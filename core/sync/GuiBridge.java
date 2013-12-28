@@ -1,6 +1,7 @@
 package appeng.core.sync;
 
 import java.lang.reflect.Constructor;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -16,10 +17,12 @@ import appeng.container.implementations.ContainerChest;
 import appeng.container.implementations.ContainerCondenser;
 import appeng.container.implementations.ContainerDrive;
 import appeng.container.implementations.ContainerGrinder;
+import appeng.container.implementations.ContainerInterface;
 import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.tile.grindstone.TileGrinder;
 import appeng.tile.misc.TileCondenser;
+import appeng.tile.misc.TileInterface;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.tile.storage.TileChest;
 import appeng.tile.storage.TileDrive;
@@ -41,7 +44,9 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_VIBRATIONCHAMBER(ContainerVibrationChamber.class, TileVibrationChamber.class),
 
-	GUI_CONDENSER(ContainerCondenser.class, TileCondenser.class);
+	GUI_CONDENSER(ContainerCondenser.class, TileCondenser.class),
+
+	GUI_INTERFACE(ContainerInterface.class, TileInterface.class);
 
 	private Class Tile;
 	private Class Gui;
@@ -106,7 +111,7 @@ public enum GuiBridge implements IGuiHandler
 		}
 	}
 
-	public Object ConstructGui(InventoryPlayer inventory,ForgeDirection side, Object tE)
+	public Object ConstructGui(InventoryPlayer inventory, ForgeDirection side, Object tE)
 	{
 		try
 		{
@@ -124,7 +129,7 @@ public enum GuiBridge implements IGuiHandler
 	@Override
 	public Object getServerGuiElement(int ID_ORDINAL, EntityPlayer player, World w, int x, int y, int z)
 	{
-		ForgeDirection side = ForgeDirection.getOrientation( ID_ORDINAL&  0x07 );
+		ForgeDirection side = ForgeDirection.getOrientation( ID_ORDINAL & 0x07 );
 		GuiBridge ID = values()[ID_ORDINAL >> 3];
 
 		TileEntity TE = w.getBlockTileEntity( x, y, z );
@@ -132,32 +137,32 @@ public enum GuiBridge implements IGuiHandler
 		if ( TE instanceof IPartHost )
 		{
 			((IPartHost) TE).getPart( side );
-			IPart part =  ((IPartHost) TE).getPart(side);
-			if ( ID.CorrectTileOrPart(part) )
+			IPart part = ((IPartHost) TE).getPart( side );
+			if ( ID.CorrectTileOrPart( part ) )
 				return ID.ConstructContainer( player.inventory, side, part );
 		}
 		else
 		{
-		if ( ID.CorrectTileOrPart( TE ) )
-			return ID.ConstructContainer( player.inventory, side, TE );
+			if ( ID.CorrectTileOrPart( TE ) )
+				return ID.ConstructContainer( player.inventory, side, TE );
 		}
-		
+
 		return new ContainerNull();
 	}
 
 	@Override
 	public Object getClientGuiElement(int ID_ORDINAL, EntityPlayer player, World w, int x, int y, int z)
 	{
-		ForgeDirection side = ForgeDirection.getOrientation( ID_ORDINAL&  0x07 );
+		ForgeDirection side = ForgeDirection.getOrientation( ID_ORDINAL & 0x07 );
 		GuiBridge ID = values()[ID_ORDINAL >> 3];
 
 		TileEntity TE = w.getBlockTileEntity( x, y, z );
-		
+
 		if ( TE instanceof IPartHost )
 		{
 			((IPartHost) TE).getPart( side );
-			IPart part =  ((IPartHost) TE).getPart(side);
-			if ( ID.CorrectTileOrPart(part) )
+			IPart part = ((IPartHost) TE).getPart( side );
+			if ( ID.CorrectTileOrPart( part ) )
 				return ID.ConstructGui( player.inventory, side, part );
 		}
 		else
@@ -165,7 +170,7 @@ public enum GuiBridge implements IGuiHandler
 			if ( ID.CorrectTileOrPart( TE ) )
 				return ID.ConstructGui( player.inventory, side, TE );
 		}
-		
+
 		return new GuiNull( new ContainerNull() );
 	}
 
