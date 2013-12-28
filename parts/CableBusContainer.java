@@ -11,6 +11,7 @@ import java.util.Random;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -891,6 +892,21 @@ public class CableBusContainer implements AEMultiTile
 	public boolean hasRedstone(ForgeDirection side)
 	{
 		return hasRedstone;
+	}
+
+	public boolean isLadder(EntityLivingBase entity)
+	{
+		for (ForgeDirection side : ForgeDirection.values())
+		{
+			IPart p = getPart( side );
+			if ( p != null )
+			{
+				if ( p.isLadder( entity ) )
+					return true;
+			}
+		}
+
+		return false;
 	}
 
 }

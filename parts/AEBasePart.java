@@ -9,6 +9,7 @@ import java.util.Random;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -235,6 +236,12 @@ public class AEBasePart implements IPart, IGridProxyable, IGridHost
 	public void gridChanged()
 	{
 
+	}
+
+	@Override
+	public boolean isLadder(EntityLivingBase entity)
+	{
+		return false;
 	}
 
 }

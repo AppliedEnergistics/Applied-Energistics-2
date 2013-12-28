@@ -8,6 +8,7 @@ import java.util.Random;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -26,6 +27,7 @@ public class PartCableAnchor implements IPart
 {
 
 	ItemStack is = null;
+	ForgeDirection mySide = ForgeDirection.UP;
 
 	public PartCableAnchor(ItemStack is) {
 		this.is = is;
@@ -167,7 +169,7 @@ public class PartCableAnchor implements IPart
 	@Override
 	public void setPartHostInfo(ForgeDirection side, IPartHost host, TileEntity tile)
 	{
-
+		mySide = side;
 	}
 
 	@Override
@@ -188,4 +190,9 @@ public class PartCableAnchor implements IPart
 		return 0;
 	}
 
+	@Override
+	public boolean isLadder(EntityLivingBase entity)
+	{
+		return mySide.offsetY == 0;
+	}
 }
