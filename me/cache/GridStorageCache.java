@@ -26,11 +26,9 @@ public class GridStorageCache implements IStorageGrid
 	final HashSet<ICellContainer> cellContainers = new HashSet();
 	final IGrid myGrid;
 
-	private IItemList<IAEItemStack> previousItemSet;
 	private NetworkInventoryHandler<IAEItemStack> myItemNetwork;
 	private NetworkMonitor<IAEItemStack> itemMonitor = new NetworkMonitor<IAEItemStack>( this, StorageChannel.ITEMS );
 
-	private IItemList<IAEFluidStack> previousFluidSet;
 	private NetworkInventoryHandler<IAEFluidStack> myFluidNetwork;
 	private NetworkMonitor<IAEFluidStack> fluidMonitor = new NetworkMonitor<IAEFluidStack>( this, StorageChannel.FLUIDS );
 
