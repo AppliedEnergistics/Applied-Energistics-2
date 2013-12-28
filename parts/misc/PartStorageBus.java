@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -32,8 +30,12 @@ import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.me.storage.MEMonitorIInventory;
 import appeng.parts.PartBasicState;
+import appeng.util.Platform;
+import buildcraft.api.transport.IPipeConnection;
+import buildcraft.api.transport.IPipeTile.PipeType;
 
-public class PartStorageBus extends PartBasicState implements IGridTickable, ICellContainer, IMEMontorHandlerReciever<IAEItemStack>
+@Interface(modid = "BuildCraft|Transport", iface = "buildcraft.api.transport.IPipeConnection")
+public class PartStorageBus extends PartBasicState implements IGridTickable, ICellContainer, IMEMontorHandlerReciever<IAEItemStack>, IPipeConnection
 {
 
 	int priority = 0;
@@ -79,7 +81,7 @@ public class PartStorageBus extends PartBasicState implements IGridTickable, ICe
 		TileEntity self = getHost().getTile();
 		TileEntity target = self.worldObj.getBlockTileEntity( self.xCoord + side.offsetX, self.yCoord + side.offsetY, self.zCoord + side.offsetZ );
 
-		int newHandlerHash = generateTileHash( target );
+		int newHandlerHash = Platform.generateTileHash( target );
 
 		if ( handlerHash == newHandlerHash )
 			return handler;
@@ -125,35 +127,6 @@ public class PartStorageBus extends PartBasicState implements IGridTickable, ICe
 		}
 
 		return handler;
-	}
-
-	/**
-	 * generates a hash for a tile to detect if the tile has changed, or changed settings, if it does it will re-gen the
-	 * handler.
-	 */
-	private int generateTileHash(TileEntity target)
-	{
-		if ( target == null )
-			return 0;
-
-		int hash = target.hashCode();
-
-		if ( target instanceof IInventory )
-			hash ^= ((IInventory) target).getSizeInventory();
-
-		if ( target instanceof ISidedInventory )
-		{
-			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
-			{
-				int offset = 0;
-				for (Integer Side : ((ISidedInventory) target).getAccessibleSlotsFromSide( dir.ordinal() ))
-				{
-					hash ^= Side << (offset++ % 20);
-				}
-			}
-		}
-
-		return hash;
 	}
 
 	@Override
@@ -274,6 +247,13 @@ public class PartStorageBus extends PartBasicState implements IGridTickable, ICe
 		{
 			// :(
 		}
+	}
+
+	@Override
+	@Method(modid = "BuildCraft|Transport")
+	public ConnectOverride overridePipeConnection(PipeType type, ForgeDirection with)
+	{
+		return type == PipeType.ITEM && with == side ? ConnectOverride.CONNECT : ConnectOverride.DISCONNECT;
 	}
 
 }
