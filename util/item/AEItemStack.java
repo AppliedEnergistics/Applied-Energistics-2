@@ -71,7 +71,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		/*
 		 * Kinda Hacky
 		 */
-		def.damageValue = Item.blazeRod.getDamage( is );
+		def.damageValue = def.getDamageValueHack( is );
 		def.def = is.itemID << Platform.DEF_OFFSET | def.damageValue;
 
 		def.dspDamage = is.getItemDamageForDisplay();
@@ -495,5 +495,23 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	public IAETagCompound getTagCompound()
 	{
 		return def.tagCompound;
+	}
+
+	@Override
+	public boolean isSameType(IAEItemStack otherStack)
+	{
+		if ( otherStack == null )
+			return false;
+
+		return def.equals( ((AEItemStack) otherStack).def );
+	}
+
+	@Override
+	public boolean isSameType(ItemStack otherStack)
+	{
+		if ( otherStack == null )
+			return false;
+
+		return def.isItem( otherStack );
 	}
 }
