@@ -1,5 +1,7 @@
 package appeng.tile.inventory;
 
+import java.util.Iterator;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -7,8 +9,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.storage.IMEInventory;
 import appeng.me.storage.MEIInventoryWrapper;
 import appeng.util.Platform;
+import appeng.util.iterators.InvIterator;
 
-public class AppEngInternalInventory implements IInventory
+public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 {
 
 	protected IAEAppEngInventory te;
@@ -223,5 +226,11 @@ public class AppEngInternalInventory implements IInventory
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
 		return true;
+	}
+
+	@Override
+	public Iterator<ItemStack> iterator()
+	{
+		return new InvIterator( this );
 	}
 }
