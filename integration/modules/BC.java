@@ -14,10 +14,12 @@ import appeng.api.parts.IFacadePart;
 import appeng.facade.FacadePart;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IBC;
+import appeng.integration.modules.helpers.BCPipeHandler;
 import buildcraft.BuildCraftEnergy;
 import buildcraft.BuildCraftTransport;
 import buildcraft.api.tools.IToolWrench;
 import buildcraft.api.transport.FacadeManager;
+import buildcraft.api.transport.IPipeConnection;
 import buildcraft.api.transport.IPipeTile;
 import buildcraft.api.transport.IPipeTile.PipeType;
 import buildcraft.transport.ItemFacade;
@@ -174,7 +176,8 @@ public class BC implements IIntegrationModule, IBC
 	@Override
 	public void Init()
 	{
-
+		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIPipeConnection", IPipeConnection.class );
+		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new BCPipeHandler() );
 	}
 
 	@Override
