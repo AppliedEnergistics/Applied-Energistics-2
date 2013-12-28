@@ -17,6 +17,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.Item;
@@ -1126,9 +1127,9 @@ public class Platform
 		return 0;
 	}
 
-	public static IAEItemStack poweredExtraction(IEnergySource energy, IMEInventory<IAEItemStack> cell, IAEItemStack input)
+	public static IAEItemStack poweredExtraction(IEnergySource energy, IMEInventory<IAEItemStack> cell, IAEItemStack request)
 	{
-		IAEItemStack possible = cell.extractItems( input.copy(), Actionable.SIMULATE );
+		IAEItemStack possible = cell.extractItems( request.copy(), Actionable.SIMULATE );
 
 		long retrieved = 0;
 		if ( possible != null )
@@ -1245,6 +1246,31 @@ public class Platform
 				meMonitorPassthu.postChange( is );
 			}
 		}
+	}
+
+	public static int generateTileHash(TileEntity target)
+	{
+		if ( target == null )
+			return 0;
+
+		int hash = target.hashCode();
+
+		if ( target instanceof IInventory )
+			hash ^= ((IInventory) target).getSizeInventory();
+
+		if ( target instanceof ISidedInventory )
+		{
+			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+			{
+				int offset = 0;
+				for (Integer Side : ((ISidedInventory) target).getAccessibleSlotsFromSide( dir.ordinal() ))
+				{
+					hash ^= Side << (offset++ % 20);
+				}
+			}
+		}
+
+		return hash;
 	}
 
 }
