@@ -46,6 +46,8 @@ public class TickTracker implements Comparable<TickTracker>
 	@Override
 	public int compareTo(TickTracker t)
 	{
-		return (int) ((host.getCurrentTick() - lastTick) + current_rate);
+		int nextTick = (int) ((lastTick - host.getCurrentTick()) + current_rate);
+		int ts_nextTick = (int) ((t.lastTick - host.getCurrentTick()) + t.current_rate);
+		return nextTick - ts_nextTick;
 	}
 };
