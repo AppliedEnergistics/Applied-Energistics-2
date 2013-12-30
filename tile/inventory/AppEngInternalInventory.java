@@ -15,8 +15,8 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 {
 
 	protected IAEAppEngInventory te;
-	int size;
-	int maxStack;
+	protected int size;
+	protected int maxStack;
 
 	protected ItemStack inv[];
 
@@ -38,6 +38,11 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 		size = s;
 		maxStack = 64;
 		inv = new ItemStack[s];
+	}
+
+	protected boolean eventsEnabled()
+	{
+		return Platform.isServer();
 	}
 
 	public void setMaxStackSize(int s)
@@ -67,7 +72,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 			else
 				ns = split.splitStack( qty );
 
-			if ( te != null && Platform.isServer() )
+			if ( te != null && eventsEnabled() )
 			{
 				te.onChangeInventory( this, slot, InvOperation.decrStackSize, ns, null );
 			}
@@ -90,7 +95,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 		ItemStack oldStack = inv[slot];
 		inv[slot] = newItemStack;
 
-		if ( te != null && Platform.isServer() )
+		if ( te != null && eventsEnabled() )
 		{
 			ItemStack removed = oldStack;
 			ItemStack added = newItemStack;
@@ -122,7 +127,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	@Override
 	public void onInventoryChanged()
 	{
-		if ( te != null && Platform.isServer() )
+		if ( te != null && eventsEnabled() )
 		{
 			te.onChangeInventory( this, -1, InvOperation.onInventoryChanged, null, null );
 		}
