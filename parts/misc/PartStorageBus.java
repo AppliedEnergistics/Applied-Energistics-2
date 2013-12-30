@@ -33,6 +33,8 @@ import appeng.parts.PartBasicState;
 import appeng.util.Platform;
 import buildcraft.api.transport.IPipeConnection;
 import buildcraft.api.transport.IPipeTile.PipeType;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.Method;
 
 @Interface(modid = "BuildCraft|Transport", iface = "buildcraft.api.transport.IPipeConnection")
 public class PartStorageBus extends PartBasicState implements IGridTickable, ICellContainer, IMEMontorHandlerReciever<IAEItemStack>, IPipeConnection
