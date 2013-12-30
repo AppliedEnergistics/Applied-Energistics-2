@@ -1,8 +1,13 @@
 package appeng.tile.powersink;
 
+import java.util.EnumSet;
+
 import net.minecraftforge.common.ForgeDirection;
 import Reika.RotaryCraft.API.ShaftPowerReceiver;
 import appeng.api.config.PowerUnits;
+import appeng.tile.events.AETileEventHandler;
+import appeng.tile.events.TileEventType;
+import appeng.util.Platform;
 import cpw.mods.fml.common.Optional.Interface;
 
 @Interface(modid = "RotaryCraft", iface = "Reika.RotaryCraft.API.ShaftPowerReceiver")
@@ -13,6 +18,25 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	private int torque = 0;
 	private long power = 0;
 	private int alpha = 0;
+
+	class RotaryCraftHandler extends AETileEventHandler
+	{
+
+		public RotaryCraftHandler() {
+			super( EnumSet.of( TileEventType.TICK ) );
+		}
+
+		@Override
+		public void Tick()
+		{
+			injectExternalPower( PowerUnits.WA, power );
+		}
+
+	};
+
+	public RotaryCraft() {
+		addNewHandler( new RotaryCraftHandler() );
+	}
 
 	@Override
 	final public int getOmega()
@@ -83,7 +107,9 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	@Override
 	final public void setPower(long p)
 	{
-		injectExternalPower( PowerUnits.WA, p );
+		if ( Platform.isClient() )
+			return;
+
 		power = p;
 	}
 
