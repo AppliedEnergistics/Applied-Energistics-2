@@ -8,11 +8,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.exceptions.AppEngException;
+import appeng.api.implementations.IBusCommon;
 import appeng.api.implementations.IStorageMonitorable;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.client.gui.GuiNull;
 import appeng.container.ContainerNull;
+import appeng.container.implementations.ContainerBus;
 import appeng.container.implementations.ContainerChest;
 import appeng.container.implementations.ContainerCondenser;
 import appeng.container.implementations.ContainerDrive;
@@ -46,7 +48,9 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_CONDENSER(ContainerCondenser.class, TileCondenser.class),
 
-	GUI_INTERFACE(ContainerInterface.class, TileInterface.class);
+	GUI_INTERFACE(ContainerInterface.class, TileInterface.class),
+
+	GUI_BUS(ContainerBus.class, IBusCommon.class);
 
 	private Class Tile;
 	private Class Gui;
