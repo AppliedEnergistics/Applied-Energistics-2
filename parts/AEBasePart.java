@@ -11,12 +11,15 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import appeng.api.config.Upgrades;
+import appeng.api.implementations.IBusCommon;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPart;
@@ -26,11 +29,12 @@ import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
+import appeng.api.util.IConfigManager;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
 import appeng.parts.networking.PartCable;
 
-public class AEBasePart implements IPart, IGridProxyable, IGridHost
+public class AEBasePart implements IPart, IGridProxyable, IGridHost, IBusCommon
 {
 
 	protected AENetworkProxy proxy = new AENetworkProxy( this, "part", this instanceof PartCable );
@@ -242,6 +246,24 @@ public class AEBasePart implements IPart, IGridProxyable, IGridHost
 	public boolean isLadder(EntityLivingBase entity)
 	{
 		return false;
+	}
+
+	@Override
+	public IConfigManager getConfigManager()
+	{
+		return null;
+	}
+
+	@Override
+	public IInventory getInventoryByName(String name)
+	{
+		return null;
+	}
+
+	@Override
+	public int getInstalledUpgrades(Upgrades u)
+	{
+		return 0;
 	}
 
 }
