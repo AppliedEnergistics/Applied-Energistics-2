@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.implementations.ISegmentedInventory;
 import appeng.api.implementations.IStorageMonitorable;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergySource;
@@ -21,6 +22,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.GridAccessException;
+import appeng.me.storage.MEMonitorIInventory;
 import appeng.me.storage.MEMonitorPassthu;
 import appeng.me.storage.NullInventory;
 import appeng.tile.events.AETileEventHandler;
@@ -35,7 +37,7 @@ import appeng.util.inv.AdaptorIInventory;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.WrapperInvSlot;
 
-public class TileInterface extends AENetworkInvTile implements IGridTickable, IStorageMonitorable, IInventoryDestination
+public class TileInterface extends AENetworkInvTile implements IGridTickable, ISegmentedInventory, IStorageMonitorable, IInventoryDestination
 {
 
 	final int sides[] = new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
@@ -58,19 +60,26 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 			}
 		}
 
+		boolean had = hasWorkToDo();
+
 		for (int x = 0; x < 8; x++)
 			updatePlan( x );
 
-		try
+		boolean has = hasWorkToDo();
+
+		if ( had != has )
 		{
-			if ( hasWorkToDo() )
-				gridProxy.getTick().wakeDevice( gridProxy.getNode() );
-			else
-				gridProxy.getTick().sleepDevice( gridProxy.getNode() );
-		}
-		catch (GridAccessException e)
-		{
-			// :P
+			try
+			{
+				if ( has )
+					gridProxy.getTick().wakeDevice( gridProxy.getNode() );
+				else
+					gridProxy.getTick().sleepDevice( gridProxy.getNode() );
+			}
+			catch (GridAccessException e)
+			{
+				// :P
+			}
 		}
 
 		if ( hadConfig != hasConfig && worldObj != null )
@@ -115,12 +124,12 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 		}
 		else if ( req != null )
 		{
-			if ( Stored == null )
+			if ( Stored == null ) // need to add stuff!
 			{
 				requireWork[slot] = req.copy();
 				return;
 			}
-			if ( req.isSameType( Stored ) )
+			else if ( req.isSameType( Stored ) ) // same type ( qty diffrent? )!
 			{
 				if ( req.getStackSize() != Stored.stackSize )
 				{
@@ -129,7 +138,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 					return;
 				}
 			}
-			else if ( Stored != null )
+			else if ( Stored != null ) // dispose!
 			{
 				IAEItemStack work = AEApi.instance().storage().createItemStack( Stored );
 				requireWork[slot] = work.setStackSize( -work.getStackSize() );
@@ -142,11 +151,40 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 		requireWork[slot] = null;
 	}
 
+	static private boolean interfaceRequest = false;
+
+	class InterfaceInventory extends MEMonitorIInventory
+	{
+
+		public InterfaceInventory(TileInterface tileInterface) {
+			super( tileInterface, ForgeDirection.UP );
+		}
+
+		@Override
+		public IAEItemStack injectItems(IAEItemStack input, Actionable type)
+		{
+			if ( interfaceRequest )
+				return input;
+
+			return super.injectItems( input, type );
+		}
+
+		@Override
+		public IAEItemStack extractItems(IAEItemStack request, Actionable type)
+		{
+			if ( interfaceRequest )
+				return null;
+
+			return super.extractItems( request, type );
+		}
+
+	};
+
 	private boolean usePlan(int x, IAEItemStack itemStack)
 	{
 		boolean changed = false;
 		slotInv.setSlot( x );
-		isWorking = true;
+		interfaceRequest = isWorking = true;
 
 		try
 		{
@@ -197,7 +235,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 		if ( changed )
 			updatePlan( x );
 
-		isWorking = false;
+		interfaceRequest = isWorking = false;
 		return changed;
 	}
 
@@ -297,18 +335,25 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 		}
 		else if ( inv == storage && slot >= 0 )
 		{
+			boolean had = hasWorkToDo();
+
 			updatePlan( slot );
 
-			try
+			boolean now = hasWorkToDo();
+
+			if ( had != now )
 			{
-				if ( hasWorkToDo() )
-					gridProxy.getTick().wakeDevice( gridProxy.getNode() );
-				else
-					gridProxy.getTick().sleepDevice( gridProxy.getNode() );
-			}
-			catch (GridAccessException e)
-			{
-				// :P
+				try
+				{
+					if ( now )
+						gridProxy.getTick().wakeDevice( gridProxy.getNode() );
+					else
+						gridProxy.getTick().sleepDevice( gridProxy.getNode() );
+				}
+				catch (GridAccessException e)
+				{
+					// :P
+				}
 			}
 		}
 	}
@@ -362,7 +407,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 	public IMEMonitor<IAEItemStack> getItemInventory()
 	{
 		if ( hasConfig() )
-			return null;
+			return new InterfaceInventory( this );
 
 		return items;
 	}
@@ -374,6 +419,21 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 			return null;
 
 		return fluids;
+	}
+
+	@Override
+	public IInventory getInventoryByName(String name)
+	{
+		if ( name.equals( "storage" ) )
+			return storage;
+
+		if ( name.equals( "patterns" ) )
+			return patterns;
+
+		if ( name.equals( "config" ) )
+			return config;
+
+		return null;
 	}
 
 }
