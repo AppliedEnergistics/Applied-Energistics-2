@@ -47,7 +47,7 @@ public class ConfigManager implements IConfigManager
 
 		for (Enum e : Settings.keySet())
 		{
-			tagCompound.setString( e.name(), e.name() );
+			tagCompound.setString( e.name(), Settings.get( e ).toString() );
 		}
 
 	}
