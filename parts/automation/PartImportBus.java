@@ -1,11 +1,15 @@
 package appeng.parts.automation;
 
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Vec3;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.Settings;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -16,17 +20,34 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.texture.CableBusTextures;
+import appeng.core.sync.GuiBridge;
 import appeng.me.GridAccessException;
-import appeng.parts.PartBasicState;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
 
-public class PartImportBus extends PartBasicState implements IGridTickable, IInventoryDestination
+public class PartImportBus extends PartSharedItemBus implements IGridTickable, IInventoryDestination
 {
 
 	public PartImportBus(ItemStack is) {
 		super( PartImportBus.class, is );
+		settings.registerSetting( Settings.REDSTONE_INPUT, RedstoneMode.IGNORE );
+		settings.registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+	}
+
+	@Override
+	public boolean onActivate(EntityPlayer player, Vec3 pos)
+	{
+		if ( !player.isSneaking() )
+		{
+			if ( Platform.isClient() )
+				return true;
+
+			Platform.openGUI( player, getHost().getTile(), side, GuiBridge.GUI_BUS );
+			return true;
+		}
+
+		return false;
 	}
 
 	IMEInventory<IAEItemStack> destination = null;
@@ -44,49 +65,6 @@ public class PartImportBus extends PartBasicState implements IGridTickable, IInv
 	{
 		destination = itemInventory;
 		return this;
-	}
-
-	boolean cached = false;
-	int adaptorHash = 0;
-	InventoryAdaptor adaptor;
-
-	InventoryAdaptor getHandler()
-	{
-		if ( cached )
-			return adaptor;
-
-		cached = true;
-		TileEntity self = getHost().getTile();
-		TileEntity target = self.worldObj.getBlockTileEntity( self.xCoord + side.offsetX, self.yCoord + side.offsetY, self.zCoord + side.offsetZ );
-
-		int newAdaptorHash = Platform.generateTileHash( target );
-
-		if ( adaptorHash == newAdaptorHash )
-			return adaptor;
-
-		adaptorHash = newAdaptorHash;
-		adaptor = InventoryAdaptor.getAdaptor( target, side.getOpposite() );
-		cached = true;
-
-		return adaptor;
-
-	}
-
-	@Override
-	public void onNeighborChanged()
-	{
-		cached = false;
-		if ( adaptor == null && getHandler() != null )
-		{
-			try
-			{
-				proxy.getTick().wakeDevice( proxy.getNode() );
-			}
-			catch (GridAccessException e)
-			{
-				// :P
-			}
-		}
 	}
 
 	@Override
@@ -182,6 +160,12 @@ public class PartImportBus extends PartBasicState implements IGridTickable, IInv
 			return TickRateModulation.SLEEP;
 
 		return worked ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
+	}
+
+	@Override
+	protected boolean isSleeping()
+	{
+		return getHandler() == null;
 	}
 
 }

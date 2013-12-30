@@ -132,7 +132,6 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 		return true;
 	}
 
-	@Override
 	public abstract IInventory getInternalInventory();
 
 	@Override
