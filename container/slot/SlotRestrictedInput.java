@@ -11,6 +11,7 @@ import appeng.api.crafting.ICraftingPatternMAC;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.implementations.ISpatialStorageCell;
 import appeng.api.implementations.IStorageComponent;
+import appeng.api.implementations.IUpgradeModule;
 import appeng.util.Platform;
 
 public class SlotRestrictedInput extends AppEngSlot
@@ -18,9 +19,9 @@ public class SlotRestrictedInput extends AppEngSlot
 
 	public enum PlaceableItemType
 	{
-		STORAGE_CELLS(15), ORE(1 * 16 + 15), STORAGE_COMPONENT(3 * 16 + 15), WIRELESS_TERMINAL(4 * 16 + 15), TRASH(5 * 16 + 15), VALID_ENCODED_PATTERN_W_OUPUT(7 * 16 + 15), ENCODED_PATTERN_W_OUTPUT(
-				7 * 16 + 15), ENCODED_PATTERN(7 * 16 + 15), BLANK_PATTERN(8 * 16 + 15), POWERED_TOOL(9 * 16 + 15), RANGE_BOOSTER(6 * 16 + 15), QE_SINGULARTIY(10 * 16 + 15), SPATIAL_STORAGE_CELLS(
-				11 * 16 + 15), FUEL(12 * 16 + 15);
+		STORAGE_CELLS(15), ORE(1 * 16 + 15), STORAGE_COMPONENT(3 * 16 + 15), WIRELESS_TERMINAL(4 * 16 + 15), TRASH(5 * 16 + 15), VALID_ENCODED_PATTERN_W_OUPUT(
+				7 * 16 + 15), ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15), ENCODED_PATTERN(7 * 16 + 15), BLANK_PATTERN(8 * 16 + 15), POWERED_TOOL(9 * 16 + 15), RANGE_BOOSTER(
+				6 * 16 + 15), QE_SINGULARTIY(10 * 16 + 15), SPATIAL_STORAGE_CELLS(11 * 16 + 15), FUEL(12 * 16 + 15), UPGRADES(13 * 16 + 15);
 
 		public final int icon;
 
@@ -90,6 +91,9 @@ public class SlotRestrictedInput extends AppEngSlot
 		if ( i.getItem() == null )
 			return false;
 
+		if ( !inventory.isItemValidForSlot( this.getSlotIndex(), i ) )
+			return false;
+
 		IAppEngApi api = AEApi.instance();
 		switch (which)
 		{
@@ -133,6 +137,10 @@ public class SlotRestrictedInput extends AppEngSlot
 			return true;
 		case WIRELESS_TERMINAL:
 			return AEApi.instance().registries().wireless().isWirelessTerminal( i );
+		case UPGRADES:
+			return i.getItem() instanceof IUpgradeModule && ((IUpgradeModule) i.getItem()).getType( i ) != null;
+		default:
+			break;
 		}
 
 		return false;

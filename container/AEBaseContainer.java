@@ -18,7 +18,7 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.me.InternalSlotME;
 import appeng.client.me.SlotME;
-import appeng.container.slot.ISlotPlayerSide;
+import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.SlotCraftingMatrix;
 import appeng.container.slot.SlotDisabled;
 import appeng.container.slot.SlotFake;
@@ -46,6 +46,15 @@ public abstract class AEBaseContainer extends Container
 	public TileEntity getTileEntity()
 	{
 		return tileEntity;
+	}
+
+	@Override
+	protected Slot addSlotToContainer(Slot newSlot)
+	{
+		if ( newSlot instanceof AppEngSlot )
+			return super.addSlotToContainer( newSlot );
+		else
+			throw new RuntimeException( "Invalid Slot for AE Container." );
 	}
 
 	@Override
@@ -78,7 +87,7 @@ public abstract class AEBaseContainer extends Container
 		}
 
 		ItemStack tis = null;
-		Slot clickSlot = (Slot) this.inventorySlots.get( idx );
+		AppEngSlot clickSlot = (AppEngSlot) this.inventorySlots.get( idx ); // require AE SLots!
 
 		if ( clickSlot instanceof SlotDisabled || clickSlot instanceof SlotInaccessable )
 			return null;
@@ -94,16 +103,16 @@ public abstract class AEBaseContainer extends Container
 			/**
 			 * Gather a list of valid destinations.
 			 */
-			if ( clickSlot instanceof ISlotPlayerSide )
+			if ( clickSlot.isPlayerSide() )
 			{
 				tis = shiftStoreItem( tis );
 
 				// target slots in the container...
 				for (int x = 0; x < this.inventorySlots.size(); x++)
 				{
-					Slot cs = (Slot) this.inventorySlots.get( x );
+					AppEngSlot cs = (AppEngSlot) this.inventorySlots.get( x );
 
-					if ( !(cs instanceof ISlotPlayerSide) && !(cs instanceof SlotFake) && !(cs instanceof SlotCraftingMatrix) )
+					if ( !(cs.isPlayerSide()) && !(cs instanceof SlotFake) && !(cs instanceof SlotCraftingMatrix) )
 					{
 						if ( cs.isItemValid( tis ) )
 							selectedSlots.add( cs );
@@ -115,9 +124,9 @@ public abstract class AEBaseContainer extends Container
 				// target slots in the container...
 				for (int x = 0; x < this.inventorySlots.size(); x++)
 				{
-					Slot cs = (Slot) this.inventorySlots.get( x );
+					AppEngSlot cs = (AppEngSlot) this.inventorySlots.get( x );
 
-					if ( (cs instanceof ISlotPlayerSide) && !(cs instanceof SlotFake) && !(cs instanceof SlotCraftingMatrix) )
+					if ( (cs.isPlayerSide()) && !(cs instanceof SlotFake) && !(cs instanceof SlotCraftingMatrix) )
 					{
 						if ( cs.isItemValid( tis ) )
 							selectedSlots.add( cs );
@@ -128,17 +137,17 @@ public abstract class AEBaseContainer extends Container
 			/**
 			 * Handle Fake Slot Shift clicking.
 			 */
-			if ( selectedSlots.isEmpty() && clickSlot instanceof ISlotPlayerSide )
+			if ( selectedSlots.isEmpty() && clickSlot.isPlayerSide() )
 			{
 				if ( tis != null )
 				{
 					// target slots in the container...
 					for (int x = 0; x < this.inventorySlots.size(); x++)
 					{
-						Slot cs = (Slot) this.inventorySlots.get( x );
+						AppEngSlot cs = (AppEngSlot) this.inventorySlots.get( x );
 						ItemStack dest = cs.getStack();
 
-						if ( !(cs instanceof ISlotPlayerSide) && cs instanceof SlotFake )
+						if ( !(cs.isPlayerSide()) && cs instanceof SlotFake )
 						{
 							if ( Platform.isSameItem( dest, tis ) )
 								return null;

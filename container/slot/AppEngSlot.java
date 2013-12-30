@@ -12,6 +12,14 @@ public class AppEngSlot extends Slot
 		NotAvailable, Valid, Invalid
 	};
 
+	public boolean isPlayerSide = false;
+
+	public Slot setPlayerSide()
+	{
+		isPlayerSide = true;
+		return this;
+	}
+
 	public int icon = -1;
 	public hasCalculatedValidness isValid;
 	public int defX, defY;
@@ -66,6 +74,11 @@ public class AppEngSlot extends Slot
 	public int getIcon()
 	{
 		return icon;
+	}
+
+	public boolean isPlayerSide()
+	{
+		return isPlayerSide;
 	}
 
 }

@@ -15,6 +15,11 @@ public class SlotFake extends AppEngSlot
 		invSlot = idx;
 	}
 
+	public boolean isEnabled()
+	{
+		return true;
+	}
+
 	public void addToInv(ItemStack is)
 	{
 		if ( is != null )
@@ -27,7 +32,8 @@ public class SlotFake extends AppEngSlot
 
 				if ( current.stackSize > inventory.getInventoryStackLimit() )
 					current.stackSize = inventory.getInventoryStackLimit();
-			} else
+			}
+			else
 			{
 				current = is.copy();
 
@@ -36,7 +42,8 @@ public class SlotFake extends AppEngSlot
 
 				this.inventory.setInventorySlotContents( invSlot, current );
 			}
-		} else
+		}
+		else
 		{
 			this.inventory.setInventorySlotContents( invSlot, null );
 		}
@@ -82,4 +89,5 @@ public class SlotFake extends AppEngSlot
 	{
 		return true;
 	}
+
 }
