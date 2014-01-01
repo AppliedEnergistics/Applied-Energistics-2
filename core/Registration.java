@@ -6,6 +6,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.ChestGenHooks;
@@ -61,6 +62,8 @@ import appeng.block.storage.BlockChest;
 import appeng.block.storage.BlockDrive;
 import appeng.block.storage.BlockIOPort;
 import appeng.core.features.AEFeature;
+import appeng.core.features.AEFeatureHandler;
+import appeng.core.features.DamagedItemDefinition;
 import appeng.core.features.IAEFeature;
 import appeng.core.features.registries.entries.BasicCellHandler;
 import appeng.core.features.registries.entries.CreativeCellHandler;
@@ -68,6 +71,7 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.GuiBridge;
 import appeng.debug.ToolDebugCard;
+import appeng.debug.ToolReplicatorCard;
 import appeng.helpers.AETrading;
 import appeng.helpers.PartPlacement;
 import appeng.helpers.QuartzWorldGen;
@@ -137,13 +141,16 @@ public class Registration
 		Parts parts = AEApi.instance().parts();
 		Blocks blocks = AEApi.instance().blocks();
 
+		AEItemDefinition materialItem = (AEFeatureHandler) addFeature( ItemMaterial.class );
+
 		Class materialClass = materials.getClass();
 		for (MaterialType mat : MaterialType.values())
 		{
 			try
 			{
 				Field f = materialClass.getField( "material" + mat.name() );
-				f.set( materials, addFeature( ItemMaterial.class, mat ) );
+				ItemStack is = ((ItemMaterial) materialItem.item()).createMaterial( mat );
+				f.set( materials, new DamagedItemDefinition( is ) );
 			}
 			catch (Throwable err)
 			{
@@ -253,6 +260,7 @@ public class Registration
 		items.itemFacade = addFeature( ItemFacade.class );
 
 		addFeature( ToolDebugCard.class );
+		addFeature( ToolReplicatorCard.class );
 	}
 
 	private AEItemDefinition addFeature(Class c, Object... Args)
@@ -265,8 +273,24 @@ public class Registration
 
 			for (Constructor conItem : con)
 			{
-				if ( conItem.getParameterTypes().length == Args.length )
-					obj = conItem.newInstance( Args );
+				Class paramTypes[] = conItem.getParameterTypes();
+				if ( paramTypes.length == Args.length )
+				{
+					boolean valid = true;
+
+					for (int idx = 0; idx < paramTypes.length; idx++)
+					{
+						Class cz = Args[idx].getClass();
+						if ( !isClassMatch( paramTypes[idx], cz, Args[idx] ) )
+							valid = false;
+					}
+
+					if ( valid )
+					{
+						obj = conItem.newInstance( Args );
+						break;
+					}
+				}
 			}
 
 			if ( obj instanceof IAEFeature )
@@ -291,6 +315,40 @@ public class Registration
 			AELog.severe( "Error with Feature: " + c.getName() );
 			throw new RuntimeException( e );
 		}
+	}
+
+	private boolean isClassMatch(Class expected, Class got, Object value)
+	{
+		if ( value == null && !expected.isPrimitive() )
+			return true;
+
+		expected = condense( expected, Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class );
+		got = condense( got, Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class );
+
+		if ( expected == got || expected.isAssignableFrom( got ) )
+			return true;
+
+		return false;
+	}
+
+	private Class condense(Class expected, Class... wrappers)
+	{
+		if ( expected.isPrimitive() )
+		{
+			for (Class clz : wrappers)
+			{
+				try
+				{
+					if ( expected == clz.getField( "TYPE" ).get( null ) )
+						return clz;
+				}
+				catch (Throwable t)
+				{
+					t.printStackTrace();
+				}
+			}
+		}
+		return expected;
 	}
 
 	public void Init(FMLInitializationEvent event)

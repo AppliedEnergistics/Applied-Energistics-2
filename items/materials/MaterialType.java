@@ -3,6 +3,7 @@ package appeng.items.materials;
 import java.util.EnumSet;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.Icon;
 import net.minecraftforge.oredict.OreDictionary;
 import appeng.client.render.entity.EntityIds;
 import appeng.core.AppEng;
@@ -10,6 +11,8 @@ import appeng.core.features.AEFeature;
 import appeng.entity.EntityChargedQuartz;
 import appeng.entity.EntitySingularity;
 import cpw.mods.fml.common.registry.EntityRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public enum MaterialType
 {
@@ -51,6 +54,11 @@ public enum MaterialType
 	private String oreName;
 	private EnumSet<AEFeature> features;
 	private Class<? extends Entity> droppedEntity;
+
+	// icon for the material.
+	@SideOnly(Side.CLIENT)
+	public Icon icon;
+	public int damageValue = -1;
 
 	MaterialType() {
 		features = EnumSet.of( AEFeature.Core );
