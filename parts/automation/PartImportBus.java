@@ -51,11 +51,12 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 	}
 
 	IMEInventory<IAEItemStack> destination = null;
+	IAEItemStack lastItemChecked = null;
 
 	@Override
 	public boolean canInsert(ItemStack stack)
 	{
-		IAEItemStack out = destination.injectItems( AEApi.instance().storage().createItemStack( stack ), Actionable.SIMULATE );
+		IAEItemStack out = destination.injectItems( lastItemChecked = AEApi.instance().storage().createItemStack( stack ), Actionable.SIMULATE );
 		if ( out == null )
 			return true;
 		return out.getStackSize() != stack.stackSize;
@@ -86,6 +87,7 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 	@Override
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
+		rh.useSimpliedRendering( x, y, z, this );
 		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
 				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
@@ -144,7 +146,12 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 				ItemStack newItems = myAdaptor.removeItems( howMany, null, configDest( proxy.getStorage().getItemInventory() ) );
 				if ( newItems != null )
 				{
-					IAEItemStack failed = destination.injectItems( AEApi.instance().storage().createItemStack( newItems ), Actionable.MODULATE );
+					if ( lastItemChecked == null || !lastItemChecked.isSameType( newItems ) )
+						lastItemChecked = AEApi.instance().storage().createItemStack( newItems );
+					else
+						lastItemChecked.setStackSize( newItems.stackSize );
+
+					IAEItemStack failed = destination.injectItems( lastItemChecked, Actionable.MODULATE );
 					if ( failed != null )
 						myAdaptor.addItems( failed.getItemStack() );
 					else
