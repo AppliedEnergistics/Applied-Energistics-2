@@ -98,6 +98,13 @@ public class AppEng
 		return integrationModules.getInstance( Name );
 	}
 
+	private void startService(String serviceName, Thread thread)
+	{
+		thread.setName( serviceName );
+		thread.setPriority( Thread.MIN_PRIORITY );
+		thread.start();
+	}
+
 	@EventHandler
 	void PreInit(FMLPreInitializationEvent event)
 	{
@@ -116,13 +123,13 @@ public class AppEng
 		if ( Configuration.instance.isFeatureEnabled( AEFeature.Profiler ) )
 		{
 			AELog.info( "Starting Profiler" );
-			(new Thread( Profiler.instance = new Profiler() )).start();
+			startService( "AE2 Profiler", (new Thread( Profiler.instance = new Profiler() )) );
 		}
 
 		if ( Configuration.instance.isFeatureEnabled( AEFeature.VersionChecker ) )
 		{
 			AELog.info( "Starting VersionChecker" );
-			(new Thread( VersionChecker.instance = new VersionChecker() )).start();
+			startService( "AE2 VersionChecker", new Thread( VersionChecker.instance = new VersionChecker() ) );
 		}
 
 		AELog.info( "PreInit ( end )" );
