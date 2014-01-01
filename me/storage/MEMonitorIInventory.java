@@ -232,7 +232,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 
 	private void postDiffrence(IAEItemStack a)
 	{
-		AELog.info( a.getItemStack().getUnlocalizedName() + " @ " + a.getStackSize() );
+		// AELog.info( a.getItemStack().getUnlocalizedName() + " @ " + a.getStackSize() );
 		if ( a != null )
 		{
 			Iterator<Entry<IMEMontorHandlerReciever<IAEItemStack>, Object>> i = listeners.entrySet().iterator();
