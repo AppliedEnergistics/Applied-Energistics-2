@@ -1,0 +1,143 @@
+package appeng.debug;
+
+import java.util.EnumSet;
+
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.ForgeDirection;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.spatial.ISpatialCache;
+import appeng.api.util.DimensionalCoord;
+import appeng.core.features.AEFeature;
+import appeng.items.AEBaseItem;
+import appeng.util.Platform;
+
+public class ToolReplicatorCard extends AEBaseItem
+{
+
+	public ToolReplicatorCard() {
+		super( ToolReplicatorCard.class );
+		setfeature( EnumSet.of( AEFeature.Creative ) );
+	}
+
+	@Override
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	{
+		if ( Platform.isClient() )
+			return false;
+
+		if ( player.isSneaking() )
+		{
+			if ( world.getBlockTileEntity( x, y, z ) instanceof IGridHost )
+			{
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setInteger( "x", x );
+				tag.setInteger( "y", y );
+				tag.setInteger( "z", z );
+				tag.setInteger( "side", side );
+				tag.setInteger( "dimid", world.provider.dimensionId );
+				stack.setTagCompound( tag );
+			}
+			else
+				outputMsg( player, "This is not a Grid Tile." );
+		}
+		else
+		{
+			NBTTagCompound ish = stack.getTagCompound();
+			if ( ish != null )
+			{
+				int src_x = ish.getInteger( "x" );
+				int src_y = ish.getInteger( "y" );
+				int src_z = ish.getInteger( "z" );
+				int src_side = ish.getInteger( "side" );
+				int dimid = ish.getInteger( "dimid" );
+				World src_w = DimensionManager.getWorld( dimid );
+
+				TileEntity te = src_w.getBlockTileEntity( src_x, src_y, src_z );
+				if ( te instanceof IGridHost )
+				{
+					IGridHost gh = (IGridHost) te;
+					ForgeDirection sideOff = ForgeDirection.getOrientation( src_side );
+					ForgeDirection currentSideOff = ForgeDirection.getOrientation( side );
+					IGridNode n = gh.getGridNode( sideOff );
+					if ( n != null )
+					{
+						IGrid g = n.getGrid();
+						if ( g != null )
+						{
+							ISpatialCache sc = g.getCache( ISpatialCache.class );
+							if ( sc.isValidRegion() )
+							{
+								DimensionalCoord min = sc.getMin();
+								DimensionalCoord max = sc.getMax();
+
+								x += currentSideOff.offsetX;
+								y += currentSideOff.offsetY;
+								z += currentSideOff.offsetZ;
+
+								int min_x = min.x;
+								int min_y = min.y;
+								int min_z = min.z;
+
+								int rel_x = min.x - src_x + x;
+								int rel_y = min.y - src_y + y;
+								int rel_z = min.z - src_z + z;
+
+								int scale_x = max.x - min.x;
+								int scale_y = max.y - min.y;
+								int scale_z = max.z - min.z;
+
+								for (int i = 1; i < scale_x; i++)
+									for (int j = 1; j < scale_y; j++)
+										for (int k = 1; k < scale_z; k++)
+										{
+											int id = src_w.getBlockId( min_x + i, min_y + j, min_z + k );
+											int meta = src_w.getBlockMetadata( min_x + i, min_y + j, min_z + k );
+											world.setBlock( i + rel_x, j + rel_y, k + rel_z, id, meta, 4 );
+
+											Block blk = Block.blocksList[id];
+											if ( blk != null && blk.hasTileEntity( meta ) )
+											{
+												TileEntity ote = src_w.getBlockTileEntity( min_x + i, min_y + j, min_z + k );
+												TileEntity nte = blk.createTileEntity( world, meta );
+												NBTTagCompound data = new NBTTagCompound();
+												ote.writeToNBT( data );
+												nte.readFromNBT( data );
+												world.setBlockTileEntity( i + rel_x, j + rel_y, k + rel_z, nte );
+											}
+											world.markBlockForUpdate( i + rel_x, j + rel_y, k + rel_z );
+										}
+
+							}
+							else
+								outputMsg( player, "requires valid spatial pylon setup." );
+						}
+						else
+							outputMsg( player, "no grid?" );
+					}
+					else
+						outputMsg( player, "No grid node?" );
+				}
+				else
+					outputMsg( player, "Src is no longer a grid block?" );
+			}
+			else
+				outputMsg( player, "No Source Defined" );
+		}
+		return true;
+	}
+
+	private void outputMsg(EntityPlayer player, String string)
+	{
+		player.sendChatToPlayer( ChatMessageComponent.createFromText( string ) );
+	}
+
+}
