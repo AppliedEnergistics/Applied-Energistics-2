@@ -35,10 +35,10 @@ public class ToolDebugCard extends AEBaseItem
 
 	public String timeMeasurement(long nanos)
 	{
-		int ms = (int) (nanos / 1000000);
-		if ( ms <= 0 )
+		long ms = (long) (nanos / 100000);
+		if ( nanos <= 100000 )
 			return nanos + "ns";
-		return ms + "ms";
+		return (((float) ms) / 10.0f) + "ms";
 	}
 
 	@Override
