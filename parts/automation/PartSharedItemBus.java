@@ -3,6 +3,7 @@ package appeng.parts.automation;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickingRequest;
@@ -16,6 +17,11 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 
 	public PartSharedItemBus(Class c, ItemStack is) {
 		super( c, is );
+	}
+
+	protected int availableSlots()
+	{
+		return Math.min( 1 + getInstalledUpgrades( Upgrades.CAPACITY ) * 4, config.getSizeInventory() );
 	}
 
 	public void writeToNBT(net.minecraft.nbt.NBTTagCompound extra)
