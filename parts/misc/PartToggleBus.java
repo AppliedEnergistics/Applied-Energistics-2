@@ -141,6 +141,7 @@ public class PartToggleBus extends PartBasicState
 	@Override
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
+		rh.useSimpliedRendering( x, y, z, this );
 		rh.setTexture( is.getIconIndex() );
 
 		rh.setBounds( 6, 6, 14, 10, 10, 16 );

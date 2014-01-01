@@ -36,6 +36,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 	private ForgeDirection up = ForgeDirection.UNKNOWN;
 
 	public boolean dropItems = true;
+	public int renderFragment = 0;
 
 	/**
 	 * isRedstonePowerd has already changed.
@@ -158,9 +159,14 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 				output = !forward.equals( old_Forward ) || !up.equals( old_Up );
 			}
 
+			renderFragment = 100;
 			for (AETileEventHandler h : getHandlerListFor( TileEventType.NETWORK ))
 				if ( h.readFromStream( data ) )
 					output = true;
+
+			if ( (renderFragment & 1) == 1 )
+				output = true;
+			renderFragment = 0;
 		}
 		catch (Throwable t)
 		{
@@ -246,8 +252,13 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 
 	public void markForUpdate()
 	{
-		if ( worldObj != null )
-			worldObj.markBlockForUpdate( xCoord, yCoord, zCoord );
+		if ( renderFragment > 0 )
+			renderFragment = renderFragment | 1;
+		else
+		{
+			if ( worldObj != null )
+				worldObj.markBlockForUpdate( xCoord, yCoord, zCoord );
+		}
 	}
 
 	/**

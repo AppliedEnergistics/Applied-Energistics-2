@@ -41,6 +41,7 @@ public class PartP2PTunnel extends PartBasicState
 	@Override
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
+		rh.useSimpliedRendering( x, y, z, this );
 		rh.setTexture( AEApi.instance().blocks().blockQuartz.block().getIcon( 0, 0 ) );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );

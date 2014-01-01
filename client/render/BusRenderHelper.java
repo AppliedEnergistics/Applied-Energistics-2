@@ -8,6 +8,8 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.block.AEBaseBlock;
 
@@ -31,6 +33,94 @@ public class BusRenderHelper implements IPartRenderHelper
 	public ForgeDirection az;
 
 	int color = 0xffffff;
+
+	class BoundBoxCalculator implements IPartCollsionHelper
+	{
+
+		public boolean started = false;
+
+		float minX;
+		float minY;
+		float minZ;
+
+		float maxX;
+		float maxY;
+		float maxZ;
+
+		@Override
+		public void addBox(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
+		{
+			if ( started )
+			{
+				this.minX = Math.min( this.minX, (float) minX );
+				this.minY = Math.min( this.minY, (float) minY );
+				this.minZ = Math.min( this.minZ, (float) minZ );
+				this.maxX = Math.max( this.maxX, (float) maxX );
+				this.maxY = Math.max( this.maxY, (float) maxY );
+				this.maxZ = Math.max( this.maxZ, (float) maxZ );
+			}
+			else
+			{
+				started = true;
+				this.minX = (float) minX;
+				this.minY = (float) minY;
+				this.minZ = (float) minZ;
+				this.maxX = (float) maxX;
+				this.maxY = (float) maxY;
+				this.maxZ = (float) maxZ;
+			}
+		}
+
+		@Override
+		public ForgeDirection getWorldX()
+		{
+			return ax;
+		}
+
+		@Override
+		public ForgeDirection getWorldY()
+		{
+			return ay;
+		}
+
+		@Override
+		public ForgeDirection getWorldZ()
+		{
+			return az;
+		}
+
+	};
+
+	BoundBoxCalculator bbc = new BoundBoxCalculator();
+
+	@Override
+	public void normalRendering()
+	{
+		RenderBlocksWorkaround rbw = BusRenderer.instance.renderer;
+		rbw.calculations = true;
+		rbw.useTextures = true;
+		rbw.enableAO = false;
+	}
+
+	@Override
+	public void useSimpliedRendering(int x, int y, int z, IPart p)
+	{
+		RenderBlocksWorkaround rbw = BusRenderer.instance.renderer;
+		rbw.calculations = true;
+		rbw.faces.clear();
+
+		bbc.started = false;
+		p.getBoxes( bbc );
+
+		setBounds( bbc.minX, bbc.minY, bbc.minZ, bbc.maxX, bbc.maxY, bbc.maxZ );
+
+		bbr.renderBlockBounds( rbw, minX, minY, minZ, maxX, maxY, maxZ, ax, ay, az );
+		rbw.renderStandardBlock( blk, x, y, z );
+
+		rbw.faces = EnumSet.allOf( ForgeDirection.class );
+		rbw.calculations = false;
+		rbw.useTextures = false;
+	}
 
 	@Override
 	public void setBounds(float minx, float miny, float minz, float maxx, float maxy, float maxz)
@@ -251,4 +341,5 @@ public class BusRenderHelper implements IPartRenderHelper
 	{
 		return az;
 	}
+
 }

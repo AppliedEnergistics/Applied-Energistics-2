@@ -740,14 +740,10 @@ public class PartCable extends AEBasePart implements IPartCable
 		if ( useCovered )
 		{
 			rh.setTexture( getCoveredTexture( getCableColor() ) );
-			rh.setBounds( 5, 5, 5, 11, 11, 11 );
-			rh.renderBlock( x, y, z, renderer );
 		}
 		else
 		{
 			rh.setTexture( getTexture( getCableColor() ) );
-			rh.setBounds( 6, 6, 6, 10, 10, 10 );
-			rh.renderBlock( x, y, z, renderer );
 		}
 
 		IPartHost ph = getHost();
@@ -787,9 +783,54 @@ public class PartCable extends AEBasePart implements IPartCable
 			}
 		}
 
-		for (ForgeDirection of : connections)
+		if ( connections.size() != 2 || !nonLinear( connections ) || useCovered )
 		{
-			rendereGlassConection( x, y, z, rh, renderer, of );
+			if ( useCovered )
+			{
+				rh.setBounds( 5, 5, 5, 11, 11, 11 );
+				rh.renderBlock( x, y, z, renderer );
+			}
+			else
+			{
+				rh.setBounds( 6, 6, 6, 10, 10, 10 );
+				rh.renderBlock( x, y, z, renderer );
+			}
+
+			for (ForgeDirection of : connections)
+			{
+				rendereGlassConection( x, y, z, rh, renderer, of );
+			}
+		}
+		else
+		{
+			Icon def = getTexture( getCableColor() );
+			rh.setTexture( def );
+
+			for (ForgeDirection of : connections)
+			{
+				switch (of)
+				{
+				case DOWN:
+				case UP:
+					renderer.setRenderBounds( 6 / 16.0, 0, 6 / 16.0, 10 / 16.0, 16 / 16.0, 10 / 16.0 );
+					break;
+				case EAST:
+				case WEST:
+					renderer.uvRotateEast = renderer.uvRotateWest = 1;
+					renderer.uvRotateBottom = renderer.uvRotateTop = 1;
+					renderer.setRenderBounds( 0, 6 / 16.0, 6 / 16.0, 16 / 16.0, 10 / 16.0, 10 / 16.0 );
+					break;
+				case NORTH:
+				case SOUTH:
+					renderer.uvRotateNorth = renderer.uvRotateSouth = 1;
+					renderer.setRenderBounds( 6 / 16.0, 6 / 16.0, 0, 10 / 16.0, 10 / 16.0, 16 / 16.0 );
+					break;
+				default:
+					continue;
+				}
+			}
+
+			renderer.renderStandardBlock( rh.getBlock(), x, y, z );
 		}
 
 		rh.setTexture( null );

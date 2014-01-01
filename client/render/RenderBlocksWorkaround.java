@@ -46,6 +46,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	private float foZNeg[] = new float[12];
 
 	public boolean isFacade = false;
+	public boolean useTextures = true;
 
 	Field fBrightness;
 
@@ -75,27 +76,27 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	{
 		Tessellator.instance.setBrightness( bXPos );
 		restoreAO( aoXPos, foXPos );
-		renderFaceXPos( b, x, y, z, rXPos );
+		renderFaceXPos( b, x, y, z, useTextures ? rXPos : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.EAST.ordinal() ) );
 
 		Tessellator.instance.setBrightness( bXNeg );
 		restoreAO( aoXNeg, foXNeg );
-		renderFaceXNeg( b, x, y, z, rXNeg );
+		renderFaceXNeg( b, x, y, z, useTextures ? rXNeg : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.WEST.ordinal() ) );
 
 		Tessellator.instance.setBrightness( bYPos );
 		restoreAO( aoYPos, foYPos );
-		renderFaceYPos( b, x, y, z, rYPos );
+		renderFaceYPos( b, x, y, z, useTextures ? rYPos : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.UP.ordinal() ) );
 
 		Tessellator.instance.setBrightness( bYNeg );
 		restoreAO( aoYNeg, foYNeg );
-		renderFaceYNeg( b, x, y, z, rYNeg );
+		renderFaceYNeg( b, x, y, z, useTextures ? rYNeg : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.DOWN.ordinal() ) );
 
 		Tessellator.instance.setBrightness( bZPos );
 		restoreAO( aoZPos, foZPos );
-		renderFaceZPos( b, x, y, z, rZPos );
+		renderFaceZPos( b, x, y, z, useTextures ? rZPos : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.SOUTH.ordinal() ) );
 
 		Tessellator.instance.setBrightness( bZNeg );
 		restoreAO( aoZNeg, foZNeg );
-		renderFaceZNeg( b, x, y, z, rZNeg );
+		renderFaceZNeg( b, x, y, z, useTextures ? rZNeg : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.NORTH.ordinal() ) );
 
 		return true;
 	}
