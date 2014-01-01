@@ -88,6 +88,9 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	@Override
 	final public double injectAEPower(double amt, Actionable mode)
 	{
+		if ( amt < 0.000001 )
+			return 0;
+
 		if ( mode == Actionable.SIMULATE )
 		{
 			double fakeBattery = internalCurrentPower + amt;

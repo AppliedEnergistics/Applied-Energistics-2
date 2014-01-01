@@ -35,7 +35,8 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	};
 
 	public RotaryCraft() {
-		addNewHandler( new RotaryCraftHandler() );
+		if ( Platform.isServer() )
+			addNewHandler( new RotaryCraftHandler() );
 	}
 
 	@Override

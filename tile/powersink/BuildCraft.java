@@ -9,6 +9,7 @@ import appeng.api.config.PowerUnits;
 import appeng.core.AppEng;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
+import appeng.util.Platform;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
@@ -54,18 +55,21 @@ public abstract class BuildCraft extends AERootPoweredTile implements IPowerRece
 	BCPerdition bcPowerWrapper;
 
 	public BuildCraft() {
-		try
+		if ( Platform.isServer() )
 		{
-			if ( Loader.isModLoaded( "BuildCraftAPI|power" ) )
+			try
 			{
-				if ( AppEng.instance.isIntegrationEnabled( "" ) )
-					addNewHandler( bcPowerWrapper = new BCPerdition( this ) );
-				bcPowerWrapper.bcPowerHandler.configure( 1, 380, 1.0f / 5.0f, 1000 );
+				if ( Loader.isModLoaded( "BuildCraftAPI|power" ) )
+				{
+					if ( AppEng.instance.isIntegrationEnabled( "" ) )
+						addNewHandler( bcPowerWrapper = new BCPerdition( this ) );
+					bcPowerWrapper.bcPowerHandler.configure( 1, 380, 1.0f / 5.0f, 1000 );
+				}
 			}
-		}
-		catch (Throwable t)
-		{
-			// ignore.. no bc?
+			catch (Throwable t)
+			{
+				// ignore.. no bc?
+			}
 		}
 	}
 
