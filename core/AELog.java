@@ -3,6 +3,7 @@ package appeng.core;
 import java.io.File;
 import java.util.logging.Level;
 
+import appeng.util.Platform;
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
 
 public class AELog
@@ -16,7 +17,7 @@ public class AELog
 
 	private static void log(Level level, String format, Object... data)
 	{
-		FMLRelaunchLog.log( "AE", level, format, data );
+		FMLRelaunchLog.log( "AE2:" + (Platform.isServer() ? "S" : "C"), level, format, data );
 	}
 
 	public static void severe(String format, Object... data)
