@@ -23,6 +23,8 @@ import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.client.me.InternalSlotME;
 import appeng.client.me.SlotME;
+import appeng.container.slot.OptionalSlotFake;
+import appeng.container.slot.SlotFake;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.helpers.InventoryAction;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -69,6 +71,29 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
+		if ( slot instanceof SlotFake )
+		{
+			InventoryAction action = null;
+			IAEItemStack stack = null;
+			action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACESINGLE : InventoryAction.PICKUP_OR_SETDOWN;
+
+			if ( action != null )
+			{
+				PacketInventoryAction p;
+				try
+				{
+					p = new PacketInventoryAction( action, slotIdx, stack );
+					PacketDispatcher.sendPacketToServer( p.getPacket() );
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+
+			return;
+		}
+
 		if ( slot instanceof SlotME )
 		{
 			InventoryAction action = null;
@@ -107,7 +132,7 @@ public abstract class AEBaseGui extends GuiContainer
 				PacketInventoryAction p;
 				try
 				{
-					p = new PacketInventoryAction( action, slotIdx, stack );
+					p = new PacketInventoryAction( action, inventorySlots.inventorySlots.size(), stack );
 					PacketDispatcher.sendPacketToServer( p.getPacket() );
 				}
 				catch (IOException e)
@@ -276,6 +301,16 @@ public abstract class AEBaseGui extends GuiContainer
 		int oy = guiTop; // (height - ySize) / 2;
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 		drawBG( ox, oy, x, y );
+
+		for (Object o : inventorySlots.inventorySlots)
+		{
+			if ( o instanceof OptionalSlotFake )
+			{
+				OptionalSlotFake fs = (OptionalSlotFake) o;
+				if ( fs.isEnabled() )
+					this.drawTexturedModalRect( ox + fs.xDisplayPosition - 1, oy + fs.yDisplayPosition - 1, fs.srcX - 1, fs.srcY - 1, 18, 18 );
+			}
+		}
 	}
 
 	@Override

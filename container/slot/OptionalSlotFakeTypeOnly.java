@@ -3,11 +3,11 @@ package appeng.container.slot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
-public class SlotFakeTypeOnly extends SlotFake
+public class OptionalSlotFakeTypeOnly extends OptionalSlotFake
 {
 
-	public SlotFakeTypeOnly(IInventory inv, int idx, int x, int y) {
-		super( inv, idx, x, y );
+	public OptionalSlotFakeTypeOnly(IInventory inv, IOptionalSlotHost containerBus, int idx, int x, int y, int offX, int offY, int groupNum) {
+		super( inv, containerBus, idx, x, y, offX, offY, groupNum );
 	}
 
 	@Override

@@ -43,6 +43,11 @@ public abstract class AEBaseContainer extends Container
 		tileEntity = te;
 	}
 
+	public boolean canDragIntoSlot(Slot s)
+	{
+		return ((AppEngSlot) s).isDraggable;
+	}
+
 	public TileEntity getTileEntity()
 	{
 		return tileEntity;
@@ -298,6 +303,7 @@ public abstract class AEBaseContainer extends Container
 
 	private void updateSlot(Slot clickSlot)
 	{
+		// ???
 		detectAndSendChanges();
 	}
 
@@ -329,11 +335,60 @@ public abstract class AEBaseContainer extends Container
 
 	public void doAction(EntityPlayerMP player, InventoryAction action, int slot, IAEItemStack slotItem)
 	{
-		/*
-		 * boolean isValidSlot = true;
-		 * 
-		 * if ( slot < 0 || slot >= inventorySlots.size() ) isValidSlot = false;
-		 */
+		if ( slot >= 0 && slot < inventorySlots.size() )
+		{
+			Slot s = getSlot( slot );
+
+			if ( s instanceof SlotFake )
+			{
+				ItemStack hand = player.inventory.getItemStack();
+
+				switch (action)
+				{
+				case PICKUP_OR_SETDOWN:
+
+					if ( hand == null )
+						s.putStack( null );
+					else
+						s.putStack( hand.copy() );
+
+					break;
+				case SPLIT_OR_PLACESINGLE:
+
+					ItemStack is = s.getStack();
+					if ( is != null )
+					{
+						if ( hand == null )
+							is.stackSize--;
+						else if ( hand.isItemEqual( is ) )
+							is.stackSize = Math.min( is.getMaxStackSize(), is.stackSize + 1 );
+						else
+						{
+							is = hand.copy();
+							is.stackSize = 1;
+						}
+
+						s.putStack( is );
+					}
+					else if ( hand != null )
+					{
+						is = hand.copy();
+						is.stackSize = 1;
+						s.putStack( is );
+					}
+
+					break;
+				case CREATIVE_DUPLICATE:
+				case MOVE_REGION:
+				case SHIFT_CLICK:
+				default:
+					break;
+
+				}
+			}
+
+			return;
+		}
 
 		switch (action)
 		{

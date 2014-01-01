@@ -5,12 +5,16 @@ import appeng.api.implementations.IBusCommon;
 import appeng.client.gui.AEBaseGui;
 import appeng.container.implementations.ContainerBus;
 import appeng.core.localization.GuiText;
+import appeng.parts.automation.PartImportBus;
 
 public class GuiBus extends AEBaseGui
 {
 
+	IBusCommon bc;
+
 	public GuiBus(InventoryPlayer inventoryPlayer, IBusCommon te) {
 		super( new ContainerBus( inventoryPlayer, te ) );
+		bc = te;
 		this.xSize = hasToolbox() ? 246 : 211;
 		this.ySize = 184;
 	}
@@ -33,7 +37,7 @@ public class GuiBus extends AEBaseGui
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRenderer.drawString( GuiText.Drive.getLocal(), 8, 6, 4210752 );
+		fontRenderer.drawString( (bc instanceof PartImportBus ? GuiText.ImportBus : GuiText.ExportBus).getLocal(), 8, 6, 4210752 );
 		fontRenderer.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
 	}
 
