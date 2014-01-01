@@ -77,7 +77,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		def.dspDamage = is.getItemDamageForDisplay();
 		def.maxDamage = is.getMaxDamage();
 
-		def.tagCompound = (IAETagCompound) AESharedNBT.getSharedTagCompound( is );
+		NBTTagCompound tagCompound = is.getTagCompound();
+		if ( tagCompound != null )
+			def.tagCompound = (IAETagCompound) AESharedNBT.getSharedTagCompound( tagCompound, is );
 
 		stackSize = is.stackSize;
 		setCraftable( false );
@@ -88,12 +90,10 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 	public static AEItemStack create(Object a)
 	{
-		if ( a == null )
-			return null;
-		if ( a instanceof IAEItemStack )
-			((IAEItemStack) a).copy();
 		if ( a instanceof ItemStack )
 			return new AEItemStack( (ItemStack) a );
+		if ( a instanceof IAEItemStack )
+			((IAEItemStack) a).copy();
 		return null;
 	}
 
