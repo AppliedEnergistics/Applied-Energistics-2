@@ -446,6 +446,10 @@ public class CableBusContainer implements AEMultiTile
 			{
 				renderer.renderAllFaces = true;
 				part.renderStatic( te.xCoord, te.yCoord, te.zCoord, BusRenderHelper.instance, renderer );
+
+				renderer.faces = EnumSet.allOf( ForgeDirection.class );
+				renderer.calculations = true;
+				renderer.useTextures = true;
 			}
 		}
 

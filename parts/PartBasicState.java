@@ -59,6 +59,7 @@ public class PartBasicState extends AEBasePart
 
 	public void renderLights(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
+		rh.normalRendering();
 		setColors( (clientFlags & (POWERED_FLAG | CHANNEL_FLAG)) == (POWERED_FLAG | CHANNEL_FLAG), (clientFlags & POWERED_FLAG) == POWERED_FLAG );
 		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.EAST, renderer );
 		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.WEST, renderer );
