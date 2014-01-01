@@ -10,6 +10,7 @@ import appeng.api.AEApi;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import appeng.util.iterators.AEInvIterator;
 import appeng.util.iterators.InvIterator;
 
 public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack>
@@ -236,5 +237,10 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	public Iterator<ItemStack> iterator()
 	{
 		return new InvIterator( this );
+	}
+
+	public Iterator<IAEItemStack> aeiterator()
+	{
+		return new AEInvIterator( this );
 	}
 }

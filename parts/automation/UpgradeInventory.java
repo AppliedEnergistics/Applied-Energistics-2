@@ -13,6 +13,7 @@ import appeng.util.Platform;
 public class UpgradeInventory extends AppEngInternalInventory implements IAEAppEngInventory
 {
 
+	private boolean cached = false;
 	private int FuzzyUpgrades = 0;
 	private int SpeedUpgrades = 0;
 	private int RedstoneUpgrades = 0;
@@ -30,6 +31,12 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 	protected boolean eventsEnabled()
 	{
 		return true;
+	}
+
+	@Override
+	public void setInventorySlotContents(int slot, ItemStack newItemStack)
+	{
+		super.setInventorySlotContents( slot, newItemStack );
 	}
 
 	@Override
@@ -51,6 +58,7 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 
 	private void updateUpgradeInfo()
 	{
+		cached = true;
 		CapacityUpgrades = RedstoneUpgrades = SpeedUpgrades = FuzzyUpgrades = 0;
 
 		for (ItemStack is : this)
@@ -86,6 +94,9 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 
 	public int getInstalledUpgrades(Upgrades u)
 	{
+		if ( !cached )
+			updateUpgradeInfo();
+
 		switch (u)
 		{
 		case CAPACITY:
@@ -104,8 +115,7 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 	@Override
 	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
 	{
-		updateUpgradeInfo();
-
+		cached = false;
 		if ( parent != null && Platform.isServer() )
 			parent.onChangeInventory( inv, slot, mc, removedStack, newStack );
 	}
