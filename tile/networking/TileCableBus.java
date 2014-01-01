@@ -83,7 +83,10 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	{
 		super.onReady();
 		if ( cb.isEmpty() )
-			worldObj.destroyBlock( xCoord, yCoord, zCoord, true );
+		{
+			if ( worldObj.getBlockTileEntity( xCoord, yCoord, zCoord ) == this )
+				worldObj.destroyBlock( xCoord, yCoord, zCoord, true );
+		}
 		else
 			cb.addToWorld();
 	}
