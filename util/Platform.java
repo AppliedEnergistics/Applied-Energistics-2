@@ -52,7 +52,7 @@ import appeng.api.implementations.IAEWrench;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEMontorHandlerReciever;
+import appeng.api.storage.IMEMonitorHandlerReciever;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
@@ -1231,7 +1231,7 @@ public class Platform
 		}
 	}
 
-	static public <T extends IAEStack<T>> void postListChanges(IItemList<T> before, IItemList<T> after, IMEMontorHandlerReciever<T> meMonitorPassthu)
+	static public <T extends IAEStack<T>> void postListChanges(IItemList<T> before, IItemList<T> after, IMEMonitorHandlerReciever<T> meMonitorPassthu)
 	{
 		for (T is : before)
 			is.setStackSize( -is.getStackSize() );

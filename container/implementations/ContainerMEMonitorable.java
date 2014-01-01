@@ -15,7 +15,7 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMontorHandlerReciever;
+import appeng.api.storage.IMEMonitorHandlerReciever;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
@@ -25,7 +25,7 @@ import appeng.util.item.ItemList;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 
-public class ContainerMEMonitorable extends AEBaseContainer implements IMEMontorHandlerReciever<IAEItemStack>
+public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonitorHandlerReciever<IAEItemStack>
 {
 
 	final IMEMonitor<IAEItemStack> monitor;

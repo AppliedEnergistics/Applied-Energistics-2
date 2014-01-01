@@ -34,8 +34,8 @@ import appeng.api.storage.ICellHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMontorHandlerReciever;
-import appeng.api.storage.MEMontorHandler;
+import appeng.api.storage.IMEMonitorHandlerReciever;
+import appeng.api.storage.MEMonitorHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -224,8 +224,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	boolean isCached = false;
 
 	private ICellHandler cellHandler;
-	private MEMontorHandler icell;
-	private MEMontorHandler fcell;
+	private MEMonitorHandler icell;
+	private MEMonitorHandler fcell;
 
 	@Override
 	public IMEMonitor getItemInventory()
@@ -239,7 +239,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		return fcell;
 	}
 
-	class ChestNetNotifier<T extends IAEStack<T>> implements IMEMontorHandlerReciever<T>
+	class ChestNetNotifier<T extends IAEStack<T>> implements IMEMonitorHandlerReciever<T>
 	{
 
 		final StorageChannel chan;
@@ -273,7 +273,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 	};
 
-	private <StackType extends IAEStack> MEMontorHandler<StackType> wrap(IMEInventoryHandler h)
+	private <StackType extends IAEStack> MEMonitorHandler<StackType> wrap(IMEInventoryHandler h)
 	{
 		if ( h == null )
 			return null;
@@ -281,7 +281,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		MEInventoryHandler ih = new MEInventoryHandler( h );
 		ih.myPriority = priority;
 
-		MEMontorHandler<StackType> g = new MEMontorHandler<StackType>( ih );
+		MEMonitorHandler<StackType> g = new MEMonitorHandler<StackType>( ih );
 		g.addListener( new ChestNetNotifier( h.getChannel() ), g );
 
 		return g;

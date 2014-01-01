@@ -6,16 +6,16 @@ import java.util.Map.Entry;
 
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMontorHandlerReciever;
+import appeng.api.storage.IMEMonitorHandlerReciever;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
 import appeng.util.item.ItemList;
 
-public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> implements IMEMonitor<T>, IMEMontorHandlerReciever<T>
+public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> implements IMEMonitor<T>, IMEMonitorHandlerReciever<T>
 {
 
-	HashMap<IMEMontorHandlerReciever<T>, Object> listeners = new HashMap();
+	HashMap<IMEMonitorHandlerReciever<T>, Object> listeners = new HashMap();
 	IMEMonitor<T> monitor;
 
 	public MEMonitorPassthu(IMEInventory<T> i) {
@@ -46,13 +46,13 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 	}
 
 	@Override
-	public void addListener(IMEMontorHandlerReciever<T> l, Object verificationToken)
+	public void addListener(IMEMonitorHandlerReciever<T> l, Object verificationToken)
 	{
 		listeners.put( l, verificationToken );
 	}
 
 	@Override
-	public void removeListener(IMEMontorHandlerReciever<T> l)
+	public void removeListener(IMEMonitorHandlerReciever<T> l)
 	{
 		listeners.remove( l );
 	}
@@ -74,11 +74,11 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 	@Override
 	public void postChange(T change)
 	{
-		Iterator<Entry<IMEMontorHandlerReciever<T>, Object>> i = listeners.entrySet().iterator();
+		Iterator<Entry<IMEMonitorHandlerReciever<T>, Object>> i = listeners.entrySet().iterator();
 		while (i.hasNext())
 		{
-			Entry<IMEMontorHandlerReciever<T>, Object> e = i.next();
-			IMEMontorHandlerReciever<T> recv = e.getKey();
+			Entry<IMEMonitorHandlerReciever<T>, Object> e = i.next();
+			IMEMonitorHandlerReciever<T> recv = e.getKey();
 			if ( recv.isValid( e.getValue() ) )
 				recv.postChange( change );
 			else

@@ -14,7 +14,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMontorHandlerReciever;
+import appeng.api.storage.IMEMonitorHandlerReciever;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -54,16 +54,16 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 
 	final TreeMap<Integer, CachedItemStack> memory;
 	final IItemList<IAEItemStack> list = new ItemList();
-	final HashMap<IMEMontorHandlerReciever<IAEItemStack>, Object> listeners = new HashMap();
+	final HashMap<IMEMonitorHandlerReciever<IAEItemStack>, Object> listeners = new HashMap();
 
 	@Override
-	public void addListener(IMEMontorHandlerReciever<IAEItemStack> l, Object verificationToken)
+	public void addListener(IMEMonitorHandlerReciever<IAEItemStack> l, Object verificationToken)
 	{
 		listeners.put( l, verificationToken );
 	}
 
 	@Override
-	public void removeListener(IMEMontorHandlerReciever<IAEItemStack> l)
+	public void removeListener(IMEMonitorHandlerReciever<IAEItemStack> l)
 	{
 		listeners.remove( l );
 	}
@@ -235,11 +235,11 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 		// AELog.info( a.getItemStack().getUnlocalizedName() + " @ " + a.getStackSize() );
 		if ( a != null )
 		{
-			Iterator<Entry<IMEMontorHandlerReciever<IAEItemStack>, Object>> i = listeners.entrySet().iterator();
+			Iterator<Entry<IMEMonitorHandlerReciever<IAEItemStack>, Object>> i = listeners.entrySet().iterator();
 			while (i.hasNext())
 			{
-				Entry<IMEMontorHandlerReciever<IAEItemStack>, Object> l = i.next();
-				IMEMontorHandlerReciever<IAEItemStack> key = l.getKey();
+				Entry<IMEMonitorHandlerReciever<IAEItemStack>, Object> l = i.next();
+				IMEMonitorHandlerReciever<IAEItemStack> key = l.getKey();
 				if ( key.isValid( l.getValue() ) )
 					key.postChange( a );
 				else

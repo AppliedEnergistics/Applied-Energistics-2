@@ -4,11 +4,11 @@ import java.util.LinkedList;
 
 import appeng.api.networking.events.MENetworkStorageEvent;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.MEMontorHandler;
+import appeng.api.storage.MEMonitorHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEStack;
 
-public class NetworkMonitor<T extends IAEStack<T>> extends MEMontorHandler<T>
+public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 {
 
 	final private GridStorageCache myGridCache;

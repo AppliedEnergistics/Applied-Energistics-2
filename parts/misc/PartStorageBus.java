@@ -22,7 +22,7 @@ import appeng.api.storage.IExternalStorageHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMontorHandlerReciever;
+import appeng.api.storage.IMEMonitorHandlerReciever;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.texture.CableBusTextures;
@@ -37,7 +37,7 @@ import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 
 @Interface(modid = "BuildCraft|Transport", iface = "buildcraft.api.transport.IPipeConnection")
-public class PartStorageBus extends PartBasicState implements IGridTickable, ICellContainer, IMEMontorHandlerReciever<IAEItemStack>, IPipeConnection
+public class PartStorageBus extends PartBasicState implements IGridTickable, ICellContainer, IMEMonitorHandlerReciever<IAEItemStack>, IPipeConnection
 {
 
 	int priority = 0;
