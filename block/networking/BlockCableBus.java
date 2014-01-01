@@ -205,6 +205,12 @@ public class BlockCableBus extends AEBaseBlock
 	}
 
 	@Override
+	public int idDropped(int i, Random r, int k)
+	{
+		return 0;
+	}
+
+	@Override
 	public boolean onActivated(World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
 		return cb( w, x, y, z ).activate( player, w.getWorldVec3Pool().getVecFromPool( hitX, hitY, hitZ ) );
