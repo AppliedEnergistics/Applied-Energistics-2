@@ -1255,22 +1255,36 @@ public class Platform
 
 		int hash = target.hashCode();
 
-		if ( target instanceof IInventory )
+		if ( target instanceof TileEntityChest )
+		{
+			TileEntityChest targ = (TileEntityChest) target;
+			targ.checkForAdjacentChests();
+			if ( targ.adjacentChestZNeg != null )
+				hash ^= targ.adjacentChestZNeg.hashCode();
+			else if ( targ.adjacentChestZPosition != null )
+				hash ^= targ.adjacentChestZPosition.hashCode();
+			else if ( targ.adjacentChestXPos != null )
+				hash ^= targ.adjacentChestXPos.hashCode();
+			else if ( targ.adjacentChestXNeg != null )
+				hash ^= targ.adjacentChestXNeg.hashCode();
+		}
+		else if ( target instanceof IInventory )
+		{
 			hash ^= ((IInventory) target).getSizeInventory();
 
-		if ( target instanceof ISidedInventory )
-		{
-			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+			if ( target instanceof ISidedInventory )
 			{
-				int offset = 0;
-				for (Integer Side : ((ISidedInventory) target).getAccessibleSlotsFromSide( dir.ordinal() ))
+				for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 				{
-					hash ^= Side << (offset++ % 20);
+					int offset = 0;
+					for (Integer Side : ((ISidedInventory) target).getAccessibleSlotsFromSide( dir.ordinal() ))
+					{
+						hash ^= Side << (offset++ % 20);
+					}
 				}
 			}
 		}
 
 		return hash;
 	}
-
 }
