@@ -14,7 +14,7 @@ public class ContainerGrinder extends AEBaseContainer
 	TileGrinder myte;
 
 	public ContainerGrinder(InventoryPlayer ip, TileGrinder te) {
-		super( ip, te );
+		super( ip, te, null );
 		myte = te;
 
 		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.ORE, te, 0, 12, 17 ) );

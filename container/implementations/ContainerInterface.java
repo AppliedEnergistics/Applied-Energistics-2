@@ -14,14 +14,14 @@ public class ContainerInterface extends AEBaseContainer
 	TileInterface myte;
 
 	public ContainerInterface(InventoryPlayer ip, TileInterface te) {
-		super( ip, te );
+		super( ip, te, null );
 		myte = te;
 
 		for (int x = 0; x < 8; x++)
-			addSlotToContainer( new SlotFake( myte.getConfig(), x, 8 + 18 * x, 28 + 7 ) );
+			addSlotToContainer( new SlotFake( myte.getConfig(), x, 17 + 18 * x, 35 ) );
 
 		for (int x = 0; x < 8; x++)
-			addSlotToContainer( new SlotNormal( myte, x, 26 + 18 * x, 46 + 7 ) );
+			addSlotToContainer( new SlotNormal( myte, x, 17 + 18 * x, 35 + 18 ) );
 
 		for (int x = 0; x < 9; x++)
 			addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.ENCODED_PATTERN, myte.getPatterns(), x, 8 + 18 * x, 90 + 7 ) );

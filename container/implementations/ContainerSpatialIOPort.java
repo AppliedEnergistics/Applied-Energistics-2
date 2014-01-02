@@ -13,7 +13,7 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 	TileSpatialIOPort myte;
 
 	public ContainerSpatialIOPort(InventoryPlayer ip, TileSpatialIOPort te) {
-		super( ip, te );
+		super( ip, te, null );
 		myte = te;
 
 		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.SPATIAL_STORAGE_CELLS, te, 0, 71, 14 ) );

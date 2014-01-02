@@ -3,9 +3,11 @@ package appeng.parts.automation;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.me.GridAccessException;
 import appeng.tile.inventory.AppEngInternalAEInventory;
@@ -17,6 +19,12 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 
 	public PartSharedItemBus(Class c, ItemStack is) {
 		super( c, is );
+	}
+
+	@Override
+	public void upgradesChanged()
+	{
+		updateState();
 	}
 
 	protected int availableSlots()
@@ -61,23 +69,37 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		cached = true;
 
 		return adaptor;
-
 	}
+
+	boolean lastRedstone = false;
+
+	abstract TickRateModulation doBusWork();
 
 	@Override
 	public void onNeighborChanged()
 	{
-		cached = false;
-		if ( !isSleeping() )
+		updateState();
+		if ( lastRedstone != host.hasRedstone( side ) )
 		{
-			try
-			{
+			lastRedstone = !lastRedstone;
+			if ( lastRedstone && getRSMode() == RedstoneMode.SIGNAL_PULSE )
+				doBusWork();
+		}
+	}
+
+	private void updateState()
+	{
+		cached = false;
+		try
+		{
+			if ( !isSleeping() )
 				proxy.getTick().wakeDevice( proxy.getNode() );
-			}
-			catch (GridAccessException e)
-			{
-				// :P
-			}
+			else
+				proxy.getTick().sleepDevice( proxy.getNode() );
+		}
+		catch (GridAccessException e)
+		{
+			// :P
 		}
 	}
 
@@ -95,7 +117,5 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	{
 		return new TickingRequest( 5, 60, isSleeping(), false );
 	}
-
-	abstract protected boolean isSleeping();
 
 }

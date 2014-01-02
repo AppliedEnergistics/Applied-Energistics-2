@@ -20,7 +20,7 @@ public class ContainerCondenser extends AEBaseContainer
 	TileCondenser myte;
 
 	public ContainerCondenser(InventoryPlayer ip, TileCondenser te) {
-		super( ip, te );
+		super( ip, te, null );
 		myte = te;
 
 		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.TRASH, te, 0, 51, 52 ) );

@@ -10,6 +10,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
+import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -31,7 +32,7 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 
 	public PartImportBus(ItemStack is) {
 		super( PartImportBus.class, is );
-		settings.registerSetting( Settings.REDSTONE_INPUT, RedstoneMode.IGNORE );
+		settings.registerSetting( Settings.REDSTONE_OUTPUT, RedstoneMode.IGNORE );
 		settings.registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 	}
 
@@ -130,32 +131,63 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 		return new TickingRequest( 5, 40, getHandler() == null, false );
 	}
 
-	@Override
-	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
+	private int itemToSend; // used in tickingRequest
+	private boolean worked; // used in tickingRequest
+
+	TickRateModulation doBusWork()
 	{
-		boolean worked = false;
+		worked = false;
 
 		InventoryAdaptor myAdaptor = getHandler();
 		if ( myAdaptor != null )
 		{
 			try
 			{
-				int howMany = 1;
-				howMany = Math.min( howMany, (int) (0.01 + proxy.getEnergy().extractAEPower( howMany, Actionable.SIMULATE, PowerMultiplier.CONFIG )) );
-
-				ItemStack newItems = myAdaptor.removeItems( howMany, null, configDest( proxy.getStorage().getItemInventory() ) );
-				if ( newItems != null )
+				switch (getInstalledUpgrades( Upgrades.SPEED ))
 				{
-					if ( lastItemChecked == null || !lastItemChecked.isSameType( newItems ) )
-						lastItemChecked = AEApi.instance().storage().createItemStack( newItems );
-					else
-						lastItemChecked.setStackSize( newItems.stackSize );
+				default:
+				case 0:
+					itemToSend = 1;
+					break;
+				case 1:
+					itemToSend = 8;
+					break;
+				case 2:
+					itemToSend = 32;
+					break;
+				case 3:
+					itemToSend = 64;
+					break;
+				case 4:
+					itemToSend = 96;
+					break;
+				}
 
-					IAEItemStack failed = destination.injectItems( lastItemChecked, Actionable.MODULATE );
-					if ( failed != null )
-						myAdaptor.addItems( failed.getItemStack() );
-					else
-						worked = true;
+				itemToSend = Math.min( itemToSend, (int) (0.01 + proxy.getEnergy().extractAEPower( itemToSend, Actionable.SIMULATE, PowerMultiplier.CONFIG )) );
+				IMEMonitor<IAEItemStack> inv = proxy.getStorage().getItemInventory();
+
+				boolean Configured = false;
+				for (int x = 0; x < availableSlots(); x++)
+				{
+					IAEItemStack ais = config.getAEStackInSlot( x );
+					if ( ais != null && itemToSend > 0 )
+					{
+						Configured = true;
+						while (itemToSend > 0)
+						{
+							if ( importStuff( myAdaptor, ais, inv ) )
+								break;
+						}
+					}
+				}
+
+				if ( !Configured )
+				{
+					while (itemToSend > 0)
+					{
+						if ( importStuff( myAdaptor, null, inv ) )
+							break;
+					}
 				}
 			}
 			catch (GridAccessException e)
@@ -170,9 +202,50 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 	}
 
 	@Override
+	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
+	{
+		return doBusWork();
+	}
+
+	private boolean importStuff(InventoryAdaptor myAdaptor, IAEItemStack whatToImport, IMEMonitor<IAEItemStack> inv)
+	{
+		if ( itemToSend > 64 )
+			itemToSend = 64;
+
+		ItemStack newItems = myAdaptor.removeItems( itemToSend, whatToImport == null ? null : whatToImport.getItemStack(), configDest( inv ) );
+		if ( newItems != null )
+		{
+			itemToSend -= newItems.stackSize;
+
+			if ( lastItemChecked == null || !lastItemChecked.isSameType( newItems ) )
+				lastItemChecked = AEApi.instance().storage().createItemStack( newItems );
+			else
+				lastItemChecked.setStackSize( newItems.stackSize );
+
+			IAEItemStack failed = destination.injectItems( lastItemChecked, Actionable.MODULATE );
+			if ( failed != null )
+			{
+				myAdaptor.addItems( failed.getItemStack() );
+				return true;
+			}
+			else
+				worked = true;
+		}
+		else
+			return true;
+
+		return false;
+	}
+
+	public RedstoneMode getRSMode()
+	{
+		return (RedstoneMode) settings.getSetting( Settings.REDSTONE_OUTPUT );
+	}
+
+	@Override
 	protected boolean isSleeping()
 	{
-		return getHandler() == null;
+		return getHandler() == null || super.isSleeping();
 	}
 
 }

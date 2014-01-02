@@ -2,6 +2,7 @@ package appeng.parts.automation;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.ISegmentedInventory;
 import appeng.api.util.IConfigManager;
@@ -45,7 +46,7 @@ public class PartUpgradeable extends PartBasicState implements ISegmentedInvento
 	@Override
 	public IConfigManager getConfigManager()
 	{
-		return null;
+		return settings;
 	}
 
 	@Override
@@ -63,10 +64,55 @@ public class PartUpgradeable extends PartBasicState implements ISegmentedInvento
 
 	}
 
-	@Override
-	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
+	public void upgradesChanged()
 	{
 
 	}
 
+	@Override
+	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
+	{
+		if ( inv == upgrades )
+		{
+			upgradesChanged();
+		}
+	}
+
+	public RedstoneMode getRSMode()
+	{
+		return null;
+	}
+
+	protected boolean isSleeping()
+	{
+		if ( getInstalledUpgrades( Upgrades.REDSTONE ) > 0 )
+		{
+			switch (getRSMode())
+			{
+			case IGNORE:
+				return false;
+
+			case HIGH_SIGNAL:
+				if ( host.hasRedstone( side ) )
+					return false;
+
+				break;
+
+			case LOW_SIGNAL:
+				if ( !host.hasRedstone( side ) )
+					return false;
+
+				break;
+
+			case SIGNAL_PULSE:
+			default:
+				break;
+
+			}
+
+			return true;
+		}
+
+		return false;
+	}
 }

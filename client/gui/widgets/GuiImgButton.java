@@ -82,6 +82,12 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		Appearances.put( new EnumPair( setting, val ), a );
 	}
 
+	public void setVisibility(boolean vis)
+	{
+		drawButton = vis;
+		enabled = vis;
+	}
+
 	public GuiImgButton(int x, int y, Enum idx, Enum val) {
 		super( 0, 0, 16, "" );
 		buttonSetting = idx;
@@ -110,10 +116,10 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			registerApp( 16 * 10 + 3, Settings.POWER_UNITS, PowerUnits.KJ, "AppEng.GuiITooltip.PowerUnits", "AppEng.GuiITooltip.UEUnits" );
 			registerApp( 16 * 10 + 4, Settings.POWER_UNITS, PowerUnits.WA, "AppEng.GuiITooltip.PowerUnits", "AppEng.GuiITooltip.WUnits" );
 
-			registerApp( 3, Settings.REDSTONE_INPUT, RedstoneMode.IGNORE, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.AlwaysActive" );
-			registerApp( 0, Settings.REDSTONE_INPUT, RedstoneMode.LOW_SIGNAL, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.ActiveWithoutSignal" );
-			registerApp( 1, Settings.REDSTONE_INPUT, RedstoneMode.HIGH_SIGNAL, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.ActiveWithSignal" );
-			registerApp( 2, Settings.REDSTONE_INPUT, RedstoneMode.SIGNAL_PULSE, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.ActiveOnPulse" );
+			registerApp( 3, Settings.REDSTONE_OUTPUT, RedstoneMode.IGNORE, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.AlwaysActive" );
+			registerApp( 0, Settings.REDSTONE_OUTPUT, RedstoneMode.LOW_SIGNAL, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.ActiveWithoutSignal" );
+			registerApp( 1, Settings.REDSTONE_OUTPUT, RedstoneMode.HIGH_SIGNAL, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.ActiveWithSignal" );
+			registerApp( 2, Settings.REDSTONE_OUTPUT, RedstoneMode.SIGNAL_PULSE, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.ActiveOnPulse" );
 
 			registerApp( 3, Settings.REDSTONE_INPUT, RedstoneMode.IGNORE, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.AlwaysActive" );
 			registerApp( 0, Settings.REDSTONE_INPUT, RedstoneMode.LOW_SIGNAL, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.ActiveWithoutSignal" );
@@ -230,7 +236,10 @@ public class GuiImgButton extends GuiButton implements ITooltip
 	{
 		if ( buttonSetting != null && currentValue != null )
 		{
-			return Appearances.get( new EnumPair( buttonSetting, currentValue ) ).index;
+			BtnAppearance app = Appearances.get( new EnumPair( buttonSetting, currentValue ) );
+			if ( app == null )
+				return 256 - 1;
+			return app.index;
 		}
 		return 256 - 1;
 	}
@@ -254,6 +263,9 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		if ( buttonSetting != null && currentValue != null )
 		{
 			BtnAppearance ba = Appearances.get( new EnumPair( buttonSetting, currentValue ) );
+			if ( ba == null )
+				return "No Such Message";
+
 			DisplayName = ba.DisplayName;
 			DisplayValue = ba.DisplayValue;
 		}

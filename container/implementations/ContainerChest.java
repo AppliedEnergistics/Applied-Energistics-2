@@ -12,7 +12,7 @@ public class ContainerChest extends AEBaseContainer
 	TileChest myte;
 
 	public ContainerChest(InventoryPlayer ip, TileChest te) {
-		super( ip, te );
+		super( ip, te, null );
 		myte = te;
 
 		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.STORAGE_CELLS, myte, 1, 80, 37 ) );

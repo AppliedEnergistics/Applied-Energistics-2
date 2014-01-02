@@ -2,7 +2,6 @@ package appeng.helpers;
 
 import java.util.EnumSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 import net.minecraftforge.event.ForgeSubscribe;
@@ -22,7 +21,7 @@ public class TickHandler implements ITickHandler
 
 		public Queue<AEBaseTile> tiles = new LinkedList();
 
-		public List<Grid> networks = new LinkedList();
+		public LinkedList<Grid> networks = new LinkedList();
 
 		public void clear()
 		{
@@ -76,8 +75,9 @@ public class TickHandler implements ITickHandler
 	{
 		if ( Platform.isServer() )
 		{
-			for (Grid g : getRepo().networks)
+			while (!getRepo().networks.isEmpty())
 			{
+				Grid g = getRepo().networks.poll();
 				for (IGridNode n : g.getNodes())
 				{
 					if ( n.getWorld() == ev.world )

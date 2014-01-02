@@ -7,7 +7,6 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetworkManager;
-import net.minecraft.tileentity.TileEntity;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
@@ -31,10 +30,9 @@ public class PacketConfigButton extends AppEngPacket
 	{
 		EntityPlayerMP sender = (EntityPlayerMP) player;
 		AEBaseContainer aebc = (AEBaseContainer) sender.openContainer;
-		TileEntity bt = aebc.getTileEntity();
-		if ( bt instanceof IConfigureableObject )
+		if ( aebc.getTarget() instanceof IConfigureableObject )
 		{
-			IConfigManager cm = ((IConfigureableObject) bt).getConfigManager();
+			IConfigManager cm = ((IConfigureableObject) aebc.getTarget()).getConfigManager();
 			Enum newState = Platform.nextEnum( cm.getSetting( option ) );
 			cm.putSetting( option, newState );
 		}

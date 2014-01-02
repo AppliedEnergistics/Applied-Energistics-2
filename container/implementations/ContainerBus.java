@@ -1,7 +1,11 @@
 package appeng.container.implementations;
 
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IBusCommon;
 import appeng.container.AEBaseContainer;
@@ -12,6 +16,9 @@ import appeng.container.slot.SlotFakeTypeOnly;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.tile.inventory.AppEngInternalInventory;
+import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ContainerBus extends AEBaseContainer implements IOptionalSlotHost
 {
@@ -20,7 +27,7 @@ public class ContainerBus extends AEBaseContainer implements IOptionalSlotHost
 	IInventory toolbox = new AppEngInternalInventory( null, 9 );
 
 	public ContainerBus(InventoryPlayer ip, IBusCommon te) {
-		super( ip, null );
+		super( ip, null, te );
 		myte = te;
 
 		IInventory upgrades = myte.getInventoryByName( "upgrades" );
@@ -55,9 +62,33 @@ public class ContainerBus extends AEBaseContainer implements IOptionalSlotHost
 		bindPlayerInventory( ip, 0, 184 - /* height of playerinventory */82 );
 	}
 
+	public RedstoneMode rsMode = RedstoneMode.IGNORE;
+	public FuzzyMode fzMode = FuzzyMode.IGNORE_ALL;
+
 	@Override
 	public void detectAndSendChanges()
 	{
+		if ( Platform.isServer() )
+		{
+			for (int i = 0; i < this.crafters.size(); ++i)
+			{
+				ICrafting icrafting = (ICrafting) this.crafters.get( i );
+
+				if ( this.rsMode != this.myte.getConfigManager().getSetting( Settings.REDSTONE_OUTPUT ) )
+				{
+					icrafting.sendProgressBarUpdate( this, 0, (int) this.myte.getConfigManager().getSetting( Settings.REDSTONE_OUTPUT ).ordinal() );
+				}
+
+				if ( this.fzMode != this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE ) )
+				{
+					icrafting.sendProgressBarUpdate( this, 1, (int) this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE ).ordinal() );
+				}
+			}
+
+			this.fzMode = (FuzzyMode) this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE );
+			this.rsMode = (RedstoneMode) this.myte.getConfigManager().getSetting( Settings.REDSTONE_OUTPUT );
+		}
+
 		for (Object o : inventorySlots)
 		{
 			if ( o instanceof OptionalSlotFake )
@@ -69,6 +100,19 @@ public class ContainerBus extends AEBaseContainer implements IOptionalSlotHost
 		}
 
 		super.detectAndSendChanges();
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void updateProgressBar(int idx, int value)
+	{
+
+		if ( idx == 0 )
+			this.rsMode = RedstoneMode.values()[value];
+
+		if ( idx == 1 )
+			this.fzMode = FuzzyMode.values()[value];
+
 	}
 
 	public boolean hasToolbox()

@@ -14,6 +14,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.parts.IPart;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReciever;
 import appeng.api.storage.data.IAEItemStack;
@@ -32,7 +33,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonito
 	final IItemList<IAEItemStack> items = new ItemList<IAEItemStack>();
 
 	public ContainerMEMonitorable(InventoryPlayer ip, IStorageMonitorable montiorable) {
-		super( ip, montiorable instanceof TileEntity ? (TileEntity) montiorable : null );
+		super( ip, montiorable instanceof TileEntity ? (TileEntity) montiorable : null, montiorable instanceof IPart ? (IPart) montiorable : null );
 
 		if ( Platform.isServer() )
 		{

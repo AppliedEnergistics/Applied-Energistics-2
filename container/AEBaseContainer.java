@@ -14,6 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.networking.energy.IEnergySource;
+import appeng.api.parts.IPart;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.me.InternalSlotME;
@@ -34,13 +35,24 @@ public abstract class AEBaseContainer extends Container
 
 	final InventoryPlayer invPlayer;
 	final TileEntity tileEntity;
+	final IPart part;
 
 	protected IMEInventoryHandler<IAEItemStack> cellInv;
 	protected IEnergySource powerSrc;
 
-	public AEBaseContainer(InventoryPlayer ip, TileEntity te) {
+	public Object getTarget()
+	{
+		if ( tileEntity != null )
+			return tileEntity;
+		if ( part != null )
+			return part;
+		return null;
+	}
+
+	public AEBaseContainer(InventoryPlayer ip, TileEntity myTile, IPart myPart) {
 		invPlayer = ip;
-		tileEntity = te;
+		tileEntity = myTile;
+		part = myPart;
 	}
 
 	public boolean canDragIntoSlot(Slot s)
@@ -495,4 +507,5 @@ public abstract class AEBaseContainer extends Container
 			break;
 		}
 	}
+
 }

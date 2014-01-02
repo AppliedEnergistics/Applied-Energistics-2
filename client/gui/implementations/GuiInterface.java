@@ -26,8 +26,8 @@ public class GuiInterface extends AEBaseGui
 	{
 		fontRenderer.drawString( GuiText.Interface.getLocal(), 8, 6, 4210752 );
 
-		fontRenderer.drawString( GuiText.Config.getLocal(), 8, 6 + 11 + 7, 4210752 );
-		fontRenderer.drawString( GuiText.StoredItems.getLocal(), 8 + 18, 6 + 60 + 7, 4210752 );
+		fontRenderer.drawString( GuiText.Config.getLocal(), 18, 6 + 11 + 7, 4210752 );
+		fontRenderer.drawString( GuiText.StoredItems.getLocal(), 18, 6 + 60 + 7, 4210752 );
 		fontRenderer.drawString( GuiText.Patterns.getLocal(), 8, 6 + 73 + 7, 4210752 );
 
 		fontRenderer.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );

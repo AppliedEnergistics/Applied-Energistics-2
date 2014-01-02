@@ -12,7 +12,7 @@ public class ContainerDrive extends AEBaseContainer
 	TileDrive myte;
 
 	public ContainerDrive(InventoryPlayer ip, TileDrive te) {
-		super( ip, te );
+		super( ip, te, null );
 		myte = te;
 
 		for (int y = 0; y < 5; y++)

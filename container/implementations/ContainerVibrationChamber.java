@@ -17,7 +17,7 @@ public class ContainerVibrationChamber extends AEBaseContainer
 	TileVibrationChamber myte;
 
 	public ContainerVibrationChamber(InventoryPlayer ip, TileVibrationChamber te) {
-		super( ip, te );
+		super( ip, te, null );
 		myte = te;
 
 		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.FUEL, te, 0, 80, 37 ) );

@@ -10,7 +10,7 @@ public class ContainerNetworkStatus extends AEBaseContainer
 	TileEntity myte;
 
 	public ContainerNetworkStatus(InventoryPlayer ip, TileEntity te) {
-		super( ip, (TileEntity) te );
+		super( ip, te, null );
 		myte = te;
 
 		// addSlotToContainer( new SlotRestrictedInput(

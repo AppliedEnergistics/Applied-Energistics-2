@@ -8,6 +8,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
+import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.ticking.IGridTickable;
@@ -105,16 +106,30 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 	}
 
 	@Override
-	protected boolean isSleeping()
-	{
-		// TODO Auto-generated method stub
-		return getHandler() == null;
-	}
-
-	@Override
-	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
+	TickRateModulation doBusWork()
 	{
 		int itemToSend = 1;
+
+		switch (getInstalledUpgrades( Upgrades.SPEED ))
+		{
+		default:
+		case 0:
+			itemToSend = 1;
+			break;
+		case 1:
+			itemToSend = 8;
+			break;
+		case 2:
+			itemToSend = 32;
+			break;
+		case 3:
+			itemToSend = 64;
+			break;
+		case 4:
+			itemToSend = 96;
+			break;
+		}
+
 		boolean didSomething = false;
 
 		try
@@ -170,4 +185,20 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 		return didSomething ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
 	}
 
+	@Override
+	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
+	{
+		return doBusWork();
+	}
+
+	public RedstoneMode getRSMode()
+	{
+		return (RedstoneMode) settings.getSetting( Settings.REDSTONE_OUTPUT );
+	}
+
+	@Override
+	protected boolean isSleeping()
+	{
+		return getHandler() == null || super.isSleeping();
+	}
 }

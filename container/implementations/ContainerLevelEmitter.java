@@ -10,7 +10,7 @@ public class ContainerLevelEmitter extends AEBaseContainer
 	PartLevelEmitter myte;
 
 	public ContainerLevelEmitter(InventoryPlayer ip, PartLevelEmitter te) {
-		super( ip, te.getHost().getTile() );
+		super( ip, te.getHost().getTile(), te );
 		myte = te;
 
 		// addSlotToContainer( new SlotRestrictedInput(

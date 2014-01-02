@@ -2,7 +2,6 @@ package appeng.core.features.registries.entries;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.Icon;
 import appeng.api.implementations.IChestOrDrive;
 import appeng.api.storage.ICellHandler;
@@ -10,8 +9,11 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.client.texture.ExtraTextures;
+import appeng.core.sync.GuiBridge;
 import appeng.items.storage.ItemCreativeStorageCell;
 import appeng.me.storage.CreativeCellInventory;
+import appeng.tile.AEBaseTile;
+import appeng.util.Platform;
 
 public class CreativeCellHandler implements ICellHandler
 {
@@ -39,7 +41,7 @@ public class CreativeCellHandler implements ICellHandler
 	@Override
 	public void openChestGui(EntityPlayer player, IChestOrDrive chest, ICellHandler cellHandler, IMEInventoryHandler inv, ItemStack is, StorageChannel chan)
 	{
-		player.sendChatToPlayer( ChatMessageComponent.createFromText( "Not ready yet..." ) );
+		Platform.openGUI( player, (AEBaseTile) chest, chest.getUp(), GuiBridge.GUI_ME );
 	}
 
 	@Override
