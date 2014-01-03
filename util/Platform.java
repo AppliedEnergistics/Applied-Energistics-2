@@ -49,6 +49,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.IAEItemPowerStorage;
 import appeng.api.implementations.IAEWrench;
+import appeng.api.implementations.ITileStorageMonitorable;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventory;
@@ -1255,7 +1256,9 @@ public class Platform
 
 		int hash = target.hashCode();
 
-		if ( target instanceof TileEntityChest )
+		if ( target instanceof ITileStorageMonitorable )
+			return 0;
+		else if ( target instanceof TileEntityChest )
 		{
 			TileEntityChest targ = (TileEntityChest) target;
 			targ.checkForAdjacentChests();
