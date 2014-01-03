@@ -148,6 +148,9 @@ public class GridStorageCache implements IStorageGrid
 	{
 		myItemNetwork = null;
 		myFluidNetwork = null;
+
+		itemMonitor.forceUpdate();
+		fluidMonitor.forceUpdate();
 	}
 
 	public IMEInventoryHandler<IAEItemStack> getItemInventoryHandler()

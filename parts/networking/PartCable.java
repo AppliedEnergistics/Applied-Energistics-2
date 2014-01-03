@@ -30,6 +30,7 @@ import appeng.block.AEBaseBlock;
 import appeng.client.texture.CableBusTextures;
 import appeng.client.texture.FlipableIcon;
 import appeng.client.texture.TaughtIcon;
+import appeng.items.parts.ItemPart;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.parts.AEBasePart;
@@ -46,7 +47,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	public PartCable(Class c, ItemStack is) {
 		super( c, is );
 		proxy.setIdlePowerUsage( 1.0 / 16.0 );
-		proxy.myColor = AEColor.fromCable( is );
+		proxy.myColor = AEColor.values()[((ItemPart) is.getItem()).varientOf( is.getItemDamage() )];
 	}
 
 	public Icon getGlassTexture(AEColor c)

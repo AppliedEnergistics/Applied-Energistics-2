@@ -3,9 +3,10 @@ package appeng.me.storage;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import appeng.api.implementations.IStorageMonitorable;
+import appeng.api.implementations.ITileStorageMonitorable;
 import appeng.api.storage.IExternalStorageHandler;
 import appeng.api.storage.IMEInventory;
+import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
@@ -17,7 +18,7 @@ public class AEExternalHandler implements IExternalStorageHandler
 	@Override
 	public boolean canHandle(TileEntity te, ForgeDirection d, StorageChannel channel)
 	{
-		if ( channel == StorageChannel.ITEMS && te instanceof IStorageMonitorable )
+		if ( channel == StorageChannel.ITEMS && te instanceof ITileStorageMonitorable )
 			return true;
 
 		if ( channel == StorageChannel.ITEMS && te instanceof IInventory )
@@ -37,20 +38,21 @@ public class AEExternalHandler implements IExternalStorageHandler
 				return new VoidFluidInventory( (TileCondenser) te );
 		}
 
-		if ( te instanceof IStorageMonitorable )
+		if ( te instanceof ITileStorageMonitorable )
 		{
-			IStorageMonitorable iface = (IStorageMonitorable) te;
+			ITileStorageMonitorable iface = (ITileStorageMonitorable) te;
+			IStorageMonitorable sm = iface.getMonitorable( d );
 
-			if ( channel == StorageChannel.ITEMS )
+			if ( channel == StorageChannel.ITEMS && sm != null )
 			{
-				IMEInventory<IAEItemStack> ii = iface.getItemInventory();
+				IMEInventory<IAEItemStack> ii = sm.getItemInventory();
 				if ( ii != null )
 					return ii;
 			}
 
-			if ( channel == StorageChannel.FLUIDS )
+			if ( channel == StorageChannel.FLUIDS && sm != null )
 			{
-				IMEInventory<IAEFluidStack> fi = iface.getFluidInventory();
+				IMEInventory<IAEFluidStack> fi = sm.getFluidInventory();
 				if ( fi != null )
 					return fi;
 			}

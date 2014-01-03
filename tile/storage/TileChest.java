@@ -35,6 +35,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReciever;
+import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.MEMonitorHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -51,7 +52,7 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 import appeng.util.item.AEFluidStack;
 
-public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHandler
+public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHandler, IStorageMonitorable
 {
 
 	static final AENoHandler noHandler = new AENoHandler();
@@ -608,6 +609,12 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		}
 
 		return super.getAECurrentPower() > 1 || gridPowered;
+	}
+
+	@Override
+	public IStorageMonitorable getMonitorable(ForgeDirection side)
+	{
+		return this;
 	}
 
 	public ItemStack getStorageType()

@@ -61,7 +61,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 
 		int newAdaptorHash = Platform.generateTileHash( target );
 
-		if ( adaptorHash == newAdaptorHash )
+		if ( adaptorHash == newAdaptorHash && newAdaptorHash != 0 )
 			return adaptor;
 
 		adaptorHash = newAdaptorHash;

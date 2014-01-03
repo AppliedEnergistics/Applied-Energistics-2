@@ -85,7 +85,7 @@ public class PartStorageBus extends PartBasicState implements IGridTickable, ICe
 
 		int newHandlerHash = Platform.generateTileHash( target );
 
-		if ( handlerHash == newHandlerHash )
+		if ( handlerHash == newHandlerHash && handlerHash != 0 )
 			return handler;
 
 		handlerHash = newHandlerHash;
