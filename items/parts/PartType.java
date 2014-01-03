@@ -3,6 +3,7 @@ package appeng.items.parts;
 import java.util.EnumSet;
 
 import appeng.api.parts.IPart;
+import appeng.api.util.AEColor;
 import appeng.core.features.AEFeature;
 import appeng.parts.automation.PartAnnihilationPlane;
 import appeng.parts.automation.PartExportBus;
@@ -10,6 +11,7 @@ import appeng.parts.automation.PartFormationPlane;
 import appeng.parts.automation.PartImportBus;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.parts.misc.PartCableAnchor;
+import appeng.parts.misc.PartInterface;
 import appeng.parts.misc.PartInvertedToggleBus;
 import appeng.parts.misc.PartP2PTunnel;
 import appeng.parts.misc.PartStorageBus;
@@ -70,7 +72,9 @@ public enum PartType
 
 	StorageMonitor(AEFeature.StorageMonitor, PartStorageMonitor.class),
 
-	ConversionMonitor(AEFeature.PartConversionMonitor, PartConversionMonitor.class);
+	ConversionMonitor(AEFeature.PartConversionMonitor, PartConversionMonitor.class),
+
+	Interface(AEFeature.Core, PartInterface.class);
 
 	private EnumSet<AEFeature> features;
 	private Class<? extends IPart> myPart;
@@ -78,6 +82,11 @@ public enum PartType
 	PartType(AEFeature part, Class<? extends IPart> c) {
 		features = EnumSet.of( part );
 		myPart = c;
+	}
+
+	public Enum[] getVarients()
+	{
+		return (this == CableSmart || this == CableCovered || this == CableGlass) ? AEColor.values() : null;
 	}
 
 	public EnumSet<AEFeature> getFeature()

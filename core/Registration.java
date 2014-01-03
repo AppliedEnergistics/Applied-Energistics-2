@@ -17,6 +17,7 @@ import appeng.api.definitions.Blocks;
 import appeng.api.definitions.Items;
 import appeng.api.definitions.Materials;
 import appeng.api.definitions.Parts;
+import appeng.api.implementations.ITileStorageMonitorable;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.spatial.ISpatialCache;
@@ -159,17 +160,32 @@ public class Registration
 			}
 		}
 
+		AEItemDefinition partItem = (AEFeatureHandler) addFeature( ItemPart.class );
+
 		Class partClass = parts.getClass();
-		for (PartType part : PartType.values())
+		for (PartType type : PartType.values())
 		{
 			try
 			{
-				Field f = partClass.getField( "part" + part.name() );
-				f.set( parts, addFeature( ItemPart.class, part ) );
+				Field f = partClass.getField( "part" + type.name() );
+				Enum varients[] = type.getVarients();
+				if ( varients == null )
+				{
+					ItemStack is = ((ItemPart) partItem.item()).createPart( type, null );
+					f.set( parts, new DamagedItemDefinition( is ) );
+				}
+				else
+				{
+					for (Enum v : varients)
+					{
+						ItemStack is = ((ItemPart) partItem.item()).createPart( type, v );
+						f.set( parts, new DamagedItemDefinition( is ) );
+					}
+				}
 			}
 			catch (Throwable err)
 			{
-				AELog.severe( "Error creating part: " + part.name() );
+				AELog.severe( "Error creating part: " + type.name() );
 				throw new RuntimeException( err );
 			}
 		}
@@ -358,6 +374,7 @@ public class Registration
 		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIPowerEmitter", IPowerEmitter.class );
 		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIPowerReceptor", IPowerReceptor.class );
 		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIFluidHandler", IFluidHandler.class );
+		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerITileStorageMonitorable", ITileStorageMonitorable.class );
 
 		TickRegistry.registerTickHandler( TickHandler.instance, Side.SERVER );
 		TickRegistry.registerTickHandler( TickHandler.instance, Side.CLIENT );

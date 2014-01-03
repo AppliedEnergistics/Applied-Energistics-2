@@ -1,6 +1,7 @@
 package appeng.items.materials;
 
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -22,8 +23,7 @@ import appeng.items.AEBaseItem;
 public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule
 {
 
-	private int currentMaterial = 0;
-	private final MaterialType material[] = new MaterialType[MaterialType.values().length];
+	HashMap<Integer, MaterialType> dmgToMaterial = new HashMap();
 
 	public ItemMaterial() {
 		super( ItemMaterial.class );
@@ -32,6 +32,8 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 
 	public ItemStack createMaterial(MaterialType mat)
 	{
+		String name = mat.name();
+
 		if ( mat.damageValue == -1 )
 		{
 			boolean enabled = true;
@@ -40,14 +42,15 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 
 			if ( enabled )
 			{
-				material[currentMaterial] = mat;
-				mat.damageValue = currentMaterial;
-				ItemStack output = new ItemStack( this );
-				output.setItemDamage( currentMaterial );
-				currentMaterial++;
+				int newMaterialNum = Configuration.instance.get( "materials", name, Configuration.instance.getFreeMaterial() ).getInt();
+				mat.damageValue = newMaterialNum;
+				ItemStack output = new ItemStack( this, 1, newMaterialNum );
+				output.setItemDamage( newMaterialNum );
+
+				dmgToMaterial.put( newMaterialNum, mat );
 
 				if ( mat.getOreName() != null )
-					OreDictionary.registerOre( mat.getOreName(), this );
+					OreDictionary.registerOre( mat.getOreName(), output );
 
 				return output;
 			}
@@ -60,13 +63,13 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 
 	public MaterialType getTypeByStack(ItemStack is)
 	{
-		return material[is.getItemDamage()];
+		return dmgToMaterial.get( is.getItemDamage() );
 	}
 
 	@Override
 	public Icon getIconFromDamage(int dmg)
 	{
-		return material[dmg].icon;
+		return dmgToMaterial.get( dmg ).icon;
 	}
 
 	@Override
@@ -78,10 +81,13 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 	@Override
 	public void registerIcons(IconRegister par1IconRegister)
 	{
-		for (int x = 0; x < currentMaterial; x++)
+		for (MaterialType mat : MaterialType.values())
 		{
-			String tex = "appliedenergistics2:" + getUnlocalizedName( new ItemStack( this, 1, x ) );
-			material[x].icon = par1IconRegister.registerIcon( tex );
+			if ( mat.damageValue != -1 )
+			{
+				String tex = "appliedenergistics2:" + getUnlocalizedName( new ItemStack( this, 1, mat.damageValue ) );
+				mat.icon = par1IconRegister.registerIcon( tex );
+			}
 		}
 	}
 
@@ -171,7 +177,10 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 	@Override
 	public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List cList)
 	{
-		for (int x = 0; x < currentMaterial; x++)
-			cList.add( new ItemStack( this, 1, x ) );
+		for (MaterialType mat : MaterialType.values())
+		{
+			if ( mat.damageValue >= 0 )
+				cList.add( new ItemStack( this, 1, mat.damageValue ) );
+		}
 	}
 }

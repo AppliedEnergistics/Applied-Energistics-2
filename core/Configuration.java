@@ -3,6 +3,7 @@ package appeng.core;
 import java.io.File;
 import java.util.EnumSet;
 
+import net.minecraftforge.common.Property;
 import appeng.api.config.CondenserOuput;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.Settings;
@@ -153,6 +154,22 @@ public class Configuration extends net.minecraftforge.common.Configuration imple
 
 		if ( hasChanged() )
 			super.save();
+	}
+
+	public int getFreeMaterial()
+	{
+		int min = 0;
+		for (Property p : getCategory( "materials" ).getValues().values())
+			min = Math.max( min, p.getInt() + 1 );
+		return min;
+	}
+
+	public int getFreePart()
+	{
+		int min = 0;
+		for (Property p : getCategory( "parts" ).getValues().values())
+			min = Math.max( min, p.getInt() + 1 );
+		return min;
 	}
 
 	@Override
