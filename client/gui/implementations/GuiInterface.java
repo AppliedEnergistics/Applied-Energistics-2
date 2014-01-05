@@ -4,12 +4,12 @@ import net.minecraft.entity.player.InventoryPlayer;
 import appeng.client.gui.AEBaseGui;
 import appeng.container.implementations.ContainerInterface;
 import appeng.core.localization.GuiText;
-import appeng.tile.misc.TileInterface;
+import appeng.helpers.IInterfaceHost;
 
 public class GuiInterface extends AEBaseGui
 {
 
-	public GuiInterface(InventoryPlayer inventoryPlayer, TileInterface te) {
+	public GuiInterface(InventoryPlayer inventoryPlayer, IInterfaceHost te) {
 		super( new ContainerInterface( inventoryPlayer, te ) );
 		this.ySize = 211;
 	}
