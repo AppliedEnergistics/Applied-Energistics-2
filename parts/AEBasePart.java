@@ -97,15 +97,15 @@ public class AEBasePart implements IPart, IGridProxyable, IGridHost, IBusCommon
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound extra)
+	public void readFromNBT(NBTTagCompound data)
 	{
-		proxy.readFromNBT( extra );
+		proxy.readFromNBT( data );
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound extra)
+	public void writeToNBT(NBTTagCompound data)
 	{
-		proxy.writeToNBT( extra );
+		proxy.writeToNBT( data );
 	}
 
 	@Override
