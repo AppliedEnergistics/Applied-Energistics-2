@@ -9,9 +9,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.exceptions.AppEngException;
 import appeng.api.implementations.IBusCommon;
-import appeng.api.implementations.IStorageMonitorable;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
+import appeng.api.storage.IStorageMonitorable;
 import appeng.client.gui.GuiNull;
 import appeng.container.ContainerNull;
 import appeng.container.implementations.ContainerBus;
@@ -20,11 +20,13 @@ import appeng.container.implementations.ContainerCondenser;
 import appeng.container.implementations.ContainerDrive;
 import appeng.container.implementations.ContainerGrinder;
 import appeng.container.implementations.ContainerInterface;
+import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.container.implementations.ContainerVibrationChamber;
+import appeng.helpers.IInterfaceHost;
+import appeng.parts.automation.PartLevelEmitter;
 import appeng.tile.grindstone.TileGrinder;
 import appeng.tile.misc.TileCondenser;
-import appeng.tile.misc.TileInterface;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.tile.storage.TileChest;
 import appeng.tile.storage.TileDrive;
@@ -48,9 +50,12 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_CONDENSER(ContainerCondenser.class, TileCondenser.class),
 
-	GUI_INTERFACE(ContainerInterface.class, TileInterface.class),
+	GUI_INTERFACE(ContainerInterface.class, IInterfaceHost.class),
 
-	GUI_BUS(ContainerBus.class, IBusCommon.class);
+	GUI_BUS(ContainerBus.class, IBusCommon.class),
+
+	// extends (Container/Gui) + Bus
+	GUI_LEVELEMITTER(ContainerLevelEmitter.class, PartLevelEmitter.class);
 
 	private Class Tile;
 	private Class Gui;

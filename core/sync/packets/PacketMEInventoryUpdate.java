@@ -9,13 +9,13 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.implementations.GuiMEMonitorable;
 import appeng.core.sync.AppEngPacket;
 import appeng.util.item.AEItemStack;
-import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -42,7 +42,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void clientPacketData(INetworkManager network, AppEngPacket packet, Player player)
+	public void clientPacketData(INetworkManager network, AppEngPacket packet, EntityPlayer player)
 	{
 		GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 		if ( gs instanceof GuiMEMonitorable )

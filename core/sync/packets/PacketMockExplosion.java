@@ -5,11 +5,11 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.world.World;
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
-import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -22,7 +22,7 @@ public class PacketMockExplosion extends AppEngPacket
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void clientPacketData(INetworkManager network, AppEngPacket packet, Player player)
+	public void clientPacketData(INetworkManager network, AppEngPacket packet, EntityPlayer player)
 	{
 		World world = CommonHelper.proxy.getWorld();
 		world.spawnParticle( "largeexplode", this.x, this.y, this.z, 1.0D, 0.0D, 0.0D );

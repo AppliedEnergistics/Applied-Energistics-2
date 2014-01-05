@@ -5,6 +5,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import cpw.mods.fml.common.network.IPacketHandler;
@@ -24,20 +25,25 @@ public final class AppEngServerPacketHandler extends AppEngPacketHandlerBase imp
 		{
 			packetType = stream.readInt();
 			AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
-			pack.serverPacketData( manager, pack, player );
-		} catch (IOException e)
+			pack.serverPacketData( manager, pack, (EntityPlayer) player );
+		}
+		catch (IOException e)
 		{
 			e.printStackTrace();
-		} catch (InstantiationException e)
+		}
+		catch (InstantiationException e)
 		{
 			e.printStackTrace();
-		} catch (IllegalAccessException e)
+		}
+		catch (IllegalAccessException e)
 		{
 			e.printStackTrace();
-		} catch (IllegalArgumentException e)
+		}
+		catch (IllegalArgumentException e)
 		{
 			e.printStackTrace();
-		} catch (InvocationTargetException e)
+		}
+		catch (InvocationTargetException e)
 		{
 			e.printStackTrace();
 		}

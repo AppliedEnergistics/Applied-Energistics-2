@@ -7,13 +7,13 @@ import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.world.World;
 import appeng.client.render.effects.MatterCannonEffect;
 import appeng.core.sync.AppEngPacket;
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -41,7 +41,7 @@ public class PacketMatterCannon extends AppEngPacket
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void clientPacketData(INetworkManager network, AppEngPacket packet, Player player)
+	public void clientPacketData(INetworkManager network, AppEngPacket packet, EntityPlayer player)
 	{
 		try
 		{
@@ -53,7 +53,8 @@ public class PacketMatterCannon extends AppEngPacket
 
 				Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
 			}
-		} catch (Exception err)
+		}
+		catch (Exception err)
 		{
 		}
 	}

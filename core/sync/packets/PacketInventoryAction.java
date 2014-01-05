@@ -5,6 +5,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetworkManager;
 import appeng.api.storage.data.IAEItemStack;
@@ -12,7 +13,6 @@ import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
 import appeng.helpers.InventoryAction;
 import appeng.util.item.AEItemStack;
-import cpw.mods.fml.common.network.Player;
 
 public class PacketInventoryAction extends AppEngPacket
 {
@@ -33,7 +33,7 @@ public class PacketInventoryAction extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData(INetworkManager manager, AppEngPacket packet, Player player)
+	public void serverPacketData(INetworkManager manager, AppEngPacket packet, EntityPlayer player)
 	{
 		EntityPlayerMP sender = (EntityPlayerMP) player;
 		AEBaseContainer aebc = (AEBaseContainer) sender.openContainer;

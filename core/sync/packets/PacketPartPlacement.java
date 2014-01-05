@@ -5,11 +5,11 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetworkManager;
 import appeng.core.sync.AppEngPacket;
 import appeng.helpers.PartPlacement;
-import cpw.mods.fml.common.network.Player;
 
 public class PacketPartPlacement extends AppEngPacket
 {
@@ -25,7 +25,7 @@ public class PacketPartPlacement extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData(INetworkManager manager, AppEngPacket packet, Player player)
+	public void serverPacketData(INetworkManager manager, AppEngPacket packet, EntityPlayer player)
 	{
 		EntityPlayerMP sender = (EntityPlayerMP) player;
 		PartPlacement.place( sender.getHeldItem(), x, y, z, face, sender, sender.worldObj, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );

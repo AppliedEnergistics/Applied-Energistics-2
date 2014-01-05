@@ -9,7 +9,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.util.ChatMessageComponent;
 import appeng.core.sync.AppEngPacket;
-import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -25,7 +24,7 @@ public class PacketLocalizedChatMsg extends AppEngPacket
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void clientPacketData(INetworkManager network, AppEngPacket packet, Player player)
+	public void clientPacketData(INetworkManager network, AppEngPacket packet, EntityPlayer player)
 	{
 		((EntityPlayer) player).sendChatToPlayer( ChatMessageComponent.createFromTranslationWithSubstitutions( msg ) );
 	}

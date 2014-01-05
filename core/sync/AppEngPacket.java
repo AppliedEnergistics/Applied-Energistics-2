@@ -1,9 +1,9 @@
 package appeng.core.sync;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import appeng.core.Configuration;
-import cpw.mods.fml.common.network.Player;
 
 public abstract class AppEngPacket
 {
@@ -18,12 +18,12 @@ public abstract class AppEngPacket
 		return AppEngPacketHandlerBase.PacketTypes.getID( this.getClass() ).ordinal();
 	}
 
-	public void serverPacketData(INetworkManager manager, AppEngPacket packet, Player player)
+	public void serverPacketData(INetworkManager manager, AppEngPacket packet, EntityPlayer player)
 	{
 		throw new RuntimeException( "This packet ( " + getPacketID() + " does not implement a server side handler." );
 	}
 
-	public void clientPacketData(INetworkManager network, AppEngPacket packet, Player player)
+	public void clientPacketData(INetworkManager network, AppEngPacket packet, EntityPlayer player)
 	{
 		throw new RuntimeException( "This packet ( " + getPacketID() + " does not implement a client side handler." );
 	}
