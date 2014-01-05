@@ -6,7 +6,7 @@ import appeng.api.storage.data.IAEItemStack;
 public class OreHelper
 {
 
-	public static OreHelper instance;
+	public static OreHelper instance = new OreHelper();
 
 	public boolean isOre(IAEItemStack is)
 	{

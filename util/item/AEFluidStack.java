@@ -16,6 +16,7 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import appeng.api.config.FuzzyMode;
+import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAETagCompound;
 import appeng.util.Platform;
@@ -314,6 +315,24 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		}
 
 		return false;
+	}
+
+	@Override
+	public boolean isItem()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isFluid()
+	{
+		return true;
+	}
+
+	@Override
+	public StorageChannel getChannel()
+	{
+		return StorageChannel.FLUIDS;
 	}
 
 }

@@ -16,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagShort;
 import appeng.api.config.FuzzyMode;
+import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAETagCompound;
 import appeng.util.Platform;
@@ -108,7 +109,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	{
 		if ( ia instanceof AEItemStack )
 		{
-			return ((AEItemStack) ia).def == def && def.tagCompound == ((AEItemStack) ia).def.tagCompound;
+			return ((AEItemStack) ia).def.equals( def ) && def.tagCompound == ((AEItemStack) ia).def.tagCompound;
 		}
 		else if ( ia instanceof ItemStack )
 		{
@@ -241,6 +242,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		int id = def.item.itemID - b.def.item.itemID;
 		int dv = def.damageValue - b.def.damageValue;
 		int dspv = def.dspDamage - b.def.dspDamage;
+
+		int dif = id == 0 ? (dv == 0 ? (dspv == 0 ? ((def.tagCompound == null ? 0 : def.tagCompound.hashCode()) - (b.def.tagCompound == null ? 0
+				: b.def.tagCompound.hashCode())) : dspv) : dv) : id;
 
 		return id == 0 ? (dv == 0 ? (dspv == 0 ? ((def.tagCompound == null ? 0 : def.tagCompound.hashCode()) - (b.def.tagCompound == null ? 0
 				: b.def.tagCompound.hashCode())) : dspv) : dv) : id;
@@ -474,8 +478,18 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		AEItemStack bottom = new AEItemStack( this );
 		bottom.def = bottom.def.copy();
 
-		int low = fuzzy.calculateBreakPoint( def.maxDamage );
-		bottom.def.dspDamage = low < def.dspDamage ? low : 0;
+		if ( fuzzy == FuzzyMode.IGNORE_ALL )
+		{
+			bottom.def.dspDamage = 0;
+		}
+		else
+		{
+			int low = fuzzy.calculateBreakPoint( def.maxDamage );
+			bottom.def.dspDamage = low < def.dspDamage ? low : 0;
+		}
+
+		if ( bottom.def.item.isDamageable() )
+			bottom.def.damageValue = bottom.def.dspDamage;
 
 		return bottom;
 	}
@@ -485,8 +499,18 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		AEItemStack top = new AEItemStack( this );
 		top.def = top.def.copy();
 
-		int high = fuzzy.calculateBreakPoint( def.maxDamage );
-		top.def.dspDamage = high > def.dspDamage ? high : def.maxDamage;
+		if ( fuzzy == FuzzyMode.IGNORE_ALL )
+		{
+			top.def.dspDamage = def.maxDamage + 1;
+		}
+		else
+		{
+			int high = fuzzy.calculateBreakPoint( def.maxDamage ) + 1;
+			top.def.dspDamage = high > def.dspDamage ? high : def.maxDamage + 1;
+		}
+
+		if ( top.def.item.isDamageable() )
+			top.def.damageValue = top.def.dspDamage;
 
 		return top;
 	}
@@ -513,5 +537,23 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			return false;
 
 		return def.isItem( otherStack );
+	}
+
+	@Override
+	public boolean isItem()
+	{
+		return true;
+	}
+
+	@Override
+	public boolean isFluid()
+	{
+		return false;
+	}
+
+	@Override
+	public StorageChannel getChannel()
+	{
+		return StorageChannel.ITEMS;
 	}
 }
