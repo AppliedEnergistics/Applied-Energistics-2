@@ -11,6 +11,7 @@ import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
@@ -55,6 +56,8 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 	final TreeMap<Integer, CachedItemStack> memory;
 	final IItemList<IAEItemStack> list = new ItemList();
 	final HashMap<IMEMonitorHandlerReciever<IAEItemStack>, Object> listeners = new HashMap();
+
+	public BaseActionSource mySource;
 
 	@Override
 	public void addListener(IMEMonitorHandlerReciever<IAEItemStack> l, Object verificationToken)
@@ -241,7 +244,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 				Entry<IMEMonitorHandlerReciever<IAEItemStack>, Object> l = i.next();
 				IMEMonitorHandlerReciever<IAEItemStack> key = l.getKey();
 				if ( key.isValid( l.getValue() ) )
-					key.postChange( a );
+					key.postChange( this, a, mySource );
 				else
 					i.remove();
 			}

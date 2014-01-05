@@ -29,6 +29,8 @@ import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.events.MENetworkPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.IMEInventory;
@@ -61,6 +63,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	static final int front[] = new int[] { 1 };
 
 	AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
+	BaseActionSource mySrc = new MachineSource( this );
 
 	ItemStack storageType;
 	long lastStateChange = 0;
@@ -250,11 +253,11 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		}
 
 		@Override
-		public void postChange(T change)
+		public void postChange(IMEMonitor<T> monitor, T change, BaseActionSource source)
 		{
 			try
 			{
-				gridProxy.getStorage().postAlterationOfStoredItems( chan, change );
+				gridProxy.getStorage().postAlterationOfStoredItems( chan, change, mySrc );
 			}
 			catch (GridAccessException e)
 			{
@@ -336,7 +339,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			try
 			{
 				IStorageGrid gs = gridProxy.getStorage();
-				Platform.postChanges( gs, removed, added );
+				Platform.postChanges( gs, removed, added, mySrc );
 
 				gridProxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
 			}
@@ -369,7 +372,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			{
 				IMEInventory<IAEItemStack> cell = getHandler( StorageChannel.ITEMS );
 
-				IAEItemStack returns = Platform.poweredInsert( this, cell, AEApi.instance().storage().createItemStack( inv.getStackInSlot( 0 ) ) );
+				IAEItemStack returns = Platform.poweredInsert( this, cell, AEApi.instance().storage().createItemStack( inv.getStackInSlot( 0 ) ), mySrc );
 
 				if ( returns == null )
 					inv.setInventorySlotContents( 0, null );

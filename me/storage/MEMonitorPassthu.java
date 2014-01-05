@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReciever;
@@ -17,6 +18,8 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 
 	HashMap<IMEMonitorHandlerReciever<T>, Object> listeners = new HashMap();
 	IMEMonitor<T> monitor;
+
+	public BaseActionSource changeSource;
 
 	public MEMonitorPassthu(IMEInventory<T> i) {
 		super( i );
@@ -42,7 +45,7 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 		if ( monitor != null )
 			monitor.addListener( this, monitor );
 
-		Platform.postListChanges( before, after, this );
+		Platform.postListChanges( before, after, this, changeSource );
 	}
 
 	@Override
@@ -72,7 +75,7 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 	}
 
 	@Override
-	public void postChange(T change)
+	public void postChange(IMEMonitor<T> monitor, T change, BaseActionSource source)
 	{
 		Iterator<Entry<IMEMonitorHandlerReciever<T>, Object>> i = listeners.entrySet().iterator();
 		while (i.hasNext())
@@ -80,7 +83,7 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 			Entry<IMEMonitorHandlerReciever<T>, Object> e = i.next();
 			IMEMonitorHandlerReciever<T> recv = e.getKey();
 			if ( recv.isValid( e.getValue() ) )
-				recv.postChange( change );
+				recv.postChange( this, change, source );
 			else
 				i.remove();
 		}

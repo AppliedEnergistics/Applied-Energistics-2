@@ -11,6 +11,8 @@ import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartCollsionHelper;
@@ -26,10 +28,13 @@ import appeng.util.Platform;
 public class PartExportBus extends PartSharedItemBus implements IGridTickable
 {
 
+	BaseActionSource mySrc;
+
 	public PartExportBus(ItemStack is) {
 		super( PartExportBus.class, is );
-		settings.registerSetting( Settings.REDSTONE_OUTPUT, RedstoneMode.IGNORE );
+		settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		settings.registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		mySrc = new MachineSource( this );
 	}
 
 	@Override
@@ -155,7 +160,7 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 						{
 							ais = ais.copy();
 							ais.setStackSize( canFit );
-							IAEItemStack itemsToAdd = Platform.poweredExtraction( energy, inv, ais );
+							IAEItemStack itemsToAdd = Platform.poweredExtraction( energy, inv, ais, mySrc );
 
 							if ( itemsToAdd != null )
 							{
@@ -193,7 +198,7 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 
 	public RedstoneMode getRSMode()
 	{
-		return (RedstoneMode) settings.getSetting( Settings.REDSTONE_OUTPUT );
+		return (RedstoneMode) settings.getSetting( Settings.REDSTONE_CONTROLLED );
 	}
 
 	@Override

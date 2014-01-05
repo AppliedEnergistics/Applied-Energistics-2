@@ -13,7 +13,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
+import appeng.api.networking.IGridHost;
 import appeng.api.networking.energy.IEnergySource;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.PlayerSource;
 import appeng.api.parts.IPart;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.data.IAEItemStack;
@@ -37,6 +40,8 @@ public abstract class AEBaseContainer extends Container
 	final TileEntity tileEntity;
 	final IPart part;
 
+	BaseActionSource mySrc;
+
 	protected IMEInventoryHandler<IAEItemStack> cellInv;
 	protected IEnergySource powerSrc;
 
@@ -53,6 +58,7 @@ public abstract class AEBaseContainer extends Container
 		invPlayer = ip;
 		tileEntity = myTile;
 		part = myPart;
+		mySrc = new PlayerSource( ip.player, (IGridHost) (myTile instanceof IGridHost ? myTile : (myPart instanceof IGridHost ? myPart : null)) );
 	}
 
 	public boolean canDragIntoSlot(Slot s)
@@ -339,7 +345,7 @@ public abstract class AEBaseContainer extends Container
 	{
 		if ( powerSrc == null || cellInv == null )
 			return input;
-		IAEItemStack ais = Platform.poweredInsert( powerSrc, cellInv, AEApi.instance().storage().createItemStack( input ) );
+		IAEItemStack ais = Platform.poweredInsert( powerSrc, cellInv, AEApi.instance().storage().createItemStack( input ), mySrc );
 		if ( ais == null )
 			return null;
 		return ais.getItemStack();
@@ -422,7 +428,7 @@ public abstract class AEBaseContainer extends Container
 				if ( myItem != null )
 					ais.setStackSize( ais.getStackSize() - myItem.stackSize );
 
-				ais = Platform.poweredExtraction( powerSrc, cellInv, ais );
+				ais = Platform.poweredExtraction( powerSrc, cellInv, ais, mySrc );
 				if ( ais != null )
 					adp.addItems( ais.getItemStack() );
 			}
@@ -437,7 +443,7 @@ public abstract class AEBaseContainer extends Container
 				{
 					IAEItemStack ais = slotItem.copy();
 					ais.setStackSize( ais.getItemStack().getMaxStackSize() );
-					ais = Platform.poweredExtraction( powerSrc, cellInv, ais );
+					ais = Platform.poweredExtraction( powerSrc, cellInv, ais, mySrc );
 					if ( ais != null )
 						player.inventory.setItemStack( ais.getItemStack() );
 					else
@@ -448,7 +454,7 @@ public abstract class AEBaseContainer extends Container
 			else
 			{
 				IAEItemStack ais = AEApi.instance().storage().createItemStack( player.inventory.getItemStack() );
-				ais = Platform.poweredInsert( powerSrc, cellInv, ais );
+				ais = Platform.poweredInsert( powerSrc, cellInv, ais, mySrc );
 				if ( ais != null )
 					player.inventory.setItemStack( ais.getItemStack() );
 				else
@@ -468,7 +474,7 @@ public abstract class AEBaseContainer extends Container
 					IAEItemStack ais = slotItem.copy();
 					long stackSize = Math.min( ais.getItemStack().getMaxStackSize(), ais.getStackSize() );
 					ais.setStackSize( (stackSize + 1) >> 1 );
-					ais = Platform.poweredExtraction( powerSrc, cellInv, ais );
+					ais = Platform.poweredExtraction( powerSrc, cellInv, ais, mySrc );
 					if ( ais != null )
 						player.inventory.setItemStack( ais.getItemStack() );
 					else
@@ -480,7 +486,7 @@ public abstract class AEBaseContainer extends Container
 			{
 				IAEItemStack ais = AEApi.instance().storage().createItemStack( player.inventory.getItemStack() );
 				ais.setStackSize( 1 );
-				ais = Platform.poweredInsert( powerSrc, cellInv, ais );
+				ais = Platform.poweredInsert( powerSrc, cellInv, ais, mySrc );
 				if ( ais == null )
 				{
 					ItemStack is = player.inventory.getItemStack();

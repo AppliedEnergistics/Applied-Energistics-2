@@ -12,6 +12,10 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergySource;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
@@ -30,10 +34,15 @@ import appeng.util.inv.IInventoryDestination;
 public class PartImportBus extends PartSharedItemBus implements IGridTickable, IInventoryDestination
 {
 
+	BaseActionSource mySrc;
+	IMEInventory<IAEItemStack> destination = null;
+	IAEItemStack lastItemChecked = null;
+
 	public PartImportBus(ItemStack is) {
 		super( PartImportBus.class, is );
-		settings.registerSetting( Settings.REDSTONE_OUTPUT, RedstoneMode.IGNORE );
+		settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		settings.registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		mySrc = new MachineSource( this );
 	}
 
 	@Override
@@ -50,9 +59,6 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 
 		return false;
 	}
-
-	IMEInventory<IAEItemStack> destination = null;
-	IAEItemStack lastItemChecked = null;
 
 	@Override
 	public boolean canInsert(ItemStack stack)
@@ -165,6 +171,7 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 
 				itemToSend = Math.min( itemToSend, (int) (0.01 + proxy.getEnergy().extractAEPower( itemToSend, Actionable.SIMULATE, PowerMultiplier.CONFIG )) );
 				IMEMonitor<IAEItemStack> inv = proxy.getStorage().getItemInventory();
+				IEnergyGrid energy = proxy.getEnergy();
 
 				boolean Configured = false;
 				for (int x = 0; x < availableSlots(); x++)
@@ -175,7 +182,7 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 						Configured = true;
 						while (itemToSend > 0)
 						{
-							if ( importStuff( myAdaptor, ais, inv ) )
+							if ( importStuff( myAdaptor, ais, inv, energy ) )
 								break;
 						}
 					}
@@ -185,7 +192,7 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 				{
 					while (itemToSend > 0)
 					{
-						if ( importStuff( myAdaptor, null, inv ) )
+						if ( importStuff( myAdaptor, null, inv, energy ) )
 							break;
 					}
 				}
@@ -207,7 +214,7 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 		return doBusWork();
 	}
 
-	private boolean importStuff(InventoryAdaptor myAdaptor, IAEItemStack whatToImport, IMEMonitor<IAEItemStack> inv)
+	private boolean importStuff(InventoryAdaptor myAdaptor, IAEItemStack whatToImport, IMEMonitor<IAEItemStack> inv, IEnergySource energy)
 	{
 		if ( itemToSend > 64 )
 			itemToSend = 64;
@@ -215,6 +222,7 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 		ItemStack newItems = myAdaptor.removeItems( itemToSend, whatToImport == null ? null : whatToImport.getItemStack(), configDest( inv ) );
 		if ( newItems != null )
 		{
+			newItems.stackSize = (int) (Math.min( newItems.stackSize, energy.extractAEPower( newItems.stackSize, Actionable.SIMULATE, PowerMultiplier.CONFIG ) ) + 0.01);
 			itemToSend -= newItems.stackSize;
 
 			if ( lastItemChecked == null || !lastItemChecked.isSameType( newItems ) )
@@ -222,7 +230,8 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 			else
 				lastItemChecked.setStackSize( newItems.stackSize );
 
-			IAEItemStack failed = destination.injectItems( lastItemChecked, Actionable.MODULATE );
+			IAEItemStack failed = Platform.poweredInsert( energy, destination, lastItemChecked, mySrc );
+			// destination.injectItems( lastItemChecked, Actionable.MODULATE );
 			if ( failed != null )
 			{
 				myAdaptor.addItems( failed.getItemStack() );
@@ -239,7 +248,7 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 
 	public RedstoneMode getRSMode()
 	{
-		return (RedstoneMode) settings.getSetting( Settings.REDSTONE_OUTPUT );
+		return (RedstoneMode) settings.getSetting( Settings.REDSTONE_CONTROLLED );
 	}
 
 	@Override

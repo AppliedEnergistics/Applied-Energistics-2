@@ -11,6 +11,8 @@ import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -41,9 +43,11 @@ public class PartStorageBus extends PartBasicState implements IGridTickable, ICe
 {
 
 	int priority = 0;
+	BaseActionSource mySrc;
 
 	public PartStorageBus(ItemStack is) {
 		super( PartStorageBus.class, is );
+		mySrc = new MachineSource( this );
 	}
 
 	boolean cached = false;
@@ -97,6 +101,9 @@ public class PartStorageBus extends PartBasicState implements IGridTickable, ICe
 			if ( esh != null )
 			{
 				IMEInventory inv = esh.getInventory( target, side.getOpposite(), StorageChannel.ITEMS );
+
+				if ( inv instanceof MEMonitorIInventory )
+					((MEMonitorIInventory) inv).mySource = new MachineSource( this );
 
 				if ( inv instanceof MEMonitorIInventory )
 					monitor = (MEMonitorIInventory) inv;
@@ -240,11 +247,11 @@ public class PartStorageBus extends PartBasicState implements IGridTickable, ICe
 	}
 
 	@Override
-	public void postChange(IAEItemStack change)
+	public void postChange(IMEMonitor<IAEItemStack> monitor, IAEItemStack change, BaseActionSource source)
 	{
 		try
 		{
-			proxy.getStorage().postAlterationOfStoredItems( StorageChannel.ITEMS, change );
+			proxy.getStorage().postAlterationOfStoredItems( StorageChannel.ITEMS, change, mySrc );
 		}
 		catch (GridAccessException e)
 		{

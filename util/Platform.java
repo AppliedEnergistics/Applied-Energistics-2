@@ -51,6 +51,7 @@ import appeng.api.implementations.IAEItemPowerStorage;
 import appeng.api.implementations.IAEWrench;
 import appeng.api.implementations.ITileStorageMonitorable;
 import appeng.api.networking.energy.IEnergySource;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitorHandlerReciever;
@@ -65,6 +66,7 @@ import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.Configuration;
 import appeng.core.sync.GuiBridge;
+import appeng.me.cache.NetworkMonitor;
 import appeng.server.AccessType;
 import appeng.server.Security;
 import appeng.util.item.AEItemStack;
@@ -215,6 +217,20 @@ public class Platform
 		}
 
 		return null;
+	}
+
+	public static <T extends Enum> T rotateEnum(T ce, boolean backwards, EnumSet ValidOptions)
+	{
+		do
+		{
+			if ( backwards )
+				ce = prevEnum( ce );
+			else
+				ce = nextEnum( ce );
+		}
+		while (!ValidOptions.contains( ce ));
+
+		return ce;
 	}
 
 	/*
@@ -1128,8 +1144,11 @@ public class Platform
 		return 0;
 	}
 
-	public static IAEItemStack poweredExtraction(IEnergySource energy, IMEInventory<IAEItemStack> cell, IAEItemStack request)
+	public static IAEItemStack poweredExtraction(IEnergySource energy, IMEInventory<IAEItemStack> cell, IAEItemStack request, BaseActionSource src)
 	{
+		if ( cell instanceof NetworkMonitor )
+			((NetworkMonitor) cell).setSource( src );
+
 		IAEItemStack possible = cell.extractItems( request.copy(), Actionable.SIMULATE );
 
 		long retrieved = 0;
@@ -1145,14 +1164,22 @@ public class Platform
 			energy.extractAEPower( retrieved, Actionable.MODULATE, PowerMultiplier.CONFIG );
 
 			possible.setStackSize( itemToExtract );
-			return cell.extractItems( possible, Actionable.MODULATE );
+			IAEItemStack ret = cell.extractItems( possible, Actionable.MODULATE );
+
+			if ( cell instanceof NetworkMonitor )
+				((NetworkMonitor) cell).setSource( null );
+
+			return ret;
 		}
 
 		return null;
 	}
 
-	public static IAEItemStack poweredInsert(IEnergySource energy, IMEInventory<IAEItemStack> cell, IAEItemStack input)
+	public static IAEItemStack poweredInsert(IEnergySource energy, IMEInventory<IAEItemStack> cell, IAEItemStack input, BaseActionSource src)
 	{
+		if ( cell instanceof NetworkMonitor )
+			((NetworkMonitor) cell).setSource( src );
+
 		IAEItemStack possible = cell.injectItems( input.copy(), Actionable.SIMULATE );
 
 		long stored = input.getStackSize();
@@ -1175,13 +1202,19 @@ public class Platform
 				split.add( cell.injectItems( input, Actionable.MODULATE ) );
 				return split;
 			}
-			return cell.injectItems( input, Actionable.MODULATE );
+
+			IAEItemStack ret = cell.injectItems( input, Actionable.MODULATE );
+
+			if ( cell instanceof NetworkMonitor )
+				((NetworkMonitor) cell).setSource( null );
+
+			return ret;
 		}
 
 		return input;
 	}
 
-	public static void postChanges(IStorageGrid gs, ItemStack removed, ItemStack added)
+	public static void postChanges(IStorageGrid gs, ItemStack removed, ItemStack added, BaseActionSource src)
 	{
 		if ( removed != null )
 		{
@@ -1192,7 +1225,7 @@ public class Platform
 				for (IAEItemStack is : myItems.getAvailableItems( new ItemList() ))
 				{
 					is.setStackSize( -is.getStackSize() );
-					gs.postAlterationOfStoredItems( StorageChannel.ITEMS, is );
+					gs.postAlterationOfStoredItems( StorageChannel.ITEMS, is, src );
 				}
 			}
 
@@ -1203,7 +1236,7 @@ public class Platform
 				for (IAEFluidStack is : myFluids.getAvailableItems( new ItemList() ))
 				{
 					is.setStackSize( -is.getStackSize() );
-					gs.postAlterationOfStoredItems( StorageChannel.ITEMS, is );
+					gs.postAlterationOfStoredItems( StorageChannel.ITEMS, is, src );
 				}
 			}
 		}
@@ -1216,7 +1249,7 @@ public class Platform
 			{
 				for (IAEItemStack is : myItems.getAvailableItems( new ItemList() ))
 				{
-					gs.postAlterationOfStoredItems( StorageChannel.ITEMS, is );
+					gs.postAlterationOfStoredItems( StorageChannel.ITEMS, is, src );
 				}
 			}
 
@@ -1226,13 +1259,14 @@ public class Platform
 			{
 				for (IAEFluidStack is : myFluids.getAvailableItems( new ItemList() ))
 				{
-					gs.postAlterationOfStoredItems( StorageChannel.ITEMS, is );
+					gs.postAlterationOfStoredItems( StorageChannel.ITEMS, is, src );
 				}
 			}
 		}
 	}
 
-	static public <T extends IAEStack<T>> void postListChanges(IItemList<T> before, IItemList<T> after, IMEMonitorHandlerReciever<T> meMonitorPassthu)
+	static public <T extends IAEStack<T>> void postListChanges(IItemList<T> before, IItemList<T> after, IMEMonitorHandlerReciever<T> meMonitorPassthu,
+			BaseActionSource source)
 	{
 		for (T is : before)
 			is.setStackSize( -is.getStackSize() );
@@ -1244,7 +1278,7 @@ public class Platform
 		{
 			if ( is.getStackSize() != 0 )
 			{
-				meMonitorPassthu.postChange( is );
+				meMonitorPassthu.postChange( null, is, source );
 			}
 		}
 	}

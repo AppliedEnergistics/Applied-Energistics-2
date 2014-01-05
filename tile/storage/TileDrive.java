@@ -18,6 +18,8 @@ import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.IMEInventoryHandler;
@@ -45,6 +47,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive
 	List<MEInventoryHandler> items = new LinkedList();
 	List<MEInventoryHandler> fluids = new LinkedList();
 
+	BaseActionSource mySrc;
 	long lastStateChange = 0;
 	int state = 0;
 	int priority = 0;
@@ -127,6 +130,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive
 	}
 
 	public TileDrive() {
+		mySrc = new MachineSource( this );
 		gridProxy.setFlags( GridFlags.REQURE_CHANNEL );
 		addNewHandler( new invManger() );
 	}
@@ -158,7 +162,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive
 		try
 		{
 			IStorageGrid gs = gridProxy.getStorage();
-			Platform.postChanges( gs, removed, added );
+			Platform.postChanges( gs, removed, added, mySrc );
 
 			gridProxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
 		}
