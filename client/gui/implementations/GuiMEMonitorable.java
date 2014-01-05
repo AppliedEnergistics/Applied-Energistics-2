@@ -7,7 +7,7 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
 import appeng.api.config.Settings;
 import appeng.api.implementations.IMEChest;
-import appeng.api.implementations.IStorageMonitorable;
+import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.AEBaseMEGui;
 import appeng.client.gui.widgets.GuiImgButton;
