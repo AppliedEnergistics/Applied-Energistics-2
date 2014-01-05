@@ -1,10 +1,12 @@
 package appeng.me;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
+import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkEvent;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -20,14 +22,14 @@ public class NetworkEventBus
 
 	};
 
-	class MENetworkEventInfo
+	class EventMethod
 	{
 
 		public final Class objClass;
 		public final Method objMethod;
 		public final Class objEvent;
 
-		public MENetworkEventInfo(Class Event, Class ObjClass, Method ObjMethod) {
+		public EventMethod(Class Event, Class ObjClass, Method ObjMethod) {
 			this.objClass = ObjClass;
 			this.objMethod = ObjMethod;
 			this.objEvent = Event;
@@ -50,6 +52,23 @@ public class NetworkEventBus
 
 			if ( e.isCanceled() )
 				throw new NetworkEventDone();
+		}
+	};
+
+	class MENetworkEventInfo
+	{
+
+		private ArrayList<EventMethod> methods = new ArrayList();
+
+		public void Add(Class Event, Class ObjClass, Method ObjMethod)
+		{
+			methods.add( new EventMethod( Event, ObjClass, ObjMethod ) );
+		}
+
+		public void invoke(Object obj, MENetworkEvent e) throws NetworkEventDone
+		{
+			for (EventMethod em : methods)
+				em.invoke( obj, e );
 		}
 	};
 
@@ -77,7 +96,13 @@ public class NetworkEventBus
 						if ( classEvents == null )
 							events.put( types[0], classEvents = new Hashtable() );
 
-						classEvents.put( listAs, new MENetworkEventInfo( types[0], c, m ) );
+						MENetworkEventInfo thisEvent = classEvents.get( listAs );
+						if ( thisEvent == null )
+							thisEvent = new MENetworkEventInfo();
+
+						thisEvent.Add( types[0], c, m );
+
+						classEvents.put( listAs, thisEvent );
 					}
 					else
 						throw new RuntimeException( "Invalid ME Network Event Subscriber, " + m.getName() + "s Parameter must extend MENetworkEvent." );
