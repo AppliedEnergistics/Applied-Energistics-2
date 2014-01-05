@@ -164,7 +164,7 @@ public abstract class AEBaseGui extends GuiContainer
 				int x = tooltip.xPos(); // ((GuiImgButton) c).xPosition;
 				int y = tooltip.yPos(); // ((GuiImgButton) c).yPosition;
 
-				if ( x < mouse_x && x + tooltip.getWidth() > mouse_x )
+				if ( x < mouse_x && x + tooltip.getWidth() > mouse_x && tooltip.isVisible() )
 				{
 					if ( y < mouse_y && y + tooltip.getHeight() > mouse_y )
 					{

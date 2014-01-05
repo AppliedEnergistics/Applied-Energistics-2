@@ -93,4 +93,10 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 		return height + 4;
 	}
 
+	@Override
+	public boolean isVisible()
+	{
+		return true;
+	}
+
 }

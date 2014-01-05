@@ -116,17 +116,17 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			registerApp( 16 * 10 + 3, Settings.POWER_UNITS, PowerUnits.KJ, "AppEng.GuiITooltip.PowerUnits", "AppEng.GuiITooltip.UEUnits" );
 			registerApp( 16 * 10 + 4, Settings.POWER_UNITS, PowerUnits.WA, "AppEng.GuiITooltip.PowerUnits", "AppEng.GuiITooltip.WUnits" );
 
-			registerApp( 3, Settings.REDSTONE_OUTPUT, RedstoneMode.IGNORE, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.AlwaysActive" );
-			registerApp( 0, Settings.REDSTONE_OUTPUT, RedstoneMode.LOW_SIGNAL, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.ActiveWithoutSignal" );
-			registerApp( 1, Settings.REDSTONE_OUTPUT, RedstoneMode.HIGH_SIGNAL, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.ActiveWithSignal" );
-			registerApp( 2, Settings.REDSTONE_OUTPUT, RedstoneMode.SIGNAL_PULSE, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.ActiveOnPulse" );
+			registerApp( 3, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.AlwaysActive" );
+			registerApp( 0, Settings.REDSTONE_CONTROLLED, RedstoneMode.LOW_SIGNAL, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.ActiveWithoutSignal" );
+			registerApp( 1, Settings.REDSTONE_CONTROLLED, RedstoneMode.HIGH_SIGNAL, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.ActiveWithSignal" );
+			registerApp( 2, Settings.REDSTONE_CONTROLLED, RedstoneMode.SIGNAL_PULSE, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.ActiveOnPulse" );
 
-			registerApp( 3, Settings.REDSTONE_INPUT, RedstoneMode.IGNORE, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.AlwaysActive" );
-			registerApp( 0, Settings.REDSTONE_INPUT, RedstoneMode.LOW_SIGNAL, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.ActiveWithoutSignal" );
-			registerApp( 1, Settings.REDSTONE_INPUT, RedstoneMode.HIGH_SIGNAL, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.ActiveWithSignal" );
+			registerApp( 3, Settings.REDSTONE_EMITTER, RedstoneMode.IGNORE, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.AlwaysActive" );
+			registerApp( 0, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.ActiveWithoutSignal" );
+			registerApp( 1, Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.ActiveWithSignal" );
 
-			registerApp( 0, Settings.REDSTONE_OUTPUT, RedstoneMode.LOW_SIGNAL, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.EmitLevelsBelow" );
-			registerApp( 1, Settings.REDSTONE_OUTPUT, RedstoneMode.HIGH_SIGNAL, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.EmitLevelAbove" );
+			registerApp( 0, Settings.REDSTONE_CONTROLLED, RedstoneMode.LOW_SIGNAL, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.EmitLevelsBelow" );
+			registerApp( 1, Settings.REDSTONE_CONTROLLED, RedstoneMode.HIGH_SIGNAL, "AppEng.GuiITooltip.RedstoneMode", "AppEng.GuiITooltip.EmitLevelAbove" );
 
 			registerApp( 16 * 8 + 2, Settings.INCLUSION, IncludeExclude.WHITELIST, "AppEng.Gui.Whitelisted", "AppEng.Gui.WhitelistedDesc" );
 			registerApp( 16 * 8 + 3, Settings.INCLUSION, IncludeExclude.BLACKLIST, "AppEng.Gui.Blacklisted", "AppEng.Gui.BlacklistedDesc" );
@@ -183,6 +183,12 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			registerApp( 19, Settings.CRAFT, YesNo.YES, "AppEng.GuiITooltip.InterfaceCraftingMode", "AppEng.GuiITooltip.Craft" );
 			registerApp( 17, Settings.CRAFT, YesNo.NO, "AppEng.GuiITooltip.InterfaceCraftingMode", "AppEng.GuiITooltip.DontCraft" );
 		}
+	}
+
+	@Override
+	public boolean isVisible()
+	{
+		return drawButton;
 	}
 
 	@Override
@@ -244,9 +250,9 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		return 256 - 1;
 	}
 
-	public Enum getSetting()
+	public Settings getSetting()
 	{
-		return buttonSetting;
+		return (Settings) buttonSetting;
 	}
 
 	public Enum getCurrentValue()

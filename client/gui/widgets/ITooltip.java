@@ -42,4 +42,9 @@ public interface ITooltip
 	 */
 	int getHeight();
 
+	/**
+	 * @return true if button being drawn
+	 */
+	boolean isVisible();
+
 }
