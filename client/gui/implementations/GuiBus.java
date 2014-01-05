@@ -4,6 +4,9 @@ import java.io.IOException;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
+
+import org.lwjgl.input.Mouse;
+
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
@@ -27,10 +30,14 @@ public class GuiBus extends AEBaseGui
 	GuiImgButton fuzzyMode;
 
 	public GuiBus(InventoryPlayer inventoryPlayer, IBusCommon te) {
-		super( new ContainerBus( inventoryPlayer, te ) );
-		cvb = (ContainerBus) inventorySlots;
+		this( new ContainerBus( inventoryPlayer, te ) );
+	}
 
-		bc = te;
+	public GuiBus(ContainerBus te) {
+		super( te );
+		cvb = (ContainerBus) te;
+
+		bc = (IBusCommon) te.getTarget();
 		this.xSize = hasToolbox() ? 246 : 211;
 		this.ySize = 184;
 	}
@@ -39,12 +46,24 @@ public class GuiBus extends AEBaseGui
 	public void initGui()
 	{
 		super.initGui();
+		addButtons();
+	}
 
-		redstoneMode = new GuiImgButton( 122 + guiLeft, 31 + guiTop, Settings.REDSTONE_OUTPUT, RedstoneMode.IGNORE );
+	protected void addButtons()
+	{
+		redstoneMode = new GuiImgButton( 122 + guiLeft, 31 + guiTop, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		fuzzyMode = new GuiImgButton( 122 + guiLeft, 49 + guiTop, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 
 		buttonList.add( redstoneMode );
 		buttonList.add( fuzzyMode );
+	}
+
+	protected void mouseClicked(int par1, int par2, int par3)
+	{
+		if ( par3 == 1 )
+			super.mouseClicked( par1, par2, 0 );
+		else
+			super.mouseClicked( par1, par2, par3 );
 	}
 
 	@Override
@@ -52,13 +71,15 @@ public class GuiBus extends AEBaseGui
 	{
 		super.actionPerformed( btn );
 
+		boolean backwards = Mouse.isButtonDown( 1 );
+
 		try
 		{
 			if ( btn == redstoneMode )
-				PacketDispatcher.sendPacketToServer( (new PacketConfigButton( Settings.REDSTONE_OUTPUT )).getPacket() );
+				PacketDispatcher.sendPacketToServer( (new PacketConfigButton( redstoneMode.getSetting(), backwards )).getPacket() );
 
 			if ( btn == fuzzyMode )
-				PacketDispatcher.sendPacketToServer( (new PacketConfigButton( Settings.FUZZY_MODE )).getPacket() );
+				PacketDispatcher.sendPacketToServer( (new PacketConfigButton( fuzzyMode.getSetting(), backwards )).getPacket() );
 
 		}
 		catch (IOException e)
@@ -75,24 +96,39 @@ public class GuiBus extends AEBaseGui
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		redstoneMode.setVisibility( bc.getInstalledUpgrades( Upgrades.REDSTONE ) > 0 );
-		fuzzyMode.setVisibility( bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );
+		handleButtonVisiblity();
 
-		bindTexture( "guis/bus.png" );
+		bindTexture( getBackground() );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, xSize - 34, ySize );
 		this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 86 );
 		if ( hasToolbox() )
 			this.drawTexturedModalRect( offsetX + 178, offsetY + 94, 178, 94, 68, 68 );
 	}
 
+	protected String getBackground()
+	{
+		return "guis/bus.png";
+	}
+
+	protected void handleButtonVisiblity()
+	{
+		redstoneMode.setVisibility( bc.getInstalledUpgrades( Upgrades.REDSTONE ) > 0 );
+		fuzzyMode.setVisibility( bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );
+	}
+
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRenderer.drawString( (bc instanceof PartImportBus ? GuiText.ImportBus : GuiText.ExportBus).getLocal(), 8, 6, 4210752 );
+		fontRenderer.drawString( getName().getLocal(), 8, 6, 4210752 );
 		fontRenderer.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
 
 		redstoneMode.set( cvb.rsMode );
 		fuzzyMode.set( cvb.fzMode );
+	}
+
+	protected GuiText getName()
+	{
+		return bc instanceof PartImportBus ? GuiText.ImportBus : GuiText.ExportBus;
 	}
 
 }

@@ -4,6 +4,9 @@ import java.io.IOException;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
+
+import org.lwjgl.input.Mouse;
+
 import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiImgButton;
@@ -33,11 +36,13 @@ public class GuiCondenser extends AEBaseGui
 	{
 		super.actionPerformed( btn );
 
+		boolean backwards = Mouse.isButtonDown( 1 );
+
 		if ( mode == btn )
 		{
 			try
 			{
-				PacketDispatcher.sendPacketToServer( (new PacketConfigButton( Settings.CONDENSER_OUTPUT )).getPacket() );
+				PacketDispatcher.sendPacketToServer( (new PacketConfigButton( Settings.CONDENSER_OUTPUT, backwards )).getPacket() );
 			}
 			catch (IOException e)
 			{
