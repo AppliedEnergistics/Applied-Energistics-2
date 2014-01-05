@@ -3,6 +3,7 @@ package appeng.parts.automation;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeModule;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -110,6 +111,13 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 		default:
 			return 0;
 		}
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound target)
+	{
+		super.readFromNBT( target );
+		updateUpgradeInfo();
 	}
 
 	@Override
