@@ -1,33 +1,251 @@
 package appeng.parts.automation;
 
+import java.util.Collection;
 import java.util.Random;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.Settings;
+import appeng.api.config.Upgrades;
+import appeng.api.networking.events.MENetworkChannelsChanged;
+import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.storage.IStackWatcher;
+import appeng.api.networking.storage.IStackWatcherHost;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IMEMonitorHandlerReciever;
+import appeng.api.storage.StorageChannel;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.client.texture.CableBusTextures;
-import appeng.parts.PartBasicState;
+import appeng.core.AELog;
+import appeng.core.sync.GuiBridge;
+import appeng.me.GridAccessException;
+import appeng.tile.inventory.AppEngInternalAEInventory;
+import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
+import appeng.util.item.AEItemStack;
 
-public class PartLevelEmitter extends PartBasicState
+public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHost, IMEMonitorHandlerReciever<IAEItemStack>
 {
 
 	final int FLAG_ON = 4;
 
+	AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 1 );
+
+	boolean prevState = false;
+
+	long lastReportedValue = 0;
+	long reportingValue = 0;
+
+	IStackWatcher myWatcher;
+
+	public long getReportingValue()
+	{
+		return reportingValue;
+	}
+
+	public void setReportingValue(long v)
+	{
+		reportingValue = v;
+		updateState();
+	}
+
+	@MENetworkEventSubscribe
+	public void powerChanged(MENetworkPowerStatusChange c)
+	{
+		updateState();
+	}
+
+	@MENetworkEventSubscribe
+	public void channelChanged(MENetworkChannelsChanged c)
+	{
+		updateState();
+	}
+
+	public void upgradesChanged()
+	{
+		confgiureWatchers();
+	}
+
+	@Override
+	public void updateSetting(Enum settingName, Enum newValue)
+	{
+		confgiureWatchers();
+	}
+
+	private void updateState()
+	{
+		if ( prevState != isLevelEmitterOn() && proxy.isActive() )
+		{
+			host.markForUpdate();
+			TileEntity te = host.getTile();
+			te.worldObj.notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, 0 );
+			prevState = isLevelEmitterOn();
+		}
+	}
+
+	public void writeToNBT(NBTTagCompound data)
+	{
+		super.writeToNBT( data );
+		data.setLong( "lastReportedValue", lastReportedValue );
+		data.setLong( "reportingValue", reportingValue );
+		data.setBoolean( "prevState", prevState );
+		config.writeToNBT( data, "config" );
+	}
+
+	public void readFromNBT(NBTTagCompound data)
+	{
+		super.readFromNBT( data );
+		lastReportedValue = data.getLong( "lastReportedValue" );
+		reportingValue = data.getLong( "reportingValue" );
+		prevState = data.getBoolean( "prevState" );
+		config.readFromNBT( data, "config" );
+	}
+
 	@Override
 	protected int populateFlags(int cf)
 	{
-		return cf | (isLevelEmitterOn() ? FLAG_ON : 0);
+		return cf | (prevState ? FLAG_ON : 0);
+	}
+
+	@Override
+	public void updateWatcher(IStackWatcher newWatcher)
+	{
+		myWatcher = newWatcher;
+		confgiureWatchers();
+	}
+
+	// update the system...
+	public void confgiureWatchers()
+	{
+		IAEItemStack myStack = config.getAEStackInSlot( 0 );
+
+		if ( myWatcher != null )
+			myWatcher.clear();
+		try
+		{
+			if ( getInstalledUpgrades( Upgrades.FUZZY ) > 0 || myStack == null )
+			{
+				proxy.getStorage().getItemInventory().addListener( this, proxy.getGrid() );
+			}
+			else
+			{
+				proxy.getStorage().getItemInventory().removeListener( this );
+
+				if ( myWatcher != null )
+					myWatcher.add( myStack );
+			}
+
+			updateReportingValue( proxy.getStorage().getItemInventory() );
+		}
+		catch (GridAccessException e)
+		{
+			// >.>
+		}
+	}
+
+	@Override
+	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
+	{
+		if ( inv == config )
+			confgiureWatchers();
+
+		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
+	}
+
+	@Override
+	public void postChange(IMEMonitor<IAEItemStack> monitor, IAEItemStack change, BaseActionSource actionSource)
+	{
+		updateReportingValue( monitor );
+	}
+
+	@Override
+	public boolean onActivate(EntityPlayer player, Vec3 pos)
+	{
+		if ( !player.isSneaking() )
+		{
+			if ( Platform.isClient() )
+				return true;
+
+			Platform.openGUI( player, getHost().getTile(), side, GuiBridge.GUI_LEVELEMITTER );
+			return true;
+		}
+
+		return false;
+	}
+
+	private void updateReportingValue(IMEMonitor<IAEItemStack> monitor)
+	{
+		IAEItemStack myStack = config.getAEStackInSlot( 0 );
+
+		if ( myStack == null )
+		{
+			lastReportedValue = 0;
+			for (IAEItemStack st : monitor.getStorageList())
+				lastReportedValue += st.getStackSize();
+		}
+		else if ( getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
+		{
+			lastReportedValue = 0;
+			FuzzyMode fzMode = (FuzzyMode) getConfigManager().getSetting( Settings.FUZZY_MODE );
+			Collection<IAEItemStack> fuzzyList = monitor.getStorageList().findFuzzy( myStack, fzMode );
+			AELog.info( "FuzzyMatches: " + fuzzyList.size() );
+			for (IAEItemStack st : fuzzyList)
+			{
+
+				AELog.info( "Matched: " + ((AEItemStack) st).getItemDamage() );
+				lastReportedValue += st.getStackSize();
+			}
+		}
+		else
+		{
+			IAEItemStack r = monitor.getStorageList().findPrecise( myStack );
+			if ( r == null )
+				lastReportedValue = 0;
+			else
+				lastReportedValue = r.getStackSize();
+		}
+
+		updateState();
+	}
+
+	@Override
+	public boolean isValid(Object effectiveGrid)
+	{
+		return getGridNode().getGrid() == effectiveGrid;
+	}
+
+	@Override
+	public void onStackChange(IItemList o, IAEStack fullStack, IAEStack diffStack, BaseActionSource src, StorageChannel chan)
+	{
+		if ( chan == StorageChannel.ITEMS && fullStack.equals( config.getAEStackInSlot( 0 ) ) && getInstalledUpgrades( Upgrades.FUZZY ) == 0 )
+		{
+			lastReportedValue = fullStack.getStackSize();
+			updateState();
+		}
 	}
 
 	public PartLevelEmitter(ItemStack is) {
 		super( PartLevelEmitter.class, is );
+		getConfigManager().registerSetting( Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL );
+		getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 	}
 
 	@Override
@@ -222,7 +440,8 @@ public class PartLevelEmitter extends PartBasicState
 		if ( Platform.isClient() )
 			return (clientFlags & FLAG_ON) == FLAG_ON;
 
-		return false;
+		boolean flipState = getConfigManager().getSetting( Settings.REDSTONE_EMITTER ) == RedstoneMode.LOW_SIGNAL;
+		return flipState ? reportingValue >= lastReportedValue + 1 : reportingValue < lastReportedValue + 1;
 	}
 
 	@Override
@@ -271,4 +490,12 @@ public class PartLevelEmitter extends PartBasicState
 		return 16;
 	}
 
+	@Override
+	public IInventory getInventoryByName(String name)
+	{
+		if ( name.equals( "config" ) )
+			return config;
+
+		return super.getInventoryByName( name );
+	}
 }

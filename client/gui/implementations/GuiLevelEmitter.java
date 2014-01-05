@@ -1,31 +1,109 @@
 package appeng.client.gui.implementations;
 
+import java.io.IOException;
+
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
-import appeng.client.gui.AEBaseGui;
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.Settings;
+import appeng.api.config.Upgrades;
+import appeng.client.gui.widgets.GuiImgButton;
 import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.core.localization.GuiText;
+import appeng.core.sync.packets.PacketValueConfig;
 import appeng.parts.automation.PartLevelEmitter;
+import cpw.mods.fml.common.network.PacketDispatcher;
 
-public class GuiLevelEmitter extends AEBaseGui
+public class GuiLevelEmitter extends GuiBus
 {
+
+	GuiTextField level;
 
 	public GuiLevelEmitter(InventoryPlayer inventoryPlayer, PartLevelEmitter te) {
 		super( new ContainerLevelEmitter( inventoryPlayer, te ) );
-		this.ySize = 199;
+	}
+
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+		level = new GuiTextField( this.fontRenderer, this.guiLeft + 10, this.guiTop + 43, 59, this.fontRenderer.FONT_HEIGHT );
+		level.setEnableBackgroundDrawing( false );
+		level.setMaxStringLength( 16 );
+		level.setTextColor( 0xFFFFFF );
+		level.setVisible( true );
+		level.setFocused( true );
+		((ContainerLevelEmitter) inventorySlots).setTextField( level );
+	}
+
+	@Override
+	protected void addButtons()
+	{
+		redstoneMode = new GuiImgButton( 122 + guiLeft, 31 + guiTop, Settings.REDSTONE_EMITTER, RedstoneMode.IGNORE );
+		fuzzyMode = new GuiImgButton( 122 + guiLeft, 49 + guiTop, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+
+		buttonList.add( redstoneMode );
+		buttonList.add( fuzzyMode );
+	}
+
+	protected void handleButtonVisiblity()
+	{
+		fuzzyMode.setVisibility( bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );
+	}
+
+	@Override
+	protected void keyTyped(char character, int key)
+	{
+		if ( !this.checkHotbarKeys( key ) )
+		{
+			if ( (key == 211 || key == 205 || key == 203 || key == 14 || Character.isDigit( character )) && level.textboxKeyTyped( character, key ) )
+			{
+				try
+				{
+					String Out = level.getText();
+
+					boolean Fixed = false;
+					while (Out.startsWith( "0" ) && Out.length() > 1)
+					{
+						Out = Out.substring( 1 );
+						Fixed = true;
+					}
+
+					if ( Fixed )
+						level.setText( Out );
+
+					if ( Out.length() == 0 )
+						Out = "0";
+
+					PacketDispatcher.sendPacketToServer( (new PacketValueConfig( "LevelEmitter.Value", Out )).getPacket() );
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+			else
+			{
+				super.keyTyped( character, key );
+			}
+		}
 	}
 
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		bindTexture( "guis/lvlemitter.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, xSize, ySize );
+		super.drawBG( offsetX, offsetY, mouseX, mouseY );
+		level.drawTextBox();
 	}
 
-	@Override
-	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
+	protected String getBackground()
 	{
-		fontRenderer.drawString( GuiText.LevelEmitter.getLocal(), 8, 6, 4210752 );
-		fontRenderer.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		return "guis/lvlemitter.png";
 	}
 
+	protected GuiText getName()
+	{
+		return GuiText.LevelEmitter;
+	}
 }

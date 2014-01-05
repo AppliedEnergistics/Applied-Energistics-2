@@ -1,5 +1,6 @@
 package appeng.me.cache;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 import appeng.api.networking.IGrid;
@@ -8,6 +9,10 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.storage.IStackWatcher;
+import appeng.api.networking.storage.IStackWatcherHost;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.ICellContainer;
 import appeng.api.storage.IMEInventoryHandler;
@@ -17,20 +22,28 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.me.storage.ItemWatcher;
 import appeng.me.storage.NetworkInventoryHandler;
 import appeng.util.item.ItemList;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
 
 public class GridStorageCache implements IStorageGrid
 {
 
+	public SetMultimap<IAEStack, ItemWatcher> interests = HashMultimap.create();
+
 	final HashSet<ICellContainer> cellContainers = new HashSet();
-	final IGrid myGrid;
+	final public IGrid myGrid;
 
 	private NetworkInventoryHandler<IAEItemStack> myItemNetwork;
 	private NetworkMonitor<IAEItemStack> itemMonitor = new NetworkMonitor<IAEItemStack>( this, StorageChannel.ITEMS );
 
 	private NetworkInventoryHandler<IAEFluidStack> myFluidNetwork;
 	private NetworkMonitor<IAEFluidStack> fluidMonitor = new NetworkMonitor<IAEFluidStack>( this, StorageChannel.FLUIDS );
+
+	private HashMap<IGridNode, IStackWatcher> watchers = new HashMap<IGridNode, IStackWatcher>();
 
 	public GridStorageCache(IGrid g) {
 		myGrid = g;
@@ -51,18 +64,28 @@ public class GridStorageCache implements IStorageGrid
 			ICellContainer cc = (ICellContainer) machine;
 			cellContainers.remove( cc );
 
+			myGrid.postEvent( new MENetworkCellArrayUpdate() );
+
 			for (IMEInventoryHandler<IAEItemStack> h : cc.getCellArray( StorageChannel.ITEMS ))
 			{
-				postChanges( StorageChannel.ITEMS, -1, h.getAvailableItems( new ItemList<IAEItemStack>() ) );
+				postChanges( StorageChannel.ITEMS, -1, h.getAvailableItems( new ItemList<IAEItemStack>() ), new MachineSource( machine ) );
 			}
 
 			for (IMEInventoryHandler<IAEFluidStack> h : cc.getCellArray( StorageChannel.FLUIDS ))
 			{
-				postChanges( StorageChannel.ITEMS, -1, h.getAvailableItems( new ItemList<IAEFluidStack>() ) );
+				postChanges( StorageChannel.ITEMS, -1, h.getAvailableItems( new ItemList<IAEFluidStack>() ), new MachineSource( machine ) );
 			}
 		}
 
-		myGrid.postEvent( new MENetworkCellArrayUpdate() );
+		if ( machine instanceof IStackWatcherHost )
+		{
+			IStackWatcher myWatcher = watchers.get( machine );
+			if ( myWatcher != null )
+			{
+				myWatcher.clear();
+				watchers.remove( machine );
+			}
+		}
 	}
 
 	@Override
@@ -73,18 +96,26 @@ public class GridStorageCache implements IStorageGrid
 			ICellContainer cc = (ICellContainer) machine;
 			cellContainers.add( cc );
 
+			myGrid.postEvent( new MENetworkCellArrayUpdate() );
+
 			for (IMEInventoryHandler<IAEItemStack> h : cc.getCellArray( StorageChannel.ITEMS ))
 			{
-				postChanges( StorageChannel.ITEMS, 1, h.getAvailableItems( new ItemList<IAEItemStack>() ) );
+				postChanges( StorageChannel.ITEMS, 1, h.getAvailableItems( new ItemList<IAEItemStack>() ), new MachineSource( machine ) );
 			}
 
 			for (IMEInventoryHandler<IAEFluidStack> h : cc.getCellArray( StorageChannel.FLUIDS ))
 			{
-				postChanges( StorageChannel.ITEMS, 1, h.getAvailableItems( new ItemList<IAEFluidStack>() ) );
+				postChanges( StorageChannel.ITEMS, 1, h.getAvailableItems( new ItemList<IAEFluidStack>() ), new MachineSource( machine ) );
 			}
 		}
 
-		myGrid.postEvent( new MENetworkCellArrayUpdate() );
+		if ( machine instanceof IStackWatcherHost )
+		{
+			IStackWatcherHost swh = (IStackWatcherHost) machine;
+			ItemWatcher iw = new ItemWatcher( this, (IStackWatcherHost) swh );
+			watchers.put( node, iw );
+			swh.updateWatcher( iw );
+		}
 	}
 
 	private void buildNetworkStorage(StorageChannel chan)
@@ -111,7 +142,7 @@ public class GridStorageCache implements IStorageGrid
 		}
 	}
 
-	private void postChanges(StorageChannel chan, int up_or_down, IItemList availableItems)
+	private void postChanges(StorageChannel chan, int up_or_down, IItemList availableItems, BaseActionSource src)
 	{
 		switch (chan)
 		{
@@ -119,11 +150,11 @@ public class GridStorageCache implements IStorageGrid
 			for (IAEFluidStack fs : ((IItemList<IAEFluidStack>) availableItems))
 			{
 				if ( up_or_down > 0 )
-					fluidMonitor.postChange( fs );
+					fluidMonitor.postChange( fs, src );
 				else
 				{
 					fs.setStackSize( -fs.getStackSize() );
-					fluidMonitor.postChange( fs );
+					fluidMonitor.postChange( fs, src );
 				}
 			}
 			break;
@@ -131,11 +162,11 @@ public class GridStorageCache implements IStorageGrid
 			for (IAEItemStack fs : ((IItemList<IAEItemStack>) availableItems))
 			{
 				if ( up_or_down > 0 )
-					itemMonitor.postChange( fs );
+					itemMonitor.postChange( fs, src );
 				else
 				{
 					fs.setStackSize( -fs.getStackSize() );
-					itemMonitor.postChange( fs );
+					itemMonitor.postChange( fs, src );
 				}
 			}
 			break;
@@ -168,12 +199,12 @@ public class GridStorageCache implements IStorageGrid
 	}
 
 	@Override
-	public void postAlterationOfStoredItems(StorageChannel chan, IAEStack input)
+	public void postAlterationOfStoredItems(StorageChannel chan, IAEStack input, BaseActionSource src)
 	{
 		if ( chan == StorageChannel.ITEMS )
-			itemMonitor.postChange( (IAEItemStack) input );
+			itemMonitor.postChange( (IAEItemStack) input, src );
 		else if ( chan == StorageChannel.FLUIDS )
-			fluidMonitor.postChange( (IAEFluidStack) input );
+			fluidMonitor.postChange( (IAEFluidStack) input, src );
 	}
 
 	@Override

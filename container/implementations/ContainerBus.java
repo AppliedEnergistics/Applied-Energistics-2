@@ -31,10 +31,14 @@ public class ContainerBus extends AEBaseContainer implements IOptionalSlotHost
 		myte = te;
 
 		IInventory upgrades = myte.getInventoryByName( "upgrades" );
-		addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0 )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 1, 187, 8 + 18 * 1 )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2 )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3 )).setNotDraggable() );
+		if ( availableUpgrades() > 0 )
+			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0 )).setNotDraggable() );
+		if ( availableUpgrades() > 1 )
+			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 1, 187, 8 + 18 * 1 )).setNotDraggable() );
+		if ( availableUpgrades() > 2 )
+			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2 )).setNotDraggable() );
+		if ( availableUpgrades() > 3 )
+			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3 )).setNotDraggable() );
 
 		if ( hasToolbox() )
 		{
@@ -49,17 +53,30 @@ public class ContainerBus extends AEBaseContainer implements IOptionalSlotHost
 		IInventory inv = myte.getInventoryByName( "config" );
 		addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
 
-		addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 1, x, y, -1, 0, 1 ) );
-		addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 2, x, y, 1, 0, 1 ) );
-		addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 3, x, y, 0, -1, 1 ) );
-		addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 4, x, y, 0, 1, 1 ) );
+		if ( supportCapacity() )
+		{
+			addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 1, x, y, -1, 0, 1 ) );
+			addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 2, x, y, 1, 0, 1 ) );
+			addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 3, x, y, 0, -1, 1 ) );
+			addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 4, x, y, 0, 1, 1 ) );
 
-		addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 5, x, y, -1, -1, 2 ) );
-		addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 6, x, y, 1, -1, 2 ) );
-		addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 7, x, y, -1, 1, 2 ) );
-		addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 8, x, y, 1, 1, 2 ) );
+			addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 5, x, y, -1, -1, 2 ) );
+			addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 6, x, y, 1, -1, 2 ) );
+			addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 7, x, y, -1, 1, 2 ) );
+			addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 8, x, y, 1, 1, 2 ) );
+		}
 
 		bindPlayerInventory( ip, 0, 184 - /* height of playerinventory */82 );
+	}
+
+	protected int availableUpgrades()
+	{
+		return 4;
+	}
+
+	protected boolean supportCapacity()
+	{
+		return true;
 	}
 
 	public RedstoneMode rsMode = RedstoneMode.IGNORE;
@@ -74,9 +91,9 @@ public class ContainerBus extends AEBaseContainer implements IOptionalSlotHost
 			{
 				ICrafting icrafting = (ICrafting) this.crafters.get( i );
 
-				if ( this.rsMode != this.myte.getConfigManager().getSetting( Settings.REDSTONE_OUTPUT ) )
+				if ( this.rsMode != this.myte.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED ) )
 				{
-					icrafting.sendProgressBarUpdate( this, 0, (int) this.myte.getConfigManager().getSetting( Settings.REDSTONE_OUTPUT ).ordinal() );
+					icrafting.sendProgressBarUpdate( this, 0, (int) this.myte.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED ).ordinal() );
 				}
 
 				if ( this.fzMode != this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE ) )
@@ -86,7 +103,7 @@ public class ContainerBus extends AEBaseContainer implements IOptionalSlotHost
 			}
 
 			this.fzMode = (FuzzyMode) this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE );
-			this.rsMode = (RedstoneMode) this.myte.getConfigManager().getSetting( Settings.REDSTONE_OUTPUT );
+			this.rsMode = (RedstoneMode) this.myte.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
 		}
 
 		for (Object o : inventorySlots)
@@ -99,6 +116,11 @@ public class ContainerBus extends AEBaseContainer implements IOptionalSlotHost
 			}
 		}
 
+		standardDetectAndSendChanges();
+	}
+
+	protected void standardDetectAndSendChanges()
+	{
 		super.detectAndSendChanges();
 	}
 
