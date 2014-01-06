@@ -18,6 +18,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.IMEInventory;
+import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
@@ -110,10 +111,14 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 		bch.addBox( 6, 6, 11, 10, 10, 12 );
 	}
 
+	int itemToSend = 1;
+	boolean didSomething = false;
+
 	@Override
 	TickRateModulation doBusWork()
 	{
-		int itemToSend = 1;
+		itemToSend = 1;
+		didSomething = false;
 
 		switch (getInstalledUpgrades( Upgrades.SPEED ))
 		{
@@ -140,44 +145,29 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 		try
 		{
 			InventoryAdaptor d = getHandler();
-			IMEInventory<IAEItemStack> inv = proxy.getStorage().getItemInventory();
+			IMEMonitor<IAEItemStack> inv = proxy.getStorage().getItemInventory();
 			IEnergyGrid energy = proxy.getEnergy();
+			FuzzyMode fzMode = (FuzzyMode) getConfigManager().getSetting( Settings.FUZZY_MODE );
 
 			if ( d != null )
 			{
-				for (int x = 0; x < availableSlots(); x++)
+				for (int x = 0; x < availableSlots() && itemToSend > 0; x++)
 				{
 					IAEItemStack ais = config.getAEStackInSlot( x );
-					if ( ais != null && itemToSend > 0 )
+					if ( ais == null || itemToSend <= 0 )
+						continue;
+
+					if ( getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 					{
-						ItemStack is = ais.getItemStack();
-						is.stackSize = itemToSend;
-
-						ItemStack o = d.simulateAdd( ais.getItemStack() );
-						int canFit = o == null ? itemToSend : itemToSend - o.stackSize;
-
-						if ( canFit > 0 )
+						for (IAEItemStack o : inv.getStorageList().findFuzzy( ais, fzMode ))
 						{
-							ais = ais.copy();
-							ais.setStackSize( canFit );
-							IAEItemStack itemsToAdd = Platform.poweredExtraction( energy, inv, ais, mySrc );
-
-							if ( itemsToAdd != null )
-							{
-								itemToSend -= itemsToAdd.getStackSize();
-
-								ItemStack failed = d.addItems( itemsToAdd.getItemStack() );
-								if ( failed != null )
-								{
-									ais.setStackSize( failed.stackSize );
-									inv.injectItems( ais, Actionable.MODULATE );
-								}
-								else
-									didSomething = true;
-							}
-
+							pushItemIntoTarget( d, energy, fzMode, inv, o );
+							if ( itemToSend <= 0 )
+								break;
 						}
 					}
+					else
+						pushItemIntoTarget( d, energy, fzMode, inv, ais );
 				}
 			}
 
@@ -188,6 +178,37 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 		}
 
 		return didSomething ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
+	}
+
+	private void pushItemIntoTarget(InventoryAdaptor d, IEnergyGrid energy, FuzzyMode fzMode, IMEInventory<IAEItemStack> inv, IAEItemStack ais)
+	{
+		ItemStack is = ais.getItemStack();
+		is.stackSize = itemToSend;
+
+		ItemStack o = d.simulateAdd( is );
+		int canFit = o == null ? itemToSend : itemToSend - o.stackSize;
+
+		if ( canFit > 0 )
+		{
+			ais = ais.copy();
+			ais.setStackSize( canFit );
+			IAEItemStack itemsToAdd = Platform.poweredExtraction( energy, inv, ais, mySrc );
+
+			if ( itemsToAdd != null )
+			{
+				itemToSend -= itemsToAdd.getStackSize();
+
+				ItemStack failed = d.addItems( itemsToAdd.getItemStack() );
+				if ( failed != null )
+				{
+					ais.setStackSize( failed.stackSize );
+					inv.injectItems( ais, Actionable.MODULATE );
+				}
+				else
+					didSomething = true;
+			}
+
+		}
 	}
 
 	@Override

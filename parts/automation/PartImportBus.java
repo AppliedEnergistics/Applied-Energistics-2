@@ -145,6 +145,8 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 		worked = false;
 
 		InventoryAdaptor myAdaptor = getHandler();
+		FuzzyMode fzMode = (FuzzyMode) getConfigManager().getSetting( Settings.FUZZY_MODE );
+
 		if ( myAdaptor != null )
 		{
 			try
@@ -182,7 +184,7 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 						Configured = true;
 						while (itemToSend > 0)
 						{
-							if ( importStuff( myAdaptor, ais, inv, energy ) )
+							if ( importStuff( myAdaptor, ais, inv, energy, fzMode ) )
 								break;
 						}
 					}
@@ -192,7 +194,7 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 				{
 					while (itemToSend > 0)
 					{
-						if ( importStuff( myAdaptor, null, inv, energy ) )
+						if ( importStuff( myAdaptor, null, inv, energy, fzMode ) )
 							break;
 					}
 				}
@@ -214,12 +216,17 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 		return doBusWork();
 	}
 
-	private boolean importStuff(InventoryAdaptor myAdaptor, IAEItemStack whatToImport, IMEMonitor<IAEItemStack> inv, IEnergySource energy)
+	private boolean importStuff(InventoryAdaptor myAdaptor, IAEItemStack whatToImport, IMEMonitor<IAEItemStack> inv, IEnergySource energy, FuzzyMode fzMode)
 	{
 		if ( itemToSend > 64 )
 			itemToSend = 64;
 
-		ItemStack newItems = myAdaptor.removeItems( itemToSend, whatToImport == null ? null : whatToImport.getItemStack(), configDest( inv ) );
+		ItemStack newItems;
+		if ( getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
+			newItems = myAdaptor.removeSimilarItems( itemToSend, whatToImport == null ? null : whatToImport.getItemStack(), fzMode, configDest( inv ) );
+		else
+			newItems = myAdaptor.removeItems( itemToSend, whatToImport == null ? null : whatToImport.getItemStack(), configDest( inv ) );
+
 		if ( newItems != null )
 		{
 			newItems.stackSize = (int) (Math.min( newItems.stackSize, energy.extractAEPower( newItems.stackSize, Actionable.SIMULATE, PowerMultiplier.CONFIG ) ) + 0.01);
