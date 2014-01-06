@@ -39,6 +39,7 @@ public class AEItemDef
 		t.damageValue = damageValue;
 		t.dspDamage = dspDamage;
 		t.maxDamage = maxDamage;
+		t.tagCompound = tagCompound;
 		return t;
 	}
 
@@ -70,5 +71,11 @@ public class AEItemDef
 			return true;
 		}
 		return false;
+	}
+
+	public void reHash()
+	{
+		def = item.itemID << Platform.DEF_OFFSET | damageValue;
+		myHash = def ^ (tagCompound == null ? 0 : System.identityHashCode( tagCompound ));
 	}
 }

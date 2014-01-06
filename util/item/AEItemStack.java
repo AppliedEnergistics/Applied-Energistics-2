@@ -73,8 +73,6 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		 * Kinda Hacky
 		 */
 		def.damageValue = def.getDamageValueHack( is );
-		def.def = is.itemID << Platform.DEF_OFFSET | def.damageValue;
-
 		def.dspDamage = is.getItemDamageForDisplay();
 		def.maxDamage = is.getMaxDamage();
 
@@ -86,7 +84,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		setCraftable( false );
 		setCountRequestable( 0 );
 
-		def.myHash = def.def ^ (def.tagCompound == null ? 0 : System.identityHashCode( def.tagCompound ));
+		def.reHash();
 	}
 
 	public static AEItemStack create(Object a)
@@ -242,9 +240,6 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		int id = def.item.itemID - b.def.item.itemID;
 		int dv = def.damageValue - b.def.damageValue;
 		int dspv = def.dspDamage - b.def.dspDamage;
-
-		int dif = id == 0 ? (dv == 0 ? (dspv == 0 ? ((def.tagCompound == null ? 0 : def.tagCompound.hashCode()) - (b.def.tagCompound == null ? 0
-				: b.def.tagCompound.hashCode())) : dspv) : dv) : id;
 
 		return id == 0 ? (dv == 0 ? (dspv == 0 ? ((def.tagCompound == null ? 0 : def.tagCompound.hashCode()) - (b.def.tagCompound == null ? 0
 				: b.def.tagCompound.hashCode())) : dspv) : dv) : id;
@@ -476,42 +471,44 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	public IAEItemStack getLow(FuzzyMode fuzzy)
 	{
 		AEItemStack bottom = new AEItemStack( this );
-		bottom.def = bottom.def.copy();
+		AEItemDef newDef = bottom.def = bottom.def.copy();
 
 		if ( fuzzy == FuzzyMode.IGNORE_ALL )
 		{
-			bottom.def.dspDamage = 0;
+			newDef.dspDamage = 0;
 		}
 		else
 		{
 			int low = fuzzy.calculateBreakPoint( def.maxDamage );
-			bottom.def.dspDamage = low < def.dspDamage ? low : 0;
+			newDef.dspDamage = low < def.dspDamage ? low : 0;
 		}
 
-		if ( bottom.def.item.isDamageable() )
-			bottom.def.damageValue = bottom.def.dspDamage;
+		if ( newDef.item.isDamageable() )
+			newDef.damageValue = newDef.dspDamage;
 
+		newDef.reHash();
 		return bottom;
 	}
 
 	public IAEItemStack getHigh(FuzzyMode fuzzy)
 	{
 		AEItemStack top = new AEItemStack( this );
-		top.def = top.def.copy();
+		AEItemDef newDef = top.def = top.def.copy();
 
 		if ( fuzzy == FuzzyMode.IGNORE_ALL )
 		{
-			top.def.dspDamage = def.maxDamage + 1;
+			newDef.dspDamage = def.maxDamage + 1;
 		}
 		else
 		{
 			int high = fuzzy.calculateBreakPoint( def.maxDamage ) + 1;
-			top.def.dspDamage = high > def.dspDamage ? high : def.maxDamage + 1;
+			newDef.dspDamage = high > def.dspDamage ? high : def.maxDamage + 1;
 		}
 
-		if ( top.def.item.isDamageable() )
-			top.def.damageValue = top.def.dspDamage;
+		if ( newDef.item.isDamageable() )
+			newDef.damageValue = top.def.dspDamage;
 
+		newDef.reHash();
 		return top;
 	}
 

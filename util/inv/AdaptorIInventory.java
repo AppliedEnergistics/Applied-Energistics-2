@@ -128,6 +128,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 					if ( rv == null )
 					{
 						rv = is.copy();
+						filter = rv;
 						rv.stackSize = lhow_many;
 						how_many -= lhow_many;
 					}
