@@ -3,11 +3,13 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.tileentity.TileEntity;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IBusCommon;
+import appeng.api.parts.IPart;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.IOptionalSlotHost;
 import appeng.container.slot.OptionalSlotFake;
@@ -27,7 +29,7 @@ public class ContainerBus extends AEBaseContainer implements IOptionalSlotHost
 	IInventory toolbox = new AppEngInternalInventory( null, 9 );
 
 	public ContainerBus(InventoryPlayer ip, IBusCommon te) {
-		super( ip, null, te );
+		super( ip, (TileEntity) (te instanceof TileEntity ? te : null), (IPart) (te instanceof IPart ? te : null) );
 		myte = te;
 
 		IInventory upgrades = myte.getInventoryByName( "upgrades" );
@@ -66,7 +68,12 @@ public class ContainerBus extends AEBaseContainer implements IOptionalSlotHost
 			addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 8, x, y, 1, 1, 2 ) );
 		}
 
-		bindPlayerInventory( ip, 0, 184 - /* height of playerinventory */82 );
+		bindPlayerInventory( ip, 0, getHeight() - /* height of playerinventory */82 );
+	}
+
+	protected int getHeight()
+	{
+		return 184;
 	}
 
 	protected int availableUpgrades()

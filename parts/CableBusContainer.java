@@ -265,10 +265,15 @@ public class CableBusContainer implements AEMultiTile
 		}
 	}
 
-	public boolean canConnectRedstone(ForgeDirection side)
+	public boolean canConnectRedstone(EnumSet<ForgeDirection> enumSet)
 	{
-		IPart part = getPart( side );
-		return part != null && part.canConnectRedstone();
+		for (ForgeDirection dir : enumSet)
+		{
+			IPart part = getPart( dir );
+			if ( part != null && part.canConnectRedstone() )
+				return true;
+		}
+		return false;
 	}
 
 	@Override

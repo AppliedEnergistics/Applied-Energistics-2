@@ -15,6 +15,7 @@ import appeng.api.storage.IStorageMonitorable;
 import appeng.client.gui.GuiNull;
 import appeng.container.ContainerNull;
 import appeng.container.implementations.ContainerBus;
+import appeng.container.implementations.ContainerCellWorkBench;
 import appeng.container.implementations.ContainerChest;
 import appeng.container.implementations.ContainerCondenser;
 import appeng.container.implementations.ContainerDrive;
@@ -26,6 +27,7 @@ import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.helpers.IInterfaceHost;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.tile.grindstone.TileGrinder;
+import appeng.tile.misc.TileCellWorkbench;
 import appeng.tile.misc.TileCondenser;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.tile.storage.TileChest;
@@ -55,7 +57,9 @@ public enum GuiBridge implements IGuiHandler
 	GUI_BUS(ContainerBus.class, IBusCommon.class),
 
 	// extends (Container/Gui) + Bus
-	GUI_LEVELEMITTER(ContainerLevelEmitter.class, PartLevelEmitter.class);
+	GUI_LEVELEMITTER(ContainerLevelEmitter.class, PartLevelEmitter.class),
+
+	GUI_CELLWORKBENCH(ContainerCellWorkBench.class, TileCellWorkbench.class);
 
 	private Class Tile;
 	private Class Gui;

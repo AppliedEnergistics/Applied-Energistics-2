@@ -35,7 +35,7 @@ import appeng.block.misc.BlockCondenser;
 import appeng.block.misc.BlockInscriber;
 import appeng.block.misc.BlockInterface;
 import appeng.block.misc.BlockNetworkEmitter;
-import appeng.block.misc.BlockPartitionEditor;
+import appeng.block.misc.BlockCellWorkbench;
 import appeng.block.misc.BlockQuartzCrystalizer;
 import appeng.block.misc.BlockQuartzTorch;
 import appeng.block.misc.BlockTinyTNT;
@@ -228,7 +228,7 @@ public class Registration
 		blocks.blockDrive = addFeature( BlockDrive.class );
 		blocks.blockChest = addFeature( BlockChest.class );
 		blocks.blockInterface = addFeature( BlockInterface.class );
-		blocks.blockPartitioner = addFeature( BlockPartitionEditor.class );
+		blocks.blockPartitioner = addFeature( BlockCellWorkbench.class );
 		blocks.blockIOPort = addFeature( BlockIOPort.class );
 		blocks.blockCondenser = addFeature( BlockCondenser.class );
 		blocks.blockEnergyAcceptor = addFeature( BlockEnergyAcceptor.class );

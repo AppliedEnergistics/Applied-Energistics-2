@@ -7,7 +7,7 @@ public enum GuiText
 {
 	inventory("container"), // mc's default Inventory localization.
 
-	Chest, StoredEnergy, Of, Condenser, Drive, GrindStone, VibrationChamber, SpatialIOPort, NetworkStatus, LevelEmitter, Terminal, Interface, Config, StoredItems, Patterns, ImportBus, ExportBus;
+	Chest, StoredEnergy, Of, Condenser, Drive, GrindStone, VibrationChamber, SpatialIOPort, NetworkStatus, LevelEmitter, Terminal, Interface, Config, StoredItems, Patterns, ImportBus, ExportBus, CellWorkbench;
 
 	String root;
 

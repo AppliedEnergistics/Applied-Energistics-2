@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
-import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkEvent;
 import appeng.api.networking.events.MENetworkEventSubscribe;
