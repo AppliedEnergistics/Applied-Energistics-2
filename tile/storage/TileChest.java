@@ -42,7 +42,6 @@ import appeng.api.storage.MEMonitorHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.core.AELog;
 import appeng.helpers.AENoHandler;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
@@ -187,7 +186,6 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 			lastStateChange = worldObj.getTotalWorldTime();
 
-			AELog.info( "" + (state & 0x40) );
 			return (state & 0xDB6DB6DB) != (oldState & 0xDB6DB6DB) || oldType != storageType;
 		}
 

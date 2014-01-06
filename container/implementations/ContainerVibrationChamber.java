@@ -5,7 +5,6 @@ import net.minecraft.inventory.ICrafting;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
-import appeng.core.AELog;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
@@ -49,7 +48,6 @@ public class ContainerVibrationChamber extends AEBaseContainer
 
 				if ( this.burnSpeed != this.myte.burnSpeed )
 				{
-					AELog.info( "" + this.myte.burnSpeed );
 					icrafting.sendProgressBarUpdate( this, 1, this.myte.burnSpeed );
 				}
 			}

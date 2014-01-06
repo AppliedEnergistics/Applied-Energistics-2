@@ -19,7 +19,6 @@ import appeng.api.storage.IMEMonitorHandlerReciever;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.AELog;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.ItemSlot;
@@ -130,9 +129,6 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 	@Override
 	public IItemList<IAEItemStack> getStorageList()
 	{
-		for (IAEItemStack is : list)
-			AELog.info( "sl: " + is.getItemStack().getUnlocalizedName() + " @ " + is.getStackSize() );
-
 		return list;
 	}
 
