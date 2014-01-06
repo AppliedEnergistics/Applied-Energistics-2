@@ -722,6 +722,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		boolean useCovered = false;
+		boolean requireDetailed = false;
 
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 		{
@@ -735,6 +736,14 @@ public class PartCable extends AEBasePart implements IPartCable
 					useCovered = true;
 					break;
 				}
+			}
+			else if ( connections.contains( dir ) )
+			{
+				TileEntity te = this.tile.worldObj.getBlockTileEntity( x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ );
+				IPartHost ccph = te instanceof IPartHost ? (IPartHost) te : null;
+				IGridHost gh = te instanceof IGridHost ? (IGridHost) te : null;
+				if ( ccph == null && gh != null && gh.getCableConnectionType( dir ) != AECableType.GLASS )
+					requireDetailed = true;
 			}
 		}
 
@@ -784,7 +793,7 @@ public class PartCable extends AEBasePart implements IPartCable
 			}
 		}
 
-		if ( connections.size() != 2 || !nonLinear( connections ) || useCovered )
+		if ( connections.size() != 2 || !nonLinear( connections ) || useCovered || requireDetailed )
 		{
 			if ( useCovered )
 			{
