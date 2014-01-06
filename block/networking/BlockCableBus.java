@@ -157,31 +157,6 @@ public class BlockCableBus extends AEBaseBlock
 
 	}
 
-	private int rs(int side)
-	{
-		int s = 0;
-		switch (side)
-		{
-		case -1:
-			s = 1;
-			break;
-		case 1:
-			s = 2;
-			break;
-		case 2:
-			s = 5;
-			break;
-		case 3:
-			s = 3;
-			break;
-		case 4:
-			s = 4;
-			break;
-		default:
-		}
-		return s;
-	}
-
 	@Override
 	public boolean canProvidePower()
 	{
@@ -198,10 +173,6 @@ public class BlockCableBus extends AEBaseBlock
 	public void onNeighborBlockChange(World w, int x, int y, int z, int meh)
 	{
 		cb( w, x, y, z ).onNeighborChanged();
-		// kinda works
-		/*
-		 * if ( cb( w, x, y, z ).isEmpty() ) { w.setBlockToAir( x, y, z ); }
-		 */
 	}
 
 	@Override
@@ -225,19 +196,33 @@ public class BlockCableBus extends AEBaseBlock
 	@Override
 	public boolean canConnectRedstone(IBlockAccess w, int x, int y, int z, int side)
 	{
-		return cb( w, x, y, z ).canConnectRedstone( ForgeDirection.getOrientation( rs( side ) ) );
+		switch (side)
+		{
+		case -1:
+		case 4:
+			return cb( w, x, y, z ).canConnectRedstone( EnumSet.of( ForgeDirection.UP, ForgeDirection.DOWN ) );
+		case 0:
+			return cb( w, x, y, z ).canConnectRedstone( EnumSet.of( ForgeDirection.NORTH ) );
+		case 1:
+			return cb( w, x, y, z ).canConnectRedstone( EnumSet.of( ForgeDirection.EAST ) );
+		case 2:
+			return cb( w, x, y, z ).canConnectRedstone( EnumSet.of( ForgeDirection.SOUTH ) );
+		case 3:
+			return cb( w, x, y, z ).canConnectRedstone( EnumSet.of( ForgeDirection.WEST ) );
+		}
+		return false;
 	}
 
 	@Override
 	public int isProvidingWeakPower(IBlockAccess w, int x, int y, int z, int side)
 	{
-		return cb( w, x, y, z ).isProvidingWeakPower( ForgeDirection.getOrientation( side ) );
+		return cb( w, x, y, z ).isProvidingWeakPower( ForgeDirection.getOrientation( side ).getOpposite() );
 	}
 
 	@Override
 	public int isProvidingStrongPower(IBlockAccess w, int x, int y, int z, int side)
 	{
-		return cb( w, x, y, z ).isProvidingStrongPower( ForgeDirection.getOrientation( side ) );
+		return cb( w, x, y, z ).isProvidingStrongPower( ForgeDirection.getOrientation( side ).getOpposite() );
 	}
 
 	@Override

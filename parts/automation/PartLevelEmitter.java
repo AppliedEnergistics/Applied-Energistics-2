@@ -34,13 +34,11 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.client.texture.CableBusTextures;
-import appeng.core.AELog;
 import appeng.core.sync.GuiBridge;
 import appeng.me.GridAccessException;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
 
 public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHost, IMEMonitorHandlerReciever<IAEItemStack>
 {
@@ -96,8 +94,9 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 		{
 			host.markForUpdate();
 			TileEntity te = host.getTile();
-			te.worldObj.notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, 0 );
 			prevState = isLevelEmitterOn();
+			te.worldObj.notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, 0 );
+			te.worldObj.notifyBlocksOfNeighborChange( te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ, 0 );
 		}
 	}
 
@@ -206,13 +205,8 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 			lastReportedValue = 0;
 			FuzzyMode fzMode = (FuzzyMode) getConfigManager().getSetting( Settings.FUZZY_MODE );
 			Collection<IAEItemStack> fuzzyList = monitor.getStorageList().findFuzzy( myStack, fzMode );
-			AELog.info( "FuzzyMatches: " + fuzzyList.size() );
 			for (IAEItemStack st : fuzzyList)
-			{
-
-				AELog.info( "Matched: " + ((AEItemStack) st).getItemDamage() );
 				lastReportedValue += st.getStackSize();
-			}
 		}
 		else
 		{
@@ -488,6 +482,24 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 	public int cableConnectionRenderTo()
 	{
 		return 16;
+	}
+
+	@Override
+	public boolean canConnectRedstone()
+	{
+		return true;
+	}
+
+	@Override
+	public int isProvidingStrongPower()
+	{
+		return prevState ? 15 : 0;
+	}
+
+	@Override
+	public int isProvidingWeakPower()
+	{
+		return prevState ? 15 : 0;
 	}
 
 	@Override
