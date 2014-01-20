@@ -18,6 +18,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
@@ -25,14 +26,18 @@ import appeng.client.render.blocks.RendererCableBus;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
 import appeng.integration.abstraction.IFMP;
-import appeng.parts.CableBusContainer;
+import appeng.parts.ICableBusContainer;
+import appeng.parts.NullCableBusContainer;
 import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
 
 public class BlockCableBus extends AEBaseBlock
 {
+
+	static private ICableBusContainer nullCB = new NullCableBusContainer();
 
 	public BlockCableBus() {
 		super( BlockCableBus.class, Material.glass );
@@ -44,14 +49,7 @@ public class BlockCableBus extends AEBaseBlock
 	@Override
 	public boolean isLadder(World world, int x, int y, int z, EntityLivingBase entity)
 	{
-		try
-		{
-			return cb( world, x, y, z ).isLadder( entity );
-		}
-		catch (Throwable t)
-		{
-		}
-		return false;
+		return cb( world, x, y, z ).isLadder( entity );
 	}
 
 	@Override
@@ -70,18 +68,13 @@ public class BlockCableBus extends AEBaseBlock
 	@Override
 	public void randomDisplayTick(World world, int x, int y, int z, Random r)
 	{
-		CableBusContainer cb = cb( world, x, y, z );
-		if ( cb != null )
-			cb.randomDisplayTick( world, x, y, z, r );
+		cb( world, x, y, z ).randomDisplayTick( world, x, y, z, r );
 	}
 
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		CableBusContainer cb = cb( world, x, y, z );
-		if ( cb != null )
-			return cb.getLightValue();
-		return 0;
+		return cb( world, x, y, z ).getLightValue();
 	}
 
 	@Override
@@ -89,13 +82,12 @@ public class BlockCableBus extends AEBaseBlock
 	{
 		Vec3 v3 = target.hitVec.addVector( -x, -y, -z );
 		SelectedPart sp = cb( world, x, y, z ).selectPart( v3 );
-		if ( sp != null )
-		{
-			if ( sp.part != null )
-				return sp.part.getItemStack( false );
-			if ( sp.facade != null )
-				return sp.facade.getItemStack();
-		}
+
+		if ( sp.part != null )
+			return sp.part.getItemStack( PartItemStack.Break );
+		else if ( sp.facade != null )
+			return sp.facade.getItemStack();
+
 		return null;
 	}
 
@@ -130,19 +122,8 @@ public class BlockCableBus extends AEBaseBlock
 		Icon i = super.getIcon( direction, metadata );
 		if ( i != null )
 			return i;
+
 		return CableBusTextures.getMissing();
-	}
-
-	private CableBusContainer cb(IBlockAccess w, int x, int y, int z)
-	{
-		TileEntity te = w.getBlockTileEntity( x, y, z );
-		if ( te instanceof TileCableBus )
-			return ((TileCableBus) te).cb;
-
-		if ( AppEng.instance.isIntegrationEnabled( "FMP" ) )
-			return ((IFMP) AppEng.instance.getIntegration( "FMP" )).getCableContainer( te );
-
-		return null;
 	}
 
 	@Override
@@ -234,6 +215,19 @@ public class BlockCableBus extends AEBaseBlock
 	public void setupTile()
 	{
 		setTileEntiy( Api.instance.partHelper.getCombinedInstance( TileCableBus.class.getName() ) );
+		CommonHelper.proxy.bindTileEntitySpecialRenderer( getTileEntityClass(), this );
+	}
+
+	private ICableBusContainer cb(IBlockAccess w, int x, int y, int z)
+	{
+		TileEntity te = w.getBlockTileEntity( x, y, z );
+		if ( te instanceof TileCableBus )
+			return ((TileCableBus) te).cb;
+
+		if ( AppEng.instance.isIntegrationEnabled( "FMP" ) )
+			return ((IFMP) AppEng.instance.getIntegration( "FMP" )).getCableContainer( te );
+
+		return nullCB;
 	}
 
 }

@@ -12,16 +12,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
+import appeng.api.implementations.IItemGroup;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.core.Configuration;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
+import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemPart extends AEBaseItem implements IPartItem
+public class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 {
 
 	class PartTypeIst
@@ -99,7 +101,23 @@ public class ItemPart extends AEBaseItem implements IPartItem
 	@Override
 	public String getUnlocalizedName(ItemStack is)
 	{
+		return "item.appliedenergistics2." + getname( is );
+	}
+
+	public String getname(ItemStack is)
+	{
 		return AEFeatureHandler.getName( ItemPart.class, getTypeByStack( is ).name() );
+	}
+
+	@Override
+	public String getItemDisplayName(ItemStack is)
+	{
+		Enum[] varients = getTypeByStack( is ).getVarients();
+
+		if ( varients != null )
+			return super.getItemDisplayName( is ) + " - " + varients[dmgToPart.get( is.getItemDamage() ).varient].toString();
+
+		return super.getItemDisplayName( is );
 	}
 
 	@Override
@@ -107,7 +125,7 @@ public class ItemPart extends AEBaseItem implements IPartItem
 	{
 		for (Entry<Integer, PartTypeIst> part : dmgToPart.entrySet())
 		{
-			String tex = "appliedenergistics2:" + getUnlocalizedName( new ItemStack( this, 1, part.getKey() ) );
+			String tex = "appliedenergistics2:" + getname( new ItemStack( this, 1, part.getKey() ) );
 			part.getValue().ico = par1IconRegister.registerIcon( tex );
 		}
 	}
@@ -143,6 +161,19 @@ public class ItemPart extends AEBaseItem implements IPartItem
 	public int varientOf(int itemDamage)
 	{
 		return dmgToPart.get( itemDamage ).varient;
+	}
+
+	@Override
+	public String getUnlocalizedGroupName(ItemStack is)
+	{
+		switch (getTypeByStack( is ))
+		{
+		case ImportBus:
+		case ExportBus:
+			return GuiText.IOBuses.getUnlocalized();
+		default:
+		}
+		return null;
 	}
 
 }

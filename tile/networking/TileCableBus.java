@@ -15,6 +15,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import powercrystals.minefactoryreloaded.api.rednet.RedNetConnectionType;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IPart;
@@ -29,6 +30,7 @@ import appeng.parts.CableBusContainer;
 import appeng.tile.AEBaseTile;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
+import cpw.mods.fml.common.Optional.Method;
 
 public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomCollision
 {
@@ -251,5 +253,42 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	public boolean hasRedstone(ForgeDirection side)
 	{
 		return cb.hasRedstone( side );
+	}
+
+	@Override
+	@Method(modid = "MineFactoryReloaded")
+	public RedNetConnectionType getConnectionType(World world, int x, int y, int z, ForgeDirection side)
+	{
+		return cb.canConnectRedstone( EnumSet.of( side ) ) ? RedNetConnectionType.CableSingle : RedNetConnectionType.None;
+	}
+
+	@Override
+	@Method(modid = "MineFactoryReloaded")
+	public int[] getOutputValues(World world, int x, int y, int z, ForgeDirection side)
+	{
+		// never called!
+		return null;
+	}
+
+	@Override
+	@Method(modid = "MineFactoryReloaded")
+	public int getOutputValue(World world, int x, int y, int z, ForgeDirection side, int subnet)
+	{
+		// never called!
+		return 0;
+	}
+
+	@Override
+	@Method(modid = "MineFactoryReloaded")
+	public void onInputsChanged(World world, int x, int y, int z, ForgeDirection side, int[] inputValues)
+	{
+		// never called!
+	}
+
+	@Override
+	@Method(modid = "MineFactoryReloaded")
+	public void onInputChanged(World world, int x, int y, int z, ForgeDirection side, int inputValue)
+	{
+		// never called!
 	}
 }

@@ -152,12 +152,6 @@ public class Grid implements IGrid
 	}
 
 	@Override
-	public boolean isReady()
-	{
-		return true;
-	}
-
-	@Override
 	public IReadOnlyCollection<IGridNode> getNodes()
 	{
 		return new NodeIteratable( Machines );

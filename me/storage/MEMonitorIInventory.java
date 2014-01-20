@@ -78,7 +78,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 	}
 
 	@Override
-	public IAEItemStack injectItems(IAEItemStack input, Actionable type)
+	public IAEItemStack injectItems(IAEItemStack input, Actionable type, BaseActionSource src)
 	{
 		ItemStack out = null;
 
@@ -142,7 +142,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 	}
 
 	@Override
-	public IAEItemStack extractItems(IAEItemStack request, Actionable type)
+	public IAEItemStack extractItems(IAEItemStack request, Actionable type, BaseActionSource src)
 	{
 		ItemStack out = null;
 

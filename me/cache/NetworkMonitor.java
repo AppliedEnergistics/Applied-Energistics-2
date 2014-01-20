@@ -33,19 +33,6 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 
 	final static public LinkedList depth = new LinkedList();
 
-	private BaseActionSource src;
-
-	public void setSource(BaseActionSource src)
-	{
-		this.src = src;
-	}
-
-	@Override
-	protected BaseActionSource getSource()
-	{
-		return src;
-	}
-
 	@Override
 	protected void postChange(T diff, BaseActionSource src)
 	{
@@ -86,7 +73,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 		if ( sendEvent )
 		{
 			sendEvent = false;
-			myGridCache.myGrid.postEvent( new MENetworkStorageEvent( getStorageList(), myChannel ) );
+			myGridCache.myGrid.postEvent( new MENetworkStorageEvent( this, myChannel ) );
 		}
 	}
 

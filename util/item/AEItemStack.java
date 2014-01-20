@@ -78,7 +78,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 		NBTTagCompound tagCompound = is.getTagCompound();
 		if ( tagCompound != null )
-			def.tagCompound = (IAETagCompound) AESharedNBT.getSharedTagCompound( tagCompound, is );
+			def.tagCompound = (AESharedNBT) AESharedNBT.getSharedTagCompound( tagCompound, is );
 
 		stackSize = is.stackSize;
 		setCraftable( false );
@@ -241,8 +241,8 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		int dv = def.damageValue - b.def.damageValue;
 		int dspv = def.dspDamage - b.def.dspDamage;
 
-		return id == 0 ? (dv == 0 ? (dspv == 0 ? ((def.tagCompound == null ? 0 : def.tagCompound.hashCode()) - (b.def.tagCompound == null ? 0
-				: b.def.tagCompound.hashCode())) : dspv) : dv) : id;
+		return id == 0 ? (dv == 0 ? (dspv == 0 ? ((def.tagCompound == null ? 0 : def.tagCompound.getHash()) - (b.def.tagCompound == null ? 0
+				: b.def.tagCompound.getHash())) : dspv) : dv) : id;
 	}
 
 	@SideOnly(Side.CLIENT)

@@ -111,7 +111,7 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 		bch.addBox( 6, 6, 11, 10, 10, 12 );
 	}
 
-	int itemToSend = 1;
+	long itemToSend = 1;
 	boolean didSomething = false;
 
 	@Override
@@ -139,8 +139,6 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 			itemToSend = 96;
 			break;
 		}
-
-		boolean didSomething = false;
 
 		try
 		{
@@ -183,10 +181,10 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 	private void pushItemIntoTarget(InventoryAdaptor d, IEnergyGrid energy, FuzzyMode fzMode, IMEInventory<IAEItemStack> inv, IAEItemStack ais)
 	{
 		ItemStack is = ais.getItemStack();
-		is.stackSize = itemToSend;
+		is.stackSize = (int) itemToSend;
 
 		ItemStack o = d.simulateAdd( is );
-		int canFit = o == null ? itemToSend : itemToSend - o.stackSize;
+		long canFit = o == null ? itemToSend : itemToSend - o.stackSize;
 
 		if ( canFit > 0 )
 		{
@@ -202,7 +200,7 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 				if ( failed != null )
 				{
 					ais.setStackSize( failed.stackSize );
-					inv.injectItems( ais, Actionable.MODULATE );
+					inv.injectItems( ais, Actionable.MODULATE, mySrc );
 				}
 				else
 					didSomething = true;

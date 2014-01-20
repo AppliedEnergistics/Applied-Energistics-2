@@ -4,6 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 import appeng.api.config.Actionable;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -28,7 +29,7 @@ public class MFRDSU implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack injectItems(IAEItemStack input, Actionable mode)
+	public IAEItemStack injectItems(IAEItemStack input, Actionable mode, BaseActionSource src)
 	{
 		ItemStack is = dsu.getStoredItemType();
 		if ( is != null )
@@ -66,7 +67,7 @@ public class MFRDSU implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack extractItems(IAEItemStack request, Actionable mode)
+	public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src)
 	{
 		ItemStack is = dsu.getStoredItemType();
 		if ( request.equals( is ) )

@@ -22,6 +22,11 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 	public SharedSearchObject sso;
 	private IItemComparison comp;
 
+	public int getHash()
+	{
+		return hash;
+	}
+
 	@Override
 	public IItemComparison getSpecialComparison()
 	{

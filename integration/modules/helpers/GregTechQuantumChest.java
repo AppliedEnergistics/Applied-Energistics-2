@@ -4,6 +4,7 @@ import gregtechmod.api.interfaces.IDigitalChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import appeng.api.config.Actionable;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.storage.MEIInventoryWrapper;
@@ -29,7 +30,7 @@ public class GregTechQuantumChest extends MEIInventoryWrapper
 	}
 
 	@Override
-	public IAEItemStack injectItems(IAEItemStack input, Actionable mode)
+	public IAEItemStack injectItems(IAEItemStack input, Actionable mode, BaseActionSource src)
 	{
 		ItemStack type = getType();
 		if ( input.hasTagCompound() )
@@ -52,7 +53,7 @@ public class GregTechQuantumChest extends MEIInventoryWrapper
 					if ( mode == Actionable.MODULATE )
 						qc.setItemCount( type.stackSize + room );
 
-					return super.injectItems( is, mode );
+					return super.injectItems( is, mode, src );
 				}
 
 				if ( mode == Actionable.MODULATE )
@@ -61,14 +62,14 @@ public class GregTechQuantumChest extends MEIInventoryWrapper
 				return null;
 			}
 
-			return super.injectItems( input, mode );
+			return super.injectItems( input, mode, src );
 		}
 
 		return input;
 	}
 
 	@Override
-	public IAEItemStack extractItems(IAEItemStack i, Actionable mode)
+	public IAEItemStack extractItems(IAEItemStack i, Actionable mode, BaseActionSource src)
 	{
 		ItemStack type = getType();
 		if ( type != null )
@@ -85,7 +86,7 @@ public class GregTechQuantumChest extends MEIInventoryWrapper
 				}
 			}
 		}
-		return super.extractItems( i, mode );
+		return super.extractItems( i, mode, src );
 	}
 
 	@Override

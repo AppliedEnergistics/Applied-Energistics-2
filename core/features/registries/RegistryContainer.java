@@ -2,6 +2,7 @@ package appeng.core.features.registries;
 
 import appeng.api.features.IGrinderRegistry;
 import appeng.api.features.ILocateableRegistry;
+import appeng.api.features.IMatterCannonAmmoRegistry;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.features.ISpecialComparisonRegistry;
@@ -23,6 +24,7 @@ public class RegistryContainer implements IRegistryContainer
 	private GridCacheRegistry GridCacheRegistry = new GridCacheRegistry();
 	private P2PTunnelRegistry P2PRegistry = new P2PTunnelRegistry();
 	private MovableTileRegistry MoveableReg = new MovableTileRegistry();
+	private MatterCannonAmmoRegistry matterCannonReg = new MatterCannonAmmoRegistry();
 
 	@Override
 	public IWirelessTermRegistery wireless()
@@ -76,6 +78,12 @@ public class RegistryContainer implements IRegistryContainer
 	public IP2PTunnelRegistry p2pTunnel()
 	{
 		return P2PRegistry;
+	}
+
+	@Override
+	public IMatterCannonAmmoRegistry matterCannon()
+	{
+		return matterCannonReg;
 	}
 
 }

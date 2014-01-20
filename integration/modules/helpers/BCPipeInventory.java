@@ -3,6 +3,7 @@ package appeng.integration.modules.helpers;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.config.Actionable;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -27,7 +28,7 @@ public class BCPipeInventory implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack injectItems(IAEItemStack input, Actionable mode)
+	public IAEItemStack injectItems(IAEItemStack input, Actionable mode, BaseActionSource src)
 	{
 		if ( mode == Actionable.SIMULATE )
 		{
@@ -42,7 +43,7 @@ public class BCPipeInventory implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack extractItems(IAEItemStack request, Actionable mode)
+	public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src)
 	{
 		return null;
 	}

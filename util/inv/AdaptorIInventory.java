@@ -71,7 +71,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 
 				if ( rv != null )
 				{
-					i.onInventoryChanged();
+					// i.onInventoryChanged();
 					return rv;
 				}
 			}
@@ -150,8 +150,8 @@ public class AdaptorIInventory extends InventoryAdaptor
 			}
 		}
 
-		if ( rv != null )
-			i.onInventoryChanged();
+		// if ( rv != null )
+		// i.onInventoryChanged();
 
 		return rv;
 	}
@@ -226,7 +226,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 
 						if ( left.stackSize <= 0 )
 						{
-							i.onInventoryChanged();
+							// i.onInventoryChanged();
 							return null;
 						}
 					}
@@ -247,7 +247,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 								left.stackSize -= used;
 								if ( left.stackSize <= 0 )
 								{
-									i.onInventoryChanged();
+									// i.onInventoryChanged();
 									return null;
 								}
 							}
@@ -257,8 +257,8 @@ public class AdaptorIInventory extends InventoryAdaptor
 			}
 		}
 
-		if ( left.stackSize != A.stackSize )
-			i.onInventoryChanged();
+		// if ( left.stackSize != A.stackSize )
+		// i.onInventoryChanged();
 
 		return left;
 	}

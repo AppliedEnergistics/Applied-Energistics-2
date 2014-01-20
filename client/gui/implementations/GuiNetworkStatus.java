@@ -24,7 +24,7 @@ public class GuiNetworkStatus extends AEBaseGui
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRenderer.drawString( GuiText.NetworkStatus.getLocal(), 8, 6, 4210752 );
+		fontRenderer.drawString( GuiText.NetworkDetails.getLocal(), 8, 6, 4210752 );
 		fontRenderer.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
 	}
 

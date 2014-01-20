@@ -4,6 +4,7 @@ import net.mcft.copy.betterstorage.api.ICrateStorage;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.config.Actionable;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -28,7 +29,7 @@ public class BSCrate implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack injectItems(IAEItemStack input, Actionable mode)
+	public IAEItemStack injectItems(IAEItemStack input, Actionable mode, BaseActionSource src)
 	{
 		if ( mode == Actionable.SIMULATE )
 			return null;
@@ -41,7 +42,7 @@ public class BSCrate implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack extractItems(IAEItemStack request, Actionable mode)
+	public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src)
 	{
 		if ( mode == Actionable.SIMULATE )
 		{

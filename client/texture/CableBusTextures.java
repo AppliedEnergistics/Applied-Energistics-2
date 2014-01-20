@@ -50,6 +50,11 @@ public enum CableBusTextures
 			"MECable_Purple"), MECable_Red("MECable_Red"), MECable_White("MECable_White"), MECable_Yellow("MECable_Yellow"), MECable_Black("MECable_Black"), MECable_Blue(
 			"MECable_Blue"), MECable_Brown("MECable_Brown"), MECable_Cyan("MECable_Cyan"),
 
+	MEDense_Black("MEDense_Black"), MEDense_Blue("MEDense_Blue"), MEDense_Brown("MEDense_Brown"), MEDense_Cyan("MEDense_Cyan"), MEDense_Gray("MEDense_Gray"), MEDense_Green(
+			"MEDense_Green"), MEDense_LightBlue("MEDense_LightBlue"), MEDense_LightGrey("MEDense_LightGrey"), MEDense_Lime("MEDense_Lime"), MEDense_Magenta(
+			"MEDense_Magenta"), MEDense_Orange("MEDense_Orange"), MEDense_Pink("MEDense_Pink"), MEDense_Purple("MEDense_Purple"), MEDense_Red("MEDense_Red"), MEDense_White(
+			"MEDense_White"), MEDense_Yellow("MEDense_Yellow"),
+
 	MESmart_Black("MESmart_Black"), MESmart_Blue("MESmart_Blue"), MESmart_Brown("MESmart_Brown"), MESmart_Cyan("MESmart_Cyan"), MESmart_Gray("MESmart_Gray"), MESmart_Green(
 			"MESmart_Green"), MESmart_LightBlue("MESmart_LightBlue"), MESmart_LightGrey("MESmart_LightGrey"), MESmart_Lime("MESmart_Lime"), MESmart_Magenta(
 			"MESmart_Magenta"), MESmart_Orange("MESmart_Orange"), MESmart_Pink("MESmart_Pink"), MESmart_Purple("MESmart_Purple"), MESmart_Red("MESmart_Red"), MESmart_White(

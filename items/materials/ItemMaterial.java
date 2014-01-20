@@ -1,24 +1,33 @@
 package appeng.items.materials;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.config.Upgrades;
+import appeng.api.implementations.IItemGroup;
 import appeng.api.implementations.IStorageComponent;
 import appeng.api.implementations.IUpgradeModule;
 import appeng.core.Configuration;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
 import appeng.items.AEBaseItem;
+import appeng.util.Platform;
 
 public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule
 {
@@ -28,6 +37,75 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 	public ItemMaterial() {
 		super( ItemMaterial.class );
 		setfeature( EnumSet.of( AEFeature.Core ) );
+		setHasSubtypes( true );
+	}
+
+	class SlightlyBetterSort implements Comparator<String>
+	{
+
+		Pattern p;
+
+		public SlightlyBetterSort(Pattern p) {
+			this.p = p;
+		}
+
+		@Override
+		public int compare(String o1, String o2)
+		{
+			try
+			{
+				Matcher a = p.matcher( o1 );
+				Matcher b = p.matcher( o2 );
+				if ( a.find() && b.find() )
+				{
+					int ia = Integer.parseInt( a.group( 1 ) );
+					int ib = Integer.parseInt( b.group( 1 ) );
+					return Integer.compare( ia, ib );
+				}
+			}
+			catch (Throwable t)
+			{
+				// ek!
+			}
+			return o1.compareTo( o2 );
+		}
+	}
+
+	@Override
+	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
+	{
+		super.addInformation( par1ItemStack, par2EntityPlayer, par3List, par4 );
+
+		Upgrades u = getType( par1ItemStack );
+		if ( u != null )
+		{
+			List<String> textList = new LinkedList();
+			for (Entry<ItemStack, Integer> j : u.getSupported().entrySet())
+			{
+				String name = null;
+
+				int limit = j.getValue();
+
+				if ( j.getKey().getItem() instanceof IItemGroup )
+				{
+					IItemGroup ig = (IItemGroup) j.getKey().getItem();
+					String str = ig.getUnlocalizedGroupName( j.getKey() );
+					if ( str != null )
+						name = Platform.gui_localize( str ) + (limit > 1 ? " (" + limit + ")" : "");
+				}
+
+				if ( name == null )
+					name = j.getKey().getDisplayName() + (limit > 1 ? " (" + limit + ")" : "");
+
+				if ( !textList.contains( name ) )
+					textList.add( name );
+			}
+
+			Pattern p = Pattern.compile( "(\\d+)[^\\d]" );
+			SlightlyBetterSort s = new SlightlyBetterSort( p );
+			Collections.sort( textList, s );
+			par3List.addAll( textList );
+		}
 	}
 
 	public ItemStack createMaterial(MaterialType mat)
@@ -72,21 +150,26 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 		return dmgToMaterial.get( dmg ).icon;
 	}
 
-	@Override
-	public String getUnlocalizedName(ItemStack is)
+	private String nameOf(ItemStack is)
 	{
 		return AEFeatureHandler.getName( ItemMaterial.class, getTypeByStack( is ).name() );
 	}
 
 	@Override
-	public void registerIcons(IconRegister par1IconRegister)
+	public String getUnlocalizedName(ItemStack is)
+	{
+		return "item.appliedenergistics2." + nameOf( is );
+	}
+
+	@Override
+	public void registerIcons(IconRegister icoRegister)
 	{
 		for (MaterialType mat : MaterialType.values())
 		{
 			if ( mat.damageValue != -1 )
 			{
-				String tex = "appliedenergistics2:" + getUnlocalizedName( new ItemStack( this, 1, mat.damageValue ) );
-				mat.icon = par1IconRegister.registerIcon( tex );
+				String tex = "appliedenergistics2:" + nameOf( new ItemStack( this, 1, mat.damageValue ) );
+				mat.icon = icoRegister.registerIcon( tex );
 			}
 		}
 	}
@@ -169,6 +252,8 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 			return Upgrades.REDSTONE;
 		case CardSpeed:
 			return Upgrades.SPEED;
+		case CardInverter:
+			return Upgrades.INVERTER;
 		default:
 			return null;
 		}

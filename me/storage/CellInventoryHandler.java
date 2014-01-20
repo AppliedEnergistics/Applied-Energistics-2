@@ -1,9 +1,20 @@
 package appeng.me.storage;
 
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.IncludeExclude;
+import appeng.api.config.Upgrades;
+import appeng.api.implementations.IUpgradeModule;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
+import appeng.util.item.AEItemStack;
+import appeng.util.item.ItemList;
+import appeng.util.prioitylist.FuzzyPriorityList;
+import appeng.util.prioitylist.PrecisePriorityList;
 
 public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack>
 {
@@ -15,11 +26,67 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack>
 
 	public CellInventory getCellInv()
 	{
-		return (CellInventory) (this.internal instanceof CellInventory ? this.internal : null);
+		Object o = this.internal;
+
+		if ( o instanceof MEPassthru )
+			o = ((MEPassthru) o).getInternal();
+
+		return (CellInventory) (o instanceof CellInventory ? o : null);
 	}
 
 	CellInventoryHandler(IMEInventory c) {
 		super( c );
-	}
 
+		CellInventory ci = getCellInv();
+		if ( ci != null )
+		{
+			IItemList priorityList = new ItemList();
+
+			IInventory upgrades = ci.getUpgradesInventory();
+			IInventory config = ci.getConfigInventory();
+			FuzzyMode fzMode = ci.getFuzzyMode();
+
+			boolean hasInverter = false;
+			boolean hasFuzzy = false;
+
+			for (int x = 0; x < upgrades.getSizeInventory(); x++)
+			{
+				ItemStack is = upgrades.getStackInSlot( x );
+				if ( is != null && is.getItem() instanceof IUpgradeModule )
+				{
+					Upgrades u = ((IUpgradeModule) is.getItem()).getType( is );
+					if ( u != null )
+					{
+						switch (u)
+						{
+						case FUZZY:
+							hasFuzzy = true;
+							break;
+						case INVERTER:
+							hasInverter = true;
+							break;
+						default:
+						}
+					}
+				}
+			}
+
+			for (int x = 0; x < config.getSizeInventory(); x++)
+			{
+				ItemStack is = config.getStackInSlot( x );
+				if ( is != null )
+					priorityList.add( AEItemStack.create( is ) );
+			}
+
+			myWhitelist = hasInverter ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST;
+
+			if ( !priorityList.isEmpty() )
+			{
+				if ( hasFuzzy )
+					myPartitionList = new FuzzyPriorityList<IAEItemStack>( priorityList, fzMode );
+				else
+					myPartitionList = new PrecisePriorityList<IAEItemStack>( priorityList );
+			}
+		}
+	}
 }

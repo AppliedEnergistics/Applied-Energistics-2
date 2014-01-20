@@ -1,7 +1,9 @@
 package appeng.parts.automation;
 
+import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.config.Upgrades;
@@ -14,18 +16,21 @@ import appeng.util.Platform;
 public class UpgradeInventory extends AppEngInternalInventory implements IAEAppEngInventory
 {
 
+	private final Object itemorblock;
+	private final IAEAppEngInventory parent;
+
 	private boolean cached = false;
 	private int FuzzyUpgrades = 0;
 	private int SpeedUpgrades = 0;
 	private int RedstoneUpgrades = 0;
 	private int CapacityUpgrades = 0;
+	private int InverterUpgrades = 0;
 
-	IAEAppEngInventory parent;
-
-	public UpgradeInventory(IAEAppEngInventory _te, int s) {
+	public UpgradeInventory(Object itemOrBlock, IAEAppEngInventory _te, int s) {
 		super( null, s );
 		te = this;
 		parent = _te;
+		itemorblock = itemOrBlock;
 	}
 
 	@Override
@@ -51,16 +56,45 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 			Upgrades u = ((IUpgradeModule) it).getType( itemstack );
 			if ( u != null )
 			{
-				return getInstalledUpgrades( u ) < u.maxInstalled;
+				return getInstalledUpgrades( u ) < getMaxInstalled( u );
 			}
 		}
 		return false;
 	}
 
+	private int getMaxInstalled(Upgrades u)
+	{
+		Integer max = null;
+
+		for (ItemStack is : u.getSupported().keySet())
+		{
+			if ( is.getItem() == itemorblock )
+			{
+				max = u.getSupported().get( is );
+				break;
+			}
+			else if ( is.getItem() instanceof ItemBlock && Block.blocksList[((ItemBlock) is.getItem()).getBlockID()] == itemorblock )
+			{
+				max = u.getSupported().get( is );
+				break;
+			}
+		}
+
+		if ( max == null )
+			return 0;
+		return max;
+	}
+
+	@Override
+	public int getInventoryStackLimit()
+	{
+		return 1;
+	}
+
 	private void updateUpgradeInfo()
 	{
 		cached = true;
-		CapacityUpgrades = RedstoneUpgrades = SpeedUpgrades = FuzzyUpgrades = 0;
+		InverterUpgrades = CapacityUpgrades = RedstoneUpgrades = SpeedUpgrades = FuzzyUpgrades = 0;
 
 		for (ItemStack is : this)
 		{
@@ -82,15 +116,19 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 			case SPEED:
 				SpeedUpgrades++;
 				break;
+			case INVERTER:
+				InverterUpgrades++;
+				break;
 			default:
 				break;
 			}
 		}
 
-		CapacityUpgrades = Math.min( CapacityUpgrades, Upgrades.CAPACITY.maxInstalled );
-		FuzzyUpgrades = Math.min( FuzzyUpgrades, Upgrades.FUZZY.maxInstalled );
-		RedstoneUpgrades = Math.min( RedstoneUpgrades, Upgrades.REDSTONE.maxInstalled );
-		SpeedUpgrades = Math.min( SpeedUpgrades, Upgrades.SPEED.maxInstalled );
+		CapacityUpgrades = Math.min( CapacityUpgrades, getMaxInstalled( Upgrades.CAPACITY ) );
+		FuzzyUpgrades = Math.min( FuzzyUpgrades, getMaxInstalled( Upgrades.FUZZY ) );
+		RedstoneUpgrades = Math.min( RedstoneUpgrades, getMaxInstalled( Upgrades.REDSTONE ) );
+		SpeedUpgrades = Math.min( SpeedUpgrades, getMaxInstalled( Upgrades.SPEED ) );
+		InverterUpgrades = Math.min( InverterUpgrades, getMaxInstalled( Upgrades.INVERTER ) );
 	}
 
 	public int getInstalledUpgrades(Upgrades u)
@@ -108,6 +146,8 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 			return RedstoneUpgrades;
 		case SPEED:
 			return SpeedUpgrades;
+		case INVERTER:
+			return InverterUpgrades;
 		default:
 			return 0;
 		}

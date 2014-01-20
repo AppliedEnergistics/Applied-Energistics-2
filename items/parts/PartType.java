@@ -13,13 +13,19 @@ import appeng.parts.automation.PartLevelEmitter;
 import appeng.parts.misc.PartCableAnchor;
 import appeng.parts.misc.PartInterface;
 import appeng.parts.misc.PartInvertedToggleBus;
-import appeng.parts.misc.PartP2PTunnel;
 import appeng.parts.misc.PartStorageBus;
 import appeng.parts.misc.PartToggleBus;
 import appeng.parts.networking.PartCableCovered;
 import appeng.parts.networking.PartCableGlass;
 import appeng.parts.networking.PartCableSmart;
+import appeng.parts.networking.PartDenseCable;
 import appeng.parts.networking.PartQuartzFiber;
+import appeng.parts.p2p.PartP2PBCPower;
+import appeng.parts.p2p.PartP2PIC2Power;
+import appeng.parts.p2p.PartP2PItems;
+import appeng.parts.p2p.PartP2PLiquids;
+import appeng.parts.p2p.PartP2PRedstone;
+import appeng.parts.p2p.PartP2PTunnelME;
 import appeng.parts.reporting.PartConversionMonitor;
 import appeng.parts.reporting.PartCraftingMonitor;
 import appeng.parts.reporting.PartCraftingTerminal;
@@ -37,6 +43,8 @@ public enum PartType
 	InvertedToggleBus(AEFeature.Core, PartInvertedToggleBus.class),
 
 	CableSmart(AEFeature.Core, PartCableSmart.class), CableCovered(AEFeature.Core, PartCableCovered.class), CableGlass(AEFeature.Core, PartCableGlass.class),
+
+	CableDense(AEFeature.DenseCables, PartDenseCable.class),
 
 	CableAnchor(AEFeature.Core, PartCableAnchor.class),
 
@@ -60,7 +68,17 @@ public enum PartType
 
 	FormationPlane(AEFeature.FormationPlane, PartFormationPlane.class),
 
-	P2PTunnel(AEFeature.P2PTunnel, PartP2PTunnel.class),
+	P2PTunnelME(AEFeature.P2PTunnelME, PartP2PTunnelME.class),
+
+	P2PTunnelRedstone(AEFeature.P2PTunnelRedstone, PartP2PRedstone.class),
+
+	P2PTunnelItems(AEFeature.P2PTunnelItems, PartP2PItems.class),
+
+	P2PTunnelLiquids(AEFeature.P2PTunnelLiquids, PartP2PLiquids.class),
+
+	P2PTunnelMJ(AEFeature.P2PTunnelMJ, PartP2PBCPower.class),
+
+	P2PTunnelEU(AEFeature.P2PTunnelEU, PartP2PIC2Power.class),
 
 	CraftingMonitor(AEFeature.Crafting, PartCraftingMonitor.class),
 
@@ -86,7 +104,7 @@ public enum PartType
 
 	public Enum[] getVarients()
 	{
-		return (this == CableSmart || this == CableCovered || this == CableGlass) ? AEColor.values() : null;
+		return (this == CableSmart || this == CableCovered || this == CableGlass || this == CableDense) ? AEColor.values() : null;
 	}
 
 	public EnumSet<AEFeature> getFeature()

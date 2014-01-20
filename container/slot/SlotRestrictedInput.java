@@ -12,6 +12,7 @@ import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.implementations.ISpatialStorageCell;
 import appeng.api.implementations.IStorageComponent;
 import appeng.api.implementations.IUpgradeModule;
+import appeng.api.storage.ICellWorkbenchItem;
 import appeng.util.Platform;
 
 public class SlotRestrictedInput extends AppEngSlot
@@ -21,7 +22,7 @@ public class SlotRestrictedInput extends AppEngSlot
 	{
 		STORAGE_CELLS(15), ORE(1 * 16 + 15), STORAGE_COMPONENT(3 * 16 + 15), WIRELESS_TERMINAL(4 * 16 + 15), TRASH(5 * 16 + 15), VALID_ENCODED_PATTERN_W_OUPUT(
 				7 * 16 + 15), ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15), ENCODED_PATTERN(7 * 16 + 15), BLANK_PATTERN(8 * 16 + 15), POWERED_TOOL(9 * 16 + 15), RANGE_BOOSTER(
-				6 * 16 + 15), QE_SINGULARTIY(10 * 16 + 15), SPATIAL_STORAGE_CELLS(11 * 16 + 15), FUEL(12 * 16 + 15), UPGRADES(13 * 16 + 15);
+				6 * 16 + 15), QE_SINGULARTIY(10 * 16 + 15), SPATIAL_STORAGE_CELLS(11 * 16 + 15), FUEL(12 * 16 + 15), UPGRADES(13 * 16 + 15), WORKBENCH_CELL(15);
 
 		public final int icon;
 
@@ -126,6 +127,8 @@ public class SlotRestrictedInput extends AppEngSlot
 			return i.getItem() instanceof ISpatialStorageCell && ((ISpatialStorageCell) i.getItem()).isSpatialStorage( i );
 		case STORAGE_CELLS:
 			return AEApi.instance().registries().cell().isCellHandled( i );
+		case WORKBENCH_CELL:
+			return i != null && i.getItem() instanceof ICellWorkbenchItem && ((ICellWorkbenchItem) i.getItem()).isEditable( i );
 		case STORAGE_COMPONENT:
 			boolean isComp = i.getItem() instanceof IStorageComponent && ((IStorageComponent) i.getItem()).isStorageComponent( i );
 			return isComp;

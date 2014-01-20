@@ -6,11 +6,11 @@ import net.minecraft.inventory.ICrafting;
 import appeng.api.config.CondenserOuput;
 import appeng.api.config.Settings;
 import appeng.container.AEBaseContainer;
+import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.tile.misc.TileCondenser;
 import appeng.util.Platform;
-import buildcraft.core.gui.slots.SlotOutput;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -24,7 +24,7 @@ public class ContainerCondenser extends AEBaseContainer
 		myte = te;
 
 		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.TRASH, te, 0, 51, 52 ) );
-		addSlotToContainer( new SlotOutput( te, 1, 105, 52 ) );
+		addSlotToContainer( new SlotOutput( te, 1, 105, 52, 15 + 16 * 8 ) );
 		addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.STORAGE_COMPONENT, te.getInternalInventory(), 2, 101, 26 )).setStackLimit( 1 ) );
 
 		bindPlayerInventory( ip, 0, 197 - /* height of playerinventory */82 );

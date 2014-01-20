@@ -56,24 +56,24 @@ public class QuantumCalculator extends MBCalculator
 				{
 					TileQuantumBridge te = (TileQuantumBridge) w.getBlockTileEntity( x, y, z );
 
-					byte Fish = 0;
+					byte flags = 0;
 
 					num++;
 					if ( num == 5 )
 					{
-						Fish = (byte) (num);
+						flags = (byte) (num);
 						c.setCenter( te );
 					}
 					else
 					{
 						if ( num == 1 || num == 3 || num == 7 || num == 9 )
-							Fish = (byte) (tqb.corner | num);
+							flags = (byte) (tqb.corner | num);
 						else
-							Fish = (byte) (num);
+							flags = (byte) (num);
 						c.Ring[ringNum++] = te;
 					}
 
-					te.updateStatus( c, Fish );
+					te.updateStatus( c, flags );
 				}
 			}
 		}
@@ -112,12 +112,12 @@ public class QuantumCalculator extends MBCalculator
 					num++;
 					if ( num == 5 )
 					{
-						if ( Platform.blockAtLocationIs( w, x, y, z, AEApi.instance().blocks().blockQuantumLink ) )
+						if ( !Platform.blockAtLocationIs( w, x, y, z, AEApi.instance().blocks().blockQuantumLink ) )
 							return false;
 					}
 					else
 					{
-						if ( Platform.blockAtLocationIs( w, x, y, z, AEApi.instance().blocks().blockQuantumRing ) )
+						if ( !Platform.blockAtLocationIs( w, x, y, z, AEApi.instance().blocks().blockQuantumRing ) )
 							return false;
 					}
 

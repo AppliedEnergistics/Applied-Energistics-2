@@ -33,15 +33,18 @@ public enum AEFeature
 	LevelEmiter("NetworkBuses"), CraftingTerminal("NetworkBuses"), StorageMonitor("NetworkBuses"), P2PTunnel("NetworkBuses"), FormationPlane("NetworkBuses"), AnnihilationPlane(
 			"NetworkBuses"), ImportBus("NetworkBuses"), ExportBus("NetworkBuses"), StorageBus("NetworkBuses"), PartConversionMonitor("NetworkBuses"),
 
-	StorageCells("Storage"), MEChest("Storage"), MEDrive("Storage"), IOPort("Storage"),
+	StorageCells("Storage"), PortableCell("PortableCell"), MEChest("Storage"), MEDrive("Storage"), IOPort("Storage"),
+
+	NetworkTool("NetworkTool"),
 
 	DenseEnergyCells("HigherCapacity"), DenseCables("HigherCapacity"),
 
-	P2PTunnelME("P2PTunnels"), P2PTunnelItems("P2PTunnels"), P2PTunnelRedstone("P2PTunnels"), P2PTunnelEU("P2PTunnels"), P2PTunnelMJ("P2PTunnels"), P2PTunnelLiquids("P2PTunnels"),
+	P2PTunnelME("P2PTunnels"), P2PTunnelItems("P2PTunnels"), P2PTunnelRedstone("P2PTunnels"), P2PTunnelEU("P2PTunnels"), P2PTunnelMJ("P2PTunnels"), P2PTunnelLiquids(
+			"P2PTunnels"),
 
 	MassCannonBlockDamage("BlockFeatures"), TinyTNTBlockDamage("BlockFeatures"), Facades("Facades"),
 
-	DuplicateItems("Misc", false), Profiler("Services"), VersionChecker("Services"), Debug("Misc"), Creative("Misc");
+	DuplicateItems("Misc", false), Profiler("Services"), VersionChecker("Services"), Debug("Misc", false), Creative("Misc");
 
 	String Category;
 	boolean visible = true;

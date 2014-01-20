@@ -22,6 +22,8 @@ public class Configuration extends net.minecraftforge.common.Configuration imple
 
 	public static Configuration instance;
 
+	public static float TunnelPowerLoss = 0.05f;
+
 	public String latestVersion = VERSION;
 	public long latestTimeStamp = 0;
 

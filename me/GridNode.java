@@ -485,4 +485,10 @@ public class GridNode implements IGridNode, IPathItem
 		}
 	}
 
+	@Override
+	public boolean hasFlag(GridFlags flag)
+	{
+		return getGridBlock().getFlags().contains( flag );
+	}
+
 }

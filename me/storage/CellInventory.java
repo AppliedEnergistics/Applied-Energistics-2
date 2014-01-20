@@ -3,6 +3,7 @@ package appeng.me.storage;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -11,8 +12,10 @@ import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagShort;
 import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.config.Actionable;
+import appeng.api.config.FuzzyMode;
 import appeng.api.exceptions.AppEngException;
 import appeng.api.implementations.IStorageCell;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
@@ -335,7 +338,7 @@ public class CellInventory implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack injectItems(IAEItemStack input, Actionable mode)
+	public IAEItemStack injectItems(IAEItemStack input, Actionable mode, BaseActionSource src)
 	{
 		if ( input == null )
 			return null;
@@ -422,7 +425,7 @@ public class CellInventory implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack extractItems(IAEItemStack request, Actionable mode)
+	public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src)
 	{
 		if ( request == null )
 			return null;
@@ -480,6 +483,30 @@ public class CellInventory implements IMEInventory<IAEItemStack>
 	public double getIdleDrain()
 	{
 		return CellType.getIdleDrain();
+	}
+
+	public FuzzyMode getFuzzyMode()
+	{
+		return CellType.getFuzzyMode( this.i );
+	}
+
+	public IInventory getConfigInventory()
+	{
+		return CellType.getConfigInventory( this.i );
+	}
+
+	public IInventory getUpgradesInventory()
+	{
+		return CellType.getUpgradesInventory( this.i );
+	}
+
+	public int getStatusForCell()
+	{
+		if ( canHoldNewItem() )
+			return 1;
+		if ( remainingItemCount() > 0 )
+			return 2;
+		return 3;
 	}
 
 }

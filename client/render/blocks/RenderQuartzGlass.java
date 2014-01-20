@@ -1,5 +1,7 @@
 package appeng.client.render.blocks;
 
+import java.util.Random;
+
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
@@ -8,12 +10,23 @@ import appeng.api.AEApi;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.OffsetIcon;
 
 public class RenderQuartzGlass extends BaseBlockRender
 {
 
+	static byte offsets[][][];
+
 	public RenderQuartzGlass() {
 		super( false, 0 );
+		if ( offsets == null )
+		{
+			Random r = new Random( 924 );
+			offsets = new byte[10][10][10];
+			for (int x = 0; x < 10; x++)
+				for (int y = 0; y < 10; y++)
+					r.nextBytes( offsets[x][y] );
+		}
 	}
 
 	boolean isFlush(AEBaseBlock imb, IBlockAccess world, int x, int y, int z)
@@ -113,7 +126,29 @@ public class RenderQuartzGlass extends BaseBlockRender
 	{
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
-		renderer.overrideBlockTexture = imb.getIcon( 0, 0 );
+		int cx = Math.abs( x % 10 );
+		int cy = Math.abs( y % 10 );
+		int cz = Math.abs( z % 10 );
+
+		int u = offsets[cx][cy][cz] % 4;
+		int v = offsets[9 - cx][9 - cy][9 - cz] % 4;
+
+		switch (Math.abs( (offsets[cx][cy][cz] + (x + y + z)) % 4 ))
+		{
+		case 0:
+			renderer.overrideBlockTexture = new OffsetIcon( imb.getIcon( 0, 0 ), u / 2, v / 2 );
+			break;
+		case 1:
+			renderer.overrideBlockTexture = new OffsetIcon( ExtraTextures.BlockQuartzGlassB.getIcon(), u / 2, v / 2 );
+			break;
+		case 2:
+			renderer.overrideBlockTexture = new OffsetIcon( ExtraTextures.BlockQuartzGlassC.getIcon(), u, v );
+			break;
+		case 3:
+			renderer.overrideBlockTexture = new OffsetIcon( ExtraTextures.BlockQuartzGlassD.getIcon(), u, v );
+			break;
+		}
+
 		boolean result = renderer.renderStandardBlock( imb, x, y, z );
 
 		renderer.overrideBlockTexture = null;

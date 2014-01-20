@@ -22,15 +22,33 @@ import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ContainerBus extends AEBaseContainer implements IOptionalSlotHost
+public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSlotHost
 {
 
 	IBusCommon myte;
 	IInventory toolbox = new AppEngInternalInventory( null, 9 );
 
-	public ContainerBus(InventoryPlayer ip, IBusCommon te) {
+	public ContainerUpgradeable(InventoryPlayer ip, IBusCommon te) {
 		super( ip, (TileEntity) (te instanceof TileEntity ? te : null), (IPart) (te instanceof IPart ? te : null) );
 		myte = te;
+
+		if ( hasToolbox() )
+		{
+			for (int v = 0; v < 3; v++)
+				for (int u = 0; u < 3; u++)
+					addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, toolbox, u + v * 3, 186 + u * 18, getHeight() - 82 + v * 18 ))
+							.setPlayerSide() );
+		}
+
+		setupConfig();
+
+		bindPlayerInventory( ip, 0, getHeight() - /* height of playerinventory */82 );
+	}
+
+	protected void setupConfig()
+	{
+		int x = 80;
+		int y = 40;
 
 		IInventory upgrades = myte.getInventoryByName( "upgrades" );
 		if ( availableUpgrades() > 0 )
@@ -41,16 +59,6 @@ public class ContainerBus extends AEBaseContainer implements IOptionalSlotHost
 			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2 )).setNotDraggable() );
 		if ( availableUpgrades() > 3 )
 			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3 )).setNotDraggable() );
-
-		if ( hasToolbox() )
-		{
-			for (int v = 0; v < 3; v++)
-				for (int u = 0; u < 3; u++)
-					addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, toolbox, u + v * 3, 186 + u * 18, 102 + v * 18 )).setPlayerSide() );
-		}
-
-		int x = 80;
-		int y = 40;
 
 		IInventory inv = myte.getInventoryByName( "config" );
 		addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
@@ -67,8 +75,6 @@ public class ContainerBus extends AEBaseContainer implements IOptionalSlotHost
 			addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 7, x, y, -1, 1, 2 ) );
 			addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 8, x, y, 1, 1, 2 ) );
 		}
-
-		bindPlayerInventory( ip, 0, getHeight() - /* height of playerinventory */82 );
 	}
 
 	protected int getHeight()
@@ -76,7 +82,7 @@ public class ContainerBus extends AEBaseContainer implements IOptionalSlotHost
 		return 184;
 	}
 
-	protected int availableUpgrades()
+	public int availableUpgrades()
 	{
 		return 4;
 	}
@@ -151,7 +157,7 @@ public class ContainerBus extends AEBaseContainer implements IOptionalSlotHost
 	}
 
 	@Override
-	public boolean isSlotEnabled(int idx, OptionalSlotFake osf)
+	public boolean isSlotEnabled(int idx)
 	{
 		int upgrades = myte.getInstalledUpgrades( Upgrades.CAPACITY );
 

@@ -61,7 +61,7 @@ public class ClientHelper extends ServerHelper
 	public void bindTileEntitySpecialRenderer(Class tile, AEBaseBlock blk)
 	{
 		BaseBlockRender bbr = blk.getRendererInstance().rendererInstance;
-		if ( bbr.hasTESR )
+		if ( bbr.hasTESR && tile != null )
 			ClientRegistry.bindTileEntitySpecialRenderer( tile, new TESRWrapper( bbr ) );
 	}
 

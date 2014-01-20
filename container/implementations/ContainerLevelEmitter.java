@@ -4,15 +4,19 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IInventory;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
+import appeng.container.slot.SlotFakeTypeOnly;
+import appeng.container.slot.SlotRestrictedInput;
+import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ContainerLevelEmitter extends ContainerBus
+public class ContainerLevelEmitter extends ContainerUpgradeable
 {
 
 	PartLevelEmitter lvlEmitter;
@@ -33,7 +37,7 @@ public class ContainerLevelEmitter extends ContainerBus
 	}
 
 	@Override
-	protected int availableUpgrades()
+	public int availableUpgrades()
 	{
 
 		return 1;
@@ -51,6 +55,26 @@ public class ContainerLevelEmitter extends ContainerBus
 	{
 		lvlEmitter.setReportingValue( newValue );
 		EmitterValue = newValue;
+	}
+
+	@Override
+	protected void setupConfig()
+	{
+		int x = 80 + 34;
+		int y = 40;
+
+		IInventory upgrades = myte.getInventoryByName( "upgrades" );
+		if ( availableUpgrades() > 0 )
+			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0 )).setNotDraggable() );
+		if ( availableUpgrades() > 1 )
+			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 1, 187, 8 + 18 * 1 )).setNotDraggable() );
+		if ( availableUpgrades() > 2 )
+			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2 )).setNotDraggable() );
+		if ( availableUpgrades() > 3 )
+			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3 )).setNotDraggable() );
+
+		IInventory inv = myte.getInventoryByName( "config" );
+		addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
 	}
 
 	@Override

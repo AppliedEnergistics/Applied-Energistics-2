@@ -14,6 +14,7 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.events.MENetworkPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.api.networking.pathing.ControllerState;
+import appeng.api.util.AECableType;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkPowerTile;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -29,6 +30,12 @@ public class TileController extends AENetworkPowerTile implements IAEPowerStorag
 		internalPublicPowerStorage = true;
 		gridProxy.setIdlePowerUsage( 6 );
 		gridProxy.setFlags( GridFlags.CANNOT_CARRY );
+	}
+
+	@Override
+	public AECableType getCableConnectionType(ForgeDirection dir)
+	{
+		return AECableType.DENSE;
 	}
 
 	@Override

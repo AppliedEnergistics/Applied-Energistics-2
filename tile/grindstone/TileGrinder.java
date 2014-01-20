@@ -105,7 +105,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 					{
 						i = i.copy();
 						i.setStackSize( r.getInput().stackSize );
-						IAEItemStack ais = input.extractItems( (IAEItemStack) i, Actionable.MODULATE );
+						IAEItemStack ais = input.extractItems( (IAEItemStack) i, Actionable.MODULATE, null );
 						if ( ais != null )
 							this.setInventorySlotContents( 6, ais.getItemStack() );
 						return true;

@@ -2,6 +2,7 @@ package appeng.me.storage;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
@@ -18,7 +19,7 @@ public class VoidFluidInventory implements IMEInventoryHandler<IAEFluidStack>
 	}
 
 	@Override
-	public IAEFluidStack injectItems(IAEFluidStack input, Actionable mode)
+	public IAEFluidStack injectItems(IAEFluidStack input, Actionable mode, BaseActionSource src)
 	{
 		if ( input != null )
 			target.addPower( (double) input.getStackSize() / 1000.0 );
@@ -32,7 +33,7 @@ public class VoidFluidInventory implements IMEInventoryHandler<IAEFluidStack>
 	}
 
 	@Override
-	public IAEFluidStack extractItems(IAEFluidStack request, Actionable mode)
+	public IAEFluidStack extractItems(IAEFluidStack request, Actionable mode, BaseActionSource src)
 	{
 		return null;
 	}

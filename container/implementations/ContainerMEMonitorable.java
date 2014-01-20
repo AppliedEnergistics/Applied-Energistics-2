@@ -22,6 +22,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
+import appeng.helpers.ICellItemViewer;
 import appeng.util.Platform;
 import appeng.util.item.ItemList;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -42,7 +43,10 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonito
 			monitor.addListener( this, null );
 
 			cellInv = monitor;
-			if ( montiorable instanceof IMEChest )
+
+			if ( montiorable instanceof ICellItemViewer )
+				powerSrc = (ICellItemViewer) montiorable;
+			else if ( montiorable instanceof IMEChest )
 				powerSrc = (IMEChest) montiorable;
 			else if ( montiorable instanceof IGridHost )
 			{
@@ -120,8 +124,18 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonito
 				PacketMEInventoryUpdate piu = new PacketMEInventoryUpdate();
 				IItemList<IAEItemStack> monitorCache = monitor.getStorageList();
 
+				int items = 0;
 				for (IAEItemStack send : monitorCache)
 				{
+					if ( items > 2000 )
+					{
+						items = 0;
+						Packet p = piu.getPacket();
+						PacketDispatcher.sendPacketToPlayer( p, (Player) c );
+						piu = new PacketMEInventoryUpdate();
+					}
+
+					items++;
 					piu.appendItem( send );
 				}
 

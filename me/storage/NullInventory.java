@@ -2,6 +2,7 @@ package appeng.me.storage;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEStack;
@@ -17,13 +18,13 @@ public class NullInventory<T extends IAEStack<T>> implements IMEInventoryHandler
 	}
 
 	@Override
-	public T injectItems(T input, Actionable mode)
+	public T injectItems(T input, Actionable mode, BaseActionSource src)
 	{
 		return input;
 	}
 
 	@Override
-	public T extractItems(T request, Actionable mode)
+	public T extractItems(T request, Actionable mode, BaseActionSource src)
 	{
 		return null;
 	}

@@ -35,7 +35,7 @@ public enum MaterialType
 	BasicCard, CardRedstone, CardCapacity,
 
 	// Adv Cards
-	AdvCard, CardFuzzy, CardSpeed,
+	AdvCard, CardFuzzy, CardSpeed, CardInverter,
 
 	Cell2SpatialPart(AEFeature.SpatialIO), Cell16SpatialPart(AEFeature.SpatialIO), Cell128SpatialPart(AEFeature.SpatialIO),
 
@@ -48,8 +48,8 @@ public enum MaterialType
 
 	BlankPattern, FormationCore, AnnihilationCore,
 
-	EnderDust(AEFeature.QuantumNetworkBridge, "dustEnder"), Singularity(AEFeature.QuantumNetworkBridge), QESingularity(AEFeature.QuantumNetworkBridge,
-			EntitySingularity.class);
+	EnderDust(AEFeature.QuantumNetworkBridge, "dustEnder", EntitySingularity.class), Singularity(AEFeature.QuantumNetworkBridge, EntitySingularity.class), QESingularity(
+			AEFeature.QuantumNetworkBridge, EntitySingularity.class);
 
 	private String oreName;
 	private EnumSet<AEFeature> features;
@@ -72,6 +72,16 @@ public enum MaterialType
 		features = EnumSet.of( part );
 		droppedEntity = c;
 
+		EntityRegistry.registerModEntity( droppedEntity, droppedEntity.getSimpleName(), EntityIds.get( droppedEntity ), AppEng.instance, 16, 4, true );
+	}
+
+	MaterialType(AEFeature part, String oreDictionary, Class<? extends Entity> c) {
+		features = EnumSet.of( part );
+		oreName = oreDictionary;
+		if ( OreDictionary.getOres( oreDictionary ).size() > 0 )
+			features.add( AEFeature.DuplicateItems );
+
+		droppedEntity = c;
 		EntityRegistry.registerModEntity( droppedEntity, droppedEntity.getSimpleName(), EntityIds.get( droppedEntity ), AppEng.instance, 16, 4, true );
 	}
 

@@ -20,8 +20,10 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import appeng.api.AEApi;
 import appeng.api.parts.IFacadePart;
+import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
+import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.core.AppEng;
 import appeng.core.sync.packets.PacketPartPlacement;
@@ -67,10 +69,7 @@ public class PartPlacement
 
 		ForgeDirection side = ForgeDirection.getOrientation( face );
 
-		if ( held == null )
-			return false;
-
-		if ( Platform.isWrench( player, held, x, y, z ) )
+		if ( held != null && Platform.isWrench( player, held, x, y, z ) && player.isSneaking() )
 		{
 			int block = world.getBlockId( x, y, z );
 			TileEntity tile = world.getBlockTileEntity( x, y, z );
@@ -92,7 +91,7 @@ public class PartPlacement
 
 						if ( sp.part != null )
 						{
-							is.add( sp.part.getItemStack( true ) );
+							is.add( sp.part.getItemStack( PartItemStack.Wrench ) );
 							sp.part.getDrops( is, true );
 							host.removePart( sp.side );
 						}
@@ -132,51 +131,86 @@ public class PartPlacement
 		if ( tile instanceof IPartHost )
 			host = (IPartHost) tile;
 
-		IFacadePart fp = isFacade( held, side );
-		if ( fp != null )
+		if ( held != null )
 		{
-			if ( host != null )
+			IFacadePart fp = isFacade( held, side );
+			if ( fp != null )
 			{
-				if ( !world.isRemote )
+				if ( host != null )
 				{
-					if ( host.getPart( ForgeDirection.UNKNOWN ) == null )
-						return false;
+					if ( !world.isRemote )
+					{
+						if ( host.getPart( ForgeDirection.UNKNOWN ) == null )
+							return false;
 
-					if ( host.getFacadeContainer().addFacade( fp ) )
-					{
-						host.markForUpdate();
-						if ( !player.capabilities.isCreativeMode )
+						if ( host.getFacadeContainer().addFacade( fp ) )
 						{
-							held.stackSize--;
-							if ( held.stackSize == 0 )
+							host.markForUpdate();
+							if ( !player.capabilities.isCreativeMode )
 							{
-								player.inventory.mainInventory[player.inventory.currentItem] = null;
-								MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, held ) );
+								held.stackSize--;
+								if ( held.stackSize == 0 )
+								{
+									player.inventory.mainInventory[player.inventory.currentItem] = null;
+									MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, held ) );
+								}
 							}
+							return true;
 						}
-						return true;
+					}
+					else
+					{
+						player.swingItem();
+						try
+						{
+							PacketDispatcher.sendPacketToServer( (new PacketPartPlacement( x, y, z, face )).getPacket() );
+						}
+						catch (IOException e)
+						{
+							e.printStackTrace();
+						}
 					}
 				}
-				else
-				{
-					player.swingItem();
-					try
-					{
-						PacketDispatcher.sendPacketToServer( (new PacketPartPlacement( x, y, z, face )).getPacket() );
-					}
-					catch (IOException e)
-					{
-						e.printStackTrace();
-					}
-				}
+				return false;
 			}
-			return false;
 		}
 
 		if ( host == null && tile != null && AppEng.instance.isIntegrationEnabled( "FMP" ) )
 			host = ((IFMP) AppEng.instance.getIntegration( "FMP" )).getOrCreateHost( tile );
 
-		if ( !(held.getItem() instanceof IPartItem) )
+		// if ( held == null )
+		{
+			int block = world.getBlockId( x, y, z );
+			if ( host != null && player.isSneaking() && Block.blocksList[block] != null )
+			{
+				LookDirection dir = Platform.getPlayerRay( player );
+				MovingObjectPosition mop = Block.blocksList[block].collisionRayTrace( world, x, y, z, dir.a, dir.b );
+				if ( mop != null )
+				{
+					mop.hitVec = mop.hitVec.addVector( -mop.blockX, -mop.blockY, -mop.blockZ );
+					SelectedPart sPart = host.selectPart( mop.hitVec );
+					if ( sPart != null && sPart.part != null )
+						if ( sPart.part.onShiftActivate( player, mop.hitVec ) )
+						{
+							if ( world.isRemote )
+							{
+								try
+								{
+									PacketDispatcher.sendPacketToServer( (new PacketPartPlacement( x, y, z, face )).getPacket() );
+								}
+								catch (IOException e)
+								{
+									e.printStackTrace();
+								}
+							}
+							return true;
+						}
+				}
+			}
+
+		}
+
+		if ( held == null || !(held.getItem() instanceof IPartItem) )
 			return false;
 
 		int te_x = x;
@@ -234,6 +268,8 @@ public class PartPlacement
 					return true;
 				}
 			}
+			else
+				return false;
 		}
 
 		if ( host == null )
@@ -256,16 +292,21 @@ public class PartPlacement
 					host = ((IFMP) AppEng.instance.getIntegration( "FMP" )).getOrCreateHost( tile );
 
 				if ( (blkID == 0 || Block.blocksList[blkID].isBlockReplaceable( world, te_x, te_y, te_z ) || host != null) && offset != ForgeDirection.UNKNOWN )
-					return place( held, te_x, te_y, te_z, side.getOpposite().ordinal(), player, world, pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS
-							: PlaceType.PLACE_ITEM, depth + 1 );
+					return place( held, te_x, te_y, te_z, side.getOpposite().ordinal(), player, world,
+							pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS : PlaceType.PLACE_ITEM, depth + 1 );
 			}
 			return false;
 		}
 
 		if ( !world.isRemote )
 		{
-			if ( host.addPart( held, side ) != null )
+			ForgeDirection mySide = host.addPart( held, side );
+			if ( mySide != null )
 			{
+				IPart newlyPlacedPart = host.getPart( mySide );
+				if ( newlyPlacedPart != null )
+					newlyPlacedPart.onPlacement( player, held, side );
+
 				StepSound ss = AEApi.instance().blocks().blockMultiPart.block().stepSound;
 				world.playSoundEffect( 0.5 + x, 0.5 + y, 0.5 + z, ss.getPlaceSound(), (ss.getVolume() + 1.0F) / 2.0F, ss.getPitch() * 0.8F );
 

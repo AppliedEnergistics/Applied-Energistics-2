@@ -3,6 +3,7 @@ package appeng.me.cluster.implementations;
 import java.util.Iterator;
 
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
@@ -10,8 +11,9 @@ import appeng.api.AEApi;
 import appeng.api.events.LocatableEventAnnounce;
 import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
 import appeng.api.features.ILocatable;
+import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridHost;
-import appeng.api.util.DimensionalCoord;
+import appeng.api.networking.IGridNode;
 import appeng.api.util.WorldCoord;
 import appeng.me.cluster.IAECluster;
 import appeng.tile.qnb.TileQuantumBridge;
@@ -20,6 +22,13 @@ import appeng.util.iterators.ChainedIterator;
 public class QuantumCluster implements ILocatable, IAECluster
 {
 
+	class QuantumLeap
+	{
+
+		IGridConnection connection;
+
+	};
+
 	public WorldCoord min;
 	public WorldCoord max;
 	public boolean isDestroyed = false;
@@ -27,6 +36,8 @@ public class QuantumCluster implements ILocatable, IAECluster
 	boolean registered = false;
 	private long thisSide;
 	private long otherSide;
+
+	QuantumLeap connection;
 
 	public TileQuantumBridge Ring[];
 	private TileQuantumBridge center;
@@ -53,7 +64,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 	public boolean canUseNode(long qe)
 	{
 		QuantumCluster qc = (QuantumCluster) AEApi.instance().registries().locateable().findLocateableBySerial( qe );
-		if ( qc.center instanceof TileQuantumBridge )
+		if ( qc != null && qc.center instanceof TileQuantumBridge )
 		{
 			if ( !qc.isDestroyed )
 			{
@@ -77,7 +88,6 @@ public class QuantumCluster implements ILocatable, IAECluster
 	@Override
 	public void updateStatus(boolean updateGrid)
 	{
-		long oldOtherSide = otherSide;
 		long qe;
 
 		qe = center.getQEDest();
@@ -111,29 +121,45 @@ public class QuantumCluster implements ILocatable, IAECluster
 			}
 		}
 
-		if ( updateGrid )
+		Object myOtherSide = otherSide == 0 ? null : AEApi.instance().registries().locateable().findLocateableBySerial( otherSide );
+
+		boolean shutdown = false;
+
+		if ( myOtherSide instanceof QuantumCluster )
 		{
-			updateGrid( this );
-			Object myOtherSide = otherSide == 0 ? null : AEApi.instance().registries().locateable().findLocateableBySerial( otherSide );
-			Object oldMyOtherSide = oldOtherSide == 0 ? null : AEApi.instance().registries().locateable().findLocateableBySerial( oldOtherSide );
-			if ( myOtherSide instanceof QuantumCluster )
-				updateGrid( (QuantumCluster) myOtherSide );
-			if ( oldMyOtherSide instanceof QuantumCluster )
-				updateGrid( (QuantumCluster) oldMyOtherSide );
-		}
-	}
+			QuantumCluster sideA = (QuantumCluster) this;
+			QuantumCluster sideB = (QuantumCluster) myOtherSide;
 
-	public void updateRender()
-	{
-		for (int x = 0; x < Ring.length; x++)
+			if ( sideA.isActive() && sideB.isActive() )
+			{
+				if ( connection != null && connection.connection != null )
+				{
+					IGridNode a = connection.connection.a();
+					IGridNode b = connection.connection.b();
+					IGridNode sa = sideA.getNode();
+					IGridNode sb = sideB.getNode();
+					if ( (a == sa || b == sa) && (a == sb || b == sb) )
+						return;
+				}
+
+				QuantumLeap ql = sideA.connection = sideB.connection = new QuantumLeap();
+				ql.connection = AEApi.instance().createGridConnection( sideA.getNode(), sideB.getNode() );
+			}
+			else
+				shutdown = true;
+		}
+		else
+			shutdown = true;
+
+		if ( shutdown && connection != null )
 		{
-
+			if ( connection.connection != null )
+			{
+				connection.connection.destroy();
+				connection.connection = null;
+				connection = new QuantumLeap();
+			}
 		}
-	}
-
-	private void updateGrid(QuantumCluster c)
-	{
-
 	}
 
 	@Override
@@ -151,15 +177,9 @@ public class QuantumCluster implements ILocatable, IAECluster
 
 		if ( getLocatableSerial() != 0 )
 		{
-			updateGrid( this );
-			Object myOtherSide = otherSide == 0 ? null : AEApi.instance().registries().locateable().findLocateableBySerial( otherSide );
-			if ( myOtherSide instanceof QuantumCluster )
-				updateGrid( (QuantumCluster) myOtherSide );
-
+			updateStatus( true );
 			MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Unregister ) );
 		}
-
-		// updateStatus( true );
 
 		center.updateStatus( null, (byte) -1 );
 
@@ -175,40 +195,12 @@ public class QuantumCluster implements ILocatable, IAECluster
 	public boolean isCorner(TileQuantumBridge tileQuantumBridge)
 	{
 		return Ring[0] == tileQuantumBridge || Ring[2] == tileQuantumBridge || Ring[4] == tileQuantumBridge || Ring[6] == tileQuantumBridge;
-
-	}
-
-	public DimensionalCoord[] getOtherSide()
-	{
-		Object myOtherSide = AEApi.instance().registries().locateable().findLocateableBySerial( otherSide );
-		if ( myOtherSide != null )
-		{
-			try
-			{
-				QuantumCluster qc = (QuantumCluster) myOtherSide;
-				DimensionalCoord[] out = new DimensionalCoord[4];
-				out[0] = new DimensionalCoord( qc.Ring[1] );
-				out[1] = new DimensionalCoord( qc.Ring[3] );
-				out[2] = new DimensionalCoord( qc.Ring[4] );
-				out[3] = new DimensionalCoord( qc.Ring[6] );
-				return out;
-			}
-			catch (Throwable t)
-			{
-			}
-		}
-		return new DimensionalCoord[0];
 	}
 
 	@Override
 	public long getLocatableSerial()
 	{
 		return thisSide;
-	}
-
-	public boolean hasPower()
-	{
-		return center.bridgePowered;
 	}
 
 	public TileQuantumBridge getCenter()
@@ -219,6 +211,19 @@ public class QuantumCluster implements ILocatable, IAECluster
 	public boolean hasQES()
 	{
 		return getLocatableSerial() != 0;
+	}
+
+	private IGridNode getNode()
+	{
+		return center.getGridNode( ForgeDirection.UNKNOWN );
+	}
+
+	private boolean isActive()
+	{
+		if ( isDestroyed || !registered )
+			return false;
+
+		return center.isPowered() && hasQES();
 	}
 
 }

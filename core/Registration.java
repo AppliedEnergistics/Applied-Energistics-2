@@ -13,6 +13,7 @@ import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.IFluidHandler;
 import appeng.api.AEApi;
+import appeng.api.config.Upgrades;
 import appeng.api.definitions.Blocks;
 import appeng.api.definitions.Items;
 import appeng.api.definitions.Materials;
@@ -30,12 +31,12 @@ import appeng.block.mac.BlockContainmentWall;
 import appeng.block.mac.BlockCraftingAccelerator;
 import appeng.block.mac.BlockHeatVent;
 import appeng.block.mac.BlockPatternProvider;
+import appeng.block.misc.BlockCellWorkbench;
 import appeng.block.misc.BlockCharger;
 import appeng.block.misc.BlockCondenser;
 import appeng.block.misc.BlockInscriber;
 import appeng.block.misc.BlockInterface;
 import appeng.block.misc.BlockNetworkEmitter;
-import appeng.block.misc.BlockCellWorkbench;
 import appeng.block.misc.BlockQuartzCrystalizer;
 import appeng.block.misc.BlockQuartzTorch;
 import appeng.block.misc.BlockTinyTNT;
@@ -49,6 +50,7 @@ import appeng.block.networking.BlockEnergyCell;
 import appeng.block.networking.BlockWireless;
 import appeng.block.qnb.BlockQuantumLinkChamber;
 import appeng.block.qnb.BlockQuantumRing;
+import appeng.block.solids.BlockFluix;
 import appeng.block.solids.BlockMatrixFrame;
 import appeng.block.solids.BlockQuartz;
 import appeng.block.solids.BlockQuartzChiseled;
@@ -71,6 +73,8 @@ import appeng.core.features.registries.entries.CreativeCellHandler;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.GuiBridge;
+import appeng.debug.BlockChunkloader;
+import appeng.debug.BlockItemGen;
 import appeng.debug.ToolDebugCard;
 import appeng.debug.ToolReplicatorCard;
 import appeng.helpers.AETrading;
@@ -90,6 +94,8 @@ import appeng.items.tools.ToolMemoryCard;
 import appeng.items.tools.powered.ToolChargedStaff;
 import appeng.items.tools.powered.ToolEntropyManipulator;
 import appeng.items.tools.powered.ToolMassCannon;
+import appeng.items.tools.powered.ToolNetworkTool;
+import appeng.items.tools.powered.ToolPortableCell;
 import appeng.items.tools.powered.ToolWirelessTerminal;
 import appeng.items.tools.quartz.ToolQuartzAxe;
 import appeng.items.tools.quartz.ToolQuartzCuttingKnife;
@@ -137,10 +143,10 @@ public class Registration
 	{
 		MinecraftForge.EVENT_BUS.register( OreDictionaryHandler.instance );
 
-		Items items = AEApi.instance().items();
-		Materials materials = AEApi.instance().materials();
-		Parts parts = AEApi.instance().parts();
-		Blocks blocks = AEApi.instance().blocks();
+		Items items = appeng.core.Api.instance.items();
+		Materials materials = appeng.core.Api.instance.materials();
+		Parts parts = appeng.core.Api.instance.parts();
+		Blocks blocks = appeng.core.Api.instance.blocks();
 
 		AEItemDefinition materialItem = (AEFeatureHandler) addFeature( ItemMaterial.class );
 
@@ -197,6 +203,8 @@ public class Registration
 		blocks.blockQuartzOreCharged = addFeature( OreQuartzCharged.class );
 		blocks.blockMatrixFrame = addFeature( BlockMatrixFrame.class );
 		blocks.blockQuartz = addFeature( BlockQuartz.class );
+		blocks.blockFluix = addFeature( BlockFluix.class );
+
 		blocks.blockQuartzGlass = addFeature( BlockQuartzGlass.class );
 		blocks.blockQuartzVibrantGlass = addFeature( BlockQuartzLamp.class );
 		blocks.blockQuartzPiller = addFeature( BlockQuartzPillar.class );
@@ -228,7 +236,7 @@ public class Registration
 		blocks.blockDrive = addFeature( BlockDrive.class );
 		blocks.blockChest = addFeature( BlockChest.class );
 		blocks.blockInterface = addFeature( BlockInterface.class );
-		blocks.blockPartitioner = addFeature( BlockCellWorkbench.class );
+		blocks.blockCellWorkbench = addFeature( BlockCellWorkbench.class );
 		blocks.blockIOPort = addFeature( BlockIOPort.class );
 		blocks.blockCondenser = addFeature( BlockCondenser.class );
 		blocks.blockEnergyAcceptor = addFeature( BlockEnergyAcceptor.class );
@@ -272,11 +280,15 @@ public class Registration
 		items.itemChargedStaff = addFeature( ToolChargedStaff.class );
 		items.itemEntropyManipulator = addFeature( ToolEntropyManipulator.class );
 		items.itemWirelessTerminal = addFeature( ToolWirelessTerminal.class );
+		items.itemNetworkTool = addFeature( ToolNetworkTool.class );
+		items.itemPortableCell = addFeature( ToolPortableCell.class );
 
 		items.itemFacade = addFeature( ItemFacade.class );
 
 		addFeature( ToolDebugCard.class );
 		addFeature( ToolReplicatorCard.class );
+		addFeature( BlockItemGen.class );
+		addFeature( BlockChunkloader.class );
 	}
 
 	private AEItemDefinition addFeature(Class c, Object... Args)
@@ -394,8 +406,9 @@ public class Registration
 		AEApi.instance().registries().cell().addCellHandler( new BasicCellHandler() );
 		AEApi.instance().registries().cell().addCellHandler( new CreativeCellHandler() );
 
-		NetworkRegistry.instance().registerGuiHandler( AppEng.instance, GuiBridge.GUI_Handler );
+		AEApi.instance().registries().matterCannon().registerAmmo( AEApi.instance().materials().materialMatterBall.stack( 1 ), 32.0 );
 
+		NetworkRegistry.instance().registerGuiHandler( AppEng.instance, GuiBridge.GUI_Handler );
 	}
 
 	public void PostInit(FMLPostInitializationEvent event)
@@ -406,6 +419,48 @@ public class Registration
 
 		Api.instance.partHelper.initFMPSupport();
 		((BlockCableBus) AEApi.instance().blocks().blockMultiPart.block()).setupTile();
+
+		// IO PORT!
+		Upgrades.SPEED.registerItem( AEApi.instance().blocks().blockIOPort.stack( 1 ), 3 );
+		Upgrades.REDSTONE.registerItem( AEApi.instance().blocks().blockIOPort.stack( 1 ), 1 );
+
+		// partLevelEmitter
+		Upgrades.FUZZY.registerItem( AEApi.instance().parts().partLevelEmitter.stack( 1 ), 1 );
+
+		// partImportBus
+		Upgrades.FUZZY.registerItem( AEApi.instance().parts().partImportBus.stack( 1 ), 1 );
+		Upgrades.REDSTONE.registerItem( AEApi.instance().parts().partImportBus.stack( 1 ), 1 );
+		Upgrades.CAPACITY.registerItem( AEApi.instance().parts().partImportBus.stack( 1 ), 2 );
+		Upgrades.SPEED.registerItem( AEApi.instance().parts().partImportBus.stack( 1 ), 4 );
+
+		// partExportBus
+		Upgrades.FUZZY.registerItem( AEApi.instance().parts().partExportBus.stack( 1 ), 1 );
+		Upgrades.REDSTONE.registerItem( AEApi.instance().parts().partExportBus.stack( 1 ), 1 );
+		Upgrades.CAPACITY.registerItem( AEApi.instance().parts().partExportBus.stack( 1 ), 2 );
+		Upgrades.SPEED.registerItem( AEApi.instance().parts().partExportBus.stack( 1 ), 4 );
+
+		// blockCellWorkbench
+		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemCell1k.stack( 1 ), 1 );
+		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemCell1k.stack( 1 ), 1 );
+
+		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemCell4k.stack( 1 ), 1 );
+		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemCell4k.stack( 1 ), 1 );
+
+		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemCell16k.stack( 1 ), 1 );
+		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemCell16k.stack( 1 ), 1 );
+
+		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemCell64k.stack( 1 ), 1 );
+		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemCell64k.stack( 1 ), 1 );
+
+		// partStorageBus
+		Upgrades.FUZZY.registerItem( AEApi.instance().parts().partStorageBus.stack( 1 ), 1 );
+		Upgrades.INVERTER.registerItem( AEApi.instance().parts().partStorageBus.stack( 1 ), 1 );
+		Upgrades.CAPACITY.registerItem( AEApi.instance().parts().partStorageBus.stack( 1 ), 3 );
+
+		// matter cannon
+		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemMassCannon.stack( 1 ), 1 );
+		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemMassCannon.stack( 1 ), 1 );
+		Upgrades.SPEED.registerItem( AEApi.instance().items().itemMassCannon.stack( 1 ), 4 );
 
 		if ( Configuration.instance.isFeatureEnabled( AEFeature.ChestLoot ) )
 		{

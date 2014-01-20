@@ -20,7 +20,6 @@ import appeng.core.features.AEFeature;
 import appeng.helpers.TickHandler;
 import appeng.items.AEBaseItem;
 import appeng.me.Grid;
-import appeng.me.GridCacheWrapper;
 import appeng.me.GridNode;
 import appeng.me.cache.TickManagerCache;
 import appeng.util.Platform;
@@ -30,7 +29,7 @@ public class ToolDebugCard extends AEBaseItem
 
 	public ToolDebugCard() {
 		super( ToolDebugCard.class );
-		setfeature( EnumSet.of( AEFeature.Creative ) );
+		setfeature( EnumSet.of( AEFeature.Debug, AEFeature.Creative ) );
 	}
 
 	public String timeMeasurement(long nanos)
@@ -57,11 +56,6 @@ public class ToolDebugCard extends AEBaseItem
 			{
 				TickManagerCache tmc = (TickManagerCache) g.getCache( ITickManager.class );
 
-				for (GridCacheWrapper w : g.getCacheWrappers())
-				{
-					totalOver5Ticks += w.LastFiveTicksTime;
-				}
-
 				grids++;
 				for (IGridNode n : g.getNodes())
 				{
@@ -86,12 +80,6 @@ public class ToolDebugCard extends AEBaseItem
 					IGridNode center = g.getPivot();
 					outputMsg( player, "This Node: " + node.toString() );
 					outputMsg( player, "Center Node: " + center.toString() );
-
-					for (GridCacheWrapper w : g.getCacheWrappers())
-					{
-						outputMsg( player, w.getName() + "Tick: " + timeMeasurement( w.LastFiveTicksTime / 5 ) + ", Add: "
-								+ timeMeasurement( w.LastFiveAddNode / 5 ) + ", Rmv: " + timeMeasurement( w.LastFiveRemoveTime / 5 ) );
-					}
 
 					TickManagerCache tmc = (TickManagerCache) g.getCache( ITickManager.class );
 					for (Class c : g.getMachineClasses())

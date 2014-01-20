@@ -11,6 +11,7 @@ import appeng.api.storage.StorageChannel;
 import appeng.client.texture.ExtraTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.me.storage.CellInventory;
+import appeng.me.storage.CellInventoryHandler;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 
@@ -46,7 +47,12 @@ public class BasicCellHandler implements ICellHandler
 	@Override
 	public int getStatusForCell(ItemStack is, IMEInventory handler)
 	{
-		return 1;
+		if ( handler instanceof CellInventoryHandler )
+		{
+			CellInventoryHandler ci = (CellInventoryHandler) handler;
+			return ci.getCellInv().getStatusForCell();
+		}
+		return 0;
 	}
 
 	@Override

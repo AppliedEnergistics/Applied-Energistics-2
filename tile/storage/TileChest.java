@@ -31,6 +31,7 @@ import appeng.api.networking.events.MENetworkPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.security.PlayerSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.IMEInventory;
@@ -253,14 +254,19 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		@Override
 		public void postChange(IMEMonitor<T> monitor, T change, BaseActionSource source)
 		{
-			try
+			if ( source == mySrc || (source instanceof PlayerSource && ((PlayerSource) source).via == TileChest.this) )
 			{
-				gridProxy.getStorage().postAlterationOfStoredItems( chan, change, mySrc );
+				try
+				{
+					gridProxy.getStorage().postAlterationOfStoredItems( chan, change, mySrc );
+				}
+				catch (GridAccessException e)
+				{
+					// :(
+				}
 			}
-			catch (GridAccessException e)
-			{
-				// :(
-			}
+
+			blinkCell( 0 );
 		}
 
 		@Override
@@ -275,6 +281,23 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 	};
 
+	class ChestMonitorHandler<T extends IAEStack> extends MEMonitorHandler<T>
+	{
+
+		public ChestMonitorHandler(IMEInventoryHandler<T> t) {
+			super( t );
+		}
+
+		public IMEInventoryHandler<T> getInternalHandler()
+		{
+			IMEInventoryHandler<T> h = getHandler();
+			if ( h instanceof MEInventoryHandler )
+				return (IMEInventoryHandler<T>) ((MEInventoryHandler) h).getInternal();
+			return this.getHandler();
+		}
+
+	};
+
 	private <StackType extends IAEStack> MEMonitorHandler<StackType> wrap(IMEInventoryHandler h)
 	{
 		if ( h == null )
@@ -283,7 +306,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		MEInventoryHandler ih = new MEInventoryHandler( h );
 		ih.myPriority = priority;
 
-		MEMonitorHandler<StackType> g = new MEMonitorHandler<StackType>( ih );
+		MEMonitorHandler<StackType> g = new ChestMonitorHandler<StackType>( ih );
 		g.addListener( new ChestNetNotifier( h.getChannel() ), g );
 
 		return g;
@@ -395,7 +418,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		try
 		{
 			IMEInventory<IAEItemStack> cell = getHandler( StorageChannel.ITEMS );
-			IAEItemStack returns = cell.injectItems( AEApi.instance().storage().createItemStack( inv.getStackInSlot( 0 ) ), Actionable.SIMULATE );
+			IAEItemStack returns = cell.injectItems( AEApi.instance().storage().createItemStack( inv.getStackInSlot( 0 ) ), Actionable.SIMULATE, mySrc );
 			return returns == null || returns.getStackSize() != itemstack.stackSize;
 		}
 		catch (AENoHandler t)
@@ -447,6 +470,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		lastStateChange = now;
 
 		state |= 1 << (slot * 3 + 2);
+
+		recalculateDisplay();
 	}
 
 	@Override
@@ -473,8 +498,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			try
 			{
 				IMEInventoryHandler handler = getHandler( StorageChannel.ITEMS );
-				if ( ch != null )
-					return ch.getStatusForCell( cell, handler );
+				if ( ch != null && handler instanceof ChestMonitorHandler )
+					return ch.getStatusForCell( cell, ((ChestMonitorHandler) handler).getInternalHandler() );
 			}
 			catch (AENoHandler e)
 			{
@@ -483,8 +508,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			try
 			{
 				IMEInventoryHandler handler = getHandler( StorageChannel.FLUIDS );
-				if ( ch != null )
-					return ch.getStatusForCell( cell, handler );
+				if ( ch != null && handler instanceof ChestMonitorHandler )
+					return ch.getStatusForCell( cell, ((ChestMonitorHandler) handler).getInternalHandler() );
 			}
 			catch (AENoHandler e)
 			{
@@ -506,7 +531,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 				IMEInventoryHandler h = getHandler( StorageChannel.FLUIDS );
 
 				extractAEPower( req, Actionable.MODULATE, PowerMultiplier.CONFIG );
-				IAEStack results = h.injectItems( AEFluidStack.create( resource ), doFill ? Actionable.MODULATE : Actionable.SIMULATE );
+				IAEStack results = h.injectItems( AEFluidStack.create( resource ), doFill ? Actionable.MODULATE : Actionable.SIMULATE, mySrc );
 
 				if ( results == null )
 					return resource.amount;

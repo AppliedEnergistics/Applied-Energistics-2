@@ -16,6 +16,7 @@ import org.lwjgl.opengl.GL11;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.IPartCable;
+import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -48,6 +49,12 @@ public class PartCable extends AEBasePart implements IPartCable
 		super( c, is );
 		proxy.setIdlePowerUsage( 1.0 / 16.0 );
 		proxy.myColor = AEColor.values()[((ItemPart) is.getItem()).varientOf( is.getItemDamage() )];
+	}
+
+	@Override
+	public boolean supportsBuses()
+	{
+		return true;
 	}
 
 	public Icon getGlassTexture(AEColor c)
@@ -220,7 +227,10 @@ public class PartCable extends AEBasePart implements IPartCable
 						IReadOnlyCollection<IGridConnection> set = part.getGridNode().getConnections();
 						for (IGridConnection gc : set)
 						{
-							sideOut |= gc.getUsedChannels() << (4 * thisSide.ordinal());
+							if ( proxy.getNode().hasFlag( GridFlags.TIER_2_CAPACITY ) && gc.getOtherSide( proxy.getNode() ).hasFlag( GridFlags.TIER_2_CAPACITY ) )
+								sideOut |= (gc.getUsedChannels() / 4) << (4 * thisSide.ordinal());
+							else
+								sideOut |= (gc.getUsedChannels()) << (4 * thisSide.ordinal());
 						}
 					}
 				}
@@ -231,7 +241,10 @@ public class PartCable extends AEBasePart implements IPartCable
 				ForgeDirection side = gc.getDirection( n );
 				if ( side != ForgeDirection.UNKNOWN )
 				{
-					sideOut |= gc.getUsedChannels() << (4 * side.ordinal());
+					if ( proxy.getNode().hasFlag( GridFlags.TIER_2_CAPACITY ) && gc.getOtherSide( proxy.getNode() ).hasFlag( GridFlags.TIER_2_CAPACITY ) )
+						sideOut |= (gc.getUsedChannels() / 4) << (4 * side.ordinal());
+					else
+						sideOut |= gc.getUsedChannels() << (4 * side.ordinal());
 					cs |= (1 << side.ordinal());
 				}
 			}
@@ -562,12 +575,12 @@ public class PartCable extends AEBasePart implements IPartCable
 		boolean isGlass = false;
 		AEColor myColor = getCableColor();
 
-		if ( ghh != null && ccph != null && ghh.getCableConnectionType( of ) == AECableType.GLASS && ccph.getPart( of.getOpposite() ) == null )
+		if ( ghh != null && ccph != null && ghh.getCableConnectionType( of.getOpposite() ) == AECableType.GLASS && ccph.getPart( of.getOpposite() ) == null )
 		{
 			isGlass = true;
 			rh.setTexture( getGlassTexture( myColor = ccph.getColor() ) );
 		}
-		else if ( ccph == null && ghh != null && ghh.getCableConnectionType( of ) != AECableType.GLASS )
+		else if ( ccph == null && ghh != null && ghh.getCableConnectionType( of.getOpposite() ) != AECableType.GLASS )
 		{
 			rh.setTexture( getSmartTexture( myColor ) );
 			switch (of)

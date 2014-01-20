@@ -22,7 +22,7 @@ public class IMEInventoryDestination implements IInventoryDestination
 		if ( stack == null )
 			return false;
 
-		IAEItemStack failed = me.injectItems( AEItemStack.create( stack ), Actionable.SIMULATE );
+		IAEItemStack failed = me.injectItems( AEItemStack.create( stack ), Actionable.SIMULATE, null );
 
 		if ( failed == null )
 			return true;

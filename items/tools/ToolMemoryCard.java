@@ -21,6 +21,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	public ToolMemoryCard() {
 		super( ToolMemoryCard.class );
 		setfeature( EnumSet.of( AEFeature.Core ) );
+		setMaxStackSize( 1 );
 	}
 
 	@Override
@@ -39,7 +40,6 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	{
 		NBTTagCompound c = Platform.openNbtData( is );
 		c.setString( "Config", SettingsName );
-		;
 		c.setCompoundTag( "Data", data );
 	}
 
@@ -64,6 +64,9 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	@Override
 	public void notifyUser(Block blk, EntityPlayer player, MemoryCardMessages msg)
 	{
+		if ( Platform.isClient() )
+			return;
+
 		switch (msg)
 		{
 		case INVALID_MACHINE:

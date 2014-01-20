@@ -16,7 +16,7 @@ public class PartUpgradeable extends PartBasicState implements ISegmentedInvento
 {
 
 	IConfigManager settings = new ConfigManager( this );
-	private UpgradeInventory upgrades = new UpgradeInventory( this, 4 );
+	private UpgradeInventory upgrades = new UpgradeInventory( is.getItem(), this, 4 );
 
 	@Override
 	public int getInstalledUpgrades(Upgrades u)

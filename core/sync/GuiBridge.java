@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -14,24 +15,31 @@ import appeng.api.parts.IPartHost;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.client.gui.GuiNull;
 import appeng.container.ContainerNull;
-import appeng.container.implementations.ContainerBus;
-import appeng.container.implementations.ContainerCellWorkBench;
+import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerChest;
 import appeng.container.implementations.ContainerCondenser;
 import appeng.container.implementations.ContainerDrive;
 import appeng.container.implementations.ContainerGrinder;
+import appeng.container.implementations.ContainerIOPort;
 import appeng.container.implementations.ContainerInterface;
 import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.container.implementations.ContainerMEMonitorable;
+import appeng.container.implementations.ContainerMEPortableCell;
+import appeng.container.implementations.ContainerQNB;
+import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
+import appeng.helpers.ICellItemViewer;
+import appeng.helpers.IGuiItem;
 import appeng.helpers.IInterfaceHost;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.tile.grindstone.TileGrinder;
 import appeng.tile.misc.TileCellWorkbench;
 import appeng.tile.misc.TileCondenser;
 import appeng.tile.misc.TileVibrationChamber;
+import appeng.tile.qnb.TileQuantumBridge;
 import appeng.tile.storage.TileChest;
 import appeng.tile.storage.TileDrive;
+import appeng.tile.storage.TileIOPort;
 import appeng.util.Platform;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.relauncher.ReflectionHelper;
@@ -40,30 +48,37 @@ public enum GuiBridge implements IGuiHandler
 {
 	GUI_Handler(),
 
-	GUI_GRINDER(ContainerGrinder.class, TileGrinder.class),
+	GUI_GRINDER(ContainerGrinder.class, TileGrinder.class, false),
 
-	GUI_CHEST(ContainerChest.class, TileChest.class),
+	GUI_QNB(ContainerQNB.class, TileQuantumBridge.class, false),
 
-	GUI_ME(ContainerMEMonitorable.class, IStorageMonitorable.class),
+	GUI_CHEST(ContainerChest.class, TileChest.class, false),
 
-	GUI_DRIVE(ContainerDrive.class, TileDrive.class),
+	GUI_ME(ContainerMEMonitorable.class, IStorageMonitorable.class, false),
 
-	GUI_VIBRATIONCHAMBER(ContainerVibrationChamber.class, TileVibrationChamber.class),
+	GUI_PORTABLE_CELL(ContainerMEPortableCell.class, ICellItemViewer.class, true),
 
-	GUI_CONDENSER(ContainerCondenser.class, TileCondenser.class),
+	GUI_DRIVE(ContainerDrive.class, TileDrive.class, false),
 
-	GUI_INTERFACE(ContainerInterface.class, IInterfaceHost.class),
+	GUI_VIBRATIONCHAMBER(ContainerVibrationChamber.class, TileVibrationChamber.class, false),
 
-	GUI_BUS(ContainerBus.class, IBusCommon.class),
+	GUI_CONDENSER(ContainerCondenser.class, TileCondenser.class, false),
+
+	GUI_INTERFACE(ContainerInterface.class, IInterfaceHost.class, false),
+
+	GUI_BUS(ContainerUpgradeable.class, IBusCommon.class, false),
+
+	GUI_IOPORT(ContainerIOPort.class, TileIOPort.class, false),
 
 	// extends (Container/Gui) + Bus
-	GUI_LEVELEMITTER(ContainerLevelEmitter.class, PartLevelEmitter.class),
+	GUI_LEVELEMITTER(ContainerLevelEmitter.class, PartLevelEmitter.class, false),
 
-	GUI_CELLWORKBENCH(ContainerCellWorkBench.class, TileCellWorkbench.class);
+	GUI_CELLWORKBENCH(ContainerCellWorkbench.class, TileCellWorkbench.class, false);
 
 	private Class Tile;
 	private Class Gui;
 	private Class Container;
+	private boolean isItem;
 
 	private GuiBridge() {
 		Tile = null;
@@ -95,8 +110,9 @@ public enum GuiBridge implements IGuiHandler
 		getGui();
 	}
 
-	private GuiBridge(Class _Container, Class _Tile) {
+	private GuiBridge(Class _Container, Class _Tile, boolean isItem) {
 		Container = _Container;
+		this.isItem = isItem;
 		Tile = _Tile;
 		getGui();
 	}
@@ -145,22 +161,39 @@ public enum GuiBridge implements IGuiHandler
 		ForgeDirection side = ForgeDirection.getOrientation( ID_ORDINAL & 0x07 );
 		GuiBridge ID = values()[ID_ORDINAL >> 3];
 
-		TileEntity TE = w.getBlockTileEntity( x, y, z );
-
-		if ( TE instanceof IPartHost )
+		if ( ID.isItem() )
 		{
-			((IPartHost) TE).getPart( side );
-			IPart part = ((IPartHost) TE).getPart( side );
-			if ( ID.CorrectTileOrPart( part ) )
-				return ID.ConstructContainer( player.inventory, side, part );
+			ItemStack it = player.inventory.getCurrentItem();
+			if ( it != null && it.getItem() instanceof IGuiItem )
+			{
+				Object myItem = ((IGuiItem) it.getItem()).getGuiObject( it );
+				if ( ID.CorrectTileOrPart( myItem ) )
+					return ID.ConstructContainer( player.inventory, side, myItem );
+			}
 		}
 		else
 		{
-			if ( ID.CorrectTileOrPart( TE ) )
-				return ID.ConstructContainer( player.inventory, side, TE );
+			TileEntity TE = w.getBlockTileEntity( x, y, z );
+			if ( TE instanceof IPartHost )
+			{
+				((IPartHost) TE).getPart( side );
+				IPart part = ((IPartHost) TE).getPart( side );
+				if ( ID.CorrectTileOrPart( part ) )
+					return ID.ConstructContainer( player.inventory, side, part );
+			}
+			else
+			{
+				if ( ID.CorrectTileOrPart( TE ) )
+					return ID.ConstructContainer( player.inventory, side, TE );
+			}
 		}
 
 		return new ContainerNull();
+	}
+
+	private boolean isItem()
+	{
+		return isItem;
 	}
 
 	@Override
@@ -169,19 +202,32 @@ public enum GuiBridge implements IGuiHandler
 		ForgeDirection side = ForgeDirection.getOrientation( ID_ORDINAL & 0x07 );
 		GuiBridge ID = values()[ID_ORDINAL >> 3];
 
-		TileEntity TE = w.getBlockTileEntity( x, y, z );
-
-		if ( TE instanceof IPartHost )
+		if ( ID.isItem() )
 		{
-			((IPartHost) TE).getPart( side );
-			IPart part = ((IPartHost) TE).getPart( side );
-			if ( ID.CorrectTileOrPart( part ) )
-				return ID.ConstructGui( player.inventory, side, part );
+			ItemStack it = player.inventory.getCurrentItem();
+			if ( it != null && it.getItem() instanceof IGuiItem )
+			{
+				Object myItem = ((IGuiItem) it.getItem()).getGuiObject( it );
+				if ( ID.CorrectTileOrPart( myItem ) )
+					return ID.ConstructGui( player.inventory, side, myItem );
+			}
 		}
 		else
 		{
-			if ( ID.CorrectTileOrPart( TE ) )
-				return ID.ConstructGui( player.inventory, side, TE );
+			TileEntity TE = w.getBlockTileEntity( x, y, z );
+
+			if ( TE instanceof IPartHost )
+			{
+				((IPartHost) TE).getPart( side );
+				IPart part = ((IPartHost) TE).getPart( side );
+				if ( ID.CorrectTileOrPart( part ) )
+					return ID.ConstructGui( player.inventory, side, part );
+			}
+			else
+			{
+				if ( ID.CorrectTileOrPart( TE ) )
+					return ID.ConstructGui( player.inventory, side, TE );
+			}
 		}
 
 		return new GuiNull( new ContainerNull() );

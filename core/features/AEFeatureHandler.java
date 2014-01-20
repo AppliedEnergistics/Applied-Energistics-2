@@ -53,6 +53,9 @@ public class AEFeatureHandler implements AEItemDefinition
 		{
 			// simple hack to allow me to do get nice names for these without
 			// mode code outside of AEBaseItem
+			if ( subname.startsWith( "P2PTunnel" ) )
+				return "ItemPart.P2PTunnel";
+
 			if ( subname.equals( "CertusQuartzTools" ) )
 				return name.replace( "Quartz", "CertusQuartz" );
 			if ( subname.equals( "NetherQuartzTools" ) )

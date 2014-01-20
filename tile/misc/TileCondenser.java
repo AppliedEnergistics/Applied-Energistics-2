@@ -46,12 +46,14 @@ public class TileCondenser extends AEBaseInvTile implements IAEAppEngInventory, 
 		@Override
 		public void writeToNBT(NBTTagCompound data)
 		{
+			cm.writeToNBT( data );
 			data.setDouble( "storedPower", storedPower );
 		}
 
 		@Override
 		public void readFromNBT(NBTTagCompound data)
 		{
+			cm.readFromNBT( data );
 			storedPower = data.getDouble( "storedPower" );
 		}
 

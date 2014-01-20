@@ -7,13 +7,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.integration.modules.BC;
 
-public class WrapperPipe implements IInventory
+public class WrapperBCPipe implements IInventory
 {
 
 	TileEntity ad;
 	ForgeDirection dir;
 
-	public WrapperPipe(TileEntity te, ForgeDirection d) {
+	public WrapperBCPipe(TileEntity te, ForgeDirection d) {
 		ad = te;
 		dir = d;
 	}

@@ -51,8 +51,33 @@ public class EnergyGridCache implements IEnergyGrid
 	double prev_extra = 0;
 	double extra = 0;
 
+	IAEPowerStorage lastProvider;
 	Set<IAEPowerStorage> providers = new LinkedHashSet();
+
+	IAEPowerStorage lastRequestor;
 	Set<IAEPowerStorage> requesters = new LinkedHashSet();
+
+	private IAEPowerStorage getFirstRequestor()
+	{
+		if ( lastRequestor == null )
+		{
+			Iterator<IAEPowerStorage> i = requesters.iterator();
+			lastRequestor = i.hasNext() ? i.next() : null;
+		}
+
+		return lastRequestor;
+	}
+
+	private IAEPowerStorage getFirstProvider()
+	{
+		if ( lastProvider == null )
+		{
+			Iterator<IAEPowerStorage> i = providers.iterator();
+			lastProvider = i.hasNext() ? i.next() : null;
+		}
+
+		return lastProvider;
+	}
 
 	Set<IEnergyGridProvider> gproviders = new LinkedHashSet();
 
@@ -131,11 +156,14 @@ public class EnergyGridCache implements IEnergyGrid
 		{
 			while (i > 0 && !requesters.isEmpty())
 			{
-				IAEPowerStorage node = requesters.iterator().next();
+				IAEPowerStorage node = getFirstRequestor();
 
 				i = node.injectAEPower( i, Actionable.MODULATE );
 				if ( i > 0 )
+				{
 					requesters.remove( node );
+					lastRequestor = null;
+				}
 			}
 
 			extra = i;
@@ -145,10 +173,13 @@ public class EnergyGridCache implements IEnergyGrid
 		return i;
 	}
 
+	Set<IEnergyGrid> seen = new HashSet();
+
 	@Override
 	public double extractAEPower(double amt, Actionable mode, PowerMultiplier pm)
 	{
-		return pm.divide( extractAEPower( pm.multiply( amt ), mode, new HashSet() ) );
+		seen.clear();
+		return pm.divide( extractAEPower( pm.multiply( amt ), mode, seen ) );
 	}
 
 	@Override
@@ -203,42 +234,14 @@ public class EnergyGridCache implements IEnergyGrid
 			if ( ps.getPowerFlow() != AccessRestriction.WRITE )
 				globalAvailablePower -= ps.getAECurrentPower();
 
+			if ( lastProvider == machine )
+				lastProvider = null;
+
+			if ( lastRequestor == machine )
+				lastRequestor = null;
+
 			providers.remove( machine );
 			requesters.remove( machine );
-		}
-	}
-
-	// recalculate the whole thing?
-	public void reset(IGrid grid)
-	{
-		providers = new LinkedHashSet();
-		requesters = new LinkedHashSet();
-
-		// re-calculate power info
-		for (Class c : grid.getMachinesClasses())
-		{
-			if ( IAEPowerStorage.class.isAssignableFrom( c ) )
-			{
-				for (Object obj : grid.getMachines( c ))
-				{
-					IAEPowerStorage ps = (IAEPowerStorage) obj;
-					if ( ps.isAEPublicPowerStorage() )
-					{
-						double max = ps.getAEMaxPower();
-						double current = ps.getAECurrentPower();
-
-						if ( current > 0 && ps.getPowerFlow() != AccessRestriction.WRITE )
-						{
-							providers.add( ps );
-							globalAvailablePower += ps.getAECurrentPower();
-						}
-
-						if ( current < max && ps.getPowerFlow() != AccessRestriction.READ )
-							requesters.add( ps );
-
-					}
-				}
-			}
 		}
 	}
 
@@ -280,7 +283,6 @@ public class EnergyGridCache implements IEnergyGrid
 
 	private void publicPowerState(boolean newState, IGrid grid)
 	{
-
 		if ( publicHasPower == newState )
 			return;
 
@@ -311,44 +313,18 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public double extractAEPower(double amt, Actionable mode, Set<IEnergyGrid> seen)
 	{
-		if ( seen.contains( this ) )
+		if ( !seen.add( this ) )
 			return 0;
-
-		seen.add( this );
 
 		double extractedPower = extra;
 
 		if ( mode == Actionable.SIMULATE )
 		{
-			Iterator<IAEPowerStorage> it = providers.iterator();
-			while (extractedPower < amt && it.hasNext())
-			{
-				IAEPowerStorage node = it.next();
-
-				double req = amt - extractedPower;
-				double newPower = node.extractAEPower( req, Actionable.SIMULATE, PowerMultiplier.ONE );
-				extractedPower += newPower;
-			}
+			extractedPower += simulateExtract( extractedPower, amt );
+			return extractedPower;
 		}
 		else
-		{
-			extra = 0;
-
-			while (extractedPower < amt && !providers.isEmpty())
-			{
-				IAEPowerStorage node = providers.iterator().next();
-
-				double req = amt - extractedPower;
-				double newPower = node.extractAEPower( req, Actionable.MODULATE, PowerMultiplier.ONE );
-				extractedPower += newPower;
-
-				if ( newPower < req )
-					providers.remove( node );
-			}
-
-			// add power used to the current tick.
-			totalDrainPastTicks[0] += extractedPower;
-		}
+			extractedPower += doExtract( extractedPower, amt );
 
 		// got more then we wanted?
 		if ( extractedPower > amt )
@@ -361,12 +337,52 @@ public class EnergyGridCache implements IEnergyGrid
 
 		if ( extractedPower < amt )
 		{
-			for (IEnergyGridProvider egp : gproviders)
-				extractedPower += egp.extractAEPower( amt - extractedPower, mode, seen );
+			Iterator<IEnergyGridProvider> i = gproviders.iterator();
+			while (extractedPower < amt && i.hasNext())
+				extractedPower += i.next().extractAEPower( amt - extractedPower, mode, seen );
 		}
 
 		// go less or the correct amount?
 		globalAvailablePower -= extractedPower;
+		return extractedPower;
+	}
+
+	private double doExtract(double extractedPower, double amt)
+	{
+		extra = 0;
+
+		while (extractedPower < amt && !providers.isEmpty())
+		{
+			IAEPowerStorage node = getFirstProvider();
+
+			double req = amt - extractedPower;
+			double newPower = node.extractAEPower( req, Actionable.MODULATE, PowerMultiplier.ONE );
+			extractedPower += newPower;
+
+			if ( newPower < req )
+			{
+				providers.remove( node );
+				lastProvider = null;
+			}
+		}
+
+		totalDrainPastTicks[0] += extractedPower;
+		return extractedPower;
+	}
+
+	private double simulateExtract(double extractedPower, double amt)
+	{
+		Iterator<IAEPowerStorage> it = providers.iterator();
+
+		while (extractedPower < amt && it.hasNext())
+		{
+			IAEPowerStorage node = it.next();
+
+			double req = amt - extractedPower;
+			double newPower = node.extractAEPower( req, Actionable.SIMULATE, PowerMultiplier.ONE );
+			extractedPower += newPower;
+		}
+
 		return extractedPower;
 	}
 

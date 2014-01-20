@@ -1,18 +1,22 @@
 package appeng.me.storage;
 
 import net.minecraft.item.ItemStack;
+import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.exceptions.AppEngException;
-import appeng.api.implementations.IStorageCell;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.util.Platform;
+import appeng.api.storage.data.IItemList;
+import appeng.items.storage.CellConfig;
+import appeng.util.item.AEItemStack;
 import appeng.util.item.ItemList;
 
-public class CreativeCellInventory extends CellInventory implements IStorageCell
+public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 {
 
-	ItemList itemListCache;
+	ItemList<IAEItemStack> itemListCache = new ItemList();
 
 	public static IMEInventoryHandler getCell(ItemStack o)
 	{
@@ -28,58 +32,20 @@ public class CreativeCellInventory extends CellInventory implements IStorageCell
 	}
 
 	protected CreativeCellInventory(ItemStack o) throws AppEngException {
-		super( Platform.openNbtData( o ) );
-
-		if ( MAX_ITEM_TYPES > 63 )
-			MAX_ITEM_TYPES = 63;
-		if ( MAX_ITEM_TYPES < 1 )
-			MAX_ITEM_TYPES = 1;
-
-		storedItems = tagCompound.getShort( ITEM_TYPE_TAG );
-		storedItemCount = tagCompound.getInteger( ITEM_COUNT_TAG );
-		cellItems = null;
+		CellConfig cc = new CellConfig( o );
+		for (ItemStack is : cc)
+			if ( is != null )
+			{
+				IAEItemStack i = AEItemStack.create( is );
+				i.setStackSize( Integer.MAX_VALUE );
+				itemListCache.add( i );
+			}
 	}
 
 	@Override
-	public boolean isStorageCell(ItemStack i)
+	public IAEItemStack injectItems(IAEItemStack input, Actionable mode, BaseActionSource src)
 	{
-		return true;
-	}
-
-	@Override
-	public int getBytes(ItemStack cellItem)
-	{
-		return 0;
-	}
-
-	@Override
-	public int BytePerType(ItemStack iscellItem)
-	{
-		return 8;
-	}
-
-	@Override
-	public int getTotalTypes(ItemStack cellItem)
-	{
-		return 63;
-	}
-
-	@Override
-	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requsetedAddition)
-	{
-		return false;
-	}
-
-	@Override
-	public boolean storableInStorageCell()
-	{
-		return false;
-	}
-
-	@Override
-	public IAEItemStack injectItems(IAEItemStack input, Actionable mode)
-	{
-		IAEItemStack local = getCellItems().findPrecise( input );
+		IAEItemStack local = itemListCache.findPrecise( input );
 		if ( local == null )
 			return input;
 
@@ -87,9 +53,9 @@ public class CreativeCellInventory extends CellInventory implements IStorageCell
 	}
 
 	@Override
-	public IAEItemStack extractItems(IAEItemStack request, Actionable mode)
+	public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src)
 	{
-		IAEItemStack local = getCellItems().findPrecise( request );
+		IAEItemStack local = itemListCache.findPrecise( request );
 		if ( local == null )
 			return null;
 
@@ -97,22 +63,47 @@ public class CreativeCellInventory extends CellInventory implements IStorageCell
 	}
 
 	@Override
-	ItemList<IAEItemStack> getCellItems()
+	public IItemList<IAEItemStack> getAvailableItems(IItemList out)
 	{
-		if ( itemListCache != null )
-			return itemListCache;
+		for (IAEItemStack ais : itemListCache)
+			out.add( ais );
+		return out;
+	}
 
-		ItemList list = new ItemList();
-		CellInventoryHandler handler = new CellInventoryHandler( this );
+	@Override
+	public StorageChannel getChannel()
+	{
+		return StorageChannel.ITEMS;
+	}
 
-		for (IAEItemStack is : handler.myPartitionList.getItems())
-		{
-			IAEItemStack b = is.copy();
-			b.setStackSize( Integer.MAX_VALUE );
-			list.add( b );
-		}
+	@Override
+	public AccessRestriction getAccess()
+	{
+		return AccessRestriction.READ_WRITE;
+	}
 
-		return itemListCache = list;
+	@Override
+	public boolean isPrioritized(IAEItemStack input)
+	{
+		return itemListCache.findPrecise( input ) != null;
+	}
+
+	@Override
+	public boolean canAccept(IAEItemStack input)
+	{
+		return itemListCache.findPrecise( input ) != null;
+	}
+
+	@Override
+	public int getPriority()
+	{
+		return 0;
+	}
+
+	@Override
+	public int getSlot()
+	{
+		return 0;
 	}
 
 }

@@ -15,7 +15,7 @@ import appeng.core.sync.packets.PacketValueConfig;
 import appeng.parts.automation.PartLevelEmitter;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
-public class GuiLevelEmitter extends GuiBus
+public class GuiLevelEmitter extends GuiUpgradeable
 {
 
 	GuiTextField level;
@@ -28,7 +28,7 @@ public class GuiLevelEmitter extends GuiBus
 	public void initGui()
 	{
 		super.initGui();
-		level = new GuiTextField( this.fontRenderer, this.guiLeft + 10, this.guiTop + 43, 59, this.fontRenderer.FONT_HEIGHT );
+		level = new GuiTextField( this.fontRenderer, this.guiLeft + 44, this.guiTop + 43, 59, this.fontRenderer.FONT_HEIGHT );
 		level.setEnableBackgroundDrawing( false );
 		level.setMaxStringLength( 16 );
 		level.setTextColor( 0xFFFFFF );
@@ -40,8 +40,8 @@ public class GuiLevelEmitter extends GuiBus
 	@Override
 	protected void addButtons()
 	{
-		redstoneMode = new GuiImgButton( 122 + guiLeft, 31 + guiTop, Settings.REDSTONE_EMITTER, RedstoneMode.IGNORE );
-		fuzzyMode = new GuiImgButton( 122 + guiLeft, 49 + guiTop, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		redstoneMode = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.REDSTONE_EMITTER, RedstoneMode.IGNORE );
+		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 
 		buttonList.add( redstoneMode );
 		buttonList.add( fuzzyMode );

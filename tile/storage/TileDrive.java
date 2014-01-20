@@ -24,9 +24,11 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.GridAccessException;
+import appeng.me.storage.DriveWatcher;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
@@ -43,7 +45,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive
 
 	boolean isCached = false;
 	ICellHandler handlersBySlot[] = new ICellHandler[10];
-	IMEInventoryHandler invBySlot[] = new IMEInventoryHandler[10];
+	DriveWatcher<IAEItemStack> invBySlot[] = new DriveWatcher[10];
 	List<MEInventoryHandler> items = new LinkedList();
 	List<MEInventoryHandler> fluids = new LinkedList();
 
@@ -202,7 +204,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive
 
 						if ( cell != null )
 						{
-							MEInventoryHandler ih = new MEInventoryHandler( cell );
+							DriveWatcher<IAEItemStack> ih = new DriveWatcher( cell, is, handlersBySlot[x], this );
 							ih.myPriority = priority;
 							invBySlot[x] = ih;
 							items.add( ih );
@@ -213,7 +215,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive
 
 							if ( cell != null )
 							{
-								MEInventoryHandler ih = new MEInventoryHandler( cell );
+								DriveWatcher<IAEItemStack> ih = new DriveWatcher( cell, is, handlersBySlot[x], this );
 								ih.myPriority = priority;
 								invBySlot[x] = ih;
 								fluids.add( ih );
@@ -255,6 +257,8 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive
 		lastStateChange = now;
 
 		state |= 1 << (slot * 3 + 2);
+
+		recalculateDisplay();
 	}
 
 	@Override
@@ -276,20 +280,20 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive
 		ItemStack cell = inv.getStackInSlot( 2 );
 		ICellHandler ch = handlersBySlot[slot];
 
-		IMEInventoryHandler handler = invBySlot[slot];
+		MEInventoryHandler handler = invBySlot[slot];
 		if ( handler == null )
 			return 0;
 
 		if ( handler.getChannel() == StorageChannel.ITEMS )
 		{
 			if ( ch != null )
-				return ch.getStatusForCell( cell, handler );
+				return ch.getStatusForCell( cell, handler.getInternal() );
 		}
 
 		if ( handler.getChannel() == StorageChannel.FLUIDS )
 		{
 			if ( ch != null )
-				return ch.getStatusForCell( cell, handler );
+				return ch.getStatusForCell( cell, handler.getInternal() );
 		}
 
 		return 0;

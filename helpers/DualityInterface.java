@@ -127,7 +127,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	@Override
 	public boolean canInsert(ItemStack stack)
 	{
-		IAEItemStack out = destination.injectItems( AEApi.instance().storage().createItemStack( stack ), Actionable.SIMULATE );
+		IAEItemStack out = destination.injectItems( AEApi.instance().storage().createItemStack( stack ), Actionable.SIMULATE, null );
 		if ( out == null )
 			return true;
 		return out.getStackSize() != stack.stackSize;
@@ -188,21 +188,21 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		}
 
 		@Override
-		public IAEItemStack injectItems(IAEItemStack input, Actionable type)
+		public IAEItemStack injectItems(IAEItemStack input, Actionable type, BaseActionSource src)
 		{
 			if ( interfaceRequest )
 				return input;
 
-			return super.injectItems( input, type );
+			return super.injectItems( input, type, src );
 		}
 
 		@Override
-		public IAEItemStack extractItems(IAEItemStack request, Actionable type)
+		public IAEItemStack extractItems(IAEItemStack request, Actionable type, BaseActionSource src)
 		{
 			if ( interfaceRequest )
 				return null;
 
-			return super.extractItems( request, type );
+			return super.extractItems( request, type, src );
 		}
 
 	};

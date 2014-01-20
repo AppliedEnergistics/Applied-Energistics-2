@@ -14,13 +14,11 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.core.AELog;
 import appeng.me.cache.helpers.TickTracker;
-import appeng.util.Platform;
 
 public class TickManagerCache implements ITickManager
 {
 
 	private long currentTick = 0;
-	private long lastInnerTime = 0;
 
 	final IGrid myGrid;
 
@@ -38,11 +36,6 @@ public class TickManagerCache implements ITickManager
 	public long getCurrentTick()
 	{
 		return currentTick;
-	}
-
-	public long getInnerTime()
-	{
-		return lastInnerTime;
 	}
 
 	public long getAvgNanoTime(IGridNode node)
@@ -70,13 +63,7 @@ public class TickManagerCache implements ITickManager
 			{
 				// remove tt..
 				upcomingTicks.poll();
-
-				long startTime = Platform.nanoTime();
 				TickRateModulation mod = tt.gt.tickingRequest( tt.node, diff );
-				long estimatedTime = Platform.nanoTime() - startTime;
-				lastInnerTime += estimatedTime;
-
-				tt.LastFiveTicksTime = ((tt.LastFiveTicksTime * 4) / 5) + estimatedTime;
 
 				switch (mod)
 				{

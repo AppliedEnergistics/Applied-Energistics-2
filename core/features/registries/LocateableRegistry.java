@@ -2,6 +2,7 @@ package appeng.core.features.registries;
 
 import java.util.HashMap;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import appeng.api.events.LocatableEventAnnounce;
 import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
@@ -23,7 +24,8 @@ public class LocateableRegistry implements ILocateableRegistry
 		if ( e.change == LocatableEvent.Register )
 		{
 			set.put( e.target.getLocatableSerial(), e.target );
-		} else if ( e.change == LocatableEvent.Unregister )
+		}
+		else if ( e.change == LocatableEvent.Unregister )
 		{
 			set.remove( e.target.getLocatableSerial() );
 		}
@@ -31,6 +33,7 @@ public class LocateableRegistry implements ILocateableRegistry
 
 	public LocateableRegistry() {
 		set = new HashMap();
+		MinecraftForge.EVENT_BUS.register( this );
 	}
 
 	/**

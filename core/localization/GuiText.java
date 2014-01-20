@@ -7,27 +7,27 @@ public enum GuiText
 {
 	inventory("container"), // mc's default Inventory localization.
 
-	Chest, StoredEnergy, Of, Condenser, Drive, GrindStone, VibrationChamber, SpatialIOPort, NetworkStatus, LevelEmitter, Terminal, Interface, Config, StoredItems, Patterns, ImportBus, ExportBus, CellWorkbench;
+	Chest, StoredEnergy, Of, Condenser, Drive, GrindStone, VibrationChamber, SpatialIOPort, LevelEmitter, Terminal, Interface, Config, StoredItems, Patterns, ImportBus, ExportBus, CellWorkbench, NetworkDetails, StorageCells, IOBuses, IOPort, BytesUsed, Types, QuantumLinkChamber, PortableCell;
 
 	String root;
 
 	GuiText() {
 		root = "gui.appliedenergistics2";
-		AELog.localization( "gui", getName() );
+		AELog.localization( "gui", getUnlocalized() );
 	}
 
 	GuiText(String r) {
 		root = r;
 	}
 
-	private String getName()
+	public String getUnlocalized()
 	{
 		return root + "." + toString();
 	}
 
 	public String getLocal()
 	{
-		return StatCollector.translateToLocal( getName() );
+		return StatCollector.translateToLocal( getUnlocalized() );
 	}
 
 }

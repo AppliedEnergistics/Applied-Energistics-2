@@ -3,6 +3,7 @@ package appeng.me.storage;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
@@ -33,18 +34,18 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	}
 
 	@Override
-	public T injectItems(T input, Actionable type)
+	public T injectItems(T input, Actionable type, BaseActionSource src)
 	{
 		if ( !this.canAccept( input ) )
 			return input;
 
-		return internal.injectItems( input, type );
+		return internal.injectItems( input, type, src );
 	}
 
 	@Override
-	public T extractItems(T request, Actionable type)
+	public T extractItems(T request, Actionable type, BaseActionSource src)
 	{
-		return internal.extractItems( request, type );
+		return internal.extractItems( request, type, src );
 	}
 
 	@Override
@@ -97,6 +98,11 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	public int getSlot()
 	{
 		return internal.getSlot();
+	}
+
+	public IMEInventory getInternal()
+	{
+		return internal;
 	}
 
 }

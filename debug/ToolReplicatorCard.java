@@ -25,7 +25,7 @@ public class ToolReplicatorCard extends AEBaseItem
 
 	public ToolReplicatorCard() {
 		super( ToolReplicatorCard.class );
-		setfeature( EnumSet.of( AEFeature.Creative ) );
+		setfeature( EnumSet.of( AEFeature.Debug, AEFeature.Creative ) );
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class ToolReplicatorCard extends AEBaseItem
 												TileEntity nte = blk.createTileEntity( world, meta );
 												NBTTagCompound data = new NBTTagCompound();
 												ote.writeToNBT( data );
-												nte.readFromNBT( data );
+												nte.readFromNBT( (NBTTagCompound) data.copy() );
 												world.setBlockTileEntity( i + rel_x, j + rel_y, k + rel_z, nte );
 											}
 											world.markBlockForUpdate( i + rel_x, j + rel_y, k + rel_z );

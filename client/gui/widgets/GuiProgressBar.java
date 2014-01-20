@@ -28,6 +28,8 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 
 	public GuiProgressBar(String string, int posX, int posY, int u, int y, int _width, int _height, Direction dir) {
 		super( posX, posY, _width, "" );
+		this.xPosition = posX;
+		this.yPosition = posY;
 		texture = new ResourceLocation( "appliedenergistics2", "textures/" + string );
 		width = _width;
 		height = _height;

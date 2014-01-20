@@ -11,7 +11,6 @@ import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderDrive;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
-import appeng.tile.misc.TileInterface;
 import appeng.tile.storage.TileDrive;
 import appeng.util.Platform;
 
@@ -36,7 +35,7 @@ public class BlockDrive extends AEBaseBlock
 		if ( p.isSneaking() )
 			return false;
 
-		TileInterface tg = getTileEntity( w, x, y, z );
+		TileDrive tg = getTileEntity( w, x, y, z );
 		if ( tg != null )
 		{
 			if ( Platform.isServer() )

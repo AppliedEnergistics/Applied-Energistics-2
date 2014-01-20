@@ -27,6 +27,7 @@ import appeng.api.implementations.IMemoryCard;
 import appeng.api.implementations.MemoryCardMessages;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
+import appeng.block.networking.BlockCableBus;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
 import appeng.client.render.WorldRender;
@@ -631,7 +632,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 					return false;
 				}
 
-				if ( is.getItem() instanceof IMemoryCard )
+				if ( is.getItem() instanceof IMemoryCard && !(this instanceof BlockCableBus) )
 				{
 					IMemoryCard memc = (IMemoryCard) is.getItem();
 					if ( player.isSneaking() )

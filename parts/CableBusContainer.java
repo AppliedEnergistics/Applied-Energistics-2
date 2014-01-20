@@ -21,8 +21,10 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import powercrystals.minefactoryreloaded.api.rednet.RedNetConnectionType;
 import appeng.api.AEApi;
 import appeng.api.implementations.IPartCable;
+import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
@@ -30,6 +32,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
+import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
@@ -42,7 +45,7 @@ import appeng.helpers.AEMultiTile;
 import appeng.me.GridConnection;
 import appeng.util.Platform;
 
-public class CableBusContainer implements AEMultiTile
+public class CableBusContainer implements AEMultiTile, ICableBusContainer
 {
 
 	private IPartCable center;
@@ -128,10 +131,22 @@ public class CableBusContainer implements AEMultiTile
 			IPart bp = bi.createPartFromItemStack( is );
 			if ( bp instanceof IPartCable )
 			{
+				boolean hasParts = false;
+				for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
+					if ( getPart( d ) != null )
+						hasParts = true;
+
+				if ( hasParts && !((IPartCable) bp).supportsBuses() )
+					return false;
+
 				return getPart( ForgeDirection.UNKNOWN ) == null;
 			}
 			else if ( !(bp instanceof IPartCable) && side != ForgeDirection.UNKNOWN )
 			{
+				IPart cable = getPart( ForgeDirection.UNKNOWN );
+				if ( cable != null && !((IPartCable) cable).supportsBuses() )
+					return false;
+
 				return getPart( side ) == null;
 			}
 		}
@@ -153,6 +168,14 @@ public class CableBusContainer implements AEMultiTile
 				IPart bp = bi.createPartFromItemStack( is );
 				if ( bp instanceof IPartCable )
 				{
+					boolean hasParts = false;
+					for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
+						if ( getPart( d ) != null )
+							hasParts = true;
+
+					if ( hasParts && !((IPartCable) bp).supportsBuses() )
+						return null;
+
 					if ( getPart( ForgeDirection.UNKNOWN ) != null )
 						return null;
 
@@ -184,6 +207,10 @@ public class CableBusContainer implements AEMultiTile
 				}
 				else if ( !(bp instanceof IPartCable) && side != ForgeDirection.UNKNOWN )
 				{
+					IPart cable = getPart( ForgeDirection.UNKNOWN );
+					if ( cable != null && !((IPartCable) cable).supportsBuses() )
+						return null;
+
 					sides[side.ordinal()] = bp;
 					bp.setPartHostInfo( side, this, this.getTile() );
 
@@ -585,7 +612,7 @@ public class CableBusContainer implements AEMultiTile
 			IPart p = getPart( ForgeDirection.getOrientation( x ) );
 			if ( p != null )
 			{
-				is = p.getItemStack( false );
+				is = p.getItemStack( PartItemStack.Network );
 				is.setTagCompound( null );
 
 				data.writeShort( is.getItem().itemID );
@@ -613,7 +640,7 @@ public class CableBusContainer implements AEMultiTile
 				short itemID = data.readShort();
 				short dmgValue = data.readShort();
 
-				ItemStack current = p != null ? p.getItemStack( false ) : null;
+				ItemStack current = p != null ? p.getItemStack( PartItemStack.Network ) : null;
 				if ( current != null && current.getItem().itemID == itemID && current.getItemDamage() == dmgValue )
 					p.readFromStream( data );
 				else
@@ -661,7 +688,7 @@ public class CableBusContainer implements AEMultiTile
 			if ( part != null )
 			{
 				NBTTagCompound def = new NBTTagCompound();
-				part.getItemStack( false ).writeToNBT( def );
+				part.getItemStack( PartItemStack.World ).writeToNBT( def );
 
 				NBTTagCompound extra = new NBTTagCompound();
 				part.writeToNBT( extra );
@@ -689,7 +716,7 @@ public class CableBusContainer implements AEMultiTile
 				if ( iss == null )
 					continue;
 
-				ItemStack current = p == null ? null : p.getItemStack( false );
+				ItemStack current = p == null ? null : p.getItemStack( PartItemStack.World );
 
 				if ( Platform.isSameItemType( iss, current ) )
 					p.readFromNBT( extra );
@@ -718,7 +745,7 @@ public class CableBusContainer implements AEMultiTile
 			IPart part = getPart( s );
 			if ( part != null )
 			{
-				drops.add( part.getItemStack( false ) );
+				drops.add( part.getItemStack( PartItemStack.Break ) );
 				part.getDrops( drops, false );
 			}
 
@@ -754,6 +781,14 @@ public class CableBusContainer implements AEMultiTile
 	@Override
 	public AECableType getCableConnectionType(ForgeDirection dir)
 	{
+		IPart part = getPart( dir );
+		if ( part != null && part instanceof IGridHost )
+		{
+			AECableType t = ((IGridHost) part).getCableConnectionType( dir );
+			if ( t != null && t != AECableType.NONE )
+				return t;
+		}
+
 		if ( center != null )
 		{
 			IPartCable c = center;
@@ -916,6 +951,38 @@ public class CableBusContainer implements AEMultiTile
 		}
 
 		return false;
+	}
+
+	@Override
+	public RedNetConnectionType getConnectionType(World world, int x, int y, int z, ForgeDirection side)
+	{
+		return getPart( side ).canConnectRedstone() ? RedNetConnectionType.CableSingle : RedNetConnectionType.None;
+	}
+
+	@Override
+	public int[] getOutputValues(World world, int x, int y, int z, ForgeDirection side)
+	{
+		// never called
+		return null;
+	}
+
+	@Override
+	public int getOutputValue(World world, int x, int y, int z, ForgeDirection side, int subnet)
+	{
+		// never called
+		return 0;
+	}
+
+	@Override
+	public void onInputsChanged(World world, int x, int y, int z, ForgeDirection side, int[] inputValues)
+	{
+		// never called
+	}
+
+	@Override
+	public void onInputChanged(World world, int x, int y, int z, ForgeDirection side, int inputValue)
+	{
+		// never called
 	}
 
 }

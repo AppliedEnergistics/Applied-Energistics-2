@@ -14,28 +14,28 @@ import appeng.api.config.Upgrades;
 import appeng.api.implementations.IBusCommon;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiImgButton;
-import appeng.container.implementations.ContainerBus;
+import appeng.container.implementations.ContainerUpgradeable;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.parts.automation.PartImportBus;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
-public class GuiBus extends AEBaseGui
+public class GuiUpgradeable extends AEBaseGui
 {
 
-	ContainerBus cvb;
+	ContainerUpgradeable cvb;
 	IBusCommon bc;
 
 	GuiImgButton redstoneMode;
 	GuiImgButton fuzzyMode;
 
-	public GuiBus(InventoryPlayer inventoryPlayer, IBusCommon te) {
-		this( new ContainerBus( inventoryPlayer, te ) );
+	public GuiUpgradeable(InventoryPlayer inventoryPlayer, IBusCommon te) {
+		this( new ContainerUpgradeable( inventoryPlayer, te ) );
 	}
 
-	public GuiBus(ContainerBus te) {
+	public GuiUpgradeable(ContainerUpgradeable te) {
 		super( te );
-		cvb = (ContainerBus) te;
+		cvb = (ContainerUpgradeable) te;
 
 		bc = (IBusCommon) te.getTarget();
 		this.xSize = hasToolbox() ? 246 : 211;
@@ -58,12 +58,21 @@ public class GuiBus extends AEBaseGui
 		buttonList.add( fuzzyMode );
 	}
 
-	protected void mouseClicked(int par1, int par2, int par3)
+	protected void mouseClicked(int xCoord, int yCoord, int btn)
 	{
-		if ( par3 == 1 )
-			super.mouseClicked( par1, par2, 0 );
-		else
-			super.mouseClicked( par1, par2, par3 );
+		if ( btn == 1 )
+		{
+			for (Object o : this.buttonList)
+			{
+				GuiButton guibutton = (GuiButton) o;
+				if ( guibutton.mousePressed( this.mc, xCoord, yCoord ) )
+				{
+					super.mouseClicked( xCoord, yCoord, 0 );
+					return;
+				}
+			}
+		}
+		super.mouseClicked( xCoord, yCoord, btn );
 	}
 
 	@Override
@@ -88,9 +97,9 @@ public class GuiBus extends AEBaseGui
 		}
 	}
 
-	private boolean hasToolbox()
+	protected boolean hasToolbox()
 	{
-		return ((ContainerBus) inventorySlots).hasToolbox();
+		return ((ContainerUpgradeable) inventorySlots).hasToolbox();
 	}
 
 	@Override
@@ -99,10 +108,16 @@ public class GuiBus extends AEBaseGui
 		handleButtonVisiblity();
 
 		bindTexture( getBackground() );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, xSize - 34, ySize );
-		this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 86 );
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, ySize );
+		if ( drawUpgrades() )
+			this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 10 + cvb.availableUpgrades() * 18 );
 		if ( hasToolbox() )
-			this.drawTexturedModalRect( offsetX + 178, offsetY + 94, 178, 94, 68, 68 );
+			this.drawTexturedModalRect( offsetX + 178, offsetY + ySize - 90, 178, ySize - 90, 68, 68 );
+	}
+
+	protected boolean drawUpgrades()
+	{
+		return true;
 	}
 
 	protected String getBackground()
@@ -112,8 +127,10 @@ public class GuiBus extends AEBaseGui
 
 	protected void handleButtonVisiblity()
 	{
-		redstoneMode.setVisibility( bc.getInstalledUpgrades( Upgrades.REDSTONE ) > 0 );
-		fuzzyMode.setVisibility( bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );
+		if ( redstoneMode != null )
+			redstoneMode.setVisibility( bc.getInstalledUpgrades( Upgrades.REDSTONE ) > 0 );
+		if ( fuzzyMode != null )
+			fuzzyMode.setVisibility( bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );
 	}
 
 	@Override

@@ -22,6 +22,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.PartItemStack;
 
 public class PartCableAnchor implements IPart
 {
@@ -65,7 +66,7 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public ItemStack getItemStack(boolean wrenched)
+	public ItemStack getItemStack(PartItemStack wrenched)
 	{
 		return is;
 	}
@@ -194,5 +195,17 @@ public class PartCableAnchor implements IPart
 	public boolean isLadder(EntityLivingBase entity)
 	{
 		return mySide.offsetY == 0;
+	}
+
+	@Override
+	public boolean onShiftActivate(EntityPlayer player, Vec3 pos)
+	{
+		return false;
+	}
+
+	@Override
+	public void onPlacement(EntityPlayer player, ItemStack held, ForgeDirection side)
+	{
+
 	}
 }

@@ -9,9 +9,9 @@ import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPart;
 import appeng.api.parts.IFacadePart;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartItem;
 import appeng.client.ClientHelper;
 import appeng.facade.IFacadeItem;
 import appeng.util.Platform;
@@ -68,6 +68,10 @@ public class BusRenderer implements IItemRenderer
 		BusRenderHelper.instance.setTexture( null );
 		BusRenderHelper.instance.setInvColor( 0xffffff );
 		renderer.blockAccess = ClientHelper.proxy.getWorld();
+
+		BusRenderHelper.instance.ax = ForgeDirection.EAST;
+		BusRenderHelper.instance.ay = ForgeDirection.UP;
+		BusRenderHelper.instance.az = ForgeDirection.SOUTH;
 
 		if ( item.getItem() instanceof IFacadeItem )
 		{

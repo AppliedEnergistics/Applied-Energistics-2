@@ -66,6 +66,11 @@ public abstract class AEBaseContainer extends Container
 		return ((AppEngSlot) s).isDraggable;
 	}
 
+	public InventoryPlayer getPlayerInv()
+	{
+		return invPlayer;
+	}
+
 	public TileEntity getTileEntity()
 	{
 		return tileEntity;

@@ -18,6 +18,7 @@ import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.container.slot.AppEngSlot;
 import appeng.core.Configuration;
 import appeng.core.localization.GuiText;
+import appeng.helpers.ICellItemViewer;
 import appeng.parts.reporting.PartTerminal;
 import appeng.util.Platform;
 
@@ -29,6 +30,7 @@ public class GuiMEMonitorable extends AEBaseMEGui
 
 	GuiText myName;
 	int rows = 0;
+	int maxRows = Integer.MAX_VALUE;
 
 	public GuiMEMonitorable(InventoryPlayer inventoryPlayer, IStorageMonitorable te) {
 		super( new ContainerMEMonitorable( inventoryPlayer, null ) );
@@ -37,6 +39,8 @@ public class GuiMEMonitorable extends AEBaseMEGui
 		xSize = 195;
 		ySize = 204;
 
+		if ( te instanceof ICellItemViewer )
+			myName = GuiText.PortableCell;
 		if ( te instanceof IMEChest )
 			myName = GuiText.Chest;
 		else if ( te instanceof PartTerminal )
@@ -65,7 +69,14 @@ public class GuiMEMonitorable extends AEBaseMEGui
 		int NEI = 0;
 		int top = 4;
 		int extraSpace = height - 114 - NEI - top;
+		int moveDown = 0;
+
 		rows = (int) Math.floor( extraSpace / 18 );
+		if ( rows > maxRows )
+		{
+			top += (rows - maxRows) * 18 / 2;
+			rows = maxRows;
+		}
 
 		meSlots.clear();
 		for (int y = 0; y < rows; y++)
@@ -101,7 +112,7 @@ public class GuiMEMonitorable extends AEBaseMEGui
 		{
 			if ( s instanceof AppEngSlot )
 			{
-				((AppEngSlot) s).yDisplayPosition = ((AppEngSlot) s).defY + ySize - 78 - guiTop;
+				((AppEngSlot) s).yDisplayPosition = ((AppEngSlot) s).defY + ySize - 78 - 4;
 			}
 		}
 	}

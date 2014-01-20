@@ -11,6 +11,7 @@ import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.PowerUnits;
 import appeng.api.implementations.IAEItemPowerStorage;
+import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 
 public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEItemPowerStorage
@@ -34,7 +35,7 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 
 		double percent = internalCurrentPower / internalMaxPower;
 
-		lines.add( Platform.gui_localize( "Stored Energy" ) + ":" + MessageFormat.format( " {0,number,#} ", internalCurrentPower )
+		lines.add( GuiText.StoredEnergy.getLocal() + ":" + MessageFormat.format( " {0,number,#} ", internalCurrentPower )
 				+ Platform.gui_localize( PowerUnits.AE.unlocalizedName ) + " - "
 				+ MessageFormat.format( " {0,number,#.##%} ", percent ) );
 

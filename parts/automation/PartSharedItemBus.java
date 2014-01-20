@@ -3,6 +3,7 @@ package appeng.parts.automation;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
@@ -16,6 +17,19 @@ import appeng.util.Platform;
 
 public abstract class PartSharedItemBus extends PartUpgradeable implements IGridTickable
 {
+
+	private TileEntity getBlockTileEntity(TileEntity self, int x, int y, int z)
+	{
+		World w = self.worldObj;
+
+		if ( w.getChunkProvider().chunkExists( x >> 4, z >> 4 ) )
+		{
+			TileEntity te = w.getBlockTileEntity( x, y, z );
+			return te;
+		}
+
+		return null;
+	}
 
 	public PartSharedItemBus(Class c, ItemStack is) {
 		super( c, is );
@@ -57,7 +71,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 
 		cached = true;
 		TileEntity self = getHost().getTile();
-		TileEntity target = self.worldObj.getBlockTileEntity( self.xCoord + side.offsetX, self.yCoord + side.offsetY, self.zCoord + side.offsetZ );
+		TileEntity target = getBlockTileEntity( self, self.xCoord + side.offsetX, self.yCoord + side.offsetY, self.zCoord + side.offsetZ );
 
 		int newAdaptorHash = Platform.generateTileHash( target );
 

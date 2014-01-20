@@ -21,6 +21,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IOrientable;
 import appeng.helpers.TickHandler;
 import appeng.me.GridAccessException;
+import appeng.me.cache.P2PCache;
 import appeng.parts.networking.PartCable;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
@@ -95,15 +96,6 @@ public class AENetworkProxy implements IGridBlock
 	public EnumSet<ForgeDirection> getConnectableSides()
 	{
 		return validSides;
-	}
-
-	@Override
-	public boolean isNetworkMachineActive()
-	{
-		if ( node == null )
-			return false;
-
-		return node.getGrid().isReady();
 	}
 
 	public void setValidSides(EnumSet<ForgeDirection> validSides)
@@ -224,6 +216,20 @@ public class AENetworkProxy implements IGridBlock
 			throw new GridAccessException();
 
 		IStorageGrid pg = grid.getCache( IStorageGrid.class );
+
+		if ( pg == null )
+			throw new GridAccessException();
+
+		return pg;
+	}
+
+	public P2PCache getP2P() throws GridAccessException
+	{
+		IGrid grid = getGrid();
+		if ( grid == null )
+			throw new GridAccessException();
+
+		P2PCache pg = grid.getCache( P2PCache.class );
 
 		if ( pg == null )
 			throw new GridAccessException();

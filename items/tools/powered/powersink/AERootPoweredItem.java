@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.PowerUnits;
 import appeng.api.implementations.IAEItemPowerStorage;
+import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
@@ -43,7 +44,7 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 
 		double percent = internalCurrentPower / internalMaxPower;
 
-		lines.add( Platform.gui_localize( "Stored Energy" ) + ":" + MessageFormat.format( " {0,number,#} ", internalCurrentPower )
+		lines.add( GuiText.StoredEnergy.getLocal() + ":" + MessageFormat.format( " {0,number,#} ", internalCurrentPower )
 				+ Platform.gui_localize( PowerUnits.AE.unlocalizedName ) + " - " + MessageFormat.format( " {0,number,#.##%} ", percent ) );
 
 	}

@@ -8,6 +8,8 @@ import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.network.INetworkManager;
+import appeng.api.config.FuzzyMode;
+import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.core.sync.AppEngPacket;
 
@@ -33,6 +35,25 @@ public class PacketValueConfig extends AppEngPacket
 			ContainerLevelEmitter lvc = (ContainerLevelEmitter) c;
 			lvc.setLevel( Integer.parseInt( Value ), player );
 			return;
+		}
+		else if ( Name.startsWith( "CellWorkbench." ) && c instanceof ContainerCellWorkbench )
+		{
+			ContainerCellWorkbench ccw = (ContainerCellWorkbench) c;
+			if ( Name.equals( "CellWorkbench.Action" ) )
+			{
+				if ( Value.equals( "Partition" ) )
+				{
+					ccw.partition();
+				}
+				else if ( Value.equals( "Clear" ) )
+				{
+					ccw.clear();
+				}
+			}
+			else if ( Name.equals( "CellWorkbench.Fuzzy" ) )
+			{
+				ccw.setFuzzy( FuzzyMode.valueOf( Value ) );
+			}
 		}
 
 	}

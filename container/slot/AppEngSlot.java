@@ -70,6 +70,9 @@ public class AppEngSlot extends Slot
 		if ( !isEnabled() )
 			return null;
 
+		if ( inventory.getSizeInventory() <= getSlotIndex() )
+			return null;
+
 		if ( isDisplay )
 		{
 			isDisplay = false;

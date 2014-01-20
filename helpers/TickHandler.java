@@ -112,7 +112,7 @@ public class TickHandler implements ITickHandler
 	@Override
 	public EnumSet<TickType> ticks()
 	{
-		return EnumSet.of( TickType.WORLD );
+		return EnumSet.of( TickType.SERVER );
 	}
 
 	@Override

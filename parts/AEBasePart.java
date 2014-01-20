@@ -26,6 +26,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
@@ -73,7 +74,7 @@ public class AEBasePart implements IPart, IGridProxyable, IGridHost, IBusCommon
 	}
 
 	@Override
-	public ItemStack getItemStack(boolean wrenched)
+	public ItemStack getItemStack(PartItemStack type)
 	{
 		return is;
 	}
@@ -264,6 +265,18 @@ public class AEBasePart implements IPart, IGridProxyable, IGridHost, IBusCommon
 	public int getInstalledUpgrades(Upgrades u)
 	{
 		return 0;
+	}
+
+	@Override
+	public boolean onShiftActivate(EntityPlayer player, Vec3 pos)
+	{
+		return false;
+	}
+
+	@Override
+	public void onPlacement(EntityPlayer player, ItemStack held, ForgeDirection side)
+	{
+
 	}
 
 }

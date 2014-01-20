@@ -5,6 +5,6 @@ public class AEBasePoweredItem extends UniversalElectricity
 
 	public AEBasePoweredItem(Class c, String subname) {
 		super( c, subname );
+		setMaxStackSize( 1 );
 	}
-
 }

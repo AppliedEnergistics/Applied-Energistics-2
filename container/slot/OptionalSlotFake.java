@@ -40,7 +40,7 @@ public class OptionalSlotFake extends SlotFake
 		if ( host == null )
 			return false;
 
-		return host.isSlotEnabled( groupNum, this );
+		return host.isSlotEnabled( groupNum );
 	}
 
 }

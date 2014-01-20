@@ -22,8 +22,8 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartHelper;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.LayerBase;
 import appeng.client.render.BusRenderer;
 import appeng.core.AELog;

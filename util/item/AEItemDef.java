@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
-import appeng.api.storage.data.IAETagCompound;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -23,7 +22,7 @@ public class AEItemDef
 	public int dspDamage;
 	public int maxDamage;
 
-	public IAETagCompound tagCompound;
+	public AESharedNBT tagCompound;
 
 	@SideOnly(Side.CLIENT)
 	public String displayName;

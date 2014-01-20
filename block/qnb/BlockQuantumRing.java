@@ -3,6 +3,7 @@ package appeng.block.qnb;
 import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderQNB;
@@ -20,6 +21,14 @@ public class BlockQuantumRing extends AEBaseBlock
 		setBlockBounds( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
 		setLightOpacity( 1 );
 		isFullSize = isOpaque = false;
+	}
+
+	@Override
+	public void onNeighborBlockChange(World w, int x, int y, int z, int pointlessnumber)
+	{
+		TileQuantumBridge bridge = getTileEntity( w, x, y, z );
+		if ( bridge != null )
+			bridge.neighborUpdate();
 	}
 
 	@Override

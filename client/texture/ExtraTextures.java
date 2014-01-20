@@ -32,6 +32,8 @@ public enum ExtraTextures
 
 	GlassFrame("BlockQuartzGlassFrame"),
 
+	BlockQRingCornerLight("BlockQRingCornerLight"), BlockQRingEdgeLight("BlockQRingEdgeLight"),
+
 	MEDenseEnergyCell0("BlockDenseEnergyCell0"), MEDenseEnergyCell1("BlockDenseEnergyCell1"), MEDenseEnergyCell2("BlockDenseEnergyCell2"), MEDenseEnergyCell3(
 			"BlockDenseEnergyCell3"), MEDenseEnergyCell4("BlockDenseEnergyCell4"), MEDenseEnergyCell5("BlockDenseEnergyCell5"), MEDenseEnergyCell6(
 			"BlockDenseEnergyCell6"), MEDenseEnergyCell7("BlockDenseEnergyCell7"),
@@ -43,6 +45,8 @@ public enum ExtraTextures
 
 	BlockSpatialPylonC("BlockSpatialPylon_spanned"), BlockSpatialPylonC_dim("BlockSpatialPylon_spanned_dim"), BlockSpatialPylonC_red(
 			"BlockSpatialPylon_spanned_red"),
+
+	BlockQuartzGlassB("BlockQuartzGlassB"), BlockQuartzGlassC("BlockQuartzGlassC"), BlockQuartzGlassD("BlockQuartzGlassD"),
 
 	BlockSpatialPylonE("BlockSpatialPylon_end"), BlockSpatialPylonE_dim("BlockSpatialPylon_end_dim"), BlockSpatialPylonE_red("BlockSpatialPylon_end_red");
 

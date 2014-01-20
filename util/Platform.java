@@ -13,6 +13,7 @@ import java.util.WeakHashMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -35,7 +36,9 @@ import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
@@ -64,9 +67,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEItemDefinition;
 import appeng.core.AELog;
 import appeng.core.AppEng;
-import appeng.core.Configuration;
 import appeng.core.sync.GuiBridge;
-import appeng.me.cache.NetworkMonitor;
 import appeng.server.AccessType;
 import appeng.server.Security;
 import appeng.util.item.AEItemStack;
@@ -278,8 +279,15 @@ public class Platform
 		if ( isClient() )
 			return;
 
-		if ( Security.hasPermissions( tile, p, AccessType.BLOCK_ACCESS ) )
-			p.openGui( AppEng.instance, type.ordinal() << 3 | (side.ordinal()), tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord );
+		if ( tile == null )
+		{
+			p.openGui( AppEng.instance, type.ordinal() << 3, p.getEntityWorld(), (int) p.posX, (int) p.posY, (int) p.posZ );
+		}
+		else
+		{
+			if ( Security.hasPermissions( tile, p, AccessType.BLOCK_ACCESS ) )
+				p.openGui( AppEng.instance, type.ordinal() << 3 | (side.ordinal()), tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord );
+		}
 	}
 
 	/*
@@ -1137,19 +1145,103 @@ public class Platform
 		return new LookDirection( vec3, vec31 );
 	}
 
+	public static MovingObjectPosition rayTrace(EntityPlayer p, boolean hitBlocks, boolean hitEntities)
+	{
+		World w = p.getEntityWorld();
+
+		float f = 1.0F;
+		float f1 = p.prevRotationPitch + (p.rotationPitch - p.prevRotationPitch) * f;
+		float f2 = p.prevRotationYaw + (p.rotationYaw - p.prevRotationYaw) * f;
+		double d0 = p.prevPosX + (p.posX - p.prevPosX) * (double) f;
+		double d1 = p.prevPosY + (p.posY - p.prevPosY) * (double) f + 1.62D - (double) p.yOffset;
+		double d2 = p.prevPosZ + (p.posZ - p.prevPosZ) * (double) f;
+		Vec3 vec3 = w.getWorldVec3Pool().getVecFromPool( d0, d1, d2 );
+		float f3 = MathHelper.cos( -f2 * 0.017453292F - (float) Math.PI );
+		float f4 = MathHelper.sin( -f2 * 0.017453292F - (float) Math.PI );
+		float f5 = -MathHelper.cos( -f1 * 0.017453292F );
+		float f6 = MathHelper.sin( -f1 * 0.017453292F );
+		float f7 = f4 * f5;
+		float f8 = f3 * f5;
+		double d3 = 32.0D;
+
+		Vec3 vec31 = vec3.addVector( (double) f7 * d3, (double) f6 * d3, (double) f8 * d3 );
+
+		AxisAlignedBB bb = AxisAlignedBB
+				.getAABBPool()
+				.getAABB( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ),
+						Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) )
+				.expand( 16, 16, 16 );
+
+		Entity entity = null;
+		double Closeest = 9999999.0D;
+		if ( hitEntities )
+		{
+			List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
+			int l;
+
+			for (l = 0; l < list.size(); ++l)
+			{
+				Entity entity1 = (Entity) list.get( l );
+
+				if ( entity1.isDead == false && entity1 != p && !(entity1 instanceof EntityItem) )
+				{
+					if ( entity1.isEntityAlive() )
+					{
+						// prevent killing / flying of mounts.
+						if ( entity1.riddenByEntity == p )
+							continue;
+
+						f1 = 0.3F;
+						AxisAlignedBB axisalignedbb1 = entity1.boundingBox.expand( (double) f1, (double) f1, (double) f1 );
+						MovingObjectPosition movingobjectposition1 = axisalignedbb1.calculateIntercept( vec3, vec31 );
+
+						if ( movingobjectposition1 != null )
+						{
+							double nd = vec3.squareDistanceTo( movingobjectposition1.hitVec );
+
+							if ( nd < Closeest )
+							{
+								entity = entity1;
+								Closeest = nd;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		MovingObjectPosition pos = null;
+		Vec3 Srec = null;
+
+		if ( hitBlocks )
+		{
+			Srec = w.getWorldVec3Pool().getVecFromPool( d0, d1, d2 );
+			pos = w.rayTraceBlocks_do_do( vec3, vec31, true, false );
+		}
+
+		if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( Srec ) > Closeest )
+		{
+			pos = new MovingObjectPosition( entity );
+		}
+		else if ( entity != null && pos == null )
+		{
+			pos = new MovingObjectPosition( entity );
+		}
+
+		return pos;
+	}
+
 	public static long nanoTime()
 	{
-		if ( Configuration.instance.enableNetworkProfiler )
-			return System.nanoTime();
+		// if ( Configuration.instance.enableNetworkProfiler )
+		// return System.nanoTime();
 		return 0;
 	}
 
-	public static IAEItemStack poweredExtraction(IEnergySource energy, IMEInventory<IAEItemStack> cell, IAEItemStack request, BaseActionSource src)
+	public static <StackType extends IAEStack> StackType poweredExtraction(IEnergySource energy, IMEInventory<StackType> cell, StackType request,
+			BaseActionSource src)
 	{
-		if ( cell instanceof NetworkMonitor )
-			((NetworkMonitor) cell).setSource( src );
-
-		IAEItemStack possible = cell.extractItems( request.copy(), Actionable.SIMULATE );
+		StackType possible = cell.extractItems( (StackType) request.copy(), Actionable.SIMULATE, src );
 
 		long retrieved = 0;
 		if ( possible != null )
@@ -1164,10 +1256,7 @@ public class Platform
 			energy.extractAEPower( retrieved, Actionable.MODULATE, PowerMultiplier.CONFIG );
 
 			possible.setStackSize( itemToExtract );
-			IAEItemStack ret = cell.extractItems( possible, Actionable.MODULATE );
-
-			if ( cell instanceof NetworkMonitor )
-				((NetworkMonitor) cell).setSource( null );
+			StackType ret = cell.extractItems( possible, Actionable.MODULATE, src );
 
 			return ret;
 		}
@@ -1175,12 +1264,9 @@ public class Platform
 		return null;
 	}
 
-	public static IAEItemStack poweredInsert(IEnergySource energy, IMEInventory<IAEItemStack> cell, IAEItemStack input, BaseActionSource src)
+	public static <StackType extends IAEStack> StackType poweredInsert(IEnergySource energy, IMEInventory<StackType> cell, StackType input, BaseActionSource src)
 	{
-		if ( cell instanceof NetworkMonitor )
-			((NetworkMonitor) cell).setSource( src );
-
-		IAEItemStack possible = cell.injectItems( input.copy(), Actionable.SIMULATE );
+		StackType possible = cell.injectItems( (StackType) input.copy(), Actionable.SIMULATE, src );
 
 		long stored = input.getStackSize();
 		if ( possible != null )
@@ -1196,17 +1282,14 @@ public class Platform
 
 			if ( itemToAdd < input.getStackSize() )
 			{
-				IAEItemStack split = input.copy();
+				StackType split = (StackType) input.copy();
 				split.decStackSize( itemToAdd );
 				input.setStackSize( itemToAdd );
-				split.add( cell.injectItems( input, Actionable.MODULATE ) );
+				split.add( cell.injectItems( input, Actionable.MODULATE, src ) );
 				return split;
 			}
 
-			IAEItemStack ret = cell.injectItems( input, Actionable.MODULATE );
-
-			if ( cell instanceof NetworkMonitor )
-				((NetworkMonitor) cell).setSource( null );
+			StackType ret = cell.injectItems( input, Actionable.MODULATE, src );
 
 			return ret;
 		}

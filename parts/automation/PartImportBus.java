@@ -63,7 +63,7 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 	@Override
 	public boolean canInsert(ItemStack stack)
 	{
-		IAEItemStack out = destination.injectItems( lastItemChecked = AEApi.instance().storage().createItemStack( stack ), Actionable.SIMULATE );
+		IAEItemStack out = destination.injectItems( lastItemChecked = AEApi.instance().storage().createItemStack( stack ), Actionable.SIMULATE, mySrc );
 		if ( out == null )
 			return true;
 		return out.getStackSize() != stack.stackSize;

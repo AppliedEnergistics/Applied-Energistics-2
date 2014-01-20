@@ -18,6 +18,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	protected int size;
 	protected int maxStack;
 
+	public boolean enableClientEvents = false;
 	protected ItemStack inv[];
 
 	public IMEInventory getIMEI()
@@ -42,7 +43,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 
 	protected boolean eventsEnabled()
 	{
-		return Platform.isServer();
+		return Platform.isServer() || enableClientEvents;
 	}
 
 	public void setMaxStackSize(int s)
