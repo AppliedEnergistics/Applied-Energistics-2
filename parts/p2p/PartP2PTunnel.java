@@ -11,6 +11,7 @@ import net.minecraft.util.Vec3;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.PowerUnits;
+import appeng.api.config.TunnelType;
 import appeng.api.implementations.IMemoryCard;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
@@ -21,6 +22,7 @@ import appeng.me.GridAccessException;
 import appeng.me.cache.P2PCache;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.parts.PartBasicState;
+import appeng.util.Platform;
 
 public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 {
@@ -54,6 +56,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 	{
 		ItemStack is = player.inventory.getCurrentItem();
 
+		TunnelType tt = AEApi.instance().registries().p2pTunnel().getTunnelTypeByItem( is );
 		if ( is != null && is.getItem() instanceof IMemoryCard )
 		{
 			IMemoryCard mc = (IMemoryCard) is.getItem();
@@ -83,6 +86,67 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 				}
 			}
 
+		}
+		else if ( tt != null ) // attune-ment
+		{
+			ItemStack newType = null;
+
+			switch (tt)
+			{
+
+			case BC_POWER:
+				newType = AEApi.instance().parts().partP2PTunnelMJ.stack( 1 );
+				break;
+
+			case FLUID:
+				newType = AEApi.instance().parts().partP2PTunnelLiquids.stack( 1 );
+				break;
+
+			case IC2_POWER:
+				newType = AEApi.instance().parts().partP2PTunnelEU.stack( 1 );
+				break;
+
+			case ITEM:
+				newType = AEApi.instance().parts().partP2PTunnelItems.stack( 1 );
+				break;
+
+			case ME:
+				newType = AEApi.instance().parts().partP2PTunnelME.stack( 1 );
+				break;
+
+			case REDSTONE:
+				newType = AEApi.instance().parts().partP2PTunnelRedstone.stack( 1 );
+				break;
+
+			}
+
+			if ( newType != null && !Platform.isSameItem( newType, this.is ) )
+			{
+				boolean oldOutput = output;
+				long myFreq = freq;
+
+				getHost().removePart( side );
+				ForgeDirection dir = getHost().addPart( newType, side );
+				IPart newBus = getHost().getPart( dir );
+
+				if ( newBus instanceof PartP2PTunnel )
+				{
+					PartP2PTunnel newTunnel = (PartP2PTunnel) newBus;
+					newTunnel.output = oldOutput;
+					newTunnel.onChange();
+
+					try
+					{
+						P2PCache p2p = newTunnel.proxy.getP2P();
+						p2p.updateFreq( newTunnel, myFreq );
+					}
+					catch (GridAccessException e)
+					{
+						// :P
+					}
+				}
+
+			}
 		}
 
 		return false;
