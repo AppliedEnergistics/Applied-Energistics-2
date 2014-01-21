@@ -11,23 +11,16 @@ import appeng.api.AEApi;
 import appeng.api.events.LocatableEventAnnounce;
 import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
 import appeng.api.features.ILocatable;
-import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.util.WorldCoord;
+import appeng.me.cache.helpers.ConnectionWrapper;
 import appeng.me.cluster.IAECluster;
 import appeng.tile.qnb.TileQuantumBridge;
 import appeng.util.iterators.ChainedIterator;
 
 public class QuantumCluster implements ILocatable, IAECluster
 {
-
-	class QuantumLeap
-	{
-
-		IGridConnection connection;
-
-	};
 
 	public WorldCoord min;
 	public WorldCoord max;
@@ -37,7 +30,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 	private long thisSide;
 	private long otherSide;
 
-	QuantumLeap connection;
+	ConnectionWrapper connection;
 
 	public TileQuantumBridge Ring[];
 	private TileQuantumBridge center;
@@ -142,8 +135,8 @@ public class QuantumCluster implements ILocatable, IAECluster
 						return;
 				}
 
-				QuantumLeap ql = sideA.connection = sideB.connection = new QuantumLeap();
-				ql.connection = AEApi.instance().createGridConnection( sideA.getNode(), sideB.getNode() );
+				ConnectionWrapper ql = sideA.connection = sideB.connection = new ConnectionWrapper( AEApi.instance().createGridConnection( sideA.getNode(),
+						sideB.getNode() ) );
 			}
 			else
 				shutdown = true;
@@ -157,7 +150,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 			{
 				connection.connection.destroy();
 				connection.connection = null;
-				connection = new QuantumLeap();
+				connection = new ConnectionWrapper( null );
 			}
 		}
 	}
