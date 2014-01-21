@@ -255,7 +255,7 @@ public class PathGridCache implements IPathingGrid
 	@Override
 	public boolean isNetworkBooting()
 	{
-		return !active.isEmpty();
+		return !active.isEmpty() && booting == false;
 	}
 
 	@Override
