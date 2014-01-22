@@ -22,6 +22,7 @@ import appeng.items.AEBaseItem;
 import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.me.cache.TickManagerCache;
+import appeng.parts.p2p.PartP2PTunnel;
 import appeng.util.Platform;
 
 public class ToolDebugCard extends AEBaseItem
@@ -65,7 +66,7 @@ public class ToolDebugCard extends AEBaseItem
 			}
 			outputMsg( player, "Grids: " + grids );
 			outputMsg( player, "Total Nodes: " + totalNodes );
-			outputMsg( player, "Average Time Used: " + " - " + timeMeasurement( totalOver5Ticks / 5 ) );
+			// outputMsg( player, "Average Time Used: " + " - " + timeMeasurement( totalOver5Ticks / 5 ) );
 		}
 		else
 		{
@@ -80,6 +81,10 @@ public class ToolDebugCard extends AEBaseItem
 					IGridNode center = g.getPivot();
 					outputMsg( player, "This Node: " + node.toString() );
 					outputMsg( player, "Center Node: " + center.toString() );
+					if ( center.getMachine() instanceof PartP2PTunnel )
+					{
+						outputMsg( player, "Freq: " + ((PartP2PTunnel) center.getMachine()).freq );
+					}
 
 					TickManagerCache tmc = (TickManagerCache) g.getCache( ITickManager.class );
 					for (Class c : g.getMachineClasses())
