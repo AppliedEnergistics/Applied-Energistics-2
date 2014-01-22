@@ -636,7 +636,8 @@ public class PartCable extends AEBasePart implements IPartCable
 			rh.setTexture( getTexture( getCableColor() ) );
 		}
 
-		else if ( ghh != null && ccph != null && ghh.getCableConnectionType( of ) != AECableType.GLASS && ccph.getColor() != AEColor.Transparent )
+		else if ( ghh != null && ccph != null && ghh.getCableConnectionType( of ) != AECableType.GLASS && ccph.getColor() != AEColor.Transparent
+				&& ccph.getPart( of.getOpposite() ) == null )
 			rh.setTexture( getSmartTexture( myColor = ccph.getColor() ) );
 		else
 			rh.setTexture( getSmartTexture( getCableColor() ) );
