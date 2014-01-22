@@ -2,14 +2,19 @@ package appeng.me.cache;
 
 import java.util.HashMap;
 
+import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridCache;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
-import appeng.core.AELog;
+import appeng.api.networking.events.MENetworkBootingStatusChange;
+import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.ticking.ITickManager;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.parts.p2p.PartP2PTunnel;
+import appeng.parts.p2p.PartP2PTunnelME;
 
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
@@ -27,6 +32,34 @@ public class P2PCache implements IGridCache
 		myGrid = g;
 	}
 
+	@MENetworkEventSubscribe
+	public void bootComplete(MENetworkBootingStatusChange bootstat)
+	{
+		ITickManager tm = myGrid.getCache( ITickManager.class );
+		for (PartP2PTunnel me : inputs.values())
+		{
+			if ( me instanceof PartP2PTunnelME )
+				tm.wakeDevice( me.getGridNode() );
+		}
+	}
+
+	@MENetworkEventSubscribe
+	public void bootComplete(MENetworkPowerStatusChange power)
+	{
+		ITickManager tm = myGrid.getCache( ITickManager.class );
+		for (PartP2PTunnel me : inputs.values())
+		{
+			if ( me instanceof PartP2PTunnelME )
+				tm.wakeDevice( me.getGridNode() );
+		}
+	}
+
+	@Override
+	public void onUpdateTick(IGrid grid)
+	{
+
+	}
+
 	public void updateFreq(PartP2PTunnel t, long NewFreq)
 	{
 		outputs.remove( t.freq, t );
@@ -39,7 +72,7 @@ public class P2PCache implements IGridCache
 		else
 			inputs.put( t.freq, t );
 
-		AELog.info( "update-" + (t.output ? "output: " : "input: ") + t.freq );
+		// AELog.info( "update-" + (t.output ? "output: " : "input: ") + t.freq );
 		updateTunnel( t.freq, t.output );
 		updateTunnel( t.freq, !t.output );
 	}
@@ -49,8 +82,14 @@ public class P2PCache implements IGridCache
 	{
 		if ( machine instanceof PartP2PTunnel )
 		{
+			if ( machine instanceof PartP2PTunnelME )
+			{
+				if ( !node.hasFlag( GridFlags.REQURE_CHANNEL ) )
+					return;
+			}
+
 			PartP2PTunnel t = (PartP2PTunnel) machine;
-			AELog.info( "add-" + (t.output ? "output: " : "input: ") + t.freq );
+			// AELog.info( "add-" + (t.output ? "output: " : "input: ") + t.freq );
 
 			if ( t.output )
 				outputs.put( t.freq, t );
@@ -66,8 +105,14 @@ public class P2PCache implements IGridCache
 	{
 		if ( machine instanceof PartP2PTunnel )
 		{
+			if ( machine instanceof PartP2PTunnelME )
+			{
+				if ( !node.hasFlag( GridFlags.REQURE_CHANNEL ) )
+					return;
+			}
+
 			PartP2PTunnel t = (PartP2PTunnel) machine;
-			AELog.info( "rmv-" + (t.output ? "output: " : "input: ") + t.freq );
+			// AELog.info( "rmv-" + (t.output ? "output: " : "input: ") + t.freq );
 
 			if ( t.output )
 				outputs.remove( t.freq, t );
@@ -104,12 +149,6 @@ public class P2PCache implements IGridCache
 	public PartP2PTunnel getInput(long freq)
 	{
 		return inputs.get( freq );
-	}
-
-	@Override
-	public void onUpdateTick(IGrid grid)
-	{
-
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package appeng.helpers;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.Callable;
 
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
@@ -33,6 +34,8 @@ public class TickHandler implements ITickHandler
 
 	final public static TickHandler instance = new TickHandler();
 
+	final private Queue<Callable> callQueue = new LinkedList();
+
 	final private HandlerRep server = new HandlerRep();
 	final private HandlerRep client = new HandlerRep();
 
@@ -41,6 +44,11 @@ public class TickHandler implements ITickHandler
 		if ( Platform.isServer() )
 			return server;
 		return client;
+	}
+
+	public void addCallable(Callable c)
+	{
+		callQueue.add( c );
 	}
 
 	public void addInit(AEBaseTile tile)
@@ -106,6 +114,19 @@ public class TickHandler implements ITickHandler
 		for (Grid g : getRepo().networks)
 		{
 			g.update();
+		}
+
+		Callable c = null;
+		while ((c = callQueue.poll()) != null)
+		{
+			try
+			{
+				c.call();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 
