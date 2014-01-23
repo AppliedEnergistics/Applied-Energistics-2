@@ -6,7 +6,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.IBusCommon;
+import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.storage.ICellWorkbenchItem;
 import appeng.api.util.IConfigManager;
 import appeng.tile.AEBaseTile;
@@ -17,7 +17,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 
-public class TileCellWorkbench extends AEBaseTile implements IBusCommon, IAEAppEngInventory
+public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, IAEAppEngInventory
 {
 
 	AppEngInternalInventory cell = new AppEngInternalInventory( this, 1 );

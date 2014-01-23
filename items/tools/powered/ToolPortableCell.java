@@ -11,15 +11,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
-import appeng.api.implementations.IStorageCell;
+import appeng.api.implementations.guiobjects.IGuiItem;
+import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
-import appeng.helpers.CellItemViewer;
-import appeng.helpers.IGuiItem;
+import appeng.helpers.PortableCellViewer;
 import appeng.items.storage.CellConfig;
 import appeng.items.storage.CellUpgrades;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
@@ -149,6 +149,6 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	@Override
 	public Object getGuiObject(ItemStack is, World w, int x, int y, int z)
 	{
-		return new CellItemViewer( is );
+		return new PortableCellViewer( is );
 	}
 }

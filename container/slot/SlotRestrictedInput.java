@@ -9,9 +9,9 @@ import appeng.api.AEApi;
 import appeng.api.IAppEngApi;
 import appeng.api.crafting.ICraftingPatternMAC;
 import appeng.api.implementations.ICraftingPatternItem;
-import appeng.api.implementations.ISpatialStorageCell;
-import appeng.api.implementations.IStorageComponent;
-import appeng.api.implementations.IUpgradeModule;
+import appeng.api.implementations.items.ISpatialStorageCell;
+import appeng.api.implementations.items.IStorageComponent;
+import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.ICellWorkbenchItem;
 import appeng.util.Platform;
 

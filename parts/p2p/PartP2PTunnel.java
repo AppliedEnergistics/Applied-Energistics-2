@@ -12,7 +12,7 @@ import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.TunnelType;
-import appeng.api.implementations.IMemoryCard;
+import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;

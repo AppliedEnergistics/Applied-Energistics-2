@@ -2,10 +2,10 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
-import appeng.helpers.INetworkTool;
 import appeng.util.Platform;
 
 public class ContainerNetworkTool extends AEBaseContainer

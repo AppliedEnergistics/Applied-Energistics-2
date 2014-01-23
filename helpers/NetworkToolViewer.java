@@ -2,19 +2,20 @@ package appeng.helpers;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import appeng.api.implementations.IUpgradeModule;
+import appeng.api.implementations.guiobjects.INetworkTool;
+import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.networking.IGridHost;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 
-public class NetworkToolInv implements INetworkTool
+public class NetworkToolViewer implements INetworkTool
 {
 
 	final AppEngInternalInventory inv;
 	final ItemStack is;
 	final IGridHost gh;
 
-	public NetworkToolInv(ItemStack is, IGridHost gHost) {
+	public NetworkToolViewer(ItemStack is, IGridHost gHost) {
 		this.is = is;
 		gh = gHost;
 		inv = new AppEngInternalInventory( null, 9 );

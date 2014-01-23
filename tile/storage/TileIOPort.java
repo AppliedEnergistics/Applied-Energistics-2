@@ -13,7 +13,7 @@ import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.IBusCommon;
+import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.BaseActionSource;
@@ -45,7 +45,7 @@ import appeng.util.Platform;
 import appeng.util.inv.WrapperInventoryRange;
 import appeng.util.item.ItemList;
 
-public class TileIOPort extends AENetworkInvTile implements IBusCommon, IConfigManagerHost, IGridTickable
+public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IConfigManagerHost, IGridTickable
 {
 
 	ConfigManager cm = new ConfigManager( this );

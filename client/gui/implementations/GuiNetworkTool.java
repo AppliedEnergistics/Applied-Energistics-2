@@ -1,10 +1,10 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.InventoryPlayer;
+import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.client.gui.AEBaseGui;
 import appeng.container.implementations.ContainerNetworkTool;
 import appeng.core.localization.GuiText;
-import appeng.helpers.INetworkTool;
 
 public class GuiNetworkTool extends AEBaseGui
 {

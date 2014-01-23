@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.PowerUnits;
-import appeng.api.implementations.IAEItemPowerStorage;
+import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;

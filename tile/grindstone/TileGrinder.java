@@ -9,7 +9,7 @@ import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.features.IGrinderEntry;
-import appeng.api.implementations.ICrankable;
+import appeng.api.implementations.tiles.ICrankable;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.WorldCoord;

@@ -8,7 +8,8 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import appeng.api.implementations.IMEChest;
+import appeng.api.implementations.guiobjects.IPortableCell;
+import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -22,7 +23,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
-import appeng.helpers.ICellItemViewer;
 import appeng.util.Platform;
 import appeng.util.item.ItemList;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -44,8 +44,8 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonito
 
 			cellInv = monitor;
 
-			if ( montiorable instanceof ICellItemViewer )
-				powerSrc = (ICellItemViewer) montiorable;
+			if ( montiorable instanceof IPortableCell )
+				powerSrc = (IPortableCell) montiorable;
 			else if ( montiorable instanceof IMEChest )
 				powerSrc = (IMEChest) montiorable;
 			else if ( montiorable instanceof IGridHost )

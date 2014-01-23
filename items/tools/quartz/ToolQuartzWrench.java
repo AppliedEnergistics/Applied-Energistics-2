@@ -7,7 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import appeng.api.implementations.IAEWrench;
+import appeng.api.implementations.items.IAEWrench;
 import appeng.core.features.AEFeature;
 import appeng.items.AEBaseItem;
 import buildcraft.api.tools.IToolWrench;

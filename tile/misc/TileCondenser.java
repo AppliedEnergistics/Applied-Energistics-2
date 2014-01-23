@@ -13,7 +13,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import appeng.api.AEApi;
 import appeng.api.config.CondenserOuput;
 import appeng.api.config.Settings;
-import appeng.api.implementations.IStorageComponent;
+import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
 import appeng.tile.AEBaseInvTile;

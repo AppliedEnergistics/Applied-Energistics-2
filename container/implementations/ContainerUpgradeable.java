@@ -10,7 +10,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.IBusCommon;
+import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.parts.IPart;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.IOptionalSlotHost;
@@ -19,7 +19,7 @@ import appeng.container.slot.OptionalSlotFakeTypeOnly;
 import appeng.container.slot.SlotFakeTypeOnly;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
-import appeng.helpers.NetworkToolInv;
+import appeng.helpers.NetworkToolViewer;
 import appeng.items.tools.ToolNetworkTool;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
@@ -28,12 +28,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSlotHost
 {
 
-	IBusCommon myte;
+	IUpgradeableHost myte;
 
 	int tbslot;
-	NetworkToolInv tbinv;
+	NetworkToolViewer tbinv;
 
-	public ContainerUpgradeable(InventoryPlayer ip, IBusCommon te) {
+	public ContainerUpgradeable(InventoryPlayer ip, IUpgradeableHost te) {
 		super( ip, (TileEntity) (te instanceof TileEntity ? te : null), (IPart) (te instanceof IPart ? te : null) );
 		myte = te;
 
@@ -51,7 +51,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 
 		if ( te instanceof IPart )
 		{
-			IBusCommon myTile = (IBusCommon) te;
+			IUpgradeableHost myTile = (IUpgradeableHost) te;
 			TileEntity mk = myTile.getTile();
 			w = mk.getWorldObj();
 			xCoor = mk.xCoord;
@@ -67,7 +67,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 			{
 				lockPlayerInventorySlot( x );
 				tbslot = x;
-				tbinv = (NetworkToolInv) ((ToolNetworkTool) pii.getItem()).getGuiObject( pii, w, xCoor, yCoor, zCoor );
+				tbinv = (NetworkToolViewer) ((ToolNetworkTool) pii.getItem()).getGuiObject( pii, w, xCoor, yCoor, zCoor );
 				break;
 			}
 		}

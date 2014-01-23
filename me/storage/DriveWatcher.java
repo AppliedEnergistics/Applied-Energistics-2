@@ -2,7 +2,7 @@ package appeng.me.storage;
 
 import net.minecraft.item.ItemStack;
 import appeng.api.config.Actionable;
-import appeng.api.implementations.IChestOrDrive;
+import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.IMEInventory;

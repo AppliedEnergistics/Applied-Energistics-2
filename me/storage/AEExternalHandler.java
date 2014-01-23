@@ -3,7 +3,7 @@ package appeng.me.storage;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import appeng.api.implementations.ITileStorageMonitorable;
+import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.storage.IExternalStorageHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageMonitorable;

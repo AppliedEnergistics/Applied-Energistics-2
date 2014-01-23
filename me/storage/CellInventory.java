@@ -14,7 +14,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.exceptions.AppEngException;
-import appeng.api.implementations.IStorageCell;
+import appeng.api.implementations.items.IStorageCell;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;

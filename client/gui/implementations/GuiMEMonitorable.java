@@ -6,7 +6,8 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
 import appeng.api.config.Settings;
-import appeng.api.implementations.IMEChest;
+import appeng.api.implementations.guiobjects.IPortableCell;
+import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.AEBaseMEGui;
@@ -18,7 +19,6 @@ import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.container.slot.AppEngSlot;
 import appeng.core.Configuration;
 import appeng.core.localization.GuiText;
-import appeng.helpers.ICellItemViewer;
 import appeng.parts.reporting.PartTerminal;
 import appeng.util.Platform;
 
@@ -39,7 +39,7 @@ public class GuiMEMonitorable extends AEBaseMEGui
 		xSize = 195;
 		ySize = 204;
 
-		if ( te instanceof ICellItemViewer )
+		if ( te instanceof IPortableCell )
 			myName = GuiText.PortableCell;
 		if ( te instanceof IMEChest )
 			myName = GuiText.Chest;

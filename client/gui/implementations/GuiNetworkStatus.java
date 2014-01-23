@@ -9,6 +9,7 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
+import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
@@ -16,7 +17,6 @@ import appeng.client.me.ItemRepo;
 import appeng.client.me.SlotME;
 import appeng.container.implementations.ContainerNetworkStatus;
 import appeng.core.localization.GuiText;
-import appeng.helpers.INetworkTool;
 import appeng.util.Platform;
 
 public class GuiNetworkStatus extends AEBaseGui

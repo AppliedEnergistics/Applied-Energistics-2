@@ -4,16 +4,16 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.storage.IStorageMonitorable;
-import appeng.helpers.ICellItemViewer;
 import appeng.util.Platform;
 
 public class ContainerMEPortableCell extends ContainerMEMonitorable
 {
 
-	ICellItemViewer civ;
+	IPortableCell civ;
 
-	public ContainerMEPortableCell(InventoryPlayer ip, ICellItemViewer montiorable) {
+	public ContainerMEPortableCell(InventoryPlayer ip, IPortableCell montiorable) {
 		super( ip, (IStorageMonitorable) montiorable, Platform.isServer() );
 		lockPlayerInventorySlot( ip.currentItem );
 		civ = montiorable;

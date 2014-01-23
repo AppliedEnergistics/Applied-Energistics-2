@@ -21,7 +21,7 @@ import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.IStorageCell;
+import appeng.api.implementations.items.IStorageCell;
 import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;

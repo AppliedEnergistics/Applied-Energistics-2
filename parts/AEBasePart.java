@@ -19,7 +19,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.IBusCommon;
+import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPart;
@@ -35,7 +35,7 @@ import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
 import appeng.parts.networking.PartCable;
 
-public class AEBasePart implements IPart, IGridProxyable, IGridHost, IBusCommon
+public class AEBasePart implements IPart, IGridProxyable, IGridHost, IUpgradeableHost
 {
 
 	protected AENetworkProxy proxy;

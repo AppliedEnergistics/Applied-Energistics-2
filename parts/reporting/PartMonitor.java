@@ -10,7 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.ForgeDirection;
-import appeng.api.implementations.IPartMonitor;
+import appeng.api.implementations.parts.IPartMonitor;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkBootingStatusChange;
 import appeng.api.networking.events.MENetworkEventSubscribe;

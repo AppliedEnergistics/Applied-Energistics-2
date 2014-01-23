@@ -3,20 +3,21 @@ package appeng.helpers;
 import net.minecraft.item.ItemStack;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.implementations.IAEItemPowerStorage;
+import appeng.api.implementations.guiobjects.IPortableCell;
+import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.MEMonitorHandler;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.me.storage.CellInventory;
 
-public class CellItemViewer extends MEMonitorHandler<IAEItemStack> implements ICellItemViewer
+public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implements IPortableCell
 {
 
 	private ItemStack target;
 	private IAEItemPowerStorage ips;
 
-	public CellItemViewer(ItemStack is) {
+	public PortableCellViewer(ItemStack is) {
 		super( CellInventory.getCell( is ) );
 		ips = (IAEItemPowerStorage) is.getItem();
 		target = is;

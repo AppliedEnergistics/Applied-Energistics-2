@@ -4,7 +4,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.ISegmentedInventory;
+import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.util.IConfigManager;
 import appeng.parts.PartBasicState;
 import appeng.tile.inventory.IAEAppEngInventory;

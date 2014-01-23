@@ -18,7 +18,7 @@ import appeng.api.definitions.Blocks;
 import appeng.api.definitions.Items;
 import appeng.api.definitions.Materials;
 import appeng.api.definitions.Parts;
-import appeng.api.implementations.ITileStorageMonitorable;
+import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.spatial.ISpatialCache;

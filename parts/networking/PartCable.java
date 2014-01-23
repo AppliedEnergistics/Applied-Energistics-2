@@ -15,7 +15,7 @@ import net.minecraftforge.common.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 
 import appeng.api.AEApi;
-import appeng.api.implementations.IPartCable;
+import appeng.api.implementations.parts.IPartCable;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridHost;

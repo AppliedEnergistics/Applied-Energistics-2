@@ -13,7 +13,7 @@ import appeng.api.config.ActionItems;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.IUpgradeModule;
+import appeng.api.implementations.items.IUpgradeModule;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.core.localization.GuiText;

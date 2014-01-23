@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import appeng.api.implementations.IPartStorageMonitor;
+import appeng.api.implementations.parts.IPartStorageMonitor;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;

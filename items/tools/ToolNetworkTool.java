@@ -8,12 +8,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import appeng.api.implementations.IAEWrench;
+import appeng.api.implementations.guiobjects.IGuiItem;
+import appeng.api.implementations.items.IAEWrench;
 import appeng.api.networking.IGridHost;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
-import appeng.helpers.IGuiItem;
-import appeng.helpers.NetworkToolInv;
+import appeng.helpers.NetworkToolViewer;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 import buildcraft.api.tools.IToolWrench;
@@ -32,7 +32,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	public Object getGuiObject(ItemStack is, World world, int x, int y, int z)
 	{
 		TileEntity te = world.getBlockTileEntity( x, y, z );
-		return new NetworkToolInv( is, (IGridHost) (te instanceof IGridHost ? te : null) );
+		return new NetworkToolViewer( is, (IGridHost) (te instanceof IGridHost ? te : null) );
 	}
 
 	@Override

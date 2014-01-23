@@ -9,7 +9,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.exceptions.AppEngException;
-import appeng.api.implementations.IBusCommon;
+import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.implementations.guiobjects.IPortableCell;
+import appeng.api.implementations.guiobjects.IGuiItem;
+import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.storage.IStorageMonitorable;
@@ -30,10 +33,7 @@ import appeng.container.implementations.ContainerNetworkTool;
 import appeng.container.implementations.ContainerQNB;
 import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
-import appeng.helpers.ICellItemViewer;
-import appeng.helpers.IGuiItem;
 import appeng.helpers.IInterfaceHost;
-import appeng.helpers.INetworkTool;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.tile.grindstone.TileGrinder;
 import appeng.tile.misc.TileCellWorkbench;
@@ -59,7 +59,7 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_ME(ContainerMEMonitorable.class, IStorageMonitorable.class, false),
 
-	GUI_PORTABLE_CELL(ContainerMEPortableCell.class, ICellItemViewer.class, true),
+	GUI_PORTABLE_CELL(ContainerMEPortableCell.class, IPortableCell.class, true),
 
 	GUI_NETWORK_STATUS(ContainerNetworkStatus.class, INetworkTool.class, true),
 
@@ -73,7 +73,7 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_INTERFACE(ContainerInterface.class, IInterfaceHost.class, false),
 
-	GUI_BUS(ContainerUpgradeable.class, IBusCommon.class, false),
+	GUI_BUS(ContainerUpgradeable.class, IUpgradeableHost.class, false),
 
 	GUI_IOPORT(ContainerIOPort.class, TileIOPort.class, false),
 

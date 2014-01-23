@@ -6,7 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.IUpgradeModule;
+import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;

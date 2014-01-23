@@ -11,7 +11,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.IBusCommon;
+import appeng.api.implementations.IUpgradeableHost;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.container.implementations.ContainerUpgradeable;
@@ -24,12 +24,12 @@ public class GuiUpgradeable extends AEBaseGui
 {
 
 	ContainerUpgradeable cvb;
-	IBusCommon bc;
+	IUpgradeableHost bc;
 
 	GuiImgButton redstoneMode;
 	GuiImgButton fuzzyMode;
 
-	public GuiUpgradeable(InventoryPlayer inventoryPlayer, IBusCommon te) {
+	public GuiUpgradeable(InventoryPlayer inventoryPlayer, IUpgradeableHost te) {
 		this( new ContainerUpgradeable( inventoryPlayer, te ) );
 	}
 
@@ -37,7 +37,7 @@ public class GuiUpgradeable extends AEBaseGui
 		super( te );
 		cvb = (ContainerUpgradeable) te;
 
-		bc = (IBusCommon) te.getTarget();
+		bc = (IUpgradeableHost) te.getTarget();
 		this.xSize = hasToolbox() ? 246 : 211;
 		this.ySize = 184;
 	}

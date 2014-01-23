@@ -3,7 +3,7 @@ package appeng.client.render.blocks;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
-import appeng.api.implementations.IAEItemPowerStorage;
+import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 
