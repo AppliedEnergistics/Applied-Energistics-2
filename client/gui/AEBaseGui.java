@@ -1,6 +1,7 @@
 package appeng.client.gui;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -319,9 +320,41 @@ public abstract class AEBaseGui extends GuiContainer
 		int ox = guiLeft; // (width - xSize) / 2;
 		int oy = guiTop; // (height - ySize) / 2;
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		drawFG( ox, oy, x, y );
+
 		if ( myScrollBar != null )
 			myScrollBar.draw( this );
+
+		drawFG( ox, oy, x, y );
+	}
+
+	protected Slot getSlot(int mousex, int mousey)
+	{
+		for (int j1 = 0; j1 < this.inventorySlots.inventorySlots.size(); ++j1)
+		{
+			Slot slot = (Slot) this.inventorySlots.inventorySlots.get( j1 );
+			if ( isPointInRegion( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mousex, mousey ) )
+			{
+				return slot;
+			}
+		}
+
+		return null;
+	}
+
+	protected static String join(Collection<?> s, String delimiter)
+	{
+		StringBuilder builder = new StringBuilder();
+		Iterator iter = s.iterator();
+		while (iter.hasNext())
+		{
+			builder.append( iter.next() );
+			if ( !iter.hasNext() )
+			{
+				break;
+			}
+			builder.append( delimiter );
+		}
+		return builder.toString();
 	}
 
 }

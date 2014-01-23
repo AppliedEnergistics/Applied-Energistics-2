@@ -285,7 +285,7 @@ public class Platform
 		}
 		else
 		{
-			if ( Security.hasPermissions( tile, p, AccessType.BLOCK_ACCESS ) )
+			if ( type.isItem() || Security.hasPermissions( tile, p, AccessType.BLOCK_ACCESS ) )
 				p.openGui( AppEng.instance, type.ordinal() << 3 | (side.ordinal()), tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord );
 		}
 	}

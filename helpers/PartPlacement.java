@@ -102,6 +102,9 @@ public class PartPlacement
 							host.getFacadeContainer().removeFacade( host, sp.side );
 						}
 
+						if ( host.isEmpty() )
+							world.setBlock( x, y, z, 0 );
+
 						if ( is != null && !is.isEmpty() )
 						{
 							Platform.spawnDrops( world, x, y, z, is );
@@ -120,6 +123,7 @@ public class PartPlacement
 						e.printStackTrace();
 					}
 				}
+				return true;
 			}
 
 			return false;

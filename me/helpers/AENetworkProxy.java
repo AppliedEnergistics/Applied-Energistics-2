@@ -2,6 +2,7 @@ package appeng.me.helpers;
 
 import java.util.EnumSet;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
@@ -32,6 +33,8 @@ public class AENetworkProxy implements IGridBlock
 	final private IGridProxyable gp;
 	final private boolean worldNode;
 
+	final private ItemStack myRepInstance;
+
 	private boolean isReady = false;
 	private IGridNode node = null;
 
@@ -44,10 +47,17 @@ public class AENetworkProxy implements IGridBlock
 	final private String nbtName; // name
 	NBTTagCompound data = null; // input
 
-	public AENetworkProxy(IGridProxyable te, String nbtName, boolean inWorld) {
+	@Override
+	public ItemStack getMachineRepresentation()
+	{
+		return myRepInstance;
+	}
+
+	public AENetworkProxy(IGridProxyable te, String nbtName, ItemStack visual, boolean inWorld) {
 		this.gp = te;
 		this.nbtName = nbtName;
 		worldNode = inWorld;
+		myRepInstance = visual;
 		validSides = EnumSet.allOf( ForgeDirection.class );
 	}
 

@@ -51,22 +51,15 @@ public class ToolDebugCard extends AEBaseItem
 		{
 			int grids = 0;
 			int totalNodes = 0;
-			long totalOver5Ticks = 0;
 
 			for (Grid g : TickHandler.instance.getGridList())
 			{
-				TickManagerCache tmc = (TickManagerCache) g.getCache( ITickManager.class );
-
 				grids++;
-				for (IGridNode n : g.getNodes())
-				{
-					totalOver5Ticks += tmc.getAvgNanoTime( n );
-					totalNodes++;
-				}
+				totalNodes += g.getNodes().size();
 			}
+
 			outputMsg( player, "Grids: " + grids );
 			outputMsg( player, "Total Nodes: " + totalNodes );
-			// outputMsg( player, "Average Time Used: " + " - " + timeMeasurement( totalOver5Ticks / 5 ) );
 		}
 		else
 		{

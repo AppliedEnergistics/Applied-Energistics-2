@@ -110,7 +110,7 @@ public class GuiUpgradeable extends AEBaseGui
 		bindTexture( getBackground() );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, ySize );
 		if ( drawUpgrades() )
-			this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 10 + cvb.availableUpgrades() * 18 );
+			this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 14 + cvb.availableUpgrades() * 18 );
 		if ( hasToolbox() )
 			this.drawTexturedModalRect( offsetX + 178, offsetY + ySize - 90, 178, ySize - 90, 68, 68 );
 	}

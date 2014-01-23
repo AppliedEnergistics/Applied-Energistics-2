@@ -36,8 +36,11 @@ public class PacketInventoryAction extends AppEngPacket
 	public void serverPacketData(INetworkManager manager, AppEngPacket packet, EntityPlayer player)
 	{
 		EntityPlayerMP sender = (EntityPlayerMP) player;
-		AEBaseContainer aebc = (AEBaseContainer) sender.openContainer;
-		aebc.doAction( sender, action, slot, slotItem );
+		if ( sender.openContainer instanceof AEBaseContainer )
+		{
+			AEBaseContainer aebc = (AEBaseContainer) sender.openContainer;
+			aebc.doAction( sender, action, slot, slotItem );
+		}
 	}
 
 	// api

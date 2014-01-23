@@ -24,7 +24,7 @@ import appeng.parts.PartBasicState;
 public class PartToggleBus extends PartBasicState
 {
 
-	AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", true );
+	AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", proxy.getMachineRepresentation(), true );
 	IGridConnection connection;
 
 	protected final int REDSTONE_FLAG = 4;

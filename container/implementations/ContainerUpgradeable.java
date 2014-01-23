@@ -3,7 +3,9 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
@@ -17,7 +19,8 @@ import appeng.container.slot.OptionalSlotFakeTypeOnly;
 import appeng.container.slot.SlotFakeTypeOnly;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
-import appeng.tile.inventory.AppEngInternalInventory;
+import appeng.helpers.NetworkToolInv;
+import appeng.items.tools.ToolNetworkTool;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -26,17 +29,54 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 {
 
 	IBusCommon myte;
-	IInventory toolbox = new AppEngInternalInventory( null, 9 );
+
+	int tbslot;
+	NetworkToolInv tbinv;
 
 	public ContainerUpgradeable(InventoryPlayer ip, IBusCommon te) {
 		super( ip, (TileEntity) (te instanceof TileEntity ? te : null), (IPart) (te instanceof IPart ? te : null) );
 		myte = te;
 
+		World w = null;
+		int xCoor = 0, yCoor = 0, zCoor = 0;
+
+		if ( te instanceof TileEntity )
+		{
+			TileEntity myTile = (TileEntity) te;
+			w = myTile.getWorldObj();
+			xCoor = myTile.xCoord;
+			yCoor = myTile.yCoord;
+			zCoor = myTile.zCoord;
+		}
+
+		if ( te instanceof IPart )
+		{
+			IBusCommon myTile = (IBusCommon) te;
+			TileEntity mk = myTile.getTile();
+			w = mk.getWorldObj();
+			xCoor = mk.xCoord;
+			yCoor = mk.yCoord;
+			zCoor = mk.zCoord;
+		}
+
+		IInventory pi = getPlayerInv();
+		for (int x = 0; x < pi.getSizeInventory(); x++)
+		{
+			ItemStack pii = pi.getStackInSlot( x );
+			if ( pii != null && pii.getItem() instanceof ToolNetworkTool )
+			{
+				lockPlayerInventorySlot( x );
+				tbslot = x;
+				tbinv = (NetworkToolInv) ((ToolNetworkTool) pii.getItem()).getGuiObject( pii, w, xCoor, yCoor, zCoor );
+				break;
+			}
+		}
+
 		if ( hasToolbox() )
 		{
 			for (int v = 0; v < 3; v++)
 				for (int u = 0; u < 3; u++)
-					addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, toolbox, u + v * 3, 186 + u * 18, getHeight() - 82 + v * 18 ))
+					addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, tbinv, u + v * 3, 186 + u * 18, getHeight() - 82 + v * 18 ))
 							.setPlayerSide() );
 		}
 
@@ -95,6 +135,27 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	public RedstoneMode rsMode = RedstoneMode.IGNORE;
 	public FuzzyMode fzMode = FuzzyMode.IGNORE_ALL;
 
+	public void checkToolbox()
+	{
+		if ( hasToolbox() )
+		{
+			ItemStack currentItem = getPlayerInv().getStackInSlot( tbslot );
+
+			if ( currentItem != tbinv.getItemStack() )
+			{
+				if ( currentItem != null )
+				{
+					if ( Platform.isSameItem( tbinv.getItemStack(), currentItem ) )
+						getPlayerInv().setInventorySlotContents( tbslot, tbinv.getItemStack() );
+					else
+						getPlayerInv().player.closeScreen();
+				}
+				else
+					getPlayerInv().player.closeScreen();
+			}
+		}
+	}
+
 	@Override
 	public void detectAndSendChanges()
 	{
@@ -118,6 +179,8 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 			this.fzMode = (FuzzyMode) this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE );
 			this.rsMode = (RedstoneMode) this.myte.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
 		}
+
+		checkToolbox();
 
 		for (Object o : inventorySlots)
 		{
@@ -152,8 +215,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 
 	public boolean hasToolbox()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return tbinv != null;
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import appeng.tile.AEBaseInvTile;
 public abstract class AENetworkInvTile extends AEBaseInvTile implements IGridHost, IGridProxyable
 {
 
-	protected AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", true );
+	protected AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", getItemFromTile( this ), true );
 
 	@Override
 	public IGridNode getGridNode(ForgeDirection dir)

@@ -18,7 +18,7 @@ public class AENetworkProxyMultiblock extends AENetworkProxy implements IGridMul
 	}
 
 	public AENetworkProxyMultiblock(IGridProxyable te, String nbtName, boolean inWorld) {
-		super( te, nbtName, inWorld );
+		super( te, nbtName, null, inWorld );
 	}
 
 	@Override

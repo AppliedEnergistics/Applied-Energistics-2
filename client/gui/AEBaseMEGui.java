@@ -1,8 +1,6 @@
 package appeng.client.gui;
 
 import java.text.NumberFormat;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -117,36 +115,6 @@ public abstract class AEBaseMEGui extends AEBaseGui
 		super.drawItemStackTooltip( stack, x, y );
 	}
 
-	static String join(Collection<?> s, String delimiter)
-	{
-		StringBuilder builder = new StringBuilder();
-		Iterator iter = s.iterator();
-		while (iter.hasNext())
-		{
-			builder.append( iter.next() );
-			if ( !iter.hasNext() )
-			{
-				break;
-			}
-			builder.append( delimiter );
-		}
-		return builder.toString();
-	}
-
-	private Slot getSlot(int mousex, int mousey)
-	{
-		for (int j1 = 0; j1 < this.inventorySlots.inventorySlots.size(); ++j1)
-		{
-			Slot slot = (Slot) this.inventorySlots.inventorySlots.get( j1 );
-			if ( isPointInRegion( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mousex, mousey ) )
-			{
-				return slot;
-			}
-		}
-
-		return null;
-	}
-
 	private void safeDrawSlot(Slot s)
 	{
 		try
@@ -175,7 +143,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 				this.zLevel = 100.0F;
 				itemRenderer.zLevel = 100.0F;
 
-				if ( ! isPowered() )
+				if ( !isPowered() )
 				{
 					GL11.glDisable( GL11.GL_LIGHTING );
 					super.drawRect( s.xDisplayPosition, s.yDisplayPosition, 16 + s.xDisplayPosition, 16 + s.yDisplayPosition, 0x66111111 );
@@ -308,7 +276,8 @@ public abstract class AEBaseMEGui extends AEBaseGui
 		safeDrawSlot( s );
 	}
 
-	private boolean isPowered() {
+	private boolean isPowered()
+	{
 		return true;
 	}
 

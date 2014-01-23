@@ -26,8 +26,6 @@ public class Grid implements IGrid
 	HashMap<Class<? extends IGridHost>, Set> Machines = new HashMap<Class<? extends IGridHost>, Set>();
 	HashMap<Class<? extends IGridCache>, GridCacheWrapper> caches = new HashMap<Class<? extends IGridCache>, GridCacheWrapper>();
 
-	long LastFiveRemoveTime = 0;
-	long LastFiveAddNode = 0;
 	GridNode pivot;
 
 	public Grid(GridNode center) {

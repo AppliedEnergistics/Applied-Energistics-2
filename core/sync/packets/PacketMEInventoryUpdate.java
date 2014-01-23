@@ -14,6 +14,7 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.implementations.GuiMEMonitorable;
+import appeng.client.gui.implementations.GuiNetworkStatus;
 import appeng.core.sync.AppEngPacket;
 import appeng.util.item.AEItemStack;
 import cpw.mods.fml.relauncher.Side;
@@ -45,10 +46,13 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	public void clientPacketData(INetworkManager network, AppEngPacket packet, EntityPlayer player)
 	{
 		GuiScreen gs = Minecraft.getMinecraft().currentScreen;
+
 		if ( gs instanceof GuiMEMonitorable )
-		{
 			((GuiMEMonitorable) gs).postUpdate( list );
-		}
+
+		if ( gs instanceof GuiNetworkStatus )
+			((GuiNetworkStatus) gs).postUpdate( list );
+
 	}
 
 	@Override

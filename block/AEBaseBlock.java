@@ -152,6 +152,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 	protected void setTileEntiy(Class<? extends TileEntity> c)
 	{
+		AEBaseTile.registerTileItem( c, new ItemStack( this ) );
 		GameRegistry.registerTileEntity( tileEntityType = c, FeatureFullname );
 	}
 

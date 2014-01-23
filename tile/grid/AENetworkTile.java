@@ -16,7 +16,7 @@ public class AENetworkTile extends AEBaseTile implements IGridHost, IGridProxyab
 
 	protected AENetworkProxy createProxy()
 	{
-		return new AENetworkProxy( this, "proxy", true );
+		return new AENetworkProxy( this, "proxy", getItemFromTile( this ), true );
 	}
 
 	@Override

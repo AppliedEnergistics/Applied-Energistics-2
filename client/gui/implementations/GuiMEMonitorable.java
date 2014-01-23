@@ -69,7 +69,6 @@ public class GuiMEMonitorable extends AEBaseMEGui
 		int NEI = 0;
 		int top = 4;
 		int extraSpace = height - 114 - NEI - top;
-		int moveDown = 0;
 
 		rows = (int) Math.floor( extraSpace / 18 );
 		if ( rows > maxRows )

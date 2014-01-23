@@ -38,7 +38,7 @@ import appeng.parts.networking.PartCable;
 public class AEBasePart implements IPart, IGridProxyable, IGridHost, IBusCommon
 {
 
-	protected AENetworkProxy proxy = new AENetworkProxy( this, "part", this instanceof PartCable );
+	protected AENetworkProxy proxy;
 	protected TileEntity tile = null;
 	protected IPartHost host = null;
 	protected ForgeDirection side = null;
@@ -47,6 +47,7 @@ public class AEBasePart implements IPart, IGridProxyable, IGridHost, IBusCommon
 
 	public AEBasePart(Class c, ItemStack is) {
 		this.is = is;
+		proxy = new AENetworkProxy( this, "part", is, this instanceof PartCable );
 		proxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 	}
 
@@ -277,6 +278,12 @@ public class AEBasePart implements IPart, IGridProxyable, IGridHost, IBusCommon
 	public void onPlacement(EntityPlayer player, ItemStack held, ForgeDirection side)
 	{
 
+	}
+
+	@Override
+	public TileEntity getTile()
+	{
+		return tile;
 	}
 
 }

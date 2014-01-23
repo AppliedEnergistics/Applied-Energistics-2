@@ -145,4 +145,9 @@ public class ItemRepo
 	{
 		return view.size();
 	}
+
+	public void clear()
+	{
+		list.resetStatus();
+	}
 }

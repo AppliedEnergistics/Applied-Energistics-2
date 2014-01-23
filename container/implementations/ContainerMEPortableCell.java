@@ -14,7 +14,8 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 	ICellItemViewer civ;
 
 	public ContainerMEPortableCell(InventoryPlayer ip, ICellItemViewer montiorable) {
-		super( ip, (IStorageMonitorable) montiorable );
+		super( ip, (IStorageMonitorable) montiorable, Platform.isServer() );
+		lockPlayerInventorySlot( ip.currentItem );
 		civ = montiorable;
 	}
 

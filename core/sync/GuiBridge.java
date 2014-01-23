@@ -25,12 +25,15 @@ import appeng.container.implementations.ContainerInterface;
 import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.container.implementations.ContainerMEPortableCell;
+import appeng.container.implementations.ContainerNetworkStatus;
+import appeng.container.implementations.ContainerNetworkTool;
 import appeng.container.implementations.ContainerQNB;
 import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.helpers.ICellItemViewer;
 import appeng.helpers.IGuiItem;
 import appeng.helpers.IInterfaceHost;
+import appeng.helpers.INetworkTool;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.tile.grindstone.TileGrinder;
 import appeng.tile.misc.TileCellWorkbench;
@@ -57,6 +60,10 @@ public enum GuiBridge implements IGuiHandler
 	GUI_ME(ContainerMEMonitorable.class, IStorageMonitorable.class, false),
 
 	GUI_PORTABLE_CELL(ContainerMEPortableCell.class, ICellItemViewer.class, true),
+
+	GUI_NETWORK_STATUS(ContainerNetworkStatus.class, INetworkTool.class, true),
+
+	GUI_NETWORK_TOOL(ContainerNetworkTool.class, INetworkTool.class, true),
 
 	GUI_DRIVE(ContainerDrive.class, TileDrive.class, false),
 
@@ -166,7 +173,7 @@ public enum GuiBridge implements IGuiHandler
 			ItemStack it = player.inventory.getCurrentItem();
 			if ( it != null && it.getItem() instanceof IGuiItem )
 			{
-				Object myItem = ((IGuiItem) it.getItem()).getGuiObject( it );
+				Object myItem = ((IGuiItem) it.getItem()).getGuiObject( it, w, x, y, z );
 				if ( ID.CorrectTileOrPart( myItem ) )
 					return ID.ConstructContainer( player.inventory, side, myItem );
 			}
@@ -191,7 +198,7 @@ public enum GuiBridge implements IGuiHandler
 		return new ContainerNull();
 	}
 
-	private boolean isItem()
+	public boolean isItem()
 	{
 		return isItem;
 	}
@@ -207,7 +214,7 @@ public enum GuiBridge implements IGuiHandler
 			ItemStack it = player.inventory.getCurrentItem();
 			if ( it != null && it.getItem() instanceof IGuiItem )
 			{
-				Object myItem = ((IGuiItem) it.getItem()).getGuiObject( it );
+				Object myItem = ((IGuiItem) it.getItem()).getGuiObject( it, w, x, y, z );
 				if ( ID.CorrectTileOrPart( myItem ) )
 					return ID.ConstructGui( player.inventory, side, myItem );
 			}

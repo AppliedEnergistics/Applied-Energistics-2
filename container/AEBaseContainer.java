@@ -1,6 +1,7 @@
 package appeng.container;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -44,6 +45,12 @@ public abstract class AEBaseContainer extends Container
 
 	protected IMEInventoryHandler<IAEItemStack> cellInv;
 	protected IEnergySource powerSrc;
+	protected HashSet<Integer> locked = new HashSet();
+
+	public void lockPlayerInventorySlot(int idx)
+	{
+		locked.add( idx );
+	}
 
 	public Object getTarget()
 	{
@@ -336,13 +343,19 @@ public abstract class AEBaseContainer extends Container
 		{
 			for (int j = 0; j < 9; j++)
 			{
-				addSlotToContainer( new SlotPlayerInv( inventoryPlayer, j + i * 9 + 9, 8 + j * 18 + offset_x, offset_y + i * 18 ) );
+				if ( locked.contains( j + i * 9 + 9 ) )
+					addSlotToContainer( new SlotDisabled( inventoryPlayer, j + i * 9 + 9, 8 + j * 18 + offset_x, offset_y + i * 18 ) );
+				else
+					addSlotToContainer( new SlotPlayerInv( inventoryPlayer, j + i * 9 + 9, 8 + j * 18 + offset_x, offset_y + i * 18 ) );
 			}
 		}
 
 		for (int i = 0; i < 9; i++)
 		{
-			addSlotToContainer( new SlotPlayerHotBar( inventoryPlayer, i, 8 + i * 18 + offset_x, 58 + offset_y ) );
+			if ( locked.contains( i ) )
+				addSlotToContainer( new SlotDisabled( inventoryPlayer, i, 8 + i * 18 + offset_x, 58 + offset_y ) );
+			else
+				addSlotToContainer( new SlotPlayerHotBar( inventoryPlayer, i, 8 + i * 18 + offset_x, 58 + offset_y ) );
 		}
 	}
 

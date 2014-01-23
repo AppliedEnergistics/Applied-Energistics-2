@@ -147,7 +147,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
-	public Object getGuiObject(ItemStack is)
+	public Object getGuiObject(ItemStack is, World w, int x, int y, int z)
 	{
 		return new CellItemViewer( is );
 	}

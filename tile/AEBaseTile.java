@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,12 +32,28 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 {
 
 	private final EnumMap<TileEventType, List<AETileEventHandler>> handlers = new EnumMap<TileEventType, List<AETileEventHandler>>( TileEventType.class );
+	private final static HashMap<Class, ItemStack> myItem = new HashMap();
 
 	private ForgeDirection forward = ForgeDirection.UNKNOWN;
 	private ForgeDirection up = ForgeDirection.UNKNOWN;
 
 	public boolean dropItems = true;
 	public int renderFragment = 0;
+
+	public TileEntity getTile()
+	{
+		return this;
+	}
+
+	static public void registerTileItem(Class c, ItemStack wat)
+	{
+		myItem.put( c, wat );
+	}
+
+	protected ItemStack getItemFromTile(Object obj)
+	{
+		return myItem.get( obj.getClass() );
+	}
 
 	/**
 	 * isRedstonePowerd has already changed.

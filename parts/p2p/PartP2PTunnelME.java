@@ -26,7 +26,7 @@ import appeng.me.helpers.AENetworkProxy;
 public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements IGridTickable
 {
 
-	AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", true );
+	AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", null, true );
 	public Connections connection = new Connections( this );
 
 	public PartP2PTunnelME(ItemStack is) {

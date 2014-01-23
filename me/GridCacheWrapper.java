@@ -5,19 +5,16 @@ import appeng.api.networking.IGridCache;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
-import appeng.me.cache.TickManagerCache;
 
 public class GridCacheWrapper implements IGridCache
 {
 
-	final public boolean isTickHandler;
 	final IGridCache myCache;
 	final String name;
 
 	public GridCacheWrapper(final IGridCache gc) {
 		myCache = gc;
 		name = myCache.getClass().getName();
-		isTickHandler = myCache instanceof TickManagerCache;
 	}
 
 	@Override

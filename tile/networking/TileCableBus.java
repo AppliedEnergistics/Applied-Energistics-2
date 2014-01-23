@@ -291,4 +291,10 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	{
 		// never called!
 	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		return cb.isEmpty();
+	}
 }

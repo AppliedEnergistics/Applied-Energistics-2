@@ -12,7 +12,7 @@ import appeng.tile.powersink.AEBasePoweredTile;
 public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IGridHost, IGridProxyable
 {
 
-	protected AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", true );
+	protected AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", getItemFromTile( this ), true );
 
 	@Override
 	public AECableType getCableConnectionType(ForgeDirection dir)
