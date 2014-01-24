@@ -24,6 +24,7 @@ import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
+import appeng.api.util.AEColor;
 import appeng.api.util.AEItemDefinition;
 import appeng.block.grindstone.BlockCrank;
 import appeng.block.grindstone.BlockGrinder;
@@ -66,8 +67,10 @@ import appeng.block.storage.BlockDrive;
 import appeng.block.storage.BlockIOPort;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
+import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.DamagedItemDefinition;
 import appeng.core.features.IAEFeature;
+import appeng.core.features.registries.P2PTunnelRegistry;
 import appeng.core.features.registries.entries.BasicCellHandler;
 import appeng.core.features.registries.entries.CreativeCellHandler;
 import appeng.core.localization.GuiText;
@@ -182,10 +185,17 @@ public class Registration
 				}
 				else
 				{
-					for (Enum v : varients)
+					if ( varients[0] instanceof AEColor )
 					{
-						ItemStack is = ((ItemPart) partItem.item()).createPart( type, v );
-						f.set( parts, new DamagedItemDefinition( is ) );
+						ColoredItemDefinition def = new ColoredItemDefinition();
+
+						for (Enum v : varients)
+						{
+							ItemStack is = ((ItemPart) partItem.item()).createPart( type, v );
+							def.add( (AEColor) v, is );
+						}
+
+						f.set( parts, def );
 					}
 				}
 			}
@@ -408,6 +418,9 @@ public class Registration
 
 		AEApi.instance().registries().matterCannon().registerAmmo( AEApi.instance().materials().materialMatterBall.stack( 1 ), 32.0 );
 
+		// default settings..
+		((P2PTunnelRegistry) AEApi.instance().registries().p2pTunnel()).configure();
+
 		NetworkRegistry.instance().registerGuiHandler( AppEng.instance, GuiBridge.GUI_Handler );
 	}
 
@@ -455,7 +468,7 @@ public class Registration
 		// partStorageBus
 		Upgrades.FUZZY.registerItem( AEApi.instance().parts().partStorageBus.stack( 1 ), 1 );
 		Upgrades.INVERTER.registerItem( AEApi.instance().parts().partStorageBus.stack( 1 ), 1 );
-		Upgrades.CAPACITY.registerItem( AEApi.instance().parts().partStorageBus.stack( 1 ), 3 );
+		Upgrades.CAPACITY.registerItem( AEApi.instance().parts().partStorageBus.stack( 1 ), 5 );
 
 		// matter cannon
 		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemMassCannon.stack( 1 ), 1 );

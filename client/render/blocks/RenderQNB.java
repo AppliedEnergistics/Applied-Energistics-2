@@ -10,7 +10,8 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
-import appeng.api.util.AEItemDefinition;
+import appeng.api.util.AEColor;
+import appeng.api.util.AEColoredItemDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraTextures;
@@ -92,15 +93,15 @@ public class RenderQNB extends BaseBlockRender
 		{
 			if ( tqb.isFormed() )
 			{
-				AEItemDefinition cabldef = AEApi.instance().parts().partCableGlass;
-				Item cable = cabldef.item();
+				AEColoredItemDefinition cabldef = AEApi.instance().parts().partCableGlass;
+				Item cable = cabldef.item( AEColor.Transparent );
 
-				AEItemDefinition ccabldef = AEApi.instance().parts().partCableCovered;
-				Item ccable = ccabldef.item();
+				AEColoredItemDefinition ccabldef = AEApi.instance().parts().partCableCovered;
+				Item ccable = ccabldef.item( AEColor.Transparent );
 
 				EnumSet<ForgeDirection> sides = tqb.getConnections();
-				renderCableAt( 0.11D, world, x, y, z, block, renderer, cable.getIconIndex( cabldef.stack( 1 ) ), 0.141D, sides );
-				renderCableAt( 0.188D, world, x, y, z, block, renderer, ccable.getIconIndex( ccabldef.stack( 1 ) ), 0.1875D, tqb.getConnections() );
+				renderCableAt( 0.11D, world, x, y, z, block, renderer, cable.getIconIndex( cabldef.stack( AEColor.Transparent, 1 ) ), 0.141D, sides );
+				renderCableAt( 0.188D, world, x, y, z, block, renderer, ccable.getIconIndex( ccabldef.stack( AEColor.Transparent, 1 ) ), 0.1875D, tqb.getConnections() );
 			}
 
 			float px = 2.0f / 16.0f;
@@ -120,12 +121,13 @@ public class RenderQNB extends BaseBlockRender
 			}
 			else if ( tqb.isCorner() )
 			{
-				// renderCableAt(0.11D, world, x, y, z, block, modelId, renderer,
+				// renderCableAt(0.11D, world, x, y, z, block, modelId,
+				// renderer,
 				// AppEngTextureRegistry.Blocks.MECable.get(), true, 0.0D);
-				AEItemDefinition ccabldef = AEApi.instance().parts().partCableCovered;
-				Item ccable = ccabldef.item();
+				AEColoredItemDefinition ccabldef = AEApi.instance().parts().partCableCovered;
+				Item ccable = ccabldef.item( AEColor.Transparent );
 
-				renderCableAt( 0.188D, world, x, y, z, block, renderer, ccable.getIconIndex( ccabldef.stack( 1 ) ), 0.05D, tqb.getConnections() );
+				renderCableAt( 0.188D, world, x, y, z, block, renderer, ccable.getIconIndex( ccabldef.stack( AEColor.Transparent, 1 ) ), 0.05D, tqb.getConnections() );
 
 				float px = 4.0f / 16.0f;
 				float maxpx = 12.0f / 16.0f;
