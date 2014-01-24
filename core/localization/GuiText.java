@@ -17,7 +17,9 @@ public enum GuiText
 
 	IOPort, BytesUsed, Types, QuantumLinkChamber, PortableCell,
 
-	NetworkTool, PowerUsageRate, PowerInputRate, Installed, EnergyDrain;
+	NetworkTool, PowerUsageRate, PowerInputRate, Installed, EnergyDrain,
+
+	StorageBus;
 
 	String root;
 

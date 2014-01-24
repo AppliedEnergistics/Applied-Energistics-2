@@ -10,9 +10,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.exceptions.AppEngException;
 import appeng.api.implementations.IUpgradeableHost;
-import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.INetworkTool;
+import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.storage.IStorageMonitorable;
@@ -31,10 +31,12 @@ import appeng.container.implementations.ContainerMEPortableCell;
 import appeng.container.implementations.ContainerNetworkStatus;
 import appeng.container.implementations.ContainerNetworkTool;
 import appeng.container.implementations.ContainerQNB;
+import appeng.container.implementations.ContainerStorageBus;
 import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.helpers.IInterfaceHost;
 import appeng.parts.automation.PartLevelEmitter;
+import appeng.parts.misc.PartStorageBus;
 import appeng.tile.grindstone.TileGrinder;
 import appeng.tile.misc.TileCellWorkbench;
 import appeng.tile.misc.TileCondenser;
@@ -76,6 +78,8 @@ public enum GuiBridge implements IGuiHandler
 	GUI_BUS(ContainerUpgradeable.class, IUpgradeableHost.class, false),
 
 	GUI_IOPORT(ContainerIOPort.class, TileIOPort.class, false),
+
+	GUI_STORAGEBUS(ContainerStorageBus.class, PartStorageBus.class, false),
 
 	// extends (Container/Gui) + Bus
 	GUI_LEVELEMITTER(ContainerLevelEmitter.class, PartLevelEmitter.class, false),

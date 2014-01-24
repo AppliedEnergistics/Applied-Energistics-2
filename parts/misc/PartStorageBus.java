@@ -4,11 +4,16 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
+import appeng.api.config.AccessRestriction;
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.Settings;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.security.BaseActionSource;
@@ -28,10 +33,11 @@ import appeng.api.storage.IMEMonitorHandlerReciever;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.texture.CableBusTextures;
+import appeng.core.sync.GuiBridge;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.me.storage.MEMonitorIInventory;
-import appeng.parts.PartBasicState;
+import appeng.parts.automation.PartUpgradeable;
 import appeng.util.Platform;
 import buildcraft.api.transport.IPipeConnection;
 import buildcraft.api.transport.IPipeTile.PipeType;
@@ -39,7 +45,7 @@ import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 
 @Interface(modid = "BuildCraft|Transport", iface = "buildcraft.api.transport.IPipeConnection")
-public class PartStorageBus extends PartBasicState implements IGridTickable, ICellContainer, IMEMonitorHandlerReciever<IAEItemStack>, IPipeConnection
+public class PartStorageBus extends PartUpgradeable implements IGridTickable, ICellContainer, IMEMonitorHandlerReciever<IAEItemStack>, IPipeConnection
 {
 
 	int priority = 0;
@@ -47,6 +53,8 @@ public class PartStorageBus extends PartBasicState implements IGridTickable, ICe
 
 	public PartStorageBus(ItemStack is) {
 		super( PartStorageBus.class, is );
+		getConfigManager().registerSetting( Settings.ACCESS, AccessRestriction.READ_WRITE );
+		getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 		mySrc = new MachineSource( this );
 	}
 
@@ -55,6 +63,26 @@ public class PartStorageBus extends PartBasicState implements IGridTickable, ICe
 	MEInventoryHandler handler = null;
 
 	int handlerHash = 0;
+
+	@Override
+	public boolean onActivate(EntityPlayer player, Vec3 pos)
+	{
+		if ( !player.isSneaking() )
+		{
+			if ( Platform.isClient() )
+				return true;
+
+			Platform.openGUI( player, getHost().getTile(), side, GuiBridge.GUI_STORAGEBUS );
+			return true;
+		}
+
+		return false;
+	}
+
+	protected int getUpgradeSlots()
+	{
+		return 5;
+	}
 
 	@Override
 	public boolean isValid(Object verificationToken)
