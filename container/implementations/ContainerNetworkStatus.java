@@ -41,7 +41,7 @@ public class ContainerNetworkStatus extends AEBaseContainer
 				findNode( host, d );
 		}
 
-		if ( network == null )
+		if ( network == null && Platform.isServer() )
 			ip.player.closeScreen();
 	}
 
@@ -55,7 +55,7 @@ public class ContainerNetworkStatus extends AEBaseContainer
 		}
 	}
 
-	int delay = 0;
+	int delay = 40;
 
 	public long avgAddition;
 	public long powerUsage;
@@ -91,7 +91,7 @@ public class ContainerNetworkStatus extends AEBaseContainer
 	public void detectAndSendChanges()
 	{
 		delay++;
-		if ( Platform.isServer() && delay > 1 && network != null )
+		if ( Platform.isServer() && delay > 15 && network != null )
 		{
 			delay = 0;
 
