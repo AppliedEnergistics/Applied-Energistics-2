@@ -32,6 +32,7 @@ public class GuiNetworkStatus extends AEBaseGui
 		this.xSize = 195;
 		myScrollBar = new GuiScrollbar();
 		repo = new ItemRepo( myScrollBar );
+		repo.rowSize = 5;
 	}
 
 	public void postUpdate(List<IAEItemStack> list)
@@ -47,8 +48,9 @@ public class GuiNetworkStatus extends AEBaseGui
 
 	private void setScrollBar()
 	{
+		int size = repo.size();
 		myScrollBar.setTop( 39 ).setLeft( 175 ).setHeight( 78 );
-		myScrollBar.setRange( 0, (repo.size() + 8) / 5 - rows, 2 );
+		myScrollBar.setRange( 0, (size + 4) / 5 - rows, 1 );
 	}
 
 	@Override
@@ -74,7 +76,7 @@ public class GuiNetworkStatus extends AEBaseGui
 		for (int z = 0; z <= 4 * 5; z++)
 		{
 			int minX = gx + 14 + x * 31;
-			int minY = gy + 41 + y * 22;
+			int minY = gy + 41 + y * 18;
 
 			if ( minX < mouse_x && minX + 28 > mouse_x )
 			{
@@ -114,70 +116,64 @@ public class GuiNetworkStatus extends AEBaseGui
 		int y = 0;
 		int xo = 0 + 12;
 		int yo = 0 + 42;
-		int viewStart = myScrollBar.getCurrentScroll() * 5;
+		int viewStart = 0;// myScrollBar.getCurrentScroll() * 5;
 		int viewEnd = viewStart + 5 * 4;
 
-		int pn = repo.size();
-		int rows = pn / 5 + ((pn % 5) > 0 ? 1 : 0);
-		// updateScrollRegion( rows - 4 > 0 ? rows - 4 : 0 );
+		String ToolTip = "";
+		int toolPosX = 0;
+		int toolPosY = 0;
 
 		for (int z = viewStart; z < Math.min( viewEnd, repo.size() ); z++)
 		{
-			GL11.glPushMatrix();
-			GL11.glScaled( 0.5, 0.5, 0.5 );
-
 			IAEItemStack refStack = repo.getRefrenceItem( z );
-
-			String str = Long.toString( refStack.getStackSize() );
-			if ( repo.getRefrenceItem( z ).getStackSize() >= 10000 )
-				str = Long.toString( refStack.getStackSize() / 1000 ) + StatCollector.translateToLocal( "AppEng.Sizes.1000" );
-
-			int w = fontRenderer.getStringWidth( str );
-			fontRenderer
-					.drawString( str, (int) ((x * sectionLength + xo + sectionLength - 19 - ((float) w * 0.5)) * 2), (int) ((y * 18 + yo + 6) * 2), 4210752 );
-			GL11.glPopMatrix();
-
-			int posX = x * sectionLength + xo + sectionLength - 18;
-			int posY = y * 18 + yo;
-
-			drawItem( posX, posY, repo.getItem( z ) );
-
-			x++;
-
-			if ( x > 4 )
+			if ( refStack != null )
 			{
-				y++;
-				x = 0;
-			}
-		}
+				GL11.glPushMatrix();
+				GL11.glScaled( 0.5, 0.5, 0.5 );
 
-		x = 0;
-		y = 0;
-		for (int z = viewStart; z < Math.min( viewEnd, repo.size() ); z++)
-		{
-			if ( tooltip == z - viewStart )
-			{
-				IAEItemStack refStack = repo.getRefrenceItem( z );
-				GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
-				String out = Platform.getItemDisplayName( repo.getItem( z ) );
+				String str = Long.toString( refStack.getStackSize() );
+				if ( refStack.getStackSize() >= 10000 )
+					str = Long.toString( refStack.getStackSize() / 1000 ) + StatCollector.translateToLocal( "AppEng.Sizes.1000" );
 
-				out = out + ("\n" + GuiText.Installed.getLocal() + ": " + (refStack.getStackSize()));
-				out = out + ("\n" + GuiText.EnergyDrain.getLocal() + ": " + formatPowerLong( refStack.getCountRequestable() ));
+				int w = fontRenderer.getStringWidth( str );
+				fontRenderer.drawString( str, (int) ((x * sectionLength + xo + sectionLength - 19 - ((float) w * 0.5)) * 2), (int) ((y * 18 + yo + 6) * 2),
+						4210752 );
 
-				int posX = x * sectionLength + xo + sectionLength - 8;
+				GL11.glPopMatrix();
+				int posX = x * sectionLength + xo + sectionLength - 18;
 				int posY = y * 18 + yo;
 
-				drawTooltip( posX, posY + 10, 0, out );
-				GL11.glPopAttrib();
-			}
-			x++;
+				if ( tooltip == z - viewStart )
+				{
+					ToolTip = Platform.getItemDisplayName( repo.getItem( z ) );
 
-			if ( x > 4 )
-			{
-				y++;
-				x = 0;
+					ToolTip = ToolTip + ("\n" + GuiText.Installed.getLocal() + ": " + (refStack.getStackSize()));
+					ToolTip = ToolTip + ("\n" + GuiText.EnergyDrain.getLocal() + ": " + formatPowerLong( refStack.getCountRequestable() ));
+
+					toolPosX = x * sectionLength + xo + sectionLength - 8;
+					toolPosY = y * 18 + yo;
+				}
+
+				drawItem( posX, posY, repo.getItem( z ) );
+
+				x++;
+
+				if ( x > 4 )
+				{
+					y++;
+					x = 0;
+				}
 			}
+
 		}
+
+		if ( tooltip >= 0 && ToolTip.length() > 0 )
+		{
+			GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
+			drawTooltip( toolPosX, toolPosY + 10, 0, ToolTip );
+			GL11.glPopAttrib();
+		}
+
 	}
 
 	private String formatPowerLong(long n)
