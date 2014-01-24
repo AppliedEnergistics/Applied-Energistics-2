@@ -29,7 +29,8 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 		@Override
 		public void Tick()
 		{
-			injectExternalPower( PowerUnits.WA, power );
+			if ( power > 0 )
+				injectExternalPower( PowerUnits.WA, power );
 		}
 
 	};
