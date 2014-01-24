@@ -65,7 +65,6 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 	private int getMaxInstalled(Upgrades u)
 	{
 		Integer max = null;
-
 		for (ItemStack is : u.getSupported().keySet())
 		{
 			if ( is.getItem() == itemorblock )
@@ -74,6 +73,11 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 				break;
 			}
 			else if ( is.getItem() instanceof ItemBlock && Block.blocksList[((ItemBlock) is.getItem()).getBlockID()] == itemorblock )
+			{
+				max = u.getSupported().get( is );
+				break;
+			}
+			else if ( itemorblock instanceof ItemStack && Platform.isSameItem( (ItemStack) itemorblock, is ) )
 			{
 				max = u.getSupported().get( is );
 				break;

@@ -16,12 +16,17 @@ public class PartUpgradeable extends PartBasicState implements ISegmentedInvento
 {
 
 	IConfigManager settings = new ConfigManager( this );
-	private UpgradeInventory upgrades = new UpgradeInventory( is.getItem(), this, 4 );
+	private UpgradeInventory upgrades = new UpgradeInventory( is, this, getUpgradeSlots() );
 
 	@Override
 	public int getInstalledUpgrades(Upgrades u)
 	{
 		return upgrades.getInstalledUpgrades( u );
+	}
+
+	protected int getUpgradeSlots()
+	{
+		return 4;
 	}
 
 	public void writeToNBT(net.minecraft.nbt.NBTTagCompound extra)
