@@ -58,7 +58,7 @@ public class BasicCellHandler implements ICellHandler
 	@Override
 	public double cellIdleDrain(ItemStack is, IMEInventory handler)
 	{
-		CellInventory inv = (CellInventory) handler;
+		CellInventory inv = ((CellInventoryHandler) handler).getCellInv();
 		return inv.getIdleDrain();
 	}
 }

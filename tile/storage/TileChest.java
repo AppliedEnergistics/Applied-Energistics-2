@@ -41,6 +41,7 @@ import appeng.api.storage.IMEMonitorHandlerReciever;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.MEMonitorHandler;
 import appeng.api.storage.StorageChannel;
+import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.helpers.AENoHandler;
@@ -321,8 +322,21 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			{
 				isCached = true;
 				cellHandler = AEApi.instance().registries().cell().getHander( is );
-				icell = wrap( cellHandler.getCellInventory( is, StorageChannel.ITEMS ) );
-				fcell = wrap( cellHandler.getCellInventory( is, StorageChannel.FLUIDS ) );
+
+				double power = 1.0;
+
+				IMEInventoryHandler<IAEItemStack> itemCell = cellHandler.getCellInventory( is, StorageChannel.ITEMS );
+				IMEInventoryHandler<IAEFluidStack> fluidCell = cellHandler.getCellInventory( is, StorageChannel.FLUIDS );
+
+				if ( itemCell != null )
+					power += cellHandler.cellIdleDrain( is, itemCell );
+				else if ( fluidCell != null )
+					power += cellHandler.cellIdleDrain( is, fluidCell );
+
+				gridProxy.setIdlePowerUsage( power );
+
+				icell = wrap( itemCell );
+				fcell = wrap( fluidCell );
 			}
 		}
 

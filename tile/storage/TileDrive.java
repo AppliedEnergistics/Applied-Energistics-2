@@ -188,6 +188,8 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive
 			items = new LinkedList();
 			fluids = new LinkedList();
 
+			double power = 2.0;
+
 			for (int x = 0; x < inv.getSizeInventory(); x++)
 			{
 				ItemStack is = inv.getStackInSlot( x );
@@ -204,6 +206,8 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive
 
 						if ( cell != null )
 						{
+							power += handlersBySlot[x].cellIdleDrain( is, cell );
+
 							DriveWatcher<IAEItemStack> ih = new DriveWatcher( cell, is, handlersBySlot[x], this );
 							ih.myPriority = priority;
 							invBySlot[x] = ih;
@@ -215,6 +219,8 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive
 
 							if ( cell != null )
 							{
+								power += handlersBySlot[x].cellIdleDrain( is, cell );
+
 								DriveWatcher<IAEItemStack> ih = new DriveWatcher( cell, is, handlersBySlot[x], this );
 								ih.myPriority = priority;
 								invBySlot[x] = ih;
@@ -224,6 +230,8 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive
 					}
 				}
 			}
+
+			gridProxy.setIdlePowerUsage( power );
 
 			isCached = true;
 		}
