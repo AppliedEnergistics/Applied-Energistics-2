@@ -33,7 +33,7 @@ public class TileInscriber extends AENetworkPowerTile
 	{
 
 		public TileInscriberHandler() {
-			super( EnumSet.of( TileEventType.TICK, TileEventType.NETWORK ) );
+			super( TileEventType.TICK, TileEventType.NETWORK );
 		}
 
 		@Override

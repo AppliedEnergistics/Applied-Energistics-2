@@ -52,7 +52,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	{
 
 		public QBridgeHandler() {
-			super( EnumSet.of( TileEventType.NETWORK, TileEventType.TICK ) );
+			super( TileEventType.NETWORK, TileEventType.TICK );
 			gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 			gridProxy.setFlags( GridFlags.TIER_2_CAPACITY );
 			gridProxy.setIdlePowerUsage( 22 );

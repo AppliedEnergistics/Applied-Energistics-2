@@ -1,7 +1,5 @@
 package appeng.tile.misc;
 
-import java.util.EnumSet;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -72,7 +70,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	{
 
 		public TileCellWorkbenchHandler() {
-			super( EnumSet.of( TileEventType.WORLD_NBT ) );
+			super( TileEventType.WORLD_NBT );
 		}
 
 		@Override

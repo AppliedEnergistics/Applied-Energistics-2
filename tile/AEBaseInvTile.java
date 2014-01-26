@@ -1,7 +1,5 @@
 package appeng.tile;
 
-import java.util.EnumSet;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -16,7 +14,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 {
 
 	public AEBaseInvTile() {
-		addNewHandler( new AETileEventHandler( EnumSet.of( TileEventType.WORLD_NBT ) ) {
+		addNewHandler( new AETileEventHandler( TileEventType.WORLD_NBT ) {
 
 			@Override
 			public void readFromNBT(net.minecraft.nbt.NBTTagCompound data)

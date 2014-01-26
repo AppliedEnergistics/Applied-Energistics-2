@@ -1,7 +1,5 @@
 package appeng.tile.powersink;
 
-import java.util.EnumSet;
-
 import net.minecraftforge.common.ForgeDirection;
 import Reika.RotaryCraft.API.ShaftPowerReceiver;
 import appeng.api.config.PowerUnits;
@@ -23,7 +21,7 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	{
 
 		public RotaryCraftHandler() {
-			super( EnumSet.of( TileEventType.TICK ) );
+			super( TileEventType.TICK );
 		}
 
 		@Override

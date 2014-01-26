@@ -5,7 +5,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.inventory.IInventory;
@@ -45,6 +44,7 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.helpers.AENoHandler;
+import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.tile.events.AETileEventHandler;
@@ -55,7 +55,7 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 import appeng.util.item.AEFluidStack;
 
-public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHandler, IStorageMonitorable
+public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHandler, IStorageMonitorable, IPriorityHost
 {
 
 	static final AENoHandler noHandler = new AENoHandler();
@@ -109,7 +109,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	{
 
 		public invManger() {
-			super( EnumSet.of( TileEventType.TICK, TileEventType.NETWORK, TileEventType.WORLD_NBT ) );
+			super( TileEventType.TICK, TileEventType.NETWORK, TileEventType.WORLD_NBT );
 		}
 
 		@Override
@@ -662,6 +662,25 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		if ( isPowered() )
 			return storageType;
 		return null;
+	}
+
+	@Override
+	public void setPriority(int newValue)
+	{
+		priority = newValue;
+
+		icell = null;
+		fcell = null;
+		isCached = false; // recalculate the storage cell.
+
+		try
+		{
+			gridProxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+		}
+		catch (GridAccessException e)
+		{
+			// :P
+		}
 	}
 
 }

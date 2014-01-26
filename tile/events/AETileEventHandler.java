@@ -14,8 +14,10 @@ public abstract class AETileEventHandler
 
 	final EnumSet<TileEventType> supportedEvents;
 
-	public AETileEventHandler(EnumSet<TileEventType> events) {
-		supportedEvents = events;
+	public AETileEventHandler(TileEventType... events) {
+		supportedEvents = EnumSet.noneOf( TileEventType.class );
+		for (TileEventType t : events)
+			supportedEvents.add( t );
 	}
 
 	public EnumSet<TileEventType> getSubscribedEvents()

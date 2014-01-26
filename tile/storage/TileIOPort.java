@@ -1,7 +1,5 @@
 package appeng.tile.storage;
 
-import java.util.EnumSet;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -64,7 +62,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	{
 
 		public TileIOPortHandler() {
-			super( EnumSet.of( TileEventType.WORLD_NBT ) );
+			super( TileEventType.WORLD_NBT );
 		}
 
 		@Override

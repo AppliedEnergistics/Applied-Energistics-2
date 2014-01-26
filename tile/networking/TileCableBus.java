@@ -42,7 +42,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	{
 
 		public CableBusHandler() {
-			super( EnumSet.of( TileEventType.NETWORK, TileEventType.WORLD_NBT ) );
+			super( TileEventType.NETWORK, TileEventType.WORLD_NBT );
 		}
 
 		@Override

@@ -57,7 +57,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	{
 
 		public TileSpatialPylonHandler() {
-			super( EnumSet.of( TileEventType.NETWORK ) );
+			super( TileEventType.NETWORK );
 		}
 
 		@Override

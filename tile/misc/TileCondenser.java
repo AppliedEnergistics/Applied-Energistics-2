@@ -1,7 +1,5 @@
 package appeng.tile.misc;
 
-import java.util.EnumSet;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,7 +38,7 @@ public class TileCondenser extends AEBaseInvTile implements IAEAppEngInventory, 
 	{
 
 		public TileCondenserHandler() {
-			super( EnumSet.of( TileEventType.WORLD_NBT ) );
+			super( TileEventType.WORLD_NBT );
 		}
 
 		@Override

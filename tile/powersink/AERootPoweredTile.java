@@ -44,7 +44,7 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	{
 
 		public AEPoweredRootHandler() {
-			super( EnumSet.of( TileEventType.WORLD_NBT ) );
+			super( TileEventType.WORLD_NBT );
 		}
 
 		@Override

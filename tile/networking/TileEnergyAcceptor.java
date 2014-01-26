@@ -1,7 +1,5 @@
 package appeng.tile.networking;
 
-import java.util.EnumSet;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
@@ -32,7 +30,7 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 	{
 
 		public TilePowerRelayHandler() {
-			super( EnumSet.of( TileEventType.TICK ) );
+			super( TileEventType.TICK );
 		}
 
 		@Override
@@ -44,10 +42,11 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 				{
 					IEnergyGrid eg = gridProxy.getEnergy();
 					double powerRequested = internalCurrentPower - eg.injectPower( internalCurrentPower, Actionable.SIMULATE );
-					
+
 					if ( powerRequested > 0 )
 					{
-						internalCurrentPower += eg.injectPower( extractAEPower( powerRequested, Actionable.MODULATE, PowerMultiplier.ONE ), Actionable.MODULATE );
+						internalCurrentPower += eg
+								.injectPower( extractAEPower( powerRequested, Actionable.MODULATE, PowerMultiplier.ONE ), Actionable.MODULATE );
 					}
 				}
 				catch (GridAccessException e)

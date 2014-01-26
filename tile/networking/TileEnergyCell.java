@@ -1,12 +1,11 @@
 package appeng.tile.networking;
 
-import java.util.EnumSet;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.GridFlags;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
@@ -51,7 +50,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	{
 
 		public TileEnergyCellHandler() {
-			super( EnumSet.of( TileEventType.WORLD_NBT ) );
+			super( TileEventType.WORLD_NBT );
 		}
 
 		@Override
@@ -70,6 +69,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 
 	public TileEnergyCell() {
 		gridProxy.setIdlePowerUsage( 0 );
+		gridProxy.setFlags( GridFlags.CANNOT_CARRY );
 		addNewHandler( new TileEnergyCellHandler() );
 	}
 

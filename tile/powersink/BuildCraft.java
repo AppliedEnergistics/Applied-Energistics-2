@@ -1,7 +1,5 @@
 package appeng.tile.powersink;
 
-import java.util.EnumSet;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -28,7 +26,7 @@ public abstract class BuildCraft extends AERootPoweredTile implements IPowerRece
 		final protected PowerHandler bcPowerHandler;
 
 		public BCPerdition(IPowerReceptor te) {
-			super( EnumSet.of( TileEventType.TICK, TileEventType.WORLD_NBT ) );
+			super( TileEventType.TICK, TileEventType.WORLD_NBT );
 			bcPowerHandler = new PowerHandler( te, Type.MACHINE );
 		}
 

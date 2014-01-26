@@ -1,7 +1,6 @@
 package appeng.tile.grindstone;
 
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
@@ -29,7 +28,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 	public int rotation = 0;
 
 	public TileCrank() {
-		addNewHandler( new AETileEventHandler( EnumSet.of( TileEventType.NETWORK, TileEventType.TICK ) ) {
+		addNewHandler( new AETileEventHandler( TileEventType.NETWORK, TileEventType.TICK ) {
 
 			@Override
 			public void Tick()

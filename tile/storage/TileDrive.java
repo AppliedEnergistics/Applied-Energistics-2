@@ -3,7 +3,6 @@ package appeng.tile.storage;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,6 +26,7 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
+import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.storage.DriveWatcher;
 import appeng.me.storage.MEInventoryHandler;
@@ -37,7 +37,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 
-public class TileDrive extends AENetworkInvTile implements IChestOrDrive
+public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPriorityHost
 {
 
 	final int sides[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -74,7 +74,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive
 	{
 
 		public invManger() {
-			super( EnumSet.of( TileEventType.WORLD_NBT, TileEventType.NETWORK ) );
+			super( TileEventType.WORLD_NBT, TileEventType.NETWORK );
 		}
 
 		@Override
@@ -316,4 +316,22 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive
 		return gridProxy.isActive();
 	}
 
+	@Override
+	public void setPriority(int newValue)
+	{
+		priority = newValue;
+		onInventoryChanged();
+
+		isCached = false; // recalculate the storage cell.
+		updateState();
+
+		try
+		{
+			gridProxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+		}
+		catch (GridAccessException e)
+		{
+			// :P
+		}
+	}
 }

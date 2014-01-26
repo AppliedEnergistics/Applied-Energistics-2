@@ -3,7 +3,6 @@ package appeng.tile.networking;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.EnumSet;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -54,7 +53,7 @@ public class TileWireless extends AENetworkInvTile
 	{
 
 		public TileWirelessHandler() {
-			super( EnumSet.of( TileEventType.NETWORK ) );
+			super( TileEventType.NETWORK );
 		}
 
 		@Override

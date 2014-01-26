@@ -3,7 +3,6 @@ package appeng.tile.misc;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.EnumSet;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -11,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.config.Actionable;
+import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.ticking.IGridTickable;
@@ -50,7 +50,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	{
 
 		public TileVibrationChamberHandler() {
-			super( EnumSet.of( TileEventType.NETWORK, TileEventType.WORLD_NBT ) );
+			super( TileEventType.NETWORK, TileEventType.WORLD_NBT );
 		}
 
 		@Override
@@ -87,6 +87,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 
 	public TileVibrationChamber() {
 		gridProxy.setIdlePowerUsage( 0 );
+		gridProxy.setFlags( GridFlags.CANNOT_CARRY );
 		addNewHandler( new TileVibrationChamberHandler() );
 	}
 
