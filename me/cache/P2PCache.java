@@ -125,16 +125,12 @@ public class P2PCache implements IGridCache
 
 	private void updateTunnel(long freq, boolean updateOutputs)
 	{
-		if ( updateOutputs )
-		{
-			for (PartP2PTunnel p : outputs.values())
-				p.onChange();
-		}
-		else
-		{
-			for (PartP2PTunnel p : inputs.values())
-				p.onChange();
-		}
+		for (PartP2PTunnel p : outputs.get( freq ))
+			p.onChange();
+
+		PartP2PTunnel in = inputs.get( freq );
+		if ( in != null )
+			in.onChange();
 	}
 
 	public TunnelCollection<PartP2PTunnel> getOutputs(long freq, Class<? extends PartP2PTunnel> c)
