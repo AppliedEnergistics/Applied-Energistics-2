@@ -45,16 +45,18 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	@Override
 	public T extractItems(T request, Actionable type, BaseActionSource src)
 	{
+		if ( !getAccess().hasPermission( AccessRestriction.READ ) )
+			return null;
+
 		return internal.extractItems( request, type, src );
 	}
 
 	@Override
 	public IItemList<T> getAvailableItems(IItemList out)
-	{/*
-	 * if ( monitor != null ) { for (T is : monitor.getStorageList()) out.add( is );
-	 * 
-	 * return out; } else
-	 */
+	{
+		if ( !getAccess().hasPermission( AccessRestriction.READ ) )
+			return out;
+
 		return internal.getAvailableItems( out );
 	}
 
@@ -81,6 +83,9 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	@Override
 	public boolean canAccept(T input)
 	{
+		if ( !getAccess().hasPermission( AccessRestriction.WRITE ) )
+			return false;
+
 		if ( myWhitelist == IncludeExclude.BLACKLIST && myPartitionList.isListed( input ) )
 			return false;
 		if ( myPartitionList.isEmpty() || myWhitelist == IncludeExclude.BLACKLIST )

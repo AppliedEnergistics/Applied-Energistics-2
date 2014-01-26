@@ -17,6 +17,8 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
+import appeng.items.contents.CellConfig;
+import appeng.items.contents.CellUpgrades;
 import appeng.items.materials.MaterialType;
 import appeng.me.storage.CellInventory;
 import appeng.me.storage.CellInventoryHandler;

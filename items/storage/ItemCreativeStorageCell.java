@@ -8,6 +8,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.storage.ICellWorkbenchItem;
 import appeng.core.features.AEFeature;
 import appeng.items.AEBaseItem;
+import appeng.items.contents.CellConfig;
 
 public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenchItem
 {

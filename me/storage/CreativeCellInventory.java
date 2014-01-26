@@ -9,7 +9,7 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.items.storage.CellConfig;
+import appeng.items.contents.CellConfig;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.ItemList;
 
