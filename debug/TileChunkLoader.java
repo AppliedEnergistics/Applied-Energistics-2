@@ -1,6 +1,5 @@
 package appeng.debug;
 
-import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -27,7 +26,7 @@ public class TileChunkLoader extends AEBaseTile
 	{
 
 		public ChunkLoaderHandler() {
-			super( EnumSet.of( TileEventType.TICK ) );
+			super( TileEventType.TICK );
 		}
 
 		@Override

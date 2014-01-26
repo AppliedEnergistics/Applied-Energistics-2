@@ -100,6 +100,7 @@ public class PartPlacement
 						{
 							is.add( sp.facade.getItemStack() );
 							host.getFacadeContainer().removeFacade( host, sp.side );
+							world.notifyBlocksOfNeighborChange( x, y, z, 0 );
 						}
 
 						if ( host.isEmpty() )
@@ -272,7 +273,7 @@ public class PartPlacement
 					return true;
 				}
 			}
-			else
+			else if ( host != null && !host.canAddPart( held, side ) )
 				return false;
 		}
 

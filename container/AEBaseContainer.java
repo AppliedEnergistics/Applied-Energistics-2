@@ -43,6 +43,8 @@ public abstract class AEBaseContainer extends Container
 
 	BaseActionSource mySrc;
 
+	public ContainerOpenContext openContext;
+
 	protected IMEInventoryHandler<IAEItemStack> cellInv;
 	protected IEnergySource powerSrc;
 	protected HashSet<Integer> locked = new HashSet();

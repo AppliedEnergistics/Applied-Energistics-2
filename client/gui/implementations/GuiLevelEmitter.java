@@ -2,6 +2,7 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
 import appeng.api.config.FuzzyMode;
@@ -20,6 +21,9 @@ public class GuiLevelEmitter extends GuiUpgradeable
 
 	GuiTextField level;
 
+	GuiButton plus1, plus10, plus100, plus1000;
+	GuiButton minus1, minus10, minus100, minus1000;
+
 	public GuiLevelEmitter(InventoryPlayer inventoryPlayer, PartLevelEmitter te) {
 		super( new ContainerLevelEmitter( inventoryPlayer, te ) );
 	}
@@ -28,6 +32,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	public void initGui()
 	{
 		super.initGui();
+
 		level = new GuiTextField( this.fontRenderer, this.guiLeft + 44, this.guiTop + 43, 59, this.fontRenderer.FONT_HEIGHT );
 		level.setEnableBackgroundDrawing( false );
 		level.setMaxStringLength( 16 );
@@ -43,8 +48,75 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		redstoneMode = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.REDSTONE_EMITTER, RedstoneMode.IGNORE );
 		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 
+		buttonList.add( plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 17, 22, 20, "+1" ) );
+		buttonList.add( plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 17, 28, 20, "+10" ) );
+		buttonList.add( plus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 17, 32, 20, "+100" ) );
+		buttonList.add( plus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 17, 38, 20, "+1000" ) );
+
+		buttonList.add( minus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 59, 22, 20, "-1" ) );
+		buttonList.add( minus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 59, 28, 20, "-10" ) );
+		buttonList.add( minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 59, 32, 20, "-100" ) );
+		buttonList.add( minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 59, 38, 20, "-1000" ) );
+
 		buttonList.add( redstoneMode );
 		buttonList.add( fuzzyMode );
+	}
+
+	@Override
+	protected void actionPerformed(GuiButton btn)
+	{
+		super.actionPerformed( btn );
+
+		if ( btn == plus1 )
+			addQty( 1 );
+		if ( btn == plus10 )
+			addQty( 10 );
+		if ( btn == plus100 )
+			addQty( 100 );
+		if ( btn == plus1000 )
+			addQty( 1000 );
+		if ( btn == minus1 )
+			addQty( -1 );
+		if ( btn == minus10 )
+			addQty( -10 );
+		if ( btn == minus100 )
+			addQty( -100 );
+		if ( btn == minus1000 )
+			addQty( -1000 );
+	}
+
+	private void addQty(int i)
+	{
+		try
+		{
+			String Out = level.getText();
+
+			boolean Fixed = false;
+			while (Out.startsWith( "0" ) && Out.length() > 1)
+			{
+				Out = Out.substring( 1 );
+				Fixed = true;
+			}
+
+			if ( Fixed )
+				level.setText( Out );
+
+			if ( Out.length() == 0 )
+				Out = "0";
+
+			long result = Long.parseLong( Out );
+			result += i;
+			if ( result < 0 )
+				result = 0;
+
+			level.setText( Out = Long.toString( result ) );
+
+			PacketDispatcher.sendPacketToServer( (new PacketValueConfig( "LevelEmitter.Value", Out )).getPacket() );
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	protected void handleButtonVisiblity()

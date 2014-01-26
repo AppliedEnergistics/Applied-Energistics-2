@@ -17,7 +17,9 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.client.gui.GuiNull;
+import appeng.container.AEBaseContainer;
 import appeng.container.ContainerNull;
+import appeng.container.ContainerOpenContext;
 import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerChest;
 import appeng.container.implementations.ContainerCondenser;
@@ -30,16 +32,20 @@ import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.container.implementations.ContainerMEPortableCell;
 import appeng.container.implementations.ContainerNetworkStatus;
 import appeng.container.implementations.ContainerNetworkTool;
+import appeng.container.implementations.ContainerPriority;
 import appeng.container.implementations.ContainerQNB;
+import appeng.container.implementations.ContainerSecurity;
 import appeng.container.implementations.ContainerStorageBus;
 import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.helpers.IInterfaceHost;
+import appeng.helpers.IPriorityHost;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.parts.misc.PartStorageBus;
 import appeng.tile.grindstone.TileGrinder;
 import appeng.tile.misc.TileCellWorkbench;
 import appeng.tile.misc.TileCondenser;
+import appeng.tile.misc.TileSecurity;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.tile.qnb.TileQuantumBridge;
 import appeng.tile.storage.TileChest;
@@ -80,6 +86,10 @@ public enum GuiBridge implements IGuiHandler
 	GUI_IOPORT(ContainerIOPort.class, TileIOPort.class, false),
 
 	GUI_STORAGEBUS(ContainerStorageBus.class, PartStorageBus.class, false),
+
+	GUI_PRIORITY(ContainerPriority.class, IPriorityHost.class, false),
+
+	GUI_SECURITY(ContainerSecurity.class, TileSecurity.class, false),
 
 	// extends (Container/Gui) + Bus
 	GUI_LEVELEMITTER(ContainerLevelEmitter.class, PartLevelEmitter.class, false),
@@ -166,6 +176,22 @@ public enum GuiBridge implements IGuiHandler
 		}
 	}
 
+	private Object updateGui(Object newContainer, World w, int x, int y, int z, ForgeDirection side)
+	{
+		if ( newContainer instanceof AEBaseContainer )
+		{
+			AEBaseContainer bc = (AEBaseContainer) newContainer;
+			bc.openContext = new ContainerOpenContext();
+			bc.openContext.w = w;
+			bc.openContext.x = x;
+			bc.openContext.y = y;
+			bc.openContext.z = z;
+			bc.openContext.side = side;
+		}
+
+		return newContainer;
+	}
+
 	@Override
 	public Object getServerGuiElement(int ID_ORDINAL, EntityPlayer player, World w, int x, int y, int z)
 	{
@@ -179,7 +205,7 @@ public enum GuiBridge implements IGuiHandler
 			{
 				Object myItem = ((IGuiItem) it.getItem()).getGuiObject( it, w, x, y, z );
 				if ( ID.CorrectTileOrPart( myItem ) )
-					return ID.ConstructContainer( player.inventory, side, myItem );
+					return updateGui( ID.ConstructContainer( player.inventory, side, myItem ), w, x, y, z, side );
 			}
 		}
 		else
@@ -190,12 +216,12 @@ public enum GuiBridge implements IGuiHandler
 				((IPartHost) TE).getPart( side );
 				IPart part = ((IPartHost) TE).getPart( side );
 				if ( ID.CorrectTileOrPart( part ) )
-					return ID.ConstructContainer( player.inventory, side, part );
+					return updateGui( ID.ConstructContainer( player.inventory, side, part ), w, x, y, z, side );
 			}
 			else
 			{
 				if ( ID.CorrectTileOrPart( TE ) )
-					return ID.ConstructContainer( player.inventory, side, TE );
+					return updateGui( ID.ConstructContainer( player.inventory, side, TE ), w, x, y, z, side );
 			}
 		}
 

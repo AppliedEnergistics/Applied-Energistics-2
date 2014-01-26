@@ -11,9 +11,12 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerStorageBus;
 import appeng.core.localization.GuiText;
+import appeng.core.sync.GuiBridge;
 import appeng.core.sync.packets.PacketConfigButton;
+import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.parts.misc.PartStorageBus;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
@@ -21,10 +24,11 @@ public class GuiStorageBus extends GuiUpgradeable
 {
 
 	GuiImgButton rwMode;
+	GuiTabButton priority;
 
 	public GuiStorageBus(InventoryPlayer inventoryPlayer, PartStorageBus te) {
 		super( new ContainerStorageBus( inventoryPlayer, te ) );
-		this.ySize = 245;
+		this.ySize = 251;
 	}
 
 	@Override
@@ -52,6 +56,8 @@ public class GuiStorageBus extends GuiUpgradeable
 		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 		rwMode = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.ACCESS, AccessRestriction.READ_WRITE );
 
+		buttonList.add( priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRenderer ) );
+
 		buttonList.add( fuzzyMode );
 		buttonList.add( rwMode );
 	}
@@ -63,6 +69,17 @@ public class GuiStorageBus extends GuiUpgradeable
 
 		boolean backwards = Mouse.isButtonDown( 1 );
 
+		if ( btn == priority )
+		{
+			try
+			{
+				PacketDispatcher.sendPacketToServer( (new PacketSwitchGuis( GuiBridge.GUI_PRIORITY )).getPacket() );
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
 		try
 		{
 			if ( btn == fuzzyMode )

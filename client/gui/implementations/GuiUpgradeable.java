@@ -51,8 +51,8 @@ public class GuiUpgradeable extends AEBaseGui
 
 	protected void addButtons()
 	{
-		redstoneMode = new GuiImgButton( 122 + guiLeft, 31 + guiTop, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
-		fuzzyMode = new GuiImgButton( 122 + guiLeft, 49 + guiTop, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		redstoneMode = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
+		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 
 		buttonList.add( redstoneMode );
 		buttonList.add( fuzzyMode );

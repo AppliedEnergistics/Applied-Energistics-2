@@ -19,7 +19,7 @@ import appeng.container.slot.OptionalSlotFakeTypeOnly;
 import appeng.container.slot.SlotFakeTypeOnly;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
-import appeng.helpers.NetworkToolViewer;
+import appeng.items.contents.NetworkToolViewer;
 import appeng.items.tools.ToolNetworkTool;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;

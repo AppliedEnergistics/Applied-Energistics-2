@@ -59,7 +59,8 @@ public class BusRenderer implements IItemRenderer
 		if ( type == ItemRenderType.INVENTORY )
 			GL11.glTranslatef( 0.0f, -0.1f, 0.0f );
 
-		GL11.glTranslated( 0.2, 0.3, 0.0 );
+		GL11.glTranslated( 0.2, 0.3, 0.1 );
+		GL11.glScaled( 1.2, 1.2, 1. );
 
 		GL11.glColor4f( 1, 1, 1, 1 );
 		Tessellator.instance.setColorOpaque_F( 1, 1, 1 );

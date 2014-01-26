@@ -1,13 +1,48 @@
 package appeng.client.gui.implementations;
 
+import java.io.IOException;
+
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import appeng.client.gui.AEBaseGui;
+import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerDrive;
 import appeng.core.localization.GuiText;
+import appeng.core.sync.GuiBridge;
+import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.tile.storage.TileDrive;
+import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class GuiDrive extends AEBaseGui
 {
+
+	GuiTabButton priority;
+
+	@Override
+	protected void actionPerformed(GuiButton par1GuiButton)
+	{
+		super.actionPerformed( par1GuiButton );
+
+		if ( par1GuiButton == priority )
+		{
+			try
+			{
+				PacketDispatcher.sendPacketToServer( (new PacketSwitchGuis( GuiBridge.GUI_PRIORITY )).getPacket() );
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+
+		buttonList.add( priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRenderer ) );
+	}
 
 	public GuiDrive(InventoryPlayer inventoryPlayer, TileDrive te) {
 		super( new ContainerDrive( inventoryPlayer, te ) );

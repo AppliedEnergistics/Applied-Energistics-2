@@ -11,6 +11,7 @@ import net.minecraft.network.INetworkManager;
 import appeng.api.config.FuzzyMode;
 import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerLevelEmitter;
+import appeng.container.implementations.ContainerPriority;
 import appeng.core.sync.AppEngPacket;
 
 public class PacketValueConfig extends AppEngPacket
@@ -30,7 +31,13 @@ public class PacketValueConfig extends AppEngPacket
 	{
 		Container c = player.openContainer;
 
-		if ( Name.equals( "LevelEmitter.Value" ) && c instanceof ContainerLevelEmitter )
+		if ( Name.equals( "PriorityHost.Priority" ) && c instanceof ContainerPriority )
+		{
+			ContainerPriority pc = (ContainerPriority) c;
+			pc.setPriority( Integer.parseInt( Value ), player );
+			return;
+		}
+		else if ( Name.equals( "LevelEmitter.Value" ) && c instanceof ContainerLevelEmitter )
 		{
 			ContainerLevelEmitter lvc = (ContainerLevelEmitter) c;
 			lvc.setLevel( Integer.parseInt( Value ), player );

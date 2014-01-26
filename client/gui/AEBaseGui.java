@@ -310,6 +310,15 @@ public abstract class AEBaseGui extends GuiContainer
 				OptionalSlotFake fs = (OptionalSlotFake) o;
 				if ( fs.isEnabled() )
 					this.drawTexturedModalRect( ox + fs.xDisplayPosition - 1, oy + fs.yDisplayPosition - 1, fs.srcX - 1, fs.srcY - 1, 18, 18 );
+				else
+				{
+					GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
+					GL11.glColor4f( 1.0F, 1.0F, 1.0F, 0.4F );
+					GL11.glEnable( GL11.GL_BLEND );
+					this.drawTexturedModalRect( ox + fs.xDisplayPosition - 1, oy + fs.yDisplayPosition - 1, fs.srcX - 1, fs.srcY - 1, 18, 18 );
+					GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+					GL11.glPopAttrib();
+				}
 			}
 		}
 	}

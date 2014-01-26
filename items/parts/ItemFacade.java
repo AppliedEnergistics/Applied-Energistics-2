@@ -32,7 +32,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem
 		setfeature( EnumSet.of( AEFeature.Facades ) );
 		setHasSubtypes( true );
 		if ( Platform.isClient() )
-			MinecraftForgeClient.registerItemRenderer( this.itemID, BusRenderer.instance );
+			MinecraftForgeClient.registerItemRenderer( itemID, BusRenderer.instance );
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem
 	{
 		ItemStack is = new ItemStack( AEApi.instance().items().itemFacade.item() );
 		NBTTagCompound data = new NBTTagCompound();
-		data.setIntArray( "x", ids );
+		data.setIntArray( "x", ids.clone() );
 		is.setTagCompound( data );
 		return is;
 	}
