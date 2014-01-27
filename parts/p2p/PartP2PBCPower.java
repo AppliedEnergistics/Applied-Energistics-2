@@ -8,6 +8,7 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.config.PowerUnits;
+import appeng.api.config.TunnelType;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -26,6 +27,11 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 {
 
 	PowerHandler pp;
+
+	public TunnelType getTunnelType()
+	{
+		return TunnelType.BC_POWER;
+	}
 
 	public PartP2PBCPower(ItemStack is) {
 		super( is );

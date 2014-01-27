@@ -65,8 +65,8 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 			ItemStack newType = ItemStack.loadItemStackFromNBT( data );
 			long freq = data.getLong( "freq" );
 
-			getHost().removePart( side );
-			ForgeDirection dir = getHost().addPart( newType, side );
+			getHost().removePart( side, true );
+			ForgeDirection dir = getHost().addPart( newType, side, player );
 			IPart newBus = getHost().getPart( dir );
 
 			if ( newBus instanceof PartP2PTunnel )
@@ -125,8 +125,8 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 				boolean oldOutput = output;
 				long myFreq = freq;
 
-				getHost().removePart( side );
-				ForgeDirection dir = getHost().addPart( newType, side );
+				getHost().removePart( side, false );
+				ForgeDirection dir = getHost().addPart( newType, side, player );
 				IPart newBus = getHost().getPart( dir );
 
 				if ( newBus instanceof PartP2PTunnel )
@@ -150,6 +150,11 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 		}
 
 		return false;
+	}
+
+	public TunnelType getTunnelType()
+	{
+		return null;
 	}
 
 	@Override

@@ -4,11 +4,14 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
+import appeng.api.config.TunnelType;
+import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
@@ -16,7 +19,6 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AECableType;
-import appeng.core.AELog;
 import appeng.helpers.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.Connections;
@@ -25,6 +27,11 @@ import appeng.me.helpers.AENetworkProxy;
 
 public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements IGridTickable
 {
+
+	public TunnelType getTunnelType()
+	{
+		return TunnelType.ME;
+	}
 
 	AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", null, true );
 	public Connections connection = new Connections( this );
@@ -143,6 +150,13 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 		return TickRateModulation.IDLE;
 	}
 
+	@Override
+	public void onPlacement(EntityPlayer player, ItemStack held, ForgeDirection side)
+	{
+		super.onPlacement( player, held, side );
+		outerProxy.setOwner( player );
+	}
+
 	public void updateConnections(Connections connections)
 	{
 		if ( connections.destroy )
@@ -159,7 +173,6 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 			while (i.hasNext())
 			{
 				TunnelConnection cw = i.next();
-				AELog.info( "Old!" );
 				try
 				{
 					if ( cw.tunnel.proxy.getGrid() != proxy.getGrid() )
@@ -175,7 +188,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 				}
 				catch (GridAccessException e)
 				{
-					e.printStackTrace();
+					// e.printStackTrace();
 				}
 			}
 
@@ -192,8 +205,16 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 
 				for (PartP2PTunnelME me : newSides)
 				{
-					connections.connections.put( me.getGridNode(),
-							new TunnelConnection( me, AEApi.instance().createGridConnection( outerProxy.getNode(), me.outerProxy.getNode() ) ) );
+					try
+					{
+						connections.connections.put( me.getGridNode(),
+								new TunnelConnection( me, AEApi.instance().createGridConnection( outerProxy.getNode(), me.outerProxy.getNode() ) ) );
+					}
+					catch (FailedConnection e)
+					{
+						e.printStackTrace();
+						// :(
+					}
 				}
 			}
 			catch (GridAccessException e)

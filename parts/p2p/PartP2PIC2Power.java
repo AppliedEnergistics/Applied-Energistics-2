@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
+import appeng.api.config.TunnelType;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.util.Platform;
@@ -16,6 +17,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements ic2.api.energy.tile.IEnergySink, ic2.api.energy.tile.IEnergySource
 {
+
+	public TunnelType getTunnelType()
+	{
+		return TunnelType.IC2_POWER;
+	}
 
 	public PartP2PIC2Power(ItemStack is) {
 		super( is );

@@ -20,7 +20,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import appeng.api.AEApi;
 import appeng.api.parts.IFacadePart;
-import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartItemStack;
@@ -93,7 +92,7 @@ public class PartPlacement
 						{
 							is.add( sp.part.getItemStack( PartItemStack.Wrench ) );
 							sp.part.getDrops( is, true );
-							host.removePart( sp.side );
+							host.removePart( sp.side, false );
 						}
 
 						if ( sp.facade != null )
@@ -305,13 +304,9 @@ public class PartPlacement
 
 		if ( !world.isRemote )
 		{
-			ForgeDirection mySide = host.addPart( held, side );
+			ForgeDirection mySide = host.addPart( held, side, player );
 			if ( mySide != null )
 			{
-				IPart newlyPlacedPart = host.getPart( mySide );
-				if ( newlyPlacedPart != null )
-					newlyPlacedPart.onPlacement( player, held, side );
-
 				StepSound ss = AEApi.instance().blocks().blockMultiPart.block().stepSound;
 				world.playSoundEffect( 0.5 + x, 0.5 + y, 0.5 + z, ss.getPlaceSound(), (ss.getVolume() + 1.0F) / 2.0F, ss.getPitch() * 0.8F );
 

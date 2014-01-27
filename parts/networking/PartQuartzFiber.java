@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -34,6 +35,13 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 		super( PartQuartzFiber.class, is );
 		proxy.setIdlePowerUsage( 0 );
 		proxy.setFlags( GridFlags.CANNOT_CARRY );
+	}
+
+	@Override
+	public void onPlacement(EntityPlayer player, ItemStack held, ForgeDirection side)
+	{
+		super.onPlacement( player, held, side );
+		outerProxy.setOwner( player );
 	}
 
 	@Override

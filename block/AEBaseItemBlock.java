@@ -13,6 +13,7 @@ import net.minecraftforge.common.ForgeDirection;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.client.render.ItemRenderer;
+import appeng.me.helpers.IGridProxyable;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 
@@ -108,6 +109,11 @@ public class AEBaseItemBlock extends ItemBlock
 					if ( ori.getForward() == null || ori.getUp() == null || // null
 							tile.getForward() == ForgeDirection.UNKNOWN || ori.getUp() == ForgeDirection.UNKNOWN )
 						ori.setOrientation( forward, up );
+				}
+
+				if ( tile instanceof IGridProxyable )
+				{
+					((IGridProxyable) tile).getProxy().setOwner( player );
 				}
 
 				tile.onPlacement( stack, player, side );

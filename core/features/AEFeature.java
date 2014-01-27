@@ -40,7 +40,7 @@ public enum AEFeature
 	DenseEnergyCells("HigherCapacity"), DenseCables("HigherCapacity"),
 
 	P2PTunnelME("P2PTunnels"), P2PTunnelItems("P2PTunnels"), P2PTunnelRedstone("P2PTunnels"), P2PTunnelEU("P2PTunnels"), P2PTunnelMJ("P2PTunnels"), P2PTunnelLiquids(
-			"P2PTunnels"),
+			"P2PTunnels"), Security("Security"),
 
 	MassCannonBlockDamage("BlockFeatures"), TinyTNTBlockDamage("BlockFeatures"), Facades("Facades"),
 

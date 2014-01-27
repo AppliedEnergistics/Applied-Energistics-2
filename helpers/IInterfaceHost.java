@@ -1,9 +1,9 @@
 package appeng.helpers;
 
 import net.minecraft.tileentity.TileEntity;
-import appeng.api.networking.IGridHost;
+import appeng.api.networking.security.IActionHost;
 
-public interface IInterfaceHost extends IGridHost
+public interface IInterfaceHost extends IActionHost
 {
 
 	DualityInterface getInterfaceDuality();

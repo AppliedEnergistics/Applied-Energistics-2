@@ -10,6 +10,7 @@ import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherHost;
@@ -68,12 +69,12 @@ public class GridStorageCache implements IStorageGrid
 
 			for (IMEInventoryHandler<IAEItemStack> h : cc.getCellArray( StorageChannel.ITEMS ))
 			{
-				postChanges( StorageChannel.ITEMS, -1, h.getAvailableItems( new ItemList<IAEItemStack>() ), new MachineSource( machine ) );
+				postChanges( StorageChannel.ITEMS, -1, h.getAvailableItems( new ItemList<IAEItemStack>() ), new MachineSource( cc ) );
 			}
 
 			for (IMEInventoryHandler<IAEFluidStack> h : cc.getCellArray( StorageChannel.FLUIDS ))
 			{
-				postChanges( StorageChannel.ITEMS, -1, h.getAvailableItems( new ItemList<IAEFluidStack>() ), new MachineSource( machine ) );
+				postChanges( StorageChannel.ITEMS, -1, h.getAvailableItems( new ItemList<IAEFluidStack>() ), new MachineSource( cc ) );
 			}
 		}
 
@@ -100,12 +101,12 @@ public class GridStorageCache implements IStorageGrid
 
 			for (IMEInventoryHandler<IAEItemStack> h : cc.getCellArray( StorageChannel.ITEMS ))
 			{
-				postChanges( StorageChannel.ITEMS, 1, h.getAvailableItems( new ItemList<IAEItemStack>() ), new MachineSource( machine ) );
+				postChanges( StorageChannel.ITEMS, 1, h.getAvailableItems( new ItemList<IAEItemStack>() ), new MachineSource( cc ) );
 			}
 
 			for (IMEInventoryHandler<IAEFluidStack> h : cc.getCellArray( StorageChannel.FLUIDS ))
 			{
-				postChanges( StorageChannel.ITEMS, 1, h.getAvailableItems( new ItemList<IAEFluidStack>() ), new MachineSource( machine ) );
+				postChanges( StorageChannel.ITEMS, 1, h.getAvailableItems( new ItemList<IAEFluidStack>() ), new MachineSource( cc ) );
 			}
 		}
 
@@ -120,10 +121,12 @@ public class GridStorageCache implements IStorageGrid
 
 	private void buildNetworkStorage(StorageChannel chan)
 	{
+		SecurityCache security = myGrid.getCache( ISecurityGrid.class );
+
 		switch (chan)
 		{
 		case FLUIDS:
-			myFluidNetwork = new NetworkInventoryHandler<IAEFluidStack>( StorageChannel.FLUIDS );
+			myFluidNetwork = new NetworkInventoryHandler<IAEFluidStack>( StorageChannel.FLUIDS, security );
 			for (ICellContainer cc : cellContainers)
 			{
 				for (IMEInventoryHandler<IAEFluidStack> h : cc.getCellArray( chan ))
@@ -131,7 +134,7 @@ public class GridStorageCache implements IStorageGrid
 			}
 			break;
 		case ITEMS:
-			myItemNetwork = new NetworkInventoryHandler<IAEItemStack>( StorageChannel.ITEMS );
+			myItemNetwork = new NetworkInventoryHandler<IAEItemStack>( StorageChannel.ITEMS, security );
 			for (ICellContainer cc : cellContainers)
 			{
 				for (IMEInventoryHandler<IAEItemStack> h : cc.getCellArray( chan ))

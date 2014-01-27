@@ -6,6 +6,7 @@ import net.minecraft.inventory.IInventory;
 import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
@@ -70,6 +71,8 @@ public class ContainerIOPort extends ContainerUpgradeable
 	@Override
 	public void detectAndSendChanges()
 	{
+		verifyPermissions( SecurityPermissions.BUILD, false );
+
 		if ( Platform.isServer() )
 		{
 			for (int i = 0; i < this.crafters.size(); ++i)

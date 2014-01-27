@@ -7,6 +7,7 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.container.slot.SlotFakeTypeOnly;
 import appeng.container.slot.SlotRestrictedInput;
@@ -80,6 +81,8 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 	@Override
 	public void detectAndSendChanges()
 	{
+		verifyPermissions( SecurityPermissions.BUILD, false );
+
 		if ( Platform.isServer() )
 		{
 			for (int i = 0; i < this.crafters.size(); ++i)

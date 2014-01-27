@@ -14,9 +14,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
-import appeng.api.networking.IGridHost;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.PlayerSource;
 import appeng.api.parts.IPart;
 import appeng.api.storage.IMEInventoryHandler;
@@ -43,6 +48,53 @@ public abstract class AEBaseContainer extends Container
 
 	BaseActionSource mySrc;
 
+	int ticksSinceCheck = 900;
+
+	public void verifyPermissions(SecurityPermissions security, boolean requirePower)
+	{
+		if ( Platform.isClient() )
+			return;
+
+		ticksSinceCheck++;
+		if ( ticksSinceCheck < 20 )
+			return;
+
+		ticksSinceCheck = 0;
+		IActionHost host = null;
+
+		if ( tileEntity instanceof IActionHost )
+			host = (IActionHost) tileEntity;
+		if ( part instanceof IActionHost )
+			host = (IActionHost) part;
+
+		if ( host == null )
+			invPlayer.player.closeScreen();// close!
+		else
+		{
+			IGridNode gn = host.getActionableNode();
+			if ( gn != null )
+			{
+				IGrid g = gn.getGrid();
+				if ( g != null )
+				{
+					if ( requirePower )
+					{
+						IEnergyGrid eg = g.getCache( IEnergyGrid.class );
+						if ( !eg.isNetworkPowered() )
+						{
+							invPlayer.player.closeScreen();
+							return;
+						}
+					}
+
+					ISecurityGrid sg = g.getCache( ISecurityGrid.class );
+					if ( !sg.hasPermission( invPlayer.player, security ) )
+						invPlayer.player.closeScreen();
+				}
+			}
+		}
+	}
+
 	public ContainerOpenContext openContext;
 
 	protected IMEInventoryHandler<IAEItemStack> cellInv;
@@ -67,7 +119,7 @@ public abstract class AEBaseContainer extends Container
 		invPlayer = ip;
 		tileEntity = myTile;
 		part = myPart;
-		mySrc = new PlayerSource( ip.player, (IGridHost) (myTile instanceof IGridHost ? myTile : (myPart instanceof IGridHost ? myPart : null)) );
+		mySrc = new PlayerSource( ip.player, (IActionHost) (myTile instanceof IActionHost ? myTile : (myPart instanceof IActionHost ? myPart : null)) );
 	}
 
 	public boolean canDragIntoSlot(Slot s)

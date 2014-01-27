@@ -8,6 +8,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -143,15 +144,15 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public ForgeDirection addPart(ItemStack is, ForgeDirection side)
+	public ForgeDirection addPart(ItemStack is, ForgeDirection side, EntityPlayer player)
 	{
-		return cb.addPart( is, side );
+		return cb.addPart( is, side, player );
 	}
 
 	@Override
-	public void removePart(ForgeDirection side)
+	public void removePart(ForgeDirection side, boolean supressUpdate)
 	{
-		cb.removePart( side );
+		cb.removePart( side, supressUpdate );
 	}
 
 	@Override

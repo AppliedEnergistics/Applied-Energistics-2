@@ -2,10 +2,13 @@ package appeng.core;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.Map.Entry;
 import java.util.WeakHashMap;
 
+import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.Property;
 import appeng.api.util.WorldCoord;
 import appeng.me.GridStorage;
 import appeng.me.GridStorageSearch;
@@ -17,16 +20,19 @@ public class WorldSettings extends Configuration
 	private static WorldSettings instance;
 
 	long lastGridStorage = 0;
+	int lastPlayer = 0;
 
 	public WorldSettings(File f) {
 		super( f );
 		try
 		{
 			lastGridStorage = Long.parseLong( get( "Counters", "lastGridStorage", 0 ).getString() );
+			lastPlayer = get( "Counters", "lastPlayer", 0 ).getInt();
 		}
 		catch (NumberFormatException err)
 		{
 			lastGridStorage = 0;
+			lastPlayer = 0;
 		}
 	}
 
@@ -141,4 +147,38 @@ public class WorldSettings extends Configuration
 		return r;
 	}
 
+	private long nextPlayer()
+	{
+		long r = lastPlayer++;
+		get( "Counters", "lastPlayer", lastPlayer ).set( lastPlayer );
+		return r;
+	}
+
+	public String getUsername(int id)
+	{
+		ConfigCategory playerList = this.getCategory( "players" );
+		for (Entry<String, Property> fish : playerList.entrySet())
+		{
+			if ( fish.getValue().isIntValue() && fish.getValue().getInt() == id )
+				return fish.getKey();
+		}
+		return null;
+	}
+
+	public int getPlayerID(String username)
+	{
+		ConfigCategory playerList = this.getCategory( "players" );
+		if ( playerList == null )
+			return -1;
+
+		Property prop = playerList.get( username );
+		if ( prop != null && prop.isIntValue() )
+			return prop.getInt();
+		else
+		{
+			playerList.put( username, prop = new Property( username, "" + nextPlayer(), Property.Type.INTEGER ) );
+			save();
+			return prop.getInt();
+		}
+	}
 }

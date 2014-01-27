@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 
 import net.minecraftforge.common.ForgeDirection;
+import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
@@ -11,6 +12,7 @@ import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.me.pathfinding.IPathItem;
+import appeng.util.Platform;
 import appeng.util.ReadOnlyCollection;
 
 public class GridConnection implements IGridConnection, IPathItem
@@ -26,13 +28,16 @@ public class GridConnection implements IGridConnection, IPathItem
 
 	public int channelData = 0;
 
-	public GridConnection(IGridNode aNode, IGridNode bNode, ForgeDirection fromAtoB) {
+	public GridConnection(IGridNode aNode, IGridNode bNode, ForgeDirection fromAtoB) throws FailedConnection {
 
 		GridNode a = (GridNode) aNode;
 		GridNode b = (GridNode) bNode;
 
+		if ( Platform.securityCheck( a, b ) )
+			throw new FailedConnection();
+
 		if ( a == null || b == null )
-			throw new GridException( "Connection Forged Between null entnties." );
+			throw new GridException( "Connection Forged Between null enties." );
 
 		if ( a.hasConnection( b ) || b.hasConnection( a ) )
 			throw new GridException( "Connection already exists." );

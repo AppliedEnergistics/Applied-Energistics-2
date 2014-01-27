@@ -9,11 +9,18 @@ import java.util.TreeMap;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.ISecurityGrid;
+import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.me.cache.SecurityCache;
 
 public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
@@ -29,11 +36,14 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	};
 
 	final StorageChannel myChannel;
+	final SecurityCache security;
+
 	// final TreeMultimap<Integer, IMEInventoryHandler<T>> prorityInventory;
 	final TreeMap<Integer, List<IMEInventoryHandler<T>>> prorityInventory;
 
-	public NetworkInventoryHandler(StorageChannel chan) {
+	public NetworkInventoryHandler(StorageChannel chan, SecurityCache security) {
 		myChannel = chan;
+		this.security = security;
 		prorityInventory = new TreeMap( prioritySorter ); // TreeMultimap.create( prioritySorter, hashSorter );
 	}
 
@@ -86,11 +96,49 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 			throw new RuntimeException( "Invalid Access to Networked Storage API detected." );
 	}
 
+	private boolean testPermission(BaseActionSource src, SecurityPermissions inject)
+	{
+		if ( src.isPlayer() )
+		{
+			if ( !security.hasPermission( ((PlayerSource) src).player, SecurityPermissions.INJECT ) )
+				return true;
+		}
+		else if ( src.isMachine() )
+		{
+			if ( security.isAvailable() )
+			{
+				IGridNode n = ((MachineSource) src).via.getActionableNode();
+				if ( n == null )
+					return true;
+
+				IGrid gn = n.getGrid();
+				if ( gn != security.myGrid )
+				{
+					int playerID = -1;
+
+					ISecurityGrid sg = gn.getCache( ISecurityGrid.class );
+					playerID = sg.getOwner();
+
+					if ( !security.hasPermission( playerID, SecurityPermissions.INJECT ) )
+						return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	@Override
 	public T injectItems(T input, Actionable type, BaseActionSource src)
 	{
 		if ( diveList( this ) )
 			return input;
+
+		if ( testPermission( src, SecurityPermissions.INJECT ) )
+		{
+			surface( this );
+			return input;
+		}
 
 		Iterator<List<IMEInventoryHandler<T>>> i = prorityInventory.values().iterator();// asMap().entrySet().iterator();
 
@@ -126,6 +174,12 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	{
 		if ( diveList( this ) )
 			return null;
+
+		if ( testPermission( src, SecurityPermissions.EXTRACT ) )
+		{
+			surface( this );
+			return null;
+		}
 
 		Iterator<List<IMEInventoryHandler<T>>> i = prorityInventory.descendingMap().values().iterator();// prorityInventory.asMap().descendingMap().entrySet().iterator();
 

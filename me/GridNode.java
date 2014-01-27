@@ -3,11 +3,13 @@ package appeng.me;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridNotification;
 import appeng.api.networking.IGrid;
@@ -24,7 +26,9 @@ import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IReadOnlyCollection;
+import appeng.core.AELog;
 import appeng.core.WorldSettings;
+import appeng.helpers.TickHandler;
 import appeng.me.pathfinding.IPathItem;
 import appeng.util.ReadOnlyCollection;
 
@@ -54,6 +58,16 @@ public class GridNode implements IGridNode, IPathItem
 	private int maxChannels = 8;
 	private int channelData = 0;
 
+	public long lastSecurityKey = -1;
+	public int playerID = -1;
+
+	@Override
+	public void setPlayerID(int playerID)
+	{
+		if ( playerID >= 0 )
+			this.playerID = playerID;
+	}
+
 	public int usedChannels()
 	{
 		return channelData >> 8;
@@ -72,7 +86,13 @@ public class GridNode implements IGridNode, IPathItem
 	public void loadFromNBT(String name, NBTTagCompound nodeData)
 	{
 		if ( myGrid == null )
-			setGridStorage( WorldSettings.getInstance().getGridStorage( nodeData.getLong( name ) ) );
+		{
+			NBTTagCompound node = nodeData.getCompoundTag( name );
+			playerID = node.getInteger( "p" );
+			lastSecurityKey = node.getLong( "k" );
+			AELog.info( "Player: " + playerID );
+			setGridStorage( WorldSettings.getInstance().getGridStorage( node.getLong( "g" ) ) );
+		}
 		else
 			throw new RuntimeException( "Loading data after part of a grid, this is invalid." );
 	}
@@ -81,7 +101,15 @@ public class GridNode implements IGridNode, IPathItem
 	public void saveToNBT(String name, NBTTagCompound nodeData)
 	{
 		if ( myStorage != null )
-			nodeData.setLong( name, myStorage.getID() );
+		{
+			NBTTagCompound node = new NBTTagCompound();
+
+			node.setInteger( "p", playerID );
+			node.setLong( "k", lastSecurityKey );
+			node.setLong( "g", myStorage.getID() );
+
+			nodeData.setCompoundTag( name, node );
+		}
 		else
 			nodeData.removeTag( name );
 	}
@@ -211,6 +239,8 @@ public class GridNode implements IGridNode, IPathItem
 		if ( !gridProxy.isWorldAccessable() )
 			return;
 
+		EnumSet<ForgeDirection> newSecurityConnections = EnumSet.noneOf( ForgeDirection.class );
+
 		DimensionalCoord dc = gridProxy.getLocation();
 		for (ForgeDirection f : ForgeDirection.VALID_DIRECTIONS)
 		{
@@ -250,10 +280,65 @@ public class GridNode implements IGridNode, IPathItem
 				}
 				else if ( isValidConnection )
 				{
-					// construct a new connection between these two nodes.
-					new GridConnection( node, this, f.getOpposite() );
+					if ( node.lastSecurityKey != -1 )
+						newSecurityConnections.add( f );
+					else
+					{
+						// construct a new connection between these two nodes.
+						try
+						{
+							new GridConnection( node, this, f.getOpposite() );
+						}
+						catch (FailedConnection e)
+						{
+							TickHandler.instance.addCallable( new Callable() {
+
+								@Override
+								public Object call() throws Exception
+								{
+									getMachine().securityBreak();
+									return null;
+								}
+
+							} );
+
+							return;
+						}
+					}
 				}
 
+			}
+		}
+
+		for (ForgeDirection f : newSecurityConnections)
+		{
+			IGridHost te = findGridHost( dc.getWorld(), dc.x + f.offsetX, dc.y + f.offsetY, dc.z + f.offsetZ );
+			if ( te != null )
+			{
+				GridNode node = (GridNode) te.getGridNode( f.getOpposite() );
+				if ( node == null )
+					continue;
+
+				// construct a new connection between these two nodes.
+				try
+				{
+					new GridConnection( node, this, f.getOpposite() );
+				}
+				catch (FailedConnection e)
+				{
+					TickHandler.instance.addCallable( new Callable() {
+
+						@Override
+						public Object call() throws Exception
+						{
+							getMachine().securityBreak();
+							return null;
+						}
+
+					} );
+
+					return;
+				}
 			}
 		}
 	}
@@ -489,6 +574,12 @@ public class GridNode implements IGridNode, IPathItem
 	public boolean hasFlag(GridFlags flag)
 	{
 		return getGridBlock().getFlags().contains( flag );
+	}
+
+	@Override
+	public int getPlayerID()
+	{
+		return playerID;
 	}
 
 }

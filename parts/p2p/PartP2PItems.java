@@ -12,6 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
+import appeng.api.config.TunnelType;
 import appeng.core.AppEng;
 import appeng.integration.abstraction.IBC;
 import appeng.integration.abstraction.ITE;
@@ -30,6 +31,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeConnection, IInventory, ISidedInventory
 {
+
+	public TunnelType getTunnelType()
+	{
+		return TunnelType.ITEM;
+	}
 
 	public PartP2PItems(ItemStack is) {
 		super( is );

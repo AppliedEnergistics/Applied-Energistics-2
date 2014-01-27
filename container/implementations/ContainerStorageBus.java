@@ -5,6 +5,7 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.container.slot.OptionalSlotFakeTypeOnly;
@@ -80,6 +81,8 @@ public class ContainerStorageBus extends ContainerUpgradeable
 	@Override
 	public void detectAndSendChanges()
 	{
+		verifyPermissions( SecurityPermissions.BUILD, false );
+
 		if ( Platform.isServer() )
 		{
 			for (int i = 0; i < this.crafters.size(); ++i)

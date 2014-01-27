@@ -1,6 +1,7 @@
 package appeng.container.implementations;
 
 import net.minecraft.entity.player.InventoryPlayer;
+import appeng.api.config.SecurityPermissions;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotFake;
 import appeng.container.slot.SlotNormal;
@@ -30,4 +31,10 @@ public class ContainerInterface extends AEBaseContainer
 		bindPlayerInventory( ip, 0, 211 - /* height of playerinventory */82 );
 	}
 
+	@Override
+	public void detectAndSendChanges()
+	{
+		verifyPermissions( SecurityPermissions.BUILD, false );
+		super.detectAndSendChanges();
+	}
 }

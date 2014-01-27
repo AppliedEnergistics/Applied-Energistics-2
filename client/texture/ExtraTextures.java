@@ -48,7 +48,9 @@ public enum ExtraTextures
 
 	BlockQuartzGlassB("BlockQuartzGlassB"), BlockQuartzGlassC("BlockQuartzGlassC"), BlockQuartzGlassD("BlockQuartzGlassD"),
 
-	BlockSpatialPylonE("BlockSpatialPylon_end"), BlockSpatialPylonE_dim("BlockSpatialPylon_end_dim"), BlockSpatialPylonE_red("BlockSpatialPylon_end_red");
+	BlockSpatialPylonE("BlockSpatialPylon_end"), BlockSpatialPylonE_dim("BlockSpatialPylon_end_dim"), BlockSpatialPylonE_red("BlockSpatialPylon_end_red"),
+
+	BlockMESecurityOn("BlockMESecurityOn");
 
 	final private String name;
 	public Icon icon;

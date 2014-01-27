@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
+import appeng.api.config.TunnelType;
 import appeng.api.networking.events.MENetworkBootingStatusChange;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -16,6 +17,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 {
+
+	public TunnelType getTunnelType()
+	{
+		return TunnelType.REDSTONE;
+	}
 
 	public PartP2PRedstone(ItemStack is) {
 		super( is );

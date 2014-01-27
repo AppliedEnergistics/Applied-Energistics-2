@@ -1,18 +1,52 @@
 package appeng.tile.grid;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
-import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.security.IActionHost;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
+import appeng.tile.events.AETileEventHandler;
+import appeng.tile.events.TileEventType;
 import appeng.tile.powersink.AEBasePoweredTile;
 
-public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IGridHost, IGridProxyable
+public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IActionHost, IGridProxyable
 {
 
+	class AENetworkPowerTileHandler extends AETileEventHandler
+	{
+
+		public AENetworkPowerTileHandler() {
+			super( TileEventType.WORLD_NBT );
+		}
+
+		@Override
+		public void readFromNBT(NBTTagCompound data)
+		{
+			gridProxy.readFromNBT( data );
+		}
+
+		@Override
+		public void writeToNBT(NBTTagCompound data)
+		{
+			gridProxy.writeToNBT( data );
+		}
+
+	};
+
+	public AENetworkPowerTile() {
+		addNewHandler( new AENetworkPowerTileHandler() );
+	}
+
 	protected AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", getItemFromTile( this ), true );
+
+	@Override
+	public AENetworkProxy getProxy()
+	{
+		return gridProxy;
+	}
 
 	@Override
 	public AECableType getCableConnectionType(ForgeDirection dir)
@@ -64,5 +98,11 @@ public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IG
 	public void gridChanged()
 	{
 
+	}
+
+	@Override
+	public IGridNode getActionableNode()
+	{
+		return gridProxy.getNode();
 	}
 }

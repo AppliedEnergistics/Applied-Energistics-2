@@ -4,6 +4,7 @@ import appeng.api.features.IGrinderRegistry;
 import appeng.api.features.ILocateableRegistry;
 import appeng.api.features.IMatterCannonAmmoRegistry;
 import appeng.api.features.IP2PTunnelRegistry;
+import appeng.api.features.IPlayerRegistry;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.features.ISpecialComparisonRegistry;
 import appeng.api.features.IWirelessTermRegistery;
@@ -25,6 +26,7 @@ public class RegistryContainer implements IRegistryContainer
 	private P2PTunnelRegistry P2PRegistry = new P2PTunnelRegistry();
 	private MovableTileRegistry MoveableReg = new MovableTileRegistry();
 	private MatterCannonAmmoRegistry matterCannonReg = new MatterCannonAmmoRegistry();
+	private PlayerRegistry playerreg = new PlayerRegistry();
 
 	@Override
 	public IWirelessTermRegistery wireless()
@@ -84,6 +86,12 @@ public class RegistryContainer implements IRegistryContainer
 	public IMatterCannonAmmoRegistry matterCannon()
 	{
 		return matterCannonReg;
+	}
+
+	@Override
+	public IPlayerRegistry players()
+	{
+		return playerreg;
 	}
 
 }

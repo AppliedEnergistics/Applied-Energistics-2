@@ -23,6 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import powercrystals.minefactoryreloaded.api.rednet.RedNetConnectionType;
 import appeng.api.AEApi;
+import appeng.api.exceptions.FailedConnection;
 import appeng.api.implementations.parts.IPartCable;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -76,7 +77,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	}
 
 	@Override
-	public void removePart(ForgeDirection side)
+	public void removePart(ForgeDirection side, boolean supressUpdate)
 	{
 		if ( side == ForgeDirection.UNKNOWN )
 		{
@@ -91,9 +92,12 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 			sides[side.ordinal()] = null;
 		}
 
-		updateConnections();
-		markForUpdate();
-		PartChanged();
+		if ( !supressUpdate )
+		{
+			updateConnections();
+			markForUpdate();
+			PartChanged();
+		}
 	}
 
 	/**
@@ -154,7 +158,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	}
 
 	@Override
-	public ForgeDirection addPart(ItemStack is, ForgeDirection side)
+	public ForgeDirection addPart(ItemStack is, ForgeDirection side, EntityPlayer player)
 	{
 		if ( canAddPart( is, side ) )
 		{
@@ -182,6 +186,9 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 					center = (IPartCable) bp;
 					bp.setPartHostInfo( ForgeDirection.UNKNOWN, this, tcb.getTile() );
 
+					if ( player != null )
+						bp.onPlacement( player, is, side );
+
 					if ( inWorld )
 						bp.addToWorld();
 
@@ -195,7 +202,20 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 							{
 								IGridNode sn = sbp.getGridNode();
 								if ( sn != null && cn != null )
-									new GridConnection( (IGridNode) cn, (IGridNode) sn, ForgeDirection.UNKNOWN );
+								{
+									try
+									{
+										new GridConnection( (IGridNode) cn, (IGridNode) sn, ForgeDirection.UNKNOWN );
+									}
+									catch (FailedConnection e)
+									{
+										// ekk!
+
+										bp.removeFromWorld();
+										center = null;
+										return null;
+									}
+								}
 							}
 						}
 					}
@@ -214,6 +234,9 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 					sides[side.ordinal()] = bp;
 					bp.setPartHostInfo( side, this, this.getTile() );
 
+					if ( player != null )
+						bp.onPlacement( player, is, side );
+
 					if ( inWorld )
 						bp.addToWorld();
 
@@ -224,7 +247,18 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 
 						if ( cn != null && sn != null )
 						{
-							new GridConnection( (IGridNode) cn, (IGridNode) sn, ForgeDirection.UNKNOWN );
+							try
+							{
+								new GridConnection( (IGridNode) cn, (IGridNode) sn, ForgeDirection.UNKNOWN );
+							}
+							catch (FailedConnection e)
+							{
+								// ekk!
+
+								bp.removeFromWorld();
+								sides[side.ordinal()] = null;
+								return null;
+							}
 						}
 					}
 
@@ -270,7 +304,14 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 							IGridNode cn = center.getGridNode();
 							if ( cn != null )
 							{
-								AEApi.instance().createGridConnection( cn, sn );
+								try
+								{
+									AEApi.instance().createGridConnection( cn, sn );
+								}
+								catch (FailedConnection e)
+								{
+									// ekk
+								}
 							}
 						}
 
@@ -645,8 +686,8 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 					p.readFromStream( data );
 				else
 				{
-					removePart( side );
-					side = addPart( new ItemStack( Item.itemsList[itemID], 1, dmgValue ), side );
+					removePart( side, false );
+					side = addPart( new ItemStack( Item.itemsList[itemID], 1, dmgValue ), side, null );
 					if ( side != null )
 					{
 						p = getPart( side );
@@ -657,7 +698,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 				}
 			}
 			else
-				removePart( side );
+				removePart( side, false );
 		}
 
 		return fc.readFromStream( data );
@@ -722,8 +763,8 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 					p.readFromNBT( extra );
 				else
 				{
-					removePart( side );
-					side = addPart( iss, side );
+					removePart( side, false );
+					side = addPart( iss, side, null );
 					if ( side != null )
 					{
 						p = getPart( side );
@@ -734,7 +775,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 				}
 			}
 			else
-				removePart( side );
+				removePart( side, false );
 		}
 	}
 
@@ -983,6 +1024,17 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	public void onInputChanged(World world, int x, int y, int z, ForgeDirection side, int inputValue)
 	{
 		// never called
+	}
+
+	@Override
+	public void securityBreak()
+	{
+		for (ForgeDirection d : ForgeDirection.values())
+		{
+			IPart p = getPart( d );
+			if ( p != null && p instanceof IGridHost )
+				((IGridHost) p).securityBreak();
+		}
 	}
 
 }

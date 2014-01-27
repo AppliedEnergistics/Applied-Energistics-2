@@ -6,6 +6,7 @@ import appeng.api.definitions.Blocks;
 import appeng.api.definitions.Items;
 import appeng.api.definitions.Materials;
 import appeng.api.definitions.Parts;
+import appeng.api.exceptions.FailedConnection;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridConnection;
@@ -89,7 +90,7 @@ public class Api implements IAppEngApi
 	}
 
 	@Override
-	public IGridConnection createGridConnection(IGridNode a, IGridNode b)
+	public IGridConnection createGridConnection(IGridNode a, IGridNode b) throws FailedConnection
 	{
 		return new GridConnection( a, b, ForgeDirection.UNKNOWN );
 	}

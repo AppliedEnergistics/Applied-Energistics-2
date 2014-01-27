@@ -1,8 +1,11 @@
 package appeng.parts.misc;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -11,6 +14,7 @@ import net.minecraftforge.common.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 
 import appeng.api.AEApi;
+import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPartCollsionHelper;
@@ -20,6 +24,7 @@ import appeng.api.util.AECableType;
 import appeng.client.texture.CableBusTextures;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.parts.PartBasicState;
+import appeng.util.Platform;
 
 public class PartToggleBus extends PartBasicState
 {
@@ -30,6 +35,13 @@ public class PartToggleBus extends PartBasicState
 	protected final int REDSTONE_FLAG = 4;
 
 	boolean hasRedstone = false;
+
+	@Override
+	public void onPlacement(EntityPlayer player, ItemStack held, ForgeDirection side)
+	{
+		super.onPlacement( player, held, side );
+		outerProxy.setOwner( player );
+	}
 
 	@Override
 	protected int populateFlags(int cf)
@@ -96,7 +108,14 @@ public class PartToggleBus extends PartBasicState
 			{
 				if ( intention )
 				{
-					connection = AEApi.instance().createGridConnection( proxy.getNode(), outerProxy.getNode() );
+					try
+					{
+						connection = AEApi.instance().createGridConnection( proxy.getNode(), outerProxy.getNode() );
+					}
+					catch (FailedConnection e)
+					{
+						// :(
+					}
 				}
 				else
 				{
@@ -194,5 +213,18 @@ public class PartToggleBus extends PartBasicState
 	public int cableConnectionRenderTo()
 	{
 		return 5;
+	}
+
+	@Override
+	public void securityBreak()
+	{
+		if ( is.stackSize > 0 )
+		{
+			List<ItemStack> items = new ArrayList();
+			items.add( is.copy() );
+			host.removePart( side, false );
+			Platform.spawnDrops( tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord, items );
+			is.stackSize = 0;
+		}
 	}
 }

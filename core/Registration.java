@@ -21,6 +21,7 @@ import appeng.api.definitions.Parts;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.pathing.IPathingGrid;
+import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
@@ -40,6 +41,7 @@ import appeng.block.misc.BlockInterface;
 import appeng.block.misc.BlockNetworkEmitter;
 import appeng.block.misc.BlockQuartzCrystalizer;
 import appeng.block.misc.BlockQuartzTorch;
+import appeng.block.misc.BlockSecurity;
 import appeng.block.misc.BlockTinyTNT;
 import appeng.block.misc.BlockVibrationChamber;
 import appeng.block.networking.BlockCableBus;
@@ -111,6 +113,7 @@ import appeng.me.cache.EnergyGridCache;
 import appeng.me.cache.GridStorageCache;
 import appeng.me.cache.P2PCache;
 import appeng.me.cache.PathGridCache;
+import appeng.me.cache.SecurityCache;
 import appeng.me.cache.SpatialPylonCache;
 import appeng.me.cache.TickManagerCache;
 import appeng.me.storage.AEExternalHandler;
@@ -255,6 +258,8 @@ public class Registration
 		blocks.blockEnergyCell = addFeature( BlockEnergyCell.class );
 		blocks.blockEnergyCellDense = addFeature( BlockDenseEnergyCell.class );
 		blocks.blockEnergyCellCreative = addFeature( BlockCreativeEnergyCell.class );
+
+		blocks.blockSecurity = addFeature( BlockSecurity.class );
 
 		items.itemEncodedAsemblerPattern = addFeature( ItemEncodedPattern.class );
 
@@ -410,6 +415,7 @@ public class Registration
 		AEApi.instance().registries().gridCache().registerGridCache( IStorageGrid.class, GridStorageCache.class );
 		AEApi.instance().registries().gridCache().registerGridCache( P2PCache.class, P2PCache.class );
 		AEApi.instance().registries().gridCache().registerGridCache( ISpatialCache.class, SpatialPylonCache.class );
+		AEApi.instance().registries().gridCache().registerGridCache( ISecurityGrid.class, SecurityCache.class );
 
 		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new AEExternalHandler() );
 

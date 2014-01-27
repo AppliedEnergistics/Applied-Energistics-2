@@ -2,6 +2,7 @@ package appeng.me.helpers;
 
 import java.util.EnumSet;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
@@ -20,6 +21,7 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IOrientable;
+import appeng.core.WorldSettings;
 import appeng.helpers.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.me.cache.P2PCache;
@@ -46,6 +48,8 @@ public class AENetworkProxy implements IGridBlock
 
 	final private String nbtName; // name
 	NBTTagCompound data = null; // input
+
+	private EntityPlayer owner;
 
 	@Override
 	public ItemStack getMachineRepresentation()
@@ -74,6 +78,11 @@ public class AENetworkProxy implements IGridBlock
 		{
 			node.loadFromNBT( nbtName, data );
 			data = null;
+		}
+		else if ( node != null && owner != null )
+		{
+			node.setPlayerID( WorldSettings.getInstance().getPlayerID( owner.username ) );
+			owner = null;
 		}
 	}
 
@@ -310,6 +319,11 @@ public class AENetworkProxy implements IGridBlock
 	public void gridChanged()
 	{
 		gp.gridChanged();
+	}
+
+	public void setOwner(EntityPlayer player)
+	{
+		owner = player;
 	}
 
 }

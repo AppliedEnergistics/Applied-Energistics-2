@@ -50,11 +50,15 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitorHandlerReciever;
@@ -68,8 +72,8 @@ import appeng.api.util.AEItemDefinition;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.GuiBridge;
+import appeng.me.GridNode;
 import appeng.server.AccessType;
-import appeng.server.Security;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.AESharedNBT;
 import appeng.util.item.ItemList;
@@ -274,19 +278,26 @@ public class Platform
 		return FMLCommonHandler.instance().getEffectiveSide().isServer();
 	}
 
+	public static boolean hasPermissions(TileEntity myTile, EntityPlayer player, AccessType blockAccess)
+	{
+		return true;
+	}
+
 	public static void openGUI(EntityPlayer p, TileEntity tile, ForgeDirection side, GuiBridge type)
 	{
 		if ( isClient() )
 			return;
 
-		if ( tile == null )
+		if ( type.isItem() || hasPermissions( tile, p, AccessType.BLOCK_ACCESS ) )
 		{
-			p.openGui( AppEng.instance, type.ordinal() << 3, p.getEntityWorld(), (int) p.posX, (int) p.posY, (int) p.posZ );
-		}
-		else
-		{
-			if ( type.isItem() || Security.hasPermissions( tile, p, AccessType.BLOCK_ACCESS ) )
+			if ( tile == null )
+			{
+				p.openGui( AppEng.instance, type.ordinal() << 3, p.getEntityWorld(), (int) p.posX, (int) p.posY, (int) p.posZ );
+			}
+			else
+			{
 				p.openGui( AppEng.instance, type.ordinal() << 3 | (side.ordinal()), tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord );
+			}
 		}
 	}
 
@@ -1406,5 +1417,53 @@ public class Platform
 		}
 
 		return hash;
+	}
+
+	public static boolean securityCheck(GridNode a, GridNode b)
+	{
+		if ( a.lastSecurityKey == -1 && b.lastSecurityKey == -1 )
+			return false;
+		else if ( a.lastSecurityKey == b.lastSecurityKey )
+			return false;
+
+		boolean a_isSecure = isPowered( a.getGrid() ) && a.lastSecurityKey != -1;
+		boolean b_isSecure = isPowered( b.getGrid() ) && b.lastSecurityKey != -1;
+
+		// can't do that son...
+		if ( a_isSecure && b_isSecure )
+			return true;
+
+		if ( !a_isSecure && b_isSecure )
+			return checkPlayerPermissions( b.getGrid(), a.playerID );
+
+		if ( a_isSecure && !b_isSecure )
+			return checkPlayerPermissions( a.getGrid(), b.playerID );
+
+		return false;
+	}
+
+	private static boolean isPowered(IGrid grid)
+	{
+		if ( grid == null )
+			return false;
+
+		IEnergyGrid eg = (IEnergyGrid) grid.getCache( IEnergyGrid.class );
+		return eg.isNetworkPowered();
+	}
+
+	private static boolean checkPlayerPermissions(IGrid grid, int playerID)
+	{
+		if ( grid == null )
+			return false;
+
+		ISecurityGrid gs = (ISecurityGrid) grid.getCache( ISecurityGrid.class );
+
+		if ( gs == null )
+			return false;
+
+		if ( !gs.isAvailable() )
+			return false;
+
+		return !gs.hasPermission( playerID, SecurityPermissions.BUILD );
 	}
 }

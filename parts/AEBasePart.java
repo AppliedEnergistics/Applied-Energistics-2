@@ -3,6 +3,7 @@ package appeng.parts;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
@@ -20,8 +21,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
-import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.security.IActionHost;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
@@ -34,8 +35,9 @@ import appeng.api.util.IConfigManager;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
 import appeng.parts.networking.PartCable;
+import appeng.util.Platform;
 
-public class AEBasePart implements IPart, IGridProxyable, IGridHost, IUpgradeableHost
+public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradeableHost
 {
 
 	protected AENetworkProxy proxy;
@@ -277,13 +279,38 @@ public class AEBasePart implements IPart, IGridProxyable, IGridHost, IUpgradeabl
 	@Override
 	public void onPlacement(EntityPlayer player, ItemStack held, ForgeDirection side)
 	{
-
+		proxy.setOwner( player );
 	}
 
 	@Override
 	public TileEntity getTile()
 	{
 		return tile;
+	}
+
+	@Override
+	public void securityBreak()
+	{
+		if ( is.stackSize > 0 )
+		{
+			List<ItemStack> items = new ArrayList();
+			items.add( is.copy() );
+			host.removePart( side, false );
+			Platform.spawnDrops( tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord, items );
+			is.stackSize = 0;
+		}
+	}
+
+	@Override
+	public AENetworkProxy getProxy()
+	{
+		return proxy;
+	}
+
+	@Override
+	public IGridNode getActionableNode()
+	{
+		return proxy.getNode();
 	}
 
 }

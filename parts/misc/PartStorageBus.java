@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -13,7 +14,9 @@ import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.IncludeExclude;
 import appeng.api.config.Settings;
+import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.security.BaseActionSource;
@@ -32,24 +35,34 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReciever;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
+import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.me.storage.MEMonitorIInventory;
 import appeng.parts.automation.PartUpgradeable;
+import appeng.tile.inventory.AppEngInternalAEInventory;
+import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
+import appeng.util.item.ItemList;
+import appeng.util.prioitylist.FuzzyPriorityList;
+import appeng.util.prioitylist.PrecisePriorityList;
 import buildcraft.api.transport.IPipeConnection;
 import buildcraft.api.transport.IPipeTile.PipeType;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 
 @Interface(modid = "BuildCraft|Transport", iface = "buildcraft.api.transport.IPipeConnection")
-public class PartStorageBus extends PartUpgradeable implements IGridTickable, ICellContainer, IMEMonitorHandlerReciever<IAEItemStack>, IPipeConnection
+public class PartStorageBus extends PartUpgradeable implements IGridTickable, ICellContainer, IMEMonitorHandlerReciever<IAEItemStack>, IPipeConnection,
+		IPriorityHost
 {
 
 	int priority = 0;
 	BaseActionSource mySrc;
+
+	AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
 
 	public PartStorageBus(ItemStack is) {
 		super( PartStorageBus.class, is );
@@ -91,17 +104,58 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public IInventory getInventoryByName(String name)
+	{
+		if ( name.equals( "config" ) )
+			return Config;
+
+		return super.getInventoryByName( name );
+	}
+
+	private void resetCache(boolean fullReset)
 	{
 		cached = false;
+		if ( fullReset )
+			handlerHash = 0;
 		try
 		{
+			// force grid to update handlers...
 			proxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
 		}
 		catch (GridAccessException e)
 		{
 			// :3
 		}
+	}
+
+	@Override
+	public void onNeighborChanged()
+	{
+		resetCache( false );
+	}
+
+	@Override
+	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
+	{
+		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
+
+		if ( inv == Config )
+			resetCache( true );
+	}
+
+	@Override
+	public void updateSetting(Enum settingName, Enum newValue)
+	{
+		resetCache( true );
+		host.markForSave();
+	}
+
+	@Override
+	public void setPriority(int newValue)
+	{
+		priority = newValue;
+		host.markForSave();
+		resetCache( true );
 	}
 
 	private MEInventoryHandler getHandler()
@@ -139,6 +193,25 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 				if ( inv != null )
 				{
 					handler = new MEInventoryHandler( inv );
+
+					handler.myAccess = (AccessRestriction) this.getConfigManager().getSetting( Settings.ACCESS );
+					handler.myWhitelist = getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST;
+					handler.myPriority = priority;
+
+					IItemList priorityList = new ItemList();
+
+					int slotsToUse = 18 + getInstalledUpgrades( Upgrades.CAPACITY ) * 9;
+					for (int x = 0; x < Config.getSizeInventory() && x < slotsToUse; x++)
+					{
+						IAEItemStack is = Config.getAEStackInSlot( x );
+						if ( is != null )
+							priorityList.add( is );
+					}
+
+					if ( getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
+						handler.myPartitionList = new FuzzyPriorityList( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) );
+					else
+						handler.myPartitionList = new PrecisePriorityList( priorityList );
 
 					if ( inv instanceof IMEMonitor )
 						((IMEMonitor) inv).addListener( this, handler );
@@ -242,16 +315,18 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound extra)
+	public void writeToNBT(NBTTagCompound data)
 	{
-		super.writeToNBT( extra );
-		extra.setInteger( "priority", priority );
+		super.writeToNBT( data );
+		Config.writeToNBT( data, "config" );
+		data.setInteger( "priority", priority );
 	}
 
-	public void readFromNBT(NBTTagCompound extra)
+	public void readFromNBT(NBTTagCompound data)
 	{
-		super.readFromNBT( extra );
-		priority = extra.getInteger( "priority" );
+		super.readFromNBT( data );
+		Config.readFromNBT( data, "config" );
+		priority = data.getInteger( "priority" );
 	};
 
 	@Override

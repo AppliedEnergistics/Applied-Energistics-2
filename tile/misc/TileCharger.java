@@ -22,7 +22,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.me.GridAccessException;
 import appeng.server.AccessType;
-import appeng.server.Security;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkPowerTile;
@@ -226,7 +225,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 
 	public void activate(EntityPlayer player)
 	{
-		if ( !Security.hasPermissions( this, player, AccessType.BLOCK_ACCESS ) )
+		if ( !Platform.hasPermissions( this, player, AccessType.BLOCK_ACCESS ) )
 			return;
 
 		ItemStack myItem = getStackInSlot( 0 );

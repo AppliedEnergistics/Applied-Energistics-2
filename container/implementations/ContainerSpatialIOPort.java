@@ -1,6 +1,7 @@
 package appeng.container.implementations;
 
 import net.minecraft.entity.player.InventoryPlayer;
+import appeng.api.config.SecurityPermissions;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
@@ -20,6 +21,14 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 		addSlotToContainer( new SlotOutput( te, 1, 71, 14, PlaceableItemType.SPATIAL_STORAGE_CELLS.icon ) );
 
 		bindPlayerInventory( ip, 0, 199 - /* height of playerinventory */82 );
+	}
+
+	@Override
+	public void detectAndSendChanges()
+	{
+		verifyPermissions( SecurityPermissions.BUILD, false );
+
+		super.detectAndSendChanges();
 	}
 
 }
