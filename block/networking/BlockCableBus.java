@@ -33,6 +33,7 @@ import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
 import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
+import appeng.util.Platform;
 
 public class BlockCableBus extends AEBaseBlock
 {
@@ -215,7 +216,8 @@ public class BlockCableBus extends AEBaseBlock
 	public void setupTile()
 	{
 		setTileEntiy( Api.instance.partHelper.getCombinedInstance( TileCableBus.class.getName() ) );
-		CommonHelper.proxy.bindTileEntitySpecialRenderer( getTileEntityClass(), this );
+		if ( Platform.isClient() )
+			CommonHelper.proxy.bindTileEntitySpecialRenderer( getTileEntityClass(), this );
 	}
 
 	private ICableBusContainer cb(IBlockAccess w, int x, int y, int z)

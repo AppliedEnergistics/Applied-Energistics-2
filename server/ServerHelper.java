@@ -78,4 +78,10 @@ public class ServerHelper extends CommonHelper
 		// :P
 	}
 
+	@Override
+	public void spawnEnergy(World w, double posX, double posY, double posZ)
+	{
+		// :P
+	}
+
 }

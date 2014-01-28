@@ -26,4 +26,6 @@ public abstract class CommonHelper
 
 	public abstract void spawnLightning(World worldObj, double posX, double posY, double posZ);
 
+	public abstract void spawnEnergy(World w, double posX, double posY, double posZ);
+
 }

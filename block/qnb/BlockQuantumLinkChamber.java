@@ -4,20 +4,19 @@ import java.util.EnumSet;
 import java.util.Random;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderQNB;
-import appeng.client.render.effects.EnergyFx;
+import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.qnb.TileQuantumBridge;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockQuantumLinkChamber extends AEBaseBlock
 {
@@ -33,6 +32,7 @@ public class BlockQuantumLinkChamber extends AEBaseBlock
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(World w, int bx, int by, int bz, Random r)
 	{
 		TileQuantumBridge bridge = getTileEntity( w, bx, by, bz );
@@ -40,17 +40,7 @@ public class BlockQuantumLinkChamber extends AEBaseBlock
 		{
 			if ( bridge.hasQES() )
 			{
-				float x = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
-				float y = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
-				float z = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
-
-				EnergyFx fx = new EnergyFx( w, bx + x + 0.5, by + y + 0.5, bz + z + 0.5, Item.diamond );
-
-				fx.motionX = -x * 0.1;
-				fx.motionY = -y * 0.1;
-				fx.motionZ = -z * 0.1;
-
-				Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+				CommonHelper.proxy.spawnEnergy( w, bx + 0.5, by + 0.5, bz + 0.5 );
 			}
 		}
 	}
