@@ -67,6 +67,7 @@ import appeng.core.features.AEFeatureHandler;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.DamagedItemDefinition;
 import appeng.core.features.IAEFeature;
+import appeng.core.features.NullItemDefinition;
 import appeng.core.features.registries.P2PTunnelRegistry;
 import appeng.core.features.registries.entries.BasicCellHandler;
 import appeng.core.features.registries.entries.CreativeCellHandler;
@@ -156,7 +157,10 @@ public class Registration
 			{
 				Field f = materialClass.getField( "material" + mat.name() );
 				ItemStack is = ((ItemMaterial) materialItem.item()).createMaterial( mat );
-				f.set( materials, new DamagedItemDefinition( is ) );
+				if ( is != null )
+					f.set( materials, new DamagedItemDefinition( is ) );
+				else
+					f.set( parts, new NullItemDefinition() );
 			}
 			catch (Throwable err)
 			{
@@ -179,6 +183,8 @@ public class Registration
 					ItemStack is = ((ItemPart) partItem.item()).createPart( type, null );
 					if ( is != null )
 						f.set( parts, new DamagedItemDefinition( is ) );
+					else
+						f.set( parts, new NullItemDefinition() );
 				}
 				else
 				{
