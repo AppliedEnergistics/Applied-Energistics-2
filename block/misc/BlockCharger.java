@@ -24,6 +24,8 @@ import appeng.helpers.ICustomCollision;
 import appeng.tile.AEBaseTile;
 import appeng.tile.misc.TileCharger;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCharger extends AEBaseBlock implements ICustomCollision
 {
@@ -62,6 +64,7 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(World w, int x, int y, int z, Random r)
 	{
 		if ( !Configuration.instance.enableEffects )

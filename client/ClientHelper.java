@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -14,6 +15,7 @@ import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.TESRWrapper;
 import appeng.client.render.WorldRender;
+import appeng.client.render.effects.LightningEffect;
 import appeng.client.render.entity.RenderTinyTNTPrimed;
 import appeng.client.texture.CableBusTextures;
 import appeng.client.texture.ExtraTextures;
@@ -76,6 +78,13 @@ public class ClientHelper extends ServerHelper
 		}
 		else
 			return super.getPlayers();
+	}
+
+	@Override
+	public void spawnLightning(World worldObj, double posX, double posY, double posZ)
+	{
+		LightningEffect fx = new LightningEffect( worldObj, posX, posY + 0.3f, posZ, 0.0f, 0.0f, 0.0f );
+		Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
 	}
 
 }

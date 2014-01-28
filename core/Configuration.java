@@ -27,8 +27,8 @@ public class Configuration extends net.minecraftforge.common.Configuration imple
 	public String latestVersion = VERSION;
 	public long latestTimeStamp = 0;
 
-	public static final String VERSION = "${version}";
-	public static final String CHANNEL = "${channel}";
+	public static final String VERSION = "@version@";
+	public static final String CHANNEL = "@aechannel@";
 
 	public final static String PACKET_CHANNEL = "AE";
 

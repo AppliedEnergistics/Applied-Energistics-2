@@ -26,9 +26,11 @@ import appeng.util.inv.WrapperMCISidedInventory;
 import appeng.util.inv.WrapperTEPipe;
 import buildcraft.api.transport.IPipeConnection;
 import buildcraft.api.transport.IPipeTile.PipeType;
+import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@Interface(iface = "buildcraft.api.transport.IPipeConnection", modid = "BuildCraftAPI|transport")
 public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeConnection, IInventory, ISidedInventory
 {
 

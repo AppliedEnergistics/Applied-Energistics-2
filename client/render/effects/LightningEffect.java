@@ -3,9 +3,9 @@ package appeng.client.render.effects;
 import java.util.Random;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
@@ -81,7 +81,7 @@ public class LightningEffect extends EntityFX
 		double oy = 0;
 		double oz = 0;
 
-		EntityClientPlayerMP p = Minecraft.getMinecraft().thePlayer;
+		EntityPlayer p = Minecraft.getMinecraft().thePlayer;
 		double offX = -rZ;
 		double offY = MathHelper.cos( (float) (Math.PI / 2.0f + p.rotationPitch * 0.017453292F) );
 		double offZ = rX;

@@ -24,4 +24,6 @@ public abstract class CommonHelper
 
 	public abstract void sendToAllNearExcept(EntityPlayer p, double x, double y, double z, double dist, World w, Packet packet);
 
+	public abstract void spawnLightning(World worldObj, double posX, double posY, double posZ);
+
 }

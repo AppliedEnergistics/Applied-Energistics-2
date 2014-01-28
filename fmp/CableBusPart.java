@@ -6,6 +6,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,13 +18,16 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import powercrystals.minefactoryreloaded.api.rednet.RedNetConnectionType;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
+import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
@@ -181,7 +185,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		if ( sp != null )
 		{
 			if ( sp.part != null )
-				return sp.part.getItemStack( false );
+				return sp.part.getItemStack( PartItemStack.Break );
 			if ( sp.facade != null )
 				return sp.facade.getItemStack();
 		}
@@ -218,7 +222,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public boolean canConnectRedstone(int side)
 	{
-		return cb.canConnectRedstone( ForgeDirection.getOrientation( side ) );
+		return cb.canConnectRedstone( EnumSet.of( ForgeDirection.getOrientation( side ) ) );
 	}
 
 	@Override
@@ -299,9 +303,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	}
 
 	@Override
-	public ForgeDirection addPart(ItemStack is, ForgeDirection side)
+	public ForgeDirection addPart(ItemStack is, ForgeDirection side, EntityPlayer owner)
 	{
-		return cb.addPart( is, side );
+		return cb.addPart( is, side, owner );
 	}
 
 	@Override
@@ -311,9 +315,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	}
 
 	@Override
-	public void removePart(ForgeDirection side)
+	public void removePart(ForgeDirection side, boolean supressUpdate)
 	{
-		cb.removePart( side );
+		cb.removePart( side, supressUpdate );
 	}
 
 	boolean canUpdate = false;
@@ -431,6 +435,48 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	public boolean hasRedstone(ForgeDirection side)
 	{
 		return cb.hasRedstone( side );
+	}
+
+	@Override
+	public void securityBreak()
+	{
+		cb.securityBreak();
+	}
+
+	@Override
+	public RedNetConnectionType getConnectionType(World world, int x, int y, int z, ForgeDirection side)
+	{
+		return cb.getConnectionType( world, x, y, z, side );
+	}
+
+	@Override
+	public int[] getOutputValues(World world, int x, int y, int z, ForgeDirection side)
+	{
+		return cb.getOutputValues( world, x, y, z, side );
+	}
+
+	@Override
+	public int getOutputValue(World world, int x, int y, int z, ForgeDirection side, int subnet)
+	{
+		return cb.getOutputValue( world, x, y, z, side, subnet );
+	}
+
+	@Override
+	public void onInputsChanged(World world, int x, int y, int z, ForgeDirection side, int[] inputValues)
+	{
+		cb.onInputsChanged( world, x, y, z, side, inputValues );
+	}
+
+	@Override
+	public void onInputChanged(World world, int x, int y, int z, ForgeDirection side, int inputValue)
+	{
+		cb.onInputChanged( world, x, y, z, side, inputValue );
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		return cb.isEmpty();
 	}
 
 }

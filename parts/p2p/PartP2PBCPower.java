@@ -20,9 +20,11 @@ import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
+import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@Interface(iface = "buildcraft.api.power.IPowerReceptor", modid = "BuildCraftAPI|core")
 public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPowerReceptor, IGridTickable
 {
 
@@ -98,7 +100,8 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 					PowerReceiver tp = target.getPowerReceiver( side.getOpposite() );
 					if ( tp != null )
 					{
-						float howmuch = tp.powerRequest(); // orientation.getOpposite() );
+						float howmuch = tp.powerRequest(); // orientation.getOpposite()
+															// );
 						if ( howmuch > tp.getMaxEnergyReceived() )
 							howmuch = tp.getMaxEnergyReceived();
 

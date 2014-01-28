@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
@@ -14,7 +12,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
-import appeng.client.render.effects.LightningEffect;
+import appeng.core.CommonHelper;
 import appeng.core.Configuration;
 import appeng.util.Platform;
 
@@ -39,9 +37,8 @@ final public class EntityChargedQuartz extends EntityItem
 
 		if ( Platform.isClient() && delay++ > 30 && Configuration.instance.enableEffects )
 		{
+			CommonHelper.proxy.spawnLightning( worldObj, posX, posY, posZ );
 			delay = 0;
-			LightningEffect fx = new LightningEffect( worldObj, posX, posY + 0.3f, posZ, 0.0f, 0.0f, 0.0f );
-			Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
 		}
 
 		int j = MathHelper.floor_double( this.posX );

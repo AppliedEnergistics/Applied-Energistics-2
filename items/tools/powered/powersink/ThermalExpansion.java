@@ -3,7 +3,9 @@ package appeng.items.tools.powered.powersink;
 import net.minecraft.item.ItemStack;
 import appeng.api.config.PowerUnits;
 import cofh.api.energy.IEnergyContainerItem;
+import cpw.mods.fml.common.Optional.Interface;
 
+@Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "ThermalExpansion")
 public class ThermalExpansion extends IC2 implements IEnergyContainerItem
 {
 

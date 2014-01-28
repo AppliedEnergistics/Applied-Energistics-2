@@ -1,6 +1,6 @@
 package appeng.items.tools.powered.powersink;
 
-public class AEBasePoweredItem extends UniversalElectricity
+public class AEBasePoweredItem extends ThermalExpansion
 {
 
 	public AEBasePoweredItem(Class c, String subname) {

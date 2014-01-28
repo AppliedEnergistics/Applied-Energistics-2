@@ -12,9 +12,12 @@ import appeng.api.config.TunnelType;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.util.Platform;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@InterfaceList(value = { @Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"), @Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2") })
 public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements ic2.api.energy.tile.IEnergySink, ic2.api.energy.tile.IEnergySource
 {
 

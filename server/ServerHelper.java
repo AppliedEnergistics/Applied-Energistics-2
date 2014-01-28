@@ -72,4 +72,10 @@ public class ServerHelper extends CommonHelper
 		throw new RuntimeException( "This is a server..." );
 	}
 
+	@Override
+	public void spawnLightning(World worldObj, double posX, double posY, double posZ)
+	{
+		// :P
+	}
+
 }
