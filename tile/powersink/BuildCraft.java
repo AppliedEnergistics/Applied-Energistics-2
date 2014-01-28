@@ -1,17 +1,14 @@
 package appeng.tile.powersink;
 
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.config.PowerUnits;
 import appeng.core.AppEng;
-import appeng.tile.events.AETileEventHandler;
-import appeng.tile.events.TileEventType;
+import appeng.integration.abstraction.IBC;
 import appeng.util.Platform;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
-import buildcraft.api.power.PowerHandler.Type;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
@@ -20,37 +17,7 @@ import cpw.mods.fml.common.Optional.Method;
 public abstract class BuildCraft extends AERootPoweredTile implements IPowerReceptor
 {
 
-	private class BCPerdition extends AETileEventHandler
-	{
-
-		final protected PowerHandler bcPowerHandler;
-
-		public BCPerdition(IPowerReceptor te) {
-			super( TileEventType.TICK, TileEventType.WORLD_NBT );
-			bcPowerHandler = new PowerHandler( te, Type.MACHINE );
-		}
-
-		@Override
-		public void Tick()
-		{
-			bcPowerHandler.update();
-		}
-
-		@Override
-		public void writeToNBT(NBTTagCompound data)
-		{
-			bcPowerHandler.writeToNBT( data, "bcPowerHandler" );
-		}
-
-		@Override
-		public void readFromNBT(NBTTagCompound data)
-		{
-			bcPowerHandler.readFromNBT( data, "bcPowerHandler" );
-		}
-
-	};
-
-	BCPerdition bcPowerWrapper;
+	BaseBCperdition bcPowerWrapper;
 
 	public BuildCraft() {
 		if ( Platform.isServer() )
@@ -59,9 +26,12 @@ public abstract class BuildCraft extends AERootPoweredTile implements IPowerRece
 			{
 				if ( Loader.isModLoaded( "BuildCraftAPI|power" ) )
 				{
-					if ( AppEng.instance.isIntegrationEnabled( "" ) )
-						addNewHandler( bcPowerWrapper = new BCPerdition( this ) );
-					bcPowerWrapper.bcPowerHandler.configure( 1, 380, 1.0f / 5.0f, 1000 );
+					IBC bcIntegration = (IBC) AppEng.instance.getIntegration( "BC" );
+					if ( bcIntegration != null )
+					{
+						addNewHandler( bcPowerWrapper = bcIntegration.createPerdition( this ) );
+						bcPowerWrapper.configure( 1, 380, 1.0f / 5.0f, 1000 );
+					}
 				}
 			}
 			catch (Throwable t)
@@ -75,8 +45,8 @@ public abstract class BuildCraft extends AERootPoweredTile implements IPowerRece
 	@Method(modid = "BuildCraftAPI|power")
 	final public PowerReceiver getPowerReceiver(ForgeDirection side)
 	{
-		if ( internalCanAcceptPower && getPowerSides().contains( side ) )
-			return bcPowerWrapper.bcPowerHandler.getPowerReceiver();
+		if ( internalCanAcceptPower && getPowerSides().contains( side ) && bcPowerWrapper != null )
+			return bcPowerWrapper.getPowerReceiver();
 		return null;
 	}
 
@@ -85,9 +55,9 @@ public abstract class BuildCraft extends AERootPoweredTile implements IPowerRece
 	final public void doWork(PowerHandler workProvider)
 	{
 		float requred = (float) getExternalPowerDemand( PowerUnits.MJ );
-		double failed = injectExternalPower( PowerUnits.MJ, bcPowerWrapper.bcPowerHandler.useEnergy( 0.0f, requred, true ) );
+		double failed = injectExternalPower( PowerUnits.MJ, bcPowerWrapper.useEnergy( 0.0f, requred, true ) );
 		if ( failed > 0.01 )
-			bcPowerWrapper.bcPowerHandler.addEnergy( (float) failed );
+			bcPowerWrapper.addEnergy( (float) failed );
 	}
 
 	@Override

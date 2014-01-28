@@ -15,6 +15,9 @@ import appeng.facade.FacadePart;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IBC;
 import appeng.integration.modules.helpers.BCPipeHandler;
+import appeng.tile.powersink.BCPerdition;
+import appeng.tile.powersink.BaseBCperdition;
+import appeng.tile.powersink.BuildCraft;
 import buildcraft.BuildCraftEnergy;
 import buildcraft.BuildCraftTransport;
 import buildcraft.api.tools.IToolWrench;
@@ -218,6 +221,12 @@ public class BC implements IIntegrationModule, IBC
 		}
 		return null;
 		// Pipe
+	}
+
+	@Override
+	public BaseBCperdition createPerdition(BuildCraft buildCraft)
+	{
+		return new BCPerdition( buildCraft );
 	}
 
 }

@@ -160,7 +160,7 @@ public class Registration
 				if ( is != null )
 					f.set( materials, new DamagedItemDefinition( is ) );
 				else
-					f.set( parts, new NullItemDefinition() );
+					f.set( materials, new NullItemDefinition() );
 			}
 			catch (Throwable err)
 			{
