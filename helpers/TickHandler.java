@@ -83,15 +83,19 @@ public class TickHandler implements ITickHandler
 	{
 		if ( Platform.isServer() )
 		{
-			while (!getRepo().networks.isEmpty())
+			LinkedList<IGridNode> toDestroy = new LinkedList();
+
+			for (Grid g : getRepo().networks)
 			{
-				Grid g = getRepo().networks.poll();
 				for (IGridNode n : g.getNodes())
 				{
 					if ( n.getWorld() == ev.world )
-						n.destroy();
+						toDestroy.add( n );
 				}
 			}
+
+			for (IGridNode n : toDestroy)
+				n.destroy();
 		}
 	}
 

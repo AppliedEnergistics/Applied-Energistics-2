@@ -32,7 +32,8 @@ public class BusRenderer implements IItemRenderer
 		if ( part == null )
 		{
 			part = c.createPartFromItemStack( is );
-			renderPart.put( id, part );
+			if ( part != null )
+				renderPart.put( id, part );
 		}
 
 		return part;
@@ -53,6 +54,9 @@ public class BusRenderer implements IItemRenderer
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
 	{
+		if ( item == null )
+			return;
+
 		GL11.glPushMatrix();
 		if ( type == ItemRenderType.ENTITY )
 			GL11.glTranslatef( -0.5f, -0.5f, -0.5f );
@@ -83,7 +87,11 @@ public class BusRenderer implements IItemRenderer
 				fp.renderInventory( BusRenderHelper.instance, renderer );
 		}
 		else
-			getRenderer( item, (IPartItem) item.getItem() ).renderInventory( BusRenderHelper.instance, renderer );
+		{
+			IPart ip = getRenderer( item, (IPartItem) item.getItem() );
+			if ( ip != null )
+				ip.renderInventory( BusRenderHelper.instance, renderer );
+		}
 
 		GL11.glPopMatrix();
 	}

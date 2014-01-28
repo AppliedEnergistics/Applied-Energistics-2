@@ -51,8 +51,7 @@ public class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 		try
 		{
 			ItemStack is = new ItemStack( this );
-			PartType t = getTypeByStack( is );
-			t.getPart().getConstructor( ItemStack.class ).newInstance( is );
+			mat.getPart().getConstructor( ItemStack.class ).newInstance( is );
 		}
 		catch (Throwable e)
 		{
@@ -92,7 +91,14 @@ public class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 
 	public PartType getTypeByStack(ItemStack is)
 	{
-		return dmgToPart.get( is.getItemDamage() ).part;
+		if ( is == null )
+			return null;
+
+		PartTypeIst pt = dmgToPart.get( is.getItemDamage() );
+		if ( pt != null )
+			return pt.part;
+
+		return null;
 	}
 
 	@Override
@@ -123,7 +129,11 @@ public class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	@Override
 	public String getItemDisplayName(ItemStack is)
 	{
-		Enum[] varients = getTypeByStack( is ).getVarients();
+		PartType pt = getTypeByStack( is );
+		if ( pt == null )
+			return "Unnamed";
+
+		Enum[] varients = pt.getVarients();
 
 		if ( varients != null )
 			return super.getItemDisplayName( is ) + " - " + varients[dmgToPart.get( is.getItemDamage() ).varient].toString();
@@ -153,13 +163,15 @@ public class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 		try
 		{
 			PartType t = getTypeByStack( is );
-			return t.getPart().getConstructor( ItemStack.class ).newInstance( is );
+			if ( t != null )
+				return t.getPart().getConstructor( ItemStack.class ).newInstance( is );
 		}
 		catch (Throwable e)
 		{
 			throw new RuntimeException( "Unable to construct IBusPart from IBusItem : " + getTypeByStack( is ).getPart().getName()
 					+ " ; Possibly didn't have correct constructor( ItemStack )", e );
 		}
+		return null;
 	}
 
 	@Override
