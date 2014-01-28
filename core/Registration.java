@@ -177,7 +177,8 @@ public class Registration
 				if ( varients == null )
 				{
 					ItemStack is = ((ItemPart) partItem.item()).createPart( type, null );
-					f.set( parts, new DamagedItemDefinition( is ) );
+					if ( is != null )
+						f.set( parts, new DamagedItemDefinition( is ) );
 				}
 				else
 				{
@@ -188,7 +189,8 @@ public class Registration
 						for (Enum v : varients)
 						{
 							ItemStack is = ((ItemPart) partItem.item()).createPart( type, v );
-							def.add( (AEColor) v, is );
+							if ( is != null )
+								def.add( (AEColor) v, is );
 						}
 
 						f.set( parts, def );

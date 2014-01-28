@@ -6,8 +6,9 @@ import java.util.EnumSet;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.MinecraftForge;
 import appeng.api.config.PowerUnits;
+import appeng.core.AppEng;
+import appeng.integration.abstraction.IIC2;
 import appeng.util.Platform;
 import cpw.mods.fml.common.Optional.Interface;
 
@@ -77,18 +78,20 @@ public abstract class IC2 extends BuildCraft implements IEnergySink
 
 	final private void addToENet()
 	{
-		if ( !isInIC2 && Platform.isServer() )
+		IIC2 ic2Integration = (IIC2) AppEng.instance.getIntegration( "IC2" );
+		if ( !isInIC2 && Platform.isServer() && ic2Integration != null )
 		{
-			MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileLoadEvent( this ) );
+			ic2Integration.addToEnergyNet( this );
 			isInIC2 = true;
 		}
 	}
 
 	final private void removeFromENet()
 	{
-		if ( isInIC2 && Platform.isServer() )
+		IIC2 ic2Integration = (IIC2) AppEng.instance.getIntegration( "IC2" );
+		if ( isInIC2 && Platform.isServer() && ic2Integration != null )
 		{
-			MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileUnloadEvent( this ) );
+			ic2Integration.removeFromEnergyNet( this );
 			isInIC2 = false;
 		}
 	}

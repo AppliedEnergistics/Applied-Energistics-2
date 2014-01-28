@@ -48,6 +48,17 @@ public class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 
 	public ItemStack createPart(PartType mat, Enum varient)
 	{
+		try
+		{
+			ItemStack is = new ItemStack( this );
+			PartType t = getTypeByStack( is );
+			t.getPart().getConstructor( ItemStack.class ).newInstance( is );
+		}
+		catch (Throwable e)
+		{
+			return null; // part not supported..
+		}
+
 		String name = varient == null ? mat.name() : mat.name() + "." + varient.name();
 		int varID = varient == null ? 0 : varient.ordinal();
 
