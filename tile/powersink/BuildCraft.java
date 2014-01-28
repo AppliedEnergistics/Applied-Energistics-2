@@ -26,11 +26,14 @@ public abstract class BuildCraft extends AERootPoweredTile implements IPowerRece
 			{
 				if ( Loader.isModLoaded( "BuildCraftAPI|power" ) )
 				{
-					IBC bcIntegration = (IBC) AppEng.instance.getIntegration( "BC" );
-					if ( bcIntegration != null )
+					if ( AppEng.instance.isIntegrationEnabled( "BC" ) )
 					{
-						addNewHandler( bcPowerWrapper = bcIntegration.createPerdition( this ) );
-						bcPowerWrapper.configure( 1, 380, 1.0f / 5.0f, 1000 );
+						IBC bcIntegration = (IBC) AppEng.instance.getIntegration( "BC" );
+						if ( bcIntegration != null )
+						{
+							addNewHandler( bcPowerWrapper = bcIntegration.createPerdition( this ) );
+							bcPowerWrapper.configure( 1, 380, 1.0f / 5.0f, 1000 );
+						}
 					}
 				}
 			}

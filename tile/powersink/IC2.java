@@ -78,21 +78,27 @@ public abstract class IC2 extends BuildCraft implements IEnergySink
 
 	final private void addToENet()
 	{
-		IIC2 ic2Integration = (IIC2) AppEng.instance.getIntegration( "IC2" );
-		if ( !isInIC2 && Platform.isServer() && ic2Integration != null )
+		if ( AppEng.instance.isIntegrationEnabled( "IC2" ) )
 		{
-			ic2Integration.addToEnergyNet( this );
-			isInIC2 = true;
+			IIC2 ic2Integration = (IIC2) AppEng.instance.getIntegration( "IC2" );
+			if ( !isInIC2 && Platform.isServer() && ic2Integration != null )
+			{
+				ic2Integration.addToEnergyNet( this );
+				isInIC2 = true;
+			}
 		}
 	}
 
 	final private void removeFromENet()
 	{
-		IIC2 ic2Integration = (IIC2) AppEng.instance.getIntegration( "IC2" );
-		if ( isInIC2 && Platform.isServer() && ic2Integration != null )
+		if ( AppEng.instance.isIntegrationEnabled( "IC2" ) )
 		{
-			ic2Integration.removeFromEnergyNet( this );
-			isInIC2 = false;
+			IIC2 ic2Integration = (IIC2) AppEng.instance.getIntegration( "IC2" );
+			if ( isInIC2 && Platform.isServer() && ic2Integration != null )
+			{
+				ic2Integration.removeFromEnergyNet( this );
+				isInIC2 = false;
+			}
 		}
 	}
 
