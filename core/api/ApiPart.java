@@ -65,10 +65,8 @@ public class ApiPart implements IPartHelper
 			ClassLoader loader = getClass().getClassLoader();// ClassLoader.getSystemClassLoader();
 			Class root = ClassLoader.class;
 			Class cls = loader.getClass();
-			java.lang.reflect.Method defineClassMethod = root.getDeclaredMethod( "defineClass",
-					new Class[] { String.class, byte[].class, int.class, int.class } );
-			java.lang.reflect.Method runTransformersMethod = cls
-					.getDeclaredMethod( "runTransformers", new Class[] { String.class, String.class, byte[].class } );
+			java.lang.reflect.Method defineClassMethod = root.getDeclaredMethod( "defineClass", new Class[] { String.class, byte[].class, int.class, int.class } );
+			java.lang.reflect.Method runTransformersMethod = cls.getDeclaredMethod( "runTransformers", new Class[] { String.class, String.class, byte[].class } );
 
 			runTransformersMethod.setAccessible( true );
 			defineClassMethod.setAccessible( true );
@@ -121,9 +119,11 @@ public class ApiPart implements IPartHelper
 	public Class getCombinedInstance(String base)// , CableBusContainer cbc)
 	{
 		/*
-		 * List<String> desc = new LinkedList(); for (ForgeDirection side : ForgeDirection.values()) { IBusPart part =
-		 * cbc.getPart( side ); if ( part != null ) { for (Class c : interfaces2Layer.keySet()) { if ( c.isInstance(
-		 * part ) ) desc.add( interfaces2Layer.get( c ).getName() ); } } }
+		 * List<String> desc = new LinkedList(); for (ForgeDirection side :
+		 * ForgeDirection.values()) { IBusPart part = cbc.getPart( side ); if (
+		 * part != null ) { for (Class c : interfaces2Layer.keySet()) { if (
+		 * c.isInstance( part ) ) desc.add( interfaces2Layer.get( c ).getName()
+		 * ); } } }
 		 */
 
 		if ( desc.size() == 0 )
@@ -328,15 +328,22 @@ public class ApiPart implements IPartHelper
 	}
 
 	@Override
-	public boolean registerNewLayer(String layer, Class<?> layerInterface)
+	public boolean registerNewLayer(String layer, String layerInterface)
 	{
-		if ( interfaces2Layer.get( layerInterface ) == null )
+		try
 		{
-			desc.add( layerInterface.getName() );
-			interfaces2Layer.put( layerInterface, layer );
+			if ( interfaces2Layer.get( layerInterface ) == null )
+			{
+				interfaces2Layer.put( Class.forName( layerInterface ), layer );
+				desc.add( layerInterface );
+				return true;
+			}
+			else
+				AELog.info( "Layer " + layer + " not registered, " + layerInterface + " aready has a layer." );
 		}
-		else
-			AELog.info( "Layer " + layer + " not registered, " + layerInterface.getName() + " aready has a layer." );
+		catch (Throwable t)
+		{
+		}
 
 		return false;
 	}

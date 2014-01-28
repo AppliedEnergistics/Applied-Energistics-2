@@ -1,24 +1,19 @@
 package appeng.core;
 
-import ic2.api.energy.tile.IEnergySink;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.IFluidHandler;
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.Blocks;
 import appeng.api.definitions.Items;
 import appeng.api.definitions.Materials;
 import appeng.api.definitions.Parts;
-import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.security.ISecurityGrid;
@@ -118,8 +113,6 @@ import appeng.me.cache.SpatialPylonCache;
 import appeng.me.cache.TickManagerCache;
 import appeng.me.storage.AEExternalHandler;
 import appeng.recipes.ores.OreDictionaryHandler;
-import buildcraft.api.power.IPowerEmitter;
-import buildcraft.api.power.IPowerReceptor;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -396,12 +389,12 @@ public class Registration
 
 	public void Init(FMLInitializationEvent event)
 	{
-		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIEnergySink", IEnergySink.class );
-		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerISidedInventory", ISidedInventory.class );
-		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIPowerEmitter", IPowerEmitter.class );
-		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIPowerReceptor", IPowerReceptor.class );
-		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIFluidHandler", IFluidHandler.class );
-		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerITileStorageMonitorable", ITileStorageMonitorable.class );
+		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );
+		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerISidedInventory", "net.minecraft.inventory.ISidedInventory" );
+		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIPowerEmitter", "buildcraft.api.power.IPowerEmitter" );
+		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIPowerReceptor", "buildcraft.api.power.IPowerReceptor" );
+		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIFluidHandler", "net.minecraftforge.fluids.IFluidHandler" );
+		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerITileStorageMonitorable", "appeng.api.implementations.tiles.ITileStorageMonitorable" );
 
 		TickRegistry.registerTickHandler( TickHandler.instance, Side.SERVER );
 		TickRegistry.registerTickHandler( TickHandler.instance, Side.CLIENT );
