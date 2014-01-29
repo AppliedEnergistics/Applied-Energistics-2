@@ -274,6 +274,8 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 
 	public void addToWorld()
 	{
+		if ( inWorld )
+			return;
 		inWorld = true;
 
 		TileEntity te = getTile();
@@ -323,6 +325,8 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 
 	public void removeFromWorld()
 	{
+		if ( !inWorld )
+			return;
 		inWorld = false;
 
 		for (ForgeDirection s : ForgeDirection.values())

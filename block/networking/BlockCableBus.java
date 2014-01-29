@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -75,6 +76,13 @@ public class BlockCableBus extends AEBaseBlock
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
+		Block block = blocksList[world.getBlockId( x, y, z )];
+		if ( block != null && block != this )
+		{
+			return block.getLightValue( world, x, y, z );
+		}
+		if ( block == null )
+			return 0;
 		return cb( world, x, y, z ).getLightValue();
 	}
 

@@ -84,7 +84,7 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 		MultiPartRegistry.registerConverter( this );
 		MultiPartRegistry.registerParts( this, data );
 		MinecraftForge.EVENT_BUS.register( new FMPEvent() );
-		// MultipartGenerator.registerPassThroughInterface( "appeng.helpers.AEMultiTile" );
+		MultipartGenerator.registerPassThroughInterface( "appeng.helpers.AEMultiTile" );
 	}
 
 	@Override
