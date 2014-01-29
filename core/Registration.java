@@ -91,6 +91,7 @@ import appeng.items.parts.PartType;
 import appeng.items.storage.ItemBasicStorageCell;
 import appeng.items.storage.ItemCreativeStorageCell;
 import appeng.items.storage.ItemSpatialStorageCell;
+import appeng.items.tools.ToolBiometricCard;
 import appeng.items.tools.ToolMemoryCard;
 import appeng.items.tools.ToolNetworkTool;
 import appeng.items.tools.powered.ToolChargedStaff;
@@ -298,6 +299,7 @@ public class Registration
 		items.itemWirelessTerminal = addFeature( ToolWirelessTerminal.class );
 		items.itemNetworkTool = addFeature( ToolNetworkTool.class );
 		items.itemPortableCell = addFeature( ToolPortableCell.class );
+		items.itemBiometricCard = addFeature( ToolBiometricCard.class );
 
 		items.itemFacade = addFeature( ItemFacade.class );
 
@@ -402,7 +404,8 @@ public class Registration
 		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIPowerEmitter", "buildcraft.api.power.IPowerEmitter" );
 		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIPowerReceptor", "buildcraft.api.power.IPowerReceptor" );
 		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIFluidHandler", "net.minecraftforge.fluids.IFluidHandler" );
-		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerITileStorageMonitorable", "appeng.api.implementations.tiles.ITileStorageMonitorable" );
+		AEApi.instance().partHelper()
+				.registerNewLayer( "appeng.api.parts.layers.LayerITileStorageMonitorable", "appeng.api.implementations.tiles.ITileStorageMonitorable" );
 
 		TickRegistry.registerTickHandler( TickHandler.instance, Side.SERVER );
 		TickRegistry.registerTickHandler( TickHandler.instance, Side.CLIENT );
