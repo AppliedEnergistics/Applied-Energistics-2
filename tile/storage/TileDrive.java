@@ -334,4 +334,9 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 			// :P
 		}
 	}
+
+	public boolean isItemValidForSlot(int i, ItemStack itemstack)
+	{
+		return itemstack != null && AEApi.instance().registries().cell().isCellHandled( itemstack );
+	}
 }
