@@ -61,11 +61,12 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonito
 		}
 		else
 			monitor = null;
+
+		bindPlayerInventory( ip, 0, 0 );
 	}
 
 	public ContainerMEMonitorable(InventoryPlayer ip, IStorageMonitorable montiorable) {
 		this( ip, montiorable, Platform.isServer() );
-		bindPlayerInventory( ip, 0, 0 );
 	}
 
 	@Override
