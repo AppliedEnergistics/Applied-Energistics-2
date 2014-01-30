@@ -11,6 +11,7 @@ import net.minecraft.util.StatCollector;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.core.features.AEFeature;
+import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
@@ -48,7 +49,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	{
 		NBTTagCompound c = Platform.openNbtData( is );
 		String name = c.getString( "Config" );
-		return name == null || name == "" ? "gui.appliedenergistics2.Blank" : name;
+		return name == null || name == "" ? GuiText.Blank.getUnlocalized() : name;
 	}
 
 	@Override

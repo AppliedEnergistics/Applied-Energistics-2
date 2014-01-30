@@ -10,6 +10,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
 import appeng.core.features.AEFeature;
+import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.Platform;
 
@@ -42,9 +43,9 @@ public class ToolWirelessTerminal extends AEBasePoweredItem
 				String encKey = tag.getString( "encKey" );
 
 				if ( encKey == null || encKey == "" )
-					l.add( StatCollector.translateToLocal( "AppEng.GuiITooltip.Unlinked" ) );
+					l.add( GuiText.Unlinked.getLocal() );
 				else
-					l.add( StatCollector.translateToLocal( "AppEng.GuiITooltip.Linked" ) );
+					l.add( GuiText.Linked.getLocal() );
 			}
 		}
 		else

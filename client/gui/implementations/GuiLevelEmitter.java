@@ -45,7 +45,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	@Override
 	protected void addButtons()
 	{
-		redstoneMode = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.REDSTONE_EMITTER, RedstoneMode.IGNORE );
+		redstoneMode = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL );
 		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 
 		buttonList.add( plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 17, 22, 20, "+1" ) );

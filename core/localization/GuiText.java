@@ -19,7 +19,7 @@ public enum GuiText
 
 	NetworkTool, PowerUsageRate, PowerInputRate, Installed, EnergyDrain,
 
-	StorageBus, Priority, Security, Encoded;
+	StorageBus, Priority, Security, Encoded, Blank, Unlinked, Linked;
 
 	String root;
 

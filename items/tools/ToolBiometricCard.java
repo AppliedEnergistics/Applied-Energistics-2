@@ -31,7 +31,7 @@ public class ToolBiometricCard extends AEBaseItem
 	{
 		NBTTagCompound tag = Platform.openNbtData( is );
 		String username = tag.getString( "username" );
-		return username != null ? super.getItemDisplayName( is ) + " - " + GuiText.Encoded.getLocal() : super.getItemDisplayName( is );
+		return username.length() > 0 ? super.getItemDisplayName( is ) + " - " + GuiText.Encoded.getLocal() : super.getItemDisplayName( is );
 	}
 
 	@Override
