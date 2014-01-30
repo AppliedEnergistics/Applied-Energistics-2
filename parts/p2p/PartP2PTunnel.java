@@ -13,8 +13,10 @@ import appeng.api.AEApi;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.TunnelType;
 import appeng.api.implementations.items.IMemoryCard;
+import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
 import appeng.client.texture.CableBusTextures;
@@ -65,27 +67,40 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 			ItemStack newType = ItemStack.loadItemStackFromNBT( data );
 			long freq = data.getLong( "freq" );
 
-			getHost().removePart( side, true );
-			ForgeDirection dir = getHost().addPart( newType, side, player );
-			IPart newBus = getHost().getPart( dir );
-
-			if ( newBus instanceof PartP2PTunnel )
+			if ( newType != null )
 			{
-				PartP2PTunnel newTunnel = (PartP2PTunnel) newBus;
-				newTunnel.output = true;
-				newTunnel.onChange();
+				if ( newType.getItem() instanceof IPartItem )
+				{
+					IPart testPart = ((IPartItem) newType.getItem()).createPartFromItemStack( newType );
+					if ( testPart instanceof PartP2PTunnel )
+					{
+						getHost().removePart( side, true );
+						ForgeDirection dir = getHost().addPart( newType, side, player );
+						IPart newBus = getHost().getPart( dir );
 
-				try
-				{
-					P2PCache p2p = newTunnel.proxy.getP2P();
-					p2p.updateFreq( newTunnel, freq );
-				}
-				catch (GridAccessException e)
-				{
-					// :P
+						if ( newBus instanceof PartP2PTunnel )
+						{
+							PartP2PTunnel newTunnel = (PartP2PTunnel) newBus;
+							newTunnel.output = true;
+							newTunnel.onChange();
+
+							try
+							{
+								P2PCache p2p = newTunnel.proxy.getP2P();
+								p2p.updateFreq( newTunnel, freq );
+							}
+							catch (GridAccessException e)
+							{
+								// :P
+							}
+						}
+
+						mc.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
+						return true;
+					}
 				}
 			}
-
+			mc.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
 		}
 		else if ( tt != null ) // attune-ment
 		{
@@ -145,7 +160,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 						// :P
 					}
 				}
-
+				return true;
 			}
 		}
 
@@ -191,6 +206,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 			data.setLong( "freq", freq );
 
 			mc.setMemoryCardContents( is, type + ".name", data );
+			mc.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
 			return true;
 		}
 		return false;
@@ -244,8 +260,8 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderInventoryBox( renderer );
 
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(),
-				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(), is.getIconIndex(),
+				CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderInventoryBox( renderer );
@@ -265,8 +281,8 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderBlock( x, y, z, renderer );
 
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(),
-				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(), is.getIconIndex(),
+				CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderBlock( x, y, z, renderer );
