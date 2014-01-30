@@ -23,6 +23,7 @@ import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
+import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
@@ -311,6 +312,12 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	public IGridNode getActionableNode()
 	{
 		return proxy.getNode();
+	}
+
+	@Override
+	public boolean canBePlacedOn(BusSupport what)
+	{
+		return what == BusSupport.CABLE;
 	}
 
 }

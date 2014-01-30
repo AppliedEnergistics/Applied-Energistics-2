@@ -20,6 +20,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
@@ -52,9 +53,9 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public boolean supportsBuses()
+	public BusSupport supportsBuses()
 	{
-		return true;
+		return BusSupport.CABLE;
 	}
 
 	public Icon getGlassTexture(AEColor c)
@@ -95,8 +96,7 @@ public class PartCable extends AEBasePart implements IPartCable
 			return CableBusTextures.MECable_Yellow.getIcon();
 		default:
 		}
-		return AEApi.instance().parts().partCableGlass.item( AEColor.Transparent ).getIconIndex(
-				AEApi.instance().parts().partCableGlass.stack( AEColor.Transparent, 1 ) );
+		return AEApi.instance().parts().partCableGlass.item( AEColor.Transparent ).getIconIndex( AEApi.instance().parts().partCableGlass.stack( AEColor.Transparent, 1 ) );
 	}
 
 	public Icon getTexture(AEColor c)
@@ -142,8 +142,7 @@ public class PartCable extends AEBasePart implements IPartCable
 			return CableBusTextures.MECovered_Yellow.getIcon();
 		default:
 		}
-		return AEApi.instance().parts().partCableCovered.item( AEColor.Transparent ).getIconIndex(
-				AEApi.instance().parts().partCableCovered.stack( AEColor.Transparent, 1 ) );
+		return AEApi.instance().parts().partCableCovered.item( AEColor.Transparent ).getIconIndex( AEApi.instance().parts().partCableCovered.stack( AEColor.Transparent, 1 ) );
 	}
 
 	public Icon getSmartTexture(AEColor c)

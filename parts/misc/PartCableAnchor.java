@@ -18,6 +18,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.networking.IGridNode;
+import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
@@ -207,5 +208,11 @@ public class PartCableAnchor implements IPart
 	public void onPlacement(EntityPlayer player, ItemStack held, ForgeDirection side)
 	{
 
+	}
+
+	@Override
+	public boolean canBePlacedOn(BusSupport what)
+	{
+		return what == BusSupport.CABLE || what == BusSupport.DENSE_CABLE;
 	}
 }

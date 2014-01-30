@@ -135,12 +135,12 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 			IPart bp = bi.createPartFromItemStack( is );
 			if ( bp instanceof IPartCable )
 			{
-				boolean hasParts = false;
+				boolean canPlace = true;
 				for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
-					if ( getPart( d ) != null )
-						hasParts = true;
+					if ( getPart( d ) != null && !getPart( d ).canBePlacedOn( ((IPartCable) bp).supportsBuses() ) )
+						canPlace = false;
 
-				if ( hasParts && !((IPartCable) bp).supportsBuses() )
+				if ( !canPlace )
 					return false;
 
 				return getPart( ForgeDirection.UNKNOWN ) == null;
@@ -148,7 +148,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 			else if ( !(bp instanceof IPartCable) && side != ForgeDirection.UNKNOWN )
 			{
 				IPart cable = getPart( ForgeDirection.UNKNOWN );
-				if ( cable != null && !((IPartCable) cable).supportsBuses() )
+				if ( cable != null && !bp.canBePlacedOn( ((IPartCable) cable).supportsBuses() ) )
 					return false;
 
 				return getPart( side ) == null;
@@ -172,12 +172,12 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 				IPart bp = bi.createPartFromItemStack( is );
 				if ( bp instanceof IPartCable )
 				{
-					boolean hasParts = false;
+					boolean canPlace = true;
 					for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
-						if ( getPart( d ) != null )
-							hasParts = true;
+						if ( getPart( d ) != null && !getPart( d ).canBePlacedOn( ((IPartCable) bp).supportsBuses() ) )
+							canPlace = false;
 
-					if ( hasParts && !((IPartCable) bp).supportsBuses() )
+					if ( !canPlace )
 						return null;
 
 					if ( getPart( ForgeDirection.UNKNOWN ) != null )
@@ -228,7 +228,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 				else if ( !(bp instanceof IPartCable) && side != ForgeDirection.UNKNOWN )
 				{
 					IPart cable = getPart( ForgeDirection.UNKNOWN );
-					if ( cable != null && !((IPartCable) cable).supportsBuses() )
+					if ( cable != null && !bp.canBePlacedOn( ((IPartCable) cable).supportsBuses() ) )
 						return null;
 
 					sides[side.ordinal()] = bp;
@@ -297,7 +297,8 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 					IGridNode sn = part.getGridNode();
 					if ( sn != null )
 					{
-						// this is a really stupid if statement, why was this here?
+						// this is a really stupid if statement, why was this
+						// here?
 						// if ( !sn.getConnections().iterator().hasNext() )
 
 						IPart center = getPart( ForgeDirection.UNKNOWN );
@@ -542,8 +543,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 				if ( part != null )
 				{
 					setSide( s );
-					BusCollisionHelper bch = new BusCollisionHelper( boxes, BusRenderHelper.instance.ax, BusRenderHelper.instance.ay,
-							BusRenderHelper.instance.az );
+					BusCollisionHelper bch = new BusCollisionHelper( boxes, BusRenderHelper.instance.ax, BusRenderHelper.instance.ay, BusRenderHelper.instance.az );
 					part.getBoxes( bch );
 				}
 			}
