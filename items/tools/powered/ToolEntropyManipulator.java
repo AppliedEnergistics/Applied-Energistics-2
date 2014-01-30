@@ -254,6 +254,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem
 
 					if ( w.isAirBlock( x, y, z ) )
 					{
+						extractAEPower( item, 1600 );
 						w.playSoundEffect( (double) x + 0.5D, (double) y + 0.5D, (double) z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
 						w.setBlock( x, y, z, Block.fire.blockID );
 					}
