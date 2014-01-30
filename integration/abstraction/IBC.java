@@ -7,8 +7,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.parts.IFacadePart;
-import appeng.tile.powersink.BaseBCperdition;
-import appeng.tile.powersink.BuildCraft;
 
 public interface IBC
 {
@@ -42,7 +40,5 @@ public interface IBC
 	ItemStack getTextureForFacade(ItemStack facade);
 
 	Icon getFacadeTexture();
-
-	BaseBCperdition createPerdition(BuildCraft buildCraft);
 
 }

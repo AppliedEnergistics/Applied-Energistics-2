@@ -4,12 +4,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.config.PowerUnits;
 import appeng.core.AppEng;
-import appeng.integration.abstraction.IBC;
+import appeng.integration.abstraction.IMJ;
+import appeng.integration.modules.helpers.BaseBCperdition;
 import appeng.util.Platform;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 
@@ -24,16 +24,14 @@ public abstract class BuildCraft extends AERootPoweredTile implements IPowerRece
 		{
 			try
 			{
-				if ( Loader.isModLoaded( "BuildCraftAPI|power" ) )
+				if ( AppEng.instance.isIntegrationEnabled( "MJ" ) )
 				{
-					if ( AppEng.instance.isIntegrationEnabled( "BC" ) )
+					IMJ mjIntegration = (IMJ) AppEng.instance.getIntegration( "MJ" );
+					if ( mjIntegration != null )
 					{
-						IBC bcIntegration = (IBC) AppEng.instance.getIntegration( "BC" );
-						if ( bcIntegration != null )
-						{
-							addNewHandler( bcPowerWrapper = bcIntegration.createPerdition( this ) );
+						addNewHandler( bcPowerWrapper = mjIntegration.createPerdition( this ) );
+						if ( bcPowerWrapper != null )
 							bcPowerWrapper.configure( 1, 380, 1.0f / 5.0f, 1000 );
-						}
 					}
 				}
 			}

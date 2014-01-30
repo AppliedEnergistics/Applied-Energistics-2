@@ -76,6 +76,7 @@ public class AppEng
 			IntegrationSide.BOTH, "Thermal Expansion", "ThermalExpansion", "TE", // TE
 			IntegrationSide.BOTH, "Mystcraft", "Mystcraft", "Mystcraft", // MC
 			IntegrationSide.BOTH, "BuildCraft", "BuildCraft|Silicon", "BC", // BC
+			IntegrationSide.BOTH, "BuildCraft Power", null, "MJ", // BC
 			IntegrationSide.BOTH, "Greg Tech", "gregtech_addon", "GT", // GT
 			IntegrationSide.BOTH, "Universal Electricity", null, "UE", // UE
 			IntegrationSide.BOTH, "Logistics Pipes", "LogisticsPipes|Main", "LP", // LP
