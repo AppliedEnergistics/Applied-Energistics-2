@@ -3,7 +3,6 @@ package appeng.items.tools;
 import java.util.EnumSet;
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -63,7 +62,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public void notifyUser(Block blk, EntityPlayer player, MemoryCardMessages msg)
+	public void notifyUser(EntityPlayer player, MemoryCardMessages msg)
 	{
 		if ( Platform.isClient() )
 			return;
