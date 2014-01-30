@@ -107,7 +107,7 @@ public abstract class AEBaseGui extends GuiContainer
 				stack = ((SlotME) slot).getAEStack();
 				break;
 			case 1:
-				action = InventoryAction.SHIFT_CLICK;
+				action = ctrlDown == 1 ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
 				stack = ((SlotME) slot).getAEStack();
 				break;
 

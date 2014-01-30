@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
+import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -38,6 +39,7 @@ import appeng.container.slot.SlotPlayerInv;
 import appeng.helpers.InventoryAction;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import appeng.util.inv.AdaptorPlayerHand;
 
 public abstract class AEBaseContainer extends Container
 {
@@ -503,6 +505,39 @@ public abstract class AEBaseContainer extends Container
 				ais = Platform.poweredExtraction( powerSrc, cellInv, ais, mySrc );
 				if ( ais != null )
 					adp.addItems( ais.getItemStack() );
+			}
+			break;
+		case PICKUP_SINGLE:
+			if ( powerSrc == null || cellInv == null )
+				return;
+
+			if ( slotItem != null )
+			{
+				int liftQty = 1;
+				ItemStack isg = player.inventory.getItemStack();
+
+				if ( isg != null )
+				{
+					if ( isg.stackSize >= isg.getMaxStackSize() )
+						liftQty = 0;
+					if ( !Platform.isSameItem( slotItem.getItemStack(), isg ) )
+						liftQty = 0;
+				}
+
+				if ( liftQty > 0 )
+				{
+					IAEItemStack ais = slotItem.copy();
+					ais.setStackSize( 1 );
+					ais = Platform.poweredExtraction( powerSrc, cellInv, ais, mySrc );
+
+					InventoryAdaptor ia = new AdaptorPlayerHand( player );
+
+					ItemStack fail = ia.addItems( ais.getItemStack() );
+					if ( fail != null )
+						cellInv.injectItems( ais, Actionable.MODULATE, mySrc );
+
+					player.updateHeldItem();
+				}
 			}
 			break;
 		case PICKUP_OR_SETDOWN:
