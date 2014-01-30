@@ -111,7 +111,7 @@ public class AppEng
 	{
 		AELog.info( "Starting ( PreInit )" );
 
-		Configuration.instance = new Configuration( event.getSuggestedConfigurationFile() );
+		Configuration.instance = new Configuration( event.getModConfigurationDirectory() );
 
 		if ( Platform.isClient() )
 		{

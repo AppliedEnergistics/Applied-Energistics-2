@@ -77,7 +77,7 @@ public class Configuration extends net.minecraftforge.common.Configuration imple
 	public boolean enableNetworkProfiler = true;
 
 	public Configuration(File f) {
-		super( f );
+		super( new File( f.getPath() + File.separator + "AppliedEnergistics2" + File.separator + "AppliedEnergistics2.cfg" ) );
 
 		final double DEFAULT_BC_EXCHANGE = 5.0;
 		final double DEFAULT_UE_EXCHANGE = 5.0;
