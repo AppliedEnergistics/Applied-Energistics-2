@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
 import appeng.client.render.effects.ChargedOreEffect;
+import appeng.core.CommonHelper;
 import appeng.core.Configuration;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -63,8 +64,11 @@ public class OreQuartzCharged extends OreQuartz
 			break;
 		}
 
-		ChargedOreEffect fx = new ChargedOreEffect( w, x + xOff, y + yOff, z + zOff, 0.0f, 0.0f, 0.0f );
-		Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+		if ( CommonHelper.proxy.shouldAddParticles( r ) )
+		{
+			ChargedOreEffect fx = new ChargedOreEffect( w, x + xOff, y + yOff, z + zOff, 0.0f, 0.0f, 0.0f );
+			Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+		}
 	}
 
 }

@@ -37,9 +37,6 @@ public class ToolBiometricCardRender implements IItemRenderer
 		float f5 = ((Icon) par2Icon).getMaxU();
 		float f6 = ((Icon) par2Icon).getMinV();
 		float f7 = ((Icon) par2Icon).getMaxV();
-		float f8 = 1.0F;
-		float f9 = 0.0F;
-		float f10 = 0.0F;
 		float f12 = 0.0625F;
 
 		Tessellator tessellator = Tessellator.instance;

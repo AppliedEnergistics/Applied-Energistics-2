@@ -63,9 +63,11 @@ public class Configuration extends net.minecraftforge.common.Configuration imple
 
 	public String grinderOres[] = {
 			// Vanilla Items
-			"Obsidian", "EnderPearl", "Coal", "Iron", "Gold", "Charcoal",
+			"Obsidian", "Ender", "Coal", "Iron", "Gold", "Charcoal", "NetherQuartz",
 			// Common Mod Ores
 			"Copper", "Tin", "Silver", "Lead", "Bronze",
+			// AE
+			"CertusQuartz", "Wheat", "Fluix",
 			// Other Mod Ores
 			"Brass", "Platinum", "Nickel", "Invar", "Aluminium", "Electrum" };
 

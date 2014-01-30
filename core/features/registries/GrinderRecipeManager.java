@@ -33,14 +33,22 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 	public GrinderRecipeManager() {
 		RecipeList = new ArrayList();
 
-		addOre( "Gold", new ItemStack( Block.oreGold ) );
-		addOre( "Iron", new ItemStack( Block.oreIron ) );
-		addIngot( "Gold", new ItemStack( Item.ingotGold ) );
-		addIngot( "Iron", new ItemStack( Item.ingotIron ) );
-		addOre( "Obsidian", new ItemStack( Block.obsidian ) );
-		addOre( "EnderPearl", new ItemStack( Item.enderPearl ) );
 		addOre( "Coal", new ItemStack( Item.coal ) );
 		addOre( "Charcoal", new ItemStack( Item.coal, 1, 1 ) );
+
+		addOre( "NetherQuartz", new ItemStack( Block.oreNetherQuartz ) );
+		addIngot( "NetherQuartz", new ItemStack( Item.netherQuartz ) );
+
+		addOre( "Gold", new ItemStack( Block.oreGold ) );
+		addIngot( "Gold", new ItemStack( Item.ingotGold ) );
+
+		addOre( "Iron", new ItemStack( Block.oreIron ) );
+		addIngot( "Iron", new ItemStack( Item.ingotIron ) );
+
+		addOre( "Obsidian", new ItemStack( Block.obsidian ) );
+		addIngot( "Ender", new ItemStack( Item.enderPearl ) );
+
+		addIngot( "Wheat", new ItemStack( Item.wheat ) );
 
 		OreDictionaryHandler.instance.observe( this );
 	}
@@ -61,8 +69,7 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 			return;
 		}
 
-		log( "Allow Grinding of " + Platform.getItemDisplayName( in ) + " to " + Platform.getItemDisplayName( out ) + " for "
-				+ cost );
+		log( "Allow Grinding of " + Platform.getItemDisplayName( in ) + " to " + Platform.getItemDisplayName( out ) + " for " + cost );
 		RecipeList.add( new AppEngGrinderRecipe( copy( in ), copy( out ), cost ) );
 	}
 
@@ -75,8 +82,8 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 			return;
 		}
 
-		log( "Allow Grinding of " + Platform.getItemDisplayName( in ) + " to " + Platform.getItemDisplayName( out )
-				+ " with optional " + Platform.getItemDisplayName( optional ) + " for " + cost );
+		log( "Allow Grinding of " + Platform.getItemDisplayName( in ) + " to " + Platform.getItemDisplayName( out ) + " with optional "
+				+ Platform.getItemDisplayName( optional ) + " for " + cost );
 		RecipeList.add( new AppEngGrinderRecipe( copy( in ), copy( out ), copy( optional ), chance, cost ) );
 	}
 
@@ -110,13 +117,9 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 	{
 		if ( name.equals( "Obsidian" ) )
 			return 1;
-		if ( name.equals( "EnderPearl" ) )
-			return 1;
 		if ( name.equals( "Charcoal" ) )
 			return 1;
 		if ( name.equals( "Coal" ) )
-			return 1;
-		if ( name.contains( "Quartz" ) )
 			return 1;
 		return 2;
 	}
@@ -200,18 +203,17 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 	@Override
 	public void oreRegistered(String Name, ItemStack item)
 	{
-		if ( Name.startsWith( "ore" ) || Name.startsWith( "ingot" ) || Name.startsWith( "dust" ) )
+		if ( Name.startsWith( "ore" ) || Name.startsWith( "crystal" ) || Name.startsWith( "ingot" ) || Name.startsWith( "dust" ) )
 		{
 			for (String ore : Configuration.instance.grinderOres)
 			{
-				if ( ore.equals( "CertusQuartz" ) )
-					continue;
-				if ( ore.equals( "NetherQuartz" ) )
-					continue;
-
 				if ( Name.equals( "ore" + ore ) )
 				{
 					addOre( ore, item );
+				}
+				else if ( Name.equals( "crystal" + ore ) )
+				{
+					addIngot( ore, item );
 				}
 				else if ( Name.equals( "ingot" + ore ) )
 				{

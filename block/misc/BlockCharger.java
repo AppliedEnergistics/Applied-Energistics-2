@@ -18,6 +18,7 @@ import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockCharger;
 import appeng.client.render.effects.LightningEffect;
+import appeng.core.CommonHelper;
 import appeng.core.Configuration;
 import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
@@ -86,8 +87,11 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 
 				for (int bolts = 0; bolts < 3; bolts++)
 				{
-					LightningEffect fx = new LightningEffect( w, xOff + 0.5 + x, yOff + 0.5 + y, zOff + 0.5 + z, 0.0D, 0.0D, 0.0D );
-					Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+					if ( CommonHelper.proxy.shouldAddParticles( r ) )
+					{
+						LightningEffect fx = new LightningEffect( w, xOff + 0.5 + x, yOff + 0.5 + y, zOff + 0.5 + z, 0.0D, 0.0D, 0.0D );
+						Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+					}
 				}
 
 			}

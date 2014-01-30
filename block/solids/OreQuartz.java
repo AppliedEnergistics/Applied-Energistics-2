@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.AEApi;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
@@ -32,6 +33,12 @@ public class OreQuartz extends AEBaseBlock implements IOrientableBlock
 		boostBrightnessLow = 0;
 		boostBrightnessHigh = 1;
 		enhanceBrightness = false;
+	}
+
+	@Override
+	public void postInit()
+	{
+		OreDictionary.registerOre( "oreCertusQuartz", new ItemStack( this ) );
 	}
 
 	@Override

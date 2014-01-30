@@ -25,4 +25,9 @@ public class ToolQuartzSword extends ItemSword implements IAEFeature
 		feature = new AEFeatureHandler( EnumSet.of( Type, AEFeature.QuartzSword ), this, Type.name() );
 	}
 
+	@Override
+	public void postInit()
+	{
+		// override!
+	}
 }

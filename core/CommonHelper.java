@@ -1,6 +1,7 @@
 package appeng.core;
 
 import java.util.List;
+import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet;
@@ -27,5 +28,7 @@ public abstract class CommonHelper
 	public abstract void spawnLightning(World worldObj, double posX, double posY, double posZ);
 
 	public abstract void spawnEnergy(World w, double posX, double posY, double posZ);
+
+	public abstract boolean shouldAddParticles(Random r);
 
 }

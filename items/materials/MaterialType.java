@@ -16,14 +16,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public enum MaterialType
 {
-	CertusQuartzCrystal(AEFeature.Core), CertusQuartzCrystalCharged(AEFeature.Core, EntityChargedQuartz.class),
+	CertusQuartzCrystal(AEFeature.Core, "crystalCertusQuartz"), CertusQuartzCrystalCharged(AEFeature.Core, EntityChargedQuartz.class),
 
-	CertusQuartzDust, NetherQuartzDust(AEFeature.Core, "dustNetherQuartz"), Flour(AEFeature.Flour, "dustWheat"), GoldDust(AEFeature.Core, "dustGold"), IronDust(
-			AEFeature.Core, "dustIron"), IronNugget(AEFeature.Core, "nuggetIron"),
+	CertusQuartzDust(AEFeature.Core, "dustCertusQuartz"), NetherQuartzDust(AEFeature.Core, "dustNetherQuartz"), Flour(AEFeature.Flour, "dustWheat"), GoldDust(
+			AEFeature.Core, "dustGold"), IronDust(AEFeature.Core, "dustIron"), IronNugget(AEFeature.Core, "nuggetIron"),
 
 	Silicon(AEFeature.Core, "itemSilicon"), MatterBall,
 
-	FluixCrystal(AEFeature.Core, "crystalFLuix"), FluixDust(AEFeature.Core, "dustFluix"), FluixPearl(AEFeature.Core, "pearlFluix"),
+	FluixCrystal(AEFeature.Core, "crystalFluix"), FluixDust(AEFeature.Core, "dustFluix"), FluixPearl(AEFeature.Core, "pearlFluix"),
 
 	PureifiedCertusQuartzCrystal, PureifiedNetherQuartzCrystal, PureifiedFluixCrystal,
 

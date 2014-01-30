@@ -27,4 +27,9 @@ public class ToolQuartzPickaxe extends ItemPickaxe implements IAEFeature
 		feature = new AEFeatureHandler( EnumSet.of( Type, AEFeature.QuartzPickaxe ), this, Type.name() );
 	}
 
+	@Override
+	public void postInit()
+	{
+		// override!
+	}
 }

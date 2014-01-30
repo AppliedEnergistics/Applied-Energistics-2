@@ -27,4 +27,9 @@ public class ToolQuartzAxe extends ItemAxe implements IAEFeature
 		feature = new AEFeatureHandler( EnumSet.of( Type, AEFeature.QuartzAxe ), this, Type.name() );
 	}
 
+	@Override
+	public void postInit()
+	{
+		// override!
+	}
 }

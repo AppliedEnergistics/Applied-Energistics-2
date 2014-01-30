@@ -348,6 +348,8 @@ public class Registration
 
 				feature.feature().register();
 
+				feature.postInit();
+
 				return feature.feature();
 			}
 			else if ( obj == null )

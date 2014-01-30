@@ -27,4 +27,9 @@ public class ToolQuartzSpade extends ItemSpade implements IAEFeature
 		feature = new AEFeatureHandler( EnumSet.of( Type, AEFeature.QuartzSpade ), this, Type.name() );
 	}
 
+	@Override
+	public void postInit()
+	{
+		// override!
+	}
 }

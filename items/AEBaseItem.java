@@ -49,4 +49,9 @@ public class AEBaseItem extends Item implements IAEFeature
 		return false;
 	}
 
+	@Override
+	public void postInit()
+	{
+		// override!
+	}
 }

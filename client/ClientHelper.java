@@ -2,6 +2,7 @@ package appeng.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
@@ -104,4 +105,13 @@ public class ClientHelper extends ServerHelper
 
 		Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
 	}
+
+	@Override
+	public boolean shouldAddParticles(Random r)
+	{
+		if ( Minecraft.getMinecraft().gameSettings.particleSetting == 0 )
+			return true;
+		return r.nextInt( Minecraft.getMinecraft().gameSettings.particleSetting ) == 0;
+	}
+
 }

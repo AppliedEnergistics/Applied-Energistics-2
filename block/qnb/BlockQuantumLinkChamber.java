@@ -40,7 +40,8 @@ public class BlockQuantumLinkChamber extends AEBaseBlock
 		{
 			if ( bridge.hasQES() )
 			{
-				CommonHelper.proxy.spawnEnergy( w, bx + 0.5, by + 0.5, bz + 0.5 );
+				if ( CommonHelper.proxy.shouldAddParticles( r ) )
+					CommonHelper.proxy.spawnEnergy( w, bx + 0.5, by + 0.5, bz + 0.5 );
 			}
 		}
 	}

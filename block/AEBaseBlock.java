@@ -94,7 +94,8 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 			try
 			{
 				ResourceLocation resLoc = new ResourceLocation( Name );
-				resLoc = new ResourceLocation( resLoc.getResourceDomain(), String.format( "%s/%s%s", new Object[] { "textures/blocks", resLoc.getResourcePath(), ".png" } ) );
+				resLoc = new ResourceLocation( resLoc.getResourceDomain(), String.format( "%s/%s%s", new Object[] { "textures/blocks",
+						resLoc.getResourcePath(), ".png" } ) );
 
 				Resource res = Minecraft.getMinecraft().getResourceManager().getResource( resLoc );
 				if ( res != null )
@@ -685,6 +686,12 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	public Class<AEBaseItemBlock> getItemBlockClass()
 	{
 		return AEBaseItemBlock.class;
+	}
+
+	@Override
+	public void postInit()
+	{
+		// override!
 	}
 
 }

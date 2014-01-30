@@ -5,4 +5,6 @@ public interface IAEFeature
 
 	public AEFeatureHandler feature();
 
+	void postInit();
+
 }

@@ -27,4 +27,9 @@ public class ToolQuartzHoe extends ItemHoe implements IAEFeature
 		feature = new AEFeatureHandler( EnumSet.of( Type, AEFeature.QuartzHoe ), this, Type.name() );
 	}
 
+	@Override
+	public void postInit()
+	{
+		// override!
+	}
 }

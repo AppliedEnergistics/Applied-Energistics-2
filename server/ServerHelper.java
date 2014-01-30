@@ -2,6 +2,7 @@ package appeng.server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -82,6 +83,12 @@ public class ServerHelper extends CommonHelper
 	public void spawnEnergy(World w, double posX, double posY, double posZ)
 	{
 		// :P
+	}
+
+	@Override
+	public boolean shouldAddParticles(Random r)
+	{
+		return false;
 	}
 
 }
