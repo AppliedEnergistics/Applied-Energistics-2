@@ -816,11 +816,13 @@ public class Platform
 			}
 			catch (Throwable _)
 			{ // explodes without BC
-				if ( eq.getItem() instanceof IAEWrench )
-				{
-					IAEWrench wrench = (IAEWrench) eq.getItem();
-					return wrench.canWrench( eq, player, x, y, z );
-				}
+
+			}
+
+			if ( eq.getItem() instanceof IAEWrench )
+			{
+				IAEWrench wrench = (IAEWrench) eq.getItem();
+				return wrench.canWrench( eq, player, x, y, z );
 			}
 		}
 		return false;
