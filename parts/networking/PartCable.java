@@ -95,7 +95,8 @@ public class PartCable extends AEBasePart implements IPartCable
 			return CableBusTextures.MECable_Yellow.getIcon();
 		default:
 		}
-		return is.getIconIndex();
+		return AEApi.instance().parts().partCableGlass.item( AEColor.Transparent ).getIconIndex(
+				AEApi.instance().parts().partCableGlass.stack( AEColor.Transparent, 1 ) );
 	}
 
 	public Icon getTexture(AEColor c)
@@ -141,7 +142,8 @@ public class PartCable extends AEBasePart implements IPartCable
 			return CableBusTextures.MECovered_Yellow.getIcon();
 		default:
 		}
-		return AEApi.instance().parts().partCableCovered.item( AEColor.Transparent ).getIconIndex( AEApi.instance().parts().partCableCovered.stack( AEColor.Transparent, 1 ) );
+		return AEApi.instance().parts().partCableCovered.item( AEColor.Transparent ).getIconIndex(
+				AEApi.instance().parts().partCableCovered.stack( AEColor.Transparent, 1 ) );
 	}
 
 	public Icon getSmartTexture(AEColor c)
