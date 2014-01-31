@@ -105,10 +105,23 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		return outs;
 	}
 
-	public void onNeighborBlockChange()
+	@Override
+	public void onNeighborChanged()
 	{
 		cachedTank = null;
+		if ( output )
+		{
+			PartP2PLiquids in = getInput();
+			if ( in != null )
+				in.onChange();
+		}
 	};
+
+	@Override
+	public void onChange()
+	{
+		cachedTank = null;
+	}
 
 	IFluidHandler getTarget()
 	{
