@@ -13,6 +13,10 @@ import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.config.TunnelType;
+import appeng.api.networking.events.MENetworkBootingStatusChange;
+import appeng.api.networking.events.MENetworkChannelsChanged;
+import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.core.AppEng;
 import appeng.integration.abstraction.IBC;
 import appeng.integration.abstraction.ITE;
@@ -160,16 +164,73 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 		return cachedInv = new WrapperChainedInventory( outs );
 	}
 
+	@MENetworkEventSubscribe
+	public void changeStateA(MENetworkBootingStatusChange bs)
+	{
+		if ( !output )
+		{
+			cachedInv = null;
+			int olderSize = oldSize;
+			oldSize = getDest().getSizeInventory();
+			if ( olderSize != oldSize )
+			{
+				getHost().PartChanged();
+				tile.worldObj.notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
+			}
+		}
+	}
+
+	@MENetworkEventSubscribe
+	public void changeStateB(MENetworkChannelsChanged bs)
+	{
+		if ( !output )
+		{
+			cachedInv = null;
+			int olderSize = oldSize;
+			oldSize = getDest().getSizeInventory();
+			if ( olderSize != oldSize )
+			{
+				getHost().PartChanged();
+				tile.worldObj.notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
+			}
+		}
+	}
+
+	@MENetworkEventSubscribe
+	public void changeStateC(MENetworkPowerStatusChange bs)
+	{
+		if ( !output )
+		{
+			cachedInv = null;
+			int olderSize = oldSize;
+			oldSize = getDest().getSizeInventory();
+			if ( olderSize != oldSize )
+			{
+				getHost().PartChanged();
+				tile.worldObj.notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
+			}
+		}
+	}
+
 	@Override
 	public void onChange()
 	{
-		cachedInv = null;
-		int olderSize = oldSize;
-		oldSize = getDest().getSizeInventory();
-		if ( olderSize != oldSize )
+		if ( !output )
 		{
-			getHost().PartChanged();
-			tile.worldObj.notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
+			cachedInv = null;
+			int olderSize = oldSize;
+			oldSize = getDest().getSizeInventory();
+			if ( olderSize != oldSize )
+			{
+				getHost().PartChanged();
+				tile.worldObj.notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
+			}
+		}
+		else
+		{
+			PartP2PItems input = getInput();
+			if ( input != null )
+				input.onChange();
 		}
 	}
 
