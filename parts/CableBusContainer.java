@@ -366,13 +366,13 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 		return null;
 	}
 
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxsFromPool(boolean ignoreCableConnections)
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxsFromPool(boolean ignoreCableConnections, Entity e, boolean visual)
 	{
 		List<AxisAlignedBB> boxes = new LinkedList<AxisAlignedBB>();
 
 		for (ForgeDirection s : ForgeDirection.values())
 		{
-			IPartCollsionHelper bch = new BusCollisionHelper( boxes, s );
+			IPartCollsionHelper bch = new BusCollisionHelper( boxes, s, e, visual );
 
 			IPart part = getPart( s );
 			if ( part != null )
@@ -543,8 +543,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 				if ( part != null )
 				{
 					setSide( s );
-					BusCollisionHelper bch = new BusCollisionHelper( boxes, BusRenderHelper.instance.ax, BusRenderHelper.instance.ay,
-							BusRenderHelper.instance.az );
+					BusCollisionHelper bch = new BusCollisionHelper( boxes, BusRenderHelper.instance.ax, BusRenderHelper.instance.ay, BusRenderHelper.instance.az, null, true );
 					part.getBoxes( bch );
 				}
 			}
@@ -937,7 +936,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 			{
 				List<AxisAlignedBB> boxes = new LinkedList<AxisAlignedBB>();
 
-				IPartCollsionHelper bch = new BusCollisionHelper( boxes, side );
+				IPartCollsionHelper bch = new BusCollisionHelper( boxes, side, null, true );
 				p.getBoxes( bch );
 				for (AxisAlignedBB bb : boxes)
 				{
@@ -957,7 +956,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 			{
 				List<AxisAlignedBB> boxes = new LinkedList<AxisAlignedBB>();
 
-				IPartCollsionHelper bch = new BusCollisionHelper( boxes, side );
+				IPartCollsionHelper bch = new BusCollisionHelper( boxes, side, null, true );
 				p.getBoxes( bch );
 				for (AxisAlignedBB bb : boxes)
 				{

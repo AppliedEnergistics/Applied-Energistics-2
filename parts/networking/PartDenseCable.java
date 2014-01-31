@@ -95,7 +95,11 @@ public class PartDenseCable extends PartCable
 	@Override
 	public void getBoxes(IPartCollsionHelper bch)
 	{
-		bch.addBox( 3.0, 3.0, 3.0, 13.0, 13.0, 13.0 );
+		boolean noLadder = !bch.isBBCollision();
+		double min = noLadder ? 3.0 : 4.9;
+		double max = noLadder ? 13.0 : 11.1;
+
+		bch.addBox( min, min, min, max, max, max );
 
 		if ( Platform.isServer() )
 		{
@@ -113,22 +117,22 @@ public class PartDenseCable extends PartCable
 				switch (of)
 				{
 				case DOWN:
-					bch.addBox( 3.0, 0.0, 3.0, 13.0, 3.0, 13.0 );
+					bch.addBox( min, 0.0, min, max, min, max );
 					break;
 				case EAST:
-					bch.addBox( 13.0, 3.0, 3.0, 16.0, 13.0, 13.0 );
+					bch.addBox( max, min, min, 16.0, max, max );
 					break;
 				case NORTH:
-					bch.addBox( 3.0, 3.0, 0.0, 13.0, 13.0, 3.0 );
+					bch.addBox( min, min, 0.0, max, max, min );
 					break;
 				case SOUTH:
-					bch.addBox( 3.0, 3.0, 13.0, 13.0, 13.0, 16.0 );
+					bch.addBox( min, min, max, max, max, 16.0 );
 					break;
 				case UP:
-					bch.addBox( 3.0, 13.0, 3.0, 13.0, 16.0, 13.0 );
+					bch.addBox( min, max, min, max, 16.0, max );
 					break;
 				case WEST:
-					bch.addBox( 0.0, 3.0, 3.0, 3.0, 13.0, 13.0 );
+					bch.addBox( 0.0, min, min, min, max, max );
 					break;
 				default:
 					continue;

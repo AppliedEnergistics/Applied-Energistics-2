@@ -423,7 +423,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 		if ( collisionHandler != null )
 		{
-			Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxsFromPool( w, x, y, z );
+			Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxsFromPool( w, x, y, z, null, true );
 			MovingObjectPosition br = null;
 
 			double lastDist = 0;
@@ -484,7 +484,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 			{
 				LookDirection ld = Platform.getPlayerRay( Minecraft.getMinecraft().thePlayer );
 
-				Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxsFromPool( w, x, y, z );
+				Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxsFromPool( w, x, y, z, Minecraft.getMinecraft().thePlayer, true );
 				AxisAlignedBB br = null;
 
 				double lastDist = 0;
@@ -519,7 +519,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 				}
 			}
 
-			for (AxisAlignedBB bx : collisionHandler.getSelectedBoundingBoxsFromPool( w, x, y, z ))
+			for (AxisAlignedBB bx : collisionHandler.getSelectedBoundingBoxsFromPool( w, x, y, z, null, false ))
 			{
 				if ( b == null )
 					b = bx;

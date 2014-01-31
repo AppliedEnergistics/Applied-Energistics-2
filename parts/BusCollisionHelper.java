@@ -2,6 +2,7 @@ package appeng.parts;
 
 import java.util.List;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.parts.IPartCollsionHelper;
@@ -15,15 +16,22 @@ public class BusCollisionHelper implements IPartCollsionHelper
 	final private ForgeDirection y;
 	final private ForgeDirection z;
 
-	public BusCollisionHelper(List<AxisAlignedBB> boxes, ForgeDirection x, ForgeDirection y, ForgeDirection z) {
+	final private Entity entity;
+	final private boolean isVisual;
+
+	public BusCollisionHelper(List<AxisAlignedBB> boxes, ForgeDirection x, ForgeDirection y, ForgeDirection z, Entity e, boolean visual) {
 		this.boxes = boxes;
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		entity = e;
+		isVisual = visual;
 	}
 
-	public BusCollisionHelper(List<AxisAlignedBB> boxes, ForgeDirection s) {
+	public BusCollisionHelper(List<AxisAlignedBB> boxes, ForgeDirection s, Entity e, boolean visual) {
 		this.boxes = boxes;
+		entity = e;
+		isVisual = visual;
 
 		switch (s)
 		{
@@ -64,6 +72,12 @@ public class BusCollisionHelper implements IPartCollsionHelper
 			z = ForgeDirection.SOUTH;
 			break;
 		}
+	}
+
+	@Override
+	public boolean isBBCollision()
+	{
+		return !isVisual;
 	}
 
 	@Override

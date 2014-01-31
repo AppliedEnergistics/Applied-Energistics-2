@@ -85,7 +85,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxsFromPool(World w, int x, int y, int z)
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxsFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
 	{
 		ForgeDirection up = getOrientable( w, x, y, z ).getUp();
 		double xOff = -0.3 * up.offsetX;
@@ -97,10 +97,11 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	@Override
 	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e)
 	{/*
-	 * double xOff = -0.15 * getUp().offsetX; double yOff = -0.15 * getUp().offsetY; double zOff = -0.15 *
-	 * getUp().offsetZ; out.add( AxisAlignedBB.getAABBPool().getAABB( xOff + (double) x + 0.15, yOff + (double) y +
-	 * 0.15, zOff + (double) z + 0.15,// ahh xOff + (double) x + 0.85, yOff + (double) y + 0.85, zOff + (double) z +
-	 * 0.85 ) );
+	 * double xOff = -0.15 * getUp().offsetX; double yOff = -0.15 *
+	 * getUp().offsetY; double zOff = -0.15 * getUp().offsetZ; out.add(
+	 * AxisAlignedBB.getAABBPool().getAABB( xOff + (double) x + 0.15, yOff +
+	 * (double) y + 0.15, zOff + (double) z + 0.15,// ahh xOff + (double) x +
+	 * 0.85, yOff + (double) y + 0.85, zOff + (double) z + 0.85 ) );
 	 */
 	}
 

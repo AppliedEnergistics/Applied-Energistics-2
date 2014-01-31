@@ -7,7 +7,6 @@ import java.util.Locale;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.me.SlotME;
 import appeng.core.Configuration;
@@ -53,8 +52,6 @@ public abstract class AEBaseMEGui extends AEBaseGui
 					currenttip.add( "\u00a77Items Stored: " + NumberFormat.getNumberInstance( Locale.US ).format( stack.stackSize ) );
 				}
 			}
-			else
-				currenttip.add( StatCollector.translateToLocal( "AppEng.Gui.Whitelisted" ) );
 		}
 		return currenttip;
 	}

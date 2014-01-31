@@ -174,15 +174,15 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxsFromPool(World w, int x, int y, int z)
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxsFromPool(World w, int x, int y, int z, Entity e, boolean visual)
 	{
-		return cb.getSelectedBoundingBoxsFromPool( false );
+		return cb.getSelectedBoundingBoxsFromPool( false, e, visual );
 	}
 
 	@Override
 	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e)
 	{
-		for (AxisAlignedBB bx : getSelectedBoundingBoxsFromPool( w, x, y, z ))
+		for (AxisAlignedBB bx : getSelectedBoundingBoxsFromPool( w, x, y, z, e, false ))
 			out.add( AxisAlignedBB.getAABBPool().getAABB( bx.minX, bx.minY, bx.minZ, bx.maxX, bx.maxY, bx.maxZ ) );
 	}
 

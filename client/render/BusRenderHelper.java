@@ -89,6 +89,12 @@ public class BusRenderHelper implements IPartRenderHelper
 			return az;
 		}
 
+		@Override
+		public boolean isBBCollision()
+		{
+			return false;
+		}
+
 	};
 
 	BoundBoxCalculator bbc = new BoundBoxCalculator();
@@ -157,9 +163,8 @@ public class BusRenderHelper implements IPartRenderHelper
 		list[4] = West;
 		list[5] = East;
 
-		blk.getRendererInstance().setTemporaryRenderIcons( list[mapRotation( ForgeDirection.UP ).ordinal()],
-				list[mapRotation( ForgeDirection.DOWN ).ordinal()], list[mapRotation( ForgeDirection.SOUTH ).ordinal()],
-				list[mapRotation( ForgeDirection.NORTH ).ordinal()], list[mapRotation( ForgeDirection.EAST ).ordinal()],
+		blk.getRendererInstance().setTemporaryRenderIcons( list[mapRotation( ForgeDirection.UP ).ordinal()], list[mapRotation( ForgeDirection.DOWN ).ordinal()],
+				list[mapRotation( ForgeDirection.SOUTH ).ordinal()], list[mapRotation( ForgeDirection.NORTH ).ordinal()], list[mapRotation( ForgeDirection.EAST ).ordinal()],
 				list[mapRotation( ForgeDirection.WEST ).ordinal()] );
 	}
 
