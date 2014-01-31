@@ -543,9 +543,28 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 				if ( part != null )
 				{
 					setSide( s );
-					BusCollisionHelper bch = new BusCollisionHelper( boxes, BusRenderHelper.instance.ax, BusRenderHelper.instance.ay, BusRenderHelper.instance.az );
+					BusCollisionHelper bch = new BusCollisionHelper( boxes, BusRenderHelper.instance.ax, BusRenderHelper.instance.ay,
+							BusRenderHelper.instance.az );
 					part.getBoxes( bch );
 				}
+			}
+
+			boolean useThinFacades = false;
+			double min = 2.0 / 16.0;
+			double max = 14.0 / 16.0;
+
+			for (AxisAlignedBB bb : boxes)
+			{
+				int o = 0;
+				o += bb.maxX > max ? 1 : 0;
+				o += bb.maxY > max ? 1 : 0;
+				o += bb.maxZ > max ? 1 : 0;
+				o += bb.minX < min ? 1 : 0;
+				o += bb.minY < min ? 1 : 0;
+				o += bb.minZ < min ? 1 : 0;
+
+				if ( o >= 2 )
+					useThinFacades = true;
 			}
 
 			for (ForgeDirection s : ForgeDirection.VALID_DIRECTIONS)
@@ -554,6 +573,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 				if ( fPart != null )
 				{
 					AxisAlignedBB b = null;
+					fPart.setThinFacades( useThinFacades );
 					AxisAlignedBB pb = fPart.getPrimaryBox();
 					for (AxisAlignedBB bb : boxes)
 					{
