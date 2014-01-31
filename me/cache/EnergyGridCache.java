@@ -341,6 +341,14 @@ public class EnergyGridCache implements IEnergyGrid
 		if ( mode == Actionable.SIMULATE )
 		{
 			extractedPower += simulateExtract( extractedPower, amt );
+
+			if ( extractedPower < amt )
+			{
+				Iterator<IEnergyGridProvider> i = gproviders.iterator();
+				while (extractedPower < amt && i.hasNext())
+					extractedPower += i.next().extractAEPower( amt - extractedPower, mode, seen );
+			}
+
 			return extractedPower;
 		}
 		else
