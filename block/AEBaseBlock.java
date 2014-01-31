@@ -94,8 +94,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 			try
 			{
 				ResourceLocation resLoc = new ResourceLocation( Name );
-				resLoc = new ResourceLocation( resLoc.getResourceDomain(), String.format( "%s/%s%s", new Object[] { "textures/blocks",
-						resLoc.getResourcePath(), ".png" } ) );
+				resLoc = new ResourceLocation( resLoc.getResourceDomain(), String.format( "%s/%s%s", new Object[] { "textures/blocks", resLoc.getResourcePath(), ".png" } ) );
 
 				Resource res = Minecraft.getMinecraft().getResourceManager().getResource( resLoc );
 				if ( res != null )
@@ -647,7 +646,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 							if ( data != null )
 							{
 								memc.setMemoryCardContents( is, name, data );
-								memc.notifyUser( this, player, MemoryCardMessages.SETTINGS_SAVED );
+								memc.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
 								return false;
 							}
 						}
@@ -660,10 +659,10 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 						{
 							AEBaseTile t = getTileEntity( w, x, y, z );
 							t.uploadSettings( SettingsFrom.MEMORY_CARD, data );
-							memc.notifyUser( this, player, MemoryCardMessages.SETTINGS_LOADED );
+							memc.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
 						}
 						else
-							memc.notifyUser( this, player, MemoryCardMessages.INVALID_MACHINE );
+							memc.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
 						return false;
 					}
 				}
