@@ -241,7 +241,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		}
 	}
 
-	public static IAEFluidStack loadItemStackFromPacket(DataInputStream data) throws IOException
+	public static IAEFluidStack loadFluidStackFromPacket(DataInputStream data) throws IOException
 	{
 		byte mask = data.readByte();
 		// byte PriorityType = (byte) (mask & 0x03);

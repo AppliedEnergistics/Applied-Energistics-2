@@ -1,5 +1,8 @@
 package appeng.core.api;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import appeng.api.networking.energy.IEnergySource;
@@ -47,4 +50,15 @@ public class ApiStorage implements IStorageHelper
 		return Platform.poweredInsert( energy, cell, input, src );
 	}
 
+	@Override
+	public IAEItemStack readItemFromPacket(DataInputStream input) throws IOException
+	{
+		return AEItemStack.loadItemStackFromPacket( input );
+	}
+
+	@Override
+	public IAEFluidStack readFluidFromPacket(DataInputStream input) throws IOException
+	{
+		return AEFluidStack.loadFluidStackFromPacket( input );
+	}
 }
