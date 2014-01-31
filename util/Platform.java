@@ -1048,7 +1048,7 @@ public class Platform
 
 	public static boolean isSameItemPrecise(ItemStack is, ItemStack filter)
 	{
-		return isSameItem( is, filter );
+		return isSameItem( is, filter ) && sameStackStags( is, filter );
 	}
 
 	public static boolean isSameItemFuzzy(ItemStack a, ItemStack b, FuzzyMode Mode)
