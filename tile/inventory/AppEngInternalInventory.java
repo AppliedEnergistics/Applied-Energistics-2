@@ -137,6 +137,15 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 		}
 	}
 
+	// for guis...
+	public void onInventoryChanged(int slotIndex)
+	{
+		if ( te != null && eventsEnabled() )
+		{
+			te.onChangeInventory( this, slotIndex, InvOperation.onInventoryChanged, null, null );
+		}
+	}
+
 	@Override
 	public int getInventoryStackLimit()
 	{
@@ -242,4 +251,5 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	{
 		return new InvIterator( this );
 	}
+
 }

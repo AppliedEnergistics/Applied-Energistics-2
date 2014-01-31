@@ -319,6 +319,8 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 	public void onInventoryChanged()
 	{
+		for (int slot = 0; slot < storage.getSizeInventory(); slot++)
+			onChangeInventory( storage, slot, InvOperation.onInventoryChanged, null, null );
 	}
 
 	@Override
@@ -360,8 +362,8 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 	public boolean hasWorkToDo()
 	{
-		return requireWork[0] != null || requireWork[1] != null || requireWork[2] != null || requireWork[3] != null || requireWork[4] != null || requireWork[5] != null
-				|| requireWork[6] != null || requireWork[7] != null;
+		return requireWork[0] != null || requireWork[1] != null || requireWork[2] != null || requireWork[3] != null || requireWork[4] != null
+				|| requireWork[5] != null || requireWork[6] != null || requireWork[7] != null;
 	}
 
 	private boolean updateStorage()

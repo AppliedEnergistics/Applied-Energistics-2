@@ -125,6 +125,12 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 	}
 
 	@Override
+	public void onInventoryChanged()
+	{
+		duality.onInventoryChanged();
+	}
+
+	@Override
 	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added)
 	{
 		duality.onChangeInventory( inv, slot, mc, removed, added );
