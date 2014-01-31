@@ -231,6 +231,9 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 
 	public T getInput()
 	{
+		if ( freq == 0 )
+			return null;
+
 		PartP2PTunnel tunn;
 		try
 		{
@@ -263,8 +266,8 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderInventoryBox( renderer );
 
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(),
-				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(), is.getIconIndex(),
+				CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderInventoryBox( renderer );
@@ -284,8 +287,8 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderBlock( x, y, z, renderer );
 
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(),
-				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(), is.getIconIndex(),
+				CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderBlock( x, y, z, renderer );

@@ -128,7 +128,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	{
 		cachedInv = null;
 		PartP2PItems input = getInput();
-		if ( input != null )
+		if ( input != null && output )
 			input.onChange();
 	}
 
