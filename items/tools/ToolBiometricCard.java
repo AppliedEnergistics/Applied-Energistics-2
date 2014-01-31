@@ -37,26 +37,28 @@ public class ToolBiometricCard extends AEBaseItem
 	@Override
 	public boolean itemInteractionForEntity(ItemStack is, EntityPlayer par2EntityPlayer, EntityLivingBase target)
 	{
-		if ( target instanceof EntityPlayer )
+		if ( target instanceof EntityPlayer && !par2EntityPlayer.isSneaking() )
 		{
 			if ( par2EntityPlayer.capabilities.isCreativeMode )
 				is = par2EntityPlayer.getCurrentEquippedItem();
 			encode( is, (EntityPlayer) target );
+			par2EntityPlayer.swingItem();
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack is, EntityPlayer p, World w, int x, int y, int z, int side, float hitx, float hity, float hitz)
+	public ItemStack onItemRightClick(ItemStack is, World w, EntityPlayer p)
 	{
 		if ( p.isSneaking() )
 		{
 			encode( is, p );
-			return true;
+			p.swingItem();
+			return is;
 		}
 
-		return false;
+		return is;
 	}
 
 	private void encode(ItemStack is, EntityPlayer p)

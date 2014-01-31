@@ -12,6 +12,7 @@ import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.networking.IGridHost;
+import appeng.container.AEBaseContainer;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.items.AEBaseItem;
@@ -64,14 +65,25 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 
 		if ( !p.isSneaking() )
 		{
+			if ( p.openContainer instanceof AEBaseContainer )
+				return true;
+
 			TileEntity te = w.getBlockTileEntity( x, y, z );
 			if ( te instanceof IGridHost )
 				Platform.openGUI( p, te, ForgeDirection.getOrientation( side ), GuiBridge.GUI_NETWORK_STATUS );
 			else
 				Platform.openGUI( p, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_NETWORK_TOOL );
+			return true;
 		}
 
 		return false;
+	}
+
+	@Override
+	public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
+	{
+		onItemUse( par1ItemStack, par3EntityPlayer, par2World, 0, 0, 0, -1, 0, 0, 0 );
+		return super.onItemRightClick( par1ItemStack, par2World, par3EntityPlayer );
 	}
 
 	@Override
