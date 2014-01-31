@@ -5,7 +5,6 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -70,12 +69,17 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 				l.add( cd.usedBytes() + " " + GuiText.Of.getLocal() + " " + cd.totalBytes() + " " + GuiText.BytesUsed.getLocal() );
 				l.add( cd.storedItemTypes() + " " + GuiText.Of.getLocal() + " " + cd.getTotalItemTypes() + " " + GuiText.Types.getLocal() );
 				/*
-				 * if ( cd.isPreformatted() ) { String List = StatCollector.translateToLocal( cd.getListMode() ==
-				 * ListMode.WHITELIST ? "AppEng.Gui.Whitelisted" : "AppEng.Gui.Blacklisted" ); if (
-				 * cd.isFuzzyPreformatted() ) l.add( StatCollector.translateToLocal( "Appeng.GuiITooltip.Partitioned" )
-				 * + " - " + List + " " + StatCollector.translateToLocal( "Appeng.GuiITooltip.Fuzzy" ) ); else l.add(
-				 * StatCollector.translateToLocal( "Appeng.GuiITooltip.Partitioned" ) + " - " + List + " " +
-				 * StatCollector.translateToLocal( "Appeng.GuiITooltip.Precise" ) ); }
+				 * if ( cd.isPreformatted() ) { String List =
+				 * StatCollector.translateToLocal( cd.getListMode() ==
+				 * ListMode.WHITELIST ? "AppEng.Gui.Whitelisted" :
+				 * "AppEng.Gui.Blacklisted" ); if ( cd.isFuzzyPreformatted() )
+				 * l.add( StatCollector.translateToLocal(
+				 * "Appeng.GuiITooltip.Partitioned" ) + " - " + List + " " +
+				 * StatCollector.translateToLocal( "Appeng.GuiITooltip.Fuzzy" )
+				 * ); else l.add( StatCollector.translateToLocal(
+				 * "Appeng.GuiITooltip.Partitioned" ) + " - " + List + " " +
+				 * StatCollector.translateToLocal( "Appeng.GuiITooltip.Precise"
+				 * ) ); }
 				 */
 			}
 		}
@@ -102,11 +106,6 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	@Override
 	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requsetedAddition)
 	{
-		Item i = requsetedAddition.getItem();
-
-		if ( i instanceof IStorageCell )
-			return !((IStorageCell) i).storableInStorageCell();
-
 		return false;
 	}
 
