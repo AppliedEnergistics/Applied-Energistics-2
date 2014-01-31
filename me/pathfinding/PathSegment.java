@@ -48,7 +48,7 @@ public class PathSegment
 				{
 					pi.setControllerRoute( i, true );
 
-					if ( flags.contains( GridFlags.REQURE_CHANNEL ) )
+					if ( flags.contains( GridFlags.REQUIRE_CHANNEL ) )
 					{
 						// close the semi open.
 						if ( !semiopen.contains( pi ) )

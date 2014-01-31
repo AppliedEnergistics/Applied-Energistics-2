@@ -133,7 +133,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 
 	public TileDrive() {
 		mySrc = new MachineSource( this );
-		gridProxy.setFlags( GridFlags.REQURE_CHANNEL );
+		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 		addNewHandler( new invManger() );
 	}
 

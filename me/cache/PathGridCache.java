@@ -190,7 +190,7 @@ public class PathGridCache implements IPathingGrid
 			recalculateControllerNextTick = true;
 		}
 
-		if ( gridNode.getGridBlock().getFlags().contains( GridFlags.REQURE_CHANNEL ) )
+		if ( gridNode.getGridBlock().getFlags().contains( GridFlags.REQUIRE_CHANNEL ) )
 			requireChannels.remove( gridNode );
 
 		repath();
@@ -205,7 +205,7 @@ public class PathGridCache implements IPathingGrid
 			recalculateControllerNextTick = true;
 		}
 
-		if ( gridNode.getGridBlock().getFlags().contains( GridFlags.REQURE_CHANNEL ) )
+		if ( gridNode.getGridBlock().getFlags().contains( GridFlags.REQUIRE_CHANNEL ) )
 			requireChannels.add( gridNode );
 
 		repath();

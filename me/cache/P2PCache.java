@@ -84,7 +84,7 @@ public class P2PCache implements IGridCache
 		{
 			if ( machine instanceof PartP2PTunnelME )
 			{
-				if ( !node.hasFlag( GridFlags.REQURE_CHANNEL ) )
+				if ( !node.hasFlag( GridFlags.REQUIRE_CHANNEL ) )
 					return;
 			}
 
@@ -107,7 +107,7 @@ public class P2PCache implements IGridCache
 		{
 			if ( machine instanceof PartP2PTunnelME )
 			{
-				if ( !node.hasFlag( GridFlags.REQURE_CHANNEL ) )
+				if ( !node.hasFlag( GridFlags.REQUIRE_CHANNEL ) )
 					return;
 			}
 

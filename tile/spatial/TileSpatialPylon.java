@@ -77,7 +77,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	};
 
 	public TileSpatialPylon() {
-		gridProxy.setFlags( GridFlags.REQURE_CHANNEL, GridFlags.MULTIBLOCK );
+		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL, GridFlags.MULTIBLOCK );
 		gridProxy.setIdlePowerUsage( 0.5 );
 		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 		addNewHandler( new TileSpatialPylonHandler() );

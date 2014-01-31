@@ -33,7 +33,7 @@ public class TileWireless extends AENetworkInvTile
 	public int clientFlags = 0;
 
 	public TileWireless() {
-		gridProxy.setFlags( GridFlags.REQURE_CHANNEL );
+		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 		addNewHandler( new TileWirelessHandler() );
 	}
 

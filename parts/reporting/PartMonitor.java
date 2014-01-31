@@ -116,7 +116,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor
 	protected PartMonitor(Class c, ItemStack is) {
 		super( c, is );
 		if ( notLightSource )
-			proxy.setFlags( GridFlags.REQURE_CHANNEL );
+			proxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 		else
 			proxy.setIdlePowerUsage( 1.0 / 16.0 ); // lights drain a little bit.
 

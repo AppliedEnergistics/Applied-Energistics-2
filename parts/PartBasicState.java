@@ -110,7 +110,7 @@ public class PartBasicState extends AEBasePart
 
 	public PartBasicState(Class c, ItemStack is) {
 		super( c, is );
-		proxy.setFlags( GridFlags.REQURE_CHANNEL );
+		proxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 	}
 
 }

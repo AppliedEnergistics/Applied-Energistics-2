@@ -38,7 +38,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 
 	public PartP2PTunnelME(ItemStack is) {
 		super( is );
-		proxy.setFlags( GridFlags.REQURE_CHANNEL, GridFlags.DENSE_CHANNEL );
+		proxy.setFlags( GridFlags.REQUIRE_CHANNEL, GridFlags.DENSE_CHANNEL );
 		outerProxy.setFlags( GridFlags.TIER_2_CAPACITY, GridFlags.CANNOT_CARRY_DENSE );
 	}
 

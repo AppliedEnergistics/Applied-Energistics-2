@@ -470,7 +470,7 @@ public class GridNode implements IGridNode, IPathItem
 	@Override
 	public boolean meetsChannelRequirements()
 	{
-		return (!getGridBlock().getFlags().contains( GridFlags.REQURE_CHANNEL ) || getUsedChannels() > 0);
+		return (!getGridBlock().getFlags().contains( GridFlags.REQUIRE_CHANNEL ) || getUsedChannels() > 0);
 	}
 
 	@Override

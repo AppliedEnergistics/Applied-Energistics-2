@@ -185,7 +185,7 @@ public class TileSecurity extends AENetworkTile implements IStorageMonitorable
 
 	public TileSecurity() {
 		addNewHandler( new SecurityHandler() );
-		gridProxy.setFlags( GridFlags.REQURE_CHANNEL );
+		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 		gridProxy.setIdlePowerUsage( 2.0 );
 		diffrence++;
 		securityKey = System.currentTimeMillis() * 10 + diffrence;

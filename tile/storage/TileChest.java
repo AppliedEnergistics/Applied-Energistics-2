@@ -218,7 +218,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	public TileChest() {
-		gridProxy.setFlags( GridFlags.REQURE_CHANNEL );
+		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 		addNewHandler( new invManger() );
 
 		internalPublicPowerStorage = true;
