@@ -1,31 +1,20 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.InventoryPlayer;
-import appeng.client.gui.AEBaseGui;
-import appeng.container.implementations.ContainerSecurity;
-import appeng.core.localization.GuiText;
-import appeng.tile.misc.TileSecurity;
+import appeng.api.storage.IStorageMonitorable;
 
-public class GuiSecurity extends AEBaseGui
+public class GuiSecurity extends GuiMEMonitorable
 {
 
-	public GuiSecurity(InventoryPlayer inventoryPlayer, TileSecurity te) {
-		super( new ContainerSecurity( inventoryPlayer, te ) );
-		this.ySize = 199;
+	public GuiSecurity(InventoryPlayer inventoryPlayer, IStorageMonitorable te) {
+		super( inventoryPlayer, te );
+		perRow = 5;
+		xoffset = 81;
 	}
 
-	@Override
-	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
+	protected String getBackground()
 	{
-		bindTexture( "guis/security.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, xSize, ySize );
-	}
-
-	@Override
-	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
-	{
-		fontRenderer.drawString( GuiText.Security.getLocal(), 8, 6, 4210752 );
-		fontRenderer.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		return "guis/security.png";
 	}
 
 }

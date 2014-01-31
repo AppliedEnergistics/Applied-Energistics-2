@@ -20,6 +20,7 @@ import appeng.container.slot.AppEngSlot;
 import appeng.core.Configuration;
 import appeng.core.localization.GuiText;
 import appeng.parts.reporting.PartTerminal;
+import appeng.tile.misc.TileSecurity;
 import appeng.util.Platform;
 
 public class GuiMEMonitorable extends AEBaseMEGui
@@ -29,6 +30,10 @@ public class GuiMEMonitorable extends AEBaseMEGui
 	ItemRepo repo;
 
 	GuiText myName;
+
+	int xoffset = 9;
+	int perRow = 9;
+
 	int rows = 0;
 	int maxRows = Integer.MAX_VALUE;
 
@@ -39,13 +44,14 @@ public class GuiMEMonitorable extends AEBaseMEGui
 		xSize = 195;
 		ySize = 204;
 
-		if ( te instanceof IPortableCell )
+		if ( te instanceof TileSecurity )
+			myName = GuiText.Security;
+		else if ( te instanceof IPortableCell )
 			myName = GuiText.PortableCell;
-		if ( te instanceof IMEChest )
+		else if ( te instanceof IMEChest )
 			myName = GuiText.Chest;
 		else if ( te instanceof PartTerminal )
 			myName = GuiText.Terminal;
-
 	}
 
 	public void postUpdate(List<IAEItemStack> list)
@@ -60,7 +66,7 @@ public class GuiMEMonitorable extends AEBaseMEGui
 	private void setScrollBar()
 	{
 		myScrollBar.setTop( 18 ).setLeft( 175 ).setHeight( rows * 18 - 2 );
-		myScrollBar.setRange( 0, (repo.size() + 8) / 9 - rows, Math.max( 1, rows / 6 ) );
+		myScrollBar.setRange( 0, (repo.size() + perRow - 1) / perRow - rows, Math.max( 1, rows / 6 ) );
 	}
 
 	@Override
@@ -80,9 +86,9 @@ public class GuiMEMonitorable extends AEBaseMEGui
 		meSlots.clear();
 		for (int y = 0; y < rows; y++)
 		{
-			for (int x = 0; x < 9; x++)
+			for (int x = 0; x < perRow; x++)
 			{
-				meSlots.add( new InternalSlotME( repo, x + y * 9, 9 + x * 18, 18 + y * 18 ) );
+				meSlots.add( new InternalSlotME( repo, x + y * perRow, xoffset + x * 18, 18 + y * 18 ) );
 			}
 		}
 
@@ -98,7 +104,7 @@ public class GuiMEMonitorable extends AEBaseMEGui
 		buttonList.add( new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.SORT_DIRECTION, Configuration.instance.settings
 				.getSetting( Settings.SORT_DIRECTION ) ) );
 
-		searchField = new GuiTextField( this.fontRenderer, this.guiLeft + 82, this.guiTop + 6, 89, this.fontRenderer.FONT_HEIGHT );
+		searchField = new GuiTextField( this.fontRenderer, this.guiLeft + Math.max( 82, xoffset ), this.guiTop + 6, 89, this.fontRenderer.FONT_HEIGHT );
 		searchField.setEnableBackgroundDrawing( false );
 		searchField.setMaxStringLength( 25 );
 		searchField.setTextColor( 0xFFFFFF );
@@ -151,7 +157,7 @@ public class GuiMEMonitorable extends AEBaseMEGui
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		bindTexture( "guis/terminal.png" );
+		bindTexture( getBackground() );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, xSize, 18 );
 
 		for (int x = 0; x < rows; x++)
@@ -160,6 +166,11 @@ public class GuiMEMonitorable extends AEBaseMEGui
 		this.drawTexturedModalRect( offsetX, offsetY + 16 + rows * 18, 0, 106, xSize, 98 );
 
 		searchField.drawTextBox();
+	}
+
+	protected String getBackground()
+	{
+		return "guis/terminal.png";
 	}
 
 	@Override

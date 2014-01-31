@@ -16,6 +16,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkPowerIdleChange;
 import appeng.api.networking.pathing.IPathingGrid;
+import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.util.AEColor;
@@ -254,6 +255,20 @@ public class AENetworkProxy implements IGridBlock
 			throw new GridAccessException();
 
 		return pg;
+	}
+
+	public ISecurityGrid getSecurity() throws GridAccessException
+	{
+		IGrid grid = getGrid();
+		if ( grid == null )
+			throw new GridAccessException();
+
+		ISecurityGrid sg = grid.getCache( ISecurityGrid.class );
+
+		if ( sg == null )
+			throw new GridAccessException();
+
+		return sg;
 	}
 
 	@Override
