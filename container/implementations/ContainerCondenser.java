@@ -24,7 +24,7 @@ public class ContainerCondenser extends AEBaseContainer
 		myte = te;
 
 		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.TRASH, te, 0, 51, 52 ) );
-		addSlotToContainer( new SlotOutput( te, 1, 105, 52, 15 + 16 * 8 ) );
+		addSlotToContainer( new SlotOutput( te, 1, 105, 52, -1 ) );
 		addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.STORAGE_COMPONENT, te.getInternalInventory(), 2, 101, 26 )).setStackLimit( 1 ) );
 
 		bindPlayerInventory( ip, 0, 197 - /* height of playerinventory */82 );

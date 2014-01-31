@@ -58,23 +58,6 @@ public class GuiUpgradeable extends AEBaseGui
 		buttonList.add( fuzzyMode );
 	}
 
-	protected void mouseClicked(int xCoord, int yCoord, int btn)
-	{
-		if ( btn == 1 )
-		{
-			for (Object o : this.buttonList)
-			{
-				GuiButton guibutton = (GuiButton) o;
-				if ( guibutton.mousePressed( this.mc, xCoord, yCoord ) )
-				{
-					super.mouseClicked( xCoord, yCoord, 0 );
-					return;
-				}
-			}
-		}
-		super.mouseClicked( xCoord, yCoord, btn );
-	}
-
 	@Override
 	protected void actionPerformed(GuiButton btn)
 	{

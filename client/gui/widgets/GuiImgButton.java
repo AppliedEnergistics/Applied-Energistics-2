@@ -273,6 +273,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			if ( FillVar != null )
 				Value = Value.replaceFirst( "%s", FillVar );
 
+			Value = Value.replace( "\\n", "\n" );
 			StringBuilder sb = new StringBuilder( Value );
 
 			int i = sb.lastIndexOf( "\n" );

@@ -7,8 +7,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -24,8 +27,16 @@ import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.client.me.InternalSlotME;
 import appeng.client.me.SlotME;
+import appeng.client.render.AppEngRenderItem;
+import appeng.container.slot.AppEngSlot;
+import appeng.container.slot.AppEngSlot.hasCalculatedValidness;
 import appeng.container.slot.OptionalSlotFake;
+import appeng.container.slot.SlotDisabled;
 import appeng.container.slot.SlotFake;
+import appeng.container.slot.SlotInaccessable;
+import appeng.container.slot.SlotOutput;
+import appeng.container.slot.SlotRestrictedInput;
+import appeng.core.AELog;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.helpers.InventoryAction;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -65,6 +76,24 @@ public abstract class AEBaseGui extends GuiContainer
 			if ( i != 0 )
 				myScrollBar.wheel( i );
 		}
+	}
+
+	@Override
+	protected void mouseClicked(int xCoord, int yCoord, int btn)
+	{
+		if ( btn == 1 )
+		{
+			for (Object o : this.buttonList)
+			{
+				GuiButton guibutton = (GuiButton) o;
+				if ( guibutton.mousePressed( this.mc, xCoord, yCoord ) )
+				{
+					super.mouseClicked( xCoord, yCoord, 0 );
+					return;
+				}
+			}
+		}
+		super.mouseClicked( xCoord, yCoord, btn );
 	}
 
 	@Override
@@ -366,4 +395,170 @@ public abstract class AEBaseGui extends GuiContainer
 		return builder.toString();
 	}
 
+	private void safeDrawSlot(Slot s)
+	{
+		try
+		{
+			super.drawSlotInventory( s );
+		}
+		catch (Exception err)
+		{
+			Tessellator tessellator = Tessellator.instance;
+			if ( tessellator.isDrawing )
+				tessellator.draw();
+		}
+	}
+
+	AppEngRenderItem aeri = new AppEngRenderItem();
+
+	private boolean isPowered()
+	{
+		return true;
+	}
+
+	@Override
+	protected void drawSlotInventory(Slot s)
+	{
+		if ( s instanceof SlotME )
+		{
+			RenderItem pIR = itemRenderer;
+			itemRenderer = aeri;
+			try
+			{
+				this.zLevel = 100.0F;
+				itemRenderer.zLevel = 100.0F;
+
+				if ( !isPowered() )
+				{
+					GL11.glDisable( GL11.GL_LIGHTING );
+					super.drawRect( s.xDisplayPosition, s.yDisplayPosition, 16 + s.xDisplayPosition, 16 + s.yDisplayPosition, 0x66111111 );
+					GL11.glEnable( GL11.GL_LIGHTING );
+				}
+
+				this.zLevel = 0.0F;
+				itemRenderer.zLevel = 0.0F;
+
+				if ( s instanceof SlotME )
+					aeri.aestack = ((SlotME) s).getAEStack();
+				else
+					aeri.aestack = null;
+
+				safeDrawSlot( s );
+			}
+			catch (Exception err)
+			{
+				AELog.warning( "[AppEng] AE prevented crash while drawing slot: " + err.toString() );
+				if ( Tessellator.instance.isDrawing )
+					Tessellator.instance.draw();
+			}
+			itemRenderer = pIR;
+			return;
+		}
+		else
+		{
+			try
+			{
+				ItemStack is = s.getStack();
+				if ( s instanceof AppEngSlot && (((AppEngSlot) s).renderIconWithItem() || is == null) && (((AppEngSlot) s).isEnabled()) )
+				{
+					AppEngSlot aes = (AppEngSlot) s;
+					if ( aes.getIcon() >= 0 )
+					{
+						bindTexture( "guis/states.png" );
+
+						GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
+						Tessellator tessellator = Tessellator.instance;
+						try
+						{
+							int uv_y = (int) Math.floor( aes.getIcon() / 16 );
+							int uv_x = aes.getIcon() - uv_y * 16;
+
+							GL11.glEnable( GL11.GL_BLEND );
+							GL11.glDisable( GL11.GL_LIGHTING );
+							GL11.glEnable( GL11.GL_TEXTURE_2D );
+							GL11.glBlendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA );
+							GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+							float par1 = aes.xDisplayPosition;
+							float par2 = aes.yDisplayPosition;
+							float par3 = uv_x * 16;
+							float par4 = uv_y * 16;
+							float par5 = 16;
+							float par6 = 16;
+
+							float f = 0.00390625F;
+							float f1 = 0.00390625F;
+							tessellator.startDrawingQuads();
+							tessellator.setColorRGBA_F( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() );
+							tessellator.addVertexWithUV( (double) (par1 + 0), (double) (par2 + par6), (double) this.zLevel, (double) ((float) (par3 + 0) * f),
+									(double) ((float) (par4 + par6) * f1) );
+							tessellator.addVertexWithUV( (double) (par1 + par5), (double) (par2 + par6), (double) this.zLevel,
+									(double) ((float) (par3 + par5) * f), (double) ((float) (par4 + par6) * f1) );
+							tessellator.addVertexWithUV( (double) (par1 + par5), (double) (par2 + 0), (double) this.zLevel,
+									(double) ((float) (par3 + par5) * f), (double) ((float) (par4 + 0) * f1) );
+							tessellator.addVertexWithUV( (double) (par1 + 0), (double) (par2 + 0), (double) this.zLevel, (double) ((float) (par3 + 0) * f),
+									(double) ((float) (par4 + 0) * f1) );
+							tessellator.setColorRGBA_F( 1.0f, 1.0f, 1.0f, 1.0f );
+							tessellator.draw();
+						}
+						catch (Exception err)
+						{
+							if ( tessellator.isDrawing )
+								tessellator.draw();
+						}
+						GL11.glPopAttrib();
+					}
+				}
+
+				if ( is != null && s instanceof AppEngSlot )
+				{
+					if ( ((AppEngSlot) s).isValid == hasCalculatedValidness.NotAvailable )
+					{
+						boolean isValid = s.isItemValid( is ) || s instanceof SlotOutput || s instanceof SlotDisabled || s instanceof SlotInaccessable
+								|| s instanceof SlotFake;
+						if ( isValid && s instanceof SlotRestrictedInput )
+						{
+							try
+							{
+								isValid = ((SlotRestrictedInput) s).isValid( is, this.mc.theWorld );
+							}
+							catch (Exception err)
+							{
+								err.printStackTrace();
+							}
+						}
+						((AppEngSlot) s).isValid = isValid ? hasCalculatedValidness.Valid : hasCalculatedValidness.Invalid;
+					}
+
+					if ( ((AppEngSlot) s).isValid == hasCalculatedValidness.Invalid )
+					{
+						this.zLevel = 100.0F;
+						itemRenderer.zLevel = 100.0F;
+
+						GL11.glDisable( GL11.GL_LIGHTING );
+						super.drawRect( s.xDisplayPosition, s.yDisplayPosition, 16 + s.xDisplayPosition, 16 + s.yDisplayPosition, 0x66ff6666 );
+						GL11.glEnable( GL11.GL_LIGHTING );
+
+						this.zLevel = 0.0F;
+						itemRenderer.zLevel = 0.0F;
+					}
+				}
+
+				if ( s instanceof AppEngSlot )
+				{
+					((AppEngSlot) s).isDisplay = true;
+					safeDrawSlot( s );
+				}
+				else
+					safeDrawSlot( s );
+
+				return;
+			}
+			catch (Exception err)
+			{
+				AELog.warning( "[AppEng] AE prevented crash while drawing slot: " + err.toString() );
+			}
+		}
+		// do the usual for non-ME Slots.
+		safeDrawSlot( s );
+	}
 }
