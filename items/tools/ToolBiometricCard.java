@@ -9,13 +9,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.implementations.items.IBiometricCard;
 import appeng.client.render.items.ToolBiometricCardRender;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
-public class ToolBiometricCard extends AEBaseItem
+public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 {
 
 	public ToolBiometricCard() {
@@ -29,8 +31,7 @@ public class ToolBiometricCard extends AEBaseItem
 	@Override
 	public String getItemDisplayName(ItemStack is)
 	{
-		NBTTagCompound tag = Platform.openNbtData( is );
-		String username = tag.getString( "username" );
+		String username = getUserName( is );
 		return username.length() > 0 ? super.getItemDisplayName( is ) + " - " + GuiText.Encoded.getLocal() : super.getItemDisplayName( is );
 	}
 
@@ -74,10 +75,38 @@ public class ToolBiometricCard extends AEBaseItem
 	@Override
 	public void addInformation(ItemStack is, EntityPlayer p, List l, boolean b)
 	{
-		NBTTagCompound tag = Platform.openNbtData( is );
-		String username = tag.getString( "username" );
+		String username = getUserName( is );
 		if ( username.length() > 0 )
 			l.add( username );
+	}
+
+	@Override
+	public String getUserName(ItemStack is)
+	{
+		NBTTagCompound tag = Platform.openNbtData( is );
+		return tag.getString( "username" );
+	}
+
+	@Override
+	public EnumSet<SecurityPermissions> getPermissions(ItemStack is)
+	{
+		NBTTagCompound tag = Platform.openNbtData( is );
+		EnumSet<SecurityPermissions> result = EnumSet.noneOf( SecurityPermissions.class );
+
+		for (SecurityPermissions sp : SecurityPermissions.values())
+		{
+			if ( tag.getBoolean( sp.name() ) )
+				result.add( sp );
+		}
+
+		return result;
+	}
+
+	@Override
+	public boolean hasPermission(ItemStack is, SecurityPermissions permission)
+	{
+		NBTTagCompound tag = Platform.openNbtData( is );
+		return tag.getBoolean( permission.name() );
 	}
 
 }
