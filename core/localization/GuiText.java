@@ -19,7 +19,9 @@ public enum GuiText
 
 	NetworkTool, PowerUsageRate, PowerInputRate, Installed, EnergyDrain,
 
-	StorageBus, Priority, Security, Encoded, Blank, Unlinked, Linked;
+	StorageBus, Priority, Security, Encoded, Blank, Unlinked, Linked,
+
+	METunnel, ItemTunnel, RedstoneTunnel, MJTunnel, EUTunnel, FluidTunnel;
 
 	String root;
 

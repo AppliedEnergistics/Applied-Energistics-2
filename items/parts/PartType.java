@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.core.features.AEFeature;
+import appeng.core.localization.GuiText;
 import appeng.parts.automation.PartAnnihilationPlane;
 import appeng.parts.automation.PartExportBus;
 import appeng.parts.automation.PartFormationPlane;
@@ -68,17 +69,17 @@ public enum PartType
 
 	FormationPlane(AEFeature.FormationPlane, PartFormationPlane.class),
 
-	P2PTunnelME(AEFeature.P2PTunnelME, PartP2PTunnelME.class),
+	P2PTunnelME(AEFeature.P2PTunnelME, PartP2PTunnelME.class, GuiText.METunnel),
 
-	P2PTunnelRedstone(AEFeature.P2PTunnelRedstone, PartP2PRedstone.class),
+	P2PTunnelRedstone(AEFeature.P2PTunnelRedstone, PartP2PRedstone.class, GuiText.RedstoneTunnel),
 
-	P2PTunnelItems(AEFeature.P2PTunnelItems, PartP2PItems.class),
+	P2PTunnelItems(AEFeature.P2PTunnelItems, PartP2PItems.class, GuiText.ItemTunnel),
 
-	P2PTunnelLiquids(AEFeature.P2PTunnelLiquids, PartP2PLiquids.class),
+	P2PTunnelLiquids(AEFeature.P2PTunnelLiquids, PartP2PLiquids.class, GuiText.FluidTunnel),
 
-	P2PTunnelMJ(AEFeature.P2PTunnelMJ, PartP2PBCPower.class),
+	P2PTunnelMJ(AEFeature.P2PTunnelMJ, PartP2PBCPower.class, GuiText.MJTunnel),
 
-	P2PTunnelEU(AEFeature.P2PTunnelEU, PartP2PIC2Power.class),
+	P2PTunnelEU(AEFeature.P2PTunnelEU, PartP2PIC2Power.class, GuiText.EUTunnel),
 
 	CraftingMonitor(AEFeature.Crafting, PartCraftingMonitor.class),
 
@@ -94,12 +95,18 @@ public enum PartType
 
 	Interface(AEFeature.Core, PartInterface.class);
 
-	private EnumSet<AEFeature> features;
-	private Class<? extends IPart> myPart;
+	private final EnumSet<AEFeature> features;
+	private final Class<? extends IPart> myPart;
+	private final GuiText extraName;
 
 	PartType(AEFeature part, Class<? extends IPart> c) {
+		this( part, c, null );
+	}
+
+	PartType(AEFeature part, Class<? extends IPart> c, GuiText en) {
 		features = EnumSet.of( part );
 		myPart = c;
+		extraName = en;
 	}
 
 	public Enum[] getVarients()
@@ -115,6 +122,11 @@ public enum PartType
 	public Class<? extends IPart> getPart()
 	{
 		return myPart;
+	}
+
+	public GuiText getExtraName()
+	{
+		return extraName;
 	}
 
 }

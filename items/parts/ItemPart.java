@@ -138,6 +138,9 @@ public class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 		if ( varients != null )
 			return super.getItemDisplayName( is ) + " - " + varients[dmgToPart.get( is.getItemDamage() ).varient].toString();
 
+		if ( pt.getExtraName() != null )
+			return super.getItemDisplayName( is ) + " - " + pt.getExtraName().getLocal();
+
 		return super.getItemDisplayName( is );
 	}
 
