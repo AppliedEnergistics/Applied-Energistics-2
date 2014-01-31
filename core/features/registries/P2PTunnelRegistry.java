@@ -11,6 +11,7 @@ import appeng.api.config.TunnelType;
 import appeng.api.definitions.Blocks;
 import appeng.api.definitions.Parts;
 import appeng.api.features.IP2PTunnelRegistry;
+import appeng.api.util.AEColor;
 import appeng.util.Platform;
 
 public class P2PTunnelRegistry implements IP2PTunnelRegistry
@@ -31,8 +32,10 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 		addNewAttunement( new ItemStack( Block.redstoneComparatorIdle ), TunnelType.REDSTONE );
 		addNewAttunement( new ItemStack( Block.redstoneRepeaterActive ), TunnelType.REDSTONE );
 		addNewAttunement( new ItemStack( Block.redstoneRepeaterIdle ), TunnelType.REDSTONE );
+		addNewAttunement( new ItemStack( Block.daylightSensor ), TunnelType.REDSTONE );
 		addNewAttunement( new ItemStack( Block.redstoneWire ), TunnelType.REDSTONE );
 		addNewAttunement( new ItemStack( Block.blockRedstone ), TunnelType.REDSTONE );
+		addNewAttunement( new ItemStack( Block.lever ), TunnelType.REDSTONE );
 
 		/**
 		 * attune based on lots of random item related stuff
@@ -56,13 +59,21 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 		addNewAttunement( new ItemStack( Item.bucketLava ), TunnelType.FLUID );
 		addNewAttunement( new ItemStack( Item.bucketMilk ), TunnelType.FLUID );
 		addNewAttunement( new ItemStack( Item.bucketWater ), TunnelType.FLUID );
+
+		for (AEColor c : AEColor.values())
+		{
+			addNewAttunement( Parts.partCableGlass.stack( c, 1 ), TunnelType.ME );
+			addNewAttunement( Parts.partCableCovered.stack( c, 1 ), TunnelType.ME );
+			addNewAttunement( Parts.partCableSmart.stack( c, 1 ), TunnelType.ME );
+			addNewAttunement( Parts.partCableDense.stack( c, 1 ), TunnelType.ME );
+		}
 	}
 
 	@Override
 	public void addNewAttunement(ItemStack trigger, TunnelType type)
 	{
 		if ( type == null )
-			throw new RuntimeException( "Invalid Tunnel Type." );
+			return;
 
 		Tunnels.put( trigger, type );
 	}
@@ -75,7 +86,7 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 
 		for (ItemStack is : Tunnels.keySet())
 		{
-			if ( Platform.isSameItemType( is, trigger ) )
+			if ( Platform.isSameItem( is, trigger ) )
 				return Tunnels.get( is );
 		}
 
