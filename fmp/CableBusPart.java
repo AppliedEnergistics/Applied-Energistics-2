@@ -287,7 +287,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 			if ( !(side == null || side == ForgeDirection.UNKNOWN || tile() == null) )
 			{
 				List<AxisAlignedBB> boxes = new ArrayList();
-				IPartCollsionHelper bch = new BusCollisionHelper( boxes, side );
+				IPartCollsionHelper bch = new BusCollisionHelper( boxes, side, null, true );
 				bp.getBoxes( bch );
 				for (AxisAlignedBB bb : boxes)
 				{
