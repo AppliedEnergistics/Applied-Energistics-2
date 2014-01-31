@@ -320,4 +320,8 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 		return what == BusSupport.CABLE;
 	}
 
+	public void saveChanges()
+	{
+		host.markForSave();
+	}
 }

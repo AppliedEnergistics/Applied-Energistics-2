@@ -9,4 +9,6 @@ public interface IInterfaceHost extends IActionHost
 	DualityInterface getInterfaceDuality();
 
 	TileEntity getTileEntity();
+
+	void saveChanges();
 }

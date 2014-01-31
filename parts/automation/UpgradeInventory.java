@@ -172,4 +172,10 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 			parent.onChangeInventory( inv, slot, mc, removedStack, newStack );
 	}
 
+	@Override
+	public void saveChanges()
+	{
+		parent.saveChanges();
+	}
+
 }

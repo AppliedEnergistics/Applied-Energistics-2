@@ -78,6 +78,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 				te.onChangeInventory( this, slot, InvOperation.decrStackSize, ns, null );
 			}
 
+			onInventoryChanged();
 			return ns;
 		}
 
@@ -122,6 +123,8 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 			}
 
 			te.onChangeInventory( this, slot, InvOperation.setInventorySlotContents, removed, added );
+
+			onInventoryChanged();
 		}
 	}
 

@@ -340,4 +340,10 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 		worldObj.destroyBlock( xCoord, yCoord, zCoord, true );
 		dropItems = false;
 	}
+
+	public void saveChanges()
+	{
+		super.onInventoryChanged();
+	}
+
 }

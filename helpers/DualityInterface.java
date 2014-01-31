@@ -55,6 +55,12 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		mySrc = fluids.changeSource = items.changeSource = new MachineSource( iHost );
 	}
 
+	@Override
+	public void saveChanges()
+	{
+		iHost.saveChanges();
+	}
+
 	private void readConfig()
 	{
 		boolean hadConfig = hasConfig;
@@ -354,8 +360,8 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 	public boolean hasWorkToDo()
 	{
-		return requireWork[0] != null || requireWork[1] != null || requireWork[2] != null || requireWork[3] != null || requireWork[4] != null
-				|| requireWork[5] != null || requireWork[6] != null || requireWork[7] != null;
+		return requireWork[0] != null || requireWork[1] != null || requireWork[2] != null || requireWork[3] != null || requireWork[4] != null || requireWork[5] != null
+				|| requireWork[6] != null || requireWork[7] != null;
 	}
 
 	private boolean updateStorage()
