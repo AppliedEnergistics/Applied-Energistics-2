@@ -143,7 +143,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	{
 		AxisAlignedBB b = null;
 
-		for (AxisAlignedBB bx : cb.getSelectedBoundingBoxsFromPool( false ))
+		for (AxisAlignedBB bx : cb.getSelectedBoundingBoxsFromPool( false, null, true ))
 		{
 			if ( b == null )
 				b = bx;
@@ -357,7 +357,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	public Iterable<Cuboid6> getCollisionBoxes()
 	{
 		LinkedList l = new LinkedList();
-		for (AxisAlignedBB b : cb.getSelectedBoundingBoxsFromPool( false ))
+		for (AxisAlignedBB b : cb.getSelectedBoundingBoxsFromPool( false, null, false ))
 		{
 			l.add( new Cuboid6( b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ ) );
 		}
@@ -380,7 +380,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	public Iterable<Cuboid6> getOcclusionBoxes()
 	{
 		LinkedList l = new LinkedList();
-		for (AxisAlignedBB b : cb.getSelectedBoundingBoxsFromPool( true ))
+		for (AxisAlignedBB b : cb.getSelectedBoundingBoxsFromPool( true, null, true ))
 		{
 			l.add( new Cuboid6( b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ ) );
 		}
