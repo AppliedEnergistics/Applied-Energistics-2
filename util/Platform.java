@@ -111,6 +111,31 @@ public class Platform
 
 	private static HashMap<String, String> modIDToName;
 	private static HashMap<Integer, String> itemTomodID;
+	private static HashMap<Integer, String> itemNames;
+
+	public static String getBlockName(Block id)
+	{
+		populateModInfo();
+
+		String out = itemNames.get( id.blockID );
+
+		if ( out == null )
+			return "Unknown";
+
+		return out;
+	}
+
+	public static String getItemName(Item id)
+	{
+		populateModInfo();
+
+		String out = itemNames.get( id.itemID );
+
+		if ( out == null )
+			return "Unknown";
+
+		return out;
+	}
 
 	public static String getMod(String modID)
 	{
@@ -126,9 +151,22 @@ public class Platform
 
 	public static String getMod(ItemStack is)
 	{
+		populateModInfo();
+
+		String out = itemTomodID.get( is.itemID );
+
+		if ( out == null )
+			return "Unknown";
+
+		return out;
+	}
+
+	private static void populateModInfo()
+	{
 		if ( itemTomodID == null )
 		{
 			itemTomodID = new HashMap<Integer, String>();
+			itemNames = new HashMap<Integer, String>();
 			ImmutableTable<String, String, Integer> modObjectTable;
 
 			for (Field f : Block.class.getDeclaredFields())
@@ -138,6 +176,7 @@ public class Platform
 					Object o = f.get( Block.class );
 					if ( o instanceof Block )
 					{
+						itemNames.put( ((Block) o).blockID, f.getName() );
 						itemTomodID.put( ((Block) o).blockID, "minecraft" );
 					}
 				}
@@ -154,10 +193,14 @@ public class Platform
 				f.setAccessible( false );
 
 				ImmutableMap<String, Map<String, Integer>> fish = modObjectTable.rowMap();
-				for (Map<String, Integer> g : fish.values())
+				for (String MODID : fish.keySet())
 				{
+					Map<String, Integer> g = fish.get( MODID );
 					for (String key : g.keySet())
-						itemTomodID.put( g.get( key ), key );
+					{
+						itemNames.put( g.get( key ), key );
+						itemTomodID.put( g.get( key ), MODID );
+					}
 				}
 			}
 			catch (Throwable t)
@@ -165,12 +208,6 @@ public class Platform
 			}
 		}
 
-		String out = itemTomodID.get( is.itemID );
-
-		if ( out == null )
-			return "Unknown";
-
-		return out;
 	}
 
 	public static ForgeDirection crossProduct(ForgeDirection forward, ForgeDirection up)
@@ -1472,5 +1509,4 @@ public class Platform
 
 		return !gs.hasPermission( playerID, SecurityPermissions.BUILD );
 	}
-
 }

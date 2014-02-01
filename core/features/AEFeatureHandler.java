@@ -13,6 +13,8 @@ import appeng.core.AELog;
 import appeng.core.CommonHelper;
 import appeng.core.Configuration;
 import appeng.core.CreativeTab;
+import appeng.core.CreativeTabFacade;
+import appeng.items.parts.ItemFacade;
 import appeng.util.Platform;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -74,8 +76,12 @@ public class AEFeatureHandler implements AEItemDefinition
 
 		String name = getName( i.getClass(), subname );
 		i.setTextureName( "appliedenergistics2:" + name );
-		i.setCreativeTab( CreativeTab.instance );
 		i.setUnlocalizedName( /* "item." */"appliedenergistics2." + name );
+
+		if ( i instanceof ItemFacade )
+			i.setCreativeTab( CreativeTabFacade.instance );
+		else
+			i.setCreativeTab( CreativeTab.instance );
 
 		GameRegistry.registerItem( i, "item." + name );
 		AELog.localization( "item", i.getUnlocalizedName() );

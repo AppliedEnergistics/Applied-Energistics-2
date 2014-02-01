@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockGlass;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -16,6 +17,7 @@ import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.block.solids.OreQuartz;
 import appeng.client.render.BusRenderer;
+import appeng.core.FacadeConfig;
 import appeng.core.features.AEFeature;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
@@ -59,6 +61,14 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem
 
 	List<ItemStack> subTypes = null;
 
+	public ItemStack getCreativeTabIcon()
+	{
+		calculateSubTypes();
+		if ( subTypes.isEmpty() )
+			return new ItemStack( Item.cake );
+		return subTypes.get( 0 );
+	}
+
 	@Override
 	public void getSubItems(int number, CreativeTabs tab, List list)
 	{
@@ -89,9 +99,12 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem
 		if ( subTypes == null )
 		{
 			subTypes = new ArrayList();
-			for (Block b : Block.blocksList)
+			for (int id = 0; id < Block.blocksList.length; id++)
 			{
-				if ( b != null && (b.isOpaqueCube() && !b.getTickRandomly() && !(b instanceof OreQuartz)) || b instanceof BlockGlass )
+				Block b = Block.blocksList[id];
+				if ( b != null
+						&& FacadeConfig.instance.checkEnabled( b, b.isOpaqueCube() && !b.getTickRandomly() && !(b instanceof OreQuartz)
+								|| b instanceof BlockGlass ) )
 				{
 					try
 					{
@@ -116,7 +129,11 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem
 					}
 				}
 			}
+
+			if ( FacadeConfig.instance.hasChanged() )
+				FacadeConfig.instance.save();
 		}
+
 	}
 
 	@Override

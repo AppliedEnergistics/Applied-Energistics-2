@@ -112,10 +112,12 @@ public class AppEng
 		AELog.info( "Starting ( PreInit )" );
 
 		Configuration.instance = new Configuration( event.getModConfigurationDirectory() );
+		FacadeConfig.instance = new FacadeConfig( event.getModConfigurationDirectory() );
 
 		if ( Platform.isClient() )
 		{
 			CreativeTab.init();
+			CreativeTabFacade.init();
 			CommonHelper.proxy.init();
 		}
 
