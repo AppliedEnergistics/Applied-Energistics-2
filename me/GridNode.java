@@ -26,7 +26,6 @@ import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IReadOnlyCollection;
-import appeng.core.AELog;
 import appeng.core.WorldSettings;
 import appeng.helpers.TickHandler;
 import appeng.me.pathfinding.IPathItem;
@@ -90,7 +89,6 @@ public class GridNode implements IGridNode, IPathItem
 			NBTTagCompound node = nodeData.getCompoundTag( name );
 			playerID = node.getInteger( "p" );
 			lastSecurityKey = node.getLong( "k" );
-			AELog.info( "Player: " + playerID );
 			setGridStorage( WorldSettings.getInstance().getGridStorage( node.getLong( "g" ) ) );
 		}
 		else
