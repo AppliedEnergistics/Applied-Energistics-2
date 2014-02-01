@@ -51,7 +51,10 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	}
 
 	private AEFluidStack(AEFluidStack is) {
+
+		fluid = is.fluid;
 		stackSize = is.stackSize;
+
 		// priority = is.priority;
 		setCraftable( is.isCraftable() );
 		setCountRequestable( is.getCountRequestable() );
@@ -64,6 +67,10 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 			throw new RuntimeException( "Invalid Itemstack." );
 
 		fluid = is.getFluid();
+
+		if ( fluid == null )
+			throw new RuntimeException( "Fluid is null." );
+
 		stackSize = is.amount;
 		setCraftable( false );
 		setCountRequestable( 0 );

@@ -184,7 +184,6 @@ public class GuiMEMonitorable extends AEBaseMEGui
 	{
 		fontRenderer.drawString( myName.getLocal(), 8, 6, 4210752 );
 		fontRenderer.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
-		fontRenderer.drawString( GuiText.SecurityCardEditor.getLocal(), 8, ySize - 96 + 3 - reservedSpace, 4210752 );
 	}
 
 }

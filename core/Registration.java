@@ -24,17 +24,10 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEItemDefinition;
 import appeng.block.grindstone.BlockCrank;
 import appeng.block.grindstone.BlockGrinder;
-import appeng.block.mac.BlockContainmentWall;
-import appeng.block.mac.BlockCraftingAccelerator;
-import appeng.block.mac.BlockHeatVent;
-import appeng.block.mac.BlockPatternProvider;
 import appeng.block.misc.BlockCellWorkbench;
 import appeng.block.misc.BlockCharger;
 import appeng.block.misc.BlockCondenser;
-import appeng.block.misc.BlockInscriber;
 import appeng.block.misc.BlockInterface;
-import appeng.block.misc.BlockNetworkEmitter;
-import appeng.block.misc.BlockQuartzCrystalizer;
 import appeng.block.misc.BlockQuartzTorch;
 import appeng.block.misc.BlockSecurity;
 import appeng.block.misc.BlockTinyTNT;
@@ -45,7 +38,6 @@ import appeng.block.networking.BlockCreativeEnergyCell;
 import appeng.block.networking.BlockDenseEnergyCell;
 import appeng.block.networking.BlockEnergyAcceptor;
 import appeng.block.networking.BlockEnergyCell;
-import appeng.block.networking.BlockWireless;
 import appeng.block.qnb.BlockQuantumLinkChamber;
 import appeng.block.qnb.BlockQuantumRing;
 import appeng.block.solids.BlockFluix;
@@ -82,7 +74,6 @@ import appeng.helpers.AETrading;
 import appeng.helpers.PartPlacement;
 import appeng.helpers.QuartzWorldGen;
 import appeng.helpers.TickHandler;
-import appeng.items.ItemEncodedPattern;
 import appeng.items.materials.ItemMaterial;
 import appeng.items.materials.MaterialType;
 import appeng.items.parts.ItemFacade;
@@ -98,7 +89,6 @@ import appeng.items.tools.powered.ToolChargedStaff;
 import appeng.items.tools.powered.ToolEntropyManipulator;
 import appeng.items.tools.powered.ToolMassCannon;
 import appeng.items.tools.powered.ToolPortableCell;
-import appeng.items.tools.powered.ToolWirelessTerminal;
 import appeng.items.tools.quartz.ToolQuartzAxe;
 import appeng.items.tools.quartz.ToolQuartzCuttingKnife;
 import appeng.items.tools.quartz.ToolQuartzHoe;
@@ -229,17 +219,17 @@ public class Registration
 
 		blocks.blockGrindStone = addFeature( BlockGrinder.class );
 		blocks.blockCrankHandle = addFeature( BlockCrank.class );
-		blocks.blockInscriber = addFeature( BlockInscriber.class );
-		blocks.blockWireless = addFeature( BlockWireless.class );
+		// blocks.blockInscriber = addFeature( BlockInscriber.class );
+		// blocks.blockWireless = addFeature( BlockWireless.class );
 		blocks.blockTinyTNT = addFeature( BlockTinyTNT.class );
 
-		blocks.blockQuartzCrystalizer = addFeature( BlockQuartzCrystalizer.class );
-		blocks.blockNetworkEmitter = addFeature( BlockNetworkEmitter.class );
+		// blocks.blockQuartzCrystalizer = addFeature( BlockQuartzCrystalizer.class );
+		// blocks.blockNetworkEmitter = addFeature( BlockNetworkEmitter.class );
 
-		blocks.blockPatternProvider = addFeature( BlockPatternProvider.class );
-		blocks.blockAssemblerFieldWall = addFeature( BlockContainmentWall.class );
-		blocks.blockHeatVent = addFeature( BlockHeatVent.class );
-		blocks.blockCraftingCPU = addFeature( BlockCraftingAccelerator.class );
+		// blocks.blockPatternProvider = addFeature( BlockPatternProvider.class );
+		// blocks.blockAssemblerFieldWall = addFeature( BlockContainmentWall.class );
+		// blocks.blockHeatVent = addFeature( BlockHeatVent.class );
+		// blocks.blockCraftingCPU = addFeature( BlockCraftingAccelerator.class );
 
 		blocks.blockQuantumRing = addFeature( BlockQuantumRing.class );
 		blocks.blockQuantumLink = addFeature( BlockQuantumLinkChamber.class );
@@ -263,7 +253,7 @@ public class Registration
 
 		blocks.blockSecurity = addFeature( BlockSecurity.class );
 
-		items.itemEncodedAsemblerPattern = addFeature( ItemEncodedPattern.class );
+		// items.itemEncodedAsemblerPattern = addFeature( ItemEncodedPattern.class );
 
 		items.itemCellCreative = addFeature( ItemCreativeStorageCell.class );
 
@@ -296,7 +286,7 @@ public class Registration
 		items.itemMemoryCard = addFeature( ToolMemoryCard.class );
 		items.itemChargedStaff = addFeature( ToolChargedStaff.class );
 		items.itemEntropyManipulator = addFeature( ToolEntropyManipulator.class );
-		items.itemWirelessTerminal = addFeature( ToolWirelessTerminal.class );
+		// items.itemWirelessTerminal = addFeature( ToolWirelessTerminal.class );
 		items.itemNetworkTool = addFeature( ToolNetworkTool.class );
 		items.itemPortableCell = addFeature( ToolPortableCell.class );
 		items.itemBiometricCard = addFeature( ToolBiometricCard.class );

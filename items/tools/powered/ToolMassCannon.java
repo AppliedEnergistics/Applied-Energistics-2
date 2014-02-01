@@ -79,20 +79,21 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 			if ( cu != null )
 				shots += cu.getInstalledUpgrades( Upgrades.SPEED );
 
-			for (int sh = 0; sh < shots; sh++)
+			IMEInventory inv = AEApi.instance().registries().cell().getCellInventory( item, StorageChannel.ITEMS );
+			if ( inv != null )
 			{
-				extractAEPower( item, 1600 );
-
-				if ( Platform.isClient() )
-					return item;
-
-				IMEInventory inv = AEApi.instance().registries().cell().getCellInventory( item, StorageChannel.ITEMS );
-				if ( inv != null )
+				IItemList itemList = inv.getAvailableItems( new ItemList() );
+				IAEStack aeammo = itemList.getFirstItem();
+				if ( aeammo instanceof IAEItemStack )
 				{
-					IItemList itemList = inv.getAvailableItems( new ItemList() );
-					IAEStack aeammo = itemList.getFirstItem();
-					if ( aeammo instanceof IAEItemStack )
+					shots = Math.min( shots, (int) aeammo.getStackSize() );
+					for (int sh = 0; sh < shots; sh++)
 					{
+						extractAEPower( item, 1600 );
+
+						if ( Platform.isClient() )
+							return item;
+
 						aeammo.setStackSize( 1 );
 						ItemStack ammo = ((IAEItemStack) aeammo).getItemStack();
 						if ( ammo == null )
@@ -250,7 +251,8 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				}
 				else
 				{
-					p.sendChatToPlayer( PlayerMessages.AmmoDepleted.get() );
+					if ( Platform.isServer() )
+						p.sendChatToPlayer( PlayerMessages.AmmoDepleted.get() );
 					return item;
 				}
 			}

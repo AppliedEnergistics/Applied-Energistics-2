@@ -6,9 +6,7 @@ import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
-import appeng.parts.automation.PartAnnihilationPlane;
 import appeng.parts.automation.PartExportBus;
-import appeng.parts.automation.PartFormationPlane;
 import appeng.parts.automation.PartImportBus;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.parts.misc.PartCableAnchor;
@@ -21,8 +19,6 @@ import appeng.parts.networking.PartCableGlass;
 import appeng.parts.networking.PartCableSmart;
 import appeng.parts.networking.PartDenseCable;
 import appeng.parts.networking.PartQuartzFiber;
-import appeng.parts.p2p.PartP2PBCPower;
-import appeng.parts.p2p.PartP2PIC2Power;
 import appeng.parts.p2p.PartP2PItems;
 import appeng.parts.p2p.PartP2PLiquids;
 import appeng.parts.p2p.PartP2PRedstone;
@@ -65,9 +61,9 @@ public enum PartType
 
 	LevelEmitter(AEFeature.LevelEmiter, PartLevelEmitter.class),
 
-	AnnihilationPlane(AEFeature.AnnihilationPlane, PartAnnihilationPlane.class),
+	// AnnihilationPlane(AEFeature.AnnihilationPlane, PartAnnihilationPlane.class),
 
-	FormationPlane(AEFeature.FormationPlane, PartFormationPlane.class),
+	// FormationPlane(AEFeature.FormationPlane, PartFormationPlane.class),
 
 	P2PTunnelME(AEFeature.P2PTunnelME, PartP2PTunnelME.class, GuiText.METunnel),
 
@@ -77,9 +73,9 @@ public enum PartType
 
 	P2PTunnelLiquids(AEFeature.P2PTunnelLiquids, PartP2PLiquids.class, GuiText.FluidTunnel),
 
-	P2PTunnelMJ(AEFeature.P2PTunnelMJ, PartP2PBCPower.class, GuiText.MJTunnel),
+	// P2PTunnelMJ(AEFeature.P2PTunnelMJ, PartP2PBCPower.class, GuiText.MJTunnel),
 
-	P2PTunnelEU(AEFeature.P2PTunnelEU, PartP2PIC2Power.class, GuiText.EUTunnel),
+	// P2PTunnelEU(AEFeature.P2PTunnelEU, PartP2PIC2Power.class, GuiText.EUTunnel),
 
 	CraftingMonitor(AEFeature.Crafting, PartCraftingMonitor.class),
 

@@ -85,9 +85,6 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	{
 		Item i = requsetedAddition.getItem();
 
-		if ( i instanceof IStorageCell )
-			return !((IStorageCell) i).storableInStorageCell();
-
 		return false;
 	}
 

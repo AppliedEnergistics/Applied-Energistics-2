@@ -7,6 +7,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.client.gui.widgets.GuiToggleButton;
 import appeng.container.implementations.ContainerSecurity;
+import appeng.core.localization.GuiText;
 import appeng.core.sync.packets.PacketValueConfig;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
@@ -84,6 +85,13 @@ public class GuiSecurity extends GuiMEMonitorable
 		security.setState( (cs.security & (1 << SecurityPermissions.SECURITY.ordinal())) > 0 );
 
 		return "guis/security.png";
+	}
+
+	@Override
+	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
+	{
+		super.drawFG( offsetX, offsetY, mouseX, mouseY );
+		fontRenderer.drawString( GuiText.SecurityCardEditor.getLocal(), 8, ySize - 96 + 3 - reservedSpace, 4210752 );
 	}
 
 }
