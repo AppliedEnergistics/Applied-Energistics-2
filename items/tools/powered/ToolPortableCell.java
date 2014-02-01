@@ -5,7 +5,6 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -83,8 +82,6 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	@Override
 	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requsetedAddition)
 	{
-		Item i = requsetedAddition.getItem();
-
 		return false;
 	}
 
