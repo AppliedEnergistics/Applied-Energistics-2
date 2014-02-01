@@ -14,9 +14,10 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 	IPortableCell civ;
 
 	public ContainerMEPortableCell(InventoryPlayer ip, IPortableCell montiorable) {
-		super( ip, (IStorageMonitorable) montiorable, Platform.isServer() );
+		super( ip, (IStorageMonitorable) montiorable, false );
 		lockPlayerInventorySlot( ip.currentItem );
 		civ = montiorable;
+		bindPlayerInventory( ip, 0, 0 );
 	}
 
 	int ticks = 0;
@@ -26,18 +27,23 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 	{
 		ItemStack currentItem = getPlayerInv().getCurrentItem();
 
-		if ( currentItem != civ.getItemStack() )
+		if ( civ != null )
 		{
-			if ( currentItem != null )
+			if ( currentItem != civ.getItemStack() )
 			{
-				if ( Platform.isSameItem( civ.getItemStack(), currentItem ) )
-					getPlayerInv().setInventorySlotContents( getPlayerInv().currentItem, civ.getItemStack() );
+				if ( currentItem != null )
+				{
+					if ( Platform.isSameItem( civ.getItemStack(), currentItem ) )
+						getPlayerInv().setInventorySlotContents( getPlayerInv().currentItem, civ.getItemStack() );
+					else
+						getPlayerInv().player.closeScreen();
+				}
 				else
 					getPlayerInv().player.closeScreen();
 			}
-			else
-				getPlayerInv().player.closeScreen();
 		}
+		else
+			getPlayerInv().player.closeScreen();
 
 		// drain 1 ae t
 		ticks++;
