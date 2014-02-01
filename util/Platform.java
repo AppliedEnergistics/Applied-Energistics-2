@@ -278,27 +278,31 @@ public class Platform
 		return FMLCommonHandler.instance().getEffectiveSide().isServer();
 	}
 
-	public static boolean hasPermissions(TileEntity myTile, EntityPlayer player, AccessType blockAccess)
-	{
-		return true;
-	}
-
 	public static void openGUI(EntityPlayer p, TileEntity tile, ForgeDirection side, GuiBridge type)
 	{
 		if ( isClient() )
 			return;
 
-		if ( type.isItem() || hasPermissions( tile, p, AccessType.BLOCK_ACCESS ) )
+		int x = (int) p.posX, y = (int) p.posY, z = (int) p.posZ;
+		if ( tile != null )
+		{
+			x = tile.xCoord;
+			y = tile.yCoord;
+			z = tile.zCoord;
+		}
+
+		if ( type.isItem() || type.hasPermissions( tile, x, y, z, side, p ) )
 		{
 			if ( tile == null )
-			{
-				p.openGui( AppEng.instance, type.ordinal() << 3, p.getEntityWorld(), (int) p.posX, (int) p.posY, (int) p.posZ );
-			}
+				p.openGui( AppEng.instance, type.ordinal() << 3, p.getEntityWorld(), x, y, z );
 			else
-			{
-				p.openGui( AppEng.instance, type.ordinal() << 3 | (side.ordinal()), tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord );
-			}
+				p.openGui( AppEng.instance, type.ordinal() << 3 | (side.ordinal()), tile.worldObj, x, y, z );
 		}
+	}
+
+	public static boolean hasPermissions(int x, int y, int z, EntityPlayer player, AccessType blockAccess)
+	{
+		return true;
 	}
 
 	/*
@@ -1468,4 +1472,5 @@ public class Platform
 
 		return !gs.hasPermission( playerID, SecurityPermissions.BUILD );
 	}
+
 }

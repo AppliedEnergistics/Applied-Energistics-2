@@ -4,6 +4,7 @@ import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.IMEInventoryHandler;
@@ -45,8 +46,7 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	{
 		if ( hasPermission( src ) && AEApi.instance().items().itemBiometricCard.sameAs( input.getItemStack() ) )
 		{
-			IAEItemStack stored = storedItems.findPrecise( input );
-			if ( stored == null || !stored.isMeaninful() )
+			if ( canAccept( input ) )
 			{
 				if ( type == Actionable.SIMULATE )
 					return null;
@@ -110,7 +110,24 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	@Override
 	public boolean canAccept(IAEItemStack input)
 	{
-		return AEApi.instance().items().itemBiometricCard.sameAs( input.getItemStack() );
+		if ( input.getItem() instanceof IBiometricCard )
+		{
+			IBiometricCard tbc = (IBiometricCard) input.getItem();
+			String newUser = tbc.getUsername( input.getItemStack() );
+
+			for (IAEItemStack ais : storedItems)
+			{
+				if ( ais.isMeaninful() )
+				{
+					String thisUser = tbc.getUsername( ais.getItemStack() );
+					if ( thisUser.equals( newUser ) )
+						return false;
+				}
+			}
+
+			return true;
+		}
+		return false;
 	}
 
 	@Override

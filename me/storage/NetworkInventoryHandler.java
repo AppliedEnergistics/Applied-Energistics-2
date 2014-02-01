@@ -96,11 +96,11 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 			throw new RuntimeException( "Invalid Access to Networked Storage API detected." );
 	}
 
-	private boolean testPermission(BaseActionSource src, SecurityPermissions inject)
+	private boolean testPermission(BaseActionSource src, SecurityPermissions permission)
 	{
 		if ( src.isPlayer() )
 		{
-			if ( !security.hasPermission( ((PlayerSource) src).player, SecurityPermissions.INJECT ) )
+			if ( !security.hasPermission( ((PlayerSource) src).player, permission ) )
 				return true;
 		}
 		else if ( src.isMachine() )
@@ -119,7 +119,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 					ISecurityGrid sg = gn.getCache( ISecurityGrid.class );
 					playerID = sg.getOwner();
 
-					if ( !security.hasPermission( playerID, SecurityPermissions.INJECT ) )
+					if ( !security.hasPermission( playerID, permission ) )
 						return true;
 				}
 			}

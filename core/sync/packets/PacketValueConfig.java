@@ -12,6 +12,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.container.implementations.ContainerPriority;
+import appeng.container.implementations.ContainerSecurity;
 import appeng.core.sync.AppEngPacket;
 
 public class PacketValueConfig extends AppEngPacket
@@ -31,7 +32,13 @@ public class PacketValueConfig extends AppEngPacket
 	{
 		Container c = player.openContainer;
 
-		if ( Name.equals( "PriorityHost.Priority" ) && c instanceof ContainerPriority )
+		if ( Name.equals( "TileSecurity.ToggleOption" ) && c instanceof ContainerSecurity )
+		{
+			ContainerSecurity sc = (ContainerSecurity) c;
+			sc.toggleSetting( Value, player );
+			return;
+		}
+		else if ( Name.equals( "PriorityHost.Priority" ) && c instanceof ContainerPriority )
 		{
 			ContainerPriority pc = (ContainerPriority) c;
 			pc.setPriority( Integer.parseInt( Value ), player );

@@ -31,7 +31,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	@Override
 	public String getItemDisplayName(ItemStack is)
 	{
-		String username = getUserName( is );
+		String username = getUsername( is );
 		return username.length() > 0 ? super.getItemDisplayName( is ) + " - " + GuiText.Encoded.getLocal() : super.getItemDisplayName( is );
 	}
 
@@ -64,24 +64,41 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 
 	private void encode(ItemStack is, EntityPlayer p)
 	{
-		NBTTagCompound tag = Platform.openNbtData( is );
-		String username = tag.getString( "username" );
+		String username = getUsername( is );
 		if ( p.username.equals( username ) )
-			is.setTagCompound( null );
+			setUsername( is, "" );
 		else
-			tag.setString( "username", p.username );
+			setUsername( is, p.username );
 	}
 
 	@Override
 	public void addInformation(ItemStack is, EntityPlayer p, List l, boolean b)
 	{
-		String username = getUserName( is );
+		String username = getUsername( is );
 		if ( username.length() > 0 )
 			l.add( username );
+
+		EnumSet<SecurityPermissions> perms = getPermissions( is );
+		if ( perms.isEmpty() )
+			l.add( GuiText.NoPermissions.getLocal() );
+		else
+		{
+			String msg = null;
+
+			for (SecurityPermissions sp : perms)
+			{
+				if ( msg == null )
+					msg = Platform.gui_localize( sp.getUnlocalizedName() );
+				else
+					msg = msg + ", " + Platform.gui_localize( sp.getUnlocalizedName() );
+			}
+			l.add( msg );
+		}
+
 	}
 
 	@Override
-	public String getUserName(ItemStack is)
+	public String getUsername(ItemStack is)
 	{
 		NBTTagCompound tag = Platform.openNbtData( is );
 		return tag.getString( "username" );
@@ -107,6 +124,28 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	{
 		NBTTagCompound tag = Platform.openNbtData( is );
 		return tag.getBoolean( permission.name() );
+	}
+
+	@Override
+	public void setUsername(ItemStack itemStack, String username)
+	{
+		NBTTagCompound tag = Platform.openNbtData( itemStack );
+		tag.setString( "username", username );
+	}
+
+	@Override
+	public void removePermission(ItemStack itemStack, SecurityPermissions permission)
+	{
+		NBTTagCompound tag = Platform.openNbtData( itemStack );
+		if ( tag.hasKey( permission.name() ) )
+			tag.removeTag( permission.name() );
+	}
+
+	@Override
+	public void addPermission(ItemStack itemStack, SecurityPermissions permission)
+	{
+		NBTTagCompound tag = Platform.openNbtData( itemStack );
+		tag.setBoolean( permission.name(), true );
 	}
 
 }

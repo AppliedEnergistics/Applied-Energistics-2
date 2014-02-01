@@ -34,10 +34,10 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonito
 	final IMEMonitor<IAEItemStack> monitor;
 	final IItemList<IAEItemStack> items = new ItemList<IAEItemStack>();
 
-	protected ContainerMEMonitorable(InventoryPlayer ip, IStorageMonitorable montiorable, boolean isServer) {
+	protected ContainerMEMonitorable(InventoryPlayer ip, IStorageMonitorable montiorable, boolean bindInventory) {
 		super( ip, montiorable instanceof TileEntity ? (TileEntity) montiorable : null, montiorable instanceof IPart ? (IPart) montiorable : null );
 
-		if ( isServer )
+		if ( Platform.isServer() )
 		{
 			monitor = montiorable.getItemInventory();
 			monitor.addListener( this, null );
@@ -62,11 +62,12 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonito
 		else
 			monitor = null;
 
-		bindPlayerInventory( ip, 0, 0 );
+		if ( bindInventory )
+			bindPlayerInventory( ip, 0, 0 );
 	}
 
 	public ContainerMEMonitorable(InventoryPlayer ip, IStorageMonitorable montiorable) {
-		this( ip, montiorable, Platform.isServer() );
+		this( ip, montiorable, true );
 	}
 
 	@Override

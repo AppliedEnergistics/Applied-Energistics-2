@@ -3,12 +3,15 @@ package appeng.tile.misc;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
@@ -32,10 +35,13 @@ import appeng.me.storage.SecurityInventory;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
+import appeng.tile.inventory.AppEngInternalInventory;
+import appeng.tile.inventory.IAEAppEngInventory;
+import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
-public class TileSecurity extends AENetworkTile implements IStorageMonitorable
+public class TileSecurity extends AENetworkTile implements IStorageMonitorable, IAEAppEngInventory
 {
 
 	private static int diffrence = 0;
@@ -46,6 +52,21 @@ public class TileSecurity extends AENetworkTile implements IStorageMonitorable
 	private boolean isActive = false;
 
 	public long securityKey;
+
+	public AppEngInternalInventory configSlot = new AppEngInternalInventory( this, 1 );
+
+	@Override
+	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
+	{
+
+	}
+
+	@Override
+	public void getDrops(World w, int x, int y, int z, ArrayList<ItemStack> drops)
+	{
+		for (IAEItemStack ais : inventory.storedItems)
+			drops.add( ais.getItemStack() );
+	}
 
 	IMEInventoryHandler<IAEItemStack> getSecurityInventory()
 	{
@@ -100,6 +121,8 @@ public class TileSecurity extends AENetworkTile implements IStorageMonitorable
 		public void writeToNBT(NBTTagCompound data)
 		{
 			data.setLong( "securityKey", securityKey );
+			configSlot.writeToNBT( data, "config" );
+
 			NBTTagCompound storedItems = new NBTTagCompound();
 
 			int offset = 0;
@@ -117,6 +140,8 @@ public class TileSecurity extends AENetworkTile implements IStorageMonitorable
 		public void readFromNBT(NBTTagCompound data)
 		{
 			securityKey = data.getLong( "securityKey" );
+			configSlot.readFromNBT( data, "config" );
+
 			NBTTagCompound storedItems = data.getCompoundTag( "storedItems" );
 			for (Object obj : storedItems.getTags())
 			{
@@ -153,7 +178,7 @@ public class TileSecurity extends AENetworkTile implements IStorageMonitorable
 			if ( i instanceof IBiometricCard )
 			{
 				IBiometricCard bc = (IBiometricCard) i;
-				playerPerms.put( pr.getID( bc.getUserName( is ) ), bc.getPermissions( is ) );
+				playerPerms.put( pr.getID( bc.getUsername( is ) ), bc.getPermissions( is ) );
 			}
 		}
 

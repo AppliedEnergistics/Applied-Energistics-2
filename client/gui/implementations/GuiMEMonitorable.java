@@ -33,12 +33,18 @@ public class GuiMEMonitorable extends AEBaseMEGui
 
 	int xoffset = 9;
 	int perRow = 9;
+	int reservedSpace = 0;
 
 	int rows = 0;
 	int maxRows = Integer.MAX_VALUE;
 
 	public GuiMEMonitorable(InventoryPlayer inventoryPlayer, IStorageMonitorable te) {
-		super( new ContainerMEMonitorable( inventoryPlayer, null ) );
+		this( inventoryPlayer, te, new ContainerMEMonitorable( inventoryPlayer, null ) );
+	}
+
+	public GuiMEMonitorable(InventoryPlayer inventoryPlayer, IStorageMonitorable te, ContainerMEMonitorable c) {
+
+		super( c );
 		myScrollBar = new GuiScrollbar();
 		repo = new ItemRepo( myScrollBar );
 		xSize = 195;
@@ -74,7 +80,7 @@ public class GuiMEMonitorable extends AEBaseMEGui
 	{
 		int NEI = 0;
 		int top = 4;
-		int extraSpace = height - 114 - NEI - top;
+		int extraSpace = height - 114 - NEI - top - reservedSpace;
 
 		rows = (int) Math.floor( extraSpace / 18 );
 		if ( rows > maxRows )
@@ -97,7 +103,7 @@ public class GuiMEMonitorable extends AEBaseMEGui
 		// extra slots : 72
 		// slot 18
 
-		this.ySize = 114 + rows * 18;
+		this.ySize = 114 + rows * 18 + reservedSpace;
 		this.guiTop = top;
 
 		buttonList.add( new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.SORT_BY, Configuration.instance.settings.getSetting( Settings.SORT_BY ) ) );
@@ -163,7 +169,7 @@ public class GuiMEMonitorable extends AEBaseMEGui
 		for (int x = 0; x < rows; x++)
 			this.drawTexturedModalRect( offsetX, offsetY + 18 + x * 18, 0, 18, xSize, 18 );
 
-		this.drawTexturedModalRect( offsetX, offsetY + 16 + rows * 18, 0, 106, xSize, 98 );
+		this.drawTexturedModalRect( offsetX, offsetY + 16 + rows * 18, 0, 106, xSize, 98 + reservedSpace );
 
 		searchField.drawTextBox();
 	}
@@ -178,6 +184,7 @@ public class GuiMEMonitorable extends AEBaseMEGui
 	{
 		fontRenderer.drawString( myName.getLocal(), 8, 6, 4210752 );
 		fontRenderer.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		fontRenderer.drawString( GuiText.SecurityCardEditor.getLocal(), 8, ySize - 96 + 3 - reservedSpace, 4210752 );
 	}
 
 }

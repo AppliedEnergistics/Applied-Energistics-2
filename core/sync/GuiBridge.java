@@ -8,11 +8,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.exceptions.AppEngException;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.implementations.guiobjects.IPortableCell;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.storage.IStorageMonitorable;
@@ -42,6 +48,7 @@ import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.parts.misc.PartStorageBus;
+import appeng.server.AccessType;
 import appeng.tile.grindstone.TileGrinder;
 import appeng.tile.misc.TileCellWorkbench;
 import appeng.tile.misc.TileCondenser;
@@ -59,47 +66,48 @@ public enum GuiBridge implements IGuiHandler
 {
 	GUI_Handler(),
 
-	GUI_GRINDER(ContainerGrinder.class, TileGrinder.class, false),
+	GUI_GRINDER(ContainerGrinder.class, TileGrinder.class, false, null),
 
-	GUI_QNB(ContainerQNB.class, TileQuantumBridge.class, false),
+	GUI_QNB(ContainerQNB.class, TileQuantumBridge.class, false, SecurityPermissions.BUILD),
 
-	GUI_CHEST(ContainerChest.class, TileChest.class, false),
+	GUI_CHEST(ContainerChest.class, TileChest.class, false, SecurityPermissions.BUILD),
 
-	GUI_ME(ContainerMEMonitorable.class, IStorageMonitorable.class, false),
+	GUI_ME(ContainerMEMonitorable.class, IStorageMonitorable.class, false, null),
 
-	GUI_PORTABLE_CELL(ContainerMEPortableCell.class, IPortableCell.class, true),
+	GUI_PORTABLE_CELL(ContainerMEPortableCell.class, IPortableCell.class, true, null),
 
-	GUI_NETWORK_STATUS(ContainerNetworkStatus.class, INetworkTool.class, true),
+	GUI_NETWORK_STATUS(ContainerNetworkStatus.class, INetworkTool.class, true, null),
 
-	GUI_NETWORK_TOOL(ContainerNetworkTool.class, INetworkTool.class, true),
+	GUI_NETWORK_TOOL(ContainerNetworkTool.class, INetworkTool.class, true, null),
 
-	GUI_DRIVE(ContainerDrive.class, TileDrive.class, false),
+	GUI_DRIVE(ContainerDrive.class, TileDrive.class, false, SecurityPermissions.BUILD),
 
-	GUI_VIBRATIONCHAMBER(ContainerVibrationChamber.class, TileVibrationChamber.class, false),
+	GUI_VIBRATIONCHAMBER(ContainerVibrationChamber.class, TileVibrationChamber.class, false, null),
 
-	GUI_CONDENSER(ContainerCondenser.class, TileCondenser.class, false),
+	GUI_CONDENSER(ContainerCondenser.class, TileCondenser.class, false, null),
 
-	GUI_INTERFACE(ContainerInterface.class, IInterfaceHost.class, false),
+	GUI_INTERFACE(ContainerInterface.class, IInterfaceHost.class, false, SecurityPermissions.BUILD),
 
-	GUI_BUS(ContainerUpgradeable.class, IUpgradeableHost.class, false),
+	GUI_BUS(ContainerUpgradeable.class, IUpgradeableHost.class, false, SecurityPermissions.BUILD),
 
-	GUI_IOPORT(ContainerIOPort.class, TileIOPort.class, false),
+	GUI_IOPORT(ContainerIOPort.class, TileIOPort.class, false, SecurityPermissions.BUILD),
 
-	GUI_STORAGEBUS(ContainerStorageBus.class, PartStorageBus.class, false),
+	GUI_STORAGEBUS(ContainerStorageBus.class, PartStorageBus.class, false, SecurityPermissions.BUILD),
 
-	GUI_PRIORITY(ContainerPriority.class, IPriorityHost.class, false),
+	GUI_PRIORITY(ContainerPriority.class, IPriorityHost.class, false, SecurityPermissions.BUILD),
 
-	GUI_SECURITY(ContainerSecurity.class, TileSecurity.class, false),
+	GUI_SECURITY(ContainerSecurity.class, TileSecurity.class, false, SecurityPermissions.SECURITY),
 
 	// extends (Container/Gui) + Bus
-	GUI_LEVELEMITTER(ContainerLevelEmitter.class, PartLevelEmitter.class, false),
+	GUI_LEVELEMITTER(ContainerLevelEmitter.class, PartLevelEmitter.class, false, SecurityPermissions.BUILD),
 
-	GUI_CELLWORKBENCH(ContainerCellWorkbench.class, TileCellWorkbench.class, false);
+	GUI_CELLWORKBENCH(ContainerCellWorkbench.class, TileCellWorkbench.class, false, null);
 
 	private Class Tile;
 	private Class Gui;
 	private Class Container;
 	private boolean isItem;
+	private SecurityPermissions requiredPermission;
 
 	private GuiBridge() {
 		Tile = null;
@@ -125,13 +133,15 @@ public enum GuiBridge implements IGuiHandler
 		}
 	}
 
-	private GuiBridge(Class _Container) {
+	private GuiBridge(Class _Container, SecurityPermissions requiredPermission) {
+		this.requiredPermission = requiredPermission;
 		Container = _Container;
 		Tile = null;
 		getGui();
 	}
 
-	private GuiBridge(Class _Container, Class _Tile, boolean isItem) {
+	private GuiBridge(Class _Container, Class _Tile, boolean isItem, SecurityPermissions requiredPermission) {
+		this.requiredPermission = requiredPermission;
 		Container = _Container;
 		this.isItem = isItem;
 		Tile = _Tile;
@@ -268,6 +278,76 @@ public enum GuiBridge implements IGuiHandler
 		}
 
 		return new GuiNull( new ContainerNull() );
+	}
+
+	public boolean hasPermissions(TileEntity te, int x, int y, int z, ForgeDirection side, EntityPlayer player)
+	{
+		World w = player.getEntityWorld();
+
+		if ( Platform.hasPermissions( x, y, z, player, AccessType.BLOCK_ACCESS ) )
+		{
+			if ( isItem() )
+			{
+				ItemStack it = player.inventory.getCurrentItem();
+				if ( it != null && it.getItem() instanceof IGuiItem )
+				{
+					Object myItem = ((IGuiItem) it.getItem()).getGuiObject( it, w, x, y, z );
+					if ( CorrectTileOrPart( myItem ) )
+					{
+						return true;
+					}
+				}
+			}
+			else
+			{
+				TileEntity TE = w.getBlockTileEntity( x, y, z );
+				if ( TE instanceof IPartHost )
+				{
+					((IPartHost) TE).getPart( side );
+					IPart part = ((IPartHost) TE).getPart( side );
+					if ( CorrectTileOrPart( part ) )
+						return securityCheck( part, player );
+				}
+				else
+				{
+					if ( CorrectTileOrPart( TE ) )
+						return securityCheck( TE, player );
+				}
+			}
+		}
+		return false;
+	}
+
+	private boolean securityCheck(Object te, EntityPlayer player)
+	{
+		if ( te instanceof IActionHost && requiredPermission != null )
+		{
+			boolean requirePower = false;
+
+			IGridNode gn = ((IActionHost) te).getActionableNode();
+			if ( gn != null )
+			{
+				IGrid g = gn.getGrid();
+				if ( g != null )
+				{
+					if ( requirePower )
+					{
+						IEnergyGrid eg = g.getCache( IEnergyGrid.class );
+						if ( !eg.isNetworkPowered() )
+						{
+							return false;
+						}
+					}
+
+					ISecurityGrid sg = g.getCache( ISecurityGrid.class );
+					if ( sg.hasPermission( player, requiredPermission ) )
+						return true;
+				}
+			}
+
+			return false;
+		}
+		return true;
 	}
 
 }

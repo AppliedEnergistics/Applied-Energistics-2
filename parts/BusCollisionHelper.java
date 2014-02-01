@@ -80,6 +80,14 @@ public class BusCollisionHelper implements IPartCollsionHelper
 		return !isVisual;
 	}
 
+	/**
+	 * pretty much useless...
+	 */
+	public Entity getEntity()
+	{
+		return entity;
+	}
+
 	@Override
 	public void addBox(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
 	{

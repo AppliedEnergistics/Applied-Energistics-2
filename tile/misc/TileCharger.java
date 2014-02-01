@@ -225,7 +225,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 
 	public void activate(EntityPlayer player)
 	{
-		if ( !Platform.hasPermissions( this, player, AccessType.BLOCK_ACCESS ) )
+		if ( !Platform.hasPermissions( xCoord, yCoord, zCoord, player, AccessType.BLOCK_ACCESS ) )
 			return;
 
 		ItemStack myItem = getStackInSlot( 0 );
