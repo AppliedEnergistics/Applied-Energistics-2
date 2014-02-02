@@ -42,7 +42,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	public boolean onItemUseFirst(ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
 		int id = world.getBlockId( x, y, z );
-		if ( id > 0 )
+		if ( id > 0 && !player.isSneaking() )
 		{
 			Block b = Block.blocksList[id];
 			TileEntity te = world.getBlockTileEntity( x, y, z );
