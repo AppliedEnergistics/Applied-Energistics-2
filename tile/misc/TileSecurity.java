@@ -270,4 +270,9 @@ public class TileSecurity extends AENetworkTile implements IStorageMonitorable, 
 		return securityKey;
 	}
 
+	public boolean isPowered()
+	{
+		return gridProxy.isActive();
+	}
+
 }

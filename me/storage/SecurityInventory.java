@@ -115,6 +115,10 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 			IBiometricCard tbc = (IBiometricCard) input.getItem();
 			String newUser = tbc.getUsername( input.getItemStack() );
 
+			int PlayerID = AEApi.instance().registries().players().getID( newUser );
+			if ( securityTile.getOwner() == PlayerID )
+				return false;
+
 			for (IAEItemStack ais : storedItems)
 			{
 				if ( ais.isMeaninful() )

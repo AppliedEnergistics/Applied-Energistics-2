@@ -132,8 +132,8 @@ public class ItemRepo
 
 		if ( SortBy == SortOrder.AMOUNT )
 			Collections.sort( view, ItemSorters.ConfigBased_SortBySize );
-		else if ( SortBy == SortOrder.MOD )
-			Collections.sort( view, ItemSorters.ConfigBased_SortByMod );
+		// else if ( SortBy == SortOrder.MOD )
+		// Collections.sort( view, ItemSorters.ConfigBased_SortByMod );
 		else
 			Collections.sort( view, ItemSorters.ConfigBased_SortByName );
 
