@@ -13,8 +13,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.events.LocatableEventAnnounce;
+import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
+import appeng.api.features.ILocatable;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.networking.GridFlags;
@@ -41,7 +45,7 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
-public class TileSecurity extends AENetworkTile implements IStorageMonitorable, IAEAppEngInventory
+public class TileSecurity extends AENetworkTile implements IStorageMonitorable, IAEAppEngInventory, ILocatable
 {
 
 	private static int diffrence = 0;
@@ -64,6 +68,9 @@ public class TileSecurity extends AENetworkTile implements IStorageMonitorable, 
 	@Override
 	public void getDrops(World w, int x, int y, int z, ArrayList<ItemStack> drops)
 	{
+		if ( !configSlot.isEmpty() )
+			drops.add( configSlot.getStackInSlot( 0 ) );
+
 		for (IAEItemStack ais : inventory.storedItems)
 			drops.add( ais.getItemStack() );
 	}
@@ -78,13 +85,17 @@ public class TileSecurity extends AENetworkTile implements IStorageMonitorable, 
 	{
 		super.onReady();
 		if ( Platform.isServer() )
+		{
 			isActive = true;
+			MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Register ) );
+		}
 	}
 
 	@Override
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
+		MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Unregister ) );
 		isActive = false;
 	}
 
@@ -92,6 +103,7 @@ public class TileSecurity extends AENetworkTile implements IStorageMonitorable, 
 	public void invalidate()
 	{
 		super.invalidate();
+		MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Unregister ) );
 		isActive = false;
 	}
 
@@ -250,6 +262,12 @@ public class TileSecurity extends AENetworkTile implements IStorageMonitorable, 
 	public IMEMonitor<IAEFluidStack> getFluidInventory()
 	{
 		return null;
+	}
+
+	@Override
+	public long getLocatableSerial()
+	{
+		return securityKey;
 	}
 
 }

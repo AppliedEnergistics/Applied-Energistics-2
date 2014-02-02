@@ -23,7 +23,8 @@ public class WirelessRegistry implements IWirelessTermRegistery
 	@Override
 	public void registerWirelessHandler(IWirelessTermHandler handler)
 	{
-		handlers.add( handler );
+		if ( handler != null )
+			handlers.add( handler );
 	}
 
 	@Override

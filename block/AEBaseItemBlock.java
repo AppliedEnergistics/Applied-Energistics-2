@@ -12,6 +12,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
+import appeng.block.networking.BlockWireless;
 import appeng.client.render.ItemRenderer;
 import appeng.me.helpers.IGridProxyable;
 import appeng.tile.AEBaseTile;
@@ -47,36 +48,47 @@ public class AEBaseItemBlock extends ItemBlock
 
 		if ( blockType.hasBlockTileEntity() )
 		{
-			up = ForgeDirection.UP;
-
-			byte rotation = (byte) (MathHelper.floor_double( (double) ((player.rotationYaw * 4F) / 360F) + 2.5D ) & 3);
-
-			switch (rotation)
+			if ( blockType instanceof BlockWireless )
 			{
-			default:
-			case 0:
-				forward = ForgeDirection.SOUTH;
-				break;
-			case 1:
-				forward = ForgeDirection.WEST;
-				break;
-			case 2:
-				forward = ForgeDirection.NORTH;
-				break;
-			case 3:
-				forward = ForgeDirection.EAST;
-				break;
+				forward = ForgeDirection.getOrientation( side );
+				if ( forward == ForgeDirection.UP || forward == ForgeDirection.DOWN )
+					up = ForgeDirection.SOUTH;
+				else
+					up = ForgeDirection.UP;
 			}
+			else
+			{
+				up = ForgeDirection.UP;
 
-			if ( player.rotationPitch > 65 )
-			{
-				up = forward.getOpposite();
-				forward = ForgeDirection.UP;
-			}
-			else if ( player.rotationPitch < -65 )
-			{
-				up = forward.getOpposite();
-				forward = ForgeDirection.DOWN;
+				byte rotation = (byte) (MathHelper.floor_double( (double) ((player.rotationYaw * 4F) / 360F) + 2.5D ) & 3);
+
+				switch (rotation)
+				{
+				default:
+				case 0:
+					forward = ForgeDirection.SOUTH;
+					break;
+				case 1:
+					forward = ForgeDirection.WEST;
+					break;
+				case 2:
+					forward = ForgeDirection.NORTH;
+					break;
+				case 3:
+					forward = ForgeDirection.EAST;
+					break;
+				}
+
+				if ( player.rotationPitch > 65 )
+				{
+					up = forward.getOpposite();
+					forward = ForgeDirection.UP;
+				}
+				else if ( player.rotationPitch < -65 )
+				{
+					up = forward.getOpposite();
+					forward = ForgeDirection.DOWN;
+				}
 			}
 		}
 

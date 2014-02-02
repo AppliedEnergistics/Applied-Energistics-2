@@ -17,6 +17,7 @@ public class GuiSecurity extends GuiMEMonitorable
 	public GuiSecurity(InventoryPlayer inventoryPlayer, IStorageMonitorable te) {
 		super( inventoryPlayer, te, new ContainerSecurity( inventoryPlayer, te ) );
 		reservedSpace = 32;
+		xSize += 50;
 	}
 
 	GuiToggleButton inject, extract, craft, build, security;

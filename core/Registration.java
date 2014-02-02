@@ -14,6 +14,7 @@ import appeng.api.definitions.Blocks;
 import appeng.api.definitions.Items;
 import appeng.api.definitions.Materials;
 import appeng.api.definitions.Parts;
+import appeng.api.features.IWirelessTermHandler;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.security.ISecurityGrid;
@@ -38,6 +39,7 @@ import appeng.block.networking.BlockCreativeEnergyCell;
 import appeng.block.networking.BlockDenseEnergyCell;
 import appeng.block.networking.BlockEnergyAcceptor;
 import appeng.block.networking.BlockEnergyCell;
+import appeng.block.networking.BlockWireless;
 import appeng.block.qnb.BlockQuantumLinkChamber;
 import appeng.block.qnb.BlockQuantumRing;
 import appeng.block.solids.BlockFluix;
@@ -89,6 +91,7 @@ import appeng.items.tools.powered.ToolChargedStaff;
 import appeng.items.tools.powered.ToolEntropyManipulator;
 import appeng.items.tools.powered.ToolMassCannon;
 import appeng.items.tools.powered.ToolPortableCell;
+import appeng.items.tools.powered.ToolWirelessTerminal;
 import appeng.items.tools.quartz.ToolQuartzAxe;
 import appeng.items.tools.quartz.ToolQuartzCuttingKnife;
 import appeng.items.tools.quartz.ToolQuartzHoe;
@@ -220,7 +223,7 @@ public class Registration
 		blocks.blockGrindStone = addFeature( BlockGrinder.class );
 		blocks.blockCrankHandle = addFeature( BlockCrank.class );
 		// blocks.blockInscriber = addFeature( BlockInscriber.class );
-		// blocks.blockWireless = addFeature( BlockWireless.class );
+		blocks.blockWireless = addFeature( BlockWireless.class );
 		blocks.blockTinyTNT = addFeature( BlockTinyTNT.class );
 
 		// blocks.blockQuartzCrystalizer = addFeature( BlockQuartzCrystalizer.class );
@@ -286,7 +289,7 @@ public class Registration
 		items.itemMemoryCard = addFeature( ToolMemoryCard.class );
 		items.itemChargedStaff = addFeature( ToolChargedStaff.class );
 		items.itemEntropyManipulator = addFeature( ToolEntropyManipulator.class );
-		// items.itemWirelessTerminal = addFeature( ToolWirelessTerminal.class );
+		items.itemWirelessTerminal = addFeature( ToolWirelessTerminal.class );
 		items.itemNetworkTool = addFeature( ToolNetworkTool.class );
 		items.itemPortableCell = addFeature( ToolPortableCell.class );
 		items.itemBiometricCard = addFeature( ToolBiometricCard.class );
@@ -476,6 +479,8 @@ public class Registration
 		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemMassCannon.stack( 1 ), 1 );
 		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemMassCannon.stack( 1 ), 1 );
 		Upgrades.SPEED.registerItem( AEApi.instance().items().itemMassCannon.stack( 1 ), 4 );
+
+		AEApi.instance().registries().wireless().registerWirelessHandler( (IWirelessTermHandler) AEApi.instance().items().itemWirelessTerminal.item() );
 
 		if ( Configuration.instance.isFeatureEnabled( AEFeature.ChestLoot ) )
 		{

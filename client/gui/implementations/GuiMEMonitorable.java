@@ -123,7 +123,8 @@ public class GuiMEMonitorable extends AEBaseMEGui
 		{
 			if ( s instanceof AppEngSlot )
 			{
-				((AppEngSlot) s).yDisplayPosition = ((AppEngSlot) s).defY + ySize - 78 - 4;
+				if ( ((AppEngSlot) s).xDisplayPosition < 197 )
+					((AppEngSlot) s).yDisplayPosition = ((AppEngSlot) s).defY + ySize - 78 - 4;
 			}
 		}
 	}
@@ -163,13 +164,16 @@ public class GuiMEMonitorable extends AEBaseMEGui
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
+		int x_width = 197;
+
 		bindTexture( getBackground() );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, xSize, 18 );
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 18 );
+		this.drawTexturedModalRect( offsetX + x_width, offsetY, x_width, 0, 46, 128 );
 
 		for (int x = 0; x < rows; x++)
-			this.drawTexturedModalRect( offsetX, offsetY + 18 + x * 18, 0, 18, xSize, 18 );
+			this.drawTexturedModalRect( offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18 );
 
-		this.drawTexturedModalRect( offsetX, offsetY + 16 + rows * 18, 0, 106, xSize, 98 + reservedSpace );
+		this.drawTexturedModalRect( offsetX, offsetY + 16 + rows * 18, 0, 106, x_width, 98 + reservedSpace );
 
 		searchField.drawTextBox();
 	}

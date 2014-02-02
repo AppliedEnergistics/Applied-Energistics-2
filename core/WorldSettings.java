@@ -168,7 +168,7 @@ public class WorldSettings extends Configuration
 	public int getPlayerID(String username)
 	{
 		ConfigCategory playerList = this.getCategory( "players" );
-		if ( playerList == null )
+		if ( playerList == null || username == null || username.length() == 0 )
 			return -1;
 
 		Property prop = playerList.get( username );

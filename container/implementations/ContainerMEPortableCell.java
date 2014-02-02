@@ -11,6 +11,7 @@ import appeng.util.Platform;
 public class ContainerMEPortableCell extends ContainerMEMonitorable
 {
 
+	double powerMultiplier = 0.5;
 	IPortableCell civ;
 
 	public ContainerMEPortableCell(InventoryPlayer ip, IPortableCell montiorable) {
@@ -49,7 +50,7 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 		ticks++;
 		if ( ticks > 10 )
 		{
-			civ.extractAEPower( 0.5 * (double) ticks, Actionable.MODULATE, PowerMultiplier.CONFIG );
+			civ.extractAEPower( powerMultiplier * (double) ticks, Actionable.MODULATE, PowerMultiplier.CONFIG );
 			ticks = 0;
 		}
 		super.detectAndSendChanges();
