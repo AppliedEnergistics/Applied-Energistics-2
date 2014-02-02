@@ -106,7 +106,7 @@ public class GridStorageCache implements IStorageGrid
 
 			for (IMEInventoryHandler<IAEFluidStack> h : cc.getCellArray( StorageChannel.FLUIDS ))
 			{
-				postChanges( StorageChannel.ITEMS, 1, h.getAvailableItems( new ItemList<IAEFluidStack>() ), new MachineSource( cc ) );
+				postChanges( StorageChannel.FLUIDS, 1, h.getAvailableItems( new ItemList<IAEFluidStack>() ), new MachineSource( cc ) );
 			}
 		}
 
