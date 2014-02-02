@@ -93,7 +93,7 @@ public class WrapperTEPipe implements IInventory
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
-		return TE.instance.canAddItemsToPipe( ad, itemstack, dir );
+		return false;
 	}
 
 }

@@ -19,7 +19,6 @@ import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.core.AppEng;
 import appeng.integration.abstraction.IBC;
-import appeng.integration.abstraction.ITE;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.tile.inventory.AppEngNullInventory;
@@ -27,7 +26,6 @@ import appeng.util.Platform;
 import appeng.util.inv.WrapperBCPipe;
 import appeng.util.inv.WrapperChainedInventory;
 import appeng.util.inv.WrapperMCISidedInventory;
-import appeng.util.inv.WrapperTEPipe;
 import buildcraft.api.transport.IPipeConnection;
 import buildcraft.api.transport.IPipeTile.PipeType;
 import cpw.mods.fml.common.Optional.Interface;
@@ -83,23 +81,11 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 				}
 			}
 
-			if ( AppEng.instance.isIntegrationEnabled( "TE" ) )
-			{
-				ITE thermal = (ITE) AppEng.instance.getIntegration( "TE" );
-				if ( thermal != null )
-				{
-					if ( thermal.isPipe( te, side.getOpposite() ) )
-					{
-						try
-						{
-							output = new WrapperTEPipe( te, side.getOpposite() );
-						}
-						catch (Throwable _)
-						{
-						}
-					}
-				}
-			}
+			/*
+			 * if ( AppEng.instance.isIntegrationEnabled( "TE" ) ) { ITE thermal = (ITE) AppEng.instance.getIntegration(
+			 * "TE" ); if ( thermal != null ) { if ( thermal.isPipe( te, side.getOpposite() ) ) { try { output = new
+			 * WrapperTEPipe( te, side.getOpposite() ); } catch (Throwable _) { } } } }
+			 */
 
 			if ( output == null )
 			{

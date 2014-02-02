@@ -6,8 +6,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.integration.IIntegrationModule;
+import appeng.integration.abstraction.ITE;
+import cofh.api.transport.IItemConduit;
 
-public class TE implements IIntegrationModule
+public class TE implements IIntegrationModule, ITE
 {
 
 	public static TE instance;
@@ -39,16 +41,30 @@ public class TE implements IIntegrationModule
 		thermalexpansion.api.crafting.CraftingManagers.pulverizerManager.addRecipe( 320, in, out );
 	}
 
-	public void addItemsToPipe(TileEntity ad, ItemStack itemstack, ForgeDirection dir)
+	@Override
+	public ItemStack addItemsToPipe(TileEntity ad, ItemStack itemstack, ForgeDirection dir)
+	{
+		return ((IItemConduit) ad).insertItem( dir, itemstack );
+	}
+
+	@Override
+	public void addPulverizerRecipe(int i, ItemStack blkQuartz, ItemStack blockDust)
 	{
 		// TODO Auto-generated method stub
 
 	}
 
-	public boolean canAddItemsToPipe(TileEntity ad, ItemStack itemstack, ForgeDirection dir)
+	@Override
+	public void addPulverizerRecipe(int i, ItemStack blkQuartzOre, ItemStack matQuartz, ItemStack matQuartzDust)
 	{
 		// TODO Auto-generated method stub
-		return false;
+
+	}
+
+	@Override
+	public boolean isPipe(TileEntity te, ForgeDirection opposite)
+	{
+		return te instanceof IItemConduit;
 	}
 
 }

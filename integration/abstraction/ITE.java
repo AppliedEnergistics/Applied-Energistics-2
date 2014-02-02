@@ -13,4 +13,6 @@ public interface ITE
 
 	boolean isPipe(TileEntity te, ForgeDirection opposite);
 
+	ItemStack addItemsToPipe(TileEntity ad, ItemStack itemstack, ForgeDirection dir);
+
 }
