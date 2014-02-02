@@ -29,6 +29,7 @@ import appeng.util.inv.WrapperMCISidedInventory;
 import buildcraft.api.transport.IPipeConnection;
 import buildcraft.api.transport.IPipeTile.PipeType;
 import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -325,6 +326,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
+	@Method(modid = "BuildCraftAPI|transport")
 	public ConnectOverride overridePipeConnection(PipeType type, ForgeDirection with)
 	{
 		return side.equals( with ) && type == PipeType.ITEM ? ConnectOverride.CONNECT : ConnectOverride.DEFAULT;
