@@ -330,6 +330,18 @@ public class AENetworkProxy implements IGridBlock
 		return node.isActive();
 	}
 
+	public boolean isPowered()
+	{
+		try
+		{
+			return getEnergy().isNetworkPowered();
+		}
+		catch (GridAccessException e)
+		{
+			return false;
+		}
+	}
+
 	@Override
 	public void gridChanged()
 	{

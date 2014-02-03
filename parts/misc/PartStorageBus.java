@@ -19,6 +19,8 @@ import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
+import appeng.api.networking.events.MENetworkChannelsChanged;
+import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.ticking.IGridTickable;
@@ -76,6 +78,25 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	MEInventoryHandler handler = null;
 
 	int handlerHash = 0;
+	boolean wasActive = false;
+
+	@MENetworkEventSubscribe
+	public void updateChannels(MENetworkChannelsChanged chann)
+	{
+		boolean currentActive = proxy.isActive();
+		if ( wasActive != currentActive )
+		{
+			wasActive = currentActive;
+			try
+			{
+				proxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+			}
+			catch (GridAccessException e)
+			{
+				// :P
+			}
+		}
+	}
 
 	@Override
 	public boolean onActivate(EntityPlayer player, Vec3 pos)
@@ -332,7 +353,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	@Override
 	public List<IMEInventoryHandler> getCellArray(StorageChannel channel)
 	{
-		IMEInventoryHandler out = getHandler();
+		IMEInventoryHandler out = proxy.isActive() ? getHandler() : null;
 		if ( out == null )
 			return Arrays.asList( new IMEInventoryHandler[] {} );
 		return Arrays.asList( new IMEInventoryHandler[] { out } );
@@ -354,7 +375,8 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	{
 		try
 		{
-			proxy.getStorage().postAlterationOfStoredItems( StorageChannel.ITEMS, change, mySrc );
+			if ( proxy.isActive() )
+				proxy.getStorage().postAlterationOfStoredItems( StorageChannel.ITEMS, change, mySrc );
 		}
 		catch (GridAccessException e)
 		{

@@ -142,6 +142,9 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 
 	TickRateModulation doBusWork()
 	{
+		if ( !proxy.isActive() )
+			return TickRateModulation.IDLE;
+
 		worked = false;
 
 		InventoryAdaptor myAdaptor = getHandler();

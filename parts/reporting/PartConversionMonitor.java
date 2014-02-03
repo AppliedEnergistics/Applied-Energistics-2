@@ -35,6 +35,9 @@ public class PartConversionMonitor extends PartStorageMonitor
 		if ( Platform.isClient() )
 			return true;
 
+		if ( !proxy.isActive() )
+			return false;
+
 		boolean ModeB = false;
 
 		ItemStack item = player.getCurrentEquippedItem();

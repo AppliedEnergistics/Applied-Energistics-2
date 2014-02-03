@@ -117,6 +117,9 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 	@Override
 	TickRateModulation doBusWork()
 	{
+		if ( !proxy.isActive() )
+			return TickRateModulation.IDLE;
+
 		itemToSend = 1;
 		didSomething = false;
 

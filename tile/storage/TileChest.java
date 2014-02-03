@@ -70,6 +70,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	long lastStateChange = 0;
 	int priority = 0;
 	int state = 0;
+	boolean wasActive = false;
 
 	private void recalculateDisplay()
 	{
@@ -78,10 +79,24 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		for (int x = 0; x < getCellCount(); x++)
 			state |= (getCellStatus( x ) << (3 * x));
 
-		if ( getAECurrentPower() > 64 || gridProxy.isActive() )
+		if ( isPowered() )
 			state |= 0x40;
 		else
 			state &= ~0x40;
+
+		boolean currentActive = gridProxy.isActive();
+		if ( wasActive != currentActive )
+		{
+			wasActive = currentActive;
+			try
+			{
+				gridProxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+			}
+			catch (GridAccessException e)
+			{
+				// :P
+			}
+		}
 
 		if ( oldState != state )
 			markForUpdate();
@@ -153,7 +168,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			for (int x = 0; x < getCellCount(); x++)
 				state |= (getCellStatus( x ) << (3 * x));
 
-			if ( getAECurrentPower() > 64 || gridProxy.isActive() )
+			if ( isPowered() )
 				state |= 0x40;
 			else
 				state &= ~0x40;
@@ -259,7 +274,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			{
 				try
 				{
-					gridProxy.getStorage().postAlterationOfStoredItems( chan, change, mySrc );
+					if ( gridProxy.isActive() )
+						gridProxy.getStorage().postAlterationOfStoredItems( chan, change, mySrc );
 				}
 				catch (GridAccessException e)
 				{
@@ -453,14 +469,18 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	@Override
 	public List<IMEInventoryHandler> getCellArray(StorageChannel channel)
 	{
-		try
+		if ( gridProxy.isActive() )
 		{
-			return Arrays.asList( new IMEInventoryHandler[] { getHandler( channel ) } );
+			try
+			{
+				return Arrays.asList( new IMEInventoryHandler[] { getHandler( channel ) } );
+			}
+			catch (AENoHandler e)
+			{
+				// :P
+			}
 		}
-		catch (AENoHandler e)
-		{
-			return new ArrayList();
-		}
+		return new ArrayList();
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import net.minecraft.util.Vec3;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.client.texture.CableBusTextures;
+import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.GuiBridge;
 import appeng.me.GridAccessException;
 import appeng.util.Platform;
@@ -29,7 +30,16 @@ public class PartTerminal extends PartMonitor implements IStorageMonitorable
 			if ( Platform.isClient() )
 				return true;
 
-			Platform.openGUI( player, getHost().getTile(), side, GuiBridge.GUI_ME );
+			if ( proxy.isActive() )
+				Platform.openGUI( player, getHost().getTile(), side, GuiBridge.GUI_ME );
+			else
+			{
+				if ( proxy.isPowered() )
+					player.sendChatToPlayer( PlayerMessages.CommunicationError.get() );
+				else
+					player.sendChatToPlayer( PlayerMessages.MachineNotPowered.get() );
+			}
+
 			return true;
 		}
 

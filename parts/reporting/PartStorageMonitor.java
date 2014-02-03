@@ -123,6 +123,9 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		if ( Platform.isClient() )
 			return true;
 
+		if ( !proxy.isActive() )
+			return false;
+
 		TileEntity te = this.tile;
 		ItemStack eq = player.getCurrentEquippedItem();
 		if ( Platform.isWrench( player, eq, te.xCoord, te.yCoord, te.zCoord ) )

@@ -3,6 +3,7 @@ package appeng.tile.storage;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -53,15 +54,30 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	long lastStateChange = 0;
 	int state = 0;
 	int priority = 0;
+	boolean wasActive = false;
 
 	private void recalculateDisplay()
 	{
 		int oldState = 0;
 
-		if ( gridProxy.isActive() )
+		boolean currentActive;
+		if ( currentActive = gridProxy.isActive() )
 			state |= 0x80000000;
 		else
 			state &= ~0x80000000;
+
+		if ( wasActive != currentActive )
+		{
+			wasActive = currentActive;
+			try
+			{
+				gridProxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+			}
+			catch (GridAccessException e)
+			{
+				// :P
+			}
+		}
 
 		for (int x = 0; x < getCellCount(); x++)
 			state |= (getCellStatus( x ) << (3 * x));
@@ -240,8 +256,12 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	@Override
 	public List<IMEInventoryHandler> getCellArray(StorageChannel channel)
 	{
-		updateState();
-		return (List) (channel == StorageChannel.ITEMS ? items : fluids);
+		if ( gridProxy.isActive() )
+		{
+			updateState();
+			return (List) (channel == StorageChannel.ITEMS ? items : fluids);
+		}
+		return new ArrayList();
 	}
 
 	@Override
