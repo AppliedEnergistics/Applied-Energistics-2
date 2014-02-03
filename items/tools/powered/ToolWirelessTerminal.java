@@ -14,7 +14,6 @@ import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.Platform;
-import cpw.mods.fml.common.network.Player;
 
 public class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler
 {
@@ -63,15 +62,15 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	}
 
 	@Override
-	public boolean usePower(Player player, float amount, ItemStack is)
+	public boolean usePower(EntityPlayer player, double amount, ItemStack is)
 	{
 		return this.extractAEPower( is, amount ) >= amount - 0.5;
 	}
 
 	@Override
-	public boolean hasPower(Player player, ItemStack is)
+	public boolean hasPower(EntityPlayer player, double amt, ItemStack is)
 	{
-		return getAECurrentPower( is ) > 0.5;
+		return getAECurrentPower( is ) >= amt;
 	}
 
 	@Override

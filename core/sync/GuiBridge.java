@@ -8,8 +8,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.exceptions.AppEngException;
+import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.INetworkTool;
@@ -44,8 +46,10 @@ import appeng.container.implementations.ContainerSecurity;
 import appeng.container.implementations.ContainerStorageBus;
 import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
+import appeng.container.implementations.ContainerWirelessTerm;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
+import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.parts.misc.PartStorageBus;
 import appeng.server.AccessType;
@@ -75,6 +79,8 @@ public enum GuiBridge implements IGuiHandler
 	GUI_ME(ContainerMEMonitorable.class, IStorageMonitorable.class, false, null),
 
 	GUI_PORTABLE_CELL(ContainerMEPortableCell.class, IPortableCell.class, true, null),
+
+	GUI_WIRELESS_TERM(ContainerWirelessTerm.class, WirelessTerminalGuiObject.class, true, null),
 
 	GUI_NETWORK_STATUS(ContainerNetworkStatus.class, INetworkTool.class, true, null),
 
@@ -211,12 +217,9 @@ public enum GuiBridge implements IGuiHandler
 		if ( ID.isItem() )
 		{
 			ItemStack it = player.inventory.getCurrentItem();
-			if ( it != null && it.getItem() instanceof IGuiItem )
-			{
-				Object myItem = ((IGuiItem) it.getItem()).getGuiObject( it, w, x, y, z );
-				if ( ID.CorrectTileOrPart( myItem ) )
-					return updateGui( ID.ConstructContainer( player.inventory, side, myItem ), w, x, y, z, side );
-			}
+			Object myItem = getGuiObject( it, player, w, x, y, z );
+			if ( myItem != null && ID.CorrectTileOrPart( myItem ) )
+				return updateGui( ID.ConstructContainer( player.inventory, side, myItem ), w, x, y, z, side );
 		}
 		else
 		{
@@ -238,6 +241,23 @@ public enum GuiBridge implements IGuiHandler
 		return new ContainerNull();
 	}
 
+	private Object getGuiObject(ItemStack it, EntityPlayer player, World w, int x, int y, int z)
+	{
+		if ( it != null )
+		{
+			if ( it.getItem() instanceof IGuiItem )
+			{
+				return ((IGuiItem) it.getItem()).getGuiObject( it, w, x, y, z );
+			}
+
+			IWirelessTermHandler wh = AEApi.instance().registries().wireless().getWirelessTerminalHandler( it );
+			if ( wh != null )
+				return new WirelessTerminalGuiObject( wh, it, player, w, x, y, z );
+		}
+
+		return null;
+	}
+
 	public boolean isItem()
 	{
 		return isItem;
@@ -252,12 +272,9 @@ public enum GuiBridge implements IGuiHandler
 		if ( ID.isItem() )
 		{
 			ItemStack it = player.inventory.getCurrentItem();
-			if ( it != null && it.getItem() instanceof IGuiItem )
-			{
-				Object myItem = ((IGuiItem) it.getItem()).getGuiObject( it, w, x, y, z );
-				if ( ID.CorrectTileOrPart( myItem ) )
-					return ID.ConstructGui( player.inventory, side, myItem );
-			}
+			Object myItem = getGuiObject( it, player, w, x, y, z );
+			if ( ID.CorrectTileOrPart( myItem ) )
+				return ID.ConstructGui( player.inventory, side, myItem );
 		}
 		else
 		{

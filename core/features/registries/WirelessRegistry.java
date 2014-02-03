@@ -8,8 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWirelessTermRegistery;
+import appeng.core.sync.GuiBridge;
 import appeng.util.Platform;
-import cpw.mods.fml.common.network.Player;
 
 public class WirelessRegistry implements IWirelessTermRegistery
 {
@@ -62,9 +62,9 @@ public class WirelessRegistry implements IWirelessTermRegistery
 			return;
 		}
 
-		if ( handler.usePower( (Player) player, 10.0f, item ) )
+		if ( handler.hasPower( player, 0.5, item ) )
 		{
-
+			Platform.openGUI( player, null, null, GuiBridge.GUI_WIRELESS_TERM );
 		}
 
 	}
