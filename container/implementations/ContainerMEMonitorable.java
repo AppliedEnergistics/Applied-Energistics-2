@@ -40,24 +40,29 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonito
 		if ( Platform.isServer() )
 		{
 			monitor = montiorable.getItemInventory();
-			monitor.addListener( this, null );
-
-			cellInv = monitor;
-
-			if ( montiorable instanceof IPortableCell )
-				powerSrc = (IPortableCell) montiorable;
-			else if ( montiorable instanceof IMEChest )
-				powerSrc = (IMEChest) montiorable;
-			else if ( montiorable instanceof IGridHost )
+			if ( monitor != null )
 			{
-				IGridNode node = ((IGridHost) montiorable).getGridNode( ForgeDirection.UNKNOWN );
-				if ( node != null )
+				monitor.addListener( this, null );
+
+				cellInv = monitor;
+
+				if ( montiorable instanceof IPortableCell )
+					powerSrc = (IPortableCell) montiorable;
+				else if ( montiorable instanceof IMEChest )
+					powerSrc = (IMEChest) montiorable;
+				else if ( montiorable instanceof IGridHost )
 				{
-					IGrid g = node.getGrid();
-					if ( g != null )
-						powerSrc = g.getCache( IEnergyGrid.class );
+					IGridNode node = ((IGridHost) montiorable).getGridNode( ForgeDirection.UNKNOWN );
+					if ( node != null )
+					{
+						IGrid g = node.getGrid();
+						if ( g != null )
+							powerSrc = g.getCache( IEnergyGrid.class );
+					}
 				}
 			}
+			else
+				ip.player.closeScreen();
 		}
 		else
 			monitor = null;
@@ -122,7 +127,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonito
 	{
 		super.addCraftingToCrafters( c );
 
-		if ( Platform.isServer() && c instanceof Player )
+		if ( Platform.isServer() && c instanceof Player && monitor != null )
 		{
 			try
 			{
@@ -168,7 +173,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonito
 	{
 		super.removeCraftingFromCrafters( c );
 
-		if ( this.crafters.isEmpty() )
+		if ( this.crafters.isEmpty() && monitor != null )
 			monitor.removeListener( this );
 	}
 

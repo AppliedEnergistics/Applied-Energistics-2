@@ -3,12 +3,16 @@ package appeng.helpers;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
+import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEMonitor;
@@ -36,104 +40,156 @@ public class WirelessTerminalGuiObject implements IPortableCell
 		effectiveItem = is;
 		myPlayer = ep;
 		wth = wh;
+
+		long encKey = Long.parseLong( encryptionKey );
+		Object obj = AEApi.instance().registries().locateable().findLocateableBySerial( encKey );
+		if ( obj instanceof IGridHost )
+		{
+			IGridNode n = ((IGridHost) obj).getGridNode( ForgeDirection.UNKNOWN );
+			if ( n != null )
+			{
+				targetGrid = n.getGrid();
+				if ( targetGrid != null )
+				{
+					sg = targetGrid.getCache( IStorageGrid.class );
+					if ( sg != null )
+						itemStorage = sg.getItemInventory();
+				}
+			}
+		}
 	}
 
-	boolean rangeCheck()
+	public boolean rangeCheck()
 	{
+		if ( targetGrid != null && itemStorage != null )
+		{
+
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public IMEMonitor<IAEItemStack> getItemInventory()
 	{
+		if ( sg == null )
+			return null;
 		return sg.getItemInventory();
 	}
 
 	@Override
 	public IMEMonitor<IAEFluidStack> getFluidInventory()
 	{
+		if ( sg == null )
+			return null;
 		return sg.getFluidInventory();
 	}
 
 	@Override
 	public void addListener(IMEMonitorHandlerReciever<IAEItemStack> l, Object verificationToken)
 	{
-		itemStorage.addListener( l, verificationToken );
+		if ( itemStorage != null )
+			itemStorage.addListener( l, verificationToken );
 	}
 
 	@Override
 	public void removeListener(IMEMonitorHandlerReciever<IAEItemStack> l)
 	{
-		itemStorage.removeListener( l );
+		if ( itemStorage != null )
+			itemStorage.removeListener( l );
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public IItemList<IAEItemStack> getAvailableItems(IItemList out)
 	{
-		return itemStorage.getAvailableItems( out );
+		if ( itemStorage != null )
+			return itemStorage.getAvailableItems( out );
+		return out;
 	}
 
 	@Override
 	public IItemList<IAEItemStack> getStorageList()
 	{
-		return itemStorage.getStorageList();
+		if ( itemStorage != null )
+			return itemStorage.getStorageList();
+		return null;
 	}
 
 	@Override
 	public AccessRestriction getAccess()
 	{
-		return itemStorage.getAccess();
+		if ( itemStorage != null )
+			return itemStorage.getAccess();
+		return AccessRestriction.NO_ACCESS;
 	}
 
 	@Override
 	public boolean isPrioritized(IAEItemStack input)
 	{
-		return itemStorage.isPrioritized( input );
+		if ( itemStorage != null )
+			return itemStorage.isPrioritized( input );
+		return false;
 	}
 
 	@Override
 	public boolean canAccept(IAEItemStack input)
 	{
-		return itemStorage.canAccept( input );
+		if ( itemStorage != null )
+			return itemStorage.canAccept( input );
+		return false;
 	}
 
 	@Override
 	public int getPriority()
 	{
-		return itemStorage.getPriority();
+		if ( itemStorage != null )
+			return itemStorage.getPriority();
+		return 0;
 	}
 
 	@Override
 	public int getSlot()
 	{
-		return itemStorage.getSlot();
+		if ( itemStorage != null )
+			return itemStorage.getSlot();
+		return 0;
 	}
 
 	@Override
 	public IAEItemStack injectItems(IAEItemStack input, Actionable type, BaseActionSource src)
 	{
-		return itemStorage.injectItems( input, type, src );
+		if ( itemStorage != null )
+			return itemStorage.injectItems( input, type, src );
+		return input;
 	}
 
 	@Override
 	public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src)
 	{
-		return itemStorage.extractItems( request, mode, src );
+		if ( itemStorage != null )
+			return itemStorage.extractItems( request, mode, src );
+		return null;
 	}
 
 	@Override
 	public StorageChannel getChannel()
 	{
-		return itemStorage.getChannel();
+		if ( itemStorage != null )
+			return itemStorage.getChannel();
+		return StorageChannel.ITEMS;
 	}
 
 	@Override
 	public double extractAEPower(double amt, Actionable mode, PowerMultiplier usePowerMultiplier)
 	{
-		if ( mode == Actionable.SIMULATE )
-			return wth.hasPower( myPlayer, amt, getItemStack() ) ? amt : 0;
-		return wth.usePower( myPlayer, amt, getItemStack() ) ? amt : 0;
+		if ( wth != null && effectiveItem != null )
+		{
+			if ( mode == Actionable.SIMULATE )
+				return wth.hasPower( myPlayer, amt, getItemStack() ) ? amt : 0;
+			return wth.usePower( myPlayer, amt, getItemStack() ) ? amt : 0;
+		}
+		return 0.0;
 	}
 
 	@Override

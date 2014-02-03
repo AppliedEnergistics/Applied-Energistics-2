@@ -19,6 +19,7 @@ import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.container.slot.AppEngSlot;
 import appeng.core.Configuration;
 import appeng.core.localization.GuiText;
+import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.reporting.PartTerminal;
 import appeng.tile.misc.TileSecurity;
 import appeng.util.Platform;
@@ -52,6 +53,8 @@ public class GuiMEMonitorable extends AEBaseMEGui
 
 		if ( te instanceof TileSecurity )
 			myName = GuiText.Security;
+		else if ( te instanceof WirelessTerminalGuiObject )
+			myName = GuiText.WirelessTerminal;
 		else if ( te instanceof IPortableCell )
 			myName = GuiText.PortableCell;
 		else if ( te instanceof IMEChest )

@@ -21,7 +21,7 @@ public enum GuiText
 
 	StorageBus, Priority, Security, Encoded, Blank, Unlinked, Linked,
 
-	SecurityCardEditor, NoPermissions,
+	SecurityCardEditor, NoPermissions, WirelessTerminal,
 
 	METunnel, ItemTunnel, RedstoneTunnel, MJTunnel, EUTunnel, FluidTunnel;
 

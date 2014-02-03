@@ -5,7 +5,9 @@ import appeng.core.AELog;
 
 public enum PlayerMessages
 {
-	ChestCannotReadStorageCell, InvalidMachine, LoadedSettings, SavedSettings, MachineNotPowered, isNowLocked, isNowUnlocked, AmmoDepleted, CommunicationError;
+	ChestCannotReadStorageCell, InvalidMachine, LoadedSettings, SavedSettings, MachineNotPowered,
+
+	isNowLocked, isNowUnlocked, AmmoDepleted, CommunicationError, OutOfRange, DeviceNotPowered;
 
 	private PlayerMessages() {
 		AELog.localization( "chat", getName() );
