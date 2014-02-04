@@ -1,6 +1,5 @@
 package appeng.me;
 
-import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridCache;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -18,21 +17,21 @@ public class GridCacheWrapper implements IGridCache
 	}
 
 	@Override
-	public void onUpdateTick(final IGrid grid)
+	public void onUpdateTick()
 	{
-		myCache.onUpdateTick( grid );
+		myCache.onUpdateTick();
 	}
 
 	@Override
-	public void removeNode(final IGrid grid, final IGridNode gridNode, final IGridHost machine)
+	public void removeNode(final IGridNode gridNode, final IGridHost machine)
 	{
-		myCache.removeNode( grid, gridNode, machine );
+		myCache.removeNode( gridNode, machine );
 	}
 
 	@Override
-	public void addNode(final IGrid grid, final IGridNode gridNode, final IGridHost machine)
+	public void addNode(final IGridNode gridNode, final IGridHost machine)
 	{
-		myCache.addNode( grid, gridNode, machine );
+		myCache.addNode( gridNode, machine );
 	}
 
 	public String getName()

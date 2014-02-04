@@ -182,18 +182,18 @@ public class SpatialPylonCache implements IGridCache, ISpatialCache
 	}
 
 	@Override
-	public void onUpdateTick(IGrid grid)
+	public void onUpdateTick()
 	{
 	}
 
 	@Override
-	public void addNode(IGrid grid, IGridNode node, IGridHost machine)
+	public void addNode(IGridNode node, IGridHost machine)
 	{
 
 	}
 
 	@Override
-	public void removeNode(IGrid grid, IGridNode node, IGridHost machine)
+	public void removeNode(IGridNode node, IGridHost machine)
 	{
 
 	}

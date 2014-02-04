@@ -52,7 +52,7 @@ public class TickManagerCache implements ITickManager
 	}
 
 	@Override
-	public void onUpdateTick(IGrid grid)
+	public void onUpdateTick()
 	{
 		currentTick++;
 		while (!upcomingTicks.isEmpty())
@@ -146,7 +146,7 @@ public class TickManagerCache implements ITickManager
 	}
 
 	@Override
-	public void removeNode(IGrid grid, IGridNode gridNode, IGridHost machine)
+	public void removeNode(IGridNode gridNode, IGridHost machine)
 	{
 		if ( machine instanceof IGridTickable )
 		{
@@ -157,7 +157,7 @@ public class TickManagerCache implements ITickManager
 	}
 
 	@Override
-	public void addNode(IGrid grid, IGridNode gridNode, IGridHost machine)
+	public void addNode(IGridNode gridNode, IGridHost machine)
 	{
 		if ( machine instanceof IGridTickable )
 		{

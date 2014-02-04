@@ -64,7 +64,7 @@ public class Grid implements IGrid
 	public void remove(GridNode gridNode)
 	{
 		for (IGridCache c : caches.values())
-			c.removeNode( this, gridNode, gridNode.getMachine() );
+			c.removeNode( gridNode, gridNode.getMachine() );
 
 		Collection<IGridNode> nodes = Machines.get( gridNode.getMachineClass() );
 		if ( nodes != null )
@@ -143,7 +143,7 @@ public class Grid implements IGrid
 		nodes.add( gridNode );
 
 		for (IGridCache c : caches.values())
-			c.addNode( this, gridNode, gridNode.getMachine() );
+			c.addNode( gridNode, gridNode.getMachine() );
 
 		gridNode.gridProxy.gridChanged();
 		// postEventTo( gridNode, networkChanged );
@@ -198,7 +198,7 @@ public class Grid implements IGrid
 	{
 		for (IGridCache gc : caches.values())
 		{
-			gc.onUpdateTick( this );
+			gc.onUpdateTick();
 		}
 	}
 

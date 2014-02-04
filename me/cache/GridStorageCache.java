@@ -51,14 +51,14 @@ public class GridStorageCache implements IStorageGrid
 	}
 
 	@Override
-	public void onUpdateTick(IGrid grid)
+	public void onUpdateTick()
 	{
 		itemMonitor.onTick();
 		fluidMonitor.onTick();
 	}
 
 	@Override
-	public void removeNode(IGrid grid, IGridNode node, IGridHost machine)
+	public void removeNode(IGridNode node, IGridHost machine)
 	{
 		if ( machine instanceof ICellContainer )
 		{
@@ -90,7 +90,7 @@ public class GridStorageCache implements IStorageGrid
 	}
 
 	@Override
-	public void addNode(IGrid grid, IGridNode node, IGridHost machine)
+	public void addNode(IGridNode node, IGridHost machine)
 	{
 		if ( machine instanceof ICellContainer )
 		{

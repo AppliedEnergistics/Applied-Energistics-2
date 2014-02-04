@@ -97,7 +97,7 @@ public class SecurityCache implements IGridCache, ISecurityGrid
 	}
 
 	@Override
-	public void removeNode(IGrid grid, IGridNode gridNode, IGridHost machine)
+	public void removeNode(IGridNode gridNode, IGridHost machine)
 	{
 		if ( machine instanceof TileSecurity )
 		{
@@ -107,7 +107,7 @@ public class SecurityCache implements IGridCache, ISecurityGrid
 	}
 
 	@Override
-	public void addNode(IGrid grid, IGridNode gridNode, IGridHost machine)
+	public void addNode(IGridNode gridNode, IGridHost machine)
 	{
 		if ( machine instanceof TileSecurity )
 		{
@@ -119,7 +119,7 @@ public class SecurityCache implements IGridCache, ISecurityGrid
 	}
 
 	@Override
-	public void onUpdateTick(IGrid grid)
+	public void onUpdateTick()
 	{
 
 	}

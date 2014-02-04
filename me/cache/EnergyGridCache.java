@@ -44,8 +44,10 @@ public class EnergyGridCache implements IEnergyGrid
 	double tickDrainPerTick = 0;
 	double tickInjectionPerTick = 0;
 
-	// Double[] totalDrainPastTicks = new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-	// Double[] totalInjectionPastTicks = new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+	// Double[] totalDrainPastTicks = new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0,
+	// 0.0, 0.0, 0.0, 0.0, 0.0 };
+	// Double[] totalInjectionPastTicks = new Double[] { 0.0, 0.0, 0.0, 0.0,
+	// 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 
 	/**
 	 * power status
@@ -194,7 +196,7 @@ public class EnergyGridCache implements IEnergyGrid
 	}
 
 	@Override
-	public void addNode(IGrid grid, IGridNode node, IGridHost machine)
+	public void addNode(IGridNode node, IGridHost machine)
 	{
 		if ( machine instanceof IEnergyGridProvider )
 			gproviders.add( (IEnergyGridProvider) machine );
@@ -225,11 +227,11 @@ public class EnergyGridCache implements IEnergyGrid
 			}
 		}
 
-		grid.postEventTo( node, new MENetworkPowerStatusChange() );
+		myGrid.postEventTo( node, new MENetworkPowerStatusChange() );
 	}
 
 	@Override
-	public void removeNode(IGrid grid, IGridNode node, IGridHost machine)
+	public void removeNode(IGridNode node, IGridHost machine)
 	{
 		if ( machine instanceof IEnergyGridProvider )
 			gproviders.remove( machine );
@@ -257,7 +259,7 @@ public class EnergyGridCache implements IEnergyGrid
 	}
 
 	@Override
-	public void onUpdateTick(IGrid grid)
+	public void onUpdateTick()
 	{
 		avgDrainPerTick *= (AvgLength - 1) / AvgLength;
 		avgInjectionPerTick *= (AvgLength - 1) / AvgLength;
@@ -292,9 +294,9 @@ public class EnergyGridCache implements IEnergyGrid
 
 		// update public status, this buffers power ups for 30 ticks.
 		if ( hasPower && ticksSinceHasPowerChange > 30 )
-			publicPowerState( true, grid );
+			publicPowerState( true, myGrid );
 		else if ( !hasPower )
-			publicPowerState( false, grid );
+			publicPowerState( false, myGrid );
 
 		availableTicksSinceUpdate++;
 		if ( extra > 32 )
@@ -433,7 +435,8 @@ public class EnergyGridCache implements IEnergyGrid
 		return avgDrainPerTick;/*
 								 * double out = 0;
 								 * 
-								 * for (double x : totalDrainPastTicks) out += x;
+								 * for (double x : totalDrainPastTicks) out +=
+								 * x;
 								 * 
 								 * return out / totalDrainPastTicks.length;
 								 */
@@ -445,9 +448,11 @@ public class EnergyGridCache implements IEnergyGrid
 		return avgInjectionPerTick;/*
 									 * double out = 0;
 									 * 
-									 * for (double x : totalInjectionPastTicks) out += x;
+									 * for (double x : totalInjectionPastTicks)
+									 * out += x;
 									 * 
-									 * return out / totalInjectionPastTicks.length;
+									 * return out /
+									 * totalInjectionPastTicks.length;
 									 */
 	}
 

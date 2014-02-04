@@ -55,7 +55,7 @@ public class PathGridCache implements IPathingGrid
 	}
 
 	@Override
-	public void onUpdateTick(IGrid grid)
+	public void onUpdateTick()
 	{
 		if ( recalculateControllerNextTick )
 		{
@@ -95,8 +95,9 @@ public class PathGridCache implements IPathingGrid
 				closedList = new HashSet();
 				semiOpen = new HashSet();
 
-				// myGrid.getPivot().beginVisition( new AdHocChannelUpdater( 0 ) );
-				for (IGridNode node : grid.getMachines( TileController.class ))
+				// myGrid.getPivot().beginVisition( new AdHocChannelUpdater( 0 )
+				// );
+				for (IGridNode node : myGrid.getMachines( TileController.class ))
 				{
 					closedList.add( (IPathItem) node );
 					for (IGridConnection gcc : node.getConnections())
@@ -182,7 +183,7 @@ public class PathGridCache implements IPathingGrid
 	}
 
 	@Override
-	public void removeNode(IGrid grid, IGridNode gridNode, IGridHost machine)
+	public void removeNode(IGridNode gridNode, IGridHost machine)
 	{
 		if ( machine instanceof TileController )
 		{
@@ -197,7 +198,7 @@ public class PathGridCache implements IPathingGrid
 	}
 
 	@Override
-	public void addNode(IGrid grid, IGridNode gridNode, IGridHost machine)
+	public void addNode(IGridNode gridNode, IGridHost machine)
 	{
 		if ( machine instanceof TileController )
 		{

@@ -55,7 +55,7 @@ public class P2PCache implements IGridCache
 	}
 
 	@Override
-	public void onUpdateTick(IGrid grid)
+	public void onUpdateTick()
 	{
 
 	}
@@ -72,13 +72,14 @@ public class P2PCache implements IGridCache
 		else
 			inputs.put( t.freq, t );
 
-		// AELog.info( "update-" + (t.output ? "output: " : "input: ") + t.freq );
+		// AELog.info( "update-" + (t.output ? "output: " : "input: ") + t.freq
+		// );
 		updateTunnel( t.freq, t.output );
 		updateTunnel( t.freq, !t.output );
 	}
 
 	@Override
-	public void addNode(IGrid grid, IGridNode node, IGridHost machine)
+	public void addNode(IGridNode node, IGridHost machine)
 	{
 		if ( machine instanceof PartP2PTunnel )
 		{
@@ -89,7 +90,8 @@ public class P2PCache implements IGridCache
 			}
 
 			PartP2PTunnel t = (PartP2PTunnel) machine;
-			// AELog.info( "add-" + (t.output ? "output: " : "input: ") + t.freq );
+			// AELog.info( "add-" + (t.output ? "output: " : "input: ") + t.freq
+			// );
 
 			if ( t.output )
 				outputs.put( t.freq, t );
@@ -101,7 +103,7 @@ public class P2PCache implements IGridCache
 	}
 
 	@Override
-	public void removeNode(IGrid grid, IGridNode node, IGridHost machine)
+	public void removeNode(IGridNode node, IGridHost machine)
 	{
 		if ( machine instanceof PartP2PTunnel )
 		{
@@ -112,7 +114,8 @@ public class P2PCache implements IGridCache
 			}
 
 			PartP2PTunnel t = (PartP2PTunnel) machine;
-			// AELog.info( "rmv-" + (t.output ? "output: " : "input: ") + t.freq );
+			// AELog.info( "rmv-" + (t.output ? "output: " : "input: ") + t.freq
+			// );
 
 			if ( t.output )
 				outputs.remove( t.freq, t );
