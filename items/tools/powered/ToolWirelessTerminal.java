@@ -10,6 +10,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
 import appeng.api.features.IWirelessTermHandler;
+import appeng.core.Configuration;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
@@ -18,12 +19,10 @@ import appeng.util.Platform;
 public class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler
 {
 
-	String name;
-	int DISTNACE_CALC = 2;
-
 	public ToolWirelessTerminal() {
 		super( ToolWirelessTerminal.class, null );
 		setfeature( EnumSet.of( AEFeature.WirelessAccessTerminal, AEFeature.PoweredTools ) );
+		maxStoredPower = Configuration.instance.wireless_battery;
 	}
 
 	@Override

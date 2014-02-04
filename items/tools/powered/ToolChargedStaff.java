@@ -6,6 +6,7 @@ import java.util.EnumSet;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import appeng.core.Configuration;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.packets.PacketLightning;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
@@ -18,7 +19,7 @@ public class ToolChargedStaff extends AEBasePoweredItem
 	public ToolChargedStaff() {
 		super( ToolChargedStaff.class, null );
 		setfeature( EnumSet.of( AEFeature.ChargedStaff, AEFeature.PoweredTools ) );
-		maxStoredPower = 8000;
+		maxStoredPower = Configuration.instance.staff_battery;
 	}
 
 	@Override

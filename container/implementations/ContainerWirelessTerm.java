@@ -1,6 +1,7 @@
 package appeng.container.implementations;
 
 import net.minecraft.entity.player.InventoryPlayer;
+import appeng.core.Configuration;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
 
@@ -23,6 +24,10 @@ public class ContainerWirelessTerm extends ContainerMEPortableCell
 		{
 			getPlayerInv().player.closeScreen();
 			getPlayerInv().player.sendChatToPlayer( PlayerMessages.OutOfRange.get() );
+		}
+		else
+		{
+			powerMultiplier = Configuration.instance.wireless_getDrainRate( wtgo.getRange() );
 		}
 	}
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
@@ -14,8 +15,10 @@ import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockWireless;
 import appeng.core.features.AEFeature;
+import appeng.core.sync.GuiBridge;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.networking.TileWireless;
+import appeng.util.Platform;
 
 public class BlockWireless extends AEBaseBlock implements ICustomCollision
 {
@@ -164,6 +167,22 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 		}
 		else
 			out.add( AxisAlignedBB.getAABBPool().getAABB( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
+	}
+
+	@Override
+	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
+	{
+		if ( p.isSneaking() )
+			return false;
+
+		TileWireless tg = getTileEntity( w, x, y, z );
+		if ( tg != null )
+		{
+			if ( Platform.isServer() )
+				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_WIRELESS );
+			return true;
+		}
+		return false;
 	}
 
 }

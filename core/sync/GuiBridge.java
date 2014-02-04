@@ -46,6 +46,7 @@ import appeng.container.implementations.ContainerSecurity;
 import appeng.container.implementations.ContainerStorageBus;
 import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
+import appeng.container.implementations.ContainerWireless;
 import appeng.container.implementations.ContainerWirelessTerm;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
@@ -58,6 +59,7 @@ import appeng.tile.misc.TileCellWorkbench;
 import appeng.tile.misc.TileCondenser;
 import appeng.tile.misc.TileSecurity;
 import appeng.tile.misc.TileVibrationChamber;
+import appeng.tile.networking.TileWireless;
 import appeng.tile.qnb.TileQuantumBridge;
 import appeng.tile.storage.TileChest;
 import appeng.tile.storage.TileDrive;
@@ -75,6 +77,8 @@ public enum GuiBridge implements IGuiHandler
 	GUI_QNB(ContainerQNB.class, TileQuantumBridge.class, false, SecurityPermissions.BUILD),
 
 	GUI_CHEST(ContainerChest.class, TileChest.class, false, SecurityPermissions.BUILD),
+
+	GUI_WIRELESS(ContainerWireless.class, TileWireless.class, false, SecurityPermissions.BUILD),
 
 	GUI_ME(ContainerMEMonitorable.class, IStorageMonitorable.class, false, null),
 

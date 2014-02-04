@@ -125,21 +125,37 @@ public class TileWireless extends AENetworkInvTile
 	}
 
 	@Override
-	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added)
+	public void onInventoryChanged()
 	{
 		updatePower();
 	}
 
 	private void updatePower()
 	{
-		ItemStack boosters = inv.getStackInSlot( 0 );
-		gridProxy.setIdlePowerUsage( Configuration.instance.wireless_getPowerDrain( boosters == null ? 0 : boosters.stackSize ) );
+		gridProxy.setIdlePowerUsage( Configuration.instance.wireless_getPowerDrain( getBoosters() ) );
 	}
 
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		return sides;
+	}
+
+	public double getRange()
+	{
+		return Configuration.instance.wireless_getMaxRange( getBoosters() );
+	}
+
+	private int getBoosters()
+	{
+		ItemStack boosters = inv.getStackInSlot( 0 );
+		return boosters == null ? 0 : boosters.stackSize;
+	}
+
+	@Override
+	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added)
+	{
+		// :P
 	}
 
 }

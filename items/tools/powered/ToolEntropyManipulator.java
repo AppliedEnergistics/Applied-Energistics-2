@@ -17,6 +17,7 @@ import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import appeng.core.Configuration;
 import appeng.core.features.AEFeature;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.InWorldToolOperationResult;
@@ -103,6 +104,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem
 	public ToolEntropyManipulator() {
 		super( ToolEntropyManipulator.class, null );
 		setfeature( EnumSet.of( AEFeature.EntropyManipulator, AEFeature.PoweredTools ) );
+		maxStoredPower = Configuration.instance.manipulator_battery;
 
 		coolDown = new Hashtable<String, InWorldToolOperationResult>();
 		coolDown.put( Block.stone.blockID + ":0", new InWorldToolOperationResult( new ItemStack( Block.cobblestone ) ) );

@@ -40,10 +40,16 @@ public class Configuration extends net.minecraftforge.common.Configuration imple
 	private double WirelessBaseCost = 8;
 	private double WirelessCostMultiplier = 1;
 	private double WirelessHighWirelessCount = 64;
+	private double WirelessTerminalDrainMultiplier = 1;
 
 	private double WirelessBaseRange = 16;
 	private double WirelessBoosterRangeMultiplier = 1;
 	private double WirelessBoosterExp = 1.5;
+
+	public double wireless_getDrainRate(double range)
+	{
+		return WirelessTerminalDrainMultiplier * range;
+	}
 
 	public double wireless_getMaxRange(int boosters)
 	{
@@ -74,7 +80,12 @@ public class Configuration extends net.minecraftforge.common.Configuration imple
 	public double oreDoublePercentage = 90.0;
 
 	public boolean enableEffects = true;
-	public boolean enableNetworkProfiler = true;
+
+	public int wireless_battery = 1600000;
+	public int manipulator_battery = 200000;
+	public int mattercannon_battery = 200000;
+	public int portablecell_battery = 20000;
+	public int staff_battery = 8000;
 
 	public Configuration(File f) {
 		super( new File( f.getPath() + File.separator + "AppliedEnergistics2" + File.separator + "AppliedEnergistics2.cfg" ) );
@@ -97,12 +108,26 @@ public class Configuration extends net.minecraftforge.common.Configuration imple
 		grinderOres = get( "GrindStone", "grinderOres", grinderOres ).getStringList();
 		oreDoublePercentage = get( "GrindStone", "oreDoublePercentage", oreDoublePercentage ).getDouble( oreDoublePercentage );
 		enableEffects = get( "Client", "enableEffects", true ).getBoolean( true );
-		enableNetworkProfiler = get( "Server", "enableNetworkProfiler", true ).getBoolean( true );
 
 		// settings.registerSetting( Settings.SEARCH_MODS, YesNo.YES );
 		settings.registerSetting( Settings.SEARCH_TOOLTIPS, YesNo.YES );
 		settings.registerSetting( Settings.SORT_BY, SortOrder.NAME );
 		settings.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
+
+		WirelessBaseCost = get( "wireless", "WirelessBaseCost", WirelessBaseCost ).getDouble( WirelessBaseCost );
+		WirelessCostMultiplier = get( "wireless", "WirelessCostMultiplier", WirelessCostMultiplier ).getDouble( WirelessCostMultiplier );
+		WirelessBaseRange = get( "wireless", "WirelessBaseRange", WirelessBaseRange ).getDouble( WirelessBaseRange );
+		WirelessBoosterRangeMultiplier = get( "wireless", "WirelessBoosterRangeMultiplier", WirelessBoosterRangeMultiplier ).getDouble(
+				WirelessBoosterRangeMultiplier );
+		WirelessBoosterExp = get( "wireless", "WirelessBoosterExp", WirelessBoosterExp ).getDouble( WirelessBoosterExp );
+		WirelessTerminalDrainMultiplier = get( "wireless", "WirelessTerminalDrainMultiplier", WirelessTerminalDrainMultiplier ).getDouble(
+				WirelessTerminalDrainMultiplier );
+
+		wireless_battery = get( "battery", "wireless", wireless_battery ).getInt( wireless_battery );
+		staff_battery = get( "battery", "staff", staff_battery ).getInt( staff_battery );
+		manipulator_battery = get( "battery", "manipulator", manipulator_battery ).getInt( manipulator_battery );
+		portablecell_battery = get( "battery", "portablecell", portablecell_battery ).getInt( portablecell_battery );
+		mattercannon_battery = get( "battery", "mattercannon", mattercannon_battery ).getInt( mattercannon_battery );
 
 		for (AEFeature feature : AEFeature.values())
 		{

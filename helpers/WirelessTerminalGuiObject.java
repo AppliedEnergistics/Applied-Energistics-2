@@ -13,6 +13,7 @@ import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IMachineSet;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEMonitor;
@@ -21,6 +22,7 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.tile.networking.TileWireless;
 
 public class WirelessTerminalGuiObject implements IPortableCell
 {
@@ -31,9 +33,18 @@ public class WirelessTerminalGuiObject implements IPortableCell
 	IGrid targetGrid;
 	IStorageGrid sg;
 	IMEMonitor<IAEItemStack> itemStorage;
+	TileWireless myWap;
+
+	double sqRange = Double.MAX_VALUE;
+	double myRange = Double.MAX_VALUE;
 
 	EntityPlayer myPlayer;
 	public ItemStack effectiveItem;
+
+	public double getRange()
+	{
+		return myRange;
+	}
 
 	public WirelessTerminalGuiObject(IWirelessTermHandler wh, ItemStack is, EntityPlayer ep, World w, int x, int y, int z) {
 		encryptionKey = wh.getEncryptionKey( is );
@@ -61,10 +72,57 @@ public class WirelessTerminalGuiObject implements IPortableCell
 
 	public boolean rangeCheck()
 	{
+		sqRange = myRange = Double.MAX_VALUE;
+
 		if ( targetGrid != null && itemStorage != null )
 		{
+			if ( myWap != null )
+			{
+				if ( myWap.getGridNode( ForgeDirection.UNKNOWN ).getGrid() == targetGrid )
+				{
+					if ( testWap( myWap ) )
+						return true;
+				}
+				return false;
+			}
 
-			return true;
+			IMachineSet tw = targetGrid.getMachines( TileWireless.class );
+
+			myWap = null;
+
+			for (IGridNode n : tw)
+			{
+				TileWireless wap = (TileWireless) n.getMachine();
+				if ( testWap( wap ) )
+					myWap = wap;
+			}
+
+			return myWap != null;
+		}
+		return false;
+	}
+
+	private boolean testWap(TileWireless wap)
+	{
+		double rangeLimit = wap.getRange();
+		rangeLimit *= rangeLimit;
+
+		if ( wap.worldObj == myPlayer.worldObj )
+		{
+			double offX = (double) wap.xCoord - myPlayer.posX;
+			double offY = (double) wap.yCoord - myPlayer.posY;
+			double offZ = (double) wap.zCoord - myPlayer.posZ;
+
+			double r = offX * offX + offY * offY + offZ * offZ;
+			if ( r < rangeLimit && sqRange > r )
+			{
+				if ( wap.getGridNode( ForgeDirection.UNKNOWN ).isActive() )
+				{
+					sqRange = r;
+					myRange = Math.sqrt( r );
+					return true;
+				}
+			}
 		}
 		return false;
 	}

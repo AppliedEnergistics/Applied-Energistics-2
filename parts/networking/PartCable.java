@@ -96,7 +96,8 @@ public class PartCable extends AEBasePart implements IPartCable
 			return CableBusTextures.MECable_Yellow.getIcon();
 		default:
 		}
-		return AEApi.instance().parts().partCableGlass.item( AEColor.Transparent ).getIconIndex( AEApi.instance().parts().partCableGlass.stack( AEColor.Transparent, 1 ) );
+		return AEApi.instance().parts().partCableGlass.item( AEColor.Transparent ).getIconIndex(
+				AEApi.instance().parts().partCableGlass.stack( AEColor.Transparent, 1 ) );
 	}
 
 	public Icon getTexture(AEColor c)
@@ -142,7 +143,8 @@ public class PartCable extends AEBasePart implements IPartCable
 			return CableBusTextures.MECovered_Yellow.getIcon();
 		default:
 		}
-		return AEApi.instance().parts().partCableCovered.item( AEColor.Transparent ).getIconIndex( AEApi.instance().parts().partCableCovered.stack( AEColor.Transparent, 1 ) );
+		return AEApi.instance().parts().partCableCovered.item( AEColor.Transparent ).getIconIndex(
+				AEApi.instance().parts().partCableCovered.stack( AEColor.Transparent, 1 ) );
 	}
 
 	public Icon getSmartTexture(AEColor c)
@@ -183,8 +185,8 @@ public class PartCable extends AEBasePart implements IPartCable
 			return CableBusTextures.MESmart_Yellow.getIcon();
 		default:
 		}
-
-		return is.getIconIndex();
+		return AEApi.instance().parts().partCableCovered.item( AEColor.Transparent ).getIconIndex(
+				AEApi.instance().parts().partCableSmart.stack( AEColor.Transparent, 1 ) );
 	}
 
 	@Override
@@ -242,7 +244,10 @@ public class PartCable extends AEBasePart implements IPartCable
 				ForgeDirection side = gc.getDirection( n );
 				if ( side != ForgeDirection.UNKNOWN )
 				{
-					if ( proxy.getNode().hasFlag( GridFlags.TIER_2_CAPACITY ) && gc.getOtherSide( proxy.getNode() ).hasFlag( GridFlags.TIER_2_CAPACITY ) )
+					boolean isTier2a = proxy.getNode().hasFlag( GridFlags.TIER_2_CAPACITY );
+					boolean isTier2b = gc.getOtherSide( proxy.getNode() ).hasFlag( GridFlags.TIER_2_CAPACITY );
+
+					if ( isTier2a && isTier2b )
 						sideOut |= (gc.getUsedChannels() / 4) << (4 * side.ordinal());
 					else
 						sideOut |= gc.getUsedChannels() << (4 * side.ordinal());
