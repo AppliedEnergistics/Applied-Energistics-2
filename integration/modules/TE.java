@@ -2,12 +2,14 @@ package appeng.integration.modules;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.ITE;
 import cofh.api.transport.IItemConduit;
+import cpw.mods.fml.common.event.FMLInterModComms;
 
 public class TE implements IIntegrationModule, ITE
 {
@@ -38,7 +40,14 @@ public class TE implements IIntegrationModule, ITE
 
 	private void pulverizer(ItemStack in, ItemStack out)
 	{
-		thermalexpansion.api.crafting.CraftingManagers.pulverizerManager.addRecipe( 320, in, out );
+		NBTTagCompound toSend = new NBTTagCompound();
+		toSend.setInteger( "energy", 3200 );
+		toSend.setCompoundTag( "input", new NBTTagCompound() );
+		toSend.setCompoundTag( "primaryOutput", new NBTTagCompound() );
+
+		in.writeToNBT( toSend.getCompoundTag( "input" ) );
+		out.writeToNBT( toSend.getCompoundTag( "primaryOutput" ) );
+		FMLInterModComms.sendMessage( "ThermalExpansion", "PulverizerRecipe", toSend );
 	}
 
 	@Override

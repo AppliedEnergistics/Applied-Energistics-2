@@ -65,16 +65,14 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	@Override
 	public void Init() throws Throwable
 	{
-
+		BlockMicroMaterial.createAndRegister( AEApi.instance().blocks().blockQuartz.block() );
+		BlockMicroMaterial.createAndRegister( AEApi.instance().blocks().blockQuartzPiller.block() );
+		BlockMicroMaterial.createAndRegister( AEApi.instance().blocks().blockQuartzChiseled.block() );
 	}
 
 	@Override
 	public void PostInit() throws Throwable
 	{
-		BlockMicroMaterial.createAndRegister( AEApi.instance().blocks().blockQuartz.block() );
-		BlockMicroMaterial.createAndRegister( AEApi.instance().blocks().blockQuartzPiller.block() );
-		BlockMicroMaterial.createAndRegister( AEApi.instance().blocks().blockQuartzChiseled.block() );
-
 		PartRegistry reg[] = PartRegistry.values();
 
 		String data[] = new String[reg.length];

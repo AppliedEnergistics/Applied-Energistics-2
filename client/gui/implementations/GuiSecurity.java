@@ -16,7 +16,7 @@ public class GuiSecurity extends GuiMEMonitorable
 
 	public GuiSecurity(InventoryPlayer inventoryPlayer, IStorageMonitorable te) {
 		super( inventoryPlayer, te, new ContainerSecurity( inventoryPlayer, te ) );
-		reservedSpace = 32;
+		reservedSpace = 33;
 		xSize += 50;
 	}
 
@@ -27,7 +27,7 @@ public class GuiSecurity extends GuiMEMonitorable
 	{
 		super.initGui();
 
-		int top = this.guiTop + this.ySize - 114;
+		int top = this.guiTop + this.ySize - 116;
 		buttonList.add( inject = new GuiToggleButton( this.guiLeft + 56 + 18 * 0, top, 11 * 16 + 0, 12 * 16 + 0, SecurityPermissions.INJECT
 				.getUnlocalizedName(), SecurityPermissions.INJECT.getUnlocalizedTip() ) );
 
@@ -92,7 +92,7 @@ public class GuiSecurity extends GuiMEMonitorable
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
-		fontRenderer.drawString( GuiText.SecurityCardEditor.getLocal(), 8, ySize - 96 + 3 - reservedSpace, 4210752 );
+		fontRenderer.drawString( GuiText.SecurityCardEditor.getLocal(), 8, ySize - 96 + 1 - reservedSpace, 4210752 );
 	}
 
 }

@@ -14,12 +14,21 @@ import appeng.util.Platform;
 public class PartTerminal extends PartMonitor implements IStorageMonitorable
 {
 
+	public PartTerminal(Class clz, ItemStack is) {
+		super( clz, is );
+	}
+
 	public PartTerminal(ItemStack is) {
 		super( PartTerminal.class, is );
 		frontBright = CableBusTextures.PartTerminal_Bright;
 		frontColored = CableBusTextures.PartTerminal_Colored;
 		frontDark = CableBusTextures.PartTerminal_Dark;
 		frontSolid = CableBusTextures.PartTerminal_Solid;
+	}
+
+	public GuiBridge getGui()
+	{
+		return GuiBridge.GUI_ME;
 	}
 
 	@Override
@@ -31,7 +40,7 @@ public class PartTerminal extends PartMonitor implements IStorageMonitorable
 				return true;
 
 			if ( proxy.isActive() )
-				Platform.openGUI( player, getHost().getTile(), side, GuiBridge.GUI_ME );
+				Platform.openGUI( player, getHost().getTile(), side, getGui() );
 			else
 			{
 				if ( proxy.isPowered() )

@@ -1,5 +1,7 @@
 package appeng.parts.automation;
 
+import java.util.List;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import appeng.api.config.RedstoneMode;
@@ -27,6 +29,14 @@ public class PartUpgradeable extends PartBasicState implements ISegmentedInvento
 	protected int getUpgradeSlots()
 	{
 		return 4;
+	}
+
+	@Override
+	public void getDrops(List<ItemStack> drops, boolean wrenched)
+	{
+		for (ItemStack is : upgrades)
+			if ( is != null )
+				drops.add( is );
 	}
 
 	public void writeToNBT(net.minecraft.nbt.NBTTagCompound extra)

@@ -31,6 +31,7 @@ import appeng.container.ContainerOpenContext;
 import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerChest;
 import appeng.container.implementations.ContainerCondenser;
+import appeng.container.implementations.ContainerCraftingTerm;
 import appeng.container.implementations.ContainerDrive;
 import appeng.container.implementations.ContainerGrinder;
 import appeng.container.implementations.ContainerIOPort;
@@ -53,6 +54,7 @@ import appeng.helpers.IPriorityHost;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.parts.misc.PartStorageBus;
+import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.server.AccessType;
 import appeng.tile.grindstone.TileGrinder;
 import appeng.tile.misc.TileCellWorkbench;
@@ -107,6 +109,8 @@ public enum GuiBridge implements IGuiHandler
 	GUI_PRIORITY(ContainerPriority.class, IPriorityHost.class, false, SecurityPermissions.BUILD),
 
 	GUI_SECURITY(ContainerSecurity.class, TileSecurity.class, false, SecurityPermissions.SECURITY),
+
+	GUI_CRAFTING_TERMINAL(ContainerCraftingTerm.class, PartCraftingTerminal.class, false, SecurityPermissions.CRAFT),
 
 	// extends (Container/Gui) + Bus
 	GUI_LEVELEMITTER(ContainerLevelEmitter.class, PartLevelEmitter.class, false, SecurityPermissions.BUILD),

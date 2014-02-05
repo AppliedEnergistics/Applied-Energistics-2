@@ -23,6 +23,8 @@ public enum GuiText
 
 	SecurityCardEditor, NoPermissions, WirelessTerminal, Wireless,
 
+	CraftingTerminal,
+
 	METunnel, ItemTunnel, RedstoneTunnel, MJTunnel, EUTunnel, FluidTunnel;
 
 	String root;

@@ -37,7 +37,7 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 
 		securityBox = (TileSecurity) montiorable;
 
-		addSlotToContainer( configSlot = new SlotRestrictedInput( PlaceableItemType.BIOMETRIC_CARD, securityBox.configSlot, 0, 37, -32 ) );
+		addSlotToContainer( configSlot = new SlotRestrictedInput( PlaceableItemType.BIOMETRIC_CARD, securityBox.configSlot, 0, 37, -33 ) );
 
 		addSlotToContainer( wirelessIn = new SlotRestrictedInput( PlaceableItemType.WIRELESS_TERMINAL, wirelessEncoder, 0, 212, 10 ) );
 		addSlotToContainer( wirelessOut = new SlotOutput( wirelessEncoder, 1, 212, 68, -1 ) );
@@ -50,6 +50,8 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 	@Override
 	public void onContainerClosed(EntityPlayer player)
 	{
+		super.onContainerClosed( player );
+
 		if ( wirelessIn.getHasStack() )
 			player.dropPlayerItem( wirelessIn.getStack() );
 
