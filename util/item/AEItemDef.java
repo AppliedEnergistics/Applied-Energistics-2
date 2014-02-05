@@ -30,6 +30,8 @@ public class AEItemDef
 	@SideOnly(Side.CLIENT)
 	public List tooltip;
 
+	public boolean isOre;
+
 	public AEItemDef copy()
 	{
 		AEItemDef t = new AEItemDef();
@@ -39,6 +41,7 @@ public class AEItemDef
 		t.dspDamage = dspDamage;
 		t.maxDamage = maxDamage;
 		t.tagCompound = tagCompound;
+		t.isOre = isOre;
 		return t;
 	}
 

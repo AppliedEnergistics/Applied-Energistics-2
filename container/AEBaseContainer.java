@@ -31,6 +31,7 @@ import appeng.client.me.InternalSlotME;
 import appeng.client.me.SlotME;
 import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.SlotCraftingMatrix;
+import appeng.container.slot.SlotCraftingTerm;
 import appeng.container.slot.SlotDisabled;
 import appeng.container.slot.SlotFake;
 import appeng.container.slot.SlotInaccessable;
@@ -48,7 +49,7 @@ public abstract class AEBaseContainer extends Container
 	final TileEntity tileEntity;
 	final IPart part;
 
-	BaseActionSource mySrc;
+	final protected BaseActionSource mySrc;
 
 	int ticksSinceCheck = 900;
 
@@ -430,6 +431,18 @@ public abstract class AEBaseContainer extends Container
 		if ( slot >= 0 && slot < inventorySlots.size() )
 		{
 			Slot s = getSlot( slot );
+
+			if ( s instanceof SlotCraftingTerm )
+			{
+				switch (action)
+				{
+				case CRAFT_SHIFT:
+				case CRAFT_ITEM:
+				case CRAFT_STACK:
+					((SlotCraftingTerm) s).doClick( action, player );
+				default:
+				}
+			}
 
 			if ( s instanceof SlotFake )
 			{

@@ -137,7 +137,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonito
 				int items = 0;
 				for (IAEItemStack send : monitorCache)
 				{
-					if ( items > 2000 )
+					if ( piu.getLength() > 20000 )
 					{
 						items = 0;
 						Packet p = piu.getPacket();

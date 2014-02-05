@@ -28,9 +28,11 @@ import appeng.client.gui.widgets.ITooltip;
 import appeng.client.me.InternalSlotME;
 import appeng.client.me.SlotME;
 import appeng.client.render.AppEngRenderItem;
+import appeng.container.slot.AppEngCraftingSlot;
 import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.AppEngSlot.hasCalculatedValidness;
 import appeng.container.slot.OptionalSlotFake;
+import appeng.container.slot.SlotCraftingTerm;
 import appeng.container.slot.SlotDisabled;
 import appeng.container.slot.SlotFake;
 import appeng.container.slot.SlotInaccessable;
@@ -106,6 +108,35 @@ public abstract class AEBaseGui extends GuiContainer
 			InventoryAction action = null;
 			IAEItemStack stack = null;
 			action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACESINGLE : InventoryAction.PICKUP_OR_SETDOWN;
+
+			if ( action != null )
+			{
+				PacketInventoryAction p;
+				try
+				{
+					p = new PacketInventoryAction( action, slotIdx, stack );
+					PacketDispatcher.sendPacketToServer( p.getPacket() );
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+
+			return;
+		}
+
+		if ( slot instanceof SlotCraftingTerm )
+		{
+			if ( key == 6 )
+				return; // prevent weird double clicks..
+
+			InventoryAction action = null;
+			IAEItemStack stack = null;
+			if ( key == 1 )
+				action = InventoryAction.CRAFT_SHIFT;
+			else
+				action = ctrlDown == 1 ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
 
 			if ( action != null )
 			{
@@ -513,8 +544,8 @@ public abstract class AEBaseGui extends GuiContainer
 				{
 					if ( ((AppEngSlot) s).isValid == hasCalculatedValidness.NotAvailable )
 					{
-						boolean isValid = s.isItemValid( is ) || s instanceof SlotOutput || s instanceof SlotDisabled || s instanceof SlotInaccessable
-								|| s instanceof SlotFake;
+						boolean isValid = s.isItemValid( is ) || s instanceof SlotOutput || s instanceof AppEngCraftingSlot || s instanceof SlotDisabled
+								|| s instanceof SlotInaccessable || s instanceof SlotFake;
 						if ( isValid && s instanceof SlotRestrictedInput )
 						{
 							try

@@ -1,24 +1,69 @@
 package appeng.container.implementations;
 
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import appeng.api.storage.IStorageMonitorable;
-import appeng.container.slot.SlotNormal;
-import appeng.container.slot.SlotOutput;
+import appeng.container.ContainerNull;
+import appeng.container.slot.SlotCraftingMatrix;
+import appeng.container.slot.SlotCraftingTerm;
 import appeng.parts.reporting.PartCraftingTerminal;
+import appeng.tile.inventory.AppEngInternalInventory;
+import appeng.tile.inventory.IAEAppEngInventory;
+import appeng.tile.inventory.InvOperation;
 
-public class ContainerCraftingTerm extends ContainerMEMonitorable
+public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAEAppEngInventory
 {
+
+	AppEngInternalInventory output = new AppEngInternalInventory( this, 1 );
+
+	SlotCraftingMatrix craftingSlots[] = new SlotCraftingMatrix[9];
+	SlotCraftingTerm outputSlot;
 
 	PartCraftingTerminal ct;
 
-	SlotNormal craftingSlots[] = new SlotNormal[9];
-	SlotOutput outputSlot;
+	/**
+	 * Callback for when the crafting matrix is changed.
+	 */
+	public void onCraftMatrixChanged(IInventory par1IInventory)
+	{
+		ContainerNull cn = new ContainerNull();
+		InventoryCrafting ic = new InventoryCrafting( cn, 3, 3 );
+
+		for (int x = 0; x < 9; x++)
+			ic.setInventorySlotContents( x, craftingSlots[x].getStack() );
+
+		outputSlot.putStack( CraftingManager.getInstance().findMatchingRecipe( ic, getPlayerInv().player.worldObj ) );
+	}
 
 	public ContainerCraftingTerm(InventoryPlayer ip, IStorageMonitorable montiorable) {
 		super( ip, montiorable, false );
 		ct = (PartCraftingTerminal) montiorable;
 
+		IInventory crafting = ct.getInventoryByName( "crafting" );
+
+		for (int y = 0; y < 3; y++)
+			for (int x = 0; x < 3; x++)
+				addSlotToContainer( craftingSlots[x + y * 3] = new SlotCraftingMatrix( this, crafting, x + y * 3, 37 + x * 18, -72 + y * 18 ) );
+
+		addSlotToContainer( outputSlot = new SlotCraftingTerm( getPlayerInv().player, mySrc, powerSrc, montiorable, crafting, output, 131, -72 + 18 ) );
+
 		bindPlayerInventory( ip, 0, 0 );
+
+		onCraftMatrixChanged( crafting );
 	}
 
+	@Override
+	public void saveChanges()
+	{
+
+	}
+
+	@Override
+	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
+	{
+
+	}
 }

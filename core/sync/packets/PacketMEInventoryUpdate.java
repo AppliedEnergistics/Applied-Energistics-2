@@ -77,6 +77,11 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		empty = false;
 	}
 
+	public int getLength()
+	{
+		return data.size();
+	}
+
 	public boolean isEmpty()
 	{
 		return empty;

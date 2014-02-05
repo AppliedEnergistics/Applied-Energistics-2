@@ -274,16 +274,19 @@ public class ApiPart implements IPartHelper
 				AELog.severe( "Error, Expected layer to NOT implement LayerBase but it DID." );
 			}
 
-			if ( !(fish instanceof TileCableBus) )
+			if ( !fullPath.contains( ".fmp." ) )
 			{
-				bads = true;
-				AELog.severe( "Error, Expected layer to implement TileCableBus did not." );
-			}
+				if ( !(fish instanceof TileCableBus) )
+				{
+					bads = true;
+					AELog.severe( "Error, Expected layer to implement TileCableBus did not." );
+				}
 
-			if ( !(fish instanceof TileEntity) )
-			{
-				bads = true;
-				AELog.severe( "Error, Expected layer to implement TileEntity did not." );
+				if ( !(fish instanceof TileEntity) )
+				{
+					bads = true;
+					AELog.severe( "Error, Expected layer to implement TileEntity did not." );
+				}
 			}
 
 			if ( !bads )

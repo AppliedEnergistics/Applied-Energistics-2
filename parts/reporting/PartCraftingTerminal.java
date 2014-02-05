@@ -42,4 +42,12 @@ public class PartCraftingTerminal extends PartTerminal implements IAEAppEngInven
 		// :)
 	}
 
+	@Override
+	public IInventory getInventoryByName(String name)
+	{
+		if ( name.equals( "crafting" ) )
+			return craftingGrid;
+		return super.getInventoryByName( name );
+	}
+
 }

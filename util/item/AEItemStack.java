@@ -85,6 +85,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		setCountRequestable( 0 );
 
 		def.reHash();
+		def.isOre = OreHelper.instance.isOre( this );
 	}
 
 	public static AEItemStack create(Object a)
@@ -552,5 +553,10 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	public StorageChannel getChannel()
 	{
 		return StorageChannel.ITEMS;
+	}
+
+	public boolean isOre()
+	{
+		return def.isOre;
 	}
 }
