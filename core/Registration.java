@@ -15,12 +15,14 @@ import appeng.api.definitions.Items;
 import appeng.api.definitions.Materials;
 import appeng.api.definitions.Parts;
 import appeng.api.features.IWirelessTermHandler;
+import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
+import appeng.api.parts.IPartHelper;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEItemDefinition;
 import appeng.block.grindstone.BlockCrank;
@@ -394,13 +396,13 @@ public class Registration
 
 	public void Init(FMLInitializationEvent event)
 	{
-		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );
-		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerISidedInventory", "net.minecraft.inventory.ISidedInventory" );
-		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIPowerEmitter", "buildcraft.api.power.IPowerEmitter" );
-		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIPowerReceptor", "buildcraft.api.power.IPowerReceptor" );
-		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIFluidHandler", "net.minecraftforge.fluids.IFluidHandler" );
-		AEApi.instance().partHelper()
-				.registerNewLayer( "appeng.api.parts.layers.LayerITileStorageMonitorable", "appeng.api.implementations.tiles.ITileStorageMonitorable" );
+		IPartHelper ph = AEApi.instance().partHelper();
+		ph.registerNewLayer( "appeng.api.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );
+		ph.registerNewLayer( "appeng.api.parts.layers.LayerISidedInventory", "net.minecraft.inventory.ISidedInventory" );
+		ph.registerNewLayer( "appeng.api.parts.layers.LayerIPowerEmitter", "buildcraft.api.power.IPowerEmitter" );
+		ph.registerNewLayer( "appeng.api.parts.layers.LayerIPowerReceptor", "buildcraft.api.power.IPowerReceptor" );
+		ph.registerNewLayer( "appeng.api.parts.layers.LayerIFluidHandler", "net.minecraftforge.fluids.IFluidHandler" );
+		ph.registerNewLayer( "appeng.api.parts.layers.LayerITileStorageMonitorable", "appeng.api.implementations.tiles.ITileStorageMonitorable" );
 
 		TickRegistry.registerTickHandler( TickHandler.instance, Side.SERVER );
 		TickRegistry.registerTickHandler( TickHandler.instance, Side.CLIENT );
@@ -408,13 +410,14 @@ public class Registration
 		MinecraftForge.EVENT_BUS.register( TickHandler.instance );
 		MinecraftForge.EVENT_BUS.register( new PartPlacement() );
 
-		AEApi.instance().registries().gridCache().registerGridCache( ITickManager.class, TickManagerCache.class );
-		AEApi.instance().registries().gridCache().registerGridCache( IEnergyGrid.class, EnergyGridCache.class );
-		AEApi.instance().registries().gridCache().registerGridCache( IPathingGrid.class, PathGridCache.class );
-		AEApi.instance().registries().gridCache().registerGridCache( IStorageGrid.class, GridStorageCache.class );
-		AEApi.instance().registries().gridCache().registerGridCache( P2PCache.class, P2PCache.class );
-		AEApi.instance().registries().gridCache().registerGridCache( ISpatialCache.class, SpatialPylonCache.class );
-		AEApi.instance().registries().gridCache().registerGridCache( ISecurityGrid.class, SecurityCache.class );
+		IGridCacheRegistry gcr = AEApi.instance().registries().gridCache();
+		gcr.registerGridCache( ITickManager.class, TickManagerCache.class );
+		gcr.registerGridCache( IEnergyGrid.class, EnergyGridCache.class );
+		gcr.registerGridCache( IPathingGrid.class, PathGridCache.class );
+		gcr.registerGridCache( IStorageGrid.class, GridStorageCache.class );
+		gcr.registerGridCache( P2PCache.class, P2PCache.class );
+		gcr.registerGridCache( ISpatialCache.class, SpatialPylonCache.class );
+		gcr.registerGridCache( ISecurityGrid.class, SecurityCache.class );
 
 		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new AEExternalHandler() );
 

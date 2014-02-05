@@ -479,7 +479,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		IGridHost ghh = te instanceof IGridHost ? (IGridHost) te : null;
 		boolean isSmart = false;
 
-		if ( ghh != null && ccph != null && ghh.getCableConnectionType( of ) == AECableType.GLASS && ccph.getPart( of.getOpposite() ) == null )
+		if ( ghh != null && ccph != null && ghh.getCableConnectionType( of.getOpposite() ) == AECableType.GLASS && ccph.getPart( of.getOpposite() ) == null )
 			rh.setTexture( getGlassTexture( ccph.getColor() ) );
 		else if ( ccph == null && ghh != null && ghh.getCableConnectionType( of ) != AECableType.GLASS )
 		{
