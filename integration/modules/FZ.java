@@ -41,11 +41,13 @@ public class FZ implements IFZ, IIntegrationModule
 		{
 			ItemStack i;
 
-			if ( day_BarrelClass.isInstance( te ) ) i = (ItemStack) day_item.get( te );
+			if ( day_BarrelClass.isInstance( te ) )
+				i = (ItemStack) day_item.get( te );
 			else
 				i = (ItemStack) item.get( te );
 
-			if ( i != null ) i = Platform.cloneItemStack( i );
+			if ( i != null )
+				i = Platform.cloneItemStack( i );
 			return i;
 		}
 		catch (IllegalArgumentException e)
@@ -63,7 +65,8 @@ public class FZ implements IFZ, IIntegrationModule
 		try
 		{
 
-			if ( day_BarrelClass.isInstance( te ) ) return (Integer) day_getMaxSize.invoke( te );
+			if ( day_BarrelClass.isInstance( te ) )
+				return (Integer) day_getMaxSize.invoke( te );
 			else
 				return (Integer) getMaxSize.invoke( te );
 		}
@@ -85,7 +88,8 @@ public class FZ implements IFZ, IIntegrationModule
 		try
 		{
 
-			if ( day_BarrelClass.isInstance( te ) ) return (Integer) day_getItemCount.invoke( te );
+			if ( day_BarrelClass.isInstance( te ) )
+				return (Integer) day_getItemCount.invoke( te );
 			else
 				return (Integer) getItemCount.invoke( te );
 		}
@@ -107,7 +111,8 @@ public class FZ implements IFZ, IIntegrationModule
 		try
 		{
 
-			if ( day_BarrelClass.isInstance( te ) ) day_item.set( te, input == null ? null : input.copy() );
+			if ( day_BarrelClass.isInstance( te ) )
+				day_item.set( te, input == null ? null : input.copy() );
 			else
 				item.set( te, input == null ? null : input.copy() );
 		}
@@ -125,7 +130,8 @@ public class FZ implements IFZ, IIntegrationModule
 		try
 		{
 
-			if ( day_BarrelClass.isInstance( te ) ) day_setItemCount.invoke( te, max );
+			if ( day_BarrelClass.isInstance( te ) )
+				day_setItemCount.invoke( te, max );
 			else
 				setItemCount.invoke( te, max );
 
@@ -151,16 +157,18 @@ public class FZ implements IFZ, IIntegrationModule
 	@Override
 	public boolean isBarrel(TileEntity te)
 	{
-		if ( day_BarrelClass.isAssignableFrom( te.getClass() ) ) return true;
-		if ( barrelClass.isAssignableFrom( te.getClass() ) ) return true;
+		if ( day_BarrelClass.isAssignableFrom( te.getClass() ) )
+			return true;
+		if ( barrelClass.isAssignableFrom( te.getClass() ) )
+			return true;
 		return false;
 	}
 
 	@Override
 	public void Init() throws Throwable
 	{
-		barrelClass = Class.forName( "factorization.common.TileEntityBarrel" );
-		day_BarrelClass = Class.forName( "factorization.common.TileEntityDayBarrel" );
+		barrelClass = Class.forName( "factorization.weird.TileEntityBarrel" );
+		day_BarrelClass = Class.forName( "factorization.weird.TileEntityDayBarrel" );
 
 		getItemCount = barrelClass.getDeclaredMethod( "getItemCount", new Class[] {} );
 		setItemCount = barrelClass.getDeclaredMethod( "setItemCount", new Class[] { int.class } );
@@ -177,15 +185,13 @@ public class FZ implements IFZ, IIntegrationModule
 	public void PostInit()
 	{
 		// certus quartz
-		grinderRecipe( AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 ),
-				AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ) );
+		grinderRecipe( AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 ), AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ) );
 
 		grinderRecipe( AEApi.instance().materials().materialCertusQuartzCrystalCharged.stack( 1 ),
 				AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ) );
 
 		// fluix
-		grinderRecipe( AEApi.instance().materials().materialFluixCrystal.stack( 1 ),
-				AEApi.instance().materials().materialFluixDust.stack( 1 ) );
+		grinderRecipe( AEApi.instance().materials().materialFluixCrystal.stack( 1 ), AEApi.instance().materials().materialFluixDust.stack( 1 ) );
 
 		// nether quartz
 		grinderRecipe( new ItemStack( Item.netherQuartz ), AEApi.instance().materials().materialNetherQuartzDust.stack( 1 ) );

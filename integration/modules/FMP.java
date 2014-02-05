@@ -68,11 +68,7 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 		BlockMicroMaterial.createAndRegister( AEApi.instance().blocks().blockQuartz.block() );
 		BlockMicroMaterial.createAndRegister( AEApi.instance().blocks().blockQuartzPiller.block() );
 		BlockMicroMaterial.createAndRegister( AEApi.instance().blocks().blockQuartzChiseled.block() );
-	}
 
-	@Override
-	public void PostInit() throws Throwable
-	{
 		PartRegistry reg[] = PartRegistry.values();
 
 		String data[] = new String[reg.length];
@@ -81,8 +77,14 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 
 		MultiPartRegistry.registerConverter( this );
 		MultiPartRegistry.registerParts( this, data );
-		MinecraftForge.EVENT_BUS.register( new FMPEvent() );
+
 		MultipartGenerator.registerPassThroughInterface( "appeng.helpers.AEMultiTile" );
+	}
+
+	@Override
+	public void PostInit() throws Throwable
+	{
+		MinecraftForge.EVENT_BUS.register( new FMPEvent() );
 	}
 
 	@Override
