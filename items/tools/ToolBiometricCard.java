@@ -32,7 +32,9 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	public String getItemDisplayName(ItemStack is)
 	{
 		String username = getUsername( is );
-		return username.length() > 0 ? super.getItemDisplayName( is ) + " - " + GuiText.Encoded.getLocal() : super.getItemDisplayName( is );
+		return username.length() > 0 ? super.getItemDisplayName( is ) + " - " + username : super.getItemDisplayName( is );// GuiText.Encoded.getLocal()
+																															// //
+																															// );
 	}
 
 	@Override
@@ -74,9 +76,9 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	@Override
 	public void addInformation(ItemStack is, EntityPlayer p, List l, boolean b)
 	{
-		String username = getUsername( is );
-		if ( username.length() > 0 )
-			l.add( username );
+		// String username = getUsername( is );
+		// if ( username.length() > 0 )
+		// l.add( username );
 
 		EnumSet<SecurityPermissions> perms = getPermissions( is );
 		if ( perms.isEmpty() )
