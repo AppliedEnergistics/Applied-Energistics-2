@@ -1,6 +1,7 @@
 package appeng.container.implementations;
 
 import java.io.IOException;
+import java.nio.BufferOverflowException;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -136,14 +137,18 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonito
 
 				for (IAEItemStack send : monitorCache)
 				{
-					if ( piu.getLength() > 20000 )
+					try
+					{
+						piu.appendItem( send );
+					}
+					catch (BufferOverflowException boe)
 					{
 						Packet p = piu.getPacket();
 						PacketDispatcher.sendPacketToPlayer( p, (Player) c );
-						piu = new PacketMEInventoryUpdate();
-					}
 
-					piu.appendItem( send );
+						piu = new PacketMEInventoryUpdate();
+						piu.appendItem( send );
+					}
 				}
 
 				Packet p = piu.getPacket();

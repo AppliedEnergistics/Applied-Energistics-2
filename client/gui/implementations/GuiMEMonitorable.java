@@ -167,6 +167,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource
 			{
 				repo.searchString = this.searchField.getText();
 				repo.updateView();
+				setScrollBar();
 			}
 			else
 			{

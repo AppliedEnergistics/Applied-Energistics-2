@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.nio.BufferOverflowException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	// output...
 	final private ByteArrayOutputStream bytes;
 	final private DataOutputStream data;
+	int lastSize = 0;
 	boolean empty = true;
 
 	// input.
@@ -59,7 +61,9 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	public Packet250CustomPayload getPacket()
 	{
 		isChunkDataPacket = false;
-		configureWrite( bytes.toByteArray() );
+		byte[] dataOut = new byte[lastSize];
+		System.arraycopy( bytes.toByteArray(), 0, dataOut, 0, lastSize );
+		configureWrite( dataOut );
 		return super.getPacket();
 	}
 
@@ -71,10 +75,14 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		data.writeInt( getPacketID() );
 	}
 
-	public void appendItem(IAEItemStack is) throws IOException
+	public void appendItem(IAEItemStack is) throws IOException, BufferOverflowException
 	{
 		is.writeToPacket( data );
 		empty = false;
+		if ( bytes.size() > 20000 )
+			throw new BufferOverflowException();
+		else
+			lastSize = bytes.size();
 	}
 
 	public int getLength()
