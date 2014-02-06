@@ -11,6 +11,7 @@ import appeng.api.config.YesNo;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.gui.widgets.IScrollSource;
+import appeng.client.gui.widgets.ISortSource;
 import appeng.core.Configuration;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
@@ -23,13 +24,15 @@ public class ItemRepo
 	final private ArrayList<IAEItemStack> view = new ArrayList();
 	final private ArrayList<ItemStack> dsp = new ArrayList();
 	final private IScrollSource src;
+	final private ISortSource sortSrc;
 
 	public int rowSize = 9;
 
 	public String searchString = "";
 
-	public ItemRepo(IScrollSource src) {
+	public ItemRepo(IScrollSource src, ISortSource sortSrc) {
 		this.src = src;
+		this.sortSrc = sortSrc;
 	}
 
 	public IAEItemStack getRefrenceItem(int idx)
@@ -125,8 +128,8 @@ public class ItemRepo
 			 */
 		}
 
-		Enum SortBy = Configuration.instance.settings.getSetting( Settings.SORT_BY );
-		Enum SortDir = Configuration.instance.settings.getSetting( Settings.SORT_DIRECTION );
+		Enum SortBy = sortSrc.getSortBy();
+		Enum SortDir = sortSrc.getSortDir();
 
 		ItemSorters.Direction = (appeng.api.config.SortDir) SortDir;
 

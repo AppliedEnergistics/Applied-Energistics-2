@@ -9,17 +9,20 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
+import appeng.client.gui.widgets.ISortSource;
 import appeng.client.me.ItemRepo;
 import appeng.client.me.SlotME;
 import appeng.container.implementations.ContainerNetworkStatus;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 
-public class GuiNetworkStatus extends AEBaseGui
+public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 {
 
 	ItemRepo repo;
@@ -31,7 +34,7 @@ public class GuiNetworkStatus extends AEBaseGui
 		this.ySize = 125;
 		this.xSize = 195;
 		myScrollBar = new GuiScrollbar();
-		repo = new ItemRepo( myScrollBar );
+		repo = new ItemRepo( myScrollBar, this );
 		repo.rowSize = 5;
 	}
 
@@ -244,5 +247,17 @@ public class GuiNetworkStatus extends AEBaseGui
 			}
 		}
 		super.drawItemStackTooltip( stack, x, y );
+	}
+
+	@Override
+	public Enum getSortBy()
+	{
+		return SortOrder.NAME;
+	}
+
+	@Override
+	public Enum getSortDir()
+	{
+		return SortDir.ASCENDING;
 	}
 }

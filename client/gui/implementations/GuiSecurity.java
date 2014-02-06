@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.config.SortOrder;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.client.gui.widgets.GuiToggleButton;
 import appeng.container.implementations.ContainerSecurity;
@@ -16,6 +17,7 @@ public class GuiSecurity extends GuiMEMonitorable
 
 	public GuiSecurity(InventoryPlayer inventoryPlayer, IStorageMonitorable te) {
 		super( inventoryPlayer, te, new ContainerSecurity( inventoryPlayer, te ) );
+		customSortOrder = false;
 		reservedSpace = 33;
 		xSize += 50;
 	}
@@ -93,6 +95,12 @@ public class GuiSecurity extends GuiMEMonitorable
 	{
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
 		fontRenderer.drawString( GuiText.SecurityCardEditor.getLocal(), 8, ySize - 96 + 1 - reservedSpace, 4210752 );
+	}
+
+	@Override
+	public Enum getSortBy()
+	{
+		return SortOrder.NAME;
 	}
 
 }

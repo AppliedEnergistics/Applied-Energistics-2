@@ -13,6 +13,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.AEBaseMEGui;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiScrollbar;
+import appeng.client.gui.widgets.ISortSource;
 import appeng.client.me.InternalSlotME;
 import appeng.client.me.ItemRepo;
 import appeng.container.implementations.ContainerMEMonitorable;
@@ -24,7 +25,7 @@ import appeng.parts.reporting.PartTerminal;
 import appeng.tile.misc.TileSecurity;
 import appeng.util.Platform;
 
-public class GuiMEMonitorable extends AEBaseMEGui
+public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource
 {
 
 	GuiTextField searchField;
@@ -36,6 +37,7 @@ public class GuiMEMonitorable extends AEBaseMEGui
 	int perRow = 9;
 	int reservedSpace = 0;
 	int lowerTextureOffset = 0;
+	boolean customSortOrder = true;
 
 	int rows = 0;
 	int maxRows = Integer.MAX_VALUE;
@@ -48,7 +50,7 @@ public class GuiMEMonitorable extends AEBaseMEGui
 
 		super( c );
 		myScrollBar = new GuiScrollbar();
-		repo = new ItemRepo( myScrollBar );
+		repo = new ItemRepo( myScrollBar, this );
 		xSize = 195;
 		ySize = 204;
 
@@ -111,8 +113,15 @@ public class GuiMEMonitorable extends AEBaseMEGui
 		this.ySize = magicNumber + rows * 18 + reservedSpace;
 		this.guiTop = top;
 
-		buttonList.add( new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.SORT_BY, Configuration.instance.settings.getSetting( Settings.SORT_BY ) ) );
-		buttonList.add( new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.SORT_DIRECTION, Configuration.instance.settings
+		int offset = guiTop + 8;
+
+		if ( customSortOrder )
+		{
+			buttonList.add( new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_BY, Configuration.instance.settings.getSetting( Settings.SORT_BY ) ) );
+			offset += 20;
+		}
+
+		buttonList.add( new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, Configuration.instance.settings
 				.getSetting( Settings.SORT_DIRECTION ) ) );
 
 		searchField = new GuiTextField( this.fontRenderer, this.guiLeft + Math.max( 82, xoffset ), this.guiTop + 6, 89, this.fontRenderer.FONT_HEIGHT );
@@ -193,6 +202,18 @@ public class GuiMEMonitorable extends AEBaseMEGui
 	{
 		fontRenderer.drawString( myName.getLocal(), 8, 6, 4210752 );
 		fontRenderer.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+	}
+
+	@Override
+	public Enum getSortBy()
+	{
+		return Configuration.instance.settings.getSetting( Settings.SORT_BY );
+	}
+
+	@Override
+	public Enum getSortDir()
+	{
+		return Configuration.instance.settings.getSetting( Settings.SORT_DIRECTION );
 	}
 
 }
