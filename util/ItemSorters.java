@@ -34,8 +34,8 @@ public class ItemSorters
 		public int compare(IAEItemStack o1, IAEItemStack o2)
 		{
 			if ( Direction == SortDir.ASCENDING )
-				return Platform.getItemDisplayName( o1 ).toLowerCase().compareTo( Platform.getItemDisplayName( o2 ).toLowerCase() );
-			return Platform.getItemDisplayName( o2 ).toLowerCase().compareTo( Platform.getItemDisplayName( o1 ).toLowerCase() );
+				return Platform.getItemDisplayName( o1 ).compareToIgnoreCase( Platform.getItemDisplayName( o2 ) );
+			return Platform.getItemDisplayName( o2 ).compareToIgnoreCase( Platform.getItemDisplayName( o1 ) );
 		}
 	};
 

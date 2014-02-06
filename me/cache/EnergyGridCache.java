@@ -59,7 +59,6 @@ public class EnergyGridCache implements IEnergyGrid
 	/**
 	 * excess power in the system.
 	 */
-	double prev_extra = 0;
 	double extra = 0;
 
 	IAEPowerStorage lastProvider;
