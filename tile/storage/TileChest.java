@@ -130,7 +130,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		@Override
 		public void Tick()
 		{
-			if ( Platform.isClient() )
+			if ( worldObj.isRemote )
 				return;
 
 			double idleUsage = gridProxy.getIdlePowerUsage();
