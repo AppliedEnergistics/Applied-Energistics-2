@@ -353,10 +353,13 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	@Override
 	public List<IMEInventoryHandler> getCellArray(StorageChannel channel)
 	{
-		IMEInventoryHandler out = proxy.isActive() ? getHandler() : null;
-		if ( out == null )
-			return Arrays.asList( new IMEInventoryHandler[] {} );
-		return Arrays.asList( new IMEInventoryHandler[] { out } );
+		if ( channel == StorageChannel.ITEMS )
+		{
+			IMEInventoryHandler out = proxy.isActive() ? getHandler() : null;
+			if ( out != null )
+				return Arrays.asList( new IMEInventoryHandler[] { out } );
+		}
+		return Arrays.asList( new IMEInventoryHandler[] {} );
 	}
 
 	@Override

@@ -116,7 +116,8 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 		double xOff = -0.15 * getUp().offsetX;
 		double yOff = -0.15 * getUp().offsetY;
 		double zOff = -0.15 * getUp().offsetZ;
-		return Arrays.asList( new AxisAlignedBB[] { AxisAlignedBB.getBoundingBox( xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85 ) } );
+		return Arrays
+				.asList( new AxisAlignedBB[] { AxisAlignedBB.getBoundingBox( xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85 ) } );
 	}
 
 	@Override
@@ -127,5 +128,11 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 		double zOff = -0.15 * getUp().offsetZ;
 		out.add( AxisAlignedBB.getAABBPool().getAABB( xOff + (double) 0.15, yOff + (double) 0.15, zOff + (double) 0.15,// ahh
 				xOff + (double) 0.85, yOff + (double) 0.85, zOff + (double) 0.85 ) );
+	}
+
+	@Override
+	public boolean requiresTESR()
+	{
+		return true;
 	}
 }

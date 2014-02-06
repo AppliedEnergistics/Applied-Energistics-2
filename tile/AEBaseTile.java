@@ -346,4 +346,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 		super.onInventoryChanged();
 	}
 
+	public boolean requiresTESR()
+	{
+		return false;
+	}
+
 }

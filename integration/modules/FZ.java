@@ -64,7 +64,6 @@ public class FZ implements IFZ, IIntegrationModule
 	{
 		try
 		{
-
 			if ( day_BarrelClass.isInstance( te ) )
 				return (Integer) day_getMaxSize.invoke( te );
 			else
@@ -87,7 +86,6 @@ public class FZ implements IFZ, IIntegrationModule
 	{
 		try
 		{
-
 			if ( day_BarrelClass.isInstance( te ) )
 				return (Integer) day_getItemCount.invoke( te );
 			else
@@ -110,11 +108,12 @@ public class FZ implements IFZ, IIntegrationModule
 	{
 		try
 		{
-
 			if ( day_BarrelClass.isInstance( te ) )
 				day_item.set( te, input == null ? null : input.copy() );
 			else
 				item.set( te, input == null ? null : input.copy() );
+
+			te.onInventoryChanged();
 		}
 		catch (IllegalArgumentException e)
 		{
@@ -129,13 +128,12 @@ public class FZ implements IFZ, IIntegrationModule
 	{
 		try
 		{
-
 			if ( day_BarrelClass.isInstance( te ) )
 				day_setItemCount.invoke( te, max );
 			else
 				setItemCount.invoke( te, max );
 
-			te.worldObj.markBlockForUpdate( te.xCoord, te.yCoord, te.zCoord );
+			te.onInventoryChanged();
 		}
 		catch (IllegalAccessException e)
 		{

@@ -163,6 +163,12 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
+	public boolean requireDynamicRender()
+	{
+		return true;
+	}
+
+	@Override
 	public void renderDynamic(double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		Tessellator tess = Tessellator.instance;

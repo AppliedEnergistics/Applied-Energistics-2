@@ -57,6 +57,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	public IPartHost tcb;
 
 	boolean inWorld = false;
+	public boolean requiresDynamicRender = false;
 
 	public void setHost(IPartHost host)
 	{
@@ -74,6 +75,17 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 		if ( side == ForgeDirection.UNKNOWN )
 			return center;
 		return sides[side.ordinal()];
+	}
+
+	public void updateDynamicRender()
+	{
+		requiresDynamicRender = false;
+		for (ForgeDirection s : ForgeDirection.VALID_DIRECTIONS)
+		{
+			IPart p = getPart( s );
+			if ( p != null )
+				requiresDynamicRender = requiresDynamicRender || p.requireDynamicRender();
+		}
 	}
 
 	@Override
@@ -94,6 +106,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 
 		if ( !supressUpdate )
 		{
+			updateDynamicRender();
 			updateConnections();
 			markForUpdate();
 			PartChanged();
@@ -262,6 +275,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 						}
 					}
 
+					updateDynamicRender();
 					updateConnections();
 					markForUpdate();
 					PartChanged();
@@ -543,7 +557,8 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 				if ( part != null )
 				{
 					setSide( s );
-					BusCollisionHelper bch = new BusCollisionHelper( boxes, BusRenderHelper.instance.ax, BusRenderHelper.instance.ay, BusRenderHelper.instance.az, null, true );
+					BusCollisionHelper bch = new BusCollisionHelper( boxes, BusRenderHelper.instance.ax, BusRenderHelper.instance.ay,
+							BusRenderHelper.instance.az, null, true );
 					part.getBoxes( bch );
 				}
 			}

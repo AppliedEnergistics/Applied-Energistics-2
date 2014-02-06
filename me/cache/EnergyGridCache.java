@@ -68,6 +68,11 @@ public class EnergyGridCache implements IEnergyGrid
 	IAEPowerStorage lastRequestor;
 	Set<IAEPowerStorage> requesters = new LinkedHashSet();
 
+	private double buffer()
+	{
+		return providers.isEmpty() ? 1000.0 : 0.0;
+	}
+
 	private IAEPowerStorage getFirstRequestor()
 	{
 		if ( lastRequestor == null )
@@ -183,7 +188,7 @@ public class EnergyGridCache implements IEnergyGrid
 			extra = i;
 		}
 
-		return i;
+		return Math.max( 0.0, i - buffer() );
 	}
 
 	Set<IEnergyGrid> seen = new HashSet();
@@ -299,8 +304,8 @@ public class EnergyGridCache implements IEnergyGrid
 			publicPowerState( false, myGrid );
 
 		availableTicksSinceUpdate++;
-		if ( extra > 32 )
-			injectPower( 0.0, Actionable.MODULATE );
+		// if ( extra > 32 )
+		// injectPower( 0.0, Actionable.MODULATE );
 	}
 
 	private void publicPowerState(boolean newState, IGrid grid)
@@ -354,7 +359,10 @@ public class EnergyGridCache implements IEnergyGrid
 			return extractedPower;
 		}
 		else
-			extractedPower += doExtract( extractedPower, amt );
+		{
+			extra = 0;
+			extractedPower = doExtract( extractedPower, amt );
+		}
 
 		// got more then we wanted?
 		if ( extractedPower > amt )
@@ -379,8 +387,6 @@ public class EnergyGridCache implements IEnergyGrid
 
 	private double doExtract(double extractedPower, double amt)
 	{
-		extra = 0;
-
 		while (extractedPower < amt && !providers.isEmpty())
 		{
 			IAEPowerStorage node = getFirstProvider();
@@ -435,8 +441,7 @@ public class EnergyGridCache implements IEnergyGrid
 		return avgDrainPerTick;/*
 								 * double out = 0;
 								 * 
-								 * for (double x : totalDrainPastTicks) out +=
-								 * x;
+								 * for (double x : totalDrainPastTicks) out += x;
 								 * 
 								 * return out / totalDrainPastTicks.length;
 								 */
@@ -448,11 +453,9 @@ public class EnergyGridCache implements IEnergyGrid
 		return avgInjectionPerTick;/*
 									 * double out = 0;
 									 * 
-									 * for (double x : totalInjectionPastTicks)
-									 * out += x;
+									 * for (double x : totalInjectionPastTicks) out += x;
 									 * 
-									 * return out /
-									 * totalInjectionPastTicks.length;
+									 * return out / totalInjectionPastTicks.length;
 									 */
 	}
 

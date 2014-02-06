@@ -73,6 +73,12 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
+	public boolean requireDynamicRender()
+	{
+		return false;
+	}
+
+	@Override
 	public void renderDynamic(double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
 

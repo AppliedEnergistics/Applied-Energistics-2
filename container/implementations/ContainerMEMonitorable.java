@@ -134,18 +134,15 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonito
 				PacketMEInventoryUpdate piu = new PacketMEInventoryUpdate();
 				IItemList<IAEItemStack> monitorCache = monitor.getStorageList();
 
-				int items = 0;
 				for (IAEItemStack send : monitorCache)
 				{
 					if ( piu.getLength() > 20000 )
 					{
-						items = 0;
 						Packet p = piu.getPacket();
 						PacketDispatcher.sendPacketToPlayer( p, (Player) c );
 						piu = new PacketMEInventoryUpdate();
 					}
 
-					items++;
 					piu.appendItem( send );
 				}
 

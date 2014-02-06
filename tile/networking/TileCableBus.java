@@ -298,4 +298,11 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	{
 		return cb.isEmpty();
 	}
+
+	@Override
+	public boolean requiresTESR()
+	{
+		return cb.requiresDynamicRender;
+	}
+
 }

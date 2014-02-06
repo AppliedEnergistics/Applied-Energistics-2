@@ -247,4 +247,10 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 		}
 	}
 
+	@Override
+	public boolean requiresTESR()
+	{
+		return true;
+	}
+
 }

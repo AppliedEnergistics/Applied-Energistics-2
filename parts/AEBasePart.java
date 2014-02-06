@@ -324,4 +324,10 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	{
 		host.markForSave();
 	}
+
+	@Override
+	public boolean requireDynamicRender()
+	{
+		return false;
+	}
 }

@@ -223,7 +223,14 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 	@Override
 	public boolean isValid(Object effectiveGrid)
 	{
-		return getGridNode().getGrid() == effectiveGrid;
+		try
+		{
+			return proxy.getGrid() == effectiveGrid;
+		}
+		catch (GridAccessException e)
+		{
+			return false;
+		}
 	}
 
 	@Override
