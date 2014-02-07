@@ -5,7 +5,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import appeng.api.util.AEItemDefinition;
-import appeng.core.AELog;
 
 public class DamagedItemDefinition implements AEItemDefinition
 {
@@ -23,7 +22,6 @@ public class DamagedItemDefinition implements AEItemDefinition
 		{
 			baseItem = is.getItem();
 			damage = is.getItemDamage();
-			AELog.localization( "item", is.getUnlocalizedName() );
 		}
 	}
 

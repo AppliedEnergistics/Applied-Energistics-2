@@ -13,6 +13,7 @@ import appeng.api.config.Settings;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerStorageBus;
+import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.packets.PacketConfigButton;
@@ -77,7 +78,7 @@ public class GuiStorageBus extends GuiUpgradeable
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				AELog.error( e );
 			}
 		}
 		try
@@ -90,7 +91,7 @@ public class GuiStorageBus extends GuiUpgradeable
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			AELog.error( e );
 		}
 	}
 

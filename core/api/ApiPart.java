@@ -86,7 +86,7 @@ public class ApiPart implements IPartHelper
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			AELog.error( e );
 			System.exit( 1 );
 		}
 		return clazz;
@@ -110,7 +110,7 @@ public class ApiPart implements IPartHelper
 		}
 		catch (Throwable e)
 		{
-			e.printStackTrace();
+			AELog.error( e );
 		}
 
 		return null;
@@ -160,7 +160,7 @@ public class ApiPart implements IPartHelper
 		}
 		catch (ClassNotFoundException e)
 		{
-			e.printStackTrace();
+			AELog.error( e );
 		}
 		Class myCLass;
 
@@ -232,7 +232,7 @@ public class ApiPart implements IPartHelper
 		}
 		catch (Throwable t)
 		{
-			t.printStackTrace();
+			AELog.error( t );
 		}
 
 		for (MethodNode mn : n.methods)
@@ -298,7 +298,7 @@ public class ApiPart implements IPartHelper
 		catch (Throwable t)
 		{
 			AELog.severe( "Layer: " + n.name + " Failed." );
-			t.printStackTrace();
+			AELog.error( t );
 		}
 
 		roots.put( fullPath, nclass );

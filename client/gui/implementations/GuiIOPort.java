@@ -14,6 +14,7 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.container.implementations.ContainerIOPort;
+import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.tile.storage.TileIOPort;
@@ -83,7 +84,7 @@ public class GuiIOPort extends GuiUpgradeable
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			AELog.error( e );
 		}
 	}
 

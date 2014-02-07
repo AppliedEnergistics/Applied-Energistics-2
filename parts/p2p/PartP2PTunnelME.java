@@ -19,6 +19,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AECableType;
+import appeng.core.AELog;
 import appeng.helpers.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.Connections;
@@ -188,7 +189,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 				}
 				catch (GridAccessException e)
 				{
-					// e.printStackTrace();
+					// :P
 				}
 			}
 
@@ -212,14 +213,14 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 					}
 					catch (FailedConnection e)
 					{
-						e.printStackTrace();
+						AELog.error( e );
 						// :(
 					}
 				}
 			}
 			catch (GridAccessException e)
 			{
-				e.printStackTrace();
+				AELog.error( e );
 			}
 		}
 	}

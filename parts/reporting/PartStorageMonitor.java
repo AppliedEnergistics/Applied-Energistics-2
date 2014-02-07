@@ -41,6 +41,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.texture.CableBusTextures;
+import appeng.core.AELog;
 import appeng.core.localization.PlayerMessages;
 import appeng.me.GridAccessException;
 import appeng.util.Platform;
@@ -263,10 +264,11 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 				doRenderItem( sis, this.tile );
 
 			}
-			catch (Exception err)
+			catch (Exception e)
 			{
-				err.printStackTrace();
+				AELog.error( e );
 			}
+
 			GL11.glPopMatrix();
 
 			GL11.glTranslatef( 0.0f, 0.14f, -0.24f );

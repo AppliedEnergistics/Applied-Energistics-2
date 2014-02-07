@@ -19,6 +19,7 @@ import appeng.block.AEBaseBlock;
 import appeng.block.misc.BlockCharger;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraTextures;
+import appeng.core.AELog;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 
@@ -146,7 +147,7 @@ public class RenderBlockCharger extends BaseBlockRender
 			}
 			catch (Exception err)
 			{
-				err.printStackTrace();
+				AELog.error( err );
 			}
 
 			GL11.glPopMatrix();

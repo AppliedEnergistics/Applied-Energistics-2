@@ -15,6 +15,7 @@ import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import appeng.block.AEBaseItemBlock;
+import appeng.core.AELog;
 import appeng.core.sync.packets.PacketMultiPart;
 import appeng.integration.modules.helpers.FMPPacketEvent;
 import codechicken.lib.packet.PacketCustom;
@@ -121,7 +122,7 @@ public class FMPEvent
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				AELog.error( e );
 			}
 		}
 		return true;

@@ -8,6 +8,7 @@ import java.util.concurrent.Callable;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 import appeng.api.networking.IGridNode;
+import appeng.core.AELog;
 import appeng.me.Grid;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
@@ -129,7 +130,7 @@ public class TickHandler implements ITickHandler
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				AELog.error( e );
 			}
 		}
 	}

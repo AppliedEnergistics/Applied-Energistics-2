@@ -23,7 +23,6 @@ import appeng.api.movable.IMovableHandler;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
-import cpw.mods.fml.common.FMLLog;
 
 public class CachedPlane
 {
@@ -218,9 +217,9 @@ public class CachedPlane
 			{
 				wrld.loadedTileEntityList.remove( te );
 			}
-			catch (Exception _)
+			catch (Exception e)
 			{
-				_.printStackTrace();
+				AELog.error( e );
 			}
 		}
 	}
@@ -331,9 +330,9 @@ public class CachedPlane
 				{
 					handler.moveTile( te, wrld, x + x_offset, y + y_offset, z + z_offset );
 				}
-				catch (Throwable _)
+				catch (Throwable e)
 				{
-					_.printStackTrace();
+					AELog.error( e );
 
 					// attempt recovery...
 					te.worldObj = wrld;
@@ -357,9 +356,9 @@ public class CachedPlane
 				alernateDest.addTile( x, y, z, te, null, mr );
 			}
 		}
-		catch (Throwable _)
+		catch (Throwable e)
 		{
-			_.printStackTrace();
+			AELog.error( e );
 		}
 	}
 
@@ -373,7 +372,7 @@ public class CachedPlane
 				Chunk c = myChunks[x][z];
 				for (Method m : c.getClass().getMethods())
 				{
-					FMLLog.severe( "Chunk." + m.getName() );
+					AELog.severe( "Chunk." + m.getName() );
 				}
 
 				c.resetRelightChecks();

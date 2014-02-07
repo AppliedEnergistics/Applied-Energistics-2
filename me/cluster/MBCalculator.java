@@ -4,6 +4,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.util.WorldCoord;
+import appeng.core.AELog;
 import appeng.util.Platform;
 
 public abstract class MBCalculator
@@ -126,7 +127,7 @@ public abstract class MBCalculator
 		}
 		catch (Throwable err)
 		{
-			err.printStackTrace();
+			AELog.error( err );
 		}
 
 		disconnect();

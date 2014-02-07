@@ -20,6 +20,7 @@ import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.RenderBlocksWorkaround;
+import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.integration.abstraction.IBC;
 import cpw.mods.fml.relauncher.Side;
@@ -76,8 +77,7 @@ public class FacadePart implements IFacadePart
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void renderStatic(int x, int y, int z, IPartRenderHelper instance2, RenderBlocks renderer, IFacadeContainer fc, AxisAlignedBB busBounds,
-			boolean renderStilt)
+	public void renderStatic(int x, int y, int z, IPartRenderHelper instance2, RenderBlocks renderer, IFacadeContainer fc, AxisAlignedBB busBounds, boolean renderStilt)
 	{
 		if ( facade != null )
 		{
@@ -244,7 +244,7 @@ public class FacadePart implements IFacadePart
 			}
 			catch (Throwable t)
 			{
-				t.printStackTrace();
+				AELog.error( t );
 
 			}
 
@@ -253,8 +253,8 @@ public class FacadePart implements IFacadePart
 	}
 
 	@SideOnly(Side.CLIENT)
-	private void renderSegmentBlockCurrentBounds(BusRenderHelper instance, int x, int y, int z, RenderBlocks renderer, double minX, double minY, double minZ,
-			double maxX, double maxY, double maxZ)
+	private void renderSegmentBlockCurrentBounds(BusRenderHelper instance, int x, int y, int z, RenderBlocks renderer, double minX, double minY, double minZ, double maxX,
+			double maxY, double maxZ)
 	{
 		double oldMinX = renderer.renderMinX;
 		double oldMinY = renderer.renderMinY;

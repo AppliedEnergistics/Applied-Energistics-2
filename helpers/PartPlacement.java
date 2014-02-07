@@ -24,6 +24,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
+import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.packets.PacketPartPlacement;
 import appeng.facade.IFacadeItem;
@@ -120,7 +121,7 @@ public class PartPlacement
 					}
 					catch (IOException e)
 					{
-						e.printStackTrace();
+						AELog.error( e );
 					}
 				}
 				return true;
@@ -171,7 +172,7 @@ public class PartPlacement
 						}
 						catch (IOException e)
 						{
-							e.printStackTrace();
+							AELog.error( e );
 						}
 					}
 				}
@@ -204,7 +205,7 @@ public class PartPlacement
 								}
 								catch (IOException e)
 								{
-									e.printStackTrace();
+									AELog.error( e );
 								}
 							}
 							return true;
@@ -267,7 +268,7 @@ public class PartPlacement
 					}
 					catch (IOException e)
 					{
-						e.printStackTrace();
+						AELog.error( e );
 					}
 					return true;
 				}
@@ -296,8 +297,8 @@ public class PartPlacement
 					host = ((IFMP) AppEng.instance.getIntegration( "FMP" )).getOrCreateHost( tile );
 
 				if ( (blkID == 0 || Block.blocksList[blkID].isBlockReplaceable( world, te_x, te_y, te_z ) || host != null) && offset != ForgeDirection.UNKNOWN )
-					return place( held, te_x, te_y, te_z, side.getOpposite().ordinal(), player, world,
-							pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS : PlaceType.PLACE_ITEM, depth + 1 );
+					return place( held, te_x, te_y, te_z, side.getOpposite().ordinal(), player, world, pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS
+							: PlaceType.PLACE_ITEM, depth + 1 );
 			}
 			return false;
 		}
@@ -330,7 +331,7 @@ public class PartPlacement
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				AELog.error( e );
 			}
 		}
 		return true;

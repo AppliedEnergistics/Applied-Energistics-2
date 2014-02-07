@@ -7,6 +7,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.storage.IMEInventory;
+import appeng.core.AELog;
 import appeng.me.storage.MEIInventoryWrapper;
 import appeng.util.Platform;
 import appeng.util.iterators.InvIterator;
@@ -201,9 +202,9 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 					inv[x] = ItemStack.loadItemStackFromNBT( c );
 
 			}
-			catch (Exception err)
+			catch (Exception e)
 			{
-				err.printStackTrace();
+				AELog.error( e );
 			}
 		}
 	}

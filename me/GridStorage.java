@@ -13,6 +13,7 @@ import org.bouncycastle.util.encoders.Base64;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridStorage;
+import appeng.core.AELog;
 import appeng.core.WorldSettings;
 
 public class GridStorage implements IGridStorage
@@ -25,7 +26,8 @@ public class GridStorage implements IGridStorage
 
 	public boolean isDirty = false;
 	private Set<GridStorage> divlist = new HashSet();
-	final GridStorageSearch mySearchEntry; // keep myself in the list until I'm lost...
+	final GridStorageSearch mySearchEntry; // keep myself in the list until I'm
+											// lost...
 
 	/**
 	 * for use with world settings
@@ -90,7 +92,7 @@ public class GridStorage implements IGridStorage
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			AELog.error( e );
 		}
 
 		return "";

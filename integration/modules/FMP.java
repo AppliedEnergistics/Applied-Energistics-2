@@ -113,7 +113,7 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 		}
 		catch (Throwable t)
 		{
-			t.printStackTrace();
+			AELog.error( t );
 		}
 		return null;
 	}
@@ -145,7 +145,7 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 		catch (Throwable t)
 		{
 			AELog.severe( "Failed to register " + layerInterface.getName() + " with FMP, some features may not work with MultiParts." );
-			t.printStackTrace();
+			AELog.error( t );
 		}
 	}
 

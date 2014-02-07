@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
+import appeng.core.AELog;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -161,7 +162,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 		catch (Throwable t)
 		{
-			t.printStackTrace();
+			AELog.error( t );
 			// meh
 		}
 		return false;

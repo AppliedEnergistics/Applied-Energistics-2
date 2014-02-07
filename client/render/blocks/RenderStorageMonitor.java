@@ -15,6 +15,7 @@ import appeng.api.implementations.parts.IPartStorageMonitor;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
+import appeng.core.AELog;
 import appeng.tile.AEBaseTile;
 
 public class RenderStorageMonitor extends BaseBlockRender
@@ -25,8 +26,7 @@ public class RenderStorageMonitor extends BaseBlockRender
 	}
 
 	@Override
-	public void renderTile(AEBaseBlock blk, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f,
-			RenderBlocks rinstance)
+	public void renderTile(AEBaseBlock blk, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks rinstance)
 	{
 		IPartStorageMonitor monitor = (IPartStorageMonitor) tile;
 		IAEItemStack is = ((IAEItemStack) monitor.getDisplayed());
@@ -50,8 +50,7 @@ public class RenderStorageMonitor extends BaseBlockRender
 
 				int k = sis.itemID;
 				Block block = (k < Block.blocksList.length ? Block.blocksList[k] : null);
-				if ( sis.getItemSpriteNumber() == 0 && block != null
-						&& RenderBlocks.renderItemIn3d( Block.blocksList[k].getRenderType() ) )
+				if ( sis.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( Block.blocksList[k].getRenderType() ) )
 				{
 					GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
 					GL11.glRotatef( 15.0f, 0.0f, 1.0f, 0.0f );
@@ -72,7 +71,7 @@ public class RenderStorageMonitor extends BaseBlockRender
 			}
 			catch (Exception err)
 			{
-				err.printStackTrace();
+				AELog.error( err );
 			}
 
 			GL11.glPopMatrix();

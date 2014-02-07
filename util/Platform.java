@@ -69,7 +69,6 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAETagCompound;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEItemDefinition;
-import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.GuiBridge;
 import appeng.me.GridNode;
@@ -363,8 +362,9 @@ public class Platform
 	}
 
 	/*
-	 * Lots of sillyness to try and account for weird tag related junk, basically requires that two tags have at least
-	 * something in their tags before it wasts its time comparing them.
+	 * Lots of sillyness to try and account for weird tag related junk,
+	 * basically requires that two tags have at least something in their tags
+	 * before it wasts its time comparing them.
 	 */
 	public static boolean sameStackStags(ItemStack a, ItemStack b)
 	{
@@ -397,9 +397,11 @@ public class Platform
 	}
 
 	/*
-	 * recursive test for NBT Equality, this was faster then trying to compare / generate hashes, its also more reliable
-	 * then the vanilla version which likes to fail when NBT Compound data changes order, it is pretty expensive
-	 * performance wise, so try an use shared tag compounds as long as the system remains in AE.
+	 * recursive test for NBT Equality, this was faster then trying to compare /
+	 * generate hashes, its also more reliable then the vanilla version which
+	 * likes to fail when NBT Compound data changes order, it is pretty
+	 * expensive performance wise, so try an use shared tag compounds as long as
+	 * the system remains in AE.
 	 */
 	public static boolean NBTEqualityTest(NBTBase A, NBTBase B)
 	{
@@ -483,8 +485,8 @@ public class Platform
 	}
 
 	/*
-	 * Orderless hash on NBT Data, used to work thought huge piles fast, but ignroes the order just in case MC decided
-	 * to change it... WHICH IS BAD...
+	 * Orderless hash on NBT Data, used to work thought huge piles fast, but
+	 * ignroes the order just in case MC decided to change it... WHICH IS BAD...
 	 */
 	public static int NBTOrderlessHash(NBTBase A)
 	{
@@ -546,7 +548,8 @@ public class Platform
 	}
 
 	/*
-	 * The usual version of this returns an ItemStack, this version returns the recipe.
+	 * The usual version of this returns an ItemStack, this version returns the
+	 * recipe.
 	 */
 	public static IRecipe findMatchingRecipe(InventoryCrafting par1InventoryCrafting, World par2World)
 	{
@@ -631,7 +634,8 @@ public class Platform
 	}
 
 	/*
-	 * Creates / or loads previous NBT Data on items, used for editing items owned by AE.
+	 * Creates / or loads previous NBT Data on items, used for editing items
+	 * owned by AE.
 	 */
 	public static NBTTagCompound openNbtData(ItemStack i)
 	{
@@ -646,7 +650,8 @@ public class Platform
 	}
 
 	/*
-	 * Generates Item entiies in the world similar to how items are generally droped.
+	 * Generates Item entiies in the world similar to how items are generally
+	 * droped.
 	 */
 	public static void spawnDrops(World w, int x, int y, int z, List<ItemStack> drops)
 	{
@@ -670,7 +675,8 @@ public class Platform
 	}
 
 	/*
-	 * Utility function to get the full inventory for a Double Chest in the World.
+	 * Utility function to get the full inventory for a Double Chest in the
+	 * World.
 	 */
 	public static IInventory GetChestInv(Object te)
 	{
@@ -1062,7 +1068,6 @@ public class Platform
 	@SideOnly(Side.CLIENT)
 	public static String gui_localize(String string)
 	{
-		AELog.localization( "gui", string );
 		return StatCollector.translateToLocal( string );
 	}
 
@@ -1110,8 +1115,9 @@ public class Platform
 		}
 
 		/*
-		 * if ( a.itemID != 0 && b.itemID != 0 && a.isItemStackDamageable() && ! a.getHasSubtypes() && a.itemID ==
-		 * b.itemID ) { return (a.getItemDamage() > 0) == (b.getItemDamage() > 0); }
+		 * if ( a.itemID != 0 && b.itemID != 0 && a.isItemStackDamageable() && !
+		 * a.getHasSubtypes() && a.itemID == b.itemID ) { return
+		 * (a.getItemDamage() > 0) == (b.getItemDamage() > 0); }
 		 */
 
 		// test damageable items..
@@ -1156,17 +1162,21 @@ public class Platform
 		}
 
 		/*
-		 * // test ore dictionary.. int OreID = getOreID( a ); if ( OreID != -1 ) return OreID == getOreID( b );
+		 * // test ore dictionary.. int OreID = getOreID( a ); if ( OreID != -1
+		 * ) return OreID == getOreID( b );
 		 * 
-		 * if ( Mode != FuzzyMode.IGNORE_ALL ) { if ( a.hasTagCompound() && !isShared( a.getTagCompound() ) ) { a =
-		 * Platform.getSharedItemStack( AEItemStack.create( a ) ); }
+		 * if ( Mode != FuzzyMode.IGNORE_ALL ) { if ( a.hasTagCompound() &&
+		 * !isShared( a.getTagCompound() ) ) { a = Platform.getSharedItemStack(
+		 * AEItemStack.create( a ) ); }
 		 * 
-		 * if ( b.hasTagCompound() && !isShared( b.getTagCompound() ) ) { b = Platform.getSharedItemStack(
-		 * AEItemStack.create( b ) ); }
+		 * if ( b.hasTagCompound() && !isShared( b.getTagCompound() ) ) { b =
+		 * Platform.getSharedItemStack( AEItemStack.create( b ) ); }
 		 * 
-		 * // test regular items with damage values and what not... if ( isShared( a.getTagCompound() ) && isShared(
-		 * b.getTagCompound() ) && a.itemID == b.itemID ) { return ((AppEngSharedNBTTagCompound)
-		 * a.getTagCompound()).compareFuzzyWithRegistry( (AppEngSharedNBTTagCompound) b.getTagCompound() ); } }
+		 * // test regular items with damage values and what not... if (
+		 * isShared( a.getTagCompound() ) && isShared( b.getTagCompound() ) &&
+		 * a.itemID == b.itemID ) { return ((AppEngSharedNBTTagCompound)
+		 * a.getTagCompound()).compareFuzzyWithRegistry(
+		 * (AppEngSharedNBTTagCompound) b.getTagCompound() ); } }
 		 */
 
 		return a.isItemEqual( b );
@@ -1223,8 +1233,7 @@ public class Platform
 		AxisAlignedBB bb = AxisAlignedBB
 				.getAABBPool()
 				.getAABB( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ),
-						Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) )
-				.expand( 16, 16, 16 );
+						Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
 
 		Entity entity = null;
 		double Closeest = 9999999.0D;
@@ -1292,8 +1301,7 @@ public class Platform
 		return 0;
 	}
 
-	public static <StackType extends IAEStack> StackType poweredExtraction(IEnergySource energy, IMEInventory<StackType> cell, StackType request,
-			BaseActionSource src)
+	public static <StackType extends IAEStack> StackType poweredExtraction(IEnergySource energy, IMEInventory<StackType> cell, StackType request, BaseActionSource src)
 	{
 		StackType possible = cell.extractItems( (StackType) request.copy(), Actionable.SIMULATE, src );
 
@@ -1402,8 +1410,7 @@ public class Platform
 		}
 	}
 
-	static public <T extends IAEStack<T>> void postListChanges(IItemList<T> before, IItemList<T> after, IMEMonitorHandlerReciever<T> meMonitorPassthu,
-			BaseActionSource source)
+	static public <T extends IAEStack<T>> void postListChanges(IItemList<T> before, IItemList<T> after, IMEMonitorHandlerReciever<T> meMonitorPassthu, BaseActionSource source)
 	{
 		for (T is : before)
 			is.setStackSize( -is.getStackSize() );

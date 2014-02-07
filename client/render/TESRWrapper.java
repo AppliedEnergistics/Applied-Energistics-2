@@ -9,8 +9,8 @@ import net.minecraft.tileentity.TileEntity;
 import org.lwjgl.opengl.GL11;
 
 import appeng.block.AEBaseBlock;
+import appeng.core.AELog;
 import appeng.tile.AEBaseTile;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -61,9 +61,9 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 				}
 				catch (Throwable t)
 				{
-					FMLLog.severe( "Hi, Looks like there was a crash while rendering something..." );
+					AELog.severe( "Hi, Looks like there was a crash while rendering something..." );
 					t.printStackTrace();
-					FMLLog.severe( "MC will now crash ( probobly )!" );
+					AELog.severe( "MC will now crash ( probobly )!" );
 					throw new RuntimeException( t );
 				}
 

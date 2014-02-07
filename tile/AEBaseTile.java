@@ -153,7 +153,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 		}
 		catch (Throwable t)
 		{
-			t.printStackTrace();
+			AELog.error( t );
 		}
 	}
 
@@ -187,14 +187,15 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 		}
 		catch (Throwable t)
 		{
-			t.printStackTrace();
+			AELog.error( t );
 		}
 
 		return output;
 	}
 
 	/**
-	 * By default all blocks can have orientation, this handles saving, and loading, as well as synchronization.
+	 * By default all blocks can have orientation, this handles saving, and
+	 * loading, as well as synchronization.
 	 * 
 	 * @return
 	 */
@@ -279,7 +280,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 	}
 
 	/**
-	 * returns the contents of the tile entity, into the world, defaults to dropping everything in the inventory.
+	 * returns the contents of the tile entity, into the world, defaults to
+	 * dropping everything in the inventory.
 	 * 
 	 * @param w
 	 * @param x
@@ -314,7 +316,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 	}
 
 	/**
-	 * depending on the from, diffrent settings will be accepted, don't call this with null
+	 * depending on the from, diffrent settings will be accepted, don't call
+	 * this with null
 	 * 
 	 * @param from
 	 * @param compound

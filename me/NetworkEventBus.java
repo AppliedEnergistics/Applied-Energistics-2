@@ -9,7 +9,7 @@ import java.util.Set;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkEvent;
 import appeng.api.networking.events.MENetworkEventSubscribe;
-import cpw.mods.fml.common.FMLLog;
+import appeng.core.AELog;
 
 public class NetworkEventBus
 {
@@ -42,10 +42,10 @@ public class NetworkEventBus
 			}
 			catch (Throwable e1)
 			{
-				FMLLog.severe( "[AppEng] Network Event caused exception:" );
-				FMLLog.severe( "Offending Class: " + obj.getClass().getName() );
-				FMLLog.severe( "Offending Object: " + obj.toString() );
-				e1.printStackTrace();
+				AELog.severe( "[AppEng] Network Event caused exception:" );
+				AELog.severe( "Offending Class: " + obj.getClass().getName() );
+				AELog.severe( "Offending Object: " + obj.toString() );
+				AELog.error( e1 );
 				throw new RuntimeException( e1 );
 			}
 

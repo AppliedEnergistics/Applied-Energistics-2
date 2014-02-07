@@ -11,6 +11,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.container.implementations.ContainerLevelEmitter;
+import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.parts.automation.PartLevelEmitter;
@@ -115,7 +116,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			AELog.error( e );
 		}
 	}
 
@@ -152,7 +153,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 				}
 				catch (IOException e)
 				{
-					e.printStackTrace();
+					AELog.error( e );
 				}
 			}
 			else

@@ -1,7 +1,6 @@
 package appeng.core.localization;
 
 import net.minecraft.util.StatCollector;
-import appeng.core.AELog;
 
 public enum ButtonToolTips
 {
@@ -37,7 +36,6 @@ public enum ButtonToolTips
 
 	ButtonToolTips() {
 		root = "gui.tooltips.appliedenergistics2";
-		AELog.localization( "gui.tooltips", getUnlocalized() );
 	}
 
 	ButtonToolTips(String r) {

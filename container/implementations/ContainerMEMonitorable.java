@@ -23,6 +23,7 @@ import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
+import appeng.core.AELog;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.util.Platform;
 import appeng.util.item.ItemList;
@@ -115,7 +116,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonito
 				}
 				catch (IOException e)
 				{
-					e.printStackTrace();
+					AELog.error( e );
 				}
 			}
 
@@ -156,7 +157,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonito
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				AELog.error( e );
 			}
 
 		}

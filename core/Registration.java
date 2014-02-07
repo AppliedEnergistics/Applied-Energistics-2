@@ -228,13 +228,17 @@ public class Registration
 		blocks.blockWireless = addFeature( BlockWireless.class );
 		blocks.blockTinyTNT = addFeature( BlockTinyTNT.class );
 
-		// blocks.blockQuartzCrystalizer = addFeature( BlockQuartzCrystalizer.class );
+		// blocks.blockQuartzCrystalizer = addFeature(
+		// BlockQuartzCrystalizer.class );
 		// blocks.blockNetworkEmitter = addFeature( BlockNetworkEmitter.class );
 
-		// blocks.blockPatternProvider = addFeature( BlockPatternProvider.class );
-		// blocks.blockAssemblerFieldWall = addFeature( BlockContainmentWall.class );
+		// blocks.blockPatternProvider = addFeature( BlockPatternProvider.class
+		// );
+		// blocks.blockAssemblerFieldWall = addFeature(
+		// BlockContainmentWall.class );
 		// blocks.blockHeatVent = addFeature( BlockHeatVent.class );
-		// blocks.blockCraftingCPU = addFeature( BlockCraftingAccelerator.class );
+		// blocks.blockCraftingCPU = addFeature( BlockCraftingAccelerator.class
+		// );
 
 		blocks.blockQuantumRing = addFeature( BlockQuantumRing.class );
 		blocks.blockQuantumLink = addFeature( BlockQuantumLinkChamber.class );
@@ -258,7 +262,8 @@ public class Registration
 
 		blocks.blockSecurity = addFeature( BlockSecurity.class );
 
-		// items.itemEncodedAsemblerPattern = addFeature( ItemEncodedPattern.class );
+		// items.itemEncodedAsemblerPattern = addFeature(
+		// ItemEncodedPattern.class );
 
 		items.itemCellCreative = addFeature( ItemCreativeStorageCell.class );
 
@@ -387,7 +392,7 @@ public class Registration
 				}
 				catch (Throwable t)
 				{
-					t.printStackTrace();
+					AELog.error( t );
 				}
 			}
 		}

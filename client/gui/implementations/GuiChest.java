@@ -7,6 +7,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerChest;
+import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.packets.PacketSwitchGuis;
@@ -31,7 +32,7 @@ public class GuiChest extends AEBaseGui
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				AELog.error( e );
 			}
 		}
 	}

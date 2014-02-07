@@ -11,6 +11,7 @@ import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerPriority;
+import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.packets.PacketSwitchGuis;
@@ -97,7 +98,7 @@ public class GuiPriority extends AEBaseGui
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				AELog.error( e );
 			}
 		}
 
@@ -147,7 +148,7 @@ public class GuiPriority extends AEBaseGui
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			AELog.error( e );
 		}
 	}
 
@@ -156,8 +157,7 @@ public class GuiPriority extends AEBaseGui
 	{
 		if ( !this.checkHotbarKeys( key ) )
 		{
-			if ( (key == 211 || key == 205 || key == 203 || key == 14 || character == '-' || Character.isDigit( character ))
-					&& priority.textboxKeyTyped( character, key ) )
+			if ( (key == 211 || key == 205 || key == 203 || key == 14 || character == '-' || Character.isDigit( character )) && priority.textboxKeyTyped( character, key ) )
 			{
 				try
 				{
@@ -180,7 +180,7 @@ public class GuiPriority extends AEBaseGui
 				}
 				catch (IOException e)
 				{
-					e.printStackTrace();
+					AELog.error( e );
 				}
 			}
 			else

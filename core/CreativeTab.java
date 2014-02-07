@@ -5,7 +5,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.api.util.AEItemDefinition;
-import appeng.util.Platform;
 
 public final class CreativeTab extends CreativeTabs
 {
@@ -14,8 +13,6 @@ public final class CreativeTab extends CreativeTabs
 
 	public CreativeTab() {
 		super( "appliedenergistics2" );
-		if ( Platform.isClient() )
-			AELog.localization( "gui", "itemGroup." + getTabLabel() );
 	}
 
 	@Override

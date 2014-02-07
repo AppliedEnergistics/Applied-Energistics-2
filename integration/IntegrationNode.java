@@ -46,8 +46,7 @@ public class IntegrationNode
 							.addCustomCategoryComment(
 									"ModIntegration",
 									"Valid Values are 'AUTO', 'ON', or 'OFF' - defaults to 'AUTO' ; Suggested that you leave this alone unless your experiencing an issue, or wish to disable the integration for a reason." );
-					String Mode = Configuration.instance.get( "ModIntegration", displayName.replace( " ", "" ), "AUTO" )
-							.getString();
+					String Mode = Configuration.instance.get( "ModIntegration", displayName.replace( " ", "" ), "AUTO" ).getString();
 
 					if ( Mode.toUpperCase().equals( "ON" ) )
 						enabled = true;
@@ -90,7 +89,7 @@ public class IntegrationNode
 			{
 				AELog.info( displayName + " - Integration Disabled" );
 				if ( !(exception instanceof ModNotInstalled) )
-					exception.printStackTrace();
+					AELog.error( exception );
 			}
 			else
 			{

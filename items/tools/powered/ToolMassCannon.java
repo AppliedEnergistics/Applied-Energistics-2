@@ -28,6 +28,7 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.core.AELog;
 import appeng.core.CommonHelper;
 import appeng.core.Configuration;
 import appeng.core.features.AEFeature;
@@ -130,9 +131,9 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 							AxisAlignedBB bb = AxisAlignedBB
 									.getAABBPool()
-									.getAABB( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ),
-											Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ),
-											Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
+									.getAABB( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ),
+											Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) )
+									.expand( 16, 16, 16 );
 
 							Entity entity = null;
 							List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
@@ -182,14 +183,13 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 							try
 							{
-								CommonHelper.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, (new PacketMatterCannon( d0, d1, d2, (float) (f7 * d3),
-										(float) (f6 * d3), (float) (f8 * d3), (byte) (pos == null ? 32 : pos.hitVec.squareDistanceTo( Srec ) + 1) ))
-										.getPacket() );
+								CommonHelper.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, (new PacketMatterCannon( d0, d1, d2, (float) (f7 * d3), (float) (f6 * d3),
+										(float) (f8 * d3), (byte) (pos == null ? 32 : pos.hitVec.squareDistanceTo( Srec ) + 1) )).getPacket() );
 
 							}
 							catch (Exception err)
 							{
-								err.printStackTrace();
+								AELog.error( err );
 							}
 
 							if ( pos != null )
@@ -205,7 +205,8 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 										EntityLivingBase el = (EntityLivingBase) pos.entityHit;
 										penitration -= dmg;
 										el.knockBack( p, 0, (double) f7 * d3, (double) f8 * d3 );
-										// el.knockBack( p, 0, vec3.xCoord, vec3.zCoord );
+										// el.knockBack( p, 0, vec3.xCoord,
+										// vec3.zCoord );
 										el.attackEntityFrom( dmgSrc, dmg );
 										if ( !el.isEntityAlive() )
 											hasDestroyedSomething = true;
@@ -227,7 +228,8 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 									else
 									{
 										int bid = w.getBlockId( pos.blockX, pos.blockY, pos.blockZ );
-										// int meta = w.getBlockMetadata( pos.blockX, pos.blockY, pos.blockZ );
+										// int meta = w.getBlockMetadata(
+										// pos.blockX, pos.blockY, pos.blockZ );
 
 										if ( bid > 0 )
 										{

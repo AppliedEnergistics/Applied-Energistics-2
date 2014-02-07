@@ -15,6 +15,7 @@ import appeng.api.implementations.IUpgradeableHost;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.container.implementations.ContainerUpgradeable;
+import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.parts.automation.PartImportBus;
@@ -76,7 +77,7 @@ public class GuiUpgradeable extends AEBaseGui
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			AELog.error( e );
 		}
 	}
 

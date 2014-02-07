@@ -178,8 +178,7 @@ public class Profiler implements Runnable
 			File d = new File( BaseB + "org-openide-util.jar" );
 			File e = new File( BaseB + "org-openide-util-lookup.jar" );
 
-			ClassLoader cl = URLClassLoader.newInstance( new URL[] { a.toURI().toURL(), b.toURI().toURL(), c.toURI().toURL(), d.toURI().toURL(),
-					e.toURI().toURL() } );
+			ClassLoader cl = URLClassLoader.newInstance( new URL[] { a.toURI().toURL(), b.toURI().toURL(), c.toURI().toURL(), d.toURI().toURL(), e.toURI().toURL() } );
 
 			ProfilingSettingsPresets = cl.loadClass( "org.netbeans.lib.profiler.common.ProfilingSettingsPresets" );
 			ProfilingSettings = cl.loadClass( "org.netbeans.lib.profiler.common.ProfilingSettings" );
@@ -239,8 +238,8 @@ public class Profiler implements Runnable
 
 					Object CPUResultsSnapshot_Instance = createSnapshot.invoke( StackTraceSnapshotBuilder_Instance, System.currentTimeMillis() );
 
-					Object LoadedSnapshot_Instance = LoadedSnapshot_Constructor.newInstance( CPUResultsSnapshot_Instance,
-							createCPUPreset.invoke( ProfilingSettingsPresets ), null, null );
+					Object LoadedSnapshot_Instance = LoadedSnapshot_Constructor.newInstance( CPUResultsSnapshot_Instance, createCPUPreset.invoke( ProfilingSettingsPresets ), null,
+							null );
 
 					FileOutputStream bout = new FileOutputStream( new File( "ae-latest-profile.nps" ) );
 					DataOutputStream out = new DataOutputStream( bout );
@@ -251,7 +250,7 @@ public class Profiler implements Runnable
 				catch (Throwable t)
 				{
 					AELog.severe( "Error while profiling" );
-					t.printStackTrace();
+					AELog.error( t );
 					profile = false;
 					return;
 				}

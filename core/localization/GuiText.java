@@ -1,7 +1,6 @@
 package appeng.core.localization;
 
 import net.minecraft.util.StatCollector;
-import appeng.core.AELog;
 
 public enum GuiText
 {
@@ -31,7 +30,6 @@ public enum GuiText
 
 	GuiText() {
 		root = "gui.appliedenergistics2";
-		AELog.localization( "gui", getUnlocalized() );
 	}
 
 	GuiText(String r) {

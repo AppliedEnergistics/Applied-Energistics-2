@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.crash.CallableMinecraftVersion;
+import appeng.core.AELog;
 import appeng.core.Configuration;
 
 public class VersionChecker implements Runnable
@@ -44,8 +45,8 @@ public class VersionChecker implements Runnable
 				URL url = new URL( "http://ae-mod.info/releases/?latest" );
 
 				URLConnection yc = url.openConnection();
-				yc.setRequestProperty( "User-Agent", "AE2/" + Configuration.VERSION + " (Channel:" + Configuration.CHANNEL
-						+ ",Minecraft:" + ((new CallableMinecraftVersion( null )).minecraftVersion()) + ")" );
+				yc.setRequestProperty( "User-Agent", "AE2/" + Configuration.VERSION + " (Channel:" + Configuration.CHANNEL + ",Minecraft:"
+						+ ((new CallableMinecraftVersion( null )).minecraftVersion()) + ")" );
 
 				BufferedReader in = new BufferedReader( new InputStreamReader( yc.getInputStream() ) );
 
@@ -77,7 +78,7 @@ public class VersionChecker implements Runnable
 				}
 				catch (InterruptedException e1)
 				{
-					e1.printStackTrace();
+					AELog.error( e );
 				}
 			}
 		}

@@ -4,7 +4,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.items.parts.ItemFacade;
-import appeng.util.Platform;
 
 public final class CreativeTabFacade extends CreativeTabs
 {
@@ -13,8 +12,6 @@ public final class CreativeTabFacade extends CreativeTabs
 
 	public CreativeTabFacade() {
 		super( "appliedenergistics2.facades" );
-		if ( Platform.isClient() )
-			AELog.localization( "gui", "itemGroup." + getTabLabel() );
 	}
 
 	@Override

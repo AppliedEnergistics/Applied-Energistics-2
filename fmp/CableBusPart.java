@@ -32,6 +32,7 @@ import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
+import appeng.core.AELog;
 import appeng.helpers.AEMultiTile;
 import appeng.parts.BusCollisionHelper;
 import appeng.parts.CableBusContainer;
@@ -115,7 +116,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			AELog.error( e );
 		}
 
 	}
@@ -134,7 +135,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			AELog.error( e );
 		}
 	}
 

@@ -119,7 +119,7 @@ public abstract class AEBaseGui extends GuiContainer
 				}
 				catch (IOException e)
 				{
-					e.printStackTrace();
+					AELog.error( e );
 				}
 			}
 
@@ -148,7 +148,7 @@ public abstract class AEBaseGui extends GuiContainer
 				}
 				catch (IOException e)
 				{
-					e.printStackTrace();
+					AELog.error( e );
 				}
 			}
 
@@ -198,7 +198,7 @@ public abstract class AEBaseGui extends GuiContainer
 				}
 				catch (IOException e)
 				{
-					e.printStackTrace();
+					AELog.error( e );
 				}
 			}
 
@@ -522,10 +522,10 @@ public abstract class AEBaseGui extends GuiContainer
 							tessellator.setColorRGBA_F( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() );
 							tessellator.addVertexWithUV( (double) (par1 + 0), (double) (par2 + par6), (double) this.zLevel, (double) ((float) (par3 + 0) * f),
 									(double) ((float) (par4 + par6) * f1) );
-							tessellator.addVertexWithUV( (double) (par1 + par5), (double) (par2 + par6), (double) this.zLevel,
-									(double) ((float) (par3 + par5) * f), (double) ((float) (par4 + par6) * f1) );
-							tessellator.addVertexWithUV( (double) (par1 + par5), (double) (par2 + 0), (double) this.zLevel,
-									(double) ((float) (par3 + par5) * f), (double) ((float) (par4 + 0) * f1) );
+							tessellator.addVertexWithUV( (double) (par1 + par5), (double) (par2 + par6), (double) this.zLevel, (double) ((float) (par3 + par5) * f),
+									(double) ((float) (par4 + par6) * f1) );
+							tessellator.addVertexWithUV( (double) (par1 + par5), (double) (par2 + 0), (double) this.zLevel, (double) ((float) (par3 + par5) * f),
+									(double) ((float) (par4 + 0) * f1) );
 							tessellator.addVertexWithUV( (double) (par1 + 0), (double) (par2 + 0), (double) this.zLevel, (double) ((float) (par3 + 0) * f),
 									(double) ((float) (par4 + 0) * f1) );
 							tessellator.setColorRGBA_F( 1.0f, 1.0f, 1.0f, 1.0f );
@@ -554,7 +554,7 @@ public abstract class AEBaseGui extends GuiContainer
 							}
 							catch (Exception err)
 							{
-								err.printStackTrace();
+								AELog.error( err );
 							}
 						}
 						((AppEngSlot) s).isValid = isValid ? hasCalculatedValidness.Valid : hasCalculatedValidness.Invalid;

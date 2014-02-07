@@ -13,6 +13,7 @@ import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiProgressBar;
 import appeng.client.gui.widgets.GuiProgressBar.Direction;
 import appeng.container.implementations.ContainerCondenser;
+import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.tile.misc.TileCondenser;
@@ -46,7 +47,7 @@ public class GuiCondenser extends AEBaseGui
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				AELog.error( e );
 			}
 		}
 	}

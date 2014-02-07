@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import appeng.core.AELog;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 
@@ -29,23 +30,23 @@ public class AppEngClientPacketHandler extends AppEngPacketHandlerBase implement
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			AELog.error( e );
 		}
 		catch (InstantiationException e)
 		{
-			e.printStackTrace();
+			AELog.error( e );
 		}
 		catch (IllegalAccessException e)
 		{
-			e.printStackTrace();
+			AELog.error( e );
 		}
 		catch (IllegalArgumentException e)
 		{
-			e.printStackTrace();
+			AELog.error( e );
 		}
 		catch (InvocationTargetException e)
 		{
-			e.printStackTrace();
+			AELog.error( e );
 		}
 
 	}

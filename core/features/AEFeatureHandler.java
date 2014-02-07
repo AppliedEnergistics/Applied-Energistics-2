@@ -9,7 +9,6 @@ import net.minecraft.tileentity.TileEntity;
 import appeng.api.util.AEItemDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseItemBlock;
-import appeng.core.AELog;
 import appeng.core.CommonHelper;
 import appeng.core.Configuration;
 import appeng.core.CreativeTab;
@@ -84,7 +83,6 @@ public class AEFeatureHandler implements AEItemDefinition
 			i.setCreativeTab( CreativeTab.instance );
 
 		GameRegistry.registerItem( i, "item." + name );
-		AELog.localization( "item", i.getUnlocalizedName() );
 	}
 
 	private void initBlock(Block b)
@@ -108,7 +106,6 @@ public class AEFeatureHandler implements AEItemDefinition
 			itemBlock = ((AEBaseBlock) b).getItemBlockClass();
 
 		GameRegistry.registerBlock( b, itemBlock, "tile." + name );
-		AELog.localization( "block", b.getUnlocalizedName() );
 	}
 
 	public EnumSet<AEFeature> getFeatures()
