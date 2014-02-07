@@ -12,6 +12,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IFZ;
 import appeng.integration.modules.helpers.FactorizationBarrel;
+import appeng.integration.modules.helpers.FactorizationHandler;
 import appeng.util.Platform;
 
 /**
@@ -182,6 +183,8 @@ public class FZ implements IFZ, IIntegrationModule
 	@Override
 	public void PostInit()
 	{
+		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new FactorizationHandler() );
+
 		// certus quartz
 		grinderRecipe( AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 ), AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ) );
 
@@ -205,7 +208,8 @@ public class FZ implements IFZ, IIntegrationModule
 		}
 		catch (Throwable t)
 		{
-			throw new RuntimeException( t );
+			// AELog.info( "" );
+			// throw new RuntimeException( t );
 		}
 	}
 }

@@ -2,8 +2,10 @@ package appeng.integration.modules;
 
 import net.mcft.copy.betterstorage.api.ICrateStorage;
 import net.minecraftforge.common.ForgeDirection;
+import appeng.api.AEApi;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IBS;
+import appeng.integration.modules.helpers.BSCrateHandler;
 import appeng.integration.modules.helpers.BSCrateStorageAdaptor;
 import appeng.util.InventoryAdaptor;
 
@@ -31,15 +33,13 @@ public class BS implements IIntegrationModule, IBS
 	@Override
 	public void Init()
 	{
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void PostInit()
 	{
-		// TODO Auto-generated method stub
-
+		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new BSCrateHandler() );
 	}
 
 }

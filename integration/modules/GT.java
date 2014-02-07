@@ -4,9 +4,11 @@ import gregtechmod.api.interfaces.IDigitalChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import appeng.api.AEApi;
 import appeng.api.storage.IMEInventory;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IGT;
+import appeng.integration.modules.helpers.GregTechHandler;
 import appeng.integration.modules.helpers.GregTechQuantumChest;
 import appeng.util.InventoryAdaptor;
 
@@ -38,7 +40,7 @@ public class GT implements IGT, IIntegrationModule
 	@Override
 	public void PostInit()
 	{
-
+		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new GregTechHandler() );
 	}
 
 }
