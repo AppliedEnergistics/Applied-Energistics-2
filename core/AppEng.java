@@ -86,7 +86,9 @@ public class AppEng
 			IntegrationSide.BOTH, "Factorization", "factorization", "FZ", // FZ
 			IntegrationSide.BOTH, "Forestry", "Forestry", "Forestry", // Forestry
 			IntegrationSide.BOTH, "Mekanism", "Mekanism", "Mekanism", // MeK
-			IntegrationSide.CLIENT, "Not Enought Items", "NotEnoughItems", "NEI", // Not Eneough Items
+			IntegrationSide.CLIENT, "Not Enought Items", "NotEnoughItems", "NEI", // Not
+																					// Eneough
+																					// Items
 			IntegrationSide.BOTH, "Forge MultiPart", "McMultipart", "FMP" } );
 
 	public boolean isIntegrationEnabled(String Name)
@@ -109,10 +111,10 @@ public class AppEng
 	@EventHandler
 	void PreInit(FMLPreInitializationEvent event)
 	{
-		AELog.info( "Starting ( PreInit )" );
-
 		Configuration.instance = new Configuration( event.getModConfigurationDirectory() );
 		FacadeConfig.instance = new FacadeConfig( event.getModConfigurationDirectory() );
+
+		AELog.info( "Starting ( PreInit )" );
 
 		if ( Platform.isClient() )
 		{
