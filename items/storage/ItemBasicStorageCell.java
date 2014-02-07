@@ -40,7 +40,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 		switch (component)
 		{
 		case Cell1kPart:
-			idleDrain = 0.5;
+			idleDrain = 12.5;
 			break;
 		case Cell4kPart:
 			idleDrain = 1.0;
@@ -69,17 +69,12 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 				l.add( cd.usedBytes() + " " + GuiText.Of.getLocal() + " " + cd.totalBytes() + " " + GuiText.BytesUsed.getLocal() );
 				l.add( cd.storedItemTypes() + " " + GuiText.Of.getLocal() + " " + cd.getTotalItemTypes() + " " + GuiText.Types.getLocal() );
 				/*
-				 * if ( cd.isPreformatted() ) { String List =
-				 * StatCollector.translateToLocal( cd.getListMode() ==
-				 * ListMode.WHITELIST ? "AppEng.Gui.Whitelisted" :
-				 * "AppEng.Gui.Blacklisted" ); if ( cd.isFuzzyPreformatted() )
-				 * l.add( StatCollector.translateToLocal(
-				 * "Appeng.GuiITooltip.Partitioned" ) + " - " + List + " " +
-				 * StatCollector.translateToLocal( "Appeng.GuiITooltip.Fuzzy" )
-				 * ); else l.add( StatCollector.translateToLocal(
-				 * "Appeng.GuiITooltip.Partitioned" ) + " - " + List + " " +
-				 * StatCollector.translateToLocal( "Appeng.GuiITooltip.Precise"
-				 * ) ); }
+				 * if ( cd.isPreformatted() ) { String List = StatCollector.translateToLocal( cd.getListMode() ==
+				 * ListMode.WHITELIST ? "AppEng.Gui.Whitelisted" : "AppEng.Gui.Blacklisted" ); if (
+				 * cd.isFuzzyPreformatted() ) l.add( StatCollector.translateToLocal( "Appeng.GuiITooltip.Partitioned" )
+				 * + " - " + List + " " + StatCollector.translateToLocal( "Appeng.GuiITooltip.Fuzzy" ) ); else l.add(
+				 * StatCollector.translateToLocal( "Appeng.GuiITooltip.Partitioned" ) + " - " + List + " " +
+				 * StatCollector.translateToLocal( "Appeng.GuiITooltip.Precise" ) ); }
 				 */
 			}
 		}

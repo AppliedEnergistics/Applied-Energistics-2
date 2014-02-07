@@ -37,6 +37,8 @@ import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.parts.AEBasePart;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartCable extends AEBasePart implements IPartCable
 {
@@ -355,6 +357,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		GL11.glTranslated( -0.2, -0.3, 0.0 );
@@ -365,6 +368,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		rh.setTexture( null );
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void rendereGlassConection(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, ForgeDirection of)
 	{
 		TileEntity te = this.tile.worldObj.getBlockTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
@@ -472,6 +476,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		}
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void renderCoveredConection(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of)
 	{
 		TileEntity te = this.tile.worldObj.getBlockTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
@@ -573,6 +578,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		}
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void renderSmartConection(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of)
 	{
 		TileEntity te = this.tile.worldObj.getBlockTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
@@ -694,6 +700,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		}
 	}
 
+	@SideOnly(Side.CLIENT)
 	protected void setSmartConnectionRotations(ForgeDirection of, RenderBlocks renderer)
 	{
 		switch (of)
@@ -728,6 +735,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		}
 	}
 
+	@SideOnly(Side.CLIENT)
 	protected void renderAllFaces(AEBaseBlock blk, int x, int y, int z, RenderBlocks renderer)
 	{
 		renderer.renderFaceXNeg( blk, x, y, z, blk.getRendererInstance().getTexture( ForgeDirection.WEST ) );
@@ -739,6 +747,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		boolean useCovered = false;

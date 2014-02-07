@@ -25,6 +25,8 @@ import appeng.core.sync.GuiBridge;
 import appeng.me.GridAccessException;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartExportBus extends PartSharedItemBus implements IGridTickable
 {
@@ -54,6 +56,7 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
 	{
 
@@ -71,6 +74,7 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		rh.useSimpliedRendering( x, y, z, this );

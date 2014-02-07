@@ -157,7 +157,6 @@ public class WirelessTerminalGuiObject implements IPortableCell
 			itemStorage.removeListener( l );
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public IItemList<IAEItemStack> getAvailableItems(IItemList out)
 	{

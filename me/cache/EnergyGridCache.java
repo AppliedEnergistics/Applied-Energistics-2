@@ -156,6 +156,7 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public double injectPower(double i, Actionable mode)
 	{
+		double ignore = extra;
 		i += extra;
 
 		if ( mode == Actionable.SIMULATE )
@@ -169,7 +170,7 @@ public class EnergyGridCache implements IEnergyGrid
 		}
 		else
 		{
-			tickInjectionPerTick += i;
+			tickInjectionPerTick += i - ignore;
 			// totalInjectionPastTicks[0] += i;
 
 			while (i > 0 && !requesters.isEmpty())
@@ -369,6 +370,7 @@ public class EnergyGridCache implements IEnergyGrid
 			extra = extractedPower - amt;
 			globalAvailablePower -= amt;
 
+			tickDrainPerTick += amt;
 			return amt;
 		}
 
@@ -381,6 +383,7 @@ public class EnergyGridCache implements IEnergyGrid
 
 		// go less or the correct amount?
 		globalAvailablePower -= extractedPower;
+		tickDrainPerTick += extractedPower;
 		return extractedPower;
 	}
 
@@ -401,7 +404,6 @@ public class EnergyGridCache implements IEnergyGrid
 			}
 		}
 
-		tickDrainPerTick += extractedPower;
 		// totalDrainPastTicks[0] += extractedPower;
 		return extractedPower;
 	}

@@ -39,6 +39,8 @@ import appeng.me.GridAccessException;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHost, IMEMonitorHandlerReciever<IAEItemStack>
 {
@@ -250,6 +252,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		rh.setTexture( is.getIconIndex() );
@@ -446,6 +449,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		rh.setTexture( is.getIconIndex() );

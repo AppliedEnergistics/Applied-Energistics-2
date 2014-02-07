@@ -11,7 +11,10 @@ import org.lwjgl.opengl.GL11;
 import appeng.block.AEBaseBlock;
 import appeng.tile.AEBaseTile;
 import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class TESRWrapper extends TileEntitySpecialRenderer
 {
 

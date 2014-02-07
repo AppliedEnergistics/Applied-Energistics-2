@@ -21,6 +21,8 @@ import appeng.client.texture.CableBusTextures;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartMonitor extends AEBasePart implements IPartMonitor
 {
@@ -123,6 +125,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
@@ -145,6 +148,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),

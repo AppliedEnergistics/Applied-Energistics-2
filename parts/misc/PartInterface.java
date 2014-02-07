@@ -30,6 +30,8 @@ import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartInterface extends PartBasicState implements IGridTickable, ISegmentedInventory, IStorageMonitorable, IInventoryDestination, IInterfaceHost,
 		ISidedInventory, IAEAppEngInventory, ITileStorageMonitorable
@@ -62,6 +64,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
@@ -78,6 +81,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		rh.useSimpliedRendering( x, y, z, this );

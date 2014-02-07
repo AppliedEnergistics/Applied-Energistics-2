@@ -15,6 +15,8 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.client.texture.CableBusTextures;
 import appeng.me.GridAccessException;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartBasicState extends AEBasePart
 {
@@ -57,6 +59,7 @@ public class PartBasicState extends AEBasePart
 		}
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void renderLights(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		rh.normalRendering();

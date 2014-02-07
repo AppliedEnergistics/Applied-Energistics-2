@@ -22,6 +22,8 @@ import appeng.client.render.BusRenderHelper;
 import appeng.client.render.RenderBlocksWorkaround;
 import appeng.core.AppEng;
 import appeng.integration.abstraction.IBC;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class FacadePart implements IFacadePart
 {
@@ -73,6 +75,7 @@ public class FacadePart implements IFacadePart
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper instance2, RenderBlocks renderer, IFacadeContainer fc, AxisAlignedBB busBounds,
 			boolean renderStilt)
 	{
@@ -249,6 +252,7 @@ public class FacadePart implements IFacadePart
 		}
 	}
 
+	@SideOnly(Side.CLIENT)
 	private void renderSegmentBlockCurrentBounds(BusRenderHelper instance, int x, int y, int z, RenderBlocks renderer, double minX, double minY, double minZ,
 			double maxX, double maxY, double maxZ)
 	{
@@ -282,6 +286,7 @@ public class FacadePart implements IFacadePart
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderInventory(IPartRenderHelper instance, RenderBlocks renderer)
 	{
 		if ( facade != null )

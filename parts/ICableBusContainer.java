@@ -10,6 +10,8 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import appeng.api.parts.SelectedPart;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public interface ICableBusContainer
 {
@@ -36,6 +38,7 @@ public interface ICableBusContainer
 
 	boolean isLadder(EntityLivingBase entity);
 
+	@SideOnly(Side.CLIENT)
 	void randomDisplayTick(World world, int x, int y, int z, Random r);
 
 	int getLightValue();

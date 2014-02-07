@@ -22,6 +22,8 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.client.texture.OffsetIcon;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartCableCovered extends PartCable
 {
@@ -97,6 +99,7 @@ public class PartCableCovered extends PartCable
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		GL11.glTranslated( -0.2, -0.3, 0.0 );
@@ -108,6 +111,7 @@ public class PartCableCovered extends PartCable
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		rh.setTexture( getTexture( getCableColor() ) );

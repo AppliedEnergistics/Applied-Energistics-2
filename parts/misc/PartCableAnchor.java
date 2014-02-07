@@ -24,6 +24,8 @@ import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartCableAnchor implements IPart
 {
@@ -36,6 +38,7 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		Icon myIcon = is.getIconIndex();
@@ -46,12 +49,14 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(World world, int x, int y, int z, Random r)
 	{
 
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderInventory(IPartRenderHelper instance, RenderBlocks renderer)
 	{
 		instance.setTexture( is.getIconIndex() );
@@ -79,6 +84,7 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderDynamic(double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
 
