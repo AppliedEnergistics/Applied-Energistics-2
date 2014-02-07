@@ -105,7 +105,7 @@ public class ItemRepo
 			String dspName = Platform.getItemDisplayName( is );
 			notDone = true;
 
-			if ( m.matcher( dspName.toLowerCase() ).find() )
+			if ( m.matcher( dspName ).find() )
 			{
 				view.add( is );
 				notDone = false;
