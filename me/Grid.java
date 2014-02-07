@@ -12,6 +12,7 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IMachineSet;
 import appeng.api.networking.events.MENetworkEvent;
+import appeng.api.networking.events.MENetworkPostCacheConstruction;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.core.WorldSettings;
 import appeng.helpers.TickHandler;
@@ -40,6 +41,8 @@ public class Grid implements IGrid
 
 		TickHandler.instance.addNetwork( this );
 		center.setGrid( this );
+
+		postEvent( new MENetworkPostCacheConstruction() );
 	}
 
 	public Set<Class<? extends IGridHost>> getMachineClasses()
