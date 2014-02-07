@@ -40,7 +40,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 		switch (component)
 		{
 		case Cell1kPart:
-			idleDrain = 12.5;
+			idleDrain = 0.5;
 			break;
 		case Cell4kPart:
 			idleDrain = 1.0;
