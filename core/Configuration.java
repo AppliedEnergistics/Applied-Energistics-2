@@ -5,6 +5,7 @@ import java.util.EnumSet;
 
 import net.minecraftforge.common.Property;
 import appeng.api.config.CondenserOuput;
+import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -96,11 +97,14 @@ public class Configuration extends net.minecraftforge.common.Configuration imple
 		final double DEFAULT_RTC_EXCHANGE = 1.0 / 11256.0;
 		final double DEFAULT_RF_EXCHANGE = 0.5;
 
-		PowerUnits.MJ.conversionRatio = get( "PowerInputRatios", "BuildCraft", DEFAULT_BC_EXCHANGE ).getDouble( DEFAULT_BC_EXCHANGE );
-		PowerUnits.KJ.conversionRatio = get( "PowerInputRatios", "UniversalElectricity", DEFAULT_UE_EXCHANGE ).getDouble( DEFAULT_UE_EXCHANGE );
-		PowerUnits.EU.conversionRatio = get( "PowerInputRatios", "IC2", DEFAULT_IC2_EXCHANGE ).getDouble( DEFAULT_IC2_EXCHANGE );
-		PowerUnits.WA.conversionRatio = get( "PowerInputRatios", "RotaryCraft", DEFAULT_RTC_EXCHANGE ).getDouble( DEFAULT_RTC_EXCHANGE );
-		PowerUnits.RF.conversionRatio = get( "PowerInputRatios", "ThermalExpansion", DEFAULT_RF_EXCHANGE ).getDouble( DEFAULT_RF_EXCHANGE );
+		PowerUnits.MJ.conversionRatio = get( "PowerRatios", "BuildCraft", DEFAULT_BC_EXCHANGE ).getDouble( DEFAULT_BC_EXCHANGE );
+		PowerUnits.KJ.conversionRatio = get( "PowerRatios", "UniversalElectricity", DEFAULT_UE_EXCHANGE ).getDouble( DEFAULT_UE_EXCHANGE );
+		PowerUnits.EU.conversionRatio = get( "PowerRatios", "IC2", DEFAULT_IC2_EXCHANGE ).getDouble( DEFAULT_IC2_EXCHANGE );
+		PowerUnits.WA.conversionRatio = get( "PowerRatios", "RotaryCraft", DEFAULT_RTC_EXCHANGE ).getDouble( DEFAULT_RTC_EXCHANGE );
+		PowerUnits.RF.conversionRatio = get( "PowerRatios", "ThermalExpansion", DEFAULT_RF_EXCHANGE ).getDouble( DEFAULT_RF_EXCHANGE );
+
+		double usageEffective = get( "PowerRatios", "UsageMultiplier", 1.0 ).getDouble( 1.0 );
+		PowerMultiplier.CONFIG.multiplier = Math.max( 0.01, usageEffective );
 
 		CondenserOuput.MATTER_BALLS.requiredPower = get( "Condenser", "MatterBalls", 256 ).getInt( 256 );
 		CondenserOuput.SINGULARITY.requiredPower = get( "Condenser", "Singularity", 256000 ).getInt( 256000 );
@@ -117,11 +121,9 @@ public class Configuration extends net.minecraftforge.common.Configuration imple
 		WirelessBaseCost = get( "wireless", "WirelessBaseCost", WirelessBaseCost ).getDouble( WirelessBaseCost );
 		WirelessCostMultiplier = get( "wireless", "WirelessCostMultiplier", WirelessCostMultiplier ).getDouble( WirelessCostMultiplier );
 		WirelessBaseRange = get( "wireless", "WirelessBaseRange", WirelessBaseRange ).getDouble( WirelessBaseRange );
-		WirelessBoosterRangeMultiplier = get( "wireless", "WirelessBoosterRangeMultiplier", WirelessBoosterRangeMultiplier ).getDouble(
-				WirelessBoosterRangeMultiplier );
+		WirelessBoosterRangeMultiplier = get( "wireless", "WirelessBoosterRangeMultiplier", WirelessBoosterRangeMultiplier ).getDouble( WirelessBoosterRangeMultiplier );
 		WirelessBoosterExp = get( "wireless", "WirelessBoosterExp", WirelessBoosterExp ).getDouble( WirelessBoosterExp );
-		WirelessTerminalDrainMultiplier = get( "wireless", "WirelessTerminalDrainMultiplier", WirelessTerminalDrainMultiplier ).getDouble(
-				WirelessTerminalDrainMultiplier );
+		WirelessTerminalDrainMultiplier = get( "wireless", "WirelessTerminalDrainMultiplier", WirelessTerminalDrainMultiplier ).getDouble( WirelessTerminalDrainMultiplier );
 
 		wireless_battery = get( "battery", "wireless", wireless_battery ).getInt( wireless_battery );
 		staff_battery = get( "battery", "staff", staff_battery ).getInt( staff_battery );
