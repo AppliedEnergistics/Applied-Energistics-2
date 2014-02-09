@@ -3,6 +3,7 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -18,7 +19,6 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 
 import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
 public class PacketValueConfig extends AppEngPacket
 {
@@ -88,13 +88,13 @@ public class PacketValueConfig extends AppEngPacket
 
 		data.writeInt( getPacketID() );
 
-		ByteOutputStream bos = new ByteOutputStream();
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DataOutputStream dos = new DataOutputStream( bos );
 		data.writeBytes( Name.getBytes() );
 		data.writeBytes( Value.getBytes() );
 		dos.close();
 
-		data.writeBytes( bos.getBytes() );
+		data.writeBytes( bos.toByteArray() );
 
 		configureWrite( data );
 	}
