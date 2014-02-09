@@ -3,8 +3,8 @@ package appeng.integration;
 import java.lang.reflect.Field;
 
 import appeng.api.exceptions.ModNotInstalled;
-import appeng.core.AELog;
 import appeng.core.AEConfig;
+import appeng.core.AELog;
 import cpw.mods.fml.common.Loader;
 
 public class IntegrationNode
@@ -89,7 +89,7 @@ public class IntegrationNode
 			{
 				AELog.info( displayName + " - Integration Disabled" );
 				if ( !(exception instanceof ModNotInstalled) )
-					AELog.error( exception );
+					AELog.integration( exception );
 			}
 			else
 			{

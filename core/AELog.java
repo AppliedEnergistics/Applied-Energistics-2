@@ -50,4 +50,12 @@ public class AELog
 			e.printStackTrace();
 		}
 	}
+
+	public static void integration(Throwable exception)
+	{
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.IntegrationLogging ) )
+		{
+			error( exception );
+		}
+	}
 }
