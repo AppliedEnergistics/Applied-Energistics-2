@@ -19,6 +19,7 @@ import appeng.api.parts.IPartItem;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
+import appeng.core.features.ItemStackSrc;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import cpw.mods.fml.relauncher.Side;
@@ -47,10 +48,11 @@ public class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 		setHasSubtypes( true );
 	}
 
-	public ItemStack createPart(PartType mat, Enum varient)
+	public ItemStackSrc createPart(PartType mat, Enum varient)
 	{
 		try
 		{
+			// I think this still works?
 			ItemStack is = new ItemStack( this );
 			mat.getPart().getConstructor( ItemStack.class ).newInstance( is );
 		}
@@ -76,8 +78,7 @@ public class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 		if ( enabled )
 		{
 			int newPartNum = AEConfig.instance.get( "parts", name, AEConfig.instance.getFreePart() ).getInt();
-			ItemStack output = new ItemStack( this );
-			output.setItemDamage( newPartNum );
+			ItemStackSrc output = new ItemStackSrc( this, newPartNum );
 
 			PartTypeIst pti = new PartTypeIst();
 			pti.part = mat;

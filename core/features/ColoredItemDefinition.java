@@ -10,42 +10,42 @@ import appeng.api.util.AEColoredItemDefinition;
 public class ColoredItemDefinition implements AEColoredItemDefinition
 {
 
-	ItemStack colors[] = new ItemStack[17];
+	ItemStackSrc colors[] = new ItemStackSrc[17];
 
 	@Override
 	public Item item(AEColor color)
 	{
-		ItemStack is = colors[color.ordinal()];
+		ItemStackSrc is = colors[color.ordinal()];
 
 		if ( is == null )
 			return null;
 
-		return is.getItem();
+		return is.item;
 	}
 
 	@Override
 	public ItemStack stack(AEColor color, int stackSize)
 	{
-		ItemStack is = colors[color.ordinal()];
+		ItemStackSrc is = colors[color.ordinal()];
 
 		if ( is == null )
 			return null;
 
-		return new ItemStack( is.getItem(), stackSize, is.getItemDamage() );
+		return is.stack( stackSize );
 	}
 
 	@Override
 	public boolean sameAs(AEColor color, ItemStack comparableItem)
 	{
-		ItemStack is = colors[color.ordinal()];
+		ItemStackSrc is = colors[color.ordinal()];
 
 		if ( comparableItem == null )
 			return false;
 
-		return comparableItem.getItem() == is.getItem() && comparableItem.getItemDamage() == is.getItemDamage();
+		return comparableItem.getItem() == is.item && comparableItem.getItemDamage() == is.damage;
 	}
 
-	public void add(AEColor v, ItemStack is)
+	public void add(AEColor v, ItemStackSrc is)
 	{
 		colors[v.ordinal()] = is;
 	}

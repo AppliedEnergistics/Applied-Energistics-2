@@ -35,6 +35,7 @@ import appeng.client.texture.FlipableIcon;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
 import appeng.core.features.IAEFeature;
+import appeng.core.features.ItemStackSrc;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
@@ -151,7 +152,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 	protected void setTileEntiy(Class<? extends TileEntity> c)
 	{
-		AEBaseTile.registerTileItem( c, new ItemStack( this ) );
+		AEBaseTile.registerTileItem( c, new ItemStackSrc( this, 0 ) );
 		GameRegistry.registerTileEntity( tileEntityType = c, FeatureFullname );
 	}
 

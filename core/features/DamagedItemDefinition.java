@@ -12,7 +12,7 @@ public class DamagedItemDefinition implements AEItemDefinition
 	final Item baseItem;
 	final int damage;
 
-	public DamagedItemDefinition(ItemStack is) {
+	public DamagedItemDefinition(ItemStackSrc is) {
 		if ( is == null )
 		{
 			baseItem = null;
@@ -20,8 +20,8 @@ public class DamagedItemDefinition implements AEItemDefinition
 		}
 		else
 		{
-			baseItem = is.getItem();
-			damage = is.getItemDamage();
+			baseItem = is.item;
+			damage = is.damage;
 		}
 	}
 

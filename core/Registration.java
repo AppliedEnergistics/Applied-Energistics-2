@@ -3,7 +3,6 @@ package appeng.core;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.ChestGenHooks;
@@ -63,6 +62,7 @@ import appeng.core.features.AEFeatureHandler;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.DamagedItemDefinition;
 import appeng.core.features.IAEFeature;
+import appeng.core.features.ItemStackSrc;
 import appeng.core.features.NullItemDefinition;
 import appeng.core.features.registries.P2PTunnelRegistry;
 import appeng.core.features.registries.entries.BasicCellHandler;
@@ -149,7 +149,7 @@ public class Registration
 			try
 			{
 				Field f = materialClass.getField( "material" + mat.name() );
-				ItemStack is = ((ItemMaterial) materialItem.item()).createMaterial( mat );
+				ItemStackSrc is = ((ItemMaterial) materialItem.item()).createMaterial( mat );
 				if ( is != null )
 					f.set( materials, new DamagedItemDefinition( is ) );
 				else
@@ -173,7 +173,7 @@ public class Registration
 				Enum varients[] = type.getVarients();
 				if ( varients == null )
 				{
-					ItemStack is = ((ItemPart) partItem.item()).createPart( type, null );
+					ItemStackSrc is = ((ItemPart) partItem.item()).createPart( type, null );
 					if ( is != null )
 						f.set( parts, new DamagedItemDefinition( is ) );
 					else
@@ -187,7 +187,7 @@ public class Registration
 
 						for (Enum v : varients)
 						{
-							ItemStack is = ((ItemPart) partItem.item()).createPart( type, v );
+							ItemStackSrc is = ((ItemPart) partItem.item()).createPart( type, v );
 							if ( is != null )
 								def.add( (AEColor) v, is );
 						}

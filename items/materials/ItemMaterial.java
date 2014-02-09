@@ -27,6 +27,7 @@ import appeng.api.implementations.items.IUpgradeModule;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
+import appeng.core.features.ItemStackSrc;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
@@ -109,7 +110,7 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 		}
 	}
 
-	public ItemStack createMaterial(MaterialType mat)
+	public ItemStackSrc createMaterial(MaterialType mat)
 	{
 		String name = mat.name();
 
@@ -123,13 +124,12 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 			{
 				int newMaterialNum = AEConfig.instance.get( "materials", name, AEConfig.instance.getFreeMaterial() ).getInt();
 				mat.damageValue = newMaterialNum;
-				ItemStack output = new ItemStack( this, 1, newMaterialNum );
-				output.setItemDamage( newMaterialNum );
+				ItemStackSrc output = new ItemStackSrc( this, newMaterialNum );
 
 				dmgToMaterial.put( newMaterialNum, mat );
 
 				if ( mat.getOreName() != null )
-					OreDictionary.registerOre( mat.getOreName(), output );
+					OreDictionary.registerOre( mat.getOreName(), output.stack( 1 ) );
 
 				return output;
 			}

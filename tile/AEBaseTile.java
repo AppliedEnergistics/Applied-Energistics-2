@@ -23,6 +23,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.util.ICommonTile;
 import appeng.api.util.IOrientable;
 import appeng.core.AELog;
+import appeng.core.features.ItemStackSrc;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
@@ -32,7 +33,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 {
 
 	private final EnumMap<TileEventType, List<AETileEventHandler>> handlers = new EnumMap<TileEventType, List<AETileEventHandler>>( TileEventType.class );
-	private final static HashMap<Class, ItemStack> myItem = new HashMap();
+	private final static HashMap<Class, ItemStackSrc> myItem = new HashMap();
 
 	private ForgeDirection forward = ForgeDirection.UNKNOWN;
 	private ForgeDirection up = ForgeDirection.UNKNOWN;
@@ -45,14 +46,17 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 		return this;
 	}
 
-	static public void registerTileItem(Class c, ItemStack wat)
+	static public void registerTileItem(Class c, ItemStackSrc wat)
 	{
 		myItem.put( c, wat );
 	}
 
 	protected ItemStack getItemFromTile(Object obj)
 	{
-		return myItem.get( obj.getClass() );
+		ItemStackSrc src = myItem.get( obj.getClass() );
+		if ( src == null )
+			return null;
+		return src.stack( 1 );
 	}
 
 	/**
