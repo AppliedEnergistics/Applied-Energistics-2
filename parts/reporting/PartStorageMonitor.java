@@ -59,6 +59,8 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	@Override
 	public void onPlacement(EntityPlayer player, ItemStack held, ForgeDirection side)
 	{
+		super.onPlacement( player, held, side );
+
 		byte rotation = (byte) (MathHelper.floor_double( (double) ((player.rotationYaw * 4F) / 360F) + 2.5D ) & 3);
 		if ( side == ForgeDirection.UP )
 			spin = rotation;
