@@ -566,7 +566,7 @@ public class PartCable extends AEBasePart implements IPartCable
 				ico.setFlip( false, true );
 			}
 
-			Tessellator.instance.setBrightness( 15 << 20 | 15 << 5 );
+			Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
 			Tessellator.instance.setColorOpaque_I( getCableColor().mediumVariant );
 			rh.setTexture( defa, defa, defa, defa, defa, defa );
 			renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, renderer );
@@ -635,7 +635,7 @@ public class PartCable extends AEBasePart implements IPartCable
 					ico.setFlip( false, true );
 				}
 
-				Tessellator.instance.setBrightness( 15 << 20 | 15 << 5 );
+				Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
 				Tessellator.instance.setColorOpaque_I( myColor.mediumVariant );
 				rh.setTexture( defa, defa, defa, defa, defa, defa );
 				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, renderer );
@@ -689,7 +689,7 @@ public class PartCable extends AEBasePart implements IPartCable
 			IIcon defa = new TaughtIcon( getChannelTex( channels, false ).getIcon(), -0.2f );
 			IIcon defb = new TaughtIcon( getChannelTex( channels, true ).getIcon(), -0.2f );
 
-			Tessellator.instance.setBrightness( 15 << 20 | 15 << 5 );
+			Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
 			Tessellator.instance.setColorOpaque_I( myColor.mediumVariant );
 			rh.setTexture( defa, defa, defa, defa, defa, defa );
 			renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, renderer );
@@ -740,7 +740,6 @@ public class PartCable extends AEBasePart implements IPartCable
 	@SideOnly(Side.CLIENT)
 	protected void renderAllFaces(AEBaseBlock blk, int x, int y, int z, RenderBlocks renderer)
 	{
-		renderer.enableAO = true;
 		renderer.renderFaceXNeg( blk, x, y, z, blk.getRendererInstance().getTexture( ForgeDirection.WEST ) );
 		renderer.renderFaceXPos( blk, x, y, z, blk.getRendererInstance().getTexture( ForgeDirection.EAST ) );
 		renderer.renderFaceZNeg( blk, x, y, z, blk.getRendererInstance().getTexture( ForgeDirection.NORTH ) );
