@@ -3,6 +3,7 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -18,8 +19,6 @@ import appeng.container.implementations.ContainerSecurity;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
-
 public class PacketValueConfig extends AppEngPacket
 {
 
@@ -28,7 +27,7 @@ public class PacketValueConfig extends AppEngPacket
 
 	// automatic.
 	public PacketValueConfig(ByteBuf stream) throws IOException {
-		DataInputStream dis = new DataInputStream( new ByteInputStream( stream.array(), 0, stream.readableBytes() ) );
+		DataInputStream dis = new DataInputStream( new ByteArrayInputStream( stream.array(), 0, stream.readableBytes() ) );
 		Name = dis.readUTF();
 		Value = dis.readUTF();
 		dis.close();
