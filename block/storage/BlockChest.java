@@ -1,7 +1,6 @@
 package appeng.block.storage;
 
 import java.util.EnumSet;
-import java.util.List;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,6 +17,7 @@ import appeng.client.render.blocks.RenderMEChest;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.GuiBridge;
+import appeng.helpers.AENoHandler;
 import appeng.tile.storage.TileChest;
 import appeng.util.Platform;
 
@@ -56,20 +56,35 @@ public class BlockChest extends AEBaseBlock
 				{
 					ICellHandler ch = AEApi.instance().registries().cell().getHander( cell );
 
-					List<IMEInventoryHandler> ih = tg.getCellArray( StorageChannel.ITEMS );
-					if ( ch != null && ih != null && ih.size() == 1 )
+					try
 					{
-						IMEInventoryHandler mine = ih.get( 0 );
-						ch.openChestGui( p, tg, ch, mine, cell, StorageChannel.ITEMS );
-						return true;
+						IMEInventoryHandler ih = tg.getHandler( StorageChannel.ITEMS );
+						if ( ch != null && ih != null )
+						{
+							IMEInventoryHandler mine = ih;
+							ch.openChestGui( p, tg, ch, mine, cell, StorageChannel.ITEMS );
+							return true;
+						}
+
+					}
+					catch (AENoHandler e)
+					{
+						// :P
 					}
 
-					List<IMEInventoryHandler> fh = tg.getCellArray( StorageChannel.FLUIDS );
-					if ( ch != null && fh != null && ih.size() == 1 )
+					try
 					{
-						IMEInventoryHandler mine = fh.get( 0 );
-						ch.openChestGui( p, tg, ch, mine, cell, StorageChannel.FLUIDS );
-						return true;
+						IMEInventoryHandler fh = tg.getHandler( StorageChannel.FLUIDS );
+						if ( ch != null && fh != null )
+						{
+							IMEInventoryHandler mine = fh;
+							ch.openChestGui( p, tg, ch, mine, cell, StorageChannel.FLUIDS );
+							return true;
+						}
+					}
+					catch (AENoHandler e)
+					{
+						// :P
 					}
 				}
 

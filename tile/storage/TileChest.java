@@ -330,7 +330,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		return g;
 	}
 
-	private IMEInventoryHandler getHandler(StorageChannel channel) throws AENoHandler
+	public IMEInventoryHandler getHandler(StorageChannel channel) throws AENoHandler
 	{
 		if ( !isCached )
 		{
