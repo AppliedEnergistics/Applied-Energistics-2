@@ -472,6 +472,9 @@ public class Registration
 		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemCell64k.stack( 1 ), 1 );
 		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemCell64k.stack( 1 ), 1 );
 
+		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemPortableCell.stack( 1 ), 1 );
+		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemPortableCell.stack( 1 ), 1 );
+
 		// partStorageBus
 		Upgrades.FUZZY.registerItem( AEApi.instance().parts().partStorageBus.stack( 1 ), 1 );
 		Upgrades.INVERTER.registerItem( AEApi.instance().parts().partStorageBus.stack( 1 ), 1 );
