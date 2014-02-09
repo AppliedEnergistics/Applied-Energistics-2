@@ -75,6 +75,10 @@ public class RenderMEChest extends BaseBlockRender
 			fico.setFlip( false, true );
 		else if ( forward == ForgeDirection.DOWN )
 			fico.setFlip( true, false );
+		else if ( forward == ForgeDirection.EAST && up == ForgeDirection.UP )
+			fico.setFlip( true, false );
+		else if ( forward == ForgeDirection.NORTH && up == ForgeDirection.UP )
+			fico.setFlip( true, false );
 
 		renderFace( x, y, z, imb, fico, renderer, forward );
 
