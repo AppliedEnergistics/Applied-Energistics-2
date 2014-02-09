@@ -27,10 +27,10 @@ public class PacketValueConfig extends AppEngPacket
 
 	// automatic.
 	public PacketValueConfig(ByteBuf stream) throws IOException {
-		DataInputStream dis = new DataInputStream( new ByteArrayInputStream( stream.array(), 0, stream.readableBytes() ) );
+		DataInputStream dis = new DataInputStream( new ByteArrayInputStream( stream.array(), stream.readerIndex(), stream.readableBytes() ) );
 		Name = dis.readUTF();
 		Value = dis.readUTF();
-		dis.close();
+		// dis.close();
 	}
 
 	@Override
@@ -89,9 +89,9 @@ public class PacketValueConfig extends AppEngPacket
 
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DataOutputStream dos = new DataOutputStream( bos );
-		data.writeBytes( Name.getBytes() );
-		data.writeBytes( Value.getBytes() );
-		dos.close();
+		dos.writeUTF( Name );
+		dos.writeUTF( Value );
+		// dos.close();
 
 		data.writeBytes( bos.toByteArray() );
 
