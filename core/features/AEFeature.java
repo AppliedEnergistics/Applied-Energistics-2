@@ -39,12 +39,14 @@ public enum AEFeature
 
 	DenseEnergyCells("HigherCapacity"), DenseCables("HigherCapacity"),
 
-	P2PTunnelME("P2PTunnels"), P2PTunnelItems("P2PTunnels"), P2PTunnelRedstone("P2PTunnels"), P2PTunnelEU("P2PTunnels"), P2PTunnelMJ("P2PTunnels"), P2PTunnelLiquids("P2PTunnels"), Security(
-			"Security"),
+	P2PTunnelME("P2PTunnels"), P2PTunnelItems("P2PTunnels"), P2PTunnelRedstone("P2PTunnels"), P2PTunnelEU("P2PTunnels"), P2PTunnelMJ("P2PTunnels"), P2PTunnelLiquids(
+			"P2PTunnels"), Security("Security"),
 
 	MassCannonBlockDamage("BlockFeatures"), TinyTNTBlockDamage("BlockFeatures"), Facades("Facades"),
 
-	DuplicateItems("Misc", false), Profiler("Services"), VersionChecker("Services"), Debug("Misc", false), Creative("Misc"), Logging("Misc");
+	DuplicateItems("Misc", false), Profiler("Services"), VersionChecker("Services"), Debug("Misc", false), Creative("Misc"),
+
+	Logging("Misc"), IntegrationLogging("Misc", false);
 
 	String Category;
 	boolean visible = true;
