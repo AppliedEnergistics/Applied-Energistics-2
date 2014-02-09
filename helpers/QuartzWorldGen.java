@@ -4,7 +4,6 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
@@ -22,13 +21,10 @@ final public class QuartzWorldGen implements IWorldGenerator
 		Block normal = AEApi.instance().blocks().blockQuartzOre.block();
 		Block charged = AEApi.instance().blocks().blockQuartzOreCharged.block();
 
-		ItemStack is_normal = AEApi.instance().blocks().blockQuartzOre.stack( 1 );
-		ItemStack is_charged = AEApi.instance().blocks().blockQuartzOreCharged.stack( 1 );
-
-		if ( normal == null || charged == null )
+		if ( normal != null && charged != null )
 		{
-			oreNormal = new WorldGenMinable( normal, is_normal.getItemDamage(), AEConfig.instance.oresPerCluster, Blocks.stone );
-			oreCharged = new WorldGenMinable( charged, is_charged.getItemDamage(), AEConfig.instance.oresPerCluster, Blocks.stone );
+			oreNormal = new WorldGenMinable( normal, 0, AEConfig.instance.oresPerCluster, Blocks.stone );
+			oreCharged = new WorldGenMinable( charged, 0, AEConfig.instance.oresPerCluster, Blocks.stone );
 		}
 		else
 			oreNormal = oreCharged = null;
