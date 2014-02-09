@@ -60,12 +60,16 @@ public class AdaptorIInventory extends InventoryAdaptor
 					rv.stackSize = lhow_many;
 
 					if ( is.stackSize == rv.stackSize )
+					{
 						i.setInventorySlotContents( x, null );
+						i.markDirty();
+					}
 					else
 					{
 						ItemStack po = is.copy();
 						po.stackSize -= rv.stackSize;
 						i.setInventorySlotContents( x, po );
+						i.markDirty();
 					}
 				}
 
@@ -139,12 +143,16 @@ public class AdaptorIInventory extends InventoryAdaptor
 					}
 
 					if ( is.stackSize == lhow_many )
+					{
 						i.setInventorySlotContents( x, null );
+						i.markDirty();
+					}
 					else
 					{
 						ItemStack po = is.copy();
 						po.stackSize -= lhow_many;
 						i.setInventorySlotContents( x, po );
+						i.markDirty();
 					}
 				}
 			}
@@ -243,6 +251,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 
 								is.stackSize += used;
 								i.setInventorySlotContents( x, is );
+								i.markDirty();
 
 								left.stackSize -= used;
 								if ( left.stackSize <= 0 )
