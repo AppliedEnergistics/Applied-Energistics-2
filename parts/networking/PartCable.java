@@ -740,6 +740,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	@SideOnly(Side.CLIENT)
 	protected void renderAllFaces(AEBaseBlock blk, int x, int y, int z, RenderBlocks renderer)
 	{
+		renderer.enableAO = true;
 		renderer.renderFaceXNeg( blk, x, y, z, blk.getRendererInstance().getTexture( ForgeDirection.WEST ) );
 		renderer.renderFaceXPos( blk, x, y, z, blk.getRendererInstance().getTexture( ForgeDirection.EAST ) );
 		renderer.renderFaceZNeg( blk, x, y, z, blk.getRendererInstance().getTexture( ForgeDirection.NORTH ) );
