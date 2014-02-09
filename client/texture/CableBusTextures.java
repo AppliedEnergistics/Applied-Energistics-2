@@ -19,7 +19,7 @@ public enum CableBusTextures
 
 	BlockP2PTunnel2("ItemPart.P2PTunnel2"), BlockP2PTunnel3("ItemPart.P2PTunnel3"),
 
-	MEWaiting("MEWaiting"),
+	// MEWaiting("MEWaiting"),
 
 	PartMonitorSides("PartMonitorSides"), PartMonitorBack("PartMonitorBack"),
 
@@ -69,7 +69,7 @@ public enum CableBusTextures
 
 	BlockFormPlaneOn("BlockFormPlaneOn"),
 
-	ItemPartLevelEmitterOn("ItemPart.LevelEmitterOn.png"), PartTransitionPlaneBack("PartTransitionPlaneBack");
+	ItemPartLevelEmitterOn("ItemPart.LevelEmitterOn"), PartTransitionPlaneBack("PartTransitionPlaneBack");
 
 	final private String name;
 	public IIcon IIcon;
