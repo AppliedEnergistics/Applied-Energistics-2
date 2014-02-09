@@ -25,16 +25,14 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 		setfeature( EnumSet.of( AEFeature.Security ) );
 		setMaxStackSize( 1 );
 		if ( Platform.isClient() )
-			MinecraftForgeClient.registerItemRenderer( itemID, new ToolBiometricCardRender() );
+			MinecraftForgeClient.registerItemRenderer( this, new ToolBiometricCardRender() );
 	}
 
 	@Override
-	public String getItemDisplayName(ItemStack is)
+	public String getItemStackDisplayName(ItemStack is)
 	{
 		String username = getUsername( is );
-		return username.length() > 0 ? super.getItemDisplayName( is ) + " - " + username : super.getItemDisplayName( is );// GuiText.Encoded.getLocal()
-																															// //
-																															// );
+		return username.length() > 0 ? super.getItemStackDisplayName( is ) + " - " + username : super.getItemStackDisplayName( is );
 	}
 
 	@Override
@@ -67,10 +65,10 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	private void encode(ItemStack is, EntityPlayer p)
 	{
 		String username = getUsername( is );
-		if ( p.username.equals( username ) )
+		if ( p.getCommandSenderName().equals( username ) )
 			setUsername( is, "" );
 		else
-			setUsername( is, p.username );
+			setUsername( is, p.getCommandSenderName() );
 	}
 
 	@Override

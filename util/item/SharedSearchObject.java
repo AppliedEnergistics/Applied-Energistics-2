@@ -1,5 +1,6 @@
 package appeng.util.item;
 
+import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import appeng.util.Platform;
 
@@ -11,8 +12,8 @@ public class SharedSearchObject
 	NBTTagCompound compound;
 	public AESharedNBT shared;
 
-	public SharedSearchObject(int itemID, int damageValue, NBTTagCompound tagCompound) {
-		def = (damageValue << Platform.DEF_OFFSET) | itemID;
+	public SharedSearchObject(Item itemID, int damageValue, NBTTagCompound tagCompound) {
+		def = (damageValue << Platform.DEF_OFFSET) | Item.itemRegistry.getIDForObject( itemID );
 		hash = Platform.NBTOrderlessHash( tagCompound );
 		compound = tagCompound;
 	}

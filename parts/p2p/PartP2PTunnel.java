@@ -6,9 +6,9 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.TunnelType;
@@ -164,7 +164,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 					}
 				}
 
-				tile.worldObj.notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
+				tile.getWorldObj().notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, Platform.air );
 				return true;
 			}
 		}
@@ -276,7 +276,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 		rh.renderInventoryBox( renderer );
 	}
 
-	protected Icon getTypeTexture()
+	protected IIcon getTypeTexture()
 	{
 		return AEApi.instance().blocks().blockQuartz.block().getIcon( 0, 0 );
 	}

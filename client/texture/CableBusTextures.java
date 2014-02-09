@@ -2,7 +2,7 @@ package appeng.client.texture;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -72,7 +72,7 @@ public enum CableBusTextures
 	ItemPartLevelEmitterOn("ItemPart.LevelEmitterOn.png"), PartTransitionPlaneBack("PartTransitionPlaneBack");
 
 	final private String name;
-	public Icon icon;
+	public IIcon IIcon;
 
 	public static ResourceLocation GuiTexture(String string)
 	{
@@ -88,18 +88,18 @@ public enum CableBusTextures
 		this.name = name;
 	}
 
-	public Icon getIcon()
+	public IIcon getIcon()
 	{
-		return icon;
+		return IIcon;
 	}
 
 	public void registerIcon(TextureMap map)
 	{
-		icon = map.registerIcon( "appliedenergistics2:" + name );
+		IIcon = map.registerIcon( "appliedenergistics2:" + name );
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static Icon getMissing()
+	public static IIcon getMissing()
 	{
 		return ((TextureMap) Minecraft.getMinecraft().getTextureManager().getTexture( TextureMap.locationBlocksTexture )).getAtlasSprite( "missingno" );
 	}

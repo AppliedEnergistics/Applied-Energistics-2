@@ -7,9 +7,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityChest;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.FuzzyMode;
-import appeng.integration.modules.BS;
 import appeng.util.inv.AdaptorIInventory;
 import appeng.util.inv.AdaptorISpecialInventory;
 import appeng.util.inv.AdaptorList;
@@ -18,7 +17,6 @@ import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.ItemSlot;
 import appeng.util.inv.WrapperMCISidedInventory;
 import buildcraft.api.inventory.ISpecialInventory;
-import cpw.mods.fml.common.network.Player;
 
 public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 {
@@ -46,18 +44,17 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 		if ( te == null )
 			return null;
 
-		if ( te instanceof Player )
+		if ( te instanceof EntityPlayer )
 		{
 			return new AdaptorIInventory( new AdaptorPlayerInventory( ((EntityPlayer) te).inventory ) );
 		}
 		else if ( te instanceof ArrayList )
 		{
 			return new AdaptorList( (ArrayList) te );
-		}
-		else if ( BS.instance != null && BS.instance.isStorageCrate( te ) )
-		{
-			return BS.instance.getAdaptor( te, d );
-		}
+		}/*
+		 * else if ( BS.instance != null && BS.instance.isStorageCrate( te ) ) { return BS.instance.getAdaptor( te, d );
+		 * }
+		 */
 		else if ( te instanceof TileEntityChest )
 		{
 			return new AdaptorIInventory( (IInventory) Platform.GetChestInv( te ) );

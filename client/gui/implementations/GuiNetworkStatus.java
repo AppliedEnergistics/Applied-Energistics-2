@@ -108,10 +108,10 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	{
 		ContainerNetworkStatus ns = (ContainerNetworkStatus) inventorySlots;
 
-		fontRenderer.drawString( GuiText.NetworkDetails.getLocal(), 8, 6, 4210752 );
+		fontRendererObj.drawString( GuiText.NetworkDetails.getLocal(), 8, 6, 4210752 );
 
-		fontRenderer.drawString( GuiText.PowerInputRate.getLocal() + ": " + formatPowerLong( ns.avgAddition ), 8, 16, 4210752 );
-		fontRenderer.drawString( GuiText.PowerUsageRate.getLocal() + ": " + formatPowerLong( ns.powerUsage ), 8, 26, 4210752 );
+		fontRendererObj.drawString( GuiText.PowerInputRate.getLocal() + ": " + formatPowerLong( ns.avgAddition ), 8, 16, 4210752 );
+		fontRendererObj.drawString( GuiText.PowerUsageRate.getLocal() + ": " + formatPowerLong( ns.powerUsage ), 8, 26, 4210752 );
 
 		int sectionLength = 30;
 
@@ -138,8 +138,8 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 				if ( refStack.getStackSize() >= 10000 )
 					str = Long.toString( refStack.getStackSize() / 1000 ) + StatCollector.translateToLocal( "AppEng.Sizes.1000" );
 
-				int w = fontRenderer.getStringWidth( str );
-				fontRenderer.drawString( str, (int) ((x * sectionLength + xo + sectionLength - 19 - ((float) w * 0.5)) * 2), (int) ((y * 18 + yo + 6) * 2),
+				int w = fontRendererObj.getStringWidth( str );
+				fontRendererObj.drawString( str, (int) ((x * sectionLength + xo + sectionLength - 19 - ((float) w * 0.5)) * 2), (int) ((y * 18 + yo + 6) * 2),
 						4210752 );
 
 				GL11.glPopMatrix();
@@ -216,7 +216,6 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	}
 
 	// Vanillia version...
-	@Override
 	protected void drawItemStackTooltip(ItemStack stack, int x, int y)
 	{
 		Slot s = getSlot( x, y );
@@ -246,7 +245,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 				drawTooltip( x, y, 0, join( currenttip, "\n" ) );
 			}
 		}
-		super.drawItemStackTooltip( stack, x, y );
+		// super.drawItemStackTooltip( stack, x, y );
 	}
 
 	@Override

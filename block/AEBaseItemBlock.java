@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.networking.BlockWireless;
@@ -23,19 +23,17 @@ public class AEBaseItemBlock extends ItemBlock
 
 	final AEBaseBlock blockType;
 
-	public AEBaseItemBlock(int id) {
+	public AEBaseItemBlock(Block id) {
 		super( id );
-		blockType = (AEBaseBlock) Block.blocksList[id + 256];
+		blockType = (AEBaseBlock) id;
 		if ( Platform.isClient() )
-			MinecraftForgeClient.registerItemRenderer( blockType.blockID, ItemRenderer.instance );
+			MinecraftForgeClient.registerItemRenderer( this, ItemRenderer.instance );
 	}
 
 	@Override
 	public void addInformation(ItemStack is, EntityPlayer player, List lines, boolean advancedItemTooltips)
 	{
-		Block blk = Block.blocksList[getBlockID()];
-		if ( blk instanceof AEBaseBlock )
-			((AEBaseBlock) blk).addInformation( is, player, lines, advancedItemTooltips );
+		blockType.addInformation( is, player, lines, advancedItemTooltips );
 	}
 
 	@Override

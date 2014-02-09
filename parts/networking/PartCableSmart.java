@@ -5,8 +5,8 @@ import java.util.EnumSet;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
@@ -55,7 +55,7 @@ public class PartCableSmart extends PartCable
 	}
 
 	@Override
-	public Icon getTexture(AEColor c)
+	public IIcon getTexture(AEColor c)
 	{
 		return getSmartTexture( c );
 	}
@@ -173,8 +173,8 @@ public class PartCableSmart extends PartCable
 					rh.renderBlock( x, y, z, renderer );
 
 					setSmartConnectionRotations( of, renderer );
-					Icon defa = new TaughtIcon( getChannelTex( channelsOnSide[of.ordinal()], false ).getIcon(), -0.2f );
-					Icon defb = new TaughtIcon( getChannelTex( channelsOnSide[of.ordinal()], true ).getIcon(), -0.2f );
+					IIcon defa = new TaughtIcon( getChannelTex( channelsOnSide[of.ordinal()], false ).getIcon(), -0.2f );
+					IIcon defb = new TaughtIcon( getChannelTex( channelsOnSide[of.ordinal()], true ).getIcon(), -0.2f );
 
 					if ( of == ForgeDirection.EAST || of == ForgeDirection.WEST )
 					{
@@ -221,14 +221,14 @@ public class PartCableSmart extends PartCable
 			}
 
 			int channels = channelsOnSide[selectedSide.ordinal()];
-			Icon def = getTexture( getCableColor() );
-			Icon off = new OffsetIcon( def, 0, -12 );
+			IIcon def = getTexture( getCableColor() );
+			IIcon off = new OffsetIcon( def, 0, -12 );
 
-			Icon defa = new TaughtIcon( getChannelTex( channels, false ).getIcon(), -0.2f );
-			Icon offa = new OffsetIcon( defa, 0, -12 );
+			IIcon defa = new TaughtIcon( getChannelTex( channels, false ).getIcon(), -0.2f );
+			IIcon offa = new OffsetIcon( defa, 0, -12 );
 
-			Icon defb = new TaughtIcon( getChannelTex( channels, true ).getIcon(), -0.2f );
-			Icon offb = new OffsetIcon( defb, 0, -12 );
+			IIcon defb = new TaughtIcon( getChannelTex( channels, true ).getIcon(), -0.2f );
+			IIcon offb = new OffsetIcon( defb, 0, -12 );
 
 			switch (selectedSide)
 			{

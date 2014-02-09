@@ -3,6 +3,7 @@ package appeng.helpers;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -18,13 +19,16 @@ final public class QuartzWorldGen implements IWorldGenerator
 	final WorldGenMinable oreCharged;
 
 	public QuartzWorldGen() {
-		ItemStack normal = AEApi.instance().blocks().blockQuartzOre.stack( 1 );
-		ItemStack charged = AEApi.instance().blocks().blockQuartzOreCharged.stack( 1 );
+		Block normal = AEApi.instance().blocks().blockQuartzOre.block();
+		Block charged = AEApi.instance().blocks().blockQuartzOreCharged.block();
+
+		ItemStack is_normal = AEApi.instance().blocks().blockQuartzOre.stack( 1 );
+		ItemStack is_charged = AEApi.instance().blocks().blockQuartzOreCharged.stack( 1 );
 
 		if ( normal == null || charged == null )
 		{
-			oreNormal = new WorldGenMinable( normal.itemID, normal.getItemDamage(), Configuration.instance.oresPerCluster, Block.stone.blockID );
-			oreCharged = new WorldGenMinable( normal.itemID, normal.getItemDamage(), Configuration.instance.oresPerCluster, Block.stone.blockID );
+			oreNormal = new WorldGenMinable( normal, is_normal.getItemDamage(), Configuration.instance.oresPerCluster, Blocks.stone );
+			oreCharged = new WorldGenMinable( charged, is_charged.getItemDamage(), Configuration.instance.oresPerCluster, Blocks.stone );
 		}
 		else
 			oreNormal = oreCharged = null;

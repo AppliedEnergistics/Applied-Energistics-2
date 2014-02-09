@@ -48,9 +48,8 @@ public class RenderStorageMonitor extends BaseBlockRender
 				GL11.glScalef( 1.0f / 1.5f, 1.0f / 1.5f, 1.0f / 1.5f );
 				GL11.glScalef( 1.0f, -1.0f, 0.005f );
 
-				int k = sis.itemID;
-				Block block = (k < Block.blocksList.length ? Block.blocksList[k] : null);
-				if ( sis.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( Block.blocksList[k].getRenderType() ) )
+				Block block = Block.getBlockFromItem( sis.getItem() );
+				if ( sis.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( block.getRenderType() ) )
 				{
 					GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
 					GL11.glRotatef( 15.0f, 0.0f, 1.0f, 0.0f );

@@ -2,7 +2,7 @@ package appeng.core.features.registries;
 
 import java.util.HashMap;
 
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import appeng.api.features.IMatterCannonAmmoRegistry;
 import appeng.recipes.ores.IOreListener;
@@ -109,7 +109,7 @@ public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmo
 
 	public MatterCannonAmmoRegistry() {
 		OreDictionaryHandler.instance.observe( this );
-		registerAmmo( new ItemStack( Item.goldNugget ), 196.96655 );
+		registerAmmo( new ItemStack( Items.gold_nugget ), 196.96655 );
 	}
 
 	@Override

@@ -1,13 +1,13 @@
 package appeng.tile.networking;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.EnumSet;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -66,7 +66,7 @@ public class TileWireless extends AENetworkInvTile
 		}
 
 		@Override
-		public boolean readFromStream(DataInputStream data) throws IOException
+		public boolean readFromStream(ByteBuf data) throws IOException
 		{
 			boolean eh = super.readFromStream( data );
 
@@ -77,7 +77,7 @@ public class TileWireless extends AENetworkInvTile
 		}
 
 		@Override
-		public void writeToStream(DataOutputStream data) throws IOException
+		public void writeToStream(ByteBuf data) throws IOException
 		{
 
 			clientFlags = 0;
@@ -125,7 +125,7 @@ public class TileWireless extends AENetworkInvTile
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
 		updatePower();
 	}

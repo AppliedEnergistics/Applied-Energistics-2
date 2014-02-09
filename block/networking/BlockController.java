@@ -2,6 +2,7 @@ package appeng.block.networking;
 
 import java.util.EnumSet;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
@@ -20,7 +21,7 @@ public class BlockController extends AEBaseBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange(World w, int x, int y, int z, int id_junk)
+	public void onNeighborBlockChange(World w, int x, int y, int z, Block id_junk)
 	{
 		TileController tc = getTileEntity( w, x, y, z );
 		if ( tc != null )

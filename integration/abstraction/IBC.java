@@ -4,8 +4,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.parts.IFacadePart;
 
 public interface IBC
@@ -39,6 +39,6 @@ public interface IBC
 
 	ItemStack getTextureForFacade(ItemStack facade);
 
-	Icon getFacadeTexture();
+	IIcon getFacadeTexture();
 
 }

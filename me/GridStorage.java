@@ -8,9 +8,6 @@ import java.util.Set;
 
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-
-import org.bouncycastle.util.encoders.Base64;
-
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridStorage;
 import appeng.core.AELog;
@@ -55,7 +52,7 @@ public class GridStorage implements IGridStorage
 
 		try
 		{
-			byte[] dbata = Base64.decode( input );
+			byte[] dbata = javax.xml.bind.DatatypeConverter.parseBase64Binary( input );
 			myTag = CompressedStreamTools.readCompressed( new ByteArrayInputStream( dbata ) );
 		}
 		catch (Throwable t)
@@ -88,7 +85,7 @@ public class GridStorage implements IGridStorage
 		{
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			CompressedStreamTools.writeCompressed( data, out );
-			return new String( Base64.encode( out.toByteArray() ), "UTF-8" );
+			return javax.xml.bind.DatatypeConverter.printBase64Binary( out.toByteArray() );
 		}
 		catch (IOException e)
 		{

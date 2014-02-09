@@ -10,9 +10,9 @@ import appeng.container.implementations.ContainerChest;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.tile.storage.TileChest;
-import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class GuiChest extends AEBaseGui
 {
@@ -28,7 +28,7 @@ public class GuiChest extends AEBaseGui
 		{
 			try
 			{
-				PacketDispatcher.sendPacketToServer( (new PacketSwitchGuis( GuiBridge.GUI_PRIORITY )).getPacket() );
+				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
 			}
 			catch (IOException e)
 			{
@@ -42,7 +42,7 @@ public class GuiChest extends AEBaseGui
 	{
 		super.initGui();
 
-		buttonList.add( priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRenderer ) );
+		buttonList.add( priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRender ) );
 	}
 
 	public GuiChest(InventoryPlayer inventoryPlayer, TileChest te) {
@@ -60,8 +60,8 @@ public class GuiChest extends AEBaseGui
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRenderer.drawString( GuiText.Chest.getLocal(), 8, 6, 4210752 );
-		fontRenderer.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		fontRendererObj.drawString( GuiText.Chest.getLocal(), 8, 6, 4210752 );
+		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
 	}
 
 }

@@ -1,7 +1,7 @@
 package appeng.tile.qnb;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.EnumSet;
 
@@ -9,7 +9,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -72,7 +72,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		}
 
 		@Override
-		public void writeToStream(DataOutputStream data) throws IOException
+		public void writeToStream(ByteBuf data) throws IOException
 		{
 			int out = xdex;
 
@@ -86,7 +86,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		}
 
 		@Override
-		public boolean readFromStream(DataInputStream data) throws IOException
+		public boolean readFromStream(ByteBuf data) throws IOException
 		{
 			int oldValue = xdex;
 			xdex = data.readByte();
@@ -233,7 +233,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 		for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity te = worldObj.getBlockTileEntity( xCoord + d.offsetX, yCoord + d.offsetY, zCoord + d.offsetZ );
+			TileEntity te = worldObj.getTileEntity( xCoord + d.offsetX, yCoord + d.offsetY, zCoord + d.offsetZ );
 			if ( te instanceof TileQuantumBridge )
 				set.add( d );
 		}

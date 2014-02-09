@@ -1,5 +1,7 @@
 package appeng.tile.grindstone;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -7,7 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.AEBaseTile;
@@ -50,14 +52,14 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 			}
 
 			@Override
-			public boolean readFromStream(java.io.DataInputStream data) throws java.io.IOException
+			public boolean readFromStream(ByteBuf data) throws java.io.IOException
 			{
 				rotation = data.readInt();
 				return false;
 			}
 
 			@Override
-			public void writeToStream(java.io.DataOutputStream data) throws java.io.IOException
+			public void writeToStream(ByteBuf data) throws java.io.IOException
 			{
 				data.writeInt( rotation );
 			}
@@ -71,7 +73,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 			return null;
 
 		ForgeDirection grinder = getUp().getOpposite();
-		TileEntity te = worldObj.getBlockTileEntity( xCoord + grinder.offsetX, yCoord + grinder.offsetY, zCoord + grinder.offsetZ );
+		TileEntity te = worldObj.getTileEntity( xCoord + grinder.offsetX, yCoord + grinder.offsetY, zCoord + grinder.offsetZ );
 		if ( te instanceof ICrankable )
 			return (ICrankable) te;
 		return null;
@@ -81,7 +83,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 	public void setOrientation(ForgeDirection inForward, ForgeDirection inUp)
 	{
 		super.setOrientation( inForward, inUp );
-		getBlockType().onNeighborBlockChange( worldObj, xCoord, yCoord, zCoord, 0 );
+		getBlockType().onNeighborBlockChange( worldObj, xCoord, yCoord, zCoord, Platform.air );
 	}
 
 	public void power()
@@ -104,7 +106,10 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 				{
 					hits++;
 					if ( hits > 10 )
-						worldObj.destroyBlock( xCoord, yCoord, zCoord, false );
+					{
+						worldObj.func_147480_a( xCoord, yCoord, zCoord, false );
+						// worldObj.destroyBlock( xCoord, yCoord, zCoord, false );
+					}
 				}
 			}
 		}

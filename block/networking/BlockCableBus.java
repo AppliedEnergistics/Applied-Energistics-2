@@ -6,25 +6,26 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RendererCableBus;
-import appeng.client.texture.CableBusTextures;
+import appeng.client.texture.ExtraTextures;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.CommonHelper;
@@ -49,7 +50,7 @@ public class BlockCableBus extends AEBaseBlock
 	}
 
 	@Override
-	public boolean isLadder(World world, int x, int y, int z, EntityLivingBase entity)
+	public boolean isLadder(IBlockAccess world, int x, int y, int z, EntityLivingBase entity)
 	{
 		return cb( world, x, y, z ).isLadder( entity );
 	}
@@ -76,7 +77,7 @@ public class BlockCableBus extends AEBaseBlock
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		Block block = blocksList[world.getBlockId( x, y, z )];
+		Block block = world.getBlock( x, y, z );
 		if ( block != null && block != this )
 		{
 			return block.getLightValue( world, x, y, z );
@@ -101,13 +102,13 @@ public class BlockCableBus extends AEBaseBlock
 	}
 
 	@Override
-	public boolean isBlockReplaceable(World world, int x, int y, int z)
+	public boolean isReplaceable(IBlockAccess world, int x, int y, int z)
 	{
 		return cb( world, x, y, z ).isEmpty();
 	}
 
 	@Override
-	public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z)
 	{
 		if ( player.capabilities.isCreativeMode )
 		{
@@ -116,23 +117,23 @@ public class BlockCableBus extends AEBaseBlock
 				tile.dropItems = false;
 			// maybe ray trace?
 		}
-		return super.removeBlockByPlayer( world, player, x, y, z );
+		return super.removedByPlayer( world, player, x, y, z );
 	}
 
 	@Override
-	public Icon getBlockTexture(IBlockAccess w, int x, int y, int z, int s)
+	public IIcon getIcon(IBlockAccess w, int x, int y, int z, int s)
 	{
 		return getIcon( s, 0 );
 	}
 
 	@Override
-	public Icon getIcon(int direction, int metadata)
+	public IIcon getIcon(int direction, int metadata)
 	{
-		Icon i = super.getIcon( direction, metadata );
+		IIcon i = super.getIcon( direction, metadata );
 		if ( i != null )
 			return i;
 
-		return CableBusTextures.getMissing();
+		return ExtraTextures.BlockQuartzGlassB.getIcon();
 	}
 
 	@Override
@@ -142,7 +143,7 @@ public class BlockCableBus extends AEBaseBlock
 	}
 
 	@Override
-	public void registerIcons(IconRegister iconRegistry)
+	public void registerBlockIcons(IIconRegister iconRegistry)
 	{
 
 	}
@@ -154,21 +155,21 @@ public class BlockCableBus extends AEBaseBlock
 	}
 
 	@Override
-	public boolean isBlockSolidOnSide(World w, int x, int y, int z, ForgeDirection side)
+	public boolean isSideSolid(IBlockAccess w, int x, int y, int z, ForgeDirection side)
 	{
 		return cb( w, x, y, z ).isSolidOnSide( side );
 	}
 
 	@Override
-	public void onNeighborBlockChange(World w, int x, int y, int z, int meh)
+	public void onNeighborBlockChange(World w, int x, int y, int z, Block meh)
 	{
 		cb( w, x, y, z ).onNeighborChanged();
 	}
 
 	@Override
-	public int idDropped(int i, Random r, int k)
+	public Item getItemDropped(int i, Random r, int k)
 	{
-		return 0;
+		return null;
 	}
 
 	@Override
@@ -216,7 +217,7 @@ public class BlockCableBus extends AEBaseBlock
 	}
 
 	@Override
-	public void getSubBlocks(int par1, CreativeTabs par2CreativeTabs, List par3List)
+	public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List)
 	{
 
 	}
@@ -230,7 +231,7 @@ public class BlockCableBus extends AEBaseBlock
 
 	private ICableBusContainer cb(IBlockAccess w, int x, int y, int z)
 	{
-		TileEntity te = w.getBlockTileEntity( x, y, z );
+		TileEntity te = w.getTileEntity( x, y, z );
 		if ( te instanceof TileCableBus )
 			return ((TileCableBus) te).cb;
 

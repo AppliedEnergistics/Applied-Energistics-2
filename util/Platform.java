@@ -4,19 +4,20 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -43,8 +44,9 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.FakePlayer;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.util.FakePlayerFactory;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -69,6 +71,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAETagCompound;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEItemDefinition;
+import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.GuiBridge;
 import appeng.me.GridNode;
@@ -78,18 +81,18 @@ import appeng.util.item.AESharedNBT;
 import appeng.util.item.ItemList;
 import buildcraft.api.tools.IToolWrench;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableTable;
+import com.mojang.authlib.GameProfile;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class Platform
 {
+
+	public static Block air = Blocks.air;
 
 	public static final int DEF_OFFSET = 16;
 
@@ -106,107 +109,6 @@ public class Platform
 	public static float getRandomFloat()
 	{
 		return rdnSrc.nextFloat();
-	}
-
-	private static HashMap<String, String> modIDToName;
-	private static HashMap<Integer, String> itemTomodID;
-	private static HashMap<Integer, String> itemNames;
-
-	public static String getBlockName(Block id)
-	{
-		populateModInfo();
-
-		String out = itemNames.get( id.blockID );
-
-		if ( out == null )
-			return "Unknown";
-
-		return out;
-	}
-
-	public static String getItemName(Item id)
-	{
-		populateModInfo();
-
-		String out = itemNames.get( id.itemID );
-
-		if ( out == null )
-			return "Unknown";
-
-		return out;
-	}
-
-	public static String getMod(String modID)
-	{
-		String out = modIDToName.get( modID );
-
-		if ( out == null )
-		{
-			out = modID;
-		}
-
-		return out;
-	}
-
-	public static String getMod(ItemStack is)
-	{
-		populateModInfo();
-
-		String out = itemTomodID.get( is.itemID );
-
-		if ( out == null )
-			return "Unknown";
-
-		return out;
-	}
-
-	private static void populateModInfo()
-	{
-		if ( itemTomodID == null )
-		{
-			itemTomodID = new HashMap<Integer, String>();
-			itemNames = new HashMap<Integer, String>();
-			ImmutableTable<String, String, Integer> modObjectTable;
-
-			for (Field f : Block.class.getDeclaredFields())
-			{
-				try
-				{
-					Object o = f.get( Block.class );
-					if ( o instanceof Block )
-					{
-						itemNames.put( ((Block) o).blockID, f.getName() );
-						itemTomodID.put( ((Block) o).blockID, "minecraft" );
-					}
-				}
-				catch (Throwable t)
-				{
-				}
-			}
-
-			try
-			{
-				Field f = GameData.class.getDeclaredField( "modObjectTable" );
-				f.setAccessible( true );
-				modObjectTable = (ImmutableTable<String, String, Integer>) f.get( GameData.class );
-				f.setAccessible( false );
-
-				ImmutableMap<String, Map<String, Integer>> fish = modObjectTable.rowMap();
-				for (String MODID : fish.keySet())
-				{
-					Map<String, Integer> g = fish.get( MODID );
-					for (String key : g.keySet())
-					{
-						itemNames.put( g.get( key ), key );
-						itemTomodID.put( g.get( key ), MODID );
-					}
-				}
-			}
-			catch (Throwable t)
-			{
-			}
-		}
-
 	}
 
 	public static ForgeDirection crossProduct(ForgeDirection forward, ForgeDirection up)
@@ -332,7 +234,7 @@ public class Platform
 			if ( tile == null )
 				p.openGui( AppEng.instance, type.ordinal() << 3, p.getEntityWorld(), x, y, z );
 			else
-				p.openGui( AppEng.instance, type.ordinal() << 3 | (side.ordinal()), tile.worldObj, x, y, z );
+				p.openGui( AppEng.instance, type.ordinal() << 3 | (side.ordinal()), tile.getWorldObj(), x, y, z );
 		}
 	}
 
@@ -348,12 +250,7 @@ public class Platform
 	{
 		try
 		{
-			int bid = w.getBlockId( x, y, z );
-			if ( bid <= 0 )
-				return true;
-			if ( Block.blocksList[bid] == null )
-				return true;
-			return Block.blocksList[bid].isAirBlock( w, x, y, z );
+			return w.getBlock( x, y, z ).isAir( w, x, y, z );
 		}
 		catch (Throwable e)
 		{
@@ -362,9 +259,8 @@ public class Platform
 	}
 
 	/*
-	 * Lots of sillyness to try and account for weird tag related junk,
-	 * basically requires that two tags have at least something in their tags
-	 * before it wasts its time comparing them.
+	 * Lots of sillyness to try and account for weird tag related junk, basically requires that two tags have at least
+	 * something in their tags before it wasts its time comparing them.
 	 */
 	public static boolean sameStackStags(ItemStack a, ItemStack b)
 	{
@@ -397,11 +293,9 @@ public class Platform
 	}
 
 	/*
-	 * recursive test for NBT Equality, this was faster then trying to compare /
-	 * generate hashes, its also more reliable then the vanilla version which
-	 * likes to fail when NBT Compound data changes order, it is pretty
-	 * expensive performance wise, so try an use shared tag compounds as long as
-	 * the system remains in AE.
+	 * recursive test for NBT Equality, this was faster then trying to compare / generate hashes, its also more reliable
+	 * then the vanilla version which likes to fail when NBT Compound data changes order, it is pretty expensive
+	 * performance wise, so try an use shared tag compounds as long as the system remains in AE.
 	 */
 	public static boolean NBTEqualityTest(NBTBase A, NBTBase B)
 	{
@@ -415,17 +309,18 @@ public class Platform
 				NBTTagCompound ctA = (NBTTagCompound) A;
 				NBTTagCompound ctB = (NBTTagCompound) B;
 
-				Collection cA = ctA.getTags();
-				Collection cB = ctB.getTags();
+				Set<String> cA = ctA.func_150296_c();
+				Set<String> cB = ctB.func_150296_c();
 
 				if ( cA.size() != cB.size() )
 					return false;
 
-				Iterator<NBTBase> i = cA.iterator();
+				Iterator<String> i = cA.iterator();
 				while (i.hasNext())
 				{
-					NBTBase tag = i.next();
-					NBTBase aTag = ctB.getTag( tag.getName() );
+					String name = i.next();
+					NBTBase tag = ctA.getTag( name );
+					NBTBase aTag = ctB.getTag( name );
 					if ( aTag == null )
 						return false;
 
@@ -443,15 +338,14 @@ public class Platform
 				if ( lA.tagCount() != lB.tagCount() )
 					return false;
 
+				List<NBTBase> tag = tagList( lA );
+				List<NBTBase> aTag = tagList( lB );
 				for (int x = 0; x < lA.tagCount(); x++)
 				{
-					NBTBase tag = lA.tagAt( x );
-					NBTBase aTag = lB.tagAt( x );
-
-					if ( aTag == null )
+					if ( aTag.get( x ) == null )
 						return false;
 
-					if ( !NBTEqualityTest( tag, aTag ) )
+					if ( !NBTEqualityTest( tag.get( x ), aTag.get( x ) ) )
 						return false;
 				}
 
@@ -459,22 +353,23 @@ public class Platform
 			}
 
 			case 1: // ( A instanceof NBTTagByte )
-				return ((NBTTagByte) A).data == ((NBTTagByte) B).data;
+				return ((NBTTagByte) A).func_150287_d() == ((NBTTagByte) B).func_150287_d();
 
 			case 4: // else if ( A instanceof NBTTagLong )
-				return ((NBTTagLong) A).data == ((NBTTagLong) B).data;
+				return ((NBTTagLong) A).func_150291_c() == ((NBTTagLong) B).func_150291_c();
 
 			case 8: // else if ( A instanceof NBTTagString )
-				return ((NBTTagString) A).data == ((NBTTagString) B).data || ((NBTTagString) A).data.equals( ((NBTTagString) B).data );
+				return ((NBTTagString) A).func_150285_a_() == ((NBTTagString) B).func_150285_a_()
+						|| ((NBTTagString) A).func_150285_a_().equals( ((NBTTagString) B).func_150285_a_() );
 
 			case 6: // else if ( A instanceof NBTTagDouble )
-				return ((NBTTagDouble) A).data == ((NBTTagDouble) B).data;
+				return ((NBTTagDouble) A).func_150286_g() == ((NBTTagDouble) B).func_150286_g();
 
 			case 5: // else if ( A instanceof NBTTagFloat )
-				return ((NBTTagFloat) A).data == ((NBTTagFloat) B).data;
+				return ((NBTTagFloat) A).func_150288_h() == ((NBTTagFloat) B).func_150288_h();
 
 			case 3: // else if ( A instanceof NBTTagInt )
-				return ((NBTTagInt) A).data == ((NBTTagInt) B).data;
+				return ((NBTTagInt) A).func_150287_d() == ((NBTTagInt) B).func_150287_d();
 
 			default:
 				return A.equals( B );
@@ -484,9 +379,38 @@ public class Platform
 		return false;
 	}
 
+	private static Field tagList;
+
+	private static List<NBTBase> tagList(NBTTagList lB)
+	{
+		if ( tagList == null )
+		{
+			try
+			{
+				tagList = lB.getClass().getDeclaredField( "tagList" );
+			}
+			catch (Throwable t)
+			{
+				AELog.error( t );
+			}
+		}
+
+		try
+		{
+			tagList.setAccessible( true );
+			return (List<NBTBase>) tagList.get( lB );
+		}
+		catch (Throwable t)
+		{
+			AELog.error( t );
+		}
+
+		return new ArrayList();
+	}
+
 	/*
-	 * Orderless hash on NBT Data, used to work thought huge piles fast, but
-	 * ignroes the order just in case MC decided to change it... WHICH IS BAD...
+	 * Orderless hash on NBT Data, used to work thought huge piles fast, but ignroes the order just in case MC decided
+	 * to change it... WHICH IS BAD...
 	 */
 	public static int NBTOrderlessHash(NBTBase A)
 	{
@@ -499,13 +423,13 @@ public class Platform
 		case 10: {
 			NBTTagCompound ctA = (NBTTagCompound) A;
 
-			Collection cA = ctA.getTags();
+			Set<String> cA = ctA.func_150296_c();
 
-			Iterator<NBTBase> i = cA.iterator();
+			Iterator<String> i = cA.iterator();
 			while (i.hasNext())
 			{
-				NBTBase tag = i.next();
-				hash += NBTOrderlessHash( ctA.getTag( tag.getName() ) );
+				String name = i.next();
+				hash += NBTOrderlessHash( ctA.getTag( name ) );
 			}
 
 			return hash;
@@ -516,31 +440,32 @@ public class Platform
 			NBTTagList lA = (NBTTagList) A;
 			hash += 9 * lA.tagCount();
 
+			List<NBTBase> l = tagList( lA );
 			for (int x = 0; x < lA.tagCount(); x++)
 			{
-				hash += NBTOrderlessHash( lA.tagAt( x ) );
+				hash += NBTOrderlessHash( l.get( x ) );
 			}
 
 			return hash;
 		}
 
 		case 1: // ( A instanceof NBTTagByte )
-			return hash + ((NBTTagByte) A).data;
+			return hash + ((NBTTagByte) A).func_150290_f();
 
 		case 4: // else if ( A instanceof NBTTagLong )
-			return hash + (int) ((NBTTagLong) A).data;
+			return hash + (int) ((NBTTagLong) A).func_150291_c();
 
 		case 8: // else if ( A instanceof NBTTagString )
-			return hash + ((NBTTagString) A).data.hashCode();
+			return hash + ((NBTTagString) A).func_150285_a_().hashCode();
 
 		case 6: // else if ( A instanceof NBTTagDouble )
-			return hash + (int) ((NBTTagDouble) A).data;
+			return hash + (int) ((NBTTagDouble) A).func_150286_g();
 
 		case 5: // else if ( A instanceof NBTTagFloat )
-			return hash + (int) ((NBTTagFloat) A).data;
+			return hash + (int) ((NBTTagFloat) A).func_150288_h();
 
 		case 3: // else if ( A instanceof NBTTagInt )
-			return hash + ((NBTTagInt) A).data;
+			return hash + ((NBTTagInt) A).func_150287_d();
 
 		default:
 			return hash;
@@ -548,8 +473,7 @@ public class Platform
 	}
 
 	/*
-	 * The usual version of this returns an ItemStack, this version returns the
-	 * recipe.
+	 * The usual version of this returns an ItemStack, this version returns the recipe.
 	 */
 	public static IRecipe findMatchingRecipe(InventoryCrafting par1InventoryCrafting, World par2World)
 	{
@@ -572,14 +496,11 @@ public class Platform
 	public static ItemStack[] getBlockDrops(World w, int x, int y, int z)
 	{
 		List<ItemStack> out = new ArrayList<ItemStack>();
-		int bid = w.getBlockId( x, y, z );
+		Block which = w.getBlock( x, y, z );
 
-		if ( Block.blocksList.length > bid )
+		if ( which != null )
 		{
-			Block which = Block.blocksList[bid];
-			if ( which == null )
-				return new ItemStack[0];
-			out = which.getBlockDropped( w, x, y, z, w.getBlockMetadata( x, y, z ), 0 );
+			out = which.getDrops( w, x, y, z, w.getBlockMetadata( x, y, z ), 0 );
 		}
 
 		if ( out == null )
@@ -634,8 +555,7 @@ public class Platform
 	}
 
 	/*
-	 * Creates / or loads previous NBT Data on items, used for editing items
-	 * owned by AE.
+	 * Creates / or loads previous NBT Data on items, used for editing items owned by AE.
 	 */
 	public static NBTTagCompound openNbtData(ItemStack i)
 	{
@@ -650,8 +570,7 @@ public class Platform
 	}
 
 	/*
-	 * Generates Item entiies in the world similar to how items are generally
-	 * droped.
+	 * Generates Item entiies in the world similar to how items are generally droped.
 	 */
 	public static void spawnDrops(World w, int x, int y, int z, List<ItemStack> drops)
 	{
@@ -675,27 +594,26 @@ public class Platform
 	}
 
 	/*
-	 * Utility function to get the full inventory for a Double Chest in the
-	 * World.
+	 * Utility function to get the full inventory for a Double Chest in the World.
 	 */
 	public static IInventory GetChestInv(Object te)
 	{
 		TileEntityChest teA = (TileEntityChest) te;
 		TileEntity teB = null;
-		int myBlockID = teA.worldObj.getBlockId( teA.xCoord, teA.yCoord, teA.zCoord );
+		Block myBlockID = teA.getWorldObj().getBlock( teA.xCoord, teA.yCoord, teA.zCoord );
 
-		if ( teA.worldObj.getBlockId( teA.xCoord + 1, teA.yCoord, teA.zCoord ) == myBlockID )
+		if ( teA.getWorldObj().getBlock( teA.xCoord + 1, teA.yCoord, teA.zCoord ) == myBlockID )
 		{
-			teB = teA.worldObj.getBlockTileEntity( teA.xCoord + 1, teA.yCoord, teA.zCoord );
+			teB = teA.getWorldObj().getTileEntity( teA.xCoord + 1, teA.yCoord, teA.zCoord );
 			if ( !(teB instanceof TileEntityChest) )
 				teB = null;
 		}
 
 		if ( teB == null )
 		{
-			if ( teA.worldObj.getBlockId( teA.xCoord - 1, teA.yCoord, teA.zCoord ) == myBlockID )
+			if ( teA.getWorldObj().getBlock( teA.xCoord - 1, teA.yCoord, teA.zCoord ) == myBlockID )
 			{
-				teB = teA.worldObj.getBlockTileEntity( teA.xCoord - 1, teA.yCoord, teA.zCoord );
+				teB = teA.getWorldObj().getTileEntity( teA.xCoord - 1, teA.yCoord, teA.zCoord );
 				if ( !(teB instanceof TileEntityChest) )
 					teB = null;
 				else
@@ -709,9 +627,9 @@ public class Platform
 
 		if ( teB == null )
 		{
-			if ( teA.worldObj.getBlockId( teA.xCoord, teA.yCoord, teA.zCoord + 1 ) == myBlockID )
+			if ( teA.getWorldObj().getBlock( teA.xCoord, teA.yCoord, teA.zCoord + 1 ) == myBlockID )
 			{
-				teB = teA.worldObj.getBlockTileEntity( teA.xCoord, teA.yCoord, teA.zCoord + 1 );
+				teB = teA.getWorldObj().getTileEntity( teA.xCoord, teA.yCoord, teA.zCoord + 1 );
 				if ( !(teB instanceof TileEntityChest) )
 					teB = null;
 			}
@@ -719,9 +637,9 @@ public class Platform
 
 		if ( teB == null )
 		{
-			if ( teA.worldObj.getBlockId( teA.xCoord, teA.yCoord, teA.zCoord - 1 ) == myBlockID )
+			if ( teA.getWorldObj().getBlock( teA.xCoord, teA.yCoord, teA.zCoord - 1 ) == myBlockID )
 			{
-				teB = teA.worldObj.getBlockTileEntity( teA.xCoord, teA.yCoord, teA.zCoord - 1 );
+				teB = teA.getWorldObj().getTileEntity( teA.xCoord, teA.yCoord, teA.zCoord - 1 );
 				if ( !(teB instanceof TileEntityChest) )
 					teB = null;
 				else
@@ -888,14 +806,15 @@ public class Platform
 	}
 
 	private static WeakHashMap<World, EntityPlayer> fakePlayers = new WeakHashMap<World, EntityPlayer>();
+	private static GameProfile myProfile = new GameProfile( "[appeng]", "AE2" );
 
-	public static EntityPlayer getPlayer(World w)
+	public static EntityPlayer getPlayer(WorldServer w)
 	{
 		EntityPlayer wrp = fakePlayers.get( w );
 		if ( wrp != null )
 			return wrp;
 
-		EntityPlayer p = new FakePlayer( w, "[AppEng]" );
+		EntityPlayer p = FakePlayerFactory.get( w, myProfile );
 		fakePlayers.put( w, p );
 		return p;
 	}
@@ -956,8 +875,7 @@ public class Platform
 
 	public static boolean blockAtLocationIs(IBlockAccess w, int x, int y, int z, AEItemDefinition def)
 	{
-		int blk = w.getBlockId( x, y, z );
-		return def.block() == Block.blocksList[blk];
+		return def.block() == w.getBlock( x, y, z );
 	}
 
 	public static ForgeDirection rotateAround(ForgeDirection forward, ForgeDirection axis)
@@ -1073,7 +991,7 @@ public class Platform
 
 	public static boolean isSameItemType(ItemStack ol, ItemStack op)
 	{
-		if ( ol != null && op != null && ol.itemID == op.itemID )
+		if ( ol != null && op != null && ol.getItem() == op.getItem() )
 		{
 			if ( ol.isItemStackDamageable() )
 				return true;
@@ -1115,13 +1033,12 @@ public class Platform
 		}
 
 		/*
-		 * if ( a.itemID != 0 && b.itemID != 0 && a.isItemStackDamageable() && !
-		 * a.getHasSubtypes() && a.itemID == b.itemID ) { return
-		 * (a.getItemDamage() > 0) == (b.getItemDamage() > 0); }
+		 * if ( a.itemID != 0 && b.itemID != 0 && a.isItemStackDamageable() && ! a.getHasSubtypes() && a.itemID ==
+		 * b.itemID ) { return (a.getItemDamage() > 0) == (b.getItemDamage() > 0); }
 		 */
 
 		// test damageable items..
-		if ( a.itemID != 0 && b.itemID != 0 && a.getItem().isDamageable() && a.itemID == b.itemID )
+		if ( a.getItem() != null && b.getItem() != null && a.getItem().isDamageable() && a.getItem() == b.getItem() )
 		{
 			try
 			{
@@ -1162,21 +1079,17 @@ public class Platform
 		}
 
 		/*
-		 * // test ore dictionary.. int OreID = getOreID( a ); if ( OreID != -1
-		 * ) return OreID == getOreID( b );
+		 * // test ore dictionary.. int OreID = getOreID( a ); if ( OreID != -1 ) return OreID == getOreID( b );
 		 * 
-		 * if ( Mode != FuzzyMode.IGNORE_ALL ) { if ( a.hasTagCompound() &&
-		 * !isShared( a.getTagCompound() ) ) { a = Platform.getSharedItemStack(
-		 * AEItemStack.create( a ) ); }
+		 * if ( Mode != FuzzyMode.IGNORE_ALL ) { if ( a.hasTagCompound() && !isShared( a.getTagCompound() ) ) { a =
+		 * Platform.getSharedItemStack( AEItemStack.create( a ) ); }
 		 * 
-		 * if ( b.hasTagCompound() && !isShared( b.getTagCompound() ) ) { b =
-		 * Platform.getSharedItemStack( AEItemStack.create( b ) ); }
+		 * if ( b.hasTagCompound() && !isShared( b.getTagCompound() ) ) { b = Platform.getSharedItemStack(
+		 * AEItemStack.create( b ) ); }
 		 * 
-		 * // test regular items with damage values and what not... if (
-		 * isShared( a.getTagCompound() ) && isShared( b.getTagCompound() ) &&
-		 * a.itemID == b.itemID ) { return ((AppEngSharedNBTTagCompound)
-		 * a.getTagCompound()).compareFuzzyWithRegistry(
-		 * (AppEngSharedNBTTagCompound) b.getTagCompound() ); } }
+		 * // test regular items with damage values and what not... if ( isShared( a.getTagCompound() ) && isShared(
+		 * b.getTagCompound() ) && a.itemID == b.itemID ) { return ((AppEngSharedNBTTagCompound)
+		 * a.getTagCompound()).compareFuzzyWithRegistry( (AppEngSharedNBTTagCompound) b.getTagCompound() ); } }
 		 */
 
 		return a.isItemEqual( b );
@@ -1233,7 +1146,8 @@ public class Platform
 		AxisAlignedBB bb = AxisAlignedBB
 				.getAABBPool()
 				.getAABB( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ),
-						Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
+						Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) )
+				.expand( 16, 16, 16 );
 
 		Entity entity = null;
 		double Closeest = 9999999.0D;
@@ -1279,7 +1193,7 @@ public class Platform
 		if ( hitBlocks )
 		{
 			Srec = w.getWorldVec3Pool().getVecFromPool( d0, d1, d2 );
-			pos = w.rayTraceBlocks_do_do( vec3, vec31, true, false );
+			pos = w.rayTraceBlocks( vec3, vec31, true );
 		}
 
 		if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( Srec ) > Closeest )
@@ -1301,7 +1215,8 @@ public class Platform
 		return 0;
 	}
 
-	public static <StackType extends IAEStack> StackType poweredExtraction(IEnergySource energy, IMEInventory<StackType> cell, StackType request, BaseActionSource src)
+	public static <StackType extends IAEStack> StackType poweredExtraction(IEnergySource energy, IMEInventory<StackType> cell, StackType request,
+			BaseActionSource src)
 	{
 		StackType possible = cell.extractItems( (StackType) request.copy(), Actionable.SIMULATE, src );
 
@@ -1410,7 +1325,8 @@ public class Platform
 		}
 	}
 
-	static public <T extends IAEStack<T>> void postListChanges(IItemList<T> before, IItemList<T> after, IMEMonitorHandlerReciever<T> meMonitorPassthu, BaseActionSource source)
+	static public <T extends IAEStack<T>> void postListChanges(IItemList<T> before, IItemList<T> after, IMEMonitorHandlerReciever<T> meMonitorPassthu,
+			BaseActionSource source)
 	{
 		for (T is : before)
 			is.setStackSize( -is.getStackSize() );
@@ -1442,8 +1358,8 @@ public class Platform
 			targ.checkForAdjacentChests();
 			if ( targ.adjacentChestZNeg != null )
 				hash ^= targ.adjacentChestZNeg.hashCode();
-			else if ( targ.adjacentChestZPosition != null )
-				hash ^= targ.adjacentChestZPosition.hashCode();
+			else if ( targ.adjacentChestZPos != null )
+				hash ^= targ.adjacentChestZPos.hashCode();
 			else if ( targ.adjacentChestXPos != null )
 				hash ^= targ.adjacentChestXPos.hashCode();
 			else if ( targ.adjacentChestXNeg != null )
@@ -1515,5 +1431,10 @@ public class Platform
 			return false;
 
 		return !gs.hasPermission( playerID, SecurityPermissions.BUILD );
+	}
+
+	public static boolean isDrawing(Tessellator tess)
+	{
+		return false;
 	}
 }

@@ -1,7 +1,7 @@
 package appeng.parts.reporting;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 
 import net.minecraft.client.renderer.RenderBlocks;
@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.parts.IPartMonitor;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkBootingStatusChange;
@@ -54,7 +54,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor
 	}
 
 	@Override
-	public void writeToStream(DataOutputStream data) throws IOException
+	public void writeToStream(ByteBuf data) throws IOException
 	{
 		super.writeToStream( data );
 		clientFlags = 0;
@@ -79,7 +79,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor
 	}
 
 	@Override
-	public boolean readFromStream(DataInputStream data) throws IOException
+	public boolean readFromStream(ByteBuf data) throws IOException
 	{
 		super.readFromStream( data );
 		int oldFlags = clientFlags;

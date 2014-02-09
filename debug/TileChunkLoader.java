@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
@@ -60,7 +61,7 @@ public class TileChunkLoader extends AEBaseTile
 				List<EntityPlayerMP> pl = server.getConfigurationManager().playerEntityList;
 				for (EntityPlayerMP p : pl)
 				{
-					p.addChatMessage( "Can't chunk load.." );
+					p.addChatMessage( new ChatComponentText( "Can't chunk load.." ) );
 				}
 			}
 			return;

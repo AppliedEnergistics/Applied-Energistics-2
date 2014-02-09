@@ -17,7 +17,7 @@ import appeng.util.Platform;
 public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEItemPowerStorage
 {
 
-	public AEBaseItemBlockChargeable(int id) {
+	public AEBaseItemBlockChargeable(Block id) {
 		super( id );
 	}
 
@@ -36,14 +36,13 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 		double percent = internalCurrentPower / internalMaxPower;
 
 		lines.add( GuiText.StoredEnergy.getLocal() + ":" + MessageFormat.format( " {0,number,#} ", internalCurrentPower )
-				+ Platform.gui_localize( PowerUnits.AE.unlocalizedName ) + " - "
-				+ MessageFormat.format( " {0,number,#.##%} ", percent ) );
+				+ Platform.gui_localize( PowerUnits.AE.unlocalizedName ) + " - " + MessageFormat.format( " {0,number,#.##%} ", percent ) );
 
 	}
 
 	private double getMax(ItemStack is)
 	{
-		Block blk = Block.blocksList[getBlockID()];
+		Block blk = Block.getBlockFromItem( this );
 		if ( blk == AEApi.instance().blocks().blockEnergyCell.block() )
 			return 200000;
 		else

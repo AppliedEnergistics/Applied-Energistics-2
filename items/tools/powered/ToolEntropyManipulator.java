@@ -9,14 +9,16 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.oredict.OreDictionary;
 import appeng.core.Configuration;
 import appeng.core.features.AEFeature;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
@@ -26,25 +28,50 @@ import appeng.util.Platform;
 public class ToolEntropyManipulator extends AEBasePoweredItem
 {
 
-	static private Hashtable<String, InWorldToolOperationResult> heatUp;
-	static private Hashtable<String, InWorldToolOperationResult> coolDown;
-
-	static public void heat(int BlockID, int Metadata, World w, int x, int y, int z)
+	static class Combo
 	{
-		InWorldToolOperationResult r = heatUp.get( BlockID + ":" + Metadata );
+
+		final public Block blk;
+		final public int meta;
+
+		public Combo(Block b, int m) {
+			blk = b;
+			meta = m;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return blk.hashCode() ^ meta;
+		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			return blk == ((Combo) obj).blk && meta == ((Combo) obj).meta;
+		}
+
+	};
+
+	static private Hashtable<Combo, InWorldToolOperationResult> heatUp;
+	static private Hashtable<Combo, InWorldToolOperationResult> coolDown;
+
+	static public void heat(Block BlockID, int Metadata, World w, int x, int y, int z)
+	{
+		InWorldToolOperationResult r = heatUp.get( new Combo( BlockID, Metadata ) );
 
 		if ( r == null )
 		{
-			r = heatUp.get( BlockID + ":*" );
+			r = heatUp.get( new Combo( BlockID, OreDictionary.WILDCARD_VALUE ) );
 		}
 
 		if ( r.BlockItem != null )
 		{
-			w.setBlock( x, y, z, r.BlockItem.itemID, r.BlockItem.getItemDamage(), 3 );
+			w.setBlock( x, y, z, Block.getBlockFromItem( r.BlockItem.getItem() ), r.BlockItem.getItemDamage(), 3 );
 		}
 		else
 		{
-			w.setBlock( x, y, z, 0, 0, 3 );
+			w.setBlock( x, y, z, Platform.air, 0, 3 );
 		}
 
 		if ( r.Drops != null )
@@ -53,34 +80,34 @@ public class ToolEntropyManipulator extends AEBasePoweredItem
 		}
 	}
 
-	static public boolean canHeat(int BlockID, int Metadata)
+	static public boolean canHeat(Block BlockID, int Metadata)
 	{
-		InWorldToolOperationResult r = heatUp.get( BlockID + ":" + Metadata );
+		InWorldToolOperationResult r = heatUp.get( new Combo( BlockID, Metadata ) );
 
 		if ( r == null )
 		{
-			r = heatUp.get( BlockID + ":*" );
+			r = heatUp.get( new Combo( BlockID, OreDictionary.WILDCARD_VALUE ) );
 		}
 
 		return r != null;
 	}
 
-	static public void cool(int BlockID, int Metadata, World w, int x, int y, int z)
+	static public void cool(Block BlockID, int Metadata, World w, int x, int y, int z)
 	{
-		InWorldToolOperationResult r = coolDown.get( BlockID + ":" + Metadata );
+		InWorldToolOperationResult r = coolDown.get( new Combo( BlockID, Metadata ) );
 
 		if ( r == null )
 		{
-			r = coolDown.get( BlockID + ":*" );
+			r = coolDown.get( new Combo( BlockID, OreDictionary.WILDCARD_VALUE ) );
 		}
 
 		if ( r.BlockItem != null )
 		{
-			w.setBlock( x, y, z, r.BlockItem.itemID, r.BlockItem.getItemDamage(), 3 );
+			w.setBlock( x, y, z, Block.getBlockFromItem( r.BlockItem.getItem() ), r.BlockItem.getItemDamage(), 3 );
 		}
 		else
 		{
-			w.setBlock( x, y, z, 0, 0, 3 );
+			w.setBlock( x, y, z, Platform.air, 0, 3 );
 		}
 
 		if ( r.Drops != null )
@@ -89,13 +116,13 @@ public class ToolEntropyManipulator extends AEBasePoweredItem
 		}
 	}
 
-	static public boolean canCool(int BlockID, int Metadata)
+	static public boolean canCool(Block BlockID, int Metadata)
 	{
-		InWorldToolOperationResult r = coolDown.get( BlockID + ":" + Metadata );
+		InWorldToolOperationResult r = coolDown.get( new Combo( BlockID, Metadata ) );
 
 		if ( r == null )
 		{
-			r = coolDown.get( BlockID + ":*" );
+			r = coolDown.get( new Combo( BlockID, OreDictionary.WILDCARD_VALUE ) );
 		}
 
 		return r != null;
@@ -106,23 +133,23 @@ public class ToolEntropyManipulator extends AEBasePoweredItem
 		setfeature( EnumSet.of( AEFeature.EntropyManipulator, AEFeature.PoweredTools ) );
 		maxStoredPower = Configuration.instance.manipulator_battery;
 
-		coolDown = new Hashtable<String, InWorldToolOperationResult>();
-		coolDown.put( Block.stone.blockID + ":0", new InWorldToolOperationResult( new ItemStack( Block.cobblestone ) ) );
-		coolDown.put( Block.stoneBrick.blockID + ":0", new InWorldToolOperationResult( new ItemStack( Block.stoneBrick, 1, 2 ) ) );
-		coolDown.put( Block.lavaStill.blockID + ":*", new InWorldToolOperationResult( new ItemStack( Block.obsidian ) ) );
-		coolDown.put( Block.lavaMoving.blockID + ":*", new InWorldToolOperationResult( new ItemStack( Block.obsidian ) ) );
-		coolDown.put( Block.grass.blockID + ":*", new InWorldToolOperationResult( new ItemStack( Block.dirt ) ) );
+		coolDown = new Hashtable<Combo, InWorldToolOperationResult>();
+		coolDown.put( new Combo( Blocks.stone, 0 ), new InWorldToolOperationResult( new ItemStack( Blocks.cobblestone ) ) );
+		coolDown.put( new Combo( Blocks.stonebrick, 0 ), new InWorldToolOperationResult( new ItemStack( Blocks.stonebrick, 1, 2 ) ) );
+		coolDown.put( new Combo( Blocks.lava, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult( new ItemStack( Blocks.obsidian ) ) );
+		coolDown.put( new Combo( Blocks.flowing_lava, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult( new ItemStack( Blocks.obsidian ) ) );
+		coolDown.put( new Combo( Blocks.grass, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult( new ItemStack( Blocks.dirt ) ) );
 
 		List<ItemStack> snowBalls = new ArrayList();
-		snowBalls.add( new ItemStack( Item.snowball ) );
-		coolDown.put( Block.waterMoving.blockID + ":*", new InWorldToolOperationResult( null, snowBalls ) );
-		coolDown.put( Block.waterStill.blockID + ":*", new InWorldToolOperationResult( new ItemStack( Block.ice ) ) );
+		snowBalls.add( new ItemStack( Items.snowball ) );
+		coolDown.put( new Combo( Blocks.flowing_water, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult( null, snowBalls ) );
+		coolDown.put( new Combo( Blocks.water, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult( new ItemStack( Blocks.ice ) ) );
 
-		heatUp = new Hashtable<String, InWorldToolOperationResult>();
-		heatUp.put( Block.ice.blockID + ":0", new InWorldToolOperationResult( new ItemStack( Block.waterStill ) ) );
-		heatUp.put( Block.waterMoving.blockID + ":*", new InWorldToolOperationResult() );
-		heatUp.put( Block.waterStill.blockID + ":*", new InWorldToolOperationResult() );
-		heatUp.put( Block.blockSnow.blockID + ":*", new InWorldToolOperationResult( new ItemStack( Block.waterStill ) ) );
+		heatUp = new Hashtable<Combo, InWorldToolOperationResult>();
+		heatUp.put( new Combo( Blocks.ice, 0 ), new InWorldToolOperationResult( new ItemStack( Blocks.water ) ) );
+		heatUp.put( new Combo( Blocks.flowing_water, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult() );
+		heatUp.put( new Combo( Blocks.water, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult() );
+		heatUp.put( new Combo( Blocks.snow, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult( new ItemStack( Blocks.flowing_water ) ) );
 	}
 
 	@Override
@@ -146,13 +173,13 @@ public class ToolEntropyManipulator extends AEBasePoweredItem
 			return item;
 		else
 		{
-			if ( target.typeOfHit == EnumMovingObjectType.TILE )
+			if ( target.typeOfHit == MovingObjectType.BLOCK )
 			{
 				int x = target.blockX;
 				int y = target.blockY;
 				int z = target.blockZ;
 
-				if ( w.getBlockMaterial( x, y, z ) == Material.lava || w.getBlockMaterial( x, y, z ) == Material.water )
+				if ( w.getBlock( x, y, z ).getMaterial() == Material.lava || w.getBlock( x, y, z ).getMaterial() == Material.water )
 				{
 					if ( w.canMineBlock( p, x, y, z ) )
 					{
@@ -173,7 +200,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem
 			if ( !p.canPlayerEdit( x, y, z, side, item ) )
 				return false;
 
-			int BlockID = w.getBlockId( x, y, z );
+			Block BlockID = w.getBlock( x, y, z );
 			int Metadata = w.getBlockMetadata( x, y, z );
 
 			if ( p.isSneaking() )
@@ -207,7 +234,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem
 					{
 						if ( result.getItem() instanceof ItemBlock )
 						{
-							if ( ((ItemBlock) result.getItem()).getBlockID() == BlockID && result.getItem().getDamage( result ) == Metadata )
+							if ( Block.getBlockFromItem( (ItemBlock) result.getItem() ) == BlockID && result.getItem().getDamage( result ) == Metadata )
 							{
 								canFurnaceable = false;
 							}
@@ -230,11 +257,11 @@ public class ToolEntropyManipulator extends AEBasePoweredItem
 
 					if ( or.BlockItem == null )
 					{
-						w.setBlock( x, y, z, 0, 0, 3 );
+						w.setBlock( x, y, z, Platform.air, 0, 3 );
 					}
 					else
 					{
-						w.setBlock( x, y, z, or.BlockItem.itemID, or.BlockItem.getItemDamage(), 3 );
+						w.setBlock( x, y, z, Block.getBlockFromItem( or.BlockItem.getItem() ), or.BlockItem.getItemDamage(), 3 );
 					}
 
 					if ( or.Drops != null )
@@ -258,7 +285,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem
 					{
 						extractAEPower( item, 1600 );
 						w.playSoundEffect( (double) x + 0.5D, (double) y + 0.5D, (double) z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
-						w.setBlock( x, y, z, Block.fire.blockID );
+						w.setBlock( x, y, z, Blocks.fire );
 					}
 
 					return true;

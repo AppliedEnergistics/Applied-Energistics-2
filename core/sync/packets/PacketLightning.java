@@ -1,18 +1,18 @@
 package appeng.core.sync.packets;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.INetworkManager;
 import appeng.client.ClientHelper;
 import appeng.client.render.effects.LightningEffect;
 import appeng.core.Configuration;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -25,7 +25,7 @@ public class PacketLightning extends AppEngPacket
 	final double z;
 
 	// automatic.
-	public PacketLightning(DataInputStream stream) throws IOException {
+	public PacketLightning(ByteBuf stream) throws IOException {
 		x = stream.readFloat();
 		y = stream.readFloat();
 		z = stream.readFloat();
@@ -33,7 +33,7 @@ public class PacketLightning extends AppEngPacket
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void clientPacketData(INetworkManager network, AppEngPacket packet, EntityPlayer player)
+	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
 	{
 		try
 		{
@@ -55,16 +55,14 @@ public class PacketLightning extends AppEngPacket
 		this.y = y;
 		this.z = z;
 
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		DataOutputStream data = new DataOutputStream( bytes );
+		ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( getPacketID() );
 		data.writeFloat( (float) x );
 		data.writeFloat( (float) y );
 		data.writeFloat( (float) z );
 
-		isChunkDataPacket = false;
-		configureWrite( bytes.toByteArray() );
+		configureWrite( data );
 	}
 
 }

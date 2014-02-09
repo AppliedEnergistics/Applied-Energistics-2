@@ -1,7 +1,7 @@
 package appeng.parts.networking;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.EnumSet;
 
@@ -9,8 +9,8 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
@@ -60,7 +60,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		return BusSupport.CABLE;
 	}
 
-	public Icon getGlassTexture(AEColor c)
+	public IIcon getGlassTexture(AEColor c)
 	{
 		switch (c)
 		{
@@ -102,12 +102,12 @@ public class PartCable extends AEBasePart implements IPartCable
 				AEApi.instance().parts().partCableGlass.stack( AEColor.Transparent, 1 ) );
 	}
 
-	public Icon getTexture(AEColor c)
+	public IIcon getTexture(AEColor c)
 	{
 		return getGlassTexture( c );
 	}
 
-	public Icon getCoveredTexture(AEColor c)
+	public IIcon getCoveredTexture(AEColor c)
 	{
 		switch (c)
 		{
@@ -149,7 +149,7 @@ public class PartCable extends AEBasePart implements IPartCable
 				AEApi.instance().parts().partCableCovered.stack( AEColor.Transparent, 1 ) );
 	}
 
-	public Icon getSmartTexture(AEColor c)
+	public IIcon getSmartTexture(AEColor c)
 	{
 		switch (c)
 		{
@@ -214,7 +214,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public void writeToStream(DataOutputStream data) throws IOException
+	public void writeToStream(ByteBuf data) throws IOException
 	{
 		int cs = 0;
 		int sideOut = 0;
@@ -273,7 +273,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public boolean readFromStream(DataInputStream data) throws IOException
+	public boolean readFromStream(ByteBuf data) throws IOException
 	{
 		int cs = data.readByte();
 		int sideOut = data.readInt();
@@ -371,7 +371,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	@SideOnly(Side.CLIENT)
 	public void rendereGlassConection(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, ForgeDirection of)
 	{
-		TileEntity te = this.tile.worldObj.getBlockTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
+		TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
 		IPartHost ccph = te instanceof IPartHost ? (IPartHost) te : null;
 		IGridHost gh = te instanceof IGridHost ? (IGridHost) te : null;
 
@@ -479,7 +479,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	@SideOnly(Side.CLIENT)
 	public void renderCoveredConection(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of)
 	{
-		TileEntity te = this.tile.worldObj.getBlockTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
+		TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
 		IPartHost ccph = te instanceof IPartHost ? (IPartHost) te : null;
 		IGridHost ghh = te instanceof IGridHost ? (IGridHost) te : null;
 		boolean isSmart = false;
@@ -555,8 +555,8 @@ public class PartCable extends AEBasePart implements IPartCable
 		if ( isSmart )
 		{
 			setSmartConnectionRotations( of, renderer );
-			Icon defa = new TaughtIcon( getChannelTex( channels, false ).getIcon(), -0.2f );
-			Icon defb = new TaughtIcon( getChannelTex( channels, true ).getIcon(), -0.2f );
+			IIcon defa = new TaughtIcon( getChannelTex( channels, false ).getIcon(), -0.2f );
+			IIcon defb = new TaughtIcon( getChannelTex( channels, true ).getIcon(), -0.2f );
 
 			if ( of == ForgeDirection.EAST || of == ForgeDirection.WEST )
 			{
@@ -581,7 +581,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	@SideOnly(Side.CLIENT)
 	public void renderSmartConection(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of)
 	{
-		TileEntity te = this.tile.worldObj.getBlockTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
+		TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
 		IPartHost ccph = te instanceof IPartHost ? (IPartHost) te : null;
 		IGridHost ghh = te instanceof IGridHost ? (IGridHost) te : null;
 		boolean isGlass = false;
@@ -623,8 +623,8 @@ public class PartCable extends AEBasePart implements IPartCable
 			if ( true )
 			{
 				setSmartConnectionRotations( of, renderer );
-				Icon defa = new TaughtIcon( getChannelTex( channels, false ).getIcon(), -0.2f );
-				Icon defb = new TaughtIcon( getChannelTex( channels, true ).getIcon(), -0.2f );
+				IIcon defa = new TaughtIcon( getChannelTex( channels, false ).getIcon(), -0.2f );
+				IIcon defb = new TaughtIcon( getChannelTex( channels, true ).getIcon(), -0.2f );
 
 				if ( of == ForgeDirection.EAST || of == ForgeDirection.WEST )
 				{
@@ -684,8 +684,8 @@ public class PartCable extends AEBasePart implements IPartCable
 		{
 			setSmartConnectionRotations( of, renderer );
 
-			Icon defa = new TaughtIcon( getChannelTex( channels, false ).getIcon(), -0.2f );
-			Icon defb = new TaughtIcon( getChannelTex( channels, true ).getIcon(), -0.2f );
+			IIcon defa = new TaughtIcon( getChannelTex( channels, false ).getIcon(), -0.2f );
+			IIcon defb = new TaughtIcon( getChannelTex( channels, true ).getIcon(), -0.2f );
 
 			Tessellator.instance.setBrightness( 15 << 20 | 15 << 5 );
 			Tessellator.instance.setColorOpaque_I( myColor.mediumVariant );
@@ -768,7 +768,7 @@ public class PartCable extends AEBasePart implements IPartCable
 			}
 			else if ( connections.contains( dir ) )
 			{
-				TileEntity te = this.tile.worldObj.getBlockTileEntity( x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ );
+				TileEntity te = this.tile.getWorldObj().getTileEntity( x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ );
 				IPartHost ccph = te instanceof IPartHost ? (IPartHost) te : null;
 				IGridHost gh = te instanceof IGridHost ? (IGridHost) te : null;
 				if ( ccph == null && gh != null && gh.getCableConnectionType( dir ) != AECableType.GLASS )
@@ -842,7 +842,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		}
 		else
 		{
-			Icon def = getTexture( getCableColor() );
+			IIcon def = getTexture( getCableColor() );
 			rh.setTexture( def );
 
 			for (ForgeDirection of : connections)

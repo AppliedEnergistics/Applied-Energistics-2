@@ -4,8 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
-import appeng.integration.modules.TE;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class WrapperTEPipe implements IInventory
 {
@@ -45,17 +44,17 @@ public class WrapperTEPipe implements IInventory
 	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack)
 	{
-		TE.instance.addItemsToPipe( ad, itemstack, dir );
+		// ITE.addItemsToPipe( ad, itemstack, dir );
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
 		return null;
 	}
 
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
 		return false;
 	}
@@ -67,7 +66,7 @@ public class WrapperTEPipe implements IInventory
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
 
 	}
@@ -79,13 +78,13 @@ public class WrapperTEPipe implements IInventory
 	}
 
 	@Override
-	public void openChest()
+	public void openInventory()
 	{
 
 	}
 
 	@Override
-	public void closeChest()
+	public void closeInventory()
 	{
 
 	}

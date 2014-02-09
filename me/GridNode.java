@@ -8,7 +8,7 @@ import java.util.concurrent.Callable;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridNotification;
@@ -106,7 +106,7 @@ public class GridNode implements IGridNode, IPathItem
 			node.setLong( "k", lastSecurityKey );
 			node.setLong( "g", myStorage.getID() );
 
-			nodeData.setCompoundTag( name, node );
+			nodeData.setTag( name, node );
 		}
 		else
 			nodeData.removeTag( name );
@@ -345,7 +345,7 @@ public class GridNode implements IGridNode, IPathItem
 	{
 		if ( world.blockExists( x, y, z ) )
 		{
-			TileEntity te = world.getBlockTileEntity( x, y, z );
+			TileEntity te = world.getTileEntity( x, y, z );
 			if ( te instanceof IGridHost )
 				return (IGridHost) te;
 		}

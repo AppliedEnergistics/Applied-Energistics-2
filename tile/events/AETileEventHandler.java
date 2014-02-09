@@ -1,7 +1,7 @@
 package appeng.tile.events;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.EnumSet;
 
@@ -41,7 +41,7 @@ public abstract class AETileEventHandler
 	}
 
 	// NETWORK
-	public void writeToStream(DataOutputStream data) throws IOException
+	public void writeToStream(ByteBuf data) throws IOException
 	{
 	}
 
@@ -54,7 +54,7 @@ public abstract class AETileEventHandler
 	 * @throws IOException
 	 */
 	@SideOnly(Side.CLIENT)
-	public boolean readFromStream(DataInputStream data) throws IOException
+	public boolean readFromStream(ByteBuf data) throws IOException
 	{
 		return false;
 	}

@@ -2,7 +2,7 @@ package appeng.me.cluster;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.util.Platform;
@@ -60,7 +60,7 @@ public abstract class MBCalculator
 
 	public boolean isValidTileAt(World w, int x, int y, int z)
 	{
-		return isValidTile( w.getBlockTileEntity( x, y, z ) );
+		return isValidTile( w.getTileEntity( x, y, z ) );
 	}
 
 	public void calculateMultiblock(World worldObj, WorldCoord loc)
@@ -173,7 +173,7 @@ public abstract class MBCalculator
 			{
 				for (int z = minz; z <= maxz; z++)
 				{
-					TileEntity te = w.getBlockTileEntity( x, y, z );
+					TileEntity te = w.getTileEntity( x, y, z );
 					if ( isValidTile( te ) )
 						return true;
 				}

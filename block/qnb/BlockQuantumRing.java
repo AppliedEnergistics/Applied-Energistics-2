@@ -2,6 +2,7 @@ package appeng.block.qnb;
 
 import java.util.EnumSet;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
@@ -24,7 +25,7 @@ public class BlockQuantumRing extends AEBaseBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange(World w, int x, int y, int z, int pointlessnumber)
+	public void onNeighborBlockChange(World w, int x, int y, int z, Block pointlessnumber)
 	{
 		TileQuantumBridge bridge = getTileEntity( w, x, y, z );
 		if ( bridge != null )

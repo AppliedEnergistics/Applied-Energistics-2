@@ -18,13 +18,13 @@ import appeng.util.Platform;
 public abstract class PartSharedItemBus extends PartUpgradeable implements IGridTickable
 {
 
-	private TileEntity getBlockTileEntity(TileEntity self, int x, int y, int z)
+	private TileEntity getTileEntity(TileEntity self, int x, int y, int z)
 	{
-		World w = self.worldObj;
+		World w = self.getWorldObj();
 
 		if ( w.getChunkProvider().chunkExists( x >> 4, z >> 4 ) )
 		{
-			TileEntity te = w.getBlockTileEntity( x, y, z );
+			TileEntity te = w.getTileEntity( x, y, z );
 			return te;
 		}
 
@@ -71,7 +71,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 
 		cached = true;
 		TileEntity self = getHost().getTile();
-		TileEntity target = getBlockTileEntity( self, self.xCoord + side.offsetX, self.yCoord + side.offsetY, self.zCoord + side.offsetZ );
+		TileEntity target = getTileEntity( self, self.xCoord + side.offsetX, self.yCoord + side.offsetY, self.zCoord + side.offsetZ );
 
 		int newAdaptorHash = Platform.generateTileHash( target );
 

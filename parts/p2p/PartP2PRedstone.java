@@ -2,9 +2,10 @@ package appeng.parts.p2p;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRedstoneWire;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import appeng.api.config.TunnelType;
 import appeng.api.networking.events.MENetworkBootingStatusChange;
@@ -104,21 +105,21 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 
 	public void notifyNeightbors()
 	{
-		World worldObj = tile.worldObj;
+		World worldObj = tile.getWorldObj();
 
 		int xCoord = tile.xCoord;
 		int yCoord = tile.yCoord;
 		int zCoord = tile.zCoord;
 
-		worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord, worldObj.getBlockId( xCoord, yCoord, zCoord ) );
+		worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord, worldObj.getBlock( xCoord, yCoord, zCoord ) );
 
 		// and this cause somtimes it can go thought walls.
-		worldObj.notifyBlocksOfNeighborChange( xCoord - 1, yCoord, zCoord, worldObj.getBlockId( xCoord, yCoord, zCoord ) );
-		worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord - 1, zCoord, worldObj.getBlockId( xCoord, yCoord, zCoord ) );
-		worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord - 1, worldObj.getBlockId( xCoord, yCoord, zCoord ) );
-		worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord + 1, worldObj.getBlockId( xCoord, yCoord, zCoord ) );
-		worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord + 1, zCoord, worldObj.getBlockId( xCoord, yCoord, zCoord ) );
-		worldObj.notifyBlocksOfNeighborChange( xCoord + 1, yCoord, zCoord, worldObj.getBlockId( xCoord, yCoord, zCoord ) );
+		worldObj.notifyBlocksOfNeighborChange( xCoord - 1, yCoord, zCoord, worldObj.getBlock( xCoord, yCoord, zCoord ) );
+		worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord - 1, zCoord, worldObj.getBlock( xCoord, yCoord, zCoord ) );
+		worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord - 1, worldObj.getBlock( xCoord, yCoord, zCoord ) );
+		worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord + 1, worldObj.getBlock( xCoord, yCoord, zCoord ) );
+		worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord + 1, zCoord, worldObj.getBlock( xCoord, yCoord, zCoord ) );
+		worldObj.notifyBlocksOfNeighborChange( xCoord + 1, yCoord, zCoord, worldObj.getBlock( xCoord, yCoord, zCoord ) );
 	}
 
 	@Override
@@ -136,9 +137,9 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	}
 
 	@SideOnly(Side.CLIENT)
-	public Icon getTypeTexture()
+	public IIcon getTypeTexture()
 	{
-		return Block.blockRedstone.getBlockTextureFromSide( 0 );
+		return Blocks.redstone_block.getBlockTextureFromSide( 0 );
 	}
 
 	public float getPowerDrainPerTick()
@@ -155,14 +156,14 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 			int y = tile.yCoord + side.offsetY;
 			int z = tile.zCoord + side.offsetZ;
 
-			Block b = Block.blocksList[tile.worldObj.getBlockId( x, y, z )];
+			Block b = tile.getWorldObj().getBlock( x, y, z );
 			if ( b != null && !output )
 			{
 				int srcSide = side.ordinal();
 				if ( b instanceof BlockRedstoneWire )
 					srcSide = 1;
-				power = b.isProvidingStrongPower( tile.worldObj, x, y, z, srcSide );
-				power = Math.max( power, b.isProvidingWeakPower( tile.worldObj, x, y, z, srcSide ) );
+				power = b.isProvidingStrongPower( tile.getWorldObj(), x, y, z, srcSide );
+				power = Math.max( power, b.isProvidingWeakPower( tile.getWorldObj(), x, y, z, srcSide ) );
 				sendToOutput( power );
 			}
 			else

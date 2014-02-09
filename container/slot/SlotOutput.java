@@ -8,7 +8,7 @@ public class SlotOutput extends AppEngSlot
 
 	public SlotOutput(IInventory a, int b, int c, int d, int i) {
 		super( a, b, c, d );
-		icon = i;
+		IIcon = i;
 	}
 
 	@Override

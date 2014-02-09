@@ -8,9 +8,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockWireless;
@@ -39,7 +39,7 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public Icon getIcon(int direction, int metadata)
+	public IIcon getIcon(int direction, int metadata)
 	{
 		return super.getIcon( direction, metadata );
 	}

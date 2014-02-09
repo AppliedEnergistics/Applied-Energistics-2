@@ -2,6 +2,7 @@ package appeng.block.spatial;
 
 import java.util.EnumSet;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -21,7 +22,7 @@ public class BlockSpatialPylon extends AEBaseBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange(World w, int x, int y, int z, int junk)
+	public void onNeighborBlockChange(World w, int x, int y, int z, Block junk)
 	{
 		TileSpatialPylon tsp = getTileEntity( w, x, y, z );
 		if ( tsp != null )

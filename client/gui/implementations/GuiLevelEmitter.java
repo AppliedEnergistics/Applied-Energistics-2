@@ -13,9 +13,9 @@ import appeng.client.gui.widgets.GuiImgButton;
 import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.parts.automation.PartLevelEmitter;
-import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class GuiLevelEmitter extends GuiUpgradeable
 {
@@ -34,7 +34,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	{
 		super.initGui();
 
-		level = new GuiTextField( this.fontRenderer, this.guiLeft + 44, this.guiTop + 43, 59, this.fontRenderer.FONT_HEIGHT );
+		level = new GuiTextField( fontRendererObj, this.guiLeft + 44, this.guiTop + 43, 59, fontRendererObj.FONT_HEIGHT );
 		level.setEnableBackgroundDrawing( false );
 		level.setMaxStringLength( 16 );
 		level.setTextColor( 0xFFFFFF );
@@ -112,7 +112,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 
 			level.setText( Out = Long.toString( result ) );
 
-			PacketDispatcher.sendPacketToServer( (new PacketValueConfig( "LevelEmitter.Value", Out )).getPacket() );
+			NetworkHandler.instance.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
 		}
 		catch (IOException e)
 		{
@@ -149,7 +149,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 					if ( Out.length() == 0 )
 						Out = "0";
 
-					PacketDispatcher.sendPacketToServer( (new PacketValueConfig( "LevelEmitter.Value", Out )).getPacket() );
+					NetworkHandler.instance.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
 				}
 				catch (IOException e)
 				{

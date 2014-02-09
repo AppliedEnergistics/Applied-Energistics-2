@@ -22,7 +22,7 @@ public class GuiCraftingTerm extends GuiMEMonitorable
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
-		fontRenderer.drawString( GuiText.CraftingTerminal.getLocal(), 8, ySize - 96 + 1 - reservedSpace, 4210752 );
+		fontRendererObj.drawString( GuiText.CraftingTerminal.getLocal(), 8, ySize - 96 + 1 - reservedSpace, 4210752 );
 	}
 
 }

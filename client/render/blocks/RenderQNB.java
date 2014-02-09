@@ -6,9 +6,9 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
@@ -20,7 +20,7 @@ import appeng.tile.qnb.TileQuantumBridge;
 public class RenderQNB extends BaseBlockRender
 {
 
-	public void renderCableAt(double Thickness, IBlockAccess world, int x, int y, int z, AEBaseBlock block, RenderBlocks renderer, Icon texture, double pull,
+	public void renderCableAt(double Thickness, IBlockAccess world, int x, int y, int z, AEBaseBlock block, RenderBlocks renderer, IIcon texture, double pull,
 			EnumSet<ForgeDirection> connections)
 	{
 		block.getRendererInstance().setTemporaryRenderIcon( texture );

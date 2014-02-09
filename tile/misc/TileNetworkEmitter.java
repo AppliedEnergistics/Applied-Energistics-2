@@ -3,7 +3,7 @@ package appeng.tile.misc;
 import java.util.EnumSet;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.tile.grid.AENetworkTile;
 
 public class TileNetworkEmitter extends AENetworkTile

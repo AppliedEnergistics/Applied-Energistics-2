@@ -16,10 +16,10 @@ import appeng.container.implementations.ContainerStorageBus;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.parts.misc.PartStorageBus;
-import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class GuiStorageBus extends GuiUpgradeable
 {
@@ -41,8 +41,8 @@ public class GuiStorageBus extends GuiUpgradeable
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRenderer.drawString( GuiText.StorageBus.getLocal(), 8, 6, 4210752 );
-		fontRenderer.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		fontRendererObj.drawString( GuiText.StorageBus.getLocal(), 8, 6, 4210752 );
+		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
 
 		if ( fuzzyMode != null )
 			fuzzyMode.set( cvb.fzMode );
@@ -57,7 +57,7 @@ public class GuiStorageBus extends GuiUpgradeable
 		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 		rwMode = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.ACCESS, AccessRestriction.READ_WRITE );
 
-		buttonList.add( priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRenderer ) );
+		buttonList.add( priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRender ) );
 
 		buttonList.add( fuzzyMode );
 		buttonList.add( rwMode );
@@ -74,7 +74,7 @@ public class GuiStorageBus extends GuiUpgradeable
 		{
 			try
 			{
-				PacketDispatcher.sendPacketToServer( (new PacketSwitchGuis( GuiBridge.GUI_PRIORITY )).getPacket() );
+				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
 			}
 			catch (IOException e)
 			{
@@ -84,10 +84,10 @@ public class GuiStorageBus extends GuiUpgradeable
 		try
 		{
 			if ( btn == fuzzyMode )
-				PacketDispatcher.sendPacketToServer( (new PacketConfigButton( fuzzyMode.getSetting(), backwards )).getPacket() );
+				NetworkHandler.instance.sendToServer( new PacketConfigButton( fuzzyMode.getSetting(), backwards ) );
 
 			if ( btn == rwMode )
-				PacketDispatcher.sendPacketToServer( (new PacketConfigButton( rwMode.getSetting(), backwards )).getPacket() );
+				NetworkHandler.instance.sendToServer( new PacketConfigButton( rwMode.getSetting(), backwards ) );
 		}
 		catch (IOException e)
 		{

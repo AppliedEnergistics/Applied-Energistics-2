@@ -3,19 +3,19 @@ package appeng.core.features.registries;
 import java.util.HashMap;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
 import appeng.api.events.LocatableEventAnnounce;
 import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
 import appeng.api.features.ILocatable;
 import appeng.api.features.ILocateableRegistry;
 import appeng.util.Platform;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class LocateableRegistry implements ILocateableRegistry
 {
 
 	private HashMap<Long, ILocatable> set;
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void updateLocateable(LocatableEventAnnounce e)
 	{
 		if ( Platform.isClient() )

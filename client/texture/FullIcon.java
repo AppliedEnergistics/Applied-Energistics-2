@@ -1,15 +1,15 @@
 package appeng.client.texture;
 
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class FullIcon implements Icon
+public class FullIcon implements IIcon
 {
 
-	private Icon p;
+	private IIcon p;
 
-	public FullIcon(Icon o) {
+	public FullIcon(IIcon o) {
 		p = o;
 	}
 

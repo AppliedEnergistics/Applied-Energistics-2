@@ -2,6 +2,7 @@ package appeng.block.spatial;
 
 import java.util.EnumSet;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
@@ -18,7 +19,7 @@ public class BlockSpatialIOPort extends AEBaseBlock
 	}
 
 	@Override
-	public final void onNeighborBlockChange(World w, int x, int y, int z, int junk)
+	public final void onNeighborBlockChange(World w, int x, int y, int z, Block junk)
 	{
 		TileSpatialIOPort te = getTileEntity( w, x, y, z );
 		if ( te != null )

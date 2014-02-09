@@ -12,13 +12,14 @@ public class DefaultSpatialHandler implements IMovableHandler
 	public void moveTile(TileEntity te, World w, int x, int y, int z)
 	{
 
-		te.worldObj = w;
+		te.setWorldObj( w );
 		te.xCoord = x;
 		te.yCoord = y;
 		te.zCoord = z;
 
 		Chunk c = w.getChunkFromBlockCoords( x, z );
-		c.setChunkBlockTileEntity( x & 0xF, y, z & 0xF, te );
+		c.func_150812_a( x & 0xF, y, z & 0xF, te );
+		// c.setChunkBlockTileEntity( x & 0xF, y, z & 0xF, te );
 
 		if ( c.isChunkLoaded )
 		{

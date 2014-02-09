@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.IGridNode;
@@ -189,15 +189,15 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
-		return duality.getStorage().getInvName();
+		return duality.getStorage().getInventoryName();
 	}
 
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
-		return duality.getStorage().isInvNameLocalized();
+		return duality.getStorage().hasCustomInventoryName();
 	}
 
 	@Override
@@ -207,9 +207,9 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
-		duality.getStorage().onInventoryChanged();
+		duality.getStorage().markDirty();
 	}
 
 	@Override
@@ -219,15 +219,15 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	}
 
 	@Override
-	public void openChest()
+	public void openInventory()
 	{
-		duality.getStorage().openChest();
+		duality.getStorage().openInventory();
 	}
 
 	@Override
-	public void closeChest()
+	public void closeInventory()
 	{
-		duality.getStorage().closeChest();
+		duality.getStorage().closeInventory();
 	}
 
 	@Override

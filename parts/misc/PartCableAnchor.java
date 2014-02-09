@@ -1,7 +1,7 @@
 package appeng.parts.misc;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
@@ -13,10 +13,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
@@ -41,7 +41,7 @@ public class PartCableAnchor implements IPart
 	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		Icon myIcon = is.getIconIndex();
+		IIcon myIcon = is.getIconIndex();
 		rh.setTexture( myIcon );
 		rh.setBounds( 7, 7, 10, 9, 9, 16 );
 		rh.renderBlock( x, y, z, renderer );
@@ -139,13 +139,13 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public void writeToStream(DataOutputStream data) throws IOException
+	public void writeToStream(ByteBuf data) throws IOException
 	{
 
 	}
 
 	@Override
-	public boolean readFromStream(DataInputStream data) throws IOException
+	public boolean readFromStream(ByteBuf data) throws IOException
 	{
 		return false;
 	}

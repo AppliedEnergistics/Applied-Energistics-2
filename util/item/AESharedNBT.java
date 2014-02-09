@@ -4,8 +4,8 @@ import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.WeakHashMap;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.AEApi;
 import appeng.api.features.IItemComparison;
@@ -18,7 +18,8 @@ import appeng.util.Platform;
 public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 {
 
-	private int itemid, meta, hash;
+	private Item itemid;
+	private int meta, hash;
 	public SharedSearchObject sso;
 	private IItemComparison comp;
 
@@ -33,8 +34,8 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		return comp;
 	}
 
-	private AESharedNBT(int itemID, int damageValue, String name) {
-		super( name );
+	private AESharedNBT(Item itemID, int damageValue) {
+		super();
 		itemid = itemID;
 		meta = damageValue;
 	}
@@ -45,16 +46,17 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		return (NBTTagCompound) copy();
 	}
 
-	public static AESharedNBT createFromCompound(int itemID, int damageValue, NBTTagCompound c)
+	public static AESharedNBT createFromCompound(Item itemID, int damageValue, NBTTagCompound c)
 	{
-		AESharedNBT x = new AESharedNBT( itemID, damageValue, c.getName() );
+		AESharedNBT x = new AESharedNBT( itemID, damageValue );
 
-		Iterator var2 = c.getTags().iterator();
+		// c.getTags()
+		Iterator var2 = c.func_150296_c().iterator();
 
 		while (var2.hasNext())
 		{
-			NBTBase tag = (NBTBase) var2.next();
-			x.setTag( tag.getName(), (NBTBase) tag.copy() );
+			String name = (String) var2.next();
+			x.setTag( name, c.getTag( name ).copy() );
 		}
 
 		x.hash = Platform.NBTOrderlessHash( c );
@@ -74,7 +76,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		return super.equals( par1Obj );
 	}
 
-	public boolean matches(int itemid2, int meta2, int orderlessHash)
+	public boolean matches(Item itemid2, int meta2, int orderlessHash)
 	{
 		return itemid2 == itemid && meta == meta2 && hash == orderlessHash;
 	}
@@ -139,9 +141,9 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		if ( tagCompound.hasNoTags() )
 			return null;
 
-		int itemid = s.itemID;
+		Item itemid = s.getItem();
 		int meta = -1;
-		if ( s.itemID != 0 && s.isItemStackDamageable() && s.getHasSubtypes() )
+		if ( s.getItem() != null && s.isItemStackDamageable() && s.getHasSubtypes() )
 			meta = s.getItemDamage();
 
 		if ( isShared( tagCompound ) )

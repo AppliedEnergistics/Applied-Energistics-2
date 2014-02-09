@@ -3,9 +3,9 @@ package appeng.client.render.blocks;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
@@ -149,7 +149,7 @@ public class RenderSpatialPylon extends BaseBlockRender
 		return result;
 	}
 
-	private Icon getBlockTextureFromSideOutside(AEBaseBlock blk, TileSpatialPylon sp, int displayBits, ForgeDirection ori, ForgeDirection dir)
+	private IIcon getBlockTextureFromSideOutside(AEBaseBlock blk, TileSpatialPylon sp, int displayBits, ForgeDirection ori, ForgeDirection dir)
 	{
 
 		if ( ori.equals( dir ) || ori.getOpposite().equals( dir ) )
@@ -167,7 +167,7 @@ public class RenderSpatialPylon extends BaseBlockRender
 		return blk.getIcon( 0, 0 );
 	}
 
-	private Icon getBlockTextureFromSideInside(AEBaseBlock blk, TileSpatialPylon sp, int displayBits, ForgeDirection ori, ForgeDirection dir)
+	private IIcon getBlockTextureFromSideInside(AEBaseBlock blk, TileSpatialPylon sp, int displayBits, ForgeDirection ori, ForgeDirection dir)
 	{
 		boolean good = (displayBits & sp.DISPLAY_ENABLED) == sp.DISPLAY_ENABLED;
 

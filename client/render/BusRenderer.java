@@ -3,9 +3,10 @@ package appeng.client.render;
 import java.util.HashMap;
 
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
@@ -29,7 +30,7 @@ public class BusRenderer implements IItemRenderer
 
 	public IPart getRenderer(ItemStack is, IPartItem c)
 	{
-		int id = (is.getItem().itemID << Platform.DEF_OFFSET) | is.getItemDamage();
+		int id = (Item.getIdFromItem( is.getItem() ) << Platform.DEF_OFFSET) | is.getItemDamage();
 
 		IPart part = renderPart.get( id );
 		if ( part == null )
@@ -61,6 +62,11 @@ public class BusRenderer implements IItemRenderer
 			return;
 
 		GL11.glPushMatrix();
+		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
+		GL11.glEnable( GL11.GL_ALPHA_TEST );
+		GL11.glEnable( GL11.GL_DEPTH_TEST );
+		GL11.glEnable( GL11.GL_BLEND );
+
 		if ( type == ItemRenderType.ENTITY )
 			GL11.glTranslatef( -0.5f, -0.5f, -0.5f );
 		if ( type == ItemRenderType.INVENTORY )
@@ -96,6 +102,7 @@ public class BusRenderer implements IItemRenderer
 				ip.renderInventory( BusRenderHelper.instance, renderer );
 		}
 
+		GL11.glPopAttrib();
 		GL11.glPopMatrix();
 	}
 }

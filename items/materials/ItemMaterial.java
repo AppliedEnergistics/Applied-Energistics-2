@@ -10,13 +10,14 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.config.Upgrades;
@@ -145,9 +146,9 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 	}
 
 	@Override
-	public Icon getIconFromDamage(int dmg)
+	public IIcon getIconFromDamage(int dmg)
 	{
-		return dmgToMaterial.get( dmg ).icon;
+		return dmgToMaterial.get( dmg ).IIcon;
 	}
 
 	private String nameOf(ItemStack is)
@@ -162,14 +163,14 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 	}
 
 	@Override
-	public void registerIcons(IconRegister icoRegister)
+	public void registerIcons(IIconRegister icoRegister)
 	{
 		for (MaterialType mat : MaterialType.values())
 		{
 			if ( mat.damageValue != -1 )
 			{
 				String tex = "appliedenergistics2:" + nameOf( new ItemStack( this, 1, mat.damageValue ) );
-				mat.icon = icoRegister.registerIcon( tex );
+				mat.IIcon = icoRegister.registerIcon( tex );
 			}
 		}
 	}
@@ -260,7 +261,7 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 	}
 
 	@Override
-	public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List cList)
+	public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List cList)
 	{
 		for (MaterialType mat : MaterialType.values())
 		{

@@ -4,16 +4,19 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
-import appeng.integration.modules.BC;
+import net.minecraftforge.common.util.ForgeDirection;
+import appeng.core.AppEng;
+import appeng.integration.abstraction.IBC;
 
 public class WrapperBCPipe implements IInventory
 {
 
-	TileEntity ad;
-	ForgeDirection dir;
+	final private IBC bc;
+	final private TileEntity ad;
+	final private ForgeDirection dir;
 
 	public WrapperBCPipe(TileEntity te, ForgeDirection d) {
+		bc = (IBC) AppEng.instance.getIntegration( "BC" );
 		ad = te;
 		dir = d;
 	}
@@ -45,19 +48,31 @@ public class WrapperBCPipe implements IInventory
 	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack)
 	{
-		BC.instance.addItemsToPipe( ad, itemstack, dir );
+		bc.addItemsToPipe( ad, itemstack, dir );
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
-		return null;
+		return "BC Pipe Wrapper";
 	}
 
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
 		return false;
+	}
+
+	@Override
+	public void closeInventory()
+	{
+
+	}
+
+	@Override
+	public void openInventory()
+	{
+
 	}
 
 	@Override
@@ -67,7 +82,7 @@ public class WrapperBCPipe implements IInventory
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
 
 	}
@@ -79,21 +94,9 @@ public class WrapperBCPipe implements IInventory
 	}
 
 	@Override
-	public void openChest()
-	{
-
-	}
-
-	@Override
-	public void closeChest()
-	{
-
-	}
-
-	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
-		return BC.instance.canAddItemsToPipe( ad, itemstack, dir );
+		return bc.canAddItemsToPipe( ad, itemstack, dir );
 	}
 
 }

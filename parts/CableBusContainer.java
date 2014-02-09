@@ -1,7 +1,7 @@
 package appeng.parts;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.LinkedList;
@@ -18,7 +18,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import powercrystals.minefactoryreloaded.api.rednet.RedNetConnectionType;
 import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnection;
@@ -292,7 +292,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 		inWorld = true;
 
 		TileEntity te = getTile();
-		hasRedstone = te.worldObj.isBlockIndirectlyGettingPowered( te.xCoord, te.yCoord, te.zCoord );
+		hasRedstone = te.getWorldObj().isBlockIndirectlyGettingPowered( te.xCoord, te.yCoord, te.zCoord );
 
 		// start with the center, then install the side parts into the grid.
 		for (int x = 6; x >= 0; x--)
@@ -439,7 +439,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	public void onNeighborChanged()
 	{
 		TileEntity te = getTile();
-		hasRedstone = te.worldObj.isBlockIndirectlyGettingPowered( te.xCoord, te.yCoord, te.zCoord );
+		hasRedstone = te.getWorldObj().isBlockIndirectlyGettingPowered( te.xCoord, te.yCoord, te.zCoord );
 
 		for (ForgeDirection s : ForgeDirection.values())
 		{
@@ -532,7 +532,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 		CableRenderHelper.getInstance().renderDynamic( this, x, y, z );
 	}
 
-	public void writeToStream(DataOutputStream data) throws IOException
+	public void writeToStream(ByteBuf data) throws IOException
 	{
 		int sides = 0;
 		for (int x = 0; x < 7; x++)
@@ -555,7 +555,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 				is = p.getItemStack( PartItemStack.Network );
 				is.setTagCompound( null );
 
-				data.writeShort( is.getItem().itemID );
+				data.writeShort( Item.getIdFromItem( is.getItem() ) );
 				data.writeShort( is.getItemDamage() );
 
 				if ( p != null )
@@ -566,7 +566,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 		fc.writeToStream( data );
 	}
 
-	public boolean readFromStream(DataInputStream data) throws IOException
+	public boolean readFromStream(ByteBuf data) throws IOException
 	{
 		byte sides = data.readByte();
 
@@ -580,13 +580,15 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 				short itemID = data.readShort();
 				short dmgValue = data.readShort();
 
+				Item myItem = Item.getItemById( itemID );
+
 				ItemStack current = p != null ? p.getItemStack( PartItemStack.Network ) : null;
-				if ( current != null && current.getItem().itemID == itemID && current.getItemDamage() == dmgValue )
+				if ( current != null && current.getItem() == myItem && current.getItemDamage() == dmgValue )
 					p.readFromStream( data );
 				else
 				{
 					removePart( side, false );
-					side = addPart( new ItemStack( Item.itemsList[itemID], 1, dmgValue ), side, null );
+					side = addPart( new ItemStack( myItem, 1, dmgValue ), side, null );
 					if ( side != null )
 					{
 						p = getPart( side );
@@ -633,8 +635,8 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 				NBTTagCompound extra = new NBTTagCompound();
 				part.writeToNBT( extra );
 
-				data.setCompoundTag( "def:" + getSide( part ).ordinal(), def );
-				data.setCompoundTag( "extra:" + getSide( part ).ordinal(), extra );
+				data.setTag( "def:" + getSide( part ).ordinal(), def );
+				data.setTag( "extra:" + getSide( part ).ordinal(), extra );
 			}
 		}
 	}

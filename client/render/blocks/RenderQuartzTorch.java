@@ -2,12 +2,12 @@ package appeng.client.render.blocks;
 
 import java.util.EnumSet;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseBlock;
 import appeng.block.misc.BlockQuartzTorch;
@@ -51,7 +51,7 @@ public class RenderQuartzTorch extends BaseBlockRender
 
 		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, tess, 0xffffff, renderer );
 
-		blk.getRendererInstance().setTemporaryRenderIcon( Block.hopperBlock.getIcon( 0, 0 ) );
+		blk.getRendererInstance().setTemporaryRenderIcon( Blocks.hopper.getIcon( 0, 0 ) );
 		renderer.renderAllFaces = true;
 
 		renderer.setRenderBounds( Point2 + xOff, bottom + yOff, Point2 + zOff, Point13 + xOff, top + yOff, Point3 + zOff );
@@ -125,7 +125,7 @@ public class RenderQuartzTorch extends BaseBlockRender
 			super.renderInWorld( block, world, x, y, z, renderer );
 		}
 
-		blk.getRendererInstance().setTemporaryRenderIcon( Block.hopperBlock.getIcon( 0, 0 ) );
+		blk.getRendererInstance().setTemporaryRenderIcon( Blocks.hopper.getIcon( 0, 0 ) );
 
 		renderer.setRenderBounds( Point2 + xOff, bottom + yOff, Point2 + zOff, Point13 + xOff, top + yOff, Point3 + zOff );
 		boolean out = renderer.renderStandardBlock( blk, x, y, z );

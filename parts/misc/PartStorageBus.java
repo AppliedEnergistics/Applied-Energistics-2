@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
@@ -190,7 +190,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 		cached = true;
 		TileEntity self = getHost().getTile();
-		TileEntity target = self.worldObj.getBlockTileEntity( self.xCoord + side.offsetX, self.yCoord + side.offsetY, self.zCoord + side.offsetZ );
+		TileEntity target = self.getWorldObj().getTileEntity( self.xCoord + side.offsetX, self.yCoord + side.offsetY, self.zCoord + side.offsetZ );
 
 		int newHandlerHash = Platform.generateTileHash( target );
 

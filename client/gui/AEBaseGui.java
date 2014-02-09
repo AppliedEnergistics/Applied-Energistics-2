@@ -39,9 +39,10 @@ import appeng.container.slot.SlotInaccessable;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.AELog;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.helpers.InventoryAction;
-import cpw.mods.fml.common.network.PacketDispatcher;
+import appeng.util.Platform;
 
 public abstract class AEBaseGui extends GuiContainer
 {
@@ -115,7 +116,7 @@ public abstract class AEBaseGui extends GuiContainer
 				try
 				{
 					p = new PacketInventoryAction( action, slotIdx, stack );
-					PacketDispatcher.sendPacketToServer( p.getPacket() );
+					NetworkHandler.instance.sendToServer( p );
 				}
 				catch (IOException e)
 				{
@@ -144,7 +145,7 @@ public abstract class AEBaseGui extends GuiContainer
 				try
 				{
 					p = new PacketInventoryAction( action, slotIdx, stack );
-					PacketDispatcher.sendPacketToServer( p.getPacket() );
+					NetworkHandler.instance.sendToServer( p );
 				}
 				catch (IOException e)
 				{
@@ -194,7 +195,7 @@ public abstract class AEBaseGui extends GuiContainer
 				try
 				{
 					p = new PacketInventoryAction( action, inventorySlots.inventorySlots.size(), stack );
-					PacketDispatcher.sendPacketToServer( p.getPacket() );
+					NetworkHandler.instance.sendToServer( p );
 				}
 				catch (IOException e)
 				{
@@ -255,7 +256,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 			for (var6 = 0; var6 < var4.length; ++var6)
 			{
-				var7 = fontRenderer.getStringWidth( (String) var4[var6] );
+				var7 = fontRendererObj.getStringWidth( (String) var4[var6] );
 
 				if ( var7 > var5 )
 				{
@@ -281,7 +282,7 @@ public abstract class AEBaseGui extends GuiContainer
 				var5 = forceWidth;
 
 			this.zLevel = 300.0F;
-			itemRenderer.zLevel = 300.0F;
+			itemRender.zLevel = 300.0F;
 			int var10 = -267386864;
 			this.drawGradientRect( var6 - 3, var7 - 4, var6 + var5 + 3, var7 - 3, var10, var10 );
 			this.drawGradientRect( var6 - 3, var7 + var9 + 3, var6 + var5 + 3, var7 + var9 + 4, var10, var10 );
@@ -308,7 +309,7 @@ public abstract class AEBaseGui extends GuiContainer
 					var14 = "\u00a77" + var14;
 				}
 
-				this.fontRenderer.drawStringWithShadow( var14, var6, var7, -1 );
+				this.fontRendererObj.drawStringWithShadow( var14, var6, var7, -1 );
 
 				if ( var13 == 0 )
 				{
@@ -319,7 +320,7 @@ public abstract class AEBaseGui extends GuiContainer
 			}
 
 			this.zLevel = 0.0F;
-			itemRenderer.zLevel = 0.0F;
+			itemRender.zLevel = 0.0F;
 		}
 		GL11.glPopAttrib();
 	}
@@ -343,15 +344,15 @@ public abstract class AEBaseGui extends GuiContainer
 	protected void drawItem(int x, int y, ItemStack is)
 	{
 		this.zLevel = 100.0F;
-		itemRenderer.zLevel = 100.0F;
+		itemRender.zLevel = 100.0F;
 
 		GL11.glEnable( GL11.GL_LIGHTING );
 		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		RenderHelper.enableGUIStandardItemLighting();
-		itemRenderer.renderItemAndEffectIntoGUI( this.fontRenderer, this.mc.renderEngine, is, x, y );
+		itemRender.renderItemAndEffectIntoGUI( this.fontRendererObj, this.mc.renderEngine, is, x, y );
 		GL11.glDisable( GL11.GL_LIGHTING );
 
-		itemRenderer.zLevel = 0.0F;
+		itemRender.zLevel = 0.0F;
 		this.zLevel = 0.0F;
 	}
 
@@ -401,7 +402,9 @@ public abstract class AEBaseGui extends GuiContainer
 		for (int j1 = 0; j1 < this.inventorySlots.inventorySlots.size(); ++j1)
 		{
 			Slot slot = (Slot) this.inventorySlots.inventorySlots.get( j1 );
-			if ( isPointInRegion( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mousex, mousey ) )
+
+			// isPointInRegion
+			if ( func_146978_c( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mousex, mousey ) )
 			{
 				return slot;
 			}
@@ -430,12 +433,13 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		try
 		{
-			super.drawSlotInventory( s );
+			// drawSlotInventory
+			// super.func_146977_a( s );
 		}
 		catch (Exception err)
 		{
 			Tessellator tessellator = Tessellator.instance;
-			if ( tessellator.isDrawing )
+			if ( Platform.isDrawing( tessellator ) )
 				tessellator.draw();
 		}
 	}
@@ -447,17 +451,18 @@ public abstract class AEBaseGui extends GuiContainer
 		return true;
 	}
 
-	@Override
+	// @Override
+	// private void func_146977_a(Slot p_146977_1_)
 	protected void drawSlotInventory(Slot s)
 	{
 		if ( s instanceof SlotME )
 		{
-			RenderItem pIR = itemRenderer;
-			itemRenderer = aeri;
+			RenderItem pIR = itemRender;
+			itemRender = aeri;
 			try
 			{
 				this.zLevel = 100.0F;
-				itemRenderer.zLevel = 100.0F;
+				itemRender.zLevel = 100.0F;
 
 				if ( !isPowered() )
 				{
@@ -467,7 +472,7 @@ public abstract class AEBaseGui extends GuiContainer
 				}
 
 				this.zLevel = 0.0F;
-				itemRenderer.zLevel = 0.0F;
+				itemRender.zLevel = 0.0F;
 
 				if ( s instanceof SlotME )
 					aeri.aestack = ((SlotME) s).getAEStack();
@@ -479,10 +484,10 @@ public abstract class AEBaseGui extends GuiContainer
 			catch (Exception err)
 			{
 				AELog.warning( "[AppEng] AE prevented crash while drawing slot: " + err.toString() );
-				if ( Tessellator.instance.isDrawing )
+				if ( Platform.isDrawing( Tessellator.instance ) )
 					Tessellator.instance.draw();
 			}
-			itemRenderer = pIR;
+			itemRender = pIR;
 			return;
 		}
 		else
@@ -522,10 +527,10 @@ public abstract class AEBaseGui extends GuiContainer
 							tessellator.setColorRGBA_F( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() );
 							tessellator.addVertexWithUV( (double) (par1 + 0), (double) (par2 + par6), (double) this.zLevel, (double) ((float) (par3 + 0) * f),
 									(double) ((float) (par4 + par6) * f1) );
-							tessellator.addVertexWithUV( (double) (par1 + par5), (double) (par2 + par6), (double) this.zLevel, (double) ((float) (par3 + par5) * f),
-									(double) ((float) (par4 + par6) * f1) );
-							tessellator.addVertexWithUV( (double) (par1 + par5), (double) (par2 + 0), (double) this.zLevel, (double) ((float) (par3 + par5) * f),
-									(double) ((float) (par4 + 0) * f1) );
+							tessellator.addVertexWithUV( (double) (par1 + par5), (double) (par2 + par6), (double) this.zLevel,
+									(double) ((float) (par3 + par5) * f), (double) ((float) (par4 + par6) * f1) );
+							tessellator.addVertexWithUV( (double) (par1 + par5), (double) (par2 + 0), (double) this.zLevel,
+									(double) ((float) (par3 + par5) * f), (double) ((float) (par4 + 0) * f1) );
 							tessellator.addVertexWithUV( (double) (par1 + 0), (double) (par2 + 0), (double) this.zLevel, (double) ((float) (par3 + 0) * f),
 									(double) ((float) (par4 + 0) * f1) );
 							tessellator.setColorRGBA_F( 1.0f, 1.0f, 1.0f, 1.0f );
@@ -533,7 +538,7 @@ public abstract class AEBaseGui extends GuiContainer
 						}
 						catch (Exception err)
 						{
-							if ( tessellator.isDrawing )
+							if ( Platform.isDrawing( tessellator ) )
 								tessellator.draw();
 						}
 						GL11.glPopAttrib();
@@ -563,14 +568,14 @@ public abstract class AEBaseGui extends GuiContainer
 					if ( ((AppEngSlot) s).isValid == hasCalculatedValidness.Invalid )
 					{
 						this.zLevel = 100.0F;
-						itemRenderer.zLevel = 100.0F;
+						itemRender.zLevel = 100.0F;
 
 						GL11.glDisable( GL11.GL_LIGHTING );
 						super.drawRect( s.xDisplayPosition, s.yDisplayPosition, 16 + s.xDisplayPosition, 16 + s.yDisplayPosition, 0x66ff6666 );
 						GL11.glEnable( GL11.GL_LIGHTING );
 
 						this.zLevel = 0.0F;
-						itemRenderer.zLevel = 0.0F;
+						itemRender.zLevel = 0.0F;
 					}
 				}
 
@@ -592,4 +597,5 @@ public abstract class AEBaseGui extends GuiContainer
 		// do the usual for non-ME Slots.
 		safeDrawSlot( s );
 	}
+
 }

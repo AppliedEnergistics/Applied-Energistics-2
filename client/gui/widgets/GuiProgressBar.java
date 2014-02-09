@@ -43,7 +43,7 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 	@Override
 	public void drawButton(Minecraft par1Minecraft, int par2, int par3)
 	{
-		if ( this.drawButton )
+		if ( this.visible )
 		{
 			par1Minecraft.getTextureManager().bindTexture( texture );
 

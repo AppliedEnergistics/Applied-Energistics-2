@@ -36,7 +36,7 @@ public class AppEngNullInventory implements IInventory
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
 
 	}
@@ -54,12 +54,12 @@ public class AppEngNullInventory implements IInventory
 	}
 
 	@Override
-	public void openChest()
+	public void openInventory()
 	{
 	}
 
 	@Override
-	public void closeChest()
+	public void closeInventory()
 	{
 	}
 
@@ -74,13 +74,13 @@ public class AppEngNullInventory implements IInventory
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
 		return "appeng-internal";
 	}
 
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
 		return false;
 	}

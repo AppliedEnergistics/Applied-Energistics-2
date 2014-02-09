@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.features.IGrinderEntry;
@@ -35,7 +35,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	public void setOrientation(ForgeDirection inForward, ForgeDirection inUp)
 	{
 		super.setOrientation( inForward, inUp );
-		getBlockType().onNeighborBlockChange( worldObj, xCoord, yCoord, zCoord, 0 );
+		getBlockType().onNeighborBlockChange( worldObj, xCoord, yCoord, zCoord, Platform.air );
 	}
 
 	private void addItem(InventoryAdaptor sia, ItemStack output)

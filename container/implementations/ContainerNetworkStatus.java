@@ -2,11 +2,12 @@ package appeng.container.implementations;
 
 import java.io.IOException;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.Packet;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.networking.IGrid;
@@ -17,11 +18,10 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -42,7 +42,7 @@ public class ContainerNetworkStatus extends AEBaseContainer
 		}
 
 		if ( network == null && Platform.isServer() )
-			ip.player.closeScreen();
+			isContainerValid = false;
 	}
 
 	private void findNode(IGridHost host, ForgeDirection d)
@@ -142,11 +142,10 @@ public class ContainerNetworkStatus extends AEBaseContainer
 						piu.appendItem( ais );
 				}
 
-				Packet p = piu.getPacket();
 				for (Object c : this.crafters)
 				{
-					if ( c instanceof Player )
-						PacketDispatcher.sendPacketToPlayer( p, (Player) c );
+					if ( c instanceof EntityPlayer )
+						NetworkHandler.instance.sendTo( piu, (EntityPlayerMP) c );
 				}
 			}
 			catch (IOException e)

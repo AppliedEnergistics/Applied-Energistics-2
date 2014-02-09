@@ -4,7 +4,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.IGridNode;
@@ -125,9 +125,9 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
-		duality.onInventoryChanged();
+		duality.markDirty();
 	}
 
 	@Override

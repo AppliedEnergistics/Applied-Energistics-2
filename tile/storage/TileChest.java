@@ -1,16 +1,17 @@
 package appeng.tile.storage;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -158,7 +159,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		}
 
 		@Override
-		public void writeToStream(DataOutputStream data) throws IOException
+		public void writeToStream(ByteBuf data) throws IOException
 		{
 			if ( worldObj.getTotalWorldTime() - lastStateChange > 8 )
 				state = 0;
@@ -182,12 +183,12 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			}
 			else
 			{
-				data.writeInt( (is.getItemDamage() << Platform.DEF_OFFSET) | is.itemID );
+				data.writeInt( (is.getItemDamage() << Platform.DEF_OFFSET) | Item.getIdFromItem( is.getItem() ) );
 			}
 		}
 
 		@Override
-		public boolean readFromStream(DataInputStream data) throws IOException
+		public boolean readFromStream(ByteBuf data) throws IOException
 		{
 			int oldState = state;
 			ItemStack oldType = storageType;
@@ -199,7 +200,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			if ( item == 0 )
 				storageType = null;
 			else
-				storageType = new ItemStack( item & 0xffff, 1, item >> Platform.DEF_OFFSET );
+				storageType = new ItemStack( Item.getItemById( item & 0xffff ), 1, item >> Platform.DEF_OFFSET );
 
 			lastStateChange = worldObj.getTotalWorldTime();
 
@@ -402,7 +403,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			// update the neighbors
 			if ( worldObj != null )
 			{
-				worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord, 0 );
+				worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord, Platform.air );
 				markForUpdate();
 			}
 		}

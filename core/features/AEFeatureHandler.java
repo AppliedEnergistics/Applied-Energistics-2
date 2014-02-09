@@ -27,7 +27,6 @@ public class AEFeatureHandler implements AEItemDefinition
 
 	private Item ItemData;
 	private Block BlockData;
-	private ItemStack StackData;
 
 	public AEFeatureHandler(EnumSet<AEFeature> featureSet, IAEFeature _obj, String _subname) {
 		myFeatures = featureSet;
@@ -71,7 +70,6 @@ public class AEFeatureHandler implements AEItemDefinition
 	private void initItem(Item i)
 	{
 		ItemData = i;
-		StackData = new ItemStack( i );
 
 		String name = getName( i.getClass(), subname );
 		i.setTextureName( "appliedenergistics2:" + name );
@@ -88,12 +86,11 @@ public class AEFeatureHandler implements AEItemDefinition
 	private void initBlock(Block b)
 	{
 		BlockData = b;
-		StackData = new ItemStack( b );
 
 		String name = getName( b.getClass(), subname );
 		b.setCreativeTab( CreativeTab.instance );
-		b.setUnlocalizedName( /* "tile." */"appliedenergistics2." + name );
-		b.setTextureName( "appliedenergistics2:" + name );
+		b.setBlockName( /* "tile." */"appliedenergistics2." + name );
+		b.setBlockTextureName( "appliedenergistics2:" + name );
 
 		if ( Platform.isClient() && BlockData instanceof AEBaseBlock )
 		{
@@ -152,7 +149,13 @@ public class AEFeatureHandler implements AEItemDefinition
 	{
 		if ( isFeatureAvailable() )
 		{
-			ItemStack rv = StackData.copy();
+			ItemStack rv = null;
+
+			if ( ItemData != null )
+				rv = new ItemStack( ItemData );
+			else
+				rv = new ItemStack( BlockData );
+
 			rv.stackSize = stackSize;
 			return rv;
 		}
@@ -163,7 +166,7 @@ public class AEFeatureHandler implements AEItemDefinition
 	public boolean sameAs(ItemStack is)
 	{
 		if ( isFeatureAvailable() )
-			return Platform.isSameItemType( is, StackData );
+			return Platform.isSameItemType( is, stack( 1 ) );
 		return false;
 	}
 

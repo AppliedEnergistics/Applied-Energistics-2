@@ -1,11 +1,11 @@
 package appeng.client.render.entity;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -54,7 +54,7 @@ public class RenderTinyTNTPrimed extends Render
 		GL11.glScalef( 0.5f, 0.5f, 0.5f );
 		f2 = (1.0F - ((float) tnt.fuse - life + 1.0F) / 100.0F) * 0.8F;
 		this.bindEntityTexture( tnt );
-		this.blockRenderer.renderBlockAsItem( Block.tnt, 0, tnt.getBrightness( life ) );
+		this.blockRenderer.renderBlockAsItem( Blocks.tnt, 0, tnt.getBrightness( life ) );
 
 		if ( tnt.fuse / 5 % 2 == 0 )
 		{
@@ -63,7 +63,7 @@ public class RenderTinyTNTPrimed extends Render
 			GL11.glEnable( GL11.GL_BLEND );
 			GL11.glBlendFunc( GL11.GL_SRC_ALPHA, GL11.GL_DST_ALPHA );
 			GL11.glColor4f( 1.0F, 1.0F, 1.0F, f2 );
-			this.blockRenderer.renderBlockAsItem( Block.tnt, 0, 1.0F );
+			this.blockRenderer.renderBlockAsItem( Blocks.tnt, 0, 1.0F );
 			GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 			GL11.glDisable( GL11.GL_BLEND );
 			GL11.glEnable( GL11.GL_LIGHTING );

@@ -5,9 +5,9 @@ import java.util.EnumSet;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.storage.ICellHandler;
 import appeng.block.AEBaseBlock;
@@ -108,7 +108,7 @@ public class RenderMEChest extends BaseBlockRender
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
 		ICellHandler ch = AEApi.instance().registries().cell().getHander( sp.getStorageType() );
-		Icon ico = ch == null ? null : ch.getTopTexture();
+		IIcon ico = ch == null ? null : ch.getTopTexture();
 		renderFace( x, y, z, imb, ico == null ? ExtraTextures.MEChest.getIcon() : ico, renderer, up );
 
 		renderer.overrideBlockTexture = null;

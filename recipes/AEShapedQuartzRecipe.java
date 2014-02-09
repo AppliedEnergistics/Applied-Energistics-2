@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -59,7 +60,8 @@ public class AEShapedQuartzRecipe implements IRecipe
 			if ( recipe[idx + 1] instanceof Object[] )
 			{
 				recipe = (Object[]) recipe[idx + 1];
-			} else
+			}
+			else
 			{
 				idx = 1;
 			}
@@ -76,7 +78,8 @@ public class AEShapedQuartzRecipe implements IRecipe
 			}
 
 			height = parts.length;
-		} else
+		}
+		else
 		{
 			while (recipe[idx] instanceof String)
 			{
@@ -108,13 +111,16 @@ public class AEShapedQuartzRecipe implements IRecipe
 			if ( in instanceof ItemStack )
 			{
 				itemMap.put( chr, ((ItemStack) in).copy() );
-			} else if ( in instanceof Item )
+			}
+			else if ( in instanceof Item )
 			{
 				itemMap.put( chr, new ItemStack( (Item) in ) );
-			} else if ( in instanceof Block )
+			}
+			else if ( in instanceof Block )
 			{
 				itemMap.put( chr, new ItemStack( (Block) in, 1, OreDictionary.WILDCARD_VALUE ) );
-			} else if ( in instanceof String )
+			}
+			else if ( in instanceof String )
 			{
 				ArrayList<ItemStack> is = OreDictionary.getOres( (String) in );
 				ArrayList copy = new ArrayList();
@@ -126,15 +132,17 @@ public class AEShapedQuartzRecipe implements IRecipe
 					{
 						copy.add( AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ) );
 						copy.add( AEApi.instance().materials().materialNetherQuartzDust.stack( 1 ) );
-					} else
+					}
+					else
 					{
 						copy.add( AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 ) );
-						copy.add( new ItemStack( Item.netherQuartz ) );
+						copy.add( new ItemStack( Items.quartz ) );
 					}
 				}
 
 				itemMap.put( chr, copy );
-			} else
+			}
+			else
 			{
 				String ret = "Invalid shaped ore recipe: ";
 				for (Object tmp : recipe)
@@ -209,7 +217,8 @@ public class AEShapedQuartzRecipe implements IRecipe
 					if ( mirror )
 					{
 						target = input[width - subX - 1 + subY * width];
-					} else
+					}
+					else
 					{
 						target = input[subX + subY * width];
 					}
@@ -223,7 +232,8 @@ public class AEShapedQuartzRecipe implements IRecipe
 					{
 						return false;
 					}
-				} else if ( target instanceof ArrayList )
+				}
+				else if ( target instanceof ArrayList )
 				{
 					boolean matched = false;
 
@@ -236,7 +246,8 @@ public class AEShapedQuartzRecipe implements IRecipe
 					{
 						return false;
 					}
-				} else if ( target == null && slot != null )
+				}
+				else if ( target == null && slot != null )
 				{
 					return false;
 				}
@@ -252,8 +263,8 @@ public class AEShapedQuartzRecipe implements IRecipe
 		{
 			return false;
 		}
-		return (target.itemID == input.itemID && (target.getItemDamage() == OreDictionary.WILDCARD_VALUE || target
-				.getItemDamage() == input.getItemDamage()));
+		return (target.getItem() == input.getItem() && (target.getItemDamage() == OreDictionary.WILDCARD_VALUE || target.getItemDamage() == input
+				.getItemDamage()));
 	}
 
 	public AEShapedQuartzRecipe setMirrored(boolean mirror)
@@ -263,9 +274,8 @@ public class AEShapedQuartzRecipe implements IRecipe
 	}
 
 	/**
-	 * Returns the input for this recipe, any mod accessing this value should
-	 * never manipulate the values in this array as it will effect the recipe
-	 * itself.
+	 * Returns the input for this recipe, any mod accessing this value should never manipulate the values in this array
+	 * as it will effect the recipe itself.
 	 * 
 	 * @return The recipes input vales.
 	 */

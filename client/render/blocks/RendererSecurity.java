@@ -5,9 +5,9 @@ import java.util.EnumSet;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraTextures;
@@ -55,7 +55,7 @@ public class RendererSecurity extends BaseBlockRender
 		Tessellator.instance.setColorOpaque_I( 0xffffff );
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
-		Icon ico = sp.isActive() ? ExtraTextures.BlockMESecurityOn.getIcon() : ExtraTextures.MEChest.getIcon();
+		IIcon ico = sp.isActive() ? ExtraTextures.BlockMESecurityOn.getIcon() : ExtraTextures.MEChest.getIcon();
 		renderFace( x, y, z, imb, ico, renderer, up );
 
 		renderer.overrideBlockTexture = null;

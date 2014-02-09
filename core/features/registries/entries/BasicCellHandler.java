@@ -2,7 +2,7 @@ package appeng.core.features.registries.entries;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.IMEInventory;
@@ -33,7 +33,7 @@ public class BasicCellHandler implements ICellHandler
 	}
 
 	@Override
-	public Icon getTopTexture()
+	public IIcon getTopTexture()
 	{
 		return ExtraTextures.BlockMEChestItems.getIcon();
 	}

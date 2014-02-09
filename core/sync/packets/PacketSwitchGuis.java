@@ -1,18 +1,18 @@
 package appeng.core.sync.packets;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.network.INetworkManager;
 import net.minecraft.tileentity.TileEntity;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerOpenContext;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.GuiBridge;
+import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
 
 public class PacketSwitchGuis extends AppEngPacket
@@ -21,12 +21,12 @@ public class PacketSwitchGuis extends AppEngPacket
 	final GuiBridge newGui;
 
 	// automatic.
-	public PacketSwitchGuis(DataInputStream stream) throws IOException {
+	public PacketSwitchGuis(ByteBuf stream) throws IOException {
 		newGui = GuiBridge.values()[stream.readInt()];
 	}
 
 	@Override
-	public void serverPacketData(INetworkManager manager, AppEngPacket packet, EntityPlayer player)
+	public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player)
 	{
 		Container c = player.openContainer;
 		if ( c instanceof AEBaseContainer )
@@ -35,7 +35,7 @@ public class PacketSwitchGuis extends AppEngPacket
 			ContainerOpenContext context = bc.openContext;
 			if ( context != null )
 			{
-				TileEntity te = context.w.getBlockTileEntity( context.x, context.y, context.z );
+				TileEntity te = context.w.getTileEntity( context.x, context.y, context.z );
 				Platform.openGUI( player, te, context.side, newGui );
 			}
 		}
@@ -46,13 +46,11 @@ public class PacketSwitchGuis extends AppEngPacket
 
 		this.newGui = newGui;
 
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		DataOutputStream data = new DataOutputStream( bytes );
+		ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( getPacketID() );
 		data.writeInt( newGui.ordinal() );
 
-		isChunkDataPacket = false;
-		configureWrite( bytes.toByteArray() );
+		configureWrite( data );
 	}
 }

@@ -1,7 +1,7 @@
 package appeng.util.item;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 
 import appeng.api.storage.data.IAEStack;
@@ -92,7 +92,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 		countRequestable += i;
 	}
 
-	void putPacketValue(DataOutputStream tag, long num) throws IOException
+	void putPacketValue(ByteBuf tag, long num) throws IOException
 	{
 		if ( num <= 255 )
 			tag.writeByte( (byte) (num + (long) Byte.MIN_VALUE) );
@@ -104,7 +104,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 			tag.writeLong( num );
 	}
 
-	static long getPacketValue(byte type, DataInputStream tag) throws IOException
+	static long getPacketValue(byte type, ByteBuf tag) throws IOException
 	{
 		if ( type == 0 )
 		{
@@ -140,14 +140,14 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 			return 3;
 	}
 
-	abstract void writeIdentity(DataOutputStream i) throws IOException;
+	abstract void writeIdentity(ByteBuf i) throws IOException;
 
-	abstract void readNBT(DataOutputStream i) throws IOException;
+	abstract void readNBT(ByteBuf i) throws IOException;
 
 	abstract boolean hasTagCompound();
 
 	@Override
-	public void writeToPacket(DataOutputStream i) throws IOException
+	public void writeToPacket(ByteBuf i) throws IOException
 	{
 		byte mask = (byte) (getType( 0 ) | (getType( stackSize ) << 2) | (getType( getCountRequestable() ) << 4) | ((byte) (isCraftable ? 1 : 0) << 6) | (hasTagCompound() ? 1
 				: 0) << 7);

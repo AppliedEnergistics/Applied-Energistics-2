@@ -1,7 +1,7 @@
 package appeng.tile.misc;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -10,7 +10,7 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -54,7 +54,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 		}
 
 		@Override
-		public boolean readFromStream(DataInputStream data) throws IOException
+		public boolean readFromStream(ByteBuf data) throws IOException
 		{
 			try
 			{
@@ -70,7 +70,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 		}
 
 		@Override
-		public void writeToStream(DataOutputStream data) throws IOException
+		public void writeToStream(ByteBuf data) throws IOException
 		{
 			AEItemStack is = AEItemStack.create( getStackInSlot( 0 ) );
 			if ( is != null )

@@ -57,7 +57,6 @@ public abstract class AEBaseMEGui extends AEBaseGui
 	}
 
 	// Vanillia version...
-	@Override
 	protected void drawItemStackTooltip(ItemStack stack, int x, int y)
 	{
 		Slot s = getSlot( x, y );
@@ -96,7 +95,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 				return;
 			}
 		}
-		super.drawItemStackTooltip( stack, x, y );
+		// super.drawItemStackTooltip( stack, x, y );
 	}
 
 }

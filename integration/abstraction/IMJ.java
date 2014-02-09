@@ -1,6 +1,6 @@
 package appeng.integration.abstraction;
 
-import appeng.integration.modules.helpers.BaseBCperdition;
+import appeng.integration.abstraction.helpers.BaseBCperdition;
 import appeng.tile.powersink.BuildCraft;
 
 public interface IMJ

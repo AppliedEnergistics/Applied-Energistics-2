@@ -24,13 +24,13 @@ public class GuiInterface extends AEBaseGui
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRenderer.drawString( GuiText.Interface.getLocal(), 8, 6, 4210752 );
+		fontRendererObj.drawString( GuiText.Interface.getLocal(), 8, 6, 4210752 );
 
-		fontRenderer.drawString( GuiText.Config.getLocal(), 18, 6 + 11 + 7, 4210752 );
-		fontRenderer.drawString( GuiText.StoredItems.getLocal(), 18, 6 + 60 + 7, 4210752 );
-		fontRenderer.drawString( GuiText.Patterns.getLocal(), 8, 6 + 73 + 7, 4210752 );
+		fontRendererObj.drawString( GuiText.Config.getLocal(), 18, 6 + 11 + 7, 4210752 );
+		fontRendererObj.drawString( GuiText.StoredItems.getLocal(), 18, 6 + 60 + 7, 4210752 );
+		fontRendererObj.drawString( GuiText.Patterns.getLocal(), 8, 6 + 73 + 7, 4210752 );
 
-		fontRenderer.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
 	}
 
 }

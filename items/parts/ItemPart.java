@@ -5,11 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
 import appeng.api.implementations.items.IItemGroup;
@@ -33,7 +34,7 @@ public class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 		int varient;
 
 		@SideOnly(Side.CLIENT)
-		Icon ico;
+		IIcon ico;
 
 	};
 
@@ -109,9 +110,9 @@ public class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	}
 
 	@Override
-	public Icon getIconFromDamage(int dmg)
+	public IIcon getIconFromDamage(int dmg)
 	{
-		Icon ico = dmgToPart.get( dmg ).ico;
+		IIcon ico = dmgToPart.get( dmg ).ico;
 		return ico;
 	}
 
@@ -127,7 +128,7 @@ public class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	}
 
 	@Override
-	public String getItemDisplayName(ItemStack is)
+	public String getItemStackDisplayName(ItemStack is)
 	{
 		PartType pt = getTypeByStack( is );
 		if ( pt == null )
@@ -136,16 +137,16 @@ public class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 		Enum[] varients = pt.getVarients();
 
 		if ( varients != null )
-			return super.getItemDisplayName( is ) + " - " + varients[dmgToPart.get( is.getItemDamage() ).varient].toString();
+			return super.getItemStackDisplayName( is ) + " - " + varients[dmgToPart.get( is.getItemDamage() ).varient].toString();
 
 		if ( pt.getExtraName() != null )
-			return super.getItemDisplayName( is ) + " - " + pt.getExtraName().getLocal();
+			return super.getItemStackDisplayName( is ) + " - " + pt.getExtraName().getLocal();
 
-		return super.getItemDisplayName( is );
+		return super.getItemStackDisplayName( is );
 	}
 
 	@Override
-	public void registerIcons(IconRegister par1IconRegister)
+	public void registerIcons(IIconRegister par1IconRegister)
 	{
 		for (Entry<Integer, PartTypeIst> part : dmgToPart.entrySet())
 		{
@@ -178,7 +179,7 @@ public class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	}
 
 	@Override
-	public void getSubItems(int number, CreativeTabs tab, List cList)
+	public void getSubItems(Item number, CreativeTabs tab, List cList)
 	{
 		for (Entry<Integer, PartTypeIst> part : dmgToPart.entrySet())
 			cList.add( new ItemStack( this, 1, part.getKey() ) );

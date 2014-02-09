@@ -2,8 +2,8 @@ package appeng.client.render;
 
 import appeng.client.texture.FlipableIcon;
 import appeng.client.texture.TmpFlipableIcon;
-import net.minecraft.util.Icon;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class BlockRenderInfo
 {
@@ -41,24 +41,24 @@ public class BlockRenderInfo
 
 	}
 
-	public void setTemporaryRenderIcon(Icon icon)
+	public void setTemporaryRenderIcon(IIcon IIcon)
 	{
-		if ( icon == null )
+		if ( IIcon == null )
 			useTmp = false;
 		else
 		{
 			useTmp = true;
-			tmpTopIcon.setOriginal( icon );
-			tmpBottomIcon.setOriginal( icon );
-			tmpSouthIcon.setOriginal( icon );
-			tmpNorthIcon.setOriginal( icon );
-			tmpEastIcon.setOriginal( icon );
-			tmpWestIcon.setOriginal( icon );
+			tmpTopIcon.setOriginal( IIcon );
+			tmpBottomIcon.setOriginal( IIcon );
+			tmpSouthIcon.setOriginal( IIcon );
+			tmpNorthIcon.setOriginal( IIcon );
+			tmpEastIcon.setOriginal( IIcon );
+			tmpWestIcon.setOriginal( IIcon );
 		}
 	}
 
-	public void setTemporaryRenderIcons(Icon nTopIcon, Icon nBottomIcon, Icon nSouthIcon, Icon nNorthIcon, Icon nEastIcon,
-			Icon nWestIcon)
+	public void setTemporaryRenderIcons(IIcon nTopIcon, IIcon nBottomIcon, IIcon nSouthIcon, IIcon nNorthIcon, IIcon nEastIcon,
+			IIcon nWestIcon)
 	{
 		tmpTopIcon.setOriginal( nTopIcon == null ? getTexture( ForgeDirection.UP ) : nTopIcon );
 		tmpBottomIcon.setOriginal( nBottomIcon == null ? getTexture( ForgeDirection.DOWN ) : nBottomIcon );

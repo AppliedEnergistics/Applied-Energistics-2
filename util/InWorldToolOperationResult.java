@@ -21,15 +21,12 @@ public class InWorldToolOperationResult
 		{
 			if ( b == null )
 			{
-				if ( Block.blocksList.length > l.itemID )
-				{
-					Block bl = Block.blocksList[l.itemID];
+				Block bl = Block.getBlockFromItem( l.getItem() );
 
-					if ( bl.blockID > 0 )
-					{
-						b = l;
-						continue;
-					}
+				if ( bl != null )
+				{
+					b = l;
+					continue;
 				}
 			}
 

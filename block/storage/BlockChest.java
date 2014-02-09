@@ -7,7 +7,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.IMEInventoryHandler;
@@ -73,10 +73,10 @@ public class BlockChest extends AEBaseBlock
 					}
 				}
 
-				p.sendChatToPlayer( PlayerMessages.ChestCannotReadStorageCell.get() );
+				p.addChatMessage( PlayerMessages.ChestCannotReadStorageCell.get() );
 			}
 			else
-				p.sendChatToPlayer( PlayerMessages.MachineNotPowered.get() );
+				p.addChatMessage( PlayerMessages.MachineNotPowered.get() );
 
 			return true;
 		}

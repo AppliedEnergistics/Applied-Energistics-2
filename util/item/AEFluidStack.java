@@ -1,18 +1,15 @@
 package appeng.util.item;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataInput;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagLong;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import appeng.api.config.FuzzyMode;
@@ -143,45 +140,39 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	public void writeToNBT(NBTTagCompound i)
 	{
 		/*
-		 * Ugly Yes, but it saves a lot in the memory department.
+		 * Mojang Fucked this over ; GC Optimization - Ugly Yes, but it saves a lot in the memory department.
 		 */
 
-		NBTBase FluidName = i.getTag( "FluidName" );
-		NBTBase Count = i.getTag( "Count" );
-		// NBTBase Priority = i.getTag( "Priority" );
-		NBTBase Cnt = i.getTag( "Cnt" );
-		NBTBase Req = i.getTag( "Req" );
-		NBTBase Craft = i.getTag( "Craft" );
+		/*
+		 * NBTBase FluidName = i.getTag( "FluidName" ); NBTBase Count = i.getTag( "Count" ); NBTBase Cnt = i.getTag(
+		 * "Cnt" ); NBTBase Req = i.getTag( "Req" ); NBTBase Craft = i.getTag( "Craft" );
+		 */
 
-		if ( FluidName != null && FluidName instanceof NBTTagString )
-			((NBTTagString) FluidName).data = (String) this.fluid.getName();
-		else
-			i.setString( "FluidName", (String) this.fluid.getName() );
+		/*
+		 * if ( FluidName != null && FluidName instanceof NBTTagString ) ((NBTTagString) FluidName).data = (String)
+		 * this.fluid.getName(); else
+		 */
+		i.setString( "FluidName", (String) this.fluid.getName() );
 
-		// if ( Priority != null && Priority instanceof NBTTagInt )
-		// ((NBTTagInt) Priority).data = this.priority;
-		// else
-		// i.setInteger( "Priority", this.priority );
+		/*
+		 * if ( Count != null && Count instanceof NBTTagByte ) ((NBTTagByte) Count).data = (byte) 0; else
+		 */
+		i.setByte( "Count", (byte) 0 );
 
-		if ( Count != null && Count instanceof NBTTagByte )
-			((NBTTagByte) Count).data = (byte) 0;
-		else
-			i.setByte( "Count", (byte) 0 );
+		/*
+		 * if ( Cnt != null && Cnt instanceof NBTTagLong ) ((NBTTagLong) Cnt).data = this.stackSize; else
+		 */
+		i.setLong( "Cnt", this.stackSize );
 
-		if ( Cnt != null && Cnt instanceof NBTTagLong )
-			((NBTTagLong) Cnt).data = this.stackSize;
-		else
-			i.setLong( "Cnt", this.stackSize );
+		/*
+		 * if ( Req != null && Req instanceof NBTTagLong ) ((NBTTagLong) Req).data = this.stackSize; else
+		 */
+		i.setLong( "Req", this.getCountRequestable() );
 
-		if ( Req != null && Req instanceof NBTTagLong )
-			((NBTTagLong) Req).data = this.stackSize;
-		else
-			i.setLong( "Req", this.getCountRequestable() );
-
-		if ( Craft != null && Craft instanceof NBTTagByte )
-			((NBTTagByte) Craft).data = (byte) (this.isCraftable() ? 1 : 0);
-		else
-			i.setBoolean( "Craft", this.isCraftable() );
+		/*
+		 * if ( Craft != null && Craft instanceof NBTTagByte ) ((NBTTagByte) Craft).data = (byte) (this.isCraftable() ?
+		 * 1 : 0); else
+		 */i.setBoolean( "Craft", this.isCraftable() );
 
 		if ( tagCompound != null )
 			i.setTag( "tag", (NBTTagCompound) tagCompound );
@@ -223,15 +214,15 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	}
 
 	@Override
-	void writeIdentity(DataOutputStream i) throws IOException
+	void writeIdentity(ByteBuf i) throws IOException
 	{
 		byte[] name = fluid.getName().getBytes( "UTF-8" );
 		i.writeByte( (byte) name.length );
-		i.write( name );
+		i.writeBytes( name );
 	}
 
 	@Override
-	void readNBT(DataOutputStream i) throws IOException
+	void readNBT(ByteBuf i) throws IOException
 	{
 		if ( hasTagCompound() )
 		{
@@ -244,11 +235,11 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 			int size = tagBytes.length;
 
 			i.writeInt( size );
-			i.write( tagBytes );
+			i.writeBytes( tagBytes );
 		}
 	}
 
-	public static IAEFluidStack loadFluidStackFromPacket(DataInputStream data) throws IOException
+	public static IAEFluidStack loadFluidStackFromPacket(ByteBuf data) throws IOException
 	{
 		byte mask = data.readByte();
 		// byte PriorityType = (byte) (mask & 0x03);
@@ -262,7 +253,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 
 		byte len2 = data.readByte();
 		byte name[] = new byte[len2];
-		data.read( name, 0, len2 );
+		data.readBytes( name, 0, len2 );
 
 		d.setString( "FluidName", new String( name, "UTF-8" ) );
 		d.setByte( "Count", (byte) 0 );
@@ -272,10 +263,10 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 			int len = data.readInt();
 
 			byte[] bd = new byte[len];
-			data.readFully( bd );
+			data.readBytes( bd );
 
 			DataInput di = ByteStreams.newDataInput( bd );
-			d.setCompoundTag( "tag", CompressedStreamTools.read( di ) );
+			d.setTag( "tag", CompressedStreamTools.read( di ) );
 		}
 
 		// long priority = getPacketValue( PriorityType, data );

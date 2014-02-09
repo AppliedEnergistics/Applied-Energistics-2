@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.Random;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
@@ -83,9 +84,9 @@ public class OreQuartz extends AEBaseBlock implements IOrientableBlock
 	}
 
 	@Override
-	public int idDropped(int id, Random rand, int meta)
+	public Item getItemDropped(int id, Random rand, int meta)
 	{
-		return getItemDropped().itemID;
+		return getItemDropped().getItem();
 	}
 
 	@Override
@@ -103,7 +104,7 @@ public class OreQuartz extends AEBaseBlock implements IOrientableBlock
 	@Override
 	public int quantityDroppedWithBonus(int fortune, Random rand)
 	{
-		if ( fortune > 0 && this.blockID != this.idDropped( 0, rand, fortune ) )
+		if ( fortune > 0 && Item.getItemFromBlock( this ) != getItemDropped( 0, rand, fortune ) )
 		{
 			int j = rand.nextInt( fortune + 2 ) - 1;
 
@@ -125,7 +126,7 @@ public class OreQuartz extends AEBaseBlock implements IOrientableBlock
 	{
 		super.dropBlockAsItemWithChance( w, x, y, z, blockid, something, meta );
 
-		if ( this.idDropped( blockid, w.rand, meta ) != this.blockID )
+		if ( getItemDropped( blockid, w.rand, meta ) != Item.getItemFromBlock( this ) )
 		{
 			int xp = MathHelper.getRandomIntegerInRange( w.rand, 2, 5 );
 

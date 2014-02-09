@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import appeng.api.features.IGrinderEntry;
 import appeng.api.features.IGrinderRegistry;
@@ -33,22 +33,22 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 	public GrinderRecipeManager() {
 		RecipeList = new ArrayList();
 
-		addOre( "Coal", new ItemStack( Item.coal ) );
-		addOre( "Charcoal", new ItemStack( Item.coal, 1, 1 ) );
+		addOre( "Coal", new ItemStack( Items.coal ) );
+		addOre( "Charcoal", new ItemStack( Items.coal, 1, 1 ) );
 
-		addOre( "NetherQuartz", new ItemStack( Block.oreNetherQuartz ) );
-		addIngot( "NetherQuartz", new ItemStack( Item.netherQuartz ) );
+		addOre( "NetherQuartz", new ItemStack( Blocks.quartz_ore ) );
+		addIngot( "NetherQuartz", new ItemStack( Items.quartz ) );
 
-		addOre( "Gold", new ItemStack( Block.oreGold ) );
-		addIngot( "Gold", new ItemStack( Item.ingotGold ) );
+		addOre( "Gold", new ItemStack( Blocks.gold_ore ) );
+		addIngot( "Gold", new ItemStack( Items.gold_ingot ) );
 
-		addOre( "Iron", new ItemStack( Block.oreIron ) );
-		addIngot( "Iron", new ItemStack( Item.ingotIron ) );
+		addOre( "Iron", new ItemStack( Blocks.iron_ore ) );
+		addIngot( "Iron", new ItemStack( Items.iron_ingot ) );
 
-		addOre( "Obsidian", new ItemStack( Block.obsidian ) );
-		addIngot( "Ender", new ItemStack( Item.enderPearl ) );
+		addOre( "Obsidian", new ItemStack( Blocks.obsidian ) );
+		addIngot( "Ender", new ItemStack( Items.ender_pearl ) );
 
-		addIngot( "Wheat", new ItemStack( Item.wheat ) );
+		addIngot( "Wheat", new ItemStack( Items.wheat ) );
 
 		OreDictionaryHandler.instance.observe( this );
 	}

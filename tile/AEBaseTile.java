@@ -1,9 +1,8 @@
 package appeng.tile;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -15,17 +14,18 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet132TileEntityData;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.util.ICommonTile;
 import appeng.api.util.IOrientable;
 import appeng.core.AELog;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
+import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
@@ -138,7 +138,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 		}
 	}
 
-	final public void writeToStream(DataOutputStream data)
+	final public void writeToStream(ByteBuf data)
 	{
 		try
 		{
@@ -157,7 +157,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 		}
 	}
 
-	final public boolean readfromStream(DataInputStream data)
+	final public boolean readfromStream(ByteBuf data)
 	{
 		boolean output = false;
 
@@ -194,8 +194,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 	}
 
 	/**
-	 * By default all blocks can have orientation, this handles saving, and
-	 * loading, as well as synchronization.
+	 * By default all blocks can have orientation, this handles saving, and loading, as well as synchronization.
 	 * 
 	 * @return
 	 */
@@ -223,7 +222,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 		forward = inForward;
 		up = inUp;
 		markForUpdate();
-		worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord, 0 );
+		worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord, Platform.air );
 	}
 
 	public void onPlacement(ItemStack stack, EntityPlayer player, int side)
@@ -239,13 +238,12 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 	{
 		NBTTagCompound data = new NBTTagCompound();
 
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		DataOutputStream stream = new DataOutputStream( bytes );
+		ByteBuf stream = Unpooled.buffer();
 
 		try
 		{
 			writeToStream( stream );
-			if ( bytes.size() == 0 )
+			if ( stream.readableBytes() == 0 )
 				return null;
 		}
 		catch (Throwable t)
@@ -253,16 +251,17 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 			AELog.error( t );
 		}
 
-		data.setByteArray( "X", bytes.toByteArray() );
-		return new Packet132TileEntityData( xCoord, yCoord, zCoord, 64, data );
+		data.setByteArray( "X", stream.array() );
+		return new S35PacketUpdateTileEntity( xCoord, yCoord, zCoord, 64, data );
 	}
 
 	@Override
-	public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt)
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
 	{
-		if ( pkt.actionType == 64 )
+		// / pkt.actionType
+		if ( pkt.func_148853_f() == 64 )
 		{
-			DataInputStream stream = new DataInputStream( new ByteArrayInputStream( pkt.data.getByteArray( "X" ) ) );
+			ByteBuf stream = Unpooled.copiedBuffer( pkt.func_148857_g().getByteArray( "X" ) );
 			if ( readfromStream( stream ) )
 				markForUpdate();
 		}
@@ -280,8 +279,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 	}
 
 	/**
-	 * returns the contents of the tile entity, into the world, defaults to
-	 * dropping everything in the inventory.
+	 * returns the contents of the tile entity, into the world, defaults to dropping everything in the inventory.
 	 * 
 	 * @param w
 	 * @param x
@@ -316,8 +314,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 	}
 
 	/**
-	 * depending on the from, diffrent settings will be accepted, don't call
-	 * this with null
+	 * depending on the from, diffrent settings will be accepted, don't call this with null
 	 * 
 	 * @param from
 	 * @param compound
@@ -340,13 +337,14 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 
 	public void securityBreak()
 	{
-		worldObj.destroyBlock( xCoord, yCoord, zCoord, true );
+		worldObj.func_147480_a( xCoord, yCoord, zCoord, true ); // worldObj.destroyBlock( xCoord, yCoord, zCoord, true
+																// );
 		dropItems = false;
 	}
 
 	public void saveChanges()
 	{
-		super.onInventoryChanged();
+		super.markDirty();
 	}
 
 	public boolean requiresTESR()

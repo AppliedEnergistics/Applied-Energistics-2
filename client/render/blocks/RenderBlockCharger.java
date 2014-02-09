@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -123,15 +123,15 @@ public class RenderBlockCharger extends BaseBlockRender
 				GL11.glScalef( 1.0f / 1.1f, 1.0f / 1.1f, 1.0f / 1.1f );
 				GL11.glScalef( 1.0f, 1.0f, 1.0f );
 
-				int k = sis.itemID;
-				if ( sis.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( Block.blocksList[k].getRenderType() ) )
+				Block blk = Block.getBlockFromItem( sis.getItem() );
+				if ( sis.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( blk.getRenderType() ) )
 				{
 					GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
 					GL11.glRotatef( 15.0f, 0.0f, 1.0f, 0.0f );
 					GL11.glRotatef( 30.0f, 0.0f, 1.0f, 0.0f );
 				}
 
-				int light = tile.worldObj.getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
+				int light = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
 				int br = light;// << 20 | light << 4;
 				int var11 = br % 65536;
 				int var12 = br / 65536;

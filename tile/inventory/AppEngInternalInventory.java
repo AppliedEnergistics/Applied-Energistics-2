@@ -79,7 +79,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 				te.onChangeInventory( this, slot, InvOperation.decrStackSize, ns, null );
 			}
 
-			onInventoryChanged();
+			markDirty();
 			return ns;
 		}
 
@@ -125,25 +125,25 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 
 			te.onChangeInventory( this, slot, InvOperation.setInventorySlotContents, removed, added );
 
-			onInventoryChanged();
+			markDirty();
 		}
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
 		if ( te != null && eventsEnabled() )
 		{
-			te.onChangeInventory( this, -1, InvOperation.onInventoryChanged, null, null );
+			te.onChangeInventory( this, -1, InvOperation.markDirty, null, null );
 		}
 	}
 
 	// for guis...
-	public void onInventoryChanged(int slotIndex)
+	public void markDirty(int slotIndex)
 	{
 		if ( te != null && eventsEnabled() )
 		{
-			te.onChangeInventory( this, slotIndex, InvOperation.onInventoryChanged, null, null );
+			te.onChangeInventory( this, slotIndex, InvOperation.markDirty, null, null );
 		}
 	}
 
@@ -160,12 +160,12 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	}
 
 	@Override
-	public void openChest()
+	public void closeInventory()
 	{
 	}
 
 	@Override
-	public void closeChest()
+	public void openInventory()
 	{
 	}
 
@@ -182,7 +182,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 					inv[x].writeToNBT( c );
 				}
 
-				target.setCompoundTag( "#" + x, c );
+				target.setTag( "#" + x, c );
 			}
 			catch (Exception err)
 			{
@@ -213,7 +213,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	{
 		NBTTagCompound c = new NBTTagCompound();
 		writeToNBT( c );
-		data.setCompoundTag( name, c );
+		data.setTag( name, c );
 	}
 
 	public void readFromNBT(NBTTagCompound data, String name)
@@ -230,13 +230,13 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
 		return "appeng-internal";
 	}
 
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
 		return false;
 	}

@@ -6,11 +6,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
-import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
-public class FacadeConfig extends Configuration
+public class FacadeConfig extends net.minecraftforge.common.config.Configuration
 {
 
 	public static FacadeConfig instance;
@@ -23,7 +22,7 @@ public class FacadeConfig extends Configuration
 
 	public boolean checkEnabled(Block id, boolean automatic)
 	{
-		if ( id == null || id.blockID == 0 )
+		if ( id == null )
 			return false;
 
 		UniqueIdentifier blk = GameRegistry.findUniqueIdentifierFor( id );

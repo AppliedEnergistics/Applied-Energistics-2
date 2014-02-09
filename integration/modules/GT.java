@@ -3,7 +3,7 @@ package appeng.integration.modules;
 import gregtechmod.api.interfaces.IDigitalChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.storage.IMEInventory;
 import appeng.integration.IIntegrationModule;

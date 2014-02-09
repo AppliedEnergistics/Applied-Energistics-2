@@ -7,7 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.implementations.items.IAEWrench;
@@ -34,19 +34,18 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	@Override
 	public IGuiItemObject getGuiObject(ItemStack is, World world, int x, int y, int z)
 	{
-		TileEntity te = world.getBlockTileEntity( x, y, z );
+		TileEntity te = world.getTileEntity( x, y, z );
 		return new NetworkToolViewer( is, (IGridHost) (te instanceof IGridHost ? te : null) );
 	}
 
 	@Override
 	public boolean onItemUseFirst(ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
-		int id = world.getBlockId( x, y, z );
-		if ( id > 0 && !player.isSneaking() )
+		Block b = world.getBlock( x, y, z );
+		if ( b != null && !player.isSneaking() )
 		{
-			Block b = Block.blocksList[id];
-			TileEntity te = world.getBlockTileEntity( x, y, z );
-			if ( b != null && !(te instanceof IGridHost) )
+			TileEntity te = world.getTileEntity( x, y, z );
+			if ( !(te instanceof IGridHost) )
 			{
 				if ( b.rotateBlock( world, x, y, z, ForgeDirection.getOrientation( side ) ) )
 				{
@@ -69,7 +68,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 			if ( p.openContainer instanceof AEBaseContainer )
 				return true;
 
-			TileEntity te = w.getBlockTileEntity( x, y, z );
+			TileEntity te = w.getTileEntity( x, y, z );
 			if ( te instanceof IGridHost )
 				Platform.openGUI( p, te, ForgeDirection.getOrientation( side ), GuiBridge.GUI_NETWORK_STATUS );
 			else
@@ -88,7 +87,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	}
 
 	@Override
-	public boolean shouldPassSneakingClickToBlock(World w, int x, int y, int z)
+	public boolean doesSneakBypassUse(World world, int x, int y, int z, EntityPlayer player)
 	{
 		return true;
 	}

@@ -18,7 +18,7 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 		myte = te;
 
 		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.SPATIAL_STORAGE_CELLS, te, 0, 71, 14 ) );
-		addSlotToContainer( new SlotOutput( te, 1, 71, 14, PlaceableItemType.SPATIAL_STORAGE_CELLS.icon ) );
+		addSlotToContainer( new SlotOutput( te, 1, 71, 14, PlaceableItemType.SPATIAL_STORAGE_CELLS.IIcon ) );
 
 		bindPlayerInventory( ip, 0, 199 - /* height of playerinventory */82 );
 	}

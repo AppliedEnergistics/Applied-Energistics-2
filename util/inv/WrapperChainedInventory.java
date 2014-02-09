@@ -138,7 +138,7 @@ public class WrapperChainedInventory implements IInventory
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
 		return "ChainedInv";
 	}
@@ -155,11 +155,11 @@ public class WrapperChainedInventory implements IInventory
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
 		for (IInventory i : l)
 		{
-			i.onInventoryChanged();
+			i.markDirty();
 		}
 	}
 
@@ -170,17 +170,17 @@ public class WrapperChainedInventory implements IInventory
 	}
 
 	@Override
-	public void openChest()
+	public void openInventory()
 	{
 	}
 
 	@Override
-	public void closeChest()
+	public void closeInventory()
 	{
 	}
 
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
 		return false;
 	}

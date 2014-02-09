@@ -3,7 +3,7 @@ package appeng.core;
 import java.io.File;
 import java.util.EnumSet;
 
-import net.minecraftforge.common.Property;
+import net.minecraftforge.common.config.Property;
 import appeng.api.config.CondenserOuput;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
@@ -14,11 +14,10 @@ import appeng.api.config.YesNo;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
 import appeng.core.features.AEFeature;
-import appeng.core.features.AEFeatureHandler;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 
-public class Configuration extends net.minecraftforge.common.Configuration implements IConfigureableObject, IConfigManagerHost
+public class Configuration extends net.minecraftforge.common.config.Configuration implements IConfigureableObject, IConfigManagerHost
 {
 
 	public static Configuration instance;
@@ -64,9 +63,6 @@ public class Configuration extends net.minecraftforge.common.Configuration imple
 
 	public double spatialPowerScaler = 1.5;
 	public double spatialPowerMultiplier = 1500.0;
-
-	private int blkBaseNumber = 900;
-	private int blkItemNumber = 3841;
 
 	public String grinderOres[] = {
 			// Vanilla Items
@@ -123,9 +119,11 @@ public class Configuration extends net.minecraftforge.common.Configuration imple
 		WirelessBaseCost = get( "wireless", "WirelessBaseCost", WirelessBaseCost ).getDouble( WirelessBaseCost );
 		WirelessCostMultiplier = get( "wireless", "WirelessCostMultiplier", WirelessCostMultiplier ).getDouble( WirelessCostMultiplier );
 		WirelessBaseRange = get( "wireless", "WirelessBaseRange", WirelessBaseRange ).getDouble( WirelessBaseRange );
-		WirelessBoosterRangeMultiplier = get( "wireless", "WirelessBoosterRangeMultiplier", WirelessBoosterRangeMultiplier ).getDouble( WirelessBoosterRangeMultiplier );
+		WirelessBoosterRangeMultiplier = get( "wireless", "WirelessBoosterRangeMultiplier", WirelessBoosterRangeMultiplier ).getDouble(
+				WirelessBoosterRangeMultiplier );
 		WirelessBoosterExp = get( "wireless", "WirelessBoosterExp", WirelessBoosterExp ).getDouble( WirelessBoosterExp );
-		WirelessTerminalDrainMultiplier = get( "wireless", "WirelessTerminalDrainMultiplier", WirelessTerminalDrainMultiplier ).getDouble( WirelessTerminalDrainMultiplier );
+		WirelessTerminalDrainMultiplier = get( "wireless", "WirelessTerminalDrainMultiplier", WirelessTerminalDrainMultiplier ).getDouble(
+				WirelessTerminalDrainMultiplier );
 
 		wireless_battery = get( "battery", "wireless", wireless_battery ).getInt( wireless_battery );
 		staff_battery = get( "battery", "staff", staff_battery ).getInt( staff_battery );
@@ -218,12 +216,14 @@ public class Configuration extends net.minecraftforge.common.Configuration imple
 
 	public int getBlockID(Class c, String subname)
 	{
-		return getBlock( AEFeatureHandler.getName( c, subname ), blkBaseNumber++ ).getInt();
+		return 0;
+		// return getBlock( AEFeatureHandler.getName( c, subname ), blkBaseNumber++ ).getInt();
 	}
 
 	public int getItemID(Class c, String subname)
 	{
-		return getItem( AEFeatureHandler.getName( c, subname ), blkItemNumber++ ).getInt();
+		return 0;
+		// return getItem( AEFeatureHandler.getName( c, subname ), blkItemNumber++ ).getInt();
 	}
 
 	public boolean useTerminalUseLargeFont()

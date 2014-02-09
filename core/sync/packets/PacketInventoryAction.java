@@ -1,16 +1,16 @@
 package appeng.core.sync.packets;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.INetworkManager;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.InventoryAction;
 import appeng.util.item.AEItemStack;
 
@@ -22,7 +22,7 @@ public class PacketInventoryAction extends AppEngPacket
 	final public IAEItemStack slotItem;
 
 	// automatic.
-	public PacketInventoryAction(DataInputStream stream) throws IOException {
+	public PacketInventoryAction(ByteBuf stream) throws IOException {
 		action = InventoryAction.values()[stream.readInt()];
 		slot = stream.readInt();
 		boolean hasItem = stream.readBoolean();
@@ -33,7 +33,7 @@ public class PacketInventoryAction extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData(INetworkManager manager, AppEngPacket packet, EntityPlayer player)
+	public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player)
 	{
 		EntityPlayerMP sender = (EntityPlayerMP) player;
 		if ( sender.openContainer instanceof AEBaseContainer )
@@ -49,8 +49,7 @@ public class PacketInventoryAction extends AppEngPacket
 		this.slot = slot;
 		this.slotItem = slotItem;
 
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		DataOutputStream data = new DataOutputStream( bytes );
+		ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( getPacketID() );
 		data.writeInt( action.ordinal() );
@@ -64,8 +63,7 @@ public class PacketInventoryAction extends AppEngPacket
 			slotItem.writeToPacket( data );
 		}
 
-		isChunkDataPacket = false;
-		configureWrite( bytes.toByteArray() );
+		configureWrite( data );
 	}
 
 }

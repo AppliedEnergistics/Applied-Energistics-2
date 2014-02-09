@@ -45,7 +45,7 @@ public class WorldRender implements ISimpleBlockRenderingHandler
 	}
 
 	@Override
-	public boolean shouldRender3DInInventory()
+	public boolean shouldRender3DInInventory(int modelId)
 	{
 		return true;
 	}
@@ -58,7 +58,7 @@ public class WorldRender implements ISimpleBlockRenderingHandler
 
 	public void renderItemBlock(ItemStack item)
 	{
-		AEBaseBlock block = (AEBaseBlock) Block.blocksList[item.itemID];
+		AEBaseBlock block = (AEBaseBlock) Block.getBlockFromItem( item.getItem() );
 		renderer.setRenderBoundsFromBlock( block );
 		getRender( block ).renderInventory( block, item, renderer );
 	}

@@ -39,9 +39,9 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 					ItemStack is = getStackInSlot( x );
 					if ( is != null )
 						is.writeToNBT( item );
-					opt.setCompoundTag( "item" + x, item );
+					opt.setTag( "item" + x, item );
 				}
-				data.setCompoundTag( "inv", opt );
+				data.setTag( "inv", opt );
 			}
 
 		} );
@@ -78,15 +78,25 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
 		return getClass().getSimpleName();
 	}
 
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
 		return false;
+	}
+
+	@Override
+	public void openInventory()
+	{
+	}
+
+	@Override
+	public void closeInventory()
+	{
 	}
 
 	@Override
@@ -98,18 +108,8 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer p)
 	{
-		return this.worldObj.getBlockTileEntity( this.xCoord, this.yCoord, this.zCoord ) != this ? false : p.getDistanceSq( (double) this.xCoord + 0.5D,
+		return this.worldObj.getTileEntity( this.xCoord, this.yCoord, this.zCoord ) != this ? false : p.getDistanceSq( (double) this.xCoord + 0.5D,
 				(double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D ) <= 32.0D;
-	}
-
-	@Override
-	public void openChest()
-	{
-	}
-
-	@Override
-	public void closeChest()
-	{
 	}
 
 	@Override

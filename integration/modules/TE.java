@@ -4,7 +4,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.ITE;
@@ -42,8 +42,8 @@ public class TE implements IIntegrationModule, ITE
 	{
 		NBTTagCompound toSend = new NBTTagCompound();
 		toSend.setInteger( "energy", 3200 );
-		toSend.setCompoundTag( "input", new NBTTagCompound() );
-		toSend.setCompoundTag( "primaryOutput", new NBTTagCompound() );
+		toSend.setTag( "input", new NBTTagCompound() );
+		toSend.setTag( "primaryOutput", new NBTTagCompound() );
 
 		in.writeToNBT( toSend.getCompoundTag( "input" ) );
 		out.writeToNBT( toSend.getCompoundTag( "primaryOutput" ) );

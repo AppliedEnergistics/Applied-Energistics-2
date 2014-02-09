@@ -3,10 +3,11 @@ package appeng.block.qnb;
 import java.util.EnumSet;
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderQNB;
@@ -47,7 +48,7 @@ public class BlockQuantumLinkChamber extends AEBaseBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange(World w, int x, int y, int z, int pointlessnumber)
+	public void onNeighborBlockChange(World w, int x, int y, int z, Block pointlessnumber)
 	{
 		TileQuantumBridge bridge = getTileEntity( w, x, y, z );
 		if ( bridge != null )

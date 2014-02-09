@@ -2,7 +2,7 @@ package appeng.integration.modules.helpers;
 
 import net.mcft.copy.betterstorage.api.ICrateStorage;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;

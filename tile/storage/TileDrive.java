@@ -1,7 +1,7 @@
 package appeng.tile.storage;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -10,7 +10,7 @@ import java.util.List;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.networking.GridFlags;
@@ -94,7 +94,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 		}
 
 		@Override
-		public void writeToStream(DataOutputStream data) throws IOException
+		public void writeToStream(ByteBuf data) throws IOException
 		{
 			if ( worldObj.getTotalWorldTime() - lastStateChange > 8 )
 				state = 0;
@@ -113,7 +113,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 		}
 
 		@Override
-		public boolean readFromStream(DataInputStream data) throws IOException
+		public boolean readFromStream(ByteBuf data) throws IOException
 		{
 			int oldState = state;
 			state = data.readInt();
@@ -340,7 +340,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	public void setPriority(int newValue)
 	{
 		priority = newValue;
-		onInventoryChanged();
+		markDirty();
 
 		isCached = false; // recalculate the storage cell.
 		updateState();

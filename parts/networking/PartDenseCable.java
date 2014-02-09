@@ -6,8 +6,8 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
@@ -66,7 +66,7 @@ public class PartDenseCable extends PartCable
 	}
 
 	@Override
-	public Icon getTexture(AEColor c)
+	public IIcon getTexture(AEColor c)
 	{
 		if ( c == AEColor.Transparent )
 			return AEApi.instance().parts().partCableSmart.stack( AEColor.Transparent, 1 ).getIconIndex();
@@ -172,7 +172,7 @@ public class PartDenseCable extends PartCable
 
 	private boolean isDense(ForgeDirection of)
 	{
-		TileEntity te = tile.worldObj.getBlockTileEntity( tile.xCoord + of.offsetX, tile.yCoord + of.offsetY, tile.zCoord + of.offsetZ );
+		TileEntity te = tile.getWorldObj().getTileEntity( tile.xCoord + of.offsetX, tile.yCoord + of.offsetY, tile.zCoord + of.offsetZ );
 		if ( te instanceof IGridHost )
 		{
 			AECableType t = ((IGridHost) te).getCableConnectionType( of.getOpposite() );
@@ -183,7 +183,7 @@ public class PartDenseCable extends PartCable
 
 	private boolean isSmart(ForgeDirection of)
 	{
-		TileEntity te = tile.worldObj.getBlockTileEntity( tile.xCoord + of.offsetX, tile.yCoord + of.offsetY, tile.zCoord + of.offsetZ );
+		TileEntity te = tile.getWorldObj().getTileEntity( tile.xCoord + of.offsetX, tile.yCoord + of.offsetY, tile.zCoord + of.offsetZ );
 		if ( te instanceof IGridHost )
 		{
 			AECableType t = ((IGridHost) te).getCableConnectionType( of.getOpposite() );
@@ -195,7 +195,7 @@ public class PartDenseCable extends PartCable
 	@SideOnly(Side.CLIENT)
 	public void renderDenseConection(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of)
 	{
-		TileEntity te = this.tile.worldObj.getBlockTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
+		TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
 		IPartHost ccph = te instanceof IPartHost ? (IPartHost) te : null;
 		IGridHost ghh = te instanceof IGridHost ? (IGridHost) te : null;
 		boolean isGlass = false;
@@ -210,8 +210,8 @@ public class PartDenseCable extends PartCable
 		 * 13 ); break; case WEST: rh.setBounds( 0, 3, 3, 4, 13, 13 ); break; default: return; } rh.renderBlock( x, y,
 		 * z, renderer );
 		 * 
-		 * if ( true ) { setSmartConnectionRotations( of, renderer ); Icon defa = new TaughtIcon( getChannelTex(
-		 * channels, false ).getIcon(), -0.2f ); Icon defb = new TaughtIcon( getChannelTex( channels, true ).getIcon(),
+		 * if ( true ) { setSmartConnectionRotations( of, renderer ); IIcon defa = new TaughtIcon( getChannelTex(
+		 * channels, false ).getIcon(), -0.2f ); IIcon defb = new TaughtIcon( getChannelTex( channels, true ).getIcon(),
 		 * -0.2f );
 		 * 
 		 * if ( of == ForgeDirection.EAST || of == ForgeDirection.WEST ) { AEBaseBlock blk = (AEBaseBlock)
@@ -266,8 +266,8 @@ public class PartDenseCable extends PartCable
 		{
 			setSmartConnectionRotations( of, renderer );
 
-			Icon defa = new TaughtIcon( getChannelTex( channels, false ).getIcon(), -0.2f );
-			Icon defb = new TaughtIcon( getChannelTex( channels, true ).getIcon(), -0.2f );
+			IIcon defa = new TaughtIcon( getChannelTex( channels, false ).getIcon(), -0.2f );
+			IIcon defb = new TaughtIcon( getChannelTex( channels, true ).getIcon(), -0.2f );
 
 			Tessellator.instance.setBrightness( 15 << 20 | 15 << 5 );
 			Tessellator.instance.setColorOpaque_I( myColor.mediumVariant );
@@ -324,14 +324,14 @@ public class PartDenseCable extends PartCable
 			}
 
 			int channels = channelsOnSide[selectedSide.ordinal()];
-			Icon def = getTexture( getCableColor() );
-			Icon off = new OffsetIcon( def, 0, -12 );
+			IIcon def = getTexture( getCableColor() );
+			IIcon off = new OffsetIcon( def, 0, -12 );
 
-			Icon defa = new TaughtIcon( getChannelTex( channels, false ).getIcon(), -0.2f );
-			Icon offa = new OffsetIcon( defa, 0, -12 );
+			IIcon defa = new TaughtIcon( getChannelTex( channels, false ).getIcon(), -0.2f );
+			IIcon offa = new OffsetIcon( defa, 0, -12 );
 
-			Icon defb = new TaughtIcon( getChannelTex( channels, true ).getIcon(), -0.2f );
-			Icon offb = new OffsetIcon( defb, 0, -12 );
+			IIcon defb = new TaughtIcon( getChannelTex( channels, true ).getIcon(), -0.2f );
+			IIcon offb = new OffsetIcon( defb, 0, -12 );
 
 			switch (selectedSide)
 			{
@@ -412,7 +412,7 @@ public class PartDenseCable extends PartCable
 		rh.setTexture( null );
 	}
 
-	private Icon getDenseTexture(AEColor c)
+	private IIcon getDenseTexture(AEColor c)
 	{
 		switch (c)
 		{

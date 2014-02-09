@@ -3,7 +3,7 @@ package appeng.helpers;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -107,7 +107,7 @@ public class WirelessTerminalGuiObject implements IPortableCell
 		double rangeLimit = wap.getRange();
 		rangeLimit *= rangeLimit;
 
-		if ( wap.worldObj == myPlayer.worldObj )
+		if ( wap.getWorldObj() == myPlayer.worldObj )
 		{
 			double offX = (double) wap.xCoord - myPlayer.posX;
 			double offY = (double) wap.yCoord - myPlayer.posY;

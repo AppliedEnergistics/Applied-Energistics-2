@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.energy.IAEPowerStorage;
@@ -103,12 +103,12 @@ public class TileController extends AENetworkPowerTile implements IAEPowerStorag
 
 	public void onNeighborChange(boolean force)
 	{
-		boolean xx = worldObj.getBlockTileEntity( xCoord - 1, yCoord, zCoord ) instanceof TileController
-				&& worldObj.getBlockTileEntity( xCoord + 1, yCoord, zCoord ) instanceof TileController;
-		boolean yy = worldObj.getBlockTileEntity( xCoord, yCoord - 1, zCoord ) instanceof TileController
-				&& worldObj.getBlockTileEntity( xCoord, yCoord + 1, zCoord ) instanceof TileController;
-		boolean zz = worldObj.getBlockTileEntity( xCoord, yCoord, zCoord - 1 ) instanceof TileController
-				&& worldObj.getBlockTileEntity( xCoord, yCoord, zCoord + 1 ) instanceof TileController;
+		boolean xx = worldObj.getTileEntity( xCoord - 1, yCoord, zCoord ) instanceof TileController
+				&& worldObj.getTileEntity( xCoord + 1, yCoord, zCoord ) instanceof TileController;
+		boolean yy = worldObj.getTileEntity( xCoord, yCoord - 1, zCoord ) instanceof TileController
+				&& worldObj.getTileEntity( xCoord, yCoord + 1, zCoord ) instanceof TileController;
+		boolean zz = worldObj.getTileEntity( xCoord, yCoord, zCoord - 1 ) instanceof TileController
+				&& worldObj.getTileEntity( xCoord, yCoord, zCoord + 1 ) instanceof TileController;
 
 		// int meta = world.getBlockMetadata( xCoord, yCoord, zCoord );
 		// boolean hasPower = meta > 0;

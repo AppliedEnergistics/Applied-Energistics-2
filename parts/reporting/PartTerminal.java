@@ -44,9 +44,9 @@ public class PartTerminal extends PartMonitor implements IStorageMonitorable
 			else
 			{
 				if ( proxy.isPowered() )
-					player.sendChatToPlayer( PlayerMessages.CommunicationError.get() );
+					player.addChatMessage( PlayerMessages.CommunicationError.get() );
 				else
-					player.sendChatToPlayer( PlayerMessages.MachineNotPowered.get() );
+					player.addChatMessage( PlayerMessages.MachineNotPowered.get() );
 			}
 
 			return true;

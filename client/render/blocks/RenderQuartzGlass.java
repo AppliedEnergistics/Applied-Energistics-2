@@ -5,7 +5,7 @@ import java.util.Random;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
@@ -36,8 +36,8 @@ public class RenderQuartzGlass extends BaseBlockRender
 
 	boolean isGlass(AEBaseBlock imb, IBlockAccess world, int x, int y, int z)
 	{
-		return world.getBlockId( x, y, z ) == AEApi.instance().blocks().blockQuartzGlass.block().blockID
-				|| world.getBlockId( x, y, z ) == AEApi.instance().blocks().blockQuartzVibrantGlass.block().blockID;
+		return world.getBlock( x, y, z ) == AEApi.instance().blocks().blockQuartzGlass.block()
+				|| world.getBlock( x, y, z ) == AEApi.instance().blocks().blockQuartzVibrantGlass.block();
 	}
 
 	void renderEdge(AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer, ForgeDirection side, ForgeDirection direction)

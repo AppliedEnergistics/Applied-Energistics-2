@@ -56,7 +56,7 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 		if ( part instanceof CableBusPart )
 		{
 			CableBusPart cbp = (CableBusPart) part;
-			cbp.convertFromTile( world.getBlockTileEntity( pos.x, pos.y, pos.z ) );
+			cbp.convertFromTile( world.getTileEntity( pos.x, pos.y, pos.z ) );
 		}
 
 		return part;

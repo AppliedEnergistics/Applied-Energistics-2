@@ -7,10 +7,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -36,7 +36,7 @@ public class ToolReplicatorCard extends AEBaseItem
 
 		if ( player.isSneaking() )
 		{
-			if ( world.getBlockTileEntity( x, y, z ) instanceof IGridHost )
+			if ( world.getTileEntity( x, y, z ) instanceof IGridHost )
 			{
 				NBTTagCompound tag = new NBTTagCompound();
 				tag.setInteger( "x", x );
@@ -61,7 +61,7 @@ public class ToolReplicatorCard extends AEBaseItem
 				int dimid = ish.getInteger( "dimid" );
 				World src_w = DimensionManager.getWorld( dimid );
 
-				TileEntity te = src_w.getBlockTileEntity( src_x, src_y, src_z );
+				TileEntity te = src_w.getTileEntity( src_x, src_y, src_z );
 				if ( te instanceof IGridHost )
 				{
 					IGridHost gh = (IGridHost) te;
@@ -99,19 +99,18 @@ public class ToolReplicatorCard extends AEBaseItem
 									for (int j = 1; j < scale_y; j++)
 										for (int k = 1; k < scale_z; k++)
 										{
-											int id = src_w.getBlockId( min_x + i, min_y + j, min_z + k );
+											Block blk = src_w.getBlock( min_x + i, min_y + j, min_z + k );
 											int meta = src_w.getBlockMetadata( min_x + i, min_y + j, min_z + k );
-											world.setBlock( i + rel_x, j + rel_y, k + rel_z, id, meta, 4 );
+											world.setBlock( i + rel_x, j + rel_y, k + rel_z, blk, meta, 4 );
 
-											Block blk = Block.blocksList[id];
 											if ( blk != null && blk.hasTileEntity( meta ) )
 											{
-												TileEntity ote = src_w.getBlockTileEntity( min_x + i, min_y + j, min_z + k );
+												TileEntity ote = src_w.getTileEntity( min_x + i, min_y + j, min_z + k );
 												TileEntity nte = blk.createTileEntity( world, meta );
 												NBTTagCompound data = new NBTTagCompound();
 												ote.writeToNBT( data );
 												nte.readFromNBT( (NBTTagCompound) data.copy() );
-												world.setBlockTileEntity( i + rel_x, j + rel_y, k + rel_z, nte );
+												world.setTileEntity( i + rel_x, j + rel_y, k + rel_z, nte );
 											}
 											world.markBlockForUpdate( i + rel_x, j + rel_y, k + rel_z );
 										}
@@ -137,7 +136,7 @@ public class ToolReplicatorCard extends AEBaseItem
 
 	private void outputMsg(EntityPlayer player, String string)
 	{
-		player.sendChatToPlayer( ChatMessageComponent.createFromText( string ) );
+		player.addChatMessage( new ChatComponentText( string ) );
 	}
 
 }

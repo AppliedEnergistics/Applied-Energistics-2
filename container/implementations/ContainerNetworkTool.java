@@ -38,10 +38,10 @@ public class ContainerNetworkTool extends AEBaseContainer
 				if ( Platform.isSameItem( toolInv.getItemStack(), currentItem ) )
 					getPlayerInv().setInventorySlotContents( getPlayerInv().currentItem, toolInv.getItemStack() );
 				else
-					getPlayerInv().player.closeScreen();
+					isContainerValid = false;
 			}
 			else
-				getPlayerInv().player.closeScreen();
+				isContainerValid = false;
 		}
 
 		super.detectAndSendChanges();

@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
@@ -69,7 +69,7 @@ public class RenderBlockCrank extends BaseBlockRender
 		tess.setTranslation( -tc.xCoord, -tc.yCoord, -tc.zCoord );
 		tess.startDrawingQuads();
 		rbinstance.renderAllFaces = true;
-		rbinstance.blockAccess = tc.worldObj;
+		rbinstance.blockAccess = tc.getWorldObj();
 
 		rbinstance.setRenderBounds( 0.5D - 0.05, 0.5D - 0.5, 0.5D - 0.05, 0.5D + 0.05, 0.5D + 0.1, 0.5D + 0.05 );
 

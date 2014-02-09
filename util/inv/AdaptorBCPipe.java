@@ -4,27 +4,33 @@ import java.util.Iterator;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.FuzzyMode;
-import appeng.integration.modules.BC;
+import appeng.core.AppEng;
+import appeng.integration.abstraction.IBC;
 import appeng.util.InventoryAdaptor;
 import appeng.util.iterators.NullIterator;
 
 public class AdaptorBCPipe extends InventoryAdaptor
 {
 
-	private TileEntity i;
-	private ForgeDirection d;
+	final private IBC bc;
+	final private TileEntity i;
+	final private ForgeDirection d;
 
 	public AdaptorBCPipe(TileEntity s, ForgeDirection dd) {
-		if ( BC.instance != null )
+		bc = (IBC) AppEng.instance.getIntegration( "BC" );
+		if ( bc != null )
 		{
-			if ( BC.instance.isPipe( s, dd ) )
+			if ( bc.isPipe( s, dd ) )
 			{
 				i = s;
 				d = dd;
+				return;
 			}
 		}
+		i = null;
+		d = null;
 	}
 
 	@Override
@@ -61,7 +67,7 @@ public class AdaptorBCPipe extends InventoryAdaptor
 		if ( A.stackSize == 0 )
 			return null;
 
-		if ( BC.instance.addItemsToPipe( i, A, d ) )
+		if ( bc.addItemsToPipe( i, A, d ) )
 			return null;
 		return A;
 	}

@@ -5,9 +5,9 @@ import java.util.EnumSet;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -63,7 +63,7 @@ public class ToolDebugCard extends AEBaseItem
 		}
 		else
 		{
-			TileEntity te = world.getBlockTileEntity( x, y, z );
+			TileEntity te = world.getTileEntity( x, y, z );
 
 			if ( te instanceof IGridHost )
 			{
@@ -144,7 +144,7 @@ public class ToolDebugCard extends AEBaseItem
 
 	private void outputMsg(EntityPlayer player, String string)
 	{
-		player.sendChatToPlayer( ChatMessageComponent.createFromText( string ) );
+		player.addChatMessage( new ChatComponentText( string ) );
 	}
 
 }

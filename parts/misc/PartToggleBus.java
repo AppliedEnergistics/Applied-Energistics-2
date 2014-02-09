@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
@@ -227,7 +227,7 @@ public class PartToggleBus extends PartBasicState
 			List<ItemStack> items = new ArrayList();
 			items.add( is.copy() );
 			host.removePart( side, false );
-			Platform.spawnDrops( tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord, items );
+			Platform.spawnDrops( tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord, items );
 			is.stackSize = 0;
 		}
 	}

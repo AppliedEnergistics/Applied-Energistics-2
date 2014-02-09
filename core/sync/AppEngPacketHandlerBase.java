@@ -1,6 +1,7 @@
 package appeng.core.sync;
 
-import java.io.DataInputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -9,7 +10,6 @@ import java.util.Map;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketLightning;
-import appeng.core.sync.packets.PacketLocalizedChatMsg;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.core.sync.packets.PacketMatterCannon;
 import appeng.core.sync.packets.PacketMockExplosion;
@@ -41,8 +41,6 @@ public class AppEngPacketHandlerBase
 
 		PACKET_MOCKEXPLOSION(PacketMockExplosion.class),
 
-		PACKET_LOCALIZED_CHATMSG(PacketLocalizedChatMsg.class),
-
 		PACKET_VALUE_CONFIG(PacketValueConfig.class),
 
 		PACKET_SWITCH_GUIS(PacketSwitchGuis.class);
@@ -56,7 +54,7 @@ public class AppEngPacketHandlerBase
 			Constructor x = null;
 			try
 			{
-				x = pc.getConstructor( DataInputStream.class );
+				x = pc.getConstructor( ByteBuf.class );
 			}
 			catch (NoSuchMethodException e)
 			{
@@ -72,7 +70,7 @@ public class AppEngPacketHandlerBase
 				throw new RuntimeException( "Invalid Packet Class, must be constructable on DataInputStream" );
 		}
 
-		AppEngPacket parsePacket(DataInputStream in) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+		public AppEngPacket parsePacket(ByteBuf in) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
 		{
 			return (AppEngPacket) con.newInstance( in );
 		}

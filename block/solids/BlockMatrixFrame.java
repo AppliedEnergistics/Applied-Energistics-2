@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderNull;
@@ -29,7 +30,7 @@ public class BlockMatrixFrame extends AEBaseBlock
 	}
 
 	@Override
-	public void getSubBlocks(int id, CreativeTabs tab, List list)
+	public void getSubBlocks(Item id, CreativeTabs tab, List list)
 	{
 
 	}

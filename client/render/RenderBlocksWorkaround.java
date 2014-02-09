@@ -6,8 +6,8 @@ import java.util.EnumSet;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.Icon;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.core.AELog;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -19,12 +19,12 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	public boolean calculations = true;
 	public EnumSet<ForgeDirection> faces = EnumSet.allOf( ForgeDirection.class );
 
-	private Icon rXPos = null;
-	private Icon rXNeg = null;
-	private Icon rYPos = null;
-	private Icon rYNeg = null;
-	private Icon rZPos = null;
-	private Icon rZNeg = null;
+	private IIcon rXPos = null;
+	private IIcon rXNeg = null;
+	private IIcon rYPos = null;
+	private IIcon rYNeg = null;
+	private IIcon rZPos = null;
+	private IIcon rZNeg = null;
 
 	private boolean isAO = false;
 
@@ -71,7 +71,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 	}
 
-	public void setTexture(Icon ico)
+	public void setTexture(IIcon ico)
 	{
 		rXPos = rXNeg = rYPos = rYNeg = rZPos = rZNeg = ico;
 	}
@@ -169,7 +169,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceXNeg(Block par1Block, double par2, double par4, double par6, Icon par8Icon)
+	public void renderFaceXNeg(Block par1Block, double par2, double par4, double par6, IIcon par8Icon)
 	{
 		if ( faces.contains( ForgeDirection.WEST ) )
 		{
@@ -220,7 +220,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceXPos(Block par1Block, double par2, double par4, double par6, Icon par8Icon)
+	public void renderFaceXPos(Block par1Block, double par2, double par4, double par6, IIcon par8Icon)
 	{
 		if ( faces.contains( ForgeDirection.EAST ) )
 		{
@@ -299,7 +299,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceYNeg(Block par1Block, double par2, double par4, double par6, Icon par8Icon)
+	public void renderFaceYNeg(Block par1Block, double par2, double par4, double par6, IIcon par8Icon)
 	{
 		if ( faces.contains( ForgeDirection.DOWN ) )
 		{
@@ -350,7 +350,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceYPos(Block par1Block, double par2, double par4, double par6, Icon par8Icon)
+	public void renderFaceYPos(Block par1Block, double par2, double par4, double par6, IIcon par8Icon)
 	{
 		if ( faces.contains( ForgeDirection.UP ) )
 		{
@@ -401,7 +401,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceZNeg(Block par1Block, double par2, double par4, double par6, Icon par8Icon)
+	public void renderFaceZNeg(Block par1Block, double par2, double par4, double par6, IIcon par8Icon)
 	{
 		if ( faces.contains( ForgeDirection.NORTH ) )
 		{
@@ -452,7 +452,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceZPos(Block par1Block, double par2, double par4, double par6, Icon par8Icon)
+	public void renderFaceZPos(Block par1Block, double par2, double par4, double par6, IIcon par8Icon)
 	{
 		if ( faces.contains( ForgeDirection.SOUTH ) )
 		{

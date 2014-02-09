@@ -8,8 +8,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
@@ -97,7 +97,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		Icon myIcon = is.getIconIndex();
+		IIcon myIcon = is.getIconIndex();
 		rh.setTexture( myIcon );
 		rh.setBounds( 6, 6, 10, 10, 10, 16 );
 		rh.renderBlock( x, y, z, renderer );

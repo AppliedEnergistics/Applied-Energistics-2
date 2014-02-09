@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.oredict.OreDictionary;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class OreDictionaryHandler
 {
@@ -25,7 +25,7 @@ public class OreDictionaryHandler
 		return true;
 	}
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onOreDictionaryRegister(OreDictionary.OreRegisterEvent event)
 	{
 		if ( shouldCare( event.Name ) )

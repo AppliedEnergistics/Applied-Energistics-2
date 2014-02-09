@@ -15,6 +15,7 @@ import net.minecraft.world.WorldServer;
 import appeng.api.AEApi;
 import appeng.api.util.WorldCoord;
 import appeng.block.solids.BlockMatrixFrame;
+import appeng.util.Platform;
 
 public class StorageHelper
 {
@@ -40,9 +41,8 @@ public class StorageHelper
 		@Override
 		public void visit(int x, int y, int z)
 		{
-			int blk = dst.getBlockId( x, y, z );
-			if ( blk > 0 )
-				Block.blocksList[blk].onNeighborBlockChange( dst, x, y, z, 0 );
+			Block blk = dst.getBlock( x, y, z );
+			blk.onNeighborBlockChange( dst, x, y, z, Platform.air );
 		}
 	};
 
@@ -50,9 +50,10 @@ public class StorageHelper
 	{
 
 		World dst;
-		int blkID, Meta;
+		Block blkID;
+		int Meta;
 
-		public WrapInMatrixFrame(int blockID, int metaData, World dst2) {
+		public WrapInMatrixFrame(Block blockID, int metaData, World dst2) {
 			dst = dst2;
 			blkID = blockID;
 			Meta = metaData;
@@ -178,7 +179,8 @@ public class StorageHelper
 					oldWorld.getChunkFromChunkCoords( entX, entZ ).isModified = true;
 				}
 
-				oldWorld.onEntityRemoved( entity );
+				// TODO: Fix?
+				// oldWorld.onEntityRemoved( entity );
 
 				if ( player == null ) // Are we NOT working with a player?
 				{
@@ -215,7 +217,8 @@ public class StorageHelper
 
 		if ( player != null )
 		{
-			WorldServer.class.cast( newWorld ).getChunkProvider().loadChunk( MathHelper.floor_double( entity.posX ) >> 4, MathHelper.floor_double( entity.posZ ) >> 4 );
+			WorldServer.class.cast( newWorld ).getChunkProvider()
+					.loadChunk( MathHelper.floor_double( entity.posX ) >> 4, MathHelper.floor_double( entity.posZ ) >> 4 );
 		}
 
 		return entity;
@@ -252,7 +255,7 @@ public class StorageHelper
 	{
 		BlockMatrixFrame blkMF = (BlockMatrixFrame) AEApi.instance().blocks().blockMatrixFrame.block();
 
-		transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new WrapInMatrixFrame( blkMF.blockID, 0, dst ) );
+		transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new WrapInMatrixFrame( blkMF, 0, dst ) );
 
 		AxisAlignedBB srcBox = AxisAlignedBB.getBoundingBox( x, y, z, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1 );
 
@@ -278,10 +281,10 @@ public class StorageHelper
 		}
 
 		for (WorldCoord wc : cDst.updates)
-			cDst.wrld.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, 0 );
+			cDst.wrld.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.air );
 
 		for (WorldCoord wc : cSrc.updates)
-			cSrc.wrld.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, 0 );
+			cSrc.wrld.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.air );
 
 		transverseEdges( x - 1, y - 1, z - 1, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1, new triggerUpdates( src ) );
 		transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new triggerUpdates( dst ) );
@@ -290,9 +293,8 @@ public class StorageHelper
 		transverseEdges( i, j, k, i + scaleX, j + scaleY, k + scaleZ, new triggerUpdates( dst ) );
 
 		/*
-		 * IChunkProvider cp = dest.getChunkProvider(); if ( cp instanceof
-		 * ChunkProviderServer ) { ChunkProviderServer srv =
-		 * (ChunkProviderServer) cp; srv.unloadAllChunks(); }
+		 * IChunkProvider cp = dest.getChunkProvider(); if ( cp instanceof ChunkProviderServer ) { ChunkProviderServer
+		 * srv = (ChunkProviderServer) cp; srv.unloadAllChunks(); }
 		 * 
 		 * cp.unloadQueuedChunks();
 		 */

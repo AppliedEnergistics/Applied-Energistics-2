@@ -16,9 +16,9 @@ import appeng.client.gui.widgets.GuiImgButton;
 import appeng.container.implementations.ContainerIOPort;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.tile.storage.TileIOPort;
-import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class GuiIOPort extends GuiUpgradeable
 {
@@ -42,8 +42,8 @@ public class GuiIOPort extends GuiUpgradeable
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRenderer.drawString( GuiText.IOPort.getLocal(), 8, 6, 4210752 );
-		fontRenderer.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		fontRendererObj.drawString( GuiText.IOPort.getLocal(), 8, 6, 4210752 );
+		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
 
 		if ( redstoneMode != null )
 			redstoneMode.set( cvb.rsMode );
@@ -77,10 +77,10 @@ public class GuiIOPort extends GuiUpgradeable
 		try
 		{
 			if ( btn == fullMode )
-				PacketDispatcher.sendPacketToServer( (new PacketConfigButton( fullMode.getSetting(), backwards )).getPacket() );
+				NetworkHandler.instance.sendToServer( new PacketConfigButton( fullMode.getSetting(), backwards ) );
 
 			if ( btn == operationMode )
-				PacketDispatcher.sendPacketToServer( (new PacketConfigButton( operationMode.getSetting(), backwards )).getPacket() );
+				NetworkHandler.instance.sendToServer( new PacketConfigButton( operationMode.getSetting(), backwards ) );
 		}
 		catch (IOException e)
 		{

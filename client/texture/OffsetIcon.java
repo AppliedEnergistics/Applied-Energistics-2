@@ -1,18 +1,18 @@
 package appeng.client.texture;
 
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class OffsetIcon implements Icon
+public class OffsetIcon implements IIcon
 {
 
 	final float offsetX;
 	final float offsetY;
 
-	private Icon p;
+	private IIcon p;
 
-	public OffsetIcon(Icon o, float x, float y) {
+	public OffsetIcon(IIcon o, float x, float y) {
 		p = o;
 		offsetX = x;
 		offsetY = y;

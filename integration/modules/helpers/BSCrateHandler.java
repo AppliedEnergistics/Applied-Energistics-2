@@ -2,7 +2,7 @@ package appeng.integration.modules.helpers;
 
 import net.mcft.copy.betterstorage.api.ICrateStorage;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.storage.IExternalStorageHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;

@@ -17,9 +17,9 @@ import appeng.client.gui.widgets.GuiImgButton;
 import appeng.container.implementations.ContainerUpgradeable;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.parts.automation.PartImportBus;
-import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class GuiUpgradeable extends AEBaseGui
 {
@@ -69,10 +69,10 @@ public class GuiUpgradeable extends AEBaseGui
 		try
 		{
 			if ( btn == redstoneMode )
-				PacketDispatcher.sendPacketToServer( (new PacketConfigButton( redstoneMode.getSetting(), backwards )).getPacket() );
+				NetworkHandler.instance.sendToServer( new PacketConfigButton( redstoneMode.getSetting(), backwards ) );
 
 			if ( btn == fuzzyMode )
-				PacketDispatcher.sendPacketToServer( (new PacketConfigButton( fuzzyMode.getSetting(), backwards )).getPacket() );
+				NetworkHandler.instance.sendToServer( new PacketConfigButton( fuzzyMode.getSetting(), backwards ) );
 
 		}
 		catch (IOException e)
@@ -120,8 +120,8 @@ public class GuiUpgradeable extends AEBaseGui
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRenderer.drawString( getName().getLocal(), 8, 6, 4210752 );
-		fontRenderer.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		fontRendererObj.drawString( getName().getLocal(), 8, 6, 4210752 );
+		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
 
 		if ( redstoneMode != null )
 			redstoneMode.set( cvb.rsMode );

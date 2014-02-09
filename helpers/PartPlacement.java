@@ -5,16 +5,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.StepSound;
+import net.minecraft.block.Block.SoundType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
@@ -26,20 +25,21 @@ import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.core.AELog;
 import appeng.core.AppEng;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketPartPlacement;
 import appeng.facade.IFacadeItem;
 import appeng.integration.abstraction.IBC;
 import appeng.integration.abstraction.IFMP;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
-import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class PartPlacement
 {
 
 	private ThreadLocal<Object> placing = new ThreadLocal<Object>();
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void playerInteract(PlayerInteractEvent event)
 	{
 		if ( event.action == Action.RIGHT_CLICK_BLOCK && event.entityPlayer.worldObj.isRemote )
@@ -71,8 +71,8 @@ public class PartPlacement
 
 		if ( held != null && Platform.isWrench( player, held, x, y, z ) && player.isSneaking() )
 		{
-			int block = world.getBlockId( x, y, z );
-			TileEntity tile = world.getBlockTileEntity( x, y, z );
+			Block block = world.getBlock( x, y, z );
+			TileEntity tile = world.getTileEntity( x, y, z );
 			IPartHost host = null;
 
 			if ( tile instanceof IPartHost )
@@ -83,7 +83,7 @@ public class PartPlacement
 				if ( !world.isRemote )
 				{
 					LookDirection dir = Platform.getPlayerRay( player );
-					MovingObjectPosition mop = Block.blocksList[block].collisionRayTrace( world, x, y, z, dir.a, dir.b );
+					MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.a, dir.b );
 					if ( mop != null )
 					{
 						List<ItemStack> is = new LinkedList();
@@ -100,11 +100,11 @@ public class PartPlacement
 						{
 							is.add( sp.facade.getItemStack() );
 							host.getFacadeContainer().removeFacade( host, sp.side );
-							world.notifyBlocksOfNeighborChange( x, y, z, 0 );
+							world.notifyBlocksOfNeighborChange( x, y, z, Platform.air );
 						}
 
 						if ( host.isEmpty() )
-							world.setBlock( x, y, z, 0 );
+							world.setBlock( x, y, z, Platform.air );
 
 						if ( is != null && !is.isEmpty() )
 						{
@@ -117,7 +117,7 @@ public class PartPlacement
 					player.swingItem();
 					try
 					{
-						PacketDispatcher.sendPacketToServer( (new PacketPartPlacement( x, y, z, face )).getPacket() );
+						NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face ) );
 					}
 					catch (IOException e)
 					{
@@ -130,7 +130,7 @@ public class PartPlacement
 			return false;
 		}
 
-		TileEntity tile = world.getBlockTileEntity( x, y, z );
+		TileEntity tile = world.getTileEntity( x, y, z );
 		IPartHost host = null;
 
 		if ( tile instanceof IPartHost )
@@ -168,7 +168,7 @@ public class PartPlacement
 						player.swingItem();
 						try
 						{
-							PacketDispatcher.sendPacketToServer( (new PacketPartPlacement( x, y, z, face )).getPacket() );
+							NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face ) );
 						}
 						catch (IOException e)
 						{
@@ -185,11 +185,11 @@ public class PartPlacement
 
 		// if ( held == null )
 		{
-			int block = world.getBlockId( x, y, z );
-			if ( host != null && player.isSneaking() && Block.blocksList[block] != null )
+			Block block = world.getBlock( x, y, z );
+			if ( host != null && player.isSneaking() && block != null )
 			{
 				LookDirection dir = Platform.getPlayerRay( player );
-				MovingObjectPosition mop = Block.blocksList[block].collisionRayTrace( world, x, y, z, dir.a, dir.b );
+				MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.a, dir.b );
 				if ( mop != null )
 				{
 					mop.hitVec = mop.hitVec.addVector( -mop.blockX, -mop.blockY, -mop.blockZ );
@@ -201,7 +201,7 @@ public class PartPlacement
 							{
 								try
 								{
-									PacketDispatcher.sendPacketToServer( (new PacketPartPlacement( x, y, z, face )).getPacket() );
+									NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face ) );
 								}
 								catch (IOException e)
 								{
@@ -228,8 +228,8 @@ public class PartPlacement
 			ItemBlock ib = (ItemBlock) is.getItem();
 			ForgeDirection offset = ForgeDirection.UNKNOWN;
 
-			int blkID = world.getBlockId( x, y, z );
-			if ( blkID != 0 && !Block.blocksList[blkID].isBlockReplaceable( world, x, y, z ) )
+			Block blkID = world.getBlock( x, y, z );
+			if ( blkID != null && !blkID.isReplaceable( world, x, y, z ) )
 			{
 				offset = side;
 				if ( Platform.isServer() )
@@ -240,7 +240,7 @@ public class PartPlacement
 			te_y = y + offset.offsetY;
 			te_z = z + offset.offsetZ;
 
-			tile = world.getBlockTileEntity( te_x, te_y, te_z );
+			tile = world.getTileEntity( te_x, te_y, te_z );
 			if ( tile instanceof IPartHost )
 				host = (IPartHost) tile;
 
@@ -252,7 +252,7 @@ public class PartPlacement
 			{
 				if ( !world.isRemote )
 				{
-					tile = world.getBlockTileEntity( te_x, te_y, te_z );
+					tile = world.getTileEntity( te_x, te_y, te_z );
 
 					if ( tile instanceof IPartHost )
 						host = (IPartHost) tile;
@@ -264,7 +264,7 @@ public class PartPlacement
 					player.swingItem();
 					try
 					{
-						PacketDispatcher.sendPacketToServer( (new PacketPartPlacement( x, y, z, face )).getPacket() );
+						NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face ) );
 					}
 					catch (IOException e)
 					{
@@ -290,15 +290,15 @@ public class PartPlacement
 				te_y = y + offset.offsetY;
 				te_z = z + offset.offsetZ;
 
-				int blkID = world.getBlockId( te_x, te_y, te_z );
-				tile = world.getBlockTileEntity( te_x, te_y, te_z );
+				Block blkID = world.getBlock( te_x, te_y, te_z );
+				tile = world.getTileEntity( te_x, te_y, te_z );
 
 				if ( tile != null && AppEng.instance.isIntegrationEnabled( "FMP" ) )
 					host = ((IFMP) AppEng.instance.getIntegration( "FMP" )).getOrCreateHost( tile );
 
-				if ( (blkID == 0 || Block.blocksList[blkID].isBlockReplaceable( world, te_x, te_y, te_z ) || host != null) && offset != ForgeDirection.UNKNOWN )
-					return place( held, te_x, te_y, te_z, side.getOpposite().ordinal(), player, world, pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS
-							: PlaceType.PLACE_ITEM, depth + 1 );
+				if ( (blkID == null || blkID.isReplaceable( world, te_x, te_y, te_z ) || host != null) && offset != ForgeDirection.UNKNOWN )
+					return place( held, te_x, te_y, te_z, side.getOpposite().ordinal(), player, world,
+							pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS : PlaceType.PLACE_ITEM, depth + 1 );
 			}
 			return false;
 		}
@@ -308,8 +308,10 @@ public class PartPlacement
 			ForgeDirection mySide = host.addPart( held, side, player );
 			if ( mySide != null )
 			{
-				StepSound ss = AEApi.instance().blocks().blockMultiPart.block().stepSound;
-				world.playSoundEffect( 0.5 + x, 0.5 + y, 0.5 + z, ss.getPlaceSound(), (ss.getVolume() + 1.0F) / 2.0F, ss.getPitch() * 0.8F );
+				SoundType ss = AEApi.instance().blocks().blockMultiPart.block().stepSound;
+
+				// ss.getPlaceSound()
+				world.playSoundEffect( 0.5 + x, 0.5 + y, 0.5 + z, ss.func_150496_b(), (ss.getVolume() + 1.0F) / 2.0F, ss.getPitch() * 0.8F );
 
 				if ( !player.capabilities.isCreativeMode )
 				{
@@ -327,7 +329,7 @@ public class PartPlacement
 			player.swingItem();
 			try
 			{
-				PacketDispatcher.sendPacketToServer( (new PacketPartPlacement( x, y, z, face )).getPacket() );
+				NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face ) );
 			}
 			catch (IOException e)
 			{

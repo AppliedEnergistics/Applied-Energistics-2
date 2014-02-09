@@ -14,9 +14,9 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -248,9 +248,9 @@ public class BaseBlockRender
 		return MAX_DISTANCE;
 	}
 
-	public Icon firstNotNull(Icon... s)
+	public IIcon firstNotNull(IIcon... s)
 	{
-		for (Icon o : s)
+		for (IIcon o : s)
 			if ( o != null )
 				return o;
 		return ExtraTextures.getMissing();
@@ -258,7 +258,7 @@ public class BaseBlockRender
 
 	public void renderInvBlock(EnumSet<ForgeDirection> sides, AEBaseBlock block, Tessellator tess, int color, RenderBlocks renderer)
 	{
-		if ( tess.isDrawing )
+		if ( Platform.isDrawing( tess ) )
 			tess.draw();
 
 		if ( sides.contains( ForgeDirection.DOWN ) )
@@ -517,7 +517,7 @@ public class BaseBlockRender
 
 	@SideOnly(Side.CLIENT)
 	private void renderFace(Tessellator tess, double offsetX, double offsetY, double offsetZ, double ax, double ay, double az, double bx, double by, double bz,
-			double ua, double ub, double va, double vb, Icon ico, boolean flip)
+			double ua, double ub, double va, double vb, IIcon ico, boolean flip)
 	{
 		if ( flip )
 		{
@@ -544,7 +544,7 @@ public class BaseBlockRender
 	}
 
 	@SideOnly(Side.CLIENT)
-	protected void renderCutoutFace(Block block, Icon ico, int x, int y, int z, RenderBlocks renderer, ForgeDirection orientation, float edgeThickness)
+	protected void renderCutoutFace(Block block, IIcon ico, int x, int y, int z, RenderBlocks renderer, ForgeDirection orientation, float edgeThickness)
 	{
 		Tessellator tess = Tessellator.instance;
 
@@ -631,7 +631,7 @@ public class BaseBlockRender
 	}
 
 	@SideOnly(Side.CLIENT)
-	protected void renderFace(int x, int y, int z, Block block, Icon ico, RenderBlocks renderer, ForgeDirection orientation)
+	protected void renderFace(int x, int y, int z, Block block, IIcon ico, RenderBlocks renderer, ForgeDirection orientation)
 	{
 		switch (orientation)
 		{
@@ -729,7 +729,7 @@ public class BaseBlockRender
 	{
 		if ( itemstack != null )
 		{
-			EntityItem entityitem = new EntityItem( par1EntityItemFrame.worldObj, 0.0D, 0.0D, 0.0D, itemstack );
+			EntityItem entityitem = new EntityItem( par1EntityItemFrame.getWorldObj(), 0.0D, 0.0D, 0.0D, itemstack );
 			entityitem.getEntityItem().stackSize = 1;
 
 			// set all this stuff and then do shit? meh?

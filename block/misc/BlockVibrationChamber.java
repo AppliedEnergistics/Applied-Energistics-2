@@ -5,10 +5,10 @@ import java.util.Random;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
 import appeng.client.texture.ExtraTextures;
 import appeng.core.Configuration;
@@ -38,7 +38,7 @@ public class BlockVibrationChamber extends AEBaseBlock
 			TileVibrationChamber tc = getTileEntity( w, x, y, z );
 			if ( tc != null && !player.isSneaking() )
 			{
-				Platform.openGUI( player, tc, ForgeDirection.getOrientation(side),GuiBridge.GUI_VIBRATIONCHAMBER );
+				Platform.openGUI( player, tc, ForgeDirection.getOrientation( side ), GuiBridge.GUI_VIBRATIONCHAMBER );
 				return true;
 			}
 		}
@@ -47,9 +47,9 @@ public class BlockVibrationChamber extends AEBaseBlock
 	}
 
 	@Override
-	public Icon getBlockTexture(IBlockAccess w, int x, int y, int z, int s)
+	public IIcon getIcon(IBlockAccess w, int x, int y, int z, int s)
 	{
-		Icon ico = super.getBlockTexture( w, x, y, z, s );
+		IIcon ico = super.getIcon( w, x, y, z, s );
 		TileVibrationChamber tvc = getTileEntity( w, x, y, z );
 
 		if ( tvc != null && tvc.isOn && ico == getRendererInstance().getTexture( ForgeDirection.SOUTH ) )

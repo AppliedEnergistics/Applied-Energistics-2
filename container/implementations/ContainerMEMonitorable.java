@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.nio.BufferOverflowException;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.networking.IGrid;
@@ -24,11 +24,10 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.util.Platform;
 import appeng.util.item.ItemList;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 
 public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonitorHandlerReciever<IAEItemStack>
 {
@@ -64,7 +63,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonito
 				}
 			}
 			else
-				ip.player.closeScreen();
+				isContainerValid = false;
 		}
 		else
 			monitor = null;
@@ -104,13 +103,12 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonito
 
 					if ( !piu.isEmpty() )
 					{
-						Packet p = piu.getPacket();
 						items.resetStatus();
 
 						for (Object c : this.crafters)
 						{
-							if ( c instanceof Player )
-								PacketDispatcher.sendPacketToPlayer( p, (Player) c );
+							if ( c instanceof EntityPlayer )
+								NetworkHandler.instance.sendTo( piu, (EntityPlayerMP) c );
 						}
 					}
 				}
@@ -129,7 +127,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonito
 	{
 		super.addCraftingToCrafters( c );
 
-		if ( Platform.isServer() && c instanceof Player && monitor != null )
+		if ( Platform.isServer() && c instanceof EntityPlayer && monitor != null )
 		{
 			try
 			{
@@ -144,16 +142,14 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IMEMonito
 					}
 					catch (BufferOverflowException boe)
 					{
-						Packet p = piu.getPacket();
-						PacketDispatcher.sendPacketToPlayer( p, (Player) c );
+						NetworkHandler.instance.sendTo( piu, (EntityPlayerMP) c );
 
 						piu = new PacketMEInventoryUpdate();
 						piu.appendItem( send );
 					}
 				}
 
-				Packet p = piu.getPacket();
-				PacketDispatcher.sendPacketToPlayer( p, (Player) c );
+				NetworkHandler.instance.sendTo( piu, (EntityPlayerMP) c );
 			}
 			catch (IOException e)
 			{

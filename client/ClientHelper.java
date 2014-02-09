@@ -8,11 +8,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.TESRWrapper;
@@ -27,6 +26,7 @@ import appeng.server.ServerHelper;
 import appeng.util.Platform;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientHelper extends ServerHelper
 {
@@ -40,10 +40,10 @@ public class ClientHelper extends ServerHelper
 		RenderManager.instance.entityRenderMap.put( EntityTinyTNTPrimed.class, new RenderTinyTNTPrimed() );
 	}
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void updateTextureSheet(TextureStitchEvent.Pre ev)
 	{
-		if ( ev.map.textureType == 0 )
+		if ( ev.map.getTextureType() == 0 )
 		{
 			for (ExtraTextures et : ExtraTextures.values())
 				et.registerIcon( ev.map );
@@ -97,7 +97,7 @@ public class ClientHelper extends ServerHelper
 		float y = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
 		float z = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
 
-		EnergyFx fx = new EnergyFx( w, posX + x, posY + y, posZ + z, Item.diamond );
+		EnergyFx fx = new EnergyFx( w, posX + x, posY + y, posZ + z, Items.diamond );
 
 		fx.motionX = -x * 0.1;
 		fx.motionY = -y * 0.1;

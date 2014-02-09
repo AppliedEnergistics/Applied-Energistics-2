@@ -1,21 +1,20 @@
 package appeng.helpers;
 
-import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Callable;
 
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.WorldEvent;
 import appeng.api.networking.IGridNode;
 import appeng.core.AELog;
 import appeng.me.Grid;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Type;
 
-public class TickHandler implements ITickHandler
+public class TickHandler
 {
 
 	class HandlerRep
@@ -79,7 +78,7 @@ public class TickHandler implements ITickHandler
 		getRepo().clear();
 	}
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void unloadWorld(WorldEvent.Unload ev)
 	{
 		if ( Platform.isServer() )
@@ -100,50 +99,36 @@ public class TickHandler implements ITickHandler
 		}
 	}
 
-	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData)
+	@SubscribeEvent
+	public void onTick(TickEvent ev)
 	{
-
-	}
-
-	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData)
-	{
-		HandlerRep repo = getRepo();
-		while (!repo.tiles.isEmpty())
+		if ( ev.type == Type.SERVER )
 		{
-			AEBaseTile bt = repo.tiles.poll();
-			bt.onReady();
-		}
-
-		for (Grid g : getRepo().networks)
-		{
-			g.update();
-		}
-
-		Callable c = null;
-		while ((c = callQueue.poll()) != null)
-		{
-			try
+			HandlerRep repo = getRepo();
+			while (!repo.tiles.isEmpty())
 			{
-				c.call();
+				AEBaseTile bt = repo.tiles.poll();
+				bt.onReady();
 			}
-			catch (Exception e)
+
+			for (Grid g : getRepo().networks)
 			{
-				AELog.error( e );
+				g.update();
+			}
+
+			Callable c = null;
+			while ((c = callQueue.poll()) != null)
+			{
+				try
+				{
+					c.call();
+				}
+				catch (Exception e)
+				{
+					AELog.error( e );
+				}
 			}
 		}
 	}
 
-	@Override
-	public EnumSet<TickType> ticks()
-	{
-		return EnumSet.of( TickType.SERVER );
-	}
-
-	@Override
-	public String getLabel()
-	{
-		return "AE-TickHandler";
-	}
 }

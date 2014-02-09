@@ -1,7 +1,7 @@
 package appeng.tile.networking;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -15,7 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import powercrystals.minefactoryreloaded.api.rednet.RedNetConnectionType;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
@@ -59,7 +59,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		}
 
 		@Override
-		public boolean readFromStream(DataInputStream data) throws IOException
+		public boolean readFromStream(ByteBuf data) throws IOException
 		{
 			boolean ret = cb.readFromStream( data );
 
@@ -67,14 +67,15 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 			if ( newLV != oldLV )
 			{
 				oldLV = newLV;
-				worldObj.updateAllLightTypes( xCoord, yCoord, zCoord );
+				worldObj.func_147451_t( xCoord, yCoord, zCoord );
+				// worldObj.updateAllLightTypes( xCoord, yCoord, zCoord );
 			}
 
 			return ret;
 		}
 
 		@Override
-		public void writeToStream(DataOutputStream data) throws IOException
+		public void writeToStream(ByteBuf data) throws IOException
 		{
 			cb.writeToStream( data );
 		}
@@ -87,8 +88,11 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		super.onReady();
 		if ( cb.isEmpty() )
 		{
-			if ( worldObj.getBlockTileEntity( xCoord, yCoord, zCoord ) == this )
-				worldObj.destroyBlock( xCoord, yCoord, zCoord, true );
+			if ( worldObj.getTileEntity( xCoord, yCoord, zCoord ) == this )
+			{
+				worldObj.func_147480_a( xCoord, yCoord, zCoord, true );
+				// worldObj.destroyBlock( xCoord, yCoord, zCoord, true );
+			}
 		}
 		else
 			cb.addToWorld();
@@ -226,7 +230,8 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		if ( newLV != oldLV )
 		{
 			oldLV = newLV;
-			worldObj.updateAllLightTypes( xCoord, yCoord, zCoord );
+			worldObj.func_147451_t( xCoord, yCoord, zCoord );
+			// worldObj.updateAllLightTypes( xCoord, yCoord, zCoord );
 		}
 
 		super.markForUpdate();
@@ -247,7 +252,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public void markForSave()
 	{
-		onInventoryChanged();
+		markDirty();
 	}
 
 	@Override

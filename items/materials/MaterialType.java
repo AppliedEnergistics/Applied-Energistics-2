@@ -3,7 +3,7 @@ package appeng.items.materials;
 import java.util.EnumSet;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.oredict.OreDictionary;
 import appeng.client.render.entity.EntityIds;
 import appeng.core.AppEng;
@@ -55,9 +55,9 @@ public enum MaterialType
 	private EnumSet<AEFeature> features;
 	private Class<? extends Entity> droppedEntity;
 
-	// icon for the material.
+	// IIcon for the material.
 	@SideOnly(Side.CLIENT)
-	public Icon icon;
+	public IIcon IIcon;
 	public int damageValue = -1;
 
 	MaterialType() {

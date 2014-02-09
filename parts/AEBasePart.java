@@ -1,7 +1,7 @@
 package appeng.parts;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -18,7 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.IGridNode;
@@ -131,13 +131,13 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	}
 
 	@Override
-	public void writeToStream(DataOutputStream data) throws IOException
+	public void writeToStream(ByteBuf data) throws IOException
 	{
 
 	}
 
 	@Override
-	public boolean readFromStream(DataInputStream data) throws IOException
+	public boolean readFromStream(ByteBuf data) throws IOException
 	{
 		return false;
 	}
@@ -303,7 +303,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 			List<ItemStack> items = new ArrayList();
 			items.add( is.copy() );
 			host.removePart( side, false );
-			Platform.spawnDrops( tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord, items );
+			Platform.spawnDrops( tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord, items );
 			is.stackSize = 0;
 		}
 	}

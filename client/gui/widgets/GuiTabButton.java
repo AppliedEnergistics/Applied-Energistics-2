@@ -24,7 +24,7 @@ public class GuiTabButton extends GuiButton implements ITooltip
 
 	public void setVisibility(boolean vis)
 	{
-		drawButton = vis;
+		visible = vis;
 		enabled = vis;
 	}
 
@@ -53,17 +53,17 @@ public class GuiTabButton extends GuiButton implements ITooltip
 	@Override
 	public boolean isVisible()
 	{
-		return drawButton;
+		return visible;
 	}
 
 	@Override
 	public void drawButton(Minecraft par1Minecraft, int par2, int par3)
 	{
-		if ( this.drawButton )
+		if ( this.visible )
 		{
 			GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 			par1Minecraft.renderEngine.bindTexture( ExtraTextures.GuiTexture( "guis/states.png" ) );
-			this.field_82253_i = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
+			this.field_146123_n = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
 
 			int uv_y = (int) Math.floor( 13 / 16 );
 			int uv_x = 13 - uv_y * 16;

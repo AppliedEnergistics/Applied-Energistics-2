@@ -16,7 +16,7 @@ public class CellConfig extends AppEngInternalInventory
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
 		writeToNBT( Platform.openNbtData( is ), "list" );
 	}

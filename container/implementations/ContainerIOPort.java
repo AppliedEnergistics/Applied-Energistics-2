@@ -60,7 +60,7 @@ public class ContainerIOPort extends ContainerUpgradeable
 		offy = 17;
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 2; x++)
-				addSlotToContainer( new SlotOutput( cells, 6 + x + y * 2, offx + x * 18, offy + y * 18, PlaceableItemType.STORAGE_CELLS.icon ) );
+				addSlotToContainer( new SlotOutput( cells, 6 + x + y * 2, offx + x * 18, offy + y * 18, PlaceableItemType.STORAGE_CELLS.IIcon ) );
 
 		IInventory upgrades = myte.getInventoryByName( "upgrades" );
 		addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0 )).setNotDraggable() );

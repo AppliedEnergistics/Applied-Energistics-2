@@ -16,7 +16,7 @@ public class PlayerRegistry implements IPlayerRegistry
 	@Override
 	public int getID(EntityPlayer player)
 	{
-		return WorldSettings.getInstance().getPlayerID( player.username );
+		return WorldSettings.getInstance().getPlayerID( player.getCommandSenderName() );
 	}
 
 	@Override

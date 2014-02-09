@@ -4,8 +4,8 @@ import java.util.EnumSet;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
@@ -45,7 +45,7 @@ public class PartCableCovered extends PartCable
 	}
 
 	@Override
-	public Icon getTexture(AEColor c)
+	public IIcon getTexture(AEColor c)
 	{
 		return getCoveredTexture( c );
 	}
@@ -175,8 +175,8 @@ public class PartCableCovered extends PartCable
 		}
 		else
 		{
-			Icon def = getTexture( getCableColor() );
-			Icon off = new OffsetIcon( def, 0, -12 );
+			IIcon def = getTexture( getCableColor() );
+			IIcon off = new OffsetIcon( def, 0, -12 );
 			for (ForgeDirection of : connections)
 			{
 				switch (of)

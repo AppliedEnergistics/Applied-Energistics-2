@@ -1,17 +1,17 @@
 package appeng.client.texture;
 
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TaughtIcon implements Icon
+public class TaughtIcon implements IIcon
 {
 
 	final float tightness;
 
-	private Icon p;
+	private IIcon p;
 
-	public TaughtIcon(Icon o, float tightness) {
+	public TaughtIcon(IIcon o, float tightness) {
 		p = o;
 		this.tightness = tightness;
 	}

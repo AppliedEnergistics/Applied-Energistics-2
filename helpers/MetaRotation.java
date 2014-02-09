@@ -2,7 +2,7 @@ package appeng.helpers;
 
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.util.IOrientable;
 
 public class MetaRotation implements IOrientable

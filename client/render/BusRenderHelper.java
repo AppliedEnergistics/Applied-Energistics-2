@@ -5,8 +5,8 @@ import java.util.EnumSet;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.Icon;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
@@ -149,15 +149,15 @@ public class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void setTexture(Icon ico)
+	public void setTexture(IIcon ico)
 	{
 		blk.getRendererInstance().setTemporaryRenderIcon( ico );
 	}
 
 	@Override
-	public void setTexture(Icon Down, Icon Up, Icon North, Icon South, Icon West, Icon East)
+	public void setTexture(IIcon Down, IIcon Up, IIcon North, IIcon South, IIcon West, IIcon East)
 	{
-		Icon list[] = new Icon[6];
+		IIcon list[] = new IIcon[6];
 
 		list[0] = Down;
 		list[1] = Up;
@@ -215,10 +215,10 @@ public class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void renderInventoryFace(Icon icon, ForgeDirection face, RenderBlocks renderer)
+	public void renderInventoryFace(IIcon IIcon, ForgeDirection face, RenderBlocks renderer)
 	{
 		renderer.setRenderBounds( minX / 16.0, minY / 16.0, minZ / 16.0, maxX / 16.0, maxY / 16.0, maxZ / 16.0 );
-		setTexture( icon );
+		setTexture( IIcon );
 		bbr.renderInvBlock( EnumSet.of( face ), blk, Tessellator.instance, color, renderer );
 	}
 
@@ -241,11 +241,7 @@ public class BusRenderHelper implements IPartRenderHelper
 
 		bbr.renderBlockBounds( renderer, minX, minY, minZ, maxX, maxY, maxZ, ax, ay, az );
 
-		int blkId = renderer.blockAccess.getBlockId( x, y, z );
-		if ( Block.blocksList[blkId] == null )
-			return;
-
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( renderer.blockAccess.getBlock( x, y, z ), x, y, z );
 	}
 
 	@Override
@@ -261,15 +257,11 @@ public class BusRenderHelper implements IPartRenderHelper
 
 	public void renderBlockCurrentBounds(int x, int y, int z, RenderBlocks renderer)
 	{
-		int blkId = renderer.blockAccess.getBlockId( x, y, z );
-		if ( Block.blocksList[blkId] == null )
-			return;
-
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( renderer.blockAccess.getBlock( x, y, z ), x, y, z );
 	}
 
 	@Override
-	public void renderFaceCutout(int x, int y, int z, Icon ico, ForgeDirection face, float edgeThickness, RenderBlocks renderer)
+	public void renderFaceCutout(int x, int y, int z, IIcon ico, ForgeDirection face, float edgeThickness, RenderBlocks renderer)
 	{
 		switch (face)
 		{
@@ -301,7 +293,7 @@ public class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void renderFace(int x, int y, int z, Icon ico, ForgeDirection face, RenderBlocks renderer)
+	public void renderFace(int x, int y, int z, IIcon ico, ForgeDirection face, RenderBlocks renderer)
 	{
 		prepareBounds( renderer );
 		switch (face)

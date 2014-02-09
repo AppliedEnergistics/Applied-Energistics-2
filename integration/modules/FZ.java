@@ -114,7 +114,7 @@ public class FZ implements IFZ, IIntegrationModule
 			else
 				item.set( te, input == null ? null : input.copy() );
 
-			te.onInventoryChanged();
+			te.markDirty();
 		}
 		catch (IllegalArgumentException e)
 		{
@@ -134,7 +134,7 @@ public class FZ implements IFZ, IIntegrationModule
 			else
 				setItemCount.invoke( te, max );
 
-			te.onInventoryChanged();
+			te.markDirty();
 		}
 		catch (IllegalAccessException e)
 		{

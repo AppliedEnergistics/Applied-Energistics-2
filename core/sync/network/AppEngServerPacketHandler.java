@@ -1,25 +1,22 @@
-package appeng.core.sync;
+package appeng.core.sync.network;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
+
 import java.lang.reflect.InvocationTargetException;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import appeng.core.AELog;
-import cpw.mods.fml.common.network.IPacketHandler;
-import cpw.mods.fml.common.network.Player;
+import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.AppEngPacketHandlerBase;
+import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 
 public final class AppEngServerPacketHandler extends AppEngPacketHandlerBase implements IPacketHandler
 {
 
 	@Override
-	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player)
+	public void onPacketData(INetworkInfo manager, FMLProxyPacket packet, EntityPlayer player)
 	{
-		DataInputStream stream = new DataInputStream( new ByteArrayInputStream( packet.data ) );
-		// Determine packet type and coordinates of affected tile entity
+		ByteBuf stream = packet.payload();
 		int packetType = -1;
 
 		try
@@ -27,10 +24,6 @@ public final class AppEngServerPacketHandler extends AppEngPacketHandlerBase imp
 			packetType = stream.readInt();
 			AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
 			pack.serverPacketData( manager, pack, (EntityPlayer) player );
-		}
-		catch (IOException e)
-		{
-			AELog.error( e );
 		}
 		catch (InstantiationException e)
 		{

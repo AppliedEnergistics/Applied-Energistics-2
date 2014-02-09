@@ -1,6 +1,7 @@
 package appeng.core.api;
 
-import java.io.DataInputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 
 import net.minecraft.item.ItemStack;
@@ -51,13 +52,13 @@ public class ApiStorage implements IStorageHelper
 	}
 
 	@Override
-	public IAEItemStack readItemFromPacket(DataInputStream input) throws IOException
+	public IAEItemStack readItemFromPacket(ByteBuf input) throws IOException
 	{
 		return AEItemStack.loadItemStackFromPacket( input );
 	}
 
 	@Override
-	public IAEFluidStack readFluidFromPacket(DataInputStream input) throws IOException
+	public IAEFluidStack readFluidFromPacket(ByteBuf input) throws IOException
 	{
 		return AEFluidStack.loadFluidStackFromPacket( input );
 	}

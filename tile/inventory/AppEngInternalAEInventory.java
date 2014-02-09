@@ -126,11 +126,11 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
 		if ( te != null && Platform.isServer() )
 		{
-			te.onChangeInventory( this, -1, InvOperation.onInventoryChanged, null, null );
+			te.onChangeInventory( this, -1, InvOperation.markDirty, null, null );
 		}
 	}
 
@@ -147,12 +147,12 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	}
 
 	@Override
-	public void openChest()
+	public void openInventory()
 	{
 	}
 
 	@Override
-	public void closeChest()
+	public void closeInventory()
 	{
 	}
 
@@ -169,7 +169,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 					inv[x].writeToNBT( c );
 				}
 
-				target.setCompoundTag( "#" + x, c );
+				target.setTag( "#" + x, c );
 			}
 			catch (Exception err)
 			{
@@ -200,7 +200,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	{
 		NBTTagCompound c = new NBTTagCompound();
 		writeToNBT( c );
-		data.setCompoundTag( name, c );
+		data.setTag( name, c );
 	}
 
 	public void readFromNBT(NBTTagCompound data, String name)
@@ -217,13 +217,13 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
 		return "appeng-internal";
 	}
 
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
 		return false;
 	}

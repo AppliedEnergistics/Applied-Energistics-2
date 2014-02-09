@@ -35,7 +35,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem
 	}
 
 	@Override
-	public ItemStack getContainerItemStack(ItemStack itemStack)
+	public ItemStack getContainerItem(ItemStack itemStack)
 	{
 		itemStack.setItemDamage( itemStack.getItemDamage() + 1 );
 		return itemStack;

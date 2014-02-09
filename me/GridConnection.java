@@ -3,7 +3,7 @@ package appeng.me;
 import java.util.Arrays;
 import java.util.EnumSet;
 
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;

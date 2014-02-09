@@ -2,7 +2,7 @@ package appeng.block.networking;
 
 import java.util.EnumSet;
 
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import appeng.client.texture.ExtraTextures;
 import appeng.core.features.AEFeature;
 import appeng.tile.networking.TileDenseEnergyCell;
@@ -23,7 +23,7 @@ public class BlockDenseEnergyCell extends BlockEnergyCell
 	}
 
 	@Override
-	public Icon getIcon(int direction, int metadata)
+	public IIcon getIcon(int direction, int metadata)
 	{
 		switch (metadata)
 		{

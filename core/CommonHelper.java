@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
+import appeng.core.sync.AppEngPacket;
 import cpw.mods.fml.common.SidedProxy;
 
 public abstract class CommonHelper
@@ -23,7 +23,7 @@ public abstract class CommonHelper
 
 	public abstract List<EntityPlayer> getPlayers();
 
-	public abstract void sendToAllNearExcept(EntityPlayer p, double x, double y, double z, double dist, World w, Packet packet);
+	public abstract void sendToAllNearExcept(EntityPlayer p, double x, double y, double z, double dist, World w, AppEngPacket packet);
 
 	public abstract void spawnLightning(World worldObj, double posX, double posY, double posZ);
 

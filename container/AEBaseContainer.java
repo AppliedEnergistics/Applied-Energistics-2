@@ -12,7 +12,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
@@ -50,6 +50,7 @@ public abstract class AEBaseContainer extends Container
 	final IPart part;
 
 	final protected BaseActionSource mySrc;
+	public boolean isContainerValid = true;
 
 	int ticksSinceCheck = 900;
 
@@ -71,7 +72,9 @@ public abstract class AEBaseContainer extends Container
 			host = (IActionHost) part;
 
 		if ( host == null )
-			invPlayer.player.closeScreen();// close!
+		{
+			isContainerValid = false;
+		}
 		else
 		{
 			IGridNode gn = host.getActionableNode();
@@ -85,14 +88,14 @@ public abstract class AEBaseContainer extends Container
 						IEnergyGrid eg = g.getCache( IEnergyGrid.class );
 						if ( !eg.isNetworkPowered() )
 						{
-							invPlayer.player.closeScreen();
+							isContainerValid = false;
 							return;
 						}
 					}
 
 					ISecurityGrid sg = g.getCache( ISecurityGrid.class );
 					if ( !sg.hasPermission( invPlayer.player, security ) )
-						invPlayer.player.closeScreen();
+						isContainerValid = false;
 				}
 			}
 		}
@@ -152,9 +155,13 @@ public abstract class AEBaseContainer extends Container
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer)
 	{
-		if ( tileEntity instanceof IInventory )
-			return ((IInventory) tileEntity).isUseableByPlayer( entityplayer );
-		return true;
+		if ( isContainerValid )
+		{
+			if ( tileEntity instanceof IInventory )
+				return ((IInventory) tileEntity).isUseableByPlayer( entityplayer );
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -337,7 +344,7 @@ public abstract class AEBaseContainer extends Container
 									d.onSlotChanged();
 
 									// if ( worldEntity != null )
-									// worldEntity.onInventoryChanged();
+									// worldEntity.markDirty();
 									// if ( hasMETiles ) updateClient();
 
 									updateSlot( clickSlot );
@@ -367,7 +374,7 @@ public abstract class AEBaseContainer extends Container
 								d.onSlotChanged();
 
 								// if ( worldEntity != null )
-								// worldEntity.onInventoryChanged();
+								// worldEntity.markDirty();
 								// if ( hasMETiles ) updateClient();
 
 								updateSlot( clickSlot );

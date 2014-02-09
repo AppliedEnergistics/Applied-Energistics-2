@@ -2,13 +2,14 @@ package appeng.block.grindstone;
 
 import java.util.EnumSet;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
@@ -47,7 +48,7 @@ public class BlockCrank extends AEBaseBlock
 
 	private boolean isCrankable(World w, int x, int y, int z, ForgeDirection offset)
 	{
-		TileEntity te = w.getBlockTileEntity( x + offset.offsetX, y + offset.offsetY, z + offset.offsetZ );
+		TileEntity te = w.getTileEntity( x + offset.offsetX, y + offset.offsetY, z + offset.offsetZ );
 		if ( te instanceof ICrankable )
 		{
 			return ((ICrankable) te).canCrankAttach( offset.getOpposite() );
@@ -72,13 +73,13 @@ public class BlockCrank extends AEBaseBlock
 	@Override
 	public boolean isValidOrientation(World w, int x, int y, int z, ForgeDirection forward, ForgeDirection up)
 	{
-		TileEntity te = w.getBlockTileEntity( x, y, z );
+		TileEntity te = w.getTileEntity( x, y, z );
 		return !(te instanceof TileCrank) || isCrankable( w, x, y, z, up.getOpposite() );
 	}
 
 	private void dropCrank(World w, int x, int y, int z)
 	{
-		w.destroyBlock( x, y, z, true );
+		w.func_147480_a( x, y, z, true ); // w.destroyBlock( x, y, z, true );
 		w.markBlockForUpdate( x, y, z );
 	}
 
@@ -99,7 +100,7 @@ public class BlockCrank extends AEBaseBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange(World w, int x, int y, int z, int id)
+	public void onNeighborBlockChange(World w, int x, int y, int z, Block id)
 	{
 		AEBaseTile tile = getTileEntity( w, x, y, z );
 		if ( tile != null )

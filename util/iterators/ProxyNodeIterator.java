@@ -2,7 +2,7 @@ package appeng.util.iterators;
 
 import java.util.Iterator;
 
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 

@@ -50,15 +50,15 @@ public class WrapperInvSlot implements IInventory
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
-		return inv.getInvName();
+		return inv.getInventoryName();
 	}
 
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
-		return inv.isInvNameLocalized();
+		return inv.hasCustomInventoryName();
 	}
 
 	@Override
@@ -68,9 +68,9 @@ public class WrapperInvSlot implements IInventory
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
-		inv.onInventoryChanged();
+		inv.markDirty();
 	}
 
 	@Override
@@ -80,15 +80,15 @@ public class WrapperInvSlot implements IInventory
 	}
 
 	@Override
-	public void openChest()
+	public void openInventory()
 	{
-		inv.openChest();
+		inv.openInventory();
 	}
 
 	@Override
-	public void closeChest()
+	public void closeInventory()
 	{
-		inv.closeChest();
+		inv.closeInventory();
 	}
 
 	@Override

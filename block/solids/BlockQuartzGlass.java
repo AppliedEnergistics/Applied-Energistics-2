@@ -2,7 +2,6 @@ package appeng.block.solids;
 
 import java.util.EnumSet;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.IBlockAccess;
 import appeng.block.AEBaseBlock;
@@ -29,9 +28,9 @@ public class BlockQuartzGlass extends AEBaseBlock
 	@Override
 	public boolean shouldSideBeRendered(IBlockAccess w, int x, int y, int z, int side)
 	{
-		if ( w.getBlockMaterial( x, y, z ) == Material.glass )
+		if ( w.getBlock( x, y, z ).getMaterial() == Material.glass )
 		{
-			if ( Block.blocksList[w.getBlockId( x, y, z )].getRenderType() == this.getRenderType() )
+			if ( w.getBlock( x, y, z ).getRenderType() == this.getRenderType() )
 				return false;
 		}
 		return super.shouldSideBeRendered( w, x, y, z, side );

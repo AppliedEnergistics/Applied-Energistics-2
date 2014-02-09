@@ -15,9 +15,9 @@ import appeng.client.gui.widgets.GuiProgressBar.Direction;
 import appeng.container.implementations.ContainerCondenser;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.tile.misc.TileCondenser;
-import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class GuiCondenser extends AEBaseGui
 {
@@ -43,7 +43,7 @@ public class GuiCondenser extends AEBaseGui
 		{
 			try
 			{
-				PacketDispatcher.sendPacketToServer( (new PacketConfigButton( Settings.CONDENSER_OUTPUT, backwards )).getPacket() );
+				NetworkHandler.instance.sendToServer( new PacketConfigButton( Settings.CONDENSER_OUTPUT, backwards ) );
 			}
 			catch (IOException e)
 			{
@@ -77,8 +77,8 @@ public class GuiCondenser extends AEBaseGui
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRenderer.drawString( GuiText.Condenser.getLocal(), 8, 6, 4210752 );
-		fontRenderer.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		fontRendererObj.drawString( GuiText.Condenser.getLocal(), 8, 6, 4210752 );
+		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
 
 		mode.set( cvc.output );
 		mode.FillVar = "" + cvc.output.requiredPower;

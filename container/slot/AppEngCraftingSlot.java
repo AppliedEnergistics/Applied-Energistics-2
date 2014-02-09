@@ -1,14 +1,18 @@
 package appeng.container.slot;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemHoe;
+import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 import net.minecraft.stats.AchievementList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class AppEngCraftingSlot extends AppEngSlot
 {
@@ -70,43 +74,52 @@ public class AppEngCraftingSlot extends AppEngSlot
 		par1ItemStack.onCrafting( this.thePlayer.worldObj, this.thePlayer, this.amountCrafted );
 		this.amountCrafted = 0;
 
-		if ( par1ItemStack.itemID == Block.workbench.blockID )
+		if ( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.crafting_table ) )
 		{
 			this.thePlayer.addStat( AchievementList.buildWorkBench, 1 );
 		}
-		else if ( par1ItemStack.itemID == Item.pickaxeWood.itemID )
+
+		if ( par1ItemStack.getItem() instanceof ItemPickaxe )
 		{
 			this.thePlayer.addStat( AchievementList.buildPickaxe, 1 );
 		}
-		else if ( par1ItemStack.itemID == Block.furnaceIdle.blockID )
+
+		if ( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.furnace ) )
 		{
 			this.thePlayer.addStat( AchievementList.buildFurnace, 1 );
 		}
-		else if ( par1ItemStack.itemID == Item.hoeWood.itemID )
+
+		if ( par1ItemStack.getItem() instanceof ItemHoe )
 		{
 			this.thePlayer.addStat( AchievementList.buildHoe, 1 );
 		}
-		else if ( par1ItemStack.itemID == Item.bread.itemID )
+
+		if ( par1ItemStack.getItem() == Items.bread )
 		{
 			this.thePlayer.addStat( AchievementList.makeBread, 1 );
 		}
-		else if ( par1ItemStack.itemID == Item.cake.itemID )
+
+		if ( par1ItemStack.getItem() == Items.cake )
 		{
 			this.thePlayer.addStat( AchievementList.bakeCake, 1 );
 		}
-		else if ( par1ItemStack.itemID == Item.pickaxeStone.itemID )
+
+		if ( par1ItemStack.getItem() instanceof ItemPickaxe && ((ItemPickaxe) par1ItemStack.getItem()).func_150913_i() != Item.ToolMaterial.WOOD )
 		{
 			this.thePlayer.addStat( AchievementList.buildBetterPickaxe, 1 );
 		}
-		else if ( par1ItemStack.itemID == Item.swordWood.itemID )
+
+		if ( par1ItemStack.getItem() instanceof ItemSword )
 		{
 			this.thePlayer.addStat( AchievementList.buildSword, 1 );
 		}
-		else if ( par1ItemStack.itemID == Block.enchantmentTable.blockID )
+
+		if ( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.enchanting_table ) )
 		{
 			this.thePlayer.addStat( AchievementList.enchantments, 1 );
 		}
-		else if ( par1ItemStack.itemID == Block.bookShelf.blockID )
+
+		if ( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.bookshelf ) )
 		{
 			this.thePlayer.addStat( AchievementList.bookcase, 1 );
 		}
@@ -114,7 +127,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 
 	public void onPickupFromSlot(EntityPlayer par1EntityPlayer, ItemStack par2ItemStack)
 	{
-		GameRegistry.onItemCrafted( par1EntityPlayer, par2ItemStack, craftMatrix );
+		FMLCommonHandler.instance().firePlayerCraftingEvent( par1EntityPlayer, par2ItemStack, craftMatrix );
 		this.onCrafting( par2ItemStack );
 
 		for (int i = 0; i < this.craftMatrix.getSizeInventory(); ++i)
@@ -125,19 +138,18 @@ public class AppEngCraftingSlot extends AppEngSlot
 			{
 				this.craftMatrix.decrStackSize( i, 1 );
 
-				if ( itemstack1.getItem().hasContainerItem() )
+				if ( itemstack1.getItem().hasContainerItem( itemstack1 ) )
 				{
-					ItemStack itemstack2 = itemstack1.getItem().getContainerItemStack( itemstack1 );
+					ItemStack itemstack2 = itemstack1.getItem().getContainerItem( itemstack1 );
 
-					if ( itemstack2.isItemStackDamageable() && itemstack2.getItemDamage() > itemstack2.getMaxDamage() )
+					if ( itemstack2 != null && itemstack2.isItemStackDamageable() && itemstack2.getItemDamage() > itemstack2.getMaxDamage() )
 					{
 						MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( thePlayer, itemstack2 ) );
-						itemstack2 = null;
+						continue;
 					}
 
-					if ( itemstack2 != null
-							&& (!itemstack1.getItem().doesContainerItemLeaveCraftingGrid( itemstack1 ) || !this.thePlayer.inventory
-									.addItemStackToInventory( itemstack2 )) )
+					if ( !itemstack1.getItem().doesContainerItemLeaveCraftingGrid( itemstack1 )
+							|| !this.thePlayer.inventory.addItemStackToInventory( itemstack2 ) )
 					{
 						if ( this.craftMatrix.getStackInSlot( i ) == null )
 						{
@@ -145,7 +157,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 						}
 						else
 						{
-							this.thePlayer.dropPlayerItem( itemstack2 );
+							this.thePlayer.dropPlayerItemWithRandomChoice( itemstack2, false );
 						}
 					}
 				}

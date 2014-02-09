@@ -2,10 +2,11 @@ package appeng.block.storage;
 
 import java.util.EnumSet;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
@@ -22,7 +23,7 @@ public class BlockIOPort extends AEBaseBlock
 	}
 
 	@Override
-	public final void onNeighborBlockChange(World w, int x, int y, int z, int junk)
+	public final void onNeighborBlockChange(World w, int x, int y, int z, Block junk)
 	{
 		TileIOPort te = getTileEntity( w, x, y, z );
 		if ( te != null )

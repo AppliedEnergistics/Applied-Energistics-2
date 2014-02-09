@@ -6,11 +6,12 @@ import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
 import appeng.core.CommonHelper;
+import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.util.Platform;
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -32,7 +33,7 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public void sendToAllNearExcept(EntityPlayer p, double x, double y, double z, double dist, World w, Packet packet)
+	public void sendToAllNearExcept(EntityPlayer p, double x, double y, double z, double dist, World w, AppEngPacket packet)
 	{
 		if ( Platform.isClient() )
 			return;
@@ -49,7 +50,7 @@ public class ServerHelper extends CommonHelper
 
 				if ( dX * dX + dY * dY + dZ * dZ < dist * dist )
 				{
-					entityplayermp.playerNetServerHandler.sendPacketToPlayer( packet );
+					NetworkHandler.instance.sendTo( packet, entityplayermp );
 				}
 			}
 		}

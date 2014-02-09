@@ -54,15 +54,15 @@ public class NetworkToolViewer implements INetworkTool
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
-		return inv.getInvName();
+		return inv.getInventoryName();
 	}
 
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
-		return inv.isInvNameLocalized();
+		return inv.hasCustomInventoryName();
 	}
 
 	@Override
@@ -72,9 +72,9 @@ public class NetworkToolViewer implements INetworkTool
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
-		inv.onInventoryChanged();
+		inv.markDirty();
 		inv.writeToNBT( Platform.openNbtData( is ), "inv" );
 	}
 
@@ -85,15 +85,15 @@ public class NetworkToolViewer implements INetworkTool
 	}
 
 	@Override
-	public void openChest()
+	public void openInventory()
 	{
-		inv.openChest();
+		inv.openInventory();
 	}
 
 	@Override
-	public void closeChest()
+	public void closeInventory()
 	{
-		inv.closeChest();
+		inv.closeInventory();
 	}
 
 	@Override

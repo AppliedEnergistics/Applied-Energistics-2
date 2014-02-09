@@ -2,13 +2,12 @@ package appeng.core.features.registries;
 
 import java.util.HashMap;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
-import appeng.api.definitions.Blocks;
 import appeng.api.definitions.Parts;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.util.AEColor;
@@ -24,41 +23,40 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 		/**
 		 * attune based on most redstone base items.
 		 */
-		addNewAttunement( new ItemStack( Item.redstone ), TunnelType.REDSTONE );
-		addNewAttunement( new ItemStack( Item.redstoneRepeater ), TunnelType.REDSTONE );
-		addNewAttunement( new ItemStack( Block.redstoneLampActive ), TunnelType.REDSTONE );
-		addNewAttunement( new ItemStack( Block.redstoneLampIdle ), TunnelType.REDSTONE );
-		addNewAttunement( new ItemStack( Block.redstoneComparatorActive ), TunnelType.REDSTONE );
-		addNewAttunement( new ItemStack( Block.redstoneComparatorIdle ), TunnelType.REDSTONE );
-		addNewAttunement( new ItemStack( Block.redstoneRepeaterActive ), TunnelType.REDSTONE );
-		addNewAttunement( new ItemStack( Block.redstoneRepeaterIdle ), TunnelType.REDSTONE );
-		addNewAttunement( new ItemStack( Block.daylightSensor ), TunnelType.REDSTONE );
-		addNewAttunement( new ItemStack( Block.redstoneWire ), TunnelType.REDSTONE );
-		addNewAttunement( new ItemStack( Block.blockRedstone ), TunnelType.REDSTONE );
-		addNewAttunement( new ItemStack( Block.lever ), TunnelType.REDSTONE );
+		addNewAttunement( new ItemStack( Items.redstone ), TunnelType.REDSTONE );
+		addNewAttunement( new ItemStack( Items.repeater ), TunnelType.REDSTONE );
+		addNewAttunement( new ItemStack( Blocks.redstone_lamp ), TunnelType.REDSTONE );
+		addNewAttunement( new ItemStack( Blocks.unpowered_comparator ), TunnelType.REDSTONE );
+		addNewAttunement( new ItemStack( Blocks.powered_comparator ), TunnelType.REDSTONE );
+		addNewAttunement( new ItemStack( Blocks.powered_repeater ), TunnelType.REDSTONE );
+		addNewAttunement( new ItemStack( Blocks.unpowered_repeater ), TunnelType.REDSTONE );
+		addNewAttunement( new ItemStack( Blocks.daylight_detector ), TunnelType.REDSTONE );
+		addNewAttunement( new ItemStack( Blocks.redstone_wire ), TunnelType.REDSTONE );
+		addNewAttunement( new ItemStack( Blocks.redstone_block ), TunnelType.REDSTONE );
+		addNewAttunement( new ItemStack( Blocks.lever ), TunnelType.REDSTONE );
 
 		/**
 		 * attune based on lots of random item related stuff
 		 */
-		Blocks Blocks = AEApi.instance().blocks();
+		appeng.api.definitions.Blocks AEBlocks = AEApi.instance().blocks();
 		Parts Parts = AEApi.instance().parts();
 
-		addNewAttunement( Blocks.blockInterface.stack( 1 ), TunnelType.ITEM );
+		addNewAttunement( AEBlocks.blockInterface.stack( 1 ), TunnelType.ITEM );
 		addNewAttunement( Parts.partInterface.stack( 1 ), TunnelType.ITEM );
 		addNewAttunement( Parts.partStorageBus.stack( 1 ), TunnelType.ITEM );
 		addNewAttunement( Parts.partImportBus.stack( 1 ), TunnelType.ITEM );
 		addNewAttunement( Parts.partExportBus.stack( 1 ), TunnelType.ITEM );
-		addNewAttunement( new ItemStack( Block.hopperBlock ), TunnelType.ITEM );
-		addNewAttunement( new ItemStack( Block.chest ), TunnelType.ITEM );
-		addNewAttunement( new ItemStack( Block.chestTrapped ), TunnelType.ITEM );
+		addNewAttunement( new ItemStack( Blocks.hopper ), TunnelType.ITEM );
+		addNewAttunement( new ItemStack( Blocks.chest ), TunnelType.ITEM );
+		addNewAttunement( new ItemStack( Blocks.trapped_chest ), TunnelType.ITEM );
 
 		/**
 		 * attune based on lots of random item related stuff
 		 */
-		addNewAttunement( new ItemStack( Item.bucketEmpty ), TunnelType.FLUID );
-		addNewAttunement( new ItemStack( Item.bucketLava ), TunnelType.FLUID );
-		addNewAttunement( new ItemStack( Item.bucketMilk ), TunnelType.FLUID );
-		addNewAttunement( new ItemStack( Item.bucketWater ), TunnelType.FLUID );
+		addNewAttunement( new ItemStack( Items.bucket ), TunnelType.FLUID );
+		addNewAttunement( new ItemStack( Items.lava_bucket ), TunnelType.FLUID );
+		addNewAttunement( new ItemStack( Items.milk_bucket ), TunnelType.FLUID );
+		addNewAttunement( new ItemStack( Items.water_bucket ), TunnelType.FLUID );
 
 		for (AEColor c : AEColor.values())
 		{

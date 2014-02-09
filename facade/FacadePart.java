@@ -9,8 +9,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Icon;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
@@ -77,7 +77,8 @@ public class FacadePart implements IFacadePart
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void renderStatic(int x, int y, int z, IPartRenderHelper instance2, RenderBlocks renderer, IFacadeContainer fc, AxisAlignedBB busBounds, boolean renderStilt)
+	public void renderStatic(int x, int y, int z, IPartRenderHelper instance2, RenderBlocks renderer, IFacadeContainer fc, AxisAlignedBB busBounds,
+			boolean renderStilt)
 	{
 		if ( facade != null )
 		{
@@ -96,7 +97,7 @@ public class FacadePart implements IFacadePart
 						rbw.calculations = true;
 					}
 
-					Icon myIcon = null;
+					IIcon myIcon = null;
 					if ( isBC() )
 					{
 						IBC bc = (IBC) AppEng.instance.getIntegration( "BC" );
@@ -123,7 +124,7 @@ public class FacadePart implements IFacadePart
 					if ( randomItem.getItem() instanceof ItemBlock )
 					{
 						ItemBlock ib = (ItemBlock) randomItem.getItem();
-						Block blk = Block.blocksList[ib.getBlockID()];
+						Block blk = Block.getBlockFromItem( ib );
 
 						try
 						{
@@ -253,8 +254,8 @@ public class FacadePart implements IFacadePart
 	}
 
 	@SideOnly(Side.CLIENT)
-	private void renderSegmentBlockCurrentBounds(BusRenderHelper instance, int x, int y, int z, RenderBlocks renderer, double minX, double minY, double minZ, double maxX,
-			double maxY, double maxZ)
+	private void renderSegmentBlockCurrentBounds(BusRenderHelper instance, int x, int y, int z, RenderBlocks renderer, double minX, double minY, double minZ,
+			double maxX, double maxY, double maxZ)
 	{
 		double oldMinX = renderer.renderMinX;
 		double oldMinY = renderer.renderMinY;
@@ -307,7 +308,7 @@ public class FacadePart implements IFacadePart
 					if ( randomItem.getItem() instanceof ItemBlock )
 					{
 						ItemBlock ib = (ItemBlock) randomItem.getItem();
-						Block blk = Block.blocksList[ib.getBlockID()];
+						Block blk = Block.getBlockFromItem( ib );
 
 						try
 						{

@@ -1,19 +1,24 @@
 package appeng.core.sync.packets;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.network.INetworkManager;
 import appeng.api.config.FuzzyMode;
 import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.container.implementations.ContainerPriority;
 import appeng.container.implementations.ContainerSecurity;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.network.INetworkInfo;
+
+import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
 public class PacketValueConfig extends AppEngPacket
 {
@@ -22,13 +27,15 @@ public class PacketValueConfig extends AppEngPacket
 	final public String Value;
 
 	// automatic.
-	public PacketValueConfig(DataInputStream stream) throws IOException {
-		Name = stream.readUTF();
-		Value = stream.readUTF();
+	public PacketValueConfig(ByteBuf stream) throws IOException {
+		DataInputStream dis = new DataInputStream( new ByteInputStream( stream.array(), 0, stream.readableBytes() ) );
+		Name = dis.readUTF();
+		Value = dis.readUTF();
+		dis.close();
 	}
 
 	@Override
-	public void serverPacketData(INetworkManager manager, AppEngPacket packet, EntityPlayer player)
+	public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player)
 	{
 		Container c = player.openContainer;
 
@@ -77,14 +84,18 @@ public class PacketValueConfig extends AppEngPacket
 		this.Name = Name;
 		this.Value = Value;
 
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		DataOutputStream data = new DataOutputStream( bytes );
+		ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( getPacketID() );
-		data.writeUTF( Name );
-		data.writeUTF( Value );
 
-		isChunkDataPacket = false;
-		configureWrite( bytes.toByteArray() );
+		ByteOutputStream bos = new ByteOutputStream();
+		DataOutputStream dos = new DataOutputStream( bos );
+		data.writeBytes( Name.getBytes() );
+		data.writeBytes( Value.getBytes() );
+		dos.close();
+
+		data.writeBytes( bos.getBytes() );
+
+		configureWrite( data );
 	}
 }

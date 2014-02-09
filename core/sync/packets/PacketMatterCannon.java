@@ -1,18 +1,18 @@
 package appeng.core.sync.packets;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.network.INetworkManager;
+import net.minecraft.init.Items;
 import net.minecraft.world.World;
 import appeng.client.render.effects.MatterCannonEffect;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.network.INetworkInfo;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -29,7 +29,7 @@ public class PacketMatterCannon extends AppEngPacket
 	final byte len;
 
 	// automatic.
-	public PacketMatterCannon(DataInputStream stream) throws IOException {
+	public PacketMatterCannon(ByteBuf stream) throws IOException {
 		x = stream.readFloat();
 		y = stream.readFloat();
 		z = stream.readFloat();
@@ -41,7 +41,7 @@ public class PacketMatterCannon extends AppEngPacket
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void clientPacketData(INetworkManager network, AppEngPacket packet, EntityPlayer player)
+	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
 	{
 		try
 		{
@@ -49,7 +49,7 @@ public class PacketMatterCannon extends AppEngPacket
 			World world = FMLClientHandler.instance().getClient().theWorld;
 			for (int a = 1; a < len; a++)
 			{
-				MatterCannonEffect fx = new MatterCannonEffect( world, x + dx * a, y + dy * a, z + dz * a, Item.diamond );
+				MatterCannonEffect fx = new MatterCannonEffect( world, x + dx * a, y + dy * a, z + dz * a, Items.diamond );
 
 				Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
 			}
@@ -72,8 +72,7 @@ public class PacketMatterCannon extends AppEngPacket
 		this.dz = dz / dlz;
 		this.len = len;
 
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		DataOutputStream data = new DataOutputStream( bytes );
+		ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( getPacketID() );
 		data.writeFloat( (float) x );
@@ -84,8 +83,7 @@ public class PacketMatterCannon extends AppEngPacket
 		data.writeFloat( (float) this.dz );
 		data.writeByte( len );
 
-		isChunkDataPacket = false;
-		configureWrite( bytes.toByteArray() );
+		configureWrite( data );
 	}
 
 }

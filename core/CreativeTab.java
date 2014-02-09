@@ -1,7 +1,8 @@
 package appeng.core;
 
-import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.api.util.AEItemDefinition;
@@ -16,10 +17,16 @@ public final class CreativeTab extends CreativeTabs
 	}
 
 	@Override
+	public Item getTabIconItem()
+	{
+		return getIconItemStack().getItem();
+	}
+
+	@Override
 	public ItemStack getIconItemStack()
 	{
-		return findFirst( AEApi.instance().blocks().blockController, AEApi.instance().blocks().blockChest, AEApi.instance().blocks().blockCellWorkbench,
-				AEApi.instance().blocks().blockFluix, AEApi.instance().items().itemCell1k, AEApi.instance().items().itemNetworkTool,
+		return findFirst( AEApi.instance().blocks().blockController, AEApi.instance().blocks().blockChest, AEApi.instance().blocks().blockCellWorkbench, AEApi
+				.instance().blocks().blockFluix, AEApi.instance().items().itemCell1k, AEApi.instance().items().itemNetworkTool,
 				AEApi.instance().materials().materialFluixCrystal, AEApi.instance().materials().materialCertusQuartzCrystal );
 	}
 
@@ -32,7 +39,7 @@ public final class CreativeTab extends CreativeTabs
 				return is;
 		}
 
-		return new ItemStack( Block.chest );
+		return new ItemStack( Blocks.chest );
 	}
 
 	public static void init()

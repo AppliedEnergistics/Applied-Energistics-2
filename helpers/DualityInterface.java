@@ -4,10 +4,11 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.tiles.ISegmentedInventory;
+import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.BaseActionSource;
@@ -51,6 +52,8 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 	public DualityInterface(AENetworkProxy prox, IInterfaceHost ih) {
 		gridProxy = prox;
+		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
+
 		iHost = ih;
 		mySrc = fluids.changeSource = items.changeSource = new MachineSource( iHost );
 	}
@@ -99,9 +102,9 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		}
 
 		TileEntity te = iHost.getTileEntity();
-		if ( hadConfig != hasConfig && te != null && te.worldObj != null )
+		if ( hadConfig != hasConfig && te != null && te.getWorldObj() != null )
 		{
-			te.worldObj.notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, 0 );
+			te.getWorldObj().notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, Platform.air );
 		}
 	}
 
@@ -299,7 +302,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		}
 
 		TileEntity te = iHost.getTileEntity();
-		te.worldObj.notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, 0 );
+		te.getWorldObj().notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, Platform.air );
 	}
 
 	public AECableType getCableConnectionType(ForgeDirection dir)
@@ -317,10 +320,10 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		return storage;
 	}
 
-	public void onInventoryChanged()
+	public void markDirty()
 	{
 		for (int slot = 0; slot < storage.getSizeInventory(); slot++)
-			onChangeInventory( storage, slot, InvOperation.onInventoryChanged, null, null );
+			onChangeInventory( storage, slot, InvOperation.markDirty, null, null );
 	}
 
 	@Override

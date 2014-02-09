@@ -17,10 +17,10 @@ import appeng.api.implementations.items.IUpgradeModule;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.core.localization.GuiText;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.tile.misc.TileCellWorkbench;
 import appeng.util.Platform;
-import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class GuiCellWorkbench extends GuiUpgradeable
 {
@@ -104,11 +104,11 @@ public class GuiCellWorkbench extends GuiUpgradeable
 		{
 			if ( btn == partition )
 			{
-				PacketDispatcher.sendPacketToServer( (new PacketValueConfig( "CellWorkbench.Action", "Partition" )).getPacket() );
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "CellWorkbench.Action", "Partition" ) );
 			}
 			else if ( btn == clear )
 			{
-				PacketDispatcher.sendPacketToServer( (new PacketValueConfig( "CellWorkbench.Action", "Clear" )).getPacket() );
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "CellWorkbench.Action", "Clear" ) );
 			}
 			else if ( btn == fuzzyMode )
 			{
@@ -117,7 +117,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 				FuzzyMode fz = (FuzzyMode) fuzzyMode.getCurrentValue();
 				fz = Platform.rotateEnum( fz, backwards, Settings.FUZZY_MODE.getPossibleValues() );
 
-				PacketDispatcher.sendPacketToServer( (new PacketValueConfig( "CellWorkbench.Fuzzy", fz.name() )).getPacket() );
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "CellWorkbench.Fuzzy", fz.name() ) );
 			}
 			else
 				super.actionPerformed( btn );

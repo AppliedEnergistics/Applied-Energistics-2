@@ -7,14 +7,15 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.item.Item;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
@@ -40,7 +41,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		isFullSize = isOpaque = false;
 
 		EntityRegistry.registerModEntity( EntityTinyTNTPrimed.class, "EntityTinyTNTPrimed", EntityIds.TINY_TNT, AppEng.instance, 16, 4, true );
-		BlockDispenser.dispenseBehaviorRegistry.putObject( Item.itemsList[blockID], new DispenserBehaviorTinyTNT() );
+		BlockDispenser.dispenseBehaviorRegistry.putObject( Block.getIdFromBlock( this ), new DispenserBehaviorTinyTNT() );
 	}
 
 	@Override
@@ -50,15 +51,15 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void registerIcons(IconRegister iconRegistry)
+	public void registerBlockIcons(IIconRegister iconRegistry)
 	{
 		// no images required.
 	}
 
 	@Override
-	public Icon getIcon(int direction, int metadata)
+	public IIcon getIcon(int direction, int metadata)
 	{
-		return new FullIcon( Block.tnt.getIcon( direction, metadata ) );
+		return new FullIcon( Blocks.tnt.getIcon( direction, metadata ) );
 	}
 
 	@Override
@@ -89,7 +90,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void onNeighborBlockChange(World w, int x, int y, int z, int id)
+	public void onNeighborBlockChange(World w, int x, int y, int z, Block id)
 	{
 		if ( w.isBlockIndirectlyGettingPowered( x, y, z ) )
 		{
@@ -101,7 +102,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	@Override
 	public boolean onActivated(World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		if ( player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().itemID == Item.flintAndSteel.itemID )
+		if ( player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() == Items.flint_and_steel )
 		{
 			this.startFuse( w, x, y, z, player );
 			w.setBlockToAir( x, y, z );

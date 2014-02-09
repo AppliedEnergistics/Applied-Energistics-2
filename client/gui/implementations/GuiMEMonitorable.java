@@ -124,7 +124,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource
 		buttonList.add( new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, Configuration.instance.settings
 				.getSetting( Settings.SORT_DIRECTION ) ) );
 
-		searchField = new GuiTextField( this.fontRenderer, this.guiLeft + Math.max( 82, xoffset ), this.guiTop + 6, 89, this.fontRenderer.FONT_HEIGHT );
+		searchField = new GuiTextField( fontRendererObj, this.guiLeft + Math.max( 82, xoffset ), this.guiTop + 6, 89, fontRendererObj.FONT_HEIGHT );
 		searchField.setEnableBackgroundDrawing( false );
 		searchField.setMaxStringLength( 25 );
 		searchField.setTextColor( 0xFFFFFF );
@@ -201,8 +201,8 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRenderer.drawString( myName.getLocal(), 8, 6, 4210752 );
-		fontRenderer.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		fontRendererObj.drawString( myName.getLocal(), 8, 6, 4210752 );
+		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
 	}
 
 	@Override

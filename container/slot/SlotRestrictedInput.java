@@ -27,10 +27,10 @@ public class SlotRestrictedInput extends AppEngSlot
 				6 * 16 + 15), QE_SINGULARTIY(10 * 16 + 15), SPATIAL_STORAGE_CELLS(11 * 16 + 15), FUEL(12 * 16 + 15), UPGRADES(13 * 16 + 15), WORKBENCH_CELL(15), BIOMETRIC_CARD(
 				14 * 16 + 15);
 
-		public final int icon;
+		public final int IIcon;
 
 		private PlaceableItemType(int o) {
-			icon = o;
+			IIcon = o;
 		}
 	};
 
@@ -66,7 +66,7 @@ public class SlotRestrictedInput extends AppEngSlot
 	public SlotRestrictedInput(PlaceableItemType valid, IInventory i, int slotnum, int x, int y) {
 		super( i, slotnum, x, y );
 		which = valid;
-		icon = valid.icon;
+		IIcon = valid.IIcon;
 	}
 
 	@Override

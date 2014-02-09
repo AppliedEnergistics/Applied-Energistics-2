@@ -5,7 +5,7 @@ import java.util.EnumSet;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridNotification;
@@ -82,7 +82,7 @@ public class AENetworkProxy implements IGridBlock
 		}
 		else if ( node != null && owner != null )
 		{
-			node.setPlayerID( WorldSettings.getInstance().getPlayerID( owner.username ) );
+			node.setPlayerID( WorldSettings.getInstance().getPlayerID( owner.getCommandSenderName() ) );
 			owner = null;
 		}
 	}

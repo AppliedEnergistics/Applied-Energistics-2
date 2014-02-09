@@ -1,7 +1,7 @@
 package appeng.integration.modules;
 
 import net.mcft.copy.betterstorage.api.ICrateStorage;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IBS;

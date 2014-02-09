@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.crash.CallableMinecraftVersion;
 import appeng.core.AELog;
 import appeng.core.Configuration;
 
@@ -44,10 +43,11 @@ public class VersionChecker implements Runnable
 			{
 				URL url = new URL( "http://ae-mod.info/releases/?latest" );
 
-				URLConnection yc = url.openConnection();
-				yc.setRequestProperty( "User-Agent", "AE2/" + Configuration.VERSION + " (Channel:" + Configuration.CHANNEL + ",Minecraft:"
-						+ ((new CallableMinecraftVersion( null )).minecraftVersion()) + ")" );
+				String MCVersion = cpw.mods.fml.common.Loader.instance().getMCVersionString();
 
+				URLConnection yc = url.openConnection();
+				yc.setRequestProperty( "User-Agent", "AE2/" + Configuration.VERSION + " (Channel:" + Configuration.CHANNEL + "," + MCVersion.replace( " ", ":" )
+						+ ")" );
 				BufferedReader in = new BufferedReader( new InputStreamReader( yc.getInputStream() ) );
 
 				String Version = "";

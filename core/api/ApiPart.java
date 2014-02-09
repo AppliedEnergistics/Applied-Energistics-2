@@ -1,5 +1,6 @@
 package appeng.core.api;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -65,8 +66,10 @@ public class ApiPart implements IPartHelper
 			ClassLoader loader = getClass().getClassLoader();// ClassLoader.getSystemClassLoader();
 			Class root = ClassLoader.class;
 			Class cls = loader.getClass();
-			java.lang.reflect.Method defineClassMethod = root.getDeclaredMethod( "defineClass", new Class[] { String.class, byte[].class, int.class, int.class } );
-			java.lang.reflect.Method runTransformersMethod = cls.getDeclaredMethod( "runTransformers", new Class[] { String.class, String.class, byte[].class } );
+			java.lang.reflect.Method defineClassMethod = root.getDeclaredMethod( "defineClass",
+					new Class[] { String.class, byte[].class, int.class, int.class } );
+			java.lang.reflect.Method runTransformersMethod = cls
+					.getDeclaredMethod( "runTransformers", new Class[] { String.class, String.class, byte[].class } );
 
 			runTransformersMethod.setAccessible( true );
 			defineClassMethod.setAccessible( true );
@@ -92,40 +95,19 @@ public class ApiPart implements IPartHelper
 		return clazz;
 	}
 
-	public ClassNode getReader(String name)
+	public ClassNode getReader(String name) throws IOException
 	{
-		// if ( readerCache.get( name ) != null )
-		// return readerCache.get( name );
-
 		ClassReader cr;
-		try
-		{
-			String path = "/" + name.replace( ".", "/" ) + ".class";
-			InputStream is = getClass().getResourceAsStream( path );
-			cr = new ClassReader( is );
-			ClassNode cn = new ClassNode();
-			cr.accept( cn, ClassReader.EXPAND_FRAMES );
-			// readerCache.put( name, cn );
-			return cn;
-		}
-		catch (Throwable e)
-		{
-			AELog.error( e );
-		}
-
-		return null;
+		String path = "/" + name.replace( ".", "/" ) + ".class";
+		InputStream is = getClass().getResourceAsStream( path );
+		cr = new ClassReader( is );
+		ClassNode cn = new ClassNode();
+		cr.accept( cn, ClassReader.EXPAND_FRAMES );
+		return cn;
 	}
 
-	public Class getCombinedInstance(String base)// , CableBusContainer cbc)
+	public Class getCombinedInstance(String base)
 	{
-		/*
-		 * List<String> desc = new LinkedList(); for (ForgeDirection side :
-		 * ForgeDirection.values()) { IBusPart part = cbc.getPart( side ); if (
-		 * part != null ) { for (Class c : interfaces2Layer.keySet()) { if (
-		 * c.isInstance( part ) ) desc.add( interfaces2Layer.get( c ).getName()
-		 * ); } } }
-		 */
-
 		if ( desc.size() == 0 )
 		{
 			try
@@ -177,14 +159,16 @@ public class ApiPart implements IPartHelper
 
 		for (String name : desc)
 		{
-			path = path + ";" + name;
 			try
 			{
-				myCLass = getClassByDesc( Addendum, path, f, interfaces2Layer.get( Class.forName( name ) ) );
+				String newPath = path + ";" + name;
+				myCLass = getClassByDesc( Addendum, newPath, f, interfaces2Layer.get( Class.forName( name ) ) );
+				path = newPath;
 			}
 			catch (Throwable t)
 			{
-				throw new RuntimeException( t );
+				AELog.error( t );
+				// throw new RuntimeException( t );
 			}
 			f = myCLass.getName();
 		}
@@ -217,7 +201,7 @@ public class ApiPart implements IPartHelper
 
 	}
 
-	public Class getClassByDesc(String Addendum, String fullPath, String root, String next)
+	public Class getClassByDesc(String Addendum, String fullPath, String root, String next) throws IOException
 	{
 		if ( roots.get( fullPath ) != null )
 			return roots.get( fullPath );
@@ -225,6 +209,7 @@ public class ApiPart implements IPartHelper
 		ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
 		ClassNode n = getReader( next );
 		String originalName = n.name;
+
 		try
 		{
 			n.name = n.name + "_" + Addendum;
@@ -321,7 +306,7 @@ public class ApiPart implements IPartHelper
 	public void setItemBusRenderer(IPartItem i)
 	{
 		if ( Platform.isClient() && i instanceof Item )
-			MinecraftForgeClient.registerItemRenderer( ((Item) i).itemID, BusRenderer.instance );
+			MinecraftForgeClient.registerItemRenderer( (Item) i, BusRenderer.instance );
 	}
 
 	@Override

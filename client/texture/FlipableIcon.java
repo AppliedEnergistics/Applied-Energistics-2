@@ -1,15 +1,15 @@
 package appeng.client.texture;
 
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 
-public class FlipableIcon implements Icon
+public class FlipableIcon implements IIcon
 {
 
-	protected Icon original;
+	protected IIcon original;
 	boolean flip_u;
 	boolean flip_v;
 
-	public FlipableIcon(Icon o) {
+	public FlipableIcon(IIcon o) {
 		original = o;
 		flip_u = false;
 		flip_v = false;
@@ -81,7 +81,7 @@ public class FlipableIcon implements Icon
 		return original.getIconName();
 	}
 
-	public Icon getOriginal()
+	public IIcon getOriginal()
 	{
 		return original;
 	}

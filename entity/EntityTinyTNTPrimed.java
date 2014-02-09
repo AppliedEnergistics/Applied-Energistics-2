@@ -1,5 +1,7 @@
 package appeng.entity;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 
 import net.minecraft.block.Block;
@@ -16,10 +18,6 @@ import appeng.core.Configuration;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.packets.PacketMockExplosion;
 import appeng.util.Platform;
-
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
-
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
 final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntityAdditionalSpawnData
@@ -109,9 +107,8 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 				{
 					for (int z = (int) (posZ - 2); z <= posZ + 2; z++)
 					{
-						int l = worldObj.getBlockId( x, y, z );
-						Block block = Block.blocksList[l];
-						if ( block != null && !block.isAirBlock( worldObj, x, y, z ) )
+						Block block = worldObj.getBlock( x, y, z );
+						if ( block != null && !block.isAir( worldObj, x, y, z ) )
 						{
 							float strength = (float) (2.3f - (((x + 0.5f) - posX) * ((x + 0.5f) - posX) + ((y + 0.5f) - posY) * ((y + 0.5f) - posY) + ((z + 0.5f) - posZ)
 									* ((z + 0.5f) - posZ)));
@@ -120,7 +117,8 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 							strength -= (resistance + 0.3F) * 0.11f;
 							if ( strength > 0.01 )
 							{
-								worldObj.destroyBlock( x, y, z, true );
+								worldObj.func_147480_a( x, y, z, true );
+								// worldObj.destroyBlock( x, y, z, true );
 							}
 						}
 					}
@@ -130,7 +128,7 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 
 		try
 		{
-			CommonHelper.proxy.sendToAllNearExcept( null, posX, posY, posZ, 64, this.worldObj, (new PacketMockExplosion( posX, posY, posZ )).getPacket() );
+			CommonHelper.proxy.sendToAllNearExcept( null, posX, posY, posZ, 64, this.worldObj, new PacketMockExplosion( posX, posY, posZ ) );
 		}
 		catch (IOException e1)
 		{
@@ -148,13 +146,13 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 	}
 
 	@Override
-	public void writeSpawnData(ByteArrayDataOutput data)
+	public void writeSpawnData(ByteBuf data)
 	{
 		data.writeByte( fuse );
 	}
 
 	@Override
-	public void readSpawnData(ByteArrayDataInput data)
+	public void readSpawnData(ByteBuf data)
 	{
 		fuse = data.readByte();
 	}

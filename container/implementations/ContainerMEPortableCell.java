@@ -37,14 +37,14 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 					if ( Platform.isSameItem( civ.getItemStack(), currentItem ) )
 						getPlayerInv().setInventorySlotContents( getPlayerInv().currentItem, civ.getItemStack() );
 					else
-						getPlayerInv().player.closeScreen();
+						isContainerValid = false;
 				}
 				else
-					getPlayerInv().player.closeScreen();
+					isContainerValid = false;
 			}
 		}
 		else
-			getPlayerInv().player.closeScreen();
+			isContainerValid = false;
 
 		// drain 1 ae t
 		ticks++;

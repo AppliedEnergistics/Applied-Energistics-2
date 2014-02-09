@@ -10,10 +10,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
@@ -97,8 +97,8 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 			host.markForUpdate();
 			TileEntity te = host.getTile();
 			prevState = isLevelEmitterOn();
-			te.worldObj.notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, 0 );
-			te.worldObj.notifyBlocksOfNeighborChange( te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ, 0 );
+			te.getWorldObj().notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, Platform.air );
+			te.getWorldObj().notifyBlocksOfNeighborChange( te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ, Platform.air );
 		}
 	}
 
@@ -336,7 +336,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 	public void renderTorchAtAngle(double baseX, double baseY, double baseZ)
 	{
 		boolean isOn = isLevelEmitterOn();
-		Icon icon = (isOn ? CableBusTextures.LevelEmitterTorchOn.getIcon() : is.getIconIndex());
+		IIcon IIcon = (isOn ? CableBusTextures.LevelEmitterTorchOn.getIcon() : is.getIconIndex());
 		//
 		cenx = baseX + 0.5;
 		ceny = baseY + 0.5;
@@ -349,33 +349,33 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 		double Zero = 0;
 
 		/*
-		 * double d5 = (double)icon.func_94209_e(); double d6 = (double)icon.func_94206_g(); double d7 =
-		 * (double)icon.func_94212_f(); double d8 = (double)icon.func_94210_h(); double d9 =
-		 * (double)icon.func_94214_a(7.0D); double d10 = (double)icon.func_94207_b(6.0D); double d11 =
-		 * (double)icon.func_94214_a(9.0D); double d12 = (double)icon.func_94207_b(8.0D); double d13 =
-		 * (double)icon.func_94214_a(7.0D); double d14 = (double)icon.func_94207_b(13.0D); double d15 =
-		 * (double)icon.func_94214_a(9.0D); double d16 = (double)icon.func_94207_b(15.0D);
+		 * double d5 = (double)IIcon.func_94209_e(); double d6 = (double)IIcon.func_94206_g(); double d7 =
+		 * (double)IIcon.func_94212_f(); double d8 = (double)IIcon.func_94210_h(); double d9 =
+		 * (double)IIcon.func_94214_a(7.0D); double d10 = (double)IIcon.func_94207_b(6.0D); double d11 =
+		 * (double)IIcon.func_94214_a(9.0D); double d12 = (double)IIcon.func_94207_b(8.0D); double d13 =
+		 * (double)IIcon.func_94214_a(7.0D); double d14 = (double)IIcon.func_94207_b(13.0D); double d15 =
+		 * (double)IIcon.func_94214_a(9.0D); double d16 = (double)IIcon.func_94207_b(15.0D);
 		 */
 
-		float var16 = icon.getMinU();
-		float var17 = icon.getMaxU();
-		float var18 = icon.getMinV();
-		float var19 = icon.getMaxV();
+		float var16 = IIcon.getMinU();
+		float var17 = IIcon.getMaxU();
+		float var18 = IIcon.getMinV();
+		float var19 = IIcon.getMaxV();
 		/*
 		 * float var16 = (float)var14 / 256.0F; float var17 = ((float)var14 + 15.99F) / 256.0F; float var18 =
 		 * (float)var15 / 256.0F; float var19 = ((float)var15 + 15.99F) / 256.0F;
 		 */
-		double var20 = (double) icon.getInterpolatedU( 7.0D );
-		double var24 = (double) icon.getInterpolatedU( 9.0D );
-		double var22 = (double) icon.getInterpolatedV( 6.0D + (isOn ? 0 : 1.0D) );
-		double var26 = (double) icon.getInterpolatedV( 8.0D + (isOn ? 0 : 1.0D) );
-		double var28 = (double) icon.getInterpolatedU( 7.0D );
-		double var30 = (double) icon.getInterpolatedV( 13.0D );
-		double var32 = (double) icon.getInterpolatedU( 9.0D );
-		double var34 = (double) icon.getInterpolatedV( 15.0D );
+		double var20 = (double) IIcon.getInterpolatedU( 7.0D );
+		double var24 = (double) IIcon.getInterpolatedU( 9.0D );
+		double var22 = (double) IIcon.getInterpolatedV( 6.0D + (isOn ? 0 : 1.0D) );
+		double var26 = (double) IIcon.getInterpolatedV( 8.0D + (isOn ? 0 : 1.0D) );
+		double var28 = (double) IIcon.getInterpolatedU( 7.0D );
+		double var30 = (double) IIcon.getInterpolatedV( 13.0D );
+		double var32 = (double) IIcon.getInterpolatedU( 9.0D );
+		double var34 = (double) IIcon.getInterpolatedV( 15.0D );
 
-		double var22b = (double) icon.getInterpolatedV( 9.0D );
-		double var26b = (double) icon.getInterpolatedV( 11.0D );
+		double var22b = (double) IIcon.getInterpolatedV( 9.0D );
+		double var26b = (double) IIcon.getInterpolatedV( 11.0D );
 
 		baseX += 0.5D;
 		baseZ += 0.5D;
@@ -464,7 +464,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 		renderer.renderAllFaces = true;
 
 		Tessellator tess = Tessellator.instance;
-		tess.setBrightness( rh.getBlock().getMixedBrightnessForBlock( this.getHost().getTile().worldObj, x, y, z ) );
+		tess.setBrightness( rh.getBlock().getMixedBrightnessForBlock( this.getHost().getTile().getWorldObj(), x, y, z ) );
 		tess.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
 
 		renderTorchAtAngle( x, y, z );

@@ -40,7 +40,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	{
 		NBTTagCompound c = Platform.openNbtData( is );
 		c.setString( "Config", SettingsName );
-		c.setCompoundTag( "Data", data );
+		c.setTag( "Data", data );
 	}
 
 	@Override
@@ -70,13 +70,13 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 		switch (msg)
 		{
 		case INVALID_MACHINE:
-			player.sendChatToPlayer( PlayerMessages.InvalidMachine.get() );
+			player.addChatMessage( PlayerMessages.InvalidMachine.get() );
 			break;
 		case SETTINGS_LOADED:
-			player.sendChatToPlayer( PlayerMessages.LoadedSettings.get() );
+			player.addChatMessage( PlayerMessages.LoadedSettings.get() );
 			break;
 		case SETTINGS_SAVED:
-			player.sendChatToPlayer( PlayerMessages.SavedSettings.get() );
+			player.addChatMessage( PlayerMessages.SavedSettings.get() );
 			break;
 		default:
 		}

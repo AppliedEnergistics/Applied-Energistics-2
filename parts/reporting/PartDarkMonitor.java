@@ -3,7 +3,7 @@ package appeng.parts.reporting;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.client.texture.CableBusTextures;
 import cpw.mods.fml.relauncher.Side;

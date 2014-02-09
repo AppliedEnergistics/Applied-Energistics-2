@@ -1,14 +1,14 @@
 package appeng.tile.misc;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
@@ -54,7 +54,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		}
 
 		@Override
-		public boolean readFromStream(DataInputStream data) throws IOException
+		public boolean readFromStream(ByteBuf data) throws IOException
 		{
 			boolean wasOn = isOn;
 			isOn = data.readBoolean();
@@ -62,7 +62,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		}
 
 		@Override
-		public void writeToStream(DataOutputStream data) throws IOException
+		public void writeToStream(ByteBuf data) throws IOException
 		{
 			data.writeBoolean( burnTime > 0 );
 		}

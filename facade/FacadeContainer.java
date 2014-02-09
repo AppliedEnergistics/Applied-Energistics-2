@@ -1,13 +1,13 @@
 package appeng.facade;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
@@ -21,7 +21,7 @@ public class FacadeContainer implements IFacadeContainer
 
 	final private IFacadePart facades[] = new FacadePart[6];
 
-	public void writeToStream(DataOutputStream out) throws IOException
+	public void writeToStream(ByteBuf out) throws IOException
 	{
 		int facadeSides = 0;
 		for (int x = 0; x < facades.length; x++)
@@ -36,7 +36,7 @@ public class FacadeContainer implements IFacadeContainer
 			IFacadePart part = getFacade( ForgeDirection.getOrientation( x ) );
 			if ( part != null )
 			{
-				int itemID = part.getItem().itemID;
+				int itemID = Item.getIdFromItem( part.getItem() );
 				int dmgValue = part.getItemDamage();
 				out.writeInt( itemID * (part.isBC() ? -1 : 1) );
 				out.writeInt( dmgValue );
@@ -44,7 +44,7 @@ public class FacadeContainer implements IFacadeContainer
 		}
 	}
 
-	public boolean readFromStream(DataInputStream out) throws IOException
+	public boolean readFromStream(ByteBuf out) throws IOException
 	{
 		int facadeSides = out.readByte();
 
@@ -116,7 +116,7 @@ public class FacadeContainer implements IFacadeContainer
 			{
 				NBTTagCompound data = new NBTTagCompound();
 				facades[x].getItemStack().writeToNBT( data );
-				c.setCompoundTag( "facade:" + x, data );
+				c.setTag( "facade:" + x, data );
 			}
 		}
 	}

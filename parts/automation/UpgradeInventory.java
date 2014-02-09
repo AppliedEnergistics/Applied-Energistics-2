@@ -72,7 +72,7 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 				max = u.getSupported().get( is );
 				break;
 			}
-			else if ( is.getItem() instanceof ItemBlock && Block.blocksList[((ItemBlock) is.getItem()).getBlockID()] == itemorblock )
+			else if ( is.getItem() instanceof ItemBlock && Block.getBlockFromItem( is.getItem() ) == itemorblock )
 			{
 				max = u.getSupported().get( is );
 				break;

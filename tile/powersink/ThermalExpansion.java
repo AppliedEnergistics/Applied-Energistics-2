@@ -1,6 +1,6 @@
 package appeng.tile.powersink;
 
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.PowerUnits;
 import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.common.Optional.Interface;

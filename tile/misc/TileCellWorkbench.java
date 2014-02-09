@@ -146,7 +146,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 				{
 					for (int x = 0; x < config.getSizeInventory(); x++)
 						c.setInventorySlotContents( x, config.getStackInSlot( x ) );
-					c.onInventoryChanged();
+					c.markDirty();
 				}
 
 			}
@@ -160,7 +160,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 			{
 				for (int x = 0; x < config.getSizeInventory(); x++)
 					c.setInventorySlotContents( x, config.getStackInSlot( x ) );
-				c.onInventoryChanged();
+				c.markDirty();
 			}
 		}
 	}

@@ -3,15 +3,15 @@ package appeng.parts.p2p;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.util.Icon;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.TunnelType;
 import appeng.api.networking.events.MENetworkBootingStatusChange;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -57,7 +57,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 
 		if ( proxy.isActive() )
 		{
-			TileEntity te = tile.worldObj.getBlockTileEntity( tile.xCoord + side.offsetX, tile.yCoord + side.offsetY, tile.zCoord + side.offsetZ );
+			TileEntity te = tile.getWorldObj().getTileEntity( tile.xCoord + side.offsetX, tile.yCoord + side.offsetY, tile.zCoord + side.offsetZ );
 
 			if ( which.contains( this ) )
 				return null;
@@ -162,7 +162,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 			if ( olderSize != oldSize )
 			{
 				getHost().PartChanged();
-				tile.worldObj.notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
+				tile.getWorldObj().notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, Platform.air );
 			}
 		}
 	}
@@ -178,7 +178,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 			if ( olderSize != oldSize )
 			{
 				getHost().PartChanged();
-				tile.worldObj.notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
+				tile.getWorldObj().notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, Platform.air );
 			}
 		}
 	}
@@ -194,7 +194,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 			if ( olderSize != oldSize )
 			{
 				getHost().PartChanged();
-				tile.worldObj.notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
+				tile.getWorldObj().notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, Platform.air );
 			}
 		}
 	}
@@ -210,7 +210,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 			if ( olderSize != oldSize )
 			{
 				getHost().PartChanged();
-				tile.worldObj.notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
+				tile.getWorldObj().notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, Platform.air );
 			}
 		}
 		else
@@ -222,9 +222,9 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@SideOnly(Side.CLIENT)
-	public Icon getTypeTexture()
+	public IIcon getTypeTexture()
 	{
-		return Block.hopperBlock.getBlockTextureFromSide( 0 );
+		return Blocks.hopper.getBlockTextureFromSide( 0 );
 	}
 
 	@Override
@@ -258,13 +258,13 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
 		return null;
 	}
 
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
 		return false;
 	}
@@ -276,15 +276,13 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	public void openChest()
+	public void openInventory()
 	{
-
 	}
 
 	@Override
-	public void closeChest()
+	public void closeInventory()
 	{
-
 	}
 
 	@Override
@@ -333,7 +331,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
 		// eh?
 	}

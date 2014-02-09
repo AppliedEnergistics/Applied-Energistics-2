@@ -2,12 +2,12 @@ package appeng.parts.p2p;
 
 import java.util.LinkedList;
 
-import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.TunnelType;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
@@ -17,7 +17,8 @@ import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@InterfaceList(value = { @Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"), @Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2") })
+@InterfaceList(value = { @Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
+		@Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2") })
 public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements ic2.api.energy.tile.IEnergySink, ic2.api.energy.tile.IEnergySource
 {
 
@@ -47,9 +48,9 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@SideOnly(Side.CLIENT)
-	public Icon getTypeTexture()
+	public IIcon getTypeTexture()
 	{
-		return Block.blockDiamond.getBlockTextureFromSide( 0 );
+		return Blocks.diamond_block.getBlockTextureFromSide( 0 );
 	}
 
 	@Override

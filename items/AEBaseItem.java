@@ -4,7 +4,6 @@ import java.util.EnumSet;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import appeng.core.Configuration;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
 import appeng.core.features.IAEFeature;
@@ -39,7 +38,6 @@ public class AEBaseItem extends Item implements IAEFeature
 	}
 
 	public AEBaseItem(Class c, String subname) {
-		super( Configuration.instance.getItemID( c, subname ) );
 		FeatureSubname = subname;
 		FeatureFullname = AEFeatureHandler.getName( c, subname );
 	}

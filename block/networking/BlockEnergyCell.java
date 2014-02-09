@@ -5,9 +5,10 @@ import java.util.List;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseItemBlockChargeable;
 import appeng.client.render.BaseBlockRender;
@@ -36,7 +37,7 @@ public class BlockEnergyCell extends AEBaseBlock
 	}
 
 	@Override
-	public void getSubBlocks(int id, CreativeTabs tab, List list)
+	public void getSubBlocks(Item id, CreativeTabs tab, List list)
 	{
 		super.getSubBlocks( id, tab, list );
 
@@ -54,7 +55,7 @@ public class BlockEnergyCell extends AEBaseBlock
 	}
 
 	@Override
-	public Icon getIcon(int direction, int metadata)
+	public IIcon getIcon(int direction, int metadata)
 	{
 		switch (metadata)
 		{

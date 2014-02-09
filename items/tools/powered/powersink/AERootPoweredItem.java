@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.config.AccessRestriction;
@@ -166,7 +167,7 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 	}
 
 	@Override
-	public void getSubItems(int id, CreativeTabs tab, List list)
+	public void getSubItems(Item id, CreativeTabs tab, List list)
 	{
 		super.getSubItems( id, tab, list );
 

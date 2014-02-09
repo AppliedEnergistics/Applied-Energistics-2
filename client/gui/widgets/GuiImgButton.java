@@ -72,18 +72,18 @@ public class GuiImgButton extends GuiButton implements ITooltip
 
 	static private Map<EnumPair, BtnAppearance> Appearances;
 
-	private void registerApp(int icon, Settings setting, Enum val, ButtonToolTips title, Object hint)
+	private void registerApp(int IIcon, Settings setting, Enum val, ButtonToolTips title, Object hint)
 	{
 		BtnAppearance a = new BtnAppearance();
 		a.DisplayName = title.getUnlocalized();
 		a.DisplayValue = (String) (hint instanceof String ? hint : ((ButtonToolTips) hint).getUnlocalized());
-		a.index = icon;
+		a.index = IIcon;
 		Appearances.put( new EnumPair( setting, val ), a );
 	}
 
 	public void setVisibility(boolean vis)
 	{
-		drawButton = vis;
+		visible = vis;
 		enabled = vis;
 	}
 
@@ -174,13 +174,13 @@ public class GuiImgButton extends GuiButton implements ITooltip
 	@Override
 	public boolean isVisible()
 	{
-		return drawButton;
+		return visible;
 	}
 
 	@Override
 	public void drawButton(Minecraft par1Minecraft, int par2, int par3)
 	{
-		if ( this.drawButton )
+		if ( this.visible )
 		{
 			int iconIndex = getIconIndex();
 
@@ -195,7 +195,8 @@ public class GuiImgButton extends GuiButton implements ITooltip
 
 				GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 				par1Minecraft.renderEngine.bindTexture( ExtraTextures.GuiTexture( "guis/states.png" ) );
-				this.field_82253_i = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
+				this.field_146123_n = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width
+						&& par3 < this.yPosition + this.height;
 
 				int uv_y = (int) Math.floor( iconIndex / 16 );
 				int uv_x = iconIndex - uv_y * 16;
@@ -210,7 +211,8 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			{
 				GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 				par1Minecraft.renderEngine.bindTexture( ExtraTextures.GuiTexture( "guis/states.png" ) );
-				this.field_82253_i = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
+				this.field_146123_n = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width
+						&& par3 < this.yPosition + this.height;
 
 				int uv_y = (int) Math.floor( iconIndex / 16 );
 				int uv_x = iconIndex - uv_y * 16;

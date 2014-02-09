@@ -5,9 +5,9 @@ import net.minecraft.client.particle.EntityBreakingFX;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.Item;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class EnergyFx extends EntityBreakingFX
 {
 
-	private Icon particleTextureIndex;
+	private IIcon particleTextureIndex;
 
 	public EnergyFx(World par1World, double par2, double par4, double par6, Item par8Item) {
 		super( par1World, par2, par4, par6, par8Item );

@@ -34,7 +34,7 @@ public class ThermalExpansion extends IC2 implements IEnergyContainerItem
 	@Override
 	public int getMaxEnergyStored(ItemStack is)
 	{
-		return (int) PowerUnits.AE.convertTo( PowerUnits.EU, getMaxEnergyStored( is ) );
+		return (int) PowerUnits.AE.convertTo( PowerUnits.RF, getAEMaxPower( is ) );
 	}
 
 }

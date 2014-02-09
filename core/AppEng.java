@@ -1,11 +1,10 @@
 package appeng.core;
 
-import net.minecraft.item.ItemStack;
 import appeng.core.crash.CrashEnhancement;
 import appeng.core.crash.CrashInfo;
 import appeng.core.features.AEFeature;
-import appeng.core.sync.AppEngClientPacketHandler;
-import appeng.core.sync.AppEngServerPacketHandler;
+import appeng.core.sync.GuiBridge;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.helpers.TickHandler;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationSide;
@@ -21,11 +20,9 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
 
 @Mod(modid = AppEng.modid, name = AppEng.name, version = Configuration.VERSION, dependencies = AppEng.dependencies)
-@NetworkMod(clientSideRequired = true, serverSideRequired = true, clientPacketHandlerSpec = @SidedPacketHandler(channels = { Configuration.PACKET_CHANNEL }, packetHandler = AppEngClientPacketHandler.class), serverPacketHandlerSpec = @SidedPacketHandler(channels = (Configuration.PACKET_CHANNEL), packetHandler = AppEngServerPacketHandler.class))
 public class AppEng
 {
 
@@ -53,17 +50,6 @@ public class AppEng
 
 		for (CrashInfo ci : CrashInfo.values())
 			FMLCommonHandler.instance().registerCrashCallable( new CrashEnhancement( ci ) );
-
-		// detect funny obfuscation issues?
-		try
-		{
-			new ItemStack( 1, 1, 0 ).getItemDamage();
-		}
-		catch (Throwable t)
-		{
-			throw new Error( "AE2 is incompatible with this environment, please verify your using the correct version of AE2." );
-		}
-
 	}
 
 	private IntegrationRegistry integrationModules = new IntegrationRegistry( new Object[] {
@@ -160,6 +146,9 @@ public class AppEng
 		integrationModules.postinit();
 
 		Configuration.instance.save();
+
+		NetworkRegistry.INSTANCE.registerGuiHandler( this, GuiBridge.GUI_Handler );
+		NetworkHandler.instance = new NetworkHandler( "AE2" );
 
 		AELog.info( "PostInit ( end )" );
 	}

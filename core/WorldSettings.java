@@ -5,14 +5,13 @@ import java.lang.ref.WeakReference;
 import java.util.Map.Entry;
 import java.util.WeakHashMap;
 
-import net.minecraftforge.common.ConfigCategory;
-import net.minecraftforge.common.Configuration;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.Property;
+import net.minecraftforge.common.config.ConfigCategory;
+import net.minecraftforge.common.config.Property;
 import appeng.api.util.WorldCoord;
 import appeng.me.GridStorage;
 import appeng.me.GridStorageSearch;
-import cpw.mods.fml.common.network.Player;
 
 public class WorldSettings extends Configuration
 {
@@ -47,7 +46,7 @@ public class WorldSettings extends Configuration
 		return instance;
 	}
 
-	public void sendToPlayer(Player player)
+	public void sendToPlayer(EntityPlayer player)
 	{
 
 	}

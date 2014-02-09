@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.FuzzyMode;
 import appeng.util.InventoryAdaptor;
 import buildcraft.api.inventory.ISpecialInventory;

@@ -4,12 +4,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -76,9 +76,9 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	}
 
 	@SideOnly(Side.CLIENT)
-	public Icon getTypeTexture()
+	public IIcon getTypeTexture()
 	{
-		return Block.blockLapis.getBlockTextureFromSide( 0 );
+		return Blocks.diamond_block.getBlockTextureFromSide( 0 );
 	}
 
 	List<PartP2PLiquids> getOutputs(Fluid input)
@@ -128,7 +128,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		if ( cachedTank != null )
 			return cachedTank;
 
-		TileEntity te = tile.worldObj.getBlockTileEntity( tile.xCoord + side.offsetX, tile.yCoord + side.offsetY, tile.zCoord + side.offsetZ );
+		TileEntity te = tile.getWorldObj().getTileEntity( tile.xCoord + side.offsetX, tile.yCoord + side.offsetY, tile.zCoord + side.offsetZ );
 		if ( te instanceof IFluidHandler )
 			return cachedTank = (IFluidHandler) te;
 

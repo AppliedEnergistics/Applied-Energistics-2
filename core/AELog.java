@@ -1,6 +1,6 @@
 package appeng.core;
 
-import java.util.logging.Level;
+import org.apache.logging.log4j.Level;
 
 import appeng.core.features.AEFeature;
 import appeng.util.Platform;
@@ -24,12 +24,12 @@ public class AELog
 
 	public static void severe(String format, Object... data)
 	{
-		log( Level.SEVERE, format, data );
+		log( Level.ERROR, format, data );
 	}
 
 	public static void warning(String format, Object... data)
 	{
-		log( Level.WARNING, format, data );
+		log( Level.WARN, format, data );
 	}
 
 	public static void info(String format, Object... data)
@@ -39,7 +39,7 @@ public class AELog
 
 	public static void grinder(String o)
 	{
-		log( Level.FINEST, "grinder: " + o );
+		log( Level.DEBUG, "grinder: " + o );
 	}
 
 	public static void error(Throwable e)

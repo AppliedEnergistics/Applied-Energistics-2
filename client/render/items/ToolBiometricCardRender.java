@@ -2,10 +2,10 @@ package appeng.client.render.items;
 
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.GL11;
@@ -31,12 +31,12 @@ public class ToolBiometricCardRender implements IItemRenderer
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
 	{
-		Icon par2Icon = item.getIconIndex();
+		IIcon par2Icon = item.getIconIndex();
 
-		float f4 = ((Icon) par2Icon).getMinU();
-		float f5 = ((Icon) par2Icon).getMaxU();
-		float f6 = ((Icon) par2Icon).getMinV();
-		float f7 = ((Icon) par2Icon).getMaxV();
+		float f4 = ((IIcon) par2Icon).getMinU();
+		float f5 = ((IIcon) par2Icon).getMaxU();
+		float f6 = ((IIcon) par2Icon).getMinV();
+		float f7 = ((IIcon) par2Icon).getMaxV();
 		float f12 = 0.0625F;
 
 		Tessellator tessellator = Tessellator.instance;
@@ -49,6 +49,7 @@ public class ToolBiometricCardRender implements IItemRenderer
 			GL11.glScalef( 16F, 16F, 10F );
 			GL11.glTranslatef( 0.0F, 1.0F, 0.0F );
 			GL11.glRotatef( 180F, 1.0F, 0.0F, 0.0F );
+			GL11.glEnable( GL11.GL_ALPHA_TEST );
 
 			tessellator.startDrawingQuads();
 			tessellator.setNormal( 0.0F, 1.0F, 0.0F );
@@ -61,7 +62,7 @@ public class ToolBiometricCardRender implements IItemRenderer
 		else
 		{
 			GL11.glTranslatef( -0.5F, -0.3F, 0.01F );
-			ItemRenderer.renderItemIn2D( tessellator, f5, f6, f4, f7, ((Icon) par2Icon).getIconWidth(), ((Icon) par2Icon).getIconHeight(), f12 );
+			ItemRenderer.renderItemIn2D( tessellator, f5, f6, f4, f7, ((IIcon) par2Icon).getIconWidth(), ((IIcon) par2Icon).getIconHeight(), f12 );
 
 			GL11.glDisable( GL11.GL_CULL_FACE );
 			GL11.glColor4f( 1, 1, 1, 1.0F );
@@ -70,8 +71,8 @@ public class ToolBiometricCardRender implements IItemRenderer
 			GL11.glRotatef( 180F, 1.0F, 0.0F, 0.0F );
 		}
 
-		float u = Item.snowball.getIconFromDamage( 0 ).getInterpolatedU( 8.1 );
-		float v = Item.snowball.getIconFromDamage( 0 ).getInterpolatedV( 8.1 );
+		float u = Items.snowball.getIconFromDamage( 0 ).getInterpolatedU( 8.1 );
+		float v = Items.snowball.getIconFromDamage( 0 ).getInterpolatedV( 8.1 );
 
 		NBTTagCompound myTag = Platform.openNbtData( item );
 		String username = myTag.getString( "username" );
@@ -80,6 +81,7 @@ public class ToolBiometricCardRender implements IItemRenderer
 		GL11.glScalef( 1F / 16F, 1F / 16F, 1F );
 		GL11.glTranslatef( 4, 6, 0 );
 		GL11.glDisable( GL11.GL_LIGHTING );
+
 		tessellator.startDrawingQuads();
 		float z = 0;
 

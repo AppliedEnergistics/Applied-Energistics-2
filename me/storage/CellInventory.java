@@ -8,8 +8,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagInt;
-import net.minecraft.nbt.NBTTagShort;
 import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -99,31 +97,32 @@ public class CellInventory implements IMEInventory<IAEItemStack>
 			{
 				NBTTagCompound g = new NBTTagCompound();
 				v.writeToNBT( g );
-				tagCompound.setCompoundTag( ITEM_SLOT_ARR[x], g );
+				tagCompound.setTag( ITEM_SLOT_ARR[x], g );
 			}
 
-			NBTBase tagSlotCount = tagCompound.getTag( ITEM_SLOTCOUNT_ARR[x] );
-			if ( tagSlotCount instanceof NBTTagInt )
-				((NBTTagInt) tagSlotCount).data = (int) v.getStackSize();
-			else
-				tagCompound.setInteger( ITEM_SLOTCOUNT_ARR[x], (int) v.getStackSize() );
+			/*
+			 * NBTBase tagSlotCount = tagCompound.getTag( ITEM_SLOTCOUNT_ARR[x] ); if ( tagSlotCount instanceof
+			 * NBTTagInt ) ((NBTTagInt) tagSlotCount).data = (int) v.getStackSize(); else
+			 */
+			tagCompound.setInteger( ITEM_SLOTCOUNT_ARR[x], (int) v.getStackSize() );
 
 			x++;
 		}
 
-		NBTBase tagType = tagCompound.getTag( ITEM_TYPE_TAG );
-		NBTBase tagCount = tagCompound.getTag( ITEM_COUNT_TAG );
+		// NBTBase tagType = tagCompound.getTag( ITEM_TYPE_TAG );
+		// NBTBase tagCount = tagCompound.getTag( ITEM_COUNT_TAG );
 		short oldStoreditems = storedItems;
 
-		if ( tagType instanceof NBTTagShort )
-			((NBTTagShort) tagType).data = storedItems = (short) cellItems.size();
-		else
-			tagCompound.setShort( ITEM_TYPE_TAG, storedItems = (short) cellItems.size() );
+		/*
+		 * if ( tagType instanceof NBTTagShort ) ((NBTTagShort) tagType).data = storedItems = (short) cellItems.size();
+		 * else
+		 */
+		tagCompound.setShort( ITEM_TYPE_TAG, storedItems = (short) cellItems.size() );
 
-		if ( tagCount instanceof NBTTagInt )
-			((NBTTagInt) tagCount).data = storedItemCount = itemCount;
-		else
-			tagCompound.setInteger( ITEM_COUNT_TAG, storedItemCount = itemCount );
+		/*
+		 * if ( tagCount instanceof NBTTagInt ) ((NBTTagInt) tagCount).data = storedItemCount = itemCount; else
+		 */
+		tagCompound.setInteger( ITEM_COUNT_TAG, storedItemCount = itemCount );
 
 		// clean any old crusty stuff...
 		for (; x < oldStoreditems && x < MAX_ITEM_TYPES; x++)
@@ -327,9 +326,9 @@ public class CellInventory implements IMEInventory<IAEItemStack>
 
 	public static boolean isBlackListed(IAEItemStack input)
 	{
-		if ( blackList.contains( (OreDictionary.WILDCARD_VALUE << Platform.DEF_OFFSET) | input.getItem().itemID ) )
+		if ( blackList.contains( (OreDictionary.WILDCARD_VALUE << Platform.DEF_OFFSET) | Item.getIdFromItem( input.getItem() ) ) )
 			return true;
-		return blackList.contains( (input.getItemDamage() << Platform.DEF_OFFSET) | input.getItem().itemID );
+		return blackList.contains( (input.getItemDamage() << Platform.DEF_OFFSET) | Item.getIdFromItem( input.getItem() ) );
 	}
 
 	private boolean isEmpty(IMEInventory meinv)

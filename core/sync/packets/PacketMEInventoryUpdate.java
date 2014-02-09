@@ -1,8 +1,8 @@
 package appeng.core.sync.packets;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.nio.BufferOverflowException;
 import java.util.LinkedList;
@@ -11,13 +11,13 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.implementations.GuiMEMonitorable;
 import appeng.client.gui.implementations.GuiNetworkStatus;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
+import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -25,8 +25,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 {
 
 	// output...
-	final private ByteArrayOutputStream bytes;
-	final private DataOutputStream data;
+	final private ByteBuf data;
 	int lastSize = 0;
 	boolean empty = true;
 
@@ -34,18 +33,17 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	final List<IAEItemStack> list;
 
 	// automatic.
-	public PacketMEInventoryUpdate(DataInputStream stream) throws IOException {
-		bytes = null;
+	public PacketMEInventoryUpdate(ByteBuf stream) throws IOException {
 		data = null;
 		list = new LinkedList();
-		while (stream.available() > 0)
+		while (stream.readableBytes() > 0)
 			list.add( AEItemStack.loadItemStackFromPacket( stream ) );
 		empty = list.isEmpty();
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void clientPacketData(INetworkManager network, AppEngPacket packet, EntityPlayer player)
+	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
 	{
 		GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 
@@ -58,36 +56,34 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	}
 
 	@Override
-	public Packet250CustomPayload getPacket()
+	public FMLProxyPacket getProxy()
 	{
-		isChunkDataPacket = false;
-		byte[] dataOut = new byte[lastSize];
-		System.arraycopy( bytes.toByteArray(), 0, dataOut, 0, lastSize );
-		configureWrite( dataOut );
-		return super.getPacket();
+		data.capacity( lastSize );
+		configureWrite( data );
+		return super.getProxy();
 	}
 
 	// api
 	public PacketMEInventoryUpdate() throws IOException {
-		bytes = new ByteArrayOutputStream();
-		data = new DataOutputStream( bytes );
+		data = Unpooled.buffer( 2048 );
 		list = null;
 		data.writeInt( getPacketID() );
+		lastSize = data.readableBytes();
 	}
 
 	public void appendItem(IAEItemStack is) throws IOException, BufferOverflowException
 	{
 		is.writeToPacket( data );
 		empty = false;
-		if ( bytes.size() > 20000 )
+		if ( data.readableBytes() > 20000 )
 			throw new BufferOverflowException();
 		else
-			lastSize = bytes.size();
+			lastSize = data.readableBytes();
 	}
 
 	public int getLength()
 	{
-		return data.size();
+		return data.readableBytes();
 	}
 
 	public boolean isEmpty()

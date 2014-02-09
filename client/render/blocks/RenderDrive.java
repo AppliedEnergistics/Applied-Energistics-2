@@ -5,9 +5,9 @@ import java.util.EnumSet;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraTextures;
@@ -44,7 +44,7 @@ public class RenderDrive extends BaseBlockRender
 		boolean result = super.renderInWorld( imb, world, x, y, z, renderer );
 		Tessellator tess = Tessellator.instance;
 
-		Icon ico = ExtraTextures.MEStorageCellTextures.getIcon();
+		IIcon ico = ExtraTextures.MEStorageCellTextures.getIcon();
 
 		int b = world.getLightBrightnessForSkyBlocks( x + forward.offsetX, y + forward.offsetY, z + forward.offsetZ, 0 );
 
@@ -236,7 +236,7 @@ public class RenderDrive extends BaseBlockRender
 
 				if ( stat != 0 )
 				{
-					Icon wico = ExtraTextures.White.getIcon();
+					IIcon wico = ExtraTextures.White.getIcon();
 					u1 = wico.getInterpolatedU( (spin % 4 < 2) ? 1 : 6 );
 					u2 = wico.getInterpolatedU( ((spin + 1) % 4 < 2) ? 1 : 6 );
 					u3 = wico.getInterpolatedU( ((spin + 2) % 4 < 2) ? 1 : 6 );

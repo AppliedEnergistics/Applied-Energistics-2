@@ -22,8 +22,8 @@ public class ContainerWirelessTerm extends ContainerMEPortableCell
 
 		if ( !wtgo.rangeCheck() )
 		{
-			getPlayerInv().player.closeScreen();
-			getPlayerInv().player.sendChatToPlayer( PlayerMessages.OutOfRange.get() );
+			isContainerValid = false;
+			getPlayerInv().player.addChatMessage( PlayerMessages.OutOfRange.get() );
 		}
 		else
 		{

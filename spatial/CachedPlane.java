@@ -7,22 +7,19 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
-import net.minecraft.network.packet.Packet51MapChunk;
-import net.minecraft.server.management.PlayerInstance;
-import net.minecraft.server.management.PlayerManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.NextTickListEntry;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.movable.IMovableHandler;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
+import appeng.util.Platform;
 
 public class CachedPlane
 {
@@ -33,7 +30,7 @@ public class CachedPlane
 		private final int x;
 		private final int z;
 		private final Chunk c;
-		private final int ch[] = { 0, 0, 0 };
+		private final Object ch[] = { 0, 0, 0 };
 		private List<Integer> skipThese = null;
 
 		private ExtendedBlockStorage[] storage;
@@ -54,18 +51,19 @@ public class CachedPlane
 			}
 		}
 
-		public void setBlockIDWithMetadata(int y, int[] blk)
+		public void setBlockIDWithMetadata(int y, Object[] blk)
 		{
 			ExtendedBlockStorage extendedblockstorage = storage[y >> 4];
-			extendedblockstorage.setExtBlockID( x, y & 15, z, blk[0] );
-			extendedblockstorage.setExtBlockMetadata( x, y & 15, z, blk[1] );
-			extendedblockstorage.setExtBlocklightValue( x, y & 15, z, blk[2] );
+			extendedblockstorage.func_150818_a( x, y & 15, z, (Block) blk[0] );
+			// extendedblockstorage.setExtBlockID( x, y & 15, z, blk[0] );
+			extendedblockstorage.setExtBlockMetadata( x, y & 15, z, (Integer) blk[1] );
+			extendedblockstorage.setExtBlocklightValue( x, y & 15, z, (Integer) blk[2] );
 		}
 
-		public int[] getDetails(int y)
+		public Object[] getDetails(int y)
 		{
 			ExtendedBlockStorage extendedblockstorage = storage[y >> 4];
-			ch[0] = extendedblockstorage.getExtBlockID( x, y & 15, z );
+			ch[0] = extendedblockstorage.getBlockByExtId( x, y & 15, z );
 			ch[1] = extendedblockstorage.getExtBlockMetadata( x, y & 15, z );
 			ch[2] = extendedblockstorage.getExtBlocklightValue( x, y & 15, z );
 			return ch;
@@ -172,15 +170,15 @@ public class CachedPlane
 						}
 						else
 						{
-							int[] details = myColumns[te.xCoord - minx][te.zCoord - minz].getDetails( te.yCoord );
-							Block blk = Block.blocksList[details[0]];
+							Object[] details = myColumns[te.xCoord - minx][te.zCoord - minz].getDetails( te.yCoord );
+							Block blk = (Block) details[0];
 
 							// don't skip air, juset let the code replace it...
-							if ( blk != null && blk.isAirBlock( c.worldObj, te.xCoord, te.yCoord, te.zCoord )
-									&& blk.isBlockReplaceable( c.worldObj, te.xCoord, te.yCoord, te.zCoord ) )
+							if ( blk != null && blk.isAir( c.worldObj, te.xCoord, te.yCoord, te.zCoord )
+									&& blk.isReplaceable( c.worldObj, te.xCoord, te.yCoord, te.zCoord ) )
 							{
-								c.worldObj.setBlock( te.xCoord, te.yCoord, te.zCoord, 0 );
-								c.worldObj.notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, 0 );
+								c.worldObj.setBlock( te.xCoord, te.yCoord, te.zCoord, Platform.air );
+								c.worldObj.notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, Platform.air );
 							}
 							else
 								myColumns[te.xCoord - minx][te.zCoord - minz].setSkip( te.yCoord );
@@ -200,9 +198,10 @@ public class CachedPlane
 					for (Object o : list)
 					{
 						NextTickListEntry ntle = (NextTickListEntry) o;
-						if ( ntle.xCoord >= minx && ntle.xCoord <= maxx && ntle.yCoord >= miny && ntle.yCoord <= maxy && ntle.zCoord >= minz && ntle.zCoord <= maxz )
+						if ( ntle.xCoord >= minx && ntle.xCoord <= maxx && ntle.yCoord >= miny && ntle.yCoord <= maxy && ntle.zCoord >= minz
+								&& ntle.zCoord <= maxz )
 						{
-							NextTickListEntry newEntry = new NextTickListEntry( ntle.xCoord, ntle.yCoord, ntle.zCoord, ntle.blockID );
+							NextTickListEntry newEntry = new NextTickListEntry( ntle.xCoord, ntle.yCoord, ntle.zCoord, ntle.func_151351_a() );
 							newEntry.scheduledTime = ntle.scheduledTime - k;
 							ticks.add( newEntry );
 						}
@@ -254,8 +253,8 @@ public class CachedPlane
 
 						if ( a.dontSkip( src_y ) && b.dontSkip( dst_y ) )
 						{
-							int[] aD = a.getDetails( src_y );
-							int[] bD = b.getDetails( dst_y );
+							Object[] aD = a.getDetails( src_y );
+							Object[] bD = b.getDetails( dst_y );
 
 							a.setBlockIDWithMetadata( src_y, bD );
 							b.setBlockIDWithMetadata( dst_y, aD );
@@ -313,7 +312,7 @@ public class CachedPlane
 
 	private void addTick(int x, int y, int z, NextTickListEntry ntle)
 	{
-		wrld.scheduleBlockUpdate( x + x_offset, y + y_offset, z + z_offset, ntle.blockID, (int) ntle.scheduledTime );
+		wrld.scheduleBlockUpdate( x + x_offset, y + y_offset, z + z_offset, ntle.func_151351_a(), (int) ntle.scheduledTime );
 	}
 
 	private void addTile(int x, int y, int z, TileEntity te, CachedPlane alernateDest, IMovableRegistry mr)
@@ -335,12 +334,13 @@ public class CachedPlane
 					AELog.error( e );
 
 					// attempt recovery...
-					te.worldObj = wrld;
+					te.setWorldObj( wrld );
 					te.xCoord = x;
 					te.yCoord = y;
 					te.zCoord = z;
 
-					c.c.setChunkBlockTileEntity( c.x, y + y, c.z, te );
+					c.c.func_150812_a( c.x, y + y, c.z, te );
+					// c.c.setChunkTileEntity( c.x, y + y, c.z, te );
 
 					if ( c.c.isChunkLoaded )
 					{
@@ -384,14 +384,18 @@ public class CachedPlane
 		for (int x = 0; x < cx_size; x++)
 			for (int z = 0; z < cz_size; z++)
 			{
-				Chunk c = myChunks[x][z];
 
-				WorldServer ws = (WorldServer) c.worldObj;
-				PlayerManager pm = ws.getPlayerManager();
-				PlayerInstance playerinstance = pm.getOrCreateChunkWatcher( c.xPosition, c.zPosition, false );
+				// TODO: Fix?
 
-				if ( playerinstance != null )
-					playerinstance.sendToAllPlayersWatchingChunk( new Packet51MapChunk( c, false, verticalBits ) );
+				/*
+				 * Chunk c = myChunks[x][z];
+				 * 
+				 * WorldServer ws = (WorldServer) c.worldObj; PlayerManager pm = ws.getPlayerManager(); PlayerInstance
+				 * playerinstance = pm.getOrCreateChunkWatcher( c.xPosition, c.zPosition, false );
+				 * 
+				 * if ( playerinstance != null ) playerinstance.sendToAllPlayersWatchingChunk( new Packet51MapChunk( c,
+				 * false, verticalBits ) );
+				 */
 			}
 
 	}

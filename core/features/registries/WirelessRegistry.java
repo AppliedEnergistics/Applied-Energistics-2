@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWirelessTermRegistery;
@@ -59,7 +60,7 @@ public class WirelessRegistry implements IWirelessTermRegistery
 		IWirelessTermHandler handler = getWirelessTerminalHandler( item );
 		if ( handler == null )
 		{
-			player.addChatMessage( "Item is not a wireless terminal." );
+			player.addChatMessage( new ChatComponentText( "Item is not a wireless terminal." ) );
 			return;
 		}
 
@@ -68,7 +69,7 @@ public class WirelessRegistry implements IWirelessTermRegistery
 			Platform.openGUI( player, null, null, GuiBridge.GUI_WIRELESS_TERM );
 		}
 		else
-			player.sendChatToPlayer( PlayerMessages.DeviceNotPowered.get() );
+			player.addChatMessage( PlayerMessages.DeviceNotPowered.get() );
 
 	}
 

@@ -16,7 +16,7 @@ public class CellUpgrades extends UpgradeInventory
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
 		writeToNBT( Platform.openNbtData( is ), "upgrades" );
 	}

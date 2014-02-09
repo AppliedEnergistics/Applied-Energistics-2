@@ -19,9 +19,9 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	public TileItemGen() {
 		if ( possibleItems.isEmpty() )
 		{
-			for (int x = 0; x < Item.itemsList.length; x++)
+			for (Object obj : Item.itemRegistry)
 			{
-				Item mi = Item.itemsList[x];
+				Item mi = (Item) obj;
 				if ( mi != null )
 				{
 					if ( mi.isDamageable() )
@@ -32,7 +32,7 @@ public class TileItemGen extends AEBaseTile implements IInventory
 					else
 					{
 						List<ItemStack> list = new ArrayList<ItemStack>();
-						mi.getSubItems( x, mi.getCreativeTab(), list );
+						mi.getSubItems( mi, mi.getCreativeTab(), list );
 						possibleItems.addAll( list );
 					}
 				}
@@ -80,13 +80,13 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
 		return null;
 	}
 
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
 		return false;
 	}
@@ -98,13 +98,13 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	}
 
 	@Override
-	public void openChest()
+	public void openInventory()
 	{
 
 	}
 
 	@Override
-	public void closeChest()
+	public void closeInventory()
 	{
 
 	}

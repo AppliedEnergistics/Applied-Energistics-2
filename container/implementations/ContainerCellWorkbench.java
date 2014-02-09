@@ -72,7 +72,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		{
 			IInventory inv = getCellUpgradeInventory();
 			ItemStack is = inv.decrStackSize( i, j );
-			inv.onInventoryChanged();
+			inv.markDirty();
 			return is;
 		}
 
@@ -81,7 +81,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		{
 			IInventory inv = getCellUpgradeInventory();
 			ItemStack is = inv.getStackInSlotOnClosing( i );
-			inv.onInventoryChanged();
+			inv.markDirty();
 			return is;
 		}
 
@@ -90,17 +90,17 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		{
 			IInventory inv = getCellUpgradeInventory();
 			inv.setInventorySlotContents( i, itemstack );
-			inv.onInventoryChanged();
+			inv.markDirty();
 		}
 
 		@Override
-		public String getInvName()
+		public String getInventoryName()
 		{
 			return "Upgrades";
 		}
 
 		@Override
-		public boolean isInvNameLocalized()
+		public boolean hasCustomInventoryName()
 		{
 			return false;
 		}
@@ -112,7 +112,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		}
 
 		@Override
-		public void onInventoryChanged()
+		public void markDirty()
 		{
 
 		}
@@ -124,12 +124,12 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		}
 
 		@Override
-		public void openChest()
+		public void openInventory()
 		{
 		}
 
 		@Override
-		public void closeChest()
+		public void closeInventory()
 		{
 		}
 
@@ -239,7 +239,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 							icrafting.sendSlotContents( this, sri.slotNumber, sri.getStack() );
 						}
 					}
-					((EntityPlayerMP) icrafting).playerInventoryBeingManipulated = false;
+					((EntityPlayerMP) icrafting).isChangingQuantityOnly = false;
 				}
 			}
 

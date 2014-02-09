@@ -14,13 +14,13 @@ import appeng.container.implementations.ContainerPriority;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.IPriorityHost;
 import appeng.parts.misc.PartStorageBus;
 import appeng.tile.storage.TileChest;
 import appeng.tile.storage.TileDrive;
-import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class GuiPriority extends AEBaseGui
 {
@@ -74,9 +74,9 @@ public class GuiPriority extends AEBaseGui
 		}
 
 		if ( OriginalGui != null )
-			buttonList.add( originalGuiBtn = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), itemRenderer ) );
+			buttonList.add( originalGuiBtn = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), itemRender ) );
 
-		priority = new GuiTextField( this.fontRenderer, this.guiLeft + 62, this.guiTop + 57, 59, this.fontRenderer.FONT_HEIGHT );
+		priority = new GuiTextField( fontRendererObj, this.guiLeft + 62, this.guiTop + 57, 59, fontRendererObj.FONT_HEIGHT );
 		priority.setEnableBackgroundDrawing( false );
 		priority.setMaxStringLength( 16 );
 		priority.setTextColor( 0xFFFFFF );
@@ -94,7 +94,7 @@ public class GuiPriority extends AEBaseGui
 		{
 			try
 			{
-				PacketDispatcher.sendPacketToServer( (new PacketSwitchGuis( OriginalGui )).getPacket() );
+				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( OriginalGui ) );
 			}
 			catch (IOException e)
 			{
@@ -144,7 +144,7 @@ public class GuiPriority extends AEBaseGui
 
 			priority.setText( Out = Long.toString( result ) );
 
-			PacketDispatcher.sendPacketToServer( (new PacketValueConfig( "PriorityHost.Priority", Out )).getPacket() );
+			NetworkHandler.instance.sendToServer( new PacketValueConfig( "PriorityHost.Priority", Out ) );
 		}
 		catch (IOException e)
 		{
@@ -157,7 +157,8 @@ public class GuiPriority extends AEBaseGui
 	{
 		if ( !this.checkHotbarKeys( key ) )
 		{
-			if ( (key == 211 || key == 205 || key == 203 || key == 14 || character == '-' || Character.isDigit( character )) && priority.textboxKeyTyped( character, key ) )
+			if ( (key == 211 || key == 205 || key == 203 || key == 14 || character == '-' || Character.isDigit( character ))
+					&& priority.textboxKeyTyped( character, key ) )
 			{
 				try
 				{
@@ -176,7 +177,7 @@ public class GuiPriority extends AEBaseGui
 					if ( Out.length() == 0 )
 						Out = "0";
 
-					PacketDispatcher.sendPacketToServer( (new PacketValueConfig( "PriorityHost.Priority", Out )).getPacket() );
+					NetworkHandler.instance.sendToServer( new PacketValueConfig( "PriorityHost.Priority", Out ) );
 				}
 				catch (IOException e)
 				{
@@ -207,6 +208,6 @@ public class GuiPriority extends AEBaseGui
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRenderer.drawString( GuiText.Priority.getLocal(), 8, 6, 4210752 );
+		fontRendererObj.drawString( GuiText.Priority.getLocal(), 8, 6, 4210752 );
 	}
 }

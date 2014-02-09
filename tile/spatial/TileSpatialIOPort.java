@@ -2,7 +2,7 @@ package appeng.tile.spatial;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.tile.grid.AENetworkInvTile;

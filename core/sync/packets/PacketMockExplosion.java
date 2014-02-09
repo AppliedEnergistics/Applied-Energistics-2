@@ -1,15 +1,15 @@
 package appeng.core.sync.packets;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.INetworkManager;
 import net.minecraft.world.World;
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.network.INetworkInfo;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -22,14 +22,14 @@ public class PacketMockExplosion extends AppEngPacket
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void clientPacketData(INetworkManager network, AppEngPacket packet, EntityPlayer player)
+	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
 	{
 		World world = CommonHelper.proxy.getWorld();
 		world.spawnParticle( "largeexplode", this.x, this.y, this.z, 1.0D, 0.0D, 0.0D );
 	}
 
 	// automatic.
-	public PacketMockExplosion(DataInputStream stream) throws IOException {
+	public PacketMockExplosion(ByteBuf stream) throws IOException {
 		x = stream.readDouble();
 		y = stream.readDouble();
 		z = stream.readDouble();
@@ -41,16 +41,14 @@ public class PacketMockExplosion extends AppEngPacket
 		this.y = y;
 		this.z = z;
 
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		DataOutputStream data = new DataOutputStream( bytes );
+		ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( getPacketID() );
 		data.writeDouble( x );
 		data.writeDouble( y );
 		data.writeDouble( z );
 
-		isChunkDataPacket = false;
-		configureWrite( bytes.toByteArray() );
+		configureWrite( data );
 	}
 
 }

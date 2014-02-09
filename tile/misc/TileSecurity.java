@@ -1,7 +1,7 @@
 package appeng.tile.misc;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -10,10 +10,11 @@ import java.util.HashMap;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.events.LocatableEventAnnounce;
@@ -115,7 +116,7 @@ public class TileSecurity extends AENetworkTile implements IStorageMonitorable, 
 		}
 
 		@Override
-		public boolean readFromStream(DataInputStream data) throws IOException
+		public boolean readFromStream(ByteBuf data) throws IOException
 		{
 			boolean wasActive = isActive;
 			isActive = data.readBoolean();
@@ -124,7 +125,7 @@ public class TileSecurity extends AENetworkTile implements IStorageMonitorable, 
 		}
 
 		@Override
-		public void writeToStream(DataOutputStream data) throws IOException
+		public void writeToStream(ByteBuf data) throws IOException
 		{
 			data.writeBoolean( gridProxy.isActive() );
 		}
@@ -142,10 +143,10 @@ public class TileSecurity extends AENetworkTile implements IStorageMonitorable, 
 			{
 				NBTTagCompound it = new NBTTagCompound();
 				ais.getItemStack().writeToNBT( it );
-				storedItems.setCompoundTag( "" + (offset++), it );
+				storedItems.setTag( "" + (offset++), it );
 			}
 
-			data.setCompoundTag( "storedItems", storedItems );
+			data.setTag( "storedItems", storedItems );
 		}
 
 		@Override
@@ -155,8 +156,9 @@ public class TileSecurity extends AENetworkTile implements IStorageMonitorable, 
 			configSlot.readFromNBT( data, "config" );
 
 			NBTTagCompound storedItems = data.getCompoundTag( "storedItems" );
-			for (Object obj : storedItems.getTags())
+			for (Object key : storedItems.func_150296_c())
 			{
+				NBTBase obj = storedItems.getTag( (String) key );
 				if ( obj instanceof NBTTagCompound )
 				{
 					inventory.storedItems.add( AEItemStack.create( ItemStack.loadItemStackFromNBT( (NBTTagCompound) obj ) ) );

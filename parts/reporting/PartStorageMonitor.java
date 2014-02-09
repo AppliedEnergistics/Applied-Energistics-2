@@ -2,9 +2,8 @@ package appeng.parts.reporting;
 
 import static net.minecraftforge.client.IItemRenderer.ItemRenderType.ENTITY;
 import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
+import io.netty.buffer.ByteBuf;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.block.Block;
@@ -25,7 +24,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -79,7 +78,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		if ( configuredItem != null )
 			configuredItem.writeToNBT( myItem );
 
-		data.setCompoundTag( "configuredItem", myItem );
+		data.setTag( "configuredItem", myItem );
 	}
 
 	@Override
@@ -95,7 +94,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	public void writeToStream(DataOutputStream data) throws IOException
+	public void writeToStream(ByteBuf data) throws IOException
 	{
 		super.writeToStream( data );
 
@@ -106,7 +105,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	public boolean readFromStream(DataInputStream data) throws IOException
+	public boolean readFromStream(ByteBuf data) throws IOException
 	{
 		boolean stuff = super.readFromStream( data );
 
@@ -134,7 +133,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		if ( Platform.isWrench( player, eq, te.xCoord, te.yCoord, te.zCoord ) )
 		{
 			isLocked = !isLocked;
-			player.sendChatToPlayer( (isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).get() );
+			player.addChatMessage( (isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).get() );
 		}
 		else if ( !isLocked )
 		{
@@ -176,7 +175,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	public void renderDynamic(double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		Tessellator tess = Tessellator.instance;
-		if ( tess.isDrawing )
+		if ( Platform.isDrawing( tess ) )
 			return;
 
 		if ( (clientFlags & (POWERED_FLAG | CHANNEL_FLAG)) != (POWERED_FLAG | CHANNEL_FLAG) )
@@ -240,9 +239,8 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 				GL11.glScalef( 1.0f, -1.0f, 0.005f );
 				// GL11.glScalef( 1.0f , -1.0f, 1.0f );
 
-				int k = sis.itemID;
-				Block block = (k < Block.blocksList.length ? Block.blocksList[k] : null);
-				if ( (sis.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( Block.blocksList[k].getRenderType() )) )
+				Block block = Block.getBlockFromItem( sis.getItem() );
+				if ( (sis.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d( block.getRenderType() )) )
 				{
 					GL11.glRotatef( 25.0f, 1.0f, 0.0f, 0.0f );
 					GL11.glRotatef( 15.0f, 0.0f, 1.0f, 0.0f );
@@ -300,7 +298,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	{
 		if ( itemstack != null )
 		{
-			EntityItem entityitem = new EntityItem( par1EntityItemFrame.worldObj, 0.0D, 0.0D, 0.0D, itemstack );
+			EntityItem entityitem = new EntityItem( par1EntityItemFrame.getWorldObj(), 0.0D, 0.0D, 0.0D, itemstack );
 			entityitem.getEntityItem().stackSize = 1;
 
 			// set all this stuff and then do shit? meh?

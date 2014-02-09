@@ -70,7 +70,7 @@ public class ContainerCondenser extends AEBaseContainer
 				if ( changed )
 				{
 					// if the bars changed an item was probably made, so just send shit!
-					((EntityPlayerMP) icrafting).playerInventoryBeingManipulated = false;
+					((EntityPlayerMP) icrafting).isChangingQuantityOnly = false;
 				}
 			}
 

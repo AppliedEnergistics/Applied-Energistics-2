@@ -37,7 +37,7 @@ public class ToolChargedStaff extends AEBasePoweredItem
 						float dx = (float) (Platform.getRandomFloat() * target.width + target.boundingBox.minX);
 						float dy = (float) (Platform.getRandomFloat() * target.height + target.boundingBox.minY);
 						float dz = (float) (Platform.getRandomFloat() * target.width + target.boundingBox.minZ);
-						ServerHelper.proxy.sendToAllNearExcept( null, dx, dy, dz, 32.0, target.worldObj, (new PacketLightning( dx, dy, dz )).getPacket() );
+						ServerHelper.proxy.sendToAllNearExcept( null, dx, dy, dz, 32.0, target.worldObj, new PacketLightning( dx, dy, dz ) );
 					}
 				}
 				catch (IOException e)

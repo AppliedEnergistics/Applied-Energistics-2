@@ -7,7 +7,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.exceptions.AppEngException;
@@ -231,7 +231,7 @@ public enum GuiBridge implements IGuiHandler
 		}
 		else
 		{
-			TileEntity TE = w.getBlockTileEntity( x, y, z );
+			TileEntity TE = w.getTileEntity( x, y, z );
 			if ( TE instanceof IPartHost )
 			{
 				((IPartHost) TE).getPart( side );
@@ -286,7 +286,7 @@ public enum GuiBridge implements IGuiHandler
 		}
 		else
 		{
-			TileEntity TE = w.getBlockTileEntity( x, y, z );
+			TileEntity TE = w.getTileEntity( x, y, z );
 
 			if ( TE instanceof IPartHost )
 			{
@@ -325,7 +325,7 @@ public enum GuiBridge implements IGuiHandler
 			}
 			else
 			{
-				TileEntity TE = w.getBlockTileEntity( x, y, z );
+				TileEntity TE = w.getTileEntity( x, y, z );
 				if ( TE instanceof IPartHost )
 				{
 					((IPartHost) TE).getPart( side );

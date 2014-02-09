@@ -10,8 +10,8 @@ import appeng.client.gui.widgets.GuiToggleButton;
 import appeng.container.implementations.ContainerSecurity;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
-import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class GuiSecurity extends GuiMEMonitorable
 {
@@ -31,11 +31,11 @@ public class GuiSecurity extends GuiMEMonitorable
 		super.initGui();
 
 		int top = this.guiTop + this.ySize - 116;
-		buttonList.add( inject = new GuiToggleButton( this.guiLeft + 56 + 18 * 0, top, 11 * 16 + 0, 12 * 16 + 0, SecurityPermissions.INJECT.getUnlocalizedName(),
-				SecurityPermissions.INJECT.getUnlocalizedTip() ) );
+		buttonList.add( inject = new GuiToggleButton( this.guiLeft + 56 + 18 * 0, top, 11 * 16 + 0, 12 * 16 + 0, SecurityPermissions.INJECT
+				.getUnlocalizedName(), SecurityPermissions.INJECT.getUnlocalizedTip() ) );
 
-		buttonList.add( extract = new GuiToggleButton( this.guiLeft + 56 + 18 * 1, top, 11 * 16 + 1, 12 * 16 + 1, SecurityPermissions.EXTRACT.getUnlocalizedName(),
-				SecurityPermissions.EXTRACT.getUnlocalizedTip() ) );
+		buttonList.add( extract = new GuiToggleButton( this.guiLeft + 56 + 18 * 1, top, 11 * 16 + 1, 12 * 16 + 1, SecurityPermissions.EXTRACT
+				.getUnlocalizedName(), SecurityPermissions.EXTRACT.getUnlocalizedTip() ) );
 
 		buttonList.add( craft = new GuiToggleButton( this.guiLeft + 56 + 18 * 2, top, 11 * 16 + 2, 12 * 16 + 2, SecurityPermissions.CRAFT.getUnlocalizedName(),
 				SecurityPermissions.CRAFT.getUnlocalizedTip() ) );
@@ -43,8 +43,8 @@ public class GuiSecurity extends GuiMEMonitorable
 		buttonList.add( build = new GuiToggleButton( this.guiLeft + 56 + 18 * 3, top, 11 * 16 + 3, 12 * 16 + 3, SecurityPermissions.BUILD.getUnlocalizedName(),
 				SecurityPermissions.BUILD.getUnlocalizedTip() ) );
 
-		buttonList.add( security = new GuiToggleButton( this.guiLeft + 56 + 18 * 4, top, 11 * 16 + 4, 12 * 16 + 4, SecurityPermissions.SECURITY.getUnlocalizedName(),
-				SecurityPermissions.SECURITY.getUnlocalizedTip() ) );
+		buttonList.add( security = new GuiToggleButton( this.guiLeft + 56 + 18 * 4, top, 11 * 16 + 4, 12 * 16 + 4, SecurityPermissions.SECURITY
+				.getUnlocalizedName(), SecurityPermissions.SECURITY.getUnlocalizedTip() ) );
 	}
 
 	protected void actionPerformed(net.minecraft.client.gui.GuiButton btn)
@@ -68,7 +68,7 @@ public class GuiSecurity extends GuiMEMonitorable
 		{
 			try
 			{
-				PacketDispatcher.sendPacketToServer( (new PacketValueConfig( "TileSecurity.ToggleOption", toggleSetting.name() )).getPacket() );
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "TileSecurity.ToggleOption", toggleSetting.name() ) );
 			}
 			catch (IOException e)
 			{
@@ -95,7 +95,7 @@ public class GuiSecurity extends GuiMEMonitorable
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
-		fontRenderer.drawString( GuiText.SecurityCardEditor.getLocal(), 8, ySize - 96 + 1 - reservedSpace, 4210752 );
+		fontRendererObj.drawString( GuiText.SecurityCardEditor.getLocal(), 8, ySize - 96 + 1 - reservedSpace, 4210752 );
 	}
 
 	@Override

@@ -49,9 +49,9 @@ public class AdaptorPlayerInventory implements IInventory
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
-		return src.getInvName();
+		return src.getInventoryName();
 	}
 
 	@Override
@@ -61,9 +61,9 @@ public class AdaptorPlayerInventory implements IInventory
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
-		src.onInventoryChanged();
+		src.markDirty();
 	}
 
 	@Override
@@ -73,19 +73,19 @@ public class AdaptorPlayerInventory implements IInventory
 	}
 
 	@Override
-	public void openChest()
+	public void openInventory()
 	{
-		src.openChest();
+		src.openInventory();
 	}
 
 	@Override
-	public void closeChest()
+	public void closeInventory()
 	{
-		src.closeChest();
+		src.closeInventory();
 	}
 
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
 		return false;
 	}

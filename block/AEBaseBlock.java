@@ -8,21 +8,21 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.client.resources.Resource;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.util.IOrientable;
@@ -32,7 +32,6 @@ import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
 import appeng.client.render.WorldRender;
 import appeng.client.texture.FlipableIcon;
-import appeng.core.Configuration;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
 import appeng.core.features.IAEFeature;
@@ -58,7 +57,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	protected boolean isFullSize = true;
 
 	@SideOnly(Side.CLIENT)
-	public Icon renderIcon;
+	public IIcon renderIcon;
 
 	@SideOnly(Side.CLIENT)
 	BlockRenderInfo renderInfo;
@@ -83,9 +82,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@SideOnly(Side.CLIENT)
-	private FlipableIcon optionaIcon(IconRegister ir, String Name, Icon substitute)
+	private FlipableIcon optionaIcon(IIconRegister ir, String Name, IIcon substitute)
 	{
-		// if the input is an flippable icon find the original.
+		// if the input is an flippable IIcon find the original.
 		while (substitute instanceof FlipableIcon)
 			substitute = ((FlipableIcon) substitute).getOriginal();
 
@@ -94,9 +93,10 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 			try
 			{
 				ResourceLocation resLoc = new ResourceLocation( Name );
-				resLoc = new ResourceLocation( resLoc.getResourceDomain(), String.format( "%s/%s%s", new Object[] { "textures/blocks", resLoc.getResourcePath(), ".png" } ) );
+				resLoc = new ResourceLocation( resLoc.getResourceDomain(), String.format( "%s/%s%s", new Object[] { "textures/blocks",
+						resLoc.getResourcePath(), ".png" } ) );
 
-				Resource res = Minecraft.getMinecraft().getResourceManager().getResource( resLoc );
+				IResource res = Minecraft.getMinecraft().getResourceManager().getResource( resLoc );
 				if ( res != null )
 					return new FlipableIcon( ir.registerIcon( Name ) );
 			}
@@ -111,7 +111,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister iconRegistry)
+	public void registerBlockIcons(IIconRegister iconRegistry)
 	{
 		BlockRenderInfo info = getRendererInstance();
 		FlipableIcon topIcon;
@@ -135,7 +135,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Icon getIcon(int direction, int metadata)
+	public IIcon getIcon(int direction, int metadata)
 	{
 		if ( renderIcon != null )
 			return renderIcon;
@@ -144,7 +144,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
-	public Icon getBlockTexture(IBlockAccess w, int x, int y, int z, int s)
+	public IIcon getIcon(IBlockAccess w, int x, int y, int z, int s)
 	{
 		return getIcon( mapRotation( w, x, y, z, s ), 0 );
 	}
@@ -163,19 +163,19 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	protected AEBaseBlock(Class<?> c, Material mat) {
 		this( c, mat, null );
 		setLightOpacity( 15 );
-		setLightValue( 0 );
+		setLightLevel( 0 );
 		setHardness( 1.2F );
 	}
 
 	protected AEBaseBlock(Class<?> c, Material mat, String subname) {
-		super( Configuration.instance.getBlockID( c, subname ), mat );
+		super( mat );
 
 		if ( mat == Material.glass )
-			setStepSound( Block.soundGlassFootstep );
+			setStepSound( Block.soundTypeGlass );
 		else if ( mat == Material.rock )
-			setStepSound( Block.soundStoneFootstep );
+			setStepSound( Block.soundTypeStone );
 		else
-			setStepSound( Block.soundMetalFootstep );
+			setStepSound( Block.soundTypeMetal );
 
 		FeatureFullname = AEFeatureHandler.getName( c, subname );
 		FeatureSubname = subname;
@@ -205,7 +205,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
-	final public boolean isBlockNormalCube(World world, int x, int y, int z)
+	final public boolean isNormalCube(IBlockAccess world, int x, int y, int z)
 	{
 		return isFullSize;
 	}
@@ -243,7 +243,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
-	final public TileEntity createTileEntity(World world, int metadata)
+	final public TileEntity createNewTileEntity(World var1, int var2)
 	{
 		try
 		{
@@ -255,18 +255,12 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		}
 	}
 
-	@Override
-	final public TileEntity createNewTileEntity(World world)
-	{
-		return createTileEntity( world, 0 );
-	}
-
 	final public <T extends TileEntity> T getTileEntity(IBlockAccess w, int x, int y, int z)
 	{
 		if ( !hasBlockTileEntity() )
 			return null;
 
-		TileEntity te = w.getBlockTileEntity( x, y, z );
+		TileEntity te = w.getTileEntity( x, y, z );
 		if ( tileEntityType.isInstance( te ) )
 			return (T) te;
 
@@ -387,7 +381,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
-	public void breakBlock(World w, int x, int y, int z, int a, int b)
+	public void breakBlock(World w, int x, int y, int z, Block a, int b)
 	{
 		AEBaseTile te = getTileEntity( w, x, y, z );
 		if ( te != null )
@@ -404,7 +398,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 		super.breakBlock( w, x, y, z, a, b );
 		if ( te != null )
-			w.setBlockTileEntity( x, y, z, null );
+			w.setTileEntity( x, y, z, null );
 	}
 
 	@Override
@@ -598,8 +592,8 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 			{
 				if ( Platform.isWrench( player, is, x, y, z ) && player.isSneaking() )
 				{
-					int id = w.getBlockId( x, y, z );
-					if ( id != 0 )
+					Block id = w.getBlock( x, y, z );
+					if ( id != null )
 					{
 						AEBaseTile tile = getTileEntity( w, x, y, z );
 						ItemStack[] drops = Platform.getBlockDrops( w, x, y, z );
@@ -621,7 +615,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 							}
 						}
 
-						if ( Block.blocksList[id].removeBlockByPlayer( w, player, x, y, z ) )
+						if ( id.removedByPlayer( w, player, x, y, z ) )
 						{
 							List<ItemStack> l = new ArrayList<ItemStack>();
 							for (ItemStack iss : drops)

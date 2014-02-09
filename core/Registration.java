@@ -69,7 +69,6 @@ import appeng.core.features.registries.entries.BasicCellHandler;
 import appeng.core.features.registries.entries.CreativeCellHandler;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
-import appeng.core.sync.GuiBridge;
 import appeng.debug.BlockChunkloader;
 import appeng.debug.BlockItemGen;
 import appeng.debug.ToolDebugCard;
@@ -114,14 +113,12 @@ import appeng.recipes.ores.OreDictionaryHandler;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.common.registry.VillagerRegistry;
-import cpw.mods.fml.relauncher.Side;
 
 public class Registration
 {
@@ -409,10 +406,7 @@ public class Registration
 		ph.registerNewLayer( "appeng.api.parts.layers.LayerIFluidHandler", "net.minecraftforge.fluids.IFluidHandler" );
 		ph.registerNewLayer( "appeng.api.parts.layers.LayerITileStorageMonitorable", "appeng.api.implementations.tiles.ITileStorageMonitorable" );
 
-		TickRegistry.registerTickHandler( TickHandler.instance, Side.SERVER );
-		TickRegistry.registerTickHandler( TickHandler.instance, Side.CLIENT );
-
-		MinecraftForge.EVENT_BUS.register( TickHandler.instance );
+		FMLCommonHandler.instance().bus().register( TickHandler.instance );
 		MinecraftForge.EVENT_BUS.register( new PartPlacement() );
 
 		IGridCacheRegistry gcr = AEApi.instance().registries().gridCache();
@@ -434,7 +428,7 @@ public class Registration
 		// default settings..
 		((P2PTunnelRegistry) AEApi.instance().registries().p2pTunnel()).configure();
 
-		NetworkRegistry.instance().registerGuiHandler( AppEng.instance, GuiBridge.GUI_Handler );
+		// NetworkRegistry.instance().registerGuiHandler( AppEng.instance, GuiBridge.GUI_Handler );
 	}
 
 	public void PostInit(FMLPostInitializationEvent event)
@@ -502,7 +496,7 @@ public class Registration
 			VillagerRegistry.instance().registerVillageTradeHandler( 3, new AETrading() );
 
 		if ( Configuration.instance.isFeatureEnabled( AEFeature.CertusQuartzWorldGen ) )
-			GameRegistry.registerWorldGenerator( new QuartzWorldGen() );
+			GameRegistry.registerWorldGenerator( new QuartzWorldGen(), 0 );
 
 	}
 }

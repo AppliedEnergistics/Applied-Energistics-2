@@ -6,7 +6,7 @@ import java.util.List;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
@@ -45,7 +45,7 @@ final public class EntityChargedQuartz extends EntityItem
 		int i = MathHelper.floor_double( this.posY );
 		int k = MathHelper.floor_double( this.posZ );
 
-		Material mat = worldObj.getBlockMaterial( j, i, k );
+		Material mat = worldObj.getBlock( j, i, k ).getMaterial();
 		if ( Platform.isServer() && mat.isLiquid() )
 		{
 			transformTime++;
@@ -77,10 +77,10 @@ final public class EntityChargedQuartz extends EntityItem
 					ItemStack other = ((EntityItem) e).getEntityItem();
 					if ( other != null && other.stackSize > 0 )
 					{
-						if ( Platform.isSameItem( other, new ItemStack( Item.redstone ) ) )
+						if ( Platform.isSameItem( other, new ItemStack( Items.redstone ) ) )
 							redstone = (EntityItem) e;
 
-						if ( Platform.isSameItem( other, new ItemStack( Item.netherQuartz ) ) )
+						if ( Platform.isSameItem( other, new ItemStack( Items.quartz ) ) )
 							netherQuartz = (EntityItem) e;
 					}
 				}

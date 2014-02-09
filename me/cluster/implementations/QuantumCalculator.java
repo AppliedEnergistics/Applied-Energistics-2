@@ -54,7 +54,7 @@ public class QuantumCalculator extends MBCalculator
 			{
 				for (int z = min.z; z <= max.z; z++)
 				{
-					TileQuantumBridge te = (TileQuantumBridge) w.getBlockTileEntity( x, y, z );
+					TileQuantumBridge te = (TileQuantumBridge) w.getTileEntity( x, y, z );
 
 					byte flags = 0;
 
@@ -104,7 +104,7 @@ public class QuantumCalculator extends MBCalculator
 			{
 				for (int z = min.z; z <= max.z; z++)
 				{
-					IAEMultiBlock te = (IAEMultiBlock) w.getBlockTileEntity( x, y, z );
+					IAEMultiBlock te = (IAEMultiBlock) w.getTileEntity( x, y, z );
 
 					if ( !te.isValid() )
 						return false;

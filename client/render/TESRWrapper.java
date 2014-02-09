@@ -11,6 +11,7 @@ import org.lwjgl.opengl.GL11;
 import appeng.block.AEBaseBlock;
 import appeng.core.AELog;
 import appeng.tile.AEBaseTile;
+import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -42,7 +43,7 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 
 				Tessellator tess = Tessellator.instance;
 
-				if ( tess.isDrawing )
+				if ( Platform.isDrawing( tess ) )
 					return;
 
 				try
@@ -50,10 +51,10 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 					GL11.glPushMatrix();
 					GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
-					rbinstance.blockAccess = te.worldObj;
+					rbinstance.blockAccess = te.getWorldObj();
 					blkRender.renderTile( (AEBaseBlock) b, (AEBaseTile) te, tess, x, y, z, f, rbinstance );
 
-					if ( tess.isDrawing )
+					if ( Platform.isDrawing( tess ) )
 						throw new RuntimeException( "Error durring rendering." );
 
 					GL11.glPopAttrib();

@@ -12,9 +12,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
@@ -131,9 +131,9 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 							AxisAlignedBB bb = AxisAlignedBB
 									.getAABBPool()
-									.getAABB( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ),
-											Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) )
-									.expand( 16, 16, 16 );
+									.getAABB( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ),
+											Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ),
+											Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
 
 							Entity entity = null;
 							List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
@@ -171,7 +171,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 							}
 
 							Vec3 Srec = w.getWorldVec3Pool().getVecFromPool( d0, d1, d2 );
-							MovingObjectPosition pos = w.rayTraceBlocks_do_do( vec3, vec31, true, false );
+							MovingObjectPosition pos = w.rayTraceBlocks( vec3, vec31, true );
 							if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( Srec ) > Closeest )
 							{
 								pos = new MovingObjectPosition( entity );
@@ -183,8 +183,8 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 							try
 							{
-								CommonHelper.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, (new PacketMatterCannon( d0, d1, d2, (float) (f7 * d3), (float) (f6 * d3),
-										(float) (f8 * d3), (byte) (pos == null ? 32 : pos.hitVec.squareDistanceTo( Srec ) + 1) )).getPacket() );
+								CommonHelper.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) (f7 * d3),
+										(float) (f6 * d3), (float) (f8 * d3), (byte) (pos == null ? 32 : pos.hitVec.squareDistanceTo( Srec ) + 1) ) );
 
 							}
 							catch (Exception err)
@@ -197,7 +197,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 								DamageSource dmgSrc = DamageSource.causePlayerDamage( p );
 								dmgSrc.damageType = "masscannon";
 
-								if ( pos.typeOfHit == EnumMovingObjectType.ENTITY )
+								if ( pos.typeOfHit == MovingObjectType.ENTITY )
 								{
 									int dmg = (int) Math.ceil( penitration / 20.0f );
 									if ( pos.entityHit instanceof EntityLivingBase )
@@ -221,29 +221,26 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 										hasDestroyedSomething = true;
 									}
 								}
-								else if ( pos.typeOfHit == EnumMovingObjectType.TILE )
+								else if ( pos.typeOfHit == MovingObjectType.BLOCK )
 								{
 									if ( !Configuration.instance.isFeatureEnabled( AEFeature.MassCannonBlockDamage ) )
 										penitration = 0;
 									else
 									{
-										int bid = w.getBlockId( pos.blockX, pos.blockY, pos.blockZ );
+										Block b = w.getBlock( pos.blockX, pos.blockY, pos.blockZ );
 										// int meta = w.getBlockMetadata(
 										// pos.blockX, pos.blockY, pos.blockZ );
 
-										if ( bid > 0 )
+										float hardness = b.getBlockHardness( w, pos.blockX, pos.blockY, pos.blockZ ) * 9.0f;
+										if ( hardness >= 0.0 )
 										{
-											Block b = Block.blocksList[bid];
-											float hardness = b.getBlockHardness( w, pos.blockX, pos.blockY, pos.blockZ ) * 9.0f;
-											if ( hardness >= 0.0 )
+											if ( penitration > hardness )
 											{
-												if ( penitration > hardness )
-												{
-													hasDestroyedSomething = true;
-													penitration -= hardness;
-													penitration *= 0.60;
-													w.destroyBlock( pos.blockX, pos.blockY, pos.blockZ, true );
-												}
+												hasDestroyedSomething = true;
+												penitration -= hardness;
+												penitration *= 0.60;
+												w.func_147480_a( pos.blockX, pos.blockY, pos.blockZ, true );
+												// w.destroyBlock( pos.blockX, pos.blockY, pos.blockZ, true );
 											}
 										}
 									}
@@ -255,7 +252,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				else
 				{
 					if ( Platform.isServer() )
-						p.sendChatToPlayer( PlayerMessages.AmmoDepleted.get() );
+						p.addChatMessage( PlayerMessages.AmmoDepleted.get() );
 					return item;
 				}
 			}

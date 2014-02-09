@@ -3,7 +3,7 @@ package appeng.parts.automation;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
@@ -48,16 +48,16 @@ public class PartAnnihilationPlane extends PartBasicState
 
 		TileEntity te = getHost().getTile();
 
-		if ( isTransitionPlane( te.worldObj.getBlockTileEntity( x - e.offsetX, y - e.offsetY, z - e.offsetZ ), side ) )
+		if ( isTransitionPlane( te.getWorldObj().getTileEntity( x - e.offsetX, y - e.offsetY, z - e.offsetZ ), side ) )
 			minX = 0;
 
-		if ( isTransitionPlane( te.worldObj.getBlockTileEntity( x + e.offsetX, y + e.offsetY, z + e.offsetZ ), side ) )
+		if ( isTransitionPlane( te.getWorldObj().getTileEntity( x + e.offsetX, y + e.offsetY, z + e.offsetZ ), side ) )
 			maxX = 16;
 
-		if ( isTransitionPlane( te.worldObj.getBlockTileEntity( x - u.offsetX, y - u.offsetY, z - u.offsetZ ), side ) )
+		if ( isTransitionPlane( te.getWorldObj().getTileEntity( x - u.offsetX, y - u.offsetY, z - u.offsetZ ), side ) )
 			minY = 0;
 
-		if ( isTransitionPlane( te.worldObj.getBlockTileEntity( x + u.offsetX, y + u.offsetY, z + u.offsetZ ), side ) )
+		if ( isTransitionPlane( te.getWorldObj().getTileEntity( x + u.offsetX, y + u.offsetY, z + u.offsetZ ), side ) )
 			maxY = 16;
 
 		boolean isActive = (clientFlags & (POWERED_FLAG | CHANNEL_FLAG)) == (POWERED_FLAG | CHANNEL_FLAG);
@@ -107,16 +107,16 @@ public class PartAnnihilationPlane extends PartBasicState
 		ForgeDirection e = bch.getWorldX();
 		ForgeDirection u = bch.getWorldY();
 
-		if ( isTransitionPlane( te.worldObj.getBlockTileEntity( x - e.offsetX, y - e.offsetY, z - e.offsetZ ), side ) )
+		if ( isTransitionPlane( te.getWorldObj().getTileEntity( x - e.offsetX, y - e.offsetY, z - e.offsetZ ), side ) )
 			minX = 0;
 
-		if ( isTransitionPlane( te.worldObj.getBlockTileEntity( x + e.offsetX, y + e.offsetY, z + e.offsetZ ), side ) )
+		if ( isTransitionPlane( te.getWorldObj().getTileEntity( x + e.offsetX, y + e.offsetY, z + e.offsetZ ), side ) )
 			maxX = 16;
 
-		if ( isTransitionPlane( te.worldObj.getBlockTileEntity( x - u.offsetX, y - u.offsetY, z - u.offsetZ ), side ) )
+		if ( isTransitionPlane( te.getWorldObj().getTileEntity( x - u.offsetX, y - u.offsetY, z - u.offsetZ ), side ) )
 			minY = 0;
 
-		if ( isTransitionPlane( te.worldObj.getBlockTileEntity( x + u.offsetX, y + u.offsetY, z + u.offsetZ ), side ) )
+		if ( isTransitionPlane( te.getWorldObj().getTileEntity( x + u.offsetX, y + u.offsetY, z + u.offsetZ ), side ) )
 			maxY = 16;
 
 		bch.addBox( 5, 5, 14, 11, 11, 15 );

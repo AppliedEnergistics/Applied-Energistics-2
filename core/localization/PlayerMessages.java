@@ -1,6 +1,7 @@
 package appeng.core.localization;
 
-import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IChatComponent;
 
 public enum PlayerMessages
 {
@@ -13,9 +14,9 @@ public enum PlayerMessages
 		return "chat.appliedenergistics2." + toString();
 	}
 
-	public ChatMessageComponent get()
+	public IChatComponent get()
 	{
-		return ChatMessageComponent.createFromTranslationKey( getName() );
+		return new ChatComponentTranslation( getName() );
 	}
 
 }

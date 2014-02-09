@@ -3,9 +3,8 @@ package appeng.me.cluster.implementations;
 import java.util.Iterator;
 
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.WorldEvent;
 import appeng.api.AEApi;
 import appeng.api.events.LocatableEventAnnounce;
@@ -19,6 +18,7 @@ import appeng.me.cache.helpers.ConnectionWrapper;
 import appeng.me.cluster.IAECluster;
 import appeng.tile.qnb.TileQuantumBridge;
 import appeng.util.iterators.ChainedIterator;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class QuantumCluster implements ILocatable, IAECluster
 {
@@ -62,7 +62,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 		{
 			if ( !qc.isDestroyed )
 			{
-				Chunk c = qc.center.worldObj.getChunkFromBlockCoords( qc.center.xCoord, qc.center.zCoord );
+				Chunk c = qc.center.getWorldObj().getChunkFromBlockCoords( qc.center.xCoord, qc.center.zCoord );
 				if ( c.isChunkLoaded )
 					return false;
 			}
@@ -70,10 +70,10 @@ public class QuantumCluster implements ILocatable, IAECluster
 		return true;
 	}
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onUnload(WorldEvent.Unload e)
 	{
-		if ( center.worldObj == e.world )
+		if ( center.getWorldObj() == e.world )
 		{
 			destroy();
 		}

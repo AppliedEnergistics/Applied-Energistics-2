@@ -29,7 +29,7 @@ public class AppEngSlot extends Slot
 		return this;
 	}
 
-	public int icon = -1;
+	public int IIcon = -1;
 	public hasCalculatedValidness isValid;
 	public int defX, defY;
 
@@ -53,7 +53,7 @@ public class AppEngSlot extends Slot
 	public void onSlotChanged()
 	{
 		if ( inventory instanceof AppEngInternalInventory )
-			((AppEngInternalInventory) inventory).onInventoryChanged( getSlotIndex() );
+			((AppEngInternalInventory) inventory).markDirty( getSlotIndex() );
 		else
 			super.onSlotChanged();
 
@@ -131,7 +131,7 @@ public class AppEngSlot extends Slot
 
 	public int getIcon()
 	{
-		return icon;
+		return IIcon;
 	}
 
 	public boolean isPlayerSide()

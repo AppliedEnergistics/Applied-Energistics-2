@@ -5,9 +5,9 @@ import java.util.EnumSet;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
@@ -39,7 +39,7 @@ public class RenderBlockWireless extends BaseBlockRender
 
 		renderer.renderAllFaces = true;
 
-		Icon r = CableBusTextures.PartMonitorSidesStatus.getIcon();
+		IIcon r = CableBusTextures.PartMonitorSidesStatus.getIcon();
 		ri.setTemporaryRenderIcons( r, r, CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), r, r );
 		renderBlockBounds( renderer, 5, 5, 0, 11, 11, 1, ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
 		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, tess, 0xffffff, renderer );
@@ -107,7 +107,7 @@ public class RenderBlockWireless extends BaseBlockRender
 
 			renderer.renderAllFaces = true;
 
-			Icon r = CableBusTextures.PartMonitorSidesStatus.getIcon();
+			IIcon r = CableBusTextures.PartMonitorSidesStatus.getIcon();
 			ri.setTemporaryRenderIcons( r, r, CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), r, r );
 			renderBlockBounds( renderer, 5, 5, 0, 11, 11, 1, fdx, fdy, fdz );
 			super.renderInWorld( blk, world, x, y, z, renderer );
@@ -193,8 +193,8 @@ public class RenderBlockWireless extends BaseBlockRender
 
 	private void renderTorchAtAngle(RenderBlocks renderer, ForgeDirection x, ForgeDirection y, ForgeDirection z)
 	{
-		Icon r = (hasChan ? CableBusTextures.BlockWirelessOn.getIcon() : blk.getIcon( 0, 0 ));
-		Icon sides = new OffsetIcon( r, 0.0f, -2.0f );
+		IIcon r = (hasChan ? CableBusTextures.BlockWirelessOn.getIcon() : blk.getIcon( 0, 0 ));
+		IIcon sides = new OffsetIcon( r, 0.0f, -2.0f );
 
 		switch (z)
 		{

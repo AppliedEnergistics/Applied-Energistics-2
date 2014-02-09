@@ -8,12 +8,14 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockGlass;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.block.solids.OreQuartz;
 import appeng.client.render.BusRenderer;
@@ -34,7 +36,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem
 		setfeature( EnumSet.of( AEFeature.Facades ) );
 		setHasSubtypes( true );
 		if ( Platform.isClient() )
-			MinecraftForgeClient.registerItemRenderer( itemID, BusRenderer.instance );
+			MinecraftForgeClient.registerItemRenderer( this, BusRenderer.instance );
 	}
 
 	@Override
@@ -65,12 +67,12 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem
 	{
 		calculateSubTypes();
 		if ( subTypes.isEmpty() )
-			return new ItemStack( Item.cake );
+			return new ItemStack( Items.cake );
 		return subTypes.get( 0 );
 	}
 
 	@Override
-	public void getSubItems(int number, CreativeTabs tab, List list)
+	public void getSubItems(Item number, CreativeTabs tab, List list)
 	{
 		calculateSubTypes();
 		list.addAll( subTypes );
@@ -99,23 +101,25 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem
 		if ( subTypes == null )
 		{
 			subTypes = new ArrayList();
-			for (int id = 0; id < Block.blocksList.length; id++)
+			for (Object blk : Block.blockRegistry)
 			{
-				Block b = Block.blocksList[id];
+				Block b = (Block) blk;
 				if ( b != null
 						&& FacadeConfig.instance.checkEnabled( b, b.isOpaqueCube() && !b.getTickRandomly() && !(b instanceof OreQuartz)
 								|| b instanceof BlockGlass ) )
 				{
 					try
 					{
+						Item item = Item.getItemFromBlock( b );
+
 						List<ItemStack> tmpList = new ArrayList();
-						b.getSubBlocks( b.blockID, b.getCreativeTabToDisplayOn(), tmpList );
+						b.getSubBlocks( item, b.getCreativeTabToDisplayOn(), tmpList );
 						for (ItemStack l : tmpList)
 						{
 							ItemStack is = new ItemStack( this );
 							NBTTagCompound data = new NBTTagCompound();
 							int[] ds = new int[2];
-							ds[0] = l.itemID;
+							ds[0] = Item.getIdFromItem( l.getItem() );
 							ds[1] = l.getItem().getMetadata( l.getItemDamage() );
 							data.setIntArray( "x", ds );
 							is.setTagCompound( data );
@@ -144,9 +148,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem
 		{
 			int[] blk = data.getIntArray( "x" );
 			if ( blk != null && blk.length == 2 )
-				return Block.blocksList[blk[0]];
+				return Block.getBlockById( blk[0] );
 		}
-		return Block.glass;
+		return Blocks.glass;
 	}
 
 	@Override
@@ -163,14 +167,14 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem
 	}
 
 	@Override
-	public String getItemDisplayName(ItemStack is)
+	public String getItemStackDisplayName(ItemStack is)
 	{
 		try
 		{
 			ItemStack in = getTextureItem( is );
 			if ( in != null )
 			{
-				return super.getItemDisplayName( is ) + " - " + in.getDisplayName();
+				return super.getItemStackDisplayName( is ) + " - " + in.getDisplayName();
 			}
 		}
 		catch (Throwable t)
@@ -178,7 +182,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem
 
 		}
 
-		return super.getItemDisplayName( is );
+		return super.getItemStackDisplayName( is );
 	}
 
 }

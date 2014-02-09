@@ -53,10 +53,10 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 		super.onContainerClosed( player );
 
 		if ( wirelessIn.getHasStack() )
-			player.dropPlayerItem( wirelessIn.getStack() );
+			player.dropPlayerItemWithRandomChoice( wirelessIn.getStack(), false );
 
 		if ( wirelessOut.getHasStack() )
-			player.dropPlayerItem( wirelessOut.getStack() );
+			player.dropPlayerItemWithRandomChoice( wirelessOut.getStack(), false );
 	}
 
 	public void toggleSetting(String value, EntityPlayer player)

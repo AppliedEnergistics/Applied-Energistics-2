@@ -2,6 +2,7 @@ package appeng.util.item;
 
 import java.util.List;
 
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -16,6 +17,7 @@ public class AEItemDef
 
 	public int def;
 
+	private int itemID;
 	public Item item;
 	public int damageValue;
 
@@ -42,6 +44,7 @@ public class AEItemDef
 		t.maxDamage = maxDamage;
 		t.tagCompound = tagCompound;
 		t.isOre = isOre;
+		t.itemID = itemID;
 		return t;
 	}
 
@@ -54,7 +57,7 @@ public class AEItemDef
 
 	public int getDamageValueHack(ItemStack is)
 	{
-		return Item.blazeRod.getDamage( is );
+		return Items.blaze_rod.getDamage( is );
 	}
 
 	public boolean isItem(ItemStack otherStack)
@@ -77,7 +80,7 @@ public class AEItemDef
 
 	public void reHash()
 	{
-		def = item.itemID << Platform.DEF_OFFSET | damageValue;
+		def = itemID << Platform.DEF_OFFSET | damageValue;
 		myHash = def ^ (tagCompound == null ? 0 : System.identityHashCode( tagCompound ));
 	}
 }

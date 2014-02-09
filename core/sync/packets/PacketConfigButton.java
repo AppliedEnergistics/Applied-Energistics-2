@@ -1,18 +1,18 @@
 package appeng.core.sync.packets;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.INetworkManager;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
 
 public class PacketConfigButton extends AppEngPacket
@@ -22,13 +22,13 @@ public class PacketConfigButton extends AppEngPacket
 	final public boolean rotationDirection;
 
 	// automatic.
-	public PacketConfigButton(DataInputStream stream) throws IOException {
+	public PacketConfigButton(ByteBuf stream) throws IOException {
 		option = Settings.values()[stream.readInt()];
 		rotationDirection = stream.readBoolean();
 	}
 
 	@Override
-	public void serverPacketData(INetworkManager manager, AppEngPacket packet, EntityPlayer player)
+	public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player)
 	{
 		EntityPlayerMP sender = (EntityPlayerMP) player;
 		AEBaseContainer aebc = (AEBaseContainer) sender.openContainer;
@@ -45,14 +45,12 @@ public class PacketConfigButton extends AppEngPacket
 		this.option = option;
 		this.rotationDirection = rotationDirection;
 
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		DataOutputStream data = new DataOutputStream( bytes );
+		ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( getPacketID() );
 		data.writeInt( option.ordinal() );
 		data.writeBoolean( rotationDirection );
 
-		isChunkDataPacket = false;
-		configureWrite( bytes.toByteArray() );
+		configureWrite( data );
 	}
 }

@@ -1,12 +1,12 @@
 package appeng.parts.p2p;
 
-import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.TunnelType;
 import appeng.api.networking.IGridNode;
@@ -130,7 +130,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 
 	private IPowerReceptor getPowerTarget()
 	{
-		TileEntity te = getWorld().getBlockTileEntity( tile.xCoord + side.offsetX, tile.yCoord + side.offsetY, tile.zCoord + side.offsetZ );
+		TileEntity te = getWorld().getTileEntity( tile.xCoord + side.offsetX, tile.yCoord + side.offsetY, tile.zCoord + side.offsetZ );
 		if ( te != null )
 		{
 			if ( te instanceof IPowerReceptor )
@@ -154,9 +154,9 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 	}
 
 	@SideOnly(Side.CLIENT)
-	public Icon getTypeTexture()
+	public IIcon getTypeTexture()
 	{
-		return Block.blockEmerald.getBlockTextureFromSide( 0 );
+		return Blocks.emerald_block.getBlockTextureFromSide( 0 );
 	}
 
 	@Override
@@ -176,7 +176,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 	@Override
 	public World getWorld()
 	{
-		return tile.worldObj;
+		return tile.getWorldObj();
 	}
 
 }
