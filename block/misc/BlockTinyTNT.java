@@ -132,7 +132,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		{
 			EntityTinyTNTPrimed entitytntprimed = new EntityTinyTNTPrimed( w, x + 0.5F, y + 0.5F, z + 0.5F, ignitor );
 			w.spawnEntityInWorld( entitytntprimed );
-			w.playSoundAtEntity( entitytntprimed, "random.fuse", 1.0F, 1.0F );
+			w.playSoundAtEntity( entitytntprimed, "game.tnt.primed", 1.0F, 1.0F );
 		}
 	}
 
