@@ -1,7 +1,7 @@
 package appeng.container.implementations;
 
 import net.minecraft.entity.player.InventoryPlayer;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
 
@@ -27,7 +27,7 @@ public class ContainerWirelessTerm extends ContainerMEPortableCell
 		}
 		else
 		{
-			powerMultiplier = Configuration.instance.wireless_getDrainRate( wtgo.getRange() );
+			powerMultiplier = AEConfig.instance.wireless_getDrainRate( wtgo.getRange() );
 		}
 	}
 }

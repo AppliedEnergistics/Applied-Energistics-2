@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 import appeng.api.AEApi;
 import appeng.client.render.effects.ChargedOreEffect;
 import appeng.core.CommonHelper;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -32,7 +32,7 @@ public class OreQuartzCharged extends OreQuartz
 	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(World w, int x, int y, int z, Random r)
 	{
-		if ( !Configuration.instance.enableEffects )
+		if ( !AEConfig.instance.enableEffects )
 			return;
 
 		double xOff = (double) (r.nextFloat());

@@ -9,7 +9,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.me.SlotME;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 
 public abstract class AEBaseMEGui extends AEBaseGui
 {
@@ -26,7 +26,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 			Slot s = getSlot( mousex, mousey );
 			if ( s instanceof SlotME )
 			{
-				int BigNumber = Configuration.instance.useTerminalUseLargeFont() ? 999 : 9999;
+				int BigNumber = AEConfig.instance.useTerminalUseLargeFont() ? 999 : 9999;
 
 				IAEItemStack myStack = null;
 
@@ -62,7 +62,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 		Slot s = getSlot( x, y );
 		if ( s instanceof SlotME && stack != null )
 		{
-			int BigNumber = Configuration.instance.useTerminalUseLargeFont() ? 999 : 9999;
+			int BigNumber = AEConfig.instance.useTerminalUseLargeFont() ? 999 : 9999;
 
 			IAEItemStack myStack = null;
 

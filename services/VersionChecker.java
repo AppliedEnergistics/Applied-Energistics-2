@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import appeng.core.AELog;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 
 public class VersionChecker implements Runnable
 {
@@ -20,7 +20,7 @@ public class VersionChecker implements Runnable
 
 	public VersionChecker() {
 		long now = (new Date()).getTime();
-		delay = (1000 * 3600 * 5) - (now - Configuration.instance.latestTimeStamp);
+		delay = (1000 * 3600 * 5) - (now - AEConfig.instance.latestTimeStamp);
 		if ( delay < 1 )
 			delay = 1;
 	}
@@ -46,7 +46,7 @@ public class VersionChecker implements Runnable
 				String MCVersion = cpw.mods.fml.common.Loader.instance().getMCVersionString();
 
 				URLConnection yc = url.openConnection();
-				yc.setRequestProperty( "User-Agent", "AE2/" + Configuration.VERSION + " (Channel:" + Configuration.CHANNEL + "," + MCVersion.replace( " ", ":" )
+				yc.setRequestProperty( "User-Agent", "AE2/" + AEConfig.VERSION + " (Channel:" + AEConfig.CHANNEL + "," + MCVersion.replace( " ", ":" )
 						+ ")" );
 				BufferedReader in = new BufferedReader( new InputStreamReader( yc.getInputStream() ) );
 
@@ -63,9 +63,9 @@ public class VersionChecker implements Runnable
 					Matcher m = Pattern.compile( "\"Version\":\"([^\"]+)\"" ).matcher( Version );
 					m.find();
 					Version = m.group( 1 );
-					Configuration.instance.latestVersion = Version;
-					Configuration.instance.latestTimeStamp = (new Date()).getTime();
-					Configuration.instance.save();
+					AEConfig.instance.latestVersion = Version;
+					AEConfig.instance.latestTimeStamp = (new Date()).getTime();
+					AEConfig.instance.save();
 				}
 
 				Thread.sleep( 1000 * 3600 * 4 );

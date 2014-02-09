@@ -16,7 +16,7 @@ public class AELog
 
 	private static void log(Level level, String format, Object... data)
 	{
-		if ( Configuration.instance == null || Configuration.instance.isFeatureEnabled( AEFeature.Logging ) )
+		if ( AEConfig.instance == null || AEConfig.instance.isFeatureEnabled( AEFeature.Logging ) )
 		{
 			FMLRelaunchLog.log( "AE2:" + (Platform.isServer() ? "S" : "C"), level, format, data );
 		}
@@ -44,7 +44,7 @@ public class AELog
 
 	public static void error(Throwable e)
 	{
-		if ( Configuration.instance.isFeatureEnabled( AEFeature.Logging ) )
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.Logging ) )
 		{
 			severe( "Error: " + e.getMessage() );
 			e.printStackTrace();

@@ -24,7 +24,7 @@ import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
 import appeng.items.AEBaseItem;
@@ -117,11 +117,11 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 		{
 			boolean enabled = true;
 			for (AEFeature f : mat.getFeature())
-				enabled = enabled && Configuration.instance.isFeatureEnabled( f );
+				enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
 
 			if ( enabled )
 			{
-				int newMaterialNum = Configuration.instance.get( "materials", name, Configuration.instance.getFreeMaterial() ).getInt();
+				int newMaterialNum = AEConfig.instance.get( "materials", name, AEConfig.instance.getFreeMaterial() ).getInt();
 				mat.damageValue = newMaterialNum;
 				ItemStack output = new ItemStack( this, 1, newMaterialNum );
 				output.setItemDamage( newMaterialNum );

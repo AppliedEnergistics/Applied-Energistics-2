@@ -14,7 +14,7 @@ import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IReadOnlyCollection;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import appeng.me.cluster.implementations.SpatialPylonCluster;
 import appeng.tile.spatial.TileSpatialIOPort;
 import appeng.tile.spatial.TileSpatialPylon;
@@ -159,8 +159,8 @@ public class SpatialPylonCache implements IGridCache, ISpatialCache
 			if ( effiency < 0.0 )
 				effiency = 0.0;
 
-			minPower = (double) reqX * (double) reqY * reqZ * Configuration.instance.spatialPowerMultiplier;
-			maxPower = Math.pow( minPower, Configuration.instance.spatialPowerScaler );
+			minPower = (double) reqX * (double) reqY * reqZ * AEConfig.instance.spatialPowerMultiplier;
+			maxPower = Math.pow( minPower, AEConfig.instance.spatialPowerScaler );
 		}
 
 		double affective_effiency = Math.pow( effiency, 0.25 );

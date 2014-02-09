@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
 import appeng.api.storage.data.IAEItemStack;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 
 public class AppEngRenderItem extends RenderItem
 {
@@ -38,9 +38,9 @@ public class AppEngRenderItem extends RenderItem
 	{
 		if ( is != null )
 		{
-			float ScaleFactor = Configuration.instance.useTerminalUseLargeFont() ? 0.85f : 0.5f;
+			float ScaleFactor = AEConfig.instance.useTerminalUseLargeFont() ? 0.85f : 0.5f;
 			float RScaleFactor = 1.0f / ScaleFactor;
-			int offset = Configuration.instance.useTerminalUseLargeFont() ? 0 : -1;
+			int offset = AEConfig.instance.useTerminalUseLargeFont() ? 0 : -1;
 
 			if ( is.isItemDamaged() )
 			{
@@ -63,7 +63,7 @@ public class AppEngRenderItem extends RenderItem
 
 			if ( is.stackSize == 0 )
 			{
-				String var6 = Configuration.instance.useTerminalUseLargeFont() ? "+" : "Craft";
+				String var6 = AEConfig.instance.useTerminalUseLargeFont() ? "+" : "Craft";
 				GL11.glDisable( GL11.GL_LIGHTING );
 				GL11.glDisable( GL11.GL_DEPTH_TEST );
 				GL11.glPushMatrix();
@@ -84,7 +84,7 @@ public class AppEngRenderItem extends RenderItem
 			{
 				String var6 = "" + Math.abs( amount );
 
-				if ( Configuration.instance.useTerminalUseLargeFont() )
+				if ( AEConfig.instance.useTerminalUseLargeFont() )
 				{
 					if ( amount > 999999999 )
 					{

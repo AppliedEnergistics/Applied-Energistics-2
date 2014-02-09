@@ -8,6 +8,7 @@ import java.util.WeakHashMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.ConfigCategory;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import appeng.api.util.WorldCoord;
 import appeng.me.GridStorage;

@@ -16,7 +16,7 @@ import appeng.api.AEApi;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
 import appeng.core.localization.GuiText;
@@ -71,11 +71,11 @@ public class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 
 		boolean enabled = true;
 		for (AEFeature f : mat.getFeature())
-			enabled = enabled && Configuration.instance.isFeatureEnabled( f );
+			enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
 
 		if ( enabled )
 		{
-			int newPartNum = Configuration.instance.get( "parts", name, Configuration.instance.getFreePart() ).getInt();
+			int newPartNum = AEConfig.instance.get( "parts", name, AEConfig.instance.getFreePart() ).getInt();
 			ItemStack output = new ItemStack( this );
 			output.setItemDamage( newPartNum );
 

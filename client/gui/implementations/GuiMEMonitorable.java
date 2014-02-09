@@ -18,7 +18,7 @@ import appeng.client.me.InternalSlotME;
 import appeng.client.me.ItemRepo;
 import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.container.slot.AppEngSlot;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.reporting.PartTerminal;
@@ -117,11 +117,11 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource
 
 		if ( customSortOrder )
 		{
-			buttonList.add( new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_BY, Configuration.instance.settings.getSetting( Settings.SORT_BY ) ) );
+			buttonList.add( new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_BY, AEConfig.instance.settings.getSetting( Settings.SORT_BY ) ) );
 			offset += 20;
 		}
 
-		buttonList.add( new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, Configuration.instance.settings
+		buttonList.add( new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, AEConfig.instance.settings
 				.getSetting( Settings.SORT_DIRECTION ) ) );
 
 		searchField = new GuiTextField( fontRendererObj, this.guiLeft + Math.max( 82, xoffset ), this.guiTop + 6, 89, fontRendererObj.FONT_HEIGHT );
@@ -152,7 +152,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource
 			Enum cv = iBtn.getCurrentValue();
 
 			Enum next = Platform.nextEnum( cv );
-			Configuration.instance.settings.putSetting( iBtn.getSetting(), next );
+			AEConfig.instance.settings.putSetting( iBtn.getSetting(), next );
 			iBtn.set( next );
 			repo.updateView();
 		}
@@ -208,13 +208,13 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource
 	@Override
 	public Enum getSortBy()
 	{
-		return Configuration.instance.settings.getSetting( Settings.SORT_BY );
+		return AEConfig.instance.settings.getSetting( Settings.SORT_BY );
 	}
 
 	@Override
 	public Enum getSortDir()
 	{
-		return Configuration.instance.settings.getSetting( Settings.SORT_DIRECTION );
+		return AEConfig.instance.settings.getSetting( Settings.SORT_DIRECTION );
 	}
 
 }

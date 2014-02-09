@@ -12,7 +12,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
 import appeng.util.item.ItemList;
@@ -79,7 +79,7 @@ public class ItemRepo
 		view.ensureCapacity( list.size() );
 		dsp.ensureCapacity( list.size() );
 
-		boolean terminalSearchToolTips = Configuration.instance.settings.getSetting( Settings.SEARCH_TOOLTIPS ) != YesNo.NO;
+		boolean terminalSearchToolTips = AEConfig.instance.settings.getSetting( Settings.SEARCH_TOOLTIPS ) != YesNo.NO;
 		// boolean terminalSearchMods = Configuration.instance.settings.getSetting( Settings.SEARCH_MODS ) != YesNo.NO;
 
 		Pattern m = null;

@@ -13,7 +13,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
 import appeng.core.CommonHelper;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import appeng.util.Platform;
 
 final public class EntityChargedQuartz extends EntityItem
@@ -35,7 +35,7 @@ final public class EntityChargedQuartz extends EntityItem
 	{
 		super.onUpdate();
 
-		if ( Platform.isClient() && delay++ > 30 && Configuration.instance.enableEffects )
+		if ( Platform.isClient() && delay++ > 30 && AEConfig.instance.enableEffects )
 		{
 			CommonHelper.proxy.spawnLightning( worldObj, posX, posY, posZ );
 			delay = 0;

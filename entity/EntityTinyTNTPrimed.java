@@ -14,7 +14,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
 import appeng.core.CommonHelper;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.packets.PacketMockExplosion;
 import appeng.util.Platform;
@@ -97,7 +97,7 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 			return;
 		}
 
-		if ( Configuration.instance.isFeatureEnabled( AEFeature.TinyTNTBlockDamage ) )
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.TinyTNTBlockDamage ) )
 		{
 			posY -= 0.25;
 

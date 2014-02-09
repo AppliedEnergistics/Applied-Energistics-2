@@ -21,7 +21,7 @@ import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderQuartzTorch;
 import appeng.client.render.effects.LightningEffect;
 import appeng.core.CommonHelper;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 import appeng.helpers.MetaRotation;
@@ -110,7 +110,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(World w, int x, int y, int z, Random r)
 	{
-		if ( !Configuration.instance.enableEffects )
+		if ( !AEConfig.instance.enableEffects )
 			return;
 
 		if ( r.nextFloat() < 0.98 )

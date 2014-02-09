@@ -10,7 +10,7 @@ import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.player.EntityPlayer;
 import appeng.client.ClientHelper;
 import appeng.client.render.effects.LightningEffect;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
@@ -37,7 +37,7 @@ public class PacketLightning extends AppEngPacket
 	{
 		try
 		{
-			if ( Platform.isClient() && Configuration.instance.enableEffects )
+			if ( Platform.isClient() && AEConfig.instance.enableEffects )
 			{
 				LightningEffect fx = new LightningEffect( ClientHelper.proxy.getWorld(), x, y, z, 0.0f, 0.0f, 0.0f );
 				Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );

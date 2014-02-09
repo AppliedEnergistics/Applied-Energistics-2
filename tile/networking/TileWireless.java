@@ -14,7 +14,7 @@ import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import appeng.me.GridAccessException;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
@@ -132,7 +132,7 @@ public class TileWireless extends AENetworkInvTile
 
 	private void updatePower()
 	{
-		gridProxy.setIdlePowerUsage( Configuration.instance.wireless_getPowerDrain( getBoosters() ) );
+		gridProxy.setIdlePowerUsage( AEConfig.instance.wireless_getPowerDrain( getBoosters() ) );
 	}
 
 	@Override
@@ -143,7 +143,7 @@ public class TileWireless extends AENetworkInvTile
 
 	public double getRange()
 	{
-		return Configuration.instance.wireless_getMaxRange( getBoosters() );
+		return AEConfig.instance.wireless_getMaxRange( getBoosters() );
 	}
 
 	private int getBoosters()

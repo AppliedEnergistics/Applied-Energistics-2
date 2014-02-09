@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import appeng.api.AEApi;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import cpw.mods.fml.common.IWorldGenerator;
 
 final public class QuartzWorldGen implements IWorldGenerator
@@ -27,8 +27,8 @@ final public class QuartzWorldGen implements IWorldGenerator
 
 		if ( normal == null || charged == null )
 		{
-			oreNormal = new WorldGenMinable( normal, is_normal.getItemDamage(), Configuration.instance.oresPerCluster, Blocks.stone );
-			oreCharged = new WorldGenMinable( charged, is_charged.getItemDamage(), Configuration.instance.oresPerCluster, Blocks.stone );
+			oreNormal = new WorldGenMinable( normal, is_normal.getItemDamage(), AEConfig.instance.oresPerCluster, Blocks.stone );
+			oreCharged = new WorldGenMinable( charged, is_charged.getItemDamage(), AEConfig.instance.oresPerCluster, Blocks.stone );
 		}
 		else
 			oreNormal = oreCharged = null;

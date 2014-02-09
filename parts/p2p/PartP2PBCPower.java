@@ -13,7 +13,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
 import buildcraft.api.power.IPowerReceptor;
@@ -109,7 +109,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 						{
 							float toPull = currentTotal * (howmuch / totalRequiredPower);
 							float pulled = pp.useEnergy( 0, toPull, true );
-							QueueTunnelDrain( PowerUnits.MJ, pulled * Configuration.TunnelPowerLoss );
+							QueueTunnelDrain( PowerUnits.MJ, pulled * AEConfig.TunnelPowerLoss );
 
 							tp.receiveEnergy( Type.PIPE, pulled, o.side.getOpposite() );
 						}

@@ -30,7 +30,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AELog;
 import appeng.core.CommonHelper;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
@@ -49,7 +49,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 	public ToolMassCannon() {
 		super( ToolMassCannon.class, null );
 		setfeature( EnumSet.of( AEFeature.MatterCannon, AEFeature.PoweredTools ) );
-		maxStoredPower = Configuration.instance.mattercannon_battery;
+		maxStoredPower = AEConfig.instance.mattercannon_battery;
 	}
 
 	@Override
@@ -223,7 +223,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 								}
 								else if ( pos.typeOfHit == MovingObjectType.BLOCK )
 								{
-									if ( !Configuration.instance.isFeatureEnabled( AEFeature.MassCannonBlockDamage ) )
+									if ( !AEConfig.instance.isFeatureEnabled( AEFeature.MassCannonBlockDamage ) )
 										penitration = 0;
 									else
 									{

@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import appeng.api.features.IGrinderEntry;
 import appeng.api.features.IGrinderRegistry;
 import appeng.core.AELog;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import appeng.core.features.registries.entries.AppEngGrinderRecipe;
 import appeng.recipes.ores.IOreListener;
 import appeng.recipes.ores.OreDictionaryHandler;
@@ -144,7 +144,7 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 			{
 				ItemStack extra = is.copy();
 				extra.stackSize = ratio - 1;
-				addRecipe( item, is, extra, (float) (Configuration.instance.oreDoublePercentage / 100.0), 8 );
+				addRecipe( item, is, extra, (float) (AEConfig.instance.oreDoublePercentage / 100.0), 8 );
 			}
 			else
 				addRecipe( item, is, 8 );
@@ -189,7 +189,7 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 				{
 					ItemStack extra = is.copy();
 					extra.stackSize = ratio - 1;
-					addRecipe( d.getKey(), is, extra, (float) (Configuration.instance.oreDoublePercentage / 100.0), 8 );
+					addRecipe( d.getKey(), is, extra, (float) (AEConfig.instance.oreDoublePercentage / 100.0), 8 );
 				}
 				else
 					addRecipe( d.getKey(), is, 8 );
@@ -205,7 +205,7 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 	{
 		if ( Name.startsWith( "ore" ) || Name.startsWith( "crystal" ) || Name.startsWith( "ingot" ) || Name.startsWith( "dust" ) )
 		{
-			for (String ore : Configuration.instance.grinderOres)
+			for (String ore : AEConfig.instance.grinderOres)
 			{
 				if ( Name.equals( "ore" + ore ) )
 				{

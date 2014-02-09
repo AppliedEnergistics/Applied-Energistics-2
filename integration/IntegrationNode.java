@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 
 import appeng.api.exceptions.ModNotInstalled;
 import appeng.core.AELog;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import cpw.mods.fml.common.Loader;
 
 public class IntegrationNode
@@ -42,11 +42,11 @@ public class IntegrationNode
 
 					boolean enabled = modID == null || Loader.isModLoaded( modID );
 
-					Configuration.instance
+					AEConfig.instance
 							.addCustomCategoryComment(
 									"ModIntegration",
 									"Valid Values are 'AUTO', 'ON', or 'OFF' - defaults to 'AUTO' ; Suggested that you leave this alone unless your experiencing an issue, or wish to disable the integration for a reason." );
-					String Mode = Configuration.instance.get( "ModIntegration", displayName.replace( " ", "" ), "AUTO" ).getString();
+					String Mode = AEConfig.instance.get( "ModIntegration", displayName.replace( " ", "" ), "AUTO" ).getString();
 
 					if ( Mode.toUpperCase().equals( "ON" ) )
 						enabled = true;

@@ -22,7 +22,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
-@Mod(modid = AppEng.modid, name = AppEng.name, version = Configuration.VERSION, dependencies = AppEng.dependencies)
+@Mod(modid = AppEng.modid, name = AppEng.name, version = AEConfig.VERSION, dependencies = AppEng.dependencies)
 public class AppEng
 {
 
@@ -97,7 +97,7 @@ public class AppEng
 	@EventHandler
 	void PreInit(FMLPreInitializationEvent event)
 	{
-		Configuration.instance = new Configuration( event.getModConfigurationDirectory() );
+		AEConfig.instance = new AEConfig( event.getModConfigurationDirectory() );
 		FacadeConfig.instance = new FacadeConfig( event.getModConfigurationDirectory() );
 
 		AELog.info( "Starting ( PreInit )" );
@@ -111,13 +111,13 @@ public class AppEng
 
 		Registration.instance.PreInit( event );
 
-		if ( Configuration.instance.isFeatureEnabled( AEFeature.Profiler ) )
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.Profiler ) )
 		{
 			AELog.info( "Starting Profiler" );
 			startService( "AE2 Profiler", (new Thread( Profiler.instance = new Profiler() )) );
 		}
 
-		if ( Configuration.instance.isFeatureEnabled( AEFeature.VersionChecker ) )
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.VersionChecker ) )
 		{
 			AELog.info( "Starting VersionChecker" );
 			startService( "AE2 VersionChecker", new Thread( VersionChecker.instance = new VersionChecker() ) );
@@ -145,7 +145,7 @@ public class AppEng
 		Registration.instance.PostInit( event );
 		integrationModules.postinit();
 
-		Configuration.instance.save();
+		AEConfig.instance.save();
 
 		NetworkRegistry.INSTANCE.registerGuiHandler( this, GuiBridge.GUI_Handler );
 		NetworkHandler.instance = new NetworkHandler( "AE2" );

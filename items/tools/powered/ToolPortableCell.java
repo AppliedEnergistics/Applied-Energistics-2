@@ -16,7 +16,7 @@ import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
@@ -34,7 +34,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	public ToolPortableCell() {
 		super( ToolPortableCell.class, null );
 		setfeature( EnumSet.of( AEFeature.PortableCell, AEFeature.StorageCells, AEFeature.PoweredTools ) );
-		maxStoredPower = Configuration.instance.portablecell_battery;
+		maxStoredPower = AEConfig.instance.portablecell_battery;
 	}
 
 	@Override

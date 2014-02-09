@@ -10,7 +10,7 @@ import appeng.api.util.AEItemDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseItemBlock;
 import appeng.core.CommonHelper;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import appeng.core.CreativeTab;
 import appeng.core.CreativeTabFacade;
 import appeng.items.parts.ItemFacade;
@@ -115,7 +115,7 @@ public class AEFeatureHandler implements AEItemDefinition
 		boolean enabled = true;
 
 		for (AEFeature f : myFeatures)
-			enabled = enabled && Configuration.instance.isFeatureEnabled( f );
+			enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
 
 		return enabled;
 	}

@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
 import appeng.client.texture.ExtraTextures;
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.AEBaseTile;
@@ -63,7 +63,7 @@ public class BlockVibrationChamber extends AEBaseBlock
 	@Override
 	public void randomDisplayTick(World w, int x, int y, int z, Random r)
 	{
-		if ( !Configuration.instance.enableEffects )
+		if ( !AEConfig.instance.enableEffects )
 			return;
 
 		AEBaseTile tile = getTileEntity( w, x, y, z );

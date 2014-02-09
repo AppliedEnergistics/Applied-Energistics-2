@@ -484,7 +484,7 @@ public class Registration
 
 		AEApi.instance().registries().wireless().registerWirelessHandler( (IWirelessTermHandler) AEApi.instance().items().itemWirelessTerminal.item() );
 
-		if ( Configuration.instance.isFeatureEnabled( AEFeature.ChestLoot ) )
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.ChestLoot ) )
 		{
 			ChestGenHooks d = ChestGenHooks.getInfo( ChestGenHooks.MINESHAFT_CORRIDOR );
 			d.addItem( new WeightedRandomChestContent( AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 ), 1, 4, 2 ) );
@@ -492,10 +492,10 @@ public class Registration
 		}
 
 		// add villager trading to black smiths for a few basic materials
-		if ( Configuration.instance.isFeatureEnabled( AEFeature.VillagerTrading ) )
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.VillagerTrading ) )
 			VillagerRegistry.instance().registerVillageTradeHandler( 3, new AETrading() );
 
-		if ( Configuration.instance.isFeatureEnabled( AEFeature.CertusQuartzWorldGen ) )
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.CertusQuartzWorldGen ) )
 			GameRegistry.registerWorldGenerator( new QuartzWorldGen(), 0 );
 
 	}

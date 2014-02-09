@@ -1,6 +1,6 @@
 package appeng.core.crash;
 
-import appeng.core.Configuration;
+import appeng.core.AEConfig;
 import appeng.integration.IntegrationRegistry;
 import cpw.mods.fml.common.ICrashCallable;
 
@@ -19,7 +19,7 @@ public class CrashEnhancement implements ICrashCallable
 		switch (Output)
 		{
 		case MOD_VERSION:
-			return Configuration.CHANNEL + " " + Configuration.VERSION + " for Forge "
+			return AEConfig.CHANNEL + " " + AEConfig.VERSION + " for Forge "
 					+ net.minecraftforge.common.ForgeVersion.majorVersion + "." // majorVersion
 					+ net.minecraftforge.common.ForgeVersion.minorVersion + "." // minorVersion
 					+ net.minecraftforge.common.ForgeVersion.revisionVersion + "." // revisionVersion
