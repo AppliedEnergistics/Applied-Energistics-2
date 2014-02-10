@@ -49,6 +49,7 @@ public class AppEngRenderItem extends RenderItem
 				GL11.glDisable( GL11.GL_LIGHTING );
 				GL11.glDisable( GL11.GL_DEPTH_TEST );
 				GL11.glDisable( GL11.GL_TEXTURE_2D );
+				GL11.glDisable( GL11.GL_BLEND );
 				Tessellator tessellator = Tessellator.instance;
 				int i1 = 255 - l << 16 | l << 8;
 				int j1 = (255 - l) / 4 << 16 | 16128;
