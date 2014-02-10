@@ -8,6 +8,7 @@ import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.client.ClientHelper;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -40,6 +41,18 @@ public class PacketInventoryAction extends AppEngPacket
 		{
 			AEBaseContainer aebc = (AEBaseContainer) sender.openContainer;
 			aebc.doAction( sender, action, slot, slotItem );
+		}
+	}
+
+	@Override
+	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
+	{
+		if ( action == InventoryAction.UPDATE_HAND )
+		{
+			if ( slotItem == null )
+				ClientHelper.proxy.getPlayers().get( 0 ).inventory.setItemStack( null );
+			else
+				ClientHelper.proxy.getPlayers().get( 0 ).inventory.setItemStack( slotItem.getItemStack() );
 		}
 	}
 

@@ -1,5 +1,6 @@
 package appeng.container;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -37,10 +38,14 @@ import appeng.container.slot.SlotFake;
 import appeng.container.slot.SlotInaccessable;
 import appeng.container.slot.SlotPlayerHotBar;
 import appeng.container.slot.SlotPlayerInv;
+import appeng.core.AELog;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.helpers.InventoryAction;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorPlayerHand;
+import appeng.util.item.AEItemStack;
 
 public abstract class AEBaseContainer extends Container
 {
@@ -556,7 +561,7 @@ public abstract class AEBaseContainer extends Container
 					if ( fail != null )
 						cellInv.injectItems( ais, Actionable.MODULATE, mySrc );
 
-					player.updateHeldItem();
+					updateHeld( player );
 				}
 			}
 			break;
@@ -575,7 +580,7 @@ public abstract class AEBaseContainer extends Container
 						player.inventory.setItemStack( ais.getItemStack() );
 					else
 						player.inventory.setItemStack( null );
-					player.updateHeldItem();
+					updateHeld( player );
 				}
 			}
 			else
@@ -586,7 +591,7 @@ public abstract class AEBaseContainer extends Container
 					player.inventory.setItemStack( ais.getItemStack() );
 				else
 					player.inventory.setItemStack( null );
-				player.updateHeldItem();
+				updateHeld( player );
 			}
 
 			break;
@@ -606,7 +611,7 @@ public abstract class AEBaseContainer extends Container
 						player.inventory.setItemStack( ais.getItemStack() );
 					else
 						player.inventory.setItemStack( null );
-					player.updateHeldItem();
+					updateHeld( player );
 				}
 			}
 			else
@@ -620,7 +625,7 @@ public abstract class AEBaseContainer extends Container
 					is.stackSize--;
 					if ( is.stackSize <= 0 )
 						player.inventory.setItemStack( null );
-					player.updateHeldItem();
+					updateHeld( player );
 				}
 			}
 
@@ -631,13 +636,25 @@ public abstract class AEBaseContainer extends Container
 				ItemStack is = slotItem.getItemStack();
 				is.stackSize = is.getMaxStackSize();
 				player.inventory.setItemStack( is );
-				player.updateHeldItem();
+				updateHeld( player );
 			}
 			break;
 		case MOVE_REGION:
 			break;
 		default:
 			break;
+		}
+	}
+
+	private void updateHeld(EntityPlayerMP p)
+	{
+		try
+		{
+			NetworkHandler.instance.sendTo( new PacketInventoryAction( InventoryAction.UPDATE_HAND, 0, AEItemStack.create( p.inventory.getItemStack() ) ), p );
+		}
+		catch (IOException e)
+		{
+			AELog.error( e );
 		}
 	}
 
