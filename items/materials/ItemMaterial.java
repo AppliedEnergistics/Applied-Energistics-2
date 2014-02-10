@@ -36,10 +36,13 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 
 	HashMap<Integer, MaterialType> dmgToMaterial = new HashMap();
 
+	public static ItemMaterial instance;
+
 	public ItemMaterial() {
 		super( ItemMaterial.class );
 		setfeature( EnumSet.of( AEFeature.Core ) );
 		setHasSubtypes( true );
+		instance = this;
 	}
 
 	class SlightlyBetterSort implements Comparator<String>

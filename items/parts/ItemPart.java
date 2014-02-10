@@ -41,11 +41,14 @@ public class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 
 	HashMap<Integer, PartTypeIst> dmgToPart = new HashMap();
 
+	public static ItemPart instance;
+
 	public ItemPart() {
 		super( ItemPart.class );
 		setfeature( EnumSet.of( AEFeature.Core ) );
 		AEApi.instance().partHelper().setItemBusRenderer( this );
 		setHasSubtypes( true );
+		instance = this;
 	}
 
 	public ItemStackSrc createPart(PartType mat, Enum varient)
@@ -89,6 +92,16 @@ public class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 		}
 
 		return null;
+	}
+
+	public int getDamageByType(PartType t)
+	{
+		for (Entry<Integer, PartTypeIst> pt : dmgToPart.entrySet())
+		{
+			if ( pt.getValue().part == t )
+				return pt.getKey();
+		}
+		return -1;
 	}
 
 	public PartType getTypeByStack(ItemStack is)

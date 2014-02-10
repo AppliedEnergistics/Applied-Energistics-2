@@ -108,6 +108,7 @@ import appeng.me.cache.SecurityCache;
 import appeng.me.cache.SpatialPylonCache;
 import appeng.me.cache.TickManagerCache;
 import appeng.me.storage.AEExternalHandler;
+import appeng.recipes.RecipeHandler;
 import appeng.recipes.ores.OreDictionaryHandler;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -125,9 +126,11 @@ public class Registration
 
 	final public static Registration instance = new Registration();
 
+	public RecipeHandler recipeHandler;
 	public BiomeGenBase storageBiome;
 
 	private Registration() {
+		recipeHandler = new RecipeHandler();
 	}
 
 	final private Multimap<AEFeature, Class> featuresToEntities = ArrayListMultimap.create();
@@ -304,6 +307,7 @@ public class Registration
 		addFeature( ToolReplicatorCard.class );
 		addFeature( BlockItemGen.class );
 		addFeature( BlockChunkloader.class );
+
 	}
 
 	private AEItemDefinition addFeature(Class c, Object... Args)
@@ -398,6 +402,8 @@ public class Registration
 
 	public void Init(FMLInitializationEvent event)
 	{
+		recipeHandler.parseRecipes( "" );
+
 		IPartHelper ph = AEApi.instance().partHelper();
 		ph.registerNewLayer( "appeng.api.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );
 		ph.registerNewLayer( "appeng.api.parts.layers.LayerISidedInventory", "net.minecraft.inventory.ISidedInventory" );
@@ -501,5 +507,6 @@ public class Registration
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.CertusQuartzWorldGen ) )
 			GameRegistry.registerWorldGenerator( new QuartzWorldGen(), 0 );
 
+		recipeHandler.registerHandlers();
 	}
 }
