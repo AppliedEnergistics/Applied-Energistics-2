@@ -853,6 +853,27 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	@Override
 	public void PartChanged()
 	{
+		if ( center == null )
+		{
+			List<ItemStack> facades = new LinkedList();
+
+			for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
+			{
+				IFacadePart fp = fc.getFacade( d );
+				if ( fp != null )
+				{
+					facades.add( fp.getItemStack() );
+					fc.removeFacade( tcb, d );
+				}
+			}
+
+			if ( facades != null && !facades.isEmpty() )
+			{
+				TileEntity te = tcb.getTile();
+				Platform.spawnDrops( te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord, facades );
+			}
+		}
+
 		tcb.PartChanged();
 	}
 
