@@ -1,10 +1,16 @@
 package appeng.recipes;
 
+import java.io.DataInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
+
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.recipes.handlers.CraftHandler;
 import appeng.recipes.handlers.Grind;
 import appeng.recipes.handlers.Shaped;
@@ -13,9 +19,13 @@ import appeng.recipes.handlers.Smelt;
 public class RecipeHandler
 {
 
-	HashMap<String, String> aliases = new HashMap();
-	List<CraftHandler> Handlers = new LinkedList();
+	HashMap<String, String> aliases = new HashMap<String,String>();
+	List<CraftHandler> Handlers = new LinkedList<CraftHandler>();
+	List<String> tokens = new LinkedList<String>();
 
+	boolean crash = true;
+	boolean erroronmissing = true;
+	
 	private void addCrafting(CraftHandler ch)
 	{
 		Handlers.add( ch );
@@ -23,17 +33,36 @@ public class RecipeHandler
 
 	public void registerHandlers()
 	{
-		for (CraftHandler ch : Handlers)
+		try
 		{
-			try
+			for (CraftHandler ch : Handlers)
 			{
-				ch.register();
+				try
+				{
+					ch.register();
+				}
+				catch (RegistrationError e)
+				{
+					AELog.warning( "Unable to regsiter a recipe." );
+					AELog.error( e );
+					if ( crash ) throw e;
+				}
+				catch (MissingIngredientError e)
+				{
+					if ( erroronmissing )
+					{
+						AELog.warning( "Unable to regsiter a recipe." );
+						AELog.error( e );	
+						if ( crash ) throw e;			
+					}
+				}
 			}
-			catch (RegistrationError e)
-			{
-				AELog.warning( "Unable to regsiter a recipe." );
-				AELog.error( e );
-			}
+		}
+		catch( Throwable e )
+		{
+			AELog.error( e );
+			if ( crash )
+				throw new RuntimeException(e);
 		}
 	}
 
@@ -46,88 +75,92 @@ public class RecipeHandler
 
 		return in;
 	}
-
-	List<String> tokens = new LinkedList();
-
-	public void parseRecipes(String file)
+	
+	public void parseRecipes(String path)
 	{
-		file = org.apache.commons.lang3.StringUtils.join( new String[] { "", "alias=", "	mc", "	-> minecraft", "", "alias=", "	ae2", "	-> appliedenergistics2",
-				"", "smelt=", "	ae2:ItemMaterial.IronDust", "	-> mc:iron_ingot", "", "smelt=", "	ae2:ItemMaterial.GoldDust", "	-> mc:gold_ingot", "", "craft=",
-				"	mc:stick mc:stick mc:stick,", "	_        _        mc:stick,", "	_        _        mc:stick", "	-> ae2:BlockGrinder", "" }, "\n" );
-
-		int len = file.length();
-
-		boolean inQuote = false;
-
-		String token = "";
-		int line = 0;
-
-		for (int x = 0; x < len; x++)
+		try
 		{
-			char c = file.charAt( x );
-
-			if ( c == '\n' )
-				line++;
-
-			if ( inQuote )
+			ResourceLocation r =  new ResourceLocation(AppEng.instance.modid, path );
+			InputStream in = Minecraft.getMinecraft().getResourceManager().getResource(r).getInputStream();
+			DataInputStream reader = new DataInputStream(in);
+			
+			boolean inQuote = false;
+	
+			String token = "";
+			int line = 0;
+	
+			while ( in.available() > 0)
 			{
-				switch (c)
+				char c =  reader.readChar();
+	
+				if ( c == '\n' )
+					line++;
+	
+				if ( inQuote )
 				{
-				case '"':
-					inQuote = !inQuote;
-					break;
-				default:
-					token = token + c;
-				}
-			}
-			else
-			{
-				switch (c)
-				{
-				case '"':
-					inQuote = !inQuote;
-					break;
-				case ',':
-
-					if ( token.length() > 0 )
+					switch (c)
 					{
-						tokens.add( token );
-						tokens.add( "," );
+					case '"':
+						inQuote = !inQuote;
+						break;
+					default:
+						token = token + c;
 					}
-					token = "";
-					break;
-
-				case '=':
-
-					processTokens( line );
-
-					if ( token.length() > 0 )
-						tokens.add( token );
-					token = "";
-
-					break;
-
-				case '\n':
-				case '\t':
-				case '\r':
-				case ' ':
-
-					if ( token.length() > 0 )
-						tokens.add( token );
-					token = "";
-
-					break;
-				default:
-					token = token + c;
 				}
+				else
+				{
+					switch (c)
+					{
+					case '"':
+						inQuote = !inQuote;
+						break;
+					case ',':
+	
+						if ( token.length() > 0 )
+						{
+							tokens.add( token );
+							tokens.add( "," );
+						}
+						token = "";
+						break;
+	
+					case '=':
+	
+						processTokens( path,line );
+	
+						if ( token.length() > 0 )
+							tokens.add( token );
+						token = "";
+	
+						break;
+	
+					case '\n':
+					case '\t':
+					case '\r':
+					case ' ':
+	
+						if ( token.length() > 0 )
+							tokens.add( token );
+						token = "";
+	
+						break;
+					default:
+						token = token + c;
+					}
+				}
+	
 			}
-
+			processTokens( path,line );
 		}
-		processTokens( line );
-
+		catch( Throwable e )
+		{
+			AELog.error( e );
+			if ( crash )
+				throw new RuntimeException(e);
+		}
 	}
 
-	private void processTokens(int line)
+	private void processTokens(String file, int line) throws RecipeError
 	{
 		try
 		{
@@ -137,7 +170,7 @@ public class RecipeHandler
 			int split = tokens.indexOf( "->" );
 			if ( split != -1 )
 			{
-				String operation = tokens.remove( 0 );
+				String operation = tokens.remove( 0 ).toLowerCase();
 
 				if ( operation.equals( "alias" ) )
 				{
@@ -145,6 +178,31 @@ public class RecipeHandler
 						aliases.put( tokens.get( 0 ), tokens.get( 2 ) );
 					else
 						throw new RecipeError( "Alias must have exactly 1 input and 1 output." );
+				}
+				else if ( operation.equals( "crash" )&& ( tokens.get( 0 ).equals("true")  ||  tokens.get( 0 ).equals("false")  ))
+				{
+					if ( tokens.size() == 1 )
+					{
+						crash = tokens.get(0).equals("true");
+					}
+					else
+						throw new RecipeError( "crash must be true or false explicitly." );
+				}
+				else if ( operation.equals( "erroronmissing" ) )
+				{
+					if ( tokens.size() == 1 && ( tokens.get( 0 ).equals("true")  ||  tokens.get( 0 ).equals("false")  ))
+					{
+						erroronmissing = tokens.get(0).equals("true");
+					}
+					else
+						throw new RecipeError( "erroronmissing must be true or false explicitly." );
+				}
+				else if ( operation.equals( "import" ) )
+				{
+					if ( tokens.size() == 1 )
+						parseRecipes( tokens.get(0) );
+					else
+						throw new RecipeError( "Import must have exactly 1 input." );
 				}
 				else
 				{
@@ -178,8 +236,9 @@ public class RecipeHandler
 		}
 		catch (RecipeError e)
 		{
-			AELog.warning( "Recipe Error near line:" + line + " with: " + tokens.toString() );
+			AELog.warning( "Recipe Error near line:" + line + " in "+file+" with: " + tokens.toString() );
 			AELog.error( e );
+			if ( crash ) throw e;
 		}
 
 		tokens.clear();

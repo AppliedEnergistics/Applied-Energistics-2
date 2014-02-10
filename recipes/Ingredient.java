@@ -98,7 +98,7 @@ public class Ingredient
 			throw new RecipeError( input + " : Needs at least Namespace and Name." );
 	}
 
-	public ItemStack getItemStack() throws RegistrationError
+	public ItemStack getItemStack() throws RegistrationError, MissingIngredientError
 	{
 		if ( isAir )
 			throw new RegistrationError( "Found blank item and expected a real item." );
@@ -117,7 +117,7 @@ public class Ingredient
 		if ( o instanceof Block )
 			return new ItemStack( (Block) o, 1, meta );
 
-		throw new RegistrationError( "Unable to find item: " + toString() );
+		throw new MissingIngredientError( "Unable to find item: " + toString() );
 	}
 
 	@Override

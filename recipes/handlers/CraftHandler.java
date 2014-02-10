@@ -3,6 +3,7 @@ package appeng.recipes.handlers;
 import java.util.List;
 
 import appeng.recipes.Ingredient;
+import appeng.recipes.MissingIngredientError;
 import appeng.recipes.RecipeError;
 import appeng.recipes.RegistrationError;
 
@@ -13,7 +14,7 @@ public class CraftHandler
 	{
 	}
 
-	public void register() throws RegistrationError
+	public void register() throws RegistrationError, MissingIngredientError
 	{
 	}
 

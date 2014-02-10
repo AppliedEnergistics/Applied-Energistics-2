@@ -3,6 +3,7 @@ package appeng.recipes.handlers;
 import java.util.List;
 
 import appeng.recipes.Ingredient;
+import appeng.recipes.MissingIngredientError;
 import appeng.recipes.RecipeError;
 import appeng.recipes.RegistrationError;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -31,7 +32,7 @@ public class Smelt extends CraftHandler
 	}
 
 	@Override
-	public void register() throws RegistrationError
+	public void register() throws RegistrationError, MissingIngredientError
 	{
 		if ( in.getItemStack().getItem() == null )
 			throw new RegistrationError( in.toString() + ": Smelting Input is not a valid item." );
