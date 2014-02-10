@@ -35,12 +35,12 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	private int bZPos = 0;
 	private int bZNeg = 0;
 
-	private int aoXPos[] = new int[4];
-	private int aoXNeg[] = new int[4];
-	private int aoYPos[] = new int[4];
-	private int aoYNeg[] = new int[4];
-	private int aoZPos[] = new int[4];
-	private int aoZNeg[] = new int[4];
+	private int aoXPos[] = new int[5];
+	private int aoXNeg[] = new int[5];
+	private int aoYPos[] = new int[5];
+	private int aoYNeg[] = new int[5];
+	private int aoZPos[] = new int[5];
+	private int aoZNeg[] = new int[5];
 
 	private float foXPos[] = new float[12];
 	private float foXNeg[] = new float[12];
@@ -53,6 +53,24 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	public boolean useTextures = true;
 
 	Field fBrightness;
+	Field fColor;
+
+	public int getCurrentColor()
+	{
+		try
+		{
+			if ( fColor == null )
+			{
+				fColor = Tessellator.class.getDeclaredField( "color" );
+				fColor.setAccessible( true );
+			}
+			return (Integer) fColor.get( Tessellator.instance );
+		}
+		catch (Throwable t)
+		{
+			return 0;
+		}
+	}
 
 	public int getCurrentBrightness()
 	{
@@ -111,6 +129,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		brightnessBottomRight = z[1];
 		brightnessTopLeft = z[2];
 		brightnessTopRight = z[3];
+		Tessellator.instance.setColorOpaque_I( z[4] );
 
 		colorRedTopLeft = c[0];
 		colorGreenTopLeft = c[1];
@@ -132,6 +151,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		z[1] = brightnessBottomRight;
 		z[2] = brightnessTopLeft;
 		z[3] = brightnessTopRight;
+		z[4] = getCurrentColor();
 
 		c[0] = colorRedTopLeft;
 		c[1] = colorGreenTopLeft;
