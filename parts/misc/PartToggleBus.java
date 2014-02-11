@@ -31,7 +31,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartToggleBus extends PartBasicState
 {
 
-	AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", proxy.getMachineRepresentation(), true );
+	AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", null, true );
 	IGridConnection connection;
 
 	protected final int REDSTONE_FLAG = 4;
@@ -66,6 +66,8 @@ public class PartToggleBus extends PartBasicState
 
 	public PartToggleBus(ItemStack is) {
 		this( PartToggleBus.class, is );
+		proxy.setIdlePowerUsage( 0.0 );
+		outerProxy.setIdlePowerUsage( 0.0 );
 	}
 
 	public PartToggleBus(Class cls, ItemStack is) {
