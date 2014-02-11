@@ -177,7 +177,7 @@ public enum GuiBridge implements IGuiHandler
 			Constructor[] c = Container.getConstructors();
 			if ( c.length == 0 )
 				throw new AppEngException( "Invalid Gui Class" );
-			return c[0].newInstance( inventory, tE );
+			return findConstructor( c, inventory, tE ).newInstance( inventory, tE );
 		}
 		catch (Throwable t)
 		{
@@ -192,12 +192,27 @@ public enum GuiBridge implements IGuiHandler
 			Constructor[] c = Gui.getConstructors();
 			if ( c.length == 0 )
 				throw new AppEngException( "Invalid Gui Class" );
-			return c[0].newInstance( inventory, tE );
+
+			return findConstructor( c, inventory, tE ).newInstance( inventory, tE );
 		}
 		catch (Throwable t)
 		{
 			throw new RuntimeException( t );
 		}
+	}
+
+	private Constructor findConstructor(Constructor[] c, InventoryPlayer inventory, Object tE)
+	{
+		for (Constructor con : c)
+		{
+			Class[] types = con.getParameterTypes();
+			if ( types.length == 2 )
+			{
+				if ( types[0] == inventory.getClass() && types[1].isAssignableFrom( tE.getClass() ) )
+					return con;
+			}
+		}
+		return null;
 	}
 
 	private Object updateGui(Object newContainer, World w, int x, int y, int z, ForgeDirection side)
