@@ -75,7 +75,7 @@ public class AppEngASMTransformer implements IClassTransformer
 							while (i.hasNext())
 							{
 								AbstractInsnNode in = i.next();
-								//if ( in.getOpcode() == Opcodes.INVOKESPECIAL )
+								if ( in.getOpcode() == Opcodes.INVOKESPECIAL )
 								{
 									MethodInsnNode n = (MethodInsnNode) in;
 									if ( n.name.equals( "func_146977_a" ) || (n.name.equals( "a" ) && n.desc.equals( "(Lzk;)V" )) )
