@@ -434,7 +434,8 @@ public abstract class AEBaseGui extends GuiContainer
 		try
 		{
 			// drawSlotInventory
-			// super.func_146977_a( s );
+			// super.func_146977_a( s );r
+			GuiContainer.class.getDeclaredMethod( "func_146977_a_original", Slot.class ).invoke( this, s );
 		}
 		catch (Exception err)
 		{
@@ -451,9 +452,7 @@ public abstract class AEBaseGui extends GuiContainer
 		return true;
 	}
 
-	// @Override
-	// private void func_146977_a(Slot p_146977_1_)
-	protected void drawSlotInventory(Slot s)
+	public void func_146977_a(Slot s)
 	{
 		if ( s instanceof SlotME )
 		{
