@@ -4,6 +4,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
+import appeng.util.Platform;
 
 public class ContainerWirelessTerm extends ContainerMEPortableCell
 {
@@ -22,8 +23,10 @@ public class ContainerWirelessTerm extends ContainerMEPortableCell
 
 		if ( !wtgo.rangeCheck() )
 		{
+			if ( Platform.isServer() && isContainerValid )
+				getPlayerInv().player.addChatMessage( PlayerMessages.OutOfRange.get() );
+
 			isContainerValid = false;
-			getPlayerInv().player.addChatMessage( PlayerMessages.OutOfRange.get() );
 		}
 		else
 		{
