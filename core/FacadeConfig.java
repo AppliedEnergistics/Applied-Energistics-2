@@ -16,8 +16,8 @@ public class FacadeConfig extends Configuration
 	public static FacadeConfig instance;
 	Pattern replacementPattern;
 
-	public FacadeConfig(File f) {
-		super( new File( f.getPath() + File.separator + "AppliedEnergistics2" + File.separator + "Facades.cfg" ) );
+	public FacadeConfig(String path) {
+		super( new File( path + "Facades.cfg" ) );
 		replacementPattern = Pattern.compile( "[^a-zA-Z0-9]" );
 	}
 

@@ -1,5 +1,7 @@
 package appeng.core;
 
+import java.io.File;
+
 import appeng.core.crash.CrashEnhancement;
 import appeng.core.crash.CrashInfo;
 import appeng.core.features.AEFeature;
@@ -26,6 +28,13 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 public class AppEng
 {
 
+	private String configPath;
+
+	public String getConfigPath()
+	{
+		return configPath;
+	}
+
 	public final static String modid = "appliedenergistics2";
 	public final static String name = "Applied Energistics 2";
 
@@ -45,7 +54,6 @@ public class AppEng
 			+ net.minecraftforge.common.ForgeVersion.buildVersion + ",)"; // buildVersion
 
 	public AppEng() {
-
 		instance = this;
 
 		for (CrashInfo ci : CrashInfo.values())
@@ -97,8 +105,10 @@ public class AppEng
 	@EventHandler
 	void PreInit(FMLPreInitializationEvent event)
 	{
-		AEConfig.instance = new AEConfig( event.getModConfigurationDirectory() );
-		FacadeConfig.instance = new FacadeConfig( event.getModConfigurationDirectory() );
+		configPath = event.getModConfigurationDirectory().getPath() + File.separator + "AppliedEnergistics2" + File.separator;
+
+		AEConfig.instance = new AEConfig( configPath );
+		FacadeConfig.instance = new FacadeConfig( configPath );
 
 		AELog.info( "Starting ( PreInit )" );
 

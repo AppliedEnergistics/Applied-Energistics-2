@@ -85,8 +85,8 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 	public int portablecell_battery = 20000;
 	public int staff_battery = 8000;
 
-	public AEConfig(File f) {
-		super( new File( f.getPath() + File.separator + "AppliedEnergistics2" + File.separator + "AppliedEnergistics2.cfg" ) );
+	public AEConfig(String path) {
+		super( new File( path + "AppliedEnergistics2.cfg" ) );
 
 		final double DEFAULT_BC_EXCHANGE = 5.0;
 		// final double DEFAULT_UE_EXCHANGE = 5.0;
