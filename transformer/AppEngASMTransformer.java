@@ -52,7 +52,7 @@ public class AppEngASMTransformer implements IClassTransformer
 			{
 				for (MethodNode mn : classNode.methods)
 				{
-					if ( mn.name.equals( "func_146977_a" ) || mn.name.equals( "a" ) )
+					if ( mn.name.equals( "func_146977_a" ) || (mn.name.equals( "a" ) && mn.desc.equals( "(Lzk;)V" )) )
 					{
 						MethodNode newNode = new MethodNode( Opcodes.ACC_PUBLIC, "func_146977_a_original", mn.desc, mn.signature, new String[0] );
 						newNode.instructions.add( new VarInsnNode( Opcodes.ALOAD, 0 ) );
@@ -66,7 +66,7 @@ public class AppEngASMTransformer implements IClassTransformer
 
 				for (MethodNode mn : classNode.methods)
 				{
-					if ( mn.name.equals( "drawScreen" ) )
+					if ( mn.name.equals( "drawScreen" ) || (mn.name.equals( "a" ) && mn.desc.equals( "(IIF)V" )) )
 					{
 						Iterator<AbstractInsnNode> i = mn.instructions.iterator();
 						while (i.hasNext())
