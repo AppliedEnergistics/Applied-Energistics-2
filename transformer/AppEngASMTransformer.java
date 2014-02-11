@@ -69,7 +69,7 @@ public class AppEngASMTransformer implements IClassTransformer
 	
 					for (MethodNode mn : classNode.methods)
 					{
-						if ( mn.name.equals( "drawScreen" ) || (mn.name.equals( "a" ) && mn.desc.equals( "(IIF)V" )) )
+						if ( mn.name.equals("func_73863_a") || mn.name.equals( "drawScreen" ) || (mn.name.equals( "a" ) && mn.desc.equals( "(IIF)V" )) )
 						{
 							Iterator<AbstractInsnNode> i = mn.instructions.iterator();
 							while (i.hasNext())
