@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -224,8 +223,6 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 				}
 			}
 		}
-
-		((EntityPlayerMP) who).updateHeldItem();
 	}
 
 }
