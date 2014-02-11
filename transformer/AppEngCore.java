@@ -44,7 +44,7 @@ public class AppEngCore extends DummyModContainer implements IFMLLoadingPlugin
 	@Override
 	public String[] getASMTransformerClass()
 	{
-		return new String[] { "appeng.transformer.AppEngASMTransformer" };
+		return null;//return new String[] { "appeng.transformer.AppEngASMTransformer" };
 	}
 
 	@Override
@@ -97,7 +97,6 @@ public class AppEngCore extends DummyModContainer implements IFMLLoadingPlugin
 	@Override
 	public String getAccessTransformerClass()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return  "appeng.transformer.AppEngASMTransformer" ;
 	}
 }
