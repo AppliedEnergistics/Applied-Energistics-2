@@ -12,12 +12,14 @@ import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPartHelper;
+import appeng.api.recipes.IRecipeHandler;
 import appeng.api.storage.IStorageHelper;
 import appeng.core.api.ApiPart;
 import appeng.core.api.ApiStorage;
 import appeng.core.features.registries.RegistryContainer;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
+import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
 
 public class Api implements IAppEngApi
@@ -94,4 +96,11 @@ public class Api implements IAppEngApi
 	{
 		return new GridConnection( a, b, ForgeDirection.UNKNOWN );
 	}
+
+	@Override
+	public IRecipeHandler createNewRecipeHandler()
+	{
+		return new RecipeHandler();
+	}
+
 }

@@ -46,7 +46,7 @@ public enum AEFeature
 
 	DuplicateItems("Misc", false), Profiler("Services"), VersionChecker("Services"), Debug("Misc", false), Creative("Misc"),
 
-	Logging("Misc"), IntegrationLogging("Misc", false);
+	Logging("Misc"), IntegrationLogging("Misc", false), CustomRecipes("Misc", false);
 
 	String Category;
 	boolean visible = true;

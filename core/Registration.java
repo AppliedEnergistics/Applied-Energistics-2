@@ -7,6 +7,8 @@ import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.oredict.RecipeSorter;
+import net.minecraftforge.oredict.RecipeSorter.Category;
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.Blocks;
@@ -109,6 +111,10 @@ import appeng.me.cache.SpatialPylonCache;
 import appeng.me.cache.TickManagerCache;
 import appeng.me.storage.AEExternalHandler;
 import appeng.recipes.RecipeHandler;
+import appeng.recipes.Recipes.ShapedRecipe;
+import appeng.recipes.Recipes.ShapelessRecipe;
+import appeng.recipes.loader.ConfigLoader;
+import appeng.recipes.loader.JarLoader;
 import appeng.recipes.ores.OreDictionaryHandler;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -137,6 +143,9 @@ public class Registration
 
 	public void PreInit(FMLPreInitializationEvent event)
 	{
+		RecipeSorter.register( "AE2-Shaped", ShapedRecipe.class, Category.SHAPED, "" );
+		RecipeSorter.register( "AE2-Shapeless", ShapelessRecipe.class, Category.SHAPELESS, "" );
+
 		MinecraftForge.EVENT_BUS.register( OreDictionaryHandler.instance );
 
 		Items items = appeng.core.Api.instance.items();
@@ -402,7 +411,10 @@ public class Registration
 
 	public void Init(FMLInitializationEvent event)
 	{
-		recipeHandler.parseRecipes( "" );
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.CustomRecipes ) )
+			recipeHandler.parseRecipes( new ConfigLoader( AppEng.instance.getConfigPath() ), "index.recipe" );
+		else
+			recipeHandler.parseRecipes( new JarLoader( "/assets/appliedenergistics2/recipes/" ), "index.recipe" );
 
 		IPartHelper ph = AEApi.instance().partHelper();
 		ph.registerNewLayer( "appeng.api.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );

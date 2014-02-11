@@ -1,10 +1,16 @@
 package appeng.recipes.handlers;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.item.ItemStack;
+import appeng.core.AELog;
 import appeng.recipes.Ingredient;
+import appeng.recipes.MissingIngredientError;
 import appeng.recipes.RecipeError;
 import appeng.recipes.RegistrationError;
+import appeng.recipes.Recipes.ShapelessRecipe;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Shapeless extends CraftHandler
 {
@@ -17,7 +23,7 @@ public class Shapeless extends CraftHandler
 	{
 		if ( output.size() == 1 && output.get( 0 ).size() == 1 )
 		{
-			if ( inputs.size() == 1 )
+			if ( input.size() == 1 )
 			{
 				inputs = input.get( 0 );
 				this.output = output.get( 0 ).get( 0 );
@@ -30,8 +36,22 @@ public class Shapeless extends CraftHandler
 	}
 
 	@Override
-	public void register() throws RegistrationError
+	public void register() throws RegistrationError, MissingIngredientError
 	{
+		List<Object> args = new ArrayList();
+		for (Ingredient i : inputs)
+			args.add( i.getSet() );
 
+		ItemStack outIS = output.getItemStack();
+
+		try
+		{
+			GameRegistry.addRecipe( new ShapelessRecipe( outIS, args.toArray( new Object[args.size()] ) ) );
+		}
+		catch (Throwable e)
+		{
+			AELog.error( e );
+			throw new RegistrationError( "Erro while adding shapeless recipe." );
+		}
 	}
 }

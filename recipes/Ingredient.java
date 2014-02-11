@@ -1,5 +1,7 @@
 package appeng.recipes;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -8,6 +10,7 @@ import appeng.core.AppEng;
 import appeng.items.materials.MaterialType;
 import appeng.items.parts.ItemPart;
 import appeng.items.parts.PartType;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Ingredient
 {
@@ -18,7 +21,12 @@ public class Ingredient
 	final public String itemName;
 	final public int meta;
 
-	public Ingredient(RecipeHandler handler, String input) throws RecipeError {
+	final public int qty;
+
+	public Ingredient(RecipeHandler handler, String input, int qty) throws RecipeError {
+
+		// works no matter wat!
+		this.qty = qty;
 
 		if ( input.equals( "_" ) )
 		{
@@ -103,19 +111,35 @@ public class Ingredient
 		if ( isAir )
 			throw new RegistrationError( "Found blank item and expected a real item." );
 
-		Object o = Item.itemRegistry.getObject( nameSpace + ":" + itemName );
-		if ( o instanceof Item )
-			return new ItemStack( (Item) o, 1, meta );
-		if ( o instanceof Block )
-			return new ItemStack( (Block) o, 1, meta );
+		if ( nameSpace.equalsIgnoreCase( "oreDictionary" ) )
+			throw new RegistrationError( "Recipe format expected a single item, but got a set of items." );
 
-		o = Item.itemRegistry.getObject( nameSpace + ":item." + itemName );
-		if ( o instanceof Item )
-			return new ItemStack( (Item) o, 1, meta );
+		Block blk = GameRegistry.findBlock( nameSpace, itemName );
+		if ( blk == null )
+			blk = GameRegistry.findBlock( nameSpace, "tile." + itemName );
 
-		o = Item.itemRegistry.getObject( nameSpace + ":tile." + itemName );
-		if ( o instanceof Block )
-			return new ItemStack( (Block) o, 1, meta );
+		if ( blk != null )
+			return new ItemStack( blk, qty, meta );
+
+		Item it = GameRegistry.findItem( nameSpace, itemName );
+		if ( it == null )
+			it = GameRegistry.findItem( nameSpace, "item." + itemName );
+
+		if ( it != null )
+			return new ItemStack( it, qty, meta );
+
+		/*
+		 * Object o = Item.itemRegistry.getObject( nameSpace + ":" + itemName ); if ( o instanceof Item ) return new
+		 * ItemStack( (Item) o, qty, meta );
+		 * 
+		 * if ( o instanceof Block ) return new ItemStack( (Block) o, qty, meta );
+		 * 
+		 * o = Item.itemRegistry.getObject( nameSpace + ":item." + itemName ); if ( o instanceof Item ) return new
+		 * ItemStack( (Item) o, qty, meta );
+		 * 
+		 * o = Block.blockRegistry.getObject( nameSpace + ":tile." + itemName ); if ( o instanceof Block && (!(o
+		 * instanceof BlockAir)) ) return new ItemStack( (Block) o, qty, meta );
+		 */
 
 		throw new MissingIngredientError( "Unable to find item: " + toString() );
 	}
@@ -124,6 +148,27 @@ public class Ingredient
 	public String toString()
 	{
 		return nameSpace + ":" + itemName + ":" + meta;
+	}
+
+	public ItemStack[] getSet() throws RegistrationError, MissingIngredientError
+	{
+		if ( nameSpace.equalsIgnoreCase( "oreDictionary" ) )
+		{
+			List<ItemStack> ores = OreDictionary.getOres( itemName );
+			ItemStack[] set = ores.toArray( new ItemStack[ores.size()] );
+
+			// clone and set qty.
+			for (int x = 0; x < set.length; x++)
+			{
+				ItemStack is = set[x].copy();
+				is.stackSize = qty;
+				set[x] = is;
+			}
+
+			return set;
+		}
+
+		return new ItemStack[] { getItemStack() };
 	}
 
 }
