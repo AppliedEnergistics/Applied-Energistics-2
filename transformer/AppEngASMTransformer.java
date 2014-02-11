@@ -25,22 +25,17 @@ public class AppEngASMTransformer implements IClassTransformer
 
 	public AppEngASMTransformer() {
 		publicShit.put( "net.minecraft.client.gui.inventory.GuiContainer", "func_146977_a" );
-		publicShit.put( "bcd", "a" );
+		publicShit.put( "net.minecraft.client.gui.inventory.GuiContainer", "a" );
 	}
 
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] basicClass)
 	{
-		if ( publicShit.containsKey( name ) || publicShit.containsKey( transformedName ) )
+		if ( publicShit.containsKey( transformedName ) )
 		{
 			ClassNode classNode = new ClassNode();
 			ClassReader classReader = new ClassReader( basicClass );
 			classReader.accept( classNode, 0 );
-
-			for (String Set : publicShit.get( name ))
-			{
-				makePublic( classNode, Set );
-			}
 
 			for (String Set : publicShit.get( transformedName ))
 			{
@@ -48,7 +43,7 @@ public class AppEngASMTransformer implements IClassTransformer
 			}
 
 			// CALL VIRUAL!
-			if ( name.equals( "bcd" ) || transformedName.equals( "net.minecraft.client.gui.inventory.GuiContainer" ) )
+			if ( transformedName.equals( "net.minecraft.client.gui.inventory.GuiContainer" ) )
 			{
 				for (MethodNode mn : classNode.methods)
 				{
@@ -103,7 +98,6 @@ public class AppEngASMTransformer implements IClassTransformer
 			if ( mn.name.equals( set ) )
 			{
 				mn.access = getFixedAccess( mn.access );
-				return;
 			}
 		}
 
@@ -112,7 +106,6 @@ public class AppEngASMTransformer implements IClassTransformer
 			if ( mn.name.equals( set ) )
 			{
 				mn.access = getFixedAccess( mn.access );
-				return;
 			}
 		}
 
