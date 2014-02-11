@@ -52,8 +52,18 @@ public class WirelessTerminalGuiObject implements IPortableCell
 		myPlayer = ep;
 		wth = wh;
 
-		long encKey = Long.parseLong( encryptionKey );
-		Object obj = AEApi.instance().registries().locateable().findLocateableBySerial( encKey );
+		Object obj = null;
+
+		try
+		{
+			long encKey = Long.parseLong( encryptionKey );
+			obj = AEApi.instance().registries().locateable().findLocateableBySerial( encKey );
+		}
+		catch (NumberFormatException err)
+		{
+			// :P
+		}
+
 		if ( obj instanceof IGridHost )
 		{
 			IGridNode n = ((IGridHost) obj).getGridNode( ForgeDirection.UNKNOWN );
