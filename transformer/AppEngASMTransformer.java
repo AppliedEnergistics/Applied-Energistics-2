@@ -70,7 +70,7 @@ public class AppEngASMTransformer implements IClassTransformer
 							if ( in.getOpcode() == Opcodes.INVOKESPECIAL )
 							{
 								MethodInsnNode n = (MethodInsnNode) in;
-								if ( n.name.equals( "func_146977_a" ) || (mn.name.equals( "a" ) && mn.desc.equals( "(Lzk;)V" )) )
+								if ( n.name.equals( "func_146977_a" ) || (n.name.equals( "a" ) && n.desc.equals( "(Lzk;)V" )) )
 								{
 									mn.instructions.insertBefore( n, new MethodInsnNode( Opcodes.INVOKEVIRTUAL, n.owner, n.name, n.desc ) );
 									mn.instructions.remove( in );
