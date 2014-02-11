@@ -452,7 +452,17 @@ public abstract class AEBaseGui extends GuiContainer
 		return true;
 	}
 
+	public void a(Slot s)
+	{
+		drawSlot( s );
+	}
+
 	public void func_146977_a(Slot s)
+	{
+		drawSlot( s );
+	}
+
+	public void drawSlot(Slot s)
 	{
 		if ( s instanceof SlotME )
 		{

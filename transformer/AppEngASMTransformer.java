@@ -48,11 +48,11 @@ public class AppEngASMTransformer implements IClassTransformer
 			}
 
 			// CALL VIRUAL!
-			if ( transformedName.equals( "net.minecraft.client.gui.inventory.GuiContainer" ) )
+			if ( name.equals( "bcd" ) || transformedName.equals( "net.minecraft.client.gui.inventory.GuiContainer" ) )
 			{
 				for (MethodNode mn : classNode.methods)
 				{
-					if ( mn.name.equals( "func_146977_a" ) )
+					if ( mn.name.equals( "func_146977_a" ) || mn.name.equals( "a" ) )
 					{
 						MethodNode newNode = new MethodNode( Opcodes.ACC_PUBLIC, "func_146977_a_original", mn.desc, mn.signature, new String[0] );
 						newNode.instructions.add( new VarInsnNode( Opcodes.ALOAD, 0 ) );
