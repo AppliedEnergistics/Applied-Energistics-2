@@ -68,7 +68,9 @@ public class BusRenderer implements IItemRenderer
 		GL11.glDisable( GL11.GL_BLEND );
 
 		if ( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
+		{
 			GL11.glTranslatef( -0.2f, -0.1f, -0.3f );
+		}
 
 		if ( type == ItemRenderType.ENTITY )
 			GL11.glTranslatef( -0.5f, -0.5f, -0.5f );
@@ -94,6 +96,12 @@ public class BusRenderer implements IItemRenderer
 		{
 			IFacadeItem fi = (IFacadeItem) item.getItem();
 			IFacadePart fp = fi.createPartFromItemStack( item, ForgeDirection.SOUTH );
+
+			if ( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
+			{
+				GL11.glRotatef( 160.0f, 0.0f, 1.0f, 0.0f );
+				GL11.glTranslated( -0.4, 0.1, -1.6 );
+			}
 
 			if ( fp != null )
 				fp.renderInventory( BusRenderHelper.instance, renderer );
