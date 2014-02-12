@@ -231,7 +231,8 @@ public class PartDenseCable extends PartCable
 		 * rh.setTexture( getTexture( getCableColor() ) ); }
 		 */
 
-		if ( ghh != null && ccph != null && ghh.getCableConnectionType( of ) != AECableType.GLASS && ccph.getColor() != AEColor.Transparent )
+		if ( ghh != null && ccph != null && ghh.getCableConnectionType( of ) != AECableType.GLASS && ccph.getColor() != AEColor.Transparent
+				&& ccph.getPart( of.getOpposite() ) == null )
 			rh.setTexture( getTexture( myColor = ccph.getColor() ) );
 		else
 			rh.setTexture( getTexture( getCableColor() ) );
