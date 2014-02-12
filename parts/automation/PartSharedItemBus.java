@@ -60,16 +60,11 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 
 	AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
 
-	boolean cached = false;
 	int adaptorHash = 0;
 	InventoryAdaptor adaptor;
 
 	InventoryAdaptor getHandler()
 	{
-		if ( cached )
-			return adaptor;
-
-		cached = true;
 		TileEntity self = getHost().getTile();
 		TileEntity target = getTileEntity( self, self.xCoord + side.offsetX, self.yCoord + side.offsetY, self.zCoord + side.offsetZ );
 
@@ -80,7 +75,6 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 
 		adaptorHash = newAdaptorHash;
 		adaptor = InventoryAdaptor.getAdaptor( target, side.getOpposite() );
-		cached = true;
 
 		return adaptor;
 	}
@@ -103,7 +97,6 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 
 	private void updateState()
 	{
-		cached = false;
 		try
 		{
 			if ( !isSleeping() )
