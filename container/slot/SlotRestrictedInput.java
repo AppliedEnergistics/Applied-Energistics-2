@@ -14,7 +14,6 @@ import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.ICellWorkbenchItem;
-import appeng.parts.automation.UpgradeInventory;
 import appeng.util.Platform;
 
 public class SlotRestrictedInput extends AppEngSlot
@@ -95,7 +94,7 @@ public class SlotRestrictedInput extends AppEngSlot
 		if ( i.getItem() == null )
 			return false;
 
-		if ( !inventory.isItemValidForSlot( this.getSlotIndex(), i ) && !(inventory instanceof UpgradeInventory) )
+		if ( !inventory.isItemValidForSlot( this.getSlotIndex(), i ) )
 			return false;
 
 		IAppEngApi api = AEApi.instance();

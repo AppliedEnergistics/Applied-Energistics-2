@@ -42,6 +42,7 @@ import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.helpers.InventoryAction;
+import appeng.parts.automation.UpgradeInventory;
 import appeng.util.Platform;
 
 public abstract class AEBaseGui extends GuiContainer
@@ -559,7 +560,7 @@ public abstract class AEBaseGui extends GuiContainer
 					if ( ((AppEngSlot) s).isValid == hasCalculatedValidness.NotAvailable )
 					{
 						boolean isValid = s.isItemValid( is ) || s instanceof SlotOutput || s instanceof AppEngCraftingSlot || s instanceof SlotDisabled
-								|| s instanceof SlotInaccessable || s instanceof SlotFake;
+								|| s instanceof SlotInaccessable || s instanceof SlotFake || s.inventory instanceof UpgradeInventory;
 						if ( isValid && s instanceof SlotRestrictedInput )
 						{
 							try
