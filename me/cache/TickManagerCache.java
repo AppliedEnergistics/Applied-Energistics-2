@@ -109,8 +109,12 @@ public class TickManagerCache implements ITickManager
 		if ( tt == null )
 			throw new RuntimeException( "Invalid Alertted device, this node is not marked as alertable, or part of this grid." );
 
-		tt.lastTick = -tt.request.maxTickRate;
-		addToQueue( tt );
+		// set to awake, this is for sanity.
+		sleeping.remove( node );
+		awake.put( node, tt );
+
+		tt.lastTick = tt.lastTick - tt.request.maxTickRate;
+		upcomingTicks.add( tt );
 		return true;
 	}
 
