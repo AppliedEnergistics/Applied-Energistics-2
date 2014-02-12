@@ -169,6 +169,7 @@ public class PartPlacement
 						try
 						{
 							NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face ) );
+							return true;
 						}
 						catch (IOException e)
 						{
