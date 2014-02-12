@@ -67,6 +67,9 @@ public class BusRenderer implements IItemRenderer
 		GL11.glEnable( GL11.GL_DEPTH_TEST );
 		GL11.glDisable( GL11.GL_BLEND );
 
+		if ( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
+			GL11.glTranslatef( -0.2f, -0.1f, -0.3f );
+
 		if ( type == ItemRenderType.ENTITY )
 			GL11.glTranslatef( -0.5f, -0.5f, -0.5f );
 		if ( type == ItemRenderType.INVENTORY )
