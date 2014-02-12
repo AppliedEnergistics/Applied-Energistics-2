@@ -10,13 +10,10 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
-
-import appeng.core.AELog;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -26,11 +23,11 @@ import cpw.mods.fml.relauncher.FMLRelaunchLog;
 public class AppEngASMTransformer implements IClassTransformer
 {
 
-	Multimap<String, String> publicShit = HashMultimap.create();
+	Multimap<String, String> privateToPublicMethods = HashMultimap.create();
 
 	public AppEngASMTransformer() {
-		publicShit.put( "net.minecraft.client.gui.inventory.GuiContainer", "func_146977_a" );
-		publicShit.put( "net.minecraft.client.gui.inventory.GuiContainer", "a" );
+		privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", "func_146977_a" );
+		privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", "a" );
 	}
 
 	@Override
@@ -38,17 +35,17 @@ public class AppEngASMTransformer implements IClassTransformer
 	{
 		try
 		{
-			if ( transformedName != null && publicShit.containsKey( transformedName ) )
+			if ( transformedName != null && privateToPublicMethods.containsKey( transformedName ) )
 			{
 				ClassNode classNode = new ClassNode();
 				ClassReader classReader = new ClassReader( basicClass );
 				classReader.accept( classNode, 0 );
-	
-				for (String Set : publicShit.get( transformedName ))
+
+				for (String Set : privateToPublicMethods.get( transformedName ))
 				{
 					makePublic( classNode, Set );
 				}
-	
+
 				// CALL VIRUAL!
 				if ( transformedName.equals( "net.minecraft.client.gui.inventory.GuiContainer" ) )
 				{
@@ -61,15 +58,15 @@ public class AppEngASMTransformer implements IClassTransformer
 							newNode.instructions.add( new VarInsnNode( Opcodes.ALOAD, 1 ) );
 							newNode.instructions.add( new MethodInsnNode( Opcodes.INVOKESPECIAL, classNode.name, mn.name, mn.desc ) );
 							newNode.instructions.add( new InsnNode( Opcodes.RETURN ) );
-							log(newNode.name+newNode.desc+" - New Method");
+							log( newNode.name + newNode.desc + " - New Method" );
 							classNode.methods.add( newNode );
 							break;
 						}
 					}
-	
+
 					for (MethodNode mn : classNode.methods)
 					{
-						if ( mn.name.equals("func_73863_a") || mn.name.equals( "drawScreen" ) || (mn.name.equals( "a" ) && mn.desc.equals( "(IIF)V" )) )
+						if ( mn.name.equals( "func_73863_a" ) || mn.name.equals( "drawScreen" ) || (mn.name.equals( "a" ) && mn.desc.equals( "(IIF)V" )) )
 						{
 							Iterator<AbstractInsnNode> i = mn.instructions.iterator();
 							while (i.hasNext())
@@ -80,7 +77,7 @@ public class AppEngASMTransformer implements IClassTransformer
 									MethodInsnNode n = (MethodInsnNode) in;
 									if ( n.name.equals( "func_146977_a" ) || (n.name.equals( "a" ) && n.desc.equals( "(Lzk;)V" )) )
 									{
-										log(n.name+n.desc+" - Invoke Virtual");
+										log( n.name + n.desc + " - Invoke Virtual" );
 										mn.instructions.insertBefore( n, new MethodInsnNode( Opcodes.INVOKEVIRTUAL, n.owner, n.name, n.desc ) );
 										mn.instructions.remove( in );
 										break;
@@ -90,20 +87,22 @@ public class AppEngASMTransformer implements IClassTransformer
 						}
 					}
 				}
-	
-				ClassWriter writer = new ClassWriter(  ClassWriter.COMPUTE_MAXS );
+
+				ClassWriter writer = new ClassWriter( ClassWriter.COMPUTE_MAXS );
 				classNode.accept( writer );
 				return writer.toByteArray();
 			}
 		}
-		catch( Throwable t ) {}
-		
+		catch (Throwable t)
+		{
+		}
+
 		return basicClass;
 	}
 
-	private void log(String string) 		
+	private void log(String string)
 	{
-		FMLRelaunchLog.log("AE2-CORE", Level.INFO, string );
+		FMLRelaunchLog.log( "AE2-CORE", Level.INFO, string );
 	}
 
 	private void makePublic(ClassNode classNode, String set)
@@ -113,7 +112,7 @@ public class AppEngASMTransformer implements IClassTransformer
 			if ( mn.name.equals( set ) )
 			{
 				mn.access = Opcodes.ACC_PUBLIC;
-				log(mn.name+mn.desc+" - Public");
+				log( mn.name + mn.desc + " - Public" );
 			}
 		}
 	}
