@@ -30,6 +30,7 @@ public class ItemRenderer implements IItemRenderer
 		GL11.glEnable( GL11.GL_ALPHA_TEST );
 		GL11.glEnable( GL11.GL_DEPTH_TEST );
 		GL11.glEnable( GL11.GL_BLEND );
+		GL11.glBlendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA );
 		GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		if ( type == ItemRenderType.ENTITY )
