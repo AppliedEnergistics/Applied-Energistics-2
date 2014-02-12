@@ -7,20 +7,15 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
-import appeng.api.config.Actionable;
 import appeng.api.features.IGrinderEntry;
 import appeng.api.implementations.tiles.ICrankable;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.WorldCoord;
-import appeng.me.storage.MEIInventoryWrapper;
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.WrapperInventoryRange;
-import appeng.util.item.ItemList;
 
 public class TileGrinder extends AEBaseInvTile implements ICrankable
 {
@@ -95,19 +90,27 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 
 		if ( null == this.getStackInSlot( 6 ) ) // Add if there isn't one...
 		{
-			IMEInventory<IAEItemStack> input = new MEIInventoryWrapper( new WrapperInventoryRange( this, inputs, true ), null );
-			for (IAEItemStack i : input.getAvailableItems( new ItemList() ))
+			IInventory src = new WrapperInventoryRange( this, inputs, true );
+			for (int x = 0; x < src.getSizeInventory(); x++)
 			{
-				IGrinderEntry r = AEApi.instance().registries().grinder().getRecipeForInput( i.getItemStack() );
+				ItemStack item = src.getStackInSlot( x );
+				if ( item == null )
+					continue;
+
+				IGrinderEntry r = AEApi.instance().registries().grinder().getRecipeForInput( item );
 				if ( r != null )
 				{
-					if ( i.getStackSize() >= r.getInput().stackSize )
+					if ( item.stackSize >= r.getInput().stackSize )
 					{
-						i = i.copy();
-						i.setStackSize( r.getInput().stackSize );
-						IAEItemStack ais = input.extractItems( (IAEItemStack) i, Actionable.MODULATE, null );
-						if ( ais != null )
-							this.setInventorySlotContents( 6, ais.getItemStack() );
+						item.stackSize -= r.getInput().stackSize;
+						ItemStack ais = item.copy();
+						ais.stackSize = r.getInput().stackSize;
+
+						if ( item.stackSize <= 0 )
+							item = null;
+
+						src.setInventorySlotContents( x, item );
+						this.setInventorySlotContents( 6, ais );
 						return true;
 					}
 				}
