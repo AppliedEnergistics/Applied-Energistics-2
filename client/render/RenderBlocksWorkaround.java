@@ -61,7 +61,14 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		{
 			if ( fColor == null )
 			{
-				fColor = Tessellator.class.getDeclaredField( "color" );
+				try
+				{
+					fColor = Tessellator.class.getDeclaredField( "color" );
+				}
+				catch (Throwable t)
+				{
+					fColor = Tessellator.class.getDeclaredField( "field_78402_m" );
+				}
 				fColor.setAccessible( true );
 			}
 			return (Integer) fColor.get( Tessellator.instance );
@@ -78,7 +85,14 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		{
 			if ( fBrightness == null )
 			{
-				fBrightness = Tessellator.class.getDeclaredField( "brightness" );
+				try
+				{
+					fBrightness = Tessellator.class.getDeclaredField( "brightness" );
+				}
+				catch (Throwable t)
+				{
+					fBrightness = Tessellator.class.getDeclaredField( "field_78401_l" );
+				}
 				fBrightness.setAccessible( true );
 			}
 			return (Integer) fBrightness.get( Tessellator.instance );
