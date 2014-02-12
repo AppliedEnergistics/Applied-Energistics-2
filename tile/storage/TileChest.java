@@ -37,7 +37,7 @@ import appeng.api.storage.ICellHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReciever;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.MEMonitorHandler;
 import appeng.api.storage.StorageChannel;
@@ -259,7 +259,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		return fcell;
 	}
 
-	class ChestNetNotifier<T extends IAEStack<T>> implements IMEMonitorHandlerReciever<T>
+	class ChestNetNotifier<T extends IAEStack<T>> implements IMEMonitorHandlerReceiver<T>
 	{
 
 		final StorageChannel chan;

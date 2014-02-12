@@ -17,7 +17,7 @@ import appeng.api.networking.IMachineSet;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReciever;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
@@ -154,14 +154,14 @@ public class WirelessTerminalGuiObject implements IPortableCell
 	}
 
 	@Override
-	public void addListener(IMEMonitorHandlerReciever<IAEItemStack> l, Object verificationToken)
+	public void addListener(IMEMonitorHandlerReceiver<IAEItemStack> l, Object verificationToken)
 	{
 		if ( itemStorage != null )
 			itemStorage.addListener( l, verificationToken );
 	}
 
 	@Override
-	public void removeListener(IMEMonitorHandlerReciever<IAEItemStack> l)
+	public void removeListener(IMEMonitorHandlerReceiver<IAEItemStack> l)
 	{
 		if ( itemStorage != null )
 			itemStorage.removeListener( l );

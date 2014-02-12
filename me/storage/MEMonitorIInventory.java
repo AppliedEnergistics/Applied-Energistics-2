@@ -15,7 +15,7 @@ import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReciever;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -54,18 +54,18 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 
 	final TreeMap<Integer, CachedItemStack> memory;
 	final IItemList<IAEItemStack> list = new ItemList();
-	final HashMap<IMEMonitorHandlerReciever<IAEItemStack>, Object> listeners = new HashMap();
+	final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap();
 
 	public BaseActionSource mySource;
 
 	@Override
-	public void addListener(IMEMonitorHandlerReciever<IAEItemStack> l, Object verificationToken)
+	public void addListener(IMEMonitorHandlerReceiver<IAEItemStack> l, Object verificationToken)
 	{
 		listeners.put( l, verificationToken );
 	}
 
 	@Override
-	public void removeListener(IMEMonitorHandlerReciever<IAEItemStack> l)
+	public void removeListener(IMEMonitorHandlerReceiver<IAEItemStack> l)
 	{
 		listeners.remove( l );
 	}
@@ -234,11 +234,11 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 		// AELog.info( a.getItemStack().getUnlocalizedName() + " @ " + a.getStackSize() );
 		if ( a != null )
 		{
-			Iterator<Entry<IMEMonitorHandlerReciever<IAEItemStack>, Object>> i = listeners.entrySet().iterator();
+			Iterator<Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object>> i = listeners.entrySet().iterator();
 			while (i.hasNext())
 			{
-				Entry<IMEMonitorHandlerReciever<IAEItemStack>, Object> l = i.next();
-				IMEMonitorHandlerReciever<IAEItemStack> key = l.getKey();
+				Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object> l = i.next();
+				IMEMonitorHandlerReceiver<IAEItemStack> key = l.getKey();
 				if ( key.isValid( l.getValue() ) )
 					key.postChange( this, a, mySource );
 				else

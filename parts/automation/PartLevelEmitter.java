@@ -27,7 +27,7 @@ import appeng.api.networking.storage.IStackWatcherHost;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReciever;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -42,7 +42,7 @@ import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHost, IMEMonitorHandlerReciever<IAEItemStack>
+public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>
 {
 
 	final int FLAG_ON = 4;
