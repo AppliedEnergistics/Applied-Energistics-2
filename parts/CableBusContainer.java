@@ -664,7 +664,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 					p.readFromNBT( extra );
 				else
 				{
-					removePart( side, false );
+					removePart( side, true );
 					side = addPart( iss, side, null );
 					if ( side != null )
 					{
