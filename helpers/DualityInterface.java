@@ -91,7 +91,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			try
 			{
 				if ( has )
-					gridProxy.getTick().wakeDevice( gridProxy.getNode() );
+					gridProxy.getTick().alertDevice( gridProxy.getNode() );
 				else
 					gridProxy.getTick().sleepDevice( gridProxy.getNode() );
 			}
@@ -351,7 +351,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 				try
 				{
 					if ( now )
-						gridProxy.getTick().wakeDevice( gridProxy.getNode() );
+						gridProxy.getTick().alertDevice( gridProxy.getNode() );
 					else
 						gridProxy.getTick().sleepDevice( gridProxy.getNode() );
 				}
@@ -397,7 +397,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	@Override
 	public TickingRequest getTickingRequest(IGridNode node)
 	{
-		return new TickingRequest( 5, 120, !hasWorkToDo(), false );
+		return new TickingRequest( 5, 120, !hasWorkToDo(), true );
 	}
 
 	@Override
