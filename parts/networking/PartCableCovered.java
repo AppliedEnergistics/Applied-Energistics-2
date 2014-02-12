@@ -104,9 +104,33 @@ public class PartCableCovered extends PartCable
 	{
 		GL11.glTranslated( -0.2, -0.3, 0.0 );
 
-		rh.setTexture( getTexture( getCableColor() ) );
 		rh.setBounds( 5.0f, 5.0f, 2.0f, 11.0f, 11.0f, 14.0f );
-		rh.renderInventoryBox( renderer );
+		float offu = 0;
+		float offv = 9;
+
+		OffsetIcon main = new OffsetIcon( getTexture( getCableColor() ), offu, offv );
+
+		for (ForgeDirection side : EnumSet.of( ForgeDirection.UP, ForgeDirection.DOWN ))
+		{
+			rh.renderInventoryFace( main, side, renderer );
+		}
+
+		offu = 9;
+		offv = 0;
+		main = new OffsetIcon( getTexture( getCableColor() ), offu, offv );
+
+		for (ForgeDirection side : EnumSet.of( ForgeDirection.EAST, ForgeDirection.WEST ))
+		{
+			rh.renderInventoryFace( main, side, renderer );
+		}
+
+		main = new OffsetIcon( getTexture( getCableColor() ), 0, 0 );
+
+		for (ForgeDirection side : EnumSet.of( ForgeDirection.SOUTH, ForgeDirection.NORTH ))
+		{
+			rh.renderInventoryFace( main, side, renderer );
+		}
+
 		rh.setTexture( null );
 	}
 

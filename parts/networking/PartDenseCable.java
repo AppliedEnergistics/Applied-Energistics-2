@@ -79,18 +79,45 @@ public class PartDenseCable extends PartCable
 	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		GL11.glTranslated( -0.2, -0.3, 0.0 );
+		rh.setBounds( 4.0f, 4.0f, 2.0f, 12.0f, 12.0f, 14.0f );
 
-		rh.setTexture( getTexture( getCableColor() ) );
-		rh.setBounds( 2.0f, 2.0f, 2.0f, 13.0f, 13.0f, 14.0f );
-		rh.renderInventoryBox( renderer );
+		float offu = 0;
+		float offv = 9;
 
-		rh.setTexture( getChannelTex( 4, false ).getIcon() );
-		rh.setBounds( 2.0f, 2.0f, 2.0f, 13.0f, 13.0f, 14.0f );
-		rh.renderInventoryBox( renderer );
+		OffsetIcon main = new OffsetIcon( getTexture( getCableColor() ), offu, offv );
+		OffsetIcon ch1 = new OffsetIcon( getChannelTex( 4, false ).getIcon(), offu, offv );
+		OffsetIcon ch2 = new OffsetIcon( getChannelTex( 4, true ).getIcon(), offu, offv );
 
-		rh.setTexture( getChannelTex( 4, true ).getIcon() );
-		rh.setBounds( 2.0f, 2.0f, 2.0f, 13.0f, 13.0f, 14.0f );
-		rh.renderInventoryBox( renderer );
+		for (ForgeDirection side : EnumSet.of( ForgeDirection.UP, ForgeDirection.DOWN ))
+		{
+			rh.renderInventoryFace( main, side, renderer );
+			rh.renderInventoryFace( ch1, side, renderer );
+			rh.renderInventoryFace( ch2, side, renderer );
+		}
+
+		offu = 9;
+		offv = 0;
+		main = new OffsetIcon( getTexture( getCableColor() ), offu, offv );
+		ch1 = new OffsetIcon( getChannelTex( 4, false ).getIcon(), offu, offv );
+		ch2 = new OffsetIcon( getChannelTex( 4, true ).getIcon(), offu, offv );
+
+		for (ForgeDirection side : EnumSet.of( ForgeDirection.EAST, ForgeDirection.WEST ))
+		{
+			rh.renderInventoryFace( main, side, renderer );
+			rh.renderInventoryFace( ch1, side, renderer );
+			rh.renderInventoryFace( ch2, side, renderer );
+		}
+
+		main = new OffsetIcon( getTexture( getCableColor() ), 0, 0 );
+		ch1 = new OffsetIcon( getChannelTex( 4, false ).getIcon(), 0, 0 );
+		ch2 = new OffsetIcon( getChannelTex( 4, true ).getIcon(), 0, 0 );
+
+		for (ForgeDirection side : EnumSet.of( ForgeDirection.SOUTH, ForgeDirection.NORTH ))
+		{
+			rh.renderInventoryFace( main, side, renderer );
+			rh.renderInventoryFace( ch1, side, renderer );
+			rh.renderInventoryFace( ch2, side, renderer );
+		}
 
 		rh.setTexture( null );
 	}
