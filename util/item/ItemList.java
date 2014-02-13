@@ -3,9 +3,11 @@ package appeng.util.item;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 
+import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
@@ -166,6 +168,13 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 		return records.isEmpty();
 	}
 
+	public Collection<StackType> findFuzzyDamage(AEItemStack filter, FuzzyMode fuzzy, boolean ignoreMeta)
+	{
+		StackType low = (StackType) filter.getLow( fuzzy, ignoreMeta );
+		StackType high = (StackType) filter.getHigh( fuzzy, ignoreMeta );
+		return records.subMap( low, high ).values();
+	}
+
 	@Override
 	public Collection<StackType> findFuzzy(StackType filter, FuzzyMode fuzzy)
 	{
@@ -174,14 +183,25 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 					.asList( new IAEFluidStack[] {} );
 
 		AEItemStack ais = (AEItemStack) filter;
-
-		if ( OreHelper.instance.isOre( ais ) )
+		if ( ais.isOre() )
 		{
+			OreRefrence or = ais.def.isOre;
+			if ( or.aeotherOptions.size() == 1 )
+			{
+				IAEItemStack is = or.aeotherOptions.get( 0 );
+				return findFuzzyDamage( (AEItemStack) is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE );
+			}
+			else
+			{
+				Collection<StackType> output = new LinkedList();
 
+				for (IAEItemStack is : or.aeotherOptions)
+					output.addAll( findFuzzyDamage( (AEItemStack) is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE ) );
+
+				return output;
+			}
 		}
 
-		StackType low = (StackType) ais.getLow( fuzzy );
-		StackType high = (StackType) ais.getHigh( fuzzy );
-		return records.subMap( low, high ).values();
+		return findFuzzyDamage( ais, fuzzy, false );
 	}
 }

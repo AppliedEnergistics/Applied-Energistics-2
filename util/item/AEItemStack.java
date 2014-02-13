@@ -82,7 +82,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		setCountRequestable( 0 );
 
 		def.reHash();
-		def.isOre = OreHelper.instance.isOre( this );
+		def.isOre = OreHelper.instance.isOre( is );
 	}
 
 	public static AEItemStack create(Object a)
@@ -460,10 +460,17 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		return false;
 	}
 
-	public IAEItemStack getLow(FuzzyMode fuzzy)
+	public IAEItemStack getLow(FuzzyMode fuzzy, boolean ignoreMeta)
 	{
 		AEItemStack bottom = new AEItemStack( this );
 		AEItemDef newDef = bottom.def = bottom.def.copy();
+
+		if ( ignoreMeta )
+		{
+			newDef.dspDamage = newDef.damageValue = 0;
+			newDef.reHash();
+			return bottom;
+		}
 
 		if ( fuzzy == FuzzyMode.IGNORE_ALL )
 		{
@@ -482,10 +489,17 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		return bottom;
 	}
 
-	public IAEItemStack getHigh(FuzzyMode fuzzy)
+	public IAEItemStack getHigh(FuzzyMode fuzzy, boolean ignoreMeta)
 	{
 		AEItemStack top = new AEItemStack( this );
 		AEItemDef newDef = top.def = top.def.copy();
+
+		if ( ignoreMeta )
+		{
+			newDef.dspDamage = newDef.damageValue = Integer.MAX_VALUE;
+			newDef.reHash();
+			return top;
+		}
 
 		if ( fuzzy == FuzzyMode.IGNORE_ALL )
 		{
@@ -548,6 +562,6 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 	public boolean isOre()
 	{
-		return def.isOre;
+		return def.isOre != null;
 	}
 }

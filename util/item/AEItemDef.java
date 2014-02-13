@@ -32,7 +32,7 @@ public class AEItemDef
 	@SideOnly(Side.CLIENT)
 	public List tooltip;
 
-	public boolean isOre;
+	public OreRefrence isOre;
 
 	public AEItemDef copy()
 	{

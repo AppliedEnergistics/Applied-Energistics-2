@@ -79,6 +79,8 @@ import appeng.server.AccessType;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.AESharedNBT;
 import appeng.util.item.ItemList;
+import appeng.util.item.OreHelper;
+import appeng.util.item.OreRefrence;
 import buildcraft.api.tools.IToolWrench;
 
 import com.mojang.authlib.GameProfile;
@@ -1077,6 +1079,12 @@ public class Platform
 				}
 			}
 		}
+
+		OreRefrence aOR = OreHelper.instance.isOre( a );
+		OreRefrence bOR = OreHelper.instance.isOre( b );
+
+		if ( OreHelper.instance.sameOre( aOR, bOR ) )
+			return true;
 
 		/*
 		 * // test ore dictionary.. int OreID = getOreID( a ); if ( OreID != -1 ) return OreID == getOreID( b );
