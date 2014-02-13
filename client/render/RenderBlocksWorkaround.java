@@ -108,6 +108,16 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		rXPos = rXNeg = rYPos = rYNeg = rZPos = rZNeg = ico;
 	}
 
+	public void setTexture(IIcon rYNeg, IIcon rYPos, IIcon rZNeg, IIcon rZPos, IIcon rXNeg, IIcon rXPos)
+	{
+		this.rXPos = rXPos;
+		this.rXNeg = rXNeg;
+		this.rYPos = rYPos;
+		this.rYNeg = rYNeg;
+		this.rZPos = rZPos;
+		this.rZNeg = rZNeg;
+	}
+
 	public boolean renderStandardBlockNoCalculations(Block b, int x, int y, int z)
 	{
 		Tessellator.instance.setBrightness( bXPos );

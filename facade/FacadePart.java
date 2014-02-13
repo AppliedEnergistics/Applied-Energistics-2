@@ -153,11 +153,22 @@ public class FacadePart implements IFacadePart
 							rbw.calculations = false;
 							rbw.faces = EnumSet.allOf( ForgeDirection.class );
 
-							((RenderBlocksWorkaround) renderer).setTexture( blk.getIcon( side.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ) );
+							((RenderBlocksWorkaround) renderer).setTexture(
+									blk.getIcon( ForgeDirection.DOWN.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ),
+									blk.getIcon( ForgeDirection.UP.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ),
+									blk.getIcon( ForgeDirection.NORTH.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ),
+									blk.getIcon( ForgeDirection.SOUTH.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ),
+									blk.getIcon( ForgeDirection.WEST.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ),
+									blk.getIcon( ForgeDirection.EAST.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ) );
 						}
 						else
 						{
-							instance.setTexture( blk.getIcon( side.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ) );
+							instance.setTexture( blk.getIcon( ForgeDirection.DOWN.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ),
+									blk.getIcon( ForgeDirection.UP.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ),
+									blk.getIcon( ForgeDirection.NORTH.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ),
+									blk.getIcon( ForgeDirection.SOUTH.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ),
+									blk.getIcon( ForgeDirection.WEST.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ),
+									blk.getIcon( ForgeDirection.EAST.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ) );
 						}
 
 						if ( busBounds == null )
