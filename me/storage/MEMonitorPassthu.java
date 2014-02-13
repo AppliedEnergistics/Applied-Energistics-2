@@ -7,16 +7,16 @@ import java.util.Map.Entry;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReciever;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
 import appeng.util.item.ItemList;
 
-public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> implements IMEMonitor<T>, IMEMonitorHandlerReciever<T>
+public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> implements IMEMonitor<T>, IMEMonitorHandlerReceiver<T>
 {
 
-	HashMap<IMEMonitorHandlerReciever<T>, Object> listeners = new HashMap();
+	HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap();
 	IMEMonitor<T> monitor;
 
 	public BaseActionSource changeSource;
@@ -49,13 +49,13 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 	}
 
 	@Override
-	public void addListener(IMEMonitorHandlerReciever<T> l, Object verificationToken)
+	public void addListener(IMEMonitorHandlerReceiver<T> l, Object verificationToken)
 	{
 		listeners.put( l, verificationToken );
 	}
 
 	@Override
-	public void removeListener(IMEMonitorHandlerReciever<T> l)
+	public void removeListener(IMEMonitorHandlerReceiver<T> l)
 	{
 		listeners.remove( l );
 	}
@@ -77,11 +77,11 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 	@Override
 	public void postChange(IMEMonitor<T> monitor, T change, BaseActionSource source)
 	{
-		Iterator<Entry<IMEMonitorHandlerReciever<T>, Object>> i = listeners.entrySet().iterator();
+		Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = listeners.entrySet().iterator();
 		while (i.hasNext())
 		{
-			Entry<IMEMonitorHandlerReciever<T>, Object> e = i.next();
-			IMEMonitorHandlerReciever<T> recv = e.getKey();
+			Entry<IMEMonitorHandlerReceiver<T>, Object> e = i.next();
+			IMEMonitorHandlerReceiver<T> recv = e.getKey();
 			if ( recv.isValid( e.getValue() ) )
 				recv.postChange( this, change, source );
 			else
