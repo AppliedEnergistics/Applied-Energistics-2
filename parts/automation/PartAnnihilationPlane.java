@@ -350,7 +350,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 				break;
 			}
 
-			if ( capture && Platform.isServer() )
+			if ( capture && Platform.isServer() && proxy.isActive() )
 			{
 				IAEItemStack stack = AEItemStack.create( ((EntityItem) entity).getEntityItem() );
 				if ( stack != null )
