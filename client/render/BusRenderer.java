@@ -65,6 +65,8 @@ public class BusRenderer implements IItemRenderer
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 		GL11.glEnable( GL11.GL_ALPHA_TEST );
 		GL11.glEnable( GL11.GL_DEPTH_TEST );
+		GL11.glEnable( GL11.GL_TEXTURE_2D );
+		GL11.glEnable( GL11.GL_LIGHTING );
 		GL11.glDisable( GL11.GL_BLEND );
 
 		if ( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
@@ -82,6 +84,7 @@ public class BusRenderer implements IItemRenderer
 
 		GL11.glColor4f( 1, 1, 1, 1 );
 		Tessellator.instance.setColorOpaque_F( 1, 1, 1 );
+		Tessellator.instance.setBrightness( 14 << 20 | 14 << 4 );
 
 		BusRenderHelper.instance.setBounds( 0, 0, 0, 1, 1, 1 );
 		BusRenderHelper.instance.setTexture( null );
@@ -93,6 +96,7 @@ public class BusRenderer implements IItemRenderer
 		BusRenderHelper.instance.az = ForgeDirection.SOUTH;
 
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+		renderer.useInventoryTint = false;
 
 		if ( item.getItem() instanceof IFacadeItem )
 		{

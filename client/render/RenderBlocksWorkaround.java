@@ -201,7 +201,9 @@ public class RenderBlocksWorkaround extends RenderBlocks
 			else
 			{
 				enableAO = isAO;
-				return renderStandardBlockNoCalculations( par1Block, par2, par3, par4 );
+				boolean out = renderStandardBlockNoCalculations( par1Block, par2, par3, par4 );
+				enableAO = false;
+				return out;
 			}
 		}
 		catch (Throwable t)
