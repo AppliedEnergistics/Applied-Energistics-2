@@ -60,7 +60,11 @@ public class WorldRender implements ISimpleBlockRenderingHandler
 	{
 		AEBaseBlock block = (AEBaseBlock) Block.getBlockFromItem( item.getItem() );
 		renderer.setRenderBoundsFromBlock( block );
+
+		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 		getRender( block ).renderInventory( block, item, renderer );
+		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+
 	}
 
 	private BaseBlockRender getRender(AEBaseBlock block)

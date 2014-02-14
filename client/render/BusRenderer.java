@@ -92,6 +92,8 @@ public class BusRenderer implements IItemRenderer
 		BusRenderHelper.instance.ay = ForgeDirection.UP;
 		BusRenderHelper.instance.az = ForgeDirection.SOUTH;
 
+		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+
 		if ( item.getItem() instanceof IFacadeItem )
 		{
 			IFacadeItem fi = (IFacadeItem) item.getItem();
@@ -112,6 +114,8 @@ public class BusRenderer implements IItemRenderer
 			if ( ip != null )
 				ip.renderInventory( BusRenderHelper.instance, renderer );
 		}
+
+		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 
 		GL11.glPopAttrib();
 		GL11.glPopMatrix();
