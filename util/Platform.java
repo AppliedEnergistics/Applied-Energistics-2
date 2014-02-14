@@ -103,6 +103,11 @@ public class Platform
 	 */
 	static private Random rdnSrc = new Random();
 
+	public static Random getRandom()
+	{
+		return rdnSrc;
+	}
+
 	public static int getRandomInt()
 	{
 		return Math.abs( rdnSrc.nextInt() );
@@ -1445,4 +1450,5 @@ public class Platform
 	{
 		return false;
 	}
+
 }
