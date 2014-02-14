@@ -110,11 +110,13 @@ public class GridStorageCache implements IStorageGrid
 		for (ICellContainer cc : ll)
 		{
 			IGridNode node = cc.getActionableNode();
-
-			if ( node.isActive() )
-				addCell( node, cc );
-			else
-				rmvCell( node, cc );
+			if ( node != null )
+			{
+				if ( node.isActive() )
+					addCell( node, cc );
+				else
+					rmvCell( node, cc );
+			}
 		}
 
 		itemMonitor.forceUpdate();
