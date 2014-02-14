@@ -2,6 +2,7 @@ package appeng.parts.automation;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.concurrent.Callable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -18,6 +19,9 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.events.MENetworkChannelsChanged;
+import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStorageGrid;
@@ -32,6 +36,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.AELog;
 import appeng.core.sync.packets.PacketTransitionEffect;
+import appeng.helpers.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.parts.PartBasicState;
 import appeng.server.ServerHelper;
@@ -40,7 +45,7 @@ import appeng.util.item.AEItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PartAnnihilationPlane extends PartBasicState implements IGridTickable
+public class PartAnnihilationPlane extends PartBasicState implements IGridTickable, Callable
 {
 
 	public PartAnnihilationPlane(ItemStack is) {
@@ -156,6 +161,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		return 1;
 	}
 
+	boolean breaking = false;
 	LinkedList<IAEItemStack> Buffer = new LinkedList();
 	BaseActionSource mySrc = new MachineSource( this );
 
@@ -194,7 +200,19 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		return Buffer.isEmpty();
 	}
 
-	public TickRateModulation EatBlock()
+	@MENetworkEventSubscribe
+	public void chanRender(MENetworkChannelsChanged c)
+	{
+		onNeighborChanged();
+	}
+
+	@MENetworkEventSubscribe
+	public void powerRender(MENetworkPowerStatusChange c)
+	{
+		onNeighborChanged();
+	}
+
+	public TickRateModulation EatBlock(boolean eatForReal)
 	{
 		if ( isAccepting() && proxy.isActive() )
 		{
@@ -231,29 +249,36 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 							boolean hasPower = energy.extractAEPower( total, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > total - 0.1;
 							if ( hasPower )
 							{
-								w.setBlock( x, y, z, Platform.air, 0, 3 );
-
-								try
+								if ( eatForReal )
 								{
-									ServerHelper.proxy.sendToAllNearExcept( null, x, y, z, 64, w, new PacketTransitionEffect( x, y, z, side, true ) );
+									energy.extractAEPower( total, Actionable.MODULATE, PowerMultiplier.CONFIG );
+									w.setBlock( x, y, z, Platform.air, 0, 3 );
+
+									try
+									{
+										ServerHelper.proxy.sendToAllNearExcept( null, x, y, z, 64, w, new PacketTransitionEffect( x, y, z, side, true ) );
+									}
+									catch (IOException e)
+									{
+										AELog.error( e );
+									}
+
+									for (ItemStack is : out)
+									{
+										IAEItemStack storedItem = AEItemStack.create( is );
+										storedItem = Platform.poweredInsert( energy, storage.getItemInventory(), storedItem, mySrc );
+										if ( storedItem != null )
+											Buffer.add( storedItem );
+									}
+
+									return TickRateModulation.URGENT;
 								}
-								catch (IOException e)
+								else
 								{
-									AELog.error( e );
+									breaking = true;
+									TickHandler.instance.addCallable( this );
+									return TickRateModulation.URGENT;
 								}
-
-								for (ItemStack is : out)
-								{
-									IAEItemStack storedItem = AEItemStack.create( is );
-									storedItem = Platform.poweredInsert( energy, storage.getItemInventory(), storedItem, mySrc );
-									if ( storedItem != null )
-										Buffer.add( storedItem );
-								}
-
-								if ( isAccepting() )
-									return TickRateModulation.URGENT; // tick again in a sec..
-
-								return TickRateModulation.IDLE;
 							}
 						}
 					}
@@ -351,8 +376,11 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	@Override
 	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
 	{
+		if ( breaking )
+			return TickRateModulation.URGENT;
+
 		if ( isAccepting() )
-			return EatBlock();
+			return EatBlock( false );
 		else
 		{
 			storeBuffer();
@@ -382,6 +410,13 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		{
 			// :P
 		}
+	}
+
+	@Override
+	public Object call() throws Exception
+	{
+		breaking = false;
+		return EatBlock( true );
 	}
 
 }
