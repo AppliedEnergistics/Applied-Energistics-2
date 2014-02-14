@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.client.ClientHelper;
 import appeng.client.render.effects.EnergyFx;
+import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
@@ -47,20 +48,21 @@ public class PacketTransitionEffect extends AppEngPacket
 		World world = ClientHelper.proxy.getWorld();
 
 		for (int zz = 0; zz < (mode ? 32 : 8); zz++)
-		{
-			EnergyFx fx = new EnergyFx( world, x + (mode ? (Platform.getRandomInt() % 100) * 0.01 : (Platform.getRandomInt() % 100) * 0.005 - 0.25), y
-					+ (mode ? (Platform.getRandomInt() % 100) * 0.01 : (Platform.getRandomInt() % 100) * 0.005 - 0.25), z
-					+ (mode ? (Platform.getRandomInt() % 100) * 0.01 : (Platform.getRandomInt() % 100) * 0.005 - 0.25), Items.diamond );
+			if ( CommonHelper.proxy.shouldAddParticles( Platform.getRandom() ) )
+			{
+				EnergyFx fx = new EnergyFx( world, x + (mode ? (Platform.getRandomInt() % 100) * 0.01 : (Platform.getRandomInt() % 100) * 0.005 - 0.25), y
+						+ (mode ? (Platform.getRandomInt() % 100) * 0.01 : (Platform.getRandomInt() % 100) * 0.005 - 0.25), z
+						+ (mode ? (Platform.getRandomInt() % 100) * 0.01 : (Platform.getRandomInt() % 100) * 0.005 - 0.25), Items.diamond );
 
-			if ( !mode )
-				fx.fromItem( d );
+				if ( !mode )
+					fx.fromItem( d );
 
-			fx.motionX = -0.1 * d.offsetX;
-			fx.motionY = -0.1 * d.offsetY;
-			fx.motionZ = -0.1 * d.offsetZ;
+				fx.motionX = -0.1 * d.offsetX;
+				fx.motionY = -0.1 * d.offsetY;
+				fx.motionZ = -0.1 * d.offsetZ;
 
-			Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
-		}
+				Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+			}
 
 		if ( mode )
 		{
