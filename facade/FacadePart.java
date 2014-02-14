@@ -331,9 +331,9 @@ public class FacadePart implements IFacadePart
 						}
 						catch (Throwable error)
 						{
+							GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0F );
 						}
 
-						GL11.glColor4f( 1, 1, 1, 1.0F );
 						Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
 						Tessellator.instance.setColorOpaque_F( 1, 1, 1 );
 						instance.setTexture( blk.getIcon( side.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ) );
@@ -342,7 +342,6 @@ public class FacadePart implements IFacadePart
 						instance.renderInventoryBox( renderer );
 
 						instance.setTexture( null );
-						GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0F );
 
 						return;
 					}
