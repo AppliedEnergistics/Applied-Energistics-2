@@ -2,6 +2,7 @@ package appeng.me.cache;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
@@ -35,7 +36,8 @@ public class GridStorageCache implements IStorageGrid
 
 	public SetMultimap<IAEStack, ItemWatcher> interests = HashMultimap.create();
 
-	final HashSet<ICellContainer> cellContainers = new HashSet();
+	final HashSet<ICellContainer> activeCellContainers = new HashSet();
+	final HashSet<ICellContainer> inactiveCellContainers = new HashSet();
 	final public IGrid myGrid;
 
 	private NetworkInventoryHandler<IAEItemStack> myItemNetwork;
@@ -57,15 +59,31 @@ public class GridStorageCache implements IStorageGrid
 		fluidMonitor.onTick();
 	}
 
-	@Override
-	public void removeNode(IGridNode node, IGridHost machine)
+	private void addCell(IGridNode node, ICellContainer cc)
 	{
-		if ( machine instanceof ICellContainer )
+		if ( node.isActive() && inactiveCellContainers.contains( cc ) )
 		{
-			ICellContainer cc = (ICellContainer) machine;
-			cellContainers.remove( cc );
+			inactiveCellContainers.remove( cc );
+			activeCellContainers.add( cc );
 
-			myGrid.postEvent( new MENetworkCellArrayUpdate() );
+			for (IMEInventoryHandler<IAEItemStack> h : cc.getCellArray( StorageChannel.ITEMS ))
+			{
+				postChanges( StorageChannel.ITEMS, 1, h.getAvailableItems( new ItemList<IAEItemStack>() ), new MachineSource( cc ) );
+			}
+
+			for (IMEInventoryHandler<IAEFluidStack> h : cc.getCellArray( StorageChannel.FLUIDS ))
+			{
+				postChanges( StorageChannel.FLUIDS, 1, h.getAvailableItems( new ItemList<IAEFluidStack>() ), new MachineSource( cc ) );
+			}
+		}
+	}
+
+	private void rmvCell(IGridNode node, ICellContainer cc)
+	{
+		if ( node.isActive() && activeCellContainers.contains( cc ) )
+		{
+			inactiveCellContainers.add( cc );
+			activeCellContainers.remove( cc );
 
 			for (IMEInventoryHandler<IAEItemStack> h : cc.getCellArray( StorageChannel.ITEMS ))
 			{
@@ -76,6 +94,43 @@ public class GridStorageCache implements IStorageGrid
 			{
 				postChanges( StorageChannel.FLUIDS, -1, h.getAvailableItems( new ItemList<IAEFluidStack>() ), new MachineSource( cc ) );
 			}
+		}
+	}
+
+	@MENetworkEventSubscribe
+	public void cellUpdate(MENetworkCellArrayUpdate ev)
+	{
+		myItemNetwork = null;
+		myFluidNetwork = null;
+
+		LinkedList<ICellContainer> ll = new LinkedList();
+		ll.addAll( inactiveCellContainers );
+		ll.addAll( activeCellContainers );
+
+		for (ICellContainer cc : ll)
+		{
+			IGridNode node = cc.getActionableNode();
+
+			if ( node.isActive() )
+				addCell( node, cc );
+			else
+				rmvCell( node, cc );
+		}
+
+		itemMonitor.forceUpdate();
+		fluidMonitor.forceUpdate();
+	}
+
+	@Override
+	public void removeNode(IGridNode node, IGridHost machine)
+	{
+		if ( machine instanceof ICellContainer )
+		{
+			ICellContainer cc = (ICellContainer) machine;
+
+			myGrid.postEvent( new MENetworkCellArrayUpdate() );
+			rmvCell( node, cc );
+			inactiveCellContainers.remove( cc );
 		}
 
 		if ( machine instanceof IStackWatcherHost )
@@ -95,19 +150,10 @@ public class GridStorageCache implements IStorageGrid
 		if ( machine instanceof ICellContainer )
 		{
 			ICellContainer cc = (ICellContainer) machine;
-			cellContainers.add( cc );
+			inactiveCellContainers.add( cc );
 
 			myGrid.postEvent( new MENetworkCellArrayUpdate() );
-
-			for (IMEInventoryHandler<IAEItemStack> h : cc.getCellArray( StorageChannel.ITEMS ))
-			{
-				postChanges( StorageChannel.ITEMS, 1, h.getAvailableItems( new ItemList<IAEItemStack>() ), new MachineSource( cc ) );
-			}
-
-			for (IMEInventoryHandler<IAEFluidStack> h : cc.getCellArray( StorageChannel.FLUIDS ))
-			{
-				postChanges( StorageChannel.FLUIDS, 1, h.getAvailableItems( new ItemList<IAEFluidStack>() ), new MachineSource( cc ) );
-			}
+			addCell( node, cc );
 		}
 
 		if ( machine instanceof IStackWatcherHost )
@@ -127,7 +173,7 @@ public class GridStorageCache implements IStorageGrid
 		{
 		case FLUIDS:
 			myFluidNetwork = new NetworkInventoryHandler<IAEFluidStack>( StorageChannel.FLUIDS, security );
-			for (ICellContainer cc : cellContainers)
+			for (ICellContainer cc : activeCellContainers)
 			{
 				for (IMEInventoryHandler<IAEFluidStack> h : cc.getCellArray( chan ))
 					myFluidNetwork.addNewStorage( h );
@@ -135,7 +181,7 @@ public class GridStorageCache implements IStorageGrid
 			break;
 		case ITEMS:
 			myItemNetwork = new NetworkInventoryHandler<IAEItemStack>( StorageChannel.ITEMS, security );
-			for (ICellContainer cc : cellContainers)
+			for (ICellContainer cc : activeCellContainers)
 			{
 				for (IMEInventoryHandler<IAEItemStack> h : cc.getCellArray( chan ))
 					myItemNetwork.addNewStorage( h );
@@ -175,16 +221,6 @@ public class GridStorageCache implements IStorageGrid
 			break;
 		default:
 		}
-	}
-
-	@MENetworkEventSubscribe
-	public void cellUpdate(MENetworkCellArrayUpdate ev)
-	{
-		myItemNetwork = null;
-		myFluidNetwork = null;
-
-		itemMonitor.forceUpdate();
-		fluidMonitor.forceUpdate();
 	}
 
 	public IMEInventoryHandler<IAEItemStack> getItemInventoryHandler()

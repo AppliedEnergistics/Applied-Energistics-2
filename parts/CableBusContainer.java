@@ -643,8 +643,6 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 
 	public void readFromNBT(NBTTagCompound data)
 	{
-		fc.readFromNBT( data );
-
 		for (int x = 0; x < 7; x++)
 		{
 			ForgeDirection side = ForgeDirection.getOrientation( x );
@@ -678,6 +676,8 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 			else
 				removePart( side, false );
 		}
+
+		fc.readFromNBT( data );
 	}
 
 	public List getDrops(List drops)
