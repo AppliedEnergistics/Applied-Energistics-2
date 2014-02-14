@@ -6,6 +6,7 @@ import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
+import appeng.parts.automation.PartAnnihilationPlane;
 import appeng.parts.automation.PartExportBus;
 import appeng.parts.automation.PartImportBus;
 import appeng.parts.automation.PartLevelEmitter;
@@ -61,7 +62,7 @@ public enum PartType
 
 	LevelEmitter(AEFeature.LevelEmiter, PartLevelEmitter.class),
 
-	// AnnihilationPlane(AEFeature.AnnihilationPlane, PartAnnihilationPlane.class),
+	AnnihilationPlane(AEFeature.AnnihilationPlane, PartAnnihilationPlane.class),
 
 	// FormationPlane(AEFeature.FormationPlane, PartFormationPlane.class),
 

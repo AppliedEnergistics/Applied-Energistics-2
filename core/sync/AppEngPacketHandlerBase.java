@@ -16,6 +16,7 @@ import appeng.core.sync.packets.PacketMockExplosion;
 import appeng.core.sync.packets.PacketMultiPart;
 import appeng.core.sync.packets.PacketPartPlacement;
 import appeng.core.sync.packets.PacketSwitchGuis;
+import appeng.core.sync.packets.PacketTransitionEffect;
 import appeng.core.sync.packets.PacketValueConfig;
 
 public class AppEngPacketHandlerBase
@@ -42,6 +43,8 @@ public class AppEngPacketHandlerBase
 		PACKET_MOCKEXPLOSION(PacketMockExplosion.class),
 
 		PACKET_VALUE_CONFIG(PacketValueConfig.class),
+
+		PACKET_TRANSITION_EFFECT(PacketTransitionEffect.class),
 
 		PACKET_SWITCH_GUIS(PacketSwitchGuis.class);
 

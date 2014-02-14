@@ -1,19 +1,46 @@
 package appeng.parts.automation;
 
+import java.io.IOException;
+import java.util.LinkedList;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.client.texture.CableBusTextures;
+import appeng.core.AELog;
+import appeng.core.sync.packets.PacketTransitionEffect;
+import appeng.me.GridAccessException;
 import appeng.parts.PartBasicState;
+import appeng.server.ServerHelper;
+import appeng.util.Platform;
+import appeng.util.item.AEItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PartAnnihilationPlane extends PartBasicState
+public class PartAnnihilationPlane extends PartBasicState implements IGridTickable
 {
 
 	public PartAnnihilationPlane(ItemStack is) {
@@ -120,13 +147,241 @@ public class PartAnnihilationPlane extends PartBasicState
 			maxY = 16;
 
 		bch.addBox( 5, 5, 14, 11, 11, 15 );
-		bch.addBox( minX, minY, 15, maxX, maxY, 16 );
+		bch.addBox( minX, minY, 15, maxX, maxY, bch.isBBCollision() ? 15 : 16 );
 	}
 
 	@Override
 	public int cableConnectionRenderTo()
 	{
 		return 1;
+	}
+
+	LinkedList<IAEItemStack> Buffer = new LinkedList();
+	BaseActionSource mySrc = new MachineSource( this );
+
+	@Override
+	public void writeToNBT(NBTTagCompound data)
+	{
+		super.writeToNBT( data );
+
+		data.setInteger( "bufferSize", Buffer.size() );
+		for (int x = 0; x < Buffer.size(); x++)
+		{
+			NBTTagCompound pack = new NBTTagCompound();
+			Buffer.get( x ).writeToNBT( pack );
+			data.setTag( "buffer" + x, pack );
+		}
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound data)
+	{
+		super.readFromNBT( data );
+
+		int size = data.getInteger( "bufferSize" );
+		Buffer.clear();
+		for (int x = 0; x < size; x++)
+		{
+			NBTTagCompound pack = (NBTTagCompound) data.getTag( "buffer" + x );
+			IAEItemStack ais = AEItemStack.loadItemStackFromNBT( pack );
+			if ( ais != null )
+				Buffer.add( ais );
+		}
+	}
+
+	private boolean isAccepting()
+	{
+		return Buffer.isEmpty();
+	}
+
+	public TickRateModulation EatBlock()
+	{
+		if ( isAccepting() && proxy.isActive() )
+		{
+			try
+			{
+				TileEntity te = getTile();
+				WorldServer w = (WorldServer) te.getWorldObj();
+
+				int x = te.xCoord + side.offsetX;
+				int y = te.yCoord + side.offsetY;
+				int z = te.zCoord + side.offsetZ;
+
+				Block blk = w.getBlock( x, y, z );
+
+				IStorageGrid storage = (IStorageGrid) proxy.getStorage();
+				IEnergyGrid energy = (IEnergyGrid) proxy.getEnergy();
+
+				Material mat = blk.getMaterial();
+				boolean ignore = mat == Material.air || mat == Material.lava || mat == Material.water || mat.isLiquid() || blk == Blocks.bedrock
+						|| blk == Blocks.end_portal || blk == Blocks.end_portal_frame || blk == Blocks.command_block;
+
+				if ( !ignore )
+				{
+					if ( !w.isAirBlock( x, y, z ) && w.blockExists( x, y, z ) && blk != null && w.canMineBlock( Platform.getPlayer( w ), x, y, z ) )
+					{
+						float hardness = blk.getBlockHardness( w, x, y, z );
+						if ( hardness >= 0.0 )
+						{
+							ItemStack[] out = Platform.getBlockDrops( w, x, y, z );
+							float total = 1 + hardness;
+							for (ItemStack is : out)
+								total += is.stackSize;
+
+							boolean hasPower = energy.extractAEPower( total, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > total - 0.1;
+							if ( hasPower )
+							{
+								w.setBlock( x, y, z, Platform.air, 0, 3 );
+
+								try
+								{
+									ServerHelper.proxy.sendToAllNearExcept( null, x, y, z, 64, w, new PacketTransitionEffect( x, y, z, side, true ) );
+								}
+								catch (IOException e)
+								{
+									AELog.error( e );
+								}
+
+								for (ItemStack is : out)
+								{
+									IAEItemStack storedItem = AEItemStack.create( is );
+									storedItem = Platform.poweredInsert( energy, storage.getItemInventory(), storedItem, mySrc );
+									if ( storedItem != null )
+										Buffer.add( storedItem );
+								}
+
+								if ( isAccepting() )
+									return TickRateModulation.URGENT; // tick again in a sec..
+
+								return TickRateModulation.IDLE;
+							}
+						}
+					}
+				}
+			}
+			catch (GridAccessException e1)
+			{
+				// :P
+			}
+		}
+
+		// nothing to do here :)
+		return TickRateModulation.SLEEP;
+	}
+
+	@Override
+	public TickingRequest getTickingRequest(IGridNode node)
+	{
+		return new TickingRequest( 2, 120, false, true );
+	}
+
+	@Override
+	public void onNeighborChanged()
+	{
+		try
+		{
+			proxy.getTick().alertDevice( proxy.getNode() );
+		}
+		catch (GridAccessException e)
+		{
+			// :P
+		}
+	}
+
+	@Override
+	public void onEntityCollision(Entity entity)
+	{
+		if ( entity instanceof EntityItem && !entity.isDead && isAccepting() )
+		{
+			boolean capture = false;
+
+			switch (side)
+			{
+			case DOWN:
+			case UP:
+				if ( entity.posX > tile.xCoord && entity.posX < tile.xCoord + 1 )
+					if ( entity.posZ > tile.zCoord && entity.posZ < tile.zCoord + 1 )
+						if ( (entity.posY > tile.yCoord + 0.9 && side == ForgeDirection.UP) || (entity.posY < tile.yCoord + 0.1 && side == ForgeDirection.DOWN) )
+							capture = true;
+				break;
+			case SOUTH:
+			case NORTH:
+				if ( entity.posX > tile.xCoord && entity.posX < tile.xCoord + 1 )
+					if ( entity.posY > tile.yCoord && entity.posY < tile.yCoord + 1 )
+						if ( (entity.posZ > tile.zCoord + 0.9 && side == ForgeDirection.SOUTH)
+								|| (entity.posZ < tile.zCoord + 0.1 && side == ForgeDirection.NORTH) )
+							capture = true;
+				break;
+			case EAST:
+			case WEST:
+				if ( entity.posZ > tile.zCoord && entity.posZ < tile.zCoord + 1 )
+					if ( entity.posY > tile.yCoord && entity.posY < tile.yCoord + 1 )
+						if ( (entity.posX > tile.xCoord + 0.9 && side == ForgeDirection.EAST)
+								|| (entity.posX < tile.xCoord + 0.1 && side == ForgeDirection.WEST) )
+							capture = true;
+				break;
+			default:
+				// umm?
+				break;
+			}
+
+			if ( capture && Platform.isServer() )
+			{
+				IAEItemStack stack = AEItemStack.create( ((EntityItem) entity).getEntityItem() );
+				if ( stack != null )
+				{
+					try
+					{
+						ServerHelper.proxy.sendToAllNearExcept( null, tile.xCoord, tile.yCoord, tile.zCoord, 64, tile.getWorldObj(),
+								new PacketTransitionEffect( entity.posX, entity.posY, entity.posZ, side, false ) );
+					}
+					catch (IOException e)
+					{
+						AELog.error( e );
+					}
+
+					Buffer.add( stack );
+					storeBuffer();
+					entity.setDead();
+				}
+			}
+		}
+	}
+
+	@Override
+	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
+	{
+		if ( isAccepting() )
+			return EatBlock();
+		else
+		{
+			storeBuffer();
+			return TickRateModulation.IDLE;
+		}
+	}
+
+	private void storeBuffer()
+	{
+		try
+		{
+			IStorageGrid storage = (IStorageGrid) proxy.getStorage();
+			IEnergyGrid energy = (IEnergyGrid) proxy.getEnergy();
+
+			while (!Buffer.isEmpty())
+			{
+				IAEItemStack storedItem = Buffer.pop();
+				storedItem = Platform.poweredInsert( energy, storage.getItemInventory(), storedItem, mySrc );
+				if ( storedItem != null )
+				{
+					Buffer.add( storedItem );
+					break;
+				}
+			}
+		}
+		catch (GridAccessException e1)
+		{
+			// :P
+		}
 	}
 
 }
