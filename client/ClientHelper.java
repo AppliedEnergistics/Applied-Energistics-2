@@ -109,9 +109,10 @@ public class ClientHelper extends ServerHelper
 	@Override
 	public boolean shouldAddParticles(Random r)
 	{
-		if ( Minecraft.getMinecraft().gameSettings.particleSetting == 0 )
+		int setting = Minecraft.getMinecraft().gameSettings.particleSetting;
+		if ( setting == 0 )
 			return true;
-		return r.nextInt( Minecraft.getMinecraft().gameSettings.particleSetting ) == 0;
+		return r.nextInt( 2 * (setting + 1) ) == 0;
 	}
 
 }
