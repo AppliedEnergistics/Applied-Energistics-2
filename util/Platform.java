@@ -347,7 +347,10 @@ public class Platform
 
 				List<NBTBase> tag = tagList( lA );
 				List<NBTBase> aTag = tagList( lB );
-				for (int x = 0; x < lA.tagCount(); x++)
+				if ( tag.size() != aTag.size() )
+					return false;
+
+				for (int x = 0; x < tag.size(); x++)
 				{
 					if ( aTag.get( x ) == null )
 						return false;
@@ -398,7 +401,15 @@ public class Platform
 			}
 			catch (Throwable t)
 			{
-				AELog.error( t );
+				try
+				{
+					tagList = lB.getClass().getDeclaredField( "field_74747_a" );
+				}
+				catch (Throwable z)
+				{
+					AELog.error( t );
+					AELog.error( z );
+				}
 			}
 		}
 
