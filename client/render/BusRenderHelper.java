@@ -11,6 +11,7 @@ import appeng.api.AEApi;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.ISimplifiedBundle;
 import appeng.block.AEBaseBlock;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -112,23 +113,38 @@ public class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void useSimpliedRendering(int x, int y, int z, IPart p)
+	public ISimplifiedBundle useSimpliedRendering(int x, int y, int z, IPart p, ISimplifiedBundle sim)
 	{
 		RenderBlocksWorkaround rbw = BusRenderer.instance.renderer;
-		rbw.calculations = true;
-		rbw.faces.clear();
 
-		bbc.started = false;
-		p.getBoxes( bbc );
+		if ( sim != null && rbw.similarLighting( blk, rbw.blockAccess, x, y, z, sim ) )
+		{
+			rbw.populate( sim );
+			rbw.faces = EnumSet.allOf( ForgeDirection.class );
+			rbw.calculations = false;
+			rbw.useTextures = false;
 
-		setBounds( bbc.minX, bbc.minY, bbc.minZ, bbc.maxX, bbc.maxY, bbc.maxZ );
+			return sim;
+		}
+		else
+		{
+			rbw.calculations = true;
+			rbw.faces.clear();
 
-		bbr.renderBlockBounds( rbw, minX, minY, minZ, maxX, maxY, maxZ, ax, ay, az );
-		rbw.renderStandardBlock( blk, x, y, z );
+			bbc.started = false;
+			p.getBoxes( bbc );
 
-		rbw.faces = EnumSet.allOf( ForgeDirection.class );
-		rbw.calculations = false;
-		rbw.useTextures = false;
+			setBounds( bbc.minX, bbc.minY, bbc.minZ, bbc.maxX, bbc.maxY, bbc.maxZ );
+
+			bbr.renderBlockBounds( rbw, minX, minY, minZ, maxX, maxY, maxZ, ax, ay, az );
+			rbw.renderStandardBlock( blk, x, y, z );
+
+			rbw.faces = EnumSet.allOf( ForgeDirection.class );
+			rbw.calculations = false;
+			rbw.useTextures = false;
+
+			return rbw.getLightingCache();
+		}
 	}
 
 	@Override

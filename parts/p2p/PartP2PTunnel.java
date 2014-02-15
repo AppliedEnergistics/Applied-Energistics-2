@@ -285,7 +285,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		rh.useSimpliedRendering( x, y, z, this );
+		renderCache = rh.useSimpliedRendering( x, y, z, this, renderCache );
 		rh.setTexture( getTypeTexture() );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );

@@ -98,7 +98,7 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		rh.useSimpliedRendering( x, y, z, this );
+		renderCache = rh.useSimpliedRendering( x, y, z, this, renderCache );
 		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
 				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 

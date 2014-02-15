@@ -1,13 +1,16 @@
 package appeng.client.render;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.EnumSet;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.parts.ISimplifiedBundle;
 import appeng.core.AELog;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -19,35 +22,112 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	public boolean calculations = true;
 	public EnumSet<ForgeDirection> faces = EnumSet.allOf( ForgeDirection.class );
 
-	private IIcon rXPos = null;
-	private IIcon rXNeg = null;
-	private IIcon rYPos = null;
-	private IIcon rYNeg = null;
-	private IIcon rZPos = null;
-	private IIcon rZNeg = null;
+	private class LightingCache implements ISimplifiedBundle
+	{
 
-	private boolean isAO = false;
+		public IIcon rXPos;
+		public IIcon rXNeg;
+		public IIcon rYPos;
+		public IIcon rYNeg;
+		public IIcon rZPos;
+		public IIcon rZNeg;
 
-	private int bXPos = 0;
-	private int bXNeg = 0;
-	private int bYPos = 0;
-	private int bYNeg = 0;
-	private int bZPos = 0;
-	private int bZNeg = 0;
+		public boolean isAO;
 
-	private int aoXPos[] = new int[5];
-	private int aoXNeg[] = new int[5];
-	private int aoYPos[] = new int[5];
-	private int aoYNeg[] = new int[5];
-	private int aoZPos[] = new int[5];
-	private int aoZNeg[] = new int[5];
+		public int bXPos;
+		public int bXNeg;
+		public int bYPos;
+		public int bYNeg;
+		public int bZPos;
+		public int bZNeg;
 
-	private float foXPos[] = new float[12];
-	private float foXNeg[] = new float[12];
-	private float foYPos[] = new float[12];
-	private float foYNeg[] = new float[12];
-	private float foZPos[] = new float[12];
-	private float foZNeg[] = new float[12];
+		public int aoXPos[];
+		public int aoXNeg[];
+		public int aoYPos[];
+		public int aoYNeg[];
+		public int aoZPos[];
+		public int aoZNeg[];
+
+		public float foXPos[];
+		public float foXNeg[];
+		public float foYPos[];
+		public float foYNeg[];
+		public float foZPos[];
+		public float foZNeg[];
+
+		public int lightHash;
+
+		public LightingCache(LightingCache secondCSrc) {
+			rXPos = secondCSrc.rXPos;
+			rXNeg = secondCSrc.rXNeg;
+			rYPos = secondCSrc.rYPos;
+			rYNeg = secondCSrc.rYNeg;
+			rZPos = secondCSrc.rZPos;
+			rZNeg = secondCSrc.rZNeg;
+
+			isAO = secondCSrc.isAO;
+
+			bXPos = secondCSrc.bXPos;
+			bXNeg = secondCSrc.bXNeg;
+			bYPos = secondCSrc.bYPos;
+			bYNeg = secondCSrc.bYNeg;
+			bZPos = secondCSrc.bZPos;
+			bZNeg = secondCSrc.bZNeg;
+
+			aoXPos = secondCSrc.aoXPos.clone();
+			aoXNeg = secondCSrc.aoXNeg.clone();
+			aoYPos = secondCSrc.aoYPos.clone();
+			aoYNeg = secondCSrc.aoYNeg.clone();
+			aoZPos = secondCSrc.aoZPos.clone();
+			aoZNeg = secondCSrc.aoZNeg.clone();
+
+			foXPos = secondCSrc.foXPos.clone();
+			foXNeg = secondCSrc.foXNeg.clone();
+			foYPos = secondCSrc.foYPos.clone();
+			foYNeg = secondCSrc.foYNeg.clone();
+			foZPos = secondCSrc.foZPos.clone();
+			foZNeg = secondCSrc.foZNeg.clone();
+
+			lightHash = secondCSrc.lightHash;
+		}
+
+		public LightingCache() {
+			rXPos = null;
+			rXNeg = null;
+			rYPos = null;
+			rYNeg = null;
+			rZPos = null;
+			rZNeg = null;
+
+			isAO = false;
+
+			bXPos = 0;
+			bXNeg = 0;
+			bYPos = 0;
+			bYNeg = 0;
+			bZPos = 0;
+			bZNeg = 0;
+
+			aoXPos = new int[5];
+			aoXNeg = new int[5];
+			aoYPos = new int[5];
+			aoYNeg = new int[5];
+			aoZPos = new int[5];
+			aoZNeg = new int[5];
+
+			foXPos = new float[12];
+			foXNeg = new float[12];
+			foYPos = new float[12];
+			foYNeg = new float[12];
+			foZPos = new float[12];
+			foZNeg = new float[12];
+
+			lightHash = 0;
+		}
+
+	};
+
+	private LightingCache lightState = new LightingCache();
 
 	public boolean isFacade = false;
 	public boolean useTextures = true;
@@ -105,44 +185,44 @@ public class RenderBlocksWorkaround extends RenderBlocks
 
 	public void setTexture(IIcon ico)
 	{
-		rXPos = rXNeg = rYPos = rYNeg = rZPos = rZNeg = ico;
+		lightState.rXPos = lightState.rXNeg = lightState.rYPos = lightState.rYNeg = lightState.rZPos = lightState.rZNeg = ico;
 	}
 
 	public void setTexture(IIcon rYNeg, IIcon rYPos, IIcon rZNeg, IIcon rZPos, IIcon rXNeg, IIcon rXPos)
 	{
-		this.rXPos = rXPos;
-		this.rXNeg = rXNeg;
-		this.rYPos = rYPos;
-		this.rYNeg = rYNeg;
-		this.rZPos = rZPos;
-		this.rZNeg = rZNeg;
+		lightState.rXPos = rXPos;
+		lightState.rXNeg = rXNeg;
+		lightState.rYPos = rYPos;
+		lightState.rYNeg = rYNeg;
+		lightState.rZPos = rZPos;
+		lightState.rZNeg = rZNeg;
 	}
 
 	public boolean renderStandardBlockNoCalculations(Block b, int x, int y, int z)
 	{
-		Tessellator.instance.setBrightness( bXPos );
-		restoreAO( aoXPos, foXPos );
-		renderFaceXPos( b, x, y, z, useTextures ? rXPos : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.EAST.ordinal() ) );
+		Tessellator.instance.setBrightness( lightState.bXPos );
+		restoreAO( lightState.aoXPos, lightState.foXPos );
+		renderFaceXPos( b, x, y, z, useTextures ? lightState.rXPos : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.EAST.ordinal() ) );
 
-		Tessellator.instance.setBrightness( bXNeg );
-		restoreAO( aoXNeg, foXNeg );
-		renderFaceXNeg( b, x, y, z, useTextures ? rXNeg : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.WEST.ordinal() ) );
+		Tessellator.instance.setBrightness( lightState.bXNeg );
+		restoreAO( lightState.aoXNeg, lightState.foXNeg );
+		renderFaceXNeg( b, x, y, z, useTextures ? lightState.rXNeg : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.WEST.ordinal() ) );
 
-		Tessellator.instance.setBrightness( bYPos );
-		restoreAO( aoYPos, foYPos );
-		renderFaceYPos( b, x, y, z, useTextures ? rYPos : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.UP.ordinal() ) );
+		Tessellator.instance.setBrightness( lightState.bYPos );
+		restoreAO( lightState.aoYPos, lightState.foYPos );
+		renderFaceYPos( b, x, y, z, useTextures ? lightState.rYPos : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.UP.ordinal() ) );
 
-		Tessellator.instance.setBrightness( bYNeg );
-		restoreAO( aoYNeg, foYNeg );
-		renderFaceYNeg( b, x, y, z, useTextures ? rYNeg : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.DOWN.ordinal() ) );
+		Tessellator.instance.setBrightness( lightState.bYNeg );
+		restoreAO( lightState.aoYNeg, lightState.foYNeg );
+		renderFaceYNeg( b, x, y, z, useTextures ? lightState.rYNeg : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.DOWN.ordinal() ) );
 
-		Tessellator.instance.setBrightness( bZPos );
-		restoreAO( aoZPos, foZPos );
-		renderFaceZPos( b, x, y, z, useTextures ? rZPos : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.SOUTH.ordinal() ) );
+		Tessellator.instance.setBrightness( lightState.bZPos );
+		restoreAO( lightState.aoZPos, lightState.foZPos );
+		renderFaceZPos( b, x, y, z, useTextures ? lightState.rZPos : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.SOUTH.ordinal() ) );
 
-		Tessellator.instance.setBrightness( bZNeg );
-		restoreAO( aoZNeg, foZNeg );
-		renderFaceZNeg( b, x, y, z, useTextures ? rZNeg : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.NORTH.ordinal() ) );
+		Tessellator.instance.setBrightness( lightState.bZNeg );
+		restoreAO( lightState.aoZNeg, lightState.foZNeg );
+		renderFaceZNeg( b, x, y, z, useTextures ? lightState.rZNeg : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.NORTH.ordinal() ) );
 
 		return true;
 	}
@@ -192,16 +272,19 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	@Override
-	public boolean renderStandardBlock(Block par1Block, int par2, int par3, int par4)
+	public boolean renderStandardBlock(Block blk, int x, int y, int z)
 	{
 		try
 		{
 			if ( calculations )
-				return super.renderStandardBlock( par1Block, par2, par3, par4 );
+			{
+				lightState.lightHash = getLightingHash( blk, this.blockAccess, x, y, z );
+				return super.renderStandardBlock( blk, x, y, z );
+			}
 			else
 			{
-				enableAO = isAO;
-				boolean out = renderStandardBlockNoCalculations( par1Block, par2, par3, par4 );
+				enableAO = lightState.isAO;
+				boolean out = renderStandardBlockNoCalculations( blk, x, y, z );
 				enableAO = false;
 				return out;
 			}
@@ -258,10 +341,10 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 		else
 		{
-			isAO = enableAO;
-			rXNeg = par8Icon;
-			saveAO( aoXNeg, foXNeg );
-			bXNeg = getCurrentBrightness();
+			lightState.isAO = enableAO;
+			lightState.rXNeg = par8Icon;
+			saveAO( lightState.aoXNeg, lightState.foXNeg );
+			lightState.bXNeg = getCurrentBrightness();
 		}
 	}
 
@@ -309,10 +392,10 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 		else
 		{
-			isAO = enableAO;
-			rXPos = par8Icon;
-			saveAO( aoXPos, foXPos );
-			bXPos = getCurrentBrightness();
+			lightState.isAO = enableAO;
+			lightState.rXPos = par8Icon;
+			saveAO( lightState.aoXPos, lightState.foXPos );
+			lightState.bXPos = getCurrentBrightness();
 		}
 	}
 
@@ -388,10 +471,10 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 		else
 		{
-			isAO = enableAO;
-			rYNeg = par8Icon;
-			saveAO( aoYNeg, foYNeg );
-			bYNeg = getCurrentBrightness();
+			lightState.isAO = enableAO;
+			lightState.rYNeg = par8Icon;
+			saveAO( lightState.aoYNeg, lightState.foYNeg );
+			lightState.bYNeg = getCurrentBrightness();
 		}
 	}
 
@@ -439,10 +522,10 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 		else
 		{
-			isAO = enableAO;
-			rYPos = par8Icon;
-			saveAO( aoYPos, foYPos );
-			bYPos = getCurrentBrightness();
+			lightState.isAO = enableAO;
+			lightState.rYPos = par8Icon;
+			saveAO( lightState.aoYPos, lightState.foYPos );
+			lightState.bYPos = getCurrentBrightness();
 		}
 	}
 
@@ -490,10 +573,10 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 		else
 		{
-			isAO = enableAO;
-			rZNeg = par8Icon;
-			saveAO( aoZNeg, foZNeg );
-			bZNeg = getCurrentBrightness();
+			lightState.isAO = enableAO;
+			lightState.rZNeg = par8Icon;
+			saveAO( lightState.aoZNeg, lightState.foZNeg );
+			lightState.bZNeg = getCurrentBrightness();
 		}
 	}
 
@@ -541,10 +624,41 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 		else
 		{
-			isAO = enableAO;
-			rZPos = par8Icon;
-			saveAO( aoZPos, foZPos );
-			bZPos = getCurrentBrightness();
+			lightState.isAO = enableAO;
+			lightState.rZPos = par8Icon;
+			saveAO( lightState.aoZPos, lightState.foZPos );
+			lightState.bZPos = getCurrentBrightness();
 		}
+	}
+
+	public boolean similarLighting(Block blk, IBlockAccess w, int x, int y, int z, ISimplifiedBundle sim)
+	{
+		int lh = getLightingHash( blk, w, x, y, z );
+		return ((LightingCache) sim).lightHash == lh;
+	}
+
+	int lightHashTmp[] = new int[7];
+
+	private int getLightingHash(Block blk, IBlockAccess w, int x, int y, int z)
+	{
+		lightHashTmp[0] = blk.getMixedBrightnessForBlock( this.blockAccess, x, y, z );
+		lightHashTmp[1] = blk.getMixedBrightnessForBlock( this.blockAccess, x + 1, y, z );
+		lightHashTmp[2] = blk.getMixedBrightnessForBlock( this.blockAccess, x, y + 1, z );
+		lightHashTmp[3] = blk.getMixedBrightnessForBlock( this.blockAccess, x, y, z + 1 );
+		lightHashTmp[4] = blk.getMixedBrightnessForBlock( this.blockAccess, x - 1, y, z );
+		lightHashTmp[5] = blk.getMixedBrightnessForBlock( this.blockAccess, x, y - 1, z );
+		lightHashTmp[6] = blk.getMixedBrightnessForBlock( this.blockAccess, x, y, z - 1 );
+
+		return Arrays.hashCode( lightHashTmp );
+	}
+
+	public void populate(ISimplifiedBundle sim)
+	{
+		lightState = new LightingCache( (LightingCache) sim );
+	}
+
+	public ISimplifiedBundle getLightingCache()
+	{
+		return new LightingCache( lightState );
 	}
 }

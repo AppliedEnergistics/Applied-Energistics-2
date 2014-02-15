@@ -23,6 +23,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.ISimplifiedBundle;
 import appeng.api.parts.PartItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -30,6 +31,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartCableAnchor implements IPart
 {
 
+	protected ISimplifiedBundle renderCache = null;
 	ItemStack is = null;
 	ForgeDirection mySide = ForgeDirection.UP;
 
@@ -41,6 +43,7 @@ public class PartCableAnchor implements IPart
 	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
+		renderCache = rh.useSimpliedRendering( x, y, z, this, renderCache );
 		IIcon myIcon = is.getIconIndex();
 		rh.setTexture( myIcon );
 		rh.setBounds( 7, 7, 10, 9, 9, 16 );

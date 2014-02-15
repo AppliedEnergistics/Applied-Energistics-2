@@ -28,6 +28,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.ISimplifiedBundle;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
@@ -42,6 +43,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradeableHost
 {
+
+	protected ISimplifiedBundle renderCache = null;
 
 	protected AENetworkProxy proxy;
 	protected TileEntity tile = null;
