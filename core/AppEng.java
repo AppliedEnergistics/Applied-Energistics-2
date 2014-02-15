@@ -75,7 +75,8 @@ public class AppEng
 			IntegrationSide.BOTH, "Universal Electricity", null, "UE", // UE
 			IntegrationSide.BOTH, "Logistics Pipes", "LogisticsPipes|Main", "LP", // LP
 			// IntegrationSide.CLIENT, "Inventory Tweaks", "", "InvTweaks",
-			IntegrationSide.BOTH, "Mine Factory Reloaded", "MineFactoryReloaded", "MFR", // MFR
+			// IntegrationSide.BOTH, "Mine Factory Reloaded", "MineFactoryReloaded", "MFR", // MFR
+			IntegrationSide.BOTH, "Deep Storage Unit", null, "DSU", // DSU
 			IntegrationSide.BOTH, "Better Storage", "betterstorage", "BS", // BS
 			IntegrationSide.BOTH, "Factorization", "factorization", "FZ", // FZ
 			IntegrationSide.BOTH, "Forestry", "Forestry", "Forestry", // Forestry
