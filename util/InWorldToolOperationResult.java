@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
 import net.minecraft.item.ItemStack;
 
 public class InWorldToolOperationResult
@@ -23,7 +24,7 @@ public class InWorldToolOperationResult
 			{
 				Block bl = Block.getBlockFromItem( l.getItem() );
 
-				if ( bl != null )
+				if ( bl != null && !(bl instanceof BlockAir) )
 				{
 					b = l;
 					continue;

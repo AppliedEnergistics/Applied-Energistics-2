@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockTNT;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,6 +20,7 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
+import appeng.block.misc.BlockTinyTNT;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
@@ -200,24 +202,38 @@ public class ToolEntropyManipulator extends AEBasePoweredItem
 			if ( !p.canPlayerEdit( x, y, z, side, item ) )
 				return false;
 
-			Block BlockID = w.getBlock( x, y, z );
+			Block Blk = w.getBlock( x, y, z );
 			int Metadata = w.getBlockMetadata( x, y, z );
 
 			if ( p.isSneaking() )
 			{
-				if ( canCool( BlockID, Metadata ) )
+				if ( canCool( Blk, Metadata ) )
 				{
 					extractAEPower( item, 1600 );
-					cool( BlockID, Metadata, w, x, y, z );
+					cool( Blk, Metadata, w, x, y, z );
 					return true;
 				}
 			}
 			else
 			{
-				if ( canHeat( BlockID, Metadata ) )
+				if ( Blk instanceof BlockTNT )
+				{
+					w.setBlock( x, y, z, Platform.air, 0, 3 );
+					((BlockTNT) Blk).func_150114_a( w, x, y, z, 1, p );
+					return true;
+				}
+
+				if ( Blk instanceof BlockTinyTNT )
+				{
+					w.setBlock( x, y, z, Platform.air, 0, 3 );
+					((BlockTinyTNT) Blk).startFuse( w, x, y, z, p );
+					return true;
+				}
+
+				if ( canHeat( Blk, Metadata ) )
 				{
 					extractAEPower( item, 1600 );
-					heat( BlockID, Metadata, w, x, y, z );
+					heat( Blk, Metadata, w, x, y, z );
 					return true;
 				}
 
@@ -234,7 +250,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem
 					{
 						if ( result.getItem() instanceof ItemBlock )
 						{
-							if ( Block.getBlockFromItem( (ItemBlock) result.getItem() ) == BlockID && result.getItem().getDamage( result ) == Metadata )
+							if ( Block.getBlockFromItem( (ItemBlock) result.getItem() ) == Blk && result.getItem().getDamage( result ) == Metadata )
 							{
 								canFurnaceable = false;
 							}
