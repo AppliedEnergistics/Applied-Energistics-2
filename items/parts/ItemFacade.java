@@ -116,6 +116,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem
 						b.getSubBlocks( item, b.getCreativeTabToDisplayOn(), tmpList );
 						for (ItemStack l : tmpList)
 						{
+							if ( l.hasTagCompound() )
+								continue;
+
 							ItemStack is = new ItemStack( this );
 							NBTTagCompound data = new NBTTagCompound();
 							int[] ds = new int[2];
