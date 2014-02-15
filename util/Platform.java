@@ -448,7 +448,7 @@ public class Platform
 			hash += 9 * lA.tagCount();
 
 			List<NBTBase> l = tagList( lA );
-			for (int x = 0; x < lA.tagCount(); x++)
+			for (int x = 0; x < l.size(); x++)
 			{
 				hash += NBTOrderlessHash( l.get( x ) );
 			}
