@@ -5,16 +5,18 @@ import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
-import appeng.core.CommonHelper;
 import appeng.core.AEConfig;
+import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.packets.PacketMockExplosion;
 import appeng.util.Platform;
@@ -97,9 +99,20 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 			return;
 		}
 
+		for (Object e : this.worldObj.getEntitiesWithinAABBExcludingEntity( this,
+				AxisAlignedBB.getBoundingBox( this.posX - 1.5, this.posY - 1.5f, this.posZ - 1.5, this.posX + 1.5, this.posY + 1.5, this.posZ + 1.5 ) ))
+		{
+			if ( e instanceof Entity )
+			{
+				((Entity) e).attackEntityFrom( DamageSource.setExplosionSource( null ), 6 );
+			}
+
+		}
+
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.TinyTNTBlockDamage ) )
 		{
 			posY -= 0.25;
+			Explosion ex = new Explosion( worldObj, this, posX, posY, posZ, 0.2f );
 
 			for (int x = (int) (posX - 2); x <= posX + 2; x++)
 			{
@@ -115,11 +128,20 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 
 							float resistance = block.getExplosionResistance( this, worldObj, x, y, z, posX, posY, posZ );
 							strength -= (resistance + 0.3F) * 0.11f;
+
 							if ( strength > 0.01 )
 							{
-								worldObj.func_147480_a( x, y, z, true );
-								// worldObj.destroyBlock( x, y, z, true );
+								if ( block.getMaterial() != Material.air )
+								{
+									if ( block.canDropFromExplosion( ex ) )
+									{
+										block.dropBlockAsItemWithChance( this.worldObj, x, y, z, this.worldObj.getBlockMetadata( x, y, z ), 1.0F / 1.0f, 0 );
+									}
+
+									block.onBlockExploded( this.worldObj, x, y, z, ex );
+								}
 							}
+
 						}
 					}
 				}
@@ -132,16 +154,6 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 		}
 		catch (IOException e1)
 		{
-		}
-
-		for (Object e : this.worldObj.getEntitiesWithinAABBExcludingEntity( this,
-				AxisAlignedBB.getBoundingBox( this.posX - 1.5, this.posY - 1.5f, this.posZ - 1.5, this.posX + 1.5, this.posY + 1.5, this.posZ + 1.5 ) ))
-		{
-			if ( e instanceof Entity )
-			{
-				((Entity) e).attackEntityFrom( DamageSource.setExplosionSource( null ), 6 );
-			}
-
 		}
 	}
 
