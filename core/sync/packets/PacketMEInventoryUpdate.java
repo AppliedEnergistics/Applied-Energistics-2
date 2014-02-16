@@ -46,7 +46,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		compressFrame = null;
 		list = new LinkedList();
 
-		int originalBytes = stream.readableBytes();
+		// int originalBytes = stream.readableBytes();
 
 		GZIPInputStream gzReader = new GZIPInputStream( new InputStream() {
 
@@ -71,7 +71,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		}
 		gzReader.close();
 
-		int uncompesssedBytes = uncompesssed.readableBytes();
+		// int uncompesssedBytes = uncompesssed.readableBytes();
 		// AELog.info( "Recv: " + originalBytes + " -> " + uncompesssedBytes );
 
 		while (uncompesssed.readableBytes() > 0)
