@@ -8,6 +8,7 @@ import net.minecraftforge.common.config.Property;
 import appeng.api.config.CondenserOuput;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
+import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -116,6 +117,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		settings.registerSetting( Settings.SEARCH_TOOLTIPS, YesNo.YES );
 		settings.registerSetting( Settings.SORT_BY, SortOrder.NAME );
 		settings.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
+		settings.registerSetting( Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH );
 
 		WirelessBaseCost = get( "wireless", "WirelessBaseCost", WirelessBaseCost ).getDouble( WirelessBaseCost );
 		WirelessCostMultiplier = get( "wireless", "WirelessCostMultiplier", WirelessCostMultiplier ).getDouble( WirelessCostMultiplier );
@@ -232,4 +234,27 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		return false;
 	}
 
+	public Enum getSetting(String Category, Class<? extends Enum> class1, Enum myDefault)
+	{
+		String name = class1.getSimpleName();
+		Property p = get( Category, name, myDefault.name() );
+
+		try
+		{
+			return (Enum) class1.getField( p.toString() ).get( class1 );
+		}
+		catch (Throwable t)
+		{
+			// :{
+		}
+
+		return myDefault;
+	}
+
+	public void setSetting(String Category, Enum s)
+	{
+		String name = s.getClass().getSimpleName();
+		get( Category, name, s.name() ).set( s.name() );
+		save();
+	}
 }

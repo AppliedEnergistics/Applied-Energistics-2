@@ -3,8 +3,8 @@ package appeng.client.gui.implementations;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
+import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.tiles.IMEChest;
@@ -14,6 +14,7 @@ import appeng.client.gui.AEBaseMEGui;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.ISortSource;
+import appeng.client.gui.widgets.MEGuiTextField;
 import appeng.client.me.InternalSlotME;
 import appeng.client.me.ItemRepo;
 import appeng.container.implementations.ContainerMEMonitorable;
@@ -28,7 +29,7 @@ import appeng.util.Platform;
 public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource
 {
 
-	GuiTextField searchField;
+	MEGuiTextField searchField;
 	ItemRepo repo;
 
 	GuiText myName;
@@ -81,6 +82,12 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource
 		myScrollBar.setRange( 0, (repo.size() + perRow - 1) / perRow - rows, Math.max( 1, rows / 6 ) );
 	}
 
+	public void re_init()
+	{
+		this.buttonList.clear();
+		this.initGui();
+	}
+
 	@Override
 	public void initGui()
 	{
@@ -121,15 +128,21 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource
 			offset += 20;
 		}
 
-		buttonList.add( new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, AEConfig.instance.settings
-				.getSetting( Settings.SORT_DIRECTION ) ) );
+		buttonList
+				.add( new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, AEConfig.instance.settings.getSetting( Settings.SORT_DIRECTION ) ) );
+		offset += 20;
 
-		searchField = new GuiTextField( fontRendererObj, this.guiLeft + Math.max( 82, xoffset ), this.guiTop + 6, 89, fontRendererObj.FONT_HEIGHT );
+		buttonList.add( new GuiImgButton( this.guiLeft - 18, offset, Settings.SEARCH_MODE, AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE ) ) );
+
+		searchField = new MEGuiTextField( fontRendererObj, this.guiLeft + Math.max( 82, xoffset ), this.guiTop + 6, 89, fontRendererObj.FONT_HEIGHT );
 		searchField.setEnableBackgroundDrawing( false );
 		searchField.setMaxStringLength( 25 );
 		searchField.setTextColor( 0xFFFFFF );
 		searchField.setVisible( true );
-		searchField.setFocused( true );
+
+		// Enum setting = AEConfig.instance.getSetting( "Terminal", SearchBoxMode.class, SearchBoxMode.AUTOSEARCH );
+		Enum setting = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
+		searchField.setFocused( SearchBoxMode.AUTOSEARCH == setting || SearchBoxMode.NEI_AUTOSEARCH == setting );
 
 		setScrollBar();
 
@@ -155,7 +168,27 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource
 			AEConfig.instance.settings.putSetting( iBtn.getSetting(), next );
 			iBtn.set( next );
 			repo.updateView();
+
+			if ( next.getClass() == SearchBoxMode.class )
+				re_init();
 		}
+	}
+
+	@Override
+	protected void mouseClicked(int xCoord, int yCoord, int btn)
+	{
+		Enum setting = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
+		if ( !(SearchBoxMode.AUTOSEARCH == setting || SearchBoxMode.NEI_AUTOSEARCH == setting) )
+			searchField.mouseClicked( xCoord, yCoord, btn );
+
+		if ( btn == 1 && searchField.isMouseIn( xCoord, yCoord ) )
+		{
+			searchField.setText( "" );
+			repo.searchString = "";
+			repo.updateView();
+		}
+
+		super.mouseClicked( xCoord, yCoord, btn );
 	}
 
 	@Override
@@ -190,7 +223,8 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource
 
 		this.drawTexturedModalRect( offsetX, offsetY + 16 + rows * 18 + lowerTextureOffset, 0, 106 - 18 - 18, x_width, 99 + reservedSpace - lowerTextureOffset );
 
-		searchField.drawTextBox();
+		if ( searchField != null )
+			searchField.drawTextBox();
 	}
 
 	protected String getBackground()
