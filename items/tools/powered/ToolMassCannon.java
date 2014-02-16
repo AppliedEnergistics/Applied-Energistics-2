@@ -28,9 +28,9 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.CommonHelper;
-import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
@@ -204,7 +204,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 									{
 										EntityLivingBase el = (EntityLivingBase) pos.entityHit;
 										penitration -= dmg;
-										el.knockBack( p, 0, (double) f7 * d3, (double) f8 * d3 );
+										el.knockBack( p, 0, (double) -f7 * d3, (double) -f8 * d3 );
 										// el.knockBack( p, 0, vec3.xCoord,
 										// vec3.zCoord );
 										el.attackEntityFrom( dmgSrc, dmg );
