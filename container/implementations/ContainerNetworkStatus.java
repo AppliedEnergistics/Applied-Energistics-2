@@ -18,8 +18,10 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
+import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
+import appeng.core.sync.packets.PacketProgressBar;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import cpw.mods.fml.relauncher.Side;
@@ -110,10 +112,17 @@ public class ContainerNetworkStatus extends AEBaseContainer
 				for (Object c : this.crafters)
 				{
 					ICrafting icrafting = (ICrafting) c;
-					icrafting.sendProgressBarUpdate( this, 0, (int) lo_avgAddition );
-					icrafting.sendProgressBarUpdate( this, 1, (int) hi_avgAddition );
-					icrafting.sendProgressBarUpdate( this, 2, (int) lo_powerUsage );
-					icrafting.sendProgressBarUpdate( this, 3, (int) hi_powerUsage );
+					try
+					{
+						NetworkHandler.instance.sendTo( new PacketProgressBar( 0, (int) lo_avgAddition ), (EntityPlayerMP) icrafting );
+						NetworkHandler.instance.sendTo( new PacketProgressBar( 1, (int) hi_avgAddition ), (EntityPlayerMP) icrafting );
+						NetworkHandler.instance.sendTo( new PacketProgressBar( 2, (int) lo_powerUsage ), (EntityPlayerMP) icrafting );
+						NetworkHandler.instance.sendTo( new PacketProgressBar( 3, (int) hi_powerUsage ), (EntityPlayerMP) icrafting );
+					}
+					catch (IOException e)
+					{
+						AELog.error( e );
+					}
 				}
 			}
 

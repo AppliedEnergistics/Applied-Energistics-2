@@ -1,7 +1,10 @@
 package appeng.container.implementations;
 
+import java.io.IOException;
+
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
@@ -12,6 +15,9 @@ import appeng.api.config.Settings;
 import appeng.container.slot.SlotFakeTypeOnly;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
+import appeng.core.AELog;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketProgressBar;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
@@ -101,7 +107,15 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 
 				if ( this.EmitterValue != lvlEmitter.getReportingValue() )
 				{
-					icrafting.sendProgressBarUpdate( this, 2, (int) lvlEmitter.getReportingValue() );
+					try
+					{
+						NetworkHandler.instance.sendTo( new PacketProgressBar( 2, (int) lvlEmitter.getReportingValue() ), (EntityPlayerMP) icrafting );
+					}
+					catch (IOException e)
+					{
+						AELog.error( e );
+					}
+					// icrafting.sendProgressBarUpdate( this, 2, (int) lvlEmitter.getReportingValue() );
 				}
 			}
 

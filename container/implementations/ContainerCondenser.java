@@ -1,5 +1,7 @@
 package appeng.container.implementations;
 
+import java.io.IOException;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
@@ -9,6 +11,9 @@ import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
+import appeng.core.AELog;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketProgressBar;
 import appeng.tile.misc.TileCondenser;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
@@ -51,13 +56,27 @@ public class ContainerCondenser extends AEBaseContainer
 
 				if ( this.requiredEnergy != maxDisplay )
 				{
-					icrafting.sendProgressBarUpdate( this, 0, (int) maxDisplay );
+					try
+					{
+						NetworkHandler.instance.sendTo( new PacketProgressBar( 0, (int) maxDisplay ), (EntityPlayerMP) icrafting );
+					}
+					catch (IOException e)
+					{
+						AELog.error( e );
+					}
 					changed = true;
 				}
 
 				if ( this.storedPower != this.myte.storedPower )
 				{
-					icrafting.sendProgressBarUpdate( this, 1, (int) this.myte.storedPower );
+					try
+					{
+						NetworkHandler.instance.sendTo( new PacketProgressBar( 1, (int) this.myte.storedPower ), (EntityPlayerMP) icrafting );
+					}
+					catch (IOException e)
+					{
+						AELog.error( e );
+					}
 					changed = true;
 				}
 

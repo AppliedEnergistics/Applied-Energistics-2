@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.lang.reflect.InvocationTargetException;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
@@ -18,6 +19,8 @@ public class AppEngClientPacketHandler extends AppEngPacketHandlerBase implement
 	{
 		ByteBuf stream = packet.payload();
 		int packetType = -1;
+
+		player = Minecraft.getMinecraft().thePlayer;
 
 		try
 		{
