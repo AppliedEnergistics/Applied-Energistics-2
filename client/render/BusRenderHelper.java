@@ -134,6 +134,20 @@ public class BusRenderHelper implements IPartRenderHelper
 			bbc.started = false;
 			p.getBoxes( bbc );
 
+			if ( bbc.minX < 1 )
+				bbc.minX = 1;
+			if ( bbc.minY < 1 )
+				bbc.minY = 1;
+			if ( bbc.minZ < 1 )
+				bbc.minZ = 1;
+
+			if ( bbc.maxX > 15 )
+				bbc.maxX = 15;
+			if ( bbc.maxY > 15 )
+				bbc.maxY = 15;
+			if ( bbc.maxZ > 15 )
+				bbc.maxZ = 15;
+
 			setBounds( bbc.minX, bbc.minY, bbc.minZ, bbc.maxX, bbc.maxY, bbc.maxZ );
 
 			bbr.renderBlockBounds( rbw, minX, minY, minZ, maxX, maxY, maxZ, ax, ay, az );

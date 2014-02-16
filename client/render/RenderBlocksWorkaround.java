@@ -637,17 +637,16 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		return ((LightingCache) sim).lightHash == lh;
 	}
 
-	int lightHashTmp[] = new int[7];
+	int lightHashTmp[] = new int[27];
 
 	private int getLightingHash(Block blk, IBlockAccess w, int x, int y, int z)
 	{
-		lightHashTmp[0] = blk.getMixedBrightnessForBlock( this.blockAccess, x, y, z );
-		lightHashTmp[1] = blk.getMixedBrightnessForBlock( this.blockAccess, x + 1, y, z );
-		lightHashTmp[2] = blk.getMixedBrightnessForBlock( this.blockAccess, x, y + 1, z );
-		lightHashTmp[3] = blk.getMixedBrightnessForBlock( this.blockAccess, x, y, z + 1 );
-		lightHashTmp[4] = blk.getMixedBrightnessForBlock( this.blockAccess, x - 1, y, z );
-		lightHashTmp[5] = blk.getMixedBrightnessForBlock( this.blockAccess, x, y - 1, z );
-		lightHashTmp[6] = blk.getMixedBrightnessForBlock( this.blockAccess, x, y, z - 1 );
+		int o = 0;
+
+		for (int i = -1; i <= 1; i++)
+			for (int j = -1; j <= 1; j++)
+				for (int k = -1; k <= 1; k++)
+					lightHashTmp[o++] = blk.getMixedBrightnessForBlock( this.blockAccess, x + i, y + j, z + k );
 
 		return Arrays.hashCode( lightHashTmp );
 	}
