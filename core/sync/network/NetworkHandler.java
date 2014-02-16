@@ -64,13 +64,15 @@ public class NetworkHandler
 	public void serverPacket(ServerCustomPacketEvent ev)
 	{
 		NetHandlerPlayServer srv = (NetHandlerPlayServer) ev.packet.handler();
-		serveHandler.onPacketData( null, ev.packet, srv.playerEntity );
+		if ( serveHandler != null )
+			serveHandler.onPacketData( null, ev.packet, srv.playerEntity );
 	}
 
 	@SubscribeEvent
 	public void clientPacket(ClientCustomPacketEvent ev)
 	{
-		clientHandler.onPacketData( null, ev.packet, null );
+		if ( clientHandler != null )
+			clientHandler.onPacketData( null, ev.packet, null );
 	}
 
 	public String getChannel()
