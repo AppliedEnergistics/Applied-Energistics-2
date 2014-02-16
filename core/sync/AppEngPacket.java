@@ -30,6 +30,7 @@ public abstract class AppEngPacket
 
 	protected void configureWrite(ByteBuf data)
 	{
+		data.capacity( data.readableBytes() );
 		p = data;
 	}
 

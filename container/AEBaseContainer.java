@@ -647,6 +647,11 @@ public abstract class AEBaseContainer extends Container
 		}
 	}
 
+	public void updateFullProgressBar(int id, long value)
+	{
+		updateProgressBar( id, (int) value );
+	}
+
 	private void updateHeld(EntityPlayerMP p)
 	{
 		try

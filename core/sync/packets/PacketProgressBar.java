@@ -15,12 +15,12 @@ public class PacketProgressBar extends AppEngPacket
 {
 
 	short id;
-	int value;
+	long value;
 
 	// automatic.
 	public PacketProgressBar(ByteBuf stream) throws IOException {
 		id = stream.readShort();
-		value = stream.readInt();
+		value = stream.readLong();
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class PacketProgressBar extends AppEngPacket
 	{
 		Container c = player.openContainer;
 		if ( c instanceof AEBaseContainer )
-			c.updateProgressBar( id, value );
+			((AEBaseContainer) c).updateFullProgressBar( id, value );
 	}
 
 	@Override
@@ -36,11 +36,11 @@ public class PacketProgressBar extends AppEngPacket
 	{
 		Container c = player.openContainer;
 		if ( c instanceof AEBaseContainer )
-			c.updateProgressBar( id, value );
+			((AEBaseContainer) c).updateFullProgressBar( id, value );
 	}
 
 	// api
-	public PacketProgressBar(int short_id, int value) throws IOException {
+	public PacketProgressBar(int short_id, long value) throws IOException {
 
 		this.id = (short) short_id;
 		this.value = value;
@@ -49,7 +49,7 @@ public class PacketProgressBar extends AppEngPacket
 
 		data.writeInt( getPacketID() );
 		data.writeShort( short_id );
-		data.writeInt( value );
+		data.writeLong( value );
 
 		configureWrite( data );
 	}

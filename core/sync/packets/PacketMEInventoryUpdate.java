@@ -4,9 +4,13 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.BufferOverflowException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -14,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.implementations.GuiMEMonitorable;
 import appeng.client.gui.implementations.GuiNetworkStatus;
+import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
@@ -26,18 +31,52 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 
 	// output...
 	final private ByteBuf data;
-	int lastSize = 0;
+	final private GZIPOutputStream compressFrame;
+
+	int writtenBytes = 0;
+
 	boolean empty = true;
 
 	// input.
 	final List<IAEItemStack> list;
 
 	// automatic.
-	public PacketMEInventoryUpdate(ByteBuf stream) throws IOException {
+	public PacketMEInventoryUpdate(final ByteBuf stream) throws IOException {
 		data = null;
+		compressFrame = null;
 		list = new LinkedList();
-		while (stream.readableBytes() > 0)
-			list.add( AEItemStack.loadItemStackFromPacket( stream ) );
+
+		int originalBytes = stream.readableBytes();
+
+		GZIPInputStream gzReader = new GZIPInputStream( new InputStream() {
+
+			@Override
+			public int read() throws IOException
+			{
+				if ( stream.readableBytes() <= 0 )
+					return -1;
+
+				return (int) stream.readByte() & 0xff;
+			}
+
+		} );
+
+		ByteBuf uncompesssed = Unpooled.buffer( stream.readableBytes() );
+		byte tmp[] = new byte[1024];
+		while (gzReader.available() != 0)
+		{
+			int bytes = gzReader.read( tmp );
+			if ( bytes > 0 )
+				uncompesssed.writeBytes( tmp, 0, bytes );
+		}
+		gzReader.close();
+
+		int uncompesssedBytes = uncompesssed.readableBytes();
+		// AELog.info( "Recv: " + originalBytes + " -> " + uncompesssedBytes );
+
+		while (uncompesssed.readableBytes() > 0)
+			list.add( AEItemStack.loadItemStackFromPacket( uncompesssed ) );
+
 		empty = list.isEmpty();
 	}
 
@@ -58,27 +97,53 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	@Override
 	public FMLProxyPacket getProxy()
 	{
-		data.capacity( lastSize );
-		configureWrite( data );
-		return super.getProxy();
+		try
+		{
+			compressFrame.close();
+
+			configureWrite( data );
+			return super.getProxy();
+		}
+		catch (IOException e)
+		{
+			AELog.error( e );
+		}
+		return null;
 	}
 
 	// api
 	public PacketMEInventoryUpdate() throws IOException {
+
 		data = Unpooled.buffer( 2048 );
-		list = null;
 		data.writeInt( getPacketID() );
-		lastSize = data.readableBytes();
+
+		compressFrame = new GZIPOutputStream( new OutputStream() {
+
+			@Override
+			public void write(int value) throws IOException
+			{
+				data.writeByte( value );
+			}
+
+		} );
+
+		list = null;
 	}
 
 	public void appendItem(IAEItemStack is) throws IOException, BufferOverflowException
 	{
-		is.writeToPacket( data );
-		empty = false;
-		if ( data.readableBytes() > 20000 )
+		ByteBuf tmp = Unpooled.buffer( 2048 );
+		is.writeToPacket( tmp );
+
+		compressFrame.flush();
+		if ( writtenBytes + tmp.readableBytes() > 30000 )
 			throw new BufferOverflowException();
 		else
-			lastSize = data.readableBytes();
+		{
+			writtenBytes += tmp.readableBytes();
+			compressFrame.write( tmp.array(), 0, tmp.readableBytes() );
+			empty = false;
+		}
 	}
 
 	public int getLength()
