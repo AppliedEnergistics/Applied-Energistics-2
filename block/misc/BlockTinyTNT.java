@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.Explosion;
@@ -41,7 +42,13 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		isFullSize = isOpaque = false;
 
 		EntityRegistry.registerModEntity( EntityTinyTNTPrimed.class, "EntityTinyTNTPrimed", EntityIds.TINY_TNT, AppEng.instance, 16, 4, true );
-		BlockDispenser.dispenseBehaviorRegistry.putObject( Block.getIdFromBlock( this ), new DispenserBehaviorTinyTNT() );
+	}
+
+	@Override
+	public void postInit()
+	{
+		super.postInit();
+		BlockDispenser.dispenseBehaviorRegistry.putObject( Item.getItemFromBlock( this ), new DispenserBehaviorTinyTNT() );
 	}
 
 	@Override
