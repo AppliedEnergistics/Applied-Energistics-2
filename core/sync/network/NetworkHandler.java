@@ -26,8 +26,32 @@ public class NetworkHandler
 		ec = NetworkRegistry.INSTANCE.newEventDrivenChannel( myChannelName = channelName );
 		ec.register( this );
 
-		clientHandler = new AppEngClientPacketHandler();
-		serveHandler = new AppEngServerPacketHandler();
+		clientHandler = createClientSide();
+		serveHandler = createServerSide();
+	}
+
+	private IPacketHandler createServerSide()
+	{
+		try
+		{
+			return new AppEngServerPacketHandler();
+		}
+		catch (Throwable t)
+		{
+			return null;
+		}
+	}
+
+	private IPacketHandler createClientSide()
+	{
+		try
+		{
+			return new AppEngClientPacketHandler();
+		}
+		catch (Throwable t)
+		{
+			return null;
+		}
 	}
 
 	@SubscribeEvent
