@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
 import appeng.core.sync.AppEngPacket;
@@ -30,5 +31,7 @@ public abstract class CommonHelper
 	public abstract void spawnEnergy(World w, double posX, double posY, double posZ);
 
 	public abstract boolean shouldAddParticles(Random r);
+
+	public abstract MovingObjectPosition getMOP();
 
 }

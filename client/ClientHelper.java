@@ -9,6 +9,7 @@ import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -113,6 +114,12 @@ public class ClientHelper extends ServerHelper
 		if ( setting == 0 )
 			return true;
 		return r.nextInt( 2 * (setting + 1) ) == 0;
+	}
+
+	@Override
+	public MovingObjectPosition getMOP()
+	{
+		return Minecraft.getMinecraft().objectMouseOver;
 	}
 
 }

@@ -7,6 +7,7 @@ import java.util.Random;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
 import appeng.core.CommonHelper;
@@ -90,6 +91,12 @@ public class ServerHelper extends CommonHelper
 	public boolean shouldAddParticles(Random r)
 	{
 		return false;
+	}
+
+	@Override
+	public MovingObjectPosition getMOP()
+	{
+		return null;
 	}
 
 }

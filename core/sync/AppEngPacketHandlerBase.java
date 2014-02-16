@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import appeng.core.sync.packets.PacketClick;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketLightning;
@@ -48,6 +49,8 @@ public class AppEngPacketHandlerBase
 		PACKET_TRANSITION_EFFECT(PacketTransitionEffect.class),
 
 		PACKET_PROGRESS_VALUE(PacketProgressBar.class),
+
+		PACKET_CLICK(PacketClick.class),
 
 		PACKET_SWITCH_GUIS(PacketSwitchGuis.class);
 

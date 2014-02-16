@@ -1,20 +1,26 @@
 package appeng.items.tools;
 
+import java.io.IOException;
 import java.util.EnumSet;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.networking.IGridHost;
+import appeng.client.ClientHelper;
 import appeng.container.AEBaseContainer;
+import appeng.core.AELog;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketClick;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolViewer;
 import appeng.util.Platform;
@@ -39,51 +45,84 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	}
 
 	@Override
-	public boolean onItemUseFirst(ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
-	{
-		Block b = world.getBlock( x, y, z );
-		if ( b != null && !player.isSneaking() )
-		{
-			TileEntity te = world.getTileEntity( x, y, z );
-			if ( !(te instanceof IGridHost) )
-			{
-				if ( b.rotateBlock( world, x, y, z, ForgeDirection.getOrientation( side ) ) )
-				{
-					player.swingItem();
-					return !world.isRemote;
-				}
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public boolean onItemUse(ItemStack is, EntityPlayer p, World w, int x, int y, int z, int side, float hitx, float hity, float hitz)
+	public ItemStack onItemRightClick(ItemStack it, World w, EntityPlayer p)
 	{
 		if ( Platform.isClient() )
-			return false;
-
-		if ( !p.isSneaking() )
 		{
-			if ( p.openContainer instanceof AEBaseContainer )
-				return true;
+			MovingObjectPosition mop = ClientHelper.proxy.getMOP();
 
-			TileEntity te = w.getTileEntity( x, y, z );
-			if ( te instanceof IGridHost )
-				Platform.openGUI( p, te, ForgeDirection.getOrientation( side ), GuiBridge.GUI_NETWORK_STATUS );
+			if ( mop == null )
+			{
+				onItemUseFirst( it, p, w, 0, 0, 0, -1, 0, 0, 0 );
+			}
 			else
-				Platform.openGUI( p, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_NETWORK_TOOL );
-			return true;
+			{
+				int i = mop.blockX;
+				int j = mop.blockY;
+				int k = mop.blockZ;
+
+				if ( w.getBlock( i, j, k ).isAir( w, i, j, k ) )
+					onItemUseFirst( it, p, w, 0, 0, 0, -1, 0, 0, 0 );
+			}
 		}
 
-		return false;
+		return it;
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
+	public boolean onItemUseFirst(ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
-		onItemUse( par1ItemStack, par3EntityPlayer, par2World, 0, 0, 0, -1, 0, 0, 0 );
-		return super.onItemRightClick( par1ItemStack, par2World, par3EntityPlayer );
+		if ( Platform.isClient() )
+		{
+			try
+			{
+				NetworkHandler.instance.sendToServer( new PacketClick( x, y, z, side, hitX, hitY, hitZ ) );
+			}
+			catch (IOException e)
+			{
+				AELog.error( e );
+			}
+		}
+		return true;
+	}
+
+	public boolean serverSideToolLogic(ItemStack is, EntityPlayer p, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	{
+		if ( side >= 0 )
+		{
+			Block b = w.getBlock( x, y, z );
+			if ( b != null && !p.isSneaking() )
+			{
+				TileEntity te = w.getTileEntity( x, y, z );
+				if ( !(te instanceof IGridHost) )
+				{
+					if ( b.rotateBlock( w, x, y, z, ForgeDirection.getOrientation( side ) ) )
+					{
+						p.swingItem();
+						return !w.isRemote;
+					}
+				}
+			}
+
+			if ( !p.isSneaking() )
+			{
+				if ( p.openContainer instanceof AEBaseContainer )
+					return true;
+
+				TileEntity te = w.getTileEntity( x, y, z );
+				if ( te instanceof IGridHost )
+					Platform.openGUI( p, te, ForgeDirection.getOrientation( side ), GuiBridge.GUI_NETWORK_STATUS );
+				else
+					Platform.openGUI( p, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_NETWORK_TOOL );
+				return true;
+			}
+			else
+				b.onBlockActivated( w, x, y, z, p, side, hitX, hitY, hitZ );
+		}
+		else
+			Platform.openGUI( p, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_NETWORK_TOOL );
+
+		return false;
 	}
 
 	@Override
