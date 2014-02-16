@@ -5,7 +5,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.PowerUnits;
 import appeng.core.AppEng;
 import appeng.integration.abstraction.IMJ;
-import appeng.integration.abstraction.helpers.BaseBCperdition;
+import appeng.integration.abstraction.helpers.BaseMJperdition;
 import appeng.util.Platform;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
@@ -17,7 +17,7 @@ import cpw.mods.fml.common.Optional.Method;
 public abstract class BuildCraft extends AERootPoweredTile implements IPowerReceptor
 {
 
-	BaseBCperdition bcPowerWrapper;
+	BaseMJperdition bcPowerWrapper;
 
 	public BuildCraft() {
 		if ( Platform.isServer() )

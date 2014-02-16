@@ -1,5 +1,6 @@
 package appeng.integration.abstraction;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -33,7 +34,7 @@ public interface IBC
 
 	void registerLiquidsP2P();
 
-	IFacadePart createFacadePart(int[] ids, ForgeDirection side);
+	IFacadePart createFacadePart(Block blk, int meta, ForgeDirection side);
 
 	IFacadePart createFacadePart(ItemStack held, ForgeDirection side);
 

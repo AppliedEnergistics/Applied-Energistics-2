@@ -1,17 +1,18 @@
-package appeng.integration.modules.helpers.dead;
+package appeng.integration.modules.helpers;
 
 import net.minecraft.nbt.NBTTagCompound;
+import appeng.integration.abstraction.helpers.BaseMJperdition;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
 
-public class BCPerdition extends BaseBCperdition
+public class MJPerdition extends BaseMJperdition
 {
 
 	final protected PowerHandler bcPowerHandler;
 
-	public BCPerdition(IPowerReceptor te) {
+	public MJPerdition(IPowerReceptor te) {
 		bcPowerHandler = new PowerHandler( te, Type.MACHINE );
 	}
 

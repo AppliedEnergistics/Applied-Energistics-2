@@ -1,4 +1,4 @@
-package appeng.integration.modules.dead;
+package appeng.integration.modules;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,16 +14,16 @@ import appeng.api.parts.IFacadePart;
 import appeng.facade.FacadePart;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IBC;
-import appeng.integration.modules.helpers.dead.BCPipeHandler;
+import appeng.integration.modules.helpers.BCPipeHandler;
 import buildcraft.BuildCraftEnergy;
 import buildcraft.BuildCraftTransport;
 import buildcraft.api.tools.IToolWrench;
-import buildcraft.api.transport.FacadeManager;
 import buildcraft.api.transport.IPipeTile;
 import buildcraft.api.transport.IPipeTile.PipeType;
 import buildcraft.transport.ItemFacade;
 import buildcraft.transport.PipeIconProvider;
 import buildcraft.transport.TileGenericPipe;
+import cpw.mods.fml.common.event.FMLInterModComms;
 
 public class BC implements IIntegrationModule, IBC
 {
@@ -33,10 +33,8 @@ public class BC implements IIntegrationModule, IBC
 	@Override
 	public void addFacade(ItemStack item)
 	{
-		// Myrathi :
-		// FMLInterModComms.sendMessage("BuildCraft|Transport", "add-facade",
-		// <your block ID> + "@" + <your block meta>);
-		FacadeManager.addFacade( item );
+		int blkId = Block.blockRegistry.getIDForObject( Block.getBlockFromItem( item.getItem() ) );
+		FMLInterModComms.sendMessage( "BuildCraft|Transport", "add-facade", blkId + "@" + item.getItemDamage() );
 	}
 
 	@Override
@@ -188,9 +186,9 @@ public class BC implements IIntegrationModule, IBC
 	}
 
 	@Override
-	public IFacadePart createFacadePart(int[] ids, ForgeDirection side)
+	public IFacadePart createFacadePart(Block blk, int meta, ForgeDirection side)
 	{
-		ItemStack fs = ItemFacade.getStack( ids[0], ids[1] );
+		ItemStack fs = ItemFacade.getStack( blk, meta );
 		return new FacadePart( fs, side );
 	}
 
@@ -203,7 +201,8 @@ public class BC implements IIntegrationModule, IBC
 	@Override
 	public ItemStack getTextureForFacade(ItemStack facade)
 	{
-		return new ItemStack( Block.blocksList[ItemFacade.getBlockId( facade )], 1, ItemFacade.getMetaData( facade ) );
+		Block blk = ItemFacade.getBlock( facade );
+		return new ItemStack( blk, 1, ItemFacade.getMetaData( facade ) );
 	}
 
 	@Override

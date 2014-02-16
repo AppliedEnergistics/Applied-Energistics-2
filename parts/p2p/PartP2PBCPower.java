@@ -72,7 +72,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 					PowerReceiver tp = target.getPowerReceiver( side.getOpposite() );
 					if ( tp != null )
 					{
-						float howmuch = tp.powerRequest();
+						double howmuch = tp.powerRequest();
 
 						if ( howmuch > tp.getMaxEnergyReceived() )
 							howmuch = tp.getMaxEnergyReceived();
@@ -88,7 +88,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 			if ( totalRequiredPower < 0.1 )
 				return TickRateModulation.SLOWER;
 
-			float currentTotal = pp.getEnergyStored();
+			double currentTotal = pp.getEnergyStored();
 			if ( currentTotal < 0.01 )
 				return TickRateModulation.SLOWER;
 
@@ -100,15 +100,15 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 					PowerReceiver tp = target.getPowerReceiver( side.getOpposite() );
 					if ( tp != null )
 					{
-						float howmuch = tp.powerRequest(); // orientation.getOpposite()
+						double howmuch = tp.powerRequest(); // orientation.getOpposite()
 															// );
 						if ( howmuch > tp.getMaxEnergyReceived() )
 							howmuch = tp.getMaxEnergyReceived();
 
 						if ( howmuch > 0.01 && howmuch > tp.getMinEnergyReceived() )
 						{
-							float toPull = currentTotal * (howmuch / totalRequiredPower);
-							float pulled = pp.useEnergy( 0, toPull, true );
+							double toPull = currentTotal * (howmuch / totalRequiredPower);
+							double pulled = pp.useEnergy( 0, toPull, true );
 							QueueTunnelDrain( PowerUnits.MJ, pulled * AEConfig.TunnelPowerLoss );
 
 							tp.receiveEnergy( Type.PIPE, pulled, o.side.getOpposite() );

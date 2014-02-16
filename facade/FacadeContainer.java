@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -63,7 +64,7 @@ public class FacadeContainer implements IFacadeContainer
 				if ( isBC && AppEng.instance.isIntegrationEnabled( "BC" ) )
 				{
 					IBC bc = (IBC) AppEng.instance.getIntegration( "BC" );
-					facades[x] = bc.createFacadePart( ids, side );
+					facades[x] = bc.createFacadePart( (Block) Block.blockRegistry.getObjectById( ids[0] ), ids[1], side );
 				}
 				else if ( !isBC )
 				{

@@ -8,11 +8,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.storage.IExternalStorageHandler;
 import appeng.api.storage.IExternalStorageRegistry;
 import appeng.api.storage.StorageChannel;
+import appeng.core.features.registries.entries.ExternalIInv;
 
 public class ExternalStorageRegistry implements IExternalStorageRegistry
 {
 
 	List<IExternalStorageHandler> Handlers;
+	final ExternalIInv lastHandler = new ExternalIInv();
 
 	public ExternalStorageRegistry() {
 		Handlers = new ArrayList();
@@ -26,6 +28,10 @@ public class ExternalStorageRegistry implements IExternalStorageRegistry
 			if ( x.canHandle( te, d, chan ) )
 				return x;
 		}
+
+		if ( lastHandler.canHandle( te, d, chan ) )
+			return lastHandler;
+
 		return null;
 	}
 

@@ -311,7 +311,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 		renderLights( x, y, z, rh, renderer );
 	}
 
-	protected void QueueTunnelDrain(PowerUnits mj, float f)
+	protected void QueueTunnelDrain(PowerUnits mj, double f)
 	{
 		// TODO Auto-generated method stub
 

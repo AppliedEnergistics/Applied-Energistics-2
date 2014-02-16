@@ -1,6 +1,5 @@
 package appeng.me.storage;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
@@ -19,9 +18,6 @@ public class AEExternalHandler implements IExternalStorageHandler
 	public boolean canHandle(TileEntity te, ForgeDirection d, StorageChannel channel)
 	{
 		if ( channel == StorageChannel.ITEMS && te instanceof ITileStorageMonitorable )
-			return true;
-
-		if ( channel == StorageChannel.ITEMS && te instanceof IInventory )
 			return true;
 
 		return te instanceof TileCondenser;
@@ -56,11 +52,6 @@ public class AEExternalHandler implements IExternalStorageHandler
 				if ( fi != null )
 					return fi;
 			}
-		}
-
-		if ( channel == StorageChannel.ITEMS && te instanceof IInventory )
-		{
-			return new MEMonitorIInventory( (IInventory) te, d );
 		}
 
 		return null;

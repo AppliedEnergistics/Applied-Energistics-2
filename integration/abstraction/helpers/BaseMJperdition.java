@@ -5,10 +5,10 @@ import appeng.tile.events.TileEventType;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import cpw.mods.fml.common.Optional.Method;
 
-public abstract class BaseBCperdition extends AETileEventHandler
+public abstract class BaseMJperdition extends AETileEventHandler
 {
 
-	public BaseBCperdition() {
+	public BaseMJperdition() {
 		super( TileEventType.TICK, TileEventType.WORLD_NBT );
 	}
 
