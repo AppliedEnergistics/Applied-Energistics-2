@@ -108,7 +108,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 
 		} );
 
-		out.registerSetting( Sewttings.SORT_BY, SortOrder.NAME );
+		out.registerSetting( Settings.SORT_BY, SortOrder.NAME );
 		out.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
 		out.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 
