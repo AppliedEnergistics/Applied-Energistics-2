@@ -22,6 +22,7 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.util.IConfigManager;
 import appeng.tile.networking.TileWireless;
 
 public class WirelessTerminalGuiObject implements IPortableCell
@@ -263,6 +264,12 @@ public class WirelessTerminalGuiObject implements IPortableCell
 	public ItemStack getItemStack()
 	{
 		return effectiveItem;
+	}
+
+	@Override
+	public IConfigManager getConfigManager()
+	{
+		return wth.getConfigManager( effectiveItem );
 	}
 
 }

@@ -33,6 +33,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
+import appeng.api.util.IConfigManager;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.me.GridAccessException;
@@ -85,7 +86,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 	}
 
 	@Override
-	public void updateSetting(Enum settingName, Enum newValue)
+	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
 	{
 		confgiureWatchers();
 	}

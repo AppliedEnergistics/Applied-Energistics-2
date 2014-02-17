@@ -237,7 +237,7 @@ public class TileCondenser extends AEBaseInvTile implements IAEAppEngInventory, 
 	}
 
 	@Override
-	public void updateSetting(Enum settingName, Enum newValue)
+	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
 	{
 		addPower( 0 );
 	}

@@ -9,11 +9,18 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
+import appeng.api.config.Settings;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
 import appeng.api.features.IWirelessTermHandler;
+import appeng.api.util.IConfigManager;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
+import appeng.util.ConfigManager;
+import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
 public class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler
@@ -85,6 +92,28 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 		NBTTagCompound tag = Platform.openNbtData( item );
 		tag.setString( "encryptionKey", encKey );
 		tag.setString( "name", name );
+	}
+
+	@Override
+	public IConfigManager getConfigManager(final ItemStack target)
+	{
+		final ConfigManager out = new ConfigManager( new IConfigManagerHost() {
+
+			@Override
+			public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
+			{
+				NBTTagCompound data = Platform.openNbtData( target );
+				manager.writeToNBT( data );
+			}
+
+		} );
+
+		out.registerSetting( Sewttings.SORT_BY, SortOrder.NAME );
+		out.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
+		out.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
+
+		out.readFromNBT( (NBTTagCompound) Platform.openNbtData( target ).copy() );
+		return out;
 	}
 
 }

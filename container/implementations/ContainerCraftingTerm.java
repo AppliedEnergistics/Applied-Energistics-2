@@ -5,7 +5,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
-import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.ITerminalHost;
 import appeng.container.ContainerNull;
 import appeng.container.slot.SlotCraftingMatrix;
 import appeng.container.slot.SlotCraftingTerm;
@@ -38,7 +38,7 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 		outputSlot.putStack( CraftingManager.getInstance().findMatchingRecipe( ic, getPlayerInv().player.worldObj ) );
 	}
 
-	public ContainerCraftingTerm(InventoryPlayer ip, IStorageMonitorable montiorable) {
+	public ContainerCraftingTerm(InventoryPlayer ip, ITerminalHost montiorable) {
 		super( ip, montiorable, false );
 		ct = (PartCraftingTerminal) montiorable;
 

@@ -74,7 +74,7 @@ public class PartUpgradeable extends PartBasicState implements ISegmentedInvento
 	}
 
 	@Override
-	public void updateSetting(Enum settingName, Enum newValue)
+	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
 	{
 
 	}

@@ -81,6 +81,10 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 	{
 		super.addInformation( par1ItemStack, par2EntityPlayer, par3List, par4 );
 
+		MaterialType mt = getTypeByStack( par1ItemStack );
+		if ( mt == null )
+			return;
+
 		Upgrades u = getType( par1ItemStack );
 		if ( u != null )
 		{
@@ -156,7 +160,14 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 
 	private String nameOf(ItemStack is)
 	{
-		return AEFeatureHandler.getName( ItemMaterial.class, getTypeByStack( is ).name() );
+		if ( is == null )
+			return "null";
+
+		MaterialType mt = getTypeByStack( is );
+		if ( mt == null )
+			return "null";
+
+		return AEFeatureHandler.getName( ItemMaterial.class, mt.name() );
 	}
 
 	@Override

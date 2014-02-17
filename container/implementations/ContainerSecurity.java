@@ -10,7 +10,7 @@ import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.items.IBiometricCard;
-import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.ITerminalHost;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
@@ -32,7 +32,7 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 
 	TileSecurity securityBox;
 
-	public ContainerSecurity(InventoryPlayer ip, IStorageMonitorable montiorable) {
+	public ContainerSecurity(InventoryPlayer ip, ITerminalHost montiorable) {
 		super( ip, montiorable, false );
 
 		securityBox = (TileSecurity) montiorable;

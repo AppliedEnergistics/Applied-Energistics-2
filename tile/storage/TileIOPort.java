@@ -183,7 +183,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	}
 
 	@Override
-	public void updateSetting(Enum settingName, Enum newValue)
+	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
 	{
 		updateTask();
 	}

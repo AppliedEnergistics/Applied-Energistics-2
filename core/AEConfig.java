@@ -10,8 +10,6 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
 import appeng.api.config.YesNo;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
@@ -115,9 +113,9 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 
 		// settings.registerSetting( Settings.SEARCH_MODS, YesNo.YES );
 		settings.registerSetting( Settings.SEARCH_TOOLTIPS, YesNo.YES );
-		settings.registerSetting( Settings.SORT_BY, SortOrder.NAME );
-		settings.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 		settings.registerSetting( Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH );
+		// settings.registerSetting( Settings.SORT_BY, SortOrder.NAME );
+		// settings.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 
 		WirelessBaseCost = get( "wireless", "WirelessBaseCost", WirelessBaseCost ).getDouble( WirelessBaseCost );
 		WirelessCostMultiplier = get( "wireless", "WirelessCostMultiplier", WirelessCostMultiplier ).getDouble( WirelessCostMultiplier );
@@ -166,7 +164,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 	}
 
 	@Override
-	public void updateSetting(Enum setting, Enum newValue)
+	public void updateSetting(IConfigManager manager, Enum setting, Enum newValue)
 	{
 		for (Enum e : settings.getSettings())
 		{

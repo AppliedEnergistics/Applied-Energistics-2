@@ -5,6 +5,7 @@ import java.util.Set;
 
 import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.util.IConfigManager;
+import appeng.core.AELog;
 
 public class ConfigManager implements IConfigManager
 {
@@ -21,18 +22,27 @@ public class ConfigManager implements IConfigManager
 	 * 
 	 * @param tagCompound
 	 */
-	@SuppressWarnings("static-access")
 	@Override
 	public void readFromNBT(NBTTagCompound tagCompound)
 	{
 		for (Enum key : Settings.keySet())
 		{
-			String value = tagCompound.getString( key.name() );
+			try
+			{
+				if ( tagCompound.hasKey( key.name() ) )
+				{
+					String value = tagCompound.getString( key.name() );
 
-			Enum oldValue = Settings.get( key );
-			Enum newValue = oldValue.valueOf( oldValue.getClass(), value );
+					Enum oldValue = Settings.get( key );
+					Enum newValue = Enum.valueOf( oldValue.getClass(), value );
 
-			putSetting( key, newValue );
+					putSetting( key, newValue );
+				}
+			}
+			catch (IllegalArgumentException e)
+			{
+				AELog.error( e );
+			}
 		}
 	}
 
@@ -80,7 +90,7 @@ public class ConfigManager implements IConfigManager
 	{
 		Enum oldValue = getSetting( settingName );
 		Settings.put( settingName, newValue );
-		target.updateSetting( settingName, newValue );
+		target.updateSetting( this, settingName, newValue );
 		return oldValue;
 	}
 

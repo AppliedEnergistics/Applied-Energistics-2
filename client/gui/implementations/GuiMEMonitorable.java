@@ -1,5 +1,6 @@
 package appeng.client.gui.implementations;
 
+import java.io.IOException;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
@@ -8,8 +9,10 @@ import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.tiles.IMEChest;
-import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigureableObject;
 import appeng.client.gui.AEBaseMEGui;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiScrollbar;
@@ -20,13 +23,17 @@ import appeng.client.me.ItemRepo;
 import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.container.slot.AppEngSlot;
 import appeng.core.AEConfig;
+import appeng.core.AELog;
 import appeng.core.localization.GuiText;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.reporting.PartTerminal;
 import appeng.tile.misc.TileSecurity;
+import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
-public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource
+public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfigManagerHost
 {
 
 	MEGuiTextField searchField;
@@ -43,17 +50,28 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource
 	int rows = 0;
 	int maxRows = Integer.MAX_VALUE;
 
-	public GuiMEMonitorable(InventoryPlayer inventoryPlayer, IStorageMonitorable te) {
+	IConfigManager configSrc;
+
+	GuiImgButton ViewBox;
+	GuiImgButton SortByBox;
+	GuiImgButton SortDirBox;
+
+	GuiImgButton searchBoxSettings;
+
+	public GuiMEMonitorable(InventoryPlayer inventoryPlayer, ITerminalHost te) {
 		this( inventoryPlayer, te, new ContainerMEMonitorable( inventoryPlayer, null ) );
 	}
 
-	public GuiMEMonitorable(InventoryPlayer inventoryPlayer, IStorageMonitorable te, ContainerMEMonitorable c) {
+	public GuiMEMonitorable(InventoryPlayer inventoryPlayer, ITerminalHost te, ContainerMEMonitorable c) {
 
 		super( c );
 		myScrollBar = new GuiScrollbar();
 		repo = new ItemRepo( myScrollBar, this );
 		xSize = 195;
 		ySize = 204;
+
+		configSrc = ((IConfigureableObject) inventorySlots).getConfigManager();
+		((ContainerMEMonitorable) inventorySlots).gui = this;
 
 		if ( te instanceof TileSecurity )
 			myName = GuiText.Security;
@@ -124,15 +142,15 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource
 
 		if ( customSortOrder )
 		{
-			buttonList.add( new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_BY, AEConfig.instance.settings.getSetting( Settings.SORT_BY ) ) );
+			buttonList.add( SortByBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_BY, configSrc.getSetting( Settings.SORT_BY ) ) );
 			offset += 20;
 		}
 
-		buttonList
-				.add( new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, AEConfig.instance.settings.getSetting( Settings.SORT_DIRECTION ) ) );
+		buttonList.add( SortDirBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, configSrc.getSetting( Settings.SORT_DIRECTION ) ) );
 		offset += 20;
 
-		buttonList.add( new GuiImgButton( this.guiLeft - 18, offset, Settings.SEARCH_MODE, AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE ) ) );
+		buttonList.add( searchBoxSettings = new GuiImgButton( this.guiLeft - 18, offset, Settings.SEARCH_MODE, AEConfig.instance.settings
+				.getSetting( Settings.SEARCH_MODE ) ) );
 
 		searchField = new MEGuiTextField( fontRendererObj, this.guiLeft + Math.max( 82, xoffset ), this.guiTop + 6, 89, fontRendererObj.FONT_HEIGHT );
 		searchField.setEnableBackgroundDrawing( false );
@@ -162,12 +180,25 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource
 		if ( btn instanceof GuiImgButton )
 		{
 			GuiImgButton iBtn = (GuiImgButton) btn;
-			Enum cv = iBtn.getCurrentValue();
 
+			Enum cv = iBtn.getCurrentValue();
 			Enum next = Platform.nextEnum( cv );
-			AEConfig.instance.settings.putSetting( iBtn.getSetting(), next );
+
+			if ( btn == searchBoxSettings )
+				AEConfig.instance.settings.putSetting( iBtn.getSetting(), next );
+			else
+			{
+				try
+				{
+					NetworkHandler.instance.sendToServer( new PacketValueConfig( iBtn.getSetting().name(), next.name() ) );
+				}
+				catch (IOException e)
+				{
+					AELog.error( e );
+				}
+			}
+
 			iBtn.set( next );
-			repo.updateView();
 
 			if ( next.getClass() == SearchBoxMode.class )
 				re_init();
@@ -242,13 +273,28 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource
 	@Override
 	public Enum getSortBy()
 	{
-		return AEConfig.instance.settings.getSetting( Settings.SORT_BY );
+		return configSrc.getSetting( Settings.SORT_BY );
 	}
 
 	@Override
 	public Enum getSortDir()
 	{
-		return AEConfig.instance.settings.getSetting( Settings.SORT_DIRECTION );
+		return configSrc.getSetting( Settings.SORT_DIRECTION );
+	}
+
+	@Override
+	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
+	{
+		if ( SortByBox != null )
+			SortByBox.set( configSrc.getSetting( Settings.SORT_BY ) );
+
+		if ( SortDirBox != null )
+			SortDirBox.set( configSrc.getSetting( Settings.SORT_DIRECTION ) );
+
+		if ( ViewBox != null )
+			ViewBox.set( configSrc.getSetting( Settings.VIEW_MODE ) );
+
+		repo.updateView();
 	}
 
 }

@@ -18,6 +18,7 @@ import appeng.util.inv.ItemSlot;
 import appeng.util.inv.WrapperMCISidedInventory;
 import buildcraft.api.inventory.ISpecialInventory;
 
+@SuppressWarnings("deprecation")
 public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 {
 

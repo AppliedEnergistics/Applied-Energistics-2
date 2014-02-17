@@ -2,20 +2,48 @@ package appeng.parts.reporting;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
+import appeng.api.config.Settings;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.ITerminalHost;
+import appeng.api.util.IConfigManager;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.GuiBridge;
 import appeng.me.GridAccessException;
+import appeng.util.ConfigManager;
+import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
-public class PartTerminal extends PartMonitor implements IStorageMonitorable
+public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigManagerHost
 {
+
+	IConfigManager cm = new ConfigManager( this );
 
 	public PartTerminal(Class clz, ItemStack is) {
 		super( clz, is );
+
+		cm.registerSetting( Settings.SORT_BY, SortOrder.NAME );
+		cm.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
+		cm.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound data)
+	{
+		super.readFromNBT( data );
+		cm.readFromNBT( data );
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound data)
+	{
+		super.writeToNBT( data );
+		cm.writeToNBT( data );
 	}
 
 	public PartTerminal(ItemStack is) {
@@ -24,6 +52,10 @@ public class PartTerminal extends PartMonitor implements IStorageMonitorable
 		frontColored = CableBusTextures.PartTerminal_Colored;
 		frontDark = CableBusTextures.PartTerminal_Dark;
 		frontSolid = CableBusTextures.PartTerminal_Solid;
+
+		cm.registerSetting( Settings.SORT_BY, SortOrder.NAME );
+		cm.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
+		cm.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 	}
 
 	public GuiBridge getGui()
@@ -81,6 +113,18 @@ public class PartTerminal extends PartMonitor implements IStorageMonitorable
 			// err nope?
 		}
 		return null;
+	}
+
+	@Override
+	public IConfigManager getConfigManager()
+	{
+		return cm;
+	}
+
+	@Override
+	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
+	{
+
 	}
 
 }

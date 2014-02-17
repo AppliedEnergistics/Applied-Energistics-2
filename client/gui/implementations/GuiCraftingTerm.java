@@ -1,14 +1,14 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.InventoryPlayer;
-import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.ITerminalHost;
 import appeng.container.implementations.ContainerCraftingTerm;
 import appeng.core.localization.GuiText;
 
 public class GuiCraftingTerm extends GuiMEMonitorable
 {
 
-	public GuiCraftingTerm(InventoryPlayer inventoryPlayer, IStorageMonitorable te) {
+	public GuiCraftingTerm(InventoryPlayer inventoryPlayer, ITerminalHost te) {
 		super( inventoryPlayer, te, new ContainerCraftingTerm( inventoryPlayer, te ) );
 		reservedSpace = 73;
 	}

@@ -1,7 +1,10 @@
 package appeng.util;
 
-public interface IConfigManagerHost {
+import appeng.api.util.IConfigManager;
 
-	void updateSetting(Enum settingName, Enum newValue);
+public interface IConfigManagerHost
+{
+
+	void updateSetting(IConfigManager manager, Enum settingName, Enum newValue);
 
 }

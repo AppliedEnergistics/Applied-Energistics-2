@@ -12,6 +12,8 @@ import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import appeng.api.config.FuzzyMode;
+import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigureableObject;
 import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.container.implementations.ContainerPriority;
@@ -73,6 +75,60 @@ public class PacketValueConfig extends AppEngPacket
 			else if ( Name.equals( "CellWorkbench.Fuzzy" ) )
 			{
 				ccw.setFuzzy( FuzzyMode.valueOf( Value ) );
+			}
+		}
+		else if ( c instanceof IConfigureableObject )
+		{
+			IConfigManager cm = ((IConfigureableObject) c).getConfigManager();
+
+			for (Enum e : cm.getSettings())
+			{
+				if ( e.name().equals( Name ) )
+				{
+					Enum def = cm.getSetting( e );
+
+					try
+					{
+						cm.putSetting( e, Enum.valueOf( def.getClass(), Value ) );
+					}
+					catch (IllegalArgumentException err)
+					{
+						// :P
+					}
+
+					break;
+				}
+			}
+		}
+
+	}
+
+	@Override
+	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
+	{
+		Container c = player.openContainer;
+
+		if ( c instanceof IConfigureableObject )
+		{
+			IConfigManager cm = ((IConfigureableObject) c).getConfigManager();
+
+			for (Enum e : cm.getSettings())
+			{
+				if ( e.name().equals( Name ) )
+				{
+					Enum def = cm.getSetting( e );
+
+					try
+					{
+						cm.putSetting( e, Enum.valueOf( def.getClass(), Value ) );
+					}
+					catch (IllegalArgumentException err)
+					{
+						// :P
+					}
+
+					break;
+				}
 			}
 		}
 

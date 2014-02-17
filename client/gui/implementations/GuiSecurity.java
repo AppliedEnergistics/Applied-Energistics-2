@@ -5,7 +5,7 @@ import java.io.IOException;
 import net.minecraft.entity.player.InventoryPlayer;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
-import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.ITerminalHost;
 import appeng.client.gui.widgets.GuiToggleButton;
 import appeng.container.implementations.ContainerSecurity;
 import appeng.core.AELog;
@@ -16,7 +16,7 @@ import appeng.core.sync.packets.PacketValueConfig;
 public class GuiSecurity extends GuiMEMonitorable
 {
 
-	public GuiSecurity(InventoryPlayer inventoryPlayer, IStorageMonitorable te) {
+	public GuiSecurity(InventoryPlayer inventoryPlayer, ITerminalHost te) {
 		super( inventoryPlayer, te, new ContainerSecurity( inventoryPlayer, te ) );
 		customSortOrder = false;
 		reservedSpace = 33;

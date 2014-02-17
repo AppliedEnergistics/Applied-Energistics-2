@@ -23,7 +23,7 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
-import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.ITerminalHost;
 import appeng.client.gui.GuiNull;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerNull;
@@ -82,7 +82,7 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_WIRELESS(ContainerWireless.class, TileWireless.class, false, SecurityPermissions.BUILD),
 
-	GUI_ME(ContainerMEMonitorable.class, IStorageMonitorable.class, false, null),
+	GUI_ME(ContainerMEMonitorable.class, ITerminalHost.class, false, null),
 
 	GUI_PORTABLE_CELL(ContainerMEPortableCell.class, IPortableCell.class, true, null),
 

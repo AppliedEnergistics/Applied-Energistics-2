@@ -9,6 +9,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.util.InventoryAdaptor;
 import buildcraft.api.inventory.ISpecialInventory;
 
+@SuppressWarnings("deprecation")
 public class AdaptorISpecialInventory extends InventoryAdaptor
 {
 

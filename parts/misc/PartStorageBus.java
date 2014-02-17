@@ -38,6 +38,7 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.util.IConfigManager;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.IPriorityHost;
@@ -167,7 +168,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public void updateSetting(Enum settingName, Enum newValue)
+	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
 	{
 		resetCache( true );
 		host.markForSave();

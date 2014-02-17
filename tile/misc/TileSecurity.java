@@ -17,6 +17,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.config.Settings;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
 import appeng.api.events.LocatableEventAnnounce;
 import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
 import appeng.api.features.ILocatable;
@@ -29,12 +33,13 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.events.MENetworkSecurityChange;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.MEMonitorHandler;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
+import appeng.api.util.IConfigManager;
 import appeng.me.GridAccessException;
 import appeng.me.storage.SecurityInventory;
 import appeng.tile.events.AETileEventHandler;
@@ -43,13 +48,16 @@ import appeng.tile.grid.AENetworkTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
+import appeng.util.ConfigManager;
+import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
-public class TileSecurity extends AENetworkTile implements IStorageMonitorable, IAEAppEngInventory, ILocatable
+public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEAppEngInventory, ILocatable, IConfigManagerHost
 {
 
 	private static int diffrence = 0;
+	private IConfigManager cm = new ConfigManager( this );
 
 	private SecurityInventory inventory = new SecurityInventory( this );
 	private MEMonitorHandler<IAEItemStack> securityMonitor = new MEMonitorHandler<IAEItemStack>( inventory );
@@ -133,6 +141,9 @@ public class TileSecurity extends AENetworkTile implements IStorageMonitorable, 
 		@Override
 		public void writeToNBT(NBTTagCompound data)
 		{
+			cm.writeToNBT( data );
+			;
+
 			data.setLong( "securityKey", securityKey );
 			configSlot.writeToNBT( data, "config" );
 
@@ -152,6 +163,8 @@ public class TileSecurity extends AENetworkTile implements IStorageMonitorable, 
 		@Override
 		public void readFromNBT(NBTTagCompound data)
 		{
+			cm.readFromNBT( data );
+
 			securityKey = data.getLong( "securityKey" );
 			configSlot.readFromNBT( data, "config" );
 
@@ -230,6 +243,10 @@ public class TileSecurity extends AENetworkTile implements IStorageMonitorable, 
 		securityKey = System.currentTimeMillis() * 10 + diffrence;
 		if ( diffrence > 10 )
 			diffrence = 0;
+
+		cm.registerSetting( Settings.SORT_BY, SortOrder.NAME );
+		cm.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
+		cm.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 	}
 
 	public int getOwner()
@@ -275,6 +292,18 @@ public class TileSecurity extends AENetworkTile implements IStorageMonitorable, 
 	public boolean isPowered()
 	{
 		return gridProxy.isActive();
+	}
+
+	@Override
+	public IConfigManager getConfigManager()
+	{
+		return cm;
+	}
+
+	@Override
+	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
+	{
+
 	}
 
 }
