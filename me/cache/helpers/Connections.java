@@ -32,14 +32,12 @@ public class Connections implements Callable
 	{
 		create = false;
 		destroy = true;
-		AELog.info( "markDestroy" );
 	}
 
 	public void markCreate()
 	{
 		create = true;
 		destroy = false;
-		AELog.info( "markCreate" );
 	}
 
 };
