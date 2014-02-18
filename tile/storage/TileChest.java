@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import scala.collection.ViewMkString;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -20,6 +22,10 @@ import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.config.Settings;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
 import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -39,11 +45,13 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.MEMonitorHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
+import appeng.api.util.IConfigManager;
 import appeng.helpers.AENoHandler;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
@@ -53,10 +61,12 @@ import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkPowerTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
+import appeng.util.ConfigManager;
+import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 import appeng.util.item.AEFluidStack;
 
-public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHandler, IStorageMonitorable, IPriorityHost
+public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHandler, ITerminalHost, IPriorityHost, IConfigManagerHost
 {
 
 	static final AENoHandler noHandler = new AENoHandler();
@@ -66,6 +76,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 	AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
 	BaseActionSource mySrc = new MachineSource( this );
+	IConfigManager config = new ConfigManager(this);
 
 	ItemStack storageType;
 	long lastStateChange = 0;
@@ -210,12 +221,14 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		@Override
 		public void readFromNBT(NBTTagCompound data)
 		{
+			config.readFromNBT(data);
 			priority = data.getInteger( "priority" );
 		}
 
 		@Override
 		public void writeToNBT(NBTTagCompound data)
 		{
+			config.writeToNBT(data);
 			data.setInteger( "priority", priority );
 		}
 
@@ -236,6 +249,10 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	public TileChest() {
 		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 		addNewHandler( new invManger() );
+
+		config.registerSetting(Settings.SORT_BY, SortOrder.NAME);
+		config.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
+		config.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
 		internalPublicPowerStorage = true;
 		internalPowerFlow = AccessRestriction.WRITE;
@@ -702,6 +719,16 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		{
 			// :P
 		}
+	}
+
+	@Override
+	public IConfigManager getConfigManager() {
+		return config;
+	}
+
+	@Override
+	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue) {
+		
 	}
 
 }
