@@ -498,6 +498,11 @@ public class Registration
 		Upgrades.INVERTER.registerItem( AEApi.instance().parts().partStorageBus.stack( 1 ), 1 );
 		Upgrades.CAPACITY.registerItem( AEApi.instance().parts().partStorageBus.stack( 1 ), 5 );
 
+		// partFormationPlane
+		Upgrades.FUZZY.registerItem( AEApi.instance().parts().partFormationPlane.stack( 1 ), 1 );
+		Upgrades.INVERTER.registerItem( AEApi.instance().parts().partFormationPlane.stack( 1 ), 1 );
+		Upgrades.CAPACITY.registerItem( AEApi.instance().parts().partFormationPlane.stack( 1 ), 5 );
+
 		// matter cannon
 		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemMassCannon.stack( 1 ), 1 );
 		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemMassCannon.stack( 1 ), 1 );
