@@ -33,6 +33,7 @@ import appeng.container.implementations.ContainerChest;
 import appeng.container.implementations.ContainerCondenser;
 import appeng.container.implementations.ContainerCraftingTerm;
 import appeng.container.implementations.ContainerDrive;
+import appeng.container.implementations.ContainerFormationPlane;
 import appeng.container.implementations.ContainerGrinder;
 import appeng.container.implementations.ContainerIOPort;
 import appeng.container.implementations.ContainerInterface;
@@ -52,6 +53,7 @@ import appeng.container.implementations.ContainerWirelessTerm;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.helpers.WirelessTerminalGuiObject;
+import appeng.parts.automation.PartFormationPlane;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.parts.misc.PartStorageBus;
 import appeng.parts.reporting.PartCraftingTerminal;
@@ -105,6 +107,8 @@ public enum GuiBridge implements IGuiHandler
 	GUI_IOPORT(ContainerIOPort.class, TileIOPort.class, false, SecurityPermissions.BUILD),
 
 	GUI_STORAGEBUS(ContainerStorageBus.class, PartStorageBus.class, false, SecurityPermissions.BUILD),
+
+	GUI_FPLANE(ContainerFormationPlane.class, PartFormationPlane.class, false, SecurityPermissions.BUILD),
 
 	GUI_PRIORITY(ContainerPriority.class, IPriorityHost.class, false, SecurityPermissions.BUILD),
 

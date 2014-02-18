@@ -8,6 +8,7 @@ import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.parts.automation.PartAnnihilationPlane;
 import appeng.parts.automation.PartExportBus;
+import appeng.parts.automation.PartFormationPlane;
 import appeng.parts.automation.PartImportBus;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.parts.misc.PartCableAnchor;
@@ -65,7 +66,7 @@ public enum PartType
 
 	AnnihilationPlane(AEFeature.AnnihilationPlane, PartAnnihilationPlane.class),
 
-	// FormationPlane(AEFeature.FormationPlane, PartFormationPlane.class),
+	FormationPlane(AEFeature.FormationPlane, PartFormationPlane.class),
 
 	P2PTunnelME(AEFeature.P2PTunnelME, PartP2PTunnelME.class, GuiText.METunnel),
 

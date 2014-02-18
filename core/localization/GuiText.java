@@ -22,7 +22,7 @@ public enum GuiText
 
 	SecurityCardEditor, NoPermissions, WirelessTerminal, Wireless,
 
-	CraftingTerminal,
+	CraftingTerminal, FormationPlane,
 
 	METunnel, ItemTunnel, RedstoneTunnel, MJTunnel, EUTunnel, FluidTunnel;
 
