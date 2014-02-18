@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.concurrent.Callable;
 
 import appeng.api.networking.IGridNode;
-import appeng.core.AELog;
 import appeng.parts.p2p.PartP2PTunnelME;
 
 public class Connections implements Callable
