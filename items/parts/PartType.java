@@ -48,7 +48,7 @@ public enum PartType
 
 	QuartzFiber(AEFeature.Core, PartQuartzFiber.class),
 
-	Monitior(AEFeature.Core, PartMonitor.class),
+	Monitor(AEFeature.Core, PartMonitor.class),
 
 	SemiDarkMonitor(AEFeature.Core, PartSemiDarkMonitor.class),
 
