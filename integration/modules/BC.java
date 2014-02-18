@@ -12,12 +12,15 @@ import appeng.api.config.TunnelType;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.parts.IFacadePart;
 import appeng.facade.FacadePart;
+import appeng.integration.BaseModule;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IBC;
 import appeng.integration.modules.helpers.BCPipeHandler;
+import appeng.integration.modules.helpers.MJPerdition;
 import buildcraft.BuildCraftEnergy;
 import buildcraft.BuildCraftTransport;
 import buildcraft.api.tools.IToolWrench;
+import buildcraft.api.transport.IPipeConnection;
 import buildcraft.api.transport.IPipeTile;
 import buildcraft.api.transport.IPipeTile.PipeType;
 import buildcraft.transport.ItemFacade;
@@ -25,7 +28,7 @@ import buildcraft.transport.PipeIconProvider;
 import buildcraft.transport.TileGenericPipe;
 import cpw.mods.fml.common.event.FMLInterModComms;
 
-public class BC implements IIntegrationModule, IBC
+public class BC extends BaseModule implements IIntegrationModule, IBC
 {
 
 	public static BC instance;
@@ -173,6 +176,10 @@ public class BC implements IIntegrationModule, IBC
 	@Override
 	public void Init()
 	{
+		TestClass(IPipeConnection.class);
+		TestClass(ItemFacade.class);
+		TestClass(IToolWrench.class);
+		
 		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIPipeConnection", "buildcraft.api.transport.IPipeConnection" );
 		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new BCPipeHandler() );
 	}

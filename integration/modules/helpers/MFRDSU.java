@@ -89,7 +89,7 @@ public class MFRDSU implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems(IItemList out)
+	public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> out)
 	{
 		ItemStack is = dsu.getStoredItemType();
 		if ( is != null )
