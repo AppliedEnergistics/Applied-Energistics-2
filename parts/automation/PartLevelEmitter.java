@@ -337,7 +337,8 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 	public void renderTorchAtAngle(double baseX, double baseY, double baseZ)
 	{
 		boolean isOn = isLevelEmitterOn();
-		IIcon IIcon = (isOn ? CableBusTextures.LevelEmitterTorchOn.getIcon() : is.getIconIndex());
+		IIcon offTexture = is.getIconIndex();
+		IIcon IIcon = (isOn ? CableBusTextures.LevelEmitterTorchOn.getIcon() : offTexture);
 		//
 		cenx = baseX + 0.5;
 		ceny = baseY + 0.5;
@@ -366,6 +367,9 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 		 * float var16 = (float)var14 / 256.0F; float var17 = ((float)var14 + 15.99F) / 256.0F; float var18 =
 		 * (float)var15 / 256.0F; float var19 = ((float)var15 + 15.99F) / 256.0F;
 		 */
+		double var20b = (double) offTexture.getInterpolatedU( 7.0D );
+		double var24b = (double) offTexture.getInterpolatedU( 9.0D );
+
 		double var20 = (double) IIcon.getInterpolatedU( 7.0D );
 		double var24 = (double) IIcon.getInterpolatedU( 9.0D );
 		double var22 = (double) IIcon.getInterpolatedV( 6.0D + (isOn ? 0 : 1.0D) );
@@ -385,7 +389,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 		double var40 = baseZ - 0.5D;
 		double var42 = baseZ + 0.5D;
 		double var44 = 0.0625D;
-		double var422 = 0.1915D;
+		double var422 = 0.1915D + 1.0 / 16.0;
 		double TorchLen = 0.625D;
 
 		double toff = 0.0d;
@@ -407,10 +411,10 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 		this.addVertexWithUV( baseX + Zero * (1.0D - TorchLen) + var44, baseY + TorchLen - toff, baseZ + par10 * (1.0D - TorchLen) + var44, var24, var26 );
 		this.addVertexWithUV( baseX + Zero * (1.0D - TorchLen) + var44, baseY + TorchLen - toff, baseZ + par10 * (1.0D - TorchLen) - var44, var24, var22 );
 
-		this.addVertexWithUV( baseX + Zero * (1.0D - TorchLen) + var44, baseY + var422, baseZ + par10 * (1.0D - TorchLen) - var44, var24, var22b );
-		this.addVertexWithUV( baseX + Zero * (1.0D - TorchLen) + var44, baseY + var422, baseZ + par10 * (1.0D - TorchLen) + var44, var24, var26b );
-		this.addVertexWithUV( baseX + Zero * (1.0D - TorchLen) - var44, baseY + var422, baseZ + par10 * (1.0D - TorchLen) + var44, var20, var26b );
-		this.addVertexWithUV( baseX + Zero * (1.0D - TorchLen) - var44, baseY + var422, baseZ + par10 * (1.0D - TorchLen) - var44, var20, var22b );
+		this.addVertexWithUV( baseX + Zero * (1.0D - TorchLen) + var44, baseY + var422, baseZ + par10 * (1.0D - TorchLen) - var44, var24b, var22b );
+		this.addVertexWithUV( baseX + Zero * (1.0D - TorchLen) + var44, baseY + var422, baseZ + par10 * (1.0D - TorchLen) + var44, var24b, var26b );
+		this.addVertexWithUV( baseX + Zero * (1.0D - TorchLen) - var44, baseY + var422, baseZ + par10 * (1.0D - TorchLen) + var44, var20b, var26b );
+		this.addVertexWithUV( baseX + Zero * (1.0D - TorchLen) - var44, baseY + var422, baseZ + par10 * (1.0D - TorchLen) - var44, var20b, var22b );
 
 		this.addVertexWithUV( baseX + var44 + Zero, baseY, baseZ - var44 + par10, var32, var30 );
 		this.addVertexWithUV( baseX + var44 + Zero, baseY, baseZ + var44 + par10, var32, var34 );
@@ -481,7 +485,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 	@Override
 	public void getBoxes(IPartCollsionHelper bch)
 	{
-		bch.addBox( 7, 7, 10, 9, 9, 16 );
+		bch.addBox( 7, 7, 11, 9, 9, 16 );
 	}
 
 	@Override
