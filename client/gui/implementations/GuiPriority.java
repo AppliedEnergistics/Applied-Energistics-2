@@ -18,6 +18,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.IPriorityHost;
+import appeng.parts.automation.PartFormationPlane;
 import appeng.parts.misc.PartStorageBus;
 import appeng.tile.storage.TileChest;
 import appeng.tile.storage.TileDrive;
@@ -59,6 +60,12 @@ public class GuiPriority extends AEBaseGui
 		{
 			myIcon = AEApi.instance().parts().partStorageBus.stack( 1 );
 			OriginalGui = GuiBridge.GUI_STORAGEBUS;
+		}
+
+		if ( target instanceof PartFormationPlane )
+		{
+			myIcon = AEApi.instance().parts().partFormationPlane.stack( 1 );
+			OriginalGui = GuiBridge.GUI_FPLANE;
 		}
 
 		if ( target instanceof TileDrive )
