@@ -4,22 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
+import appeng.api.exceptions.MissingIngredientError;
+import appeng.api.exceptions.RecipeError;
+import appeng.api.exceptions.RegistrationError;
+import appeng.api.recipes.ICraftHandler;
+import appeng.api.recipes.IIngredient;
 import appeng.core.AELog;
-import appeng.recipes.Ingredient;
-import appeng.recipes.MissingIngredientError;
-import appeng.recipes.RecipeError;
-import appeng.recipes.RegistrationError;
 import appeng.recipes.Recipes.ShapelessRecipe;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class Shapeless extends CraftHandler
+public class Shapeless implements ICraftHandler
 {
 
-	List<Ingredient> inputs;
-	Ingredient output;
+	List<IIngredient> inputs;
+	IIngredient output;
 
 	@Override
-	public void setup(List<List<Ingredient>> input, List<List<Ingredient>> output) throws RecipeError
+	public void setup(List<List<IIngredient>> input, List<List<IIngredient>> output) throws RecipeError
 	{
 		if ( output.size() == 1 && output.get( 0 ).size() == 1 )
 		{
@@ -38,9 +39,9 @@ public class Shapeless extends CraftHandler
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		List<Object> args = new ArrayList();
-		for (Ingredient i : inputs)
-			args.add( i.getSet() );
+		List<Object> args = new ArrayList<Object>();
+		for (IIngredient i : inputs)
+			args.add( i.getItemStackSet() );
 
 		ItemStack outIS = output.getItemStack();
 

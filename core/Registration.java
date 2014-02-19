@@ -15,6 +15,7 @@ import appeng.api.definitions.Blocks;
 import appeng.api.definitions.Items;
 import appeng.api.definitions.Materials;
 import appeng.api.definitions.Parts;
+import appeng.api.features.IRecipeHandlerRegistry;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -113,6 +114,11 @@ import appeng.me.storage.AEExternalHandler;
 import appeng.recipes.RecipeHandler;
 import appeng.recipes.Recipes.ShapedRecipe;
 import appeng.recipes.Recipes.ShapelessRecipe;
+import appeng.recipes.handlers.Grind;
+import appeng.recipes.handlers.Pureify;
+import appeng.recipes.handlers.Shaped;
+import appeng.recipes.handlers.Shapeless;
+import appeng.recipes.handlers.Smelt;
 import appeng.recipes.loader.ConfigLoader;
 import appeng.recipes.loader.JarLoader;
 import appeng.recipes.ores.OreDictionaryHandler;
@@ -143,6 +149,13 @@ public class Registration
 
 	public void PreInit(FMLPreInitializationEvent event)
 	{
+		IRecipeHandlerRegistry recipeRegistery = AEApi.instance().registries().recipes();
+		recipeRegistery.addNewCraftHandler("grind", Grind.class);
+		recipeRegistery.addNewCraftHandler("shaped", Shaped.class);
+		recipeRegistery.addNewCraftHandler("shapeless", Shapeless.class);
+		recipeRegistery.addNewCraftHandler("smelt", Smelt.class);
+		recipeRegistery.addNewCraftHandler("pureify", Pureify.class);
+
 		RecipeSorter.register( "AE2-Shaped", ShapedRecipe.class, Category.SHAPED, "" );
 		RecipeSorter.register( "AE2-Shapeless", ShapelessRecipe.class, Category.SHAPELESS, "" );
 

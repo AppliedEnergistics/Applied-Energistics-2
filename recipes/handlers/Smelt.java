@@ -2,25 +2,26 @@ package appeng.recipes.handlers;
 
 import java.util.List;
 
-import appeng.recipes.Ingredient;
-import appeng.recipes.MissingIngredientError;
-import appeng.recipes.RecipeError;
-import appeng.recipes.RegistrationError;
+import appeng.api.exceptions.MissingIngredientError;
+import appeng.api.exceptions.RecipeError;
+import appeng.api.exceptions.RegistrationError;
+import appeng.api.recipes.ICraftHandler;
+import appeng.api.recipes.IIngredient;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class Smelt extends CraftHandler
+public class Smelt implements ICraftHandler
 {
 
-	Ingredient in;
-	Ingredient out;
+	IIngredient in;
+	IIngredient out;
 
 	@Override
-	public void setup(List<List<Ingredient>> input, List<List<Ingredient>> output) throws RecipeError
+	public void setup(List<List<IIngredient>> input, List<List<IIngredient>> output) throws RecipeError
 	{
 		if ( input.size() == 1 && output.size() == 1 )
 		{
-			List<Ingredient> inputList = input.get( 0 );
-			List<Ingredient> outputList = output.get( 0 );
+			List<IIngredient> inputList = input.get( 0 );
+			List<IIngredient> outputList = output.get( 0 );
 			if ( inputList.size() == 1 && outputList.size() == 1 )
 			{
 				in = inputList.get( 0 );

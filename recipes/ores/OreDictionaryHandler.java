@@ -12,7 +12,7 @@ public class OreDictionaryHandler
 
 	public static final OreDictionaryHandler instance = new OreDictionaryHandler();
 
-	private List<IOreListener> ol = new ArrayList();
+	private List<IOreListener> ol = new ArrayList<IOreListener>();
 
 	/**
 	 * Just limit what items are sent to the final listeners, I got sick of strange items showing up...

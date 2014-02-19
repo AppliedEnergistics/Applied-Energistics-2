@@ -63,28 +63,28 @@ public class AppEng
 	private IntegrationRegistry integrationModules = new IntegrationRegistry( new Object[] {
 
 	/**
-	 * Display Name, ModID ClassPostFix
+	 * Side, Display Name, ModID ClassPostFix
 	 */
-	IntegrationSide.BOTH, "Industrial Craft 2", "IC2", "IC2", // IC2
-			IntegrationSide.BOTH, "Railcraft", "Railcraft", "RC", // RC
-			IntegrationSide.BOTH, "Thermal Expansion", "ThermalExpansion", "TE", // TE
-			IntegrationSide.BOTH, "Mystcraft", "Mystcraft", "Mystcraft", // MC
-			IntegrationSide.BOTH, "BuildCraft", "BuildCraft|Silicon", "BC", // BC
-			IntegrationSide.BOTH, "BuildCraft Power", null, "MJ", // BC
-			IntegrationSide.BOTH, "Greg Tech", "gregtech_addon", "GT", // GT
-			IntegrationSide.BOTH, "Universal Electricity", null, "UE", // UE
-			IntegrationSide.BOTH, "Logistics Pipes", "LogisticsPipes|Main", "LP", // LP
-			// IntegrationSide.CLIENT, "Inventory Tweaks", "", "InvTweaks",
-			// IntegrationSide.BOTH, "Mine Factory Reloaded", "MineFactoryReloaded", "MFR", // MFR
-			IntegrationSide.BOTH, "Deep Storage Unit", null, "DSU", // DSU
-			IntegrationSide.BOTH, "Better Storage", "betterstorage", "BS", // BS
-			IntegrationSide.BOTH, "Factorization", "factorization", "FZ", // FZ
-			IntegrationSide.BOTH, "Forestry", "Forestry", "Forestry", // Forestry
-			IntegrationSide.BOTH, "Mekanism", "Mekanism", "Mekanism", // MeK
-			IntegrationSide.CLIENT, "Not Enought Items", "NotEnoughItems", "NEI", // Not
-																					// Eneough
-																					// Items
-			IntegrationSide.BOTH, "Forge MultiPart", "McMultipart", "FMP" } );
+		IntegrationSide.BOTH, "Industrial Craft 2", "IC2", "IC2", // IC2
+		//IntegrationSide.BOTH, "Railcraft", "Railcraft", "RC", // RC
+		//IntegrationSide.BOTH, "Thermal Expansion", "ThermalExpansion", "TE", // TE
+		//IntegrationSide.BOTH, "Mystcraft", "Mystcraft", "Mystcraft", // MC
+		IntegrationSide.BOTH, "BuildCraft", "BuildCraft|Silicon", "BC", // BC
+		IntegrationSide.BOTH, "BuildCraft Power", null, "MJ", // BC
+		//IntegrationSide.BOTH, "Greg Tech", "gregtech_addon", "GT", // GT
+		//IntegrationSide.BOTH, "Universal Electricity", null, "UE", // UE
+		//IntegrationSide.BOTH, "Logistics Pipes", "LogisticsPipes|Main", "LP", // LP
+		// IntegrationSide.CLIENT, "Inventory Tweaks", "", "InvTweaks", // InvTweaks
+		// IntegrationSide.BOTH, "Mine Factory Reloaded", "MineFactoryReloaded", "MFR", // MFR
+		IntegrationSide.BOTH, "Deep Storage Unit", null, "DSU", // DSU
+		//IntegrationSide.BOTH, "Better Storage", "betterstorage", "BS", // BS
+		//IntegrationSide.BOTH, "Factorization", "factorization", "FZ", // FZ
+		//IntegrationSide.BOTH, "Forestry", "Forestry", "Forestry", // Forestry
+		//IntegrationSide.BOTH, "Mekanism", "Mekanism", "Mekanism", // MeK
+		//IntegrationSide.CLIENT, "Waila", "Waila", "Waila", // Waila			
+		//IntegrationSide.CLIENT, "Not Enough Items", "NotEnoughItems", "NEI", // NEI
+		//IntegrationSide.BOTH, "Forge MultiPart", "McMultipart", "FMP" // FMP
+	});
 
 	public boolean isIntegrationEnabled(String Name)
 	{

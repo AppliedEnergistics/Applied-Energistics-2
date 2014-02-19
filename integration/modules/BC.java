@@ -13,10 +13,8 @@ import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.parts.IFacadePart;
 import appeng.facade.FacadePart;
 import appeng.integration.BaseModule;
-import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IBC;
 import appeng.integration.modules.helpers.BCPipeHandler;
-import appeng.integration.modules.helpers.MJPerdition;
 import buildcraft.BuildCraftEnergy;
 import buildcraft.BuildCraftTransport;
 import buildcraft.api.tools.IToolWrench;
@@ -28,7 +26,7 @@ import buildcraft.transport.PipeIconProvider;
 import buildcraft.transport.TileGenericPipe;
 import cpw.mods.fml.common.event.FMLInterModComms;
 
-public class BC extends BaseModule implements IIntegrationModule, IBC
+public class BC extends BaseModule implements  IBC
 {
 
 	public static BC instance;

@@ -6,10 +6,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import appeng.api.AEApi;
+import appeng.api.exceptions.MissingIngredientError;
+import appeng.api.exceptions.RecipeError;
+import appeng.api.exceptions.RegistrationError;
+import appeng.api.features.IRecipeHandlerRegistry;
+import appeng.api.recipes.ICraftHandler;
+import appeng.api.recipes.IIngredient;
 import appeng.api.recipes.IRecipeHandler;
 import appeng.api.recipes.IRecipeLoader;
 import appeng.core.AELog;
-import appeng.recipes.handlers.CraftHandler;
 import appeng.recipes.handlers.Grind;
 import appeng.recipes.handlers.OreRegistration;
 import appeng.recipes.handlers.Pureify;
@@ -31,7 +37,7 @@ public class RecipeHandler implements IRecipeHandler
 		data = parent.data;
 	}
 
-	private void addCrafting(CraftHandler ch)
+	private void addCrafting(ICraftHandler ch)
 	{
 		data.Handlers.add( ch );
 	}
@@ -42,7 +48,7 @@ public class RecipeHandler implements IRecipeHandler
 		HashMap<Class, Integer> processed = new HashMap<Class, Integer>();
 		try
 		{
-			for (CraftHandler ch : data.Handlers)
+			for (ICraftHandler ch : data.Handlers)
 			{
 				try
 				{
@@ -206,6 +212,8 @@ public class RecipeHandler implements IRecipeHandler
 	{
 		try
 		{
+			IRecipeHandlerRegistry cr = AEApi.instance().registries().recipes();
+			
 			if ( tokens.isEmpty() )
 				return;
 
@@ -226,7 +234,7 @@ public class RecipeHandler implements IRecipeHandler
 					List<String> pre = tokens.subList( 0, split - 1 );
 					List<String> post = tokens.subList( split, tokens.size() );
 
-					List<List<Ingredient>> inputs = parseLines( pre );
+					List<List<IIngredient>> inputs = parseLines( pre );
 
 					if ( inputs.size() >= 1 && post.size() == 1 )
 					{
@@ -240,11 +248,11 @@ public class RecipeHandler implements IRecipeHandler
 					List<String> pre = tokens.subList( 0, split - 1 );
 					List<String> post = tokens.subList( split, tokens.size() );
 
-					List<List<Ingredient>> inputs = parseLines( pre );
+					List<List<IIngredient>> inputs = parseLines( pre );
 
 					if ( inputs.size() == 1 && inputs.get( 0 ).size() > 0 && post.size() == 1 )
 					{
-						CraftHandler ch = new OreRegistration( inputs.get( 0 ), post.get( 0 ) );
+						ICraftHandler ch = new OreRegistration( inputs.get( 0 ), post.get( 0 ) );
 						addCrafting( ch );
 					}
 					else
@@ -255,21 +263,10 @@ public class RecipeHandler implements IRecipeHandler
 					List<String> pre = tokens.subList( 0, split - 1 );
 					List<String> post = tokens.subList( split, tokens.size() );
 
-					List<List<Ingredient>> inputs = parseLines( pre );
-					List<List<Ingredient>> outputs = parseLines( post );
+					List<List<IIngredient>> inputs = parseLines( pre );
+					List<List<IIngredient>> outputs = parseLines( post );
 
-					CraftHandler ch = null;
-
-					if ( operation.equals( "shaped" ) )
-						ch = new Shaped();
-					else if ( operation.equals( "shapeless" ) )
-						ch = new Shapeless();
-					else if ( operation.equals( "smelt" ) )
-						ch = new Smelt();
-					else if ( operation.equals( "pureify" ) )
-						ch = new Pureify();
-					else if ( operation.equals( "grind" ) )
-						ch = new Grind();
+					ICraftHandler ch = cr.getCraftHandlerFor(operation);
 
 					if ( ch != null )
 					{
@@ -325,10 +322,10 @@ public class RecipeHandler implements IRecipeHandler
 		tokens.clear();
 	}
 
-	private List<List<Ingredient>> parseLines(List<String> subList) throws RecipeError
+	private List<List<IIngredient>> parseLines(List<String> subList) throws RecipeError
 	{
-		List<List<Ingredient>> out = new LinkedList<List<Ingredient>>();
-		List<Ingredient> cList = new LinkedList<Ingredient>();
+		List<List<IIngredient>> out = new LinkedList<List<IIngredient>>();
+		List<IIngredient> cList = new LinkedList<IIngredient>();
 
 		boolean hasQty = false;
 		int qty = 1;
@@ -341,7 +338,7 @@ public class RecipeHandler implements IRecipeHandler
 					throw new RecipeError( "Qty found with no item." );
 				if ( !cList.isEmpty() )
 					out.add( cList );
-				cList = new LinkedList<Ingredient>();
+				cList = new LinkedList<IIngredient>();
 			}
 			else
 			{

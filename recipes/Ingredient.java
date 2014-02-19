@@ -6,13 +6,17 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+import appeng.api.exceptions.MissingIngredientError;
+import appeng.api.exceptions.RecipeError;
+import appeng.api.exceptions.RegistrationError;
+import appeng.api.recipes.IIngredient;
 import appeng.core.AppEng;
 import appeng.items.materials.MaterialType;
 import appeng.items.parts.ItemPart;
 import appeng.items.parts.PartType;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class Ingredient
+public class Ingredient implements IIngredient
 {
 
 	final public boolean isAir;
@@ -106,6 +110,7 @@ public class Ingredient
 			throw new RecipeError( input + " : Needs at least Namespace and Name." );
 	}
 
+	@Override
 	public ItemStack getItemStack() throws RegistrationError, MissingIngredientError
 	{
 		if ( isAir )
@@ -150,7 +155,8 @@ public class Ingredient
 		return nameSpace + ":" + itemName + ":" + meta;
 	}
 
-	public ItemStack[] getSet() throws RegistrationError, MissingIngredientError
+	@Override
+	public ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
 	{
 		if ( nameSpace.equalsIgnoreCase( "oreDictionary" ) )
 		{
@@ -169,6 +175,31 @@ public class Ingredient
 		}
 
 		return new ItemStack[] { getItemStack() };
+	}
+
+	@Override
+	public String getNameSpace() {
+		return nameSpace;
+	}
+
+	@Override
+	public String getItemName() {
+		return itemName;
+	}
+
+	@Override
+	public int getDamageValue() {
+		return meta;
+	}
+
+	@Override
+	public int getQty() {
+		return qty;
+	}
+	
+	@Override
+	public boolean isAir() {
+		return isAir;
 	}
 
 }
