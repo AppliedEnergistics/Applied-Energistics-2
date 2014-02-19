@@ -26,6 +26,7 @@ import appeng.api.config.Upgrades;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
@@ -97,20 +98,24 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@MENetworkEventSubscribe
+	public void powerRender(MENetworkPowerStatusChange c)
+	{
+		boolean currentActive = proxy.isActive();
+		if ( wasActive != currentActive )
+		{
+			wasActive = currentActive;
+			updateHandler();// proxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+		}
+	}
+
+	@MENetworkEventSubscribe
 	public void updateChannels(MENetworkChannelsChanged chann)
 	{
 		boolean currentActive = proxy.isActive();
 		if ( wasActive != currentActive )
 		{
 			wasActive = currentActive;
-			try
-			{
-				proxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
-			}
-			catch (GridAccessException e)
-			{
-				// :P
-			}
+			updateHandler();// proxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
 		}
 	}
 
@@ -375,8 +380,42 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 			if ( i instanceof ItemBlock || i instanceof IPlantable )
 			{
 				EntityPlayer player = Platform.getPlayer( (WorldServer) w );
-				player.prevCameraPitch = player.cameraPitch = 0;
-				player.prevCameraYaw = player.cameraYaw = 0;
+
+				float pitch = 0.0f, yaw = 0.0f;
+				player.yOffset = 1.8f;
+
+				switch (side)
+				{
+				case DOWN:
+					pitch = 90.0f;
+					player.yOffset = -1.8f;
+					break;
+				case EAST:
+					yaw = -90.0f;
+					break;
+				case NORTH:
+					yaw = 180.0f;
+					break;
+				case SOUTH:
+					yaw = 0.0f;
+					break;
+				case UNKNOWN:
+					break;
+				case UP:
+					pitch = 90.0f;
+					break;
+				case WEST:
+					yaw = 90.0f;
+					break;
+				}
+
+				player.posX = (float) tile.xCoord + 0.5;
+				player.posY = (float) tile.yCoord + 0.5;
+				player.posZ = (float) tile.zCoord + 0.5;
+
+				player.rotationPitch = player.prevCameraPitch = player.cameraPitch = pitch;
+				player.rotationYaw = player.prevCameraYaw = player.cameraYaw = yaw;
+
 				maxStorage = is.stackSize;
 				worked = true;
 				if ( type == Actionable.MODULATE )
@@ -415,6 +454,8 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		{
 			IAEItemStack out = input.copy();
 			out.decStackSize( maxStorage );
+			if ( out.getStackSize() == 0 )
+				return null;
 			return out;
 		}
 

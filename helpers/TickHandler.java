@@ -1,5 +1,6 @@
 package appeng.helpers;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Callable;
@@ -8,6 +9,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import appeng.api.networking.IGridNode;
 import appeng.core.AELog;
 import appeng.me.Grid;
+import appeng.me.NetworkList;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -22,12 +24,12 @@ public class TickHandler
 
 		public Queue<AEBaseTile> tiles = new LinkedList();
 
-		public LinkedList<Grid> networks = new LinkedList();
+		public Collection<Grid> networks = new NetworkList();
 
 		public void clear()
 		{
 			tiles = new LinkedList();
-			networks = new LinkedList();
+			networks = new NetworkList();
 		}
 
 	};
