@@ -48,7 +48,7 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 	}
 
 	@Override
-	public boolean onActivate(EntityPlayer player, Vec3 pos)
+	public boolean onPartActivate(EntityPlayer player, Vec3 pos)
 	{
 		if ( !player.isSneaking() )
 		{

@@ -20,12 +20,17 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.util.ICommonTile;
+import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigureableObject;
 import appeng.api.util.IOrientable;
 import appeng.core.AELog;
 import appeng.core.features.ItemStackSrc;
+import appeng.helpers.IPriorityHost;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
+import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
@@ -325,7 +330,31 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 	 */
 	public void uploadSettings(SettingsFrom from, NBTTagCompound compound)
 	{
+		if ( compound != null && this instanceof IConfigureableObject )
+		{
+			IConfigManager cm = ((IConfigureableObject) this).getConfigManager();
+			if ( cm != null )
+				cm.readFromNBT( compound );
+		}
 
+		if ( this instanceof IPriorityHost )
+		{
+			IPriorityHost pHost = (IPriorityHost) this;
+			pHost.setPriority( compound.getInteger( "priority" ) );
+		}
+
+		if ( this instanceof ISegmentedInventory )
+		{
+			IInventory inv = ((ISegmentedInventory) this).getInventoryByName( "config" );
+			if ( inv != null && inv instanceof AppEngInternalAEInventory )
+			{
+				AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
+				AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSizeInventory() );
+				tmp.readFromNBT( compound, "config" );
+				for (int x = 0; x < tmp.getSizeInventory(); x++)
+					target.setInventorySlotContents( x, tmp.getStackInSlot( x ) );
+			}
+		}
 	}
 
 	/**
@@ -336,7 +365,31 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 	 */
 	public NBTTagCompound downloadSettings(SettingsFrom from)
 	{
-		return null;
+		NBTTagCompound output = new NBTTagCompound();
+
+		if ( this instanceof IConfigureableObject )
+		{
+			IConfigManager cm = ((IConfigureableObject) this).getConfigManager();
+			if ( cm != null )
+				cm.writeToNBT( output );
+		}
+
+		if ( this instanceof IPriorityHost )
+		{
+			IPriorityHost pHost = (IPriorityHost) this;
+			output.setInteger( "priority", pHost.getPriority() );
+		}
+
+		if ( this instanceof ISegmentedInventory )
+		{
+			IInventory inv = ((ISegmentedInventory) this).getInventoryByName( "config" );
+			if ( inv != null && inv instanceof AppEngInternalAEInventory )
+			{
+				((AppEngInternalAEInventory) inv).writeToNBT( output, "config" );
+			}
+		}
+
+		return output.hasNoTags() ? null : output;
 	}
 
 	public void securityBreak()

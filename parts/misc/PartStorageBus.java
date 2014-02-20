@@ -102,7 +102,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public boolean onActivate(EntityPlayer player, Vec3 pos)
+	public boolean onPartActivate(EntityPlayer player, Vec3 pos)
 	{
 		if ( !player.isSneaking() )
 		{

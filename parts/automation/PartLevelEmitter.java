@@ -179,7 +179,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 	}
 
 	@Override
-	public boolean onActivate(EntityPlayer player, Vec3 pos)
+	public boolean onPartActivate(EntityPlayer player, Vec3 pos)
 	{
 		if ( !player.isSneaking() )
 		{

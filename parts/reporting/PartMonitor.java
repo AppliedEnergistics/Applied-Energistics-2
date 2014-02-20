@@ -6,9 +6,7 @@ import java.io.IOException;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.parts.IPartMonitor;
 import appeng.api.networking.GridFlags;
@@ -218,12 +216,6 @@ public class PartMonitor extends AEBasePart implements IPartMonitor
 	{
 		bch.addBox( 2, 2, 14, 14, 14, 16 );
 		bch.addBox( 4, 4, 13, 12, 12, 14 );
-	}
-
-	@Override
-	public boolean onActivate(EntityPlayer player, Vec3 pos)
-	{
-		return false;
 	}
 
 }

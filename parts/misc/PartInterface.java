@@ -267,7 +267,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	}
 
 	@Override
-	public boolean onActivate(EntityPlayer p, Vec3 pos)
+	public boolean onPartActivate(EntityPlayer p, Vec3 pos)
 	{
 		if ( p.isSneaking() )
 			return false;

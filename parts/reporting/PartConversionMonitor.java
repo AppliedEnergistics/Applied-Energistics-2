@@ -30,7 +30,7 @@ public class PartConversionMonitor extends PartStorageMonitor
 	}
 
 	@Override
-	public boolean onShiftActivate(EntityPlayer player, Vec3 pos)
+	public boolean onPartShiftActivate(EntityPlayer player, Vec3 pos)
 	{
 		if ( Platform.isClient() )
 			return true;

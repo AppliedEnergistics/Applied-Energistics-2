@@ -42,6 +42,12 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 	}
 
 	@Override
+	public boolean useStandardMemoryCard()
+	{
+		return false;
+	}
+	
+	@Override
 	public void writeToNBT(NBTTagCompound data)
 	{
 		data.setBoolean( "output", output );
@@ -56,7 +62,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 	}
 
 	@Override
-	public boolean onActivate(EntityPlayer player, Vec3 pos)
+	public boolean onPartActivate(EntityPlayer player, Vec3 pos)
 	{
 		ItemStack is = player.inventory.getCurrentItem();
 
@@ -178,7 +184,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 	}
 
 	@Override
-	public boolean onShiftActivate(EntityPlayer player, Vec3 pos)
+	public boolean onPartShiftActivate(EntityPlayer player, Vec3 pos)
 	{
 		ItemStack is = player.inventory.getCurrentItem();
 		if ( is != null && is.getItem() instanceof IMemoryCard )

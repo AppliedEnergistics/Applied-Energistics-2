@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.core.features.AEFeature;
@@ -33,6 +34,12 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 		{
 			l.add( StatCollector.translateToLocal( data.getString( "tooltip" ) ) );
 		}
+	}
+
+	@Override
+	public boolean doesSneakBypassUse(World world, int x, int y, int z, EntityPlayer player)
+	{
+		return true;
 	}
 
 	@Override

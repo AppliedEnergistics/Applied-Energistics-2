@@ -21,6 +21,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.implementations.items.IMemoryCard;
+import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.parts.BusSupport;
@@ -34,10 +37,14 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigureableObject;
+import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
 import appeng.parts.networking.PartCable;
+import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
+import appeng.util.SettingsFrom;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -227,12 +234,6 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	}
 
 	@Override
-	public boolean onActivate(EntityPlayer player, Vec3 pos)
-	{
-		return false;
-	}
-
-	@Override
 	public AECableType getCableConnectionType(ForgeDirection dir)
 	{
 		return AECableType.GLASS;
@@ -280,8 +281,140 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 		return 0;
 	}
 
+	/**
+	 * depending on the from, diffrent settings will be accepted, don't call this with null
+	 * 
+	 * @param from
+	 * @param compound
+	 */
+	public void uploadSettings(SettingsFrom from, NBTTagCompound compound)
+	{
+		if ( compound != null && this instanceof IConfigureableObject )
+		{
+			IConfigManager cm = ((IConfigureableObject) this).getConfigManager();
+			if ( cm != null )
+				cm.readFromNBT( compound );
+		}
+
+		if ( this instanceof IPriorityHost )
+		{
+			IPriorityHost pHost = (IPriorityHost) this;
+			pHost.setPriority( compound.getInteger( "priority" ) );
+		}
+
+		if ( this instanceof ISegmentedInventory )
+		{
+			IInventory inv = ((ISegmentedInventory) this).getInventoryByName( "config" );
+			if ( inv != null && inv instanceof AppEngInternalAEInventory )
+			{
+				AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
+				AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSizeInventory() );
+				tmp.readFromNBT( compound, "config" );
+				for (int x = 0; x < tmp.getSizeInventory(); x++)
+					target.setInventorySlotContents( x, tmp.getStackInSlot( x ) );
+			}
+		}
+	}
+
+	/**
+	 * null means nothing to store...
+	 * 
+	 * @param from
+	 * @return
+	 */
+	public NBTTagCompound downloadSettings(SettingsFrom from)
+	{
+		NBTTagCompound output = new NBTTagCompound();
+
+		if ( this instanceof IConfigureableObject )
+		{
+			IConfigManager cm = this.getConfigManager();
+			if ( cm != null )
+				cm.writeToNBT( output );
+		}
+
+		if ( this instanceof IPriorityHost )
+		{
+			IPriorityHost pHost = (IPriorityHost) this;
+			output.setInteger( "priority", pHost.getPriority() );
+		}
+
+		if ( this instanceof ISegmentedInventory )
+		{
+			IInventory inv = ((ISegmentedInventory) this).getInventoryByName( "config" );
+			if ( inv != null && inv instanceof AppEngInternalAEInventory )
+			{
+				((AppEngInternalAEInventory) inv).writeToNBT( output, "config" );
+			}
+		}
+
+		return output.hasNoTags() ? null : output;
+	}
+
+	public boolean useStandardMemoryCard()
+	{
+		return true;
+	}
+
+	private boolean useMemoryCard(EntityPlayer player)
+	{
+		ItemStack memCardIS = player.inventory.getCurrentItem();
+
+		if ( memCardIS != null && useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard )
+		{
+			IMemoryCard memc = (IMemoryCard) memCardIS.getItem();
+			String name = getItemStack( PartItemStack.Network ).getUnlocalizedName();
+
+			if ( player.isSneaking() )
+			{
+				NBTTagCompound data = downloadSettings( SettingsFrom.MEMORY_CARD );
+				if ( data != null )
+				{
+					memc.setMemoryCardContents( memCardIS, name, data );
+					memc.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
+				}
+			}
+			else
+			{
+				String stordName = memc.getSettingsName( memCardIS );
+				NBTTagCompound data = memc.getData( memCardIS );
+				if ( name.equals( stordName ) )
+				{
+					uploadSettings( SettingsFrom.MEMORY_CARD, data );
+					memc.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
+				}
+				else
+					memc.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
+			}
+			return true;
+		}
+		return false;
+	}
+
 	@Override
-	public boolean onShiftActivate(EntityPlayer player, Vec3 pos)
+	final public boolean onActivate(EntityPlayer player, Vec3 pos)
+	{
+		if ( useMemoryCard( player ) )
+			return true;
+
+		return onPartActivate( player, pos );
+	}
+
+	@Override
+	final public boolean onShiftActivate(EntityPlayer player, Vec3 pos)
+	{
+		if ( useMemoryCard( player ) )
+			return true;
+
+		return onPartShiftActivate( player, pos );
+	}
+
+	public boolean onPartActivate(EntityPlayer player, Vec3 pos)
+	{
+		return false;
+	}
+
+	public boolean onPartShiftActivate(EntityPlayer player, Vec3 pos)
 	{
 		return false;
 	}

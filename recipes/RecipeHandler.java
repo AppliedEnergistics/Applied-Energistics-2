@@ -16,12 +16,7 @@ import appeng.api.recipes.IIngredient;
 import appeng.api.recipes.IRecipeHandler;
 import appeng.api.recipes.IRecipeLoader;
 import appeng.core.AELog;
-import appeng.recipes.handlers.Grind;
 import appeng.recipes.handlers.OreRegistration;
-import appeng.recipes.handlers.Pureify;
-import appeng.recipes.handlers.Shaped;
-import appeng.recipes.handlers.Shapeless;
-import appeng.recipes.handlers.Smelt;
 
 public class RecipeHandler implements IRecipeHandler
 {
@@ -213,7 +208,7 @@ public class RecipeHandler implements IRecipeHandler
 		try
 		{
 			IRecipeHandlerRegistry cr = AEApi.instance().registries().recipes();
-			
+
 			if ( tokens.isEmpty() )
 				return;
 
@@ -266,7 +261,7 @@ public class RecipeHandler implements IRecipeHandler
 					List<List<IIngredient>> inputs = parseLines( pre );
 					List<List<IIngredient>> outputs = parseLines( post );
 
-					ICraftHandler ch = cr.getCraftHandlerFor(operation);
+					ICraftHandler ch = cr.getCraftHandlerFor( operation );
 
 					if ( ch != null )
 					{
