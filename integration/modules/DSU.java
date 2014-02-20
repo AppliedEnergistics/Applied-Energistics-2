@@ -5,12 +5,11 @@ import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 import appeng.api.AEApi;
 import appeng.api.storage.IMEInventory;
 import appeng.integration.BaseModule;
-import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IDSU;
 import appeng.integration.modules.helpers.MFRDSU;
 import appeng.integration.modules.helpers.MFRDSUHandler;
 
-public class DSU extends BaseModule implements IIntegrationModule, IDSU
+public class DSU extends BaseModule implements IDSU
 {
 
 	public static DSU instance;
@@ -32,7 +31,7 @@ public class DSU extends BaseModule implements IIntegrationModule, IDSU
 	@Override
 	public void Init()
 	{
-		TestClass(IDeepStorageUnit.class );
+		TestClass( IDeepStorageUnit.class );
 	}
 
 	@Override

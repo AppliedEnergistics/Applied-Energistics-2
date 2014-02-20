@@ -26,7 +26,7 @@ import buildcraft.transport.PipeIconProvider;
 import buildcraft.transport.TileGenericPipe;
 import cpw.mods.fml.common.event.FMLInterModComms;
 
-public class BC extends BaseModule implements  IBC
+public class BC extends BaseModule implements IBC
 {
 
 	public static BC instance;
@@ -174,10 +174,10 @@ public class BC extends BaseModule implements  IBC
 	@Override
 	public void Init()
 	{
-		TestClass(IPipeConnection.class);
-		TestClass(ItemFacade.class);
-		TestClass(IToolWrench.class);
-		
+		TestClass( IPipeConnection.class );
+		TestClass( ItemFacade.class );
+		TestClass( IToolWrench.class );
+
 		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIPipeConnection", "buildcraft.api.transport.IPipeConnection" );
 		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new BCPipeHandler() );
 	}

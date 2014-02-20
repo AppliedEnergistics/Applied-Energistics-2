@@ -101,6 +101,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		super.writeToStream( data );
 
 		data.writeByte( spin );
+		data.writeBoolean( isLocked );
 		data.writeBoolean( configuredItem != null ? true : false );
 		if ( configuredItem != null )
 			configuredItem.writeToPacket( data );
@@ -112,6 +113,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		boolean stuff = super.readFromStream( data );
 
 		spin = data.readByte();
+		isLocked = data.readBoolean();
 		boolean val = data.readBoolean();
 		if ( val )
 			configuredItem = AEItemStack.loadItemStackFromPacket( data );
@@ -136,6 +138,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		{
 			isLocked = !isLocked;
 			player.addChatMessage( (isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).get() );
+			this.getHost().markForUpdate();
 		}
 		else if ( !isLocked )
 		{

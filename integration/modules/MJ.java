@@ -1,14 +1,13 @@
 package appeng.integration.modules;
 
 import appeng.integration.BaseModule;
-import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IMJ;
 import appeng.integration.abstraction.helpers.BaseMJperdition;
 import appeng.integration.modules.helpers.MJPerdition;
 import appeng.tile.powersink.BuildCraft;
 import buildcraft.api.power.IPowerReceptor;
 
-public class MJ extends BaseModule implements IIntegrationModule, IMJ
+public class MJ extends BaseModule implements IMJ
 {
 
 	public static MJ instance;
@@ -24,7 +23,7 @@ public class MJ extends BaseModule implements IIntegrationModule, IMJ
 	@Override
 	public void Init() throws Throwable
 	{
-		TestClass(MJPerdition.class);
+		TestClass( MJPerdition.class );
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -18,7 +19,7 @@ import appeng.me.GridAccessException;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PartBasicState extends AEBasePart
+public class PartBasicState extends AEBasePart implements IPowerChannelState
 {
 
 	protected final int POWERED_FLAG = 1;
@@ -114,6 +115,18 @@ public class PartBasicState extends AEBasePart
 	public PartBasicState(Class c, ItemStack is) {
 		super( c, is );
 		proxy.setFlags( GridFlags.REQUIRE_CHANNEL );
+	}
+
+	@Override
+	public boolean isPowered()
+	{
+		return (clientFlags & POWERED_FLAG) == POWERED_FLAG;
+	}
+
+	@Override
+	public boolean isActive()
+	{
+		return (clientFlags & CHANNEL_FLAG) == CHANNEL_FLAG;
 	}
 
 }
