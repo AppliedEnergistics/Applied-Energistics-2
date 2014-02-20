@@ -56,8 +56,9 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	@SideOnly(Side.CLIENT)
 	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
-				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(),
+				CableBusTextures.PartTransitionPlaneBack.getIcon(), is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(),
+				CableBusTextures.PartMonitorSides.getIcon() );
 
 		rh.setBounds( 1, 1, 15, 15, 15, 16 );
 		rh.renderInventoryBox( renderer );

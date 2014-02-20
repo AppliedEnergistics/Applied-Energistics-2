@@ -75,7 +75,13 @@ public class BusRenderer implements IItemRenderer
 		}
 
 		if ( type == ItemRenderType.ENTITY )
-			GL11.glTranslatef( -0.5f, -0.5f, -0.5f );
+		{
+			GL11.glRotatef( 90.0f, 0.0f, 1.0f, 0.0f );
+			GL11.glScalef( 0.8f, 0.8f, 0.8f );
+			GL11.glTranslatef( -0.8f, -0.87f, -0.7f );
+
+		}
+
 		if ( type == ItemRenderType.INVENTORY )
 			GL11.glTranslatef( 0.0f, -0.1f, 0.0f );
 
@@ -115,6 +121,13 @@ public class BusRenderer implements IItemRenderer
 		else
 		{
 			IPart ip = getRenderer( item, (IPartItem) item.getItem() );
+
+			if ( type == ItemRenderType.ENTITY )
+			{
+				int depth = ip.cableConnectionRenderTo();
+				GL11.glTranslatef( 0.0f, 0.0f, -0.04f * (8 - depth) - 0.06f );
+			}
+
 			if ( ip != null )
 				ip.renderInventory( BusRenderHelper.instance, renderer );
 		}

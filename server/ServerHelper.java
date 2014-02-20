@@ -6,7 +6,9 @@ import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
@@ -18,6 +20,12 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class ServerHelper extends CommonHelper
 {
+
+	@Override
+	public void doRenderItem(ItemStack sis, TileEntity tile)
+	{
+
+	}
 
 	@Override
 	public List<EntityPlayer> getPlayers()

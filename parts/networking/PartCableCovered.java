@@ -102,7 +102,7 @@ public class PartCableCovered extends PartCable
 	@SideOnly(Side.CLIENT)
 	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		GL11.glTranslated( -0.2, -0.3, 0.0 );
+		GL11.glTranslated( -0.0, -0.0, 0.3 );
 
 		rh.setBounds( 5.0f, 5.0f, 2.0f, 11.0f, 11.0f, 14.0f );
 		float offu = 0;

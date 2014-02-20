@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
@@ -33,5 +35,7 @@ public abstract class CommonHelper
 	public abstract boolean shouldAddParticles(Random r);
 
 	public abstract MovingObjectPosition getMOP();
+
+	public abstract void doRenderItem(ItemStack sis, TileEntity tile);
 
 }

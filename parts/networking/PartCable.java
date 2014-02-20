@@ -360,7 +360,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	@SideOnly(Side.CLIENT)
 	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		GL11.glTranslated( -0.2, -0.3, 0.0 );
+		GL11.glTranslated( -0.0, -0.0, 0.3 );
 
 		rh.setTexture( getTexture( getCableColor() ) );
 		rh.setBounds( 6.0f, 6.0f, 2.0f, 10.0f, 10.0f, 14.0f );

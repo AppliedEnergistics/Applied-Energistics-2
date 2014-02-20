@@ -64,7 +64,7 @@ public class PartCableSmart extends PartCable
 	@SideOnly(Side.CLIENT)
 	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		GL11.glTranslated( -0.2, -0.3, 0.0 );
+		GL11.glTranslated( -0.0, -0.0, 0.3 );
 
 		float offu = 0;
 		float offv = 9;
