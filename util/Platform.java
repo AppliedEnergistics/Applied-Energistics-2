@@ -1306,7 +1306,7 @@ public class Platform
 
 			if ( myItems != null )
 			{
-				for (IAEItemStack is : myItems.getAvailableItems( new ItemList() ))
+				for (IAEItemStack is : myItems.getAvailableItems( AEApi.instance().storage().createItemList() ))
 				{
 					is.setStackSize( -is.getStackSize() );
 					gs.postAlterationOfStoredItems( StorageChannel.ITEMS, is, src );
@@ -1317,7 +1317,7 @@ public class Platform
 
 			if ( myFluids != null )
 			{
-				for (IAEFluidStack is : myFluids.getAvailableItems( new ItemList() ))
+				for (IAEFluidStack is : myFluids.getAvailableItems( AEApi.instance().storage().createFluidList() ))
 				{
 					is.setStackSize( -is.getStackSize() );
 					gs.postAlterationOfStoredItems( StorageChannel.ITEMS, is, src );
@@ -1331,7 +1331,7 @@ public class Platform
 
 			if ( myItems != null )
 			{
-				for (IAEItemStack is : myItems.getAvailableItems( new ItemList() ))
+				for (IAEItemStack is : myItems.getAvailableItems( new ItemList(IAEItemStack.class) ))
 				{
 					gs.postAlterationOfStoredItems( StorageChannel.ITEMS, is, src );
 				}
@@ -1341,7 +1341,7 @@ public class Platform
 
 			if ( myFluids != null )
 			{
-				for (IAEFluidStack is : myFluids.getAvailableItems( new ItemList() ))
+				for (IAEFluidStack is : myFluids.getAvailableItems( new ItemList(IAEFluidStack.class) ))
 				{
 					gs.postAlterationOfStoredItems( StorageChannel.ITEMS, is, src );
 				}

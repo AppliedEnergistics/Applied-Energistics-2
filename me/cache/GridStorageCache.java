@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -26,8 +27,6 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.storage.ItemWatcher;
 import appeng.me.storage.NetworkInventoryHandler;
-import appeng.util.item.ItemList;
-
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
@@ -68,12 +67,12 @@ public class GridStorageCache implements IStorageGrid
 
 			for (IMEInventoryHandler<IAEItemStack> h : cc.getCellArray( StorageChannel.ITEMS ))
 			{
-				postChanges( StorageChannel.ITEMS, 1, h.getAvailableItems( new ItemList<IAEItemStack>() ), new MachineSource( cc ) );
+				postChanges( StorageChannel.ITEMS, 1, h.getAvailableItems( AEApi.instance().storage().createItemList() ), new MachineSource( cc ) );
 			}
 
 			for (IMEInventoryHandler<IAEFluidStack> h : cc.getCellArray( StorageChannel.FLUIDS ))
 			{
-				postChanges( StorageChannel.FLUIDS, 1, h.getAvailableItems( new ItemList<IAEFluidStack>() ), new MachineSource( cc ) );
+				postChanges( StorageChannel.FLUIDS, 1, h.getAvailableItems( AEApi.instance().storage().createFluidList() ), new MachineSource( cc ) );
 			}
 		}
 	}
@@ -87,12 +86,12 @@ public class GridStorageCache implements IStorageGrid
 
 			for (IMEInventoryHandler<IAEItemStack> h : cc.getCellArray( StorageChannel.ITEMS ))
 			{
-				postChanges( StorageChannel.ITEMS, -1, h.getAvailableItems( new ItemList<IAEItemStack>() ), new MachineSource( cc ) );
+				postChanges( StorageChannel.ITEMS, -1, h.getAvailableItems( AEApi.instance().storage().createItemList() ), new MachineSource( cc ) );
 			}
 
 			for (IMEInventoryHandler<IAEFluidStack> h : cc.getCellArray( StorageChannel.FLUIDS ))
 			{
-				postChanges( StorageChannel.FLUIDS, -1, h.getAvailableItems( new ItemList<IAEFluidStack>() ), new MachineSource( cc ) );
+				postChanges( StorageChannel.FLUIDS, -1, h.getAvailableItems( AEApi.instance().storage().createFluidList() ), new MachineSource( cc ) );
 			}
 		}
 	}

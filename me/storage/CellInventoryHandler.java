@@ -3,6 +3,7 @@ package appeng.me.storage;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
 import appeng.api.config.Upgrades;
@@ -12,7 +13,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-import appeng.util.item.ItemList;
 import appeng.util.prioitylist.FuzzyPriorityList;
 import appeng.util.prioitylist.PrecisePriorityList;
 
@@ -35,12 +35,12 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack>
 	}
 
 	CellInventoryHandler(IMEInventory c) {
-		super( c );
+		super( c, IAEItemStack.class );
 
 		CellInventory ci = getCellInv();
 		if ( ci != null )
 		{
-			IItemList priorityList = new ItemList();
+			IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
 
 			IInventory upgrades = ci.getUpgradesInventory();
 			IInventory config = ci.getConfigInventory();

@@ -9,6 +9,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.AEApi;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -36,13 +37,12 @@ import appeng.core.sync.packets.PacketValueConfig;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
-import appeng.util.item.ItemList;
 
 public class ContainerMEMonitorable extends AEBaseContainer implements IConfigManagerHost, IConfigureableObject, IMEMonitorHandlerReceiver<IAEItemStack>
 {
 
 	final IMEMonitor<IAEItemStack> monitor;
-	final IItemList<IAEItemStack> items = new ItemList<IAEItemStack>();
+	final IItemList<IAEItemStack> items = AEApi.instance().storage().createItemList();
 
 	IConfigManager serverCM;
 	IConfigManager clientCM;

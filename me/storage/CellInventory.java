@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.exceptions.AppEngException;
@@ -21,7 +22,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-import appeng.util.item.ItemList;
 
 public class CellInventory implements IMEInventory<IAEItemStack>
 {
@@ -42,7 +42,7 @@ public class CellInventory implements IMEInventory<IAEItemStack>
 	protected int MAX_ITEM_TYPES = 63;
 	protected short storedItems = 0;
 	protected int storedItemCount = 0;
-	protected ItemList<IAEItemStack> cellItems;
+	protected IItemList<IAEItemStack> cellItems;
 
 	protected ItemStack i;
 	protected IStorageCell CellType;
@@ -54,7 +54,7 @@ public class CellInventory implements IMEInventory<IAEItemStack>
 	protected void loadCellItems()
 	{
 		if ( cellItems == null )
-			cellItems = new ItemList();
+			cellItems = AEApi.instance().storage().createItemList();
 
 		cellItems.resetStatus(); // clears totals and stuff.
 
@@ -181,11 +181,11 @@ public class CellInventory implements IMEInventory<IAEItemStack>
 		cellItems = null;
 	}
 
-	ItemList<IAEItemStack> getCellItems()
+	IItemList<IAEItemStack> getCellItems()
 	{
 		if ( cellItems == null )
 		{
-			cellItems = new ItemList();
+			cellItems = AEApi.instance().storage().createItemList();
 			loadCellItems();
 		}
 
@@ -333,7 +333,7 @@ public class CellInventory implements IMEInventory<IAEItemStack>
 
 	private boolean isEmpty(IMEInventory meinv)
 	{
-		return meinv.getAvailableItems( new ItemList() ).isEmpty();
+		return meinv.getAvailableItems( AEApi.instance().storage().createItemList() ).isEmpty();
 	}
 
 	@Override

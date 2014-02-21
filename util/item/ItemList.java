@@ -1,5 +1,6 @@
 package appeng.util.item;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -18,15 +19,32 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 {
 
 	private final TreeMap<StackType, StackType> records = new TreeMap();
+	private final Class<? extends IAEStack> clz;
+	
 	// private int currentPriority = Integer.MIN_VALUE;
 
 	int iteration = Integer.MIN_VALUE;
 	public Throwable stacktrace;
+	
+	public ItemList( Class<? extends IAEStack> cla) {
+		clz = cla;
+	}
 
+	private boolean checkStackType( StackType st )
+	{
+		if ( st == null)
+			return true;
+		
+		if ( !clz.isInstance(st) )
+			throw new RuntimeException("WRONG TYPE - got "+st.getClass().getName()+" expected "+clz.getName() );
+		
+		return false;
+	}
+	
 	@Override
 	synchronized public void add(StackType option)
 	{
-		if ( option == null )
+		if ( checkStackType( option ) )
 			return;
 
 		StackType st = records.get( option );
@@ -47,7 +65,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	synchronized public void addStorage(StackType option) // adds a stack as
 															// stored.
 	{
-		if ( option == null )
+		if ( checkStackType( option ) )
 			return;
 
 		StackType st = records.get( option );
@@ -68,7 +86,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	synchronized public void addCrafting(StackType option) // adds a stack as
 															// craftable.
 	{
-		if ( option == null )
+		if ( checkStackType( option ) )
 			return;
 
 		StackType st = records.get( option );
@@ -93,7 +111,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 																// as
 																// requestable.
 	{
-		if ( option == null )
+		if ( checkStackType( option ) )
 			return;
 
 		StackType st = records.get( option );
@@ -144,7 +162,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	@Override
 	synchronized public StackType findPrecise(StackType i)
 	{
-		if ( i == null )
+		if ( checkStackType( i ) )
 			return null;
 
 		StackType is = records.get( i );
@@ -178,6 +196,9 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	@Override
 	public Collection<StackType> findFuzzy(StackType filter, FuzzyMode fuzzy)
 	{
+		if ( checkStackType( filter ) )
+			return new ArrayList();
+		
 		if ( filter instanceof IAEFluidStack )
 			return filter.equals( this ) ? (List<StackType>) Arrays.asList( new IAEFluidStack[] { (IAEFluidStack) filter } ) : (List<StackType>) Arrays
 					.asList( new IAEFluidStack[] {} );

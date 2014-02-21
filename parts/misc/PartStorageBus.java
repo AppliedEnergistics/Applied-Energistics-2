@@ -49,7 +49,6 @@ import appeng.parts.automation.PartUpgradeable;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
-import appeng.util.item.ItemList;
 import appeng.util.prioitylist.FuzzyPriorityList;
 import appeng.util.prioitylist.PrecisePriorityList;
 import buildcraft.api.transport.IPipeConnection;
@@ -216,13 +215,13 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 				if ( inv != null )
 				{
-					handler = new MEInventoryHandler( inv );
+					handler = new MEInventoryHandler( inv, IAEItemStack.class );
 
 					handler.myAccess = (AccessRestriction) this.getConfigManager().getSetting( Settings.ACCESS );
 					handler.myWhitelist = getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST;
 					handler.myPriority = priority;
 
-					IItemList priorityList = new ItemList();
+					IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
 
 					int slotsToUse = 18 + getInstalledUpgrades( Upgrades.CAPACITY ) * 9;
 					for (int x = 0; x < Config.getSizeInventory() && x < slotsToUse; x++)

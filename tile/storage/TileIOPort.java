@@ -301,7 +301,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		if ( src instanceof IMEMonitor )
 			myList = ((IMEMonitor) src).getStorageList();
 		else
-			myList = src.getAvailableItems( new ItemList() );
+			myList = src.getAvailableItems( new ItemList( src.getChannel().type ) );
 
 		if ( fm == FullnessMode.EMPTY )
 			return myList.isEmpty();
@@ -340,7 +340,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		if ( src instanceof IMEMonitor )
 			myList = ((IMEMonitor) src).getStorageList();
 		else
-			myList = src.getAvailableItems( new ItemList() );
+			myList = src.getAvailableItems( new ItemList( src.getChannel().type ) );
 
 		boolean didStuff;
 

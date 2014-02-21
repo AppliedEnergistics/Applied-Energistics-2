@@ -17,6 +17,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -47,7 +48,6 @@ import appeng.me.storage.MEInventoryHandler;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
-import appeng.util.item.ItemList;
 import appeng.util.prioitylist.FuzzyPriorityList;
 import appeng.util.prioitylist.PrecisePriorityList;
 import cpw.mods.fml.relauncher.Side;
@@ -59,7 +59,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	int priority = 0;
 	boolean wasActive = false;
 	boolean blocked = false;
-	MEInventoryHandler myHandler = new MEInventoryHandler( this );
+	MEInventoryHandler myHandler = new MEInventoryHandler( this, IAEItemStack.class );
 	AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
 
 	public PartFormationPlane(ItemStack is) {
@@ -271,7 +271,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		myHandler.myWhitelist = getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST;
 		myHandler.myPriority = priority;
 
-		IItemList priorityList = new ItemList();
+		IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
 
 		int slotsToUse = 18 + getInstalledUpgrades( Upgrades.CAPACITY ) * 9;
 		for (int x = 0; x < Config.getSizeInventory() && x < slotsToUse; x++)

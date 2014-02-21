@@ -22,7 +22,6 @@ import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.tile.inventory.AppEngNullInventory;
 import appeng.tile.misc.TileCellWorkbench;
 import appeng.util.Platform;
-import appeng.util.item.ItemList;
 import appeng.util.iterators.NullIterator;
 
 public class ContainerCellWorkbench extends ContainerUpgradeable
@@ -268,7 +267,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		Iterator<IAEItemStack> i = new NullIterator<IAEItemStack>();
 		if ( cellInv != null )
 		{
-			IItemList<IAEItemStack> list = cellInv.getAvailableItems( new ItemList() );
+			IItemList<IAEItemStack> list = cellInv.getAvailableItems( AEApi.instance().storage().createItemList() );
 			i = list.iterator();
 		}
 

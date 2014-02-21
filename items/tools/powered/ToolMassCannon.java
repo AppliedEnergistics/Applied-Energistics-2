@@ -41,7 +41,6 @@ import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.storage.CellInventory;
 import appeng.me.storage.CellInventoryHandler;
 import appeng.util.Platform;
-import appeng.util.item.ItemList;
 
 public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 {
@@ -84,7 +83,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 			IMEInventory inv = AEApi.instance().registries().cell().getCellInventory( item, StorageChannel.ITEMS );
 			if ( inv != null )
 			{
-				IItemList itemList = inv.getAvailableItems( new ItemList() );
+				IItemList itemList = inv.getAvailableItems( AEApi.instance().storage().createItemList() );
 				IAEStack aeammo = itemList.getFirstItem();
 				if ( aeammo instanceof IAEItemStack )
 				{

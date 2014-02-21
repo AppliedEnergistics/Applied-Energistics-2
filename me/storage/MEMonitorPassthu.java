@@ -21,8 +21,8 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 
 	public BaseActionSource changeSource;
 
-	public MEMonitorPassthu(IMEInventory<T> i) {
-		super( i );
+	public MEMonitorPassthu(IMEInventory<T> i, Class<? extends IAEStack> cla) {
+		super( i,cla );
 		if ( i instanceof IMEMonitor )
 			monitor = (IMEMonitor<T>) i;
 	}
@@ -34,13 +34,13 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 			monitor.removeListener( this );
 
 		monitor = null;
-		IItemList<T> before = getInternal() == null ? new ItemList() : getInternal().getAvailableItems( new ItemList() );
+		IItemList<T> before = getInternal() == null ? new ItemList(clz) : getInternal().getAvailableItems( new ItemList(clz) );
 
 		super.setInternal( i );
 		if ( i instanceof IMEMonitor )
 			monitor = (IMEMonitor<T>) i;
 
-		IItemList<T> after = getInternal() == null ? new ItemList() : getInternal().getAvailableItems( new ItemList() );
+		IItemList<T> after = getInternal() == null ? new ItemList(clz) : getInternal().getAvailableItems( new ItemList(clz) );
 
 		if ( monitor != null )
 			monitor.addListener( this, monitor );
@@ -64,7 +64,7 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 	public IItemList<T> getStorageList()
 	{
 		if ( monitor == null )
-			return getInternal().getAvailableItems( new ItemList<T>() );
+			return getInternal().getAvailableItems( new ItemList<T>(clz) );
 		return monitor.getStorageList();
 	}
 

@@ -1,6 +1,7 @@
 package appeng.me.storage;
 
 import net.minecraft.item.ItemStack;
+import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.exceptions.AppEngException;
@@ -11,12 +12,11 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.items.contents.CellConfig;
 import appeng.util.item.AEItemStack;
-import appeng.util.item.ItemList;
 
 public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 {
 
-	ItemList<IAEItemStack> itemListCache = new ItemList();
+	IItemList<IAEItemStack> itemListCache = AEApi.instance().storage().createItemList();
 
 	public static IMEInventoryHandler getCell(ItemStack o)
 	{

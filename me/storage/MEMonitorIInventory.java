@@ -23,7 +23,6 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.ItemSlot;
 import appeng.util.item.AEItemStack;
-import appeng.util.item.ItemList;
 
 public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonitor<IAEItemStack>
 {
@@ -53,7 +52,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 	final InventoryAdaptor adaptor;
 
 	final TreeMap<Integer, CachedItemStack> memory;
-	final IItemList<IAEItemStack> list = new ItemList();
+	final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
 	final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap();
 
 	public BaseActionSource mySource;

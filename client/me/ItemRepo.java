@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.regex.Pattern;
 
 import net.minecraft.item.ItemStack;
+import appeng.api.AEApi;
 import appeng.api.config.Settings;
 import appeng.api.config.SortOrder;
 import appeng.api.config.YesNo;
@@ -15,14 +16,13 @@ import appeng.client.gui.widgets.ISortSource;
 import appeng.core.AEConfig;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
-import appeng.util.item.ItemList;
 
 public class ItemRepo
 {
 
-	final private IItemList<IAEItemStack> list = new ItemList();
-	final private ArrayList<IAEItemStack> view = new ArrayList();
-	final private ArrayList<ItemStack> dsp = new ArrayList();
+	final private IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
+	final private ArrayList<IAEItemStack> view = new ArrayList<IAEItemStack>();
+	final private ArrayList<ItemStack> dsp = new ArrayList<ItemStack>();
 	final private IScrollSource src;
 	final private ISortSource sortSrc;
 

@@ -34,9 +34,15 @@ public class ApiStorage implements IStorageHelper
 	}
 
 	@Override
-	public IItemList createItemList()
+	public IItemList<IAEItemStack> createItemList()
 	{
-		return new ItemList();
+		return new ItemList( IAEItemStack.class);
+	}
+
+	@Override
+	public IItemList<IAEFluidStack> createFluidList()
+	{
+		return new ItemList( IAEFluidStack.class);
 	}
 
 	@Override

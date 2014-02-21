@@ -15,20 +15,23 @@ import appeng.util.prioitylist.IPartitionList;
 
 public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
-
+	
+	Class<? extends IAEStack> clz;
 	final protected IMEMonitor<T> monitor;
 	final protected IMEInventoryHandler<T> internal;
 
 	public int myPriority = 0;
 	public IncludeExclude myWhitelist = IncludeExclude.WHITELIST;
 	public AccessRestriction myAccess = AccessRestriction.READ_WRITE;
-	public IPartitionList<T> myPartitionList = new DefaultPriorityList();
+	public IPartitionList<T> myPartitionList = new DefaultPriorityList<T>();
 
-	public MEInventoryHandler(IMEInventory<T> i) {
+	public MEInventoryHandler(IMEInventory<T> i,Class<? extends IAEStack> cla) {
+		clz = cla;
+		
 		if ( i instanceof IMEInventoryHandler )
 			internal = (IMEInventoryHandler<T>) i;
 		else
-			internal = new MEPassthru<T>( i );
+			internal = new MEPassthru<T>( i,clz );
 
 		monitor = internal instanceof IMEMonitor ? (IMEMonitor<T>) internal : null;
 	}
@@ -52,7 +55,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	}
 
 	@Override
-	public IItemList<T> getAvailableItems(IItemList out)
+	public IItemList<T> getAvailableItems(IItemList<T> out)
 	{
 		if ( !getAccess().hasPermission( AccessRestriction.READ ) )
 			return out;
@@ -105,7 +108,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 		return internal.getSlot();
 	}
 
-	public IMEInventory getInternal()
+	public IMEInventory<T> getInternal()
 	{
 		return internal;
 	}
