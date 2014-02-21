@@ -1320,7 +1320,7 @@ public class Platform
 				for (IAEFluidStack is : myFluids.getAvailableItems( AEApi.instance().storage().createFluidList() ))
 				{
 					is.setStackSize( -is.getStackSize() );
-					gs.postAlterationOfStoredItems( StorageChannel.ITEMS, is, src );
+					gs.postAlterationOfStoredItems( StorageChannel.FLUIDS, is, src );
 				}
 			}
 		}
@@ -1343,7 +1343,7 @@ public class Platform
 			{
 				for (IAEFluidStack is : myFluids.getAvailableItems( new ItemList(IAEFluidStack.class) ))
 				{
-					gs.postAlterationOfStoredItems( StorageChannel.ITEMS, is, src );
+					gs.postAlterationOfStoredItems( StorageChannel.FLUIDS, is, src );
 				}
 			}
 		}
