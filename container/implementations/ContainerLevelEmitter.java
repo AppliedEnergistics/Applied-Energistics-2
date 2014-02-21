@@ -9,6 +9,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.LevelType;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -27,6 +28,7 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 {
 
 	PartLevelEmitter lvlEmitter;
+	long EmitterValue = -1;
 
 	@SideOnly(Side.CLIENT)
 	public GuiTextField textField;
@@ -56,18 +58,16 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 		return false;
 	}
 
-	int EmitterValue = -1;
-
-	public void setLevel(int newValue, EntityPlayer player)
+	public void setLevel(long l, EntityPlayer player)
 	{
-		lvlEmitter.setReportingValue( newValue );
-		EmitterValue = newValue;
+		lvlEmitter.setReportingValue( l );
+		EmitterValue = l;
 	}
 
 	@Override
 	protected void setupConfig()
 	{
-		int x = 80 + 34;
+		int x = 80 + 44;
 		int y = 40;
 
 		IInventory upgrades = myte.getInventoryByName( "upgrades" );
@@ -83,6 +83,8 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 		IInventory inv = myte.getInventoryByName( "config" );
 		addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
 	}
+
+	public LevelType lvType;
 
 	@Override
 	public void detectAndSendChanges()
@@ -105,11 +107,16 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 					icrafting.sendProgressBarUpdate( this, 1, (int) this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE ).ordinal() );
 				}
 
+				if ( this.lvType != this.myte.getConfigManager().getSetting( Settings.LEVEL_TYPE ) )
+				{
+					icrafting.sendProgressBarUpdate( this, 2, (int) this.myte.getConfigManager().getSetting( Settings.LEVEL_TYPE ).ordinal() );
+				}
+
 				if ( this.EmitterValue != lvlEmitter.getReportingValue() )
 				{
 					try
 					{
-						NetworkHandler.instance.sendTo( new PacketProgressBar( 2, (int) lvlEmitter.getReportingValue() ), (EntityPlayerMP) icrafting );
+						NetworkHandler.instance.sendTo( new PacketProgressBar( 3, lvlEmitter.getReportingValue() ), (EntityPlayerMP) icrafting );
 					}
 					catch (IOException e)
 					{
@@ -119,7 +126,8 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 				}
 			}
 
-			this.EmitterValue = (int) lvlEmitter.getReportingValue();
+			this.EmitterValue = lvlEmitter.getReportingValue();
+			this.lvType = (LevelType) this.myte.getConfigManager().getSetting( Settings.LEVEL_TYPE );
 			this.fzMode = (FuzzyMode) this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE );
 			this.rsMode = (RedstoneMode) this.myte.getConfigManager().getSetting( Settings.REDSTONE_EMITTER );
 		}
@@ -133,6 +141,17 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 		super.updateProgressBar( idx, value );
 
 		if ( idx == 2 )
+		{
+			lvType = LevelType.values()[value];
+		}
+	}
+
+	@Override
+	public void updateFullProgressBar(int idx, long value)
+	{
+		super.updateFullProgressBar( idx, value );
+
+		if ( idx == 3 )
 		{
 			EmitterValue = value;
 			if ( textField != null )

@@ -16,7 +16,9 @@ import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.MENetworkBootingStatusChange;
+import appeng.api.networking.events.MENetworkChannelChanged;
 import appeng.api.networking.events.MENetworkControllerChange;
+import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.util.DimensionalCoord;
@@ -208,6 +210,19 @@ public class PathGridCache implements IPathingGrid
 
 		if ( gridNode.getGridBlock().getFlags().contains( GridFlags.REQUIRE_CHANNEL ) )
 			requireChannels.add( gridNode );
+
+		repath();
+	}
+
+	@MENetworkEventSubscribe
+	void updateNodReq(MENetworkChannelChanged ev)
+	{
+		IGridNode gridNode = ev.node;
+
+		if ( gridNode.getGridBlock().getFlags().contains( GridFlags.REQUIRE_CHANNEL ) )
+			requireChannels.add( gridNode );
+		else
+			requireChannels.remove( gridNode );
 
 		repath();
 	}

@@ -1,9 +1,11 @@
 package appeng.me.cache;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -16,11 +18,17 @@ import appeng.api.networking.IGridStorage;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergyGridProvider;
+import appeng.api.networking.energy.IEnergyWatcher;
+import appeng.api.networking.energy.IEnergyWatcherHost;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerIdleChange;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.events.MENetworkPowerStorage;
+import appeng.api.networking.storage.IStackWatcherHost;
+import appeng.core.AELog;
 import appeng.me.GridNode;
+import appeng.me.energy.EnergyThreshold;
+import appeng.me.energy.EnergyWatcher;
 
 public class EnergyGridCache implements IEnergyGrid
 {
@@ -66,6 +74,9 @@ public class EnergyGridCache implements IEnergyGrid
 
 	IAEPowerStorage lastRequestor;
 	Set<IAEPowerStorage> requesters = new LinkedHashSet();
+
+	public TreeSet<EnergyThreshold> interests = new TreeSet<EnergyThreshold>();
+	private HashMap<IGridNode, IEnergyWatcher> watchers = new HashMap<IGridNode, IEnergyWatcher>();
 
 	private double buffer()
 	{
@@ -232,6 +243,14 @@ public class EnergyGridCache implements IEnergyGrid
 			}
 		}
 
+		if ( machine instanceof IEnergyWatcherHost )
+		{
+			IEnergyWatcherHost swh = (IEnergyWatcherHost) machine;
+			EnergyWatcher iw = new EnergyWatcher( this, (IEnergyWatcherHost) swh );
+			watchers.put( node, iw );
+			swh.updateWatcher( iw );
+		}
+
 		myGrid.postEventTo( node, new MENetworkPowerStatusChange() );
 	}
 
@@ -261,11 +280,39 @@ public class EnergyGridCache implements IEnergyGrid
 			providers.remove( machine );
 			requesters.remove( machine );
 		}
+
+		if ( machine instanceof IStackWatcherHost )
+		{
+			IEnergyWatcher myWatcher = watchers.get( machine );
+			if ( myWatcher != null )
+			{
+				myWatcher.clear();
+				watchers.remove( machine );
+			}
+		}
+
 	}
+
+	double lastStoredPower = -1;
 
 	@Override
 	public void onUpdateTick()
 	{
+		if ( !interests.isEmpty() )
+		{
+			double oldPower = lastStoredPower;
+			lastStoredPower = getStoredPower();
+
+			if ( Math.abs( oldPower - lastStoredPower ) > 1000 )
+				AELog.info( "Hi" );
+			EnergyThreshold low = new EnergyThreshold( Math.min( oldPower, lastStoredPower ), null );
+			EnergyThreshold high = new EnergyThreshold( Math.max( oldPower, lastStoredPower ), null );
+			for (EnergyThreshold th : interests.subSet( low, true, high, true ))
+			{
+				((EnergyWatcher) th.watcher).post( this );
+			}
+		}
+
 		avgDrainPerTick *= (AvgLength - 1) / AvgLength;
 		avgInjectionPerTick *= (AvgLength - 1) / AvgLength;
 

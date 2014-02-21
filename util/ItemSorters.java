@@ -28,6 +28,15 @@ public class ItemSorters
 		return 1;
 	}
 
+	public static int comparDouble(double a, double b)
+	{
+		if ( a == b )
+			return 0;
+		if ( a < b )
+			return -1;
+		return 1;
+	}
+
 	public static Comparator<IAEItemStack> ConfigBased_SortByName = new Comparator<IAEItemStack>() {
 
 		@Override

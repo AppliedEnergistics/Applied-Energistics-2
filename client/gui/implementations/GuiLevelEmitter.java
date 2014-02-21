@@ -5,7 +5,11 @@ import java.io.IOException;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
+
+import org.lwjgl.input.Mouse;
+
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.LevelType;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
@@ -14,6 +18,7 @@ import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.parts.automation.PartLevelEmitter;
 
@@ -25,6 +30,8 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	GuiButton plus1, plus10, plus100, plus1000;
 	GuiButton minus1, minus10, minus100, minus1000;
 
+	GuiImgButton levelMode;
+
 	public GuiLevelEmitter(InventoryPlayer inventoryPlayer, PartLevelEmitter te) {
 		super( new ContainerLevelEmitter( inventoryPlayer, te ) );
 	}
@@ -34,7 +41,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	{
 		super.initGui();
 
-		level = new GuiTextField( fontRendererObj, this.guiLeft + 44, this.guiTop + 43, 59, fontRendererObj.FONT_HEIGHT );
+		level = new GuiTextField( fontRendererObj, this.guiLeft + 24, this.guiTop + 43, 79, fontRendererObj.FONT_HEIGHT );
 		level.setEnableBackgroundDrawing( false );
 		level.setMaxStringLength( 16 );
 		level.setTextColor( 0xFFFFFF );
@@ -46,8 +53,9 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	@Override
 	protected void addButtons()
 	{
-		redstoneMode = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL );
-		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		levelMode = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL );
+		redstoneMode = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL );
+		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 48, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 
 		buttonList.add( plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 17, 22, 20, "+1" ) );
 		buttonList.add( plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 17, 28, 20, "+10" ) );
@@ -59,6 +67,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		buttonList.add( minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 59, 32, 20, "-100" ) );
 		buttonList.add( minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 59, 38, 20, "-1000" ) );
 
+		buttonList.add( levelMode );
 		buttonList.add( redstoneMode );
 		buttonList.add( fuzzyMode );
 	}
@@ -67,6 +76,18 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	protected void actionPerformed(GuiButton btn)
 	{
 		super.actionPerformed( btn );
+
+		boolean backwards = Mouse.isButtonDown( 1 );
+
+		try
+		{
+			if ( btn == levelMode )
+				NetworkHandler.instance.sendToServer( new PacketConfigButton( levelMode.getSetting(), backwards ) );
+		}
+		catch (IOException e)
+		{
+			AELog.error( e );
+		}
 
 		if ( btn == plus1 )
 			addQty( 1 );
@@ -86,7 +107,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 			addQty( -1000 );
 	}
 
-	private void addQty(int i)
+	private void addQty(long i)
 	{
 		try
 		{
@@ -161,6 +182,15 @@ public class GuiLevelEmitter extends GuiUpgradeable
 				super.keyTyped( character, key );
 			}
 		}
+	}
+
+	@Override
+	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
+	{
+		super.drawFG( offsetX, offsetY, mouseX, mouseY );
+
+		if ( levelMode != null )
+			levelMode.set( ((ContainerLevelEmitter) cvb).lvType );
 	}
 
 	@Override

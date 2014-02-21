@@ -30,7 +30,9 @@ public enum ButtonToolTips
 
 	MoveWhenEmpty, MoveWhenWorkIsDone, MoveWhenFull, Disabled, Enable,
 
-	Blocking, NonBlocking, Craft, DontCraft;
+	Blocking, NonBlocking, Craft, DontCraft,
+
+	LevelType, LevelType_Energy, LevelType_Item;
 
 	String root;
 

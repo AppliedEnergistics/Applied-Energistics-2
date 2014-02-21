@@ -15,9 +15,13 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.LevelType;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergyWatcher;
+import appeng.api.networking.energy.IEnergyWatcherHost;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
@@ -43,7 +47,7 @@ import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>
+public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherHost, IStackWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>
 {
 
 	final int FLAG_ON = 4;
@@ -56,6 +60,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 	long reportingValue = 0;
 
 	IStackWatcher myWatcher;
+	IEnergyWatcher myEnergyWatcher;
 
 	public long getReportingValue()
 	{
@@ -65,7 +70,10 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 	public void setReportingValue(long v)
 	{
 		reportingValue = v;
-		updateState();
+		if ( getConfigManager().getSetting( Settings.LEVEL_TYPE ) == LevelType.ENERGY_LEVEL )
+			confgiureWatchers();
+		else
+			updateState();
 	}
 
 	@MENetworkEventSubscribe
@@ -134,6 +142,13 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 		confgiureWatchers();
 	}
 
+	@Override
+	public void updateWatcher(IEnergyWatcher newWatcher)
+	{
+		myEnergyWatcher = newWatcher;
+		confgiureWatchers();
+	}
+
 	// update the system...
 	public void confgiureWatchers()
 	{
@@ -141,6 +156,32 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 
 		if ( myWatcher != null )
 			myWatcher.clear();
+
+		if ( myEnergyWatcher != null )
+			myEnergyWatcher.clear();
+
+		if ( getConfigManager().getSetting( Settings.LEVEL_TYPE ) == LevelType.ENERGY_LEVEL )
+		{
+			if ( myEnergyWatcher != null )
+				myEnergyWatcher.add( (double) reportingValue );
+
+			try
+			{
+				// update to power...
+				lastReportedValue = (long) proxy.getEnergy().getStoredPower();
+				updateState();
+
+				// no more item stuf..
+				proxy.getStorage().getItemInventory().removeListener( this );
+			}
+			catch (GridAccessException e)
+			{
+				// :P
+			}
+
+			return;
+		}
+
 		try
 		{
 			if ( getInstalledUpgrades( Upgrades.FUZZY ) > 0 || myStack == null )
@@ -237,6 +278,13 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 	}
 
 	@Override
+	public void onThreshholdPass(IEnergyGrid energyGrid)
+	{
+		lastReportedValue = (long) energyGrid.getStoredPower();
+		updateState();
+	}
+
+	@Override
 	public void onStackChange(IItemList o, IAEStack fullStack, IAEStack diffStack, BaseActionSource src, StorageChannel chan)
 	{
 		if ( chan == StorageChannel.ITEMS && fullStack.equals( config.getAEStackInSlot( 0 ) ) && getInstalledUpgrades( Upgrades.FUZZY ) == 0 )
@@ -250,6 +298,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 		super( PartLevelEmitter.class, is );
 		getConfigManager().registerSetting( Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL );
 		getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		getConfigManager().registerSetting( Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL );
 	}
 
 	@Override
@@ -526,4 +575,5 @@ public class PartLevelEmitter extends PartUpgradeable implements IStackWatcherHo
 
 		return super.getInventoryByName( name );
 	}
+
 }

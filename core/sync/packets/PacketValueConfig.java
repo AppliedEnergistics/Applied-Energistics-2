@@ -55,7 +55,7 @@ public class PacketValueConfig extends AppEngPacket
 		else if ( Name.equals( "LevelEmitter.Value" ) && c instanceof ContainerLevelEmitter )
 		{
 			ContainerLevelEmitter lvc = (ContainerLevelEmitter) c;
-			lvc.setLevel( Integer.parseInt( Value ), player );
+			lvc.setLevel( Long.parseLong( Value ), player );
 			return;
 		}
 		else if ( Name.startsWith( "CellWorkbench." ) && c instanceof ContainerCellWorkbench )

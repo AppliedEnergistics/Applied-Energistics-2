@@ -14,6 +14,7 @@ import appeng.api.config.ActionItems;
 import appeng.api.config.CondenserOuput;
 import appeng.api.config.FullnessMode;
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.LevelType;
 import appeng.api.config.OperationMode;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.RedstoneMode;
@@ -134,6 +135,9 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			registerApp( 16 * 2 + 4, Settings.SEARCH_MODE, SearchBoxMode.MANUAL_SEARCH, ButtonToolTips.SearchMode, ButtonToolTips.SearchMode_Standard );
 			registerApp( 16 * 2 + 5, Settings.SEARCH_MODE, SearchBoxMode.NEI_AUTOSEARCH, ButtonToolTips.SearchMode, ButtonToolTips.SearchMode_NEIAuto );
 			registerApp( 16 * 2 + 6, Settings.SEARCH_MODE, SearchBoxMode.NEI_MANUAL_SEARCH, ButtonToolTips.SearchMode, ButtonToolTips.SearchMode_NEIStandard );
+
+			registerApp( 16 * 5 + 3, Settings.LEVEL_TYPE, LevelType.ENERGY_LEVEL, ButtonToolTips.LevelType, ButtonToolTips.LevelType_Energy );
+			registerApp( 16 * 4 + 3, Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL, ButtonToolTips.LevelType, ButtonToolTips.LevelType_Item );
 
 			registerApp( 64, Settings.SORT_BY, SortOrder.NAME, ButtonToolTips.SortBy, ButtonToolTips.ItemName );
 			registerApp( 65, Settings.SORT_BY, SortOrder.AMOUNT, ButtonToolTips.SortBy, ButtonToolTips.NumberOfItems );
