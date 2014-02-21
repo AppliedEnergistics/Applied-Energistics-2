@@ -26,7 +26,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 	}
 
 	public NetworkMonitor(GridStorageCache cache, StorageChannel chan) {
-		super( null );
+		super( null, chan );
 		myGridCache = cache;
 		myChannel = chan;
 	}
