@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
@@ -27,4 +28,11 @@ public class BlockChunkloader extends AEBaseBlock implements LoadingCallback
 	{
 
 	}
+
+	@Override
+	public void registerBlockIcons(IIconRegister iconRegistry)
+	{
+		return;
+	}
+
 }

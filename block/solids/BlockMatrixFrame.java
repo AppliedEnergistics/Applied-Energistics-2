@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import appeng.block.AEBaseBlock;
@@ -31,6 +32,12 @@ public class BlockMatrixFrame extends AEBaseBlock
 
 	@Override
 	public void getSubBlocks(Item id, CreativeTabs tab, List list)
+	{
+
+	}
+
+	@Override
+	public void registerBlockIcons(IIconRegister iconRegistry)
 	{
 
 	}

@@ -28,7 +28,7 @@ public class PartCraftingTerminal extends PartTerminal implements IAEAppEngInven
 		frontBright = CableBusTextures.PartCraftingTerm_Bright;
 		frontColored = CableBusTextures.PartCraftingTerm_Colored;
 		frontDark = CableBusTextures.PartCraftingTerm_Dark;
-		frontSolid = CableBusTextures.PartCraftingTerm_Solid;
+		// frontSolid = CableBusTextures.PartCraftingTerm_Solid;
 	}
 
 	public GuiBridge getGui()

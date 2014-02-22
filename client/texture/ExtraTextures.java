@@ -22,11 +22,7 @@ public enum ExtraTextures
 
 	BlockChargerInside("BlockChargerInside"),
 
-	BlockContainmentWallMerged("BlockContainmentWallMerged"), BlockHeatVentMerged("BlockHeatVentMerged"),
-
 	MEStorageCellTextures("MEStorageCellTextures"), White("White"),
-
-	// BlockInterfaceAlternate("BlockInterfaceAlternate"), BlockInterfaceAlternateArrow("BlockInterfaceAlternateArrow"),
 
 	BlockMatterCannonParticle("BlockMatterCannonParticle"), BlockEnergyParticle("BlockEnergyParticle"),
 
@@ -50,7 +46,9 @@ public enum ExtraTextures
 
 	BlockSpatialPylonE("BlockSpatialPylon_end"), BlockSpatialPylonE_dim("BlockSpatialPylon_end_dim"), BlockSpatialPylonE_red("BlockSpatialPylon_end_red"),
 
-	BlockMESecurityOn("BlockMESecurityOn");
+	BlockMESecurityOn("BlockMESecurityOn"),
+
+	BlockQuartzGrowthAcceleratorOn("BlockQuartzGrowthAcceleratorOn"), BlockQuartzGrowthAcceleratorSideOn("BlockQuartzGrowthAcceleratorSideOn");
 
 	final private String name;
 	public IIcon IIcon;

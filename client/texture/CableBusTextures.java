@@ -15,8 +15,6 @@ public enum CableBusTextures
 
 	LevelEmitterTorchOn("ItemPart.LevelEmitterOn"), BlockWirelessOn("BlockWirelessOn"),
 
-	BlockTransPlane("BlockTransPlaneOn"),
-
 	BlockP2PTunnel2("ItemPart.P2PTunnel2"), BlockP2PTunnel3("ItemPart.P2PTunnel3"),
 
 	// MEWaiting("MEWaiting"),
@@ -25,25 +23,19 @@ public enum CableBusTextures
 
 	Transparent("Transparent"), PartMonitorSidesStatus("PartMonitorSidesStatus"), PartMonitorSidesStatusLights("PartMonitorSidesStatusLights"),
 
-	PartMonitor_Solid("PartMonitor_Solid"), PartMonitor_Colored("PartMonitor_Colored"), PartMonitor_Bright("PartMonitor_Bright"),
+	PartMonitor_Colored("PartMonitor_Colored"), PartMonitor_Bright("PartMonitor_Bright"),
 
-	PartPatternTerm_Bright("PartPatternTerm_Bright"), PartPatternTerm_Colored("PartPatternTerm_Colored"), PartPatternTerm_Dark("PartPatternTerm_Dark"), PartPatternTerm_Solid(
-			"PartPatternTerm_Solid"),
+	PartPatternTerm_Bright("PartPatternTerm_Bright"), PartPatternTerm_Colored("PartPatternTerm_Colored"), PartPatternTerm_Dark("PartPatternTerm_Dark"),
 
-	PartConvMonitor_Bright("PartConvMonitor_Bright"), PartConvMonitor_Colored("PartConvMonitor_Colored"), PartConvMonitor_Dark("PartConvMonitor_Dark"), PartConvMonitor_Solid(
-			"PartConvMonitor_Solid"),
+	PartConvMonitor_Bright("PartConvMonitor_Bright"), PartConvMonitor_Colored("PartConvMonitor_Colored"), PartConvMonitor_Dark("PartConvMonitor_Dark"), PartCraftingMonitor_Bright(
+			"PartCraftingMonitor_Bright"), PartCraftingMonitor_Colored("PartCraftingMonitor_Colored"), PartCraftingMonitor_Dark("PartCraftingMonitor_Dark"),
 
-	PartCraftingMonitor_Bright("PartCraftingMonitor_Bright"), PartCraftingMonitor_Colored("PartCraftingMonitor_Colored"), PartCraftingMonitor_Dark(
-			"PartCraftingMonitor_Dark"), PartCraftingMonitor_Solid("PartCraftingMonitor_Solid"),
-
-	PartCraftingTerm_Bright("PartCraftingTerm_Bright"), PartCraftingTerm_Colored("PartCraftingTerm_Colored"), PartCraftingTerm_Dark("PartCraftingTerm_Dark"), PartCraftingTerm_Solid(
-			"PartCraftingTerm_Solid"),
+	PartCraftingTerm_Bright("PartCraftingTerm_Bright"), PartCraftingTerm_Colored("PartCraftingTerm_Colored"), PartCraftingTerm_Dark("PartCraftingTerm_Dark"), //
 
 	PartStorageMonitor_Bright("PartStorageMonitor_Bright"), PartStorageMonitor_Colored("PartStorageMonitor_Colored"), PartStorageMonitor_Dark(
-			"PartStorageMonitor_Dark"), PartStorageMonitor_Solid("PartStorageMonitor_Solid"),
+			"PartStorageMonitor_Dark"),
 
-	PartTerminal_Bright("PartTerminal_Bright"), PartTerminal_Colored("PartTerminal_Colored"), PartTerminal_Dark("PartTerminal_Dark"), PartTerminal_Solid(
-			"PartTerminal_Solid"),
+	PartTerminal_Bright("PartTerminal_Bright"), PartTerminal_Colored("PartTerminal_Colored"), PartTerminal_Dark("PartTerminal_Dark"),
 
 	MECable_Green("MECable_Green"), MECable_Grey("MECable_Grey"), MECable_LightBlue("MECable_LightBlue"), MECable_LightGrey("MECable_LightGrey"), MECable_Lime(
 			"MECable_Lime"), MECable_Magenta("MECable_Magenta"), MECable_Orange("MECable_Orange"), MECable_Pink("MECable_Pink"), MECable_Purple(

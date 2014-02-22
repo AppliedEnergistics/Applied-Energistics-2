@@ -26,7 +26,7 @@ public class PartConversionMonitor extends PartStorageMonitor
 		frontBright = CableBusTextures.PartConvMonitor_Bright;
 		frontColored = CableBusTextures.PartConvMonitor_Colored;
 		frontDark = CableBusTextures.PartConvMonitor_Dark;
-		frontSolid = CableBusTextures.PartConvMonitor_Solid;
+		// frontSolid = CableBusTextures.PartConvMonitor_Solid;
 	}
 
 	@Override

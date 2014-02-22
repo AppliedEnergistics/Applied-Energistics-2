@@ -11,7 +11,7 @@ public class PartPatternTerminal extends PartMonitor
 		frontBright = CableBusTextures.PartPatternTerm_Bright;
 		frontColored = CableBusTextures.PartPatternTerm_Colored;
 		frontDark = CableBusTextures.PartPatternTerm_Dark;
-		frontSolid = CableBusTextures.PartPatternTerm_Solid;
+		// frontSolid = CableBusTextures.PartPatternTerm_Solid;
 	}
 
 }

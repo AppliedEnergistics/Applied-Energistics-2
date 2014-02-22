@@ -158,7 +158,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		frontBright = CableBusTextures.PartStorageMonitor_Bright;
 		frontColored = CableBusTextures.PartStorageMonitor_Colored;
 		frontDark = CableBusTextures.PartStorageMonitor_Dark;
-		frontSolid = CableBusTextures.PartStorageMonitor_Solid;
+		// frontSolid = CableBusTextures.PartStorageMonitor_Solid;
 	}
 
 	@Override

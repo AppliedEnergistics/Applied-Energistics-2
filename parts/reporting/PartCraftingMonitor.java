@@ -11,7 +11,7 @@ public class PartCraftingMonitor extends PartMonitor
 		frontBright = CableBusTextures.PartCraftingMonitor_Bright;
 		frontColored = CableBusTextures.PartCraftingMonitor_Colored;
 		frontDark = CableBusTextures.PartCraftingMonitor_Dark;
-		frontSolid = CableBusTextures.PartCraftingMonitor_Solid;
+		// frontSolid = CableBusTextures.PartCraftingMonitor_Solid;
 	}
 
 }

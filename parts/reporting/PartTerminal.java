@@ -51,7 +51,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 		frontBright = CableBusTextures.PartTerminal_Bright;
 		frontColored = CableBusTextures.PartTerminal_Colored;
 		frontDark = CableBusTextures.PartTerminal_Dark;
-		frontSolid = CableBusTextures.PartTerminal_Solid;
+		// frontSolid = CableBusTextures.PartTerminal_Solid;
 
 		cm.registerSetting( Settings.SORT_BY, SortOrder.NAME );
 		cm.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );

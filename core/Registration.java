@@ -33,6 +33,7 @@ import appeng.block.misc.BlockCellWorkbench;
 import appeng.block.misc.BlockCharger;
 import appeng.block.misc.BlockCondenser;
 import appeng.block.misc.BlockInterface;
+import appeng.block.misc.BlockQuartzGrowthAccelerator;
 import appeng.block.misc.BlockQuartzTorch;
 import appeng.block.misc.BlockSecurity;
 import appeng.block.misc.BlockTinyTNT;
@@ -150,11 +151,11 @@ public class Registration
 	public void PreInit(FMLPreInitializationEvent event)
 	{
 		IRecipeHandlerRegistry recipeRegistery = AEApi.instance().registries().recipes();
-		recipeRegistery.addNewCraftHandler("grind", Grind.class);
-		recipeRegistery.addNewCraftHandler("shaped", Shaped.class);
-		recipeRegistery.addNewCraftHandler("shapeless", Shapeless.class);
-		recipeRegistery.addNewCraftHandler("smelt", Smelt.class);
-		recipeRegistery.addNewCraftHandler("pureify", Pureify.class);
+		recipeRegistery.addNewCraftHandler( "grind", Grind.class );
+		recipeRegistery.addNewCraftHandler( "shaped", Shaped.class );
+		recipeRegistery.addNewCraftHandler( "shapeless", Shapeless.class );
+		recipeRegistery.addNewCraftHandler( "smelt", Smelt.class );
+		recipeRegistery.addNewCraftHandler( "pureify", Pureify.class );
 
 		RecipeSorter.register( "AE2-Shaped", ShapedRecipe.class, Category.SHAPED, "" );
 		RecipeSorter.register( "AE2-Shapeless", ShapelessRecipe.class, Category.SHAPELESS, "" );
@@ -243,6 +244,7 @@ public class Registration
 		blocks.blockQuartzChiseled = addFeature( BlockQuartzChiseled.class );
 		blocks.blockQuartzTorch = addFeature( BlockQuartzTorch.class );
 		blocks.blockCharger = addFeature( BlockCharger.class );
+		blocks.blockQuartzGrowthAccelerator = addFeature( BlockQuartzGrowthAccelerator.class );
 
 		blocks.blockGrindStone = addFeature( BlockGrinder.class );
 		blocks.blockCrankHandle = addFeature( BlockCrank.class );

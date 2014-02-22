@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.parts.IPartMonitor;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkBootingStatusChange;
@@ -22,10 +23,10 @@ import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PartMonitor extends AEBasePart implements IPartMonitor
+public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChannelState
 {
 
-	CableBusTextures frontSolid = CableBusTextures.PartMonitor_Solid;
+	// CableBusTextures frontSolid = CableBusTextures.PartMonitor_Solid;
 	CableBusTextures frontDark = CableBusTextures.PartMonitor_Colored;
 	CableBusTextures frontBright = CableBusTextures.PartMonitor_Bright;
 	CableBusTextures frontColored = CableBusTextures.PartMonitor_Colored;
@@ -129,7 +130,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 
 		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
-				frontSolid.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 		rh.renderInventoryBox( renderer );
 
 		rh.setInvColor( getColor().whiteVariant );
@@ -150,7 +151,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
-				frontSolid.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderBlock( x, y, z, renderer );
@@ -173,7 +174,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor
 		if ( notLightSource )
 		{
 			rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(),
-					CableBusTextures.PartMonitorBack.getIcon(), frontSolid.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(),
+					CableBusTextures.PartMonitorBack.getIcon(), is.getIconIndex(), CableBusTextures.PartMonitorSidesStatus.getIcon(),
 					CableBusTextures.PartMonitorSidesStatus.getIcon() );
 		}
 
@@ -216,6 +217,15 @@ public class PartMonitor extends AEBasePart implements IPartMonitor
 	{
 		bch.addBox( 2, 2, 14, 14, 14, 16 );
 		bch.addBox( 4, 4, 13, 12, 12, 14 );
+	}
+
+	@Override
+	public boolean isActive()
+	{
+		if ( notLightSource )
+			return ((clientFlags & (CHANNEL_FLAG | POWERED_FLAG)) == (CHANNEL_FLAG | POWERED_FLAG));
+		else
+			return isPowered();
 	}
 
 }
