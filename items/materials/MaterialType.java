@@ -5,10 +5,10 @@ import java.util.EnumSet;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.oredict.OreDictionary;
-import appeng.client.render.entity.EntityIds;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.entity.EntityChargedQuartz;
+import appeng.entity.EntityIds;
 import appeng.entity.EntitySingularity;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -46,7 +46,7 @@ public enum MaterialType
 
 	Wireless(AEFeature.WirelessAccessTerminal), WirelessBooster(AEFeature.WirelessAccessTerminal),
 
-	BlankPattern, FormationCore, AnnihilationCore,
+	FormationCore, AnnihilationCore,
 
 	EnderDust(AEFeature.QuantumNetworkBridge, "dustEnder", EntitySingularity.class), Singularity(AEFeature.QuantumNetworkBridge, EntitySingularity.class), QESingularity(
 			AEFeature.QuantumNetworkBridge, EntitySingularity.class);

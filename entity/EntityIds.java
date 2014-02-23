@@ -1,9 +1,6 @@
-package appeng.client.render.entity;
+package appeng.entity;
 
 import net.minecraft.entity.Entity;
-import appeng.entity.EntityChargedQuartz;
-import appeng.entity.EntitySingularity;
-import appeng.entity.EntityTinyTNTPrimed;
 
 public class EntityIds
 {
@@ -11,6 +8,7 @@ public class EntityIds
 	public static final int TINY_TNT = 10;
 	public static final int SINGULARITY = 11;
 	public static final int CHARGED_QUARTZ = 12;
+	public static final int GROWING_CRYSTAL = 13;
 
 	public static int get(Class<? extends Entity> droppedEntity)
 	{
@@ -20,6 +18,8 @@ public class EntityIds
 			return SINGULARITY;
 		if ( droppedEntity == EntityChargedQuartz.class )
 			return CHARGED_QUARTZ;
+		if ( droppedEntity == EntityChargedQuartz.class )
+			return GROWING_CRYSTAL;
 
 		throw new RuntimeException( "Missing entity id: " + droppedEntity.getName() );
 	}

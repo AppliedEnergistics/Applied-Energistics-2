@@ -1,4 +1,4 @@
-package appeng.client.render.entity;
+package appeng.entity;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.Render;
@@ -10,7 +10,6 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import appeng.entity.EntityTinyTNTPrimed;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
