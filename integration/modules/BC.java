@@ -35,8 +35,7 @@ public class BC extends BaseModule implements IBC
 	@Override
 	public void addFacade(ItemStack item)
 	{
-		int blkId = Block.blockRegistry.getIDForObject( Block.getBlockFromItem( item.getItem() ) );
-		FMLInterModComms.sendMessage( "BuildCraft|Transport", "add-facade", blkId + "@" + item.getItemDamage() );
+		FMLInterModComms.sendMessage( "BuildCraft|Transport", "add-facade", item );
 	}
 
 	@Override
