@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
+import appeng.client.EffectType;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderQNB;
 import appeng.core.CommonHelper;
@@ -42,7 +43,7 @@ public class BlockQuantumLinkChamber extends AEBaseBlock
 			if ( bridge.hasQES() )
 			{
 				if ( CommonHelper.proxy.shouldAddParticles( r ) )
-					CommonHelper.proxy.spawnEnergy( w, bx + 0.5, by + 0.5, bz + 0.5 );
+					CommonHelper.proxy.spawnEffect( EffectType.Energy, w, bx + 0.5, by + 0.5, bz + 0.5 );
 			}
 		}
 	}

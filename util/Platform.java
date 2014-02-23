@@ -884,7 +884,7 @@ public class Platform
 	{
 		int index = rdnSrc.nextInt( outs.size() );
 		Iterator<T> i = outs.iterator();
-		while (i.hasNext() && index > 0)
+		while (i.hasNext() && index-- > 0)
 			i.next();
 		if ( i.hasNext() )
 			return i.next();
@@ -1331,7 +1331,7 @@ public class Platform
 
 			if ( myItems != null )
 			{
-				for (IAEItemStack is : myItems.getAvailableItems( new ItemList(IAEItemStack.class) ))
+				for (IAEItemStack is : myItems.getAvailableItems( new ItemList( IAEItemStack.class ) ))
 				{
 					gs.postAlterationOfStoredItems( StorageChannel.ITEMS, is, src );
 				}
@@ -1341,7 +1341,7 @@ public class Platform
 
 			if ( myFluids != null )
 			{
-				for (IAEFluidStack is : myFluids.getAvailableItems( new ItemList(IAEFluidStack.class) ))
+				for (IAEFluidStack is : myFluids.getAvailableItems( new ItemList( IAEFluidStack.class ) ))
 				{
 					gs.postAlterationOfStoredItems( StorageChannel.FLUIDS, is, src );
 				}

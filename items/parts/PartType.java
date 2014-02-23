@@ -22,12 +22,12 @@ import appeng.parts.networking.PartCableSmart;
 import appeng.parts.networking.PartDenseCable;
 import appeng.parts.networking.PartQuartzFiber;
 import appeng.parts.p2p.PartP2PBCPower;
+import appeng.parts.p2p.PartP2PIC2Power;
 import appeng.parts.p2p.PartP2PItems;
 import appeng.parts.p2p.PartP2PLiquids;
 import appeng.parts.p2p.PartP2PRedstone;
 import appeng.parts.p2p.PartP2PTunnelME;
 import appeng.parts.reporting.PartConversionMonitor;
-import appeng.parts.reporting.PartCraftingMonitor;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartDarkMonitor;
 import appeng.parts.reporting.PartMonitor;
@@ -78,9 +78,9 @@ public enum PartType
 
 	P2PTunnelMJ(AEFeature.P2PTunnelMJ, PartP2PBCPower.class, GuiText.MJTunnel),
 
-	// P2PTunnelEU(AEFeature.P2PTunnelEU, PartP2PIC2Power.class, GuiText.EUTunnel),
+	P2PTunnelEU(AEFeature.P2PTunnelEU, PartP2PIC2Power.class, GuiText.EUTunnel),
 
-	CraftingMonitor(AEFeature.Crafting, PartCraftingMonitor.class),
+	// CraftingMonitor(AEFeature.Crafting, PartCraftingMonitor.class),
 
 	PatternTerminal(AEFeature.CraftingTerminal, PartPatternTerminal.class),
 

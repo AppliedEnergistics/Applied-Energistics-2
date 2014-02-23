@@ -46,7 +46,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 	{
 		return false;
 	}
-	
+
 	@Override
 	public void writeToNBT(NBTTagCompound data)
 	{
@@ -225,7 +225,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 
 	public ItemStack getItemStack(PartItemStack type)
 	{
-		if ( type == PartItemStack.World || type == PartItemStack.Network || type == PartItemStack.Wrench )
+		if ( type == PartItemStack.World || type == PartItemStack.Network || type == PartItemStack.Wrench || type == PartItemStack.Pick )
 			return super.getItemStack( type );
 
 		return AEApi.instance().parts().partP2PTunnelME.stack( 1 );

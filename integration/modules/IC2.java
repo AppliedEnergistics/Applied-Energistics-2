@@ -6,6 +6,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import appeng.api.AEApi;
+import appeng.api.config.TunnelType;
+import appeng.api.features.IP2PTunnelRegistry;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IIC2;
 
@@ -23,6 +25,19 @@ public class IC2 implements IIntegrationModule, IIC2
 	@Override
 	public void PostInit()
 	{
+		IP2PTunnelRegistry reg = AEApi.instance().registries().p2pTunnel();
+		reg.addNewAttunement( getItem( "copperCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( getItem( "insulatedCopperCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( getItem( "goldCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( getItem( "insulatedGoldCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( getItem( "ironCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( getItem( "insulatedIronCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( getItem( "insulatedTinCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( getItem( "glassFiberCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( getItem( "tinCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( getItem( "detectorCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( getItem( "splitterCableItem" ), TunnelType.IC2_POWER );
+
 		AEApi.instance().registries().matterCannon().registerAmmo( getItem( "uraniumDrop" ), 238.0289 );
 	}
 

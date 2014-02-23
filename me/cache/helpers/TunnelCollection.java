@@ -32,6 +32,6 @@ public class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T>
 
 	public boolean isEmpty()
 	{
-		return iterator().hasNext();
+		return !iterator().hasNext();
 	}
 }

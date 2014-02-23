@@ -440,6 +440,7 @@ public class Registration
 
 		IPartHelper ph = AEApi.instance().partHelper();
 		ph.registerNewLayer( "appeng.api.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );
+		ph.registerNewLayer( "appeng.api.parts.layers.LayerIEnergySource", "ic2.api.energy.tile.IEnergySource" );
 		ph.registerNewLayer( "appeng.api.parts.layers.LayerISidedInventory", "net.minecraft.inventory.ISidedInventory" );
 		ph.registerNewLayer( "appeng.api.parts.layers.LayerIPowerEmitter", "buildcraft.api.power.IPowerEmitter" );
 		ph.registerNewLayer( "appeng.api.parts.layers.LayerIPowerReceptor", "buildcraft.api.power.IPowerReceptor" );

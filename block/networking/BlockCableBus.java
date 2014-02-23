@@ -94,7 +94,7 @@ public class BlockCableBus extends AEBaseBlock
 		SelectedPart sp = cb( world, x, y, z ).selectPart( v3 );
 
 		if ( sp.part != null )
-			return sp.part.getItemStack( PartItemStack.Break );
+			return sp.part.getItemStack( PartItemStack.Pick );
 		else if ( sp.facade != null )
 			return sp.facade.getItemStack();
 

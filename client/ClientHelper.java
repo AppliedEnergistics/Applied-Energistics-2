@@ -36,8 +36,11 @@ import appeng.client.render.TESRWrapper;
 import appeng.client.render.WorldRender;
 import appeng.client.render.effects.EnergyFx;
 import appeng.client.render.effects.LightningEffect;
+import appeng.client.render.effects.VibrantEffect;
 import appeng.client.texture.CableBusTextures;
 import appeng.client.texture.ExtraTextures;
+import appeng.core.AEConfig;
+import appeng.core.CommonHelper;
 import appeng.entity.EntityTinyTNTPrimed;
 import appeng.entity.RenderTinyTNTPrimed;
 import appeng.server.ServerHelper;
@@ -185,14 +188,45 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public void spawnLightning(World worldObj, double posX, double posY, double posZ)
+	public void spawnEffect(EffectType effect, World worldObj, double posX, double posY, double posZ)
+	{
+		if ( AEConfig.instance.enableEffects )
+		{
+			switch (effect)
+			{
+			case Vibrant:
+				spawnVibrant( worldObj, posX, posY, posZ );
+				return;
+			case Energy:
+				spawnEnergy( worldObj, posX, posY, posZ );
+				return;
+			case Lightning:
+				spawnLightning( worldObj, posX, posY, posZ );
+				return;
+			}
+		}
+	}
+
+	private void spawnVibrant(World w, double x, double y, double z)
+	{
+		if ( CommonHelper.proxy.shouldAddParticles( Platform.getRandom() ) )
+		{
+			double d0 = (double) (Platform.getRandomFloat() - 0.5F) * 0.26D;
+			double d1 = (double) (Platform.getRandomFloat() - 0.5F) * 0.26D;
+			double d2 = (double) (Platform.getRandomFloat() - 0.5F) * 0.26D;
+
+			VibrantEffect fx = new VibrantEffect( w, x + d0, y + d1, z + d2, 0.0D, 0.0D, 0.0D );
+			Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+		}
+	}
+
+	private void spawnLightning(World worldObj, double posX, double posY, double posZ)
 	{
 		LightningEffect fx = new LightningEffect( worldObj, posX, posY + 0.3f, posZ, 0.0f, 0.0f, 0.0f );
 		Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
 	}
 
-	@Override
-	public void spawnEnergy(World w, double posX, double posY, double posZ)
+	private void spawnEnergy(World w, double posX, double posY, double posZ)
 	{
 		float x = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
 		float y = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;

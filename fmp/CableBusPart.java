@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,6 +28,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
+import appeng.api.parts.LayerFlags;
 import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
@@ -426,6 +428,12 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		// nothing!
 	}
 
+	@Override
+	public Set<LayerFlags> getLayerFlags()
+	{
+		return cb.getLayerFlags();
+	}
+	
 	@Override
 	public void markForSave()
 	{

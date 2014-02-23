@@ -7,6 +7,7 @@ import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -31,6 +32,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
+import appeng.api.parts.LayerFlags;
 import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
@@ -51,6 +53,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	private IPartCable center;
 	private IPart sides[] = new IPart[6];
 	private FacadeContainer fc = new FacadeContainer();
+	private EnumSet<LayerFlags> myLayerFlags = EnumSet.noneOf( LayerFlags.class );
 
 	public boolean hasRedstone = false;
 	public IPartHost tcb;
@@ -957,6 +960,12 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 			if ( p != null && p instanceof IGridHost )
 				((IGridHost) p).securityBreak();
 		}
+	}
+
+	@Override
+	public Set<LayerFlags> getLayerFlags()
+	{
+		return myLayerFlags;
 	}
 
 }

@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.TunnelType;
+import appeng.core.AELog;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.util.Platform;
@@ -107,7 +108,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	@Override
 	public double injectEnergyUnits(ForgeDirection directionFrom, double amount)
 	{
-
+		AELog.info( "INJECT: " + amount );
 		TunnelCollection<PartP2PIC2Power> outs;
 		try
 		{
@@ -147,6 +148,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	@Override
 	public double getOfferedEnergy()
 	{
+		AELog.info( "getOfferedEnergy: " + OutputPacket );
 		if ( output )
 			return OutputPacket;
 		return 0;
@@ -155,6 +157,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	@Override
 	public void drawEnergy(double amount)
 	{
+		AELog.info( "drawEnergy: " + amount );
 		OutputPacket -= amount;
 	}
 

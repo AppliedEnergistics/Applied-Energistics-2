@@ -12,6 +12,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.AEApi;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 import appeng.util.Platform;
 
 final public class EntitySingularity extends EntityItem
@@ -42,6 +44,9 @@ final public class EntitySingularity extends EntityItem
 	public void doExplosion()
 	{
 		if ( Platform.isClient() )
+			return;
+
+		if ( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldSingularity ) )
 			return;
 
 		ItemStack item = getEntityItem();

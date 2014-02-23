@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
+import appeng.client.EffectType;
 import appeng.core.sync.AppEngPacket;
 import cpw.mods.fml.common.SidedProxy;
 
@@ -28,9 +29,7 @@ public abstract class CommonHelper
 
 	public abstract void sendToAllNearExcept(EntityPlayer p, double x, double y, double z, double dist, World w, AppEngPacket packet);
 
-	public abstract void spawnLightning(World worldObj, double posX, double posY, double posZ);
-
-	public abstract void spawnEnergy(World w, double posX, double posY, double posZ);
+	public abstract void spawnEffect(EffectType effect, World worldObj, double posX, double posY, double posZ);
 
 	public abstract boolean shouldAddParticles(Random r);
 

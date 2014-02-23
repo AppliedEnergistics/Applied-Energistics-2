@@ -12,6 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
+import appeng.client.EffectType;
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.NetworkHandler;
@@ -84,13 +85,7 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public void spawnLightning(World worldObj, double posX, double posY, double posZ)
-	{
-		// :P
-	}
-
-	@Override
-	public void spawnEnergy(World w, double posX, double posY, double posZ)
+	public void spawnEffect(EffectType type, World worldObj, double posX, double posY, double posZ)
 	{
 		// :P
 	}

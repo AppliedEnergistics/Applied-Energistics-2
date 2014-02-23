@@ -8,7 +8,7 @@ public enum AEFeature
 
 	CertusQuartzWorldGen("World"),
 
-	DecorativeLights("DecorativeLights"), DecorativeQuartzBlocks("World"),
+	DecorativeLights("World"), DecorativeQuartzBlocks("World"),
 
 	GrindStone("World"), Flour("World"), Inscriber("World"),
 
@@ -26,9 +26,11 @@ public enum AEFeature
 
 	ChargedStaff("Tools"), EntropyManipulator("Tools"), MatterCannon("Tools"), WirelessAccessTerminal("Tools"),
 
-	PowerGen("NetworkFeatures"),
+	PowerGen("NetworkFeatures"), Security("NetworkFeatures"),
 
-	Crafting("NetworkFeatures"), MolecularAssembler("NetworkFeatures"), SpatialIO("NetworkFeatures"), QuantumNetworkBridge("NetworkFeatures"),
+	// Crafting("NetworkFeatures"), MolecularAssembler("NetworkFeatures"),
+
+	SpatialIO("NetworkFeatures"), QuantumNetworkBridge("NetworkFeatures"),
 
 	LevelEmiter("NetworkBuses"), CraftingTerminal("NetworkBuses"), StorageMonitor("NetworkBuses"), P2PTunnel("NetworkBuses"), FormationPlane("NetworkBuses"), AnnihilationPlane(
 			"NetworkBuses"), ImportBus("NetworkBuses"), ExportBus("NetworkBuses"), StorageBus("NetworkBuses"), PartConversionMonitor("NetworkBuses"),
@@ -40,13 +42,15 @@ public enum AEFeature
 	DenseEnergyCells("HigherCapacity"), DenseCables("HigherCapacity"),
 
 	P2PTunnelME("P2PTunnels"), P2PTunnelItems("P2PTunnels"), P2PTunnelRedstone("P2PTunnels"), P2PTunnelEU("P2PTunnels"), P2PTunnelMJ("P2PTunnels"), P2PTunnelLiquids(
-			"P2PTunnels"), Security("Security"),
+			"P2PTunnels"),
 
 	MassCannonBlockDamage("BlockFeatures"), TinyTNTBlockDamage("BlockFeatures"), Facades("Facades"),
 
-	DuplicateItems("Misc", false), Profiler("Services"), VersionChecker("Services"), Debug("Misc", false), Creative("Misc"),
+	DuplicateItems("Misc", false), Profiler("Services", false), VersionChecker("Services"), Debug("Misc", false), Creative("Misc"),
 
-	Logging("Misc"), IntegrationLogging("Misc", false), CustomRecipes("Misc", false);
+	Logging("Misc"), IntegrationLogging("Misc", false), CustomRecipes("Crafting", false),
+
+	inWorldSingularity("Crafting"), inWorldFluix("Crafting"), inWorldPurification("Crafting");
 
 	String Category;
 	boolean visible = true;

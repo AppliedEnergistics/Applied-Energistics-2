@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +21,7 @@ import powercrystals.minefactoryreloaded.api.rednet.RedNetConnectionType;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IPart;
+import appeng.api.parts.LayerFlags;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
@@ -308,6 +310,12 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	public boolean requiresTESR()
 	{
 		return cb.requiresDynamicRender;
+	}
+
+	@Override
+	public Set<LayerFlags> getLayerFlags()
+	{
+		return cb.getLayerFlags();
 	}
 
 }

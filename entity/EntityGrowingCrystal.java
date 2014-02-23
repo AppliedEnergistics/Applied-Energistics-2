@@ -9,6 +9,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import appeng.api.implementations.items.IGrowableCrystal;
+import appeng.client.EffectType;
+import appeng.core.AEConfig;
+import appeng.core.CommonHelper;
+import appeng.core.features.AEFeature;
 import appeng.tile.misc.TileQuartzGrowthAccelerator;
 import appeng.util.Platform;
 
@@ -34,10 +38,11 @@ final public class EntityGrowingCrystal extends EntityItem
 	public void onUpdate()
 	{
 		super.onUpdate();
-		age = 0;
 
-		if ( Platform.isClient() )
+		if ( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldPurification ) )
 			return;
+
+		age = 0;
 
 		ItemStack is = this.getEntityItem();
 		Item gc = is.getItem();
@@ -53,17 +58,58 @@ final public class EntityGrowingCrystal extends EntityItem
 			IGrowableCrystal cry = (IGrowableCrystal) is.getItem();
 
 			float multiplier = cry.getMultiplier( blk, mat );
-			if ( Platform.isServer() && mat.isLiquid() )
+			int speed = (int) Math.max( 1, getSpeed( j, i, k ) * multiplier );
+
+			boolean isClient = Platform.isClient();
+
+			if ( mat.isLiquid() )
 			{
-				progress_1000 += Math.max( 1, getSpeed( j, i, k ) * multiplier );
+				if ( isClient )
+					progress_1000++;
+				else
+					progress_1000 += speed;
+
+			}
+			else
+				progress_1000 = 0;
+
+			if ( isClient )
+			{
+				int len = 40;
+
+				if ( speed > 2 )
+					len = 20;
+
+				if ( speed > 90 )
+					len = 15;
+
+				if ( speed > 150 )
+					len = 10;
+
+				if ( speed > 240 )
+					len = 7;
+
+				if ( speed > 360 )
+					len = 3;
+
+				if ( speed > 500 )
+					len = 1;
+
+				if ( progress_1000 >= len )
+				{
+					progress_1000 = 0;
+					CommonHelper.proxy.spawnEffect( EffectType.Vibrant, worldObj, posX, posY + 0.2, posZ );
+				}
+				return;
+			}
+			else
+			{
 				if ( progress_1000 > 1000 )
 				{
 					progress_1000 -= 1000;
 					setEntityItemStack( cry.triggerGrowth( is ) );
 				}
 			}
-			else
-				progress_1000 = 0;
 		}
 	}
 

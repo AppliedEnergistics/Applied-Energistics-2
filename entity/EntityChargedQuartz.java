@@ -12,8 +12,10 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
-import appeng.core.CommonHelper;
+import appeng.client.EffectType;
 import appeng.core.AEConfig;
+import appeng.core.CommonHelper;
+import appeng.core.features.AEFeature;
 import appeng.util.Platform;
 
 final public class EntityChargedQuartz extends EntityItem
@@ -35,9 +37,12 @@ final public class EntityChargedQuartz extends EntityItem
 	{
 		super.onUpdate();
 
+		if ( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldFluix ) )
+			return;
+
 		if ( Platform.isClient() && delay++ > 30 && AEConfig.instance.enableEffects )
 		{
-			CommonHelper.proxy.spawnLightning( worldObj, posX, posY, posZ );
+			CommonHelper.proxy.spawnEffect( EffectType.Lightning, worldObj, posX, posY, posZ );
 			delay = 0;
 		}
 
