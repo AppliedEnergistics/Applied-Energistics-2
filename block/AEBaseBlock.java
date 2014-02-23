@@ -32,6 +32,7 @@ import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
 import appeng.client.render.WorldRender;
 import appeng.client.texture.FlipableIcon;
+import appeng.client.texture.MissingIcon;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
 import appeng.core.features.IAEFeature;
@@ -132,6 +133,13 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		northIcon = optionaIcon( iconRegistry, this.getTextureName() + "Back", sideIcon );
 
 		info.updateIcons( bottomIcon, topIcon, northIcon, southIcon, eastIcon, westIcon );
+	}
+
+	public void registerNoIcons()
+	{
+		BlockRenderInfo info = getRendererInstance();
+		FlipableIcon i = new FlipableIcon( new MissingIcon() );
+		info.updateIcons( i, i, i, i, i, i );
 	}
 
 	@Override

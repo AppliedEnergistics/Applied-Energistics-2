@@ -19,7 +19,7 @@ public class BlockItemGen extends AEBaseBlock
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegistry)
 	{
-		return;
+		registerNoIcons();
 	}
 
 }

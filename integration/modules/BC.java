@@ -9,6 +9,7 @@ import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
+import appeng.api.definitions.Blocks;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.parts.IFacadePart;
 import appeng.facade.FacadePart;
@@ -187,6 +188,13 @@ public class BC extends BaseModule implements IBC
 	{
 		registerPowerP2P();
 		registerItemP2P();
+
+		Blocks b = AEApi.instance().blocks();
+		addFacade( b.blockFluix.stack( 1 ) );
+		addFacade( b.blockQuartz.stack( 1 ) );
+		addFacade( b.blockQuartzChiseled.stack( 1 ) );
+		addFacade( b.blockQuartzPiller.stack( 1 ) );
+
 		registerLiquidsP2P();
 	}
 

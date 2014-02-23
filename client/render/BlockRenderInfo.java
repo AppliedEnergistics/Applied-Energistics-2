@@ -1,9 +1,9 @@
 package appeng.client.render;
 
-import appeng.client.texture.FlipableIcon;
-import appeng.client.texture.TmpFlipableIcon;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.client.texture.FlipableIcon;
+import appeng.client.texture.TmpFlipableIcon;
 
 public class BlockRenderInfo
 {
@@ -29,8 +29,7 @@ public class BlockRenderInfo
 	private FlipableIcon eastIcon = null;
 	private FlipableIcon westIcon = null;
 
-	public void updateIcons(FlipableIcon Bottom, FlipableIcon Top, FlipableIcon North, FlipableIcon South, FlipableIcon East,
-			FlipableIcon West)
+	public void updateIcons(FlipableIcon Bottom, FlipableIcon Top, FlipableIcon North, FlipableIcon South, FlipableIcon East, FlipableIcon West)
 	{
 		topIcon = Top;
 		bottomIcon = Bottom;
@@ -57,8 +56,7 @@ public class BlockRenderInfo
 		}
 	}
 
-	public void setTemporaryRenderIcons(IIcon nTopIcon, IIcon nBottomIcon, IIcon nSouthIcon, IIcon nNorthIcon, IIcon nEastIcon,
-			IIcon nWestIcon)
+	public void setTemporaryRenderIcons(IIcon nTopIcon, IIcon nBottomIcon, IIcon nSouthIcon, IIcon nNorthIcon, IIcon nEastIcon, IIcon nWestIcon)
 	{
 		tmpTopIcon.setOriginal( nTopIcon == null ? getTexture( ForgeDirection.UP ) : nTopIcon );
 		tmpBottomIcon.setOriginal( nBottomIcon == null ? getTexture( ForgeDirection.DOWN ) : nBottomIcon );
@@ -115,8 +113,7 @@ public class BlockRenderInfo
 
 	public boolean isValid()
 	{
-		return topIcon != null && bottomIcon != null && southIcon != null && northIcon != null && eastIcon != null
-				&& westIcon != null;
+		return topIcon != null && bottomIcon != null && southIcon != null && northIcon != null && eastIcon != null && westIcon != null;
 	}
 
 }

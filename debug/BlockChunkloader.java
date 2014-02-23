@@ -32,7 +32,7 @@ public class BlockChunkloader extends AEBaseBlock implements LoadingCallback
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegistry)
 	{
-		return;
+		registerNoIcons();
 	}
 
 }
