@@ -12,4 +12,6 @@ public interface IIC2
 
 	ItemStack getItem(String string);
 
+	void maceratorRecipe(ItemStack in, ItemStack out);
+
 }

@@ -83,6 +83,7 @@ import appeng.helpers.QuartzWorldGen;
 import appeng.helpers.TickHandler;
 import appeng.items.materials.ItemMaterial;
 import appeng.items.materials.MaterialType;
+import appeng.items.misc.ItemCrystalSeed;
 import appeng.items.parts.ItemFacade;
 import appeng.items.parts.ItemPart;
 import appeng.items.parts.PartType;
@@ -116,7 +117,8 @@ import appeng.recipes.RecipeHandler;
 import appeng.recipes.Recipes.ShapedRecipe;
 import appeng.recipes.Recipes.ShapelessRecipe;
 import appeng.recipes.handlers.Grind;
-import appeng.recipes.handlers.Pureify;
+import appeng.recipes.handlers.Macerator;
+import appeng.recipes.handlers.Pulverizer;
 import appeng.recipes.handlers.Shaped;
 import appeng.recipes.handlers.Shapeless;
 import appeng.recipes.handlers.Smelt;
@@ -151,11 +153,15 @@ public class Registration
 	public void PreInit(FMLPreInitializationEvent event)
 	{
 		IRecipeHandlerRegistry recipeRegistery = AEApi.instance().registries().recipes();
+
 		recipeRegistery.addNewCraftHandler( "grind", Grind.class );
+		recipeRegistery.addNewCraftHandler( "pulverizer", Pulverizer.class );
+		recipeRegistery.addNewCraftHandler( "macerator", Macerator.class );
+
+		recipeRegistery.addNewCraftHandler( "smelt", Smelt.class );
+
 		recipeRegistery.addNewCraftHandler( "shaped", Shaped.class );
 		recipeRegistery.addNewCraftHandler( "shapeless", Shapeless.class );
-		recipeRegistery.addNewCraftHandler( "smelt", Smelt.class );
-		recipeRegistery.addNewCraftHandler( "pureify", Pureify.class );
 
 		RecipeSorter.register( "AE2-Shaped", ShapedRecipe.class, Category.SHAPED, "" );
 		RecipeSorter.register( "AE2-Shapeless", ShapelessRecipe.class, Category.SHAPELESS, "" );
@@ -326,6 +332,7 @@ public class Registration
 		items.itemBiometricCard = addFeature( ToolBiometricCard.class );
 
 		items.itemFacade = addFeature( ItemFacade.class );
+		items.itemCrystalSeed = addFeature( ItemCrystalSeed.class );
 
 		addFeature( ToolDebugCard.class );
 		addFeature( ToolReplicatorCard.class );

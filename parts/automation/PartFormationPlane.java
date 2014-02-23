@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -353,7 +354,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		int y = te.yCoord + side.offsetY;
 		int z = te.zCoord + side.offsetZ;
 
-		blocked = !w.getBlock( x, y, z ).isAir( w, x, y, z );
+		blocked = !w.getBlock( x, y, z ).isReplaceable( w, x, y, z );
 	}
 
 	@Override
@@ -376,7 +377,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		int y = te.yCoord + side.offsetY;
 		int z = te.zCoord + side.offsetZ;
 
-		if ( w.getBlock( x, y, z ).isAir( w, x, y, z ) )
+		if ( w.getBlock( x, y, z ).isReplaceable( w, x, y, z ) )
 		{
 			if ( i instanceof ItemBlock || i instanceof IPlantable )
 			{
@@ -440,16 +441,24 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 					if ( type == Actionable.MODULATE )
 					{
 						is.stackSize = (int) maxStorage;
-						List<ItemStack> out = new ArrayList( 1 );
-						out.add( is );
 						if ( type == Actionable.MODULATE )
-							Platform.spawnDrops( w, x, y, z, out );
+						{
+							EntityItem ei = new EntityItem( w, // w
+									((side.offsetX != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetX * -0.3 + (double) x, // spawn
+									((side.offsetY != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetY * -0.3 + (double) y, // spawn
+									((side.offsetZ != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetZ * -0.3 + (double) z, // spawn
+									is.copy() );
+							ei.motionX = side.offsetX * 0.2;
+							ei.motionY = side.offsetY * 0.2;
+							ei.motionZ = side.offsetZ * 0.2;
+							w.spawnEntityInWorld( ei );
+						}
 					}
 				}
 			}
 		}
 
-		blocked = !w.getBlock( x, y, z ).isAir( w, x, y, z );
+		blocked = !w.getBlock( x, y, z ).isReplaceable( w, x, y, z );
 
 		if ( worked )
 		{

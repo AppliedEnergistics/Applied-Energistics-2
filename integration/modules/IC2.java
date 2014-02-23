@@ -17,7 +17,6 @@ public class IC2 implements IIntegrationModule, IIC2
 	@Override
 	public void Init()
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -25,27 +24,10 @@ public class IC2 implements IIntegrationModule, IIC2
 	public void PostInit()
 	{
 		AEApi.instance().registries().matterCannon().registerAmmo( getItem( "uraniumDrop" ), 238.0289 );
-
-		/*
-		 * // certus quartz maceratorRecipe( AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 ),
-		 * AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ) );
-		 * 
-		 * maceratorRecipe( AEApi.instance().materials().materialCertusQuartzCrystalCharged.stack( 1 ),
-		 * AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ) );
-		 * 
-		 * // fluix maceratorRecipe( AEApi.instance().materials().materialFluixCrystal.stack( 1 ),
-		 * AEApi.instance().materials().materialFluixDust.stack( 1 ) );
-		 * 
-		 * // nether quartz maceratorRecipe( new ItemStack( Itemq ),
-		 * AEApi.instance().materials().materialNetherQuartzDust.stack( 1 ) );
-		 */
 	}
 
-	/*
-	 * private void compressorRecipe(ItemStack in, ItemStack out) { ic2.api.recipe.Recipes.compressor.addRecipe( new
-	 * RecipeInputItemStack( in, in.stackSize ), null, out ); }
-	 */
-	private void maceratorRecipe(ItemStack in, ItemStack out)
+	@Override
+	public void maceratorRecipe(ItemStack in, ItemStack out)
 	{
 		ic2.api.recipe.Recipes.macerator.addRecipe( new RecipeInputItemStack( in, in.stackSize ), null, out );
 	}

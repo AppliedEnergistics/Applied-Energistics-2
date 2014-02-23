@@ -15,6 +15,7 @@ import appeng.me.GridAccessException;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
+import appeng.util.Platform;
 
 public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPowerChannelState
 {
@@ -66,7 +67,7 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 	public TileQuartzGrowthAccelerator() {
 		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 		gridProxy.setFlags( GridFlags.CANNOT_CARRY );
-		gridProxy.setIdlePowerUsage( 2 );
+		gridProxy.setIdlePowerUsage( 8 );
 		addNewHandler( new TileChargerHandler() );
 	}
 
@@ -80,13 +81,25 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 	@Override
 	public boolean isPowered()
 	{
+		if ( Platform.isServer() )
+		{
+			try
+			{
+				return gridProxy.getEnergy().isNetworkPowered();
+			}
+			catch (GridAccessException e)
+			{
+				return false;
+			}
+		}
+
 		return hasPower;
 	}
 
 	@Override
 	public boolean isActive()
 	{
-		return hasPower;
+		return isPowered();
 	}
 
 }

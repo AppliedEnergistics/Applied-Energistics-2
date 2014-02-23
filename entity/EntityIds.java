@@ -18,7 +18,7 @@ public class EntityIds
 			return SINGULARITY;
 		if ( droppedEntity == EntityChargedQuartz.class )
 			return CHARGED_QUARTZ;
-		if ( droppedEntity == EntityChargedQuartz.class )
+		if ( droppedEntity == EntityGrowingCrystal.class )
 			return GROWING_CRYSTAL;
 
 		throw new RuntimeException( "Missing entity id: " + droppedEntity.getName() );

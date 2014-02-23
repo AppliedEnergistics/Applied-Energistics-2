@@ -3,14 +3,15 @@ package appeng.recipes.handlers;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import appeng.api.AEApi;
+import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
+import cpw.mods.fml.common.event.FMLInterModComms;
 
-public class Grind implements ICraftHandler
+public class Pulverizer implements ICraftHandler
 {
 
 	IIngredient pro_input;
@@ -35,8 +36,17 @@ public class Grind implements ICraftHandler
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		for (ItemStack is : pro_input.getItemStackSet())
-			AEApi.instance().registries().grinder().addRecipe( is, pro_output[0].getItemStack(), 8 );
-	}
+		NBTTagCompound toSend = new NBTTagCompound();
+		toSend.setInteger( "energy", 800 );
+		toSend.setTag( "primaryOutput", new NBTTagCompound() );
 
+		pro_output[0].getItemStack().writeToNBT( toSend.getCompoundTag( "primaryOutput" ) );
+
+		for (ItemStack is : pro_input.getItemStackSet())
+		{
+			toSend.setTag( "input", new NBTTagCompound() );
+			is.writeToNBT( toSend.getCompoundTag( "input" ) );
+			FMLInterModComms.sendMessage( "ThermalExpansion", "PulverizerRecipe", toSend );
+		}
+	}
 }
