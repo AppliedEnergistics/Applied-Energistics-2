@@ -8,6 +8,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.features.INetworkEncodable;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.storage.ITerminalHost;
@@ -136,11 +137,18 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 			if ( wirelessIn.getHasStack() )
 			{
 				ItemStack term = wirelessIn.getStack().copy();
-				IWirelessTermHandler h = AEApi.instance().registries().wireless().getWirelessTerminalHandler( term );
-
-				if ( h != null )
+				INetworkEncodable netEncodeable = null;
+				
+				if ( term.getItem() instanceof INetworkEncodable )
+					netEncodeable = (INetworkEncodable) term.getItem();
+				
+				IWirelessTermHandler wTermHandler = AEApi.instance().registries().wireless().getWirelessTerminalHandler( term );
+				if ( wTermHandler != null )
+					netEncodeable = wTermHandler;
+				
+				if ( netEncodeable != null )
 				{
-					h.setEncryptionKey( term, "" + securityBox.securityKey, "" );
+					netEncodeable.setEncryptionKey( term, "" + securityBox.securityKey, "" );
 
 					wirelessIn.putStack( null );
 					wirelessOut.putStack( term );
