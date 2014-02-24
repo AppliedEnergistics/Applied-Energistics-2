@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import appeng.block.AEBaseBlock;
+import appeng.core.AELog;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -58,13 +59,20 @@ public class WorldRender implements ISimpleBlockRenderingHandler
 
 	public void renderItemBlock(ItemStack item)
 	{
-		AEBaseBlock block = (AEBaseBlock) Block.getBlockFromItem( item.getItem() );
-		renderer.setRenderBoundsFromBlock( block );
-
-		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
-		getRender( block ).renderInventory( block, item, renderer );
-		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
-
+		Block blk = Block.getBlockFromItem( item.getItem() );
+		if ( blk instanceof AEBaseBlock )
+		{
+			AEBaseBlock block = (AEBaseBlock)blk;
+			renderer.setRenderBoundsFromBlock( block );
+	
+			renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+			getRender( block ).renderInventory( block, item, renderer );
+			renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+		}
+		else
+		{
+			AELog.severe( "Invalid render: "+item.getUnlocalizedName() +" as ae block" );
+		}
 	}
 
 	private BaseBlockRender getRender(AEBaseBlock block)
