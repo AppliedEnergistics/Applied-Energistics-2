@@ -4,8 +4,11 @@ import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IItemGroup;
@@ -13,6 +16,7 @@ import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
@@ -21,6 +25,7 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.materials.MaterialType;
 import appeng.me.storage.CellInventory;
 import appeng.me.storage.CellInventoryHandler;
+import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
 public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, IItemGroup
@@ -166,4 +171,36 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 		return true;
 	}
 
+	@Override
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	{
+		if ( player.isSneaking() )
+		{
+			if ( Platform.isClient() )
+				return false;
+
+			InventoryPlayer pinv = player.inventory;
+			IMEInventory<IAEItemStack> inv = AEApi.instance().registries().cell().getCellInventory( stack, StorageChannel.ITEMS );
+			if ( inv != null && pinv.getCurrentItem() == stack )
+			{
+				InventoryAdaptor ia = InventoryAdaptor.getAdaptor( pinv, ForgeDirection.UNKNOWN );
+				IItemList<IAEItemStack> list = inv.getAvailableItems( StorageChannel.ITEMS.createList() );
+				if ( list.isEmpty() && ia != null )
+				{
+					pinv.setInventorySlotContents( pinv.currentItem, null );
+
+					ItemStack extraA = ia.addItems( AEApi.instance().materials().materialEmptyStorageCell.stack( 1 ) );
+					ItemStack extraB = ia.addItems( component.stack( 1 ) );
+
+					if ( extraA != null )
+						player.dropPlayerItemWithRandomChoice( extraA, false );
+					if ( extraB != null )
+						player.dropPlayerItemWithRandomChoice( extraB, false );
+
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

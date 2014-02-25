@@ -38,7 +38,8 @@ public class IC2 implements IIntegrationModule, IIC2
 		reg.addNewAttunement( getItem( "detectorCableItem" ), TunnelType.IC2_POWER );
 		reg.addNewAttunement( getItem( "splitterCableItem" ), TunnelType.IC2_POWER );
 
-		AEApi.instance().registries().matterCannon().registerAmmo( getItem( "uraniumDrop" ), 238.0289 );
+		// this is gone?
+		// AEApi.instance().registries().matterCannon().registerAmmo( getItem( "uraniumDrop" ), 238.0289 );
 	}
 
 	@Override

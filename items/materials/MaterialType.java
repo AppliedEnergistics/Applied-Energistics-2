@@ -3,6 +3,7 @@ package appeng.items.materials;
 import java.util.EnumSet;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.oredict.OreDictionary;
 import appeng.core.AppEng;
@@ -90,6 +91,11 @@ public enum MaterialType
 		oreName = oreDictionary;
 		if ( OreDictionary.getOres( oreDictionary ).size() > 0 )
 			features.add( AEFeature.DuplicateItems );
+	}
+
+	public ItemStack stack(int size)
+	{
+		return new ItemStack( ItemMaterial.instance, size, damageValue );
 	}
 
 	public EnumSet<AEFeature> getFeature()
