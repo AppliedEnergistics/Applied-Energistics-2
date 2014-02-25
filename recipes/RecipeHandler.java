@@ -58,8 +58,9 @@ public class RecipeHandler implements IRecipeHandler
 				}
 				catch (RegistrationError e)
 				{
-					AELog.warning( "Unable to regsiter a recipe." );
-					AELog.error( e );
+					AELog.warning( "Unable to regsiter a recipe: " + e.getMessage() );
+					if ( data.exceptions )
+						AELog.error( e );
 					if ( data.crash )
 						throw e;
 				}
@@ -67,8 +68,9 @@ public class RecipeHandler implements IRecipeHandler
 				{
 					if ( data.erroronmissing )
 					{
-						AELog.warning( "Unable to regsiter a recipe." );
-						AELog.error( e );
+						AELog.warning( "Unable to regsiter a recipe:" + e.getMessage() );
+						if ( data.exceptions )
+							AELog.error( e );
 						if ( data.crash )
 							throw e;
 					}
@@ -77,7 +79,8 @@ public class RecipeHandler implements IRecipeHandler
 		}
 		catch (Throwable e)
 		{
-			AELog.error( e );
+			if ( data.exceptions )
+				AELog.error( e );
 			if ( data.crash )
 				throw new RuntimeException( e );
 		}
@@ -231,9 +234,9 @@ public class RecipeHandler implements IRecipeHandler
 
 					List<List<IIngredient>> inputs = parseLines( pre );
 
-					if ( inputs.size() >= 1 && post.size() == 1 )
+					if ( inputs.size() == 1 && inputs.get( 0 ).size() > 0 && post.size() == 1 )
 					{
-
+						data.groups.put( post.get( 0 ), new GroupIngredient( post.get( 0 ), inputs.get( 0 ) ) );
 					}
 					else
 						throw new RecipeError( "Group must have exactly 1 output, and 1 or more inputs." );
@@ -276,7 +279,16 @@ public class RecipeHandler implements IRecipeHandler
 			{
 				String operation = tokens.remove( 0 ).toLowerCase();
 
-				if ( operation.equals( "crash" ) && (tokens.get( 0 ).equals( "true" ) || tokens.get( 0 ).equals( "false" )) )
+				if ( operation.equals( "exceptions" ) && (tokens.get( 0 ).equals( "true" ) || tokens.get( 0 ).equals( "false" )) )
+				{
+					if ( tokens.size() == 1 )
+					{
+						data.exceptions = tokens.get( 0 ).equals( "true" );
+					}
+					else
+						throw new RecipeError( "exceptions must be true or false explicitly." );
+				}
+				else if ( operation.equals( "crash" ) && (tokens.get( 0 ).equals( "true" ) || tokens.get( 0 ).equals( "false" )) )
 				{
 					if ( tokens.size() == 1 )
 					{
@@ -309,7 +321,8 @@ public class RecipeHandler implements IRecipeHandler
 		catch (RecipeError e)
 		{
 			AELog.warning( "Recipe Error near line:" + line + " in " + file + " with: " + tokens.toString() );
-			AELog.error( e );
+			if ( data.exceptions )
+				AELog.error( e );
 			if ( data.crash )
 				throw e;
 		}
@@ -348,11 +361,11 @@ public class RecipeHandler implements IRecipeHandler
 				{
 					if ( hasQty )
 					{
-						cList.add( new Ingredient( this, v, qty ) );
+						cList.add( findIngrident( v, qty ) );
 						hasQty = false;
 					}
 					else
-						cList.add( new Ingredient( this, v, 1 ) );
+						cList.add( findIngrident( v, 1 ) );
 				}
 			}
 		}
@@ -361,6 +374,14 @@ public class RecipeHandler implements IRecipeHandler
 			out.add( cList );
 
 		return out;
+	}
+
+	private IIngredient findIngrident(String v, int qty) throws RecipeError
+	{
+		GroupIngredient gi = data.groups.get( v );
+		if ( gi != null )
+			return gi.copy( qty );
+		return new Ingredient( this, v, qty );
 	}
 
 	private boolean isNumber(String v)

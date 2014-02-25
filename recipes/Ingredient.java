@@ -6,14 +6,12 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+import appeng.api.AEApi;
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.IIngredient;
-import appeng.core.AppEng;
-import appeng.items.materials.MaterialType;
-import appeng.items.parts.ItemPart;
-import appeng.items.parts.PartType;
+import appeng.api.recipes.ResolveResult;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Ingredient implements IIngredient
@@ -58,24 +56,15 @@ public class Ingredient implements IIngredient
 						throw new RecipeError( "Cannot specify meta when using ore dictionary." );
 					sel = OreDictionary.WILDCARD_VALUE;
 				}
-				else if ( nameSpace.equals( AppEng.modid ) )
+				else
 				{
 					try
 					{
-						if ( tmpName.startsWith( "ItemMaterial." ) )
+						ResolveResult rr = AEApi.instance().registries().recipes().resolveItem( nameSpace, tmpName );
+						if ( rr != null )
 						{
-							String materialName = tmpName.substring( tmpName.indexOf( "." ) + 1 );
-							MaterialType mt = MaterialType.valueOf( materialName );
-							tmpName = tmpName.substring( 0, tmpName.indexOf( "." ) );
-							sel = mt.damageValue;
-						}
-
-						if ( tmpName.startsWith( "ItemPart." ) )
-						{
-							String partName = tmpName.substring( tmpName.indexOf( "." ) + 1 );
-							PartType pt = PartType.valueOf( partName );
-							tmpName = tmpName.substring( 0, tmpName.indexOf( "." ) );
-							sel = ItemPart.instance.getDamageByType( pt );
+							tmpName = rr.itemName;
+							sel = rr.damageValue;
 						}
 					}
 					catch (IllegalArgumentException e)
@@ -171,6 +160,9 @@ public class Ingredient implements IIngredient
 				set[x] = is;
 			}
 
+			if ( set.length == 0 )
+				throw new MissingIngredientError( toString() + " - ore dictionary could not be resolved to any items." );
+
 			return set;
 		}
 
@@ -178,27 +170,32 @@ public class Ingredient implements IIngredient
 	}
 
 	@Override
-	public String getNameSpace() {
+	public String getNameSpace()
+	{
 		return nameSpace;
 	}
 
 	@Override
-	public String getItemName() {
+	public String getItemName()
+	{
 		return itemName;
 	}
 
 	@Override
-	public int getDamageValue() {
+	public int getDamageValue()
+	{
 		return meta;
 	}
 
 	@Override
-	public int getQty() {
+	public int getQty()
+	{
 		return qty;
 	}
-	
+
 	@Override
-	public boolean isAir() {
+	public boolean isAir()
+	{
 		return isAir;
 	}
 

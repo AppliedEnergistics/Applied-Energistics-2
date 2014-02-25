@@ -26,6 +26,14 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 {
 
+	public static final int LEVEL_OFFSET = 200;
+	public static final int SINGLE_OFFSET = LEVEL_OFFSET * 3;
+
+	public static final int Certus = 0;
+	public static final int Nether = SINGLE_OFFSET;
+	public static final int Fluix = SINGLE_OFFSET * 2;
+	public static final int END = SINGLE_OFFSET * 3;
+
 	IIcon certus[] = new IIcon[3];
 	IIcon fluix[] = new IIcon[3];
 	IIcon nether[] = new IIcon[3];
@@ -45,13 +53,13 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	{
 		int damage = is.getItemDamage();
 
-		if ( damage < 600 )
+		if ( damage < Certus + SINGLE_OFFSET )
 			return getUnlocalizedName() + ".Certus";
 
-		if ( damage < 1200 )
+		if ( damage < Nether + SINGLE_OFFSET )
 			return getUnlocalizedName() + ".Nether";
 
-		if ( damage < 1800 )
+		if ( damage < Fluix + SINGLE_OFFSET )
 			return getUnlocalizedName() + ".Fluix";
 
 		return getUnlocalizedName();
@@ -62,13 +70,13 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	{
 		int newDamage = is.getItemDamage() + 1;
 
-		if ( newDamage == 600 )
+		if ( newDamage == Certus + SINGLE_OFFSET )
 			return AEApi.instance().materials().materialPureifiedCertusQuartzCrystal.stack( is.stackSize );
-		if ( newDamage == 1200 )
+		if ( newDamage == Nether + SINGLE_OFFSET )
 			return AEApi.instance().materials().materialPureifiedNetherQuartzCrystal.stack( is.stackSize );
-		if ( newDamage == 1800 )
+		if ( newDamage == Fluix + SINGLE_OFFSET )
 			return AEApi.instance().materials().materialPureifiedFluixCrystal.stack( is.stackSize );
-		if ( newDamage > 1800 )
+		if ( newDamage > END )
 			return null;
 
 		is.setItemDamage( newDamage );
@@ -106,27 +114,27 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	{
 		IIcon list[] = null;
 
-		if ( damage < 600 )
+		if ( damage < Certus + SINGLE_OFFSET )
 			list = certus;
 
-		else if ( damage < 1200 )
+		else if ( damage < Nether + SINGLE_OFFSET )
 		{
-			damage -= 600;
+			damage -= Nether;
 			list = nether;
 		}
 
-		else if ( damage < 1800 )
+		else if ( damage < Fluix + SINGLE_OFFSET )
 		{
-			damage -= 1200;
+			damage -= Fluix;
 			list = fluix;
 		}
 
 		if ( list == null )
 			return Items.diamond.getIconFromDamage( 0 );
 
-		if ( damage < 200 )
+		if ( damage < LEVEL_OFFSET )
 			return list[0];
-		else if ( damage < 400 )
+		else if ( damage < LEVEL_OFFSET * 2 )
 			return list[1];
 		else
 			return list[2];
@@ -181,19 +189,19 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	public void getSubItems(Item i, CreativeTabs t, List l)
 	{
 		// lvl 0
-		l.add( new ItemStack( this, 1, 0 ) );
-		l.add( new ItemStack( this, 1, 600 ) );
-		l.add( new ItemStack( this, 1, 1200 ) );
+		l.add( new ItemStack( this, 1, Certus ) );
+		l.add( new ItemStack( this, 1, Nether ) );
+		l.add( new ItemStack( this, 1, Fluix ) );
 
 		// lvl 1
-		l.add( new ItemStack( this, 1, 200 + 0 ) );
-		l.add( new ItemStack( this, 1, 200 + 600 ) );
-		l.add( new ItemStack( this, 1, 200 + 1200 ) );
+		l.add( new ItemStack( this, 1, LEVEL_OFFSET + Certus ) );
+		l.add( new ItemStack( this, 1, LEVEL_OFFSET + Nether ) );
+		l.add( new ItemStack( this, 1, LEVEL_OFFSET + Fluix ) );
 
 		// lvl 2
-		l.add( new ItemStack( this, 1, 400 + 0 ) );
-		l.add( new ItemStack( this, 1, 400 + 600 ) );
-		l.add( new ItemStack( this, 1, 400 + 1200 ) );
+		l.add( new ItemStack( this, 1, LEVEL_OFFSET * 2 + Certus ) );
+		l.add( new ItemStack( this, 1, LEVEL_OFFSET * 2 + Nether ) );
+		l.add( new ItemStack( this, 1, LEVEL_OFFSET * 2 + Fluix ) );
 	}
 
 }

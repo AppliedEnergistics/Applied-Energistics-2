@@ -113,6 +113,7 @@ import appeng.me.cache.SecurityCache;
 import appeng.me.cache.SpatialPylonCache;
 import appeng.me.cache.TickManagerCache;
 import appeng.me.storage.AEExternalHandler;
+import appeng.recipes.AEItemResolver;
 import appeng.recipes.RecipeHandler;
 import appeng.recipes.Recipes.ShapedRecipe;
 import appeng.recipes.Recipes.ShapelessRecipe;
@@ -153,6 +154,7 @@ public class Registration
 	public void PreInit(FMLPreInitializationEvent event)
 	{
 		IRecipeHandlerRegistry recipeRegistery = AEApi.instance().registries().recipes();
+		recipeRegistery.addNewSubItemResolver( new AEItemResolver() );
 
 		recipeRegistery.addNewCraftHandler( "grind", Grind.class );
 		recipeRegistery.addNewCraftHandler( "pulverizer", Pulverizer.class );
@@ -338,7 +340,6 @@ public class Registration
 		addFeature( ToolReplicatorCard.class );
 		addFeature( BlockItemGen.class );
 		addFeature( BlockChunkloader.class );
-
 	}
 
 	private AEItemDefinition addFeature(Class c, Object... Args)
