@@ -161,7 +161,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 			oldSize = getDest().getSizeInventory();
 			if ( olderSize != oldSize )
 			{
-				getHost().PartChanged();
+				getHost().partChanged();
 				tile.getWorldObj().notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, Platform.air );
 			}
 		}
@@ -177,7 +177,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 			oldSize = getDest().getSizeInventory();
 			if ( olderSize != oldSize )
 			{
-				getHost().PartChanged();
+				getHost().partChanged();
 				tile.getWorldObj().notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, Platform.air );
 			}
 		}
@@ -193,7 +193,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 			oldSize = getDest().getSizeInventory();
 			if ( olderSize != oldSize )
 			{
-				getHost().PartChanged();
+				getHost().partChanged();
 				tile.getWorldObj().notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, Platform.air );
 			}
 		}
@@ -209,7 +209,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 			oldSize = getDest().getSizeInventory();
 			if ( olderSize != oldSize )
 			{
-				getHost().PartChanged();
+				getHost().partChanged();
 				tile.getWorldObj().notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, Platform.air );
 			}
 		}

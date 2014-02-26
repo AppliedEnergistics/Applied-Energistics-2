@@ -111,7 +111,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 			updateDynamicRender();
 			updateConnections();
 			markForUpdate();
-			PartChanged();
+			partChanged();
 		}
 	}
 
@@ -237,7 +237,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 
 					updateConnections();
 					markForUpdate();
-					PartChanged();
+					partChanged();
 					return ForgeDirection.UNKNOWN;
 				}
 				else if ( !(bp instanceof IPartCable) && side != ForgeDirection.UNKNOWN )
@@ -280,7 +280,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 					updateDynamicRender();
 					updateConnections();
 					markForUpdate();
-					PartChanged();
+					partChanged();
 					return side;
 				}
 			}
@@ -854,7 +854,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	}
 
 	@Override
-	public void PartChanged()
+	public void partChanged()
 	{
 		if ( center == null )
 		{
@@ -877,7 +877,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 			}
 		}
 
-		tcb.PartChanged();
+		tcb.partChanged();
 	}
 
 	@Override

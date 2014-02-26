@@ -246,7 +246,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public void PartChanged()
+	public void partChanged()
 	{
 		// nothing!
 	}

@@ -96,7 +96,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	@Override
 	public void onChange()
 	{
-		getHost().PartChanged();
+		getHost().partChanged();
 	}
 
 	public float getPowerDrainPerTick()

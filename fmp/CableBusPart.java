@@ -423,7 +423,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	}
 
 	@Override
-	public void PartChanged()
+	public void partChanged()
 	{
 		// nothing!
 	}
