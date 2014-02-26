@@ -28,9 +28,15 @@ public enum MaterialType
 
 	PureifiedCertusQuartzCrystal, PureifiedNetherQuartzCrystal, PureifiedFluixCrystal,
 
-	LogicProcessorAsm(AEFeature.QuartzKnife), LogicProcessor,
+	CalcProcessorPress, EngProcessorPress, LogicProcessorPress,
 
-	CalcProcessor, EngProcessor,
+	CalcProcessorPrint, EngProcessorPrint, LogicProcessorPrint,
+
+	SiliconPress, SiliconPrint,
+
+	NamePress,
+
+	LogicProcessor, CalcProcessor, EngProcessor,
 
 	// Basic Cards
 	BasicCard, CardRedstone, CardCapacity,

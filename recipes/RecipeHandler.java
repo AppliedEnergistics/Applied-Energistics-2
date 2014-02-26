@@ -114,7 +114,8 @@ public class RecipeHandler implements IRecipeHandler
 			catch (Exception err)
 			{
 				AELog.warning( "Error Loading Recipe File:" + path );
-				AELog.error( err );
+				if ( data.exceptions )
+					AELog.error( err );
 				return;
 			}
 
@@ -320,7 +321,7 @@ public class RecipeHandler implements IRecipeHandler
 		}
 		catch (RecipeError e)
 		{
-			AELog.warning( "Recipe Error near line:" + line + " in " + file + " with: " + tokens.toString() );
+			AELog.warning( "Recipe Error '" + e.getMessage() + "' near line:" + line + " in " + file + " with: " + tokens.toString() );
 			if ( data.exceptions )
 				AELog.error( e );
 			if ( data.crash )
