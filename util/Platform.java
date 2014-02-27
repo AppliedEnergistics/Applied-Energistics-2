@@ -52,7 +52,9 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.config.SearchBoxMode;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.config.SortOrder;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
@@ -178,9 +180,23 @@ public class Platform
 			else
 				ce = nextEnum( ce );
 		}
-		while (!ValidOptions.contains( ce ));
+		while (!ValidOptions.contains( ce ) || isNotValidSetting( ce ));
 
 		return ce;
+	}
+
+	private static boolean isNotValidSetting(Enum e)
+	{
+		if ( e == SortOrder.INVTWEAKS && !AppEng.instance.isIntegrationEnabled( "InvTweaks" ) )
+			return true;
+
+		if ( e == SearchBoxMode.NEI_AUTOSEARCH && !AppEng.instance.isIntegrationEnabled( "NEI" ) )
+			return true;
+
+		if ( e == SearchBoxMode.NEI_MANUAL_SEARCH && !AppEng.instance.isIntegrationEnabled( "NEI" ) )
+			return true;
+
+		return false;
 	}
 
 	/*

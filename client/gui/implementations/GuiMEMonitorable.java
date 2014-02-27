@@ -5,6 +5,9 @@ import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
+
+import org.lwjgl.input.Mouse;
+
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
 import appeng.api.implementations.guiobjects.IPortableCell;
@@ -179,11 +182,13 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	{
 		if ( btn instanceof GuiImgButton )
 		{
+			boolean backwards = Mouse.isButtonDown( 1 );
+
 			GuiImgButton iBtn = (GuiImgButton) btn;
 			if ( iBtn.getSetting() != Settings.ACTIONS )
 			{
 				Enum cv = iBtn.getCurrentValue();
-				Enum next = Platform.nextEnum( cv );
+				Enum next = Platform.rotateEnum( cv, backwards, iBtn.getSetting().getPossibleValues() );
 
 				if ( btn == searchBoxSettings )
 					AEConfig.instance.settings.putSetting( iBtn.getSetting(), next );

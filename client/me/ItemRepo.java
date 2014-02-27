@@ -132,11 +132,12 @@ public class ItemRepo
 		Enum SortDir = sortSrc.getSortDir();
 
 		ItemSorters.Direction = (appeng.api.config.SortDir) SortDir;
+		ItemSorters.init();
 
 		if ( SortBy == SortOrder.AMOUNT )
 			Collections.sort( view, ItemSorters.ConfigBased_SortBySize );
-		// else if ( SortBy == SortOrder.MOD )
-		// Collections.sort( view, ItemSorters.ConfigBased_SortByMod );
+		else if ( SortBy == SortOrder.INVTWEAKS )
+			Collections.sort( view, ItemSorters.ConfigBased_SortByInvTweaks );
 		else
 			Collections.sort( view, ItemSorters.ConfigBased_SortByName );
 

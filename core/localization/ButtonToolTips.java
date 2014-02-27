@@ -32,7 +32,7 @@ public enum ButtonToolTips
 
 	Blocking, NonBlocking, Craft, DontCraft,
 
-	LevelType, LevelType_Energy, LevelType_Item;
+	LevelType, LevelType_Energy, LevelType_Item, InventoryTweaks;
 
 	String root;
 

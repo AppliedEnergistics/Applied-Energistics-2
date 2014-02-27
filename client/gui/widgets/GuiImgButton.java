@@ -141,6 +141,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 
 			registerApp( 64, Settings.SORT_BY, SortOrder.NAME, ButtonToolTips.SortBy, ButtonToolTips.ItemName );
 			registerApp( 65, Settings.SORT_BY, SortOrder.AMOUNT, ButtonToolTips.SortBy, ButtonToolTips.NumberOfItems );
+			registerApp( 68, Settings.SORT_BY, SortOrder.INVTWEAKS, ButtonToolTips.SortBy, ButtonToolTips.InventoryTweaks );
 			// registerApp( 66, Settings.SORT_BY, SortOrder.PRIORITY,
 			// "AppEng.GuiITooltip.SortBy",
 			// "AppEng.GuiITooltip.PriorityCellOrder" );
