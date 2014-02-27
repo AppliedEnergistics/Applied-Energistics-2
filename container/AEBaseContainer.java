@@ -3,6 +3,7 @@ package appeng.container;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -505,6 +506,20 @@ public abstract class AEBaseContainer extends Container
 				}
 			}
 
+			if ( action == InventoryAction.MOVE_REGION )
+			{
+				List<Slot> from = new LinkedList();
+
+				for (Object j : inventorySlots)
+				{
+					if ( j instanceof Slot && j.getClass() == s.getClass() )
+						from.add( (Slot) j );
+				}
+
+				for (Slot fr : from)
+					transferStackInSlot( player, fr.slotNumber );
+			}
+
 			return;
 		}
 
@@ -641,6 +656,34 @@ public abstract class AEBaseContainer extends Container
 			}
 			break;
 		case MOVE_REGION:
+
+			if ( powerSrc == null || cellInv == null )
+				return;
+
+			if ( slotItem != null )
+			{
+				for (int slotNum = 0; slotNum < player.inventory.getSizeInventory(); slotNum++)
+				{
+					IAEItemStack ais = slotItem.copy();
+					ItemStack myItem = ais.getItemStack();
+
+					ais.setStackSize( myItem.getMaxStackSize() );
+
+					InventoryAdaptor adp = InventoryAdaptor.getAdaptor( player.inventory, ForgeDirection.UNKNOWN );
+					myItem.stackSize = (int) ais.getStackSize();
+					myItem = adp.simulateAdd( myItem );
+
+					if ( myItem != null )
+						ais.setStackSize( ais.getStackSize() - myItem.stackSize );
+
+					ais = Platform.poweredExtraction( powerSrc, cellInv, ais, mySrc );
+					if ( ais != null )
+						adp.addItems( ais.getItemStack() );
+					else
+						return;
+				}
+			}
+
 			break;
 		default:
 			break;

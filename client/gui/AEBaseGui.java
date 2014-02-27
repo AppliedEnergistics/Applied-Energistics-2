@@ -18,6 +18,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -153,6 +154,30 @@ public abstract class AEBaseGui extends GuiContainer
 				}
 			}
 
+			return;
+		}
+
+		if ( Keyboard.isKeyDown( Keyboard.KEY_SPACE ) )
+		{
+			IAEItemStack stack = null;
+			if ( slot instanceof SlotME )
+				stack = ((SlotME) slot).getAEStack();
+
+			PacketInventoryAction p;
+			try
+			{
+				int slotNum = inventorySlots.inventorySlots.size();
+
+				if ( !(slot instanceof SlotME) && slot != null )
+					slotNum = slot.slotNumber;
+
+				p = new PacketInventoryAction( InventoryAction.MOVE_REGION, slotNum, stack );
+				NetworkHandler.instance.sendToServer( p );
+			}
+			catch (IOException e)
+			{
+				AELog.error( e );
+			}
 			return;
 		}
 

@@ -227,6 +227,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	{
 		if ( !this.checkHotbarKeys( key ) )
 		{
+			if ( character == ' ' && this.searchField.getText().length() == 0 )
+				return;
+
 			if ( searchField.textboxKeyTyped( character, key ) )
 			{
 				repo.searchString = this.searchField.getText();
