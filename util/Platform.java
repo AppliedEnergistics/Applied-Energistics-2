@@ -1478,4 +1478,42 @@ public class Platform
 		return false;
 	}
 
+	public static void configurePlayer(EntityPlayer player, ForgeDirection side, TileEntity tile)
+	{
+		float pitch = 0.0f, yaw = 0.0f;
+		player.yOffset = 1.8f;
+
+		switch (side)
+		{
+		case DOWN:
+			pitch = 90.0f;
+			player.yOffset = -1.8f;
+			break;
+		case EAST:
+			yaw = -90.0f;
+			break;
+		case NORTH:
+			yaw = 180.0f;
+			break;
+		case SOUTH:
+			yaw = 0.0f;
+			break;
+		case UNKNOWN:
+			break;
+		case UP:
+			pitch = 90.0f;
+			break;
+		case WEST:
+			yaw = 90.0f;
+			break;
+		}
+
+		player.posX = (float) tile.xCoord + 0.5;
+		player.posY = (float) tile.yCoord + 0.5;
+		player.posZ = (float) tile.zCoord + 0.5;
+
+		player.rotationPitch = player.prevCameraPitch = player.cameraPitch = pitch;
+		player.rotationYaw = player.prevCameraYaw = player.cameraYaw = yaw;
+	}
+
 }

@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.BlockTNT;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -23,6 +24,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import appeng.block.misc.BlockTinyTNT;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
+import appeng.helpers.DispenserEntropyManipulator;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.InWorldToolOperationResult;
 import appeng.util.Platform;
@@ -152,6 +154,14 @@ public class ToolEntropyManipulator extends AEBasePoweredItem
 		heatUp.put( new Combo( Blocks.flowing_water, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult() );
 		heatUp.put( new Combo( Blocks.water, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult() );
 		heatUp.put( new Combo( Blocks.snow, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult( new ItemStack( Blocks.flowing_water ) ) );
+	}
+
+	@Override
+	public void postInit()
+	{
+		super.postInit();
+
+		BlockDispenser.dispenseBehaviorRegistry.putObject( this, new DispenserEntropyManipulator() );
 	}
 
 	@Override

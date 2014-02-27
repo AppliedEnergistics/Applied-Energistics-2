@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDispenser;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -35,6 +36,7 @@ import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.packets.PacketMatterCannon;
+import appeng.helpers.DispenserMatterCannon;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
@@ -49,6 +51,13 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 		super( ToolMassCannon.class, null );
 		setfeature( EnumSet.of( AEFeature.MatterCannon, AEFeature.PoweredTools ) );
 		maxStoredPower = AEConfig.instance.mattercannon_battery;
+	}
+
+	@Override
+	public void postInit()
+	{
+		super.postInit();
+		BlockDispenser.dispenseBehaviorRegistry.putObject( this, new DispenserMatterCannon() );
 	}
 
 	@Override
