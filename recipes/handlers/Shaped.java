@@ -31,12 +31,17 @@ public class Shaped implements ICraftHandler
 			if ( rows > 0 && input.size() <= 3 )
 			{
 				cols = input.get( 0 ).size();
-				for (int x = 0; x < input.size(); x++)
-					if ( input.get( x ).size() != cols )
-						throw new RecipeError( "all rows in a shaped crafting recipe must contain the same number of ingredients." );
+				if ( cols <= 3 && cols >= 1 )
+				{
+					for (int x = 0; x < input.size(); x++)
+						if ( input.get( x ).size() != cols )
+							throw new RecipeError( "all rows in a shaped crafting recipe must contain the same number of ingredients." );
 
-				inputs = input;
-				this.output = output.get( 0 ).get( 0 );
+					inputs = input;
+					this.output = output.get( 0 ).get( 0 );
+				}
+				else
+					throw new RecipeError( "Crafting recipes must have 1-3 columns." );
 			}
 			else
 				throw new RecipeError( "shaped crafting recpies must have 1-3 rows." );
