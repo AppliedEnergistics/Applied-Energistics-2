@@ -180,28 +180,30 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		if ( btn instanceof GuiImgButton )
 		{
 			GuiImgButton iBtn = (GuiImgButton) btn;
-
-			Enum cv = iBtn.getCurrentValue();
-			Enum next = Platform.nextEnum( cv );
-
-			if ( btn == searchBoxSettings )
-				AEConfig.instance.settings.putSetting( iBtn.getSetting(), next );
-			else
+			if ( iBtn.getSetting() != Settings.ACTIONS )
 			{
-				try
+				Enum cv = iBtn.getCurrentValue();
+				Enum next = Platform.nextEnum( cv );
+
+				if ( btn == searchBoxSettings )
+					AEConfig.instance.settings.putSetting( iBtn.getSetting(), next );
+				else
 				{
-					NetworkHandler.instance.sendToServer( new PacketValueConfig( iBtn.getSetting().name(), next.name() ) );
+					try
+					{
+						NetworkHandler.instance.sendToServer( new PacketValueConfig( iBtn.getSetting().name(), next.name() ) );
+					}
+					catch (IOException e)
+					{
+						AELog.error( e );
+					}
 				}
-				catch (IOException e)
-				{
-					AELog.error( e );
-				}
+
+				iBtn.set( next );
+
+				if ( next.getClass() == SearchBoxMode.class )
+					re_init();
 			}
-
-			iBtn.set( next );
-
-			if ( next.getClass() == SearchBoxMode.class )
-				re_init();
 		}
 	}
 
