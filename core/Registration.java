@@ -54,6 +54,7 @@ import appeng.block.solids.BlockQuartzChiseled;
 import appeng.block.solids.BlockQuartzGlass;
 import appeng.block.solids.BlockQuartzLamp;
 import appeng.block.solids.BlockQuartzPillar;
+import appeng.block.solids.BlockSkyRock;
 import appeng.block.solids.OreQuartz;
 import appeng.block.solids.OreQuartzCharged;
 import appeng.block.spatial.BlockSpatialIOPort;
@@ -61,6 +62,7 @@ import appeng.block.spatial.BlockSpatialPylon;
 import appeng.block.storage.BlockChest;
 import appeng.block.storage.BlockDrive;
 import appeng.block.storage.BlockIOPort;
+import appeng.block.storage.BlockSkyChest;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
 import appeng.core.features.ColoredItemDefinition;
@@ -245,6 +247,8 @@ public class Registration
 		blocks.blockMatrixFrame = addFeature( BlockMatrixFrame.class );
 		blocks.blockQuartz = addFeature( BlockQuartz.class );
 		blocks.blockFluix = addFeature( BlockFluix.class );
+		blocks.blockSkyRock = addFeature( BlockSkyRock.class );
+		blocks.blockSkyChest = addFeature( BlockSkyChest.class );
 
 		blocks.blockQuartzGlass = addFeature( BlockQuartzGlass.class );
 		blocks.blockQuartzVibrantGlass = addFeature( BlockQuartzLamp.class );

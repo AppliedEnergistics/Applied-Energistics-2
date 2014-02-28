@@ -45,6 +45,7 @@ import appeng.container.implementations.ContainerNetworkTool;
 import appeng.container.implementations.ContainerPriority;
 import appeng.container.implementations.ContainerQNB;
 import appeng.container.implementations.ContainerSecurity;
+import appeng.container.implementations.ContainerSkyChest;
 import appeng.container.implementations.ContainerStorageBus;
 import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
@@ -68,6 +69,7 @@ import appeng.tile.qnb.TileQuantumBridge;
 import appeng.tile.storage.TileChest;
 import appeng.tile.storage.TileDrive;
 import appeng.tile.storage.TileIOPort;
+import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.relauncher.ReflectionHelper;
@@ -79,6 +81,8 @@ public enum GuiBridge implements IGuiHandler
 	GUI_GRINDER(ContainerGrinder.class, TileGrinder.class, false, null),
 
 	GUI_QNB(ContainerQNB.class, TileQuantumBridge.class, false, SecurityPermissions.BUILD),
+
+	GUI_SKYCHEST(ContainerSkyChest.class, TileSkyChest.class, false, null),
 
 	GUI_CHEST(ContainerChest.class, TileChest.class, false, SecurityPermissions.BUILD),
 
