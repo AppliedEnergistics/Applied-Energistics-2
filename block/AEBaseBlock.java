@@ -680,6 +680,11 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		return true;
 	}
 
+    public String getUnlocalizedName(ItemStack is)
+    {
+        return getUnlocalizedName();
+    }
+
 	public void addInformation(ItemStack is, EntityPlayer player, List<?> lines, boolean advancedItemTooltips)
 	{
 

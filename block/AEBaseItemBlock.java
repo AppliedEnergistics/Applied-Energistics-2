@@ -31,6 +31,12 @@ public class AEBaseItemBlock extends ItemBlock
 	}
 
 	@Override
+    public String getUnlocalizedName(ItemStack is)
+    {
+        return blockType.getUnlocalizedName(is);
+    }
+
+	@Override
 	public void addInformation(ItemStack is, EntityPlayer player, List lines, boolean advancedItemTooltips)
 	{
 		blockType.addInformation( is, player, lines, advancedItemTooltips );
