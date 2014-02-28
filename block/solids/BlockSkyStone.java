@@ -10,11 +10,11 @@ import appeng.block.AEBaseBlock;
 import appeng.core.features.AEFeature;
 import appeng.helpers.LocationRotation;
 
-public class BlockSkyRock extends AEBaseBlock implements IOrientableBlock
+public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 {
 
-	public BlockSkyRock() {
-		super( BlockSkyRock.class, Material.rock );
+	public BlockSkyStone() {
+		super( BlockSkyStone.class, Material.rock );
 		setfeature( EnumSet.of( AEFeature.Core ) );
 		setHardness( 50 );
 		blockResistance = 150.0f;

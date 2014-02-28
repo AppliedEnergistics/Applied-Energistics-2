@@ -54,7 +54,7 @@ import appeng.block.solids.BlockQuartzChiseled;
 import appeng.block.solids.BlockQuartzGlass;
 import appeng.block.solids.BlockQuartzLamp;
 import appeng.block.solids.BlockQuartzPillar;
-import appeng.block.solids.BlockSkyRock;
+import appeng.block.solids.BlockSkyStone;
 import appeng.block.solids.OreQuartz;
 import appeng.block.solids.OreQuartzCharged;
 import appeng.block.spatial.BlockSpatialIOPort;
@@ -247,7 +247,7 @@ public class Registration
 		blocks.blockMatrixFrame = addFeature( BlockMatrixFrame.class );
 		blocks.blockQuartz = addFeature( BlockQuartz.class );
 		blocks.blockFluix = addFeature( BlockFluix.class );
-		blocks.blockSkyRock = addFeature( BlockSkyRock.class );
+		blocks.blockSkyStone = addFeature( BlockSkyStone.class );
 		blocks.blockSkyChest = addFeature( BlockSkyChest.class );
 
 		blocks.blockQuartzGlass = addFeature( BlockQuartzGlass.class );

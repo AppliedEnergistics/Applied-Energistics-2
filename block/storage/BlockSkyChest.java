@@ -65,7 +65,7 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 	@Override
 	public IIcon getIcon(int direction, int metadata)
 	{
-		return AEApi.instance().blocks().blockSkyRock.block().getIcon( direction, metadata );
+		return AEApi.instance().blocks().blockSkyStone.block().getIcon( direction, metadata );
 	}
 
 	@Override
