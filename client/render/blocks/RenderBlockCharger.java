@@ -37,25 +37,25 @@ public class RenderBlockCharger extends BaseBlockRender
 
 		renderer.renderAllFaces = true;
 		setInvRenderBounds( renderer, 6, 1, 0, 10, 15, 2 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, tess, 0xffffff, renderer );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		blk.getRendererInstance().setTemporaryRenderIcons( ExtraTextures.BlockChargerInside.getIcon(), null, null, null, null, null );
 
 		setInvRenderBounds( renderer, 2, 0, 2, 14, 3, 14 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, tess, 0xffffff, renderer );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		setInvRenderBounds( renderer, 3, 3, 3, 13, 4, 13 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, tess, 0xffffff, renderer );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 
 		blk.getRendererInstance().setTemporaryRenderIcons( null, ExtraTextures.BlockChargerInside.getIcon(), null, null, null, null );
 
 		setInvRenderBounds( renderer, 2, 13, 2, 14, 16, 14 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, tess, 0xffffff, renderer );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		setInvRenderBounds( renderer, 3, 12, 3, 13, 13, 13 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, tess, 0xffffff, renderer );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		renderer.renderAllFaces = false;
 		blk.getRendererInstance().setTemporaryRenderIcon( null );

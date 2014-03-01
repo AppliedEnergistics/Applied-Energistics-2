@@ -29,10 +29,10 @@ public class RenderMEChest extends BaseBlockRender
 	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer)
 	{
 		renderer.overrideBlockTexture = ExtraTextures.getMissing();
-		this.renderInvBlock( EnumSet.of( ForgeDirection.SOUTH ), block, Tessellator.instance, 0x000000, renderer );
+		this.renderInvBlock( EnumSet.of( ForgeDirection.SOUTH ), block, is, Tessellator.instance, 0x000000, renderer );
 
 		renderer.overrideBlockTexture = ExtraTextures.MEChest.getIcon();
-		this.renderInvBlock( EnumSet.of( ForgeDirection.UP ), block, Tessellator.instance, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.of( ForgeDirection.UP ), block, is, Tessellator.instance, 0xffffff, renderer );
 
 		renderer.overrideBlockTexture = null;
 		super.renderInventory( block, is, renderer );

@@ -30,7 +30,12 @@ public class RenderBlockSkyChest extends BaseBlockRender
 		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */);
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
-		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/models/skychest.png" );
+		ResourceLocation loc;
+		if ( is.getItemDamage() == 1 )
+			loc = new ResourceLocation( "appliedenergistics2", "textures/models/skyblockchest.png" );
+		else
+			loc = new ResourceLocation( "appliedenergistics2", "textures/models/skychest.png" );
+
 		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
 
 		float lidangle = 0.0f;
@@ -66,7 +71,13 @@ public class RenderBlockSkyChest extends BaseBlockRender
 		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */);
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
-		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/models/skychest.png" );
+		ResourceLocation loc;
+
+		if ( tile.blockMetadata == 1 )
+			loc = new ResourceLocation( "appliedenergistics2", "textures/models/skyblockchest.png" );
+		else
+			loc = new ResourceLocation( "appliedenergistics2", "textures/models/skychest.png" );
+
 		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
 
 		this.applyTESRRotation( x, y, z, skyChest.getForward(), skyChest.getUp() );

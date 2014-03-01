@@ -241,7 +241,7 @@ public class BusRenderHelper implements IPartRenderHelper
 	public void renderInventoryBox(RenderBlocks renderer)
 	{
 		renderer.setRenderBounds( minX / 16.0, minY / 16.0, minZ / 16.0, maxX / 16.0, maxY / 16.0, maxZ / 16.0 );
-		bbr.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, Tessellator.instance, color, renderer );
+		bbr.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, null, Tessellator.instance, color, renderer );
 	}
 
 	@Override
@@ -249,7 +249,7 @@ public class BusRenderHelper implements IPartRenderHelper
 	{
 		renderer.setRenderBounds( minX / 16.0, minY / 16.0, minZ / 16.0, maxX / 16.0, maxY / 16.0, maxZ / 16.0 );
 		setTexture( IIcon );
-		bbr.renderInvBlock( EnumSet.of( face ), blk, Tessellator.instance, color, renderer );
+		bbr.renderInvBlock( EnumSet.of( face ), blk, null, Tessellator.instance, color, renderer );
 	}
 
 	@Override

@@ -256,18 +256,27 @@ public class BaseBlockRender
 		return ExtraTextures.getMissing();
 	}
 
-	public void renderInvBlock(EnumSet<ForgeDirection> sides, AEBaseBlock block, Tessellator tess, int color, RenderBlocks renderer)
+	public void renderInvBlock(EnumSet<ForgeDirection> sides, AEBaseBlock block, ItemStack item, Tessellator tess, int color, RenderBlocks renderer)
 	{
 		if ( Platform.isDrawing( tess ) )
 			tess.draw();
+
+		int meta = 0;
+		if ( block != null && block.hasSubtypes() && item != null )
+			meta = item.getItemDamage();
 
 		if ( sides.contains( ForgeDirection.DOWN ) )
 		{
 			tess.startDrawingQuads();
 			tess.setNormal( 0.0F, -1.0F, 0.0F );
 			tess.setColorOpaque_I( color );
-			renderer.renderFaceYNeg( block, 0.0D, 0.0D, 0.0D,
-					firstNotNull( renderer.overrideBlockTexture, block.getRendererInstance().getTexture( ForgeDirection.DOWN ), block.getIcon( 0, 0 ) ) );
+			renderer.renderFaceYNeg(
+					block,
+					0.0D,
+					0.0D,
+					0.0D,
+					firstNotNull( renderer.overrideBlockTexture, block.getRendererInstance().getTexture( ForgeDirection.DOWN ),
+							block.getIcon( ForgeDirection.DOWN.ordinal(), meta ) ) );
 			tess.draw();
 		}
 
@@ -282,7 +291,7 @@ public class BaseBlockRender
 					0.0D,
 					0.0D,
 					firstNotNull( renderer.overrideBlockTexture, block.getRendererInstance().getTexture( ForgeDirection.UP ),
-							block.getIcon( ForgeDirection.UP.ordinal(), 0 ) ) );
+							block.getIcon( ForgeDirection.UP.ordinal(), meta ) ) );
 			tess.draw();
 		}
 
@@ -297,7 +306,7 @@ public class BaseBlockRender
 					0.0D,
 					0.0D,
 					firstNotNull( renderer.overrideBlockTexture, block.getRendererInstance().getTexture( ForgeDirection.NORTH ),
-							block.getIcon( ForgeDirection.NORTH.ordinal(), 0 ) ) );
+							block.getIcon( ForgeDirection.NORTH.ordinal(), meta ) ) );
 			tess.draw();
 		}
 
@@ -312,7 +321,7 @@ public class BaseBlockRender
 					0.0D,
 					0.0D,
 					firstNotNull( renderer.overrideBlockTexture, block.getRendererInstance().getTexture( ForgeDirection.SOUTH ),
-							block.getIcon( ForgeDirection.SOUTH.ordinal(), 0 ) ) );
+							block.getIcon( ForgeDirection.SOUTH.ordinal(), meta ) ) );
 			tess.draw();
 		}
 
@@ -327,7 +336,7 @@ public class BaseBlockRender
 					0.0D,
 					0.0D,
 					firstNotNull( renderer.overrideBlockTexture, block.getRendererInstance().getTexture( ForgeDirection.WEST ),
-							block.getIcon( ForgeDirection.WEST.ordinal(), 0 ) ) );
+							block.getIcon( ForgeDirection.WEST.ordinal(), meta ) ) );
 			tess.draw();
 		}
 
@@ -342,7 +351,7 @@ public class BaseBlockRender
 					0.0D,
 					0.0D,
 					firstNotNull( renderer.overrideBlockTexture, block.getRendererInstance().getTexture( ForgeDirection.EAST ),
-							block.getIcon( ForgeDirection.EAST.ordinal(), 0 ) ) );
+							block.getIcon( ForgeDirection.EAST.ordinal(), meta ) ) );
 			tess.draw();
 		}
 	}
@@ -354,6 +363,9 @@ public class BaseBlockRender
 		BlockRenderInfo info = block.getRendererInstance();
 		if ( info.isValid() )
 		{
+			if ( block.hasSubtypes() )
+				block.setRenderStateByMeta( item.getItemDamage() );
+
 			renderer.uvRotateBottom = info.getTexture( ForgeDirection.DOWN ).setFlip(
 					getOrientation( ForgeDirection.DOWN, ForgeDirection.SOUTH, ForgeDirection.UP ) );
 			renderer.uvRotateTop = info.getTexture( ForgeDirection.UP ).setFlip( getOrientation( ForgeDirection.UP, ForgeDirection.SOUTH, ForgeDirection.UP ) );
@@ -367,10 +379,12 @@ public class BaseBlockRender
 					getOrientation( ForgeDirection.NORTH, ForgeDirection.SOUTH, ForgeDirection.UP ) );
 			renderer.uvRotateSouth = info.getTexture( ForgeDirection.SOUTH ).setFlip(
 					getOrientation( ForgeDirection.SOUTH, ForgeDirection.SOUTH, ForgeDirection.UP ) );
-
 		}
 
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), block, tess, 0xffffff, renderer );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), block, item, tess, 0xffffff, renderer );
+
+		if ( block.hasSubtypes() )
+			info.setTemporaryRenderIcon( null );
 
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 	}

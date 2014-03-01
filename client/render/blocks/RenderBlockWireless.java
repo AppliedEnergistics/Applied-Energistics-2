@@ -42,12 +42,12 @@ public class RenderBlockWireless extends BaseBlockRender
 		IIcon r = CableBusTextures.PartMonitorSidesStatus.getIcon();
 		ri.setTemporaryRenderIcons( r, r, CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), r, r );
 		renderBlockBounds( renderer, 5, 5, 0, 11, 11, 1, ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, tess, 0xffffff, renderer );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		r = CableBusTextures.PartMonitorSides.getIcon();
 		ri.setTemporaryRenderIcons( r, r, ExtraTextures.BlockChargerInside.getIcon(), ExtraTextures.BlockChargerInside.getIcon(), r, r );
 		renderBlockBounds( renderer, 5, 5, 1, 11, 11, 2, ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, tess, 0xffffff, renderer );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		tess.startDrawingQuads();
 		ri.setTemporaryRenderIcon( null );
@@ -67,7 +67,7 @@ public class RenderBlockWireless extends BaseBlockRender
 					+ (side.offsetZ != 0 ? side.offsetZ * 2 : -1) + s, 8 + (side.offsetX != 0 ? side.offsetX * 4 : 2),
 					8 + (side.offsetY != 0 ? side.offsetY * 4 : 2), 2 + (side.offsetZ != 0 ? side.offsetZ * 5 : 1) + s, ForgeDirection.EAST, ForgeDirection.UP,
 					ForgeDirection.SOUTH );
-			renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, tess, 0xffffff, renderer );
+			renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 		}
 
 		s = 3;
@@ -78,7 +78,7 @@ public class RenderBlockWireless extends BaseBlockRender
 					8 + (side.offsetY != 0 ? side.offsetY * 5 : 1), 2 + (side.offsetZ != 0 ? side.offsetZ * 5 : 1) + s, ForgeDirection.EAST, ForgeDirection.UP,
 					ForgeDirection.SOUTH );
 
-			renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, tess, 0xffffff, renderer );
+			renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 		}
 	}
 

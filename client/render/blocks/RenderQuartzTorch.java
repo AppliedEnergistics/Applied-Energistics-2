@@ -42,30 +42,30 @@ public class RenderQuartzTorch extends BaseBlockRender
 		float zOff = 0.0f;
 
 		renderer.setRenderBounds( Point3 + xOff, rbottom + yOff, Point3 + zOff, Point12 + xOff, rtop + yOff, Point12 + zOff );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, tess, 0xffffff, renderer );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		renderer.setRenderBounds( Point3 + xOff, rtop + yOff, Point3 + zOff, Point3 + Onepx + xOff, rtop + Onepx + yOff, Point3 + Onepx + zOff );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, tess, 0xffffff, renderer );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		renderer.setRenderBounds( Point12 - Onepx + xOff, rbottom - Onepx + yOff, Point12 - Onepx + zOff, Point12 + xOff, rbottom + yOff, Point12 + zOff );
 
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, tess, 0xffffff, renderer );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		blk.getRendererInstance().setTemporaryRenderIcon( Blocks.hopper.getIcon( 0, 0 ) );
 		renderer.renderAllFaces = true;
 
 		renderer.setRenderBounds( Point2 + xOff, bottom + yOff, Point2 + zOff, Point13 + xOff, top + yOff, Point3 + zOff );
 
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, tess, 0xffffff, renderer );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 		renderer.setRenderBounds( Point2 + xOff, bottom + yOff, Point12 + zOff, Point13 + xOff, top + yOff, Point13 + zOff );
 
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, tess, 0xffffff, renderer );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 		renderer.setRenderBounds( Point2 + xOff, bottom + yOff, Point3 + zOff, Point3 + xOff, top + yOff, Point12 + zOff );
 
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, tess, 0xffffff, renderer );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 		renderer.setRenderBounds( Point12 + xOff, bottom + yOff, Point3 + zOff, Point13 + xOff, top + yOff, Point12 + zOff );
 
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, tess, 0xffffff, renderer );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		renderer.renderAllFaces = false;
 		blk.getRendererInstance().setTemporaryRenderIcon( null );

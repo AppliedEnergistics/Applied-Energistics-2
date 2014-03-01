@@ -26,15 +26,25 @@ public class AEBaseItemBlock extends ItemBlock
 	public AEBaseItemBlock(Block id) {
 		super( id );
 		blockType = (AEBaseBlock) id;
+		hasSubtypes = blockType.hasSubtypes;
+
 		if ( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, ItemRenderer.instance );
 	}
 
 	@Override
-    public String getUnlocalizedName(ItemStack is)
-    {
-        return blockType.getUnlocalizedName(is);
-    }
+	public int getMetadata(int dmg)
+	{
+		if ( hasSubtypes )
+			return dmg;
+		return 0;
+	}
+
+	@Override
+	public String getUnlocalizedName(ItemStack is)
+	{
+		return blockType.getUnlocalizedName( is );
+	}
 
 	@Override
 	public void addInformation(ItemStack is, EntityPlayer player, List lines, boolean advancedItemTooltips)

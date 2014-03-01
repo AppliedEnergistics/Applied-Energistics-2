@@ -25,7 +25,7 @@ public class RenderDrive extends BaseBlockRender
 	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer)
 	{
 		renderer.overrideBlockTexture = ExtraTextures.getMissing();
-		this.renderInvBlock( EnumSet.of( ForgeDirection.SOUTH ), block, Tessellator.instance, 0x000000, renderer );
+		this.renderInvBlock( EnumSet.of( ForgeDirection.SOUTH ), block, is, Tessellator.instance, 0x000000, renderer );
 
 		renderer.overrideBlockTexture = null;
 		super.renderInventory( block, is, renderer );

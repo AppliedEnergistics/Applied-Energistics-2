@@ -57,6 +57,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	private Class<? extends TileEntity> tileEntityType = null;
 	protected boolean isOpaque = true;
 	protected boolean isFullSize = true;
+	protected boolean hasSubtypes = false;
 
 	@SideOnly(Side.CLIENT)
 	public IIcon renderIcon;
@@ -155,7 +156,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@Override
 	public IIcon getIcon(IBlockAccess w, int x, int y, int z, int s)
 	{
-		return getIcon( mapRotation( w, x, y, z, s ), 0 );
+		return getIcon( mapRotation( w, x, y, z, s ), w.getBlockMetadata( x, y, z ) );
 	}
 
 	protected void setTileEntiy(Class<? extends TileEntity> c)
@@ -233,6 +234,12 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	public Class<? extends TileEntity> getTileEntityClass()
 	{
 		return tileEntityType;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void setRenderStateByMeta(int itemDamage)
+	{
+
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -680,10 +687,10 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		return true;
 	}
 
-    public String getUnlocalizedName(ItemStack is)
-    {
-        return getUnlocalizedName();
-    }
+	public String getUnlocalizedName(ItemStack is)
+	{
+		return getUnlocalizedName();
+	}
 
 	public void addInformation(ItemStack is, EntityPlayer player, List<?> lines, boolean advancedItemTooltips)
 	{
@@ -699,6 +706,11 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	public void postInit()
 	{
 		// override!
+	}
+
+	public boolean hasSubtypes()
+	{
+		return hasSubtypes;
 	}
 
 }

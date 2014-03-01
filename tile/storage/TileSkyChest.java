@@ -108,7 +108,11 @@ public class TileSkyChest extends AEBaseInvTile
 			playerOpen = 0;
 
 		if ( playerOpen == 0 )
+		{
+			getWorldObj().playSoundEffect( xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "random.chestclosed", 0.5F,
+					getWorldObj().rand.nextFloat() * 0.1F + 0.9F );
 			markForUpdate();
+		}
 	}
 
 }
