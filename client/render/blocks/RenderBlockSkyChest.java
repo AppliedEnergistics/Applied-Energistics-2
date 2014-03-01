@@ -73,7 +73,7 @@ public class RenderBlockSkyChest extends BaseBlockRender
 
 		ResourceLocation loc;
 
-		if ( tile.blockMetadata == 1 )
+		if ( tile.getWorldObj().getBlockMetadata( tile.xCoord, tile.yCoord, tile.zCoord ) == 1 )
 			loc = new ResourceLocation( "appliedenergistics2", "textures/models/skyblockchest.png" );
 		else
 			loc = new ResourceLocation( "appliedenergistics2", "textures/models/skychest.png" );
