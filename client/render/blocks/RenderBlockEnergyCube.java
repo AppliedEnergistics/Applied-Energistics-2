@@ -3,6 +3,7 @@ package appeng.client.render.blocks;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
@@ -15,7 +16,7 @@ public class RenderBlockEnergyCube extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer)
+	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type)
 	{
 		IAEItemPowerStorage myItem = (IAEItemPowerStorage) is.getItem();
 		double internalCurrentPower = myItem.getAECurrentPower( is );
@@ -29,7 +30,7 @@ public class RenderBlockEnergyCube extends BaseBlockRender
 			meta = 0;
 
 		renderer.setOverrideBlockTexture( blk.getIcon( 0, meta ) );
-		super.renderInventory( blk, is, renderer );
+		super.renderInventory( blk, is, renderer, type );
 		renderer.setOverrideBlockTexture( null );
 	}
 

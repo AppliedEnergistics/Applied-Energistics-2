@@ -27,8 +27,8 @@ import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.entity.EntityIds;
 import appeng.entity.EntityTinyTNTPrimed;
-import appeng.helpers.DispenserBehaviorTinyTNT;
 import appeng.helpers.ICustomCollision;
+import appeng.hooks.DispenserBehaviorTinyTNT;
 import cpw.mods.fml.common.registry.EntityRegistry;
 
 public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision

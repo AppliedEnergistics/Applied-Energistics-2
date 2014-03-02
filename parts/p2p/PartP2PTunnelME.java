@@ -20,7 +20,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AECableType;
 import appeng.core.AELog;
-import appeng.helpers.TickHandler;
+import appeng.hooks.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.Connections;
 import appeng.me.cache.helpers.TunnelConnection;

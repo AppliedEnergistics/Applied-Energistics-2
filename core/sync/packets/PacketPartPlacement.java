@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.helpers.PartPlacement;
+import appeng.parts.PartPlacement;
 
 public class PacketPartPlacement extends AppEngPacket
 {

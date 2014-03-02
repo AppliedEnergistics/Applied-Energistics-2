@@ -3,6 +3,7 @@ package appeng.block.solids;
 import java.util.EnumSet;
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -15,6 +16,7 @@ import net.minecraft.world.World;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
+import appeng.core.WorldSettings;
 import appeng.core.features.AEFeature;
 import appeng.helpers.LocationRotation;
 import cpw.mods.fml.relauncher.Side;
@@ -108,6 +110,20 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 		l.add( new ItemStack( i, 1, 1 ) );
 		l.add( new ItemStack( i, 1, 2 ) );
 		l.add( new ItemStack( i, 1, 3 ) );
+	}
+
+	@Override
+	public void onBlockAdded(World w, int x, int y, int z)
+	{
+		super.onBlockAdded( w, x, y, z );
+		WorldSettings.getInstance().getCompass().updateArea( w, x, y, z );
+	}
+
+	@Override
+	public void breakBlock(World w, int x, int y, int z, Block b, int WTF)
+	{
+		super.breakBlock( w, x, y, z, b, WTF );
+		WorldSettings.getInstance().getCompass().updateArea( w, x, y, z );
 	}
 
 }

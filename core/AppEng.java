@@ -7,7 +7,7 @@ import appeng.core.crash.CrashInfo;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.helpers.TickHandler;
+import appeng.hooks.TickHandler;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationSide;
 import appeng.server.AECommand;

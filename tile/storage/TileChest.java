@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -50,7 +51,6 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
-import appeng.helpers.AENoHandler;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
@@ -67,14 +67,21 @@ import appeng.util.item.AEFluidStack;
 public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHandler, ITerminalHost, IPriorityHost, IConfigManagerHost
 {
 
-	static final AENoHandler noHandler = new AENoHandler();
+	static private class ChestNoHandler extends Exception
+	{
+
+		private static final long serialVersionUID = 7995805326136526631L;
+
+	}
+
+	static final ChestNoHandler noHandler = new ChestNoHandler();
 
 	static final int sides[] = new int[] { 0 };
 	static final int front[] = new int[] { 1 };
 
 	AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
 	BaseActionSource mySrc = new MachineSource( this );
-	IConfigManager config = new ConfigManager(this);
+	IConfigManager config = new ConfigManager( this );
 
 	ItemStack storageType;
 	long lastStateChange = 0;
@@ -219,14 +226,14 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		@Override
 		public void readFromNBT(NBTTagCompound data)
 		{
-			config.readFromNBT(data);
+			config.readFromNBT( data );
 			priority = data.getInteger( "priority" );
 		}
 
 		@Override
 		public void writeToNBT(NBTTagCompound data)
 		{
-			config.writeToNBT(data);
+			config.writeToNBT( data );
 			data.setInteger( "priority", priority );
 		}
 
@@ -248,9 +255,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 		addNewHandler( new invManger() );
 
-		config.registerSetting(Settings.SORT_BY, SortOrder.NAME);
-		config.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
-		config.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
+		config.registerSetting( Settings.SORT_BY, SortOrder.NAME );
+		config.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
+		config.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 
 		internalPublicPowerStorage = true;
 		internalPowerFlow = AccessRestriction.WRITE;
@@ -345,7 +352,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		return g;
 	}
 
-	public IMEInventoryHandler getHandler(StorageChannel channel) throws AENoHandler
+	public IMEInventoryHandler getHandler(StorageChannel channel) throws ChestNoHandler
 	{
 		if ( !isCached )
 		{
@@ -447,7 +454,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 					inv.setInventorySlotContents( 0, returns.getItemStack() );
 			}
 		}
-		catch (AENoHandler t)
+		catch (ChestNoHandler t)
 		{
 		}
 	}
@@ -467,7 +474,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			IAEItemStack returns = cell.injectItems( AEApi.instance().storage().createItemStack( inv.getStackInSlot( 0 ) ), Actionable.SIMULATE, mySrc );
 			return returns == null || returns.getStackSize() != itemstack.stackSize;
 		}
-		catch (AENoHandler t)
+		catch (ChestNoHandler t)
 		{
 		}
 
@@ -491,7 +498,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			{
 				return Arrays.asList( new IMEInventoryHandler[] { getHandler( channel ) } );
 			}
-			catch (AENoHandler e)
+			catch (ChestNoHandler e)
 			{
 				// :P
 			}
@@ -551,7 +558,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 				if ( ch != null && handler instanceof ChestMonitorHandler )
 					return ch.getStatusForCell( cell, ((ChestMonitorHandler) handler).getInternalHandler() );
 			}
-			catch (AENoHandler e)
+			catch (ChestNoHandler e)
 			{
 			}
 
@@ -561,7 +568,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 				if ( ch != null && handler instanceof ChestMonitorHandler )
 					return ch.getStatusForCell( cell, ((ChestMonitorHandler) handler).getInternalHandler() );
 			}
-			catch (AENoHandler e)
+			catch (ChestNoHandler e)
 			{
 			}
 		}
@@ -588,7 +595,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 				return resource.amount - (int) results.getStackSize();
 			}
-			catch (AENoHandler e)
+			catch (ChestNoHandler e)
 			{
 			}
 		}
@@ -615,7 +622,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			IMEInventoryHandler h = getHandler( StorageChannel.FLUIDS );
 			return h.canAccept( AEFluidStack.create( new FluidStack( fluid, 1 ) ) );
 		}
-		catch (AENoHandler e)
+		catch (ChestNoHandler e)
 		{
 		}
 		return false;
@@ -636,7 +643,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			if ( h.getChannel() == StorageChannel.FLUIDS )
 				return new FluidTankInfo[] { new FluidTankInfo( null ) }; // eh?
 		}
-		catch (AENoHandler e)
+		catch (ChestNoHandler e)
 		{
 		}
 
@@ -720,13 +727,51 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public IConfigManager getConfigManager() {
+	public IConfigManager getConfigManager()
+	{
 		return config;
 	}
 
 	@Override
-	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue) {
-		
+	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
+	{
+
+	}
+
+	public boolean openGui(EntityPlayer p, ICellHandler ch, ItemStack cell, int side)
+	{
+		try
+		{
+			IMEInventoryHandler ih = this.getHandler( StorageChannel.ITEMS );
+			if ( ch != null && ih != null )
+			{
+				IMEInventoryHandler mine = ih;
+				ch.openChestGui( p, this, ch, mine, cell, StorageChannel.ITEMS );
+				return true;
+			}
+
+		}
+		catch (ChestNoHandler e)
+		{
+			// :P
+		}
+
+		try
+		{
+			IMEInventoryHandler fh = this.getHandler( StorageChannel.FLUIDS );
+			if ( ch != null && fh != null )
+			{
+				IMEInventoryHandler mine = fh;
+				ch.openChestGui( p, this, ch, mine, cell, StorageChannel.FLUIDS );
+				return true;
+			}
+		}
+		catch (ChestNoHandler e)
+		{
+			// :P
+		}
+
+		return false;
 	}
 
 }

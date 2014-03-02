@@ -5,6 +5,7 @@ import java.util.Random;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.block.AEBaseBlock;
@@ -113,12 +114,12 @@ public class RenderQuartzGlass extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer)
+	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type)
 	{
 		renderer.overrideBlockTexture = ExtraTextures.GlassFrame.getIcon();
-		super.renderInventory( block, is, renderer );
+		super.renderInventory( block, is, renderer, type );
 		renderer.overrideBlockTexture = null;
-		super.renderInventory( block, is, renderer );
+		super.renderInventory( block, is, renderer, type );
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package appeng.helpers;
+package appeng.hooks;
 
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;

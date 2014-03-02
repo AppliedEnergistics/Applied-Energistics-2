@@ -3,6 +3,7 @@ package appeng.client.render.blocks;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 
@@ -14,10 +15,10 @@ public class RenderTinyTNT extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer)
+	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type)
 	{
 		renderer.setRenderBounds( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f );
-		super.renderInventory( block, is, renderer );
+		super.renderInventory( block, is, renderer, type );
 	}
 
 	@Override

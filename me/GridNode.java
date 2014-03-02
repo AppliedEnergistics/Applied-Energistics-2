@@ -27,7 +27,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.core.WorldSettings;
-import appeng.helpers.TickHandler;
+import appeng.hooks.TickHandler;
 import appeng.me.pathfinding.IPathItem;
 import appeng.util.ReadOnlyCollection;
 

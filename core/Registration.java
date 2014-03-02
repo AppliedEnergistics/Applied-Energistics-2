@@ -36,6 +36,7 @@ import appeng.block.misc.BlockInterface;
 import appeng.block.misc.BlockQuartzGrowthAccelerator;
 import appeng.block.misc.BlockQuartzTorch;
 import appeng.block.misc.BlockSecurity;
+import appeng.block.misc.BlockSkyCompass;
 import appeng.block.misc.BlockTinyTNT;
 import appeng.block.misc.BlockVibrationChamber;
 import appeng.block.networking.BlockCableBus;
@@ -78,11 +79,11 @@ import appeng.core.localization.PlayerMessages;
 import appeng.debug.BlockChunkloader;
 import appeng.debug.BlockItemGen;
 import appeng.debug.ToolDebugCard;
+import appeng.debug.ToolMeteoritePlacer;
 import appeng.debug.ToolReplicatorCard;
-import appeng.helpers.AETrading;
-import appeng.helpers.PartPlacement;
-import appeng.helpers.QuartzWorldGen;
-import appeng.helpers.TickHandler;
+import appeng.hooks.AETrading;
+import appeng.hooks.QuartzWorldGen;
+import appeng.hooks.TickHandler;
 import appeng.items.materials.ItemMaterial;
 import appeng.items.materials.MaterialType;
 import appeng.items.misc.ItemCrystalSeed;
@@ -115,6 +116,7 @@ import appeng.me.cache.SecurityCache;
 import appeng.me.cache.SpatialPylonCache;
 import appeng.me.cache.TickManagerCache;
 import appeng.me.storage.AEExternalHandler;
+import appeng.parts.PartPlacement;
 import appeng.recipes.AEItemResolver;
 import appeng.recipes.RecipeHandler;
 import appeng.recipes.Recipes.ShapedRecipe;
@@ -249,6 +251,7 @@ public class Registration
 		blocks.blockFluix = addFeature( BlockFluix.class );
 		blocks.blockSkyStone = addFeature( BlockSkyStone.class );
 		blocks.blockSkyChest = addFeature( BlockSkyChest.class );
+		blocks.blockSkyCompass = addFeature( BlockSkyCompass.class );
 
 		blocks.blockQuartzGlass = addFeature( BlockQuartzGlass.class );
 		blocks.blockQuartzVibrantGlass = addFeature( BlockQuartzLamp.class );
@@ -340,6 +343,7 @@ public class Registration
 		items.itemFacade = addFeature( ItemFacade.class );
 		items.itemCrystalSeed = addFeature( ItemCrystalSeed.class );
 
+		addFeature( ToolMeteoritePlacer.class );
 		addFeature( ToolDebugCard.class );
 		addFeature( ToolReplicatorCard.class );
 		addFeature( BlockItemGen.class );

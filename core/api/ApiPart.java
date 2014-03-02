@@ -29,8 +29,8 @@ import appeng.api.parts.LayerBase;
 import appeng.client.render.BusRenderer;
 import appeng.core.AELog;
 import appeng.core.AppEng;
-import appeng.helpers.PartPlacement;
 import appeng.integration.abstraction.IFMP;
+import appeng.parts.PartPlacement;
 import appeng.tile.networking.TileCableBus;
 import appeng.util.Platform;
 

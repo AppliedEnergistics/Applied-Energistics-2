@@ -23,7 +23,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IOrientable;
 import appeng.core.WorldSettings;
-import appeng.helpers.TickHandler;
+import appeng.hooks.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.me.cache.P2PCache;
 import appeng.parts.networking.PartCable;

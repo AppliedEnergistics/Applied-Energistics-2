@@ -28,7 +28,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.helpers.AEMultiTile;
 import appeng.helpers.ICustomCollision;
-import appeng.helpers.TickHandler;
+import appeng.hooks.TickHandler;
 import appeng.parts.CableBusContainer;
 import appeng.tile.AEBaseTile;
 import appeng.tile.events.AETileEventHandler;

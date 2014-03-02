@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import appeng.block.AEBaseBlock;
 import appeng.core.AELog;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -57,21 +58,21 @@ public class WorldRender implements ISimpleBlockRenderingHandler
 		return renderID;
 	}
 
-	public void renderItemBlock(ItemStack item)
+	public void renderItemBlock(ItemStack item, ItemRenderType type)
 	{
 		Block blk = Block.getBlockFromItem( item.getItem() );
 		if ( blk instanceof AEBaseBlock )
 		{
-			AEBaseBlock block = (AEBaseBlock)blk;
+			AEBaseBlock block = (AEBaseBlock) blk;
 			renderer.setRenderBoundsFromBlock( block );
-	
+
 			renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
-			getRender( block ).renderInventory( block, item, renderer );
+			getRender( block ).renderInventory( block, item, renderer, type );
 			renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 		}
 		else
 		{
-			AELog.severe( "Invalid render: "+item.getUnlocalizedName() +" as ae block" );
+			AELog.severe( "Invalid render: " + item.getUnlocalizedName() + " as ae block" );
 		}
 	}
 

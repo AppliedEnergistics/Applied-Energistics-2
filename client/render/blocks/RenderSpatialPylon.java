@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
@@ -20,12 +21,12 @@ public class RenderSpatialPylon extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer)
+	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type)
 	{
 		renderer.overrideBlockTexture = ExtraTextures.BlockSpatialPylon_dim.getIcon();
-		super.renderInventory( block, is, renderer );
+		super.renderInventory( block, is, renderer, type );
 		renderer.overrideBlockTexture = null;
-		super.renderInventory( block, is, renderer );
+		super.renderInventory( block, is, renderer, type );
 	}
 
 	@Override

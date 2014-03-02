@@ -1,0 +1,182 @@
+package appeng.client.render.blocks;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.IItemRenderer.ItemRenderType;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import org.lwjgl.opengl.GL11;
+
+import appeng.block.AEBaseBlock;
+import appeng.client.render.BaseBlockRender;
+import appeng.client.render.model.ModelCompass;
+import appeng.hooks.CompassManager;
+import appeng.hooks.CompassResult;
+import appeng.tile.AEBaseTile;
+import appeng.tile.misc.TileSkyCompass;
+
+public class RenderBlockSkyCompass extends BaseBlockRender
+{
+
+	float r = 0;
+	ModelCompass model = new ModelCompass();
+
+	public RenderBlockSkyCompass() {
+		super( true, 80 );
+	}
+
+	@Override
+	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type)
+	{
+		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */);
+		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+
+		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/models/compass.png" );
+
+		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
+
+		if ( type == ItemRenderType.ENTITY )
+		{
+			GL11.glRotatef( -90.0f, 0.0f, 0.0f, 1.0f );
+			GL11.glScalef( 1.0F, -1F, -1F );
+			GL11.glScalef( 2.5f, 2.5f, 2.5f );
+			GL11.glTranslatef( -0.25F, -1.65F, -0.19F );
+		}
+		else
+		{
+			if ( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
+				GL11.glRotatef( 15.3f, 0.0f, 0.0f, 1.0f );
+
+			GL11.glScalef( 1.0F, -1F, -1F );
+			GL11.glScalef( 2.5f, 2.5f, 2.5f );
+
+			if ( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
+				GL11.glTranslatef( 0.3F, -1.65F, -0.19F );
+			else
+				GL11.glTranslatef( 0.2F, -1.65F, -0.19F );
+		}
+
+		long now = System.currentTimeMillis();
+		if ( type == ItemRenderType.EQUIPPED_FIRST_PERSON || type == ItemRenderType.INVENTORY )
+		{
+			EntityPlayer p = Minecraft.getMinecraft().thePlayer;
+
+			int x = (int) p.posX;
+			int y = (int) p.posY;
+			int z = (int) p.posZ;
+			CompassResult cr = CompassManager.instance.getCompassDirection( 0, x, y, z );
+
+			for (int i = 0; i < 3; i++)
+				for (int j = 0; j < 3; j++)
+					CompassManager.instance.getCompassDirection( 0, x + i - 1, y, z + j - 1 );
+
+			if ( cr.hasResult )
+			{
+				if ( cr.spin )
+				{
+					now = now % 100000;
+					model.renderAll( ((float) now / 50000.0f) * (float) Math.PI * 500.0f );
+				}
+				else
+				{
+					if ( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
+					{
+						float offRads = p.rotationYaw / 180.0f * (float) Math.PI;
+						float adjustment = (float) Math.PI * 0.74f;
+						model.renderAll( (float) flipidiy( cr.rad + offRads + adjustment ) );
+					}
+					else
+					{
+						float offRads = p.rotationYaw / 180.0f * (float) Math.PI;
+						float adjustment = (float) Math.PI * -0.74f;
+						model.renderAll( (float) flipidiy( cr.rad + offRads + adjustment ) );
+					}
+				}
+			}
+			else
+			{
+				now = now % 1000000;
+				model.renderAll( ((float) now / 500000.0f) * (float) Math.PI * 500.0f );
+			}
+
+		}
+		else
+		{
+			now = now % 100000;
+			model.renderAll( ((float) now / 50000.0f) * (float) Math.PI * 500.0f );
+		}
+
+		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);
+		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+	}
+
+	@Override
+	public boolean renderInWorld(AEBaseBlock blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
+	{
+		return true;
+	}
+
+	@Override
+	public void renderTile(AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float partialTick, RenderBlocks renderer)
+	{
+		if ( !(tile instanceof TileSkyCompass) )
+			return;
+
+		TileSkyCompass skyCompass = (TileSkyCompass) tile;
+
+		if ( !skyCompass.hasWorldObj() )
+			return;
+
+		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */);
+		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+
+		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/models/compass.png" );
+
+		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
+
+		this.applyTESRRotation( x, y, z, skyCompass.getUp(), skyCompass.getForward() );
+
+		GL11.glScalef( 1.0F, -1F, -1F );
+		GL11.glTranslatef( 0.5F, -1.5F, -0.5F );
+
+		long now = System.currentTimeMillis();
+
+		CompassResult cr = null;
+		if ( skyCompass.getForward() == ForgeDirection.UP || skyCompass.getForward() == ForgeDirection.DOWN )
+			cr = CompassManager.instance.getCompassDirection( 0, tile.xCoord, tile.yCoord, tile.zCoord );
+		else
+			cr = new CompassResult( false, true, 0 );
+
+		if ( cr.hasResult )
+		{
+			if ( cr.spin )
+			{
+				now = now % 100000;
+				model.renderAll( ((float) now / 50000.0f) * (float) Math.PI * 500.0f );
+			}
+			else
+				model.renderAll( (float) (skyCompass.getForward() == ForgeDirection.DOWN ? flipidiy( cr.rad ) : cr.rad) );
+
+		}
+		else
+		{
+			now = now % 1000000;
+			model.renderAll( ((float) now / 500000.0f) * (float) Math.PI * 500.0f );
+		}
+
+		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);
+		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+	}
+
+	private double flipidiy(double rad)
+	{
+		double x = Math.cos( rad );
+		double y = Math.sin( rad );
+		return Math.atan2( -y, x );
+	}
+}

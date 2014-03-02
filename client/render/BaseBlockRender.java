@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.BufferUtils;
@@ -356,7 +357,7 @@ public class BaseBlockRender
 		}
 	}
 
-	public void renderInventory(AEBaseBlock block, ItemStack item, RenderBlocks renderer)
+	public void renderInventory(AEBaseBlock block, ItemStack item, RenderBlocks renderer, ItemRenderType type)
 	{
 		Tessellator tess = Tessellator.instance;
 

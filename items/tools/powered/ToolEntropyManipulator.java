@@ -24,7 +24,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import appeng.block.misc.BlockTinyTNT;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
-import appeng.helpers.DispenserEntropyManipulator;
+import appeng.hooks.DispenserEntropyManipulator;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.InWorldToolOperationResult;
 import appeng.util.Platform;

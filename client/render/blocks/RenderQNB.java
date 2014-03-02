@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.util.AEColor;
@@ -71,13 +72,13 @@ public class RenderQNB extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock block, ItemStack item, RenderBlocks renderer)
+	public void renderInventory(AEBaseBlock block, ItemStack item, RenderBlocks renderer, ItemRenderType type)
 	{
 		float px = 2.0f / 16.0f;
 		float maxpx = 14.0f / 16.0f;
 		renderer.setRenderBounds( px, px, px, maxpx, maxpx, maxpx );
 
-		super.renderInventory( block, item, renderer );
+		super.renderInventory( block, item, renderer, type );
 	}
 
 	@Override
@@ -101,7 +102,8 @@ public class RenderQNB extends BaseBlockRender
 
 				EnumSet<ForgeDirection> sides = tqb.getConnections();
 				renderCableAt( 0.11D, world, x, y, z, block, renderer, cable.getIconIndex( cabldef.stack( AEColor.Transparent, 1 ) ), 0.141D, sides );
-				renderCableAt( 0.188D, world, x, y, z, block, renderer, ccable.getIconIndex( ccabldef.stack( AEColor.Transparent, 1 ) ), 0.1875D, tqb.getConnections() );
+				renderCableAt( 0.188D, world, x, y, z, block, renderer, ccable.getIconIndex( ccabldef.stack( AEColor.Transparent, 1 ) ), 0.1875D,
+						tqb.getConnections() );
 			}
 
 			float px = 2.0f / 16.0f;
@@ -127,7 +129,8 @@ public class RenderQNB extends BaseBlockRender
 				AEColoredItemDefinition ccabldef = AEApi.instance().parts().partCableCovered;
 				Item ccable = ccabldef.item( AEColor.Transparent );
 
-				renderCableAt( 0.188D, world, x, y, z, block, renderer, ccable.getIconIndex( ccabldef.stack( AEColor.Transparent, 1 ) ), 0.05D, tqb.getConnections() );
+				renderCableAt( 0.188D, world, x, y, z, block, renderer, ccable.getIconIndex( ccabldef.stack( AEColor.Transparent, 1 ) ), 0.05D,
+						tqb.getConnections() );
 
 				float px = 4.0f / 16.0f;
 				float maxpx = 12.0f / 16.0f;

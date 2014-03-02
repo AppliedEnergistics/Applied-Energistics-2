@@ -12,6 +12,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
+import appeng.block.misc.BlockSkyCompass;
 import appeng.block.networking.BlockWireless;
 import appeng.client.render.ItemRenderer;
 import appeng.me.helpers.IGridProxyable;
@@ -62,7 +63,7 @@ public class AEBaseItemBlock extends ItemBlock
 
 		if ( blockType.hasBlockTileEntity() )
 		{
-			if ( blockType instanceof BlockWireless )
+			if ( blockType instanceof BlockWireless || blockType instanceof BlockSkyCompass )
 			{
 				forward = ForgeDirection.getOrientation( side );
 				if ( forward == ForgeDirection.UP || forward == ForgeDirection.DOWN )

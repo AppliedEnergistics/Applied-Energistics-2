@@ -36,7 +36,7 @@ import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.packets.PacketMatterCannon;
-import appeng.helpers.DispenserMatterCannon;
+import appeng.hooks.DispenserMatterCannon;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;

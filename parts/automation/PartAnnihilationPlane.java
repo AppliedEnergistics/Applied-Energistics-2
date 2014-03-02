@@ -36,7 +36,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.AELog;
 import appeng.core.sync.packets.PacketTransitionEffect;
-import appeng.helpers.TickHandler;
+import appeng.hooks.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.parts.PartBasicState;
 import appeng.server.ServerHelper;

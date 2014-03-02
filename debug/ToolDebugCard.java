@@ -17,7 +17,7 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.core.features.AEFeature;
-import appeng.helpers.TickHandler;
+import appeng.hooks.TickHandler;
 import appeng.items.AEBaseItem;
 import appeng.me.Grid;
 import appeng.me.GridNode;

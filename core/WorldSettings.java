@@ -13,6 +13,7 @@ import net.minecraftforge.common.config.Property;
 import appeng.api.util.WorldCoord;
 import appeng.me.GridStorage;
 import appeng.me.GridStorageSearch;
+import appeng.services.CompassService;
 
 public class WorldSettings extends Configuration
 {
@@ -22,8 +23,17 @@ public class WorldSettings extends Configuration
 	long lastGridStorage = 0;
 	int lastPlayer = 0;
 
-	public WorldSettings(File f) {
-		super( f );
+	private CompassService compass;
+
+	File AEFolder;
+
+	public WorldSettings(File aeFolder) {
+		super( new File( aeFolder.getPath() + File.separatorChar + "settings.cfg" ) );
+		AEFolder = aeFolder;
+
+		compass = new CompassService( AEFolder );
+		(new Thread( compass, "AE Compass Service" )).start();
+
 		try
 		{
 			lastGridStorage = Long.parseLong( get( "Counters", "lastGridStorage", 0 ).getString() );
@@ -36,11 +46,21 @@ public class WorldSettings extends Configuration
 		}
 	}
 
+	public CompassService getCompass()
+	{
+		return compass;
+	}
+
 	public static WorldSettings getInstance()
 	{
 		if ( instance == null )
 		{
-			File f = DimensionManager.getWorld( 0 ).getSaveHandler().getMapFileFromName( "AppEng" );
+			File world = DimensionManager.getWorld( 0 ).getSaveHandler().getWorldDirectory();
+			File f = new File( world.getPath() + File.separatorChar + "AE2" );
+
+			if ( !f.exists() || !f.isDirectory() )
+				f.mkdir();
+
 			instance = new WorldSettings( f );
 		}
 
@@ -60,6 +80,7 @@ public class WorldSettings extends Configuration
 	public void shutdown()
 	{
 		save();
+		compass.kill();
 		instance = null;
 	}
 
@@ -181,4 +202,5 @@ public class WorldSettings extends Configuration
 			return prop.getInt();
 		}
 	}
+
 }

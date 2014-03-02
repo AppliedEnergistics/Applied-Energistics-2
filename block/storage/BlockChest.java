@@ -9,15 +9,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.storage.ICellHandler;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.StorageChannel;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderMEChest;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.GuiBridge;
-import appeng.helpers.AENoHandler;
 import appeng.tile.storage.TileChest;
 import appeng.util.Platform;
 
@@ -56,36 +53,7 @@ public class BlockChest extends AEBaseBlock
 				{
 					ICellHandler ch = AEApi.instance().registries().cell().getHander( cell );
 
-					try
-					{
-						IMEInventoryHandler ih = tg.getHandler( StorageChannel.ITEMS );
-						if ( ch != null && ih != null )
-						{
-							IMEInventoryHandler mine = ih;
-							ch.openChestGui( p, tg, ch, mine, cell, StorageChannel.ITEMS );
-							return true;
-						}
-
-					}
-					catch (AENoHandler e)
-					{
-						// :P
-					}
-
-					try
-					{
-						IMEInventoryHandler fh = tg.getHandler( StorageChannel.FLUIDS );
-						if ( ch != null && fh != null )
-						{
-							IMEInventoryHandler mine = fh;
-							ch.openChestGui( p, tg, ch, mine, cell, StorageChannel.FLUIDS );
-							return true;
-						}
-					}
-					catch (AENoHandler e)
-					{
-						// :P
-					}
+					tg.openGui( p, ch, cell, side );
 				}
 
 				p.addChatMessage( PlayerMessages.ChestCannotReadStorageCell.get() );

@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import appeng.core.sync.packets.PacketClick;
+import appeng.core.sync.packets.PacketCompassRequest;
+import appeng.core.sync.packets.PacketCompassResponse;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketLightning;
@@ -28,6 +30,10 @@ public class AppEngPacketHandlerBase
 
 	public enum PacketTypes
 	{
+		PACKET_COMPASS_REQUEST(PacketCompassRequest.class),
+
+		PACKET_COMPASS_RESPONSE(PacketCompassResponse.class),
+
 		PACKET_INVENTORY_ACTION(PacketInventoryAction.class),
 
 		PACKET_ME_INVENTORY_UPDATE(PacketMEInventoryUpdate.class),
