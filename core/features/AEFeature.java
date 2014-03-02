@@ -6,7 +6,7 @@ public enum AEFeature
 				// is just flat out required by tons of
 				// important stuff.
 
-	CertusQuartzWorldGen("World"),
+	CertusQuartzWorldGen("World"), MeteoriteWorldGen("World"),
 
 	DecorativeLights("World"), DecorativeQuartzBlocks("World"),
 

@@ -1,8 +1,9 @@
 package appeng.services.helpers;
 
-import java.io.EOFException;
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 
 public class CompassRegion
 {
@@ -18,6 +19,7 @@ public class CompassRegion
 	boolean hasFile = false;
 	final File rootFolder;
 	RandomAccessFile raf = null;
+	ByteBuffer buffer;
 
 	public void close()
 	{
@@ -25,6 +27,7 @@ public class CompassRegion
 		{
 			if ( hasFile )
 			{
+				buffer = null;
 				raf.close();
 				raf = null;
 				hasFile = false;
@@ -94,8 +97,9 @@ public class CompassRegion
 	{
 		try
 		{
-			raf.seek( cx + cz * 0x400 );
-			raf.writeByte( val );
+			buffer.put( cx + cz * 0x400, (byte) val );
+			// raf.seek( cx + cz * 0x400 );
+			// raf.writeByte( val );
 		}
 		catch (Throwable t)
 		{
@@ -107,10 +111,11 @@ public class CompassRegion
 	{
 		try
 		{
-			raf.seek( cx + cz * 0x400 );
-			return raf.readByte();
+			return buffer.get( cx + cz * 0x400 );
+			// raf.seek( cx + cz * 0x400 );
+			// return raf.readByte();
 		}
-		catch (EOFException eof)
+		catch (IndexOutOfBoundsException outofBounds)
 		{
 			return 0;
 		}
@@ -131,6 +136,8 @@ public class CompassRegion
 			try
 			{
 				raf = new RandomAccessFile( fName, "rw" );
+				FileChannel fc = raf.getChannel();
+				buffer = fc.map( FileChannel.MapMode.READ_WRITE, 0, 0x400 * 0x400 );// fc.size() );
 				hasFile = true;
 			}
 			catch (Throwable t)
@@ -156,4 +163,5 @@ public class CompassRegion
 
 		return new File( folder + File.separatorChar + world + "_" + low_x + "_" + low_z + ".dat" );
 	}
+
 }

@@ -16,6 +16,7 @@ public class CompassReader
 	{
 		for (CompassRegion r : regions.values())
 			r.close();
+
 		regions.clear();
 	}
 

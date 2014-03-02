@@ -8,7 +8,6 @@ import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
 import appeng.api.util.DimensionalCoord;
-import appeng.core.AELog;
 import appeng.services.helpers.CompassException;
 import appeng.services.helpers.CompassReader;
 import appeng.services.helpers.ICompassCallback;
@@ -59,6 +58,7 @@ public class CompassService implements Runnable
 	{
 
 		public final DimensionalCoord coord;
+		public final int maxRange;
 		public final ICompassCallback callback;
 
 		@Override
@@ -67,8 +67,9 @@ public class CompassService implements Runnable
 			return true;
 		}
 
-		public CMDirectionRequest(DimensionalCoord coord, ICompassCallback cc) {
+		public CMDirectionRequest(DimensionalCoord coord, int getMaxRange, ICompassCallback cc) {
 			this.coord = coord;
+			this.maxRange = getMaxRange;
 			callback = cc;
 		}
 
@@ -111,9 +112,9 @@ public class CompassService implements Runnable
 		postJob( new CMUpdatePost( w, cx, cz, cdy, false ) );
 	}
 
-	public void getCompassDirection(DimensionalCoord coord, ICompassCallback cc)
+	public void getCompassDirection(DimensionalCoord coord, int maxRange, ICompassCallback cc)
 	{
-		postJob( new CMDirectionRequest( coord, cc ) );
+		postJob( new CMDirectionRequest( coord, maxRange, cc ) );
 	}
 
 	private void postJob(CompassMessage msg)
@@ -137,6 +138,8 @@ public class CompassService implements Runnable
 				try
 				{
 					myMsg = jobList.poll();
+					overOberdened = jobList.isEmpty();
+
 					if ( myMsg == null )
 						jobList.wait();
 				}
@@ -150,6 +153,7 @@ public class CompassService implements Runnable
 		return myMsg;
 	}
 
+	boolean overOberdened = false;
 	HashMap<World, CompassReader> worldSet = new HashMap();
 
 	final File rootFolder;
@@ -173,8 +177,6 @@ public class CompassService implements Runnable
 
 	private void processRequest(CMDirectionRequest req)
 	{
-		AELog.info( "CompassService.processRequest" );
-
 		int cx = req.coord.x >> 4;
 		int cz = req.coord.z >> 4;
 
@@ -183,8 +185,7 @@ public class CompassService implements Runnable
 		// Am I standing on it?
 		if ( cr.hasBeacon( cx, cz ) )
 		{
-			req.callback.calculatedDirection( true, true, -999 );
-			cr.close();
+			req.callback.calculatedDirection( true, true, -999, 0 );
 			return;
 		}
 
@@ -196,20 +197,32 @@ public class CompassService implements Runnable
 			int maxx = cx + offset;
 			int maxz = cz + offset;
 
+			int closest = Integer.MAX_VALUE;
+			int chosen_x = cx;
+			int chosen_z = cz;
+
 			for (int z = minz; z <= maxz; z++)
 			{
 				if ( cr.hasBeacon( minx, z ) )
 				{
-					req.callback.calculatedDirection( true, false, rad( cx, cz, minx, z ) );
-					cr.close();
-					return;
+					int closness = dist( cx, cz, minx, z );
+					if ( closness < closest )
+					{
+						closest = closness;
+						chosen_x = minx;
+						chosen_z = z;
+					}
 				}
 
 				if ( cr.hasBeacon( maxx, z ) )
 				{
-					req.callback.calculatedDirection( true, false, rad( cx, cz, maxx, z ) );
-					cr.close();
-					return;
+					int closness = dist( cx, cz, maxx, z );
+					if ( closness < closest )
+					{
+						closest = closness;
+						chosen_x = maxx;
+						chosen_z = z;
+					}
 				}
 			}
 
@@ -217,23 +230,48 @@ public class CompassService implements Runnable
 			{
 				if ( cr.hasBeacon( x, minz ) )
 				{
-					req.callback.calculatedDirection( true, false, rad( cx, cz, x, minz ) );
-					cr.close();
-					return;
+					int closness = dist( cx, cz, x, minz );
+					if ( closness < closest )
+					{
+						closest = closness;
+						chosen_x = x;
+						chosen_z = minz;
+					}
 				}
 
 				if ( cr.hasBeacon( x, maxz ) )
 				{
-					req.callback.calculatedDirection( true, false, rad( cx, cz, x, maxz ) );
-					cr.close();
-					return;
+					int closness = dist( cx, cz, x, maxz );
+					if ( closness < closest )
+					{
+						closest = closness;
+						chosen_x = x;
+						chosen_z = maxz;
+					}
 				}
+			}
+
+			if ( closest < Integer.MAX_VALUE )
+			{
+				req.callback.calculatedDirection( true, false, rad( cx, cz, chosen_x, chosen_z ), dist( cx, cz, chosen_x, chosen_z ) );
+				if ( !overOberdened )
+					cr.close();
+				return;
 			}
 		}
 
 		// didn't find shit...
-		req.callback.calculatedDirection( false, true, -999 );
-		cr.close();
+		req.callback.calculatedDirection( false, true, -999, 999 );
+		if ( !overOberdened )
+			cr.close();
+	}
+
+	private int dist(int ax, int az, int bx, int bz)
+	{
+		int up = (bz - az) * 16;
+		int side = (bx - ax) * 16;
+
+		return up * up + side * side;
 	}
 
 	private double rad(int ax, int az, int bx, int bz)

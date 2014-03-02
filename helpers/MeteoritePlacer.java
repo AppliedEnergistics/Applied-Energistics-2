@@ -43,7 +43,7 @@ public class MeteoritePlacer
 			else if ( a > 0.8 )
 				put( w, x, y, z, Blocks.stone );
 			else if ( a > 0.7 )
-				put( w, x, y, z, Blocks.dirt );
+				put( w, x, y, z, Blocks.grass );
 			else if ( a > 0.6 )
 				put( w, x, y, z, skystone );
 			else if ( a > 0.5 )
@@ -105,7 +105,7 @@ public class MeteoritePlacer
 
 		public void getOther(World w, int x, int y, int z, double a)
 		{
-			if ( a > 0.8 )
+			if ( a > 0.66 )
 				put( w, x, y, z, Blocks.glass );
 		}
 
@@ -118,6 +118,7 @@ public class MeteoritePlacer
 	Fallout type = new Fallout();
 
 	Block skystone = AEApi.instance().blocks().blockSkyStone.block();
+	Block skychest = AEApi.instance().blocks().blockSkyChest.block();
 
 	double real_sizeOfMetorite = (Math.random() * 6.0) + 2;
 	double real_crator = real_sizeOfMetorite * 2 + 5;
@@ -126,7 +127,6 @@ public class MeteoritePlacer
 	double crator = real_crator * real_crator;
 
 	public MeteoritePlacer() {
-		Block skystone = AEApi.instance().blocks().blockSkyStone.block();
 
 		validSpawn.add( Blocks.stone );
 		validSpawn.add( Blocks.cobblestone );
@@ -277,6 +277,8 @@ public class MeteoritePlacer
 					if ( dx * dx * 0.7 + dy * dy * (j > y ? 1.4 : 0.8) + dz * dz * 0.7 < sizeOfMetorite )
 						put( w, i, j, k, skystone );
 				}
+
+		put( w, x, y, z, skychest );
 	}
 
 	private void Decay(World w, int x, int y, int z)
@@ -310,12 +312,14 @@ public class MeteoritePlacer
 							double dist = dx * dx + dy * dy + dz * dz;
 
 							Block xf = w.getBlock( i, j - 1, k );
-
-							double height = crator * 0.1 - Math.abs( dist - crator * 1.7 );
-
-							if ( xf != blk && height > 0 && Math.random() > 0.5 )
+							if ( !xf.isReplaceable( w, i, j - 1, k ) )
 							{
-								type.getRandomFall( w, i, j, k );
+								double height = crator * 0.1 - Math.abs( dist - crator * 1.7 );
+
+								if ( xf != blk && height > 0 && Math.random() > 0.5 )
+								{
+									type.getRandomFall( w, i, j, k );
+								}
 							}
 						}
 					}

@@ -48,7 +48,6 @@ public class CompassManager
 
 	public void postResult(long attunement, int x, int y, int z, CompassResult res)
 	{
-		AELog.info( "CompassManager.postResult" );
 		CompassReq r = new CompassReq( attunement, x, y, z );
 		reqs.put( r, res );
 	}
@@ -89,7 +88,6 @@ public class CompassManager
 
 	private void requestUpdate(CompassReq r)
 	{
-		AELog.info( "CompassManager.requestUpdate" );
 
 		try
 		{

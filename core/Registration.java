@@ -79,9 +79,11 @@ import appeng.core.localization.PlayerMessages;
 import appeng.debug.BlockChunkloader;
 import appeng.debug.BlockItemGen;
 import appeng.debug.ToolDebugCard;
+import appeng.debug.ToolEraser;
 import appeng.debug.ToolMeteoritePlacer;
 import appeng.debug.ToolReplicatorCard;
 import appeng.hooks.AETrading;
+import appeng.hooks.MeteoriteWorldGen;
 import appeng.hooks.QuartzWorldGen;
 import appeng.hooks.TickHandler;
 import appeng.items.materials.ItemMaterial;
@@ -343,6 +345,7 @@ public class Registration
 		items.itemFacade = addFeature( ItemFacade.class );
 		items.itemCrystalSeed = addFeature( ItemCrystalSeed.class );
 
+		addFeature( ToolEraser.class );
 		addFeature( ToolMeteoritePlacer.class );
 		addFeature( ToolDebugCard.class );
 		addFeature( ToolReplicatorCard.class );
@@ -555,6 +558,9 @@ public class Registration
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.CertusQuartzWorldGen ) )
 			GameRegistry.registerWorldGenerator( new QuartzWorldGen(), 0 );
+
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.MeteoriteWorldGen ) )
+			GameRegistry.registerWorldGenerator( new MeteoriteWorldGen(), 0 );
 
 		recipeHandler.registerHandlers();
 	}

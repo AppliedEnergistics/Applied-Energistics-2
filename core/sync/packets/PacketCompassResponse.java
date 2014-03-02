@@ -6,7 +6,6 @@ import io.netty.buffer.Unpooled;
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
-import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.hooks.CompassManager;
@@ -33,7 +32,6 @@ public class PacketCompassResponse extends AppEngPacket
 	@Override
 	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
 	{
-		AELog.info( "PacketCompassResponse.clientPacketData" );
 		CompassManager.instance.postResult( attunement, cx << 4, cdy << 5, cz << 4, cr );
 	}
 
