@@ -12,6 +12,7 @@ import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
+import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
@@ -28,7 +29,7 @@ import appeng.me.storage.CellInventory;
 import appeng.me.storage.CellInventoryHandler;
 import appeng.util.Platform;
 
-public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell, IGuiItem
+public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell, IGuiItem, IItemGroup
 {
 
 	public ToolPortableCell() {
@@ -128,6 +129,12 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 		{
 			return FuzzyMode.IGNORE_ALL;
 		}
+	}
+
+	@Override
+	public String getUnlocalizedGroupName(ItemStack is)
+	{
+		return GuiText.StorageCells.getUnlocalized();
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package appeng.parts.reporting;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
@@ -8,6 +9,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
+import appeng.api.implementations.tiles.IViewCellStorage;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.util.IConfigManager;
@@ -15,14 +17,18 @@ import appeng.client.texture.CableBusTextures;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.GuiBridge;
 import appeng.me.GridAccessException;
+import appeng.tile.inventory.AppEngInternalInventory;
+import appeng.tile.inventory.IAEAppEngInventory;
+import appeng.tile.inventory.InvOperation;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
-public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigManagerHost
+public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigManagerHost, IViewCellStorage, IAEAppEngInventory
 {
 
 	IConfigManager cm = new ConfigManager( this );
+	AppEngInternalInventory viewCell = new AppEngInternalInventory( this, 1 );
 
 	public PartTerminal(Class clz, ItemStack is) {
 		super( clz, is );
@@ -37,6 +43,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	{
 		super.readFromNBT( data );
 		cm.readFromNBT( data );
+		viewCell.readFromNBT( data, "viewCell" );
 	}
 
 	@Override
@@ -44,6 +51,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	{
 		super.writeToNBT( data );
 		cm.writeToNBT( data );
+		viewCell.writeToNBT( data, "viewCell" );
 	}
 
 	public PartTerminal(ItemStack is) {
@@ -125,6 +133,18 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
 	{
 
+	}
+
+	@Override
+	public IInventory getViewCellStorage()
+	{
+		return viewCell;
+	}
+
+	@Override
+	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
+	{
+		host.markForSave();
 	}
 
 }

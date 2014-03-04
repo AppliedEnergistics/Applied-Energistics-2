@@ -55,6 +55,8 @@ public enum MaterialType
 
 	FormationCore, AnnihilationCore,
 
+	SkyDust(AEFeature.Core),
+
 	EnderDust(AEFeature.QuantumNetworkBridge, "dustEnder", EntitySingularity.class), Singularity(AEFeature.QuantumNetworkBridge, EntitySingularity.class), QESingularity(
 			AEFeature.QuantumNetworkBridge, EntitySingularity.class);
 

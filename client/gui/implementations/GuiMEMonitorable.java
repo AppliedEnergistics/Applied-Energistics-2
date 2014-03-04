@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 
 import org.lwjgl.input.Mouse;
 
@@ -12,6 +13,7 @@ import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.tiles.IMEChest;
+import appeng.api.implementations.tiles.IViewCellStorage;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.IConfigManager;
@@ -60,9 +62,13 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	GuiImgButton SortDirBox;
 
 	GuiImgButton searchBoxSettings;
+	boolean viewCell;
+
+	ItemStack currentViewCell;
+	ContainerMEMonitorable mecontainer;
 
 	public GuiMEMonitorable(InventoryPlayer inventoryPlayer, ITerminalHost te) {
-		this( inventoryPlayer, te, new ContainerMEMonitorable( inventoryPlayer, null ) );
+		this( inventoryPlayer, te, new ContainerMEMonitorable( inventoryPlayer, te ) );
 	}
 
 	public GuiMEMonitorable(InventoryPlayer inventoryPlayer, ITerminalHost te, ContainerMEMonitorable c) {
@@ -73,8 +79,13 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		xSize = 195;
 		ySize = 204;
 
+		if ( te instanceof IViewCellStorage )
+			xSize += 33;
+
 		configSrc = ((IConfigureableObject) inventorySlots).getConfigManager();
-		((ContainerMEMonitorable) inventorySlots).gui = this;
+		(mecontainer = (ContainerMEMonitorable) inventorySlots).gui = this;
+
+		viewCell = te instanceof IViewCellStorage;
 
 		if ( te instanceof TileSecurity )
 			myName = GuiText.Security;
@@ -263,6 +274,15 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			this.drawTexturedModalRect( offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18 );
 
 		this.drawTexturedModalRect( offsetX, offsetY + 16 + rows * 18 + lowerTextureOffset, 0, 106 - 18 - 18, x_width, 99 + reservedSpace - lowerTextureOffset );
+
+		if ( viewCell )
+		{
+			if ( currentViewCell != mecontainer.cellView.getStack() )
+			{
+				currentViewCell = mecontainer.cellView.getStack();
+				repo.setViewCell( currentViewCell );
+			}
+		}
 
 		if ( searchField != null )
 			searchField.drawTextBox();

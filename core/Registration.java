@@ -95,6 +95,7 @@ import appeng.items.parts.PartType;
 import appeng.items.storage.ItemBasicStorageCell;
 import appeng.items.storage.ItemCreativeStorageCell;
 import appeng.items.storage.ItemSpatialStorageCell;
+import appeng.items.storage.ItemViewCell;
 import appeng.items.tools.ToolBiometricCard;
 import appeng.items.tools.ToolMemoryCard;
 import appeng.items.tools.ToolNetworkTool;
@@ -307,6 +308,7 @@ public class Registration
 		// ItemEncodedPattern.class );
 
 		items.itemCellCreative = addFeature( ItemCreativeStorageCell.class );
+		items.itemViewCell = addFeature( ItemViewCell.class );
 
 		items.itemCell1k = addFeature( ItemBasicStorageCell.class, MaterialType.Cell1kPart, 1 );
 		items.itemCell4k = addFeature( ItemBasicStorageCell.class, MaterialType.Cell4kPart, 4 );
@@ -527,6 +529,9 @@ public class Registration
 
 		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemPortableCell.stack( 1 ), 1 );
 		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemPortableCell.stack( 1 ), 1 );
+
+		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemViewCell.stack( 1 ), 1 );
+		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemViewCell.stack( 1 ), 1 );
 
 		// partStorageBus
 		Upgrades.FUZZY.registerItem( AEApi.instance().parts().partStorageBus.stack( 1 ), 1 );

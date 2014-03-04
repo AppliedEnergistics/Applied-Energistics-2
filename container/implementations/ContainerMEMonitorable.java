@@ -16,6 +16,7 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.tiles.IMEChest;
+import appeng.api.implementations.tiles.IViewCellStorage;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -30,6 +31,9 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
 import appeng.container.AEBaseContainer;
+import appeng.container.slot.AppEngSlot;
+import appeng.container.slot.SlotRestrictedInput;
+import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
@@ -46,6 +50,8 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 
 	IConfigManager serverCM;
 	IConfigManager clientCM;
+
+	public AppEngSlot cellView;
 
 	public IConfigManagerHost gui;
 
@@ -89,6 +95,9 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		}
 		else
 			monitor = null;
+
+		if ( montiorable instanceof IViewCellStorage )
+			addSlotToContainer( cellView = new SlotRestrictedInput( PlaceableItemType.VIEWCELL, ((IViewCellStorage) montiorable).getViewCellStorage(), 0, 205, 7 ) );
 
 		if ( bindInventory )
 			bindPlayerInventory( ip, 0, 0 );
