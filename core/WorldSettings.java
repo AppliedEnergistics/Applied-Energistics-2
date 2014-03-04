@@ -55,7 +55,8 @@ public class WorldSettings extends Configuration
 	{
 		if ( instance == null )
 		{
-			File world = DimensionManager.getWorld( 0 ).getSaveHandler().getWorldDirectory();
+			File world = DimensionManager.getCurrentSaveRootDirectory();
+
 			File f = new File( world.getPath() + File.separatorChar + "AE2" );
 
 			if ( !f.exists() || !f.isDirectory() )

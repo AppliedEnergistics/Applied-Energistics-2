@@ -13,12 +13,15 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
 import appeng.core.WorldSettings;
 import appeng.core.features.AEFeature;
 import appeng.helpers.LocationRotation;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -34,12 +37,27 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	@SideOnly(Side.CLIENT)
 	IIcon SmallBrick;
 
+	@SubscribeEvent
+	public void breakFaster(PlayerEvent.BreakSpeed Ev)
+	{
+		if ( Ev.block == this && Ev.originalSpeed > 7 || Ev.metadata > 0 )
+			Ev.newSpeed /= 0.1;
+	}
+
 	public BlockSkyStone() {
 		super( BlockSkyStone.class, Material.rock );
 		setfeature( EnumSet.of( AEFeature.Core ) );
 		setHardness( 50 );
 		hasSubtypes = true;
 		blockResistance = 150.0f;
+		setHarvestLevel( "pickaxe", 3, 0 );
+		MinecraftForge.EVENT_BUS.register( this );
+	}
+
+	@Override
+	public int damageDropped(int meta)
+	{
+		return meta;
 	}
 
 	@Override

@@ -111,6 +111,28 @@ public class MeteoritePlacer
 
 	};
 
+	private class FalloutSnow extends FalloutCopy
+	{
+
+		public FalloutSnow(World w, int x, int y, int z) {
+			super( w, x, y, z );
+		}
+
+		public int adjustCrator()
+		{
+			return 2;
+		}
+
+		public void getOther(World w, int x, int y, int z, double a)
+		{
+			if ( a > 0.7 )
+				put( w, x, y, z, Blocks.snow );
+			else if ( a > 0.5 )
+				put( w, x, y, z, Blocks.ice );
+		}
+
+	};
+
 	int minBLocks = 200;
 	HashSet<Block> validSpawn = new HashSet();
 	HashSet<Block> invalidSpawn = new HashSet();
@@ -140,6 +162,8 @@ public class MeteoritePlacer
 		validSpawn.add( Blocks.diamond_ore );
 		validSpawn.add( Blocks.redstone_ore );
 		validSpawn.add( Blocks.hardened_clay );
+		validSpawn.add( Blocks.ice );
+		validSpawn.add( Blocks.snow );
 
 		invalidSpawn.add( skystone );
 		invalidSpawn.add( Blocks.planks );
@@ -168,6 +192,8 @@ public class MeteoritePlacer
 			type = new FalloutSand( w, x, y, z );
 		else if ( blk == Blocks.hardened_clay )
 			type = new FalloutCopy( w, x, y, z );
+		else if ( blk == Blocks.ice || blk == Blocks.snow )
+			type = new FalloutSnow( w, x, y, z );
 
 		int realValidBlocks = 0;
 
@@ -283,10 +309,11 @@ public class MeteoritePlacer
 
 	private void Decay(World w, int x, int y, int z)
 	{
+		double randomShit = 0;
 
 		for (int i = x - 30; i < x + 30; i++)
-			for (int j = y - 9; j < y + 30; j++)
-				for (int k = z - 30; k < z + 30; k++)
+			for (int k = z - 30; k < z + 30; k++)
+				for (int j = y - 9; j < y + 30; j++)
 				{
 					Block blk = w.getBlock( i, j, k );
 					if ( blk == Blocks.lava )
@@ -304,7 +331,7 @@ public class MeteoritePlacer
 							w.setBlock( i, j, k, blk_b, meta_b, 3 );
 							w.setBlock( i, j + 1, k, blk );
 						}
-						else
+						else if ( randomShit < 100 * crator )
 						{
 							double dx = i - x;
 							double dy = j - y;
@@ -314,10 +341,12 @@ public class MeteoritePlacer
 							Block xf = w.getBlock( i, j - 1, k );
 							if ( !xf.isReplaceable( w, i, j - 1, k ) )
 							{
-								double height = crator * 0.1 - Math.abs( dist - crator * 1.7 );
+								double extrRange = Math.random() * 0.6;
+								double height = crator * (extrRange + 0.2) - Math.abs( dist - crator * 1.7 );
 
-								if ( xf != blk && height > 0 && Math.random() > 0.5 )
+								if ( xf != blk && height > 0 && Math.random() > 0.6 )
 								{
+									randomShit++;
 									type.getRandomFall( w, i, j, k );
 								}
 							}
