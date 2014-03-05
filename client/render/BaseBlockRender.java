@@ -444,6 +444,12 @@ public class BaseBlockRender
 	{
 		if ( forward != null && up != null )
 		{
+			if ( forward == ForgeDirection.UNKNOWN )
+				forward = ForgeDirection.SOUTH;
+
+			if ( up == ForgeDirection.UNKNOWN )
+				up = ForgeDirection.UP;
+
 			ForgeDirection west = Platform.crossProduct( forward, up );
 
 			rotMat.put( 0, west.offsetX );
