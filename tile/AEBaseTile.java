@@ -216,12 +216,16 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 	@Override
 	public ForgeDirection getForward()
 	{
+		if ( forward == ForgeDirection.UNKNOWN )
+			return ForgeDirection.SOUTH;
 		return forward;
 	}
 
 	@Override
 	public ForgeDirection getUp()
 	{
+		if ( up == ForgeDirection.UNKNOWN )
+			return ForgeDirection.UP;
 		return up;
 	}
 

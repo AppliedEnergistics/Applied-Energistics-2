@@ -6,6 +6,9 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
@@ -305,6 +308,39 @@ public class MeteoritePlacer
 				}
 
 		put( w, x, y, z, skychest );
+		TileEntity te = w.getTileEntity( x, y, z );
+		if ( te instanceof IInventory )
+		{
+			switch ((int) (Math.random() * 1000) % 4)
+			{
+			case 0:
+				((IInventory) te).setInventorySlotContents( 0, AEApi.instance().materials().materialCalcProcessorPress.stack( 1 ) );
+				break;
+			case 1:
+				((IInventory) te).setInventorySlotContents( 0, AEApi.instance().materials().materialEngProcessorPress.stack( 1 ) );
+				break;
+			case 2:
+				((IInventory) te).setInventorySlotContents( 0, AEApi.instance().materials().materialLogicProcessorPress.stack( 1 ) );
+				break;
+			case 3:
+				((IInventory) te).setInventorySlotContents( 0, AEApi.instance().materials().materialSiliconPress.stack( 1 ) );
+				break;
+			default:
+			}
+
+			switch ((int) (Math.random() * 1000) % 3)
+			{
+			case 0:
+				((IInventory) te).setInventorySlotContents( 1, AEApi.instance().blocks().blockSkyStone.stack( (int) (Math.random() * 12) + 1 ) );
+				break;
+			case 1:
+				((IInventory) te).setInventorySlotContents( 1, AEApi.instance().materials().materialIronNugget.stack( (int) (Math.random() * 12) + 1 ) );
+				break;
+			case 2:
+				((IInventory) te).setInventorySlotContents( 1, new ItemStack( net.minecraft.init.Items.gold_nugget, (int) (Math.random() * 12) + 1 ) );
+				break;
+			}
+		}
 	}
 
 	private void Decay(World w, int x, int y, int z)
@@ -376,19 +412,19 @@ public class MeteoritePlacer
 				}
 	}
 
-	private void put(World w, int i, int j, int k, Block skystone)
+	private void put(World w, int i, int j, int k, Block blk)
 	{
 		if ( w.getBlock( i, j, k ) == Blocks.bedrock )
 			return;
 
-		w.setBlock( i, j, k, skystone );
+		w.setBlock( i, j, k, blk );
 	}
 
-	private void put(World w, int i, int j, int k, Block skystone, int meta)
+	private void put(World w, int i, int j, int k, Block blk, int meta)
 	{
 		if ( w.getBlock( i, j, k ) == Blocks.bedrock )
 			return;
 
-		w.setBlock( i, j, k, skystone, meta, 3 );
+		w.setBlock( i, j, k, blk, meta, 3 );
 	}
 }
