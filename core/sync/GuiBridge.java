@@ -46,6 +46,7 @@ import appeng.container.implementations.ContainerPriority;
 import appeng.container.implementations.ContainerQNB;
 import appeng.container.implementations.ContainerSecurity;
 import appeng.container.implementations.ContainerSkyChest;
+import appeng.container.implementations.ContainerSpatialIOPort;
 import appeng.container.implementations.ContainerStorageBus;
 import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
@@ -66,6 +67,7 @@ import appeng.tile.misc.TileSecurity;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.tile.networking.TileWireless;
 import appeng.tile.qnb.TileQuantumBridge;
+import appeng.tile.spatial.TileSpatialIOPort;
 import appeng.tile.storage.TileChest;
 import appeng.tile.storage.TileDrive;
 import appeng.tile.storage.TileIOPort;
@@ -122,6 +124,10 @@ public enum GuiBridge implements IGuiHandler
 
 	// extends (Container/Gui) + Bus
 	GUI_LEVELEMITTER(ContainerLevelEmitter.class, PartLevelEmitter.class, false, SecurityPermissions.BUILD),
+
+	GUI_SPATIALIOPORT(ContainerSpatialIOPort.class, TileSpatialIOPort.class, false, SecurityPermissions.BUILD),
+
+	// GUI_INSCRIBER
 
 	GUI_CELLWORKBENCH(ContainerCellWorkbench.class, TileCellWorkbench.class, false, null);
 

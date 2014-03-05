@@ -4,12 +4,16 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import appeng.core.WorldSettings;
 import appeng.core.sync.AppEngPacket;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent.CustomNetworkEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
+import cpw.mods.fml.common.network.NetworkHandshakeEstablished;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 public class NetworkHandler
 {
@@ -23,6 +27,7 @@ public class NetworkHandler
 	final IPacketHandler serveHandler;
 
 	public NetworkHandler(String channelName) {
+		FMLCommonHandler.instance().bus().register( this );
 		ec = NetworkRegistry.INSTANCE.newEventDrivenChannel( myChannelName = channelName );
 		ec.register( this );
 
@@ -55,9 +60,25 @@ public class NetworkHandler
 	}
 
 	@SubscribeEvent
-	public void newPlayer(PlayerLoggedInEvent ev)
+	public void newConection(CustomNetworkEvent cctse)
 	{
-		WorldSettings.getInstance().sendToPlayer( ev.player );
+		if ( cctse.wrappedEvent instanceof NetworkHandshakeEstablished )
+		{
+			NetworkHandshakeEstablished nhe = (NetworkHandshakeEstablished) cctse.wrappedEvent;
+			if ( nhe.side == Side.SERVER && nhe.netHandler instanceof NetHandlerPlayServer )
+			{
+				NetHandlerPlayServer srv = (NetHandlerPlayServer) nhe.netHandler;
+				// WorldSettings.getInstance().sendToPlayer( srv.playerEntity );
+
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public void newConection(PlayerLoggedInEvent loginEvent)
+	{
+		if ( loginEvent.player instanceof EntityPlayerMP )
+			WorldSettings.getInstance().sendToPlayer( (EntityPlayerMP) loginEvent.player );
 	}
 
 	@SubscribeEvent

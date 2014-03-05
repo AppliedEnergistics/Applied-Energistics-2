@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.ChestGenHooks;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
@@ -17,6 +18,7 @@ import appeng.api.definitions.Materials;
 import appeng.api.definitions.Parts;
 import appeng.api.features.IRecipeHandlerRegistry;
 import appeng.api.features.IWirelessTermHandler;
+import appeng.api.movable.IMovableRegistry;
 import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.pathing.IPathingGrid;
@@ -133,6 +135,10 @@ import appeng.recipes.handlers.Smelt;
 import appeng.recipes.loader.ConfigLoader;
 import appeng.recipes.loader.JarLoader;
 import appeng.recipes.ores.OreDictionaryHandler;
+import appeng.spatial.BiomeGenStorage;
+import appeng.spatial.StorageWorldProvider;
+import appeng.tile.AEBaseTile;
+import appeng.util.Platform;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -160,6 +166,8 @@ public class Registration
 
 	public void PreInit(FMLPreInitializationEvent event)
 	{
+		registerSpatial( false );
+
 		IRecipeHandlerRegistry recipeRegistery = AEApi.instance().registries().recipes();
 		recipeRegistery.addNewSubItemResolver( new AEItemResolver() );
 
@@ -488,6 +496,8 @@ public class Registration
 
 	public void PostInit(FMLPostInitializationEvent event)
 	{
+		registerSpatial( true );
+
 		// add to localizaiton..
 		PlayerMessages.values();
 		GuiText.values();
@@ -567,6 +577,69 @@ public class Registration
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.MeteoriteWorldGen ) )
 			GameRegistry.registerWorldGenerator( new MeteoriteWorldGen(), 0 );
 
+		IMovableRegistry mr = AEApi.instance().registries().moveable();
+
+		/*
+		 * White List Vanilla...
+		 */
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityBeacon.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityBrewingStand.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityChest.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityCommandBlock.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityComparator.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityDaylightDetector.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityDispenser.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityDropper.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityEnchantmentTable.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityEnderChest.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityEndPortal.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntitySkull.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityFurnace.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityMobSpawner.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntitySign.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityPiston.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityFlowerPot.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityNote.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityHopper.class );
+
+		/**
+		 * Whitelist AE
+		 */
+		mr.whiteListTileEntity( AEBaseTile.class );
+
 		recipeHandler.registerHandlers();
 	}
+
+	private void registerSpatial(boolean force)
+	{
+		AEConfig config = AEConfig.instance;
+
+		if ( storageBiome == null )
+		{
+			if ( force && config.storageBiomeID == -1 )
+			{
+				storageBiome = new BiomeGenStorage( config.storageBiomeID = Platform.findEmpty( BiomeGenBase.getBiomeGenArray() ) );
+				config.save();
+			}
+
+			if ( !force && config.storageBiomeID != -1 )
+				storageBiome = new BiomeGenStorage( config.storageBiomeID );
+		}
+
+		if ( config.storageProviderID != -1 )
+		{
+			DimensionManager.registerProviderType( config.storageProviderID, StorageWorldProvider.class, false );
+		}
+
+		if ( config.storageProviderID == -1 && force )
+		{
+			config.storageProviderID = -11;
+
+			while (!DimensionManager.registerProviderType( config.storageProviderID, StorageWorldProvider.class, false ))
+				config.storageProviderID--;
+
+			config.save();
+		}
+	}
+
 }

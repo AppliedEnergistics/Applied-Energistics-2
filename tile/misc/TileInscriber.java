@@ -5,7 +5,6 @@ import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 import java.util.EnumSet;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -105,12 +104,6 @@ public class TileInscriber extends AENetworkPowerTile
 	@Override
 	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added)
 	{
-
-	}
-
-	public void activate(EntityPlayer player)
-	{
-		// TODO Auto-generated method stub
 
 	}
 

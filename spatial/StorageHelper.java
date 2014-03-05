@@ -1,5 +1,6 @@
 package appeng.spatial;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -15,7 +16,9 @@ import net.minecraft.world.WorldServer;
 import appeng.api.AEApi;
 import appeng.api.util.WorldCoord;
 import appeng.block.solids.BlockMatrixFrame;
+import appeng.core.AELog;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class StorageHelper
 {
@@ -119,6 +122,8 @@ public class StorageHelper
 
 	};
 
+	Method onEntityRemoved;
+
 	/**
 	 * Mostly from dimentional doors.. which mostly got it form X-Comp.
 	 * 
@@ -179,8 +184,23 @@ public class StorageHelper
 					oldWorld.getChunkFromChunkCoords( entX, entZ ).isModified = true;
 				}
 
-				// TODO: Fix?
-				// oldWorld.onEntityRemoved( entity );
+				if ( onEntityRemoved == null )
+				{
+					onEntityRemoved = ReflectionHelper.findMethod( WorldServer.class, oldWorld, new String[] { "onEntityRemoved", "func_72847_b" },
+							Entity.class );
+				}
+
+				if ( onEntityRemoved != null )
+				{
+					try
+					{
+						onEntityRemoved.invoke( oldWorld, entity );
+					}
+					catch (Throwable t)
+					{
+						AELog.error( t );
+					}
+				}
 
 				if ( player == null ) // Are we NOT working with a player?
 				{

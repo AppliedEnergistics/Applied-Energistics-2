@@ -17,10 +17,10 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 		super( ip, te, null );
 		myte = te;
 
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.SPATIAL_STORAGE_CELLS, te, 0, 71, 14 ) );
-		addSlotToContainer( new SlotOutput( te, 1, 71, 14, PlaceableItemType.SPATIAL_STORAGE_CELLS.IIcon ) );
+		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.SPATIAL_STORAGE_CELLS, te, 0, 52, 53 ) );
+		addSlotToContainer( new SlotOutput( te, 1, 113, 53, PlaceableItemType.SPATIAL_STORAGE_CELLS.IIcon ) );
 
-		bindPlayerInventory( ip, 0, 199 - /* height of playerinventory */82 );
+		bindPlayerInventory( ip, 0, 197 - /* height of playerinventory */82 );
 	}
 
 	@Override

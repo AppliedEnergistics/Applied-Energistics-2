@@ -7,10 +7,14 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S21PacketChunkData;
+import net.minecraft.server.management.PlayerManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.NextTickListEntry;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -20,6 +24,7 @@ import appeng.api.movable.IMovableRegistry;
 import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class CachedPlane
 {
@@ -53,6 +58,9 @@ public class CachedPlane
 
 		public void setBlockIDWithMetadata(int y, Object[] blk)
 		{
+			if ( blk[0] == matrixFrame )
+				blk[0] = Platform.air;
+
 			ExtendedBlockStorage extendedblockstorage = storage[y >> 4];
 			extendedblockstorage.func_150818_a( x, y & 15, z, (Block) blk[0] );
 			// extendedblockstorage.setExtBlockID( x, y & 15, z, blk[0] );
@@ -104,6 +112,7 @@ public class CachedPlane
 	LinkedList<NextTickListEntry> ticks = new LinkedList<NextTickListEntry>();
 
 	World wrld;
+	Block matrixFrame = AEApi.instance().blocks().blockMatrixFrame.block();
 
 	LinkedList<WorldCoord> updates = new LinkedList<WorldCoord>();
 
@@ -385,19 +394,49 @@ public class CachedPlane
 			for (int z = 0; z < cz_size; z++)
 			{
 
-				// TODO: Fix?
+				Chunk c = myChunks[x][z];
 
-				/*
-				 * Chunk c = myChunks[x][z];
-				 * 
-				 * WorldServer ws = (WorldServer) c.worldObj; PlayerManager pm = ws.getPlayerManager(); PlayerInstance
-				 * playerinstance = pm.getOrCreateChunkWatcher( c.xPosition, c.zPosition, false );
-				 * 
-				 * if ( playerinstance != null ) playerinstance.sendToAllPlayersWatchingChunk( new Packet51MapChunk( c,
-				 * false, verticalBits ) );
-				 */
+				try
+				{
+					WorldServer ws = (WorldServer) c.worldObj;
+					PlayerManager pm = ws.getPlayerManager();
+
+					if ( getOrCreateChunkWatcher == null )
+					{
+						getOrCreateChunkWatcher = ReflectionHelper.findMethod( PlayerManager.class, pm, new String[] { "getOrCreateChunkWatcher",
+								"func_72690_a" }, int.class, int.class, boolean.class );
+					}
+
+					if ( getOrCreateChunkWatcher != null )
+					{
+						Object playerinstance = getOrCreateChunkWatcher.invoke( pm, c.xPosition, c.zPosition, false );
+						if ( playerinstance != null )
+						{
+							Playerinstance = playerinstance.getClass();
+
+							if ( sendToAllPlayersWatchingChunk == null )
+							{
+								sendToAllPlayersWatchingChunk = ReflectionHelper.findMethod( Playerinstance, playerinstance, new String[] {
+										"sendToAllPlayersWatchingChunk", "func_151251_a" }, Packet.class );
+							}
+
+							if ( sendToAllPlayersWatchingChunk != null )
+								sendToAllPlayersWatchingChunk.invoke( playerinstance, new S21PacketChunkData( c, false, verticalBits ) );
+						}
+					}
+
+				}
+				catch (Throwable t)
+				{
+					AELog.error( t );
+				}
+
 			}
 
 	}
+
+	Class Playerinstance;
+	Method getOrCreateChunkWatcher;
+	Method sendToAllPlayersWatchingChunk;
 
 }

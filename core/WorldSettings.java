@@ -1,16 +1,21 @@
 package appeng.core;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.WeakHashMap;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import appeng.api.util.WorldCoord;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketNewStorageDimension;
 import appeng.me.GridStorage;
 import appeng.me.GridStorageSearch;
 import appeng.services.CompassService;
@@ -46,6 +51,31 @@ public class WorldSettings extends Configuration
 		}
 	}
 
+	List<Integer> storageCellDims = new ArrayList();
+
+	public void addStorageCellDim(int newDim)
+	{
+		storageCellDims.add( newDim );
+		DimensionManager.registerDimension( newDim, AEConfig.instance.storageProviderID );
+
+		try
+		{
+			NetworkHandler.instance.sendToAll( new PacketNewStorageDimension( newDim ) );
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
+		String[] values = new String[storageCellDims.size()];
+
+		for (int x = 0; x < values.length; x++)
+			values[x] = "" + storageCellDims.get( x );
+
+		get( "DimensionManager", "StorageCells", new int[0] ).set( values );
+		save();
+	}
+
 	public CompassService getCompass()
 	{
 		return compass;
@@ -68,9 +98,19 @@ public class WorldSettings extends Configuration
 		return instance;
 	}
 
-	public void sendToPlayer(EntityPlayer player)
+	public void sendToPlayer(EntityPlayerMP player)
 	{
-
+		for (int newDim : get( "DimensionManager", "StorageCells", new int[0] ).getIntList())
+		{
+			try
+			{
+				NetworkHandler.instance.sendTo( new PacketNewStorageDimension( newDim ), player );
+			}
+			catch (IOException e)
+			{
+				AELog.error( e );
+			}
+		}
 	}
 
 	public void init()

@@ -55,8 +55,8 @@ public class BlockChest extends AEBaseBlock
 
 					tg.openGui( p, ch, cell, side );
 				}
-
-				p.addChatMessage( PlayerMessages.ChestCannotReadStorageCell.get() );
+				else
+					p.addChatMessage( PlayerMessages.ChestCannotReadStorageCell.get() );
 			}
 			else
 				p.addChatMessage( PlayerMessages.MachineNotPowered.get() );

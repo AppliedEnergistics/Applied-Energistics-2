@@ -3,20 +3,29 @@ package appeng.spatial;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderGenerate;
+import appeng.api.AEApi;
+import appeng.core.AEConfig;
 
 public class StorageChunkProvider extends ChunkProviderGenerate implements IChunkProvider
 {
 
+	Block[] ablock = new Block[32768];
 	World w;
 
 	public StorageChunkProvider(World wrd, long i) {
 		super( wrd, i, false );
 		this.w = wrd;
+
+		Block matrixFrame = AEApi.instance().blocks().blockMatrixFrame.block();
+
+		for (int x = 0; x < ablock.length; x++)
+			ablock[x] = matrixFrame;
 	}
 
 	@Override
@@ -28,7 +37,13 @@ public class StorageChunkProvider extends ChunkProviderGenerate implements IChun
 	@Override
 	public Chunk provideChunk(int x, int z)
 	{
-		Chunk chunk = new Chunk( w, x, z );
+		Chunk chunk = new Chunk( w, ablock, x, z );
+
+		byte[] abyte = chunk.getBiomeArray();
+		AEConfig config = AEConfig.instance;
+
+		for (int k = 0; k < abyte.length; ++k)
+			abyte[k] = (byte) config.storageBiomeID;
 
 		if ( !chunk.isTerrainPopulated )
 		{

@@ -35,6 +35,9 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 	public IConfigManager settings = new ConfigManager( this );
 	public EnumSet<AEFeature> featureFlags = EnumSet.noneOf( AEFeature.class );
 
+	public int storageBiomeID = -1;
+	public int storageProviderID = -1;
+
 	public int oresPerCluster = 4;
 
 	private double WirelessBaseCost = 8;
@@ -149,6 +152,12 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 			this.get( Category, e.name(), settings.getSetting( e ).name() );
 		}
 
+		if ( isFeatureEnabled( AEFeature.SpatialIO ) )
+		{
+			storageBiomeID = get( "spatialio", "storageBiomeID", storageBiomeID ).getInt( storageBiomeID );
+			storageProviderID = get( "spatialio", "storageProviderID", storageProviderID ).getInt( storageProviderID );
+		}
+
 		if ( isFeatureEnabled( AEFeature.VersionChecker ) )
 		{
 			try
@@ -182,6 +191,12 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		{
 			get( "VersionChecker", "LatestVersion", latestVersion ).set( latestVersion );
 			get( "VersionChecker", "LatestTimeStamp", "" ).set( Long.toString( latestTimeStamp ) );
+		}
+
+		if ( isFeatureEnabled( AEFeature.SpatialIO ) )
+		{
+			get( "spatialio", "storageBiomeID", storageBiomeID ).set( storageBiomeID );
+			get( "spatialio", "storageProviderID", storageProviderID ).set( storageProviderID );
 		}
 
 		if ( hasChanged() )

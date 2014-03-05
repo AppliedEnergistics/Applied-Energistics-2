@@ -157,8 +157,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 	@Override
 	public IConfigManager getConfigManager()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return duality.getConfigManager();
 	}
 
 }

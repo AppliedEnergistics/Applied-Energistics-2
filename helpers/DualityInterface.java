@@ -24,6 +24,8 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
+import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigureableObject;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.storage.MEMonitorIInventory;
@@ -33,13 +35,16 @@ import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
+import appeng.util.ConfigManager;
+import appeng.util.IConfigManagerHost;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorIInventory;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.WrapperInvSlot;
 
-public class DualityInterface implements IGridTickable, ISegmentedInventory, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory
+public class DualityInterface implements IGridTickable, ISegmentedInventory, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory,
+		IConfigureableObject, IConfigManagerHost
 {
 
 	final int sides[] = new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
@@ -49,6 +54,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	AENetworkProxy gridProxy;
 	IInterfaceHost iHost;
 	BaseActionSource mySrc;
+	ConfigManager cm = new ConfigManager( this );
 
 	public DualityInterface(AENetworkProxy prox, IInterfaceHost ih) {
 		gridProxy = prox;
@@ -454,5 +460,17 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	{
 		return (IPart) (iHost instanceof IPart ? iHost : null);
 	}
+
+	public appeng.api.util.IConfigManager getConfigManager()
+	{
+		return cm;
+	}
+
+	@Override
+	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
+	{
+		// TODO Auto-generated method stub
+
+	};
 
 }

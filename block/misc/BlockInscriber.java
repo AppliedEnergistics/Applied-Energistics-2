@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
 import appeng.core.features.AEFeature;
 import appeng.tile.misc.TileInscriber;
-import appeng.util.Platform;
+import appeng.tile.misc.TileInterface;
 
 public class BlockInscriber extends AEBaseBlock
 {
@@ -20,21 +20,19 @@ public class BlockInscriber extends AEBaseBlock
 	}
 
 	@Override
-	public boolean onActivated(World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
 	{
-		if ( player.isSneaking() )
+		if ( p.isSneaking() )
 			return false;
 
-		if ( Platform.isServer() )
+		TileInterface tg = getTileEntity( w, x, y, z );
+		if ( tg != null )
 		{
-			TileInscriber tc = getTileEntity( w, x, y, z );
-			if ( tc != null )
-			{
-				tc.activate( player );
-			}
+			// if ( Platform.isServer() )
+			// Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_INSCRIBER );
+			return true;
 		}
-
-		return true;
+		return false;
 	}
 
 }

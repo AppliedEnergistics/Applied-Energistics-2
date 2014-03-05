@@ -25,7 +25,7 @@ public class GuiSpatialIOPort extends AEBaseGui
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
 		fontRendererObj.drawString( GuiText.SpatialIOPort.getLocal(), 8, 6, 4210752 );
-		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96, 4210752 );
 	}
 
 }

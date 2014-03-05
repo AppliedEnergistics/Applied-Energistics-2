@@ -40,6 +40,12 @@ public class SpatialPylonCache implements IGridCache, ISpatialCache
 	}
 
 	@Override
+	public long requiredPower()
+	{
+		return powerRequired;
+	}
+
+	@Override
 	public boolean hasRegion()
 	{
 		return captureMin != null;
