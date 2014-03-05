@@ -38,7 +38,7 @@ public class ItemRenderer implements IItemRenderer
 		if ( type == ItemRenderType.INVENTORY )
 			GL11.glTranslatef( 0.0f, -0.1f, 0.0f );
 
-		WorldRender.instance.renderItemBlock( item, type );
+		WorldRender.instance.renderItemBlock( item, type, data );
 
 		GL11.glPopAttrib();
 		GL11.glPopMatrix();

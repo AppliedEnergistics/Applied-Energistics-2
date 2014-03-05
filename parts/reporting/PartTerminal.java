@@ -28,7 +28,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 {
 
 	IConfigManager cm = new ConfigManager( this );
-	AppEngInternalInventory viewCell = new AppEngInternalInventory( this, 1 );
+	AppEngInternalInventory viewCell = new AppEngInternalInventory( this, 5 );
 
 	public PartTerminal(Class clz, ItemStack is) {
 		super( clz, is );

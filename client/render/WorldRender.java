@@ -58,7 +58,7 @@ public class WorldRender implements ISimpleBlockRenderingHandler
 		return renderID;
 	}
 
-	public void renderItemBlock(ItemStack item, ItemRenderType type)
+	public void renderItemBlock(ItemStack item, ItemRenderType type, Object[] data)
 	{
 		Block blk = Block.getBlockFromItem( item.getItem() );
 		if ( blk instanceof AEBaseBlock )
@@ -67,7 +67,7 @@ public class WorldRender implements ISimpleBlockRenderingHandler
 			renderer.setRenderBoundsFromBlock( block );
 
 			renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
-			getRender( block ).renderInventory( block, item, renderer, type );
+			getRender( block ).renderInventory( block, item, renderer, type, data );
 			renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 		}
 		else

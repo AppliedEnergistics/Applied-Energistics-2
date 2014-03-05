@@ -25,15 +25,15 @@ public class RenderBlockCrank extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type)
+	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
 		renderer.renderAllFaces = true;
 
 		renderer.setRenderBounds( 0.5D - 0.05, 0.5D - 0.5, 0.5D - 0.05, 0.5D + 0.05, 0.5D + 0.3, 0.5D + 0.05 );
-		super.renderInventory( blk, is, renderer, type );
+		super.renderInventory( blk, is, renderer, type, obj );
 
 		renderer.setRenderBounds( 0.70D - 0.15, 0.75D - 0.05, 0.5D - 0.05, 0.70D + 0.28, 0.75D + 0.05, 0.5D + 0.05 );
-		super.renderInventory( blk, is, renderer, type );
+		super.renderInventory( blk, is, renderer, type, obj );
 
 		renderer.renderAllFaces = false;
 	}

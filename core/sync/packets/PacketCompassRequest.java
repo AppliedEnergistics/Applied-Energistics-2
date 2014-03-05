@@ -42,7 +42,7 @@ public class PacketCompassRequest extends AppEngPacket implements ICompassCallba
 		talkBackTo = player;
 
 		DimensionalCoord loc = new DimensionalCoord( player.worldObj, this.cx << 4, this.cdy << 5, this.cz << 4 );
-		WorldSettings.getInstance().getCompass().getCompassDirection( loc, 128, this );
+		WorldSettings.getInstance().getCompass().getCompassDirection( loc, 174, this );
 	}
 
 	// api

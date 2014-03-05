@@ -27,7 +27,7 @@ public class RenderMEChest extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type)
+	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
 		renderer.overrideBlockTexture = ExtraTextures.getMissing();
 		this.renderInvBlock( EnumSet.of( ForgeDirection.SOUTH ), block, is, Tessellator.instance, 0x000000, renderer );
@@ -36,7 +36,7 @@ public class RenderMEChest extends BaseBlockRender
 		this.renderInvBlock( EnumSet.of( ForgeDirection.UP ), block, is, Tessellator.instance, 0xffffff, renderer );
 
 		renderer.overrideBlockTexture = null;
-		super.renderInventory( block, is, renderer, type );
+		super.renderInventory( block, is, renderer, type, obj );
 	}
 
 	@Override

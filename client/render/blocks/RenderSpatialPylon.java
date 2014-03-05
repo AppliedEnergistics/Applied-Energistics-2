@@ -21,12 +21,12 @@ public class RenderSpatialPylon extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type)
+	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
 		renderer.overrideBlockTexture = ExtraTextures.BlockSpatialPylon_dim.getIcon();
-		super.renderInventory( block, is, renderer, type );
+		super.renderInventory( block, is, renderer, type, obj );
 		renderer.overrideBlockTexture = null;
-		super.renderInventory( block, is, renderer, type );
+		super.renderInventory( block, is, renderer, type, obj );
 	}
 
 	@Override

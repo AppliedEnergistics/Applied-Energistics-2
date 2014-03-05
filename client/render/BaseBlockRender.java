@@ -357,7 +357,7 @@ public class BaseBlockRender
 		}
 	}
 
-	public void renderInventory(AEBaseBlock block, ItemStack item, RenderBlocks renderer, ItemRenderType type)
+	public void renderInventory(AEBaseBlock block, ItemStack item, RenderBlocks renderer, ItemRenderType type, Object[] data)
 	{
 		Tessellator tess = Tessellator.instance;
 

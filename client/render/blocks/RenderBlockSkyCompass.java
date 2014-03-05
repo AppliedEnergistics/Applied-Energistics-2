@@ -31,7 +31,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type)
+	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
 		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */);
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
@@ -62,9 +62,15 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 		}
 
 		long now = System.currentTimeMillis();
-		if ( type == ItemRenderType.EQUIPPED_FIRST_PERSON || type == ItemRenderType.INVENTORY )
+		if ( type == ItemRenderType.EQUIPPED_FIRST_PERSON || type == ItemRenderType.INVENTORY || type == ItemRenderType.EQUIPPED )
 		{
 			EntityPlayer p = Minecraft.getMinecraft().thePlayer;
+
+			if ( type == ItemRenderType.EQUIPPED )
+			{
+				p = (EntityPlayer) obj[1];
+				p.rotationYaw = p.renderYawOffset;
+			}
 
 			int x = (int) p.posX;
 			int y = (int) p.posY;

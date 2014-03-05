@@ -57,8 +57,8 @@ public class CompassService implements Runnable
 	private class CMDirectionRequest extends CompassMessage
 	{
 
-		public final DimensionalCoord coord;
 		public final int maxRange;
+		public final DimensionalCoord coord;
 		public final ICompassCallback callback;
 
 		@Override
@@ -190,7 +190,7 @@ public class CompassService implements Runnable
 		}
 
 		// spiral outward...
-		for (int offset = 1; offset < 174; offset++)
+		for (int offset = 1; offset < req.maxRange; offset++)
 		{
 			int minx = cx - offset;
 			int minz = cz - offset;

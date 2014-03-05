@@ -15,10 +15,10 @@ public class RenderTinyTNT extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type)
+	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
 		renderer.setRenderBounds( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f );
-		super.renderInventory( block, is, renderer, type );
+		super.renderInventory( block, is, renderer, type, obj );
 	}
 
 	@Override

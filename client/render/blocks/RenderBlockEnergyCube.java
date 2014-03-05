@@ -16,7 +16,7 @@ public class RenderBlockEnergyCube extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type)
+	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
 		IAEItemPowerStorage myItem = (IAEItemPowerStorage) is.getItem();
 		double internalCurrentPower = myItem.getAECurrentPower( is );
@@ -30,7 +30,7 @@ public class RenderBlockEnergyCube extends BaseBlockRender
 			meta = 0;
 
 		renderer.setOverrideBlockTexture( blk.getIcon( 0, meta ) );
-		super.renderInventory( blk, is, renderer, type );
+		super.renderInventory( blk, is, renderer, type, obj );
 		renderer.setOverrideBlockTexture( null );
 	}
 

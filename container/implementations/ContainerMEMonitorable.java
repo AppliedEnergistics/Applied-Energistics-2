@@ -10,6 +10,7 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -31,7 +32,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
 import appeng.container.AEBaseContainer;
-import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.core.AELog;
@@ -51,7 +51,8 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	IConfigManager serverCM;
 	IConfigManager clientCM;
 
-	public AppEngSlot cellView;
+	public boolean canAccessViewCells = false;
+	public SlotRestrictedInput cellView[] = new SlotRestrictedInput[5];
 
 	public IConfigManagerHost gui;
 
@@ -96,8 +97,16 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		else
 			monitor = null;
 
+		canAccessViewCells = false;
 		if ( montiorable instanceof IViewCellStorage )
-			addSlotToContainer( cellView = new SlotRestrictedInput( PlaceableItemType.VIEWCELL, ((IViewCellStorage) montiorable).getViewCellStorage(), 0, 205, 7 ) );
+		{
+			for (int y = 0; y < 5; y++)
+			{
+				cellView[y] = new SlotRestrictedInput( PlaceableItemType.VIEWCELL, ((IViewCellStorage) montiorable).getViewCellStorage(), y, 206, y * 18 + 8 );
+				cellView[y].allowEdit = canAccessViewCells;
+				addSlotToContainer( cellView[y] );
+			}
+		}
 
 		if ( bindInventory )
 			bindPlayerInventory( ip, 0, 0 );
@@ -171,6 +180,23 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				}
 			}
 
+			boolean oldCanAccessViewCells = canAccessViewCells;
+			canAccessViewCells = hasAccess( SecurityPermissions.BUILD, false );
+			if ( canAccessViewCells != oldCanAccessViewCells )
+			{
+				for (int y = 0; y < 5; y++)
+				{
+					if ( cellView[y] != null )
+						cellView[y].allowEdit = canAccessViewCells;
+				}
+
+				for (Object c : this.crafters)
+				{
+					if ( c instanceof ICrafting )
+						((ICrafting) c).sendProgressBarUpdate( this, 99, canAccessViewCells ? 1 : 0 );
+				}
+			}
+
 			super.detectAndSendChanges();
 		}
 	}
@@ -210,6 +236,19 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 			}
 
 		}
+	}
+
+	@Override
+	public void updateProgressBar(int idx, int value)
+	{
+		super.updateProgressBar( idx, value );
+
+		if ( idx == 99 )
+			canAccessViewCells = value == 1;
+
+		for (int y = 0; y < 5; y++)
+			if ( cellView[y] != null )
+				cellView[y].allowEdit = canAccessViewCells;
 	}
 
 	@Override

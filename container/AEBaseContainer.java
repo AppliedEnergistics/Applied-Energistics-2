@@ -70,6 +70,11 @@ public abstract class AEBaseContainer extends Container
 			return;
 
 		ticksSinceCheck = 0;
+		isContainerValid = isContainerValid && hasAccess( security, requirePower );
+	}
+
+	protected boolean hasAccess(SecurityPermissions perm, boolean requirePower)
+	{
 		IActionHost host = null;
 
 		if ( tileEntity instanceof IActionHost )
@@ -77,11 +82,7 @@ public abstract class AEBaseContainer extends Container
 		if ( part instanceof IActionHost )
 			host = (IActionHost) part;
 
-		if ( host == null )
-		{
-			isContainerValid = false;
-		}
-		else
+		if ( host != null )
 		{
 			IGridNode gn = host.getActionableNode();
 			if ( gn != null )
@@ -93,18 +94,17 @@ public abstract class AEBaseContainer extends Container
 					{
 						IEnergyGrid eg = g.getCache( IEnergyGrid.class );
 						if ( !eg.isNetworkPowered() )
-						{
-							isContainerValid = false;
-							return;
-						}
+							return false;
 					}
 
 					ISecurityGrid sg = g.getCache( ISecurityGrid.class );
-					if ( !sg.hasPermission( invPlayer.player, security ) )
-						isContainerValid = false;
+					if ( sg.hasPermission( invPlayer.player, perm ) )
+						return true;
 				}
 			}
 		}
+
+		return false;
 	}
 
 	public ContainerOpenContext openContext;

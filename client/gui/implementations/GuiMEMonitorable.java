@@ -64,7 +64,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	GuiImgButton searchBoxSettings;
 	boolean viewCell;
 
-	ItemStack currentViewCell;
+	ItemStack myCurrentViewCells[] = new ItemStack[5];
 	ContainerMEMonitorable mecontainer;
 
 	public GuiMEMonitorable(InventoryPlayer inventoryPlayer, ITerminalHost te) {
@@ -277,11 +277,19 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		if ( viewCell )
 		{
-			if ( currentViewCell != mecontainer.cellView.getStack() )
+			boolean update = false;
+
+			for (int i = 0; i < 5; i++)
 			{
-				currentViewCell = mecontainer.cellView.getStack();
-				repo.setViewCell( currentViewCell );
+				if ( myCurrentViewCells[i] != mecontainer.cellView[i].getStack() )
+				{
+					update = true;
+					myCurrentViewCells[i] = mecontainer.cellView[i].getStack();
+				}
 			}
+
+			if ( update )
+				repo.setViewCell( myCurrentViewCells );
 		}
 
 		if ( searchField != null )

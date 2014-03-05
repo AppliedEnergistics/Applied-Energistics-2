@@ -72,13 +72,13 @@ public class RenderQNB extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock block, ItemStack item, RenderBlocks renderer, ItemRenderType type)
+	public void renderInventory(AEBaseBlock block, ItemStack item, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
 		float px = 2.0f / 16.0f;
 		float maxpx = 14.0f / 16.0f;
 		renderer.setRenderBounds( px, px, px, maxpx, maxpx, maxpx );
 
-		super.renderInventory( block, item, renderer, type );
+		super.renderInventory( block, item, renderer, type, obj );
 	}
 
 	@Override

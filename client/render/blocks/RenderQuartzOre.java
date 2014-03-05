@@ -17,11 +17,11 @@ public class RenderQuartzOre extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type)
+	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
-		super.renderInventory( blk, is, renderer, type );
+		super.renderInventory( blk, is, renderer, type, obj );
 		blk.getRendererInstance().setTemporaryRenderIcon( ExtraTextures.OreQuartzStone.getIcon() );
-		super.renderInventory( blk, is, renderer, type );
+		super.renderInventory( blk, is, renderer, type, obj );
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 	}
 

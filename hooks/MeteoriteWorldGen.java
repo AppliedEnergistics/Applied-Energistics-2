@@ -43,7 +43,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 			int z = r.nextInt( 16 ) + (chunkZ << 4);
 
 			myGen obj = new myGen();
-			WorldSettings.getInstance().getCompass().getCompassDirection( new DimensionalCoord( w, x, 128, z ), 30, obj );
+			WorldSettings.getInstance().getCompass().getCompassDirection( new DimensionalCoord( w, x, 128, z ), 70, obj );
 
 			synchronized (obj)
 			{

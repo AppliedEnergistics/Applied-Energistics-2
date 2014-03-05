@@ -15,7 +15,7 @@ public class RenderNull extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type)
+	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
 
 	}

@@ -24,6 +24,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioitylist.FuzzyPriorityList;
 import appeng.util.prioitylist.IPartitionList;
+import appeng.util.prioitylist.MergedPriorityList;
 import appeng.util.prioitylist.PrecisePriorityList;
 
 public class ItemRepo
@@ -80,65 +81,73 @@ public class ItemRepo
 			list.add( is );
 	}
 
-	boolean hasInverter = false;
-	boolean hasFuzzy = false;
 	IPartitionList<IAEItemStack> myPartitionList;
 
-	public void setViewCell(ItemStack currentViewCell)
+	public void setViewCell(ItemStack[] list)
 	{
-		if ( currentViewCell == null || !(currentViewCell.getItem() instanceof ItemViewCell) )
-			myPartitionList = null;
-		else
+		myPartitionList = null;
+		MergedPriorityList<IAEItemStack> myMergedList = new MergedPriorityList<IAEItemStack>();
+
+		for (ItemStack currentViewCell : list)
 		{
-			IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
+			if ( currentViewCell == null )
+				continue;
 
-			ItemViewCell vc = (ItemViewCell) currentViewCell.getItem();
-			IInventory upgrades = vc.getUpgradesInventory( currentViewCell );
-			IInventory config = vc.getConfigInventory( currentViewCell );
-			FuzzyMode fzMode = vc.getFuzzyMode( currentViewCell );
-
-			hasInverter = false;
-			hasFuzzy = false;
-
-			for (int x = 0; x < upgrades.getSizeInventory(); x++)
+			if ( (currentViewCell.getItem() instanceof ItemViewCell) )
 			{
-				ItemStack is = upgrades.getStackInSlot( x );
-				if ( is != null && is.getItem() instanceof IUpgradeModule )
+				boolean hasInverter = false;
+				boolean hasFuzzy = false;
+				IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
+
+				ItemViewCell vc = (ItemViewCell) currentViewCell.getItem();
+				IInventory upgrades = vc.getUpgradesInventory( currentViewCell );
+				IInventory config = vc.getConfigInventory( currentViewCell );
+				FuzzyMode fzMode = vc.getFuzzyMode( currentViewCell );
+
+				hasInverter = false;
+				hasFuzzy = false;
+
+				for (int x = 0; x < upgrades.getSizeInventory(); x++)
 				{
-					Upgrades u = ((IUpgradeModule) is.getItem()).getType( is );
-					if ( u != null )
+					ItemStack is = upgrades.getStackInSlot( x );
+					if ( is != null && is.getItem() instanceof IUpgradeModule )
 					{
-						switch (u)
+						Upgrades u = ((IUpgradeModule) is.getItem()).getType( is );
+						if ( u != null )
 						{
-						case FUZZY:
-							hasFuzzy = true;
-							break;
-						case INVERTER:
-							hasInverter = true;
-							break;
-						default:
+							switch (u)
+							{
+							case FUZZY:
+								hasFuzzy = true;
+								break;
+							case INVERTER:
+								hasInverter = true;
+								break;
+							default:
+							}
 						}
 					}
 				}
-			}
 
-			for (int x = 0; x < config.getSizeInventory(); x++)
-			{
-				ItemStack is = config.getStackInSlot( x );
-				if ( is != null )
-					priorityList.add( AEItemStack.create( is ) );
-			}
+				for (int x = 0; x < config.getSizeInventory(); x++)
+				{
+					ItemStack is = config.getStackInSlot( x );
+					if ( is != null )
+						priorityList.add( AEItemStack.create( is ) );
+				}
 
-			// myWhitelist = hasInverter ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST;
+				if ( !priorityList.isEmpty() )
+				{
+					if ( hasFuzzy )
+						myMergedList.addNewList( new FuzzyPriorityList<IAEItemStack>( priorityList, fzMode ), !hasInverter );
+					else
+						myMergedList.addNewList( new PrecisePriorityList<IAEItemStack>( priorityList ), !hasInverter );
 
-			if ( !priorityList.isEmpty() )
-			{
-				if ( hasFuzzy )
-					myPartitionList = new FuzzyPriorityList<IAEItemStack>( priorityList, fzMode );
-				else
-					myPartitionList = new PrecisePriorityList<IAEItemStack>( priorityList );
+					myPartitionList = myMergedList;
+				}
 			}
 		}
+
 		updateView();
 	}
 
@@ -175,7 +184,7 @@ public class ItemRepo
 		{
 			if ( myPartitionList != null )
 			{
-				if ( hasInverter == myPartitionList.isListed( is ) )
+				if ( !myPartitionList.isListed( is ) )
 					continue;
 			}
 
