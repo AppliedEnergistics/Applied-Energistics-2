@@ -1,4 +1,4 @@
-package appeng.recipes.Recipes;
+package appeng.recipes.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;

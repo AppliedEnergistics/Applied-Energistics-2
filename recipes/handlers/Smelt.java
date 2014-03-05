@@ -2,14 +2,18 @@ package appeng.recipes.handlers;
 
 import java.util.List;
 
+import net.minecraft.item.ItemStack;
+
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
+import appeng.recipes.RecipeHandler;
+import appeng.util.Platform;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class Smelt implements ICraftHandler
+public class Smelt implements ICraftHandler, IWebsiteSeralizer
 {
 
 	IIngredient in;
@@ -44,4 +48,15 @@ public class Smelt implements ICraftHandler
 		GameRegistry.addSmelting( in.getItemStack(), out.getItemStack(), 0 );
 	}
 
+	@Override
+	public boolean canCraft(ItemStack reqOutput) throws RegistrationError, MissingIngredientError {
+		return Platform.isSameItemPrecise( out.getItemStack(),reqOutput );
+	}
+
+	@Override
+	public String getPattern( RecipeHandler h ) {
+		return "smelt "+out.getQty()+"\n"+
+				h.getName(in)+"\n"+
+				h.getName(out);
+	}
 }

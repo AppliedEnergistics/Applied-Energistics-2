@@ -10,10 +10,12 @@ import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
 import appeng.core.AELog;
-import appeng.recipes.Recipes.ShapedRecipe;
+import appeng.recipes.RecipeHandler;
+import appeng.recipes.game.ShapedRecipe;
+import appeng.util.Platform;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class Shaped implements ICraftHandler
+public class Shaped implements ICraftHandler, IWebsiteSeralizer
 {
 
 	private int rows;
@@ -87,4 +89,29 @@ public class Shaped implements ICraftHandler
 			throw new RegistrationError( "Error while adding shaped recipe." );
 		}
 	}
+
+	@Override
+	public boolean canCraft(ItemStack reqOutput) throws RegistrationError, MissingIngredientError {
+		return Platform.isSameItemPrecise( output.getItemStack(),reqOutput );
+	}
+
+	@Override
+	public String getPattern( RecipeHandler h ) {
+		String o = "shaped "+output.getQty()+"\n";
+
+		o += h.getName(output)+"\n";
+		
+		for ( int y = 0; y < rows; y++ )
+		for ( int x= 0; x< cols; x++ )
+		{
+			IIngredient i = inputs.get(y).get(x);
+			if ( i.isAir() )
+				o += "air"+( x +1 == cols ? "\n" : " " );
+			else
+				o += h.getName(i)+( x +1 == cols ? "\n" : " " );
+		}
+		
+		return o.trim();
+	}
+	
 }

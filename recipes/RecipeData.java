@@ -1,8 +1,10 @@
 package appeng.recipes;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import appeng.api.recipes.ICraftHandler;
 
@@ -17,5 +19,7 @@ public class RecipeData
 	public boolean crash = true;
 	public boolean exceptions = true;
 	public boolean erroronmissing = true;
+	
+	public Set<String> knownItem = new HashSet();
 
 }
