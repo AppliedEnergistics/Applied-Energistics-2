@@ -12,6 +12,8 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -58,6 +60,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	protected boolean isOpaque = true;
 	protected boolean isFullSize = true;
 	protected boolean hasSubtypes = false;
+	protected boolean isInventory = false;
 
 	@SideOnly(Side.CLIENT)
 	public IIcon renderIcon;
@@ -163,6 +166,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	{
 		AEBaseTile.registerTileItem( c, new ItemStackSrc( this, 0 ) );
 		GameRegistry.registerTileEntity( tileEntityType = c, FeatureFullname );
+		isInventory = IInventory.class.isAssignableFrom( c );
 	}
 
 	protected void setfeature(EnumSet<AEFeature> f)
@@ -711,6 +715,19 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	public boolean hasSubtypes()
 	{
 		return hasSubtypes;
+	}
+
+	public boolean hasComparatorInputOverride()
+	{
+		return isInventory;
+	}
+
+	public int getComparatorInputOverride(World w, int x, int y, int z, int s)
+	{
+		TileEntity te = getTileEntity( w, x, y, z );
+		if ( te instanceof IInventory )
+			return Container.calcRedstoneFromInventory( (IInventory) te );
+		return 0;
 	}
 
 }
