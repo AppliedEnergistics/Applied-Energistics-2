@@ -9,9 +9,11 @@ import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
+import appeng.recipes.RecipeHandler;
+import appeng.util.Platform;
 import cpw.mods.fml.common.event.FMLInterModComms;
 
-public class Pulverizer implements ICraftHandler
+public class Pulverizer implements ICraftHandler, IWebsiteSeralizer
 {
 
 	IIngredient pro_input;
@@ -49,4 +51,17 @@ public class Pulverizer implements ICraftHandler
 			FMLInterModComms.sendMessage( "ThermalExpansion", "PulverizerRecipe", toSend );
 		}
 	}
+
+	@Override
+	public boolean canCraft(ItemStack output) throws RegistrationError, MissingIngredientError {
+		return Platform.isSameItemPrecise( pro_output[0].getItemStack(),output );
+	}
+
+	@Override
+	public String getPattern( RecipeHandler h ) {
+		return "pulverizer\n"+
+				h.getName(pro_input)+"\n"+
+				h.getName(pro_output[0]);
+	}
+	
 }

@@ -38,4 +38,10 @@ public class OreRegistration implements ICraftHandler
 			List<List<IIngredient>> output) throws RecipeError {
 		
 	}
+	
+	@Override
+	public boolean canCraft(ItemStack output) throws RegistrationError, MissingIngredientError {
+		return false;
+	}
+	
 }

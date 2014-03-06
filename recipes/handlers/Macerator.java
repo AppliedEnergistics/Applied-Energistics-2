@@ -10,8 +10,10 @@ import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
 import appeng.core.AppEng;
 import appeng.integration.abstraction.IIC2;
+import appeng.recipes.RecipeHandler;
+import appeng.util.Platform;
 
-public class Macerator implements ICraftHandler
+public class Macerator implements ICraftHandler, IWebsiteSeralizer
 {
 
 	IIngredient pro_input;
@@ -44,4 +46,16 @@ public class Macerator implements ICraftHandler
 		}
 	}
 
+	@Override
+	public boolean canCraft(ItemStack output) throws RegistrationError, MissingIngredientError {
+		return Platform.isSameItemPrecise( pro_output[0].getItemStack(),output );
+	}
+
+	@Override
+	public String getPattern( RecipeHandler h ) {
+		return "macerator\n"+
+				h.getName(pro_input)+"\n"+
+				h.getName(pro_output[0]);
+	}
+	
 }

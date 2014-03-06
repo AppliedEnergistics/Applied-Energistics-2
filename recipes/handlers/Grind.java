@@ -9,8 +9,10 @@ import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
+import appeng.recipes.RecipeHandler;
+import appeng.util.Platform;
 
-public class Grind implements ICraftHandler
+public class Grind implements ICraftHandler, IWebsiteSeralizer
 {
 
 	IIngredient pro_input;
@@ -39,4 +41,16 @@ public class Grind implements ICraftHandler
 			AEApi.instance().registries().grinder().addRecipe( is, pro_output[0].getItemStack(), 8 );
 	}
 
+	@Override
+	public boolean canCraft(ItemStack output) throws RegistrationError, MissingIngredientError {
+		return Platform.isSameItemPrecise( pro_output[0].getItemStack(),output );
+	}
+
+	@Override
+	public String getPattern( RecipeHandler h ) {
+		return "grind\n"+
+				h.getName(pro_input)+"\n"+
+				h.getName(pro_output[0]);
+	}
+	
 }

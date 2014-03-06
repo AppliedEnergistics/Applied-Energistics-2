@@ -10,10 +10,12 @@ import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
 import appeng.core.AELog;
-import appeng.recipes.Recipes.ShapelessRecipe;
+import appeng.recipes.RecipeHandler;
+import appeng.recipes.game.ShapelessRecipe;
+import appeng.util.Platform;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class Shapeless implements ICraftHandler
+public class Shapeless implements ICraftHandler, IWebsiteSeralizer
 {
 
 	List<IIngredient> inputs;
@@ -55,4 +57,28 @@ public class Shapeless implements ICraftHandler
 			throw new RegistrationError( "Erro while adding shapeless recipe." );
 		}
 	}
+	
+	@Override
+	public boolean canCraft(ItemStack reqOutput) throws RegistrationError, MissingIngredientError {
+		return Platform.isSameItemPrecise( output.getItemStack(),reqOutput );
+	}
+
+	@Override
+	public String getPattern( RecipeHandler h) {
+		String o = "shapeless "+output.getQty()+"\n";
+
+		o += h.getName(output)+"\n";
+		
+		for ( int y = 0; y < inputs.size(); y++ )
+		{
+			IIngredient i = inputs.get(y);
+			if ( i.isAir() )
+				o += "air"+( y +1 == inputs.size() ? "\n" : " " );
+			else
+				o += h.getName(i)+( y +1 == inputs.size() ? "\n" : " " );
+		}
+		
+		return o.trim();
+	}
+	
 }
