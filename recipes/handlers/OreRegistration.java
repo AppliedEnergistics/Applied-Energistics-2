@@ -34,14 +34,9 @@ public class OreRegistration implements ICraftHandler
 	}
 
 	@Override
-	public void setup(List<List<IIngredient>> input,
-			List<List<IIngredient>> output) throws RecipeError {
-		
+	public void setup(List<List<IIngredient>> input, List<List<IIngredient>> output) throws RecipeError
+	{
+
 	}
-	
-	@Override
-	public boolean canCraft(ItemStack output) throws RegistrationError, MissingIngredientError {
-		return false;
-	}
-	
+
 }

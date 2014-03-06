@@ -11,11 +11,7 @@ import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
-
 import net.minecraft.item.ItemStack;
-
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
@@ -32,6 +28,8 @@ import appeng.items.materials.ItemMaterial;
 import appeng.items.parts.ItemPart;
 import appeng.recipes.handlers.IWebsiteSeralizer;
 import appeng.recipes.handlers.OreRegistration;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 public class RecipeHandler implements IRecipeHandler
 {
@@ -52,28 +50,28 @@ public class RecipeHandler implements IRecipeHandler
 		data.Handlers.add( ch );
 	}
 
-	public List<IWebsiteSeralizer> findRecipe( ItemStack output )
+	public List<IWebsiteSeralizer> findRecipe(ItemStack output)
 	{
 		List<IWebsiteSeralizer> out = new LinkedList<IWebsiteSeralizer>();
-		
-		for ( ICraftHandler ch : data.Handlers )
+
+		for (ICraftHandler ch : data.Handlers)
 		{
 			try
 			{
-				if ( ch instanceof IWebsiteSeralizer && ch.canCraft(output))
+				if ( ch instanceof IWebsiteSeralizer && ((IWebsiteSeralizer) ch).canCraft( output ) )
 				{
-					out.add((IWebsiteSeralizer)ch);
+					out.add( (IWebsiteSeralizer) ch );
 				}
 			}
-			catch (Throwable t )
+			catch (Throwable t)
 			{
-				AELog.error(t);
+				AELog.error( t );
 			}
 		}
-		
+
 		return out;
 	}
-	
+
 	@Override
 	public void registerHandlers()
 	{
@@ -126,81 +124,86 @@ public class RecipeHandler implements IRecipeHandler
 		{
 			AELog.info( "Recipes Loading: " + e.getKey().getSimpleName() + ": " + e.getValue() + " loaded." );
 		}
-		
-		
-		if ( AEConfig.instance.isFeatureEnabled(AEFeature.WebsiteRecipes) )
+
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.WebsiteRecipes ) )
 		{
-			try {
-				ZipOutputStream out = new ZipOutputStream(new FileOutputStream("recipes.zip"));
-				
-				for ( String s : data.knownItem )
+			try
+			{
+				ZipOutputStream out = new ZipOutputStream( new FileOutputStream( "recipes.zip" ) );
+
+				for (String s : data.knownItem)
 				{
 					try
 					{
 						Ingredient i = new Ingredient( this, s, 1 );
-						for ( ItemStack is : i.getItemStackSet() )
+						for (ItemStack is : i.getItemStackSet())
 						{
-							List<IWebsiteSeralizer> recipes =  findRecipe(is);
+							List<IWebsiteSeralizer> recipes = findRecipe( is );
 							if ( !recipes.isEmpty() )
 							{
-								int offset =0;
-								String realName =  getName(is);
-								
-								for ( IWebsiteSeralizer ws : recipes )
+								int offset = 0;
+								String realName = getName( is );
+
+								for (IWebsiteSeralizer ws : recipes)
 								{
-							        out.putNextEntry(new ZipEntry(realName+"_"+offset+".txt")); 
-							        offset++;
-							        out.write(ws.getPattern(this).getBytes());
+									out.putNextEntry( new ZipEntry( realName + "_" + offset + ".txt" ) );
+									offset++;
+									out.write( ws.getPattern( this ).getBytes() );
 								}
-								
+
 							}
-						}				
+						}
 					}
-					catch( Throwable t )
+					catch (Throwable t)
 					{
 						// :P
 					}
 				}
-				
+
 				out.close();
-				
-			} catch (FileNotFoundException e1) {
-				AELog.error(e1);
-			} catch (IOException e1) {
-				AELog.error(e1);
+
 			}
-			
+			catch (FileNotFoundException e1)
+			{
+				AELog.error( e1 );
+			}
+			catch (IOException e1)
+			{
+				AELog.error( e1 );
+			}
+
 		}
 	}
-	
-	public String getName( IIngredient i )
+
+	public String getName(IIngredient i)
 	{
 		try
 		{
 			return getName( i.getItemStack() );
 		}
-		catch (Throwable t )
+		catch (Throwable t)
 		{
 			// :P
 		}
-		
-		return i.getNameSpace()+":"+i.getItemName();
+
+		return i.getNameSpace() + ":" + i.getItemName();
 	}
-	
-	public String getName(ItemStack is) {
-		
-		UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(is.getItem());
-		String realName = id.modId+":"+id.name;
-		
+
+	public String getName(ItemStack is)
+	{
+
+		UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor( is.getItem() );
+		String realName = id.modId + ":" + id.name;
+
 		if ( is.getItem() instanceof ItemMaterial )
-			realName += ":"+( (ItemMaterial)is.getItem() ).getType(is).name();
+			realName += ":" + ((ItemMaterial) is.getItem()).getType( is ).name();
 		else if ( is.getItem() instanceof ItemPart )
-			realName += ":"+( (ItemPart)is.getItem() ).getTypeByStack(is).name();
+			realName += ":" + ((ItemPart) is.getItem()).getTypeByStack( is ).name();
 		else if ( is.getItemDamage() > 0 )
-			realName += ":"+is.getItemDamage();
-		
+			realName += ":" + is.getItemDamage();
+
 		return realName;
-		
+
 	}
 
 	public String alias(String in)
@@ -492,10 +495,10 @@ public class RecipeHandler implements IRecipeHandler
 	private IIngredient findIngrident(String v, int qty) throws RecipeError
 	{
 		GroupIngredient gi = data.groups.get( v );
-		
+
 		if ( gi != null )
 			return gi.copy( qty );
-		
+
 		data.knownItem.add( v );
 		return new Ingredient( this, v, qty );
 	}
