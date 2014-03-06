@@ -113,6 +113,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			registerApp( 16 * 10 + 2, Settings.POWER_UNITS, PowerUnits.MJ, ButtonToolTips.PowerUnits, PowerUnits.MJ.unlocalizedName );
 			registerApp( 16 * 10 + 3, Settings.POWER_UNITS, PowerUnits.KJ, ButtonToolTips.PowerUnits, PowerUnits.KJ.unlocalizedName );
 			registerApp( 16 * 10 + 4, Settings.POWER_UNITS, PowerUnits.WA, ButtonToolTips.PowerUnits, PowerUnits.WA.unlocalizedName );
+			registerApp( 16 * 10 + 5, Settings.POWER_UNITS, PowerUnits.RF, ButtonToolTips.PowerUnits, PowerUnits.RF.unlocalizedName );
 
 			registerApp( 3, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE, ButtonToolTips.RedstoneMode, ButtonToolTips.AlwaysActive );
 			registerApp( 0, Settings.REDSTONE_CONTROLLED, RedstoneMode.LOW_SIGNAL, ButtonToolTips.RedstoneMode, ButtonToolTips.ActiveWithoutSignal );

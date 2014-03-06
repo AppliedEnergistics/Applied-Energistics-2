@@ -25,7 +25,6 @@ import appeng.api.networking.events.MENetworkPowerIdleChange;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.events.MENetworkPowerStorage;
 import appeng.api.networking.storage.IStackWatcherHost;
-import appeng.core.AELog;
 import appeng.me.GridNode;
 import appeng.me.energy.EnergyThreshold;
 import appeng.me.energy.EnergyWatcher;
@@ -38,6 +37,7 @@ public class EnergyGridCache implements IEnergyGrid
 	 */
 	int availableTicksSinceUpdate = 0;
 	double globalAvailablePower = 0;
+	double globalMaxPower = 0;
 
 	/**
 	 * idle draw.
@@ -232,6 +232,8 @@ public class EnergyGridCache implements IEnergyGrid
 				double max = ps.getAEMaxPower();
 				double current = ps.getAECurrentPower();
 
+				globalMaxPower += ps.getAEMaxPower();
+
 				if ( current > 0 && ps.getPowerFlow() != AccessRestriction.WRITE )
 				{
 					globalAvailablePower += ((IAEPowerStorage) machine).getAECurrentPower();
@@ -277,6 +279,8 @@ public class EnergyGridCache implements IEnergyGrid
 			if ( lastRequestor == machine )
 				lastRequestor = null;
 
+			globalMaxPower -= ps.getAEMaxPower();
+
 			providers.remove( machine );
 			requesters.remove( machine );
 		}
@@ -303,8 +307,6 @@ public class EnergyGridCache implements IEnergyGrid
 			double oldPower = lastStoredPower;
 			lastStoredPower = getStoredPower();
 
-			if ( Math.abs( oldPower - lastStoredPower ) > 1000 )
-				AELog.info( "Hi" );
 			EnergyThreshold low = new EnergyThreshold( Math.min( oldPower, lastStoredPower ), null );
 			EnergyThreshold high = new EnergyThreshold( Math.max( oldPower, lastStoredPower ), null );
 			for (EnergyThreshold th : interests.subSet( low, true, high, true ))
@@ -382,6 +384,12 @@ public class EnergyGridCache implements IEnergyGrid
 			refreshPower();
 
 		return globalAvailablePower;
+	}
+
+	@Override
+	public double getMaxStoredPower()
+	{
+		return globalMaxPower;
 	}
 
 	@Override

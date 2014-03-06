@@ -23,6 +23,7 @@ import appeng.api.movable.IMovableHandler;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
+import appeng.core.WorldSettings;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
@@ -379,11 +380,6 @@ public class CachedPlane
 			for (int z = 0; z < cz_size; z++)
 			{
 				Chunk c = myChunks[x][z];
-				for (Method m : c.getClass().getMethods())
-				{
-					AELog.severe( "Chunk." + m.getName() );
-				}
-
 				c.resetRelightChecks();
 				c.generateSkylightMap();
 				c.isModified = true;
@@ -395,6 +391,9 @@ public class CachedPlane
 			{
 
 				Chunk c = myChunks[x][z];
+
+				for (int y = 1; y < 255; y += 32)
+					WorldSettings.getInstance().getCompass().updateArea( wrld, c.xPosition << 4, y, c.zPosition << 4 );
 
 				try
 				{

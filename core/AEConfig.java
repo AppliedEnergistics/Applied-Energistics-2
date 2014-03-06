@@ -16,6 +16,7 @@ import appeng.api.util.IConfigureableObject;
 import appeng.core.features.AEFeature;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
+import appeng.util.Platform;
 
 public class AEConfig extends Configuration implements IConfigureableObject, IConfigManagerHost
 {
@@ -34,6 +35,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 
 	public IConfigManager settings = new ConfigManager( this );
 	public EnumSet<AEFeature> featureFlags = EnumSet.noneOf( AEFeature.class );
+	PowerUnits selectedPowerUnit = PowerUnits.AE;
 
 	public int storageBiomeID = -1;
 	public int storageProviderID = -1;
@@ -152,6 +154,15 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 			this.get( Category, e.name(), settings.getSetting( e ).name() );
 		}
 
+		try
+		{
+			selectedPowerUnit = PowerUnits.valueOf( get( "Client", "PowerUnit", selectedPowerUnit.name() ).getString() );
+		}
+		catch (Throwable t)
+		{
+			selectedPowerUnit = PowerUnits.AE;
+		}
+
 		if ( isFeatureEnabled( AEFeature.SpatialIO ) )
 		{
 			storageBiomeID = get( "spatialio", "storageBiomeID", storageBiomeID ).getInt( storageBiomeID );
@@ -198,6 +209,8 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 			get( "spatialio", "storageBiomeID", storageBiomeID ).set( storageBiomeID );
 			get( "spatialio", "storageProviderID", storageProviderID ).set( storageProviderID );
 		}
+
+		get( "Client", "PowerUnit", selectedPowerUnit.name() ).set( selectedPowerUnit.name() );
 
 		if ( hasChanged() )
 			super.save();
@@ -268,6 +281,17 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 	{
 		String name = s.getClass().getSimpleName();
 		get( Category, name, s.name() ).set( s.name() );
+		save();
+	}
+
+	public PowerUnits selectedPowerUnit()
+	{
+		return selectedPowerUnit;
+	}
+
+	public void nextPowerUnit(boolean backwards)
+	{
+		selectedPowerUnit = Platform.rotateEnum( selectedPowerUnit, backwards, Settings.POWER_UNITS.getPossibleValues() );
 		save();
 	}
 }

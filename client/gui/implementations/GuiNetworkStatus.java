@@ -2,23 +2,28 @@ package appeng.client.gui.implementations;
 
 import java.util.List;
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.AEBaseGui;
+import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.me.ItemRepo;
 import appeng.client.me.SlotME;
 import appeng.container.implementations.ContainerNetworkStatus;
+import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 
@@ -26,16 +31,40 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 {
 
 	ItemRepo repo;
+	GuiImgButton units;
 
 	int rows = 4;
 
 	public GuiNetworkStatus(InventoryPlayer inventoryPlayer, INetworkTool te) {
 		super( new ContainerNetworkStatus( inventoryPlayer, te ) );
-		this.ySize = 125;
+		this.ySize = 153;
 		this.xSize = 195;
 		myScrollBar = new GuiScrollbar();
 		repo = new ItemRepo( myScrollBar, this );
 		repo.rowSize = 5;
+	}
+
+	@Override
+	protected void actionPerformed(GuiButton btn)
+	{
+		super.actionPerformed( btn );
+
+		boolean backwards = Mouse.isButtonDown( 1 );
+
+		if ( btn == units )
+		{
+			AEConfig.instance.nextPowerUnit( backwards );
+			units.set( AEConfig.instance.selectedPowerUnit() );
+		}
+	}
+
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+
+		units = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.POWER_UNITS, AEConfig.instance.selectedPowerUnit() );
+		buttonList.add( units );
 	}
 
 	public void postUpdate(List<IAEItemStack> list)
@@ -110,8 +139,11 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 		fontRendererObj.drawString( GuiText.NetworkDetails.getLocal(), 8, 6, 4210752 );
 
-		fontRendererObj.drawString( GuiText.PowerInputRate.getLocal() + ": " + formatPowerLong( ns.avgAddition ), 8, 16, 4210752 );
-		fontRendererObj.drawString( GuiText.PowerUsageRate.getLocal() + ": " + formatPowerLong( ns.powerUsage ), 8, 26, 4210752 );
+		fontRendererObj.drawString( GuiText.StoredPower.getLocal() + ": " + formatPowerLong( ns.currentPower, false ), 13, 16, 4210752 );
+		fontRendererObj.drawString( GuiText.MaxPower.getLocal() + ": " + formatPowerLong( ns.maxPower, false ), 13, 26, 4210752 );
+
+		fontRendererObj.drawString( GuiText.PowerInputRate.getLocal() + ": " + formatPowerLong( ns.avgAddition, true ), 13, 143 - 10, 4210752 );
+		fontRendererObj.drawString( GuiText.PowerUsageRate.getLocal() + ": " + formatPowerLong( ns.powerUsage, true ), 13, 143 - 20, 4210752 );
 
 		int sectionLength = 30;
 
@@ -152,7 +184,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 					ToolTip = ToolTip + ("\n" + GuiText.Installed.getLocal() + ": " + (refStack.getStackSize()));
 					if ( refStack.getCountRequestable() > 0 )
-						ToolTip = ToolTip + ("\n" + GuiText.EnergyDrain.getLocal() + ": " + formatPowerLong( refStack.getCountRequestable() ));
+						ToolTip = ToolTip + ("\n" + GuiText.EnergyDrain.getLocal() + ": " + formatPowerLong( refStack.getCountRequestable(), true ));
 
 					toolPosX = x * sectionLength + xo + sectionLength - 8;
 					toolPosY = y * 18 + yo;
@@ -178,12 +210,6 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 			GL11.glPopAttrib();
 		}
 
-	}
-
-	private String formatPowerLong(long n)
-	{
-		double p = ((double) n) / 100;
-		return Double.toString( p ) + " ae/t";
 	}
 
 	// @Override - NEI
@@ -241,7 +267,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 					currenttip.remove( 1 );
 
 				currenttip.add( GuiText.Installed.getLocal() + ": " + (myStack.getStackSize()) );
-				currenttip.add( GuiText.EnergyDrain.getLocal() + ": " + formatPowerLong( myStack.getCountRequestable() ) );
+				currenttip.add( GuiText.EnergyDrain.getLocal() + ": " + formatPowerLong( myStack.getCountRequestable(), true ) );
 
 				drawTooltip( x, y, 0, join( currenttip, "\n" ) );
 			}

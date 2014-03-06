@@ -23,6 +23,7 @@ public class SpatialPylonCache implements IGridCache, ISpatialCache
 {
 
 	long powerRequired = 0;
+	double effiency = 0.0;
 
 	DimensionalCoord captureMin;
 	DimensionalCoord captureMax;
@@ -76,7 +77,6 @@ public class SpatialPylonCache implements IGridCache, ISpatialCache
 		int reqZ = 0;
 		int requirePylongBlocks = 1;
 
-		double effiency = 0.0;
 		double minPower = 0;
 		double maxPower = 0;
 
@@ -179,6 +179,12 @@ public class SpatialPylonCache implements IGridCache, ISpatialCache
 			if ( myWasValid != isValid )
 				cl.updateStatus( false );
 		}
+	}
+
+	@Override
+	public float currentEffiency()
+	{
+		return (float) effiency * 100;
 	}
 
 	@MENetworkEventSubscribe

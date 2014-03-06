@@ -24,8 +24,6 @@ import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.core.sync.packets.PacketProgressBar;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class ContainerNetworkStatus extends AEBaseContainer
 {
@@ -61,32 +59,23 @@ public class ContainerNetworkStatus extends AEBaseContainer
 
 	public long avgAddition;
 	public long powerUsage;
-
-	int lo_avgAddition, hi_avgAddition;
-	int lo_powerUsage, hi_powerUsage;
+	public long currentPower;
+	public long maxPower;
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void updateProgressBar(int idx, int value)
+	public void updateFullProgressBar(int id, long value)
 	{
-		switch (idx)
-		{
-		case 0:
-			lo_avgAddition = value;
-			break;
-		case 1:
-			hi_avgAddition = value;
-			break;
-		case 2:
-			lo_powerUsage = value;
-			break;
-		case 3:
-			hi_powerUsage = value;
-			break;
-		}
+		if ( id == 0 )
+			avgAddition = value;
 
-		avgAddition = ((long) hi_avgAddition) << 32 | lo_avgAddition;
-		powerUsage = ((long) hi_powerUsage) << 32 | lo_powerUsage;
+		if ( id == 1 )
+			powerUsage = value;
+
+		if ( id == 2 )
+			currentPower = value;
+
+		if ( id == 3 )
+			maxPower = value;
 	}
 
 	@Override
@@ -102,22 +91,18 @@ public class ContainerNetworkStatus extends AEBaseContainer
 			{
 				avgAddition = (long) (100.0 * eg.getAvgPowerInjection());
 				powerUsage = (long) (100.0 * eg.getAvgPowerUsage());
-
-				lo_avgAddition = (int) (avgAddition & 0xffffffffL);
-				hi_avgAddition = (int) (avgAddition >> 32L);
-
-				lo_powerUsage = (int) (powerUsage & 0xffffffffL);
-				hi_powerUsage = (int) (powerUsage >> 32L);
+				currentPower = (long) (100.0 * eg.getStoredPower());
+				maxPower = (long) (100.0 * eg.getMaxStoredPower());
 
 				for (Object c : this.crafters)
 				{
 					ICrafting icrafting = (ICrafting) c;
 					try
 					{
-						NetworkHandler.instance.sendTo( new PacketProgressBar( 0, (int) lo_avgAddition ), (EntityPlayerMP) icrafting );
-						NetworkHandler.instance.sendTo( new PacketProgressBar( 1, (int) hi_avgAddition ), (EntityPlayerMP) icrafting );
-						NetworkHandler.instance.sendTo( new PacketProgressBar( 2, (int) lo_powerUsage ), (EntityPlayerMP) icrafting );
-						NetworkHandler.instance.sendTo( new PacketProgressBar( 3, (int) hi_powerUsage ), (EntityPlayerMP) icrafting );
+						NetworkHandler.instance.sendTo( new PacketProgressBar( 0, avgAddition ), (EntityPlayerMP) icrafting );
+						NetworkHandler.instance.sendTo( new PacketProgressBar( 1, powerUsage ), (EntityPlayerMP) icrafting );
+						NetworkHandler.instance.sendTo( new PacketProgressBar( 2, currentPower ), (EntityPlayerMP) icrafting );
+						NetworkHandler.instance.sendTo( new PacketProgressBar( 3, maxPower ), (EntityPlayerMP) icrafting );
 					}
 					catch (IOException e)
 					{

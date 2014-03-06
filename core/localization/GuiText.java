@@ -24,7 +24,9 @@ public enum GuiText
 
 	CraftingTerminal, FormationPlane, Inscriber, QuartzCuttingKnife,
 
-	METunnel, ItemTunnel, RedstoneTunnel, MJTunnel, EUTunnel, FluidTunnel, StoredSize;
+	METunnel, ItemTunnel, RedstoneTunnel, MJTunnel, EUTunnel, FluidTunnel, StoredSize,
+
+	StoredPower, MaxPower, RequiredPower, Efficiency;
 
 	String root;
 

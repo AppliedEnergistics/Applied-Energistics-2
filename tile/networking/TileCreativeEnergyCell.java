@@ -36,13 +36,13 @@ public class TileCreativeEnergyCell extends AENetworkTile implements IAEPowerSto
 	@Override
 	public double getAEMaxPower()
 	{
-		return Integer.MAX_VALUE;
+		return Long.MAX_VALUE / 10000;
 	}
 
 	@Override
 	public double getAECurrentPower()
 	{
-		return Integer.MAX_VALUE - 32;
+		return Long.MAX_VALUE / 10000;
 	}
 
 	@Override
