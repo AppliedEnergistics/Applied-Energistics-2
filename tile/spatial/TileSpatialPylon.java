@@ -44,7 +44,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	@Override
 	protected AENetworkProxy createProxy()
 	{
-		return new AENetworkProxyMultiblock( this, "proxy", true );
+		return new AENetworkProxyMultiblock( this, "proxy", getItemFromTile( this ), true );
 	}
 
 	@Override

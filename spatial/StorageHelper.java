@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import appeng.api.AEApi;
 import appeng.api.util.WorldCoord;
-import appeng.block.solids.BlockMatrixFrame;
+import appeng.block.spatial.BlockMatrixFrame;
 import appeng.core.AELog;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.ReflectionHelper;

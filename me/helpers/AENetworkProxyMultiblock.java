@@ -2,6 +2,7 @@ package appeng.me.helpers;
 
 import java.util.Iterator;
 
+import net.minecraft.item.ItemStack;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.me.cluster.IAECluster;
@@ -17,8 +18,8 @@ public class AENetworkProxyMultiblock extends AENetworkProxy implements IGridMul
 		return ((IAEMultiBlock) getMachine()).getCluster();
 	}
 
-	public AENetworkProxyMultiblock(IGridProxyable te, String nbtName, boolean inWorld) {
-		super( te, nbtName, null, inWorld );
+	public AENetworkProxyMultiblock(IGridProxyable te, String nbtName, ItemStack itemStack, boolean inWorld) {
+		super( te, nbtName, itemStack, inWorld );
 	}
 
 	@Override

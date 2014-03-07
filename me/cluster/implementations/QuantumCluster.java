@@ -3,7 +3,9 @@ package appeng.me.cluster.implementations;
 import java.util.Iterator;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.WorldEvent;
@@ -61,13 +63,17 @@ public class QuantumCluster implements ILocatable, IAECluster
 		QuantumCluster qc = (QuantumCluster) AEApi.instance().registries().locateable().findLocateableBySerial( qe );
 		if ( qc != null && qc.center instanceof TileQuantumBridge )
 		{
+			World theWorld = qc.getCenter().getWorldObj();
 			if ( !qc.isDestroyed )
 			{
-				Chunk c = qc.center.getWorldObj().getChunkFromBlockCoords( qc.center.xCoord, qc.center.zCoord );
+				Chunk c = theWorld.getChunkFromBlockCoords( qc.center.xCoord, qc.center.zCoord );
 				if ( c.isChunkLoaded )
 				{
-					TileEntity te = qc.center.getWorldObj().getTileEntity( qc.center.xCoord, qc.center.yCoord, qc.center.zCoord );
-					return te != qc.center;
+					int id = theWorld.provider.dimensionId;
+					World cur = DimensionManager.getWorld( id );
+
+					TileEntity te = theWorld.getTileEntity( qc.center.xCoord, qc.center.yCoord, qc.center.zCoord );
+					return te != qc.center || theWorld != cur;
 				}
 			}
 		}
@@ -142,6 +148,24 @@ public class QuantumCluster implements ILocatable, IAECluster
 
 				try
 				{
+					if ( sideA.connection != null )
+					{
+						if ( sideA.connection.connection != null )
+						{
+							sideA.connection.connection.destroy();
+							sideA.connection = new ConnectionWrapper( null );
+						}
+					}
+
+					if ( sideB.connection != null )
+					{
+						if ( sideB.connection.connection != null )
+						{
+							sideB.connection.connection.destroy();
+							sideB.connection = new ConnectionWrapper( null );
+						}
+					}
+
 					sideA.connection = sideB.connection = new ConnectionWrapper( AEApi.instance().createGridConnection( sideA.getNode(), sideB.getNode() ) );
 				}
 				catch (FailedConnection e)

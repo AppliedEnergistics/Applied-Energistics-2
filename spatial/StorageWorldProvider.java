@@ -49,6 +49,12 @@ public class StorageWorldProvider extends WorldProvider
 	}
 
 	@Override
+	public boolean canSnowAt(int x, int y, int z, boolean checkLight)
+	{
+		return false;
+	}
+
+	@Override
 	public boolean canDoLightning(Chunk chunk)
 	{
 		return false;
