@@ -91,7 +91,7 @@ public class SpatialPylonCache implements IGridCache, ISpatialCache
 		IReadOnlyCollection<IGridNode> set = grid.getMachines( TileSpatialPylon.class );
 		for (IGridNode gm : set)
 		{
-			if ( gm.isActive() )
+			if ( gm.meetsChannelRequirements() )
 			{
 				SpatialPylonCluster c = ((TileSpatialPylon) gm.getMachine()).getCluster();
 				if ( c != null )

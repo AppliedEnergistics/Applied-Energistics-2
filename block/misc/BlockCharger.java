@@ -18,8 +18,8 @@ import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockCharger;
 import appeng.client.render.effects.LightningEffect;
-import appeng.core.CommonHelper;
 import appeng.core.AEConfig;
+import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.AEBaseTile;
@@ -36,8 +36,7 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 		setfeature( EnumSet.of( AEFeature.Core ) );
 		setTileEntiy( TileCharger.class );
 		setLightOpacity( 2 );
-		isFullSize = false;
-		isOpaque = false;
+		isFullSize = isOpaque = false;
 	}
 
 	@Override
