@@ -5,10 +5,14 @@ import java.util.EnumSet;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
+import appeng.client.render.BaseBlockRender;
+import appeng.client.render.blocks.RenderBlockInscriber;
 import appeng.core.features.AEFeature;
+import appeng.core.sync.GuiBridge;
 import appeng.tile.misc.TileInscriber;
-import appeng.tile.misc.TileInterface;
+import appeng.util.Platform;
 
 public class BlockInscriber extends AEBaseBlock
 {
@@ -17,6 +21,14 @@ public class BlockInscriber extends AEBaseBlock
 		super( BlockInscriber.class, Material.iron );
 		setfeature( EnumSet.of( AEFeature.Inscriber ) );
 		setTileEntiy( TileInscriber.class );
+		setLightOpacity( 2 );
+		isFullSize = isOpaque = false;
+	}
+
+	@Override
+	protected Class<? extends BaseBlockRender> getRenderer()
+	{
+		return RenderBlockInscriber.class;
 	}
 
 	@Override
@@ -25,11 +37,11 @@ public class BlockInscriber extends AEBaseBlock
 		if ( p.isSneaking() )
 			return false;
 
-		TileInterface tg = getTileEntity( w, x, y, z );
+		TileInscriber tg = getTileEntity( w, x, y, z );
 		if ( tg != null )
 		{
-			// if ( Platform.isServer() )
-			// Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_INSCRIBER );
+			if ( Platform.isServer() )
+				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_INSCRIBER );
 			return true;
 		}
 		return false;

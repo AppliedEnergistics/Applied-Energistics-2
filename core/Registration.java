@@ -34,6 +34,7 @@ import appeng.block.grindstone.BlockGrinder;
 import appeng.block.misc.BlockCellWorkbench;
 import appeng.block.misc.BlockCharger;
 import appeng.block.misc.BlockCondenser;
+import appeng.block.misc.BlockInscriber;
 import appeng.block.misc.BlockInterface;
 import appeng.block.misc.BlockQuartzGrowthAccelerator;
 import appeng.block.misc.BlockQuartzTorch;
@@ -276,21 +277,9 @@ public class Registration
 
 		blocks.blockGrindStone = addFeature( BlockGrinder.class );
 		blocks.blockCrankHandle = addFeature( BlockCrank.class );
-		// blocks.blockInscriber = addFeature( BlockInscriber.class );
+		blocks.blockInscriber = addFeature( BlockInscriber.class );
 		blocks.blockWireless = addFeature( BlockWireless.class );
 		blocks.blockTinyTNT = addFeature( BlockTinyTNT.class );
-
-		// blocks.blockQuartzCrystalizer = addFeature(
-		// BlockQuartzCrystalizer.class );
-		// blocks.blockNetworkEmitter = addFeature( BlockNetworkEmitter.class );
-
-		// blocks.blockPatternProvider = addFeature( BlockPatternProvider.class
-		// );
-		// blocks.blockAssemblerFieldWall = addFeature(
-		// BlockContainmentWall.class );
-		// blocks.blockHeatVent = addFeature( BlockHeatVent.class );
-		// blocks.blockCraftingCPU = addFeature( BlockCraftingAccelerator.class
-		// );
 
 		blocks.blockQuantumRing = addFeature( BlockQuantumRing.class );
 		blocks.blockQuantumLink = addFeature( BlockQuantumLinkChamber.class );
@@ -313,9 +302,6 @@ public class Registration
 		blocks.blockEnergyCellCreative = addFeature( BlockCreativeEnergyCell.class );
 
 		blocks.blockSecurity = addFeature( BlockSecurity.class );
-
-		// items.itemEncodedAsemblerPattern = addFeature(
-		// ItemEncodedPattern.class );
 
 		items.itemCellCreative = addFeature( ItemCreativeStorageCell.class );
 		items.itemViewCell = addFeature( ItemViewCell.class );

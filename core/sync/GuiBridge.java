@@ -36,6 +36,7 @@ import appeng.container.implementations.ContainerDrive;
 import appeng.container.implementations.ContainerFormationPlane;
 import appeng.container.implementations.ContainerGrinder;
 import appeng.container.implementations.ContainerIOPort;
+import appeng.container.implementations.ContainerInscriber;
 import appeng.container.implementations.ContainerInterface;
 import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.container.implementations.ContainerMEMonitorable;
@@ -65,6 +66,7 @@ import appeng.server.AccessType;
 import appeng.tile.grindstone.TileGrinder;
 import appeng.tile.misc.TileCellWorkbench;
 import appeng.tile.misc.TileCondenser;
+import appeng.tile.misc.TileInscriber;
 import appeng.tile.misc.TileSecurity;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.tile.networking.TileWireless;
@@ -131,7 +133,7 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_SPATIALIOPORT(ContainerSpatialIOPort.class, TileSpatialIOPort.class, false, SecurityPermissions.BUILD),
 
-	// GUI_INSCRIBER
+	GUI_INSCRIBER(ContainerInscriber.class, TileInscriber.class, false, null),
 
 	GUI_CELLWORKBENCH(ContainerCellWorkbench.class, TileCellWorkbench.class, false, null);
 
