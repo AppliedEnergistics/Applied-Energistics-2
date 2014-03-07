@@ -2,6 +2,7 @@ package appeng.me.cluster.implementations;
 
 import java.util.Iterator;
 
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -64,7 +65,10 @@ public class QuantumCluster implements ILocatable, IAECluster
 			{
 				Chunk c = qc.center.getWorldObj().getChunkFromBlockCoords( qc.center.xCoord, qc.center.zCoord );
 				if ( c.isChunkLoaded )
-					return false;
+				{
+					TileEntity te = qc.center.getWorldObj().getTileEntity( qc.center.xCoord, qc.center.yCoord, qc.center.zCoord );
+					return te != qc.center;
+				}
 			}
 		}
 		return true;
