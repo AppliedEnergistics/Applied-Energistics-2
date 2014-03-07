@@ -17,6 +17,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
@@ -77,15 +78,21 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 	}
 
 	@Override
-	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
+	public void addInformation(ItemStack is, EntityPlayer player, List details, boolean moar)
 	{
-		super.addInformation( par1ItemStack, par2EntityPlayer, par3List, par4 );
+		super.addInformation( is, player, details, moar );
 
-		MaterialType mt = getTypeByStack( par1ItemStack );
+		MaterialType mt = getTypeByStack( is );
 		if ( mt == null )
 			return;
 
-		Upgrades u = getType( par1ItemStack );
+		if ( mt == MaterialType.NamePress )
+		{
+			NBTTagCompound c = Platform.openNbtData( is );
+			details.add( c.getString( "InscribeName" ) );
+		}
+
+		Upgrades u = getType( is );
 		if ( u != null )
 		{
 			List<String> textList = new LinkedList();
@@ -113,7 +120,7 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 			Pattern p = Pattern.compile( "(\\d+)[^\\d]" );
 			SlightlyBetterSort s = new SlightlyBetterSort( p );
 			Collections.sort( textList, s );
-			par3List.addAll( textList );
+			details.addAll( textList );
 		}
 	}
 

@@ -2,11 +2,19 @@ package appeng.items.tools.quartz;
 
 import java.util.EnumSet;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.implementations.guiobjects.IGuiItem;
+import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.core.features.AEFeature;
+import appeng.core.sync.GuiBridge;
 import appeng.items.AEBaseItem;
+import appeng.items.contents.QuartzKnifeObj;
+import appeng.util.Platform;
 
-public class ToolQuartzCuttingKnife extends AEBaseItem
+public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 {
 
 	public ToolQuartzCuttingKnife(AEFeature type) {
@@ -35,10 +43,33 @@ public class ToolQuartzCuttingKnife extends AEBaseItem
 	}
 
 	@Override
+	public ItemStack onItemRightClick(ItemStack it, World w, EntityPlayer p)
+	{
+		if ( Platform.isServer() )
+			Platform.openGUI( p, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_QUARTZ_KNIFE );
+		p.swingItem();
+		return it;
+	}
+
+	@Override
+	public boolean onItemUse(ItemStack is, EntityPlayer p, World w, int x, int y, int z, int s, float hitx, float hity, float hitz)
+	{
+		if ( Platform.isServer() )
+			Platform.openGUI( p, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_QUARTZ_KNIFE );
+		return true;
+	}
+
+	@Override
 	public ItemStack getContainerItem(ItemStack itemStack)
 	{
 		itemStack.setItemDamage( itemStack.getItemDamage() + 1 );
 		return itemStack;
+	}
+
+	@Override
+	public IGuiItemObject getGuiObject(ItemStack is, World world, int x, int y, int z)
+	{
+		return new QuartzKnifeObj( is );
 	}
 
 }

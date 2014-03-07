@@ -127,6 +127,7 @@ import appeng.recipes.RecipeHandler;
 import appeng.recipes.game.ShapedRecipe;
 import appeng.recipes.game.ShapelessRecipe;
 import appeng.recipes.handlers.Grind;
+import appeng.recipes.handlers.Inscriber;
 import appeng.recipes.handlers.Macerator;
 import appeng.recipes.handlers.Pulverizer;
 import appeng.recipes.handlers.Shaped;
@@ -176,6 +177,7 @@ public class Registration
 		recipeRegistery.addNewCraftHandler( "macerator", Macerator.class );
 
 		recipeRegistery.addNewCraftHandler( "smelt", Smelt.class );
+		recipeRegistery.addNewCraftHandler( "inscriber", Inscriber.class );
 
 		recipeRegistery.addNewCraftHandler( "shaped", Shaped.class );
 		recipeRegistery.addNewCraftHandler( "shapeless", Shapeless.class );

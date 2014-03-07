@@ -17,6 +17,7 @@ import appeng.api.util.IConfigureableObject;
 import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.container.implementations.ContainerPriority;
+import appeng.container.implementations.ContainerQuartzKnife;
 import appeng.container.implementations.ContainerSecurity;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -40,7 +41,13 @@ public class PacketValueConfig extends AppEngPacket
 	{
 		Container c = player.openContainer;
 
-		if ( Name.equals( "TileSecurity.ToggleOption" ) && c instanceof ContainerSecurity )
+		if ( Name.equals( "QuartzKnife.Name" ) && c instanceof ContainerQuartzKnife )
+		{
+			ContainerQuartzKnife qk = (ContainerQuartzKnife) c;
+			qk.setName( Value );
+			return;
+		}
+		else if ( Name.equals( "TileSecurity.ToggleOption" ) && c instanceof ContainerSecurity )
 		{
 			ContainerSecurity sc = (ContainerSecurity) c;
 			sc.toggleSetting( Value, player );

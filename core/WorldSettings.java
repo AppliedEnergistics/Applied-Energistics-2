@@ -39,6 +39,12 @@ public class WorldSettings extends Configuration
 		compass = new CompassService( AEFolder );
 		(new Thread( compass, "AE Compass Service" )).start();
 
+		for (int dimID : get( "DimensionManager", "StorageCells", new int[0] ).getIntList())
+		{
+			storageCellDims.add( dimID );
+			DimensionManager.registerDimension( dimID, AEConfig.instance.storageProviderID );
+		}
+
 		try
 		{
 			lastGridStorage = Long.parseLong( get( "Counters", "lastGridStorage", 0 ).getString() );
@@ -49,6 +55,19 @@ public class WorldSettings extends Configuration
 			lastGridStorage = 0;
 			lastPlayer = 0;
 		}
+	}
+
+	public void shutdown()
+	{
+		save();
+
+		for (Integer dimID : storageCellDims)
+			DimensionManager.unregisterDimension( dimID );
+
+		storageCellDims.clear();
+
+		compass.kill();
+		instance = null;
 	}
 
 	List<Integer> storageCellDims = new ArrayList();
@@ -116,13 +135,6 @@ public class WorldSettings extends Configuration
 	public void init()
 	{
 		save();
-	}
-
-	public void shutdown()
-	{
-		save();
-		compass.kill();
-		instance = null;
 	}
 
 	private WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>> loadedStorage = new WeakHashMap();

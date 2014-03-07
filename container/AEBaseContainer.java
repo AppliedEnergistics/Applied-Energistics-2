@@ -254,7 +254,7 @@ public abstract class AEBaseContainer extends Container
 
 						if ( !(cs.isPlayerSide()) && cs instanceof SlotFake )
 						{
-							if ( Platform.isSameItem( dest, tis ) )
+							if ( Platform.isSameItemPrecise( dest, tis ) )
 								return null;
 							else if ( dest == null )
 							{
@@ -282,7 +282,7 @@ public abstract class AEBaseContainer extends Container
 						{
 							ItemStack t = d.getStack();
 
-							if ( tis != null && Platform.isSameItem( tis, t ) ) // t.isItemEqual(tis))
+							if ( tis != null && Platform.isSameItemPrecise( tis, t ) ) // t.isItemEqual(tis))
 							{
 								int maxSize = t.getMaxStackSize();
 								if ( maxSize > d.getSlotStackLimit() )
@@ -328,7 +328,7 @@ public abstract class AEBaseContainer extends Container
 						{
 							ItemStack t = d.getStack();
 
-							if ( tis != null && Platform.isSameItem( t, tis ) )
+							if ( tis != null && Platform.isSameItemPrecise( t, tis ) )
 							{
 								int maxSize = t.getMaxStackSize();
 								if ( d.getSlotStackLimit() < maxSize )
@@ -536,7 +536,7 @@ public abstract class AEBaseContainer extends Container
 
 				ais.setStackSize( myItem.getMaxStackSize() );
 
-				InventoryAdaptor adp = InventoryAdaptor.getAdaptor( player.inventory, ForgeDirection.UNKNOWN );
+				InventoryAdaptor adp = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
 				myItem.stackSize = (int) ais.getStackSize();
 				myItem = adp.simulateAdd( myItem );
 
@@ -561,7 +561,7 @@ public abstract class AEBaseContainer extends Container
 				{
 					if ( isg.stackSize >= isg.getMaxStackSize() )
 						liftQty = 0;
-					if ( !Platform.isSameItem( slotItem.getItemStack(), isg ) )
+					if ( !Platform.isSameItemPrecise( slotItem.getItemStack(), isg ) )
 						liftQty = 0;
 				}
 
@@ -662,14 +662,15 @@ public abstract class AEBaseContainer extends Container
 
 			if ( slotItem != null )
 			{
-				for (int slotNum = 0; slotNum < player.inventory.getSizeInventory(); slotNum++)
+				int playerInv = 9 * 4;
+				for (int slotNum = 0; slotNum < playerInv; slotNum++)
 				{
 					IAEItemStack ais = slotItem.copy();
 					ItemStack myItem = ais.getItemStack();
 
 					ais.setStackSize( myItem.getMaxStackSize() );
 
-					InventoryAdaptor adp = InventoryAdaptor.getAdaptor( player.inventory, ForgeDirection.UNKNOWN );
+					InventoryAdaptor adp = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
 					myItem.stackSize = (int) ais.getStackSize();
 					myItem = adp.simulateAdd( myItem );
 

@@ -44,6 +44,7 @@ import appeng.container.implementations.ContainerNetworkStatus;
 import appeng.container.implementations.ContainerNetworkTool;
 import appeng.container.implementations.ContainerPriority;
 import appeng.container.implementations.ContainerQNB;
+import appeng.container.implementations.ContainerQuartzKnife;
 import appeng.container.implementations.ContainerSecurity;
 import appeng.container.implementations.ContainerSkyChest;
 import appeng.container.implementations.ContainerSpatialIOPort;
@@ -55,6 +56,7 @@ import appeng.container.implementations.ContainerWirelessTerm;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.helpers.WirelessTerminalGuiObject;
+import appeng.items.contents.QuartzKnifeObj;
 import appeng.parts.automation.PartFormationPlane;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.parts.misc.PartStorageBus;
@@ -99,6 +101,8 @@ public enum GuiBridge implements IGuiHandler
 	GUI_NETWORK_STATUS(ContainerNetworkStatus.class, INetworkTool.class, true, null),
 
 	GUI_NETWORK_TOOL(ContainerNetworkTool.class, INetworkTool.class, true, null),
+
+	GUI_QUARTZ_KNIFE(ContainerQuartzKnife.class, QuartzKnifeObj.class, true, null),
 
 	GUI_DRIVE(ContainerDrive.class, TileDrive.class, false, SecurityPermissions.BUILD),
 

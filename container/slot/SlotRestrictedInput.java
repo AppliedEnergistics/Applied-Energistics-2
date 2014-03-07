@@ -1,11 +1,13 @@
 package appeng.container.slot;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.AEApi;
 import appeng.api.IAppEngApi;
 import appeng.api.crafting.ICraftingPatternMAC;
@@ -15,6 +17,7 @@ import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.ICellWorkbenchItem;
+import appeng.recipes.handlers.Inscriber;
 import appeng.util.Platform;
 
 public class SlotRestrictedInput extends AppEngSlot
@@ -22,10 +25,17 @@ public class SlotRestrictedInput extends AppEngSlot
 
 	public enum PlaceableItemType
 	{
-		STORAGE_CELLS(15), ORE(1 * 16 + 15), STORAGE_COMPONENT(3 * 16 + 15), WIRELESS_TERMINAL(4 * 16 + 15), TRASH(5 * 16 + 15), VALID_ENCODED_PATTERN_W_OUPUT(
-				7 * 16 + 15), ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15), ENCODED_PATTERN(7 * 16 + 15), BLANK_PATTERN(8 * 16 + 15), POWERED_TOOL(9 * 16 + 15), RANGE_BOOSTER(
-				6 * 16 + 15), QE_SINGULARTIY(10 * 16 + 15), SPATIAL_STORAGE_CELLS(11 * 16 + 15), FUEL(12 * 16 + 15), UPGRADES(13 * 16 + 15), WORKBENCH_CELL(15), BIOMETRIC_CARD(
-				14 * 16 + 15), VIEWCELL(4 * 16 + 14);
+		STORAGE_CELLS(15), ORE(1 * 16 + 15), STORAGE_COMPONENT(3 * 16 + 15),
+
+		WIRELESS_TERMINAL(4 * 16 + 15), TRASH(5 * 16 + 15), VALID_ENCODED_PATTERN_W_OUPUT(7 * 16 + 15), ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15),
+
+		ENCODED_PATTERN(7 * 16 + 15), BLANK_PATTERN(8 * 16 + 15), POWERED_TOOL(9 * 16 + 15),
+
+		RANGE_BOOSTER(6 * 16 + 15), QE_SINGULARTIY(10 * 16 + 15), SPATIAL_STORAGE_CELLS(11 * 16 + 15),
+
+		FUEL(12 * 16 + 15), UPGRADES(13 * 16 + 15), WORKBENCH_CELL(15), BIOMETRIC_CARD(14 * 16 + 15), VIEWCELL(4 * 16 + 14),
+
+		INSCRIBER_PLATE(2 * 16 + 14), INSCRIBER_INPUT(3 * 16 + 14), METAL_INGOTS(3 * 16 + 14);
 
 		public final int IIcon;
 
@@ -127,6 +137,27 @@ public class SlotRestrictedInput extends AppEngSlot
 
 			return false;
 		}
+
+		case INSCRIBER_PLATE:
+
+			for (ItemStack is : Inscriber.plates)
+				if ( Platform.isSameItemPrecise( is, i ) )
+					return true;
+
+			return false;
+
+		case INSCRIBER_INPUT:
+
+			for (ItemStack is : Inscriber.inputs)
+				if ( Platform.isSameItemPrecise( is, i ) )
+					return true;
+
+			return false;
+
+		case METAL_INGOTS:
+
+			return isMetalIngot( i );
+
 		case VIEWCELL:
 			return AEApi.instance().items().itemViewCell.sameAs( i );
 		case ORE:
@@ -162,6 +193,23 @@ public class SlotRestrictedInput extends AppEngSlot
 			return i.getItem() instanceof IUpgradeModule && ((IUpgradeModule) i.getItem()).getType( i ) != null;
 		default:
 			break;
+		}
+
+		return false;
+	}
+
+	static public boolean isMetalIngot(ItemStack i)
+	{
+		if ( Platform.isSameItemPrecise( i, new ItemStack( Items.iron_ingot ) ) )
+			return true;
+
+		for (String name : new String[] { "Copper", "Tin", "Obsidian", "Iron", "Lead", "Bronze", "Brass", "Nickel", "Aluminium" })
+		{
+			for (ItemStack ingot : OreDictionary.getOres( "ingot" + name ))
+			{
+				if ( Platform.isSameItemPrecise( i, ingot ) )
+					return true;
+			}
 		}
 
 		return false;
