@@ -27,7 +27,14 @@ public class PacketNewStorageDimension extends AppEngPacket
 	@SideOnly(Side.CLIENT)
 	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
 	{
-		DimensionManager.registerDimension( newDim, AEConfig.instance.storageProviderID );
+		try
+		{
+			DimensionManager.registerDimension( newDim, AEConfig.instance.storageProviderID );
+		}
+		catch (IllegalArgumentException iae)
+		{
+			// ok!
+		}
 	}
 
 	// api

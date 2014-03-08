@@ -179,10 +179,12 @@ public class RecipeHandler implements IRecipeHandler
 	{
 		try
 		{
-			return getName( i.getItemStack() );
+			for (ItemStack is : i.getItemStackSet())
+				return getName( is );
 		}
 		catch (Throwable t)
 		{
+			t.printStackTrace();
 			// :P
 		}
 
@@ -191,12 +193,13 @@ public class RecipeHandler implements IRecipeHandler
 
 	public String getName(ItemStack is)
 	{
-
 		UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor( is.getItem() );
 		String realName = id.modId + ":" + id.name;
 
+		AELog.info( realName );
+
 		if ( is.getItem() instanceof ItemMaterial )
-			realName += ":" + ((ItemMaterial) is.getItem()).getType( is ).name();
+			realName += ":" + ((ItemMaterial) is.getItem()).getTypeByStack( is ).name();
 		else if ( is.getItem() instanceof ItemPart )
 			realName += ":" + ((ItemPart) is.getItem()).getTypeByStack( is ).name();
 		else if ( is.getItemDamage() > 0 )

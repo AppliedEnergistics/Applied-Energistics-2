@@ -11,7 +11,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
+import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
 public class MeteoritePlacer
@@ -143,7 +145,7 @@ public class MeteoritePlacer
 	Fallout type = new Fallout();
 
 	Block skystone = AEApi.instance().blocks().blockSkyStone.block();
-	Block skychest = AEApi.instance().blocks().blockSkyChest.block();
+	Block skychest;
 
 	double real_sizeOfMetorite = (Math.random() * 6.0) + 2;
 	double real_crator = real_sizeOfMetorite * 2 + 5;
@@ -152,6 +154,11 @@ public class MeteoritePlacer
 	double crator = real_crator * real_crator;
 
 	public MeteoritePlacer() {
+
+		if ( AEApi.instance().blocks().blockSkyChest.block() == null )
+			skychest = Blocks.chest;
+		else
+			skychest = AEApi.instance().blocks().blockSkyChest.block();
 
 		validSpawn.add( Blocks.stone );
 		validSpawn.add( Blocks.cobblestone );
@@ -311,34 +318,44 @@ public class MeteoritePlacer
 		TileEntity te = w.getTileEntity( x, y, z );
 		if ( te instanceof IInventory )
 		{
-			switch ((int) (Math.random() * 1000) % 4)
+			InventoryAdaptor ap = InventoryAdaptor.getAdaptor( te, ForgeDirection.UP );
+
+			int primary = (int) (Math.random() * 4);
+			for (int zz = 0; zz < primary; zz++)
 			{
-			case 0:
-				((IInventory) te).setInventorySlotContents( 0, AEApi.instance().materials().materialCalcProcessorPress.stack( 1 ) );
-				break;
-			case 1:
-				((IInventory) te).setInventorySlotContents( 0, AEApi.instance().materials().materialEngProcessorPress.stack( 1 ) );
-				break;
-			case 2:
-				((IInventory) te).setInventorySlotContents( 0, AEApi.instance().materials().materialLogicProcessorPress.stack( 1 ) );
-				break;
-			case 3:
-				((IInventory) te).setInventorySlotContents( 0, AEApi.instance().materials().materialSiliconPress.stack( 1 ) );
-				break;
-			default:
+				switch ((int) (Math.random() * 1000) % 4)
+				{
+				case 0:
+					ap.addItems( AEApi.instance().materials().materialCalcProcessorPress.stack( 1 ) );
+					break;
+				case 1:
+					ap.addItems( AEApi.instance().materials().materialEngProcessorPress.stack( 1 ) );
+					break;
+				case 2:
+					ap.addItems( AEApi.instance().materials().materialLogicProcessorPress.stack( 1 ) );
+					break;
+				case 3:
+					ap.addItems( AEApi.instance().materials().materialSiliconPress.stack( 1 ) );
+					break;
+				default:
+				}
 			}
 
-			switch ((int) (Math.random() * 1000) % 3)
+			int secondary = (int) (Math.random() * 3);
+			for (int zz = 0; zz < secondary; zz++)
 			{
-			case 0:
-				((IInventory) te).setInventorySlotContents( 1, AEApi.instance().blocks().blockSkyStone.stack( (int) (Math.random() * 12) + 1 ) );
-				break;
-			case 1:
-				((IInventory) te).setInventorySlotContents( 1, AEApi.instance().materials().materialIronNugget.stack( (int) (Math.random() * 12) + 1 ) );
-				break;
-			case 2:
-				((IInventory) te).setInventorySlotContents( 1, new ItemStack( net.minecraft.init.Items.gold_nugget, (int) (Math.random() * 12) + 1 ) );
-				break;
+				switch ((int) (Math.random() * 1000) % 3)
+				{
+				case 0:
+					ap.addItems( AEApi.instance().blocks().blockSkyStone.stack( (int) (Math.random() * 12) + 1 ) );
+					break;
+				case 1:
+					ap.addItems( AEApi.instance().materials().materialIronNugget.stack( (int) (Math.random() * 12) + 1 ) );
+					break;
+				case 2:
+					ap.addItems( new ItemStack( net.minecraft.init.Items.gold_nugget, (int) (Math.random() * 12) + 1 ) );
+					break;
+				}
 			}
 		}
 	}

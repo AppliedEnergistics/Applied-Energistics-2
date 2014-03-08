@@ -59,7 +59,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 				}
 			}
 
-			if ( obj.distance > 1000 * 1000 )
+			if ( obj.distance > 1000 * 500 )
 			{
 				int depth = 180 + r.nextInt( 20 );
 				for (int trys = 0; trys < 20; trys++)
