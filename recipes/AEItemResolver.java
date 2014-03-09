@@ -25,6 +25,8 @@ public class AEItemResolver implements ISubItemResolver
 					return new ResolveResult( "ItemCrystalSeed", ItemCrystalSeed.Nether );
 				if ( itemName.equalsIgnoreCase( "ItemCrystalSeed.Fluix" ) )
 					return new ResolveResult( "ItemCrystalSeed", ItemCrystalSeed.Fluix );
+
+				return null;
 			}
 
 			if ( itemName.startsWith( "ItemMaterial." ) )

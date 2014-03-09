@@ -23,6 +23,7 @@ import appeng.api.recipes.IRecipeHandler;
 import appeng.api.recipes.IRecipeLoader;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.items.materials.ItemMaterial;
 import appeng.items.parts.ItemPart;
@@ -180,7 +181,15 @@ public class RecipeHandler implements IRecipeHandler
 		try
 		{
 			for (ItemStack is : i.getItemStackSet())
-				return getName( is );
+			{
+				try
+				{
+					return getName( is );
+				}
+				catch (RecipeError notappicable)
+				{
+				}
+			}
 		}
 		catch (Throwable t)
 		{
@@ -191,10 +200,13 @@ public class RecipeHandler implements IRecipeHandler
 		return i.getNameSpace() + ":" + i.getItemName();
 	}
 
-	public String getName(ItemStack is)
+	public String getName(ItemStack is) throws RecipeError
 	{
 		UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor( is.getItem() );
 		String realName = id.modId + ":" + id.name;
+
+		if ( !id.modId.equals( AppEng.modid ) && !id.modId.equals( "minecraft" ) )
+			throw new RecipeError( "Not applicable for website" );
 
 		if ( is.getItem() == AEApi.instance().blocks().blockSkyStone.item() )
 		{

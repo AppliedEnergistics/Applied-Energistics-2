@@ -59,7 +59,16 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 	{
 		for (ISubItemResolver sir : resolvers)
 		{
-			ResolveResult rr = sir.resolveItemByName( nameSpace, itemName );
+			ResolveResult rr = null;
+
+			try
+			{
+				rr = sir.resolveItemByName( nameSpace, itemName );
+			}
+			catch (Throwable t)
+			{
+				AELog.error( t );
+			}
 
 			if ( rr != null )
 				return rr;

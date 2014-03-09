@@ -148,6 +148,9 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 				featureFlags.add( feature );
 		}
 
+		if ( featureFlags.contains( AEFeature.WebsiteRecipes ) )
+			featureFlags.add( AEFeature.DuplicateItems );
+
 		for (Enum e : settings.getSettings())
 		{
 			String Category = e.getClass().getSimpleName();
