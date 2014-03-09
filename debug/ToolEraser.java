@@ -5,10 +5,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import appeng.api.util.WorldCoord;
+import appeng.client.texture.MissingIcon;
 import appeng.core.AELog;
 import appeng.core.features.AEFeature;
 import appeng.items.AEBaseItem;
@@ -70,6 +72,12 @@ public class ToolEraser extends AEBaseItem
 	private void check(World world, int i, int y, int z, List<WorldCoord> next)
 	{
 		next.add( new WorldCoord( i, y, z ) );
+	}
+
+	@Override
+	public void registerIcons(IIconRegister par1IconRegister)
+	{
+		itemIcon = new MissingIcon( this );
 	}
 
 }

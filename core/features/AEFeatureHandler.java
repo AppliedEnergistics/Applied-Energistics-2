@@ -9,8 +9,8 @@ import net.minecraft.tileentity.TileEntity;
 import appeng.api.util.AEItemDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseItemBlock;
-import appeng.core.CommonHelper;
 import appeng.core.AEConfig;
+import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
 import appeng.core.CreativeTabFacade;
 import appeng.items.parts.ItemFacade;
@@ -141,6 +141,8 @@ public class AEFeatureHandler implements AEItemDefinition
 	@Override
 	public Item item()
 	{
+		if ( ItemData == null && BlockData != null )
+			return Item.getItemFromBlock( BlockData );
 		return ItemData;
 	}
 

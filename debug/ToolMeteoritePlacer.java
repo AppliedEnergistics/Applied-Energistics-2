@@ -2,10 +2,12 @@ package appeng.debug;
 
 import java.util.EnumSet;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
+import appeng.client.texture.MissingIcon;
 import appeng.core.features.AEFeature;
 import appeng.helpers.MeteoritePlacer;
 import appeng.items.AEBaseItem;
@@ -32,6 +34,12 @@ public class ToolMeteoritePlacer extends AEBaseItem
 			player.addChatMessage( new ChatComponentText( "Un-suiteable Location." ) );
 
 		return true;
+	}
+
+	@Override
+	public void registerIcons(IIconRegister par1IconRegister)
+	{
+		itemIcon = new MissingIcon( this );
 	}
 
 }

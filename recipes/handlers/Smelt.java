@@ -56,7 +56,7 @@ public class Smelt implements ICraftHandler, IWebsiteSeralizer
 	@Override
 	public String getPattern( RecipeHandler h ) {
 		return "smelt "+out.getQty()+"\n"+
-				h.getName(in)+"\n"+
-				h.getName(out);
+				h.getName(out)+"\n"+
+				h.getName(in);
 	}
 }

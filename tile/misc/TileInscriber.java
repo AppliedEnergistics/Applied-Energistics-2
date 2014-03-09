@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.util.AECableType;
-import appeng.recipes.handlers.Inscriber;
+import appeng.recipes.handlers.Inscribe;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkPowerTile;
@@ -145,14 +145,14 @@ public class TileInscriber extends AENetworkPowerTile
 	{
 		if ( i == 0 || i == 1 )
 		{
-			for (ItemStack s : Inscriber.plates)
+			for (ItemStack s : Inscribe.plates)
 				if ( Platform.isSameItemPrecise( s, itemstack ) )
 					return true;
 		}
 
 		if ( i == 2 )
 		{
-			for (ItemStack s : Inscriber.inputs)
+			for (ItemStack s : Inscribe.inputs)
 				if ( Platform.isSameItemPrecise( s, itemstack ) )
 					return true;
 		}

@@ -282,6 +282,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 			renderFragment = renderFragment | 1;
 		else
 		{
+			// TODO: Optimize Network Load
 			if ( worldObj != null )
 				worldObj.markBlockForUpdate( xCoord, yCoord, zCoord );
 		}

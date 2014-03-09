@@ -8,7 +8,7 @@ public enum AEFeature
 
 	CertusQuartzWorldGen("World"), MeteoriteWorldGen("World"),
 
-	DecorativeLights("World"), DecorativeQuartzBlocks("World"),
+	DecorativeLights("World"), DecorativeQuartzBlocks("World"), SkyStoneChests("World"),
 
 	GrindStone("World"), Flour("World"), Inscriber("World"),
 
@@ -48,7 +48,7 @@ public enum AEFeature
 
 	DuplicateItems("Misc", false), Profiler("Services", false), VersionChecker("Services"), Debug("Misc", false), Creative("Misc"),
 
-	Logging("Misc"), IntegrationLogging("Misc", false), CustomRecipes("Crafting", false), WebsiteRecipes("Misc",false),
+	Logging("Misc"), IntegrationLogging("Misc", false), CustomRecipes("Crafting", false), WebsiteRecipes("Misc", false),
 
 	inWorldSingularity("Crafting"), inWorldFluix("Crafting"), inWorldPurification("Crafting");
 

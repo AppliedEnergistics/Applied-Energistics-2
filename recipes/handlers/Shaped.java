@@ -91,27 +91,29 @@ public class Shaped implements ICraftHandler, IWebsiteSeralizer
 	}
 
 	@Override
-	public boolean canCraft(ItemStack reqOutput) throws RegistrationError, MissingIngredientError {
-		return Platform.isSameItemPrecise( output.getItemStack(),reqOutput );
+	public boolean canCraft(ItemStack reqOutput) throws RegistrationError, MissingIngredientError
+	{
+		return Platform.isSameItemPrecise( output.getItemStack(), reqOutput );
 	}
 
 	@Override
-	public String getPattern( RecipeHandler h ) {
-		String o = "shaped "+output.getQty()+"\n";
+	public String getPattern(RecipeHandler h)
+	{
+		String o = "shaped " + output.getQty() + " " + cols + "x" + rows + "\n";
 
-		o += h.getName(output)+"\n";
-		
-		for ( int y = 0; y < rows; y++ )
-		for ( int x= 0; x< cols; x++ )
-		{
-			IIngredient i = inputs.get(y).get(x);
-			if ( i.isAir() )
-				o += "air"+( x +1 == cols ? "\n" : " " );
-			else
-				o += h.getName(i)+( x +1 == cols ? "\n" : " " );
-		}
-		
+		o += h.getName( output ) + "\n";
+
+		for (int y = 0; y < rows; y++)
+			for (int x = 0; x < cols; x++)
+			{
+				IIngredient i = inputs.get( y ).get( x );
+
+				if ( i.isAir() )
+					o += "air" + (x + 1 == cols ? "\n" : " ");
+				else
+					o += h.getName( i ) + (x + 1 == cols ? "\n" : " ");
+			}
+
 		return o.trim();
 	}
-	
 }

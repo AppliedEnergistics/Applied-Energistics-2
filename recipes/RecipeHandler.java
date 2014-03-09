@@ -196,14 +196,38 @@ public class RecipeHandler implements IRecipeHandler
 		UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor( is.getItem() );
 		String realName = id.modId + ":" + id.name;
 
-		AELog.info( realName );
-
-		if ( is.getItem() instanceof ItemMaterial )
-			realName += ":" + ((ItemMaterial) is.getItem()).getTypeByStack( is ).name();
+		if ( is.getItem() == AEApi.instance().blocks().blockSkyStone.item() )
+		{
+			switch (is.getItemDamage())
+			{
+			case 1:
+				realName += ".Block";
+				break;
+			case 2:
+				realName += ".Brick";
+				break;
+			case 3:
+				realName += ".SmallBrick";
+				break;
+			default:
+			}
+		}
+		else if ( is.getItem() == AEApi.instance().blocks().blockSkyChest.item() )
+		{
+			switch (is.getItemDamage())
+			{
+			case 1:
+				realName += ".Block";
+				break;
+			default:
+			}
+		}
+		else if ( is.getItem() instanceof ItemMaterial )
+			realName += "." + ((ItemMaterial) is.getItem()).getTypeByStack( is ).name();
 		else if ( is.getItem() instanceof ItemPart )
-			realName += ":" + ((ItemPart) is.getItem()).getTypeByStack( is ).name();
+			realName += "." + ((ItemPart) is.getItem()).getTypeByStack( is ).name();
 		else if ( is.getItemDamage() > 0 )
-			realName += ":" + is.getItemDamage();
+			realName += "." + is.getItemDamage();
 
 		return realName;
 

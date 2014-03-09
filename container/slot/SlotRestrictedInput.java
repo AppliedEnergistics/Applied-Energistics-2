@@ -17,7 +17,7 @@ import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.ICellWorkbenchItem;
-import appeng.recipes.handlers.Inscriber;
+import appeng.recipes.handlers.Inscribe;
 import appeng.util.Platform;
 
 public class SlotRestrictedInput extends AppEngSlot
@@ -140,7 +140,7 @@ public class SlotRestrictedInput extends AppEngSlot
 
 		case INSCRIBER_PLATE:
 
-			for (ItemStack is : Inscriber.plates)
+			for (ItemStack is : Inscribe.plates)
 				if ( Platform.isSameItemPrecise( is, i ) )
 					return true;
 
@@ -148,7 +148,7 @@ public class SlotRestrictedInput extends AppEngSlot
 
 		case INSCRIBER_INPUT:
 
-			for (ItemStack is : Inscriber.inputs)
+			for (ItemStack is : Inscribe.inputs)
 				if ( Platform.isSameItemPrecise( is, i ) )
 					return true;
 

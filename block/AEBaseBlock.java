@@ -142,7 +142,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	public void registerNoIcons()
 	{
 		BlockRenderInfo info = getRendererInstance();
-		FlipableIcon i = new FlipableIcon( new MissingIcon() );
+		FlipableIcon i = new FlipableIcon( new MissingIcon( this ) );
 		info.updateIcons( i, i, i, i, i, i );
 	}
 

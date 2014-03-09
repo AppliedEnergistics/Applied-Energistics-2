@@ -12,7 +12,7 @@ import appeng.api.recipes.IIngredient;
 import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
 
-public class Inscriber implements ICraftHandler, IWebsiteSeralizer
+public class Inscribe implements ICraftHandler, IWebsiteSeralizer
 {
 
 	public static HashSet<ItemStack> plates = new HashSet();
