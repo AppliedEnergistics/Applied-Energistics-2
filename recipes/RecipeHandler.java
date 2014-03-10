@@ -539,7 +539,14 @@ public class RecipeHandler implements IRecipeHandler
 			return gi.copy( qty );
 
 		data.knownItem.add( v );
-		return new Ingredient( this, v, qty );
+		try
+		{
+			return new Ingredient( this, v, qty );
+		}
+		catch (MissedIngredientSet grp)
+		{
+			return new IngredientSet( grp.rrs );
+		}
 	}
 
 	private boolean isNumber(String v)

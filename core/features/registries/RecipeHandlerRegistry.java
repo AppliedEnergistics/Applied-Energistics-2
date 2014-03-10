@@ -7,7 +7,6 @@ import appeng.api.features.IRecipeHandlerRegistry;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IRecipeHandler;
 import appeng.api.recipes.ISubItemResolver;
-import appeng.api.recipes.ResolveResult;
 import appeng.core.AELog;
 import appeng.recipes.RecipeHandler;
 
@@ -55,11 +54,11 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 	}
 
 	@Override
-	public ResolveResult resolveItem(String nameSpace, String itemName)
+	public Object resolveItem(String nameSpace, String itemName)
 	{
 		for (ISubItemResolver sir : resolvers)
 		{
-			ResolveResult rr = null;
+			Object rr = null;
 
 			try
 			{

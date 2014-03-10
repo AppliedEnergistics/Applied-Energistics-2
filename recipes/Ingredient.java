@@ -11,7 +11,8 @@ import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.IIngredient;
-import appeng.api.recipes.ResolveResult;
+import appeng.api.recipes.ResolverResult;
+import appeng.api.recipes.ResolverResultSet;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Ingredient implements IIngredient
@@ -25,7 +26,7 @@ public class Ingredient implements IIngredient
 
 	final public int qty;
 
-	public Ingredient(RecipeHandler handler, String input, int qty) throws RecipeError {
+	public Ingredient(RecipeHandler handler, String input, int qty) throws RecipeError, MissedIngredientSet {
 
 		// works no matter wat!
 		this.qty = qty;
@@ -60,11 +61,16 @@ public class Ingredient implements IIngredient
 				{
 					try
 					{
-						ResolveResult rr = AEApi.instance().registries().recipes().resolveItem( nameSpace, tmpName );
-						if ( rr != null )
+						Object ro = AEApi.instance().registries().recipes().resolveItem( nameSpace, tmpName );
+						if ( ro instanceof ResolverResult )
 						{
+							ResolverResult rr = (ResolverResult) ro;
 							tmpName = rr.itemName;
 							sel = rr.damageValue;
+						}
+						else if ( ro instanceof ResolverResultSet )
+						{
+							throw new MissedIngredientSet( (ResolverResultSet) ro );
 						}
 					}
 					catch (IllegalArgumentException e)

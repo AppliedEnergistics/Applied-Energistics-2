@@ -252,9 +252,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	public TileChest() {
+		internalMaxPower = PowerMultiplier.CONFIG.multiply( 40 );
 		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 		addNewHandler( new invManger() );
-
 		config.registerSetting( Settings.SORT_BY, SortOrder.NAME );
 		config.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
 		config.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );

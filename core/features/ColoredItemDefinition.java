@@ -62,4 +62,13 @@ public class ColoredItemDefinition implements AEColoredItemDefinition
 		return null;
 	}
 
+	@Override
+	public ItemStack[] allStacks(int stackSize)
+	{
+		ItemStack is[] = new ItemStack[colors.length];
+		for (int x = 0; x < is.length; x++)
+			is[x] = colors[x].stack( 1 );
+		return is;
+	}
+
 }
