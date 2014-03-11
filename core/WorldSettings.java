@@ -37,7 +37,6 @@ public class WorldSettings extends Configuration
 		AEFolder = aeFolder;
 
 		compass = new CompassService( AEFolder );
-		(new Thread( compass, "AE Compass Service" )).start();
 
 		for (int dimID : get( "DimensionManager", "StorageCells", new int[0] ).getIntList())
 		{

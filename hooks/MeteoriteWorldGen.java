@@ -1,10 +1,13 @@
 package appeng.hooks;
 
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import appeng.api.util.DimensionalCoord;
+import appeng.core.AELog;
 import appeng.core.WorldSettings;
 import appeng.helpers.MeteoritePlacer;
 import appeng.services.helpers.ICompassCallback;
@@ -25,11 +28,6 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 				distance = dist;
 			else
 				distance = Double.MAX_VALUE;
-
-			synchronized (this)
-			{
-				notify();
-			}
 		}
 
 	};
@@ -43,37 +41,38 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 			int z = r.nextInt( 16 ) + (chunkZ << 4);
 
 			myGen obj = new myGen();
-			WorldSettings.getInstance().getCompass().getCompassDirection( new DimensionalCoord( w, x, 128, z ), 70, obj );
+			Future<?> future = WorldSettings.getInstance().getCompass().getCompassDirection( new DimensionalCoord( w, x, 128, z ), 70, obj );
 
-			synchronized (obj)
+			try
 			{
-				try
-				{
-					obj.wait();
 
-				}
-				catch (InterruptedException e)
+				future.get();
+
+				if ( obj.distance > 1000 * 500 )
 				{
-					// meh
-					return;
+					int depth = 180 + r.nextInt( 20 );
+					for (int trys = 0; trys < 20; trys++)
+					{
+						MeteoritePlacer mp = new MeteoritePlacer();
+
+						if ( mp.spawnMeteorite( w, x, depth, z ) )
+							return;
+
+						depth -= 15;
+						if ( depth < 40 )
+							return;
+
+					}
 				}
+
 			}
-
-			if ( obj.distance > 1000 * 500 )
+			catch (InterruptedException e)
 			{
-				int depth = 180 + r.nextInt( 20 );
-				for (int trys = 0; trys < 20; trys++)
-				{
-					MeteoritePlacer mp = new MeteoritePlacer();
-
-					if ( mp.spawnMeteorite( w, x, depth, z ) )
-						return;
-
-					depth -= 15;
-					if ( depth < 40 )
-						return;
-
-				}
+				AELog.error( e );
+			}
+			catch (ExecutionException e)
+			{
+				AELog.error( e );
 			}
 
 		}
