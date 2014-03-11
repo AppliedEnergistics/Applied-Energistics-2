@@ -1,6 +1,7 @@
 package appeng.recipes.handlers;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -15,8 +16,26 @@ import appeng.util.Platform;
 public class Inscribe implements ICraftHandler, IWebsiteSeralizer
 {
 
+	public class InscriberRecipe
+	{
+
+		public InscriberRecipe(ItemStack[] imprintable, ItemStack plateA, ItemStack plateB, ItemStack out) {
+			this.imprintable = imprintable;
+			this.plateA = plateA;
+			this.plateB = plateB;
+			output = out;
+		}
+
+		final public ItemStack plateA;
+		final public ItemStack[] imprintable;
+		final public ItemStack plateB;
+		final public ItemStack output;
+
+	};
+
 	public static HashSet<ItemStack> plates = new HashSet();
 	public static HashSet<ItemStack> inputs = new HashSet();
+	public static LinkedList<InscriberRecipe> recipes = new LinkedList();
 
 	IIngredient imprintable;
 
@@ -63,8 +82,8 @@ public class Inscribe implements ICraftHandler, IWebsiteSeralizer
 			for (ItemStack s : plateB.getItemStackSet())
 				plates.add( s );
 
-		// TODO: REAL REGISTRATION
-
+		InscriberRecipe ir = new InscriberRecipe( imprintable.getItemStackSet(), plateA.getItemStack(), plateB.getItemStack(), output.getItemStack() );
+		recipes.add( ir );
 	}
 
 	@Override

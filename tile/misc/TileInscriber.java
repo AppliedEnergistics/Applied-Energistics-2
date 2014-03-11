@@ -9,8 +9,14 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
+import appeng.me.GridAccessException;
 import appeng.recipes.handlers.Inscribe;
+import appeng.recipes.handlers.Inscribe.InscriberRecipe;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkPowerTile;
@@ -19,7 +25,7 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
-public class TileInscriber extends AENetworkPowerTile
+public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 {
 
 	final int top[] = new int[] { 0 };
@@ -27,7 +33,9 @@ public class TileInscriber extends AENetworkPowerTile
 	final int sides[] = new int[] { 2, 3 };
 
 	AppEngInternalInventory inv = new AppEngInternalInventory( this, 4 );
-	int processingTime = 0;
+
+	public final int maxProessingTime = 100;
+	public int processingTime = 0;
 
 	@Override
 	public AECableType getCableConnectionType(ForgeDirection dir)
@@ -61,7 +69,7 @@ public class TileInscriber extends AENetworkPowerTile
 
 			for (int num = 0; num < inv.getSizeInventory(); num++)
 			{
-				if ( (slot | (1 << num)) > 0 )
+				if ( (slot & (1 << num)) > 0 )
 					inv.setInventorySlotContents( num, AEItemStack.loadItemStackFromPacket( data ).getItemStack() );
 				else
 					inv.setInventorySlotContents( num, null );
@@ -81,9 +89,10 @@ public class TileInscriber extends AENetworkPowerTile
 					slot = slot | (1 << num);
 			}
 
+			data.writeByte( slot );
 			for (int num = 0; num < inv.getSizeInventory(); num++)
 			{
-				if ( (slot | (1 << num)) > 0 )
+				if ( (slot & (1 << num)) > 0 )
 				{
 					AEItemStack st = AEItemStack.create( inv.getStackInSlot( num ) );
 					st.writeToPacket( data );
@@ -169,7 +178,80 @@ public class TileInscriber extends AENetworkPowerTile
 	@Override
 	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added)
 	{
+		try
+		{
+			processingTime = 0;
+			gridProxy.getTick().wakeDevice( gridProxy.getNode() );
+		}
+		catch (GridAccessException e)
+		{
+			// :P
+		}
+	}
 
+	private ItemStack getTask()
+	{
+
+		for (InscriberRecipe i : Inscribe.recipes)
+		{
+			ItemStack PlateA = getStackInSlot( 0 );
+			ItemStack PlateB = getStackInSlot( 1 );
+
+			boolean matchA = (PlateA == null && i.plateA == null) || (Platform.isSameItemPrecise( PlateA, i.plateA )) && // and...
+					(PlateB == null && i.plateB == null) | (Platform.isSameItemPrecise( PlateB, i.plateB ));
+
+			boolean matchB = (PlateB == null && i.plateA == null) || (Platform.isSameItemPrecise( PlateB, i.plateA )) && // and...
+					(PlateA == null && i.plateB == null) | (Platform.isSameItemPrecise( PlateA, i.plateB ));
+
+			if ( matchA || matchB )
+			{
+				for (ItemStack opion : i.imprintable)
+				{
+					if ( Platform.isSameItemPrecise( opion, getStackInSlot( 2 ) ) )
+						return i.output;
+				}
+			}
+
+		}
+		return null;
+	}
+
+	private boolean hasWork()
+	{
+		if ( getTask() != null )
+			return true;
+
+		processingTime = 0;
+		return false;
+	}
+
+	@Override
+	public TickingRequest getTickingRequest(IGridNode node)
+	{
+		return new TickingRequest( 1, 1, !hasWork(), false );
+	}
+
+	@Override
+	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
+	{
+		if ( processingTime == 0 )
+			processingTime++;
+		else
+			processingTime += TicksSinceLastCall;
+
+		if ( processingTime > maxProessingTime )
+		{
+			processingTime = 0;
+
+			ItemStack out = getTask();
+			if ( out != null )
+			{
+				setInventorySlotContents( 2, null );
+				setInventorySlotContents( 3, out );
+			}
+		}
+
+		return hasWork() ? TickRateModulation.URGENT : TickRateModulation.SLEEP;
 	}
 
 }
