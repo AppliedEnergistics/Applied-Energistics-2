@@ -270,19 +270,22 @@ public class EnergyGridCache implements IEnergyGrid
 		if ( machine instanceof IAEPowerStorage )
 		{
 			IAEPowerStorage ps = (IAEPowerStorage) machine;
-			if ( ps.getPowerFlow() != AccessRestriction.WRITE )
-				globalAvailablePower -= ps.getAECurrentPower();
+			if ( ps.isAEPublicPowerStorage() )
+			{
+				if ( ps.getPowerFlow() != AccessRestriction.WRITE )
+					globalAvailablePower -= ps.getAECurrentPower();
 
-			if ( lastProvider == machine )
-				lastProvider = null;
+				if ( lastProvider == machine )
+					lastProvider = null;
 
-			if ( lastRequestor == machine )
-				lastRequestor = null;
+				if ( lastRequestor == machine )
+					lastRequestor = null;
 
-			globalMaxPower -= ps.getAEMaxPower();
+				globalMaxPower -= ps.getAEMaxPower();
 
-			providers.remove( machine );
-			requesters.remove( machine );
+				providers.remove( machine );
+				requesters.remove( machine );
+			}
 		}
 
 		if ( machine instanceof IStackWatcherHost )
@@ -383,7 +386,7 @@ public class EnergyGridCache implements IEnergyGrid
 		if ( availableTicksSinceUpdate > 90 )
 			refreshPower();
 
-		return globalAvailablePower;
+		return Math.max( 0.0, globalAvailablePower );
 	}
 
 	@Override

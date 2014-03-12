@@ -45,8 +45,7 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 
 					if ( powerRequested > 0 )
 					{
-						internalCurrentPower += eg
-								.injectPower( extractAEPower( powerRequested, Actionable.MODULATE, PowerMultiplier.ONE ), Actionable.MODULATE );
+						eg.injectPower( extractAEPower( powerRequested, Actionable.MODULATE, PowerMultiplier.ONE ), Actionable.MODULATE );
 					}
 				}
 				catch (GridAccessException e)
@@ -58,9 +57,29 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 		}
 	};
 
+	@Override
+	protected double funnelPowerIntoStorage(double newPower, Actionable mode)
+	{
+		try
+		{
+			IEnergyGrid grid = gridProxy.getEnergy();
+			double overFlow = grid.injectPower( newPower, Actionable.SIMULATE );
+
+			if ( mode == Actionable.MODULATE )
+				grid.injectPower( Math.max( 0.0, newPower - overFlow ), Actionable.MODULATE );
+
+			return super.funnelPowerIntoStorage( overFlow, mode );
+		}
+		catch (GridAccessException e)
+		{
+			return super.funnelPowerIntoStorage( newPower, mode );
+		}
+	}
+
 	public TileEnergyAcceptor() {
-		gridProxy.setIdlePowerUsage( 1.0 / 16.0 );
+		gridProxy.setIdlePowerUsage( 0.0 );
 		addNewHandler( new TilePowerRelayHandler() );
+		internalMaxPower = 100;
 	}
 
 	@Override
