@@ -149,7 +149,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	@Override
 	public void registerIcons(IIconRegister ir)
 	{
-		String preFix = "appliedenergistics2:GrowthSeed.";
+		String preFix = "appliedenergistics2:ItemCrystalSeed.";
 
 		certus[0] = ir.registerIcon( preFix + "Certus" );
 		certus[1] = ir.registerIcon( preFix + "Certus2" );
