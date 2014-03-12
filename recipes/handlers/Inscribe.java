@@ -19,12 +19,15 @@ public class Inscribe implements ICraftHandler, IWebsiteSeralizer
 	public class InscriberRecipe
 	{
 
-		public InscriberRecipe(ItemStack[] imprintable, ItemStack plateA, ItemStack plateB, ItemStack out) {
+		public InscriberRecipe(ItemStack[] imprintable, ItemStack plateA, ItemStack plateB, ItemStack out, boolean usePlates) {
 			this.imprintable = imprintable;
+			this.usePlates = usePlates;
 			this.plateA = plateA;
 			this.plateB = plateB;
 			output = out;
 		}
+
+		final public boolean usePlates;
 
 		final public ItemStack plateA;
 		final public ItemStack[] imprintable;
@@ -32,6 +35,8 @@ public class Inscribe implements ICraftHandler, IWebsiteSeralizer
 		final public ItemStack output;
 
 	};
+
+	public boolean usePlates = false;
 
 	public static HashSet<ItemStack> plates = new HashSet();
 	public static HashSet<ItemStack> inputs = new HashSet();
@@ -82,7 +87,8 @@ public class Inscribe implements ICraftHandler, IWebsiteSeralizer
 			for (ItemStack s : plateB.getItemStackSet())
 				plates.add( s );
 
-		InscriberRecipe ir = new InscriberRecipe( imprintable.getItemStackSet(), plateA.getItemStack(), plateB.getItemStack(), output.getItemStack() );
+		InscriberRecipe ir = new InscriberRecipe( imprintable.getItemStackSet(), plateA == null ? null : plateA.getItemStack(), plateB == null ? null
+				: plateB.getItemStack(), output.getItemStack(), usePlates );
 		recipes.add( ir );
 	}
 

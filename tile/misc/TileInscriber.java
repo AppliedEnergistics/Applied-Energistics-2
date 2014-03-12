@@ -9,7 +9,11 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
@@ -22,7 +26,9 @@ import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkPowerTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
+import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import appeng.util.inv.WrapperInventoryRange;
 import appeng.util.item.AEItemStack;
 
 public class TileInscriber extends AENetworkPowerTile implements IGridTickable
@@ -119,8 +125,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 	public void setOrientation(ForgeDirection inForward, ForgeDirection inUp)
 	{
 		super.setOrientation( inForward, inUp );
-		gridProxy.setValidSides( EnumSet.of( getUp(), getUp().getOpposite() ) );
-		setPowerSides( EnumSet.of( getUp(), getUp().getOpposite() ) );
+		ForgeDirection right = Platform.crossProduct( getForward(), getUp() );
+		gridProxy.setValidSides( EnumSet.of( getForward().getOpposite(), right, right.getOpposite() ) );
+		setPowerSides( EnumSet.of( getForward().getOpposite(), right, right.getOpposite() ) );
 	}
 
 	@Override
@@ -180,8 +187,12 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 	{
 		try
 		{
-			processingTime = 0;
-			gridProxy.getTick().wakeDevice( gridProxy.getNode() );
+			if ( mc != InvOperation.markDirty )
+			{
+				if ( slot != 3 )
+					processingTime = 0;
+				gridProxy.getTick().wakeDevice( gridProxy.getNode() );
+			}
 		}
 		catch (GridAccessException e)
 		{
@@ -189,7 +200,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 		}
 	}
 
-	private ItemStack getTask()
+	private InscriberRecipe getTask()
 	{
 
 		for (InscriberRecipe i : Inscribe.recipes)
@@ -208,7 +219,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 				for (ItemStack opion : i.imprintable)
 				{
 					if ( Platform.isSameItemPrecise( opion, getStackInSlot( 2 ) ) )
-						return i.output;
+						return i;
 				}
 			}
 
@@ -234,24 +245,55 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 	@Override
 	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
 	{
-		if ( processingTime == 0 )
-			processingTime++;
-		else
-			processingTime += TicksSinceLastCall;
+		IEnergyGrid eg;
+		try
+		{
+			eg = gridProxy.getEnergy();
+			IEnergySource src = this;
+
+			double powerReq = extractAEPower( 10, Actionable.SIMULATE, PowerMultiplier.CONFIG );
+
+			if ( powerReq < 9.99 )
+			{
+				src = eg;
+				powerReq = eg.extractAEPower( 10, Actionable.SIMULATE, PowerMultiplier.CONFIG );
+			}
+
+			if ( powerReq > 9.99 )
+			{
+				src.extractAEPower( 10, Actionable.MODULATE, PowerMultiplier.CONFIG );
+
+				if ( processingTime == 0 )
+					processingTime++;
+				else
+					processingTime += TicksSinceLastCall;
+			}
+		}
+		catch (GridAccessException e)
+		{
+			// :P
+		}
 
 		if ( processingTime > maxProessingTime )
 		{
-			processingTime = 0;
-
-			ItemStack out = getTask();
+			InscriberRecipe out = getTask();
 			if ( out != null )
 			{
-				setInventorySlotContents( 2, null );
-				setInventorySlotContents( 3, out );
+				ItemStack is = out.output.copy();
+				InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( inv, 3, 1, true ), ForgeDirection.UNKNOWN );
+				if ( ad.addItems( is ) == null )
+				{
+					processingTime = 0;
+					if ( out.usePlates )
+					{
+						setInventorySlotContents( 0, null );
+						setInventorySlotContents( 1, null );
+					}
+					setInventorySlotContents( 2, null );
+				}
 			}
 		}
 
 		return hasWork() ? TickRateModulation.URGENT : TickRateModulation.SLEEP;
 	}
-
 }

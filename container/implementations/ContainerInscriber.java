@@ -39,8 +39,8 @@ public class ContainerInscriber extends AEBaseContainer
 
 		if ( Platform.isServer() )
 		{
-			int localMax = this.maxProessingTime;
-			int localTime = this.processingTime;
+			int localMax = myte.maxProessingTime;
+			int localTime = myte.processingTime;
 
 			for (int i = 0; i < this.crafters.size(); ++i)
 			{
