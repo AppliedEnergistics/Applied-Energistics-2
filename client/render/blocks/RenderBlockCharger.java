@@ -114,9 +114,8 @@ public class RenderBlockCharger extends BaseBlockRender
 
 		if ( sis != null )
 		{
-			applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
-
 			GL11.glPushMatrix();
+			applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
 
 			try
 			{

@@ -140,6 +140,9 @@ public class SlotRestrictedInput extends AppEngSlot
 
 		case INSCRIBER_PLATE:
 
+			if ( AEApi.instance().materials().materialNamePress.sameAs( i ) )
+				return true;
+
 			for (ItemStack is : Inscribe.plates)
 				if ( Platform.isSameItemPrecise( is, i ) )
 					return true;
@@ -147,12 +150,11 @@ public class SlotRestrictedInput extends AppEngSlot
 			return false;
 
 		case INSCRIBER_INPUT:
-
-			for (ItemStack is : Inscribe.inputs)
-				if ( Platform.isSameItemPrecise( is, i ) )
-					return true;
-
-			return false;
+			return true;/*
+						 * for (ItemStack is : Inscribe.inputs) if ( Platform.isSameItemPrecise( is, i ) ) return true;
+						 * 
+						 * return false;
+						 */
 
 		case METAL_INGOTS:
 

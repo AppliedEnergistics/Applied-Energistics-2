@@ -9,6 +9,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGridNode;
@@ -43,6 +44,12 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 	public final int maxProessingTime = 100;
 	public int processingTime = 0;
 
+	// cycles from 0 - 16, at 8 it preforms the action, at 16 it reenables the normal rotuine.
+	public boolean smash;
+	public int finalStep;
+
+	public long clientStart;
+
 	@Override
 	public AECableType getCableConnectionType(ForgeDirection dir)
 	{
@@ -73,6 +80,15 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 		{
 			int slot = data.readByte();
 
+			boolean oldSmash = smash;
+			boolean newSmash = (slot & 64) == 64;
+
+			if ( oldSmash != newSmash && newSmash )
+			{
+				smash = true;
+				clientStart = System.currentTimeMillis();
+			}
+
 			for (int num = 0; num < inv.getSizeInventory(); num++)
 			{
 				if ( (slot & (1 << num)) > 0 )
@@ -87,7 +103,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 		@Override
 		public void writeToStream(ByteBuf data) throws IOException
 		{
-			int slot = 0;
+			int slot = smash ? 64 : 0;
 
 			for (int num = 0; num < inv.getSizeInventory(); num++)
 			{
@@ -114,6 +130,12 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 
 	};
 
+	@Override
+	public boolean requiresTESR()
+	{
+		return true;
+	}
+
 	public TileInscriber() {
 		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 		internalMaxPower = 1500;
@@ -126,8 +148,8 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 	{
 		super.setOrientation( inForward, inUp );
 		ForgeDirection right = Platform.crossProduct( getForward(), getUp() );
-		gridProxy.setValidSides( EnumSet.of( getForward().getOpposite(), right, right.getOpposite() ) );
-		setPowerSides( EnumSet.of( getForward().getOpposite(), right, right.getOpposite() ) );
+		gridProxy.setValidSides( EnumSet.complementOf( EnumSet.of( getForward() ) ) );
+		setPowerSides( EnumSet.complementOf( EnumSet.of( getForward() ) ) );
 	}
 
 	@Override
@@ -159,8 +181,14 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
+		if ( smash )
+			return false;
+
 		if ( i == 0 || i == 1 )
 		{
+			if ( AEApi.instance().materials().materialNamePress.sameAs( itemstack ) )
+				return true;
+
 			for (ItemStack s : Inscribe.plates)
 				if ( Platform.isSameItemPrecise( s, itemstack ) )
 					return true;
@@ -168,9 +196,10 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 
 		if ( i == 2 )
 		{
-			for (ItemStack s : Inscribe.inputs)
-				if ( Platform.isSameItemPrecise( s, itemstack ) )
-					return true;
+			return true;
+			// for (ItemStack s : Inscribe.inputs)
+			// if ( Platform.isSameItemPrecise( s, itemstack ) )
+			// return true;
 		}
 
 		return false;
@@ -179,6 +208,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 	@Override
 	public boolean canExtractItem(int i, ItemStack itemstack, int j)
 	{
+		if ( smash )
+			return false;
+
 		return i == 0 || i == 1 || i == 3;
 	}
 
@@ -191,6 +223,10 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 			{
 				if ( slot != 3 )
 					processingTime = 0;
+
+				if ( !smash )
+					markForUpdate();
+
 				gridProxy.getTick().wakeDevice( gridProxy.getNode() );
 			}
 		}
@@ -200,13 +236,53 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 		}
 	}
 
-	private InscriberRecipe getTask()
+	public InscriberRecipe getTask()
 	{
+		ItemStack PlateA = getStackInSlot( 0 );
+		ItemStack PlateB = getStackInSlot( 1 );
+
+		boolean isNameA = AEApi.instance().materials().materialNamePress.sameAs( PlateA );
+		boolean isNameB = AEApi.instance().materials().materialNamePress.sameAs( PlateB );
+
+		if ( (isNameA || isNameB) && (isNameA || PlateA == null) && (isNameB || PlateB == null) )
+		{
+			ItemStack renamedItem = getStackInSlot( 2 );
+			if ( renamedItem != null )
+			{
+				String name = "";
+
+				if ( PlateA != null )
+				{
+					NBTTagCompound tag = Platform.openNbtData( PlateA );
+					name += tag.getString( "InscribeName" );
+				}
+
+				if ( PlateB != null )
+				{
+					NBTTagCompound tag = Platform.openNbtData( PlateB );
+					if ( name.length() > 0 )
+						name += " ";
+					name += tag.getString( "InscribeName" );
+				}
+
+				ItemStack startingItem = renamedItem.copy();
+				renamedItem = renamedItem.copy();
+				NBTTagCompound tag = Platform.openNbtData( renamedItem );
+
+				NBTTagCompound display = tag.getCompoundTag( "display" );
+				tag.setTag( "display", display );
+
+				if ( name.length() > 0 )
+					display.setString( "Name", name );
+				else
+					display.removeTag( "Name" );
+
+				return new InscriberRecipe( new ItemStack[] { startingItem }, PlateA, PlateB, renamedItem, false );
+			}
+		}
 
 		for (InscriberRecipe i : Inscribe.recipes)
 		{
-			ItemStack PlateA = getStackInSlot( 0 );
-			ItemStack PlateB = getStackInSlot( 1 );
 
 			boolean matchA = (PlateA == null && i.plateA == null) || (Platform.isSameItemPrecise( PlateA, i.plateA )) && // and...
 					(PlateB == null && i.plateB == null) | (Platform.isSameItemPrecise( PlateB, i.plateB ));
@@ -233,7 +309,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 			return true;
 
 		processingTime = 0;
-		return false;
+		return false || smash;
 	}
 
 	@Override
@@ -245,51 +321,85 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 	@Override
 	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
 	{
-		IEnergyGrid eg;
-		try
+		if ( smash )
 		{
-			eg = gridProxy.getEnergy();
-			IEnergySource src = this;
-
-			double powerReq = extractAEPower( 10, Actionable.SIMULATE, PowerMultiplier.CONFIG );
-
-			if ( powerReq < 9.99 )
+			finalStep++;
+			if ( finalStep == 8 )
 			{
-				src = eg;
-				powerReq = eg.extractAEPower( 10, Actionable.SIMULATE, PowerMultiplier.CONFIG );
-			}
 
-			if ( powerReq > 9.99 )
-			{
-				src.extractAEPower( 10, Actionable.MODULATE, PowerMultiplier.CONFIG );
-
-				if ( processingTime == 0 )
-					processingTime++;
-				else
-					processingTime += TicksSinceLastCall;
-			}
-		}
-		catch (GridAccessException e)
-		{
-			// :P
-		}
-
-		if ( processingTime > maxProessingTime )
-		{
-			InscriberRecipe out = getTask();
-			if ( out != null )
-			{
-				ItemStack is = out.output.copy();
-				InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( inv, 3, 1, true ), ForgeDirection.UNKNOWN );
-				if ( ad.addItems( is ) == null )
+				InscriberRecipe out = getTask();
+				if ( out != null )
 				{
-					processingTime = 0;
-					if ( out.usePlates )
+					ItemStack is = out.output.copy();
+					InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( inv, 3, 1, true ), ForgeDirection.UNKNOWN );
+
+					if ( ad.addItems( is ) == null )
 					{
-						setInventorySlotContents( 0, null );
-						setInventorySlotContents( 1, null );
+						processingTime = 0;
+						if ( out.usePlates )
+						{
+							setInventorySlotContents( 0, null );
+							setInventorySlotContents( 1, null );
+						}
+						setInventorySlotContents( 2, null );
 					}
-					setInventorySlotContents( 2, null );
+				}
+
+				markDirty();
+
+			}
+			else if ( finalStep == 16 )
+			{
+				finalStep = 0;
+				smash = false;
+				markForUpdate();
+			}
+		}
+		else
+		{
+			IEnergyGrid eg;
+			try
+			{
+				eg = gridProxy.getEnergy();
+				IEnergySource src = this;
+
+				double powerReq = extractAEPower( 10, Actionable.SIMULATE, PowerMultiplier.CONFIG );
+
+				if ( powerReq < 9.99 )
+				{
+					src = eg;
+					powerReq = eg.extractAEPower( 10, Actionable.SIMULATE, PowerMultiplier.CONFIG );
+				}
+
+				if ( powerReq > 9.99 )
+				{
+					src.extractAEPower( 10, Actionable.MODULATE, PowerMultiplier.CONFIG );
+
+					if ( processingTime == 0 )
+						processingTime++;
+					else
+						processingTime += TicksSinceLastCall;
+				}
+			}
+			catch (GridAccessException e)
+			{
+				// :P
+			}
+
+			if ( processingTime > maxProessingTime )
+			{
+				processingTime = maxProessingTime;
+				InscriberRecipe out = getTask();
+				if ( out != null )
+				{
+					ItemStack is = out.output.copy();
+					InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( inv, 3, 1, true ), ForgeDirection.UNKNOWN );
+					if ( ad.simulateAdd( is ) == null )
+					{
+						smash = true;
+						finalStep = 0;
+						markForUpdate();
+					}
 				}
 			}
 		}

@@ -3,6 +3,7 @@ package appeng.core;
 import org.apache.logging.log4j.Level;
 
 import appeng.core.features.AEFeature;
+import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
 
@@ -56,6 +57,14 @@ public class AELog
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.IntegrationLogging ) )
 		{
 			error( exception );
+		}
+	}
+
+	public static void blockUpdate(int xCoord, int yCoord, int zCoord, AEBaseTile aeBaseTile)
+	{
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.UpdateLogging ) )
+		{
+			info( aeBaseTile.getClass().getName() + " @ " + xCoord + ", " + yCoord + ", " + zCoord );
 		}
 	}
 }

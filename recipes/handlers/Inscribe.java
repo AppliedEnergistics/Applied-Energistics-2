@@ -16,7 +16,7 @@ import appeng.util.Platform;
 public class Inscribe implements ICraftHandler, IWebsiteSeralizer
 {
 
-	public class InscriberRecipe
+	public static class InscriberRecipe
 	{
 
 		public InscriberRecipe(ItemStack[] imprintable, ItemStack plateA, ItemStack plateB, ItemStack out, boolean usePlates) {

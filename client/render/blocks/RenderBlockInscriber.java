@@ -6,8 +6,8 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -21,7 +21,9 @@ import appeng.block.misc.BlockInscriber;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraTextures;
 import appeng.core.AELog;
+import appeng.recipes.handlers.Inscribe.InscriberRecipe;
 import appeng.tile.AEBaseTile;
+import appeng.tile.misc.TileInscriber;
 import appeng.util.Platform;
 
 public class RenderBlockInscriber extends BaseBlockRender
@@ -42,21 +44,13 @@ public class RenderBlockInscriber extends BaseBlockRender
 
 		blk.getRendererInstance().setTemporaryRenderIcons( ExtraTextures.BlockChargerInside.getIcon(), null, null, null, null, null );
 
-		setInvRenderBounds( renderer, 2, 0, 2, 14, 3, 14 );
-		// renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		setInvRenderBounds( renderer, 1, 0, 1, 15, 2, 15 );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 3, 3, 3, 13, 4, 13 );
-		// renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		setInvRenderBounds( renderer, 1, 14, 1, 15, 16, 15 );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
-
-		blk.getRendererInstance().setTemporaryRenderIcons( null, ExtraTextures.BlockChargerInside.getIcon(), null, null, null, null );
-
-		setInvRenderBounds( renderer, 2, 13, 2, 14, 16, 14 );
-		// renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
-
-		setInvRenderBounds( renderer, 3, 12, 3, 13, 13, 13 );
-		// renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		renderer.renderAllFaces = false;
 		// blk.getRendererInstance().setTemporaryRenderIcon( null );
@@ -77,26 +71,25 @@ public class RenderBlockInscriber extends BaseBlockRender
 		ForgeDirection fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
 
 		renderer.renderAllFaces = true;
-		renderBlockBounds( renderer, 6, 1, 0, 10, 15, 2, fdx, fdy, fdz );
+
+		// sides...
+		renderBlockBounds( renderer, 3, 1, 0, 13, 15, 3, fdx, fdy, fdz );
 		boolean out = renderer.renderStandardBlock( blk, x, y, z );
 
-		blk.getRendererInstance().setTemporaryRenderIcons( ExtraTextures.BlockChargerInside.getIcon(), null, null, null, null, null );
+		renderBlockBounds( renderer, 0, 1, 0, 3, 15, 16, fdx, fdy, fdz );
+		out = renderer.renderStandardBlock( blk, x, y, z );
 
-		renderBlockBounds( renderer, 2, 0, 2, 14, 3, 14, fdx, fdy, fdz );
-		// out = renderer.renderStandardBlock( blk, x, y, z );
+		renderBlockBounds( renderer, 13, 1, 0, 16, 15, 16, fdx, fdy, fdz );
+		out = renderer.renderStandardBlock( blk, x, y, z );
 
-		renderBlockBounds( renderer, 3, 3, 3, 13, 4, 13, fdx, fdy, fdz );
-		// out = renderer.renderStandardBlock( blk, x, y, z );
+		// top bottom..
+		renderBlockBounds( renderer, 1, 0, 1, 15, 4, 15, fdx, fdy, fdz );
+		out = renderer.renderStandardBlock( blk, x, y, z );
+
+		renderBlockBounds( renderer, 1, 12, 1, 15, 16, 15, fdx, fdy, fdz );
+		out = renderer.renderStandardBlock( blk, x, y, z );
 
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
-
-		blk.getRendererInstance().setTemporaryRenderIcons( null, ExtraTextures.BlockChargerInside.getIcon(), null, null, null, null );
-
-		renderBlockBounds( renderer, 2, 13, 2, 14, 16, 14, fdx, fdy, fdz );
-		// out = renderer.renderStandardBlock( blk, x, y, z );
-
-		renderBlockBounds( renderer, 3, 12, 3, 13, 13, 13, fdx, fdy, fdz );
-		// out = renderer.renderStandardBlock( blk, x, y, z );
 
 		renderer.renderAllFaces = false;
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
@@ -108,19 +101,110 @@ public class RenderBlockInscriber extends BaseBlockRender
 	@Override
 	public void renderTile(AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f, RenderBlocks renderer)
 	{
-		ItemStack sis = null;
-		if ( tile instanceof IInventory )
-			sis = ((IInventory) tile).getStackInSlot( 0 );
+		TileInscriber inv = (TileInscriber) tile;
 
+		GL11.glPushMatrix();
+		applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
+
+		int light = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
+		int br = light;// << 20 | light << 4;
+		int var11 = br % 65536;
+		int var12 = br / 65536;
+		OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11, var12 );
+
+		float TwoPx = 2.0f / 16.0f;
+		float middle = 0.5f;
+
+		float press = 0.2f;
+		float base = 0.4f;
+
+		long lprogress = 0;
+		if ( inv.smash )
+		{
+			long currentTime = System.currentTimeMillis();
+			lprogress = currentTime - inv.clientStart;
+			if ( lprogress > 800 )
+				inv.smash = false;
+		}
+
+		float rprogress = (float) (lprogress % 800) / 400.0f;
+		float progress = rprogress;
+
+		if ( progress > 1.0f )
+			progress = 1.0f - (progress - 1.0f);
+		press -= progress / 5.0f;
+
+		IIcon ic = ExtraTextures.MEDenseEnergyCell0.getIcon();
+		tess.startDrawingQuads();
+
+		middle += 0.02f;
+		tess.addVertexWithUV( TwoPx, middle + press, TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 2 ) );
+		tess.addVertexWithUV( 1.0 - TwoPx, middle + press, TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 2 ) );
+		tess.addVertexWithUV( 1.0 - TwoPx, middle + press, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 14 ) );
+		tess.addVertexWithUV( TwoPx, middle + press, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 14 ) );
+
+		tess.addVertexWithUV( TwoPx, middle + press, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 2 ) );
+		tess.addVertexWithUV( 1.0 - TwoPx, middle + press, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 2 ) );
+		tess.addVertexWithUV( 1.0 - TwoPx, middle + base, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 2 + 16 * (press - base) ) );
+		tess.addVertexWithUV( TwoPx, middle + base, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 2 + 16 * (press - base) ) );
+
+		middle -= 2.0f * 0.02f;
+		tess.addVertexWithUV( 1.0 - TwoPx, middle - press, TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 2 ) );
+		tess.addVertexWithUV( TwoPx, middle - press, TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 2 ) );
+		tess.addVertexWithUV( TwoPx, middle - press, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 14 ) );
+		tess.addVertexWithUV( 1.0 - TwoPx, middle - press, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 14 ) );
+
+		tess.addVertexWithUV( 1.0 - TwoPx, middle - press, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 2 ) );
+		tess.addVertexWithUV( TwoPx, middle - press, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 2 ) );
+		tess.addVertexWithUV( TwoPx, middle - base, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 2 + 16 * (press - base) ) );
+		tess.addVertexWithUV( 1.0 - TwoPx, middle + -base, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 2 + 16 * (press - base) ) );
+
+		tess.draw();
+
+		GL11.glPopMatrix();
+
+		int items = 0;
+		if ( inv.getStackInSlot( 0 ) != null )
+			items++;
+		if ( inv.getStackInSlot( 1 ) != null )
+			items++;
+		if ( inv.getStackInSlot( 2 ) != null )
+			items++;
+
+		if ( rprogress > 1.0f || items == 0 )
+		{
+			ItemStack is = inv.getStackInSlot( 3 );
+
+			if ( is == null )
+			{
+				InscriberRecipe ir = inv.getTask();
+				if ( ir != null )
+					is = ir.output.copy();
+			}
+
+			renderItem( is, 0.0f, block, tile, tess, x, y, z, f, renderer );
+		}
+		else
+		{
+			renderItem( inv.getStackInSlot( 0 ), press, block, tile, tess, x, y, z, f, renderer );
+			renderItem( inv.getStackInSlot( 1 ), -press, block, tile, tess, x, y, z, f, renderer );
+			renderItem( inv.getStackInSlot( 2 ), 0.0f, block, tile, tess, x, y, z, f, renderer );
+		}
+
+	}
+
+	public void renderItem(ItemStack sis, float o, AEBaseBlock block, AEBaseTile tile, Tessellator tess, double x, double y, double z, float f,
+			RenderBlocks renderer)
+	{
 		if ( sis != null )
 		{
-			applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
-
+			sis = sis.copy();
 			GL11.glPushMatrix();
+			applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
 
 			try
 			{
-				GL11.glTranslatef( 0.5f, 0.45f, 0.5f );
+				GL11.glTranslatef( 0.5f, 0.5f + o, 0.5f );
 				GL11.glScalef( 1.0f / 1.1f, 1.0f / 1.1f, 1.0f / 1.1f );
 				GL11.glScalef( 1.0f, 1.0f, 1.0f );
 
@@ -131,6 +215,8 @@ public class RenderBlockInscriber extends BaseBlockRender
 					GL11.glRotatef( 15.0f, 0.0f, 1.0f, 0.0f );
 					GL11.glRotatef( 30.0f, 0.0f, 1.0f, 0.0f );
 				}
+
+				GL11.glRotatef( 90.0f, 1, 0, 0 );
 
 				int light = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
 				int br = light;// << 20 | light << 4;
