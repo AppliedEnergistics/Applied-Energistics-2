@@ -105,10 +105,13 @@ public class Inscribe implements ICraftHandler, IWebsiteSeralizer
 
 		o += h.getName( output ) + "\n";
 
-		if ( plateB != null )
-			o += h.getName( plateB ) + "\n";
+		if ( plateA != null )
+			o +=  h.getName( plateA )+"\n";
 
-		o += h.getName( plateA );
+		o += h.getName(imprintable);
+
+		if ( plateB != null )
+			o += "\n"+h.getName( plateB );
 
 		return o;
 	}
