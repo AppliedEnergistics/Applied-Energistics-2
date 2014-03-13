@@ -26,6 +26,7 @@ import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.items.materials.ItemMaterial;
+import appeng.items.misc.ItemCrystalSeed;
 import appeng.items.parts.ItemPart;
 import appeng.recipes.handlers.IWebsiteSeralizer;
 import appeng.recipes.handlers.OreRegistration;
@@ -208,7 +209,17 @@ public class RecipeHandler implements IRecipeHandler
 		if ( !id.modId.equals( AppEng.modid ) && !id.modId.equals( "minecraft" ) )
 			throw new RecipeError( "Not applicable for website" );
 
-		if ( is.getItem() == AEApi.instance().blocks().blockSkyStone.item() )
+		if ( is.getItem() == AEApi.instance().items().itemCrystalSeed.item() )
+		{
+			int dmg = is.getItemDamage();
+			if ( dmg < ItemCrystalSeed.Nether )
+				realName += ".Certus";
+			else if ( dmg < ItemCrystalSeed.Fluix )
+				realName += ".Nether";
+			else if ( dmg < ItemCrystalSeed.END )
+				realName += ".Fluix";
+		}
+		else if ( is.getItem() == AEApi.instance().blocks().blockSkyStone.item() )
 		{
 			switch (is.getItemDamage())
 			{
