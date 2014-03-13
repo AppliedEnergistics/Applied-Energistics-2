@@ -65,7 +65,16 @@ public class GroupIngredient implements IIngredient
 		try
 		{
 			for (IIngredient i : ingredients)
-				out.addAll( Arrays.asList( i.getItemStackSet() ) );
+			{
+				try
+				{
+					out.addAll( Arrays.asList( i.getItemStackSet() ) );
+				}
+				catch (MissingIngredientError mir)
+				{
+					// oh well this is a group!
+				}
+			}
 		}
 		finally
 		{
