@@ -147,7 +147,6 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 	public void setOrientation(ForgeDirection inForward, ForgeDirection inUp)
 	{
 		super.setOrientation( inForward, inUp );
-		ForgeDirection right = Platform.crossProduct( getForward(), getUp() );
 		gridProxy.setValidSides( EnumSet.complementOf( EnumSet.of( getForward() ) ) );
 		setPowerSides( EnumSet.complementOf( EnumSet.of( getForward() ) ) );
 	}
