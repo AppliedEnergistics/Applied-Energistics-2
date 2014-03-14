@@ -46,7 +46,7 @@ public enum ExtraTextures
 
 	BlockSpatialPylonE("BlockSpatialPylon_end"), BlockSpatialPylonE_dim("BlockSpatialPylon_end_dim"), BlockSpatialPylonE_red("BlockSpatialPylon_end_red"),
 
-	BlockMESecurityOn("BlockMESecurityOn"),
+	BlockMESecurityOn("BlockMESecurityOn"), BlockInscriberInside("BlockInscriberInside"),
 
 	BlockQuartzGrowthAcceleratorOn("BlockQuartzGrowthAcceleratorOn"), BlockQuartzGrowthAcceleratorSideOn("BlockQuartzGrowthAcceleratorSideOn");
 

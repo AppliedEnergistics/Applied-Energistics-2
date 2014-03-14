@@ -3,9 +3,11 @@ package appeng.client.render.blocks;
 import java.util.EnumSet;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -42,12 +44,29 @@ public class RenderBlockInscriber extends BaseBlockRender
 		setInvRenderBounds( renderer, 6, 1, 0, 10, 15, 2 );
 		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
-		blk.getRendererInstance().setTemporaryRenderIcons( ExtraTextures.BlockChargerInside.getIcon(), null, null, null, null, null );
+		// sides...
+		setInvRenderBounds( renderer, 3, 1, 0, 13, 15, 3 );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+
+		setInvRenderBounds( renderer, 0, 1, 0, 3, 15, 16 );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+
+		setInvRenderBounds( renderer, 13, 1, 0, 16, 15, 16 );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		setInvRenderBounds( renderer, 1, 0, 1, 15, 2, 15 );
 		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		setInvRenderBounds( renderer, 1, 14, 1, 15, 16, 15 );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+
+		blk.getRendererInstance().setTemporaryRenderIcon( ExtraTextures.BlockInscriberInside.getIcon() );
+
+		// press
+		setInvRenderBounds( renderer, 3, 2, 3, 13, 3, 13 );
+		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+
+		setInvRenderBounds( renderer, 3, 13, 3, 13, 15, 13 );
 		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
@@ -106,6 +125,13 @@ public class RenderBlockInscriber extends BaseBlockRender
 		GL11.glPushMatrix();
 		applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
 
+		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+		GL11.glDisable( GL11.GL_LIGHTING );
+		GL11.glDisable( GL12.GL_RESCALE_NORMAL );
+
+		Minecraft mc = Minecraft.getMinecraft();
+		mc.renderEngine.bindTexture( TextureMap.locationBlocksTexture );
+
 		int light = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
 		int br = light;// << 20 | light << 4;
 		int var11 = br % 65536;
@@ -134,30 +160,30 @@ public class RenderBlockInscriber extends BaseBlockRender
 			progress = 1.0f - (progress - 1.0f);
 		press -= progress / 5.0f;
 
-		IIcon ic = ExtraTextures.MEDenseEnergyCell0.getIcon();
+		IIcon ic = ExtraTextures.BlockInscriberInside.getIcon();
 		tess.startDrawingQuads();
 
 		middle += 0.02f;
 		tess.addVertexWithUV( TwoPx, middle + press, TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 2 ) );
 		tess.addVertexWithUV( 1.0 - TwoPx, middle + press, TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 2 ) );
-		tess.addVertexWithUV( 1.0 - TwoPx, middle + press, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 14 ) );
-		tess.addVertexWithUV( TwoPx, middle + press, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 14 ) );
+		tess.addVertexWithUV( 1.0 - TwoPx, middle + press, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 13 ) );
+		tess.addVertexWithUV( TwoPx, middle + press, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 13 ) );
 
-		tess.addVertexWithUV( TwoPx, middle + press, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 2 ) );
-		tess.addVertexWithUV( 1.0 - TwoPx, middle + press, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 2 ) );
-		tess.addVertexWithUV( 1.0 - TwoPx, middle + base, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 2 + 16 * (press - base) ) );
-		tess.addVertexWithUV( TwoPx, middle + base, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 2 + 16 * (press - base) ) );
+		tess.addVertexWithUV( TwoPx, middle + press, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 ) );
+		tess.addVertexWithUV( 1.0 - TwoPx, middle + press, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 ) );
+		tess.addVertexWithUV( 1.0 - TwoPx, middle + base, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 - 16 * (press - base) ) );
+		tess.addVertexWithUV( TwoPx, middle + base, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 - 16 * (press - base) ) );
 
 		middle -= 2.0f * 0.02f;
 		tess.addVertexWithUV( 1.0 - TwoPx, middle - press, TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 2 ) );
 		tess.addVertexWithUV( TwoPx, middle - press, TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 2 ) );
-		tess.addVertexWithUV( TwoPx, middle - press, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 14 ) );
-		tess.addVertexWithUV( 1.0 - TwoPx, middle - press, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 14 ) );
+		tess.addVertexWithUV( TwoPx, middle - press, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 13 ) );
+		tess.addVertexWithUV( 1.0 - TwoPx, middle - press, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 13 ) );
 
-		tess.addVertexWithUV( 1.0 - TwoPx, middle - press, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 2 ) );
-		tess.addVertexWithUV( TwoPx, middle - press, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 2 ) );
-		tess.addVertexWithUV( TwoPx, middle - base, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 2 + 16 * (press - base) ) );
-		tess.addVertexWithUV( 1.0 - TwoPx, middle + -base, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 2 + 16 * (press - base) ) );
+		tess.addVertexWithUV( 1.0 - TwoPx, middle - press, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 ) );
+		tess.addVertexWithUV( TwoPx, middle - press, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 ) );
+		tess.addVertexWithUV( TwoPx, middle - base, 1.0 - TwoPx, ic.getInterpolatedU( 14 ), ic.getInterpolatedV( 3 - 16 * (press - base) ) );
+		tess.addVertexWithUV( 1.0 - TwoPx, middle + -base, 1.0 - TwoPx, ic.getInterpolatedU( 2 ), ic.getInterpolatedV( 3 - 16 * (press - base) ) );
 
 		tess.draw();
 
