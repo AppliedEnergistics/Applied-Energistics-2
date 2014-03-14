@@ -120,7 +120,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getAccessibleSlotsBySide(ForgeDirection side)
 	{
 		if ( isCenter() )
 			return sidesLink;

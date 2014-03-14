@@ -193,7 +193,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getAccessibleSlotsBySide(ForgeDirection whichSide)
 	{
 		return sides;
 	}

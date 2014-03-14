@@ -192,7 +192,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getAccessibleSlotsBySide(ForgeDirection side)
 	{
 		return sides;
 	}

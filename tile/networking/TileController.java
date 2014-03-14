@@ -170,7 +170,7 @@ public class TileController extends AENetworkPowerTile implements IAEPowerStorag
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getAccessibleSlotsBySide(ForgeDirection side)
 	{
 		return sides;
 	}

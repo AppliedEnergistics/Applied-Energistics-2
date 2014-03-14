@@ -1,10 +1,13 @@
 package appeng.tile;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
+import appeng.block.AEBaseBlock;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
 import appeng.tile.inventory.IAEAppEngInventory;
@@ -135,7 +138,17 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	@Override
 	public abstract void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added);
 
-	@Override
-	public abstract int[] getAccessibleSlotsFromSide(int side);
+	public abstract int[] getAccessibleSlotsBySide(ForgeDirection whichSide);
 
+	@Override
+	final public int[] getAccessibleSlotsFromSide(int side)
+	{
+		Block blk = worldObj.getBlock( xCoord, yCoord, zCoord );
+		if ( blk instanceof AEBaseBlock )
+		{
+			ForgeDirection mySide = ForgeDirection.getOrientation( side );
+			return getAccessibleSlotsBySide( ((AEBaseBlock) blk).mapRotation( this, mySide ) );
+		}
+		return getAccessibleSlotsBySide( ForgeDirection.getOrientation( side ) );
+	}
 }

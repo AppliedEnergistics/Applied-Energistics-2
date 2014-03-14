@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
@@ -76,7 +77,7 @@ public class TileSkyChest extends AEBaseInvTile
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getAccessibleSlotsBySide(ForgeDirection side)
 	{
 		return sides;
 	}

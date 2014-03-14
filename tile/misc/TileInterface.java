@@ -137,9 +137,9 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getAccessibleSlotsBySide(ForgeDirection side)
 	{
-		return duality.getAccessibleSlotsFromSide( side );
+		return duality.getAccessibleSlotsFromSide( side.ordinal() );
 	}
 
 	@Override

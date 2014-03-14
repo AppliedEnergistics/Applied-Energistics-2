@@ -358,7 +358,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		{
 			icell = null;
 			fcell = null;
-			
+
 			ItemStack is = inv.getStackInSlot( 1 );
 			if ( is != null )
 			{
@@ -367,17 +367,17 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 				if ( cellHandler != null )
 				{
 					double power = 1.0;
-	
+
 					IMEInventoryHandler<IAEItemStack> itemCell = cellHandler.getCellInventory( is, StorageChannel.ITEMS );
 					IMEInventoryHandler<IAEFluidStack> fluidCell = cellHandler.getCellInventory( is, StorageChannel.FLUIDS );
-	
+
 					if ( itemCell != null )
 						power += cellHandler.cellIdleDrain( is, itemCell );
 					else if ( fluidCell != null )
 						power += cellHandler.cellIdleDrain( is, fluidCell );
-	
+
 					gridProxy.setIdlePowerUsage( power );
-	
+
 					icell = wrap( itemCell );
 					fcell = wrap( fluidCell );
 				}
@@ -487,9 +487,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getAccessibleSlotsBySide(ForgeDirection side)
 	{
-		if ( side == getForward().ordinal() )
+		if ( side == getForward() )
 			return front;
 		return sides;
 	}

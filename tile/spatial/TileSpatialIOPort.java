@@ -145,7 +145,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getAccessibleSlotsBySide(ForgeDirection side)
 	{
 		return sides;
 	}

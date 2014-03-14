@@ -172,7 +172,7 @@ public class TileCondenser extends AEBaseInvTile implements IAEAppEngInventory, 
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int var1)
+	public int[] getAccessibleSlotsBySide(ForgeDirection side)
 	{
 		return sides;
 	}

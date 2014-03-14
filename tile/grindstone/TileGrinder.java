@@ -71,7 +71,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getAccessibleSlotsBySide(ForgeDirection side)
 	{
 		return sides;
 	}

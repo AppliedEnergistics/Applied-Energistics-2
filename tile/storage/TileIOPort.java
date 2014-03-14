@@ -153,7 +153,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getAccessibleSlotsBySide(ForgeDirection side)
 	{
 		return sides;
 	}

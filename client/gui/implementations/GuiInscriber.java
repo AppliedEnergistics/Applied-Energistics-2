@@ -41,12 +41,9 @@ public class GuiInscriber extends AEBaseGui
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		int k = 25;
-		int l = -15;
-
 		pb.max = cvc.maxProessingTime;
 		pb.current = cvc.processingTime;
-		pb.FullMsg = ( pb.current * 100 / pb.max ) + "%";
+		pb.FullMsg = (pb.current * 100 / pb.max) + "%";
 
 		fontRendererObj.drawString( GuiText.Inscriber.getLocal(), 8, 6, 4210752 );
 		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );

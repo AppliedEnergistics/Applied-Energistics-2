@@ -158,10 +158,8 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getAccessibleSlotsBySide(ForgeDirection d)
 	{
-		ForgeDirection d = ForgeDirection.getOrientation( side );
-
 		if ( d == ForgeDirection.UP )
 			return top;
 
