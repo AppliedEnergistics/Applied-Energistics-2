@@ -45,7 +45,7 @@ public class GuiInscriber extends AEBaseGui
 		pb.current = cvc.processingTime;
 		pb.FullMsg = (pb.current * 100 / pb.max) + "%";
 
-		fontRendererObj.drawString( GuiText.Inscriber.getLocal(), 8, 6, 4210752 );
+		fontRendererObj.drawString( getGuiDisplayName( GuiText.Inscriber.getLocal() ), 8, 6, 4210752 );
 		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
 	}
 

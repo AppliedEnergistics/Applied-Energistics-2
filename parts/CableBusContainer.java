@@ -556,7 +556,6 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 			if ( p != null )
 			{
 				is = p.getItemStack( PartItemStack.Network );
-				is.setTagCompound( null );
 
 				data.writeShort( Item.getIdFromItem( is.getItem() ) );
 				data.writeShort( is.getItemDamage() );

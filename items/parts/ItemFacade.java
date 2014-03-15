@@ -104,36 +104,41 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem
 			for (Object blk : Block.blockRegistry)
 			{
 				Block b = (Block) blk;
-				if ( b != null
-						&& FacadeConfig.instance.checkEnabled( b, b.isOpaqueCube() && !b.getTickRandomly() && !(b instanceof OreQuartz)
-								|| b instanceof BlockGlass ) )
+				try
 				{
-					try
+					Item item = Item.getItemFromBlock( b );
+
+					List<ItemStack> tmpList = new ArrayList();
+					b.getSubBlocks( item, b.getCreativeTabToDisplayOn(), tmpList );
+					for (ItemStack l : tmpList)
 					{
-						Item item = Item.getItemFromBlock( b );
+						if ( l.hasTagCompound() )
+							continue;
 
-						List<ItemStack> tmpList = new ArrayList();
-						b.getSubBlocks( item, b.getCreativeTabToDisplayOn(), tmpList );
-						for (ItemStack l : tmpList)
+						int metadata = l.getItem().getMetadata( l.getItemDamage() );
+
+						boolean hasTile = b.hasTileEntity( metadata );
+						boolean enableGlass = b instanceof BlockGlass;
+						boolean disableOre = b instanceof OreQuartz;
+
+						boolean defaultValue = (b.isOpaqueCube() && !b.getTickRandomly() && !hasTile && !disableOre) || enableGlass;
+						if ( FacadeConfig.instance.checkEnabled( b, metadata, defaultValue ) )
 						{
-							if ( l.hasTagCompound() )
-								continue;
-
 							ItemStack is = new ItemStack( this );
 							NBTTagCompound data = new NBTTagCompound();
 							int[] ds = new int[2];
 							ds[0] = Item.getIdFromItem( l.getItem() );
-							ds[1] = l.getItem().getMetadata( l.getItemDamage() );
+							ds[1] = metadata;
 							data.setIntArray( "x", ds );
 							is.setTagCompound( data );
 
 							subTypes.add( is );
 						}
 					}
-					catch (Throwable t)
-					{
-						// just absorb..
-					}
+				}
+				catch (Throwable t)
+				{
+					// just absorb..
 				}
 			}
 

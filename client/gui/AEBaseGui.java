@@ -31,6 +31,7 @@ import appeng.client.gui.widgets.ITooltip;
 import appeng.client.me.InternalSlotME;
 import appeng.client.me.SlotME;
 import appeng.client.render.AppEngRenderItem;
+import appeng.container.AEBaseContainer;
 import appeng.container.slot.AppEngCraftingSlot;
 import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.AppEngSlot.hasCalculatedValidness;
@@ -456,6 +457,23 @@ public abstract class AEBaseGui extends GuiContainer
 			myScrollBar.draw( this );
 
 		drawFG( ox, oy, x, y );
+	}
+
+	protected String getGuiDisplayName(String in)
+	{
+		return hasCustomInventoryName() ? getInventoryName() : in;
+	}
+
+	private String getInventoryName()
+	{
+		return ((AEBaseContainer) inventorySlots).customName;
+	}
+
+	private boolean hasCustomInventoryName()
+	{
+		if ( inventorySlots instanceof AEBaseContainer )
+			return ((AEBaseContainer) inventorySlots).customName != null;
+		return false;
 	}
 
 	protected Slot getSlot(int mousex, int mousey)

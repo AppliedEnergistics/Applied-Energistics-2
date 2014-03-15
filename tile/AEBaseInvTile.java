@@ -81,18 +81,6 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	}
 
 	@Override
-	public String getInventoryName()
-	{
-		return getClass().getSimpleName();
-	}
-
-	@Override
-	public boolean hasCustomInventoryName()
-	{
-		return false;
-	}
-
-	@Override
 	public void openInventory()
 	{
 	}
@@ -151,4 +139,23 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 		}
 		return getAccessibleSlotsBySide( ForgeDirection.getOrientation( side ) );
 	}
+
+	/**
+	 * Returns the name of the inventory
+	 */
+	@Override
+	public String getInventoryName()
+	{
+		return getCustomName();
+	}
+
+	/**
+	 * Returns if the inventory is named
+	 */
+	@Override
+	public boolean hasCustomInventoryName()
+	{
+		return hasCustomName();
+	}
+
 }

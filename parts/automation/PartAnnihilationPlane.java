@@ -13,6 +13,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.Actionable;
@@ -255,6 +256,24 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 									energy.extractAEPower( total, Actionable.MODULATE, PowerMultiplier.CONFIG );
 									w.setBlock( x, y, z, Platform.air, 0, 3 );
 
+									AxisAlignedBB box = AxisAlignedBB.getBoundingBox( x - 0.2, y - 0.2, z - 0.2, x + 1.2, y + 1.2, z + 1.2 );
+									for (Object ei : w.getEntitiesWithinAABB( EntityItem.class, box ))
+									{
+										if ( ei instanceof EntityItem )
+										{
+											EntityItem item = (EntityItem) ei;
+											if ( !item.isDead )
+											{
+												IAEItemStack storedItem = AEItemStack.create( item.getEntityItem() );
+												storedItem = Platform.poweredInsert( energy, storage.getItemInventory(), storedItem, mySrc );
+												if ( storedItem != null )
+													Buffer.add( storedItem );
+
+												item.setDead();
+											}
+										}
+									}
+
 									try
 									{
 										ServerHelper.proxy.sendToAllNearExcept( null, x, y, z, 64, w, new PacketTransitionEffect( x, y, z, side, true ) );
@@ -264,9 +283,9 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 										AELog.error( e );
 									}
 
-									for (ItemStack is : out)
+									for (ItemStack snaggedItem : out)
 									{
-										IAEItemStack storedItem = AEItemStack.create( is );
+										IAEItemStack storedItem = AEItemStack.create( snaggedItem );
 										storedItem = Platform.poweredInsert( energy, storage.getItemInventory(), storedItem, mySrc );
 										if ( storedItem != null )
 											Buffer.add( storedItem );

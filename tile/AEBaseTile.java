@@ -27,6 +27,7 @@ import appeng.api.util.IConfigureableObject;
 import appeng.api.util.IOrientable;
 import appeng.core.AELog;
 import appeng.core.features.ItemStackSrc;
+import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
@@ -34,7 +35,7 @@ import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
+public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, ICustomNameObject
 {
 
 	private final EnumMap<TileEventType, List<AETileEventHandler>> handlers = new EnumMap<TileEventType, List<AETileEventHandler>>( TileEventType.class );
@@ -45,6 +46,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 
 	public boolean dropItems = true;
 	public int renderFragment = 0;
+	public String customName;
 
 	public TileEntity getTile()
 	{
@@ -120,6 +122,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 			data.setString( "orientation_up", up.name() );
 		}
 
+		if ( customName != null )
+			data.setString( "customName", customName );
+
 		for (AETileEventHandler h : getHandlerListFor( TileEventType.WORLD_NBT ))
 			h.writeToNBT( data );
 	}
@@ -128,6 +133,11 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 	final public void readFromNBT(NBTTagCompound data)
 	{
 		super.readFromNBT( data );
+
+		if ( data.hasKey( "customName" ) )
+			customName = data.getString( "customName" );
+		else
+			customName = null;
 
 		try
 		{
@@ -411,6 +421,23 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile
 	public boolean requiresTESR()
 	{
 		return false;
+	}
+
+	public void setName(String name)
+	{
+		this.customName = name;
+	}
+
+	@Override
+	public String getCustomName()
+	{
+		return hasCustomName() ? customName : getClass().getSimpleName();
+	}
+
+	@Override
+	public boolean hasCustomName()
+	{
+		return customName != null && customName.length() > 0;
 	}
 
 }

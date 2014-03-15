@@ -38,6 +38,8 @@ import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
+import appeng.core.AELog;
+import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
@@ -48,7 +50,7 @@ import appeng.util.SettingsFrom;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradeableHost
+public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradeableHost, ICustomNameObject
 {
 
 	protected ISimplifiedBundle renderCache = null;
@@ -62,6 +64,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 
 	public AEBasePart(Class c, ItemStack is) {
 		this.is = is;
+		AELog.info( System.identityHashCode( is ) + " = " + is.getDisplayName() );
 		proxy = new AENetworkProxy( this, "part", is, this instanceof PartCable );
 		proxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 	}
@@ -95,6 +98,12 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	@Override
 	public ItemStack getItemStack(PartItemStack type)
 	{
+		if ( type == PartItemStack.Network )
+		{
+			ItemStack copy = is.copy();
+			copy.setTagCompound( null );
+			return copy;
+		}
 		return is;
 	}
 
@@ -472,4 +481,18 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	{
 		return false;
 	}
+
+	@Override
+	public String getCustomName()
+	{
+		return is.getDisplayName();
+	}
+
+	@Override
+	public boolean hasCustomName()
+	{
+		AELog.info( System.identityHashCode( is ) + " = " + is.getDisplayName() );
+		return is.hasDisplayName();
+	}
+
 }

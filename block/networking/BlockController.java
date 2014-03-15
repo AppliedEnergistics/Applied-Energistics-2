@@ -18,6 +18,7 @@ public class BlockController extends AEBaseBlock
 		super( BlockController.class, Material.iron );
 		setfeature( EnumSet.of( AEFeature.Core ) );
 		setTileEntiy( TileController.class );
+		setHardness( 6 );
 	}
 
 	@Override

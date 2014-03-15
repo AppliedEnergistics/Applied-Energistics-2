@@ -42,6 +42,8 @@ import appeng.container.slot.SlotPlayerInv;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
+import appeng.core.sync.packets.PacketValueConfig;
+import appeng.helpers.ICustomNameObject;
 import appeng.helpers.InventoryAction;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
@@ -57,6 +59,9 @@ public abstract class AEBaseContainer extends Container
 
 	final protected BaseActionSource mySrc;
 	public boolean isContainerValid = true;
+
+	boolean sentCustomName;
+	public String customName;
 
 	int ticksSinceCheck = 900;
 
@@ -405,6 +410,49 @@ public abstract class AEBaseContainer extends Container
 	{
 		// ???
 		detectAndSendChanges();
+	}
+
+	@Override
+	public void detectAndSendChanges()
+	{
+		sendCustomName();
+		super.detectAndSendChanges();
+	}
+
+	protected void sendCustomName()
+	{
+		if ( !sentCustomName )
+		{
+			sentCustomName = true;
+			if ( Platform.isServer() )
+			{
+				ICustomNameObject name = null;
+
+				if ( part instanceof ICustomNameObject )
+					name = (ICustomNameObject) part;
+
+				if ( tileEntity instanceof ICustomNameObject )
+					name = (ICustomNameObject) tileEntity;
+
+				if ( name != null )
+				{
+					if ( name.hasCustomName() )
+						customName = name.getCustomName();
+
+					if ( customName != null )
+					{
+						try
+						{
+							NetworkHandler.instance.sendTo( new PacketValueConfig( "CustomName", customName ), (EntityPlayerMP) invPlayer.player );
+						}
+						catch (IOException e)
+						{
+							AELog.error( e );
+						}
+					}
+				}
+			}
+		}
 	}
 
 	protected void bindPlayerInventory(InventoryPlayer inventoryPlayer, int offset_x, int offset_y)

@@ -245,6 +245,8 @@ public class ClientHelper extends ServerHelper
 	public boolean shouldAddParticles(Random r)
 	{
 		int setting = Minecraft.getMinecraft().gameSettings.particleSetting;
+		if ( setting == 2 )
+			return false;
 		if ( setting == 0 )
 			return true;
 		return r.nextInt( 2 * (setting + 1) ) == 0;

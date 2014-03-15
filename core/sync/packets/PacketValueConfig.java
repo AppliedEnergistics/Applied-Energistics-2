@@ -14,6 +14,7 @@ import net.minecraft.inventory.Container;
 import appeng.api.config.FuzzyMode;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
+import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.container.implementations.ContainerPriority;
@@ -115,7 +116,11 @@ public class PacketValueConfig extends AppEngPacket
 	{
 		Container c = player.openContainer;
 
-		if ( c instanceof IConfigureableObject )
+		if ( Name.equals( "CustomName" ) && c instanceof AEBaseContainer )
+		{
+			((AEBaseContainer) c).customName = Value;
+		}
+		else if ( c instanceof IConfigureableObject )
 		{
 			IConfigManager cm = ((IConfigureableObject) c).getConfigManager();
 

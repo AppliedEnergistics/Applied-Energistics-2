@@ -21,7 +21,7 @@ public class FacadeConfig extends Configuration
 		replacementPattern = Pattern.compile( "[^a-zA-Z0-9]" );
 	}
 
-	public boolean checkEnabled(Block id, boolean automatic)
+	public boolean checkEnabled(Block id, int metadata, boolean automatic)
 	{
 		if ( id == null )
 			return false;
@@ -34,7 +34,7 @@ public class FacadeConfig extends Configuration
 				try
 				{
 					if ( f.get( Block.class ) == id )
-						return get( "minecraft", f.getName(), automatic ).getBoolean( automatic );
+						return get( "minecraft", f.getName() + (metadata == 0 ? "" : "." + metadata), automatic ).getBoolean( automatic );
 				}
 				catch (Throwable e)
 				{
@@ -46,7 +46,7 @@ public class FacadeConfig extends Configuration
 		{
 			Matcher mod = replacementPattern.matcher( blk.modId );
 			Matcher name = replacementPattern.matcher( blk.name );
-			return get( mod.replaceAll( "" ), name.replaceAll( "" ), automatic ).getBoolean( automatic );
+			return get( mod.replaceAll( "" ), name.replaceAll( "" ) + (metadata == 0 ? "" : "." + metadata), automatic ).getBoolean( automatic );
 		}
 
 		return false;

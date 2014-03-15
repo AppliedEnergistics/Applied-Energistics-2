@@ -103,6 +103,7 @@ public class BusRenderer implements IItemRenderer
 
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 		renderer.useInventoryTint = false;
+		renderer.overrideBlockTexture = null;
 
 		if ( item.getItem() instanceof IFacadeItem )
 		{

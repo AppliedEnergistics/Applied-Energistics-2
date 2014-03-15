@@ -23,8 +23,8 @@ final public class QuartzWorldGen implements IWorldGenerator
 
 		if ( normal != null && charged != null )
 		{
-			oreNormal = new WorldGenMinable( normal, 0, AEConfig.instance.oresPerCluster, Blocks.stone );
-			oreCharged = new WorldGenMinable( charged, 0, AEConfig.instance.oresPerCluster, Blocks.stone );
+			oreNormal = new WorldGenMinable( normal, 0, AEConfig.instance.quartzOresPerCluster, Blocks.stone );
+			oreCharged = new WorldGenMinable( charged, 0, AEConfig.instance.quartzOresPerCluster, Blocks.stone );
 		}
 		else
 			oreNormal = oreCharged = null;
@@ -43,7 +43,7 @@ final public class QuartzWorldGen implements IWorldGenerator
 
 		for (int x = 0; x < (r.nextBoolean() ? scale * 2 : scale) / 2; ++x)
 		{
-			WorldGenMinable whichOre = r.nextFloat() > 0.92 ? oreCharged : oreNormal;
+			WorldGenMinable whichOre = r.nextFloat() > AEConfig.instance.spawnChargedChance ? oreCharged : oreNormal;
 			int a = chunkX * 16 + r.nextInt( 22 );
 			int b = r.nextInt( 40 * sealevel / 64 ) + r.nextInt( 22 * sealevel / 64 ) + 12 * sealevel / 64;
 			int c = chunkZ * 16 + r.nextInt( 22 );

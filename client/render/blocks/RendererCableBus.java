@@ -33,6 +33,7 @@ public class RendererCableBus extends BaseBlockRender
 		{
 			BusRenderer.instance.renderer.renderAllFaces = true;
 			BusRenderer.instance.renderer.blockAccess = renderer.blockAccess;
+			BusRenderer.instance.renderer.overrideBlockTexture = renderer.overrideBlockTexture;
 			((TileCableBus) t).cb.renderStatic( x, y, z );
 			BusRenderer.instance.renderer.renderAllFaces = false;
 		}
@@ -45,6 +46,7 @@ public class RendererCableBus extends BaseBlockRender
 	{
 		if ( t instanceof TileCableBus )
 		{
+			BusRenderer.instance.renderer.overrideBlockTexture = null;
 			((TileCableBus) t).cb.renderDynamic( x, y, z );
 		}
 	}

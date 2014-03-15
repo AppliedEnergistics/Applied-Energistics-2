@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -728,6 +729,17 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		if ( te instanceof IInventory )
 			return Container.calcRedstoneFromInventory( (IInventory) te );
 		return 0;
+	}
+
+	@Override
+	public void onBlockPlacedBy(World w, int x, int y, int z, EntityLivingBase player, ItemStack is)
+	{
+		if ( is.hasDisplayName() )
+		{
+			TileEntity te = getTileEntity( w, x, y, z );
+			if ( te instanceof AEBaseTile )
+				((AEBaseTile) w.getTileEntity( x, y, z )).setName( is.getDisplayName() );
+		}
 	}
 
 }

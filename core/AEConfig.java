@@ -40,7 +40,11 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 	public int storageBiomeID = -1;
 	public int storageProviderID = -1;
 
-	public int oresPerCluster = 4;
+	public float spawnChargedChance = 0.92f;
+	public int quartzOresPerCluster = 4;
+	public int chargedChange = 4;
+	public int minMeteoriteDistance = 707;
+	public int minMeteoriteDistanceSq = minMeteoriteDistance * minMeteoriteDistance;
 
 	private double WirelessBaseCost = 8;
 	private double WirelessCostMultiplier = 1;
@@ -121,6 +125,12 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		settings.registerSetting( Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH );
 		// settings.registerSetting( Settings.SORT_BY, SortOrder.NAME );
 		// settings.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
+
+		spawnChargedChance = (float) (1.0 - get( "worldGen", "spawnChargedChance", 1.0 - spawnChargedChance ).getDouble( 1.0 - spawnChargedChance ));
+		minMeteoriteDistance = get( "worldGen", "minMeteoriteDistance", minMeteoriteDistance ).getInt( minMeteoriteDistance );
+		quartzOresPerCluster = get( "worldGen", "quartzOresPerCluster", quartzOresPerCluster ).getInt( quartzOresPerCluster );
+
+		minMeteoriteDistanceSq = minMeteoriteDistance * minMeteoriteDistance;
 
 		WirelessBaseCost = get( "wireless", "WirelessBaseCost", WirelessBaseCost ).getDouble( WirelessBaseCost );
 		WirelessCostMultiplier = get( "wireless", "WirelessCostMultiplier", WirelessCostMultiplier ).getDouble( WirelessCostMultiplier );

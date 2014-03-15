@@ -304,7 +304,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString( myName.getLocal(), 8, 6, 4210752 );
+		fontRendererObj.drawString( getGuiDisplayName( myName.getLocal() ), 8, 6, 4210752 );
 		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
 	}
 

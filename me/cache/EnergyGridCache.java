@@ -232,10 +232,9 @@ public class EnergyGridCache implements IEnergyGrid
 				double max = ps.getAEMaxPower();
 				double current = ps.getAECurrentPower();
 
-				globalMaxPower += ps.getAEMaxPower();
-
 				if ( current > 0 && ps.getPowerFlow() != AccessRestriction.WRITE )
 				{
+					globalMaxPower += ps.getAEMaxPower();
 					globalAvailablePower += ((IAEPowerStorage) machine).getAECurrentPower();
 					providers.add( ps );
 				}
@@ -273,15 +272,16 @@ public class EnergyGridCache implements IEnergyGrid
 			if ( ps.isAEPublicPowerStorage() )
 			{
 				if ( ps.getPowerFlow() != AccessRestriction.WRITE )
+				{
+					globalMaxPower -= ps.getAEMaxPower();
 					globalAvailablePower -= ps.getAECurrentPower();
+				}
 
 				if ( lastProvider == machine )
 					lastProvider = null;
 
 				if ( lastRequestor == machine )
 					lastRequestor = null;
-
-				globalMaxPower -= ps.getAEMaxPower();
 
 				providers.remove( machine );
 				requesters.remove( machine );

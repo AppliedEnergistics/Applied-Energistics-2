@@ -60,7 +60,7 @@ public class GuiDrive extends AEBaseGui
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString( GuiText.Drive.getLocal(), 8, 6, 4210752 );
+		fontRendererObj.drawString( getGuiDisplayName( GuiText.Drive.getLocal() ), 8, 6, 4210752 );
 		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
 	}
 

@@ -63,7 +63,7 @@ public class GuiSpatialIOPort extends AEBaseGui
 		fontRendererObj.drawString( GuiText.RequiredPower.getLocal() + ": " + formatPowerLong( csiop.reqPower, false ), 13, 78, 4210752 );
 		fontRendererObj.drawString( GuiText.Efficiency.getLocal() + ": " + (((float) csiop.eff) / 100) + "%", 13, 88, 4210752 );
 
-		fontRendererObj.drawString( GuiText.SpatialIOPort.getLocal(), 8, 6, 4210752 );
+		fontRendererObj.drawString( getGuiDisplayName( GuiText.SpatialIOPort.getLocal() ), 8, 6, 4210752 );
 		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96, 4210752 );
 	}
 

@@ -41,7 +41,7 @@ public class GuiStorageBus extends GuiUpgradeable
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString( GuiText.StorageBus.getLocal(), 8, 6, 4210752 );
+		fontRendererObj.drawString( getGuiDisplayName( GuiText.StorageBus.getLocal() ), 8, 6, 4210752 );
 		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
 
 		if ( fuzzyMode != null )

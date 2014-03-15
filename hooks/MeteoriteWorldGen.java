@@ -7,6 +7,7 @@ import java.util.concurrent.Future;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import appeng.api.util.DimensionalCoord;
+import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.WorldSettings;
 import appeng.helpers.MeteoritePlacer;
@@ -48,7 +49,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 
 				future.get();
 
-				if ( obj.distance > 1000 * 500 )
+				if ( obj.distance > AEConfig.instance.minMeteoriteDistanceSq )
 				{
 					int depth = 180 + r.nextInt( 20 );
 					for (int trys = 0; trys < 20; trys++)

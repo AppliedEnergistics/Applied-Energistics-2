@@ -306,6 +306,21 @@ public class PartPlacement
 
 		if ( !world.isRemote )
 		{
+			Block block = world.getBlock( x, y, z );
+			LookDirection dir = Platform.getPlayerRay( player );
+			MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.a, dir.b );
+			if ( mop != null )
+			{
+				List<ItemStack> is = new LinkedList();
+				SelectedPart sp = host.selectPart( mop.hitVec.addVector( -mop.blockX, -mop.blockY, -mop.blockZ ) );
+
+				if ( sp.part != null )
+				{
+					if ( !player.isSneaking() && sp.part.onActivate( player, mop.hitVec ) )
+						return false;
+				}
+			}
+
 			ForgeDirection mySide = host.addPart( held, side, player );
 			if ( mySide != null )
 			{
