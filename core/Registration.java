@@ -3,6 +3,7 @@ package appeng.core;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.ChestGenHooks;
@@ -125,6 +126,7 @@ import appeng.me.storage.AEExternalHandler;
 import appeng.parts.PartPlacement;
 import appeng.recipes.AEItemResolver;
 import appeng.recipes.RecipeHandler;
+import appeng.recipes.game.FacadeRecipe;
 import appeng.recipes.game.ShapedRecipe;
 import appeng.recipes.game.ShapelessRecipe;
 import appeng.recipes.handlers.Grind;
@@ -185,6 +187,7 @@ public class Registration
 		recipeRegistery.addNewCraftHandler( "shaped", Shaped.class );
 		recipeRegistery.addNewCraftHandler( "shapeless", Shapeless.class );
 
+		RecipeSorter.register( "AE2-Facade", FacadeRecipe.class, Category.SHAPED, "" );
 		RecipeSorter.register( "AE2-Shaped", ShapedRecipe.class, Category.SHAPED, "" );
 		RecipeSorter.register( "AE2-Shapeless", ShapelessRecipe.class, Category.SHAPELESS, "" );
 
@@ -598,6 +601,10 @@ public class Registration
 		mr.whiteListTileEntity( AEBaseTile.class );
 
 		recipeHandler.registerHandlers();
+
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.enableFacadeCrafting ) )
+			CraftingManager.getInstance().getRecipeList().add( new FacadeRecipe() );
+
 	}
 
 	private void registerSpatial(boolean force)

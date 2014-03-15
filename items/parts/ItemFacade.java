@@ -112,28 +112,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem
 					b.getSubBlocks( item, b.getCreativeTabToDisplayOn(), tmpList );
 					for (ItemStack l : tmpList)
 					{
-						if ( l.hasTagCompound() )
-							continue;
-
-						int metadata = l.getItem().getMetadata( l.getItemDamage() );
-
-						boolean hasTile = b.hasTileEntity( metadata );
-						boolean enableGlass = b instanceof BlockGlass;
-						boolean disableOre = b instanceof OreQuartz;
-
-						boolean defaultValue = (b.isOpaqueCube() && !b.getTickRandomly() && !hasTile && !disableOre) || enableGlass;
-						if ( FacadeConfig.instance.checkEnabled( b, metadata, defaultValue ) )
-						{
-							ItemStack is = new ItemStack( this );
-							NBTTagCompound data = new NBTTagCompound();
-							int[] ds = new int[2];
-							ds[0] = Item.getIdFromItem( l.getItem() );
-							ds[1] = metadata;
-							data.setIntArray( "x", ds );
-							is.setTagCompound( data );
-
-							subTypes.add( is );
-						}
+						ItemStack facade = createFacadeForItem( l, false );
+						if ( l != null )
+							subTypes.add( l );
 					}
 				}
 				catch (Throwable t)
@@ -146,6 +127,39 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem
 				FacadeConfig.instance.save();
 		}
 
+	}
+
+	public ItemStack createFacadeForItem(ItemStack l, boolean returnItem)
+	{
+		if ( l == null )
+			return null;
+
+		Block b = Block.getBlockFromItem( l.getItem() );
+		if ( b == null || l.hasTagCompound() )
+			return null;
+
+		int metadata = l.getItem().getMetadata( l.getItemDamage() );
+
+		boolean hasTile = b.hasTileEntity( metadata );
+		boolean enableGlass = b instanceof BlockGlass;
+		boolean disableOre = b instanceof OreQuartz;
+
+		boolean defaultValue = (b.isOpaqueCube() && !b.getTickRandomly() && !hasTile && !disableOre) || enableGlass;
+		if ( FacadeConfig.instance.checkEnabled( b, metadata, defaultValue ) )
+		{
+			if ( returnItem )
+				return l;
+
+			ItemStack is = new ItemStack( this );
+			NBTTagCompound data = new NBTTagCompound();
+			int[] ds = new int[2];
+			ds[0] = Item.getIdFromItem( l.getItem() );
+			ds[1] = metadata;
+			data.setIntArray( "x", ds );
+			is.setTagCompound( data );
+			return is;
+		}
+		return null;
 	}
 
 	@Override

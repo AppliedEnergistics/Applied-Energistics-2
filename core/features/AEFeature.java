@@ -50,7 +50,7 @@ public enum AEFeature
 
 	Logging("Misc"), IntegrationLogging("Misc", false), CustomRecipes("Crafting", false), WebsiteRecipes("Misc", false),
 
-	inWorldSingularity("Crafting"), inWorldFluix("Crafting"), inWorldPurification("Crafting"), UpdateLogging("Misc", false);
+	enableFacadeCrafting("Crafting"), inWorldSingularity("Crafting"), inWorldFluix("Crafting"), inWorldPurification("Crafting"), UpdateLogging("Misc", false);
 
 	String Category;
 	boolean visible = true;
