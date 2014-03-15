@@ -7,6 +7,8 @@ import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.WorldChunkManagerHell;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraftforge.client.IRenderHandler;
+import appeng.client.render.SpatialSkyRender;
 import appeng.core.Registration;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -113,6 +115,12 @@ public class StorageWorldProvider extends WorldProvider
 	public String getDimensionName()
 	{
 		return "Storage Cell";
+	}
+
+	@Override
+	public IRenderHandler getSkyRenderer()
+	{
+		return SpatialSkyRender.getInstance();
 	}
 
 }

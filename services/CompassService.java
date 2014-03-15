@@ -232,6 +232,13 @@ public class CompassService implements ThreadFactory
 		try
 		{
 			executor.awaitTermination( 6, TimeUnit.MINUTES );
+
+			for (CompassReader cr : worldSet.values())
+			{
+				cr.close();
+			}
+
+			worldSet.clear();
 		}
 		catch (InterruptedException e)
 		{
