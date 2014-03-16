@@ -38,7 +38,6 @@ import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
-import appeng.core.AELog;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.AENetworkProxy;
@@ -64,7 +63,6 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 
 	public AEBasePart(Class c, ItemStack is) {
 		this.is = is;
-		AELog.info( System.identityHashCode( is ) + " = " + is.getDisplayName() );
 		proxy = new AENetworkProxy( this, "part", is, this instanceof PartCable );
 		proxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 	}
@@ -491,7 +489,6 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	@Override
 	public boolean hasCustomName()
 	{
-		AELog.info( System.identityHashCode( is ) + " = " + is.getDisplayName() );
 		return is.hasDisplayName();
 	}
 
