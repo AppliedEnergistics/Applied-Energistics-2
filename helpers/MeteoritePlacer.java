@@ -320,7 +320,7 @@ public class MeteoritePlacer
 		{
 			InventoryAdaptor ap = InventoryAdaptor.getAdaptor( te, ForgeDirection.UP );
 
-			int primary = (int) (Math.random() * 4);
+			int primary = Math.max( 1, (int) (Math.random() * 4) );
 			for (int zz = 0; zz < primary; zz++)
 			{
 				switch ((int) (Math.random() * 1000) % 4)
@@ -341,7 +341,7 @@ public class MeteoritePlacer
 				}
 			}
 
-			int secondary = (int) (Math.random() * 3);
+			int secondary = Math.max( 1, (int) (Math.random() * 3) );
 			for (int zz = 0; zz < secondary; zz++)
 			{
 				switch ((int) (Math.random() * 1000) % 3)
