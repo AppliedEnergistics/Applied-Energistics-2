@@ -15,12 +15,14 @@ import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.texture.CableBusTextures;
+import appeng.core.settings.TickRates;
 import appeng.core.sync.GuiBridge;
 import appeng.me.GridAccessException;
 import appeng.util.InventoryAdaptor;
@@ -231,5 +233,11 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 	protected boolean isSleeping()
 	{
 		return getHandler() == null || super.isSleeping();
+	}
+
+	@Override
+	public TickingRequest getTickingRequest(IGridNode node)
+	{
+		return new TickingRequest( TickRates.ExportBus.min,TickRates.ExportBus.max, isSleeping(), false );
 	}
 }

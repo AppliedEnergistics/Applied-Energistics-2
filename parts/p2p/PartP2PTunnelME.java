@@ -20,6 +20,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AECableType;
 import appeng.core.AELog;
+import appeng.core.settings.TickRates;
 import appeng.hooks.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.Connections;
@@ -110,7 +111,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	@Override
 	public TickingRequest getTickingRequest(IGridNode node)
 	{
-		return new TickingRequest( 5, 20, output, false );
+		return new TickingRequest( TickRates.METunnel.min, TickRates.METunnel.max, output, false );
 	}
 
 	@Override

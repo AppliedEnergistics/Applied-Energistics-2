@@ -18,6 +18,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
+import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
@@ -154,7 +155,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		if ( burnTime <= 0 )
 			eatFuel();
 
-		return new TickingRequest( 10, 40, burnTime <= 0, false );
+		return new TickingRequest( TickRates.VibrationChamber.min, TickRates.VibrationChamber.max, burnTime <= 0, false );
 	}
 
 	@Override

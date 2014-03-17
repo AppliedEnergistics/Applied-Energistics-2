@@ -119,10 +119,4 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		return super.getInventoryByName( name );
 	}
 
-	@Override
-	public TickingRequest getTickingRequest(IGridNode node)
-	{
-		return new TickingRequest( 5, 60, isSleeping(), false );
-	}
-
 }

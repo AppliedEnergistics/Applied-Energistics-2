@@ -14,6 +14,7 @@ import appeng.api.config.YesNo;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
 import appeng.core.features.AEFeature;
+import appeng.core.settings.TickRates;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
@@ -86,6 +87,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 	public double oreDoublePercentage = 90.0;
 
 	public boolean enableEffects = true;
+	public boolean useLargeFonts = false;
 
 	public int wireless_battery = 1600000;
 	public int manipulator_battery = 200000;
@@ -119,12 +121,10 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		grinderOres = get( "GrindStone", "grinderOres", grinderOres ).getStringList();
 		oreDoublePercentage = get( "GrindStone", "oreDoublePercentage", oreDoublePercentage ).getDouble( oreDoublePercentage );
 		enableEffects = get( "Client", "enableEffects", true ).getBoolean( true );
-
-		// settings.registerSetting( Settings.SEARCH_MODS, YesNo.YES );
+		useLargeFonts= get( "Client", "useTerminalUseLargeFont", true ).getBoolean( true );
+		
 		settings.registerSetting( Settings.SEARCH_TOOLTIPS, YesNo.YES );
 		settings.registerSetting( Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH );
-		// settings.registerSetting( Settings.SORT_BY, SortOrder.NAME );
-		// settings.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 
 		spawnChargedChance = (float) (1.0 - get( "worldGen", "spawnChargedChance", 1.0 - spawnChargedChance ).getDouble( 1.0 - spawnChargedChance ));
 		minMeteoriteDistance = get( "worldGen", "minMeteoriteDistance", minMeteoriteDistance ).getInt( minMeteoriteDistance );
@@ -176,6 +176,11 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 			selectedPowerUnit = PowerUnits.AE;
 		}
 
+		for (TickRates tr: TickRates.values() )
+		{
+			tr.Load(this);
+		}
+		
 		if ( isFeatureEnabled( AEFeature.SpatialIO ) )
 		{
 			storageBiomeID = get( "spatialio", "storageBiomeID", storageBiomeID ).getInt( storageBiomeID );
@@ -256,21 +261,9 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		return featureFlags.contains( f );
 	}
 
-	public int getBlockID(Class c, String subname)
-	{
-		return 0;
-		// return getBlock( AEFeatureHandler.getName( c, subname ), blkBaseNumber++ ).getInt();
-	}
-
-	public int getItemID(Class c, String subname)
-	{
-		return 0;
-		// return getItem( AEFeatureHandler.getName( c, subname ), blkItemNumber++ ).getInt();
-	}
-
 	public boolean useTerminalUseLargeFont()
 	{
-		return false;
+		return useLargeFonts;
 	}
 
 	public Enum getSetting(String Category, Class<? extends Enum> class1, Enum myDefault)

@@ -14,6 +14,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.core.AEConfig;
+import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
 import buildcraft.api.power.IPowerReceptor;
@@ -44,7 +45,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 	@Override
 	public TickingRequest getTickingRequest(IGridNode node)
 	{
-		return new TickingRequest( 1, 20, false, false );
+		return new TickingRequest( TickRates.MJTunnel.min, TickRates.MJTunnel.max, false, false );
 	}
 
 	@Override

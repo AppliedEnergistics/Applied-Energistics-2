@@ -29,6 +29,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
+import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.events.AETileEventHandler;
@@ -203,7 +204,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	@Override
 	public TickingRequest getTickingRequest(IGridNode node)
 	{
-		return new TickingRequest( 1, 5, hasWork(), false );
+		return new TickingRequest( TickRates.IOPort.min, TickRates.IOPort.max, hasWork(), false );
 	}
 
 	@Override

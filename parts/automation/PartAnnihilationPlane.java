@@ -36,6 +36,7 @@ import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.AELog;
+import appeng.core.settings.TickRates;
 import appeng.core.sync.packets.PacketTransitionEffect;
 import appeng.hooks.TickHandler;
 import appeng.me.GridAccessException;
@@ -317,7 +318,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	@Override
 	public TickingRequest getTickingRequest(IGridNode node)
 	{
-		return new TickingRequest( 2, 120, false, true );
+		return new TickingRequest( TickRates.AnnihilationPlane.min, TickRates.AnnihilationPlane.max, false, true );
 	}
 
 	@Override

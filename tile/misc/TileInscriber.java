@@ -19,6 +19,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
+import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.recipes.handlers.Inscribe;
 import appeng.recipes.handlers.Inscribe.InscriberRecipe;
@@ -312,7 +313,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 	@Override
 	public TickingRequest getTickingRequest(IGridNode node)
 	{
-		return new TickingRequest( 1, 1, !hasWork(), false );
+		return new TickingRequest( TickRates.Inscriber.min, TickRates.Inscriber.max, !hasWork(), false );
 	}
 
 	@Override

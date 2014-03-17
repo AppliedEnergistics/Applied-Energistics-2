@@ -26,6 +26,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
+import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.storage.MEMonitorIInventory;
@@ -403,7 +404,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	@Override
 	public TickingRequest getTickingRequest(IGridNode node)
 	{
-		return new TickingRequest( 5, 120, !hasWorkToDo(), true );
+		return new TickingRequest( TickRates.Interface.min, TickRates.Interface.max, !hasWorkToDo(), true );
 	}
 
 	@Override

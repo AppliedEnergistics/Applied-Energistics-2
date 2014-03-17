@@ -40,6 +40,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.IConfigManager;
 import appeng.client.texture.CableBusTextures;
+import appeng.core.settings.TickRates;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
@@ -327,7 +328,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	@Override
 	public TickingRequest getTickingRequest(IGridNode node)
 	{
-		return new TickingRequest( 5, 20 * 3, monitor == null, false );
+		return new TickingRequest( TickRates.StorageBus.min, TickRates.StorageBus.max, monitor == null, false );
 	}
 
 	@Override

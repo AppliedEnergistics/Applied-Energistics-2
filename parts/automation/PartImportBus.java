@@ -25,6 +25,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.texture.CableBusTextures;
+import appeng.core.settings.TickRates;
 import appeng.core.sync.GuiBridge;
 import appeng.me.GridAccessException;
 import appeng.util.InventoryAdaptor;
@@ -138,7 +139,7 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 	@Override
 	public TickingRequest getTickingRequest(IGridNode node)
 	{
-		return new TickingRequest( 5, 40, getHandler() == null, false );
+		return new TickingRequest( TickRates.ImportBus.min, TickRates.ImportBus.max, getHandler() == null, false );
 	}
 
 	private int itemToSend; // used in tickingRequest
