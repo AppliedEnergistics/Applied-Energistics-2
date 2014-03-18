@@ -119,7 +119,11 @@ public class Ingredient implements IIngredient
 			blk = GameRegistry.findBlock( nameSpace, "tile." + itemName );
 
 		if ( blk != null )
-			return new ItemStack( blk, qty, meta );
+		{
+			Item it = Item.getItemFromBlock( blk );
+			if ( it != null )
+				return new ItemStack( it, qty, meta );
+		}
 
 		Item it = GameRegistry.findItem( nameSpace, itemName );
 		if ( it == null )
