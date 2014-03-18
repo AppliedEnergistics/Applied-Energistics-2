@@ -425,7 +425,8 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public void partChanged()
 	{
-		// nothing!
+		if ( worldObj != null )
+			worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord, Platform.air );
 	}
 
 	@Override

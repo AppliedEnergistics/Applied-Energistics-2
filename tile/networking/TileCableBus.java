@@ -33,6 +33,7 @@ import appeng.parts.CableBusContainer;
 import appeng.tile.AEBaseTile;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
+import appeng.util.Platform;
 import cpw.mods.fml.common.Optional.Method;
 
 public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomCollision
@@ -248,7 +249,8 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public void partChanged()
 	{
-		// nothing!
+		if ( worldObj != null )
+			worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord, Platform.air );
 	}
 
 	@Override
