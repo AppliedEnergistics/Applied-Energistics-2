@@ -21,4 +21,6 @@ public interface IFZ
 
 	boolean isBarrel(TileEntity te);
 
+	void grinderRecipe(ItemStack is, ItemStack itemStack);
+
 }

@@ -78,7 +78,7 @@ public class AppEng
 			// IntegrationSide.BOTH, "Mine Factory Reloaded", "MineFactoryReloaded", "MFR", // MFR
 			IntegrationSide.BOTH, "Deep Storage Unit", null, "DSU", // DSU
 			// IntegrationSide.BOTH, "Better Storage", "betterstorage", "BS", // BS
-			// IntegrationSide.BOTH, "Factorization", "factorization", "FZ", // FZ
+			IntegrationSide.BOTH, "Factorization", "factorization", "FZ", // FZ
 			// IntegrationSide.BOTH, "Forestry", "Forestry", "Forestry", // Forestry
 			// IntegrationSide.BOTH, "Mekanism", "Mekanism", "Mekanism", // MeK
 			IntegrationSide.CLIENT, "Waila", "Waila", "Waila", // Waila
