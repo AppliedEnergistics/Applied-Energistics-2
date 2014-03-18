@@ -53,15 +53,15 @@ public class Pulverizer implements ICraftHandler, IWebsiteSeralizer
 	}
 
 	@Override
-	public boolean canCraft(ItemStack output) throws RegistrationError, MissingIngredientError {
-		return Platform.isSameItemPrecise( pro_output[0].getItemStack(),output );
+	public boolean canCraft(ItemStack output) throws RegistrationError, MissingIngredientError
+	{
+		return Platform.isSameItemPrecise( pro_output[0].getItemStack(), output );
 	}
 
 	@Override
-	public String getPattern( RecipeHandler h ) {
-		return "pulverizer\n"+
-				h.getName(pro_input)+"\n"+
-				h.getName(pro_output[0]);
+	public String getPattern(RecipeHandler h)
+	{
+		return null;
 	}
-	
+
 }

@@ -52,6 +52,9 @@ public class PathGridCache implements IPathingGrid
 	private HashSet<IPathItem> semiOpen = new HashSet();
 	private HashSet<IPathItem> closedList = new HashSet();
 
+	public int channelsByBlocks = 0;
+	public double channelPowerUsage = 0.0;
+
 	public PathGridCache(IGrid g) {
 		myGrid = g;
 	}
@@ -82,6 +85,8 @@ public class PathGridCache implements IPathingGrid
 
 				int nodes = myGrid.getNodes().size();
 				ticksUntilReady = 20 + (nodes / 10);
+				channelsByBlocks = nodes * used;
+				channelPowerUsage = (double) channelsByBlocks / 128.0;
 
 				myGrid.getPivot().beginVisition( new AdHocChannelUpdater( used ) );
 			}
@@ -111,7 +116,7 @@ public class PathGridCache implements IPathingGrid
 							closedList.add( gc );
 							open.add( gc );
 							gc.setControllerRoute( (GridNode) node, true );
-							active.add( new PathSegment( open, semiOpen, closedList ) );
+							active.add( new PathSegment( this, open, semiOpen, closedList ) );
 						}
 					}
 				}
@@ -145,6 +150,7 @@ public class PathGridCache implements IPathingGrid
 				}
 
 				booting = false;
+				channelPowerUsage = (double) channelsByBlocks / 128.0;
 				myGrid.postEvent( new MENetworkBootingStatusChange() );
 			}
 		}
@@ -181,6 +187,7 @@ public class PathGridCache implements IPathingGrid
 		// clean up...
 		active.clear();
 
+		channelsByBlocks = 0;
 		updateNetwork = true;
 	}
 

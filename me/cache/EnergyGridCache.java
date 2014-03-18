@@ -21,9 +21,11 @@ import appeng.api.networking.energy.IEnergyGridProvider;
 import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.api.networking.energy.IEnergyWatcherHost;
 import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPostCacheConstruction;
 import appeng.api.networking.events.MENetworkPowerIdleChange;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.events.MENetworkPowerStorage;
+import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.storage.IStackWatcherHost;
 import appeng.me.GridNode;
 import appeng.me.energy.EnergyThreshold;
@@ -108,9 +110,16 @@ public class EnergyGridCache implements IEnergyGrid
 	Set<IEnergyGridProvider> gproviders = new LinkedHashSet();
 
 	final IGrid myGrid;
+	PathGridCache pgc;
 
 	public EnergyGridCache(IGrid g) {
 		myGrid = g;
+	}
+
+	@MENetworkEventSubscribe
+	public void postInit(MENetworkPostCacheConstruction pcc)
+	{
+		pgc = myGrid.getCache( IPathingGrid.class );
 	}
 
 	@MENetworkEventSubscribe
@@ -491,7 +500,7 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public double getIdlePowerUsage()
 	{
-		return drainPerTick;
+		return drainPerTick + pgc.channelPowerUsage;
 	}
 
 	@Override

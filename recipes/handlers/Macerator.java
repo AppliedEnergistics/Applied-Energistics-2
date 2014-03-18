@@ -8,6 +8,7 @@ import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
+import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.integration.abstraction.IIC2;
 import appeng.recipes.RecipeHandler;
@@ -42,20 +43,29 @@ public class Macerator implements ICraftHandler, IWebsiteSeralizer
 		{
 			IIC2 ic2 = (IIC2) AppEng.instance.getIntegration( "IC2" );
 			for (ItemStack is : pro_input.getItemStackSet())
-				ic2.maceratorRecipe( is, pro_output[0].getItemStack() );
+			{
+				try
+				{
+					ic2.maceratorRecipe( is, pro_output[0].getItemStack() );
+				}
+				catch (java.lang.RuntimeException err)
+				{
+					AELog.info( "IC2 not happy - " + err.getMessage() );
+				}
+			}
 		}
 	}
 
 	@Override
-	public boolean canCraft(ItemStack output) throws RegistrationError, MissingIngredientError {
-		return Platform.isSameItemPrecise( pro_output[0].getItemStack(),output );
+	public boolean canCraft(ItemStack output) throws RegistrationError, MissingIngredientError
+	{
+		return Platform.isSameItemPrecise( pro_output[0].getItemStack(), output );
 	}
 
 	@Override
-	public String getPattern( RecipeHandler h ) {
-		return "macerator\n"+
-				h.getName(pro_input)+"\n"+
-				h.getName(pro_output[0]);
+	public String getPattern(RecipeHandler h)
+	{
+		return null;
 	}
-	
+
 }

@@ -9,6 +9,7 @@ import java.util.Set;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
+import appeng.me.cache.PathGridCache;
 
 public class PathSegment
 {
@@ -22,10 +23,13 @@ public class PathSegment
 
 	};
 
-	public PathSegment(List open, Set semiopen, Set closed) {
+	PathGridCache pgc;
+
+	public PathSegment(PathGridCache myPGC, List open, Set semiopen, Set closed) {
 		this.open = open;
 		this.semiopen = semiopen;
 		this.closed = closed;
+		pgc = myPGC;
 		isDead = false;
 	}
 
@@ -101,6 +105,7 @@ public class PathSegment
 		pi = start;
 		while (pi != null)
 		{
+			pgc.channelsByBlocks++;
 			pi.incrementChannelCount( 1 );
 			pi = pi.getControllerRoute();
 		}
@@ -122,6 +127,7 @@ public class PathSegment
 		pi = start;
 		while (pi != null)
 		{
+			pgc.channelsByBlocks++;
 			pi.incrementChannelCount( 1 );
 			pi = pi.getControllerRoute();
 		}
