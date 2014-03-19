@@ -38,9 +38,15 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 		return fProxy.barrelGetMaxItemCount( te ) - fProxy.barrelGetItemCount( te );
 	}
 
-	public boolean containsItemType(IAEItemStack i)
+	public boolean containsItemType(IAEItemStack i, boolean acceptEmpty)
 	{
-		return i.equals( fProxy.barrelGetItem( te ) );
+		ItemStack currentItem = fProxy.barrelGetItem( te );
+
+		// empty barrels want your love too!
+		if ( acceptEmpty && currentItem == null )
+			return true;
+
+		return i.equals( currentItem );
 	}
 
 	public long storedItemCount()
@@ -66,7 +72,7 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 				fProxy.setItemType( te, input.getItemStack() );
 		}
 
-		if ( containsItemType( input ) )
+		if ( containsItemType( input, mode == Actionable.SIMULATE ) )
 		{
 			int max = fProxy.barrelGetMaxItemCount( te );
 			int newTotal = (int) storedItemCount() + (int) input.getStackSize();
@@ -92,7 +98,7 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 	@Override
 	public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src)
 	{
-		if ( containsItemType( request ) )
+		if ( containsItemType( request, false ) )
 		{
 			int howMany = (int) storedItemCount();
 			if ( request.getStackSize() >= howMany )

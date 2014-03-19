@@ -40,7 +40,7 @@ public class FZ implements IFZ, IIntegrationModule
 
 			if ( i != null )
 				i = Platform.cloneItemStack( i );
-			
+
 			return i;
 		}
 		catch (IllegalArgumentException e)
@@ -99,8 +99,6 @@ public class FZ implements IFZ, IIntegrationModule
 		{
 			if ( day_BarrelClass.isInstance( te ) )
 				day_item.set( te, input == null ? null : input.copy() );
-
-			te.markDirty();
 		}
 		catch (IllegalArgumentException e)
 		{
@@ -168,7 +166,11 @@ public class FZ implements IFZ, IIntegrationModule
 		{
 			Class c = Class.forName( "factorization.oreprocessing.TileEntityGrinder" );
 			Method m = c.getMethod( "addRecipe", Object.class, ItemStack.class, float.class );
-			m.invoke( c, in, out, 1.0 );
+
+			float amt = out.stackSize;
+			out.stackSize = 1;
+
+			m.invoke( c, in, out, amt );
 		}
 		catch (Throwable t)
 		{
