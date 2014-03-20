@@ -113,8 +113,8 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem
 					for (ItemStack l : tmpList)
 					{
 						ItemStack facade = createFacadeForItem( l, false );
-						if ( l != null )
-							subTypes.add( l );
+						if ( facade != null )
+							subTypes.add( facade );
 					}
 				}
 				catch (Throwable t)
