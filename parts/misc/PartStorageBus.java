@@ -21,6 +21,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.ticking.IGridTickable;
@@ -84,7 +85,18 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	boolean wasActive = false;
 
 	@MENetworkEventSubscribe
+	public void powerRender(MENetworkPowerStatusChange c)
+	{
+		updateStatus();
+	}
+
+	@MENetworkEventSubscribe
 	public void updateChannels(MENetworkChannelsChanged chann)
+	{
+		updateStatus();
+	}
+
+	private void updateStatus()
 	{
 		boolean currentActive = proxy.isActive();
 		if ( wasActive != currentActive )
