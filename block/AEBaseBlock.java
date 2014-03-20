@@ -288,6 +288,16 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		return null;
 	}
 
+	protected boolean hasCustomRotation()
+	{
+		return false;
+	}
+
+	protected void customRotateBlock(IOrientable rotateable, ForgeDirection axis)
+	{
+
+	}
+
 	@Override
 	final public boolean rotateBlock(World w, int x, int y, int z, ForgeDirection axis)
 	{
@@ -304,18 +314,26 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 		if ( rotateable != null && rotateable.canBeRotated() )
 		{
-			ForgeDirection forward = rotateable.getForward();
-			ForgeDirection up = rotateable.getUp();
-
-			for (int rs = 0; rs < 4; rs++)
+			if ( hasCustomRotation() )
 			{
-				forward = Platform.rotateAround( forward, axis );
-				up = Platform.rotateAround( up, axis );
+				customRotateBlock( rotateable, axis );
+				return true;
+			}
+			else
+			{
+				ForgeDirection forward = rotateable.getForward();
+				ForgeDirection up = rotateable.getUp();
 
-				if ( this.isValidOrientation( w, x, y, z, forward, up ) )
+				for (int rs = 0; rs < 4; rs++)
 				{
-					rotateable.setOrientation( forward, up );
-					return true;
+					forward = Platform.rotateAround( forward, axis );
+					up = Platform.rotateAround( up, axis );
+
+					if ( this.isValidOrientation( w, x, y, z, forward, up ) )
+					{
+						rotateable.setOrientation( forward, up );
+						return true;
+					}
 				}
 			}
 		}

@@ -123,7 +123,7 @@ public class AEBaseItemBlock extends ItemBlock
 
 		if ( super.placeBlockAt( stack, player, w, x, y, z, side, hitX, hitY, hitZ, metadata ) )
 		{
-			if ( blockType.hasBlockTileEntity() )
+			if ( blockType.hasBlockTileEntity() && !blockType.hasCustomRotation() )
 			{
 				AEBaseTile tile = blockType.getTileEntity( w, x, y, z );
 				ori = tile;

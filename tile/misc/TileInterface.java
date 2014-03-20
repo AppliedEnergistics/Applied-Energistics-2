@@ -1,5 +1,7 @@
 package appeng.tile.misc;
 
+import java.util.EnumSet;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,13 +27,39 @@ import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.InvOperation;
+import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
 
 public class TileInterface extends AENetworkInvTile implements IGridTickable, ISegmentedInventory, ITileStorageMonitorable, IStorageMonitorable,
 		IInventoryDestination, IInterfaceHost, IConfigureableObject
 {
 
+	ForgeDirection pointAt = ForgeDirection.UNKNOWN;
 	DualityInterface duality = new DualityInterface( gridProxy, this );
+
+	public void setSide(ForgeDirection axis)
+	{
+		if ( Platform.isClient() )
+			return;
+
+		if ( pointAt == axis.getOpposite() )
+			pointAt = axis;
+		else if ( pointAt == axis || pointAt == axis.getOpposite() )
+			pointAt = ForgeDirection.UNKNOWN;
+		else if ( pointAt == ForgeDirection.UNKNOWN )
+			pointAt = axis.getOpposite();
+		else
+			pointAt = Platform.rotateAround( pointAt, axis );
+
+		if ( ForgeDirection.UNKNOWN == pointAt )
+			setOrientation( pointAt, pointAt );
+		else
+			setOrientation( pointAt.offsetY != 0 ? ForgeDirection.SOUTH : ForgeDirection.UP, pointAt.getOpposite() );
+
+		gridProxy.setValidSides( EnumSet.complementOf( EnumSet.of( pointAt ) ) );
+		markForUpdate();
+		markDirty();
+	}
 
 	@Override
 	public void gridChanged()
@@ -49,19 +77,33 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 		@Override
 		public void writeToNBT(NBTTagCompound data)
 		{
+			data.setInteger( "pointAt", pointAt.ordinal() );
 			duality.writeToNBT( data );
 		}
 
 		@Override
 		public void readFromNBT(NBTTagCompound data)
 		{
+			int val = data.getInteger( "pointAt" );
+
+			if ( val >= 0 && val < ForgeDirection.values().length )
+				pointAt = ForgeDirection.values()[val];
+			else
+				pointAt = ForgeDirection.UNKNOWN;
+
 			duality.readFromNBT( data );
 		}
-
 	};
 
 	public TileInterface() {
 		addNewHandler( new TileInterfaceHandler() );
+	}
+
+	@Override
+	public void onReady()
+	{
+		gridProxy.setValidSides( EnumSet.complementOf( EnumSet.of( pointAt ) ) );
+		super.onReady();
 	}
 
 	@Override

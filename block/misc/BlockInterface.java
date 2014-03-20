@@ -6,7 +6,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.util.IOrientable;
 import appeng.block.AEBaseBlock;
+import appeng.client.render.BaseBlockRender;
+import appeng.client.render.blocks.RenderBlockInterface;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.misc.TileInterface;
@@ -19,6 +22,27 @@ public class BlockInterface extends AEBaseBlock
 		super( BlockInterface.class, Material.iron );
 		setfeature( EnumSet.of( AEFeature.Core ) );
 		setTileEntiy( TileInterface.class );
+	}
+
+	@Override
+	protected Class<? extends BaseBlockRender> getRenderer()
+	{
+		return RenderBlockInterface.class;
+	}
+
+	@Override
+	protected boolean hasCustomRotation()
+	{
+		return true;
+	}
+
+	@Override
+	protected void customRotateBlock(IOrientable rotateable, ForgeDirection axis)
+	{
+		if ( rotateable instanceof TileInterface )
+		{
+			((TileInterface) rotateable).setSide( axis );
+		}
 	}
 
 	@Override

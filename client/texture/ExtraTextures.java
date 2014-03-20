@@ -22,6 +22,8 @@ public enum ExtraTextures
 
 	BlockChargerInside("BlockChargerInside"),
 
+	BlockInterfaceAlternate("BlockInterfaceAlternate"), BlockInterfaceAlternateArrow("BlockInterfaceAlternateArrow"),
+
 	MEStorageCellTextures("MEStorageCellTextures"), White("White"),
 
 	BlockMatterCannonParticle("BlockMatterCannonParticle"), BlockEnergyParticle("BlockEnergyParticle"),
