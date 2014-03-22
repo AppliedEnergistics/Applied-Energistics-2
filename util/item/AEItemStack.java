@@ -497,7 +497,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		if ( newDef.item.isDamageable() )
 			newDef.damageValue = newDef.dspDamage;
 
-		newDef.tagCompound = newDef.lowTag;
+		newDef.tagCompound = AEItemDef.lowTag;
 		newDef.reHash();
 		return bottom;
 	}
@@ -527,7 +527,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		if ( newDef.item.isDamageable() )
 			newDef.damageValue = top.def.dspDamage;
 
-		newDef.tagCompound = newDef.highTag;
+		newDef.tagCompound = AEItemDef.highTag;
 		newDef.reHash();
 		return top;
 	}

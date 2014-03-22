@@ -21,6 +21,7 @@ import appeng.block.AEBaseBlock;
 import appeng.core.WorldSettings;
 import appeng.core.features.AEFeature;
 import appeng.helpers.LocationRotation;
+import appeng.helpers.NullRotation;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -80,7 +81,7 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	{
 		if ( w.getBlockMetadata( x, y, z ) == 0 )
 			return new LocationRotation( w, x, y, z );
-		return null;
+		return new NullRotation();
 	}
 
 	@Override

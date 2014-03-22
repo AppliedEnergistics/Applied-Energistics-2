@@ -21,6 +21,7 @@ public class WorldRender implements ISimpleBlockRenderingHandler
 	private RenderBlocks renderer = new RenderBlocks();
 	final int renderID = RenderingRegistry.getNextAvailableRenderId();
 	public static final WorldRender instance = new WorldRender();
+	boolean hasErrored = false;
 
 	public HashMap<AEBaseBlock, BaseBlockRender> blockRenders = new HashMap();
 
@@ -72,7 +73,13 @@ public class WorldRender implements ISimpleBlockRenderingHandler
 		}
 		else
 		{
-			AELog.severe( "Invalid render: " + item.getUnlocalizedName() + " as ae block" );
+			if ( !hasErrored )
+			{
+				hasErrored = true;
+				AELog.severe( "Invalid render - item/block mismatch" );
+				AELog.severe( "		item: " + item.getUnlocalizedName() );
+				AELog.severe( "		block: " + blk.getUnlocalizedName() );
+			}
 		}
 	}
 
