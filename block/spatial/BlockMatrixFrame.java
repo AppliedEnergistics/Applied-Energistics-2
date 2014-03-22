@@ -10,6 +10,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
@@ -45,6 +46,12 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 	public void registerBlockIcons(IIconRegister iconRegistry)
 	{
 
+	}
+
+	@Override
+	public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity)
+	{
+		return false;
 	}
 
 	@Override
