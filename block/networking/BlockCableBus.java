@@ -241,4 +241,9 @@ public class BlockCableBus extends AEBaseBlock
 		return nullCB;
 	}
 
+	/**
+	 * Immibis MB Support.
+	 */
+	boolean ImmibisMicroblocks_TransformableBlockMarker = true;
+
 }

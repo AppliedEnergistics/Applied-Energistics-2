@@ -577,7 +577,8 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
-	final public void addCollisionBoxesToList(World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e)
+	// NOTE: WAS FINAL, changed for Immibis
+	public void addCollisionBoxesToList(World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e)
 	{
 		ICustomCollision collisionHandler = null;
 

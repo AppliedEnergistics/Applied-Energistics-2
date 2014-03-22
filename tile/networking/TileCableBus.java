@@ -220,7 +220,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public boolean isBlocked(ForgeDirection side)
 	{
-		return false;
+		return !ImmibisMicroblocks_isSideOpen( side.ordinal() );
 	}
 
 	@Override
@@ -318,6 +318,22 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	public Set<LayerFlags> getLayerFlags()
 	{
 		return cb.getLayerFlags();
+	}
+
+	/**
+	 * Immibis MB Support
+	 */
+
+	boolean ImmibisMicroblocks_TransformableTileEntityMarker = true;
+
+	public boolean ImmibisMicroblocks_isSideOpen(int side)
+	{
+		return true;
+	}
+
+	public void ImmibisMicroblocks_onMicroblocksChanged()
+	{
+		cb.updateConnections();
 	}
 
 }
