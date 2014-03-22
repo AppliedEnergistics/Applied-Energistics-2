@@ -103,9 +103,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	{
 		if ( burnTime <= 0 )
 		{
-			eatFuel();
-
-			if ( burnTime > 0 )
+			if ( canEatFuel() )
 			{
 				try
 				{
@@ -208,6 +206,18 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		}
 	}
 
+	private boolean canEatFuel()
+	{
+		ItemStack is = getStackInSlot( 0 );
+		if ( is != null )
+		{
+			int newBurnTime = TileEntityFurnace.getItemBurnTime( is );
+			if ( newBurnTime > 0 && is.stackSize > 0 )
+				return true;
+		}
+		return false;
+	}
+
 	private void eatFuel()
 	{
 		ItemStack is = getStackInSlot( 0 );
@@ -220,7 +230,14 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 				maxBurnTime = burnTime;
 				is.stackSize--;
 				if ( is.stackSize <= 0 )
-					setInventorySlotContents( 0, null );
+				{
+					ItemStack container = null;
+
+					if ( is.getItem().hasContainerItem( is ) )
+						container = is.getItem().getContainerItem( is );
+
+					setInventorySlotContents( 0, container );
+				}
 				else
 					setInventorySlotContents( 0, is );
 			}
