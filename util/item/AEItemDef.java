@@ -34,6 +34,9 @@ public class AEItemDef
 
 	public OreRefrence isOre;
 
+	static AESharedNBT lowTag = new AESharedNBT( Integer.MIN_VALUE );
+	static AESharedNBT highTag = new AESharedNBT( Integer.MAX_VALUE );
+
 	public AEItemDef copy()
 	{
 		AEItemDef t = new AEItemDef();

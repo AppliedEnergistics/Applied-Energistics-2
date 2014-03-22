@@ -463,7 +463,7 @@ public class Platform
 			while (i.hasNext())
 			{
 				String name = i.next();
-				hash += NBTOrderlessHash( ctA.getTag( name ) );
+				hash += name.hashCode() ^ NBTOrderlessHash( ctA.getTag( name ) );
 			}
 
 			return hash;
@@ -477,7 +477,7 @@ public class Platform
 			List<NBTBase> l = tagList( lA );
 			for (int x = 0; x < l.size(); x++)
 			{
-				hash += NBTOrderlessHash( l.get( x ) );
+				hash += ((Integer) x).hashCode() ^ NBTOrderlessHash( l.get( x ) );
 			}
 
 			return hash;

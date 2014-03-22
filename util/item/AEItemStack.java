@@ -229,12 +229,24 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@Override
 	public int compareTo(AEItemStack b)
 	{
-		int id = def.item.hashCode() - b.def.item.hashCode();
-		int dv = def.damageValue - b.def.damageValue;
-		int dspv = def.dspDamage - b.def.dspDamage;
+		int id = compare( def.item.hashCode(), b.def.item.hashCode() );
+		int dv = compare( def.damageValue, b.def.damageValue );
+		int dspv = compare( def.dspDamage, b.def.dspDamage );
+		// AELog.info( "NBT: " + nbt );
+		return id == 0 ? (dv == 0 ? (dspv == 0 ? compareNBT( b.def ) : dspv) : dv) : id;
+	}
 
-		return id == 0 ? (dv == 0 ? (dspv == 0 ? ((def.tagCompound == null ? 0 : def.tagCompound.getHash()) - (b.def.tagCompound == null ? 0
-				: b.def.tagCompound.getHash())) : dspv) : dv) : id;
+	private int compareNBT(AEItemDef b)
+	{
+		int nbt = compare( (def.tagCompound == null ? 0 : def.tagCompound.getHash()), (b.tagCompound == null ? 0 : b.tagCompound.getHash()) );
+		if ( nbt == 0 )
+			return compare( System.identityHashCode( def.tagCompound ), System.identityHashCode( b.tagCompound ) );
+		return nbt;
+	}
+
+	private int compare(int l, long m)
+	{
+		return l < m ? -1 : (l > m ? 1 : 0);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -485,6 +497,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		if ( newDef.item.isDamageable() )
 			newDef.damageValue = newDef.dspDamage;
 
+		newDef.tagCompound = newDef.lowTag;
 		newDef.reHash();
 		return bottom;
 	}
@@ -514,6 +527,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		if ( newDef.item.isDamageable() )
 			newDef.damageValue = top.def.dspDamage;
 
+		newDef.tagCompound = newDef.highTag;
 		newDef.reHash();
 		return top;
 	}

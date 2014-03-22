@@ -18,7 +18,7 @@ import appeng.util.Platform;
 public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 {
 
-	private Item itemid;
+	private Item item;
 	private int meta, hash;
 	public SharedSearchObject sso;
 	private IItemComparison comp;
@@ -36,8 +36,15 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 
 	private AESharedNBT(Item itemID, int damageValue) {
 		super();
-		itemid = itemID;
+		item = itemID;
 		meta = damageValue;
+	}
+
+	public AESharedNBT(int fakeValue) {
+		super();
+		item = null;
+		meta = 0;
+		hash = fakeValue;
 	}
 
 	@Override
@@ -78,7 +85,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 
 	public boolean matches(Item itemid2, int meta2, int orderlessHash)
 	{
-		return itemid2 == itemid && meta == meta2 && hash == orderlessHash;
+		return itemid2 == item && meta == meta2 && hash == orderlessHash;
 	}
 
 	public boolean comparePreciseWithRegistry(AESharedNBT tagCompound)
