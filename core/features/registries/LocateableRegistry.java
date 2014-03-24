@@ -6,11 +6,11 @@ import net.minecraftforge.common.MinecraftForge;
 import appeng.api.events.LocatableEventAnnounce;
 import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
 import appeng.api.features.ILocatable;
-import appeng.api.features.ILocateableRegistry;
+import appeng.api.features.ILocatableRegistry;
 import appeng.util.Platform;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class LocateableRegistry implements ILocateableRegistry
+public class LocateableRegistry implements ILocatableRegistry
 {
 
 	private HashMap<Long, ILocatable> set;

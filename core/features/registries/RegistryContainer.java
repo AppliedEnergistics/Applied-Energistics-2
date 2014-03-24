@@ -1,7 +1,7 @@
 package appeng.core.features.registries;
 
 import appeng.api.features.IGrinderRegistry;
-import appeng.api.features.ILocateableRegistry;
+import appeng.api.features.ILocatableRegistry;
 import appeng.api.features.IMatterCannonAmmoRegistry;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.features.IPlayerRegistry;
@@ -61,7 +61,7 @@ private IRecipeHandlerRegistry recipeReg = new RecipeHandlerRegistry();
 	}
 
 	@Override
-	public ILocateableRegistry locateable()
+	public ILocatableRegistry locateable()
 	{
 		return LocateableRegistry;
 	}
