@@ -21,7 +21,10 @@ public class FacadeRecipe implements IRecipe
 			if ( anchor.sameAs( inv.getStackInSlot( 1 ) ) && anchor.sameAs( inv.getStackInSlot( 3 ) ) && anchor.sameAs( inv.getStackInSlot( 5 ) )
 					&& anchor.sameAs( inv.getStackInSlot( 7 ) ) )
 			{
-				return facade.createFacadeForItem( inv.getStackInSlot( 4 ), !createFacade );
+				ItemStack facadeis = facade.createFacadeForItem( inv.getStackInSlot( 1 ), !createFacade );
+				if ( facadeis != null )
+					facadeis.stackSize = 4;
+				return facadeis;
 			}
 		}
 		return null;
