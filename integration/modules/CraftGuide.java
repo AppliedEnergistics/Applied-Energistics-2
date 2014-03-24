@@ -1,5 +1,6 @@
 package appeng.integration.modules;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.init.Blocks;
@@ -219,10 +220,10 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 			output[i] = items.get( i );
 
 			if ( output[i] instanceof ItemStack[] )
-				output[i] = ((ItemStack[]) output[i])[0];
+				output[i] = Arrays.asList( (ItemStack[]) output[i] );
 
-			if ( output[i] instanceof List )
-				output[i] = ((List) output[i]).get( 0 );
+			// if ( output[i] instanceof List )
+			// output[i] = ((List) output[i]).get( 0 );
 		}
 
 		output[9] = recipeOutput;
@@ -241,10 +242,10 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 				output[i] = items[y * width + x];
 
 				if ( output[i] instanceof ItemStack[] )
-					output[i] = ((ItemStack[]) output[i])[0];
+					output[i] = Arrays.asList( (ItemStack[]) output[i] );
 
-				if ( output[i] instanceof List )
-					output[i] = ((List) output[i]).get( 0 );
+				// if ( output[i] instanceof List )
+				// output[i] = ((List) output[i]).get( 0 );
 			}
 		}
 
@@ -264,10 +265,10 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 				output[i] = items[y * width + x];
 
 				if ( output[i] instanceof ItemStack[] )
-					output[i] = ((ItemStack[]) output[i])[0];
+					output[i] = Arrays.asList( (ItemStack[]) output[i] );
 
-				if ( output[i] instanceof List )
-					output[i] = ((List) output[i]).get( 0 );
+				// if ( output[i] instanceof List )
+				// output[i] = ((List) output[i]).get( 0 );
 			}
 		}
 
