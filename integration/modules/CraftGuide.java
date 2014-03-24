@@ -21,12 +21,15 @@ import uristqwerty.CraftGuide.api.StackInfo;
 import uristqwerty.CraftGuide.api.StackInfoSource;
 import uristqwerty.gui_craftguide.texture.DynamicTexture;
 import uristqwerty.gui_craftguide.texture.TextureClip;
+import appeng.integration.IIntegrationModule;
 import appeng.recipes.game.ShapedRecipe;
 import appeng.recipes.game.ShapelessRecipe;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
-public class CraftGuide extends CraftGuideAPIObject implements RecipeProvider, StackInfoSource, RecipeGenerator
+public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModule, RecipeProvider, StackInfoSource, RecipeGenerator
 {
+
+	public static CraftGuide instance;
 
 	private final Slot[] shapelessCraftingSlots = new ItemSlot[] { new ItemSlot( 3, 3, 16, 16 ), new ItemSlot( 21, 3, 16, 16 ), new ItemSlot( 39, 3, 16, 16 ),
 			new ItemSlot( 3, 21, 16, 16 ), new ItemSlot( 21, 21, 16, 16 ), new ItemSlot( 39, 21, 16, 16 ), new ItemSlot( 3, 39, 16, 16 ),
@@ -52,11 +55,6 @@ public class CraftGuide extends CraftGuideAPIObject implements RecipeProvider, S
 
 	private final Slot[] furnaceSlots = new ItemSlot[] { new ItemSlot( 13, 21, 16, 16 ),
 			new ItemSlot( 50, 21, 16, 16, true ).setSlotType( SlotType.OUTPUT_SLOT ), };
-
-	public CraftGuide() {
-
-		StackInfo.addSource( this );
-	}
 
 	@Override
 	public String getInfo(ItemStack itemStack)
@@ -303,7 +301,18 @@ public class CraftGuide extends CraftGuideAPIObject implements RecipeProvider, S
 		}
 
 		return null;
-		// return parent.getCraftingRecipe( recipe, allowSmallGrid );
+	}
+
+	@Override
+	public void Init() throws Throwable
+	{
+		StackInfo.addSource( this );
+	}
+
+	@Override
+	public void PostInit() throws Throwable
+	{
+
 	}
 
 }
