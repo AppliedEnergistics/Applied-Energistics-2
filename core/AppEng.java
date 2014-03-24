@@ -84,6 +84,7 @@ public class AppEng
 			IntegrationSide.CLIENT, "Waila", "Waila", "Waila", // Waila
 			IntegrationSide.CLIENT, "Inventory Tweaks", "inventorytweaks", "InvTweaks", // INV
 			IntegrationSide.CLIENT, "Not Enough Items", "NotEnoughItems", "NEI", // NEI
+			IntegrationSide.CLIENT, "Craft Guide", "craftguide", "CraftGuide", // CraftGuide
 			IntegrationSide.BOTH, "Forge MultiPart", "McMultipart", "FMP" // FMP
 	} );
 
