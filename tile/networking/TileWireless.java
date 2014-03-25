@@ -8,7 +8,9 @@ import java.util.EnumSet;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
@@ -22,7 +24,7 @@ import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
 
-public class TileWireless extends AENetworkInvTile
+public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoint
 {
 
 	public static final int POWERED_FLAG = 1;
@@ -141,11 +143,28 @@ public class TileWireless extends AENetworkInvTile
 		return sides;
 	}
 
+	@Override
 	public double getRange()
 	{
 		return AEConfig.instance.wireless_getMaxRange( getBoosters() );
 	}
-
+	
+	@Override
+	public boolean isActive()
+	{
+		return gridProxy.isActive();
+	}
+	
+	@Override
+	public IGrid getGrid()
+	{
+		try {
+			return gridProxy.getGrid();
+		} catch (GridAccessException e) {
+			return null;
+		}
+	}
+	
 	private int getBoosters()
 	{
 		ItemStack boosters = inv.getStackInSlot( 0 );

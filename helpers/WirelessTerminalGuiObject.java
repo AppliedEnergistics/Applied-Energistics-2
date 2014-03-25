@@ -10,6 +10,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.guiobjects.IPortableCell;
+import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -22,6 +23,7 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.tile.networking.TileWireless;
 
@@ -34,7 +36,7 @@ public class WirelessTerminalGuiObject implements IPortableCell
 	IGrid targetGrid;
 	IStorageGrid sg;
 	IMEMonitor<IAEItemStack> itemStorage;
-	TileWireless myWap;
+	IWirelessAccessPoint myWap;
 
 	double sqRange = Double.MAX_VALUE;
 	double myRange = Double.MAX_VALUE;
@@ -89,7 +91,7 @@ public class WirelessTerminalGuiObject implements IPortableCell
 		{
 			if ( myWap != null )
 			{
-				if ( myWap.getGridNode( ForgeDirection.UNKNOWN ).getGrid() == targetGrid )
+				if ( myWap.getGrid() == targetGrid )
 				{
 					if ( testWap( myWap ) )
 						return true;
@@ -103,7 +105,7 @@ public class WirelessTerminalGuiObject implements IPortableCell
 
 			for (IGridNode n : tw)
 			{
-				TileWireless wap = (TileWireless) n.getMachine();
+				IWirelessAccessPoint wap = (IWirelessAccessPoint) n.getMachine();
 				if ( testWap( wap ) )
 					myWap = wap;
 			}
@@ -113,21 +115,23 @@ public class WirelessTerminalGuiObject implements IPortableCell
 		return false;
 	}
 
-	private boolean testWap(TileWireless wap)
+	private boolean testWap(IWirelessAccessPoint wap)
 	{
 		double rangeLimit = wap.getRange();
 		rangeLimit *= rangeLimit;
 
-		if ( wap.getWorldObj() == myPlayer.worldObj )
+		DimensionalCoord dc = wap.getLocation();
+		
+		if ( dc.getWorld()  == myPlayer.worldObj )
 		{
-			double offX = (double) wap.xCoord - myPlayer.posX;
-			double offY = (double) wap.yCoord - myPlayer.posY;
-			double offZ = (double) wap.zCoord - myPlayer.posZ;
+			double offX = (double) dc.x - myPlayer.posX;
+			double offY = (double) dc.y - myPlayer.posY;
+			double offZ = (double) dc.z - myPlayer.posZ;
 
 			double r = offX * offX + offY * offY + offZ * offZ;
 			if ( r < rangeLimit && sqRange > r )
 			{
-				if ( wap.getGridNode( ForgeDirection.UNKNOWN ).isActive() )
+				if ( wap.isActive() )
 				{
 					sqRange = r;
 					myRange = Math.sqrt( r );
