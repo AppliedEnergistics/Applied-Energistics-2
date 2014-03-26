@@ -51,6 +51,8 @@ public enum MaterialType
 
 	WoodenGear(AEFeature.GrindStone, "gearWood"),
 
+	BlankPattern,
+
 	Wireless(AEFeature.WirelessAccessTerminal), WirelessBooster(AEFeature.WirelessAccessTerminal),
 
 	FormationCore, AnnihilationCore,

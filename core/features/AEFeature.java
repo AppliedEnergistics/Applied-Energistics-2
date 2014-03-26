@@ -26,7 +26,7 @@ public enum AEFeature
 
 	ChargedStaff("Tools"), EntropyManipulator("Tools"), MatterCannon("Tools"), WirelessAccessTerminal("Tools"),
 
-	PowerGen("NetworkFeatures"), Security("NetworkFeatures"),
+	Crafting("NetworkFeatures"), PowerGen("NetworkFeatures"), Security("NetworkFeatures"),
 
 	// Crafting("NetworkFeatures"), MolecularAssembler("NetworkFeatures"),
 

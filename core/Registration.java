@@ -30,6 +30,8 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPartHelper;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEItemDefinition;
+import appeng.block.crafting.BlockCraftingUnit;
+import appeng.block.crafting.BlockMolecularAssembler;
 import appeng.block.grindstone.BlockCrank;
 import appeng.block.grindstone.BlockGrinder;
 import appeng.block.misc.BlockCellWorkbench;
@@ -98,6 +100,7 @@ import appeng.items.parts.ItemPart;
 import appeng.items.parts.PartType;
 import appeng.items.storage.ItemBasicStorageCell;
 import appeng.items.storage.ItemCreativeStorageCell;
+import appeng.items.storage.ItemEncodedPattern;
 import appeng.items.storage.ItemSpatialStorageCell;
 import appeng.items.storage.ItemViewCell;
 import appeng.items.tools.ToolBiometricCard;
@@ -269,6 +272,8 @@ public class Registration
 		blocks.blockQuartzOreCharged = addFeature( OreQuartzCharged.class );
 		blocks.blockMatrixFrame = addFeature( BlockMatrixFrame.class );
 		blocks.blockQuartz = addFeature( BlockQuartz.class );
+		blocks.blockCraftingUnit = addFeature( BlockCraftingUnit.class );
+		blocks.blockMolecularAssembler = addFeature( BlockMolecularAssembler.class );
 		blocks.blockFluix = addFeature( BlockFluix.class );
 		blocks.blockSkyStone = addFeature( BlockSkyStone.class );
 		blocks.blockSkyChest = addFeature( BlockSkyChest.class );
@@ -312,6 +317,7 @@ public class Registration
 
 		items.itemCellCreative = addFeature( ItemCreativeStorageCell.class );
 		items.itemViewCell = addFeature( ItemViewCell.class );
+		items.itemEncodedPattern = addFeature( ItemEncodedPattern.class );
 
 		items.itemCell1k = addFeature( ItemBasicStorageCell.class, MaterialType.Cell1kPart, 1 );
 		items.itemCell4k = addFeature( ItemBasicStorageCell.class, MaterialType.Cell4kPart, 4 );
