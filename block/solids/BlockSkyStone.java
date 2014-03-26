@@ -41,7 +41,7 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	@SubscribeEvent
 	public void breakFaster(PlayerEvent.BreakSpeed Ev)
 	{
-		if ( Ev.block == this && Ev.originalSpeed > 7 || Ev.metadata > 0 )
+		if ( Ev.block == this && (Ev.originalSpeed > 7 || Ev.metadata > 0) )
 			Ev.newSpeed /= 0.1;
 	}
 
