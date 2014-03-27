@@ -52,6 +52,11 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
+	public int damageDropped(int metadata) {
+		return metadata;
+	}
+	
+	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int direction, int metadata)
 	{
