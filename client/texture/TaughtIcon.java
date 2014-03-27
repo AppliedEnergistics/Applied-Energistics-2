@@ -13,7 +13,7 @@ public class TaughtIcon implements IIcon
 
 	public TaughtIcon(IIcon o, float tightness) {
 		p = o;
-		this.tightness = tightness;
+		this.tightness = tightness * 0.4f;
 	}
 
 	@Override
