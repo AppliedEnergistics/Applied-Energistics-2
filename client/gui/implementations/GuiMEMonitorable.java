@@ -11,6 +11,7 @@ import org.lwjgl.input.Mouse;
 
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
+import appeng.api.config.TerminalStyle;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.implementations.tiles.IViewCellStorage;
@@ -55,13 +56,15 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	int rows = 0;
 	int maxRows = Integer.MAX_VALUE;
 
+	int standardSize;
+
 	IConfigManager configSrc;
 
 	GuiImgButton ViewBox;
 	GuiImgButton SortByBox;
 	GuiImgButton SortDirBox;
 
-	GuiImgButton searchBoxSettings;
+	GuiImgButton searchBoxSettings, terminalStyleBox;
 	boolean viewCell;
 
 	ItemStack myCurrentViewCells[] = new ItemStack[5];
@@ -81,6 +84,8 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		if ( te instanceof IViewCellStorage )
 			xSize += 33;
+
+		standardSize = xSize;
 
 		configSrc = ((IConfigureableObject) inventorySlots).getConfigManager();
 		(mecontainer = (ContainerMEMonitorable) inventorySlots).gui = this;
@@ -123,6 +128,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	@Override
 	public void initGui()
 	{
+		maxRows = AEConfig.instance.getConfigManager().getSetting( Settings.TERMINAL_STYLE ) == TerminalStyle.SMALL ? 6 : Integer.MAX_VALUE;
+		perRow = AEConfig.instance.getConfigManager().getSetting( Settings.TERMINAL_STYLE ) != TerminalStyle.FULL ? 9 : 9 + ((width - standardSize) / 18);
+
 		int NEI = 0;
 		int top = 4;
 		int magicNumber = 114 + 1;
@@ -144,6 +152,11 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			}
 		}
 
+		if ( AEConfig.instance.getConfigManager().getSetting( Settings.TERMINAL_STYLE ) != TerminalStyle.FULL )
+			this.xSize = standardSize + ((perRow - 9) * 18);
+		else
+			this.xSize = standardSize;
+		
 		super.initGui();
 		// full size : 204
 		// extra slots : 72
@@ -165,6 +178,10 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		buttonList.add( searchBoxSettings = new GuiImgButton( this.guiLeft - 18, offset, Settings.SEARCH_MODE, AEConfig.instance.settings
 				.getSetting( Settings.SEARCH_MODE ) ) );
+		offset += 20;
+
+		buttonList.add( terminalStyleBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, AEConfig.instance.settings
+				.getSetting( Settings.TERMINAL_STYLE ) ) );
 
 		searchField = new MEGuiTextField( fontRendererObj, this.guiLeft + Math.max( 82, xoffset ), this.guiTop + 6, 89, fontRendererObj.FONT_HEIGHT );
 		searchField.setEnableBackgroundDrawing( false );
@@ -201,7 +218,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 				Enum cv = iBtn.getCurrentValue();
 				Enum next = Platform.rotateEnum( cv, backwards, iBtn.getSetting().getPossibleValues() );
 
-				if ( btn == searchBoxSettings )
+				if ( btn == terminalStyleBox )
+					AEConfig.instance.settings.putSetting( iBtn.getSetting(), next );
+				else if ( btn == searchBoxSettings )
 					AEConfig.instance.settings.putSetting( iBtn.getSetting(), next );
 				else
 				{
@@ -217,7 +236,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 				iBtn.set( next );
 
-				if ( next.getClass() == SearchBoxMode.class )
+				if ( next.getClass() == SearchBoxMode.class || next.getClass() == TerminalStyle.class )
 					re_init();
 			}
 		}
