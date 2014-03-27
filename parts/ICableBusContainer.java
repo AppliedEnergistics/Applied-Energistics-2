@@ -34,7 +34,7 @@ public interface ICableBusContainer
 
 	SelectedPart selectPart(Vec3 v3);
 
-	boolean recolourBlock(ForgeDirection side, int colour);
+	boolean recolourBlock(ForgeDirection side, int colour, EntityPlayer who);
 
 	boolean isLadder(EntityLivingBase entity);
 

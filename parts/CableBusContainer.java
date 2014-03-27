@@ -782,7 +782,8 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 		return light;
 	}
 
-	public boolean recolourBlock(ForgeDirection side, int colour)
+	@Override
+	public boolean recolourBlock(ForgeDirection side, int colour, EntityPlayer who)
 	{
 		IPart cable = getPart( ForgeDirection.UNKNOWN );
 		if ( cable != null )
@@ -791,7 +792,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 
 			AEColor colors[] = AEColor.values();
 			if ( colors.length > colour )
-				return pc.changeColor( colors[colour] );
+				return pc.changeColor( colors[colour], who );
 		}
 		return false;
 	}

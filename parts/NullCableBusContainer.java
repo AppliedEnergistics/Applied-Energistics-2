@@ -69,7 +69,7 @@ public class NullCableBusContainer implements ICableBusContainer
 	}
 
 	@Override
-	public boolean recolourBlock(ForgeDirection side, int colour)
+	public boolean recolourBlock(ForgeDirection side, int colour, EntityPlayer who)
 	{
 		return false;
 	}
