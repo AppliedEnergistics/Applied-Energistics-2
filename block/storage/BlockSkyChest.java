@@ -94,7 +94,20 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxsFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
 	{
-		return Arrays.asList( new AxisAlignedBB[] { AxisAlignedBB.getBoundingBox( 0.05, 0.05, 0.05, 0.95, 0.95, 0.95 ) } );
+		TileSkyChest sk = getTileEntity( w, x, y, z );
+		double sc = 0.06;
+		ForgeDirection o = ForgeDirection.UNKNOWN;
+
+		if ( sk != null )
+			o = sk.getUp();
+
+		double X = o.offsetX == 0 ? 0.06 : 0.0;
+		double Y = o.offsetY == 0 ? 0.06 : 0.0;
+		double Z = o.offsetZ == 0 ? 0.06 : 0.0;
+
+		return Arrays.asList( new AxisAlignedBB[] { AxisAlignedBB.getBoundingBox( Math.max( 0.0, X - o.offsetX * sc ), Math.max( 0.0, Y - o.offsetY * sc ),
+				Math.max( 0.0, Z - o.offsetZ * sc ), Math.min( 1.0, (1.0 - X) - o.offsetX * sc ), Math.min( 1.0, (1.0 - Y) - o.offsetY * sc ),
+				Math.min( 1.0, (1.0 - Z) - o.offsetZ * sc ) ) } );
 	}
 
 	@Override
