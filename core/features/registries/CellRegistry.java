@@ -37,7 +37,7 @@ public class CellRegistry implements ICellRegistry
 	}
 
 	@Override
-	public ICellHandler getHander(ItemStack is)
+	public ICellHandler getHandler(ItemStack is)
 	{
 		if ( is == null )
 			return null;

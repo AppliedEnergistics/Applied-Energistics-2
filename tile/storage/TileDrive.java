@@ -214,7 +214,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 
 				if ( is != null )
 				{
-					handlersBySlot[x] = AEApi.instance().registries().cell().getHander( is );
+					handlersBySlot[x] = AEApi.instance().registries().cell().getHandler( is );
 
 					if ( handlersBySlot[x] != null )
 					{

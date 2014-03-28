@@ -51,7 +51,7 @@ public class BlockChest extends AEBaseBlock
 				ItemStack cell = tg.getStackInSlot( 1 );
 				if ( cell != null )
 				{
-					ICellHandler ch = AEApi.instance().registries().cell().getHander( cell );
+					ICellHandler ch = AEApi.instance().registries().cell().getHandler( cell );
 
 					tg.openGui( p, ch, cell, side );
 				}

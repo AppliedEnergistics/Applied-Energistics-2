@@ -363,7 +363,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			if ( is != null )
 			{
 				isCached = true;
-				cellHandler = AEApi.instance().registries().cell().getHander( is );
+				cellHandler = AEApi.instance().registries().cell().getHandler( is );
 				if ( cellHandler != null )
 				{
 					double power = 1.0;
@@ -553,7 +553,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			return (state >> (slot * 3)) & 3;
 
 		ItemStack cell = inv.getStackInSlot( 1 );
-		ICellHandler ch = AEApi.instance().registries().cell().getHander( cell );
+		ICellHandler ch = AEApi.instance().registries().cell().getHandler( cell );
 
 		if ( ch != null )
 		{
