@@ -319,6 +319,12 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			return false;
 		}
 
+		@Override
+		public void onListUpdate()
+		{
+			// not used here
+		}
+
 	};
 
 	class ChestMonitorHandler<T extends IAEStack> extends MEMonitorHandler<T>

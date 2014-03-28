@@ -411,4 +411,10 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		return type == PipeType.ITEM && with == side ? ConnectOverride.CONNECT : ConnectOverride.DISCONNECT;
 	}
 
+	@Override
+	public void onListUpdate()
+	{
+		// not used here.
+	}
+
 }

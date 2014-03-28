@@ -28,4 +28,9 @@ public class InternalSlotME
 	{
 		return repo.getRefrenceItem( offset );
 	}
+
+	public boolean hasPower()
+	{
+		return repo.hasPower();
+	}
 }

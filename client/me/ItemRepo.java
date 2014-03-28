@@ -241,4 +241,16 @@ public class ItemRepo
 		list.resetStatus();
 	}
 
+	private boolean hasPower;
+
+	public boolean hasPower()
+	{
+		return hasPower;
+	}
+
+	public void setPower(boolean hasPower)
+	{
+		this.hasPower = hasPower;
+	}
+
 }

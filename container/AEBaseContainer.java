@@ -115,8 +115,8 @@ public abstract class AEBaseContainer extends Container
 	public ContainerOpenContext openContext;
 
 	protected IMEInventoryHandler<IAEItemStack> cellInv;
-	protected IEnergySource powerSrc;
 	protected HashSet<Integer> locked = new HashSet();
+	protected IEnergySource powerSrc;
 
 	public void lockPlayerInventorySlot(int idx)
 	{

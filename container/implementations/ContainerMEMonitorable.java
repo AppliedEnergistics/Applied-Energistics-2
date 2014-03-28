@@ -10,6 +10,8 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -38,6 +40,7 @@ import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.core.sync.packets.PacketValueConfig;
+import appeng.me.helpers.ChannelPowerSrc;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
@@ -52,9 +55,12 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	IConfigManager clientCM;
 
 	public boolean canAccessViewCells = false;
+	public boolean hasPower = false;
+
 	public SlotRestrictedInput cellView[] = new SlotRestrictedInput[5];
 
 	public IConfigManagerHost gui;
+	private IGridNode networkNode;
 
 	protected ContainerMEMonitorable(InventoryPlayer ip, ITerminalHost montiorable, boolean bindInventory) {
 		super( ip, montiorable instanceof TileEntity ? (TileEntity) montiorable : null, montiorable instanceof IPart ? (IPart) montiorable : null );
@@ -85,9 +91,10 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 					IGridNode node = ((IGridHost) montiorable).getGridNode( ForgeDirection.UNKNOWN );
 					if ( node != null )
 					{
+						networkNode = node;
 						IGrid g = node.getGrid();
 						if ( g != null )
-							powerSrc = g.getCache( IEnergyGrid.class );
+							powerSrc = new ChannelPowerSrc( networkNode, (IEnergyGrid) g.getCache( IEnergyGrid.class ) );
 					}
 				}
 			}
@@ -180,6 +187,8 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				}
 			}
 
+			updatePowerStatus();
+
 			boolean oldCanAccessViewCells = canAccessViewCells;
 			canAccessViewCells = hasAccess( SecurityPermissions.BUILD, false );
 			if ( canAccessViewCells != oldCanAccessViewCells )
@@ -201,11 +210,46 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		}
 	}
 
+	protected void updatePowerStatus()
+	{
+		boolean oldHasPower = hasPower;
+		try
+		{
+			if ( networkNode != null )
+				hasPower = networkNode.isActive();
+			else if ( powerSrc instanceof IEnergyGrid )
+				hasPower = ((IEnergyGrid) powerSrc).isNetworkPowered();
+			else
+				hasPower = powerSrc.extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.8;
+		}
+		catch (Throwable t)
+		{
+			// :P
+		}
+
+		if ( hasPower != oldHasPower )
+		{
+			for (Object c : this.crafters)
+			{
+				if ( c instanceof ICrafting )
+				{
+					ICrafting cr = (ICrafting) c;
+					cr.sendProgressBarUpdate( this, 98, hasPower ? 1 : 0 );
+				}
+			}
+		}
+
+	}
+
 	@Override
 	public void addCraftingToCrafters(ICrafting c)
 	{
 		super.addCraftingToCrafters( c );
+		queueInventory( c );
+	}
 
+	public void queueInventory(ICrafting c)
+	{
 		if ( Platform.isServer() && c instanceof EntityPlayer && monitor != null )
 		{
 			try
@@ -239,9 +283,25 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
+	public void onListUpdate()
+	{
+		for (Object c : this.crafters)
+		{
+			if ( c instanceof ICrafting )
+			{
+				ICrafting cr = (ICrafting) c;
+				queueInventory( cr );
+			}
+		}
+	}
+
+	@Override
 	public void updateProgressBar(int idx, int value)
 	{
 		super.updateProgressBar( idx, value );
+
+		if ( idx == 98 )
+			hasPower = value == 1;
 
 		if ( idx == 99 )
 			canAccessViewCells = value == 1;

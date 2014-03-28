@@ -526,7 +526,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 	AppEngRenderItem aeri = new AppEngRenderItem();
 
-	private boolean isPowered()
+	protected boolean isPowered()
 	{
 		return true;
 	}

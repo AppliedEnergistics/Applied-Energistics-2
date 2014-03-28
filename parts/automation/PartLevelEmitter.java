@@ -576,4 +576,17 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		return super.getInventoryByName( name );
 	}
 
+	@Override
+	public void onListUpdate()
+	{
+		try
+		{
+			updateReportingValue( proxy.getStorage().getItemInventory() );
+		}
+		catch (GridAccessException e)
+		{
+			// ;P
+		}
+	}
+
 }

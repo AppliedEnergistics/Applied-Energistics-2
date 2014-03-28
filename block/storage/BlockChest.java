@@ -46,7 +46,7 @@ public class BlockChest extends AEBaseBlock
 			{
 				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_CHEST );
 			}
-			else if ( tg.isPowered() )
+			else
 			{
 				ItemStack cell = tg.getStackInSlot( 1 );
 				if ( cell != null )
@@ -58,8 +58,6 @@ public class BlockChest extends AEBaseBlock
 				else
 					p.addChatMessage( PlayerMessages.ChestCannotReadStorageCell.get() );
 			}
-			else
-				p.addChatMessage( PlayerMessages.MachineNotPowered.get() );
 
 			return true;
 		}

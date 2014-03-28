@@ -79,6 +79,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		super( c );
 		myScrollBar = new GuiScrollbar();
 		repo = new ItemRepo( myScrollBar, this );
+
 		xSize = 195;
 		ySize = 204;
 
@@ -156,7 +157,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			this.xSize = standardSize + ((perRow - 9) * 18);
 		else
 			this.xSize = standardSize;
-		
+
 		super.initGui();
 		// full size : 204
 		// extra slots : 72
@@ -281,6 +282,13 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	}
 
 	@Override
+	public void updateScreen()
+	{
+		repo.setPower( mecontainer.hasPower );
+		super.updateScreen();
+	}
+
+	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
 		int x_width = 197;
@@ -352,6 +360,11 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			ViewBox.set( configSrc.getSetting( Settings.VIEW_MODE ) );
 
 		repo.updateView();
+	}
+
+	protected boolean isPowered()
+	{
+		return repo.hasPower();
 	}
 
 }

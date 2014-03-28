@@ -85,6 +85,8 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 	@Override
 	public void updateProgressBar(int key, int value)
 	{
+		super.updateProgressBar( key, value );
+
 		if ( key == 0 )
 			security = value;
 	}
@@ -92,7 +94,7 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 	@Override
 	public void detectAndSendChanges()
 	{
-		verifyPermissions( SecurityPermissions.SECURITY, true );
+		verifyPermissions( SecurityPermissions.SECURITY, false );
 
 		int newSecurity = 0;
 
@@ -104,6 +106,8 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 			for (SecurityPermissions sp : bc.getPermissions( a ))
 				newSecurity = newSecurity | (1 << sp.ordinal());
 		}
+
+		updatePowerStatus();
 
 		if ( newSecurity != security )
 		{
@@ -138,14 +142,14 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 			{
 				ItemStack term = wirelessIn.getStack().copy();
 				INetworkEncodable netEncodeable = null;
-				
+
 				if ( term.getItem() instanceof INetworkEncodable )
 					netEncodeable = (INetworkEncodable) term.getItem();
-				
+
 				IWirelessTermHandler wTermHandler = AEApi.instance().registries().wireless().getWirelessTerminalHandler( term );
 				if ( wTermHandler != null )
 					netEncodeable = wTermHandler;
-				
+
 				if ( netEncodeable != null )
 				{
 					netEncodeable.setEncryptionKey( term, "" + securityBox.securityKey, "" );
