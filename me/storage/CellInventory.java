@@ -59,7 +59,7 @@ public class CellInventory implements ICellInventory
 
 		cellItems.resetStatus(); // clears totals and stuff.
 
-		int types = (int) storedItemTypes();
+		int types = (int) getStoredItemTypes();
 
 		for (int x = 0; x < types; x++)
 		{
@@ -194,7 +194,7 @@ public class CellInventory implements ICellInventory
 	}
 
 	@Override
-	public int BytesPerType()
+	public int getBytesPerType()
 	{
 		return CellType.BytePerType( i );
 	}
@@ -202,8 +202,8 @@ public class CellInventory implements ICellInventory
 	@Override
 	public boolean canHoldNewItem()
 	{
-		long bytesFree = freeBytes();
-		return (bytesFree > BytesPerType() || (bytesFree == BytesPerType() && unusedItemCount() > 0)) && remainingItemTypes() > 0;
+		long bytesFree = getFreeBytes();
+		return (bytesFree > getBytesPerType() || (bytesFree == getBytesPerType() && getUnusedItemCount() > 0)) && getRemainingItemTypes() > 0;
 	}
 
 	public static IMEInventoryHandler getCell(ItemStack o)
@@ -258,22 +258,22 @@ public class CellInventory implements ICellInventory
 	}
 
 	@Override
-	public long totalBytes()
+	public long getTotalBytes()
 	{
 		return CellType.getBytes( i );
 	}
 
 	@Override
-	public long freeBytes()
+	public long getFreeBytes()
 	{
-		return totalBytes() - usedBytes();
+		return getTotalBytes() - getUsedBytes();
 	}
 
 	@Override
-	public long usedBytes()
+	public long getUsedBytes()
 	{
-		long bytesForItemCount = (storedItemCount() + unusedItemCount()) / 8;
-		return storedItemTypes() * BytesPerType() + bytesForItemCount;
+		long bytesForItemCount = (getStoredItemCount() + getUnusedItemCount()) / 8;
+		return getStoredItemTypes() * getBytesPerType() + bytesForItemCount;
 	}
 
 	@Override
@@ -283,13 +283,13 @@ public class CellInventory implements ICellInventory
 	}
 
 	@Override
-	public long storedItemTypes()
+	public long getStoredItemTypes()
 	{
 		return storedItems;
 	}
 
 	@Override
-	public long storedItemCount()
+	public long getStoredItemCount()
 	{
 		return storedItemCount;
 	}
@@ -300,24 +300,24 @@ public class CellInventory implements ICellInventory
 	}
 
 	@Override
-	public long remainingItemTypes()
+	public long getRemainingItemTypes()
 	{
-		long basedOnStorage = freeBytes() / BytesPerType();
-		long baseOnTotal = getTotalItemTypes() - storedItemTypes();
+		long basedOnStorage = getFreeBytes() / getBytesPerType();
+		long baseOnTotal = getTotalItemTypes() - getStoredItemTypes();
 		return basedOnStorage > baseOnTotal ? baseOnTotal : basedOnStorage;
 	}
 
 	@Override
-	public long remainingItemCount()
+	public long getRemainingItemCount()
 	{
-		long remaining = freeBytes() * 8 + unusedItemCount();
+		long remaining = getFreeBytes() * 8 + getUnusedItemCount();
 		return remaining > 0 ? remaining : 0;
 	}
 
 	@Override
-	public int unusedItemCount()
+	public int getUnusedItemCount()
 	{
-		int div = (int) (storedItemCount() % 8);
+		int div = (int) (getStoredItemCount() % 8);
 
 		if ( div == 0 )
 		{
@@ -369,7 +369,7 @@ public class CellInventory implements ICellInventory
 		IAEItemStack l = getCellItems().findPrecise( input );
 		if ( l != null )
 		{
-			long remainingItemSlots = remainingItemCount();
+			long remainingItemSlots = getRemainingItemCount();
 			if ( remainingItemSlots < 0 )
 				return input;
 
@@ -399,7 +399,7 @@ public class CellInventory implements ICellInventory
 
 		if ( canHoldNewItem() ) // room for new type, and for at least one item!
 		{
-			int remainingItemCount = (int) remainingItemCount() - BytesPerType() * 8;
+			int remainingItemCount = (int) getRemainingItemCount() - getBytesPerType() * 8;
 			if ( remainingItemCount > 0 )
 			{
 				if ( input.getStackSize() > remainingItemCount )
@@ -518,7 +518,7 @@ public class CellInventory implements ICellInventory
 	{
 		if ( canHoldNewItem() )
 			return 1;
-		if ( remainingItemCount() > 0 )
+		if ( getRemainingItemCount() > 0 )
 			return 2;
 		return 3;
 	}
