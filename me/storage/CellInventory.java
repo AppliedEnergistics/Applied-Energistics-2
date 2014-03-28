@@ -15,6 +15,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.exceptions.AppEngException;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.storage.ICellInventory;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
@@ -23,7 +24,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
-public class CellInventory implements IMEInventory<IAEItemStack>
+public class CellInventory implements ICellInventory
 {
 
 	static final String ITEM_TYPE_TAG = "it";
@@ -192,11 +193,13 @@ public class CellInventory implements IMEInventory<IAEItemStack>
 		return cellItems;
 	}
 
+	@Override
 	public int BytesPerType()
 	{
 		return CellType.BytePerType( i );
 	}
 
+	@Override
 	public boolean canHoldNewItem()
 	{
 		long bytesFree = freeBytes();
@@ -254,32 +257,38 @@ public class CellInventory implements IMEInventory<IAEItemStack>
 		return false;
 	}
 
+	@Override
 	public long totalBytes()
 	{
 		return CellType.getBytes( i );
 	}
 
+	@Override
 	public long freeBytes()
 	{
 		return totalBytes() - usedBytes();
 	}
 
+	@Override
 	public long usedBytes()
 	{
 		long bytesForItemCount = (storedItemCount() + unusedItemCount()) / 8;
 		return storedItemTypes() * BytesPerType() + bytesForItemCount;
 	}
 
+	@Override
 	public long getTotalItemTypes()
 	{
 		return MAX_ITEM_TYPES;
 	}
 
+	@Override
 	public long storedItemTypes()
 	{
 		return storedItems;
 	}
 
+	@Override
 	public long storedItemCount()
 	{
 		return storedItemCount;
@@ -290,6 +299,7 @@ public class CellInventory implements IMEInventory<IAEItemStack>
 		tagCompound.setInteger( ITEM_COUNT_TAG, storedItemCount = (int) (storedItemCount + delta) );
 	}
 
+	@Override
 	public long remainingItemTypes()
 	{
 		long basedOnStorage = freeBytes() / BytesPerType();
@@ -297,14 +307,14 @@ public class CellInventory implements IMEInventory<IAEItemStack>
 		return basedOnStorage > baseOnTotal ? baseOnTotal : basedOnStorage;
 	}
 
+	@Override
 	public long remainingItemCount()
 	{
 		long remaining = freeBytes() * 8 + unusedItemCount();
 		return remaining > 0 ? remaining : 0;
 	}
 
-	// returns the number of items that can be added without using an additional
-	// byte!
+	@Override
 	public int unusedItemCount()
 	{
 		int div = (int) (storedItemCount() % 8);
@@ -479,26 +489,31 @@ public class CellInventory implements IMEInventory<IAEItemStack>
 		return StorageChannel.ITEMS;
 	}
 
+	@Override
 	public double getIdleDrain()
 	{
 		return CellType.getIdleDrain();
 	}
 
+	@Override
 	public FuzzyMode getFuzzyMode()
 	{
 		return CellType.getFuzzyMode( this.i );
 	}
 
+	@Override
 	public IInventory getConfigInventory()
 	{
 		return CellType.getConfigInventory( this.i );
 	}
 
+	@Override
 	public IInventory getUpgradesInventory()
 	{
 		return CellType.getUpgradesInventory( this.i );
 	}
 
+	@Override
 	public int getStatusForCell()
 	{
 		if ( canHoldNewItem() )
@@ -506,6 +521,12 @@ public class CellInventory implements IMEInventory<IAEItemStack>
 		if ( remainingItemCount() > 0 )
 			return 2;
 		return 3;
+	}
+
+	@Override
+	public ItemStack getItemStack()
+	{
+		return i;
 	}
 
 }

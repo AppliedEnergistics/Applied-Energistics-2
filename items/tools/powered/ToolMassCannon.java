@@ -24,6 +24,8 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.networking.security.PlayerSource;
+import appeng.api.storage.ICellInventory;
+import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -40,7 +42,6 @@ import appeng.hooks.DispenserMatterCannon;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
-import appeng.me.storage.CellInventory;
 import appeng.me.storage.CellInventoryHandler;
 import appeng.util.Platform;
 
@@ -69,7 +70,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 		if ( cdi instanceof CellInventoryHandler )
 		{
-			CellInventory cd = ((CellInventoryHandler) cdi).getCellInv();
+			ICellInventory cd = ((ICellInventoryHandler) cdi).getCellInv();
 			if ( cd != null )
 			{
 				lines.add( cd.usedBytes() + " " + GuiText.Of.getLocal() + " " + cd.totalBytes() + " " + GuiText.BytesUsed.getLocal() );
