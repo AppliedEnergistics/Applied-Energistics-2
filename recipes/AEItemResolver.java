@@ -79,7 +79,8 @@ public class AEItemResolver implements ISubItemResolver
 				String materialName = itemName.substring( itemName.indexOf( "." ) + 1 );
 				MaterialType mt = MaterialType.valueOf( materialName );
 				itemName = itemName.substring( 0, itemName.indexOf( "." ) );
-				return new ResolverResult( itemName, mt.damageValue );
+				if ( mt.damageValue >= 0 )
+					return new ResolverResult( itemName, mt.damageValue );
 			}
 
 			if ( itemName.startsWith( "ItemPart." ) )
@@ -87,7 +88,9 @@ public class AEItemResolver implements ISubItemResolver
 				String partName = itemName.substring( itemName.indexOf( "." ) + 1 );
 				PartType pt = PartType.valueOf( partName );
 				itemName = itemName.substring( 0, itemName.indexOf( "." ) );
-				return new ResolverResult( itemName, ItemPart.instance.getDamageByType( pt ) );
+				int dVal = ItemPart.instance.getDamageByType( pt );
+				if ( dVal >= 0 )
+					return new ResolverResult( itemName, dVal );
 			}
 		}
 
