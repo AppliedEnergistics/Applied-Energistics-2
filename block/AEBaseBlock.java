@@ -43,6 +43,7 @@ import appeng.core.features.ItemStackSrc;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
+import appeng.tile.storage.TileSkyChest;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
@@ -641,7 +642,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 						if ( tile == null )
 							return false;
 
-						if ( tile instanceof TileCableBus )
+						if ( tile instanceof TileCableBus || tile instanceof TileSkyChest )
 							return false;
 
 						ItemStack op = new ItemStack( this );
