@@ -65,11 +65,12 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 		if ( type == ItemRenderType.EQUIPPED_FIRST_PERSON || type == ItemRenderType.INVENTORY || type == ItemRenderType.EQUIPPED )
 		{
 			EntityPlayer p = Minecraft.getMinecraft().thePlayer;
+			float rYaw = p.rotationYaw;
 
 			if ( type == ItemRenderType.EQUIPPED )
 			{
 				p = (EntityPlayer) obj[1];
-				p.rotationYaw = p.renderYawOffset;
+				rYaw = p.renderYawOffset;
 			}
 
 			int x = (int) p.posX;
@@ -92,13 +93,13 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 				{
 					if ( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
 					{
-						float offRads = p.rotationYaw / 180.0f * (float) Math.PI;
+						float offRads = rYaw / 180.0f * (float) Math.PI;
 						float adjustment = (float) Math.PI * 0.74f;
 						model.renderAll( (float) flipidiy( cr.rad + offRads + adjustment ) );
 					}
 					else
 					{
-						float offRads = p.rotationYaw / 180.0f * (float) Math.PI;
+						float offRads = rYaw / 180.0f * (float) Math.PI;
 						float adjustment = (float) Math.PI * -0.74f;
 						model.renderAll( (float) flipidiy( cr.rad + offRads + adjustment ) );
 					}
