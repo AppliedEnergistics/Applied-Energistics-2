@@ -1,6 +1,7 @@
 package appeng.core;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import appeng.core.crash.CrashEnhancement;
 import appeng.core.crash.CrashInfo;
@@ -14,6 +15,9 @@ import appeng.server.AECommand;
 import appeng.services.Profiler;
 import appeng.services.VersionChecker;
 import appeng.util.Platform;
+
+import com.google.common.base.Stopwatch;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -108,6 +112,7 @@ public class AppEng
 	@EventHandler
 	void PreInit(FMLPreInitializationEvent event)
 	{
+		Stopwatch star = Stopwatch.createStarted();
 		configPath = event.getModConfigurationDirectory().getPath() + File.separator + "AppliedEnergistics2" + File.separator;
 
 		AEConfig.instance = new AEConfig( configPath );
@@ -136,23 +141,25 @@ public class AppEng
 			startService( "AE2 VersionChecker", new Thread( VersionChecker.instance = new VersionChecker() ) );
 		}
 
-		AELog.info( "PreInit ( end )" );
+		AELog.info( "PreInit ( end " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}
 
 	@EventHandler
 	void Init(FMLInitializationEvent event)
 	{
+		Stopwatch star = Stopwatch.createStarted();
 		AELog.info( "Init" );
 
 		Registration.instance.Init( event );
 		integrationModules.init();
 
-		AELog.info( "Init ( end )" );
+		AELog.info( "Init ( end " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}
 
 	@EventHandler
 	void PostInit(FMLPostInitializationEvent event)
 	{
+		Stopwatch star = Stopwatch.createStarted();
 		AELog.info( "PostInit" );
 
 		Registration.instance.PostInit( event );
@@ -163,7 +170,7 @@ public class AppEng
 		NetworkRegistry.INSTANCE.registerGuiHandler( this, GuiBridge.GUI_Handler );
 		NetworkHandler.instance = new NetworkHandler( "AE2" );
 
-		AELog.info( "PostInit ( end )" );
+		AELog.info( "PostInit ( end " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}
 
 	@EventHandler

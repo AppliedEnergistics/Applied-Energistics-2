@@ -46,8 +46,10 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
+import appeng.core.sync.packets.PacketSwapSlots;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public abstract class AEBaseGui extends GuiContainer
 {
@@ -269,6 +271,47 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 
 		super.handleMouseClick( slot, slotIdx, ctrlDown, key );
+	}
+
+	@Override
+	protected boolean checkHotbarKeys(int p_146983_1_)
+	{
+		Slot theSlot = ReflectionHelper.getPrivateValue( GuiContainer.class, this, "theSlot" );
+
+		if ( this.mc.thePlayer.inventory.getItemStack() == null && theSlot != null )
+		{
+			for (int j = 0; j < 9; ++j)
+			{
+				if ( p_146983_1_ == this.mc.gameSettings.keyBindsHotbar[j].getKeyCode() )
+				{
+					if ( theSlot.getSlotStackLimit() == 64 )
+					{
+						this.handleMouseClick( theSlot, theSlot.slotNumber, j, 2 );
+						return true;
+					}
+					else
+					{
+						try
+						{
+							for (Slot s : (List<Slot>) inventorySlots.inventorySlots)
+							{
+								if ( s.getSlotIndex() == j && s.inventory == ((AEBaseContainer) inventorySlots).getPlayerInv() )
+								{
+									NetworkHandler.instance.sendToServer( new PacketSwapSlots( s.slotNumber, theSlot.slotNumber ) );
+									return true;
+								}
+							}
+						}
+						catch (IOException e)
+						{
+							AELog.error( e );
+						}
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 
 	@Override

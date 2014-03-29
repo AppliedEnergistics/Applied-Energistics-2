@@ -756,4 +756,67 @@ public abstract class AEBaseContainer extends Container
 		}
 	}
 
+	public void swapSlotContents(int slotA, int slotB)
+	{
+		Slot a = getSlot( slotA );
+		Slot b = getSlot( slotB );
+
+		// NPE protection...
+		if ( a == null || b == null )
+			return;
+
+		ItemStack isA = a.getStack();
+		ItemStack isB = b.getStack();
+
+		// something to do?
+		if ( isA == null && isB == null )
+			return;
+
+		// can take?
+
+		if ( isA != null && !a.canTakeStack( invPlayer.player ) )
+			return;
+
+		if ( isB != null && !b.canTakeStack( invPlayer.player ) )
+			return;
+
+		// swap valid?
+
+		if ( isB != null && !a.isItemValid( isB ) )
+			return;
+
+		if ( isA != null && !b.isItemValid( isA ) )
+			return;
+
+		ItemStack testA = isB == null ? null : isB.copy();
+		ItemStack testB = isA == null ? null : isA.copy();
+
+		// can put some back?
+		if ( testA != null && testA.stackSize > a.getSlotStackLimit() )
+		{
+			if ( testB != null )
+				return;
+
+			int totalA = testA.stackSize;
+			testA.stackSize = a.getSlotStackLimit();
+			testB = testA.copy();
+
+			testB.stackSize = totalA - testA.stackSize;
+		}
+
+		if ( testB != null && testB.stackSize > b.getSlotStackLimit() )
+		{
+			if ( testA != null )
+				return;
+
+			int totalB = testB.stackSize;
+			testB.stackSize = b.getSlotStackLimit();
+			testA = testB.copy();
+
+			testA.stackSize = totalB - testA.stackSize;
+		}
+
+		a.putStack( testA );
+		b.putStack( testB );
+	}
 }
