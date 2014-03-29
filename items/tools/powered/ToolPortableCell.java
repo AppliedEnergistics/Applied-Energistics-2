@@ -58,8 +58,8 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 			ICellInventory cd = ((ICellInventoryHandler) cdi).getCellInv();
 			if ( cd != null )
 			{
-				lines.add( cd.usedBytes() + " " + GuiText.Of.getLocal() + " " + cd.totalBytes() + " " + GuiText.BytesUsed.getLocal() );
-				lines.add( cd.storedItemTypes() + " " + GuiText.Of.getLocal() + " " + cd.getTotalItemTypes() + " " + GuiText.Types.getLocal() );
+				lines.add( cd.getUsedBytes() + " " + GuiText.Of.getLocal() + " " + cd.getTotalBytes() + " " + GuiText.BytesUsed.getLocal() );
+				lines.add( cd.getStoredItemTypes() + " " + GuiText.Of.getLocal() + " " + cd.getTotalItemTypes() + " " + GuiText.Types.getLocal() );
 			}
 		}
 	}
