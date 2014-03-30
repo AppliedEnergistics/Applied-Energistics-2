@@ -1,7 +1,6 @@
 package appeng.hooks;
 
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import net.minecraft.world.World;
@@ -46,7 +45,6 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 
 			try
 			{
-
 				future.get();
 
 				if ( obj.distance > AEConfig.instance.minMeteoriteDistanceSq )
@@ -67,11 +65,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 				}
 
 			}
-			catch (InterruptedException e)
-			{
-				AELog.error( e );
-			}
-			catch (ExecutionException e)
+			catch (Throwable e)
 			{
 				AELog.error( e );
 			}

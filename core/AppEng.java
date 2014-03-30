@@ -24,6 +24,7 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -181,9 +182,14 @@ public class AppEng
 	}
 
 	@EventHandler
-	public void serverStarting(FMLServerStartingEvent evt)
+	public void serverStarting(FMLServerAboutToStartEvent evt)
 	{
 		WorldSettings.getInstance().init();
+	}
+
+	@EventHandler
+	public void serverStarting(FMLServerStartingEvent evt)
+	{
 		evt.registerServerCommand( new AECommand( evt.getServer() ) );
 	}
 
