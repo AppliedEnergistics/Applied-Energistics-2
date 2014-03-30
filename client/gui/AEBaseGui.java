@@ -49,7 +49,7 @@ import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketSwapSlots;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
-import cpw.mods.fml.relauncher.ReflectionHelper;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
 public abstract class AEBaseGui extends GuiContainer
 {
@@ -276,7 +276,16 @@ public abstract class AEBaseGui extends GuiContainer
 	@Override
 	protected boolean checkHotbarKeys(int p_146983_1_)
 	{
-		Slot theSlot = ReflectionHelper.getPrivateValue( GuiContainer.class, this, "theSlot" );
+		Slot theSlot;
+
+		try
+		{
+			theSlot = ObfuscationReflectionHelper.getPrivateValue( GuiContainer.class, this, "theSlot", "field_147006_u", "f" );
+		}
+		catch (Throwable t)
+		{
+			return false;
+		}
 
 		if ( this.mc.thePlayer.inventory.getItemStack() == null && theSlot != null )
 		{
