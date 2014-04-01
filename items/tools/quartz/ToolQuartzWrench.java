@@ -10,6 +10,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.core.features.AEFeature;
 import appeng.items.AEBaseItem;
+import appeng.util.Platform;
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.common.Optional.Interface;
 
@@ -29,8 +30,10 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWren
 		Block b = world.getBlock( x, y, z );
 		if ( b != null && !player.isSneaking() )
 		{
-			if ( b.rotateBlock( world, x, y, z, ForgeDirection.getOrientation( side ) ) )
+			ForgeDirection mySide = ForgeDirection.getOrientation( side );
+			if ( b.rotateBlock( world, x, y, z, mySide ) )
 			{
+				b.onNeighborBlockChange( world, x, y, z, Platform.air );
 				player.swingItem();
 				return !world.isRemote;
 			}
