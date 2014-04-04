@@ -1,4 +1,4 @@
-package appeng.integration.modules.helpers.dead;
+package appeng.integration.modules.helpers;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import appeng.recipes.AEShapedQuartzRecipe;
+import appeng.recipes.game.ShapedRecipe;
 import codechicken.nei.NEIClientUtils;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
@@ -21,7 +21,7 @@ import codechicken.nei.api.IStackPositioner;
 import codechicken.nei.recipe.RecipeInfo;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
-public class NEIQuartzShapedRecipeHandler extends TemplateRecipeHandler
+public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 {
 
 	public void loadTransferRects()
@@ -43,14 +43,14 @@ public class NEIQuartzShapedRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadCraftingRecipes(String outputId, Object[] results)
 	{
-		if ( (outputId.equals( "crafting" )) && (getClass() == NEIQuartzShapedRecipeHandler.class) )
+		if ( (outputId.equals( "crafting" )) && (getClass() == NEIAEShapedRecipeHandler.class) )
 		{
 			List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
 			for (IRecipe irecipe : allrecipes)
 			{
 				CachedShapedRecipe recipe = null;
-				if ( (irecipe instanceof AEShapedQuartzRecipe) )
-					recipe = new CachedShapedRecipe( (AEShapedQuartzRecipe) irecipe );
+				if ( (irecipe instanceof ShapedRecipe) )
+					recipe = new CachedShapedRecipe( (ShapedRecipe) irecipe );
 
 				if ( recipe != null )
 				{
@@ -73,8 +73,8 @@ public class NEIQuartzShapedRecipeHandler extends TemplateRecipeHandler
 			if ( NEIServerUtils.areStacksSameTypeCrafting( irecipe.getRecipeOutput(), result ) )
 			{
 				CachedShapedRecipe recipe = null;
-				if ( (irecipe instanceof AEShapedQuartzRecipe) )
-					recipe = new CachedShapedRecipe( (AEShapedQuartzRecipe) irecipe );
+				if ( (irecipe instanceof ShapedRecipe) )
+					recipe = new CachedShapedRecipe( (ShapedRecipe) irecipe );
 
 				if ( recipe != null )
 				{
@@ -91,10 +91,10 @@ public class NEIQuartzShapedRecipeHandler extends TemplateRecipeHandler
 		for (IRecipe irecipe : allrecipes)
 		{
 			CachedShapedRecipe recipe = null;
-			if ( (irecipe instanceof AEShapedQuartzRecipe) )
-				recipe = new CachedShapedRecipe( (AEShapedQuartzRecipe) irecipe );
+			if ( (irecipe instanceof ShapedRecipe) )
+				recipe = new CachedShapedRecipe( (ShapedRecipe) irecipe );
 
-			if ( (recipe != null) && (recipe.contains( recipe.ingredients, ingredient.itemID )) )
+			if ( (recipe != null) && (recipe.contains( recipe.ingredients, ingredient.getItem() )) )
 			{
 				recipe.computeVisuals();
 				if ( recipe.contains( recipe.ingredients, ingredient ) )
@@ -163,7 +163,7 @@ public class NEIQuartzShapedRecipeHandler extends TemplateRecipeHandler
 		public ArrayList<PositionedStack> ingredients;
 		public PositionedStack result;
 
-		public CachedShapedRecipe(AEShapedQuartzRecipe irecipe) {
+		public CachedShapedRecipe(ShapedRecipe irecipe) {
 			result = new PositionedStack( irecipe.getRecipeOutput(), 119, 24 );
 			ingredients = new ArrayList<PositionedStack>();
 			setIngredients( irecipe.getWidth(), irecipe.getHeight(), irecipe.getIngredients() );

@@ -254,4 +254,20 @@ public class ShapedRecipe implements IRecipe
 	{
 		return this.input;
 	}
+
+	public int getWidth()
+	{
+		return width;
+	}
+
+	public int getHeight()
+	{
+		return height;
+	}
+
+	public Object[] getIngredients()
+	{
+		return input;
+	}
+
 }
