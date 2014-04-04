@@ -125,7 +125,8 @@ public class AppEng
 		if ( Platform.isClient() )
 		{
 			CreativeTab.init();
-			CreativeTabFacade.init();
+			if ( AEConfig.instance.isFeatureEnabled( AEFeature.Facades ) )
+				CreativeTabFacade.init();
 			CommonHelper.proxy.init();
 		}
 
