@@ -48,6 +48,7 @@ import appeng.util.LookDirection;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -158,6 +159,11 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		return getRendererInstance().getTexture( ForgeDirection.getOrientation( direction ) );
 	}
 
+	public IIcon unmappedGetIcon(IBlockAccess w, int x, int y, int z, int s)
+	{
+		return super.getIcon( w, x, y, z, s );
+	}
+
 	@Override
 	public IIcon getIcon(IBlockAccess w, int x, int y, int z, int s)
 	{
@@ -169,6 +175,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		AEBaseTile.registerTileItem( c, new ItemStackSrc( this, 0 ) );
 		GameRegistry.registerTileEntity( tileEntityType = c, FeatureFullname );
 		isInventory = IInventory.class.isAssignableFrom( c );
+		setTileProvider( hasBlockTileEntity() );
 	}
 
 	protected void setfeature(EnumSet<AEFeature> f)
@@ -181,6 +188,13 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		setLightOpacity( 15 );
 		setLightLevel( 0 );
 		setHardness( 1.2F );
+		setTileProvider( false );
+	}
+
+	// update Block value.
+	private void setTileProvider(boolean b)
+	{
+		ReflectionHelper.setPrivateValue( Block.class, this, b, "isTileProvider" );
 	}
 
 	protected AEBaseBlock(Class<?> c, Material mat, String subname) {
@@ -231,12 +245,6 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		return tileEntityType != null;
 	}
 
-	@Override
-	final public boolean hasTileEntity(int metadata)
-	{
-		return hasBlockTileEntity();
-	}
-
 	public Class<? extends TileEntity> getTileEntityClass()
 	{
 		return tileEntityType;
@@ -267,14 +275,18 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@Override
 	final public TileEntity createNewTileEntity(World var1, int var2)
 	{
-		try
+		if ( hasBlockTileEntity() )
 		{
-			return tileEntityType.newInstance();
+			try
+			{
+				return tileEntityType.newInstance();
+			}
+			catch (Throwable e)
+			{
+				throw new RuntimeException( e );
+			}
 		}
-		catch (Throwable e)
-		{
-			throw new RuntimeException( e );
-		}
+		return null;
 	}
 
 	final public <T extends TileEntity> T getTileEntity(IBlockAccess w, int x, int y, int z)
@@ -294,7 +306,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		return false;
 	}
 
-	protected void customRotateBlock(IOrientable rotateable, ForgeDirection axis)
+	protected void customRotateBlock(IOrientable rotatable, ForgeDirection axis)
 	{
 
 	}
@@ -302,28 +314,28 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@Override
 	final public boolean rotateBlock(World w, int x, int y, int z, ForgeDirection axis)
 	{
-		IOrientable rotateable = null;
+		IOrientable rotatable = null;
 
 		if ( hasBlockTileEntity() )
 		{
-			rotateable = (AEBaseTile) getTileEntity( w, x, y, z );
+			rotatable = (AEBaseTile) getTileEntity( w, x, y, z );
 		}
 		else if ( this instanceof IOrientableBlock )
 		{
-			rotateable = ((IOrientableBlock) this).getOrientable( w, x, y, z );
+			rotatable = ((IOrientableBlock) this).getOrientable( w, x, y, z );
 		}
 
-		if ( rotateable != null && rotateable.canBeRotated() )
+		if ( rotatable != null && rotatable.canBeRotated() )
 		{
 			if ( hasCustomRotation() )
 			{
-				customRotateBlock( rotateable, axis );
+				customRotateBlock( rotatable, axis );
 				return true;
 			}
 			else
 			{
-				ForgeDirection forward = rotateable.getForward();
-				ForgeDirection up = rotateable.getUp();
+				ForgeDirection forward = rotatable.getForward();
+				ForgeDirection up = rotatable.getUp();
 
 				for (int rs = 0; rs < 4; rs++)
 				{
@@ -332,14 +344,14 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 					if ( this.isValidOrientation( w, x, y, z, forward, up ) )
 					{
-						rotateable.setOrientation( forward, up );
+						rotatable.setOrientation( forward, up );
 						return true;
 					}
 				}
 			}
 		}
 
-		return false;
+		return super.rotateBlock( w, x, y, z, axis );
 	}
 
 	public ForgeDirection mapRotation(IOrientable ori, ForgeDirection dir)

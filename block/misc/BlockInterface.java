@@ -37,11 +37,11 @@ public class BlockInterface extends AEBaseBlock
 	}
 
 	@Override
-	protected void customRotateBlock(IOrientable rotateable, ForgeDirection axis)
+	protected void customRotateBlock(IOrientable rotatable, ForgeDirection axis)
 	{
-		if ( rotateable instanceof TileInterface )
+		if ( rotatable instanceof TileInterface )
 		{
-			((TileInterface) rotateable).setSide( axis );
+			((TileInterface) rotatable).setSide( axis );
 		}
 	}
 

@@ -87,6 +87,7 @@ public class AppEng
 			// IntegrationSide.BOTH, "Forestry", "Forestry", "Forestry", // Forestry
 			// IntegrationSide.BOTH, "Mekanism", "Mekanism", "Mekanism", // MeK
 			IntegrationSide.CLIENT, "Waila", "Waila", "Waila", // Waila
+			IntegrationSide.BOTH, "Rotatable Blocks", "RotatableBlocks", "RB", // RB
 			IntegrationSide.CLIENT, "Inventory Tweaks", "inventorytweaks", "InvTweaks", // INV
 			IntegrationSide.CLIENT, "Not Enough Items", "NotEnoughItems", "NEI", // NEI
 			IntegrationSide.CLIENT, "Craft Guide", "craftguide", "CraftGuide", // CraftGuide

@@ -9,23 +9,28 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import rblocks.api.RotatableBlockEnable;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
+import appeng.core.AppEng;
 import appeng.core.WorldSettings;
 import appeng.core.features.AEFeature;
 import appeng.helpers.LocationRotation;
 import appeng.helpers.NullRotation;
+import appeng.integration.abstraction.IRB;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@RotatableBlockEnable
 public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 {
 
@@ -79,8 +84,20 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	@Override
 	public IOrientable getOrientable(final IBlockAccess w, final int x, final int y, final int z)
 	{
+		if ( AppEng.instance.isIntegrationEnabled( "RB" ) )
+		{
+			TileEntity te = w.getTileEntity( x, y, z );
+			if ( te != null )
+			{
+				IOrientable out = ((IRB) AppEng.instance.getIntegration( "RB" )).getOrientable( te );
+				if ( out != null )
+					return out;
+			}
+		}
+
 		if ( w.getBlockMetadata( x, y, z ) == 0 )
 			return new LocationRotation( w, x, y, z );
+
 		return new NullRotation();
 	}
 
@@ -143,6 +160,12 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	{
 		super.breakBlock( w, x, y, z, b, WTF );
 		WorldSettings.getInstance().getCompass().updateArea( w, x, y, z );
+	}
+
+	// use AE2's enderer, no rotatable blocks.
+	int getRealRenderType()
+	{
+		return getRenderType();
 	}
 
 }
