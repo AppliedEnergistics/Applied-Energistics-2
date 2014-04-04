@@ -62,8 +62,8 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
 	{
 
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
-				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
+				is.getIconIndex(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
 
 		rh.setBounds( 4, 4, 12, 12, 12, 14 );
 		rh.renderInventoryBox( renderer );
@@ -80,8 +80,8 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		renderCache = rh.useSimpliedRendering( x, y, z, this, renderCache );
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
-				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
+				is.getIconIndex(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
 
 		rh.setBounds( 4, 4, 12, 12, 12, 14 );
 		rh.renderBlock( x, y, z, renderer );
@@ -238,6 +238,6 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 	@Override
 	public TickingRequest getTickingRequest(IGridNode node)
 	{
-		return new TickingRequest( TickRates.ExportBus.min,TickRates.ExportBus.max, isSleeping(), false );
+		return new TickingRequest( TickRates.ExportBus.min, TickRates.ExportBus.max, isSleeping(), false );
 	}
 }
