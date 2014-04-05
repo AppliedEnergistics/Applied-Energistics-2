@@ -22,7 +22,7 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 	public BaseActionSource changeSource;
 
 	public MEMonitorPassthu(IMEInventory<T> i, Class<? extends IAEStack> cla) {
-		super( i,cla );
+		super( i, cla );
 		if ( i instanceof IMEMonitor )
 			monitor = (IMEMonitor<T>) i;
 	}
@@ -34,13 +34,13 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 			monitor.removeListener( this );
 
 		monitor = null;
-		IItemList<T> before = getInternal() == null ? new ItemList(clz) : getInternal().getAvailableItems( new ItemList(clz) );
+		IItemList<T> before = getInternal() == null ? new ItemList( clz ) : getInternal().getAvailableItems( new ItemList( clz ) );
 
 		super.setInternal( i );
 		if ( i instanceof IMEMonitor )
 			monitor = (IMEMonitor<T>) i;
 
-		IItemList<T> after = getInternal() == null ? new ItemList(clz) : getInternal().getAvailableItems( new ItemList(clz) );
+		IItemList<T> after = getInternal() == null ? new ItemList( clz ) : getInternal().getAvailableItems( new ItemList( clz ) );
 
 		if ( monitor != null )
 			monitor.addListener( this, monitor );
@@ -64,7 +64,7 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 	public IItemList<T> getStorageList()
 	{
 		if ( monitor == null )
-			return getInternal().getAvailableItems( new ItemList<T>(clz) );
+			return getInternal().getAvailableItems( new ItemList<T>( clz ) );
 		return monitor.getStorageList();
 	}
 
@@ -84,6 +84,21 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 			IMEMonitorHandlerReceiver<T> recv = e.getKey();
 			if ( recv.isValid( e.getValue() ) )
 				recv.postChange( this, change, source );
+			else
+				i.remove();
+		}
+	}
+
+	@Override
+	public void onListUpdate()
+	{
+		Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = listeners.entrySet().iterator();
+		while (i.hasNext())
+		{
+			Entry<IMEMonitorHandlerReceiver<T>, Object> e = i.next();
+			IMEMonitorHandlerReceiver<T> recv = e.getKey();
+			if ( recv.isValid( e.getValue() ) )
+				recv.onListUpdate();
 			else
 				i.remove();
 		}

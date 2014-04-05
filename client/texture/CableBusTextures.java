@@ -61,7 +61,11 @@ public enum CableBusTextures
 
 	BlockFormPlaneOn("BlockFormPlaneOn"),
 
-	ItemPartLevelEmitterOn("ItemPart.LevelEmitterOn"), PartTransitionPlaneBack("PartTransitionPlaneBack");
+	ItemPartLevelEmitterOn("ItemPart.LevelEmitterOn"), PartTransitionPlaneBack("PartTransitionPlaneBack"),
+
+	PartTunnelSides("PartTunnelSides"), PartPlaneSides("PartPlaneSides"), PartExportSides("PartExportSides"), PartImportSides("PartImportSides"),
+
+	PartWirelessSides("PartWirelessSides"), PartStorageSides("PartStorageSides"), PartStorageBack("PartStorageBack");
 
 	final private String name;
 	public IIcon IIcon;

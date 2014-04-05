@@ -19,12 +19,16 @@ public class SlotME extends Slot
 	@Override
 	public ItemStack getStack()
 	{
-		return mySlot.getStack();
+		if ( mySlot.hasPower() )
+			return mySlot.getStack();
+		return null;
 	}
 
 	public IAEItemStack getAEStack()
 	{
-		return mySlot.getAEStack();
+		if ( mySlot.hasPower() )
+			return mySlot.getAEStack();
+		return null;
 	}
 
 	@Override
@@ -48,7 +52,9 @@ public class SlotME extends Slot
 	@Override
 	public boolean getHasStack()
 	{
-		return getStack() != null;
+		if ( mySlot.hasPower() )
+			return getStack() != null;
+		return false;
 	}
 
 	@Override

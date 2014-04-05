@@ -61,7 +61,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 	{
 
 		public TileInscriberHandler() {
-			super( TileEventType.TICK, TileEventType.WORLD_NBT, TileEventType.NETWORK );
+			super( TileEventType.WORLD_NBT, TileEventType.NETWORK );
 		}
 
 		@Override
@@ -121,12 +121,6 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 					st.writeToPacket( data );
 				}
 			}
-		}
-
-		@Override
-		public void Tick()
-		{
-
 		}
 
 	};
@@ -238,13 +232,22 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 	{
 		ItemStack PlateA = getStackInSlot( 0 );
 		ItemStack PlateB = getStackInSlot( 1 );
+		ItemStack renamedItem = getStackInSlot( 2 );
+
+		if ( PlateA != null && PlateA.stackSize > 1 )
+			return null;
+
+		if ( PlateB != null && PlateB.stackSize > 1 )
+			return null;
+
+		if ( renamedItem != null && renamedItem.stackSize > 1 )
+			return null;
 
 		boolean isNameA = AEApi.instance().materials().materialNamePress.sameAs( PlateA );
 		boolean isNameB = AEApi.instance().materials().materialNamePress.sameAs( PlateB );
 
 		if ( (isNameA || isNameB) && (isNameA || PlateA == null) && (isNameB || PlateB == null) )
 		{
-			ItemStack renamedItem = getStackInSlot( 2 );
 			if ( renamedItem != null )
 			{
 				String name = "";

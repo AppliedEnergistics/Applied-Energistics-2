@@ -82,8 +82,8 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 	@SideOnly(Side.CLIENT)
 	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
-				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
+				is.getIconIndex(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon() );
 
 		rh.setBounds( 3, 3, 15, 13, 13, 16 );
 		rh.renderInventoryBox( renderer );
@@ -100,8 +100,8 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		renderCache = rh.useSimpliedRendering( x, y, z, this, renderCache );
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
-				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
+				is.getIconIndex(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon() );
 
 		rh.setBounds( 4, 4, 14, 12, 12, 16 );
 		rh.renderBlock( x, y, z, renderer );

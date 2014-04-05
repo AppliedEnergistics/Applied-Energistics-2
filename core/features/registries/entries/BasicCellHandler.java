@@ -5,6 +5,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.ICellHandler;
+import appeng.api.storage.ICellInventory;
+import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
@@ -58,7 +60,7 @@ public class BasicCellHandler implements ICellHandler
 	@Override
 	public double cellIdleDrain(ItemStack is, IMEInventory handler)
 	{
-		CellInventory inv = ((CellInventoryHandler) handler).getCellInv();
+		ICellInventory inv = ((ICellInventoryHandler) handler).getCellInv();
 		return inv.getIdleDrain();
 	}
 }

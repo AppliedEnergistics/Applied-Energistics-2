@@ -8,6 +8,8 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IUpgradeModule;
+import appeng.api.storage.ICellInventory;
+import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -16,28 +18,29 @@ import appeng.util.item.AEItemStack;
 import appeng.util.prioitylist.FuzzyPriorityList;
 import appeng.util.prioitylist.PrecisePriorityList;
 
-public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack>
+public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> implements ICellInventoryHandler
 {
 
 	NBTTagCompound openNbtData()
 	{
-		return Platform.openNbtData( getCellInv().i );
+		return Platform.openNbtData( getCellInv().getItemStack() );
 	}
 
-	public CellInventory getCellInv()
+	@Override
+	public ICellInventory getCellInv()
 	{
 		Object o = this.internal;
 
 		if ( o instanceof MEPassthru )
 			o = ((MEPassthru) o).getInternal();
 
-		return (CellInventory) (o instanceof CellInventory ? o : null);
+		return (ICellInventory) (o instanceof ICellInventory ? o : null);
 	}
 
 	CellInventoryHandler(IMEInventory c) {
 		super( c, IAEItemStack.class );
 
-		CellInventory ci = getCellInv();
+		ICellInventory ci = getCellInv();
 		if ( ci != null )
 		{
 			IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();

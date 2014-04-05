@@ -124,9 +124,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	@SideOnly(Side.CLIENT)
 	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(),
-				CableBusTextures.PartTransitionPlaneBack.getIcon(), is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(),
-				CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon(),
+				CableBusTextures.PartTransitionPlaneBack.getIcon(), is.getIconIndex(), CableBusTextures.PartPlaneSides.getIcon(),
+				CableBusTextures.PartPlaneSides.getIcon() );
 
 		rh.setBounds( 1, 1, 15, 15, 15, 16 );
 		rh.renderInventoryBox( renderer );
@@ -164,9 +164,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		boolean isActive = (clientFlags & (POWERED_FLAG | CHANNEL_FLAG)) == (POWERED_FLAG | CHANNEL_FLAG);
 
 		renderCache = rh.useSimpliedRendering( x, y, z, this, renderCache );
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(),
+		rh.setTexture( CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon(),
 				CableBusTextures.PartTransitionPlaneBack.getIcon(), isActive ? CableBusTextures.BlockFormPlaneOn.getIcon() : is.getIconIndex(),
-				CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+				CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon() );
 
 		rh.setBounds( minX, minY, 15, maxX, maxY, 16 );
 		rh.renderBlock( x, y, z, renderer );

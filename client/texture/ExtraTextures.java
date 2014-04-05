@@ -50,7 +50,9 @@ public enum ExtraTextures
 
 	BlockMESecurityOn("BlockMESecurityOn"), BlockInscriberInside("BlockInscriberInside"),
 
-	BlockQuartzGrowthAcceleratorOn("BlockQuartzGrowthAcceleratorOn"), BlockQuartzGrowthAcceleratorSideOn("BlockQuartzGrowthAcceleratorSideOn");
+	BlockQuartzGrowthAcceleratorOn("BlockQuartzGrowthAcceleratorOn"), BlockQuartzGrowthAcceleratorSideOn("BlockQuartzGrowthAcceleratorSideOn"),
+
+	BlockWirelessInside("BlockWirelessInside");
 
 	final private String name;
 	public IIcon IIcon;

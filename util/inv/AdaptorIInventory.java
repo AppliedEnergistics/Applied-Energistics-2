@@ -240,7 +240,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 					}
 					else if ( is != null )
 					{
-						if ( Platform.isSameItem( is, left ) )
+						if ( Platform.isSameItemPrecise( is, left ) )
 						{
 							if ( is.stackSize < stack_limit )
 							{
@@ -303,7 +303,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 				}
 				else
 				{
-					if ( Platform.isSameItem( is, left ) )
+					if ( Platform.isSameItemPrecise( is, left ) )
 					{
 						if ( is.stackSize < stack_limit )
 						{

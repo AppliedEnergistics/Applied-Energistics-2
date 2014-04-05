@@ -10,6 +10,7 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
+import appeng.api.config.TerminalStyle;
 import appeng.api.config.YesNo;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
@@ -121,9 +122,10 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		grinderOres = get( "GrindStone", "grinderOres", grinderOres ).getStringList();
 		oreDoublePercentage = get( "GrindStone", "oreDoublePercentage", oreDoublePercentage ).getDouble( oreDoublePercentage );
 		enableEffects = get( "Client", "enableEffects", true ).getBoolean( true );
-		useLargeFonts= get( "Client", "useTerminalUseLargeFont", true ).getBoolean( true );
-		
+		useLargeFonts = get( "Client", "useTerminalUseLargeFont", false ).getBoolean( false );
+
 		settings.registerSetting( Settings.SEARCH_TOOLTIPS, YesNo.YES );
+		settings.registerSetting( Settings.TERMINAL_STYLE, TerminalStyle.TALL );
 		settings.registerSetting( Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH );
 
 		spawnChargedChance = (float) (1.0 - get( "worldGen", "spawnChargedChance", 1.0 - spawnChargedChance ).getDouble( 1.0 - spawnChargedChance ));
@@ -176,11 +178,11 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 			selectedPowerUnit = PowerUnits.AE;
 		}
 
-		for (TickRates tr: TickRates.values() )
+		for (TickRates tr : TickRates.values())
 		{
-			tr.Load(this);
+			tr.Load( this );
 		}
-		
+
 		if ( isFeatureEnabled( AEFeature.SpatialIO ) )
 		{
 			storageBiomeID = get( "spatialio", "storageBiomeID", storageBiomeID ).getInt( storageBiomeID );

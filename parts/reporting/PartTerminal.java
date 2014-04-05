@@ -14,7 +14,6 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.util.IConfigManager;
 import appeng.client.texture.CableBusTextures;
-import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.GuiBridge;
 import appeng.me.GridAccessException;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -79,15 +78,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 			if ( Platform.isClient() )
 				return true;
 
-			if ( proxy.isActive() )
-				Platform.openGUI( player, getHost().getTile(), side, getGui() );
-			else
-			{
-				if ( proxy.isPowered() )
-					player.addChatMessage( PlayerMessages.CommunicationError.get() );
-				else
-					player.addChatMessage( PlayerMessages.MachineNotPowered.get() );
-			}
+			Platform.openGUI( player, getHost().getTile(), side, getGui() );
 
 			return true;
 		}

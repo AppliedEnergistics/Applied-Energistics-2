@@ -46,20 +46,18 @@ public class BlockChest extends AEBaseBlock
 			{
 				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_CHEST );
 			}
-			else if ( tg.isPowered() )
+			else
 			{
 				ItemStack cell = tg.getStackInSlot( 1 );
 				if ( cell != null )
 				{
-					ICellHandler ch = AEApi.instance().registries().cell().getHander( cell );
+					ICellHandler ch = AEApi.instance().registries().cell().getHandler( cell );
 
 					tg.openGui( p, ch, cell, side );
 				}
 				else
 					p.addChatMessage( PlayerMessages.ChestCannotReadStorageCell.get() );
 			}
-			else
-				p.addChatMessage( PlayerMessages.MachineNotPowered.get() );
 
 			return true;
 		}

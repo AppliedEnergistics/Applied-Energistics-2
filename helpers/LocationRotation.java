@@ -43,6 +43,6 @@ public class LocationRotation implements IOrientable
 	@Override
 	public boolean canBeRotated()
 	{
-		return true;
+		return false;
 	}
 }

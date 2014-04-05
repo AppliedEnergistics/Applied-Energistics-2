@@ -7,6 +7,7 @@ import java.util.EnumSet;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -15,6 +16,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 
 import appeng.api.AEApi;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.parts.IPartCable;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
@@ -879,13 +881,41 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public boolean changeColor(AEColor newColor)
+	public boolean changeColor(AEColor newColor, EntityPlayer who)
 	{
 		if ( getCableColor() != newColor )
 		{
-			is.setItemDamage( newColor.ordinal() );
-			markForUpdate();
-			return true;
+			ItemStack newPart = null;
+
+			if ( getCableConnectionType() == AECableType.GLASS )
+				newPart = AEApi.instance().parts().partCableGlass.stack( newColor, 1 );
+			else if ( getCableConnectionType() == AECableType.COVERED )
+				newPart = AEApi.instance().parts().partCableCovered.stack( newColor, 1 );
+			else if ( getCableConnectionType() == AECableType.SMART )
+				newPart = AEApi.instance().parts().partCableSmart.stack( newColor, 1 );
+			else if ( getCableConnectionType() == AECableType.DENSE )
+				newPart = AEApi.instance().parts().partCableDense.stack( newColor, 1 );
+
+			boolean hasPermission = true;
+
+			try
+			{
+				hasPermission = proxy.getSecurity().hasPermission( who, SecurityPermissions.BUILD );
+			}
+			catch (GridAccessException e)
+			{
+				// :P
+			}
+
+			if ( newPart != null && hasPermission )
+			{
+				if ( Platform.isClient() )
+					return true;
+
+				getHost().removePart( ForgeDirection.UNKNOWN, false );
+				getHost().addPart( newPart, ForgeDirection.UNKNOWN, who );
+				return true;
+			}
 		}
 		return false;
 	}

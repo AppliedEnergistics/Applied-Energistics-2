@@ -104,7 +104,7 @@ public class RenderBlockSkyChest extends BaseBlockRender
 		lidangle = 1.0F - lidangle;
 		lidangle = 1.0F - lidangle * lidangle * lidangle;
 
-		model.chestLid.offsetY = -(0.9f / 16.0f);
+		model.chestLid.offsetY = -(1.01f / 16.0f);
 		model.chestLid.rotateAngleX = -((lidangle * 3.141593F) / 2.0F);
 		model.renderAll();
 

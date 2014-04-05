@@ -112,7 +112,7 @@ public class RenderMEChest extends BaseBlockRender
 		Tessellator.instance.setColorOpaque_I( 0xffffff );
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
-		ICellHandler ch = AEApi.instance().registries().cell().getHander( sp.getStorageType() );
+		ICellHandler ch = AEApi.instance().registries().cell().getHandler( sp.getStorageType() );
 		IIcon ico = ch == null ? null : ch.getTopTexture();
 		renderFace( x, y, z, imb, ico == null ? ExtraTextures.MEChest.getIcon() : ico, renderer, up );
 

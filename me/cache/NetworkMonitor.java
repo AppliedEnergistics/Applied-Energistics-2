@@ -1,11 +1,14 @@
 package appeng.me.cache;
 
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import appeng.api.networking.events.MENetworkStorageEvent;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.MEMonitorHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEStack;
@@ -23,6 +26,18 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 	public void forceUpdate()
 	{
 		hasChanged = true;
+
+		Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = getListeners();
+		while (i.hasNext())
+		{
+			Entry<IMEMonitorHandlerReceiver<T>, Object> o = i.next();
+			IMEMonitorHandlerReceiver<T> recv = o.getKey();
+
+			if ( recv.isValid( o.getValue() ) )
+				recv.onListUpdate();
+			else
+				i.remove();
+		}
 	}
 
 	public NetworkMonitor(GridStorageCache cache, StorageChannel chan) {

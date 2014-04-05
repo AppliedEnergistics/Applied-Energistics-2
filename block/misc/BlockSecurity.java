@@ -10,7 +10,6 @@ import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RendererSecurity;
 import appeng.core.features.AEFeature;
-import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.misc.TileSecurity;
 import appeng.util.Platform;
@@ -39,15 +38,10 @@ public class BlockSecurity extends AEBaseBlock
 		TileSecurity tg = getTileEntity( w, x, y, z );
 		if ( tg != null )
 		{
-			if ( Platform.isServer() )
-			{
-				if ( tg.isPowered() )
-				{
-					Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_SECURITY );
-				}
-				else
-					p.addChatMessage( PlayerMessages.MachineNotPowered.get() );
-			}
+			if ( Platform.isClient() )
+				return true;
+
+			Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_SECURITY );
 			return true;
 
 		}

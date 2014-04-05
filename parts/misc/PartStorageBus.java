@@ -279,8 +279,8 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	@SideOnly(Side.CLIENT)
 	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
-				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(),
+				is.getIconIndex(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
 
 		rh.setBounds( 3, 3, 15, 13, 13, 16 );
 		rh.renderInventoryBox( renderer );
@@ -297,8 +297,8 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		renderCache = rh.useSimpliedRendering( x, y, z, this, renderCache );
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
-				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(),
+				is.getIconIndex(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
 
 		rh.setBounds( 3, 3, 15, 13, 13, 16 );
 		rh.renderBlock( x, y, z, renderer );
@@ -306,8 +306,8 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		rh.setBounds( 2, 2, 14, 14, 14, 15 );
 		rh.renderBlock( x, y, z, renderer );
 
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
-				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(),
+				is.getIconIndex(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
 
 		rh.setBounds( 5, 5, 12, 11, 11, 13 );
 		rh.renderBlock( x, y, z, renderer );
@@ -409,6 +409,12 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	public ConnectOverride overridePipeConnection(PipeType type, ForgeDirection with)
 	{
 		return type == PipeType.ITEM && with == side ? ConnectOverride.CONNECT : ConnectOverride.DISCONNECT;
+	}
+
+	@Override
+	public void onListUpdate()
+	{
+		// not used here.
 	}
 
 }

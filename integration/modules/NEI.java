@@ -1,9 +1,10 @@
-package appeng.integration.modules.dead;
+package appeng.integration.modules;
 
 import java.lang.reflect.Method;
 
 import appeng.integration.IIntegrationModule;
-import appeng.integration.modules.helpers.NEIQuartzShapedRecipeHandler;
+import appeng.integration.modules.helpers.NEIAEShapedRecipeHandler;
+import appeng.integration.modules.helpers.NEIAEShapelessRecipeHandler;
 
 public class NEI implements IIntegrationModule
 {
@@ -14,11 +15,15 @@ public class NEI implements IIntegrationModule
 	public void Init() throws Throwable
 	{
 		Class API = Class.forName( "codechicken.nei.api.API" );
+
 		Method registerRecipeHandler = API.getDeclaredMethod( "registerRecipeHandler", new Class[] { codechicken.nei.recipe.ICraftingHandler.class } );
 		Method registerUsageHandler = API.getDeclaredMethod( "registerUsageHandler", new Class[] { codechicken.nei.recipe.IUsageHandler.class } );
 
-		registerRecipeHandler.invoke( API, new NEIQuartzShapedRecipeHandler() );
-		registerUsageHandler.invoke( API, new NEIQuartzShapedRecipeHandler() );
+		registerRecipeHandler.invoke( API, new NEIAEShapedRecipeHandler() );
+		registerUsageHandler.invoke( API, new NEIAEShapedRecipeHandler() );
+
+		registerRecipeHandler.invoke( API, new NEIAEShapelessRecipeHandler() );
+		registerUsageHandler.invoke( API, new NEIAEShapelessRecipeHandler() );
 
 		/*
 		 * Method registerGuiOverlay = API.getDeclaredMethod( "registerGuiOverlay", new Class[] { Class.class,

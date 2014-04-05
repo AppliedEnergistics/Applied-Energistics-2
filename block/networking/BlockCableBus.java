@@ -58,9 +58,14 @@ public class BlockCableBus extends AEBaseBlock
 	@Override
 	public boolean recolourBlock(World world, int x, int y, int z, ForgeDirection side, int colour)
 	{
+		return recolourBlock( world, x, y, z, side, colour, null );
+	}
+
+	public boolean recolourBlock(World world, int x, int y, int z, ForgeDirection side, int colour, EntityPlayer who)
+	{
 		try
 		{
-			return cb( world, x, y, z ).recolourBlock( side, colour );
+			return cb( world, x, y, z ).recolourBlock( side, colour, who );
 		}
 		catch (Throwable t)
 		{

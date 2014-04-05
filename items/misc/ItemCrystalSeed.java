@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -90,11 +91,19 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
+	public void addInformation(ItemStack stack, EntityPlayer p, List l, boolean b)
+	{
+		int progress = stack.getItemDamage() % 200;
+		l.add( Math.floor( (float) progress / 2.0f ) + "%" );
+		super.addInformation( stack, p, l, b );
+	}
+
+	@Override
 	public boolean isDamaged(ItemStack stack)
 	{
-		if ( stack.getItemDamage() % 200 == 0 )
-			return false;
-		return true;
+		// if ( stack.getItemDamage() % 200 == 0 )
+		// return false;
+		return false;
 	}
 
 	@Override

@@ -140,4 +140,5 @@ public class ShapelessRecipe implements IRecipe
 	{
 		return this.input;
 	}
+
 }
