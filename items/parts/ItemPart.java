@@ -80,7 +80,7 @@ public class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 
 		if ( enabled )
 		{
-			int newPartNum = AEConfig.instance.get( "parts", name, AEConfig.instance.getFreePart() ).getInt();
+			int newPartNum = AEConfig.instance.get( "parts", name, AEConfig.instance.getFreePart( varID ) ).getInt();
 			ItemStackSrc output = new ItemStackSrc( this, newPartNum );
 
 			PartTypeIst pti = new PartTypeIst();
