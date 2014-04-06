@@ -9,7 +9,9 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
+import appeng.api.config.CopyMode;
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.Settings;
 import appeng.api.storage.ICellWorkbenchItem;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
@@ -23,6 +25,8 @@ import appeng.tile.inventory.AppEngNullInventory;
 import appeng.tile.misc.TileCellWorkbench;
 import appeng.util.Platform;
 import appeng.util.iterators.NullIterator;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ContainerCellWorkbench extends ContainerUpgradeable
 {
@@ -49,6 +53,16 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		if ( cwi != null )
 			return cwi.getFuzzyMode( workBench.getInventoryByName( "cell" ).getStackInSlot( 0 ) );
 		return FuzzyMode.IGNORE_ALL;
+	}
+
+	public void nextCopyMode()
+	{
+		workBench.getConfigManager().putSetting( Settings.COPY_MODE, Platform.nextEnum( getCopyMode() ) );
+	}
+
+	public CopyMode getCopyMode()
+	{
+		return (CopyMode) workBench.getConfigManager().getSetting( Settings.COPY_MODE );
 	}
 
 	class Upgrades implements IInventory
@@ -144,6 +158,8 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 	ItemStack prevStack = null;
 	int lastUpgrades = 0;
 
+	public CopyMode copyMode = CopyMode.CLEAR_ON_REMOVE;
+
 	public ContainerCellWorkbench(InventoryPlayer ip, TileCellWorkbench te) {
 		super( ip, te );
 		workBench = te;
@@ -213,6 +229,19 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 	ItemStack LastCell;
 
 	@Override
+	@SideOnly(Side.CLIENT)
+	public void updateProgressBar(int idx, int value)
+	{
+		super.updateProgressBar( idx, value );
+
+		if ( idx == 2 )
+		{
+			this.copyMode = CopyMode.values()[value];
+			workBench.getConfigManager().putSetting( Settings.COPY_MODE, this.copyMode );
+		}
+	}
+
+	@Override
 	public void detectAndSendChanges()
 	{
 		ItemStack is = workBench.getInventoryByName( "cell" ).getStackInSlot( 0 );
@@ -221,6 +250,11 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 			for (int i = 0; i < this.crafters.size(); ++i)
 			{
 				ICrafting icrafting = (ICrafting) this.crafters.get( i );
+
+				if ( copyMode != getCopyMode() )
+				{
+					icrafting.sendProgressBarUpdate( this, 2, (int) getCopyMode().ordinal() );
+				}
 
 				if ( this.fzMode != getFuzzyMode() )
 				{
@@ -242,6 +276,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 				}
 			}
 
+			this.copyMode = getCopyMode();
 			this.fzMode = (FuzzyMode) getFuzzyMode();
 		}
 

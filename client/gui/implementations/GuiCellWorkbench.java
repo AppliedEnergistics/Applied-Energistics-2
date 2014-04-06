@@ -10,11 +10,13 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Mouse;
 
 import appeng.api.config.ActionItems;
+import appeng.api.config.CopyMode;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.GuiToggleButton;
 import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
@@ -30,6 +32,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 
 	GuiImgButton clear;
 	GuiImgButton partition;
+	GuiToggleButton copyMode;
 
 	public GuiCellWorkbench(InventoryPlayer inventoryPlayer, TileCellWorkbench te) {
 		super( new ContainerCellWorkbench( inventoryPlayer, te ) );
@@ -102,7 +105,11 @@ public class GuiCellWorkbench extends GuiUpgradeable
 	{
 		try
 		{
-			if ( btn == partition )
+			if ( btn == copyMode )
+			{
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "CellWorkbench.Action", "CopyMode" ) );
+			}
+			else if ( btn == partition )
 			{
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "CellWorkbench.Action", "Partition" ) );
 			}
@@ -132,15 +139,19 @@ public class GuiCellWorkbench extends GuiUpgradeable
 	{
 		clear = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.ACTIONS, ActionItems.CLOSE );
 		partition = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.ACTIONS, ActionItems.WRENCH );
-		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 48, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		copyMode = new GuiToggleButton( this.guiLeft - 18, guiTop + 48, 11 * 16 + 5, 12 * 16 + 5, GuiText.CopyMode.getLocal(), GuiText.CopyModeDesc.getLocal() );
+		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 68, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 
 		buttonList.add( fuzzyMode );
 		buttonList.add( partition );
 		buttonList.add( clear );
+		buttonList.add( copyMode );
 	}
 
 	protected void handleButtonVisiblity()
 	{
+		copyMode.setState( ccwb.copyMode == CopyMode.CLEAR_ON_REMOVE );
+
 		boolean hasFuzzy = false;
 		IInventory inv = ccwb.getCellUpgradeInventory();
 		for (int x = 0; x < inv.getSizeInventory(); x++)

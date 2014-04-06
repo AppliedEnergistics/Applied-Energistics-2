@@ -3,10 +3,13 @@ package appeng.tile.misc;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import appeng.api.config.CopyMode;
+import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.storage.ICellWorkbenchItem;
 import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigureableObject;
 import appeng.tile.AEBaseTile;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
@@ -14,12 +17,15 @@ import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
+import appeng.util.ConfigManager;
+import appeng.util.IConfigManagerHost;
 
-public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, IAEAppEngInventory
+public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, IAEAppEngInventory, IConfigureableObject, IConfigManagerHost
 {
 
 	AppEngInternalInventory cell = new AppEngInternalInventory( this, 1 );
 	AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 63 );
+	ConfigManager cm = new ConfigManager( this );
 
 	IInventory cacheUpgrades = null;
 	IInventory cacheConfig = null;
@@ -78,6 +84,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 		{
 			cell.writeToNBT( data, "cell" );
 			config.writeToNBT( data, "config" );
+			cm.writeToNBT( data );
 		}
 
 		@Override
@@ -85,12 +92,14 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 		{
 			cell.readFromNBT( data, "cell" );
 			config.readFromNBT( data, "config" );
+			cm.readFromNBT( data );
 		}
 
 	}
 
 	public TileCellWorkbench() {
 		addNewHandler( new TileCellWorkbenchHandler() );
+		cm.registerSetting( Settings.COPY_MODE, CopyMode.CLEAR_ON_REMOVE );
 		cell.enableClientEvents = true;
 	}
 
@@ -146,9 +155,16 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 				{
 					for (int x = 0; x < config.getSizeInventory(); x++)
 						c.setInventorySlotContents( x, config.getStackInSlot( x ) );
+
 					c.markDirty();
 				}
+			}
+			else if ( cm.getSetting( Settings.COPY_MODE ) == CopyMode.CLEAR_ON_REMOVE )
+			{
+				for (int x = 0; x < config.getSizeInventory(); x++)
+					config.setInventorySlotContents( x, null );
 
+				this.markDirty();
 			}
 
 			locked = false;
@@ -160,6 +176,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 			{
 				for (int x = 0; x < config.getSizeInventory(); x++)
 					c.setInventorySlotContents( x, config.getStackInSlot( x ) );
+
 				c.markDirty();
 			}
 		}
@@ -179,7 +196,13 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	@Override
 	public IConfigManager getConfigManager()
 	{
-		return null;
+		return cm;
+	}
+
+	@Override
+	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
+	{
+		// nothing here..
 	}
 
 }

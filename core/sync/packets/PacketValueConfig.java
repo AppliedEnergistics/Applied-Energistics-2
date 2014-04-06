@@ -71,7 +71,11 @@ public class PacketValueConfig extends AppEngPacket
 			ContainerCellWorkbench ccw = (ContainerCellWorkbench) c;
 			if ( Name.equals( "CellWorkbench.Action" ) )
 			{
-				if ( Value.equals( "Partition" ) )
+				if ( Value.equals( "CopyMode" ) )
+				{
+					ccw.nextCopyMode();
+				}
+				else if ( Value.equals( "Partition" ) )
 				{
 					ccw.partition();
 				}
