@@ -78,7 +78,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	@SideOnly(Side.CLIENT)
 	public IIcon getTypeTexture()
 	{
-		return Blocks.diamond_block.getBlockTextureFromSide( 0 );
+		return Blocks.lapis_block.getBlockTextureFromSide( 0 );
 	}
 
 	List<PartP2PLiquids> getOutputs(Fluid input)
