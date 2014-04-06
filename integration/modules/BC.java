@@ -41,7 +41,8 @@ public class BC extends BaseModule implements IBC
 	@Override
 	public void addFacade(ItemStack item)
 	{
-		FMLInterModComms.sendMessage( "BuildCraft|Transport", "add-facade", item );
+		if ( item != null )
+			FMLInterModComms.sendMessage( "BuildCraft|Transport", "add-facade", item );
 	}
 
 	@Override
@@ -188,6 +189,15 @@ public class BC extends BaseModule implements IBC
 		addFacade( b.blockQuartz.stack( 1 ) );
 		addFacade( b.blockQuartzChiseled.stack( 1 ) );
 		addFacade( b.blockQuartzPiller.stack( 1 ) );
+		
+		Block skyStone = b.blockSkyStone.block();
+		if ( skyStone != null )
+		{
+			addFacade( new ItemStack( skyStone, 1, 0 ) );
+			addFacade( new ItemStack( skyStone, 1, 1 ) );
+			addFacade( new ItemStack( skyStone, 1, 2 ) );
+			addFacade( new ItemStack( skyStone, 1, 3 ) );
+		}
 	}
 
 	@Override
