@@ -2,7 +2,8 @@ package appeng.integration;
 
 import java.util.LinkedList;
 
-import appeng.util.Platform;
+import cpw.mods.fml.relauncher.FMLLaunchHandler;
+import cpw.mods.fml.relauncher.Side;
 
 public class IntegrationRegistry
 {
@@ -11,71 +12,19 @@ public class IntegrationRegistry
 
 	private LinkedList<IntegrationNode> modules = new LinkedList<IntegrationNode>();
 
-	public void loadIntegration(IntegrationSide side, String dspname, String modID, String name)
+	public void add(IntegrationSide side, String dspname, String modID, String name)
 	{
-		if ( side == IntegrationSide.CLIENT && Platform.isServer() )
+		if ( side == IntegrationSide.CLIENT && FMLLaunchHandler.side() == Side.SERVER )
 			return;
 
-		if ( side == IntegrationSide.SERVER && Platform.isClient() )
+		if ( side == IntegrationSide.SERVER && FMLLaunchHandler.side() == Side.CLIENT )
 			return;
 
 		modules.add( new IntegrationNode( dspname, modID, name, "appeng.integration.modules." + name ) );
 	}
 
-	private void die()
-	{
-		throw new RuntimeException( "Invalid Mod Integration Registry config, please check parameters." );
-	}
-
-	public IntegrationRegistry(Object[] name) {
+	public IntegrationRegistry() {
 		instance = this;
-
-		int stage = 0;
-
-		IntegrationSide side = null;
-		String dspName = null;
-		String modID = null;
-		for (Object n : name)
-		{
-			stage++;
-			if ( stage == 1 )
-			{
-				if ( n instanceof IntegrationSide )
-					side = (IntegrationSide) n;
-				else
-					die();
-			}
-			else if ( stage == 2 )
-			{
-				if ( n instanceof String )
-					dspName = (String) n;
-				else
-					die();
-			}
-			else if ( stage == 3 )
-			{
-				if ( n instanceof String || n == null )
-					modID = (String) n;
-				else
-					die();
-			}
-			else
-			{
-				if ( n instanceof String )
-				{
-					loadIntegration( side, dspName, modID, (String) n );
-					side = null;
-					dspName = null;
-					modID = null;
-					stage = 0;
-				}
-				else
-					die();
-			}
-		}
-
-		if ( dspName != null || modID != null )
-			die();
 	}
 
 	public void init()

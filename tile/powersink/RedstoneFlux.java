@@ -2,11 +2,11 @@ package appeng.tile.powersink;
 
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.PowerUnits;
+import appeng.transformer.annotations.integration.Interface;
 import cofh.api.energy.IEnergyHandler;
-import cpw.mods.fml.common.Optional.Interface;
 
-@Interface(modid = "ThermalExpansion", iface = "cofh.api.energy.IEnergyHandler")
-public abstract class ThermalExpansion extends RotaryCraft implements IEnergyHandler
+@Interface(iname = "RF", iface = "cofh.api.energy.IEnergyHandler")
+public abstract class RedstoneFlux extends RotaryCraft implements IEnergyHandler
 {
 
 	@Override

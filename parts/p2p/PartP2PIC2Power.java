@@ -9,16 +9,17 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.TunnelType;
+import appeng.core.AppEng;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
+import appeng.transformer.annotations.integration.Interface;
+import appeng.transformer.annotations.integration.InterfaceList;
 import appeng.util.Platform;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@InterfaceList(value = { @Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
-		@Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2") })
+@InterfaceList(value = { @Interface(iface = "ic2.api.energy.tile.IEnergySink", iname = "IC2"),
+		@Interface(iface = "ic2.api.energy.tile.IEnergySource", iname = "IC2") })
 public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements ic2.api.energy.tile.IEnergySink, ic2.api.energy.tile.IEnergySource
 {
 
@@ -29,6 +30,9 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 
 	public PartP2PIC2Power(ItemStack is) {
 		super( is );
+
+		if ( !AppEng.instance.isIntegrationEnabled( "IC2" ) )
+			throw new RuntimeException( "IC2 Not installed!" );
 	}
 
 	double OutputPacket;

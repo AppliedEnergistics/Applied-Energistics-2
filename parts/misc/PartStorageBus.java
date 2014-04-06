@@ -50,17 +50,17 @@ import appeng.me.storage.MEMonitorIInventory;
 import appeng.parts.automation.PartUpgradeable;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.InvOperation;
+import appeng.transformer.annotations.integration.Interface;
+import appeng.transformer.annotations.integration.Method;
 import appeng.util.Platform;
 import appeng.util.prioitylist.FuzzyPriorityList;
 import appeng.util.prioitylist.PrecisePriorityList;
 import buildcraft.api.transport.IPipeConnection;
 import buildcraft.api.transport.IPipeTile.PipeType;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@Interface(modid = "BuildCraft|Transport", iface = "buildcraft.api.transport.IPipeConnection")
+@Interface(iname = "BC", iface = "buildcraft.api.transport.IPipeConnection")
 public class PartStorageBus extends PartUpgradeable implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack>, IPipeConnection,
 		IPriorityHost
 {
@@ -405,7 +405,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	@Method(modid = "BuildCraft|Transport")
+	@Method(iname = "BC")
 	public ConnectOverride overridePipeConnection(PipeType type, ForgeDirection with)
 	{
 		return type == PipeType.ITEM && with == side ? ConnectOverride.CONNECT : ConnectOverride.DISCONNECT;

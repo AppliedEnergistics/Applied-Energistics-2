@@ -5,10 +5,10 @@ import Reika.RotaryCraft.API.ShaftPowerReceiver;
 import appeng.api.config.PowerUnits;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
+import appeng.transformer.annotations.integration.Interface;
 import appeng.util.Platform;
-import cpw.mods.fml.common.Optional.Interface;
 
-@Interface(modid = "RotaryCraft", iface = "Reika.RotaryCraft.API.ShaftPowerReceiver")
+@Interface(iname = "RotaryCraft", iface = "Reika.RotaryCraft.API.ShaftPowerReceiver")
 public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 {
 

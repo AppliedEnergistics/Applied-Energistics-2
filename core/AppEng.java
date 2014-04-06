@@ -10,7 +10,6 @@ import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.hooks.TickHandler;
 import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationSide;
 import appeng.server.AECommand;
 import appeng.services.Profiler;
 import appeng.services.VersionChecker;
@@ -65,43 +64,14 @@ public class AppEng
 			FMLCommonHandler.instance().registerCrashCallable( new CrashEnhancement( ci ) );
 	}
 
-	private IntegrationRegistry integrationModules = new IntegrationRegistry( new Object[] {
-
-	/**
-	 * Side, Display Name, ModID ClassPostFix
-	 */
-	IntegrationSide.BOTH, "Industrial Craft 2", "IC2", "IC2", // IC2
-			// IntegrationSide.BOTH, "Railcraft", "Railcraft", "RC", // RC
-			// IntegrationSide.BOTH, "Thermal Expansion", "ThermalExpansion", "TE", // TE
-			// IntegrationSide.BOTH, "Mystcraft", "Mystcraft", "Mystcraft", // MC
-			IntegrationSide.BOTH, "BuildCraft", "BuildCraft|Silicon", "BC", // BC
-			IntegrationSide.BOTH, "BuildCraft Power", null, "MJ", // BC
-			// IntegrationSide.BOTH, "Greg Tech", "gregtech_addon", "GT", // GT
-			// IntegrationSide.BOTH, "Universal Electricity", null, "UE", // UE
-			// IntegrationSide.BOTH, "Logistics Pipes", "LogisticsPipes|Main", "LP", // LP
-			// IntegrationSide.CLIENT, "Inventory Tweaks", "", "InvTweaks", // InvTweaks
-			// IntegrationSide.BOTH, "Mine Factory Reloaded", "MineFactoryReloaded", "MFR", // MFR
-			IntegrationSide.BOTH, "Deep Storage Unit", null, "DSU", // DSU
-			// IntegrationSide.BOTH, "Better Storage", "betterstorage", "BS", // BS
-			IntegrationSide.BOTH, "Factorization", "factorization", "FZ", // FZ
-			// IntegrationSide.BOTH, "Forestry", "Forestry", "Forestry", // Forestry
-			// IntegrationSide.BOTH, "Mekanism", "Mekanism", "Mekanism", // MeK
-			IntegrationSide.CLIENT, "Waila", "Waila", "Waila", // Waila
-			IntegrationSide.BOTH, "Rotatable Blocks", "RotatableBlocks", "RB", // RB
-			IntegrationSide.CLIENT, "Inventory Tweaks", "inventorytweaks", "InvTweaks", // INV
-			IntegrationSide.CLIENT, "Not Enough Items", "NotEnoughItems", "NEI", // NEI
-			IntegrationSide.CLIENT, "Craft Guide", "craftguide", "CraftGuide", // CraftGuide
-			IntegrationSide.BOTH, "Forge MultiPart", "McMultipart", "FMP" // FMP
-	} );
-
 	public boolean isIntegrationEnabled(String Name)
 	{
-		return integrationModules.isEnabled( Name );
+		return IntegrationRegistry.instance.isEnabled( Name );
 	}
 
 	public Object getIntegration(String Name)
 	{
-		return integrationModules.getInstance( Name );
+		return IntegrationRegistry.instance.getInstance( Name );
 	}
 
 	private void startService(String serviceName, Thread thread)
@@ -153,7 +123,7 @@ public class AppEng
 		AELog.info( "Init" );
 
 		Registration.instance.Init( event );
-		integrationModules.init();
+		IntegrationRegistry.instance.init();
 
 		AELog.info( "Init ( end " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}
@@ -165,7 +135,7 @@ public class AppEng
 		AELog.info( "PostInit" );
 
 		Registration.instance.PostInit( event );
-		integrationModules.postinit();
+		IntegrationRegistry.instance.postinit();
 
 		AEConfig.instance.save();
 

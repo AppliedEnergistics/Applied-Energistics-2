@@ -1,4 +1,4 @@
-package appeng.integration.modules.dead;
+package appeng.integration.modules;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -6,12 +6,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
+import appeng.integration.BaseModule;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.ITE;
-import cofh.api.transport.IItemConduit;
 import cpw.mods.fml.common.event.FMLInterModComms;
 
-public class TE implements IIntegrationModule, ITE
+public class TE extends BaseModule implements IIntegrationModule, ITE
 {
 
 	public static TE instance;
@@ -19,7 +19,6 @@ public class TE implements IIntegrationModule, ITE
 	@Override
 	public void Init()
 	{
-		// TODO Auto-generated method stub
 
 	}
 

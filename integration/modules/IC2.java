@@ -8,18 +8,22 @@ import net.minecraftforge.common.MinecraftForge;
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.api.features.IP2PTunnelRegistry;
+import appeng.integration.BaseModule;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IIC2;
 
-public class IC2 implements IIntegrationModule, IIC2
+public class IC2 extends BaseModule implements IIntegrationModule, IIC2
 {
 
 	public static IC2 instance;
 
+	public IC2() {
+		TestClass( IEnergyTile.class );
+	}
+
 	@Override
 	public void Init()
 	{
-
 	}
 
 	@Override

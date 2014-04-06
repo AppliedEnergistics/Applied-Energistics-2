@@ -2,8 +2,8 @@ package appeng.integration.abstraction.helpers;
 
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
+import appeng.transformer.annotations.integration.Method;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
-import cpw.mods.fml.common.Optional.Method;
 
 public abstract class BaseMJperdition extends AETileEventHandler
 {
@@ -12,7 +12,7 @@ public abstract class BaseMJperdition extends AETileEventHandler
 		super( TileEventType.TICK, TileEventType.WORLD_NBT );
 	}
 
-	@Method(modid = "BuildCraftAPI|power")
+	@Method(iname = "MJ")
 	public abstract PowerReceiver getPowerReceiver();
 
 	public abstract double useEnergy(float f, float requred, boolean b);
