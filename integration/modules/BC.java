@@ -32,6 +32,12 @@ public class BC extends BaseModule implements IBC
 
 	public static BC instance;
 
+	public BC() {
+		TestClass( IPipeConnection.class );
+		TestClass( ItemFacade.class );
+		TestClass( IToolWrench.class );
+	}
+
 	@Override
 	public void addFacade(ItemStack item)
 	{
@@ -175,10 +181,6 @@ public class BC extends BaseModule implements IBC
 	@Override
 	public void Init()
 	{
-		TestClass( IPipeConnection.class );
-		TestClass( ItemFacade.class );
-		TestClass( IToolWrench.class );
-
 		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIPipeConnection", "buildcraft.api.transport.IPipeConnection" );
 		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new BCPipeHandler() );
 

@@ -32,8 +32,11 @@ public class IntegrationNode
 
 	void Call(IntegrationStage stage)
 	{
-		if ( isActive() )
+		if ( state != IntegrationStage.FAILED )
 		{
+			if ( state.ordinal() > stage.ordinal() )
+				return;
+
 			try
 			{
 				switch (stage)
@@ -100,6 +103,9 @@ public class IntegrationNode
 
 	public boolean isActive()
 	{
+		if ( state == IntegrationStage.PREINIT )
+			Call( IntegrationStage.PREINIT );
+
 		return state != IntegrationStage.FAILED;
 	}
 

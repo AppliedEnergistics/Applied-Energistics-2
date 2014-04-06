@@ -23,11 +23,11 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketClick;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolViewer;
+import appeng.transformer.annotations.integration.Interface;
 import appeng.util.Platform;
 import buildcraft.api.tools.IToolWrench;
-import cpw.mods.fml.common.Optional.Interface;
 
-@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraftAPI|core")
+@Interface(iface = "buildcraft.api.tools.IToolWrench", iname = "BC")
 public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, IToolWrench
 {
 

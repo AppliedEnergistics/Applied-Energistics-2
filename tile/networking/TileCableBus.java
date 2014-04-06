@@ -33,8 +33,8 @@ import appeng.parts.CableBusContainer;
 import appeng.tile.AEBaseTile;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
+import appeng.transformer.annotations.integration.Method;
 import appeng.util.Platform;
-import cpw.mods.fml.common.Optional.Method;
 
 public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomCollision
 {
@@ -266,14 +266,14 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	@Method(modid = "MineFactoryReloaded")
+	@Method(iname = "MFR")
 	public RedNetConnectionType getConnectionType(World world, int x, int y, int z, ForgeDirection side)
 	{
 		return cb.canConnectRedstone( EnumSet.of( side ) ) ? RedNetConnectionType.CableSingle : RedNetConnectionType.None;
 	}
 
 	@Override
-	@Method(modid = "MineFactoryReloaded")
+	@Method(iname = "MFR")
 	public int[] getOutputValues(World world, int x, int y, int z, ForgeDirection side)
 	{
 		// never called!
@@ -281,7 +281,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	@Method(modid = "MineFactoryReloaded")
+	@Method(iname = "MFR")
 	public int getOutputValue(World world, int x, int y, int z, ForgeDirection side, int subnet)
 	{
 		// never called!
@@ -289,14 +289,14 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	@Method(modid = "MineFactoryReloaded")
+	@Method(iname = "MFR")
 	public void onInputsChanged(World world, int x, int y, int z, ForgeDirection side, int[] inputValues)
 	{
 		// never called!
 	}
 
 	@Override
-	@Method(modid = "MineFactoryReloaded")
+	@Method(iname = "MFR")
 	public void onInputChanged(World world, int x, int y, int z, ForgeDirection side, int inputValue)
 	{
 		// never called!

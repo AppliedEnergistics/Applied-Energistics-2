@@ -1,4 +1,4 @@
-package appeng.transformer;
+package appeng.transformer.asm;
 
 import java.util.Iterator;
 
@@ -20,12 +20,12 @@ import com.google.common.collect.Multimap;
 
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
 
-public class AppEngASMTransformer implements IClassTransformer
+public class ASMTweaker implements IClassTransformer
 {
 
 	Multimap<String, String> privateToPublicMethods = HashMultimap.create();
 
-	public AppEngASMTransformer() {
+	public ASMTweaker() {
 		privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", "func_146977_a" );
 		privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", "a" );
 	}

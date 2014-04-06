@@ -14,18 +14,19 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.core.AEConfig;
+import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
+import appeng.transformer.annotations.integration.Interface;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
-import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@Interface(iface = "buildcraft.api.power.IPowerReceptor", modid = "BuildCraftAPI|core")
+@Interface(iface = "buildcraft.api.power.IPowerReceptor", iname = "BC")
 public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPowerReceptor, IGridTickable
 {
 
@@ -38,6 +39,10 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 
 	public PartP2PBCPower(ItemStack is) {
 		super( is );
+
+		if ( !AppEng.instance.isIntegrationEnabled( "MJ" ) )
+			throw new RuntimeException( "MJ Not installed!" );
+
 		pp = new PowerHandler( this, Type.MACHINE );
 		pp.configure( 1f, 320f, 800f, 640f );
 	}
