@@ -98,12 +98,16 @@ public class ASMIntegration implements IClassTransformer
 			{
 				if ( hasAnnotation( an, integration.Interface.class ) )
 				{
-					changed = changed || stripInterface( classNode, integration.Interface.class, an );
+					if ( stripInterface( classNode, integration.Interface.class, an ) )
+						changed = true;
 				}
 				else if ( hasAnnotation( an, integration.InterfaceList.class ) )
 				{
 					for (Object o : ((List) an.values.get( 1 )))
-						changed = changed || stripInterface( classNode, integration.InterfaceList.class, (AnnotationNode) o );
+					{
+						if ( stripInterface( classNode, integration.InterfaceList.class, (AnnotationNode) o ) )
+							changed = true;
+					}
 				}
 			}
 		}
@@ -119,12 +123,16 @@ public class ASMIntegration implements IClassTransformer
 				{
 					if ( hasAnnotation( an, integration.Method.class ) )
 					{
-						changed = changed || stripMethod( classNode, mn, i, integration.Method.class, an );
+						if ( stripMethod( classNode, mn, i, integration.Method.class, an ) )
+							changed = true;
 					}
 				}
 
 			}
 		}
+
+		if ( changed )
+			log( "Updated " + classNode.name );
 
 		return changed;
 	}
@@ -150,7 +158,10 @@ public class ASMIntegration implements IClassTransformer
 			{
 				log( "Removing Method " + mn.name + " from " + classNode.name + " because " + iName + " integration is disabled." );
 				i.remove();
+				return true;
 			}
+			else
+				log( "Allowing Method " + mn.name + " from " + classNode.name + " because " + iName + " integration is enabled." );
 		}
 		else
 			throw new RuntimeException( "Unable to handle Method annotation on " + classNode.name );
@@ -181,8 +192,11 @@ public class ASMIntegration implements IClassTransformer
 			if ( !IntegrationRegistry.instance.isEnabled( iName ) )
 			{
 				log( "Removing Interface " + iFace + " from " + classNode.name + " because " + iName + " integration is disabled." );
-				classNode.interfaces.remove( iFace );
+				classNode.interfaces.remove( iFace.replace( '.', '/' ) );
+				return true;
 			}
+			else
+				log( "Allowing Interface " + iFace + " from " + classNode.name + " because " + iName + " integration is enabled." );
 		}
 		else
 			throw new RuntimeException( "Unable to handle Method annotation on " + classNode.name );
