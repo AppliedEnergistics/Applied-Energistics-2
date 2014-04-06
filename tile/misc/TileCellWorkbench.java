@@ -1,8 +1,11 @@
 package appeng.tile.misc;
 
+import java.util.ArrayList;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.storage.ICellWorkbenchItem;
@@ -162,6 +165,18 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 					c.setInventorySlotContents( x, config.getStackInSlot( x ) );
 				c.markDirty();
 			}
+		}
+	}
+
+	@Override
+	public void getDrops(World w, int x, int y, int z, ArrayList<ItemStack> drops)
+	{
+		super.getDrops( w, x, y, z, drops );
+
+		if ( cell.getStackInSlot( 0 ) != null )
+		{
+			drops.add( cell.getStackInSlot( 0 ) );
+			cell.setInventorySlotContents( 0, null );
 		}
 	}
 
