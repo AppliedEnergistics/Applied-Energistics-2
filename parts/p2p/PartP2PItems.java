@@ -22,18 +22,18 @@ import appeng.integration.abstraction.IBC;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.tile.inventory.AppEngNullInventory;
+import appeng.transformer.annotations.integration.Interface;
+import appeng.transformer.annotations.integration.Method;
 import appeng.util.Platform;
 import appeng.util.inv.WrapperBCPipe;
 import appeng.util.inv.WrapperChainedInventory;
 import appeng.util.inv.WrapperMCISidedInventory;
 import buildcraft.api.transport.IPipeConnection;
 import buildcraft.api.transport.IPipeTile.PipeType;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@Interface(iface = "buildcraft.api.transport.IPipeConnection", modid = "BuildCraftAPI|transport")
+@Interface(iface = "buildcraft.api.transport.IPipeConnection", iname = "BC")
 public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeConnection, IInventory, ISidedInventory
 {
 
@@ -324,7 +324,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	@Method(modid = "BuildCraftAPI|transport")
+	@Method(iname = "BC")
 	public ConnectOverride overridePipeConnection(PipeType type, ForgeDirection with)
 	{
 		return side.equals( with ) && type == PipeType.ITEM ? ConnectOverride.CONNECT : ConnectOverride.DEFAULT;

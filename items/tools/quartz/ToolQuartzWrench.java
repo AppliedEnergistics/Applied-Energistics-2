@@ -10,11 +10,11 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.core.features.AEFeature;
 import appeng.items.AEBaseItem;
+import appeng.transformer.annotations.integration.Interface;
 import appeng.util.Platform;
 import buildcraft.api.tools.IToolWrench;
-import cpw.mods.fml.common.Optional.Interface;
 
-@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraftAPI|core")
+@Interface(iface = "buildcraft.api.tools.IToolWrench", iname = "BC")
 public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWrench
 {
 

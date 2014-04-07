@@ -1,11 +1,10 @@
 package appeng.integration.abstraction;
 
-import appeng.integration.abstraction.helpers.BaseMJperdition;
-import appeng.tile.powersink.BuildCraft;
+import appeng.tile.powersink.MinecraftJoules;
 
 public interface IMJ
 {
 
-	BaseMJperdition createPerdition(BuildCraft buildCraft);
+	Object createPerdition(MinecraftJoules buildCraft);
 
 }

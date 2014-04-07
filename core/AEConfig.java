@@ -236,20 +236,40 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 			super.save();
 	}
 
-	public int getFreeMaterial()
+	public int getFreeIDSLot(int varID, String Category)
 	{
+		boolean alreadyUsed = false;
 		int min = 0;
-		for (Property p : getCategory( "materials" ).getValues().values())
-			min = Math.max( min, p.getInt() + 1 );
-		return min;
+
+		for (Property p : getCategory( Category ).getValues().values())
+		{
+			int thisInt = p.getInt();
+
+			if ( varID == thisInt )
+				alreadyUsed = true;
+
+			min = Math.max( min, thisInt + 1 );
+		}
+
+		if ( alreadyUsed )
+		{
+			if ( min < 1000 )
+				min = 1000;
+
+			return min;
+		}
+
+		return varID;
 	}
 
-	public int getFreePart()
+	public int getFreeMaterial(int varID)
 	{
-		int min = 0;
-		for (Property p : getCategory( "parts" ).getValues().values())
-			min = Math.max( min, p.getInt() + 1 );
-		return min;
+		return getFreeIDSLot( varID, "materials" );
+	}
+
+	public int getFreePart(int varID)
+	{
+		return getFreeIDSLot( varID, "parts" );
 	}
 
 	@Override

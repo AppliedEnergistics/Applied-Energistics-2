@@ -1,6 +1,6 @@
 package appeng.items.tools.powered.powersink;
 
-public class AEBasePoweredItem extends ThermalExpansion
+public class AEBasePoweredItem extends RedstoneFlux
 {
 
 	public AEBasePoweredItem(Class c, String subname) {

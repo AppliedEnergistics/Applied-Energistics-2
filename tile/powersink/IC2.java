@@ -9,11 +9,11 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.PowerUnits;
 import appeng.core.AppEng;
 import appeng.integration.abstraction.IIC2;
+import appeng.transformer.annotations.integration.Interface;
 import appeng.util.Platform;
-import cpw.mods.fml.common.Optional.Interface;
 
-@Interface(modid = "IC2", iface = "ic2.api.energy.tile.IEnergySink")
-public abstract class IC2 extends BuildCraft implements IEnergySink
+@Interface(iname = "IC2", iface = "ic2.api.energy.tile.IEnergySink")
+public abstract class IC2 extends MinecraftJoules implements IEnergySink
 {
 
 	boolean isInIC2 = false;

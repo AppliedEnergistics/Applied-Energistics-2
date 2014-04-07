@@ -136,7 +136,7 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 
 			if ( enabled )
 			{
-				int newMaterialNum = AEConfig.instance.get( "materials", name, AEConfig.instance.getFreeMaterial() ).getInt();
+				int newMaterialNum = AEConfig.instance.get( "materials", name, AEConfig.instance.getFreeMaterial( mat.ordinal() ) ).getInt();
 				mat.damageValue = newMaterialNum;
 				ItemStackSrc output = new ItemStackSrc( this, newMaterialNum );
 

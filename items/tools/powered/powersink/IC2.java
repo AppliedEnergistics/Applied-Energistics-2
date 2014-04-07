@@ -4,9 +4,9 @@ import ic2.api.item.IElectricItemManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import appeng.api.config.PowerUnits;
-import cpw.mods.fml.common.Optional.Interface;
+import appeng.transformer.annotations.integration.Interface;
 
-@Interface(iface = "ic2.api.item.IElectricItemManager", modid = "IC2")
+@Interface(iface = "ic2.api.item.IElectricItemManager", iname = "IC2")
 public class IC2 extends AERootPoweredItem implements IElectricItemManager
 {
 

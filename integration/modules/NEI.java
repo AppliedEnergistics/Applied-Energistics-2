@@ -11,11 +11,15 @@ public class NEI implements IIntegrationModule
 
 	public static NEI instance;
 
+	Class API;
+
+	public NEI() throws ClassNotFoundException {
+		API = Class.forName( "codechicken.nei.api.API" );
+	}
+
 	@Override
 	public void Init() throws Throwable
 	{
-		Class API = Class.forName( "codechicken.nei.api.API" );
-
 		Method registerRecipeHandler = API.getDeclaredMethod( "registerRecipeHandler", new Class[] { codechicken.nei.recipe.ICraftingHandler.class } );
 		Method registerUsageHandler = API.getDeclaredMethod( "registerUsageHandler", new Class[] { codechicken.nei.recipe.IUsageHandler.class } );
 
