@@ -7,6 +7,8 @@ public class PartInvertedToggleBus extends PartToggleBus
 
 	public PartInvertedToggleBus(ItemStack is) {
 		super( PartInvertedToggleBus.class, is );
+		proxy.setFlags();
+		outerProxy.setFlags();
 	}
 
 	@Override
