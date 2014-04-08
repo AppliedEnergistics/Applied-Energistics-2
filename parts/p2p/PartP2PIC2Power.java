@@ -131,6 +131,15 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 				Options.add( o );
 		}
 
+		if ( Options.isEmpty() )
+		{
+			for (PartP2PIC2Power o : outs)
+				Options.add( o );
+		}
+
+		if ( Options.isEmpty() )
+			return amount;
+
 		PartP2PIC2Power x = (PartP2PIC2Power) Platform.pickRandom( Options );
 		if ( x != null && x.OutputPacket <= 0.001 )
 		{
