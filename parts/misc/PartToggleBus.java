@@ -15,6 +15,7 @@ import org.lwjgl.opengl.GL11;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnection;
+import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPartCollsionHelper;
@@ -68,6 +69,8 @@ public class PartToggleBus extends PartBasicState
 		this( PartToggleBus.class, is );
 		proxy.setIdlePowerUsage( 0.0 );
 		outerProxy.setIdlePowerUsage( 0.0 );
+		proxy.setFlags();
+		outerProxy.setFlags();
 	}
 
 	public PartToggleBus(Class cls, ItemStack is) {
