@@ -15,11 +15,13 @@ public class PartPatternTerminal extends PartTerminal implements IAEAppEngInvent
 {
 
 	AppEngInternalInventory craftingGrid = new AppEngInternalInventory( this, 9 + 3 );
+	AppEngInternalInventory pattern = new AppEngInternalInventory( this, 1 );
 
 	@Override
 	public void writeToNBT(NBTTagCompound data)
 	{
 		super.writeToNBT( data );
+		pattern.writeToNBT( data, "pattern" );
 		craftingGrid.writeToNBT( data, "craftingGrid" );
 	}
 
@@ -27,6 +29,7 @@ public class PartPatternTerminal extends PartTerminal implements IAEAppEngInvent
 	public void readFromNBT(NBTTagCompound data)
 	{
 		super.readFromNBT( data );
+		pattern.readFromNBT( data, "pattern" );
 		craftingGrid.readFromNBT( data, "craftingGrid" );
 	}
 
@@ -34,6 +37,10 @@ public class PartPatternTerminal extends PartTerminal implements IAEAppEngInvent
 	public void getDrops(List<ItemStack> drops, boolean wrenched)
 	{
 		for (ItemStack is : craftingGrid)
+			if ( is != null )
+				drops.add( is );
+
+		for (ItemStack is : pattern)
 			if ( is != null )
 				drops.add( is );
 	}
@@ -56,6 +63,8 @@ public class PartPatternTerminal extends PartTerminal implements IAEAppEngInvent
 	{
 		if ( name.equals( "crafting" ) )
 			return craftingGrid;
+		if ( name.equals( "pattern" ) )
+			return pattern;
 		return super.getInventoryByName( name );
 	}
 

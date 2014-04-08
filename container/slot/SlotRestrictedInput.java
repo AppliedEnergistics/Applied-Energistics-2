@@ -30,7 +30,7 @@ public class SlotRestrictedInput extends AppEngSlot
 
 		ENCODEABLE_ITEM(4 * 16 + 15), TRASH(5 * 16 + 15), VALID_ENCODED_PATTERN_W_OUPUT(7 * 16 + 15), ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15),
 
-		ENCODED_PATTERN(7 * 16 + 15), BLANK_PATTERN(8 * 16 + 15), POWERED_TOOL(9 * 16 + 15),
+		ENCODED_PATTERN(7 * 16 + 15), PATTERN(8 * 16 + 15), BLANK_PATTERN(8 * 16 + 15), POWERED_TOOL(9 * 16 + 15),
 
 		RANGE_BOOSTER(6 * 16 + 15), QE_SINGULARTIY(10 * 16 + 15), SPATIAL_STORAGE_CELLS(11 * 16 + 15),
 
@@ -131,6 +131,12 @@ public class SlotRestrictedInput extends AppEngSlot
 				return pattern.isEncoded();
 			return false;
 		}
+		case PATTERN:
+			ICraftingPatternMAC p = i.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem) i.getItem()).getPatternForItem( i ) : null;
+			if ( p != null )
+				return true;
+			return false;
+
 		case BLANK_PATTERN: {
 			ICraftingPatternMAC pattern = i.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem) i.getItem()).getPatternForItem( i ) : null;
 			if ( pattern != null )
@@ -189,8 +195,7 @@ public class SlotRestrictedInput extends AppEngSlot
 				return false;
 			return true;
 		case ENCODEABLE_ITEM:
-			return i.getItem() instanceof INetworkEncodable ||
-					AEApi.instance().registries().wireless().isWirelessTerminal( i );
+			return i.getItem() instanceof INetworkEncodable || AEApi.instance().registries().wireless().isWirelessTerminal( i );
 		case BIOMETRIC_CARD:
 			return i.getItem() instanceof IBiometricCard;
 		case UPGRADES:

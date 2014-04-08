@@ -19,7 +19,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	public void initGui()
 	{
 		super.initGui();
-		buttonList.add( clearBtn = new GuiImgButton( this.guiLeft + 92, this.guiTop + this.ySize - 156, Settings.ACTIONS, ActionItems.CLOSE ) );
+		buttonList.add( clearBtn = new GuiImgButton( this.guiLeft + 32, this.guiTop + this.ySize - 156, Settings.ACTIONS, ActionItems.PULL ) );
 		buttonList.add( substitutionsBtn = new GuiImgButton( this.guiLeft + 92, this.guiTop + this.ySize - 156, Settings.ACTIONS, ActionItems.CLOSE ) );
 		clearBtn.halfSize = true;
 	}

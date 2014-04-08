@@ -6,6 +6,8 @@ import net.minecraft.item.ItemStack;
 import appeng.api.storage.ITerminalHost;
 import appeng.container.slot.SlotFake;
 import appeng.container.slot.SlotPatternTerm;
+import appeng.container.slot.SlotRestrictedInput;
+import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
@@ -19,6 +21,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	SlotFake craftingSlots[] = new SlotFake[9];
 	SlotFake outputSlots[] = new SlotFake[3];
 	SlotPatternTerm craftSlot;
+	SlotRestrictedInput patternSlot;
 
 	PartPatternTerminal ct;
 
@@ -26,16 +29,18 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		super( ip, montiorable, false );
 		ct = (PartPatternTerminal) montiorable;
 
+		IInventory patternInv = ct.getInventoryByName( "pattern" );
 		IInventory crafting = ct.getInventoryByName( "crafting" );
 
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 3; x++)
-				addSlotToContainer( craftingSlots[x + y * 3] = new SlotFake( crafting, x + y * 3, 37 + x * 18, -72 + y * 18 ) );
+				addSlotToContainer( craftingSlots[x + y * 3] = new SlotFake( crafting, x + y * 3, 54 + x * 18, -72 + y * 18 ) );
 
 		for (int y = 0; y < 3; y++)
-			addSlotToContainer( outputSlots[y] = new SlotFake( crafting, y * 3, 37, -72 + y * 18 ) );
+			addSlotToContainer( outputSlots[y] = new SlotFake( crafting, y * 3, 146, -72 + y * 18 ) );
 
-		addSlotToContainer( craftSlot = new SlotPatternTerm( craftSlotInv, 0, 37, -72 ) );
+		addSlotToContainer( patternSlot = new SlotRestrictedInput( PlaceableItemType.PATTERN, patternInv, 0, 17, -72 - 5 ) );
+		addSlotToContainer( craftSlot = new SlotPatternTerm( craftSlotInv, 0, 17, -72 + 38 ) );
 
 		bindPlayerInventory( ip, 0, 0 );
 	}
