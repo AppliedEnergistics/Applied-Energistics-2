@@ -251,7 +251,7 @@ public enum GuiBridge implements IGuiHandler
 			Class[] types = con.getParameterTypes();
 			if ( types.length == 2 )
 			{
-				if ( types[0] == inventory.getClass() && types[1].isAssignableFrom( tE.getClass() ) )
+				if ( types[0].isAssignableFrom( inventory.getClass() ) && types[1].isAssignableFrom( tE.getClass() ) )
 					return con;
 			}
 		}
