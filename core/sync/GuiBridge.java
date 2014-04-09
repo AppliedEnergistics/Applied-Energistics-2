@@ -54,7 +54,6 @@ import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.container.implementations.ContainerWireless;
 import appeng.container.implementations.ContainerWirelessTerm;
-import appeng.core.AELog;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.helpers.WirelessTerminalGuiObject;
@@ -203,8 +202,7 @@ public enum GuiBridge implements IGuiHandler
 
 			if ( target == null )
 			{
-				AELog.severe( "Cannot find " + Container.getName() + "( " + typeName( inventory ) + ", " + typeName( tE ) + " )" );
-				return null;
+				throw new RuntimeException( "Cannot find " + Container.getName() + "( " + typeName( inventory ) + ", " + typeName( tE ) + " )" );
 			}
 
 			return target.newInstance( inventory, tE );
@@ -227,8 +225,7 @@ public enum GuiBridge implements IGuiHandler
 
 			if ( target == null )
 			{
-				AELog.severe( "Cannot find " + Container.getName() + "( " + typeName( inventory ) + ", " + typeName( tE ) + " )" );
-				return null;
+				throw new RuntimeException( "Cannot find " + Container.getName() + "( " + typeName( inventory ) + ", " + typeName( tE ) + " )" );
 			}
 
 			return target.newInstance( inventory, tE );
