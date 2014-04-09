@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.AEApi;
 import appeng.api.IAppEngApi;
-import appeng.api.crafting.ICraftingPatternMAC;
+import appeng.api.crafting.ICraftingPatternDetails;
 import appeng.api.features.INetworkEncodable;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.implementations.items.IBiometricCard;
@@ -18,6 +18,7 @@ import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.ICellWorkbenchItem;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.recipes.handlers.Inscribe;
 import appeng.util.Platform;
 
@@ -57,8 +58,8 @@ public class SlotRestrictedInput extends AppEngSlot
 	{
 		if ( which == PlaceableItemType.VALID_ENCODED_PATTERN_W_OUPUT )
 		{
-			ICraftingPatternMAC ap = is.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem) is.getItem()).getPatternForItem( is ) : null;
-			if ( ap != null && ap.isEncoded() && ap.isCraftable( theWorld ) )
+			ICraftingPatternDetails ap = is.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem) is.getItem()).getPatternForItem( is ) : null;
+			if ( ap != null )
 				return true;
 			return false;
 		}
@@ -93,12 +94,15 @@ public class SlotRestrictedInput extends AppEngSlot
 		if ( Platform.isClient() && (which == PlaceableItemType.VALID_ENCODED_PATTERN_W_OUPUT || which == PlaceableItemType.ENCODED_PATTERN_W_OUTPUT) )
 		{
 			ItemStack is = super.getStack();
-			if ( is != null )
+			if ( is != null && is.getItem() instanceof ICraftingPatternItem )
 			{
-				ICraftingPatternMAC ap = is.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem) is.getItem()).getPatternForItem( is ) : null;
-				if ( ap != null )
+				ICraftingPatternItem it = (ICraftingPatternItem) is.getItem();
+				ICraftingPatternDetails details = it.getPatternForItem( is );
+				if ( details != null )
 				{
-					return ap.getOutput().getItemStack();
+					IAEItemStack list[] = details.getOutputs();
+					if ( list.length > 0 )
+						return list[0].getItemStack();
 				}
 			}
 		}
@@ -126,24 +130,15 @@ public class SlotRestrictedInput extends AppEngSlot
 		case VALID_ENCODED_PATTERN_W_OUPUT:
 		case ENCODED_PATTERN_W_OUTPUT:
 		case ENCODED_PATTERN: {
-			ICraftingPatternMAC pattern = i.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem) i.getItem()).getPatternForItem( i ) : null;
-			if ( pattern != null )
-				return pattern.isEncoded();
-			return false;
+			ICraftingPatternDetails pattern = i.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem) i.getItem()).getPatternForItem( i ) : null;
+			return pattern != null;
 		}
 		case PATTERN:
-			ICraftingPatternMAC p = i.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem) i.getItem()).getPatternForItem( i ) : null;
-			if ( p != null )
+
+			if ( i.getItem() instanceof ICraftingPatternItem )
 				return true;
-			return false;
 
-		case BLANK_PATTERN: {
-			ICraftingPatternMAC pattern = i.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem) i.getItem()).getPatternForItem( i ) : null;
-			if ( pattern != null )
-				return !pattern.isEncoded();
-
-			return false;
-		}
+			return AEApi.instance().materials().materialBlankPattern.sameAs( i );
 
 		case INSCRIBER_PLATE:
 

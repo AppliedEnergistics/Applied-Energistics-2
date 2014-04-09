@@ -34,7 +34,7 @@ public enum ButtonToolTips
 
 	LevelType, LevelType_Energy, LevelType_Item, InventoryTweaks, TerminalStyle, TerminalStyle_Full, TerminalStyle_Tall, TerminalStyle_Small,
 
-	Pull, PullDescription;
+	Pull, PullDescription, Substitutions, SubstitutionsOn, SubstitutionsOff;
 
 	String root;
 

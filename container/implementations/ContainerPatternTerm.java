@@ -34,14 +34,15 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 3; x++)
-				addSlotToContainer( craftingSlots[x + y * 3] = new SlotFake( crafting, x + y * 3, 54 + x * 18, -72 + y * 18 ) );
+				addSlotToContainer( craftingSlots[x + y * 3] = new SlotFake( crafting, x + y * 3, 54 + x * 18, -76 + y * 18 ) );
 
 		for (int y = 0; y < 3; y++)
-			addSlotToContainer( outputSlots[y] = new SlotFake( crafting, y * 3, 146, -72 + y * 18 ) );
+			addSlotToContainer( outputSlots[y] = new SlotFake( crafting, 9 + y, 146, -76 + y * 18 ) );
 
-		addSlotToContainer( patternSlot = new SlotRestrictedInput( PlaceableItemType.PATTERN, patternInv, 0, 17, -72 - 5 ) );
-		addSlotToContainer( craftSlot = new SlotPatternTerm( craftSlotInv, 0, 17, -72 + 38 ) );
+		addSlotToContainer( patternSlot = new SlotRestrictedInput( PlaceableItemType.PATTERN, patternInv, 0, 17, -72 - 9 ) );
+		addSlotToContainer( craftSlot = new SlotPatternTerm( craftSlotInv, 0, 17, -72 + 34 ) );
 
+		patternSlot.setStackLimit( 1 );
 		bindPlayerInventory( ip, 0, 0 );
 	}
 
