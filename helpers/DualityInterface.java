@@ -156,6 +156,12 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	private void updatePlan(int slot)
 	{
 		IAEItemStack req = config.getAEStackInSlot( slot );
+		if ( req != null && req.getStackSize() <= 0 )
+		{
+			config.setInventorySlotContents(slot, null);
+			req = null;
+		}
+		
 		ItemStack Stored = storage.getStackInSlot( slot );
 
 		if ( req == null && Stored != null )
@@ -242,7 +248,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 					changed = true;
 					ItemStack issue = adaptor.addItems( aquired.getItemStack() );
 					if ( issue != null )
-						throw new RuntimeException( "bad attempt at managining inventory. ( addItems )" );
+						throw new RuntimeException( "bad attempt at managing inventory. ( addItems )" );
 				}
 			}
 			else if ( itemStack.getStackSize() < 0 )
@@ -263,9 +269,9 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 					changed = true;
 					ItemStack removed = adaptor.removeItems( (int) diff, null, null );
 					if ( removed == null )
-						throw new RuntimeException( "bad attempt at managining inventory. ( addItems )" );
+						throw new RuntimeException( "bad attempt at managing inventory. ( addItems )" );
 					else if ( removed.stackSize != diff )
-						throw new RuntimeException( "bad attempt at managining inventory. ( addItems )" );
+						throw new RuntimeException( "bad attempt at managing inventory. ( addItems )" );
 				}
 			}
 			// else wtf?
