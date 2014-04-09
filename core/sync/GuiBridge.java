@@ -54,6 +54,7 @@ import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.container.implementations.ContainerWireless;
 import appeng.container.implementations.ContainerWirelessTerm;
+import appeng.core.AELog;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.helpers.WirelessTerminalGuiObject;
@@ -197,7 +198,16 @@ public enum GuiBridge implements IGuiHandler
 			Constructor[] c = Container.getConstructors();
 			if ( c.length == 0 )
 				throw new AppEngException( "Invalid Gui Class" );
-			return findConstructor( c, inventory, tE ).newInstance( inventory, tE );
+
+			Constructor target = findConstructor( c, inventory, tE );
+
+			if ( target == null )
+			{
+				AELog.severe( "Cannot find " + Container.getName() + "( " + typeName( inventory ) + ", " + typeName( tE ) + " )" );
+				return null;
+			}
+
+			return target.newInstance( inventory, tE );
 		}
 		catch (Throwable t)
 		{
@@ -213,12 +223,28 @@ public enum GuiBridge implements IGuiHandler
 			if ( c.length == 0 )
 				throw new AppEngException( "Invalid Gui Class" );
 
-			return findConstructor( c, inventory, tE ).newInstance( inventory, tE );
+			Constructor target = findConstructor( c, inventory, tE );
+
+			if ( target == null )
+			{
+				AELog.severe( "Cannot find " + Container.getName() + "( " + typeName( inventory ) + ", " + typeName( tE ) + " )" );
+				return null;
+			}
+
+			return target.newInstance( inventory, tE );
 		}
 		catch (Throwable t)
 		{
 			throw new RuntimeException( t );
 		}
+	}
+
+	private String typeName(Object inventory)
+	{
+		if ( inventory == null )
+			return "NULL";
+
+		return inventory.getClass().getName();
 	}
 
 	private Constructor findConstructor(Constructor[] c, InventoryPlayer inventory, Object tE)
