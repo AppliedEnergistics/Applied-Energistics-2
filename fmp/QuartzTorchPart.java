@@ -65,7 +65,7 @@ public class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTi
 	public static McBlockPart placement(World world, BlockCoord pos, int side)
 	{
 		pos = pos.copy().offset( side );
-		if ( !world.isBlockSolidOnSide( pos.x, pos.y, pos.z, ForgeDirection.getOrientation( side ) ) )
+		if ( !world.isSideSolid( pos.x, pos.y, pos.z, ForgeDirection.getOrientation( side ) ) )
 		{
 			return null;
 		}

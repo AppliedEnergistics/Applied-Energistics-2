@@ -1,9 +1,8 @@
 package appeng.fmp;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -42,7 +41,6 @@ import appeng.tile.networking.TileCableBus;
 import appeng.util.Platform;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
-import codechicken.lib.lighting.LazyLightMatrix;
 import codechicken.lib.raytracer.IndexedCuboid6;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
@@ -107,14 +105,14 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public void writeDesc(MCDataOutput packet)
 	{
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		DataOutputStream stream = new DataOutputStream( bytes );
+		ByteBuf stream = Unpooled.buffer();
 
 		try
 		{
 			cb.writeToStream( stream );
-			packet.writeInt( bytes.size() );
-			packet.writeByteArray( bytes.toByteArray() );
+			packet.writeInt( stream.readableBytes() );
+			stream.capacity( stream.readableBytes() );
+			packet.writeByteArray( stream.array() );
 		}
 		catch (IOException e)
 		{
@@ -129,11 +127,13 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		int len = packet.readInt();
 		byte data[] = packet.readByteArray( len );
 
-		DataInputStream stream = new DataInputStream( new ByteArrayInputStream( data ) );
-
 		try
 		{
-			cb.readFromStream( stream );
+			if ( len > 0 )
+			{
+				ByteBuf bybuff= Unpooled.wrappedBuffer(data);
+				cb.readFromStream( bybuff );
+			}
 		}
 		catch (IOException e)
 		{
@@ -262,12 +262,14 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	}
 
 	@Override
-	public void renderStatic(Vector3 pos, LazyLightMatrix olm, int pass)
+	public boolean renderStatic(Vector3 pos, int pass)
 	{
 		if ( pass == 0 )
 		{
 			cb.renderStatic( pos.x, pos.y, pos.z );
+			return true;
 		}
+		return false;
 	}
 
 	@Override
@@ -425,8 +427,8 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public void partChanged()
 	{
-		if ( worldObj != null )
-			worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord, Platform.air );
+		if ( world() != null )
+			world().notifyBlocksOfNeighborChange( x(), y(), z(), Platform.air );
 	}
 
 	@Override
@@ -438,7 +440,8 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public void markForSave()
 	{
-		this.getTile().markDirty();
+		// mark the chunk for save...
+		this.getTile().getWorldObj().getChunkFromBlockCoords( x(), z() ).isModified = true;
 	}
 
 	@Override
@@ -476,7 +479,11 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	{
 		cb.onInputsChanged( world, x, y, z, side, inputValues );
 	}
-
+	
+	public void markDirty() {
+		markForSave();
+	}
+	
 	@Override
 	public void onInputChanged(World world, int x, int y, int z, ForgeDirection side, int inputValue)
 	{
