@@ -496,4 +496,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		return cb.isEmpty();
 	}
 
+	@Override
+	public void cleanup() {
+		tile().remPart( this );
+	}
+
 }
