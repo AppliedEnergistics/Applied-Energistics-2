@@ -380,6 +380,8 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 							}
 
 							itemsToMove -= possible;
+							didStuff = true;
+							break;
 						}
 					}
 				}
