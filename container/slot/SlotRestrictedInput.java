@@ -130,9 +130,14 @@ public class SlotRestrictedInput extends AppEngSlot
 		case VALID_ENCODED_PATTERN_W_OUPUT:
 		case ENCODED_PATTERN_W_OUTPUT:
 		case ENCODED_PATTERN: {
-			ICraftingPatternDetails pattern = i.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem) i.getItem()).getPatternForItem( i ) : null;
-			return pattern != null;
+			if ( i.getItem() instanceof ICraftingPatternItem )
+				return true;
+			// ICraftingPatternDetails pattern = i.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem)
+			// i.getItem()).getPatternForItem( i ) : null;
+			return false;// pattern != null;
 		}
+		case BLANK_PATTERN:
+			return AEApi.instance().materials().materialBlankPattern.sameAs( i );
 		case PATTERN:
 
 			if ( i.getItem() instanceof ICraftingPatternItem )

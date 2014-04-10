@@ -10,6 +10,8 @@ public class OptionalSlotFake extends SlotFake
 	final int groupNum;
 	IOptionalSlotHost host;
 
+	public boolean renderDisabled = true;
+
 	public int srcX;
 	public int srcY;
 
@@ -41,6 +43,11 @@ public class OptionalSlotFake extends SlotFake
 			return false;
 
 		return host.isSlotEnabled( groupNum );
+	}
+
+	public boolean renderDisabled()
+	{
+		return renderDisabled;
 	}
 
 }

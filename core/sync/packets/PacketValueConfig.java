@@ -17,6 +17,7 @@ import appeng.api.util.IConfigureableObject;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerLevelEmitter;
+import appeng.container.implementations.ContainerPatternTerm;
 import appeng.container.implementations.ContainerPriority;
 import appeng.container.implementations.ContainerQuartzKnife;
 import appeng.container.implementations.ContainerSecurity;
@@ -65,6 +66,18 @@ public class PacketValueConfig extends AppEngPacket
 			ContainerLevelEmitter lvc = (ContainerLevelEmitter) c;
 			lvc.setLevel( Long.parseLong( Value ), player );
 			return;
+		}
+		else if ( Name.startsWith( "PatternTerminal." ) && c instanceof ContainerPatternTerm )
+		{
+			ContainerPatternTerm cpt = (ContainerPatternTerm) c;
+			if ( Name.equals( "PatternTerminal.CraftMode" ) )
+			{
+				cpt.ct.craftingMode = Value.equals( "1" );
+			}
+			else if ( Name.equals( "PatternTerminal.Encode" ) )
+			{
+				cpt.encode();
+			}
 		}
 		else if ( Name.startsWith( "CellWorkbench." ) && c instanceof ContainerCellWorkbench )
 		{

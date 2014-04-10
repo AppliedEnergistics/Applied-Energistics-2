@@ -26,7 +26,9 @@ public enum GuiText
 
 	METunnel, ItemTunnel, RedstoneTunnel, MJTunnel, EUTunnel, FluidTunnel, StoredSize,
 
-	StoredPower, MaxPower, RequiredPower, Efficiency, CopyMode, CopyModeDesc, PatternTerminal;
+	StoredPower, MaxPower, RequiredPower, Efficiency, CopyMode, CopyModeDesc, PatternTerminal,
+
+	CraftingPattern, ProcessingPattern;
 
 	String root;
 
