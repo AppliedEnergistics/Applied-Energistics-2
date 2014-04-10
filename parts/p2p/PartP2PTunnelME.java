@@ -111,7 +111,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	@Override
 	public TickingRequest getTickingRequest(IGridNode node)
 	{
-		return new TickingRequest( TickRates.METunnel.min, TickRates.METunnel.max, output, false );
+		return new TickingRequest( TickRates.METunnel.min, TickRates.METunnel.max, true, false );
 	}
 
 	@Override
