@@ -80,7 +80,7 @@ public class GridStorageCache implements IStorageGrid
 
 	private void rmvCell(IGridNode node, ICellContainer cc)
 	{
-		if ( node.isActive() && activeCellContainers.contains( cc ) )
+		if ( activeCellContainers.contains( cc ) )
 		{
 			inactiveCellContainers.add( cc );
 			activeCellContainers.remove( cc );

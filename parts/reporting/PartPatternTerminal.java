@@ -46,7 +46,7 @@ public class PartPatternTerminal extends PartTerminal implements IAEAppEngInvent
 	}
 
 	public PartPatternTerminal(ItemStack is) {
-		super( PartPatternTerminal.class, is );
+		super( PartPatternTerminal.class, is, true );
 		frontBright = CableBusTextures.PartPatternTerm_Bright;
 		frontColored = CableBusTextures.PartPatternTerm_Colored;
 		frontDark = CableBusTextures.PartPatternTerm_Dark;

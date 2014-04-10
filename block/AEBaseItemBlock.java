@@ -123,7 +123,7 @@ public class AEBaseItemBlock extends ItemBlock
 
 		if ( super.placeBlockAt( stack, player, w, x, y, z, side, hitX, hitY, hitZ, metadata ) )
 		{
-			if ( blockType.hasBlockTileEntity() && !blockType.hasCustomRotation() )
+			if ( blockType.hasBlockTileEntity() )
 			{
 				AEBaseTile tile = blockType.getTileEntity( w, x, y, z );
 				ori = tile;
@@ -131,7 +131,7 @@ public class AEBaseItemBlock extends ItemBlock
 				if ( tile == null )
 					return true;
 
-				if ( ori.canBeRotated() )
+				if ( ori.canBeRotated() && !blockType.hasCustomRotation() )
 				{
 					if ( ori.getForward() == null || ori.getUp() == null || // null
 							tile.getForward() == ForgeDirection.UNKNOWN || ori.getUp() == ForgeDirection.UNKNOWN )

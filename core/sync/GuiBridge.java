@@ -201,7 +201,15 @@ public enum GuiBridge implements IGuiHandler
 			Constructor[] c = Container.getConstructors();
 			if ( c.length == 0 )
 				throw new AppEngException( "Invalid Gui Class" );
-			return findConstructor( c, inventory, tE ).newInstance( inventory, tE );
+
+			Constructor target = findConstructor( c, inventory, tE );
+
+			if ( target == null )
+			{
+				throw new RuntimeException( "Cannot find " + Container.getName() + "( " + typeName( inventory ) + ", " + typeName( tE ) + " )" );
+			}
+
+			return target.newInstance( inventory, tE );
 		}
 		catch (Throwable t)
 		{
@@ -217,12 +225,27 @@ public enum GuiBridge implements IGuiHandler
 			if ( c.length == 0 )
 				throw new AppEngException( "Invalid Gui Class" );
 
-			return findConstructor( c, inventory, tE ).newInstance( inventory, tE );
+			Constructor target = findConstructor( c, inventory, tE );
+
+			if ( target == null )
+			{
+				throw new RuntimeException( "Cannot find " + Container.getName() + "( " + typeName( inventory ) + ", " + typeName( tE ) + " )" );
+			}
+
+			return target.newInstance( inventory, tE );
 		}
 		catch (Throwable t)
 		{
 			throw new RuntimeException( t );
 		}
+	}
+
+	private String typeName(Object inventory)
+	{
+		if ( inventory == null )
+			return "NULL";
+
+		return inventory.getClass().getName();
 	}
 
 	private Constructor findConstructor(Constructor[] c, InventoryPlayer inventory, Object tE)
@@ -232,7 +255,7 @@ public enum GuiBridge implements IGuiHandler
 			Class[] types = con.getParameterTypes();
 			if ( types.length == 2 )
 			{
-				if ( types[0] == inventory.getClass() && types[1].isAssignableFrom( tE.getClass() ) )
+				if ( types[0].isAssignableFrom( inventory.getClass() ) && types[1].isAssignableFrom( tE.getClass() ) )
 					return con;
 			}
 		}

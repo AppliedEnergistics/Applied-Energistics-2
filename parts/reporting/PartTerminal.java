@@ -30,7 +30,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	AppEngInternalInventory viewCell = new AppEngInternalInventory( this, 5 );
 
 	public PartTerminal(Class clz, ItemStack is) {
-		super( clz, is );
+		super( clz, is,true );
 
 		cm.registerSetting( Settings.SORT_BY, SortOrder.NAME );
 		cm.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
@@ -54,7 +54,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	}
 
 	public PartTerminal(ItemStack is) {
-		super( PartTerminal.class, is );
+		super( PartTerminal.class, is,true );
 		frontBright = CableBusTextures.PartTerminal_Bright;
 		frontColored = CableBusTextures.PartTerminal_Colored;
 		frontDark = CableBusTextures.PartTerminal_Dark;

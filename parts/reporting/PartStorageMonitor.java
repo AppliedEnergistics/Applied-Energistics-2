@@ -150,11 +150,11 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	protected PartStorageMonitor(Class myClass, ItemStack is) {
-		super( myClass, is );
+		super( myClass, is,true );
 	}
 
 	public PartStorageMonitor(ItemStack is) {
-		super( PartStorageMonitor.class, is );
+		super( PartStorageMonitor.class, is,true );
 		frontBright = CableBusTextures.PartStorageMonitor_Bright;
 		frontColored = CableBusTextures.PartStorageMonitor_Colored;
 		frontDark = CableBusTextures.PartStorageMonitor_Dark;

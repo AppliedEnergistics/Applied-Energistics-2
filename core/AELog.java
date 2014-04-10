@@ -47,7 +47,7 @@ public class AELog
 	{
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.Logging ) )
 		{
-			severe( "Error: " + e.getMessage() );
+			severe( "Error: " + e.getClass().getName() + " : " + e.getMessage() );
 			e.printStackTrace();
 		}
 	}
