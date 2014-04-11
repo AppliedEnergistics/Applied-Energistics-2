@@ -104,7 +104,7 @@ public class PartPlacement
 						}
 
 						if ( host.isEmpty() )
-							world.setBlock( x, y, z, Platform.air );
+							host.cleanup();
 
 						if ( is != null && !is.isEmpty() )
 						{

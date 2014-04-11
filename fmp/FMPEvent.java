@@ -6,16 +6,16 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.Packet15Place;
+import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import appeng.block.AEBaseItemBlock;
 import appeng.core.AELog;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMultiPart;
 import appeng.integration.modules.helpers.FMPPacketEvent;
 import codechicken.lib.packet.PacketCustom;
@@ -24,7 +24,7 @@ import codechicken.lib.vec.BlockCoord;
 import codechicken.lib.vec.Vector3;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
-import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Basically a total rip of of the FMP version for vanilla, seemed to work well enough...
@@ -34,13 +34,13 @@ public class FMPEvent
 
 	private ThreadLocal<Object> placing = new ThreadLocal<Object>();
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void ServerFMPEvent(FMPPacketEvent event)
 	{
 		FMPEvent.place( event.sender, event.sender.worldObj );
 	}
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void playerInteract(PlayerInteractEvent event)
 	{
 		if ( event.action == Action.RIGHT_CLICK_BLOCK && event.entityPlayer.worldObj.isRemote )
@@ -72,7 +72,7 @@ public class FMPEvent
 		if ( held.getItem() instanceof AEBaseItemBlock )
 		{
 			AEBaseItemBlock ib = (AEBaseItemBlock) held.getItem();
-			blk = Block.blocksList[ib.getBlockID()];
+			blk = Block.getBlockFromItem(ib);
 			part = PartRegistry.getPartByBlock( blk, hit.sideHit );
 		}
 
@@ -83,12 +83,12 @@ public class FMPEvent
 														// the right stuff
 		{
 			Vector3 f = new Vector3( hit.hitVec ).add( -hit.blockX, -hit.blockY, -hit.blockZ );
-			Block block = Block.blocksList[world.getBlockId( hit.blockX, hit.blockY, hit.blockZ )];
+			Block block = world.getBlock( hit.blockX, hit.blockY, hit.blockZ );
 			if ( block != null && !ignoreActivate( block )
 					&& block.onBlockActivated( world, hit.blockX, hit.blockY, hit.blockZ, player, hit.sideHit, (float) f.x, (float) f.y, (float) f.z ) )
 			{
 				player.swingItem();
-				PacketCustom.sendToServer( new Packet15Place( hit.blockX, hit.blockY, hit.blockZ, hit.sideHit, player.inventory.getCurrentItem(), (float) f.x,
+				PacketCustom.sendToServer(new C08PacketPlayerBlockPlacement( hit.blockX, hit.blockY, hit.blockZ, hit.sideHit, player.inventory.getCurrentItem(), (float) f.x,
 						(float) f.y, (float) f.z ) );
 				return false;
 			}
@@ -101,7 +101,7 @@ public class FMPEvent
 		if ( !world.isRemote )
 		{
 			TileMultipart.addPart( world, pos, part );
-			world.playSoundEffect( pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, blk.stepSound.getPlaceSound(), (blk.stepSound.getVolume() + 1.0F) / 2.0F,
+			world.playSoundEffect( pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, blk.stepSound.func_150496_b(), (blk.stepSound.getVolume() + 1.0F) / 2.0F,
 					blk.stepSound.getPitch() * 0.8F );
 			if ( !player.capabilities.isCreativeMode )
 			{
@@ -118,7 +118,7 @@ public class FMPEvent
 			player.swingItem();
 			try
 			{
-				PacketDispatcher.sendPacketToServer( (new PacketMultiPart()).getPacket() );
+				NetworkHandler.instance.sendToServer( new PacketMultiPart() );
 			}
 			catch (IOException e)
 			{

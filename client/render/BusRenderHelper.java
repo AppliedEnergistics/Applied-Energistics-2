@@ -271,7 +271,7 @@ public class BusRenderHelper implements IPartRenderHelper
 
 		bbr.renderBlockBounds( renderer, minX, minY, minZ, maxX, maxY, maxZ, ax, ay, az );
 
-		renderer.renderStandardBlock( renderer.blockAccess.getBlock( x, y, z ), x, y, z );
+		renderer.renderStandardBlock( blk, x, y, z );
 	}
 
 	@Override

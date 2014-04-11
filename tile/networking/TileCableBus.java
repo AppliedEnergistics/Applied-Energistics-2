@@ -41,7 +41,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 
 	public CableBusContainer cb = new CableBusContainer( this );
 	private int oldLV = -1; // on re-calculate light when it changes
-
+		
 	class CableBusHandler extends AETileEventHandler
 	{
 
@@ -318,6 +318,11 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	public Set<LayerFlags> getLayerFlags()
 	{
 		return cb.getLayerFlags();
+	}
+	
+	@Override
+	public void cleanup() {
+		getWorldObj().setBlock( xCoord, yCoord, zCoord, Platform.air );
 	}
 
 	/**

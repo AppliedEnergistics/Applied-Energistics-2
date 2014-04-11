@@ -968,4 +968,9 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 		return myLayerFlags;
 	}
 
+	@Override
+	public void cleanup() {
+		tcb.cleanup();
+	}
+
 }
