@@ -19,7 +19,8 @@ import appeng.tile.inventory.InvOperation;
 public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEAppEngInventory, IOptionalSlotHost
 {
 
-	AppEngInternalInventory craftSlotInv = new AppEngInternalInventory( this, 1 );
+	AppEngInternalInventory output = new AppEngInternalInventory( this, 1 );
+	AppEngInternalInventory craftSlotInv = new AppEngInternalInventory( this, 3 );
 
 	SlotFake craftingSlots[] = new SlotFake[9];
 	OptionalSlotFake outputSlots[] = new OptionalSlotFake[3];
@@ -44,8 +45,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			for (int x = 0; x < 3; x++)
 				addSlotToContainer( craftingSlots[x + y * 3] = new SlotFake( crafting, x + y * 3, 18 + x * 18, -76 + y * 18 ) );
 
-		addSlotToContainer( craftSlot = new SlotPatternTerm( craftSlotInv, this, 0, 110, -76 + 18, 2 ) );
-		craftSlot.renderDisabled = false;
+		addSlotToContainer( craftSlot = new SlotPatternTerm( ip.player, mySrc, powerSrc, montiorable, crafting, patternInv, craftSlotInv, output, 0, 110,
+				-76 + 18, this, 2 ) );
 		craftSlot.IIcon = -1;
 
 		for (int y = 0; y < 3; y++)
