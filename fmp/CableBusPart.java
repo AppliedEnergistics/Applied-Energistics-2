@@ -50,6 +50,7 @@ import codechicken.multipart.JNormalOcclusion;
 import codechicken.multipart.NormalOcclusionTest;
 import codechicken.multipart.NormallyOccludedPart;
 import codechicken.multipart.TMultiPart;
+import codechicken.multipart.scalatraits.TIInventoryTile;
 
 //TFacePart, 
 public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IRedstonePart, IPartHost, AEMultiTile
@@ -131,7 +132,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		{
 			if ( len > 0 )
 			{
-				ByteBuf bybuff= Unpooled.wrappedBuffer(data);
+				ByteBuf bybuff = Unpooled.wrappedBuffer( data );
 				cb.readFromStream( bybuff );
 			}
 		}
@@ -427,6 +428,10 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public void partChanged()
 	{
+		AELog.info( "rebuildSlotMap" );
+		if ( tile() instanceof TIInventoryTile )
+			((TIInventoryTile) tile()).rebuildSlotMap();
+
 		if ( world() != null )
 			world().notifyBlocksOfNeighborChange( x(), y(), z(), Platform.air );
 	}
@@ -436,7 +441,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	{
 		return cb.getLayerFlags();
 	}
-	
+
 	@Override
 	public void markForSave()
 	{
@@ -479,11 +484,12 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	{
 		cb.onInputsChanged( world, x, y, z, side, inputValues );
 	}
-	
-	public void markDirty() {
+
+	public void markDirty()
+	{
 		markForSave();
 	}
-	
+
 	@Override
 	public void onInputChanged(World world, int x, int y, int z, ForgeDirection side, int inputValue)
 	{
@@ -497,7 +503,8 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	}
 
 	@Override
-	public void cleanup() {
+	public void cleanup()
+	{
 		tile().remPart( this );
 	}
 
