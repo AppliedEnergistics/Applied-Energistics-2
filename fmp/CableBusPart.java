@@ -484,11 +484,6 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		cb.onInputsChanged( world, x, y, z, side, inputValues );
 	}
 
-	public void markDirty()
-	{
-		markForSave();
-	}
-
 	@Override
 	public void onInputChanged(World world, int x, int y, int z, ForgeDirection side, int inputValue)
 	{
