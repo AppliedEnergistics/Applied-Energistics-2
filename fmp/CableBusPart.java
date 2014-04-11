@@ -428,7 +428,6 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public void partChanged()
 	{
-		AELog.info( "rebuildSlotMap" );
 		if ( tile() instanceof TIInventoryTile )
 			((TIInventoryTile) tile()).rebuildSlotMap();
 

@@ -124,8 +124,7 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 	@Override
 	public void getBoxes(IPartCollsionHelper bch)
 	{
-		bch.addBox( 6, 6, 11, 10, 10, 12 );
-		bch.addBox( 6, 6, 12, 10, 10, 13 );
+		bch.addBox( 6, 6, 11, 10, 10, 13 );
 		bch.addBox( 5, 5, 13, 11, 11, 14 );
 		bch.addBox( 4, 4, 14, 12, 12, 16 );
 	}

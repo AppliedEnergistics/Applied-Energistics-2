@@ -110,10 +110,8 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	@Override
 	public void getBoxes(IPartCollsionHelper bch)
 	{
-		bch.addBox( 3, 3, 15, 13, 13, 16 );
-		bch.addBox( 2, 2, 14, 14, 14, 15 );
-		bch.addBox( 5, 5, 12, 11, 11, 13 );
-		bch.addBox( 5, 5, 13, 11, 11, 14 );
+		bch.addBox( 2, 2, 14, 14, 14, 16 );
+		bch.addBox( 5, 5, 12, 11, 11, 14 );
 	}
 
 	@Override

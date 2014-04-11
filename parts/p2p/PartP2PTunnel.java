@@ -332,6 +332,8 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 	@Override
 	public void getBoxes(IPartCollsionHelper bch)
 	{
+		bch.addBox( 5, 5, 12, 11, 11, 13 );
+		bch.addBox( 3, 3, 13, 13, 13, 14 );
 		bch.addBox( 2, 2, 14, 14, 14, 16 );
 	}
 
