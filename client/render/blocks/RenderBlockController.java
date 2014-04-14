@@ -2,6 +2,7 @@ package appeng.client.render.blocks;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
@@ -19,9 +20,9 @@ public class RenderBlockController extends BaseBlockRender
 	public boolean renderInWorld(AEBaseBlock blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
 	{
 
-		boolean xx = world.getTileEntity( x - 1, y, z ) instanceof TileController && world.getTileEntity( x + 1, y, z ) instanceof TileController;
-		boolean yy = world.getTileEntity( x, y - 1, z ) instanceof TileController && world.getTileEntity( x, y + 1, z ) instanceof TileController;
-		boolean zz = world.getTileEntity( x, y, z - 1 ) instanceof TileController && world.getTileEntity( x, y, z + 1 ) instanceof TileController;
+		boolean xx = getTileEntity( world, x - 1, y, z ) instanceof TileController && getTileEntity( world, x + 1, y, z ) instanceof TileController;
+		boolean yy = getTileEntity( world, x, y - 1, z ) instanceof TileController && getTileEntity( world, x, y + 1, z ) instanceof TileController;
+		boolean zz = getTileEntity( world, x, y, z - 1 ) instanceof TileController && getTileEntity( world, x, y, z + 1 ) instanceof TileController;
 
 		int meta = world.getBlockMetadata( x, y, z );
 		boolean hasPower = meta > 0;
@@ -121,5 +122,12 @@ public class RenderBlockController extends BaseBlockRender
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 		renderer.uvRotateEast = renderer.uvRotateBottom = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 		return out;
+	}
+
+	private TileEntity getTileEntity(IBlockAccess world, int x, int y, int z)
+	{
+		if ( y >= 0 )
+			return world.getTileEntity( x, y, z );
+		return null;
 	}
 }
