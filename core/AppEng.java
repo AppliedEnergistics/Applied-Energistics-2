@@ -51,6 +51,7 @@ public class AppEng
 	"after:gregtech_addon;after:Mekanism;after:IC2;after:ThermalExpansion;after:BuildCraft|Core;" +
 
 	// depend on version of forge used for build.
+			"required-after:AppliedEnergistics2-Core;" +
 			"required-after:Forge@[" // require forge.
 			+ net.minecraftforge.common.ForgeVersion.majorVersion + "." // majorVersion
 			+ net.minecraftforge.common.ForgeVersion.minorVersion + "." // minorVersion
