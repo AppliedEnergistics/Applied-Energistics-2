@@ -80,7 +80,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		myScrollBar = new GuiScrollbar();
 		repo = new ItemRepo( myScrollBar, this );
 
-		xSize = 195;
+		xSize = 185;
 		ySize = 204;
 
 		if ( te instanceof IViewCellStorage )
@@ -295,7 +295,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		bindTexture( getBackground() );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 18 );
-		this.drawTexturedModalRect( offsetX + x_width, offsetY, x_width, 0, 46, 128 );
+
+		if ( viewCell )
+			this.drawTexturedModalRect( offsetX + x_width, offsetY, x_width, 0, 46, 128 );
 
 		for (int x = 0; x < rows; x++)
 			this.drawTexturedModalRect( offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18 );
