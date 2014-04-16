@@ -1,5 +1,7 @@
 package appeng.parts.reporting;
 
+import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -35,6 +37,16 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 		cm.registerSetting( Settings.SORT_BY, SortOrder.NAME );
 		cm.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
 		cm.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
+	}
+
+	@Override
+	public void getDrops(List<ItemStack> drops, boolean wrenched)
+	{
+		super.getDrops(drops, wrenched);
+		
+		for (ItemStack is : viewCell)
+			if ( is != null )
+				drops.add( is );
 	}
 
 	@Override
