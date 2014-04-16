@@ -20,7 +20,10 @@ public class GuiSecurity extends GuiMEMonitorable
 		super( inventoryPlayer, te, new ContainerSecurity( inventoryPlayer, te ) );
 		customSortOrder = false;
 		reservedSpace = 33;
-		xSize += 50;
+		
+		// increase size so that the slot is over the gui.
+		xSize += 56;
+		standardSize = xSize;
 	}
 
 	GuiToggleButton inject, extract, craft, build, security;
