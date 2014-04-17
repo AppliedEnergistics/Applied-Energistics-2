@@ -80,7 +80,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		myScrollBar = new GuiScrollbar();
 		repo = new ItemRepo( myScrollBar, this );
 
-		xSize = 195;
+		xSize = 185;
 		ySize = 204;
 
 		if ( te instanceof IViewCellStorage )
@@ -129,7 +129,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	@Override
 	public void initGui()
 	{
-		maxRows = AEConfig.instance.getConfigManager().getSetting( Settings.TERMINAL_STYLE ) == TerminalStyle.SMALL ? 6 : Integer.MAX_VALUE;
+		maxRows = getMaxRows();
 		perRow = AEConfig.instance.getConfigManager().getSetting( Settings.TERMINAL_STYLE ) != TerminalStyle.FULL ? 9 : 9 + ((width - standardSize) / 18);
 
 		int NEI = 0;
@@ -181,9 +181,12 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 				.getSetting( Settings.SEARCH_MODE ) ) );
 		offset += 20;
 
-		buttonList.add( terminalStyleBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, AEConfig.instance.settings
-				.getSetting( Settings.TERMINAL_STYLE ) ) );
-
+		if ( !(this instanceof GuiMEPortableCell ) )
+		{
+			buttonList.add( terminalStyleBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, AEConfig.instance.settings
+					.getSetting( Settings.TERMINAL_STYLE ) ) );
+		}
+		
 		searchField = new MEGuiTextField( fontRendererObj, this.guiLeft + Math.max( 82, xoffset ), this.guiTop + 6, 89, fontRendererObj.FONT_HEIGHT );
 		searchField.setEnableBackgroundDrawing( false );
 		searchField.setMaxStringLength( 25 );
@@ -295,7 +298,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		bindTexture( getBackground() );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 18 );
-		this.drawTexturedModalRect( offsetX + x_width, offsetY, x_width, 0, 46, 128 );
+
+		if ( viewCell || ( this instanceof GuiSecurity))
+			this.drawTexturedModalRect( offsetX + x_width, offsetY, x_width, 0, 46, 128 );
 
 		for (int x = 0; x < rows; x++)
 			this.drawTexturedModalRect( offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18 );
@@ -365,6 +370,11 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	protected boolean isPowered()
 	{
 		return repo.hasPower();
+	}
+
+	int getMaxRows()
+	{
+		return AEConfig.instance.getConfigManager().getSetting( Settings.TERMINAL_STYLE ) == TerminalStyle.SMALL ? 6 : Integer.MAX_VALUE;
 	}
 
 }
