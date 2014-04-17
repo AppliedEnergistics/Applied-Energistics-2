@@ -19,6 +19,7 @@ import appeng.core.sync.packets.PacketMockExplosion;
 import appeng.core.sync.packets.PacketMultiPart;
 import appeng.core.sync.packets.PacketNewStorageDimension;
 import appeng.core.sync.packets.PacketPartPlacement;
+import appeng.core.sync.packets.PacketPatternSlot;
 import appeng.core.sync.packets.PacketProgressBar;
 import appeng.core.sync.packets.PacketSwapSlots;
 import appeng.core.sync.packets.PacketSwitchGuis;
@@ -64,7 +65,9 @@ public class AppEngPacketHandlerBase
 
 		PACKET_SWITCH_GUIS(PacketSwitchGuis.class),
 
-		PACKET_SWAP_SLOTS(PacketSwapSlots.class);
+		PACKET_SWAP_SLOTS(PacketSwapSlots.class),
+
+		PACKET_PATTERN_SLOT(PacketPatternSlot.class);
 
 		final public Class pc;
 		final public Constructor con;

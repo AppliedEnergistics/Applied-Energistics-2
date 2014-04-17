@@ -41,6 +41,7 @@ import appeng.container.slot.SlotDisabled;
 import appeng.container.slot.SlotFake;
 import appeng.container.slot.SlotInaccessable;
 import appeng.container.slot.SlotOutput;
+import appeng.container.slot.SlotPatternTerm;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -167,7 +168,21 @@ public abstract class AEBaseGui extends GuiContainer
 			return;
 		}
 
-		if ( slot instanceof SlotCraftingTerm )
+		if ( slot instanceof SlotPatternTerm )
+		{
+			if ( key == 6 )
+				return; // prevent weird double clicks..
+
+			try
+			{
+				NetworkHandler.instance.sendToServer( ((SlotPatternTerm) slot).getRequest( key == 1 ) );
+			}
+			catch (IOException e)
+			{
+				AELog.error( e );
+			}
+		}
+		else if ( slot instanceof SlotCraftingTerm )
 		{
 			if ( key == 6 )
 				return; // prevent weird double clicks..

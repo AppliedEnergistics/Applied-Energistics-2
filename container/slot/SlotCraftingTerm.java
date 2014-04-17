@@ -8,9 +8,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.world.World;
 import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEMonitor;
@@ -27,8 +25,8 @@ import appeng.util.item.AEItemStack;
 public class SlotCraftingTerm extends AppEngCraftingSlot
 {
 
-	private final IInventory craftInv;
-	private final IInventory pattern;
+	protected final IInventory craftInv;
+	protected final IInventory pattern;
 
 	private final BaseActionSource mySrc;
 	private final IEnergySource energySrc;
@@ -60,54 +58,9 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 	{
 	}
 
-	private ItemStack extractItemsByRecipe(IMEMonitor<IAEItemStack> src, World w, IRecipe r, ItemStack output, InventoryCrafting ci,
-			ItemStack providedTemplate, int slot, IItemList<IAEItemStack> aitems)
+	public void makeItem(EntityPlayer p, ItemStack is)
 	{
-		if ( energySrc.extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.9 )
-		{
-			if ( providedTemplate == null )
-				return null;
-
-			AEItemStack ae_req = AEItemStack.create( providedTemplate );
-			ae_req.setStackSize( 1 );
-
-			IAEItemStack ae_ext = src.extractItems( ae_req, Actionable.MODULATE, mySrc );
-			if ( ae_ext != null )
-			{
-				ItemStack extracted = ae_ext.getItemStack();
-				if ( extracted != null )
-				{
-					energySrc.extractAEPower( 1, Actionable.MODULATE, PowerMultiplier.CONFIG );
-					return extracted;
-				}
-			}
-
-			if ( aitems != null && (ae_req.isOre() || providedTemplate.hasTagCompound() || providedTemplate.isItemStackDamageable()) )
-			{
-				for (IAEItemStack x : aitems)
-				{
-					ItemStack sh = x.getItemStack();
-					if ( (Platform.isSameItemType( providedTemplate, sh ) || ae_req.sameOre( x )) && !Platform.isSameItem( sh, output ) )
-					{ // Platform.isSameItemType( sh, providedTemplate )
-						ItemStack cp = Platform.cloneItemStack( sh );
-						cp.stackSize = 1;
-						ci.setInventorySlotContents( slot, cp );
-						if ( r.matches( ci, w ) && Platform.isSameItem( r.getCraftingResult( ci ), output ) )
-						{
-							IAEItemStack ex = src.extractItems( AEItemStack.create( cp ), Actionable.MODULATE, mySrc );
-							if ( ex != null )
-							{
-								energySrc.extractAEPower( 1, Actionable.MODULATE, PowerMultiplier.CONFIG );
-								return ex.getItemStack();
-							}
-						}
-						ci.setInventorySlotContents( slot, providedTemplate );
-					}
-				}
-			}
-
-		}
-		return null;
+		super.onPickupFromSlot( p, is );
 	}
 
 	public ItemStack craftItem(EntityPlayer p, ItemStack request, IMEMonitor<IAEItemStack> inv, IItemList all)
@@ -139,7 +92,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 					{
 						if ( pattern.getStackInSlot( x ) != null )
 						{
-							set[x] = extractItemsByRecipe( inv, p.worldObj, r, is, ic, pattern.getStackInSlot( x ), x, all );
+							set[x] = Platform.extractItemsByRecipe( energySrc, mySrc, inv, p.worldObj, r, is, ic, pattern.getStackInSlot( x ), x, all );
 							ic.setInventorySlotContents( x, set[x] );
 						}
 					}
@@ -148,7 +101,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 
 			if ( preCraft( p, inv, set, is ) )
 			{
-				super.onPickupFromSlot( p, is );
+				makeItem( p, is );
 
 				postCraft( p, inv, set, is );
 			}

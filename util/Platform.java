@@ -65,6 +65,7 @@ import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventory;
+import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
@@ -1514,6 +1515,56 @@ public class Platform
 
 		player.rotationPitch = player.prevCameraPitch = player.cameraPitch = pitch;
 		player.rotationYaw = player.prevCameraYaw = player.cameraYaw = yaw;
+	}
+
+	public static ItemStack extractItemsByRecipe(IEnergySource energySrc, BaseActionSource mySrc, IMEMonitor<IAEItemStack> src, World w, IRecipe r,
+			ItemStack output, InventoryCrafting ci, ItemStack providedTemplate, int slot, IItemList<IAEItemStack> aitems)
+	{
+		if ( energySrc.extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.9 )
+		{
+			if ( providedTemplate == null )
+				return null;
+
+			AEItemStack ae_req = AEItemStack.create( providedTemplate );
+			ae_req.setStackSize( 1 );
+
+			IAEItemStack ae_ext = src.extractItems( ae_req, Actionable.MODULATE, mySrc );
+			if ( ae_ext != null )
+			{
+				ItemStack extracted = ae_ext.getItemStack();
+				if ( extracted != null )
+				{
+					energySrc.extractAEPower( 1, Actionable.MODULATE, PowerMultiplier.CONFIG );
+					return extracted;
+				}
+			}
+
+			if ( aitems != null && (ae_req.isOre() || providedTemplate.hasTagCompound() || providedTemplate.isItemStackDamageable()) )
+			{
+				for (IAEItemStack x : aitems)
+				{
+					ItemStack sh = x.getItemStack();
+					if ( (Platform.isSameItemType( providedTemplate, sh ) || ae_req.sameOre( x )) && !Platform.isSameItem( sh, output ) )
+					{ // Platform.isSameItemType( sh, providedTemplate )
+						ItemStack cp = Platform.cloneItemStack( sh );
+						cp.stackSize = 1;
+						ci.setInventorySlotContents( slot, cp );
+						if ( r.matches( ci, w ) && Platform.isSameItem( r.getCraftingResult( ci ), output ) )
+						{
+							IAEItemStack ex = src.extractItems( AEItemStack.create( cp ), Actionable.MODULATE, mySrc );
+							if ( ex != null )
+							{
+								energySrc.extractAEPower( 1, Actionable.MODULATE, PowerMultiplier.CONFIG );
+								return ex.getItemStack();
+							}
+						}
+						ci.setInventorySlotContents( slot, providedTemplate );
+					}
+				}
+			}
+
+		}
+		return null;
 	}
 
 }
