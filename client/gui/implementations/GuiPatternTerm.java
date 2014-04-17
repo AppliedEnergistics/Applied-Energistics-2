@@ -25,6 +25,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	GuiTabButton tabProcessButton;
 	GuiImgButton substitutionsBtn;
 	GuiImgButton encodeBtn;
+	GuiImgButton clearBtn;
 
 	@Override
 	public void initGui()
@@ -34,9 +35,14 @@ public class GuiPatternTerm extends GuiMEMonitorable
 				GuiText.CraftingPattern.getLocal(), itemRender ) );
 		buttonList.add( tabProcessButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 179, new ItemStack( Blocks.furnace ),
 				GuiText.ProcessingPattern.getLocal(), itemRender ) );
-		buttonList.add( substitutionsBtn = new GuiImgButton( this.guiLeft + 74, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.SUBSTITUTION ) );
-		buttonList.add( encodeBtn = new GuiImgButton( this.guiLeft + 147, this.guiTop + this.ySize - 144, Settings.ACTIONS, ActionItems.ENCODE ) );
+
+		buttonList.add( substitutionsBtn = new GuiImgButton( this.guiLeft + 84, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.SUBSTITUTION ) );
 		substitutionsBtn.halfSize = true;
+
+		buttonList.add( clearBtn = new GuiImgButton( this.guiLeft + 74, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.CLOSE ) );
+		clearBtn.halfSize = true;
+
+		buttonList.add( encodeBtn = new GuiImgButton( this.guiLeft + 147, this.guiTop + this.ySize - 144, Settings.ACTIONS, ActionItems.ENCODE ) );
 	}
 
 	@Override
@@ -46,6 +52,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 
 		try
 		{
+
 			if ( tabCraftButton == btn || tabProcessButton == btn )
 			{
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "PatternTerminal.CraftMode", tabProcessButton == btn ? "0" : "1" ) );
@@ -55,6 +62,12 @@ public class GuiPatternTerm extends GuiMEMonitorable
 			{
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "PatternTerminal.Encode", "1" ) );
 			}
+
+			if ( clearBtn == btn )
+			{
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "PatternTerminal.Clear", "1" ) );
+			}
+
 		}
 		catch (IOException e)
 		{

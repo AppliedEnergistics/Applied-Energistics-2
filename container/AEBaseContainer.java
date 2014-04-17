@@ -744,7 +744,7 @@ public abstract class AEBaseContainer extends Container
 		updateProgressBar( id, (int) value );
 	}
 
-	private void updateHeld(EntityPlayerMP p)
+	protected void updateHeld(EntityPlayerMP p)
 	{
 		try
 		{

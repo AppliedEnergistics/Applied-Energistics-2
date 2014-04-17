@@ -78,6 +78,10 @@ public class PacketValueConfig extends AppEngPacket
 			{
 				cpt.encode();
 			}
+			else if ( Name.equals( "PatternTerminal.Clear" ) )
+			{
+				cpt.clear();
+			}
 		}
 		else if ( Name.startsWith( "CellWorkbench." ) && c instanceof ContainerCellWorkbench )
 		{

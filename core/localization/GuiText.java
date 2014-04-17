@@ -28,7 +28,7 @@ public enum GuiText
 
 	StoredPower, MaxPower, RequiredPower, Efficiency, CopyMode, CopyModeDesc, PatternTerminal,
 
-	CraftingPattern, ProcessingPattern;
+	CraftingPattern, ProcessingPattern, Crafts, Creates, And, With;
 
 	String root;
 
