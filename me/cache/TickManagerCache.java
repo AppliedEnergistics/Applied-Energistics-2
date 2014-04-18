@@ -68,7 +68,7 @@ public class TickManagerCache implements ITickManager
 				switch (mod)
 				{
 				case FASTER:
-					tt.setRate( tt.current_rate - 1 );
+					tt.setRate( tt.current_rate - 2 );
 					break;
 				case IDLE:
 					tt.setRate( tt.request.maxTickRate );

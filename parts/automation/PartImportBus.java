@@ -225,14 +225,16 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 
 	private boolean importStuff(InventoryAdaptor myAdaptor, IAEItemStack whatToImport, IMEMonitor<IAEItemStack> inv, IEnergySource energy, FuzzyMode fzMode)
 	{
-		if ( itemToSend > 64 )
-			itemToSend = 64;
+		int toSend = this.itemToSend;
+
+		if ( toSend > 64 )
+			toSend = 64;
 
 		ItemStack newItems;
 		if ( getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-			newItems = myAdaptor.removeSimilarItems( itemToSend, whatToImport == null ? null : whatToImport.getItemStack(), fzMode, configDest( inv ) );
+			newItems = myAdaptor.removeSimilarItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), fzMode, configDest( inv ) );
 		else
-			newItems = myAdaptor.removeItems( itemToSend, whatToImport == null ? null : whatToImport.getItemStack(), configDest( inv ) );
+			newItems = myAdaptor.removeItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), configDest( inv ) );
 
 		if ( newItems != null )
 		{
