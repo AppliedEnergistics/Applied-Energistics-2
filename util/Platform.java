@@ -62,7 +62,10 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.ISecurityGrid;
+import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.security.PlayerSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
@@ -77,7 +80,9 @@ import appeng.api.util.AEItemDefinition;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.GuiBridge;
+import appeng.me.GridAccessException;
 import appeng.me.GridNode;
+import appeng.me.helpers.AENetworkProxy;
 import appeng.server.AccessType;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.AESharedNBT;
@@ -1565,6 +1570,29 @@ public class Platform
 
 		}
 		return null;
+	}
+
+	public static boolean canAccess(AENetworkProxy gridProxy, BaseActionSource src)
+	{
+		try
+		{
+			if ( src.isPlayer() )
+			{
+				return gridProxy.getSecurity().hasPermission( ((PlayerSource) src).player, SecurityPermissions.BUILD );
+			}
+			else if ( src.isMachine() )
+			{
+				IActionHost te = ((MachineSource) src).via;
+				int playerID = te.getActionableNode().getPlayerID();
+				return gridProxy.getSecurity().hasPermission( playerID, SecurityPermissions.BUILD );
+			}
+			else
+				return false;
+		}
+		catch (GridAccessException gae)
+		{
+			return false;
+		}
 	}
 
 }

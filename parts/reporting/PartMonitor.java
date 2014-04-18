@@ -111,12 +111,12 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	}
 
 	public PartMonitor(ItemStack is) {
-		super( PartMonitor.class, is );
+		this( PartMonitor.class, is, false );
 	}
 
-	protected PartMonitor(Class c, ItemStack is, boolean requireChannel ) {
+	protected PartMonitor(Class c, ItemStack is, boolean requireChannel) {
 		super( c, is );
-		
+
 		if ( requireChannel )
 			proxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 		else

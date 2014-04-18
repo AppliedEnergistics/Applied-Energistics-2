@@ -10,6 +10,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
@@ -191,9 +192,9 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 	}
 
 	@Override
-	public IStorageMonitorable getMonitorable(ForgeDirection side)
+	public IStorageMonitorable getMonitorable(ForgeDirection side, BaseActionSource src)
 	{
-		return this;
+		return duality.getMonitorable( side, src, this );
 	}
 
 	@Override

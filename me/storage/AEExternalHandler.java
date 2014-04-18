@@ -3,6 +3,7 @@ package appeng.me.storage;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IExternalStorageHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageMonitorable;
@@ -24,7 +25,7 @@ public class AEExternalHandler implements IExternalStorageHandler
 	}
 
 	@Override
-	public IMEInventory getInventory(TileEntity te, ForgeDirection d, StorageChannel channel)
+	public IMEInventory getInventory(TileEntity te, ForgeDirection d, StorageChannel channel, BaseActionSource src)
 	{
 		if ( te instanceof TileCondenser )
 		{
@@ -37,7 +38,7 @@ public class AEExternalHandler implements IExternalStorageHandler
 		if ( te instanceof ITileStorageMonitorable )
 		{
 			ITileStorageMonitorable iface = (ITileStorageMonitorable) te;
-			IStorageMonitorable sm = iface.getMonitorable( d );
+			IStorageMonitorable sm = iface.getMonitorable( d, src );
 
 			if ( channel == StorageChannel.ITEMS && sm != null )
 			{

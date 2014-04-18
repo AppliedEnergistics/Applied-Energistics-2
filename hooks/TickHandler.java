@@ -14,6 +14,7 @@ import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.Type;
 
 public class TickHandler
@@ -104,7 +105,7 @@ public class TickHandler
 	@SubscribeEvent
 	public void onTick(TickEvent ev)
 	{
-		if ( ev.type == Type.SERVER )
+		if ( ev.type == Type.SERVER && ev.phase == Phase.END )
 		{
 			HandlerRep repo = getRepo();
 			while (!repo.tiles.isEmpty())

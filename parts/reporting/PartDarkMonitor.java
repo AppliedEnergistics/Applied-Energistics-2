@@ -13,8 +13,7 @@ public class PartDarkMonitor extends PartMonitor
 {
 
 	public PartDarkMonitor(ItemStack is) {
-		super( PartDarkMonitor.class, is,false );
-
+		super( PartDarkMonitor.class, is, false );
 		notLightSource = false;
 	}
 
