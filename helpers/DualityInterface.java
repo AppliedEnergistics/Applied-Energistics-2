@@ -158,10 +158,10 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		IAEItemStack req = config.getAEStackInSlot( slot );
 		if ( req != null && req.getStackSize() <= 0 )
 		{
-			config.setInventorySlotContents(slot, null);
+			config.setInventorySlotContents( slot, null );
 			req = null;
 		}
-		
+
 		ItemStack Stored = storage.getStackInSlot( slot );
 
 		if ( req == null && Stored != null )
@@ -478,6 +478,29 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	public IStorageMonitorable getMonitorable(ForgeDirection side, BaseActionSource src, IStorageMonitorable myInterface)
+	{
+		if ( Platform.canAccess( gridProxy, src ) )
+			return myInterface;
+
+		final DualityInterface di = this;
+
+		return new IStorageMonitorable() {
+
+			@Override
+			public IMEMonitor<IAEItemStack> getItemInventory()
+			{
+				return new InterfaceInventory( di );
+			}
+
+			@Override
+			public IMEMonitor<IAEFluidStack> getFluidInventory()
+			{
+				return null;
+			}
+		};
 	};
 
 }

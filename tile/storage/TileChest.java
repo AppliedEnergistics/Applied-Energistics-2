@@ -706,9 +706,11 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public IStorageMonitorable getMonitorable(ForgeDirection side)
+	public IStorageMonitorable getMonitorable(ForgeDirection side, BaseActionSource src)
 	{
-		return this;
+		if ( Platform.canAccess( gridProxy, src ) )
+			return this;
+		return null;
 	}
 
 	public ItemStack getStorageType()

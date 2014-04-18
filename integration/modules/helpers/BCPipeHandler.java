@@ -2,6 +2,7 @@ package appeng.integration.modules.helpers;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IExternalStorageHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
@@ -17,7 +18,7 @@ public class BCPipeHandler implements IExternalStorageHandler
 	}
 
 	@Override
-	public IMEInventory getInventory(TileEntity te, ForgeDirection d, StorageChannel chan)
+	public IMEInventory getInventory(TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource src)
 	{
 		if ( chan == StorageChannel.ITEMS )
 			return new BCPipeInventory( te, d );
