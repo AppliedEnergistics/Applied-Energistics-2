@@ -1,8 +1,15 @@
 package appeng.core;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import appeng.api.config.TunnelType;
+import appeng.core.api.IIMCHandler;
+import appeng.core.api.imc.IMCGrinder;
+import appeng.core.api.imc.IMCMatterCannon;
+import appeng.core.api.imc.IMCP2PAttunement;
+import appeng.core.api.imc.IMCSpatial;
 import appeng.core.crash.CrashEnhancement;
 import appeng.core.crash.CrashInfo;
 import appeng.core.features.AEFeature;
@@ -21,6 +28,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
@@ -42,6 +51,8 @@ public class AppEng
 	public final static String modid = "appliedenergistics2";
 	public final static String name = "Applied Energistics 2";
 
+	HashMap<String, IIMCHandler> IMCHandlers = new HashMap();
+
 	public static AppEng instance;
 
 	public final static String dependencies =
@@ -51,8 +62,7 @@ public class AppEng
 	"after:gregtech_addon;after:Mekanism;after:IC2;after:ThermalExpansion;after:BuildCraft|Core;" +
 
 	// depend on version of forge used for build.
-			"required-after:AppliedEnergistics2-Core;" +
-			"required-after:Forge@[" // require forge.
+			"required-after:AppliedEnergistics2-Core;" + "required-after:Forge@[" // require forge.
 			+ net.minecraftforge.common.ForgeVersion.majorVersion + "." // majorVersion
 			+ net.minecraftforge.common.ForgeVersion.minorVersion + "." // minorVersion
 			+ net.minecraftforge.common.ForgeVersion.revisionVersion + "." // revisionVersion
@@ -60,6 +70,15 @@ public class AppEng
 
 	public AppEng() {
 		instance = this;
+
+		IMCHandlers.put( "whitelist-spatial", new IMCSpatial() );
+		IMCHandlers.put( "add-grindable", new IMCGrinder() );
+		IMCHandlers.put( "add-mattercannon-ammo", new IMCMatterCannon() );
+
+		for (TunnelType type : TunnelType.values())
+		{
+			IMCHandlers.put( "add-p2p-attunement-" + type.name().replace( '_', '-' ).toLowerCase(), new IMCP2PAttunement() );
+		}
 
 		for (CrashInfo ci : CrashInfo.values())
 			FMLCommonHandler.instance().registerCrashCallable( new CrashEnhancement( ci ) );
@@ -145,6 +164,27 @@ public class AppEng
 		NetworkHandler.instance = new NetworkHandler( "AE2" );
 
 		AELog.info( "PostInit ( end " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
+	}
+
+	@EventHandler
+	public void processIMC(FMLInterModComms.IMCEvent event)
+	{
+		for (IMCMessage m : event.getMessages())
+		{
+			try
+			{
+				IIMCHandler handler = IMCHandlers.get( m.key );
+				if ( handler != null )
+					handler.post( m );
+				else
+					throw new RuntimeException( "Invalid IMC Called: " + m.key );
+			}
+			catch (Throwable t)
+			{
+				AELog.warning( "Problem detected when processing IMC " + m.key + " from " + m.getSender() );
+				AELog.error( t );
+			}
+		}
 	}
 
 	@EventHandler
