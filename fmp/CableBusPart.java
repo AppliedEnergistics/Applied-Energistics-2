@@ -23,6 +23,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import powercrystals.minefactoryreloaded.api.rednet.RedNetConnectionType;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
+import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
@@ -34,6 +35,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AELog;
+import appeng.facade.IFacadeItem;
 import appeng.helpers.AEMultiTile;
 import appeng.parts.BusCollisionHelper;
 import appeng.parts.CableBusContainer;
@@ -282,6 +284,30 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public boolean canAddPart(ItemStack is, ForgeDirection side)
 	{
+		if ( is.getItem() instanceof IFacadeItem )
+		{
+			IFacadeItem bi = (IFacadeItem) is.getItem();
+
+			is = is.copy();
+			is.stackSize = 1;
+
+			IFacadePart bp = bi.createPartFromItemStack( is, side );
+			if ( !(side == null || side == ForgeDirection.UNKNOWN || tile() == null) )
+			{
+				List<AxisAlignedBB> boxes = new ArrayList();
+				IPartCollsionHelper bch = new BusCollisionHelper( boxes, side, null, true );
+				bp.getBoxes( bch );
+				for (AxisAlignedBB bb : boxes)
+				{
+					if ( !tile().canAddPart( new NormallyOccludedPart( new Cuboid6( bb ) ) ) )
+					{
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+
 		if ( is.getItem() instanceof IPartItem )
 		{
 			IPartItem bi = (IPartItem) is.getItem();

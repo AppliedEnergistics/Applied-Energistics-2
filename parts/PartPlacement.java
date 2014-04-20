@@ -148,19 +148,22 @@ public class PartPlacement
 						if ( host.getPart( ForgeDirection.UNKNOWN ) == null )
 							return false;
 
-						if ( host.getFacadeContainer().addFacade( fp ) )
+						if ( host.canAddPart( held, side ) )
 						{
-							host.markForUpdate();
-							if ( !player.capabilities.isCreativeMode )
+							if ( host.getFacadeContainer().addFacade( fp ) )
 							{
-								held.stackSize--;
-								if ( held.stackSize == 0 )
+								host.markForUpdate();
+								if ( !player.capabilities.isCreativeMode )
 								{
-									player.inventory.mainInventory[player.inventory.currentItem] = null;
-									MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, held ) );
+									held.stackSize--;
+									if ( held.stackSize == 0 )
+									{
+										player.inventory.mainInventory[player.inventory.currentItem] = null;
+										MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, held ) );
+									}
 								}
+								return true;
 							}
-							return true;
 						}
 					}
 					else
