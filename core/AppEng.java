@@ -158,6 +158,7 @@ public class AppEng
 		Registration.instance.PostInit( event );
 		IntegrationRegistry.instance.postinit();
 
+		CommonHelper.proxy.postinit();
 		AEConfig.instance.save();
 
 		NetworkRegistry.INSTANCE.registerGuiHandler( this, GuiBridge.GUI_Handler );

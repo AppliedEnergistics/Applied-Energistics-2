@@ -73,6 +73,12 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
+	public void postinit()
+	{
+
+	}
+
+	@Override
 	public World getWorld()
 	{
 		throw new RuntimeException( "This is a server..." );

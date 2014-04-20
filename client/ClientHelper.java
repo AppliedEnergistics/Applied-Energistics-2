@@ -139,7 +139,11 @@ public class ClientHelper extends ServerHelper
 	public void init()
 	{
 		MinecraftForge.EVENT_BUS.register( this );
+	}
 
+	@Override
+	public void postinit()
+	{
 		RenderingRegistry.registerBlockHandler( WorldRender.instance );
 		RenderManager.instance.entityRenderMap.put( EntityTinyTNTPrimed.class, new RenderTinyTNTPrimed() );
 	}
