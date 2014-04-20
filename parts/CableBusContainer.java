@@ -41,6 +41,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.CableRenderHelper;
 import appeng.facade.FacadeContainer;
+import appeng.facade.IFacadeItem;
 import appeng.helpers.AEMultiTile;
 import appeng.me.GridConnection;
 import appeng.util.Platform;
@@ -140,6 +141,9 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	@Override
 	public boolean canAddPart(ItemStack is, ForgeDirection side)
 	{
+		if ( is.getItem() instanceof IFacadeItem )
+			return true;
+
 		if ( is.getItem() instanceof IPartItem )
 		{
 			IPartItem bi = (IPartItem) is.getItem();
@@ -389,6 +393,13 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 		for (ForgeDirection s : ForgeDirection.values())
 		{
 			IPartCollsionHelper bch = new BusCollisionHelper( boxes, s, e, visual );
+
+			if ( s != ForgeDirection.UNKNOWN )
+			{
+				IFacadePart fpa = fc.getFacade( s );
+				if ( fpa != null )
+					fpa.getBoxes( bch );
+			}
 
 			IPart part = getPart( s );
 			if ( part != null )
@@ -969,7 +980,8 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	}
 
 	@Override
-	public void cleanup() {
+	public void cleanup()
+	{
 		tcb.cleanup();
 	}
 

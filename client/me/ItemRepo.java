@@ -1,5 +1,7 @@
 package appeng.client.me;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.regex.Pattern;
@@ -8,6 +10,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
 import appeng.api.config.SortOrder;
 import appeng.api.config.Upgrades;
@@ -26,6 +29,7 @@ import appeng.util.prioitylist.FuzzyPriorityList;
 import appeng.util.prioitylist.IPartitionList;
 import appeng.util.prioitylist.MergedPriorityList;
 import appeng.util.prioitylist.PrecisePriorityList;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class ItemRepo
 {
@@ -151,6 +155,32 @@ public class ItemRepo
 		updateView();
 	}
 
+	private String NEIWord = null;
+
+	private void updateNEI(String filter)
+	{
+		try
+		{
+			if ( NEIWord == null || !NEIWord.equals( filter ) )
+			{
+				Class c = ReflectionHelper.getClass( getClass().getClassLoader(), "codechicken.nei.LayoutManager" );
+				Field fldSearchField = c.getField( "searchField" );
+				Object searchField = fldSearchField.get( c );
+
+				Method a = searchField.getClass().getMethod( "setText", String.class );
+				Method b = searchField.getClass().getMethod( "onTextChange", String.class );
+
+				NEIWord = filter;
+				a.invoke( searchField, filter );
+				b.invoke( searchField, "" );
+			}
+		}
+		catch (Throwable _)
+		{
+
+		}
+	}
+
 	public void updateView()
 	{
 		view.clear();
@@ -158,6 +188,10 @@ public class ItemRepo
 
 		view.ensureCapacity( list.size() );
 		dsp.ensureCapacity( list.size() );
+
+		Enum mode = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
+		if ( mode == SearchBoxMode.NEI_AUTOSEARCH || mode == SearchBoxMode.NEI_MANUAL_SEARCH )
+			updateNEI( searchString );
 
 		boolean terminalSearchToolTips = AEConfig.instance.settings.getSetting( Settings.SEARCH_TOOLTIPS ) != YesNo.NO;
 		// boolean terminalSearchMods = Configuration.instance.settings.getSetting( Settings.SEARCH_MODS ) != YesNo.NO;

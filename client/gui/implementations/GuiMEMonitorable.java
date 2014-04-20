@@ -30,6 +30,7 @@ import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.container.slot.AppEngSlot;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
@@ -132,8 +133,11 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		maxRows = getMaxRows();
 		perRow = AEConfig.instance.getConfigManager().getSetting( Settings.TERMINAL_STYLE ) != TerminalStyle.FULL ? 9 : 9 + ((width - standardSize) / 18);
 
-		int NEI = 0;
-		int top = 4;
+		boolean hasNEI = AppEng.instance.isIntegrationEnabled( "NEI" );
+
+		int NEI = hasNEI ? 4 : 0;
+		int top = hasNEI ? 22 : 4;
+
 		int magicNumber = 114 + 1;
 		int extraSpace = height - magicNumber - NEI - top - reservedSpace;
 
@@ -143,6 +147,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			top += (rows - maxRows) * 18 / 2;
 			rows = maxRows;
 		}
+
+		if ( hasNEI )
+			rows--;
 
 		meSlots.clear();
 		for (int y = 0; y < rows; y++)
@@ -181,12 +188,12 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 				.getSetting( Settings.SEARCH_MODE ) ) );
 		offset += 20;
 
-		if ( !(this instanceof GuiMEPortableCell ) )
+		if ( !(this instanceof GuiMEPortableCell) )
 		{
 			buttonList.add( terminalStyleBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, AEConfig.instance.settings
 					.getSetting( Settings.TERMINAL_STYLE ) ) );
 		}
-		
+
 		searchField = new MEGuiTextField( fontRendererObj, this.guiLeft + Math.max( 82, xoffset ), this.guiTop + 6, 89, fontRendererObj.FONT_HEIGHT );
 		searchField.setEnableBackgroundDrawing( false );
 		searchField.setMaxStringLength( 25 );
@@ -299,7 +306,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		bindTexture( getBackground() );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 18 );
 
-		if ( viewCell || ( this instanceof GuiSecurity))
+		if ( viewCell || (this instanceof GuiSecurity) )
 			this.drawTexturedModalRect( offsetX + x_width, offsetY, x_width, 0, 46, 128 );
 
 		for (int x = 0; x < rows; x++)

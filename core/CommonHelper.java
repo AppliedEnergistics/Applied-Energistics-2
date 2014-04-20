@@ -37,4 +37,6 @@ public abstract class CommonHelper
 
 	public abstract void doRenderItem(ItemStack sis, TileEntity tile);
 
+	public abstract void postinit();
+
 }
