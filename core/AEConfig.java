@@ -166,7 +166,20 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		for (Enum e : settings.getSettings())
 		{
 			String Category = e.getClass().getSimpleName();
-			this.get( Category, e.name(), settings.getSetting( e ).name() );
+
+			Enum value = settings.getSetting( e );
+			Property p = this.get( Category, e.name(), value.name() );
+
+			try
+			{
+				value = Enum.valueOf( value.getClass(), p.getString() );
+			}
+			catch (IllegalArgumentException er)
+			{
+				AELog.info( "Invalid value '" + p.getString() + "' for " + e.name() + " using '" + value.name() + "' instead" );
+			}
+
+			settings.putSetting( e, value );
 		}
 
 		try
@@ -208,8 +221,12 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 	{
 		for (Enum e : settings.getSettings())
 		{
-			String Category = e.getClass().getSimpleName();
-			this.get( Category, e.name(), settings.getSetting( e ).name() );
+			if ( e == setting )
+			{
+				String Category = e.getClass().getSimpleName();
+				Property p = this.get( Category, e.name(), settings.getSetting( e ).name() );
+				p.set( newValue.name() );
+			}
 		}
 
 		save();
