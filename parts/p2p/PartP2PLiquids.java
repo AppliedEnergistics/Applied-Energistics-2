@@ -22,6 +22,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFluidHandler
 {
 
+	private final static FluidTankInfo[] activeTank = new FluidTankInfo[] { new FluidTankInfo( null, 10000 ) };
+	private final static FluidTankInfo[] inactiveTank = new FluidTankInfo[] { new FluidTankInfo( null, 0 ) };
+	
 	public TunnelType getTunnelType()
 	{
 		return TunnelType.FLUID;
@@ -37,21 +40,21 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		{
 			PartP2PLiquids tun = getInput();
 			if ( tun != null )
-				return new FluidTankInfo[] { new FluidTankInfo( null, 10000 ) };
+				return activeTank;
 		}
 		else
 		{
 			try
 			{
 				if ( !getOutputs().isEmpty() )
-					return new FluidTankInfo[] { new FluidTankInfo( null, 10000 ) };
+					return activeTank;
 			}
 			catch (GridAccessException e)
 			{
 				// :(
 			}
 		}
-		return new FluidTankInfo[] { new FluidTankInfo( null, 0 ) };
+		return inactiveTank;
 	}
 
 	IFluidHandler cachedTank;
