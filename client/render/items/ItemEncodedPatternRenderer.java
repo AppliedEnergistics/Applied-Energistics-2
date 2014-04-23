@@ -1,5 +1,7 @@
 package appeng.client.render.items;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -7,6 +9,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 import appeng.util.Platform;
 
@@ -71,9 +74,13 @@ public class ItemEncodedPatternRenderer implements IItemRenderer
 		resursive = true;
 
 		ItemStack is = readOutput( item );
-		// data is just render blocks.
+		Minecraft mc = Minecraft.getMinecraft();
 
-		// ri.renderItemAndEffectIntoGUI( par1FontRenderer, par2TextureManager, par3ItemStack, par4, par5 );
+		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
+		RenderHelper.enableGUIStandardItemLighting();
+		ri.renderItemAndEffectIntoGUI( mc.fontRenderer, mc.getTextureManager(), is, 0, 0 );
+		RenderHelper.disableStandardItemLighting();
+		GL11.glPopAttrib();
 
 		resursive = false;
 	}
