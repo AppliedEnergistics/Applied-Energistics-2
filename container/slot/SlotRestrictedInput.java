@@ -18,7 +18,7 @@ import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.ICellWorkbenchItem;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.items.misc.ItemEncodedPattern;
 import appeng.recipes.handlers.Inscribe;
 import appeng.util.Platform;
 
@@ -91,19 +91,14 @@ public class SlotRestrictedInput extends AppEngSlot
 	@Override
 	public ItemStack getDisplayStack()
 	{
-		if ( Platform.isClient() && (which == PlaceableItemType.VALID_ENCODED_PATTERN_W_OUPUT || which == PlaceableItemType.ENCODED_PATTERN_W_OUTPUT) )
+		if ( Platform.isClient() && (which == PlaceableItemType.ENCODED_PATTERN) )
 		{
 			ItemStack is = super.getStack();
-			if ( is != null && is.getItem() instanceof ICraftingPatternItem )
+			if ( is != null && is.getItem() instanceof ItemEncodedPattern )
 			{
-				ICraftingPatternItem it = (ICraftingPatternItem) is.getItem();
-				ICraftingPatternDetails details = it.getPatternForItem( is );
-				if ( details != null )
-				{
-					IAEItemStack list[] = details.getOutputs();
-					if ( list.length > 0 )
-						return list[0].getItemStack();
-				}
+				ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
+				ItemStack out = iep.getOutput( is );
+				return out;
 			}
 		}
 		return super.getStack();

@@ -74,6 +74,35 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		}
 	}
 
+	public ItemStack getOutput(ItemStack item)
+	{
+		NBTTagCompound encodedValue = item.getTagCompound();
+
+		if ( encodedValue == null )
+			return null;
+
+		NBTTagList outTag = encodedValue.getTagList( "out", 10 );
+
+		if ( outTag.tagCount() == 0 )
+			return null;
+
+		ItemStack out = null;
+
+		for (int x = 0; x < outTag.tagCount(); x++)
+		{
+			ItemStack readItem = ItemStack.loadItemStackFromNBT( outTag.getCompoundTagAt( x ) );
+			if ( readItem != null )
+			{
+				if ( out == null )
+					out = readItem;
+				else if ( out != null && Platform.isSameItemPrecise( readItem, out ) )
+					out.stackSize += readItem.stackSize;
+			}
+		}
+
+		return out;
+	}
+
 	private void readItems(ItemStack[] itemList, NBTTagList tagSrc)
 	{
 		for (int x = 0; x < itemList.length; x++)

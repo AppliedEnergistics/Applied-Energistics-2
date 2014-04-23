@@ -4,14 +4,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import appeng.util.Platform;
+import appeng.items.misc.ItemEncodedPattern;
 
 public class ItemEncodedPatternRenderer implements IItemRenderer
 {
@@ -26,40 +24,12 @@ public class ItemEncodedPatternRenderer implements IItemRenderer
 
 		if ( resursive == false && type == IItemRenderer.ItemRenderType.INVENTORY && isShiftHeld )
 		{
-			if ( readOutput( item ) != null )
+			ItemEncodedPattern iep = (ItemEncodedPattern) item.getItem();
+			if ( iep.getOutput( item ) != null )
 				return true;
 		}
 
 		return false;
-	}
-
-	private ItemStack readOutput(ItemStack item)
-	{
-		NBTTagCompound encodedValue = item.getTagCompound();
-
-		if ( encodedValue == null )
-			return null;
-
-		NBTTagList outTag = encodedValue.getTagList( "out", 10 );
-
-		if ( outTag.tagCount() == 0 )
-			return null;
-
-		ItemStack out = null;
-
-		for (int x = 0; x < outTag.tagCount(); x++)
-		{
-			ItemStack readItem = ItemStack.loadItemStackFromNBT( outTag.getCompoundTagAt( x ) );
-			if ( readItem != null )
-			{
-				if ( out == null )
-					out = readItem;
-				else if ( out != null && Platform.isSameItemPrecise( readItem, out ) )
-					out.stackSize += readItem.stackSize;
-			}
-		}
-
-		return out;
 	}
 
 	@Override
@@ -73,7 +43,9 @@ public class ItemEncodedPatternRenderer implements IItemRenderer
 	{
 		resursive = true;
 
-		ItemStack is = readOutput( item );
+		ItemEncodedPattern iep = (ItemEncodedPattern) item.getItem();
+
+		ItemStack is = iep.getOutput( item );
 		Minecraft mc = Minecraft.getMinecraft();
 
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
