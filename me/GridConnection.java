@@ -24,7 +24,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	private ForgeDirection fromAtoB;
 	private GridNode sideB;
 
-	byte visitorIterationNumber = Byte.MIN_VALUE;
+	Object visitorIterationNumber = null;
 
 	public int channelData = 0;
 

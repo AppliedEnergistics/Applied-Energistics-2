@@ -83,7 +83,7 @@ public class TileController extends AENetworkPowerTile implements IAEPowerStorag
 	}
 
 	@MENetworkEventSubscribe
-	public void onPowerChange(MENetworkControllerChange status)
+	public void onControllerChange(MENetworkControllerChange status)
 	{
 		updateMeta();
 	}

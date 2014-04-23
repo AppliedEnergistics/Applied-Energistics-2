@@ -84,7 +84,7 @@ public class PathGridCache implements IPathingGrid
 					used = 0;
 
 				int nodes = myGrid.getNodes().size();
-				ticksUntilReady = 20 + (nodes / 10);
+				ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
 				channelsByBlocks = nodes * used;
 				channelPowerUsage = (double) channelsByBlocks / 128.0;
 
@@ -98,7 +98,7 @@ public class PathGridCache implements IPathingGrid
 			else
 			{
 				int nodes = myGrid.getNodes().size();
-				ticksUntilReady = 20 + (nodes / 10);
+				ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
 				closedList = new HashSet();
 				semiOpen = new HashSet();
 

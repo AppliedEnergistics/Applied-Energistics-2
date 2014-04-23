@@ -42,10 +42,7 @@ public class GridNode implements IGridNode, IPathItem
 	IGridBlock gridProxy;
 	Grid myGrid;
 
-	public static byte currentVisitorIterationNumber = Byte.MIN_VALUE;
-	public static byte currentChannelsIterationNumber = Byte.MIN_VALUE;
-
-	byte visitorIterationNumber = Byte.MIN_VALUE;
+	Object visitorIterationNumber = null;
 
 	// connection criteria
 	AEColor myColor = AEColor.Transparent;
@@ -152,12 +149,12 @@ public class GridNode implements IGridNode, IPathItem
 	@Override
 	public void beginVisition(IGridVisitor g)
 	{
-		currentVisitorIterationNumber++;
+		Object tracker = new Object();
 
 		LinkedList<GridNode> nextRun = new LinkedList();
 		nextRun.add( this );
 
-		visitorIterationNumber = currentVisitorIterationNumber;
+		visitorIterationNumber = tracker;
 
 		if ( g instanceof IGridConnecitonVisitor )
 		{
@@ -173,7 +170,7 @@ public class GridNode implements IGridNode, IPathItem
 				nextRun = new LinkedList();
 
 				for (GridNode n : thisRun)
-					n.visitorConnection( g, nextRun, nextConn );
+					n.visitorConnection( tracker, g, nextRun, nextConn );
 			}
 		}
 		else
@@ -184,12 +181,12 @@ public class GridNode implements IGridNode, IPathItem
 				nextRun = new LinkedList();
 
 				for (GridNode n : thisRun)
-					n.visitorNode( g, nextRun );
+					n.visitorNode( tracker, g, nextRun );
 			}
 		}
 	}
 
-	private void visitorConnection(IGridVisitor g, LinkedList<GridNode> nextRun, LinkedList<IGridConnection> nextConnections)
+	private void visitorConnection(Object tracker, IGridVisitor g, LinkedList<GridNode> nextRun, LinkedList<IGridConnection> nextConnections)
 	{
 		if ( g.visitNode( this ) )
 		{
@@ -198,23 +195,23 @@ public class GridNode implements IGridNode, IPathItem
 				GridNode gn = (GridNode) gc.getOtherSide( this );
 				GridConnection gcc = (GridConnection) gc;
 
-				if ( gcc.visitorIterationNumber != currentVisitorIterationNumber )
+				if ( gcc.visitorIterationNumber != tracker )
 				{
-					gcc.visitorIterationNumber = currentChannelsIterationNumber;
+					gcc.visitorIterationNumber = tracker;
 					nextConnections.add( gc );
 				}
 
-				if ( currentVisitorIterationNumber == gn.visitorIterationNumber )
+				if ( tracker == gn.visitorIterationNumber )
 					continue;
 
-				gn.visitorIterationNumber = currentVisitorIterationNumber;
+				gn.visitorIterationNumber = tracker;
 
 				nextRun.add( gn );
 			}
 		}
 	}
 
-	private void visitorNode(IGridVisitor g, LinkedList<GridNode> nextRun)
+	private void visitorNode(Object tracker, IGridVisitor g, LinkedList<GridNode> nextRun)
 	{
 		if ( g.visitNode( this ) )
 		{
@@ -222,10 +219,10 @@ public class GridNode implements IGridNode, IPathItem
 			{
 				GridNode gn = (GridNode) gc.getOtherSide( this );
 
-				if ( currentVisitorIterationNumber == gn.visitorIterationNumber )
+				if ( tracker == gn.visitorIterationNumber )
 					continue;
 
-				gn.visitorIterationNumber = currentVisitorIterationNumber;
+				gn.visitorIterationNumber = tracker;
 
 				nextRun.add( gn );
 			}
