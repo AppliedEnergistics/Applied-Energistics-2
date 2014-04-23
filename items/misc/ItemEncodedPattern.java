@@ -7,8 +7,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.client.MinecraftForgeClient;
 import appeng.api.crafting.ICraftingPatternDetails;
 import appeng.api.implementations.ICraftingPatternItem;
+import appeng.client.render.items.ItemEncodedPatternRenderer;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
@@ -21,6 +23,8 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		super( ItemEncodedPattern.class );
 		setfeature( EnumSet.of( AEFeature.Crafting ) );
 		setMaxStackSize( 1 );
+		if ( Platform.isClient() )
+			MinecraftForgeClient.registerItemRenderer( this, new ItemEncodedPatternRenderer() );
 	}
 
 	@Override
