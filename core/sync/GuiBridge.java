@@ -39,6 +39,7 @@ import appeng.container.implementations.ContainerIOPort;
 import appeng.container.implementations.ContainerInscriber;
 import appeng.container.implementations.ContainerInterface;
 import appeng.container.implementations.ContainerLevelEmitter;
+import appeng.container.implementations.ContainerMAC;
 import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.container.implementations.ContainerMEPortableCell;
 import appeng.container.implementations.ContainerNetworkStatus;
@@ -65,6 +66,7 @@ import appeng.parts.misc.PartStorageBus;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.server.AccessType;
+import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.tile.grindstone.TileGrinder;
 import appeng.tile.misc.TileCellWorkbench;
 import appeng.tile.misc.TileCondenser;
@@ -139,7 +141,9 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_INSCRIBER(ContainerInscriber.class, TileInscriber.class, false, null),
 
-	GUI_CELLWORKBENCH(ContainerCellWorkbench.class, TileCellWorkbench.class, false, null);
+	GUI_CELLWORKBENCH(ContainerCellWorkbench.class, TileCellWorkbench.class, false, null),
+
+	GUI_MAC(ContainerMAC.class, TileMolecularAssembler.class, false, null);
 
 	private Class Tile;
 	private Class Gui;

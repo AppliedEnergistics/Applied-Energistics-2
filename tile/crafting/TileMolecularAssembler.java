@@ -5,22 +5,44 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.AEApi;
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.Settings;
+import appeng.api.config.Upgrades;
+import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
+import appeng.api.util.IConfigManager;
+import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
+import appeng.util.ConfigManager;
+import appeng.util.IConfigManagerHost;
 
-public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEngInventory, ISidedInventory
+public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEngInventory, ISidedInventory, IUpgradeableHost, IConfigManagerHost
 {
 
-	final int[] sides = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	static final int[] sides = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	static final ItemStack is = AEApi.instance().blocks().blockMolecularAssembler.stack( 1 );
 
-	boolean hasPattern = false;
-	AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 + 2 );
+	private AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 + 2 );
+	private IConfigManager settings = new ConfigManager( this );
+	private UpgradeInventory upgrades = new UpgradeInventory( is, this, getUpgradeSlots() );
+
+	@Override
+	public int getInstalledUpgrades(Upgrades u)
+	{
+		return upgrades.getInstalledUpgrades( u );
+	}
+
+	protected int getUpgradeSlots()
+	{
+		return 5;
+	}
 
 	private class TileMolecularAssemblerHandler extends AETileEventHandler
 	{
@@ -32,18 +54,23 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		@Override
 		public void writeToNBT(NBTTagCompound data)
 		{
-
+			upgrades.writeToNBT( data, "upgrades" );
+			inv.writeToNBT( data, "inv" );
+			settings.writeToNBT( data );
 		}
 
 		@Override
 		public void readFromNBT(NBTTagCompound data)
 		{
-
+			upgrades.readFromNBT( data, "upgrades" );
+			inv.readFromNBT( data, "inv" );
+			settings.readFromNBT( data );
 		}
 
 	};
 
 	public TileMolecularAssembler() {
+		settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		addNewHandler( new TileMolecularAssemblerHandler() );
 	}
 
@@ -53,11 +80,16 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		if ( i >= 9 )
 			return false;
 
-		if ( hasPattern )
+		if ( hasPattern() )
 		{
 
 		}
 
+		return false;
+	}
+
+	private boolean hasPattern()
+	{
 		return false;
 	}
 
@@ -95,6 +127,30 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 	public DimensionalCoord getLocation()
 	{
 		return new DimensionalCoord( this );
+	}
+
+	@Override
+	public IConfigManager getConfigManager()
+	{
+		return settings;
+	}
+
+	@Override
+	public IInventory getInventoryByName(String name)
+	{
+		if ( name.equals( "upgrades" ) )
+			return upgrades;
+
+		if ( name.equals( "mac" ) )
+			return inv;
+
+		return null;
+	}
+
+	@Override
+	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
+	{
+
 	}
 
 }
