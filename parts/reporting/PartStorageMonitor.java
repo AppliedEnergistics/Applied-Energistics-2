@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
@@ -112,6 +113,8 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		else
 			configuredItem = null;
 
+		updateList = true;
+
 		return stuff;
 	}
 
@@ -150,11 +153,11 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	protected PartStorageMonitor(Class myClass, ItemStack is) {
-		super( myClass, is,true );
+		super( myClass, is, true );
 	}
 
 	public PartStorageMonitor(ItemStack is) {
-		super( PartStorageMonitor.class, is,true );
+		super( PartStorageMonitor.class, is, true );
 		frontBright = CableBusTextures.PartStorageMonitor_Bright;
 		frontColored = CableBusTextures.PartStorageMonitor_Colored;
 		frontDark = CableBusTextures.PartStorageMonitor_Dark;
@@ -167,10 +170,28 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		return true;
 	}
 
+	@SideOnly(Side.CLIENT)
+	private boolean updateList;
+
+	@SideOnly(Side.CLIENT)
+	private Integer dspList;
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	protected void finalize() throws Throwable
+	{
+		super.finalize();
+		if ( dspList != null )
+			GLAllocation.deleteDisplayLists( dspList );
+	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
+		if ( dspList == null )
+			dspList = GLAllocation.generateDisplayLists( 1 );
+
 		Tessellator tess = Tessellator.instance;
 		if ( Platform.isDrawing( tess ) )
 			return;
@@ -182,99 +203,114 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		if ( ais != null )
 		{
 			GL11.glPushMatrix();
-			GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
-			ForgeDirection d = side;
 			GL11.glTranslated( x + 0.5, y + 0.5, z + 0.5 );
-			GL11.glTranslated( d.offsetX * 0.76, d.offsetY * 0.76, d.offsetZ * 0.76 );
 
-			if ( d == ForgeDirection.UP )
+			if ( updateList )
 			{
-				GL11.glScalef( 1.0f, -1.0f, 1.0f );
-				GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
-				GL11.glRotatef( (float) spin * 90.0F, 0, 0, 1 );
+				updateList = false;
+				GL11.glNewList( dspList, GL11.GL_COMPILE_AND_EXECUTE );
+				tesrRenderScreen( tess, ais );
+				GL11.glEndList();
 			}
+			else
+				GL11.glCallList( dspList );
 
-			if ( d == ForgeDirection.DOWN )
-			{
-				GL11.glScalef( 1.0f, -1.0f, 1.0f );
-				GL11.glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
-				GL11.glRotatef( (float) spin * -90.0F, 0, 0, 1 );
-			}
-
-			if ( d == ForgeDirection.EAST )
-			{
-				GL11.glScalef( -1.0f, -1.0f, -1.0f );
-				GL11.glRotatef( -90.0f, 0.0f, 1.0f, 0.0f );
-			}
-
-			if ( d == ForgeDirection.WEST )
-			{
-				GL11.glScalef( -1.0f, -1.0f, -1.0f );
-				GL11.glRotatef( 90.0f, 0.0f, 1.0f, 0.0f );
-			}
-
-			if ( d == ForgeDirection.NORTH )
-			{
-				GL11.glScalef( -1.0f, -1.0f, -1.0f );
-			}
-
-			if ( d == ForgeDirection.SOUTH )
-			{
-				GL11.glScalef( -1.0f, -1.0f, -1.0f );
-				GL11.glRotatef( 180.0f, 0.0f, 1.0f, 0.0f );
-			}
-
-			GL11.glPushMatrix();
-			try
-			{
-				ItemStack sis = ais.getItemStack();
-				sis.stackSize = 1;
-
-				int br = 16 << 20 | 16 << 4;
-				int var11 = br % 65536;
-				int var12 = br / 65536;
-				OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11 * 0.8F, var12 * 0.8F );
-
-				GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-
-				GL11.glDisable( GL11.GL_LIGHTING );
-				GL11.glDisable( GL12.GL_RESCALE_NORMAL );
-				// RenderHelper.enableGUIStandardItemLighting();
-				tess.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
-
-				ClientHelper.proxy.doRenderItem( sis, this.tile );
-
-			}
-			catch (Exception e)
-			{
-				AELog.error( e );
-			}
-
-			GL11.glPopMatrix();
-
-			GL11.glTranslatef( 0.0f, 0.14f, -0.24f );
-			GL11.glScalef( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
-
-			long qty = ais.getStackSize();
-			if ( qty > 999999999999L )
-				qty = 999999999999L;
-
-			String msg = Long.toString( qty );
-			if ( qty > 1000000000 )
-				msg = Long.toString( qty / 1000000000 ) + "B";
-			else if ( qty > 1000000 )
-				msg = Long.toString( qty / 1000000 ) + "M";
-			else if ( qty > 9999 )
-				msg = Long.toString( qty / 1000 ) + "K";
-
-			FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
-			int width = fr.getStringWidth( msg );
-			GL11.glTranslatef( -0.5f * width, 0.0f, -1.0f );
-			fr.drawString( msg, 0, 0, 0 );
-
-			GL11.glPopAttrib();
 			GL11.glPopMatrix();
 		}
+	}
+
+	private void tesrRenderScreen(Tessellator tess, IAEItemStack ais)
+	{
+		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
+		ForgeDirection d = side;
+		GL11.glTranslated( d.offsetX * 0.76, d.offsetY * 0.76, d.offsetZ * 0.76 );
+
+		if ( d == ForgeDirection.UP )
+		{
+			GL11.glScalef( 1.0f, -1.0f, 1.0f );
+			GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
+			GL11.glRotatef( (float) spin * 90.0F, 0, 0, 1 );
+		}
+
+		if ( d == ForgeDirection.DOWN )
+		{
+			GL11.glScalef( 1.0f, -1.0f, 1.0f );
+			GL11.glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
+			GL11.glRotatef( (float) spin * -90.0F, 0, 0, 1 );
+		}
+
+		if ( d == ForgeDirection.EAST )
+		{
+			GL11.glScalef( -1.0f, -1.0f, -1.0f );
+			GL11.glRotatef( -90.0f, 0.0f, 1.0f, 0.0f );
+		}
+
+		if ( d == ForgeDirection.WEST )
+		{
+			GL11.glScalef( -1.0f, -1.0f, -1.0f );
+			GL11.glRotatef( 90.0f, 0.0f, 1.0f, 0.0f );
+		}
+
+		if ( d == ForgeDirection.NORTH )
+		{
+			GL11.glScalef( -1.0f, -1.0f, -1.0f );
+		}
+
+		if ( d == ForgeDirection.SOUTH )
+		{
+			GL11.glScalef( -1.0f, -1.0f, -1.0f );
+			GL11.glRotatef( 180.0f, 0.0f, 1.0f, 0.0f );
+		}
+
+		GL11.glPushMatrix();
+		try
+		{
+			ItemStack sis = ais.getItemStack();
+			sis.stackSize = 1;
+
+			int br = 16 << 20 | 16 << 4;
+			int var11 = br % 65536;
+			int var12 = br / 65536;
+			OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11 * 0.8F, var12 * 0.8F );
+
+			GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+
+			GL11.glDisable( GL11.GL_LIGHTING );
+			GL11.glDisable( GL12.GL_RESCALE_NORMAL );
+			// RenderHelper.enableGUIStandardItemLighting();
+			tess.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
+
+			ClientHelper.proxy.doRenderItem( sis, this.tile );
+
+		}
+		catch (Exception e)
+		{
+			AELog.error( e );
+		}
+
+		GL11.glPopMatrix();
+
+		GL11.glTranslatef( 0.0f, 0.14f, -0.24f );
+		GL11.glScalef( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
+
+		long qty = ais.getStackSize();
+		if ( qty > 999999999999L )
+			qty = 999999999999L;
+
+		String msg = Long.toString( qty );
+		if ( qty > 1000000000 )
+			msg = Long.toString( qty / 1000000000 ) + "B";
+		else if ( qty > 1000000 )
+			msg = Long.toString( qty / 1000000 ) + "M";
+		else if ( qty > 9999 )
+			msg = Long.toString( qty / 1000 ) + "K";
+
+		FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
+		int width = fr.getStringWidth( msg );
+		GL11.glTranslatef( -0.5f * width, 0.0f, -1.0f );
+		fr.drawString( msg, 0, 0, 0 );
+
+		GL11.glPopAttrib();
 	}
 
 	@Override
