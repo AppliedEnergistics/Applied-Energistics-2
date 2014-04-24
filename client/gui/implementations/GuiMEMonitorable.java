@@ -265,6 +265,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			searchField.setText( "" );
 			repo.searchString = "";
 			repo.updateView();
+			setScrollBar();
 		}
 
 		super.mouseClicked( xCoord, yCoord, btn );
