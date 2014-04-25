@@ -7,12 +7,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import appeng.api.crafting.ICraftingPatternDetails;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.client.render.items.ItemEncodedPatternRenderer;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
+import appeng.helpers.PatternHelper;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
@@ -128,9 +130,9 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	@Override
-	public ICraftingPatternDetails getPatternForItem(ItemStack is)
+	public ICraftingPatternDetails getPatternForItem(ItemStack is, World w)
 	{
-		return null;
+		return new PatternHelper( is, w );
 	}
 
 }

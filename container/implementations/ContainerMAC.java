@@ -3,11 +3,17 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
+import appeng.api.crafting.ICraftingPatternDetails;
+import appeng.container.slot.SlotMACPattern;
+import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
+import appeng.items.misc.ItemEncodedPattern;
 import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.util.Platform;
 
@@ -30,23 +36,45 @@ public class ContainerMAC extends ContainerUpgradeable
 		return false;
 	}
 
+	public boolean isValidItemForSlot(int slotIndex, ItemStack i)
+	{
+		IInventory mac = myte.getInventoryByName( "mac" );
+
+		ItemStack is = mac.getStackInSlot( 10 );
+		if ( is == null )
+			return false;
+
+		if ( is.getItem() instanceof ItemEncodedPattern )
+		{
+			World w = this.getTileEntity().getWorldObj();
+			ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
+			ICraftingPatternDetails ph = iep.getPatternForItem( is, w );
+			return ph.isValidItemForSlot( slotIndex, i, w );
+		}
+
+		return false;
+	}
+
 	@Override
 	protected void setupConfig()
 	{
 		int offx = 29;
 		int offy = 30;
 
-		IInventory cells = myte.getInventoryByName( "mac" );
+		IInventory mac = myte.getInventoryByName( "mac" );
 
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 3; x++)
-				addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.STORAGE_CELLS, cells, x + y * 2, offx + x * 18, offy + y * 18 ) );
+			{
+				SlotMACPattern s = new SlotMACPattern( this, mac, x + y * 3, offx + x * 18, offy + y * 18 );
+				addSlotToContainer( s );
+			}
 
 		offx = 126;
 		offy = 16;
 
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.STORAGE_CELLS, cells, 10, offx, offy ) );
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.STORAGE_CELLS, cells, 9, offx, offy + 32 ) );
+		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.ENCODED_PATTERN, mac, 10, offx, offy ) );
+		addSlotToContainer( new SlotOutput( mac, 9, offx, offy + 32, -1 ) );
 
 		offx = 122;
 		offy = 17;

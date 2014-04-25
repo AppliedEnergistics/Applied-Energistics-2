@@ -71,6 +71,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 
 	public TileMolecularAssembler() {
 		settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
+		inv.setMaxStackSize( 1 );
 		addNewHandler( new TileMolecularAssemblerHandler() );
 	}
 
