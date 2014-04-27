@@ -151,6 +151,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		if ( hasNEI )
 			rows--;
 
+		if ( rows < 3 )
+			rows = 3;
+
 		meSlots.clear();
 		for (int y = 0; y < rows; y++)
 		{
