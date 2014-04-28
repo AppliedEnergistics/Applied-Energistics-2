@@ -244,7 +244,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 					partChanged();
 					return ForgeDirection.UNKNOWN;
 				}
-				else if ( !(bp instanceof IPartCable) && side != ForgeDirection.UNKNOWN )
+				else if ( bp != null && !(bp instanceof IPartCable) && side != ForgeDirection.UNKNOWN )
 				{
 					IPart cable = getPart( ForgeDirection.UNKNOWN );
 					if ( cable != null && !bp.canBePlacedOn( ((IPartCable) cable).supportsBuses() ) )
