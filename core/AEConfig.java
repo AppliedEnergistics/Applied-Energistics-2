@@ -267,11 +267,11 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 
 			min = Math.max( min, thisInt + 1 );
 		}
-
+		
 		if ( alreadyUsed )
 		{
-			if ( min < 1000 )
-				min = 1000;
+			if ( min < 16383 )
+				min = 16383;
 
 			return min;
 		}
