@@ -1,6 +1,8 @@
 package appeng.helpers;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -12,6 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.AEApi;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
@@ -350,10 +353,25 @@ public class MeteoritePlacer
 					ap.addItems( AEApi.instance().blocks().blockSkyStone.stack( (int) (Math.random() * 12) + 1 ) );
 					break;
 				case 1:
-					ap.addItems( AEApi.instance().materials().materialIronNugget.stack( (int) (Math.random() * 12) + 1 ) );
-					break;
-				case 2:
-					ap.addItems( new ItemStack( net.minecraft.init.Items.gold_nugget, (int) (Math.random() * 12) + 1 ) );
+					List<ItemStack> possibles = new LinkedList();
+					possibles.addAll( OreDictionary.getOres( "nuggetIron" ) );
+					possibles.addAll( OreDictionary.getOres( "nuggetCopper" ) );
+					possibles.addAll( OreDictionary.getOres( "nuggetTin" ) );
+					possibles.addAll( OreDictionary.getOres( "nuggetSilver" ) );
+					possibles.addAll( OreDictionary.getOres( "nuggetLead" ) );
+					possibles.addAll( OreDictionary.getOres( "nuggetPlatinum" ) );
+					possibles.addAll( OreDictionary.getOres( "nuggetNickel" ) );
+					possibles.addAll( OreDictionary.getOres( "nuggetAluminium" ) );
+					possibles.addAll( OreDictionary.getOres( "nuggetElectrum" ) );
+					possibles.add( new ItemStack( net.minecraft.init.Items.gold_nugget ) );
+
+					ItemStack nugget = Platform.pickRandom( possibles );
+					if ( nugget != null )
+					{
+						nugget = nugget.copy();
+						nugget.stackSize = (int) (Math.random() * 12) + 1;
+						ap.addItems( nugget );
+					}
 					break;
 				}
 			}
