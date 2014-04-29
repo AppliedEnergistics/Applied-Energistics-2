@@ -73,6 +73,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 			new Cuboid6( 10.0 / 16.0, 6.0 / 16.0, 6.0 / 16.0, 1.0, 10.0 / 16.0, 10.0 / 16.0 ),// EAST(1, 0, 0),
 	};
 
+	public static ThreadLocal<Boolean> disableFacadeOcclusion = new ThreadLocal<Boolean>();
 	public CableBusContainer cb = new CableBusContainer( this );
 
 	@Override
@@ -149,7 +150,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	{
 		AxisAlignedBB b = null;
 
-		for (AxisAlignedBB bx : cb.getSelectedBoundingBoxsFromPool( false, null, true ))
+		for (AxisAlignedBB bx : cb.getSelectedBoundingBoxsFromPool( false, true, null, true ))
 		{
 			if ( b == null )
 				b = bx;
@@ -299,7 +300,10 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 				bp.getBoxes( bch );
 				for (AxisAlignedBB bb : boxes)
 				{
-					if ( !tile().canAddPart( new NormallyOccludedPart( new Cuboid6( bb ) ) ) )
+					disableFacadeOcclusion.set( true );
+					boolean canAdd = tile().canAddPart( new NormallyOccludedPart( new Cuboid6( bb ) ) );
+					disableFacadeOcclusion.remove();
+					if ( !canAdd )
 					{
 						return false;
 					}
@@ -389,7 +393,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	public Iterable<Cuboid6> getCollisionBoxes()
 	{
 		LinkedList l = new LinkedList();
-		for (AxisAlignedBB b : cb.getSelectedBoundingBoxsFromPool( false, null, false ))
+		for (AxisAlignedBB b : cb.getSelectedBoundingBoxsFromPool( false, true, null, false ))
 		{
 			l.add( new Cuboid6( b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ ) );
 		}
@@ -412,7 +416,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	public Iterable<Cuboid6> getOcclusionBoxes()
 	{
 		LinkedList l = new LinkedList();
-		for (AxisAlignedBB b : cb.getSelectedBoundingBoxsFromPool( true, null, true ))
+		for (AxisAlignedBB b : cb.getSelectedBoundingBoxsFromPool( true, disableFacadeOcclusion.get() == null, null, true ))
 		{
 			l.add( new Cuboid6( b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ ) );
 		}
@@ -442,7 +446,12 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	{
 		if ( side == null || side == ForgeDirection.UNKNOWN || tile() == null )
 			return false;
-		return !tile().canAddPart( new NormallyOccludedPart( sideTests[side.ordinal()] ) );
+
+		disableFacadeOcclusion.set( true );
+		boolean blocked = !tile().canAddPart( new NormallyOccludedPart( sideTests[side.ordinal()] ) );
+		disableFacadeOcclusion.remove();
+
+		return blocked;
 	}
 
 	@Override
