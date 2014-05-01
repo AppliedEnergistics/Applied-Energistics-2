@@ -24,6 +24,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.util.IConfigManager;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.DualityInterface;
@@ -221,6 +222,18 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	public int getInventoryStackLimit()
 	{
 		return duality.getStorage().getInventoryStackLimit();
+	}
+
+	@Override
+	public IConfigManager getConfigManager()
+	{
+		return duality.getConfigManager();
+	}
+
+	@Override
+	public IInventory getInventoryByName(String name)
+	{
+		return duality.getInventoryByName( name );
 	}
 
 	@Override

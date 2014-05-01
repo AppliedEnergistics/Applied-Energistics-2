@@ -19,6 +19,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.items.IMemoryCard;
@@ -370,7 +371,14 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 		if ( memCardIS != null && useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard )
 		{
 			IMemoryCard memc = (IMemoryCard) memCardIS.getItem();
-			String name = getItemStack( PartItemStack.Network ).getUnlocalizedName();
+
+			ItemStack is = getItemStack( PartItemStack.Network );
+
+			// Blocks and parts share the same soul!
+			if ( AEApi.instance().parts().partInterface.sameAs( is ) )
+				is = AEApi.instance().blocks().blockInterface.stack( 1 );
+
+			String name = is.getUnlocalizedName();
 
 			if ( player.isSneaking() )
 			{
