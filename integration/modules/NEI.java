@@ -15,7 +15,9 @@ import appeng.integration.abstraction.INEI;
 import appeng.integration.modules.helpers.NEIAEShapedRecipeHandler;
 import appeng.integration.modules.helpers.NEIAEShapelessRecipeHandler;
 import appeng.integration.modules.helpers.NEICraftingHandler;
+import appeng.integration.modules.helpers.NEIGrinderRecipeHandler;
 import appeng.integration.modules.helpers.NEIInscriberRecipeHandler;
+import appeng.integration.modules.helpers.NEIWorldCraftingHandler;
 import codechicken.nei.guihook.GuiContainerManager;
 
 public class NEI implements IIntegrationModule, INEI
@@ -48,6 +50,8 @@ public class NEI implements IIntegrationModule, INEI
 		registerRecipeHandler( new NEIAEShapedRecipeHandler() );
 		registerRecipeHandler( new NEIAEShapelessRecipeHandler() );
 		registerRecipeHandler( new NEIInscriberRecipeHandler() );
+		registerRecipeHandler( new NEIWorldCraftingHandler() );
+		registerRecipeHandler( new NEIGrinderRecipeHandler() );
 
 		// crafting terminal...
 		Method registerGuiOverlay = API.getDeclaredMethod( "registerGuiOverlay", new Class[] { Class.class, String.class, int.class, int.class } );

@@ -5,14 +5,20 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+
+import org.lwjgl.opengl.GL11;
+
 import appeng.api.AEApi;
 import appeng.api.util.AEItemDefinition;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
+import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.api.IOverlayHandler;
 import codechicken.nei.api.IRecipeOverlayRenderer;
@@ -25,15 +31,22 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 
 	HashMap<AEItemDefinition, String> details = new HashMap<AEItemDefinition, String>();
 	List<AEItemDefinition> offsets = new LinkedList();
+	List<PositionedStack> outputs = new LinkedList();
+
+	ItemStack target;
 
 	private void addRecipe(AEItemDefinition def, String msg)
 	{
-		offsets.add( def );
-		details.put( def, msg );
+		if ( NEIServerUtils.areStacksSameTypeCrafting( def.stack( 1 ), target ) )
+		{
+			offsets.add( def );
+			outputs.add( new PositionedStack( def.stack( 1 ), 75, 4 ) );
+			details.put( def, msg );
+		}
 	}
 
-	public NEIWorldCraftingHandler() {
-
+	private void addRecipes()
+	{
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.inWorldFluix ) )
 			addRecipe( AEApi.instance().materials().materialFluixCrystal, GuiText.inWorldFluix.getLocal() );
 
@@ -46,7 +59,6 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 			addRecipe( AEApi.instance().materials().materialPureifiedNetherQuartzCrystal, GuiText.inWorldPurification.getLocal() );
 			addRecipe( AEApi.instance().materials().materialPureifiedFluixCrystal, GuiText.inWorldPurification.getLocal() );
 		}
-
 	}
 
 	@Override
@@ -61,18 +73,22 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 		return offsets.size();
 	}
 
-	@Override
 	public void drawBackground(int recipe)
 	{
-		// TODO Auto-generated method stub
-
+		GL11.glColor4f( 1, 1, 1, 1 );// nothing.
 	}
 
 	@Override
 	public void drawForeground(int recipe)
 	{
-		// TODO Auto-generated method stub
+		if ( this.outputs.size() > recipe )
+		{
+			PositionedStack cr = this.outputs.get( recipe );
+			String details = this.details.get( this.offsets.get( recipe ) );
 
+			FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
+			fr.drawSplitString( details, 10, 25, 150, 0 );
+		}
 	}
 
 	@Override
@@ -90,7 +106,7 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 	@Override
 	public PositionedStack getResultStack(int recipe)
 	{
-		return null;
+		return outputs.get( recipe );
 	}
 
 	@Override
@@ -126,13 +142,13 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 	@Override
 	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe)
 	{
-		return null;
+		return currenttip;
 	}
 
 	@Override
 	public List<String> handleItemTooltip(GuiRecipe gui, ItemStack stack, List<String> currenttip, int recipe)
 	{
-		return null;
+		return currenttip;
 	}
 
 	@Override
@@ -147,16 +163,35 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 		return false;
 	}
 
+	public NEIWorldCraftingHandler newInstance()
+	{
+		try
+		{
+			return getClass().newInstance();
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException( e );
+		}
+	}
+
 	@Override
 	public IUsageHandler getUsageHandler(String inputId, Object... ingredients)
 	{
-		return null;
+		return this;
 	}
 
 	@Override
 	public ICraftingHandler getRecipeHandler(String outputId, Object... results)
 	{
-		return null;
+		NEIWorldCraftingHandler g = newInstance();
+		if ( results.length > 0 && results[0] instanceof ItemStack )
+		{
+			g.target = (ItemStack) results[0];
+			g.addRecipes();
+			return g;
+		}
+		return this;
 	}
 
 }
