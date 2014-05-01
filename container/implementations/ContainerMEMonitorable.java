@@ -62,6 +62,11 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	public IConfigManagerHost gui;
 	private IGridNode networkNode;
 
+	public IGridNode getNetworkNode()
+	{
+		return networkNode;
+	}
+
 	protected ContainerMEMonitorable(InventoryPlayer ip, ITerminalHost montiorable, boolean bindInventory) {
 		super( ip, montiorable instanceof TileEntity ? (TileEntity) montiorable : null, montiorable instanceof IPart ? (IPart) montiorable : null );
 

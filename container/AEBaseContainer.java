@@ -65,6 +65,11 @@ public abstract class AEBaseContainer extends Container
 
 	int ticksSinceCheck = 900;
 
+	public BaseActionSource getSource()
+	{
+		return mySrc;
+	}
+
 	public void verifyPermissions(SecurityPermissions security, boolean requirePower)
 	{
 		if ( Platform.isClient() )

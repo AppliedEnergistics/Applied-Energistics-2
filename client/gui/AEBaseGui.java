@@ -44,10 +44,12 @@ import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketSwapSlots;
 import appeng.helpers.InventoryAction;
+import appeng.integration.abstraction.INEI;
 import appeng.util.Platform;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
@@ -560,6 +562,22 @@ public abstract class AEBaseGui extends GuiContainer
 		return builder.toString();
 	}
 
+	boolean useNEI = false;
+
+	private RenderItem setItemRender(RenderItem aeri2)
+	{
+		if ( AppEng.instance.isIntegrationEnabled( "NEI" ) )
+		{
+			return ((INEI) AppEng.instance.getIntegration( "NEI" )).setItemRender( aeri2 );
+		}
+		else
+		{
+			RenderItem ri = itemRender;
+			itemRender = aeri2;
+			return ri;
+		}
+	}
+
 	private void safeDrawSlot(Slot s)
 	{
 		try
@@ -597,8 +615,7 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		if ( s instanceof SlotME )
 		{
-			RenderItem pIR = itemRender;
-			itemRender = aeri;
+			RenderItem pIR = setItemRender( aeri );
 			try
 			{
 				this.zLevel = 100.0F;
@@ -627,7 +644,7 @@ public abstract class AEBaseGui extends GuiContainer
 				if ( Platform.isDrawing( Tessellator.instance ) )
 					Tessellator.instance.draw();
 			}
-			itemRender = pIR;
+			setItemRender( pIR );
 			return;
 		}
 		else

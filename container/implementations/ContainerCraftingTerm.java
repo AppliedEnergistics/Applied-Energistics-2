@@ -22,7 +22,7 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 	SlotCraftingMatrix craftingSlots[] = new SlotCraftingMatrix[9];
 	SlotCraftingTerm outputSlot;
 
-	PartCraftingTerminal ct;
+	public PartCraftingTerminal ct;
 
 	/**
 	 * Callback for when the crafting matrix is changed.
