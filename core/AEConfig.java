@@ -25,7 +25,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 
 	public static AEConfig instance;
 
-	public static float TunnelPowerLoss = 0.05f;
+	public static double TunnelPowerLoss = 0.05;
 
 	public String latestVersion = VERSION;
 	public long latestTimeStamp = 0;
@@ -267,7 +267,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 
 			min = Math.max( min, thisInt + 1 );
 		}
-		
+
 		if ( alreadyUsed )
 		{
 			if ( min < 16383 )

@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.config.PowerUnits;
 import appeng.api.config.TunnelType;
 import appeng.core.AppEng;
 import appeng.me.GridAccessException;
@@ -143,6 +144,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 		PartP2PIC2Power x = (PartP2PIC2Power) Platform.pickRandom( Options );
 		if ( x != null && x.OutputPacket <= 0.001 )
 		{
+			QueueTunnelDrain( PowerUnits.EU, amount );
 			x.OutputPacket = amount;
 			return 0;
 		}

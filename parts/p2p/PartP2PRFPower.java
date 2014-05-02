@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.config.PowerUnits;
 import appeng.api.config.TunnelType;
 import appeng.core.AppEng;
 import appeng.integration.modules.helpers.NullRFHandler;
@@ -133,6 +134,8 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 							break;
 					}
 				}
+
+				QueueTunnelDrain( PowerUnits.RF, total );
 			}
 			catch (GridAccessException e)
 			{
