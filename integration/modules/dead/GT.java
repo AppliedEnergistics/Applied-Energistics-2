@@ -1,6 +1,6 @@
-package appeng.integration.modules.dead;
+package appeng.integration.modules;
 
-import gregtechmod.api.interfaces.IDigitalChest;
+import gregtech.api.interfaces.tileentity.IDigitalChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -8,8 +8,8 @@ import appeng.api.AEApi;
 import appeng.api.storage.IMEInventory;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IGT;
-import appeng.integration.modules.helpers.dead.GregTechHandler;
-import appeng.integration.modules.helpers.dead.GregTechQuantumChest;
+import appeng.integration.modules.helpers.GregTechHandler;
+import appeng.integration.modules.helpers.GregTechQuantumChest;
 import appeng.util.InventoryAdaptor;
 
 public class GT implements IGT, IIntegrationModule
