@@ -83,7 +83,7 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 	{
 		if ( this.outputs.size() > recipe )
 		{
-			PositionedStack cr = this.outputs.get( recipe );
+			// PositionedStack cr = this.outputs.get( recipe );
 			String details = this.details.get( this.offsets.get( recipe ) );
 
 			FontRenderer fr = Minecraft.getMinecraft().fontRenderer;

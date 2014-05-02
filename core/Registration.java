@@ -129,6 +129,7 @@ import appeng.recipes.RecipeHandler;
 import appeng.recipes.game.FacadeRecipe;
 import appeng.recipes.game.ShapedRecipe;
 import appeng.recipes.game.ShapelessRecipe;
+import appeng.recipes.handlers.Crusher;
 import appeng.recipes.handlers.Grind;
 import appeng.recipes.handlers.GrindFZ;
 import appeng.recipes.handlers.Inscribe;
@@ -178,6 +179,7 @@ public class Registration
 		recipeRegistery.addNewSubItemResolver( new AEItemResolver() );
 
 		recipeRegistery.addNewCraftHandler( "grind", Grind.class );
+		recipeRegistery.addNewCraftHandler( "crusher", Crusher.class );
 		recipeRegistery.addNewCraftHandler( "grindfz", GrindFZ.class );
 		recipeRegistery.addNewCraftHandler( "pulverizer", Pulverizer.class );
 		recipeRegistery.addNewCraftHandler( "macerator", Macerator.class );

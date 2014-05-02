@@ -31,7 +31,7 @@ public class ASMIntegration implements IClassTransformer
 
 		integrationModules.add( IntegrationSide.BOTH, "Rotary Craft", "RotaryCraft", "RotaryCraft" );
 		integrationModules.add( IntegrationSide.BOTH, "Industrial Craft 2", "IC2", "IC2" );
-		// integrationModules.add( IntegrationSide.BOTH, "Railcraft", "Railcraft", "RC" );
+		integrationModules.add( IntegrationSide.BOTH, "Railcraft", "Railcraft", "RC" );
 		// integrationModules.add( IntegrationSide.BOTH, "Thermal Expansion", "ThermalExpansion", "TE" );
 		// integrationModules.add( IntegrationSide.BOTH, "Mystcraft", "Mystcraft", "Mystcraft" );
 		integrationModules.add( IntegrationSide.BOTH, "BuildCraft", "BuildCraft|Silicon", "BC" );
@@ -40,7 +40,7 @@ public class ASMIntegration implements IClassTransformer
 		// integrationModules.add( IntegrationSide.BOTH, "Greg Tech", "gregtech_addon", "GT" );
 		// integrationModules.add( IntegrationSide.BOTH, "Universal Electricity", null, "UE" );
 		// integrationModules.add( IntegrationSide.BOTH, "Logistics Pipes", "LogisticsPipes|Main", "LP" );
-		// integrationModules.add( IntegrationSide.CLIENT, "Inventory Tweaks", "", "InvTweaks" );
+		integrationModules.add( IntegrationSide.CLIENT, "Inventory Tweaks", "", "InvTweaks" );
 		integrationModules.add( IntegrationSide.BOTH, "Mine Factory Reloaded", "MineFactoryReloaded", "MFR" );
 		integrationModules.add( IntegrationSide.BOTH, "Deep Storage Unit", null, "DSU" );
 		// integrationModules.add( IntegrationSide.BOTH, "Better Storage", "betterstorage" );
