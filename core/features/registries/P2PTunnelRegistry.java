@@ -71,7 +71,7 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 	@Override
 	public void addNewAttunement(ItemStack trigger, TunnelType type)
 	{
-		if ( type == null )
+		if ( type == null || trigger == null )
 			return;
 
 		Tunnels.put( trigger, type );
