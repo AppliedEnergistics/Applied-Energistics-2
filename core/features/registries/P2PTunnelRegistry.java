@@ -6,6 +6,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.api.definitions.Parts;
@@ -84,6 +85,9 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 
 		for (ItemStack is : Tunnels.keySet())
 		{
+			if ( is.getItem() == trigger.getItem() && is.getItemDamage() == OreDictionary.WILDCARD_VALUE )
+				return Tunnels.get( is );
+
 			if ( Platform.isSameItem( is, trigger ) )
 				return Tunnels.get( is );
 		}
