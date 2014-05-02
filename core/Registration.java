@@ -464,6 +464,7 @@ public class Registration
 		ph.registerNewLayer( "appeng.api.parts.layers.LayerIPowerEmitter", "buildcraft.api.power.IPowerEmitter" );
 		ph.registerNewLayer( "appeng.api.parts.layers.LayerIPowerReceptor", "buildcraft.api.power.IPowerReceptor" );
 		ph.registerNewLayer( "appeng.api.parts.layers.LayerIFluidHandler", "net.minecraftforge.fluids.IFluidHandler" );
+		ph.registerNewLayer( "appeng.api.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyHandler" );
 		ph.registerNewLayer( "appeng.api.parts.layers.LayerITileStorageMonitorable", "appeng.api.implementations.tiles.ITileStorageMonitorable" );
 
 		FMLCommonHandler.instance().bus().register( TickHandler.instance );
@@ -600,7 +601,7 @@ public class Registration
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityHopper.class );
 
 		/**
-		 * Whitelist AE
+		 * Whitelist AE2
 		 */
 		mr.whiteListTileEntity( AEBaseTile.class );
 

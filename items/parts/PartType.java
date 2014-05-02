@@ -25,6 +25,7 @@ import appeng.parts.p2p.PartP2PBCPower;
 import appeng.parts.p2p.PartP2PIC2Power;
 import appeng.parts.p2p.PartP2PItems;
 import appeng.parts.p2p.PartP2PLiquids;
+import appeng.parts.p2p.PartP2PRFPower;
 import appeng.parts.p2p.PartP2PRedstone;
 import appeng.parts.p2p.PartP2PTunnelME;
 import appeng.parts.reporting.PartConversionMonitor;
@@ -92,7 +93,9 @@ public enum PartType
 
 	ConversionMonitor(AEFeature.PartConversionMonitor, PartConversionMonitor.class),
 
-	Interface(AEFeature.Core, PartInterface.class);
+	Interface(AEFeature.Core, PartInterface.class),
+
+	P2PTunnelRF(AEFeature.P2PTunnelRF, PartP2PRFPower.class, GuiText.RFTunnel);
 
 	private final EnumSet<AEFeature> features;
 	private final Class<? extends IPart> myPart;
