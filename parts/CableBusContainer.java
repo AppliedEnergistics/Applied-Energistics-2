@@ -244,7 +244,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 					partChanged();
 					return ForgeDirection.UNKNOWN;
 				}
-				else if ( !(bp instanceof IPartCable) && side != ForgeDirection.UNKNOWN )
+				else if ( bp != null && !(bp instanceof IPartCable) && side != ForgeDirection.UNKNOWN )
 				{
 					IPart cable = getPart( ForgeDirection.UNKNOWN );
 					if ( cable != null && !bp.canBePlacedOn( ((IPartCable) cable).supportsBuses() ) )
@@ -386,20 +386,13 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 		return null;
 	}
 
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxsFromPool(boolean ignoreCableConnections, Entity e, boolean visual)
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxsFromPool(boolean ignoreCableConnections, boolean includeFacades, Entity e, boolean visual)
 	{
 		List<AxisAlignedBB> boxes = new LinkedList<AxisAlignedBB>();
 
 		for (ForgeDirection s : ForgeDirection.values())
 		{
 			IPartCollsionHelper bch = new BusCollisionHelper( boxes, s, e, visual );
-
-			if ( s != ForgeDirection.UNKNOWN )
-			{
-				IFacadePart fpa = fc.getFacade( s );
-				if ( fpa != null )
-					fpa.getBoxes( bch );
-			}
 
 			IPart part = getPart( s );
 			if ( part != null )
@@ -411,7 +404,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 
 			}
 
-			if ( !ignoreCableConnections && s != null && s != ForgeDirection.UNKNOWN )
+			if ( includeFacades && s != null && s != ForgeDirection.UNKNOWN )
 			{
 				IFacadePart fp = fc.getFacade( s );
 				if ( fp != null )

@@ -11,8 +11,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import appeng.api.features.IGrinderEntry;
 import appeng.api.features.IGrinderRegistry;
-import appeng.core.AELog;
 import appeng.core.AEConfig;
+import appeng.core.AELog;
 import appeng.core.features.registries.entries.AppEngGrinderRecipe;
 import appeng.recipes.ores.IOreListener;
 import appeng.recipes.ores.OreDictionaryHandler;
@@ -60,6 +60,15 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 		return RecipeList;
 	}
 
+	private void injectRecipe(AppEngGrinderRecipe appEngGrinderRecipe)
+	{
+		for (IGrinderEntry gr : RecipeList)
+			if ( Platform.isSameItemPrecise( gr.getInput(), appEngGrinderRecipe.getInput() ) )
+				return;
+
+		RecipeList.add( appEngGrinderRecipe );
+	}
+
 	@Override
 	public void addRecipe(ItemStack in, ItemStack out, int cost)
 	{
@@ -70,7 +79,7 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 		}
 
 		log( "Allow Grinding of " + Platform.getItemDisplayName( in ) + " to " + Platform.getItemDisplayName( out ) + " for " + cost );
-		RecipeList.add( new AppEngGrinderRecipe( copy( in ), copy( out ), cost ) );
+		injectRecipe( new AppEngGrinderRecipe( copy( in ), copy( out ), cost ) );
 	}
 
 	@Override
@@ -84,7 +93,7 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 
 		log( "Allow Grinding of " + Platform.getItemDisplayName( in ) + " to " + Platform.getItemDisplayName( out ) + " with optional "
 				+ Platform.getItemDisplayName( optional ) + " for " + cost );
-		RecipeList.add( new AppEngGrinderRecipe( copy( in ), copy( out ), copy( optional ), chance, cost ) );
+		injectRecipe( new AppEngGrinderRecipe( copy( in ), copy( out ), copy( optional ), chance, cost ) );
 	}
 
 	@Override

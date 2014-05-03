@@ -1,6 +1,6 @@
-package appeng.integration.modules.helpers.dead;
+package appeng.integration.modules.helpers;
 
-import gregtechmod.api.interfaces.IDigitalChest;
+import gregtech.api.interfaces.tileentity.IDigitalChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import appeng.api.config.Actionable;
@@ -24,7 +24,7 @@ public class GregTechQuantumChest extends MEIInventoryWrapper
 	private ItemStack getType()
 	{
 		ItemStack[] array = qc.getStoredItemData();
-		if ( array.length > 0 && array[0].itemID > 0 )
+		if ( array.length > 0 && array[0].getItem() != null )
 			return array[0];
 		return null;
 	}

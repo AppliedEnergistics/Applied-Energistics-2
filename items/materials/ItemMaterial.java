@@ -25,6 +25,7 @@ import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
+import appeng.client.texture.MissingIcon;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
@@ -156,13 +157,17 @@ public class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgr
 
 	public MaterialType getTypeByStack(ItemStack is)
 	{
-		return dmgToMaterial.get( is.getItemDamage() );
+		if ( dmgToMaterial.containsKey( is.getItemDamage() ) )
+			return dmgToMaterial.get( is.getItemDamage() );
+		return null;
 	}
 
 	@Override
 	public IIcon getIconFromDamage(int dmg)
 	{
-		return dmgToMaterial.get( dmg ).IIcon;
+		if ( dmgToMaterial.containsKey( dmg ) )
+			return dmgToMaterial.get( dmg ).IIcon;
+		return new MissingIcon( this );
 	}
 
 	private String nameOf(ItemStack is)

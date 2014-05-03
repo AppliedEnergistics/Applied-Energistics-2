@@ -59,20 +59,31 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 
 	static int currentPass = 0;
 	int myPass = 0;
-	final static public LinkedList depth = new LinkedList();
+	static final ThreadLocal<LinkedList> depth = new ThreadLocal<LinkedList>();
+
+	private LinkedList getDepth()
+	{
+		LinkedList s = depth.get();
+
+		if ( s == null )
+			depth.set( s = new LinkedList() );
+
+		return s;
+	}
 
 	private boolean diveList(NetworkInventoryHandler<T> networkInventoryHandler)
 	{
-		if ( depth.contains( networkInventoryHandler ) )
+		LinkedList cDepth = getDepth();
+		if ( cDepth.contains( networkInventoryHandler ) )
 			return true;
 
-		depth.push( this );
+		cDepth.push( this );
 		return false;
 	}
 
 	private boolean diveIteration(NetworkInventoryHandler<T> networkInventoryHandler)
 	{
-		if ( depth.isEmpty() )
+		if ( getDepth().isEmpty() )
 		{
 			currentPass++;
 			myPass = currentPass;
@@ -85,14 +96,13 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 				myPass = currentPass;
 		}
 
-		depth.push( this );
+		getDepth().push( this );
 		return false;
 	}
 
 	private void surface(NetworkInventoryHandler<T> networkInventoryHandler)
 	{
-		Object last = depth.pop();
-		if ( last != this )
+		if ( getDepth().pop() != this )
 			throw new RuntimeException( "Invalid Access to Networked Storage API detected." );
 	}
 

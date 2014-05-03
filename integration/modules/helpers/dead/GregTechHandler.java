@@ -1,7 +1,8 @@
-package appeng.integration.modules.helpers.dead;
+package appeng.integration.modules.helpers;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IExternalStorageHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
@@ -17,9 +18,9 @@ public class GregTechHandler implements IExternalStorageHandler
 	}
 
 	@Override
-	public IMEInventory getInventory(TileEntity te, ForgeDirection d, StorageChannel chan)
+	public IMEInventory getInventory(TileEntity te, ForgeDirection d, StorageChannel channel, BaseActionSource src)
 	{
-		if ( chan == StorageChannel.ITEMS )
+		if ( channel == StorageChannel.ITEMS )
 			return GT.instance.getQuantumChest( te );
 		return null;
 	}

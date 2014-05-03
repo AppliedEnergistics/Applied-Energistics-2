@@ -41,7 +41,7 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public void loadCraftingRecipes(String outputId, Object[] results)
+	public void loadCraftingRecipes(String outputId, Object... results)
 	{
 		if ( (outputId.equals( "crafting" )) && (getClass() == NEIAEShapelessRecipeHandler.class) )
 		{

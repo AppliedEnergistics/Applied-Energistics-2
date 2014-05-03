@@ -8,12 +8,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.networking.IGridHost;
+import appeng.api.parts.IPartHost;
+import appeng.api.parts.SelectedPart;
+import appeng.api.util.INetworkToolAgent;
 import appeng.client.ClientHelper;
 import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
@@ -72,6 +76,22 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	@Override
 	public boolean onItemUseFirst(ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
+		MovingObjectPosition mop = new MovingObjectPosition( x, y, z, side, Vec3.createVectorHelper( hitX, hitY, hitZ ) );
+		TileEntity te = world.getTileEntity( x, y, z );
+		if ( te instanceof IPartHost )
+		{
+			SelectedPart part = ((IPartHost) te).selectPart( mop.hitVec );
+			if ( part.part != null )
+			{
+				if ( part.part instanceof INetworkToolAgent && !((INetworkToolAgent) part.part).showNetworkInfo( mop ) )
+					return false;
+			}
+		}
+		else if ( te instanceof INetworkToolAgent && !((INetworkToolAgent) te).showNetworkInfo( mop ) )
+		{
+			return false;
+		}
+
 		if ( Platform.isClient() )
 		{
 			try
@@ -110,10 +130,12 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 					return true;
 
 				TileEntity te = w.getTileEntity( x, y, z );
+
 				if ( te instanceof IGridHost )
 					Platform.openGUI( p, te, ForgeDirection.getOrientation( side ), GuiBridge.GUI_NETWORK_STATUS );
 				else
 					Platform.openGUI( p, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_NETWORK_TOOL );
+
 				return true;
 			}
 			else

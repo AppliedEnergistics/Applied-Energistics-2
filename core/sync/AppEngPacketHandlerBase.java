@@ -17,6 +17,7 @@ import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.core.sync.packets.PacketMatterCannon;
 import appeng.core.sync.packets.PacketMockExplosion;
 import appeng.core.sync.packets.PacketMultiPart;
+import appeng.core.sync.packets.PacketNEIRecipe;
 import appeng.core.sync.packets.PacketNewStorageDimension;
 import appeng.core.sync.packets.PacketPartPlacement;
 import appeng.core.sync.packets.PacketPatternSlot;
@@ -67,7 +68,9 @@ public class AppEngPacketHandlerBase
 
 		PACKET_SWAP_SLOTS(PacketSwapSlots.class),
 
-		PACKET_PATTERN_SLOT(PacketPatternSlot.class);
+		PACKET_PATTERN_SLOT(PacketPatternSlot.class),
+
+		PACKET_RECIPE_NEI(PacketNEIRecipe.class);
 
 		final public Class pc;
 		final public Constructor con;

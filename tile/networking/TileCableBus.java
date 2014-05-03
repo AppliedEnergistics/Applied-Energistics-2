@@ -41,7 +41,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 
 	public CableBusContainer cb = new CableBusContainer( this );
 	private int oldLV = -1; // on re-calculate light when it changes
-		
+
 	class CableBusHandler extends AETileEventHandler
 	{
 
@@ -183,7 +183,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxsFromPool(World w, int x, int y, int z, Entity e, boolean visual)
 	{
-		return cb.getSelectedBoundingBoxsFromPool( false, e, visual );
+		return cb.getSelectedBoundingBoxsFromPool( false, true, e, visual );
 	}
 
 	@Override
@@ -319,9 +319,10 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	{
 		return cb.getLayerFlags();
 	}
-	
+
 	@Override
-	public void cleanup() {
+	public void cleanup()
+	{
 		getWorldObj().setBlock( xCoord, yCoord, zCoord, Platform.air );
 	}
 

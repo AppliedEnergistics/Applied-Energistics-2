@@ -10,6 +10,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.TunnelType;
 import appeng.api.implementations.items.IMemoryCard;
@@ -20,6 +22,7 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
 import appeng.client.texture.CableBusTextures;
+import appeng.core.AEConfig;
 import appeng.me.GridAccessException;
 import appeng.me.cache.P2PCache;
 import appeng.me.cache.helpers.TunnelCollection;
@@ -117,6 +120,10 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 
 			switch (tt)
 			{
+
+			case RF_POWER:
+				newType = AEApi.instance().parts().partP2PTunnelRF.stack( 1 );
+				break;
 
 			case BC_POWER:
 				newType = AEApi.instance().parts().partP2PTunnelMJ.stack( 1 );
@@ -317,10 +324,18 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 		renderLights( x, y, z, rh, renderer );
 	}
 
-	protected void QueueTunnelDrain(PowerUnits mj, double f)
+	protected void QueueTunnelDrain(PowerUnits unit, double f)
 	{
-		// TODO Auto-generated method stub
+		double ae_to_tax = unit.convertTo( PowerUnits.AE, f * AEConfig.TunnelPowerLoss );
 
+		try
+		{
+			proxy.getEnergy().extractAEPower( ae_to_tax, Actionable.MODULATE, PowerMultiplier.ONE );
+		}
+		catch (GridAccessException e)
+		{
+			// :P
+		}
 	}
 
 	@Override

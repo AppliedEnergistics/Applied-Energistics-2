@@ -1,5 +1,7 @@
 package appeng.parts.misc;
 
+import java.util.List;
+
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -22,6 +24,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.util.IConfigManager;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.DualityInterface;
@@ -62,6 +65,22 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	{
 		super.readFromNBT( data );
 		duality.readFromNBT( data );
+	}
+
+	@Override
+	public void getDrops(List<ItemStack> drops, boolean wrenched)
+	{
+		IInventory inv = duality.getInternalInventory();
+		for (int l = 0; l < inv.getSizeInventory(); l++)
+		{
+			ItemStack is = inv.getStackInSlot( l );
+
+			if ( is != null )
+			{
+				drops.add( is );
+				inv.setInventorySlotContents( l, (ItemStack) null );
+			}
+		}
 	}
 
 	@Override
@@ -203,6 +222,18 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	public int getInventoryStackLimit()
 	{
 		return duality.getStorage().getInventoryStackLimit();
+	}
+
+	@Override
+	public IConfigManager getConfigManager()
+	{
+		return duality.getConfigManager();
+	}
+
+	@Override
+	public IInventory getInventoryByName(String name)
+	{
+		return duality.getInventoryByName( name );
 	}
 
 	@Override

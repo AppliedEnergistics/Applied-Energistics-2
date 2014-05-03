@@ -6,6 +6,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.api.definitions.Parts;
@@ -70,7 +71,7 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 	@Override
 	public void addNewAttunement(ItemStack trigger, TunnelType type)
 	{
-		if ( type == null )
+		if ( type == null || trigger == null )
 			return;
 
 		Tunnels.put( trigger, type );
@@ -79,13 +80,19 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 	@Override
 	public TunnelType getTunnelTypeByItem(ItemStack trigger)
 	{
-		if ( FluidContainerRegistry.isContainer( trigger ) )
-			return TunnelType.FLUID;
-
-		for (ItemStack is : Tunnels.keySet())
+		if ( trigger != null )
 		{
-			if ( Platform.isSameItem( is, trigger ) )
-				return Tunnels.get( is );
+			if ( FluidContainerRegistry.isContainer( trigger ) )
+				return TunnelType.FLUID;
+
+			for (ItemStack is : Tunnels.keySet())
+			{
+				if ( is.getItem() == trigger.getItem() && is.getItemDamage() == OreDictionary.WILDCARD_VALUE )
+					return Tunnels.get( is );
+
+				if ( Platform.isSameItem( is, trigger ) )
+					return Tunnels.get( is );
+			}
 		}
 
 		return null;

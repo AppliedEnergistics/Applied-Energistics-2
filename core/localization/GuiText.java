@@ -26,9 +26,9 @@ public enum GuiText
 
 	METunnel, ItemTunnel, RedstoneTunnel, MJTunnel, EUTunnel, FluidTunnel, StoredSize,
 
-	StoredPower, MaxPower, RequiredPower, Efficiency, CopyMode, CopyModeDesc, PatternTerminal,
+	CopyMode, CopyModeDesc, PatternTerminal, CraftingPattern, ProcessingPattern, Crafts, Creates, And, With, MolecularAssembler,
 
-	CraftingPattern, ProcessingPattern, Crafts, Creates, And, With, MolecularAssembler;
+	StoredPower, MaxPower, RequiredPower, Efficiency, InWorldCrafting, inWorldFluix, inWorldPurification, inWorldSingularity, OfSecondOutput, NoSecondOutput, RFTunnel;
 
 	String root;
 

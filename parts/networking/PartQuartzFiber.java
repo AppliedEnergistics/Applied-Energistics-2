@@ -37,6 +37,8 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 		super( PartQuartzFiber.class, is );
 		proxy.setIdlePowerUsage( 0 );
 		proxy.setFlags( GridFlags.CANNOT_CARRY );
+		outerProxy.setIdlePowerUsage( 0 );
+		outerProxy.setFlags( GridFlags.CANNOT_CARRY );
 	}
 
 	@Override
