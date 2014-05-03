@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -380,6 +381,12 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 
 			getHost().markForUpdate();
 		}
+	}
+
+	@Override
+	public boolean showNetworkInfo(MovingObjectPosition where)
+	{
+		return false;
 	}
 
 }

@@ -6,11 +6,13 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Block.SoundType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -42,7 +44,26 @@ public class PartPlacement
 	@SubscribeEvent
 	public void playerInteract(PlayerInteractEvent event)
 	{
-		if ( event.action == Action.RIGHT_CLICK_BLOCK && event.entityPlayer.worldObj.isRemote )
+		if ( event.action == Action.RIGHT_CLICK_AIR && event.entityPlayer.worldObj.isRemote )
+		{
+			// re-check to see if this event was already channeled, cause these two events are really stupid...
+			MovingObjectPosition mop = Platform.rayTrace( event.entityPlayer, true, false );
+			Minecraft mc = Minecraft.getMinecraft();
+
+			float f = 1.0F;
+			double d0 = (double) mc.playerController.getBlockReachDistance();
+			double d1 = d0;
+			Vec3 vec3 = mc.renderViewEntity.getPosition( f );
+
+			if ( mop != null && mop.hitVec.distanceTo( vec3 ) < d0 )
+			{
+				World w = event.entity.worldObj;
+				TileEntity te = w.getTileEntity( mop.blockX, mop.blockY, mop.blockZ );
+				if ( te instanceof IPartHost )
+					event.setCanceled( true );
+			}
+		}
+		else if ( event.action == Action.RIGHT_CLICK_BLOCK && event.entityPlayer.worldObj.isRemote )
 		{
 			if ( placing.get() != null )
 				return;
