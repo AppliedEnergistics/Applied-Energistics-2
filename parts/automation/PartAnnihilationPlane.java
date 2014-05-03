@@ -207,12 +207,14 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	public void chanRender(MENetworkChannelsChanged c)
 	{
 		onNeighborChanged();
+		getHost().markForUpdate();
 	}
 
 	@MENetworkEventSubscribe
 	public void powerRender(MENetworkPowerStatusChange c)
 	{
 		onNeighborChanged();
+		getHost().markForUpdate();
 	}
 
 	public TickRateModulation EatBlock(boolean eatForReal)
