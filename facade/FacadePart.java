@@ -50,7 +50,7 @@ public class FacadePart implements IFacadePart
 	@Override
 	public void getBoxes(IPartCollsionHelper ch)
 	{
-		ch.addBox( 0.0, 0.0, 14, 16.0, 16.0, 16.0 );
+		ch.addBox( 0.0, 0.0, 14, 16.0, 16.0, 15.9 );
 	}
 
 	public static boolean isFacade(ItemStack is)
