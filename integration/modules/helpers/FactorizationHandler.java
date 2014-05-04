@@ -7,6 +7,8 @@ import appeng.api.storage.IExternalStorageHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
 import appeng.integration.modules.FZ;
+import appeng.me.storage.MEMonitorIInventory;
+import appeng.util.inv.IMEAdaptor;
 
 public class FactorizationHandler implements IExternalStorageHandler
 {
@@ -21,7 +23,7 @@ public class FactorizationHandler implements IExternalStorageHandler
 	public IMEInventory getInventory(TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource src)
 	{
 		if ( chan == StorageChannel.ITEMS )
-			return FZ.instance.getFactorizationBarrel( te );
+			return new MEMonitorIInventory( new IMEAdaptor( FZ.instance.getFactorizationBarrel( te ), src ) );
 		return null;
 	}
 

@@ -26,7 +26,7 @@ public class StackToSlotIterator implements Iterator<ItemSlot>
 	public ItemSlot next()
 	{
 		iss.slot = x++;
-		iss.itemStack = is.next();
+		iss.setItemStack( is.next() );
 		return iss;
 	}
 
