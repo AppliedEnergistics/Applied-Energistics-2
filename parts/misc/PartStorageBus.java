@@ -151,6 +151,14 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 	private void resetCache(boolean fullReset)
 	{
+		if ( monitor != null )
+			monitor.onTick();
+
+		IMEInventory<IAEItemStack> in = getHandler();
+		IItemList<IAEItemStack> before = AEApi.instance().storage().createItemList();
+		if ( in != null )
+			before = in.getAvailableItems( before );
+
 		cached = false;
 		if ( fullReset )
 			handlerHash = 0;
@@ -163,6 +171,13 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		{
 			// :3
 		}
+
+		IMEInventory<IAEItemStack> out = getHandler();
+		IItemList<IAEItemStack> after = AEApi.instance().storage().createItemList();
+		if ( out != null )
+			after = out.getAvailableItems( after );
+
+		Platform.postListChanges( before, after, this, mySrc );
 	}
 
 	@Override
