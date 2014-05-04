@@ -154,6 +154,9 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		if ( monitor != null )
 			monitor.onTick();
 
+		if ( host == null || host.getTile() == null || host.getTile().getWorldObj() == null )
+			return;
+
 		IMEInventory<IAEItemStack> in = getHandler();
 		IItemList<IAEItemStack> before = AEApi.instance().storage().createItemList();
 		if ( in != null )
