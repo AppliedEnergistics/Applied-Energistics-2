@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockGlass;
+import net.minecraft.block.BlockStainedGlass;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -17,6 +18,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
+import appeng.api.parts.IAlphaPassItem;
 import appeng.block.solids.OreQuartz;
 import appeng.client.render.BusRenderer;
 import appeng.core.FacadeConfig;
@@ -28,7 +30,7 @@ import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemFacade extends AEBaseItem implements IFacadeItem
+public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassItem
 {
 
 	public ItemFacade() {
@@ -141,7 +143,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem
 		int metadata = l.getItem().getMetadata( l.getItemDamage() );
 
 		boolean hasTile = b.hasTileEntity( metadata );
-		boolean enableGlass = b instanceof BlockGlass;
+		boolean enableGlass = b instanceof BlockGlass || b instanceof BlockStainedGlass;
 		boolean disableOre = b instanceof OreQuartz;
 
 		boolean defaultValue = (b.isOpaqueCube() && !b.getTickRandomly() && !hasTile && !disableOre) || enableGlass;
@@ -205,6 +207,16 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem
 		}
 
 		return super.getItemStackDisplayName( is );
+	}
+
+	@Override
+	public boolean useAlphaPass(ItemStack is)
+	{
+		ItemStack out = getTextureItem( is );
+		Block blk = Block.getBlockFromItem( out.getItem() );
+		if ( blk != null && blk.canRenderInPass( 1 ) )
+			return true;
+		return false;
 	}
 
 }
