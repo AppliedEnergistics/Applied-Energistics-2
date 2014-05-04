@@ -205,7 +205,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	{
 
 		public InterfaceInventory(DualityInterface tileInterface) {
-			super( tileInterface.storage, ForgeDirection.UP );
+			super( InventoryAdaptor.getAdaptor( tileInterface.storage, ForgeDirection.UP ) );
 			mySource = new MachineSource( iHost );
 		}
 

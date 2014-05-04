@@ -7,6 +7,8 @@ import appeng.api.storage.IExternalStorageHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
 import appeng.integration.modules.GT;
+import appeng.me.storage.MEMonitorIInventory;
+import appeng.util.inv.IMEAdaptor;
 
 public class GregTechHandler implements IExternalStorageHandler
 {
@@ -21,7 +23,7 @@ public class GregTechHandler implements IExternalStorageHandler
 	public IMEInventory getInventory(TileEntity te, ForgeDirection d, StorageChannel channel, BaseActionSource src)
 	{
 		if ( channel == StorageChannel.ITEMS )
-			return GT.instance.getQuantumChest( te );
+			return new MEMonitorIInventory( new IMEAdaptor( GT.instance.getQuantumChest( te ) ) );
 		return null;
 	}
 

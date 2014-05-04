@@ -342,7 +342,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 		public ItemSlot next()
 		{
 			is.slot = x;
-			is.itemStack = i.getStackInSlot( x++ );
+			is.setItemStack( i.getStackInSlot( x++ ) );
 			return is;
 		}
 

@@ -8,6 +8,7 @@ import appeng.api.storage.IExternalStorageHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
 import appeng.me.storage.MEMonitorIInventory;
+import appeng.util.InventoryAdaptor;
 
 public class ExternalIInv implements IExternalStorageHandler
 {
@@ -22,7 +23,7 @@ public class ExternalIInv implements IExternalStorageHandler
 	public IMEInventory getInventory(TileEntity te, ForgeDirection d, StorageChannel channel, BaseActionSource src)
 	{
 		if ( channel == StorageChannel.ITEMS && te instanceof IInventory )
-			return new MEMonitorIInventory( (IInventory) te, d );
+			return new MEMonitorIInventory( InventoryAdaptor.getAdaptor( (IInventory) te, d ) );
 
 		return null;
 	}

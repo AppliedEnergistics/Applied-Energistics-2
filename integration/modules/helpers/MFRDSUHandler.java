@@ -7,6 +7,8 @@ import appeng.api.storage.IExternalStorageHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
 import appeng.integration.modules.DSU;
+import appeng.me.storage.MEMonitorIInventory;
+import appeng.util.inv.IMEAdaptor;
 
 public class MFRDSUHandler implements IExternalStorageHandler
 {
@@ -21,8 +23,7 @@ public class MFRDSUHandler implements IExternalStorageHandler
 	public IMEInventory getInventory(TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource src)
 	{
 		if ( chan == StorageChannel.ITEMS )
-			return DSU.instance.getDSU( te );
+			return new MEMonitorIInventory( new IMEAdaptor( DSU.instance.getDSU( te ), src ) );
 		return null;
 	}
-
 }

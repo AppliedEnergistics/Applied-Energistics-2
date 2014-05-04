@@ -5,9 +5,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -22,7 +20,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.ItemSlot;
-import appeng.util.item.AEItemStack;
 
 public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonitor<IAEItemStack>
 {
@@ -47,8 +44,6 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 		final IAEItemStack aeStack;
 	};
 
-	final IInventory internal;
-	final ForgeDirection side;
 	final InventoryAdaptor adaptor;
 
 	final TreeMap<Integer, CachedItemStack> memory;
@@ -69,11 +64,9 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 		listeners.remove( l );
 	}
 
-	public MEMonitorIInventory(IInventory inv, ForgeDirection dir) {
-		adaptor = InventoryAdaptor.getAdaptor( inv, dir );
+	public MEMonitorIInventory(InventoryAdaptor adaptor) {
+		this.adaptor = adaptor;
 		memory = new TreeMap();
-		internal = inv;
-		side = dir;
 	}
 
 	@Override
@@ -135,7 +128,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 	public IItemList<IAEItemStack> getAvailableItems(IItemList out)
 	{
 		for (ItemSlot is : adaptor)
-			out.addStorage( AEItemStack.create( is.itemStack ) );
+			out.addStorage( is.getAEItemStack() );
 
 		return out;
 	}
@@ -167,12 +160,12 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 		for (ItemSlot is : adaptor)
 		{
 			CachedItemStack old = memory.get( is.slot );
-			ItemStack newIS = is == null ? null : is.itemStack;
+			ItemStack newIS = is == null ? null : is.getItemStack();
 			ItemStack oldIS = old == null ? null : old.itemStack;
 
 			if ( isDiffrent( newIS, oldIS ) )
 			{
-				CachedItemStack cis = new CachedItemStack( is.itemStack );
+				CachedItemStack cis = new CachedItemStack( is.getItemStack() );
 				memory.put( is.slot, cis );
 
 				if ( old != null && old.aeStack != null )
@@ -203,7 +196,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 
 				if ( diff != 0 && stack != null )
 				{
-					CachedItemStack cis = new CachedItemStack( is.itemStack );
+					CachedItemStack cis = new CachedItemStack( is.getItemStack() );
 					memory.put( is.slot, cis );
 
 					IAEItemStack a = stack.copy();

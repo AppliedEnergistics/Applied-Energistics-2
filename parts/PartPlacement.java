@@ -52,7 +52,6 @@ public class PartPlacement
 
 			float f = 1.0F;
 			double d0 = (double) mc.playerController.getBlockReachDistance();
-			double d1 = d0;
 			Vec3 vec3 = mc.renderViewEntity.getPosition( f );
 
 			if ( mop != null && mop.hitVec.distanceTo( vec3 ) < d0 )
