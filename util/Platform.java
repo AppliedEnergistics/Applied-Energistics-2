@@ -59,6 +59,7 @@ import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.BaseActionSource;
@@ -1533,7 +1534,11 @@ public class Platform
 			else if ( src.isMachine() )
 			{
 				IActionHost te = ((MachineSource) src).via;
-				int playerID = te.getActionableNode().getPlayerID();
+				IGridNode n = te.getActionableNode();
+				if ( n == null )
+					return false;
+
+				int playerID = n.getPlayerID();
 				return gridProxy.getSecurity().hasPermission( playerID, SecurityPermissions.BUILD );
 			}
 			else
