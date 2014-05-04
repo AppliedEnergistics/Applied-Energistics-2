@@ -129,6 +129,12 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
+	public double getMaxRenderDistanceSquared()
+	{
+		return 900.0;
+	}
+
+	@Override
 	public void getDrops(World w, int x, int y, int z, ArrayList drops)
 	{
 		cb.getDrops( drops );
