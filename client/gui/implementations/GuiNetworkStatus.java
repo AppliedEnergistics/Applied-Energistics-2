@@ -6,7 +6,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -168,7 +167,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 				String str = Long.toString( refStack.getStackSize() );
 				if ( refStack.getStackSize() >= 10000 )
-					str = Long.toString( refStack.getStackSize() / 1000 ) + StatCollector.translateToLocal( "AppEng.Sizes.1000" );
+					str = Long.toString( refStack.getStackSize() / 1000 ) + "k";
 
 				int w = fontRendererObj.getStringWidth( str );
 				fontRendererObj.drawString( str, (int) ((x * sectionLength + xo + sectionLength - 19 - ((float) w * 0.5)) * 2), (int) ((y * 18 + yo + 6) * 2),
