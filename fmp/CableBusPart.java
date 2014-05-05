@@ -34,7 +34,10 @@ import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
+import appeng.client.render.BusRenderHelper;
+import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.features.AEFeature;
 import appeng.helpers.AEMultiTile;
 import appeng.parts.BusCollisionHelper;
 import appeng.parts.CableBusContainer;
@@ -259,8 +262,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public void renderDynamic(Vector3 pos, float frame, int pass)
 	{
-		if ( pass == 0 )
+		if ( pass == 0 || (pass == 1 && AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass )) )
 		{
+			BusRenderHelper.instance.setPass( pass );
 			cb.renderDynamic( pos.x, pos.y, pos.z );
 		}
 	}
@@ -268,10 +272,11 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public boolean renderStatic(Vector3 pos, int pass)
 	{
-		if ( pass == 0 )
+		if ( pass == 0 || (pass == 1 && AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass )) )
 		{
+			BusRenderHelper.instance.setPass( pass );
 			cb.renderStatic( pos.x, pos.y, pos.z );
-			return true;
+			return BusRenderHelper.instance.getItemsRendered() > 0;
 		}
 		return false;
 	}
@@ -475,7 +480,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	public void markForSave()
 	{
 		// mark the chunk for save...
-		this.getTile().getWorldObj().getChunkFromBlockCoords( x(), z() ).isModified = true;
+		TileEntity te = getTile();
+		if ( te != null && te.getWorldObj() != null )
+			te.getWorldObj().getChunkFromBlockCoords( x(), z() ).isModified = true;
 	}
 
 	@Override

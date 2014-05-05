@@ -24,8 +24,10 @@ import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
+import appeng.client.render.BusRenderHelper;
 import appeng.client.render.blocks.RendererCableBus;
 import appeng.client.texture.ExtraTextures;
+import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.CommonHelper;
@@ -35,18 +37,53 @@ import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
 import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
+import appeng.tile.networking.TileCableBusTESR;
 import appeng.util.Platform;
 
 public class BlockCableBus extends AEBaseBlock
 {
 
 	static private ICableBusContainer nullCB = new NullCableBusContainer();
+	static public Class<? extends TileEntity> noTesrTile;
+	static public Class<? extends TileEntity> tesrTile;
+
+	public <T extends TileEntity> T getTileEntity(IBlockAccess w, int x, int y, int z)
+	{
+		TileEntity te = w.getTileEntity( x, y, z );
+
+		if ( noTesrTile.isInstance( te ) )
+			return (T) te;
+
+		if ( tesrTile.isInstance( te ) )
+			return (T) te;
+
+		return null;
+	}
 
 	public BlockCableBus() {
 		super( BlockCableBus.class, Material.glass );
 		setfeature( EnumSet.of( AEFeature.Core ) );
 		setLightOpacity( 0 );
 		isFullSize = isOpaque = false;
+	}
+
+	@Override
+	public int getRenderBlockPass()
+	{
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass ) )
+			return 1;
+		return 0;
+	}
+
+	@Override
+	public boolean canRenderInPass(int pass)
+	{
+		BusRenderHelper.instance.setPass( pass );
+
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass ) )
+			return true;
+
+		return pass == 0;
 	}
 
 	@Override
@@ -229,9 +266,12 @@ public class BlockCableBus extends AEBaseBlock
 
 	public void setupTile()
 	{
-		setTileEntiy( Api.instance.partHelper.getCombinedInstance( TileCableBus.class.getName() ) );
+		setTileEntiy( noTesrTile = Api.instance.partHelper.getCombinedInstance( TileCableBus.class.getName() ) );
 		if ( Platform.isClient() )
-			CommonHelper.proxy.bindTileEntitySpecialRenderer( getTileEntityClass(), this );
+		{
+			tesrTile = Api.instance.partHelper.getCombinedInstance( TileCableBusTESR.class.getName() );
+			CommonHelper.proxy.bindTileEntitySpecialRenderer( tesrTile, this );
+		}
 	}
 
 	private ICableBusContainer cb(IBlockAccess w, int x, int y, int z)

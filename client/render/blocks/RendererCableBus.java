@@ -7,6 +7,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
+import appeng.client.render.BusRenderHelper;
 import appeng.client.render.BusRenderer;
 import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
@@ -38,7 +39,7 @@ public class RendererCableBus extends BaseBlockRender
 			BusRenderer.instance.renderer.renderAllFaces = false;
 		}
 
-		return true;
+		return BusRenderHelper.instance.getItemsRendered() > 0;
 	}
 
 	@Override

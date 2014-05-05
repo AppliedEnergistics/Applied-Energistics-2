@@ -289,7 +289,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		return null;
 	}
 
-	final public <T extends TileEntity> T getTileEntity(IBlockAccess w, int x, int y, int z)
+	public <T extends TileEntity> T getTileEntity(IBlockAccess w, int x, int y, int z)
 	{
 		if ( !hasBlockTileEntity() )
 			return null;

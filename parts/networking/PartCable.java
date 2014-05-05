@@ -406,6 +406,8 @@ public class PartCable extends AEBasePart implements IPartCable
 			default:
 				return;
 			}
+
+			rh.setFacesToRender( EnumSet.complementOf( EnumSet.of( of ) ) );
 			rh.renderBlock( x, y, z, renderer );
 
 			rh.setTexture( getTexture( getCableColor() ) );
@@ -436,7 +438,10 @@ public class PartCable extends AEBasePart implements IPartCable
 		default:
 			return;
 		}
+
+		rh.setFacesToRender( EnumSet.complementOf( EnumSet.of( of, of.getOpposite() ) ) );
 		rh.renderBlock( x, y, z, renderer );
+		rh.setFacesToRender( EnumSet.allOf( ForgeDirection.class ) );
 	}
 
 	protected CableBusTextures getChannelTex(int i, boolean b)
@@ -486,6 +491,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		IGridHost ghh = te instanceof IGridHost ? (IGridHost) te : null;
 		boolean isSmart = false;
 
+		rh.setFacesToRender( EnumSet.complementOf( EnumSet.of( of, of.getOpposite() ) ) );
 		if ( ghh != null && ccph != null && ghh.getCableConnectionType( of.getOpposite() ) == AECableType.GLASS && ccph.getPart( of.getOpposite() ) == null
 				&& ccph.getColor() != AEColor.Transparent )
 			rh.setTexture( getGlassTexture( ccph.getColor() ) );
@@ -515,6 +521,7 @@ public class PartCable extends AEBasePart implements IPartCable
 			default:
 				return;
 			}
+
 			rh.renderBlock( x, y, z, renderer );
 
 			rh.setTexture( getTexture( getCableColor() ) );
@@ -579,6 +586,8 @@ public class PartCable extends AEBasePart implements IPartCable
 
 			renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 		}
+
+		rh.setFacesToRender( EnumSet.allOf( ForgeDirection.class ) );
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -589,6 +598,8 @@ public class PartCable extends AEBasePart implements IPartCable
 		IGridHost ghh = te instanceof IGridHost ? (IGridHost) te : null;
 		boolean isGlass = false;
 		AEColor myColor = getCableColor();
+
+		rh.setFacesToRender( EnumSet.complementOf( EnumSet.of( of, of.getOpposite() ) ) );
 
 		if ( ghh != null && ccph != null && ghh.getCableConnectionType( of.getOpposite() ) == AECableType.GLASS && ccph.getPart( of.getOpposite() ) == null
 				&& ccph.getColor() != AEColor.Transparent )
@@ -702,6 +713,8 @@ public class PartCable extends AEBasePart implements IPartCable
 
 			renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 		}
+
+		rh.setFacesToRender( EnumSet.allOf( ForgeDirection.class ) );
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -737,6 +750,7 @@ public class PartCable extends AEBasePart implements IPartCable
 			break;
 
 		}
+
 	}
 
 	@SideOnly(Side.CLIENT)

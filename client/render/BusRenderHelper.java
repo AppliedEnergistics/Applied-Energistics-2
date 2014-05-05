@@ -13,6 +13,8 @@ import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.ISimplifiedBundle;
 import appeng.block.AEBaseBlock;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -102,6 +104,39 @@ public class BusRenderHelper implements IPartRenderHelper
 	};
 
 	BoundBoxCalculator bbc = new BoundBoxCalculator();
+
+	int renderingForPass = 0;
+	int currentPass = 0;
+	int itemsRendered = 0;
+	boolean noAlphaPass = AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass ) == false;
+
+	public int getItemsRendered()
+	{
+		return itemsRendered;
+	}
+
+	public void setPass(int pass)
+	{
+		renderingForPass = 0;
+		currentPass = pass;
+		itemsRendered = 0;
+	}
+
+	@Override
+	public void renderForPass(int pass)
+	{
+		renderingForPass = pass;
+	}
+
+	public boolean renderThis()
+	{
+		if ( renderingForPass == currentPass || noAlphaPass )
+		{
+			itemsRendered++;
+			return true;
+		}
+		return false;
+	}
 
 	@Override
 	public void normalRendering()
@@ -255,6 +290,9 @@ public class BusRenderHelper implements IPartRenderHelper
 	@Override
 	public void renderBlock(int x, int y, int z, RenderBlocks renderer)
 	{
+		if ( !renderThis() )
+			return;
+
 		AEBaseBlock blk = (AEBaseBlock) AEApi.instance().blocks().blockMultiPart.block();
 		BlockRenderInfo info = blk.getRendererInstance();
 		ForgeDirection forward = BusRenderHelper.instance.az;
@@ -285,14 +323,26 @@ public class BusRenderHelper implements IPartRenderHelper
 		bbr.renderBlockBounds( renderer, minX, minY, minZ, maxX, maxY, maxZ, ax, ay, az );
 	}
 
+	@Override
+	public void setFacesToRender(EnumSet<ForgeDirection> faces)
+	{
+		BusRenderer.instance.renderer.faces = faces;
+	}
+
 	public void renderBlockCurrentBounds(int x, int y, int z, RenderBlocks renderer)
 	{
+		if ( !renderThis() )
+			return;
+
 		renderer.renderStandardBlock( renderer.blockAccess.getBlock( x, y, z ), x, y, z );
 	}
 
 	@Override
 	public void renderFaceCutout(int x, int y, int z, IIcon ico, ForgeDirection face, float edgeThickness, RenderBlocks renderer)
 	{
+		if ( !renderThis() )
+			return;
+
 		switch (face)
 		{
 		case DOWN:
@@ -325,6 +375,9 @@ public class BusRenderHelper implements IPartRenderHelper
 	@Override
 	public void renderFace(int x, int y, int z, IIcon ico, ForgeDirection face, RenderBlocks renderer)
 	{
+		if ( !renderThis() )
+			return;
+
 		prepareBounds( renderer );
 		switch (face)
 		{
