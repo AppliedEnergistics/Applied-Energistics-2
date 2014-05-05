@@ -41,7 +41,6 @@ import appeng.api.util.DimensionalCoord;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.CableRenderHelper;
 import appeng.facade.FacadeContainer;
-import appeng.facade.IFacadeItem;
 import appeng.helpers.AEMultiTile;
 import appeng.me.GridConnection;
 import appeng.util.Platform;
@@ -141,7 +140,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	@Override
 	public boolean canAddPart(ItemStack is, ForgeDirection side)
 	{
-		if ( is.getItem() instanceof IFacadeItem )
+		if ( PartPlacement.isFacade( is, side ) != null )
 			return true;
 
 		if ( is.getItem() instanceof IPartItem )
