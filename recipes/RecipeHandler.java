@@ -25,9 +25,9 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
-import appeng.items.materials.ItemMaterial;
+import appeng.items.materials.ItemMultiMaterial;
 import appeng.items.misc.ItemCrystalSeed;
-import appeng.items.parts.ItemPart;
+import appeng.items.parts.ItemMultiPart;
 import appeng.recipes.handlers.IWebsiteSeralizer;
 import appeng.recipes.handlers.OreRegistration;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -245,10 +245,10 @@ public class RecipeHandler implements IRecipeHandler
 			default:
 			}
 		}
-		else if ( is.getItem() instanceof ItemMaterial )
-			realName += "." + ((ItemMaterial) is.getItem()).getTypeByStack( is ).name();
-		else if ( is.getItem() instanceof ItemPart )
-			realName += "." + ((ItemPart) is.getItem()).getTypeByStack( is ).name();
+		else if ( is.getItem() instanceof ItemMultiMaterial )
+			realName += "." + ((ItemMultiMaterial) is.getItem()).getTypeByStack( is ).name();
+		else if ( is.getItem() instanceof ItemMultiPart )
+			realName += "." + ((ItemMultiPart) is.getItem()).getTypeByStack( is ).name();
 		else if ( is.getItemDamage() > 0 )
 			realName += "." + is.getItemDamage();
 

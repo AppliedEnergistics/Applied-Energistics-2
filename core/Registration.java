@@ -90,11 +90,11 @@ import appeng.hooks.AETrading;
 import appeng.hooks.MeteoriteWorldGen;
 import appeng.hooks.QuartzWorldGen;
 import appeng.hooks.TickHandler;
-import appeng.items.materials.ItemMaterial;
+import appeng.items.materials.ItemMultiMaterial;
 import appeng.items.materials.MaterialType;
 import appeng.items.misc.ItemCrystalSeed;
 import appeng.items.parts.ItemFacade;
-import appeng.items.parts.ItemPart;
+import appeng.items.parts.ItemMultiPart;
 import appeng.items.parts.PartType;
 import appeng.items.storage.ItemBasicStorageCell;
 import appeng.items.storage.ItemCreativeStorageCell;
@@ -123,6 +123,8 @@ import appeng.me.cache.SecurityCache;
 import appeng.me.cache.SpatialPylonCache;
 import appeng.me.cache.TickManagerCache;
 import appeng.me.storage.AEExternalHandler;
+import appeng.migration.OldItemMaterial;
+import appeng.migration.OldItemPart;
 import appeng.parts.PartPlacement;
 import appeng.recipes.AEItemResolver;
 import appeng.recipes.RecipeHandler;
@@ -202,7 +204,7 @@ public class Registration
 		Parts parts = appeng.core.Api.instance.parts();
 		Blocks blocks = appeng.core.Api.instance.blocks();
 
-		AEItemDefinition materialItem = (AEFeatureHandler) addFeature( ItemMaterial.class );
+		AEItemDefinition materialItem = (AEFeatureHandler) addFeature( ItemMultiMaterial.class );
 
 		Class materialClass = materials.getClass();
 		for (MaterialType mat : MaterialType.values())
@@ -210,7 +212,7 @@ public class Registration
 			try
 			{
 				Field f = materialClass.getField( "material" + mat.name() );
-				ItemStackSrc is = ((ItemMaterial) materialItem.item()).createMaterial( mat );
+				ItemStackSrc is = ((ItemMultiMaterial) materialItem.item()).createMaterial( mat );
 				if ( is != null )
 					f.set( materials, new DamagedItemDefinition( is ) );
 				else
@@ -223,7 +225,7 @@ public class Registration
 			}
 		}
 
-		AEItemDefinition partItem = (AEFeatureHandler) addFeature( ItemPart.class );
+		AEItemDefinition partItem = (AEFeatureHandler) addFeature( ItemMultiPart.class );
 
 		Class partClass = parts.getClass();
 		for (PartType type : PartType.values())
@@ -234,7 +236,7 @@ public class Registration
 				Enum varients[] = type.getVarients();
 				if ( varients == null )
 				{
-					ItemStackSrc is = ((ItemPart) partItem.item()).createPart( type, null );
+					ItemStackSrc is = ((ItemMultiPart) partItem.item()).createPart( type, null );
 					if ( is != null )
 						f.set( parts, new DamagedItemDefinition( is ) );
 					else
@@ -248,7 +250,7 @@ public class Registration
 
 						for (Enum v : varients)
 						{
-							ItemStackSrc is = ((ItemPart) partItem.item()).createPart( type, v );
+							ItemStackSrc is = ((ItemMultiPart) partItem.item()).createPart( type, v );
 							if ( is != null )
 								def.add( (AEColor) v, is );
 						}
@@ -351,6 +353,12 @@ public class Registration
 
 		items.itemFacade = addFeature( ItemFacade.class );
 		items.itemCrystalSeed = addFeature( ItemCrystalSeed.class );
+
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.AlphaMigration ) )
+		{
+			GameRegistry.registerItem( new OldItemMaterial(), "item.ItemMaterial" );
+			GameRegistry.registerItem( new OldItemPart(), "item.ItemPart" );
+		}
 
 		addFeature( ToolEraser.class );
 		addFeature( ToolMeteoritePlacer.class );

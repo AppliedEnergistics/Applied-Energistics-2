@@ -39,76 +39,82 @@ import appeng.parts.reporting.PartTerminal;
 
 public enum PartType
 {
-	ToggleBus(AEFeature.Core, PartToggleBus.class),
+	CableGlass(0, AEFeature.Core, PartCableGlass.class),
 
-	InvertedToggleBus(AEFeature.Core, PartInvertedToggleBus.class),
+	CableCovered(20, AEFeature.Core, PartCableCovered.class),
 
-	CableSmart(AEFeature.Core, PartCableSmart.class), CableCovered(AEFeature.Core, PartCableCovered.class), CableGlass(AEFeature.Core, PartCableGlass.class),
+	CableSmart(40, AEFeature.Core, PartCableSmart.class),
 
-	CableDense(AEFeature.DenseCables, PartDenseCable.class),
+	CableDense(60, AEFeature.DenseCables, PartDenseCable.class),
 
-	CableAnchor(AEFeature.Core, PartCableAnchor.class),
+	ToggleBus(80, AEFeature.Core, PartToggleBus.class),
 
-	QuartzFiber(AEFeature.Core, PartQuartzFiber.class),
+	InvertedToggleBus(100, AEFeature.Core, PartInvertedToggleBus.class),
 
-	Monitor(AEFeature.Core, PartMonitor.class),
+	CableAnchor(120, AEFeature.Core, PartCableAnchor.class),
 
-	SemiDarkMonitor(AEFeature.Core, PartSemiDarkMonitor.class),
+	QuartzFiber(140, AEFeature.Core, PartQuartzFiber.class),
 
-	DarkMonitor(AEFeature.Core, PartDarkMonitor.class),
+	Monitor(160, AEFeature.Core, PartMonitor.class),
 
-	StorageBus(AEFeature.StorageBus, PartStorageBus.class),
+	SemiDarkMonitor(180, AEFeature.Core, PartSemiDarkMonitor.class),
 
-	ImportBus(AEFeature.ImportBus, PartImportBus.class),
+	DarkMonitor(200, AEFeature.Core, PartDarkMonitor.class),
 
-	ExportBus(AEFeature.ExportBus, PartExportBus.class),
+	StorageBus(220, AEFeature.StorageBus, PartStorageBus.class),
 
-	LevelEmitter(AEFeature.LevelEmiter, PartLevelEmitter.class),
+	ImportBus(240, AEFeature.ImportBus, PartImportBus.class),
 
-	AnnihilationPlane(AEFeature.AnnihilationPlane, PartAnnihilationPlane.class),
+	ExportBus(260, AEFeature.ExportBus, PartExportBus.class),
 
-	FormationPlane(AEFeature.FormationPlane, PartFormationPlane.class),
+	LevelEmitter(280, AEFeature.LevelEmiter, PartLevelEmitter.class),
 
-	P2PTunnelME(AEFeature.P2PTunnelME, PartP2PTunnelME.class, GuiText.METunnel),
+	AnnihilationPlane(300, AEFeature.AnnihilationPlane, PartAnnihilationPlane.class),
 
-	P2PTunnelRedstone(AEFeature.P2PTunnelRedstone, PartP2PRedstone.class, GuiText.RedstoneTunnel),
-
-	P2PTunnelItems(AEFeature.P2PTunnelItems, PartP2PItems.class, GuiText.ItemTunnel),
-
-	P2PTunnelLiquids(AEFeature.P2PTunnelLiquids, PartP2PLiquids.class, GuiText.FluidTunnel),
-
-	P2PTunnelMJ(AEFeature.P2PTunnelMJ, PartP2PBCPower.class, GuiText.MJTunnel),
-
-	P2PTunnelEU(AEFeature.P2PTunnelEU, PartP2PIC2Power.class, GuiText.EUTunnel),
+	FormationPlane(320, AEFeature.FormationPlane, PartFormationPlane.class),
 
 	// CraftingMonitor(AEFeature.Crafting, PartCraftingMonitor.class),
 
-	PatternTerminal(AEFeature.CraftingTerminal, PartPatternTerminal.class),
+	PatternTerminal(340, AEFeature.CraftingTerminal, PartPatternTerminal.class),
 
-	CraftingTerminal(AEFeature.CraftingTerminal, PartCraftingTerminal.class),
+	CraftingTerminal(360, AEFeature.CraftingTerminal, PartCraftingTerminal.class),
 
-	Terminal(AEFeature.Core, PartTerminal.class),
+	Terminal(380, AEFeature.Core, PartTerminal.class),
 
-	StorageMonitor(AEFeature.StorageMonitor, PartStorageMonitor.class),
+	StorageMonitor(400, AEFeature.StorageMonitor, PartStorageMonitor.class),
 
-	ConversionMonitor(AEFeature.PartConversionMonitor, PartConversionMonitor.class),
+	ConversionMonitor(420, AEFeature.PartConversionMonitor, PartConversionMonitor.class),
 
-	Interface(AEFeature.Core, PartInterface.class),
+	Interface(440, AEFeature.Core, PartInterface.class),
 
-	P2PTunnelRF(AEFeature.P2PTunnelRF, PartP2PRFPower.class, GuiText.RFTunnel);
+	P2PTunnelME(460, AEFeature.P2PTunnelME, PartP2PTunnelME.class, GuiText.METunnel),
+
+	P2PTunnelRedstone(461, AEFeature.P2PTunnelRedstone, PartP2PRedstone.class, GuiText.RedstoneTunnel),
+
+	P2PTunnelItems(462, AEFeature.P2PTunnelItems, PartP2PItems.class, GuiText.ItemTunnel),
+
+	P2PTunnelLiquids(463, AEFeature.P2PTunnelLiquids, PartP2PLiquids.class, GuiText.FluidTunnel),
+
+	P2PTunnelMJ(464, AEFeature.P2PTunnelMJ, PartP2PBCPower.class, GuiText.MJTunnel),
+
+	P2PTunnelEU(465, AEFeature.P2PTunnelEU, PartP2PIC2Power.class, GuiText.EUTunnel),
+
+	P2PTunnelRF(466, AEFeature.P2PTunnelRF, PartP2PRFPower.class, GuiText.RFTunnel);
 
 	private final EnumSet<AEFeature> features;
 	private final Class<? extends IPart> myPart;
 	private final GuiText extraName;
+	public final int baseDamage;
 
-	PartType(AEFeature part, Class<? extends IPart> c) {
-		this( part, c, null );
+	PartType(int baseMetaValue, AEFeature part, Class<? extends IPart> c) {
+		this( baseMetaValue, part, c, null );
 	}
 
-	PartType(AEFeature part, Class<? extends IPart> c, GuiText en) {
+	PartType(int baseMetaValue, AEFeature part, Class<? extends IPart> c, GuiText en) {
 		features = EnumSet.of( part );
 		myPart = c;
 		extraName = en;
+		baseDamage = baseMetaValue;
 	}
 
 	public Enum[] getVarients()

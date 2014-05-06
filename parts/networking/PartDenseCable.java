@@ -258,6 +258,7 @@ public class PartDenseCable extends PartCable
 		 * rh.setTexture( getTexture( getCableColor() ) ); }
 		 */
 
+		rh.setFacesToRender( EnumSet.complementOf( EnumSet.of( of, of.getOpposite() ) ) );
 		if ( ghh != null && ccph != null && ghh.getCableConnectionType( of ) != AECableType.GLASS && ccph.getColor() != AEColor.Transparent
 				&& ccph.getPart( of.getOpposite() ) == null )
 			rh.setTexture( getTexture( myColor = ccph.getColor() ) );
@@ -290,6 +291,7 @@ public class PartDenseCable extends PartCable
 
 		rh.renderBlock( x, y, z, renderer );
 
+		rh.setFacesToRender( EnumSet.allOf( ForgeDirection.class ) );
 		if ( !isGlass )
 		{
 			setSmartConnectionRotations( of, renderer );
@@ -300,11 +302,11 @@ public class PartDenseCable extends PartCable
 			Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
 			Tessellator.instance.setColorOpaque_I( myColor.mediumVariant );
 			rh.setTexture( defa, defa, defa, defa, defa, defa );
-			renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, renderer );
+			renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
 
 			Tessellator.instance.setColorOpaque_I( myColor.whiteVariant );
 			rh.setTexture( defb, defb, defb, defb, defb, defb );
-			renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, renderer );
+			renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
 
 			renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 		}
@@ -367,7 +369,8 @@ public class PartDenseCable extends PartCable
 			case UP:
 				renderer.setRenderBounds( 3 / 16.0, 0, 3 / 16.0, 13 / 16.0, 16 / 16.0, 13 / 16.0 );
 				rh.setTexture( def, def, off, off, off, off );
-				renderer.renderStandardBlock( rh.getBlock(), x, y, z );
+				rh.renderBlockCurrentBounds( x, y, z, renderer );
+
 				renderer.uvRotateTop = 0;
 				renderer.uvRotateBottom = 0;
 				renderer.uvRotateSouth = 3;
@@ -377,11 +380,11 @@ public class PartDenseCable extends PartCable
 
 				Tessellator.instance.setColorOpaque_I( getCableColor().mediumVariant );
 				rh.setTexture( defa, defa, offa, offa, offa, offa );
-				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, renderer );
+				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
 
 				Tessellator.instance.setColorOpaque_I( getCableColor().whiteVariant );
 				rh.setTexture( defb, defb, offb, offb, offb, offb );
-				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, renderer );
+				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
 				break;
 			case EAST:
 			case WEST:
@@ -398,17 +401,17 @@ public class PartDenseCable extends PartCable
 				ico.setFlip( false, true );
 
 				renderer.setRenderBounds( 0, 3 / 16.0, 3 / 16.0, 16 / 16.0, 13 / 16.0, 13 / 16.0 );
-				renderer.renderStandardBlock( rh.getBlock(), x, y, z );
+				rh.renderBlockCurrentBounds( x, y, z, renderer );
 
 				Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
 
 				Tessellator.instance.setColorOpaque_I( getCableColor().mediumVariant );
 				rh.setTexture( offa, offa, offa, offa, defa, defa );
-				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, renderer );
+				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
 
 				Tessellator.instance.setColorOpaque_I( getCableColor().whiteVariant );
 				rh.setTexture( offb, offb, offb, offb, defb, defb );
-				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, renderer );
+				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
 				break;
 			case NORTH:
 			case SOUTH:
@@ -419,17 +422,17 @@ public class PartDenseCable extends PartCable
 				renderer.uvRotateSouth = 2;
 				renderer.uvRotateWest = 1;
 				renderer.setRenderBounds( 3 / 16.0, 3 / 16.0, 0, 13 / 16.0, 13 / 16.0, 16 / 16.0 );
-				renderer.renderStandardBlock( rh.getBlock(), x, y, z );
+				rh.renderBlockCurrentBounds( x, y, z, renderer );
 
 				Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
 
 				Tessellator.instance.setColorOpaque_I( getCableColor().mediumVariant );
 				rh.setTexture( offa, offa, defa, defa, offa, offa );
-				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, renderer );
+				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
 
 				Tessellator.instance.setColorOpaque_I( getCableColor().whiteVariant );
 				rh.setTexture( offb, offb, defb, defb, offb, offb );
-				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, renderer );
+				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
 				break;
 			default:
 				break;

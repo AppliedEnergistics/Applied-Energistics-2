@@ -229,7 +229,7 @@ public class PartCableCovered extends PartCable
 				}
 			}
 
-			renderer.renderStandardBlock( rh.getBlock(), x, y, z );
+			rh.renderBlockCurrentBounds( x, y, z, renderer );
 		}
 
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;

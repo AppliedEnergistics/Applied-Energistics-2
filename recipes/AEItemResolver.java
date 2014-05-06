@@ -10,7 +10,7 @@ import appeng.api.util.AEColoredItemDefinition;
 import appeng.core.AppEng;
 import appeng.items.materials.MaterialType;
 import appeng.items.misc.ItemCrystalSeed;
-import appeng.items.parts.ItemPart;
+import appeng.items.parts.ItemMultiPart;
 import appeng.items.parts.PartType;
 
 public class AEItemResolver implements ISubItemResolver
@@ -88,7 +88,7 @@ public class AEItemResolver implements ISubItemResolver
 				String partName = itemName.substring( itemName.indexOf( "." ) + 1 );
 				PartType pt = PartType.valueOf( partName );
 				itemName = itemName.substring( 0, itemName.indexOf( "." ) );
-				int dVal = ItemPart.instance.getDamageByType( pt );
+				int dVal = ItemMultiPart.instance.getDamageByType( pt );
 				if ( dVal >= 0 )
 					return new ResolverResult( itemName, dVal );
 			}

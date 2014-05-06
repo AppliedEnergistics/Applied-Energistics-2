@@ -49,6 +49,11 @@ public class AEFeatureHandler implements AEItemDefinition
 	{
 		String name = o.getSimpleName();
 
+		if ( name.startsWith( "ItemMultiPart" ) )
+			name = name.replace( "ItemMultiPart", "ItemPart" );
+		else if ( name.startsWith( "ItemMultiMaterial" ) )
+			name = name.replace( "ItemMultiMaterial", "ItemMaterial" );
+
 		if ( subname != null )
 		{
 			// simple hack to allow me to do get nice names for these without
@@ -79,6 +84,11 @@ public class AEFeatureHandler implements AEItemDefinition
 			i.setCreativeTab( CreativeTabFacade.instance );
 		else
 			i.setCreativeTab( CreativeTab.instance );
+
+		if ( name.equals( "ItemMaterial" ) )
+			name = "ItemMultiMaterial";
+		else if ( name.equals( "ItemPart" ) )
+			name = "ItemMultiPart";
 
 		GameRegistry.registerItem( i, "item." + name );
 	}
