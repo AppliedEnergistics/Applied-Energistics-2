@@ -157,12 +157,6 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 	}
 
 	@Override
-	public boolean canInterface(ForgeDirection from)
-	{
-		return true;
-	}
-
-	@Override
 	public int getEnergyStored(ForgeDirection from)
 	{
 		if ( output || !isActive() )
@@ -248,5 +242,16 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 			return outputTarget;
 		}
 		return myNullHandler;
+	}
+
+	@Deprecated
+	public boolean canInterface(ForgeDirection from)
+	{
+		return true;
+	}
+
+	@Override
+	public boolean canConnectEnergy(ForgeDirection from) {
+		return true;
 	}
 }
