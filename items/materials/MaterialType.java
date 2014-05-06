@@ -49,7 +49,7 @@ public enum MaterialType
 	Cell1kPart(35, AEFeature.StorageCells), Cell4kPart(36, AEFeature.StorageCells), Cell16kPart(37, AEFeature.StorageCells), Cell64kPart(38,
 			AEFeature.StorageCells), EmptyStorageCell(39, AEFeature.StorageCells),
 
-	WoodenGear(39, AEFeature.GrindStone, "gearWood"),
+	WoodenGear(40, AEFeature.GrindStone, "gearWood"),
 
 	Wireless(41, AEFeature.WirelessAccessTerminal), WirelessBooster(42, AEFeature.WirelessAccessTerminal),
 

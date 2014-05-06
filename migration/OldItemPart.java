@@ -148,30 +148,12 @@ public class OldItemPart extends AEBaseItem implements IPartItem, IItemGroup, II
 	@Override
 	public String getUnlocalizedName(ItemStack is)
 	{
-		return "item.appliedenergistics2." + getname( is );
+		return "PART";
 	}
-
-	public String getname(ItemStack is)
-	{
-		return AEFeatureHandler.getName( OldItemPart.class, getTypeByStack( is ).name() );
-	}
-
+	
 	@Override
-	public String getItemStackDisplayName(ItemStack is)
-	{
-		OldPartType pt = getTypeByStack( is );
-		if ( pt == null )
-			return "Unnamed";
-
-		Enum[] varients = pt.getVarients();
-
-		if ( varients != null )
-			return super.getItemStackDisplayName( is ) + " - " + varients[dmgToPart.get( is.getItemDamage() ).varient].toString();
-
-		if ( pt.getExtraName() != null )
-			return super.getItemStackDisplayName( is ) + " - " + pt.getExtraName().getLocal();
-
-		return super.getItemStackDisplayName( is );
+	public String getItemStackDisplayName(ItemStack par1ItemStack) {
+		return "AE2-OLD-PART";
 	}
 
 	@Override

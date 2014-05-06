@@ -88,8 +88,6 @@ public enum OldMaterialType
 	OldMaterialType(AEFeature part, String oreDictionary, Class<? extends Entity> c) {
 		features = EnumSet.of( part );
 		oreName = oreDictionary;
-		if ( OreDictionary.getOres( oreDictionary ).size() > 0 )
-			features.add( AEFeature.DuplicateItems );
 
 		droppedEntity = c;
 		EntityRegistry.registerModEntity( droppedEntity, droppedEntity.getSimpleName(), EntityIds.get( droppedEntity ), AppEng.instance, 16, 4, true );
@@ -98,8 +96,6 @@ public enum OldMaterialType
 	OldMaterialType(AEFeature part, String oreDictionary) {
 		features = EnumSet.of( part );
 		oreName = oreDictionary;
-		if ( OreDictionary.getOres( oreDictionary ).size() > 0 )
-			features.add( AEFeature.DuplicateItems );
 	}
 
 	public ItemStack stack(int size)

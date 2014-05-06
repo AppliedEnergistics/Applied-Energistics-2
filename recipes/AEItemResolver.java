@@ -78,19 +78,19 @@ public class AEItemResolver implements ISubItemResolver
 			{
 				String materialName = itemName.substring( itemName.indexOf( "." ) + 1 );
 				MaterialType mt = MaterialType.valueOf( materialName );
-				itemName = itemName.substring( 0, itemName.indexOf( "." ) );
+				//itemName = itemName.substring( 0, itemName.indexOf( "." ) );
 				if ( mt.damageValue >= 0 )
-					return new ResolverResult( itemName, mt.damageValue );
+					return new ResolverResult( "ItemMultiMaterial", mt.damageValue );
 			}
 
 			if ( itemName.startsWith( "ItemPart." ) )
 			{
 				String partName = itemName.substring( itemName.indexOf( "." ) + 1 );
 				PartType pt = PartType.valueOf( partName );
-				itemName = itemName.substring( 0, itemName.indexOf( "." ) );
+				//itemName = itemName.substring( 0, itemName.indexOf( "." ) );
 				int dVal = ItemMultiPart.instance.getDamageByType( pt );
 				if ( dVal >= 0 )
-					return new ResolverResult( itemName, dVal );
+					return new ResolverResult( "ItemMultiPart", dVal );
 			}
 		}
 
@@ -111,6 +111,6 @@ public class AEItemResolver implements ISubItemResolver
 		}
 
 		ItemStack is = partType.stack( col, 1 );
-		return new ResolverResult( "ItemPart", is.getItemDamage() );
+		return new ResolverResult( "ItemMultiPart", is.getItemDamage() );
 	}
 }

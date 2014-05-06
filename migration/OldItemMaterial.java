@@ -150,9 +150,6 @@ public class OldItemMaterial extends AEBaseItem implements IStorageComponent, IU
 
 				dmgToMaterial.put( newMaterialNum, mat );
 
-				if ( mat.getOreName() != null )
-					OreDictionary.registerOre( mat.getOreName(), output.stack( 1 ) );
-
 				return output;
 			}
 
@@ -177,22 +174,15 @@ public class OldItemMaterial extends AEBaseItem implements IStorageComponent, IU
 		return new MissingIcon( this );
 	}
 
-	private String nameOf(ItemStack is)
-	{
-		if ( is == null )
-			return "null";
-
-		OldMaterialType mt = getTypeByStack( is );
-		if ( mt == null )
-			return "null";
-
-		return AEFeatureHandler.getName( OldItemMaterial.class, mt.name() );
-	}
-
 	@Override
 	public String getUnlocalizedName(ItemStack is)
 	{
-		return "item.appliedenergistics2." + nameOf( is );
+		return "AE2-OLD-ITEM";
+	}
+	
+	@Override
+	public String getItemStackDisplayName(ItemStack par1ItemStack) {
+		return "AE2-OLD-ITEM";
 	}
 
 	@Override
