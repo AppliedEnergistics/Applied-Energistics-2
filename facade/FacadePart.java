@@ -8,8 +8,10 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
@@ -17,6 +19,7 @@ import org.lwjgl.opengl.GL11;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.RenderBlocksWorkaround;
@@ -89,11 +92,16 @@ public class FacadePart implements IFacadePart
 			{
 				ItemStack randomItem = getTexture();
 
+				RenderBlocksWorkaround rbw = null;
+				if ( renderer instanceof RenderBlocksWorkaround )
+				{
+					rbw = (RenderBlocksWorkaround) renderer;
+				}
+
 				if ( renderStilt && busBounds == null )
 				{
-					if ( renderer instanceof RenderBlocksWorkaround )
+					if ( rbw != null )
 					{
-						RenderBlocksWorkaround rbw = (RenderBlocksWorkaround) renderer;
 						rbw.isFacade = false;
 						rbw.calculations = true;
 					}
@@ -127,6 +135,11 @@ public class FacadePart implements IFacadePart
 						ItemBlock ib = (ItemBlock) randomItem.getItem();
 						Block blk = Block.getBlockFromItem( ib );
 
+						if ( blk.canRenderInPass( 1 ) )
+						{
+							instance.renderForPass( 1 );
+						}
+
 						try
 						{
 							int color = ib.getColorFromItemStack( randomItem, 0 );
@@ -140,10 +153,8 @@ public class FacadePart implements IFacadePart
 						instance.setBounds( 0, 0, 16 - getFacadeThickness(), 16, 16, 16 );
 						instance.prepareBounds( renderer );
 
-						if ( renderer instanceof RenderBlocksWorkaround )
+						if ( rbw != null )
 						{
-							RenderBlocksWorkaround rbw = (RenderBlocksWorkaround) renderer;
-
 							rbw.isFacade = true;
 
 							rbw.calculations = true;
@@ -152,7 +163,7 @@ public class FacadePart implements IFacadePart
 							rbw.renderStandardBlock( blk, x, y, z );
 
 							rbw.calculations = false;
-							rbw.faces = EnumSet.allOf( ForgeDirection.class );
+							rbw.faces = calculateFaceOpenFaces( rbw.blockAccess, fc, x, y, z, side );
 
 							((RenderBlocksWorkaround) renderer).setTexture(
 									blk.getIcon( ForgeDirection.DOWN.ordinal(), ib.getMetadata( randomItem.getItemDamage() ) ),
@@ -248,6 +259,12 @@ public class FacadePart implements IFacadePart
 							}
 						}
 
+						if ( rbw != null )
+						{
+							rbw.faces = EnumSet.allOf( ForgeDirection.class );
+						}
+
+						instance.renderForPass( 0 );
 						instance.setTexture( null );
 						Tessellator.instance.setColorOpaque_F( 1, 1, 1 );
 
@@ -263,6 +280,63 @@ public class FacadePart implements IFacadePart
 
 			return;
 		}
+	}
+
+	private EnumSet<ForgeDirection> calculateFaceOpenFaces(IBlockAccess blockAccess, IFacadeContainer fc, int x, int y, int z, ForgeDirection side)
+	{
+		EnumSet<ForgeDirection> out = EnumSet.of( side, side.getOpposite() );
+		IFacadePart facade = fc.getFacade( side );
+
+		for (ForgeDirection it : ForgeDirection.VALID_DIRECTIONS)
+		{
+			if ( !out.contains( it ) && alphaDiff( blockAccess.getTileEntity( x + it.offsetX, y + it.offsetY, z + it.offsetZ ), side, facade ) )
+			{
+				out.add( it );
+			}
+		}
+
+		if ( out.contains( ForgeDirection.UP ) && (side.offsetX != 0 || side.offsetZ != 0) )
+		{
+			IFacadePart fp = fc.getFacade( ForgeDirection.UP );
+			if ( fp != null && (fp.isTransparent() == facade.isTransparent()) )
+				out.remove( ForgeDirection.UP );
+		}
+
+		if ( out.contains( ForgeDirection.DOWN ) && (side.offsetX != 0 || side.offsetZ != 0) )
+		{
+			IFacadePart fp = fc.getFacade( ForgeDirection.DOWN );
+			if ( fp != null && (fp.isTransparent() == facade.isTransparent()) )
+				out.remove( ForgeDirection.DOWN );
+		}
+
+		if ( out.contains( ForgeDirection.SOUTH ) && (side.offsetX != 0) )
+		{
+			IFacadePart fp = fc.getFacade( ForgeDirection.SOUTH );
+			if ( fp != null && (fp.isTransparent() == facade.isTransparent()) )
+				out.remove( ForgeDirection.SOUTH );
+		}
+
+		if ( out.contains( ForgeDirection.NORTH ) && (side.offsetX != 0) )
+		{
+			IFacadePart fp = fc.getFacade( ForgeDirection.NORTH );
+			if ( fp != null && (fp.isTransparent() == facade.isTransparent()) )
+				out.remove( ForgeDirection.NORTH );
+		}
+
+		return out;
+	}
+
+	private boolean alphaDiff(TileEntity tileEntity, ForgeDirection side, IFacadePart facade)
+	{
+		if ( tileEntity instanceof IPartHost )
+		{
+			IPartHost ph = (IPartHost) tileEntity;
+			IFacadePart fp = ph.getFacadeContainer().getFacade( side );
+
+			return fp == null || (fp.isTransparent() != facade.isTransparent());
+		}
+
+		return true;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -420,5 +494,16 @@ public class FacadePart implements IFacadePart
 	public void setThinFacades(boolean useThinFacades)
 	{
 		thickness = useThinFacades ? 1 : 2;
+	}
+
+	@Override
+	public boolean isTransparent()
+	{
+		ItemStack is = getTexture();
+		Block blk = Block.getBlockFromItem( is.getItem() );
+		if ( !blk.isOpaqueCube() )
+			return true;
+
+		return false;
 	}
 }

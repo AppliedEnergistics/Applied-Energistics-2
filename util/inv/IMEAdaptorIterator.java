@@ -11,23 +11,40 @@ public class IMEAdaptorIterator implements Iterator<ItemSlot>
 	Iterator<IAEItemStack> stack;
 	ItemSlot slot = new ItemSlot();
 	int offset = 0;
+	boolean hasNext;
 
-	public IMEAdaptorIterator(IItemList<IAEItemStack> availableItems) {
+	final IMEAdaptor parent;
+	final int containerSize;
+
+	public IMEAdaptorIterator(IMEAdaptor parent, IItemList<IAEItemStack> availableItems) {
 		stack = availableItems.iterator();
+		containerSize = parent.maxSlots;
+		this.parent = parent;
 	}
 
 	@Override
 	public boolean hasNext()
 	{
-		return stack.hasNext();
+		hasNext = stack.hasNext();
+		return offset < containerSize || hasNext;
 	}
 
 	@Override
 	public ItemSlot next()
 	{
-		IAEItemStack item = stack.next();
-		slot.setAEItemStack( item );
 		slot.slot = offset++;
+
+		if ( parent.maxSlots < offset )
+			parent.maxSlots = offset;
+
+		if ( hasNext )
+		{
+			IAEItemStack item = stack.next();
+			slot.setAEItemStack( item );
+			return slot;
+		}
+
+		slot.setItemStack( null );
 		return slot;
 	}
 

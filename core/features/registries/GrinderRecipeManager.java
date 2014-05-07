@@ -111,7 +111,7 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 				}
 			}
 
-			log( "Count not find recipe for " + Platform.getItemDisplayName( input ) );
+			log( "Could not find recipe for " + Platform.getItemDisplayName( input ) );
 		}
 
 		return null;

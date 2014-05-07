@@ -18,12 +18,6 @@ public class NullRFHandler implements IEnergyHandler
 	}
 
 	@Override
-	public boolean canInterface(ForgeDirection from)
-	{
-		return true;
-	}
-
-	@Override
 	public int getEnergyStored(ForgeDirection from)
 	{
 		return 0;
@@ -33,6 +27,17 @@ public class NullRFHandler implements IEnergyHandler
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
 		return 0;
+	}
+
+	@Deprecated
+	public boolean canInterface(ForgeDirection from)
+	{
+		return true;
+	}
+
+	@Override
+	public boolean canConnectEnergy(ForgeDirection from) {
+		return true;
 	}
 
 }

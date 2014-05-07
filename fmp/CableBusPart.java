@@ -34,11 +34,14 @@ import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
+import appeng.client.render.BusRenderHelper;
+import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.facade.IFacadeItem;
+import appeng.core.features.AEFeature;
 import appeng.helpers.AEMultiTile;
 import appeng.parts.BusCollisionHelper;
 import appeng.parts.CableBusContainer;
+import appeng.parts.PartPlacement;
 import appeng.tile.networking.TileCableBus;
 import appeng.util.Platform;
 import codechicken.lib.data.MCDataInput;
@@ -259,8 +262,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public void renderDynamic(Vector3 pos, float frame, int pass)
 	{
-		if ( pass == 0 )
+		if ( pass == 0 || (pass == 1 && AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass )) )
 		{
+			BusRenderHelper.instance.setPass( pass );
 			cb.renderDynamic( pos.x, pos.y, pos.z );
 		}
 	}
@@ -268,10 +272,11 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public boolean renderStatic(Vector3 pos, int pass)
 	{
-		if ( pass == 0 )
+		if ( pass == 0 || (pass == 1 && AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass )) )
 		{
+			BusRenderHelper.instance.setPass( pass );
 			cb.renderStatic( pos.x, pos.y, pos.z );
-			return true;
+			return BusRenderHelper.instance.getItemsRendered() > 0;
 		}
 		return false;
 	}
@@ -285,19 +290,14 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public boolean canAddPart(ItemStack is, ForgeDirection side)
 	{
-		if ( is.getItem() instanceof IFacadeItem )
+		IFacadePart fp = PartPlacement.isFacade( is, side );
+		if ( fp != null )
 		{
-			IFacadeItem bi = (IFacadeItem) is.getItem();
-
-			is = is.copy();
-			is.stackSize = 1;
-
-			IFacadePart bp = bi.createPartFromItemStack( is, side );
 			if ( !(side == null || side == ForgeDirection.UNKNOWN || tile() == null) )
 			{
 				List<AxisAlignedBB> boxes = new ArrayList();
 				IPartCollsionHelper bch = new BusCollisionHelper( boxes, side, null, true );
-				bp.getBoxes( bch );
+				fp.getBoxes( bch );
 				for (AxisAlignedBB bb : boxes)
 				{
 					disableFacadeOcclusion.set( true );
@@ -480,7 +480,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	public void markForSave()
 	{
 		// mark the chunk for save...
-		this.getTile().getWorldObj().getChunkFromBlockCoords( x(), z() ).isModified = true;
+		TileEntity te = getTile();
+		if ( te != null && te.getWorldObj() != null )
+			te.getWorldObj().getChunkFromBlockCoords( x(), z() ).isModified = true;
 	}
 
 	@Override

@@ -59,6 +59,7 @@ import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.BaseActionSource;
@@ -1522,6 +1523,33 @@ public class Platform
 		player.rotationYaw = player.prevCameraYaw = player.cameraYaw = yaw;
 	}
 
+	public static boolean canAccess(AENetworkProxy gridProxy, BaseActionSource src)
+	{
+		try
+		{
+			if ( src.isPlayer() )
+			{
+				return gridProxy.getSecurity().hasPermission( ((PlayerSource) src).player, SecurityPermissions.BUILD );
+			}
+			else if ( src.isMachine() )
+			{
+				IActionHost te = ((MachineSource) src).via;
+				IGridNode n = te.getActionableNode();
+				if ( n == null )
+					return false;
+
+				int playerID = n.getPlayerID();
+				return gridProxy.getSecurity().hasPermission( playerID, SecurityPermissions.BUILD );
+			}
+			else
+				return false;
+		}
+		catch (GridAccessException gae)
+		{
+			return false;
+		}
+	}
+
 	public static ItemStack extractItemsByRecipe(IEnergySource energySrc, BaseActionSource mySrc, IMEMonitor<IAEItemStack> src, World w, IRecipe r,
 			ItemStack output, InventoryCrafting ci, ItemStack providedTemplate, int slot, IItemList<IAEItemStack> aitems)
 	{
@@ -1570,29 +1598,6 @@ public class Platform
 
 		}
 		return null;
-	}
-
-	public static boolean canAccess(AENetworkProxy gridProxy, BaseActionSource src)
-	{
-		try
-		{
-			if ( src.isPlayer() )
-			{
-				return gridProxy.getSecurity().hasPermission( ((PlayerSource) src).player, SecurityPermissions.BUILD );
-			}
-			else if ( src.isMachine() )
-			{
-				IActionHost te = ((MachineSource) src).via;
-				int playerID = te.getActionableNode().getPlayerID();
-				return gridProxy.getSecurity().hasPermission( playerID, SecurityPermissions.BUILD );
-			}
-			else
-				return false;
-		}
-		catch (GridAccessException gae)
-		{
-			return false;
-		}
 	}
 
 }

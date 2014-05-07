@@ -18,6 +18,7 @@ public class IMEAdaptor extends InventoryAdaptor
 
 	IMEInventory<IAEItemStack> target;
 	BaseActionSource src;
+	int maxSlots = 0;
 
 	public IMEAdaptor(IMEInventory<IAEItemStack> input, BaseActionSource src) {
 		target = input;
@@ -32,7 +33,7 @@ public class IMEAdaptor extends InventoryAdaptor
 	@Override
 	public Iterator<ItemSlot> iterator()
 	{
-		return new IMEAdaptorIterator( getList() );
+		return new IMEAdaptorIterator( this, getList() );
 	}
 
 	public ItemStack doRemoveItemsFuzzy(int how_many, ItemStack Filter, IInventoryDestination destination, Actionable type, FuzzyMode fuzzyMode)

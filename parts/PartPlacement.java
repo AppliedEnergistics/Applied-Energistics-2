@@ -377,16 +377,18 @@ public class PartPlacement
 		return true;
 	}
 
-	private static IFacadePart isFacade(ItemStack held, ForgeDirection side)
+	public static IFacadePart isFacade(ItemStack held, ForgeDirection side)
 	{
 		if ( held.getItem() instanceof IFacadeItem )
 			return ((IFacadeItem) held.getItem()).createPartFromItemStack( held, side );
+
 		if ( AppEng.instance.isIntegrationEnabled( "BC" ) )
 		{
 			IBC bc = (IBC) AppEng.instance.getIntegration( "BC" );
 			if ( bc.isFacade( held ) )
 				return bc.createFacadePart( held, side );
 		}
+
 		return null;
 	}
 

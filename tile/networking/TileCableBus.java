@@ -26,6 +26,7 @@ import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
+import appeng.block.networking.BlockCableBus;
 import appeng.helpers.AEMultiTile;
 import appeng.helpers.ICustomCollision;
 import appeng.hooks.TickHandler;
@@ -74,6 +75,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 				// worldObj.updateAllLightTypes( xCoord, yCoord, zCoord );
 			}
 
+			updateTileSetting();
 			return ret;
 		}
 
@@ -84,6 +86,32 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		}
 
 	};
+
+	protected void updateTileSetting()
+	{
+		if ( cb.requiresDynamicRender )
+		{
+			TileCableBus tcb;
+			try
+			{
+				tcb = (TileCableBus) BlockCableBus.tesrTile.newInstance();
+				tcb.copyFrom( this );
+				getWorldObj().setTileEntity( xCoord, yCoord, zCoord, tcb );
+			}
+			catch (Throwable t)
+			{
+
+			}
+		}
+	}
+
+	protected void copyFrom(TileCableBus oldTile)
+	{
+		CableBusContainer tmpCB = cb;
+		cb = oldTile.cb;
+		oldLV = oldTile.oldLV;
+		oldTile.cb = tmpCB;
+	}
 
 	@Override
 	public void onReady()
@@ -126,6 +154,12 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	public boolean canBeRotated()
 	{
 		return false;
+	}
+
+	@Override
+	public double getMaxRenderDistanceSquared()
+	{
+		return 900.0;
 	}
 
 	@Override

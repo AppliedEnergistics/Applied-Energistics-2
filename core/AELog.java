@@ -40,7 +40,10 @@ public class AELog
 
 	public static void grinder(String o)
 	{
-		log( Level.DEBUG, "grinder: " + o );
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.GrinderLogging ) )
+		{
+			log( Level.DEBUG, "grinder: " + o );
+		}
 	}
 
 	public static void error(Throwable e)

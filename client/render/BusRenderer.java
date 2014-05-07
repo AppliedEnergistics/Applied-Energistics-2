@@ -10,10 +10,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
+import appeng.api.parts.IAlphaPassItem;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.client.ClientHelper;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 import appeng.facade.IFacadeItem;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
@@ -63,11 +66,24 @@ public class BusRenderer implements IItemRenderer
 
 		GL11.glPushMatrix();
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
-		GL11.glEnable( GL11.GL_ALPHA_TEST );
 		GL11.glEnable( GL11.GL_DEPTH_TEST );
 		GL11.glEnable( GL11.GL_TEXTURE_2D );
 		GL11.glEnable( GL11.GL_LIGHTING );
-		GL11.glDisable( GL11.GL_BLEND );
+
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass ) && item.getItem() instanceof IAlphaPassItem
+				&& ((IAlphaPassItem) item.getItem()).useAlphaPass( item ) )
+		{
+			GL11.glBlendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA );
+			GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+			GL11.glDisable( GL11.GL_ALPHA_TEST );
+			GL11.glEnable( GL11.GL_BLEND );
+		}
+		else
+		{
+			GL11.glAlphaFunc( GL11.GL_GREATER, 0.4f );
+			GL11.glEnable( GL11.GL_ALPHA_TEST );
+			GL11.glDisable( GL11.GL_BLEND );
+		}
 
 		if ( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
 		{
@@ -79,7 +95,6 @@ public class BusRenderer implements IItemRenderer
 			GL11.glRotatef( 90.0f, 0.0f, 1.0f, 0.0f );
 			GL11.glScalef( 0.8f, 0.8f, 0.8f );
 			GL11.glTranslatef( -0.8f, -0.87f, -0.7f );
-
 		}
 
 		if ( type == ItemRenderType.INVENTORY )
