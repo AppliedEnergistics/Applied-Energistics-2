@@ -34,6 +34,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
 import appeng.container.AEBaseContainer;
+import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.core.AELog;
@@ -54,7 +55,10 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	IConfigManager serverCM;
 	IConfigManager clientCM;
 
+	@GuiSync(99)
 	public boolean canAccessViewCells = false;
+
+	@GuiSync(98)
 	public boolean hasPower = false;
 
 	public SlotRestrictedInput cellView[] = new SlotRestrictedInput[5];
@@ -203,12 +207,6 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 					if ( cellView[y] != null )
 						cellView[y].allowEdit = canAccessViewCells;
 				}
-
-				for (Object c : this.crafters)
-				{
-					if ( c instanceof ICrafting )
-						((ICrafting) c).sendProgressBarUpdate( this, 99, canAccessViewCells ? 1 : 0 );
-				}
 			}
 
 			super.detectAndSendChanges();
@@ -217,7 +215,6 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 
 	protected void updatePowerStatus()
 	{
-		boolean oldHasPower = hasPower;
 		try
 		{
 			if ( networkNode != null )
@@ -231,19 +228,6 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		{
 			// :P
 		}
-
-		if ( hasPower != oldHasPower )
-		{
-			for (Object c : this.crafters)
-			{
-				if ( c instanceof ICrafting )
-				{
-					ICrafting cr = (ICrafting) c;
-					cr.sendProgressBarUpdate( this, 98, hasPower ? 1 : 0 );
-				}
-			}
-		}
-
 	}
 
 	@Override
@@ -301,19 +285,16 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
-	public void updateProgressBar(int idx, int value)
+	public void onUpdate(String field, Object oldValue, Object newValue)
 	{
-		super.updateProgressBar( idx, value );
+		if ( field.equals( "canAccessViewCells" ) )
+		{
+			for (int y = 0; y < 5; y++)
+				if ( cellView[y] != null )
+					cellView[y].allowEdit = canAccessViewCells;
+		}
 
-		if ( idx == 98 )
-			hasPower = value == 1;
-
-		if ( idx == 99 )
-			canAccessViewCells = value == 1;
-
-		for (int y = 0; y < 5; y++)
-			if ( cellView[y] != null )
-				cellView[y].allowEdit = canAccessViewCells;
+		super.onUpdate( field, oldValue, newValue );
 	}
 
 	@Override

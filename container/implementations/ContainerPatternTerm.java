@@ -6,7 +6,6 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
@@ -26,6 +25,7 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
+import appeng.container.guisync.GuiSync;
 import appeng.container.slot.IOptionalSlotHost;
 import appeng.container.slot.OptionalSlotFake;
 import appeng.container.slot.SlotFake;
@@ -57,7 +57,6 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	SlotRestrictedInput patternSlotOUT;
 
 	public PartPatternTerminal ct;
-	public boolean craftingMode = true;
 
 	public ContainerPatternTerm(InventoryPlayer ip, ITerminalHost montiorable) {
 		super( ip, montiorable, false );
@@ -133,6 +132,9 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		return is;
 	}
 
+	@GuiSync(97)
+	public boolean craftingMode = true;
+
 	@Override
 	public void detectAndSendChanges()
 	{
@@ -143,23 +145,15 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			{
 				craftingMode = ct.craftingMode;
 				updateOrderOfOutputSlots();
-
-				for (Object c : this.crafters)
-				{
-					if ( c instanceof ICrafting )
-						((ICrafting) c).sendProgressBarUpdate( this, 97, craftingMode ? 1 : 0 );
-				}
 			}
 		}
 	}
 
 	@Override
-	public void updateProgressBar(int idx, int value)
+	public void onUpdate(String field, Object oldValue, Object newValue)
 	{
-		super.updateProgressBar( idx, value );
-		if ( idx == 97 )
+		if ( field.equals( "craftingMode" ) )
 		{
-			craftingMode = value == 1;
 			getAndUpdateOutput();
 			updateOrderOfOutputSlots();
 		}

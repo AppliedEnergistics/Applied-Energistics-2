@@ -1,13 +1,13 @@
 package appeng.container.implementations;
 
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
+import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
@@ -18,8 +18,11 @@ public class ContainerIOPort extends ContainerUpgradeable
 {
 
 	TileIOPort ioPort;
-	public OperationMode opMode = OperationMode.EMPTY;
+
+	@GuiSync(2)
 	public FullnessMode fMode = FullnessMode.EMPTY;
+	@GuiSync(3)
+	public OperationMode opMode = OperationMode.EMPTY;
 
 	public ContainerIOPort(InventoryPlayer ip, TileIOPort te) {
 		super( ip, te );
@@ -75,44 +78,12 @@ public class ContainerIOPort extends ContainerUpgradeable
 
 		if ( Platform.isServer() )
 		{
-			for (int i = 0; i < this.crafters.size(); ++i)
-			{
-				ICrafting icrafting = (ICrafting) this.crafters.get( i );
-
-				if ( this.rsMode != this.myte.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED ) )
-				{
-					icrafting.sendProgressBarUpdate( this, 0, (int) this.myte.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED ).ordinal() );
-				}
-
-				if ( this.fMode != this.myte.getConfigManager().getSetting( Settings.FULLNESS_MODE ) )
-				{
-					icrafting.sendProgressBarUpdate( this, 2, (int) this.myte.getConfigManager().getSetting( Settings.FULLNESS_MODE ).ordinal() );
-				}
-
-				if ( this.opMode != this.myte.getConfigManager().getSetting( Settings.OPERATION_MODE ) )
-				{
-					icrafting.sendProgressBarUpdate( this, 3, (int) this.myte.getConfigManager().getSetting( Settings.OPERATION_MODE ).ordinal() );
-				}
-			}
-
 			this.opMode = (OperationMode) myte.getConfigManager().getSetting( Settings.OPERATION_MODE );
 			this.fMode = (FullnessMode) this.myte.getConfigManager().getSetting( Settings.FULLNESS_MODE );
 			this.rsMode = (RedstoneMode) this.myte.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
 		}
 
 		standardDetectAndSendChanges();
-	}
-
-	@Override
-	public void updateProgressBar(int idx, int value)
-	{
-		super.updateProgressBar( idx, value );
-
-		if ( idx == 2 )
-			this.fMode = FullnessMode.values()[value];
-
-		if ( idx == 3 )
-			this.opMode = OperationMode.values()[value];
 	}
 
 }

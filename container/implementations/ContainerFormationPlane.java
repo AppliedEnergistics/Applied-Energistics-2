@@ -1,7 +1,6 @@
 package appeng.container.implementations;
 
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.SecurityPermissions;
@@ -83,30 +82,10 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 
 		if ( Platform.isServer() )
 		{
-			for (int i = 0; i < this.crafters.size(); ++i)
-			{
-				ICrafting icrafting = (ICrafting) this.crafters.get( i );
-
-				if ( this.fzMode != this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE ) )
-				{
-					icrafting.sendProgressBarUpdate( this, 4, (int) this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE ).ordinal() );
-				}
-			}
-
 			this.fzMode = (FuzzyMode) this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE );
 		}
 
 		standardDetectAndSendChanges();
-	}
-
-	@Override
-	public void updateProgressBar(int idx, int value)
-	{
-		super.updateProgressBar( idx, value );
-
-		if ( idx == 4 )
-			this.fzMode = FuzzyMode.values()[value];
-
 	}
 
 }

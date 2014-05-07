@@ -1,13 +1,13 @@
 package appeng.container.implementations;
 
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OptionalSlotFakeTypeOnly;
 import appeng.container.slot.SlotFakeTypeOnly;
 import appeng.container.slot.SlotRestrictedInput;
@@ -19,6 +19,8 @@ public class ContainerStorageBus extends ContainerUpgradeable
 {
 
 	PartStorageBus storageBus;
+
+	@GuiSync(3)
 	public AccessRestriction rwMode = AccessRestriction.READ_WRITE;
 
 	public ContainerStorageBus(InventoryPlayer ip, PartStorageBus te) {
@@ -85,39 +87,11 @@ public class ContainerStorageBus extends ContainerUpgradeable
 
 		if ( Platform.isServer() )
 		{
-			for (int i = 0; i < this.crafters.size(); ++i)
-			{
-				ICrafting icrafting = (ICrafting) this.crafters.get( i );
-
-				if ( this.rwMode != this.myte.getConfigManager().getSetting( Settings.ACCESS ) )
-				{
-					icrafting.sendProgressBarUpdate( this, 3, (int) this.myte.getConfigManager().getSetting( Settings.ACCESS ).ordinal() );
-				}
-
-				if ( this.fzMode != this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE ) )
-				{
-					icrafting.sendProgressBarUpdate( this, 4, (int) this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE ).ordinal() );
-				}
-			}
-
 			this.fzMode = (FuzzyMode) this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE );
 			this.rwMode = (AccessRestriction) this.myte.getConfigManager().getSetting( Settings.ACCESS );
 		}
 
 		standardDetectAndSendChanges();
-	}
-
-	@Override
-	public void updateProgressBar(int idx, int value)
-	{
-		super.updateProgressBar( idx, value );
-
-		if ( idx == 3 )
-			this.rwMode = AccessRestriction.values()[value];
-
-		if ( idx == 4 )
-			this.fzMode = FuzzyMode.values()[value];
-
 	}
 
 }

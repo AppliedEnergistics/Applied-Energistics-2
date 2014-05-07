@@ -570,6 +570,10 @@ public class Registration
 		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemMassCannon.stack( 1 ), 1 );
 		Upgrades.SPEED.registerItem( AEApi.instance().items().itemMassCannon.stack( 1 ), 4 );
 
+		// molecular assembler
+		Upgrades.REDSTONE.registerItem( AEApi.instance().blocks().blockMolecularAssembler.stack( 1 ), 1 );
+		Upgrades.SPEED.registerItem( AEApi.instance().blocks().blockMolecularAssembler.stack( 1 ), 5 );
+
 		AEApi.instance().registries().wireless().registerWirelessHandler( (IWirelessTermHandler) AEApi.instance().items().itemWirelessTerminal.item() );
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.ChestLoot ) )

@@ -83,8 +83,8 @@ public class GuiCondenser extends AEBaseGui
 		mode.set( cvc.output );
 		mode.FillVar = "" + cvc.output.requiredPower;
 
-		pb.max = cvc.requiredEnergy;
-		pb.current = cvc.storedPower;
+		pb.max = (int) cvc.requiredEnergy;
+		pb.current = (int) cvc.storedPower;
 	}
 
 }

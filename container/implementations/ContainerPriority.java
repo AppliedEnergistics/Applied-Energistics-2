@@ -3,11 +3,11 @@ package appeng.container.implementations;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
 import net.minecraft.tileentity.TileEntity;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPart;
 import appeng.container.AEBaseContainer;
+import appeng.container.guisync.GuiSync;
 import appeng.helpers.IPriorityHost;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
@@ -33,7 +33,8 @@ public class ContainerPriority extends AEBaseContainer
 		priHost = te;
 	}
 
-	int PriorityValue = -1;
+	@GuiSync(2)
+	long PriorityValue = -1;
 
 	public void setPriority(int newValue, EntityPlayer player)
 	{
@@ -48,31 +49,19 @@ public class ContainerPriority extends AEBaseContainer
 
 		if ( Platform.isServer() )
 		{
-			for (int i = 0; i < this.crafters.size(); ++i)
-			{
-				ICrafting icrafting = (ICrafting) this.crafters.get( i );
-
-				if ( this.PriorityValue != priHost.getPriority() )
-				{
-					icrafting.sendProgressBarUpdate( this, 2, (int) priHost.getPriority() );
-				}
-			}
-
-			this.PriorityValue = (int) priHost.getPriority();
+			this.PriorityValue = priHost.getPriority();
 		}
 	}
 
 	@Override
-	public void updateProgressBar(int idx, int value)
+	public void onUpdate(String field, Object oldValue, Object newValue)
 	{
-		super.updateProgressBar( idx, value );
-
-		if ( idx == 2 )
+		if ( field.equals( "PriorityValue" ) )
 		{
-			PriorityValue = value;
 			if ( textField != null )
 				textField.setText( "" + PriorityValue );
 		}
-	}
 
+		super.onUpdate( field, oldValue, newValue );
+	}
 }

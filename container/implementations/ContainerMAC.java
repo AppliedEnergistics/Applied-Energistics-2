@@ -1,7 +1,6 @@
 package appeng.container.implementations;
 
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -99,26 +98,10 @@ public class ContainerMAC extends ContainerUpgradeable
 
 		if ( Platform.isServer() )
 		{
-			for (int i = 0; i < this.crafters.size(); ++i)
-			{
-				ICrafting icrafting = (ICrafting) this.crafters.get( i );
-
-				if ( this.rsMode != this.myte.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED ) )
-				{
-					icrafting.sendProgressBarUpdate( this, 0, (int) this.myte.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED ).ordinal() );
-				}
-			}
-
 			this.rsMode = (RedstoneMode) this.myte.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
 		}
 
 		standardDetectAndSendChanges();
-	}
-
-	@Override
-	public void updateProgressBar(int idx, int value)
-	{
-		super.updateProgressBar( idx, value );
 	}
 
 }

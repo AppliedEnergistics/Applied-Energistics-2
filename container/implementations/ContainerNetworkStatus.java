@@ -5,7 +5,6 @@ import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
@@ -18,10 +17,9 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
-import appeng.core.AELog;
+import appeng.container.guisync.GuiSync;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
-import appeng.core.sync.packets.PacketProgressBar;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
@@ -57,26 +55,14 @@ public class ContainerNetworkStatus extends AEBaseContainer
 
 	int delay = 40;
 
+	@GuiSync(0)
 	public long avgAddition;
+	@GuiSync(1)
 	public long powerUsage;
+	@GuiSync(2)
 	public long currentPower;
+	@GuiSync(3)
 	public long maxPower;
-
-	@Override
-	public void updateFullProgressBar(int id, long value)
-	{
-		if ( id == 0 )
-			avgAddition = value;
-
-		if ( id == 1 )
-			powerUsage = value;
-
-		if ( id == 2 )
-			currentPower = value;
-
-		if ( id == 3 )
-			maxPower = value;
-	}
 
 	@Override
 	public void detectAndSendChanges()
@@ -93,22 +79,6 @@ public class ContainerNetworkStatus extends AEBaseContainer
 				powerUsage = (long) (100.0 * eg.getAvgPowerUsage());
 				currentPower = (long) (100.0 * eg.getStoredPower());
 				maxPower = (long) (100.0 * eg.getMaxStoredPower());
-
-				for (Object c : this.crafters)
-				{
-					ICrafting icrafting = (ICrafting) c;
-					try
-					{
-						NetworkHandler.instance.sendTo( new PacketProgressBar( 0, avgAddition ), (EntityPlayerMP) icrafting );
-						NetworkHandler.instance.sendTo( new PacketProgressBar( 1, powerUsage ), (EntityPlayerMP) icrafting );
-						NetworkHandler.instance.sendTo( new PacketProgressBar( 2, currentPower ), (EntityPlayerMP) icrafting );
-						NetworkHandler.instance.sendTo( new PacketProgressBar( 3, maxPower ), (EntityPlayerMP) icrafting );
-					}
-					catch (IOException e)
-					{
-						AELog.error( e );
-					}
-				}
 			}
 
 			PacketMEInventoryUpdate piu;

@@ -1,7 +1,6 @@
 package appeng.container.implementations;
 
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -14,6 +13,7 @@ import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.parts.IPart;
 import appeng.container.AEBaseContainer;
+import appeng.container.guisync.GuiSync;
 import appeng.container.slot.IOptionalSlotHost;
 import appeng.container.slot.OptionalSlotFake;
 import appeng.container.slot.OptionalSlotFakeTypeOnly;
@@ -23,8 +23,6 @@ import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.items.contents.NetworkToolViewer;
 import appeng.items.tools.ToolNetworkTool;
 import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSlotHost
 {
@@ -133,7 +131,10 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		return true;
 	}
 
+	@GuiSync(0)
 	public RedstoneMode rsMode = RedstoneMode.IGNORE;
+
+	@GuiSync(1)
 	public FuzzyMode fzMode = FuzzyMode.IGNORE_ALL;
 
 	public void checkToolbox()
@@ -164,21 +165,6 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 
 		if ( Platform.isServer() )
 		{
-			for (int i = 0; i < this.crafters.size(); ++i)
-			{
-				ICrafting icrafting = (ICrafting) this.crafters.get( i );
-
-				if ( this.rsMode != this.myte.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED ) )
-				{
-					icrafting.sendProgressBarUpdate( this, 0, (int) this.myte.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED ).ordinal() );
-				}
-
-				if ( this.fzMode != this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE ) )
-				{
-					icrafting.sendProgressBarUpdate( this, 1, (int) this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE ).ordinal() );
-				}
-			}
-
 			this.fzMode = (FuzzyMode) this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE );
 			this.rsMode = (RedstoneMode) this.myte.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
 		}
@@ -201,19 +187,6 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	protected void standardDetectAndSendChanges()
 	{
 		super.detectAndSendChanges();
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void updateProgressBar(int idx, int value)
-	{
-
-		if ( idx == 0 )
-			this.rsMode = RedstoneMode.values()[value];
-
-		if ( idx == 1 )
-			this.fzMode = FuzzyMode.values()[value];
-
 	}
 
 	public boolean hasToolbox()

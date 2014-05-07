@@ -26,7 +26,6 @@ public class GuiMAC extends GuiUpgradeable
 	public GuiMAC(InventoryPlayer inventoryPlayer, TileMolecularAssembler te) {
 		super( new ContainerMAC( inventoryPlayer, te ) );
 		this.ySize = 197;
-		this.xSize = 211;
 	}
 
 	protected GuiText getName()

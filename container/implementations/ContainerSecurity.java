@@ -12,6 +12,7 @@ import appeng.api.features.INetworkEncodable;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.storage.ITerminalHost;
+import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
@@ -19,7 +20,6 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.tile.misc.TileSecurity;
-import appeng.util.Platform;
 
 public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppEngInventory
 {
@@ -46,6 +46,7 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 		bindPlayerInventory( ip, 0, 0 );
 	}
 
+	@GuiSync(0)
 	public int security = 0;
 
 	@Override
@@ -83,20 +84,11 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 	}
 
 	@Override
-	public void updateProgressBar(int key, int value)
-	{
-		super.updateProgressBar( key, value );
-
-		if ( key == 0 )
-			security = value;
-	}
-
-	@Override
 	public void detectAndSendChanges()
 	{
 		verifyPermissions( SecurityPermissions.SECURITY, false );
 
-		int newSecurity = 0;
+		security = 0;
 
 		ItemStack a = configSlot.getStack();
 		if ( a != null && a.getItem() instanceof IBiometricCard )
@@ -104,25 +96,10 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 			IBiometricCard bc = (IBiometricCard) a.getItem();
 
 			for (SecurityPermissions sp : bc.getPermissions( a ))
-				newSecurity = newSecurity | (1 << sp.ordinal());
+				security = security | (1 << sp.ordinal());
 		}
 
 		updatePowerStatus();
-
-		if ( newSecurity != security )
-		{
-			if ( Platform.isServer() )
-			{
-				for (int i = 0; i < this.crafters.size(); ++i)
-				{
-					ICrafting icrafting = (ICrafting) this.crafters.get( i );
-
-					icrafting.sendProgressBarUpdate( this, 0, newSecurity );
-				}
-			}
-
-			security = newSecurity;
-		}
 
 		super.detectAndSendChanges();
 	}

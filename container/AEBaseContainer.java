@@ -1,7 +1,9 @@
 package appeng.container;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -31,6 +34,8 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.me.InternalSlotME;
 import appeng.client.me.SlotME;
+import appeng.container.guisync.GuiSync;
+import appeng.container.guisync.SyncDat;
 import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.SlotCraftingMatrix;
 import appeng.container.slot.SlotCraftingTerm;
@@ -142,6 +147,7 @@ public abstract class AEBaseContainer extends Container
 		tileEntity = myTile;
 		part = myPart;
 		mySrc = new PlayerSource( ip.player, (IActionHost) (myTile instanceof IActionHost ? myTile : (myPart instanceof IActionHost ? myPart : null)) );
+		prepareSync();
 	}
 
 	public boolean canDragIntoSlot(Slot s)
@@ -417,11 +423,61 @@ public abstract class AEBaseContainer extends Container
 		detectAndSendChanges();
 	}
 
+	HashMap<Integer, SyncDat> syncData = new HashMap<Integer, SyncDat>();
+
 	@Override
 	public void detectAndSendChanges()
 	{
 		sendCustomName();
+
+		if ( Platform.isServer() )
+		{
+			for (int i = 0; i < this.crafters.size(); ++i)
+			{
+				ICrafting icrafting = (ICrafting) this.crafters.get( i );
+
+				for (SyncDat sd : syncData.values())
+					sd.tick( icrafting );
+			}
+		}
+
 		super.detectAndSendChanges();
+	}
+
+	final public void updateProgressBar(int idx, int value)
+	{
+		if ( syncData.containsKey( idx ) )
+		{
+			syncData.get( idx ).update( value );
+			return;
+		}
+
+	}
+
+	final public void updateFullProgressBar(int idx, long value)
+	{
+		if ( syncData.containsKey( idx ) )
+		{
+			syncData.get( idx ).update( value );
+			return;
+		}
+
+		updateProgressBar( idx, (int) value );
+	}
+
+	private void prepareSync()
+	{
+		for (Field f : getClass().getFields())
+		{
+			if ( f.isAnnotationPresent( GuiSync.class ) )
+			{
+				GuiSync anno = f.getAnnotation( GuiSync.class );
+				if ( syncData.containsKey( anno.value() ) )
+					AELog.warning( "Channel already in use: " + anno.value() + " for " + f.getName() );
+				else
+					syncData.put( anno.value(), new SyncDat( this, f, anno ) );
+			}
+		}
 	}
 
 	protected void sendCustomName()
@@ -744,11 +800,6 @@ public abstract class AEBaseContainer extends Container
 		}
 	}
 
-	public void updateFullProgressBar(int id, long value)
-	{
-		updateProgressBar( id, (int) value );
-	}
-
 	protected void updateHeld(EntityPlayerMP p)
 	{
 		try
@@ -823,5 +874,10 @@ public abstract class AEBaseContainer extends Container
 
 		a.putStack( testA );
 		b.putStack( testB );
+	}
+
+	public void onUpdate(String field, Object oldValue, Object newValue)
+	{
+
 	}
 }
