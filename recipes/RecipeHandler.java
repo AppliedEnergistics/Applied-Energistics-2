@@ -361,6 +361,10 @@ public class RecipeHandler implements IRecipeHandler
 				}
 
 			}
+
+			if ( token.length() > 0 )
+				tokens.add( token );
+
 			reader.close();
 			processTokens( loader, path, line );
 		}
