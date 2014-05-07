@@ -24,6 +24,11 @@ public class ContainerMAC extends ContainerUpgradeable
 		super( ip, te );
 	}
 
+	public int availableUpgrades()
+	{
+		return 5;
+	}
+
 	@Override
 	protected int getHeight()
 	{
