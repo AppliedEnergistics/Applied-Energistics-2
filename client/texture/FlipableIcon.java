@@ -10,10 +10,10 @@ public class FlipableIcon implements IIcon
 	boolean flip_v;
 
 	public FlipableIcon(IIcon o) {
-		
+
 		if ( o == null )
-			throw new RuntimeException("Cannot create a wrapper icon with a null icon.");
-		
+			throw new RuntimeException( "Cannot create a wrapper icon with a null icon." );
+
 		original = o;
 		flip_u = false;
 		flip_v = false;
