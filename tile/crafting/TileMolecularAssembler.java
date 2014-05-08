@@ -2,17 +2,28 @@ package appeng.tile.crafting;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.api.crafting.ICraftingPatternDetails;
 import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
+import appeng.container.ContainerNull;
+import appeng.items.misc.ItemEncodedPattern;
+import appeng.me.GridAccessException;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
@@ -22,16 +33,74 @@ import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
+import appeng.util.InventoryAdaptor;
+import appeng.util.Platform;
 
-public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEngInventory, ISidedInventory, IUpgradeableHost, IConfigManagerHost
+public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEngInventory, ISidedInventory, IUpgradeableHost, IConfigManagerHost,
+		IGridTickable
 {
 
 	static final int[] sides = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 	static final ItemStack is = AEApi.instance().blocks().blockMolecularAssembler.stack( 1 );
 
+	private InventoryCrafting craftingInv = new InventoryCrafting( new ContainerNull(), 3, 3 );
 	private AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 + 2 );
 	private IConfigManager settings = new ConfigManager( this );
 	private UpgradeInventory upgrades = new UpgradeInventory( is, this, getUpgradeSlots() );
+
+	private ForgeDirection pushDirection = ForgeDirection.UNKNOWN;
+	private ItemStack myPattern = null;
+	private ICraftingPatternDetails myPlan = null;
+	private int progress = 0;
+	private boolean isAwake = false;
+
+	public boolean pushPattern(ItemStack pattern, ICraftingPatternDetails patternDetails, InventoryCrafting table, ForgeDirection where)
+	{
+		return false;
+	}
+
+	private void recalculatePlan()
+	{
+		ItemStack is = inv.getStackInSlot( 10 );
+
+		boolean wasEnabled = isAwake;
+
+		if ( is != null && is.getItem() instanceof ItemEncodedPattern )
+		{
+			if ( !Platform.isSameItem( is, myPattern ) )
+			{
+				World w = getWorldObj();
+				ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
+				ICraftingPatternDetails ph = iep.getPatternForItem( is, w );
+
+				progress = 0;
+				myPattern = is;
+				myPlan = ph;
+			}
+		}
+		else
+		{
+			progress = 0;
+			myPlan = null;
+			myPattern = null;
+		}
+
+		isAwake = myPlan != null && hasMats();
+		if ( wasEnabled != isAwake )
+		{
+			try
+			{
+				if ( isAwake )
+					gridProxy.getTick().wakeDevice( gridProxy.getNode() );
+				else
+					gridProxy.getTick().sleepDevice( gridProxy.getNode() );
+			}
+			catch (GridAccessException e)
+			{
+				// :P
+			}
+		}
+	}
 
 	@Override
 	public int getInstalledUpgrades(Upgrades u)
@@ -65,6 +134,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 			upgrades.readFromNBT( data, "upgrades" );
 			inv.readFromNBT( data, "inv" );
 			settings.readFromNBT( data );
+			recalculatePlan();
 		}
 
 	};
@@ -82,16 +152,14 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 			return false;
 
 		if ( hasPattern() )
-		{
-
-		}
+			return myPlan.isValidItemForSlot( i, itemstack, getWorldObj() );
 
 		return false;
 	}
 
 	private boolean hasPattern()
 	{
-		return false;
+		return myPlan != null && inv.getStackInSlot( 10 ) != null;
 	}
 
 	@Override
@@ -109,7 +177,8 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 	@Override
 	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added)
 	{
-
+		if ( inv == this.inv )
+			recalculatePlan();
 	}
 
 	@Override
@@ -154,9 +223,99 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 
 	}
 
-	public int getCraftingProgress()
+	@Override
+	public int getInventoryStackLimit()
 	{
-		return 0;
+		return 1;
 	}
 
+	public int getCraftingProgress()
+	{
+		return progress;
+	}
+
+	@Override
+	public TickingRequest getTickingRequest(IGridNode node)
+	{
+		return new TickingRequest( 1, 5, isAwake = hasPattern() && hasMats(), false );
+	}
+
+	private boolean hasMats()
+	{
+		if ( myPlan == null )
+			return false;
+
+		for (int x = 0; x < craftingInv.getSizeInventory(); x++)
+			craftingInv.setInventorySlotContents( x, inv.getStackInSlot( x ) );
+
+		return myPlan.getOutput( craftingInv, getWorldObj() ) != null;
+	}
+
+	@Override
+	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
+	{
+		if ( inv.getStackInSlot( 9 ) != null )
+		{
+			pushOut( inv.getStackInSlot( 9 ) );
+			return inv.getStackInSlot( 9 ) == null ? TickRateModulation.SLEEP : TickRateModulation.IDLE;
+		}
+
+		if ( myPlan == null )
+		{
+			isAwake = false;
+			return TickRateModulation.SLEEP;
+		}
+
+		progress += TicksSinceLastCall;
+
+		if ( progress >= 100 )
+		{
+			for (int x = 0; x < craftingInv.getSizeInventory(); x++)
+				craftingInv.setInventorySlotContents( x, inv.getStackInSlot( x ) );
+
+			ItemStack output = myPlan.getOutput( craftingInv, getWorldObj() );
+			if ( output != null )
+			{
+				for (int x = 0; x < craftingInv.getSizeInventory(); x++)
+					inv.setInventorySlotContents( x, null );
+
+				pushOut( output.copy() );
+				isAwake = false;
+				return inv.getStackInSlot( 9 ) == null ? TickRateModulation.SLEEP : TickRateModulation.IDLE;
+			}
+		}
+
+		return TickRateModulation.FASTER;
+	}
+
+	private void pushOut(ItemStack output)
+	{
+		if ( pushDirection == ForgeDirection.UNKNOWN )
+		{
+			for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
+				output = pushTo( output, d );
+		}
+		else
+			output = pushTo( output, pushDirection );
+
+		inv.setInventorySlotContents( 9, output );
+	}
+
+	private ItemStack pushTo(ItemStack output, ForgeDirection d)
+	{
+		if ( output == null )
+			return output;
+
+		TileEntity te = getWorldObj().getTileEntity( xCoord + d.offsetX, yCoord + d.offsetY, zCoord + d.offsetZ );
+
+		if ( te == null )
+			return output;
+
+		InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor( te, d.getOpposite() );
+
+		if ( adaptor == null )
+			return output;
+
+		return adaptor.addItems( output );
+	}
 }
