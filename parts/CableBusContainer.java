@@ -603,7 +603,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 						throw new RuntimeException( "Invalid Stream For CableBus Container." );
 				}
 			}
-			else
+			else if ( getPart( side ) != null )
 				removePart( side, false );
 		}
 
