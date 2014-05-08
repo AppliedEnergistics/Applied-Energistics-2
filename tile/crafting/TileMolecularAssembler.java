@@ -154,4 +154,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 
 	}
 
+	public int getCraftingProgress()
+	{
+		return 0;
+	}
+
 }

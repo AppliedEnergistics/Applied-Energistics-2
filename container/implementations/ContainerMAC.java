@@ -8,6 +8,7 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.crafting.ICraftingPatternDetails;
+import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotMACPattern;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
@@ -19,8 +20,11 @@ import appeng.util.Platform;
 public class ContainerMAC extends ContainerUpgradeable
 {
 
+	TileMolecularAssembler tma;
+
 	public ContainerMAC(InventoryPlayer ip, TileMolecularAssembler te) {
 		super( ip, te );
+		tma = te;
 	}
 
 	public int availableUpgrades()
@@ -39,6 +43,9 @@ public class ContainerMAC extends ContainerUpgradeable
 	{
 		return false;
 	}
+
+	@GuiSync(4)
+	public int craftProgress = 0;
 
 	public boolean isValidItemForSlot(int slotIndex, ItemStack i)
 	{
@@ -100,6 +107,8 @@ public class ContainerMAC extends ContainerUpgradeable
 		{
 			this.rsMode = (RedstoneMode) this.myte.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
 		}
+
+		craftProgress = this.tma.getCraftingProgress();
 
 		standardDetectAndSendChanges();
 	}
