@@ -10,6 +10,10 @@ public class FullIcon implements IIcon
 	private IIcon p;
 
 	public FullIcon(IIcon o) {
+		
+		if ( o == null )
+			throw new RuntimeException("Cannot create a wrapper icon with a null icon.");
+		
 		p = o;
 	}
 

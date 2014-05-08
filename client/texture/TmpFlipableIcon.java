@@ -1,12 +1,15 @@
 package appeng.client.texture;
 
+import net.minecraft.init.Blocks;
 import net.minecraft.util.IIcon;
 
 public class TmpFlipableIcon extends FlipableIcon
 {
 
+	private static final IIcon nullIcon = new MissingIcon( Blocks.diamond_block );
+
 	public TmpFlipableIcon() {
-		super( null );
+		super( nullIcon );
 	}
 
 	public void setOriginal(IIcon i)
@@ -14,7 +17,10 @@ public class TmpFlipableIcon extends FlipableIcon
 		while (i instanceof FlipableIcon)
 			i = ((FlipableIcon) i).getOriginal();
 
-		original = i;
+		if ( i == null )
+			original = nullIcon;
+		else
+			original = i;
 	}
 
 }

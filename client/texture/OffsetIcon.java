@@ -13,6 +13,10 @@ public class OffsetIcon implements IIcon
 	private IIcon p;
 
 	public OffsetIcon(IIcon o, float x, float y) {
+		
+		if ( o == null )
+			throw new RuntimeException("Cannot create a wrapper icon with a null icon.");
+		
 		p = o;
 		offsetX = x;
 		offsetY = y;
