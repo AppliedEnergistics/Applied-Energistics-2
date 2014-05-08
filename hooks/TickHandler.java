@@ -56,18 +56,19 @@ public class TickHandler
 
 	public void addInit(AEBaseTile tile)
 	{
-		getRepo().tiles.add( tile );
+		if ( Platform.isServer() ) // for no there is no reason to care about this on the client...
+			getRepo().tiles.add( tile );
 	}
 
 	public void addNetwork(Grid grid)
 	{
-		if ( Platform.isServer() )
+		if ( Platform.isServer() ) // for no there is no reason to care about this on the client...
 			getRepo().networks.add( grid );
 	}
 
 	public void removeNetwork(Grid grid)
 	{
-		if ( Platform.isServer() )
+		if ( Platform.isServer() ) // for no there is no reason to care about this on the client...
 			getRepo().networks.remove( grid );
 	}
 
@@ -84,7 +85,7 @@ public class TickHandler
 	@SubscribeEvent
 	public void unloadWorld(WorldEvent.Unload ev)
 	{
-		if ( Platform.isServer() )
+		if ( Platform.isServer() ) // for no there is no reason to care about this on the client...
 		{
 			LinkedList<IGridNode> toDestroy = new LinkedList();
 
@@ -105,7 +106,7 @@ public class TickHandler
 	@SubscribeEvent
 	public void onTick(TickEvent ev)
 	{
-		if ( ev.type == Type.SERVER && ev.phase == Phase.END )
+		if ( ev.type == Type.SERVER && ev.phase == Phase.END ) // for no there is no reason to care about this on the client...
 		{
 			HandlerRep repo = getRepo();
 			while (!repo.tiles.isEmpty())
