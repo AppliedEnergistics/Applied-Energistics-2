@@ -7,7 +7,7 @@ import net.minecraft.world.World;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
-import appeng.api.crafting.ICraftingPatternDetails;
+import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotMACPattern;
 import appeng.container.slot.SlotOutput;

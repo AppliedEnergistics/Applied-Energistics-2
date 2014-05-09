@@ -1,11 +1,13 @@
 package appeng.parts.misc;
 
+import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -14,6 +16,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.networking.crafting.ICraftingProviderHelper;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -313,4 +317,23 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	{
 		return duality.getMonitorable( side, src, this );
 	}
+
+	@Override
+	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table, ForgeDirection where)
+	{
+		return duality.pushPattern( patternDetails, table, where );
+	}
+
+	@Override
+	public void provideCrafting(ICraftingProviderHelper craftingTracker)
+	{
+		duality.provideCrafting( craftingTracker );
+	}
+
+	@Override
+	public EnumSet<ForgeDirection> getTargets()
+	{
+		return EnumSet.of( side );
+	}
+
 }

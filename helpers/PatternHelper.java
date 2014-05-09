@@ -13,7 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
-import appeng.api.crafting.ICraftingPatternDetails;
+import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerNull;
 import appeng.util.Platform;
@@ -21,16 +21,18 @@ import appeng.util.Platform;
 public class PatternHelper implements ICraftingPatternDetails
 {
 
-	InventoryCrafting crafting = new InventoryCrafting( new ContainerNull(), 3, 3 );
-	InventoryCrafting testFrame = new InventoryCrafting( new ContainerNull(), 3, 3 );
+	final ItemStack patternItem;
 
-	ItemStack correctOutput;
-	IRecipe standardRecipe;
+	final InventoryCrafting crafting = new InventoryCrafting( new ContainerNull(), 3, 3 );
+	final InventoryCrafting testFrame = new InventoryCrafting( new ContainerNull(), 3, 3 );
 
-	IAEItemStack inputs[];
-	IAEItemStack outputs[];
+	final ItemStack correctOutput;
+	final IRecipe standardRecipe;
 
-	boolean isCrafting = false;
+	final IAEItemStack inputs[];
+	final IAEItemStack outputs[];
+
+	final boolean isCrafting;
 
 	class TestLookup
 	{
@@ -75,7 +77,7 @@ public class PatternHelper implements ICraftingPatternDetails
 
 	private void markItemAs(int slotIndex, ItemStack i, TestStatus b)
 	{
-		if ( b == TestStatus.TEST ||i.hasTagCompound())
+		if ( b == TestStatus.TEST || i.hasTagCompound() )
 			return;
 
 		(b == TestStatus.ACCEPT ? passCache : failCache).add( new TestLookup( slotIndex, i ) );
@@ -105,11 +107,12 @@ public class PatternHelper implements ICraftingPatternDetails
 		NBTTagCompound encodedValue = is.getTagCompound();
 
 		if ( encodedValue == null )
-			return;
+			throw new RuntimeException( "No pattern here!" );
 
 		NBTTagList inTag = encodedValue.getTagList( "in", 10 );
 		NBTTagList outTag = encodedValue.getTagList( "out", 10 );
 		isCrafting = encodedValue.getBoolean( "crafting" );
+		patternItem = is;
 
 		if ( isCrafting == false )
 			throw new RuntimeException( "Only crafting recipes supported." );
@@ -241,6 +244,12 @@ public class PatternHelper implements ICraftingPatternDetails
 	public IAEItemStack[] getOutputs()
 	{
 		return outputs;
+	}
+
+	@Override
+	public ItemStack getPattern()
+	{
+		return patternItem;
 	}
 
 }

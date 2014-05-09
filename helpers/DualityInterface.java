@@ -1,16 +1,30 @@
 package appeng.helpers;
 
+import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.ICraftingMedium;
+import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.networking.crafting.ICraftingProvider;
+import appeng.api.networking.crafting.ICraftingProviderHelper;
 import appeng.api.networking.energy.IEnergySource;
+import appeng.api.networking.events.MECraftingPatternUpdate;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.ticking.IGridTickable;
@@ -45,7 +59,7 @@ import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.WrapperInvSlot;
 
 public class DualityInterface implements IGridTickable, ISegmentedInventory, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory,
-		IConfigureableObject, IConfigManagerHost
+		IConfigureableObject, IConfigManagerHost, ICraftingProvider
 {
 
 	final int sides[] = new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
@@ -56,6 +70,45 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	IInterfaceHost iHost;
 	BaseActionSource mySrc;
 	ConfigManager cm = new ConfigManager( this );
+
+	List<ICraftingPatternDetails> craftingList = null;
+	List<ItemStack> waitingToSend = null;
+
+	public boolean hasItemsToSend()
+	{
+		return waitingToSend != null && !waitingToSend.isEmpty();
+	}
+
+	public void addToCraftingList(ItemStack is)
+	{
+		if ( is == null )
+			return;
+
+		if ( is.getItem() instanceof ICraftingPatternItem )
+		{
+			ICraftingPatternItem cpi = (ICraftingPatternItem) is.getItem();
+			ICraftingPatternDetails details = cpi.getPatternForItem( is, iHost.getTileEntity().getWorldObj() );
+
+			if ( details != null )
+			{
+				if ( craftingList == null )
+					craftingList = new LinkedList();
+
+				craftingList.add( details );
+			}
+		}
+	}
+
+	public void addToSendList(ItemStack is)
+	{
+		if ( is == null )
+			return;
+
+		if ( waitingToSend == null )
+			waitingToSend = new LinkedList();
+
+		waitingToSend.add( is );
+	}
 
 	public DualityInterface(AENetworkProxy prox, IInterfaceHost ih) {
 		gridProxy = prox;
@@ -120,10 +173,37 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		config.writeToNBT( data, "config" );
 		patterns.writeToNBT( data, "patterns" );
 		storage.writeToNBT( data, "storage" );
+
+		NBTTagList waitingToSend = new NBTTagList();
+		if ( this.waitingToSend != null )
+		{
+			for (ItemStack is : this.waitingToSend)
+			{
+				NBTTagCompound item = new NBTTagCompound();
+				is.writeToNBT( item );
+				waitingToSend.appendTag( item );
+			}
+		}
+		data.setTag( "waitingToSend", waitingToSend );
 	}
 
 	public void readFromNBT(NBTTagCompound data)
 	{
+		this.waitingToSend = null;
+		NBTTagList waitingList = data.getTagList( "waitingToSend", 10 );
+		if ( waitingList != null )
+		{
+			for (int x = 0; x < waitingList.tagCount(); x++)
+			{
+				NBTTagCompound c = waitingList.getCompoundTagAt( x );
+				if ( c != null )
+				{
+					ItemStack is = ItemStack.loadItemStackFromNBT( c );
+					addToSendList( is );
+				}
+			}
+		}
+
 		config.readFromNBT( data, "config" );
 		patterns.readFromNBT( data, "patterns" );
 		storage.readFromNBT( data, "storage" );
@@ -349,7 +429,14 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			readConfig();
 		else if ( inv == patterns )
 		{
-
+			try
+			{
+				gridProxy.getGrid().postEvent( new MECraftingPatternUpdate( this ) );
+			}
+			catch (GridAccessException e)
+			{
+				// :P
+			}
 		}
 		else if ( inv == storage && slot >= 0 )
 		{
@@ -378,8 +465,8 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 	public boolean hasWorkToDo()
 	{
-		return requireWork[0] != null || requireWork[1] != null || requireWork[2] != null || requireWork[3] != null || requireWork[4] != null
-				|| requireWork[5] != null || requireWork[6] != null || requireWork[7] != null;
+		return hasItemsToSend() || requireWork[0] != null || requireWork[1] != null || requireWork[2] != null || requireWork[3] != null
+				|| requireWork[4] != null || requireWork[5] != null || requireWork[6] != null || requireWork[7] != null;
 	}
 
 	private boolean updateStorage()
@@ -501,6 +588,92 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 				return null;
 			}
 		};
-	};
+	}
+
+	@Override
+	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table, ForgeDirection where)
+	{
+		if ( hasItemsToSend() )
+			return false;
+
+		TileEntity tile = iHost.getTileEntity();
+		World w = tile.getWorldObj();
+
+		EnumSet<ForgeDirection> possibleDirections = iHost.getTargets();
+		for (ForgeDirection s : possibleDirections)
+		{
+			TileEntity te = w.getTileEntity( tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ );
+			if ( te instanceof ICraftingMedium )
+			{
+				if ( ((ICraftingMedium) te).pushPattern( patternDetails, table, s.getOpposite() ) )
+					return true;
+			}
+			else
+			{
+				InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
+				if ( ad != null )
+				{
+					possibleDirections.remove( s );
+
+					for (int x = 0; x < table.getSizeInventory(); x++)
+					{
+						ItemStack is = table.getStackInSlot( x );
+						if ( is != null )
+						{
+							addToSendList( ad.addItems( is ) );
+						}
+					}
+
+					pushItemsOut( possibleDirections );
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	private void pushItemsOut(EnumSet<ForgeDirection> possibleDirections)
+	{
+		if ( hasItemsToSend() )
+			return;
+
+		TileEntity tile = iHost.getTileEntity();
+		World w = tile.getWorldObj();
+
+		Iterator<ItemStack> i = waitingToSend.iterator();
+		while (i.hasNext())
+		{
+			ItemStack whatToSend = i.next();
+
+			for (ForgeDirection s : possibleDirections)
+			{
+				TileEntity te = w.getTileEntity( tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ );
+
+				InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
+				if ( ad != null )
+				{
+					whatToSend = ad.addItems( whatToSend );
+					if ( whatToSend == null )
+						break;
+				}
+			}
+
+			if ( whatToSend == null )
+				i.remove();
+			else
+				whatToSend.stackSize = whatToSend.stackSize;
+		}
+
+		if ( waitingToSend.isEmpty() )
+			waitingToSend = null;
+	}
+
+	@Override
+	public void provideCrafting(ICraftingProviderHelper craftingTracker)
+	{
+		for (ICraftingPatternDetails details : craftingList)
+			craftingTracker.addCraftingOption( details );
+	}
 
 }
