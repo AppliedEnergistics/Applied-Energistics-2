@@ -466,14 +466,24 @@ public class Registration
 			recipeHandler.parseRecipes( new JarLoader( "/assets/appliedenergistics2/recipes/" ), "index.recipe" );
 
 		IPartHelper ph = AEApi.instance().partHelper();
-		ph.registerNewLayer( "appeng.api.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );
-		ph.registerNewLayer( "appeng.api.parts.layers.LayerIEnergySource", "ic2.api.energy.tile.IEnergySource" );
 		ph.registerNewLayer( "appeng.api.parts.layers.LayerISidedInventory", "net.minecraft.inventory.ISidedInventory" );
-		ph.registerNewLayer( "appeng.api.parts.layers.LayerIPowerEmitter", "buildcraft.api.power.IPowerEmitter" );
-		ph.registerNewLayer( "appeng.api.parts.layers.LayerIPowerReceptor", "buildcraft.api.power.IPowerReceptor" );
 		ph.registerNewLayer( "appeng.api.parts.layers.LayerIFluidHandler", "net.minecraftforge.fluids.IFluidHandler" );
-		ph.registerNewLayer( "appeng.api.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyHandler" );
 		ph.registerNewLayer( "appeng.api.parts.layers.LayerITileStorageMonitorable", "appeng.api.implementations.tiles.ITileStorageMonitorable" );
+
+		if ( AppEng.instance.isIntegrationEnabled( "IC2" ) )
+		{
+			ph.registerNewLayer( "appeng.api.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );
+			ph.registerNewLayer( "appeng.api.parts.layers.LayerIEnergySource", "ic2.api.energy.tile.IEnergySource" );
+		}
+
+		if ( AppEng.instance.isIntegrationEnabled( "MJ" ) )
+		{
+			ph.registerNewLayer( "appeng.api.parts.layers.LayerIPowerEmitter", "buildcraft.api.power.IPowerEmitter" );
+			ph.registerNewLayer( "appeng.api.parts.layers.LayerIPowerReceptor", "buildcraft.api.power.IPowerReceptor" );
+		}
+
+		if ( AppEng.instance.isIntegrationEnabled( "RF" ) )
+			ph.registerNewLayer( "appeng.api.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyHandler" );
 
 		FMLCommonHandler.instance().bus().register( TickHandler.instance );
 		MinecraftForge.EVENT_BUS.register( new PartPlacement() );
