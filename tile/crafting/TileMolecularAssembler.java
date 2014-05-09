@@ -9,9 +9,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.api.crafting.ICraftingMedium;
 import appeng.api.crafting.ICraftingPatternDetails;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.IGridNode;
@@ -37,7 +40,7 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
 public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEngInventory, ISidedInventory, IUpgradeableHost, IConfigManagerHost,
-		IGridTickable
+		IGridTickable, ICraftingMedium
 {
 
 	static final int[] sides = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -51,10 +54,11 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 	private ForgeDirection pushDirection = ForgeDirection.UNKNOWN;
 	private ItemStack myPattern = null;
 	private ICraftingPatternDetails myPlan = null;
-	private int progress = 0;
+	private double progress = 0;
 	private boolean isAwake = false;
 
-	public boolean pushPattern(ItemStack pattern, ICraftingPatternDetails patternDetails, InventoryCrafting table, ForgeDirection where)
+	@Override
+	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table, ForgeDirection where)
 	{
 		return false;
 	}
@@ -85,7 +89,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 			myPattern = null;
 		}
 
-		isAwake = myPlan != null && hasMats();
+		isAwake = myPlan != null && hasMats() || canPush();
 		if ( wasEnabled != isAwake )
 		{
 			try
@@ -100,6 +104,11 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 				// :P
 			}
 		}
+	}
+
+	private boolean canPush()
+	{
+		return inv.getStackInSlot( 9 ) != null;
 	}
 
 	@Override
@@ -231,13 +240,13 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 
 	public int getCraftingProgress()
 	{
-		return progress;
+		return (int) progress;
 	}
 
 	@Override
 	public TickingRequest getTickingRequest(IGridNode node)
 	{
-		return new TickingRequest( 1, 5, isAwake = hasPattern() && hasMats(), false );
+		return new TickingRequest( 1, 5, isAwake = hasPattern() && hasMats() || canPush(), false );
 	}
 
 	private boolean hasMats()
@@ -266,13 +275,34 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 			return TickRateModulation.SLEEP;
 		}
 
-		progress += TicksSinceLastCall;
+		switch (upgrades.getInstalledUpgrades( Upgrades.SPEED ))
+		{
+		case 0:
+			progress += userPower( TicksSinceLastCall );
+			break;
+		case 1:
+			progress += userPower( TicksSinceLastCall * 2 );
+			break;
+		case 2:
+			progress += userPower( TicksSinceLastCall * 6 );
+			break;
+		case 3:
+			progress += userPower( TicksSinceLastCall * 12 );
+			break;
+		case 4:
+			progress += userPower( TicksSinceLastCall * 30 );
+			break;
+		case 5:
+			progress += userPower( TicksSinceLastCall * 120 );
+			break;
+		}
 
 		if ( progress >= 100 )
 		{
 			for (int x = 0; x < craftingInv.getSizeInventory(); x++)
 				craftingInv.setInventorySlotContents( x, inv.getStackInSlot( x ) );
 
+			progress = 0;
 			ItemStack output = myPlan.getOutput( craftingInv, getWorldObj() );
 			if ( output != null )
 			{
@@ -286,6 +316,18 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		}
 
 		return TickRateModulation.FASTER;
+	}
+
+	private int userPower(int i)
+	{
+		try
+		{
+			return (int) gridProxy.getEnergy().extractAEPower( i, Actionable.MODULATE, PowerMultiplier.CONFIG );
+		}
+		catch (GridAccessException e)
+		{
+			return 0;
+		}
 	}
 
 	private void pushOut(ItemStack output)
