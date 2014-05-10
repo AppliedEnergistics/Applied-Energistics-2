@@ -375,7 +375,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 			ItemStack is = getItemStack( PartItemStack.Network );
 
 			// Blocks and parts share the same soul!
-			if ( AEApi.instance().parts().partInterface.sameAs( is ) )
+			if ( AEApi.instance().parts().partInterface.sameAsStack( is ) )
 				is = AEApi.instance().blocks().blockInterface.stack( 1 );
 
 			String name = is.getUnlocalizedName();

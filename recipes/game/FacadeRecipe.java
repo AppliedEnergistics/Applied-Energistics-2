@@ -18,8 +18,8 @@ public class FacadeRecipe implements IRecipe
 	{
 		if ( inv.getStackInSlot( 0 ) == null && inv.getStackInSlot( 2 ) == null && inv.getStackInSlot( 6 ) == null && inv.getStackInSlot( 8 ) == null )
 		{
-			if ( anchor.sameAs( inv.getStackInSlot( 1 ) ) && anchor.sameAs( inv.getStackInSlot( 3 ) ) && anchor.sameAs( inv.getStackInSlot( 5 ) )
-					&& anchor.sameAs( inv.getStackInSlot( 7 ) ) )
+			if ( anchor.sameAsStack( inv.getStackInSlot( 1 ) ) && anchor.sameAsStack( inv.getStackInSlot( 3 ) ) && anchor.sameAsStack( inv.getStackInSlot( 5 ) )
+					&& anchor.sameAsStack( inv.getStackInSlot( 7 ) ) )
 			{
 				ItemStack facadeis = facade.createFacadeForItem( inv.getStackInSlot( 4 ), !createFacade );
 				if ( facadeis != null && createFacade )

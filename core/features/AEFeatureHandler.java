@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
 import appeng.api.util.AEItemDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseItemBlock;
@@ -175,10 +176,18 @@ public class AEFeatureHandler implements AEItemDefinition
 	}
 
 	@Override
-	public boolean sameAs(ItemStack is)
+	public boolean sameAsStack(ItemStack is)
 	{
 		if ( isFeatureAvailable() )
 			return Platform.isSameItemType( is, stack( 1 ) );
+		return false;
+	}
+
+	@Override
+	public boolean sameAsBlock(IBlockAccess world, int x, int y, int z)
+	{
+		if ( isFeatureAvailable() && BlockData != null )
+			return world.getBlock( x, y, z ) == block();
 		return false;
 	}
 

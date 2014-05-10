@@ -44,7 +44,7 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	@Override
 	public IAEItemStack injectItems(IAEItemStack input, Actionable type, BaseActionSource src)
 	{
-		if ( hasPermission( src ) && AEApi.instance().items().itemBiometricCard.sameAs( input.getItemStack() ) )
+		if ( hasPermission( src ) && AEApi.instance().items().itemBiometricCard.sameAsStack( input.getItemStack() ) )
 		{
 			if ( canAccept( input ) )
 			{

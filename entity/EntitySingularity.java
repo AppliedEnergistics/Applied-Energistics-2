@@ -50,7 +50,7 @@ final public class EntitySingularity extends EntityItem
 			return;
 
 		ItemStack item = getEntityItem();
-		if ( AEApi.instance().materials().materialSingularity.sameAs( item ) )
+		if ( AEApi.instance().materials().materialSingularity.sameAsStack( item ) )
 		{
 			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( posX - 4, posY - 4, posZ - 4, posX + 4, posY + 4, posZ + 4 );
 			List<Entity> l = worldObj.getEntitiesWithinAABBExcludingEntity( this, region );

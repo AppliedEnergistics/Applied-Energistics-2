@@ -77,6 +77,7 @@ import appeng.core.features.DamagedItemDefinition;
 import appeng.core.features.IAEFeature;
 import appeng.core.features.ItemStackSrc;
 import appeng.core.features.NullItemDefinition;
+import appeng.core.features.WrappedDamageItemDefinition;
 import appeng.core.features.registries.P2PTunnelRegistry;
 import appeng.core.features.registries.entries.BasicCellHandler;
 import appeng.core.features.registries.entries.CreativeCellHandler;
@@ -272,12 +273,16 @@ public class Registration
 		// very important block!
 		blocks.blockMultiPart = addFeature( BlockCableBus.class );
 
+		blocks.blockCraftingUnit = addFeature( BlockCraftingUnit.class );
+		blocks.blockCraftingMonitor = new WrappedDamageItemDefinition( blocks.blockCraftingUnit, BlockCraftingUnit.BASE_MONITOR );
+		blocks.blockCraftingStorage = new WrappedDamageItemDefinition( blocks.blockCraftingUnit, BlockCraftingUnit.BASE_STORAGE );
+		blocks.blockCraftingAccelerator = new WrappedDamageItemDefinition( blocks.blockCraftingUnit, BlockCraftingUnit.BASE_ACCELERATOR );
+		blocks.blockMolecularAssembler = addFeature( BlockMolecularAssembler.class );
+
 		blocks.blockQuartzOre = addFeature( OreQuartz.class );
 		blocks.blockQuartzOreCharged = addFeature( OreQuartzCharged.class );
 		blocks.blockMatrixFrame = addFeature( BlockMatrixFrame.class );
 		blocks.blockQuartz = addFeature( BlockQuartz.class );
-		blocks.blockCraftingUnit = addFeature( BlockCraftingUnit.class );
-		blocks.blockMolecularAssembler = addFeature( BlockMolecularAssembler.class );
 		blocks.blockFluix = addFeature( BlockFluix.class );
 		blocks.blockSkyStone = addFeature( BlockSkyStone.class );
 		blocks.blockSkyChest = addFeature( BlockSkyChest.class );

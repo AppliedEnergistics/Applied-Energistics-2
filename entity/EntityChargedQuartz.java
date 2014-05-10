@@ -67,7 +67,7 @@ final public class EntityChargedQuartz extends EntityItem
 	public boolean transform()
 	{
 		ItemStack item = getEntityItem();
-		if ( AEApi.instance().materials().materialCertusQuartzCrystalCharged.sameAs( item ) )
+		if ( AEApi.instance().materials().materialCertusQuartzCrystalCharged.sameAsStack( item ) )
 		{
 			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( posX - 1, posY - 1, posZ - 1, posX + 1, posY + 1, posZ + 1 );
 			List<Entity> l = worldObj.getEntitiesWithinAABBExcludingEntity( this, region );

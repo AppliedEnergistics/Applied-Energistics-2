@@ -127,7 +127,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 					tickTickTimer = 20; // keep tickin...
 				}
 			}
-			else if ( internalCurrentPower > 1499 && AEApi.instance().materials().materialCertusQuartzCrystal.sameAs( myItem ) )
+			else if ( internalCurrentPower > 1499 && AEApi.instance().materials().materialCertusQuartzCrystal.sameAsStack( myItem ) )
 			{
 				if ( Platform.getRandomFloat() > 0.8f ) // simulate wait
 				{
@@ -167,7 +167,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 		injectExternalPower( PowerUnits.AE, 150 );
 
 		ItemStack myItem = getStackInSlot( 0 );
-		if ( internalCurrentPower > 1499 && AEApi.instance().materials().materialCertusQuartzCrystal.sameAs( myItem ) )
+		if ( internalCurrentPower > 1499 && AEApi.instance().materials().materialCertusQuartzCrystal.sameAsStack( myItem ) )
 		{
 			extractAEPower( internalMaxPower, Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
 			setInventorySlotContents( 0, AEApi.instance().materials().materialCertusQuartzCrystalCharged.stack( myItem.stackSize ) );
@@ -207,7 +207,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
-		return Platform.isChargeable( itemstack ) || AEApi.instance().materials().materialCertusQuartzCrystal.sameAs( itemstack );
+		return Platform.isChargeable( itemstack ) || AEApi.instance().materials().materialCertusQuartzCrystal.sameAsStack( itemstack );
 	}
 
 	@Override
@@ -220,7 +220,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 				return true;
 		}
 
-		return AEApi.instance().materials().materialCertusQuartzCrystalCharged.sameAs( itemstack );
+		return AEApi.instance().materials().materialCertusQuartzCrystalCharged.sameAsStack( itemstack );
 	}
 
 	public void activate(EntityPlayer player)
@@ -232,7 +232,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 		if ( myItem == null )
 		{
 			ItemStack held = player.inventory.getCurrentItem();
-			if ( AEApi.instance().materials().materialCertusQuartzCrystal.sameAs( held ) || Platform.isChargeable( held ) )
+			if ( AEApi.instance().materials().materialCertusQuartzCrystal.sameAsStack( held ) || Platform.isChargeable( held ) )
 			{
 				held = player.inventory.decrStackSize( player.inventory.currentItem, 1 );
 				setInventorySlotContents( 0, held );

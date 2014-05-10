@@ -278,7 +278,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		if ( output == null )
 			return false;
 
-		return AEApi.instance().items().itemEncodedPattern.sameAs( output ) || AEApi.instance().materials().materialBlankPattern.sameAs( output );
+		return AEApi.instance().items().itemEncodedPattern.sameAsStack( output ) || AEApi.instance().materials().materialBlankPattern.sameAsStack( output );
 	}
 
 	@Override

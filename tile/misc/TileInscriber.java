@@ -178,7 +178,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 
 		if ( i == 0 || i == 1 )
 		{
-			if ( AEApi.instance().materials().materialNamePress.sameAs( itemstack ) )
+			if ( AEApi.instance().materials().materialNamePress.sameAsStack( itemstack ) )
 				return true;
 
 			for (ItemStack s : Inscribe.plates)
@@ -243,8 +243,8 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 		if ( renamedItem != null && renamedItem.stackSize > 1 )
 			return null;
 
-		boolean isNameA = AEApi.instance().materials().materialNamePress.sameAs( PlateA );
-		boolean isNameB = AEApi.instance().materials().materialNamePress.sameAs( PlateB );
+		boolean isNameA = AEApi.instance().materials().materialNamePress.sameAsStack( PlateA );
+		boolean isNameB = AEApi.instance().materials().materialNamePress.sameAsStack( PlateB );
 
 		if ( (isNameA || isNameB) && (isNameA || PlateA == null) && (isNameB || PlateB == null) )
 		{
