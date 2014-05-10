@@ -16,6 +16,7 @@ public class RF extends BaseModule implements IIntegrationModule
 
 	public RF() {
 		TestClass( cofh.api.energy.IEnergyHandler.class );
+		TestClass( cofh.api.energy.IEnergyConnection.class );
 	}
 
 	@Override

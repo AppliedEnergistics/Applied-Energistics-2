@@ -236,7 +236,7 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 				cachedTarget = true;
 			}
 
-			if ( outputTarget == null )
+			if ( outputTarget == null || !outputTarget.canConnectEnergy( side.getOpposite() ) )
 				return myNullHandler;
 
 			return outputTarget;
@@ -244,14 +244,9 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 		return myNullHandler;
 	}
 
-	@Deprecated
-	public boolean canInterface(ForgeDirection from)
-	{
-		return true;
-	}
-
 	@Override
-	public boolean canConnectEnergy(ForgeDirection from) {
+	public boolean canConnectEnergy(ForgeDirection from)
+	{
 		return true;
 	}
 }
