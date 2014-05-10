@@ -575,6 +575,8 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	{
 		byte sides = data.readByte();
 
+		boolean updateBlock = false;
+
 		for (int x = 0; x < 7; x++)
 		{
 			ForgeDirection side = ForgeDirection.getOrientation( x );
@@ -589,7 +591,10 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 
 				ItemStack current = p != null ? p.getItemStack( PartItemStack.Network ) : null;
 				if ( current != null && current.getItem() == myItem && current.getItemDamage() == dmgValue )
-					p.readFromStream( data );
+				{
+					if ( p.readFromStream( data ) )
+						updateBlock = true;
+				}
 				else
 				{
 					removePart( side, false );
@@ -607,7 +612,9 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 				removePart( side, false );
 		}
 
-		return fc.readFromStream( data );
+		if ( fc.readFromStream( data ) )
+			return true;
+		return updateBlock;
 	}
 
 	ForgeDirection getSide(IPart part)

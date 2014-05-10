@@ -284,7 +284,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		int cs = data.readByte();
 		int sideOut = data.readInt();
 
-		EnumSet<ForgeDirection> myC = connections;
+		EnumSet<ForgeDirection> myC = connections.clone();
 		boolean wasPowered = powered;
 		powered = false;
 		boolean chchanged = false;

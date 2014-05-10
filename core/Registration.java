@@ -419,8 +419,7 @@ public class Registration
 		}
 		catch (Throwable e)
 		{
-			AELog.severe( "Error with Feature: " + c.getName() );
-			throw new RuntimeException( e );
+			throw new RuntimeException( "Error with Feature: " + c.getName(), e );
 		}
 	}
 
