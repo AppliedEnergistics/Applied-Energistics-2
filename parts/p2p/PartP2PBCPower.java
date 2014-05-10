@@ -25,7 +25,7 @@ import buildcraft.api.power.PowerHandler.Type;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@Interface(iface = "buildcraft.api.power.IPowerReceptor", iname = "BC")
+@Interface(iface = "buildcraft.api.power.IPowerReceptor", iname = "MJ5")
 public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPowerReceptor, IGridTickable
 {
 
@@ -39,7 +39,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 	public PartP2PBCPower(ItemStack is) {
 		super( is );
 
-		if ( !AppEng.instance.isIntegrationEnabled( "MJ" ) )
+		if ( !AppEng.instance.isIntegrationEnabled( "MJ5" ) && !AppEng.instance.isIntegrationEnabled( "MJ6" ) )
 			throw new RuntimeException( "MJ Not installed!" );
 
 		pp = new PowerHandler( this, Type.MACHINE );
