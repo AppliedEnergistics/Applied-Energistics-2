@@ -20,7 +20,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageComponent;
@@ -28,7 +27,6 @@ import appeng.api.implementations.items.IUpgradeModule;
 import appeng.client.texture.MissingIcon;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
-import appeng.core.features.AEFeatureHandler;
 import appeng.core.features.ItemStackSrc;
 import appeng.items.AEBaseItem;
 import appeng.items.materials.ItemMultiMaterial;
@@ -179,9 +177,10 @@ public class OldItemMaterial extends AEBaseItem implements IStorageComponent, IU
 	{
 		return "AE2-OLD-ITEM";
 	}
-	
+
 	@Override
-	public String getItemStackDisplayName(ItemStack par1ItemStack) {
+	public String getItemStackDisplayName(ItemStack par1ItemStack)
+	{
 		return "AE2-OLD-ITEM";
 	}
 
