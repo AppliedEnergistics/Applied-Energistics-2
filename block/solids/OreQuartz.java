@@ -11,15 +11,12 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.AEApi;
-import appeng.api.util.IOrientable;
-import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderQuartzOre;
 import appeng.core.features.AEFeature;
-import appeng.helpers.LocationRotation;
 
-public class OreQuartz extends AEBaseBlock implements IOrientableBlock
+public class OreQuartz extends AEBaseBlock
 {
 
 	public int boostBrightnessLow;
@@ -75,12 +72,6 @@ public class OreQuartz extends AEBaseBlock implements IOrientableBlock
 	ItemStack getItemDropped()
 	{
 		return AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 );
-	}
-
-	@Override
-	public IOrientable getOrientable(final IBlockAccess w, final int x, final int y, final int z)
-	{
-		return new LocationRotation( w, x, y, z );
 	}
 
 	@Override
