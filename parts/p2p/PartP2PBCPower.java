@@ -34,7 +34,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @InterfaceList(value = { @Interface(iface = "buildcraft.api.mj.ISidedBatteryProvider", iname = "MJ6"),
-		@Interface(iface = "buildcraft.api.power.IPowerReceptor", iname = "MJ5"),
+		@Interface(iface = "buildcraft.api.mj.IBatteryObject", iname = "MJ6"), @Interface(iface = "buildcraft.api.power.IPowerReceptor", iname = "MJ5"),
 		@Interface(iface = "appeng.api.networking.ticking.IGridTickable", iname = "MJ5") })
 public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPowerReceptor, ISidedBatteryProvider, IBatteryObject, IGridTickable
 {
