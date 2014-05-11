@@ -1,4 +1,4 @@
-package appeng.integration.modules.helpers;
+package appeng.integration.modules.NEIHelpers;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import appeng.recipes.game.ShapedRecipe;
+import appeng.recipes.game.ShapelessRecipe;
 import codechicken.nei.NEIClientUtils;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
@@ -21,7 +21,7 @@ import codechicken.nei.api.IStackPositioner;
 import codechicken.nei.recipe.RecipeInfo;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
-public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
+public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 {
 
 	public void loadTransferRects()
@@ -37,20 +37,20 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return NEIClientUtils.translate( "recipe.shaped", new Object[0] );
+		return NEIClientUtils.translate( "recipe.shapeless", new Object[0] );
 	}
 
 	@Override
 	public void loadCraftingRecipes(String outputId, Object... results)
 	{
-		if ( (outputId.equals( "crafting" )) && (getClass() == NEIAEShapedRecipeHandler.class) )
+		if ( (outputId.equals( "crafting" )) && (getClass() == NEIAEShapelessRecipeHandler.class) )
 		{
 			List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
 			for (IRecipe irecipe : allrecipes)
 			{
-				CachedShapedRecipe recipe = null;
-				if ( (irecipe instanceof ShapedRecipe) )
-					recipe = new CachedShapedRecipe( (ShapedRecipe) irecipe );
+				CachedShapelessRecipe recipe = null;
+				if ( (irecipe instanceof ShapelessRecipe) )
+					recipe = new CachedShapelessRecipe( (ShapelessRecipe) irecipe );
 
 				if ( recipe != null )
 				{
@@ -72,9 +72,9 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 		{
 			if ( NEIServerUtils.areStacksSameTypeCrafting( irecipe.getRecipeOutput(), result ) )
 			{
-				CachedShapedRecipe recipe = null;
-				if ( (irecipe instanceof ShapedRecipe) )
-					recipe = new CachedShapedRecipe( (ShapedRecipe) irecipe );
+				CachedShapelessRecipe recipe = null;
+				if ( (irecipe instanceof ShapelessRecipe) )
+					recipe = new CachedShapelessRecipe( (ShapelessRecipe) irecipe );
 
 				if ( recipe != null )
 				{
@@ -90,9 +90,9 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 		List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
 		for (IRecipe irecipe : allrecipes)
 		{
-			CachedShapedRecipe recipe = null;
-			if ( (irecipe instanceof ShapedRecipe) )
-				recipe = new CachedShapedRecipe( (ShapedRecipe) irecipe );
+			CachedShapelessRecipe recipe = null;
+			if ( (irecipe instanceof ShapelessRecipe) )
+				recipe = new CachedShapelessRecipe( (ShapelessRecipe) irecipe );
 
 			if ( (recipe != null) && (recipe.contains( recipe.ingredients, ingredient.getItem() )) )
 			{
@@ -157,27 +157,27 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 		return true;
 	}
 
-	public class CachedShapedRecipe extends TemplateRecipeHandler.CachedRecipe
+	public class CachedShapelessRecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 
 		public ArrayList<PositionedStack> ingredients;
 		public PositionedStack result;
 
-		public CachedShapedRecipe(ShapedRecipe irecipe) {
+		public CachedShapelessRecipe(ShapelessRecipe irecipe) {
 			result = new PositionedStack( irecipe.getRecipeOutput(), 119, 24 );
 			ingredients = new ArrayList<PositionedStack>();
-			setIngredients( irecipe.getWidth(), irecipe.getHeight(), irecipe.getIngredients() );
+			setIngredients( irecipe.getInput().toArray() );
 		}
 
-		public void setIngredients(int width, int height, Object[] items)
+		public void setIngredients(Object[] items)
 		{
-			for (int x = 0; x < width; x++)
+			for (int x = 0; x < 3; x++)
 			{
-				for (int y = 0; y < height; y++)
+				for (int y = 0; y < 3; y++)
 				{
-					if ( items[(y * width + x)] != null )
+					if ( items.length > (y * 3 + x) )
 					{
-						PositionedStack stack = new PositionedStack( items[(y * width + x)], 25 + x * 18, 6 + y * 18, false );
+						PositionedStack stack = new PositionedStack( items[(y * 3 + x)], 25 + x * 18, 6 + y * 18, false );
 						stack.setMaxSize( 1 );
 						this.ingredients.add( stack );
 					}

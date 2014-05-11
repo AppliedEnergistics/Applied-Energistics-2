@@ -1,4 +1,4 @@
-package appeng.integration.modules.helpers;
+package appeng.integration.modules.NEIHelpers;
 
 import java.util.List;
 

@@ -168,4 +168,10 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 		return getRenderType();
 	}
 
+	@Override
+	public boolean usesMetadata()
+	{
+		return false;
+	}
+
 }

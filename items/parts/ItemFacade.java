@@ -27,6 +27,8 @@ import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -158,6 +160,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			ds[0] = Item.getIdFromItem( l.getItem() );
 			ds[1] = metadata;
 			data.setIntArray( "x", ds );
+			UniqueIdentifier ui = GameRegistry.findUniqueIdentifierFor( l.getItem() );
+			data.setString( "modid", ui.modId );
+			data.setString( "itemname", ui.name );
 			is.setTagCompound( data );
 			return is;
 		}
@@ -170,9 +175,16 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		NBTTagCompound data = is.getTagCompound();
 		if ( data != null )
 		{
-			int[] blk = data.getIntArray( "x" );
-			if ( blk != null && blk.length == 2 )
-				return Block.getBlockById( blk[0] );
+			if ( data.hasKey( "modid" ) && data.hasKey( "itemname" ) )
+			{
+				return GameRegistry.findBlock( data.getString( "modid" ), data.getString( "itemname" ) );
+			}
+			else
+			{
+				int[] blk = data.getIntArray( "x" );
+				if ( blk != null && blk.length == 2 )
+					return Block.getBlockById( blk[0] );
+			}
 		}
 		return Blocks.glass;
 	}

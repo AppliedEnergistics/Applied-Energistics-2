@@ -334,7 +334,7 @@ public class BusRenderHelper implements IPartRenderHelper
 		if ( !renderThis() )
 			return;
 
-		renderer.renderStandardBlock( renderer.blockAccess.getBlock( x, y, z ), x, y, z );
+		renderer.renderStandardBlock( blk, x, y, z );
 	}
 
 	@Override

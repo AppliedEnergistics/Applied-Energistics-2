@@ -19,7 +19,6 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
-import appeng.core.features.AEFeatureHandler;
 import appeng.core.features.ItemStackSrc;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
@@ -150,9 +149,10 @@ public class OldItemPart extends AEBaseItem implements IPartItem, IItemGroup, II
 	{
 		return "PART";
 	}
-	
+
 	@Override
-	public String getItemStackDisplayName(ItemStack par1ItemStack) {
+	public String getItemStackDisplayName(ItemStack par1ItemStack)
+	{
 		return "AE2-OLD-PART";
 	}
 

@@ -174,10 +174,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 		super.getDrops( w, x, y, z, drops );
 
 		if ( cell.getStackInSlot( 0 ) != null )
-		{
 			drops.add( cell.getStackInSlot( 0 ) );
-			cell.setInventorySlotContents( 0, null );
-		}
 	}
 
 	public ICellWorkbenchItem getCell()

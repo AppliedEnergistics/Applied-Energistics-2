@@ -24,4 +24,10 @@ public class BlockQuartzPillar extends AEBaseBlock implements IOrientableBlock
 		return new MetaRotation( w, x, y, z );
 	}
 
+	@Override
+	public boolean usesMetadata()
+	{
+		return true;
+	}
+
 }
