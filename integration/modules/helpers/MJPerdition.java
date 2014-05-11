@@ -41,7 +41,7 @@ public class MJPerdition extends BaseMJperdition
 	}
 
 	@Override
-	public double useEnergy(float min, float max, boolean doUse)
+	public double useEnergy(double min, double max, boolean doUse)
 	{
 		return bcPowerHandler.useEnergy( min, max, doUse );
 	}

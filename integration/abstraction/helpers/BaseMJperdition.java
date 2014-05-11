@@ -12,10 +12,10 @@ public abstract class BaseMJperdition extends AETileEventHandler
 		super( TileEventType.TICK, TileEventType.WORLD_NBT );
 	}
 
-	@Method(iname = "MJ")
+	@Method(iname = "MJ5")
 	public abstract PowerReceiver getPowerReceiver();
 
-	public abstract double useEnergy(float f, float requred, boolean b);
+	public abstract double useEnergy(double f, double requred, boolean b);
 
 	public abstract void addEnergy(float failed);
 

@@ -225,9 +225,14 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	public boolean useAlphaPass(ItemStack is)
 	{
 		ItemStack out = getTextureItem( is );
+
+		if ( out == null || out.getItem() == null )
+			return false;
+
 		Block blk = Block.getBlockFromItem( out.getItem() );
 		if ( blk != null && blk.canRenderInPass( 1 ) )
 			return true;
+
 		return false;
 	}
 

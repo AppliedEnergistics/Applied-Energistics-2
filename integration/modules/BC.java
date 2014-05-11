@@ -118,7 +118,15 @@ public class BC extends BaseModule implements IBC
 	{
 		if ( is == null )
 			return false;
-		return is.getItem() instanceof ItemFacade;
+
+		try
+		{
+			return is.getItem() instanceof ItemFacade && ItemFacade.getType( is ) == ItemFacade.TYPE_BASIC;
+		}
+		catch (Throwable t)
+		{
+			return is.getItem() instanceof ItemFacade;
+		}
 	}
 
 	@Override
@@ -265,8 +273,27 @@ public class BC extends BaseModule implements IBC
 	@Override
 	public IFacadePart createFacadePart(Block blk, int meta, ForgeDirection side)
 	{
-		ItemStack fs = ItemFacade.getStack( blk, meta );
-		return new FacadePart( fs, side );
+		try
+		{
+			ItemStack fs = ItemFacade.getFacade( blk, meta );
+			return new FacadePart( fs, side );
+		}
+		catch (Throwable t)
+		{
+
+		}
+
+		try
+		{
+			ItemStack fs = ItemFacade.getStack( blk, meta );
+			return new FacadePart( fs, side );
+		}
+		catch (Throwable t)
+		{
+
+		}
+
+		return null;
 	}
 
 	@Override
@@ -278,8 +305,31 @@ public class BC extends BaseModule implements IBC
 	@Override
 	public ItemStack getTextureForFacade(ItemStack facade)
 	{
-		Block blk = ItemFacade.getBlock( facade );
-		return new ItemStack( blk, 1, ItemFacade.getMetaData( facade ) );
+		try
+		{
+			Block blk[] = ItemFacade.getBlocks( facade );
+			int meta[] = ItemFacade.getMetaValues( facade );
+			if ( blk == null || blk.length < 1 )
+				return null;
+
+			return new ItemStack( blk[0], 1, meta[0] );
+		}
+		catch (Throwable t)
+		{
+
+		}
+
+		try
+		{
+			Block blk = ItemFacade.getBlock( facade );
+			return new ItemStack( blk, 1, ItemFacade.getMetaData( facade ) );
+		}
+		catch (Throwable t)
+		{
+
+		}
+
+		return null;
 	}
 
 	@Override
