@@ -14,7 +14,7 @@ public class AEGenericSchematicTile extends SchematicTile
 {
 
 	@Override
-	public void writeRequirementsToSchematic(IBuilderContext context, int x, int y, int z)
+	public void writeRequirementsToBlueprint(IBuilderContext context, int x, int y, int z)
 	{
 		TileEntity tile = context.world().getTileEntity( x, y, z );
 		ArrayList<ItemStack> list = new ArrayList();
@@ -30,10 +30,10 @@ public class AEGenericSchematicTile extends SchematicTile
 	@Override
 	public void rotateLeft(IBuilderContext context)
 	{
-		if ( cpt.hasKey( "orientation_forward" ) && cpt.hasKey( "orientation_up" ) )
+		if ( tileNBT.hasKey( "orientation_forward" ) && tileNBT.hasKey( "orientation_up" ) )
 		{
-			String forward = cpt.getString( "orientation_forward" );
-			String up = cpt.getString( "orientation_up" );
+			String forward = tileNBT.getString( "orientation_forward" );
+			String up = tileNBT.getString( "orientation_up" );
 
 			if ( forward != null && up != null )
 			{
@@ -45,8 +45,8 @@ public class AEGenericSchematicTile extends SchematicTile
 					fdForward = Platform.rotateAround( fdForward, ForgeDirection.DOWN );
 					fdUp = Platform.rotateAround( fdUp, ForgeDirection.DOWN );
 
-					cpt.setString( "orientation_forward", fdForward.name() );
-					cpt.setString( "orientation_up", fdUp.name() );
+					tileNBT.setString( "orientation_forward", fdForward.name() );
+					tileNBT.setString( "orientation_up", fdUp.name() );
 				}
 				catch (Throwable t)
 				{
