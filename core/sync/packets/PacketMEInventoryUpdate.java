@@ -136,7 +136,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		is.writeToPacket( tmp );
 
 		compressFrame.flush();
-		if ( writtenBytes + tmp.readableBytes() > 30000 )
+		if ( writtenBytes + tmp.readableBytes() > 2 * 1024 * 1024 ) // 2mb!
 			throw new BufferOverflowException();
 		else
 		{
