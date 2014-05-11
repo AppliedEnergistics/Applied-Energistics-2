@@ -12,12 +12,12 @@ import net.minecraft.item.ItemStack;
 import appeng.client.gui.implementations.GuiCraftingTerm;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.INEI;
-import appeng.integration.modules.helpers.NEIAEShapedRecipeHandler;
-import appeng.integration.modules.helpers.NEIAEShapelessRecipeHandler;
-import appeng.integration.modules.helpers.NEICraftingHandler;
-import appeng.integration.modules.helpers.NEIGrinderRecipeHandler;
-import appeng.integration.modules.helpers.NEIInscriberRecipeHandler;
-import appeng.integration.modules.helpers.NEIWorldCraftingHandler;
+import appeng.integration.modules.NEIHelpers.NEIAEShapedRecipeHandler;
+import appeng.integration.modules.NEIHelpers.NEIAEShapelessRecipeHandler;
+import appeng.integration.modules.NEIHelpers.NEICraftingHandler;
+import appeng.integration.modules.NEIHelpers.NEIGrinderRecipeHandler;
+import appeng.integration.modules.NEIHelpers.NEIInscriberRecipeHandler;
+import appeng.integration.modules.NEIHelpers.NEIWorldCraftingHandler;
 import codechicken.nei.guihook.GuiContainerManager;
 
 public class NEI implements IIntegrationModule, INEI
