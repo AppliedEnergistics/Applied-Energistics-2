@@ -13,7 +13,7 @@ import appeng.transformer.annotations.integration.Interface;
 import appeng.util.Platform;
 
 @Interface(iname = "IC2", iface = "ic2.api.energy.tile.IEnergySink")
-public abstract class IC2 extends MinecraftJoules5 implements IEnergySink
+public abstract class IC2 extends MinecraftJoules6 implements IEnergySink
 {
 
 	boolean isInIC2 = false;

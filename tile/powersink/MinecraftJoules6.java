@@ -9,8 +9,15 @@ import buildcraft.api.mj.IBatteryProvider;
 
 @InterfaceList(value = { @Interface(iname = "MJ6", iface = "buildcraft.api.mj.IBatteryProvider"),
 		@Interface(iname = "MJ6", iface = "buildcraft.api.mj.IBatteryObject") })
-public abstract class MinecraftJoules6 extends AERootPoweredTile implements IBatteryProvider, IBatteryObject
+public abstract class MinecraftJoules6 extends MinecraftJoules5 implements IBatteryProvider, IBatteryObject
 {
+
+	@Override
+	@Method(iname = "MJ6")
+	public String kind()
+	{
+		return null;
+	}
 
 	@Override
 	@Method(iname = "MJ6")
@@ -23,7 +30,7 @@ public abstract class MinecraftJoules6 extends AERootPoweredTile implements IBat
 	@Method(iname = "MJ6")
 	public double addEnergy(double amount)
 	{
-		double overflow = PowerUnits.MJ.convertTo( PowerUnits.AE, injectExternalPower( PowerUnits.MJ, amount ) );
+		double overflow = injectExternalPower( PowerUnits.MJ, amount );
 		return amount - overflow;
 	}
 
@@ -31,7 +38,7 @@ public abstract class MinecraftJoules6 extends AERootPoweredTile implements IBat
 	@Method(iname = "MJ6")
 	public double addEnergy(double amount, boolean ignoreCycleLimit)
 	{
-		double overflow = PowerUnits.MJ.convertTo( PowerUnits.AE, injectExternalPower( PowerUnits.MJ, amount ) );
+		double overflow = injectExternalPower( PowerUnits.MJ, amount );
 		return amount - overflow;
 	}
 
@@ -74,12 +81,12 @@ public abstract class MinecraftJoules6 extends AERootPoweredTile implements IBat
 	@Method(iname = "MJ6")
 	public IBatteryObject reconfigure(double maxCapacity, double maxReceivedPerCycle, double minimumConsumption)
 	{
-		return getMjBattery();
+		return getMjBattery( "" );
 	}
 
 	@Override
 	@Method(iname = "MJ6")
-	public IBatteryObject getMjBattery()
+	public IBatteryObject getMjBattery(String kind)
 	{
 		return this;
 	}
