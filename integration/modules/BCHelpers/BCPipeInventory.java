@@ -1,4 +1,4 @@
-package appeng.integration.modules.helpers;
+package appeng.integration.modules.BCHelpers;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;

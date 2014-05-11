@@ -1,5 +1,7 @@
 package appeng.integration.modules;
 
+import java.lang.reflect.Field;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -12,12 +14,19 @@ import appeng.api.config.TunnelType;
 import appeng.api.definitions.Blocks;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.parts.IFacadePart;
+import appeng.api.util.AEItemDefinition;
+import appeng.api.util.IOrientableBlock;
+import appeng.core.AppEng;
 import appeng.facade.FacadePart;
 import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IBC;
-import appeng.integration.modules.helpers.BCPipeHandler;
+import appeng.integration.modules.BCHelpers.AECableSchematicTile;
+import appeng.integration.modules.BCHelpers.AEGenericSchematicTile;
+import appeng.integration.modules.BCHelpers.AERotateableBlockSchematic;
+import appeng.integration.modules.BCHelpers.BCPipeHandler;
 import buildcraft.BuildCraftEnergy;
 import buildcraft.BuildCraftTransport;
+import buildcraft.api.blueprints.SchematicRegistry;
 import buildcraft.api.tools.IToolWrench;
 import buildcraft.api.transport.IPipeConnection;
 import buildcraft.api.transport.IPipeTile;
@@ -189,7 +198,16 @@ public class BC extends BaseModule implements IBC
 		addFacade( b.blockQuartz.stack( 1 ) );
 		addFacade( b.blockQuartzChiseled.stack( 1 ) );
 		addFacade( b.blockQuartzPiller.stack( 1 ) );
-		
+
+		try
+		{
+			initBuilderSupport();
+		}
+		catch (Throwable builderSupport)
+		{
+			// not supported?
+		}
+
 		Block skyStone = b.blockSkyStone.block();
 		if ( skyStone != null )
 		{
@@ -197,6 +215,42 @@ public class BC extends BaseModule implements IBC
 			addFacade( new ItemStack( skyStone, 1, 1 ) );
 			addFacade( new ItemStack( skyStone, 1, 2 ) );
 			addFacade( new ItemStack( skyStone, 1, 3 ) );
+		}
+	}
+
+	private void initBuilderSupport()
+	{
+		SchematicRegistry.declareBlueprintSupport( AppEng.modid );
+
+		Blocks blks = AEApi.instance().blocks();
+		Block cable = blks.blockMultiPart.block();
+		for (Field f : blks.getClass().getFields())
+		{
+			AEItemDefinition def;
+			try
+			{
+				def = (AEItemDefinition) f.get( blks );
+				if ( def != null )
+				{
+					Block myBlock = def.block();
+					if ( myBlock instanceof IOrientableBlock && ((IOrientableBlock) myBlock).usesMetadata() && def.entity() == null )
+					{
+						SchematicRegistry.registerSchematicBlock( myBlock, AERotateableBlockSchematic.class );
+					}
+					else if ( myBlock == cable )
+					{
+						SchematicRegistry.registerSchematicBlock( myBlock, AECableSchematicTile.class );
+					}
+					else if ( def.entity() != null )
+					{
+						SchematicRegistry.registerSchematicBlock( myBlock, AEGenericSchematicTile.class );
+					}
+				}
+			}
+			catch (Throwable t)
+			{
+				// :P
+			}
 		}
 	}
 
