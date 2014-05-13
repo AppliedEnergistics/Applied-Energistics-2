@@ -490,6 +490,7 @@ public class Registration
 			ph.registerNewLayer( "appeng.api.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyHandler" );
 
 		FMLCommonHandler.instance().bus().register( TickHandler.instance );
+		MinecraftForge.EVENT_BUS.register( TickHandler.instance );
 		MinecraftForge.EVENT_BUS.register( new PartPlacement() );
 
 		IGridCacheRegistry gcr = AEApi.instance().registries().gridCache();

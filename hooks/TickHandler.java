@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Callable;
 
+import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import appeng.api.networking.IGridNode;
 import appeng.core.AELog;
@@ -104,9 +105,22 @@ public class TickHandler
 	}
 
 	@SubscribeEvent
+	public void onChunkLoad(ChunkEvent.Load load)
+	{
+		for (Object te : load.getChunk().chunkTileEntityMap.values())
+		{
+			if ( te instanceof AEBaseTile )
+			{
+				((AEBaseTile) te).onChunkLoad();
+			}
+		}
+	}
+
+	@SubscribeEvent
 	public void onTick(TickEvent ev)
 	{
-		if ( ev.type == Type.SERVER && ev.phase == Phase.END ) // for no there is no reason to care about this on the client...
+		if ( ev.type == Type.SERVER && ev.phase == Phase.END ) // for no there is no reason to care about this on the
+																// client...
 		{
 			HandlerRep repo = getRepo();
 			while (!repo.tiles.isEmpty())
