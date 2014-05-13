@@ -10,7 +10,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.features.IPlayerRegistry;
 import appeng.api.implementations.items.IBiometricCard;
+import appeng.api.networking.security.ISecurityRegister;
 import appeng.client.render.items.ToolBiometricCardRender;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
@@ -148,4 +150,9 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 		tag.setBoolean( permission.name(), true );
 	}
 
+	@Override
+	public void registerPermissions(ISecurityRegister register, IPlayerRegistry pr, ItemStack is)
+	{
+		register.addPlayer( pr.getID( getUsername( is ) ), getPermissions( is ) );
+	}
 }
