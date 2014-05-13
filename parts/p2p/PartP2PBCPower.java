@@ -13,7 +13,6 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.integration.abstraction.IMJ5;
@@ -110,7 +109,6 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 				return TickRateModulation.SLOWER;
 
 			double currentTotal = pp.getPowerReceiver().getEnergyStored();
-			AELog.info( "currentTotal: " + currentTotal );
 			if ( currentTotal < 0.01 )
 				return TickRateModulation.SLOWER;
 
@@ -122,20 +120,17 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 					PowerReceiver tp = target.getPowerReceiver( side.getOpposite() );
 					if ( tp != null )
 					{
-						double howmuch = tp.powerRequest(); // orientation.getOpposite()
-						AELog.info( "pulled: " + howmuch );
-						// );
+						double howmuch = tp.powerRequest();
+
 						if ( howmuch > tp.getMaxEnergyReceived() )
 							howmuch = tp.getMaxEnergyReceived();
 
-						AELog.info( "howmuch: " + howmuch );
 						if ( howmuch > 0.01 && howmuch > tp.getMinEnergyReceived() )
 						{
 							double toPull = currentTotal * (howmuch / totalRequiredPower);
 							double pulled = pp.useEnergy( 0, toPull, true );
 							QueueTunnelDrain( PowerUnits.MJ, pulled );
 
-							AELog.info( "pulled: " + pulled );
 							tp.receiveEnergy( Type.PIPE, pulled, o.side.getOpposite() );
 						}
 					}
