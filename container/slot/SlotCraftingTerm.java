@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
@@ -123,7 +124,27 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 				IRecipe r = Platform.findMatchingRecipe( ic, p.worldObj );
 
 				if ( r == null )
+				{
+					Item target = request.getItem();
+					if ( target.isDamageable() && target.isRepairable() )
+					{
+						boolean isBad = false;
+						for (int x = 0; x < ic.getSizeInventory(); x++)
+						{
+							ItemStack pis = ic.getStackInSlot( x );
+							if ( pis == null )
+								continue;
+							if ( pis.getItem() != target )
+								isBad = true;
+						}
+						if ( !isBad )
+						{
+							super.onPickupFromSlot( p, is );
+							return request;
+						}
+					}
 					return null;
+				}
 
 				is = r.getCraftingResult( ic );
 

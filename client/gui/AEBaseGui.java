@@ -115,11 +115,41 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		super.handleMouseInput();
 
-		if ( myScrollBar != null )
+		int i = Mouse.getEventDWheel();
+		if ( i != 0 && isShiftKeyDown() )
 		{
-			int i = Mouse.getEventDWheel();
-			if ( i != 0 )
-				myScrollBar.wheel( i );
+			int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
+			int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+			mouseWheelEvent( x, y, i / Math.abs( i ) );
+		}
+		else if ( i != 0 && myScrollBar != null )
+			myScrollBar.wheel( i );
+	}
+
+	protected void mouseWheelEvent(int x, int y, int wheel)
+	{
+		Slot slot = getSlot( x, y );
+		if ( slot instanceof SlotME )
+		{
+			IAEItemStack item = ((SlotME) slot).getAEStack();
+			if ( item != null )
+			{
+				try
+				{
+					((AEBaseContainer) inventorySlots).setTargetStack( item );
+					InventoryAction direction = wheel > 0 ? InventoryAction.ROLLDOWN : InventoryAction.ROLLUP;
+					int times = Math.abs( wheel );
+					for (int h = 0; h < times; h++)
+					{
+						PacketInventoryAction p = new PacketInventoryAction( direction, inventorySlots.inventorySlots.size(), null );
+						NetworkHandler.instance.sendToServer( p );
+					}
+				}
+				catch (IOException e)
+				{
+					AELog.error( e );
+				}
+			}
 		}
 	}
 
@@ -149,15 +179,13 @@ public abstract class AEBaseGui extends GuiContainer
 		if ( slot instanceof SlotFake )
 		{
 			InventoryAction action = null;
-			IAEItemStack stack = null;
 			action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACESINGLE : InventoryAction.PICKUP_OR_SETDOWN;
 
 			if ( action != null )
 			{
-				PacketInventoryAction p;
 				try
 				{
-					p = new PacketInventoryAction( action, slotIdx, stack );
+					PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, null );
 					NetworkHandler.instance.sendToServer( p );
 				}
 				catch (IOException e)
@@ -175,7 +203,6 @@ public abstract class AEBaseGui extends GuiContainer
 				return; // prevent weird double clicks..
 
 			InventoryAction action = null;
-			IAEItemStack stack = null;
 			if ( key == 1 )
 				action = InventoryAction.CRAFT_SHIFT;
 			else
@@ -183,10 +210,9 @@ public abstract class AEBaseGui extends GuiContainer
 
 			if ( action != null )
 			{
-				PacketInventoryAction p;
 				try
 				{
-					p = new PacketInventoryAction( action, slotIdx, stack );
+					PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, null );
 					NetworkHandler.instance.sendToServer( p );
 				}
 				catch (IOException e)
@@ -204,7 +230,6 @@ public abstract class AEBaseGui extends GuiContainer
 			if ( slot instanceof SlotME )
 				stack = ((SlotME) slot).getAEStack();
 
-			PacketInventoryAction p;
 			try
 			{
 				int slotNum = inventorySlots.inventorySlots.size();
@@ -212,7 +237,8 @@ public abstract class AEBaseGui extends GuiContainer
 				if ( !(slot instanceof SlotME) && slot != null )
 					slotNum = slot.slotNumber;
 
-				p = new PacketInventoryAction( InventoryAction.MOVE_REGION, slotNum, stack );
+				((AEBaseContainer) inventorySlots).setTargetStack( stack );
+				PacketInventoryAction p = new PacketInventoryAction( InventoryAction.MOVE_REGION, slotNum, null );
 				NetworkHandler.instance.sendToServer( p );
 			}
 			catch (IOException e)
@@ -257,10 +283,10 @@ public abstract class AEBaseGui extends GuiContainer
 
 			if ( action != null )
 			{
-				PacketInventoryAction p;
 				try
 				{
-					p = new PacketInventoryAction( action, inventorySlots.inventorySlots.size(), stack );
+					((AEBaseContainer) inventorySlots).setTargetStack( stack );
+					PacketInventoryAction p = new PacketInventoryAction( action, inventorySlots.inventorySlots.size(), null );
 					NetworkHandler.instance.sendToServer( p );
 				}
 				catch (IOException e)
