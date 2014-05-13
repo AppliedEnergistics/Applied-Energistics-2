@@ -8,8 +8,8 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import appeng.core.AELog;
 import appeng.core.AEConfig;
+import appeng.core.AELog;
 
 public class VersionChecker implements Runnable
 {

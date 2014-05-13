@@ -1,6 +1,7 @@
 package appeng.container;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -53,8 +54,6 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorPlayerHand;
 import appeng.util.item.AEItemStack;
-
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
 public abstract class AEBaseContainer extends Container
 {
@@ -118,7 +117,7 @@ public abstract class AEBaseContainer extends Container
 			if ( Platform.isSameItemPrecise( a, b ) )
 				return;
 
-			ByteOutputStream stream = new ByteOutputStream();
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 			NBTTagCompound item = new NBTTagCompound();
 
 			if ( stack != null )
@@ -131,7 +130,7 @@ public abstract class AEBaseContainer extends Container
 				int maxChunkSize = 30000;
 				List<byte[]> miniPackets = new LinkedList();
 
-				byte[] data = stream.getBytes();
+				byte[] data = stream.toByteArray();
 
 				ByteArrayInputStream bis = new ByteArrayInputStream( data, 0, stream.size() );
 				while (bis.available() > 0)
