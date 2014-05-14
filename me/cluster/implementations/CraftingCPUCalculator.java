@@ -7,7 +7,6 @@ import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
 import appeng.tile.crafting.TileCraftingTile;
-import appeng.tile.qnb.TileQuantumBridge;
 
 public class CraftingCPUCalculator extends MBCalculator
 {
@@ -22,19 +21,41 @@ public class CraftingCPUCalculator extends MBCalculator
 	@Override
 	public boolean isValidTile(TileEntity te)
 	{
-		return te instanceof TileQuantumBridge;
+		return te instanceof TileCraftingTile;
 	}
 
 	@Override
 	public boolean checkMultiblockScale(WorldCoord min, WorldCoord max)
 	{
+		if ( max.x - min.x > 8 )
+			return false;
+
+		if ( max.y - min.y > 8 )
+			return false;
+
+		if ( max.z - min.z > 8 )
+			return false;
+
 		return true;
 	}
 
 	@Override
 	public void updateTiles(IAECluster cl, World w, WorldCoord min, WorldCoord max)
 	{
+		CraftingCPUCluster c = (CraftingCPUCluster) cl;
 
+		for (int x = min.x; x <= max.x; x++)
+		{
+			for (int y = min.y; y <= max.y; y++)
+			{
+				for (int z = min.z; z <= max.z; z++)
+				{
+					TileCraftingTile te = (TileCraftingTile) w.getTileEntity( x, y, z );
+					te.updateStatus( c );
+					c.addTile( te );
+				}
+			}
+		}
 	}
 
 	@Override
@@ -52,7 +73,6 @@ public class CraftingCPUCalculator extends MBCalculator
 	@Override
 	public boolean verifyInternalStructure(World w, WorldCoord min, WorldCoord max)
 	{
-
 		for (int x = min.x; x <= max.x; x++)
 		{
 			for (int y = min.y; y <= max.y; y++)

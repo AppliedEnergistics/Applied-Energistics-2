@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderQuartzGlass;
+import appeng.client.render.blocks.RenderBlockAssembler;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.crafting.TileMolecularAssembler;
@@ -32,7 +32,7 @@ public class BlockMolecularAssembler extends AEBaseBlock
 	@SideOnly(Side.CLIENT)
 	public Class<? extends BaseBlockRender> getRenderer()
 	{
-		return RenderQuartzGlass.class;
+		return RenderBlockAssembler.class;
 	}
 
 	@Override

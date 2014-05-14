@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -12,6 +13,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
+import appeng.client.render.BaseBlockRender;
+import appeng.client.render.blocks.RenderBlockCrafting;
 import appeng.core.features.AEFeature;
 import appeng.tile.crafting.TileCraftingTile;
 
@@ -23,6 +26,11 @@ public class BlockCraftingUnit extends AEBaseBlock
 	public final static int BASE_STORAGE = 2;
 	public final static int BASE_ACCELERATOR = 3;
 
+	static public boolean checkType(int meta, int type)
+	{
+		return (meta & 7) == type;
+	}
+
 	public BlockCraftingUnit() {
 		super( BlockCraftingUnit.class, Material.iron );
 		hasSubtypes = true;
@@ -30,11 +38,25 @@ public class BlockCraftingUnit extends AEBaseBlock
 		setTileEntiy( TileCraftingTile.class );
 	}
 
+	@Override
+	protected Class<? extends BaseBlockRender> getRenderer()
+	{
+		return RenderBlockCrafting.class;
+	}
+
+	@Override
+	public void onNeighborBlockChange(World w, int x, int y, int z, Block junk)
+	{
+		TileCraftingTile cp = getTileEntity( w, x, y, z );
+		if ( cp != null )
+			cp.updateMultiBlock();
+	}
+
 	public ItemStack getItemStack(World world, int x, int y, int z)
 	{
 		TileCraftingTile ct = getTileEntity( world, x, y, z );
 
-		int meta = world.getBlockMetadata( x, y, z );
+		int meta = world.getBlockMetadata( x, y, z ) & 7;
 		if ( ct != null && meta == BASE_STORAGE )
 		{
 			return createStackForBytes( ct.getStorageBytes() );

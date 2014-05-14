@@ -56,18 +56,39 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 	private ICraftingPatternDetails myPlan = null;
 	private double progress = 0;
 	private boolean isAwake = false;
+	private boolean forcePlan = false;
 
 	@Override
 	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table, ForgeDirection where)
 	{
+		if ( myPattern == null )
+		{
+			boolean isEmpty = true;
+			for (int x = 0; x < inv.getSizeInventory(); x++)
+				isEmpty = inv.getStackInSlot( x ) == null && isEmpty;
+
+			if ( isEmpty )
+			{
+				forcePlan = true;
+				myPlan = patternDetails;
+				pushDirection = where;
+
+				for (int x = 0; x < table.getSizeInventory(); x++)
+					inv.setInventorySlotContents( x, table.getStackInSlot( x ) );
+
+				updateSleepyness();
+				return true;
+			}
+		}
 		return false;
 	}
 
 	private void recalculatePlan()
 	{
-		ItemStack is = inv.getStackInSlot( 10 );
+		if ( forcePlan )
+			return;
 
-		boolean wasEnabled = isAwake;
+		ItemStack is = inv.getStackInSlot( 10 );
 
 		if ( is != null && is.getItem() instanceof ItemEncodedPattern )
 		{
@@ -89,6 +110,12 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 			myPattern = null;
 		}
 
+		updateSleepyness();
+	}
+
+	private void updateSleepyness()
+	{
+		boolean wasEnabled = isAwake;
 		isAwake = myPlan != null && hasMats() || canPush();
 		if ( wasEnabled != isAwake )
 		{
@@ -132,6 +159,17 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		@Override
 		public void writeToNBT(NBTTagCompound data)
 		{
+			if ( forcePlan )
+			{
+				ItemStack pattern = myPlan.getPattern();
+				if ( pattern != null )
+				{
+					NBTTagCompound pdata = new NBTTagCompound();
+					pattern.writeToNBT( pdata );
+					data.setTag( "myPlan", pdata );
+				}
+			}
+
 			upgrades.writeToNBT( data, "upgrades" );
 			inv.writeToNBT( data, "inv" );
 			settings.writeToNBT( data );
@@ -140,6 +178,23 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		@Override
 		public void readFromNBT(NBTTagCompound data)
 		{
+			if ( data.hasKey( "myPlan" ) )
+			{
+				ItemStack myPat = ItemStack.loadItemStackFromNBT( data.getCompoundTag( "myPlan" ) );
+
+				if ( myPat != null && myPat.getItem() instanceof ItemEncodedPattern )
+				{
+					World w = getWorldObj();
+					ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
+					ICraftingPatternDetails ph = iep.getPatternForItem( is, w );
+					if ( ph != null )
+					{
+						forcePlan = true;
+						myPlan = ph;
+					}
+				}
+			}
+
 			upgrades.readFromNBT( data, "upgrades" );
 			inv.readFromNBT( data, "inv" );
 			settings.readFromNBT( data );
@@ -339,6 +394,12 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		}
 		else
 			output = pushTo( output, pushDirection );
+
+		if ( output == null && forcePlan )
+		{
+			forcePlan = false;
+			recalculatePlan();
+		}
 
 		inv.setInventorySlotContents( 9, output );
 	}
