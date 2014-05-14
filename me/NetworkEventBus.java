@@ -80,35 +80,42 @@ public class NetworkEventBus
 			return;
 		readClasses.add( c );
 
-		for (Method m : c.getMethods())
+		try
 		{
-			MENetworkEventSubscribe s = m.getAnnotation( MENetworkEventSubscribe.class );
-			if ( s != null )
+			for (Method m : c.getMethods())
 			{
-				Class types[] = m.getParameterTypes();
-				if ( types.length == 1 )
+				MENetworkEventSubscribe s = m.getAnnotation( MENetworkEventSubscribe.class );
+				if ( s != null )
 				{
-					if ( MENetworkEvent.class.isAssignableFrom( types[0] ) )
+					Class types[] = m.getParameterTypes();
+					if ( types.length == 1 )
 					{
-
-						Hashtable<Class, MENetworkEventInfo> classEvents = events.get( types[0] );
-						if ( classEvents == null )
-							events.put( types[0], classEvents = new Hashtable() );
-
-						MENetworkEventInfo thisEvent = classEvents.get( listAs );
-						if ( thisEvent == null )
-							thisEvent = new MENetworkEventInfo();
-
-						thisEvent.Add( types[0], c, m );
-
-						classEvents.put( listAs, thisEvent );
+						if ( MENetworkEvent.class.isAssignableFrom( types[0] ) )
+						{
+	
+							Hashtable<Class, MENetworkEventInfo> classEvents = events.get( types[0] );
+							if ( classEvents == null )
+								events.put( types[0], classEvents = new Hashtable() );
+	
+							MENetworkEventInfo thisEvent = classEvents.get( listAs );
+							if ( thisEvent == null )
+								thisEvent = new MENetworkEventInfo();
+	
+							thisEvent.Add( types[0], c, m );
+	
+							classEvents.put( listAs, thisEvent );
+						}
+						else
+							throw new RuntimeException( "Invalid ME Network Event Subscriber, " + m.getName() + "s Parameter must extend MENetworkEvent." );
 					}
 					else
-						throw new RuntimeException( "Invalid ME Network Event Subscriber, " + m.getName() + "s Parameter must extend MENetworkEvent." );
+						throw new RuntimeException( "Invalid ME Network Event Subscriber, " + m.getName() + " must have exactly 1 parameter." );
 				}
-				else
-					throw new RuntimeException( "Invalid ME Network Event Subscriber, " + m.getName() + " must have exactly 1 parameter." );
 			}
+		}
+		catch(Throwable t )
+		{
+			throw new RuntimeException( "Error while adding "+c.getName()+" to event bus", t );
 		}
 
 	}

@@ -2,8 +2,9 @@ package appeng.util.item;
 
 import io.netty.buffer.ByteBuf;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInput;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -17,8 +18,6 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAETagCompound;
 import appeng.util.Platform;
-
-import com.google.common.io.ByteStreams;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -329,8 +328,8 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			byte[] bd = new byte[len];
 			data.readBytes( bd );
 
-			DataInput di = ByteStreams.newDataInput( bd );
-			d.setTag( "tag", CompressedStreamTools.read( di ) );
+			ByteArrayInputStream di = new ByteArrayInputStream( bd );
+			d.setTag( "tag", CompressedStreamTools.read( new DataInputStream( di) ) );
 		}
 
 		// long priority = getPacketValue( PriorityType, data );

@@ -18,6 +18,7 @@ import appeng.api.implementations.items.IItemGroup;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.core.AEConfig;
+import appeng.core.AELog;
 import appeng.core.features.AEFeature;
 import appeng.core.features.ItemStackSrc;
 import appeng.core.localization.GuiText;
@@ -74,7 +75,7 @@ public class OldItemPart extends AEBaseItem implements IPartItem, IItemGroup, II
 		}
 		catch (Throwable e)
 		{
-			e.printStackTrace();
+			AELog.integration(e);
 			return null; // part not supported..
 		}
 
