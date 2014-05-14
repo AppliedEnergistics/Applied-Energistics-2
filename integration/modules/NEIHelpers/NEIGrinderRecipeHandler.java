@@ -1,4 +1,4 @@
-package appeng.integration.modules.helpers;
+package appeng.integration.modules.NEIHelpers;
 
 import static codechicken.lib.gui.GuiDraw.changeTexture;
 import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;

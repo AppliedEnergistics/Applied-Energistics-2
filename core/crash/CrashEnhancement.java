@@ -9,8 +9,21 @@ public class CrashEnhancement implements ICrashCallable
 
 	final CrashInfo Output;
 
+	final String ModVersion = AEConfig.CHANNEL + " " + AEConfig.VERSION + " for Forge " + // WHAT?
+			net.minecraftforge.common.ForgeVersion.majorVersion + "." // majorVersion
+			+ net.minecraftforge.common.ForgeVersion.minorVersion + "." // minorVersion
+			+ net.minecraftforge.common.ForgeVersion.revisionVersion + "." // revisionVersion
+			+ net.minecraftforge.common.ForgeVersion.buildVersion;
+
+	final String IntegrationInfo;
+
 	public CrashEnhancement(CrashInfo ci) {
 		Output = ci;
+
+		if ( IntegrationRegistry.instance != null )
+			IntegrationInfo = IntegrationRegistry.instance.getStatus();
+		else
+			IntegrationInfo = "N/A";
 	}
 
 	@Override
@@ -19,15 +32,9 @@ public class CrashEnhancement implements ICrashCallable
 		switch (Output)
 		{
 		case MOD_VERSION:
-			return AEConfig.CHANNEL + " " + AEConfig.VERSION + " for Forge "
-					+ net.minecraftforge.common.ForgeVersion.majorVersion + "." // majorVersion
-					+ net.minecraftforge.common.ForgeVersion.minorVersion + "." // minorVersion
-					+ net.minecraftforge.common.ForgeVersion.revisionVersion + "." // revisionVersion
-					+ net.minecraftforge.common.ForgeVersion.buildVersion;
+			return ModVersion;
 		case INTEGRATION:
-			if ( IntegrationRegistry.instance == null )
-				return "N/A";
-			return IntegrationRegistry.instance.getStatus();
+			return IntegrationInfo;
 		}
 
 		return "UNKNOWN_VALUE";

@@ -49,6 +49,8 @@ public class FacadeContainer implements IFacadeContainer
 	{
 		int facadeSides = out.readByte();
 
+		boolean changed = false;
+
 		int ids[] = new int[2];
 		for (int x = 0; x < facades.length; x++)
 		{
@@ -64,6 +66,7 @@ public class FacadeContainer implements IFacadeContainer
 				if ( isBC && AppEng.instance.isIntegrationEnabled( "BC" ) )
 				{
 					IBC bc = (IBC) AppEng.instance.getIntegration( "BC" );
+					changed = changed || facades[x] == null;
 					facades[x] = bc.createFacadePart( (Block) Block.blockRegistry.getObjectById( ids[0] ), ids[1], side );
 				}
 				else if ( !isBC )
@@ -71,13 +74,20 @@ public class FacadeContainer implements IFacadeContainer
 					ItemFacade ifa = (ItemFacade) AEApi.instance().items().itemFacade.item();
 					ItemStack facade = ifa.createFromInts( ids );
 					if ( facade != null )
+					{
+						changed = changed || facades[x] == null;
 						facades[x] = ifa.createPartFromItemStack( facade, side );
+					}
 				}
 			}
 			else
+			{
+				changed = changed || facades[x] != null;
 				facades[x] = null;
+			}
 		}
-		return false;
+
+		return changed;
 	}
 
 	public void readFromNBT(NBTTagCompound c)
@@ -159,5 +169,21 @@ public class FacadeContainer implements IFacadeContainer
 			if ( facades[x] != null )
 				return false;
 		return true;
+	}
+
+	public void rotateLeft()
+	{
+		IFacadePart newfacades[] = new FacadePart[6];
+
+		newfacades[ForgeDirection.UP.ordinal()] = facades[ForgeDirection.UP.ordinal()];
+		newfacades[ForgeDirection.DOWN.ordinal()] = facades[ForgeDirection.DOWN.ordinal()];
+
+		newfacades[ForgeDirection.EAST.ordinal()] = facades[ForgeDirection.NORTH.ordinal()];
+		newfacades[ForgeDirection.SOUTH.ordinal()] = facades[ForgeDirection.EAST.ordinal()];
+		newfacades[ForgeDirection.WEST.ordinal()] = facades[ForgeDirection.SOUTH.ordinal()];
+		newfacades[ForgeDirection.NORTH.ordinal()] = facades[ForgeDirection.WEST.ordinal()];
+
+		for (int x = 0; x < facades.length; x++)
+			facades[x] = newfacades[x];
 	}
 }

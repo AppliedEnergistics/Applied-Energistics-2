@@ -116,4 +116,10 @@ public class BlockQuartzGrowthAccelerator extends AEBaseBlock implements IOrient
 			Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
 		}
 	}
+
+	@Override
+	public boolean usesMetadata()
+	{
+		return true;
+	}
 }

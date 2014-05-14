@@ -80,8 +80,7 @@ public class AppEng
 			IMCHandlers.put( "add-p2p-attunement-" + type.name().replace( '_', '-' ).toLowerCase(), new IMCP2PAttunement() );
 		}
 
-		for (CrashInfo ci : CrashInfo.values())
-			FMLCommonHandler.instance().registerCrashCallable( new CrashEnhancement( ci ) );
+		FMLCommonHandler.instance().registerCrashCallable( new CrashEnhancement( CrashInfo.MOD_VERSION ) );
 	}
 
 	public boolean isIntegrationEnabled(String Name)
@@ -157,6 +156,7 @@ public class AppEng
 
 		Registration.instance.PostInit( event );
 		IntegrationRegistry.instance.postinit();
+		FMLCommonHandler.instance().registerCrashCallable( new CrashEnhancement( CrashInfo.INTEGRATION ) );
 
 		CommonHelper.proxy.postinit();
 		AEConfig.instance.save();

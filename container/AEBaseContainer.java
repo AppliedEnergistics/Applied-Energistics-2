@@ -1,5 +1,7 @@
 package appeng.container;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -16,6 +18,8 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
@@ -47,6 +51,7 @@ import appeng.container.slot.SlotPlayerInv;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
+import appeng.core.sync.packets.PacketPartialItem;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.InventoryAction;
@@ -69,6 +74,101 @@ public abstract class AEBaseContainer extends Container
 	public String customName;
 
 	int ticksSinceCheck = 900;
+
+	IAEItemStack clientRequestedTargetItem = null;
+	List<PacketPartialItem> dataChunks = new LinkedList();
+
+	public void postPartial(PacketPartialItem packetPartialItem)
+	{
+		dataChunks.add( packetPartialItem );
+		if ( packetPartialItem.getPageCount() == dataChunks.size() )
+			parsePartials();
+	}
+
+	private void parsePartials()
+	{
+		int total = 0;
+		for (PacketPartialItem ppi : dataChunks)
+			total += ppi.getSize();
+
+		byte[] buffer = new byte[total];
+		int cursor = 0;
+
+		for (PacketPartialItem ppi : dataChunks)
+			cursor = ppi.write( buffer, cursor );
+
+		try
+		{
+			NBTTagCompound data = CompressedStreamTools.readCompressed( new ByteArrayInputStream( buffer ) );
+			if ( data != null )
+				setTargetStack( AEApi.instance().storage().createItemStack( ItemStack.loadItemStackFromNBT( data ) ) );
+		}
+		catch (IOException e)
+		{
+			AELog.error( e );
+		}
+
+		dataChunks.clear();
+	}
+
+	public void setTargetStack(IAEItemStack stack)
+	{
+		// client dosn't need to re-send, makes for lower overhead rapid packets.
+		if ( Platform.isClient() )
+		{
+			ItemStack a = stack == null ? null : stack.getItemStack();
+			ItemStack b = clientRequestedTargetItem == null ? null : clientRequestedTargetItem.getItemStack();
+
+			if ( Platform.isSameItemPrecise( a, b ) )
+				return;
+
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			NBTTagCompound item = new NBTTagCompound();
+
+			if ( stack != null )
+				stack.writeToNBT( item );
+
+			try
+			{
+				CompressedStreamTools.writeCompressed( item, stream );
+
+				int maxChunkSize = 30000;
+				List<byte[]> miniPackets = new LinkedList();
+
+				byte[] data = stream.toByteArray();
+
+				ByteArrayInputStream bis = new ByteArrayInputStream( data, 0, stream.size() );
+				while (bis.available() > 0)
+				{
+					int nextBLock = bis.available() > maxChunkSize ? maxChunkSize : bis.available();
+					byte[] nextSegment = new byte[nextBLock];
+					bis.read( nextSegment );
+					miniPackets.add( nextSegment );
+				}
+				bis.close();
+				stream.close();
+
+				int page = 0;
+				for (byte[] packet : miniPackets)
+				{
+					PacketPartialItem ppi = new PacketPartialItem( page++, miniPackets.size(), packet );
+					NetworkHandler.instance.sendToServer( ppi );
+				}
+			}
+			catch (IOException e)
+			{
+				AELog.error( e );
+				return;
+			}
+		}
+
+		clientRequestedTargetItem = stack == null ? null : stack.copy();
+	}
+
+	public IAEItemStack getTargetStack()
+	{
+		return clientRequestedTargetItem;
+	}
 
 	public BaseActionSource getSource()
 	{
@@ -548,7 +648,7 @@ public abstract class AEBaseContainer extends Container
 		return ais.getItemStack();
 	}
 
-	public void doAction(EntityPlayerMP player, InventoryAction action, int slot, IAEItemStack slotItem)
+	public void doAction(EntityPlayerMP player, InventoryAction action, int slot)
 	{
 		if ( slot >= 0 && slot < inventorySlots.size() )
 		{
@@ -632,6 +732,9 @@ public abstract class AEBaseContainer extends Container
 			return;
 		}
 
+		// get target item.
+		IAEItemStack slotItem = getTargetStack();
+
 		switch (action)
 		{
 		case SHIFT_CLICK:
@@ -657,6 +760,34 @@ public abstract class AEBaseContainer extends Container
 					adp.addItems( ais.getItemStack() );
 			}
 			break;
+		case ROLLDOWN:
+			if ( powerSrc == null || cellInv == null )
+				return;
+
+			int releaseQty = 1;
+			ItemStack isg = player.inventory.getItemStack();
+
+			if ( isg != null && releaseQty > 0 )
+			{
+				IAEItemStack ais = AEApi.instance().storage().createItemStack( isg );
+				ais.setStackSize( 1 );
+				IAEItemStack extracted = ais.copy();
+
+				ais = Platform.poweredInsert( powerSrc, cellInv, ais, mySrc );
+				if ( ais == null )
+				{
+					InventoryAdaptor ia = new AdaptorPlayerHand( player );
+
+					ItemStack fail = ia.removeItems( 1, extracted.getItemStack(), null );
+					if ( fail == null )
+						cellInv.extractItems( extracted, Actionable.MODULATE, mySrc );
+
+					updateHeld( player );
+				}
+			}
+
+			break;
+		case ROLLUP:
 		case PICKUP_SINGLE:
 			if ( powerSrc == null || cellInv == null )
 				return;
@@ -664,13 +795,13 @@ public abstract class AEBaseContainer extends Container
 			if ( slotItem != null )
 			{
 				int liftQty = 1;
-				ItemStack isg = player.inventory.getItemStack();
+				ItemStack isgg = player.inventory.getItemStack();
 
-				if ( isg != null )
+				if ( isgg != null )
 				{
-					if ( isg.stackSize >= isg.getMaxStackSize() )
+					if ( isgg.stackSize >= isgg.getMaxStackSize() )
 						liftQty = 0;
-					if ( !Platform.isSameItemPrecise( slotItem.getItemStack(), isg ) )
+					if ( !Platform.isSameItemPrecise( slotItem.getItemStack(), isgg ) )
 						liftQty = 0;
 				}
 
@@ -679,14 +810,16 @@ public abstract class AEBaseContainer extends Container
 					IAEItemStack ais = slotItem.copy();
 					ais.setStackSize( 1 );
 					ais = Platform.poweredExtraction( powerSrc, cellInv, ais, mySrc );
+					if ( ais != null )
+					{
+						InventoryAdaptor ia = new AdaptorPlayerHand( player );
 
-					InventoryAdaptor ia = new AdaptorPlayerHand( player );
+						ItemStack fail = ia.addItems( ais.getItemStack() );
+						if ( fail != null )
+							cellInv.injectItems( ais, Actionable.MODULATE, mySrc );
 
-					ItemStack fail = ia.addItems( ais.getItemStack() );
-					if ( fail != null )
-						cellInv.injectItems( ais, Actionable.MODULATE, mySrc );
-
-					updateHeld( player );
+						updateHeld( player );
+					}
 				}
 			}
 			break;
@@ -802,13 +935,17 @@ public abstract class AEBaseContainer extends Container
 
 	protected void updateHeld(EntityPlayerMP p)
 	{
-		try
+		if ( Platform.isServer() )
 		{
-			NetworkHandler.instance.sendTo( new PacketInventoryAction( InventoryAction.UPDATE_HAND, 0, AEItemStack.create( p.inventory.getItemStack() ) ), p );
-		}
-		catch (IOException e)
-		{
-			AELog.error( e );
+			try
+			{
+				NetworkHandler.instance.sendTo( new PacketInventoryAction( InventoryAction.UPDATE_HAND, 0, AEItemStack.create( p.inventory.getItemStack() ) ),
+						p );
+			}
+			catch (IOException e)
+			{
+				AELog.error( e );
+			}
 		}
 	}
 

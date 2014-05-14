@@ -486,16 +486,22 @@ public class Registration
 			ph.registerNewLayer( "appeng.api.parts.layers.LayerIEnergySource", "ic2.api.energy.tile.IEnergySource" );
 		}
 
-		if ( AppEng.instance.isIntegrationEnabled( "MJ" ) )
+		if ( AppEng.instance.isIntegrationEnabled( "MJ5" ) )
 		{
 			ph.registerNewLayer( "appeng.api.parts.layers.LayerIPowerEmitter", "buildcraft.api.power.IPowerEmitter" );
 			ph.registerNewLayer( "appeng.api.parts.layers.LayerIPowerReceptor", "buildcraft.api.power.IPowerReceptor" );
+		}
+
+		if ( AppEng.instance.isIntegrationEnabled( "MJ6" ) )
+		{
+			ph.registerNewLayer( "appeng.api.parts.layers.LayerIBatteryProvider", "buildcraft.api.mj.IBatteryProvider" );
 		}
 
 		if ( AppEng.instance.isIntegrationEnabled( "RF" ) )
 			ph.registerNewLayer( "appeng.api.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyHandler" );
 
 		FMLCommonHandler.instance().bus().register( TickHandler.instance );
+		MinecraftForge.EVENT_BUS.register( TickHandler.instance );
 		MinecraftForge.EVENT_BUS.register( new PartPlacement() );
 
 		IGridCacheRegistry gcr = AEApi.instance().registries().gridCache();

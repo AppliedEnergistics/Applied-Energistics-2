@@ -20,8 +20,8 @@ import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderQuartzTorch;
 import appeng.client.render.effects.LightningEffect;
-import appeng.core.CommonHelper;
 import appeng.core.AEConfig;
+import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 import appeng.helpers.MetaRotation;
@@ -129,6 +129,12 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 				Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
 			}
 		}
+	}
+
+	@Override
+	public boolean usesMetadata()
+	{
+		return true;
 	}
 
 }

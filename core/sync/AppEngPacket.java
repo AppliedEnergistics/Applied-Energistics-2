@@ -36,8 +36,8 @@ public abstract class AppEngPacket
 
 	public FMLProxyPacket getProxy()
 	{
-		if ( p.array().length > 30000 ) // 2k walking room :)
-			throw new IllegalArgumentException( "Sorry AE2 made a huge packet by accident!" );
+		if ( p.array().length > 2 * 1024 * 1024 ) // 2k walking room :)
+			throw new IllegalArgumentException( "Sorry AE2 made a " + p.array().length + " byte packet by accident!" );
 
 		return new FMLProxyPacket( p, NetworkHandler.instance.getChannel() );
 	}

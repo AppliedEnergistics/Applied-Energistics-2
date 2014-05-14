@@ -13,6 +13,7 @@ import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.InventoryAction;
+import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 public class PacketInventoryAction extends AppEngPacket
@@ -40,7 +41,7 @@ public class PacketInventoryAction extends AppEngPacket
 		if ( sender.openContainer instanceof AEBaseContainer )
 		{
 			AEBaseContainer aebc = (AEBaseContainer) sender.openContainer;
-			aebc.doAction( sender, action, slot, slotItem );
+			aebc.doAction( sender, action, slot );
 		}
 	}
 
@@ -58,6 +59,10 @@ public class PacketInventoryAction extends AppEngPacket
 
 	// api
 	public PacketInventoryAction(InventoryAction action, int slot, IAEItemStack slotItem) throws IOException {
+
+		if ( Platform.isClient() && slotItem != null )
+			throw new RuntimeException( "invalid packet, client cannot post inv actions with stacks." );
+
 		this.action = action;
 		this.slot = slot;
 		this.slotItem = slotItem;

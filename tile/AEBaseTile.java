@@ -112,6 +112,22 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	}
 
 	@Override
+	public void onChunkUnload()
+	{
+		if ( !isInvalid() )
+			invalidate();
+	}
+
+	/**
+	 * for dormant chunk cache.
+	 */
+	public void onChunkLoad()
+	{
+		if ( isInvalid() )
+			validate();
+	}
+
+	@Override
 	// NOTE: WAS FINAL, changed for Immibis
 	public void writeToNBT(NBTTagCompound data)
 	{
@@ -322,12 +338,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			for (int l = 0; l < inv.getSizeInventory(); l++)
 			{
 				ItemStack is = inv.getStackInSlot( l );
-
 				if ( is != null )
-				{
 					drops.add( is );
-					inv.setInventorySlotContents( l, (ItemStack) null );
-				}
 			}
 		}
 

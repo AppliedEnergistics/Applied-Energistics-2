@@ -20,6 +20,7 @@ import appeng.core.sync.packets.PacketMultiPart;
 import appeng.core.sync.packets.PacketNEIRecipe;
 import appeng.core.sync.packets.PacketNewStorageDimension;
 import appeng.core.sync.packets.PacketPartPlacement;
+import appeng.core.sync.packets.PacketPartialItem;
 import appeng.core.sync.packets.PacketPatternSlot;
 import appeng.core.sync.packets.PacketProgressBar;
 import appeng.core.sync.packets.PacketSwapSlots;
@@ -70,7 +71,9 @@ public class AppEngPacketHandlerBase
 
 		PACKET_PATTERN_SLOT(PacketPatternSlot.class),
 
-		PACKET_RECIPE_NEI(PacketNEIRecipe.class);
+		PACKET_RECIPE_NEI(PacketNEIRecipe.class),
+
+		PACKET_PARTIAL_ITEM(PacketPartialItem.class);
 
 		final public Class pc;
 		final public Constructor con;

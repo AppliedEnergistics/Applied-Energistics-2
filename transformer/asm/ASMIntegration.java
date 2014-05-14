@@ -35,7 +35,8 @@ public class ASMIntegration implements IClassTransformer
 		// integrationModules.add( IntegrationSide.BOTH, "Thermal Expansion", "ThermalExpansion", "TE" );
 		// integrationModules.add( IntegrationSide.BOTH, "Mystcraft", "Mystcraft", "Mystcraft" );
 		integrationModules.add( IntegrationSide.BOTH, "BuildCraft", "BuildCraft|Silicon", "BC" );
-		integrationModules.add( IntegrationSide.BOTH, "BuildCraft Power", null, "MJ" );
+		integrationModules.add( IntegrationSide.BOTH, "BuildCraft5 Power", null, "MJ5" );
+		integrationModules.add( IntegrationSide.BOTH, "BuildCraft6 Power", null, "MJ6" );
 		integrationModules.add( IntegrationSide.BOTH, "RedstoneFlux Power", null, "RF" );
 		// integrationModules.add( IntegrationSide.BOTH, "Greg Tech", "gregtech_addon", "GT" );
 		// integrationModules.add( IntegrationSide.BOTH, "Universal Electricity", null, "UE" );

@@ -15,14 +15,14 @@ import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkSecurityChange;
 import appeng.api.networking.security.ISecurityGrid;
+import appeng.api.networking.security.ISecurityProvider;
 import appeng.core.WorldSettings;
 import appeng.me.GridNode;
-import appeng.tile.misc.TileSecurity;
 
 public class SecurityCache implements IGridCache, ISecurityGrid
 {
 
-	private List<TileSecurity> securityProvider = new ArrayList();
+	private List<ISecurityProvider> securityProvider = new ArrayList();
 	private HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms = new HashMap<Integer, EnumSet<SecurityPermissions>>();
 
 	public SecurityCache(IGrid g) {
@@ -84,7 +84,7 @@ public class SecurityCache implements IGridCache, ISecurityGrid
 		long lastCode = securityKey;
 
 		if ( securityProvider.size() == 1 )
-			securityKey = securityProvider.get( 0 ).securityKey;
+			securityKey = securityProvider.get( 0 ).getSecurityKey();
 		else
 			securityKey = -1;
 
@@ -99,9 +99,9 @@ public class SecurityCache implements IGridCache, ISecurityGrid
 	@Override
 	public void removeNode(IGridNode gridNode, IGridHost machine)
 	{
-		if ( machine instanceof TileSecurity )
+		if ( machine instanceof ISecurityProvider )
 		{
-			securityProvider.remove( (TileSecurity) machine );
+			securityProvider.remove( (ISecurityProvider) machine );
 			updateSecurityKey();
 		}
 	}
@@ -109,9 +109,9 @@ public class SecurityCache implements IGridCache, ISecurityGrid
 	@Override
 	public void addNode(IGridNode gridNode, IGridHost machine)
 	{
-		if ( machine instanceof TileSecurity )
+		if ( machine instanceof ISecurityProvider )
 		{
-			securityProvider.add( (TileSecurity) machine );
+			securityProvider.add( (ISecurityProvider) machine );
 			updateSecurityKey();
 		}
 		else

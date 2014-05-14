@@ -31,6 +31,7 @@ import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.events.MENetworkSecurityChange;
+import appeng.api.networking.security.ISecurityProvider;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ITerminalHost;
@@ -40,6 +41,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
+import appeng.helpers.PlayerSecuirtyWrapper;
 import appeng.me.GridAccessException;
 import appeng.me.storage.SecurityInventory;
 import appeng.tile.events.AETileEventHandler;
@@ -53,7 +55,7 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
-public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEAppEngInventory, ILocatable, IConfigManagerHost
+public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEAppEngInventory, ILocatable, IConfigManagerHost, ISecurityProvider
 {
 
 	private static int diffrence = 0;
@@ -205,7 +207,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 			if ( i instanceof IBiometricCard )
 			{
 				IBiometricCard bc = (IBiometricCard) i;
-				playerPerms.put( pr.getID( bc.getUsername( is ) ), bc.getPermissions( is ) );
+				bc.registerPermissions( new PlayerSecuirtyWrapper( playerPerms ), pr, is );
 			}
 		}
 
@@ -304,6 +306,12 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
 	{
 
+	}
+
+	@Override
+	public long getSecurityKey()
+	{
+		return securityKey;
 	}
 
 }

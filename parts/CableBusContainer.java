@@ -79,6 +79,23 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 		return sides[side.ordinal()];
 	}
 
+	public void rotateLeft()
+	{
+		IPart newSides[] = new IPart[6];
+
+		newSides[ForgeDirection.UP.ordinal()] = sides[ForgeDirection.UP.ordinal()];
+		newSides[ForgeDirection.DOWN.ordinal()] = sides[ForgeDirection.DOWN.ordinal()];
+
+		newSides[ForgeDirection.EAST.ordinal()] = sides[ForgeDirection.NORTH.ordinal()];
+		newSides[ForgeDirection.SOUTH.ordinal()] = sides[ForgeDirection.EAST.ordinal()];
+		newSides[ForgeDirection.WEST.ordinal()] = sides[ForgeDirection.SOUTH.ordinal()];
+		newSides[ForgeDirection.NORTH.ordinal()] = sides[ForgeDirection.WEST.ordinal()];
+
+		sides = newSides;
+
+		fc.rotateLeft();
+	}
+
 	public void updateDynamicRender()
 	{
 		requiresDynamicRender = false;

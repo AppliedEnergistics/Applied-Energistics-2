@@ -3,7 +3,6 @@ package appeng.me.cache;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
-import net.minecraft.tileentity.TileEntity;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -12,7 +11,6 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.core.AELog;
 import appeng.me.cache.helpers.TickTracker;
 
 public class TickManagerCache implements ITickManager
@@ -170,9 +168,6 @@ public class TickManagerCache implements ITickManager
 			TickingRequest tr = ((IGridTickable) machine).getTickingRequest( gridNode );
 			if ( tr != null )
 			{
-				if ( machine instanceof TileEntity && ((TileEntity) machine).canUpdate() )
-					AELog.warning( "Tile: " + machine.getClass().getName() + " - reports to use MC ticking, but also requests Network Based Ticking." );
-
 				TickTracker tt = new TickTracker( tr, gridNode, (IGridTickable) machine, currentTick, this );
 
 				if ( tr.canBeAlerted )
