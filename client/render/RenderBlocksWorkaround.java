@@ -20,6 +20,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 {
 
 	public boolean calculations = true;
+	public EnumSet<ForgeDirection> renderFaces = EnumSet.allOf( ForgeDirection.class );
 	public EnumSet<ForgeDirection> faces = EnumSet.allOf( ForgeDirection.class );
 
 	private class LightingCache implements ISimplifiedBundle
@@ -302,6 +303,9 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	{
 		if ( faces.contains( ForgeDirection.WEST ) )
 		{
+			if ( !renderFaces.contains( ForgeDirection.WEST ) )
+				return;
+
 			if ( isFacade )
 			{
 				Tessellator tessellator = Tessellator.instance;
@@ -353,6 +357,9 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	{
 		if ( faces.contains( ForgeDirection.EAST ) )
 		{
+			if ( !renderFaces.contains( ForgeDirection.EAST ) )
+				return;
+
 			if ( isFacade )
 			{
 				Tessellator tessellator = Tessellator.instance;
@@ -432,6 +439,9 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	{
 		if ( faces.contains( ForgeDirection.DOWN ) )
 		{
+			if ( !renderFaces.contains( ForgeDirection.DOWN ) )
+				return;
+
 			if ( isFacade )
 			{
 				Tessellator tessellator = Tessellator.instance;
@@ -483,6 +493,9 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	{
 		if ( faces.contains( ForgeDirection.UP ) )
 		{
+			if ( !renderFaces.contains( ForgeDirection.UP ) )
+				return;
+
 			if ( isFacade )
 			{
 				Tessellator tessellator = Tessellator.instance;
@@ -534,6 +547,9 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	{
 		if ( faces.contains( ForgeDirection.NORTH ) )
 		{
+			if ( !renderFaces.contains( ForgeDirection.NORTH ) )
+				return;
+
 			if ( isFacade )
 			{
 				Tessellator tessellator = Tessellator.instance;
@@ -585,6 +601,9 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	{
 		if ( faces.contains( ForgeDirection.SOUTH ) )
 		{
+			if ( !renderFaces.contains( ForgeDirection.SOUTH ) )
+				return;
+
 			if ( isFacade )
 			{
 				Tessellator tessellator = Tessellator.instance;

@@ -326,7 +326,7 @@ public class BusRenderHelper implements IPartRenderHelper
 	@Override
 	public void setFacesToRender(EnumSet<ForgeDirection> faces)
 	{
-		BusRenderer.instance.renderer.faces = faces;
+		BusRenderer.instance.renderer.renderFaces = faces;
 	}
 
 	public void renderBlockCurrentBounds(int x, int y, int z, RenderBlocks renderer)
