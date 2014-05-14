@@ -806,7 +806,10 @@ public abstract class AEBaseContainer extends Container
 				if ( slotItem != null )
 				{
 					IAEItemStack ais = slotItem.copy();
-					long stackSize = Math.min( ais.getItemStack().getMaxStackSize(), ais.getStackSize() );
+					long maxSize = ais.getItemStack().getMaxStackSize();
+					ais.setStackSize( maxSize );
+					ais = cellInv.extractItems( ais, Actionable.SIMULATE, mySrc );
+					long stackSize = Math.min( maxSize, ais.getStackSize() );
 					ais.setStackSize( (stackSize + 1) >> 1 );
 					ais = Platform.poweredExtraction( powerSrc, cellInv, ais, mySrc );
 					if ( ais != null )
