@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
-import appeng.api.parts.IPart;
+import appeng.api.parts.IBoxProvider;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.ISimplifiedBundle;
@@ -148,7 +148,7 @@ public class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public ISimplifiedBundle useSimpliedRendering(int x, int y, int z, IPart p, ISimplifiedBundle sim)
+	public ISimplifiedBundle useSimpliedRendering(int x, int y, int z, IBoxProvider p, ISimplifiedBundle sim)
 	{
 		RenderBlocksWorkaround rbw = BusRenderer.instance.renderer;
 
@@ -167,21 +167,29 @@ public class BusRenderHelper implements IPartRenderHelper
 			rbw.faces.clear();
 
 			bbc.started = false;
-			p.getBoxes( bbc );
+			if ( p == null )
+			{
+				bbc.minX = bbc.minY = bbc.minZ = 0;
+				bbc.maxX = bbc.maxY = bbc.maxZ = 16;
+			}
+			else
+			{
+				p.getBoxes( bbc );
 
-			if ( bbc.minX < 1 )
-				bbc.minX = 1;
-			if ( bbc.minY < 1 )
-				bbc.minY = 1;
-			if ( bbc.minZ < 1 )
-				bbc.minZ = 1;
+				if ( bbc.minX < 1 )
+					bbc.minX = 1;
+				if ( bbc.minY < 1 )
+					bbc.minY = 1;
+				if ( bbc.minZ < 1 )
+					bbc.minZ = 1;
 
-			if ( bbc.maxX > 15 )
-				bbc.maxX = 15;
-			if ( bbc.maxY > 15 )
-				bbc.maxY = 15;
-			if ( bbc.maxZ > 15 )
-				bbc.maxZ = 15;
+				if ( bbc.maxX > 15 )
+					bbc.maxX = 15;
+				if ( bbc.maxY > 15 )
+					bbc.maxY = 15;
+				if ( bbc.maxZ > 15 )
+					bbc.maxZ = 15;
+			}
 
 			setBounds( bbc.minX, bbc.minY, bbc.minZ, bbc.maxX, bbc.maxY, bbc.maxZ );
 
@@ -205,6 +213,29 @@ public class BusRenderHelper implements IPartRenderHelper
 		maxX = maxx;
 		maxY = maxy;
 		maxZ = maxz;
+	}
+
+	public double getBound(ForgeDirection side)
+	{
+		switch (side)
+		{
+		default:
+		case UNKNOWN:
+			return 0.5;
+		case DOWN:
+			return minY;
+		case EAST:
+			return maxX;
+		case NORTH:
+			return minZ;
+		case SOUTH:
+			return maxZ;
+		case UP:
+			return maxY;
+		case WEST:
+			return minX;
+
+		}
 	}
 
 	@Override

@@ -10,11 +10,13 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockCrafting;
+import appeng.client.texture.ExtraTextures;
 import appeng.core.features.AEFeature;
 import appeng.tile.crafting.TileCraftingTile;
 
@@ -36,6 +38,34 @@ public class BlockCraftingUnit extends AEBaseBlock
 		hasSubtypes = true;
 		setfeature( EnumSet.of( AEFeature.Crafting ) );
 		setTileEntiy( TileCraftingTile.class );
+	}
+
+	@Override
+	public IIcon getIcon(int direction, int metadata)
+	{
+		switch (metadata)
+		{
+		case BASE_MONITOR:
+			if ( direction == 0 )
+				return ExtraTextures.BlockCraftingStorageMonitor.getIcon();
+			break;
+		case BASE_STORAGE:
+			return ExtraTextures.BlockCraftingStorage1k.getIcon();
+		case BASE_ACCELERATOR:
+			return ExtraTextures.BlockCraftingAccelerator.getIcon();
+		case BASE_MONITOR | 8:
+			if ( direction == 0 )
+				return ExtraTextures.BlockCraftingStorageMonitorFit.getIcon();
+			break;
+		case BASE_STORAGE | 8:
+			return ExtraTextures.BlockCraftingStorage1kFit.getIcon();
+		case BASE_ACCELERATOR | 8:
+			return ExtraTextures.BlockCraftingAcceleratorFit.getIcon();
+		case BASE_DAMAGE | 8:
+			return ExtraTextures.BlockCraftingUnitFit.getIcon();
+		}
+
+		return super.getIcon( direction, metadata );
 	}
 
 	@Override

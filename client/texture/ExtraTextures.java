@@ -52,7 +52,21 @@ public enum ExtraTextures
 
 	BlockQuartzGrowthAcceleratorOn("BlockQuartzGrowthAcceleratorOn"), BlockQuartzGrowthAcceleratorSideOn("BlockQuartzGrowthAcceleratorSideOn"),
 
-	BlockWirelessInside("BlockWirelessInside");
+	BlockWirelessInside("BlockWirelessInside"),
+
+	BlockCraftingAccelerator("BlockCraftingAccelerator"), BlockCraftingStorageMonitor("BlockCraftingStorageMonitor"),
+
+	BlockCraftingStorage1k("BlockCraftingStorage1k"), BlockCraftingStorage4k("BlockCraftingStorage4k"), BlockCraftingStorage16k("BlockCraftingStorage16k"), BlockCraftingStorage64k(
+			"BlockCraftingStorage64k"),
+
+	BlockCraftingAcceleratorFit("BlockCraftingAcceleratorFit"), BlockCraftingStorageMonitorFit("BlockCraftingStorageMonitorFit"),
+
+	BlockCraftingStorage1kFit("BlockCraftingStorage1kFit"), BlockCraftingStorage4kFit("BlockCraftingStorage4kFit"), BlockCraftingStorage16kFit(
+			"BlockCraftingStorage16kFit"), BlockCraftingStorage64kFit("BlockCraftingStorage64kFit"),
+
+	BlockCraftingUnitRing("BlockCraftingUnitRing"), BlockCraftingUnitRingLong("BlockCraftingUnitRingLong"), BlockCraftingUnitFit("BlockCraftingUnitFit"),
+
+	BlockCraftingHeatVent("BlockCraftingHeatVent");
 
 	final private String name;
 	public IIcon IIcon;

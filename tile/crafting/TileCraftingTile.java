@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.networking.GridFlags;
+import appeng.api.parts.ISimplifiedBundle;
 import appeng.block.crafting.BlockCraftingUnit;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
@@ -25,6 +26,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock
 	private long storageBytes = 0;
 	CraftingCPUCluster clust;
 	final CraftingCPUCalculator calc = new CraftingCPUCalculator( this );
+	public ISimplifiedBundle lightCache;
 
 	@Override
 	protected AENetworkProxy createProxy()
