@@ -151,7 +151,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	@Override
 	public void setInventorySlotContents(int var1, ItemStack var2)
 	{
-		if ( var2 == null )
+		if ( var2 == null && Platform.isServer() )
 			makePlate();
 	}
 
