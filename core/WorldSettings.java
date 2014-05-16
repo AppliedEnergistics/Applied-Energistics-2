@@ -238,6 +238,14 @@ public class WorldSettings extends Configuration
 		return null;
 	}
 
+	public int getNextOrderedValue(String name)
+	{
+		Property p = this.get( "orderedValues", name, 0 );
+		int myValue = p.getInt();
+		p.set( myValue + 1 );
+		return myValue;
+	}
+
 	public int getPlayerID(String username)
 	{
 		ConfigCategory playerList = this.getCategory( "players" );

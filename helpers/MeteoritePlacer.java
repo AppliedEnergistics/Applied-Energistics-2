@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.AEApi;
+import appeng.core.WorldSettings;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
@@ -326,7 +327,14 @@ public class MeteoritePlacer
 			int primary = Math.max( 1, (int) (Math.random() * 4) );
 			for (int zz = 0; zz < primary; zz++)
 			{
-				switch ((int) (Math.random() * 1000) % 4)
+				int r = 0;
+
+				if ( Math.random() > 0.7 )
+					r = WorldSettings.getInstance().getNextOrderedValue( "presses" );
+				else
+					r = (int) (Math.random() * 1000);
+
+				switch (r % 4)
 				{
 				case 0:
 					ap.addItems( AEApi.instance().materials().materialCalcProcessorPress.stack( 1 ) );

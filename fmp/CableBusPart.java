@@ -35,6 +35,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.client.render.BusRenderHelper;
+import appeng.client.render.BusRenderer;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.features.AEFeature;
@@ -275,6 +276,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		if ( pass == 0 || (pass == 1 && AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass )) )
 		{
 			BusRenderHelper.instance.setPass( pass );
+			BusRenderer.instance.renderer.renderAllFaces = true;
+			BusRenderer.instance.renderer.blockAccess = world();
+			BusRenderer.instance.renderer.overrideBlockTexture = null;
 			cb.renderStatic( pos.x, pos.y, pos.z );
 			return BusRenderHelper.instance.getItemsRendered() > 0;
 		}
