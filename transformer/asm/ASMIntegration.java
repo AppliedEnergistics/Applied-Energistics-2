@@ -49,6 +49,7 @@ public class ASMIntegration implements IClassTransformer
 		// integrationModules.add( IntegrationSide.BOTH, "Forestry", "Forestry", "Forestry" );
 		// integrationModules.add( IntegrationSide.BOTH, "Mekanism", "Mekanism", "Mekanism" );
 		integrationModules.add( IntegrationSide.CLIENT, "Waila", "Waila", "Waila" );
+		integrationModules.add( IntegrationSide.BOTH, "Colored Lights Core", "coloredlightscore", "CLApi" );
 		integrationModules.add( IntegrationSide.BOTH, "Rotatable Blocks", "RotatableBlocks", "RB" );
 		integrationModules.add( IntegrationSide.CLIENT, "Inventory Tweaks", "inventorytweaks", "InvTweaks" );
 		integrationModules.add( IntegrationSide.CLIENT, "Not Enough Items", "NotEnoughItems", "NEI" );

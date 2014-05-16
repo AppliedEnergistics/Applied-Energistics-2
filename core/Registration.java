@@ -127,8 +127,6 @@ import appeng.me.cache.SecurityCache;
 import appeng.me.cache.SpatialPylonCache;
 import appeng.me.cache.TickManagerCache;
 import appeng.me.storage.AEExternalHandler;
-import appeng.migration.OldItemMaterial;
-import appeng.migration.OldItemPart;
 import appeng.parts.PartPlacement;
 import appeng.recipes.AEItemResolver;
 import appeng.recipes.RecipeHandler;
@@ -364,12 +362,6 @@ public class Registration
 
 		items.itemFacade = addFeature( ItemFacade.class );
 		items.itemCrystalSeed = addFeature( ItemCrystalSeed.class );
-
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.AlphaMigration ) )
-		{
-			GameRegistry.registerItem( new OldItemMaterial(), "item.ItemMaterial" );
-			GameRegistry.registerItem( new OldItemPart(), "item.ItemPart" );
-		}
 
 		addFeature( ToolEraser.class );
 		addFeature( ToolMeteoritePlacer.class );

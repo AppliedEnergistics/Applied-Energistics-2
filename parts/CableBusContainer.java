@@ -40,8 +40,10 @@ import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.CableRenderHelper;
+import appeng.core.AppEng;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiTile;
+import appeng.integration.abstraction.ICLApi;
 import appeng.me.GridConnection;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
@@ -800,12 +802,17 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	public int getLightValue()
 	{
 		int light = 0;
+
 		for (ForgeDirection d : ForgeDirection.values())
 		{
 			IPart p = getPart( d );
 			if ( p != null )
 				light = Math.max( p.getLightLevel(), light );
 		}
+
+		if ( light > 0 && AppEng.instance.isIntegrationEnabled( "CLApi" ) )
+			return ((ICLApi) AppEng.instance.getIntegration( "CLApi" )).colorLight( getColor(), light );
+
 		return light;
 	}
 

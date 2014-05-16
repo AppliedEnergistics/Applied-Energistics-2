@@ -37,7 +37,6 @@ import appeng.client.texture.TaughtIcon;
 import appeng.items.parts.ItemMultiPart;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
-import appeng.migration.OldItemPart;
 import appeng.parts.AEBasePart;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
@@ -54,10 +53,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	public PartCable(Class c, ItemStack is) {
 		super( c, is );
 		proxy.setIdlePowerUsage( 0.0 );
-		if ( is.getItem() instanceof OldItemPart )
-			proxy.myColor = AEColor.values()[((OldItemPart) is.getItem()).varientOf( is.getItemDamage() )];
-		else
-			proxy.myColor = AEColor.values()[((ItemMultiPart) is.getItem()).varientOf( is.getItemDamage() )];
+		proxy.myColor = AEColor.values()[((ItemMultiPart) is.getItem()).varientOf( is.getItemDamage() )];
 	}
 
 	@Override
