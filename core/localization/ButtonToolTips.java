@@ -32,7 +32,9 @@ public enum ButtonToolTips
 
 	Blocking, NonBlocking, Craft, DontCraft,
 
-	LevelType, LevelType_Energy, LevelType_Item, InventoryTweaks, TerminalStyle, TerminalStyle_Full, TerminalStyle_Tall, TerminalStyle_Small;
+	LevelType, LevelType_Energy, LevelType_Item, InventoryTweaks, TerminalStyle, TerminalStyle_Full, TerminalStyle_Tall, TerminalStyle_Small,
+
+	Stash, StashDesc;
 
 	String root;
 
