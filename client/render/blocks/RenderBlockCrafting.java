@@ -3,14 +3,15 @@ package appeng.client.render.blocks;
 import java.util.EnumSet;
 
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
+import appeng.block.crafting.BlockCraftingMonitor;
 import appeng.block.crafting.BlockCraftingUnit;
-import appeng.block.crafting.ItemBlockCraftingUnit;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.BusRenderer;
@@ -20,6 +21,10 @@ import appeng.tile.crafting.TileCraftingTile;
 public class RenderBlockCrafting extends BaseBlockRender
 {
 
+	protected RenderBlockCrafting(boolean useTesr, int range) {
+		super( useTesr, range );
+	}
+
 	public RenderBlockCrafting() {
 		super( false, 20 );
 	}
@@ -27,30 +32,7 @@ public class RenderBlockCrafting extends BaseBlockRender
 	@Override
 	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
-		if ( is.getItemDamage() == BlockCraftingUnit.BASE_STORAGE )
-		{
-			ItemBlockCraftingUnit ibcu = (ItemBlockCraftingUnit) is.getItem();
-			int bytes = (int) ibcu.getStorageBytes( is );
-			final int k = 1024;
-			switch (bytes)
-			{
-			case k:
-				renderer.setOverrideBlockTexture( ExtraTextures.BlockCraftingStorage1k.getIcon() );
-				break;
-			case 4 * k:
-				renderer.setOverrideBlockTexture( ExtraTextures.BlockCraftingStorage4k.getIcon() );
-				break;
-			case 16 * k:
-				renderer.setOverrideBlockTexture( ExtraTextures.BlockCraftingStorage16k.getIcon() );
-				break;
-			case 64 * k:
-				renderer.setOverrideBlockTexture( ExtraTextures.BlockCraftingStorage64k.getIcon() );
-				break;
-			}
-		}
-		else
-			renderer.setOverrideBlockTexture( blk.getIcon( 0, is.getItemDamage() ) );
-
+		renderer.setOverrideBlockTexture( blk.getIcon( 0, is.getItemDamage() ) );
 		super.renderInventory( blk, is, renderer, type, obj );
 		renderer.setOverrideBlockTexture( null );
 	}
@@ -60,36 +42,18 @@ public class RenderBlockCrafting extends BaseBlockRender
 	{
 		IIcon theIcon = null;
 		boolean formed = false;
+		boolean emitsLight = false;
 
 		TileCraftingTile ct = blk.getTileEntity( w, x, y, z );
 		if ( ct != null && ct.isFormed() )
-			formed = true;
-
-		int meta = w.getBlockMetadata( x, y, z ) & 7;
-
-		if ( meta == BlockCraftingUnit.BASE_STORAGE )
 		{
-			TileCraftingTile tct = (TileCraftingTile) blk.getTileEntity( w, x, y, z );
-
-			final int k = 1024;
-			switch ((int) tct.getStorageBytes())
-			{
-			case k:
-				theIcon = formed ? ExtraTextures.BlockCraftingStorage1kFit.getIcon() : ExtraTextures.BlockCraftingStorage1k.getIcon();
-				break;
-			case 4 * k:
-				theIcon = formed ? ExtraTextures.BlockCraftingStorage4kFit.getIcon() : ExtraTextures.BlockCraftingStorage4k.getIcon();
-				break;
-			case 16 * k:
-				theIcon = formed ? ExtraTextures.BlockCraftingStorage16kFit.getIcon() : ExtraTextures.BlockCraftingStorage16k.getIcon();
-				break;
-			case 64 * k:
-				theIcon = formed ? ExtraTextures.BlockCraftingStorage64kFit.getIcon() : ExtraTextures.BlockCraftingStorage64k.getIcon();
-				break;
-			}
+			formed = true;
+			emitsLight = ct.isPowered();
 		}
-		else
-			theIcon = blk.getIcon( 0, meta | (formed ? 8 : 0) );
+		int meta = w.getBlockMetadata( x, y, z ) & 3;
+
+		boolean isMonitor = blk.getClass() == BlockCraftingMonitor.class;
+		theIcon = blk.getIcon( 0, meta | (formed ? 8 : 0) );
 
 		if ( formed )
 		{
@@ -134,7 +98,7 @@ public class RenderBlockCrafting extends BaseBlockRender
 						fso( side, highX, ForgeDirection.EAST ), fso( side, highY, ForgeDirection.UP ), fso( side, highZ, ForgeDirection.SOUTH ) );
 				i.prepareBounds( renderer );
 
-				handleSide( x, y, z, i, renderer, theIcon, side, w );
+				handleSide( blk, meta, x, y, z, i, renderer, theIcon, emitsLight, isMonitor, side, w );
 			}
 
 			i.setFacesToRender( EnumSet.allOf( ForgeDirection.class ) );
@@ -194,14 +158,45 @@ public class RenderBlockCrafting extends BaseBlockRender
 		return def;
 	}
 
-	private void handleSide(int x, int y, int z, BusRenderHelper i, RenderBlocks renderer, IIcon theIcon, ForgeDirection side, IBlockAccess w)
+	private void handleSide(AEBaseBlock blk, int meta, int x, int y, int z, BusRenderHelper i, RenderBlocks renderer, IIcon color, boolean emitsLight,
+			boolean isMonitor, ForgeDirection side, IBlockAccess w)
 	{
 		if ( isConnected( w, x, y, z, side ) )
 			return;
 
 		i.setFacesToRender( EnumSet.of( side ) );
-		i.setTexture( ExtraTextures.BlockCraftingHeatVent.getIcon() );
-		i.renderBlockCurrentBounds( x, y, z, renderer );
+
+		if ( meta == 0 && blk.getClass() == BlockCraftingUnit.class )
+		{
+			i.setTexture( ExtraTextures.BlockCraftingUnitFit.getIcon() );
+			i.renderBlockCurrentBounds( x, y, z, renderer );
+		}
+		else
+		{
+			if ( color == ExtraTextures.BlockCraftingMonitorFit.getIcon() )
+				i.setTexture( ExtraTextures.BlockCraftingMonitorOuter.getIcon() );
+			else
+				i.setTexture( ExtraTextures.BlockCraftingFitSolid.getIcon() );
+
+			i.renderBlockCurrentBounds( x, y, z, renderer );
+
+			if ( color != null )
+			{
+				i.setTexture( color );
+
+				if ( !emitsLight )
+				{
+					i.renderBlockCurrentBounds( x, y, z, renderer );
+				}
+				else
+				{
+					Tessellator.instance.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
+					Tessellator.instance.setBrightness( 13 << 20 | 13 << 4 );
+					i.renderFace( x, y, z, color, side, renderer );
+				}
+
+			}
+		}
 
 		i.setTexture( ExtraTextures.BlockCraftingUnitRingLong.getIcon() );
 		for (ForgeDirection a : ForgeDirection.VALID_DIRECTIONS)

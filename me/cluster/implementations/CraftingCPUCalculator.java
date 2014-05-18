@@ -1,7 +1,14 @@
 package appeng.me.cluster.implementations;
 
+import java.util.Iterator;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.events.MENetworkCraftingCpuChange;
 import appeng.api.util.WorldCoord;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
@@ -56,6 +63,22 @@ public class CraftingCPUCalculator extends MBCalculator
 				}
 			}
 		}
+
+		Iterator<IGridHost> i = c.getTiles();
+		while (i.hasNext())
+		{
+			IGridHost gh = i.next();
+			IGridNode n = gh.getGridNode( ForgeDirection.UNKNOWN );
+			if ( n != null )
+			{
+				IGrid g = n.getGrid();
+				if ( g != null )
+				{
+					g.postEvent( new MENetworkCraftingCpuChange( n ) );
+					return;
+				}
+			}
+		}
 	}
 
 	@Override
@@ -73,6 +96,8 @@ public class CraftingCPUCalculator extends MBCalculator
 	@Override
 	public boolean verifyInternalStructure(World w, WorldCoord min, WorldCoord max)
 	{
+		boolean storage = false;
+
 		for (int x = min.x; x <= max.x; x++)
 		{
 			for (int y = min.y; y <= max.y; y++)
@@ -84,11 +109,13 @@ public class CraftingCPUCalculator extends MBCalculator
 					if ( !te.isValid() )
 						return false;
 
+					if ( !storage && te instanceof TileCraftingTile )
+						storage = ((TileCraftingTile) te).getStorageBytes() > 0;
 				}
 			}
 		}
 
-		return true;
+		return storage;
 	}
 
 }

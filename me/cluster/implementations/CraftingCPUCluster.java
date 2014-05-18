@@ -3,7 +3,10 @@ package appeng.me.cluster.implementations;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.events.MENetworkCraftingCpuChange;
 import appeng.api.util.WorldCoord;
 import appeng.me.cluster.IAECluster;
 import appeng.tile.crafting.TileCraftingTile;
@@ -48,8 +51,21 @@ public class CraftingCPUCluster implements IAECluster
 			return;
 		isDestroyed = true;
 
+		boolean posted = false;
+
 		for (TileCraftingTile r : tiles)
 		{
+			IGridNode n = r.getActionableNode();
+			if ( n != null && posted == false )
+			{
+				IGrid g = n.getGrid();
+				if ( g != null )
+				{
+					g.postEvent( new MENetworkCraftingCpuChange( n ) );
+					posted = true;
+				}
+			}
+
 			r.updateStatus( null );
 		}
 	}

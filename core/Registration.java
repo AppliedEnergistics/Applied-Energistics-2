@@ -30,6 +30,8 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPartHelper;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEItemDefinition;
+import appeng.block.crafting.BlockCraftingMonitor;
+import appeng.block.crafting.BlockCraftingStorage;
 import appeng.block.crafting.BlockCraftingUnit;
 import appeng.block.crafting.BlockMolecularAssembler;
 import appeng.block.grindstone.BlockCrank;
@@ -272,9 +274,12 @@ public class Registration
 		blocks.blockMultiPart = addFeature( BlockCableBus.class );
 
 		blocks.blockCraftingUnit = addFeature( BlockCraftingUnit.class );
-		blocks.blockCraftingMonitor = new WrappedDamageItemDefinition( blocks.blockCraftingUnit, BlockCraftingUnit.BASE_MONITOR );
-		blocks.blockCraftingStorage = new WrappedDamageItemDefinition( blocks.blockCraftingUnit, BlockCraftingUnit.BASE_STORAGE );
-		blocks.blockCraftingAccelerator = new WrappedDamageItemDefinition( blocks.blockCraftingUnit, BlockCraftingUnit.BASE_ACCELERATOR );
+		blocks.blockCraftingAccelerator = new WrappedDamageItemDefinition( blocks.blockCraftingUnit, 1 );
+		blocks.blockCraftingMonitor = addFeature( BlockCraftingMonitor.class );
+		blocks.blockCraftingStorage1k = addFeature( BlockCraftingStorage.class );
+		blocks.blockCraftingStorage4k = new WrappedDamageItemDefinition( blocks.blockCraftingStorage1k, 1 );
+		blocks.blockCraftingStorage16k = new WrappedDamageItemDefinition( blocks.blockCraftingStorage1k, 2 );
+		blocks.blockCraftingStorage64k = new WrappedDamageItemDefinition( blocks.blockCraftingStorage1k, 3 );
 		blocks.blockMolecularAssembler = addFeature( BlockMolecularAssembler.class );
 
 		blocks.blockQuartzOre = addFeature( OreQuartz.class );

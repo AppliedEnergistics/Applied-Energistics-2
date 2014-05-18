@@ -54,19 +54,19 @@ public enum ExtraTextures
 
 	BlockWirelessInside("BlockWirelessInside"),
 
-	BlockCraftingAccelerator("BlockCraftingAccelerator"), BlockCraftingStorageMonitor("BlockCraftingStorageMonitor"),
+	BlockCraftingAccelerator("BlockCraftingAccelerator"), BlockCraftingMonitor("BlockCraftingMonitor"),
 
 	BlockCraftingStorage1k("BlockCraftingStorage1k"), BlockCraftingStorage4k("BlockCraftingStorage4k"), BlockCraftingStorage16k("BlockCraftingStorage16k"), BlockCraftingStorage64k(
 			"BlockCraftingStorage64k"),
 
-	BlockCraftingAcceleratorFit("BlockCraftingAcceleratorFit"), BlockCraftingStorageMonitorFit("BlockCraftingStorageMonitorFit"),
+	BlockCraftingAcceleratorFit("BlockCraftingAcceleratorFit"), BlockCraftingMonitorFit("BlockCraftingMonitorFit"),
 
-	BlockCraftingStorage1kFit("BlockCraftingStorage1kFit"), BlockCraftingStorage4kFit("BlockCraftingStorage4kFit"), BlockCraftingStorage16kFit(
+	BlockCraftingStorage1kFit("BlockCraftingStorageFit"), BlockCraftingStorage4kFit("BlockCraftingStorage4kFit"), BlockCraftingStorage16kFit(
 			"BlockCraftingStorage16kFit"), BlockCraftingStorage64kFit("BlockCraftingStorage64kFit"),
 
 	BlockCraftingUnitRing("BlockCraftingUnitRing"), BlockCraftingUnitRingLong("BlockCraftingUnitRingLong"), BlockCraftingUnitFit("BlockCraftingUnitFit"),
 
-	BlockCraftingHeatVent("BlockCraftingHeatVent");
+	BlockCraftingMonitorOuter("BlockCraftingMonitorOuter"), BlockCraftingFitSolid("BlockCraftingFitSolid");
 
 	final private String name;
 	public IIcon IIcon;

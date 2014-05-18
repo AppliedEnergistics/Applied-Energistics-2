@@ -2,28 +2,23 @@ package appeng.tile.crafting;
 
 import java.util.EnumSet;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
-import appeng.api.AEApi;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.ISimplifiedBundle;
-import appeng.block.crafting.BlockCraftingUnit;
+import appeng.me.GridAccessException;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.AENetworkProxyMultiblock;
-import appeng.tile.events.AETileEventHandler;
-import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 
 public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock
 {
 
-	private long storageBytes = 0;
 	CraftingCPUCluster clust;
 	final CraftingCPUCalculator calc = new CraftingCPUCalculator( this );
 	public ISimplifiedBundle lightCache;
@@ -48,31 +43,6 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock
 	public TileCraftingTile() {
 		gridProxy.setFlags( GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL );
 		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
-		addNewHandler( new AETileEventHandler( TileEventType.NETWORK, TileEventType.WORLD_NBT ) {
-
-			public void writeToNBT(NBTTagCompound data)
-			{
-				if ( storageBytes > 0 )
-					data.setLong( "bytes", storageBytes );
-			}
-
-			public void readFromNBT(NBTTagCompound data)
-			{
-				storageBytes = data.getLong( "bytes" );
-			}
-
-			public boolean readFromStream(io.netty.buffer.ByteBuf data) throws java.io.IOException
-			{
-				storageBytes = data.readLong();
-				return false;
-			}
-
-			public void writeToStream(io.netty.buffer.ByteBuf data) throws java.io.IOException
-			{
-				data.writeLong( storageBytes );
-			}
-
-		} );
 	}
 
 	@Override
@@ -83,13 +53,10 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock
 	}
 
 	@Override
-	public void onPlacement(ItemStack stack, EntityPlayer player, int side)
+	public boolean canBeRotated()
 	{
-		if ( AEApi.instance().blocks().blockCraftingStorage.sameAsStack( stack ) && stack.hasTagCompound() )
-		{
-			NBTTagCompound data = stack.getTagCompound();
-			storageBytes = data.getLong( "bytes" );
-		}
+		return true;// return BlockCraftingUnit.checkType( worldObj.getBlockMetadata( xCoord, yCoord, zCoord ),
+					// BlockCraftingUnit.BASE_MONITOR );
 	}
 
 	@Override
@@ -102,11 +69,27 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock
 		}
 	}
 
+	@MENetworkEventSubscribe
+	public void onPowerStateChage(MENetworkPowerStatusChange ev)
+	{
+		updateMeta();
+	}
+
 	public void updateMeta()
 	{
 		boolean formed = clust != null;
+		boolean power = false;
+		try
+		{
+			power = gridProxy.getEnergy().isNetworkPowered();
+		}
+		catch (GridAccessException e)
+		{
+			// ;P
+		}
+
 		int current = worldObj.getBlockMetadata( xCoord, yCoord, zCoord );
-		int newmeta = (current & 7) | (formed ? 8 : 0);
+		int newmeta = (current & 3) | (formed ? 8 : 0) | (power ? 4 : 0);
 
 		if ( current != newmeta )
 			worldObj.setBlockMetadataWithNotify( xCoord, yCoord, zCoord, newmeta, 3 );
@@ -135,9 +118,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock
 		return true;
 	}
 
-	public long getStorageBytes()
+	public boolean isPowered()
 	{
-		return storageBytes;
+		return (worldObj.getBlockMetadata( xCoord, yCoord, zCoord ) & 4) == 4;
 	}
 
 	public boolean isFormed()
@@ -145,19 +128,24 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock
 		return (worldObj.getBlockMetadata( xCoord, yCoord, zCoord ) & 8) == 8;
 	}
 
-	public boolean isStorage()
+	public boolean isAccelerator()
 	{
-		return BlockCraftingUnit.checkType( worldObj.getBlockMetadata( xCoord, yCoord, zCoord ), BlockCraftingUnit.BASE_STORAGE );
+		return worldObj.getBlockMetadata( xCoord, yCoord, zCoord ) == 1;
 	}
 
 	public boolean isStatus()
 	{
-		return BlockCraftingUnit.checkType( worldObj.getBlockMetadata( xCoord, yCoord, zCoord ), BlockCraftingUnit.BASE_MONITOR );
+		return false;
 	}
 
-	public boolean isAccelerator()
+	public boolean isStorage()
 	{
-		return BlockCraftingUnit.checkType( worldObj.getBlockMetadata( xCoord, yCoord, zCoord ), BlockCraftingUnit.BASE_ACCELERATOR );
+		return false;
+	}
+
+	public int getStorageBytes()
+	{
+		return 0;
 	}
 
 }
