@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import appeng.client.gui.implementations.GuiCraftingTerm;
+import appeng.integration.BaseModule;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.INEI;
 import appeng.integration.modules.NEIHelpers.NEIAEShapedRecipeHandler;
@@ -20,7 +21,7 @@ import appeng.integration.modules.NEIHelpers.NEIInscriberRecipeHandler;
 import appeng.integration.modules.NEIHelpers.NEIWorldCraftingHandler;
 import codechicken.nei.guihook.GuiContainerManager;
 
-public class NEI implements IIntegrationModule, INEI
+public class NEI extends BaseModule implements IIntegrationModule, INEI
 {
 
 	public static NEI instance;
@@ -32,6 +33,9 @@ public class NEI implements IIntegrationModule, INEI
 	Method registerUsageHandler;
 
 	public NEI() throws ClassNotFoundException {
+		TestClass( GuiContainerManager.class );
+		TestClass( codechicken.nei.recipe.ICraftingHandler.class );
+		TestClass( codechicken.nei.recipe.IUsageHandler.class );
 		API = Class.forName( "codechicken.nei.api.API" );
 	}
 
@@ -94,9 +98,16 @@ public class NEI implements IIntegrationModule, INEI
 	@Override
 	public RenderItem setItemRender(RenderItem aeri2)
 	{
-		RenderItem ri = GuiContainerManager.drawItems;
-		GuiContainerManager.drawItems = aeri2;
-		return ri;
+		try
+		{
+			RenderItem ri = GuiContainerManager.drawItems;
+			GuiContainerManager.drawItems = aeri2;
+			return ri;
+		}
+		catch (Throwable t)
+		{
+			throw new RuntimeException( "Invalid version of NEI, please update", t );
+		}
 	}
 
 }
