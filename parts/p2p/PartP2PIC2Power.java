@@ -36,20 +36,24 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 			throw new RuntimeException( "IC2 Not installed!" );
 	}
 
-	double OutputPacket;
+	// two packet buffering...
+	double OutputPacketA;
+	double OutputPacketB;
 
 	@Override
 	public void writeToNBT(NBTTagCompound tag)
 	{
 		super.writeToNBT( tag );
-		tag.setDouble( "OutputPacket", OutputPacket );
+		tag.setDouble( "OutputPacket", OutputPacketA );
+		tag.setDouble( "OutputPacket2", OutputPacketB );
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag)
 	{
 		super.readFromNBT( tag );
-		OutputPacket = tag.getDouble( "OutputPacket" );
+		OutputPacketA = tag.getDouble( "OutputPacket" );
+		OutputPacketB = tag.getDouble( "OutputPacket2" );
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -84,7 +88,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 		{
 			for (PartP2PIC2Power t : getOutputs())
 			{
-				if ( t.OutputPacket <= 0.0001 )
+				if ( t.OutputPacketA <= 0.0001 || t.OutputPacketB <= 0.0001 )
 				{
 					return 2048;
 				}
@@ -128,8 +132,15 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 		LinkedList<PartP2PIC2Power> Options = new LinkedList();
 		for (PartP2PIC2Power o : outs)
 		{
-			if ( o.OutputPacket <= 0.01 )
+			if ( o.OutputPacketA <= 0.01 )
 				Options.add( o );
+		}
+
+		if ( Options.isEmpty() )
+		{
+			for (PartP2PIC2Power o : outs)
+				if ( o.OutputPacketB <= 0.01 )
+					Options.add( o );
 		}
 
 		if ( Options.isEmpty() )
@@ -142,10 +153,18 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 			return amount;
 
 		PartP2PIC2Power x = (PartP2PIC2Power) Platform.pickRandom( Options );
-		if ( x != null && x.OutputPacket <= 0.001 )
+
+		if ( x != null && x.OutputPacketA <= 0.001 )
 		{
 			QueueTunnelDrain( PowerUnits.EU, amount );
-			x.OutputPacket = amount;
+			x.OutputPacketA = amount;
+			return 0;
+		}
+
+		if ( x != null && x.OutputPacketB <= 0.001 )
+		{
+			QueueTunnelDrain( PowerUnits.EU, amount );
+			x.OutputPacketB = amount;
 			return 0;
 		}
 
@@ -162,14 +181,19 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	public double getOfferedEnergy()
 	{
 		if ( output )
-			return OutputPacket;
+			return OutputPacketA;
 		return 0;
 	}
 
 	@Override
 	public void drawEnergy(double amount)
 	{
-		OutputPacket -= amount;
+		OutputPacketA -= amount;
+		if ( OutputPacketA < 0.001 )
+		{
+			OutputPacketA = OutputPacketB;
+			OutputPacketB = 0;
+		}
 	}
 
 }
