@@ -3,10 +3,14 @@ package appeng.me.cluster.implementations;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkCraftingCpuChange;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.util.WorldCoord;
 import appeng.me.cluster.IAECluster;
 import appeng.tile.crafting.TileCraftingTile;
@@ -80,6 +84,24 @@ public class CraftingCPUCluster implements IAECluster
 			status.add( te );
 		else if ( te.isAccelerator() )
 			accelerator++;
+	}
+
+	public boolean canAccept(IAEStack input)
+	{
+		if ( input instanceof IAEItemStack )
+		{
+			// TODO Auto-generated method stub
+		}
+		return false;
+	}
+
+	public IAEStack injectItems(IAEStack input, Actionable type, BaseActionSource src)
+	{
+		if ( input instanceof IAEItemStack )
+		{
+			// TODO Auto-generated method stub
+		}
+		return input;
 	}
 
 }

@@ -92,12 +92,14 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock
 		int newmeta = (current & 3) | (formed ? 8 : 0) | (power ? 4 : 0);
 
 		if ( current != newmeta )
+		{
 			worldObj.setBlockMetadataWithNotify( xCoord, yCoord, zCoord, newmeta, 3 );
 
-		if ( isFormed() )
-			gridProxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
-		else
-			gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+			if ( isFormed() )
+				gridProxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
+			else
+				gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		}
 	}
 
 	private void dropAndBreak()

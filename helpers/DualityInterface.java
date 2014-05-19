@@ -79,6 +79,38 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		return waitingToSend != null && !waitingToSend.isEmpty();
 	}
 
+	public void updateCraftingList()
+	{
+		Boolean accountedFor[] = new Boolean[patterns.getSizeInventory()];
+		if ( craftingList != null )
+		{
+			Iterator<ICraftingPatternDetails> i = craftingList.iterator();
+			while (i.hasNext())
+			{
+				ICraftingPatternDetails details = i.next();
+				boolean found = false;
+
+				for (int x = 0; x < accountedFor.length; x++)
+				{
+					ItemStack is = patterns.getStackInSlot( x );
+					if ( details.getPattern() == is )
+					{
+						accountedFor[x] = found = true;
+					}
+				}
+
+				if ( !found )
+					i.remove();
+			}
+		}
+
+		for (int x = 0; x < accountedFor.length; x++)
+		{
+			if ( accountedFor[x] == false )
+				addToCraftingList( patterns.getStackInSlot( x ) );
+		}
+	}
+
 	public void addToCraftingList(ItemStack is)
 	{
 		if ( is == null )
@@ -673,7 +705,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	public void provideCrafting(ICraftingProviderHelper craftingTracker)
 	{
 		for (ICraftingPatternDetails details : craftingList)
-			craftingTracker.addCraftingOption( details );
+			craftingTracker.addCraftingOption( this, details );
 	}
 
 }

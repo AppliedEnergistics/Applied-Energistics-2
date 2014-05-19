@@ -156,6 +156,8 @@ public class GuiImgButton extends GuiButton implements ITooltip
 
 			registerApp( 66, Settings.ACTIONS, ActionItems.WRENCH, ButtonToolTips.PartitionStorage, ButtonToolTips.PartitionStorageHint );
 			registerApp( 6, Settings.ACTIONS, ActionItems.CLOSE, ButtonToolTips.Clear, ButtonToolTips.ClearSettings );
+			registerApp( 6, Settings.ACTIONS, ActionItems.STASH, ButtonToolTips.Stash, ButtonToolTips.StashDesc );
+
 			registerApp( 8, Settings.ACTIONS, ActionItems.ENCODE, ButtonToolTips.Encode, ButtonToolTips.EncodeDescription );
 			registerApp( 4 + 3 * 16, Settings.ACTIONS, ActionItems.SUBSTITUTION, ButtonToolTips.Substitutions, ButtonToolTips.SubstitutionsDesc );
 

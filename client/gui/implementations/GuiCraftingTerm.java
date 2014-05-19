@@ -27,7 +27,7 @@ public class GuiCraftingTerm extends GuiMEMonitorable
 	public void initGui()
 	{
 		super.initGui();
-		buttonList.add( clearBtn = new GuiImgButton( this.guiLeft + 92, this.guiTop + this.ySize - 156, Settings.ACTIONS, ActionItems.CLOSE ) );
+		buttonList.add( clearBtn = new GuiImgButton( this.guiLeft + 92, this.guiTop + this.ySize - 156, Settings.ACTIONS, ActionItems.STASH ) );
 		clearBtn.halfSize = true;
 	}
 

@@ -24,7 +24,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 
 	private final static FluidTankInfo[] activeTank = new FluidTankInfo[] { new FluidTankInfo( null, 10000 ) };
 	private final static FluidTankInfo[] inactiveTank = new FluidTankInfo[] { new FluidTankInfo( null, 0 ) };
-	
+
 	public TunnelType getTunnelType()
 	{
 		return TunnelType.FLUID;
@@ -92,7 +92,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		{
 			for (PartP2PLiquids l : getOutputs())
 			{
-				IFluidHandler targ = getTarget();
+				IFluidHandler targ = l.getTarget();
 				if ( targ != null )
 				{
 					if ( targ.canFill( side.getOpposite(), input ) )
@@ -128,6 +128,9 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 
 	IFluidHandler getTarget()
 	{
+		if ( !proxy.isActive() )
+			return null;
+
 		if ( cachedTank != null )
 			return cachedTank;
 
