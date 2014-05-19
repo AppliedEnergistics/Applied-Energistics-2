@@ -1,5 +1,6 @@
 package appeng.parts.p2p;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import net.minecraft.client.renderer.RenderBlocks;
@@ -265,7 +266,9 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 
 	public TunnelCollection<T> getOutputs() throws GridAccessException
 	{
-		return (TunnelCollection<T>) proxy.getP2P().getOutputs( freq, getClass() );
+		if ( proxy.isActive() )
+			return (TunnelCollection<T>) proxy.getP2P().getOutputs( freq, getClass() );
+		return new TunnelCollection( new ArrayList(), getClass() );
 	}
 
 	public void onChange()
