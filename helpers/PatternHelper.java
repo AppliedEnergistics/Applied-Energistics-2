@@ -114,9 +114,6 @@ public class PatternHelper implements ICraftingPatternDetails
 		isCrafting = encodedValue.getBoolean( "crafting" );
 		patternItem = is;
 
-		if ( isCrafting == false )
-			throw new RuntimeException( "Only crafting recipes supported." );
-
 		List<IAEItemStack> in = new ArrayList();
 		List<IAEItemStack> out = new ArrayList();
 
@@ -134,15 +131,17 @@ public class PatternHelper implements ICraftingPatternDetails
 			testFrame.setInventorySlotContents( x, gs );
 		}
 
-		standardRecipe = Platform.findMatchingRecipe( crafting, w );
-		correctOutput = standardRecipe.getCraftingResult( crafting );
-
 		if ( isCrafting )
 		{
+			standardRecipe = Platform.findMatchingRecipe( crafting, w );
+			correctOutput = standardRecipe.getCraftingResult( crafting );
 			out.add( AEApi.instance().storage().createItemStack( correctOutput ) );
 		}
 		else
 		{
+			standardRecipe = null;
+			correctOutput = null;
+
 			for (int x = 0; x < outTag.tagCount(); x++)
 			{
 				ItemStack gs = ItemStack.loadItemStackFromNBT( inTag.getCompoundTagAt( x ) );
@@ -158,6 +157,9 @@ public class PatternHelper implements ICraftingPatternDetails
 
 	public boolean isValidItemForSlot(int slotIndex, ItemStack i, World w)
 	{
+		if ( isCrafting == false )
+			throw new RuntimeException( "Only crafting recipes supported." );
+
 		TestStatus result = getStatus( slotIndex, i );
 
 		switch (result)
@@ -209,6 +211,9 @@ public class PatternHelper implements ICraftingPatternDetails
 	@Override
 	public ItemStack getOutput(InventoryCrafting craftingInv, World w)
 	{
+		if ( isCrafting == false )
+			throw new RuntimeException( "Only crafting recipes supported." );
+
 		for (int x = 0; x < craftingInv.getSizeInventory(); x++)
 		{
 			if ( !isValidItemForSlot( x, craftingInv.getStackInSlot( x ), w ) )

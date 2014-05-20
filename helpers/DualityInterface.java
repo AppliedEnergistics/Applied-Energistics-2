@@ -24,7 +24,7 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
 import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.events.MECraftingPatternUpdate;
+import appeng.api.networking.events.MENetworkCraftingPatternChange;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.ticking.IGridTickable;
@@ -81,7 +81,10 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 	public void updateCraftingList()
 	{
-		Boolean accountedFor[] = new Boolean[patterns.getSizeInventory()];
+		Boolean accountedFor[] = new Boolean[] { false, false, false, false, false, false, false, false, false }; // 9...
+
+		assert (accountedFor.length == patterns.getSizeInventory());
+
 		if ( craftingList != null )
 		{
 			Iterator<ICraftingPatternDetails> i = craftingList.iterator();
@@ -108,6 +111,15 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		{
 			if ( accountedFor[x] == false )
 				addToCraftingList( patterns.getStackInSlot( x ) );
+		}
+
+		try
+		{
+			gridProxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, gridProxy.getNode() ) );
+		}
+		catch (GridAccessException e)
+		{
+			// :P
 		}
 	}
 
@@ -460,16 +472,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		if ( inv == config )
 			readConfig();
 		else if ( inv == patterns )
-		{
-			try
-			{
-				gridProxy.getGrid().postEvent( new MECraftingPatternUpdate( this ) );
-			}
-			catch (GridAccessException e)
-			{
-				// :P
-			}
-		}
+			updateCraftingList();
 		else if ( inv == storage && slot >= 0 )
 		{
 			boolean had = hasWorkToDo();
@@ -704,8 +707,11 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	@Override
 	public void provideCrafting(ICraftingProviderHelper craftingTracker)
 	{
-		for (ICraftingPatternDetails details : craftingList)
-			craftingTracker.addCraftingOption( this, details );
+		if ( craftingList != null )
+		{
+			for (ICraftingPatternDetails details : craftingList)
+				craftingTracker.addCraftingOption( this, details );
+		}
 	}
 
 }
