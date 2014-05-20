@@ -47,7 +47,7 @@ public class AppEngCore extends DummyModContainer implements IFMLLoadingPlugin
 	@Override
 	public String[] getASMTransformerClass()
 	{
-		return new String[] { "appeng.transformer.asm.ASMIntegration", "appeng.transformer.asm.ASMMigration" };
+		return new String[] { "appeng.transformer.asm.ASMIntegration" };
 	}
 
 	@Override
