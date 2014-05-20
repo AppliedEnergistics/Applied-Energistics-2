@@ -199,9 +199,13 @@ public class Grid implements IGrid
 
 	public void update()
 	{
-		for (IGridCache gc : caches.values())
+		// are ther any nodes left?
+		if ( pivot != null )
 		{
-			gc.onUpdateTick();
+			for (IGridCache gc : caches.values())
+			{
+				gc.onUpdateTick();
+			}
 		}
 	}
 
