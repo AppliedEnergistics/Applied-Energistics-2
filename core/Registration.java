@@ -121,6 +121,7 @@ import appeng.items.tools.quartz.ToolQuartzPickaxe;
 import appeng.items.tools.quartz.ToolQuartzSpade;
 import appeng.items.tools.quartz.ToolQuartzSword;
 import appeng.items.tools.quartz.ToolQuartzWrench;
+import appeng.me.cache.CraftingCache;
 import appeng.me.cache.EnergyGridCache;
 import appeng.me.cache.GridStorageCache;
 import appeng.me.cache.P2PCache;
@@ -509,6 +510,7 @@ public class Registration
 		gcr.registerGridCache( P2PCache.class, P2PCache.class );
 		gcr.registerGridCache( ISpatialCache.class, SpatialPylonCache.class );
 		gcr.registerGridCache( ISecurityGrid.class, SecurityCache.class );
+		gcr.registerGridCache( CraftingCache.class, CraftingCache.class );
 
 		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new AEExternalHandler() );
 

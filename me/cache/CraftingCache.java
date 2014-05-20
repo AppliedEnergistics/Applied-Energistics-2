@@ -18,6 +18,7 @@ import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
 import appeng.api.networking.events.MENetworkCraftingCpuChange;
 import appeng.api.networking.events.MENetworkCraftingPatternChange;
+import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPostCacheConstruction;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IStorageGrid;
@@ -62,11 +63,13 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 		}
 	}
 
+	@MENetworkEventSubscribe
 	public void updateCPUClusters(MENetworkCraftingCpuChange c)
 	{
 		updateList = true;
 	}
 
+	@MENetworkEventSubscribe
 	public void updateCPUClusters(MENetworkCraftingPatternChange c)
 	{
 		updatePatterns();
