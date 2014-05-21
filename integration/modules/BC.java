@@ -121,11 +121,18 @@ public class BC extends BaseModule implements IBC
 
 		try
 		{
-			return is.getItem() instanceof ItemFacade && ItemFacade.getType( is ) == ItemFacade.TYPE_BASIC;
+			return is.getItem() instanceof ItemFacade && ItemFacade.getType( is ) == ItemFacade.FacadeType.Basic;
 		}
 		catch (Throwable t)
 		{
-			return is.getItem() instanceof ItemFacade;
+			try
+			{
+				return is.getItem() instanceof ItemFacade && ItemFacade.getType( is ) == ItemFacade.TYPE_BASIC;
+			}
+			catch (Throwable g)
+			{
+				return is.getItem() instanceof ItemFacade;
+			}
 		}
 	}
 

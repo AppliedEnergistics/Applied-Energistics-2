@@ -16,6 +16,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.integration.abstraction.IMJ5;
+import appeng.integration.abstraction.IMJ6;
 import appeng.integration.abstraction.helpers.BaseMJperdition;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
@@ -153,7 +154,13 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 	{
 		TileEntity te = getWorld().getTileEntity( tile.xCoord + side.offsetX, tile.yCoord + side.offsetY, tile.zCoord + side.offsetZ );
 		if ( te != null )
-			return MjAPI.getMjBattery( te );
+		{
+			IBatteryObject bo = MjAPI.getMjBattery( te, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite() );
+			if ( bo != null )
+				return bo;
+			if ( AppEng.instance.isIntegrationEnabled( "MJ5" ) )
+				return ((IMJ6) AppEng.instance.getIntegration( "MJ6" )).provider( te, side.getOpposite() );
+		}
 		return null;
 	}
 
@@ -215,13 +222,6 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 
 	@Override
 	@Method(iname = "MJ6")
-	public IBatteryObject getMjBattery(String kind)
-	{
-		return this;
-	}
-
-	@Override
-	@Method(iname = "MJ6")
 	public IBatteryObject getMjBattery(String kind, ForgeDirection direction)
 	{
 		return this;
@@ -267,7 +267,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 	@Method(iname = "MJ6")
 	private double addEnergyInternal(double mj, boolean cycleLimitMode, boolean ignoreCycleLimit)
 	{
-		if ( !output && proxy.isActive() )
+		if ( output || !proxy.isActive() )
 			return 0;
 
 		double originaInput = mj;
