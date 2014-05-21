@@ -137,15 +137,16 @@ public class BusRenderer implements IItemRenderer
 		else
 		{
 			IPart ip = getRenderer( item, (IPartItem) item.getItem() );
-
-			if ( type == ItemRenderType.ENTITY )
-			{
-				int depth = ip.cableConnectionRenderTo();
-				GL11.glTranslatef( 0.0f, 0.0f, -0.04f * (8 - depth) - 0.06f );
-			}
-
 			if ( ip != null )
+			{
+				if ( type == ItemRenderType.ENTITY )
+				{
+					int depth = ip.cableConnectionRenderTo();
+					GL11.glTranslatef( 0.0f, 0.0f, -0.04f * (8 - depth) - 0.06f );
+				}
+
 				ip.renderInventory( BusRenderHelper.instance, renderer );
+			}
 		}
 
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
