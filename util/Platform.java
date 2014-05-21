@@ -1423,7 +1423,8 @@ public class Platform
 					int offset = 0;
 					for (Integer Side : ((ISidedInventory) target).getAccessibleSlotsFromSide( dir.ordinal() ))
 					{
-						hash ^= Side << (offset++ % 20);
+						int c = (Side << (offset++ % 8)) ^ (1 << dir.ordinal());
+						hash = c + (hash << 6) + (hash << 16) - hash;
 					}
 				}
 			}
