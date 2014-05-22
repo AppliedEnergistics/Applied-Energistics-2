@@ -20,27 +20,27 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 
 	private final TreeMap<StackType, StackType> records = new TreeMap();
 	private final Class<? extends IAEStack> clz;
-	
+
 	// private int currentPriority = Integer.MIN_VALUE;
 
 	int iteration = Integer.MIN_VALUE;
 	public Throwable stacktrace;
-	
-	public ItemList( Class<? extends IAEStack> cla) {
+
+	public ItemList(Class<? extends IAEStack> cla) {
 		clz = cla;
 	}
 
-	private boolean checkStackType( StackType st )
+	private boolean checkStackType(StackType st)
 	{
-		if ( st == null)
+		if ( st == null )
 			return true;
-		
-		if ( !clz.isInstance(st) )
-			throw new RuntimeException("WRONG TYPE - got "+st.getClass().getName()+" expected "+clz.getName() );
-		
+
+		if ( !clz.isInstance( st ) )
+			throw new RuntimeException( "WRONG TYPE - got " + st.getClass().getName() + " expected " + clz.getName() );
+
 		return false;
 	}
-	
+
 	@Override
 	synchronized public void add(StackType option)
 	{
@@ -190,7 +190,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	{
 		StackType low = (StackType) filter.getLow( fuzzy, ignoreMeta );
 		StackType high = (StackType) filter.getHigh( fuzzy, ignoreMeta );
-		return records.subMap( low, high ).values();
+		return records.subMap( low, true, high, true ).values();
 	}
 
 	@Override
@@ -198,7 +198,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	{
 		if ( checkStackType( filter ) )
 			return new ArrayList();
-		
+
 		if ( filter instanceof IAEFluidStack )
 			return filter.equals( this ) ? (List<StackType>) Arrays.asList( new IAEFluidStack[] { (IAEFluidStack) filter } ) : (List<StackType>) Arrays
 					.asList( new IAEFluidStack[] {} );
