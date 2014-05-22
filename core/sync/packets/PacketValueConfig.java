@@ -20,6 +20,7 @@ import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.container.implementations.ContainerPriority;
 import appeng.container.implementations.ContainerQuartzKnife;
 import appeng.container.implementations.ContainerSecurity;
+import appeng.container.implementations.ContainerStorageBus;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 
@@ -65,6 +66,21 @@ public class PacketValueConfig extends AppEngPacket
 			ContainerLevelEmitter lvc = (ContainerLevelEmitter) c;
 			lvc.setLevel( Long.parseLong( Value ), player );
 			return;
+		}
+		else if ( Name.startsWith( "StorageBus." ) && c instanceof ContainerStorageBus )
+		{
+			ContainerStorageBus ccw = (ContainerStorageBus) c;
+			if ( Name.equals( "StorageBus.Action" ) )
+			{
+				if ( Value.equals( "Partition" ) )
+				{
+					ccw.partition();
+				}
+				else if ( Value.equals( "Clear" ) )
+				{
+					ccw.clear();
+				}
+			}
 		}
 		else if ( Name.startsWith( "CellWorkbench." ) && c instanceof ContainerCellWorkbench )
 		{
