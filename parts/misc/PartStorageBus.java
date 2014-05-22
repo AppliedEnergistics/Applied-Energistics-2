@@ -157,7 +157,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		if ( host == null || host.getTile() == null || host.getTile().getWorldObj() == null )
 			return;
 
-		IMEInventory<IAEItemStack> in = getHandler();
+		IMEInventory<IAEItemStack> in = getInternalHandler();
 		IItemList<IAEItemStack> before = AEApi.instance().storage().createItemList();
 		if ( in != null )
 			before = in.getAvailableItems( before );
@@ -175,7 +175,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 			// :3
 		}
 
-		IMEInventory<IAEItemStack> out = getHandler();
+		IMEInventory<IAEItemStack> out = getInternalHandler();
 		IItemList<IAEItemStack> after = AEApi.instance().storage().createItemList();
 		if ( out != null )
 			after = out.getAvailableItems( after );
@@ -199,6 +199,13 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
+	public void upgradesChanged()
+	{
+		super.upgradesChanged();
+		resetCache( true );
+	}
+
+	@Override
 	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
 	{
 		resetCache( true );
@@ -213,7 +220,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		resetCache( true );
 	}
 
-	private MEInventoryHandler getHandler()
+	public MEInventoryHandler getInternalHandler()
 	{
 		if ( cached )
 			return handler;
@@ -390,7 +397,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	{
 		if ( channel == StorageChannel.ITEMS )
 		{
-			IMEInventoryHandler out = proxy.isActive() ? getHandler() : null;
+			IMEInventoryHandler out = proxy.isActive() ? getInternalHandler() : null;
 			if ( out != null )
 				return Arrays.asList( new IMEInventoryHandler[] { out } );
 		}
