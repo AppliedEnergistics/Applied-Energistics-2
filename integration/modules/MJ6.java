@@ -41,7 +41,11 @@ public class MJ6 extends BaseModule implements IMJ6
 		if ( te instanceof IPowerReceptor )
 		{
 			final IPowerReceptor recp = (IPowerReceptor) te;
+			if ( recp == null )
+				return null;
 			final PowerReceiver ph = recp.getPowerReceiver( side );
+			if ( ph == null )
+				return null;
 
 			return new IBatteryObject() {
 
