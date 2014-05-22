@@ -18,7 +18,7 @@ import org.lwjgl.opengl.GL11;
 
 import appeng.api.AEApi;
 import appeng.api.features.IGrinderEntry;
-import appeng.client.gui.implementations.GuiInscriber;
+import appeng.client.gui.implementations.GuiGrinder;
 import appeng.core.localization.GuiText;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
@@ -64,12 +64,12 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 
 	public void loadTransferRects()
 	{
-		this.transferRects.add( new TemplateRecipeHandler.RecipeTransferRect( new Rectangle( 84, 23, 24, 18 ), "inscriber", new Object[0] ) );
+		this.transferRects.add( new TemplateRecipeHandler.RecipeTransferRect( new Rectangle( 84, 23, 24, 18 ), "grindstone", new Object[0] ) );
 	}
 
 	public Class<? extends GuiContainer> getGuiClass()
 	{
-		return GuiInscriber.class;
+		return GuiGrinder.class;
 	}
 
 	@Override
