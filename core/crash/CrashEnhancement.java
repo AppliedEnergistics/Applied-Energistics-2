@@ -7,51 +7,47 @@ import cpw.mods.fml.common.ICrashCallable;
 public class CrashEnhancement implements ICrashCallable
 {
 
-	final CrashInfo Output;
+	private final String name;
+	private final String value;
 
-	final String ModVersion = AEConfig.CHANNEL + " " + AEConfig.VERSION + " for Forge " + // WHAT?
+	private final String ModVersion = AEConfig.CHANNEL + " " + AEConfig.VERSION + " for Forge " + // WHAT?
 			net.minecraftforge.common.ForgeVersion.majorVersion + "." // majorVersion
 			+ net.minecraftforge.common.ForgeVersion.minorVersion + "." // minorVersion
 			+ net.minecraftforge.common.ForgeVersion.revisionVersion + "." // revisionVersion
 			+ net.minecraftforge.common.ForgeVersion.buildVersion;
 
-	final String IntegrationInfo;
-
-	public CrashEnhancement(CrashInfo ci) {
-		Output = ci;
-
-		if ( IntegrationRegistry.instance != null )
-			IntegrationInfo = IntegrationRegistry.instance.getStatus();
+	public CrashEnhancement(CrashInfo Output) {
+		
+		if ( Output == CrashInfo.MOD_VERSION )
+		{
+			name = "AE2 Version";
+			value = ModVersion;
+		}
+		else if ( Output == CrashInfo.INTEGRATION )
+		{
+			name ="AE2 Integration";
+			if ( IntegrationRegistry.instance != null )
+				value = IntegrationRegistry.instance.getStatus();
+			else
+				value = "N/A";
+		}
 		else
-			IntegrationInfo = "N/A";
+		{
+			name = "AE2_UNKNOWN";
+			value = "UNKNOWN_VALUE";
+		}
 	}
 
 	@Override
 	public String call() throws Exception
 	{
-		switch (Output)
-		{
-		case MOD_VERSION:
-			return ModVersion;
-		case INTEGRATION:
-			return IntegrationInfo;
-		}
-
-		return "UNKNOWN_VALUE";
+		return value;
 	}
 
 	@Override
 	public String getLabel()
 	{
-		switch (Output)
-		{
-		case MOD_VERSION:
-			return "AE2 Version";
-		case INTEGRATION:
-			return "AE2 Integration";
-		}
-
-		return "AE2_UNKNOWN";
+		return name;
 	}
 
 }
