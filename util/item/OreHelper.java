@@ -79,12 +79,17 @@ public class OreHelper
 					if ( OreDictionary.itemMatches( oreItem, ItemStack, false ) )
 					{
 						add = true;
-						set.add( oreItem.copy() );
+						break;
 					}
 				}
 
 				if ( add )
+				{
+					for (ItemStack oreItem : OreDictionary.getOres( ore ))
+						set.add( oreItem.copy() );
+
 					ores.add( OreDictionary.getOreID( ore ) );
+				}
 			}
 
 			if ( !set.isEmpty() )
