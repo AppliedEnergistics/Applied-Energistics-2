@@ -18,7 +18,6 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAETagCompound;
 import appeng.util.Platform;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -329,7 +328,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			data.readBytes( bd );
 
 			ByteArrayInputStream di = new ByteArrayInputStream( bd );
-			d.setTag( "tag", CompressedStreamTools.read( new DataInputStream( di) ) );
+			d.setTag( "tag", CompressedStreamTools.read( new DataInputStream( di ) ) );
 		}
 
 		// long priority = getPacketValue( PriorityType, data );
@@ -483,18 +482,20 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			return bottom;
 		}
 
-		if ( fuzzy == FuzzyMode.IGNORE_ALL )
-		{
-			newDef.dspDamage = 0;
-		}
-		else
-		{
-			int low = fuzzy.calculateBreakPoint( def.maxDamage );
-			newDef.dspDamage = low < def.dspDamage ? low : 0;
-		}
-
 		if ( newDef.item.isDamageable() )
+		{
+			if ( fuzzy == FuzzyMode.IGNORE_ALL )
+			{
+				newDef.dspDamage = 0;
+			}
+			else
+			{
+				int low = fuzzy.calculateBreakPoint( def.maxDamage );
+				newDef.dspDamage = low < def.dspDamage ? low : 0;
+			}
+
 			newDef.damageValue = newDef.dspDamage;
+		}
 
 		newDef.tagCompound = AEItemDef.lowTag;
 		newDef.reHash();
@@ -513,18 +514,20 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			return top;
 		}
 
-		if ( fuzzy == FuzzyMode.IGNORE_ALL )
-		{
-			newDef.dspDamage = def.maxDamage + 1;
-		}
-		else
-		{
-			int high = fuzzy.calculateBreakPoint( def.maxDamage ) + 1;
-			newDef.dspDamage = high > def.dspDamage ? high : def.maxDamage + 1;
-		}
-
 		if ( newDef.item.isDamageable() )
+		{
+			if ( fuzzy == FuzzyMode.IGNORE_ALL )
+			{
+				newDef.dspDamage = def.maxDamage + 1;
+			}
+			else
+			{
+				int high = fuzzy.calculateBreakPoint( def.maxDamage ) + 1;
+				newDef.dspDamage = high > def.dspDamage ? high : def.maxDamage + 1;
+			}
+
 			newDef.damageValue = top.def.dspDamage;
+		}
 
 		newDef.tagCompound = AEItemDef.highTag;
 		newDef.reHash();

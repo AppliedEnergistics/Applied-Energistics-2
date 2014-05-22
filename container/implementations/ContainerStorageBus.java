@@ -1,12 +1,19 @@
 package appeng.container.implementations;
 
+import java.util.Iterator;
+
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.api.storage.IMEInventory;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OptionalSlotFakeTypeOnly;
 import appeng.container.slot.SlotFakeTypeOnly;
@@ -14,6 +21,7 @@ import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.parts.misc.PartStorageBus;
 import appeng.util.Platform;
+import appeng.util.iterators.NullIterator;
 
 public class ContainerStorageBus extends ContainerUpgradeable
 {
@@ -92,6 +100,42 @@ public class ContainerStorageBus extends ContainerUpgradeable
 		}
 
 		standardDetectAndSendChanges();
+	}
+
+	public void clear()
+	{
+		IInventory inv = myte.getInventoryByName( "config" );
+		for (int x = 0; x < inv.getSizeInventory(); x++)
+			inv.setInventorySlotContents( x, null );
+		detectAndSendChanges();
+	}
+
+	public void partition()
+	{
+		IInventory inv = myte.getInventoryByName( "config" );
+
+		IMEInventory<IAEItemStack> cellInv = storageBus.getInternalHandler();
+
+		Iterator<IAEItemStack> i = new NullIterator<IAEItemStack>();
+		if ( cellInv != null )
+		{
+			IItemList<IAEItemStack> list = cellInv.getAvailableItems( AEApi.instance().storage().createItemList() );
+			i = list.iterator();
+		}
+
+		for (int x = 0; x < inv.getSizeInventory(); x++)
+		{
+			if ( i.hasNext() && isSlotEnabled( (x / 9) - 2 ) )
+			{
+				ItemStack g = i.next().getItemStack();
+				g.stackSize = 1;
+				inv.setInventorySlotContents( x, g );
+			}
+			else
+				inv.setInventorySlotContents( x, null );
+		}
+
+		detectAndSendChanges();
 	}
 
 }

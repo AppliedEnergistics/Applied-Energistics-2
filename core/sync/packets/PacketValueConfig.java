@@ -21,6 +21,7 @@ import appeng.container.implementations.ContainerPatternTerm;
 import appeng.container.implementations.ContainerPriority;
 import appeng.container.implementations.ContainerQuartzKnife;
 import appeng.container.implementations.ContainerSecurity;
+import appeng.container.implementations.ContainerStorageBus;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 
@@ -81,6 +82,21 @@ public class PacketValueConfig extends AppEngPacket
 			else if ( Name.equals( "PatternTerminal.Clear" ) )
 			{
 				cpt.clear();
+			}
+		}
+		else if ( Name.startsWith( "StorageBus." ) && c instanceof ContainerStorageBus )
+		{
+			ContainerStorageBus ccw = (ContainerStorageBus) c;
+			if ( Name.equals( "StorageBus.Action" ) )
+			{
+				if ( Value.equals( "Partition" ) )
+				{
+					ccw.partition();
+				}
+				else if ( Value.equals( "Clear" ) )
+				{
+					ccw.clear();
+				}
 			}
 		}
 		else if ( Name.startsWith( "CellWorkbench." ) && c instanceof ContainerCellWorkbench )

@@ -134,6 +134,8 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 
 		minMeteoriteDistanceSq = minMeteoriteDistance * minMeteoriteDistance;
 
+		addCustomCategoryComment("wireless", "Range= WirelessBaseRange + WirelessBoosterRangeMultiplier * Math.pow( boosters, WirelessBoosterExp )\nPowerDrain= WirelessBaseCost + WirelessCostMultiplier * Math.pow( boosters, 1 + boosters / WirelessHighWirelessCount )" );
+		
 		WirelessBaseCost = get( "wireless", "WirelessBaseCost", WirelessBaseCost ).getDouble( WirelessBaseCost );
 		WirelessCostMultiplier = get( "wireless", "WirelessCostMultiplier", WirelessCostMultiplier ).getDouble( WirelessCostMultiplier );
 		WirelessBaseRange = get( "wireless", "WirelessBaseRange", WirelessBaseRange ).getDouble( WirelessBaseRange );
@@ -166,10 +168,10 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		for (Enum e : settings.getSettings())
 		{
 			String Category = e.getClass().getSimpleName();
-
 			Enum value = settings.getSetting( e );
-			Property p = this.get( Category, e.name(), value.name() );
-
+			
+			Property p = this.get( Category, e.name(), value.name(), getListComment( value ) );
+			
 			try
 			{
 				value = Enum.valueOf( value.getClass(), p.getString() );
@@ -184,7 +186,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 
 		try
 		{
-			selectedPowerUnit = PowerUnits.valueOf( get( "Client", "PowerUnit", selectedPowerUnit.name() ).getString() );
+			selectedPowerUnit = PowerUnits.valueOf( get( "Client", "PowerUnit", selectedPowerUnit.name(), getListComment(selectedPowerUnit) ).getString() );
 		}
 		catch (Throwable t)
 		{
@@ -216,6 +218,27 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		}
 	}
 
+	private String getListComment(Enum value)
+	{
+		String comment = null;
+		
+		if ( value != null )
+		{
+			EnumSet set = EnumSet.allOf(value.getClass() );
+			
+			for ( Object Oeg : set )
+			{
+				Enum eg = (Enum)Oeg;
+				if ( comment == null )
+					comment = "Possible Values: " + eg.name();
+				else
+					comment += ", "+eg.name();
+			}
+		}
+		
+		return comment;
+	}
+
 	@Override
 	public void updateSetting(IConfigManager manager, Enum setting, Enum newValue)
 	{
@@ -224,7 +247,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 			if ( e == setting )
 			{
 				String Category = e.getClass().getSimpleName();
-				Property p = this.get( Category, e.name(), settings.getSetting( e ).name() );
+				Property p = this.get( Category, e.name(), settings.getSetting( e ).name(), getListComment( newValue ) );
 				p.set( newValue.name() );
 			}
 		}
@@ -247,7 +270,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 			get( "spatialio", "storageProviderID", storageProviderID ).set( storageProviderID );
 		}
 
-		get( "Client", "PowerUnit", selectedPowerUnit.name() ).set( selectedPowerUnit.name() );
+		get( "Client", "PowerUnit", selectedPowerUnit.name(), getListComment(selectedPowerUnit) ).set( selectedPowerUnit.name() );
 
 		if ( hasChanged() )
 			super.save();

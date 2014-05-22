@@ -8,6 +8,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import org.lwjgl.input.Mouse;
 
 import appeng.api.config.AccessRestriction;
+import appeng.api.config.ActionItems;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.client.gui.widgets.GuiImgButton;
@@ -19,6 +20,7 @@ import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketSwitchGuis;
+import appeng.core.sync.packets.PacketValueConfig;
 import appeng.parts.misc.PartStorageBus;
 
 public class GuiStorageBus extends GuiUpgradeable
@@ -26,6 +28,8 @@ public class GuiStorageBus extends GuiUpgradeable
 
 	GuiImgButton rwMode;
 	GuiTabButton priority;
+	GuiImgButton partition;
+	GuiImgButton clear;
 
 	public GuiStorageBus(InventoryPlayer inventoryPlayer, PartStorageBus te) {
 		super( new ContainerStorageBus( inventoryPlayer, te ) );
@@ -54,13 +58,17 @@ public class GuiStorageBus extends GuiUpgradeable
 	@Override
 	protected void addButtons()
 	{
-		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
-		rwMode = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.ACCESS, AccessRestriction.READ_WRITE );
+		clear = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.ACTIONS, ActionItems.CLOSE );
+		partition = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.ACTIONS, ActionItems.WRENCH );
+		rwMode = new GuiImgButton( this.guiLeft - 18, guiTop + 48, Settings.ACCESS, AccessRestriction.READ_WRITE );
+		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 68, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 
 		buttonList.add( priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRender ) );
 
 		buttonList.add( fuzzyMode );
 		buttonList.add( rwMode );
+		buttonList.add( partition );
+		buttonList.add( clear );
 	}
 
 	@Override
@@ -70,23 +78,21 @@ public class GuiStorageBus extends GuiUpgradeable
 
 		boolean backwards = Mouse.isButtonDown( 1 );
 
-		if ( btn == priority )
-		{
-			try
-			{
-				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
-			}
-			catch (IOException e)
-			{
-				AELog.error( e );
-			}
-		}
 		try
 		{
-			if ( btn == fuzzyMode )
+			if ( btn == partition )
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "StorageBus.Action", "Partition" ) );
+
+			else if ( btn == clear )
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "StorageBus.Action", "Clear" ) );
+
+			else if ( btn == priority )
+				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
+
+			else if ( btn == fuzzyMode )
 				NetworkHandler.instance.sendToServer( new PacketConfigButton( fuzzyMode.getSetting(), backwards ) );
 
-			if ( btn == rwMode )
+			else if ( btn == rwMode )
 				NetworkHandler.instance.sendToServer( new PacketConfigButton( rwMode.getSetting(), backwards ) );
 		}
 		catch (IOException e)
