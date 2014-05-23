@@ -144,7 +144,7 @@ public class PatternHelper implements ICraftingPatternDetails
 
 			for (int x = 0; x < outTag.tagCount(); x++)
 			{
-				ItemStack gs = ItemStack.loadItemStackFromNBT( inTag.getCompoundTagAt( x ) );
+				ItemStack gs = ItemStack.loadItemStackFromNBT( outTag.getCompoundTagAt( x ) );
 				if ( gs != null )
 					out.add( AEApi.instance().storage().createItemStack( gs ) );
 			}
