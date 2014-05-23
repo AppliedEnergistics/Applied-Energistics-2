@@ -42,6 +42,20 @@ public class BlockCraftingUnit extends AEBaseBlock
 	}
 
 	@Override
+	public String getUnlocalizedName(ItemStack is)
+	{
+		if ( is.getItemDamage() == 1 )
+			return "tile.appliedenergistics2.BlockCraftingAccelerator";
+
+		return getItemUnlocalizedName( is );
+	}
+
+	protected String getItemUnlocalizedName(ItemStack is)
+	{
+		return super.getUnlocalizedName( is );
+	}
+
+	@Override
 	public IIcon getIcon(int direction, int metadata)
 	{
 		switch (metadata)
