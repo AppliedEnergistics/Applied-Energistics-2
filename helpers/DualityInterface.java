@@ -252,6 +252,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		patterns.readFromNBT( data, "patterns" );
 		storage.readFromNBT( data, "storage" );
 		readConfig();
+		updateCraftingList();
 	}
 
 	AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 8 );
@@ -471,7 +472,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 		if ( inv == config )
 			readConfig();
-		else if ( inv == patterns )
+		else if ( inv == patterns && (removed != null || added != null) )
 			updateCraftingList();
 		else if ( inv == storage && slot >= 0 )
 		{
