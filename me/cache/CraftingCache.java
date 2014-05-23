@@ -47,10 +47,11 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 		grid = g;
 	}
 
+	@MENetworkEventSubscribe
 	public void afterCacheConstruction(MENetworkPostCacheConstruction cc)
 	{
 		IStorageGrid sg = grid.getCache( IStorageGrid.class );
-		sg.addCellProvider( this );
+		sg.registerCellProvider( this );
 	}
 
 	@Override
@@ -173,7 +174,8 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 	public List<IMEInventoryHandler> getCellArray(StorageChannel channel)
 	{
 		ArrayList<IMEInventoryHandler> list = new ArrayList<IMEInventoryHandler>( 1 );
-		list.add( this );
+		if ( channel == StorageChannel.ITEMS )
+			list.add( this );
 		return list;
 	}
 

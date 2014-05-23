@@ -62,6 +62,19 @@ public class GridStorageCache implements IStorageGrid
 	}
 
 	@Override
+	public void registerCellProvider(ICellProvider provider)
+	{
+		inactiveCellProviders.add( provider );
+		addCellProvider( provider );
+	}
+
+	@Override
+	public void unregisterCellProvider(ICellProvider provider)
+	{
+		removeCellProvider( provider );
+		inactiveCellProviders.remove( provider );
+	}
+
 	public void addCellProvider(ICellProvider cc)
 	{
 		if ( inactiveCellProviders.contains( cc ) )
@@ -85,7 +98,6 @@ public class GridStorageCache implements IStorageGrid
 		}
 	}
 
-	@Override
 	public void removeCellProvider(ICellProvider cc)
 	{
 		if ( activeCellProviders.contains( cc ) )
