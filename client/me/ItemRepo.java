@@ -14,6 +14,7 @@ import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
 import appeng.api.config.SortOrder;
 import appeng.api.config.Upgrades;
+import appeng.api.config.ViewItems;
 import appeng.api.config.YesNo;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.data.IAEItemStack;
@@ -189,6 +190,7 @@ public class ItemRepo
 		view.ensureCapacity( list.size() );
 		dsp.ensureCapacity( list.size() );
 
+		Enum vmode = sortSrc.getSortDisplay();
 		Enum mode = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
 		if ( mode == SearchBoxMode.NEI_AUTOSEARCH || mode == SearchBoxMode.NEI_MANUAL_SEARCH )
 			updateNEI( searchString );
@@ -221,6 +223,18 @@ public class ItemRepo
 				if ( !myPartitionList.isListed( is ) )
 					continue;
 			}
+
+			if ( vmode == ViewItems.CRAFTABLE && !is.isCraftable() )
+				continue;
+
+			if ( vmode == ViewItems.CRAFTABLE )
+			{
+				is = is.copy();
+				is.setStackSize( 0 );
+			}
+
+			if ( vmode == ViewItems.STORED && is.getStackSize() == 0 )
+				continue;
 
 			String dspName = Platform.getItemDisplayName( is );
 			notDone = true;

@@ -370,6 +370,12 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	}
 
 	@Override
+	public Enum getSortDisplay()
+	{
+		return configSrc.getSetting( Settings.VIEW_MODE );
+	}
+
+	@Override
 	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
 	{
 		if ( SortByBox != null )

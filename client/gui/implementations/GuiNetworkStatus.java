@@ -13,6 +13,7 @@ import org.lwjgl.opengl.GL11;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.AEBaseGui;
@@ -284,5 +285,11 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	public Enum getSortDir()
 	{
 		return SortDir.ASCENDING;
+	}
+
+	@Override
+	public Enum getSortDisplay()
+	{
+		return ViewItems.ALL;
 	}
 }
