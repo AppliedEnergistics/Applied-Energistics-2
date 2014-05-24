@@ -1,6 +1,7 @@
 package appeng.util;
 
 import java.lang.reflect.Field;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -52,6 +53,7 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.config.PowerUnits;
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
@@ -78,6 +80,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAETagCompound;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEItemDefinition;
+import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.GuiBridge;
@@ -125,6 +128,46 @@ public class Platform
 	public static float getRandomFloat()
 	{
 		return rdnSrc.nextFloat();
+	}
+
+	/**
+	 * This displays the value for encoded longs ( double *100 )
+	 * 
+	 * @param n
+	 * @param isRate
+	 * @return
+	 */
+	public static String formatPowerLong(long n, boolean isRate)
+	{
+		double p = ((double) n) / 100;
+
+		PowerUnits displayUnits = AEConfig.instance.selectedPowerUnit();
+		p = PowerUnits.AE.convertTo( displayUnits, p );
+
+		int offset = 0;
+		String Lvl = "";
+		String preFixes[] = new String[] { "k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y" };
+		String unitName = displayUnits.name();
+
+		if ( displayUnits == PowerUnits.WA )
+			unitName = "J";
+
+		if ( displayUnits == PowerUnits.KJ )
+		{
+			Lvl = preFixes[offset];
+			unitName = "J";
+			offset++;
+		}
+
+		while (p > 1000 && offset < preFixes.length)
+		{
+			p /= 1000;
+			Lvl = preFixes[offset];
+			offset++;
+		}
+
+		DecimalFormat df = new DecimalFormat( "#.##" );
+		return df.format( p ) + " " + Lvl + unitName + (isRate ? "/t" : "");
 	}
 
 	public static ForgeDirection crossProduct(ForgeDirection forward, ForgeDirection up)

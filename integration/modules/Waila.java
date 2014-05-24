@@ -8,6 +8,7 @@ import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -25,6 +26,8 @@ import appeng.core.AppEng;
 import appeng.core.localization.WailaText;
 import appeng.integration.BaseModule;
 import appeng.tile.misc.TileCharger;
+import appeng.tile.networking.TileEnergyCell;
+import appeng.util.Platform;
 import cpw.mods.fml.common.event.FMLInterModComms;
 
 public class Waila extends BaseModule implements IWailaDataProvider
@@ -87,6 +90,18 @@ public class Waila extends BaseModule implements IWailaDataProvider
 			{
 				IPart part = sp.part;
 				ThingOfInterest = part;
+			}
+		}
+
+		if ( ThingOfInterest instanceof TileEnergyCell )
+		{
+			NBTTagCompound c = accessor.getNBTData();
+			if ( c != null )
+			{
+				TileEnergyCell tec = (TileEnergyCell) ThingOfInterest;
+				long power = (long) (100 * c.getDouble( "internalCurrentPower" ));
+				currenttip.add( WailaText.Contains + ": " + Platform.formatPowerLong( power, false ) + " / "
+						+ Platform.formatPowerLong( (long) (100 * tec.getAEMaxPower()), false ) );
 			}
 		}
 

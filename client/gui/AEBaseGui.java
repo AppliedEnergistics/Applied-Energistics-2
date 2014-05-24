@@ -1,7 +1,6 @@
 package appeng.client.gui;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -24,7 +23,6 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import appeng.api.config.PowerUnits;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.ITooltip;
@@ -42,7 +40,6 @@ import appeng.container.slot.SlotFake;
 import appeng.container.slot.SlotInaccessable;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
@@ -58,39 +55,6 @@ public abstract class AEBaseGui extends GuiContainer
 
 	protected List<InternalSlotME> meSlots = new LinkedList<InternalSlotME>();
 	protected GuiScrollbar myScrollBar = null;
-
-	protected String formatPowerLong(long n, boolean isRate)
-	{
-		double p = ((double) n) / 100;
-
-		PowerUnits displayUnits = AEConfig.instance.selectedPowerUnit();
-		p = PowerUnits.AE.convertTo( displayUnits, p );
-
-		int offset = 0;
-		String Lvl = "";
-		String preFixes[] = new String[] { "k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y" };
-		String unitName = displayUnits.name();
-
-		if ( displayUnits == PowerUnits.WA )
-			unitName = "J";
-
-		if ( displayUnits == PowerUnits.KJ )
-		{
-			Lvl = preFixes[offset];
-			unitName = "J";
-			offset++;
-		}
-
-		while (p > 1000 && offset < preFixes.length)
-		{
-			p /= 1000;
-			Lvl = preFixes[offset];
-			offset++;
-		}
-
-		DecimalFormat df = new DecimalFormat( "#.##" );
-		return df.format( p ) + " " + Lvl + unitName + (isRate ? "/t" : "");
-	}
 
 	public AEBaseGui(Container container) {
 		super( container );

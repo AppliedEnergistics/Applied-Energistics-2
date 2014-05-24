@@ -138,11 +138,11 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 		fontRendererObj.drawString( GuiText.NetworkDetails.getLocal(), 8, 6, 4210752 );
 
-		fontRendererObj.drawString( GuiText.StoredPower.getLocal() + ": " + formatPowerLong( ns.currentPower, false ), 13, 16, 4210752 );
-		fontRendererObj.drawString( GuiText.MaxPower.getLocal() + ": " + formatPowerLong( ns.maxPower, false ), 13, 26, 4210752 );
+		fontRendererObj.drawString( GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong( ns.currentPower, false ), 13, 16, 4210752 );
+		fontRendererObj.drawString( GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong( ns.maxPower, false ), 13, 26, 4210752 );
 
-		fontRendererObj.drawString( GuiText.PowerInputRate.getLocal() + ": " + formatPowerLong( ns.avgAddition, true ), 13, 143 - 10, 4210752 );
-		fontRendererObj.drawString( GuiText.PowerUsageRate.getLocal() + ": " + formatPowerLong( ns.powerUsage, true ), 13, 143 - 20, 4210752 );
+		fontRendererObj.drawString( GuiText.PowerInputRate.getLocal() + ": " + Platform.formatPowerLong( ns.avgAddition, true ), 13, 143 - 10, 4210752 );
+		fontRendererObj.drawString( GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong( ns.powerUsage, true ), 13, 143 - 20, 4210752 );
 
 		int sectionLength = 30;
 
@@ -183,7 +183,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 					ToolTip = ToolTip + ("\n" + GuiText.Installed.getLocal() + ": " + (refStack.getStackSize()));
 					if ( refStack.getCountRequestable() > 0 )
-						ToolTip = ToolTip + ("\n" + GuiText.EnergyDrain.getLocal() + ": " + formatPowerLong( refStack.getCountRequestable(), true ));
+						ToolTip = ToolTip + ("\n" + GuiText.EnergyDrain.getLocal() + ": " + Platform.formatPowerLong( refStack.getCountRequestable(), true ));
 
 					toolPosX = x * sectionLength + xo + sectionLength - 8;
 					toolPosY = y * 18 + yo;
@@ -266,7 +266,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 					currenttip.remove( 1 );
 
 				currenttip.add( GuiText.Installed.getLocal() + ": " + (myStack.getStackSize()) );
-				currenttip.add( GuiText.EnergyDrain.getLocal() + ": " + formatPowerLong( myStack.getCountRequestable(), true ) );
+				currenttip.add( GuiText.EnergyDrain.getLocal() + ": " + Platform.formatPowerLong( myStack.getCountRequestable(), true ) );
 
 				drawTooltip( x, y, 0, join( currenttip, "\n" ) );
 			}
