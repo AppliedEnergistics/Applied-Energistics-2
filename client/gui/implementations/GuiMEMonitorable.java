@@ -184,7 +184,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			offset += 20;
 		}
 
-		if ( true )
+		if ( viewCell || this instanceof GuiWirelessTerm )
 		{
 			buttonList.add( ViewBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.VIEW_MODE, configSrc.getSetting( Settings.VIEW_MODE ) ) );
 			offset += 20;
