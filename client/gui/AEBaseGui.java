@@ -273,6 +273,8 @@ public abstract class AEBaseGui extends GuiContainer
 			case 0: // pickup / set-down.
 				action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACESINGLE : InventoryAction.PICKUP_OR_SETDOWN;
 				stack = ((SlotME) slot).getAEStack();
+				if ( stack != null && action == InventoryAction.PICKUP_OR_SETDOWN && stack.getStackSize() == 0 )
+					action = InventoryAction.CRAFT_ITEM;
 				break;
 			case 1:
 				action = ctrlDown == 1 ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
@@ -280,13 +282,18 @@ public abstract class AEBaseGui extends GuiContainer
 				break;
 
 			case 3: // creative dupe:
-				if ( player.capabilities.isCreativeMode )
+
+				stack = ((SlotME) slot).getAEStack();
+				if ( stack != null && stack.isCraftable() )
+				{
+					action = InventoryAction.CRAFT_ITEM;
+				}
+				else if ( player.capabilities.isCreativeMode )
 				{
 					IAEItemStack slotItem = ((SlotME) slot).getAEStack();
 					if ( slotItem != null )
 					{
 						action = InventoryAction.CREATIVE_DUPLICATE;
-						stack = slotItem;
 					}
 				}
 				break;
