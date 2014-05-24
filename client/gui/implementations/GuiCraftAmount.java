@@ -17,7 +17,6 @@ import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
-import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartPatternTerminal;
@@ -28,6 +27,8 @@ public class GuiCraftAmount extends AEBaseGui
 
 	GuiTextField amountToCraft;
 	GuiTabButton originalGuiBtn;
+
+	GuiButton next;
 
 	GuiButton plus1, plus10, plus100, plus1000;
 	GuiButton minus1, minus10, minus100, minus1000;
@@ -42,6 +43,8 @@ public class GuiCraftAmount extends AEBaseGui
 	public void initGui()
 	{
 		super.initGui();
+
+		buttonList.add( next = new GuiButton( 0, this.guiLeft + 128, this.guiTop + 51, 38, 20, GuiText.Next.getLocal() ) );
 
 		buttonList.add( plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 26, 22, 20, "+1" ) );
 		buttonList.add( plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 26, 28, 20, "+10" ) );
@@ -89,6 +92,7 @@ public class GuiCraftAmount extends AEBaseGui
 		amountToCraft.setTextColor( 0xFFFFFF );
 		amountToCraft.setVisible( true );
 		amountToCraft.setFocused( true );
+		amountToCraft.setText( "1" );
 	}
 
 	@Override
@@ -146,15 +150,19 @@ public class GuiCraftAmount extends AEBaseGui
 				Out = "0";
 
 			long result = Long.parseLong( Out );
+
+			if ( result == 1 && i > 1 )
+				result = 0;
+
 			result += i;
+			if ( result < 1 )
+				result = 1;
 
 			amountToCraft.setText( Out = Long.toString( result ) );
-
-			NetworkHandler.instance.sendToServer( new PacketValueConfig( "Terminal.CraftQty", Out ) );
 		}
-		catch (IOException e)
+		catch (NumberFormatException e)
 		{
-			AELog.error( e );
+			// :P
 		}
 	}
 
@@ -183,11 +191,15 @@ public class GuiCraftAmount extends AEBaseGui
 					if ( Out.length() == 0 )
 						Out = "0";
 
-					NetworkHandler.instance.sendToServer( new PacketValueConfig( "PriorityHost.Priority", Out ) );
+					long result = Long.parseLong( Out );
+					if ( result < 0 )
+					{
+						amountToCraft.setText( "1" );
+					}
 				}
-				catch (IOException e)
+				catch (NumberFormatException e)
 				{
-					AELog.error( e );
+					// :P
 				}
 			}
 			else
@@ -200,20 +212,30 @@ public class GuiCraftAmount extends AEBaseGui
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		bindTexture( "guis/priority.png" );
+		bindTexture( "guis/craftAmt.png" );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, xSize, ySize );
+
+		try
+		{
+			long result = Long.parseLong( amountToCraft.getText() );
+			next.enabled = amountToCraft.getText().length() > 0;
+		}
+		catch (NumberFormatException e)
+		{
+			next.enabled = false;
+		}
 
 		amountToCraft.drawTextBox();
 	}
 
 	protected String getBackground()
 	{
-		return "guis/priority.png";
+		return "guis/craftAmt.png";
 	}
 
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString( GuiText.Crafts.getLocal(), 8, 6, 4210752 );
+		fontRendererObj.drawString( GuiText.SelectAmount.getLocal(), 8, 6, 4210752 );
 	}
 }

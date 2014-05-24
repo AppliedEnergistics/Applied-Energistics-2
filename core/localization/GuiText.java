@@ -30,7 +30,7 @@ public enum GuiText
 
 	StoredPower, MaxPower, RequiredPower, Efficiency, InWorldCrafting, inWorldFluix, inWorldPurification, inWorldSingularity,
 
-	OfSecondOutput, NoSecondOutput, RFTunnel, Stores;
+	OfSecondOutput, NoSecondOutput, RFTunnel, Stores, Next, SelectAmount;
 
 	String root;
 
