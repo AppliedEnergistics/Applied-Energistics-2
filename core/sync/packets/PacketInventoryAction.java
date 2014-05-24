@@ -7,10 +7,14 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.tileentity.TileEntity;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.ClientHelper;
 import appeng.container.AEBaseContainer;
+import appeng.container.ContainerOpenContext;
+import appeng.container.implementations.ContainerCraftAmount;
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
@@ -41,7 +45,27 @@ public class PacketInventoryAction extends AppEngPacket
 		if ( sender.openContainer instanceof AEBaseContainer )
 		{
 			AEBaseContainer aebc = (AEBaseContainer) sender.openContainer;
-			aebc.doAction( sender, action, slot );
+			if ( action == InventoryAction.AUTOCRAFT )
+			{
+				ContainerOpenContext context = aebc.openContext;
+				if ( context != null )
+				{
+					TileEntity te = context.w.getTileEntity( context.x, context.y, context.z );
+					Platform.openGUI( sender, te, aebc.openContext.side, GuiBridge.GUI_CRAFTING_AMOUNT );
+
+					if ( sender.openContainer instanceof ContainerCraftAmount )
+					{
+						ContainerCraftAmount cca = (ContainerCraftAmount) sender.openContainer;
+						if ( aebc.getTargetStack() != null )
+							cca.craftingItem.putStack( aebc.getTargetStack().getItemStack() );
+						cca.detectAndSendChanges();
+					}
+				}
+			}
+			else
+			{
+				aebc.doAction( sender, action, slot );
+			}
 		}
 	}
 

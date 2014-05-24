@@ -1,5 +1,9 @@
 package appeng.core.sync;
 
+import static appeng.core.sync.GuiHostType.ITEM;
+import static appeng.core.sync.GuiHostType.ITEM_OR_WORLD;
+import static appeng.core.sync.GuiHostType.WORLD;
+
 import java.lang.reflect.Constructor;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,6 +35,7 @@ import appeng.container.ContainerOpenContext;
 import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerChest;
 import appeng.container.implementations.ContainerCondenser;
+import appeng.container.implementations.ContainerCraftAmount;
 import appeng.container.implementations.ContainerCraftingTerm;
 import appeng.container.implementations.ContainerDrive;
 import appeng.container.implementations.ContainerFormationPlane;
@@ -88,67 +93,69 @@ public enum GuiBridge implements IGuiHandler
 {
 	GUI_Handler(),
 
-	GUI_GRINDER(ContainerGrinder.class, TileGrinder.class, false, null),
+	GUI_GRINDER(ContainerGrinder.class, TileGrinder.class, WORLD, null),
 
-	GUI_QNB(ContainerQNB.class, TileQuantumBridge.class, false, SecurityPermissions.BUILD),
+	GUI_QNB(ContainerQNB.class, TileQuantumBridge.class, WORLD, SecurityPermissions.BUILD),
 
-	GUI_SKYCHEST(ContainerSkyChest.class, TileSkyChest.class, false, null),
+	GUI_SKYCHEST(ContainerSkyChest.class, TileSkyChest.class, WORLD, null),
 
-	GUI_CHEST(ContainerChest.class, TileChest.class, false, SecurityPermissions.BUILD),
+	GUI_CHEST(ContainerChest.class, TileChest.class, WORLD, SecurityPermissions.BUILD),
 
-	GUI_WIRELESS(ContainerWireless.class, TileWireless.class, false, SecurityPermissions.BUILD),
+	GUI_WIRELESS(ContainerWireless.class, TileWireless.class, WORLD, SecurityPermissions.BUILD),
 
-	GUI_ME(ContainerMEMonitorable.class, ITerminalHost.class, false, null),
+	GUI_ME(ContainerMEMonitorable.class, ITerminalHost.class, WORLD, null),
 
-	GUI_PORTABLE_CELL(ContainerMEPortableCell.class, IPortableCell.class, true, null),
+	GUI_PORTABLE_CELL(ContainerMEPortableCell.class, IPortableCell.class, ITEM, null),
 
-	GUI_WIRELESS_TERM(ContainerWirelessTerm.class, WirelessTerminalGuiObject.class, true, null),
+	GUI_WIRELESS_TERM(ContainerWirelessTerm.class, WirelessTerminalGuiObject.class, ITEM, null),
 
-	GUI_NETWORK_STATUS(ContainerNetworkStatus.class, INetworkTool.class, true, null),
+	GUI_NETWORK_STATUS(ContainerNetworkStatus.class, INetworkTool.class, ITEM, null),
 
-	GUI_NETWORK_TOOL(ContainerNetworkTool.class, INetworkTool.class, true, null),
+	GUI_NETWORK_TOOL(ContainerNetworkTool.class, INetworkTool.class, ITEM, null),
 
-	GUI_QUARTZ_KNIFE(ContainerQuartzKnife.class, QuartzKnifeObj.class, true, null),
+	GUI_QUARTZ_KNIFE(ContainerQuartzKnife.class, QuartzKnifeObj.class, ITEM, null),
 
-	GUI_DRIVE(ContainerDrive.class, TileDrive.class, false, SecurityPermissions.BUILD),
+	GUI_DRIVE(ContainerDrive.class, TileDrive.class, WORLD, SecurityPermissions.BUILD),
 
-	GUI_VIBRATIONCHAMBER(ContainerVibrationChamber.class, TileVibrationChamber.class, false, null),
+	GUI_VIBRATIONCHAMBER(ContainerVibrationChamber.class, TileVibrationChamber.class, WORLD, null),
 
-	GUI_CONDENSER(ContainerCondenser.class, TileCondenser.class, false, null),
+	GUI_CONDENSER(ContainerCondenser.class, TileCondenser.class, WORLD, null),
 
-	GUI_INTERFACE(ContainerInterface.class, IInterfaceHost.class, false, SecurityPermissions.BUILD),
+	GUI_INTERFACE(ContainerInterface.class, IInterfaceHost.class, WORLD, SecurityPermissions.BUILD),
 
-	GUI_BUS(ContainerUpgradeable.class, IUpgradeableHost.class, false, SecurityPermissions.BUILD),
+	GUI_BUS(ContainerUpgradeable.class, IUpgradeableHost.class, WORLD, SecurityPermissions.BUILD),
 
-	GUI_IOPORT(ContainerIOPort.class, TileIOPort.class, false, SecurityPermissions.BUILD),
+	GUI_IOPORT(ContainerIOPort.class, TileIOPort.class, WORLD, SecurityPermissions.BUILD),
 
-	GUI_STORAGEBUS(ContainerStorageBus.class, PartStorageBus.class, false, SecurityPermissions.BUILD),
+	GUI_STORAGEBUS(ContainerStorageBus.class, PartStorageBus.class, WORLD, SecurityPermissions.BUILD),
 
-	GUI_FPLANE(ContainerFormationPlane.class, PartFormationPlane.class, false, SecurityPermissions.BUILD),
+	GUI_FPLANE(ContainerFormationPlane.class, PartFormationPlane.class, WORLD, SecurityPermissions.BUILD),
 
-	GUI_PRIORITY(ContainerPriority.class, IPriorityHost.class, false, SecurityPermissions.BUILD),
+	GUI_PRIORITY(ContainerPriority.class, IPriorityHost.class, WORLD, SecurityPermissions.BUILD),
 
-	GUI_SECURITY(ContainerSecurity.class, TileSecurity.class, false, SecurityPermissions.SECURITY),
+	GUI_SECURITY(ContainerSecurity.class, TileSecurity.class, WORLD, SecurityPermissions.SECURITY),
 
-	GUI_CRAFTING_TERMINAL(ContainerCraftingTerm.class, PartCraftingTerminal.class, false, SecurityPermissions.CRAFT),
+	GUI_CRAFTING_TERMINAL(ContainerCraftingTerm.class, PartCraftingTerminal.class, WORLD, SecurityPermissions.CRAFT),
 
-	GUI_PATTERN_TERMINAL(ContainerPatternTerm.class, PartPatternTerminal.class, false, SecurityPermissions.CRAFT),
+	GUI_PATTERN_TERMINAL(ContainerPatternTerm.class, PartPatternTerminal.class, WORLD, SecurityPermissions.CRAFT),
 
 	// extends (Container/Gui) + Bus
-	GUI_LEVELEMITTER(ContainerLevelEmitter.class, PartLevelEmitter.class, false, SecurityPermissions.BUILD),
+	GUI_LEVELEMITTER(ContainerLevelEmitter.class, PartLevelEmitter.class, WORLD, SecurityPermissions.BUILD),
 
-	GUI_SPATIALIOPORT(ContainerSpatialIOPort.class, TileSpatialIOPort.class, false, SecurityPermissions.BUILD),
+	GUI_SPATIALIOPORT(ContainerSpatialIOPort.class, TileSpatialIOPort.class, WORLD, SecurityPermissions.BUILD),
 
-	GUI_INSCRIBER(ContainerInscriber.class, TileInscriber.class, false, null),
+	GUI_INSCRIBER(ContainerInscriber.class, TileInscriber.class, WORLD, null),
 
-	GUI_CELLWORKBENCH(ContainerCellWorkbench.class, TileCellWorkbench.class, false, null),
+	GUI_CELLWORKBENCH(ContainerCellWorkbench.class, TileCellWorkbench.class, WORLD, null),
 
-	GUI_MAC(ContainerMAC.class, TileMolecularAssembler.class, false, null);
+	GUI_MAC(ContainerMAC.class, TileMolecularAssembler.class, WORLD, null),
+
+	GUI_CRAFTING_AMOUNT(ContainerCraftAmount.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT);
 
 	private Class Tile;
 	private Class Gui;
 	private Class Container;
-	private boolean isItem;
+	private GuiHostType type;
 	private SecurityPermissions requiredPermission;
 
 	private GuiBridge() {
@@ -182,10 +189,10 @@ public enum GuiBridge implements IGuiHandler
 		getGui();
 	}
 
-	private GuiBridge(Class _Container, Class _Tile, boolean isItem, SecurityPermissions requiredPermission) {
+	private GuiBridge(Class _Container, Class _Tile, GuiHostType type, SecurityPermissions requiredPermission) {
 		this.requiredPermission = requiredPermission;
 		Container = _Container;
-		this.isItem = isItem;
+		this.type = type;
 		Tile = _Tile;
 		getGui();
 	}
@@ -288,14 +295,15 @@ public enum GuiBridge implements IGuiHandler
 		ForgeDirection side = ForgeDirection.getOrientation( ID_ORDINAL & 0x07 );
 		GuiBridge ID = values()[ID_ORDINAL >> 3];
 
-		if ( ID.isItem() )
+		if ( ID.type.isItem() )
 		{
 			ItemStack it = player.inventory.getCurrentItem();
 			Object myItem = getGuiObject( it, player, w, x, y, z );
 			if ( myItem != null && ID.CorrectTileOrPart( myItem ) )
 				return updateGui( ID.ConstructContainer( player.inventory, side, myItem ), w, x, y, z, side );
 		}
-		else
+
+		if ( ID.type.isTile() )
 		{
 			TileEntity TE = w.getTileEntity( x, y, z );
 			if ( TE instanceof IPartHost )
@@ -332,25 +340,21 @@ public enum GuiBridge implements IGuiHandler
 		return null;
 	}
 
-	public boolean isItem()
-	{
-		return isItem;
-	}
-
 	@Override
 	public Object getClientGuiElement(int ID_ORDINAL, EntityPlayer player, World w, int x, int y, int z)
 	{
 		ForgeDirection side = ForgeDirection.getOrientation( ID_ORDINAL & 0x07 );
 		GuiBridge ID = values()[ID_ORDINAL >> 3];
 
-		if ( ID.isItem() )
+		if ( ID.type.isItem() )
 		{
 			ItemStack it = player.inventory.getCurrentItem();
 			Object myItem = getGuiObject( it, player, w, x, y, z );
 			if ( ID.CorrectTileOrPart( myItem ) )
 				return ID.ConstructGui( player.inventory, side, myItem );
 		}
-		else
+
+		if ( ID.type.isTile() )
 		{
 			TileEntity TE = w.getTileEntity( x, y, z );
 
@@ -377,7 +381,7 @@ public enum GuiBridge implements IGuiHandler
 
 		if ( Platform.hasPermissions( x, y, z, player, AccessType.BLOCK_ACCESS ) )
 		{
-			if ( isItem() )
+			if ( type.isItem() )
 			{
 				ItemStack it = player.inventory.getCurrentItem();
 				if ( it != null && it.getItem() instanceof IGuiItem )
@@ -389,7 +393,8 @@ public enum GuiBridge implements IGuiHandler
 					}
 				}
 			}
-			else
+
+			if ( type.isTile() )
 			{
 				TileEntity TE = w.getTileEntity( x, y, z );
 				if ( TE instanceof IPartHost )
@@ -439,6 +444,11 @@ public enum GuiBridge implements IGuiHandler
 			return false;
 		}
 		return true;
+	}
+
+	public GuiHostType getType()
+	{
+		return type;
 	}
 
 }

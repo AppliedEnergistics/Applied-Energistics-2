@@ -259,7 +259,7 @@ public class Platform
 			z = tile.zCoord;
 		}
 
-		if ( type.isItem() || type.hasPermissions( tile, x, y, z, side, p ) )
+		if ( (type.getType().isItem() && tile == null) || type.hasPermissions( tile, x, y, z, side, p ) )
 		{
 			if ( tile == null )
 				p.openGui( AppEng.instance, type.ordinal() << 3, p.getEntityWorld(), x, y, z );

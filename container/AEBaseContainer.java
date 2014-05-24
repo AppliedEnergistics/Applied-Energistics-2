@@ -25,6 +25,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -66,6 +67,7 @@ public abstract class AEBaseContainer extends Container
 	final InventoryPlayer invPlayer;
 	final TileEntity tileEntity;
 	final IPart part;
+	final IGuiItemObject obj;
 
 	final protected BaseActionSource mySrc;
 	public boolean isContainerValid = true;
@@ -190,12 +192,7 @@ public abstract class AEBaseContainer extends Container
 
 	protected boolean hasAccess(SecurityPermissions perm, boolean requirePower)
 	{
-		IActionHost host = null;
-
-		if ( tileEntity instanceof IActionHost )
-			host = (IActionHost) tileEntity;
-		if ( part instanceof IActionHost )
-			host = (IActionHost) part;
+		IActionHost host = getActionHost();
 
 		if ( host != null )
 		{
@@ -243,11 +240,44 @@ public abstract class AEBaseContainer extends Container
 	}
 
 	public AEBaseContainer(InventoryPlayer ip, TileEntity myTile, IPart myPart) {
+		this( ip, myTile, myPart, null );
+	}
+
+	public AEBaseContainer(InventoryPlayer ip, TileEntity myTile, IPart myPart, IGuiItemObject gio) {
 		invPlayer = ip;
 		tileEntity = myTile;
 		part = myPart;
-		mySrc = new PlayerSource( ip.player, (IActionHost) (myTile instanceof IActionHost ? myTile : (myPart instanceof IActionHost ? myPart : null)) );
+		obj = gio;
+		mySrc = new PlayerSource( ip.player, getActionHost() );
 		prepareSync();
+	}
+
+	public AEBaseContainer(InventoryPlayer ip, Object anchor) {
+		invPlayer = ip;
+		tileEntity = anchor instanceof TileEntity ? (TileEntity) anchor : null;
+		part = anchor instanceof IPart ? (IPart) anchor : null;
+		obj = anchor instanceof IGuiItemObject ? (IGuiItemObject) anchor : null;
+
+		if ( tileEntity == null && part == null && obj == null )
+			throw new RuntimeException( "Must have a valid anchor" );
+
+		mySrc = new PlayerSource( ip.player, getActionHost() );
+
+		prepareSync();
+	}
+
+	private IActionHost getActionHost()
+	{
+		if ( obj instanceof IActionHost )
+			return (IActionHost) obj;
+
+		if ( tileEntity instanceof IActionHost )
+			return (IActionHost) tileEntity;
+
+		if ( part instanceof IActionHost )
+			return (IActionHost) part;
+
+		return null;
 	}
 
 	public boolean canDragIntoSlot(Slot s)

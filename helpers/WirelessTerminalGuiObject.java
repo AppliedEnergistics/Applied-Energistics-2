@@ -16,6 +16,7 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IMachineSet;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
@@ -23,11 +24,12 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.tile.networking.TileWireless;
 
-public class WirelessTerminalGuiObject implements IPortableCell
+public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 {
 
 	IWirelessTermHandler wth;
@@ -121,8 +123,8 @@ public class WirelessTerminalGuiObject implements IPortableCell
 		rangeLimit *= rangeLimit;
 
 		DimensionalCoord dc = wap.getLocation();
-		
-		if ( dc.getWorld()  == myPlayer.worldObj )
+
+		if ( dc.getWorld() == myPlayer.worldObj )
 		{
 			double offX = (double) dc.x - myPlayer.posX;
 			double offY = (double) dc.y - myPlayer.posY;
@@ -274,6 +276,33 @@ public class WirelessTerminalGuiObject implements IPortableCell
 	public IConfigManager getConfigManager()
 	{
 		return wth.getConfigManager( effectiveItem );
+	}
+
+	@Override
+	public IGridNode getGridNode(ForgeDirection dir)
+	{
+		return this.getActionableNode();
+	}
+
+	@Override
+	public AECableType getCableConnectionType(ForgeDirection dir)
+	{
+		return AECableType.NONE;
+	}
+
+	@Override
+	public void securityBreak()
+	{
+
+	}
+
+	@Override
+	public IGridNode getActionableNode()
+	{
+		rangeCheck();
+		if ( myWap != null )
+			return myWap.getActionableNode();
+		return null;
 	}
 
 }
