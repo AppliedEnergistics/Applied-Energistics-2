@@ -54,7 +54,7 @@ public class BlockCableBus extends AEBaseBlock
 		if ( noTesrTile.isInstance( te ) )
 			return (T) te;
 
-		if ( tesrTile.isInstance( te ) )
+		if ( tesrTile != null && tesrTile.isInstance( te ) )
 			return (T) te;
 
 		return null;
