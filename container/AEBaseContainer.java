@@ -809,9 +809,14 @@ public abstract class AEBaseContainer extends Container
 					long maxSize = ais.getItemStack().getMaxStackSize();
 					ais.setStackSize( maxSize );
 					ais = cellInv.extractItems( ais, Actionable.SIMULATE, mySrc );
-					long stackSize = Math.min( maxSize, ais.getStackSize() );
-					ais.setStackSize( (stackSize + 1) >> 1 );
-					ais = Platform.poweredExtraction( powerSrc, cellInv, ais, mySrc );
+
+					if ( ais != null )
+					{
+						long stackSize = Math.min( maxSize, ais.getStackSize() );
+						ais.setStackSize( (stackSize + 1) >> 1 );
+						ais = Platform.poweredExtraction( powerSrc, cellInv, ais, mySrc );
+					}
+
 					if ( ais != null )
 						player.inventory.setItemStack( ais.getItemStack() );
 					else
