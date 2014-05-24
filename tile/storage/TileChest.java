@@ -78,6 +78,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 	static final int sides[] = new int[] { 0 };
 	static final int front[] = new int[] { 1 };
+	static final int noslots[] = new int[] {};
 
 	AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
 	BaseActionSource mySrc = new MachineSource( this );
@@ -479,25 +480,47 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	@Override
 	public boolean canInsertItem(int i, ItemStack itemstack, int j)
 	{
-		try
+		if ( i == 1 )
 		{
-			IMEInventory<IAEItemStack> cell = getHandler( StorageChannel.ITEMS );
-			IAEItemStack returns = cell.injectItems( AEApi.instance().storage().createItemStack( inv.getStackInSlot( 0 ) ), Actionable.SIMULATE, mySrc );
-			return returns == null || returns.getStackSize() != itemstack.stackSize;
+			if ( AEApi.instance().registries().cell().getCellInventory( itemstack, StorageChannel.ITEMS ) != null )
+				return true;
+			if ( AEApi.instance().registries().cell().getCellInventory( itemstack, StorageChannel.FLUIDS ) != null )
+				return true;
 		}
-		catch (ChestNoHandler t)
+		else
 		{
+			try
+			{
+				IMEInventory<IAEItemStack> cell = getHandler( StorageChannel.ITEMS );
+				IAEItemStack returns = cell.injectItems( AEApi.instance().storage().createItemStack( inv.getStackInSlot( 0 ) ), Actionable.SIMULATE, mySrc );
+				return returns == null || returns.getStackSize() != itemstack.stackSize;
+			}
+			catch (ChestNoHandler t)
+			{
+			}
 		}
-
 		return false;
 	}
 
 	@Override
 	public int[] getAccessibleSlotsBySide(ForgeDirection side)
 	{
-		if ( side == getForward() )
+		if ( ForgeDirection.SOUTH == side )
 			return front;
-		return sides;
+
+		if ( gridProxy.isActive() )
+		{
+			try
+			{
+				if ( getHandler( StorageChannel.ITEMS ) != null )
+					return sides;
+			}
+			catch (ChestNoHandler e)
+			{
+				// nope!
+			}
+		}
+		return noslots;
 	}
 
 	@Override
@@ -652,7 +675,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		{
 			IMEInventoryHandler h = getHandler( StorageChannel.FLUIDS );
 			if ( h.getChannel() == StorageChannel.FLUIDS )
-				return new FluidTankInfo[] { new FluidTankInfo( null ) }; // eh?
+				return new FluidTankInfo[] { new FluidTankInfo( null, 1 ) }; // eh?
 		}
 		catch (ChestNoHandler e)
 		{
@@ -708,7 +731,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	@Override
 	public IStorageMonitorable getMonitorable(ForgeDirection side, BaseActionSource src)
 	{
-		if ( Platform.canAccess( gridProxy, src ) )
+		if ( Platform.canAccess( gridProxy, src ) && side != getForward() )
 			return this;
 		return null;
 	}
