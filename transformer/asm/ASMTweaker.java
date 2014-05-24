@@ -33,6 +33,9 @@ public class ASMTweaker implements IClassTransformer
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] basicClass)
 	{
+		if ( basicClass == null )
+			return basicClass;
+		
 		try
 		{
 			if ( transformedName != null && privateToPublicMethods.containsKey( transformedName ) )

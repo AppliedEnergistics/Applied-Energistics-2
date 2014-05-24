@@ -60,7 +60,7 @@ public class ASMIntegration implements IClassTransformer
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] basicClass)
 	{
-		if ( transformedName.startsWith( "appeng.transformer" ) )
+		if ( basicClass == null || transformedName.startsWith( "appeng.transformer" ) )
 			return basicClass;
 
 		if ( transformedName.startsWith( "appeng." ) )
