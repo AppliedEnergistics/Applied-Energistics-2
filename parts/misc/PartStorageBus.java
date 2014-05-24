@@ -241,7 +241,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		monitor = null;
 		if ( target != null )
 		{
-			IExternalStorageHandler esh = AEApi.instance().registries().externalStorage().getHandler( target, side.getOpposite(), StorageChannel.ITEMS );
+			IExternalStorageHandler esh = AEApi.instance().registries().externalStorage().getHandler( target, side.getOpposite(), StorageChannel.ITEMS, mySrc );
 			if ( esh != null )
 			{
 				IMEInventory inv = esh.getInventory( target, side.getOpposite(), StorageChannel.ITEMS, mySrc );

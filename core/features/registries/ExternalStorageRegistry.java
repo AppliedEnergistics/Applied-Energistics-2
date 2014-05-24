@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IExternalStorageHandler;
 import appeng.api.storage.IExternalStorageRegistry;
 import appeng.api.storage.StorageChannel;
@@ -21,15 +22,15 @@ public class ExternalStorageRegistry implements IExternalStorageRegistry
 	}
 
 	@Override
-	public IExternalStorageHandler getHandler(TileEntity te, ForgeDirection d, StorageChannel chan)
+	public IExternalStorageHandler getHandler(TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource mySrc)
 	{
 		for (IExternalStorageHandler x : Handlers)
 		{
-			if ( x.canHandle( te, d, chan ) )
+			if ( x.canHandle( te, d, chan, mySrc ) )
 				return x;
 		}
 
-		if ( lastHandler.canHandle( te, d, chan ) )
+		if ( lastHandler.canHandle( te, d, chan, mySrc ) )
 			return lastHandler;
 
 		return null;

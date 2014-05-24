@@ -12,7 +12,7 @@ public class BCPipeHandler implements IExternalStorageHandler
 {
 
 	@Override
-	public boolean canHandle(TileEntity te, ForgeDirection d, StorageChannel chan)
+	public boolean canHandle(TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource mySrc)
 	{
 		return chan == StorageChannel.ITEMS && BC.instance.isPipe( te, d );
 	}
