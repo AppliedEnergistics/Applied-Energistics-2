@@ -54,9 +54,13 @@ public class PartDenseCable extends PartCable
 		getHost().markForUpdate();
 	}
 
-	public PartDenseCable(ItemStack is) {
-		super( PartDenseCable.class, is );
+	public PartDenseCable(Class c, ItemStack is) {
+		super( c, is );
 		proxy.setFlags( GridFlags.TIER_2_CAPACITY );
+	}
+
+	public PartDenseCable(ItemStack is) {
+		this( PartDenseCable.class, is );
 	}
 
 	@Override

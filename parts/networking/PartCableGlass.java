@@ -5,8 +5,12 @@ import net.minecraft.item.ItemStack;
 public class PartCableGlass extends PartCable
 {
 
+	public PartCableGlass(Class c, ItemStack is) {
+		super( c, is );
+	}
+
 	public PartCableGlass(ItemStack is) {
-		super( PartCableGlass.class, is );
+		this( PartCableGlass.class, is );
 	}
 
 }

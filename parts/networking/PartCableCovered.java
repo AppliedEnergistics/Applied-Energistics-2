@@ -40,8 +40,12 @@ public class PartCableCovered extends PartCable
 		getHost().markForUpdate();
 	}
 
+	public PartCableCovered(Class c, ItemStack is) {
+		super( c, is );
+	}
+
 	public PartCableCovered(ItemStack is) {
-		super( PartCableCovered.class, is );
+		this( PartCableCovered.class, is );
 	}
 
 	@Override

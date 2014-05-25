@@ -44,8 +44,12 @@ public class PartCableSmart extends PartCable
 		getHost().markForUpdate();
 	}
 
+	public PartCableSmart(Class c, ItemStack is) {
+		super( c, is );
+	}
+
 	public PartCableSmart(ItemStack is) {
-		super( PartCableSmart.class, is );
+		this( PartCableSmart.class, is );
 	}
 
 	@Override
