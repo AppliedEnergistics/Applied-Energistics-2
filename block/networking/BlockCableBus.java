@@ -277,13 +277,15 @@ public class BlockCableBus extends AEBaseBlock
 	private ICableBusContainer cb(IBlockAccess w, int x, int y, int z)
 	{
 		TileEntity te = w.getTileEntity( x, y, z );
+		ICableBusContainer out = null;
+
 		if ( te instanceof TileCableBus )
-			return ((TileCableBus) te).cb;
+			out = ((TileCableBus) te).cb;
 
-		if ( AppEng.instance.isIntegrationEnabled( "FMP" ) )
-			return ((IFMP) AppEng.instance.getIntegration( "FMP" )).getCableContainer( te );
+		else if ( AppEng.instance.isIntegrationEnabled( "FMP" ) )
+			out = ((IFMP) AppEng.instance.getIntegration( "FMP" )).getCableContainer( te );
 
-		return nullCB;
+		return out == null ? nullCB : out;
 	}
 
 	/**
