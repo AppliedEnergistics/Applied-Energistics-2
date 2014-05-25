@@ -96,7 +96,7 @@ public class Waila extends BaseModule implements IWailaDataProvider
 		if ( ThingOfInterest instanceof TileEnergyCell )
 		{
 			NBTTagCompound c = accessor.getNBTData();
-			if ( c != null )
+			if ( c != null && c.hasKey( "internalCurrentPower" ) )
 			{
 				TileEnergyCell tec = (TileEnergyCell) ThingOfInterest;
 				long power = (long) (100 * c.getDouble( "internalCurrentPower" ));
