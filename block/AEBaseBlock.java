@@ -694,7 +694,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 							{
 								memc.setMemoryCardContents( is, name, data );
 								memc.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
-								return false;
+								return true;
 							}
 						}
 					}

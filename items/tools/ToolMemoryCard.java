@@ -25,15 +25,35 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 		setMaxStackSize( 1 );
 	}
 
+	/**
+	 * Find the localized string...
+	 * 
+	 * @param name
+	 * @return
+	 */
+	private String getLocalizedName(String... name)
+	{
+		for (String n : name)
+		{
+			String l = StatCollector.translateToLocal( n );
+			if ( !l.equals( n ) )
+				return l;
+		}
+
+		for (String n : name)
+			return n;
+
+		return "";
+	}
+
 	@Override
 	public void addInformation(ItemStack i, EntityPlayer p, List l, boolean b)
 	{
-		l.add( StatCollector.translateToLocal( getSettingsName( i ) ) );
+		l.add( getLocalizedName( getSettingsName( i ) + ".name", getSettingsName( i ) ) );
+
 		NBTTagCompound data = getData( i );
 		if ( data.hasKey( "tooltip" ) )
-		{
-			l.add( StatCollector.translateToLocal( data.getString( "tooltip" ) ) );
-		}
+			l.add( StatCollector.translateToLocal( getLocalizedName( data.getString( "tooltip" ) + ".name", data.getString( "tooltip" ) ) ) );
 	}
 
 	@Override
@@ -69,6 +89,20 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
+	public boolean onItemUse(ItemStack is, EntityPlayer player, World w, int x, int y, int z, int side, float hx, float hy, float hz)
+	{
+		if ( player.isSneaking() && !w.isRemote )
+		{
+			IMemoryCard mem = (IMemoryCard) is.getItem();
+			mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
+			is.setTagCompound( null );
+			return true;
+		}
+		else
+			return super.onItemUse( is, player, w, x, y, z, side, hx, hy, hz );
+	}
+
+	@Override
 	public void notifyUser(EntityPlayer player, MemoryCardMessages msg)
 	{
 		if ( Platform.isClient() )
@@ -76,6 +110,9 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 
 		switch (msg)
 		{
+		case SETTINGS_CLEARED:
+			player.addChatMessage( PlayerMessages.SettingCleared.get() );
+			break;
 		case INVALID_MACHINE:
 			player.addChatMessage( PlayerMessages.InvalidMachine.get() );
 			break;

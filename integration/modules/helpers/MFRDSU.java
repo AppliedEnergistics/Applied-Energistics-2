@@ -74,6 +74,7 @@ public class MFRDSU implements IMEInventory<IAEItemStack>
 		{
 			if ( request.getStackSize() >= is.stackSize )
 			{
+				is = is.copy();
 				if ( mode == Actionable.MODULATE )
 					dsu.setStoredItemCount( 0 );
 				return AEItemStack.create( is );
