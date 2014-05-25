@@ -14,7 +14,7 @@ public class ExternalIInv implements IExternalStorageHandler
 {
 
 	@Override
-	public boolean canHandle(TileEntity te, ForgeDirection d, StorageChannel channel)
+	public boolean canHandle(TileEntity te, ForgeDirection d, StorageChannel channel, BaseActionSource mySrc)
 	{
 		return channel == StorageChannel.ITEMS && te instanceof IInventory;
 	}
