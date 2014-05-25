@@ -28,6 +28,7 @@ import appeng.api.parts.SelectedPart;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketClick;
 import appeng.core.sync.packets.PacketPartPlacement;
 import appeng.facade.IFacadeItem;
 import appeng.integration.abstraction.IBC;
@@ -60,6 +61,21 @@ public class PartPlacement
 				TileEntity te = w.getTileEntity( mop.blockX, mop.blockY, mop.blockZ );
 				if ( te instanceof IPartHost )
 					event.setCanceled( true );
+			}
+			else if ( event.entityPlayer != null )
+			{
+				ItemStack held = event.entityPlayer.getHeldItem();
+				if ( event.entityPlayer.isSneaking() && held != null && AEApi.instance().items().itemMemoryCard.sameAs( held ) )
+				{
+					try
+					{
+						NetworkHandler.instance.sendToServer( new PacketClick( event.x, event.y, event.z, event.face, 0, 0, 0 ) );
+					}
+					catch (IOException e)
+					{
+						// :P
+					}
+				}
 			}
 		}
 		else if ( event.action == Action.RIGHT_CLICK_BLOCK && event.entityPlayer.worldObj.isRemote )
