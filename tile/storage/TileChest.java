@@ -474,7 +474,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	@Override
 	public boolean canExtractItem(int i, ItemStack itemstack, int j)
 	{
-		return false;
+		return i == 1;
 	}
 
 	@Override
