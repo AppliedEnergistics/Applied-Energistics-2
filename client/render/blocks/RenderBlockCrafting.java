@@ -15,7 +15,7 @@ import appeng.block.crafting.BlockCraftingUnit;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.BusRenderer;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.crafting.TileCraftingTile;
 
 public class RenderBlockCrafting extends BaseBlockRender
@@ -132,7 +132,7 @@ public class RenderBlockCrafting extends BaseBlockRender
 		i.setBounds( gso( east, 3, ForgeDirection.WEST ), gso( up, 3, ForgeDirection.DOWN ), gso( south, 3, ForgeDirection.NORTH ),
 				gso( east, 13, ForgeDirection.EAST ), gso( up, 13, ForgeDirection.UP ), gso( south, 13, ForgeDirection.SOUTH ) );
 		i.prepareBounds( renderer );
-		i.setTexture( ExtraTextures.BlockCraftingUnitRing.getIcon() );
+		i.setTexture( ExtraBlockTextures.BlockCraftingUnitRing.getIcon() );
 		i.renderBlockCurrentBounds( x, y, z, renderer );
 	}
 
@@ -168,15 +168,15 @@ public class RenderBlockCrafting extends BaseBlockRender
 
 		if ( meta == 0 && blk.getClass() == BlockCraftingUnit.class )
 		{
-			i.setTexture( ExtraTextures.BlockCraftingUnitFit.getIcon() );
+			i.setTexture( ExtraBlockTextures.BlockCraftingUnitFit.getIcon() );
 			i.renderBlockCurrentBounds( x, y, z, renderer );
 		}
 		else
 		{
-			if ( color == ExtraTextures.BlockCraftingMonitorFit.getIcon() )
-				i.setTexture( ExtraTextures.BlockCraftingMonitorOuter.getIcon() );
+			if ( color == ExtraBlockTextures.BlockCraftingMonitorFit.getIcon() )
+				i.setTexture( ExtraBlockTextures.BlockCraftingMonitorOuter.getIcon() );
 			else
-				i.setTexture( ExtraTextures.BlockCraftingFitSolid.getIcon() );
+				i.setTexture( ExtraBlockTextures.BlockCraftingFitSolid.getIcon() );
 
 			i.renderBlockCurrentBounds( x, y, z, renderer );
 
@@ -198,7 +198,7 @@ public class RenderBlockCrafting extends BaseBlockRender
 			}
 		}
 
-		i.setTexture( ExtraTextures.BlockCraftingUnitRingLong.getIcon() );
+		i.setTexture( ExtraBlockTextures.BlockCraftingUnitRingLong.getIcon() );
 		for (ForgeDirection a : ForgeDirection.VALID_DIRECTIONS)
 		{
 			if ( a == side || a == side.getOpposite() )

@@ -7,7 +7,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -34,7 +34,7 @@ public class EnergyFx extends EntityBreakingFX
 		this.particleRed = 255;
 		this.particleAlpha = 1.4f;
 		this.particleScale = 3.5f;
-		this.particleTextureIndex = ExtraTextures.BlockEnergyParticle.getIcon();
+		this.particleTextureIndex = ExtraBlockTextures.BlockEnergyParticle.getIcon();
 
 		startBlkX = MathHelper.floor_double( posX );
 		startBlkY = MathHelper.floor_double( posY );

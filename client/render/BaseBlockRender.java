@@ -25,7 +25,7 @@ import org.lwjgl.opengl.GL11;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
@@ -254,7 +254,7 @@ public class BaseBlockRender
 		for (IIcon o : s)
 			if ( o != null )
 				return o;
-		return ExtraTextures.getMissing();
+		return ExtraBlockTextures.getMissing();
 	}
 
 	public void renderInvBlock(EnumSet<ForgeDirection> sides, AEBaseBlock block, ItemStack item, Tessellator tess, int color, RenderBlocks renderer)

@@ -6,7 +6,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.misc.TileQuartzGrowthAccelerator;
 
 public class RenderBlockQuartzAccelerator extends BaseBlockRender
@@ -24,8 +24,8 @@ public class RenderBlockQuartzAccelerator extends BaseBlockRender
 		{
 			if ( ((TileQuartzGrowthAccelerator) te).hasPower )
 			{
-				IIcon top_Bottom = ExtraTextures.BlockQuartzGrowthAcceleratorOn.getIcon();
-				IIcon side = ExtraTextures.BlockQuartzGrowthAcceleratorSideOn.getIcon();
+				IIcon top_Bottom = ExtraBlockTextures.BlockQuartzGrowthAcceleratorOn.getIcon();
+				IIcon side = ExtraBlockTextures.BlockQuartzGrowthAcceleratorSideOn.getIcon();
 				blk.getRendererInstance().setTemporaryRenderIcons( top_Bottom, top_Bottom, side, side, side, side );
 			}
 		}

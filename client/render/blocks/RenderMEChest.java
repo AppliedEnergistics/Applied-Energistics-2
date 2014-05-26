@@ -13,7 +13,7 @@ import appeng.api.AEApi;
 import appeng.api.storage.ICellHandler;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.FlipableIcon;
 import appeng.client.texture.OffsetIcon;
 import appeng.tile.storage.TileChest;
@@ -29,10 +29,10 @@ public class RenderMEChest extends BaseBlockRender
 	@Override
 	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
-		renderer.overrideBlockTexture = ExtraTextures.getMissing();
+		renderer.overrideBlockTexture = ExtraBlockTextures.getMissing();
 		this.renderInvBlock( EnumSet.of( ForgeDirection.SOUTH ), block, is, Tessellator.instance, 0x000000, renderer );
 
-		renderer.overrideBlockTexture = ExtraTextures.MEChest.getIcon();
+		renderer.overrideBlockTexture = ExtraBlockTextures.MEChest.getIcon();
 		this.renderInvBlock( EnumSet.of( ForgeDirection.UP ), block, is, Tessellator.instance, 0xffffff, renderer );
 
 		renderer.overrideBlockTexture = null;
@@ -65,7 +65,7 @@ public class RenderMEChest extends BaseBlockRender
 		Tessellator.instance.setBrightness( b );
 		Tessellator.instance.setColorOpaque_I( 0xffffff );
 
-		FlipableIcon fico = new FlipableIcon( new OffsetIcon( ExtraTextures.MEStorageCellTextures.getIcon(), offsetU, offsetV ) );
+		FlipableIcon fico = new FlipableIcon( new OffsetIcon( ExtraBlockTextures.MEStorageCellTextures.getIcon(), offsetU, offsetV ) );
 		if ( forward == ForgeDirection.EAST && (up == ForgeDirection.NORTH || up == ForgeDirection.SOUTH) )
 			fico.setFlip( true, false );
 		else if ( forward == ForgeDirection.NORTH && up == ForgeDirection.EAST )
@@ -99,7 +99,7 @@ public class RenderMEChest extends BaseBlockRender
 			if ( stat == 3 )
 				Tessellator.instance.setColorOpaque_I( 0xff0000 );
 			selectFace( renderer, west, up, forward, 9, 10, 11, 12 );
-			renderFace( x, y, z, imb, ExtraTextures.White.getIcon(), renderer, forward );
+			renderFace( x, y, z, imb, ExtraBlockTextures.White.getIcon(), renderer, forward );
 		}
 
 		b = world.getLightBrightnessForSkyBlocks( x + up.offsetX, y + up.offsetY, z + up.offsetZ, 0 );
@@ -114,7 +114,7 @@ public class RenderMEChest extends BaseBlockRender
 
 		ICellHandler ch = AEApi.instance().registries().cell().getHandler( sp.getStorageType() );
 		IIcon ico = ch == null ? null : ch.getTopTexture();
-		renderFace( x, y, z, imb, ico == null ? ExtraTextures.MEChest.getIcon() : ico, renderer, up );
+		renderFace( x, y, z, imb, ico == null ? ExtraBlockTextures.MEChest.getIcon() : ico, renderer, up );
 
 		renderer.overrideBlockTexture = null;
 		postRenderInWorld( renderer );

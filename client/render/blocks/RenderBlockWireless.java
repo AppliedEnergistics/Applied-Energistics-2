@@ -14,7 +14,7 @@ import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
 import appeng.client.texture.CableBusTextures;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.OffsetIcon;
 import appeng.tile.networking.TileWireless;
 import appeng.util.Platform;
@@ -46,7 +46,7 @@ public class RenderBlockWireless extends BaseBlockRender
 		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		r = CableBusTextures.PartWirelessSides.getIcon();
-		ri.setTemporaryRenderIcons( r, r, ExtraTextures.BlockWirelessInside.getIcon(), ExtraTextures.BlockWirelessInside.getIcon(), r, r );
+		ri.setTemporaryRenderIcons( r, r, ExtraBlockTextures.BlockWirelessInside.getIcon(), ExtraBlockTextures.BlockWirelessInside.getIcon(), r, r );
 		renderBlockBounds( renderer, 5, 5, 1, 11, 11, 2, ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
 		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
@@ -56,7 +56,7 @@ public class RenderBlockWireless extends BaseBlockRender
 		super.postRenderInWorld( renderer );
 		tess.draw();
 
-		ri.setTemporaryRenderIcons( r, r, ExtraTextures.BlockWirelessInside.getIcon(), ExtraTextures.BlockWirelessInside.getIcon(), r, r );
+		ri.setTemporaryRenderIcons( r, r, ExtraBlockTextures.BlockWirelessInside.getIcon(), ExtraBlockTextures.BlockWirelessInside.getIcon(), r, r );
 
 		ForgeDirection sides[] = new ForgeDirection[] { ForgeDirection.EAST, ForgeDirection.WEST, ForgeDirection.UP, ForgeDirection.DOWN };
 
@@ -114,7 +114,7 @@ public class RenderBlockWireless extends BaseBlockRender
 			super.renderInWorld( blk, world, x, y, z, renderer );
 
 			r = CableBusTextures.PartWirelessSides.getIcon();
-			ri.setTemporaryRenderIcons( r, r, ExtraTextures.BlockWirelessInside.getIcon(), ExtraTextures.BlockWirelessInside.getIcon(), r, r );
+			ri.setTemporaryRenderIcons( r, r, ExtraBlockTextures.BlockWirelessInside.getIcon(), ExtraBlockTextures.BlockWirelessInside.getIcon(), r, r );
 			renderBlockBounds( renderer, 5, 5, 1, 11, 11, 2, fdx, fdy, fdz );
 			super.renderInWorld( blk, world, x, y, z, renderer );
 
@@ -126,7 +126,7 @@ public class RenderBlockWireless extends BaseBlockRender
 			renderTorchAtAngle( renderer, fdx, fdy, fdz );
 			super.postRenderInWorld( renderer );
 
-			ri.setTemporaryRenderIcons( r, r, ExtraTextures.BlockWirelessInside.getIcon(), ExtraTextures.BlockWirelessInside.getIcon(), r, r );
+			ri.setTemporaryRenderIcons( r, r, ExtraBlockTextures.BlockWirelessInside.getIcon(), ExtraBlockTextures.BlockWirelessInside.getIcon(), r, r );
 
 			ForgeDirection sides[] = new ForgeDirection[] { ForgeDirection.EAST, ForgeDirection.WEST, ForgeDirection.UP, ForgeDirection.DOWN };
 

@@ -8,7 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 
 public class MatterCannonEffect extends EntityBreakingFX
 {
@@ -26,7 +26,7 @@ public class MatterCannonEffect extends EntityBreakingFX
 		this.motionX = 0.0f;
 		this.motionY = 0.0f;
 		this.motionZ = 0.0f;
-		this.particleTextureIndex = ExtraTextures.BlockMatterCannonParticle.getIcon();
+		this.particleTextureIndex = ExtraBlockTextures.BlockMatterCannonParticle.getIcon();
 	}
 
 	public void fromItem(ForgeDirection d)

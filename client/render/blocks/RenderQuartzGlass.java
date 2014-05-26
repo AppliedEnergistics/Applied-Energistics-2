@@ -10,7 +10,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.OffsetIcon;
 
 public class RenderQuartzGlass extends BaseBlockRender
@@ -89,22 +89,22 @@ public class RenderQuartzGlass extends BaseBlockRender
 				switch (side)
 				{
 				case WEST:
-					renderer.renderFaceXNeg( imb, x, y, z, ExtraTextures.GlassFrame.getIcon() );
+					renderer.renderFaceXNeg( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
 					break;
 				case EAST:
-					renderer.renderFaceXPos( imb, x, y, z, ExtraTextures.GlassFrame.getIcon() );
+					renderer.renderFaceXPos( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
 					break;
 				case NORTH:
-					renderer.renderFaceZNeg( imb, x, y, z, ExtraTextures.GlassFrame.getIcon() );
+					renderer.renderFaceZNeg( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
 					break;
 				case SOUTH:
-					renderer.renderFaceZPos( imb, x, y, z, ExtraTextures.GlassFrame.getIcon() );
+					renderer.renderFaceZPos( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
 					break;
 				case DOWN:
-					renderer.renderFaceYNeg( imb, x, y, z, ExtraTextures.GlassFrame.getIcon() );
+					renderer.renderFaceYNeg( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
 					break;
 				case UP:
-					renderer.renderFaceYPos( imb, x, y, z, ExtraTextures.GlassFrame.getIcon() );
+					renderer.renderFaceYPos( imb, x, y, z, ExtraBlockTextures.GlassFrame.getIcon() );
 					break;
 				default:
 					break;
@@ -116,7 +116,7 @@ public class RenderQuartzGlass extends BaseBlockRender
 	@Override
 	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
-		renderer.overrideBlockTexture = ExtraTextures.GlassFrame.getIcon();
+		renderer.overrideBlockTexture = ExtraBlockTextures.GlassFrame.getIcon();
 		super.renderInventory( block, is, renderer, type, obj );
 		renderer.overrideBlockTexture = null;
 		super.renderInventory( block, is, renderer, type, obj );
@@ -140,13 +140,13 @@ public class RenderQuartzGlass extends BaseBlockRender
 			renderer.overrideBlockTexture = new OffsetIcon( imb.getIcon( 0, 0 ), u / 2, v / 2 );
 			break;
 		case 1:
-			renderer.overrideBlockTexture = new OffsetIcon( ExtraTextures.BlockQuartzGlassB.getIcon(), u / 2, v / 2 );
+			renderer.overrideBlockTexture = new OffsetIcon( ExtraBlockTextures.BlockQuartzGlassB.getIcon(), u / 2, v / 2 );
 			break;
 		case 2:
-			renderer.overrideBlockTexture = new OffsetIcon( ExtraTextures.BlockQuartzGlassC.getIcon(), u, v );
+			renderer.overrideBlockTexture = new OffsetIcon( ExtraBlockTextures.BlockQuartzGlassC.getIcon(), u, v );
 			break;
 		case 3:
-			renderer.overrideBlockTexture = new OffsetIcon( ExtraTextures.BlockQuartzGlassD.getIcon(), u, v );
+			renderer.overrideBlockTexture = new OffsetIcon( ExtraBlockTextures.BlockQuartzGlassD.getIcon(), u, v );
 			break;
 		}
 

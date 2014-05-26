@@ -6,7 +6,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 
 public class BlockCraftingMonitor extends BlockCraftingUnit
@@ -26,7 +26,7 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 		case 0:
 			return super.getIcon( 0, 0 );
 		case 0 | FLAG_FORMED:
-			return ExtraTextures.BlockCraftingMonitorFit.getIcon();
+			return ExtraBlockTextures.BlockCraftingMonitorFit.getIcon();
 		}
 	}
 

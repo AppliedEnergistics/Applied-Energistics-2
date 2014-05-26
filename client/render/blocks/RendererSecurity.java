@@ -11,7 +11,7 @@ import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.misc.TileSecurity;
 
 public class RendererSecurity extends BaseBlockRender
@@ -24,10 +24,10 @@ public class RendererSecurity extends BaseBlockRender
 	@Override
 	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
-		renderer.overrideBlockTexture = ExtraTextures.getMissing();
+		renderer.overrideBlockTexture = ExtraBlockTextures.getMissing();
 		this.renderInvBlock( EnumSet.of( ForgeDirection.SOUTH ), block, is, Tessellator.instance, 0x000000, renderer );
 
-		renderer.overrideBlockTexture = ExtraTextures.MEChest.getIcon();
+		renderer.overrideBlockTexture = ExtraBlockTextures.MEChest.getIcon();
 		this.renderInvBlock( EnumSet.of( ForgeDirection.UP ), block, is, Tessellator.instance, 0xffffff, renderer );
 
 		renderer.overrideBlockTexture = null;
@@ -56,7 +56,7 @@ public class RendererSecurity extends BaseBlockRender
 		Tessellator.instance.setColorOpaque_I( 0xffffff );
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
-		IIcon ico = sp.isActive() ? ExtraTextures.BlockMESecurityOn.getIcon() : ExtraTextures.MEChest.getIcon();
+		IIcon ico = sp.isActive() ? ExtraBlockTextures.BlockMESecurityOn.getIcon() : ExtraBlockTextures.MEChest.getIcon();
 		renderFace( x, y, z, imb, ico, renderer, up );
 
 		renderer.overrideBlockTexture = null;

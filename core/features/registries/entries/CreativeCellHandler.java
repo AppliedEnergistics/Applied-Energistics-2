@@ -8,7 +8,7 @@ import appeng.api.storage.ICellHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.items.storage.ItemCreativeStorageCell;
 import appeng.me.storage.CreativeCellInventory;
@@ -35,7 +35,7 @@ public class CreativeCellHandler implements ICellHandler
 	@Override
 	public IIcon getTopTexture()
 	{
-		return ExtraTextures.BlockMEChestItems.getIcon();
+		return ExtraBlockTextures.BlockMEChestItems.getIcon();
 	}
 
 	@Override

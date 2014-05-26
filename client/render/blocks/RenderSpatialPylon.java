@@ -10,7 +10,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.spatial.TileSpatialPylon;
 
 public class RenderSpatialPylon extends BaseBlockRender
@@ -23,7 +23,7 @@ public class RenderSpatialPylon extends BaseBlockRender
 	@Override
 	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
-		renderer.overrideBlockTexture = ExtraTextures.BlockSpatialPylon_dim.getIcon();
+		renderer.overrideBlockTexture = ExtraBlockTextures.BlockSpatialPylon_dim.getIcon();
 		super.renderInventory( block, is, renderer, type, obj );
 		renderer.overrideBlockTexture = null;
 		super.renderInventory( block, is, renderer, type, obj );
@@ -143,7 +143,7 @@ public class RenderSpatialPylon extends BaseBlockRender
 		renderer.overrideBlockTexture = imb.getIcon( 0, 0 );
 		boolean result = renderer.renderStandardBlock( imb, x, y, z );
 
-		renderer.overrideBlockTexture = ExtraTextures.BlockSpatialPylon_dim.getIcon();
+		renderer.overrideBlockTexture = ExtraBlockTextures.BlockSpatialPylon_dim.getIcon();
 		result = renderer.renderStandardBlock( imb, x, y, z );
 
 		renderer.overrideBlockTexture = null;
@@ -157,13 +157,13 @@ public class RenderSpatialPylon extends BaseBlockRender
 			return blk.getRendererInstance().getTexture( dir );
 
 		if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_MIDDLE )
-			return ExtraTextures.BlockSpatialPylonC.getIcon();
+			return ExtraBlockTextures.BlockSpatialPylonC.getIcon();
 
 		else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_ENDMIN )
-			return ExtraTextures.BlockSpatialPylonE.getIcon();
+			return ExtraBlockTextures.BlockSpatialPylonE.getIcon();
 
 		else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_ENDMAX )
-			return ExtraTextures.BlockSpatialPylonE.getIcon();
+			return ExtraBlockTextures.BlockSpatialPylonE.getIcon();
 
 		return blk.getIcon( 0, 0 );
 	}
@@ -173,16 +173,16 @@ public class RenderSpatialPylon extends BaseBlockRender
 		boolean good = (displayBits & sp.DISPLAY_ENABLED) == sp.DISPLAY_ENABLED;
 
 		if ( ori.equals( dir ) || ori.getOpposite().equals( dir ) )
-			return good ? ExtraTextures.BlockSpatialPylon_dim.getIcon() : ExtraTextures.BlockSpatialPylon_red.getIcon();
+			return good ? ExtraBlockTextures.BlockSpatialPylon_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylon_red.getIcon();
 
 		if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_MIDDLE )
-			return good ? ExtraTextures.BlockSpatialPylonC_dim.getIcon() : ExtraTextures.BlockSpatialPylonC_red.getIcon();
+			return good ? ExtraBlockTextures.BlockSpatialPylonC_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylonC_red.getIcon();
 
 		else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_ENDMIN )
-			return good ? ExtraTextures.BlockSpatialPylonE_dim.getIcon() : ExtraTextures.BlockSpatialPylonE_red.getIcon();
+			return good ? ExtraBlockTextures.BlockSpatialPylonE_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylonE_red.getIcon();
 
 		else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_ENDMAX )
-			return good ? ExtraTextures.BlockSpatialPylonE_dim.getIcon() : ExtraTextures.BlockSpatialPylonE_red.getIcon();
+			return good ? ExtraBlockTextures.BlockSpatialPylonE_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylonE_red.getIcon();
 
 		return blk.getIcon( 0, 0 );
 	}

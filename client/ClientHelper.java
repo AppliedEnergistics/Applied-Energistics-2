@@ -38,7 +38,8 @@ import appeng.client.render.effects.EnergyFx;
 import appeng.client.render.effects.LightningEffect;
 import appeng.client.render.effects.VibrantEffect;
 import appeng.client.texture.CableBusTextures;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraItemTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
 import appeng.entity.EntityTinyTNTPrimed;
@@ -151,9 +152,15 @@ public class ClientHelper extends ServerHelper
 	@SubscribeEvent
 	public void updateTextureSheet(TextureStitchEvent.Pre ev)
 	{
+		if ( ev.map.getTextureType() == 1 )
+		{
+			for (ExtraItemTextures et : ExtraItemTextures.values())
+				et.registerIcon( ev.map );
+		}
+
 		if ( ev.map.getTextureType() == 0 )
 		{
-			for (ExtraTextures et : ExtraTextures.values())
+			for (ExtraBlockTextures et : ExtraBlockTextures.values())
 				et.registerIcon( ev.map );
 
 			for (CableBusTextures cb : CableBusTextures.values())

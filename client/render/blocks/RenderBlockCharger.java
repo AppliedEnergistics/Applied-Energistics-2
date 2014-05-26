@@ -19,7 +19,7 @@ import appeng.api.util.IOrientable;
 import appeng.block.AEBaseBlock;
 import appeng.block.misc.BlockCharger;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.AELog;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
@@ -40,7 +40,7 @@ public class RenderBlockCharger extends BaseBlockRender
 		setInvRenderBounds( renderer, 6, 1, 0, 10, 15, 2 );
 		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
-		blk.getRendererInstance().setTemporaryRenderIcons( ExtraTextures.BlockChargerInside.getIcon(), null, null, null, null, null );
+		blk.getRendererInstance().setTemporaryRenderIcons( ExtraBlockTextures.BlockChargerInside.getIcon(), null, null, null, null, null );
 
 		setInvRenderBounds( renderer, 2, 0, 2, 14, 3, 14 );
 		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
@@ -50,7 +50,7 @@ public class RenderBlockCharger extends BaseBlockRender
 
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 
-		blk.getRendererInstance().setTemporaryRenderIcons( null, ExtraTextures.BlockChargerInside.getIcon(), null, null, null, null );
+		blk.getRendererInstance().setTemporaryRenderIcons( null, ExtraBlockTextures.BlockChargerInside.getIcon(), null, null, null, null );
 
 		setInvRenderBounds( renderer, 2, 13, 2, 14, 16, 14 );
 		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
@@ -80,7 +80,7 @@ public class RenderBlockCharger extends BaseBlockRender
 		renderBlockBounds( renderer, 6, 1, 0, 10, 15, 2, fdx, fdy, fdz );
 		boolean out = renderer.renderStandardBlock( blk, x, y, z );
 
-		blk.getRendererInstance().setTemporaryRenderIcons( ExtraTextures.BlockChargerInside.getIcon(), null, null, null, null, null );
+		blk.getRendererInstance().setTemporaryRenderIcons( ExtraBlockTextures.BlockChargerInside.getIcon(), null, null, null, null, null );
 
 		renderBlockBounds( renderer, 2, 0, 2, 14, 3, 14, fdx, fdy, fdz );
 		out = renderer.renderStandardBlock( blk, x, y, z );
@@ -90,7 +90,7 @@ public class RenderBlockCharger extends BaseBlockRender
 
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 
-		blk.getRendererInstance().setTemporaryRenderIcons( null, ExtraTextures.BlockChargerInside.getIcon(), null, null, null, null );
+		blk.getRendererInstance().setTemporaryRenderIcons( null, ExtraBlockTextures.BlockChargerInside.getIcon(), null, null, null, null );
 
 		renderBlockBounds( renderer, 2, 13, 2, 14, 16, 14, fdx, fdy, fdz );
 		out = renderer.renderStandardBlock( blk, x, y, z );

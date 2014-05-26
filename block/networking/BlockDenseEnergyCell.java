@@ -3,7 +3,7 @@ package appeng.block.networking;
 import java.util.EnumSet;
 
 import net.minecraft.util.IIcon;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.features.AEFeature;
 import appeng.tile.networking.TileDenseEnergyCell;
 
@@ -28,21 +28,21 @@ public class BlockDenseEnergyCell extends BlockEnergyCell
 		switch (metadata)
 		{
 		case 0:
-			return ExtraTextures.MEDenseEnergyCell0.getIcon();
+			return ExtraBlockTextures.MEDenseEnergyCell0.getIcon();
 		case 1:
-			return ExtraTextures.MEDenseEnergyCell1.getIcon();
+			return ExtraBlockTextures.MEDenseEnergyCell1.getIcon();
 		case 2:
-			return ExtraTextures.MEDenseEnergyCell2.getIcon();
+			return ExtraBlockTextures.MEDenseEnergyCell2.getIcon();
 		case 3:
-			return ExtraTextures.MEDenseEnergyCell3.getIcon();
+			return ExtraBlockTextures.MEDenseEnergyCell3.getIcon();
 		case 4:
-			return ExtraTextures.MEDenseEnergyCell4.getIcon();
+			return ExtraBlockTextures.MEDenseEnergyCell4.getIcon();
 		case 5:
-			return ExtraTextures.MEDenseEnergyCell5.getIcon();
+			return ExtraBlockTextures.MEDenseEnergyCell5.getIcon();
 		case 6:
-			return ExtraTextures.MEDenseEnergyCell6.getIcon();
+			return ExtraBlockTextures.MEDenseEnergyCell6.getIcon();
 		case 7:
-			return ExtraTextures.MEDenseEnergyCell7.getIcon();
+			return ExtraBlockTextures.MEDenseEnergyCell7.getIcon();
 
 		}
 		return super.getIcon( direction, metadata );

@@ -15,7 +15,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.qnb.TileQuantumBridge;
 
 public class RenderQNB extends BaseBlockRender
@@ -149,7 +149,7 @@ public class RenderQNB extends BaseBlockRender
 					Tessellator.instance.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
 					Tessellator.instance.setBrightness( bn << 20 | bn << 4 );
 					for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-						renderFace( x, y, z, block, ExtraTextures.BlockQRingCornerLight.getIcon(), renderer, side );
+						renderFace( x, y, z, block, ExtraBlockTextures.BlockQRingCornerLight.getIcon(), renderer, side );
 
 				}
 			}
@@ -176,7 +176,7 @@ public class RenderQNB extends BaseBlockRender
 					Tessellator.instance.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
 					Tessellator.instance.setBrightness( bn << 20 | bn << 4 );
 					for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-						renderFace( x, y, z, block, ExtraTextures.BlockQRingEdgeLight.getIcon(), renderer, side );
+						renderFace( x, y, z, block, ExtraBlockTextures.BlockQRingEdgeLight.getIcon(), renderer, side );
 				}
 			}
 		}

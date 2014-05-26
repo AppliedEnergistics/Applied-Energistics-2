@@ -26,7 +26,7 @@ import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.blocks.RendererCableBus;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
@@ -175,7 +175,7 @@ public class BlockCableBus extends AEBaseBlock
 		if ( i != null )
 			return i;
 
-		return ExtraTextures.BlockQuartzGlassB.getIcon();
+		return ExtraBlockTextures.BlockQuartzGlassB.getIcon();
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 
 public class GuiTabButton extends GuiButton implements ITooltip
 {
@@ -62,7 +62,7 @@ public class GuiTabButton extends GuiButton implements ITooltip
 		if ( this.visible )
 		{
 			GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-			par1Minecraft.renderEngine.bindTexture( ExtraTextures.GuiTexture( "guis/states.png" ) );
+			par1Minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
 			this.field_146123_n = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
 
 			int uv_y = (int) Math.floor( 13 / 16 );

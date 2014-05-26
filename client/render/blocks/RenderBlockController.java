@@ -6,7 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.networking.TileController;
 
 public class RenderBlockController extends BaseBlockRender
@@ -28,20 +28,20 @@ public class RenderBlockController extends BaseBlockRender
 		boolean hasPower = meta > 0;
 		boolean isConflict = meta == 2;
 
-		ExtraTextures lights = null;
+		ExtraBlockTextures lights = null;
 
 		if ( xx && !yy && !zz )
 		{
 			if ( hasPower )
 			{
-				blk.getRendererInstance().setTemporaryRenderIcon( ExtraTextures.BlockControllerColumnPowered.getIcon() );
+				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerColumnPowered.getIcon() );
 				if ( isConflict )
-					lights = ExtraTextures.BlockControllerColumnConflict;
+					lights = ExtraBlockTextures.BlockControllerColumnConflict;
 				else
-					lights = ExtraTextures.BlockControllerColumnLights;
+					lights = ExtraBlockTextures.BlockControllerColumnLights;
 			}
 			else
-				blk.getRendererInstance().setTemporaryRenderIcon( ExtraTextures.BlockControllerColumn.getIcon() );
+				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerColumn.getIcon() );
 
 			renderer.uvRotateEast = 1;
 			renderer.uvRotateWest = 1;
@@ -52,14 +52,14 @@ public class RenderBlockController extends BaseBlockRender
 		{
 			if ( hasPower )
 			{
-				blk.getRendererInstance().setTemporaryRenderIcon( ExtraTextures.BlockControllerColumnPowered.getIcon() );
+				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerColumnPowered.getIcon() );
 				if ( isConflict )
-					lights = ExtraTextures.BlockControllerColumnConflict;
+					lights = ExtraBlockTextures.BlockControllerColumnConflict;
 				else
-					lights = ExtraTextures.BlockControllerColumnLights;
+					lights = ExtraBlockTextures.BlockControllerColumnLights;
 			}
 			else
-				blk.getRendererInstance().setTemporaryRenderIcon( ExtraTextures.BlockControllerColumn.getIcon() );
+				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerColumn.getIcon() );
 
 			renderer.uvRotateEast = 0;
 			renderer.uvRotateNorth = 0;
@@ -68,14 +68,14 @@ public class RenderBlockController extends BaseBlockRender
 		{
 			if ( hasPower )
 			{
-				blk.getRendererInstance().setTemporaryRenderIcon( ExtraTextures.BlockControllerColumnPowered.getIcon() );
+				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerColumnPowered.getIcon() );
 				if ( isConflict )
-					lights = ExtraTextures.BlockControllerColumnConflict;
+					lights = ExtraBlockTextures.BlockControllerColumnConflict;
 				else
-					lights = ExtraTextures.BlockControllerColumnLights;
+					lights = ExtraBlockTextures.BlockControllerColumnLights;
 			}
 			else
-				blk.getRendererInstance().setTemporaryRenderIcon( ExtraTextures.BlockControllerColumn.getIcon() );
+				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerColumn.getIcon() );
 
 			renderer.uvRotateNorth = 1;
 			renderer.uvRotateSouth = 1;
@@ -87,19 +87,19 @@ public class RenderBlockController extends BaseBlockRender
 			renderer.uvRotateEast = renderer.uvRotateBottom = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 
 			if ( v == 0 )
-				blk.getRendererInstance().setTemporaryRenderIcon( ExtraTextures.BlockControllerInsideA.getIcon() );
+				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerInsideA.getIcon() );
 			else
-				blk.getRendererInstance().setTemporaryRenderIcon( ExtraTextures.BlockControllerInsideB.getIcon() );
+				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerInsideB.getIcon() );
 		}
 		else
 		{
 			if ( hasPower )
 			{
-				blk.getRendererInstance().setTemporaryRenderIcon( ExtraTextures.BlockControllerPowered.getIcon() );
+				blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockControllerPowered.getIcon() );
 				if ( isConflict )
-					lights = ExtraTextures.BlockControllerConflict;
+					lights = ExtraBlockTextures.BlockControllerConflict;
 				else
-					lights = ExtraTextures.BlockControllerLights;
+					lights = ExtraBlockTextures.BlockControllerLights;
 			}
 			else
 				blk.getRendererInstance().setTemporaryRenderIcon( null );

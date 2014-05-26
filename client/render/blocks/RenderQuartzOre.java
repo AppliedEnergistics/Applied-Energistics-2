@@ -7,7 +7,7 @@ import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import appeng.block.AEBaseBlock;
 import appeng.block.solids.OreQuartz;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 
 public class RenderQuartzOre extends BaseBlockRender
 {
@@ -20,7 +20,7 @@ public class RenderQuartzOre extends BaseBlockRender
 	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
 		super.renderInventory( blk, is, renderer, type, obj );
-		blk.getRendererInstance().setTemporaryRenderIcon( ExtraTextures.OreQuartzStone.getIcon() );
+		blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.OreQuartzStone.getIcon() );
 		super.renderInventory( blk, is, renderer, type, obj );
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 	}
@@ -33,7 +33,7 @@ public class RenderQuartzOre extends BaseBlockRender
 		super.renderInWorld( block, world, x, y, z, renderer );
 		blk.enhanceBrightness = false;
 
-		blk.getRendererInstance().setTemporaryRenderIcon( ExtraTextures.OreQuartzStone.getIcon() );
+		blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.OreQuartzStone.getIcon() );
 		boolean out = super.renderInWorld( block, world, x, y, z, renderer );
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 

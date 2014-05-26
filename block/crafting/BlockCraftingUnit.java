@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockCrafting;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.features.AEFeature;
 import appeng.tile.crafting.TileCraftingTile;
 
@@ -64,11 +64,11 @@ public class BlockCraftingUnit extends AEBaseBlock
 		case 0:
 			return super.getIcon( 0, 0 );
 		case 1:
-			return ExtraTextures.BlockCraftingAccelerator.getIcon();
+			return ExtraBlockTextures.BlockCraftingAccelerator.getIcon();
 		case 0 | FLAG_FORMED:
-			return ExtraTextures.BlockCraftingUnitFit.getIcon();
+			return ExtraBlockTextures.BlockCraftingUnitFit.getIcon();
 		case 1 | FLAG_FORMED:
-			return ExtraTextures.BlockCraftingAcceleratorFit.getIcon();
+			return ExtraBlockTextures.BlockCraftingAcceleratorFit.getIcon();
 		}
 	}
 

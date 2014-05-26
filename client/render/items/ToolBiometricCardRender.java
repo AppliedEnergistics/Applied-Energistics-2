@@ -2,7 +2,6 @@ package appeng.client.render.items;
 
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
@@ -11,6 +10,7 @@ import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
 import appeng.api.util.AEColor;
+import appeng.client.texture.ExtraItemTextures;
 import appeng.util.Platform;
 
 public class ToolBiometricCardRender implements IItemRenderer
@@ -71,8 +71,8 @@ public class ToolBiometricCardRender implements IItemRenderer
 			GL11.glRotatef( 180F, 1.0F, 0.0F, 0.0F );
 		}
 
-		float u = Items.snowball.getIconFromDamage( 0 ).getInterpolatedU( 8.1 );
-		float v = Items.snowball.getIconFromDamage( 0 ).getInterpolatedV( 8.1 );
+		float u = ExtraItemTextures.White.getIcon().getInterpolatedU( 8.1 );
+		float v = ExtraItemTextures.White.getIcon().getInterpolatedV( 8.1 );
 
 		NBTTagCompound myTag = Platform.openNbtData( item );
 		String username = myTag.getString( "username" );

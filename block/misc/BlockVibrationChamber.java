@@ -10,7 +10,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
@@ -54,7 +54,7 @@ public class BlockVibrationChamber extends AEBaseBlock
 
 		if ( tvc != null && tvc.isOn && ico == getRendererInstance().getTexture( ForgeDirection.SOUTH ) )
 		{
-			return ExtraTextures.BlockVibrationChamberFrontOn.getIcon();
+			return ExtraBlockTextures.BlockVibrationChamberFrontOn.getIcon();
 		}
 
 		return ico;

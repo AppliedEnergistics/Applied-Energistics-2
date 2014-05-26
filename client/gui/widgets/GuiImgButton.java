@@ -26,7 +26,7 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.TerminalStyle;
 import appeng.api.config.ViewItems;
 import appeng.api.config.YesNo;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.localization.ButtonToolTips;
 
 public class GuiImgButton extends GuiButton implements ITooltip
@@ -209,7 +209,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 				GL11.glScalef( 0.5f, 0.5f, 0.5f );
 
 				GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-				par1Minecraft.renderEngine.bindTexture( ExtraTextures.GuiTexture( "guis/states.png" ) );
+				par1Minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
 				this.field_146123_n = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width
 						&& par3 < this.yPosition + this.height;
 
@@ -225,7 +225,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			else
 			{
 				GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-				par1Minecraft.renderEngine.bindTexture( ExtraTextures.GuiTexture( "guis/states.png" ) );
+				par1Minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
 				this.field_146123_n = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width
 						&& par3 < this.yPosition + this.height;
 

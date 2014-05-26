@@ -21,7 +21,7 @@ import appeng.api.util.IOrientable;
 import appeng.block.AEBaseBlock;
 import appeng.block.misc.BlockInscriber;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.AELog;
 import appeng.recipes.handlers.Inscribe.InscriberRecipe;
 import appeng.tile.AEBaseTile;
@@ -60,7 +60,7 @@ public class RenderBlockInscriber extends BaseBlockRender
 		setInvRenderBounds( renderer, 1, 14, 1, 15, 16, 15 );
 		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
-		blk.getRendererInstance().setTemporaryRenderIcon( ExtraTextures.BlockInscriberInside.getIcon() );
+		blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockInscriberInside.getIcon() );
 
 		// press
 		setInvRenderBounds( renderer, 3, 2, 3, 13, 3, 13 );
@@ -160,7 +160,7 @@ public class RenderBlockInscriber extends BaseBlockRender
 			progress = 1.0f - (progress - 1.0f);
 		press -= progress / 5.0f;
 
-		IIcon ic = ExtraTextures.BlockInscriberInside.getIcon();
+		IIcon ic = ExtraBlockTextures.BlockInscriberInside.getIcon();
 		tess.startDrawingQuads();
 
 		middle += 0.02f;

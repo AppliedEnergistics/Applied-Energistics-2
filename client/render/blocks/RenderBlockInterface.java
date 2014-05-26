@@ -7,7 +7,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.misc.TileInterface;
 
 public class RenderBlockInterface extends BaseBlockRender
@@ -26,8 +26,8 @@ public class RenderBlockInterface extends BaseBlockRender
 
 		if ( ti.getForward() != ForgeDirection.UNKNOWN )
 		{
-			IIcon side = ExtraTextures.BlockInterfaceAlternateArrow.getIcon();
-			info.setTemporaryRenderIcons( ExtraTextures.BlockInterfaceAlternate.getIcon(), block.getIcon( 0, 0 ), side, side, side, side );
+			IIcon side = ExtraBlockTextures.BlockInterfaceAlternateArrow.getIcon();
+			info.setTemporaryRenderIcons( ExtraBlockTextures.BlockInterfaceAlternate.getIcon(), block.getIcon( 0, 0 ), side, side, side, side );
 		}
 
 		boolean fz = super.renderInWorld( block, world, x, y, z, renderer );

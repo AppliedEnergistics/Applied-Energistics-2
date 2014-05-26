@@ -13,7 +13,7 @@ import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseItemBlockChargeable;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockEnergyCube;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.features.AEFeature;
 import appeng.tile.networking.TileEnergyCell;
 import appeng.util.Platform;
@@ -60,21 +60,21 @@ public class BlockEnergyCell extends AEBaseBlock
 		switch (metadata)
 		{
 		case 0:
-			return ExtraTextures.MEEnergyCell0.getIcon();
+			return ExtraBlockTextures.MEEnergyCell0.getIcon();
 		case 1:
-			return ExtraTextures.MEEnergyCell1.getIcon();
+			return ExtraBlockTextures.MEEnergyCell1.getIcon();
 		case 2:
-			return ExtraTextures.MEEnergyCell2.getIcon();
+			return ExtraBlockTextures.MEEnergyCell2.getIcon();
 		case 3:
-			return ExtraTextures.MEEnergyCell3.getIcon();
+			return ExtraBlockTextures.MEEnergyCell3.getIcon();
 		case 4:
-			return ExtraTextures.MEEnergyCell4.getIcon();
+			return ExtraBlockTextures.MEEnergyCell4.getIcon();
 		case 5:
-			return ExtraTextures.MEEnergyCell5.getIcon();
+			return ExtraBlockTextures.MEEnergyCell5.getIcon();
 		case 6:
-			return ExtraTextures.MEEnergyCell6.getIcon();
+			return ExtraBlockTextures.MEEnergyCell6.getIcon();
 		case 7:
-			return ExtraTextures.MEEnergyCell7.getIcon();
+			return ExtraBlockTextures.MEEnergyCell7.getIcon();
 
 		}
 		return super.getIcon( direction, metadata );

@@ -11,7 +11,7 @@ import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.storage.TileDrive;
 import appeng.util.Platform;
 
@@ -25,7 +25,7 @@ public class RenderDrive extends BaseBlockRender
 	@Override
 	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
-		renderer.overrideBlockTexture = ExtraTextures.getMissing();
+		renderer.overrideBlockTexture = ExtraBlockTextures.getMissing();
 		this.renderInvBlock( EnumSet.of( ForgeDirection.SOUTH ), block, is, Tessellator.instance, 0x000000, renderer );
 
 		renderer.overrideBlockTexture = null;
@@ -45,7 +45,7 @@ public class RenderDrive extends BaseBlockRender
 		boolean result = super.renderInWorld( imb, world, x, y, z, renderer );
 		Tessellator tess = Tessellator.instance;
 
-		IIcon ico = ExtraTextures.MEStorageCellTextures.getIcon();
+		IIcon ico = ExtraBlockTextures.MEStorageCellTextures.getIcon();
 
 		int b = world.getLightBrightnessForSkyBlocks( x + forward.offsetX, y + forward.offsetY, z + forward.offsetZ, 0 );
 
@@ -237,7 +237,7 @@ public class RenderDrive extends BaseBlockRender
 
 				if ( stat != 0 )
 				{
-					IIcon wico = ExtraTextures.White.getIcon();
+					IIcon wico = ExtraBlockTextures.White.getIcon();
 					u1 = wico.getInterpolatedU( (spin % 4 < 2) ? 1 : 6 );
 					u2 = wico.getInterpolatedU( ((spin + 1) % 4 < 2) ? 1 : 6 );
 					u3 = wico.getInterpolatedU( ((spin + 2) % 4 < 2) ? 1 : 6 );

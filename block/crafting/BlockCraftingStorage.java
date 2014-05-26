@@ -6,7 +6,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import appeng.client.texture.ExtraTextures;
+import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.crafting.TileCraftingStorageTile;
 
 public class BlockCraftingStorage extends BlockCraftingUnit
@@ -42,20 +42,20 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 		case 0:
 			return super.getIcon( 0, 0 );
 		case 1:
-			return ExtraTextures.BlockCraftingStorage4k.getIcon();
+			return ExtraBlockTextures.BlockCraftingStorage4k.getIcon();
 		case 2:
-			return ExtraTextures.BlockCraftingStorage16k.getIcon();
+			return ExtraBlockTextures.BlockCraftingStorage16k.getIcon();
 		case 3:
-			return ExtraTextures.BlockCraftingStorage64k.getIcon();
+			return ExtraBlockTextures.BlockCraftingStorage64k.getIcon();
 
 		case 0 | FLAG_FORMED:
-			return ExtraTextures.BlockCraftingStorage1kFit.getIcon();
+			return ExtraBlockTextures.BlockCraftingStorage1kFit.getIcon();
 		case 1 | FLAG_FORMED:
-			return ExtraTextures.BlockCraftingStorage4kFit.getIcon();
+			return ExtraBlockTextures.BlockCraftingStorage4kFit.getIcon();
 		case 2 | FLAG_FORMED:
-			return ExtraTextures.BlockCraftingStorage16kFit.getIcon();
+			return ExtraBlockTextures.BlockCraftingStorage16kFit.getIcon();
 		case 3 | FLAG_FORMED:
-			return ExtraTextures.BlockCraftingStorage64kFit.getIcon();
+			return ExtraBlockTextures.BlockCraftingStorage64kFit.getIcon();
 		}
 	}
 
