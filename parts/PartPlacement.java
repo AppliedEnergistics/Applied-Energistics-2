@@ -65,7 +65,7 @@ public class PartPlacement
 			else if ( event.entityPlayer != null )
 			{
 				ItemStack held = event.entityPlayer.getHeldItem();
-				if ( event.entityPlayer.isSneaking() && held != null && AEApi.instance().items().itemMemoryCard.sameAs( held ) )
+				if ( event.entityPlayer.isSneaking() && held != null && AEApi.instance().items().itemMemoryCard.sameAsStack( held ) )
 				{
 					try
 					{
