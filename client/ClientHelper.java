@@ -3,6 +3,7 @@ package appeng.client;
 import static net.minecraftforge.client.IItemRenderer.ItemRenderType.ENTITY;
 import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -25,6 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -38,12 +40,16 @@ import appeng.client.render.effects.EnergyFx;
 import appeng.client.render.effects.LightningEffect;
 import appeng.client.render.effects.VibrantEffect;
 import appeng.client.texture.CableBusTextures;
-import appeng.client.texture.ExtraItemTextures;
 import appeng.client.texture.ExtraBlockTextures;
+import appeng.client.texture.ExtraItemTextures;
 import appeng.core.AEConfig;
+import appeng.core.AELog;
 import appeng.core.CommonHelper;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketValueConfig;
 import appeng.entity.EntityTinyTNTPrimed;
 import appeng.entity.RenderTinyTNTPrimed;
+import appeng.helpers.IMouseWheelItem;
 import appeng.server.ServerHelper;
 import appeng.util.Platform;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -147,6 +153,30 @@ public class ClientHelper extends ServerHelper
 	{
 		RenderingRegistry.registerBlockHandler( WorldRender.instance );
 		RenderManager.instance.entityRenderMap.put( EntityTinyTNTPrimed.class, new RenderTinyTNTPrimed() );
+	}
+
+	@SubscribeEvent
+	public void wheelEvent(MouseEvent me)
+	{
+		if ( me.isCanceled() || me.dwheel == 0 )
+			return;
+
+		Minecraft mc = Minecraft.getMinecraft();
+		EntityPlayer player = mc.thePlayer;
+		ItemStack is = player.getHeldItem();
+
+		if ( is != null && is.getItem() instanceof IMouseWheelItem && player.isSneaking() )
+		{
+			try
+			{
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Item", me.dwheel > 0 ? "WheelUp" : "WheelDown" ) );
+				me.setCanceled( true );
+			}
+			catch (IOException e)
+			{
+				AELog.error( e );
+			}
+		}
 	}
 
 	@SubscribeEvent
