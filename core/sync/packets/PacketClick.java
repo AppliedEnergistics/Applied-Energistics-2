@@ -13,6 +13,7 @@ import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.items.tools.ToolNetworkTool;
+import appeng.items.tools.powered.ToolColorApplicator;
 
 public class PacketClick extends AppEngPacket
 {
@@ -45,6 +46,11 @@ public class PacketClick extends AppEngPacket
 			IMemoryCard mem = (IMemoryCard) is.getItem();
 			mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
 			is.setTagCompound( null );
+		}
+		else if ( is != null && AEApi.instance().items().itemColorApplicator.sameAsStack( is ) )
+		{
+			ToolColorApplicator mem = (ToolColorApplicator) is.getItem();
+			mem.cycleColors( is, mem.getColor( is ), 1 );
 		}
 	}
 

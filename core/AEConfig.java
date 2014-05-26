@@ -94,6 +94,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 	public int manipulator_battery = 200000;
 	public int mattercannon_battery = 200000;
 	public int portablecell_battery = 20000;
+	public int colorapplicator_battery = 20000;
 	public int staff_battery = 8000;
 
 	public AEConfig(String path) {
@@ -134,8 +135,10 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 
 		minMeteoriteDistanceSq = minMeteoriteDistance * minMeteoriteDistance;
 
-		addCustomCategoryComment("wireless", "Range= WirelessBaseRange + WirelessBoosterRangeMultiplier * Math.pow( boosters, WirelessBoosterExp )\nPowerDrain= WirelessBaseCost + WirelessCostMultiplier * Math.pow( boosters, 1 + boosters / WirelessHighWirelessCount )" );
-		
+		addCustomCategoryComment(
+				"wireless",
+				"Range= WirelessBaseRange + WirelessBoosterRangeMultiplier * Math.pow( boosters, WirelessBoosterExp )\nPowerDrain= WirelessBaseCost + WirelessCostMultiplier * Math.pow( boosters, 1 + boosters / WirelessHighWirelessCount )" );
+
 		WirelessBaseCost = get( "wireless", "WirelessBaseCost", WirelessBaseCost ).getDouble( WirelessBaseCost );
 		WirelessCostMultiplier = get( "wireless", "WirelessCostMultiplier", WirelessCostMultiplier ).getDouble( WirelessCostMultiplier );
 		WirelessBaseRange = get( "wireless", "WirelessBaseRange", WirelessBaseRange ).getDouble( WirelessBaseRange );
@@ -149,6 +152,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		staff_battery = get( "battery", "staff", staff_battery ).getInt( staff_battery );
 		manipulator_battery = get( "battery", "manipulator", manipulator_battery ).getInt( manipulator_battery );
 		portablecell_battery = get( "battery", "portablecell", portablecell_battery ).getInt( portablecell_battery );
+		colorapplicator_battery = get( "battery", "colorapplicator", colorapplicator_battery ).getInt( colorapplicator_battery );
 		mattercannon_battery = get( "battery", "mattercannon", mattercannon_battery ).getInt( mattercannon_battery );
 
 		for (AEFeature feature : AEFeature.values())
@@ -169,9 +173,9 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		{
 			String Category = e.getClass().getSimpleName();
 			Enum value = settings.getSetting( e );
-			
+
 			Property p = this.get( Category, e.name(), value.name(), getListComment( value ) );
-			
+
 			try
 			{
 				value = Enum.valueOf( value.getClass(), p.getString() );
@@ -186,7 +190,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 
 		try
 		{
-			selectedPowerUnit = PowerUnits.valueOf( get( "Client", "PowerUnit", selectedPowerUnit.name(), getListComment(selectedPowerUnit) ).getString() );
+			selectedPowerUnit = PowerUnits.valueOf( get( "Client", "PowerUnit", selectedPowerUnit.name(), getListComment( selectedPowerUnit ) ).getString() );
 		}
 		catch (Throwable t)
 		{
@@ -221,21 +225,21 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 	private String getListComment(Enum value)
 	{
 		String comment = null;
-		
+
 		if ( value != null )
 		{
-			EnumSet set = EnumSet.allOf(value.getClass() );
-			
-			for ( Object Oeg : set )
+			EnumSet set = EnumSet.allOf( value.getClass() );
+
+			for (Object Oeg : set)
 			{
-				Enum eg = (Enum)Oeg;
+				Enum eg = (Enum) Oeg;
 				if ( comment == null )
 					comment = "Possible Values: " + eg.name();
 				else
-					comment += ", "+eg.name();
+					comment += ", " + eg.name();
 			}
 		}
-		
+
 		return comment;
 	}
 
@@ -270,7 +274,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 			get( "spatialio", "storageProviderID", storageProviderID ).set( storageProviderID );
 		}
 
-		get( "Client", "PowerUnit", selectedPowerUnit.name(), getListComment(selectedPowerUnit) ).set( selectedPowerUnit.name() );
+		get( "Client", "PowerUnit", selectedPowerUnit.name(), getListComment( selectedPowerUnit ) ).set( selectedPowerUnit.name() );
 
 		if ( hasChanged() )
 			super.save();

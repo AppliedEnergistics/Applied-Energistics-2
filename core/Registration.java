@@ -41,6 +41,7 @@ import appeng.block.misc.BlockCharger;
 import appeng.block.misc.BlockCondenser;
 import appeng.block.misc.BlockInscriber;
 import appeng.block.misc.BlockInterface;
+import appeng.block.misc.BlockPaint;
 import appeng.block.misc.BlockQuartzGrowthAccelerator;
 import appeng.block.misc.BlockQuartzTorch;
 import appeng.block.misc.BlockSecurity;
@@ -99,6 +100,7 @@ import appeng.items.materials.ItemMultiMaterial;
 import appeng.items.materials.MaterialType;
 import appeng.items.misc.ItemCrystalSeed;
 import appeng.items.misc.ItemEncodedPattern;
+import appeng.items.misc.ItemPaintBall;
 import appeng.items.parts.ItemFacade;
 import appeng.items.parts.ItemMultiPart;
 import appeng.items.parts.PartType;
@@ -110,6 +112,7 @@ import appeng.items.tools.ToolBiometricCard;
 import appeng.items.tools.ToolMemoryCard;
 import appeng.items.tools.ToolNetworkTool;
 import appeng.items.tools.powered.ToolChargedStaff;
+import appeng.items.tools.powered.ToolColorApplicator;
 import appeng.items.tools.powered.ToolEntropyManipulator;
 import appeng.items.tools.powered.ToolMassCannon;
 import appeng.items.tools.powered.ToolPortableCell;
@@ -286,6 +289,7 @@ public class Registration
 		blocks.blockQuartzOre = addFeature( OreQuartz.class );
 		blocks.blockQuartzOreCharged = addFeature( OreQuartzCharged.class );
 		blocks.blockMatrixFrame = addFeature( BlockMatrixFrame.class );
+		blocks.blockPaint = addFeature( BlockPaint.class );
 		blocks.blockQuartz = addFeature( BlockQuartz.class );
 		blocks.blockFluix = addFeature( BlockFluix.class );
 		blocks.blockSkyStone = addFeature( BlockSkyStone.class );
@@ -361,6 +365,8 @@ public class Registration
 		items.itemMemoryCard = addFeature( ToolMemoryCard.class );
 		items.itemChargedStaff = addFeature( ToolChargedStaff.class );
 		items.itemEntropyManipulator = addFeature( ToolEntropyManipulator.class );
+		items.itemColorApplicator = addFeature( ToolColorApplicator.class );
+
 		items.itemWirelessTerminal = addFeature( ToolWirelessTerminal.class );
 		items.itemNetworkTool = addFeature( ToolNetworkTool.class );
 		items.itemPortableCell = addFeature( ToolPortableCell.class );
@@ -368,6 +374,7 @@ public class Registration
 
 		items.itemFacade = addFeature( ItemFacade.class );
 		items.itemCrystalSeed = addFeature( ItemCrystalSeed.class );
+		items.itemPaintBall = addFeature( ItemPaintBall.class );
 
 		addFeature( ToolEraser.class );
 		addFeature( ToolMeteoritePlacer.class );

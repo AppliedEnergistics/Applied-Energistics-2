@@ -24,12 +24,13 @@ import net.minecraftforge.oredict.OreDictionary;
 import appeng.block.misc.BlockTinyTNT;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
-import appeng.hooks.DispenserEntropyManipulator;
+import appeng.hooks.DispenserBlockTool;
+import appeng.hooks.IBlockTool;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.InWorldToolOperationResult;
 import appeng.util.Platform;
 
-public class ToolEntropyManipulator extends AEBasePoweredItem
+public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockTool
 {
 
 	static class Combo
@@ -160,8 +161,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem
 	public void postInit()
 	{
 		super.postInit();
-
-		BlockDispenser.dispenseBehaviorRegistry.putObject( this, new DispenserEntropyManipulator() );
+		BlockDispenser.dispenseBehaviorRegistry.putObject( this, new DispenserBlockTool() );
 	}
 
 	@Override

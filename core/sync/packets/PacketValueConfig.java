@@ -11,6 +11,7 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
 import appeng.api.config.FuzzyMode;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
@@ -24,6 +25,7 @@ import appeng.container.implementations.ContainerSecurity;
 import appeng.container.implementations.ContainerStorageBus;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.helpers.IMouseWheelItem;
 
 public class PacketValueConfig extends AppEngPacket
 {
@@ -44,7 +46,14 @@ public class PacketValueConfig extends AppEngPacket
 	{
 		Container c = player.openContainer;
 
-		if ( Name.equals( "QuartzKnife.Name" ) && c instanceof ContainerQuartzKnife )
+		if ( Name.equals( "Item" ) && player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IMouseWheelItem )
+		{
+			ItemStack is = player.getHeldItem();
+			IMouseWheelItem si = (IMouseWheelItem) is.getItem();
+			si.onWheel( is, Value.equals( "WheelUp" ) );
+			return;
+		}
+		else if ( Name.equals( "QuartzKnife.Name" ) && c instanceof ContainerQuartzKnife )
 		{
 			ContainerQuartzKnife qk = (ContainerQuartzKnife) c;
 			qk.setName( Value );

@@ -24,7 +24,7 @@ public enum AEFeature
 
 	QuartzHoe("Tools"), QuartzSpade("Tools"), QuartzSword("Tools"), QuartzPickaxe("Tools"), QuartzAxe("Tools"), QuartzKnife("Tools"), QuartzWrench("Tools"),
 
-	ChargedStaff("Tools"), EntropyManipulator("Tools"), MatterCannon("Tools"), WirelessAccessTerminal("Tools"),
+	ChargedStaff("Tools"), EntropyManipulator("Tools"), MatterCannon("Tools"), WirelessAccessTerminal("Tools"), ColorApplicator("Tools"),
 
 	Crafting("NetworkFeatures"), PowerGen("NetworkFeatures"), Security("NetworkFeatures"),
 
@@ -48,11 +48,11 @@ public enum AEFeature
 
 	DuplicateItems("Misc", false), Profiler("Services", false), VersionChecker("Services"), Debug("Misc", false), Creative("Misc"),
 
-	GrinderLogging("Misc",false), Logging("Misc"), IntegrationLogging("Misc", false), CustomRecipes("Crafting", false), WebsiteRecipes("Misc", false),
+	GrinderLogging("Misc", false), Logging("Misc"), IntegrationLogging("Misc", false), CustomRecipes("Crafting", false), WebsiteRecipes("Misc", false),
 
 	enableFacadeCrafting("Crafting"), inWorldSingularity("Crafting"), inWorldFluix("Crafting"), inWorldPurification("Crafting"), UpdateLogging("Misc", false),
 
-	AlphaPass("Rendering");
+	AlphaPass("Rendering"), PaintBalls("Tools");
 
 	String Category;
 	boolean visible = true;

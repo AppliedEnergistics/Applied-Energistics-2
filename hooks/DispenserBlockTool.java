@@ -8,20 +8,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import appeng.items.tools.powered.ToolEntropyManipulator;
 import appeng.util.Platform;
 
-final public class DispenserEntropyManipulator extends BehaviorDefaultDispenseItem
+final public class DispenserBlockTool extends BehaviorDefaultDispenseItem
 {
 
 	@Override
 	protected ItemStack dispenseStack(IBlockSource dispenser, ItemStack dispensedItem)
 	{
 		Item i = dispensedItem.getItem();
-		if ( i instanceof ToolEntropyManipulator )
+		if ( i instanceof IBlockTool )
 		{
 			EnumFacing enumfacing = BlockDispenser.func_149937_b( dispenser.getBlockMetadata() );
-			ToolEntropyManipulator tm = (ToolEntropyManipulator) i;
+			IBlockTool tm = (IBlockTool) i;
 
 			World w = dispenser.getWorld();
 			if ( w instanceof WorldServer )
