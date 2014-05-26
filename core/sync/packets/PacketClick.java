@@ -40,7 +40,7 @@ public class PacketClick extends AppEngPacket
 			ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
 			tnt.serverSideToolLogic( is, player, player.worldObj, x, y, z, side, hitX, hitY, hitZ );
 		}
-		else if ( is != null && AEApi.instance().items().itemMemoryCard.sameAs( is ) )
+		else if ( is != null && AEApi.instance().items().itemMemoryCard.sameAsStack( is ) )
 		{
 			IMemoryCard mem = (IMemoryCard) is.getItem();
 			mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
