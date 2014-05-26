@@ -388,8 +388,28 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 				worked = true;
 				if ( type == Actionable.MODULATE )
 				{
-					i.onItemUse( is, player, w, x, y, z, side.ordinal(), side.offsetX, side.offsetY, side.offsetZ );
-					maxStorage = maxStorage - is.stackSize;
+					if ( i instanceof IPlantable )
+					{
+						boolean Worked = false;
+
+						if ( Worked == false && side.offsetX == 0 && side.offsetZ == 0 )
+							Worked = i.onItemUse( is, player, w, x + side.offsetX, y + side.offsetY, z + side.offsetZ, side.getOpposite().ordinal(),
+									side.offsetX, side.offsetY, side.offsetZ );
+
+						if ( Worked == false && side.offsetY == 0 )
+							Worked = i.onItemUse( is, player, w, x, y - 1, z, ForgeDirection.UP.ordinal(), side.offsetX, side.offsetY, side.offsetZ );
+
+						if ( Worked == false )
+							Worked = i.onItemUse( is, player, w, x, y, z, side.getOpposite().ordinal(), side.offsetX, side.offsetY, side.offsetZ );
+
+						if ( Worked )
+							maxStorage = maxStorage - is.stackSize;
+					}
+					else
+					{
+						i.onItemUse( is, player, w, x, y, z, side.getOpposite().ordinal(), side.offsetX, side.offsetY, side.offsetZ );
+						maxStorage = maxStorage - is.stackSize;
+					}
 				}
 				else
 					maxStorage = 1;
