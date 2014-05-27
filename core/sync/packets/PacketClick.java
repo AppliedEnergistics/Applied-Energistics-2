@@ -7,6 +7,9 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import appeng.api.AEApi;
+import appeng.api.implementations.items.IMemoryCard;
+import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.items.tools.ToolNetworkTool;
@@ -36,6 +39,12 @@ public class PacketClick extends AppEngPacket
 		{
 			ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
 			tnt.serverSideToolLogic( is, player, player.worldObj, x, y, z, side, hitX, hitY, hitZ );
+		}
+		else if ( is != null && AEApi.instance().items().itemMemoryCard.sameAs( is ) )
+		{
+			IMemoryCard mem = (IMemoryCard) is.getItem();
+			mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
+			is.setTagCompound( null );
 		}
 	}
 

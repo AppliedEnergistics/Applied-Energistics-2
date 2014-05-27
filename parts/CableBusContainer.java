@@ -170,25 +170,28 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 			is.stackSize = 1;
 
 			IPart bp = bi.createPartFromItemStack( is );
-			if ( bp instanceof IPartCable )
+			if ( bp != null )
 			{
-				boolean canPlace = true;
-				for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
-					if ( getPart( d ) != null && !getPart( d ).canBePlacedOn( ((IPartCable) bp).supportsBuses() ) )
-						canPlace = false;
+				if ( bp instanceof IPartCable )
+				{
+					boolean canPlace = true;
+					for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
+						if ( getPart( d ) != null && !getPart( d ).canBePlacedOn( ((IPartCable) bp).supportsBuses() ) )
+							canPlace = false;
 
-				if ( !canPlace )
-					return false;
+					if ( !canPlace )
+						return false;
 
-				return getPart( ForgeDirection.UNKNOWN ) == null;
-			}
-			else if ( !(bp instanceof IPartCable) && side != ForgeDirection.UNKNOWN )
-			{
-				IPart cable = getPart( ForgeDirection.UNKNOWN );
-				if ( cable != null && !bp.canBePlacedOn( ((IPartCable) cable).supportsBuses() ) )
-					return false;
+					return getPart( ForgeDirection.UNKNOWN ) == null;
+				}
+				else if ( !(bp instanceof IPartCable) && side != ForgeDirection.UNKNOWN )
+				{
+					IPart cable = getPart( ForgeDirection.UNKNOWN );
+					if ( cable != null && !bp.canBePlacedOn( ((IPartCable) cable).supportsBuses() ) )
+						return false;
 
-				return getPart( side ) == null;
+					return getPart( side ) == null;
+				}
 			}
 		}
 		return false;
@@ -701,7 +704,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 						p.readFromNBT( extra );
 					}
 					else
-						throw new RuntimeException( "Invalid NBT For CableBus Container." );
+						throw new RuntimeException( "Invalid NBT For CableBus Container: " + iss.getItem().getClass().getName() + " is not a valid part." );
 				}
 			}
 			else

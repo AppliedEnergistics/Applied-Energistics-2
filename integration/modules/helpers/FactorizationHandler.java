@@ -14,7 +14,7 @@ public class FactorizationHandler implements IExternalStorageHandler
 {
 
 	@Override
-	public boolean canHandle(TileEntity te, ForgeDirection d, StorageChannel chan)
+	public boolean canHandle(TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource mySrc)
 	{
 		return chan == StorageChannel.ITEMS && FZ.instance.isBarrel( te );
 	}

@@ -12,6 +12,7 @@ import appeng.container.implementations.ContainerSpatialIOPort;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.tile.spatial.TileSpatialIOPort;
+import appeng.util.Platform;
 
 public class GuiSpatialIOPort extends AEBaseGui
 {
@@ -58,9 +59,9 @@ public class GuiSpatialIOPort extends AEBaseGui
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString( GuiText.StoredPower.getLocal() + ": " + formatPowerLong( csiop.currentPower, false ), 13, 21, 4210752 );
-		fontRendererObj.drawString( GuiText.MaxPower.getLocal() + ": " + formatPowerLong( csiop.maxPower, false ), 13, 31, 4210752 );
-		fontRendererObj.drawString( GuiText.RequiredPower.getLocal() + ": " + formatPowerLong( csiop.reqPower, false ), 13, 78, 4210752 );
+		fontRendererObj.drawString( GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong( csiop.currentPower, false ), 13, 21, 4210752 );
+		fontRendererObj.drawString( GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong( csiop.maxPower, false ), 13, 31, 4210752 );
+		fontRendererObj.drawString( GuiText.RequiredPower.getLocal() + ": " + Platform.formatPowerLong( csiop.reqPower, false ), 13, 78, 4210752 );
 		fontRendererObj.drawString( GuiText.Efficiency.getLocal() + ": " + (((float) csiop.eff) / 100) + "%", 13, 88, 4210752 );
 
 		fontRendererObj.drawString( getGuiDisplayName( GuiText.SpatialIOPort.getLocal() ), 8, 6, 4210752 );

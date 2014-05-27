@@ -56,7 +56,8 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 		@Override
 		public void writeToNBT(NBTTagCompound data)
 		{
-			data.setDouble( "internalCurrentPower", internalCurrentPower );
+			if ( !worldObj.isRemote )
+				data.setDouble( "internalCurrentPower", internalCurrentPower );
 		}
 
 		@Override

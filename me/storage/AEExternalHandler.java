@@ -16,10 +16,10 @@ public class AEExternalHandler implements IExternalStorageHandler
 {
 
 	@Override
-	public boolean canHandle(TileEntity te, ForgeDirection d, StorageChannel channel)
+	public boolean canHandle(TileEntity te, ForgeDirection d, StorageChannel channel, BaseActionSource mySrc)
 	{
 		if ( channel == StorageChannel.ITEMS && te instanceof ITileStorageMonitorable )
-			return true;
+			return ((ITileStorageMonitorable) te).getMonitorable( d, mySrc ) != null;
 
 		return te instanceof TileCondenser;
 	}
