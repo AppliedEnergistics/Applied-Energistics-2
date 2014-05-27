@@ -1,4 +1,4 @@
-package appeng.api.parts.layers;
+package appeng.parts.layers;
 
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;

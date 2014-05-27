@@ -474,9 +474,7 @@ public class Registration
 		}
 
 		if ( AppEng.instance.isIntegrationEnabled( "MJ6" ) )
-		{
 			ph.registerNewLayer( "appeng.parts.layers.LayerIBatteryProvider", "buildcraft.api.mj.IBatteryProvider" );
-		}
 
 		if ( AppEng.instance.isIntegrationEnabled( "RF" ) )
 			ph.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyHandler" );

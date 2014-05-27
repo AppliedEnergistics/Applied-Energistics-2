@@ -1,4 +1,4 @@
-package appeng.api.parts.layers;
+package appeng.parts.layers;
 
 import java.util.ArrayList;
 import java.util.Collections;

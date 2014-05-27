@@ -1,4 +1,4 @@
-package appeng.api.parts.layers;
+package appeng.parts.layers;
 
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
