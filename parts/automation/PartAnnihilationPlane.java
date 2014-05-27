@@ -2,6 +2,7 @@ package appeng.parts.automation;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import net.minecraft.block.Block;
@@ -201,6 +202,14 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	private boolean isAccepting()
 	{
 		return Buffer.isEmpty();
+	}
+
+	@Override
+	public void getDrops(List<ItemStack> drops, boolean wrenched)
+	{
+		for (IAEItemStack is : Buffer)
+			if ( is != null )
+				drops.add( is.getItemStack() );
 	}
 
 	@MENetworkEventSubscribe
