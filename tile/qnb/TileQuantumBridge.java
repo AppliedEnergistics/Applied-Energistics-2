@@ -31,6 +31,8 @@ import appeng.util.Platform;
 public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 {
 
+	final private static ItemStack ring = AEApi.instance().blocks().blockQuantumRing.stack(1);
+	
 	final int sidesRing[] = new int[] {};
 	final int sidesLink[] = new int[] { 0 };
 
@@ -146,6 +148,14 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	public boolean isValid()
 	{
 		return !isInvalid();
+	}
+	
+	@Override
+	public void onReady()
+	{
+		super.onReady();
+		if ( worldObj.getBlock( xCoord, yCoord, zCoord) == AEApi.instance().blocks().blockQuantumRing.block() )
+			gridProxy.setVisualRepresentation( ring );
 	}
 
 	public void updateStatus(QuantumCluster c, byte flags)
