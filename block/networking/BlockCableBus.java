@@ -89,7 +89,8 @@ public class BlockCableBus extends AEBaseBlock
 	@Override
 	public boolean isLadder(IBlockAccess world, int x, int y, int z, EntityLivingBase entity)
 	{
-		return cb( world, x, y, z ).isLadder( entity );
+		ICableBusContainer cbc = cb( world, x, y, z );
+		return cbc == null ? false : cbc.isLadder( entity );
 	}
 
 	@Override
@@ -100,33 +101,33 @@ public class BlockCableBus extends AEBaseBlock
 
 	public boolean recolourBlock(World world, int x, int y, int z, ForgeDirection side, int colour, EntityPlayer who)
 	{
-		try
-		{
-			return cb( world, x, y, z ).recolourBlock( side, colour, who );
-		}
-		catch (Throwable t)
-		{
-		}
-		return false;
+		ICableBusContainer cbc = cb( world, x, y, z );
+		return cbc == null ? false : cbc.recolourBlock( side, colour, who );
 	}
 
 	@Override
 	public void randomDisplayTick(World world, int x, int y, int z, Random r)
 	{
-		cb( world, x, y, z ).randomDisplayTick( world, x, y, z, r );
+		ICableBusContainer cbc = cb( world, x, y, z );
+		if( cbc != null )
+			cbc.randomDisplayTick( world, x, y, z, r );
 	}
 
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
 		Block block = world.getBlock( x, y, z );
+		
 		if ( block != null && block != this )
 		{
 			return block.getLightValue( world, x, y, z );
 		}
+		
 		if ( block == null )
 			return 0;
-		return cb( world, x, y, z ).getLightValue();
+		
+		ICableBusContainer cbc = cb( world, x, y, z );		
+		return cbc == null ? 0 : cbc.getLightValue();
 	}
 
 	@Override
@@ -146,7 +147,8 @@ public class BlockCableBus extends AEBaseBlock
 	@Override
 	public boolean isReplaceable(IBlockAccess world, int x, int y, int z)
 	{
-		return cb( world, x, y, z ).isEmpty();
+		ICableBusContainer cbc = cb( world, x, y, z );
+		return cbc == null ? false : cbc.isEmpty();
 	}
 
 	@Override
@@ -159,6 +161,7 @@ public class BlockCableBus extends AEBaseBlock
 				tile.dropItems = false;
 			// maybe ray trace?
 		}
+		
 		return super.removedByPlayer( world, player, x, y, z );
 	}
 
@@ -197,15 +200,18 @@ public class BlockCableBus extends AEBaseBlock
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockAccess w, int x, int y, int z, ForgeDirection side)
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
-		return cb( w, x, y, z ).isSolidOnSide( side );
+		ICableBusContainer cbc = cb( world, x, y, z );
+		return cbc == null ? false : cbc.isSolidOnSide( side );
 	}
 
 	@Override
-	public void onNeighborBlockChange(World w, int x, int y, int z, Block meh)
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block meh)
 	{
-		cb( w, x, y, z ).onNeighborChanged();
+		ICableBusContainer cbc = cb( world, x, y, z );
+		if ( cbc != null )
+			cbc.onNeighborChanged();
 	}
 
 	@Override
@@ -215,47 +221,58 @@ public class BlockCableBus extends AEBaseBlock
 	}
 
 	@Override
-	public boolean onActivated(World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+	public boolean onActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		return cb( w, x, y, z ).activate( player, w.getWorldVec3Pool().getVecFromPool( hitX, hitY, hitZ ) );
+		ICableBusContainer cbc = cb( world, x, y, z );
+		return cbc == null ? false : cbc.activate( player, world.getWorldVec3Pool().getVecFromPool( hitX, hitY, hitZ ) );
 	}
 
 	@Override
-	public void onEntityCollidedWithBlock(World w, int x, int y, int z, Entity e)
+	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity e)
 	{
-		cb( w, x, y, z ).onEntityCollision( e );
+		ICableBusContainer cbc = cb( world, x, y, z );
+		if ( cbc != null )
+			cbc.onEntityCollision( e );
 	}
 
 	@Override
-	public boolean canConnectRedstone(IBlockAccess w, int x, int y, int z, int side)
+	public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
 	{
-		switch (side)
+		ICableBusContainer cbc = cb( world, x, y, z );
+		
+		if ( cbc != null )
 		{
-		case -1:
-		case 4:
-			return cb( w, x, y, z ).canConnectRedstone( EnumSet.of( ForgeDirection.UP, ForgeDirection.DOWN ) );
-		case 0:
-			return cb( w, x, y, z ).canConnectRedstone( EnumSet.of( ForgeDirection.NORTH ) );
-		case 1:
-			return cb( w, x, y, z ).canConnectRedstone( EnumSet.of( ForgeDirection.EAST ) );
-		case 2:
-			return cb( w, x, y, z ).canConnectRedstone( EnumSet.of( ForgeDirection.SOUTH ) );
-		case 3:
-			return cb( w, x, y, z ).canConnectRedstone( EnumSet.of( ForgeDirection.WEST ) );
+			switch (side)
+			{
+			case -1:
+			case 4:
+				return cb( world, x, y, z ).canConnectRedstone( EnumSet.of( ForgeDirection.UP, ForgeDirection.DOWN ) );
+			case 0:
+				return cb( world, x, y, z ).canConnectRedstone( EnumSet.of( ForgeDirection.NORTH ) );
+			case 1:
+				return cb( world, x, y, z ).canConnectRedstone( EnumSet.of( ForgeDirection.EAST ) );
+			case 2:
+				return cb( world, x, y, z ).canConnectRedstone( EnumSet.of( ForgeDirection.SOUTH ) );
+			case 3:
+				return cb( world, x, y, z ).canConnectRedstone( EnumSet.of( ForgeDirection.WEST ) );
+			}
 		}
+		
 		return false;
 	}
 
 	@Override
-	public int isProvidingWeakPower(IBlockAccess w, int x, int y, int z, int side)
+	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
 	{
-		return cb( w, x, y, z ).isProvidingWeakPower( ForgeDirection.getOrientation( side ).getOpposite() );
+		ICableBusContainer cbc = cb( world, x, y, z );
+		return cbc == null ? 0 : cbc.isProvidingWeakPower( ForgeDirection.getOrientation( side ).getOpposite() );
 	}
 
 	@Override
-	public int isProvidingStrongPower(IBlockAccess w, int x, int y, int z, int side)
+	public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
 	{
-		return cb( w, x, y, z ).isProvidingStrongPower( ForgeDirection.getOrientation( side ).getOpposite() );
+		ICableBusContainer cbc = cb( world, x, y, z );
+		return cbc == null ? 0 : cbc.isProvidingStrongPower( ForgeDirection.getOrientation( side ).getOpposite() );
 	}
 
 	@Override
