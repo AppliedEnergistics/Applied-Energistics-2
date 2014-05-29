@@ -225,7 +225,7 @@ public class ItemRepo
 			String dspName = Platform.getItemDisplayName( is );
 			notDone = true;
 
-			if ( m.matcher( dspName ).find() )
+			if ( m.matcher( dspName.toLowerCase() ).find() )
 			{
 				view.add( is );
 				notDone = false;
