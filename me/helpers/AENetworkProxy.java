@@ -36,7 +36,7 @@ public class AENetworkProxy implements IGridBlock
 	final private IGridProxyable gp;
 	final private boolean worldNode;
 
-	final private ItemStack myRepInstance;
+	private ItemStack myRepInstance;
 
 	private boolean isReady = false;
 	private IGridNode node = null;
@@ -57,7 +57,12 @@ public class AENetworkProxy implements IGridBlock
 	{
 		return myRepInstance;
 	}
-
+	
+	public void setVisualRepresentation( ItemStack is )
+	{
+		myRepInstance = is;
+	}
+	
 	public AENetworkProxy(IGridProxyable te, String nbtName, ItemStack visual, boolean inWorld) {
 		this.gp = te;
 		this.nbtName = nbtName;

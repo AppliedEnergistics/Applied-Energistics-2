@@ -28,7 +28,7 @@ public enum GuiText
 
 	CopyMode, CopyModeDesc, PatternTerminal, CraftingPattern, ProcessingPattern, Crafts, Creates, And, With, MolecularAssembler,
 
-	StoredPower, MaxPower, RequiredPower, Efficiency, InWorldCrafting, inWorldFluix, inWorldPurification, inWorldSingularity,
+	StoredPower, MaxPower, RequiredPower, Efficiency, InWorldCrafting, inWorldFluix, inWorldPurificationCertus, inWorldPurificationNether, inWorldPurificationFluix, inWorldSingularity,
 
 	OfSecondOutput, NoSecondOutput, RFTunnel, Stores, Next, SelectAmount, Lumen, Empty;
 

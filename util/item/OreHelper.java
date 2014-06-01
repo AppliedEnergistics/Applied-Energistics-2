@@ -98,7 +98,8 @@ public class OreHelper
 
 				// SUMMON AE STACKS!
 				for (ItemStack is : set)
-					aeset.add( AEItemStack.create( is ) );
+					if ( is.getItem() != null )
+						aeset.add( AEItemStack.create( is ) );
 			}
 		}
 

@@ -40,6 +40,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.CableRenderHelper;
+import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiTile;
@@ -704,7 +705,9 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 						p.readFromNBT( extra );
 					}
 					else
-						throw new RuntimeException( "Invalid NBT For CableBus Container: " + iss.getItem().getClass().getName() + " is not a valid part." );
+					{
+						AELog.warning( "Invalid NBT For CableBus Container: " + iss.getItem().getClass().getName() + " is not a valid part; it was ignored." );
+					}
 				}
 			}
 			else

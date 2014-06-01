@@ -53,7 +53,10 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 		def = new AEItemDef();
 		def.item = is.getItem();
-
+		
+		if ( def.item == null )
+			throw new RuntimeException( "This ItemStack is bad, it has a null item." );
+		
 		/*
 		 * Prevent an Item from changing the damage value on me... Either, this or a core mod.
 		 */
