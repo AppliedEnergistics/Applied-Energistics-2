@@ -1,13 +1,16 @@
 package appeng.items.tools.powered.powersink;
 
 import ic2.api.item.IElectricItemManager;
+import ic2.api.item.ISpecialElectricItem;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import appeng.api.config.PowerUnits;
 import appeng.transformer.annotations.integration.Interface;
+import appeng.transformer.annotations.integration.InterfaceList;
 
-@Interface(iface = "ic2.api.item.IElectricItemManager", iname = "IC2")
-public class IC2 extends AERootPoweredItem implements IElectricItemManager
+@InterfaceList(value = { @Interface( iface = "ic2.api.item.ISpecialElectricItem", iname = "IC2"), @Interface( iface = "ic2.api.item.IElectricItemManager", iname = "IC2")} )
+public class IC2 extends AERootPoweredItem implements IElectricItemManager, ISpecialElectricItem
 {
 
 	public IC2(Class c, String subname) {
@@ -17,7 +20,13 @@ public class IC2 extends AERootPoweredItem implements IElectricItemManager
 	@Override
 	public int charge(ItemStack is, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
 	{
-		return amount - ((int) injectExternalPower( PowerUnits.EU, is, amount, simulate ));
+		int addedAmt = amount;
+		int limit = getTransferLimit( is );
+		
+		if ( ! ignoreTransferLimit && amount > limit )
+			addedAmt = limit;
+		
+		return addedAmt - ((int) injectExternalPower( PowerUnits.EU, is, addedAmt, simulate ));
 	}
 
 	@Override
@@ -60,6 +69,41 @@ public class IC2 extends AERootPoweredItem implements IElectricItemManager
 	public String getToolTip(ItemStack itemStack)
 	{
 		return null;
+	}
+
+	@Override
+	public boolean canProvideEnergy(ItemStack itemStack) {
+		return false;
+	}
+
+	@Override
+	public Item getChargedItem(ItemStack itemStack) {
+		return itemStack.getItem();
+	}
+
+	@Override
+	public Item getEmptyItem(ItemStack itemStack) {
+		return itemStack.getItem();
+	}
+
+	@Override
+	public int getMaxCharge(ItemStack itemStack) {
+		return (int) PowerUnits.AE.convertTo( PowerUnits.EU, getAEMaxPower( itemStack ) );
+	}
+
+	@Override
+	public int getTier(ItemStack itemStack) {
+		return 1;
+	}
+
+	@Override
+	public int getTransferLimit(ItemStack itemStack) {
+		return Math.max( 32, getMaxCharge(itemStack)/ 200 );
+	}
+
+	@Override
+	public IElectricItemManager getManager(ItemStack itemStack) {
+		return this;
 	}
 
 }
