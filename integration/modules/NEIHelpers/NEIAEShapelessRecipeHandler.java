@@ -48,12 +48,9 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 			List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
 			for (IRecipe irecipe : allrecipes)
 			{
-				CachedShapelessRecipe recipe = null;
 				if ( (irecipe instanceof ShapelessRecipe) )
-					recipe = new CachedShapelessRecipe( (ShapelessRecipe) irecipe );
-
-				if ( recipe != null )
 				{
+					CachedShapelessRecipe recipe = new CachedShapelessRecipe( (ShapelessRecipe) irecipe );
 					recipe.computeVisuals();
 					this.arecipes.add( recipe );
 				}
@@ -70,16 +67,13 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 		List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
 		for (IRecipe irecipe : allrecipes)
 		{
-			if ( NEIServerUtils.areStacksSameTypeCrafting( irecipe.getRecipeOutput(), result ) )
+			if ( (irecipe instanceof ShapelessRecipe) )
 			{
-				CachedShapelessRecipe recipe = null;
-				if ( (irecipe instanceof ShapelessRecipe) )
-					recipe = new CachedShapelessRecipe( (ShapelessRecipe) irecipe );
-
-				if ( recipe != null )
+				if ( NEIServerUtils.areStacksSameTypeCrafting( irecipe.getRecipeOutput(), result ) )
 				{
+					CachedShapelessRecipe recipe = new CachedShapelessRecipe( (ShapelessRecipe) irecipe );
 					recipe.computeVisuals();
-					this.arecipes.add( recipe );
+					arecipes.add( recipe );
 				}
 			}
 		}
@@ -90,17 +84,18 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 		List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
 		for (IRecipe irecipe : allrecipes)
 		{
-			CachedShapelessRecipe recipe = null;
 			if ( (irecipe instanceof ShapelessRecipe) )
-				recipe = new CachedShapelessRecipe( (ShapelessRecipe) irecipe );
-
-			if ( (recipe != null) && (recipe.contains( recipe.ingredients, ingredient.getItem() )) )
 			{
-				recipe.computeVisuals();
-				if ( recipe.contains( recipe.ingredients, ingredient ) )
+				CachedShapelessRecipe recipe = new CachedShapelessRecipe( (ShapelessRecipe) irecipe );
+	
+				if ( recipe.contains( recipe.ingredients, ingredient.getItem() ) )
 				{
-					recipe.setIngredientPermutation( recipe.ingredients, ingredient );
-					this.arecipes.add( recipe );
+					recipe.computeVisuals();
+					if ( recipe.contains( recipe.ingredients, ingredient ) )
+					{
+						recipe.setIngredientPermutation( recipe.ingredients, ingredient );
+						this.arecipes.add( recipe );
+					}
 				}
 			}
 		}
@@ -127,12 +122,12 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 	{
 		IRecipeOverlayRenderer renderer = super.getOverlayRenderer( gui, recipe );
 		if ( renderer != null )
-		{
 			return renderer;
-		}
+		
 		IStackPositioner positioner = RecipeInfo.getStackPositioner( gui, "crafting2x2" );
 		if ( positioner == null )
 			return null;
+		
 		return new DefaultOverlayRenderer( getIngredientStacks( recipe ), positioner );
 	}
 
@@ -141,9 +136,8 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 	{
 		IOverlayHandler handler = super.getOverlayHandler( gui, recipe );
 		if ( handler != null )
-		{
 			return handler;
-		}
+		
 		return RecipeInfo.getOverlayHandler( gui, "crafting2x2" );
 	}
 
@@ -200,9 +194,8 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 		public void computeVisuals()
 		{
 			for (PositionedStack p : this.ingredients)
-			{
 				p.generatePermutations();
-			}
+			
 			this.result.generatePermutations();
 		}
 	}
