@@ -242,6 +242,13 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 			if ( itemStack.getStackSize() > 0 )
 			{
+				// make sure strange things didn't happen...
+				if ( adaptor.simulateAdd( itemStack.getItemStack() ) != null )
+				{
+					changed = true;
+					throw new GridAccessException();
+				}
+
 				IAEItemStack aquired = Platform.poweredExtraction( src, destination, itemStack, mySrc );
 				if ( aquired != null )
 				{
@@ -258,6 +265,14 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 				long diff = toStore.getStackSize();
 
+				// make sure strange things didn't happen...
+				ItemStack canExtract = adaptor.simulateRemove( (int) diff, toStore.getItemStack(), null );
+				if ( canExtract == null || canExtract.stackSize != diff )
+				{
+					changed = true;
+					throw new GridAccessException();
+				}
+
 				toStore = Platform.poweredInsert( src, destination, toStore, mySrc );
 
 				if ( toStore != null )
@@ -269,9 +284,9 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 					changed = true;
 					ItemStack removed = adaptor.removeItems( (int) diff, null, null );
 					if ( removed == null )
-						throw new RuntimeException( "bad attempt at managing inventory. ( addItems )" );
+						throw new RuntimeException( "bad attempt at managing inventory. ( removeItems )" );
 					else if ( removed.stackSize != diff )
-						throw new RuntimeException( "bad attempt at managing inventory. ( addItems )" );
+						throw new RuntimeException( "bad attempt at managing inventory. ( removeItems )" );
 				}
 			}
 			// else wtf?
