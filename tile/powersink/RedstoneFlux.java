@@ -21,10 +21,21 @@ public abstract class RedstoneFlux extends RotaryCraft implements IEnergyHandler
 		}
 		else
 		{
-			double overFlow = injectExternalPower( PowerUnits.RF, maxReceive );
+			int demand = (int) Math.floor( getExternalPowerDemand( PowerUnits.RF ) );
+
+			int ignored = 0;
+			int insertAmt = maxReceive;
+
+			if ( insertAmt > demand )
+			{
+				ignored = insertAmt - demand;
+				insertAmt = demand;
+			}
+
+			double overFlow = injectExternalPower( PowerUnits.RF, insertAmt );
 			double ox = Math.floor( overFlow );
 			internalCurrentPower += PowerUnits.RF.convertTo( PowerUnits.AE, overFlow - ox );
-			return maxReceive - (int) ox;
+			return maxReceive - ((int) ox + ignored);
 		}
 	}
 
