@@ -151,7 +151,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						}
 						else
 						{
-							standardAmmo();
+							standardAmmo( penitration, w, p, vec3, vec31, direction, d0, d1, d2 );
 						}
 
 					}
