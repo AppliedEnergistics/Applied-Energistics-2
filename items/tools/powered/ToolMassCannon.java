@@ -228,8 +228,8 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 			try
 			{
-				CommonHelper.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) (f7 * d3), (float) (f6 * d3),
-						(float) (f8 * d3), (byte) (pos == null ? 32 : pos.hitVec.squareDistanceTo( Srec ) + 1) ) );
+				CommonHelper.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) direction.xCoord,
+						(float) direction.yCoord, (float) direction.zCoord, (byte) (pos == null ? 32 : pos.hitVec.squareDistanceTo( Srec ) + 1) ) );
 
 			}
 			catch (Exception err)
@@ -249,7 +249,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 					{
 						EntityLivingBase el = (EntityLivingBase) pos.entityHit;
 						penitration -= dmg;
-						el.knockBack( p, 0, (double) -f7 * d3, (double) -f8 * d3 );
+						el.knockBack( p, 0, (double) -direction.xCoord, (double) -direction.zCoord );
 						// el.knockBack( p, 0, vec3.xCoord,
 						// vec3.zCoord );
 						el.attackEntityFrom( dmgSrc, dmg );
@@ -375,14 +375,12 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 		if ( pen > 0 )
 			return false;
 
-		if ( requsetedAddition.getItem() instanceof ItemPaintBall )
-			return false;
-
-		if ( requsetedAddition.getItem() instanceof ItemBlock )
-		{
-			Block blk = Block.getBlockFromItem( requsetedAddition.getItem() );
-			return blk == null;
-		}
+		/*
+		 * if ( requsetedAddition.getItem() instanceof ItemPaintBall ) return false;
+		 * 
+		 * if ( requsetedAddition.getItem() instanceof ItemBlock ) { Block blk = Block.getBlockFromItem(
+		 * requsetedAddition.getItem() ); return blk == null; }
+		 */
 
 		return true;
 	}
