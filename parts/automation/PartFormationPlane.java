@@ -34,6 +34,7 @@ import appeng.api.networking.security.BaseActionSource;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.ICellContainer;
 import appeng.api.storage.IMEInventory;
@@ -380,7 +381,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 		if ( w.getBlock( x, y, z ).isReplaceable( w, x, y, z ) )
 		{
-			if ( i instanceof ItemBlock || i instanceof IPlantable || i instanceof ItemSkull )
+			if ( i instanceof ItemBlock || i instanceof IPlantable || i instanceof ItemSkull || i instanceof IPartItem )
 			{
 				EntityPlayer player = Platform.getPlayer( (WorldServer) w );
 				Platform.configurePlayer( player, side, tile );
