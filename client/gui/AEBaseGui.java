@@ -56,9 +56,18 @@ public abstract class AEBaseGui extends GuiContainer
 
 	protected List<InternalSlotME> meSlots = new LinkedList<InternalSlotME>();
 	protected GuiScrollbar myScrollBar = null;
+	static public boolean switchingGuis;
+	final private boolean subGui;
 
 	public AEBaseGui(Container container) {
 		super( container );
+		subGui = switchingGuis;
+		switchingGuis = false;
+	}
+
+	public boolean isSubGui()
+	{
+		return subGui;
 	}
 
 	@Override

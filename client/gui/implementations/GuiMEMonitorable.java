@@ -44,6 +44,8 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 {
 
 	MEGuiTextField searchField;
+	private static String memoryText = "";
+
 	ItemRepo repo;
 
 	GuiText myName;
@@ -125,6 +127,13 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	{
 		this.buttonList.clear();
 		this.initGui();
+	}
+
+	@Override
+	public void onGuiClosed()
+	{
+		super.onGuiClosed();
+		memoryText = searchField.getText();
 	}
 
 	@Override
@@ -213,7 +222,13 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		Enum setting = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
 		searchField.setFocused( SearchBoxMode.AUTOSEARCH == setting || SearchBoxMode.NEI_AUTOSEARCH == setting );
 
-		setScrollBar();
+		if ( isSubGui() )
+		{
+			searchField.setText( memoryText );
+			repo.searchString = memoryText;
+			repo.updateView();
+			setScrollBar();
+		}
 
 		for (Object s : inventorySlots.inventorySlots)
 		{

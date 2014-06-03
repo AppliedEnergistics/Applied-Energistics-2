@@ -8,6 +8,7 @@ import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
+import appeng.client.gui.AEBaseGui;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerOpenContext;
 import appeng.core.sync.AppEngPacket;
@@ -45,6 +46,8 @@ public class PacketSwitchGuis extends AppEngPacket
 	public PacketSwitchGuis(GuiBridge newGui) throws IOException {
 
 		this.newGui = newGui;
+
+		AEBaseGui.switchingGuis = true;
 
 		ByteBuf data = Unpooled.buffer();
 
