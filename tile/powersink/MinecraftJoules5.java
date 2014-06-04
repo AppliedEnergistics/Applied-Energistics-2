@@ -55,7 +55,7 @@ public abstract class MinecraftJoules5 extends AERootPoweredTile implements IPow
 	@Method(iname = "MJ5")
 	final public void doWork(PowerHandler workProvider)
 	{
-		float requred = (float) getExternalPowerDemand( PowerUnits.MJ );
+		float requred = (float) getExternalPowerDemand( PowerUnits.MJ, bcPowerWrapper.getPowerReceiver().getEnergyStored() );
 		double failed = injectExternalPower( PowerUnits.MJ, bcPowerWrapper.useEnergy( 0.0f, requred, true ) );
 		if ( failed > 0.01 )
 			bcPowerWrapper.addEnergy( (float) failed );

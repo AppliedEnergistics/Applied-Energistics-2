@@ -27,7 +27,7 @@ public abstract class IC2 extends MinecraftJoules6 implements IEnergySink
 	@Override
 	final public double demandedEnergyUnits()
 	{
-		return getExternalPowerDemand( PowerUnits.EU );
+		return getExternalPowerDemand( PowerUnits.EU, Double.MAX_VALUE );
 	}
 
 	@Override

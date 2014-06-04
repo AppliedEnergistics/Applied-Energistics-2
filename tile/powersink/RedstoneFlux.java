@@ -14,14 +14,14 @@ public abstract class RedstoneFlux extends RotaryCraft implements IEnergyHandler
 	{
 		if ( simulate )
 		{
-			double demand = getExternalPowerDemand( PowerUnits.RF );
+			double demand = getExternalPowerDemand( PowerUnits.RF, maxReceive );
 			if ( demand > maxReceive )
 				return maxReceive;
 			return (int) Math.floor( maxReceive - demand );
 		}
 		else
 		{
-			int demand = (int) Math.floor( getExternalPowerDemand( PowerUnits.RF ) );
+			int demand = (int) Math.floor( getExternalPowerDemand( PowerUnits.RF, maxReceive ) );
 
 			int ignored = 0;
 			int insertAmt = maxReceive;
