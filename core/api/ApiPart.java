@@ -97,13 +97,20 @@ public class ApiPart implements IPartHelper
 
 	public ClassNode getReader(String name) throws IOException
 	{
-		ClassReader cr;
-		String path = "/" + name.replace( ".", "/" ) + ".class";
-		InputStream is = getClass().getResourceAsStream( path );
-		cr = new ClassReader( is );
-		ClassNode cn = new ClassNode();
-		cr.accept( cn, ClassReader.EXPAND_FRAMES );
-		return cn;
+		try
+		{
+			ClassReader cr;
+			String path = "/" + name.replace( ".", "/" ) + ".class";
+			InputStream is = getClass().getResourceAsStream( path );
+			cr = new ClassReader( is );
+			ClassNode cn = new ClassNode();
+			cr.accept( cn, ClassReader.EXPAND_FRAMES );
+			return cn;
+		}
+		catch (Throwable t)
+		{
+			throw new RuntimeException( "Error loading " + name, t );
+		}
 	}
 
 	public Class getCombinedInstance(String base)
@@ -167,6 +174,7 @@ public class ApiPart implements IPartHelper
 			}
 			catch (Throwable t)
 			{
+				AELog.warning( "Error loading " + name );
 				AELog.error( t );
 				// throw new RuntimeException( t );
 			}

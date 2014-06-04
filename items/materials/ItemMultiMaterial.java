@@ -166,7 +166,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	{
 		if ( dmgToMaterial.containsKey( is.getItemDamage() ) )
 			return dmgToMaterial.get( is.getItemDamage() );
-		return null;
+		return MaterialType.InvalidType;
 	}
 
 	@Override
