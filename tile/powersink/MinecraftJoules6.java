@@ -23,7 +23,7 @@ public abstract class MinecraftJoules6 extends MinecraftJoules5 implements IBatt
 	@Method(iname = "MJ6")
 	public double getEnergyRequested()
 	{
-		return getExternalPowerDemand( PowerUnits.MJ );
+		return getExternalPowerDemand( PowerUnits.MJ, Double.MAX_VALUE );
 	}
 
 	@Override

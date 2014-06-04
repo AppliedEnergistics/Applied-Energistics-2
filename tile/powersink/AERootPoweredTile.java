@@ -65,12 +65,12 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 		addNewHandler( new AEPoweredRootHandler() );
 	}
 
-	final protected double getExternalPowerDemand(PowerUnits externalUnit)
+	final protected double getExternalPowerDemand(PowerUnits externalUnit, double maxPowerRequired)
 	{
-		return PowerUnits.AE.convertTo( externalUnit, Math.max( 0.0, getFunnelPowerDemand() ) );
+		return PowerUnits.AE.convertTo( externalUnit, Math.max( 0.0, getFunnelPowerDemand( externalUnit.convertTo( PowerUnits.AE, maxPowerRequired ) ) ) );
 	}
 
-	protected double getFunnelPowerDemand()
+	protected double getFunnelPowerDemand(double maxRequired)
 	{
 		return internalMaxPower - internalCurrentPower;
 	}

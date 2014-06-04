@@ -39,7 +39,7 @@ public class TileController extends AENetworkPowerTile implements IAEPowerStorag
 	}
 
 	@Override
-	protected double getFunnelPowerDemand()
+	protected double getFunnelPowerDemand(double maxRecived)
 	{
 		try
 		{
@@ -48,7 +48,7 @@ public class TileController extends AENetworkPowerTile implements IAEPowerStorag
 		catch (GridAccessException e)
 		{
 			// no grid? use local...
-			return super.getFunnelPowerDemand();
+			return super.getFunnelPowerDemand( maxRecived );
 		}
 	}
 

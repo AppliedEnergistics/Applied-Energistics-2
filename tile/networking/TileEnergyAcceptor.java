@@ -58,6 +58,20 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 	};
 
 	@Override
+	protected double getFunnelPowerDemand(double maxRequired)
+	{
+		try
+		{
+			IEnergyGrid grid = gridProxy.getEnergy();
+			return grid.getEnergyDemand( maxRequired );
+		}
+		catch (GridAccessException e)
+		{
+			return super.getFunnelPowerDemand( maxRequired );
+		}
+	}
+
+	@Override
 	protected double funnelPowerIntoStorage(double newPower, Actionable mode)
 	{
 		try

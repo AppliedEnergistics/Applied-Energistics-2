@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemSkull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -33,6 +34,7 @@ import appeng.api.networking.security.BaseActionSource;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.ICellContainer;
 import appeng.api.storage.IMEInventory;
@@ -379,7 +381,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 		if ( w.getBlock( x, y, z ).isReplaceable( w, x, y, z ) )
 		{
-			if ( i instanceof ItemBlock || i instanceof IPlantable )
+			if ( i instanceof ItemBlock || i instanceof IPlantable || i instanceof ItemSkull || i instanceof IPartItem )
 			{
 				EntityPlayer player = Platform.getPlayer( (WorldServer) w );
 				Platform.configurePlayer( player, side, tile );
@@ -388,7 +390,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 				worked = true;
 				if ( type == Actionable.MODULATE )
 				{
-					if ( i instanceof IPlantable )
+					if ( i instanceof IPlantable || i instanceof ItemSkull )
 					{
 						boolean Worked = false;
 
@@ -396,14 +398,16 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 							Worked = i.onItemUse( is, player, w, x + side.offsetX, y + side.offsetY, z + side.offsetZ, side.getOpposite().ordinal(),
 									side.offsetX, side.offsetY, side.offsetZ );
 
+						if ( Worked == false && side.offsetX == 0 && side.offsetZ == 0 )
+							Worked = i.onItemUse( is, player, w, x-side.offsetX, y-side.offsetY, z-side.offsetZ, side.ordinal(), side.offsetX, side.offsetY, side.offsetZ );
+
 						if ( Worked == false && side.offsetY == 0 )
 							Worked = i.onItemUse( is, player, w, x, y - 1, z, ForgeDirection.UP.ordinal(), side.offsetX, side.offsetY, side.offsetZ );
 
 						if ( Worked == false )
 							Worked = i.onItemUse( is, player, w, x, y, z, side.getOpposite().ordinal(), side.offsetX, side.offsetY, side.offsetZ );
 
-						if ( Worked )
-							maxStorage = maxStorage - is.stackSize;
+						maxStorage = maxStorage - is.stackSize;
 					}
 					else
 					{
