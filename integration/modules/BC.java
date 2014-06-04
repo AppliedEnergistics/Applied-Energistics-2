@@ -319,7 +319,8 @@ public class BC extends BaseModule implements IBC
 			if ( blk == null || blk.length < 1 )
 				return null;
 
-			return new ItemStack( blk[0], 1, meta[0] );
+			if ( blk[0] != null )
+				return new ItemStack( blk[0], 1, meta[0] );
 		}
 		catch (Throwable t)
 		{
@@ -329,7 +330,8 @@ public class BC extends BaseModule implements IBC
 		try
 		{
 			Block blk = ItemFacade.getBlock( facade );
-			return new ItemStack( blk, 1, ItemFacade.getMetaData( facade ) );
+			if ( blk != null )
+				return new ItemStack( blk, 1, ItemFacade.getMetaData( facade ) );
 		}
 		catch (Throwable t)
 		{
