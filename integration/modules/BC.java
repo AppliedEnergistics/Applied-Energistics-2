@@ -205,7 +205,7 @@ public class BC extends BaseModule implements IBC
 	@Override
 	public void Init()
 	{
-		AEApi.instance().partHelper().registerNewLayer( "appeng.api.parts.layers.LayerIPipeConnection", "buildcraft.api.transport.IPipeConnection" );
+		AEApi.instance().partHelper().registerNewLayer( "appeng.parts.layers.LayerIPipeConnection", "buildcraft.api.transport.IPipeConnection" );
 		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new BCPipeHandler() );
 
 		Blocks b = AEApi.instance().blocks();
