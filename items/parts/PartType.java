@@ -39,6 +39,8 @@ import appeng.parts.reporting.PartTerminal;
 
 public enum PartType
 {
+	InvalidType(-1, AEFeature.Core, null),
+
 	CableGlass(0, AEFeature.Core, PartCableGlass.class),
 
 	CableCovered(20, AEFeature.Core, PartCableCovered.class),

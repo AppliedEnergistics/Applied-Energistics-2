@@ -209,12 +209,17 @@ public class Registration
 		{
 			try
 			{
-				Field f = materialClass.getField( "material" + mat.name() );
-				ItemStackSrc is = ((ItemMultiMaterial) materialItem.item()).createMaterial( mat );
-				if ( is != null )
-					f.set( materials, new DamagedItemDefinition( is ) );
+				if ( mat == MaterialType.InvalidType )
+					((ItemMultiMaterial) materialItem.item()).createMaterial( mat );
 				else
-					f.set( materials, new NullItemDefinition() );
+				{
+					Field f = materialClass.getField( "material" + mat.name() );
+					ItemStackSrc is = ((ItemMultiMaterial) materialItem.item()).createMaterial( mat );
+					if ( is != null )
+						f.set( materials, new DamagedItemDefinition( is ) );
+					else
+						f.set( materials, new NullItemDefinition() );
+				}
 			}
 			catch (Throwable err)
 			{
@@ -230,30 +235,35 @@ public class Registration
 		{
 			try
 			{
-				Field f = partClass.getField( "part" + type.name() );
-				Enum varients[] = type.getVarients();
-				if ( varients == null )
-				{
-					ItemStackSrc is = ((ItemMultiPart) partItem.item()).createPart( type, null );
-					if ( is != null )
-						f.set( parts, new DamagedItemDefinition( is ) );
-					else
-						f.set( parts, new NullItemDefinition() );
-				}
+				if ( type == PartType.InvalidType )
+					((ItemMultiPart) partItem.item()).createPart( type, null );
 				else
 				{
-					if ( varients[0] instanceof AEColor )
+					Field f = partClass.getField( "part" + type.name() );
+					Enum varients[] = type.getVarients();
+					if ( varients == null )
 					{
-						ColoredItemDefinition def = new ColoredItemDefinition();
-
-						for (Enum v : varients)
+						ItemStackSrc is = ((ItemMultiPart) partItem.item()).createPart( type, null );
+						if ( is != null )
+							f.set( parts, new DamagedItemDefinition( is ) );
+						else
+							f.set( parts, new NullItemDefinition() );
+					}
+					else
+					{
+						if ( varients[0] instanceof AEColor )
 						{
-							ItemStackSrc is = ((ItemMultiPart) partItem.item()).createPart( type, v );
-							if ( is != null )
-								def.add( (AEColor) v, is );
-						}
+							ColoredItemDefinition def = new ColoredItemDefinition();
 
-						f.set( parts, def );
+							for (Enum v : varients)
+							{
+								ItemStackSrc is = ((ItemMultiPart) partItem.item()).createPart( type, v );
+								if ( is != null )
+									def.add( (AEColor) v, is );
+							}
+
+							f.set( parts, def );
+						}
 					}
 				}
 			}

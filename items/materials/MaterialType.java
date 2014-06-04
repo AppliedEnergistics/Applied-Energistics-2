@@ -17,6 +17,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public enum MaterialType
 {
+	InvalidType(-1, AEFeature.Core),
+
 	CertusQuartzCrystal(0, AEFeature.Core, "crystalCertusQuartz"), CertusQuartzCrystalCharged(1, AEFeature.Core, EntityChargedQuartz.class),
 
 	CertusQuartzDust(2, AEFeature.Core, "dustCertusQuartz"), NetherQuartzDust(3, AEFeature.Core, "dustNetherQuartz"), Flour(4, AEFeature.Flour, "dustWheat"), GoldDust(
