@@ -158,7 +158,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	@Override
 	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e)
 	{
-		out.add( AxisAlignedBB.getAABBPool().getAABB( 0.25, 0, 0.25, 0.75, 0.5, 0.75 ) );
+		out.add( AxisAlignedBB.getBoundingBox( 0.25, 0, 0.25, 0.75, 0.5, 0.75 ) );
 
 	}
 

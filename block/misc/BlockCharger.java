@@ -156,6 +156,6 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 	@Override
 	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e)
 	{
-		out.add( AxisAlignedBB.getAABBPool().getAABB( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
+		out.add( AxisAlignedBB.getBoundingBox( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
 	}
 }

@@ -131,7 +131,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 		double xOff = -0.15 * getUp().offsetX;
 		double yOff = -0.15 * getUp().offsetY;
 		double zOff = -0.15 * getUp().offsetZ;
-		out.add( AxisAlignedBB.getAABBPool().getAABB( xOff + (double) 0.15, yOff + (double) 0.15, zOff + (double) 0.15,// ahh
+		out.add( AxisAlignedBB.getBoundingBox( xOff + (double) 0.15, yOff + (double) 0.15, zOff + (double) 0.15,// ahh
 				xOff + (double) 0.85, yOff + (double) 0.85, zOff + (double) 0.85 ) );
 	}
 

@@ -163,10 +163,10 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 				break;
 			}
 
-			out.add( AxisAlignedBB.getAABBPool().getAABB( minX, minY, minZ, maxX, maxY, maxZ ) );
+			out.add( AxisAlignedBB.getBoundingBox( minX, minY, minZ, maxX, maxY, maxZ ) );
 		}
 		else
-			out.add( AxisAlignedBB.getAABBPool().getAABB( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
+			out.add( AxisAlignedBB.getBoundingBox( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
 	}
 
 	@Override
