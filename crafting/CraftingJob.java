@@ -6,10 +6,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import net.minecraft.nbt.NBTTagCompound;
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.me.cache.CraftingCache;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 public class CraftingJob implements ICraftingParent
@@ -27,11 +32,48 @@ public class CraftingJob implements ICraftingParent
 	ICraftingHost jobHost;
 
 	public CraftingJob(ICraftingHost host, NBTTagCompound data) {
-		// TODO Auto-generated constructor stub
+		jobHost = host;
+		storage = AEApi.instance().storage().createItemList();
+		prophecies = new HashSet();
+		bottom = ArrayListMultimap.create();
 	}
 
-	public CraftingJob(ICraftingHost host, IAEItemStack what, Actionable mode) {
+	public CraftingJob(ICraftingHost host, IAEItemStack what, Actionable mode) throws CraftingMissingItemsException {
+		jobHost = host;
+		output = what.copy();
+		storage = AEApi.instance().storage().createItemList();
+		prophecies = new HashSet();
+		bottom = ArrayListMultimap.create();
 
+		CraftingCache cc = host.getGrid().getCache( CraftingCache.class );
+		IStorageGrid sg = host.getGrid().getCache( IStorageGrid.class );
+		
+
+		IItemList<IAEItemStack> available = AEApi.instance().storage().createItemList();
+		IItemList<IAEItemStack> missing = AEApi.instance().storage().createItemList();
+		
+		calculateCrafting( cc, this, sg.getItemInventory().getAvailableItems( available ), missing, what, mode );
+		
+		if ( ! missing.isEmpty() )
+		{
+			if ( mode == Actionable.MODULATE )
+			{
+				IMEInventory<IAEItemStack> netStorage = sg.getItemInventory();
+				
+				Iterator<IAEItemStack> i = storage.iterator();
+				while ( i.hasNext() )
+				{
+					IAEItemStack item = i.next();
+					netStorage.injectItems( item, mode, host.getActionSrc() );
+				}
+			}
+			
+			throw new CraftingMissingItemsException( missing );
+		}
+	}
+
+	public void calculateCrafting( CraftingCache cc, ICraftingParent parent, IItemList<IAEItemStack> available, IItemList<IAEItemStack> missing, IAEItemStack what, Actionable mode) {
+		
 	}
 
 	public Collection<CraftingTask> getBottom()
