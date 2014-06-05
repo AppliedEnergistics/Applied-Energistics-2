@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import net.minecraft.nbt.NBTTagCompound;
+import appeng.api.config.Actionable;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 
@@ -22,6 +23,16 @@ public class CraftingJob implements ICraftingParent
 
 	Multimap<IAEItemStack, CraftingTask> bottom;
 	CraftingTask top;
+
+	ICraftingHost jobHost;
+
+	public CraftingJob(ICraftingHost host, NBTTagCompound data) {
+		// TODO Auto-generated constructor stub
+	}
+
+	public CraftingJob(ICraftingHost host, IAEItemStack what, Actionable mode) {
+
+	}
 
 	public Collection<CraftingTask> getBottom()
 	{
