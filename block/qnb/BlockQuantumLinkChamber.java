@@ -94,7 +94,7 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e)
 	{
 		double OnePx = 2.0 / 16.0;
-		out.add( AxisAlignedBB.getAABBPool().getAABB( OnePx, OnePx, OnePx, 1.0 - OnePx, 1.0 - OnePx, 1.0 - OnePx ) );
+		out.add( AxisAlignedBB.getBoundingBox( OnePx, OnePx, OnePx, 1.0 - OnePx, 1.0 - OnePx, 1.0 - OnePx ) );
 	}
 
 }
