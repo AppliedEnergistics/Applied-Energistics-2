@@ -4,10 +4,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEItemStack;
@@ -47,33 +49,74 @@ public class CraftingJob implements ICraftingParent
 
 		CraftingCache cc = host.getGrid().getCache( CraftingCache.class );
 		IStorageGrid sg = host.getGrid().getCache( IStorageGrid.class );
-		
 
-		IItemList<IAEItemStack> available = AEApi.instance().storage().createItemList();
 		IItemList<IAEItemStack> missing = AEApi.instance().storage().createItemList();
-		
-		calculateCrafting( cc, this, sg.getItemInventory().getAvailableItems( available ), missing, what, mode );
-		
-		if ( ! missing.isEmpty() )
+
+		MECraftingInventory meci = new MECraftingInventory( sg.getItemInventory() );
+
+		calculateCrafting( cc, this, meci, missing, what, mode );
+
+		if ( !missing.isEmpty() )
 		{
 			if ( mode == Actionable.MODULATE )
 			{
 				IMEInventory<IAEItemStack> netStorage = sg.getItemInventory();
-				
+
 				Iterator<IAEItemStack> i = storage.iterator();
-				while ( i.hasNext() )
+				while (i.hasNext())
 				{
 					IAEItemStack item = i.next();
 					netStorage.injectItems( item, mode, host.getActionSrc() );
 				}
 			}
-			
+
 			throw new CraftingMissingItemsException( missing );
+		}
+
+		if ( mode == Actionable.MODULATE )
+			meci.moveItemsToStorage( storage );
+	}
+
+	public void calculateCrafting(CraftingCache cc, ICraftingParent parent, IMEInventory<IAEItemStack> inv, IItemList<IAEItemStack> missing, IAEItemStack what,
+			Actionable mode)
+	{
+		Set<ICraftingPatternDetails> patterns = cc.getCraftingFor( what );
+
+		for (ICraftingPatternDetails details : patterns)
+		{
+			IAEItemStack[] requirements = details.getCondencedInputs();
+			if ( canMake( requirements, inv ) )
+			{
+				extractItems( requirements, inv, storage, missing );
+				return;
+			}
+		}
+
+		for (ICraftingPatternDetails details : patterns)
+		{
+			IAEItemStack[] requirements = details.getCondencedInputs();
+			extractItems( requirements, inv, storage, missing );
+			return;
 		}
 	}
 
-	public void calculateCrafting( CraftingCache cc, ICraftingParent parent, IItemList<IAEItemStack> available, IItemList<IAEItemStack> missing, IAEItemStack what, Actionable mode) {
-		
+	private void extractItems(IAEItemStack[] requirements, IMEInventory<IAEItemStack> inv, IItemList<IAEItemStack> storage2, IItemList<IAEItemStack> missing)
+	{
+		for (IAEItemStack is : requirements)
+		{
+			inv.extractItems( is, Actionable.MODULATE, jobHost.getActionSrc() );
+		}
+	}
+
+	private boolean canMake(IAEItemStack[] requirements, IMEInventory<IAEItemStack> inv)
+	{
+
+		for (IAEItemStack is : requirements)
+		{
+			IAEItemStack avail = inv.extractItems( is, Actionable.SIMULATE, jobHost.getActionSrc() );
+		}
+
+		return true;
 	}
 
 	public Collection<CraftingTask> getBottom()

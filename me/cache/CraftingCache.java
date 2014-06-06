@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -40,6 +42,7 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 	IGrid grid;
 
 	HashMap<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap();
+	HashMap<IAEItemStack, Set<ICraftingPatternDetails>> craftableItems = new HashMap();
 
 	boolean updateList = false;
 
@@ -129,15 +132,15 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 		IStorageGrid sg = grid.getCache( IStorageGrid.class );
 
 		// update the stuff that was in the list...
-		for (ICraftingPatternDetails details : craftingMethods.keySet())
-			for (IAEItemStack out : details.getOutputs())
-			{
-				out.reset();
-				sg.postAlterationOfStoredItems( StorageChannel.ITEMS, out, new BaseActionSource() );
-			}
+		for (IAEItemStack out : craftableItems.keySet())
+		{
+			out.reset();
+			sg.postAlterationOfStoredItems( StorageChannel.ITEMS, out, new BaseActionSource() );
+		}
 
 		// erase list.
 		craftingMethods.clear();
+		craftableItems.clear();
 
 		// re-create list..
 		for (ICraftingProvider cp : providers)
@@ -149,6 +152,13 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 			{
 				out.reset();
 				out.setCraftable( true );
+
+				Set<ICraftingPatternDetails> methods = craftableItems.get( out );
+
+				if ( methods == null )
+					methods = craftableItems.put( out, new TreeSet() );
+
+				methods.add( details );
 				sg.postAlterationOfStoredItems( StorageChannel.ITEMS, out, new BaseActionSource() );
 			}
 	}
@@ -195,9 +205,9 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 	public IItemList getAvailableItems(IItemList out)
 	{
 		// add craftable items!
-		for (ICraftingPatternDetails details : craftingMethods.keySet())
-			for (IAEItemStack st : details.getOutputs())
-				out.addCrafting( st );
+		// for (ICraftingPatternDetails details : craftingMethods.keySet())
+		for (IAEItemStack st : craftableItems.keySet())
+			out.addCrafting( st );
 
 		return out;
 	}
@@ -243,6 +253,11 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 	public int getSlot()
 	{
 		return 0;
+	}
+
+	public Set<ICraftingPatternDetails> getCraftingFor(IAEItemStack what)
+	{
+		return craftableItems.get( what );
 	}
 
 }
