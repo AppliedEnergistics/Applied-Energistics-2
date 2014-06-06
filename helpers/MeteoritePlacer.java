@@ -325,31 +325,52 @@ public class MeteoritePlacer
 			InventoryAdaptor ap = InventoryAdaptor.getAdaptor( te, ForgeDirection.UP );
 
 			int primary = Math.max( 1, (int) (Math.random() * 4) );
+
+			if ( primary > 3 ) // in case math breaks...
+				primary = 3;
+
 			for (int zz = 0; zz < primary; zz++)
 			{
 				int r = 0;
+				boolean duplicate = false;
 
-				if ( Math.random() > 0.7 )
-					r = WorldSettings.getInstance().getNextOrderedValue( "presses" );
-				else
-					r = (int) (Math.random() * 1000);
-
-				switch (r % 4)
+				do
 				{
-				case 0:
-					ap.addItems( AEApi.instance().materials().materialCalcProcessorPress.stack( 1 ) );
-					break;
-				case 1:
-					ap.addItems( AEApi.instance().materials().materialEngProcessorPress.stack( 1 ) );
-					break;
-				case 2:
-					ap.addItems( AEApi.instance().materials().materialLogicProcessorPress.stack( 1 ) );
-					break;
-				case 3:
-					ap.addItems( AEApi.instance().materials().materialSiliconPress.stack( 1 ) );
-					break;
-				default:
+					duplicate = false;
+
+					if ( Math.random() > 0.7 )
+						r = WorldSettings.getInstance().getNextOrderedValue( "presses" );
+					else
+						r = (int) (Math.random() * 1000);
+
+					ItemStack toAdd = null;
+
+					switch (r % 4)
+					{
+					case 0:
+						toAdd = AEApi.instance().materials().materialCalcProcessorPress.stack( 1 );
+						break;
+					case 1:
+						toAdd = AEApi.instance().materials().materialEngProcessorPress.stack( 1 );
+						break;
+					case 2:
+						toAdd = AEApi.instance().materials().materialLogicProcessorPress.stack( 1 );
+						break;
+					case 3:
+						toAdd = AEApi.instance().materials().materialSiliconPress.stack( 1 );
+						break;
+					default:
+					}
+
+					if ( toAdd != null )
+					{
+						if ( ap.simulateRemove( 1, toAdd, null ) == null )
+							ap.addItems( toAdd );
+						else
+							duplicate = true;
+					}
 				}
+				while (duplicate);
 			}
 
 			int secondary = Math.max( 1, (int) (Math.random() * 3) );
