@@ -41,7 +41,6 @@ public class ASMIntegration implements IClassTransformer
 		// integrationModules.add( IntegrationSide.BOTH, "Greg Tech", "gregtech_addon", "GT" );
 		// integrationModules.add( IntegrationSide.BOTH, "Universal Electricity", null, "UE" );
 		// integrationModules.add( IntegrationSide.BOTH, "Logistics Pipes", "LogisticsPipes|Main", "LP" );
-		integrationModules.add( IntegrationSide.CLIENT, "Inventory Tweaks", "", "InvTweaks" );
 		integrationModules.add( IntegrationSide.BOTH, "Mine Factory Reloaded", "MineFactoryReloaded", "MFR" );
 		integrationModules.add( IntegrationSide.BOTH, "Deep Storage Unit", null, "DSU" );
 		// integrationModules.add( IntegrationSide.BOTH, "Better Storage", "betterstorage" );

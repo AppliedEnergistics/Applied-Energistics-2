@@ -190,26 +190,29 @@ public abstract class AEBaseGui extends GuiContainer
 
 		if ( Keyboard.isKeyDown( Keyboard.KEY_SPACE ) )
 		{
-			IAEItemStack stack = null;
-			if ( slot instanceof SlotME )
-				stack = ((SlotME) slot).getAEStack();
-
-			try
+			if ( enableSpaceClicking() )
 			{
-				int slotNum = inventorySlots.inventorySlots.size();
+				IAEItemStack stack = null;
+				if ( slot instanceof SlotME )
+					stack = ((SlotME) slot).getAEStack();
 
-				if ( !(slot instanceof SlotME) && slot != null )
-					slotNum = slot.slotNumber;
+				try
+				{
+					int slotNum = inventorySlots.inventorySlots.size();
 
-				((AEBaseContainer) inventorySlots).setTargetStack( stack );
-				PacketInventoryAction p = new PacketInventoryAction( InventoryAction.MOVE_REGION, slotNum, null );
-				NetworkHandler.instance.sendToServer( p );
+					if ( !(slot instanceof SlotME) && slot != null )
+						slotNum = slot.slotNumber;
+
+					((AEBaseContainer) inventorySlots).setTargetStack( stack );
+					PacketInventoryAction p = new PacketInventoryAction( InventoryAction.MOVE_REGION, slotNum, null );
+					NetworkHandler.instance.sendToServer( p );
+				}
+				catch (IOException e)
+				{
+					AELog.error( e );
+				}
+				return;
 			}
-			catch (IOException e)
-			{
-				AELog.error( e );
-			}
-			return;
 		}
 
 		if ( slot instanceof SlotME )
@@ -263,6 +266,11 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 
 		super.handleMouseClick( slot, slotIdx, ctrlDown, key );
+	}
+
+	protected boolean enableSpaceClicking()
+	{
+		return true;
 	}
 
 	@Override
