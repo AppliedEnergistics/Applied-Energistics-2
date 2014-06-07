@@ -3,6 +3,7 @@ package appeng.client.gui.implementations;
 import net.minecraft.entity.player.InventoryPlayer;
 import appeng.client.gui.AEBaseGui;
 import appeng.container.implementations.ContainerSkyChest;
+import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.tile.storage.TileSkyChest;
 
@@ -26,6 +27,12 @@ public class GuiSkyChest extends AEBaseGui
 	{
 		fontRendererObj.drawString( getGuiDisplayName( GuiText.SkyChest.getLocal() ), 8, 8, 4210752 );
 		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 2, 4210752 );
+	}
+
+	@Override
+	protected boolean enableSpaceClicking()
+	{
+		return !AppEng.instance.isIntegrationEnabled( "InvTweaks" );
 	}
 
 }

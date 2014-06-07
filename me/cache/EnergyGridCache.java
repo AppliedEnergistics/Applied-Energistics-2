@@ -162,7 +162,7 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public double getEnergyDemand(double maxRequired)
 	{
-		double required = 0;
+		double required = buffer() - extra;
 		Iterator<IAEPowerStorage> it = requesters.iterator();
 		while (required < maxRequired && it.hasNext())
 		{
