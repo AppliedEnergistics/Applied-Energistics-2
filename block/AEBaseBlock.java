@@ -187,8 +187,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		this( c, mat, null );
 		setLightOpacity( 15 );
 		setLightLevel( 0 );
-		setHardness( 1.2F );
+		setHardness( 2.2F );
 		setTileProvider( false );
+		setHarvestLevel( "pickaxe", 0 );
 	}
 
 	// update Block value.
