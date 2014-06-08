@@ -274,9 +274,18 @@ public class MeteoritePlacer
 	{
 		boolean lava = Math.random() > 0.9;
 
-		for (int i = x - 30; i < x + 30; i++)
-			for (int j = y - 5; j < y + 40; j++)
-				for (int k = z - 30; k < z + 30; k++)
+		int maxY = Math.min( y + 20, 255 );
+		int minX = x - 40;
+		int maxX = x + 40;
+		int minZ = z - 40;
+		int maxZ = z + 40;
+
+		for (int j = y - 5; j < maxY; j++)
+		{
+			boolean changed = false;
+
+			for (int i = minX; i < maxX; i++)
+				for (int k = minZ; k < maxZ; k++)
 				{
 					double dx = i - x;
 					double dz = k - z;
@@ -292,9 +301,21 @@ public class MeteoritePlacer
 								put( w, i, j, k, Blocks.lava );
 						}
 						else
-							put( w, i, j, k, Platform.air );
+							changed = put( w, i, j, k, Platform.air ) || changed;
 					}
 				}
+
+			if ( changed && j > maxY - 5 )
+			{
+				maxY = Math.min( maxY + 5, 255 );
+
+				minX -= 7;
+				maxX += 7;
+
+				minZ -= 7;
+				maxZ += 7;
+			}
+		}
 
 		for (Object o : w.getEntitiesWithinAABB( EntityItem.class, AxisAlignedBB.getBoundingBox( x - 30, y - 5, z - 30, x + 30, y + 30, z + 30 ) ))
 		{
@@ -476,12 +497,15 @@ public class MeteoritePlacer
 				}
 	}
 
-	private void put(World w, int i, int j, int k, Block blk)
+	private boolean put(World w, int i, int j, int k, Block blk)
 	{
-		if ( w.getBlock( i, j, k ) == Blocks.bedrock )
-			return;
+		Block original = w.getBlock( i, j, k );
+
+		if ( original == Blocks.bedrock || original == blk )
+			return false;
 
 		w.setBlock( i, j, k, blk );
+		return true;
 	}
 
 	private void put(World w, int i, int j, int k, Block blk, int meta)
