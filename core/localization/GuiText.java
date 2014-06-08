@@ -26,7 +26,7 @@ public enum GuiText
 
 	METunnel, ItemTunnel, RedstoneTunnel, MJTunnel, EUTunnel, FluidTunnel, StoredSize,
 
-	StoredPower, MaxPower, RequiredPower, Efficiency, InWorldCrafting, inWorldFluix, inWorldPurificationCertus, inWorldPurificationNether, inWorldPurificationFluix, inWorldSingularity, OfSecondOutput, NoSecondOutput, RFTunnel;
+	StoredPower, MaxPower, RequiredPower, Efficiency, InWorldCrafting, inWorldFluix, inWorldPurificationCertus, inWorldPurificationNether, inWorldPurificationFluix, inWorldSingularity, OfSecondOutput, NoSecondOutput, RFTunnel, ChargedQuartz;
 
 	String root;
 
