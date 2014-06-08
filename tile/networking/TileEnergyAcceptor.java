@@ -77,12 +77,10 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 		try
 		{
 			IEnergyGrid grid = gridProxy.getEnergy();
-			double overFlow = grid.injectPower( newPower, Actionable.SIMULATE );
-
-			if ( mode == Actionable.MODULATE )
-				grid.injectPower( Math.max( 0.0, newPower - overFlow ), Actionable.MODULATE );
-
-			return super.funnelPowerIntoStorage( overFlow, mode );
+			double leftOver = grid.injectPower( newPower, mode );
+			if ( mode == Actionable.SIMULATE )
+				return leftOver;
+			return 0.0;
 		}
 		catch (GridAccessException e)
 		{

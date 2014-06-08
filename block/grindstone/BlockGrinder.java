@@ -19,6 +19,7 @@ public class BlockGrinder extends AEBaseBlock
 		super( BlockGrinder.class, Material.rock );
 		setfeature( EnumSet.of( AEFeature.GrindStone ) );
 		setTileEntiy( TileGrinder.class );
+		setHardness( 3.2F );
 	}
 
 	@Override
@@ -27,7 +28,7 @@ public class BlockGrinder extends AEBaseBlock
 		TileGrinder tg = getTileEntity( w, x, y, z );
 		if ( tg != null && !p.isSneaking() )
 		{
-			Platform.openGUI( p, tg, ForgeDirection.getOrientation(side),GuiBridge.GUI_GRINDER );
+			Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_GRINDER );
 			return true;
 		}
 		return false;

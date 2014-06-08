@@ -30,6 +30,10 @@ public abstract class MinecraftJoules6 extends MinecraftJoules5 implements IBatt
 	@Method(iname = "MJ6")
 	public double addEnergy(double amount)
 	{
+		double demand = getExternalPowerDemand( PowerUnits.MJ, Double.MAX_VALUE );
+		if ( amount > demand )
+			amount = demand;
+
 		double overflow = injectExternalPower( PowerUnits.MJ, amount );
 		return amount - overflow;
 	}

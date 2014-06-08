@@ -46,8 +46,17 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	@SubscribeEvent
 	public void breakFaster(PlayerEvent.BreakSpeed Ev)
 	{
-		if ( Ev.block == this && (Ev.originalSpeed > 7 || Ev.metadata > 0) )
-			Ev.newSpeed /= 0.1;
+		if ( Ev.block == this && Ev.entityPlayer != null )
+		{
+			ItemStack is = Ev.entityPlayer.inventory.getCurrentItem();
+			int level = -1;
+
+			if ( is != null )
+				level = is.getItem().getHarvestLevel( is, "pickaxe" );
+
+			if ( Ev.metadata > 0 || level >= 3 || Ev.originalSpeed > 7.0 )
+				Ev.newSpeed /= 0.1;
+		}
 	}
 
 	public BlockSkyStone() {
