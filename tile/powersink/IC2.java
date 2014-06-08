@@ -73,7 +73,6 @@ public abstract class IC2 extends MinecraftJoules6 implements IEnergySink
 		super.setPowerSides( sides );
 		removeFromENet();
 		addToENet();
-
 	}
 
 	final private void addToENet()
