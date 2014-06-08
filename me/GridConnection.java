@@ -62,7 +62,7 @@ public class GridConnection implements IGridConnection, IPathItem
 				GridPropagator gp = new GridPropagator( a.getInternalGrid() );
 				b.beginVisition( gp );
 			}
-			else if ( a.myGrid.size() > b.myGrid.size() )
+			else if ( isNetworkABetter( a, b ) )
 			{
 				GridPropagator gp = new GridPropagator( a.getInternalGrid() );
 				b.beginVisition( gp );
@@ -80,6 +80,11 @@ public class GridConnection implements IGridConnection, IPathItem
 
 		sideA.addConnection( this );
 		sideB.addConnection( this );
+	}
+
+	private boolean isNetworkABetter(GridNode a, GridNode b)
+	{
+		return ((Grid) a.myGrid).isImportant > ((Grid) b.myGrid).isImportant || a.myGrid.size() > b.myGrid.size();
 	}
 
 	@Override
