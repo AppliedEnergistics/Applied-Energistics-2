@@ -116,12 +116,12 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		{
 			PartP2PLiquids in = getInput();
 			if ( in != null )
-				in.onChange();
+				in.onTunnelNetworkChange();
 		}
 	};
 
 	@Override
-	public void onChange()
+	public void onTunnelNetworkChange()
 	{
 		cachedTank = null;
 	}

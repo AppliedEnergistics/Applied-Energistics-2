@@ -30,8 +30,18 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 	{
 		if ( getEnergySinkTile() == null )
 			return null;
-		
+
 		return getEnergySinkTile().getWorldObj();
+	}
+
+	private boolean isTileValid()
+	{
+		TileEntity te = getEnergySinkTile();
+
+		if ( te == null )
+			return false;
+
+		return !te.isInvalid() && te.getWorldObj().blockExists( te.xCoord, te.yCoord, te.zCoord );
 	}
 
 	final private void addToENet()
@@ -42,7 +52,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 		// re-add
 		removeFromENet();
 
-		if ( !isInIC2() && Platform.isServer() )
+		if ( !isInIC2() && Platform.isServer() && isTileValid() )
 		{
 			getLayerFlags().add( LayerFlags.IC2_ENET );
 			MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileLoadEvent( (IEnergySink) getEnergySinkTile() ) );
@@ -63,6 +73,9 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 
 	final private boolean interestedInIC2()
 	{
+		if ( !((IPartHost) this).isInWorld() )
+			return false;
+
 		int interested = 0;
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 		{

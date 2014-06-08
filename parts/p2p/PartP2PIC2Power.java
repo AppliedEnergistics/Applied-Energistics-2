@@ -103,7 +103,13 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	public void onChange()
+	public void onTunnelNetworkChange()
+	{
+		getHost().notifyNeighbors();
+	}
+
+	@Override
+	public void onTunnelConfigChange()
 	{
 		getHost().partChanged();
 	}

@@ -49,7 +49,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	}
 
 	@Override
-	public void onChange()
+	public void onTunnelNetworkChange()
 	{
 		setNetworkReady();
 	}

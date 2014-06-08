@@ -116,7 +116,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 		cachedInv = null;
 		PartP2PItems input = getInput();
 		if ( input != null && output )
-			input.onChange();
+			input.onTunnelNetworkChange();
 	}
 
 	IInventory getDest()
@@ -161,8 +161,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 			oldSize = getDest().getSizeInventory();
 			if ( olderSize != oldSize )
 			{
-				getHost().partChanged();
-				tile.getWorldObj().notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, Platform.air );
+				getHost().notifyNeighbors();
 			}
 		}
 	}
@@ -177,8 +176,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 			oldSize = getDest().getSizeInventory();
 			if ( olderSize != oldSize )
 			{
-				getHost().partChanged();
-				tile.getWorldObj().notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, Platform.air );
+				getHost().notifyNeighbors();
 			}
 		}
 	}
@@ -200,7 +198,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	@Override
-	public void onChange()
+	public void onTunnelNetworkChange()
 	{
 		if ( !output )
 		{
@@ -217,7 +215,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 		{
 			PartP2PItems input = getInput();
 			if ( input != null )
-				input.onChange();
+				input.getHost().notifyNeighbors();
 		}
 	}
 

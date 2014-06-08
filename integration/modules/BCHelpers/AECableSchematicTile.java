@@ -140,4 +140,16 @@ public class AECableSchematicTile extends AEGenericSchematicTile implements IPar
 	{
 
 	}
+
+	@Override
+	public void notifyNeighbors()
+	{
+
+	}
+
+	@Override
+	public boolean isInWorld()
+	{
+		return false;
+	}
 }

@@ -74,8 +74,8 @@ public class P2PCache implements IGridCache
 
 		// AELog.info( "update-" + (t.output ? "output: " : "input: ") + t.freq
 		// );
-		updateTunnel( t.freq, t.output );
-		updateTunnel( t.freq, !t.output );
+		updateTunnel( t.freq, t.output, true );
+		updateTunnel( t.freq, !t.output, true );
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class P2PCache implements IGridCache
 			else
 				inputs.put( t.freq, t );
 
-			updateTunnel( t.freq, !t.output );
+			updateTunnel( t.freq, !t.output, false );
 		}
 	}
 
@@ -122,18 +122,26 @@ public class P2PCache implements IGridCache
 			else
 				inputs.remove( t.freq );
 
-			updateTunnel( t.freq, !t.output );
+			updateTunnel( t.freq, !t.output, false );
 		}
 	}
 
-	private void updateTunnel(long freq, boolean updateOutputs)
+	private void updateTunnel(long freq, boolean updateOutputs, boolean configChange)
 	{
 		for (PartP2PTunnel p : outputs.get( freq ))
-			p.onChange();
+		{
+			if ( configChange )
+				p.onTunnelConfigChange();
+			p.onTunnelNetworkChange();
+		}
 
 		PartP2PTunnel in = inputs.get( freq );
 		if ( in != null )
-			in.onChange();
+		{
+			if ( configChange )
+				in.onTunnelConfigChange();
+			in.onTunnelNetworkChange();
+		}
 	}
 
 	public TunnelCollection<PartP2PTunnel> getOutputs(long freq, Class<? extends PartP2PTunnel> c)
