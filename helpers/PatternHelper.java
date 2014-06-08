@@ -1,6 +1,7 @@
 package appeng.helpers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -16,9 +17,10 @@ import appeng.api.AEApi;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerNull;
+import appeng.util.ItemSorters;
 import appeng.util.Platform;
 
-public class PatternHelper implements ICraftingPatternDetails
+public class PatternHelper implements ICraftingPatternDetails, Comparable<PatternHelper>
 {
 
 	final ItemStack patternItem;
@@ -29,10 +31,12 @@ public class PatternHelper implements ICraftingPatternDetails
 	final ItemStack correctOutput;
 	final IRecipe standardRecipe;
 
+	final IAEItemStack condencedInputs[];
 	final IAEItemStack inputs[];
 	final IAEItemStack outputs[];
 
 	final boolean isCrafting;
+	public int priority = 0;
 
 	class TestLookup
 	{
@@ -153,6 +157,21 @@ public class PatternHelper implements ICraftingPatternDetails
 		outputs = out.toArray( new IAEItemStack[out.size()] );
 		inputs = in.toArray( new IAEItemStack[in.size()] );
 
+		HashMap<IAEItemStack, IAEItemStack> o = new HashMap<IAEItemStack, IAEItemStack>();
+
+		for (IAEItemStack io : inputs)
+		{
+			IAEItemStack g = o.get( io );
+			if ( g == null )
+				o.put( io, io.copy() );
+			else
+				g.add( io );
+		}
+
+		condencedInputs = new IAEItemStack[o.size()];
+		int offset = 0;
+		for (IAEItemStack io : o.values())
+			condencedInputs[offset++] = io;
 	}
 
 	public boolean isValidItemForSlot(int slotIndex, ItemStack i, World w)
@@ -257,4 +276,15 @@ public class PatternHelper implements ICraftingPatternDetails
 		return patternItem;
 	}
 
+	@Override
+	public IAEItemStack[] getCondencedInputs()
+	{
+		return condencedInputs;
+	}
+
+	@Override
+	public int compareTo(PatternHelper o)
+	{
+		return ItemSorters.compareInt( o.priority, priority );
+	}
 }

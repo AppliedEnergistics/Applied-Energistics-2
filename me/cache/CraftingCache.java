@@ -156,7 +156,7 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 				Set<ICraftingPatternDetails> methods = craftableItems.get( out );
 
 				if ( methods == null )
-					methods = craftableItems.put( out, new TreeSet() );
+					craftableItems.put( out, methods = new TreeSet() );
 
 				methods.add( details );
 				sg.postAlterationOfStoredItems( StorageChannel.ITEMS, out, new BaseActionSource() );
