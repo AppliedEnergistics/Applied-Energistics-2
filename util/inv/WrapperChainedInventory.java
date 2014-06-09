@@ -32,6 +32,18 @@ public class WrapperChainedInventory implements IInventory
 		setInventory( ilist );
 	}
 
+	public void cycleOrder()
+	{
+		if ( l.size() > 1 )
+		{
+			List<IInventory> newOrder = new ArrayList( l.size() );
+			newOrder.add( l.get( l.size() - 1 ) );
+			for (int x = 0; x < l.size() - 1; x++)
+				newOrder.add( l.get( x ) );
+			setInventory( newOrder );
+		}
+	}
+
 	public void calculateSizes()
 	{
 		offsets = new HashMap<Integer, WrapperChainedInventory.InvOffset>();
@@ -195,4 +207,5 @@ public class WrapperChainedInventory implements IInventory
 		}
 		return false;
 	}
+
 }

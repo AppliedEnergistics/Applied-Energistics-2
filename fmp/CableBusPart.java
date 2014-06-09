@@ -81,6 +81,12 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	public CableBusContainer cb = new CableBusContainer( this );
 
 	@Override
+	public boolean isInWorld()
+	{
+		return cb.isInWorld();
+	}
+
+	@Override
 	public boolean doesTick()
 	{
 		return false;
@@ -467,11 +473,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public void partChanged()
 	{
-		if ( tile() instanceof TIInventoryTile )
-			((TIInventoryTile) tile()).rebuildSlotMap();
-
-		if ( world() != null )
-			world().notifyBlocksOfNeighborChange( x(), y(), z(), Platform.air );
+		notifyNeighbors();
 	}
 
 	@Override
@@ -541,6 +543,16 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	public void cleanup()
 	{
 		tile().remPart( this );
+	}
+
+	@Override
+	public void notifyNeighbors()
+	{
+		if ( tile() instanceof TIInventoryTile )
+			((TIInventoryTile) tile()).rebuildSlotMap();
+
+		if ( world() != null && world().blockExists( x(), y(), z() ) )
+			world().notifyBlocksOfNeighborChange( x(), y(), z(), Platform.air );
 	}
 
 }

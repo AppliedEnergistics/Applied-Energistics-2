@@ -28,6 +28,7 @@ public class Grid implements IGrid
 	HashMap<Class<? extends IGridCache>, GridCacheWrapper> caches = new HashMap<Class<? extends IGridCache>, GridCacheWrapper>();
 
 	GridNode pivot;
+	int isImportant; // how import is this network?
 
 	public Grid(GridNode center) {
 		this.pivot = center;
@@ -226,6 +227,12 @@ public class Grid implements IGrid
 		{
 			c.populateGridStorage( myStorage );
 		}
+	}
+
+	public void setImportantFlag(int i, boolean publicHasPower)
+	{
+		int flag = 1 << i;
+		isImportant = (isImportant & ~flag) | (publicHasPower ? flag : 0);
 	}
 
 }

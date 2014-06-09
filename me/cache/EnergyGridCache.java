@@ -27,6 +27,7 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.events.MENetworkPowerStorage;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.storage.IStackWatcherHost;
+import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.me.energy.EnergyThreshold;
 import appeng.me.energy.EnergyWatcher;
@@ -379,6 +380,7 @@ public class EnergyGridCache implements IEnergyGrid
 			return;
 
 		publicHasPower = newState;
+		((Grid) myGrid).setImportantFlag( 0, publicHasPower );
 		grid.postEvent( new MENetworkPowerStatusChange() );
 	}
 

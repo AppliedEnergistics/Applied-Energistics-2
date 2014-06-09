@@ -105,7 +105,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 								// :P
 							}
 
-							newTunnel.onChange();
+							newTunnel.onTunnelNetworkChange();
 						}
 
 						mc.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
@@ -165,7 +165,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 				{
 					PartP2PTunnel newTunnel = (PartP2PTunnel) newBus;
 					newTunnel.output = oldOutput;
-					newTunnel.onChange();
+					newTunnel.onTunnelNetworkChange();
 
 					try
 					{
@@ -216,7 +216,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 				}
 			}
 
-			onChange();
+			onTunnelConfigChange();
 
 			ItemStack p2pItem = getItemStack( PartItemStack.Wrench );
 			String type = p2pItem.getUnlocalizedName();
@@ -229,6 +229,10 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 			return true;
 		}
 		return false;
+	}
+
+	public void onTunnelConfigChange()
+	{
 	}
 
 	public ItemStack getItemStack(PartItemStack type)
@@ -271,7 +275,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 		return new TunnelCollection( new ArrayList(), getClass() );
 	}
 
-	public void onChange()
+	public void onTunnelNetworkChange()
 	{
 
 	}

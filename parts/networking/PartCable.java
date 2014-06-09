@@ -62,12 +62,6 @@ public class PartCable extends AEBasePart implements IPartCable
 		return BusSupport.CABLE;
 	}
 
-	@Override
-	public int getLightLevel()
-	{
-		return 11;
-	}
-
 	public IIcon getGlassTexture(AEColor c)
 	{
 		switch (c)

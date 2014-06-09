@@ -38,7 +38,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	 * Recalculate inventory wrapper cache.
 	 */
 	@Override
-	public void partChanged()
+	public void notifyNeighbors()
 	{
 		invs = new ArrayList();
 		int slotCount = 0;
@@ -90,7 +90,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 		}
 
 		// make sure inventory is updated before we call FMP.
-		super.partChanged();
+		super.notifyNeighbors();
 	}
 
 	/**

@@ -64,6 +64,12 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	boolean inWorld = false;
 	public boolean requiresDynamicRender = false;
 
+	@Override
+	public boolean isInWorld()
+	{
+		return inWorld;
+	}
+
 	public void setHost(IPartHost host)
 	{
 		tcb.clearContainer();
@@ -364,12 +370,15 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 				}
 			}
 		}
+
+		partChanged();
 	}
 
 	public void removeFromWorld()
 	{
 		if ( !inWorld )
 			return;
+
 		inWorld = false;
 
 		for (ForgeDirection s : ForgeDirection.values())
@@ -378,6 +387,8 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 			if ( part != null )
 				part.removeFromWorld();
 		}
+
+		partChanged();
 	}
 
 	public boolean canConnectRedstone(EnumSet<ForgeDirection> enumSet)
@@ -1012,6 +1023,12 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	public void cleanup()
 	{
 		tcb.cleanup();
+	}
+
+	@Override
+	public void notifyNeighbors()
+	{
+		tcb.notifyNeighbors();
 	}
 
 }

@@ -92,9 +92,9 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	}
 
 	@Override
-	public void onChange()
+	public void onTunnelNetworkChange()
 	{
-		super.onChange();
+		super.onTunnelNetworkChange();
 		if ( !output )
 		{
 			try

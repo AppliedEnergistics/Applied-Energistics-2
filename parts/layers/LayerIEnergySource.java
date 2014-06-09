@@ -35,6 +35,14 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 		return getEnergySourceTile().getWorldObj();
 	}
 
+	private boolean isTileValid()
+	{
+		TileEntity te = getEnergySourceTile();
+		if ( te == null )
+			return false;
+		return !te.isInvalid();
+	}
+
 	final private void addToENet()
 	{
 		if ( getEnergySourceWorld() == null )
@@ -43,7 +51,7 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 		// re-add
 		removeFromENet();
 
-		if ( !isInIC2() && Platform.isServer() )
+		if ( !isInIC2() && Platform.isServer() && isTileValid() )
 		{
 			getLayerFlags().add( LayerFlags.IC2_ENET );
 			MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileLoadEvent( (IEnergySink) getEnergySourceTile() ) );
@@ -64,6 +72,9 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 
 	final private boolean interestedInIC2()
 	{
+		if ( !((IPartHost) this).isInWorld() )
+			return false;
+
 		int interested = 0;
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 		{

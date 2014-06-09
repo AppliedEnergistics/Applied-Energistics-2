@@ -325,6 +325,17 @@ public abstract class AEBaseGui extends GuiContainer
 			{
 				if ( p_146983_1_ == this.mc.gameSettings.keyBindsHotbar[j].getKeyCode() )
 				{
+					for (Slot s : (List<Slot>) inventorySlots.inventorySlots)
+					{
+						if ( s.getSlotIndex() == j && s.inventory == ((AEBaseContainer) inventorySlots).getPlayerInv() )
+						{
+							if ( !s.canTakeStack( ((AEBaseContainer) inventorySlots).getPlayerInv().player ) )
+							{
+								return false;
+							}
+						}
+					}
+
 					if ( theSlot.getSlotStackLimit() == 64 )
 					{
 						this.handleMouseClick( theSlot, theSlot.slotNumber, j, 2 );

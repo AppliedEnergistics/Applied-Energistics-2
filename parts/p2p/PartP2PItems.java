@@ -13,11 +13,16 @@ import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.TunnelType;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkBootingStatusChange;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
 import appeng.core.AppEng;
+import appeng.core.settings.TickRates;
 import appeng.integration.abstraction.IBC;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
@@ -34,7 +39,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @Interface(iface = "buildcraft.api.transport.IPipeConnection", iname = "BC")
-public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeConnection, IInventory, ISidedInventory
+public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeConnection, IInventory, ISidedInventory, IGridTickable
 {
 
 	public TunnelType getTunnelType()
@@ -47,6 +52,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	int oldSize = 0;
+	boolean requsted;
 	IInventory cachedInv;
 
 	LinkedList<IInventory> which = new LinkedList<IInventory>();
@@ -116,11 +122,31 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 		cachedInv = null;
 		PartP2PItems input = getInput();
 		if ( input != null && output )
-			input.onChange();
+			input.onTunnelNetworkChange();
+	}
+
+	@Override
+	public TickingRequest getTickingRequest(IGridNode node)
+	{
+		return new TickingRequest( TickRates.ItemTunnel.min, TickRates.ItemTunnel.max, false, false );
+	}
+
+	@Override
+	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
+	{
+		boolean wasReq = requsted;
+
+		if ( requsted && cachedInv != null )
+			((WrapperChainedInventory) cachedInv).cycleOrder();
+
+		requsted = false;
+		return wasReq ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
 	}
 
 	IInventory getDest()
 	{
+		requsted = true;
+
 		if ( cachedInv != null )
 			return cachedInv;
 
@@ -161,8 +187,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 			oldSize = getDest().getSizeInventory();
 			if ( olderSize != oldSize )
 			{
-				getHost().partChanged();
-				tile.getWorldObj().notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, Platform.air );
+				getHost().notifyNeighbors();
 			}
 		}
 	}
@@ -177,8 +202,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 			oldSize = getDest().getSizeInventory();
 			if ( olderSize != oldSize )
 			{
-				getHost().partChanged();
-				tile.getWorldObj().notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, Platform.air );
+				getHost().notifyNeighbors();
 			}
 		}
 	}
@@ -193,14 +217,13 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 			oldSize = getDest().getSizeInventory();
 			if ( olderSize != oldSize )
 			{
-				getHost().partChanged();
-				tile.getWorldObj().notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, Platform.air );
+				getHost().notifyNeighbors();
 			}
 		}
 	}
 
 	@Override
-	public void onChange()
+	public void onTunnelNetworkChange()
 	{
 		if ( !output )
 		{
@@ -209,15 +232,14 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 			oldSize = getDest().getSizeInventory();
 			if ( olderSize != oldSize )
 			{
-				getHost().partChanged();
-				tile.getWorldObj().notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, Platform.air );
+				getHost().notifyNeighbors();
 			}
 		}
 		else
 		{
 			PartP2PItems input = getInput();
 			if ( input != null )
-				input.onChange();
+				input.getHost().notifyNeighbors();
 		}
 	}
 

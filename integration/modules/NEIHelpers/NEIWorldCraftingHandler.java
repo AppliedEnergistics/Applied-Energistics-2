@@ -47,6 +47,8 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 
 	private void addRecipes()
 	{
+		addRecipe( AEApi.instance().materials().materialCertusQuartzCrystalCharged, GuiText.ChargedQuartz.getLocal() );
+
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.inWorldFluix ) )
 			addRecipe( AEApi.instance().materials().materialFluixCrystal, GuiText.inWorldFluix.getLocal() );
 

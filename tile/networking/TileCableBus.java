@@ -87,6 +87,12 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 
 	};
 
+	@Override
+	public boolean isInWorld()
+	{
+		return cb.isInWorld();
+	}
+
 	protected void updateTileSetting()
 	{
 		if ( cb.requiresDynamicRender )
@@ -283,7 +289,13 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public void partChanged()
 	{
-		if ( worldObj != null )
+		notifyNeighbors();
+	}
+
+	@Override
+	public void notifyNeighbors()
+	{
+		if ( worldObj != null && worldObj.blockExists( xCoord, yCoord, zCoord ) )
 			worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord, Platform.air );
 	}
 

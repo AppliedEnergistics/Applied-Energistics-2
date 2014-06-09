@@ -67,9 +67,9 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 	}
 
 	@Override
-	public void onChange()
+	public void onTunnelNetworkChange()
 	{
-		getHost().partChanged();
+		getHost().notifyNeighbors();
 	}
 
 	public float getPowerDrainPerTick()
