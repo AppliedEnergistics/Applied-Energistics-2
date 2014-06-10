@@ -59,9 +59,9 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 		sendEvent = true;
 		super.postChange( diff, src );
 
-		if ( myGridCache.interests.containsKey( diff ) )
+		if ( myGridCache.interestManager.containsKey( diff ) )
 		{
-			Set<ItemWatcher> list = myGridCache.interests.get( diff );
+			Set<ItemWatcher> list = myGridCache.interestManager.get( diff );
 			if ( !list.isEmpty() )
 			{
 				IItemList<T> myStorageList = getStorageList();
@@ -72,9 +72,13 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 					fullStack = diff.copy();
 					fullStack.setStackSize( 0 );
 				}
-
+				
+				myGridCache.interestManager.enableTransactions();
+				
 				for (ItemWatcher iw : list)
 					iw.getHost().onStackChange( myStorageList, fullStack, diff, src, getChannel() );
+				
+				myGridCache.interestManager.disableTransactions();
 			}
 		}
 

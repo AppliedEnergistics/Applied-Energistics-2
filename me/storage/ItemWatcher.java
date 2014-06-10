@@ -42,7 +42,7 @@ public class ItemWatcher implements IStackWatcher
 		@Override
 		public void remove()
 		{
-			gsc.interests.remove( myLast, watcher );
+			gsc.interestManager.remove( myLast, watcher );
 			interestIterator.remove();
 		}
 
@@ -68,7 +68,7 @@ public class ItemWatcher implements IStackWatcher
 		if ( myInterests.contains( e ) )
 			return false;
 
-		return myInterests.add( e.copy() ) && gsc.interests.put( e, this );
+		return myInterests.add( e.copy() ) && gsc.interestManager.put( e, this );
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public class ItemWatcher implements IStackWatcher
 		Iterator<IAEStack> i = myInterests.iterator();
 		while (i.hasNext())
 		{
-			gsc.interests.remove( i.next(), this );
+			gsc.interestManager.remove( i.next(), this );
 			i.remove();
 		}
 	}
@@ -120,7 +120,7 @@ public class ItemWatcher implements IStackWatcher
 	@Override
 	public boolean remove(Object o)
 	{
-		return myInterests.remove( o ) && gsc.interests.remove( o, this );
+		return myInterests.remove( o ) && gsc.interestManager.remove( (IAEStack)o, this );
 	}
 
 	@Override
