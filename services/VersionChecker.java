@@ -9,6 +9,7 @@ import java.util.Date;
 import net.minecraft.nbt.NBTTagCompound;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -97,7 +98,7 @@ public class VersionChecker implements Runnable
 									versionInf.setString( "changeLog", changeLog.getAsString() );
 
 								versionInf.setString( "newFileName", "appliedenergistics2-" + AEConfig.instance.latestVersion + ".jar" );
-								FMLInterModComms.sendMessage( "VersionChecker", "addUpdate", versionInf );
+								FMLInterModComms.sendRuntimeMessage( AppEng.instance, "VersionChecker", "addUpdate", versionInf );
 								VersionChecker = false;
 							}
 						}
