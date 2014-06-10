@@ -201,26 +201,30 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		int maxX = 15;
 		int maxY = 15;
 
-		TileEntity te = getHost().getTile();
+		IPartHost host = getHost();
+		if ( host != null )
+		{
+			TileEntity te = host.getTile();
 
-		int x = te.xCoord;
-		int y = te.yCoord;
-		int z = te.zCoord;
+			int x = te.xCoord;
+			int y = te.yCoord;
+			int z = te.zCoord;
 
-		ForgeDirection e = bch.getWorldX();
-		ForgeDirection u = bch.getWorldY();
+			ForgeDirection e = bch.getWorldX();
+			ForgeDirection u = bch.getWorldY();
 
-		if ( isTransitionPlane( te.getWorldObj().getTileEntity( x - e.offsetX, y - e.offsetY, z - e.offsetZ ), side ) )
-			minX = 0;
+			if ( isTransitionPlane( te.getWorldObj().getTileEntity( x - e.offsetX, y - e.offsetY, z - e.offsetZ ), side ) )
+				minX = 0;
 
-		if ( isTransitionPlane( te.getWorldObj().getTileEntity( x + e.offsetX, y + e.offsetY, z + e.offsetZ ), side ) )
-			maxX = 16;
+			if ( isTransitionPlane( te.getWorldObj().getTileEntity( x + e.offsetX, y + e.offsetY, z + e.offsetZ ), side ) )
+				maxX = 16;
 
-		if ( isTransitionPlane( te.getWorldObj().getTileEntity( x - u.offsetX, y - u.offsetY, z - u.offsetZ ), side ) )
-			minY = 0;
+			if ( isTransitionPlane( te.getWorldObj().getTileEntity( x - u.offsetX, y - u.offsetY, z - u.offsetZ ), side ) )
+				minY = 0;
 
-		if ( isTransitionPlane( te.getWorldObj().getTileEntity( x + u.offsetX, y + u.offsetY, z + u.offsetZ ), side ) )
-			maxY = 16;
+			if ( isTransitionPlane( te.getWorldObj().getTileEntity( x + u.offsetX, y + u.offsetY, z + u.offsetZ ), side ) )
+				maxY = 16;
+		}
 
 		bch.addBox( 5, 5, 14, 11, 11, 15 );
 		bch.addBox( minX, minY, 15, maxX, maxY, 16 );
@@ -399,7 +403,8 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 									side.offsetX, side.offsetY, side.offsetZ );
 
 						if ( Worked == false && side.offsetX == 0 && side.offsetZ == 0 )
-							Worked = i.onItemUse( is, player, w, x-side.offsetX, y-side.offsetY, z-side.offsetZ, side.ordinal(), side.offsetX, side.offsetY, side.offsetZ );
+							Worked = i.onItemUse( is, player, w, x - side.offsetX, y - side.offsetY, z - side.offsetZ, side.ordinal(), side.offsetX,
+									side.offsetY, side.offsetZ );
 
 						if ( Worked == false && side.offsetY == 0 )
 							Worked = i.onItemUse( is, player, w, x, y - 1, z, ForgeDirection.UP.ordinal(), side.offsetX, side.offsetY, side.offsetZ );
