@@ -6,6 +6,8 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -20,6 +22,8 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.block.AEBaseBlock;
@@ -39,6 +43,8 @@ import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
 import appeng.tile.networking.TileCableBusTESR;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCableBus extends AEBaseBlock
 {
@@ -73,6 +79,117 @@ public class BlockCableBus extends AEBaseBlock
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass ) )
 			return 1;
 		return 0;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public boolean addHitEffects(World world, MovingObjectPosition target, EffectRenderer effectRenderer)
+	{
+		Object pobj = cb( world, target.blockX, target.blockY, target.blockZ );
+		if ( pobj instanceof IPartHost )
+		{
+			IPartHost host = (IPartHost) pobj;
+
+			for (ForgeDirection side : ForgeDirection.values())
+			{
+				IPart p = host.getPart( side );
+				IIcon ico = getIcon( p );
+
+				if ( ico == null )
+					continue;
+
+				byte b0 = (byte) (Platform.getRandomInt() % 2 == 0 ? 1 : 0);
+
+				for (int i1 = 0; i1 < b0; ++i1)
+				{
+					for (int j1 = 0; j1 < b0; ++j1)
+					{
+						for (int k1 = 0; k1 < b0; ++k1)
+						{
+							double d0 = (double) target.blockX + ((double) i1 + 0.5D) / (double) b0;
+							double d1 = (double) target.blockY + ((double) j1 + 0.5D) / (double) b0;
+							double d2 = (double) target.blockZ + ((double) k1 + 0.5D) / (double) b0;
+
+							double dd0 = target.hitVec.xCoord;
+							double dd1 = target.hitVec.yCoord;
+							double dd2 = target.hitVec.zCoord;
+							EntityDiggingFX fx = (new EntityDiggingFX( world, dd0, dd1, dd2, d0 - (double) target.blockX - 0.5D, d1 - (double) target.blockY
+									- 0.5D, d2 - (double) target.blockZ - 0.5D, this, 0 )).applyColourMultiplier( target.blockX, target.blockY, target.blockZ );
+
+							fx.setParticleIcon( ico );
+
+							effectRenderer.addEffect( fx );
+						}
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public boolean addDestroyEffects(World world, int x, int y, int z, int meta, EffectRenderer effectRenderer)
+	{
+		Object pobj = cb( world, x, y, z );
+		if ( pobj instanceof IPartHost )
+		{
+			IPartHost host = (IPartHost) pobj;
+
+			for (ForgeDirection side : ForgeDirection.values())
+			{
+				IPart p = host.getPart( side );
+				IIcon ico = getIcon( p );
+
+				if ( ico == null )
+					continue;
+
+				byte b0 = 3;
+
+				for (int i1 = 0; i1 < b0; ++i1)
+				{
+					for (int j1 = 0; j1 < b0; ++j1)
+					{
+						for (int k1 = 0; k1 < b0; ++k1)
+						{
+							double d0 = (double) x + ((double) i1 + 0.5D) / (double) b0;
+							double d1 = (double) y + ((double) j1 + 0.5D) / (double) b0;
+							double d2 = (double) z + ((double) k1 + 0.5D) / (double) b0;
+							EntityDiggingFX fx = (new EntityDiggingFX( world, d0, d1, d2, d0 - (double) x - 0.5D, d1 - (double) y - 0.5D, d2 - (double) z
+									- 0.5D, this, meta )).applyColourMultiplier( x, y, z );
+
+							fx.setParticleIcon( ico );
+
+							effectRenderer.addEffect( fx );
+						}
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	private IIcon getIcon(IPart p)
+	{
+		if ( p == null )
+			return null;
+
+		try
+		{
+			IIcon ico = p.getBreakingTexture();
+			if ( ico != null )
+				return ico;
+		}
+		catch (Throwable t)
+		{
+			// nothing.
+		}
+
+		ItemStack is = p.getItemStack( PartItemStack.Network );
+		if ( is == null || is.getItem() == null )
+			return null;
+
+		return is.getItem().getIcon( is, 0 );
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import java.io.IOException;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
@@ -129,4 +130,10 @@ public class PartBasicState extends AEBasePart implements IPowerChannelState
 		return (clientFlags & CHANNEL_FLAG) == CHANNEL_FLAG;
 	}
 
+	@Override
+	@SideOnly(Side.CLIENT)
+	public IIcon getBreakingTexture()
+	{
+		return CableBusTextures.PartTransitionPlaneBack.getIcon();
+	}
 }

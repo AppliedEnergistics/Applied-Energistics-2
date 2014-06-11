@@ -16,6 +16,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -500,4 +501,10 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 		return is.hasDisplayName();
 	}
 
+	@Override
+	@SideOnly(Side.CLIENT)
+	public IIcon getBreakingTexture()
+	{
+		return null;
+	}
 }

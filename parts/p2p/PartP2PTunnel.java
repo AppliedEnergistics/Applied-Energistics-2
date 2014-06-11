@@ -331,6 +331,13 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 		renderLights( x, y, z, rh, renderer );
 	}
 
+	@Override
+	@SideOnly(Side.CLIENT)
+	public IIcon getBreakingTexture()
+	{
+		return CableBusTextures.BlockP2PTunnel2.getIcon();
+	}
+
 	protected void QueueTunnelDrain(PowerUnits unit, double f)
 	{
 		double ae_to_tax = unit.convertTo( PowerUnits.AE, f * AEConfig.TunnelPowerLoss );

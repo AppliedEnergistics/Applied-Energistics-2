@@ -27,6 +27,9 @@ import appeng.core.sync.GuiBridge;
 import appeng.me.GridAccessException;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+
+import com.google.common.collect.ImmutableList;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -166,7 +169,7 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 
 					if ( getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 					{
-						for (IAEItemStack o : inv.getStorageList().findFuzzy( ais, fzMode ))
+						for (IAEItemStack o : ImmutableList.copyOf( inv.getStorageList().findFuzzy( ais, fzMode ) ))
 						{
 							pushItemIntoTarget( d, energy, fzMode, inv, o );
 							if ( itemToSend <= 0 )

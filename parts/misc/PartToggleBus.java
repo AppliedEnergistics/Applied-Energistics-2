@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
@@ -184,6 +185,12 @@ public class PartToggleBus extends PartBasicState
 		rh.renderBlock( x, y, z, renderer );
 
 		renderLights( x, y, z, rh, renderer );
+	}
+
+	@Override
+	public IIcon getBreakingTexture()
+	{
+		return is.getIconIndex();
 	}
 
 	@Override
