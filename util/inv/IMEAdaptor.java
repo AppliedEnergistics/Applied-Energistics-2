@@ -13,6 +13,8 @@ import appeng.api.storage.data.IItemList;
 import appeng.util.InventoryAdaptor;
 import appeng.util.item.AEItemStack;
 
+import com.google.common.collect.ImmutableList;
+
 public class IMEAdaptor extends InventoryAdaptor
 {
 
@@ -44,7 +46,7 @@ public class IMEAdaptor extends InventoryAdaptor
 
 		IAEItemStack out = null;
 
-		for (IAEItemStack req : getList().findFuzzy( reqFilter, fuzzyMode ))
+		for (IAEItemStack req : ImmutableList.copyOf( getList().findFuzzy( reqFilter, fuzzyMode ) ))
 		{
 			if ( req != null )
 			{
