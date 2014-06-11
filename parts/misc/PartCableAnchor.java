@@ -230,4 +230,10 @@ public class PartCableAnchor implements IPart
 	{
 		return what == BusSupport.CABLE || what == BusSupport.DENSE_CABLE;
 	}
+
+	@Override
+	public IIcon getBreakingTexture()
+	{
+		return null;
+	}
 }

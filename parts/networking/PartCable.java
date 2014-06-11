@@ -330,6 +330,43 @@ public class PartCable extends AEBasePart implements IPartCable
 				connections.clear();
 		}
 
+		IPartHost ph = getHost();
+		if ( ph != null )
+		{
+			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+			{
+				IPart p = ph.getPart( dir );
+				if ( p instanceof IGridHost )
+				{
+					double dist = p.cableConnectionRenderTo();
+
+					switch (dir)
+					{
+					case DOWN:
+						bch.addBox( 6.0, dist, 6.0, 10.0, 6.0, 10.0 );
+						break;
+					case EAST:
+						bch.addBox( 10.0, 6.0, 6.0, 16.0 - dist, 10.0, 10.0 );
+						break;
+					case NORTH:
+						bch.addBox( 6.0, 6.0, dist, 10.0, 10.0, 6.0 );
+						break;
+					case SOUTH:
+						bch.addBox( 6.0, 6.0, 10.0, 10.0, 10.0, 16.0 - dist );
+						break;
+					case UP:
+						bch.addBox( 6.0, 10.0, 6.0, 10.0, 16.0 - dist, 10.0 );
+						break;
+					case WEST:
+						bch.addBox( dist, 6.0, 6.0, 6.0, 10.0, 10.0 );
+						break;
+					default:
+						continue;
+					}
+				}
+			}
+		}
+
 		for (ForgeDirection of : connections)
 		{
 			switch (of)
@@ -368,6 +405,13 @@ public class PartCable extends AEBasePart implements IPartCable
 		rh.setBounds( 6.0f, 6.0f, 2.0f, 10.0f, 10.0f, 14.0f );
 		rh.renderInventoryBox( renderer );
 		rh.setTexture( null );
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public IIcon getBreakingTexture()
+	{
+		return getTexture( getCableColor() );
 	}
 
 	@SideOnly(Side.CLIENT)

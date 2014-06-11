@@ -532,6 +532,12 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
+	public IIcon getBreakingTexture()
+	{
+		return is.getIconIndex();
+	}
+
+	@Override
 	public void getBoxes(IPartCollsionHelper bch)
 	{
 		bch.addBox( 7, 7, 11, 9, 9, 16 );

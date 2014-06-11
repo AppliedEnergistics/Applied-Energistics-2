@@ -434,7 +434,6 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 					bch.addBox( 6.0, 6.0, 6.0, 10.0, 10.0, 10.0 );
 				else
 					part.getBoxes( bch );
-
 			}
 
 			if ( includeFacades && s != null && s != ForgeDirection.UNKNOWN )

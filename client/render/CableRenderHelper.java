@@ -29,6 +29,9 @@ public class CableRenderHelper
 		TileEntity te = cableBusContainer.getTile();
 		RenderBlocksWorkaround renderer = BusRenderer.instance.renderer;
 
+		if ( renderer.overrideBlockTexture != null )
+			BusRenderHelper.instance.setPass( 0 );
+
 		if ( renderer.blockAccess == null )
 			renderer.blockAccess = Minecraft.getMinecraft().theWorld;
 

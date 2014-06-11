@@ -9,6 +9,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.tiles.ISegmentedInventory;
@@ -125,6 +126,12 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 		rh.renderBlock( x, y, z, renderer );
 
 		renderLights( x, y, z, rh, renderer );
+	}
+
+	@Override
+	public IIcon getBreakingTexture()
+	{
+		return is.getIconIndex();
 	}
 
 	@Override
