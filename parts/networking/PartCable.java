@@ -340,6 +340,9 @@ public class PartCable extends AEBasePart implements IPartCable
 				{
 					double dist = p.cableConnectionRenderTo();
 
+					if ( dist > 8 )
+						continue;
+
 					switch (dir)
 					{
 					case DOWN:
