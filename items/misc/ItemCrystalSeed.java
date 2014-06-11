@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
@@ -22,6 +23,7 @@ import appeng.core.features.AEFeature;
 import appeng.entity.EntityGrowingCrystal;
 import appeng.entity.EntityIds;
 import appeng.items.AEBaseItem;
+import appeng.util.Platform;
 import cpw.mods.fml.common.registry.EntityRegistry;
 
 public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
@@ -39,6 +41,29 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	IIcon fluix[] = new IIcon[3];
 	IIcon nether[] = new IIcon[3];
 
+	private int getProgress(ItemStack is)
+	{
+		if ( is.hasTagCompound() )
+		{
+			return is.getTagCompound().getInteger( "progress" );
+		}
+		else
+		{
+			int progress;
+			NBTTagCompound comp = Platform.openNbtData( is );
+			comp.setInteger( "progress", progress = is.getItemDamage() );
+			is.setItemDamage( (is.getItemDamage() / SINGLE_OFFSET) * SINGLE_OFFSET );
+			return progress;
+		}
+	}
+
+	private void setProgress(ItemStack is, int newDamage)
+	{
+		NBTTagCompound comp = Platform.openNbtData( is );
+		comp.setInteger( "progress", newDamage );
+		is.setItemDamage( (is.getItemDamage() / SINGLE_OFFSET) * SINGLE_OFFSET );
+	}
+
 	public ItemCrystalSeed() {
 		super( ItemCrystalSeed.class );
 		setHasSubtypes( true );
@@ -52,7 +77,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	@Override
 	public String getUnlocalizedName(ItemStack is)
 	{
-		int damage = is.getItemDamage();
+		int damage = getProgress( is );
 
 		if ( damage < Certus + SINGLE_OFFSET )
 			return getUnlocalizedName() + ".Certus";
@@ -69,7 +94,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	@Override
 	public ItemStack triggerGrowth(ItemStack is)
 	{
-		int newDamage = is.getItemDamage() + 1;
+		int newDamage = getProgress( is ) + 1;
 
 		if ( newDamage == Certus + SINGLE_OFFSET )
 			return AEApi.instance().materials().materialPureifiedCertusQuartzCrystal.stack( is.stackSize );
@@ -80,48 +105,42 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		if ( newDamage > END )
 			return null;
 
-		is.setItemDamage( newDamage );
+		setProgress( is, newDamage );
 		return is;
 	}
 
 	@Override
 	public boolean isDamageable()
 	{
-		return true;
+		return false;
 	}
 
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer p, List l, boolean b)
 	{
-		int progress = stack.getItemDamage() % 200;
-		l.add( Math.floor( (float) progress / 2.0f ) + "%" );
+		int progress = getProgress( stack ) % SINGLE_OFFSET;
+		l.add( Math.floor( (float) progress / (float) (SINGLE_OFFSET / 100) ) + "%" );
 		super.addInformation( stack, p, l, b );
 	}
 
 	@Override
 	public boolean isDamaged(ItemStack stack)
 	{
-		// if ( stack.getItemDamage() % 200 == 0 )
-		// return false;
 		return false;
-	}
-
-	@Override
-	public int getDisplayDamage(ItemStack stack)
-	{
-		return stack.getItemDamage() % 200;
 	}
 
 	@Override
 	public int getMaxDamage(ItemStack stack)
 	{
-		return 200;
+		return END;
 	}
 
 	@Override
-	public IIcon getIconFromDamage(int damage)
+	public IIcon getIconIndex(ItemStack stack)
 	{
 		IIcon list[] = null;
+
+		int damage = getProgress( stack );
 
 		if ( damage < Certus + SINGLE_OFFSET )
 			list = certus;
@@ -198,19 +217,25 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	public void getSubItems(Item i, CreativeTabs t, List l)
 	{
 		// lvl 0
-		l.add( new ItemStack( this, 1, Certus ) );
-		l.add( new ItemStack( this, 1, Nether ) );
-		l.add( new ItemStack( this, 1, Fluix ) );
+		l.add( newStyle( new ItemStack( this, 1, Certus ) ) );
+		l.add( newStyle( new ItemStack( this, 1, Nether ) ) );
+		l.add( newStyle( new ItemStack( this, 1, Fluix ) ) );
 
 		// lvl 1
-		l.add( new ItemStack( this, 1, LEVEL_OFFSET + Certus ) );
-		l.add( new ItemStack( this, 1, LEVEL_OFFSET + Nether ) );
-		l.add( new ItemStack( this, 1, LEVEL_OFFSET + Fluix ) );
+		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET + Certus ) ) );
+		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET + Nether ) ) );
+		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET + Fluix ) ) );
 
 		// lvl 2
-		l.add( new ItemStack( this, 1, LEVEL_OFFSET * 2 + Certus ) );
-		l.add( new ItemStack( this, 1, LEVEL_OFFSET * 2 + Nether ) );
-		l.add( new ItemStack( this, 1, LEVEL_OFFSET * 2 + Fluix ) );
+		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + Certus ) ) );
+		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + Nether ) ) );
+		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + Fluix ) ) );
+	}
+
+	private ItemStack newStyle(ItemStack itemStack)
+	{
+		getProgress( itemStack );
+		return itemStack;
 	}
 
 }
