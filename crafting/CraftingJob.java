@@ -100,11 +100,26 @@ public class CraftingJob implements ICraftingParent
 		}
 	}
 
-	private void extractItems(IAEItemStack[] requirements, IMEInventory<IAEItemStack> inv, IItemList<IAEItemStack> storage2, IItemList<IAEItemStack> missing)
+	private void extractItems(IAEItemStack[] requirements, IMEInventory<IAEItemStack> inv, IItemList<IAEItemStack> dest, IItemList<IAEItemStack> missing)
 	{
 		for (IAEItemStack is : requirements)
 		{
-			inv.extractItems( is, Actionable.MODULATE, jobHost.getActionSrc() );
+			IAEItemStack avail = inv.extractItems( is, Actionable.MODULATE, jobHost.getActionSrc() );
+
+			if ( avail == null )
+			{
+				missing.add( is );
+				continue;
+			}
+
+			if ( avail.getStackSize() != is.getStackSize() )
+			{
+				IAEItemStack ais = avail.copy();
+				ais.setStackSize( is.getStackSize() - avail.getStackSize() );
+				missing.add( ais );
+			}
+
+			dest.add( avail );
 		}
 	}
 
@@ -114,6 +129,12 @@ public class CraftingJob implements ICraftingParent
 		for (IAEItemStack is : requirements)
 		{
 			IAEItemStack avail = inv.extractItems( is, Actionable.SIMULATE, jobHost.getActionSrc() );
+
+			if ( avail == null )
+				return false;
+
+			if ( avail.getStackSize() != is.getStackSize() )
+				return false;
 		}
 
 		return true;
