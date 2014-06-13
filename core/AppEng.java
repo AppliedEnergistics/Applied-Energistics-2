@@ -111,13 +111,12 @@ public class AppEng
 
 		AELog.info( "Starting ( PreInit )" );
 
+		CreativeTab.init();		
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.Facades ) )
+			CreativeTabFacade.init();
+
 		if ( Platform.isClient() )
-		{
-			CreativeTab.init();
-			if ( AEConfig.instance.isFeatureEnabled( AEFeature.Facades ) )
-				CreativeTabFacade.init();
 			CommonHelper.proxy.init();
-		}
 
 		Registration.instance.PreInit( event );
 
