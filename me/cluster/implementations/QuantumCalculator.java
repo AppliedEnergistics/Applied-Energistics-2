@@ -73,7 +73,7 @@ public class QuantumCalculator extends MBCalculator
 						c.Ring[ringNum++] = te;
 					}
 
-					te.updateStatus( c, flags );
+					te.updateStatus( c, flags, true );
 				}
 			}
 		}
@@ -89,7 +89,7 @@ public class QuantumCalculator extends MBCalculator
 	@Override
 	public void disconnect()
 	{
-		tqb.disconnect();
+		tqb.disconnect(true);
 	}
 
 	@Override

@@ -60,7 +60,7 @@ public class SpatialPylonCalculator extends MBCalculator
 	@Override
 	public void disconnect()
 	{
-		tqb.disconnect();
+		tqb.disconnect(true);
 	}
 
 	@Override
