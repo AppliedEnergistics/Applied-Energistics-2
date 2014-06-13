@@ -334,7 +334,7 @@ public class BlockCableBus extends AEBaseBlock
 	@Override
 	public boolean onActivated(World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		return cb( w, x, y, z ).activate( player, w.getWorldVec3Pool().getVecFromPool( hitX, hitY, hitZ ) );
+		return cb( w, x, y, z ).activate( player, Vec3.createVectorHelper( hitX, hitY, hitZ ) );
 	}
 
 	@Override

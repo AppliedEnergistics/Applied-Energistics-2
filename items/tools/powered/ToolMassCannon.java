@@ -121,7 +121,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						double d0 = p.prevPosX + (p.posX - p.prevPosX) * (double) f;
 						double d1 = p.prevPosY + (p.posY - p.prevPosY) * (double) f + 1.62D - (double) p.yOffset;
 						double d2 = p.prevPosZ + (p.posZ - p.prevPosZ) * (double) f;
-						Vec3 vec3 = w.getWorldVec3Pool().getVecFromPool( d0, d1, d2 );
+						Vec3 vec3 = Vec3.createVectorHelper( d0, d1, d2 );
 						float f3 = MathHelper.cos( -f2 * 0.017453292F - (float) Math.PI );
 						float f4 = MathHelper.sin( -f2 * 0.017453292F - (float) Math.PI );
 						float f5 = -MathHelper.cos( -f1 * 0.017453292F );
@@ -177,7 +177,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 								}
 							}
 
-							Vec3 Srec = w.getWorldVec3Pool().getVecFromPool( d0, d1, d2 );
+							Vec3 Srec = Vec3.createVectorHelper( d0, d1, d2 );
 							MovingObjectPosition pos = w.rayTraceBlocks( vec3, vec31, true );
 							if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( Srec ) > Closeest )
 							{
