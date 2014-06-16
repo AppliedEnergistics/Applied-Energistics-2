@@ -130,12 +130,20 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@Override
-	public void disconnect()
+	public void disconnect(boolean affectWorld)
 	{
 		if ( clust != null )
+		{
+			if ( ! affectWorld )
+				clust.updateStatus = false;
+			
 			clust.destroy();
+		}
+		
 		clust = null;
-		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		
+		if ( affectWorld )
+			gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 	}
 
 	@Override
@@ -158,22 +166,39 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 			gridProxy.setVisualRepresentation( ring );
 	}
 
-	public void updateStatus(QuantumCluster c, byte flags)
+	@Override
+	public void invalidate()
+	{
+		disconnect(false);
+		super.invalidate();
+	}
+
+	@Override
+	public void onChunkUnload()
+	{
+		disconnect(false);
+		super.onChunkUnload();
+	}
+
+	public void updateStatus(QuantumCluster c, byte flags, boolean affectWorld)
 	{
 		clust = c;
 
-		if ( xdex != flags )
+		if ( affectWorld )
 		{
-			xdex = flags;
-			markForUpdate();
+			if ( xdex != flags )
+			{
+				xdex = flags;
+					markForUpdate();
+			}
+	
+			if ( isCorner() || isCenter() )
+			{
+				gridProxy.setValidSides( getConnections() );
+			}
+			else
+				gridProxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
 		}
-
-		if ( isCorner() || isCenter() )
-		{
-			gridProxy.setValidSides( getConnections() );
-		}
-		else
-			gridProxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
 	}
 
 	public long getQEDest()

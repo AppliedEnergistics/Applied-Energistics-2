@@ -3,10 +3,11 @@ package appeng.me.cluster;
 public interface IAEMultiBlock
 {
 
-	void disconnect();
+	void disconnect(boolean b);
 
 	IAECluster getCluster();
 
 	boolean isValid();
+
 
 }

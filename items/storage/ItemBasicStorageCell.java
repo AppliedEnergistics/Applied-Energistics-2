@@ -34,6 +34,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 
 	final MaterialType component;
 	final int totalBytes;
+	final int perType;
 	final double idleDrain;
 
 	public ItemBasicStorageCell(MaterialType whichCell, int Kilobytes) {
@@ -47,18 +48,23 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 		{
 		case Cell1kPart:
 			idleDrain = 0.5;
+			perType = 8;
 			break;
 		case Cell4kPart:
 			idleDrain = 1.0;
+			perType = 32;
 			break;
 		case Cell16kPart:
 			idleDrain = 1.5;
+			perType = 128;
 			break;
 		case Cell64kPart:
 			idleDrain = 2.0;
+			perType = 512;
 			break;
 		default:
 			idleDrain = 0.0;
+			perType = 8;
 		}
 	}
 

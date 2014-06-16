@@ -129,12 +129,12 @@ public class OreHelper
 
 	public boolean sameOre(OreRefrence a, OreRefrence b)
 	{
-		if ( a == b )
-			return true;
-
 		if ( a == null || b == null )
 			return false;
 
+		if ( a == b )
+			return true;
+		
 		Collection<Integer> bOres = b.getOres();
 		for (Integer ore : a.ores)
 		{

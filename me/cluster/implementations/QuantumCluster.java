@@ -29,7 +29,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 	public WorldCoord min;
 	public WorldCoord max;
 	public boolean isDestroyed = false;
-	private boolean updateStatus = true;
+	public boolean updateStatus = true;
 
 	boolean registered = false;
 	private long thisSide;
@@ -211,14 +211,11 @@ public class QuantumCluster implements ILocatable, IAECluster
 			MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Unregister ) );
 		}
 
-		if ( updateStatus )
-		{
-			center.updateStatus( null, (byte) -1 );
+		center.updateStatus( null, (byte) -1, updateStatus );
 
-			for (TileQuantumBridge r : Ring)
-			{
-				r.updateStatus( null, (byte) -1 );
-			}
+		for (TileQuantumBridge r : Ring)
+		{
+			r.updateStatus( null, (byte) -1, updateStatus );
 		}
 
 		center = null;

@@ -127,15 +127,15 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	@Override
 	public void invalidate()
 	{
+		disconnect(false);
 		super.invalidate();
-		disconnect();
 	}
 
 	@Override
 	public void onChunkUnload()
 	{
+		disconnect(false);
 		super.onChunkUnload();
-		disconnect();
 	}
 
 	public void onNeighborBlockChange()
@@ -207,7 +207,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	}
 
 	@Override
-	public void disconnect()
+	public void disconnect(boolean b)
 	{
 		if ( clust != null )
 		{

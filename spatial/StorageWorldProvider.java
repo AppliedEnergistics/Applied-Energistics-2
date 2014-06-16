@@ -77,7 +77,7 @@ public class StorageWorldProvider extends WorldProvider
 	@Override
 	public Vec3 getSkyColor(Entity cameraEntity, float partialTicks)
 	{
-		return this.worldObj.getWorldVec3Pool().getVecFromPool( 0.0, 0.0, 0.0 );
+		return Vec3.createVectorHelper( 0.0, 0.0, 0.0 );
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class StorageWorldProvider extends WorldProvider
 	@Override
 	public Vec3 getFogColor(float par1, float par2)
 	{
-		return this.worldObj.getWorldVec3Pool().getVecFromPool( 0.0, 0.0, 0.0 );
+		return Vec3.createVectorHelper( 0.0, 0.0, 0.0 );
 	}
 
 	@Override
