@@ -34,6 +34,8 @@ import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.crafting.TileCraftingStorageTile;
 import appeng.tile.crafting.TileCraftingTile;
 
+import com.google.common.collect.ImmutableSet;
+
 public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler
 {
 
@@ -257,7 +259,10 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 
 	public Set<ICraftingPatternDetails> getCraftingFor(IAEItemStack what)
 	{
-		return craftableItems.get( what );
+		Set<ICraftingPatternDetails> res = craftableItems.get( what );
+		if ( res == null )
+			return ImmutableSet.of();
+		return res;
 	}
 
 }

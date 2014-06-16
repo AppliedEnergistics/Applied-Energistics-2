@@ -16,6 +16,7 @@ import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketCraftRequest;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.reporting.PartCraftingTerminal;
@@ -107,6 +108,19 @@ public class GuiCraftAmount extends AEBaseGui
 				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( OriginalGui ) );
 			}
 			catch (IOException e)
+			{
+				AELog.error( e );
+			}
+		}
+
+		if ( btn == next )
+		{
+			try
+			{
+				NetworkHandler.instance.sendToServer( new PacketCraftRequest( inventorySlots.getSlot( 0 ).getStack(), Integer.parseInt( this.amountToCraft
+						.getText() ) ) );
+			}
+			catch (Throwable e)
 			{
 				AELog.error( e );
 			}

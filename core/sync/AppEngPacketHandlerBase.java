@@ -11,6 +11,7 @@ import appeng.core.sync.packets.PacketClick;
 import appeng.core.sync.packets.PacketCompassRequest;
 import appeng.core.sync.packets.PacketCompassResponse;
 import appeng.core.sync.packets.PacketConfigButton;
+import appeng.core.sync.packets.PacketCraftRequest;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketLightning;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
@@ -73,7 +74,9 @@ public class AppEngPacketHandlerBase
 
 		PACKET_RECIPE_NEI(PacketNEIRecipe.class),
 
-		PACKET_PARTIAL_ITEM(PacketPartialItem.class);
+		PACKET_PARTIAL_ITEM(PacketPartialItem.class),
+
+		PAKCET_CRAFTING_REQUEST(PacketCraftRequest.class);
 
 		final public Class pc;
 		final public Constructor con;

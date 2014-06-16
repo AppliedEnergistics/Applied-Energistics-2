@@ -28,6 +28,12 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	protected IAETagCompound tagCompound;
 
 	@Override
+	public String toString()
+	{
+		return getFluidStack().toString();
+	}
+
+	@Override
 	public IAETagCompound getTagCompound()
 	{
 		return tagCompound;

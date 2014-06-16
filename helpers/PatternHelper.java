@@ -32,6 +32,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	final IRecipe standardRecipe;
 
 	final IAEItemStack condencedInputs[];
+	final IAEItemStack condencedOutputs[];
 	final IAEItemStack inputs[];
 	final IAEItemStack outputs[];
 
@@ -129,9 +130,9 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			if ( gs != null && (!isCrafting || !gs.hasTagCompound()) )
 			{
 				markItemAs( x, gs, TestStatus.ACCEPT );
-				in.add( AEApi.instance().storage().createItemStack( gs ) );
 			}
 
+			in.add( AEApi.instance().storage().createItemStack( gs ) );
 			testFrame.setInventorySlotContents( x, gs );
 		}
 
@@ -157,21 +158,41 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		outputs = out.toArray( new IAEItemStack[out.size()] );
 		inputs = in.toArray( new IAEItemStack[in.size()] );
 
-		HashMap<IAEItemStack, IAEItemStack> o = new HashMap<IAEItemStack, IAEItemStack>();
-
-		for (IAEItemStack io : inputs)
+		HashMap<IAEItemStack, IAEItemStack> tmpOutputs = new HashMap<IAEItemStack, IAEItemStack>();
+		for (IAEItemStack io : outputs)
 		{
-			IAEItemStack g = o.get( io );
+			if ( io == null )
+				continue;
+
+			IAEItemStack g = tmpOutputs.get( io );
 			if ( g == null )
-				o.put( io, io.copy() );
+				tmpOutputs.put( io, io.copy() );
 			else
 				g.add( io );
 		}
 
-		condencedInputs = new IAEItemStack[o.size()];
+		HashMap<IAEItemStack, IAEItemStack> tmpInputs = new HashMap<IAEItemStack, IAEItemStack>();
+		for (IAEItemStack io : inputs)
+		{
+			if ( io == null )
+				continue;
+
+			IAEItemStack g = tmpInputs.get( io );
+			if ( g == null )
+				tmpInputs.put( io, io.copy() );
+			else
+				g.add( io );
+		}
+
 		int offset = 0;
-		for (IAEItemStack io : o.values())
+		condencedInputs = new IAEItemStack[tmpInputs.size()];
+		for (IAEItemStack io : tmpInputs.values())
 			condencedInputs[offset++] = io;
+
+		offset = 0;
+		condencedOutputs = new IAEItemStack[tmpOutputs.size()];
+		for (IAEItemStack io : tmpOutputs.values())
+			condencedOutputs[offset++] = io;
 	}
 
 	public boolean isValidItemForSlot(int slotIndex, ItemStack i, World w)
@@ -283,8 +304,15 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	}
 
 	@Override
+	public IAEItemStack[] getCondencedOutputs()
+	{
+		return condencedOutputs;
+	}
+
+	@Override
 	public int compareTo(PatternHelper o)
 	{
 		return ItemSorters.compareInt( o.priority, priority );
 	}
+
 }
