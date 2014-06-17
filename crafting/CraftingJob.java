@@ -1,5 +1,6 @@
 package appeng.crafting;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
@@ -54,6 +55,13 @@ public class CraftingJob
 			Stopwatch timer = Stopwatch.createStarted();
 			tree.request( meci, what.getStackSize(), host.getActionSrc() );
 			tree.dive( this );
+
+			for (String s : opsAndMultiplier.keySet())
+			{
+				twoIntegers ti = opsAndMultiplier.get( s );
+				AELog.info( s + " * " + ti.times + " = " + (ti.perOp * ti.times) );
+			}
+
 			AELog.info( "-------------" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
 			// if ( mode == Actionable.MODULATE )
 			// meci.moveItemsToStorage( storage );
@@ -70,7 +78,7 @@ public class CraftingJob
 
 	private CraftingTreeNode getCraftingTree(CraftingCache cc, IAEItemStack what)
 	{
-		return new CraftingTreeNode( cc, this, what, null, 0 );
+		return new CraftingTreeNode( cc, this, what, null, -1, 0 );
 	}
 
 	public void writeToNBT(NBTTagCompound out)
@@ -78,18 +86,35 @@ public class CraftingJob
 
 	}
 
-	public void addTask(IAEItemStack what, int crafts, ICraftingPatternDetails details, int depth)
+	public void addTask(IAEItemStack what, long crafts, ICraftingPatternDetails details, int depth)
 	{
 		if ( crafts > 0 )
 		{
-			AELog.info( "new task: " + Platform.getItemDisplayName( what ) + " x " + what.getStackSize() + " * " + crafts + " = "
-					+ (what.getStackSize() * crafts) + " @ " + depth );
+			postOp( "new task: " + Platform.getItemDisplayName( what ) + " x " + what.getStackSize(), what.getStackSize(), crafts );
 		}
 	}
 
 	public void addMissing(IAEItemStack what)
 	{
-		AELog.info( "required material: " + Platform.getItemDisplayName( what ) + " x " + what.getStackSize() );
+		postOp( "required material: " + Platform.getItemDisplayName( what ), 1, what.getStackSize() );
 	}
 
+	class twoIntegers
+	{
+
+		public long perOp = 0;
+		public long times = 0;
+	};
+
+	HashMap<String, twoIntegers> opsAndMultiplier = new HashMap();
+
+	private void postOp(String string, long stackSize, long crafts)
+	{
+		twoIntegers ti = opsAndMultiplier.get( string );
+		if ( ti == null )
+			opsAndMultiplier.put( string, ti = new twoIntegers() );
+
+		ti.perOp = stackSize;
+		ti.times += crafts;
+	}
 }

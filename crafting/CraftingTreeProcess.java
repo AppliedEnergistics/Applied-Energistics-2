@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.security.BaseActionSource;
@@ -17,25 +20,55 @@ public class CraftingTreeProcess
 	ICraftingPatternDetails details;
 	CraftingJob job;
 
-	int crafts = 0;
+	long crafts = 0;
+	boolean damageable;
+
 	final private int depth;
 
 	Map<CraftingTreeNode, Long> nodes = new HashMap();
 	public boolean possible = true;
 
-	public CraftingTreeProcess(CraftingCache cc, CraftingJob job, ICraftingPatternDetails details, CraftingTreeNode craftingTreeNode, int depth) {
+	public CraftingTreeProcess(CraftingCache cc, CraftingJob job, ICraftingPatternDetails details, CraftingTreeNode craftingTreeNode, int depth, World world) {
 		parent = craftingTreeNode;
 		this.details = details;
 		this.job = job;
 		this.depth = depth;
 
-		for (IAEItemStack part : details.getCondencedInputs())
-			nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, depth + 1 ), part.getStackSize() );
+		if ( details.isCraftable() )
+		{
+			IAEItemStack list[] = details.getInputs();
+
+			for (int x = 0; x < list.length; x++)
+			{
+				IAEItemStack part = list[x];
+				if ( part != null )
+				{
+					ItemStack is = part.getItemStack();
+					if ( is.getItem().hasContainerItem( is ) )
+						damageable = true;
+					nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, x, depth + 1 ), part.getStackSize() );
+				}
+			}
+		}
+		else
+		{
+			for (IAEItemStack part : details.getCondencedInputs())
+			{
+				nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, -1, depth + 1 ), part.getStackSize() );
+			}
+		}
 	}
 
 	public boolean notRecurive(ICraftingPatternDetails details)
 	{
 		return parent.notRecurive( details );
+	}
+
+	long getTimes(long remaining, long stackSize)
+	{
+		if ( damageable )
+			return 1;
+		return (remaining / stackSize) + (remaining % stackSize != 0 ? 1 : 0);
 	}
 
 	IAEItemStack getAmountCrafted(IAEItemStack what2)
@@ -59,7 +92,22 @@ public class CraftingTreeProcess
 		for (Entry<CraftingTreeNode, Long> entry : nodes.entrySet())
 		{
 			IAEItemStack item = entry.getKey().getStack( entry.getValue() );
-			entry.getKey().request( inv, item.getStackSize() * i, src );
+			IAEItemStack stack = entry.getKey().request( inv, item.getStackSize() * i, src );
+
+			if ( damageable )
+			{
+				ItemStack is = stack.getItemStack();
+				if ( stack.getItem().hasContainerItem( is ) )
+				{
+					is = stack.getItem().getContainerItem( is );
+					if ( is.isItemStackDamageable() && is.getItemDamage() == is.getMaxDamage() )
+						is = null;
+
+					IAEItemStack o = AEApi.instance().storage().createItemStack( is );
+					if ( o != null )
+						inv.injectItems( o, Actionable.MODULATE, src );
+				}
+			}
 		}
 
 		// assume its possible.

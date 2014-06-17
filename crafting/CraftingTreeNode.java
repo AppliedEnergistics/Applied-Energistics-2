@@ -2,7 +2,9 @@ package appeng.crafting;
 
 import java.util.ArrayList;
 
+import net.minecraft.world.World;
 import appeng.api.config.Actionable;
+import appeng.api.config.FuzzyMode;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEItemStack;
@@ -13,6 +15,10 @@ public class CraftingTreeNode
 
 	// parent node.
 	private CraftingTreeProcess parent;
+	private World world;
+
+	// what slot!
+	int slot;
 
 	// what item is this?
 	private IAEItemStack what;
@@ -21,16 +27,18 @@ public class CraftingTreeNode
 	private ArrayList<CraftingTreeProcess> nodes = new ArrayList();
 
 	boolean cannotUse = false;
-	int missing = 0;
+	long missing = 0;
 
-	public CraftingTreeNode(CraftingCache cc, CraftingJob job, IAEItemStack wat, CraftingTreeProcess par, int depth) {
+	public CraftingTreeNode(CraftingCache cc, CraftingJob job, IAEItemStack wat, CraftingTreeProcess par, int slot, int depth) {
 		what = wat;
 		parent = par;
+		this.slot = slot;
+		this.world = job.jobHost.getWorld();
 
 		for (ICraftingPatternDetails details : cc.getCraftingFor( what ))// in order.
 		{
 			if ( notRecurive( details ) )
-				nodes.add( new CraftingTreeProcess( cc, job, details, this, depth + 1 ) );
+				nodes.add( new CraftingTreeProcess( cc, job, details, this, depth + 1, world ) );
 		}
 	}
 
@@ -54,21 +62,41 @@ public class CraftingTreeNode
 		return parent.notRecurive( details );
 	}
 
-	private long getTimes(long remaining, long stackSize)
-	{
-		return (remaining / stackSize) + (remaining % stackSize != 0 ? 1 : 0);
-	}
-
-	public void request(MECraftingInventory inv, long l, BaseActionSource src) throws CraftBranchFailure
+	public IAEItemStack request(MECraftingInventory inv, long l, BaseActionSource src) throws CraftBranchFailure
 	{
 		what.setStackSize( l );
-		IAEItemStack available = inv.extractItems( what, Actionable.MODULATE, src );
+		if ( slot >= 0 && parent != null && parent.details.isCraftable() )
+		{
+			for (IAEItemStack fuzz : inv.getItemList().findFuzzy( what, FuzzyMode.IGNORE_ALL ))
+			{
+				if ( parent.details.isValidItemForSlot( slot, fuzz.getItemStack(), world ) )
+				{
+					fuzz = fuzz.copy();
+					fuzz.setStackSize( l );
+					IAEItemStack available = inv.extractItems( fuzz, Actionable.MODULATE, src );
 
-		if ( available != null )
-			l -= available.getStackSize();
+					if ( available != null )
+					{
+						l -= available.getStackSize();
 
-		if ( l == 0 )
-			return;
+						if ( l == 0 )
+							return available;
+					}
+				}
+			}
+		}
+		else
+		{
+			IAEItemStack available = inv.extractItems( what, Actionable.MODULATE, src );
+
+			if ( available != null )
+			{
+				l -= available.getStackSize();
+
+				if ( l == 0 )
+					return available;
+			}
+		}
 
 		if ( nodes.size() == 1 )
 		{
@@ -76,17 +104,17 @@ public class CraftingTreeNode
 
 			while (pro.possible && l > 0)
 			{
-				pro.request( inv, getTimes( l, pro.getAmountCrafted( what ).getStackSize() ), src );
+				pro.request( inv, pro.getTimes( l, pro.getAmountCrafted( what ).getStackSize() ), src );
 
 				what.setStackSize( l );
-				available = inv.extractItems( what, Actionable.MODULATE, src );
+				IAEItemStack available = inv.extractItems( what, Actionable.MODULATE, src );
 
 				if ( available != null )
 				{
 					l -= available.getStackSize();
 
 					if ( l <= 0 )
-						return;
+						return available;
 				}
 				else
 					pro.possible = false; // ;P
@@ -105,14 +133,14 @@ public class CraftingTreeNode
 						subInv.commit( src );
 
 						what.setStackSize( l );
-						available = inv.extractItems( what, Actionable.MODULATE, src );
+						IAEItemStack available = inv.extractItems( what, Actionable.MODULATE, src );
 
 						if ( available != null )
 						{
 							l -= available.getStackSize();
 
 							if ( l <= 0 )
-								return;
+								return available;
 						}
 						else
 							pro.possible = false; // ;P
@@ -126,6 +154,7 @@ public class CraftingTreeNode
 		}
 
 		missing += l;
+		return what;
 		// throw new CraftBranchFailure( what, l );
 	}
 

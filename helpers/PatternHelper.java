@@ -198,7 +198,10 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	public boolean isValidItemForSlot(int slotIndex, ItemStack i, World w)
 	{
 		if ( isCrafting == false )
+		{
+
 			throw new RuntimeException( "Only crafting recipes supported." );
+		}
 
 		TestStatus result = getStatus( slotIndex, i );
 
