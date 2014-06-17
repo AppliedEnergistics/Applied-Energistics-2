@@ -26,6 +26,7 @@ import appeng.core.features.AEFeature;
 import appeng.helpers.LocationRotation;
 import appeng.helpers.NullRotation;
 import appeng.integration.abstraction.IRB;
+import appeng.util.Platform;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -161,14 +162,16 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	public void onBlockAdded(World w, int x, int y, int z)
 	{
 		super.onBlockAdded( w, x, y, z );
-		WorldSettings.getInstance().getCompass().updateArea( w, x, y, z );
+		if ( Platform.isServer() )
+			WorldSettings.getInstance().getCompass().updateArea( w, x, y, z );
 	}
 
 	@Override
 	public void breakBlock(World w, int x, int y, int z, Block b, int WTF)
 	{
 		super.breakBlock( w, x, y, z, b, WTF );
-		WorldSettings.getInstance().getCompass().updateArea( w, x, y, z );
+		if ( Platform.isServer() )
+			WorldSettings.getInstance().getCompass().updateArea( w, x, y, z );
 	}
 
 	// use AE2's enderer, no rotatable blocks.
