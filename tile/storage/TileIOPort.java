@@ -379,8 +379,12 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 								src.injectItems( failed, Actionable.MODULATE, mySrc );
 							}
 
-							itemsToMove -= possible;
-							didStuff = true;
+							if ( possible > 0 )
+							{
+								itemsToMove -= possible;
+								didStuff = true;
+							}
+							
 							break;
 						}
 					}
