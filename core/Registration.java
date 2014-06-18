@@ -664,13 +664,20 @@ public class Registration
 
 	private void registerSpatial(boolean force)
 	{
+		if ( ! AEConfig.instance.isFeatureEnabled( AEFeature.SpatialIO ) )
+			return;
+		
 		AEConfig config = AEConfig.instance;
 
 		if ( storageBiome == null )
 		{
 			if ( force && config.storageBiomeID == -1 )
 			{
-				storageBiome = new BiomeGenStorage( config.storageBiomeID = Platform.findEmpty( BiomeGenBase.getBiomeGenArray() ) );
+				config.storageBiomeID = Platform.findEmpty( BiomeGenBase.getBiomeGenArray() );
+				if ( config.storageBiomeID == -1 )
+					throw new RuntimeException("Biome Array is full, please free up some Biome ID's or disable spatial.");
+				
+				storageBiome = new BiomeGenStorage( config.storageBiomeID );
 				config.save();
 			}
 
