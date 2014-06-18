@@ -86,8 +86,11 @@ public class CraftingTreeProcess
 		throw new RuntimeException( "Crafting Tree construction failed." );
 	}
 
-	public void request(MECraftingInventory inv, long i, BaseActionSource src) throws CraftBranchFailure
+	public void request(MECraftingInventory inv, long i, BaseActionSource src) throws CraftBranchFailure, InterruptedException
 	{
+		if ( Thread.interrupted() )
+			throw new InterruptedException();
+
 		// request and remove inputs...
 		for (Entry<CraftingTreeNode, Long> entry : nodes.entrySet())
 		{
@@ -128,5 +131,13 @@ public class CraftingTreeProcess
 		job.addTask( getAmountCrafted( parent.getStack( 1 ) ), crafts, details, depth );
 		for (CraftingTreeNode pro : nodes.keySet())
 			pro.dive( job );
+	}
+
+	public void setSimulate()
+	{
+		crafts = 0;
+
+		for (CraftingTreeNode pro : nodes.keySet())
+			pro.setSimulate();
 	}
 }

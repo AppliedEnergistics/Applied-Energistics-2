@@ -36,6 +36,7 @@ import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerChest;
 import appeng.container.implementations.ContainerCondenser;
 import appeng.container.implementations.ContainerCraftAmount;
+import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.container.implementations.ContainerCraftingTerm;
 import appeng.container.implementations.ContainerDrive;
 import appeng.container.implementations.ContainerFormationPlane;
@@ -150,7 +151,9 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_MAC(ContainerMAC.class, TileMolecularAssembler.class, WORLD, null),
 
-	GUI_CRAFTING_AMOUNT(ContainerCraftAmount.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT);
+	GUI_CRAFTING_AMOUNT(ContainerCraftAmount.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT),
+
+	GUI_CRAFTING_CONFIRM(ContainerCraftConfirm.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT);
 
 	private Class Tile;
 	private Class Gui;

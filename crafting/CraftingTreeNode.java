@@ -29,11 +29,14 @@ public class CraftingTreeNode
 	boolean cannotUse = false;
 	long missing = 0;
 
+	boolean sim;
+
 	public CraftingTreeNode(CraftingCache cc, CraftingJob job, IAEItemStack wat, CraftingTreeProcess par, int slot, int depth) {
 		what = wat;
 		parent = par;
 		this.slot = slot;
 		this.world = job.jobHost.getWorld();
+		sim = false;
 
 		for (ICraftingPatternDetails details : cc.getCraftingFor( what ))// in order.
 		{
@@ -62,8 +65,11 @@ public class CraftingTreeNode
 		return parent.notRecurive( details );
 	}
 
-	public IAEItemStack request(MECraftingInventory inv, long l, BaseActionSource src) throws CraftBranchFailure
+	public IAEItemStack request(MECraftingInventory inv, long l, BaseActionSource src) throws CraftBranchFailure, InterruptedException
 	{
+		if ( Thread.interrupted() )
+			throw new InterruptedException();
+
 		what.setStackSize( l );
 		if ( slot >= 0 && parent != null && parent.details.isCraftable() )
 		{
@@ -153,9 +159,13 @@ public class CraftingTreeNode
 			}
 		}
 
-		missing += l;
-		return what;
-		// throw new CraftBranchFailure( what, l );
+		if ( sim )
+		{
+			missing += l;
+			return what;
+		}
+
+		throw new CraftBranchFailure( what, l );
 	}
 
 	public void dive(CraftingJob job)
@@ -166,5 +176,14 @@ public class CraftingTreeNode
 
 		for (CraftingTreeProcess pro : nodes)
 			pro.dive( job );
+	}
+
+	public void setSimulate()
+	{
+		sim = true;
+		missing = 0;
+
+		for (CraftingTreeProcess pro : nodes)
+			pro.setSimulate();
 	}
 }

@@ -195,11 +195,10 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			condencedOutputs[offset++] = io;
 	}
 
-	public boolean isValidItemForSlot(int slotIndex, ItemStack i, World w)
+	synchronized public boolean isValidItemForSlot(int slotIndex, ItemStack i, World w)
 	{
 		if ( isCrafting == false )
 		{
-
 			throw new RuntimeException( "Only crafting recipes supported." );
 		}
 

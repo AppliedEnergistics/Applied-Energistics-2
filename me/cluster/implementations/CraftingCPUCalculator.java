@@ -90,7 +90,7 @@ public class CraftingCPUCalculator extends MBCalculator
 	@Override
 	public void disconnect()
 	{
-		tqb.disconnect();
+		tqb.disconnect( true );
 	}
 
 	@Override

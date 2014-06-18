@@ -62,12 +62,13 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	}
 
 	@Override
-	public void disconnect()
+	public void disconnect(boolean update)
 	{
 		if ( clust != null )
 		{
 			clust.destroy();
-			updateMeta();
+			if ( update )
+				updateMeta();
 		}
 	}
 
