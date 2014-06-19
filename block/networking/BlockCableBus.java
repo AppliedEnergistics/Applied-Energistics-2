@@ -326,6 +326,12 @@ public class BlockCableBus extends AEBaseBlock
 	}
 
 	@Override
+	public void onNeighborChange(IBlockAccess w, int x, int y, int z, int tileX, int tileY, int tileZ)
+	{
+		cb( w, x, y, z ).onNeighborChanged();
+	}
+
+	@Override
 	public Item getItemDropped(int i, Random r, int k)
 	{
 		return null;
