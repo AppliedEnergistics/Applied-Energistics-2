@@ -35,6 +35,11 @@ public class CraftingJob implements Runnable
 	public CraftingTreeNode tree;
 	private BaseActionSource actionSrc;
 
+	public IAEItemStack getOutput()
+	{
+		return output;
+	}
+
 	public CraftingJob(ICraftingHost host, NBTTagCompound data) {
 		jobHost = host;
 		storage = AEApi.instance().storage().createItemList();
@@ -178,4 +183,5 @@ public class CraftingJob implements Runnable
 		}
 
 	}
+
 }

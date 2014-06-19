@@ -16,7 +16,6 @@ import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.crafting.ICraftingMedium;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -40,7 +39,7 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
 public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEngInventory, ISidedInventory, IUpgradeableHost, IConfigManagerHost,
-		IGridTickable, ICraftingMedium
+		IGridTickable
 {
 
 	static final int[] sides = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -58,7 +57,6 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 	private boolean isAwake = false;
 	private boolean forcePlan = false;
 
-	@Override
 	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table, ForgeDirection where)
 	{
 		if ( myPattern == null )
@@ -421,4 +419,5 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 
 		return adaptor.addItems( output );
 	}
+
 }

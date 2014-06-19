@@ -326,9 +326,9 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	}
 
 	@Override
-	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table, ForgeDirection where)
+	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table)
 	{
-		return duality.pushPattern( patternDetails, table, where );
+		return duality.pushPattern( patternDetails, table );
 	}
 
 	@Override
@@ -341,6 +341,12 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	public EnumSet<ForgeDirection> getTargets()
 	{
 		return EnumSet.of( side );
+	}
+
+	@Override
+	public boolean isBusy()
+	{
+		return duality.isBusy();
 	}
 
 }

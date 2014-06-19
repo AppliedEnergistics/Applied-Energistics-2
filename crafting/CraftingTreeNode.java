@@ -3,12 +3,15 @@ package appeng.crafting;
 import java.util.ArrayList;
 
 import net.minecraft.world.World;
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
 import appeng.me.cache.CraftingCache;
+import appeng.me.cluster.implementations.CraftingCPUCluster;
 
 public class CraftingTreeNode
 {
@@ -28,6 +31,9 @@ public class CraftingTreeNode
 
 	boolean cannotUse = false;
 	long missing = 0;
+
+	IItemList<IAEItemStack> used = AEApi.instance().storage().createItemList();
+	boolean exhausted = false;
 
 	boolean sim;
 
@@ -83,6 +89,8 @@ public class CraftingTreeNode
 
 					if ( available != null )
 					{
+						if ( !exhausted )
+							used.add( available );
 						l -= available.getStackSize();
 
 						if ( l == 0 )
@@ -97,12 +105,16 @@ public class CraftingTreeNode
 
 			if ( available != null )
 			{
+				if ( !exhausted )
+					used.add( available );
 				l -= available.getStackSize();
 
 				if ( l == 0 )
 					return available;
 			}
 		}
+
+		exhausted = true;
 
 		if ( nodes.size() == 1 )
 		{
@@ -182,8 +194,26 @@ public class CraftingTreeNode
 	{
 		sim = true;
 		missing = 0;
+		used.resetStatus();
+		exhausted = false;
 
 		for (CraftingTreeProcess pro : nodes)
 			pro.setSimulate();
+	}
+
+	public void setJob(MECraftingInventory storage, CraftingCPUCluster craftingCPUCluster, BaseActionSource src) throws CraftBranchFailure
+	{
+		for (IAEItemStack i : used)
+		{
+			IAEItemStack ex = storage.extractItems( i, Actionable.MODULATE, src );
+
+			if ( ex == null || ex.getStackSize() != i.getStackSize() )
+				throw new CraftBranchFailure( i, i.getStackSize() );
+
+			craftingCPUCluster.addStorage( ex );
+		}
+
+		for (CraftingTreeProcess pro : nodes)
+			pro.setJob( storage, craftingCPUCluster, src );
 	}
 }

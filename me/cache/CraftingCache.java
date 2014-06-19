@@ -30,10 +30,12 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.crafting.CraftingJob;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.crafting.TileCraftingStorageTile;
 import appeng.tile.crafting.TileCraftingTile;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler
@@ -67,6 +69,9 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 			updateList = false;
 			updateCPUClusters();
 		}
+
+		for (CraftingCPUCluster cpu : cpuClusters)
+			cpu.updateCraftingLogic( grid, this );
 	}
 
 	@MENetworkEventSubscribe
@@ -111,7 +116,9 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 		for (IGridNode cst : grid.getMachines( TileCraftingStorageTile.class ))
 		{
 			TileCraftingStorageTile tile = (TileCraftingStorageTile) cst.getMachine();
-			cpuClusters.add( (CraftingCPUCluster) tile.getCluster() );
+			CraftingCPUCluster clust = (CraftingCPUCluster) tile.getCluster();
+			if ( clust != null )
+				cpuClusters.add( clust );
 		}
 	}
 
@@ -251,6 +258,24 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 		return false;
 	}
 
+	public boolean submitJob(CraftingJob job, CraftingCPUCluster target, BaseActionSource src)
+	{
+		if ( target == null )
+		{
+			// TODO real stuff...
+			for (CraftingCPUCluster cpu : cpuClusters)
+			{
+				target = cpu;
+				break;
+			}
+		}
+
+		if ( target != null && target.submitJob( grid, job, src ) )
+			return true;
+
+		return false;
+	}
+
 	@Override
 	public int getSlot()
 	{
@@ -263,6 +288,16 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 		if ( res == null )
 			return ImmutableSet.of();
 		return res;
+	}
+
+	public List<ICraftingMedium> getMediums(ICraftingPatternDetails key)
+	{
+		List<ICraftingMedium> o = craftingMethods.get( key );
+
+		if ( o == null )
+			o = ImmutableList.of();
+
+		return o;
 	}
 
 }

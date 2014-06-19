@@ -207,9 +207,9 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 	}
 
 	@Override
-	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table, ForgeDirection where)
+	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table)
 	{
-		return duality.pushPattern( patternDetails, table, where );
+		return duality.pushPattern( patternDetails, table );
 	}
 
 	@Override
@@ -224,6 +224,12 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 		if ( pointAt == null || pointAt == ForgeDirection.UNKNOWN )
 			return EnumSet.complementOf( EnumSet.of( ForgeDirection.UNKNOWN ) );
 		return EnumSet.of( pointAt );
+	}
+
+	@Override
+	public boolean isBusy()
+	{
+		return duality.isBusy();
 	}
 
 }

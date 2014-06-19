@@ -16,10 +16,10 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.ICraftingPatternItem;
+import appeng.api.implementations.tiles.ICraftingMachine;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.crafting.ICraftingMedium;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
@@ -152,6 +152,15 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			waitingToSend = new LinkedList();
 
 		waitingToSend.add( is );
+
+		try
+		{
+			gridProxy.getTick().wakeDevice( gridProxy.getNode() );
+		}
+		catch (GridAccessException e)
+		{
+			// :P
+		}
 	}
 
 	public DualityInterface(AENetworkProxy prox, IInterfaceHost ih) {
@@ -554,6 +563,9 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	@Override
 	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
 	{
+		if ( hasItemsToSend() )
+			pushItemsOut( EnumSet.allOf( ForgeDirection.class ) );
+
 		boolean couldDoWork = updateStorage();
 		return hasWorkToDo() ? (couldDoWork ? TickRateModulation.URGENT : TickRateModulation.SLOWER) : TickRateModulation.SLEEP;
 	}
@@ -642,7 +654,45 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	}
 
 	@Override
-	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table, ForgeDirection where)
+	public boolean isBusy()
+	{
+		if ( hasItemsToSend() )
+			return true;
+
+		boolean busy = false;
+
+		if ( isBlocking() )
+		{
+			EnumSet<ForgeDirection> possibleDirections = iHost.getTargets();
+			TileEntity tile = iHost.getTileEntity();
+			World w = tile.getWorldObj();
+
+			for (ForgeDirection s : possibleDirections)
+			{
+				TileEntity te = w.getTileEntity( tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ );
+
+				InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
+				if ( ad != null )
+				{
+					if ( ad.simulateRemove( 1, null, null ) != null )
+					{
+						busy = true;
+						break;
+					}
+				}
+			}
+		}
+
+		return busy;
+	}
+
+	private boolean isBlocking()
+	{
+		return true;
+	}
+
+	@Override
+	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table)
 	{
 		if ( hasItemsToSend() )
 			return false;
@@ -654,9 +704,9 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		for (ForgeDirection s : possibleDirections)
 		{
 			TileEntity te = w.getTileEntity( tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ );
-			if ( te instanceof ICraftingMedium )
+			if ( te instanceof ICraftingMachine )
 			{
-				if ( ((ICraftingMedium) te).pushPattern( patternDetails, table, s.getOpposite() ) )
+				if ( ((ICraftingMachine) te).pushPattern( patternDetails, table, s.getOpposite() ) )
 					return true;
 			}
 			else
@@ -686,7 +736,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 	private void pushItemsOut(EnumSet<ForgeDirection> possibleDirections)
 	{
-		if ( hasItemsToSend() )
+		if ( !hasItemsToSend() )
 			return;
 
 		TileEntity tile = iHost.getTileEntity();
@@ -700,6 +750,8 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			for (ForgeDirection s : possibleDirections)
 			{
 				TileEntity te = w.getTileEntity( tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ );
+				if ( te == null )
+					continue;
 
 				InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 				if ( ad != null )

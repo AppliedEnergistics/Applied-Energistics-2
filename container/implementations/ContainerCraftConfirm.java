@@ -17,6 +17,7 @@ import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
 import appeng.crafting.CraftingJob;
 import appeng.crafting.ICraftingHost;
+import appeng.me.cache.CraftingCache;
 
 public class ContainerCraftConfirm extends AEBaseContainer implements ICraftingHost
 {
@@ -39,7 +40,10 @@ public class ContainerCraftConfirm extends AEBaseContainer implements ICraftingH
 			try
 			{
 				result = job.get();
+				CraftingCache cc = getGrid().getCache( CraftingCache.class );
+				cc.submitJob( result, null, getActionSrc() );
 				AELog.info( "Job info is ready!" );
+				this.isContainerValid = false;
 			}
 			catch (Throwable e)
 			{

@@ -19,11 +19,13 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerNull;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
+import appeng.util.item.AEItemStack;
 
 public class PatternHelper implements ICraftingPatternDetails, Comparable<PatternHelper>
 {
 
 	final ItemStack patternItem;
+	private IAEItemStack aepattern;
 
 	final InventoryCrafting crafting = new InventoryCrafting( new ContainerNull(), 3, 3 );
 	final InventoryCrafting testFrame = new InventoryCrafting( new ContainerNull(), 3, 3 );
@@ -118,6 +120,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		NBTTagList outTag = encodedValue.getTagList( "out", 10 );
 		isCrafting = encodedValue.getBoolean( "crafting" );
 		patternItem = is;
+		aepattern = AEItemStack.create( is );
 
 		List<IAEItemStack> in = new ArrayList();
 		List<IAEItemStack> out = new ArrayList();
@@ -317,4 +320,15 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		return ItemSorters.compareInt( o.priority, priority );
 	}
 
+	@Override
+	public int hashCode()
+	{
+		return aepattern.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		return aepattern.equals( ((PatternHelper) obj).aepattern );
+	}
 }

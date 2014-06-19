@@ -25,15 +25,39 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 	final boolean logMissing;
 	final IItemList<IAEItemStack> missingCache;
 
+	public MECraftingInventory() {
+		localCache = AEApi.instance().storage().createItemList();
+		extractedCache = null;
+		injectedCache = null;
+		missingCache = null;
+		this.logExtracted = false;
+		this.logInjections = false;
+		this.logMissing = false;
+		target = null;
+		par = null;
+	}
+
 	public MECraftingInventory(MECraftingInventory parrent) {
 		this.target = parrent;
 		this.logExtracted = parrent.logExtracted;
 		this.logInjections = parrent.logInjections;
 		this.logMissing = parrent.logMissing;
 
-		missingCache = AEApi.instance().storage().createItemList();
-		extractedCache = AEApi.instance().storage().createItemList();
-		injectedCache = AEApi.instance().storage().createItemList();
+		if ( logMissing )
+			missingCache = AEApi.instance().storage().createItemList();
+		else
+			missingCache = null;
+
+		if ( logExtracted )
+			extractedCache = AEApi.instance().storage().createItemList();
+		else
+			extractedCache = null;
+
+		if ( logInjections )
+			injectedCache = AEApi.instance().storage().createItemList();
+		else
+			injectedCache = null;
+
 		localCache = target.getAvailableItems( AEApi.instance().storage().createItemList() );
 
 		par = parrent;
@@ -44,9 +68,22 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		this.logExtracted = logExtracted;
 		this.logInjections = logInjections;
 		this.logMissing = logMissing;
-		missingCache = AEApi.instance().storage().createItemList();
-		extractedCache = AEApi.instance().storage().createItemList();
-		injectedCache = AEApi.instance().storage().createItemList();
+
+		if ( logMissing )
+			missingCache = AEApi.instance().storage().createItemList();
+		else
+			missingCache = null;
+
+		if ( logExtracted )
+			extractedCache = AEApi.instance().storage().createItemList();
+		else
+			extractedCache = null;
+
+		if ( logInjections )
+			injectedCache = AEApi.instance().storage().createItemList();
+		else
+			injectedCache = null;
+
 		localCache = target.getAvailableItems( AEApi.instance().storage().createItemList() );
 		par = null;
 	}
@@ -118,12 +155,6 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 	public StorageChannel getChannel()
 	{
 		return StorageChannel.ITEMS;
-	}
-
-	public void moveItemsToStorage(IItemList<IAEItemStack> storage)
-	{
-		// TODO Auto-generated method stub
-
 	}
 
 	public void commit(BaseActionSource src)

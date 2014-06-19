@@ -12,6 +12,7 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.me.cache.CraftingCache;
+import appeng.me.cluster.implementations.CraftingCPUCluster;
 
 public class CraftingTreeProcess
 {
@@ -139,5 +140,13 @@ public class CraftingTreeProcess
 
 		for (CraftingTreeNode pro : nodes.keySet())
 			pro.setSimulate();
+	}
+
+	public void setJob(MECraftingInventory storage, CraftingCPUCluster craftingCPUCluster, BaseActionSource src) throws CraftBranchFailure
+	{
+		craftingCPUCluster.addCrafting( details, crafts );
+
+		for (CraftingTreeNode pro : nodes.keySet())
+			pro.setJob( storage, craftingCPUCluster, src );
 	}
 }
