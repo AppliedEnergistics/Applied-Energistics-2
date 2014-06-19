@@ -96,6 +96,8 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 	public int portablecell_battery = 20000;
 	public int staff_battery = 8000;
 
+	public boolean updateable = false;
+	
 	public AEConfig(String path) {
 		super( new File( path + "AppliedEnergistics2.cfg" ) );
 
@@ -216,6 +218,8 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 				latestTimeStamp = 0;
 			}
 		}
+		
+		updateable = true;
 	}
 
 	private String getListComment(Enum value)
@@ -252,7 +256,8 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 			}
 		}
 
-		save();
+		if ( updateable )
+			save();
 	}
 
 	@Override
