@@ -136,7 +136,7 @@ public class CraftingCPUCluster implements IAECluster
 
 	public IAEStack injectItems(IAEStack input, Actionable type, BaseActionSource src)
 	{
-		if ( input instanceof IAEItemStack )
+		if ( input instanceof IAEItemStack && type == Actionable.MODULATE )
 		{
 			IAEItemStack what = (IAEItemStack) input;
 			IAEItemStack is = waitingFor.findPrecise( what );
@@ -149,27 +149,43 @@ public class CraftingCPUCluster implements IAECluster
 				{
 					is.decStackSize( input.getStackSize() );
 
+					AELog.info( "Task: " + is.getStackSize() + " remaining : " + getRemainingTasks() + " remaining : "
+							+ (is.getStackSize() + getRemainingTasks()) + " total left : waiting: " + (waiting ? "yes" : "no") );
+
 					if ( finalOutput.equals( input ) )
 						return input; // ignore it.
 
-					return inventory.injectItems( what, Actionable.MODULATE, src );
+					// 2000
+					return inventory.injectItems( what, type, src );
 				}
 
 				IAEItemStack insert = what.copy();
 				insert.setStackSize( is.getStackSize() );
 				what.decStackSize( is.getStackSize() );
+
+				AELog.info( "Task: " + is.getStackSize() + " remaining : " + getRemainingTasks() + " remaining : " + (is.getStackSize() + getRemainingTasks())
+						+ " total left : waiting: " + (waiting ? "yes" : "no") );
+
 				is.setStackSize( 0 );
 
 				if ( finalOutput.equals( input ) )
 					return input; // ignore it.
 
-				inventory.injectItems( insert, Actionable.MODULATE, src );
+				inventory.injectItems( insert, type, src );
 
 				return what;
 			}
 		}
 
 		return input;
+	}
+
+	private int getRemainingTasks()
+	{
+		int o = 0;
+		for (Entry<ICraftingPatternDetails, TaskProgress> tp : tasks.entrySet())
+			o += tp.getValue().value * tp.getKey().getCondencedOutputs()[0].getStackSize();
+		return o;
 	}
 
 	private boolean canCraft(IAEItemStack[] condencedInputs)
@@ -185,6 +201,7 @@ public class CraftingCPUCluster implements IAECluster
 
 	public void updateCraftingLogic(IGrid grid, CraftingCache cc)
 	{
+		waiting = false;
 		if ( waiting || tasks.isEmpty() ) // nothing to do here...
 			return;
 
@@ -203,6 +220,9 @@ public class CraftingCPUCluster implements IAECluster
 
 				for (ICraftingMedium m : cc.getMediums( e.getKey() ))
 				{
+					if ( e.getValue().value <= 0 )
+						continue;
+
 					if ( !m.isBusy() )
 					{
 						if ( ic == null )
@@ -220,6 +240,8 @@ public class CraftingCPUCluster implements IAECluster
 									{
 										for (IAEItemStack fuzz : inventory.getItemList().findFuzzy( input[x], FuzzyMode.IGNORE_ALL ))
 										{
+											fuzz = fuzz.copy();
+											fuzz.setStackSize( input[x].getStackSize() );
 											IAEItemStack ais = inventory.extractItems( fuzz, Actionable.MODULATE, null );
 											ItemStack is = ais == null ? null : ais.getItemStack();
 
@@ -310,6 +332,7 @@ public class CraftingCPUCluster implements IAECluster
 
 		try
 		{
+			waitingFor.resetStatus();
 			job.tree.setJob( ci, this, src );
 			ci.commit( src );
 			finalOutput = job.getOutput();

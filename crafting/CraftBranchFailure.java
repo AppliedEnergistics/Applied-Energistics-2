@@ -1,6 +1,7 @@
 package appeng.crafting;
 
 import appeng.api.storage.data.IAEItemStack;
+import appeng.util.Platform;
 
 public class CraftBranchFailure extends Exception
 {
@@ -10,7 +11,7 @@ public class CraftBranchFailure extends Exception
 	IAEItemStack missing;
 
 	public CraftBranchFailure(IAEItemStack what, long howMany) {
-		super( "this should have been caught!" );
+		super( "Failed: " + Platform.getItemDisplayName( what ) + " x " + howMany );
 		missing = what.copy();
 		missing.setStackSize( howMany );
 	}

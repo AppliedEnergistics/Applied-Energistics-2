@@ -31,6 +31,7 @@ public class CraftingJob implements Runnable
 
 	boolean simulate = false;
 	final MECraftingInventory original;
+	final MECraftingInventory availableCheck;
 
 	public CraftingTreeNode tree;
 	private BaseActionSource actionSrc;
@@ -45,6 +46,12 @@ public class CraftingJob implements Runnable
 		storage = AEApi.instance().storage().createItemList();
 		prophecies = new HashSet();
 		original = null;
+		availableCheck = null;
+	}
+
+	public IAEItemStack checkUse(IAEItemStack available)
+	{
+		return availableCheck.extractItems( available, Actionable.MODULATE, this.actionSrc );
 	}
 
 	public CraftingJob(ICraftingHost host, IAEItemStack what, Actionable mode) {
@@ -57,7 +64,7 @@ public class CraftingJob implements Runnable
 		CraftingCache cc = host.getGrid().getCache( CraftingCache.class );
 		IStorageGrid sg = host.getGrid().getCache( IStorageGrid.class );
 		original = new MECraftingInventory( sg.getItemInventory(), false, false, false );
-
+		availableCheck = new MECraftingInventory( sg.getItemInventory(), false, false, false );
 		tree = getCraftingTree( cc, what );
 	}
 

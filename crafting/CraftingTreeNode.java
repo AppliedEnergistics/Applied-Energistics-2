@@ -32,6 +32,7 @@ public class CraftingTreeNode
 	boolean cannotUse = false;
 	long missing = 0;
 
+	CraftingJob job;
 	IItemList<IAEItemStack> used = AEApi.instance().storage().createItemList();
 	boolean exhausted = false;
 
@@ -42,6 +43,7 @@ public class CraftingTreeNode
 		parent = par;
 		this.slot = slot;
 		this.world = job.jobHost.getWorld();
+		this.job = job;
 		sim = false;
 
 		for (ICraftingPatternDetails details : cc.getCraftingFor( what ))// in order.
@@ -90,7 +92,7 @@ public class CraftingTreeNode
 					if ( available != null )
 					{
 						if ( !exhausted )
-							used.add( available );
+							used.add( job.checkUse( available ) );
 						l -= available.getStackSize();
 
 						if ( l == 0 )
@@ -106,7 +108,7 @@ public class CraftingTreeNode
 			if ( available != null )
 			{
 				if ( !exhausted )
-					used.add( available );
+					used.add( job.checkUse( available ) );
 				l -= available.getStackSize();
 
 				if ( l == 0 )

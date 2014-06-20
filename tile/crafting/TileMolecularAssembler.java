@@ -15,6 +15,7 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.implementations.tiles.ICraftingMachine;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.ticking.IGridTickable;
@@ -39,7 +40,7 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
 public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEngInventory, ISidedInventory, IUpgradeableHost, IConfigManagerHost,
-		IGridTickable
+		IGridTickable, ICraftingMachine
 {
 
 	static final int[] sides = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };

@@ -706,28 +706,30 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			TileEntity te = w.getTileEntity( tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ );
 			if ( te instanceof ICraftingMachine )
 			{
-				if ( ((ICraftingMachine) te).pushPattern( patternDetails, table, s.getOpposite() ) )
-					return true;
-			}
-			else
-			{
-				InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
-				if ( ad != null )
+				ICraftingMachine cm = (ICraftingMachine) te;
+				if ( cm.acceptsPlans() )
 				{
-					possibleDirections.remove( s );
-
-					for (int x = 0; x < table.getSizeInventory(); x++)
-					{
-						ItemStack is = table.getStackInSlot( x );
-						if ( is != null )
-						{
-							addToSendList( ad.addItems( is ) );
-						}
-					}
-
-					pushItemsOut( possibleDirections );
-					return true;
+					if ( cm.pushPattern( patternDetails, table, s.getOpposite() ) )
+						return true;
+					continue;
 				}
+			}
+
+			InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
+			if ( ad != null )
+			{
+
+				for (int x = 0; x < table.getSizeInventory(); x++)
+				{
+					ItemStack is = table.getStackInSlot( x );
+					if ( is != null )
+					{
+						addToSendList( ad.addItems( is ) );
+					}
+				}
+
+				pushItemsOut( possibleDirections );
+				return true;
 			}
 		}
 
