@@ -19,7 +19,7 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 {
 
 	final TileSecurity securityTile;
-	final public IItemList<IAEItemStack> storedItems = new ItemList(IAEItemStack.class);
+	final public IItemList<IAEItemStack> storedItems = new ItemList( IAEItemStack.class );
 
 	public SecurityInventory(TileSecurity ts) {
 		securityTile = ts;
@@ -144,6 +144,12 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	public int getSlot()
 	{
 		return 0;
+	}
+
+	@Override
+	public boolean validForPass(int i)
+	{
+		return true;
 	}
 
 }

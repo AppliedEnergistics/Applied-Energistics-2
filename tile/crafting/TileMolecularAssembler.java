@@ -219,6 +219,12 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		return false;
 	}
 
+	@Override
+	public boolean acceptsPlans()
+	{
+		return inv.getStackInSlot( 10 ) == null;
+	}
+
 	private boolean hasPattern()
 	{
 		return myPlan != null && inv.getStackInSlot( 10 ) != null;

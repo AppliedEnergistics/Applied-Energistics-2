@@ -272,4 +272,10 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 		return 0;
 	}
 
+	@Override
+	public boolean validForPass(int i)
+	{
+		return true;
+	}
+
 }

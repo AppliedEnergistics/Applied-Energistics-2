@@ -20,7 +20,7 @@ public class MEPassthru<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 		return internal;
 	}
 
-	public MEPassthru(IMEInventory<T> i,Class<? extends IAEStack> cla) {
+	public MEPassthru(IMEInventory<T> i, Class<? extends IAEStack> cla) {
 		setInternal( i );
 		clz = cla;
 	}
@@ -82,6 +82,12 @@ public class MEPassthru<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 	public int getSlot()
 	{
 		return 0;
+	}
+
+	@Override
+	public boolean validForPass(int i)
+	{
+		return true;
 	}
 
 }

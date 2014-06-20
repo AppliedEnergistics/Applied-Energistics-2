@@ -305,4 +305,10 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 		return null;
 	}
 
+	@Override
+	public boolean validForPass(int i)
+	{
+		return itemStorage.validForPass( i );
+	}
+
 }

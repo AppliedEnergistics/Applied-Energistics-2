@@ -65,4 +65,10 @@ public class NullInventory<T extends IAEStack<T>> implements IMEInventoryHandler
 		return 0;
 	}
 
+	@Override
+	public boolean validForPass(int i)
+	{
+		return i == 2;
+	}
+
 }

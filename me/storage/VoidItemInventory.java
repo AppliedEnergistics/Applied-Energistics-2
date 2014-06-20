@@ -74,4 +74,10 @@ public class VoidItemInventory implements IMEInventoryHandler<IAEItemStack>
 		return 0;
 	}
 
+	@Override
+	public boolean validForPass(int i)
+	{
+		return i == 2;
+	}
+
 }

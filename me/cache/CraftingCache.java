@@ -300,4 +300,10 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 		return o;
 	}
 
+	@Override
+	public boolean validForPass(int i)
+	{
+		return i == 1;
+	}
+
 }

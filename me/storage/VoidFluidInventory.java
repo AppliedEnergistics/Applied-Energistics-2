@@ -74,4 +74,10 @@ public class VoidFluidInventory implements IMEInventoryHandler<IAEFluidStack>
 		return 0;
 	}
 
+	@Override
+	public boolean validForPass(int i)
+	{
+		return i == 2;
+	}
+
 }

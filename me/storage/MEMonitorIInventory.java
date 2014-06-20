@@ -245,4 +245,10 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 		return StorageChannel.ITEMS;
 	}
 
+	@Override
+	public boolean validForPass(int i)
+	{
+		return true;
+	}
+
 }
