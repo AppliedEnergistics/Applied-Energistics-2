@@ -126,10 +126,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		if ( cb.isEmpty() )
 		{
 			if ( worldObj.getTileEntity( xCoord, yCoord, zCoord ) == this )
-			{
 				worldObj.func_147480_a( xCoord, yCoord, zCoord, true );
-				// worldObj.destroyBlock( xCoord, yCoord, zCoord, true );
-			}
 		}
 		else
 			cb.addToWorld();
@@ -295,7 +292,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public void notifyNeighbors()
 	{
-		if ( worldObj != null && worldObj.blockExists( xCoord, yCoord, zCoord ) )
+		if ( worldObj != null && worldObj.blockExists( xCoord, yCoord, zCoord ) && ! CableBusContainer.isLoading() )
 			worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord, Platform.air );
 	}
 

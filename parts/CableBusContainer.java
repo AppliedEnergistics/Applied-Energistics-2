@@ -320,12 +320,21 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 		return null;
 	}
 
+	private static final ThreadLocal<Boolean> isLoading = new ThreadLocal();
+	
+	public static boolean isLoading() {
+		Boolean is = isLoading.get();
+		return is != null && is == true;
+	}
+
 	public void addToWorld()
 	{
 		if ( inWorld )
 			return;
+		
 		inWorld = true;
-
+		isLoading.set( true );
+		
 		TileEntity te = getTile();
 		hasRedstone = te.getWorldObj().isBlockIndirectlyGettingPowered( te.xCoord, te.yCoord, te.zCoord );
 
@@ -372,6 +381,8 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 		}
 
 		partChanged();
+		
+		isLoading.set(false);
 	}
 
 	public void removeFromWorld()
