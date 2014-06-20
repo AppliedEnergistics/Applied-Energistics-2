@@ -138,7 +138,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 
 	public boolean isAccelerator()
 	{
-		return worldObj.getBlockMetadata( xCoord, yCoord, zCoord ) == 1;
+		return (worldObj.getBlockMetadata( xCoord, yCoord, zCoord ) & 3) == 1;
 	}
 
 	public boolean isStatus()
