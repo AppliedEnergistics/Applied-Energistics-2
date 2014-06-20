@@ -161,7 +161,8 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 			{
 				IMEInventoryHandler<T> inv = ii.next();
 
-				if ( inv.canAccept( input ) && (inv.extractItems( input, Actionable.SIMULATE, src ) != null || inv.isPrioritized( input )) )
+				if ( inv.validForPass( 1 ) && inv.canAccept( input )
+						&& (inv.isPrioritized( input ) || inv.extractItems( input, Actionable.SIMULATE, src ) != null) )
 					input = inv.injectItems( input, type, src );
 			}
 
@@ -169,7 +170,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 			while (ii.hasNext() && input != null)
 			{
 				IMEInventoryHandler<T> inv = ii.next();
-				if ( inv.canAccept( input ) )
+				if ( inv.validForPass( 2 ) && inv.canAccept( input ) )// ignore crafting on the second pass.
 					input = inv.injectItems( input, type, src );
 			}
 		}
