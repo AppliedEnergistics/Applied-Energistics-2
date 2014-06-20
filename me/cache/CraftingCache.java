@@ -159,6 +159,7 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 		for (ICraftingPatternDetails details : craftingMethods.keySet())
 			for (IAEItemStack out : details.getOutputs())
 			{
+				out = out.copy();
 				out.reset();
 				out.setCraftable( true );
 
