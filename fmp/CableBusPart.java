@@ -551,7 +551,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		if ( tile() instanceof TIInventoryTile )
 			((TIInventoryTile) tile()).rebuildSlotMap();
 
-		if ( world() != null && world().blockExists( x(), y(), z() ) )
+		if ( world() != null && world().blockExists( x(), y(), z() )  && ! CableBusContainer.isLoading() )
 			world().notifyBlocksOfNeighborChange( x(), y(), z(), Platform.air );
 	}
 
