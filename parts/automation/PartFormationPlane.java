@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemFirework;
 import net.minecraft.item.ItemSkull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -385,11 +386,20 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 		if ( w.getBlock( x, y, z ).isReplaceable( w, x, y, z ) )
 		{
-			if ( i instanceof ItemBlock || i instanceof IPlantable || i instanceof ItemSkull || i instanceof IPartItem )
+			if ( i instanceof ItemBlock || i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemFirework || i instanceof IPartItem )
 			{
 				EntityPlayer player = Platform.getPlayer( (WorldServer) w );
 				Platform.configurePlayer( player, side, tile );
 
+				if ( i instanceof ItemFirework )
+				{
+					Chunk c = w.getChunkFromBlockCoords( x, z );
+					int sum = 0;
+					for (List Z : c.entityLists)
+						sum += Z.size();
+					if ( sum > 32 )
+						return input;
+				}
 				maxStorage = is.stackSize;
 				worked = true;
 				if ( type == Actionable.MODULATE )

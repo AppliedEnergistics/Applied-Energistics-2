@@ -40,10 +40,13 @@ public class ContainerCraftConfirm extends AEBaseContainer implements ICraftingH
 			try
 			{
 				result = job.get();
-				CraftingCache cc = getGrid().getCache( CraftingCache.class );
-				cc.submitJob( result, null, getActionSrc() );
-				AELog.info( "Job info is ready!" );
-				this.isContainerValid = false;
+				if ( !result.isSimulation() )
+				{
+					CraftingCache cc = getGrid().getCache( CraftingCache.class );
+					cc.submitJob( result, null, getActionSrc() );
+					AELog.info( "Job info is ready!" );
+					this.isContainerValid = false;
+				}
 			}
 			catch (Throwable e)
 			{
@@ -87,7 +90,6 @@ public class ContainerCraftConfirm extends AEBaseContainer implements ICraftingH
 		return h.getActionableNode().getGrid();
 	}
 
-	@Override
 	public World getWorld()
 	{
 		return getPlayerInv().player.worldObj;

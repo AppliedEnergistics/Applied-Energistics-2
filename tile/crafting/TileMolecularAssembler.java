@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -38,6 +39,7 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEngInventory, ISidedInventory, IUpgradeableHost, IConfigManagerHost,
 		IGridTickable, ICraftingMachine
@@ -326,7 +328,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		if ( inv.getStackInSlot( 9 ) != null )
 		{
 			pushOut( inv.getStackInSlot( 9 ) );
-			return inv.getStackInSlot( 9 ) == null ? TickRateModulation.SLEEP : TickRateModulation.IDLE;
+			ejectHeldItems();
+			isAwake = inv.getStackInSlot( 9 ) != null;
+			return isAwake ? TickRateModulation.SLEEP : TickRateModulation.IDLE;
 		}
 
 		if ( myPlan == null )
@@ -366,16 +370,41 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 			ItemStack output = myPlan.getOutput( craftingInv, getWorldObj() );
 			if ( output != null )
 			{
+				FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) getWorldObj() ), output, craftingInv );
+
 				for (int x = 0; x < craftingInv.getSizeInventory(); x++)
-					inv.setInventorySlotContents( x, null );
+					inv.setInventorySlotContents( x, Platform.getContainerItem( craftingInv.getStackInSlot( x ) ) );
 
 				pushOut( output.copy() );
-				isAwake = false;
-				return inv.getStackInSlot( 9 ) == null ? TickRateModulation.SLEEP : TickRateModulation.IDLE;
+
+				if ( inv.getStackInSlot( 10 ) == null )
+					myPlan = null;
+
+				ejectHeldItems();
+
+				isAwake = inv.getStackInSlot( 9 ) != null;
+				return isAwake ? TickRateModulation.SLEEP : TickRateModulation.IDLE;
 			}
 		}
 
 		return TickRateModulation.FASTER;
+	}
+
+	private void ejectHeldItems()
+	{
+		if ( myPlan == null && inv.getStackInSlot( 9 ) == null )
+		{
+			for (int x = 0; x < 9; x++)
+			{
+				ItemStack is = inv.getStackInSlot( x );
+				if ( is != null )
+				{
+					inv.setInventorySlotContents( 9, is );
+					inv.setInventorySlotContents( x, null );
+					return;
+				}
+			}
+		}
 	}
 
 	private int userPower(int i)

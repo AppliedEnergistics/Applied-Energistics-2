@@ -42,7 +42,7 @@ public class CraftingTreeNode
 		what = wat;
 		parent = par;
 		this.slot = slot;
-		this.world = job.jobHost.getWorld();
+		this.world = job.getWorld();
 		this.job = job;
 		sim = false;
 

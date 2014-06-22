@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -35,14 +36,16 @@ public class CraftingJob implements Runnable
 
 	public CraftingTreeNode tree;
 	private BaseActionSource actionSrc;
+	World world;
 
 	public IAEItemStack getOutput()
 	{
 		return output;
 	}
 
-	public CraftingJob(ICraftingHost host, NBTTagCompound data) {
+	public CraftingJob(World w, ICraftingHost host, NBTTagCompound data) {
 		jobHost = host;
+		world = wrapWorld( w );
 		storage = AEApi.instance().storage().createItemList();
 		prophecies = new HashSet();
 		original = null;
@@ -54,8 +57,9 @@ public class CraftingJob implements Runnable
 		return availableCheck.extractItems( available, Actionable.MODULATE, this.actionSrc );
 	}
 
-	public CraftingJob(ICraftingHost host, IAEItemStack what, Actionable mode) {
+	public CraftingJob(World w, ICraftingHost host, IAEItemStack what, Actionable mode) {
 		jobHost = host;
+		world = wrapWorld( w );
 		output = what.copy();
 		storage = AEApi.instance().storage().createItemList();
 		prophecies = new HashSet();
@@ -66,6 +70,19 @@ public class CraftingJob implements Runnable
 		original = new MECraftingInventory( sg.getItemInventory(), false, false, false );
 		availableCheck = new MECraftingInventory( sg.getItemInventory(), false, false, false );
 		tree = getCraftingTree( cc, what );
+	}
+
+	private World wrapWorld(World w)
+	{
+		return w;
+		/*
+		 * -- works on interfaces.. :( try {
+		 * 
+		 * InvocationHandler handler = new CraftingWorldSync( w ); Class proxyClass = Proxy.getProxyClass(
+		 * World.class.getClassLoader(), new Class[] { World.class } ); return (World) proxyClass.getConstructor( new
+		 * Class[] { InvocationHandler.class } ).newInstance( new Object[] { handler } ); } catch (Throwable t) { throw
+		 * new RuntimeException( t ); }
+		 */
 	}
 
 	private CraftingTreeNode getCraftingTree(CraftingCache cc, IAEItemStack what)
@@ -189,6 +206,16 @@ public class CraftingJob implements Runnable
 			return;
 		}
 
+	}
+
+	public boolean isSimulation()
+	{
+		return simulate;
+	}
+
+	public World getWorld()
+	{
+		return world;
 	}
 
 }

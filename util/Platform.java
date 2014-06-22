@@ -1233,10 +1233,9 @@ public class Platform
 
 		Vec3 vec31 = vec3.addVector( (double) f7 * d3, (double) f6 * d3, (double) f8 * d3 );
 
-		AxisAlignedBB bb = AxisAlignedBB
-				.getBoundingBox( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ),
-						Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) )
-				.expand( 16, 16, 16 );
+		AxisAlignedBB bb = AxisAlignedBB.getBoundingBox( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ),
+				Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ),
+				Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
 
 		Entity entity = null;
 		double Closeest = 9999999.0D;
@@ -1641,6 +1640,29 @@ public class Platform
 
 		}
 		return null;
+	}
+
+	public static ItemStack getContainerItem(ItemStack stackInSlot)
+	{
+		if ( stackInSlot == null )
+			return null;
+
+		Item i = stackInSlot.getItem();
+		if ( i == null || !i.hasContainerItem( stackInSlot ) )
+		{
+			if ( stackInSlot.stackSize > 1 )
+			{
+				stackInSlot.stackSize--;
+				return stackInSlot;
+			}
+			return null;
+		}
+
+		ItemStack ci = i.getContainerItem( stackInSlot.copy() );
+		if ( ci.isItemStackDamageable() && ci.getItemDamage() == ci.getMaxDamage() )
+			ci = null;
+
+		return ci;
 	}
 
 }

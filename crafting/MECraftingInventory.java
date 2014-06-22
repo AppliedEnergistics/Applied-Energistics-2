@@ -185,6 +185,8 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 	public void ignore(IAEItemStack what)
 	{
-
+		IAEItemStack list = localCache.findPrecise( what );
+		if ( list != null )
+			list.setStackSize( 0 );
 	}
 }

@@ -261,13 +261,19 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 
 	public boolean submitJob(CraftingJob job, CraftingCPUCluster target, BaseActionSource src)
 	{
+		if ( job.isSimulation() )
+			return false;
+
 		if ( target == null )
 		{
 			// TODO real stuff...
 			for (CraftingCPUCluster cpu : cpuClusters)
 			{
-				target = cpu;
-				break;
+				if ( !cpu.isBusy() )
+				{
+					target = cpu;
+					break;
+				}
 			}
 		}
 

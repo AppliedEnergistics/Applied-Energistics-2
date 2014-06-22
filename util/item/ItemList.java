@@ -183,14 +183,14 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	@Override
 	public boolean isEmpty()
 	{
-		return records.isEmpty();
+		return !iterator().hasNext();
 	}
 
 	public Collection<StackType> findFuzzyDamage(AEItemStack filter, FuzzyMode fuzzy, boolean ignoreMeta)
 	{
 		StackType low = (StackType) filter.getLow( fuzzy, ignoreMeta );
 		StackType high = (StackType) filter.getHigh( fuzzy, ignoreMeta );
-		return records.subMap( low, true, high, true ).values();
+		return records.subMap( low, true, high, true ).descendingMap().values();
 	}
 
 	@Override

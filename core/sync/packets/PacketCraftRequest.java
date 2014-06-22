@@ -78,7 +78,7 @@ public class PacketCraftRequest extends AppEngPacket
 
 				try
 				{
-					CraftingJob cj = new CraftingJob( cca, slotItem, Actionable.SIMULATE );
+					CraftingJob cj = new CraftingJob( cca.getWorld(), cca, slotItem, Actionable.SIMULATE );
 
 					ContainerOpenContext context = cca.openContext;
 					if ( context != null )

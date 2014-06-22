@@ -45,7 +45,6 @@ public class ContainerCraftAmount extends AEBaseContainer implements ICraftingHo
 		return h.getActionableNode().getGrid();
 	}
 
-	@Override
 	public World getWorld()
 	{
 		return getPlayerInv().player.worldObj;
