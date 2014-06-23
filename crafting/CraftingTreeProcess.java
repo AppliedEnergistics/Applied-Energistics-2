@@ -31,6 +31,7 @@ public class CraftingTreeProcess
 	boolean damageable;
 	boolean fullsimulation;
 
+	private long bytes = 0;
 	final private int depth;
 
 	Map<CraftingTreeNode, Long> nodes = new HashMap();
@@ -113,8 +114,7 @@ public class CraftingTreeProcess
 
 	public void request(MECraftingInventory inv, long i, BaseActionSource src) throws CraftBranchFailure, InterruptedException
 	{
-		if ( Thread.interrupted() )
-			throw new InterruptedException();
+		job.handlepausing();
 
 		if ( fullsimulation )
 		{
@@ -137,7 +137,10 @@ public class CraftingTreeProcess
 
 				IAEItemStack o = AEApi.instance().storage().createItemStack( is );
 				if ( o != null )
+				{
+					bytes++;
 					inv.injectItems( o, Actionable.MODULATE, src );
+				}
 			}
 		}
 		else
@@ -153,7 +156,10 @@ public class CraftingTreeProcess
 					ItemStack is = Platform.getContainerItem( stack.getItemStack() );
 					IAEItemStack o = AEApi.instance().storage().createItemStack( is );
 					if ( o != null )
+					{
+						bytes++;
 						inv.injectItems( o, Actionable.MODULATE, src );
+					}
 				}
 			}
 		}
@@ -176,11 +182,14 @@ public class CraftingTreeProcess
 		job.addTask( getAmountCrafted( parent.getStack( 1 ) ), crafts, details, depth );
 		for (CraftingTreeNode pro : nodes.keySet())
 			pro.dive( job );
+
+		job.addBytes( 8 + crafts + bytes );
 	}
 
 	public void setSimulate()
 	{
 		crafts = 0;
+		bytes = 0;
 
 		for (CraftingTreeNode pro : nodes.keySet())
 			pro.setSimulate();

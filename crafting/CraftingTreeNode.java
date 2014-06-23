@@ -22,6 +22,7 @@ public class CraftingTreeNode
 
 	// what slot!
 	int slot;
+	int bytes = 0;
 
 	// what item is this?
 	private IAEItemStack what;
@@ -75,8 +76,7 @@ public class CraftingTreeNode
 
 	public IAEItemStack request(MECraftingInventory inv, long l, BaseActionSource src) throws CraftBranchFailure, InterruptedException
 	{
-		if ( Thread.interrupted() )
-			throw new InterruptedException();
+		job.handlepausing();
 
 		what.setStackSize( l );
 		if ( slot >= 0 && parent != null && parent.details.isCraftable() )
@@ -93,6 +93,8 @@ public class CraftingTreeNode
 					{
 						if ( !exhausted )
 							used.add( job.checkUse( available ) );
+
+						bytes += available.getStackSize();
 						l -= available.getStackSize();
 
 						if ( l == 0 )
@@ -109,6 +111,8 @@ public class CraftingTreeNode
 			{
 				if ( !exhausted )
 					used.add( job.checkUse( available ) );
+
+				bytes += available.getStackSize();
 				l -= available.getStackSize();
 
 				if ( l == 0 )
@@ -131,6 +135,7 @@ public class CraftingTreeNode
 
 				if ( available != null )
 				{
+					bytes += available.getStackSize();
 					l -= available.getStackSize();
 
 					if ( l <= 0 )
@@ -157,6 +162,7 @@ public class CraftingTreeNode
 
 						if ( available != null )
 						{
+							bytes += available.getStackSize();
 							l -= available.getStackSize();
 
 							if ( l <= 0 )
@@ -176,6 +182,7 @@ public class CraftingTreeNode
 		if ( sim )
 		{
 			missing += l;
+			bytes += l;
 			return what;
 		}
 
@@ -188,6 +195,8 @@ public class CraftingTreeNode
 			job.addMissing( getStack( missing ) );
 		missing = 0;
 
+		job.addBytes( 8 + bytes );
+
 		for (CraftingTreeProcess pro : nodes)
 			pro.dive( job );
 	}
@@ -196,6 +205,7 @@ public class CraftingTreeNode
 	{
 		sim = true;
 		missing = 0;
+		bytes = 0;
 		used.resetStatus();
 		exhausted = false;
 

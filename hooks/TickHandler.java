@@ -1,22 +1,30 @@
 package appeng.hooks;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Callable;
 
+import net.minecraft.world.World;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import appeng.api.networking.IGridNode;
 import appeng.core.AELog;
+import appeng.crafting.CraftingJob;
 import appeng.me.Grid;
 import appeng.me.NetworkList;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
+
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.Type;
+import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
 
 public class TickHandler
 {
@@ -119,8 +127,24 @@ public class TickHandler
 	@SubscribeEvent
 	public void onTick(TickEvent ev)
 	{
-		if ( ev.type == Type.SERVER && ev.phase == Phase.END ) // for no there is no reason to care about this on the
-																// client...
+		// rwar!
+		if ( ev.type == Type.WORLD && ev.phase == Phase.END )
+		{
+			WorldTickEvent wte = (WorldTickEvent) ev;
+			synchronized (craftingJobs)
+			{
+				Iterator<CraftingJob> i = craftingJobs.get( wte.world ).iterator();
+				while (i.hasNext())
+				{
+					CraftingJob cj = i.next();
+					if ( !cj.simulateFor( 5 ) )
+						i.remove();
+				}
+			}
+		}
+
+		// for no there is no reason to care about this on the client...
+		else if ( ev.type == Type.SERVER && ev.phase == Phase.END )
 		{
 			HandlerRep repo = getRepo();
 			while (!repo.tiles.isEmpty())
@@ -149,4 +173,13 @@ public class TickHandler
 		}
 	}
 
+	Multimap<World, CraftingJob> craftingJobs = LinkedListMultimap.create();
+
+	public void registerCraftingSimulation(World world, CraftingJob craftingJob)
+	{
+		synchronized (craftingJobs)
+		{
+			craftingJobs.put( world, craftingJob );
+		}
+	}
 }

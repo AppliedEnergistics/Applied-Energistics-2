@@ -14,6 +14,7 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AELog;
+import appeng.hooks.TickHandler;
 import appeng.me.cache.CraftingCache;
 import appeng.util.Platform;
 
@@ -36,6 +37,7 @@ public class CraftingJob implements Runnable
 
 	public CraftingTreeNode tree;
 	private BaseActionSource actionSrc;
+	long bytes = 0;
 	World world;
 
 	public IAEItemStack getOutput()
@@ -75,19 +77,16 @@ public class CraftingJob implements Runnable
 	private World wrapWorld(World w)
 	{
 		return w;
-		/*
-		 * -- works on interfaces.. :( try {
-		 * 
-		 * InvocationHandler handler = new CraftingWorldSync( w ); Class proxyClass = Proxy.getProxyClass(
-		 * World.class.getClassLoader(), new Class[] { World.class } ); return (World) proxyClass.getConstructor( new
-		 * Class[] { InvocationHandler.class } ).newInstance( new Object[] { handler } ); } catch (Throwable t) { throw
-		 * new RuntimeException( t ); }
-		 */
 	}
 
 	private CraftingTreeNode getCraftingTree(CraftingCache cc, IAEItemStack what)
 	{
 		return new CraftingTreeNode( cc, this, what, null, -1, 0 );
+	}
+
+	public long getByteTotal()
+	{
+		return bytes;
 	}
 
 	public void writeToNBT(NBTTagCompound out)
@@ -139,38 +138,18 @@ public class CraftingJob implements Runnable
 	@Override
 	public void run()
 	{
-
 		try
 		{
-			Stopwatch timer = Stopwatch.createStarted();
-
-			MECraftingInventory meci = new MECraftingInventory( original, true, false, true );
-			meci.ignore( output );
-
-			tree.request( meci, output.getStackSize(), actionSrc );
-			tree.dive( this );
-
-			for (String s : opsAndMultiplier.keySet())
-			{
-				twoIntegers ti = opsAndMultiplier.get( s );
-				AELog.info( s + " * " + ti.times + " = " + (ti.perOp * ti.times) );
-			}
-
-			AELog.info( "------------- real" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
-			// if ( mode == Actionable.MODULATE )
-			// meci.moveItemsToStorage( storage );
-		}
-		catch (CraftBranchFailure e)
-		{
-			simulate = true;
-
 			try
 			{
+				TickHandler.instance.registerCraftingSimulation( world, this );
+				handlepausing();
+
 				Stopwatch timer = Stopwatch.createStarted();
+
 				MECraftingInventory meci = new MECraftingInventory( original, true, false, true );
 				meci.ignore( output );
 
-				tree.setSimulate();
 				tree.request( meci, output.getStackSize(), actionSrc );
 				tree.dive( this );
 
@@ -180,11 +159,46 @@ public class CraftingJob implements Runnable
 					AELog.info( s + " * " + ti.times + " = " + (ti.perOp * ti.times) );
 				}
 
-				AELog.info( "------------- simulate" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
+				AELog.info( "------------- " + getByteTotal() + "b real" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
+				// if ( mode == Actionable.MODULATE )
+				// meci.moveItemsToStorage( storage );
 			}
-			catch (CraftBranchFailure e1)
+			catch (CraftBranchFailure e)
 			{
-				AELog.error( e1 );
+				simulate = true;
+
+				try
+				{
+					Stopwatch timer = Stopwatch.createStarted();
+					MECraftingInventory meci = new MECraftingInventory( original, true, false, true );
+					meci.ignore( output );
+
+					tree.setSimulate();
+					tree.request( meci, output.getStackSize(), actionSrc );
+					tree.dive( this );
+
+					for (String s : opsAndMultiplier.keySet())
+					{
+						twoIntegers ti = opsAndMultiplier.get( s );
+						AELog.info( s + " * " + ti.times + " = " + (ti.perOp * ti.times) );
+					}
+
+					AELog.info( "------------- " + getByteTotal() + "b simulate" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
+				}
+				catch (CraftBranchFailure e1)
+				{
+					AELog.error( e1 );
+				}
+				catch (CraftingCalculationFailure f)
+				{
+					AELog.error( f );
+				}
+				catch (InterruptedException e1)
+				{
+					AELog.info( "Crafting calculation canceled." );
+					finish();
+					return;
+				}
 			}
 			catch (CraftingCalculationFailure f)
 			{
@@ -193,19 +207,30 @@ public class CraftingJob implements Runnable
 			catch (InterruptedException e1)
 			{
 				AELog.info( "Crafting calculation canceled." );
+				finish();
 				return;
 			}
+
+			log( "crafting job now done" );
 		}
-		catch (CraftingCalculationFailure f)
+		catch (Throwable t)
 		{
-			AELog.error( f );
-		}
-		catch (InterruptedException e1)
-		{
-			AELog.info( "Crafting calculation canceled." );
-			return;
+			finish();
+			throw new RuntimeException( t );
 		}
 
+		finish();
+
+	}
+
+	public void finish()
+	{
+		synchronized (monitor)
+		{
+			running = false;
+			done = true;
+			monitor.notify();
+		}
 	}
 
 	public boolean isSimulation()
@@ -213,9 +238,105 @@ public class CraftingJob implements Runnable
 		return simulate;
 	}
 
+	public boolean isDone()
+	{
+		return done;
+	}
+
 	public World getWorld()
 	{
 		return world;
+	}
+
+	private boolean running = false;
+	private boolean done = false;
+	private Object monitor = new Object();
+	private Stopwatch watch = Stopwatch.createUnstarted();
+	private int time = 5;
+
+	/**
+	 * returns true if this needs more simulation.
+	 * 
+	 * @param milli
+	 * @return
+	 */
+	public boolean simulateFor(int milli)
+	{
+		time = milli;
+
+		synchronized (monitor)
+		{
+			if ( isDone() )
+				return false;
+
+			watch.reset();
+			watch.start();
+			running = true;
+
+			log( "main thread is now going to sleep" );
+
+			monitor.notify();
+
+			while (running)
+			{
+				try
+				{
+					monitor.wait();
+				}
+				catch (InterruptedException e)
+				{
+				}
+			}
+
+			log( "main thread is now active" );
+		}
+
+		return true;
+	}
+
+	private int incTime = Integer.MAX_VALUE;
+
+	public void handlepausing() throws InterruptedException
+	{
+		if ( incTime++ > 100 )
+		{
+			incTime = 0;
+
+			synchronized (monitor)
+			{
+				if ( watch.elapsed( TimeUnit.MICROSECONDS ) > time )
+				{
+					running = false;
+					watch.stop();
+					monitor.notify();
+				}
+
+				if ( !running )
+				{
+					log( "crafting job will now sleep" );
+
+					while (!running)
+					{
+						monitor.wait();
+					}
+
+					log( "crafting job now active" );
+				}
+			}
+
+			if ( Thread.interrupted() )
+				throw new InterruptedException();
+		}
+	}
+
+	private void log(String string)
+	{
+		// AELog.info( string );
+	}
+
+	public void addBytes(long crafts)
+	{
+		bytes += crafts;
 	}
 
 }
