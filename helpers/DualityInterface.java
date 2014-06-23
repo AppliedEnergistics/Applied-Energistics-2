@@ -214,11 +214,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			}
 		}
 
-		TileEntity te = iHost.getTileEntity();
-		if ( hadConfig != hasConfig && te != null && te.getWorldObj() != null )
-		{
-			te.getWorldObj().notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, Platform.air );
-		}
+		notifyNeightbors();
 	}
 
 	public void writeToNBT(NBTTagCompound data)
@@ -463,8 +459,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			fluids.setInternal( new NullInventory() );
 		}
 
-		TileEntity te = iHost.getTileEntity();
-		te.getWorldObj().notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, Platform.air );
+		notifyNeightbors();
 	}
 
 	public AECableType getCableConnectionType(ForgeDirection dir)
@@ -800,6 +795,15 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		for (ItemStack is : patterns)
 			if ( is != null )
 				drops.add( is );
+	}
+
+	public void notifyNeightbors()
+	{
+		TileEntity te = iHost.getTileEntity();
+		if ( te != null && te.getWorldObj() != null )
+		{
+			te.getWorldObj().notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, Platform.air );
+		}
 	}
 
 }
