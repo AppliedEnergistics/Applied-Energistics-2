@@ -1,5 +1,6 @@
 package appeng.tile.misc;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 
 import net.minecraft.inventory.IInventory;
@@ -7,6 +8,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
@@ -63,6 +65,12 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 		gridProxy.setValidSides( EnumSet.complementOf( EnumSet.of( pointAt ) ) );
 		markForUpdate();
 		markDirty();
+	}
+
+	@Override
+	public void getDrops(World w, int x, int y, int z, ArrayList<ItemStack> drops)
+	{
+		duality.addDrops( drops );
 	}
 
 	@Override

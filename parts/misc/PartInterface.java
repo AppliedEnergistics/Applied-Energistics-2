@@ -75,17 +75,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	@Override
 	public void getDrops(List<ItemStack> drops, boolean wrenched)
 	{
-		IInventory inv = duality.getInternalInventory();
-		for (int l = 0; l < inv.getSizeInventory(); l++)
-		{
-			ItemStack is = inv.getStackInSlot( l );
-
-			if ( is != null )
-			{
-				drops.add( is );
-				inv.setInventorySlotContents( l, (ItemStack) null );
-			}
-		}
+		duality.addDrops( drops );
 	}
 
 	@Override

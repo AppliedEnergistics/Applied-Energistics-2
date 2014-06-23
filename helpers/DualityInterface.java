@@ -784,4 +784,22 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		}
 	}
 
+	public void addDrops(List<ItemStack> drops)
+	{
+		if ( waitingToSend != null )
+		{
+			for (ItemStack is : waitingToSend)
+				if ( is != null )
+					drops.add( is );
+		}
+
+		for (ItemStack is : storage)
+			if ( is != null )
+				drops.add( is );
+
+		for (ItemStack is : patterns)
+			if ( is != null )
+				drops.add( is );
+	}
+
 }
