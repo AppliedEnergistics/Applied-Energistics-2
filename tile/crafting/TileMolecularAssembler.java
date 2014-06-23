@@ -1,5 +1,7 @@
 package appeng.tile.crafting;
 
+import java.util.ArrayList;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -60,6 +62,8 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 	private boolean isAwake = false;
 	private boolean forcePlan = false;
 
+	private boolean reboot = true;
+
 	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table, ForgeDirection where)
 	{
 		if ( myPattern == null )
@@ -78,6 +82,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 					inv.setInventorySlotContents( x, table.getStackInSlot( x ) );
 
 				updateSleepyness();
+				markDirty();
 				return true;
 			}
 		}
@@ -86,6 +91,8 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 
 	private void recalculatePlan()
 	{
+		reboot = true;
+
 		if ( forcePlan )
 			return;
 
@@ -306,9 +313,24 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 	}
 
 	@Override
+	public void getDrops(World w, int x, int y, int z, ArrayList<ItemStack> drops)
+	{
+		super.getDrops( w, x, y, z, drops );
+
+		for (int h = 0; h < upgrades.getSizeInventory(); h++)
+		{
+			ItemStack is = upgrades.getStackInSlot( h );
+			if ( is != null )
+				drops.add( is );
+		}
+	}
+
+	@Override
 	public TickingRequest getTickingRequest(IGridNode node)
 	{
-		return new TickingRequest( 1, 5, isAwake = hasPattern() && hasMats() || canPush(), false );
+		recalculatePlan();
+		updateSleepyness();
+		return new TickingRequest( 1, 1, !isAwake, false );
 	}
 
 	private boolean hasMats()
@@ -329,35 +351,39 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		{
 			pushOut( inv.getStackInSlot( 9 ) );
 			ejectHeldItems();
-			isAwake = inv.getStackInSlot( 9 ) != null;
+			updateSleepyness();
 			return isAwake ? TickRateModulation.SLEEP : TickRateModulation.IDLE;
 		}
 
 		if ( myPlan == null )
 		{
-			isAwake = false;
+			updateSleepyness();
 			return TickRateModulation.SLEEP;
 		}
 
+		if ( reboot )
+			TicksSinceLastCall = 1;
+
+		reboot = false;
 		switch (upgrades.getInstalledUpgrades( Upgrades.SPEED ))
 		{
 		case 0:
-			progress += userPower( TicksSinceLastCall );
+			progress += userPower( TicksSinceLastCall * 10 );
 			break;
 		case 1:
-			progress += userPower( TicksSinceLastCall * 2 );
+			progress += userPower( TicksSinceLastCall * 13 );
 			break;
 		case 2:
-			progress += userPower( TicksSinceLastCall * 6 );
+			progress += userPower( TicksSinceLastCall * 17 );
 			break;
 		case 3:
-			progress += userPower( TicksSinceLastCall * 12 );
+			progress += userPower( TicksSinceLastCall * 20 );
 			break;
 		case 4:
-			progress += userPower( TicksSinceLastCall * 30 );
+			progress += userPower( TicksSinceLastCall * 25 );
 			break;
 		case 5:
-			progress += userPower( TicksSinceLastCall * 120 );
+			progress += userPower( TicksSinceLastCall * 50 );
 			break;
 		}
 
@@ -382,7 +408,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 
 				ejectHeldItems();
 
-				isAwake = inv.getStackInSlot( 9 ) != null;
+				updateSleepyness();
 				return isAwake ? TickRateModulation.SLEEP : TickRateModulation.IDLE;
 			}
 		}
@@ -401,6 +427,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 				{
 					inv.setInventorySlotContents( 9, is );
 					inv.setInventorySlotContents( x, null );
+					markDirty();
 					return;
 				}
 			}
@@ -453,7 +480,14 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		if ( adaptor == null )
 			return output;
 
-		return adaptor.addItems( output );
+		int size = output.stackSize;
+		output = adaptor.addItems( output );
+		int newSize = output == null ? 0 : output.stackSize;
+
+		if ( size != newSize )
+			markDirty();
+
+		return output;
 	}
 
 }
