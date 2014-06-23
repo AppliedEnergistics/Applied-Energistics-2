@@ -15,6 +15,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.events.MENetworkChannelsChanged;
+import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -46,6 +49,18 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 
 	public PartInterface(ItemStack is) {
 		super( PartInterface.class, is );
+	}
+
+	@MENetworkEventSubscribe
+	public void stateChange(MENetworkChannelsChanged c)
+	{
+		duality.notifyNeightbors();
+	}
+
+	@MENetworkEventSubscribe
+	public void stateChange(MENetworkPowerStatusChange c)
+	{
+		duality.notifyNeightbors();
 	}
 
 	@Override
