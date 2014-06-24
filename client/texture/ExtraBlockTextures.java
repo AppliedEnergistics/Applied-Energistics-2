@@ -20,6 +20,8 @@ public enum ExtraBlockTextures
 			"BlockControllerColumnConflict"), BlockControllerConflict("BlockControllerConflict"), BlockControllerInsideA("BlockControllerInsideA"), BlockControllerInsideB(
 			"BlockControllerInsideB"),
 
+	BlockMolecularAssemblerLights("BlockMolecularAssemblerLights"),
+
 	BlockChargerInside("BlockChargerInside"),
 
 	BlockInterfaceAlternate("BlockInterfaceAlternate"), BlockInterfaceAlternateArrow("BlockInterfaceAlternateArrow"),

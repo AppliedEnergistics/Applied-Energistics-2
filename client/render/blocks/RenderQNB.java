@@ -102,8 +102,7 @@ public class RenderQNB extends BaseBlockRender
 
 				EnumSet<ForgeDirection> sides = tqb.getConnections();
 				renderCableAt( 0.11D, world, x, y, z, block, renderer, cable.getIconIndex( cabldef.stack( AEColor.Transparent, 1 ) ), 0.141D, sides );
-				renderCableAt( 0.188D, world, x, y, z, block, renderer, ccable.getIconIndex( ccabldef.stack( AEColor.Transparent, 1 ) ), 0.1875D,
-						tqb.getConnections() );
+				renderCableAt( 0.188D, world, x, y, z, block, renderer, ccable.getIconIndex( ccabldef.stack( AEColor.Transparent, 1 ) ), 0.1875D, sides );
 			}
 
 			float px = 2.0f / 16.0f;

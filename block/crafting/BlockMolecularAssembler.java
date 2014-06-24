@@ -28,6 +28,15 @@ public class BlockMolecularAssembler extends AEBaseBlock
 		lightOpacity = 1;
 	}
 
+	public static boolean booleanAlphaPass = false;
+
+	@Override
+	public boolean canRenderInPass(int pass)
+	{
+		booleanAlphaPass = pass == 1;
+		return pass == 0 || pass == 1;
+	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public Class<? extends BaseBlockRender> getRenderer()

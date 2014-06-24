@@ -57,6 +57,12 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
+	public boolean isConnected(ForgeDirection side)
+	{
+		return connections.contains( side );
+	}
+
+	@Override
 	public BusSupport supportsBuses()
 	{
 		return BusSupport.CABLE;

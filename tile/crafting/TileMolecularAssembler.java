@@ -1,5 +1,8 @@
 package appeng.tile.crafting;
 
+import io.netty.buffer.ByteBuf;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 import net.minecraft.inventory.IInventory;
@@ -17,13 +20,17 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.tiles.ICraftingMachine;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.parts.ISimplifiedBundle;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
@@ -44,7 +51,7 @@ import appeng.util.Platform;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEngInventory, ISidedInventory, IUpgradeableHost, IConfigManagerHost,
-		IGridTickable, ICraftingMachine
+		IGridTickable, ICraftingMachine, IPowerChannelState
 {
 
 	static final int[] sides = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -63,6 +70,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 	private boolean forcePlan = false;
 
 	private boolean reboot = true;
+	public ISimplifiedBundle lightCache;
 
 	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table, ForgeDirection where)
 	{
@@ -161,7 +169,21 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 	{
 
 		public TileMolecularAssemblerHandler() {
-			super( TileEventType.WORLD_NBT );
+			super( TileEventType.WORLD_NBT, TileEventType.NETWORK );
+		}
+
+		@Override
+		public boolean readFromStream(ByteBuf data) throws IOException
+		{
+			boolean oldPower = isPowered;
+			isPowered = data.readBoolean();
+			return isPowered != oldPower;
+		}
+
+		@Override
+		public void writeToStream(ByteBuf data) throws IOException
+		{
+			data.writeBoolean( isPowered );
 		}
 
 		@Override
@@ -488,6 +510,31 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 			markDirty();
 
 		return output;
+	}
+
+	boolean isPowered = false;
+
+	@MENetworkEventSubscribe
+	public void onPowerEvent(MENetworkPowerStatusChange p)
+	{
+		boolean newState = gridProxy.isActive();
+		if ( newState != isPowered )
+		{
+			isPowered = newState;
+			markForUpdate();
+		}
+	}
+
+	@Override
+	public boolean isPowered()
+	{
+		return isPowered;
+	}
+
+	@Override
+	public boolean isActive()
+	{
+		return isPowered;
 	}
 
 }
