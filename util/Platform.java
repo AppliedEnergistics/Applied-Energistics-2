@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.WeakHashMap;
 
 import net.minecraft.block.Block;
@@ -890,7 +891,7 @@ public class Platform
 	}
 
 	private static WeakHashMap<World, EntityPlayer> fakePlayers = new WeakHashMap<World, EntityPlayer>();
-	private static GameProfile myProfile = new GameProfile( "[appeng]", "AE2" );
+	private static GameProfile myProfile = new GameProfile( new UUID(0,0), "AE2" );
 
 	public static EntityPlayer getPlayer(WorldServer w)
 	{
