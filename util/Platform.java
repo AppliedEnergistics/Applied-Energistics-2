@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.UUID;
 import java.util.WeakHashMap;
 
 import net.minecraft.block.Block;
@@ -95,9 +94,6 @@ import appeng.util.item.ItemList;
 import appeng.util.item.OreHelper;
 import appeng.util.item.OreRefrence;
 import buildcraft.api.tools.IToolWrench;
-
-import com.mojang.authlib.GameProfile;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
@@ -891,7 +887,6 @@ public class Platform
 	}
 
 	private static WeakHashMap<World, EntityPlayer> fakePlayers = new WeakHashMap<World, EntityPlayer>();
-	private static GameProfile myProfile = new GameProfile( new UUID(0,0), "AE2" );
 
 	public static EntityPlayer getPlayer(WorldServer w)
 	{
@@ -899,7 +894,7 @@ public class Platform
 		if ( wrp != null )
 			return wrp;
 
-		EntityPlayer p = FakePlayerFactory.get( w, myProfile );
+		EntityPlayer p = FakePlayerFactory.getMinecraft( w );
 		fakePlayers.put( w, p );
 		return p;
 	}
@@ -1234,10 +1229,9 @@ public class Platform
 
 		Vec3 vec31 = vec3.addVector( (double) f7 * d3, (double) f6 * d3, (double) f8 * d3 );
 
-		AxisAlignedBB bb = AxisAlignedBB
-				.getBoundingBox( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ),
-						Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) )
-				.expand( 16, 16, 16 );
+		AxisAlignedBB bb = AxisAlignedBB.getBoundingBox( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ),
+				Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ),
+				Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
 
 		Entity entity = null;
 		double Closeest = 9999999.0D;
