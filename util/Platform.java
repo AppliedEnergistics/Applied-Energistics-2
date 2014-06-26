@@ -94,9 +94,6 @@ import appeng.util.item.ItemList;
 import appeng.util.item.OreHelper;
 import appeng.util.item.OreRefrence;
 import buildcraft.api.tools.IToolWrench;
-
-import com.mojang.authlib.GameProfile;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
@@ -890,7 +887,6 @@ public class Platform
 	}
 
 	private static WeakHashMap<World, EntityPlayer> fakePlayers = new WeakHashMap<World, EntityPlayer>();
-	private static GameProfile myProfile = new GameProfile( "[appeng]", "AE2" );
 
 	public static EntityPlayer getPlayer(WorldServer w)
 	{
@@ -898,7 +894,7 @@ public class Platform
 		if ( wrp != null )
 			return wrp;
 
-		EntityPlayer p = FakePlayerFactory.get( w, myProfile );
+		EntityPlayer p = FakePlayerFactory.getMinecraft( w );
 		fakePlayers.put( w, p );
 		return p;
 	}

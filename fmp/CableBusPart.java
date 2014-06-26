@@ -18,9 +18,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import powercrystals.minefactoryreloaded.api.rednet.RedNetConnectionType;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
@@ -504,36 +502,6 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	}
 
 	@Override
-	public RedNetConnectionType getConnectionType(World world, int x, int y, int z, ForgeDirection side)
-	{
-		return cb.getConnectionType( world, x, y, z, side );
-	}
-
-	@Override
-	public int[] getOutputValues(World world, int x, int y, int z, ForgeDirection side)
-	{
-		return cb.getOutputValues( world, x, y, z, side );
-	}
-
-	@Override
-	public int getOutputValue(World world, int x, int y, int z, ForgeDirection side, int subnet)
-	{
-		return cb.getOutputValue( world, x, y, z, side, subnet );
-	}
-
-	@Override
-	public void onInputsChanged(World world, int x, int y, int z, ForgeDirection side, int[] inputValues)
-	{
-		cb.onInputsChanged( world, x, y, z, side, inputValues );
-	}
-
-	@Override
-	public void onInputChanged(World world, int x, int y, int z, ForgeDirection side, int inputValue)
-	{
-		cb.onInputChanged( world, x, y, z, side, inputValue );
-	}
-
-	@Override
 	public boolean isEmpty()
 	{
 		return cb.isEmpty();
@@ -551,7 +519,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		if ( tile() instanceof TIInventoryTile )
 			((TIInventoryTile) tile()).rebuildSlotMap();
 
-		if ( world() != null && world().blockExists( x(), y(), z() )  && ! CableBusContainer.isLoading() )
+		if ( world() != null && world().blockExists( x(), y(), z() ) && !CableBusContainer.isLoading() )
 			world().notifyBlocksOfNeighborChange( x(), y(), z(), Platform.air );
 	}
 

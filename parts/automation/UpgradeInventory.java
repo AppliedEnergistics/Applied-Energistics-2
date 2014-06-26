@@ -62,7 +62,7 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 		return false;
 	}
 
-	private int getMaxInstalled(Upgrades u)
+	public int getMaxInstalled(Upgrades u)
 	{
 		Integer max = null;
 		for (ItemStack is : u.getSupported().keySet())
