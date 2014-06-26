@@ -22,6 +22,8 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import powercrystals.minefactoryreloaded.api.rednet.connectivity.IRedNetConnection;
+import powercrystals.minefactoryreloaded.api.rednet.connectivity.RedNetConnectionType;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartItemStack;
@@ -42,11 +44,14 @@ import appeng.parts.NullCableBusContainer;
 import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
 import appeng.tile.networking.TileCableBusTESR;
+import appeng.transformer.annotations.integration.Interface;
+import appeng.transformer.annotations.integration.Method;
 import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCableBus extends AEBaseBlock
+@Interface(iface = "powercrystals.minefactoryreloaded.api.rednet.connectivity.IRedNetConnection", iname = "MFR")
+public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 {
 
 	static private ICableBusContainer nullCB = new NullCableBusContainer();
@@ -416,4 +421,10 @@ public class BlockCableBus extends AEBaseBlock
 	 */
 	boolean ImmibisMicroblocks_TransformableBlockMarker = true;
 
+	@Override
+	@Method(iname = "MFR")
+	public RedNetConnectionType getConnectionType(World world, int x, int y, int z, ForgeDirection side)
+	{
+		return cb( world, x, y, z ).canConnectRedstone( EnumSet.allOf( ForgeDirection.class ) ) ? RedNetConnectionType.CableSingle : RedNetConnectionType.None;
+	}
 }

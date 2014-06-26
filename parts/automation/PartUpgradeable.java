@@ -26,6 +26,12 @@ public class PartUpgradeable extends PartBasicState implements ISegmentedInvento
 		return upgrades.getInstalledUpgrades( u );
 	}
 
+	@Override
+	public boolean canConnectRedstone()
+	{
+		return upgrades.getMaxInstalled( Upgrades.REDSTONE ) > 0;
+	}
+
 	protected int getUpgradeSlots()
 	{
 		return 4;

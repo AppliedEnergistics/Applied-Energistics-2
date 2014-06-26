@@ -20,7 +20,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import powercrystals.minefactoryreloaded.api.rednet.RedNetConnectionType;
 import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.implementations.parts.IPartCable;
@@ -321,8 +320,9 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	}
 
 	private static final ThreadLocal<Boolean> isLoading = new ThreadLocal();
-	
-	public static boolean isLoading() {
+
+	public static boolean isLoading()
+	{
 		Boolean is = isLoading.get();
 		return is != null && is == true;
 	}
@@ -331,10 +331,10 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	{
 		if ( inWorld )
 			return;
-		
+
 		inWorld = true;
 		isLoading.set( true );
-		
+
 		TileEntity te = getTile();
 		hasRedstone = te.getWorldObj().isBlockIndirectlyGettingPowered( te.xCoord, te.yCoord, te.zCoord );
 
@@ -381,8 +381,8 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 		}
 
 		partChanged();
-		
-		isLoading.set(false);
+
+		isLoading.set( false );
 	}
 
 	public void removeFromWorld()
@@ -978,38 +978,6 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 		}
 
 		return false;
-	}
-
-	@Override
-	public RedNetConnectionType getConnectionType(World world, int x, int y, int z, ForgeDirection side)
-	{
-		return getPart( side ).canConnectRedstone() ? RedNetConnectionType.CableSingle : RedNetConnectionType.None;
-	}
-
-	@Override
-	public int[] getOutputValues(World world, int x, int y, int z, ForgeDirection side)
-	{
-		// never called
-		return null;
-	}
-
-	@Override
-	public int getOutputValue(World world, int x, int y, int z, ForgeDirection side, int subnet)
-	{
-		// never called
-		return 0;
-	}
-
-	@Override
-	public void onInputsChanged(World world, int x, int y, int z, ForgeDirection side, int[] inputValues)
-	{
-		// never called
-	}
-
-	@Override
-	public void onInputChanged(World world, int x, int y, int z, ForgeDirection side, int inputValue)
-	{
-		// never called
 	}
 
 	@Override

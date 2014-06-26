@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -17,7 +16,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import powercrystals.minefactoryreloaded.api.rednet.RedNetConnectionType;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IPart;
@@ -34,7 +32,6 @@ import appeng.parts.CableBusContainer;
 import appeng.tile.AEBaseTile;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
-import appeng.transformer.annotations.integration.Method;
 import appeng.util.Platform;
 
 public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomCollision
@@ -292,7 +289,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public void notifyNeighbors()
 	{
-		if ( worldObj != null && worldObj.blockExists( xCoord, yCoord, zCoord ) && ! CableBusContainer.isLoading() )
+		if ( worldObj != null && worldObj.blockExists( xCoord, yCoord, zCoord ) && !CableBusContainer.isLoading() )
 			worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord, Platform.air );
 	}
 
@@ -306,43 +303,6 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	public boolean hasRedstone(ForgeDirection side)
 	{
 		return cb.hasRedstone( side );
-	}
-
-	@Override
-	@Method(iname = "MFR")
-	public RedNetConnectionType getConnectionType(World world, int x, int y, int z, ForgeDirection side)
-	{
-		return cb.canConnectRedstone( EnumSet.of( side ) ) ? RedNetConnectionType.CableSingle : RedNetConnectionType.None;
-	}
-
-	@Override
-	@Method(iname = "MFR")
-	public int[] getOutputValues(World world, int x, int y, int z, ForgeDirection side)
-	{
-		// never called!
-		return null;
-	}
-
-	@Override
-	@Method(iname = "MFR")
-	public int getOutputValue(World world, int x, int y, int z, ForgeDirection side, int subnet)
-	{
-		// never called!
-		return 0;
-	}
-
-	@Override
-	@Method(iname = "MFR")
-	public void onInputsChanged(World world, int x, int y, int z, ForgeDirection side, int[] inputValues)
-	{
-		// never called!
-	}
-
-	@Override
-	@Method(iname = "MFR")
-	public void onInputChanged(World world, int x, int y, int z, ForgeDirection side, int inputValue)
-	{
-		// never called!
 	}
 
 	@Override

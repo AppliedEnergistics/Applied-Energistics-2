@@ -1,6 +1,6 @@
 package appeng.integration.modules;
 
-import powercrystals.minefactoryreloaded.api.rednet.RedNetConnectionType;
+import powercrystals.minefactoryreloaded.api.rednet.connectivity.IRedNetConnection;
 import appeng.integration.BaseModule;
 
 public class MFR extends BaseModule
@@ -9,7 +9,7 @@ public class MFR extends BaseModule
 	public static MFR instance;
 
 	public MFR() {
-		TestClass( RedNetConnectionType.class );
+		TestClass( IRedNetConnection.class );
 	}
 
 	@Override
