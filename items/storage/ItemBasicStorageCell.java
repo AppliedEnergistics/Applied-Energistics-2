@@ -190,19 +190,22 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 			IMEInventory<IAEItemStack> inv = AEApi.instance().registries().cell().getCellInventory( stack, StorageChannel.ITEMS );
 			if ( inv != null && pinv.getCurrentItem() == stack )
 			{
-				InventoryAdaptor ia = InventoryAdaptor.getAdaptor( pinv, ForgeDirection.UNKNOWN );
+				InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
 				IItemList<IAEItemStack> list = inv.getAvailableItems( StorageChannel.ITEMS.createList() );
 				if ( list.isEmpty() && ia != null )
 				{
 					pinv.setInventorySlotContents( pinv.currentItem, null );
 
-					ItemStack extraA = ia.addItems( AEApi.instance().materials().materialEmptyStorageCell.stack( 1 ) );
 					ItemStack extraB = ia.addItems( component.stack( 1 ) );
+					ItemStack extraA = ia.addItems( AEApi.instance().materials().materialEmptyStorageCell.stack( 1 ) );
 
 					if ( extraA != null )
 						player.dropPlayerItemWithRandomChoice( extraA, false );
 					if ( extraB != null )
 						player.dropPlayerItemWithRandomChoice( extraB, false );
+
+					if ( player.inventoryContainer != null )
+						player.inventoryContainer.detectAndSendChanges();
 
 					return true;
 				}
