@@ -37,6 +37,7 @@ import appeng.container.implementations.ContainerChest;
 import appeng.container.implementations.ContainerCondenser;
 import appeng.container.implementations.ContainerCraftAmount;
 import appeng.container.implementations.ContainerCraftConfirm;
+import appeng.container.implementations.ContainerCraftingCPU;
 import appeng.container.implementations.ContainerCraftingTerm;
 import appeng.container.implementations.ContainerDrive;
 import appeng.container.implementations.ContainerFormationPlane;
@@ -72,6 +73,7 @@ import appeng.parts.misc.PartStorageBus;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.server.AccessType;
+import appeng.tile.crafting.TileCraftingTile;
 import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.tile.grindstone.TileGrinder;
 import appeng.tile.misc.TileCellWorkbench;
@@ -111,6 +113,8 @@ public enum GuiBridge implements IGuiHandler
 	GUI_WIRELESS_TERM(ContainerWirelessTerm.class, WirelessTerminalGuiObject.class, ITEM, null),
 
 	GUI_NETWORK_STATUS(ContainerNetworkStatus.class, INetworkTool.class, ITEM, null),
+
+	GUI_CRAFTING_CPU(ContainerCraftingCPU.class, TileCraftingTile.class, WORLD, SecurityPermissions.CRAFT),
 
 	GUI_NETWORK_TOOL(ContainerNetworkTool.class, INetworkTool.class, ITEM, null),
 

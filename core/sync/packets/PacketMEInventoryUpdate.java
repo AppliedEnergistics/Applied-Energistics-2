@@ -16,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.client.gui.implementations.GuiCraftingCPU;
 import appeng.client.gui.implementations.GuiMEMonitorable;
 import appeng.client.gui.implementations.GuiNetworkStatus;
 import appeng.core.AELog;
@@ -85,6 +86,9 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
 	{
 		GuiScreen gs = Minecraft.getMinecraft().currentScreen;
+
+		if ( gs instanceof GuiCraftingCPU )
+			((GuiCraftingCPU) gs).postUpdate( list );
 
 		if ( gs instanceof GuiMEMonitorable )
 			((GuiMEMonitorable) gs).postUpdate( list );

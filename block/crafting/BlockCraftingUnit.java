@@ -6,16 +6,20 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockCrafting;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.features.AEFeature;
+import appeng.core.sync.GuiBridge;
 import appeng.tile.crafting.TileCraftingTile;
+import appeng.util.Platform;
 
 public class BlockCraftingUnit extends AEBaseBlock
 {
@@ -32,6 +36,18 @@ public class BlockCraftingUnit extends AEBaseBlock
 	public BlockCraftingUnit() {
 		this( BlockCraftingUnit.class );
 		setTileEntiy( TileCraftingTile.class );
+	}
+
+	@Override
+	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
+	{
+		TileCraftingTile tg = getTileEntity( w, x, y, z );
+		if ( tg != null && !p.isSneaking() && tg.isFormed() && tg.isActive() )
+		{
+			Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_CRAFTING_CPU );
+			return true;
+		}
+		return false;
 	}
 
 	@Override
