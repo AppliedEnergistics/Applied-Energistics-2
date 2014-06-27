@@ -1,24 +1,24 @@
 package appeng.client.gui.implementations;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
 
+import appeng.api.AEApi;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
 import appeng.client.gui.AEBaseGui;
-import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.ISortSource;
-import appeng.client.me.ItemRepo;
-import appeng.client.me.SlotME;
 import appeng.container.implementations.ContainerCraftingCPU;
 import appeng.core.localization.GuiText;
 import appeng.tile.crafting.TileCraftingTile;
@@ -27,18 +27,19 @@ import appeng.util.Platform;
 public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 {
 
-	ItemRepo repo;
-	GuiImgButton units;
+	int rows = 6;
 
-	int rows = 4;
+	IItemList<IAEItemStack> storage = AEApi.instance().storage().createItemList();
+	IItemList<IAEItemStack> active = AEApi.instance().storage().createItemList();
+	IItemList<IAEItemStack> pending = AEApi.instance().storage().createItemList();
+
+	List<IAEItemStack> visual = new ArrayList();
 
 	public GuiCraftingCPU(InventoryPlayer inventoryPlayer, TileCraftingTile te) {
 		super( new ContainerCraftingCPU( inventoryPlayer, te ) );
 		this.ySize = 153;
 		this.xSize = 195;
 		myScrollBar = new GuiScrollbar();
-		repo = new ItemRepo( myScrollBar, this );
-		repo.rowSize = 5;
 	}
 
 	@Override
@@ -53,20 +54,116 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		super.initGui();
 	}
 
-	public void postUpdate(List<IAEItemStack> list)
+	private long getTotal(IAEItemStack is)
 	{
-		repo.clear();
+		IAEItemStack a = storage.findPrecise( is );
+		IAEItemStack b = active.findPrecise( is );
+		IAEItemStack c = pending.findPrecise( is );
 
-		for (IAEItemStack is : list)
-			repo.postUpdate( is );
+		long total = 0;
 
-		repo.updateView();
+		if ( a != null )
+			total += a.getStackSize();
+
+		if ( b != null )
+			total += b.getStackSize();
+
+		if ( c != null )
+			total += c.getStackSize();
+
+		return total;
+	}
+
+	public void postUpdate(List<IAEItemStack> list, byte ref)
+	{
+		switch (ref)
+		{
+		case 0:
+			for (IAEItemStack l : list)
+				handleInput( storage, l );
+			break;
+
+		case 1:
+			for (IAEItemStack l : list)
+				handleInput( active, l );
+			break;
+
+		case 2:
+			for (IAEItemStack l : list)
+				handleInput( pending, l );
+			break;
+		}
+
+		for (IAEItemStack l : list)
+		{
+			long amt = getTotal( l );
+
+			if ( amt <= 0 )
+				deleteVisualStack( l );
+			else
+			{
+				IAEItemStack is = findVisualStack( l );
+				is.setStackSize( amt );
+			}
+		}
+
 		setScrollBar();
+	}
+
+	private void handleInput(IItemList<IAEItemStack> s, IAEItemStack l)
+	{
+		IAEItemStack a = s.findPrecise( l );
+
+		if ( l.getStackSize() <= 0 )
+		{
+			a.reset();
+		}
+		else
+		{
+			if ( a == null )
+			{
+				s.add( l.copy() );
+				a = s.findPrecise( l );
+			}
+
+		}
+	}
+
+	private IAEItemStack findVisualStack(IAEItemStack l)
+	{
+		Iterator<IAEItemStack> i = visual.iterator();
+		while (i.hasNext())
+		{
+			IAEItemStack o = i.next();
+			if ( o.equals( l ) )
+				return o;
+		}
+
+		IAEItemStack stack = l.copy();
+		visual.add( stack );
+		return stack;
+	}
+
+	private void deleteVisualStack(IAEItemStack l)
+	{
+		Iterator<IAEItemStack> i = visual.iterator();
+		while (i.hasNext())
+		{
+			IAEItemStack o = i.next();
+			if ( o.equals( l ) )
+			{
+				i.remove();
+				return;
+			}
+		}
 	}
 
 	private void setScrollBar()
 	{
-		int size = repo.size();
+		int size = 0;
+		for (IAEItemStack l : visual)
+			size++;
+
 		myScrollBar.setTop( 39 ).setLeft( 175 ).setHeight( 78 );
 		myScrollBar.setRange( 0, (size + 4) / 5 - rows, 1 );
 	}
@@ -121,8 +218,6 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		ContainerCraftingCPU ns = (ContainerCraftingCPU) inventorySlots;
-
 		fontRendererObj.drawString( GuiText.NetworkDetails.getLocal(), 8, 7, 4210752 );
 
 		int sectionLength = 30;
@@ -138,9 +233,9 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		int toolPosX = 0;
 		int toolPosY = 0;
 
-		for (int z = viewStart; z < Math.min( viewEnd, repo.size() ); z++)
+		for (int z = viewStart; z < Math.min( viewEnd, visual.size() ); z++)
 		{
-			IAEItemStack refStack = repo.getRefrenceItem( z );
+			IAEItemStack refStack = visual.get( z );// repo.getRefrenceItem( z );
 			if ( refStack != null )
 			{
 				GL11.glPushMatrix();
@@ -158,9 +253,11 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 				int posX = x * sectionLength + xo + sectionLength - 18;
 				int posY = y * 18 + yo;
 
+				ItemStack is = refStack.copy().getItemStack();
+
 				if ( tooltip == z - viewStart )
 				{
-					ToolTip = Platform.getItemDisplayName( repo.getItem( z ) );
+					ToolTip = Platform.getItemDisplayName( is );
 
 					ToolTip = ToolTip + ("\n" + GuiText.Installed.getLocal() + ": " + (refStack.getStackSize()));
 					if ( refStack.getCountRequestable() > 0 )
@@ -170,7 +267,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 					toolPosY = y * 18 + yo;
 				}
 
-				drawItem( posX, posY, repo.getItem( z ) );
+				drawItem( posX, posY, is );
 
 				x++;
 
@@ -190,69 +287,6 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 			GL11.glPopAttrib();
 		}
 
-	}
-
-	// @Override - NEI
-	public List<String> handleItemTooltip(ItemStack stack, int mousex, int mousey, List<String> currenttip)
-	{
-		if ( stack != null )
-		{
-			Slot s = getSlot( mousex, mousey );
-			if ( s instanceof SlotME )
-			{
-				IAEItemStack myStack = null;
-
-				try
-				{
-					SlotME theSlotField = (SlotME) s;
-					myStack = theSlotField.getAEStack();
-				}
-				catch (Throwable _)
-				{
-				}
-
-				if ( myStack != null )
-				{
-					while (currenttip.size() > 1)
-						currenttip.remove( 1 );
-
-				}
-			}
-		}
-		return currenttip;
-	}
-
-	// Vanillia version...
-	protected void drawItemStackTooltip(ItemStack stack, int x, int y)
-	{
-		Slot s = getSlot( x, y );
-		if ( s instanceof SlotME && stack != null )
-		{
-			IAEItemStack myStack = null;
-
-			try
-			{
-				SlotME theSlotField = (SlotME) s;
-				myStack = theSlotField.getAEStack();
-			}
-			catch (Throwable _)
-			{
-			}
-
-			if ( myStack != null )
-			{
-				List currenttip = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
-
-				while (currenttip.size() > 1)
-					currenttip.remove( 1 );
-
-				currenttip.add( GuiText.Installed.getLocal() + ": " + (myStack.getStackSize()) );
-				currenttip.add( GuiText.EnergyDrain.getLocal() + ": " + Platform.formatPowerLong( myStack.getCountRequestable(), true ) );
-
-				drawTooltip( x, y, 0, join( currenttip, "\n" ) );
-			}
-		}
-		// super.drawItemStackTooltip( stack, x, y );
 	}
 
 	@Override

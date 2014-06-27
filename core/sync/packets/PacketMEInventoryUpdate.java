@@ -31,6 +31,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 {
 
 	// output...
+	final private byte ref;
 	final private ByteBuf data;
 	final private GZIPOutputStream compressFrame;
 
@@ -46,6 +47,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		data = null;
 		compressFrame = null;
 		list = new LinkedList();
+		ref = stream.readByte();
 
 		// int originalBytes = stream.readableBytes();
 
@@ -88,7 +90,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 
 		if ( gs instanceof GuiCraftingCPU )
-			((GuiCraftingCPU) gs).postUpdate( list );
+			((GuiCraftingCPU) gs).postUpdate( list, ref );
 
 		if ( gs instanceof GuiMEMonitorable )
 			((GuiMEMonitorable) gs).postUpdate( list );
@@ -117,9 +119,15 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 
 	// api
 	public PacketMEInventoryUpdate() throws IOException {
+		this( (byte) 0 );
+	}
+
+	// api
+	public PacketMEInventoryUpdate(byte ref) throws IOException {
 
 		data = Unpooled.buffer( 2048 );
 		data.writeInt( getPacketID() );
+		data.writeByte( this.ref = ref );
 
 		compressFrame = new GZIPOutputStream( new OutputStream() {
 

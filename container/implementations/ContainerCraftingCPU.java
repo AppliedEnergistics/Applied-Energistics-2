@@ -12,11 +12,9 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
-import appeng.container.guisync.GuiSync;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.tile.crafting.TileCraftingTile;
@@ -55,15 +53,6 @@ public class ContainerCraftingCPU extends AEBaseContainer
 
 	int delay = 40;
 
-	@GuiSync(0)
-	public long avgAddition;
-	@GuiSync(1)
-	public long powerUsage;
-	@GuiSync(2)
-	public long currentPower;
-	@GuiSync(3)
-	public long maxPower;
-
 	@Override
 	public void detectAndSendChanges()
 	{
@@ -71,15 +60,6 @@ public class ContainerCraftingCPU extends AEBaseContainer
 		if ( Platform.isServer() && delay > 15 && network != null )
 		{
 			delay = 0;
-
-			IEnergyGrid eg = network.getCache( IEnergyGrid.class );
-			if ( eg != null )
-			{
-				avgAddition = (long) (100.0 * eg.getAvgPowerInjection());
-				powerUsage = (long) (100.0 * eg.getAvgPowerUsage());
-				currentPower = (long) (100.0 * eg.getStoredPower());
-				maxPower = (long) (100.0 * eg.getMaxStoredPower());
-			}
 
 			PacketMEInventoryUpdate piu;
 			try

@@ -133,7 +133,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						double d3 = 32.0D;
 
 						Vec3 vec31 = vec3.addVector( (double) f7 * d3, (double) f6 * d3, (double) f8 * d3 );
-						Vec3 direction = w.getWorldVec3Pool().getVecFromPool( (double) f7 * d3, (double) f6 * d3, (double) f8 * d3 );
+						Vec3 direction = vec3.createVectorHelper( (double) f7 * d3, (double) f6 * d3, (double) f8 * d3 );
 
 						float penitration = AEApi.instance().registries().matterCannon().getPenetration( ammo ); // 196.96655f;
 						if ( penitration <= 0 )
@@ -174,10 +174,9 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 		{
 			hasDestroyedSomething = false;
 
-			AxisAlignedBB bb = AxisAlignedBB
-					.getBoundingBox( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ),
-							Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) )
-					.expand( 16, 16, 16 );
+			AxisAlignedBB bb = AxisAlignedBB.getBoundingBox( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ),
+					Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ),
+					Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
 
 			Entity entity = null;
 			List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
