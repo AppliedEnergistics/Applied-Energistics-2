@@ -16,12 +16,15 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.CraftingItemList;
 import appeng.api.networking.crafting.ICraftingMedium;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.events.MENetworkCraftingCpuChange;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventory;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
@@ -38,8 +41,47 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CraftingCPUCluster implements IAECluster
+public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack>
 {
+
+	private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object>();
+
+	protected Iterator<Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object>> getListeners()
+	{
+		return listeners.entrySet().iterator();
+	}
+
+	protected void postChange(IAEItemStack diff, BaseActionSource src)
+	{
+		Iterator<Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object>> i = getListeners();
+		while (i.hasNext())
+		{
+			Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object> o = i.next();
+			IMEMonitorHandlerReceiver<IAEItemStack> recv = o.getKey();
+			if ( recv.isValid( o.getValue() ) )
+				recv.postChange( null, diff, src );
+			else
+				i.remove();
+		}
+	}
+
+	/**
+	 * add a new Listener to the monitor, be sure to properly remove yourself when your done.
+	 */
+	@Override
+	public void addListener(IMEMonitorHandlerReceiver<IAEItemStack> l, Object verificationToken)
+	{
+		listeners.put( l, verificationToken );
+	}
+
+	/**
+	 * remove a Listener to the monitor.
+	 */
+	@Override
+	public void removeListener(IMEMonitorHandlerReceiver<IAEItemStack> l)
+	{
+		listeners.remove( l );
+	}
 
 	public WorldCoord min;
 	public WorldCoord max;
@@ -57,6 +99,49 @@ public class CraftingCPUCluster implements IAECluster
 	int accelerator = 0;
 	private LinkedList<TileCraftingTile> storage = new LinkedList<TileCraftingTile>();
 	private LinkedList<TileCraftingTile> status = new LinkedList<TileCraftingTile>();
+
+	public void getListOfItem(IItemList<IAEItemStack> list, CraftingItemList whichList)
+	{
+		switch (whichList)
+		{
+		case ACTIVE:
+			for (IAEItemStack ais : waitingFor)
+				list.add( ais );
+			break;
+		case PENDING:
+			for (Entry<ICraftingPatternDetails, TaskProgress> t : tasks.entrySet())
+			{
+				for (IAEItemStack ais : t.getKey().getCondencedOutputs())
+				{
+					ais = ais.copy();
+					ais.setStackSize( ais.getStackSize() * t.getValue().value );
+					list.add( ais );
+				}
+			}
+			break;
+		case STORAGE:
+			inventory.getAvailableItems( list );
+			break;
+		default:
+		case ALL:
+			inventory.getAvailableItems( list );
+
+			for (IAEItemStack ais : waitingFor)
+				list.add( ais );
+
+			for (Entry<ICraftingPatternDetails, TaskProgress> t : tasks.entrySet())
+			{
+				for (IAEItemStack ais : t.getKey().getCondencedOutputs())
+				{
+					ais = ais.copy();
+					ais.setStackSize( ais.getStackSize() * t.getValue().value );
+					list.add( ais );
+				}
+			}
+			break;
+
+		}
+	}
 
 	/**
 	 * crafting job info
@@ -484,5 +569,44 @@ public class CraftingCPUCluster implements IAECluster
 		}
 
 		return !tasks.isEmpty() || !waitingFor.isEmpty();
+	}
+
+	public IAEItemStack getItemStack(IAEItemStack what, CraftingItemList storage2)
+	{
+		IAEItemStack is = null;
+		switch (storage2)
+		{
+		case STORAGE:
+			is = inventory.getItemList().findPrecise( what );
+			break;
+		case ACTIVE:
+			is = waitingFor.findPrecise( what );
+			break;
+		case PENDING:
+
+			is = what.copy();
+			is.setStackSize( 0 );
+
+			for (Entry<ICraftingPatternDetails, TaskProgress> t : tasks.entrySet())
+			{
+				for (IAEItemStack ais : t.getKey().getCondencedOutputs())
+				{
+					if ( ais.equals( is ) )
+						is.setStackSize( is.getStackSize() + ais.getStackSize() * t.getValue().value );
+				}
+			}
+
+			break;
+		default:
+		case ALL:
+			throw new RuntimeException( "Invalid Operation" );
+		}
+
+		if ( is != null )
+			return is.copy();
+
+		is = what.copy();
+		is.setStackSize( 0 );
+		return is;
 	}
 }

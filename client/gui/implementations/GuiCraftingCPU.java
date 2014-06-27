@@ -116,7 +116,8 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 		if ( l.getStackSize() <= 0 )
 		{
-			a.reset();
+			if ( a != null )
+				a.reset();
 		}
 		else
 		{
@@ -126,6 +127,8 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 				a = s.findPrecise( l );
 			}
 
+			if ( a != null )
+				a.setStackSize( l.getStackSize() );
 		}
 	}
 

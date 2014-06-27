@@ -5,26 +5,33 @@ import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.inventory.ICrafting;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.CraftingItemList;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.storage.IBaseMonitor;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
+import appeng.me.cluster.IAECluster;
+import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
 
-public class ContainerCraftingCPU extends AEBaseContainer
+public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack>
 {
 
+	CraftingCPUCluster monitor = null;
 	IGrid network;
+
+	IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
 
 	public ContainerCraftingCPU(InventoryPlayer ip, TileCraftingTile te) {
 		super( ip, null, null );
@@ -35,6 +42,20 @@ public class ContainerCraftingCPU extends AEBaseContainer
 			findNode( host, ForgeDirection.UNKNOWN );
 			for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
 				findNode( host, d );
+		}
+
+		if ( te instanceof TileCraftingTile )
+		{
+			IAECluster c = ((TileCraftingTile) te).getCluster();
+			if ( c instanceof CraftingCPUCluster )
+			{
+				monitor = (CraftingCPUCluster) c;
+				if ( monitor != null )
+				{
+					monitor.getListOfItem( list, CraftingItemList.ALL );
+					monitor.addListener( this, null );
+				}
+			}
 		}
 
 		if ( network == null && Platform.isServer() )
@@ -54,42 +75,48 @@ public class ContainerCraftingCPU extends AEBaseContainer
 	int delay = 40;
 
 	@Override
+	public void onContainerClosed(EntityPlayer player)
+	{
+		super.onContainerClosed( player );
+		if ( monitor != null )
+			monitor.removeListener( this );
+	}
+
+	@Override
+	public void removeCraftingFromCrafters(ICrafting c)
+	{
+		super.removeCraftingFromCrafters( c );
+
+		if ( this.crafters.isEmpty() && monitor != null )
+			monitor.removeListener( this );
+	}
+
+	@Override
 	public void detectAndSendChanges()
 	{
-		delay++;
-		if ( Platform.isServer() && delay > 15 && network != null )
+		if ( Platform.isServer() )
 		{
-			delay = 0;
-
-			PacketMEInventoryUpdate piu;
 			try
 			{
-				piu = new PacketMEInventoryUpdate();
+				PacketMEInventoryUpdate a = new PacketMEInventoryUpdate( (byte) 0 );
+				PacketMEInventoryUpdate b = new PacketMEInventoryUpdate( (byte) 1 );
+				PacketMEInventoryUpdate c = new PacketMEInventoryUpdate( (byte) 2 );
 
-				for (Class<? extends IGridHost> machineClass : network.getMachinesClasses())
+				for (IAEItemStack out : list)
 				{
-					IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
-					for (IGridNode machine : network.getMachines( machineClass ))
-					{
-						IGridBlock blk = machine.getGridBlock();
-						ItemStack is = blk.getMachineRepresentation();
-						if ( is != null && is.getItem() != null )
-						{
-							IAEItemStack ais = AEItemStack.create( is );
-							ais.setStackSize( 1 );
-							ais.setCountRequestable( (long) (blk.getIdlePowerUsage() * 100.0) );
-							list.add( ais );
-						}
-					}
-
-					for (IAEItemStack ais : list)
-						piu.appendItem( ais );
+					a.appendItem( monitor.getItemStack( out, CraftingItemList.STORAGE ) );
+					b.appendItem( monitor.getItemStack( out, CraftingItemList.ACTIVE ) );
+					c.appendItem( monitor.getItemStack( out, CraftingItemList.PENDING ) );
 				}
 
-				for (Object c : this.crafters)
+				for (Object g : this.crafters)
 				{
-					if ( c instanceof EntityPlayer )
-						NetworkHandler.instance.sendTo( piu, (EntityPlayerMP) c );
+					if ( g instanceof EntityPlayer )
+					{
+						NetworkHandler.instance.sendTo( a, (EntityPlayerMP) g );
+						NetworkHandler.instance.sendTo( b, (EntityPlayerMP) g );
+						NetworkHandler.instance.sendTo( c, (EntityPlayerMP) g );
+					}
 				}
 			}
 			catch (IOException e)
@@ -99,5 +126,25 @@ public class ContainerCraftingCPU extends AEBaseContainer
 
 		}
 		super.detectAndSendChanges();
+	}
+
+	@Override
+	public boolean isValid(Object verificationToken)
+	{
+		return true;
+	}
+
+	@Override
+	public void postChange(IBaseMonitor<IAEItemStack> monitor, IAEItemStack change, BaseActionSource actionSource)
+	{
+		change = change.copy();
+		change.setStackSize( 1 );
+		list.add( change );
+	}
+
+	@Override
+	public void onListUpdate()
+	{
+
 	}
 }
