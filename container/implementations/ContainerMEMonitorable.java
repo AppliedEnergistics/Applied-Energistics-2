@@ -27,6 +27,7 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.parts.IPart;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
@@ -318,7 +319,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
-	public void postChange(IMEMonitor<IAEItemStack> monitor, IAEItemStack change, BaseActionSource source)
+	public void postChange(IBaseMonitor<IAEItemStack> monitor, IAEItemStack change, BaseActionSource source)
 	{
 		items.add( change );
 	}

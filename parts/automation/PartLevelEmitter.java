@@ -26,6 +26,7 @@ import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherHost;
 import appeng.api.parts.IPartCollsionHelper;
@@ -214,9 +215,9 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public void postChange(IMEMonitor<IAEItemStack> monitor, IAEItemStack change, BaseActionSource actionSource)
+	public void postChange(IBaseMonitor<IAEItemStack> monitor, IAEItemStack change, BaseActionSource actionSource)
 	{
-		updateReportingValue( monitor );
+		updateReportingValue( (IMEMonitor<IAEItemStack>) monitor );
 	}
 
 	@Override

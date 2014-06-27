@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
@@ -75,7 +76,7 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 	}
 
 	@Override
-	public void postChange(IMEMonitor<T> monitor, T change, BaseActionSource source)
+	public void postChange(IBaseMonitor<T> monitor, T change, BaseActionSource source)
 	{
 		Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = listeners.entrySet().iterator();
 		while (i.hasNext())

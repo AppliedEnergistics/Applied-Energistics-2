@@ -37,6 +37,7 @@ import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.security.PlayerSource;
+import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.IMEInventory;
@@ -292,7 +293,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		}
 
 		@Override
-		public void postChange(IMEMonitor<T> monitor, T change, BaseActionSource source)
+		public void postChange(IBaseMonitor<T> monitor, T change, BaseActionSource source)
 		{
 			if ( source == mySrc || (source instanceof PlayerSource && ((PlayerSource) source).via == TileChest.this) )
 			{
