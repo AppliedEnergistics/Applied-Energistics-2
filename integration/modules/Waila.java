@@ -39,6 +39,7 @@ public class Waila extends BaseModule implements IWailaDataProvider
 	{
 		// registrar.registerHeadProvider( (Waila) AppEng.instance.getIntegration( "Waila" ), AEBaseBlock.class );
 		registrar.registerBodyProvider( (Waila) AppEng.instance.getIntegration( "Waila" ), AEBaseBlock.class );
+		registrar.registerSyncedNBTKey( "internalCurrentPower", TileEnergyCell.class );
 		// registrar.registerTailProvider( (Waila) AppEng.instance.getIntegration( "Waila" ), AEBaseBlock.class );
 	}
 
