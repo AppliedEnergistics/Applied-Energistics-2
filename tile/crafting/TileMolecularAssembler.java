@@ -122,6 +122,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		else
 		{
 			progress = 0;
+			forcePlan = false;
 			myPlan = null;
 			myPattern = null;
 		}
@@ -189,7 +190,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		@Override
 		public void writeToNBT(NBTTagCompound data)
 		{
-			if ( forcePlan )
+			if ( forcePlan && myPlan != null )
 			{
 				ItemStack pattern = myPlan.getPattern();
 				if ( pattern != null )
@@ -426,8 +427,10 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 				pushOut( output.copy() );
 
 				if ( inv.getStackInSlot( 10 ) == null )
+				{
+					forcePlan = false;
 					myPlan = null;
-
+				}
 				ejectHeldItems();
 
 				updateSleepyness();
