@@ -228,4 +228,13 @@ public class CraftingTreeNode
 		for (CraftingTreeProcess pro : nodes)
 			pro.setJob( storage, craftingCPUCluster, src );
 	}
+
+	public void getPlan(IItemList<IAEItemStack> plan)
+	{
+		for (IAEItemStack i : used)
+			plan.add( i.copy() );
+
+		for (CraftingTreeProcess pro : nodes)
+			pro.getPlan( plan );
+	}
 }

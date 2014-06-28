@@ -187,9 +187,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 	private void setScrollBar()
 	{
-		int size = 0;
-		for (IAEItemStack l : visual)
-			size++;
+		int size = visual.size();
 
 		myScrollBar.setTop( 19 ).setLeft( 218 ).setHeight( 137 );
 		myScrollBar.setRange( 0, (size + 2) / 3 - rows, 1 );
@@ -198,7 +196,6 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		setScrollBar();
 		bindTexture( "guis/craftingcpu.png" );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, xSize, ySize );
 	}

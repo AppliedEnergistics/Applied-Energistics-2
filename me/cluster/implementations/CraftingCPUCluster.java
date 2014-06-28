@@ -301,14 +301,6 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 		isComplete = true;
 	}
 
-	private int getRemainingTasks()
-	{
-		int o = 0;
-		for (Entry<ICraftingPatternDetails, TaskProgress> tp : tasks.entrySet())
-			o += tp.getValue().value * tp.getKey().getCondencedOutputs()[0].getStackSize();
-		return o;
-	}
-
 	private boolean canCraft(ICraftingPatternDetails details, IAEItemStack[] condencedInputs)
 	{
 		for (IAEItemStack g : condencedInputs)

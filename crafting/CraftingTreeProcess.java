@@ -13,6 +13,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
 import appeng.me.cache.CraftingCache;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -201,5 +202,18 @@ public class CraftingTreeProcess
 
 		for (CraftingTreeNode pro : nodes.keySet())
 			pro.setJob( storage, craftingCPUCluster, src );
+	}
+
+	public void getPlan(IItemList<IAEItemStack> plan)
+	{
+		for (IAEItemStack i : details.getOutputs())
+		{
+			i = i.copy();
+			i.setCountRequestable( i.getStackSize() * crafts );
+			plan.addRequestable( i );
+		}
+
+		for (CraftingTreeNode pro : nodes.keySet())
+			pro.getPlan( plan );
 	}
 }
