@@ -62,6 +62,14 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 			isContainerValid = false;
 	}
 
+	public void cancelCrafting()
+	{
+		if ( monitor != null )
+		{
+			monitor.cancel();
+		}
+	}
+
 	private void findNode(IGridHost host, ForgeDirection d)
 	{
 		if ( network == null )

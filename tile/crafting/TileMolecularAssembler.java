@@ -55,12 +55,12 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 {
 
 	static final int[] sides = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-	static final ItemStack is = AEApi.instance().blocks().blockMolecularAssembler.stack( 1 );
+	static final ItemStack assemblerStack = AEApi.instance().blocks().blockMolecularAssembler.stack( 1 );
 
 	private InventoryCrafting craftingInv = new InventoryCrafting( new ContainerNull(), 3, 3 );
 	private AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 + 2 );
 	private IConfigManager settings = new ConfigManager( this );
-	private UpgradeInventory upgrades = new UpgradeInventory( is, this, getUpgradeSlots() );
+	private UpgradeInventory upgrades = new UpgradeInventory( assemblerStack, this, getUpgradeSlots() );
 
 	private ForgeDirection pushDirection = ForgeDirection.UNKNOWN;
 	private ItemStack myPattern = null;
@@ -216,8 +216,8 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 				if ( myPat != null && myPat.getItem() instanceof ItemEncodedPattern )
 				{
 					World w = getWorldObj();
-					ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
-					ICraftingPatternDetails ph = iep.getPatternForItem( is, w );
+					ItemEncodedPattern iep = (ItemEncodedPattern) myPat.getItem();
+					ICraftingPatternDetails ph = iep.getPatternForItem( myPat, w );
 					if ( ph != null )
 					{
 						forcePlan = true;
@@ -391,22 +391,22 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		switch (upgrades.getInstalledUpgrades( Upgrades.SPEED ))
 		{
 		case 0:
-			progress += userPower( TicksSinceLastCall * 10 );
+			progress += userPower( TicksSinceLastCall, 10, 1.0 );
 			break;
 		case 1:
-			progress += userPower( TicksSinceLastCall * 13 );
+			progress += userPower( TicksSinceLastCall, 13, 1.3 );
 			break;
 		case 2:
-			progress += userPower( TicksSinceLastCall * 17 );
+			progress += userPower( TicksSinceLastCall, 17, 1.7 );
 			break;
 		case 3:
-			progress += userPower( TicksSinceLastCall * 20 );
+			progress += userPower( TicksSinceLastCall, 20, 2.0 );
 			break;
 		case 4:
-			progress += userPower( TicksSinceLastCall * 25 );
+			progress += userPower( TicksSinceLastCall, 25, 2.5 );
 			break;
 		case 5:
-			progress += userPower( TicksSinceLastCall * 50 );
+			progress += userPower( TicksSinceLastCall, 50, 5.0 );
 			break;
 		}
 
@@ -459,11 +459,11 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		}
 	}
 
-	private int userPower(int i)
+	private int userPower(int ticksPassed, int bonusValue, double acceleratorTax)
 	{
 		try
 		{
-			return (int) gridProxy.getEnergy().extractAEPower( i, Actionable.MODULATE, PowerMultiplier.CONFIG );
+			return (int) (gridProxy.getEnergy().extractAEPower( ticksPassed * bonusValue * acceleratorTax, Actionable.MODULATE, PowerMultiplier.CONFIG ) / acceleratorTax);
 		}
 		catch (GridAccessException e)
 		{
