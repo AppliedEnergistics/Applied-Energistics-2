@@ -223,15 +223,9 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 		return 4;
 	}
 
-	private int calculateTierFromVoltage(double outputVoltageA2)
+	private int calculateTierFromVoltage(double voltage)
 	{
-		for (int x = 8; x >= 0; x--)
-		{
-			double top = ic2.api.energy.EnergyNet.instance.getPowerFromTier( x );
-			if ( outputVoltageA2 > top && top > 0 )
-				return x + 1;
-		}
-		return 0;
+		return ic2.api.energy.EnergyNet.instance.getTierFromPower( voltage );
 	}
 
 }
