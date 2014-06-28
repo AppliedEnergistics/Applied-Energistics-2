@@ -669,7 +669,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 							}
 						}
 
-						if ( id.removedByPlayer( w, player, x, y, z ) )
+						if ( id.removedByPlayer( w, player, x, y, z, false ) )
 						{
 							List<ItemStack> l = new ArrayList<ItemStack>();
 							for (ItemStack iss : drops)
