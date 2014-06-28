@@ -37,7 +37,10 @@ public class ASMIntegration implements IClassTransformer
 		integrationModules.add( IntegrationSide.BOTH, "BuildCraft", "BuildCraft|Silicon", "BC" );
 		integrationModules.add( IntegrationSide.BOTH, "BuildCraft5 Power", null, "MJ5" );
 		integrationModules.add( IntegrationSide.BOTH, "BuildCraft6 Power", null, "MJ6" );
-		integrationModules.add( IntegrationSide.BOTH, "RedstoneFlux Power", null, "RF" );
+
+		integrationModules.add( IntegrationSide.BOTH, "RedstoneFlux Power - Tiles", null, "RF" );
+		integrationModules.add( IntegrationSide.BOTH, "RedstoneFlux Power - Items", null, "RFItem" );
+
 		// integrationModules.add( IntegrationSide.BOTH, "Greg Tech", "gregtech_addon", "GT" );
 		// integrationModules.add( IntegrationSide.BOTH, "Universal Electricity", null, "UE" );
 		// integrationModules.add( IntegrationSide.BOTH, "Logistics Pipes", "LogisticsPipes|Main", "LP" );
