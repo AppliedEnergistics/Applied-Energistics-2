@@ -250,7 +250,7 @@ public abstract class AEBaseGui extends GuiContainer
 				action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACESINGLE : InventoryAction.PICKUP_OR_SETDOWN;
 				stack = ((SlotME) slot).getAEStack();
 
-				if ( stack != null && action == InventoryAction.PICKUP_OR_SETDOWN && stack.getStackSize() == 0 )
+				if ( stack != null && action == InventoryAction.PICKUP_OR_SETDOWN && stack.getStackSize() == 0 && player.inventory.getItemStack() == null )
 					action = InventoryAction.AUTOCRAFT;
 
 				break;
