@@ -118,7 +118,7 @@ public class GuiCraftAmount extends AEBaseGui
 			try
 			{
 				NetworkHandler.instance.sendToServer( new PacketCraftRequest( inventorySlots.getSlot( 0 ).getStack(), Integer.parseInt( this.amountToCraft
-						.getText() ) ) );
+						.getText() ), isShiftKeyDown() ) );
 			}
 			catch (Throwable e)
 			{
@@ -185,6 +185,10 @@ public class GuiCraftAmount extends AEBaseGui
 	{
 		if ( !this.checkHotbarKeys( key ) )
 		{
+			if ( key == 28 )
+			{
+				actionPerformed( next );
+			}
 			if ( (key == 211 || key == 205 || key == 203 || key == 14 || character == '-' || Character.isDigit( character ))
 					&& amountToCraft.textboxKeyTyped( character, key ) )
 			{
@@ -226,6 +230,8 @@ public class GuiCraftAmount extends AEBaseGui
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
+		next.displayString = isShiftKeyDown() ? GuiText.Start.getLocal() : GuiText.Next.getLocal();
+
 		bindTexture( "guis/craftAmt.png" );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, xSize, ySize );
 

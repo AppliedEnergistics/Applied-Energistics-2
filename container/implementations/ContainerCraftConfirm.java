@@ -10,11 +10,14 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
+import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.PlayerSource;
+import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.storage.IMEInventory;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -25,6 +28,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.crafting.CraftingJob;
 import appeng.crafting.ICraftingHost;
+import appeng.me.cache.CraftingCache;
 
 public class ContainerCraftConfirm extends AEBaseContainer implements ICraftingHost
 {
@@ -42,6 +46,12 @@ public class ContainerCraftConfirm extends AEBaseContainer implements ICraftingH
 	@GuiSync(2)
 	public int cpuCoProcessors;
 
+	@GuiSync(3)
+	public boolean autoStart = false;
+
+	@GuiSync(4)
+	public boolean simulation = true;
+
 	public ContainerCraftConfirm(InventoryPlayer ip, ITerminalHost te) {
 		super( ip, te );
 		priHost = te;
@@ -56,53 +66,83 @@ public class ContainerCraftConfirm extends AEBaseContainer implements ICraftingH
 			try
 			{
 				result = job.get();
+
 				if ( !result.isSimulation() )
 				{
-					try
+					simulation = false;
+					if ( autoStart )
 					{
-						PacketMEInventoryUpdate a = new PacketMEInventoryUpdate( (byte) 0 );
-						PacketMEInventoryUpdate b = new PacketMEInventoryUpdate( (byte) 1 );
+						startJob();
+						return;
+					}
+				}
+				else
+					simulation = true;
 
-						IItemList<IAEItemStack> plan = AEApi.instance().storage().createItemList();
-						result.tree.getPlan( plan );
+				try
+				{
+					PacketMEInventoryUpdate a = new PacketMEInventoryUpdate( (byte) 0 );
+					PacketMEInventoryUpdate b = new PacketMEInventoryUpdate( (byte) 1 );
+					PacketMEInventoryUpdate c = result.isSimulation() ? new PacketMEInventoryUpdate( (byte) 2 ) : null;
 
-						bytesUsed = result.getByteTotal();
+					IItemList<IAEItemStack> plan = AEApi.instance().storage().createItemList();
+					result.tree.getPlan( plan );
 
-						for (IAEItemStack out : plan)
+					bytesUsed = result.getByteTotal();
+
+					for (IAEItemStack out : plan)
+					{
+						IAEItemStack m = null;
+
+						IAEItemStack o = out.copy();
+						o.reset();
+						o.setStackSize( out.getStackSize() );
+
+						IAEItemStack p = out.copy();
+						p.reset();
+						p.setStackSize( out.getCountRequestable() );
+
+						IStorageGrid sg = getGrid().getCache( IStorageGrid.class );
+						IMEInventory<IAEItemStack> itemsg = sg.getItemInventory();
+
+						if ( c != null && result.isSimulation() )
 						{
-							IAEItemStack o = out.copy();
-							o.reset();
-							o.setStackSize( out.getStackSize() );
+							m = o.copy();
+							o = itemsg.extractItems( o, Actionable.SIMULATE, mySrc );
 
-							IAEItemStack p = out.copy();
-							p.reset();
-							p.setStackSize( out.getCountRequestable() );
-
-							if ( o.getStackSize() > 0 )
-								a.appendItem( o );
-
-							if ( p.getStackSize() > 0 )
-								b.appendItem( p );
-						}
-
-						for (Object g : this.crafters)
-						{
-							if ( g instanceof EntityPlayer )
+							if ( o == null )
 							{
-								NetworkHandler.instance.sendTo( a, (EntityPlayerMP) g );
-								NetworkHandler.instance.sendTo( b, (EntityPlayerMP) g );
+								o = m.copy();
+								o.setStackSize( 0 );
 							}
+
+							m.setStackSize( m.getStackSize() - o.getStackSize() );
 						}
-					}
-					catch (IOException e)
-					{
-						// :P
+
+						if ( o.getStackSize() > 0 )
+							a.appendItem( o );
+
+						if ( p.getStackSize() > 0 )
+							b.appendItem( p );
+
+						if ( c != null && m != null && m.getStackSize() > 0 )
+							c.appendItem( m );
 					}
 
-					// CraftingCache cc = getGrid().getCache( CraftingCache.class );
-					// cc.submitJob( result, null, getActionSrc() );
-					// AELog.info( "Job info is ready!" );
-					// this.isContainerValid = false;
+					for (Object g : this.crafters)
+					{
+						if ( g instanceof EntityPlayer )
+						{
+							NetworkHandler.instance.sendTo( a, (EntityPlayerMP) g );
+							NetworkHandler.instance.sendTo( b, (EntityPlayerMP) g );
+							if ( c != null )
+								NetworkHandler.instance.sendTo( c, (EntityPlayerMP) g );
+						}
+					}
+				}
+				catch (IOException e)
+				{
+					// :P
 				}
 			}
 			catch (Throwable e)
@@ -116,6 +156,16 @@ public class ContainerCraftConfirm extends AEBaseContainer implements ICraftingH
 			job = null;
 		}
 		verifyPermissions( SecurityPermissions.CRAFT, false );
+	}
+
+	public void startJob()
+	{
+		if ( result != null && simulation == false )
+		{
+			CraftingCache cc = getGrid().getCache( CraftingCache.class );
+			cc.submitJob( result, null, getActionSrc() );
+			this.isContainerValid = false;
+		}
 	}
 
 	@Override

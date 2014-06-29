@@ -17,6 +17,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerCellWorkbench;
+import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.container.implementations.ContainerCraftingCPU;
 import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.container.implementations.ContainerPatternTerm;
@@ -52,6 +53,12 @@ public class PacketValueConfig extends AppEngPacket
 			ItemStack is = player.getHeldItem();
 			IMouseWheelItem si = (IMouseWheelItem) is.getItem();
 			si.onWheel( is, Value.equals( "WheelUp" ) );
+			return;
+		}
+		else if ( Name.equals( "Terminal.Start" ) && c instanceof ContainerCraftConfirm )
+		{
+			ContainerCraftConfirm qk = (ContainerCraftConfirm) c;
+			qk.startJob();
 			return;
 		}
 		else if ( Name.equals( "TileCrafting.Cancel" ) && c instanceof ContainerCraftingCPU )
