@@ -147,4 +147,21 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 		}
 	}
 
+	@Override
+	public int getSourceTier()
+	{
+		// this is a flawed implementation, that requires a change to the IC2 API.
+
+		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+		{
+			IPart part = getPart( dir );
+			if ( part instanceof IEnergySource )
+			{
+				return ((IEnergySource) part).getSourceTier();
+			}
+		}
+
+		return 0;
+	}
+
 }

@@ -25,13 +25,13 @@ public abstract class IC2 extends MinecraftJoules6 implements IEnergySink
 	}
 
 	@Override
-	final public double demandedEnergyUnits()
+	final public double getDemandedEnergy()
 	{
 		return getExternalPowerDemand( PowerUnits.EU, Double.MAX_VALUE );
 	}
 
 	@Override
-	final public double injectEnergyUnits(ForgeDirection directionFrom, double amount)
+	final public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)
 	{
 		// just store the excess in the current block, if I return the waste,
 		// IC2 will just disintegrate it - Oct 20th 2013
@@ -41,7 +41,7 @@ public abstract class IC2 extends MinecraftJoules6 implements IEnergySink
 	}
 
 	@Override
-	final public int getMaxSafeInput()
+	final public int getSinkTier()
 	{
 		return Integer.MAX_VALUE;
 	}

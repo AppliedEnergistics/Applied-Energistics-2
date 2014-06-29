@@ -112,7 +112,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 	}
 
 	@Override
-	public double demandedEnergyUnits()
+	public double getDemandedEnergy()
 	{
 		if ( !isInIC2() )
 			return 0;
@@ -125,7 +125,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 			if ( part instanceof IEnergySink )
 			{
 				// use lower number cause ic2 deletes power it sends that isn't recieved.
-				return ((IEnergySink) part).demandedEnergyUnits();
+				return ((IEnergySink) part).getDemandedEnergy();
 			}
 		}
 
@@ -133,7 +133,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 	}
 
 	@Override
-	public double injectEnergyUnits(ForgeDirection directionFrom, double amount)
+	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)
 	{
 		if ( !isInIC2() )
 			return amount;
@@ -143,7 +143,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 			IPart part = getPart( dir );
 			if ( part instanceof IEnergySink )
 			{
-				return ((IEnergySink) part).injectEnergyUnits( directionFrom, amount );
+				return ((IEnergySink) part).injectEnergy( directionFrom, amount, voltage );
 			}
 		}
 
@@ -151,7 +151,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 	}
 
 	@Override
-	public int getMaxSafeInput()
+	public int getSinkTier()
 	{
 		return Integer.MAX_VALUE; // no real options here...
 	}

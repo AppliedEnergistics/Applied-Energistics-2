@@ -20,10 +20,10 @@ public class IC2 extends AERootPoweredItem implements IElectricItemManager, ISpe
 	}
 
 	@Override
-	public int charge(ItemStack is, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
+	public double charge(ItemStack is, double amount, int tier, boolean ignoreTransferLimit, boolean simulate)
 	{
-		int addedAmt = amount;
-		int limit = getTransferLimit( is );
+		double addedAmt = amount;
+		double limit = getTransferLimit( is );
 
 		if ( !ignoreTransferLimit && amount > limit )
 			addedAmt = limit;
@@ -32,25 +32,25 @@ public class IC2 extends AERootPoweredItem implements IElectricItemManager, ISpe
 	}
 
 	@Override
-	public int discharge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
+	public double discharge(ItemStack itemStack, double amount, int tier, boolean ignoreTransferLimit, boolean externaly, boolean simulate)
 	{
 		return 0;
 	}
 
 	@Override
-	public int getCharge(ItemStack is)
+	public double getCharge(ItemStack is)
 	{
 		return (int) PowerUnits.AE.convertTo( PowerUnits.EU, getAECurrentPower( is ) );
 	}
 
 	@Override
-	public boolean canUse(ItemStack is, int amount)
+	public boolean canUse(ItemStack is, double amount)
 	{
 		return getCharge( is ) > amount;
 	}
 
 	@Override
-	public boolean use(ItemStack is, int amount, EntityLivingBase entity)
+	public boolean use(ItemStack is, double amount, EntityLivingBase entity)
 	{
 		if ( canUse( is, amount ) )
 		{
@@ -92,9 +92,9 @@ public class IC2 extends AERootPoweredItem implements IElectricItemManager, ISpe
 	}
 
 	@Override
-	public int getMaxCharge(ItemStack itemStack)
+	public double getMaxCharge(ItemStack itemStack)
 	{
-		return (int) PowerUnits.AE.convertTo( PowerUnits.EU, getAEMaxPower( itemStack ) );
+		return PowerUnits.AE.convertTo( PowerUnits.EU, getAEMaxPower( itemStack ) );
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class IC2 extends AERootPoweredItem implements IElectricItemManager, ISpe
 	}
 
 	@Override
-	public int getTransferLimit(ItemStack itemStack)
+	public double getTransferLimit(ItemStack itemStack)
 	{
 		return Math.max( 32, getMaxCharge( itemStack ) / 200 );
 	}
