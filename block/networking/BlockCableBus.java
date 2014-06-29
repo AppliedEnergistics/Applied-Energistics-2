@@ -271,6 +271,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 		return cb( world, x, y, z ).isEmpty();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z)
 	{
