@@ -37,7 +37,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
-@Mod(modid = AppEng.modid, acceptedMinecraftVersions = "[1.7.2]", name = AppEng.name, version = AEConfig.VERSION, dependencies = AppEng.dependencies)
+@Mod(modid = AppEng.modid, acceptedMinecraftVersions = "[1.7.10]", name = AppEng.name, version = AEConfig.VERSION, dependencies = AppEng.dependencies)
 public class AppEng
 {
 
