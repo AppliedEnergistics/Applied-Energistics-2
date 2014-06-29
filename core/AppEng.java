@@ -37,7 +37,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
-@Mod(modid = AppEng.modid, name = AppEng.name, version = AEConfig.VERSION, dependencies = AppEng.dependencies)
+@Mod(modid = AppEng.modid, acceptedMinecraftVersions = "[1.7.2]", name = AppEng.name, version = AEConfig.VERSION, dependencies = AppEng.dependencies)
 public class AppEng
 {
 
@@ -111,7 +111,7 @@ public class AppEng
 
 		AELog.info( "Starting ( PreInit )" );
 
-		CreativeTab.init();		
+		CreativeTab.init();
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.Facades ) )
 			CreativeTabFacade.init();
 
