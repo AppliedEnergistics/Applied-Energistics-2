@@ -193,7 +193,7 @@ public class CraftingTreeNode
 	{
 		if ( missing > 0 )
 			job.addMissing( getStack( missing ) );
-		missing = 0;
+		// missing = 0;
 
 		job.addBytes( 8 + bytes );
 
@@ -227,5 +227,21 @@ public class CraftingTreeNode
 
 		for (CraftingTreeProcess pro : nodes)
 			pro.setJob( storage, craftingCPUCluster, src );
+	}
+
+	public void getPlan(IItemList<IAEItemStack> plan)
+	{
+		if ( missing > 0 )
+		{
+			IAEItemStack o = what.copy();
+			o.setStackSize( missing );
+			plan.add( o );
+		}
+
+		for (IAEItemStack i : used)
+			plan.add( i.copy() );
+
+		for (CraftingTreeProcess pro : nodes)
+			pro.getPlan( plan );
 	}
 }

@@ -13,12 +13,14 @@ import net.minecraft.world.WorldServer;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.CraftingItemList;
 import appeng.api.networking.crafting.ICraftingMedium;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkCraftingCpuChange;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
@@ -299,14 +301,6 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 		isComplete = true;
 	}
 
-	private int getRemainingTasks()
-	{
-		int o = 0;
-		for (Entry<ICraftingPatternDetails, TaskProgress> tp : tasks.entrySet())
-			o += tp.getValue().value * tp.getKey().getCondencedOutputs()[0].getStackSize();
-		return o;
-	}
-
 	private boolean canCraft(ICraftingPatternDetails details, IAEItemStack[] condencedInputs)
 	{
 		for (IAEItemStack g : condencedInputs)
@@ -346,7 +340,14 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 		return true;
 	}
 
-	public void updateCraftingLogic(IGrid grid, CraftingCache cc)
+	public void cancel()
+	{
+		isComplete = true;
+		tasks.clear();
+		waitingFor.resetStatus();
+	}
+
+	public void updateCraftingLogic(IGrid grid, IEnergyGrid eg, CraftingCache cc)
 	{
 		if ( isComplete )
 		{
@@ -377,7 +378,7 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 		if ( waiting || tasks.isEmpty() ) // nothing to do here...
 			return;
 
-		int remainingOperations = accelerator + 1;
+		int remainingOperations = accelerator + 1 + 90;
 		boolean didsomething = false;
 
 		for (Entry<ICraftingPatternDetails, TaskProgress> e : tasks.entrySet())
@@ -399,10 +400,22 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 					{
 						if ( ic == null )
 						{
+							IAEItemStack[] input = details.getInputs();
+
+							double sum = 0;
+							for (int x = 0; x < input.length; x++)
+							{
+								if ( input[x] != null )
+									sum += input[x].getStackSize();
+							}
+
+							// power...
+							if ( eg.extractAEPower( sum, Actionable.MODULATE, PowerMultiplier.CONFIG ) < sum - 0.01 )
+								continue;
+
 							ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
 							boolean found = false;
 
-							IAEItemStack[] input = details.getInputs();
 							for (int x = 0; x < input.length; x++)
 							{
 
@@ -609,4 +622,5 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 		is.setStackSize( 0 );
 		return is;
 	}
+
 }

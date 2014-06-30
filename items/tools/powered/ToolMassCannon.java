@@ -133,7 +133,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						double d3 = 32.0D;
 
 						Vec3 vec31 = vec3.addVector( (double) f7 * d3, (double) f6 * d3, (double) f8 * d3 );
-						Vec3 direction = vec3.createVectorHelper( (double) f7 * d3, (double) f6 * d3, (double) f8 * d3 );
+						Vec3 direction = Vec3.createVectorHelper( (double) f7 * d3, (double) f6 * d3, (double) f8 * d3 );
 
 						float penitration = AEApi.instance().registries().matterCannon().getPenetration( ammo ); // 196.96655f;
 						if ( penitration <= 0 )

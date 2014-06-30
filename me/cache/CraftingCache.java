@@ -18,6 +18,7 @@ import appeng.api.networking.crafting.ICraftingMedium;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
+import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkCraftingCpuChange;
 import appeng.api.networking.events.MENetworkCraftingPatternChange;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -43,7 +44,10 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 
 	HashSet<CraftingCPUCluster> cpuClusters = new HashSet();
 	HashSet<ICraftingProvider> providers = new HashSet();
+
 	IGrid grid;
+	IStorageGrid sg;
+	IEnergyGrid eg;
 
 	HashMap<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap();
 	HashMap<IAEItemStack, Set<ICraftingPatternDetails>> craftableItems = new HashMap();
@@ -57,7 +61,9 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 	@MENetworkEventSubscribe
 	public void afterCacheConstruction(MENetworkPostCacheConstruction cc)
 	{
-		IStorageGrid sg = grid.getCache( IStorageGrid.class );
+		sg = grid.getCache( IStorageGrid.class );
+		eg = grid.getCache( IEnergyGrid.class );
+
 		sg.registerCellProvider( this );
 	}
 
@@ -71,7 +77,7 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 		}
 
 		for (CraftingCPUCluster cpu : cpuClusters)
-			cpu.updateCraftingLogic( grid, this );
+			cpu.updateCraftingLogic( grid, eg, this );
 	}
 
 	@MENetworkEventSubscribe
@@ -138,8 +144,6 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 
 	private void updatePatterns()
 	{
-		IStorageGrid sg = grid.getCache( IStorageGrid.class );
-
 		// update the stuff that was in the list...
 		for (IAEItemStack out : craftableItems.keySet())
 		{

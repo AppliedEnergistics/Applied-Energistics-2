@@ -26,7 +26,6 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.crafting.CraftingJob;
-import appeng.me.cache.CraftingCache;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
@@ -34,6 +33,7 @@ public class PacketCraftRequest extends AppEngPacket
 {
 
 	final public IAEItemStack slotItem;
+	final public boolean heldShift;
 	final public static ExecutorService craftingPool;
 
 	static
@@ -53,6 +53,7 @@ public class PacketCraftRequest extends AppEngPacket
 
 	// automatic.
 	public PacketCraftRequest(ByteBuf stream) throws IOException {
+		heldShift = stream.readBoolean();
 		slotItem = AEItemStack.loadItemStackFromPacket( stream );
 	}
 
@@ -74,8 +75,6 @@ public class PacketCraftRequest extends AppEngPacket
 				if ( g == null )
 					return;
 
-				CraftingCache cc = g.getCache( CraftingCache.class );
-
 				try
 				{
 					CraftingJob cj = new CraftingJob( cca.getWorld(), cca, slotItem, Actionable.SIMULATE );
@@ -89,6 +88,7 @@ public class PacketCraftRequest extends AppEngPacket
 						if ( player.openContainer instanceof ContainerCraftConfirm )
 						{
 							ContainerCraftConfirm ccc = (ContainerCraftConfirm) player.openContainer;
+							ccc.autoStart = heldShift;
 							ccc.job = craftingPool.submit( cj, cj );
 							cca.detectAndSendChanges();
 						}
@@ -103,13 +103,15 @@ public class PacketCraftRequest extends AppEngPacket
 		}
 	}
 
-	public PacketCraftRequest(ItemStack stack, int parseInt) throws IOException {
+	public PacketCraftRequest(ItemStack stack, int parseInt, boolean shift) throws IOException {
 		this.slotItem = AEApi.instance().storage().createItemStack( stack );
 		this.slotItem.setStackSize( parseInt );
+		this.heldShift = shift;
 
 		ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( getPacketID() );
+		data.writeBoolean( shift );
 		slotItem.writeToPacket( data );
 
 		configureWrite( data );

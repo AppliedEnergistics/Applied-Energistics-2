@@ -37,23 +37,31 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	// two packet buffering...
-	double OutputPacketA;
-	double OutputPacketB;
+	double OutputEnergyA;
+	double OutputEnergyB;
+
+	// two packet buffering...
+	double OutputVoltageA;
+	double OutputVoltageB;
 
 	@Override
 	public void writeToNBT(NBTTagCompound tag)
 	{
 		super.writeToNBT( tag );
-		tag.setDouble( "OutputPacket", OutputPacketA );
-		tag.setDouble( "OutputPacket2", OutputPacketB );
+		tag.setDouble( "OutputPacket", OutputEnergyA );
+		tag.setDouble( "OutputPacket2", OutputEnergyB );
+		tag.setDouble( "OutputVoltageA", OutputVoltageA );
+		tag.setDouble( "OutputVoltageB", OutputVoltageB );
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag)
 	{
 		super.readFromNBT( tag );
-		OutputPacketA = tag.getDouble( "OutputPacket" );
-		OutputPacketB = tag.getDouble( "OutputPacket2" );
+		OutputEnergyA = tag.getDouble( "OutputPacket" );
+		OutputEnergyB = tag.getDouble( "OutputPacket2" );
+		OutputVoltageA = tag.getDouble( "OutputVoltageA" );
+		OutputVoltageB = tag.getDouble( "OutputVoltageB" );
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -79,7 +87,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	public double demandedEnergyUnits()
+	public double getDemandedEnergy()
 	{
 		if ( output )
 			return 0;
@@ -88,7 +96,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 		{
 			for (PartP2PIC2Power t : getOutputs())
 			{
-				if ( t.OutputPacketA <= 0.0001 || t.OutputPacketB <= 0.0001 )
+				if ( t.OutputEnergyA <= 0.0001 || t.OutputEnergyB <= 0.0001 )
 				{
 					return 2048;
 				}
@@ -120,7 +128,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	};
 
 	@Override
-	public double injectEnergyUnits(ForgeDirection directionFrom, double amount)
+	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)
 	{
 		TunnelCollection<PartP2PIC2Power> outs;
 		try
@@ -138,14 +146,14 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 		LinkedList<PartP2PIC2Power> Options = new LinkedList();
 		for (PartP2PIC2Power o : outs)
 		{
-			if ( o.OutputPacketA <= 0.01 )
+			if ( o.OutputEnergyA <= 0.01 )
 				Options.add( o );
 		}
 
 		if ( Options.isEmpty() )
 		{
 			for (PartP2PIC2Power o : outs)
-				if ( o.OutputPacketB <= 0.01 )
+				if ( o.OutputEnergyB <= 0.01 )
 					Options.add( o );
 		}
 
@@ -160,17 +168,19 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 
 		PartP2PIC2Power x = (PartP2PIC2Power) Platform.pickRandom( Options );
 
-		if ( x != null && x.OutputPacketA <= 0.001 )
+		if ( x != null && x.OutputEnergyA <= 0.001 )
 		{
 			QueueTunnelDrain( PowerUnits.EU, amount );
-			x.OutputPacketA = amount;
+			x.OutputEnergyA = amount;
+			x.OutputVoltageA = voltage;
 			return 0;
 		}
 
-		if ( x != null && x.OutputPacketB <= 0.001 )
+		if ( x != null && x.OutputEnergyB <= 0.001 )
 		{
 			QueueTunnelDrain( PowerUnits.EU, amount );
-			x.OutputPacketB = amount;
+			x.OutputEnergyB = amount;
+			x.OutputVoltageB = voltage;
 			return 0;
 		}
 
@@ -178,28 +188,44 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	}
 
 	@Override
-	public int getMaxSafeInput()
+	public int getSinkTier()
 	{
-		return Integer.MAX_VALUE;
+		return 4;
 	}
 
 	@Override
 	public double getOfferedEnergy()
 	{
 		if ( output )
-			return OutputPacketA;
+			return OutputEnergyA;
 		return 0;
 	}
 
 	@Override
 	public void drawEnergy(double amount)
 	{
-		OutputPacketA -= amount;
-		if ( OutputPacketA < 0.001 )
+		OutputEnergyA -= amount;
+		if ( OutputEnergyA < 0.001 )
 		{
-			OutputPacketA = OutputPacketB;
-			OutputPacketB = 0;
+			OutputEnergyA = OutputEnergyB;
+			OutputEnergyB = 0;
+
+			OutputVoltageA = OutputVoltageB;
+			OutputVoltageB = 0;
 		}
+	}
+
+	@Override
+	public int getSourceTier()
+	{
+		if ( output )
+			return calculateTierFromVoltage( OutputVoltageA );
+		return 4;
+	}
+
+	private int calculateTierFromVoltage(double voltage)
+	{
+		return ic2.api.energy.EnergyNet.instance.getTierFromPower( voltage );
 	}
 
 }

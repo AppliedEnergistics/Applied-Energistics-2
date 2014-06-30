@@ -178,8 +178,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 		return true;
 	}
 
-	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	private boolean dissassembleDrive(ItemStack stack, World world, EntityPlayer player)
 	{
 		if ( player.isSneaking() )
 		{
@@ -212,5 +211,18 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	{
+		dissassembleDrive( stack, world, player );
+		return stack;
+	}
+
+	@Override
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	{
+		return dissassembleDrive( stack, world, player );
 	}
 }

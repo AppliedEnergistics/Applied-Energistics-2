@@ -34,7 +34,7 @@ public class ContainerPriority extends AEBaseContainer
 	}
 
 	@GuiSync(2)
-	long PriorityValue = -1;
+	public long PriorityValue = -1;
 
 	public void setPriority(int newValue, EntityPlayer player)
 	{
@@ -45,6 +45,7 @@ public class ContainerPriority extends AEBaseContainer
 	@Override
 	public void detectAndSendChanges()
 	{
+		super.detectAndSendChanges();
 		verifyPermissions( SecurityPermissions.BUILD, false );
 
 		if ( Platform.isServer() )

@@ -1,7 +1,9 @@
 package appeng.client.gui.implementations;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
@@ -20,9 +22,14 @@ import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.container.implementations.ContainerCraftingCPU;
+import appeng.core.AELog;
 import appeng.core.localization.GuiText;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketValueConfig;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
+
+import com.google.common.base.Joiner;
 
 public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 {
@@ -37,21 +44,38 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 	public GuiCraftingCPU(InventoryPlayer inventoryPlayer, TileCraftingTile te) {
 		super( new ContainerCraftingCPU( inventoryPlayer, te ) );
-		this.ySize = 153;
-		this.xSize = 195;
+		this.ySize = 184;
+		this.xSize = 238;
 		myScrollBar = new GuiScrollbar();
 	}
+
+	GuiButton cancel;
 
 	@Override
 	protected void actionPerformed(GuiButton btn)
 	{
 		super.actionPerformed( btn );
+
+		if ( cancel == btn )
+		{
+			try
+			{
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "TileCrafting.Cancel", "Cancel" ) );
+			}
+			catch (IOException e)
+			{
+				AELog.error( e );
+			}
+		}
 	}
 
 	@Override
 	public void initGui()
 	{
 		super.initGui();
+
+		cancel = new GuiButton( 0, this.guiLeft + 163, this.guiTop + ySize - 25, 50, 20, GuiText.Cancel.getLocal() );
+		buttonList.add( cancel );
 	}
 
 	private long getTotal(IAEItemStack is)
@@ -163,12 +187,10 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 	private void setScrollBar()
 	{
-		int size = 0;
-		for (IAEItemStack l : visual)
-			size++;
+		int size = visual.size();
 
-		myScrollBar.setTop( 39 ).setLeft( 175 ).setHeight( 78 );
-		myScrollBar.setRange( 0, (size + 4) / 5 - rows, 1 );
+		myScrollBar.setTop( 19 ).setLeft( 218 ).setHeight( 137 );
+		myScrollBar.setRange( 0, (size + 2) / 3 - rows, 1 );
 	}
 
 	@Override
@@ -188,17 +210,18 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 		int gx = (width - xSize) / 2;
 		int gy = (height - ySize) / 2;
+		int yoff = 23;
 
 		tooltip = -1;
 
 		for (int z = 0; z <= 4 * 5; z++)
 		{
-			int minX = gx + 14 + x * 31;
-			int minY = gy + 41 + y * 18;
+			int minX = gx + 9 + x * 67;
+			int minY = gy + 22 + y * yoff;
 
-			if ( minX < mouse_x && minX + 28 > mouse_x )
+			if ( minX < mouse_x && minX + 67 > mouse_x )
 			{
-				if ( minY < mouse_y && minY + 20 > mouse_y )
+				if ( minY < mouse_y && minY + yoff - 2 > mouse_y )
 				{
 					tooltip = z;
 					break;
@@ -208,7 +231,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 			x++;
 
-			if ( x > 4 )
+			if ( x > 2 )
 			{
 				y++;
 				x = 0;
@@ -221,20 +244,23 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString( GuiText.NetworkDetails.getLocal(), 8, 7, 4210752 );
+		fontRendererObj.drawString( GuiText.CraftingStatus.getLocal(), 8, 7, 4210752 );
 
-		int sectionLength = 30;
+		int sectionLength = 67;
 
 		int x = 0;
 		int y = 0;
-		int xo = 0 + 12;
-		int yo = 0 + 42;
-		int viewStart = 0;// myScrollBar.getCurrentScroll() * 5;
-		int viewEnd = viewStart + 5 * 4;
+		int xo = 0 + 9;
+		int yo = 0 + 22;
+		int viewStart = myScrollBar.getCurrentScroll() * 3;
+		int viewEnd = viewStart + 3 * 6;
 
-		String ToolTip = "";
+		String dspToolTip = "";
+		List<String> lineList = new LinkedList();
 		int toolPosX = 0;
 		int toolPosY = 0;
+
+		int offY = 23;
 
 		for (int z = viewStart; z < Math.min( viewEnd, visual.size() ); z++)
 		{
@@ -244,37 +270,100 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 				GL11.glPushMatrix();
 				GL11.glScaled( 0.5, 0.5, 0.5 );
 
-				String str = Long.toString( refStack.getStackSize() );
-				if ( refStack.getStackSize() >= 10000 )
-					str = Long.toString( refStack.getStackSize() / 1000 ) + "k";
+				IAEItemStack stored = storage.findPrecise( refStack );
+				IAEItemStack activeStack = active.findPrecise( refStack );
+				IAEItemStack pendingStack = pending.findPrecise( refStack );
 
-				int w = fontRendererObj.getStringWidth( str );
-				fontRendererObj.drawString( str, (int) ((x * sectionLength + xo + sectionLength - 19 - ((float) w * 0.5)) * 2), (int) ((y * 18 + yo + 6) * 2),
-						4210752 );
+				int lines = 0;
+
+				if ( stored != null && stored.getStackSize() > 0 )
+					lines++;
+				if ( activeStack != null && activeStack.getStackSize() > 0 )
+					lines++;
+				if ( pendingStack != null && pendingStack.getStackSize() > 0 )
+					lines++;
+
+				int negY = ((lines - 1) * 5) / 2;
+				int downY = 0;
+
+				if ( stored != null && stored.getStackSize() > 0 )
+				{
+					String str = Long.toString( stored.getStackSize() );
+					if ( stored.getStackSize() >= 10000 )
+						str = Long.toString( stored.getStackSize() / 1000 ) + "k";
+					if ( stored.getStackSize() >= 10000000 )
+						str = Long.toString( stored.getStackSize() / 1000000 ) + "m";
+
+					str = GuiText.Stored.getLocal() + ": " + str;
+					int w = 4 + fontRendererObj.getStringWidth( str );
+					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - ((float) w * 0.5)) * 2), (int) ((y * offY + yo
+							+ 6 - negY + downY) * 2), 4210752 );
+
+					if ( tooltip == z - viewStart )
+						lineList.add( GuiText.Stored.getLocal() + ": " + Long.toString( stored.getStackSize() ) );
+
+					downY += 5;
+				}
+
+				if ( activeStack != null && activeStack.getStackSize() > 0 )
+				{
+					String str = Long.toString( activeStack.getStackSize() );
+					if ( activeStack.getStackSize() >= 10000 )
+						str = Long.toString( activeStack.getStackSize() / 1000 ) + "k";
+					if ( activeStack.getStackSize() >= 10000000 )
+						str = Long.toString( activeStack.getStackSize() / 1000000 ) + "m";
+
+					str = GuiText.Crafting.getLocal() + ": " + str;
+					int w = 4 + fontRendererObj.getStringWidth( str );
+					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - ((float) w * 0.5)) * 2), (int) ((y * offY + yo
+							+ 6 - negY + downY) * 2), 4210752 );
+
+					if ( tooltip == z - viewStart )
+						lineList.add( GuiText.Crafting.getLocal() + ": " + Long.toString( activeStack.getStackSize() ) );
+
+					downY += 5;
+				}
+
+				if ( pendingStack != null && pendingStack.getStackSize() > 0 )
+				{
+					String str = Long.toString( pendingStack.getStackSize() );
+					if ( pendingStack.getStackSize() >= 10000 )
+						str = Long.toString( pendingStack.getStackSize() / 1000 ) + "k";
+					if ( pendingStack.getStackSize() >= 10000000 )
+						str = Long.toString( pendingStack.getStackSize() / 1000000 ) + "m";
+
+					str = GuiText.Scheduled.getLocal() + ": " + str;
+					int w = 4 + fontRendererObj.getStringWidth( str );
+					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - ((float) w * 0.5)) * 2), (int) ((y * offY + yo
+							+ 6 - negY + downY) * 2), 4210752 );
+
+					if ( tooltip == z - viewStart )
+						lineList.add( GuiText.Scheduled.getLocal() + ": " + Long.toString( pendingStack.getStackSize() ) );
+
+				}
 
 				GL11.glPopMatrix();
-				int posX = x * sectionLength + xo + sectionLength - 18;
-				int posY = y * 18 + yo;
+				int posX = x * (1 + sectionLength) + xo + sectionLength - 19;
+				int posY = y * offY + yo;
 
 				ItemStack is = refStack.copy().getItemStack();
 
 				if ( tooltip == z - viewStart )
 				{
-					ToolTip = Platform.getItemDisplayName( is );
+					dspToolTip = Platform.getItemDisplayName( is );
 
-					ToolTip = ToolTip + ("\n" + GuiText.Installed.getLocal() + ": " + (refStack.getStackSize()));
-					if ( refStack.getCountRequestable() > 0 )
-						ToolTip = ToolTip + ("\n" + GuiText.EnergyDrain.getLocal() + ": " + Platform.formatPowerLong( refStack.getCountRequestable(), true ));
+					if ( lineList.size() > 0 )
+						dspToolTip = dspToolTip + "\n" + Joiner.on( "\n" ).join( lineList );
 
-					toolPosX = x * sectionLength + xo + sectionLength - 8;
-					toolPosY = y * 18 + yo;
+					toolPosX = x * (1 + sectionLength) + xo + sectionLength - 8;
+					toolPosY = y * offY + yo;
 				}
 
 				drawItem( posX, posY, is );
 
 				x++;
 
-				if ( x > 4 )
+				if ( x > 2 )
 				{
 					y++;
 					x = 0;
@@ -283,10 +372,10 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 		}
 
-		if ( tooltip >= 0 && ToolTip.length() > 0 )
+		if ( tooltip >= 0 && dspToolTip.length() > 0 )
 		{
 			GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
-			drawTooltip( toolPosX, toolPosY + 10, 0, ToolTip );
+			drawTooltip( toolPosX, toolPosY + 10, 0, dspToolTip );
 			GL11.glPopAttrib();
 		}
 
