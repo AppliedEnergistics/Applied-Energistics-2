@@ -144,8 +144,8 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		boolean hasNEI = AppEng.instance.isIntegrationEnabled( "NEI" );
 
-		int NEI = hasNEI ? 4 : 0;
-		int top = hasNEI ? 22 : 4;
+		int NEI = hasNEI ? 0 : 0;
+		int top = hasNEI ? 22 : 0;
 
 		int magicNumber = 114 + 1;
 		int extraSpace = height - magicNumber - NEI - top - reservedSpace;
@@ -183,7 +183,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		// slot 18
 
 		this.ySize = magicNumber + rows * 18 + reservedSpace;
-		this.guiTop = top;
+		// this.guiTop = top;
+		int unusedSpace = height - ySize;
+		guiTop = (int) Math.floor( (float) unusedSpace / (unusedSpace < 0 ? 3.8f : 2.0f) );
 
 		int offset = guiTop + 8;
 
@@ -235,9 +237,15 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			if ( s instanceof AppEngSlot )
 			{
 				if ( ((AppEngSlot) s).xDisplayPosition < 197 )
-					((AppEngSlot) s).yDisplayPosition = ((AppEngSlot) s).defY + ySize - 78 - 5;
+					repositionSlot( (AppEngSlot) s );
 			}
 		}
+
+	}
+
+	protected void repositionSlot(AppEngSlot s)
+	{
+		s.yDisplayPosition = s.defY + ySize - 78 - 5;
 	}
 
 	@Override

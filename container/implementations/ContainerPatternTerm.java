@@ -141,9 +141,9 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		super.detectAndSendChanges();
 		if ( Platform.isServer() )
 		{
-			if ( craftingMode != ct.craftingMode )
+			if ( craftingMode != ct.isCraftingRecipe() )
 			{
-				craftingMode = ct.craftingMode;
+				craftingMode = ct.isCraftingRecipe();
 				updateOrderOfOutputSlots();
 			}
 		}
@@ -285,9 +285,9 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	public boolean isSlotEnabled(int idx)
 	{
 		if ( idx == 1 )
-			return Platform.isServer() ? ct.craftingMode == false : craftingMode == false;
+			return Platform.isServer() ? ct.isCraftingRecipe() == false : craftingMode == false;
 		if ( idx == 2 )
-			return Platform.isServer() ? ct.craftingMode == true : craftingMode == true;
+			return Platform.isServer() ? ct.isCraftingRecipe() == true : craftingMode == true;
 		return false;
 	}
 
@@ -384,6 +384,26 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			}
 
 		}
+	}
+
+	@Override
+	public ItemStack slotClick(int slotNum, int p_75144_2_, int p_75144_3_, EntityPlayer p_75144_4_)
+	{
+		Slot s = null;
+		for (Object g : inventorySlots)
+		{
+			if ( g instanceof Slot )
+			{
+				Slot gg = (Slot) g;
+				if ( gg.slotNumber == slotNum )
+					s = gg;
+			}
+		}
+
+		ItemStack is = super.slotClick( slotNum, p_75144_2_, p_75144_3_, p_75144_4_ );
+		if ( s == patternSlotOUT )
+			detectAndSendChanges();
+		return is;
 	}
 
 	public void clear()

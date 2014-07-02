@@ -12,6 +12,7 @@ import appeng.api.storage.ITerminalHost;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerPatternTerm;
+import appeng.container.slot.AppEngSlot;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
@@ -42,7 +43,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 		buttonList.add( clearBtn = new GuiImgButton( this.guiLeft + 74, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.CLOSE ) );
 		clearBtn.halfSize = true;
 
-		buttonList.add( encodeBtn = new GuiImgButton( this.guiLeft + 147, this.guiTop + this.ySize - 144, Settings.ACTIONS, ActionItems.ENCODE ) );
+		buttonList.add( encodeBtn = new GuiImgButton( this.guiLeft + 147, this.guiTop + this.ySize - 142, Settings.ACTIONS, ActionItems.ENCODE ) );
 	}
 
 	@Override
@@ -81,10 +82,18 @@ public class GuiPatternTerm extends GuiMEMonitorable
 		}
 	}
 
+	protected void repositionSlot(AppEngSlot s)
+	{
+		if ( s.isPlayerSide() )
+			s.yDisplayPosition = s.defY + ySize - 78 - 5;
+		else
+			s.yDisplayPosition = s.defY + ySize - 78 - 3;
+	}
+
 	public GuiPatternTerm(InventoryPlayer inventoryPlayer, ITerminalHost te) {
 		super( inventoryPlayer, te, new ContainerPatternTerm( inventoryPlayer, te ) );
 		container = (ContainerPatternTerm) this.inventorySlots;
-		reservedSpace = 85;
+		reservedSpace = 81;
 	}
 
 	protected String getBackground()

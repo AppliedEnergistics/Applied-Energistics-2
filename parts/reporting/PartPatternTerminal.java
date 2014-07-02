@@ -5,6 +5,9 @@ import java.util.List;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import appeng.api.implementations.ICraftingPatternItem;
+import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -18,13 +21,13 @@ public class PartPatternTerminal extends PartTerminal implements IAEAppEngInvent
 	AppEngInternalInventory output = new AppEngInternalInventory( this, 3 );
 	AppEngInternalInventory pattern = new AppEngInternalInventory( this, 2 );
 
-	public boolean craftingMode = true;
+	private boolean craftingMode = true;
 
 	@Override
 	public void writeToNBT(NBTTagCompound data)
 	{
 		super.writeToNBT( data );
-		data.setBoolean( "craftingMode", craftingMode );
+		data.setBoolean( "craftingMode", isCraftingRecipe() );
 		pattern.writeToNBT( data, "pattern" );
 		output.writeToNBT( data, "outputList" );
 		crafting.writeToNBT( data, "craftingGrid" );
@@ -34,7 +37,7 @@ public class PartPatternTerminal extends PartTerminal implements IAEAppEngInvent
 	public void readFromNBT(NBTTagCompound data)
 	{
 		super.readFromNBT( data );
-		craftingMode = data.getBoolean( "craftingMode" );
+		setCraftingRecipe( data.getBoolean( "craftingMode" ) );
 		pattern.readFromNBT( data, "pattern" );
 		output.readFromNBT( data, "outputList" );
 		crafting.readFromNBT( data, "craftingGrid" );
@@ -78,6 +81,60 @@ public class PartPatternTerminal extends PartTerminal implements IAEAppEngInvent
 	@Override
 	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
 	{
+		if ( inv == pattern && slot == 1 )
+		{
+			ItemStack is = pattern.getStackInSlot( 1 );
+			if ( is != null && is.getItem() instanceof ICraftingPatternItem )
+			{
+				ICraftingPatternItem pattern = (ICraftingPatternItem) is.getItem();
+				ICraftingPatternDetails details = pattern.getPatternForItem( is, this.getHost().getTile().getWorldObj() );
+				if ( details != null )
+				{
+					setCraftingRecipe( details.isCraftable() );
+
+					for (int x = 0; x < crafting.getSizeInventory() && x < details.getInputs().length; x++)
+					{
+						IAEItemStack aeis = details.getInputs()[x];
+						crafting.setInventorySlotContents( x, aeis == null ? null : aeis.getItemStack() );
+					}
+
+					for (int x = 0; x < output.getSizeInventory() && x < details.getOutputs().length; x++)
+					{
+						IAEItemStack aeis = details.getOutputs()[x];
+						output.setInventorySlotContents( x, aeis == null ? null : aeis.getItemStack() );
+					}
+				}
+			}
+		}
+		else if ( inv == crafting )
+		{
+			fixCraftingRecipes();
+		}
+
 		host.markForSave();
+	}
+
+	public boolean isCraftingRecipe()
+	{
+		return craftingMode;
+	}
+
+	public void setCraftingRecipe(boolean craftingMode)
+	{
+		this.craftingMode = craftingMode;
+		fixCraftingRecipes();
+	}
+
+	private void fixCraftingRecipes()
+	{
+		if ( isCraftingRecipe() )
+		{
+			for (int x = 0; x < crafting.getSizeInventory(); x++)
+			{
+				ItemStack is = crafting.getStackInSlot( x );
+				if ( is != null )
+					is.stackSize = 1;
+			}
+		}
 	}
 }
