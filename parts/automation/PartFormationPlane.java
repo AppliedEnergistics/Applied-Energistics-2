@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemFirework;
 import net.minecraft.item.ItemSkull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -390,6 +392,16 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 				EntityPlayer player = Platform.getPlayer( (WorldServer) w );
 				Platform.configurePlayer( player, side, tile );
 
+				if ( i instanceof ItemFirework )
+				{
+					Chunk c = w.getChunkFromBlockCoords( x, z );
+					int sum = 0;
+					for (List Z : c.entityLists)
+						sum += Z.size();
+					if ( sum > 32 )
+						return input;
+				}
+
 				maxStorage = is.stackSize;
 				worked = true;
 				if ( type == Actionable.MODULATE )
@@ -435,21 +447,39 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 				{
 					if ( type == Actionable.MODULATE )
 					{
+
 						is.stackSize = (int) maxStorage;
-						if ( type == Actionable.MODULATE )
+						EntityItem ei = new EntityItem( w, // w
+								((side.offsetX != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetX * -0.3 + (double) x, // spawn
+								((side.offsetY != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetY * -0.3 + (double) y, // spawn
+								((side.offsetZ != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetZ * -0.3 + (double) z, // spawn
+								is.copy() );
+
+						Entity result = ei;
+
+						ei.motionX = side.offsetX * 0.2;
+						ei.motionY = side.offsetY * 0.2;
+						ei.motionZ = side.offsetZ * 0.2;
+
+						if ( is.getItem().hasCustomEntity( is ) )
 						{
-							EntityItem ei = new EntityItem( w, // w
-									((side.offsetX != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetX * -0.3 + (double) x, // spawn
-									((side.offsetY != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetY * -0.3 + (double) y, // spawn
-									((side.offsetZ != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetZ * -0.3 + (double) z, // spawn
-									is.copy() );
-							ei.motionX = side.offsetX * 0.2;
-							ei.motionY = side.offsetY * 0.2;
-							ei.motionZ = side.offsetZ * 0.2;
-							w.spawnEntityInWorld( ei );
+							result = is.getItem().createEntity( w, ei, is );
+							if ( result != null )
+								ei.setDead();
+							else
+								result = ei;
 						}
+
+						if ( !w.spawnEntityInWorld( result ) )
+						{
+							result.setDead();
+							worked = false;
+						}
+
 					}
 				}
+				else
+					worked = false;
 			}
 		}
 

@@ -5,7 +5,7 @@ import appeng.api.config.PowerUnits;
 import appeng.transformer.annotations.integration.Interface;
 import cofh.api.energy.IEnergyContainerItem;
 
-@Interface(iface = "cofh.api.energy.IEnergyContainerItem", iname = "RF")
+@Interface(iface = "cofh.api.energy.IEnergyContainerItem", iname = "RFItem")
 public class RedstoneFlux extends IC2 implements IEnergyContainerItem
 {
 
