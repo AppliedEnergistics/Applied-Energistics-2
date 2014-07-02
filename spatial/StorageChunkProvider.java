@@ -15,17 +15,23 @@ import appeng.core.AEConfig;
 public class StorageChunkProvider extends ChunkProviderGenerate implements IChunkProvider
 {
 
-	Block[] ablock = new Block[32768];
+	final static Block[] ablock;
+	
+	static {
+		
+		ablock = new Block[255 * 256];
+		
+		Block matrixFrame = AEApi.instance().blocks().blockMatrixFrame.block();
+		for (int x = 0; x < ablock.length; x++)
+			ablock[x] = matrixFrame;
+		
+	}
+	
 	World w;
 
 	public StorageChunkProvider(World wrd, long i) {
 		super( wrd, i, false );
 		this.w = wrd;
-
-		Block matrixFrame = AEApi.instance().blocks().blockMatrixFrame.block();
-
-		for (int x = 0; x < ablock.length; x++)
-			ablock[x] = matrixFrame;
 	}
 
 	@Override

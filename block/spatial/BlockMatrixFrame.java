@@ -22,7 +22,7 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 {
 
 	public BlockMatrixFrame() {
-		super( BlockMatrixFrame.class, Material.portal );
+		super( BlockMatrixFrame.class, Material.anvil);
 		setfeature( EnumSet.of( AEFeature.SpatialIO ) );
 		setResistance( 6000000.0F );
 		setBlockUnbreakable();
