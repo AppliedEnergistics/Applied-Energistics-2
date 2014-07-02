@@ -4,11 +4,13 @@ import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
+import appeng.api.AEApi;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.client.render.items.ItemEncodedPatternRenderer;
@@ -27,6 +29,29 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		setMaxStackSize( 1 );
 		if ( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, new ItemEncodedPatternRenderer() );
+	}
+
+	@Override
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	{
+		InventoryPlayer inv = player.inventory;
+
+		for (int s = 0; s < player.inventory.getSizeInventory(); s++)
+		{
+			if ( inv.getStackInSlot( s ) == stack )
+			{
+				inv.setInventorySlotContents( s, AEApi.instance().materials().materialBlankPattern.stack( stack.stackSize ) );
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World w, EntityPlayer p)
+	{
+		return AEApi.instance().materials().materialBlankPattern.stack( stack.stackSize );
 	}
 
 	@Override
@@ -132,7 +157,9 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	@Override
 	public ICraftingPatternDetails getPatternForItem(ItemStack is, World w)
 	{
-		return new PatternHelper( is, w );
+		if ( is.hasTagCompound() )
+			return new PatternHelper( is, w );
+		return null;
 	}
 
 }
