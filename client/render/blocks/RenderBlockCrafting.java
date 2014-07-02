@@ -61,9 +61,8 @@ public class RenderBlockCrafting extends BaseBlockRender
 			BusRenderHelper i = BusRenderHelper.instance;
 			renderer.blockAccess = w;
 			i.setPass( 0 );
-			i.ax = ForgeDirection.EAST;
-			i.ay = ForgeDirection.UP;
-			i.az = ForgeDirection.SOUTH;
+
+			i.setOrientation( ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
 
 			try
 			{

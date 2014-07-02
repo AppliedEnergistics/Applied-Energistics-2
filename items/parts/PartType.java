@@ -20,10 +20,6 @@ import appeng.parts.networking.PartCableCovered;
 import appeng.parts.networking.PartCableGlass;
 import appeng.parts.networking.PartCableSmart;
 import appeng.parts.networking.PartDenseCable;
-import appeng.parts.networking.PartLumenCableCovered;
-import appeng.parts.networking.PartLumenCableGlass;
-import appeng.parts.networking.PartLumenCableSmart;
-import appeng.parts.networking.PartLumenDenseCable;
 import appeng.parts.networking.PartQuartzFiber;
 import appeng.parts.p2p.PartP2PBCPower;
 import appeng.parts.p2p.PartP2PIC2Power;
@@ -105,15 +101,7 @@ public enum PartType
 
 	P2PTunnelEU(465, AEFeature.P2PTunnelEU, PartP2PIC2Power.class, GuiText.EUTunnel),
 
-	P2PTunnelRF(466, AEFeature.P2PTunnelRF, PartP2PRFPower.class, GuiText.RFTunnel),
-
-	LumenCableGlass(480, AEFeature.Core, PartLumenCableGlass.class),
-
-	LumenCableCovered(500, AEFeature.Core, PartLumenCableCovered.class),
-
-	LumenCableSmart(520, AEFeature.Core, PartLumenCableSmart.class),
-
-	LumenCableDense(540, AEFeature.DenseCables, PartLumenDenseCable.class);
+	P2PTunnelRF(466, AEFeature.P2PTunnelRF, PartP2PRFPower.class, GuiText.RFTunnel);
 
 	private final EnumSet<AEFeature> features;
 	private final Class<? extends IPart> myPart;
@@ -134,9 +122,6 @@ public enum PartType
 	public Enum[] getVarients()
 	{
 		if ( this == CableSmart || this == CableCovered || this == CableGlass || this == CableDense )
-			return AEColor.values();
-
-		if ( this == LumenCableSmart || this == LumenCableCovered || this == LumenCableGlass || this == LumenCableDense )
 			return AEColor.values();
 
 		return null;

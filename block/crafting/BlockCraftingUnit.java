@@ -41,6 +41,9 @@ public class BlockCraftingUnit extends AEBaseBlock
 	@Override
 	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
 	{
+		if ( Platform.isClient() )
+			return true;
+
 		TileCraftingTile tg = getTileEntity( w, x, y, z );
 		if ( tg != null && !p.isSneaking() && tg.isFormed() && tg.isActive() )
 		{
@@ -92,6 +95,16 @@ public class BlockCraftingUnit extends AEBaseBlock
 	protected Class<? extends BaseBlockRender> getRenderer()
 	{
 		return RenderBlockCrafting.class;
+	}
+
+	@Override
+	public void breakBlock(World w, int x, int y, int z, Block a, int b)
+	{
+		TileCraftingTile cp = getTileEntity( w, x, y, z );
+		if ( cp != null )
+			cp.breakCluster();
+
+		super.breakBlock( w, x, y, z, a, b );
 	}
 
 	@Override

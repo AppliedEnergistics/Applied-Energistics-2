@@ -34,9 +34,9 @@ public class BusRenderHelper implements IPartRenderHelper
 	AEBaseBlock blk = (AEBaseBlock) AEApi.instance().blocks().blockMultiPart.block();
 	BaseBlockRender bbr = new BaseBlockRender();
 
-	public ForgeDirection ax;
-	public ForgeDirection ay;
-	public ForgeDirection az;
+	private ForgeDirection ax = ForgeDirection.EAST;
+	private ForgeDirection ay = ForgeDirection.UP;
+	private ForgeDirection az = ForgeDirection.SOUTH;
 
 	int color = 0xffffff;
 
@@ -455,6 +455,13 @@ public class BusRenderHelper implements IPartRenderHelper
 	public ForgeDirection getWorldZ()
 	{
 		return az;
+	}
+
+	public void setOrientation(ForgeDirection dx, ForgeDirection dy, ForgeDirection dz)
+	{
+		ax = dx == null ? ForgeDirection.EAST : dx;
+		ay = dy == null ? ForgeDirection.UP : dy;
+		az = dz == null ? ForgeDirection.SOUTH : dz;
 	}
 
 }

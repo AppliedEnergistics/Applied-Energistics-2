@@ -37,17 +37,20 @@ public class AEItemDef
 	static AESharedNBT lowTag = new AESharedNBT( Integer.MIN_VALUE );
 	static AESharedNBT highTag = new AESharedNBT( Integer.MAX_VALUE );
 
+	public AEItemDef(Item it) {
+		item = it;
+		itemID = System.identityHashCode( item );
+	}
+
 	public AEItemDef copy()
 	{
-		AEItemDef t = new AEItemDef();
+		AEItemDef t = new AEItemDef( item );
 		t.def = def;
-		t.item = item;
 		t.damageValue = damageValue;
 		t.dspDamage = dspDamage;
 		t.maxDamage = maxDamage;
 		t.tagCompound = tagCompound;
 		t.isOre = isOre;
-		t.itemID = itemID;
 		return t;
 	}
 

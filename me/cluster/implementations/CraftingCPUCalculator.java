@@ -64,6 +64,8 @@ public class CraftingCPUCalculator extends MBCalculator
 			}
 		}
 
+		c.done();
+
 		Iterator<IGridHost> i = c.getTiles();
 		while (i.hasNext())
 		{

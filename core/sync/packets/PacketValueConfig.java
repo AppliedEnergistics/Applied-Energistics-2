@@ -96,7 +96,7 @@ public class PacketValueConfig extends AppEngPacket
 			ContainerPatternTerm cpt = (ContainerPatternTerm) c;
 			if ( Name.equals( "PatternTerminal.CraftMode" ) )
 			{
-				cpt.ct.craftingMode = Value.equals( "1" );
+				cpt.ct.setCraftingRecipe( Value.equals( "1" ) );
 			}
 			else if ( Name.equals( "PatternTerminal.Encode" ) )
 			{

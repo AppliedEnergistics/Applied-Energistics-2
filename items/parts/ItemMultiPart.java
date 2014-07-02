@@ -1,5 +1,8 @@
 package appeng.items.parts;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -61,7 +64,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		}
 		catch (Throwable e)
 		{
-			AELog.integration(e);
+			AELog.integration( e );
 			return null; // part not supported..
 		}
 
@@ -200,7 +203,18 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 	@Override
 	public void getSubItems(Item number, CreativeTabs tab, List cList)
 	{
-		for (Entry<Integer, PartTypeIst> part : dmgToPart.entrySet())
+		List<Entry<Integer, PartTypeIst>> types = new ArrayList( dmgToPart.entrySet() );
+		Collections.sort( types, new Comparator<Entry<Integer, PartTypeIst>>() {
+
+			@Override
+			public int compare(Entry<Integer, PartTypeIst> o1, Entry<Integer, PartTypeIst> o2)
+			{
+				return o1.getValue().part.name().compareTo( o2.getValue().part.name() );
+			}
+
+		} );
+
+		for (Entry<Integer, PartTypeIst> part : types)
 			cList.add( new ItemStack( this, 1, part.getKey() ) );
 	}
 

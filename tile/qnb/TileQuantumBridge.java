@@ -31,8 +31,8 @@ import appeng.util.Platform;
 public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 {
 
-	final private static ItemStack ring = AEApi.instance().blocks().blockQuantumRing.stack(1);
-	
+	final private static ItemStack ring = AEApi.instance().blocks().blockQuantumRing.stack( 1 );
+
 	final int sidesRing[] = new int[] {};
 	final int sidesLink[] = new int[] { 0 };
 
@@ -134,14 +134,14 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	{
 		if ( clust != null )
 		{
-			if ( ! affectWorld )
+			if ( !affectWorld )
 				clust.updateStatus = false;
-			
+
 			clust.destroy();
 		}
-		
+
 		clust = null;
-		
+
 		if ( affectWorld )
 			gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 	}
@@ -157,26 +157,26 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	{
 		return !isInvalid();
 	}
-	
+
 	@Override
 	public void onReady()
 	{
 		super.onReady();
-		if ( worldObj.getBlock( xCoord, yCoord, zCoord) == AEApi.instance().blocks().blockQuantumRing.block() )
+		if ( worldObj.getBlock( xCoord, yCoord, zCoord ) == AEApi.instance().blocks().blockQuantumRing.block() )
 			gridProxy.setVisualRepresentation( ring );
 	}
 
 	@Override
 	public void invalidate()
 	{
-		disconnect(false);
+		disconnect( false );
 		super.invalidate();
 	}
 
 	@Override
 	public void onChunkUnload()
 	{
-		disconnect(false);
+		disconnect( false );
 		super.onChunkUnload();
 	}
 
@@ -189,9 +189,9 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 			if ( xdex != flags )
 			{
 				xdex = flags;
-					markForUpdate();
+				markForUpdate();
 			}
-	
+
 			if ( isCorner() || isCenter() )
 			{
 				gridProxy.setValidSides( getConnections() );
@@ -281,6 +281,12 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		if ( xdex == -1 )
 			return false;
 		return (xdex & hasSingularity) == hasSingularity;
+	}
+
+	public void breakCluster()
+	{
+		if ( clust != null )
+			clust.destroy();
 	}
 
 }

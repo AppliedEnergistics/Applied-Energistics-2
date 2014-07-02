@@ -1,22 +1,36 @@
 package appeng.tile.crafting;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.config.Actionable;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGridHost;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.ISimplifiedBundle;
+import appeng.api.storage.IMEInventory;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.util.WorldCoord;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.AENetworkProxyMultiblock;
+import appeng.tile.events.AETileEventHandler;
+import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 import appeng.util.Platform;
+import appeng.util.item.ItemList;
 
 public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IPowerChannelState
 {
@@ -24,6 +38,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	CraftingCPUCluster clust;
 	final CraftingCPUCalculator calc = new CraftingCPUCalculator( this );
 	public ISimplifiedBundle lightCache;
+
+	public NBTTagCompound previousState = null;
+	public boolean isCoreBlock = false;
 
 	@Override
 	protected AENetworkProxy createProxy()
@@ -42,7 +59,38 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		calc.calculateMultiblock( worldObj, getLocation() );
 	}
 
+	private class CraftingHandler extends AETileEventHandler
+	{
+
+		public CraftingHandler() {
+			super( TileEventType.WORLD_NBT );
+		}
+
+		@Override
+		public void writeToNBT(NBTTagCompound data)
+		{
+			data.setBoolean( "core", isCoreBlock );
+			if ( isCoreBlock && clust != null )
+				clust.writeToNBT( data );
+		}
+
+		@Override
+		public void readFromNBT(NBTTagCompound data)
+		{
+			isCoreBlock = data.getBoolean( "core" );
+			if ( isCoreBlock )
+			{
+				if ( clust != null )
+					clust.readFromNBT( data );
+				else
+					previousState = (NBTTagCompound) data.copy();
+			}
+		}
+
+	};
+
 	public TileCraftingTile() {
+		addNewHandler( new CraftingHandler() );
 		gridProxy.setFlags( GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL );
 		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 	}
@@ -164,4 +212,60 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		return isPowered() && isFormed();
 	}
 
+	public void breakCluster()
+	{
+		if ( clust != null )
+		{
+			clust.cancel();
+			IMEInventory<IAEItemStack> inv = clust.getInventory();
+
+			LinkedList<WorldCoord> places = new LinkedList<WorldCoord>();
+
+			Iterator<IGridHost> i = clust.getTiles();
+			while (i.hasNext())
+			{
+				IGridHost h = i.next();
+				if ( h == this )
+					places.add( new WorldCoord( this ) );
+				else
+				{
+					TileEntity te = (TileEntity) h;
+
+					for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
+					{
+						WorldCoord wc = new WorldCoord( te );
+						wc.add( d, 1 );
+						if ( worldObj.isAirBlock( wc.x, wc.y, wc.z ) )
+							places.add( wc );
+					}
+
+				}
+			}
+
+			Collections.shuffle( places );
+
+			if ( places.isEmpty() )
+				throw new RuntimeException( "No air or even the tile hat was destroyed?!?!" );
+
+			for (IAEItemStack ais : inv.getAvailableItems( new ItemList<IAEItemStack>( IAEItemStack.class ) ))
+			{
+				ais = ais.copy();
+				ais.setStackSize( ais.getItemStack().getMaxStackSize() );
+				while (true)
+				{
+					IAEItemStack g = inv.extractItems( ais.copy(), Actionable.MODULATE, clust.getActionSource() );
+					if ( g == null )
+						break;
+
+					WorldCoord wc = places.poll();
+					places.add( wc );
+
+					Platform.spawnDrops( worldObj, wc.x, wc.y, wc.z, Arrays.asList( g.getItemStack() ) );
+				}
+
+			}
+
+			clust.destroy();
+		}
+	}
 }

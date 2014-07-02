@@ -25,6 +25,7 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 	private int RedstoneUpgrades = 0;
 	private int CapacityUpgrades = 0;
 	private int InverterUpgrades = 0;
+	private int CraftingUpgrades = 0;
 
 	public UpgradeInventory(Object itemOrBlock, IAEAppEngInventory _te, int s) {
 		super( null, s );
@@ -98,7 +99,7 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 	private void updateUpgradeInfo()
 	{
 		cached = true;
-		InverterUpgrades = CapacityUpgrades = RedstoneUpgrades = SpeedUpgrades = FuzzyUpgrades = 0;
+		InverterUpgrades = CapacityUpgrades = RedstoneUpgrades = SpeedUpgrades = FuzzyUpgrades = CraftingUpgrades = 0;
 
 		for (ItemStack is : this)
 		{
@@ -123,6 +124,9 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 			case INVERTER:
 				InverterUpgrades++;
 				break;
+			case CRAFTING:
+				CraftingUpgrades++;
+				break;
 			default:
 				break;
 			}
@@ -133,6 +137,7 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 		RedstoneUpgrades = Math.min( RedstoneUpgrades, getMaxInstalled( Upgrades.REDSTONE ) );
 		SpeedUpgrades = Math.min( SpeedUpgrades, getMaxInstalled( Upgrades.SPEED ) );
 		InverterUpgrades = Math.min( InverterUpgrades, getMaxInstalled( Upgrades.INVERTER ) );
+		CraftingUpgrades = Math.min( CraftingUpgrades, getMaxInstalled( Upgrades.CRAFTING ) );
 	}
 
 	public int getInstalledUpgrades(Upgrades u)
@@ -152,6 +157,8 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 			return SpeedUpgrades;
 		case INVERTER:
 			return InverterUpgrades;
+		case CRAFTING:
+			return CraftingUpgrades;
 		default:
 			return 0;
 		}

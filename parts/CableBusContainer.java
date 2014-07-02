@@ -528,46 +528,49 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 
 	public void setSide(ForgeDirection s)
 	{
+		ForgeDirection ax, ay, az;
+
 		switch (s)
 		{
 		case DOWN:
-			BusRenderHelper.instance.ax = ForgeDirection.EAST;
-			BusRenderHelper.instance.ay = ForgeDirection.NORTH;
-			BusRenderHelper.instance.az = ForgeDirection.DOWN;
+			ax = ForgeDirection.EAST;
+			ay = ForgeDirection.NORTH;
+			az = ForgeDirection.DOWN;
 			break;
 		case UP:
-			BusRenderHelper.instance.ax = ForgeDirection.EAST;
-			BusRenderHelper.instance.ay = ForgeDirection.SOUTH;
-			BusRenderHelper.instance.az = ForgeDirection.UP;
+			ax = ForgeDirection.EAST;
+			ay = ForgeDirection.SOUTH;
+			az = ForgeDirection.UP;
 			break;
 		case EAST:
-			BusRenderHelper.instance.ax = ForgeDirection.SOUTH;
-			BusRenderHelper.instance.ay = ForgeDirection.UP;
-			BusRenderHelper.instance.az = ForgeDirection.EAST;
+			ax = ForgeDirection.SOUTH;
+			ay = ForgeDirection.UP;
+			az = ForgeDirection.EAST;
 			break;
 		case WEST:
-			BusRenderHelper.instance.ax = ForgeDirection.NORTH;
-			BusRenderHelper.instance.ay = ForgeDirection.UP;
-			BusRenderHelper.instance.az = ForgeDirection.WEST;
+			ax = ForgeDirection.NORTH;
+			ay = ForgeDirection.UP;
+			az = ForgeDirection.WEST;
 			break;
 		case NORTH:
-			BusRenderHelper.instance.ax = ForgeDirection.WEST;
-			BusRenderHelper.instance.ay = ForgeDirection.UP;
-			BusRenderHelper.instance.az = ForgeDirection.NORTH;
+			ax = ForgeDirection.WEST;
+			ay = ForgeDirection.UP;
+			az = ForgeDirection.NORTH;
 			break;
 		case SOUTH:
-			BusRenderHelper.instance.ax = ForgeDirection.EAST;
-			BusRenderHelper.instance.ay = ForgeDirection.UP;
-			BusRenderHelper.instance.az = ForgeDirection.SOUTH;
+			ax = ForgeDirection.EAST;
+			ay = ForgeDirection.UP;
+			az = ForgeDirection.SOUTH;
 			break;
 		case UNKNOWN:
 		default:
-			BusRenderHelper.instance.ax = ForgeDirection.EAST;
-			BusRenderHelper.instance.ay = ForgeDirection.UP;
-			BusRenderHelper.instance.az = ForgeDirection.SOUTH;
+			ax = ForgeDirection.EAST;
+			ay = ForgeDirection.UP;
+			az = ForgeDirection.SOUTH;
 			break;
-
 		}
+
+		BusRenderHelper.instance.setOrientation( ax, ay, az );
 	}
 
 	@SideOnly(Side.CLIENT)

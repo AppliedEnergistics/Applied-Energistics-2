@@ -61,7 +61,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	{
 		NBTTagCompound comp = Platform.openNbtData( is );
 		comp.setInteger( "progress", newDamage );
-		is.setItemDamage( (is.getItemDamage() / SINGLE_OFFSET) * SINGLE_OFFSET );
+		is.setItemDamage( (int) (is.getItemDamage() / LEVEL_OFFSET) * LEVEL_OFFSET );
 	}
 
 	public ItemCrystalSeed() {

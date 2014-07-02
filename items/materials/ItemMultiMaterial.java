@@ -1,5 +1,6 @@
 package appeng.items.materials;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
@@ -288,6 +289,8 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 			return Upgrades.SPEED;
 		case CardInverter:
 			return Upgrades.INVERTER;
+		case CardCrafting:
+			return Upgrades.CRAFTING;
 		default:
 			return null;
 		}
@@ -296,11 +299,21 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	@Override
 	public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List cList)
 	{
-		for (MaterialType mat : MaterialType.values())
+		List<MaterialType> types = Arrays.asList( MaterialType.values() );
+		Collections.sort( types, new Comparator<MaterialType>() {
+
+			@Override
+			public int compare(MaterialType o1, MaterialType o2)
+			{
+				return o1.name().compareTo( o2.name() );
+			}
+
+		} );
+
+		for (MaterialType mat : types)
 		{
 			if ( mat.damageValue >= 0 && mat.isRegistered() )
 				cList.add( new ItemStack( this, 1, mat.damageValue ) );
 		}
 	}
-
 }

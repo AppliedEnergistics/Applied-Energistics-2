@@ -57,8 +57,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		if ( is == null )
 			throw new RuntimeException( "Invalid Itemstack." );
 
-		def = new AEItemDef();
-		def.item = is.getItem();
+		def = new AEItemDef( is.getItem() );
 
 		if ( def.item == null )
 			throw new RuntimeException( "This ItemStack is bad, it has a null item." );

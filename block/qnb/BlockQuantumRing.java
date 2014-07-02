@@ -38,6 +38,16 @@ public class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
+	public void breakBlock(World w, int x, int y, int z, Block a, int b)
+	{
+		TileQuantumBridge bridge = getTileEntity( w, x, y, z );
+		if ( bridge != null )
+			bridge.breakCluster();
+
+		super.breakBlock( w, x, y, z, a, b );
+	}
+
+	@Override
 	protected Class<? extends BaseBlockRender> getRenderer()
 	{
 		return RenderQNB.class;
