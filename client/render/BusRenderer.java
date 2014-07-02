@@ -112,9 +112,7 @@ public class BusRenderer implements IItemRenderer
 		BusRenderHelper.instance.setInvColor( 0xffffff );
 		renderer.blockAccess = ClientHelper.proxy.getWorld();
 
-		BusRenderHelper.instance.ax = ForgeDirection.EAST;
-		BusRenderHelper.instance.ay = ForgeDirection.UP;
-		BusRenderHelper.instance.az = ForgeDirection.SOUTH;
+		BusRenderHelper.instance.setOrientation( ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
 
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 		renderer.useInventoryTint = false;
