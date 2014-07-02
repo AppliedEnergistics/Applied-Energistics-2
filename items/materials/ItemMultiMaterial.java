@@ -288,6 +288,8 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 			return Upgrades.SPEED;
 		case CardInverter:
 			return Upgrades.INVERTER;
+		case CardCrafting:
+			return Upgrades.CRAFTING;
 		default:
 			return null;
 		}

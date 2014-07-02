@@ -2,6 +2,7 @@ package appeng.tile.crafting;
 
 import java.util.EnumSet;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
@@ -15,6 +16,8 @@ import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.AENetworkProxyMultiblock;
+import appeng.tile.events.AETileEventHandler;
+import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 import appeng.util.Platform;
 
@@ -24,6 +27,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	CraftingCPUCluster clust;
 	final CraftingCPUCalculator calc = new CraftingCPUCalculator( this );
 	public ISimplifiedBundle lightCache;
+
+	public NBTTagCompound previousState = null;
+	public boolean isCoreBlock = false;
 
 	@Override
 	protected AENetworkProxy createProxy()
@@ -42,7 +48,38 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		calc.calculateMultiblock( worldObj, getLocation() );
 	}
 
+	private class CraftingHandler extends AETileEventHandler
+	{
+
+		public CraftingHandler() {
+			super( TileEventType.WORLD_NBT );
+		}
+
+		@Override
+		public void writeToNBT(NBTTagCompound data)
+		{
+			data.setBoolean( "core", isCoreBlock );
+			if ( isCoreBlock && clust != null )
+				clust.writeToNBT( data );
+		}
+
+		@Override
+		public void readFromNBT(NBTTagCompound data)
+		{
+			isCoreBlock = data.getBoolean( "core" );
+			if ( isCoreBlock )
+			{
+				if ( clust != null )
+					clust.readFromNBT( data );
+				else
+					previousState = (NBTTagCompound) data.copy();
+			}
+		}
+
+	};
+
 	public TileCraftingTile() {
+		addNewHandler( new CraftingHandler() );
 		gridProxy.setFlags( GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL );
 		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 	}

@@ -62,7 +62,7 @@ public enum MaterialType
 	EnderDust(46, AEFeature.QuantumNetworkBridge, "dustEnder", EntitySingularity.class), Singularity(47, AEFeature.QuantumNetworkBridge,
 			EntitySingularity.class), QESingularity(48, AEFeature.QuantumNetworkBridge, EntitySingularity.class),
 
-	BlankPattern(52);
+	BlankPattern(52), CardCrafting(53);
 
 	private String oreName;
 	private EnumSet<AEFeature> features;
