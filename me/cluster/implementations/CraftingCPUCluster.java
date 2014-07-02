@@ -8,12 +8,15 @@ import java.util.Map.Entry;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -23,6 +26,7 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkCraftingCpuChange;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventory;
@@ -45,6 +49,36 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack>
 {
+
+	class TaskProgress
+	{
+
+		long value;
+
+	};
+
+	/**
+	 * crafting job info
+	 */
+	MECraftingInventory inventory = new MECraftingInventory();
+	IAEItemStack finalOutput;
+
+	boolean waiting = false;
+	Map<ICraftingPatternDetails, TaskProgress> tasks = new HashMap<ICraftingPatternDetails, TaskProgress>();
+	IItemList<IAEItemStack> waitingFor = AEApi.instance().storage().createItemList();
+
+	// instance sate
+	private LinkedList<TileCraftingTile> tiles = new LinkedList();
+	private LinkedList<TileCraftingTile> storage = new LinkedList<TileCraftingTile>();
+	private LinkedList<TileCraftingTile> status = new LinkedList<TileCraftingTile>();
+
+	MachineSource machineSrc = null;
+
+	int accelerator = 0;
+	public WorldCoord min;
+	public WorldCoord max;
+	public boolean isDestroyed = false;
+	private boolean isComplete = true;
 
 	private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object>();
 
@@ -84,23 +118,6 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 	{
 		listeners.remove( l );
 	}
-
-	public WorldCoord min;
-	public WorldCoord max;
-	public boolean isDestroyed = false;
-	private boolean isComplete = true;
-
-	class TaskProgress
-	{
-
-		int value;
-	};
-
-	private LinkedList<TileCraftingTile> tiles = new LinkedList();
-
-	int accelerator = 0;
-	private LinkedList<TileCraftingTile> storage = new LinkedList<TileCraftingTile>();
-	private LinkedList<TileCraftingTile> status = new LinkedList<TileCraftingTile>();
 
 	public void getListOfItem(IItemList<IAEItemStack> list, CraftingItemList whichList)
 	{
@@ -144,18 +161,6 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 
 		}
 	}
-
-	/**
-	 * crafting job info
-	 */
-	MECraftingInventory inventory = new MECraftingInventory();
-
-	IAEItemStack finalOutput;
-	BaseActionSource mySrc;
-
-	boolean waiting = false;
-	Map<ICraftingPatternDetails, TaskProgress> tasks = new HashMap<ICraftingPatternDetails, TaskProgress>();
-	IItemList<IAEItemStack> waitingFor = AEApi.instance().storage().createItemList();
 
 	@Override
 	public Iterator<IGridHost> getTiles()
@@ -205,6 +210,11 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 
 	public void addTile(TileCraftingTile te)
 	{
+		if ( machineSrc == null || te.isCoreBlock )
+			machineSrc = new MachineSource( te );
+
+		te.isCoreBlock = false;
+		te.markDirty();
 		tiles.add( te );
 
 		if ( te.isStorage() )
@@ -240,6 +250,7 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 				if ( is.getStackSize() >= input.getStackSize() )
 				{
 					is.decStackSize( input.getStackSize() );
+					markDirty();
 
 					// AELog.info( "Task: " + is.getStackSize() + " remaining : " + getRemainingTasks() +
 					// " remaining : "
@@ -279,6 +290,7 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 				}
 
 				inventory.injectItems( insert, type, src );
+				markDirty();
 
 				return what;
 			}
@@ -314,7 +326,7 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 				{
 					fuzz = fuzz.copy();
 					fuzz.setStackSize( g.getStackSize() );
-					IAEItemStack ais = inventory.extractItems( fuzz, Actionable.SIMULATE, null );
+					IAEItemStack ais = inventory.extractItems( fuzz, Actionable.SIMULATE, machineSrc );
 					ItemStack is = ais == null ? null : ais.getItemStack();
 
 					if ( is != null && is.stackSize == g.getStackSize() )
@@ -329,7 +341,7 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 			}
 			else
 			{
-				IAEItemStack ais = inventory.extractItems( g.copy(), Actionable.SIMULATE, null );
+				IAEItemStack ais = inventory.extractItems( g.copy(), Actionable.SIMULATE, machineSrc );
 				ItemStack is = ais == null ? null : ais.getItemStack();
 
 				if ( is == null || is.stackSize < g.getStackSize() )
@@ -345,6 +357,7 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 		isComplete = true;
 		tasks.clear();
 		waitingFor.resetStatus();
+		markDirty();
 	}
 
 	public void updateCraftingLogic(IGrid grid, IEnergyGrid eg, CraftingCache cc)
@@ -359,18 +372,19 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 
 			for (IAEItemStack is : inventory.getItemList())
 			{
-				is = inventory.extractItems( is.copy(), Actionable.MODULATE, mySrc );
+				is = inventory.extractItems( is.copy(), Actionable.MODULATE, machineSrc );
 
 				if ( is != null )
-					is = ii.injectItems( is, Actionable.MODULATE, mySrc );
+					is = ii.injectItems( is, Actionable.MODULATE, machineSrc );
 
 				if ( is != null )
-					inventory.injectItems( is, Actionable.MODULATE, mySrc );
+					inventory.injectItems( is, Actionable.MODULATE, machineSrc );
 			}
 
 			if ( inventory.getItemList().isEmpty() )
 				inventory = new MECraftingInventory();
 
+			markDirty();
 			return;
 		}
 
@@ -428,7 +442,7 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 										{
 											fuzz = fuzz.copy();
 											fuzz.setStackSize( input[x].getStackSize() );
-											IAEItemStack ais = inventory.extractItems( fuzz, Actionable.MODULATE, mySrc );
+											IAEItemStack ais = inventory.extractItems( fuzz, Actionable.MODULATE, machineSrc );
 											ItemStack is = ais == null ? null : ais.getItemStack();
 
 											if ( is != null && details.isValidItemForSlot( x, is, getWorld() ) )
@@ -441,7 +455,7 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 									}
 									else
 									{
-										IAEItemStack ais = inventory.extractItems( input[x].copy(), Actionable.MODULATE, mySrc );
+										IAEItemStack ais = inventory.extractItems( input[x].copy(), Actionable.MODULATE, machineSrc );
 										ItemStack is = ais == null ? null : ais.getItemStack();
 
 										if ( is != null )
@@ -465,7 +479,7 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 								{
 									ItemStack is = ic.getStackInSlot( x );
 									if ( is != null )
-										inventory.injectItems( AEItemStack.create( is ), Actionable.MODULATE, mySrc );
+										inventory.injectItems( AEItemStack.create( is ), Actionable.MODULATE, machineSrc );
 								}
 								ic = null;
 								break;
@@ -494,6 +508,7 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 							}
 
 							ic = null; // hand off complete!
+							markDirty();
 
 							e.getValue().value--;
 							if ( e.getValue().value <= 0 )
@@ -512,7 +527,9 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 					{
 						ItemStack is = ic.getStackInSlot( x );
 						if ( is != null )
-							inventory.injectItems( AEItemStack.create( is ), Actionable.MODULATE, mySrc );
+						{
+							inventory.injectItems( AEItemStack.create( is ), Actionable.MODULATE, machineSrc );
+						}
 					}
 				}
 			}
@@ -544,7 +561,7 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 			finalOutput = job.getOutput();
 			waiting = false;
 			isComplete = false;
-			mySrc = src;
+			markDirty();
 			return true;
 		}
 		catch (CraftBranchFailure e)
@@ -555,6 +572,16 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 		}
 
 		return false;
+	}
+
+	private void markDirty()
+	{
+		getCore().markDirty();
+	}
+
+	private TileCraftingTile getCore()
+	{
+		return (TileCraftingTile) machineSrc.via;
 	}
 
 	public void addStorage(IAEItemStack extractItems)
@@ -621,6 +648,100 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 		is = what.copy();
 		is.setStackSize( 0 );
 		return is;
+	}
+
+	public void readFromNBT(NBTTagCompound data)
+	{
+		finalOutput = AEItemStack.loadItemStackFromNBT( (NBTTagCompound) data.getTag( "finalOutput" ) );
+		for (IAEItemStack ais : readList( (NBTTagList) data.getTag( "inventory" ) ))
+			inventory.injectItems( ais, Actionable.MODULATE, machineSrc );
+
+		waiting = data.getBoolean( "waiting" );
+
+		NBTTagList list = data.getTagList( "tasks", 10 );
+		for (int x = 0; x < list.tagCount(); x++)
+		{
+			NBTTagCompound item = list.getCompoundTagAt( x );
+			IAEItemStack pattern = AEItemStack.loadItemStackFromNBT( item );
+			if ( pattern != null && pattern.getItem() instanceof ICraftingPatternItem )
+			{
+				ICraftingPatternItem cpi = (ICraftingPatternItem) pattern.getItem();
+				ICraftingPatternDetails details = cpi.getPatternForItem( pattern.getItemStack(), getWorld() );
+				if ( details != null )
+				{
+					TaskProgress tp = new TaskProgress();
+					tp.value = item.getLong( "craftingProgress" );
+					tasks.put( details, tp );
+				}
+			}
+		}
+
+		waitingFor = readList( (NBTTagList) data.getTag( "waitingFor" ) );
+	}
+
+	public void writeToNBT(NBTTagCompound data)
+	{
+		data.setTag( "finalOutput", writeItem( finalOutput ) );
+		data.setTag( "inventory", writeList( inventory.getItemList() ) );
+		data.setBoolean( "waiting", waiting );
+
+		NBTTagList list = new NBTTagList();
+		for (Entry<ICraftingPatternDetails, TaskProgress> e : tasks.entrySet())
+		{
+			NBTTagCompound item = writeItem( AEItemStack.create( e.getKey().getPattern() ) );
+			item.setLong( "craftingProgress", e.getValue().value );
+			list.appendTag( item );
+		}
+		data.setTag( "tasks", list );
+
+		data.setTag( "waitingFor", writeList( waitingFor ) );
+	}
+
+	private IItemList<IAEItemStack> readList(NBTTagList tag)
+	{
+		IItemList<IAEItemStack> out = AEApi.instance().storage().createItemList();
+
+		for (int x = 0; x < tag.tagCount(); x++)
+		{
+			IAEItemStack ais = AEItemStack.loadItemStackFromNBT( tag.getCompoundTagAt( x ) );
+			if ( ais != null )
+				out.add( ais );
+		}
+
+		return out;
+	}
+
+	private NBTTagList writeList(IItemList<IAEItemStack> myList)
+	{
+		NBTTagList out = new NBTTagList();
+
+		for (IAEItemStack ais : myList)
+			out.appendTag( writeItem( ais ) );
+
+		return out;
+	}
+
+	private NBTTagCompound writeItem(IAEItemStack finalOutput2)
+	{
+		NBTTagCompound out = new NBTTagCompound();
+
+		if ( finalOutput2 != null )
+			finalOutput2.writeToNBT( out );
+
+		return out;
+	}
+
+	public void done()
+	{
+		TileCraftingTile core = getCore();
+
+		core.isCoreBlock = true;
+
+		if ( core.previousState != null )
+		{
+			readFromNBT( core.previousState );
+			core.previousState = null;
+		}
 	}
 
 }
