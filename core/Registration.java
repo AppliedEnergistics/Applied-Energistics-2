@@ -21,6 +21,7 @@ import appeng.api.features.IRecipeHandlerRegistry;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.networking.IGridCacheRegistry;
+import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.security.ISecurityGrid;
@@ -123,7 +124,7 @@ import appeng.items.tools.quartz.ToolQuartzPickaxe;
 import appeng.items.tools.quartz.ToolQuartzSpade;
 import appeng.items.tools.quartz.ToolQuartzSword;
 import appeng.items.tools.quartz.ToolQuartzWrench;
-import appeng.me.cache.CraftingCache;
+import appeng.me.cache.CraftingGridCache;
 import appeng.me.cache.EnergyGridCache;
 import appeng.me.cache.GridStorageCache;
 import appeng.me.cache.P2PCache;
@@ -523,7 +524,7 @@ public class Registration
 		gcr.registerGridCache( P2PCache.class, P2PCache.class );
 		gcr.registerGridCache( ISpatialCache.class, SpatialPylonCache.class );
 		gcr.registerGridCache( ISecurityGrid.class, SecurityCache.class );
-		gcr.registerGridCache( CraftingCache.class, CraftingCache.class );
+		gcr.registerGridCache( ICraftingGrid.class, CraftingGridCache.class );
 
 		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new AEExternalHandler() );
 
@@ -664,9 +665,9 @@ public class Registration
 
 	private void registerSpatial(boolean force)
 	{
-		if ( ! AEConfig.instance.isFeatureEnabled( AEFeature.SpatialIO ) )
+		if ( !AEConfig.instance.isFeatureEnabled( AEFeature.SpatialIO ) )
 			return;
-		
+
 		AEConfig config = AEConfig.instance;
 
 		if ( storageBiome == null )
@@ -675,8 +676,8 @@ public class Registration
 			{
 				config.storageBiomeID = Platform.findEmpty( BiomeGenBase.getBiomeGenArray() );
 				if ( config.storageBiomeID == -1 )
-					throw new RuntimeException("Biome Array is full, please free up some Biome ID's or disable spatial.");
-				
+					throw new RuntimeException( "Biome Array is full, please free up some Biome ID's or disable spatial." );
+
 				storageBiome = new BiomeGenStorage( config.storageBiomeID );
 				config.save();
 			}

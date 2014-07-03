@@ -10,12 +10,12 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
-import appeng.me.cache.CraftingCache;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.util.Platform;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -38,7 +38,7 @@ public class CraftingTreeProcess
 	Map<CraftingTreeNode, Long> nodes = new HashMap();
 	public boolean possible = true;
 
-	public CraftingTreeProcess(CraftingCache cc, CraftingJob job, ICraftingPatternDetails details, CraftingTreeNode craftingTreeNode, int depth, World world) {
+	public CraftingTreeProcess(ICraftingGrid cc, CraftingJob job, ICraftingPatternDetails details, CraftingTreeNode craftingTreeNode, int depth, World world) {
 		parent = craftingTreeNode;
 		this.details = details;
 		this.job = job;

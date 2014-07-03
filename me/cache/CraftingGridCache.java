@@ -4,16 +4,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 
+import net.minecraft.world.World;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridCache;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
+import appeng.api.networking.crafting.ICraftingCPU;
+import appeng.api.networking.crafting.ICraftingCallback;
+import appeng.api.networking.crafting.ICraftingGrid;
+import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingMedium;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
@@ -36,10 +45,11 @@ import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.crafting.TileCraftingStorageTile;
 import appeng.tile.crafting.TileCraftingTile;
 
+import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
-public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler
+public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler
 {
 
 	HashSet<CraftingCPUCluster> cpuClusters = new HashSet();
@@ -50,11 +60,11 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 	IEnergyGrid eg;
 
 	HashMap<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap();
-	HashMap<IAEItemStack, Set<ICraftingPatternDetails>> craftableItems = new HashMap();
+	HashMap<IAEItemStack, ImmutableSet<ICraftingPatternDetails>> craftableItems = new HashMap();
 
 	boolean updateList = false;
 
-	public CraftingCache(IGrid g) {
+	public CraftingGridCache(IGrid g) {
 		grid = g;
 	}
 
@@ -159,22 +169,32 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 		for (ICraftingProvider cp : providers)
 			cp.provideCrafting( this );
 
+		HashMap<IAEItemStack, Set<ICraftingPatternDetails>> tmpCraft = new HashMap();
+
 		// new craftables!
 		for (ICraftingPatternDetails details : craftingMethods.keySet())
+		{
 			for (IAEItemStack out : details.getOutputs())
 			{
 				out = out.copy();
 				out.reset();
 				out.setCraftable( true );
 
-				Set<ICraftingPatternDetails> methods = craftableItems.get( out );
+				Set<ICraftingPatternDetails> methods = tmpCraft.get( out );
 
 				if ( methods == null )
-					craftableItems.put( out, methods = new TreeSet() );
+					tmpCraft.put( out, methods = new TreeSet() );
 
 				methods.add( details );
 				sg.postAlterationOfStoredItems( StorageChannel.ITEMS, out, new BaseActionSource() );
 			}
+		}
+
+		// make them immutable
+		for (Entry<IAEItemStack, Set<ICraftingPatternDetails>> e : tmpCraft.entrySet())
+		{
+			craftableItems.put( e.getKey(), ImmutableSet.copyOf( e.getValue() ) );
+		}
 	}
 
 	@Override
@@ -263,10 +283,15 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 		return false;
 	}
 
-	public boolean submitJob(CraftingJob job, CraftingCPUCluster target, BaseActionSource src)
+	public boolean submitJob(ICraftingJob job, ICraftingCPU target, BaseActionSource src)
 	{
 		if ( job.isSimulation() )
 			return false;
+
+		CraftingCPUCluster cpuClust = null;
+
+		if ( target instanceof CraftingCPUCluster )
+			cpuClust = (CraftingCPUCluster) target;
 
 		if ( target == null )
 		{
@@ -275,13 +300,13 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 			{
 				if ( !cpu.isBusy() )
 				{
-					target = cpu;
+					cpuClust = cpu;
 					break;
 				}
 			}
 		}
 
-		if ( target != null && target.submitJob( grid, job, src ) )
+		if ( cpuClust != null && cpuClust.submitJob( grid, job, src ) )
 			return true;
 
 		return false;
@@ -293,9 +318,9 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 		return 0;
 	}
 
-	public Set<ICraftingPatternDetails> getCraftingFor(IAEItemStack what)
+	public ImmutableCollection<ICraftingPatternDetails> getCraftingFor(IAEItemStack what)
 	{
-		Set<ICraftingPatternDetails> res = craftableItems.get( what );
+		ImmutableSet<ICraftingPatternDetails> res = craftableItems.get( what );
 		if ( res == null )
 			return ImmutableSet.of();
 		return res;
@@ -315,6 +340,30 @@ public class CraftingCache implements IGridCache, ICraftingProviderHelper, ICell
 	public boolean validForPass(int i)
 	{
 		return i == 1;
+	}
+
+	final public static ExecutorService craftingPool;
+
+	static
+	{
+		ThreadFactory factory = new ThreadFactory() {
+
+			@Override
+			public Thread newThread(Runnable ar)
+			{
+				return new Thread( ar, "AE Crafting Calculator" );
+			}
+
+		};
+
+		craftingPool = Executors.newCachedThreadPool( factory );
+	}
+
+	@Override
+	public Future<ICraftingJob> beginCraftingJob(World world, IGrid grid, BaseActionSource actionSrc, IAEItemStack slotItem, ICraftingCallback cb)
+	{
+		CraftingJob cj = new CraftingJob( world, grid, actionSrc, slotItem, cb );
+		return craftingPool.submit( cj, (ICraftingJob) cj );
 	}
 
 }

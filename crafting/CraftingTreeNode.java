@@ -6,11 +6,11 @@ import net.minecraft.world.World;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
+import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.me.cache.CraftingCache;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 
 public class CraftingTreeNode
@@ -39,7 +39,7 @@ public class CraftingTreeNode
 
 	boolean sim;
 
-	public CraftingTreeNode(CraftingCache cc, CraftingJob job, IAEItemStack wat, CraftingTreeProcess par, int slot, int depth) {
+	public CraftingTreeNode(ICraftingGrid cc, CraftingJob job, IAEItemStack wat, CraftingTreeProcess par, int slot, int depth) {
 		what = wat;
 		parent = par;
 		this.slot = slot;

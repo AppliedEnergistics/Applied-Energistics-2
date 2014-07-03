@@ -12,10 +12,9 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotInaccessable;
-import appeng.crafting.ICraftingHost;
 import appeng.tile.inventory.AppEngInternalInventory;
 
-public class ContainerCraftAmount extends AEBaseContainer implements ICraftingHost
+public class ContainerCraftAmount extends AEBaseContainer
 {
 
 	ITerminalHost priHost;
@@ -38,7 +37,6 @@ public class ContainerCraftAmount extends AEBaseContainer implements ICraftingHo
 		verifyPermissions( SecurityPermissions.CRAFT, false );
 	}
 
-	@Override
 	public IGrid getGrid()
 	{
 		IActionHost h = ((IActionHost) this.getTarget());
@@ -50,7 +48,6 @@ public class ContainerCraftAmount extends AEBaseContainer implements ICraftingHo
 		return getPlayerInv().player.worldObj;
 	}
 
-	@Override
 	public BaseActionSource getActionSrc()
 	{
 		return new PlayerSource( getPlayerInv().player, (IActionHost) getTarget() );

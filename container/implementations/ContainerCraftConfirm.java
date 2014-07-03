@@ -13,6 +13,8 @@ import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
+import appeng.api.networking.crafting.ICraftingGrid;
+import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.PlayerSource;
@@ -26,16 +28,13 @@ import appeng.container.guisync.GuiSync;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
-import appeng.crafting.CraftingJob;
-import appeng.crafting.ICraftingHost;
-import appeng.me.cache.CraftingCache;
 
-public class ContainerCraftConfirm extends AEBaseContainer implements ICraftingHost
+public class ContainerCraftConfirm extends AEBaseContainer
 {
 
 	ITerminalHost priHost;
-	public Future<CraftingJob> job;
-	public CraftingJob result;
+	public Future<ICraftingJob> job;
+	public ICraftingJob result;
 
 	@GuiSync(0)
 	public long bytesUsed;
@@ -86,7 +85,7 @@ public class ContainerCraftConfirm extends AEBaseContainer implements ICraftingH
 					PacketMEInventoryUpdate c = result.isSimulation() ? new PacketMEInventoryUpdate( (byte) 2 ) : null;
 
 					IItemList<IAEItemStack> plan = AEApi.instance().storage().createItemList();
-					result.tree.getPlan( plan );
+					result.populatePlan( plan );
 
 					bytesUsed = result.getByteTotal();
 
@@ -162,7 +161,7 @@ public class ContainerCraftConfirm extends AEBaseContainer implements ICraftingH
 	{
 		if ( result != null && simulation == false )
 		{
-			CraftingCache cc = getGrid().getCache( CraftingCache.class );
+			ICraftingGrid cc = getGrid().getCache( ICraftingGrid.class );
 			cc.submitJob( result, null, getActionSrc() );
 			this.isContainerValid = false;
 		}
@@ -190,7 +189,6 @@ public class ContainerCraftConfirm extends AEBaseContainer implements ICraftingH
 		}
 	}
 
-	@Override
 	public IGrid getGrid()
 	{
 		IActionHost h = ((IActionHost) this.getTarget());
@@ -202,7 +200,6 @@ public class ContainerCraftConfirm extends AEBaseContainer implements ICraftingH
 		return getPlayerInv().player.worldObj;
 	}
 
-	@Override
 	public BaseActionSource getActionSrc()
 	{
 		return new PlayerSource( getPlayerInv().player, (IActionHost) getTarget() );

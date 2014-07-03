@@ -51,7 +51,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	public void updateStatus(CraftingCPUCluster c)
 	{
 		clust = c;
-		updateMeta();
+		updateMeta( true );
 	}
 
 	public void updateMultiBlock()
@@ -116,49 +116,43 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		{
 			clust.destroy();
 			if ( update )
-				updateMeta();
+				updateMeta( true );
 		}
+	}
+
+	@MENetworkEventSubscribe
+	public void onPowerStateChage(MENetworkChannelsChanged ev)
+	{
+		updateMeta( false );
 	}
 
 	@MENetworkEventSubscribe
 	public void onPowerStateChage(MENetworkPowerStatusChange ev)
 	{
-		updateMeta();
+		updateMeta( false );
 	}
 
-	@MENetworkEventSubscribe
-	public void ChannelChangesd(MENetworkChannelsChanged ev)
+	public void updateMeta(boolean updateFormed)
 	{
-		updateMeta();
-	}
-
-	public void updateMeta()
-	{
-		if ( !gridProxy.isReady() )
-			return;
-
-		boolean formed = clust != null;
+		boolean formed = isFormed();
 		boolean power = false;
-		power = gridProxy.isActive();
+
+		if ( gridProxy.isReady() )
+			power = gridProxy.isActive();
 
 		int current = worldObj.getBlockMetadata( xCoord, yCoord, zCoord );
 		int newmeta = (current & 3) | (formed ? 8 : 0) | (power ? 4 : 0);
 
 		if ( current != newmeta )
-		{
 			worldObj.setBlockMetadataWithNotify( xCoord, yCoord, zCoord, newmeta, 2 );
 
-			if ( isFormed() )
+		if ( updateFormed )
+		{
+			if ( formed )
 				gridProxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
 			else
 				gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 		}
-	}
-
-	private void dropAndBreak()
-	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -176,12 +170,16 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	@Override
 	public boolean isPowered()
 	{
-		return (worldObj.getBlockMetadata( xCoord, yCoord, zCoord ) & 4) == 4;
+		if ( Platform.isClient() )
+			return (worldObj.getBlockMetadata( xCoord, yCoord, zCoord ) & 4) == 4;
+		return gridProxy.isActive();
 	}
 
 	public boolean isFormed()
 	{
-		return (worldObj.getBlockMetadata( xCoord, yCoord, zCoord ) & 8) == 8;
+		if ( Platform.isClient() )
+			return (worldObj.getBlockMetadata( xCoord, yCoord, zCoord ) & 8) == 8;
+		return clust != null;
 	}
 
 	public boolean isAccelerator()

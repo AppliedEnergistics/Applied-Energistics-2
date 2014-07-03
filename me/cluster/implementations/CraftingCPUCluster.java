@@ -21,13 +21,14 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.CraftingItemList;
+import appeng.api.networking.crafting.ICraftingCPU;
+import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingMedium;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkCraftingCpuChange;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
-import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
@@ -40,14 +41,14 @@ import appeng.core.AELog;
 import appeng.crafting.CraftBranchFailure;
 import appeng.crafting.CraftingJob;
 import appeng.crafting.MECraftingInventory;
-import appeng.me.cache.CraftingCache;
+import appeng.me.cache.CraftingGridCache;
 import appeng.me.cluster.IAECluster;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack>
+public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 {
 
 	class TaskProgress
@@ -72,6 +73,8 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 	private LinkedList<TileCraftingTile> tiles = new LinkedList();
 	private LinkedList<TileCraftingTile> storage = new LinkedList<TileCraftingTile>();
 	private LinkedList<TileCraftingTile> status = new LinkedList<TileCraftingTile>();
+
+	long availableStorage = 0;
 
 	MachineSource machineSrc = null;
 
@@ -182,9 +185,7 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 	public void updateStatus(boolean updateGrid)
 	{
 		for (TileCraftingTile r : tiles)
-		{
-			r.updateMeta();
-		}
+			r.updateMeta( true );
 	}
 
 	@Override
@@ -213,6 +214,18 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 		}
 	}
 
+	@Override
+	public long getAvailableStorage()
+	{
+		return availableStorage;
+	}
+
+	@Override
+	public int getCoProcessors()
+	{
+		return accelerator;
+	}
+
 	public void addTile(TileCraftingTile te)
 	{
 		if ( machineSrc == null || te.isCoreBlock )
@@ -223,7 +236,10 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 		tiles.add( te );
 
 		if ( te.isStorage() )
+		{
+			availableStorage += te.getStorageBytes();
 			storage.add( te );
+		}
 		else if ( te.isStatus() )
 			status.add( te );
 		else if ( te.isAccelerator() )
@@ -373,7 +389,7 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 		storeItems(); // marks dirty
 	}
 
-	public void updateCraftingLogic(IGrid grid, IEnergyGrid eg, CraftingCache cc)
+	public void updateCraftingLogic(IGrid grid, IEnergyGrid eg, CraftingGridCache cc)
 	{
 		if ( isComplete )
 		{
@@ -566,9 +582,12 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 		return null;
 	}
 
-	public boolean submitJob(IGrid g, CraftingJob job, BaseActionSource src)
+	public boolean submitJob(IGrid g, ICraftingJob job, BaseActionSource src)
 	{
 		if ( !tasks.isEmpty() || !waitingFor.isEmpty() )
+			return false;
+
+		if ( !(job instanceof CraftingJob) )
 			return false;
 
 		IStorageGrid sg = g.getCache( IStorageGrid.class );
@@ -578,7 +597,7 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 		try
 		{
 			waitingFor.resetStatus();
-			job.tree.setJob( ci, this, src );
+			((CraftingJob) job).tree.setJob( ci, this, src );
 			ci.commit( src );
 			finalOutput = job.getOutput();
 			waiting = false;
@@ -621,6 +640,7 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 		i.value += crafts;
 	}
 
+	@Override
 	public boolean isBusy()
 	{
 		Iterator<Entry<ICraftingPatternDetails, TaskProgress>> i = tasks.entrySet().iterator();
@@ -768,6 +788,7 @@ public class CraftingCPUCluster implements IAECluster, IBaseMonitor<IAEItemStack
 		}
 	}
 
+	@Override
 	public BaseActionSource getActionSource()
 	{
 		return machineSrc;

@@ -8,6 +8,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.crafting.ICraftingCallback;
+import appeng.api.networking.crafting.ICraftingGrid;
+import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IStorageGrid;
@@ -15,12 +19,11 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AELog;
 import appeng.hooks.TickHandler;
-import appeng.me.cache.CraftingCache;
 import appeng.util.Platform;
 
 import com.google.common.base.Stopwatch;
 
-public class CraftingJob implements Runnable
+public class CraftingJob implements Runnable, ICraftingJob
 {
 
 	IAEItemStack output;
@@ -29,14 +32,14 @@ public class CraftingJob implements Runnable
 
 	HashSet<IAEItemStack> prophecies;
 
-	ICraftingHost jobHost;
-
 	boolean simulate = false;
 	final MECraftingInventory original;
 	final MECraftingInventory availableCheck;
 
 	public CraftingTreeNode tree;
 	private BaseActionSource actionSrc;
+	private ICraftingCallback callback;
+
 	long bytes = 0;
 	World world;
 
@@ -45,8 +48,7 @@ public class CraftingJob implements Runnable
 		return output;
 	}
 
-	public CraftingJob(World w, ICraftingHost host, NBTTagCompound data) {
-		jobHost = host;
+	public CraftingJob(World w, NBTTagCompound data) {
 		world = wrapWorld( w );
 		storage = AEApi.instance().storage().createItemList();
 		prophecies = new HashSet();
@@ -59,16 +61,16 @@ public class CraftingJob implements Runnable
 		return availableCheck.extractItems( available, Actionable.MODULATE, this.actionSrc );
 	}
 
-	public CraftingJob(World w, ICraftingHost host, IAEItemStack what, Actionable mode) {
-		jobHost = host;
+	public CraftingJob(World w, IGrid grid, BaseActionSource actionSrc, IAEItemStack what, ICraftingCallback callback) {
 		world = wrapWorld( w );
 		output = what.copy();
 		storage = AEApi.instance().storage().createItemList();
 		prophecies = new HashSet();
-		actionSrc = host.getActionSrc();
+		this.actionSrc = actionSrc;
 
-		CraftingCache cc = host.getGrid().getCache( CraftingCache.class );
-		IStorageGrid sg = host.getGrid().getCache( IStorageGrid.class );
+		this.callback = callback;
+		ICraftingGrid cc = grid.getCache( ICraftingGrid.class );
+		IStorageGrid sg = grid.getCache( IStorageGrid.class );
 		original = new MECraftingInventory( sg.getItemInventory(), false, false, false );
 		availableCheck = new MECraftingInventory( sg.getItemInventory(), false, false, false );
 		tree = getCraftingTree( cc, what );
@@ -79,7 +81,7 @@ public class CraftingJob implements Runnable
 		return w;
 	}
 
-	private CraftingTreeNode getCraftingTree(CraftingCache cc, IAEItemStack what)
+	private CraftingTreeNode getCraftingTree(ICraftingGrid cc, IAEItemStack what)
 	{
 		return new CraftingTreeNode( cc, this, what, null, -1, 0 );
 	}
@@ -225,6 +227,9 @@ public class CraftingJob implements Runnable
 
 	public void finish()
 	{
+		if ( callback != null )
+			callback.calculationComplete( this );
+
 		synchronized (monitor)
 		{
 			running = false;
@@ -337,6 +342,13 @@ public class CraftingJob implements Runnable
 	public void addBytes(long crafts)
 	{
 		bytes += crafts;
+	}
+
+	@Override
+	public void populatePlan(IItemList<IAEItemStack> plan)
+	{
+		if ( tree != null )
+			tree.getPlan( plan );
 	}
 
 }
