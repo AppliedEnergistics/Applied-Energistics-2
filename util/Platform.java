@@ -791,6 +791,15 @@ public class Platform
 		}
 	}
 
+	public static String getModId(IAEItemStack is)
+	{
+		if ( is == null )
+			return "** Null";
+
+		String n = ((AEItemStack) is).getModID();
+		return n == null ? "** Null" : n;
+	}
+
 	public static String getItemDisplayName(Object o)
 	{
 		if ( o == null )

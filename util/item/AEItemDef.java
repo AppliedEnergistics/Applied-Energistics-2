@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import appeng.util.Platform;
+import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -31,6 +32,9 @@ public class AEItemDef
 
 	@SideOnly(Side.CLIENT)
 	public List tooltip;
+
+	@SideOnly(Side.CLIENT)
+	public UniqueIdentifier uniqueID;
 
 	public OreRefrence isOre;
 

@@ -18,6 +18,8 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAETagCompound;
 import appeng.util.Platform;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -271,6 +273,23 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			return def.displayName;
 
 		return def.displayName = Platform.getItemDisplayName( getItemStack() );
+	}
+
+	@SideOnly(Side.CLIENT)
+	public String getModID()
+	{
+		if ( def.uniqueID != null )
+			return getModName( def.uniqueID );
+
+		return getModName( def.uniqueID = GameRegistry.findUniqueIdentifierFor( def.item ) );
+	}
+
+	private String getModName(UniqueIdentifier uniqueIdentifier)
+	{
+		if ( uniqueIdentifier == null )
+			return "** Null";
+
+		return uniqueIdentifier.modId == null ? "** Null" : uniqueIdentifier.modId;
 	}
 
 	@Override
@@ -588,4 +607,5 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	{
 		return def.isOre != null;
 	}
+
 }

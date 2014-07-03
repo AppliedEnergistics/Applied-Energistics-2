@@ -198,6 +198,13 @@ public class ItemRepo
 		boolean terminalSearchToolTips = AEConfig.instance.settings.getSetting( Settings.SEARCH_TOOLTIPS ) != YesNo.NO;
 		// boolean terminalSearchMods = Configuration.instance.settings.getSetting( Settings.SEARCH_MODS ) != YesNo.NO;
 
+		boolean searchMod = false;
+		if ( searchString.startsWith( "@" ) )
+		{
+			searchMod = true;
+			searchString = searchString.substring( 1 );
+		}
+
 		Pattern m = null;
 		try
 		{
@@ -236,7 +243,7 @@ public class ItemRepo
 			if ( vmode == ViewItems.STORED && is.getStackSize() == 0 )
 				continue;
 
-			String dspName = Platform.getItemDisplayName( is );
+			String dspName = searchMod ? Platform.getModId( is ) : Platform.getItemDisplayName( is );
 			notDone = true;
 
 			if ( m.matcher( dspName.toLowerCase() ).find() )
