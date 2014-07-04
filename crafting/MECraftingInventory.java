@@ -94,8 +94,6 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		if ( input == null )
 			return null;
 
-		// AELog.info( mode.toString() + "Inject: " + input.toString() );
-
 		if ( mode == Actionable.MODULATE )
 		{
 			if ( logInjections )
@@ -111,8 +109,6 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 	{
 		if ( request == null )
 			return null;
-
-		// AELog.info( mode.toString() + "Extract: " + request.toString() );
 
 		IAEItemStack list = localCache.findPrecise( request );
 		if ( list == null || list.getStackSize() == 0 )

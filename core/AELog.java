@@ -70,4 +70,13 @@ public class AELog
 			info( aeBaseTile.getClass().getName() + " @ " + xCoord + ", " + yCoord + ", " + zCoord );
 		}
 	}
+
+	public static void crafting(String format, Object... data)
+	{
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.CraftingLog ) )
+		{
+			log( Level.INFO, format, data );
+		}
+	}
+
 }

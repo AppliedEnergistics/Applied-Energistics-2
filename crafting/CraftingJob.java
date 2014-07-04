@@ -158,10 +158,10 @@ public class CraftingJob implements Runnable, ICraftingJob
 				for (String s : opsAndMultiplier.keySet())
 				{
 					twoIntegers ti = opsAndMultiplier.get( s );
-					AELog.info( s + " * " + ti.times + " = " + (ti.perOp * ti.times) );
+					AELog.crafting( s + " * " + ti.times + " = " + (ti.perOp * ti.times) );
 				}
 
-				AELog.info( "------------- " + getByteTotal() + "b real" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
+				AELog.crafting( "------------- " + getByteTotal() + "b real" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
 				// if ( mode == Actionable.MODULATE )
 				// meci.moveItemsToStorage( storage );
 			}
@@ -182,10 +182,10 @@ public class CraftingJob implements Runnable, ICraftingJob
 					for (String s : opsAndMultiplier.keySet())
 					{
 						twoIntegers ti = opsAndMultiplier.get( s );
-						AELog.info( s + " * " + ti.times + " = " + (ti.perOp * ti.times) );
+						AELog.crafting( s + " * " + ti.times + " = " + (ti.perOp * ti.times) );
 					}
 
-					AELog.info( "------------- " + getByteTotal() + "b simulate" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
+					AELog.crafting( "------------- " + getByteTotal() + "b simulate" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
 				}
 				catch (CraftBranchFailure e1)
 				{
@@ -197,7 +197,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 				}
 				catch (InterruptedException e1)
 				{
-					AELog.info( "Crafting calculation canceled." );
+					AELog.crafting( "Crafting calculation canceled." );
 					finish();
 					return;
 				}
@@ -208,7 +208,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 			}
 			catch (InterruptedException e1)
 			{
-				AELog.info( "Crafting calculation canceled." );
+				AELog.crafting( "Crafting calculation canceled." );
 				finish();
 				return;
 			}
@@ -336,7 +336,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 	private void log(String string)
 	{
-		// AELog.info( string );
+		// AELog.crafting( string );
 	}
 
 	public void addBytes(long crafts)

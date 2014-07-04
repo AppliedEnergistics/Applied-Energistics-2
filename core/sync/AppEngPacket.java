@@ -2,6 +2,9 @@ package appeng.core.sync;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+import appeng.core.AEConfig;
+import appeng.core.AELog;
+import appeng.core.features.AEFeature;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.core.sync.network.NetworkHandler;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
@@ -39,7 +42,12 @@ public abstract class AppEngPacket
 		if ( p.array().length > 2 * 1024 * 1024 ) // 2k walking room :)
 			throw new IllegalArgumentException( "Sorry AE2 made a " + p.array().length + " byte packet by accident!" );
 
-		return new FMLProxyPacket( p, NetworkHandler.instance.getChannel() );
+		FMLProxyPacket pp = new FMLProxyPacket( p, NetworkHandler.instance.getChannel() );
+
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.PacketLogging ) )
+			AELog.info( getClass().getName() + " : " + pp.payload().readableBytes() );
+
+		return pp;
 	}
 
 }
