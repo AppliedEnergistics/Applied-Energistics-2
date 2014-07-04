@@ -102,7 +102,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	@Override
 	public void detectAndSendChanges()
 	{
-		if ( Platform.isServer() )
+		if ( Platform.isServer() && !list.isEmpty() )
 		{
 			try
 			{
@@ -117,13 +117,20 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 					c.appendItem( monitor.getItemStack( out, CraftingItemList.PENDING ) );
 				}
 
+				list.resetStatus();
+
 				for (Object g : this.crafters)
 				{
 					if ( g instanceof EntityPlayer )
 					{
-						NetworkHandler.instance.sendTo( a, (EntityPlayerMP) g );
-						NetworkHandler.instance.sendTo( b, (EntityPlayerMP) g );
-						NetworkHandler.instance.sendTo( c, (EntityPlayerMP) g );
+						if ( !a.isEmpty() )
+							NetworkHandler.instance.sendTo( a, (EntityPlayerMP) g );
+
+						if ( !b.isEmpty() )
+							NetworkHandler.instance.sendTo( b, (EntityPlayerMP) g );
+
+						if ( !c.isEmpty() )
+							NetworkHandler.instance.sendTo( c, (EntityPlayerMP) g );
 					}
 				}
 			}

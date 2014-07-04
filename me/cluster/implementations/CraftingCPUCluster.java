@@ -98,6 +98,11 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	protected void postChange(IAEItemStack diff, BaseActionSource src)
 	{
 		Iterator<Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object>> i = getListeners();
+
+		// protect integrity
+		if ( i.hasNext() )
+			diff = diff.copy();
+
 		while (i.hasNext())
 		{
 			Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object> o = i.next();
@@ -272,6 +277,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			if ( is != null && is.getStackSize() > 0 )
 			{
 				waiting = false;
+				postChange( (IAEItemStack) input, src );
 
 				if ( is.getStackSize() >= input.getStackSize() )
 				{
@@ -400,6 +406,11 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		if ( myLastLink != null )
 			myLastLink.cancel();
 
+		IItemList<IAEItemStack> list;
+		getListOfItem( list = AEApi.instance().storage().createItemList(), CraftingItemList.ALL );
+		for (IAEItemStack g : list)
+			postChange( g, machineSrc );
+
 		isComplete = true;
 		myLastLink = null;
 		tasks.clear();
@@ -486,6 +497,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 											if ( is != null && details.isValidItemForSlot( x, is, getWorld() ) )
 											{
+												postChange( input[x], machineSrc );
 												ic.setInventorySlotContents( x, is );
 												found = true;
 												break;
@@ -499,6 +511,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 										if ( is != null )
 										{
+											postChange( input[x], machineSrc );
 											ic.setInventorySlotContents( x, is );
 											found = true;
 											continue;
@@ -531,7 +544,10 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 							remainingOperations--;
 
 							for (IAEItemStack out : details.getCondencedOutputs())
+							{
+								postChange( out, machineSrc );
 								waitingFor.add( out.copy() );
+							}
 
 							if ( details.isCraftable() )
 							{
@@ -542,7 +558,11 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 								{
 									ItemStack output = Platform.getContainerItem( ic.getStackInSlot( x ) );
 									if ( output != null )
-										waitingFor.add( AEItemStack.create( output ) );
+									{
+										IAEItemStack cItem = AEItemStack.create( output );
+										postChange( cItem, machineSrc );
+										waitingFor.add( AEItemStack.create( cItem ) );
+									}
 								}
 							}
 
@@ -592,7 +612,10 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			is = inventory.extractItems( is.copy(), Actionable.MODULATE, machineSrc );
 
 			if ( is != null )
+			{
+				postChange( is, machineSrc );
 				is = ii.injectItems( is, Actionable.MODULATE, machineSrc );
+			}
 
 			if ( is != null )
 				inventory.injectItems( is, Actionable.MODULATE, machineSrc );
@@ -642,6 +665,11 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 			submitLink( myLastLink );
 			submitLink( whatLink );
+
+			IItemList<IAEItemStack> list;
+			getListOfItem( list = AEApi.instance().storage().createItemList(), CraftingItemList.ALL );
+			for (IAEItemStack ge : list)
+				postChange( ge, machineSrc );
 
 			return whatLink;
 		}
