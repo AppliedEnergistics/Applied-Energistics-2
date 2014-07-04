@@ -550,6 +550,10 @@ public class Registration
 		Api.instance.partHelper.initFMPSupport();
 		((BlockCableBus) AEApi.instance().blocks().blockMultiPart.block()).setupTile();
 
+		// interface
+		Upgrades.CRAFTING.registerItem( AEApi.instance().parts().partInterface.stack( 1 ), 1 );
+		Upgrades.CRAFTING.registerItem( AEApi.instance().blocks().blockInterface.stack( 1 ), 1 );
+
 		// IO PORT!
 		Upgrades.SPEED.registerItem( AEApi.instance().blocks().blockIOPort.stack( 1 ), 3 );
 		Upgrades.REDSTONE.registerItem( AEApi.instance().blocks().blockIOPort.stack( 1 ), 1 );
@@ -568,6 +572,7 @@ public class Registration
 		Upgrades.REDSTONE.registerItem( AEApi.instance().parts().partExportBus.stack( 1 ), 1 );
 		Upgrades.CAPACITY.registerItem( AEApi.instance().parts().partExportBus.stack( 1 ), 2 );
 		Upgrades.SPEED.registerItem( AEApi.instance().parts().partExportBus.stack( 1 ), 4 );
+		Upgrades.CRAFTING.registerItem( AEApi.instance().parts().partExportBus.stack( 1 ), 1 );
 
 		// blockCellWorkbench
 		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemCell1k.stack( 1 ), 1 );
@@ -604,7 +609,6 @@ public class Registration
 		Upgrades.SPEED.registerItem( AEApi.instance().items().itemMassCannon.stack( 1 ), 4 );
 
 		// molecular assembler
-		Upgrades.REDSTONE.registerItem( AEApi.instance().blocks().blockMolecularAssembler.stack( 1 ), 1 );
 		Upgrades.SPEED.registerItem( AEApi.instance().blocks().blockMolecularAssembler.stack( 1 ), 5 );
 
 		AEApi.instance().registries().wireless().registerWirelessHandler( (IWirelessTermHandler) AEApi.instance().items().itemWirelessTerminal.item() );
