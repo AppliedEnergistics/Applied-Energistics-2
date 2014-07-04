@@ -1,15 +1,25 @@
 package appeng.parts.automation;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.PowerMultiplier;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.ICraftingGrid;
+import appeng.api.networking.crafting.ICraftingJob;
+import appeng.api.networking.crafting.ICraftingLink;
+import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
@@ -22,27 +32,63 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.texture.CableBusTextures;
+import appeng.core.AELog;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.GuiBridge;
 import appeng.me.GridAccessException;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import appeng.util.item.AEItemStack;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PartExportBus extends PartSharedItemBus implements IGridTickable
+public class PartExportBus extends PartSharedItemBus implements IGridTickable, ICraftingRequester
 {
 
 	BaseActionSource mySrc;
+
+	Future<ICraftingJob> calculatingJob = null;
+	ICraftingLink[] links = null;
 
 	public PartExportBus(ItemStack is) {
 		super( PartExportBus.class, is );
 		settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		settings.registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 		mySrc = new MachineSource( this );
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound extra)
+	{
+		super.readFromNBT( extra );
+
+		for (int x = 0; x < 9; x++)
+		{
+			NBTTagCompound link = extra.getCompoundTag( "links-" + x );
+			if ( link != null && !link.hasNoTags() )
+				setLink( x, AEApi.instance().storage().loadCraftingLink( link, this ) );
+		}
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound extra)
+	{
+		super.writeToNBT( extra );
+
+		for (int x = 0; x < 9; x++)
+		{
+			ICraftingLink link = getLink( x );
+			if ( link != null )
+			{
+				NBTTagCompound ln = new NBTTagCompound();
+				link.writeToNBT( ln );
+				extra.setTag( "links-" + x, ln );
+			}
+		}
 	}
 
 	@Override
@@ -164,20 +210,67 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 				for (int x = 0; x < availableSlots() && itemToSend > 0; x++)
 				{
 					IAEItemStack ais = config.getAEStackInSlot( x );
-					if ( ais == null || itemToSend <= 0 )
+					if ( ais == null || itemToSend <= 0 || craftOnly() )
+					{
+						if ( isCraftingEnabled() && ais != null && d.simulateAdd( ais.getItemStack() ) == null )
+						{
+							ICraftingGrid cg = proxy.getCrafting();
+
+							if ( getLink( x ) != null )
+							{
+								continue;
+							}
+							else if ( calculatingJob != null )
+							{
+								ICraftingJob job = null;
+								try
+								{
+									if ( calculatingJob.isDone() )
+										job = calculatingJob.get();
+									else if ( calculatingJob.isCancelled() )
+										calculatingJob = null;
+
+									if ( job != null )
+									{
+										calculatingJob = null;
+										setLink( x, cg.submitJob( job, this, null, mySrc ) );
+										didSomething = true;
+									}
+								}
+								catch (InterruptedException e)
+								{
+									// :P
+								}
+								catch (ExecutionException e)
+								{
+									// :P
+								}
+							}
+							else
+							{
+								if ( getLink( x ) == null )
+								{
+									IAEItemStack aisC = ais.copy();
+									aisC.setStackSize( itemToSend );
+									calculatingJob = cg.beginCraftingJob( getTile().getWorldObj(), proxy.getGrid(), mySrc, aisC, null );
+								}
+							}
+						}
+
 						continue;
+					}
 
 					if ( getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 					{
 						for (IAEItemStack o : ImmutableList.copyOf( inv.getStorageList().findFuzzy( ais, fzMode ) ))
 						{
-							pushItemIntoTarget( d, energy, fzMode, inv, o );
+							pushItemIntoTarget( d, energy, inv, o );
 							if ( itemToSend <= 0 )
 								break;
 						}
 					}
 					else
-						pushItemIntoTarget( d, energy, fzMode, inv, ais );
+						pushItemIntoTarget( d, energy, inv, ais );
 				}
 			}
 
@@ -190,7 +283,17 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 		return didSomething ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
 	}
 
-	private void pushItemIntoTarget(InventoryAdaptor d, IEnergyGrid energy, FuzzyMode fzMode, IMEInventory<IAEItemStack> inv, IAEItemStack ais)
+	private boolean craftOnly()
+	{
+		return true;
+	}
+
+	private boolean isCraftingEnabled()
+	{
+		return getInstalledUpgrades( Upgrades.CRAFTING ) > 0;
+	}
+
+	private void pushItemIntoTarget(InventoryAdaptor d, IEnergyGrid energy, IMEInventory<IAEItemStack> inv, IAEItemStack ais)
 	{
 		ItemStack is = ais.getItemStack();
 		is.stackSize = (int) itemToSend;
@@ -242,5 +345,86 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable
 	public TickingRequest getTickingRequest(IGridNode node)
 	{
 		return new TickingRequest( TickRates.ExportBus.min, TickRates.ExportBus.max, isSleeping(), false );
+	}
+
+	ICraftingLink getLink(int slot)
+	{
+		if ( links == null )
+			return null;
+
+		return links[slot];
+	}
+
+	void setLink(int slot, ICraftingLink l)
+	{
+		if ( links == null )
+			links = new ICraftingLink[9];
+
+		links[slot] = l;
+
+		boolean hasStuff = false;
+		for (int x = 0; x < links.length; x++)
+		{
+			ICraftingLink g = links[x];
+
+			if ( g == null || g.isCanceled() || g.isDone() )
+				links[x] = null;
+			else
+				hasStuff = true;
+		}
+
+		if ( hasStuff == false )
+			links = null;
+	}
+
+	@Override
+	public ImmutableSet<ICraftingLink> getRequestedJobs()
+	{
+		if ( links == null )
+			return ImmutableSet.of();
+
+		return ImmutableSet.copyOf( new NonNullArrayIterator( links ) );
+	}
+
+	@Override
+	public IAEItemStack injectCratedItems(ICraftingLink link, IAEItemStack items)
+	{
+		InventoryAdaptor d = getHandler();
+
+		try
+		{
+			if ( proxy.isActive() )
+			{
+				IEnergyGrid energy = proxy.getEnergy();
+
+				double power = items.getStackSize();
+				if ( energy.extractAEPower( power, Actionable.MODULATE, PowerMultiplier.CONFIG ) > power - 0.01 )
+				{
+					return AEItemStack.create( d.addItems( items.getItemStack() ) );
+				}
+			}
+		}
+		catch (GridAccessException e)
+		{
+			AELog.error( e );
+		}
+
+		return items;
+	}
+
+	@Override
+	public void jobStateChange(ICraftingLink link)
+	{
+		if ( links != null )
+		{
+			for (int x = 0; x < links.length; x++)
+			{
+				if ( links[x] == link )
+				{
+					setLink( x, null );
+					return;
+				}
+			}
+		}
 	}
 }

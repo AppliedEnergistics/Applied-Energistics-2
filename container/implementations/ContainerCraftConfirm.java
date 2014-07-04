@@ -162,7 +162,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		if ( result != null && simulation == false )
 		{
 			ICraftingGrid cc = getGrid().getCache( ICraftingGrid.class );
-			cc.submitJob( result, null, getActionSrc() );
+			cc.submitJob( result, null, null, getActionSrc() );
 			this.isContainerValid = false;
 		}
 	}

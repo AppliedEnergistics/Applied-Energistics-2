@@ -5,7 +5,10 @@ import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
+import appeng.api.networking.crafting.ICraftingLink;
+import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;
@@ -13,6 +16,7 @@ import appeng.api.storage.IStorageHelper;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.crafting.CraftingLink;
 import appeng.util.Platform;
 import appeng.util.item.AEFluidStack;
 import appeng.util.item.AEItemStack;
@@ -36,13 +40,13 @@ public class ApiStorage implements IStorageHelper
 	@Override
 	public IItemList<IAEItemStack> createItemList()
 	{
-		return new ItemList( IAEItemStack.class);
+		return new ItemList( IAEItemStack.class );
 	}
 
 	@Override
 	public IItemList<IAEFluidStack> createFluidList()
 	{
-		return new ItemList( IAEFluidStack.class);
+		return new ItemList( IAEFluidStack.class );
 	}
 
 	@Override
@@ -67,5 +71,11 @@ public class ApiStorage implements IStorageHelper
 	public IAEFluidStack readFluidFromPacket(ByteBuf input) throws IOException
 	{
 		return AEFluidStack.loadFluidStackFromPacket( input );
+	}
+
+	@Override
+	public ICraftingLink loadCraftingLink(NBTTagCompound data, ICraftingRequester req)
+	{
+		return new CraftingLink( data, req );
 	}
 }

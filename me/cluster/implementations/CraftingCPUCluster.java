@@ -22,9 +22,12 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.CraftingItemList;
 import appeng.api.networking.crafting.ICraftingCPU;
+import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingJob;
+import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingMedium;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkCraftingCpuChange;
 import appeng.api.networking.security.BaseActionSource;
@@ -40,6 +43,7 @@ import appeng.container.ContainerNull;
 import appeng.core.AELog;
 import appeng.crafting.CraftBranchFailure;
 import appeng.crafting.CraftingJob;
+import appeng.crafting.CraftingLink;
 import appeng.crafting.MECraftingInventory;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cluster.IAECluster;
@@ -75,6 +79,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	private LinkedList<TileCraftingTile> status = new LinkedList<TileCraftingTile>();
 
 	long availableStorage = 0;
+	public ICraftingLink myLastLink;
 
 	MachineSource machineSrc = null;
 
@@ -284,6 +289,9 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 						if ( finalOutput.getStackSize() <= 0 )
 							completeJob();
 
+						if ( myLastLink != null )
+							return ((CraftingLink) myLastLink).injectItems( (IAEItemStack) input );
+
 						return input; // ignore it.
 					}
 
@@ -306,6 +314,9 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 					finalOutput.decStackSize( input.getStackSize() );
 					if ( finalOutput.getStackSize() <= 0 )
 						completeJob();
+
+					if ( myLastLink != null )
+						return ((CraftingLink) myLastLink).injectItems( (IAEItemStack) input );
 
 					return input; // ignore it.
 				}
@@ -338,6 +349,9 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	private void completeJob()
 	{
+		if ( myLastLink != null )
+			((CraftingLink) myLastLink).markDone();
+
 		AELog.info( "marking job as complete" );
 		isComplete = true;
 	}
@@ -383,7 +397,11 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	public void cancel()
 	{
+		if ( myLastLink != null )
+			myLastLink.cancel();
+
 		isComplete = true;
+		myLastLink = null;
 		tasks.clear();
 		waitingFor.resetStatus();
 		storeItems(); // marks dirty
@@ -391,6 +409,15 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	public void updateCraftingLogic(IGrid grid, IEnergyGrid eg, CraftingGridCache cc)
 	{
+		if ( myLastLink != null )
+		{
+			if ( myLastLink.isCanceled() )
+			{
+				myLastLink = null;
+				cancel();
+			}
+		}
+
 		if ( isComplete )
 		{
 			if ( inventory.getItemList().isEmpty() )
@@ -579,16 +606,16 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	private World getWorld()
 	{
-		return null;
+		return getCore().getWorldObj();
 	}
 
-	public boolean submitJob(IGrid g, ICraftingJob job, BaseActionSource src)
+	public ICraftingLink submitJob(IGrid g, ICraftingJob job, BaseActionSource src, ICraftingRequester requestingMachine)
 	{
 		if ( !tasks.isEmpty() || !waitingFor.isEmpty() )
-			return false;
+			return null;
 
 		if ( !(job instanceof CraftingJob) )
-			return false;
+			return null;
 
 		IStorageGrid sg = g.getCache( IStorageGrid.class );
 		IMEInventory<IAEItemStack> storage = sg.getItemInventory();
@@ -603,7 +630,20 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			waiting = false;
 			isComplete = false;
 			markDirty();
-			return true;
+
+			String craftID = generateCraftingID();
+
+			myLastLink = new CraftingLink( generateLinkData( craftID, requestingMachine == null, false ), this );
+
+			if ( requestingMachine == null )
+				return myLastLink;
+
+			ICraftingLink whatLink = new CraftingLink( generateLinkData( craftID, requestingMachine == null, true ), requestingMachine );
+
+			submitLink( myLastLink );
+			submitLink( whatLink );
+
+			return whatLink;
 		}
 		catch (CraftBranchFailure e)
 		{
@@ -612,7 +652,39 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			AELog.error( e );
 		}
 
-		return false;
+		return null;
+	}
+
+	private void submitLink(ICraftingLink myLastLink2)
+	{
+		if ( getGrid() != null )
+		{
+			CraftingGridCache cc = getGrid().getCache( ICraftingGrid.class );
+			cc.addLink( (CraftingLink) myLastLink2 );
+		}
+	}
+
+	private String generateCraftingID()
+	{
+		long now = System.currentTimeMillis();
+		int hash = System.identityHashCode( this );
+		int hmm = finalOutput == null ? 0 : finalOutput.hashCode();
+
+		return Long.toString( now, Character.MAX_RADIX ) + "-" + Integer.toString( hash, Character.MAX_RADIX ) + "-"
+				+ Integer.toString( hmm, Character.MAX_RADIX );
+	}
+
+	private NBTTagCompound generateLinkData(String craftingID, boolean standalone, boolean req)
+	{
+		NBTTagCompound tag = new NBTTagCompound();
+
+		tag.setString( "CraftID", craftingID );
+		tag.setBoolean( "canceled", false );
+		tag.setBoolean( "done", false );
+		tag.setBoolean( "standalone", standalone );
+		tag.setBoolean( "req", req );
+
+		return tag;
 	}
 
 	private void markDirty()
@@ -701,6 +773,13 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		waiting = data.getBoolean( "waiting" );
 		isComplete = data.getBoolean( "isComplete" );
 
+		if ( data.hasKey( "link" ) )
+		{
+			NBTTagCompound link = data.getCompoundTag( "link" );
+			myLastLink = new CraftingLink( link, this );
+			submitLink( myLastLink );
+		}
+
 		NBTTagList list = data.getTagList( "tasks", 10 );
 		for (int x = 0; x < list.tagCount(); x++)
 		{
@@ -729,6 +808,13 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		data.setBoolean( "waiting", waiting );
 		data.setBoolean( "isComplete", isComplete );
 
+		if ( myLastLink != null )
+		{
+			NBTTagCompound link = new NBTTagCompound();
+			myLastLink.writeToNBT( link );
+			data.setTag( "link", link );
+		}
+
 		NBTTagList list = new NBTTagList();
 		for (Entry<ICraftingPatternDetails, TaskProgress> e : tasks.entrySet())
 		{
@@ -744,6 +830,8 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	private IItemList<IAEItemStack> readList(NBTTagList tag)
 	{
 		IItemList<IAEItemStack> out = AEApi.instance().storage().createItemList();
+		if ( tag == null )
+			return out;
 
 		for (int x = 0; x < tag.tagCount(); x++)
 		{

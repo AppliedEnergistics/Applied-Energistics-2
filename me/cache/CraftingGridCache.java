@@ -3,6 +3,7 @@ package appeng.me.cache;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -23,10 +24,12 @@ import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingCallback;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingJob;
+import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingMedium;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
+import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkCraftingCpuChange;
 import appeng.api.networking.events.MENetworkCraftingPatternChange;
@@ -41,6 +44,8 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.crafting.CraftingJob;
+import appeng.crafting.CraftingLink;
+import appeng.crafting.CraftingLinkNexus;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.crafting.TileCraftingStorageTile;
 import appeng.tile.crafting.TileCraftingTile;
@@ -61,6 +66,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 	HashMap<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap();
 	HashMap<IAEItemStack, ImmutableSet<ICraftingPatternDetails>> craftableItems = new HashMap();
+	HashMap<String, CraftingLinkNexus> links = new HashMap();
 
 	boolean updateList = false;
 
@@ -77,6 +83,18 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		sg.registerCellProvider( this );
 	}
 
+	public void addLink(CraftingLink l)
+	{
+		if ( l.isStandalone() )
+			return;
+
+		CraftingLinkNexus n = links.get( l.getCraftingID() );
+		if ( n == null )
+			links.put( l.getCraftingID(), n = new CraftingLinkNexus( l.getCraftingID() ) );
+
+		l.setNextus( n );
+	}
+
 	@Override
 	public void onUpdateTick()
 	{
@@ -84,6 +102,13 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		{
 			updateList = false;
 			updateCPUClusters();
+		}
+
+		Iterator<CraftingLinkNexus> i = links.values().iterator();
+		while (i.hasNext())
+		{
+			if ( i.next().isDead( grid, this ) )
+				i.remove();
 		}
 
 		for (CraftingCPUCluster cpu : cpuClusters)
@@ -105,6 +130,17 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	@Override
 	public void removeNode(IGridNode gridNode, IGridHost machine)
 	{
+		if ( machine instanceof ICraftingRequester )
+		{
+			Iterator<CraftingLinkNexus> nex = links.values().iterator();
+			while (nex.hasNext())
+			{
+				CraftingLinkNexus n = nex.next();
+				if ( n.isMachine( machine ) )
+					n.removeNode();
+			}
+		}
+
 		if ( machine instanceof TileCraftingTile )
 			updateList = true;
 		if ( machine instanceof ICraftingProvider )
@@ -117,6 +153,15 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	@Override
 	public void addNode(IGridNode gridNode, IGridHost machine)
 	{
+		if ( machine instanceof ICraftingRequester )
+		{
+			for (ICraftingLink l : ((ICraftingRequester) machine).getRequestedJobs())
+			{
+				if ( l instanceof CraftingLink )
+					addLink( (CraftingLink) l );
+			}
+		}
+
 		if ( machine instanceof TileCraftingTile )
 			updateList = true;
 		if ( machine instanceof ICraftingProvider )
@@ -134,7 +179,12 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			TileCraftingStorageTile tile = (TileCraftingStorageTile) cst.getMachine();
 			CraftingCPUCluster clust = (CraftingCPUCluster) tile.getCluster();
 			if ( clust != null )
+			{
 				cpuClusters.add( clust );
+
+				if ( clust.myLastLink != null )
+					addLink( (CraftingLink) clust.myLastLink );
+			}
 		}
 	}
 
@@ -283,10 +333,11 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		return false;
 	}
 
-	public boolean submitJob(ICraftingJob job, ICraftingCPU target, BaseActionSource src)
+	@Override
+	public ICraftingLink submitJob(ICraftingJob job, ICraftingRequester requestingMachine, ICraftingCPU target, BaseActionSource src)
 	{
 		if ( job.isSimulation() )
-			return false;
+			return null;
 
 		CraftingCPUCluster cpuClust = null;
 
@@ -306,10 +357,10 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			}
 		}
 
-		if ( cpuClust != null && cpuClust.submitJob( grid, job, src ) )
-			return true;
+		if ( cpuClust != null )
+			return cpuClust.submitJob( grid, job, src, requestingMachine );
 
-		return false;
+		return null;
 	}
 
 	@Override
@@ -362,8 +413,16 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	@Override
 	public Future<ICraftingJob> beginCraftingJob(World world, IGrid grid, BaseActionSource actionSrc, IAEItemStack slotItem, ICraftingCallback cb)
 	{
+		if ( world == null || grid == null || actionSrc == null || slotItem == null )
+			throw new RuntimeException( "Invalid Craftinb Job Request" );
+
 		CraftingJob cj = new CraftingJob( world, grid, actionSrc, slotItem, cb );
 		return craftingPool.submit( cj, (ICraftingJob) cj );
+	}
+
+	public boolean hasCpu(ICraftingCPU cpu)
+	{
+		return cpuClusters.contains( cpu );
 	}
 
 }

@@ -13,6 +13,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkPowerIdleChange;
 import appeng.api.networking.pathing.IPathingGrid;
@@ -57,12 +58,12 @@ public class AENetworkProxy implements IGridBlock
 	{
 		return myRepInstance;
 	}
-	
-	public void setVisualRepresentation( ItemStack is )
+
+	public void setVisualRepresentation(ItemStack is)
 	{
 		myRepInstance = is;
 	}
-	
+
 	public AENetworkProxy(IGridProxyable te, String nbtName, ItemStack visual, boolean inWorld) {
 		this.gp = te;
 		this.nbtName = nbtName;
@@ -269,6 +270,20 @@ public class AENetworkProxy implements IGridBlock
 			throw new GridAccessException();
 
 		ISecurityGrid sg = grid.getCache( ISecurityGrid.class );
+
+		if ( sg == null )
+			throw new GridAccessException();
+
+		return sg;
+	}
+
+	public ICraftingGrid getCrafting() throws GridAccessException
+	{
+		IGrid grid = getGrid();
+		if ( grid == null )
+			throw new GridAccessException();
+
+		ICraftingGrid sg = grid.getCache( ICraftingGrid.class );
 
 		if ( sg == null )
 			throw new GridAccessException();
