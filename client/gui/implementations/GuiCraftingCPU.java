@@ -73,7 +73,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	public void initGui()
 	{
 		super.initGui();
-
+		setScrollBar();
 		cancel = new GuiButton( 0, this.guiLeft + 163, this.guiTop + ySize - 25, 50, 20, GuiText.Cancel.getLocal() );
 		buttonList.add( cancel );
 	}
