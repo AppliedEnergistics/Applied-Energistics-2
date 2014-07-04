@@ -899,6 +899,9 @@ public class Platform
 
 	public static EntityPlayer getPlayer(WorldServer w)
 	{
+		if ( w == null )
+			throw new NullPointerException();
+
 		EntityPlayer wrp = fakePlayers.get( w );
 		if ( wrp != null )
 			return wrp;

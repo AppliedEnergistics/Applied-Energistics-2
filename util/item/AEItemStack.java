@@ -211,9 +211,13 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 	public static IAEItemStack loadItemStackFromNBT(NBTTagCompound i)
 	{
+		if ( i == null )
+			return null;
+
 		ItemStack itemstack = ItemStack.loadItemStackFromNBT( i );
 		if ( itemstack == null )
 			return null;
+
 		AEItemStack aeis = AEItemStack.create( itemstack );
 		// aeis.priority = i.getInteger( "Priority" );
 		aeis.stackSize = i.getLong( "Cnt" );
