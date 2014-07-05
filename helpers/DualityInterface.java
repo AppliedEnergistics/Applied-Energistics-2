@@ -830,6 +830,18 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 	public void notifyNeightbors()
 	{
+		if ( gridProxy.isActive() )
+		{
+			try
+			{
+				gridProxy.getTick().wakeDevice( gridProxy.getNode() );
+			}
+			catch (GridAccessException e)
+			{
+				// :P
+			}
+		}
+
 		TileEntity te = iHost.getTileEntity();
 		if ( te != null && te.getWorldObj() != null )
 		{

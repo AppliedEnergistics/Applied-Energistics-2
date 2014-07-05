@@ -276,7 +276,7 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable, I
 
 		try
 		{
-			if ( proxy.isActive() )
+			if ( d != null && proxy.isActive() )
 			{
 				IEnergyGrid energy = proxy.getEnergy();
 
