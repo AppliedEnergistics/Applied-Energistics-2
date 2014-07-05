@@ -14,6 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.config.Upgrades;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.IGridNode;
@@ -352,6 +353,12 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	public boolean isBusy()
 	{
 		return duality.isBusy();
+	}
+
+	@Override
+	public int getInstalledUpgrades(Upgrades u)
+	{
+		return duality.getInstalledUpgrades( u );
 	}
 
 }

@@ -148,11 +148,6 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			registerApp( 64, Settings.SORT_BY, SortOrder.NAME, ButtonToolTips.SortBy, ButtonToolTips.ItemName );
 			registerApp( 65, Settings.SORT_BY, SortOrder.AMOUNT, ButtonToolTips.SortBy, ButtonToolTips.NumberOfItems );
 			registerApp( 68, Settings.SORT_BY, SortOrder.INVTWEAKS, ButtonToolTips.SortBy, ButtonToolTips.InventoryTweaks );
-			// registerApp( 66, Settings.SORT_BY, SortOrder.PRIORITY,
-			// "AppEng.GuiITooltip.SortBy",
-			// "AppEng.GuiITooltip.PriorityCellOrder" );
-			// registerApp( 68, Settings.SORT_BY, SortOrder.MOD,
-			// ButtonToolTips.SortBy, ButtonToolTips.ItemID );
 
 			registerApp( 66, Settings.ACTIONS, ActionItems.WRENCH, ButtonToolTips.PartitionStorage, ButtonToolTips.PartitionStorageHint );
 			registerApp( 6, Settings.ACTIONS, ActionItems.CLOSE, ButtonToolTips.Clear, ButtonToolTips.ClearSettings );
@@ -175,14 +170,11 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			registerApp( 81, Settings.FULLNESS_MODE, FullnessMode.HALF, ButtonToolTips.OperationMode, ButtonToolTips.MoveWhenWorkIsDone );
 			registerApp( 82, Settings.FULLNESS_MODE, FullnessMode.FULL, ButtonToolTips.OperationMode, ButtonToolTips.MoveWhenFull );
 
-			registerApp( 16 * 8 + 0, Settings.TRASH_CATCH, YesNo.YES, ButtonToolTips.TrashController, ButtonToolTips.Disabled );
-			registerApp( 16 * 8 + 1, Settings.TRASH_CATCH, YesNo.NO, ButtonToolTips.TrashController, ButtonToolTips.Enable );
-
 			registerApp( 16 * 1 + 5, Settings.BLOCK, YesNo.YES, ButtonToolTips.InterfaceBlockingMode, ButtonToolTips.Blocking );
 			registerApp( 16 * 1 + 4, Settings.BLOCK, YesNo.NO, ButtonToolTips.InterfaceBlockingMode, ButtonToolTips.NonBlocking );
 
-			registerApp( 19, Settings.CRAFT, YesNo.YES, ButtonToolTips.InterfaceCraftingMode, ButtonToolTips.Craft );
-			registerApp( 17, Settings.CRAFT, YesNo.NO, ButtonToolTips.InterfaceCraftingMode, ButtonToolTips.DontCraft );
+			registerApp( 16 * 1 + 3, Settings.CRAFT_ONLY, YesNo.YES, ButtonToolTips.Craft, ButtonToolTips.CraftOnly );
+			registerApp( 16 * 1 + 2, Settings.CRAFT_ONLY, YesNo.NO, ButtonToolTips.Craft, ButtonToolTips.CraftEither );
 		}
 	}
 

@@ -15,7 +15,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.config.Settings;
+import appeng.api.config.Upgrades;
+import appeng.api.config.YesNo;
 import appeng.api.implementations.ICraftingPatternItem;
+import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.tiles.ICraftingMachine;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.networking.GridFlags;
@@ -46,6 +50,7 @@ import appeng.me.helpers.AENetworkProxy;
 import appeng.me.storage.MEMonitorIInventory;
 import appeng.me.storage.MEMonitorPassthu;
 import appeng.me.storage.NullInventory;
+import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
@@ -59,7 +64,7 @@ import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.WrapperInvSlot;
 
 public class DualityInterface implements IGridTickable, ISegmentedInventory, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory,
-		IConfigureableObject, IConfigManagerHost, ICraftingProvider
+		IConfigureableObject, IConfigManagerHost, ICraftingProvider, IUpgradeableHost
 {
 
 	final int sides[] = new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
@@ -73,6 +78,16 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 	List<ICraftingPatternDetails> craftingList = null;
 	List<ItemStack> waitingToSend = null;
+
+	private UpgradeInventory upgrades;
+
+	@Override
+	public int getInstalledUpgrades(Upgrades u)
+	{
+		if ( upgrades == null )
+			return 0;
+		return upgrades.getInstalledUpgrades( u );
+	}
 
 	public boolean hasItemsToSend()
 	{
@@ -166,6 +181,9 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	public DualityInterface(AENetworkProxy prox, IInterfaceHost ih) {
 		gridProxy = prox;
 		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
+
+		upgrades = new UpgradeInventory( gridProxy.getMachineRepresentation(), this, 1 );
+		cm.registerSetting( Settings.BLOCK, YesNo.NO );
 
 		iHost = ih;
 		mySrc = fluids.changeSource = items.changeSource = new MachineSource( iHost );
@@ -595,6 +613,9 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		if ( name.equals( "config" ) )
 			return config;
 
+		if ( name.equals( "upgrades" ) )
+			return upgrades;
+
 		return null;
 	}
 
@@ -603,6 +624,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		return storage;
 	}
 
+	@Override
 	public TileEntity getTile()
 	{
 		return (TileEntity) (iHost instanceof TileEntity ? iHost : null);
@@ -620,6 +642,12 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 	@Override
 	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
+	{
+		if ( getInstalledUpgrades( Upgrades.CRAFTING ) == 0 )
+			cancelCrafting();
+	}
+
+	private void cancelCrafting()
 	{
 		// TODO Auto-generated method stub
 
@@ -683,7 +711,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 	private boolean isBlocking()
 	{
-		return true;
+		return cm.getSetting( Settings.BLOCK ) == YesNo.YES;
 	}
 
 	@Override
@@ -802,8 +830,17 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		TileEntity te = iHost.getTileEntity();
 		if ( te != null && te.getWorldObj() != null )
 		{
-			te.getWorldObj().notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, Platform.air );
+			// te.getWorldObj().notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, Platform.air );
 		}
+	}
+
+	public IUpgradeableHost getHost()
+	{
+		if ( getPart() instanceof IUpgradeableHost )
+			return (IUpgradeableHost) getPart();
+		if ( getTile() instanceof IUpgradeableHost )
+			return (IUpgradeableHost) getTile();
+		return null;
 	}
 
 }

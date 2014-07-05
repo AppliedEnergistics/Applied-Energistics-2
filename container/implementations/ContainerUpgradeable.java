@@ -10,8 +10,10 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.api.config.YesNo;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.parts.IPart;
+import appeng.api.util.IConfigManager;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.IOptionalSlotHost;
@@ -84,11 +86,8 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		bindPlayerInventory( ip, 0, getHeight() - /* height of playerinventory */82 );
 	}
 
-	protected void setupConfig()
+	protected void setupUpgrades()
 	{
-		int x = 80;
-		int y = 40;
-
 		IInventory upgrades = myte.getInventoryByName( "upgrades" );
 		if ( availableUpgrades() > 0 )
 			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0 )).setNotDraggable() );
@@ -98,6 +97,13 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2 )).setNotDraggable() );
 		if ( availableUpgrades() > 3 )
 			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3 )).setNotDraggable() );
+	}
+
+	protected void setupConfig()
+	{
+		int x = 80;
+		int y = 40;
+		setupUpgrades();
 
 		IInventory inv = myte.getInventoryByName( "config" );
 		addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
@@ -137,6 +143,9 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	@GuiSync(1)
 	public FuzzyMode fzMode = FuzzyMode.IGNORE_ALL;
 
+	@GuiSync(2)
+	public YesNo cMode = YesNo.NO;
+
 	public void checkToolbox()
 	{
 		if ( hasToolbox() )
@@ -165,8 +174,8 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 
 		if ( Platform.isServer() )
 		{
-			this.fzMode = (FuzzyMode) this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE );
-			this.rsMode = (RedstoneMode) this.myte.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
+			IConfigManager cm = this.myte.getConfigManager();
+			loadSettingsFromHost( cm );
 		}
 
 		checkToolbox();
@@ -182,6 +191,13 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		}
 
 		standardDetectAndSendChanges();
+	}
+
+	protected void loadSettingsFromHost(IConfigManager cm)
+	{
+		this.fzMode = (FuzzyMode) cm.getSetting( Settings.FUZZY_MODE );
+		this.cMode = (YesNo) cm.getSetting( Settings.CRAFT_ONLY );
+		this.rsMode = (RedstoneMode) cm.getSetting( Settings.REDSTONE_CONTROLLED );
 	}
 
 	protected void standardDetectAndSendChanges()
