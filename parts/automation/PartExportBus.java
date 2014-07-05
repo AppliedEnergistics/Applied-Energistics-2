@@ -15,6 +15,7 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.api.config.YesNo;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingJob;
@@ -58,6 +59,7 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable, I
 		super( PartExportBus.class, is );
 		settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		settings.registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		settings.registerSetting( Settings.CRAFT_ONLY, YesNo.NO );
 		mySrc = new MachineSource( this );
 	}
 
@@ -212,53 +214,11 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable, I
 					IAEItemStack ais = config.getAEStackInSlot( x );
 					if ( ais == null || itemToSend <= 0 || craftOnly() )
 					{
-						if ( isCraftingEnabled() && ais != null && d.simulateAdd( ais.getItemStack() ) == null )
-						{
-							ICraftingGrid cg = proxy.getCrafting();
-
-							if ( getLink( x ) != null )
-							{
-								continue;
-							}
-							else if ( calculatingJob != null )
-							{
-								ICraftingJob job = null;
-								try
-								{
-									if ( calculatingJob.isDone() )
-										job = calculatingJob.get();
-									else if ( calculatingJob.isCancelled() )
-										calculatingJob = null;
-
-									if ( job != null )
-									{
-										calculatingJob = null;
-										setLink( x, cg.submitJob( job, this, null, mySrc ) );
-										didSomething = true;
-									}
-								}
-								catch (InterruptedException e)
-								{
-									// :P
-								}
-								catch (ExecutionException e)
-								{
-									// :P
-								}
-							}
-							else
-							{
-								if ( getLink( x ) == null )
-								{
-									IAEItemStack aisC = ais.copy();
-									aisC.setStackSize( itemToSend );
-									calculatingJob = cg.beginCraftingJob( getTile().getWorldObj(), proxy.getGrid(), mySrc, aisC, null );
-								}
-							}
-						}
-
+						handleCrafting( x, ais, d );
 						continue;
 					}
+
+					long before = itemToSend;
 
 					if ( getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 					{
@@ -271,6 +231,9 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable, I
 					}
 					else
 						pushItemIntoTarget( d, energy, inv, ais );
+
+					if ( itemToSend == before )
+						handleCrafting( x, ais, d );
 				}
 			}
 
@@ -283,9 +246,57 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable, I
 		return didSomething ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
 	}
 
+	private void handleCrafting(int x, IAEItemStack ais, InventoryAdaptor d) throws GridAccessException
+	{
+		if ( isCraftingEnabled() && ais != null && d.simulateAdd( ais.getItemStack() ) == null )
+		{
+			ICraftingGrid cg = proxy.getCrafting();
+
+			if ( getLink( x ) != null )
+			{
+				return;
+			}
+			else if ( calculatingJob != null )
+			{
+				ICraftingJob job = null;
+				try
+				{
+					if ( calculatingJob.isDone() )
+						job = calculatingJob.get();
+					else if ( calculatingJob.isCancelled() )
+						calculatingJob = null;
+
+					if ( job != null )
+					{
+						calculatingJob = null;
+						setLink( x, cg.submitJob( job, this, null, mySrc ) );
+						didSomething = true;
+					}
+				}
+				catch (InterruptedException e)
+				{
+					// :P
+				}
+				catch (ExecutionException e)
+				{
+					// :P
+				}
+			}
+			else
+			{
+				if ( getLink( x ) == null )
+				{
+					IAEItemStack aisC = ais.copy();
+					aisC.setStackSize( itemToSend );
+					calculatingJob = cg.beginCraftingJob( getTile().getWorldObj(), proxy.getGrid(), mySrc, aisC, null );
+				}
+			}
+		}
+	}
+
 	private boolean craftOnly()
 	{
-		return true;
+		return getConfigManager().getSetting( Settings.CRAFT_ONLY ) == YesNo.YES;
 	}
 
 	private boolean isCraftingEnabled()
