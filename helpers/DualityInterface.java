@@ -576,6 +576,9 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	@Override
 	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
 	{
+		if ( !gridProxy.isActive() )
+			return TickRateModulation.SLEEP;
+
 		if ( hasItemsToSend() )
 			pushItemsOut( EnumSet.allOf( ForgeDirection.class ) );
 

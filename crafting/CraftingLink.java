@@ -1,6 +1,7 @@
 package appeng.crafting;
 
 import net.minecraft.nbt.NBTTagCompound;
+import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
@@ -130,12 +131,12 @@ public class CraftingLink implements ICraftingLink
 		return standalone;
 	}
 
-	public IAEItemStack injectItems(IAEItemStack input)
+	public IAEItemStack injectItems(IAEItemStack input, Actionable mode)
 	{
 		if ( tie == null || tie.req == null || tie.req.req == null )
 			return input;
 
-		return tie.req.req.injectCratedItems( tie.req, input );
+		return tie.req.req.injectCratedItems( tie.req, input, mode );
 	}
 
 	public void markDone()

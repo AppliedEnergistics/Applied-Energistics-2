@@ -269,7 +269,41 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	public IAEStack injectItems(IAEStack input, Actionable type, BaseActionSource src)
 	{
-		if ( input instanceof IAEItemStack && type == Actionable.MODULATE )
+		if ( input instanceof IAEItemStack && type == Actionable.SIMULATE && false )// causes crafting to lock up?
+		{
+			IAEItemStack what = (IAEItemStack) input.copy();
+			IAEItemStack is = waitingFor.findPrecise( what );
+
+			if ( is != null && is.getStackSize() > 0 )
+			{
+				if ( is.getStackSize() >= what.getStackSize() )
+				{
+					if ( finalOutput.equals( what ) )
+					{
+						if ( myLastLink != null )
+							return ((CraftingLink) myLastLink).injectItems( (IAEItemStack) what, type );
+
+						return what; // ignore it.
+					}
+
+					return null;
+				}
+
+				if ( finalOutput.equals( what ) )
+				{
+					if ( myLastLink != null )
+						return ((CraftingLink) myLastLink).injectItems( (IAEItemStack) what, type );
+
+					return what; // ignore it.
+				}
+
+				IAEItemStack leftOver = what.copy();
+				leftOver.decStackSize( is.getStackSize() );
+
+				return leftOver;
+			}
+		}
+		else if ( input instanceof IAEItemStack && type == Actionable.MODULATE )
 		{
 			IAEItemStack what = (IAEItemStack) input;
 			IAEItemStack is = waitingFor.findPrecise( what );
@@ -296,7 +330,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 							completeJob();
 
 						if ( myLastLink != null )
-							return ((CraftingLink) myLastLink).injectItems( (IAEItemStack) input );
+							return ((CraftingLink) myLastLink).injectItems( (IAEItemStack) input, type );
 
 						return input; // ignore it.
 					}
@@ -309,10 +343,6 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 				insert.setStackSize( is.getStackSize() );
 				what.decStackSize( is.getStackSize() );
 
-				// AELog.info( "Task: " + is.getStackSize() + " remaining : " + getRemainingTasks() + " remaining : " +
-				// (is.getStackSize() + getRemainingTasks())
-				// + " total left : waiting: " + (waiting ? "yes" : "no") );
-
 				is.setStackSize( 0 );
 
 				if ( finalOutput.equals( input ) )
@@ -322,7 +352,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 						completeJob();
 
 					if ( myLastLink != null )
-						return ((CraftingLink) myLastLink).injectItems( (IAEItemStack) input );
+						return ((CraftingLink) myLastLink).injectItems( (IAEItemStack) input, type );
 
 					return input; // ignore it.
 				}
@@ -358,7 +388,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		if ( myLastLink != null )
 			((CraftingLink) myLastLink).markDone();
 
-		AELog.info( "marking job as complete" );
+		AELog.crafting( "marking job as complete" );
 		isComplete = true;
 	}
 
@@ -497,7 +527,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 											if ( is != null && details.isValidItemForSlot( x, is, getWorld() ) )
 											{
-												postChange( input[x], machineSrc );
+												postChange( AEItemStack.create( is ), machineSrc );
 												ic.setInventorySlotContents( x, is );
 												found = true;
 												break;
@@ -561,7 +591,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 									{
 										IAEItemStack cItem = AEItemStack.create( output );
 										postChange( cItem, machineSrc );
-										waitingFor.add( AEItemStack.create( cItem ) );
+										waitingFor.add( cItem );
 									}
 								}
 							}

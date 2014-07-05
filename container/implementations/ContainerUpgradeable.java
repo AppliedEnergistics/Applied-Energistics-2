@@ -143,7 +143,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	@GuiSync(1)
 	public FuzzyMode fzMode = FuzzyMode.IGNORE_ALL;
 
-	@GuiSync(2)
+	@GuiSync(5)
 	public YesNo cMode = YesNo.NO;
 
 	public void checkToolbox()

@@ -1,14 +1,10 @@
 package appeng.parts.automation;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
@@ -18,7 +14,6 @@ import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingGrid;
-import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -36,6 +31,7 @@ import appeng.client.texture.CableBusTextures;
 import appeng.core.AELog;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.GuiBridge;
+import appeng.helpers.MultiCraftingTracker;
 import appeng.me.GridAccessException;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
@@ -50,10 +46,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartExportBus extends PartSharedItemBus implements IGridTickable, ICraftingRequester
 {
 
+	MultiCraftingTracker cratingTracker = new MultiCraftingTracker( this, 9 );
 	BaseActionSource mySrc;
-
-	Future<ICraftingJob> calculatingJob = null;
-	ICraftingLink[] links = null;
 
 	public PartExportBus(ItemStack is) {
 		super( PartExportBus.class, is );
@@ -67,30 +61,14 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable, I
 	public void readFromNBT(NBTTagCompound extra)
 	{
 		super.readFromNBT( extra );
-
-		for (int x = 0; x < 9; x++)
-		{
-			NBTTagCompound link = extra.getCompoundTag( "links-" + x );
-			if ( link != null && !link.hasNoTags() )
-				setLink( x, AEApi.instance().storage().loadCraftingLink( link, this ) );
-		}
+		cratingTracker.readFromNBT( extra );
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound extra)
 	{
 		super.writeToNBT( extra );
-
-		for (int x = 0; x < 9; x++)
-		{
-			ICraftingLink link = getLink( x );
-			if ( link != null )
-			{
-				NBTTagCompound ln = new NBTTagCompound();
-				link.writeToNBT( ln );
-				extra.setTag( "links-" + x, ln );
-			}
-		}
+		cratingTracker.writeToNBT( extra );
 	}
 
 	@Override
@@ -205,6 +183,7 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable, I
 			InventoryAdaptor d = getHandler();
 			IMEMonitor<IAEItemStack> inv = proxy.getStorage().getItemInventory();
 			IEnergyGrid energy = proxy.getEnergy();
+			ICraftingGrid cg = proxy.getCrafting();
 			FuzzyMode fzMode = (FuzzyMode) getConfigManager().getSetting( Settings.FUZZY_MODE );
 
 			if ( d != null )
@@ -214,7 +193,9 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable, I
 					IAEItemStack ais = config.getAEStackInSlot( x );
 					if ( ais == null || itemToSend <= 0 || craftOnly() )
 					{
-						handleCrafting( x, ais, d );
+						if ( isCraftingEnabled() )
+							didSomething = cratingTracker.handleCrafting( x, itemToSend, ais, d, getTile().getWorldObj(), proxy.getGrid(), cg, mySrc )
+									|| didSomething;
 						continue;
 					}
 
@@ -232,8 +213,9 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable, I
 					else
 						pushItemIntoTarget( d, energy, inv, ais );
 
-					if ( itemToSend == before )
-						handleCrafting( x, ais, d );
+					if ( itemToSend == before && isCraftingEnabled() )
+						didSomething = cratingTracker.handleCrafting( x, itemToSend, ais, d, getTile().getWorldObj(), proxy.getGrid(), cg, mySrc )
+								|| didSomething;
 				}
 			}
 
@@ -244,54 +226,6 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable, I
 		}
 
 		return didSomething ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
-	}
-
-	private void handleCrafting(int x, IAEItemStack ais, InventoryAdaptor d) throws GridAccessException
-	{
-		if ( isCraftingEnabled() && ais != null && d.simulateAdd( ais.getItemStack() ) == null )
-		{
-			ICraftingGrid cg = proxy.getCrafting();
-
-			if ( getLink( x ) != null )
-			{
-				return;
-			}
-			else if ( calculatingJob != null )
-			{
-				ICraftingJob job = null;
-				try
-				{
-					if ( calculatingJob.isDone() )
-						job = calculatingJob.get();
-					else if ( calculatingJob.isCancelled() )
-						calculatingJob = null;
-
-					if ( job != null )
-					{
-						calculatingJob = null;
-						setLink( x, cg.submitJob( job, this, null, mySrc ) );
-						didSomething = true;
-					}
-				}
-				catch (InterruptedException e)
-				{
-					// :P
-				}
-				catch (ExecutionException e)
-				{
-					// :P
-				}
-			}
-			else
-			{
-				if ( getLink( x ) == null )
-				{
-					IAEItemStack aisC = ais.copy();
-					aisC.setStackSize( itemToSend );
-					calculatingJob = cg.beginCraftingJob( getTile().getWorldObj(), proxy.getGrid(), mySrc, aisC, null );
-				}
-			}
-		}
 	}
 
 	private boolean craftOnly()
@@ -336,6 +270,34 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable, I
 	}
 
 	@Override
+	public IAEItemStack injectCratedItems(ICraftingLink link, IAEItemStack items, Actionable mode)
+	{
+		InventoryAdaptor d = getHandler();
+
+		try
+		{
+			if ( proxy.isActive() )
+			{
+				IEnergyGrid energy = proxy.getEnergy();
+
+				double power = items.getStackSize();
+				if ( energy.extractAEPower( power, mode, PowerMultiplier.CONFIG ) > power - 0.01 )
+				{
+					if ( mode == Actionable.MODULATE )
+						return AEItemStack.create( d.addItems( items.getItemStack() ) );
+					return AEItemStack.create( d.simulateAdd( items.getItemStack() ) );
+				}
+			}
+		}
+		catch (GridAccessException e)
+		{
+			AELog.error( e );
+		}
+
+		return items;
+	}
+
+	@Override
 	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
 	{
 		return doBusWork();
@@ -358,84 +320,16 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable, I
 		return new TickingRequest( TickRates.ExportBus.min, TickRates.ExportBus.max, isSleeping(), false );
 	}
 
-	ICraftingLink getLink(int slot)
-	{
-		if ( links == null )
-			return null;
-
-		return links[slot];
-	}
-
-	void setLink(int slot, ICraftingLink l)
-	{
-		if ( links == null )
-			links = new ICraftingLink[9];
-
-		links[slot] = l;
-
-		boolean hasStuff = false;
-		for (int x = 0; x < links.length; x++)
-		{
-			ICraftingLink g = links[x];
-
-			if ( g == null || g.isCanceled() || g.isDone() )
-				links[x] = null;
-			else
-				hasStuff = true;
-		}
-
-		if ( hasStuff == false )
-			links = null;
-	}
-
 	@Override
 	public ImmutableSet<ICraftingLink> getRequestedJobs()
 	{
-		if ( links == null )
-			return ImmutableSet.of();
-
-		return ImmutableSet.copyOf( new NonNullArrayIterator( links ) );
-	}
-
-	@Override
-	public IAEItemStack injectCratedItems(ICraftingLink link, IAEItemStack items)
-	{
-		InventoryAdaptor d = getHandler();
-
-		try
-		{
-			if ( proxy.isActive() )
-			{
-				IEnergyGrid energy = proxy.getEnergy();
-
-				double power = items.getStackSize();
-				if ( energy.extractAEPower( power, Actionable.MODULATE, PowerMultiplier.CONFIG ) > power - 0.01 )
-				{
-					return AEItemStack.create( d.addItems( items.getItemStack() ) );
-				}
-			}
-		}
-		catch (GridAccessException e)
-		{
-			AELog.error( e );
-		}
-
-		return items;
+		return cratingTracker.getRequestedJobs();
 	}
 
 	@Override
 	public void jobStateChange(ICraftingLink link)
 	{
-		if ( links != null )
-		{
-			for (int x = 0; x < links.length; x++)
-			{
-				if ( links[x] == link )
-				{
-					setLink( x, null );
-					return;
-				}
-			}
-		}
+		cratingTracker.jobStateChange( link );
 	}
+
 }

@@ -289,7 +289,6 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	public IItemList getAvailableItems(IItemList out)
 	{
 		// add craftable items!
-		// for (ICraftingPatternDetails details : craftingMethods.keySet())
 		for (IAEItemStack st : craftableItems.keySet())
 			out.addCrafting( st );
 
