@@ -10,10 +10,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -39,6 +41,8 @@ import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
+
+import com.google.common.collect.ImmutableSet;
 
 public class TileInterface extends AENetworkInvTile implements IGridTickable, ISegmentedInventory, ITileStorageMonitorable, IStorageMonitorable,
 		IInventoryDestination, IInterfaceHost, IConfigureableObject
@@ -262,4 +266,21 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 		return duality.getInstalledUpgrades( u );
 	}
 
+	@Override
+	public ImmutableSet<ICraftingLink> getRequestedJobs()
+	{
+		return duality.getRequestedJobs();
+	}
+
+	@Override
+	public IAEItemStack injectCratedItems(ICraftingLink link, IAEItemStack items, Actionable mode)
+	{
+		return duality.injectCratedItems( link, items, mode );
+	}
+
+	@Override
+	public void jobStateChange(ICraftingLink link)
+	{
+		duality.jobStateChange( link );
+	}
 }

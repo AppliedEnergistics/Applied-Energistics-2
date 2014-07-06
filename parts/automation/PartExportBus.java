@@ -46,8 +46,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartExportBus extends PartSharedItemBus implements IGridTickable, ICraftingRequester
 {
 
-	MultiCraftingTracker cratingTracker = new MultiCraftingTracker( this, 9 );
-	BaseActionSource mySrc;
+	final MultiCraftingTracker cratingTracker = new MultiCraftingTracker( this, 9 );
+	final BaseActionSource mySrc;
 
 	public PartExportBus(ItemStack is) {
 		super( PartExportBus.class, is );

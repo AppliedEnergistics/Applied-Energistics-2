@@ -24,6 +24,7 @@ import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.items.contents.NetworkToolViewer;
 import appeng.items.tools.ToolNetworkTool;
+import appeng.parts.automation.PartExportBus;
 import appeng.util.Platform;
 
 public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSlotHost
@@ -196,8 +197,9 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	protected void loadSettingsFromHost(IConfigManager cm)
 	{
 		this.fzMode = (FuzzyMode) cm.getSetting( Settings.FUZZY_MODE );
-		this.cMode = (YesNo) cm.getSetting( Settings.CRAFT_ONLY );
 		this.rsMode = (RedstoneMode) cm.getSetting( Settings.REDSTONE_CONTROLLED );
+		if ( myte instanceof PartExportBus )
+			this.cMode = (YesNo) cm.getSetting( Settings.CRAFT_ONLY );
 	}
 
 	protected void standardDetectAndSendChanges()

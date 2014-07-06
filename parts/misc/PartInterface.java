@@ -14,10 +14,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -43,6 +45,9 @@ import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
+
+import com.google.common.collect.ImmutableSet;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -359,6 +364,24 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	public int getInstalledUpgrades(Upgrades u)
 	{
 		return duality.getInstalledUpgrades( u );
+	}
+
+	@Override
+	public ImmutableSet<ICraftingLink> getRequestedJobs()
+	{
+		return duality.getRequestedJobs();
+	}
+
+	@Override
+	public IAEItemStack injectCratedItems(ICraftingLink link, IAEItemStack items, Actionable mode)
+	{
+		return duality.injectCratedItems( link, items, mode );
+	}
+
+	@Override
+	public void jobStateChange(ICraftingLink link)
+	{
+		duality.jobStateChange( link );
 	}
 
 }

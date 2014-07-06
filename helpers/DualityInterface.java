@@ -24,6 +24,7 @@ import appeng.api.implementations.tiles.ICraftingMachine;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
@@ -62,6 +63,9 @@ import appeng.util.Platform;
 import appeng.util.inv.AdaptorIInventory;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.WrapperInvSlot;
+import appeng.util.item.AEItemStack;
+
+import com.google.common.collect.ImmutableSet;
 
 public class DualityInterface implements IGridTickable, ISegmentedInventory, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory,
 		IConfigureableObject, IConfigManagerHost, ICraftingProvider, IUpgradeableHost
@@ -69,6 +73,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 	final int sides[] = new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
 	final IAEItemStack requireWork[] = new IAEItemStack[] { null, null, null, null, null, null, null, null };
+	final MultiCraftingTracker craftingTracker;
 
 	boolean hasConfig = false;
 	AENetworkProxy gridProxy;
@@ -186,6 +191,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		cm.registerSetting( Settings.BLOCK, YesNo.NO );
 
 		iHost = ih;
+		craftingTracker = new MultiCraftingTracker( iHost, 9 );
 		mySrc = fluids.changeSource = items.changeSource = new MachineSource( iHost );
 	}
 
@@ -240,6 +246,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		config.writeToNBT( data, "config" );
 		patterns.writeToNBT( data, "patterns" );
 		storage.writeToNBT( data, "storage" );
+		craftingTracker.writeToNBT( data );
 
 		NBTTagList waitingToSend = new NBTTagList();
 		if ( this.waitingToSend != null )
@@ -271,6 +278,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			}
 		}
 
+		craftingTracker.readFromNBT( data );
 		config.readFromNBT( data, "config" );
 		patterns.readFromNBT( data, "patterns" );
 		storage.readFromNBT( data, "storage" );
@@ -388,7 +396,9 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			destination = gridProxy.getStorage().getItemInventory();
 			IEnergySource src = gridProxy.getEnergy();
 
-			if ( itemStack.getStackSize() > 0 )
+			if ( craftingTracker.isBusy( x ) )
+				changed = handleCrafting( x, adaptor, itemStack ) || changed;
+			else if ( itemStack.getStackSize() > 0 )
 			{
 				// make sure strange things didn't happen...
 				if ( adaptor.simulateAdd( itemStack.getItemStack() ) != null )
@@ -405,6 +415,8 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 					if ( issue != null )
 						throw new RuntimeException( "bad attempt at managing inventory. ( addItems )" );
 				}
+				else
+					changed = handleCrafting( x, adaptor, itemStack ) || changed;
 			}
 			else if ( itemStack.getStackSize() < 0 )
 			{
@@ -449,6 +461,24 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 		interfaceRequest = isWorking = false;
 		return changed;
+	}
+
+	private boolean handleCrafting(int x, InventoryAdaptor d, IAEItemStack itemStack)
+	{
+		try
+		{
+			if ( getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
+			{
+				return craftingTracker.handleCrafting( x, itemStack.getStackSize(), itemStack, d, getTile().getWorldObj(), gridProxy.getGrid(),
+						gridProxy.getCrafting(), mySrc );
+			}
+		}
+		catch (GridAccessException e)
+		{
+			// :P
+		}
+
+		return false;
 	}
 
 	public IInventory getConfig()
@@ -652,8 +682,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 	private void cancelCrafting()
 	{
-		// TODO Auto-generated method stub
-
+		craftingTracker.cancel();
 	}
 
 	public IStorageMonitorable getMonitorable(ForgeDirection side, BaseActionSource src, IStorageMonitorable myInterface)
@@ -819,6 +848,10 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 					drops.add( is );
 		}
 
+		for (ItemStack is : upgrades)
+			if ( is != null )
+				drops.add( is );
+
 		for (ItemStack is : storage)
 			if ( is != null )
 				drops.add( is );
@@ -856,6 +889,37 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		if ( getTile() instanceof IUpgradeableHost )
 			return (IUpgradeableHost) getTile();
 		return null;
+	}
+
+	public ImmutableSet<ICraftingLink> getRequestedJobs()
+	{
+		return craftingTracker.getRequestedJobs();
+	}
+
+	public IAEItemStack injectCratedItems(ICraftingLink link, IAEItemStack aquired, Actionable mode)
+	{
+		int x = craftingTracker.getSlot( link );
+
+		if ( aquired != null && x >= 0 && x <= requireWork.length )
+		{
+			slotInv.setSlot( x );
+
+			if ( mode == Actionable.SIMULATE )
+				return AEItemStack.create( adaptor.simulateAdd( aquired.getItemStack() ) );
+			else
+			{
+				IAEItemStack is = AEItemStack.create( adaptor.addItems( aquired.getItemStack() ) );
+				updatePlan( x );
+				return is;
+			}
+		}
+
+		return aquired;
+	}
+
+	public void jobStateChange(ICraftingLink link)
+	{
+		craftingTracker.jobStateChange( link );
 	}
 
 }

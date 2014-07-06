@@ -184,4 +184,48 @@ public class MultiCraftingTracker
 			}
 		}
 	}
+
+	public int getSlot(ICraftingLink link)
+	{
+		if ( links != null )
+		{
+			for (int x = 0; x < links.length; x++)
+			{
+				if ( links[x] == link )
+					return x;
+			}
+		}
+
+		return -1;
+	}
+
+	public void cancel()
+	{
+		if ( links != null )
+		{
+			for (ICraftingLink l : links)
+			{
+				if ( l != null )
+					l.cancel();
+			}
+
+			links = null;
+		}
+
+		if ( jobs != null )
+		{
+			for (Future<ICraftingJob> l : jobs)
+			{
+				if ( l != null )
+					l.cancel( true );
+			}
+
+			jobs = null;
+		}
+	}
+
+	public boolean isBusy(int slot)
+	{
+		return getLink( slot ) != null || getJob( slot ) != null;
+	}
 }

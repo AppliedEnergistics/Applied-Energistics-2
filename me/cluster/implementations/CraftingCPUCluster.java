@@ -727,7 +727,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		{
 			tasks.clear();
 			inventory.getItemList().resetStatus();
-			AELog.error( e );
+			// AELog.error( e );
 		}
 
 		return null;
