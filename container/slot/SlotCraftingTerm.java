@@ -113,7 +113,8 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 					{
 						if ( pattern.getStackInSlot( x ) != null )
 						{
-							set[x] = Platform.extractItemsByRecipe( energySrc, mySrc, inv, p.worldObj, r, is, ic, pattern.getStackInSlot( x ), x, all );
+							set[x] = Platform.extractItemsByRecipe( energySrc, mySrc, inv, p.worldObj, r, is, ic, pattern.getStackInSlot( x ), x, all,
+									Actionable.MODULATE );
 							ic.setInventorySlotContents( x, set[x] );
 						}
 					}

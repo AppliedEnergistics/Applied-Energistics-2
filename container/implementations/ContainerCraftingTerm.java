@@ -9,12 +9,13 @@ import appeng.api.storage.ITerminalHost;
 import appeng.container.ContainerNull;
 import appeng.container.slot.SlotCraftingMatrix;
 import appeng.container.slot.SlotCraftingTerm;
+import appeng.helpers.IContainerCraftingPacket;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 
-public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAEAppEngInventory
+public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAEAppEngInventory, IContainerCraftingPacket
 {
 
 	AppEngInternalInventory output = new AppEngInternalInventory( this, 1 );
@@ -65,5 +66,17 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
 	{
 
+	}
+
+	@Override
+	public IInventory getInventoryByName(String name)
+	{
+		return ct.getInventoryByName( name );
+	}
+
+	@Override
+	public boolean useRealItems()
+	{
+		return true;
 	}
 }

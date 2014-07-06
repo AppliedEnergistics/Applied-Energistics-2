@@ -1601,7 +1601,7 @@ public class Platform
 	}
 
 	public static ItemStack extractItemsByRecipe(IEnergySource energySrc, BaseActionSource mySrc, IMEMonitor<IAEItemStack> src, World w, IRecipe r,
-			ItemStack output, InventoryCrafting ci, ItemStack providedTemplate, int slot, IItemList<IAEItemStack> aitems)
+			ItemStack output, InventoryCrafting ci, ItemStack providedTemplate, int slot, IItemList<IAEItemStack> aitems, Actionable realForFake)
 	{
 		if ( energySrc.extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.9 )
 		{
@@ -1611,13 +1611,13 @@ public class Platform
 			AEItemStack ae_req = AEItemStack.create( providedTemplate );
 			ae_req.setStackSize( 1 );
 
-			IAEItemStack ae_ext = src.extractItems( ae_req, Actionable.MODULATE, mySrc );
+			IAEItemStack ae_ext = src.extractItems( ae_req, realForFake, mySrc );
 			if ( ae_ext != null )
 			{
 				ItemStack extracted = ae_ext.getItemStack();
 				if ( extracted != null )
 				{
-					energySrc.extractAEPower( 1, Actionable.MODULATE, PowerMultiplier.CONFIG );
+					energySrc.extractAEPower( 1, realForFake, PowerMultiplier.CONFIG );
 					return extracted;
 				}
 			}
@@ -1634,10 +1634,10 @@ public class Platform
 						ci.setInventorySlotContents( slot, cp );
 						if ( r.matches( ci, w ) && Platform.isSameItem( r.getCraftingResult( ci ), output ) )
 						{
-							IAEItemStack ex = src.extractItems( AEItemStack.create( cp ), Actionable.MODULATE, mySrc );
+							IAEItemStack ex = src.extractItems( AEItemStack.create( cp ), realForFake, mySrc );
 							if ( ex != null )
 							{
-								energySrc.extractAEPower( 1, Actionable.MODULATE, PowerMultiplier.CONFIG );
+								energySrc.extractAEPower( 1, realForFake, PowerMultiplier.CONFIG );
 								return ex.getItemStack();
 							}
 						}

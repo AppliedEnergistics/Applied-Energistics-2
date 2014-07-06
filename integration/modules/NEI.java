@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import appeng.client.gui.implementations.GuiCraftingTerm;
+import appeng.client.gui.implementations.GuiPatternTerm;
 import appeng.integration.BaseModule;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.INEI;
@@ -64,9 +65,11 @@ public class NEI extends BaseModule implements IIntegrationModule, INEI
 
 		Method registerGuiOverlayHandler = API.getDeclaredMethod( "registerGuiOverlayHandler", new Class[] { Class.class, IOverlayHandler, String.class } );
 		registerGuiOverlay.invoke( API, GuiCraftingTerm.class, "crafting", 6, 75 );
+		registerGuiOverlay.invoke( API, GuiPatternTerm.class, "crafting", 6, 75 );
 
 		Constructor DefaultOverlayHandlerConstructor = DefaultOverlayHandler.getConstructor( new Class[] { int.class, int.class } );
 		registerGuiOverlayHandler.invoke( API, GuiCraftingTerm.class, DefaultOverlayHandlerConstructor.newInstance( 6, 75 ), "crafting" );
+		registerGuiOverlayHandler.invoke( API, GuiPatternTerm.class, DefaultOverlayHandlerConstructor.newInstance( 6, 75 ), "crafting" );
 	}
 
 	@Override

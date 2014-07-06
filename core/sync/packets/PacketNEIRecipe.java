@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -27,9 +28,9 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
-import appeng.container.implementations.ContainerCraftingTerm;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.helpers.IContainerCraftingPacket;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
@@ -59,9 +60,9 @@ public class PacketNEIRecipe extends AppEngPacket
 		EntityPlayerMP pmp = (EntityPlayerMP) player;
 		Container con = pmp.openContainer;
 
-		if ( con != null && con instanceof ContainerCraftingTerm )
+		if ( con != null && con instanceof IContainerCraftingPacket )
 		{
-			ContainerCraftingTerm cct = (ContainerCraftingTerm) con;
+			IContainerCraftingPacket cct = (IContainerCraftingPacket) con;
 			IGridNode node = cct.getNetworkNode();
 			if ( node != null )
 			{
@@ -72,7 +73,9 @@ public class PacketNEIRecipe extends AppEngPacket
 				IStorageGrid inv = grid.getCache( IStorageGrid.class );
 				IEnergyGrid energy = grid.getCache( IEnergyGrid.class );
 				ISecurityGrid security = grid.getCache( ISecurityGrid.class );
-				IInventory craftMatrix = cct.ct.getInventoryByName( "crafting" );
+				IInventory craftMatrix = cct.getInventoryByName( "crafting" );
+
+				Actionable realForFake = cct.useRealItems() ? Actionable.MODULATE : Actionable.SIMULATE;
 
 				if ( inv != null && recipe != null && security != null )
 				{
@@ -107,7 +110,8 @@ public class PacketNEIRecipe extends AppEngPacket
 										IAEItemStack in = AEItemStack.create( currentItem );
 										if ( in != null )
 										{
-											IAEItemStack out = Platform.poweredInsert( energy, stor, in, cct.getSource() );
+											IAEItemStack out = realForFake == Actionable.SIMULATE ? null : Platform.poweredInsert( energy, stor, in,
+													cct.getSource() );
 											if ( out != null )
 												craftMatrix.setInventorySlotContents( x, out.getItemStack() );
 											else
@@ -120,8 +124,8 @@ public class PacketNEIRecipe extends AppEngPacket
 
 								if ( PatternItem != null && currentItem == null )
 								{
-									craftMatrix.setInventorySlotContents( x,
-											Platform.extractItemsByRecipe( energy, cct.getSource(), stor, player.worldObj, r, is, ic, PatternItem, x, all ) );
+									craftMatrix.setInventorySlotContents( x, Platform.extractItemsByRecipe( energy, cct.getSource(), stor, player.worldObj, r,
+											is, ic, PatternItem, x, all, realForFake ) );
 								}
 							}
 							con.onCraftMatrixChanged( craftMatrix );

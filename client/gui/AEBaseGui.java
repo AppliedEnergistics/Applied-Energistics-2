@@ -57,7 +57,7 @@ public abstract class AEBaseGui extends GuiContainer
 	protected List<InternalSlotME> meSlots = new LinkedList<InternalSlotME>();
 	protected GuiScrollbar myScrollBar = null;
 	static public boolean switchingGuis;
-	final private boolean subGui;
+	private boolean subGui;
 
 	public AEBaseGui(Container container) {
 		super( container );
@@ -125,6 +125,13 @@ public abstract class AEBaseGui extends GuiContainer
 				}
 			}
 		}
+	}
+
+	@Override
+	public void onGuiClosed()
+	{
+		super.onGuiClosed();
+		subGui = true; // in case the gui is reopened later ( i'm looking at you NEI )
 	}
 
 	@Override

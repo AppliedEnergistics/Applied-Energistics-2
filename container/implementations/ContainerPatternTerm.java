@@ -28,11 +28,12 @@ import appeng.container.ContainerNull;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.IOptionalSlotHost;
 import appeng.container.slot.OptionalSlotFake;
-import appeng.container.slot.SlotFake;
+import appeng.container.slot.SlotFakeCraftingMatrix;
 import appeng.container.slot.SlotPatternTerm;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.core.sync.packets.PacketPatternSlot;
+import appeng.helpers.IContainerCraftingPacket;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
@@ -42,13 +43,13 @@ import appeng.util.Platform;
 import appeng.util.inv.AdaptorPlayerHand;
 import appeng.util.item.AEItemStack;
 
-public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEAppEngInventory, IOptionalSlotHost
+public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEAppEngInventory, IOptionalSlotHost, IContainerCraftingPacket
 {
 
 	AppEngInternalInventory cOut = new AppEngInternalInventory( null, 1 );
 	IInventory crafting;
 
-	SlotFake craftingSlots[] = new SlotFake[9];
+	SlotFakeCraftingMatrix craftingSlots[] = new SlotFakeCraftingMatrix[9];
 	OptionalSlotFake outputSlots[] = new OptionalSlotFake[3];
 
 	SlotPatternTerm craftSlot;
@@ -68,7 +69,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 3; x++)
-				addSlotToContainer( craftingSlots[x + y * 3] = new SlotFake( crafting, x + y * 3, 18 + x * 18, -76 + y * 18 ) );
+				addSlotToContainer( craftingSlots[x + y * 3] = new SlotFakeCraftingMatrix( crafting, x + y * 3, 18 + x * 18, -76 + y * 18 ) );
 
 		addSlotToContainer( craftSlot = new SlotPatternTerm( ip.player, mySrc, powerSrc, montiorable, crafting, patternInv, cOut, 110, -76 + 18, this, 2 ) );
 		craftSlot.IIcon = -1;
@@ -93,7 +94,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	{
 		if ( !craftingMode )
 		{
-			craftSlot.xDisplayPosition = 0;
+			craftSlot.xDisplayPosition = -9000;
 
 			for (int y = 0; y < 3; y++)
 				outputSlots[y].xDisplayPosition = outputSlots[y].defX;
@@ -103,7 +104,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			craftSlot.xDisplayPosition = craftSlot.defX;
 
 			for (int y = 0; y < 3; y++)
-				outputSlots[y].xDisplayPosition = 0;
+				outputSlots[y].xDisplayPosition = -9000;
 		}
 	}
 
@@ -346,7 +347,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 				{
 					if ( ic.getStackInSlot( x ) != null )
 					{
-						ItemStack pulled = Platform.extractItemsByRecipe( powerSrc, mySrc, storage, p.worldObj, r, is, ic, ic.getStackInSlot( x ), x, all );
+						ItemStack pulled = Platform.extractItemsByRecipe( powerSrc, mySrc, storage, p.worldObj, r, is, ic, ic.getStackInSlot( x ), x, all,
+								Actionable.MODULATE );
 						real.setInventorySlotContents( x, pulled );
 					}
 				}
@@ -416,5 +418,17 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 		detectAndSendChanges();
 		getAndUpdateOutput();
+	}
+
+	@Override
+	public IInventory getInventoryByName(String name)
+	{
+		return ct.getInventoryByName( name );
+	}
+
+	@Override
+	public boolean useRealItems()
+	{
+		return false;
 	}
 }

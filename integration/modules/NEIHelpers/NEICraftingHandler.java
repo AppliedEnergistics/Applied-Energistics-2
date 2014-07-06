@@ -6,7 +6,9 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.nbt.NBTTagCompound;
 import appeng.client.gui.implementations.GuiCraftingTerm;
+import appeng.client.gui.implementations.GuiPatternTerm;
 import appeng.container.slot.SlotCraftingMatrix;
+import appeng.container.slot.SlotFakeCraftingMatrix;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketNEIRecipe;
 import codechicken.nei.PositionedStack;
@@ -47,7 +49,7 @@ public class NEICraftingHandler implements IOverlayHandler
 		{
 			NBTTagCompound recipe = new NBTTagCompound();
 
-			if ( gui instanceof GuiCraftingTerm )
+			if ( gui instanceof GuiCraftingTerm || gui instanceof GuiPatternTerm )
 			{
 				for (int i = 0; i < ingredients.size(); i++)// identify slots
 				{
@@ -58,14 +60,14 @@ public class NEICraftingHandler implements IOverlayHandler
 					{
 						for (Slot slot : (List<Slot>) gui.inventorySlots.inventorySlots)
 						{
-							if ( slot instanceof SlotCraftingMatrix )
+							if ( slot instanceof SlotCraftingMatrix || slot instanceof SlotFakeCraftingMatrix )
 							{
-								SlotCraftingMatrix ctSlot = (SlotCraftingMatrix) slot;
+								Slot ctSlot = (Slot) slot;
 								if ( ctSlot.getSlotIndex() == col + row * 3 )
 								{
 									NBTTagCompound inbt = new NBTTagCompound();
 									pstack.item.writeToNBT( inbt );
-									recipe.setTag( "#" + ((SlotCraftingMatrix) slot).getSlotIndex(), inbt );
+									recipe.setTag( "#" + ctSlot.getSlotIndex(), inbt );
 									break;
 								}
 							}
