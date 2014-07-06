@@ -1,5 +1,6 @@
 package appeng.me.cache;
 
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -47,6 +48,7 @@ public class PathGridCache implements IPathingGrid
 	int ticksUntilReady = 20;
 	Set<TileController> controllers = new HashSet();
 	Set<IGridNode> requireChannels = new HashSet();
+	Set<IGridNode> blockDense = new HashSet();
 
 	final IGrid myGrid;
 	private HashSet<IPathItem> semiOpen = new HashSet();
@@ -165,10 +167,15 @@ public class PathGridCache implements IPathingGrid
 		{
 			if ( !semiOpen.contains( nodes ) )
 			{
+				IGridBlock gb = nodes.getGridBlock();
+				EnumSet<GridFlags> flags = gb.getFlags();
+
+				if ( flags.contains( GridFlags.DENSE_CHANNEL ) && !blockDense.isEmpty() )
+					return 9;
+
 				depth++;
 
-				IGridBlock gb = nodes.getGridBlock();
-				if ( gb.getFlags().contains( GridFlags.MULTIBLOCK ) )
+				if ( flags.contains( GridFlags.MULTIBLOCK ) )
 				{
 					IGridMultiblock gmb = (IGridMultiblock) gb;
 					Iterator<IGridNode> i = gmb.getMultiblockNodes();
@@ -200,8 +207,13 @@ public class PathGridCache implements IPathingGrid
 			recalculateControllerNextTick = true;
 		}
 
-		if ( gridNode.getGridBlock().getFlags().contains( GridFlags.REQUIRE_CHANNEL ) )
+		EnumSet<GridFlags> flags = gridNode.getGridBlock().getFlags();
+
+		if ( flags.contains( GridFlags.REQUIRE_CHANNEL ) )
 			requireChannels.remove( gridNode );
+
+		if ( flags.contains( GridFlags.CANNOT_CARRY_DENSE ) )
+			blockDense.remove( gridNode );
 
 		repath();
 	}
@@ -215,8 +227,13 @@ public class PathGridCache implements IPathingGrid
 			recalculateControllerNextTick = true;
 		}
 
-		if ( gridNode.getGridBlock().getFlags().contains( GridFlags.REQUIRE_CHANNEL ) )
+		EnumSet<GridFlags> flags = gridNode.getGridBlock().getFlags();
+
+		if ( flags.contains( GridFlags.REQUIRE_CHANNEL ) )
 			requireChannels.add( gridNode );
+
+		if ( flags.contains( GridFlags.CANNOT_CARRY_DENSE ) )
+			blockDense.add( gridNode );
 
 		repath();
 	}
