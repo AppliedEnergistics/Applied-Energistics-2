@@ -8,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
@@ -23,7 +22,7 @@ public class ServerHelper extends CommonHelper
 {
 
 	@Override
-	public void doRenderItem(ItemStack sis, TileEntity tile)
+	public void doRenderItem(ItemStack sis, World tile)
 	{
 
 	}

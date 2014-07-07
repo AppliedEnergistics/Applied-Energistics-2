@@ -10,7 +10,7 @@ import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.world.World;
-import appeng.client.render.effects.MatterCannonEffect;
+import appeng.client.render.effects.MatterCannonFX;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -49,7 +49,7 @@ public class PacketMatterCannon extends AppEngPacket
 			World world = FMLClientHandler.instance().getClient().theWorld;
 			for (int a = 1; a < len; a++)
 			{
-				MatterCannonEffect fx = new MatterCannonEffect( world, x + dx * a, y + dy * a, z + dz * a, Items.diamond );
+				MatterCannonFX fx = new MatterCannonFX( world, x + dx * a, y + dy * a, z + dz * a, Items.diamond );
 
 				Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
 			}

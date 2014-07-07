@@ -10,12 +10,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.client.texture.ExtraBlockTextures;
 
-public class MatterCannonEffect extends EntityBreakingFX
+public class MatterCannonFX extends EntityBreakingFX
 {
 
 	private IIcon particleTextureIndex;
 
-	public MatterCannonEffect(World par1World, double par2, double par4, double par6, Item par8Item) {
+	public MatterCannonFX(World par1World, double par2, double par4, double par6, Item par8Item) {
 		super( par1World, par2, par4, par6, par8Item );
 		particleGravity = 0;
 		this.particleBlue = 255;

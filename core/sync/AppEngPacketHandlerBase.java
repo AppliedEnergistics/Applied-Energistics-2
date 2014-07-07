@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import appeng.core.sync.packets.PacketAssemblerAnimation;
 import appeng.core.sync.packets.PacketClick;
 import appeng.core.sync.packets.PacketCompassRequest;
 import appeng.core.sync.packets.PacketCompassResponse;
@@ -76,7 +77,9 @@ public class AppEngPacketHandlerBase
 
 		PACKET_PARTIAL_ITEM(PacketPartialItem.class),
 
-		PAKCET_CRAFTING_REQUEST(PacketCraftRequest.class);
+		PACKET_CRAFTING_REQUEST(PacketCraftRequest.class),
+
+		PAKCET_ASSEMBLER_ANIMATION(PacketAssemblerAnimation.class);
 
 		final public Class pc;
 		final public Constructor con;

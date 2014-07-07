@@ -281,7 +281,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 			// RenderHelper.enableGUIStandardItemLighting();
 			tess.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
 
-			ClientHelper.proxy.doRenderItem( sis, this.tile );
+			ClientHelper.proxy.doRenderItem( sis, this.tile.getWorldObj() );
 
 		}
 		catch (Exception e)

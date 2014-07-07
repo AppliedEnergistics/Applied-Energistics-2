@@ -14,7 +14,7 @@ import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockQuartzAccelerator;
-import appeng.client.render.effects.LightningEffect;
+import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
@@ -112,7 +112,7 @@ public class BlockQuartzGrowthAccelerator extends AEBaseBlock implements IOrient
 			ry += dz * forward.offsetY;
 			rz += dz * forward.offsetZ;
 
-			LightningEffect fx = new LightningEffect( w, rx, ry, rz, 0.0D, 0.0D, 0.0D );
+			LightningFX fx = new LightningFX( w, rx, ry, rz, 0.0D, 0.0D, 0.0D );
 			Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
 		}
 	}

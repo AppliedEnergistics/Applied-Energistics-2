@@ -6,10 +6,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class VibrantEffect extends EntityFX
+public class VibrantFX extends EntityFX
 {
 
-	public VibrantEffect(World par1World, double x, double y, double z, double par8, double par10, double par12) {
+	public VibrantFX(World par1World, double x, double y, double z, double par8, double par10, double par12) {
 		super( par1World, x, y, z, par8, par10, par12 );
 		float f = this.rand.nextFloat() * 0.1F + 0.8F;
 		this.particleRed = f * 0.7f;

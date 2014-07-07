@@ -5,7 +5,6 @@ import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
@@ -35,8 +34,13 @@ public abstract class CommonHelper
 
 	public abstract MovingObjectPosition getMOP();
 
-	public abstract void doRenderItem(ItemStack sis, TileEntity tile);
+	public abstract void doRenderItem(ItemStack itemstack, World w);
 
 	public abstract void postinit();
+
+	{
+		// TODO Auto-generated method stub
+
+	}
 
 }

@@ -20,7 +20,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -36,9 +35,10 @@ import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.TESRWrapper;
 import appeng.client.render.WorldRender;
+import appeng.client.render.effects.CraftingFx;
 import appeng.client.render.effects.EnergyFx;
-import appeng.client.render.effects.LightningEffect;
-import appeng.client.render.effects.VibrantEffect;
+import appeng.client.render.effects.LightningFX;
+import appeng.client.render.effects.VibrantFX;
 import appeng.client.texture.CableBusTextures;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.ExtraItemTextures;
@@ -47,7 +47,9 @@ import appeng.core.AELog;
 import appeng.core.CommonHelper;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
+import appeng.entity.EntityFloatingItem;
 import appeng.entity.EntityTinyTNTPrimed;
+import appeng.entity.RenderFloatingItem;
 import appeng.entity.RenderTinyTNTPrimed;
 import appeng.helpers.IMouseWheelItem;
 import appeng.server.ServerHelper;
@@ -63,11 +65,11 @@ public class ClientHelper extends ServerHelper
 	private static RenderBlocks blockRenderer = new RenderBlocks();
 
 	@Override
-	public void doRenderItem(ItemStack itemstack, TileEntity par1EntityItemFrame)
+	public void doRenderItem(ItemStack itemstack, World w)
 	{
 		if ( itemstack != null )
 		{
-			EntityItem entityitem = new EntityItem( par1EntityItemFrame.getWorldObj(), 0.0D, 0.0D, 0.0D, itemstack );
+			EntityItem entityitem = new EntityItem( w, 0.0D, 0.0D, 0.0D, itemstack );
 			entityitem.getEntityItem().stackSize = 1;
 
 			// set all this stuff and then do shit? meh?
@@ -153,6 +155,7 @@ public class ClientHelper extends ServerHelper
 	{
 		RenderingRegistry.registerBlockHandler( WorldRender.instance );
 		RenderManager.instance.entityRenderMap.put( EntityTinyTNTPrimed.class, new RenderTinyTNTPrimed() );
+		RenderManager.instance.entityRenderMap.put( EntityFloatingItem.class, new RenderFloatingItem() );
 	}
 
 	@SubscribeEvent
@@ -238,6 +241,9 @@ public class ClientHelper extends ServerHelper
 			case Vibrant:
 				spawnVibrant( worldObj, posX, posY, posZ );
 				return;
+			case Crafting:
+				spawnCrafting( worldObj, posX, posY, posZ );
+				return;
 			case Energy:
 				spawnEnergy( worldObj, posX, posY, posZ );
 				return;
@@ -256,14 +262,14 @@ public class ClientHelper extends ServerHelper
 			double d1 = (double) (Platform.getRandomFloat() - 0.5F) * 0.26D;
 			double d2 = (double) (Platform.getRandomFloat() - 0.5F) * 0.26D;
 
-			VibrantEffect fx = new VibrantEffect( w, x + d0, y + d1, z + d2, 0.0D, 0.0D, 0.0D );
+			VibrantFX fx = new VibrantFX( w, x + d0, y + d1, z + d2, 0.0D, 0.0D, 0.0D );
 			Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
 		}
 	}
 
 	private void spawnLightning(World worldObj, double posX, double posY, double posZ)
 	{
-		LightningEffect fx = new LightningEffect( worldObj, posX, posY + 0.3f, posZ, 0.0f, 0.0f, 0.0f );
+		LightningFX fx = new LightningFX( worldObj, posX, posY + 0.3f, posZ, 0.0f, 0.0f, 0.0f );
 		Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
 	}
 
@@ -278,6 +284,21 @@ public class ClientHelper extends ServerHelper
 		fx.motionX = -x * 0.1;
 		fx.motionY = -y * 0.1;
 		fx.motionZ = -z * 0.1;
+
+		Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+	}
+
+	private void spawnCrafting(World w, double posX, double posY, double posZ)
+	{
+		float x = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
+		float y = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
+		float z = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
+
+		CraftingFx fx = new CraftingFx( w, posX + x, posY + y, posZ + z, Items.diamond );
+
+		fx.motionX = -x * 0.2;
+		fx.motionY = -y * 0.2;
+		fx.motionZ = -z * 0.2;
 
 		Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
 	}

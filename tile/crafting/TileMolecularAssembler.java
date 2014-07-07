@@ -31,10 +31,13 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.ISimplifiedBundle;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.container.ContainerNull;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketAssemblerAnimation;
 import appeng.items.misc.ItemEncodedPattern;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.UpgradeInventory;
@@ -48,7 +51,9 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import appeng.util.item.AEItemStack;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 
 public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEngInventory, ISidedInventory, IUpgradeableHost, IConfigManagerHost,
 		IGridTickable, ICraftingMachine, IPowerChannelState
@@ -388,25 +393,26 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 			TicksSinceLastCall = 1;
 
 		reboot = false;
+		int speed = 10;
 		switch (upgrades.getInstalledUpgrades( Upgrades.SPEED ))
 		{
 		case 0:
-			progress += userPower( TicksSinceLastCall, 10, 1.0 );
+			progress += userPower( TicksSinceLastCall, speed = 10, 1.0 );
 			break;
 		case 1:
-			progress += userPower( TicksSinceLastCall, 13, 1.3 );
+			progress += userPower( TicksSinceLastCall, speed = 13, 1.3 );
 			break;
 		case 2:
-			progress += userPower( TicksSinceLastCall, 17, 1.7 );
+			progress += userPower( TicksSinceLastCall, speed = 17, 1.7 );
 			break;
 		case 3:
-			progress += userPower( TicksSinceLastCall, 20, 2.0 );
+			progress += userPower( TicksSinceLastCall, speed = 20, 2.0 );
 			break;
 		case 4:
-			progress += userPower( TicksSinceLastCall, 25, 2.5 );
+			progress += userPower( TicksSinceLastCall, speed = 25, 2.5 );
 			break;
 		case 5:
-			progress += userPower( TicksSinceLastCall, 50, 5.0 );
+			progress += userPower( TicksSinceLastCall, speed = 50, 5.0 );
 			break;
 		}
 
@@ -432,6 +438,17 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 					myPlan = null;
 				}
 				ejectHeldItems();
+
+				try
+				{
+					TargetPoint where = new TargetPoint( worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 32 );
+					IAEItemStack item = AEItemStack.create( output );
+					NetworkHandler.instance.sendToAllAround( new PacketAssemblerAnimation( xCoord, yCoord, zCoord, (byte) speed, item ), where );
+				}
+				catch (IOException e)
+				{
+					// ;P
+				}
 
 				updateSleepyness();
 				return isAwake ? TickRateModulation.SLEEP : TickRateModulation.IDLE;

@@ -12,6 +12,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import appeng.api.networking.IGridNode;
 import appeng.core.AELog;
 import appeng.crafting.CraftingJob;
+import appeng.entity.EntityFloatingItem;
 import appeng.me.Grid;
 import appeng.me.NetworkList;
 import appeng.tile.AEBaseTile;
@@ -127,6 +128,12 @@ public class TickHandler
 	@SubscribeEvent
 	public void onTick(TickEvent ev)
 	{
+
+		if ( ev.type == Type.CLIENT && ev.phase == Phase.START )
+		{
+			EntityFloatingItem.ageStatic = (EntityFloatingItem.ageStatic + 1) % 60000;
+		}
+
 		// rwar!
 		if ( ev.type == Type.WORLD && ev.phase == Phase.END )
 		{
