@@ -312,7 +312,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 								else
 								{
 									breaking = true;
-									TickHandler.instance.addCallable( this );
+									TickHandler.instance.addCallable( this.tile.getWorldObj(), this );
 									return TickRateModulation.URGENT;
 								}
 							}

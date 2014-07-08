@@ -113,8 +113,14 @@ public class TickManagerCache implements ITickManager
 		sleeping.remove( node );
 		awake.put( node, tt );
 
+		// configure sort.
 		tt.lastTick = tt.lastTick - tt.request.maxTickRate;
+		tt.current_rate = tt.request.minTickRate;
+
+		// prevent dupes and tick build up.
+		upcomingTicks.remove( tt );
 		upcomingTicks.add( tt );
+
 		return true;
 	}
 
