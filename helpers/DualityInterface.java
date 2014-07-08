@@ -517,9 +517,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	{
 		TileEntity te = iHost.getTileEntity();
 		if ( te != null && te.getWorldObj() != null )
-		{
-			te.getWorldObj().notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, Platform.air );
-		}
+			Platform.notifyBlocksOfNeighbors( te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord );
 	}
 
 }

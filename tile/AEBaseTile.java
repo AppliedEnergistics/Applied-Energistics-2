@@ -259,7 +259,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		forward = inForward;
 		up = inUp;
 		markForUpdate();
-		worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord, Platform.air );
+		Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord, zCoord );
 	}
 
 	public void onPlacement(ItemStack stack, EntityPlayer player, int side)
