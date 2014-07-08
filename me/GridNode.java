@@ -286,7 +286,7 @@ public class GridNode implements IGridNode, IPathItem
 						}
 						catch (FailedConnection e)
 						{
-							TickHandler.instance.addCallable( new Callable() {
+							TickHandler.instance.addCallable( node.getWorld(), new Callable() {
 
 								@Override
 								public Object call() throws Exception
@@ -321,7 +321,7 @@ public class GridNode implements IGridNode, IPathItem
 				}
 				catch (FailedConnection e)
 				{
-					TickHandler.instance.addCallable( new Callable() {
+					TickHandler.instance.addCallable( node.getWorld(), new Callable() {
 
 						@Override
 						public Object call() throws Exception

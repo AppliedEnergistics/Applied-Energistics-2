@@ -13,6 +13,7 @@ import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.me.GridAccessException;
+import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -111,15 +112,15 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		int yCoord = tile.yCoord;
 		int zCoord = tile.zCoord;
 
-		worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord, worldObj.getBlock( xCoord, yCoord, zCoord ) );
+		Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord, zCoord );
 
 		// and this cause somtimes it can go thought walls.
-		worldObj.notifyBlocksOfNeighborChange( xCoord - 1, yCoord, zCoord, worldObj.getBlock( xCoord, yCoord, zCoord ) );
-		worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord - 1, zCoord, worldObj.getBlock( xCoord, yCoord, zCoord ) );
-		worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord - 1, worldObj.getBlock( xCoord, yCoord, zCoord ) );
-		worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord + 1, worldObj.getBlock( xCoord, yCoord, zCoord ) );
-		worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord + 1, zCoord, worldObj.getBlock( xCoord, yCoord, zCoord ) );
-		worldObj.notifyBlocksOfNeighborChange( xCoord + 1, yCoord, zCoord, worldObj.getBlock( xCoord, yCoord, zCoord ) );
+		Platform.notifyBlocksOfNeighbors( worldObj, xCoord - 1, yCoord, zCoord );
+		Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord - 1, zCoord );
+		Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord, zCoord - 1 );
+		Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord, zCoord + 1 );
+		Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord + 1, zCoord );
+		Platform.notifyBlocksOfNeighbors( worldObj, xCoord + 1, yCoord, zCoord );
 	}
 
 	@Override

@@ -178,7 +178,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 					}
 				}
 
-				tile.getWorldObj().notifyBlocksOfNeighborChange( tile.xCoord, tile.yCoord, tile.zCoord, Platform.air );
+				Platform.notifyBlocksOfNeighbors( tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord );
 				return true;
 			}
 		}

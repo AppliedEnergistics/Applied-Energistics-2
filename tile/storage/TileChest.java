@@ -437,7 +437,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			// update the neighbors
 			if ( worldObj != null )
 			{
-				worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord, Platform.air );
+				Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord, zCoord );
 				markForUpdate();
 			}
 		}

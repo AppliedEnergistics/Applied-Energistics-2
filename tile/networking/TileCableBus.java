@@ -290,7 +290,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	public void notifyNeighbors()
 	{
 		if ( worldObj != null && worldObj.blockExists( xCoord, yCoord, zCoord ) && !CableBusContainer.isLoading() )
-			worldObj.notifyBlocksOfNeighborChange( xCoord, yCoord, zCoord, Platform.air );
+			Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord, zCoord );
 	}
 
 	@Override

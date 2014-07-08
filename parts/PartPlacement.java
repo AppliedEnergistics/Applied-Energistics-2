@@ -136,7 +136,7 @@ public class PartPlacement
 						{
 							is.add( sp.facade.getItemStack() );
 							host.getFacadeContainer().removeFacade( host, sp.side );
-							world.notifyBlocksOfNeighborChange( x, y, z, Platform.air );
+							Platform.notifyBlocksOfNeighbors( world, x, y, z );
 						}
 
 						if ( host.isEmpty() )
