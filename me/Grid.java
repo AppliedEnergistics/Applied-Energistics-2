@@ -40,10 +40,10 @@ public class Grid implements IGrid
 			caches.put( c, new GridCacheWrapper( myCaches.get( c ) ) );
 		}
 
+		postEvent( new MENetworkPostCacheConstruction() );
+
 		TickHandler.instance.addNetwork( this );
 		center.setGrid( this );
-
-		postEvent( new MENetworkPostCacheConstruction() );
 	}
 
 	public Set<Class<? extends IGridHost>> getMachineClasses()
