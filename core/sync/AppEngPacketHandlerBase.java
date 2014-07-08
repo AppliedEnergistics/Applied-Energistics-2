@@ -11,6 +11,7 @@ import appeng.core.sync.packets.PacketAssemblerAnimation;
 import appeng.core.sync.packets.PacketClick;
 import appeng.core.sync.packets.PacketCompassRequest;
 import appeng.core.sync.packets.PacketCompassResponse;
+import appeng.core.sync.packets.PacketCompressedNBT;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketCraftRequest;
 import appeng.core.sync.packets.PacketInventoryAction;
@@ -79,7 +80,9 @@ public class AppEngPacketHandlerBase
 
 		PACKET_CRAFTING_REQUEST(PacketCraftRequest.class),
 
-		PAKCET_ASSEMBLER_ANIMATION(PacketAssemblerAnimation.class);
+		PACKET_ASSEMBLER_ANIMATION(PacketAssemblerAnimation.class),
+
+		PACKET_COMPRESSED_NBT(PacketCompressedNBT.class);
 
 		final public Class pc;
 		final public Constructor con;

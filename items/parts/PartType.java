@@ -31,6 +31,7 @@ import appeng.parts.p2p.PartP2PTunnelME;
 import appeng.parts.reporting.PartConversionMonitor;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartDarkMonitor;
+import appeng.parts.reporting.PartInterfaceTerminal;
 import appeng.parts.reporting.PartMonitor;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.parts.reporting.PartSemiDarkMonitor;
@@ -101,7 +102,9 @@ public enum PartType
 
 	P2PTunnelEU(465, AEFeature.P2PTunnelEU, PartP2PIC2Power.class, GuiText.EUTunnel),
 
-	P2PTunnelRF(466, AEFeature.P2PTunnelRF, PartP2PRFPower.class, GuiText.RFTunnel);
+	P2PTunnelRF(466, AEFeature.P2PTunnelRF, PartP2PRFPower.class, GuiText.RFTunnel),
+
+	InterfaceTerminal(480, AEFeature.InterfaceTerminal, PartInterfaceTerminal.class);
 
 	private final EnumSet<AEFeature> features;
 	private final Class<? extends IPart> myPart;

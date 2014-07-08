@@ -5,12 +5,15 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
@@ -45,6 +48,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
+import appeng.core.localization.GuiText;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
@@ -922,4 +926,40 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		craftingTracker.jobStateChange( link );
 	}
 
+	public String getTermName()
+	{
+		TileEntity tile = iHost.getTileEntity();
+		World w = tile.getWorldObj();
+
+		EnumSet<ForgeDirection> possibleDirections = iHost.getTargets();
+		for (ForgeDirection s : possibleDirections)
+		{
+			Vec3 from = Vec3.createVectorHelper( (double) tile.xCoord + 0.5, (double) tile.yCoord + 0.5, (double) tile.zCoord + 0.5 );
+			from = from.addVector( s.offsetX * 0.501, s.offsetY * 0.501, s.offsetZ * 0.501 );
+			Vec3 to = from.addVector( s.offsetX, s.offsetY, s.offsetZ );
+
+			Block blk = w.getBlock( tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ );
+			MovingObjectPosition mop = w.rayTraceBlocks( from, to, true );
+
+			TileEntity te = w.getTileEntity( tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ );
+			ItemStack what = new ItemStack( blk.getItem( w, tile.xCoord, tile.yCoord, tile.zCoord ) );
+
+			if ( mop != null )
+			{
+				if ( te instanceof ICraftingMachine || InventoryAdaptor.getAdaptor( te, s.getOpposite() ) != null )
+				{
+					if ( mop.blockX == te.xCoord && mop.blockY == te.yCoord && mop.blockZ == te.zCoord )
+					{
+						ItemStack g = blk.getPickBlock( mop, w, te.xCoord, te.yCoord, te.zCoord );
+						if ( g != null )
+							what = g;
+					}
+				}
+			}
+
+			return what.getUnlocalizedName();
+		}
+
+		return GuiText.Interface.getUnlocalized();
+	}
 }

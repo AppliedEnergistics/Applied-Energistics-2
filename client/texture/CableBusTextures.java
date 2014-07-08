@@ -27,8 +27,10 @@ public enum CableBusTextures
 
 	PartPatternTerm_Bright("PartPatternTerm_Bright"), PartPatternTerm_Colored("PartPatternTerm_Colored"), PartPatternTerm_Dark("PartPatternTerm_Dark"),
 
-	PartConvMonitor_Bright("PartConvMonitor_Bright"), PartConvMonitor_Colored("PartConvMonitor_Colored"), PartConvMonitor_Dark("PartConvMonitor_Dark"), PartCraftingMonitor_Bright(
-			"PartCraftingMonitor_Bright"), PartCraftingMonitor_Colored("PartCraftingMonitor_Colored"), PartCraftingMonitor_Dark("PartCraftingMonitor_Dark"),
+	PartConvMonitor_Bright("PartConvMonitor_Bright"), PartConvMonitor_Colored("PartConvMonitor_Colored"), PartConvMonitor_Dark("PartConvMonitor_Dark"),
+
+	PartInterfaceTerm_Bright("PartInterfaceTerm_Bright"), PartInterfaceTerm_Colored("PartInterfaceTerm_Colored"), PartInterfaceTerm_Dark(
+			"PartInterfaceTerm_Dark"),
 
 	PartCraftingTerm_Bright("PartCraftingTerm_Bright"), PartCraftingTerm_Colored("PartCraftingTerm_Colored"), PartCraftingTerm_Dark("PartCraftingTerm_Dark"), //
 

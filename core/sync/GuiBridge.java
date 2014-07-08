@@ -45,6 +45,7 @@ import appeng.container.implementations.ContainerGrinder;
 import appeng.container.implementations.ContainerIOPort;
 import appeng.container.implementations.ContainerInscriber;
 import appeng.container.implementations.ContainerInterface;
+import appeng.container.implementations.ContainerInterfaceTerminal;
 import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.container.implementations.ContainerMAC;
 import appeng.container.implementations.ContainerMEMonitorable;
@@ -71,6 +72,7 @@ import appeng.parts.automation.PartFormationPlane;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.parts.misc.PartStorageBus;
 import appeng.parts.reporting.PartCraftingTerminal;
+import appeng.parts.reporting.PartMonitor;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.server.AccessType;
 import appeng.tile.crafting.TileCraftingTile;
@@ -157,7 +159,9 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_CRAFTING_AMOUNT(ContainerCraftAmount.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT),
 
-	GUI_CRAFTING_CONFIRM(ContainerCraftConfirm.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT);
+	GUI_CRAFTING_CONFIRM(ContainerCraftConfirm.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT),
+
+	GUI_INTERFACE_TERMINAL(ContainerInterfaceTerminal.class, PartMonitor.class, WORLD, SecurityPermissions.BUILD);
 
 	private Class Tile;
 	private Class Gui;
