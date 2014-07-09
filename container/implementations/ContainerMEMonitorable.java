@@ -1,7 +1,5 @@
 package appeng.container.implementations;
 
-import invtweaks.api.container.IgnoreContainer;
-
 import java.io.IOException;
 import java.nio.BufferOverflowException;
 
@@ -49,7 +47,6 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
-@IgnoreContainer
 public class ContainerMEMonitorable extends AEBaseContainer implements IConfigManagerHost, IConfigureableObject, IMEMonitorHandlerReceiver<IAEItemStack>
 {
 

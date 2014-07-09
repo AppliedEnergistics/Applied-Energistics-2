@@ -84,6 +84,7 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.GuiBridge;
+import appeng.hooks.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;
 import appeng.me.helpers.AENetworkProxy;
@@ -1671,6 +1672,12 @@ public class Platform
 			ci = null;
 
 		return ci;
+	}
+
+	public static void notifyBlocksOfNeighbors(World worldObj, int xCoord, int yCoord, int zCoord)
+	{
+		if ( !worldObj.isRemote )
+			TickHandler.instance.addCallable( worldObj, new BlockUpdate( worldObj, xCoord, yCoord, zCoord ) );
 	}
 
 }

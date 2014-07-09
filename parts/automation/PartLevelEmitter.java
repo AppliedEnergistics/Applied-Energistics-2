@@ -107,8 +107,8 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 			host.markForUpdate();
 			TileEntity te = host.getTile();
 			prevState = isLevelEmitterOn();
-			te.getWorldObj().notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, Platform.air );
-			te.getWorldObj().notifyBlocksOfNeighborChange( te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ, Platform.air );
+			Platform.notifyBlocksOfNeighbors( te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord );
+			Platform.notifyBlocksOfNeighbors( te.getWorldObj(), te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ );
 		}
 	}
 

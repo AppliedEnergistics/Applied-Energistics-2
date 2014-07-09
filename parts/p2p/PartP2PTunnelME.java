@@ -125,19 +125,19 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 				if ( !proxy.getEnergy().isNetworkPowered() )
 				{
 					connection.markDestroy();
-					TickHandler.instance.addCallable( connection );
+					TickHandler.instance.addCallable( tile.getWorldObj(), connection );
 				}
 				else
 				{
 					if ( proxy.isActive() )
 					{
 						connection.markCreate();
-						TickHandler.instance.addCallable( connection );
+						TickHandler.instance.addCallable( tile.getWorldObj(), connection );
 					}
 					else
 					{
 						connection.markDestroy();
-						TickHandler.instance.addCallable( connection );
+						TickHandler.instance.addCallable( tile.getWorldObj(), connection );
 					}
 				}
 

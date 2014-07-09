@@ -25,6 +25,7 @@ public class StorageInterestManager {
 
 	private final SetMultimap<IAEStack, ItemWatcher>  container;
 	private LinkedList<SavedTransactions> transactions = null;
+	private int transDepth=0;
 	
 	public StorageInterestManager(SetMultimap<IAEStack, ItemWatcher> interests) {
 		container = interests;
@@ -32,20 +33,28 @@ public class StorageInterestManager {
 
 	public void enableTransactions()
 	{
-		transactions = new LinkedList();
+		if ( transDepth == 0 )
+			transactions = new LinkedList();
+		
+		transDepth++;
 	}
 
 	public void disableTransactions()
 	{
-		LinkedList<SavedTransactions>  myActions = transactions;
-		transactions = null;
-
-		for ( SavedTransactions t : myActions )
+		transDepth--;
+		
+		if ( transDepth == 0 )
 		{
-			if ( t.put )
-				put( t.stack, t.iw );
-			else
-				remove( t.stack, t.iw );
+			LinkedList<SavedTransactions>  myActions = transactions;
+			transactions = null;
+	
+			for ( SavedTransactions t : myActions )
+			{
+				if ( t.put )
+					put( t.stack, t.iw );
+				else
+					remove( t.stack, t.iw );
+			}
 		}
 	}
 	

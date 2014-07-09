@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 
 import net.minecraft.world.World;
@@ -47,7 +48,8 @@ public class TickHandler
 
 	final public static TickHandler instance = new TickHandler();
 
-	final private Queue<Callable> callQueue = new LinkedList();
+	final private WeakHashMap<World, Queue<Callable>> callQueue = new WeakHashMap<World, Queue<Callable>>();
+	Queue<Callable> serverQueue = new LinkedList<Callable>();
 
 	final private HandlerRep server = new HandlerRep();
 	final private HandlerRep client = new HandlerRep();
@@ -59,9 +61,19 @@ public class TickHandler
 		return client;
 	}
 
-	public void addCallable(Callable c)
+	public void addCallable(World w, Callable c)
 	{
-		callQueue.add( c );
+		if ( w == null )
+			serverQueue.add( c );
+		else
+		{
+			Queue<Callable> queue = callQueue.get( w );
+
+			if ( queue == null )
+				callQueue.put( w, queue = new LinkedList<Callable>() );
+
+			queue.add( c );
+		}
 	}
 
 	public void addInit(AEBaseTile tile)
@@ -153,6 +165,7 @@ public class TickHandler
 		// for no there is no reason to care about this on the client...
 		else if ( ev.type == Type.SERVER && ev.phase == Phase.END )
 		{
+			// ready tiles.
 			HandlerRep repo = getRepo();
 			while (!repo.tiles.isEmpty())
 			{
@@ -160,22 +173,36 @@ public class TickHandler
 				bt.onReady();
 			}
 
+			// tick networks.
 			for (Grid g : getRepo().networks)
-			{
 				g.update();
-			}
 
-			Callable c = null;
-			while ((c = callQueue.poll()) != null)
+			// cross world queue.
+			processQueue( serverQueue );
+		}
+
+		// world synced queue(s)
+		if ( ev.type == Type.WORLD && ev.phase == Phase.START )
+		{
+			processQueue( callQueue.get( ((WorldTickEvent) ev).world ) );
+		}
+	}
+
+	private void processQueue(Queue<Callable> queue)
+	{
+		if ( queue == null )
+			return;
+
+		Callable c = null;
+		while ((c = queue.poll()) != null)
+		{
+			try
 			{
-				try
-				{
-					c.call();
-				}
-				catch (Exception e)
-				{
-					AELog.error( e );
-				}
+				c.call();
+			}
+			catch (Exception e)
+			{
+				AELog.error( e );
 			}
 		}
 	}
@@ -189,4 +216,5 @@ public class TickHandler
 			craftingJobs.put( world, craftingJob );
 		}
 	}
+
 }
