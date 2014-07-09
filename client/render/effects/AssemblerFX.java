@@ -58,7 +58,7 @@ public class AssemblerFX extends EntityFX
 			time -= 4.0;
 			// if ( CommonHelper.proxy.shouldAddParticles( r ) )
 			for (int x = 0; x < (int) Math.ceil( speed / 5 ); x++)
-				CommonHelper.proxy.spawnEffect( EffectType.Crafting, worldObj, posX, posY, posZ );
+				CommonHelper.proxy.spawnEffect( EffectType.Crafting, worldObj, posX, posY, posZ, null );
 		}
 	}
 

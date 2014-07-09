@@ -27,6 +27,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.client.me.InternalSlotME;
+import appeng.client.me.SlotDisconnected;
 import appeng.client.me.SlotME;
 import appeng.client.render.AppEngRenderItem;
 import appeng.container.AEBaseContainer;
@@ -115,7 +116,7 @@ public abstract class AEBaseGui extends GuiContainer
 					int times = Math.abs( wheel );
 					for (int h = 0; h < times; h++)
 					{
-						PacketInventoryAction p = new PacketInventoryAction( direction, inventorySlots.inventorySlots.size(), null );
+						PacketInventoryAction p = new PacketInventoryAction( direction, inventorySlots.inventorySlots.size(), 0 );
 						NetworkHandler.instance.sendToServer( p );
 					}
 				}
@@ -166,7 +167,7 @@ public abstract class AEBaseGui extends GuiContainer
 			{
 				try
 				{
-					PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, null );
+					PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
 					NetworkHandler.instance.sendToServer( p );
 				}
 				catch (IOException e)
@@ -207,7 +208,7 @@ public abstract class AEBaseGui extends GuiContainer
 			{
 				try
 				{
-					PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, null );
+					PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
 					NetworkHandler.instance.sendToServer( p );
 				}
 				catch (IOException e)
@@ -235,7 +236,7 @@ public abstract class AEBaseGui extends GuiContainer
 						slotNum = slot.slotNumber;
 
 					((AEBaseContainer) inventorySlots).setTargetStack( stack );
-					PacketInventoryAction p = new PacketInventoryAction( InventoryAction.MOVE_REGION, slotNum, null );
+					PacketInventoryAction p = new PacketInventoryAction( InventoryAction.MOVE_REGION, slotNum, 0 );
 					NetworkHandler.instance.sendToServer( p );
 				}
 				catch (IOException e)
@@ -244,6 +245,49 @@ public abstract class AEBaseGui extends GuiContainer
 				}
 				return;
 			}
+		}
+
+		if ( slot instanceof SlotDisconnected )
+		{
+			InventoryAction action = null;
+
+			switch (key)
+			{
+			case 0: // pickup / set-down.
+				action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACESINGLE : InventoryAction.PICKUP_OR_SETDOWN;
+				break;
+			case 1:
+				action = ctrlDown == 1 ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
+				break;
+
+			case 3: // creative dupe:
+
+				if ( player.capabilities.isCreativeMode )
+				{
+					action = InventoryAction.CREATIVE_DUPLICATE;
+				}
+
+				break;
+
+			default:
+			case 4: // drop item:
+			case 6:
+			}
+
+			if ( action != null )
+			{
+				try
+				{
+					PacketInventoryAction p = new PacketInventoryAction( action, slot.getSlotIndex(), ((SlotDisconnected) slot).mySlot.id );
+					NetworkHandler.instance.sendToServer( p );
+				}
+				catch (IOException e)
+				{
+					AELog.error( e );
+				}
+			}
+
+			return;
 		}
 
 		if ( slot instanceof SlotME )
@@ -292,7 +336,7 @@ public abstract class AEBaseGui extends GuiContainer
 				try
 				{
 					((AEBaseContainer) inventorySlots).setTargetStack( stack );
-					PacketInventoryAction p = new PacketInventoryAction( action, inventorySlots.inventorySlots.size(), null );
+					PacketInventoryAction p = new PacketInventoryAction( action, inventorySlots.inventorySlots.size(), 0 );
 					NetworkHandler.instance.sendToServer( p );
 				}
 				catch (IOException e)
@@ -760,7 +804,7 @@ public abstract class AEBaseGui extends GuiContainer
 					if ( ((AppEngSlot) s).isValid == hasCalculatedValidness.NotAvailable )
 					{
 						boolean isValid = s.isItemValid( is ) || s instanceof SlotOutput || s instanceof AppEngCraftingSlot || s instanceof SlotDisabled
-								|| s instanceof SlotInaccessable || s instanceof SlotFake || s instanceof SlotRestrictedInput;
+								|| s instanceof SlotInaccessable || s instanceof SlotFake || s instanceof SlotRestrictedInput || s instanceof SlotDisconnected;
 						if ( isValid && s instanceof SlotRestrictedInput )
 						{
 							try

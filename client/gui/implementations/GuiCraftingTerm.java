@@ -51,7 +51,7 @@ public class GuiCraftingTerm extends GuiMEMonitorable
 				PacketInventoryAction p;
 				try
 				{
-					p = new PacketInventoryAction( InventoryAction.MOVE_REGION, s.slotNumber, null );
+					p = new PacketInventoryAction( InventoryAction.MOVE_REGION, s.slotNumber, 0 );
 					NetworkHandler.instance.sendToServer( p );
 				}
 				catch (IOException e)

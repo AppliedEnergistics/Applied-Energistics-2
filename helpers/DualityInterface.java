@@ -1,13 +1,16 @@
 package appeng.helpers;
 
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -207,8 +210,6 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 	private void readConfig()
 	{
-		boolean hadConfig = hasConfig;
-
 		hasConfig = false;
 
 		for (ItemStack p : config)
@@ -924,6 +925,8 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		craftingTracker.jobStateChange( link );
 	}
 
+	static final Set<Block> badBlocks = new HashSet();
+
 	public String getTermName()
 	{
 		TileEntity tile = iHost.getTileEntity();
@@ -940,22 +943,41 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			MovingObjectPosition mop = w.rayTraceBlocks( from, to, true );
 
 			TileEntity te = w.getTileEntity( tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ );
-			ItemStack what = new ItemStack( blk.getItem( w, tile.xCoord, tile.yCoord, tile.zCoord ) );
 
-			if ( mop != null )
+			if ( te == null )
+				return "Nothing";
+
+			Item item = Item.getItemFromBlock( blk );
+
+			if ( item == null )
 			{
-				if ( te instanceof ICraftingMachine || InventoryAdaptor.getAdaptor( te, s.getOpposite() ) != null )
+				return blk.getUnlocalizedName();
+			}
+
+			ItemStack what = new ItemStack( item, 1, blk.getDamageValue( w, tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ ) );
+
+			try
+			{
+				if ( mop != null && !badBlocks.contains( blk ) )
 				{
-					if ( mop.blockX == te.xCoord && mop.blockY == te.yCoord && mop.blockZ == te.zCoord )
+					if ( te instanceof ICraftingMachine || InventoryAdaptor.getAdaptor( te, s.getOpposite() ) != null )
 					{
-						ItemStack g = blk.getPickBlock( mop, w, te.xCoord, te.yCoord, te.zCoord );
-						if ( g != null )
-							what = g;
+						if ( mop.blockX == te.xCoord && mop.blockY == te.yCoord && mop.blockZ == te.zCoord )
+						{
+							ItemStack g = blk.getPickBlock( mop, w, te.xCoord, te.yCoord, te.zCoord );
+							if ( g != null )
+								what = g;
+						}
 					}
 				}
 			}
+			catch (Throwable t)
+			{
+				badBlocks.add( blk ); // nope!
+			}
 
-			return what.getUnlocalizedName();
+			if ( what.getItem() != null )
+				return what.getUnlocalizedName();
 		}
 
 		return GuiText.Interface.getUnlocalized();

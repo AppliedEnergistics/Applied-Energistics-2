@@ -25,12 +25,14 @@ public class PacketInventoryAction extends AppEngPacket
 
 	final public InventoryAction action;
 	final public int slot;
+	final public long id;
 	final public IAEItemStack slotItem;
 
 	// automatic.
 	public PacketInventoryAction(ByteBuf stream) throws IOException {
 		action = InventoryAction.values()[stream.readInt()];
 		slot = stream.readInt();
+		id = stream.readLong();
 		boolean hasItem = stream.readBoolean();
 		if ( hasItem )
 			slotItem = AEItemStack.loadItemStackFromPacket( stream );
@@ -64,7 +66,7 @@ public class PacketInventoryAction extends AppEngPacket
 			}
 			else
 			{
-				aebc.doAction( sender, action, slot );
+				aebc.doAction( sender, action, slot, id );
 			}
 		}
 	}
@@ -84,11 +86,12 @@ public class PacketInventoryAction extends AppEngPacket
 	// api
 	public PacketInventoryAction(InventoryAction action, int slot, IAEItemStack slotItem) throws IOException {
 
-		if ( Platform.isClient() && slotItem != null )
+		if ( Platform.isClient() )
 			throw new RuntimeException( "invalid packet, client cannot post inv actions with stacks." );
 
 		this.action = action;
 		this.slot = slot;
+		this.id = 0;
 		this.slotItem = slotItem;
 
 		ByteBuf data = Unpooled.buffer();
@@ -96,6 +99,7 @@ public class PacketInventoryAction extends AppEngPacket
 		data.writeInt( getPacketID() );
 		data.writeInt( action.ordinal() );
 		data.writeInt( slot );
+		data.writeLong( id );
 
 		if ( slotItem == null )
 			data.writeBoolean( false );
@@ -108,4 +112,22 @@ public class PacketInventoryAction extends AppEngPacket
 		configureWrite( data );
 	}
 
+	// api
+	public PacketInventoryAction(InventoryAction action, int slot, long id) throws IOException {
+
+		this.action = action;
+		this.slot = slot;
+		this.id = id;
+		this.slotItem = null;
+
+		ByteBuf data = Unpooled.buffer();
+
+		data.writeInt( getPacketID() );
+		data.writeInt( action.ordinal() );
+		data.writeInt( slot );
+		data.writeLong( id );
+		data.writeBoolean( false );
+
+		configureWrite( data );
+	}
 }

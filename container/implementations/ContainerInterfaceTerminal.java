@@ -12,16 +12,23 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.security.IActionHost;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketCompressedNBT;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
+import appeng.helpers.InventoryAction;
+import appeng.items.misc.ItemEncodedPattern;
 import appeng.parts.misc.PartInterface;
 import appeng.parts.reporting.PartMonitor;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.misc.TileInterface;
+import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import appeng.util.inv.AdaptorIInventory;
+import appeng.util.inv.AdaptorPlayerHand;
+import appeng.util.inv.WrapperInvSlot;
 
 public class ContainerInterfaceTerminal extends AEBaseContainer
 {
@@ -50,6 +57,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 	};
 
 	Map<IInterfaceHost, InvTracker> diList = new HashMap();
+	Map<Long, InvTracker> byId = new HashMap();
 	IGrid g;
 
 	public ContainerInterfaceTerminal(InventoryPlayer ip, PartMonitor anchor) {
@@ -63,9 +71,92 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 
 	NBTTagCompound data = new NBTTagCompound();
 
+	class PatternInvSlot extends WrapperInvSlot
+	{
+
+		public PatternInvSlot(IInventory inv) {
+			super( inv );
+		}
+
+		@Override
+		public boolean isItemValidForSlot(int i, ItemStack itemstack)
+		{
+			return itemstack != null && itemstack.getItem() instanceof ItemEncodedPattern;
+		}
+
+	};
+
+	@Override
+	public void doAction(EntityPlayerMP player, InventoryAction action, int slot, long id)
+	{
+		InvTracker inv = byId.get( id );
+		if ( inv != null )
+		{
+			ItemStack is = inv.server.getStackInSlot( slot );
+			boolean hasItemInHand = player.inventory.getItemStack() != null;
+
+			InventoryAdaptor playerHand = new AdaptorPlayerHand( player );
+
+			WrapperInvSlot slotInv = new PatternInvSlot( inv.server );
+			slotInv.setSlot( slot );
+			InventoryAdaptor interfaceSlot = new AdaptorIInventory( slotInv );
+
+			switch (action)
+			{
+			case PICKUP_OR_SETDOWN:
+
+				if ( hasItemInHand )
+				{
+					player.inventory.setItemStack( interfaceSlot.addItems( player.inventory.getItemStack() ) );
+				}
+				else
+				{
+					slotInv.setInventorySlotContents( 0, playerHand.addItems( slotInv.getStackInSlot( 0 ) ) );
+				}
+
+				break;
+			case SPLIT_OR_PLACESINGLE:
+
+				if ( hasItemInHand )
+				{
+					ItemStack extra = playerHand.removeItems( 1, null, null );
+					if ( extra != null )
+						extra = interfaceSlot.addItems( extra );
+					if ( extra != null )
+						playerHand.addItems( extra );
+				}
+				else if ( is != null )
+				{
+					ItemStack extra = interfaceSlot.removeItems( (is.stackSize + 1) / 2, null, null );
+					if ( extra != null )
+						extra = playerHand.addItems( extra );
+					if ( extra != null )
+						interfaceSlot.addItems( extra );
+				}
+
+				break;
+			case CREATIVE_DUPLICATE:
+
+				if ( player.capabilities.isCreativeMode && !hasItemInHand )
+				{
+					player.inventory.setItemStack( is == null ? null : is.copy() );
+				}
+
+				break;
+			default:
+				return;
+			}
+
+			updateHeld( player );
+		}
+	}
+
 	@Override
 	public void detectAndSendChanges()
 	{
+		if ( Platform.isClient() )
+			return;
+
 		super.detectAndSendChanges();
 
 		if ( g == null )
@@ -74,16 +165,46 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 		int total = 0;
 		boolean missing = false;
 
-		for (IGridNode gn : g.getMachines( TileInterface.class ))
+		IActionHost host = getActionHost();
+		if ( host != null )
 		{
-			IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
-			missing = missing || !diList.containsKey( ih );
-		}
+			IGridNode agn = host.getActionableNode();
+			if ( agn.isActive() )
+			{
+				for (IGridNode gn : g.getMachines( TileInterface.class ))
+				{
+					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
+					InvTracker t = diList.get( ih );
 
-		for (IGridNode gn : g.getMachines( PartInterface.class ))
-		{
-			IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
-			missing = missing || !diList.containsKey( ih );
+					if ( t == null )
+						missing = true;
+					else
+					{
+						DualityInterface dual = ih.getInterfaceDuality();
+						if ( !t.unlocalizedName.equals( dual.getTermName() ) )
+							missing = true;
+					}
+
+					total++;
+				}
+
+				for (IGridNode gn : g.getMachines( PartInterface.class ))
+				{
+					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
+					InvTracker t = diList.get( ih );
+
+					if ( t == null )
+						missing = true;
+					else
+					{
+						DualityInterface dual = ih.getInterfaceDuality();
+						if ( !t.unlocalizedName.equals( dual.getTermName() ) )
+							missing = true;
+					}
+
+					total++;
+				}
+			}
 		}
 
 		if ( total != diList.size() || missing )
@@ -129,20 +250,29 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 
 	private void regenList(NBTTagCompound data)
 	{
+		byId.clear();
 		diList.clear();
 
-		for (IGridNode gn : g.getMachines( TileInterface.class ))
+		IActionHost host = getActionHost();
+		if ( host != null )
 		{
-			IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
-			DualityInterface dual = ih.getInterfaceDuality();
-			diList.put( ih, new InvTracker( dual.getPatterns(), dual.getTermName() ) );
-		}
+			IGridNode agn = host.getActionableNode();
+			if ( agn.isActive() )
+			{
+				for (IGridNode gn : g.getMachines( TileInterface.class ))
+				{
+					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
+					DualityInterface dual = ih.getInterfaceDuality();
+					diList.put( ih, new InvTracker( dual.getPatterns(), dual.getTermName() ) );
+				}
 
-		for (IGridNode gn : g.getMachines( PartInterface.class ))
-		{
-			IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
-			DualityInterface dual = ih.getInterfaceDuality();
-			diList.put( ih, new InvTracker( dual.getPatterns(), dual.getTermName() ) );
+				for (IGridNode gn : g.getMachines( PartInterface.class ))
+				{
+					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
+					DualityInterface dual = ih.getInterfaceDuality();
+					diList.put( ih, new InvTracker( dual.getPatterns(), dual.getTermName() ) );
+				}
+			}
 		}
 
 		data.setBoolean( "clear", true );
@@ -150,6 +280,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 		for (Entry<IInterfaceHost, InvTracker> en : diList.entrySet())
 		{
 			InvTracker inv = en.getValue();
+			byId.put( inv.which, inv );
 			addItems( data, inv, 0, inv.server.getSizeInventory() );
 		}
 	}

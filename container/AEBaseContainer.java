@@ -266,7 +266,7 @@ public abstract class AEBaseContainer extends Container
 		prepareSync();
 	}
 
-	private IActionHost getActionHost()
+	protected IActionHost getActionHost()
 	{
 		if ( obj instanceof IActionHost )
 			return (IActionHost) obj;
@@ -678,7 +678,7 @@ public abstract class AEBaseContainer extends Container
 		return ais.getItemStack();
 	}
 
-	public void doAction(EntityPlayerMP player, InventoryAction action, int slot)
+	public void doAction(EntityPlayerMP player, InventoryAction action, int slot, long id)
 	{
 		if ( slot >= 0 && slot < inventorySlots.size() )
 		{

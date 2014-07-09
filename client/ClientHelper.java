@@ -35,6 +35,7 @@ import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.TESRWrapper;
 import appeng.client.render.WorldRender;
+import appeng.client.render.effects.AssemblerFX;
 import appeng.client.render.effects.CraftingFx;
 import appeng.client.render.effects.EnergyFx;
 import appeng.client.render.effects.LightningFX;
@@ -46,6 +47,7 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.CommonHelper;
 import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketAssemblerAnimation;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.entity.EntityFloatingItem;
 import appeng.entity.EntityTinyTNTPrimed;
@@ -232,12 +234,14 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public void spawnEffect(EffectType effect, World worldObj, double posX, double posY, double posZ)
+	public void spawnEffect(EffectType effect, World worldObj, double posX, double posY, double posZ, Object o)
 	{
 		if ( AEConfig.instance.enableEffects )
 		{
 			switch (effect)
 			{
+			case Assembler:
+				spawnAssembler( worldObj, posX, posY, posZ, o );
 			case Vibrant:
 				spawnVibrant( worldObj, posX, posY, posZ );
 				return;
@@ -252,6 +256,14 @@ public class ClientHelper extends ServerHelper
 				return;
 			}
 		}
+	}
+
+	private void spawnAssembler(World worldObj, double posX, double posY, double posZ, Object o)
+	{
+		PacketAssemblerAnimation paa = (PacketAssemblerAnimation) o;
+
+		AssemblerFX fx = new AssemblerFX( Minecraft.getMinecraft().theWorld, posX, posY, posZ, 0.0D, 0.0D, 0.0D, paa.rate, paa.is );
+		Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
 	}
 
 	private void spawnVibrant(World w, double x, double y, double z)

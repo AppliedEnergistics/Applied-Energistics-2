@@ -48,7 +48,7 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 			if ( bridge.hasQES() )
 			{
 				if ( CommonHelper.proxy.shouldAddParticles( r ) )
-					CommonHelper.proxy.spawnEffect( EffectType.Energy, w, bx + 0.5, by + 0.5, bz + 0.5 );
+					CommonHelper.proxy.spawnEffect( EffectType.Energy, w, bx + 0.5, by + 0.5, bz + 0.5, null );
 			}
 		}
 	}

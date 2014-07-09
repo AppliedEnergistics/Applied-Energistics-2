@@ -42,7 +42,7 @@ final public class EntityChargedQuartz extends EntityItem
 
 		if ( Platform.isClient() && delay++ > 30 && AEConfig.instance.enableEffects )
 		{
-			CommonHelper.proxy.spawnEffect( EffectType.Lightning, worldObj, posX, posY, posZ );
+			CommonHelper.proxy.spawnEffect( EffectType.Lightning, worldObj, posX, posY, posZ, null );
 			delay = 0;
 		}
 

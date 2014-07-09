@@ -90,7 +90,7 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public void spawnEffect(EffectType type, World worldObj, double posX, double posY, double posZ)
+	public void spawnEffect(EffectType type, World worldObj, double posX, double posY, double posZ, Object o)
 	{
 		// :P
 	}
