@@ -3,15 +3,16 @@ package appeng.client.render.items;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.GL11;
 
+import com.mojang.authlib.GameProfile;
+
+import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.util.AEColor;
 import appeng.client.texture.ExtraItemTextures;
-import appeng.util.Platform;
 
 public class ToolBiometricCardRender implements IItemRenderer
 {
@@ -74,8 +75,13 @@ public class ToolBiometricCardRender implements IItemRenderer
 		float u = ExtraItemTextures.White.getIcon().getInterpolatedU( 8.1 );
 		float v = ExtraItemTextures.White.getIcon().getInterpolatedV( 8.1 );
 
-		NBTTagCompound myTag = Platform.openNbtData( item );
-		String username = myTag.getString( "username" );
+		String username = "";
+		if ( item.getItem() instanceof IBiometricCard )
+		{
+			GameProfile gp = (( IBiometricCard) item.getItem() ).getProfile(item);
+			if ( gp != null )
+				username = gp.getName();
+		}
 		int hash = username.length() > 0 ? username.hashCode() : 0;
 
 		GL11.glScalef( 1F / 16F, 1F / 16F, 1F );

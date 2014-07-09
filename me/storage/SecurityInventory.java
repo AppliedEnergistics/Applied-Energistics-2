@@ -1,5 +1,7 @@
 package appeng.me.storage;
 
+import com.mojang.authlib.GameProfile;
+
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -113,7 +115,7 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 		if ( input.getItem() instanceof IBiometricCard )
 		{
 			IBiometricCard tbc = (IBiometricCard) input.getItem();
-			String newUser = tbc.getUsername( input.getItemStack() );
+			GameProfile newUser = tbc.getProfile( input.getItemStack() );
 
 			int PlayerID = AEApi.instance().registries().players().getID( newUser );
 			if ( securityTile.getOwner() == PlayerID )
@@ -123,7 +125,7 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 			{
 				if ( ais.isMeaninful() )
 				{
-					String thisUser = tbc.getUsername( ais.getItemStack() );
+					GameProfile thisUser = tbc.getProfile( ais.getItemStack() );
 					if ( thisUser.equals( newUser ) )
 						return false;
 				}

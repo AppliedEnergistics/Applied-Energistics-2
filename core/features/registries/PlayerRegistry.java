@@ -1,5 +1,7 @@
 package appeng.core.features.registries;
 
+import com.mojang.authlib.GameProfile;
+
 import net.minecraft.entity.player.EntityPlayer;
 import appeng.api.features.IPlayerRegistry;
 import appeng.core.WorldSettings;
@@ -8,7 +10,7 @@ public class PlayerRegistry implements IPlayerRegistry
 {
 
 	@Override
-	public int getID(String username)
+	public int getID(GameProfile username)
 	{
 		return WorldSettings.getInstance().getPlayerID( username );
 	}
@@ -16,13 +18,7 @@ public class PlayerRegistry implements IPlayerRegistry
 	@Override
 	public int getID(EntityPlayer player)
 	{
-		return WorldSettings.getInstance().getPlayerID( player.getCommandSenderName() );
-	}
-
-	@Override
-	public String getUsername(int id)
-	{
-		return WorldSettings.getInstance().getUsername( id );
+		return WorldSettings.getInstance().getPlayerID( player.getGameProfile() );
 	}
 
 }

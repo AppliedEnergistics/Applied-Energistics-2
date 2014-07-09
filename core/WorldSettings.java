@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.WeakHashMap;
 
+import com.mojang.authlib.GameProfile;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.ConfigCategory;
@@ -227,17 +229,6 @@ public class WorldSettings extends Configuration
 		return r;
 	}
 
-	public String getUsername(int id)
-	{
-		ConfigCategory playerList = this.getCategory( "players" );
-		for (Entry<String, Property> fish : playerList.entrySet())
-		{
-			if ( fish.getValue().isIntValue() && fish.getValue().getInt() == id )
-				return fish.getKey();
-		}
-		return null;
-	}
-
 	public int getNextOrderedValue(String name)
 	{
 		Property p = this.get( "orderedValues", name, 0 );
@@ -246,18 +237,21 @@ public class WorldSettings extends Configuration
 		return myValue;
 	}
 
-	public int getPlayerID(String username)
+	public int getPlayerID(GameProfile profile)
 	{
 		ConfigCategory playerList = this.getCategory( "players" );
-		if ( playerList == null || username == null || username.length() == 0 )
+		
+		if ( playerList == null || profile == null || !profile.isComplete() )
 			return -1;
 
-		Property prop = playerList.get( username );
+		String uuid  = profile.getId().toString();
+		
+		Property prop = playerList.get( uuid );
 		if ( prop != null && prop.isIntValue() )
 			return prop.getInt();
 		else
 		{
-			playerList.put( username, prop = new Property( username, "" + nextPlayer(), Property.Type.INTEGER ) );
+			playerList.put( uuid, prop = new Property( uuid, "" + nextPlayer(), Property.Type.INTEGER ) );
 			save();
 			return prop.getInt();
 		}

@@ -56,7 +56,7 @@ public class SecurityCache implements IGridCache, ISecurityGrid
 	@Override
 	public boolean hasPermission(EntityPlayer player, SecurityPermissions perm)
 	{
-		return hasPermission( player == null ? -1 : WorldSettings.getInstance().getPlayerID( player.getCommandSenderName() ), perm );
+		return hasPermission( player == null ? -1 : WorldSettings.getInstance().getPlayerID( player.getGameProfile() ), perm );
 	}
 
 	@Override

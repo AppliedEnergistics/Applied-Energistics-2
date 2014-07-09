@@ -88,7 +88,7 @@ public class AENetworkProxy implements IGridBlock
 		}
 		else if ( node != null && owner != null )
 		{
-			node.setPlayerID( WorldSettings.getInstance().getPlayerID( owner.getCommandSenderName() ) );
+			node.setPlayerID( WorldSettings.getInstance().getPlayerID( owner.getGameProfile() ) );
 			owner = null;
 		}
 	}

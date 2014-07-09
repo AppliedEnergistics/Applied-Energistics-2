@@ -3,10 +3,13 @@ package appeng.items.tools;
 import java.util.EnumSet;
 import java.util.List;
 
+import com.mojang.authlib.GameProfile;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import appeng.api.config.SecurityPermissions;
@@ -33,8 +36,8 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	@Override
 	public String getItemStackDisplayName(ItemStack is)
 	{
-		String username = getUsername( is );
-		return username.length() > 0 ? super.getItemStackDisplayName( is ) + " - " + username : super.getItemStackDisplayName( is );
+		GameProfile username = getProfile( is );
+		return username != null ? super.getItemStackDisplayName( is ) + " - " + username.getName() : super.getItemStackDisplayName( is );
 	}
 
 	@Override
@@ -66,20 +69,17 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 
 	private void encode(ItemStack is, EntityPlayer p)
 	{
-		String username = getUsername( is );
-		if ( p.getCommandSenderName().equals( username ) )
-			setUsername( is, "" );
+		GameProfile username = getProfile( is );
+		
+		if (username != null && username.equals(p.getGameProfile())) 
+			setProfile( is, null );
 		else
-			setUsername( is, p.getCommandSenderName() );
+			setProfile( is, p.getGameProfile() );
 	}
 
 	@Override
 	public void addInformation(ItemStack is, EntityPlayer p, List l, boolean b)
 	{
-		// String username = getUsername( is );
-		// if ( username.length() > 0 )
-		// l.add( username );
-
 		EnumSet<SecurityPermissions> perms = getPermissions( is );
 		if ( perms.isEmpty() )
 			l.add( GuiText.NoPermissions.getLocal() );
@@ -100,10 +100,12 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	}
 
 	@Override
-	public String getUsername(ItemStack is)
+	public GameProfile getProfile(ItemStack is)
 	{
 		NBTTagCompound tag = Platform.openNbtData( is );
-		return tag.getString( "username" );
+		if ( tag.hasKey("profile") )
+			return NBTUtil.func_152459_a(tag.getCompoundTag("profile") );
+		return null;
 	}
 
 	@Override
@@ -129,10 +131,18 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	}
 
 	@Override
-	public void setUsername(ItemStack itemStack, String username)
+	public void setProfile(ItemStack itemStack, GameProfile profile)
 	{
 		NBTTagCompound tag = Platform.openNbtData( itemStack );
-		tag.setString( "username", username );
+
+		if ( profile!= null )
+		{
+			NBTTagCompound pNBT = new NBTTagCompound();
+			NBTUtil.func_152460_a( pNBT, profile );					
+			tag.setTag( "profile", pNBT );
+		}
+		else
+		tag.removeTag("profile");
 	}
 
 	@Override
@@ -153,6 +163,6 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	@Override
 	public void registerPermissions(ISecurityRegister register, IPlayerRegistry pr, ItemStack is)
 	{
-		register.addPlayer( pr.getID( getUsername( is ) ), getPermissions( is ) );
+		register.addPlayer( pr.getID( getProfile( is ) ), getPermissions( is ) );
 	}
 }
