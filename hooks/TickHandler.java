@@ -170,7 +170,8 @@ public class TickHandler
 			while (!repo.tiles.isEmpty())
 			{
 				AEBaseTile bt = repo.tiles.poll();
-				bt.onReady();
+				if (! bt.isInvalid() )
+					bt.onReady();
 			}
 
 			// tick networks.
