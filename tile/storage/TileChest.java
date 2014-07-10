@@ -222,7 +222,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 			lastStateChange = worldObj.getTotalWorldTime();
 
-			return (state & 0xDB6DB6DB) != (oldState & 0xDB6DB6DB) || oldType != storageType;
+			return (state & 0xDB6DB6DB) != (oldState & 0xDB6DB6DB) || !Platform.isSameItemPrecise( oldType, storageType );
 		}
 
 		@Override
