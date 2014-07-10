@@ -242,6 +242,7 @@ public class ClientHelper extends ServerHelper
 			{
 			case Assembler:
 				spawnAssembler( worldObj, posX, posY, posZ, o );
+				return;
 			case Vibrant:
 				spawnVibrant( worldObj, posX, posY, posZ );
 				return;
