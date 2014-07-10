@@ -6,6 +6,10 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.AEApi;
+import appeng.client.render.BaseBlockRender;
+import appeng.client.render.blocks.RenderBlockCraftingMonitor;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 
@@ -18,8 +22,17 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 	}
 
 	@Override
+	protected Class<? extends BaseBlockRender> getRenderer()
+	{
+		return RenderBlockCraftingMonitor.class;
+	}
+
+	@Override
 	public IIcon getIcon(int direction, int metadata)
 	{
+		if ( direction != ForgeDirection.SOUTH.ordinal() )
+			return AEApi.instance().blocks().blockCraftingUnit.block().getIcon( direction, metadata );
+
 		switch (metadata)
 		{
 		default:

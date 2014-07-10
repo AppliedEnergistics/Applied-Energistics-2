@@ -47,6 +47,7 @@ import appeng.crafting.CraftingLink;
 import appeng.crafting.MECraftingInventory;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cluster.IAECluster;
+import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
@@ -76,7 +77,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	// instance sate
 	private LinkedList<TileCraftingTile> tiles = new LinkedList();
 	private LinkedList<TileCraftingTile> storage = new LinkedList<TileCraftingTile>();
-	private LinkedList<TileCraftingTile> status = new LinkedList<TileCraftingTile>();
+	private LinkedList<TileCraftingMonitorTile> status = new LinkedList<TileCraftingMonitorTile>();
 
 	long availableStorage = 0;
 	public ICraftingLink myLastLink;
@@ -251,7 +252,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			storage.add( te );
 		}
 		else if ( te.isStatus() )
-			status.add( te );
+			status.add( (TileCraftingMonitorTile) te );
 		else if ( te.isAccelerator() )
 			accelerator++;
 	}
@@ -335,6 +336,8 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 						if ( finalOutput.getStackSize() <= 0 )
 							completeJob();
 
+						updateCPU();
+
 						if ( myLastLink != null )
 							return ((CraftingLink) myLastLink).injectItems( (IAEItemStack) input, type );
 
@@ -357,6 +360,8 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 					if ( finalOutput.getStackSize() <= 0 )
 						completeJob();
 
+					updateCPU();
+
 					if ( myLastLink != null )
 					{
 						what.add( ((CraftingLink) myLastLink).injectItems( (IAEItemStack) insert.copy(), type ) );
@@ -377,6 +382,12 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		}
 
 		return input;
+	}
+
+	private void updateCPU()
+	{
+		for (TileCraftingMonitorTile t : status)
+			t.setJob( finalOutput );
 	}
 
 	public IGrid getGrid()
@@ -704,6 +715,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			isComplete = false;
 			markDirty();
 
+			updateCPU();
 			String craftID = generateCraftingID();
 
 			myLastLink = new CraftingLink( generateLinkData( craftID, requestingMachine == null, false ), this );
@@ -952,6 +964,8 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			readFromNBT( core.previousState );
 			core.previousState = null;
 		}
+
+		updateCPU();
 	}
 
 	@Override

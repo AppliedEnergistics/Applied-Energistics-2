@@ -9,6 +9,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.AEApi;
 import appeng.block.AEBaseBlock;
 import appeng.block.crafting.BlockCraftingMonitor;
 import appeng.block.crafting.BlockCraftingUnit;
@@ -32,9 +33,7 @@ public class RenderBlockCrafting extends BaseBlockRender
 	@Override
 	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
-		renderer.setOverrideBlockTexture( blk.getIcon( 0, is.getItemDamage() ) );
 		super.renderInventory( blk, is, renderer, type, obj );
-		renderer.setOverrideBlockTexture( null );
 	}
 
 	@Override
@@ -53,7 +52,11 @@ public class RenderBlockCrafting extends BaseBlockRender
 		int meta = w.getBlockMetadata( x, y, z ) & 3;
 
 		boolean isMonitor = blk.getClass() == BlockCraftingMonitor.class;
-		theIcon = blk.getIcon( 0, meta | (formed ? 8 : 0) );
+		theIcon = blk.getIcon( ForgeDirection.SOUTH.ordinal(), meta | (formed ? 8 : 0) );
+
+		IIcon nonForward = theIcon;
+		if ( blk instanceof BlockCraftingMonitor )
+			nonForward = AEApi.instance().blocks().blockCraftingUnit.block().getIcon( 0, meta | (formed ? 8 : 0) );
 
 		if ( formed )
 		{
@@ -97,7 +100,7 @@ public class RenderBlockCrafting extends BaseBlockRender
 						fso( side, highX, ForgeDirection.EAST ), fso( side, highY, ForgeDirection.UP ), fso( side, highZ, ForgeDirection.SOUTH ) );
 				i.prepareBounds( renderer );
 
-				handleSide( blk, meta, x, y, z, i, renderer, theIcon, emitsLight, isMonitor, side, w );
+				handleSide( blk, meta, x, y, z, i, renderer, ct.getForward().equals( side ) ? theIcon : nonForward, emitsLight, isMonitor, side, w );
 			}
 
 			i.setFacesToRender( EnumSet.allOf( ForgeDirection.class ) );
@@ -107,12 +110,10 @@ public class RenderBlockCrafting extends BaseBlockRender
 		}
 		else
 		{
-			renderer.setOverrideBlockTexture( theIcon );
 			double a = 0.0 / 16.0;
 			double o = 16.0 / 16.0;
 			renderer.setRenderBounds( a, a, a, o, o, o );
 			boolean out = renderer.renderStandardBlock( blk, x, y, z );
-			renderer.overrideBlockTexture = null;
 
 			return out;
 		}
@@ -164,6 +165,8 @@ public class RenderBlockCrafting extends BaseBlockRender
 			return;
 
 		i.setFacesToRender( EnumSet.of( side ) );
+		renderer = BusRenderer.instance.renderer;
+		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateWest = renderer.uvRotateTop = 0;
 
 		if ( meta == 0 && blk.getClass() == BlockCraftingUnit.class )
 		{
