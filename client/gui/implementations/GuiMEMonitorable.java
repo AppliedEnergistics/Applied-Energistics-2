@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.input.Mouse;
@@ -28,6 +29,8 @@ import appeng.client.me.InternalSlotME;
 import appeng.client.me.ItemRepo;
 import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.container.slot.AppEngSlot;
+import appeng.container.slot.SlotCraftingMatrix;
+import appeng.container.slot.SlotFakeCraftingMatrix;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -45,6 +48,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 	MEGuiTextField searchField;
 	private static String memoryText = "";
+
+	public static int CraftingGridOffsetX;
+	public static int CraftingGridOffsetY;
 
 	ItemRepo repo;
 
@@ -232,6 +238,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			setScrollBar();
 		}
 
+		CraftingGridOffsetX = Integer.MAX_VALUE;
+		CraftingGridOffsetY = Integer.MAX_VALUE;
+
 		for (Object s : inventorySlots.inventorySlots)
 		{
 			if ( s instanceof AppEngSlot )
@@ -239,8 +248,20 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 				if ( ((AppEngSlot) s).xDisplayPosition < 197 )
 					repositionSlot( (AppEngSlot) s );
 			}
+
+			if ( s instanceof SlotCraftingMatrix || s instanceof SlotFakeCraftingMatrix )
+			{
+				Slot g = (Slot) s;
+				if ( g.xDisplayPosition > 0 && g.yDisplayPosition > 0 )
+				{
+					CraftingGridOffsetX = Math.min( CraftingGridOffsetX, g.xDisplayPosition );
+					CraftingGridOffsetY = Math.min( CraftingGridOffsetY, g.yDisplayPosition );
+				}
+			}
 		}
 
+		CraftingGridOffsetX -= 25;
+		CraftingGridOffsetY -= 6;
 	}
 
 	protected void repositionSlot(AppEngSlot s)

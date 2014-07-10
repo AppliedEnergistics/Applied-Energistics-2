@@ -26,7 +26,7 @@ public class NEICraftingHandler implements IOverlayHandler
 	int offsetx;
 	int offsety;
 
-	// @override
+	@Override
 	public void overlayRecipe(GuiContainer gui, IRecipeHandler recipe, int recipeIndex, boolean shift)
 	{
 		try
@@ -42,7 +42,6 @@ public class NEICraftingHandler implements IOverlayHandler
 		}
 	}
 
-	// @override
 	public void overlayRecipe(GuiContainer gui, List<PositionedStack> ingredients, boolean shift)
 	{
 		try

@@ -20,6 +20,8 @@ import appeng.integration.modules.NEIHelpers.NEICraftingHandler;
 import appeng.integration.modules.NEIHelpers.NEIGrinderRecipeHandler;
 import appeng.integration.modules.NEIHelpers.NEIInscriberRecipeHandler;
 import appeng.integration.modules.NEIHelpers.NEIWorldCraftingHandler;
+import appeng.integration.modules.NEIHelpers.TerminalCraftingSlotFinder;
+import codechicken.nei.api.IStackPositioner;
 import codechicken.nei.guihook.GuiContainerManager;
 
 public class NEI extends BaseModule implements IIntegrationModule, INEI
@@ -59,13 +61,13 @@ public class NEI extends BaseModule implements IIntegrationModule, INEI
 		registerRecipeHandler( new NEIGrinderRecipeHandler() );
 
 		// crafting terminal...
-		Method registerGuiOverlay = API.getDeclaredMethod( "registerGuiOverlay", new Class[] { Class.class, String.class, int.class, int.class } );
+		Method registerGuiOverlay = API.getDeclaredMethod( "registerGuiOverlay", new Class[] { Class.class, String.class, IStackPositioner.class } );
 		Class IOverlayHandler = Class.forName( "codechicken.nei.api.IOverlayHandler" );
 		Class DefaultOverlayHandler = NEICraftingHandler.class;
 
 		Method registerGuiOverlayHandler = API.getDeclaredMethod( "registerGuiOverlayHandler", new Class[] { Class.class, IOverlayHandler, String.class } );
-		registerGuiOverlay.invoke( API, GuiCraftingTerm.class, "crafting", 6, 75 );
-		registerGuiOverlay.invoke( API, GuiPatternTerm.class, "crafting", 6, 75 );
+		registerGuiOverlay.invoke( API, GuiCraftingTerm.class, "crafting", new TerminalCraftingSlotFinder() );
+		registerGuiOverlay.invoke( API, GuiPatternTerm.class, "crafting", new TerminalCraftingSlotFinder() );
 
 		Constructor DefaultOverlayHandlerConstructor = DefaultOverlayHandler.getConstructor( new Class[] { int.class, int.class } );
 		registerGuiOverlayHandler.invoke( API, GuiCraftingTerm.class, DefaultOverlayHandlerConstructor.newInstance( 6, 75 ), "crafting" );

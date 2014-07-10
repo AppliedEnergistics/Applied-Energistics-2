@@ -5,10 +5,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.WeakHashMap;
-
-import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.DimensionManager;
@@ -21,6 +18,8 @@ import appeng.core.sync.packets.PacketNewStorageDimension;
 import appeng.me.GridStorage;
 import appeng.me.GridStorageSearch;
 import appeng.services.CompassService;
+
+import com.mojang.authlib.GameProfile;
 
 public class WorldSettings extends Configuration
 {
@@ -240,12 +239,12 @@ public class WorldSettings extends Configuration
 	public int getPlayerID(GameProfile profile)
 	{
 		ConfigCategory playerList = this.getCategory( "players" );
-		
+
 		if ( playerList == null || profile == null || !profile.isComplete() )
 			return -1;
 
-		String uuid  = profile.getId().toString();
-		
+		String uuid = profile.getId().toString();
+
 		Property prop = playerList.get( uuid );
 		if ( prop != null && prop.isIntValue() )
 			return prop.getInt();
