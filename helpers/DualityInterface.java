@@ -778,22 +778,38 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 			if ( ad != null )
 			{
-
-				for (int x = 0; x < table.getSizeInventory(); x++)
+				if ( acceptsItems( ad, table ) )
 				{
-					ItemStack is = table.getStackInSlot( x );
-					if ( is != null )
+					for (int x = 0; x < table.getSizeInventory(); x++)
 					{
-						addToSendList( ad.addItems( is ) );
+						ItemStack is = table.getStackInSlot( x );
+						if ( is != null )
+						{
+							addToSendList( ad.addItems( is ) );
+						}
 					}
+					pushItemsOut( possibleDirections );
+					return true;
 				}
-
-				pushItemsOut( possibleDirections );
-				return true;
 			}
 		}
 
 		return false;
+	}
+
+	private boolean acceptsItems(InventoryAdaptor ad, InventoryCrafting table)
+	{
+		for (int x = 0; x < table.getSizeInventory(); x++)
+		{
+			ItemStack is = table.getStackInSlot( x );
+			if ( is == null )
+				continue;
+
+			if ( ad.simulateAdd( is.copy() ) != null )
+				return false;
+		}
+
+		return true;
 	}
 
 	private void pushItemsOut(EnumSet<ForgeDirection> possibleDirections)
@@ -826,8 +842,6 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 			if ( whatToSend == null )
 				i.remove();
-			else
-				whatToSend.stackSize = whatToSend.stackSize;
 		}
 
 		if ( waitingToSend.isEmpty() )
