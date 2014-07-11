@@ -24,7 +24,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 
 	GuiTabButton tabCraftButton;
 	GuiTabButton tabProcessButton;
-	GuiImgButton substitutionsBtn;
+	//GuiImgButton substitutionsBtn;
 	GuiImgButton encodeBtn;
 	GuiImgButton clearBtn;
 
@@ -37,8 +37,8 @@ public class GuiPatternTerm extends GuiMEMonitorable
 		buttonList.add( tabProcessButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 179, new ItemStack( Blocks.furnace ),
 				GuiText.ProcessingPattern.getLocal(), itemRender ) );
 
-		buttonList.add( substitutionsBtn = new GuiImgButton( this.guiLeft + 84, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.SUBSTITUTION ) );
-		substitutionsBtn.halfSize = true;
+		//buttonList.add( substitutionsBtn = new GuiImgButton( this.guiLeft + 84, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.SUBSTITUTION ) );
+		//substitutionsBtn.halfSize = true;
 
 		buttonList.add( clearBtn = new GuiImgButton( this.guiLeft + 74, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.CLOSE ) );
 		clearBtn.halfSize = true;
@@ -76,10 +76,10 @@ public class GuiPatternTerm extends GuiMEMonitorable
 			e.printStackTrace();
 		}
 
-		if ( substitutionsBtn == btn )
-		{
+		//if ( substitutionsBtn == btn )
+		//{
 
-		}
+		//}
 	}
 
 	protected void repositionSlot(AppEngSlot s)
