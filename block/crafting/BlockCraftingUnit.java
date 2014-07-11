@@ -57,9 +57,14 @@ public class BlockCraftingUnit extends AEBaseBlock
 	public int getDamageValue(World w, int x, int y, int z)
 	{
 		int meta = w.getBlockMetadata( x, y, z );
+		return damageDropped( meta );
+	}
+	@Override
+	public int damageDropped( int meta )
+	{
 		return meta & 3;
 	}
-
+	
 	@Override
 	public String getUnlocalizedName(ItemStack is)
 	{
@@ -77,7 +82,9 @@ public class BlockCraftingUnit extends AEBaseBlock
 	@Override
 	public void setRenderStateByMeta(int itemDamage)
 	{
-		getRendererInstance().setTemporaryRenderIcon( getIcon( 0, itemDamage ) );
+		IIcon front = getIcon( ForgeDirection.SOUTH.ordinal(), itemDamage );
+		IIcon other = getIcon( ForgeDirection.NORTH.ordinal(), itemDamage );
+		getRendererInstance().setTemporaryRenderIcons(other, other, front, other, other, other);
 	}
 
 	@Override
