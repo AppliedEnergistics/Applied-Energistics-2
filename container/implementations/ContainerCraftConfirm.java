@@ -1,6 +1,8 @@
 package appeng.container.implementations;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.Future;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,6 +15,7 @@ import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
+import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.security.BaseActionSource;
@@ -28,6 +31,10 @@ import appeng.container.guisync.GuiSync;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
+import appeng.util.ItemSorters;
+import appeng.util.Platform;
+
+import com.google.common.collect.ImmutableSet;
 
 public class ContainerCraftConfirm extends AEBaseContainer
 {
@@ -51,15 +58,131 @@ public class ContainerCraftConfirm extends AEBaseContainer
 	@GuiSync(4)
 	public boolean simulation = true;
 
+	@GuiSync(5)
+	public int selectedCpu = -1;
+
+	@GuiSync(6)
+	public boolean noCPU = true;
+
+	protected long cpuIdx = Long.MIN_VALUE;
+
+	public class CraftingCPURecord implements Comparable<CraftingCPURecord>
+	{
+
+		ICraftingCPU cpu;
+
+		long id = cpuIdx++;
+		long size;
+		int processors;
+
+		CraftingCPURecord(long size, int proc, ICraftingCPU server) {
+			this.size = size;
+			this.processors = proc;
+			this.cpu = server;
+		}
+
+		@Override
+		public int compareTo(CraftingCPURecord o)
+		{
+			int a = ItemSorters.compareLong( o.processors, processors );
+			if ( a != 0 )
+				return a;
+			return ItemSorters.compareLong( o.size, size );
+		}
+
+	};
+
+	public ArrayList<CraftingCPURecord> cpus = new ArrayList();
+
 	public ContainerCraftConfirm(InventoryPlayer ip, ITerminalHost te) {
 		super( ip, te );
 		priHost = te;
 	}
 
+	private void sendCPUs()
+	{
+		Collections.sort( cpus );
+
+		if ( selectedCpu >= cpus.size() )
+		{
+			selectedCpu = -1;
+			cpuBytesAvail = 0;
+			cpuCoProcessors = 0;
+		}
+		else if ( selectedCpu != -1 )
+		{
+			cpuBytesAvail = cpus.get( selectedCpu ).size;
+			cpuCoProcessors = cpus.get( selectedCpu ).processors;
+		}
+	}
+
+	public void cycleCpu(boolean next)
+	{
+		if ( next )
+			selectedCpu++;
+		else
+			selectedCpu--;
+
+		if ( selectedCpu < -1 )
+			selectedCpu = cpus.size() - 1;
+		else if ( selectedCpu >= cpus.size() )
+			selectedCpu = -1;
+
+		if ( selectedCpu == -1 )
+		{
+			cpuBytesAvail = 0;
+			cpuCoProcessors = 0;
+		}
+		else
+		{
+			cpuBytesAvail = cpus.get( selectedCpu ).size;
+			cpuCoProcessors = cpus.get( selectedCpu ).processors;
+		}
+	}
+
 	@Override
 	public void detectAndSendChanges()
 	{
+		if ( Platform.isClient() )
+			return;
+
+		ICraftingGrid cc = getGrid().getCache( ICraftingGrid.class );
+		ImmutableSet<ICraftingCPU> cpuSet = cc.getCpus();
+
+		int matches = 0;
+		boolean changed = false;
+		for (ICraftingCPU c : cpuSet)
+		{
+			boolean found = false;
+			for (CraftingCPURecord ccr : cpus)
+				if ( ccr.cpu == c )
+					found = true;
+
+			boolean matched = cpuMatches( c );
+
+			if ( matched )
+				matches++;
+
+			if ( !found != matched )
+				changed = true;
+		}
+
+		if ( changed || cpus.size() != matches )
+		{
+			cpus.clear();
+			for (ICraftingCPU c : cpuSet)
+			{
+				if ( cpuMatches( c ) )
+					cpus.add( new CraftingCPURecord( c.getAvailableStorage(), c.getCoProcessors(), c ) );
+			}
+
+			sendCPUs();
+		}
+
+		noCPU = cpus.size() == 0;
+
 		super.detectAndSendChanges();
+
 		if ( job != null && job.isDone() )
 		{
 			try
@@ -157,12 +280,17 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		verifyPermissions( SecurityPermissions.CRAFT, false );
 	}
 
+	private boolean cpuMatches(ICraftingCPU c)
+	{
+		return c.getAvailableStorage() >= bytesUsed && !c.isBusy();
+	}
+
 	public void startJob()
 	{
 		if ( result != null && simulation == false )
 		{
 			ICraftingGrid cc = getGrid().getCache( ICraftingGrid.class );
-			cc.submitJob( result, null, null, getActionSrc() );
+			cc.submitJob( result, null, selectedCpu == -1 ? null : cpus.get( selectedCpu ).cpu, getActionSrc() );
 			this.isContainerValid = false;
 		}
 	}
@@ -204,5 +332,4 @@ public class ContainerCraftConfirm extends AEBaseContainer
 	{
 		return new PlayerSource( getPlayerInv().player, (IActionHost) getTarget() );
 	}
-
 }

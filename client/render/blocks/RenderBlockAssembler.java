@@ -179,6 +179,7 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 
 		BusRenderer.instance.renderer.blockAccess = renderer.blockAccess;
 		renderer = BusRenderer.instance.renderer;
+		BusRenderer.instance.renderer.isFacade = true;
 
 		preRenderInWorld( block, world, x, y, z, renderer );
 
@@ -242,6 +243,7 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 
 		renderer.renderAllFaces = false;
+		BusRenderer.instance.renderer.isFacade = false;
 
 		postRenderInWorld( renderer );
 

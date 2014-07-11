@@ -386,8 +386,13 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	private void updateCPU()
 	{
+		IAEItemStack send = finalOutput;
+
+		if ( finalOutput != null && finalOutput.getStackSize() <= 0 )
+			send = null;
+
 		for (TileCraftingMonitorTile t : status)
-			t.setJob( finalOutput );
+			t.setJob( send );
 	}
 
 	public IGrid getGrid()
@@ -468,6 +473,10 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		myLastLink = null;
 		tasks.clear();
 		waitingFor.resetStatus();
+
+		finalOutput = null;
+		updateCPU();
+
 		storeItems(); // marks dirty
 	}
 
@@ -699,6 +708,9 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			return null;
 
 		if ( !(job instanceof CraftingJob) )
+			return null;
+
+		if ( isBusy() || getAvailableStorage() < job.getByteTotal() )
 			return null;
 
 		IStorageGrid sg = g.getCache( IStorageGrid.class );

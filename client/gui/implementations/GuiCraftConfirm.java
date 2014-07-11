@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import appeng.api.AEApi;
@@ -37,6 +38,8 @@ import com.google.common.base.Joiner;
 public class GuiCraftConfirm extends AEBaseGui
 {
 
+	ContainerCraftConfirm ccc;
+
 	int rows = 5;
 
 	IItemList<IAEItemStack> storage = AEApi.instance().storage().createItemList();
@@ -62,6 +65,8 @@ public class GuiCraftConfirm extends AEBaseGui
 		xSize = 238;
 		ySize = 206;
 		myScrollBar = new GuiScrollbar();
+
+		ccc = (ContainerCraftConfirm) this.inventorySlots;
 
 		if ( te instanceof WirelessTerminalGuiObject )
 			OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
@@ -90,7 +95,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		start.enabled = false;
 		buttonList.add( start );
 
-		selectcpu = new GuiButton( 0, this.guiLeft + (219 - 150) / 2, this.guiTop + ySize - 68, 150, 20, GuiText.CraftingCPU.getLocal() + ": "
+		selectcpu = new GuiButton( 0, this.guiLeft + (219 - 180) / 2, this.guiTop + ySize - 68, 180, 20, GuiText.CraftingCPU.getLocal() + ": "
 				+ GuiText.Automatic );
 		selectcpu.enabled = false;
 		buttonList.add( selectcpu );
@@ -101,10 +106,35 @@ public class GuiCraftConfirm extends AEBaseGui
 		buttonList.add( cancel );
 	}
 
+	private void updateCPUButtonText()
+	{
+		String btnTextText = GuiText.CraftingCPU.getLocal() + ": " + GuiText.Automatic;
+		if ( ccc.selectedCpu >= 0 )// && ccc.selectedCpu < ccc.cpus.size() )
+			btnTextText = GuiText.CraftingCPU.getLocal() + ": #" + ccc.selectedCpu;
+		if ( ccc.noCPU )
+			btnTextText = GuiText.NoCraftingCPUs.getLocal();
+
+		selectcpu.displayString = btnTextText;
+	}
+
 	@Override
 	protected void actionPerformed(GuiButton btn)
 	{
 		super.actionPerformed( btn );
+
+		boolean backwards = Mouse.isButtonDown( 1 );
+
+		if ( btn == selectcpu )
+		{
+			try
+			{
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Terminal.Cpu", backwards ? "Prev" : "Next" ) );
+			}
+			catch (IOException e)
+			{
+				AELog.error( e );
+			}
+		}
 
 		if ( btn == cancel )
 		{
@@ -273,7 +303,9 @@ public class GuiCraftConfirm extends AEBaseGui
 	@Override
 	public void drawScreen(int mouse_x, int mouse_y, float btn)
 	{
-		start.enabled = isSimulation() ? false : true;
+		updateCPUButtonText();
+
+		start.enabled = ccc.noCPU || isSimulation() ? false : true;
 		selectcpu.enabled = isSimulation() ? false : true;
 
 		int x = 0;
@@ -315,9 +347,7 @@ public class GuiCraftConfirm extends AEBaseGui
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		ContainerCraftConfirm c = (ContainerCraftConfirm) inventorySlots;
-
-		long BytesUsed = c.bytesUsed;
+		long BytesUsed = ccc.bytesUsed;
 		String byteUsed = NumberFormat.getInstance().format( BytesUsed );
 		String Add = BytesUsed > 0 ? (byteUsed + " " + GuiText.BytesUsed.getLocal()) : GuiText.CalculatingWait.getLocal();
 		fontRendererObj.drawString( GuiText.CraftingPlan.getLocal() + " - " + Add, 8, 7, 4210752 );
@@ -327,7 +357,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		if ( isSimulation() )
 			dsp = GuiText.Simulation.getLocal();
 		else
-			dsp = c.cpuBytesAvail > 0 ? (GuiText.Bytes.getLocal() + ": " + c.cpuBytesAvail + " : " + GuiText.CoProcessors.getLocal() + ": " + c.cpuCoProcessors)
+			dsp = ccc.cpuBytesAvail > 0 ? (GuiText.Bytes.getLocal() + ": " + ccc.cpuBytesAvail + " : " + GuiText.CoProcessors.getLocal() + ": " + ccc.cpuCoProcessors)
 					: GuiText.Bytes.getLocal() + ": N/A : " + GuiText.CoProcessors.getLocal() + ": N/A";
 
 		int offset = (219 - fontRendererObj.getStringWidth( dsp )) / 2;

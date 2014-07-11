@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderBlockCrafting;
+import appeng.client.render.blocks.RenderBlockCraftingCPU;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
@@ -75,6 +75,12 @@ public class BlockCraftingUnit extends AEBaseBlock
 	}
 
 	@Override
+	public void setRenderStateByMeta(int itemDamage)
+	{
+		getRendererInstance().setTemporaryRenderIcon( getIcon( 0, itemDamage ) );
+	}
+
+	@Override
 	public IIcon getIcon(int direction, int metadata)
 	{
 		switch (metadata)
@@ -94,7 +100,7 @@ public class BlockCraftingUnit extends AEBaseBlock
 	@Override
 	protected Class<? extends BaseBlockRender> getRenderer()
 	{
-		return RenderBlockCrafting.class;
+		return RenderBlockCraftingCPU.class;
 	}
 
 	@Override

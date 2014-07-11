@@ -66,7 +66,8 @@ public enum ExtraBlockTextures
 	BlockCraftingStorage1kFit("BlockCraftingStorageFit"), BlockCraftingStorage4kFit("BlockCraftingStorage4kFit"), BlockCraftingStorage16kFit(
 			"BlockCraftingStorage16kFit"), BlockCraftingStorage64kFit("BlockCraftingStorage64kFit"),
 
-	BlockCraftingUnitRing("BlockCraftingUnitRing"), BlockCraftingUnitRingLong("BlockCraftingUnitRingLong"), BlockCraftingUnitFit("BlockCraftingUnitFit"),
+	BlockCraftingUnitRing("BlockCraftingUnitRing"), BlockCraftingUnitRingLongRotated("BlockCraftingUnitRingLongRotated"), BlockCraftingUnitRingLong(
+			"BlockCraftingUnitRingLong"), BlockCraftingUnitFit("BlockCraftingUnitFit"),
 
 	BlockCraftingMonitorOuter("BlockCraftingMonitorOuter"), BlockCraftingFitSolid("BlockCraftingFitSolid");
 

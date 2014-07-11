@@ -464,4 +464,22 @@ public class BusRenderHelper implements IPartRenderHelper
 		az = dz == null ? ForgeDirection.SOUTH : dz;
 	}
 
+	public double[] getBounds()
+	{
+		return new double[] { minX, minY, minZ, maxX, maxY, maxZ };
+	}
+
+	public void setBounds(double[] bounds)
+	{
+		if ( bounds == null || bounds.length != 6 )
+			return;
+
+		minX = bounds[0];
+		minY = bounds[1];
+		minZ = bounds[2];
+		maxX = bounds[3];
+		maxY = bounds[4];
+		maxZ = bounds[5];
+	}
+
 }

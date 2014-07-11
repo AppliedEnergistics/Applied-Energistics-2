@@ -9,7 +9,7 @@ import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.client.render.BaseBlockRender;
-import appeng.client.render.blocks.RenderBlockCraftingMonitor;
+import appeng.client.render.blocks.RenderBlockCraftingCPUMonitor;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 
@@ -24,7 +24,7 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 	@Override
 	protected Class<? extends BaseBlockRender> getRenderer()
 	{
-		return RenderBlockCraftingMonitor.class;
+		return RenderBlockCraftingCPUMonitor.class;
 	}
 
 	@Override

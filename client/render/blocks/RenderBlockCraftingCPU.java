@@ -19,14 +19,14 @@ import appeng.client.render.BusRenderer;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.crafting.TileCraftingTile;
 
-public class RenderBlockCrafting extends BaseBlockRender
+public class RenderBlockCraftingCPU extends BaseBlockRender
 {
 
-	protected RenderBlockCrafting(boolean useTesr, int range) {
+	protected RenderBlockCraftingCPU(boolean useTesr, int range) {
 		super( useTesr, range );
 	}
 
-	public RenderBlockCrafting() {
+	public RenderBlockCraftingCPU() {
 		super( false, 20 );
 	}
 
@@ -55,16 +55,17 @@ public class RenderBlockCrafting extends BaseBlockRender
 		theIcon = blk.getIcon( ForgeDirection.SOUTH.ordinal(), meta | (formed ? 8 : 0) );
 
 		IIcon nonForward = theIcon;
-		if ( blk instanceof BlockCraftingMonitor )
+		if ( isMonitor )
 			nonForward = AEApi.instance().blocks().blockCraftingUnit.block().getIcon( 0, meta | (formed ? 8 : 0) );
 
 		if ( formed )
 		{
 			renderer = BusRenderer.instance.renderer;
 			BusRenderHelper i = BusRenderHelper.instance;
+			BusRenderer.instance.renderer.isFacade = true;
+
 			renderer.blockAccess = w;
 			i.setPass( 0 );
-
 			i.setOrientation( ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
 
 			try
@@ -73,9 +74,9 @@ public class RenderBlockCrafting extends BaseBlockRender
 			}
 			catch (Throwable t)
 			{
-				t.printStackTrace();
 
 			}
+
 			float highX = isConnected( w, x, y, z, ForgeDirection.EAST ) ? 16 : 13.01f;
 			float lowX = isConnected( w, x, y, z, ForgeDirection.WEST ) ? 0 : 2.99f;
 
@@ -100,9 +101,14 @@ public class RenderBlockCrafting extends BaseBlockRender
 						fso( side, highX, ForgeDirection.EAST ), fso( side, highY, ForgeDirection.UP ), fso( side, highZ, ForgeDirection.SOUTH ) );
 				i.prepareBounds( renderer );
 
-				handleSide( blk, meta, x, y, z, i, renderer, ct.getForward().equals( side ) ? theIcon : nonForward, emitsLight, isMonitor, side, w );
+				boolean LocalEmit = emitsLight;
+				if ( blk instanceof BlockCraftingMonitor && !ct.getForward().equals( side ) )
+					LocalEmit = false;
+
+				handleSide( blk, meta, x, y, z, i, renderer, ct.getForward().equals( side ) ? theIcon : nonForward, LocalEmit, isMonitor, side, w );
 			}
 
+			BusRenderer.instance.renderer.isFacade = false;
 			i.setFacesToRender( EnumSet.allOf( ForgeDirection.class ) );
 			i.normalRendering();
 
@@ -165,8 +171,6 @@ public class RenderBlockCrafting extends BaseBlockRender
 			return;
 
 		i.setFacesToRender( EnumSet.of( side ) );
-		renderer = BusRenderer.instance.renderer;
-		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateWest = renderer.uvRotateTop = 0;
 
 		if ( meta == 0 && blk.getClass() == BlockCraftingUnit.class )
 		{
@@ -200,11 +204,18 @@ public class RenderBlockCrafting extends BaseBlockRender
 			}
 		}
 
-		i.setTexture( ExtraBlockTextures.BlockCraftingUnitRingLong.getIcon() );
 		for (ForgeDirection a : ForgeDirection.VALID_DIRECTIONS)
 		{
 			if ( a == side || a == side.getOpposite() )
 				continue;
+
+			if ( (side.offsetX != 0 || side.offsetZ != 0)
+					&& (a == ForgeDirection.NORTH || a == ForgeDirection.EAST || a == ForgeDirection.WEST || a == ForgeDirection.SOUTH) )
+				i.setTexture( ExtraBlockTextures.BlockCraftingUnitRingLongRotated.getIcon() );
+			else if ( (side.offsetY != 0) && (a == ForgeDirection.EAST || a == ForgeDirection.WEST) )
+				i.setTexture( ExtraBlockTextures.BlockCraftingUnitRingLongRotated.getIcon() );
+			else
+				i.setTexture( ExtraBlockTextures.BlockCraftingUnitRingLong.getIcon() );
 
 			double width = 3.0 / 16.0;
 
@@ -255,7 +266,6 @@ public class RenderBlockCrafting extends BaseBlockRender
 
 				i.renderBlockCurrentBounds( x, y, z, renderer );
 				i.prepareBounds( renderer );
-				renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateWest = renderer.uvRotateTop = 0;
 			}
 		}
 	}

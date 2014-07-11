@@ -55,6 +55,12 @@ public class PacketValueConfig extends AppEngPacket
 			si.onWheel( is, Value.equals( "WheelUp" ) );
 			return;
 		}
+		else if ( Name.equals( "Terminal.Cpu" ) && c instanceof ContainerCraftConfirm )
+		{
+			ContainerCraftConfirm qk = (ContainerCraftConfirm) c;
+			qk.cycleCpu( Value.equals( "Next" ) );
+			return;
+		}
 		else if ( Name.equals( "Terminal.Start" ) && c instanceof ContainerCraftConfirm )
 		{
 			ContainerCraftConfirm qk = (ContainerCraftConfirm) c;

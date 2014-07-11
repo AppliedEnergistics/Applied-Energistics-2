@@ -524,10 +524,10 @@ public class RenderBlocksWorkaround extends RenderBlocks
 				}
 				else
 				{
-					tessellator.addVertexWithUV( d12, d13, d15, d3, d6 );
-					tessellator.addVertexWithUV( d12, d13, d14, d3, d5 );
-					tessellator.addVertexWithUV( d11, d13, d14, d4, d5 );
-					tessellator.addVertexWithUV( d11, d13, d15, d4, d6 );
+					tessellator.addVertexWithUV( d12, d13, d15, d4, d6 );
+					tessellator.addVertexWithUV( d12, d13, d14, d4, d5 );
+					tessellator.addVertexWithUV( d11, d13, d14, d3, d5 );
+					tessellator.addVertexWithUV( d11, d13, d15, d3, d6 );
 				}
 			}
 			else

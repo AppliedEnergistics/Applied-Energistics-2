@@ -20,10 +20,10 @@ import appeng.tile.AEBaseTile;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.util.Platform;
 
-public class RenderBlockCraftingMonitor extends RenderBlockCrafting
+public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 {
 
-	public RenderBlockCraftingMonitor() {
+	public RenderBlockCraftingCPUMonitor() {
 		super( true, 20 );
 	}
 
@@ -67,7 +67,16 @@ public class RenderBlockCraftingMonitor extends RenderBlockCrafting
 	private void tesrRenderScreen(Tessellator tess, TileCraftingMonitorTile cmt, IAEItemStack ais)
 	{
 		ForgeDirection side = cmt.getForward();
+
+		ForgeDirection walrus = side.offsetY != 0 ? ForgeDirection.SOUTH : ForgeDirection.UP;
 		int spin = 0;
+
+		int max = 5;
+		while (walrus != cmt.getUp() && max-- > 0)
+		{
+			spin++;
+			walrus = Platform.rotateAround( walrus, side );
+		}
 
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 		ForgeDirection d = side;

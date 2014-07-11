@@ -1,6 +1,8 @@
 package appeng.me.cache;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -49,6 +51,7 @@ import appeng.crafting.CraftingLinkNexus;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.crafting.TileCraftingStorageTile;
 import appeng.tile.crafting.TileCraftingTile;
+import appeng.util.ItemSorters;
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
@@ -69,6 +72,12 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	HashMap<String, CraftingLinkNexus> links = new HashMap();
 
 	boolean updateList = false;
+
+	@Override
+	public ImmutableSet<ICraftingCPU> getCpus()
+	{
+		return ImmutableSet.copyOf( (HashSet<ICraftingCPU>) (HashSet) cpuClusters );
+	}
 
 	public CraftingGridCache(IGrid g) {
 		grid = g;
@@ -345,19 +354,37 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 		if ( target == null )
 		{
-			// TODO real stuff...
+			List<CraftingCPUCluster> validCpusClusters = new ArrayList<CraftingCPUCluster>();
 			for (CraftingCPUCluster cpu : cpuClusters)
 			{
-				if ( !cpu.isBusy() )
+				if ( !cpu.isBusy() && cpu.getAvailableStorage() >= job.getByteTotal() )
 				{
-					cpuClust = cpu;
+					validCpusClusters.add( cpu );
 					break;
 				}
 			}
+
+			Collections.sort( validCpusClusters, new Comparator<CraftingCPUCluster>() {
+
+				@Override
+				public int compare(CraftingCPUCluster o1, CraftingCPUCluster o2)
+				{
+					int a = ItemSorters.compareLong( o2.getCoProcessors(), o1.getCoProcessors() );
+					if ( a != 0 )
+						return a;
+					return ItemSorters.compareLong( o2.getAvailableStorage(), o1.getAvailableStorage() );
+				}
+
+			} );
+
+			if ( !validCpusClusters.isEmpty() )
+				cpuClust = validCpusClusters.get( 0 );
 		}
 
 		if ( cpuClust != null )
+		{
 			return cpuClust.submitJob( grid, job, src, requestingMachine );
+		}
 
 		return null;
 	}
