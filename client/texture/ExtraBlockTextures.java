@@ -58,7 +58,7 @@ public enum ExtraBlockTextures
 
 	BlockCraftingAccelerator("BlockCraftingAccelerator"), BlockCraftingMonitor("BlockCraftingMonitor"),
 
-	BlockCraftingStorage1k("BlockCraftingStorage1k"), BlockCraftingStorage4k("BlockCraftingStorage4k"), BlockCraftingStorage16k("BlockCraftingStorage16k"), BlockCraftingStorage64k(
+	BlockCraftingStorage1k("BlockCraftingStorage"), BlockCraftingStorage4k("BlockCraftingStorage4k"), BlockCraftingStorage16k("BlockCraftingStorage16k"), BlockCraftingStorage64k(
 			"BlockCraftingStorage64k"),
 
 	BlockCraftingAcceleratorFit("BlockCraftingAcceleratorFit"), BlockCraftingMonitorFit("BlockCraftingMonitorFit"),

@@ -201,7 +201,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	{
 		for (MaterialType mat : MaterialType.values())
 		{
-			if ( mat.damageValue != -1 )
+			if ( mat.damageValue != -1 && mat != MaterialType.InvalidType )
 			{
 				String tex = "appliedenergistics2:" + nameOf( new ItemStack( this, 1, mat.damageValue ) );
 				mat.IIcon = icoRegister.registerIcon( tex );
