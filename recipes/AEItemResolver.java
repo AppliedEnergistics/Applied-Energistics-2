@@ -22,6 +22,16 @@ public class AEItemResolver implements ISubItemResolver
 
 		if ( nameSpace.equals( AppEng.modid ) )
 		{
+			if ( itemName.startsWith( "PaintBall." ) )
+			{
+				return paintBall(AEApi.instance().items().itemPaintBall, itemName.substring( itemName.indexOf( "." ) + 1 ),false );
+			}
+
+			if ( itemName.startsWith( "LumenPaintBall." ) )
+			{
+				return paintBall(AEApi.instance().items().itemPaintBall, itemName.substring( itemName.indexOf( "." ) + 1 ), true );
+			}
+
 			if ( itemName.equals( "CableGlass" ) )
 			{
 				return new ResolverResultSet( "CableGlass", AEApi.instance().parts().partCableGlass.allStacks( 1 ) );
@@ -97,6 +107,26 @@ public class AEItemResolver implements ISubItemResolver
 		return null;
 	}
 
+	private Object paintBall(AEColoredItemDefinition partType, String substring, boolean lumen)
+	{
+		AEColor col = AEColor.Transparent;
+
+		try
+		{
+			col = AEColor.valueOf( substring );
+		}
+		catch (Throwable t)
+		{
+			col = AEColor.Transparent;
+		}
+
+		if ( col == AEColor.Transparent )
+			return null;
+		
+		ItemStack is = partType.stack( col, 1 );
+		return new ResolverResult( "ItemPaintBall", (lumen?20:0)+is.getItemDamage() );
+	}
+	
 	private Object cableItem(AEColoredItemDefinition partType, String substring)
 	{
 		AEColor col = AEColor.Transparent;
