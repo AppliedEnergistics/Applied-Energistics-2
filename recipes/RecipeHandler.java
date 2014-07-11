@@ -266,11 +266,21 @@ public class RecipeHandler implements IRecipeHandler
 		return in;
 	}
 
+	class CreativeOnlyException extends Exception
+	{
+
+		private static final long serialVersionUID = 1294198926500186893L;
+
+	};
+
 	@Override
 	public void parseRecipes(IRecipeLoader loader, String path)
 	{
 		try
 		{
+			if ( creativeOnly() )
+				throw new CreativeOnlyException();
+
 			BufferedReader reader = null;
 			try
 			{
@@ -368,12 +378,21 @@ public class RecipeHandler implements IRecipeHandler
 			reader.close();
 			processTokens( loader, path, line );
 		}
+		catch (CreativeOnlyException e)
+		{
+			AELog.warning( "Recipes are Currently Disabled" );
+		}
 		catch (Throwable e)
 		{
 			AELog.error( e );
 			if ( data.crash )
 				throw new RuntimeException( e );
 		}
+	}
+
+	private boolean creativeOnly()
+	{
+		return true;
 	}
 
 	private void processTokens(IRecipeLoader loader, String file, int line) throws RecipeError
