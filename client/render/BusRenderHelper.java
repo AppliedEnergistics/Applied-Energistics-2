@@ -163,6 +163,8 @@ public class BusRenderHelper implements IPartRenderHelper
 		}
 		else
 		{
+			boolean allFaces = rbw.renderAllFaces;
+			rbw.renderAllFaces = true;
 			rbw.calculations = true;
 			rbw.faces.clear();
 
@@ -197,6 +199,7 @@ public class BusRenderHelper implements IPartRenderHelper
 			rbw.renderStandardBlock( blk, x, y, z );
 
 			rbw.faces = EnumSet.allOf( ForgeDirection.class );
+			rbw.renderAllFaces = allFaces;
 			rbw.calculations = false;
 			rbw.useTextures = false;
 
