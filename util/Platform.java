@@ -19,6 +19,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -83,6 +84,7 @@ import appeng.api.util.AEItemDefinition;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
+import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.hooks.TickHandler;
 import appeng.me.GridAccessException;
@@ -1678,6 +1680,20 @@ public class Platform
 	{
 		if ( !worldObj.isRemote )
 			TickHandler.instance.addCallable( worldObj, new BlockUpdate( worldObj, xCoord, yCoord, zCoord ) );
+	}
+
+	public static boolean canRepair(AEFeature type, ItemStack a, ItemStack b)
+	{
+		if ( b == null || a == null )
+			return false;
+
+		if ( type == AEFeature.CertusQuartzTools )
+			return AEApi.instance().materials().materialCertusQuartzCrystal.sameAsStack( b );
+
+		if ( type == AEFeature.NetherQuartzTools )
+			return Items.quartz == b.getItem();
+
+		return false;
 	}
 
 }

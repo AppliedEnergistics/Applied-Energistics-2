@@ -17,11 +17,18 @@ import appeng.util.Platform;
 public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 {
 
-	public ToolQuartzCuttingKnife(AEFeature type) {
-		super( ToolQuartzCuttingKnife.class, type.name() );
-		setfeature( EnumSet.of( type, AEFeature.QuartzKnife ) );
+	final AEFeature type;
+
+	public ToolQuartzCuttingKnife(AEFeature Type) {
+		super( ToolQuartzCuttingKnife.class, Type.name() );
+		setfeature( EnumSet.of( type = Type, AEFeature.QuartzKnife ) );
 		setMaxDamage( 50 );
 		setMaxStackSize( 1 );
+	}
+
+	public boolean getIsRepairable(ItemStack a, ItemStack b)
+	{
+		return Platform.canRepair( type, a, b );
 	}
 
 	@Override
