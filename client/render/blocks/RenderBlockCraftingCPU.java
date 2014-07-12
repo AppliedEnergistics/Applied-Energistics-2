@@ -58,7 +58,7 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 		if ( isMonitor )
 			nonForward = AEApi.instance().blocks().blockCraftingUnit.block().getIcon( 0, meta | (formed ? 8 : 0) );
 
-		if ( formed )
+		if ( formed && renderer.overrideBlockTexture == null )
 		{
 			renderer = BusRenderer.instance.renderer;
 			BusRenderHelper i = BusRenderHelper.instance;
