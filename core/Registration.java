@@ -3,7 +3,6 @@ package appeng.core;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -384,13 +383,13 @@ public class Registration
 
 		items.itemFacade = addFeature( ItemFacade.class );
 		items.itemCrystalSeed = addFeature( ItemCrystalSeed.class );
-		
-		ColoredItemDefinition pbreg,pbregl;
-		items.itemPaintBall =  pbreg=	new ColoredItemDefinition();
-		items.itemLumenPaintBall =  pbregl=	new ColoredItemDefinition();
-		AEItemDefinition pb= addFeature( ItemPaintBall.class );
-		
-		for (AEColor c: AEColor.values() )
+
+		ColoredItemDefinition pbreg, pbregl;
+		items.itemPaintBall = pbreg = new ColoredItemDefinition();
+		items.itemLumenPaintBall = pbregl = new ColoredItemDefinition();
+		AEItemDefinition pb = addFeature( ItemPaintBall.class );
+
+		for (AEColor c : AEColor.values())
 		{
 			if ( c != AEColor.Transparent )
 			{
@@ -398,7 +397,7 @@ public class Registration
 				pbregl.add( c, new ItemStackSrc( pb.item(), 20 + c.ordinal() ) );
 			}
 		}
-		
+
 		addFeature( ToolEraser.class );
 		addFeature( ToolMeteoritePlacer.class );
 		addFeature( ToolDebugCard.class );
