@@ -79,7 +79,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 		}
 
 		@Override
-		public boolean isItemValidForSlot(int i, ItemStack itemstack)
+		public boolean isItemValid(ItemStack itemstack)
 		{
 			return itemstack != null && itemstack.getItem() instanceof ItemEncodedPattern;
 		}
@@ -98,8 +98,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 			InventoryAdaptor playerHand = new AdaptorPlayerHand( player );
 
 			WrapperInvSlot slotInv = new PatternInvSlot( inv.server );
-			slotInv.setSlot( slot );
-			InventoryAdaptor interfaceSlot = new AdaptorIInventory( slotInv );
+			InventoryAdaptor interfaceSlot = new AdaptorIInventory( slotInv.getWrapper( slot ) );
 
 			switch (action)
 			{
@@ -111,7 +110,8 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 				}
 				else
 				{
-					slotInv.setInventorySlotContents( 0, playerHand.addItems( slotInv.getStackInSlot( 0 ) ) );
+					IInventory mySlot = slotInv.getWrapper( slot );
+					mySlot.setInventorySlotContents( 0, playerHand.addItems( mySlot.getStackInSlot( 0 ) ) );
 				}
 
 				break;

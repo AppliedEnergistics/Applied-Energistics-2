@@ -298,7 +298,11 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	AppEngInternalInventory patterns = new AppEngInternalInventory( this, 9 );
 
 	WrapperInvSlot slotInv = new WrapperInvSlot( storage );
-	InventoryAdaptor adaptor = new AdaptorIInventory( slotInv );
+
+	private InventoryAdaptor getAdaptor(int slot)
+	{
+		return new AdaptorIInventory( slotInv.getWrapper( slot ) );
+	}
 
 	IMEInventory<IAEItemStack> destination;
 	private boolean isWorking = false;
@@ -395,7 +399,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	private boolean usePlan(int x, IAEItemStack itemStack)
 	{
 		boolean changed = false;
-		slotInv.setSlot( x );
+		InventoryAdaptor adaptor = getAdaptor( x );
 		interfaceRequest = isWorking = true;
 
 		try
@@ -918,18 +922,18 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 	public IAEItemStack injectCratedItems(ICraftingLink link, IAEItemStack aquired, Actionable mode)
 	{
-		int x = craftingTracker.getSlot( link );
+		int slot = craftingTracker.getSlot( link );
 
-		if ( aquired != null && x >= 0 && x <= requireWork.length )
+		if ( aquired != null && slot >= 0 && slot <= requireWork.length )
 		{
-			slotInv.setSlot( x );
+			InventoryAdaptor adaptor = getAdaptor( slot );
 
 			if ( mode == Actionable.SIMULATE )
 				return AEItemStack.create( adaptor.simulateAdd( aquired.getItemStack() ) );
 			else
 			{
 				IAEItemStack is = AEItemStack.create( adaptor.addItems( aquired.getItemStack() ) );
-				updatePlan( x );
+				updatePlan( slot );
 				return is;
 			}
 		}
