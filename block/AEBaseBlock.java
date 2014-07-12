@@ -185,7 +185,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 	protected AEBaseBlock(Class<?> c, Material mat) {
 		this( c, mat, null );
-		setLightOpacity( 15 );
+		setLightOpacity( 255 );
 		setLightLevel( 0 );
 		setHardness( 2.2F );
 		setTileProvider( false );
