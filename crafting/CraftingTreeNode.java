@@ -49,7 +49,7 @@ public class CraftingTreeNode
 
 		for (ICraftingPatternDetails details : cc.getCraftingFor( what ))// in order.
 		{
-			if ( notRecurive( details ) )
+			if ( parent == null || parent.notRecurive( details ) )
 				nodes.add( new CraftingTreeProcess( cc, job, details, this, depth + 1, world ) );
 		}
 	}
@@ -63,13 +63,18 @@ public class CraftingTreeNode
 
 	boolean notRecurive(ICraftingPatternDetails details)
 	{
-		IAEItemStack[] o = details.getOutputs();
+		IAEItemStack[] o = details.getCondencedOutputs();
 		for (IAEItemStack i : o)
 			if ( i.equals( what ) )
-				return true;
+				return false;
+
+		o = details.getCondencedInputs();
+		for (IAEItemStack i : o)
+			if ( i.equals( what ) )
+				return false;
 
 		if ( parent == null )
-			return false;
+			return true;
 
 		return parent.notRecurive( details );
 	}

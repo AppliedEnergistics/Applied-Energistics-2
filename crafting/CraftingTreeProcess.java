@@ -88,7 +88,7 @@ public class CraftingTreeProcess
 
 	public boolean notRecurive(ICraftingPatternDetails details)
 	{
-		return parent.notRecurive( details );
+		return parent == null || parent.notRecurive( details );
 	}
 
 	long getTimes(long remaining, long stackSize)
