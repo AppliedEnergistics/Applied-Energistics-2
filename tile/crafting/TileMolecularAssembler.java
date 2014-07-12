@@ -85,7 +85,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 			for (int x = 0; x < inv.getSizeInventory(); x++)
 				isEmpty = inv.getStackInSlot( x ) == null && isEmpty;
 
-			if ( isEmpty )
+			if ( isEmpty && patternDetails.isCraftable() )
 			{
 				forcePlan = true;
 				myPlan = patternDetails;
@@ -119,9 +119,12 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 				ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
 				ICraftingPatternDetails ph = iep.getPatternForItem( is, w );
 
-				progress = 0;
-				myPattern = is;
-				myPlan = ph;
+				if ( ph.isCraftable() )
+				{
+					progress = 0;
+					myPattern = is;
+					myPlan = ph;
+				}
 			}
 		}
 		else
@@ -223,7 +226,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 					World w = getWorldObj();
 					ItemEncodedPattern iep = (ItemEncodedPattern) myPat.getItem();
 					ICraftingPatternDetails ph = iep.getPatternForItem( myPat, w );
-					if ( ph != null )
+					if ( ph != null && ph.isCraftable() )
 					{
 						forcePlan = true;
 						myPlan = ph;
