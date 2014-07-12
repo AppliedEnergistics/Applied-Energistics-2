@@ -31,17 +31,22 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 			MinecraftForgeClient.registerItemRenderer( this, new ItemEncodedPatternRenderer() );
 	}
 
-	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	private boolean clearPattern(ItemStack stack, EntityPlayer player)
 	{
-		InventoryPlayer inv = player.inventory;
-
-		for (int s = 0; s < player.inventory.getSizeInventory(); s++)
+		if ( player.isSneaking() )
 		{
-			if ( inv.getStackInSlot( s ) == stack )
+			if ( Platform.isClient() )
+				return false;
+
+			InventoryPlayer inv = player.inventory;
+
+			for (int s = 0; s < player.inventory.getSizeInventory(); s++)
 			{
-				inv.setInventorySlotContents( s, AEApi.instance().materials().materialBlankPattern.stack( stack.stackSize ) );
-				return true;
+				if ( inv.getStackInSlot( s ) == stack )
+				{
+					inv.setInventorySlotContents( s, AEApi.instance().materials().materialBlankPattern.stack( stack.stackSize ) );
+					return true;
+				}
 			}
 		}
 
@@ -49,9 +54,16 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World w, EntityPlayer p)
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
-		return AEApi.instance().materials().materialBlankPattern.stack( stack.stackSize );
+		return clearPattern( stack, player );
+	}
+
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World w, EntityPlayer player)
+	{
+		clearPattern( stack, player );
+		return stack;
 	}
 
 	@Override
