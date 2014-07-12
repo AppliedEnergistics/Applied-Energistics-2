@@ -9,6 +9,7 @@ import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -52,7 +53,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
-import appeng.core.localization.GuiText;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
@@ -972,6 +972,10 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		TileEntity tile = iHost.getTileEntity();
 		World w = tile.getWorldObj();
 
+		String name = ((ICustomNameObject) iHost).getCustomName();
+		if ( name != null )
+			return name;
+
 		EnumSet<ForgeDirection> possibleDirections = iHost.getTargets();
 		for (ForgeDirection s : possibleDirections)
 		{
@@ -985,7 +989,20 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			TileEntity te = w.getTileEntity( tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ );
 
 			if ( te == null )
-				return "Nothing";
+				continue;
+
+			if ( te instanceof IInterfaceHost )
+			{
+				try
+				{
+					if ( ((IInterfaceHost) te).getInterfaceDuality().sameGrid( gridProxy.getGrid() ) )
+						continue;
+				}
+				catch (GridAccessException e)
+				{
+					continue;
+				}
+			}
 
 			Item item = Item.getItemFromBlock( blk );
 
@@ -1002,6 +1019,12 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 				{
 					if ( te instanceof ICraftingMachine || InventoryAdaptor.getAdaptor( te, s.getOpposite() ) != null )
 					{
+						if ( te instanceof IInventory && ((IInventory) te).getSizeInventory() == 0 )
+							continue;
+
+						if ( te instanceof ISidedInventory && ((ISidedInventory) te).getAccessibleSlotsFromSide( s.getOpposite().ordinal() ).length == 0 )
+							continue;
+
 						if ( mop.blockX == te.xCoord && mop.blockY == te.yCoord && mop.blockZ == te.zCoord )
 						{
 							ItemStack g = blk.getPickBlock( mop, w, te.xCoord, te.yCoord, te.zCoord );
@@ -1020,6 +1043,6 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 				return what.getUnlocalizedName();
 		}
 
-		return GuiText.Interface.getUnlocalized();
+		return "Nothing";
 	}
 }
