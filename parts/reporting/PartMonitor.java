@@ -7,6 +7,7 @@ import java.io.IOException;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.parts.IPartMonitor;
@@ -44,6 +45,12 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	{
 		if ( notLightSource )
 			getHost().markForUpdate();
+	}
+
+	@Override
+	public void onNeighborChanged()
+	{
+		getHost().markForUpdate();
 	}
 
 	@MENetworkEventSubscribe
@@ -91,7 +98,14 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	@Override
 	public int getLightLevel()
 	{
-		return isPowered() ? (notLightSource ? 9 : 15) : 0;
+		return blockLight( isPowered() ? (notLightSource ? 9 : 15) : 0 );
+	}
+
+	private int blockLight(int emit)
+	{
+		TileEntity te = this.getTile();
+		float opacity = 255 - te.getWorldObj().getBlockLightOpacity( te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ );
+		return (int) (emit * (opacity / 255.0f));
 	}
 
 	@Override
