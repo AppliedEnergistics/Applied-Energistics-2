@@ -251,6 +251,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		config.writeToNBT( data, "config" );
 		patterns.writeToNBT( data, "patterns" );
 		storage.writeToNBT( data, "storage" );
+		upgrades.writeToNBT( data, "upgrades" );
 		craftingTracker.writeToNBT( data );
 
 		NBTTagList waitingToSend = new NBTTagList();
@@ -284,6 +285,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		}
 
 		craftingTracker.readFromNBT( data );
+		upgrades.readFromNBT( data, "upgrades" );
 		config.readFromNBT( data, "config" );
 		patterns.readFromNBT( data, "patterns" );
 		storage.readFromNBT( data, "storage" );
