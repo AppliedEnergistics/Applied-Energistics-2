@@ -235,6 +235,32 @@ public class RecipeHandler implements IRecipeHandler
 			default:
 			}
 		}
+		else if ( is.getItem() == AEApi.instance().blocks().blockCraftingStorage1k.item() )
+		{
+			switch (is.getItemDamage())
+			{
+			case 1:
+				realName += "4k";
+				break;
+			case 2:
+				realName += "16k";
+				break;
+			case 3:
+				realName += "64k";
+				break;
+			default:
+			}
+		}
+		else if ( is.getItem() == AEApi.instance().blocks().blockCraftingUnit.item() )
+		{
+			switch (is.getItemDamage())
+			{
+			case 1:
+				realName = realName.replace( "blockCraftingUnit", "blockCraftingAccelerator" );
+				break;
+			default:
+			}
+		}
 		else if ( is.getItem() == AEApi.instance().blocks().blockSkyChest.item() )
 		{
 			switch (is.getItemDamage())
@@ -246,9 +272,15 @@ public class RecipeHandler implements IRecipeHandler
 			}
 		}
 		else if ( is.getItem() instanceof ItemMultiMaterial )
+		{
+			realName = realName.replace( "ItemMultiMaterial", "ItemMaterial" );
 			realName += "." + ((ItemMultiMaterial) is.getItem()).getTypeByStack( is ).name();
+		}
 		else if ( is.getItem() instanceof ItemMultiPart )
+		{
+			realName = realName.replace( "ItemMultiPart", "ItemPart" );
 			realName += "." + ((ItemMultiPart) is.getItem()).getTypeByStack( is ).name();
+		}
 		else if ( is.getItemDamage() > 0 )
 			realName += "." + is.getItemDamage();
 
