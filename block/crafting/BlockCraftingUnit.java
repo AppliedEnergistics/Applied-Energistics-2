@@ -41,15 +41,16 @@ public class BlockCraftingUnit extends AEBaseBlock
 	@Override
 	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
 	{
-		if ( Platform.isClient() )
-			return true;
-
 		TileCraftingTile tg = getTileEntity( w, x, y, z );
 		if ( tg != null && !p.isSneaking() && tg.isFormed() && tg.isActive() )
 		{
+			if ( Platform.isClient() )
+				return true;
+
 			Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_CRAFTING_CPU );
 			return true;
 		}
+
 		return false;
 	}
 
@@ -59,12 +60,13 @@ public class BlockCraftingUnit extends AEBaseBlock
 		int meta = w.getBlockMetadata( x, y, z );
 		return damageDropped( meta );
 	}
+
 	@Override
-	public int damageDropped( int meta )
+	public int damageDropped(int meta)
 	{
 		return meta & 3;
 	}
-	
+
 	@Override
 	public String getUnlocalizedName(ItemStack is)
 	{
@@ -84,7 +86,7 @@ public class BlockCraftingUnit extends AEBaseBlock
 	{
 		IIcon front = getIcon( ForgeDirection.SOUTH.ordinal(), itemDamage );
 		IIcon other = getIcon( ForgeDirection.NORTH.ordinal(), itemDamage );
-		getRendererInstance().setTemporaryRenderIcons(other, other, front, other, other, other);
+		getRendererInstance().setTemporaryRenderIcons( other, other, front, other, other, other );
 	}
 
 	@Override
