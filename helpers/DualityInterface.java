@@ -29,6 +29,7 @@ import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.tiles.ICraftingMachine;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -770,6 +771,19 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		for (ForgeDirection s : possibleDirections)
 		{
 			TileEntity te = w.getTileEntity( tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ );
+			if ( te instanceof IInterfaceHost )
+			{
+				try
+				{
+					if ( ((IInterfaceHost) te).getInterfaceDuality().sameGrid( gridProxy.getGrid() ) )
+						continue;
+				}
+				catch (GridAccessException e)
+				{
+					continue;
+				}
+			}
+
 			if ( te instanceof ICraftingMachine )
 			{
 				ICraftingMachine cm = (ICraftingMachine) te;
@@ -801,6 +815,11 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		}
 
 		return false;
+	}
+
+	private boolean sameGrid(IGrid grid) throws GridAccessException
+	{
+		return grid == gridProxy.getGrid();
 	}
 
 	private boolean acceptsItems(InventoryAdaptor ad, InventoryCrafting table)
