@@ -380,7 +380,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 			pushOut( inv.getStackInSlot( 9 ) );
 			ejectHeldItems();
 			updateSleepyness();
-			return isAwake ? TickRateModulation.SLEEP : TickRateModulation.IDLE;
+			return isAwake ? TickRateModulation.IDLE : TickRateModulation.SLEEP;
 		}
 
 		if ( myPlan == null )
@@ -427,10 +427,10 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 			{
 				FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) getWorldObj() ), output, craftingInv );
 
+				pushOut( output.copy() );
+
 				for (int x = 0; x < craftingInv.getSizeInventory(); x++)
 					inv.setInventorySlotContents( x, Platform.getContainerItem( craftingInv.getStackInSlot( x ) ) );
-
-				pushOut( output.copy() );
 
 				if ( inv.getStackInSlot( 10 ) == null )
 				{
@@ -451,7 +451,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 				}
 
 				updateSleepyness();
-				return isAwake ? TickRateModulation.SLEEP : TickRateModulation.IDLE;
+				return isAwake ? TickRateModulation.IDLE : TickRateModulation.SLEEP;
 			}
 		}
 
