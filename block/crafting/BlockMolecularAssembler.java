@@ -4,7 +4,6 @@ import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
@@ -38,16 +37,16 @@ public class BlockMolecularAssembler extends AEBaseBlock
 	}
 
 	@Override
+	public int getRenderBlockPass()
+	{
+		return 1;
+	}
+
+	@Override
 	@SideOnly(Side.CLIENT)
 	public Class<? extends BaseBlockRender> getRenderer()
 	{
 		return RenderBlockAssembler.class;
-	}
-
-	@Override
-	public boolean shouldSideBeRendered(IBlockAccess w, int x, int y, int z, int side)
-	{
-		return super.shouldSideBeRendered( w, x, y, z, side );
 	}
 
 	@Override
