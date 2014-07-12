@@ -474,7 +474,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	{
 		try
 		{
-			if ( getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
+			if ( getInstalledUpgrades( Upgrades.CRAFTING ) > 0 && itemStack != null )
 			{
 				return craftingTracker.handleCrafting( x, itemStack.getStackSize(), itemStack, d, getTile().getWorldObj(), gridProxy.getGrid(),
 						gridProxy.getCrafting(), mySrc );
