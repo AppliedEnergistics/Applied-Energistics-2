@@ -756,7 +756,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	@Override
 	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table)
 	{
-		if ( hasItemsToSend() )
+		if ( hasItemsToSend() || !gridProxy.isActive() )
 			return false;
 
 		TileEntity tile = iHost.getTileEntity();
@@ -853,7 +853,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	@Override
 	public void provideCrafting(ICraftingProviderHelper craftingTracker)
 	{
-		if ( craftingList != null )
+		if ( gridProxy.isActive() && craftingList != null )
 		{
 			for (ICraftingPatternDetails details : craftingList)
 				craftingTracker.addCraftingOption( this, details );
@@ -888,6 +888,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		{
 			try
 			{
+				gridProxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, gridProxy.getNode() ) );
 				gridProxy.getTick().wakeDevice( gridProxy.getNode() );
 			}
 			catch (GridAccessException e)
