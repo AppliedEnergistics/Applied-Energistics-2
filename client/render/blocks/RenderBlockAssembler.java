@@ -179,12 +179,12 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 
 		BusRenderer.instance.renderer.blockAccess = renderer.blockAccess;
 		renderer = BusRenderer.instance.renderer;
-		BusRenderer.instance.renderer.isFacade = true;
 
 		preRenderInWorld( block, world, x, y, z, renderer );
 
 		tma.lightCache = BusRenderHelper.instance.useSimpliedRendering( x, y, z, this, tma.lightCache );
 
+		BusRenderer.instance.renderer.isFacade = true;
 		IOrientable te = getOrientable( block, world, x, y, z );
 
 		ForgeDirection fdy = te.getUp();
@@ -249,7 +249,7 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 
 		return true;
 	}
-
+ 
 	@Override
 	public void getBoxes(IPartCollsionHelper bch)
 	{
