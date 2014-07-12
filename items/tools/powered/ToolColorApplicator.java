@@ -254,7 +254,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	@Override
 	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requsetedAddition)
 	{
-		return requsetedAddition == null || !(requsetedAddition.getItem() instanceof ItemPaintBall);
+		return requsetedAddition == null || !(requsetedAddition.getItem() instanceof ItemPaintBall && requsetedAddition.getItemDamage() < 20);
 	}
 
 	@Override
