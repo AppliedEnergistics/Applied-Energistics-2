@@ -32,6 +32,9 @@ import appeng.me.GridNode;
 import appeng.me.energy.EnergyThreshold;
 import appeng.me.energy.EnergyWatcher;
 
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
+
 public class EnergyGridCache implements IEnergyGrid
 {
 
@@ -108,7 +111,7 @@ public class EnergyGridCache implements IEnergyGrid
 		return lastProvider;
 	}
 
-	Set<IEnergyGridProvider> gproviders = new LinkedHashSet();
+	Multiset<IEnergyGridProvider> gproviders = HashMultiset.create();
 
 	final IGrid myGrid;
 	PathGridCache pgc;
