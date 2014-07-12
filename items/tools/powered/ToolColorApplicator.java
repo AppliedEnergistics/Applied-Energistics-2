@@ -8,6 +8,7 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -171,7 +172,8 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 				if ( getAECurrentPower( is ) > powerPerUse )
 				{
-					if ( color != AEColor.Transparent && blk.recolourBlock( w, x, y, z, ForgeDirection.getOrientation( side ), color.ordinal() ) )
+					if ( color != AEColor.Transparent
+							&& recolourBlock( blk, ForgeDirection.getOrientation( side ), w, x, y, z, ForgeDirection.getOrientation( side ), color ) )
 					{
 						inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 						extractAEPower( is, powerPerUse );
@@ -188,6 +190,24 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		}
 
 		return false;
+	}
+
+	private boolean recolourBlock(Block blk, ForgeDirection side, World w, int x, int y, int z, ForgeDirection orientation, AEColor newColor)
+	{
+		if ( blk == Blocks.glass )
+		{
+			return w.setBlock( x, y, z, Blocks.stained_glass, newColor.ordinal(), 3 );
+		}
+
+		if ( blk == Blocks.stained_glass )
+		{
+			int meta = w.getBlockMetadata( x, y, z );
+			if ( newColor.ordinal() == meta )
+				return false;
+			return w.setBlock( x, y, z, Blocks.stained_glass, newColor.ordinal(), 3 );
+		}
+
+		return blk.recolourBlock( w, x, y, z, side, newColor.ordinal() );
 	}
 
 	public void cycleColors(ItemStack is, ItemStack paintBall, int i)
