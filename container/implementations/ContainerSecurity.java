@@ -38,9 +38,9 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 
 		securityBox = (TileSecurity) montiorable;
 
-		addSlotToContainer( configSlot = new SlotRestrictedInput( PlaceableItemType.BIOMETRIC_CARD, securityBox.configSlot, 0, 37, -33 ) );
+		addSlotToContainer( configSlot = new SlotRestrictedInput( PlaceableItemType.BIOMETRIC_CARD, securityBox.configSlot, 0, 37, -33, ip ) );
 
-		addSlotToContainer( wirelessIn = new SlotRestrictedInput( PlaceableItemType.ENCODEABLE_ITEM, wirelessEncoder, 0, 212, 10 ) );
+		addSlotToContainer( wirelessIn = new SlotRestrictedInput( PlaceableItemType.ENCODEABLE_ITEM, wirelessEncoder, 0, 212, 10, ip ) );
 		addSlotToContainer( wirelessOut = new SlotOutput( wirelessEncoder, 1, 212, 68, -1 ) );
 
 		bindPlayerInventory( ip, 0, 0 );

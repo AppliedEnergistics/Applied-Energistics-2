@@ -64,7 +64,7 @@ import appeng.util.item.AEItemStack;
 public abstract class AEBaseContainer extends Container
 {
 
-	final InventoryPlayer invPlayer;
+	protected final InventoryPlayer invPlayer;
 	final TileEntity tileEntity;
 	final IPart part;
 	final IGuiItemObject obj;

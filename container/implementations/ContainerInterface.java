@@ -27,7 +27,7 @@ public class ContainerInterface extends ContainerUpgradeable
 		myDuality = te.getInterfaceDuality();
 
 		for (int x = 0; x < 9; x++)
-			addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.ENCODED_PATTERN, myDuality.getPatterns(), x, 8 + 18 * x, 90 + 7 ) );
+			addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.ENCODED_PATTERN, myDuality.getPatterns(), x, 8 + 18 * x, 90 + 7, invPlayer ) );
 
 		for (int x = 0; x < 8; x++)
 			addSlotToContainer( new SlotFake( myDuality.getConfig(), x, 17 + 18 * x, 35 ) );

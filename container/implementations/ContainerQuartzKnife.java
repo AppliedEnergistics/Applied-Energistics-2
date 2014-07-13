@@ -37,7 +37,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 		super( ip, null, null );
 		toolInv = te;
 
-		addSlotToContainer( metals = new SlotRestrictedInput( PlaceableItemType.METAL_INGOTS, inSlot, 0, 94, 44 ) );
+		addSlotToContainer( metals = new SlotRestrictedInput( PlaceableItemType.METAL_INGOTS, inSlot, 0, 94, 44, ip ) );
 		addSlotToContainer( output = new QuartzKnifeOutput( this, 0, 134, 44, -1 ) );
 
 		lockPlayerInventorySlot( ip.currentItem );

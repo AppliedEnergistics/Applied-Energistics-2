@@ -20,9 +20,9 @@ public class ContainerCondenser extends AEBaseContainer
 		super( ip, te, null );
 		myte = te;
 
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.TRASH, te, 0, 51, 52 ) );
+		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.TRASH, te, 0, 51, 52, ip ) );
 		addSlotToContainer( new SlotOutput( te, 1, 105, 52, -1 ) );
-		addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.STORAGE_COMPONENT, te.getInternalInventory(), 2, 101, 26 )).setStackLimit( 1 ) );
+		addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.STORAGE_COMPONENT, te.getInternalInventory(), 2, 101, 26, ip )).setStackLimit( 1 ) );
 
 		bindPlayerInventory( ip, 0, 197 - /* height of playerinventory */82 );
 	}

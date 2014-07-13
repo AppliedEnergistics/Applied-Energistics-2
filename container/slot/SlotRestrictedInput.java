@@ -1,6 +1,7 @@
 package appeng.container.slot;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -31,7 +32,7 @@ public class SlotRestrictedInput extends AppEngSlot
 
 		ENCODEABLE_ITEM(4 * 16 + 15), TRASH(5 * 16 + 15), VALID_ENCODED_PATTERN_W_OUPUT(7 * 16 + 15), ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15),
 
-		ENCODED_PATTERN(7 * 16 + 15), PATTERN(8 * 16 + 15), BLANK_PATTERN(8 * 16 + 15), POWERED_TOOL(9 * 16 + 15),
+		ENCODED_CRAFTING_PATTERN(7 * 16 + 15), ENCODED_PATTERN(7 * 16 + 15), PATTERN(8 * 16 + 15), BLANK_PATTERN(8 * 16 + 15), POWERED_TOOL(9 * 16 + 15),
 
 		RANGE_BOOSTER(6 * 16 + 15), QE_SINGULARTIY(10 * 16 + 15), SPATIAL_STORAGE_CELLS(11 * 16 + 15),
 
@@ -70,6 +71,7 @@ public class SlotRestrictedInput extends AppEngSlot
 	public PlaceableItemType which;
 	public boolean allowEdit = true;
 	public int stackLimit = -1;
+	private InventoryPlayer p;
 
 	@Override
 	public boolean canTakeStack(EntityPlayer par1EntityPlayer)
@@ -83,10 +85,11 @@ public class SlotRestrictedInput extends AppEngSlot
 		return this;
 	}
 
-	public SlotRestrictedInput(PlaceableItemType valid, IInventory i, int slotnum, int x, int y) {
+	public SlotRestrictedInput(PlaceableItemType valid, IInventory i, int slotnum, int x, int y, InventoryPlayer p) {
 		super( i, slotnum, x, y );
 		which = valid;
 		IIcon = valid.IIcon;
+		this.p = p;
 	}
 
 	@Override
@@ -123,6 +126,15 @@ public class SlotRestrictedInput extends AppEngSlot
 
 		switch (which)
 		{
+		case ENCODED_CRAFTING_PATTERN:
+			if ( i.getItem() instanceof ICraftingPatternItem )
+			{
+				ICraftingPatternItem b = (ICraftingPatternItem) i.getItem();
+				ICraftingPatternDetails de = b.getPatternForItem( i, p.player.worldObj );
+				if ( de != null )
+					return de.isCraftable();
+			}
+			return false;
 		case VALID_ENCODED_PATTERN_W_OUPUT:
 		case ENCODED_PATTERN_W_OUTPUT:
 		case ENCODED_PATTERN: {

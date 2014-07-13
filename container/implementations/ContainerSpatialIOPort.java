@@ -39,7 +39,7 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 		if ( Platform.isServer() )
 			network = te.getGridNode( ForgeDirection.UNKNOWN ).getGrid();
 
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.SPATIAL_STORAGE_CELLS, te, 0, 52, 48 ) );
+		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.SPATIAL_STORAGE_CELLS, te, 0, 52, 48, invPlayer ) );
 		addSlotToContainer( new SlotOutput( te, 1, 113, 48, PlaceableItemType.SPATIAL_STORAGE_CELLS.IIcon ) );
 
 		bindPlayerInventory( ip, 0, 197 - /* height of playerinventory */82 );

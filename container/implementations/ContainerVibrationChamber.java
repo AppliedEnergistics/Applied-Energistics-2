@@ -17,7 +17,7 @@ public class ContainerVibrationChamber extends AEBaseContainer
 		super( ip, te, null );
 		myte = te;
 
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.FUEL, te, 0, 80, 37 ) );
+		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.FUEL, te, 0, 80, 37, invPlayer ) );
 
 		bindPlayerInventory( ip, 0, 166 - /* height of playerinventory */82 );
 	}

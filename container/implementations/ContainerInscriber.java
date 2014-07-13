@@ -24,9 +24,9 @@ public class ContainerInscriber extends AEBaseContainer
 		super( ip, te, null );
 		myte = te;
 
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.INSCRIBER_PLATE, myte, 0, 45, 16 ) );
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.INSCRIBER_INPUT, myte, 2, 63, 39 ) );
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.INSCRIBER_PLATE, myte, 1, 45, 62 ) );
+		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.INSCRIBER_PLATE, myte, 0, 45, 16, invPlayer ) );
+		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.INSCRIBER_INPUT, myte, 2, 63, 39, invPlayer ) );
+		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.INSCRIBER_PLATE, myte, 1, 45, 62, invPlayer ) );
 
 		addSlotToContainer( new SlotOutput( myte, 3, 113, 40, -1 ) );
 

@@ -78,8 +78,8 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		{
 			for (int v = 0; v < 3; v++)
 				for (int u = 0; u < 3; u++)
-					addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, tbinv, u + v * 3, 186 + u * 18, getHeight() - 82 + v * 18 ))
-							.setPlayerSide() );
+					addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, tbinv, u + v * 3, 186 + u * 18, getHeight() - 82 + v * 18,
+							invPlayer )).setPlayerSide() );
 		}
 
 		setupConfig();
@@ -91,13 +91,13 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	{
 		IInventory upgrades = myte.getInventoryByName( "upgrades" );
 		if ( availableUpgrades() > 0 )
-			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0 )).setNotDraggable() );
+			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0, invPlayer )).setNotDraggable() );
 		if ( availableUpgrades() > 1 )
-			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 1, 187, 8 + 18 * 1 )).setNotDraggable() );
+			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 1, 187, 8 + 18 * 1, invPlayer )).setNotDraggable() );
 		if ( availableUpgrades() > 2 )
-			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2 )).setNotDraggable() );
+			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, invPlayer )).setNotDraggable() );
 		if ( availableUpgrades() > 3 )
-			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3 )).setNotDraggable() );
+			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, invPlayer )).setNotDraggable() );
 	}
 
 	protected void setupConfig()

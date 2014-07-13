@@ -57,7 +57,7 @@ public class ContainerIOPort extends ContainerUpgradeable
 
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 2; x++)
-				addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.STORAGE_CELLS, cells, x + y * 2, offx + x * 18, offy + y * 18 ) );
+				addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.STORAGE_CELLS, cells, x + y * 2, offx + x * 18, offy + y * 18, invPlayer ) );
 
 		offx = 122;
 		offy = 17;
@@ -66,9 +66,9 @@ public class ContainerIOPort extends ContainerUpgradeable
 				addSlotToContainer( new SlotOutput( cells, 6 + x + y * 2, offx + x * 18, offy + y * 18, PlaceableItemType.STORAGE_CELLS.IIcon ) );
 
 		IInventory upgrades = myte.getInventoryByName( "upgrades" );
-		addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0 )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 1, 187, 8 + 18 * 1 )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2 )).setNotDraggable() );
+		addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0, invPlayer )).setNotDraggable() );
+		addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 1, 187, 8 + 18 * 1, invPlayer )).setNotDraggable() );
+		addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, invPlayer )).setNotDraggable() );
 	}
 
 	@Override

@@ -21,7 +21,7 @@ public class ContainerNetworkTool extends AEBaseContainer
 
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 3; x++)
-				addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, te, y * 3 + x, 80 - 18 + x * 18, 37 - 18 + y * 18 )) );
+				addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, te, y * 3 + x, 80 - 18 + x * 18, 37 - 18 + y * 18, invPlayer )) );
 
 		bindPlayerInventory( ip, 0, 166 - /* height of playerinventory */82 );
 	}

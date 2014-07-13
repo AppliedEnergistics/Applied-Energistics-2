@@ -15,7 +15,7 @@ public class ContainerChest extends AEBaseContainer
 		super( ip, te, null );
 		myte = te;
 
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.STORAGE_CELLS, myte, 1, 80, 37 ) );
+		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.STORAGE_CELLS, myte, 1, 80, 37, invPlayer ) );
 
 		bindPlayerInventory( ip, 0, 166 - /* height of playerinventory */82 );
 	}

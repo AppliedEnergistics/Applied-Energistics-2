@@ -81,8 +81,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			outputSlots[y].IIcon = -1;
 		}
 
-		addSlotToContainer( patternSlotIN = new SlotRestrictedInput( PlaceableItemType.BLANK_PATTERN, patternInv, 0, 147, -72 - 9 ) );
-		addSlotToContainer( patternSlotOUT = new SlotRestrictedInput( PlaceableItemType.ENCODED_PATTERN, patternInv, 1, 147, -72 + 34 ) );
+		addSlotToContainer( patternSlotIN = new SlotRestrictedInput( PlaceableItemType.BLANK_PATTERN, patternInv, 0, 147, -72 - 9, invPlayer ) );
+		addSlotToContainer( patternSlotOUT = new SlotRestrictedInput( PlaceableItemType.ENCODED_PATTERN, patternInv, 1, 147, -72 + 34, invPlayer ) );
 
 		patternSlotOUT.setStackLimit( 1 );
 

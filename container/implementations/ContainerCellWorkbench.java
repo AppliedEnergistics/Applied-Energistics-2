@@ -197,7 +197,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		int offset = 0;
 
 		IInventory cell = myte.getInventoryByName( "cell" );
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.WORKBENCH_CELL, cell, 0, 152, 8 ) );
+		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.WORKBENCH_CELL, cell, 0, 152, 8, invPlayer ) );
 
 		IInventory inv = myte.getInventoryByName( "config" );
 		UpgradeInventoryWrapper = new Upgrades();// Platform.isServer() ? new Upgrades() : new AppEngInternalInventory(
@@ -212,7 +212,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 			{
 				int iSLot = zz * 8 + z;
 				addSlotToContainer( new OptionalSlotRestrictedInput( PlaceableItemType.UPGRADES, UpgradeInventoryWrapper, this, iSLot, 187 + zz * 18,
-						8 + 18 * z, iSLot ) );
+						8 + 18 * z, iSLot, invPlayer ) );
 			}
 		/*
 		 * if ( supportCapacity() ) { for (int w = 0; w < 2; w++) for (int z = 0; z < 9; z++) addSlotToContainer( new

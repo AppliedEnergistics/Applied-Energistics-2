@@ -17,9 +17,9 @@ public class ContainerGrinder extends AEBaseContainer
 		super( ip, te, null );
 		myte = te;
 
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.ORE, te, 0, 12, 17 ) );
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.ORE, te, 1, 12 + 18, 17 ) );
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.ORE, te, 2, 12 + 36, 17 ) );
+		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.ORE, te, 0, 12, 17, invPlayer ) );
+		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.ORE, te, 1, 12 + 18, 17, invPlayer ) );
+		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.ORE, te, 2, 12 + 36, 17, invPlayer ) );
 
 		addSlotToContainer( new SlotInaccessable( te, 6, 80, 40 ) );
 

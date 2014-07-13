@@ -15,7 +15,7 @@ public class ContainerQNB extends AEBaseContainer
 		super( ip, te, null );
 		myte = te;
 
-		addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.QE_SINGULARTIY, te, 0, 80, 37 )).setStackLimit( 1 ) );
+		addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.QE_SINGULARTIY, te, 0, 80, 37, invPlayer )).setStackLimit( 1 ) );
 
 		bindPlayerInventory( ip, 0, 166 - /* height of playerinventory */82 );
 	}
