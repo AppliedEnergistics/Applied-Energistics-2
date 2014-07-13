@@ -6,9 +6,11 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
@@ -37,15 +39,26 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 
 	CraftingCPUCluster clust;
 	final CraftingCPUCalculator calc = new CraftingCPUCalculator( this );
+
 	public ISimplifiedBundle lightCache;
 
 	public NBTTagCompound previousState = null;
 	public boolean isCoreBlock = false;
 
+	static final ItemStack coProcessorStack = AEApi.instance().blocks().blockCraftingAccelerator.stack( 1 );
+
 	@Override
 	protected AENetworkProxy createProxy()
 	{
 		return new AENetworkProxyMultiblock( this, "proxy", getItemFromTile( this ), true );
+	}
+
+	@Override
+	protected ItemStack getItemFromTile(Object obj)
+	{
+		if ( ((TileCraftingTile) obj).isAccelerator() )
+			return coProcessorStack;
+		return super.getItemFromTile( obj );
 	}
 
 	public void updateStatus(CraftingCPUCluster c)
@@ -99,6 +112,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	public void onReady()
 	{
 		super.onReady();
+		gridProxy.setVisualRepresentation( getItemFromTile( this ) );
 		updateMultiBlock();
 	}
 
@@ -184,6 +198,8 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 
 	public boolean isAccelerator()
 	{
+		if ( worldObj == null )
+			return false;
 		return (worldObj.getBlockMetadata( xCoord, yCoord, zCoord ) & 3) == 1;
 	}
 
