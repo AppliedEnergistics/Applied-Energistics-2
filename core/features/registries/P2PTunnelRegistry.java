@@ -13,11 +13,23 @@ import appeng.api.definitions.Parts;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.util.AEColor;
 import appeng.util.Platform;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class P2PTunnelRegistry implements IP2PTunnelRegistry
 {
 
 	HashMap<ItemStack, TunnelType> Tunnels = new HashMap();
+
+	public ItemStack getModItem(String modID, String Name, int meta)
+	{
+		ItemStack myItmeStack = GameRegistry.findItemStack( modID, Name, 1 );
+
+		if ( myItmeStack == null )
+			return null;
+
+		myItmeStack.setItemDamage( meta );
+		return myItmeStack;
+	}
 
 	public void configure()
 	{
@@ -50,6 +62,7 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 		addNewAttunement( new ItemStack( Blocks.hopper ), TunnelType.ITEM );
 		addNewAttunement( new ItemStack( Blocks.chest ), TunnelType.ITEM );
 		addNewAttunement( new ItemStack( Blocks.trapped_chest ), TunnelType.ITEM );
+		addNewAttunement( getModItem( "ExtraUtilities", "extractor_base", 0 ), TunnelType.ITEM );
 
 		/**
 		 * attune based on lots of random item related stuff
@@ -58,6 +71,7 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 		addNewAttunement( new ItemStack( Items.lava_bucket ), TunnelType.FLUID );
 		addNewAttunement( new ItemStack( Items.milk_bucket ), TunnelType.FLUID );
 		addNewAttunement( new ItemStack( Items.water_bucket ), TunnelType.FLUID );
+		addNewAttunement( getModItem( "ExtraUtilities", "extractor_base", 6 ), TunnelType.FLUID );
 
 		for (AEColor c : AEColor.values())
 		{
