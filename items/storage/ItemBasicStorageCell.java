@@ -2,6 +2,7 @@ package appeng.items.storage;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -167,7 +168,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	}
 
 	@Override
-	public String getUnlocalizedGroupName(ItemStack is)
+	public String getUnlocalizedGroupName(Set<ItemStack> others, ItemStack is)
 	{
 		return GuiText.StorageCells.getUnlocalized();
 	}

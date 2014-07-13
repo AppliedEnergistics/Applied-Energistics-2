@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
@@ -316,7 +317,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	}
 
 	@Override
-	public String getUnlocalizedGroupName(ItemStack is)
+	public String getUnlocalizedGroupName(Set<ItemStack> others, ItemStack is)
 	{
 		return GuiText.StorageCells.getUnlocalized();
 	}

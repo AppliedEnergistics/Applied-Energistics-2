@@ -7,6 +7,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -226,15 +227,37 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 	}
 
 	@Override
-	public String getUnlocalizedGroupName(ItemStack is)
+	public String getUnlocalizedGroupName(Set<ItemStack> others, ItemStack is)
 	{
-		switch (getTypeByStack( is ))
+		boolean importBus = false, exportBus = false, group = false;
+
+		PartType u = getTypeByStack( is );
+
+		for (ItemStack stack : others)
 		{
-		case ImportBus:
-		case ExportBus:
-			return GuiText.IOBuses.getUnlocalized();
-		default:
+			if ( stack.getItem() == this )
+			{
+				PartType pt = getTypeByStack( stack );
+				switch (pt)
+				{
+				case ImportBus:
+					importBus = true;
+					if ( u == pt )
+						group = true;
+					break;
+				case ExportBus:
+					exportBus = true;
+					if ( u == pt )
+						group = true;
+					break;
+				default:
+				}
+			}
 		}
+
+		if ( group && importBus && exportBus )
+			return GuiText.IOBuses.getUnlocalized();
+
 		return null;
 	}
 

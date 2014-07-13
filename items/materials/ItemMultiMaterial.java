@@ -107,7 +107,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 				if ( j.getKey().getItem() instanceof IItemGroup )
 				{
 					IItemGroup ig = (IItemGroup) j.getKey().getItem();
-					String str = ig.getUnlocalizedGroupName( j.getKey() );
+					String str = ig.getUnlocalizedGroupName( u.getSupported().keySet(), j.getKey() );
 					if ( str != null )
 						name = Platform.gui_localize( str ) + (limit > 1 ? " (" + limit + ")" : "");
 				}
