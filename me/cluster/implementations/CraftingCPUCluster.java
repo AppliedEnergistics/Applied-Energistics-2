@@ -507,7 +507,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		if ( waiting || tasks.isEmpty() ) // nothing to do here...
 			return;
 
-		int remainingOperations = accelerator + 1 + 90;
+		int remainingOperations = accelerator + 1;
 		boolean didsomething = false;
 
 		Iterator<Entry<ICraftingPatternDetails, TaskProgress>> i = tasks.entrySet().iterator();
