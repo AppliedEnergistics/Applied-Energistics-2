@@ -972,9 +972,8 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		TileEntity tile = iHost.getTileEntity();
 		World w = tile.getWorldObj();
 
-		String name = ((ICustomNameObject) iHost).getCustomName();
-		if ( name != null )
-			return name;
+		if ( ((ICustomNameObject) iHost).hasCustomName() )
+			return ((ICustomNameObject) iHost).getCustomName();
 
 		EnumSet<ForgeDirection> possibleDirections = iHost.getTargets();
 		for (ForgeDirection s : possibleDirections)
