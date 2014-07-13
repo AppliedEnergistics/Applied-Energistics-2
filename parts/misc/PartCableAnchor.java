@@ -33,6 +33,7 @@ public class PartCableAnchor implements IPart
 
 	protected ISimplifiedBundle renderCache = null;
 	ItemStack is = null;
+	IPartHost host = null;
 	ForgeDirection mySide = ForgeDirection.UP;
 
 	public PartCableAnchor(ItemStack is) {
@@ -46,7 +47,10 @@ public class PartCableAnchor implements IPart
 		renderCache = rh.useSimpliedRendering( x, y, z, this, renderCache );
 		IIcon myIcon = is.getIconIndex();
 		rh.setTexture( myIcon );
-		rh.setBounds( 7, 7, 10, 9, 9, 16 );
+		if ( host != null && host.getFacadeContainer().getFacade( mySide ) != null )
+			rh.setBounds( 7, 7, 10, 9, 9, 14 );
+		else
+			rh.setBounds( 7, 7, 10, 9, 9, 16 );
 		rh.renderBlock( x, y, z, renderer );
 		rh.setTexture( null );
 	}
@@ -71,7 +75,10 @@ public class PartCableAnchor implements IPart
 	@Override
 	public void getBoxes(IPartCollsionHelper bch)
 	{
-		bch.addBox( 7, 7, 10, 9, 9, 16 );
+		if ( host != null && host.getFacadeContainer().getFacade( mySide ) != null )
+			bch.addBox( 7, 7, 10, 9, 9, 14 );
+		else
+			bch.addBox( 7, 7, 10, 9, 9, 16 );
 	}
 
 	@Override
@@ -186,6 +193,7 @@ public class PartCableAnchor implements IPart
 	@Override
 	public void setPartHostInfo(ForgeDirection side, IPartHost host, TileEntity tile)
 	{
+		this.host = host;
 		mySide = side;
 	}
 
