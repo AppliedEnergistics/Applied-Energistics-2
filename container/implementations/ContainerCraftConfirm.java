@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
@@ -18,6 +19,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingJob;
+import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.PlayerSource;
@@ -29,8 +31,13 @@ import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.core.AELog;
+import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
+import appeng.helpers.WirelessTerminalGuiObject;
+import appeng.parts.reporting.PartCraftingTerminal;
+import appeng.parts.reporting.PartPatternTerminal;
+import appeng.parts.reporting.PartTerminal;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
 
@@ -287,11 +294,31 @@ public class ContainerCraftConfirm extends AEBaseContainer
 
 	public void startJob()
 	{
+		GuiBridge OriginalGui = null;
+
+		IActionHost ah = getActionHost();
+		if ( ah instanceof WirelessTerminalGuiObject )
+			OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
+
+		if ( ah instanceof PartTerminal )
+			OriginalGui = GuiBridge.GUI_ME;
+
+		if ( ah instanceof PartCraftingTerminal )
+			OriginalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
+
+		if ( ah instanceof PartPatternTerminal )
+			OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
+
 		if ( result != null && simulation == false )
 		{
 			ICraftingGrid cc = getGrid().getCache( ICraftingGrid.class );
-			cc.submitJob( result, null, selectedCpu == -1 ? null : cpus.get( selectedCpu ).cpu, getActionSrc() );
-			this.isContainerValid = false;
+			ICraftingLink g = cc.submitJob( result, null, selectedCpu == -1 ? null : cpus.get( selectedCpu ).cpu, getActionSrc() );
+			autoStart = false;
+			if ( g != null && OriginalGui != null && openContext != null )
+			{
+				TileEntity te = openContext.w.getTileEntity( openContext.x, openContext.y, openContext.z );
+				Platform.openGUI( invPlayer.player, te, openContext.side, OriginalGui );
+			}
 		}
 	}
 
