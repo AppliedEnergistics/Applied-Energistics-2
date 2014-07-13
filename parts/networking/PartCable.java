@@ -52,6 +52,7 @@ public class PartCable extends AEBasePart implements IPartCable
 
 	public PartCable(Class c, ItemStack is) {
 		super( c, is );
+		proxy.setFlags( GridFlags.PREFERED );
 		proxy.setIdlePowerUsage( 0.0 );
 		proxy.myColor = AEColor.values()[((ItemMultiPart) is.getItem()).varientOf( is.getItemDamage() )];
 	}

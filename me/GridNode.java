@@ -1,5 +1,7 @@
 package appeng.me;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -354,6 +356,21 @@ public class GridNode implements IGridNode, IPathItem
 		Connections.add( gridConnection );
 		if ( gridConnection.hasDirection() )
 			gridProxy.onGridNotification( GridNotification.ConnectionsChanged );
+
+		final IGridNode gn = this;
+
+		Collections.sort( Connections, new Comparator<IGridConnection>() {
+
+			@Override
+			public int compare(IGridConnection o1, IGridConnection o2)
+			{
+				boolean preferedA = o1.getOtherSide( gn ).hasFlag( GridFlags.PREFERED );
+				boolean preferedB = o2.getOtherSide( gn ).hasFlag( GridFlags.PREFERED );
+
+				return preferedA == preferedB ? 0 : (preferedA ? -1 : 1);
+			}
+
+		} );
 	}
 
 	public void removeConnection(IGridConnection gridConnection)
