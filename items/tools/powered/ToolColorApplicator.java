@@ -195,6 +195,14 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 	private boolean recolourBlock(Block blk, ForgeDirection side, World w, int x, int y, int z, ForgeDirection orientation, AEColor newColor)
 	{
+		if ( blk == Blocks.carpet )
+		{
+			int meta = w.getBlockMetadata( x, y, z );
+			if ( newColor.ordinal() == meta )
+				return false;
+			return w.setBlock( x, y, z, Blocks.carpet, newColor.ordinal(), 3 );
+		}
+
 		if ( blk == Blocks.glass )
 		{
 			return w.setBlock( x, y, z, Blocks.stained_glass, newColor.ordinal(), 3 );
@@ -206,6 +214,32 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			if ( newColor.ordinal() == meta )
 				return false;
 			return w.setBlock( x, y, z, Blocks.stained_glass, newColor.ordinal(), 3 );
+		}
+
+		if ( blk == Blocks.glass_pane )
+		{
+			return w.setBlock( x, y, z, Blocks.stained_glass_pane, newColor.ordinal(), 3 );
+		}
+
+		if ( blk == Blocks.stained_glass_pane )
+		{
+			int meta = w.getBlockMetadata( x, y, z );
+			if ( newColor.ordinal() == meta )
+				return false;
+			return w.setBlock( x, y, z, Blocks.stained_glass_pane, newColor.ordinal(), 3 );
+		}
+
+		if ( blk == Blocks.hardened_clay )
+		{
+			return w.setBlock( x, y, z, Blocks.stained_hardened_clay, newColor.ordinal(), 3 );
+		}
+
+		if ( blk == Blocks.stained_hardened_clay )
+		{
+			int meta = w.getBlockMetadata( x, y, z );
+			if ( newColor.ordinal() == meta )
+				return false;
+			return w.setBlock( x, y, z, Blocks.stained_hardened_clay, newColor.ordinal(), 3 );
 		}
 
 		return blk.recolourBlock( w, x, y, z, side, newColor.ordinal() );
