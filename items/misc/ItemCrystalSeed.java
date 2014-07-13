@@ -136,6 +136,12 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
+	public IIcon getIcon(ItemStack stack, int pass)
+	{
+		return getIconIndex( stack );
+	}
+
+	@Override
 	public IIcon getIconIndex(ItemStack stack)
 	{
 		IIcon list[] = null;
