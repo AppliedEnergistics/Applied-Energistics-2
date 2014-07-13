@@ -24,6 +24,13 @@ public class RF extends BaseModule implements IIntegrationModule
 	{
 		IP2PTunnelRegistry reg = AEApi.instance().registries().p2pTunnel();
 
+		ItemStack energyPipe = GameRegistry.findItemStack( "ExtraUtilities", "extractor_base", 1 );
+		if ( energyPipe != null )
+		{
+			energyPipe.setItemDamage( 12 );
+			reg.addNewAttunement( energyPipe, TunnelType.RF_POWER );
+		}
+
 		ItemStack energyConduit = GameRegistry.findItemStack( "EnderIO", "itemPowerConduit", 1 );
 		if ( energyConduit != null )
 		{
