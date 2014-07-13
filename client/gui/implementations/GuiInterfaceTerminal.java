@@ -150,7 +150,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 				{
 					long id = Long.parseLong( key.substring( 1 ), Character.MAX_RADIX );
 					NBTTagCompound invData = in.getCompoundTag( key );
-					ClientDCInternalInv current = getById( id, invData.getString( "un" ) );
+					ClientDCInternalInv current = getById( id, invData.getLong( "sortBy" ), invData.getString( "un" ) );
 
 					for (int x = 0; x < current.inv.getSizeInventory(); x++)
 					{
@@ -182,21 +182,29 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			for (String n : names)
 			{
 				lines.add( n );
-				for (ClientDCInternalInv i : byName.get( n ))
+
+				ArrayList<ClientDCInternalInv> lset = new ArrayList();
+				lset.addAll( byName.get( n ) );
+
+				Collections.sort( lset );
+
+				for (ClientDCInternalInv i : lset)
+				{
 					lines.add( i );
+				}
 			}
 
 			myScrollBar.setRange( 0, getTotalRows() - 6, 2 );
 		}
 	}
 
-	private ClientDCInternalInv getById(long id, String string)
+	private ClientDCInternalInv getById(long id, long sortBy, String string)
 	{
 		ClientDCInternalInv o = byId.get( id );
 
 		if ( o == null )
 		{
-			byId.put( id, o = new ClientDCInternalInv( 9, id, string ) );
+			byId.put( id, o = new ClientDCInternalInv( 9, id, sortBy, string ) );
 			refreshList = true;
 		}
 

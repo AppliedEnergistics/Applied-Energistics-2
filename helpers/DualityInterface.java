@@ -1045,4 +1045,10 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 		return "Nothing";
 	}
+
+	public long getSortValue()
+	{
+		TileEntity te = iHost.getTileEntity();
+		return (te.zCoord << 24) ^ (te.xCoord << 8) ^ te.yCoord;
+	}
 }

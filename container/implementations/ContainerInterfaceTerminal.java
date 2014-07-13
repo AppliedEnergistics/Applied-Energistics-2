@@ -45,14 +45,16 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 		long which = autoBase++;
 		String unlocalizedName;
 
-		public InvTracker(IInventory patterns, String unlocalizedName) {
+		public InvTracker(DualityInterface dual, IInventory patterns, String unlocalizedName) {
 			server = patterns;
 			client = new AppEngInternalInventory( null, server.getSizeInventory() );
 			this.unlocalizedName = unlocalizedName;
+			this.sortBy = dual.getSortValue();
 		}
 
 		IInventory client;
 		IInventory server;
+		public long sortBy;
 
 	};
 
@@ -263,14 +265,14 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 				{
 					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
 					DualityInterface dual = ih.getInterfaceDuality();
-					diList.put( ih, new InvTracker( dual.getPatterns(), dual.getTermName() ) );
+					diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName() ) );
 				}
 
 				for (IGridNode gn : g.getMachines( PartInterface.class ))
 				{
 					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
 					DualityInterface dual = ih.getInterfaceDuality();
-					diList.put( ih, new InvTracker( dual.getPatterns(), dual.getTermName() ) );
+					diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName() ) );
 				}
 			}
 		}
@@ -291,7 +293,10 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 		NBTTagCompound invv = data.getCompoundTag( name );
 
 		if ( invv.hasNoTags() )
+		{
+			invv.setLong( "sortBy", inv.sortBy );
 			invv.setString( "un", inv.unlocalizedName );
+		}
 
 		for (int x = 0; x < length; x++)
 		{
