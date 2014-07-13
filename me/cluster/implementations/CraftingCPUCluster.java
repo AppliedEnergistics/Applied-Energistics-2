@@ -507,9 +507,24 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		if ( waiting || tasks.isEmpty() ) // nothing to do here...
 			return;
 
-		int remainingOperations = accelerator + 1;
-		boolean didsomething = false;
+		remainingOperations = accelerator + 1;
 
+		do
+		{
+			didsomething = false;
+			executeCrafting( eg, cc );
+		}
+		while (didsomething && remainingOperations > 0);
+
+		if ( remainingOperations > 0 && didsomething == false )
+			waiting = true;
+	}
+
+	private int remainingOperations;
+	private boolean didsomething;
+
+	private void executeCrafting(IEnergyGrid eg, CraftingGridCache cc)
+	{
 		Iterator<Entry<ICraftingPatternDetails, TaskProgress>> i = tasks.entrySet().iterator();
 		while (i.hasNext())
 		{
@@ -663,9 +678,6 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 				}
 			}
 		}
-
-		if ( remainingOperations > 0 && didsomething == false )
-			waiting = true;
 	}
 
 	private void storeItems()
