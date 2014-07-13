@@ -37,7 +37,6 @@ import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
-import appeng.client.render.BusRenderHelper;
 import appeng.client.render.CableRenderHelper;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -524,53 +523,6 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	{
 		IPart part = getPart( side );
 		return part != null ? part.isProvidingStrongPower() : 0;
-	}
-
-	public void setSide(ForgeDirection s)
-	{
-		ForgeDirection ax, ay, az;
-
-		switch (s)
-		{
-		case DOWN:
-			ax = ForgeDirection.EAST;
-			ay = ForgeDirection.NORTH;
-			az = ForgeDirection.DOWN;
-			break;
-		case UP:
-			ax = ForgeDirection.EAST;
-			ay = ForgeDirection.SOUTH;
-			az = ForgeDirection.UP;
-			break;
-		case EAST:
-			ax = ForgeDirection.SOUTH;
-			ay = ForgeDirection.UP;
-			az = ForgeDirection.EAST;
-			break;
-		case WEST:
-			ax = ForgeDirection.NORTH;
-			ay = ForgeDirection.UP;
-			az = ForgeDirection.WEST;
-			break;
-		case NORTH:
-			ax = ForgeDirection.WEST;
-			ay = ForgeDirection.UP;
-			az = ForgeDirection.NORTH;
-			break;
-		case SOUTH:
-			ax = ForgeDirection.EAST;
-			ay = ForgeDirection.UP;
-			az = ForgeDirection.SOUTH;
-			break;
-		case UNKNOWN:
-		default:
-			ax = ForgeDirection.EAST;
-			ay = ForgeDirection.UP;
-			az = ForgeDirection.SOUTH;
-			break;
-		}
-
-		BusRenderHelper.instance.setOrientation( ax, ay, az );
 	}
 
 	@SideOnly(Side.CLIENT)

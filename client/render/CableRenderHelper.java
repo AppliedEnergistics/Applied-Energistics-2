@@ -24,6 +24,53 @@ public class CableRenderHelper
 		return instance;
 	}
 
+	private void setSide(ForgeDirection s)
+	{
+		ForgeDirection ax, ay, az;
+
+		switch (s)
+		{
+		case DOWN:
+			ax = ForgeDirection.EAST;
+			ay = ForgeDirection.NORTH;
+			az = ForgeDirection.DOWN;
+			break;
+		case UP:
+			ax = ForgeDirection.EAST;
+			ay = ForgeDirection.SOUTH;
+			az = ForgeDirection.UP;
+			break;
+		case EAST:
+			ax = ForgeDirection.SOUTH;
+			ay = ForgeDirection.UP;
+			az = ForgeDirection.EAST;
+			break;
+		case WEST:
+			ax = ForgeDirection.NORTH;
+			ay = ForgeDirection.UP;
+			az = ForgeDirection.WEST;
+			break;
+		case NORTH:
+			ax = ForgeDirection.WEST;
+			ay = ForgeDirection.UP;
+			az = ForgeDirection.NORTH;
+			break;
+		case SOUTH:
+			ax = ForgeDirection.EAST;
+			ay = ForgeDirection.UP;
+			az = ForgeDirection.SOUTH;
+			break;
+		case UNKNOWN:
+		default:
+			ax = ForgeDirection.EAST;
+			ay = ForgeDirection.UP;
+			az = ForgeDirection.SOUTH;
+			break;
+		}
+
+		BusRenderHelper.instance.setOrientation( ax, ay, az );
+	}
+
 	public void renderStatic(CableBusContainer cableBusContainer, FacadeContainer fc)
 	{
 		TileEntity te = cableBusContainer.getTile();
@@ -37,12 +84,15 @@ public class CableRenderHelper
 
 		for (ForgeDirection s : ForgeDirection.values())
 		{
-			cableBusContainer.setSide( s );
-
 			IPart part = cableBusContainer.getPart( s );
 			if ( part != null )
 			{
+				setSide( s );
 				renderer.renderAllFaces = true;
+
+				renderer.flipTexture = false;
+				renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+
 				part.renderStatic( te.xCoord, te.yCoord, te.zCoord, BusRenderHelper.instance, renderer );
 
 				renderer.faces = EnumSet.allOf( ForgeDirection.class );
@@ -62,7 +112,7 @@ public class CableRenderHelper
 				IPart part = cableBusContainer.getPart( s );
 				if ( part != null )
 				{
-					cableBusContainer.setSide( s );
+					setSide( s );
 					BusRenderHelper brh = BusRenderHelper.instance;
 					BusCollisionHelper bch = new BusCollisionHelper( boxes, brh.getWorldX(), brh.getWorldY(), brh.getWorldZ(), null, true );
 					part.getBoxes( bch );
@@ -113,7 +163,10 @@ public class CableRenderHelper
 						}
 					}
 
-					cableBusContainer.setSide( s );
+					renderer.flipTexture = false;
+					renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+
+					setSide( s );
 					fPart.renderStatic( te.xCoord, te.yCoord, te.zCoord, BusRenderHelper.instance, renderer, fc, b, cableBusContainer.getPart( s ) == null );
 				}
 			}

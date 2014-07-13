@@ -21,6 +21,8 @@ public class TmpFlipableIcon extends FlipableIcon
 			original = nullIcon;
 		else
 			original = i;
+
+		setFlip( false, false );
 	}
 
 }
