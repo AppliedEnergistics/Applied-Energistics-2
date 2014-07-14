@@ -19,7 +19,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AELog;
 import appeng.hooks.TickHandler;
-import appeng.util.Platform;
 
 import com.google.common.base.Stopwatch;
 
@@ -103,7 +102,6 @@ public class CraftingJob implements Runnable, ICraftingJob
 	{
 		if ( crafts > 0 )
 		{
-			postOp( "new task: " + Platform.getItemDisplayName( what ) + " x " + what.getStackSize(), what.getStackSize(), crafts );
 			what = what.copy();
 			what.setStackSize( what.getStackSize() * crafts );
 			crafting.add( what );
@@ -114,8 +112,6 @@ public class CraftingJob implements Runnable, ICraftingJob
 	{
 		what = what.copy();
 		missing.add( what );
-
-		postOp( "required material: " + Platform.getItemDisplayName( what ), 1, what.getStackSize() );
 	}
 
 	class twoIntegers
@@ -126,16 +122,6 @@ public class CraftingJob implements Runnable, ICraftingJob
 	};
 
 	HashMap<String, twoIntegers> opsAndMultiplier = new HashMap();
-
-	private void postOp(String string, long stackSize, long crafts)
-	{
-		twoIntegers ti = opsAndMultiplier.get( string );
-		if ( ti == null )
-			opsAndMultiplier.put( string, ti = new twoIntegers() );
-
-		ti.perOp = stackSize;
-		ti.times += crafts;
-	}
 
 	@Override
 	public void run()
