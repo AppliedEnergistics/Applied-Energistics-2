@@ -88,9 +88,19 @@ public class CraftingTreeProcess
 			}
 			else
 			{
+				// this is minorly different then below, this slot uses the pattern, but kinda fudges it.
 				for (IAEItemStack part : details.getCondencedInputs())
 				{
-					nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, -1, depth + 1 ), part.getStackSize() );
+					for (int x = 0; x < list.length; x++)
+					{
+						IAEItemStack ppart = list[x];
+						if ( part != null && part.equals( ppart ) )
+						{
+							// use the first slot...
+							nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, x, depth + 1 ), part.getStackSize() );
+							break;
+						}
+					}
 				}
 			}
 		}
