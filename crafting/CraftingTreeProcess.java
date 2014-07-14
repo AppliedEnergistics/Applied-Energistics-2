@@ -72,8 +72,25 @@ public class CraftingTreeProcess
 
 					if ( g.getItem().hasContainerItem( g ) )
 						damageable = true;
+				}
+			}
 
-					nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, x, depth + 1 ), part.getStackSize() );
+			boolean complicated = false;
+
+			if ( damageable || complicated )
+			{
+				for (int x = 0; x < list.length; x++)
+				{
+					IAEItemStack part = list[x];
+					if ( part != null )
+						nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, x, depth + 1 ), part.getStackSize() );
+				}
+			}
+			else
+			{
+				for (IAEItemStack part : details.getCondencedInputs())
+				{
+					nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, -1, depth + 1 ), part.getStackSize() );
 				}
 			}
 		}
