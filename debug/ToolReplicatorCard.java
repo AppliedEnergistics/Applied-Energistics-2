@@ -25,7 +25,7 @@ public class ToolReplicatorCard extends AEBaseItem
 
 	public ToolReplicatorCard() {
 		super( ToolReplicatorCard.class );
-		setfeature( EnumSet.of( AEFeature.Debug, AEFeature.Creative ) );
+		setfeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
 
 	@Override

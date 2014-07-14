@@ -21,7 +21,7 @@ public class ToolEraser extends AEBaseItem
 
 	public ToolEraser() {
 		super( ToolEraser.class );
-		setfeature( EnumSet.of( AEFeature.Debug, AEFeature.Creative ) );
+		setfeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
 
 	@Override
