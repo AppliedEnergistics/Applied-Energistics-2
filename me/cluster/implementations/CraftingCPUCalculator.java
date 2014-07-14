@@ -34,13 +34,13 @@ public class CraftingCPUCalculator extends MBCalculator
 	@Override
 	public boolean checkMultiblockScale(WorldCoord min, WorldCoord max)
 	{
-		if ( max.x - min.x > 8 )
+		if ( max.x - min.x > 16 )
 			return false;
 
-		if ( max.y - min.y > 8 )
+		if ( max.y - min.y > 16 )
 			return false;
 
-		if ( max.z - min.z > 8 )
+		if ( max.z - min.z > 16 )
 			return false;
 
 		return true;
