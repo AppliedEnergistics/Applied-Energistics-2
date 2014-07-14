@@ -197,36 +197,42 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 			{
 				for (IGridNode gn : g.getMachines( TileInterface.class ))
 				{
-					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
-					InvTracker t = diList.get( ih );
-
-					if ( t == null )
-						missing = true;
-					else
+					if ( gn.isActive() )
 					{
-						DualityInterface dual = ih.getInterfaceDuality();
-						if ( !t.unlocalizedName.equals( dual.getTermName() ) )
-							missing = true;
-					}
+						IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
+						InvTracker t = diList.get( ih );
 
-					total++;
+						if ( t == null )
+							missing = true;
+						else
+						{
+							DualityInterface dual = ih.getInterfaceDuality();
+							if ( !t.unlocalizedName.equals( dual.getTermName() ) )
+								missing = true;
+						}
+
+						total++;
+					}
 				}
 
 				for (IGridNode gn : g.getMachines( PartInterface.class ))
 				{
-					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
-					InvTracker t = diList.get( ih );
-
-					if ( t == null )
-						missing = true;
-					else
+					if ( gn.isActive() )
 					{
-						DualityInterface dual = ih.getInterfaceDuality();
-						if ( !t.unlocalizedName.equals( dual.getTermName() ) )
-							missing = true;
-					}
+						IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
+						InvTracker t = diList.get( ih );
 
-					total++;
+						if ( t == null )
+							missing = true;
+						else
+						{
+							DualityInterface dual = ih.getInterfaceDuality();
+							if ( !t.unlocalizedName.equals( dual.getTermName() ) )
+								missing = true;
+						}
+
+						total++;
+					}
 				}
 			}
 		}
