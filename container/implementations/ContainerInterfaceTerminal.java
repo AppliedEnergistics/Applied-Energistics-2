@@ -100,7 +100,9 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 			InventoryAdaptor playerHand = new AdaptorPlayerHand( player );
 
 			WrapperInvSlot slotInv = new PatternInvSlot( inv.server );
-			InventoryAdaptor interfaceSlot = new AdaptorIInventory( slotInv.getWrapper( slot ) );
+
+			IInventory theSlot = slotInv.getWrapper( slot );
+			InventoryAdaptor interfaceSlot = new AdaptorIInventory( theSlot );
 
 			switch (action)
 			{
@@ -108,7 +110,27 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 
 				if ( hasItemInHand )
 				{
-					player.inventory.setItemStack( interfaceSlot.addItems( player.inventory.getItemStack() ) );
+					ItemStack inSlot = theSlot.getStackInSlot( 0 );
+					if ( inSlot == null )
+						player.inventory.setItemStack( interfaceSlot.addItems( player.inventory.getItemStack() ) );
+					else
+					{
+						inSlot = inSlot.copy();
+						ItemStack inHand = player.inventory.getItemStack().copy();
+
+						theSlot.setInventorySlotContents( 0, null );
+						player.inventory.setItemStack( null );
+
+						player.inventory.setItemStack( interfaceSlot.addItems( inHand.copy() ) );
+
+						if ( player.inventory.getItemStack() == null )
+							player.inventory.setItemStack( inSlot );
+						else
+						{
+							player.inventory.setItemStack( inHand );
+							theSlot.setInventorySlotContents( 0, inSlot );
+						}
+					}
 				}
 				else
 				{
