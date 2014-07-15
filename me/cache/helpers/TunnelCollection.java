@@ -34,4 +34,14 @@ public class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T>
 	{
 		return !iterator().hasNext();
 	}
+
+	public boolean matches(Class<? extends PartP2PTunnel> c)
+	{
+		return clz == c;
+	}
+
+	public Class<? extends PartP2PTunnel> getClz()
+	{
+		return clz;
+	}
 }

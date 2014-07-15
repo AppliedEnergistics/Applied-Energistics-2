@@ -201,19 +201,19 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 			NBTTagCompound data = new NBTTagCompound();
 
 			long newFreq = freq;
+			boolean wasOutput = output;
 			output = false;
 
-			if ( output || freq == 0 )
-			{
+			if ( wasOutput || freq == 0 )
 				newFreq = System.currentTimeMillis();
-				try
-				{
-					proxy.getP2P().updateFreq( this, newFreq );
-				}
-				catch (GridAccessException e)
-				{
-					// :P
-				}
+
+			try
+			{
+				proxy.getP2P().updateFreq( this, newFreq );
+			}
+			catch (GridAccessException e)
+			{
+				// :P
 			}
 
 			onTunnelConfigChange();
@@ -243,10 +243,15 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 		return AEApi.instance().parts().partP2PTunnelME.stack( 1 );
 	}
 
-	public TunnelCollection<T> getCollection(Collection<PartP2PTunnel> collection)
+	public TunnelCollection<T> getCollection(Collection<PartP2PTunnel> collection, Class<? extends PartP2PTunnel> c)
 	{
-		type.setSource( collection );
-		return type;
+		if ( type.matches( c ) )
+		{
+			type.setSource( collection );
+			return type;
+		}
+
+		return null;
 	}
 
 	public T getInput()

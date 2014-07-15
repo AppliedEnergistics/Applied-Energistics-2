@@ -62,8 +62,11 @@ public class P2PCache implements IGridCache
 
 	public void updateFreq(PartP2PTunnel t, long NewFreq)
 	{
-		outputs.remove( t.freq, t );
-		inputs.remove( t.freq );
+		if ( outputs.containsValue( t ) )
+			outputs.remove( t.freq, t );
+
+		if ( inputs.containsValue( t ) )
+			inputs.remove( t.freq );
 
 		t.freq = NewFreq;
 
@@ -150,7 +153,11 @@ public class P2PCache implements IGridCache
 		if ( in == null )
 			return NullColl;
 
-		return inputs.get( freq ).getCollection( outputs.get( freq ) );
+		TunnelCollection<PartP2PTunnel> out = inputs.get( freq ).getCollection( outputs.get( freq ), c );
+		if ( out == null )
+			return NullColl;
+
+		return out;
 	}
 
 	public PartP2PTunnel getInput(long freq)
