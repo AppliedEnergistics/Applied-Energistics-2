@@ -34,6 +34,12 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 	public void configure()
 	{
 		/**
+		 * light!
+		 */
+		addNewAttunement( new ItemStack( Blocks.torch ), TunnelType.LIGHT );
+		addNewAttunement( new ItemStack( Blocks.glowstone ), TunnelType.LIGHT );
+
+		/**
 		 * attune based on most redstone base items.
 		 */
 		addNewAttunement( new ItemStack( Items.redstone ), TunnelType.REDSTONE );

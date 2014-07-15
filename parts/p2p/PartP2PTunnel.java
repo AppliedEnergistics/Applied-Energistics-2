@@ -121,6 +121,9 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 
 			switch (tt)
 			{
+			case LIGHT:
+				newType = AEApi.instance().parts().partP2PTunnelLight.stack( 1 );
+				break;
 
 			case RF_POWER:
 				newType = AEApi.instance().parts().partP2PTunnelRF.stack( 1 );

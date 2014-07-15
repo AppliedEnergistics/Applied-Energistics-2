@@ -25,7 +25,9 @@ public enum TickRates
 
 	StorageBus(5, 60),
 
-	ItemTunnel(5, 60);
+	ItemTunnel(5, 60),
+
+	LightTunnel(5, 120);
 
 	public int min;
 	public int max;
