@@ -103,6 +103,8 @@ public class Ingredient implements IIngredient
 		}
 		else
 			throw new RecipeError( input + " : Needs at least Namespace and Name." );
+		
+		handler.data.knownItem.add( toString() );		
 	}
 
 	@Override
@@ -171,7 +173,7 @@ public class Ingredient implements IIngredient
 			}
 
 			if ( set.length == 0 )
-				throw new MissingIngredientError( toString() + " - ore dictionary could not be resolved to any items." );
+				throw new MissingIngredientError( getItemName() + " - ore dictionary could not be resolved to any items." );
 
 			return set;
 		}

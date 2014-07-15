@@ -11,6 +11,8 @@ import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import com.google.common.collect.HashMultimap;
+
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingIngredientError;
@@ -133,37 +135,50 @@ public class RecipeHandler implements IRecipeHandler
 			{
 				ZipOutputStream out = new ZipOutputStream( new FileOutputStream( "recipes.zip" ) );
 
+				HashMultimap<String, IWebsiteSeralizer> combined = HashMultimap.create();
+				
 				for (String s : data.knownItem)
 				{
-					try
-					{
+					try {
+						
 						Ingredient i = new Ingredient( this, s, 1 );
+						
 						for (ItemStack is : i.getItemStackSet())
 						{
+							String realName = getName( is );
 							List<IWebsiteSeralizer> recipes = findRecipe( is );
 							if ( !recipes.isEmpty() )
-							{
-								int offset = 0;
-								String realName = getName( is );
-
-								for (IWebsiteSeralizer ws : recipes)
-								{
-									out.putNextEntry( new ZipEntry( realName + "_" + offset + ".txt" ) );
-									offset++;
-									out.write( ws.getPattern( this ).getBytes() );
-								}
-
-							}
+								combined.putAll(realName, recipes);
 						}
+						
+					} catch (RecipeError e1) {
+						
+					} catch (MissedIngredientSet e1) {
+						
+					} catch (RegistrationError e1) {
+						
+					} catch (MissingIngredientError e1) {
+						
 					}
-					catch (Throwable t)
+				}
+				
+				for ( String realName : combined.keySet() )
+				{
+					int offset = 0;
+					
+					for ( IWebsiteSeralizer ws : combined.get(realName) )
 					{
-						// :P
-					}
+						String rew = ws.getPattern( this );
+						if ( rew != null && rew.length() > 0 )
+						{
+							out.putNextEntry( new ZipEntry( realName + "_" + offset + ".txt" ) );
+							offset++;
+							out.write( rew.getBytes() );
+						}
+					}					
 				}
 
 				out.close();
-
 			}
 			catch (FileNotFoundException e1)
 			{
@@ -256,7 +271,7 @@ public class RecipeHandler implements IRecipeHandler
 			switch (is.getItemDamage())
 			{
 			case 1:
-				realName = realName.replace( "blockCraftingUnit", "blockCraftingAccelerator" );
+				realName = realName.replace( "Unit", "Accelerator" );
 				break;
 			default:
 			}
@@ -585,7 +600,6 @@ public class RecipeHandler implements IRecipeHandler
 		if ( gi != null )
 			return gi.copy( qty );
 
-		data.knownItem.add( v );
 		try
 		{
 			return new Ingredient( this, v, qty );

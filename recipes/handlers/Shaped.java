@@ -93,6 +93,21 @@ public class Shaped implements ICraftHandler, IWebsiteSeralizer
 	@Override
 	public boolean canCraft(ItemStack reqOutput) throws RegistrationError, MissingIngredientError
 	{
+		for (int y = 0; y < rows; y++)
+			for (int x = 0; x < cols; x++)
+			{
+				IIngredient i = inputs.get( y ).get( x );
+
+				if ( !i.isAir() )
+				{
+					for ( ItemStack r : i.getItemStackSet() )
+					{
+						if ( Platform.isSameItemPrecise( r, reqOutput) )
+							return false;
+					}
+				}
+			}
+		
 		return Platform.isSameItemPrecise( output.getItemStack(), reqOutput );
 	}
 

@@ -60,6 +60,20 @@ public class Shapeless implements ICraftHandler, IWebsiteSeralizer
 	
 	@Override
 	public boolean canCraft(ItemStack reqOutput) throws RegistrationError, MissingIngredientError {
+
+		for ( int y = 0; y < inputs.size(); y++ )
+		{
+			IIngredient i = inputs.get(y);
+				if ( !i.isAir() )
+				{
+					for ( ItemStack r : i.getItemStackSet() )
+					{
+						if ( Platform.isSameItemPrecise( r, reqOutput) )
+							return false;
+					}
+				}
+			}
+		
 		return Platform.isSameItemPrecise( output.getItemStack(),reqOutput );
 	}
 
