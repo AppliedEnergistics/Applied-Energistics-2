@@ -3,12 +3,15 @@ package appeng.integration.modules;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import appeng.client.gui.AEBaseMEGui;
 import appeng.client.gui.implementations.GuiCraftingTerm;
 import appeng.client.gui.implementations.GuiPatternTerm;
 import appeng.integration.BaseModule;
@@ -23,8 +26,9 @@ import appeng.integration.modules.NEIHelpers.NEIWorldCraftingHandler;
 import appeng.integration.modules.NEIHelpers.TerminalCraftingSlotFinder;
 import codechicken.nei.api.IStackPositioner;
 import codechicken.nei.guihook.GuiContainerManager;
+import codechicken.nei.guihook.IContainerTooltipHandler;
 
-public class NEI extends BaseModule implements IIntegrationModule, INEI
+public class NEI extends BaseModule implements IIntegrationModule, INEI, IContainerTooltipHandler
 {
 
 	public static NEI instance;
@@ -59,6 +63,9 @@ public class NEI extends BaseModule implements IIntegrationModule, INEI
 		registerRecipeHandler( new NEIInscriberRecipeHandler() );
 		registerRecipeHandler( new NEIWorldCraftingHandler() );
 		registerRecipeHandler( new NEIGrinderRecipeHandler() );
+
+		// large stack tooltips
+		GuiContainerManager.addTooltipHandler( this );
 
 		// crafting terminal...
 		Method registerGuiOverlay = API.getDeclaredMethod( "registerGuiOverlay", new Class[] { Class.class, String.class, IStackPositioner.class } );
@@ -113,6 +120,27 @@ public class NEI extends BaseModule implements IIntegrationModule, INEI
 		{
 			throw new RuntimeException( "Invalid version of NEI, please update", t );
 		}
+	}
+
+	@Override
+	public List<String> handleItemDisplayName(GuiContainer arg0, ItemStack arg1, List<String> current)
+	{
+		return current;
+	}
+
+	@Override
+	public List<String> handleItemTooltip(GuiContainer guiScreen, ItemStack stack, int mousex, int mousey, List<String> currenttip)
+	{
+		if ( guiScreen instanceof AEBaseMEGui )
+			return ((AEBaseMEGui) guiScreen).handleItemTooltip( stack, mousex, mousey, currenttip );
+
+		return currenttip;
+	}
+
+	@Override
+	public List<String> handleTooltip(GuiContainer arg0, int arg1, int arg2, List<String> current)
+	{
+		return current;
 	}
 
 }
