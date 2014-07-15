@@ -24,7 +24,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 
 	GuiTabButton tabCraftButton;
 	GuiTabButton tabProcessButton;
-	//GuiImgButton substitutionsBtn;
+	// GuiImgButton substitutionsBtn;
 	GuiImgButton encodeBtn;
 	GuiImgButton clearBtn;
 
@@ -37,8 +37,9 @@ public class GuiPatternTerm extends GuiMEMonitorable
 		buttonList.add( tabProcessButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 179, new ItemStack( Blocks.furnace ),
 				GuiText.ProcessingPattern.getLocal(), itemRender ) );
 
-		//buttonList.add( substitutionsBtn = new GuiImgButton( this.guiLeft + 84, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.SUBSTITUTION ) );
-		//substitutionsBtn.halfSize = true;
+		// buttonList.add( substitutionsBtn = new GuiImgButton( this.guiLeft + 84, this.guiTop + this.ySize - 163,
+		// Settings.ACTIONS, ActionItems.SUBSTITUTION ) );
+		// substitutionsBtn.halfSize = true;
 
 		buttonList.add( clearBtn = new GuiImgButton( this.guiLeft + 74, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.CLOSE ) );
 		clearBtn.halfSize = true;
@@ -56,7 +57,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 
 			if ( tabCraftButton == btn || tabProcessButton == btn )
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "PatternTerminal.CraftMode", tabProcessButton == btn ? "0" : "1" ) );
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "PatternTerminal.CraftMode", tabProcessButton == btn ? "1" : "0" ) );
 			}
 
 			if ( encodeBtn == btn )
@@ -76,10 +77,10 @@ public class GuiPatternTerm extends GuiMEMonitorable
 			e.printStackTrace();
 		}
 
-		//if ( substitutionsBtn == btn )
-		//{
+		// if ( substitutionsBtn == btn )
+		// {
 
-		//}
+		// }
 	}
 
 	protected void repositionSlot(AppEngSlot s)
@@ -108,13 +109,13 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	{
 		if ( !container.craftingMode )
 		{
-			tabCraftButton.visible = true;
-			tabProcessButton.visible = false;
+			tabCraftButton.visible = false;
+			tabProcessButton.visible = true;
 		}
 		else
 		{
-			tabCraftButton.visible = false;
-			tabProcessButton.visible = true;
+			tabCraftButton.visible = true;
+			tabProcessButton.visible = false;
 		}
 
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
