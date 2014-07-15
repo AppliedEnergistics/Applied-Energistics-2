@@ -4,14 +4,12 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.me.SlotME;
 import appeng.core.AEConfig;
-import codechicken.nei.guihook.IContainerTooltipHandler;
 
 public abstract class AEBaseMEGui extends AEBaseGui
 {
