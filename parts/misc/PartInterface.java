@@ -60,7 +60,13 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	public PartInterface(ItemStack is) {
 		super( PartInterface.class, is );
 	}
-
+	@Override
+	public void addToWorld()
+	{
+		super.addToWorld();
+		duality.initalize();
+	}
+	
 	@MENetworkEventSubscribe
 	public void stateChange(MENetworkChannelsChanged c)
 	{

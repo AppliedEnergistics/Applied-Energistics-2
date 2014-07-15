@@ -113,6 +113,9 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 		assert (accountedFor.length == patterns.getSizeInventory());
 
+		if (! gridProxy.isReady() )
+			return;
+		
 		if ( craftingList != null )
 		{
 			Iterator<ICraftingPatternDetails> i = craftingList.iterator();
@@ -156,7 +159,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		if ( is == null )
 			return;
 
-		if ( is.getItem() instanceof ICraftingPatternItem )
+		if ( is.getItem() instanceof ICraftingPatternItem  )
 		{
 			ICraftingPatternItem cpi = (ICraftingPatternItem) is.getItem();
 			ICraftingPatternDetails details = cpi.getPatternForItem( is, iHost.getTileEntity().getWorldObj() );
@@ -1049,5 +1052,10 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	{
 		TileEntity te = iHost.getTileEntity();
 		return (te.zCoord << 24) ^ (te.xCoord << 8) ^ te.yCoord;
+	}
+
+	public void initalize()
+	{
+		updateCraftingList();
 	}
 }

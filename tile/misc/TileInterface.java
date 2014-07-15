@@ -51,6 +51,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 	ForgeDirection pointAt = ForgeDirection.UNKNOWN;
 	DualityInterface duality = new DualityInterface( gridProxy, this );
 
+	
 	@MENetworkEventSubscribe
 	public void stateChange(MENetworkChannelsChanged c)
 	{
@@ -136,6 +137,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 	{
 		gridProxy.setValidSides( EnumSet.complementOf( EnumSet.of( pointAt ) ) );
 		super.onReady();
+		duality.initalize();
 	}
 
 	@Override
