@@ -218,7 +218,7 @@ public class PartCableSmart extends PartCable
 					}
 
 					Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
-					Tessellator.instance.setColorOpaque_I( getCableColor().mediumVariant );
+					Tessellator.instance.setColorOpaque_I( getCableColor().blackVariant );
 					rh.setTexture( defa, defa, defa, defa, defa, defa );
 					renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
 
@@ -279,7 +279,7 @@ public class PartCableSmart extends PartCable
 
 				Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
 
-				Tessellator.instance.setColorOpaque_I( getCableColor().mediumVariant );
+				Tessellator.instance.setColorOpaque_I( getCableColor().blackVariant );
 				rh.setTexture( defa, defa, offa, offa, offa, offa );
 				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
 
@@ -306,7 +306,7 @@ public class PartCableSmart extends PartCable
 
 				Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
 
-				Tessellator.instance.setColorOpaque_I( getCableColor().mediumVariant );
+				Tessellator.instance.setColorOpaque_I( getCableColor().blackVariant );
 				rh.setTexture( offa, offa, offa, offa, defa, defa );
 				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
 

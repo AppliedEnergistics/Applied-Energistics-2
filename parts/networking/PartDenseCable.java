@@ -304,7 +304,7 @@ public class PartDenseCable extends PartCable
 			IIcon defb = new TaughtIcon( getChannelTex( channels, true ).getIcon(), -0.2f );
 
 			Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
-			Tessellator.instance.setColorOpaque_I( myColor.mediumVariant );
+			Tessellator.instance.setColorOpaque_I( myColor.blackVariant );
 			rh.setTexture( defa, defa, defa, defa, defa, defa );
 			renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
 
@@ -382,7 +382,7 @@ public class PartDenseCable extends PartCable
 
 				Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
 
-				Tessellator.instance.setColorOpaque_I( getCableColor().mediumVariant );
+				Tessellator.instance.setColorOpaque_I( getCableColor().blackVariant );
 				rh.setTexture( defa, defa, offa, offa, offa, offa );
 				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
 
@@ -409,7 +409,7 @@ public class PartDenseCable extends PartCable
 
 				Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
 
-				Tessellator.instance.setColorOpaque_I( getCableColor().mediumVariant );
+				Tessellator.instance.setColorOpaque_I( getCableColor().blackVariant );
 				rh.setTexture( offa, offa, offa, offa, defa, defa );
 				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
 
@@ -430,7 +430,7 @@ public class PartDenseCable extends PartCable
 
 				Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
 
-				Tessellator.instance.setColorOpaque_I( getCableColor().mediumVariant );
+				Tessellator.instance.setColorOpaque_I( getCableColor().blackVariant );
 				rh.setTexture( offa, offa, defa, defa, offa, offa );
 				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
 
