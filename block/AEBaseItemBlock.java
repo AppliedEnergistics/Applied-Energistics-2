@@ -12,6 +12,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
+import appeng.block.misc.BlockLightDetector;
 import appeng.block.misc.BlockSkyCompass;
 import appeng.block.networking.BlockWireless;
 import appeng.client.render.ItemRenderer;
@@ -63,7 +64,15 @@ public class AEBaseItemBlock extends ItemBlock
 
 		if ( blockType.hasBlockTileEntity() )
 		{
-			if ( blockType instanceof BlockWireless || blockType instanceof BlockSkyCompass )
+			if ( blockType instanceof BlockLightDetector )
+			{
+				up = ForgeDirection.getOrientation( side );
+				if ( up == ForgeDirection.UP || up == ForgeDirection.DOWN )
+					forward = ForgeDirection.SOUTH;
+				else
+					forward = ForgeDirection.UP;
+			}
+			else if ( blockType instanceof BlockWireless || blockType instanceof BlockSkyCompass )
 			{
 				forward = ForgeDirection.getOrientation( side );
 				if ( forward == ForgeDirection.UP || forward == ForgeDirection.DOWN )
@@ -123,7 +132,7 @@ public class AEBaseItemBlock extends ItemBlock
 
 		if ( super.placeBlockAt( stack, player, w, x, y, z, side, hitX, hitY, hitZ, metadata ) )
 		{
-			if ( blockType.hasBlockTileEntity() )
+			if ( blockType.hasBlockTileEntity() && !(blockType instanceof BlockLightDetector) )
 			{
 				AEBaseTile tile = blockType.getTileEntity( w, x, y, z );
 				ori = tile;

@@ -31,12 +31,16 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, ICustomCollision
 {
 
-	public BlockQuartzTorch() {
-		super( BlockQuartzTorch.class, Material.circuits );
-		setfeature( EnumSet.of( AEFeature.DecorativeLights ) );
+	protected BlockQuartzTorch(Class which) {
+		super( which, Material.circuits );
 		setLightOpacity( 0 );
-		setLightLevel( 0.9375F );
 		isFullSize = isOpaque = false;
+	}
+
+	public BlockQuartzTorch() {
+		this( BlockQuartzTorch.class );
+		setfeature( EnumSet.of( AEFeature.DecorativeLights ) );
+		setLightLevel( 0.9375F );
 	}
 
 	@Override
@@ -100,9 +104,8 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e)
 	{/*
 	 * double xOff = -0.15 * getUp().offsetX; double yOff = -0.15 * getUp().offsetY; double zOff = -0.15 *
-	 * getUp().offsetZ; out.add( AxisAlignedBB.getBoundingBox( xOff + (double) x + 0.15, yOff + (double) y +
-	 * 0.15, zOff + (double) z + 0.15,// ahh xOff + (double) x + 0.85, yOff + (double) y + 0.85, zOff + (double) z +
-	 * 0.85 ) );
+	 * getUp().offsetZ; out.add( AxisAlignedBB.getBoundingBox( xOff + (double) x + 0.15, yOff + (double) y + 0.15, zOff
+	 * + (double) z + 0.15,// ahh xOff + (double) x + 0.85, yOff + (double) y + 0.85, zOff + (double) z + 0.85 ) );
 	 */
 	}
 

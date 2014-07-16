@@ -10,6 +10,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.util.IOrientable;
+import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
 import appeng.block.misc.BlockQuartzTorch;
 import appeng.client.render.BaseBlockRender;
@@ -78,7 +79,7 @@ public class RenderQuartzTorch extends BaseBlockRender
 	{
 		BlockQuartzTorch blk = (BlockQuartzTorch) block;
 
-		IOrientable te = getOrientable( block, world, x, y, z );
+		IOrientable te = ((IOrientableBlock) block).getOrientable( world, x, y, z );
 
 		float Point2 = 6.0f / 16.0f;
 		float Point3 = 7.0f / 16.0f;

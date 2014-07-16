@@ -42,6 +42,7 @@ import appeng.block.misc.BlockCharger;
 import appeng.block.misc.BlockCondenser;
 import appeng.block.misc.BlockInscriber;
 import appeng.block.misc.BlockInterface;
+import appeng.block.misc.BlockLightDetector;
 import appeng.block.misc.BlockQuartzGrowthAccelerator;
 import appeng.block.misc.BlockQuartzTorch;
 import appeng.block.misc.BlockSecurity;
@@ -310,6 +311,7 @@ public class Registration
 		blocks.blockQuartzPiller = addFeature( BlockQuartzPillar.class );
 		blocks.blockQuartzChiseled = addFeature( BlockQuartzChiseled.class );
 		blocks.blockQuartzTorch = addFeature( BlockQuartzTorch.class );
+		blocks.blockLightDetector = addFeature( BlockLightDetector.class );
 		blocks.blockCharger = addFeature( BlockCharger.class );
 		blocks.blockQuartzGrowthAccelerator = addFeature( BlockQuartzGrowthAccelerator.class );
 
