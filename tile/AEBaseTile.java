@@ -395,6 +395,13 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	{
 		NBTTagCompound output = new NBTTagCompound();
 
+		if ( hasCustomName() )
+		{
+			NBTTagCompound dsp = new NBTTagCompound();
+			dsp.setString( "Name", getCustomName() );
+			output.setTag( "display", dsp );
+		}
+
 		if ( this instanceof IConfigureableObject )
 		{
 			IConfigManager cm = ((IConfigureableObject) this).getConfigManager();
