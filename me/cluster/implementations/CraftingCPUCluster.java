@@ -441,6 +441,11 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 						found = true;
 						break;
 					}
+					else if ( is != null )
+					{
+						g = g.copy();
+						g.decStackSize( is.stackSize );
+					}
 				}
 
 				if ( !found )
