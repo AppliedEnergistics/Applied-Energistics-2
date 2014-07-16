@@ -42,6 +42,9 @@ public class AppEngRenderItem extends RenderItem
 			float RScaleFactor = 1.0f / ScaleFactor;
 			int offset = AEConfig.instance.useTerminalUseLargeFont() ? 0 : -1;
 
+			boolean unicodeFlag = par1FontRenderer.getUnicodeFlag();
+			par1FontRenderer.setUnicodeFlag( false );
+
 			if ( is.isItemDamaged() )
 			{
 				int k = (int) Math.round( 13.0D - is.getItemDamageForDisplay() * 13.0D / is.getMaxDamage() );
@@ -139,6 +142,8 @@ public class AppEngRenderItem extends RenderItem
 				GL11.glEnable( GL11.GL_LIGHTING );
 				GL11.glEnable( GL11.GL_DEPTH_TEST );
 			}
+
+			par1FontRenderer.setUnicodeFlag( unicodeFlag );
 		}
 	}
 }
