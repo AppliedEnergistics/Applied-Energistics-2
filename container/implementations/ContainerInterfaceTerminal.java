@@ -10,6 +10,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
@@ -156,6 +157,22 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 						extra = playerHand.addItems( extra );
 					if ( extra != null )
 						interfaceSlot.addItems( extra );
+				}
+
+				break;
+			case SHIFT_CLICK:
+
+				IInventory mySlot = slotInv.getWrapper( slot );
+				InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
+				mySlot.setInventorySlotContents( 0, playerInv.addItems( mySlot.getStackInSlot( 0 ) ) );
+
+				break;
+			case MOVE_REGION:
+
+				InventoryAdaptor playerInvAd = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
+				for (int x = 0; x < inv.server.getSizeInventory(); x++)
+				{
+					inv.server.setInventorySlotContents( x, playerInvAd.addItems( inv.server.getStackInSlot( x ) ) );
 				}
 
 				break;
