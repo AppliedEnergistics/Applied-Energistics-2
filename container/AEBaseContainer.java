@@ -578,7 +578,7 @@ public abstract class AEBaseContainer extends Container
 	{
 		if ( syncData.containsKey( idx ) )
 		{
-			syncData.get( idx ).update( value );
+			syncData.get( idx ).update( (long) value );
 			return;
 		}
 
@@ -588,11 +588,20 @@ public abstract class AEBaseContainer extends Container
 	{
 		if ( syncData.containsKey( idx ) )
 		{
-			syncData.get( idx ).update( value );
+			syncData.get( idx ).update( (long) value );
 			return;
 		}
 
 		updateProgressBar( idx, (int) value );
+	}
+
+	public void stringSync(int idx, String value)
+	{
+		if ( syncData.containsKey( idx ) )
+		{
+			syncData.get( idx ).update( value );
+			return;
+		}
 	}
 
 	private void prepareSync()
@@ -624,6 +633,12 @@ public abstract class AEBaseContainer extends Container
 
 				if ( tileEntity instanceof ICustomNameObject )
 					name = (ICustomNameObject) tileEntity;
+
+				if ( obj instanceof ICustomNameObject )
+					name = (ICustomNameObject) obj;
+
+				if ( this instanceof ICustomNameObject )
+					name = (ICustomNameObject) this;
 
 				if ( name != null )
 				{
@@ -1055,4 +1070,5 @@ public abstract class AEBaseContainer extends Container
 	{
 
 	}
+
 }

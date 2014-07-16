@@ -72,6 +72,13 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		calc.calculateMultiblock( worldObj, getLocation() );
 	}
 
+	public void setName(String name)
+	{
+		super.setName( name );
+		if ( clust != null )
+			clust.updateName();
+	}
+
 	private class CraftingHandler extends AETileEventHandler
 	{
 

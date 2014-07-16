@@ -83,6 +83,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	public ICraftingLink myLastLink;
 
 	MachineSource machineSrc = null;
+	public String myName = "";
 
 	int accelerator = 0;
 	public WorldCoord min;
@@ -244,7 +245,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 		te.isCoreBlock = false;
 		te.markDirty();
-		tiles.add( te );
+		tiles.push( te );
 
 		if ( te.isStorage() )
 		{
@@ -995,12 +996,36 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		}
 
 		updateCPU();
+		updateName();
 	}
 
 	@Override
 	public BaseActionSource getActionSource()
 	{
 		return machineSrc;
+	}
+
+	@Override
+	public String getName()
+	{
+		return myName;
+	}
+
+	public void updateName()
+	{
+		myName = "";
+		for (TileCraftingTile te : tiles)
+		{
+
+			if ( te.hasCustomName() )
+			{
+				if ( myName.length() > 0 )
+					myName += " " + te.getCustomName();
+				else
+					myName = te.getCustomName();
+			}
+
+		}
 	}
 
 }

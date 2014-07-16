@@ -10,6 +10,7 @@ import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketProgressBar;
+import appeng.core.sync.packets.PacketValueConfig;
 
 public class SyncDat
 {
@@ -59,12 +60,15 @@ public class SyncDat
 		}
 	}
 
-	public void update(long val)
+	public void update(Object val)
 	{
 		try
 		{
 			Object oldValue = field.get( source );
-			updateValue( oldValue, val );
+			if ( val instanceof String )
+				updateString( oldValue, (String) val );
+			else
+				updateValue( oldValue, (Long) val );
 		}
 		catch (IllegalArgumentException e)
 		{
@@ -75,6 +79,22 @@ public class SyncDat
 			AELog.error( e );
 		}
 
+	}
+
+	private void updateString(Object oldValue, String val)
+	{
+		try
+		{
+			field.set( source, val );
+		}
+		catch (IllegalArgumentException e)
+		{
+			AELog.error( e );
+		}
+		catch (IllegalAccessException e)
+		{
+			AELog.error( e );
+		}
 	}
 
 	private void updateValue(Object oldValue, long val)
@@ -123,7 +143,12 @@ public class SyncDat
 
 	private void send(ICrafting o, Object val) throws IOException
 	{
-		if ( field.getType().isEnum() )
+		if ( val instanceof String )
+		{
+			if ( o instanceof EntityPlayerMP )
+				NetworkHandler.instance.sendTo( new PacketValueConfig( "SyncDat." + channel, (String) val ), (EntityPlayerMP) o );
+		}
+		else if ( field.getType().isEnum() )
 		{
 			o.sendProgressBarUpdate( source, channel, ((Enum) val).ordinal() );
 		}

@@ -20,15 +20,17 @@ import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
+import appeng.helpers.ICustomNameObject;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
 
-public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack>
+public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack>, ICustomNameObject
 {
 
 	CraftingCPUCluster monitor = null;
+	String cpuName = null;
 	IGrid network;
 
 	IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
@@ -49,6 +51,8 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 			IAECluster c = ((TileCraftingTile) te).getCluster();
 			if ( c instanceof CraftingCPUCluster )
 			{
+				cpuName = ((CraftingCPUCluster) c).getName();
+
 				monitor = (CraftingCPUCluster) c;
 				if ( monitor != null )
 				{
@@ -161,5 +165,17 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	public void onListUpdate()
 	{
 
+	}
+
+	@Override
+	public String getCustomName()
+	{
+		return cpuName;
+	}
+
+	@Override
+	public boolean hasCustomName()
+	{
+		return cpuName != null && cpuName.length() > 0;
 	}
 }

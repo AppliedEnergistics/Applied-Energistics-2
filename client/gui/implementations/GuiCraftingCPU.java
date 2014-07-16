@@ -244,7 +244,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString( GuiText.CraftingStatus.getLocal(), 8, 7, 4210752 );
+		fontRendererObj.drawString( getGuiDisplayName( GuiText.CraftingStatus.getLocal() ), 8, 7, 4210752 );
 
 		int sectionLength = 67;
 

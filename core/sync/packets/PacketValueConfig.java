@@ -186,6 +186,10 @@ public class PacketValueConfig extends AppEngPacket
 		{
 			((AEBaseContainer) c).customName = Value;
 		}
+		else if ( Name.startsWith( "SyncDat." ) )
+		{
+			((AEBaseContainer) c).stringSync( Integer.parseInt( Name.substring( 8 ) ), Value );
+		}
 		else if ( c instanceof IConfigureableObject )
 		{
 			IConfigManager cm = ((IConfigureableObject) c).getConfigManager();

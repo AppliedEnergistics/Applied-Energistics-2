@@ -71,6 +71,9 @@ public class ContainerCraftConfirm extends AEBaseContainer
 	@GuiSync(6)
 	public boolean noCPU = true;
 
+	@GuiSync(7)
+	public String myName = "";
+
 	protected long cpuIdx = Long.MIN_VALUE;
 
 	public class CraftingCPURecord implements Comparable<CraftingCPURecord>
@@ -82,10 +85,13 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		long size;
 		int processors;
 
+		public String myName;
+
 		CraftingCPURecord(long size, int proc, ICraftingCPU server) {
 			this.size = size;
 			this.processors = proc;
 			this.cpu = server;
+			myName = server.getName();
 		}
 
 		@Override
@@ -115,9 +121,11 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			selectedCpu = -1;
 			cpuBytesAvail = 0;
 			cpuCoProcessors = 0;
+			myName = "";
 		}
 		else if ( selectedCpu != -1 )
 		{
+			myName = cpus.get( selectedCpu ).myName;
 			cpuBytesAvail = cpus.get( selectedCpu ).size;
 			cpuCoProcessors = cpus.get( selectedCpu ).processors;
 		}
@@ -139,9 +147,11 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		{
 			cpuBytesAvail = 0;
 			cpuCoProcessors = 0;
+			myName = "";
 		}
 		else
 		{
+			myName = cpus.get( selectedCpu ).myName;
 			cpuBytesAvail = cpus.get( selectedCpu ).size;
 			cpuCoProcessors = cpus.get( selectedCpu ).processors;
 		}
