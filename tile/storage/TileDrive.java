@@ -179,10 +179,10 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 
 		try
 		{
+			gridProxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+
 			IStorageGrid gs = gridProxy.getStorage();
 			Platform.postChanges( gs, removed, added, mySrc );
-
-			gridProxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
 		}
 		catch (GridAccessException e)
 		{

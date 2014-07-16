@@ -425,10 +425,10 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 			try
 			{
+				gridProxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+
 				IStorageGrid gs = gridProxy.getStorage();
 				Platform.postChanges( gs, removed, added, mySrc );
-
-				gridProxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
 			}
 			catch (GridAccessException e)
 			{
