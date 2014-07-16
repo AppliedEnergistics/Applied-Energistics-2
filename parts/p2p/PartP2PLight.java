@@ -170,6 +170,11 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 		return false;
 	}
 
+	public float getPowerDrainPerTick()
+	{
+		return 0.5f;
+	}
+
 	@Override
 	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
 	{
