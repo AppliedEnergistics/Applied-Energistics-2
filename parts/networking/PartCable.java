@@ -984,7 +984,7 @@ public class PartCable extends AEBasePart implements IPartCable
 				if ( Platform.isClient() )
 					return true;
 
-				getHost().removePart( ForgeDirection.UNKNOWN, false );
+				getHost().removePart( ForgeDirection.UNKNOWN, true );
 				getHost().addPart( newPart, ForgeDirection.UNKNOWN, who );
 				return true;
 			}
