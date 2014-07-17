@@ -327,7 +327,7 @@ public class PartCableSmart extends PartCable
 
 				Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
 
-				Tessellator.instance.setColorOpaque_I( getCableColor().mediumVariant );
+				Tessellator.instance.setColorOpaque_I( getCableColor().blackVariant );
 				rh.setTexture( offa, offa, defa, defa, offa, offa );
 				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
 
