@@ -28,6 +28,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.api.implementations.tiles.IColorableTile;
+import appeng.api.util.AEColor;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.networking.BlockCableBus;
@@ -762,6 +764,28 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		if ( te instanceof IInventory )
 			return Container.calcRedstoneFromInventory( (IInventory) te );
 		return 0;
+	}
+
+	@Override
+	public boolean recolourBlock(World world, int x, int y, int z, ForgeDirection side, int colour)
+	{
+		TileEntity te = getTileEntity( world, x, y, z );
+
+		if ( te instanceof IColorableTile )
+		{
+			IColorableTile ct = (IColorableTile) te;
+			AEColor c = ct.getColor();
+			AEColor newColor = AEColor.values()[colour];
+
+			if ( c != newColor )
+			{
+				ct.setColor( newColor );
+				return true;
+			}
+			return false;
+		}
+
+		return super.recolourBlock( world, x, y, z, side, colour );
 	}
 
 	@Override

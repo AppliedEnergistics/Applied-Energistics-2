@@ -33,12 +33,6 @@ public class CreativeCellHandler implements ICellHandler
 	}
 
 	@Override
-	public IIcon getTopTexture()
-	{
-		return ExtraBlockTextures.BlockMEChestItems.getIcon();
-	}
-
-	@Override
 	public void openChestGui(EntityPlayer player, IChestOrDrive chest, ICellHandler cellHandler, IMEInventoryHandler inv, ItemStack is, StorageChannel chan)
 	{
 		Platform.openGUI( player, (AEBaseTile) chest, chest.getUp(), GuiBridge.GUI_ME );
@@ -54,6 +48,24 @@ public class CreativeCellHandler implements ICellHandler
 	public double cellIdleDrain(ItemStack is, IMEInventory handler)
 	{
 		return 0;
+	}
+
+	@Override
+	public IIcon getTopTexture_Light()
+	{
+		return ExtraBlockTextures.BlockMEChestItems_Light.getIcon();
+	}
+
+	@Override
+	public IIcon getTopTexture_Medium()
+	{
+		return ExtraBlockTextures.BlockMEChestItems_Medium.getIcon();
+	}
+
+	@Override
+	public IIcon getTopTexture_Dark()
+	{
+		return ExtraBlockTextures.BlockMEChestItems_Dark.getIcon();
 	}
 
 }

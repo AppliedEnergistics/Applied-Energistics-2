@@ -43,6 +43,23 @@ public class BaseBlockRender
 	final public boolean hasTESR;
 	final static private byte OrientationMap[][][] = new byte[6][6][6];
 
+	protected int adjustBrightness(int v, double d)
+	{
+		int r = 0xff & (v >> 16);
+		int g = 0xff & (v >> 8);
+		int b = 0xff & (v >> 0);
+
+		r *= d;
+		g *= d;
+		b *= d;
+
+		r = Math.min( 255, Math.max( 0, r ) );
+		g = Math.min( 255, Math.max( 0, g ) );
+		b = Math.min( 255, Math.max( 0, b ) );
+
+		return (r << 16) | (g << 8) | b;
+	}
+
 	static public int getOrientation(ForgeDirection in, ForgeDirection forward, ForgeDirection up)
 	{
 		if ( in == null || in.equals( ForgeDirection.UNKNOWN ) // 1

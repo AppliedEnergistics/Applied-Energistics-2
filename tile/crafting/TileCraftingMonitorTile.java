@@ -4,14 +4,17 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
+import net.minecraft.nbt.NBTTagCompound;
+import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.util.AEColor;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
 import appeng.util.item.AEItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileCraftingMonitorTile extends TileCraftingTile
+public class TileCraftingMonitorTile extends TileCraftingTile implements IColorableTile
 {
 
 	@SideOnly(Side.CLIENT)
@@ -21,17 +24,21 @@ public class TileCraftingMonitorTile extends TileCraftingTile
 	public boolean updateList;
 
 	IAEItemStack dspPlay;
+	AEColor paintedColor = AEColor.Transparent;
 
 	class CraftingMonitorHandler extends AETileEventHandler
 	{
 
 		public CraftingMonitorHandler() {
-			super( TileEventType.NETWORK );
+			super( TileEventType.NETWORK, TileEventType.WORLD_NBT );
 		}
 
 		@Override
 		public boolean readFromStream(ByteBuf data) throws IOException
 		{
+			AEColor oldPaintedColor = paintedColor;
+			paintedColor = AEColor.values()[data.readByte()];
+
 			boolean hasItem = data.readBoolean();
 
 			if ( hasItem )
@@ -40,12 +47,14 @@ public class TileCraftingMonitorTile extends TileCraftingTile
 				dspPlay = null;
 
 			updateList = true;
-			return false; // tesr!
+			return oldPaintedColor != paintedColor; // tesr!
 		}
 
 		@Override
 		public void writeToStream(ByteBuf data) throws IOException
 		{
+			data.writeByte( paintedColor.ordinal() );
+
 			if ( dspPlay == null )
 				data.writeBoolean( false );
 			else
@@ -54,6 +63,20 @@ public class TileCraftingMonitorTile extends TileCraftingTile
 				dspPlay.writeToPacket( data );
 			}
 		}
+
+		@Override
+		public void readFromNBT(NBTTagCompound data)
+		{
+			if ( data.hasKey( "paintedColor" ) )
+				paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
+		}
+
+		@Override
+		public void writeToNBT(NBTTagCompound data)
+		{
+			data.setByte( "paintedColor", (byte) paintedColor.ordinal() );
+		}
+
 	};
 
 	public TileCraftingMonitorTile() {
@@ -98,4 +121,15 @@ public class TileCraftingMonitorTile extends TileCraftingTile
 		return getJobProgress() != null;
 	}
 
+	public AEColor getColor()
+	{
+		return paintedColor;
+	}
+
+	public void setColor(AEColor newPaintedColor)
+	{
+		paintedColor = newPaintedColor;
+		markDirty();
+		markForUpdate();
+	}
 }

@@ -10,6 +10,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
+import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlock;
 import appeng.block.crafting.BlockCraftingMonitor;
 import appeng.block.crafting.BlockCraftingUnit;
@@ -17,6 +18,7 @@ import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.BusRenderer;
 import appeng.client.texture.ExtraBlockTextures;
+import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.tile.crafting.TileCraftingTile;
 
 public class RenderBlockCraftingCPU extends BaseBlockRender
@@ -179,7 +181,7 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 		}
 		else
 		{
-			if ( color == ExtraBlockTextures.BlockCraftingMonitorFit.getIcon() )
+			if ( color == ExtraBlockTextures.BlockCraftingMonitorFit_Light.getIcon() )
 				i.setTexture( ExtraBlockTextures.BlockCraftingMonitorOuter.getIcon() );
 			else
 				i.setTexture( ExtraBlockTextures.BlockCraftingFitSolid.getIcon() );
@@ -192,13 +194,51 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 
 				if ( !emitsLight )
 				{
-					i.renderBlockCurrentBounds( x, y, z, renderer );
+					if ( color == ExtraBlockTextures.BlockCraftingMonitorFit_Light.getIcon() )
+					{
+						int b = w.getLightBrightnessForSkyBlocks( x + side.offsetX, y + side.offsetY, z + side.offsetZ, 0 );
+
+						TileCraftingMonitorTile sr = blk.getTileEntity( w, x, y, z );
+						AEColor col = sr.getColor();
+
+						Tessellator.instance.setBrightness( b );
+						Tessellator.instance.setColorOpaque_I( col.whiteVariant );
+						i.renderFace( x, y, z, color, side, renderer );
+
+						Tessellator.instance.setColorOpaque_I( col.mediumVariant );
+						i.renderFace( x, y, z, ExtraBlockTextures.BlockCraftingMonitorFit_Medium.getIcon(), side, renderer );
+
+						Tessellator.instance.setColorOpaque_I( col.blackVariant );
+						i.renderFace( x, y, z, ExtraBlockTextures.BlockCraftingMonitorFit_Dark.getIcon(), side, renderer );
+					}
+					else
+						i.renderBlockCurrentBounds( x, y, z, renderer );
 				}
 				else
 				{
-					Tessellator.instance.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
-					Tessellator.instance.setBrightness( 13 << 20 | 13 << 4 );
-					i.renderFace( x, y, z, color, side, renderer );
+					if ( isMonitor )
+					{
+						TileCraftingMonitorTile sr = blk.getTileEntity( w, x, y, z );
+						AEColor col = sr.getColor();
+
+						Tessellator.instance.setColorOpaque_I( col.whiteVariant );
+						Tessellator.instance.setBrightness( 13 << 20 | 13 << 4 );
+						i.renderFace( x, y, z, color, side, renderer );
+
+						Tessellator.instance.setColorOpaque_I( col.mediumVariant );
+						Tessellator.instance.setBrightness( 13 << 20 | 13 << 4 );
+						i.renderFace( x, y, z, ExtraBlockTextures.BlockCraftingMonitorFit_Medium.getIcon(), side, renderer );
+
+						Tessellator.instance.setColorOpaque_I( col.blackVariant );
+						Tessellator.instance.setBrightness( 13 << 20 | 13 << 4 );
+						i.renderFace( x, y, z, ExtraBlockTextures.BlockCraftingMonitorFit_Dark.getIcon(), side, renderer );
+					}
+					else
+					{
+						Tessellator.instance.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
+						Tessellator.instance.setBrightness( 13 << 20 | 13 << 4 );
+						i.renderFace( x, y, z, color, side, renderer );
+					}
 				}
 
 			}

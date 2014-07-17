@@ -13,7 +13,9 @@ public enum ExtraBlockTextures
 
 	OreQuartzStone("OreQuartzStone"),
 
-	MEChest("BlockMEChest"), BlockMEChestItems("BlockMEChestItems"),
+	MEChest("BlockMEChest"),
+
+	BlockMEChestItems_Light("BlockMEChestItems_Light"), BlockMEChestItems_Dark("BlockMEChestItems_Dark"), BlockMEChestItems_Medium("BlockMEChestItems_Medium"),
 
 	BlockControllerPowered("BlockControllerPowered"), BlockControllerColumnPowered("BlockControllerColumnPowered"), BlockControllerColumn(
 			"BlockControllerColumn"), BlockControllerLights("BlockControllerLights"), BlockControllerColumnLights("BlockControllerColumnLights"), BlockControllerColumnConflict(
@@ -50,7 +52,8 @@ public enum ExtraBlockTextures
 
 	BlockSpatialPylonE("BlockSpatialPylon_end"), BlockSpatialPylonE_dim("BlockSpatialPylon_end_dim"), BlockSpatialPylonE_red("BlockSpatialPylon_end_red"),
 
-	BlockMESecurityOn("BlockMESecurityOn"), BlockInscriberInside("BlockInscriberInside"),
+	BlockMESecurityOn_Light("BlockMESecurityOn_Light"), BlockMESecurityOn_Medium("BlockMESecurityOn_Medium"), BlockMESecurityOn_Dark("BlockMESecurityOn_Dark"), BlockInscriberInside(
+			"BlockInscriberInside"),
 
 	BlockQuartzGrowthAcceleratorOn("BlockQuartzGrowthAcceleratorOn"), BlockQuartzGrowthAcceleratorSideOn("BlockQuartzGrowthAcceleratorSideOn"),
 
@@ -61,7 +64,10 @@ public enum ExtraBlockTextures
 	BlockCraftingStorage1k("BlockCraftingStorage"), BlockCraftingStorage4k("BlockCraftingStorage4k"), BlockCraftingStorage16k("BlockCraftingStorage16k"), BlockCraftingStorage64k(
 			"BlockCraftingStorage64k"),
 
-	BlockCraftingAcceleratorFit("BlockCraftingAcceleratorFit"), BlockCraftingMonitorFit("BlockCraftingMonitorFit"),
+	BlockCraftingAcceleratorFit("BlockCraftingAcceleratorFit"),
+
+	BlockCraftingMonitorFit_Light("BlockCraftingMonitorFit_Light"), BlockCraftingMonitorFit_Dark("BlockCraftingMonitorFit_Dark"), BlockCraftingMonitorFit_Medium(
+			"BlockCraftingMonitorFit_Medium"),
 
 	BlockCraftingStorage1kFit("BlockCraftingStorageFit"), BlockCraftingStorage4kFit("BlockCraftingStorage4kFit"), BlockCraftingStorage16kFit(
 			"BlockCraftingStorage16kFit"), BlockCraftingStorage64kFit("BlockCraftingStorage64kFit"),

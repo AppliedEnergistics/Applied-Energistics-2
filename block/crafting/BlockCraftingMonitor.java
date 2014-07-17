@@ -39,7 +39,7 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 		case 0:
 			return super.getIcon( 0, 0 );
 		case 0 | FLAG_FORMED:
-			return ExtraBlockTextures.BlockCraftingMonitorFit.getIcon();
+			return ExtraBlockTextures.BlockCraftingMonitorFit_Light.getIcon();
 		}
 	}
 

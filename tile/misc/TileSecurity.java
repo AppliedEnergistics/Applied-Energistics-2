@@ -26,6 +26,7 @@ import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
 import appeng.api.features.ILocatable;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.implementations.items.IBiometricCard;
+import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -39,6 +40,7 @@ import appeng.api.storage.MEMonitorHandler;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.helpers.PlayerSecuirtyWrapper;
@@ -55,7 +57,7 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
-public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEAppEngInventory, ILocatable, IConfigManagerHost, ISecurityProvider
+public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEAppEngInventory, ILocatable, IConfigManagerHost, ISecurityProvider, IColorableTile
 {
 
 	private static int diffrence = 0;
@@ -66,6 +68,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 
 	private boolean isActive = false;
 
+	AEColor paintedColor = AEColor.Transparent;
 	public long securityKey;
 
 	public AppEngInternalInventory configSlot = new AppEngInternalInventory( this, 1 );
@@ -131,20 +134,24 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 			boolean wasActive = isActive;
 			isActive = data.readBoolean();
 
-			return wasActive != isActive;
+			AEColor oldPaintedColor = paintedColor;
+			paintedColor = AEColor.values()[data.readByte()];
+
+			return oldPaintedColor != paintedColor || wasActive != isActive;
 		}
 
 		@Override
 		public void writeToStream(ByteBuf data) throws IOException
 		{
 			data.writeBoolean( gridProxy.isActive() );
+			data.writeByte( paintedColor.ordinal() );
 		}
 
 		@Override
 		public void writeToNBT(NBTTagCompound data)
 		{
 			cm.writeToNBT( data );
-			;
+			data.setByte( "paintedColor", (byte) paintedColor.ordinal() );
 
 			data.setLong( "securityKey", securityKey );
 			configSlot.writeToNBT( data, "config" );
@@ -166,6 +173,8 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		public void readFromNBT(NBTTagCompound data)
 		{
 			cm.readFromNBT( data );
+			if ( data.hasKey( "paintedColor" ) )
+				paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
 
 			securityKey = data.getLong( "securityKey" );
 			configSlot.readFromNBT( data, "config" );
@@ -312,6 +321,18 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	public long getSecurityKey()
 	{
 		return securityKey;
+	}
+
+	public AEColor getColor()
+	{
+		return paintedColor;
+	}
+
+	public void setColor(AEColor newPaintedColor)
+	{
+		paintedColor = newPaintedColor;
+		markDirty();
+		markForUpdate();
 	}
 
 }

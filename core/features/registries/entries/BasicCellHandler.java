@@ -35,9 +35,21 @@ public class BasicCellHandler implements ICellHandler
 	}
 
 	@Override
-	public IIcon getTopTexture()
+	public IIcon getTopTexture_Dark()
 	{
-		return ExtraBlockTextures.BlockMEChestItems.getIcon();
+		return ExtraBlockTextures.BlockMEChestItems_Dark.getIcon();
+	}
+
+	@Override
+	public IIcon getTopTexture_Light()
+	{
+		return ExtraBlockTextures.BlockMEChestItems_Light.getIcon();
+	}
+
+	@Override
+	public IIcon getTopTexture_Medium()
+	{
+		return ExtraBlockTextures.BlockMEChestItems_Medium.getIcon();
 	}
 
 	@Override

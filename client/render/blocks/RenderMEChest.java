@@ -11,6 +11,7 @@ import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.storage.ICellHandler;
+import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
@@ -29,11 +30,13 @@ public class RenderMEChest extends BaseBlockRender
 	@Override
 	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
+		Tessellator.instance.setBrightness( 0 );
 		renderer.overrideBlockTexture = ExtraBlockTextures.getMissing();
 		this.renderInvBlock( EnumSet.of( ForgeDirection.SOUTH ), block, is, Tessellator.instance, 0x000000, renderer );
 
 		renderer.overrideBlockTexture = ExtraBlockTextures.MEChest.getIcon();
-		this.renderInvBlock( EnumSet.of( ForgeDirection.UP ), block, is, Tessellator.instance, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.of( ForgeDirection.UP ), block, is, Tessellator.instance, adjustBrightness( AEColor.Transparent.whiteVariant, 0.7 ),
+				renderer );
 
 		renderer.overrideBlockTexture = null;
 		super.renderInventory( block, is, renderer, type, obj );
@@ -76,16 +79,14 @@ public class RenderMEChest extends BaseBlockRender
 			fico.setFlip( false, true );
 		else if ( forward == ForgeDirection.DOWN )
 			fico.setFlip( true, false );
-		
-		/*  1.7.2
-		
-		else if ( forward == ForgeDirection.EAST && up == ForgeDirection.UP )
-		 	fico.setFlip( true, false );
-		else if ( forward == ForgeDirection.NORTH && up == ForgeDirection.UP )
-			fico.setFlip( true, false );
-		
-		*/
-		
+
+		/*
+		 * 1.7.2
+		 * 
+		 * else if ( forward == ForgeDirection.EAST && up == ForgeDirection.UP ) fico.setFlip( true, false ); else if (
+		 * forward == ForgeDirection.NORTH && up == ForgeDirection.UP ) fico.setFlip( true, false );
+		 */
+
 		renderFace( x, y, z, imb, fico, renderer, forward );
 
 		if ( stat != 0 )
@@ -118,8 +119,21 @@ public class RenderMEChest extends BaseBlockRender
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
 		ICellHandler ch = AEApi.instance().registries().cell().getHandler( sp.getStorageType() );
-		IIcon ico = ch == null ? null : ch.getTopTexture();
+
+		Tessellator.instance.setColorOpaque_I( sp.getColor().whiteVariant );
+		IIcon ico = ch == null ? null : ch.getTopTexture_Light();
 		renderFace( x, y, z, imb, ico == null ? ExtraBlockTextures.MEChest.getIcon() : ico, renderer, up );
+
+		if ( ico != null )
+		{
+			Tessellator.instance.setColorOpaque_I( sp.getColor().mediumVariant );
+			ico = ch == null ? null : ch.getTopTexture_Medium();
+			renderFace( x, y, z, imb, ico == null ? ExtraBlockTextures.MEChest.getIcon() : ico, renderer, up );
+
+			Tessellator.instance.setColorOpaque_I( sp.getColor().blackVariant );
+			ico = ch == null ? null : ch.getTopTexture_Dark();
+			renderFace( x, y, z, imb, ico == null ? ExtraBlockTextures.MEChest.getIcon() : ico, renderer, up );
+		}
 
 		renderer.overrideBlockTexture = null;
 		postRenderInWorld( renderer );

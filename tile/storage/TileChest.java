@@ -25,6 +25,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
+import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -51,6 +52,7 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
+import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
@@ -65,7 +67,7 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 import appeng.util.item.AEFluidStack;
 
-public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHandler, ITerminalHost, IPriorityHost, IConfigManagerHost
+public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHandler, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile
 {
 
 	static private class ChestNoHandler extends Exception
@@ -90,6 +92,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	int priority = 0;
 	int state = 0;
 	boolean wasActive = false;
+
+	AEColor paintedColor = AEColor.Transparent;
 
 	private void recalculateDisplay()
 	{
@@ -193,6 +197,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 				state &= ~0x40;
 
 			data.writeByte( state );
+			data.writeByte( paintedColor.ordinal() );
+
 			ItemStack is = inv.getStackInSlot( 1 );
 
 			if ( is == null )
@@ -212,6 +218,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			ItemStack oldType = storageType;
 
 			state = data.readByte();
+			AEColor oldPaintedColor = paintedColor;
+			paintedColor = AEColor.values()[data.readByte()];
 
 			int item = data.readInt();
 
@@ -222,7 +230,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 			lastStateChange = worldObj.getTotalWorldTime();
 
-			return (state & 0xDB6DB6DB) != (oldState & 0xDB6DB6DB) || !Platform.isSameItemPrecise( oldType, storageType );
+			return oldPaintedColor != paintedColor || (state & 0xDB6DB6DB) != (oldState & 0xDB6DB6DB) || !Platform.isSameItemPrecise( oldType, storageType );
 		}
 
 		@Override
@@ -230,6 +238,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		{
 			config.readFromNBT( data );
 			priority = data.getInteger( "priority" );
+			if ( data.hasKey( "paintedColor" ) )
+				paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
 		}
 
 		@Override
@@ -237,6 +247,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		{
 			config.writeToNBT( data );
 			data.setInteger( "priority", priority );
+			data.setByte( "paintedColor", (byte) paintedColor.ordinal() );
 		}
 
 	};
@@ -811,4 +822,15 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		return false;
 	}
 
+	public AEColor getColor()
+	{
+		return paintedColor;
+	}
+
+	public void setColor(AEColor newPaintedColor)
+	{
+		paintedColor = newPaintedColor;
+		markDirty();
+		markForUpdate();
+	}
 }
