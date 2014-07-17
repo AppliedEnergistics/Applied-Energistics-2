@@ -33,8 +33,8 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 	boolean simulate = false;
 	final MECraftingInventory original;
-	final MECraftingInventory availableCheck;
 
+	MECraftingInventory availableCheck;
 	public CraftingTreeNode tree;
 	private BaseActionSource actionSrc;
 	private ICraftingCallback callback;
@@ -71,8 +71,8 @@ public class CraftingJob implements Runnable, ICraftingJob
 		ICraftingGrid cc = grid.getCache( ICraftingGrid.class );
 		IStorageGrid sg = grid.getCache( IStorageGrid.class );
 		original = new MECraftingInventory( sg.getItemInventory(), false, false, false );
-		availableCheck = new MECraftingInventory( sg.getItemInventory(), false, false, false );
 		tree = getCraftingTree( cc, what );
+		availableCheck = null;
 	}
 
 	private World wrapWorld(World w)
@@ -138,6 +138,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 				MECraftingInventory meci = new MECraftingInventory( original, true, false, true );
 				meci.ignore( output );
 
+				availableCheck = new MECraftingInventory( original, false, false, false );
 				tree.request( meci, output.getStackSize(), actionSrc );
 				tree.dive( this );
 
@@ -160,6 +161,8 @@ public class CraftingJob implements Runnable, ICraftingJob
 					Stopwatch timer = Stopwatch.createStarted();
 					MECraftingInventory meci = new MECraftingInventory( original, true, false, true );
 					meci.ignore( output );
+
+					availableCheck = new MECraftingInventory( original, false, false, false );
 
 					tree.setSimulate();
 					tree.request( meci, output.getStackSize(), actionSrc );
@@ -215,6 +218,8 @@ public class CraftingJob implements Runnable, ICraftingJob
 	{
 		if ( callback != null )
 			callback.calculationComplete( this );
+
+		availableCheck = null;
 
 		synchronized (monitor)
 		{

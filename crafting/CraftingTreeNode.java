@@ -188,7 +188,9 @@ public class CraftingTreeNode
 		{
 			missing += l;
 			bytes += l;
-			return what;
+			IAEItemStack rv = what.copy();
+			rv.setStackSize( l );
+			return rv;
 		}
 
 		throw new CraftBranchFailure( what, l );
