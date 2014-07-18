@@ -236,6 +236,8 @@ public abstract class AEBaseContainer extends Container
 			return tileEntity;
 		if ( part != null )
 			return part;
+		if ( obj != null )
+			return obj;
 		return null;
 	}
 
