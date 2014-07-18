@@ -1,6 +1,7 @@
 package appeng.me.cache;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -73,10 +74,53 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 	boolean updateList = false;
 
+	class ActiveCpuIterator implements Iterator<ICraftingCPU>
+	{
+
+		final Iterator<CraftingCPUCluster> i;
+		CraftingCPUCluster c = null;
+
+		public ActiveCpuIterator(Collection<CraftingCPUCluster> o) {
+			i = o.iterator();
+		}
+
+		@Override
+		public boolean hasNext()
+		{
+			findNext();
+			return c != null;
+		}
+
+		private void findNext()
+		{
+			while (i.hasNext() && c == null)
+			{
+				c = i.next();
+				if ( !c.isActive() || c.isDestroyed )
+					c = null;
+			}
+		}
+
+		@Override
+		public ICraftingCPU next()
+		{
+			ICraftingCPU o = c;
+			c = null;
+			return o;
+		}
+
+		@Override
+		public void remove()
+		{
+			// no..
+		}
+
+	};
+
 	@Override
 	public ImmutableSet<ICraftingCPU> getCpus()
 	{
-		return ImmutableSet.copyOf( (HashSet<ICraftingCPU>) (HashSet) cpuClusters );
+		return ImmutableSet.copyOf( new ActiveCpuIterator( cpuClusters ) );
 	}
 
 	public CraftingGridCache(IGrid g) {
@@ -357,7 +401,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			List<CraftingCPUCluster> validCpusClusters = new ArrayList<CraftingCPUCluster>();
 			for (CraftingCPUCluster cpu : cpuClusters)
 			{
-				if ( !cpu.isBusy() && cpu.getAvailableStorage() >= job.getByteTotal() )
+				if ( cpu.isActive() && !cpu.isBusy() && cpu.getAvailableStorage() >= job.getByteTotal() )
 				{
 					validCpusClusters.add( cpu );
 					break;

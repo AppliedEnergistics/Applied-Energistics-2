@@ -1028,4 +1028,9 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		}
 	}
 
+	public boolean isActive()
+	{
+		return getCore().getActionableNode().isActive();
+	}
+
 }
