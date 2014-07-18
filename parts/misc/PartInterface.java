@@ -40,6 +40,7 @@ import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
+import appeng.helpers.IPriorityHost;
 import appeng.parts.PartBasicState;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
@@ -52,7 +53,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartInterface extends PartBasicState implements IGridTickable, ISegmentedInventory, IStorageMonitorable, IInventoryDestination, IInterfaceHost,
-		ISidedInventory, IAEAppEngInventory, ITileStorageMonitorable
+		ISidedInventory, IAEAppEngInventory, ITileStorageMonitorable, IPriorityHost
 {
 
 	DualityInterface duality = new DualityInterface( proxy, this );
@@ -60,13 +61,14 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	public PartInterface(ItemStack is) {
 		super( PartInterface.class, is );
 	}
+
 	@Override
 	public void addToWorld()
 	{
 		super.addToWorld();
 		duality.initalize();
 	}
-	
+
 	@MENetworkEventSubscribe
 	public void stateChange(MENetworkChannelsChanged c)
 	{
@@ -388,6 +390,18 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	public void jobStateChange(ICraftingLink link)
 	{
 		duality.jobStateChange( link );
+	}
+
+	@Override
+	public int getPriority()
+	{
+		return duality.getPriority();
+	}
+
+	@Override
+	public void setPriority(int newValue)
+	{
+		duality.setPriority( newValue );
 	}
 
 }

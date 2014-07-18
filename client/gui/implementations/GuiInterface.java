@@ -10,16 +10,20 @@ import org.lwjgl.input.Mouse;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerInterface;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
+import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
+import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.helpers.IInterfaceHost;
 
 public class GuiInterface extends GuiUpgradeable
 {
 
+	GuiTabButton priority;
 	GuiImgButton BlockMode;
 
 	public GuiInterface(InventoryPlayer inventoryPlayer, IInterfaceHost te) {
@@ -33,6 +37,18 @@ public class GuiInterface extends GuiUpgradeable
 		super.actionPerformed( btn );
 
 		boolean backwards = Mouse.isButtonDown( 1 );
+
+		if ( btn == priority )
+		{
+			try
+			{
+				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
+			}
+			catch (IOException e)
+			{
+				AELog.error( e );
+			}
+		}
 
 		try
 		{
@@ -49,6 +65,9 @@ public class GuiInterface extends GuiUpgradeable
 	@Override
 	protected void addButtons()
 	{
+		priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRender );
+		buttonList.add( priority );
+
 		BlockMode = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.BLOCK, YesNo.NO );
 		buttonList.add( BlockMode );
 	}

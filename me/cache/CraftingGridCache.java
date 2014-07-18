@@ -55,6 +55,7 @@ import appeng.util.ItemSorters;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
 
 public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler
 {
@@ -251,7 +252,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		// make them immutable
 		for (Entry<IAEItemStack, Set<ICraftingPatternDetails>> e : tmpCraft.entrySet())
 		{
-			craftableItems.put( e.getKey(), ImmutableSet.copyOf( e.getValue() ) );
+			craftableItems.put( e.getKey(), ImmutableSortedSet.copyOf( e.getValue() ) );
 		}
 	}
 

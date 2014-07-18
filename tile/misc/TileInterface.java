@@ -35,6 +35,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
+import appeng.helpers.IPriorityHost;
 import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
@@ -45,13 +46,12 @@ import appeng.util.inv.IInventoryDestination;
 import com.google.common.collect.ImmutableSet;
 
 public class TileInterface extends AENetworkInvTile implements IGridTickable, ISegmentedInventory, ITileStorageMonitorable, IStorageMonitorable,
-		IInventoryDestination, IInterfaceHost, IConfigureableObject
+		IInventoryDestination, IInterfaceHost, IConfigureableObject, IPriorityHost
 {
 
 	ForgeDirection pointAt = ForgeDirection.UNKNOWN;
 	DualityInterface duality = new DualityInterface( gridProxy, this );
 
-	
 	@MENetworkEventSubscribe
 	public void stateChange(MENetworkChannelsChanged c)
 	{
@@ -284,5 +284,17 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 	public void jobStateChange(ICraftingLink link)
 	{
 		duality.jobStateChange( link );
+	}
+
+	@Override
+	public int getPriority()
+	{
+		return duality.getPriority();
+	}
+
+	@Override
+	public void setPriority(int newValue)
+	{
+		duality.setPriority( newValue );
 	}
 }

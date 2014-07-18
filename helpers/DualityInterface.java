@@ -76,7 +76,7 @@ import appeng.util.item.AEItemStack;
 import com.google.common.collect.ImmutableSet;
 
 public class DualityInterface implements IGridTickable, ISegmentedInventory, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory,
-		IConfigureableObject, IConfigManagerHost, ICraftingProvider, IUpgradeableHost
+		IConfigureableObject, IConfigManagerHost, ICraftingProvider, IUpgradeableHost, IPriorityHost
 {
 
 	final int sides[] = new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
@@ -88,6 +88,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	IInterfaceHost iHost;
 	BaseActionSource mySrc;
 	ConfigManager cm = new ConfigManager( this );
+	int priority;
 
 	List<ICraftingPatternDetails> craftingList = null;
 	List<ItemStack> waitingToSend = null;
@@ -113,9 +114,9 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 		assert (accountedFor.length == patterns.getSizeInventory());
 
-		if (! gridProxy.isReady() )
+		if ( !gridProxy.isReady() )
 			return;
-		
+
 		if ( craftingList != null )
 		{
 			Iterator<ICraftingPatternDetails> i = craftingList.iterator();
@@ -159,7 +160,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		if ( is == null )
 			return;
 
-		if ( is.getItem() instanceof ICraftingPatternItem  )
+		if ( is.getItem() instanceof ICraftingPatternItem )
 		{
 			ICraftingPatternItem cpi = (ICraftingPatternItem) is.getItem();
 			ICraftingPatternDetails details = cpi.getPatternForItem( is, iHost.getTileEntity().getWorldObj() );
@@ -257,6 +258,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		storage.writeToNBT( data, "storage" );
 		upgrades.writeToNBT( data, "upgrades" );
 		craftingTracker.writeToNBT( data );
+		data.setInteger( "priority", priority );
 
 		NBTTagList waitingToSend = new NBTTagList();
 		if ( this.waitingToSend != null )
@@ -293,6 +295,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		config.readFromNBT( data, "config" );
 		patterns.readFromNBT( data, "patterns" );
 		storage.readFromNBT( data, "storage" );
+		priority = data.getInteger( "priority" );
 		readConfig();
 		updateCraftingList();
 	}
@@ -882,7 +885,10 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		if ( gridProxy.isActive() && craftingList != null )
 		{
 			for (ICraftingPatternDetails details : craftingList)
+			{
+				details.setPriority( this.priority );
 				craftingTracker.addCraftingOption( this, details );
+			}
 		}
 	}
 
@@ -1057,5 +1063,27 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	public void initalize()
 	{
 		updateCraftingList();
+	}
+
+	@Override
+	public int getPriority()
+	{
+		return priority;
+	}
+
+	@Override
+	public void setPriority(int newValue)
+	{
+		priority = newValue;
+		markDirty();
+
+		try
+		{
+			gridProxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, gridProxy.getNode() ) );
+		}
+		catch (GridAccessException e)
+		{
+			// :P
+		}
 	}
 }

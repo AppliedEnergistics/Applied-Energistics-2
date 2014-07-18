@@ -331,4 +331,10 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	{
 		return aepattern.equals( ((PatternHelper) obj).aepattern );
 	}
+
+	@Override
+	public void setPriority(int priority)
+	{
+		this.priority = priority;
+	}
 }
