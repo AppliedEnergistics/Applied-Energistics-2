@@ -21,6 +21,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.IItemRenderer;
@@ -38,6 +39,7 @@ import appeng.client.render.WorldRender;
 import appeng.client.render.effects.AssemblerFX;
 import appeng.client.render.effects.CraftingFx;
 import appeng.client.render.effects.EnergyFx;
+import appeng.client.render.effects.LightningArcFX;
 import appeng.client.render.effects.LightningFX;
 import appeng.client.render.effects.VibrantFX;
 import appeng.client.texture.CableBusTextures;
@@ -255,6 +257,9 @@ public class ClientHelper extends ServerHelper
 			case Lightning:
 				spawnLightning( worldObj, posX, posY, posZ );
 				return;
+			case LightningArc:
+				spawnLightningArc( worldObj, posX, posY, posZ, (Vec3) o );
+				return;
 			}
 		}
 	}
@@ -278,6 +283,12 @@ public class ClientHelper extends ServerHelper
 			VibrantFX fx = new VibrantFX( w, x + d0, y + d1, z + d2, 0.0D, 0.0D, 0.0D );
 			Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
 		}
+	}
+
+	private void spawnLightningArc(World worldObj, double posX, double posY, double posZ, Vec3 second)
+	{
+		LightningFX fx = new LightningArcFX( worldObj, posX, posY, posZ, second.xCoord, second.yCoord, second.zCoord, 0.0f, 0.0f, 0.0f );
+		Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
 	}
 
 	private void spawnLightning(World worldObj, double posX, double posY, double posZ)

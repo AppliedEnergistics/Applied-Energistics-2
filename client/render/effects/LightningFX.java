@@ -14,28 +14,27 @@ import org.lwjgl.opengl.GL11;
 public class LightningFX extends EntityFX
 {
 
-	final int steps = 5;
+	final int steps = getSteps();
 	static Random rng = new Random();
 	double[][] Steps;
 
-	public LightningFX(World w, double x, double y, double z, double r, double g, double b) {
+	protected LightningFX(World w, double x, double y, double z, double r, double g, double b, int maxAge) {
 		super( w, x, y, z, r, g, b );
 		Steps = new double[steps][3];
 		motionX = 0;
 		motionY = 0;
 		motionZ = 0;
-		particleMaxAge = 6;
+		particleMaxAge = maxAge;
+	}
 
-		// particleMaxAge = 269;
-		double lastDirectionX = (rng.nextDouble() - 0.5) * 0.9;
-		double lastDirectionY = (rng.nextDouble() - 0.5) * 0.9;
-		double lastDirectionZ = (rng.nextDouble() - 0.5) * 0.9;
-		for (int s = 0; s < steps; s++)
-		{
-			Steps[s][0] = lastDirectionX = (lastDirectionX + (rng.nextDouble() - 0.5) * 0.9) / 2.0;
-			Steps[s][1] = lastDirectionY = (lastDirectionY + (rng.nextDouble() - 0.5) * 0.9) / 2.0;
-			Steps[s][2] = lastDirectionZ = (lastDirectionZ + (rng.nextDouble() - 0.5) * 0.9) / 2.0;
-		}
+	private int getSteps()
+	{
+		return 5;
+	}
+
+	public LightningFX(World w, double x, double y, double z, double r, double g, double b) {
+		this( w, x, y, z, r, g, b, 6 );
+		regen();
 	}
 
 	float currentPoint = 0;
@@ -47,6 +46,19 @@ public class LightningFX extends EntityFX
 		return j1 << 20 | j1 << 4;
 	}
 
+	protected void regen()
+	{
+		double lastDirectionX = (rng.nextDouble() - 0.5) * 0.9;
+		double lastDirectionY = (rng.nextDouble() - 0.5) * 0.9;
+		double lastDirectionZ = (rng.nextDouble() - 0.5) * 0.9;
+		for (int s = 0; s < steps; s++)
+		{
+			Steps[s][0] = lastDirectionX = (lastDirectionX + (rng.nextDouble() - 0.5) * 0.9) / 2.0;
+			Steps[s][1] = lastDirectionY = (lastDirectionY + (rng.nextDouble() - 0.5) * 0.9) / 2.0;
+			Steps[s][2] = lastDirectionZ = (lastDirectionZ + (rng.nextDouble() - 0.5) * 0.9) / 2.0;
+		}
+	}
+
 	@Override
 	public void renderParticle(Tessellator tess, float l, float rX, float rY, float rZ, float rYZ, float rXY)
 	{
@@ -54,15 +66,7 @@ public class LightningFX extends EntityFX
 		tess.setColorRGBA_F( this.particleRed * j * 0.9f, this.particleGreen * j * 0.95f, this.particleBlue * j, this.particleAlpha );
 		if ( particleAge == 3 )
 		{
-			double lastDirectionX = (rng.nextDouble() - 0.5) * 0.9;
-			double lastDirectionY = (rng.nextDouble() - 0.5) * 0.9;
-			double lastDirectionZ = (rng.nextDouble() - 0.5) * 0.9;
-			for (int s = 0; s < steps; s++)
-			{
-				Steps[s][0] = lastDirectionX = (lastDirectionX + (rng.nextDouble() - 0.5) * 0.9) / 2.0;
-				Steps[s][1] = lastDirectionY = (lastDirectionY + (rng.nextDouble() - 0.5) * 0.9) / 2.0;
-				Steps[s][2] = lastDirectionZ = (lastDirectionZ + (rng.nextDouble() - 0.5) * 0.9) / 2.0;
-			}
+			regen();
 		}
 		double f6 = this.particleTextureIndexX / 16.0;
 		double f7 = f6 + 0.0324375F;
