@@ -103,8 +103,11 @@ public class CraftingTreeNode
 						if ( !exhausted )
 						{
 							IAEItemStack is = job.checkUse( available );
-							thingsUsed.add( is.copy() );
-							used.add( is );
+							if ( is != null )
+							{
+								thingsUsed.add( is.copy() );
+								used.add( is );
+							}
 						}
 
 						bytes += available.getStackSize();
@@ -125,8 +128,11 @@ public class CraftingTreeNode
 				if ( !exhausted )
 				{
 					IAEItemStack is = job.checkUse( available );
-					thingsUsed.add( is.copy() );
-					used.add( is );
+					if ( is != null )
+					{
+						thingsUsed.add( is.copy() );
+						used.add( is );
+					}
 				}
 
 				bytes += available.getStackSize();
