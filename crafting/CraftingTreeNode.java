@@ -158,7 +158,7 @@ public class CraftingTreeNode
 				{
 					while (pro.possible && l > 0)
 					{
-						MECraftingInventory subInv = new MECraftingInventory( inv );
+						MECraftingInventory subInv = new MECraftingInventory( inv, true, true, true );
 						pro.request( subInv, 1, src );
 						subInv.commit( src );
 

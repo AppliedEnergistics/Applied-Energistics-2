@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -242,7 +241,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 				Set<ICraftingPatternDetails> methods = tmpCraft.get( out );
 
 				if ( methods == null )
-					tmpCraft.put( out, methods = new TreeSet() );
+					tmpCraft.put( out, methods = new HashSet() );
 
 				methods.add( details );
 				sg.postAlterationOfStoredItems( StorageChannel.ITEMS, out, new BaseActionSource() );
