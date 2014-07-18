@@ -18,7 +18,7 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 {
 
 	final int sides[] = new int[] {};
-	AppEngInternalInventory inv = new AppEngInternalInventory( this, 0 );
+	final static AppEngInternalInventory inv = new AppEngInternalInventory( null, 0 );
 
 	@Override
 	public AECableType getCableConnectionType(ForgeDirection dir)

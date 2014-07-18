@@ -154,8 +154,8 @@ public class TileController extends AENetworkPowerTile implements IAEPowerStorag
 		worldObj.setBlockMetadataWithNotify( xCoord, yCoord, zCoord, meta, 2 );
 	}
 
-	final int sides[] = new int[] { 0 };
-	AppEngInternalInventory inv = new AppEngInternalInventory( this, 1 );
+	final int sides[] = new int[] {};
+	static final AppEngInternalInventory inv = new AppEngInternalInventory( null, 0 );
 
 	@Override
 	public IInventory getInternalInventory()
