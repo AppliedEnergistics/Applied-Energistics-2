@@ -55,6 +55,11 @@ public class CraftingJob implements Runnable, ICraftingJob
 		availableCheck = null;
 	}
 
+	public void refund(IAEItemStack o)
+	{
+		availableCheck.injectItems( o, Actionable.MODULATE, this.actionSrc );
+	}
+
 	public IAEItemStack checkUse(IAEItemStack available)
 	{
 		return availableCheck.extractItems( available, Actionable.MODULATE, this.actionSrc );

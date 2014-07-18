@@ -1,6 +1,8 @@
 package appeng.crafting;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import net.minecraft.world.World;
 import appeng.api.AEApi;
@@ -83,6 +85,8 @@ public class CraftingTreeNode
 	{
 		job.handlepausing();
 
+		List<IAEItemStack> thingsUsed = new LinkedList();
+
 		what.setStackSize( l );
 		if ( slot >= 0 && parent != null && parent.details.isCraftable() )
 		{
@@ -97,7 +101,11 @@ public class CraftingTreeNode
 					if ( available != null )
 					{
 						if ( !exhausted )
-							used.add( job.checkUse( available ) );
+						{
+							IAEItemStack is = job.checkUse( available );
+							thingsUsed.add( is.copy() );
+							used.add( is );
+						}
 
 						bytes += available.getStackSize();
 						l -= available.getStackSize();
@@ -115,7 +123,11 @@ public class CraftingTreeNode
 			if ( available != null )
 			{
 				if ( !exhausted )
-					used.add( job.checkUse( available ) );
+				{
+					IAEItemStack is = job.checkUse( available );
+					thingsUsed.add( is.copy() );
+					used.add( is );
+				}
 
 				bytes += available.getStackSize();
 				l -= available.getStackSize();
@@ -160,13 +172,14 @@ public class CraftingTreeNode
 					{
 						MECraftingInventory subInv = new MECraftingInventory( inv, true, true, true );
 						pro.request( subInv, 1, src );
-						subInv.commit( src );
 
 						what.setStackSize( l );
-						IAEItemStack available = inv.extractItems( what, Actionable.MODULATE, src );
+						IAEItemStack available = subInv.extractItems( what, Actionable.MODULATE, src );
 
 						if ( available != null )
 						{
+							subInv.commit( src );
+
 							bytes += available.getStackSize();
 							l -= available.getStackSize();
 
@@ -191,6 +204,13 @@ public class CraftingTreeNode
 			IAEItemStack rv = what.copy();
 			rv.setStackSize( l );
 			return rv;
+		}
+
+		for (IAEItemStack o : thingsUsed)
+		{
+			job.refund( o.copy() );
+			o.setStackSize( -o.getStackSize() );
+			used.add( o );
 		}
 
 		throw new CraftBranchFailure( what, l );
