@@ -728,7 +728,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		if ( !(job instanceof CraftingJob) )
 			return null;
 
-		if ( isBusy() || getAvailableStorage() < job.getByteTotal() )
+		if ( isBusy() || !isActive() || getAvailableStorage() < job.getByteTotal() )
 			return null;
 
 		IStorageGrid sg = g.getCache( IStorageGrid.class );
