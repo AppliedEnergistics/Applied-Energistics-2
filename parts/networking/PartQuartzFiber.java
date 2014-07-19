@@ -153,9 +153,66 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	}
 
 	@Override
+	public double injectAEPower(double amt, Actionable mode, Set<IEnergyGrid> seen)
+	{
+
+		try
+		{
+			IEnergyGrid eg = proxy.getEnergy();
+			if ( !seen.contains( eg ) )
+				return eg.injectAEPower( amt, mode, seen );
+		}
+		catch (GridAccessException e)
+		{
+			// :P
+		}
+
+		try
+		{
+			IEnergyGrid eg = outerProxy.getEnergy();
+			if ( !seen.contains( eg ) )
+				return eg.injectAEPower( amt, mode, seen );
+		}
+		catch (GridAccessException e)
+		{
+			// :P
+		}
+
+		return amt;
+	}
+
+	@Override
 	public int cableConnectionRenderTo()
 	{
 		return 16;
+	}
+
+	@Override
+	public double getEnergyDemand(double amt, Set<IEnergyGrid> seen)
+	{
+		double demand = 0;
+
+		try
+		{
+			IEnergyGrid eg = proxy.getEnergy();
+			demand += eg.getEnergyDemand( amt - demand, seen );
+		}
+		catch (GridAccessException e)
+		{
+			// :P
+		}
+
+		try
+		{
+			IEnergyGrid eg = outerProxy.getEnergy();
+			demand += eg.getEnergyDemand( amt - demand, seen );
+		}
+		catch (GridAccessException e)
+		{
+			// :P
+		}
+
+		return demand;
 	}
 
 }

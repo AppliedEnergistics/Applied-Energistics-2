@@ -166,7 +166,17 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public double getEnergyDemand(double maxRequired)
 	{
+		localSeen.clear();
+		return getEnergyDemand( maxRequired, localSeen );
+	}
+
+	public double getEnergyDemand(double maxRequired, Set<IEnergyGrid> seen)
+	{
+		if ( !seen.add( this ) )
+			return 0;
+
 		double required = buffer() - extra;
+
 		Iterator<IAEPowerStorage> it = requesters.iterator();
 		while (required < maxRequired && it.hasNext())
 		{
@@ -174,54 +184,88 @@ public class EnergyGridCache implements IEnergyGrid
 			if ( node.getPowerFlow() != AccessRestriction.READ )
 				required += Math.max( 0.0, node.getAEMaxPower() - node.getAECurrentPower() );
 		}
+
+		Iterator<IEnergyGridProvider> ix = gproviders.iterator();
+		while (required < maxRequired && ix.hasNext())
+		{
+			IEnergyGridProvider node = ix.next();
+			required += node.getEnergyDemand( maxRequired - required, seen );
+		}
+
 		return required;
 	}
 
 	@Override
-	public double injectPower(double i, Actionable mode)
+	public double injectPower(double amt, Actionable mode)
 	{
+		localSeen.clear();
+		return injectAEPower( amt, mode, localSeen );
+	}
+
+	public double injectAEPower(double amt, Actionable mode, Set<IEnergyGrid> seen)
+	{
+		if ( !seen.add( this ) )
+			return 0;
+
 		double ignore = extra;
-		i += extra;
+		amt += extra;
 
 		if ( mode == Actionable.SIMULATE )
 		{
 			Iterator<IAEPowerStorage> it = requesters.iterator();
-			while (i > 0 && it.hasNext())
+			while (amt > 0 && it.hasNext())
 			{
 				IAEPowerStorage node = it.next();
-				i = node.injectAEPower( i, Actionable.SIMULATE );
+				amt = node.injectAEPower( amt, Actionable.SIMULATE );
 			}
+
+			Iterator<IEnergyGridProvider> i = gproviders.iterator();
+			while (amt > 0 && i.hasNext())
+				amt = i.next().injectAEPower( amt, mode, seen );
 		}
 		else
 		{
-			tickInjectionPerTick += i - ignore;
+			tickInjectionPerTick += amt - ignore;
 			// totalInjectionPastTicks[0] += i;
 
-			while (i > 0 && !requesters.isEmpty())
+			while (amt > 0 && !requesters.isEmpty())
 			{
 				IAEPowerStorage node = getFirstRequestor();
 
-				i = node.injectAEPower( i, Actionable.MODULATE );
-				if ( i > 0 )
+				amt = node.injectAEPower( amt, Actionable.MODULATE );
+				if ( amt > 0 )
 				{
 					requesters.remove( node );
 					lastRequestor = null;
 				}
 			}
 
-			extra = i;
+			Iterator<IEnergyGridProvider> i = gproviders.iterator();
+			while (amt > 0 && i.hasNext())
+			{
+				IEnergyGridProvider what = i.next();
+				Set<IEnergyGrid> listCopy = new HashSet<IEnergyGrid>();
+				listCopy.addAll( seen );
+
+				double cannotHold = what.injectAEPower( amt, Actionable.SIMULATE, listCopy );
+				what.injectAEPower( amt - cannotHold, mode, seen );
+
+				amt = cannotHold;
+			}
+
+			extra = amt;
 		}
 
-		return Math.max( 0.0, i - buffer() );
+		return Math.max( 0.0, amt - buffer() );
 	}
 
-	Set<IEnergyGrid> seen = new HashSet();
+	Set<IEnergyGrid> localSeen = new HashSet();
 
 	@Override
 	public double extractAEPower(double amt, Actionable mode, PowerMultiplier pm)
 	{
-		seen.clear();
-		return pm.divide( extractAEPower( pm.multiply( amt ), mode, seen ) );
+		localSeen.clear();
+		return pm.divide( extractAEPower( pm.multiply( amt ), mode, localSeen ) );
 	}
 
 	@Override
