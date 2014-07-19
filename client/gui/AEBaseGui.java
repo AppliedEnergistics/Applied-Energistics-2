@@ -351,6 +351,27 @@ public abstract class AEBaseGui extends GuiContainer
 		super.handleMouseClick( slot, slotIdx, ctrlDown, key );
 	}
 
+	protected void mouseClickMove(int x, int y, int c, long d)
+	{
+		Slot slot = this.getSlot( x, y );
+		ItemStack itemstack = this.mc.thePlayer.inventory.getItemStack();
+
+		if ( slot instanceof SlotFake && itemstack != null )
+		{
+			try
+			{
+				PacketInventoryAction p = new PacketInventoryAction( InventoryAction.PICKUP_OR_SETDOWN, slot.slotNumber, 0 );
+				NetworkHandler.instance.sendToServer( p );
+			}
+			catch (IOException e)
+			{
+				AELog.error( e );
+			}
+		}
+		else
+			super.mouseClickMove( x, y, c, d );
+	}
+
 	protected boolean enableSpaceClicking()
 	{
 		return true;
@@ -749,7 +770,7 @@ public abstract class AEBaseGui extends GuiContainer
 			try
 			{
 				ItemStack is = s.getStack();
-				if ( s instanceof AppEngSlot && (((AppEngSlot) s).renderIconWithItem() || is == null) && (((AppEngSlot) s).isEnabled()) )
+				if ( s instanceof AppEngSlot && (((AppEngSlot) s).renderIconWithItem() || is == null) && (((AppEngSlot) s).shouldDisplay()) )
 				{
 					AppEngSlot aes = (AppEngSlot) s;
 					if ( aes.getIcon() >= 0 )

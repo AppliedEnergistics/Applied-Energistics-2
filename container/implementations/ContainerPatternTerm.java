@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
@@ -29,6 +30,7 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.slot.IOptionalSlotHost;
 import appeng.container.slot.OptionalSlotFake;
 import appeng.container.slot.SlotFakeCraftingMatrix;
+import appeng.container.slot.SlotPatternOutputs;
 import appeng.container.slot.SlotPatternTerm;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
@@ -76,7 +78,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 		for (int y = 0; y < 3; y++)
 		{
-			addSlotToContainer( outputSlots[y] = new OptionalSlotFake( output, this, y, 110, -76 + y * 18, 0, 0, 1 ) );
+			addSlotToContainer( outputSlots[y] = new SlotPatternOutputs( output, this, y, 110, -76 + y * 18, 0, 0, 1 ) );
 			outputSlots[y].renderDisabled = false;
 			outputSlots[y].IIcon = -1;
 		}
@@ -389,23 +391,26 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	}
 
 	@Override
-	public ItemStack slotClick(int slotNum, int p_75144_2_, int p_75144_3_, EntityPlayer p_75144_4_)
+	public void onSlotChange(Slot s)
 	{
-		Slot s = null;
-		for (Object g : inventorySlots)
+		if ( s == patternSlotOUT && Platform.isServer() )
 		{
-			if ( g instanceof Slot )
+			for (int i = 0; i < this.crafters.size(); ++i)
 			{
-				Slot gg = (Slot) g;
-				if ( gg.slotNumber == slotNum )
-					s = gg;
-			}
-		}
+				ICrafting icrafting = (ICrafting) this.crafters.get( i );
 
-		ItemStack is = super.slotClick( slotNum, p_75144_2_, p_75144_3_, p_75144_4_ );
-		if ( s == patternSlotOUT )
+				for (Object g : inventorySlots)
+				{
+					if ( g instanceof OptionalSlotFake || g instanceof SlotFakeCraftingMatrix )
+					{
+						Slot sri = (Slot) g;
+						icrafting.sendSlotContents( this, sri.slotNumber, sri.getStack() );
+					}
+				}
+				((EntityPlayerMP) icrafting).isChangingQuantityOnly = false;
+			}
 			detectAndSendChanges();
-		return is;
+		}
 	}
 
 	public void clear()

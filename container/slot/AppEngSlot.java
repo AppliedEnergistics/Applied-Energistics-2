@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import appeng.container.AEBaseContainer;
 import appeng.tile.inventory.AppEngInternalInventory;
 
 public class AppEngSlot extends Slot
@@ -16,6 +17,7 @@ public class AppEngSlot extends Slot
 
 	public boolean isDraggable = true;
 	public boolean isPlayerSide = false;
+	public AEBaseContainer myContainer = null;
 
 	public Slot setNotDraggable()
 	{
@@ -90,7 +92,12 @@ public class AppEngSlot extends Slot
 	public void putStack(ItemStack par1ItemStack)
 	{
 		if ( isEnabled() )
+		{
 			super.putStack( par1ItemStack );
+
+			if ( myContainer != null )
+				myContainer.onSlotChange( this );
+		}
 	}
 
 	public void clearStack()
@@ -137,6 +144,11 @@ public class AppEngSlot extends Slot
 	public boolean isPlayerSide()
 	{
 		return isPlayerSide;
+	}
+
+	public boolean shouldDisplay()
+	{
+		return isEnabled();
 	}
 
 }

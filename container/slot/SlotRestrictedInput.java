@@ -111,6 +111,9 @@ public class SlotRestrictedInput extends AppEngSlot
 	@Override
 	public boolean isItemValid(ItemStack i)
 	{
+		if ( !myContainer.isValidForSlot( this, i ) )
+			return false;
+
 		if ( i == null )
 			return false;
 		if ( i.getItem() == null )

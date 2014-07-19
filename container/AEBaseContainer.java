@@ -301,7 +301,11 @@ public abstract class AEBaseContainer extends Container
 	protected Slot addSlotToContainer(Slot newSlot)
 	{
 		if ( newSlot instanceof AppEngSlot )
+		{
+			AppEngSlot s = (AppEngSlot) newSlot;
+			s.myContainer = this;
 			return super.addSlotToContainer( newSlot );
+		}
 		else
 			throw new RuntimeException( "Invalid Slot for AE Container." );
 	}
@@ -1071,6 +1075,16 @@ public abstract class AEBaseContainer extends Container
 	public void onUpdate(String field, Object oldValue, Object newValue)
 	{
 
+	}
+
+	public void onSlotChange(Slot s)
+	{
+
+	}
+
+	public boolean isValidForSlot(Slot s, ItemStack i)
+	{
+		return true;
 	}
 
 }
