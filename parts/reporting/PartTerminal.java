@@ -32,7 +32,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	AppEngInternalInventory viewCell = new AppEngInternalInventory( this, 5 );
 
 	public PartTerminal(Class clz, ItemStack is) {
-		super( clz, is,true );
+		super( clz, is, true );
 
 		cm.registerSetting( Settings.SORT_BY, SortOrder.NAME );
 		cm.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
@@ -42,8 +42,8 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	@Override
 	public void getDrops(List<ItemStack> drops, boolean wrenched)
 	{
-		super.getDrops(drops, wrenched);
-		
+		super.getDrops( drops, wrenched );
+
 		for (ItemStack is : viewCell)
 			if ( is != null )
 				drops.add( is );
@@ -66,7 +66,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	}
 
 	public PartTerminal(ItemStack is) {
-		super( PartTerminal.class, is,true );
+		super( PartTerminal.class, is, true );
 		frontBright = CableBusTextures.PartTerminal_Bright;
 		frontColored = CableBusTextures.PartTerminal_Colored;
 		frontDark = CableBusTextures.PartTerminal_Dark;
@@ -85,16 +85,18 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	@Override
 	public boolean onPartActivate(EntityPlayer player, Vec3 pos)
 	{
-		if ( !player.isSneaking() )
+		if ( !super.onPartActivate( player, pos ) )
 		{
-			if ( Platform.isClient() )
+			if ( !player.isSneaking() )
+			{
+				if ( Platform.isClient() )
+					return true;
+
+				Platform.openGUI( player, getHost().getTile(), side, getGui() );
+
 				return true;
-
-			Platform.openGUI( player, getHost().getTile(), side, getGui() );
-
-			return true;
+			}
 		}
-
 		return false;
 	}
 

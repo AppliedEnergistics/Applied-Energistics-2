@@ -14,7 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -45,29 +44,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartStorageMonitor extends PartMonitor implements IPartStorageMonitor, IStackWatcherHost
 {
 
-	byte spin;
-
 	IAEItemStack configuredItem;
 	boolean isLocked;
-
-	@Override
-	public void onPlacement(EntityPlayer player, ItemStack held, ForgeDirection side)
-	{
-		super.onPlacement( player, held, side );
-
-		byte rotation = (byte) (MathHelper.floor_double( (double) ((player.rotationYaw * 4F) / 360F) + 2.5D ) & 3);
-		if ( side == ForgeDirection.UP )
-			spin = rotation;
-		else if ( side == ForgeDirection.DOWN )
-			spin = rotation;
-	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound data)
 	{
 		super.writeToNBT( data );
 
-		data.setByte( "spin", spin );
 		data.setBoolean( "isLocked", isLocked );
 
 		NBTTagCompound myItem = new NBTTagCompound();
@@ -82,7 +66,6 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	{
 		super.readFromNBT( data );
 
-		spin = data.getByte( "spin" );
 		isLocked = data.getBoolean( "isLocked" );
 
 		NBTTagCompound myItem = data.getCompoundTag( "configuredItem" );

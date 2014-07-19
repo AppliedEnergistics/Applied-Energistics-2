@@ -6,8 +6,12 @@ import java.io.IOException;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.parts.IPartMonitor;
@@ -34,11 +38,75 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 
 	boolean notLightSource = !this.getClass().equals( PartMonitor.class );
 
-	final int POWERED_FLAG = 1;
-	final int BOOTING_FLAG = 2;
-	final int CHANNEL_FLAG = 4;
+	final int POWERED_FLAG = 4;
+	final int BOOTING_FLAG = 8;
+	final int CHANNEL_FLAG = 16;
 
+	byte spin = 0; // 0-3
 	int clientFlags = 0; // sent as byte.
+
+	@Override
+	public void onPlacement(EntityPlayer player, ItemStack held, ForgeDirection side)
+	{
+		super.onPlacement( player, held, side );
+
+		byte rotation = (byte) (MathHelper.floor_double( (double) ((player.rotationYaw * 4F) / 360F) + 2.5D ) & 3);
+		if ( side == ForgeDirection.UP )
+			spin = rotation;
+		else if ( side == ForgeDirection.DOWN )
+			spin = rotation;
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound data)
+	{
+		super.writeToNBT( data );
+		data.setByte( "spin", (byte) spin );
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound data)
+	{
+		super.readFromNBT( data );
+		spin = data.getByte( "spin" );
+	}
+
+	@Override
+	public boolean onPartActivate(EntityPlayer player, Vec3 pos)
+	{
+		TileEntity te = getTile();
+
+		if ( !player.isSneaking() && Platform.isWrench( player, player.inventory.getCurrentItem(), te.xCoord, te.yCoord, te.zCoord ) )
+		{
+			if ( Platform.isServer() )
+			{
+				if ( spin > 3 )
+					spin = 0;
+
+				switch (spin)
+				{
+				case 0:
+					spin = 1;
+					break;
+				case 1:
+					spin = 3;
+					break;
+				case 2:
+					spin = 0;
+					break;
+				case 3:
+					spin = 2;
+					break;
+				}
+
+				this.host.markForUpdate();
+				this.saveChanges();
+			}
+			return true;
+		}
+		else
+			return super.onPartActivate( player, pos );
+	}
 
 	@MENetworkEventSubscribe
 	public void bootingRender(MENetworkBootingStatusChange c)
@@ -63,7 +131,8 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	public void writeToStream(ByteBuf data) throws IOException
 	{
 		super.writeToStream( data );
-		clientFlags = 0;
+		clientFlags = spin & 3;
+		;
 
 		try
 		{
@@ -90,6 +159,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 		super.readFromStream( data );
 		int oldFlags = clientFlags;
 		clientFlags = data.readByte();
+		spin = (byte) (clientFlags & 3);
 		if ( clientFlags == oldFlags )
 			return false;
 		return true;
@@ -179,6 +249,8 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 			Tessellator.instance.setBrightness( l << 20 | l << 4 );
 		}
 
+		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = this.spin;
+
 		Tessellator.instance.setColorOpaque_I( getColor().whiteVariant );
 		rh.renderFace( x, y, z, frontBright.getIcon(), ForgeDirection.SOUTH, renderer );
 
@@ -187,6 +259,8 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 
 		Tessellator.instance.setColorOpaque_I( getColor().blackVariant );
 		rh.renderFace( x, y, z, frontColored.getIcon(), ForgeDirection.SOUTH, renderer );
+
+		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 
 		if ( notLightSource )
 		{
