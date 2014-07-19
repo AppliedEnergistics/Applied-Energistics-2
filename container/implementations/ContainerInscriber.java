@@ -46,7 +46,6 @@ public class ContainerInscriber extends AEBaseContainer
 	{
 		ItemStack PlateA = myte.getStackInSlot( 0 );
 		ItemStack PlateB = myte.getStackInSlot( 1 );
-		ItemStack MiddleIS = myte.getStackInSlot( 2 );
 
 		if ( s == middle )
 		{
@@ -92,7 +91,7 @@ public class ContainerInscriber extends AEBaseContainer
 			else
 				otherSlot = top.getStack();
 
-			// name presse
+			// name presses
 			if ( AEApi.instance().materials().materialNamePress.sameAsStack( otherSlot ) )
 				return AEApi.instance().materials().materialNamePress.sameAsStack( is );
 
