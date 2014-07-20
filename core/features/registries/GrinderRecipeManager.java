@@ -97,6 +97,20 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 	}
 
 	@Override
+	public void addRecipe(ItemStack in, ItemStack out, ItemStack optional, float chance, ItemStack optional2, float chance2, int cost)
+	{
+		if ( in == null || (optional == null && out == null && optional2 == null) )
+		{
+			log( "Invalid Grinder Recipe Specified." );
+			return;
+		}
+
+		log( "Allow Grinding of " + Platform.getItemDisplayName( in ) + " to " + Platform.getItemDisplayName( out ) + " with optional "
+				+ Platform.getItemDisplayName( optional ) + " for " + cost );
+		injectRecipe( new AppEngGrinderRecipe( copy( in ), copy( out ), copy( optional ), chance, cost ) );
+	}
+
+	@Override
 	public IGrinderEntry getRecipeForInput(ItemStack input)
 	{
 		log( "Looking up recipe for " + Platform.getItemDisplayName( input ) );

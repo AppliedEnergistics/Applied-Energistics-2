@@ -144,6 +144,10 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 			if ( chance <= r.getOptionalChance() )
 				addItem( sia, r.getOptionalOutput() );
 
+			chance = (Platform.getRandomInt() % 2000) / 2000.0f;
+			if ( chance <= r.getSecondOptionalChance() )
+				addItem( sia, r.getSecondOptionalOutput() );
+
 			this.setInventorySlotContents( 6, null );
 		}
 	}

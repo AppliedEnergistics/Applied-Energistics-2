@@ -12,6 +12,9 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 	private float optionalChance;
 	private ItemStack optionalOutput;
 
+	private float optionalChance2;
+	private ItemStack optionalOutput2;
+
 	private int energy;
 
 	public AppEngGrinderRecipe(ItemStack a, ItemStack b, int cost) {
@@ -26,6 +29,19 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 
 		optionalOutput = c;
 		optionalChance = chance;
+
+		energy = cost;
+	}
+
+	public AppEngGrinderRecipe(ItemStack a, ItemStack b, ItemStack c, ItemStack d, float chance, float chance2, int cost) {
+		in = a;
+		out = b;
+
+		optionalOutput = c;
+		optionalChance = chance;
+
+		optionalOutput2 = d;
+		optionalChance2 = chance2;
 
 		energy = cost;
 	}
@@ -75,7 +91,7 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 	@Override
 	public void setOptionalOutput(ItemStack output, float chance)
 	{
-		optionalOutput = output;
+		optionalOutput = output.copy();
 		optionalChance = chance;
 	}
 
@@ -83,6 +99,25 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 	public float getOptionalChance()
 	{
 		return optionalChance;
+	}
+
+	@Override
+	public ItemStack getSecondOptionalOutput()
+	{
+		return optionalOutput2;
+	}
+
+	@Override
+	public void setSecondOptionalOutput(ItemStack output, float chance)
+	{
+		optionalChance2 = chance;
+		optionalOutput2 = output.copy();
+	}
+
+	@Override
+	public float getSecondOptionalChance()
+	{
+		return optionalChance2;
 	}
 
 }
