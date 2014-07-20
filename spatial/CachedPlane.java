@@ -80,6 +80,10 @@ public class CachedPlane
 
 		public boolean dontSkip(int y)
 		{
+			ExtendedBlockStorage extendedblockstorage = storage[y >> 4];
+			if ( reg.isBlacklisted( extendedblockstorage.getBlockByExtId( x, y & 15, z ) ) )
+				return false;
+
 			return skipThese == null ? true : !skipThese.contains( y );
 		}
 
@@ -114,6 +118,7 @@ public class CachedPlane
 
 	World wrld;
 	Block matrixFrame = AEApi.instance().blocks().blockMatrixFrame.block();
+	IMovableRegistry reg = AEApi.instance().registries().moveable();
 
 	LinkedList<WorldCoord> updates = new LinkedList<WorldCoord>();
 

@@ -35,6 +35,9 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 
 	private void addItem(InventoryAdaptor sia, ItemStack output)
 	{
+		if ( output == null )
+			return;
+
 		ItemStack notAdded = sia.addItems( output );
 		if ( notAdded != null )
 		{

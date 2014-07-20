@@ -647,6 +647,11 @@ public class Registration
 
 		IMovableRegistry mr = AEApi.instance().registries().moveable();
 
+		/**
+		 * You can't move bed rock.
+		 */
+		mr.blacklistBlock( net.minecraft.init.Blocks.bedrock );
+
 		/*
 		 * White List Vanilla...
 		 */

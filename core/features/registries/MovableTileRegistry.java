@@ -1,8 +1,10 @@
 package appeng.core.features.registries;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
+import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import appeng.api.exceptions.AppEngException;
 import appeng.api.movable.IMovableHandler;
@@ -12,6 +14,8 @@ import appeng.spatial.DefaultSpatialHandler;
 
 public class MovableTileRegistry implements IMovableRegistry
 {
+
+	private HashSet<Block> blacklisted = new HashSet();
 
 	private HashMap<Class<? extends TileEntity>, IMovableHandler> Valid = new HashMap<Class<? extends TileEntity>, IMovableHandler>();
 	private LinkedList<Class<? extends TileEntity>> test = new LinkedList<Class<? extends TileEntity>>();
@@ -100,7 +104,8 @@ public class MovableTileRegistry implements IMovableRegistry
 
 		if ( c.getName().equals( TileEntity.class.getName() ) )
 		{
-			throw new RuntimeException( new AppEngException( "Someone tried to make all tiles movable, this is a clear violation of the purpose of the white list." ) );
+			throw new RuntimeException( new AppEngException(
+					"Someone tried to make all tiles movable, this is a clear violation of the purpose of the white list." ) );
 		}
 
 		test.add( c );
@@ -124,6 +129,17 @@ public class MovableTileRegistry implements IMovableRegistry
 	public IMovableHandler getDefaultHandler()
 	{
 		return dsh;
+	}
+
+	@Override
+	public void blacklistBlock(Block blk)
+	{
+		blacklisted.add( blk );
+	}
+
+	public boolean isBlacklisted(Block blk)
+	{
+		return blacklisted.contains( blk );
 	}
 
 }

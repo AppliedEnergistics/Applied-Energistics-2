@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import appeng.api.config.TunnelType;
 import appeng.core.api.IIMCHandler;
+import appeng.core.api.imc.IMCBlackListSpatial;
 import appeng.core.api.imc.IMCGrinder;
 import appeng.core.api.imc.IMCMatterCannon;
 import appeng.core.api.imc.IMCP2PAttunement;
@@ -71,6 +72,7 @@ public class AppEng
 	public AppEng() {
 		instance = this;
 
+		IMCHandlers.put( "blacklist-block-spatial", new IMCBlackListSpatial() );
 		IMCHandlers.put( "whitelist-spatial", new IMCSpatial() );
 		IMCHandlers.put( "add-grindable", new IMCGrinder() );
 		IMCHandlers.put( "add-mattercannon-ammo", new IMCMatterCannon() );
