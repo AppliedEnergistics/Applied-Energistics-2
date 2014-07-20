@@ -4,13 +4,17 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.MapColor;
+import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
+import appeng.client.render.BaseBlockRender;
+import appeng.client.render.blocks.RenderBlockPaint;
 import appeng.core.features.AEFeature;
 import appeng.tile.misc.TilePaint;
 import appeng.util.Platform;
@@ -19,12 +23,18 @@ public class BlockPaint extends AEBaseBlock
 {
 
 	public BlockPaint() {
-		super( BlockPaint.class, Material.air );
+		super( BlockPaint.class, new MaterialLiquid( MapColor.airColor ) );
 		setfeature( EnumSet.of( AEFeature.PaintBalls ) );
 		setTileEntiy( TilePaint.class );
+		setLightOpacity( 0 );
 		isFullSize = false;
 		isOpaque = false;
-		lightOpacity = 0;
+	}
+
+	@Override
+	protected Class<? extends BaseBlockRender> getRenderer()
+	{
+		return RenderBlockPaint.class;
 	}
 
 	@Override
@@ -49,20 +59,17 @@ public class BlockPaint extends AEBaseBlock
 	@Override
 	public void fillWithRain(World w, int x, int y, int z)
 	{
-		w.setBlock( x, y, z, Platform.air, 0, 3 );
+		if ( Platform.isServer() )
+			w.setBlock( x, y, z, Platform.air, 0, 3 );
 	}
 
 	@Override
-	public boolean canBlockStay(World w, int x, int y, int z)
+	public void onNeighborBlockChange(World w, int x, int y, int z, Block junk)
 	{
 		TilePaint tp = getTileEntity( w, x, y, z );
 
 		if ( tp != null )
-		{
-			return tp.canStay();
-		}
-
-		return false;
+			tp.onNeighborBlockChange();
 	}
 
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World p_149668_1_, int p_149668_2_, int p_149668_3_, int p_149668_4_)
@@ -85,6 +92,18 @@ public class BlockPaint extends AEBaseBlock
 	public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
 	{
 		return null;
+	}
+
+	@Override
+	public boolean isAir(IBlockAccess world, int x, int y, int z)
+	{
+		return true;
+	}
+
+	@Override
+	public boolean isReplaceable(IBlockAccess world, int x, int y, int z)
+	{
+		return true;
 	}
 
 }

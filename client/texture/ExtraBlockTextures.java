@@ -75,7 +75,9 @@ public enum ExtraBlockTextures
 	BlockCraftingUnitRing("BlockCraftingUnitRing"), BlockCraftingUnitRingLongRotated("BlockCraftingUnitRingLongRotated"), BlockCraftingUnitRingLong(
 			"BlockCraftingUnitRingLong"), BlockCraftingUnitFit("BlockCraftingUnitFit"),
 
-	BlockCraftingMonitorOuter("BlockCraftingMonitorOuter"), BlockCraftingFitSolid("BlockCraftingFitSolid");
+	BlockCraftingMonitorOuter("BlockCraftingMonitorOuter"), BlockCraftingFitSolid("BlockCraftingFitSolid"),
+
+	BlockPaint2("BlockPaint2"), BlockPaint3("BlockPaint3");
 
 	final private String name;
 	public IIcon IIcon;

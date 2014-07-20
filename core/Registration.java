@@ -43,6 +43,7 @@ import appeng.block.misc.BlockCondenser;
 import appeng.block.misc.BlockInscriber;
 import appeng.block.misc.BlockInterface;
 import appeng.block.misc.BlockLightDetector;
+import appeng.block.misc.BlockPaint;
 import appeng.block.misc.BlockQuartzGrowthAccelerator;
 import appeng.block.misc.BlockQuartzTorch;
 import appeng.block.misc.BlockSecurity;
@@ -342,6 +343,7 @@ public class Registration
 		blocks.blockEnergyCellCreative = addFeature( BlockCreativeEnergyCell.class );
 
 		blocks.blockSecurity = addFeature( BlockSecurity.class );
+		blocks.blockPaint = addFeature( BlockPaint.class );
 
 		items.itemCellCreative = addFeature( ItemCreativeStorageCell.class );
 		items.itemViewCell = addFeature( ItemViewCell.class );

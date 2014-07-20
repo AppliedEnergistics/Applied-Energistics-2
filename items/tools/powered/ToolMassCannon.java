@@ -10,8 +10,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
@@ -19,6 +19,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -45,6 +46,7 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.ItemPaintBall;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.storage.CellInventoryHandler;
+import appeng.tile.misc.TilePaint;
 import appeng.util.Platform;
 
 public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
@@ -134,18 +136,42 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 						Vec3 vec31 = vec3.addVector( (double) f7 * d3, (double) f6 * d3, (double) f8 * d3 );
 						Vec3 direction = Vec3.createVectorHelper( (double) f7 * d3, (double) f6 * d3, (double) f8 * d3 );
+						direction.normalize();
 
 						float penitration = AEApi.instance().registries().matterCannon().getPenetration( ammo ); // 196.96655f;
 						if ( penitration <= 0 )
 						{
 							ItemStack type = ((IAEItemStack) aeammo).getItemStack();
-							if ( type.getItem() instanceof ItemBlock )
+							if ( type.getItem() instanceof ItemPaintBall )
 							{
+								MovingObjectPosition pos = w.rayTraceBlocks( vec3, vec31, false );
+								if ( pos != null && pos.typeOfHit == MovingObjectType.BLOCK )
+								{
+									ForgeDirection side = ForgeDirection.getOrientation( pos.sideHit );
 
-							}
-							else if ( type.getItem() instanceof ItemPaintBall )
-							{
+									int x = pos.blockX + side.offsetX;
+									int y = pos.blockY + side.offsetY;
+									int z = pos.blockZ + side.offsetZ;
 
+									Block whatsThere = w.getBlock( x, y, z );
+									if ( whatsThere == AEApi.instance().blocks().blockPaint.block() )
+									{
+
+									}
+									else if ( whatsThere.isReplaceable( w, x, y, z ) && w.isAirBlock( x, y, z ) )
+									{
+										w.setBlock( x, y, z, AEApi.instance().blocks().blockPaint.block(), 0, 3 );
+									}
+
+									TileEntity te = w.getTileEntity( x, y, z );
+									if ( te instanceof TilePaint )
+									{
+										pos.hitVec.xCoord -= x;
+										pos.hitVec.yCoord -= y;
+										pos.hitVec.zCoord -= z;
+										((TilePaint) te).addBlot( type, side.getOpposite(), pos.hitVec );
+									}
+								}
 							}
 							return item;
 						}
@@ -373,12 +399,8 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 		if ( pen > 0 )
 			return false;
 
-		/*
-		 * if ( requsetedAddition.getItem() instanceof ItemPaintBall ) return false;
-		 * 
-		 * if ( requsetedAddition.getItem() instanceof ItemBlock ) { Block blk = Block.getBlockFromItem(
-		 * requsetedAddition.getItem() ); return blk == null; }
-		 */
+		if ( requsetedAddition.getItem() instanceof ItemPaintBall )
+			return false;
 
 		return true;
 	}

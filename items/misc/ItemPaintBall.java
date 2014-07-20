@@ -60,4 +60,10 @@ public class ItemPaintBall extends AEBaseItem
 				l.add( new ItemStack( this, 1, 20 + c.ordinal() ) );
 	}
 
+	public boolean isLumen(ItemStack is)
+	{
+		int dmg = is.getItemDamage();
+		return dmg >= 20;
+	}
+
 }
