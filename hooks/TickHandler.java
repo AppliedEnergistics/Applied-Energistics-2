@@ -1,6 +1,7 @@
 package appeng.hooks;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -11,7 +12,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import appeng.api.networking.IGridNode;
+import appeng.api.util.AEColor;
 import appeng.core.AELog;
+import appeng.core.sync.packets.PacketPaintedEntity;
 import appeng.crafting.CraftingJob;
 import appeng.entity.EntityFloatingItem;
 import appeng.me.Grid;
@@ -53,6 +56,47 @@ public class TickHandler
 
 	final private HandlerRep server = new HandlerRep();
 	final private HandlerRep client = new HandlerRep();
+
+	static public class PlayerColor
+	{
+
+		public final AEColor myColor;
+		protected final int myEntity;
+		protected int ticksLeft;
+
+		public PacketPaintedEntity getPacket()
+		{
+			return new PacketPaintedEntity( myEntity, myColor, ticksLeft );
+		}
+
+		public PlayerColor(int id, AEColor col, int ticks) {
+			myEntity = id;
+			myColor = col;
+			ticksLeft = ticks;
+		}
+
+	};
+
+	final private HashMap<Integer, PlayerColor> cliPlayerColors = new HashMap();
+	final private HashMap<Integer, PlayerColor> srvPlayerColors = new HashMap();
+
+	public HashMap<Integer, PlayerColor> getPlayerColors()
+	{
+		if ( Platform.isServer() )
+			return srvPlayerColors;
+		return cliPlayerColors;
+	}
+
+	private void tickColors(HashMap<Integer, PlayerColor> playerSet)
+	{
+		Iterator<PlayerColor> i = playerSet.values().iterator();
+		while (i.hasNext())
+		{
+			PlayerColor pc = i.next();
+			if ( pc.ticksLeft-- <= 0 )
+				i.remove();
+		}
+	}
 
 	HandlerRep getRepo()
 	{
@@ -143,6 +187,7 @@ public class TickHandler
 
 		if ( ev.type == Type.CLIENT && ev.phase == Phase.START )
 		{
+			tickColors( cliPlayerColors );
 			EntityFloatingItem.ageStatic = (EntityFloatingItem.ageStatic + 1) % 60000;
 		}
 
@@ -165,12 +210,13 @@ public class TickHandler
 		// for no there is no reason to care about this on the client...
 		else if ( ev.type == Type.SERVER && ev.phase == Phase.END )
 		{
+			tickColors( srvPlayerColors );
 			// ready tiles.
 			HandlerRep repo = getRepo();
 			while (!repo.tiles.isEmpty())
 			{
 				AEBaseTile bt = repo.tiles.poll();
-				if (! bt.isInvalid() )
+				if ( !bt.isInvalid() )
 					bt.onReady();
 			}
 

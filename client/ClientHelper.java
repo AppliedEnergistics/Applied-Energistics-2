@@ -27,11 +27,13 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.MouseEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.opengl.GL11;
 
+import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.TESRWrapper;
@@ -56,6 +58,8 @@ import appeng.entity.EntityTinyTNTPrimed;
 import appeng.entity.RenderFloatingItem;
 import appeng.entity.RenderTinyTNTPrimed;
 import appeng.helpers.IMouseWheelItem;
+import appeng.hooks.TickHandler;
+import appeng.hooks.TickHandler.PlayerColor;
 import appeng.server.ServerHelper;
 import appeng.util.Platform;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -67,6 +71,21 @@ public class ClientHelper extends ServerHelper
 
 	private static RenderItem itemRenderer = new RenderItem();
 	private static RenderBlocks blockRenderer = new RenderBlocks();
+
+	@SubscribeEvent
+	public void postPlayerRender(RenderLivingEvent.Pre p)
+	{
+		PlayerColor player = TickHandler.instance.getPlayerColors().get( p.entity.getEntityId() );
+		if ( player != null )
+		{
+			AEColor col = player.myColor;
+
+			float r = (float) (0xff & (col.mediumVariant >> 16));
+			float g = (float) (0xff & (col.mediumVariant >> 8));
+			float b = (float) (0xff & (col.mediumVariant));
+			GL11.glColor3f( r / 255.0f, g / 255.0f, b / 255.0f );
+		}
+	}
 
 	@Override
 	public void doRenderItem(ItemStack itemstack, World w)

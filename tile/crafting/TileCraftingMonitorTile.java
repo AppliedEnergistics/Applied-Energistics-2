@@ -4,7 +4,9 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
@@ -126,10 +128,15 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 		return paintedColor;
 	}
 
-	public void setColor(AEColor newPaintedColor)
+	@Override
+	public boolean recolourBlock(ForgeDirection side, AEColor newPaintedColor, EntityPlayer who)
 	{
+		if ( paintedColor == newPaintedColor )
+			return false;
+
 		paintedColor = newPaintedColor;
 		markDirty();
 		markForUpdate();
+		return true;
 	}
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -328,11 +329,16 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		return paintedColor;
 	}
 
-	public void setColor(AEColor newPaintedColor)
+	@Override
+	public boolean recolourBlock(ForgeDirection side, AEColor newPaintedColor, EntityPlayer who)
 	{
+		if ( paintedColor == newPaintedColor )
+			return false;
+
 		paintedColor = newPaintedColor;
 		markDirty();
 		markForUpdate();
+		return true;
 	}
 
 }

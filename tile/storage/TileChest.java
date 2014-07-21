@@ -827,10 +827,15 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		return paintedColor;
 	}
 
-	public void setColor(AEColor newPaintedColor)
+	@Override
+	public boolean recolourBlock(ForgeDirection side, AEColor newPaintedColor, EntityPlayer who)
 	{
+		if ( paintedColor == newPaintedColor )
+			return false;
+
 		paintedColor = newPaintedColor;
 		markDirty();
 		markForUpdate();
+		return true;
 	}
 }

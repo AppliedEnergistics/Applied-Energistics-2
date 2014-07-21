@@ -121,11 +121,15 @@ public class TilePaint extends AEBaseTile
 
 		for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			Block blk = worldObj.getBlock( xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ );
-			if ( !blk.isSideSolid( worldObj, xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ, side.getOpposite() ) )
+			if ( !isSideValid( side ) )
 				removeSide( side );
 		}
 
+		updateData();
+	}
+
+	private void updateData()
+	{
 		isLit = 0;
 		for (Splot s : dots)
 		{
@@ -142,6 +146,22 @@ public class TilePaint extends AEBaseTile
 
 		if ( dots == null )
 			worldObj.setBlock( xCoord, yCoord, zCoord, Blocks.air );
+	}
+
+	public void cleanSide(ForgeDirection side)
+	{
+		if ( dots == null )
+			return;
+
+		removeSide( side );
+
+		updateData();
+	}
+
+	public boolean isSideValid(ForgeDirection side)
+	{
+		Block blk = worldObj.getBlock( xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ );
+		return blk.isSideSolid( worldObj, xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ, side.getOpposite() );
 	}
 
 	private void removeSide(ForgeDirection side)

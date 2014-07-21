@@ -28,6 +28,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
+import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BusRenderHelper;
@@ -224,7 +225,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 	{
 		try
 		{
-			return cb( world, x, y, z ).recolourBlock( side, colour, who );
+			return cb( world, x, y, z ).recolourBlock( side, AEColor.values()[colour], who );
 		}
 		catch (Throwable t)
 		{

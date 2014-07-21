@@ -8,6 +8,7 @@ import net.minecraft.block.BlockDispenser;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -33,14 +34,18 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMatterCannon;
 import appeng.hooks.DispenserMatterCannon;
+import appeng.hooks.TickHandler;
+import appeng.hooks.TickHandler.PlayerColor;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.ItemPaintBall;
@@ -144,34 +149,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 							ItemStack type = ((IAEItemStack) aeammo).getItemStack();
 							if ( type.getItem() instanceof ItemPaintBall )
 							{
-								MovingObjectPosition pos = w.rayTraceBlocks( vec3, vec31, false );
-								if ( pos != null && pos.typeOfHit == MovingObjectType.BLOCK )
-								{
-									ForgeDirection side = ForgeDirection.getOrientation( pos.sideHit );
-
-									int x = pos.blockX + side.offsetX;
-									int y = pos.blockY + side.offsetY;
-									int z = pos.blockZ + side.offsetZ;
-
-									Block whatsThere = w.getBlock( x, y, z );
-									if ( whatsThere == AEApi.instance().blocks().blockPaint.block() )
-									{
-
-									}
-									else if ( whatsThere.isReplaceable( w, x, y, z ) && w.isAirBlock( x, y, z ) )
-									{
-										w.setBlock( x, y, z, AEApi.instance().blocks().blockPaint.block(), 0, 3 );
-									}
-
-									TileEntity te = w.getTileEntity( x, y, z );
-									if ( te instanceof TilePaint )
-									{
-										pos.hitVec.xCoord -= x;
-										pos.hitVec.yCoord -= y;
-										pos.hitVec.zCoord -= z;
-										((TilePaint) te).addBlot( type, side.getOpposite(), pos.hitVec );
-									}
-								}
+								shootPaintBalls( type, w, p, vec3, vec31, direction, d0, d1, d2 );
 							}
 							return item;
 						}
@@ -191,6 +169,123 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 			}
 		}
 		return item;
+	}
+
+	private void shootPaintBalls(ItemStack type, World w, EntityPlayer p, Vec3 vec3, Vec3 vec31, Vec3 direction, double d0, double d1, double d2)
+	{
+		AxisAlignedBB bb = AxisAlignedBB.getBoundingBox( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ),
+				Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ),
+				Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
+
+		Entity entity = null;
+		List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
+		double Closeest = 9999999.0D;
+		int l;
+
+		for (l = 0; l < list.size(); ++l)
+		{
+			Entity entity1 = (Entity) list.get( l );
+
+			if ( entity1.isDead == false && entity1 != p && !(entity1 instanceof EntityItem) )
+			{
+				if ( entity1.isEntityAlive() )
+				{
+					// prevent killing / flying of mounts.
+					if ( entity1.riddenByEntity == p )
+						continue;
+
+					float f1 = 0.3F;
+					AxisAlignedBB axisalignedbb1 = entity1.boundingBox.expand( (double) f1, (double) f1, (double) f1 );
+					MovingObjectPosition movingobjectposition1 = axisalignedbb1.calculateIntercept( vec3, vec31 );
+
+					if ( movingobjectposition1 != null )
+					{
+						double nd = vec3.squareDistanceTo( movingobjectposition1.hitVec );
+
+						if ( nd < Closeest )
+						{
+							entity = entity1;
+							Closeest = nd;
+						}
+					}
+				}
+			}
+		}
+
+		MovingObjectPosition pos = w.rayTraceBlocks( vec3, vec31, false );
+
+		Vec3 Srec = Vec3.createVectorHelper( d0, d1, d2 );
+		if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( Srec ) > Closeest )
+		{
+			pos = new MovingObjectPosition( entity );
+		}
+		else if ( entity != null && pos == null )
+		{
+			pos = new MovingObjectPosition( entity );
+		}
+
+		try
+		{
+			CommonHelper.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) direction.xCoord,
+					(float) direction.yCoord, (float) direction.zCoord, (byte) (pos == null ? 32 : pos.hitVec.squareDistanceTo( Srec ) + 1) ) );
+
+		}
+		catch (Exception err)
+		{
+			AELog.error( err );
+		}
+
+		if ( pos != null && type != null && type.getItem() instanceof ItemPaintBall )
+		{
+			ItemPaintBall ipb = (ItemPaintBall) type.getItem();
+
+			AEColor col = ipb.getColor( type );
+			// boolean lit = ipb.isLumen( type );
+
+			if ( pos.typeOfHit == MovingObjectType.ENTITY )
+			{
+				int id = pos.entityHit.getEntityId();
+				PlayerColor marker = new PlayerColor( id, col, 20 * 30 );
+				TickHandler.instance.getPlayerColors().put( id, marker );
+
+				if ( pos.entityHit instanceof EntitySheep )
+				{
+					EntitySheep sh = (EntitySheep) pos.entityHit;
+					sh.setFleeceColor( col.ordinal() );
+				}
+
+				pos.entityHit.attackEntityFrom( DamageSource.causePlayerDamage( p ), (float) 0 );
+				NetworkHandler.instance.sendToAll( marker.getPacket() );
+			}
+			else if ( pos.typeOfHit == MovingObjectType.BLOCK )
+			{
+				ForgeDirection side = ForgeDirection.getOrientation( pos.sideHit );
+
+				int x = pos.blockX + side.offsetX;
+				int y = pos.blockY + side.offsetY;
+				int z = pos.blockZ + side.offsetZ;
+
+				Block whatsThere = w.getBlock( x, y, z );
+				if ( whatsThere == AEApi.instance().blocks().blockPaint.block() )
+				{
+
+				}
+				else if ( whatsThere.isReplaceable( w, x, y, z ) && w.isAirBlock( x, y, z ) )
+				{
+					w.setBlock( x, y, z, AEApi.instance().blocks().blockPaint.block(), 0, 3 );
+				}
+
+				TileEntity te = w.getTileEntity( x, y, z );
+				if ( te instanceof TilePaint )
+				{
+					pos.hitVec.xCoord -= x;
+					pos.hitVec.yCoord -= y;
+					pos.hitVec.zCoord -= z;
+					((TilePaint) te).addBlot( type, side.getOpposite(), pos.hitVec );
+				}
+			}
+
+		}
 	}
 
 	private void standardAmmo(float penitration, World w, EntityPlayer p, Vec3 vec3, Vec3 vec31, Vec3 direction, double d0, double d1, double d2)

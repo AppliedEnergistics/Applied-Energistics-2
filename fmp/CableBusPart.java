@@ -97,6 +97,12 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	}
 
 	@Override
+	public boolean recolourBlock(ForgeDirection side, AEColor colour, EntityPlayer who)
+	{
+		return cb.recolourBlock( side, colour, who );
+	}
+	
+	@Override
 	public AEColor getColor()
 	{
 		return cb.getColor();

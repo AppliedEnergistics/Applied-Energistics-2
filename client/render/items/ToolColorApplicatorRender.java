@@ -2,6 +2,7 @@ package appeng.client.render.items;
 
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
@@ -84,12 +85,20 @@ public class ToolColorApplicatorRender implements IItemRenderer
 		GL11.glTranslatef( 4, 6, 0 );
 		GL11.glDisable( GL11.GL_LIGHTING );
 
+		AEColor col = null;
+
 		ItemStack is = ((ToolColorApplicator) item.getItem()).getColor( item );
 		if ( is != null && is.getItem() instanceof ItemPaintBall )
 		{
 			ItemPaintBall ipb = (ItemPaintBall) is.getItem();
+			col = ipb.getColor( is );
+		}
 
-			AEColor col = ipb.getColor( is );
+		if ( is != null && is.getItem() instanceof ItemSnowball )
+			col = AEColor.Transparent;
+
+		if ( col != null )
+		{
 			tessellator.startDrawingQuads();
 			float z = 0;
 

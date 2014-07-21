@@ -22,6 +22,7 @@ import appeng.core.sync.packets.PacketMockExplosion;
 import appeng.core.sync.packets.PacketMultiPart;
 import appeng.core.sync.packets.PacketNEIRecipe;
 import appeng.core.sync.packets.PacketNewStorageDimension;
+import appeng.core.sync.packets.PacketPaintedEntity;
 import appeng.core.sync.packets.PacketPartPlacement;
 import appeng.core.sync.packets.PacketPartialItem;
 import appeng.core.sync.packets.PacketPatternSlot;
@@ -82,7 +83,9 @@ public class AppEngPacketHandlerBase
 
 		PACKET_ASSEMBLER_ANIMATION(PacketAssemblerAnimation.class),
 
-		PACKET_COMPRESSED_NBT(PacketCompressedNBT.class);
+		PACKET_COMPRESSED_NBT(PacketCompressedNBT.class),
+
+		PACKET_PAINTED_ENTITY(PacketPaintedEntity.class);
 
 		final public Class pc;
 		final public Constructor con;

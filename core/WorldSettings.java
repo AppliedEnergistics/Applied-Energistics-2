@@ -15,6 +15,8 @@ import net.minecraftforge.common.config.Property;
 import appeng.api.util.WorldCoord;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketNewStorageDimension;
+import appeng.hooks.TickHandler;
+import appeng.hooks.TickHandler.PlayerColor;
 import appeng.me.GridStorage;
 import appeng.me.GridStorageSearch;
 import appeng.services.CompassService;
@@ -130,6 +132,9 @@ public class WorldSettings extends Configuration
 				AELog.error( e );
 			}
 		}
+
+		for (PlayerColor pc : TickHandler.instance.getPlayerColors().values())
+			NetworkHandler.instance.sendToAll( pc.getPacket() );
 	}
 
 	public void init()

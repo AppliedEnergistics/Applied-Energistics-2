@@ -799,16 +799,13 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	}
 
 	@Override
-	public boolean recolourBlock(ForgeDirection side, int colour, EntityPlayer who)
+	public boolean recolourBlock(ForgeDirection side, AEColor colour, EntityPlayer who)
 	{
 		IPart cable = getPart( ForgeDirection.UNKNOWN );
 		if ( cable != null )
 		{
 			IPartCable pc = (IPartCable) cable;
-
-			AEColor colors[] = AEColor.values();
-			if ( colors.length > colour )
-				return pc.changeColor( colors[colour], who );
+			return pc.changeColor( colour, who );
 		}
 		return false;
 	}

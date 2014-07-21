@@ -345,4 +345,10 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		cb.updateConnections();
 	}
 
+	@Override
+	public boolean recolourBlock(ForgeDirection side, AEColor colour, EntityPlayer who)
+	{
+		return cb.recolourBlock( side, colour, who );
+	}
+
 }

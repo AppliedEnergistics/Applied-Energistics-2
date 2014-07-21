@@ -11,8 +11,10 @@ import net.minecraft.block.BlockDispenser;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -22,6 +24,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.SortDir;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageCell;
+import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
@@ -30,6 +33,7 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
+import appeng.block.misc.BlockPaint;
 import appeng.client.render.items.ToolColorApplicatorRender;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
@@ -42,6 +46,7 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.ItemPaintBall;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.storage.CellInventoryHandler;
+import appeng.tile.misc.TilePaint;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
@@ -166,7 +171,36 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			else
 				paintBall = null;
 
-			if ( paintBall != null && paintBall.getItem() instanceof ItemPaintBall )
+			if ( paintBall != null && paintBall.getItem() instanceof ItemSnowball )
+			{
+				ForgeDirection oside = ForgeDirection.getOrientation( side );
+				TileEntity te = w.getTileEntity( x, y, z );
+				// clean cables.
+				if ( te instanceof IColorableTile )
+				{
+					if ( getAECurrentPower( is ) > powerPerUse && ((IColorableTile) te).getColor() != AEColor.Transparent )
+					{
+						if ( ((IColorableTile) te).recolourBlock( oside, AEColor.Transparent, p ) )
+						{
+							inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
+							extractAEPower( is, powerPerUse );
+							return true;
+						}
+					}
+				}
+
+				// clean paint balls..
+				Block testBlk = w.getBlock( x + oside.offsetX, y + oside.offsetY, z + oside.offsetZ );
+				TileEntity painte = w.getTileEntity( x + oside.offsetX, y + oside.offsetY, z + oside.offsetZ );
+				if ( getAECurrentPower( is ) > powerPerUse && testBlk instanceof BlockPaint && painte instanceof TilePaint )
+				{
+					inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
+					extractAEPower( is, powerPerUse );
+					((TilePaint) painte).cleanSide( oside.getOpposite() );
+					return true;
+				}
+			}
+			else if ( paintBall != null && paintBall.getItem() instanceof ItemPaintBall )
 			{
 				ItemPaintBall ipb = (ItemPaintBall) paintBall.getItem();
 				AEColor color = ipb.getColor( paintBall );
@@ -264,6 +298,9 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 		ItemStack selected = getColor( par1ItemStack );
 
+		if ( selected != null && selected.getItem() instanceof ItemSnowball )
+			extra = GuiText.Clean.getLocal();
+
 		if ( selected != null && selected.getItem() instanceof ItemPaintBall )
 			extra = ((ItemPaintBall) selected.getItem()).getExtraName( selected );
 
@@ -309,7 +346,14 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	@Override
 	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requsetedAddition)
 	{
-		return requsetedAddition == null || !(requsetedAddition.getItem() instanceof ItemPaintBall && requsetedAddition.getItemDamage() < 20);
+		if ( requsetedAddition != null )
+		{
+			if ( requsetedAddition.getItem() instanceof ItemSnowball )
+				return false;
+
+			return !(requsetedAddition.getItem() instanceof ItemPaintBall && requsetedAddition.getItemDamage() < 20);
+		}
+		return true;
 	}
 
 	@Override

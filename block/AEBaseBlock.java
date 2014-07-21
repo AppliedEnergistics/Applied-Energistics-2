@@ -779,7 +779,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 			if ( c != newColor )
 			{
-				ct.setColor( newColor );
+				ct.recolourBlock( side, newColor, null );
 				return true;
 			}
 			return false;

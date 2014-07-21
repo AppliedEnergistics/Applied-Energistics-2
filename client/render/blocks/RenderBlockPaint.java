@@ -1,5 +1,7 @@
 package appeng.client.render.blocks;
 
+import java.util.EnumSet;
+
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
@@ -44,8 +46,19 @@ public class RenderBlockPaint extends BaseBlockRender
 
 			double offoff = 0.001;
 
+			EnumSet<ForgeDirection> validSides = EnumSet.noneOf( ForgeDirection.class );
+
+			for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			{
+				if ( tp.isSideValid( side ) )
+					validSides.add( side );
+			}
+
 			for (Splot s : tp.getDots())
 			{
+				if ( !validSides.contains( s.side ) )
+					continue;
+
 				if ( s.lumen )
 				{
 					tess.setColorOpaque_I( s.color.whiteVariant );
