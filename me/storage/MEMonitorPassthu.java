@@ -12,6 +12,7 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
+import appeng.util.inv.ItemListIgnoreCrafting;
 import appeng.util.item.ItemList;
 
 public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> implements IMEMonitor<T>, IMEMonitorHandlerReceiver<T>
@@ -35,18 +36,25 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 			monitor.removeListener( this );
 
 		monitor = null;
-		IItemList<T> before = getInternal() == null ? new ItemList( clz ) : getInternal().getAvailableItems( new ItemList( clz ) );
+		IItemList<T> before = getInternal() == null ? new ItemList( clz ) : getInternal().getAvailableItems( new ItemListIgnoreCrafting( new ItemList( clz ) ) );
 
 		super.setInternal( i );
 		if ( i instanceof IMEMonitor )
 			monitor = (IMEMonitor<T>) i;
 
-		IItemList<T> after = getInternal() == null ? new ItemList( clz ) : getInternal().getAvailableItems( new ItemList( clz ) );
+		IItemList<T> after = getInternal() == null ? new ItemList( clz ) : getInternal().getAvailableItems( new ItemListIgnoreCrafting( new ItemList( clz ) ) );
 
 		if ( monitor != null )
 			monitor.addListener( this, monitor );
 
 		Platform.postListChanges( before, after, this, changeSource );
+	}
+
+	@Override
+	public IItemList<T> getAvailableItems(IItemList out)
+	{
+		super.getAvailableItems( new ItemListIgnoreCrafting( out ) );
+		return out;
 	}
 
 	@Override
@@ -65,7 +73,11 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 	public IItemList<T> getStorageList()
 	{
 		if ( monitor == null )
-			return getInternal().getAvailableItems( new ItemList<T>( clz ) );
+		{
+			IItemList<T> out = new ItemList( clz );
+			getInternal().getAvailableItems( new ItemListIgnoreCrafting( out ) );
+			return out;
+		}
 		return monitor.getStorageList();
 	}
 
