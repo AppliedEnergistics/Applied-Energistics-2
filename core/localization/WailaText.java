@@ -9,7 +9,7 @@ public enum WailaText
 
 	Locked, Unlocked, Showing,
 
-	Contains;
+	Contains, Channels;
 
 	String root;
 

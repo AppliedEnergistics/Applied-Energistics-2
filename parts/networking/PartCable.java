@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -220,6 +221,23 @@ public class PartCable extends AEBasePart implements IPartCable
 	public void markForUpdate()
 	{
 		getHost().markForUpdate();
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound data)
+	{
+		super.writeToNBT( data );
+
+		if ( Platform.isServer() )
+		{
+			int howMany = 0;
+
+			for (IGridConnection gc : getGridNode().getConnections())
+				howMany = Math.max( gc.getUsedChannels(), howMany );
+
+			data.setByte( "usedChannels", (byte) howMany );
+		}
+
 	}
 
 	@Override
