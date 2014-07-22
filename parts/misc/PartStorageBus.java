@@ -166,15 +166,6 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		cached = false;
 		if ( fullReset )
 			handlerHash = 0;
-		try
-		{
-			// force grid to update handlers...
-			proxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
-		}
-		catch (GridAccessException e)
-		{
-			// :3
-		}
 
 		IMEInventory<IAEItemStack> out = getInternalHandler();
 		IItemList<IAEItemStack> after = AEApi.instance().storage().createItemList();
@@ -236,6 +227,16 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 		if ( handlerHash == newHandlerHash && handlerHash != 0 )
 			return handler;
+
+		try
+		{
+			// force grid to update handlers...
+			proxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+		}
+		catch (GridAccessException e)
+		{
+			// :3
+		}
 
 		handlerHash = newHandlerHash;
 		handler = null;

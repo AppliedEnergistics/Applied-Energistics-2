@@ -37,12 +37,15 @@ public class MFRDSU implements IMEInventory<IAEItemStack>
 			if ( input.equals( is ) )
 			{
 				long max = dsu.getMaxStoredCount();
-				long additiona = is.stackSize;
-				additiona += input.getStackSize();
-				if ( additiona > max )
+				long storedItems = is.stackSize;
+				if ( max == storedItems )
+					return input;
+
+				storedItems += input.getStackSize();
+				if ( storedItems > max )
 				{
 					IAEItemStack overflow = AEItemStack.create( is );
-					overflow.setStackSize( (int) (additiona - max) );
+					overflow.setStackSize( (int) (storedItems - max) );
 					if ( mode == Actionable.MODULATE )
 						dsu.setStoredItemCount( (int) max );
 					return overflow;
