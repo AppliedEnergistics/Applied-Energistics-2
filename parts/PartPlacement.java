@@ -31,6 +31,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketClick;
 import appeng.core.sync.packets.PacketPartPlacement;
 import appeng.facade.IFacadeItem;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBC;
 import appeng.integration.abstraction.IFMP;
 import appeng.util.LookDirection;
@@ -222,8 +223,8 @@ public class PartPlacement
 			}
 		}
 
-		if ( host == null && tile != null && AppEng.instance.isIntegrationEnabled( "FMP" ) )
-			host = ((IFMP) AppEng.instance.getIntegration( "FMP" )).getOrCreateHost( tile );
+		if ( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
+			host = ((IFMP) AppEng.instance.getIntegration( IntegrationType.FMP )).getOrCreateHost( tile );
 
 		// if ( held == null )
 		{
@@ -286,8 +287,8 @@ public class PartPlacement
 			if ( tile instanceof IPartHost )
 				host = (IPartHost) tile;
 
-			if ( host == null && tile != null && AppEng.instance.isIntegrationEnabled( "FMP" ) )
-				host = ((IFMP) AppEng.instance.getIntegration( "FMP" )).getOrCreateHost( tile );
+			if ( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
+				host = ((IFMP) AppEng.instance.getIntegration( IntegrationType.FMP )).getOrCreateHost( tile );
 
 			if ( host == null && AEApi.instance().blocks().blockMultiPart.block().canPlaceBlockAt( world, te_x, te_y, te_z )
 					&& ib.placeBlockAt( is, player, world, te_x, te_y, te_z, side.ordinal(), 0.5f, 0.5f, 0.5f, 0 ) )
@@ -335,8 +336,8 @@ public class PartPlacement
 				Block blkID = world.getBlock( te_x, te_y, te_z );
 				tile = world.getTileEntity( te_x, te_y, te_z );
 
-				if ( tile != null && AppEng.instance.isIntegrationEnabled( "FMP" ) )
-					host = ((IFMP) AppEng.instance.getIntegration( "FMP" )).getOrCreateHost( tile );
+				if ( tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
+					host = ((IFMP) AppEng.instance.getIntegration( IntegrationType.FMP )).getOrCreateHost( tile );
 
 				if ( (blkID == null || blkID.isReplaceable( world, te_x, te_y, te_z ) || host != null) && offset != ForgeDirection.UNKNOWN )
 					return place( held, te_x, te_y, te_z, side.getOpposite().ordinal(), player, world,
@@ -400,9 +401,9 @@ public class PartPlacement
 		if ( held.getItem() instanceof IFacadeItem )
 			return ((IFacadeItem) held.getItem()).createPartFromItemStack( held, side );
 
-		if ( AppEng.instance.isIntegrationEnabled( "BC" ) )
+		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.BC ) )
 		{
-			IBC bc = (IBC) AppEng.instance.getIntegration( "BC" );
+			IBC bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
 			if ( bc.isFacade( held ) )
 				return bc.createFacadePart( held, side );
 		}

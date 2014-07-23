@@ -25,6 +25,7 @@ import appeng.core.WorldSettings;
 import appeng.core.features.AEFeature;
 import appeng.helpers.LocationRotation;
 import appeng.helpers.NullRotation;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IRB;
 import appeng.util.Platform;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -94,12 +95,12 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	@Override
 	public IOrientable getOrientable(final IBlockAccess w, final int x, final int y, final int z)
 	{
-		if ( AppEng.instance.isIntegrationEnabled( "RB" ) )
+		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.RB ) )
 		{
 			TileEntity te = w.getTileEntity( x, y, z );
 			if ( te != null )
 			{
-				IOrientable out = ((IRB) AppEng.instance.getIntegration( "RB" )).getOrientable( te );
+				IOrientable out = ((IRB) AppEng.instance.getIntegration( IntegrationType.RB )).getOrientable( te );
 				if ( out != null )
 					return out;
 			}

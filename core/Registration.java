@@ -98,6 +98,7 @@ import appeng.hooks.AETrading;
 import appeng.hooks.MeteoriteWorldGen;
 import appeng.hooks.QuartzWorldGen;
 import appeng.hooks.TickHandler;
+import appeng.integration.IntegrationType;
 import appeng.items.materials.ItemMultiMaterial;
 import appeng.items.materials.MaterialType;
 import appeng.items.misc.ItemCrystalSeed;
@@ -511,22 +512,22 @@ public class Registration
 		ph.registerNewLayer( "appeng.parts.layers.LayerIFluidHandler", "net.minecraftforge.fluids.IFluidHandler" );
 		ph.registerNewLayer( "appeng.parts.layers.LayerITileStorageMonitorable", "appeng.api.implementations.tiles.ITileStorageMonitorable" );
 
-		if ( AppEng.instance.isIntegrationEnabled( "IC2" ) )
+		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.IC2 ) )
 		{
 			ph.registerNewLayer( "appeng.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );
 			ph.registerNewLayer( "appeng.parts.layers.LayerIEnergySource", "ic2.api.energy.tile.IEnergySource" );
 		}
 
-		if ( AppEng.instance.isIntegrationEnabled( "MJ5" ) )
+		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.MJ5 ) )
 		{
 			ph.registerNewLayer( "appeng.parts.layers.LayerIPowerEmitter", "buildcraft.api.power.IPowerEmitter" );
 			ph.registerNewLayer( "appeng.parts.layers.LayerIPowerReceptor", "buildcraft.api.power.IPowerReceptor" );
 		}
 
-		if ( AppEng.instance.isIntegrationEnabled( "MJ6" ) )
+		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.MJ6 ) )
 			ph.registerNewLayer( "appeng.parts.layers.LayerIBatteryProvider", "buildcraft.api.mj.IBatteryProvider" );
 
-		if ( AppEng.instance.isIntegrationEnabled( "RF" ) )
+		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.RF ) )
 			ph.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyHandler" );
 
 		FMLCommonHandler.instance().bus().register( TickHandler.instance );

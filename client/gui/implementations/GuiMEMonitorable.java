@@ -38,6 +38,7 @@ import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.WirelessTerminalGuiObject;
+import appeng.integration.IntegrationType;
 import appeng.parts.reporting.PartTerminal;
 import appeng.tile.misc.TileSecurity;
 import appeng.util.IConfigManagerHost;
@@ -148,7 +149,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		maxRows = getMaxRows();
 		perRow = AEConfig.instance.getConfigManager().getSetting( Settings.TERMINAL_STYLE ) != TerminalStyle.FULL ? 9 : 9 + ((width - standardSize) / 18);
 
-		boolean hasNEI = AppEng.instance.isIntegrationEnabled( "NEI" );
+		boolean hasNEI = AppEng.instance.isIntegrationEnabled( IntegrationType.NEI );
 
 		int NEI = hasNEI ? 0 : 0;
 		int top = hasNEI ? 22 : 0;

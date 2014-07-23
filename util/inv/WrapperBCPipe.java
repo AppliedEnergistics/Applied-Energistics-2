@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.core.AppEng;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBC;
 
 public class WrapperBCPipe implements IInventory
@@ -16,7 +17,7 @@ public class WrapperBCPipe implements IInventory
 	final private ForgeDirection dir;
 
 	public WrapperBCPipe(TileEntity te, ForgeDirection d) {
-		bc = (IBC) AppEng.instance.getIntegration( "BC" );
+		bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
 		ad = te;
 		dir = d;
 	}

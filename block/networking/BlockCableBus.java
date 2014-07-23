@@ -39,6 +39,7 @@ import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IFMP;
 import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
@@ -412,8 +413,8 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 		if ( te instanceof TileCableBus )
 			out = ((TileCableBus) te).cb;
 
-		else if ( AppEng.instance.isIntegrationEnabled( "FMP" ) )
-			out = ((IFMP) AppEng.instance.getIntegration( "FMP" )).getCableContainer( te );
+		else if ( AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
+			out = ((IFMP) AppEng.instance.getIntegration( IntegrationType.FMP )).getCableContainer( te );
 
 		return out == null ? nullCB : out;
 	}

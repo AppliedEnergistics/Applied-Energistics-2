@@ -10,6 +10,7 @@ import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
 import appeng.core.AELog;
 import appeng.core.AppEng;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IFZ;
 import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
@@ -39,9 +40,9 @@ public class GrindFZ implements ICraftHandler, IWebsiteSeralizer
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		if ( AppEng.instance.isIntegrationEnabled( "FZ" ) )
+		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.FZ ) )
 		{
-			IFZ fz = (IFZ) AppEng.instance.getIntegration( "FZ" );
+			IFZ fz = (IFZ) AppEng.instance.getIntegration( IntegrationType.FZ );
 			for (ItemStack is : pro_input.getItemStackSet())
 			{
 				try

@@ -48,6 +48,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketSwapSlots;
 import appeng.helpers.InventoryAction;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.INEI;
 import appeng.util.Platform;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
@@ -684,9 +685,9 @@ public abstract class AEBaseGui extends GuiContainer
 
 	private RenderItem setItemRender(RenderItem aeri2)
 	{
-		if ( AppEng.instance.isIntegrationEnabled( "NEI" ) )
+		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.NEI ) )
 		{
-			return ((INEI) AppEng.instance.getIntegration( "NEI" )).setItemRender( aeri2 );
+			return ((INEI) AppEng.instance.getIntegration( IntegrationType.NEI )).setItemRender( aeri2 );
 		}
 		else
 		{

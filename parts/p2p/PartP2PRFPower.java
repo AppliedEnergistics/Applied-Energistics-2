@@ -11,6 +11,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.TunnelType;
 import appeng.core.AppEng;
+import appeng.integration.IntegrationType;
 import appeng.integration.modules.helpers.NullRFHandler;
 import appeng.me.GridAccessException;
 import appeng.transformer.annotations.integration.Interface;
@@ -37,7 +38,7 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 	public PartP2PRFPower(ItemStack is) {
 		super( is );
 
-		if ( !AppEng.instance.isIntegrationEnabled( "RF" ) )
+		if ( !AppEng.instance.isIntegrationEnabled( IntegrationType.RF ) )
 			throw new RuntimeException( "RF Not installed!" );
 	}
 

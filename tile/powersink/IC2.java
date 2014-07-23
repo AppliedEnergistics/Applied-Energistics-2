@@ -8,6 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.PowerUnits;
 import appeng.core.AppEng;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IIC2;
 import appeng.transformer.annotations.integration.Interface;
 import appeng.util.Platform;
@@ -77,9 +78,9 @@ public abstract class IC2 extends MinecraftJoules6 implements IEnergySink
 
 	final private void addToENet()
 	{
-		if ( AppEng.instance.isIntegrationEnabled( "IC2" ) )
+		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.IC2 ) )
 		{
-			IIC2 ic2Integration = (IIC2) AppEng.instance.getIntegration( "IC2" );
+			IIC2 ic2Integration = (IIC2) AppEng.instance.getIntegration( IntegrationType.IC2 );
 			if ( !isInIC2 && Platform.isServer() && ic2Integration != null )
 			{
 				ic2Integration.addToEnergyNet( this );
@@ -90,9 +91,9 @@ public abstract class IC2 extends MinecraftJoules6 implements IEnergySink
 
 	final private void removeFromENet()
 	{
-		if ( AppEng.instance.isIntegrationEnabled( "IC2" ) )
+		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.IC2 ) )
 		{
-			IIC2 ic2Integration = (IIC2) AppEng.instance.getIntegration( "IC2" );
+			IIC2 ic2Integration = (IIC2) AppEng.instance.getIntegration( IntegrationType.IC2 );
 			if ( isInIC2 && Platform.isServer() && ic2Integration != null )
 			{
 				ic2Integration.removeFromEnergyNet( this );

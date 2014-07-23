@@ -25,6 +25,7 @@ import appeng.client.render.BusRenderHelper;
 import appeng.client.render.RenderBlocksWorkaround;
 import appeng.core.AELog;
 import appeng.core.AppEng;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBC;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -71,9 +72,9 @@ public class FacadePart implements IFacadePart
 			IFacadeItem fi = (IFacadeItem) facade.getItem();
 			return fi.getTextureItem( facade );
 		}
-		else if ( AppEng.instance.isIntegrationEnabled( "BC" ) )
+		else if ( AppEng.instance.isIntegrationEnabled( IntegrationType.BC ) )
 		{
-			IBC bc = (IBC) AppEng.instance.getIntegration( "BC" );
+			IBC bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
 			return bc.getTextureForFacade( facade );
 		}
 		return null;
@@ -109,7 +110,7 @@ public class FacadePart implements IFacadePart
 					IIcon myIcon = null;
 					if ( isBC() )
 					{
-						IBC bc = (IBC) AppEng.instance.getIntegration( "BC" );
+						IBC bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
 						myIcon = bc.getFacadeTexture();
 					}
 

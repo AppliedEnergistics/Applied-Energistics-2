@@ -23,6 +23,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBC;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
@@ -70,9 +71,9 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 
 			which.add( this );
 
-			if ( AppEng.instance.isIntegrationEnabled( "BC" ) )
+			if ( AppEng.instance.isIntegrationEnabled( IntegrationType.BC ) )
 			{
-				IBC buildcraft = (IBC) AppEng.instance.getIntegration( "BC" );
+				IBC buildcraft = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
 				if ( buildcraft != null )
 				{
 					if ( buildcraft.isPipe( te, side.getOpposite() ) )

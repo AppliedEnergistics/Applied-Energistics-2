@@ -42,6 +42,7 @@ import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiTile;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.ICLApi;
 import appeng.me.GridConnection;
 import appeng.util.Platform;
@@ -792,8 +793,8 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 				light = Math.max( p.getLightLevel(), light );
 		}
 
-		if ( light > 0 && AppEng.instance.isIntegrationEnabled( "CLApi" ) )
-			return ((ICLApi) AppEng.instance.getIntegration( "CLApi" )).colorLight( getColor(), light );
+		if ( light > 0 && AppEng.instance.isIntegrationEnabled( IntegrationType.CLApi ) )
+			return ((ICLApi) AppEng.instance.getIntegration( IntegrationType.CLApi )).colorLight( getColor(), light );
 
 		return light;
 	}

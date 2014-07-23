@@ -18,6 +18,7 @@ import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.hooks.TickHandler;
 import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
 import appeng.server.AECommand;
 import appeng.services.Profiler;
 import appeng.services.VersionChecker;
@@ -85,12 +86,12 @@ public class AppEng
 		FMLCommonHandler.instance().registerCrashCallable( new CrashEnhancement( CrashInfo.MOD_VERSION ) );
 	}
 
-	public boolean isIntegrationEnabled(String Name)
+	public boolean isIntegrationEnabled( IntegrationType Name )
 	{
 		return IntegrationRegistry.instance.isEnabled( Name );
 	}
 
-	public Object getIntegration(String Name)
+	public Object getIntegration( IntegrationType Name )
 	{
 		return IntegrationRegistry.instance.getInstance( Name );
 	}

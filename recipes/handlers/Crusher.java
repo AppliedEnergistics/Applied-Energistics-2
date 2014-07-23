@@ -10,6 +10,7 @@ import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
 import appeng.core.AELog;
 import appeng.core.AppEng;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IRC;
 import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
@@ -39,9 +40,9 @@ public class Crusher implements ICraftHandler, IWebsiteSeralizer
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		if ( AppEng.instance.isIntegrationEnabled( "RC" ) )
+		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.RC ) )
 		{
-			IRC rc = (IRC) AppEng.instance.getIntegration( "RC" );
+			IRC rc = (IRC) AppEng.instance.getIntegration( IntegrationType.RC );
 			for (ItemStack is : pro_input.getItemStackSet())
 			{
 				try

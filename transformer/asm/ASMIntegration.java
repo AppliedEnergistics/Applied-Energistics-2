@@ -14,7 +14,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationSide;
+import appeng.integration.IntegrationType;
 import appeng.transformer.annotations.integration;
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
 
@@ -29,34 +29,20 @@ public class ASMIntegration implements IClassTransformer
 		 * Side, Display Name, ModID ClassPostFix
 		 */
 
-		integrationModules.add( IntegrationSide.BOTH, "Rotary Craft", "RotaryCraft", "RotaryCraft" );
-		integrationModules.add( IntegrationSide.BOTH, "Industrial Craft 2", "IC2", "IC2" );
-		integrationModules.add( IntegrationSide.BOTH, "Railcraft", "Railcraft", "RC" );
-		// integrationModules.add( IntegrationSide.BOTH, "Thermal Expansion", "ThermalExpansion", "TE" );
-		// integrationModules.add( IntegrationSide.BOTH, "Mystcraft", "Mystcraft", "Mystcraft" );
-		integrationModules.add( IntegrationSide.BOTH, "BuildCraft", "BuildCraft|Silicon", "BC" );
-		integrationModules.add( IntegrationSide.BOTH, "BuildCraft5 Power", null, "MJ5" );
-		integrationModules.add( IntegrationSide.BOTH, "BuildCraft6 Power", null, "MJ6" );
+		for ( IntegrationType type : IntegrationType.values() )
+		{
+			integrationModules.add( type );
+		}
+		
+		// integrationModules.add( IntegrationSide.BOTH, "Thermal Expansion", "ThermalExpansion", IntegrationType.TE );
+		// integrationModules.add( IntegrationSide.BOTH, "Mystcraft", "Mystcraft", IntegrationType.Mystcraft );
+		// integrationModules.add( IntegrationSide.BOTH, "Greg Tech", "gregtech_addon", IntegrationType.GT );
+		// integrationModules.add( IntegrationSide.BOTH, "Universal Electricity", null, IntegrationType.UE );
+		// integrationModules.add( IntegrationSide.BOTH, "Logistics Pipes", "LogisticsPipes|Main", IntegrationType.LP );
+		// integrationModules.add( IntegrationSide.BOTH, "Better Storage", IntegrationType.betterstorage );
+		// integrationModules.add( IntegrationSide.BOTH, "Forestry", "Forestry", IntegrationType.Forestry );
+		// integrationModules.add( IntegrationSide.BOTH, "Mekanism", "Mekanism", IntegrationType.Mekanism );
 
-		integrationModules.add( IntegrationSide.BOTH, "RedstoneFlux Power - Tiles", null, "RF" );
-		integrationModules.add( IntegrationSide.BOTH, "RedstoneFlux Power - Items", null, "RFItem" );
-
-		// integrationModules.add( IntegrationSide.BOTH, "Greg Tech", "gregtech_addon", "GT" );
-		// integrationModules.add( IntegrationSide.BOTH, "Universal Electricity", null, "UE" );
-		// integrationModules.add( IntegrationSide.BOTH, "Logistics Pipes", "LogisticsPipes|Main", "LP" );
-		integrationModules.add( IntegrationSide.BOTH, "Mine Factory Reloaded", "MineFactoryReloaded", "MFR" );
-		integrationModules.add( IntegrationSide.BOTH, "Deep Storage Unit", null, "DSU" );
-		// integrationModules.add( IntegrationSide.BOTH, "Better Storage", "betterstorage" );
-		integrationModules.add( IntegrationSide.BOTH, "Factorization", "factorization", "FZ" );
-		// integrationModules.add( IntegrationSide.BOTH, "Forestry", "Forestry", "Forestry" );
-		// integrationModules.add( IntegrationSide.BOTH, "Mekanism", "Mekanism", "Mekanism" );
-		integrationModules.add( IntegrationSide.CLIENT, "Waila", "Waila", "Waila" );
-		integrationModules.add( IntegrationSide.BOTH, "Colored Lights Core", "coloredlightscore", "CLApi" );
-		integrationModules.add( IntegrationSide.BOTH, "Rotatable Blocks", "RotatableBlocks", "RB" );
-		integrationModules.add( IntegrationSide.CLIENT, "Inventory Tweaks", "inventorytweaks", "InvTweaks" );
-		integrationModules.add( IntegrationSide.CLIENT, "Not Enough Items", "NotEnoughItems", "NEI" );
-		integrationModules.add( IntegrationSide.CLIENT, "Craft Guide", "craftguide", "CraftGuide" );
-		integrationModules.add( IntegrationSide.BOTH, "Forge MultiPart", "McMultipart", "FMP" );
 	}
 
 	@Override
@@ -158,7 +144,8 @@ public class ASMIntegration implements IClassTransformer
 
 		if ( iName != null )
 		{
-			if ( !IntegrationRegistry.instance.isEnabled( iName ) )
+			IntegrationType type = IntegrationType.valueOf( iName );
+			if ( !IntegrationRegistry.instance.isEnabled( type ) )
 			{
 				log( "Removing Method " + mn.name + " from " + classNode.name + " because " + iName + " integration is disabled." );
 				i.remove();
@@ -191,9 +178,11 @@ public class ASMIntegration implements IClassTransformer
 		else if ( an.values.get( 2 ).equals( "iname" ) )
 			iName = (String) an.values.get( 3 );
 
+		IntegrationType type = IntegrationType.valueOf( iName );
+		
 		if ( iName != null && iFace != null )
 		{
-			if ( !IntegrationRegistry.instance.isEnabled( iName ) )
+			if ( !IntegrationRegistry.instance.isEnabled( type ) )
 			{
 				log( "Removing Interface " + iFace + " from " + classNode.name + " because " + iName + " integration is disabled." );
 				classNode.interfaces.remove( iFace.replace( '.', '/' ) );

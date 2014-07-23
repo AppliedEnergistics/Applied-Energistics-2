@@ -87,6 +87,7 @@ import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.hooks.TickHandler;
+import appeng.integration.IntegrationType;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;
 import appeng.me.helpers.AENetworkProxy;
@@ -236,13 +237,13 @@ public class Platform
 
 	private static boolean isNotValidSetting(Enum e)
 	{
-		if ( e == SortOrder.INVTWEAKS && !AppEng.instance.isIntegrationEnabled( "InvTweaks" ) )
+		if ( e == SortOrder.INVTWEAKS && !AppEng.instance.isIntegrationEnabled( IntegrationType.InvTweaks ) )
 			return true;
 
-		if ( e == SearchBoxMode.NEI_AUTOSEARCH && !AppEng.instance.isIntegrationEnabled( "NEI" ) )
+		if ( e == SearchBoxMode.NEI_AUTOSEARCH && !AppEng.instance.isIntegrationEnabled( IntegrationType.NEI ) )
 			return true;
 
-		if ( e == SearchBoxMode.NEI_MANUAL_SEARCH && !AppEng.instance.isIntegrationEnabled( "NEI" ) )
+		if ( e == SearchBoxMode.NEI_MANUAL_SEARCH && !AppEng.instance.isIntegrationEnabled( IntegrationType.NEI ) )
 			return true;
 
 		return false;

@@ -5,6 +5,7 @@ import java.util.Comparator;
 import appeng.api.config.SortDir;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IInvTweaks;
 
 public class ItemSorters
@@ -18,8 +19,8 @@ public class ItemSorters
 		if ( api != null )
 			return;
 
-		if ( AppEng.instance.isIntegrationEnabled( "InvTweaks" ) )
-			api = (IInvTweaks) AppEng.instance.getIntegration( "InvTweaks" );
+		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.InvTweaks ) )
+			api = (IInvTweaks) AppEng.instance.getIntegration( IntegrationType.InvTweaks );
 		else
 			api = null;
 	}

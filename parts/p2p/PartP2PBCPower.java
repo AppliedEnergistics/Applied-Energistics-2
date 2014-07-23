@@ -15,6 +15,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IMJ5;
 import appeng.integration.abstraction.IMJ6;
 import appeng.integration.abstraction.helpers.BaseMJperdition;
@@ -49,12 +50,12 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 	public PartP2PBCPower(ItemStack is) {
 		super( is );
 
-		if ( !AppEng.instance.isIntegrationEnabled( "MJ5" ) && !AppEng.instance.isIntegrationEnabled( "MJ6" ) )
+		if ( !AppEng.instance.isIntegrationEnabled( IntegrationType.MJ5 ) && !AppEng.instance.isIntegrationEnabled( IntegrationType.MJ6 ) )
 			throw new RuntimeException( "MJ Not installed!" );
 
-		if ( AppEng.instance.isIntegrationEnabled( "MJ5" ) )
+		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.MJ5 ) )
 		{
-			pp = (BaseMJperdition) ((IMJ5) AppEng.instance.getIntegration( "MJ5" )).createPerdition( this );
+			pp = (BaseMJperdition) ((IMJ5) AppEng.instance.getIntegration( IntegrationType.MJ5 )).createPerdition( this );
 			if ( pp != null )
 				pp.configure( 1, 380, 1.0f / 5.0f, 1000 );
 		}
@@ -158,8 +159,8 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 			IBatteryObject bo = MjAPI.getMjBattery( te, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite() );
 			if ( bo != null )
 				return bo;
-			if ( AppEng.instance.isIntegrationEnabled( "MJ5" ) )
-				return ((IMJ6) AppEng.instance.getIntegration( "MJ6" )).provider( te, side.getOpposite() );
+			
+			return ((IMJ6) AppEng.instance.getIntegration( IntegrationType.MJ6 )).provider( te, side.getOpposite() );
 		}
 		return null;
 	}

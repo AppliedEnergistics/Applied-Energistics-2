@@ -4,6 +4,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.PowerUnits;
 import appeng.core.AppEng;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IMJ5;
 import appeng.integration.abstraction.helpers.BaseMJperdition;
 import appeng.transformer.annotations.integration.Interface;
@@ -24,9 +25,9 @@ public abstract class MinecraftJoules5 extends AERootPoweredTile implements IPow
 		{
 			try
 			{
-				if ( AppEng.instance.isIntegrationEnabled( "MJ5" ) )
+				if ( AppEng.instance.isIntegrationEnabled( IntegrationType.MJ5 ) )
 				{
-					IMJ5 mjIntegration = (IMJ5) AppEng.instance.getIntegration( "MJ5" );
+					IMJ5 mjIntegration = (IMJ5) AppEng.instance.getIntegration( IntegrationType.MJ5 );
 					if ( mjIntegration != null )
 					{
 						addNewHandler( bcPowerWrapper = (BaseMJperdition) mjIntegration.createPerdition( this ) );

@@ -10,6 +10,7 @@ import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
 import appeng.core.AELog;
 import appeng.core.AppEng;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IIC2;
 import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
@@ -39,9 +40,9 @@ public class Macerator implements ICraftHandler, IWebsiteSeralizer
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		if ( AppEng.instance.isIntegrationEnabled( "IC2" ) )
+		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.IC2 ) )
 		{
-			IIC2 ic2 = (IIC2) AppEng.instance.getIntegration( "IC2" );
+			IIC2 ic2 = (IIC2) AppEng.instance.getIntegration( IntegrationType.IC2 );
 			for (ItemStack is : pro_input.getItemStackSet())
 			{
 				try

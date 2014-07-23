@@ -11,6 +11,7 @@ import net.minecraftforge.common.MinecraftForge;
 import appeng.core.AppEng;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IFMP;
 
 public class PacketMultiPart extends AppEngPacket
@@ -24,7 +25,7 @@ public class PacketMultiPart extends AppEngPacket
 	@Override
 	public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player)
 	{
-		IFMP fmp = (IFMP) AppEng.instance.getIntegration( "FMP" );
+		IFMP fmp = (IFMP) AppEng.instance.getIntegration( IntegrationType.FMP );
 		if ( fmp != null )
 		{
 			EntityPlayerMP sender = (EntityPlayerMP) player;

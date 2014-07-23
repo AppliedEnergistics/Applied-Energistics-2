@@ -14,6 +14,7 @@ import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
 import appeng.core.AppEng;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBC;
 import appeng.items.parts.ItemFacade;
 
@@ -63,9 +64,9 @@ public class FacadeContainer implements IFacadeContainer
 				boolean isBC = ids[0] < 0;
 				ids[0] = Math.abs( ids[0] );
 
-				if ( isBC && AppEng.instance.isIntegrationEnabled( "BC" ) )
+				if ( isBC && AppEng.instance.isIntegrationEnabled( IntegrationType.BC ) )
 				{
-					IBC bc = (IBC) AppEng.instance.getIntegration( "BC" );
+					IBC bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
 					changed = changed || facades[x] == null;
 					facades[x] = bc.createFacadePart( (Block) Block.blockRegistry.getObjectById( ids[0] ), ids[1], side );
 				}
@@ -107,9 +108,9 @@ public class FacadeContainer implements IFacadeContainer
 						facades[x] = ((IFacadeItem) i).createPartFromItemStack( is, ForgeDirection.getOrientation( x ) );
 					else
 					{
-						if ( AppEng.instance.isIntegrationEnabled( "BC" ) )
+						if ( AppEng.instance.isIntegrationEnabled( IntegrationType.BC ) )
 						{
-							IBC bc = (IBC) AppEng.instance.getIntegration( "BC" );
+							IBC bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
 							if ( bc.isFacade( is ) )
 								facades[x] = bc.createFacadePart( is, ForgeDirection.getOrientation( x ) );
 						}

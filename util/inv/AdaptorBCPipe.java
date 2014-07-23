@@ -7,6 +7,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.FuzzyMode;
 import appeng.core.AppEng;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBC;
 import appeng.util.InventoryAdaptor;
 import appeng.util.iterators.NullIterator;
@@ -19,7 +20,7 @@ public class AdaptorBCPipe extends InventoryAdaptor
 	final private ForgeDirection d;
 
 	public AdaptorBCPipe(TileEntity s, ForgeDirection dd) {
-		bc = (IBC) AppEng.instance.getIntegration( "BC" );
+		bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
 		if ( bc != null )
 		{
 			if ( bc.isPipe( s, dd ) )

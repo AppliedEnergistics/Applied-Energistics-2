@@ -5,6 +5,7 @@ import appeng.client.gui.AEBaseGui;
 import appeng.container.implementations.ContainerSkyChest;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
+import appeng.integration.IntegrationType;
 import appeng.tile.storage.TileSkyChest;
 
 public class GuiSkyChest extends AEBaseGui
@@ -32,7 +33,7 @@ public class GuiSkyChest extends AEBaseGui
 	@Override
 	protected boolean enableSpaceClicking()
 	{
-		return !AppEng.instance.isIntegrationEnabled( "InvTweaks" );
+		return !AppEng.instance.isIntegrationEnabled( IntegrationType.InvTweaks );
 	}
 
 }

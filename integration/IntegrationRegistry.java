@@ -9,18 +9,17 @@ public class IntegrationRegistry
 {
 
 	public static IntegrationRegistry instance = null;
-
 	private LinkedList<IntegrationNode> modules = new LinkedList<IntegrationNode>();
 
-	public void add(IntegrationSide side, String dspname, String modID, String name)
+	public void add( IntegrationType type)
 	{
-		if ( side == IntegrationSide.CLIENT && FMLLaunchHandler.side() == Side.SERVER )
+		if ( type.side == IntegrationSide.CLIENT && FMLLaunchHandler.side() == Side.SERVER )
 			return;
 
-		if ( side == IntegrationSide.SERVER && FMLLaunchHandler.side() == Side.CLIENT )
+		if ( type.side == IntegrationSide.SERVER && FMLLaunchHandler.side() == Side.CLIENT )
 			return;
 
-		modules.add( new IntegrationNode( dspname, modID, name, "appeng.integration.modules." + name ) );
+		modules.add( new IntegrationNode( type.dspName, type.modID, type, "appeng.integration.modules." + type.name() ) );
 	}
 
 	public IntegrationRegistry() {
@@ -59,17 +58,17 @@ public class IntegrationRegistry
 		return out;
 	}
 
-	public boolean isEnabled(String name)
+	public boolean isEnabled(IntegrationType name)
 	{
 		for (IntegrationNode node : modules)
 		{
-			if ( node.shortName.equals( name ) )
+			if ( node.shortName == name )
 				return node.isActive();
 		}
-		throw new RuntimeException( "invalid integration" );
+		return false;
 	}
 
-	public Object getInstance(String name)
+	public Object getInstance(IntegrationType name)
 	{
 		for (IntegrationNode node : modules)
 		{
@@ -78,7 +77,7 @@ public class IntegrationRegistry
 				return node.instance;
 			}
 		}
-		throw new RuntimeException( "invalid integration" );
+		throw new RuntimeException( "integration with "+name.name()+" is disabled." );
 	}
 
 }

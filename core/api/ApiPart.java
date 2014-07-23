@@ -29,6 +29,7 @@ import appeng.api.parts.LayerBase;
 import appeng.client.render.BusRenderer;
 import appeng.core.AELog;
 import appeng.core.AppEng;
+import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IFMP;
 import appeng.parts.PartPlacement;
 import appeng.tile.networking.TileCableBus;
@@ -52,8 +53,8 @@ public class ApiPart implements IPartHelper
 	{
 		for (Class layerInterface : interfaces2Layer.keySet())
 		{
-			if ( AppEng.instance.isIntegrationEnabled( "FMP" ) )
-				((IFMP) AppEng.instance.getIntegration( "FMP" )).registerPassThru( layerInterface );
+			if ( AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
+				((IFMP) AppEng.instance.getIntegration( IntegrationType.FMP )).registerPassThru( layerInterface );
 		}
 	}
 

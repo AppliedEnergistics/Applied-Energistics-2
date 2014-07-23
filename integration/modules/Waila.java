@@ -29,6 +29,7 @@ import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.WailaText;
 import appeng.integration.BaseModule;
+import appeng.integration.IntegrationType;
 import appeng.parts.networking.PartCableSmart;
 import appeng.parts.networking.PartDenseCable;
 import appeng.tile.misc.TileCharger;
@@ -44,7 +45,7 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 
 	public static void register(IWailaRegistrar registrar)
 	{
-		Waila w = (Waila) AppEng.instance.getIntegration( "Waila" );
+		Waila w = (Waila) AppEng.instance.getIntegration( IntegrationType.Waila );
 
 		registrar.registerBodyProvider( w, AEBaseBlock.class );
 		registrar.registerBodyProvider( w, "ae2_cablebus" );

@@ -17,13 +17,13 @@ public class IntegrationNode
 	String displayName;
 	String modID;
 
-	String shortName;
+	IntegrationType shortName;
 	String name = null;
 	Class classValue = null;
 	Object instance;
 	IIntegrationModule mod = null;
 
-	public IntegrationNode(String dspname, String _modID, String sName, String n) {
+	public IntegrationNode(String dspname, String _modID, IntegrationType sName, String n) {
 		displayName = dspname;
 		shortName = sName;
 		modID = _modID;
