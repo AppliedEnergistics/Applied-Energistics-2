@@ -19,7 +19,7 @@ public class ItemListIgnoreCrafting<T extends IAEStack> implements IItemList<T>
 	@Override
 	public void add(T option)
 	{
-		if ( option.isCraftable() )
+		if ( option != null && option.isCraftable() )
 		{
 			option = (T) option.copy();
 			option.setCraftable( false );
