@@ -268,7 +268,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			if ( places.isEmpty() )
 				throw new RuntimeException( "No air or even the tile hat was destroyed?!?!" );
 
-			for (IAEItemStack ais : inv.getAvailableItems( new ItemList<IAEItemStack>( IAEItemStack.class ) ))
+			for (IAEItemStack ais : inv.getAvailableItems( AEApi.instance().storage().createItemList() ))
 			{
 				ais = ais.copy();
 				ais.setStackSize( ais.getItemStack().getMaxStackSize() );

@@ -21,7 +21,7 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 {
 
 	final TileSecurity securityTile;
-	final public IItemList<IAEItemStack> storedItems = new ItemList( IAEItemStack.class );
+	final public IItemList<IAEItemStack> storedItems = AEApi.instance().storage().createItemList();
 
 	public SecurityInventory(TileSecurity ts) {
 		securityTile = ts;
