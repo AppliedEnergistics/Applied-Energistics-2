@@ -29,7 +29,7 @@ public class TileController extends AENetworkPowerTile implements IAEPowerStorag
 		internalMaxPower = 8000;
 		internalPublicPowerStorage = true;
 		gridProxy.setIdlePowerUsage( 6 );
-		gridProxy.setFlags( GridFlags.CANNOT_CARRY, GridFlags.TIER_2_CAPACITY );
+		gridProxy.setFlags( GridFlags.CANNOT_CARRY, GridFlags.DENSE_CAPACITY );
 	}
 
 	@Override

@@ -56,7 +56,7 @@ public class PartDenseCable extends PartCable
 
 	public PartDenseCable(Class c, ItemStack is) {
 		super( c, is );
-		proxy.setFlags( GridFlags.TIER_2_CAPACITY, GridFlags.PREFERED );
+		proxy.setFlags( GridFlags.DENSE_CAPACITY, GridFlags.PREFERED );
 	}
 
 	public PartDenseCable(ItemStack is) {

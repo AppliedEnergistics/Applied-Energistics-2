@@ -141,7 +141,7 @@ public class GridNode implements IGridNode, IPathItem
 	public void updateState()
 	{
 		EnumSet<GridFlags> set = gridProxy.getFlags();
-		maxChannels = set.contains( GridFlags.CANNOT_CARRY ) ? 0 : (set.contains( GridFlags.TIER_2_CAPACITY ) ? 32 : 8);
+		maxChannels = set.contains( GridFlags.CANNOT_CARRY ) ? 0 : (set.contains( GridFlags.DENSE_CAPACITY ) ? 32 : 8);
 		myColor = gridProxy.getGridColor();
 		validDirections = gridProxy.getConnectableSides();
 		FindConnections();

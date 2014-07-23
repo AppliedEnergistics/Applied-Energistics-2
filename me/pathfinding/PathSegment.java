@@ -59,7 +59,7 @@ public class PathSegment
 						{
 							boolean worked = false;
 
-							if ( flags.contains( GridFlags.DENSE_CHANNEL ) )
+							if ( flags.contains( GridFlags.COMPRESSED_CHANNEL ) )
 								worked = useDenseChannel( pi );
 							else
 								worked = useChannel( pi );
@@ -118,7 +118,7 @@ public class PathSegment
 		IPathItem pi = start;
 		while (pi != null)
 		{
-			if ( !pi.canSupportMoreChannels() || pi.getFlags().contains( GridFlags.CANNOT_CARRY_DENSE ) )
+			if ( !pi.canSupportMoreChannels() || pi.getFlags().contains( GridFlags.CANNOT_CARRY_COMPRESSED ) )
 				return false;
 
 			pi = pi.getControllerRoute();

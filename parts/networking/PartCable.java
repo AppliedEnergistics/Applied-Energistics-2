@@ -259,7 +259,7 @@ public class PartCable extends AEBasePart implements IPartCable
 						IReadOnlyCollection<IGridConnection> set = part.getGridNode().getConnections();
 						for (IGridConnection gc : set)
 						{
-							if ( proxy.getNode().hasFlag( GridFlags.TIER_2_CAPACITY ) && gc.getOtherSide( proxy.getNode() ).hasFlag( GridFlags.TIER_2_CAPACITY ) )
+							if ( proxy.getNode().hasFlag( GridFlags.DENSE_CAPACITY ) && gc.getOtherSide( proxy.getNode() ).hasFlag( GridFlags.DENSE_CAPACITY ) )
 								sideOut |= (gc.getUsedChannels() / 4) << (4 * thisSide.ordinal());
 							else
 								sideOut |= (gc.getUsedChannels()) << (4 * thisSide.ordinal());
@@ -273,8 +273,8 @@ public class PartCable extends AEBasePart implements IPartCable
 				ForgeDirection side = gc.getDirection( n );
 				if ( side != ForgeDirection.UNKNOWN )
 				{
-					boolean isTier2a = proxy.getNode().hasFlag( GridFlags.TIER_2_CAPACITY );
-					boolean isTier2b = gc.getOtherSide( proxy.getNode() ).hasFlag( GridFlags.TIER_2_CAPACITY );
+					boolean isTier2a = proxy.getNode().hasFlag( GridFlags.DENSE_CAPACITY );
+					boolean isTier2b = gc.getOtherSide( proxy.getNode() ).hasFlag( GridFlags.DENSE_CAPACITY );
 
 					if ( isTier2a && isTier2b )
 						sideOut |= (gc.getUsedChannels() / 4) << (4 * side.ordinal());

@@ -56,7 +56,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		public QBridgeHandler() {
 			super( TileEventType.NETWORK, TileEventType.TICK );
 			gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
-			gridProxy.setFlags( GridFlags.TIER_2_CAPACITY );
+			gridProxy.setFlags( GridFlags.DENSE_CAPACITY );
 			gridProxy.setIdlePowerUsage( 22 );
 			inv.setMaxStackSize( 1 );
 		}
@@ -100,7 +100,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public TileQuantumBridge() {
 		addNewHandler( new QBridgeHandler() );
-		gridProxy.setFlags( GridFlags.TIER_2_CAPACITY );
+		gridProxy.setFlags( GridFlags.DENSE_CAPACITY );
 	}
 
 	public IInventory getInternalInventory()

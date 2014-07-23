@@ -170,7 +170,7 @@ public class PathGridCache implements IPathingGrid
 				IGridBlock gb = nodes.getGridBlock();
 				EnumSet<GridFlags> flags = gb.getFlags();
 
-				if ( flags.contains( GridFlags.DENSE_CHANNEL ) && !blockDense.isEmpty() )
+				if ( flags.contains( GridFlags.COMPRESSED_CHANNEL ) && !blockDense.isEmpty() )
 					return 9;
 
 				depth++;
@@ -212,7 +212,7 @@ public class PathGridCache implements IPathingGrid
 		if ( flags.contains( GridFlags.REQUIRE_CHANNEL ) )
 			requireChannels.remove( gridNode );
 
-		if ( flags.contains( GridFlags.CANNOT_CARRY_DENSE ) )
+		if ( flags.contains( GridFlags.CANNOT_CARRY_COMPRESSED ) )
 			blockDense.remove( gridNode );
 
 		repath();
@@ -232,7 +232,7 @@ public class PathGridCache implements IPathingGrid
 		if ( flags.contains( GridFlags.REQUIRE_CHANNEL ) )
 			requireChannels.add( gridNode );
 
-		if ( flags.contains( GridFlags.CANNOT_CARRY_DENSE ) )
+		if ( flags.contains( GridFlags.CANNOT_CARRY_COMPRESSED ) )
 			blockDense.add( gridNode );
 
 		repath();
