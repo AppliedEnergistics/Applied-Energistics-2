@@ -39,16 +39,16 @@ public class PathGridCache implements IPathingGrid
 	boolean updateNetwork = true;
 	boolean booting = false;
 
-	LinkedList<PathSegment> active = new LinkedList();
+	final LinkedList<PathSegment> active = new LinkedList();
 
 	ControllerState controllerState = ControllerState.NO_CONTROLLER;
 
 	int instance = Integer.MIN_VALUE;
 
 	int ticksUntilReady = 20;
-	Set<TileController> controllers = new HashSet();
-	Set<IGridNode> requireChannels = new HashSet();
-	Set<IGridNode> blockDense = new HashSet();
+	final Set<TileController> controllers = new HashSet();
+	final Set<IGridNode> requireChannels = new HashSet();
+	final Set<IGridNode> blockDense = new HashSet();
 
 	final IGrid myGrid;
 	private HashSet<IPathItem> semiOpen = new HashSet();

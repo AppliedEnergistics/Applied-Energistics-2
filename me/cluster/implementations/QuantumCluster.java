@@ -26,8 +26,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class QuantumCluster implements ILocatable, IAECluster
 {
 
-	public WorldCoord min;
-	public WorldCoord max;
+	final public WorldCoord min;
+	final public WorldCoord max;
 	public boolean isDestroyed = false;
 	public boolean updateStatus = true;
 

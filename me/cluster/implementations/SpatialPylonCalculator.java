@@ -12,7 +12,7 @@ import appeng.tile.spatial.TileSpatialPylon;
 public class SpatialPylonCalculator extends MBCalculator
 {
 
-	TileSpatialPylon tqb;
+	private final TileSpatialPylon tqb;
 
 	public SpatialPylonCalculator(IAEMultiBlock t) {
 		super( t );

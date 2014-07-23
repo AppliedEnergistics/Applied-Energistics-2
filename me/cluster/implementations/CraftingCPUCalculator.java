@@ -17,8 +17,8 @@ import appeng.tile.crafting.TileCraftingTile;
 
 public class CraftingCPUCalculator extends MBCalculator
 {
-
-	TileCraftingTile tqb;
+	
+	final TileCraftingTile tqb;
 
 	public CraftingCPUCalculator(IAEMultiBlock t) {
 		super( t );

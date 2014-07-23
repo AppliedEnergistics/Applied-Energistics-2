@@ -13,7 +13,7 @@ import appeng.util.Platform;
 public class QuantumCalculator extends MBCalculator
 {
 
-	TileQuantumBridge tqb;
+	final private TileQuantumBridge tqb;
 
 	public QuantumCalculator(IAEMultiBlock t) {
 		super( t );

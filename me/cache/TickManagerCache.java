@@ -24,12 +24,12 @@ public class TickManagerCache implements ITickManager
 		myGrid = g;
 	}
 
-	HashMap<IGridNode, TickTracker> alertable = new HashMap<IGridNode, TickTracker>();
+	final HashMap<IGridNode, TickTracker> alertable = new HashMap<IGridNode, TickTracker>();
 
-	HashMap<IGridNode, TickTracker> sleeping = new HashMap<IGridNode, TickTracker>();
-	HashMap<IGridNode, TickTracker> awake = new HashMap<IGridNode, TickTracker>();
+	final HashMap<IGridNode, TickTracker> sleeping = new HashMap<IGridNode, TickTracker>();
+	final HashMap<IGridNode, TickTracker> awake = new HashMap<IGridNode, TickTracker>();
 
-	PriorityQueue<TickTracker> upcomingTicks = new PriorityQueue<TickTracker>();
+	final PriorityQueue<TickTracker> upcomingTicks = new PriorityQueue<TickTracker>();
 
 	public long getCurrentTick()
 	{

@@ -10,7 +10,7 @@ import appeng.util.Platform;
 public abstract class MBCalculator
 {
 
-	private IAEMultiBlock target;
+	final private IAEMultiBlock target;
 
 	public MBCalculator(IAEMultiBlock t) {
 		target = t;

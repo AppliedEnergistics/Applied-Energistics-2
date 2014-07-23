@@ -17,13 +17,13 @@ public class SpatialPylonCluster implements IAECluster
 		X, Y, Z, UNFORMED
 	};
 
-	public DimensionalCoord min;
-	public DimensionalCoord max;
+	final public DimensionalCoord min;
+	final public DimensionalCoord max;
 	public boolean isDestroyed = false;
 
 	public Axis currentAxis = Axis.UNFORMED;
 
-	List<TileSpatialPylon> line = new ArrayList();
+	final List<TileSpatialPylon> line = new ArrayList();
 	public boolean isValid;
 	public boolean hasPower;
 	public boolean hasChannel;

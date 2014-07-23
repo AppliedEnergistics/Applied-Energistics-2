@@ -22,8 +22,8 @@ import appeng.me.GridNode;
 public class SecurityCache implements IGridCache, ISecurityGrid
 {
 
-	private List<ISecurityProvider> securityProvider = new ArrayList();
-	private HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms = new HashMap<Integer, EnumSet<SecurityPermissions>>();
+	final private List<ISecurityProvider> securityProvider = new ArrayList();
+	final private HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms = new HashMap<Integer, EnumSet<SecurityPermissions>>();
 
 	public SecurityCache(IGrid g) {
 		myGrid = g;

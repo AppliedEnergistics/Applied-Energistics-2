@@ -58,11 +58,6 @@ public class EnergyGridCache implements IEnergyGrid
 	double tickDrainPerTick = 0;
 	double tickInjectionPerTick = 0;
 
-	// Double[] totalDrainPastTicks = new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0,
-	// 0.0, 0.0, 0.0, 0.0, 0.0 };
-	// Double[] totalInjectionPastTicks = new Double[] { 0.0, 0.0, 0.0, 0.0,
-	// 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-
 	/**
 	 * power status
 	 */
@@ -76,13 +71,15 @@ public class EnergyGridCache implements IEnergyGrid
 	double extra = 0;
 
 	IAEPowerStorage lastProvider;
-	Set<IAEPowerStorage> providers = new LinkedHashSet();
+	final Set<IAEPowerStorage> providers = new LinkedHashSet();
 
 	IAEPowerStorage lastRequestor;
-	Set<IAEPowerStorage> requesters = new LinkedHashSet();
+	final Set<IAEPowerStorage> requesters = new LinkedHashSet();
 
-	public TreeSet<EnergyThreshold> interests = new TreeSet<EnergyThreshold>();
-	private HashMap<IGridNode, IEnergyWatcher> watchers = new HashMap<IGridNode, IEnergyWatcher>();
+	final public TreeSet<EnergyThreshold> interests = new TreeSet<EnergyThreshold>();
+	final private HashMap<IGridNode, IEnergyWatcher> watchers = new HashMap<IGridNode, IEnergyWatcher>();
+
+	final private Set<IEnergyGrid> localSeen = new HashSet();
 
 	private double buffer()
 	{
@@ -111,7 +108,7 @@ public class EnergyGridCache implements IEnergyGrid
 		return lastProvider;
 	}
 
-	Multiset<IEnergyGridProvider> gproviders = HashMultiset.create();
+	final Multiset<IEnergyGridProvider> gproviders = HashMultiset.create();
 
 	final IGrid myGrid;
 	PathGridCache pgc;
@@ -259,8 +256,6 @@ public class EnergyGridCache implements IEnergyGrid
 		return Math.max( 0.0, amt - buffer() );
 	}
 
-	Set<IEnergyGrid> localSeen = new HashSet();
-
 	@Override
 	public double extractAEPower(double amt, Actionable mode, PowerMultiplier pm)
 	{
@@ -388,15 +383,6 @@ public class EnergyGridCache implements IEnergyGrid
 		tickDrainPerTick = 0;
 		tickInjectionPerTick = 0;
 
-		// next tick is here...
-		// for (int x = 0; x < totalDrainPastTicks.length - 1; x++)
-		// totalDrainPastTicks[x + 1] = totalDrainPastTicks[x];
-		// totalDrainPastTicks[0] = 0.0;
-
-		// for (int x = 0; x < totalInjectionPastTicks.length - 1; x++)
-		// totalInjectionPastTicks[x + 1] = totalInjectionPastTicks[x];
-		// totalInjectionPastTicks[0] = 0.0;
-
 		// power information.
 		double drained = extractAEPower( getIdlePowerUsage(), Actionable.MODULATE, PowerMultiplier.CONFIG );
 		boolean currentlyHasPower = drained >= drainPerTick - 0.001;
@@ -417,8 +403,6 @@ public class EnergyGridCache implements IEnergyGrid
 			publicPowerState( false, myGrid );
 
 		availableTicksSinceUpdate++;
-		// if ( extra > 32 )
-		// injectPower( 0.0, Actionable.MODULATE );
 	}
 
 	private void publicPowerState(boolean newState, IGrid grid)
@@ -559,25 +543,13 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public double getAvgPowerUsage()
 	{
-		return avgDrainPerTick;/*
-								 * double out = 0;
-								 * 
-								 * for (double x : totalDrainPastTicks) out += x;
-								 * 
-								 * return out / totalDrainPastTicks.length;
-								 */
+		return avgDrainPerTick;
 	}
 
 	@Override
 	public double getAvgPowerInjection()
 	{
-		return avgInjectionPerTick;/*
-									 * double out = 0;
-									 * 
-									 * for (double x : totalInjectionPastTicks) out += x;
-									 * 
-									 * return out / totalInjectionPastTicks.length;
-									 */
+		return avgInjectionPerTick;
 	}
 
 	@Override
