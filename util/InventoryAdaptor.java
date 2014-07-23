@@ -65,11 +65,16 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 		}
 		else if ( te instanceof ISidedInventory )
 		{
-			return new AdaptorIInventory( new WrapperMCISidedInventory( (ISidedInventory) te, d ) );
+			ISidedInventory si =(ISidedInventory)te;
+			int[] slots = si.getAccessibleSlotsFromSide( d.ordinal() );
+			if ( si.getSizeInventory() > 0 && slots != null && slots.length > 0 )
+				return new AdaptorIInventory( new WrapperMCISidedInventory( si, d ) );
 		}
 		else if ( te instanceof IInventory )
 		{
-			return new AdaptorIInventory( (IInventory) te );
+			IInventory i =(IInventory)te;
+			if ( i.getSizeInventory() > 0 )
+				return new AdaptorIInventory( i );
 		}
 
 		return null;
