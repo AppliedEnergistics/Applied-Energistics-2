@@ -47,6 +47,7 @@ import appeng.api.parts.IPart;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
@@ -509,8 +510,8 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		return patterns;
 	}
 
-	MEMonitorPassthu<IAEItemStack> items = new MEMonitorPassthu<IAEItemStack>( new NullInventory(), IAEItemStack.class );
-	MEMonitorPassthu<IAEFluidStack> fluids = new MEMonitorPassthu<IAEFluidStack>( new NullInventory(), IAEFluidStack.class );
+	MEMonitorPassthu<IAEItemStack> items = new MEMonitorPassthu<IAEItemStack>( new NullInventory(), StorageChannel.ITEMS );
+	MEMonitorPassthu<IAEFluidStack> fluids = new MEMonitorPassthu<IAEFluidStack>( new NullInventory(), StorageChannel.FLUIDS );
 
 	public void gridChanged()
 	{

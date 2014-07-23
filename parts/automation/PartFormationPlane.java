@@ -64,7 +64,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	int priority = 0;
 	boolean wasActive = false;
 	boolean blocked = false;
-	MEInventoryHandler myHandler = new MEInventoryHandler( this, IAEItemStack.class );
+	MEInventoryHandler myHandler = new MEInventoryHandler( this, StorageChannel.ITEMS );
 	AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
 
 	public PartFormationPlane(ItemStack is) {

@@ -15,7 +15,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.GridAccessException;
 import appeng.tile.misc.TileSecurity;
-import appeng.util.item.ItemList;
 
 public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 {

@@ -11,6 +11,7 @@ import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventory;
+import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
@@ -38,7 +39,7 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 	}
 
 	CellInventoryHandler(IMEInventory c) {
-		super( c, IAEItemStack.class );
+		super( c, StorageChannel.ITEMS );
 
 		ICellInventory ci = getCellInv();
 		if ( ci != null )

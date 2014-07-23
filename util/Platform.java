@@ -93,7 +93,6 @@ import appeng.me.helpers.AENetworkProxy;
 import appeng.server.AccessType;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.AESharedNBT;
-import appeng.util.item.ItemList;
 import appeng.util.item.OreHelper;
 import appeng.util.item.OreRefrence;
 import buildcraft.api.tools.IToolWrench;

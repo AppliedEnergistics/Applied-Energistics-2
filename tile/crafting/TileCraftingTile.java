@@ -32,7 +32,6 @@ import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 import appeng.util.Platform;
-import appeng.util.item.ItemList;
 
 public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IPowerChannelState
 {

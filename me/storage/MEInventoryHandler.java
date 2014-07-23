@@ -16,7 +16,7 @@ import appeng.util.prioitylist.IPartitionList;
 public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
 
-	Class<? extends IAEStack> clz;
+	final StorageChannel channel;
 	final protected IMEMonitor<T> monitor;
 	final protected IMEInventoryHandler<T> internal;
 
@@ -25,13 +25,13 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	public AccessRestriction myAccess = AccessRestriction.READ_WRITE;
 	public IPartitionList<T> myPartitionList = new DefaultPriorityList<T>();
 
-	public MEInventoryHandler(IMEInventory<T> i, Class<? extends IAEStack> cla) {
-		clz = cla;
+	public MEInventoryHandler(IMEInventory<T> i, StorageChannel channel ) {
+		this.channel = channel;
 
 		if ( i instanceof IMEInventoryHandler )
 			internal = (IMEInventoryHandler<T>) i;
 		else
-			internal = new MEPassthru<T>( i, clz );
+			internal = new MEPassthru<T>( i );
 
 		monitor = internal instanceof IMEMonitor ? (IMEMonitor<T>) internal : null;
 	}

@@ -42,7 +42,6 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.WrapperInventoryRange;
-import appeng.util.item.ItemList;
 
 public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IConfigManagerHost, IGridTickable
 {
@@ -302,7 +301,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		if ( src instanceof IMEMonitor )
 			myList = ((IMEMonitor) src).getStorageList();
 		else
-			myList = src.getAvailableItems( new ItemList( src.getChannel().type ) );
+			myList = src.getAvailableItems( src.getChannel().createList() );
 
 		if ( fm == FullnessMode.EMPTY )
 			return myList.isEmpty();
@@ -341,7 +340,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		if ( src instanceof IMEMonitor )
 			myList = ((IMEMonitor) src).getStorageList();
 		else
-			myList = src.getAvailableItems( new ItemList( src.getChannel().type ) );
+			myList = src.getAvailableItems( src.getChannel().createList()  );
 
 		boolean didStuff;
 

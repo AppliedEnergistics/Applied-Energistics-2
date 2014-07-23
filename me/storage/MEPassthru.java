@@ -12,7 +12,6 @@ import appeng.api.storage.data.IItemList;
 public class MEPassthru<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
 
-	Class<? extends IAEStack> clz;
 	private IMEInventory<T> internal;
 
 	protected IMEInventory<T> getInternal()
@@ -20,9 +19,8 @@ public class MEPassthru<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 		return internal;
 	}
 
-	public MEPassthru(IMEInventory<T> i, Class<? extends IAEStack> cla) {
+	public MEPassthru( IMEInventory<T> i ) {
 		setInternal( i );
-		clz = cla;
 	}
 
 	public void setInternal(IMEInventory<T> i)

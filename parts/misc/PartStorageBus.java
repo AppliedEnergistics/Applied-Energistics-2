@@ -256,7 +256,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 				if ( inv != null )
 				{
-					handler = new MEInventoryHandler( inv, IAEItemStack.class );
+					handler = new MEInventoryHandler( inv, StorageChannel.ITEMS );
 
 					handler.myAccess = (AccessRestriction) this.getConfigManager().getSetting( Settings.ACCESS );
 					handler.myWhitelist = getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST;

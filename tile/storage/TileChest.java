@@ -362,7 +362,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		if ( h == null )
 			return null;
 
-		MEInventoryHandler ih = new MEInventoryHandler( h, h.getChannel().type );
+		MEInventoryHandler ih = new MEInventoryHandler( h, h.getChannel() );
 		ih.myPriority = priority;
 
 		MEMonitorHandler<StackType> g = new ChestMonitorHandler<StackType>( ih );
