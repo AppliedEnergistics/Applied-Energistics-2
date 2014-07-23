@@ -12,6 +12,8 @@ import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.events.MENetworkEvent;
+import appeng.api.networking.events.MENetworkSpatialEvent;
 import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
@@ -78,12 +80,16 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 				double pr = energy.extractAEPower( req, Actionable.SIMULATE, PowerMultiplier.CONFIG );
 				if ( Math.abs( pr - req ) < req * 0.001 )
 				{
-					TransitionResult tr = sc.doSpatialTransition( cell, worldObj, spc.getMin(), spc.getMax(), true );
-					if ( tr.success )
+					MENetworkEvent res = gi.postEvent( new MENetworkSpatialEvent( this, req ) );
+					if ( ! res.isCanceled() )
 					{
-						energy.extractAEPower( req, Actionable.MODULATE, PowerMultiplier.CONFIG );
-						setInventorySlotContents( 0, null );
-						setInventorySlotContents( 1, cell );
+						TransitionResult tr = sc.doSpatialTransition( cell, worldObj, spc.getMin(), spc.getMax(), true );
+						if ( tr.success )
+						{
+							energy.extractAEPower( req, Actionable.MODULATE, PowerMultiplier.CONFIG );
+							setInventorySlotContents( 0, null );
+							setInventorySlotContents( 1, cell );
+						}
 					}
 				}
 			}
