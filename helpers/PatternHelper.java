@@ -142,8 +142,13 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		if ( isCrafting )
 		{
 			standardRecipe = Platform.findMatchingRecipe( crafting, w );
-			correctOutput = standardRecipe.getCraftingResult( crafting );
-			out.add( AEApi.instance().storage().createItemStack( correctOutput ) );
+			if ( standardRecipe != null )
+			{
+				correctOutput = standardRecipe.getCraftingResult( crafting );
+				out.add( AEApi.instance().storage().createItemStack( correctOutput ) );
+			}
+			else
+				throw new RuntimeException( "No pattern here!" );
 		}
 		else
 		{
@@ -186,7 +191,10 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			else
 				g.add( io );
 		}
-
+		
+		if ( tmpOutputs.isEmpty() || tmpInputs.isEmpty() )
+			throw new RuntimeException( "No pattern here!" );
+		
 		int offset = 0;
 		condencedInputs = new IAEItemStack[tmpInputs.size()];
 		for (IAEItemStack io : tmpInputs.values())
