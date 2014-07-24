@@ -25,13 +25,13 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	public AccessRestriction myAccess = AccessRestriction.READ_WRITE;
 	public IPartitionList<T> myPartitionList = new DefaultPriorityList<T>();
 
-	public MEInventoryHandler(IMEInventory<T> i, StorageChannel channel ) {
+	public MEInventoryHandler(IMEInventory<T> i, StorageChannel channel) {
 		this.channel = channel;
 
 		if ( i instanceof IMEInventoryHandler )
 			internal = (IMEInventoryHandler<T>) i;
 		else
-			internal = new MEPassthru<T>( i );
+			internal = new MEPassthru<T>( i, channel );
 
 		monitor = internal instanceof IMEMonitor ? (IMEMonitor<T>) internal : null;
 	}

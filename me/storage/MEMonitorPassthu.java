@@ -20,13 +20,11 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 
 	HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap();
 	IMEMonitor<T> monitor;
-	StorageChannel channel;
 
 	public BaseActionSource changeSource;
 
-	public MEMonitorPassthu(IMEInventory<T> i, StorageChannel channel ) {
-		super( i );
-		this.channel = channel;
+	public MEMonitorPassthu(IMEInventory<T> i, StorageChannel channel) {
+		super( i, channel );
 		if ( i instanceof IMEMonitor )
 			monitor = (IMEMonitor<T>) i;
 	}
@@ -38,13 +36,15 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 			monitor.removeListener( this );
 
 		monitor = null;
-		IItemList<T> before = getInternal() == null ? channel.createList() : getInternal().getAvailableItems( new ItemListIgnoreCrafting( channel.createList() ) );
+		IItemList<T> before = getInternal() == null ? channel.createList() : getInternal()
+				.getAvailableItems( new ItemListIgnoreCrafting( channel.createList() ) );
 
 		super.setInternal( i );
 		if ( i instanceof IMEMonitor )
 			monitor = (IMEMonitor<T>) i;
 
-		IItemList<T> after = getInternal() == null ? channel.createList() : getInternal().getAvailableItems( new ItemListIgnoreCrafting( channel.createList() ) );
+		IItemList<T> after = getInternal() == null ? channel.createList() : getInternal()
+				.getAvailableItems( new ItemListIgnoreCrafting( channel.createList() ) );
 
 		if ( monitor != null )
 			monitor.addListener( this, monitor );

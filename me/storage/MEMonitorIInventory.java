@@ -79,6 +79,8 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 		else
 			out = adaptor.addItems( input.getItemStack() );
 
+		onTick();
+
 		if ( out == null )
 			return null;
 
@@ -127,8 +129,8 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 	@Override
 	public IItemList<IAEItemStack> getAvailableItems(IItemList out)
 	{
-		for (ItemSlot is : adaptor)
-			out.addStorage( is.getAEItemStack() );
+		for (CachedItemStack is : memory.values())
+			out.addStorage( is.aeStack );
 
 		return out;
 	}
@@ -149,6 +151,9 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 		// better then doing construction from scratch :3
 		IAEItemStack o = request.copy();
 		o.setStackSize( out.stackSize );
+
+		onTick();
+
 		return o;
 	}
 

@@ -152,9 +152,6 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 	private void resetCache(boolean fullReset)
 	{
-		if ( monitor != null )
-			monitor.onTick();
-
 		if ( host == null || host.getTile() == null || host.getTile().getWorldObj() == null )
 			return;
 
@@ -168,6 +165,10 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 			handlerHash = 0;
 
 		IMEInventory<IAEItemStack> out = getInternalHandler();
+
+		if ( monitor != null )
+			monitor.onTick();
+
 		IItemList<IAEItemStack> after = AEApi.instance().storage().createItemList();
 		if ( out != null )
 			after = out.getAvailableItems( after );

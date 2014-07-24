@@ -13,13 +13,15 @@ public class MEPassthru<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
 
 	private IMEInventory<T> internal;
+	final protected StorageChannel channel;
 
 	protected IMEInventory<T> getInternal()
 	{
 		return internal;
 	}
 
-	public MEPassthru( IMEInventory<T> i ) {
+	public MEPassthru(IMEInventory<T> i, StorageChannel channel) {
+		this.channel = channel;
 		setInternal( i );
 	}
 
