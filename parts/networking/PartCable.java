@@ -230,12 +230,16 @@ public class PartCable extends AEBasePart implements IPartCable
 
 		if ( Platform.isServer() )
 		{
+			IGridNode node = getGridNode();
 			int howMany = 0;
 
-			for (IGridConnection gc : getGridNode().getConnections())
-				howMany = Math.max( gc.getUsedChannels(), howMany );
+			if ( node != null )
+			{
+				for (IGridConnection gc : node.getConnections())
+					howMany = Math.max( gc.getUsedChannels(), howMany );
 
-			data.setByte( "usedChannels", (byte) howMany );
+				data.setByte( "usedChannels", (byte) howMany );
+			}
 		}
 
 	}
