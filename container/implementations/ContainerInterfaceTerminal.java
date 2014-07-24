@@ -310,14 +310,16 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 				{
 					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
 					DualityInterface dual = ih.getInterfaceDuality();
-					diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName() ) );
+					if ( gn.isActive() )
+						diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName() ) );
 				}
 
 				for (IGridNode gn : g.getMachines( PartInterface.class ))
 				{
 					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
 					DualityInterface dual = ih.getInterfaceDuality();
-					diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName() ) );
+					if ( gn.isActive() )
+						diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName() ) );
 				}
 			}
 		}
