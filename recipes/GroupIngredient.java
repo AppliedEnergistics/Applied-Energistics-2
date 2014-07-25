@@ -17,6 +17,7 @@ public class GroupIngredient implements IIngredient
 	int qty = 0;
 	final String name;
 	final List<IIngredient> ingredients;
+	ItemStack[] baked;
 
 	boolean isInside = false;
 
@@ -57,6 +58,9 @@ public class GroupIngredient implements IIngredient
 	@Override
 	public ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
 	{
+		if ( baked != null )
+			return baked;
+		
 		if ( isInside )
 			return new ItemStack[0];
 
@@ -105,6 +109,12 @@ public class GroupIngredient implements IIngredient
 	public boolean isAir()
 	{
 		return false;
+	}
+
+	@Override
+	public void bake() throws RegistrationError, MissingIngredientError
+	{
+		baked = getItemStackSet();
 	}
 
 }

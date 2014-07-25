@@ -3,13 +3,16 @@ package appeng.recipes.game;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import appeng.api.exceptions.MissingIngredientError;
+import appeng.api.exceptions.RegistrationError;
+import appeng.api.recipes.IIngredient;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class ShapelessRecipe implements IRecipe
+public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 {
 
 	private ItemStack output = null;
@@ -19,21 +22,9 @@ public class ShapelessRecipe implements IRecipe
 		output = result.copy();
 		for (Object in : recipe)
 		{
-			if ( in instanceof ItemStack )
+			if ( in instanceof IIngredient )
 			{
-				input.add( ((ItemStack) in).copy() );
-			}
-			else if ( in instanceof ItemStack[] )
-			{
-				ItemStack[] a = (ItemStack[]) in;
-				if ( a.length == 1 )
-					input.add( a[0] );
-				else
-					input.add( a );
-			}
-			else if ( in instanceof String )
-			{
-				input.add( OreDictionary.getOres( (String) in ) );
+				input.add( in );
 			}
 			else
 			{
@@ -87,22 +78,22 @@ public class ShapelessRecipe implements IRecipe
 
 					Object next = req.next();
 
-					if ( next instanceof ItemStack )
+					if ( next instanceof IIngredient )
 					{
-						match = checkItemEquals( (ItemStack) next, slot );
-					}
-					else if ( next instanceof ItemStack[] )
-					{
-						for (ItemStack item : (ItemStack[]) next)
+						try
 						{
-							match = match || checkItemEquals( item, slot );
+							for (ItemStack item : ((IIngredient) next).getItemStackSet() )
+							{
+								match = match || checkItemEquals( item, slot );
+							}
 						}
-					}
-					else if ( next instanceof ArrayList )
-					{
-						for (ItemStack item : (ArrayList<ItemStack>) next)
+						catch (RegistrationError e)
 						{
-							match = match || checkItemEquals( item, slot );
+							// :P
+						}
+						catch (MissingIngredientError e)
+						{
+							// :P
 						}
 					}
 
@@ -141,4 +132,13 @@ public class ShapelessRecipe implements IRecipe
 		return this.input;
 	}
 
+	@Override
+	public void bake() throws RegistrationError, MissingIngredientError
+	{
+		for ( Object o : getInput() )
+		{
+			if ( o instanceof IIngredient )
+				((IIngredient)o).bake();
+		}
+	}
 }

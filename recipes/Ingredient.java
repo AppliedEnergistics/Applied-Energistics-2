@@ -26,6 +26,8 @@ public class Ingredient implements IIngredient
 
 	final public int qty;
 
+	ItemStack[] baked;
+	
 	public Ingredient(RecipeHandler handler, String input, int qty) throws RecipeError, MissedIngredientSet {
 
 		// works no matter wat!
@@ -159,6 +161,9 @@ public class Ingredient implements IIngredient
 	@Override
 	public ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
 	{
+		if ( baked != null )
+			return baked;
+		
 		if ( nameSpace.equalsIgnoreCase( "oreDictionary" ) )
 		{
 			List<ItemStack> ores = OreDictionary.getOres( itemName );
@@ -211,4 +216,10 @@ public class Ingredient implements IIngredient
 		return isAir;
 	}
 
+	@Override
+	public void bake() throws RegistrationError, MissingIngredientError
+	{
+		baked = getItemStackSet();
+	}
+	
 }

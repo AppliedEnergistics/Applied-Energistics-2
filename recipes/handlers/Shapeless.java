@@ -43,7 +43,7 @@ public class Shapeless implements ICraftHandler, IWebsiteSeralizer
 	{
 		List<Object> args = new ArrayList<Object>();
 		for (IIngredient i : inputs)
-			args.add( i.getItemStackSet() );
+			args.add( i );
 
 		ItemStack outIS = output.getItemStack();
 
@@ -54,7 +54,7 @@ public class Shapeless implements ICraftHandler, IWebsiteSeralizer
 		catch (Throwable e)
 		{
 			AELog.error( e );
-			throw new RegistrationError( "Erro while adding shapeless recipe." );
+			throw new RegistrationError( "Error while adding shapeless recipe." );
 		}
 	}
 	

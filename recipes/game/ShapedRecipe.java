@@ -3,13 +3,16 @@ package appeng.recipes.game;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import appeng.api.exceptions.MissingIngredientError;
+import appeng.api.exceptions.RegistrationError;
+import appeng.api.recipes.IIngredient;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class ShapedRecipe implements IRecipe
+public class ShapedRecipe implements IRecipe, IRecipeBakeable
 {
 
 	// Added in for future ease of change, but hard coded for now.
@@ -82,21 +85,9 @@ public class ShapedRecipe implements IRecipe
 			Character chr = (Character) recipe[idx];
 			Object in = recipe[idx + 1];
 
-			if ( in instanceof ItemStack )
+			if ( in instanceof IIngredient )
 			{
-				itemMap.put( chr, ((ItemStack) in).copy() );
-			}
-			else if ( in instanceof ItemStack[] )
-			{
-				ItemStack[] a = (ItemStack[]) in;
-				if ( a.length == 1 )
-					itemMap.put( chr, a[0] );
-				else
-					itemMap.put( chr, a );
-			}
-			else if ( in instanceof String )
-			{
-				itemMap.put( chr, OreDictionary.getOres( (String) in ) );
+				itemMap.put( chr, in );
 			}
 			else
 			{
@@ -183,20 +174,24 @@ public class ShapedRecipe implements IRecipe
 
 				ItemStack slot = inv.getStackInRowAndColumn( x, y );
 
-				if ( target instanceof ItemStack )
-				{
-					if ( !checkItemEquals( (ItemStack) target, slot ) )
-					{
-						return false;
-					}
-				}
-				else if ( target instanceof ItemStack[] )
+				if ( target instanceof IIngredient )
 				{
 					boolean matched = false;
 
-					for (ItemStack item : (ItemStack[]) target)
+					try
 					{
-						matched = matched || checkItemEquals( item, slot );
+						for (ItemStack item : ((IIngredient) target).getItemStackSet() )
+						{
+							matched = matched || checkItemEquals( item, slot );
+						}
+					}
+					catch (RegistrationError e)
+					{
+						// :P						
+					}
+					catch (MissingIngredientError e)
+					{
+						// :P
 					}
 
 					if ( !matched )
@@ -268,6 +263,16 @@ public class ShapedRecipe implements IRecipe
 	public Object[] getIngredients()
 	{
 		return input;
+	}
+
+	@Override
+	public void bake() throws RegistrationError, MissingIngredientError
+	{
+		for ( Object o : getInput() )
+		{
+			if ( o instanceof IIngredient )
+				((IIngredient)o).bake();
+		}
 	}
 
 }

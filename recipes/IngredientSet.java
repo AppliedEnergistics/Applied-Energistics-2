@@ -16,7 +16,8 @@ public class IngredientSet implements IIngredient
 	int qty = 0;
 	final String name;
 	final List<ItemStack> items;
-
+	ItemStack[] baked;
+	
 	public IngredientSet(ResolverResultSet rr) {
 		name = rr.name;
 		items = rr.results;
@@ -44,6 +45,9 @@ public class IngredientSet implements IIngredient
 	@Override
 	public ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
 	{
+		if ( baked != null )
+			return baked;
+		
 		if ( isInside )
 			return new ItemStack[0];
 
@@ -75,4 +79,11 @@ public class IngredientSet implements IIngredient
 	{
 		return false;
 	}
+	
+	@Override
+	public void bake() throws RegistrationError, MissingIngredientError
+	{
+		baked = getItemStackSet();
+	}
+	
 }

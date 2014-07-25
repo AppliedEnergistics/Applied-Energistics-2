@@ -69,7 +69,7 @@ public class Shaped implements ICraftHandler, IWebsiteSeralizer
 				{
 					row = row + first;
 					args.add( first );
-					args.add( inputs.get( y ).get( x ).getItemStackSet() );
+					args.add( inputs.get( y ).get( x ) );
 
 					first++;
 				}

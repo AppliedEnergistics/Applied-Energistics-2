@@ -140,6 +140,7 @@ import appeng.parts.PartPlacement;
 import appeng.recipes.AEItemResolver;
 import appeng.recipes.RecipeHandler;
 import appeng.recipes.game.FacadeRecipe;
+import appeng.recipes.game.IRecipeBakeable;
 import appeng.recipes.game.ShapedRecipe;
 import appeng.recipes.game.ShapelessRecipe;
 import appeng.recipes.handlers.Crusher;
@@ -561,7 +562,10 @@ public class Registration
 		// default settings..
 		((P2PTunnelRegistry) AEApi.instance().registries().p2pTunnel()).configure();
 
-		// NetworkRegistry.instance().registerGuiHandler( AppEng.instance, GuiBridge.GUI_Handler );
+		recipeHandler.injectRecipes();
+
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.enableFacadeCrafting ) )
+			CraftingManager.getInstance().getRecipeList().add( new FacadeRecipe() );
 	}
 
 	public void PostInit(FMLPostInitializationEvent event)
@@ -689,12 +693,26 @@ public class Registration
 		 * Whitelist AE2
 		 */
 		mr.whiteListTileEntity( AEBaseTile.class );
+		
+		bakeRecipes();
+	}
 
-		recipeHandler.registerHandlers();
-
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.enableFacadeCrafting ) )
-			CraftingManager.getInstance().getRecipeList().add( new FacadeRecipe() );
-
+	private void bakeRecipes()
+	{
+		for ( Object o : CraftingManager.getInstance().getRecipeList() )
+		{
+			if ( o instanceof IRecipeBakeable )
+			{
+				try
+				{
+					( (IRecipeBakeable) o ).bake();
+				}
+				catch (Throwable e)
+				{
+					AELog.error( e );
+				}
+			}
+		}
 	}
 
 	private void registerSpatial(boolean force)
