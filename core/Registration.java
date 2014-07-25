@@ -145,6 +145,7 @@ import appeng.recipes.game.ShapelessRecipe;
 import appeng.recipes.handlers.Crusher;
 import appeng.recipes.handlers.Grind;
 import appeng.recipes.handlers.GrindFZ;
+import appeng.recipes.handlers.HCCrusher;
 import appeng.recipes.handlers.Inscribe;
 import appeng.recipes.handlers.Macerator;
 import appeng.recipes.handlers.MekCrusher;
@@ -193,6 +194,8 @@ public class Registration
 		IRecipeHandlerRegistry recipeRegistery = AEApi.instance().registries().recipes();
 		recipeRegistery.addNewSubItemResolver( new AEItemResolver() );
 
+		
+		recipeRegistery.addNewCraftHandler( "hccrusher", HCCrusher.class );
 		recipeRegistery.addNewCraftHandler( "mekcrusher", MekCrusher.class );
 		recipeRegistery.addNewCraftHandler( "mekechamber", MekEnrichment.class );
 		recipeRegistery.addNewCraftHandler( "grind", Grind.class );
