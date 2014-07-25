@@ -107,11 +107,10 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		final double DEFAULT_IC2_EXCHANGE = 2.0;
 		final double DEFAULT_RTC_EXCHANGE = 1.0 / 11256.0;
 		final double DEFAULT_RF_EXCHANGE = 0.5;
+		final double DEFAULT_MEKANISM_EXCHANGE = 0.2;
 
 		PowerUnits.MJ.conversionRatio = get( "PowerRatios", "BuildCraft", DEFAULT_BC_EXCHANGE ).getDouble( DEFAULT_BC_EXCHANGE );
-		// PowerUnits.KJ.conversionRatio = get( "PowerRatios",
-		// "UniversalElectricity", DEFAULT_UE_EXCHANGE ).getDouble(
-		// DEFAULT_UE_EXCHANGE );
+		PowerUnits.MK.conversionRatio = get( "PowerRatios", "Mekanism", DEFAULT_MEKANISM_EXCHANGE ).getDouble( DEFAULT_MEKANISM_EXCHANGE );
 		PowerUnits.EU.conversionRatio = get( "PowerRatios", "IC2", DEFAULT_IC2_EXCHANGE ).getDouble( DEFAULT_IC2_EXCHANGE );
 		PowerUnits.WA.conversionRatio = get( "PowerRatios", "RotaryCraft", DEFAULT_RTC_EXCHANGE ).getDouble( DEFAULT_RTC_EXCHANGE );
 		PowerUnits.RF.conversionRatio = get( "PowerRatios", "ThermalExpansion", DEFAULT_RF_EXCHANGE ).getDouble( DEFAULT_RF_EXCHANGE );

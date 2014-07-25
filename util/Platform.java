@@ -152,12 +152,8 @@ public class Platform
 		if ( displayUnits == PowerUnits.WA )
 			unitName = "J";
 
-		if ( displayUnits == PowerUnits.KJ )
-		{
-			Lvl = preFixes[offset];
+		if ( displayUnits == PowerUnits.MK )
 			unitName = "J";
-			offset++;
-		}
 
 		while (p > 1000 && offset < preFixes.length)
 		{

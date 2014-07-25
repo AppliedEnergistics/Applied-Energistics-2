@@ -147,6 +147,8 @@ import appeng.recipes.handlers.Grind;
 import appeng.recipes.handlers.GrindFZ;
 import appeng.recipes.handlers.Inscribe;
 import appeng.recipes.handlers.Macerator;
+import appeng.recipes.handlers.MekCrusher;
+import appeng.recipes.handlers.MekEnrichment;
 import appeng.recipes.handlers.Press;
 import appeng.recipes.handlers.Pulverizer;
 import appeng.recipes.handlers.Shaped;
@@ -191,6 +193,8 @@ public class Registration
 		IRecipeHandlerRegistry recipeRegistery = AEApi.instance().registries().recipes();
 		recipeRegistery.addNewSubItemResolver( new AEItemResolver() );
 
+		recipeRegistery.addNewCraftHandler( "mekcrusher", MekCrusher.class );
+		recipeRegistery.addNewCraftHandler( "mekechamber", MekEnrichment.class );
 		recipeRegistery.addNewCraftHandler( "grind", Grind.class );
 		recipeRegistery.addNewCraftHandler( "crusher", Crusher.class );
 		recipeRegistery.addNewCraftHandler( "grindfz", GrindFZ.class );
