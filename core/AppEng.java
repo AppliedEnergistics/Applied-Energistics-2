@@ -39,7 +39,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
-@Mod(modid = AppEng.modid, acceptedMinecraftVersions = "[1.7.10]", name = AppEng.name, version = AEConfig.VERSION, dependencies = AppEng.dependencies)
+@Mod(modid = AppEng.modid, acceptedMinecraftVersions = "[1.7.10]", name = AppEng.name, version = AEConfig.VERSION, dependencies = AppEng.dependencies, guiFactory = "appeng.client.gui.config.AEConfigGuiFactory")
 public class AppEng
 {
 
@@ -64,7 +64,7 @@ public class AppEng
 	"after:gregtech_addon;after:Mekanism;after:IC2;after:ThermalExpansion;after:BuildCraft|Core;" +
 
 	// depend on version of forge used for build.
-			"required-after:AppliedEnergistics2-Core;" + "required-after:Forge@[" // require forge.
+			"required-after:appliedenergistics2-core;" + "required-after:Forge@[" // require forge.
 			+ net.minecraftforge.common.ForgeVersion.majorVersion + "." // majorVersion
 			+ net.minecraftforge.common.ForgeVersion.minorVersion + "." // minorVersion
 			+ net.minecraftforge.common.ForgeVersion.revisionVersion + "." // revisionVersion
@@ -86,12 +86,12 @@ public class AppEng
 		FMLCommonHandler.instance().registerCrashCallable( new CrashEnhancement( CrashInfo.MOD_VERSION ) );
 	}
 
-	public boolean isIntegrationEnabled( IntegrationType Name )
+	public boolean isIntegrationEnabled(IntegrationType Name)
 	{
 		return IntegrationRegistry.instance.isEnabled( Name );
 	}
 
-	public Object getIntegration( IntegrationType Name )
+	public Object getIntegration(IntegrationType Name)
 	{
 		return IntegrationRegistry.instance.getInstance( Name );
 	}

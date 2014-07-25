@@ -19,6 +19,9 @@ import appeng.core.settings.TickRates;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import cpw.mods.fml.client.event.ConfigChangedEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class AEConfig extends Configuration implements IConfigureableObject, IConfigManagerHost
 {
@@ -72,6 +75,20 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		return WirelessBaseCost + WirelessCostMultiplier * Math.pow( boosters, 1 + boosters / WirelessHighWirelessCount );
 	}
 
+	@Override
+	public Property get(String category, String key, String defaultValue, String comment, Property.Type type)
+	{
+		Property prop = super.get( category, key, defaultValue, comment, type );
+
+		if ( prop != null )
+		{
+			if ( !category.equals( "Client" ) )
+				prop.setRequiresMcRestart( true );
+		}
+
+		return prop;
+	}
+
 	public double spatialPowerScaler = 1.5;
 	public double spatialPowerMultiplier = 1500.0;
 
@@ -98,12 +115,55 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 	public int staff_battery = 8000;
 
 	public boolean updateable = false;
-	
+	final private File myPath;
+
+	@SubscribeEvent
+	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs)
+	{
+		if ( eventArgs.modID.equals( AppEng.modid ) )
+		{
+			clientSync();
+		}
+	}
+
+	private void clientSync()
+	{
+		enableEffects = get( "Client", "enableEffects", true ).getBoolean( true );
+		useLargeFonts = get( "Client", "useTerminalUseLargeFont", false ).getBoolean( false );
+
+		for (Enum e : settings.getSettings())
+		{
+			String Category = "Client"; // e.getClass().getSimpleName();
+			Enum value = settings.getSetting( e );
+
+			Property p = this.get( Category, e.name(), value.name(), getListComment( value ) );
+
+			try
+			{
+				value = Enum.valueOf( value.getClass(), p.getString() );
+			}
+			catch (IllegalArgumentException er)
+			{
+				AELog.info( "Invalid value '" + p.getString() + "' for " + e.name() + " using '" + value.name() + "' instead" );
+			}
+
+			settings.putSetting( e, value );
+		}
+
+	}
+
+	public String getFilePath()
+	{
+		return myPath.toString();
+	}
+
 	public AEConfig(String path) {
 		super( new File( path + "AppliedEnergistics2.cfg" ) );
+		myPath = new File( path + "AppliedEnergistics2.cfg" );
+
+		FMLCommonHandler.instance().bus().register( this );
 
 		final double DEFAULT_BC_EXCHANGE = 5.0;
-		// final double DEFAULT_UE_EXCHANGE = 5.0;
 		final double DEFAULT_IC2_EXCHANGE = 2.0;
 		final double DEFAULT_RTC_EXCHANGE = 1.0 / 11256.0;
 		final double DEFAULT_RF_EXCHANGE = 0.5;
@@ -123,8 +183,6 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 
 		grinderOres = get( "GrindStone", "grinderOres", grinderOres ).getStringList();
 		oreDoublePercentage = get( "GrindStone", "oreDoublePercentage", oreDoublePercentage ).getDouble( oreDoublePercentage );
-		enableEffects = get( "Client", "enableEffects", true ).getBoolean( true );
-		useLargeFonts = get( "Client", "useTerminalUseLargeFont", false ).getBoolean( false );
 
 		settings.registerSetting( Settings.SEARCH_TOOLTIPS, YesNo.YES );
 		settings.registerSetting( Settings.TERMINAL_STYLE, TerminalStyle.TALL );
@@ -156,6 +214,8 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		colorapplicator_battery = get( "battery", "colorapplicator", colorapplicator_battery ).getInt( colorapplicator_battery );
 		mattercannon_battery = get( "battery", "mattercannon", mattercannon_battery ).getInt( mattercannon_battery );
 
+		clientSync();
+
 		for (AEFeature feature : AEFeature.values())
 		{
 			if ( feature.isVisible() )
@@ -169,25 +229,6 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 
 		if ( featureFlags.contains( AEFeature.WebsiteRecipes ) )
 			featureFlags.add( AEFeature.DuplicateItems );
-
-		for (Enum e : settings.getSettings())
-		{
-			String Category = e.getClass().getSimpleName();
-			Enum value = settings.getSetting( e );
-
-			Property p = this.get( Category, e.name(), value.name(), getListComment( value ) );
-
-			try
-			{
-				value = Enum.valueOf( value.getClass(), p.getString() );
-			}
-			catch (IllegalArgumentException er)
-			{
-				AELog.info( "Invalid value '" + p.getString() + "' for " + e.name() + " using '" + value.name() + "' instead" );
-			}
-
-			settings.putSetting( e, value );
-		}
 
 		try
 		{
@@ -221,7 +262,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 				latestTimeStamp = 0;
 			}
 		}
-		
+
 		updateable = true;
 	}
 
@@ -370,4 +411,5 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		selectedPowerUnit = Platform.rotateEnum( selectedPowerUnit, backwards, Settings.POWER_UNITS.getPossibleValues() );
 		save();
 	}
+
 }

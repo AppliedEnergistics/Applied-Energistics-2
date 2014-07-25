@@ -71,7 +71,7 @@ public class AppEngCore extends DummyModContainer implements IFMLLoadingPlugin
 	@Override
 	public String getModId()
 	{
-		return "AppliedEnergistics2-Core";
+		return "appliedenergistics2-core";
 	}
 
 	@Override
