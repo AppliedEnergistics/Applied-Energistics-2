@@ -102,7 +102,8 @@ public class SlotRestrictedInput extends AppEngSlot
 			{
 				ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
 				ItemStack out = iep.getOutput( is );
-				return out;
+				if ( out != null )
+					return out;
 			}
 		}
 		return super.getStack();
