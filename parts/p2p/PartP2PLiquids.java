@@ -95,7 +95,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 				IFluidHandler targ = l.getTarget();
 				if ( targ != null )
 				{
-					if ( targ.canFill( side.getOpposite(), input ) )
+					if ( targ.canFill( l.side.getOpposite(), input ) )
 						outs.add( l );
 				}
 			}
