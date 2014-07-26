@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.oredict.OreDictionary;
+import appeng.core.AELog;
+import appeng.recipes.game.IRecipeBakeable;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class OreDictionaryHandler
@@ -13,6 +16,8 @@ public class OreDictionaryHandler
 	public static final OreDictionaryHandler instance = new OreDictionaryHandler();
 
 	private List<IOreListener> ol = new ArrayList<IOreListener>();
+
+	private boolean enableRebaking = false;
 
 	/**
 	 * Just limit what items are sent to the final listeners, I got sick of strange items showing up...
@@ -33,6 +38,9 @@ public class OreDictionaryHandler
 			for (IOreListener v : ol)
 				v.oreRegistered( event.Name, event.Ore );
 		}
+
+		if ( enableRebaking )
+			bakeRecipes();
 	}
 
 	/**
@@ -53,6 +61,26 @@ public class OreDictionaryHandler
 				for (ItemStack item : OreDictionary.getOres( name ))
 				{
 					n.oreRegistered( name, item );
+				}
+			}
+		}
+	}
+
+	public void bakeRecipes()
+	{
+		enableRebaking = true;
+
+		for (Object o : CraftingManager.getInstance().getRecipeList())
+		{
+			if ( o instanceof IRecipeBakeable )
+			{
+				try
+				{
+					((IRecipeBakeable) o).bake();
+				}
+				catch (Throwable e)
+				{
+					AELog.error( e );
 				}
 			}
 		}

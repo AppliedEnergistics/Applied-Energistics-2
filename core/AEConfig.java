@@ -114,6 +114,8 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 	public int colorapplicator_battery = 20000;
 	public int staff_battery = 8000;
 
+	public boolean disableColoredCableRecipesInNEI = true;
+
 	public boolean updateable = false;
 	final private File myPath;
 
@@ -128,6 +130,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 
 	private void clientSync()
 	{
+		disableColoredCableRecipesInNEI = get( "Client", "disableColoredCableRecipesInNEI", true ).getBoolean( true );
 		enableEffects = get( "Client", "enableEffects", true ).getBoolean( true );
 		useLargeFonts = get( "Client", "useTerminalUseLargeFont", false ).getBoolean( false );
 
@@ -150,6 +153,11 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 			settings.putSetting( e, value );
 		}
 
+	}
+
+	public boolean disableColoredCableRecipesInNEI()
+	{
+		return disableColoredCableRecipesInNEI;
 	}
 
 	public String getFilePath()

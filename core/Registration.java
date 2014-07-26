@@ -140,7 +140,6 @@ import appeng.parts.PartPlacement;
 import appeng.recipes.AEItemResolver;
 import appeng.recipes.RecipeHandler;
 import appeng.recipes.game.FacadeRecipe;
-import appeng.recipes.game.IRecipeBakeable;
 import appeng.recipes.game.ShapedRecipe;
 import appeng.recipes.game.ShapelessRecipe;
 import appeng.recipes.handlers.Crusher;
@@ -195,7 +194,6 @@ public class Registration
 		IRecipeHandlerRegistry recipeRegistery = AEApi.instance().registries().recipes();
 		recipeRegistery.addNewSubItemResolver( new AEItemResolver() );
 
-		
 		recipeRegistery.addNewCraftHandler( "hccrusher", HCCrusher.class );
 		recipeRegistery.addNewCraftHandler( "mekcrusher", MekCrusher.class );
 		recipeRegistery.addNewCraftHandler( "mekechamber", MekEnrichment.class );
@@ -693,26 +691,11 @@ public class Registration
 		 * Whitelist AE2
 		 */
 		mr.whiteListTileEntity( AEBaseTile.class );
-		
-		bakeRecipes();
-	}
 
-	private void bakeRecipes()
-	{
-		for ( Object o : CraftingManager.getInstance().getRecipeList() )
-		{
-			if ( o instanceof IRecipeBakeable )
-			{
-				try
-				{
-					( (IRecipeBakeable) o ).bake();
-				}
-				catch (Throwable e)
-				{
-					AELog.error( e );
-				}
-			}
-		}
+		/**
+		 * initial recipe bake, if ore dictionary changes after this it re-bakes.
+		 */
+		OreDictionaryHandler.instance.bakeRecipes();
 	}
 
 	private void registerSpatial(boolean force)

@@ -80,6 +80,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAETagCompound;
 import appeng.api.storage.data.IItemList;
+import appeng.api.util.AEColor;
 import appeng.api.util.AEItemDefinition;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -1412,7 +1413,7 @@ public class Platform
 
 			if ( myFluids != null )
 			{
-				for (IAEFluidStack is : myFluids.getAvailableItems( AEApi.instance().storage().createFluidList() ) )
+				for (IAEFluidStack is : myFluids.getAvailableItems( AEApi.instance().storage().createFluidList() ))
 				{
 					gs.postAlterationOfStoredItems( StorageChannel.FLUIDS, is, src );
 				}
@@ -1692,4 +1693,23 @@ public class Platform
 		return false;
 	}
 
+	public static Object findPrefered(ItemStack[] is)
+	{
+		for (ItemStack stack : is)
+		{
+			if ( AEApi.instance().parts().partCableGlass.sameAs( AEColor.Transparent, stack ) )
+				return stack;
+
+			if ( AEApi.instance().parts().partCableCovered.sameAs( AEColor.Transparent, stack ) )
+				return stack;
+
+			if ( AEApi.instance().parts().partCableSmart.sameAs( AEColor.Transparent, stack ) )
+				return stack;
+
+			if ( AEApi.instance().parts().partCableDense.sameAs( AEColor.Transparent, stack ) )
+				return stack;
+		}
+
+		return is;
+	}
 }

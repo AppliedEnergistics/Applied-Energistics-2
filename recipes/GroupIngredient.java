@@ -60,7 +60,7 @@ public class GroupIngredient implements IIngredient
 	{
 		if ( baked != null )
 			return baked;
-		
+
 		if ( isInside )
 			return new ItemStack[0];
 
@@ -114,6 +114,7 @@ public class GroupIngredient implements IIngredient
 	@Override
 	public void bake() throws RegistrationError, MissingIngredientError
 	{
+		baked = null;
 		baked = getItemStackSet();
 	}
 

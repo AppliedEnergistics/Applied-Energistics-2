@@ -10,7 +10,12 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import appeng.api.exceptions.MissingIngredientError;
+import appeng.api.exceptions.RegistrationError;
+import appeng.api.recipes.IIngredient;
+import appeng.core.AEConfig;
 import appeng.recipes.game.ShapelessRecipe;
+import appeng.util.Platform;
 import codechicken.nei.NEIClientUtils;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
@@ -87,7 +92,7 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 			if ( (irecipe instanceof ShapelessRecipe) )
 			{
 				CachedShapelessRecipe recipe = new CachedShapelessRecipe( (ShapelessRecipe) irecipe );
-	
+
 				if ( recipe.contains( recipe.ingredients, ingredient.getItem() ) )
 				{
 					recipe.computeVisuals();
@@ -123,11 +128,11 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 		IRecipeOverlayRenderer renderer = super.getOverlayRenderer( gui, recipe );
 		if ( renderer != null )
 			return renderer;
-		
+
 		IStackPositioner positioner = RecipeInfo.getStackPositioner( gui, "crafting2x2" );
 		if ( positioner == null )
 			return null;
-		
+
 		return new DefaultOverlayRenderer( getIngredientStacks( recipe ), positioner );
 	}
 
@@ -137,7 +142,7 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 		IOverlayHandler handler = super.getOverlayHandler( gui, recipe );
 		if ( handler != null )
 			return handler;
-		
+
 		return RecipeInfo.getOverlayHandler( gui, "crafting2x2" );
 	}
 
@@ -165,15 +170,32 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 
 		public void setIngredients(Object[] items)
 		{
+			boolean useSingleItems = AEConfig.instance.disableColoredCableRecipesInNEI();
 			for (int x = 0; x < 3; x++)
 			{
 				for (int y = 0; y < 3; y++)
 				{
 					if ( items.length > (y * 3 + x) )
 					{
-						PositionedStack stack = new PositionedStack( items[(y * 3 + x)], 25 + x * 18, 6 + y * 18, false );
-						stack.setMaxSize( 1 );
-						this.ingredients.add( stack );
+						IIngredient ing = (IIngredient) items[(y * 3 + x)];
+
+						try
+						{
+							ItemStack[] is = ing.getItemStackSet();
+							PositionedStack stack = new PositionedStack( useSingleItems ? Platform.findPrefered( is ) : ing.getItemStackSet(), 25 + x * 18,
+									6 + y * 18, false );
+							stack.setMaxSize( 1 );
+							this.ingredients.add( stack );
+						}
+						catch (RegistrationError e)
+						{
+
+						}
+						catch (MissingIngredientError e)
+						{
+
+						}
+
 					}
 				}
 			}
@@ -195,7 +217,7 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 		{
 			for (PositionedStack p : this.ingredients)
 				p.generatePermutations();
-			
+
 			this.result.generatePermutations();
 		}
 	}
