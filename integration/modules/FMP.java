@@ -13,12 +13,12 @@ import appeng.api.parts.IPartHost;
 import appeng.core.AELog;
 import appeng.fmp.CableBusPart;
 import appeng.fmp.FMPEvent;
+import appeng.fmp.FMPPlacementHelper;
 import appeng.fmp.PartRegistry;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IFMP;
 import appeng.integration.modules.helpers.FMPPacketEvent;
 import appeng.parts.CableBusContainer;
-import appeng.util.Platform;
 import codechicken.lib.vec.BlockCoord;
 import codechicken.microblock.BlockMicroMaterial;
 import codechicken.multipart.MultiPartRegistry;
@@ -45,7 +45,7 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 
 		return null;
 	}
-	
+
 	@Override
 	public TMultiPart convert(World world, BlockCoord pos)
 	{
@@ -64,14 +64,14 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 
 	@Override
 	public void Init() throws Throwable
-	{		
-		createAndRegister( AEApi.instance().blocks().blockQuartz.block(),0 );
-		createAndRegister( AEApi.instance().blocks().blockQuartzPiller.block(),0 );
-		createAndRegister( AEApi.instance().blocks().blockQuartzChiseled.block(),0 );
-		createAndRegister( AEApi.instance().blocks().blockSkyStone.block(),0 );
-		createAndRegister( AEApi.instance().blocks().blockSkyStone.block(),1 );
-		createAndRegister( AEApi.instance().blocks().blockSkyStone.block(),2 );
-		createAndRegister( AEApi.instance().blocks().blockSkyStone.block(),3 );
+	{
+		createAndRegister( AEApi.instance().blocks().blockQuartz.block(), 0 );
+		createAndRegister( AEApi.instance().blocks().blockQuartzPiller.block(), 0 );
+		createAndRegister( AEApi.instance().blocks().blockQuartzChiseled.block(), 0 );
+		createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 0 );
+		createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 1 );
+		createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 2 );
+		createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 3 );
 
 		PartRegistry reg[] = PartRegistry.values();
 
@@ -85,9 +85,10 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 		MultipartGenerator.registerPassThroughInterface( "appeng.helpers.AEMultiTile" );
 	}
 
-	private void createAndRegister(Block block, int i) {
+	private void createAndRegister(Block block, int i)
+	{
 		if ( block != null )
-			BlockMicroMaterial.createAndRegister(block, i);
+			BlockMicroMaterial.createAndRegister( block, i );
 	}
 
 	@Override
@@ -114,10 +115,7 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 						return (IPartHost) p;
 				}
 
-				TMultiPart part = PartRegistry.CableBusPart.construct( 0 );
-				if ( mp.canAddPart( part ) && Platform.isServer() )
-					TileMultipart.addPart( tile.getWorldObj(), loc, part );
-				return (CableBusPart) part;
+				return new FMPPlacementHelper( mp );
 			}
 		}
 		catch (Throwable t)
@@ -159,13 +157,15 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	}
 
 	@Override
-	public Event newFMPPacketEvent(EntityPlayerMP sender) {
-		return new FMPPacketEvent(sender);
+	public Event newFMPPacketEvent(EntityPlayerMP sender)
+	{
+		return new FMPPacketEvent( sender );
 	}
 
 	@Override
-	public Iterable<Block> blockTypes() {
-		Blocks def= AEApi.instance().blocks();
+	public Iterable<Block> blockTypes()
+	{
+		Blocks def = AEApi.instance().blocks();
 		return Arrays.asList( def.blockMultiPart.block(), def.blockQuartzTorch.block() );
 	}
 
