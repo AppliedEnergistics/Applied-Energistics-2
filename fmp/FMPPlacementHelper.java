@@ -18,6 +18,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.facade.FacadeContainer;
 import appeng.util.Platform;
 import codechicken.lib.vec.BlockCoord;
+import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
 
 public class FMPPlacementHelper implements IPartHost
@@ -47,11 +48,17 @@ public class FMPPlacementHelper implements IPartHost
 	{
 		if ( myPart.isEmpty() )
 		{
-			if ( hasPart )
+			scala.collection.Iterator<TMultiPart> i = myMP.partList().iterator();
+			while (i.hasNext())
 			{
-				myMP.remPart( myPart );
-				hasPart = false;
+				TMultiPart p = i.next();
+				if ( p == myPart )
+				{
+					myMP.remPart( myPart );
+					break;
+				}
 			}
+			hasPart = false;
 			myPart = null;
 		}
 	}
