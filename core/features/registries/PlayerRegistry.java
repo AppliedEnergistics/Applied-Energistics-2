@@ -1,10 +1,10 @@
 package appeng.core.features.registries;
 
-import com.mojang.authlib.GameProfile;
-
 import net.minecraft.entity.player.EntityPlayer;
 import appeng.api.features.IPlayerRegistry;
 import appeng.core.WorldSettings;
+
+import com.mojang.authlib.GameProfile;
 
 public class PlayerRegistry implements IPlayerRegistry
 {

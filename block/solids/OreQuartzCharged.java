@@ -8,8 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
 import appeng.client.render.effects.ChargedOreFX;
-import appeng.core.CommonHelper;
 import appeng.core.AEConfig;
+import appeng.core.CommonHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

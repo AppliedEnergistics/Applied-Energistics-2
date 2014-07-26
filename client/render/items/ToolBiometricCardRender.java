@@ -8,11 +8,11 @@ import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.authlib.GameProfile;
-
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.util.AEColor;
 import appeng.client.texture.ExtraItemTextures;
+
+import com.mojang.authlib.GameProfile;
 
 public class ToolBiometricCardRender implements IItemRenderer
 {

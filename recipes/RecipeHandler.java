@@ -11,9 +11,6 @@ import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import com.google.common.collect.HashMultimap;
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.Loader;
-
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingIngredientError;
@@ -33,6 +30,9 @@ import appeng.items.misc.ItemCrystalSeed;
 import appeng.items.parts.ItemMultiPart;
 import appeng.recipes.handlers.IWebsiteSeralizer;
 import appeng.recipes.handlers.OreRegistration;
+
+import com.google.common.collect.HashMultimap;
+
 import cpw.mods.fml.common.LoaderState;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
@@ -81,9 +81,9 @@ public class RecipeHandler implements IRecipeHandler
 	@Override
 	public void injectRecipes()
 	{
-		if ( cpw.mods.fml.common.Loader.instance().hasReachedState( LoaderState.POSTINITIALIZATION  ))
-			throw new RuntimeException("Recipes must now be loaded in Init.");
-		
+		if ( cpw.mods.fml.common.Loader.instance().hasReachedState( LoaderState.POSTINITIALIZATION ) )
+			throw new RuntimeException( "Recipes must now be loaded in Init." );
+
 		HashMap<Class, Integer> processed = new HashMap<Class, Integer>();
 		try
 		{
@@ -141,37 +141,46 @@ public class RecipeHandler implements IRecipeHandler
 				ZipOutputStream out = new ZipOutputStream( new FileOutputStream( "recipes.zip" ) );
 
 				HashMultimap<String, IWebsiteSeralizer> combined = HashMultimap.create();
-				
+
 				for (String s : data.knownItem)
 				{
-					try {
-						
+					try
+					{
+
 						Ingredient i = new Ingredient( this, s, 1 );
-						
+
 						for (ItemStack is : i.getItemStackSet())
 						{
 							String realName = getName( is );
 							List<IWebsiteSeralizer> recipes = findRecipe( is );
 							if ( !recipes.isEmpty() )
-								combined.putAll(realName, recipes);
+								combined.putAll( realName, recipes );
 						}
-						
-					} catch (RecipeError e1) {
-						
-					} catch (MissedIngredientSet e1) {
-						
-					} catch (RegistrationError e1) {
-						
-					} catch (MissingIngredientError e1) {
-						
+
+					}
+					catch (RecipeError e1)
+					{
+
+					}
+					catch (MissedIngredientSet e1)
+					{
+
+					}
+					catch (RegistrationError e1)
+					{
+
+					}
+					catch (MissingIngredientError e1)
+					{
+
 					}
 				}
-				
-				for ( String realName : combined.keySet() )
+
+				for (String realName : combined.keySet())
 				{
 					int offset = 0;
-					
-					for ( IWebsiteSeralizer ws : combined.get(realName) )
+
+					for (IWebsiteSeralizer ws : combined.get( realName ))
 					{
 						String rew = ws.getPattern( this );
 						if ( rew != null && rew.length() > 0 )
@@ -180,7 +189,7 @@ public class RecipeHandler implements IRecipeHandler
 							offset++;
 							out.write( rew.getBytes() );
 						}
-					}					
+					}
 				}
 
 				out.close();
