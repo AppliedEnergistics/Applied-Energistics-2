@@ -5,20 +5,19 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
 import appeng.api.AEApi;
 import appeng.api.util.WorldCoord;
 import appeng.block.spatial.BlockMatrixFrame;
-import appeng.core.AELog;
 import appeng.util.Platform;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class StorageHelper
 {
@@ -72,17 +71,24 @@ public class StorageHelper
 	class TelDestination
 	{
 
-		TelDestination(World _dim, AxisAlignedBB srcBox, double _x, double _y, double _z) {
+		TelDestination(World _dim, AxisAlignedBB srcBox, double _x, double _y, double _z, int tileX, int tileY, int tileZ) {
 			dim = _dim;
-			x = Math.min( srcBox.maxX - 0.5, Math.max( srcBox.minX + 0.5, _x ) );
-			y = Math.min( srcBox.maxY - 0.5, Math.max( srcBox.minY + 0.5, _y ) );
-			z = Math.min( srcBox.maxZ - 0.5, Math.max( srcBox.minZ + 0.5, _z ) );
+			x = Math.min( srcBox.maxX - 0.5, Math.max( srcBox.minX + 0.5, _x + tileX ) );
+			y = Math.min( srcBox.maxY - 0.5, Math.max( srcBox.minY + 0.5, _y + tileY ) );
+			z = Math.min( srcBox.maxZ - 0.5, Math.max( srcBox.minZ + 0.5, _z + tileZ ) );
+			xOff = tileX;
+			yOff = tileY;
+			zOff = tileZ;
 		}
 
 		final World dim;
 		final double x;
 		final double y;
 		final double z;
+
+		final int xOff;
+		final int yOff;
+		final int zOff;
 	};
 
 	class METeleporter extends Teleporter
@@ -167,6 +173,10 @@ public class StorageHelper
 			// We keep track of both so we can remount them on the other side.
 		}
 
+		// load the chunk!
+		Chunk myChunk = WorldServer.class.cast( newWorld ).getChunkProvider()
+				.loadChunk( MathHelper.floor_double( link.x ) >> 4, MathHelper.floor_double( link.z ) >> 4 );
+
 		boolean difDest = newWorld != oldWorld;
 		if ( difDest )
 		{
@@ -178,50 +188,42 @@ public class StorageHelper
 			{
 				int entX = entity.chunkCoordX;
 				int entZ = entity.chunkCoordZ;
+
 				if ( (entity.addedToChunk) && (oldWorld.getChunkProvider().chunkExists( entX, entZ )) )
 				{
 					oldWorld.getChunkFromChunkCoords( entX, entZ ).removeEntity( entity );
 					oldWorld.getChunkFromChunkCoords( entX, entZ ).isModified = true;
 				}
 
-				if ( onEntityRemoved == null )
+				Entity newEntity = EntityList.createEntityByName( EntityList.getEntityString( entity ), newWorld );
+				if ( newEntity != null )
 				{
-					onEntityRemoved = ReflectionHelper.findMethod( WorldServer.class, oldWorld, new String[] { "onEntityRemoved", "func_72847_b" },
-							Entity.class );
-				}
+					entity.lastTickPosX = entity.prevPosX = entity.posX = link.x;
+					entity.lastTickPosY = entity.prevPosY = entity.posY = link.y;
+					entity.lastTickPosZ = entity.prevPosZ = entity.posZ = link.z;
 
-				if ( onEntityRemoved != null )
-				{
-					try
+					if ( entity instanceof EntityHanging )
 					{
-						onEntityRemoved.invoke( oldWorld, entity );
+						EntityHanging h = (EntityHanging) entity;
+						h.field_146063_b += link.xOff;
+						h.field_146064_c += link.yOff;
+						h.field_146062_d += link.zOff;
 					}
-					catch (Throwable t)
-					{
-						AELog.error( t );
-					}
-				}
 
-				if ( player == null ) // Are we NOT working with a player?
-				{
-					NBTTagCompound entityNBT = new NBTTagCompound();
-					entity.posX = link.x;
-					entity.posY = link.y;
-					entity.posZ = link.z;
-					entity.prevPosX = link.x;
-					entity.prevPosY = link.y;
-					entity.prevPosZ = link.z;
-					entity.isDead = false;
-					entity.writeToNBTOptional( entityNBT );
+					newEntity.copyDataFrom( entity, true );
+					newEntity.dimension = newWorld.provider.dimensionId;
+					newEntity.forceSpawn = true;
+
 					entity.isDead = true;
-					entity = EntityList.createEntityFromNBT( entityNBT, newWorld );
+					entity = newEntity;
 				}
+				else
+					return null;
 
-				if ( entity == null )
-					return entity;
-
+				// myChunk.addEntity( entity );
+				// newWorld.loadedEntityList.add( entity );
+				// newWorld.onEntityAdded( entity );
 				newWorld.spawnEntityInWorld( entity );
-				entity.setWorld( newWorld );
 			}
 		}
 
@@ -233,12 +235,6 @@ public class StorageHelper
 				entity.worldObj.updateEntityWithOptionalForce( entity, true );
 
 			entity.mountEntity( cart );
-		}
-
-		if ( player != null )
-		{
-			WorldServer.class.cast( newWorld ).getChunkProvider()
-					.loadChunk( MathHelper.floor_double( entity.posX ) >> 4, MathHelper.floor_double( entity.posZ ) >> 4 );
 		}
 
 		return entity;
@@ -292,12 +288,12 @@ public class StorageHelper
 
 		for (Entity e : dstE)
 		{
-			teleportEntity( e, new TelDestination( src, srcBox, e.posX - i + x, e.posY - j + y, e.posZ - k + z ) );
+			teleportEntity( e, new TelDestination( src, srcBox, e.posX, e.posY, e.posZ, -i + x, -j + y, -k + z ) );
 		}
 
 		for (Entity e : srcE)
 		{
-			teleportEntity( e, new TelDestination( dst, dstBox, e.posX - x + i, e.posY - y + j, e.posZ - z + k ) );
+			teleportEntity( e, new TelDestination( dst, dstBox, e.posX, e.posY, e.posZ, -x + i, -y + j, -z + k ) );
 		}
 
 		for (WorldCoord wc : cDst.updates)
