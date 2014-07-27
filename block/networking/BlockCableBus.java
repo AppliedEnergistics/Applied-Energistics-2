@@ -430,4 +430,18 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 	{
 		return cb( world, x, y, z ).canConnectRedstone( EnumSet.allOf( ForgeDirection.class ) ) ? RedNetConnectionType.CableSingle : RedNetConnectionType.None;
 	}
+
+	int myColorMultiplier = 0xffffff;
+
+	public void setRenderColor(int color)
+	{
+		myColorMultiplier = color;
+	}
+
+	@Override
+	public int colorMultiplier(IBlockAccess p_149720_1_, int p_149720_2_, int p_149720_3_, int p_149720_4_)
+	{
+		return myColorMultiplier;
+	}
+
 }

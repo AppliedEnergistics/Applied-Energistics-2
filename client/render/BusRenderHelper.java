@@ -13,6 +13,7 @@ import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.ISimplifiedBundle;
 import appeng.block.AEBaseBlock;
+import appeng.block.networking.BlockCableBus;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import cpw.mods.fml.relauncher.Side;
@@ -350,6 +351,12 @@ public class BusRenderHelper implements IPartRenderHelper
 	public Block getBlock()
 	{
 		return AEApi.instance().blocks().blockMultiPart.block();
+	}
+
+	public void setRenderColor(int color)
+	{
+		BlockCableBus blk = (BlockCableBus) AEApi.instance().blocks().blockMultiPart.block();
+		blk.setRenderColor( color );
 	}
 
 	public void prepareBounds(RenderBlocks renderer)

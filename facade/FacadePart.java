@@ -141,10 +141,11 @@ public class FacadePart implements IFacadePart
 							instance.renderForPass( 1 );
 						}
 
+						int color = 0xffffff;
+
 						try
 						{
-							int color = ib.getColorFromItemStack( randomItem, 0 );
-							Tessellator.instance.setColorOpaque_I( color );
+							color = ib.getColorFromItemStack( randomItem, 0 );
 						}
 						catch (Throwable error)
 						{
@@ -161,7 +162,9 @@ public class FacadePart implements IFacadePart
 							rbw.calculations = true;
 							rbw.faces = EnumSet.noneOf( ForgeDirection.class );
 
-							rbw.renderStandardBlock( blk, x, y, z );
+							instance.setRenderColor( color );
+							rbw.renderStandardBlock( instance.getBlock(), x, y, z );
+							instance.setRenderColor( 0xffffff );
 
 							rbw.calculations = false;
 							rbw.faces = calculateFaceOpenFaces( rbw.blockAccess, fc, x, y, z, side );
@@ -403,11 +406,13 @@ public class FacadePart implements IFacadePart
 							float r = (color >> 16 & 0xff) / 255F;
 							float g = (color >> 8 & 0xff) / 255F;
 							float b = (color & 0xff) / 255F;
-							GL11.glColor4f( r, g, b, 1.0F );
+							GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0F );
+							instance.setInvColor( color );
 						}
 						catch (Throwable error)
 						{
 							GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0F );
+							instance.setInvColor( 0xffffff );
 						}
 
 						Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
