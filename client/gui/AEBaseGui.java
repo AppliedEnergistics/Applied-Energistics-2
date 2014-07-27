@@ -576,11 +576,12 @@ public abstract class AEBaseGui extends GuiContainer
 		this.zLevel = 100.0F;
 		itemRender.zLevel = 100.0F;
 
+		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 		GL11.glEnable( GL11.GL_LIGHTING );
 		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 		RenderHelper.enableGUIStandardItemLighting();
 		itemRender.renderItemAndEffectIntoGUI( this.fontRendererObj, this.mc.renderEngine, is, x, y );
-		GL11.glDisable( GL11.GL_LIGHTING );
+		GL11.glPopAttrib();
 
 		itemRender.zLevel = 0.0F;
 		this.zLevel = 0.0F;

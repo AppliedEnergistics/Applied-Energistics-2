@@ -12,6 +12,7 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.BaseActionSource;
@@ -84,6 +85,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 
 	public TileIOPort() {
 		addNewHandler( new TileIOPortHandler() );
+		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 		cm.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		cm.registerSetting( Settings.FULLNESS_MODE, FullnessMode.EMPTY );
 		cm.registerSetting( Settings.OPERATION_MODE, OperationMode.EMPTY );
@@ -340,7 +342,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		if ( src instanceof IMEMonitor )
 			myList = ((IMEMonitor) src).getStorageList();
 		else
-			myList = src.getAvailableItems( src.getChannel().createList()  );
+			myList = src.getAvailableItems( src.getChannel().createList() );
 
 		boolean didStuff;
 
@@ -383,7 +385,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 								itemsToMove -= possible;
 								didStuff = true;
 							}
-							
+
 							break;
 						}
 					}
