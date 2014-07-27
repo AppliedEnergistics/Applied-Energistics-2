@@ -1,6 +1,7 @@
 package appeng.items.tools.powered;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,7 +22,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
-import appeng.api.config.SortDir;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.implementations.tiles.IColorableTile;
@@ -104,9 +104,14 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				for (IAEItemStack i : itemList)
 					list.add( i );
 
-				ItemSorters.Direction = SortDir.ASCENDING;
-				ItemSorters.init();
-				Collections.sort( list, ItemSorters.ConfigBased_SortByName );
+				Collections.sort( list, new Comparator<IAEItemStack>() {
+
+					public int compare(IAEItemStack a, IAEItemStack b)
+					{
+						return ItemSorters.compareInt( a.getItemDamage(), b.getItemDamage() );
+					}
+
+				} );
 
 				if ( list.size() <= 0 )
 					return null;
