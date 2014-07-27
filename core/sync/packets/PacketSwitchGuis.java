@@ -42,12 +42,19 @@ public class PacketSwitchGuis extends AppEngPacket
 		}
 	}
 
+	@Override
+	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
+	{
+		AEBaseGui.switchingGuis = true;
+	}
+
 	// api
 	public PacketSwitchGuis(GuiBridge newGui) throws IOException {
 
 		this.newGui = newGui;
 
-		AEBaseGui.switchingGuis = true;
+		if ( Platform.isClient() )
+			AEBaseGui.switchingGuis = true;
 
 		ByteBuf data = Unpooled.buffer();
 
