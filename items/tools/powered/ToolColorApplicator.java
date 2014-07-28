@@ -3,6 +3,7 @@ package appeng.items.tools.powered;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -19,6 +20,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -54,6 +56,21 @@ import appeng.util.item.AEItemStack;
 public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCell, IItemGroup, IBlockTool, IMouseWheelItem
 {
 
+	final static HashMap<Integer, AEColor> oreToColor = new HashMap();
+
+	static
+	{
+
+		for (AEColor col : AEColor.values())
+		{
+			if ( col == AEColor.Transparent )
+				continue;
+
+			oreToColor.put( OreDictionary.getOreID( "dye" + col.name() ), col );
+		}
+
+	};
+
 	public ToolColorApplicator() {
 		super( ToolColorApplicator.class, null );
 		setfeature( EnumSet.of( AEFeature.ColorApplicator, AEFeature.StorageCells, AEFeature.PoweredTools ) );
@@ -81,6 +98,38 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		}
 
 		return findNextColor( is, null, 0 );
+	}
+
+	public AEColor getColorFromItem(ItemStack paintBall)
+	{
+		if ( paintBall == null )
+			return null;
+
+		if ( paintBall.getItem() instanceof ItemSnowball )
+			return AEColor.Transparent;
+
+		if ( paintBall.getItem() instanceof ItemPaintBall )
+		{
+			ItemPaintBall ipb = (ItemPaintBall) paintBall.getItem();
+			return ipb.getColor( paintBall );
+		}
+		else
+		{
+			int[] id = OreDictionary.getOreIDs( paintBall );
+
+			for (int oreID : id)
+			{
+				if ( oreToColor.containsKey( oreID ) )
+					return oreToColor.get( oreID );
+			}
+		}
+
+		return null;
+	}
+
+	public AEColor getActiveColor(ItemStack tol)
+	{
+		return getColorFromItem( getColor( tol ) );
 	}
 
 	private ItemStack findNextColor(ItemStack is, ItemStack anchor, int scrollOffset)
@@ -205,12 +254,11 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					return true;
 				}
 			}
-			else if ( paintBall != null && paintBall.getItem() instanceof ItemPaintBall )
+			else if ( paintBall != null )
 			{
-				ItemPaintBall ipb = (ItemPaintBall) paintBall.getItem();
-				AEColor color = ipb.getColor( paintBall );
+				AEColor color = getColorFromItem( paintBall );
 
-				if ( getAECurrentPower( is ) > powerPerUse )
+				if ( color != null && getAECurrentPower( is ) > powerPerUse )
 				{
 					if ( color != AEColor.Transparent
 							&& recolourBlock( blk, ForgeDirection.getOrientation( side ), w, x, y, z, ForgeDirection.getOrientation( side ), color ) )
@@ -301,13 +349,10 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	{
 		String extra = GuiText.Empty.getLocal();
 
-		ItemStack selected = getColor( par1ItemStack );
+		AEColor selected = getActiveColor( par1ItemStack );
 
-		if ( selected != null && selected.getItem() instanceof ItemSnowball )
-			extra = GuiText.Clean.getLocal();
-
-		if ( selected != null && selected.getItem() instanceof ItemPaintBall )
-			extra = ((ItemPaintBall) selected.getItem()).getExtraName( selected );
+		if ( selected != null )
+			extra = Platform.gui_localize( selected.unlocalizedName );
 
 		return super.getItemStackDisplayName( par1ItemStack ) + " - " + extra;
 	}
@@ -353,6 +398,14 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	{
 		if ( requsetedAddition != null )
 		{
+			int[] id = OreDictionary.getOreIDs( requsetedAddition.getItemStack() );
+
+			for (int x : id)
+			{
+				if ( oreToColor.containsKey( x ) )
+					return false;
+			}
+
 			if ( requsetedAddition.getItem() instanceof ItemSnowball )
 				return false;
 

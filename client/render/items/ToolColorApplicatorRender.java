@@ -2,7 +2,6 @@ package appeng.client.render.items;
 
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
@@ -11,7 +10,6 @@ import org.lwjgl.opengl.GL11;
 
 import appeng.api.util.AEColor;
 import appeng.client.texture.ExtraItemTextures;
-import appeng.items.misc.ItemPaintBall;
 import appeng.items.tools.powered.ToolColorApplicator;
 
 public class ToolColorApplicatorRender implements IItemRenderer
@@ -87,15 +85,7 @@ public class ToolColorApplicatorRender implements IItemRenderer
 
 		AEColor col = null;
 
-		ItemStack is = ((ToolColorApplicator) item.getItem()).getColor( item );
-		if ( is != null && is.getItem() instanceof ItemPaintBall )
-		{
-			ItemPaintBall ipb = (ItemPaintBall) is.getItem();
-			col = ipb.getColor( is );
-		}
-
-		if ( is != null && is.getItem() instanceof ItemSnowball )
-			col = AEColor.Transparent;
+		col = ((ToolColorApplicator) item.getItem()).getActiveColor( item );
 
 		if ( col != null )
 		{
