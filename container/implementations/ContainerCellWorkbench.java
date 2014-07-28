@@ -283,7 +283,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		IInventory inv = myte.getInventoryByName( "config" );
 
 		IMEInventory<IAEItemStack> cellInv = AEApi.instance().registries().cell()
-				.getCellInventory( myte.getInventoryByName( "cell" ).getStackInSlot( 0 ), StorageChannel.ITEMS );
+				.getCellInventory( myte.getInventoryByName( "cell" ).getStackInSlot( 0 ), null, StorageChannel.ITEMS );
 
 		Iterator<IAEItemStack> i = new NullIterator<IAEItemStack>();
 		if ( cellInv != null )

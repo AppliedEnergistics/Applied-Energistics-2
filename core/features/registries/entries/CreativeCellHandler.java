@@ -7,6 +7,7 @@ import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.StorageChannel;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.sync.GuiBridge;
@@ -25,7 +26,7 @@ public class CreativeCellHandler implements ICellHandler
 	}
 
 	@Override
-	public IMEInventoryHandler getCellInventory(ItemStack is, StorageChannel channel)
+	public IMEInventoryHandler getCellInventory(ItemStack is, ISaveProvider container, StorageChannel channel)
 	{
 		if ( channel == StorageChannel.ITEMS && is != null && is.getItem() instanceof ItemCreativeStorageCell )
 			return CreativeCellInventory.getCell( is );

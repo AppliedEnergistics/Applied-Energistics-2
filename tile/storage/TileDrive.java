@@ -22,6 +22,7 @@ import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.ICellHandler;
+import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -218,7 +219,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 
 					if ( handlersBySlot[x] != null )
 					{
-						IMEInventoryHandler cell = handlersBySlot[x].getCellInventory( is, StorageChannel.ITEMS );
+						IMEInventoryHandler cell = handlersBySlot[x].getCellInventory( is, this, StorageChannel.ITEMS );
 
 						if ( cell != null )
 						{
@@ -231,7 +232,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 						}
 						else
 						{
-							cell = handlersBySlot[x].getCellInventory( is, StorageChannel.FLUIDS );
+							cell = handlersBySlot[x].getCellInventory( is, this, StorageChannel.FLUIDS );
 
 							if ( cell != null )
 							{
@@ -358,5 +359,11 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
 		return itemstack != null && AEApi.instance().registries().cell().isCellHandled( itemstack );
+	}
+
+	@Override
+	public void saveChanges(IMEInventory cellInventory)
+	{
+		worldObj.markTileEntityChunkModified( this.xCoord, this.yCoord, this.zCoord, this );
 	}
 }

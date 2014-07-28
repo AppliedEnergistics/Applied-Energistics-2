@@ -1374,7 +1374,7 @@ public class Platform
 	{
 		if ( removed != null )
 		{
-			IMEInventory<IAEItemStack> myItems = AEApi.instance().registries().cell().getCellInventory( removed, StorageChannel.ITEMS );
+			IMEInventory<IAEItemStack> myItems = AEApi.instance().registries().cell().getCellInventory( removed, null, StorageChannel.ITEMS );
 
 			if ( myItems != null )
 			{
@@ -1385,7 +1385,7 @@ public class Platform
 				}
 			}
 
-			IMEInventory<IAEFluidStack> myFluids = AEApi.instance().registries().cell().getCellInventory( removed, StorageChannel.FLUIDS );
+			IMEInventory<IAEFluidStack> myFluids = AEApi.instance().registries().cell().getCellInventory( removed, null, StorageChannel.FLUIDS );
 
 			if ( myFluids != null )
 			{
@@ -1399,7 +1399,7 @@ public class Platform
 
 		if ( added != null )
 		{
-			IMEInventory<IAEItemStack> myItems = AEApi.instance().registries().cell().getCellInventory( added, StorageChannel.ITEMS );
+			IMEInventory<IAEItemStack> myItems = AEApi.instance().registries().cell().getCellInventory( added, null, StorageChannel.ITEMS );
 
 			if ( myItems != null )
 			{
@@ -1409,7 +1409,7 @@ public class Platform
 				}
 			}
 
-			IMEInventory<IAEFluidStack> myFluids = AEApi.instance().registries().cell().getCellInventory( added, StorageChannel.FLUIDS );
+			IMEInventory<IAEFluidStack> myFluids = AEApi.instance().registries().cell().getCellInventory( added, null, StorageChannel.FLUIDS );
 
 			if ( myFluids != null )
 			{

@@ -72,7 +72,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	@Override
 	public void addInformation(ItemStack i, EntityPlayer p, List l, boolean b)
 	{
-		IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( i, StorageChannel.ITEMS );
+		IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( i, null, StorageChannel.ITEMS );
 
 		if ( cdi instanceof CellInventoryHandler )
 		{
@@ -187,7 +187,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 				return false;
 
 			InventoryPlayer pinv = player.inventory;
-			IMEInventory<IAEItemStack> inv = AEApi.instance().registries().cell().getCellInventory( stack, StorageChannel.ITEMS );
+			IMEInventory<IAEItemStack> inv = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
 			if ( inv != null && pinv.getCurrentItem() == stack )
 			{
 				InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );

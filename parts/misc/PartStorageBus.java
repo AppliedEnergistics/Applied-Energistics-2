@@ -445,4 +445,10 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		// not used here.
 	}
 
+	@Override
+	public void saveChanges(IMEInventory cellInventory)
+	{
+		// nope!
+	}
+
 }

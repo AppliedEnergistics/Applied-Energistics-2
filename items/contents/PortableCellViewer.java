@@ -27,7 +27,7 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 	private IAEItemPowerStorage ips;
 
 	public PortableCellViewer(ItemStack is) {
-		super( CellInventory.getCell( is ) );
+		super( CellInventory.getCell( is, null ) );
 		ips = (IAEItemPowerStorage) is.getItem();
 		target = is;
 	}

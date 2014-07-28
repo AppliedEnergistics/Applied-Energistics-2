@@ -326,8 +326,8 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		if ( currentCell != is )
 		{
 			currentCell = is;
-			cachedFluid = AEApi.instance().registries().cell().getCellInventory( is, StorageChannel.FLUIDS );
-			cachedItem = AEApi.instance().registries().cell().getCellInventory( is, StorageChannel.ITEMS );
+			cachedFluid = AEApi.instance().registries().cell().getCellInventory( is, null, StorageChannel.FLUIDS );
+			cachedItem = AEApi.instance().registries().cell().getCellInventory( is, null, StorageChannel.ITEMS );
 		}
 
 		if ( StorageChannel.ITEMS == chan )

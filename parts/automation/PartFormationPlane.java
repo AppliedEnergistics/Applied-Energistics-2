@@ -495,4 +495,10 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 		return input;
 	}
+
+	@Override
+	public void saveChanges(IMEInventory cellInventory)
+	{
+		// nope!
+	}
 }

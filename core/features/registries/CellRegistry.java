@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.ICellRegistry;
 import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.StorageChannel;
 
 public class CellRegistry implements ICellRegistry
@@ -52,7 +53,7 @@ public class CellRegistry implements ICellRegistry
 	}
 
 	@Override
-	public IMEInventoryHandler getCellInventory(ItemStack is, StorageChannel chan)
+	public IMEInventoryHandler getCellInventory(ItemStack is, ISaveProvider container, StorageChannel chan)
 	{
 		if ( is == null )
 			return null;
@@ -60,7 +61,7 @@ public class CellRegistry implements ICellRegistry
 		{
 			if ( ch.isCell( is ) )
 			{
-				return ch.getCellInventory( is, chan );
+				return ch.getCellInventory( is, container, chan );
 			}
 		}
 		return null;

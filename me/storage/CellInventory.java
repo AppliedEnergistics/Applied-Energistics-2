@@ -18,6 +18,7 @@ import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -48,8 +49,11 @@ public class CellInventory implements ICellInventory
 	protected ItemStack i;
 	protected IStorageCell CellType;
 
-	protected CellInventory(NBTTagCompound data) {
+	final protected ISaveProvider container;
+
+	protected CellInventory(NBTTagCompound data, ISaveProvider container) {
 		tagCompound = data;
+		this.container = container;
 	}
 
 	protected void loadCellItems()
@@ -131,9 +135,12 @@ public class CellInventory implements ICellInventory
 			tagCompound.removeTag( ITEM_SLOT_ARR[x] );
 			tagCompound.removeTag( ITEM_SLOTCOUNT_ARR[x] );
 		}
+
+		if ( container != null )
+			container.saveChanges( this );
 	}
 
-	protected CellInventory(ItemStack o) throws AppEngException {
+	protected CellInventory(ItemStack o, ISaveProvider container) throws AppEngException {
 		if ( ITEM_SLOT_ARR == null )
 		{
 			ITEM_SLOT_ARR = new String[MAX_ITEM_TYPES];
@@ -176,6 +183,7 @@ public class CellInventory implements ICellInventory
 		if ( MAX_ITEM_TYPES < 1 )
 			MAX_ITEM_TYPES = 1;
 
+		this.container = container;
 		tagCompound = Platform.openNbtData( o );
 		storedItems = tagCompound.getShort( ITEM_TYPE_TAG );
 		storedItemCount = tagCompound.getInteger( ITEM_COUNT_TAG );
@@ -206,11 +214,11 @@ public class CellInventory implements ICellInventory
 		return (bytesFree > getBytesPerType() || (bytesFree == getBytesPerType() && getUnusedItemCount() > 0)) && getRemainingItemTypes() > 0;
 	}
 
-	public static IMEInventoryHandler getCell(ItemStack o)
+	public static IMEInventoryHandler getCell(ItemStack o, ISaveProvider container2)
 	{
 		try
 		{
-			return new CellInventoryHandler( new CellInventory( o ) );
+			return new CellInventoryHandler( new CellInventory( o, container2 ) );
 		}
 		catch (AppEngException e)
 		{
@@ -361,7 +369,7 @@ public class CellInventory implements ICellInventory
 
 		if ( CellInventory.isStorageCell( sharedItemStack ) )
 		{
-			IMEInventory meinv = getCell( sharedItemStack );
+			IMEInventory meinv = getCell( sharedItemStack, null );
 			if ( meinv != null && !isEmpty( meinv ) )
 				return input;
 		}

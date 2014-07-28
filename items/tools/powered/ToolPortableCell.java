@@ -52,7 +52,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	{
 		super.addInformation( is, player, lines, advancedItemTooltips );
 
-		IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( is, StorageChannel.ITEMS );
+		IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( is, null, StorageChannel.ITEMS );
 
 		if ( cdi instanceof CellInventoryHandler )
 		{

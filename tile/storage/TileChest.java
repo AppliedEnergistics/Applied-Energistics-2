@@ -387,8 +387,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 				{
 					double power = 1.0;
 
-					IMEInventoryHandler<IAEItemStack> itemCell = cellHandler.getCellInventory( is, StorageChannel.ITEMS );
-					IMEInventoryHandler<IAEFluidStack> fluidCell = cellHandler.getCellInventory( is, StorageChannel.FLUIDS );
+					IMEInventoryHandler<IAEItemStack> itemCell = cellHandler.getCellInventory( is, this, StorageChannel.ITEMS );
+					IMEInventoryHandler<IAEFluidStack> fluidCell = cellHandler.getCellInventory( is, this, StorageChannel.FLUIDS );
 
 					if ( itemCell != null )
 						power += cellHandler.cellIdleDrain( is, itemCell );
@@ -494,9 +494,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	{
 		if ( i == 1 )
 		{
-			if ( AEApi.instance().registries().cell().getCellInventory( itemstack, StorageChannel.ITEMS ) != null )
+			if ( AEApi.instance().registries().cell().getCellInventory( itemstack, this, StorageChannel.ITEMS ) != null )
 				return true;
-			if ( AEApi.instance().registries().cell().getCellInventory( itemstack, StorageChannel.FLUIDS ) != null )
+			if ( AEApi.instance().registries().cell().getCellInventory( itemstack, this, StorageChannel.FLUIDS ) != null )
 				return true;
 		}
 		else
@@ -837,5 +837,11 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		markDirty();
 		markForUpdate();
 		return true;
+	}
+
+	@Override
+	public void saveChanges(IMEInventory cellInventory)
+	{
+		worldObj.markTileEntityChunkModified( this.xCoord, this.yCoord, this.zCoord, this );
 	}
 }

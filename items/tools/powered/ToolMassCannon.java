@@ -75,7 +75,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 	{
 		super.addInformation( is, player, lines, advancedItemTooltips );
 
-		IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( is, StorageChannel.ITEMS );
+		IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( is, null, StorageChannel.ITEMS );
 
 		if ( cdi instanceof CellInventoryHandler )
 		{
@@ -99,7 +99,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 			if ( cu != null )
 				shots += cu.getInstalledUpgrades( Upgrades.SPEED );
 
-			IMEInventory inv = AEApi.instance().registries().cell().getCellInventory( item, StorageChannel.ITEMS );
+			IMEInventory inv = AEApi.instance().registries().cell().getCellInventory( item, null, StorageChannel.ITEMS );
 			if ( inv != null )
 			{
 				IItemList itemList = inv.getAvailableItems( AEApi.instance().storage().createItemList() );
