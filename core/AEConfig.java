@@ -238,6 +238,9 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		if ( featureFlags.contains( AEFeature.WebsiteRecipes ) )
 			featureFlags.add( AEFeature.DuplicateItems );
 
+		if ( cpw.mods.fml.common.Loader.isModLoaded( "ImmibisMicroblocks" ) )
+			featureFlags.remove( AEFeature.AlphaPass );
+
 		try
 		{
 			selectedPowerUnit = PowerUnits.valueOf( get( "Client", "PowerUnit", selectedPowerUnit.name(), getListComment( selectedPowerUnit ) ).getString() );
