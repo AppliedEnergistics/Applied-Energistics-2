@@ -152,7 +152,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 	private void resetCache(boolean fullReset)
 	{
-		if ( host == null || host.getTile() == null || host.getTile().getWorldObj() == null )
+		if ( host == null || host.getTile() == null || host.getTile().getWorldObj() == null || host.getTile().getWorldObj().isRemote )
 			return;
 
 		IMEInventory<IAEItemStack> in = getInternalHandler();
