@@ -33,6 +33,9 @@ public class OreDictionaryHandler
 	@SubscribeEvent
 	public void onOreDictionaryRegister(OreDictionary.OreRegisterEvent event)
 	{
+		if ( event.Name == null || event.Ore == null )
+			return;
+
 		if ( shouldCare( event.Name ) )
 		{
 			for (IOreListener v : ol)
@@ -56,11 +59,12 @@ public class OreDictionaryHandler
 		// notify the listener of any ore already in existance.
 		for (String name : OreDictionary.getOreNames())
 		{
-			if ( shouldCare( name ) )
+			if ( name != null && shouldCare( name ) )
 			{
 				for (ItemStack item : OreDictionary.getOres( name ))
 				{
-					n.oreRegistered( name, item );
+					if ( item != null )
+						n.oreRegistered( name, item );
 				}
 			}
 		}
