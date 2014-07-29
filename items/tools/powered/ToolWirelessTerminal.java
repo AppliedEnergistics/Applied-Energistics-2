@@ -40,6 +40,14 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	}
 
 	@Override
+	public boolean onItemUse(ItemStack item, EntityPlayer player, World w, int x, int y, int z, int side,
+			float hitx, float hity, float hitz)
+	{
+		onItemRightClick( item, w, player );
+		return true;
+	}
+
+	@Override
 	public void addInformation(ItemStack i, EntityPlayer p, List l, boolean b)
 	{
 		super.addInformation( i, p, l, b );

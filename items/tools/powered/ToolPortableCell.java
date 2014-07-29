@@ -46,6 +46,14 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 		Platform.openGUI( player, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_PORTABLE_CELL );
 		return item;
 	}
+	
+	@Override
+	public boolean onItemUse(ItemStack item, EntityPlayer player, World w, int x, int y, int z, int side,
+			float hitx, float hity, float hitz)
+	{
+		onItemRightClick( item, w, player );
+		return true;
+	}
 
 	@Override
 	public void addInformation(ItemStack is, EntityPlayer player, List lines, boolean advancedItemTooltips)
