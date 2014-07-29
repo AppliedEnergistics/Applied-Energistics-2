@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingIngredientError;
@@ -23,6 +24,7 @@ public class Ingredient implements IIngredient
 	final public String nameSpace;
 	final public String itemName;
 	final public int meta;
+	NBTTagCompound nbt = null;
 
 	final public int qty;
 
@@ -69,6 +71,7 @@ public class Ingredient implements IIngredient
 							ResolverResult rr = (ResolverResult) ro;
 							tmpName = rr.itemName;
 							sel = rr.damageValue;
+							nbt = rr.compound;
 						}
 						else if ( ro instanceof ResolverResultSet )
 						{
@@ -126,7 +129,7 @@ public class Ingredient implements IIngredient
 		{
 			Item it = Item.getItemFromBlock( blk );
 			if ( it != null )
-				return new ItemStack( it, qty, meta );
+				return MakeItemStack( it, qty, meta, nbt );
 		}
 
 		Item it = GameRegistry.findItem( nameSpace, itemName );
@@ -134,7 +137,7 @@ public class Ingredient implements IIngredient
 			it = GameRegistry.findItem( nameSpace, "item." + itemName );
 
 		if ( it != null )
-			return new ItemStack( it, qty, meta );
+			return MakeItemStack( it, qty, meta, nbt );
 
 		/*
 		 * Object o = Item.itemRegistry.getObject( nameSpace + ":" + itemName ); if ( o instanceof Item ) return new
@@ -150,6 +153,13 @@ public class Ingredient implements IIngredient
 		 */
 
 		throw new MissingIngredientError( "Unable to find item: " + toString() );
+	}
+
+	private ItemStack MakeItemStack(Item it, int quantity, int damageValue, NBTTagCompound compound)
+	{
+		ItemStack is = new ItemStack( it, quantity, damageValue );
+		is.setTagCompound( compound );
+		return is;
 	}
 
 	@Override

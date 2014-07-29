@@ -18,6 +18,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
 import appeng.api.implementations.items.IGrowableCrystal;
+import appeng.api.recipes.ResolverResult;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.entity.EntityGrowingCrystal;
@@ -238,10 +239,18 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + Fluix ) ) );
 	}
 
-	private ItemStack newStyle(ItemStack itemStack)
+	private static ItemStack newStyle(ItemStack itemStack)
 	{
-		getProgress( itemStack );
+		((ItemCrystalSeed) itemStack.getItem()).getProgress( itemStack );
 		return itemStack;
+	}
+
+	public static ResolverResult getResolver(int certus2)
+	{
+		ItemStack is = AEApi.instance().items().itemCrystalSeed.stack( 1 );
+		is.setItemDamage( certus2 );
+		is = newStyle( is );
+		return new ResolverResult( "ItemCrystalSeed", is.getItemDamage(), is.getTagCompound() );
 	}
 
 }

@@ -24,12 +24,12 @@ public class AEItemResolver implements ISubItemResolver
 		{
 			if ( itemName.startsWith( "PaintBall." ) )
 			{
-				return paintBall(AEApi.instance().items().itemPaintBall, itemName.substring( itemName.indexOf( "." ) + 1 ),false );
+				return paintBall( AEApi.instance().items().itemPaintBall, itemName.substring( itemName.indexOf( "." ) + 1 ), false );
 			}
 
 			if ( itemName.startsWith( "LumenPaintBall." ) )
 			{
-				return paintBall(AEApi.instance().items().itemPaintBall, itemName.substring( itemName.indexOf( "." ) + 1 ), true );
+				return paintBall( AEApi.instance().items().itemPaintBall, itemName.substring( itemName.indexOf( "." ) + 1 ), true );
 			}
 
 			if ( itemName.equals( "CableGlass" ) )
@@ -75,7 +75,7 @@ public class AEItemResolver implements ISubItemResolver
 			if ( itemName.startsWith( "ItemCrystalSeed." ) )
 			{
 				if ( itemName.equalsIgnoreCase( "ItemCrystalSeed.Certus" ) )
-					return new ResolverResult( "ItemCrystalSeed", ItemCrystalSeed.Certus );
+					return ItemCrystalSeed.getResolver( ItemCrystalSeed.Certus );
 				if ( itemName.equalsIgnoreCase( "ItemCrystalSeed.Nether" ) )
 					return new ResolverResult( "ItemCrystalSeed", ItemCrystalSeed.Nether );
 				if ( itemName.equalsIgnoreCase( "ItemCrystalSeed.Fluix" ) )
@@ -122,11 +122,11 @@ public class AEItemResolver implements ISubItemResolver
 
 		if ( col == AEColor.Transparent )
 			return null;
-		
+
 		ItemStack is = partType.stack( col, 1 );
-		return new ResolverResult( "ItemPaintBall", (lumen?20:0)+is.getItemDamage() );
+		return new ResolverResult( "ItemPaintBall", (lumen ? 20 : 0) + is.getItemDamage() );
 	}
-	
+
 	private Object cableItem(AEColoredItemDefinition partType, String substring)
 	{
 		AEColor col = AEColor.Transparent;
