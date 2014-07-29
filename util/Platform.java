@@ -299,10 +299,6 @@ public class Platform
 			z = tile.zCoord;
 		}
 
-		// valid tile?
-		if ( !type.CorrectTileOrPart( tile ) )
-			tile = null;
-
 		if ( (type.getType().isItem() && tile == null) || type.hasPermissions( tile, x, y, z, side, p ) )
 		{
 			if ( tile == null )

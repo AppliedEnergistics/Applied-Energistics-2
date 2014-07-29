@@ -36,7 +36,7 @@ public class PacketSwitchGuis extends AppEngPacket
 			ContainerOpenContext context = bc.openContext;
 			if ( context != null )
 			{
-				TileEntity te = context.w.getTileEntity( context.x, context.y, context.z );
+				TileEntity te = context.getTile();
 				Platform.openGUI( player, te, context.side, newGui );
 			}
 		}

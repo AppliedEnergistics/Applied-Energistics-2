@@ -67,7 +67,7 @@ public class PacketCraftRequest extends AppEngPacket
 					ContainerOpenContext context = cca.openContext;
 					if ( context != null )
 					{
-						TileEntity te = context.w.getTileEntity( context.x, context.y, context.z );
+						TileEntity te = context.getTile();
 						Platform.openGUI( player, te, cca.openContext.side, GuiBridge.GUI_CRAFTING_CONFIRM );
 
 						if ( player.openContainer instanceof ContainerCraftConfirm )

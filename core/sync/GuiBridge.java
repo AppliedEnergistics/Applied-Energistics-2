@@ -284,12 +284,12 @@ public enum GuiBridge implements IGuiHandler
 		return null;
 	}
 
-	private Object updateGui(Object newContainer, World w, int x, int y, int z, ForgeDirection side)
+	private Object updateGui(Object newContainer, World w, int x, int y, int z, ForgeDirection side, Object myItem)
 	{
 		if ( newContainer instanceof AEBaseContainer )
 		{
 			AEBaseContainer bc = (AEBaseContainer) newContainer;
-			bc.openContext = new ContainerOpenContext();
+			bc.openContext = new ContainerOpenContext( myItem );
 			bc.openContext.w = w;
 			bc.openContext.x = x;
 			bc.openContext.y = y;
@@ -311,7 +311,7 @@ public enum GuiBridge implements IGuiHandler
 			ItemStack it = player.inventory.getCurrentItem();
 			Object myItem = getGuiObject( it, player, w, x, y, z );
 			if ( myItem != null && ID.CorrectTileOrPart( myItem ) )
-				return updateGui( ID.ConstructContainer( player.inventory, side, myItem ), w, x, y, z, side );
+				return updateGui( ID.ConstructContainer( player.inventory, side, myItem ), w, x, y, z, side, myItem );
 		}
 
 		if ( ID.type.isTile() )
@@ -322,12 +322,12 @@ public enum GuiBridge implements IGuiHandler
 				((IPartHost) TE).getPart( side );
 				IPart part = ((IPartHost) TE).getPart( side );
 				if ( ID.CorrectTileOrPart( part ) )
-					return updateGui( ID.ConstructContainer( player.inventory, side, part ), w, x, y, z, side );
+					return updateGui( ID.ConstructContainer( player.inventory, side, part ), w, x, y, z, side, part );
 			}
 			else
 			{
 				if ( ID.CorrectTileOrPart( TE ) )
-					return updateGui( ID.ConstructContainer( player.inventory, side, TE ), w, x, y, z, side );
+					return updateGui( ID.ConstructContainer( player.inventory, side, TE ), w, x, y, z, side, TE );
 			}
 		}
 

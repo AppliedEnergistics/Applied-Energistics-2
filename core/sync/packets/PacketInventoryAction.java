@@ -52,7 +52,7 @@ public class PacketInventoryAction extends AppEngPacket
 				ContainerOpenContext context = aebc.openContext;
 				if ( context != null )
 				{
-					TileEntity te = context.w.getTileEntity( context.x, context.y, context.z );
+					TileEntity te = context.getTile();
 					Platform.openGUI( sender, te, aebc.openContext.side, GuiBridge.GUI_CRAFTING_AMOUNT );
 
 					if ( sender.openContainer instanceof ContainerCraftAmount )
