@@ -36,6 +36,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
 import appeng.block.misc.BlockPaint;
+import appeng.block.networking.BlockCableBus;
 import appeng.client.render.items.ToolColorApplicatorRender;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
@@ -261,7 +262,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				if ( color != null && getAECurrentPower( is ) > powerPerUse )
 				{
 					if ( color != AEColor.Transparent
-							&& recolourBlock( blk, ForgeDirection.getOrientation( side ), w, x, y, z, ForgeDirection.getOrientation( side ), color ) )
+							&& recolourBlock( blk, ForgeDirection.getOrientation( side ), w, x, y, z, ForgeDirection.getOrientation( side ), color, p ) )
 					{
 						inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 						extractAEPower( is, powerPerUse );
@@ -280,7 +281,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		return false;
 	}
 
-	private boolean recolourBlock(Block blk, ForgeDirection side, World w, int x, int y, int z, ForgeDirection orientation, AEColor newColor)
+	private boolean recolourBlock(Block blk, ForgeDirection side, World w, int x, int y, int z, ForgeDirection orientation, AEColor newColor, EntityPlayer p)
 	{
 		if ( blk == Blocks.carpet )
 		{
@@ -328,6 +329,9 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				return false;
 			return w.setBlock( x, y, z, Blocks.stained_hardened_clay, newColor.ordinal(), 3 );
 		}
+
+		if ( blk instanceof BlockCableBus )
+			return ((BlockCableBus) blk).recolourBlock( w, x, y, z, side, newColor.ordinal(), p );
 
 		return blk.recolourBlock( w, x, y, z, side, newColor.ordinal() );
 	}
