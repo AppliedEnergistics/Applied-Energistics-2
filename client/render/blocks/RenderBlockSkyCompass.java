@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
@@ -33,6 +34,19 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 	@Override
 	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
+		if ( type == ItemRenderType.INVENTORY )
+		{
+			boolean isGood = false;
+
+			IInventory inv = Minecraft.getMinecraft().thePlayer.inventory;
+			for (int x = 0; x < inv.getSizeInventory(); x++)
+				if ( inv.getStackInSlot( x ) == is )
+					isGood = true;
+
+			if ( !isGood )
+				type = ItemRenderType.FIRST_PERSON_MAP;
+		}
+
 		GL11.glEnable( 32826 /* GL_RESCALE_NORMAL_EXT */);
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
