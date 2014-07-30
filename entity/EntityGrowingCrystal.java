@@ -42,7 +42,8 @@ final public class EntityGrowingCrystal extends EntityItem
 		if ( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldPurification ) )
 			return;
 
-		age = 0;
+		if ( age > 600 )
+			age = 100;
 
 		ItemStack is = this.getEntityItem();
 		Item gc = is.getItem();

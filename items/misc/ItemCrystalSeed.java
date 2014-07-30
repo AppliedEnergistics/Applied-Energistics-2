@@ -76,6 +76,12 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
+	public int getEntityLifespan( ItemStack itemStack, World world )
+	{
+		return Integer.MAX_VALUE;
+	}
+
+	@Override
 	public String getUnlocalizedName(ItemStack is)
 	{
 		int damage = getProgress( is );
