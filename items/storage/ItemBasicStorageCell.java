@@ -20,6 +20,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
@@ -226,4 +227,17 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	{
 		return dissassembleDrive( stack, world, player );
 	}
+
+	@Override
+	public boolean hasContainerItem()
+	{
+		return AEConfig.instance.isFeatureEnabled( AEFeature.enableDisassemblyCrafting );
+	}
+
+	@Override
+	public ItemStack getContainerItem(ItemStack itemStack)
+	{
+		return AEApi.instance().materials().materialEmptyStorageCell.stack( 1 );
+	}
+
 }

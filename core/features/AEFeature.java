@@ -52,7 +52,9 @@ public enum AEFeature
 
 	enableFacadeCrafting("Crafting"), inWorldSingularity("Crafting"), inWorldFluix("Crafting"), inWorldPurification("Crafting"), UpdateLogging("Misc", false),
 
-	AlphaPass("Rendering"), PaintBalls("Tools"), PacketLogging("Misc", false), CraftingLog("Misc", false), InterfaceTerminal("Crafting"), LightDetector("Misc");
+	AlphaPass("Rendering"), PaintBalls("Tools"), PacketLogging("Misc", false), CraftingLog("Misc", false), InterfaceTerminal("Crafting"), LightDetector("Misc"),
+
+	enableDisassemblyCrafting("Crafting");
 
 	String Category;
 	boolean visible = true;

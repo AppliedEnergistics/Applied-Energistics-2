@@ -139,6 +139,7 @@ import appeng.me.storage.AEExternalHandler;
 import appeng.parts.PartPlacement;
 import appeng.recipes.AEItemResolver;
 import appeng.recipes.RecipeHandler;
+import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
 import appeng.recipes.game.ShapedRecipe;
 import appeng.recipes.game.ShapelessRecipe;
@@ -561,6 +562,9 @@ public class Registration
 		((P2PTunnelRegistry) AEApi.instance().registries().p2pTunnel()).configure();
 
 		recipeHandler.injectRecipes();
+
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.enableDisassemblyCrafting ) )
+			CraftingManager.getInstance().getRecipeList().add( new DisassembleRecipe() );
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.enableFacadeCrafting ) )
 			CraftingManager.getInstance().getRecipeList().add( new FacadeRecipe() );

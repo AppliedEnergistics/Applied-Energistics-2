@@ -18,6 +18,12 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 	}
 
 	@Override
+	public Class getItemBlockClass()
+	{
+		return ItemCraftingStorage.class;
+	}
+
+	@Override
 	public String getUnlocalizedName(ItemStack is)
 	{
 		if ( is.getItemDamage() == 1 )
