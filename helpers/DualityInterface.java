@@ -741,8 +741,8 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			TileEntity tile = iHost.getTileEntity();
 			World w = tile.getWorldObj();
 
-			boolean allAreBusy=true;
-			
+			boolean allAreBusy = true;
+
 			for (ForgeDirection s : possibleDirections)
 			{
 				TileEntity te = w.getTileEntity( tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ );
@@ -757,7 +757,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 					}
 				}
 			}
-			
+
 			busy = allAreBusy;
 		}
 
@@ -814,7 +814,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 					if ( ad.simulateRemove( 1, null, null ) != null )
 						continue;
 				}
-				
+
 				if ( acceptsItems( ad, table ) )
 				{
 					for (int x = 0; x < table.getSizeInventory(); x++)
@@ -876,7 +876,13 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 				InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 				if ( ad != null )
 				{
-					whatToSend = ad.addItems( whatToSend );
+					ItemStack Result = ad.addItems( whatToSend );
+
+					if ( Result == null )
+						whatToSend = null;
+					else
+						whatToSend.stackSize -= whatToSend.stackSize - Result.stackSize;
+
 					if ( whatToSend == null )
 						break;
 				}
