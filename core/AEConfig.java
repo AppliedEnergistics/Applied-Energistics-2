@@ -305,7 +305,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		{
 			if ( e == setting )
 			{
-				String Category = e.getClass().getSimpleName();
+				String Category = "Client";
 				Property p = this.get( Category, e.name(), settings.getSetting( e ).name(), getListComment( newValue ) );
 				p.set( newValue.name() );
 			}
