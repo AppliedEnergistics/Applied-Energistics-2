@@ -133,6 +133,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 			forcePlan = false;
 			myPlan = null;
 			myPattern = null;
+			pushDirection = ForgeDirection.UNKNOWN;
 		}
 
 		updateSleepyness();
@@ -206,6 +207,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 					NBTTagCompound pdata = new NBTTagCompound();
 					pattern.writeToNBT( pdata );
 					data.setTag( "myPlan", pdata );
+					data.setInteger( "pushDirection", pushDirection.ordinal() );
 				}
 			}
 
@@ -230,6 +232,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 					{
 						forcePlan = true;
 						myPlan = ph;
+						pushDirection = ForgeDirection.getOrientation( data.getInteger( "pushDirection" ) );
 					}
 				}
 			}
@@ -439,7 +442,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 				{
 					forcePlan = false;
 					myPlan = null;
+					pushDirection = ForgeDirection.UNKNOWN;
 				}
+
 				ejectHeldItems();
 
 				try
