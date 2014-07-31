@@ -11,6 +11,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.config.Settings;
+import appeng.api.config.YesNo;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
@@ -217,6 +219,9 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 					if ( gn.isActive() )
 					{
 						IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
+						if ( ih.getInterfaceDuality().getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.NO )
+							continue;
+
 						InvTracker t = diList.get( ih );
 
 						if ( t == null )
@@ -237,6 +242,9 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 					if ( gn.isActive() )
 					{
 						IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
+						if ( ih.getInterfaceDuality().getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.NO )
+							continue;
+
 						InvTracker t = diList.get( ih );
 
 						if ( t == null )
@@ -310,7 +318,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 				{
 					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
 					DualityInterface dual = ih.getInterfaceDuality();
-					if ( gn.isActive() )
+					if ( gn.isActive() && dual.getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.YES )
 						diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName() ) );
 				}
 
@@ -318,7 +326,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 				{
 					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
 					DualityInterface dual = ih.getInterfaceDuality();
-					if ( gn.isActive() )
+					if ( gn.isActive() && dual.getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.YES )
 						diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName() ) );
 				}
 			}

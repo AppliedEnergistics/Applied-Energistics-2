@@ -11,6 +11,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiTabButton;
+import appeng.client.gui.widgets.GuiToggleButton;
 import appeng.container.implementations.ContainerInterface;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
@@ -25,6 +26,7 @@ public class GuiInterface extends GuiUpgradeable
 
 	GuiTabButton priority;
 	GuiImgButton BlockMode;
+	GuiToggleButton interfaceMode;
 
 	public GuiInterface(InventoryPlayer inventoryPlayer, IInterfaceHost te) {
 		super( new ContainerInterface( inventoryPlayer, te ) );
@@ -52,6 +54,9 @@ public class GuiInterface extends GuiUpgradeable
 
 		try
 		{
+			if ( btn == interfaceMode )
+				NetworkHandler.instance.sendToServer( new PacketConfigButton( Settings.INTERFACE_TERMINAL, backwards ) );
+
 			if ( btn == BlockMode )
 				NetworkHandler.instance.sendToServer( new PacketConfigButton( BlockMode.getSetting(), backwards ) );
 
@@ -70,6 +75,10 @@ public class GuiInterface extends GuiUpgradeable
 
 		BlockMode = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.BLOCK, YesNo.NO );
 		buttonList.add( BlockMode );
+
+		interfaceMode = new GuiToggleButton( this.guiLeft - 18, guiTop + 26, 84, 85, GuiText.InterfaceTerminal.getLocal(),
+				GuiText.InterfaceTerminalHint.getLocal() );
+		buttonList.add( interfaceMode );
 	}
 
 	protected String getBackground()
@@ -82,6 +91,9 @@ public class GuiInterface extends GuiUpgradeable
 	{
 		if ( BlockMode != null )
 			BlockMode.set( ((ContainerInterface) cvb).bMode );
+
+		if ( interfaceMode != null )
+			interfaceMode.setState( ((ContainerInterface) cvb).iTermMode == YesNo.YES );
 
 		fontRendererObj.drawString( getGuiDisplayName( GuiText.Interface.getLocal() ), 8, 6, 4210752 );
 

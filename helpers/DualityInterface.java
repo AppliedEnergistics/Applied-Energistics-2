@@ -202,6 +202,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 		upgrades = new UpgradeInventory( gridProxy.getMachineRepresentation(), this, 1 );
 		cm.registerSetting( Settings.BLOCK, YesNo.NO );
+		cm.registerSetting( Settings.INTERFACE_TERMINAL, YesNo.YES );
 
 		iHost = ih;
 		craftingTracker = new MultiCraftingTracker( iHost, 9 );
