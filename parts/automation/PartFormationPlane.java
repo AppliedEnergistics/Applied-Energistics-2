@@ -274,6 +274,11 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 			updateHandler();
 	}
 
+	public void upgradesChanged()
+	{
+		updateHandler();
+	}
+
 	private void updateHandler()
 	{
 		myHandler.myAccess = AccessRestriction.WRITE;
