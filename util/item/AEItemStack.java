@@ -521,8 +521,8 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			}
 			else
 			{
-				int low = fuzzy.calculateBreakPoint( def.maxDamage );
-				newDef.dspDamage = low < def.dspDamage ? low : 0;
+				int breakpoint = fuzzy.calculateBreakPoint( def.maxDamage );
+				newDef.dspDamage = breakpoint < def.dspDamage ? breakpoint : 0;
 			}
 
 			newDef.damageValue = newDef.dspDamage;
@@ -553,11 +553,11 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			}
 			else
 			{
-				int high = fuzzy.calculateBreakPoint( def.maxDamage ) + 1;
-				newDef.dspDamage = high > def.dspDamage ? high : def.maxDamage + 1;
+				int breakpoint = fuzzy.calculateBreakPoint( def.maxDamage );
+				newDef.dspDamage = def.dspDamage < breakpoint ? breakpoint - 1 : def.maxDamage + 1;
 			}
 
-			newDef.damageValue = top.def.dspDamage;
+			newDef.damageValue = newDef.dspDamage;
 		}
 
 		newDef.tagCompound = AEItemDef.highTag;
