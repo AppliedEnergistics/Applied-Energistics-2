@@ -258,6 +258,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		patterns.writeToNBT( data, "patterns" );
 		storage.writeToNBT( data, "storage" );
 		upgrades.writeToNBT( data, "upgrades" );
+		cm.writeToNBT( data );
 		craftingTracker.writeToNBT( data );
 		data.setInteger( "priority", priority );
 
@@ -297,6 +298,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		patterns.readFromNBT( data, "patterns" );
 		storage.readFromNBT( data, "storage" );
 		priority = data.getInteger( "priority" );
+		cm.readFromNBT( data );
 		readConfig();
 		updateCraftingList();
 	}
@@ -697,6 +699,8 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	{
 		if ( getInstalledUpgrades( Upgrades.CRAFTING ) == 0 )
 			cancelCrafting();
+
+		markDirty();
 	}
 
 	private void cancelCrafting()
