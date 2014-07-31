@@ -16,7 +16,6 @@ import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.parts.automation.PartFormationPlane;
 
@@ -73,15 +72,6 @@ public class GuiFormationPlane extends GuiUpgradeable
 			{
 				AELog.error( e );
 			}
-		}
-		try
-		{
-			if ( btn == fuzzyMode )
-				NetworkHandler.instance.sendToServer( new PacketConfigButton( fuzzyMode.getSetting(), backwards ) );
-		}
-		catch (IOException e)
-		{
-			AELog.error( e );
 		}
 	}
 
