@@ -106,6 +106,8 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 
 	public boolean enableEffects = true;
 	public boolean useLargeFonts = false;
+	public int[] craftByStacks = new int[] { 1, 10, 100, 1000 };
+	public int[] priorityByStacks = new int[] { 1, 10, 100, 1000 };
 
 	public int wireless_battery = 1600000;
 	public int manipulator_battery = 200000;
@@ -133,6 +135,24 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		disableColoredCableRecipesInNEI = get( "Client", "disableColoredCableRecipesInNEI", true ).getBoolean( true );
 		enableEffects = get( "Client", "enableEffects", true ).getBoolean( true );
 		useLargeFonts = get( "Client", "useTerminalUseLargeFont", false ).getBoolean( false );
+
+		// load buttons..
+		for (int btnNum = 0; btnNum < 4; btnNum++)
+		{
+			Property cmb = get( "Client", "craftAmtButton" + (btnNum + 1), craftByStacks[btnNum] );
+			Property pmb = get( "Client", "priorityAmtButton" + (btnNum + 1), priorityByStacks[btnNum] );
+
+			int buttonCap = (int) (Math.pow( 10, btnNum + 1 ) - 1);
+
+			craftByStacks[btnNum] = Math.abs( cmb.getInt( craftByStacks[btnNum] ) );
+			priorityByStacks[btnNum] = Math.abs( pmb.getInt( priorityByStacks[btnNum] ) );
+
+			cmb.comment = "Controls buttons on Crafting Screen : Capped at " + buttonCap;
+			pmb.comment = "Controls buttons on Priority Screen : Capped at " + buttonCap;
+
+			craftByStacks[btnNum] = Math.min( craftByStacks[btnNum], buttonCap );
+			priorityByStacks[btnNum] = Math.min( priorityByStacks[btnNum], buttonCap );
+		}
 
 		for (Enum e : settings.getSettings())
 		{
@@ -386,6 +406,16 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 	public boolean useTerminalUseLargeFont()
 	{
 		return useLargeFonts;
+	}
+
+	public int craftItemsByStackAmounts(int i)
+	{
+		return craftByStacks[i];
+	}
+
+	public int priorityByStacksAmounts(int i)
+	{
+		return priorityByStacks[i];
 	}
 
 	public Enum getSetting(String Category, Class<? extends Enum> class1, Enum myDefault)

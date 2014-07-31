@@ -12,6 +12,7 @@ import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerCraftAmount;
+import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
@@ -45,17 +46,22 @@ public class GuiCraftAmount extends AEBaseGui
 	{
 		super.initGui();
 
+		int a = AEConfig.instance.craftItemsByStackAmounts( 0 );
+		int b = AEConfig.instance.craftItemsByStackAmounts( 1 );
+		int c = AEConfig.instance.craftItemsByStackAmounts( 2 );
+		int d = AEConfig.instance.craftItemsByStackAmounts( 3 );
+
+		buttonList.add( plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 26, 22, 20, "+" + a ) );
+		buttonList.add( plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 26, 28, 20, "+" + b ) );
+		buttonList.add( plus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 26, 32, 20, "+" + c ) );
+		buttonList.add( plus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 26, 38, 20, "+" + d ) );
+
+		buttonList.add( minus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 75, 22, 20, "-" + a ) );
+		buttonList.add( minus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 75, 28, 20, "-" + b ) );
+		buttonList.add( minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 75, 32, 20, "-" + c ) );
+		buttonList.add( minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 75, 38, 20, "-" + d ) );
+
 		buttonList.add( next = new GuiButton( 0, this.guiLeft + 128, this.guiTop + 51, 38, 20, GuiText.Next.getLocal() ) );
-
-		buttonList.add( plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 26, 22, 20, "+1" ) );
-		buttonList.add( plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 26, 28, 20, "+10" ) );
-		buttonList.add( plus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 26, 32, 20, "+100" ) );
-		buttonList.add( plus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 26, 38, 20, "+1000" ) );
-
-		buttonList.add( minus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 75, 22, 20, "-1" ) );
-		buttonList.add( minus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 75, 28, 20, "-10" ) );
-		buttonList.add( minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 75, 32, 20, "-100" ) );
-		buttonList.add( minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 75, 38, 20, "-1000" ) );
 
 		ItemStack myIcon = null;
 		Object target = ((AEBaseContainer) inventorySlots).getTarget();
@@ -101,47 +107,35 @@ public class GuiCraftAmount extends AEBaseGui
 	{
 		super.actionPerformed( btn );
 
-		if ( btn == originalGuiBtn )
+		try
 		{
-			try
+			if ( btn == originalGuiBtn )
 			{
 				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( OriginalGui ) );
 			}
-			catch (IOException e)
-			{
-				AELog.error( e );
-			}
-		}
 
-		if ( btn == next )
-		{
-			try
+			if ( btn == next )
 			{
 				NetworkHandler.instance.sendToServer( new PacketCraftRequest( inventorySlots.getSlot( 0 ).getStack(), Integer.parseInt( this.amountToCraft
 						.getText() ), isShiftKeyDown() ) );
 			}
-			catch (Throwable e)
-			{
-				AELog.error( e );
-			}
+
+		}
+		catch (IOException e)
+		{
+			AELog.error( e );
 		}
 
-		if ( btn == plus1 )
-			addQty( 1 );
-		if ( btn == plus10 )
-			addQty( 10 );
-		if ( btn == plus100 )
-			addQty( 100 );
-		if ( btn == plus1000 )
-			addQty( 1000 );
-		if ( btn == minus1 )
-			addQty( -1 );
-		if ( btn == minus10 )
-			addQty( -10 );
-		if ( btn == minus100 )
-			addQty( -100 );
-		if ( btn == minus1000 )
-			addQty( -1000 );
+		boolean isPlus = btn == plus1 || btn == plus10 || btn == plus100 || btn == plus1000;
+		boolean isMinus = btn == minus1 || btn == minus10 || btn == minus100 || btn == minus1000;
+
+		if ( isPlus || isMinus )
+			addQty( getQty( btn ) );
+	}
+
+	private int getQty(GuiButton btn)
+	{
+		return Integer.parseInt( btn.displayString );
 	}
 
 	private void addQty(int i)

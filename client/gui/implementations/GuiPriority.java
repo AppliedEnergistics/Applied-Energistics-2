@@ -11,6 +11,7 @@ import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerPriority;
+import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
@@ -45,15 +46,20 @@ public class GuiPriority extends AEBaseGui
 	{
 		super.initGui();
 
-		buttonList.add( plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 32, 22, 20, "+1" ) );
-		buttonList.add( plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 32, 28, 20, "+10" ) );
-		buttonList.add( plus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 32, 32, 20, "+100" ) );
-		buttonList.add( plus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 32, 38, 20, "+1000" ) );
+		int a = AEConfig.instance.priorityByStacksAmounts( 0 );
+		int b = AEConfig.instance.priorityByStacksAmounts( 1 );
+		int c = AEConfig.instance.priorityByStacksAmounts( 2 );
+		int d = AEConfig.instance.priorityByStacksAmounts( 3 );
 
-		buttonList.add( minus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 69, 22, 20, "-1" ) );
-		buttonList.add( minus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 69, 28, 20, "-10" ) );
-		buttonList.add( minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 69, 32, 20, "-100" ) );
-		buttonList.add( minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 69, 38, 20, "-1000" ) );
+		buttonList.add( plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 32, 22, 20, "+" + a ) );
+		buttonList.add( plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 32, 28, 20, "+" + b ) );
+		buttonList.add( plus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 32, 32, 20, "+" + c ) );
+		buttonList.add( plus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 32, 38, 20, "+" + d ) );
+
+		buttonList.add( minus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 69, 22, 20, "-" + a ) );
+		buttonList.add( minus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 69, 28, 20, "-" + b ) );
+		buttonList.add( minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 69, 32, 20, "-" + c ) );
+		buttonList.add( minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 69, 38, 20, "-" + d ) );
 
 		ItemStack myIcon = null;
 		Object target = ((AEBaseContainer) inventorySlots).getTarget();
@@ -123,22 +129,16 @@ public class GuiPriority extends AEBaseGui
 			}
 		}
 
-		if ( btn == plus1 )
-			addQty( 1 );
-		if ( btn == plus10 )
-			addQty( 10 );
-		if ( btn == plus100 )
-			addQty( 100 );
-		if ( btn == plus1000 )
-			addQty( 1000 );
-		if ( btn == minus1 )
-			addQty( -1 );
-		if ( btn == minus10 )
-			addQty( -10 );
-		if ( btn == minus100 )
-			addQty( -100 );
-		if ( btn == minus1000 )
-			addQty( -1000 );
+		boolean isPlus = btn == plus1 || btn == plus10 || btn == plus100 || btn == plus1000;
+		boolean isMinus = btn == minus1 || btn == minus10 || btn == minus100 || btn == minus1000;
+
+		if ( isPlus || isMinus )
+			addQty( getQty( btn ) );
+	}
+
+	private int getQty(GuiButton btn)
+	{
+		return Integer.parseInt( btn.displayString );
 	}
 
 	private void addQty(int i)
