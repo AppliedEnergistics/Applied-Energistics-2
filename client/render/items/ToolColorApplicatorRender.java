@@ -42,7 +42,6 @@ public class ToolColorApplicatorRender implements IItemRenderer
 		GL11.glPushMatrix();
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
-		int direction = 1;
 		if ( type == ItemRenderType.INVENTORY )
 		{
 			GL11.glColor4f( 1, 1, 1, 1.0F );

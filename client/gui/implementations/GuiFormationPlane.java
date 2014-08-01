@@ -4,9 +4,6 @@ import java.io.IOException;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
-
-import org.lwjgl.input.Mouse;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.client.gui.widgets.GuiImgButton;
@@ -59,8 +56,6 @@ public class GuiFormationPlane extends GuiUpgradeable
 	protected void actionPerformed(GuiButton btn)
 	{
 		super.actionPerformed( btn );
-
-		boolean backwards = Mouse.isButtonDown( 1 );
 
 		if ( btn == priority )
 		{
