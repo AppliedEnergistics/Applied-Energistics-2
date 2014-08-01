@@ -76,11 +76,13 @@ public class ToolColorApplicatorRender implements IItemRenderer
 			GL11.glRotatef( 180F, 1.0F, 0.0F, 0.0F );
 		}
 
-		float u = ExtraItemTextures.White.getIcon().getInterpolatedU( 8.1 );
-		float v = ExtraItemTextures.White.getIcon().getInterpolatedV( 8.1 );
+		IIcon dark = ExtraItemTextures.ToolColorApplicatorTip_Dark.getIcon();
+		IIcon med = ExtraItemTextures.ToolColorApplicatorTip_Medium.getIcon();
+		IIcon light = ExtraItemTextures.ToolColorApplicatorTip_Light.getIcon();
 
 		GL11.glScalef( 1F / 16F, 1F / 16F, 1F );
-		GL11.glTranslatef( 4, 6, 0 );
+		if ( type != ItemRenderType.INVENTORY )
+			GL11.glTranslatef( 2, 0, 0 );
 		GL11.glDisable( GL11.GL_LIGHTING );
 
 		AEColor col = null;
@@ -90,44 +92,40 @@ public class ToolColorApplicatorRender implements IItemRenderer
 		if ( col != null )
 		{
 			tessellator.startDrawingQuads();
-			float z = 0;
 
-			for (int g = 0; g < 7; g++)// 8
-			{
-				int x = g - 3 * direction;
-				int y = g + 3 * direction;
+			f4 = ((IIcon) dark).getMinU();
+			f5 = ((IIcon) dark).getMaxU();
+			f6 = ((IIcon) dark).getMinV();
+			f7 = ((IIcon) dark).getMaxV();
 
-				if ( type != ItemRenderType.INVENTORY )
-				{
-					x += 2;
-				}
+			tessellator.setColorOpaque_I( col.blackVariant );
+			tessellator.addVertexWithUV( 0, 0, 0, (double) f4, (double) f7 );
+			tessellator.addVertexWithUV( 16, 0, 0, (double) f5, (double) f7 );
+			tessellator.addVertexWithUV( 16, 16, 0, (double) f5, (double) f6 );
+			tessellator.addVertexWithUV( 0, 16, 0, (double) f4, (double) f6 );
 
-				if ( g < 6 )
-				{
-					tessellator.setColorOpaque_I( col.whiteVariant );
-					tessellator.addVertexWithUV( x, y, z, (double) u, (double) v );
-					tessellator.addVertexWithUV( x + 1, y, z, (double) u, (double) v );
-					tessellator.addVertexWithUV( x + 1, y + 1, z, (double) u, (double) v );
-					tessellator.addVertexWithUV( x, y + 1, z, (double) u, (double) v );
-				}
+			f4 = ((IIcon) light).getMinU();
+			f5 = ((IIcon) light).getMaxU();
+			f6 = ((IIcon) light).getMinV();
+			f7 = ((IIcon) light).getMaxV();
 
-				y -= direction;
-				tessellator.setColorOpaque_I( col.mediumVariant );
-				tessellator.addVertexWithUV( x, y, z, (double) u, (double) v );
-				tessellator.addVertexWithUV( x + 1, y, z, (double) u, (double) v );
-				tessellator.addVertexWithUV( x + 1, y + 1, z, (double) u, (double) v );
-				tessellator.addVertexWithUV( x, y + 1, z, (double) u, (double) v );
+			tessellator.setColorOpaque_I( col.whiteVariant );
+			tessellator.addVertexWithUV( 0, 0, 0, (double) f4, (double) f7 );
+			tessellator.addVertexWithUV( 16, 0, 0, (double) f5, (double) f7 );
+			tessellator.addVertexWithUV( 16, 16, 0, (double) f5, (double) f6 );
+			tessellator.addVertexWithUV( 0, 16, 0, (double) f4, (double) f6 );
 
-				x += direction;
-				if ( g < 6 )
-				{
-					tessellator.setColorOpaque_I( col.blackVariant );
-					tessellator.addVertexWithUV( x, y, z, (double) u, (double) v );
-					tessellator.addVertexWithUV( x + 1, y, z, (double) u, (double) v );
-					tessellator.addVertexWithUV( x + 1, y + 1, z, (double) u, (double) v );
-					tessellator.addVertexWithUV( x, y + 1, z, (double) u, (double) v );
-				}
-			}
+			f4 = ((IIcon) med).getMinU();
+			f5 = ((IIcon) med).getMaxU();
+			f6 = ((IIcon) med).getMinV();
+			f7 = ((IIcon) med).getMaxV();
+
+			tessellator.setColorOpaque_I( col.mediumVariant );
+			tessellator.addVertexWithUV( 0, 0, 0, (double) f4, (double) f7 );
+			tessellator.addVertexWithUV( 16, 0, 0, (double) f5, (double) f7 );
+			tessellator.addVertexWithUV( 16, 16, 0, (double) f5, (double) f6 );
+			tessellator.addVertexWithUV( 0, 16, 0, (double) f4, (double) f6 );
+
 			tessellator.draw();
 		}
 

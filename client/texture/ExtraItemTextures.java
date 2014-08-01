@@ -9,7 +9,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public enum ExtraItemTextures
 {
-	White("White"), ItemPaintBallShimmer("ItemPaintBallShimmer");
+	White("White"), ItemPaintBallShimmer("ItemPaintBallShimmer"),
+
+	ToolColorApplicatorTip_Medium("ToolColorApplicatorTip_Medium"),
+
+	ToolColorApplicatorTip_Dark("ToolColorApplicatorTip_Dark"),
+
+	ToolColorApplicatorTip_Light("ToolColorApplicatorTip_Light");
 
 	final private String name;
 	public IIcon IIcon;
