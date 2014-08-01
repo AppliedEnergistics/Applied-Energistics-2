@@ -411,6 +411,7 @@ public class GuiCraftConfirm extends AEBaseGui
 
 				int negY = ((lines - 1) * 5) / 2;
 				int downY = 0;
+				boolean red = false;
 
 				if ( stored != null && stored.getStackSize() > 0 )
 				{
@@ -447,6 +448,7 @@ public class GuiCraftConfirm extends AEBaseGui
 					if ( tooltip == z - viewStart )
 						lineList.add( GuiText.Missing.getLocal() + ": " + Long.toString( missingStack.getStackSize() ) );
 
+					red = true;
 					downY += 5;
 				}
 
@@ -486,6 +488,13 @@ public class GuiCraftConfirm extends AEBaseGui
 				}
 
 				drawItem( posX, posY, is );
+
+				if ( red )
+				{
+					int startX = x * (1 + sectionLength) + xo;
+					int startY = posY - 4;
+					drawRect( startX, startY, startX + sectionLength, startY + offY, 0x1AFF0000 );
+				}
 
 				x++;
 
