@@ -522,7 +522,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			else
 			{
 				int breakpoint = fuzzy.calculateBreakPoint( def.maxDamage );
-				newDef.dspDamage = breakpoint < def.dspDamage ? breakpoint : 0;
+				newDef.dspDamage = breakpoint <= def.dspDamage ? breakpoint : 0;
 			}
 
 			newDef.damageValue = newDef.dspDamage;
