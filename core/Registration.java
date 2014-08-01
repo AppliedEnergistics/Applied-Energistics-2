@@ -539,7 +539,10 @@ public class Registration
 
 		FMLCommonHandler.instance().bus().register( TickHandler.instance );
 		MinecraftForge.EVENT_BUS.register( TickHandler.instance );
-		MinecraftForge.EVENT_BUS.register( new PartPlacement() );
+
+		PartPlacement pp = new PartPlacement();
+		MinecraftForge.EVENT_BUS.register( pp );
+		FMLCommonHandler.instance().bus().register( pp );
 
 		IGridCacheRegistry gcr = AEApi.instance().registries().gridCache();
 		gcr.registerGridCache( ITickManager.class, TickManagerCache.class );

@@ -37,11 +37,19 @@ import appeng.integration.abstraction.IFMP;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class PartPlacement
 {
 
 	private ThreadLocal<Object> placing = new ThreadLocal<Object>();
+	private boolean wasCanceled = false;
+
+	@SubscribeEvent
+	public void playerInteract(TickEvent.ClientTickEvent event)
+	{
+		wasCanceled = false;
+	}
 
 	@SubscribeEvent
 	public void playerInteract(PlayerInteractEvent event)
@@ -60,7 +68,7 @@ public class PartPlacement
 			{
 				World w = event.entity.worldObj;
 				TileEntity te = w.getTileEntity( mop.blockX, mop.blockY, mop.blockZ );
-				if ( te instanceof IPartHost )
+				if ( te instanceof IPartHost && wasCanceled )
 					event.setCanceled( true );
 			}
 			else if ( event.entityPlayer != null )
@@ -90,7 +98,10 @@ public class PartPlacement
 
 			ItemStack held = event.entityPlayer.getHeldItem();
 			if ( place( held, event.x, event.y, event.z, event.face, event.entityPlayer, event.entityPlayer.worldObj, PlaceType.INTERACT_FIRST_PASS, 0 ) )
+			{
 				event.setCanceled( true );
+				wasCanceled = true;
+			}
 
 			placing.set( null );
 		}
