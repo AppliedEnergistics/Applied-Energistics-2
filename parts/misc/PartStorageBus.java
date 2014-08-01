@@ -150,10 +150,32 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		return super.getInventoryByName( name );
 	}
 
+	private byte resetCacheLogic = 0;
+
 	private void resetCache(boolean fullReset)
 	{
 		if ( host == null || host.getTile() == null || host.getTile().getWorldObj() == null || host.getTile().getWorldObj().isRemote )
 			return;
+
+		if ( fullReset )
+			resetCacheLogic = 2;
+		else
+			resetCacheLogic = 1;
+
+		try
+		{
+			proxy.getTick().alertDevice( proxy.getNode() );
+		}
+		catch (GridAccessException e)
+		{
+			// :P
+		}
+	}
+
+	private void resetCache()
+	{
+		boolean fullReset = resetCacheLogic == 2;
+		resetCacheLogic = 0;
 
 		IMEInventory<IAEItemStack> in = getInternalHandler();
 		IItemList<IAEItemStack> before = AEApi.instance().storage().createItemList();
@@ -368,12 +390,15 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	@Override
 	public TickingRequest getTickingRequest(IGridNode node)
 	{
-		return new TickingRequest( TickRates.StorageBus.min, TickRates.StorageBus.max, monitor == null, false );
+		return new TickingRequest( TickRates.StorageBus.min, TickRates.StorageBus.max, monitor == null, true );
 	}
 
 	@Override
 	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
 	{
+		if ( resetCacheLogic != 0 )
+			resetCache();
+
 		if ( monitor != null )
 			return monitor.onTick();
 
