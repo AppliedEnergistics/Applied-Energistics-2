@@ -16,22 +16,30 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.config.Upgrades;
+import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
+import appeng.api.parts.IPartHost;
+import appeng.api.parts.SelectedPart;
 import appeng.client.texture.MissingIcon;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
 import appeng.core.features.ItemStackSrc;
 import appeng.items.AEBaseItem;
+import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
 public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule
@@ -298,6 +306,46 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 		default:
 			return null;
 		}
+	}
+
+	@Override
+	public boolean onItemUseFirst(ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	{
+		if ( player.isSneaking() )
+		{
+			TileEntity te = world.getTileEntity( x, y, z );
+			IInventory upgrades = null;
+
+			if ( te instanceof IPartHost )
+			{
+				SelectedPart sp = ((IPartHost) te).selectPart( Vec3.createVectorHelper( hitX, hitY, hitZ ) );
+				if ( sp.part instanceof IUpgradeableHost )
+					upgrades = ((IUpgradeableHost) sp.part).getInventoryByName( "upgrades" );
+			}
+			else if ( te instanceof IUpgradeableHost )
+				upgrades = ((IUpgradeableHost) te).getInventoryByName( "upgrades" );
+
+			if ( upgrades != null && is != null && is.getItem() instanceof IUpgradeModule )
+			{
+				IUpgradeModule um = (IUpgradeModule) is.getItem();
+				Upgrades u = um.getType( is );
+
+				if ( u != null )
+				{
+					InventoryAdaptor ad = InventoryAdaptor.getAdaptor( upgrades, ForgeDirection.UNKNOWN );
+					if ( ad != null )
+					{
+						if ( player.worldObj.isRemote )
+							return false;
+
+						player.inventory.setInventorySlotContents( player.inventory.currentItem, ad.addItems( is ) );
+						return true;
+					}
+				}
+			}
+		}
+
+		return super.onItemUseFirst( is, player, world, x, y, z, side, hitX, hitY, hitZ );
 	}
 
 	@Override
