@@ -85,6 +85,7 @@ public class AdaptorISpecialInventory extends InventoryAdaptor
 		{
 			ISidedInventory sided = (ISidedInventory) i;
 			int slots[] = sided.getAccessibleSlotsFromSide( d.ordinal() );
+
 			if ( slots == null )
 				return false;
 

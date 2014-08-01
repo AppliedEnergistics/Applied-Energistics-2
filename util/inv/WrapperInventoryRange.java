@@ -30,6 +30,7 @@ public class WrapperInventoryRange implements IInventory
 	public WrapperInventoryRange(IInventory a, int[] s, boolean ignoreValid) {
 		src = a;
 		slots = s;
+
 		if ( slots == null )
 			slots = new int[0];
 

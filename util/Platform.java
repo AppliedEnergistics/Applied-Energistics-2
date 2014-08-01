@@ -1470,7 +1470,13 @@ public class Platform
 				for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 				{
 					int offset = 0;
-					for (Integer Side : ((ISidedInventory) target).getAccessibleSlotsFromSide( dir.ordinal() ))
+
+					int[] sides = ((ISidedInventory) target).getAccessibleSlotsFromSide( dir.ordinal() );
+
+					if ( sides == null )
+						return 0;
+
+					for (Integer Side : sides)
 					{
 						int c = (Side << (offset++ % 8)) ^ (1 << dir.ordinal());
 						hash = c + (hash << 6) + (hash << 16) - hash;

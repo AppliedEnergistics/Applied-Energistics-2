@@ -1052,8 +1052,13 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 						if ( te instanceof IInventory && ((IInventory) te).getSizeInventory() == 0 )
 							continue;
 
-						if ( te instanceof ISidedInventory && ((ISidedInventory) te).getAccessibleSlotsFromSide( s.getOpposite().ordinal() ).length == 0 )
-							continue;
+						if ( te instanceof ISidedInventory )
+						{
+							int[] sides = ((ISidedInventory) te).getAccessibleSlotsFromSide( s.getOpposite().ordinal() );
+
+							if ( sides == null || sides.length == 0 )
+								continue;
+						}
 
 						if ( mop.blockX == te.xCoord && mop.blockY == te.yCoord && mop.blockZ == te.zCoord )
 						{
