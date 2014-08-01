@@ -386,7 +386,8 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	}
 
 	@Override
-	public ICraftingLink submitJob(ICraftingJob job, ICraftingRequester requestingMachine, ICraftingCPU target, BaseActionSource src)
+	public ICraftingLink submitJob(ICraftingJob job, ICraftingRequester requestingMachine, ICraftingCPU target, final boolean prioritizePower,
+			BaseActionSource src)
 	{
 		if ( job.isSimulation() )
 			return null;
@@ -413,10 +414,18 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 				@Override
 				public int compare(CraftingCPUCluster o1, CraftingCPUCluster o2)
 				{
-					int a = ItemSorters.compareLong( o2.getCoProcessors(), o1.getCoProcessors() );
+					if ( prioritizePower )
+					{
+						int a = ItemSorters.compareLong( o2.getCoProcessors(), o1.getCoProcessors() );
+						if ( a != 0 )
+							return a;
+						return ItemSorters.compareLong( o2.getAvailableStorage(), o1.getAvailableStorage() );
+					}
+
+					int a = ItemSorters.compareLong( o1.getCoProcessors(), o2.getCoProcessors() );
 					if ( a != 0 )
 						return a;
-					return ItemSorters.compareLong( o2.getAvailableStorage(), o1.getAvailableStorage() );
+					return ItemSorters.compareLong( o1.getAvailableStorage(), o2.getAvailableStorage() );
 				}
 
 			} );

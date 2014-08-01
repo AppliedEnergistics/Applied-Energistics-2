@@ -80,7 +80,7 @@ public class MultiCraftingTracker
 					if ( job != null )
 					{
 						setJob( x, null );
-						setLink( x, cg.submitJob( job, owner, null, mySrc ) );
+						setLink( x, cg.submitJob( job, owner, null, false, mySrc ) );
 						return true;
 					}
 				}

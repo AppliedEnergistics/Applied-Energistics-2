@@ -323,7 +323,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		if ( result != null && simulation == false )
 		{
 			ICraftingGrid cc = getGrid().getCache( ICraftingGrid.class );
-			ICraftingLink g = cc.submitJob( result, null, selectedCpu == -1 ? null : cpus.get( selectedCpu ).cpu, getActionSrc() );
+			ICraftingLink g = cc.submitJob( result, null, selectedCpu == -1 ? null : cpus.get( selectedCpu ).cpu, true, getActionSrc() );
 			autoStart = false;
 			if ( g != null && OriginalGui != null && openContext != null )
 			{
