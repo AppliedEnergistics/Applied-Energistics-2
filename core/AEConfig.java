@@ -108,6 +108,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 	public boolean useLargeFonts = false;
 	public int[] craftByStacks = new int[] { 1, 10, 100, 1000 };
 	public int[] priorityByStacks = new int[] { 1, 10, 100, 1000 };
+	public int[] levelByStacks = new int[] { 1, 10, 100, 1000 };
 
 	public int wireless_battery = 1600000;
 	public int manipulator_battery = 200000;
@@ -141,17 +142,21 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		{
 			Property cmb = get( "Client", "craftAmtButton" + (btnNum + 1), craftByStacks[btnNum] );
 			Property pmb = get( "Client", "priorityAmtButton" + (btnNum + 1), priorityByStacks[btnNum] );
+			Property lmb = get( "Client", "levelAmtButton" + (btnNum + 1), levelByStacks[btnNum] );
 
 			int buttonCap = (int) (Math.pow( 10, btnNum + 1 ) - 1);
 
 			craftByStacks[btnNum] = Math.abs( cmb.getInt( craftByStacks[btnNum] ) );
 			priorityByStacks[btnNum] = Math.abs( pmb.getInt( priorityByStacks[btnNum] ) );
+			levelByStacks[btnNum] = Math.abs( pmb.getInt( levelByStacks[btnNum] ) );
 
 			cmb.comment = "Controls buttons on Crafting Screen : Capped at " + buttonCap;
 			pmb.comment = "Controls buttons on Priority Screen : Capped at " + buttonCap;
+			lmb.comment = "Controls buttons on Level Emitter Screen : Capped at " + buttonCap;
 
 			craftByStacks[btnNum] = Math.min( craftByStacks[btnNum], buttonCap );
 			priorityByStacks[btnNum] = Math.min( priorityByStacks[btnNum], buttonCap );
+			levelByStacks[btnNum] = Math.min( levelByStacks[btnNum], buttonCap );
 		}
 
 		for (Enum e : settings.getSettings())
@@ -416,6 +421,11 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 	public int priorityByStacksAmounts(int i)
 	{
 		return priorityByStacks[i];
+	}
+
+	public int levelByStackAmounts(int i)
+	{
+		return levelByStacks[i];
 	}
 
 	public Enum getSetting(String Category, Class<? extends Enum> class1, Enum myDefault)

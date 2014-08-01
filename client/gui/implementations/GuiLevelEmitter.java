@@ -15,6 +15,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.container.implementations.ContainerLevelEmitter;
+import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
@@ -57,15 +58,20 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		redstoneMode = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL );
 		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 48, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 
-		buttonList.add( plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 17, 22, 20, "+1" ) );
-		buttonList.add( plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 17, 28, 20, "+10" ) );
-		buttonList.add( plus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 17, 32, 20, "+100" ) );
-		buttonList.add( plus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 17, 38, 20, "+1000" ) );
+		int a = AEConfig.instance.levelByStackAmounts( 0 );
+		int b = AEConfig.instance.levelByStackAmounts( 1 );
+		int c = AEConfig.instance.levelByStackAmounts( 2 );
+		int d = AEConfig.instance.levelByStackAmounts( 3 );
 
-		buttonList.add( minus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 59, 22, 20, "-1" ) );
-		buttonList.add( minus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 59, 28, 20, "-10" ) );
-		buttonList.add( minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 59, 32, 20, "-100" ) );
-		buttonList.add( minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 59, 38, 20, "-1000" ) );
+		buttonList.add( plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 17, 22, 20, "+" + a ) );
+		buttonList.add( plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 17, 28, 20, "+" + b ) );
+		buttonList.add( plus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 17, 32, 20, "+" + c ) );
+		buttonList.add( plus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 17, 38, 20, "+" + d ) );
+
+		buttonList.add( minus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 59, 22, 20, "-" + a ) );
+		buttonList.add( minus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 59, 28, 20, "-" + b ) );
+		buttonList.add( minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 59, 32, 20, "-" + c ) );
+		buttonList.add( minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 59, 38, 20, "-" + d ) );
 
 		buttonList.add( levelMode );
 		buttonList.add( redstoneMode );
@@ -89,22 +95,16 @@ public class GuiLevelEmitter extends GuiUpgradeable
 			AELog.error( e );
 		}
 
-		if ( btn == plus1 )
-			addQty( 1 );
-		if ( btn == plus10 )
-			addQty( 10 );
-		if ( btn == plus100 )
-			addQty( 100 );
-		if ( btn == plus1000 )
-			addQty( 1000 );
-		if ( btn == minus1 )
-			addQty( -1 );
-		if ( btn == minus10 )
-			addQty( -10 );
-		if ( btn == minus100 )
-			addQty( -100 );
-		if ( btn == minus1000 )
-			addQty( -1000 );
+		boolean isPlus = btn == plus1 || btn == plus10 || btn == plus100 || btn == plus1000;
+		boolean isMinus = btn == minus1 || btn == minus10 || btn == minus100 || btn == minus1000;
+
+		if ( isPlus || isMinus )
+			addQty( getQty( btn ) );
+	}
+
+	private int getQty(GuiButton btn)
+	{
+		return Integer.parseInt( btn.displayString );
 	}
 
 	private void addQty(long i)
