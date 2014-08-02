@@ -91,7 +91,7 @@ public class ApiPart implements IPartHelper
 		catch (Exception e)
 		{
 			AELog.error( e );
-			System.exit( 1 );
+			throw new RuntimeException( "Unable to manage part API.", e );
 		}
 		return clazz;
 	}
