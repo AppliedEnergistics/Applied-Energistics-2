@@ -448,11 +448,30 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		return 0;
 	}
 
-	public ImmutableCollection<ICraftingPatternDetails> getCraftingFor(IAEItemStack what)
+	@Override
+	public ImmutableCollection<ICraftingPatternDetails> getCraftingFor(IAEItemStack whatToCraft, ICraftingPatternDetails details, int slotIndex, World world)
 	{
-		ImmutableSet<ICraftingPatternDetails> res = craftableItems.get( what );
+		ImmutableSet<ICraftingPatternDetails> res = craftableItems.get( whatToCraft );
+
 		if ( res == null )
+		{
+			if ( details != null && details.isCraftable() )
+			{
+				for (IAEItemStack ais : craftableItems.keySet())
+				{
+					if ( ais.getItem() == whatToCraft.getItem() && (!ais.getItem().getHasSubtypes() || ais.getItemDamage() == whatToCraft.getItemDamage()) )
+					{
+						if ( details.isValidItemForSlot( slotIndex, ais.getItemStack(), world ) )
+						{
+							return craftableItems.get( ais );
+						}
+					}
+				}
+			}
+
 			return ImmutableSet.of();
+		}
+
 		return res;
 	}
 

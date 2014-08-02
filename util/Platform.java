@@ -1640,7 +1640,9 @@ public class Platform
 						ci.setInventorySlotContents( slot, cp );
 						if ( r.matches( ci, w ) && Platform.isSameItem( r.getCraftingResult( ci ), output ) )
 						{
-							IAEItemStack ex = src.extractItems( AEItemStack.create( cp ), realForFake, mySrc );
+							IAEItemStack ax = x.copy();
+							ax.setStackSize( 1 );
+							IAEItemStack ex = src.extractItems( ax, realForFake, mySrc );
 							if ( ex != null )
 							{
 								energySrc.extractAEPower( 1, realForFake, PowerMultiplier.CONFIG );

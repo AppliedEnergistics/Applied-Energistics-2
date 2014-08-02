@@ -49,7 +49,8 @@ public class CraftingTreeNode
 		this.job = job;
 		sim = false;
 
-		for (ICraftingPatternDetails details : cc.getCraftingFor( what ))// in order.
+		for (ICraftingPatternDetails details : cc.getCraftingFor( what, parent == null ? null : parent.details, slot, world ))// in
+																																// order.
 		{
 			if ( parent == null || parent.notRecurive( details ) )
 				nodes.add( new CraftingTreeProcess( cc, job, details, this, depth + 1, world ) );
@@ -151,10 +152,12 @@ public class CraftingTreeNode
 
 			while (pro.possible && l > 0)
 			{
-				pro.request( inv, pro.getTimes( l, pro.getAmountCrafted( what ).getStackSize() ), src );
+				IAEItemStack madeWhat = pro.getAmountCrafted( what );
 
-				what.setStackSize( l );
-				IAEItemStack available = inv.extractItems( what, Actionable.MODULATE, src );
+				pro.request( inv, pro.getTimes( l, madeWhat.getStackSize() ), src );
+
+				madeWhat.setStackSize( l );
+				IAEItemStack available = inv.extractItems( madeWhat, Actionable.MODULATE, src );
 
 				if ( available != null )
 				{

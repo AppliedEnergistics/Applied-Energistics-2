@@ -137,6 +137,17 @@ public class CraftingTreeProcess
 			}
 		}
 
+		// more fuzzy!
+		for (IAEItemStack is : details.getCondencedOutputs())
+		{
+			if ( is.getItem() == what2.getItem() && (is.getItem().isDamageable() || is.getItemDamage() == what2.getItemDamage()) )
+			{
+				what2 = is.copy();
+				what2.setStackSize( is.getStackSize() );
+				return what2;
+			}
+		}
+
 		throw new RuntimeException( "Crafting Tree construction failed." );
 	}
 
