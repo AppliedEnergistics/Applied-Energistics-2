@@ -566,7 +566,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		IGridHost ghh = te instanceof IGridHost ? (IGridHost) te : null;
 		boolean isSmart = false;
 
-		rh.setFacesToRender( EnumSet.complementOf( EnumSet.of( of.getOpposite() ) ) );
+		rh.setFacesToRender( EnumSet.complementOf( EnumSet.of( of ) ) );
 		if ( ghh != null && ccph != null && ghh.getCableConnectionType( of.getOpposite() ) == AECableType.GLASS && ccph.getPart( of.getOpposite() ) == null
 				&& ccph.getColor() != AEColor.Transparent )
 			rh.setTexture( getGlassTexture( ccph.getColor() ) );
@@ -675,7 +675,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		boolean isGlass = false;
 		AEColor myColor = getCableColor();
 
-		rh.setFacesToRender( EnumSet.complementOf( EnumSet.of( of, of.getOpposite() ) ) );
+		rh.setFacesToRender( EnumSet.complementOf( EnumSet.of( of ) ) );
 
 		if ( ghh != null && ccph != null && ghh.getCableConnectionType( of.getOpposite() ) == AECableType.GLASS && ccph.getPart( of.getOpposite() ) == null
 				&& ccph.getColor() != AEColor.Transparent )
