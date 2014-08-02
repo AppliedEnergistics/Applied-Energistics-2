@@ -583,15 +583,19 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 										{
 											fuzz = fuzz.copy();
 											fuzz.setStackSize( input[x].getStackSize() );
-											IAEItemStack ais = inventory.extractItems( fuzz, Actionable.MODULATE, machineSrc );
-											ItemStack is = ais == null ? null : ais.getItemStack();
 
-											if ( is != null && details.isValidItemForSlot( x, is, getWorld() ) )
+											if ( details.isValidItemForSlot( x, fuzz.getItemStack(), getWorld() ) )
 											{
-												postChange( AEItemStack.create( is ), machineSrc );
-												ic.setInventorySlotContents( x, is );
-												found = true;
-												break;
+												IAEItemStack ais = inventory.extractItems( fuzz, Actionable.MODULATE, machineSrc );
+												ItemStack is = ais == null ? null : ais.getItemStack();
+
+												if ( is != null )
+												{
+													postChange( AEItemStack.create( is ), machineSrc );
+													ic.setInventorySlotContents( x, is );
+													found = true;
+													break;
+												}
 											}
 										}
 									}
