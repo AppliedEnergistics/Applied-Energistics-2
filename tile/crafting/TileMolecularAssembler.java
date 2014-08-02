@@ -119,7 +119,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 				ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
 				ICraftingPatternDetails ph = iep.getPatternForItem( is, w );
 
-				if ( ph.isCraftable() )
+				if ( ph != null && ph.isCraftable() )
 				{
 					progress = 0;
 					myPattern = is;
