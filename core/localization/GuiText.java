@@ -32,7 +32,7 @@ public enum GuiText
 
 	OfSecondOutput, NoSecondOutput, RFTunnel, Stores, Next, SelectAmount, Lumen, Empty, ConfirmCrafting,
 
-	Stored, Crafting, Scheduled, CraftingStatus, Cancel, FromStorage, ToCraft, CraftingPlan, CalculatingWait, Start, Bytes, CraftingCPU, Automatic, CoProcessors, Simulation, Missing, InterfaceTerminal, NoCraftingCPUs, LightTunnel, Clean, InvalidPattern, InterfaceTerminalHint;
+	Stored, Crafting, Scheduled, CraftingStatus, Cancel, FromStorage, ToCraft, CraftingPlan, CalculatingWait, Start, Bytes, CraftingCPU, Automatic, CoProcessors, Simulation, Missing, InterfaceTerminal, NoCraftingCPUs, LightTunnel, Clean, InvalidPattern, InterfaceTerminalHint, Range;
 
 	String root;
 
