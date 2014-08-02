@@ -155,6 +155,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	@Override
 	public void onUpdate(String field, Object oldValue, Object newValue)
 	{
+		super.onUpdate( field, oldValue, newValue );
+
 		if ( field.equals( "craftingMode" ) )
 		{
 			getAndUpdateOutput();
