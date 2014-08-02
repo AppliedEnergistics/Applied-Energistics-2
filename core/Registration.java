@@ -80,6 +80,7 @@ import appeng.core.features.AEFeatureHandler;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.DamagedItemDefinition;
 import appeng.core.features.IAEFeature;
+import appeng.core.features.IStackSrc;
 import appeng.core.features.ItemStackSrc;
 import appeng.core.features.NullItemDefinition;
 import appeng.core.features.WrappedDamageItemDefinition;
@@ -234,7 +235,7 @@ public class Registration
 				else
 				{
 					Field f = materialClass.getField( "material" + mat.name() );
-					ItemStackSrc is = ((ItemMultiMaterial) materialItem.item()).createMaterial( mat );
+					IStackSrc is = ((ItemMultiMaterial) materialItem.item()).createMaterial( mat );
 					if ( is != null )
 						f.set( materials, new DamagedItemDefinition( is ) );
 					else
@@ -509,6 +510,9 @@ public class Registration
 
 	public void Init(FMLInitializationEvent event)
 	{
+		// Perform ore camouflage!
+		ItemMultiMaterial.instance.unduplicate();
+
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.CustomRecipes ) )
 			recipeHandler.parseRecipes( new ConfigLoader( AppEng.instance.getConfigPath() ), "index.recipe" );
 		else

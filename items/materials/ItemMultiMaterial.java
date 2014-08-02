@@ -1,5 +1,6 @@
 package appeng.items.materials;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,7 +38,8 @@ import appeng.client.texture.MissingIcon;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
-import appeng.core.features.ItemStackSrc;
+import appeng.core.features.IStackSrc;
+import appeng.core.features.MaterialStackSrc;
 import appeng.items.AEBaseItem;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
@@ -134,7 +136,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 		}
 	}
 
-	public ItemStackSrc createMaterial(MaterialType mat)
+	public IStackSrc createMaterial(MaterialType mat)
 	{
 		if ( !mat.isRegistered() )
 		{
@@ -144,18 +146,16 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 
 			if ( enabled )
 			{
+				mat.itemInstance = this;
 				int newMaterialNum = mat.damageValue;
 				mat.markReady();
 
-				ItemStackSrc output = new ItemStackSrc( this, newMaterialNum );
+				IStackSrc output = mat.stackSrc = new MaterialStackSrc( mat );
 
 				if ( dmgToMaterial.get( newMaterialNum ) == null )
 					dmgToMaterial.put( newMaterialNum, mat );
 				else
 					throw new RuntimeException( "Meta Overlap detected." );
-
-				if ( mat.getOreName() != null )
-					OreDictionary.registerOre( mat.getOreName(), output.stack( 1 ) );
 
 				return output;
 			}
@@ -166,9 +166,49 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 			throw new RuntimeException( "Cannot create the same material twice..." );
 	}
 
-	public ItemStack getStackByType(MaterialType mt)
+	public void unduplicate()
 	{
-		return new ItemStack( this, 1, mt.damageValue );
+		for (MaterialType mt : dmgToMaterial.values())
+		{
+			if ( mt.getOreName() != null )
+			{
+				ItemStack replacement = null;
+
+				String names[] = mt.getOreName().split( "," );
+
+				for (String name : names)
+				{
+					if ( replacement != null )
+						break;
+
+					ArrayList<ItemStack> options = OreDictionary.getOres( name );
+					if ( options != null && options.size() > 0 )
+					{
+						for (ItemStack is : options)
+						{
+							if ( is != null && is.getItem() != null )
+							{
+								replacement = is.copy();
+								break;
+							}
+						}
+					}
+				}
+
+				if ( replacement == null || AEConfig.instance.useAEVersion( mt ) )
+				{
+					// continue using the AE2 item.
+					for (String name : names)
+						OreDictionary.registerOre( name, mt.stack( 1 ) );
+				}
+				else
+				{
+					mt.itemInstance = replacement.getItem();
+					mt.damageValue = replacement.getItemDamage();
+				}
+
+			}
+		}
 	}
 
 	public MaterialType getTypeByStack(ItemStack is)
@@ -364,7 +404,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 
 		for (MaterialType mat : types)
 		{
-			if ( mat.damageValue >= 0 && mat.isRegistered() )
+			if ( mat.damageValue >= 0 && mat.isRegistered() && mat.itemInstance == this )
 				cList.add( new ItemStack( this, 1, mat.damageValue ) );
 		}
 	}

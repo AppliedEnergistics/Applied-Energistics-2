@@ -16,6 +16,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
 import appeng.core.features.AEFeature;
 import appeng.core.settings.TickRates;
+import appeng.items.materials.MaterialType;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
@@ -94,7 +95,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 
 	public String grinderOres[] = {
 			// Vanilla Items
-			"Obsidian", "Ender", "Coal", "Iron", "Gold", "Charcoal", "NetherQuartz",
+			"Obsidian", "Ender", "EnderPearl", "Coal", "Iron", "Gold", "Charcoal", "NetherQuartz",
 			// Common Mod Ores
 			"Copper", "Tin", "Silver", "Lead", "Bronze",
 			// AE
@@ -260,9 +261,6 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 				featureFlags.add( feature );
 		}
 
-		if ( featureFlags.contains( AEFeature.WebsiteRecipes ) )
-			featureFlags.add( AEFeature.DuplicateItems );
-
 		if ( cpw.mods.fml.common.Loader.isModLoaded( "ImmibisMicroblocks" ) )
 			featureFlags.remove( AEFeature.AlphaPass );
 
@@ -300,6 +298,20 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		}
 
 		updateable = true;
+	}
+
+	public boolean useAEVersion(MaterialType mt)
+	{
+		if ( isFeatureEnabled( AEFeature.WebsiteRecipes ) )
+			return true;
+
+		setCategoryComment(
+				"OreCamouflage",
+				"AE2 Automatically uses alternative ores present in your instance of MC to blend better with its surroundings, if you prefer you can disable this selectively using these flags; Its important to note, that some if these items even if enabled may not be craftable in game because other items are overriding their recipes." );
+		Property p = get( "OreCamouflage", mt.name(), true );
+		p.comment = "OreDictionary Names: " + mt.getOreName();
+
+		return !p.getBoolean( true );
 	}
 
 	private String getListComment(Enum value)

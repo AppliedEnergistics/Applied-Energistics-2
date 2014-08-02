@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public class ItemStackSrc
+public class ItemStackSrc implements IStackSrc
 {
 
 	public final Item item;
@@ -23,11 +23,27 @@ public class ItemStackSrc
 		damage = dmg;
 	}
 
+	@Override
 	public ItemStack stack(int i)
 	{
 		if ( block != null )
 			return new ItemStack( block, i, damage );
-		return new ItemStack( item, i, damage );
+
+		if ( item != null )
+			return new ItemStack( item, i, damage );
+
+		return null;
 	}
 
+	@Override
+	public Item getItem()
+	{
+		return item;
+	}
+
+	@Override
+	public int getDamage()
+	{
+		return damage;
+	}
 }

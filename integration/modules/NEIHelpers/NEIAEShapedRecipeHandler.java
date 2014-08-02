@@ -55,9 +55,12 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 			{
 				if ( (irecipe instanceof ShapedRecipe) )
 				{
-					CachedShapedRecipe recipe = new CachedShapedRecipe( (ShapedRecipe) irecipe );
-					recipe.computeVisuals();
-					arecipes.add( recipe );
+					if ( ((ShapedRecipe) irecipe).isEnabled() )
+					{
+						CachedShapedRecipe recipe = new CachedShapedRecipe( (ShapedRecipe) irecipe );
+						recipe.computeVisuals();
+						arecipes.add( recipe );
+					}
 				}
 			}
 		}
@@ -74,7 +77,7 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 		{
 			if ( (irecipe instanceof ShapedRecipe) )
 			{
-				if ( NEIServerUtils.areStacksSameTypeCrafting( irecipe.getRecipeOutput(), result ) )
+				if ( ((ShapedRecipe) irecipe).isEnabled() && NEIServerUtils.areStacksSameTypeCrafting( irecipe.getRecipeOutput(), result ) )
 				{
 					CachedShapedRecipe recipe = new CachedShapedRecipe( (ShapedRecipe) irecipe );
 					recipe.computeVisuals();
@@ -93,7 +96,7 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 			{
 				CachedShapedRecipe recipe = new CachedShapedRecipe( (ShapedRecipe) irecipe );
 
-				if ( recipe.contains( recipe.ingredients, ingredient.getItem() ) )
+				if ( ((ShapedRecipe) irecipe).isEnabled() && recipe.contains( recipe.ingredients, ingredient.getItem() ) )
 				{
 					recipe.computeVisuals();
 					if ( recipe.contains( recipe.ingredients, ingredient ) )

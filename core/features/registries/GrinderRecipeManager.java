@@ -46,7 +46,9 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 		addIngot( "Iron", new ItemStack( Items.iron_ingot ) );
 
 		addOre( "Obsidian", new ItemStack( Blocks.obsidian ) );
+
 		addIngot( "Ender", new ItemStack( Items.ender_pearl ) );
+		addIngot( "EnderPearl", new ItemStack( Items.ender_pearl ) );
 
 		addIngot( "Wheat", new ItemStack( Items.wheat ) );
 
@@ -226,7 +228,7 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 	@Override
 	public void oreRegistered(String Name, ItemStack item)
 	{
-		if ( Name.startsWith( "ore" ) || Name.startsWith( "crystal" ) || Name.startsWith( "ingot" ) || Name.startsWith( "dust" ) )
+		if ( Name.startsWith( "ore" ) || Name.startsWith( "crystal" ) || Name.startsWith( "gem" ) || Name.startsWith( "ingot" ) || Name.startsWith( "dust" ) )
 		{
 			for (String ore : AEConfig.instance.grinderOres)
 			{
@@ -234,11 +236,7 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 				{
 					addOre( ore, item );
 				}
-				else if ( Name.equals( "crystal" + ore ) )
-				{
-					addIngot( ore, item );
-				}
-				else if ( Name.equals( "ingot" + ore ) )
+				else if ( Name.equals( "crystal" + ore ) || Name.equals( "ingot" + ore ) || Name.equals( "gem" + ore ) )
 				{
 					addIngot( ore, item );
 				}

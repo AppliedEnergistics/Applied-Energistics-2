@@ -10,20 +10,10 @@ import appeng.api.util.AEItemDefinition;
 public class DamagedItemDefinition implements AEItemDefinition
 {
 
-	final Item baseItem;
-	final int damage;
+	final IStackSrc src;
 
-	public DamagedItemDefinition(ItemStackSrc is) {
-		if ( is == null )
-		{
-			baseItem = null;
-			damage = -1;
-		}
-		else
-		{
-			baseItem = is.item;
-			damage = is.damage;
-		}
+	public DamagedItemDefinition(IStackSrc is) {
+		src = is;
 	}
 
 	@Override
@@ -35,7 +25,7 @@ public class DamagedItemDefinition implements AEItemDefinition
 	@Override
 	public Item item()
 	{
-		return baseItem;
+		return src.getItem();
 	}
 
 	@Override
@@ -47,10 +37,7 @@ public class DamagedItemDefinition implements AEItemDefinition
 	@Override
 	public ItemStack stack(int stackSize)
 	{
-		if ( baseItem == null )
-			return null;
-
-		return new ItemStack( baseItem, stackSize, damage );
+		return src.stack( stackSize );
 	}
 
 	@Override
@@ -59,7 +46,7 @@ public class DamagedItemDefinition implements AEItemDefinition
 		if ( comparableItem == null )
 			return false;
 
-		return comparableItem.getItem() == baseItem && comparableItem.getItemDamage() == damage;
+		return comparableItem.getItem() == src.getItem() && comparableItem.getItemDamage() == src.getDamage();
 	}
 
 	@Override

@@ -3,11 +3,12 @@ package appeng.items.materials;
 import java.util.EnumSet;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraftforge.oredict.OreDictionary;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
+import appeng.core.features.MaterialStackSrc;
 import appeng.entity.EntityChargedQuartz;
 import appeng.entity.EntityIds;
 import appeng.entity.EntitySingularity;
@@ -59,7 +60,7 @@ public enum MaterialType
 
 	SkyDust(45, AEFeature.Core),
 
-	EnderDust(46, AEFeature.QuantumNetworkBridge, "dustEnder", EntitySingularity.class), Singularity(47, AEFeature.QuantumNetworkBridge,
+	EnderDust(46, AEFeature.QuantumNetworkBridge, "dustEnder,dustEnderPearl", EntitySingularity.class), Singularity(47, AEFeature.QuantumNetworkBridge,
 			EntitySingularity.class), QESingularity(48, AEFeature.QuantumNetworkBridge, EntitySingularity.class),
 
 	BlankPattern(52), CardCrafting(53);
@@ -71,8 +72,14 @@ public enum MaterialType
 	// IIcon for the material.
 	@SideOnly(Side.CLIENT)
 	public IIcon IIcon;
-	final public int damageValue;
+
+	public Item itemInstance;
+	public int damageValue;
+
 	private boolean isRegistered = false;
+
+	// stack!
+	public MaterialStackSrc stackSrc;
 
 	MaterialType(int metaValue) {
 		damageValue = metaValue;
@@ -96,9 +103,6 @@ public enum MaterialType
 		features = EnumSet.of( part );
 		damageValue = metaValue;
 		oreName = oreDictionary;
-		if ( OreDictionary.getOres( oreDictionary ).size() > 0 )
-			features.add( AEFeature.DuplicateItems );
-
 		droppedEntity = c;
 		EntityRegistry.registerModEntity( droppedEntity, droppedEntity.getSimpleName(), EntityIds.get( droppedEntity ), AppEng.instance, 16, 4, true );
 	}
@@ -107,13 +111,11 @@ public enum MaterialType
 		features = EnumSet.of( part );
 		damageValue = metaValue;
 		oreName = oreDictionary;
-		if ( OreDictionary.getOres( oreDictionary ).size() > 0 )
-			features.add( AEFeature.DuplicateItems );
 	}
 
 	public ItemStack stack(int size)
 	{
-		return new ItemStack( ItemMultiMaterial.instance, size, damageValue );
+		return new ItemStack( itemInstance, size, damageValue );
 	}
 
 	public EnumSet<AEFeature> getFeature()

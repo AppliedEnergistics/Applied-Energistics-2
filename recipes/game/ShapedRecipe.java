@@ -24,6 +24,12 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 	private int width = 0;
 	private int height = 0;
 	private boolean mirrored = true;
+	private boolean disable = false;
+
+	public boolean isEnabled()
+	{
+		return !disable;
+	}
 
 	public ShapedRecipe(ItemStack result, Object... recipe) {
 		output = result.copy();
@@ -130,6 +136,9 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 	@Override
 	public boolean matches(InventoryCrafting inv, World world)
 	{
+		if ( disable )
+			return false;
+
 		for (int x = 0; x <= MAX_CRAFT_GRID_WIDTH - width; x++)
 		{
 			for (int y = 0; y <= MAX_CRAFT_GRID_HEIGHT - height; ++y)
@@ -152,6 +161,9 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 	@SuppressWarnings("unchecked")
 	private boolean checkMatch(InventoryCrafting inv, int startX, int startY, boolean mirror)
 	{
+		if ( disable )
+			return false;
+
 		for (int x = 0; x < MAX_CRAFT_GRID_WIDTH; x++)
 		{
 			for (int y = 0; y < MAX_CRAFT_GRID_HEIGHT; y++)
@@ -180,14 +192,14 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 
 					try
 					{
-						for (ItemStack item : ((IIngredient) target).getItemStackSet() )
+						for (ItemStack item : ((IIngredient) target).getItemStackSet())
 						{
 							matched = matched || checkItemEquals( item, slot );
 						}
 					}
 					catch (RegistrationError e)
 					{
-						// :P						
+						// :P
 					}
 					catch (MissingIngredientError e)
 					{
@@ -266,12 +278,20 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 	}
 
 	@Override
-	public void bake() throws RegistrationError, MissingIngredientError
+	public void bake() throws RegistrationError
 	{
-		for ( Object o : getInput() )
+		try
 		{
-			if ( o instanceof IIngredient )
-				((IIngredient)o).bake();
+			disable = false;
+			for (Object o : getInput())
+			{
+				if ( o instanceof IIngredient )
+					((IIngredient) o).bake();
+			}
+		}
+		catch (MissingIngredientError err)
+		{
+			disable = true;
 		}
 	}
 

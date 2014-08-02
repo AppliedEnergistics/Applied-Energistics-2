@@ -17,6 +17,12 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 
 	private ItemStack output = null;
 	private ArrayList<Object> input = new ArrayList<Object>();
+	private boolean disable = false;
+
+	public boolean isEnabled()
+	{
+		return !disable;
+	}
 
 	public ShapelessRecipe(ItemStack result, Object... recipe) {
 		output = result.copy();
@@ -61,6 +67,9 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 	@Override
 	public boolean matches(InventoryCrafting var1, World world)
 	{
+		if ( disable )
+			return false;
+
 		ArrayList<Object> required = new ArrayList<Object>( input );
 
 		for (int x = 0; x < var1.getSizeInventory(); x++)
@@ -82,7 +91,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 					{
 						try
 						{
-							for (ItemStack item : ((IIngredient) next).getItemStackSet() )
+							for (ItemStack item : ((IIngredient) next).getItemStackSet())
 							{
 								match = match || checkItemEquals( item, slot );
 							}
@@ -135,10 +144,18 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 	@Override
 	public void bake() throws RegistrationError, MissingIngredientError
 	{
-		for ( Object o : getInput() )
+		try
 		{
-			if ( o instanceof IIngredient )
-				((IIngredient)o).bake();
+			disable = false;
+			for (Object o : getInput())
+			{
+				if ( o instanceof IIngredient )
+					((IIngredient) o).bake();
+			}
+		}
+		catch (MissingIngredientError e)
+		{
+			disable = true;
 		}
 	}
 }
