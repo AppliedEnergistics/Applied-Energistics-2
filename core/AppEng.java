@@ -22,7 +22,6 @@ import appeng.integration.IntegrationType;
 import appeng.server.AECommand;
 import appeng.services.Profiler;
 import appeng.services.VersionChecker;
-import appeng.transformer.MissingCoreMod;
 import appeng.util.Platform;
 
 import com.google.common.base.Stopwatch;
@@ -109,7 +108,9 @@ public class AppEng
 	void PreInit(FMLPreInitializationEvent event)
 	{
 		if ( !Loader.isModLoaded( "appliedenergistics2-core" ) )
-			throw new MissingCoreMod();
+		{
+			CommonHelper.proxy.missingCoreMod();
+		}
 
 		Stopwatch star = Stopwatch.createStarted();
 		configPath = event.getModConfigurationDirectory().getPath() + File.separator + "AppliedEnergistics2" + File.separator;

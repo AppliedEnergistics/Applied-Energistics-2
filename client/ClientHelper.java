@@ -62,6 +62,7 @@ import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.TickHandler;
 import appeng.hooks.TickHandler.PlayerColor;
 import appeng.server.ServerHelper;
+import appeng.transformer.MissingCoreMod;
 import appeng.util.Platform;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -392,6 +393,12 @@ public class ClientHelper extends ServerHelper
 	public MovingObjectPosition getMOP()
 	{
 		return Minecraft.getMinecraft().objectMouseOver;
+	}
+
+	@Override
+	public void missingCoreMod()
+	{
+		throw new MissingCoreMod();
 	}
 
 }
