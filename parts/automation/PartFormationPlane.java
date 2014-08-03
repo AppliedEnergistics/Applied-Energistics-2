@@ -11,6 +11,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemFirework;
+import net.minecraft.item.ItemReed;
 import net.minecraft.item.ItemSkull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -392,7 +393,8 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 		if ( w.getBlock( x, y, z ).isReplaceable( w, x, y, z ) )
 		{
-			if ( i instanceof ItemBlock || i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemFirework || i instanceof IPartItem )
+			if ( i instanceof ItemBlock || i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemFirework || i instanceof IPartItem
+					|| i instanceof ItemReed )
 			{
 				EntityPlayer player = Platform.getPlayer( (WorldServer) w );
 				Platform.configurePlayer( player, side, tile );
@@ -410,7 +412,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 				worked = true;
 				if ( type == Actionable.MODULATE )
 				{
-					if ( i instanceof IPlantable || i instanceof ItemSkull )
+					if ( i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemReed )
 					{
 						boolean Worked = false;
 
