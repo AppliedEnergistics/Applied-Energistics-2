@@ -66,8 +66,7 @@ public class AppEng
 	// "after:gregtech_addon;after:Mekanism;after:IC2;after:ThermalExpansion;after:BuildCraft|Core;" +
 
 	// depend on version of forge used for build.
-	// "required-after:appliedenergistics2-core;" +
-	"required-after:Forge@[" // require forge.
+	"after:appliedenergistics2-core;" + "required-after:Forge@[" // require forge.
 			+ net.minecraftforge.common.ForgeVersion.majorVersion + "." // majorVersion
 			+ net.minecraftforge.common.ForgeVersion.minorVersion + "." // minorVersion
 			+ net.minecraftforge.common.ForgeVersion.revisionVersion + "." // revisionVersion
@@ -109,7 +108,7 @@ public class AppEng
 	@EventHandler
 	void PreInit(FMLPreInitializationEvent event)
 	{
-		if ( !Loader.isModLoaded( "after:appliedenergistics2-core" ) )
+		if ( !Loader.isModLoaded( "appliedenergistics2-core" ) )
 			throw new MissingCoreMod();
 
 		Stopwatch star = Stopwatch.createStarted();
