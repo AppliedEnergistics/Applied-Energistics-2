@@ -2,8 +2,10 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.container.AEBaseContainer;
+import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.util.Platform;
@@ -12,6 +14,9 @@ public class ContainerNetworkTool extends AEBaseContainer
 {
 
 	INetworkTool toolInv;
+
+	@GuiSync(1)
+	public boolean facadeMode;
 
 	public ContainerNetworkTool(InventoryPlayer ip, INetworkTool te) {
 		super( ip, null, null );
@@ -26,6 +31,13 @@ public class ContainerNetworkTool extends AEBaseContainer
 		bindPlayerInventory( ip, 0, 166 - /* height of playerinventory */82 );
 	}
 
+	public void toggleFacadeMode()
+	{
+		NBTTagCompound data = Platform.openNbtData( toolInv.getItemStack() );
+		data.setBoolean( "hideFacades", !data.getBoolean( "hideFacades" ) );
+		this.detectAndSendChanges();
+	}
+
 	@Override
 	public void detectAndSendChanges()
 	{
@@ -36,12 +48,20 @@ public class ContainerNetworkTool extends AEBaseContainer
 			if ( currentItem != null )
 			{
 				if ( Platform.isSameItem( toolInv.getItemStack(), currentItem ) )
+				{
 					getPlayerInv().setInventorySlotContents( getPlayerInv().currentItem, toolInv.getItemStack() );
+				}
 				else
 					isContainerValid = false;
 			}
 			else
 				isContainerValid = false;
+		}
+
+		if ( isContainerValid )
+		{
+			NBTTagCompound data = Platform.openNbtData( currentItem );
+			facadeMode = data.getBoolean( "hideFacades" );
 		}
 
 		super.detectAndSendChanges();

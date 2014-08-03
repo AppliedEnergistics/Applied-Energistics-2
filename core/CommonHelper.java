@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
 import appeng.client.EffectType;
 import appeng.core.sync.AppEngPacket;
@@ -38,9 +39,10 @@ public abstract class CommonHelper
 
 	public abstract void postinit();
 
-	{
-		// TODO Auto-generated method stub
+	public abstract CableRenderMode getRenderMode();
 
-	}
+	public abstract void triggerUpdates();
+
+	public abstract void updateRenderMode(EntityPlayer player);
 
 }

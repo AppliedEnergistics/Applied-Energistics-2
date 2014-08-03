@@ -33,6 +33,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.opengl.GL11;
 
+import appeng.api.parts.CableRenderMode;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
@@ -71,6 +72,36 @@ public class ClientHelper extends ServerHelper
 
 	private static RenderItem itemRenderer = new RenderItem();
 	private static RenderBlocks blockRenderer = new RenderBlocks();
+
+	@Override
+	public CableRenderMode getRenderMode()
+	{
+		if ( Platform.isServer() )
+			return super.getRenderMode();
+
+		Minecraft mc = Minecraft.getMinecraft();
+		EntityPlayer player = mc.thePlayer;
+
+		return renderModeForPlayer( player );
+	}
+
+	@Override
+	public void triggerUpdates()
+	{
+		Minecraft mc = Minecraft.getMinecraft();
+		EntityPlayer player = mc.thePlayer;
+
+		if ( player == null )
+			return;
+
+		int x = (int) player.posX;
+		int y = (int) player.posY;
+		int z = (int) player.posZ;
+
+		int range = 16 * 16;
+
+		mc.theWorld.markBlockRangeForRenderUpdate( x - range, y - range, z - range, x + range, y + range, z + range );
+	}
 
 	@SubscribeEvent
 	public void postPlayerRender(RenderLivingEvent.Pre p)

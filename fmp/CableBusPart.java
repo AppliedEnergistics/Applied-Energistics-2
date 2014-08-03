@@ -101,7 +101,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	{
 		return cb.recolourBlock( side, colour, who );
 	}
-	
+
 	@Override
 	public AEColor getColor()
 	{
@@ -311,7 +311,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 			{
 				List<AxisAlignedBB> boxes = new ArrayList();
 				IPartCollsionHelper bch = new BusCollisionHelper( boxes, side, null, true );
-				fp.getBoxes( bch );
+				fp.getBoxes( bch, null );
 				for (AxisAlignedBB bb : boxes)
 				{
 					disableFacadeOcclusion.set( true );

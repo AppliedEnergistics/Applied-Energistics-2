@@ -24,15 +24,29 @@ public enum GuiText
 
 	CraftingTerminal, FormationPlane, Inscriber, QuartzCuttingKnife,
 
-	METunnel, ItemTunnel, RedstoneTunnel, MJTunnel, EUTunnel, FluidTunnel, StoredSize,
+	METunnel, ItemTunnel, RedstoneTunnel, MJTunnel, EUTunnel, FluidTunnel,
 
-	CopyMode, CopyModeDesc, PatternTerminal, CraftingPattern, ProcessingPattern, Crafts, Creates, And, With, MolecularAssembler,
+	StoredSize, CopyMode, CopyModeDesc, PatternTerminal, CraftingPattern,
 
-	StoredPower, MaxPower, RequiredPower, Efficiency, InWorldCrafting, inWorldFluix, inWorldPurificationCertus, inWorldPurificationNether, inWorldPurificationFluix, inWorldSingularity, ChargedQuartz,
+	ProcessingPattern, Crafts, Creates, And, With, MolecularAssembler,
 
-	OfSecondOutput, NoSecondOutput, RFTunnel, Stores, Next, SelectAmount, Lumen, Empty, ConfirmCrafting,
+	StoredPower, MaxPower, RequiredPower, Efficiency, InWorldCrafting,
 
-	Stored, Crafting, Scheduled, CraftingStatus, Cancel, FromStorage, ToCraft, CraftingPlan, CalculatingWait, Start, Bytes, CraftingCPU, Automatic, CoProcessors, Simulation, Missing, InterfaceTerminal, NoCraftingCPUs, LightTunnel, Clean, InvalidPattern, InterfaceTerminalHint, Range;
+	inWorldFluix, inWorldPurificationCertus, inWorldPurificationNether,
+
+	inWorldPurificationFluix, inWorldSingularity, ChargedQuartz, OfSecondOutput,
+
+	NoSecondOutput, RFTunnel, Stores, Next, SelectAmount, Lumen, Empty,
+
+	ConfirmCrafting, Stored, Crafting, Scheduled, CraftingStatus, Cancel,
+
+	FromStorage, ToCraft, CraftingPlan, CalculatingWait, Start, Bytes,
+
+	CraftingCPU, Automatic, CoProcessors, Simulation, Missing,
+
+	InterfaceTerminal, NoCraftingCPUs, LightTunnel, Clean, InvalidPattern,
+
+	InterfaceTerminalHint, Range, TransparentFacades, TransparentFacadesHint;
 
 	String root;
 

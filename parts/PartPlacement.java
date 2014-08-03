@@ -27,6 +27,7 @@ import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.core.AELog;
 import appeng.core.AppEng;
+import appeng.core.CommonHelper;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketClick;
 import appeng.core.sync.packets.PacketPartPlacement;
@@ -137,7 +138,7 @@ public class PartPlacement
 					if ( mop != null )
 					{
 						List<ItemStack> is = new LinkedList();
-						SelectedPart sp = host.selectPart( mop.hitVec.addVector( -mop.blockX, -mop.blockY, -mop.blockZ ) );
+						SelectedPart sp = selectPart( player, host, mop.hitVec.addVector( -mop.blockX, -mop.blockY, -mop.blockZ ) );
 
 						if ( sp.part != null )
 						{
@@ -247,7 +248,7 @@ public class PartPlacement
 				if ( mop != null )
 				{
 					mop.hitVec = mop.hitVec.addVector( -mop.blockX, -mop.blockY, -mop.blockZ );
-					SelectedPart sPart = host.selectPart( mop.hitVec );
+					SelectedPart sPart = selectPart( player, host, mop.hitVec );
 					if ( sPart != null && sPart.part != null )
 						if ( sPart.part.onShiftActivate( player, mop.hitVec ) )
 						{
@@ -364,7 +365,7 @@ public class PartPlacement
 			MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.a, dir.b );
 			if ( mop != null )
 			{
-				SelectedPart sp = host.selectPart( mop.hitVec.addVector( -mop.blockX, -mop.blockY, -mop.blockZ ) );
+				SelectedPart sp = selectPart( player, host, mop.hitVec.addVector( -mop.blockX, -mop.blockY, -mop.blockZ ) );
 
 				if ( sp.part != null )
 				{
@@ -405,6 +406,15 @@ public class PartPlacement
 			}
 		}
 		return true;
+	}
+
+	private static SelectedPart selectPart(EntityPlayer player, IPartHost host, Vec3 pos)
+	{
+		CommonHelper.proxy.updateRenderMode( player );
+		SelectedPart sp = host.selectPart( pos );
+		CommonHelper.proxy.updateRenderMode( null );
+
+		return sp;
 	}
 
 	public static IFacadePart isFacade(ItemStack held, ForgeDirection side)

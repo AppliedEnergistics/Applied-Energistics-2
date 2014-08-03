@@ -11,9 +11,12 @@ import java.util.concurrent.Callable;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import appeng.api.AEApi;
 import appeng.api.networking.IGridNode;
+import appeng.api.parts.CableRenderMode;
 import appeng.api.util.AEColor;
 import appeng.core.AELog;
+import appeng.core.CommonHelper;
 import appeng.core.sync.packets.PacketPaintedEntity;
 import appeng.crafting.CraftingJob;
 import appeng.entity.EntityFloatingItem;
@@ -181,6 +184,8 @@ public class TickHandler
 		}
 	}
 
+	CableRenderMode crm = CableRenderMode.Standard;
+
 	@SubscribeEvent
 	public void onTick(TickEvent ev)
 	{
@@ -189,6 +194,12 @@ public class TickHandler
 		{
 			tickColors( cliPlayerColors );
 			EntityFloatingItem.ageStatic = (EntityFloatingItem.ageStatic + 1) % 60000;
+			CableRenderMode currentMode = AEApi.instance().partHelper().getCableRenderMode();
+			if ( currentMode != crm )
+			{
+				crm = currentMode;
+				CommonHelper.proxy.triggerUpdates();
+			}
 		}
 
 		// rwar!

@@ -447,11 +447,14 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 					part.getBoxes( bch );
 			}
 
-			if ( includeFacades && s != null && s != ForgeDirection.UNKNOWN )
+			if ( AEApi.instance().partHelper().getCableRenderMode().opaqueFacades || !visual )
 			{
-				IFacadePart fp = fc.getFacade( s );
-				if ( fp != null )
-					fp.getBoxes( bch );
+				if ( includeFacades && s != null && s != ForgeDirection.UNKNOWN )
+				{
+					IFacadePart fp = fc.getFacade( s );
+					if ( fp != null )
+						fp.getBoxes( bch, e );
+				}
 			}
 		}
 
@@ -844,21 +847,24 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 			}
 		}
 
-		for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		if ( AEApi.instance().partHelper().getCableRenderMode().opaqueFacades )
 		{
-			IFacadePart p = fc.getFacade( side );
-			if ( p != null )
+			for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
-				List<AxisAlignedBB> boxes = new LinkedList<AxisAlignedBB>();
-
-				IPartCollsionHelper bch = new BusCollisionHelper( boxes, side, null, true );
-				p.getBoxes( bch );
-				for (AxisAlignedBB bb : boxes)
+				IFacadePart p = fc.getFacade( side );
+				if ( p != null )
 				{
-					bb = bb.expand( 0.01, 0.01, 0.01 );
-					if ( bb.isVecInside( pos ) )
+					List<AxisAlignedBB> boxes = new LinkedList<AxisAlignedBB>();
+
+					IPartCollsionHelper bch = new BusCollisionHelper( boxes, side, null, true );
+					p.getBoxes( bch, null );
+					for (AxisAlignedBB bb : boxes)
 					{
-						return new SelectedPart( p, side );
+						bb = bb.expand( 0.01, 0.01, 0.01 );
+						if ( bb.isVecInside( pos ) )
+						{
+							return new SelectedPart( p, side );
+						}
 					}
 				}
 			}

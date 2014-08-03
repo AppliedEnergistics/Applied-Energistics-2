@@ -234,7 +234,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		brightnessBottomRight = z[1];
 		brightnessTopLeft = z[2];
 		brightnessTopRight = z[3];
-		Tessellator.instance.setColorOpaque_I( z[4] );
+		Tessellator.instance.setColorRGBA_I( z[4], (int) (opacity * 255) );
 
 		colorRedTopLeft = c[0];
 		colorGreenTopLeft = c[1];
@@ -430,7 +430,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 
 		int out = (high << 16) | low;
 
-		Tessellator.instance.setColorOpaque_F( r, g, b );
+		Tessellator.instance.setColorRGBA_F( r, g, b, opacity );
 		Tessellator.instance.setBrightness( out );
 	}
 
@@ -657,6 +657,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	}
 
 	int lightHashTmp[] = new int[27];
+	public float opacity = 1.0f;
 
 	private int getLightingHash(Block blk, IBlockAccess w, int x, int y, int z)
 	{

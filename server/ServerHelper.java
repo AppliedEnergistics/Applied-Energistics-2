@@ -6,15 +6,19 @@ import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
 import appeng.client.EffectType;
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.NetworkHandler;
+import appeng.items.tools.ToolNetworkTool;
 import appeng.util.Platform;
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -105,6 +109,49 @@ public class ServerHelper extends CommonHelper
 	public MovingObjectPosition getMOP()
 	{
 		return null;
+	}
+
+	@Override
+	public CableRenderMode getRenderMode()
+	{
+		if ( renderModeBased == null )
+			return CableRenderMode.Standard;
+
+		return renderModeForPlayer( renderModeBased );
+	}
+
+	private EntityPlayer renderModeBased;
+
+	@Override
+	public void updateRenderMode(EntityPlayer player)
+	{
+		renderModeBased = player;
+	}
+
+	protected CableRenderMode renderModeForPlayer(EntityPlayer player)
+	{
+		if ( player != null )
+		{
+			for (int x = 0; x < InventoryPlayer.getHotbarSize(); x++)
+			{
+				ItemStack is = player.inventory.getStackInSlot( x );
+
+				if ( is != null && is.getItem() instanceof ToolNetworkTool )
+				{
+					NBTTagCompound c = is.getTagCompound();
+					if ( c != null && c.getBoolean( "hideFacades" ) )
+						return CableRenderMode.CableView;
+				}
+			}
+		}
+
+		return CableRenderMode.Standard;
+	}
+
+	@Override
+	public void triggerUpdates()
+	{
+
 	}
 
 }

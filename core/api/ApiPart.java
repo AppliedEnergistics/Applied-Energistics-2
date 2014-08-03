@@ -23,12 +23,14 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.IPartHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.LayerBase;
 import appeng.client.render.BusRenderer;
 import appeng.core.AELog;
 import appeng.core.AppEng;
+import appeng.core.CommonHelper;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IFMP;
 import appeng.parts.PartPlacement;
@@ -343,6 +345,12 @@ public class ApiPart implements IPartHelper
 		}
 
 		return false;
+	}
+
+	@Override
+	public CableRenderMode getCableRenderMode()
+	{
+		return CommonHelper.proxy.getRenderMode();
 	}
 
 }

@@ -5,6 +5,8 @@ import java.util.EnumSet;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -16,6 +18,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
+import appeng.api.AEApi;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartCollsionHelper;
@@ -52,10 +55,18 @@ public class FacadePart implements IFacadePart
 	}
 
 	@Override
-	public void getBoxes(IPartCollsionHelper ch)
+	public void getBoxes(IPartCollsionHelper ch, Entity e)
 	{
-		// the box is 15.9 for transition planes to pick up collision events.
-		ch.addBox( 0.0, 0.0, 14, 16.0, 16.0, 15.9 );
+		if ( e instanceof EntityLivingBase )
+		{
+			// prevent weird snagg behavior
+			ch.addBox( 0.0, 0.0, 14, 16.0, 16.0, 16.0 );
+		}
+		else
+		{
+			// the box is 15.9 for transition planes to pick up collision events.
+			ch.addBox( 0.0, 0.0, 14, 16.0, 16.0, 15.9 );
+		}
 	}
 
 	public static boolean isFacade(ItemStack is)
@@ -136,9 +147,18 @@ public class FacadePart implements IFacadePart
 						ItemBlock ib = (ItemBlock) randomItem.getItem();
 						Block blk = Block.getBlockFromItem( ib );
 
-						if ( blk.canRenderInPass( 1 ) )
+						if ( AEApi.instance().partHelper().getCableRenderMode().transparentFacades )
 						{
+							if ( rbw != null )
+								rbw.opacity = 0.3f;
 							instance.renderForPass( 1 );
+						}
+						else
+						{
+							if ( blk.canRenderInPass( 1 ) )
+							{
+								instance.renderForPass( 1 );
+							}
 						}
 
 						int color = 0xffffff;
@@ -265,6 +285,7 @@ public class FacadePart implements IFacadePart
 
 						if ( rbw != null )
 						{
+							rbw.opacity = 1.0f;
 							rbw.faces = EnumSet.allOf( ForgeDirection.class );
 						}
 
@@ -505,6 +526,9 @@ public class FacadePart implements IFacadePart
 	@Override
 	public boolean isTransparent()
 	{
+		if ( AEApi.instance().partHelper().getCableRenderMode().transparentFacades )
+			return true;
+
 		ItemStack is = getTexture();
 		Block blk = Block.getBlockFromItem( is.getItem() );
 		if ( !blk.isOpaqueCube() )

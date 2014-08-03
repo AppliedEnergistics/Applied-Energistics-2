@@ -20,6 +20,7 @@ import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.container.implementations.ContainerCraftingCPU;
 import appeng.container.implementations.ContainerLevelEmitter;
+import appeng.container.implementations.ContainerNetworkTool;
 import appeng.container.implementations.ContainerPatternTerm;
 import appeng.container.implementations.ContainerPriority;
 import appeng.container.implementations.ContainerQuartzKnife;
@@ -149,6 +150,13 @@ public class PacketValueConfig extends AppEngPacket
 			else if ( Name.equals( "CellWorkbench.Fuzzy" ) )
 			{
 				ccw.setFuzzy( FuzzyMode.valueOf( Value ) );
+			}
+		}
+		else if ( c instanceof ContainerNetworkTool )
+		{
+			if ( Name.equals( "NetworkTool" ) && Value.equals( "Toggle" ) )
+			{
+				((ContainerNetworkTool) c).toggleFacadeMode();
 			}
 		}
 		else if ( c instanceof IConfigureableObject )
