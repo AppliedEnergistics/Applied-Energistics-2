@@ -22,11 +22,13 @@ import appeng.integration.IntegrationType;
 import appeng.server.AECommand;
 import appeng.services.Profiler;
 import appeng.services.VersionChecker;
+import appeng.transformer.MissingCoreMod;
 import appeng.util.Platform;
 
 import com.google.common.base.Stopwatch;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -64,7 +66,8 @@ public class AppEng
 	// "after:gregtech_addon;after:Mekanism;after:IC2;after:ThermalExpansion;after:BuildCraft|Core;" +
 
 	// depend on version of forge used for build.
-	"required-after:appliedenergistics2-core;" + "required-after:Forge@[" // require forge.
+	// "required-after:appliedenergistics2-core;" +
+	"required-after:Forge@[" // require forge.
 			+ net.minecraftforge.common.ForgeVersion.majorVersion + "." // majorVersion
 			+ net.minecraftforge.common.ForgeVersion.minorVersion + "." // minorVersion
 			+ net.minecraftforge.common.ForgeVersion.revisionVersion + "." // revisionVersion
@@ -106,6 +109,9 @@ public class AppEng
 	@EventHandler
 	void PreInit(FMLPreInitializationEvent event)
 	{
+		if ( !Loader.isModLoaded( "after:appliedenergistics2-core" ) )
+			throw new MissingCoreMod();
+
 		Stopwatch star = Stopwatch.createStarted();
 		configPath = event.getModConfigurationDirectory().getPath() + File.separator + "AppliedEnergistics2" + File.separator;
 
