@@ -59,10 +59,13 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 
 	static int currentPass = 0;
 	int myPass = 0;
-	static final ThreadLocal<LinkedList> depth = new ThreadLocal<LinkedList>();
+	static final ThreadLocal<LinkedList> depthMod = new ThreadLocal<LinkedList>();
+	static final ThreadLocal<LinkedList> depthSim = new ThreadLocal<LinkedList>();
 
-	private LinkedList getDepth()
+	private LinkedList getDepth(Actionable type)
 	{
+		ThreadLocal<LinkedList> depth = type == Actionable.MODULATE ? depthMod : depthSim;
+
 		LinkedList s = depth.get();
 
 		if ( s == null )
@@ -71,9 +74,9 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 		return s;
 	}
 
-	private boolean diveList(NetworkInventoryHandler<T> networkInventoryHandler)
+	private boolean diveList(NetworkInventoryHandler<T> networkInventoryHandler, Actionable type)
 	{
-		LinkedList cDepth = getDepth();
+		LinkedList cDepth = getDepth( type );
 		if ( cDepth.contains( networkInventoryHandler ) )
 			return true;
 
@@ -81,9 +84,10 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 		return false;
 	}
 
-	private boolean diveIteration(NetworkInventoryHandler<T> networkInventoryHandler)
+	private boolean diveIteration(NetworkInventoryHandler<T> networkInventoryHandler, Actionable type)
 	{
-		if ( getDepth().isEmpty() )
+		LinkedList cDepth = getDepth( type );
+		if ( cDepth.isEmpty() )
 		{
 			currentPass++;
 			myPass = currentPass;
@@ -96,13 +100,13 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 				myPass = currentPass;
 		}
 
-		getDepth().push( this );
+		cDepth.push( this );
 		return false;
 	}
 
-	private void surface(NetworkInventoryHandler<T> networkInventoryHandler)
+	private void surface(NetworkInventoryHandler<T> networkInventoryHandler, Actionable type)
 	{
-		if ( getDepth().pop() != this )
+		if ( getDepth( type ).pop() != this )
 			throw new RuntimeException( "Invalid Access to Networked Storage API detected." );
 	}
 
@@ -141,12 +145,12 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	@Override
 	public T injectItems(T input, Actionable type, BaseActionSource src)
 	{
-		if ( diveList( this ) )
+		if ( diveList( this, type ) )
 			return input;
 
 		if ( testPermission( src, SecurityPermissions.INJECT ) )
 		{
-			surface( this );
+			surface( this, type );
 			return input;
 		}
 
@@ -175,7 +179,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 			}
 		}
 
-		surface( this );
+		surface( this, type );
 
 		return input;
 	}
@@ -183,12 +187,12 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	@Override
 	public T extractItems(T request, Actionable mode, BaseActionSource src)
 	{
-		if ( diveList( this ) )
+		if ( diveList( this, mode ) )
 			return null;
 
 		if ( testPermission( src, SecurityPermissions.EXTRACT ) )
 		{
-			surface( this );
+			surface( this, mode );
 			return null;
 		}
 
@@ -213,7 +217,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 			}
 		}
 
-		surface( this );
+		surface( this, mode );
 
 		if ( output.getStackSize() <= 0 )
 			return null;
@@ -224,7 +228,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	@Override
 	public IItemList<T> getAvailableItems(IItemList out)
 	{
-		if ( diveIteration( this ) )
+		if ( diveIteration( this, Actionable.SIMULATE ) )
 			return out;
 
 		// for (Entry<Integer, IMEInventoryHandler<T>> h : prorityInventory.entries())
@@ -232,7 +236,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 			for (IMEInventoryHandler<T> j : i)
 				out = j.getAvailableItems( out );
 
-		surface( this );
+		surface( this, Actionable.SIMULATE );
 
 		return out;
 	}
