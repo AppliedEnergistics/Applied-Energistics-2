@@ -13,7 +13,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.chunk.Chunk;
 import appeng.api.AEApi;
 import appeng.api.util.WorldCoord;
 import appeng.block.spatial.BlockMatrixFrame;
@@ -174,8 +173,7 @@ public class StorageHelper
 		}
 
 		// load the chunk!
-		Chunk myChunk = WorldServer.class.cast( newWorld ).getChunkProvider()
-				.loadChunk( MathHelper.floor_double( link.x ) >> 4, MathHelper.floor_double( link.z ) >> 4 );
+		WorldServer.class.cast( newWorld ).getChunkProvider().loadChunk( MathHelper.floor_double( link.x ) >> 4, MathHelper.floor_double( link.z ) >> 4 );
 
 		boolean difDest = newWorld != oldWorld;
 		if ( difDest )

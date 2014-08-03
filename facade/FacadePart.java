@@ -424,9 +424,6 @@ public class FacadePart implements IFacadePart
 						try
 						{
 							int color = ib.getColorFromItemStack( randomItem, 0 );
-							float r = (color >> 16 & 0xff) / 255F;
-							float g = (color >> 8 & 0xff) / 255F;
-							float b = (color & 0xff) / 255F;
 							GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0F );
 							instance.setInvColor( color );
 						}
