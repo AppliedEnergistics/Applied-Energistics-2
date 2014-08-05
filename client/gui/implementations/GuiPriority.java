@@ -136,11 +136,6 @@ public class GuiPriority extends AEBaseGui
 			addQty( getQty( btn ) );
 	}
 
-	private int getQty(GuiButton btn)
-	{
-		return Integer.parseInt( btn.displayString );
-	}
-
 	private void addQty(int i)
 	{
 		try

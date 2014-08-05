@@ -1,6 +1,8 @@
 package appeng.client.gui;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -65,6 +67,19 @@ public abstract class AEBaseGui extends GuiContainer
 		super( container );
 		subGui = switchingGuis;
 		switchingGuis = false;
+	}
+
+	protected int getQty(GuiButton btn)
+	{
+		try
+		{
+			DecimalFormat df = new DecimalFormat("+#;-#");
+			return df.parse( btn.displayString ).intValue();
+		}
+		catch(ParseException e )
+		{
+			return 0;
+		}
 	}
 
 	public boolean isSubGui()

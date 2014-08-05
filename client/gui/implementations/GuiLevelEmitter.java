@@ -102,11 +102,6 @@ public class GuiLevelEmitter extends GuiUpgradeable
 			addQty( getQty( btn ) );
 	}
 
-	private int getQty(GuiButton btn)
-	{
-		return Integer.parseInt( btn.displayString );
-	}
-
 	private void addQty(long i)
 	{
 		try
