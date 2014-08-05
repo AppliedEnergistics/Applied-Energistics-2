@@ -460,9 +460,12 @@ public abstract class AEBaseGui extends GuiContainer
 				{
 					if ( y < mouse_y && y + tooltip.getHeight() > mouse_y )
 					{
+						if ( y < 15 )
+							y = 15;
+
 						String msg = tooltip.getMsg();
 						if ( msg != null )
-							drawTooltip( x + 8, y + 4, 0, msg );
+							drawTooltip( x + 11, y + 4, 0, msg );
 					}
 				}
 			}
