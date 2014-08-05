@@ -12,16 +12,18 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.CraftingItemList;
+import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
+import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
+import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.ICustomNameObject;
-import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
@@ -31,13 +33,13 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 
 	CraftingCPUCluster monitor = null;
 	String cpuName = null;
-	IGrid network;
+	protected IGrid network;
 
 	IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
 
-	public ContainerCraftingCPU(InventoryPlayer ip, TileCraftingTile te) {
-		super( ip, null, null );
-		IGridHost host = te;// .getGridHost();
+	public ContainerCraftingCPU(InventoryPlayer ip, Object te) {
+		super( ip, te );
+		IGridHost host = (IGridHost) (te instanceof IGridHost ? te : null);
 
 		if ( host != null )
 		{
@@ -47,23 +49,52 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		}
 
 		if ( te instanceof TileCraftingTile )
-		{
-			IAECluster c = ((TileCraftingTile) te).getCluster();
-			if ( c instanceof CraftingCPUCluster )
-			{
-				cpuName = ((CraftingCPUCluster) c).getName();
+			setCPU( (ICraftingCPU) ((TileCraftingTile) te).getCluster() );
 
-				monitor = (CraftingCPUCluster) c;
-				if ( monitor != null )
+		if ( network == null && Platform.isServer() )
+			isContainerValid = false;
+	}
+
+	protected void setCPU(ICraftingCPU c)
+	{
+		if ( c== monitor)
+			return;
+		
+		if ( monitor != null )
+			monitor.removeListener( this );
+
+		for (Object g : this.crafters)
+		{
+			if ( g instanceof EntityPlayer )
+			{
+				try
 				{
-					monitor.getListOfItem( list, CraftingItemList.ALL );
-					monitor.addListener( this, null );
+					NetworkHandler.instance.sendTo( new PacketValueConfig( "CraftingStatus", "Clear" ), (EntityPlayerMP) g );
+				}
+				catch (IOException e)
+				{
+					AELog.error( e );
 				}
 			}
 		}
 
-		if ( network == null && Platform.isServer() )
-			isContainerValid = false;
+		if ( c instanceof CraftingCPUCluster )
+		{
+			cpuName = ((CraftingCPUCluster) c).getName();
+
+			monitor = (CraftingCPUCluster) c;
+			if ( monitor != null )
+			{
+				list.resetStatus();
+				monitor.getListOfItem( list, CraftingItemList.ALL );
+				monitor.addListener( this, null );
+			}
+		}
+		else
+		{
+			monitor = null;
+			cpuName = "";
+		}
 	}
 
 	public void cancelCrafting()
@@ -106,7 +137,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	@Override
 	public void detectAndSendChanges()
 	{
-		if ( Platform.isServer() && !list.isEmpty() )
+		if ( Platform.isServer() && monitor != null && !list.isEmpty() )
 		{
 			try
 			{

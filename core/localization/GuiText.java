@@ -46,7 +46,9 @@ public enum GuiText
 
 	InterfaceTerminal, NoCraftingCPUs, LightTunnel, Clean, InvalidPattern,
 
-	InterfaceTerminalHint, Range, TransparentFacades, TransparentFacadesHint;
+	InterfaceTerminalHint, Range, TransparentFacades, TransparentFacadesHint,
+
+	NoCraftingJobs, CPUs;
 
 	String root;
 

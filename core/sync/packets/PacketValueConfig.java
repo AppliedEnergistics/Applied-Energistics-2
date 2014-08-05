@@ -9,16 +9,20 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import appeng.api.config.FuzzyMode;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
+import appeng.client.gui.implementations.GuiCraftingCPU;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.container.implementations.ContainerCraftingCPU;
+import appeng.container.implementations.ContainerCraftingStatus;
 import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.container.implementations.ContainerNetworkTool;
 import appeng.container.implementations.ContainerPatternTerm;
@@ -54,6 +58,12 @@ public class PacketValueConfig extends AppEngPacket
 			ItemStack is = player.getHeldItem();
 			IMouseWheelItem si = (IMouseWheelItem) is.getItem();
 			si.onWheel( is, Value.equals( "WheelUp" ) );
+			return;
+		}
+		else if ( Name.equals( "Terminal.Cpu" ) && c instanceof ContainerCraftingStatus )
+		{
+			ContainerCraftingStatus qk = (ContainerCraftingStatus) c;
+			qk.cycleCpu( Value.equals( "Next" ) );
 			return;
 		}
 		else if ( Name.equals( "Terminal.Cpu" ) && c instanceof ContainerCraftConfirm )
@@ -197,6 +207,13 @@ public class PacketValueConfig extends AppEngPacket
 		else if ( Name.startsWith( "SyncDat." ) )
 		{
 			((AEBaseContainer) c).stringSync( Integer.parseInt( Name.substring( 8 ) ), Value );
+		}
+		else if ( Name.equals( "CraftingStatus" ) && Value.equals( "Clear" ) )
+		{
+			GuiScreen gs = Minecraft.getMinecraft().currentScreen;
+			if ( gs instanceof GuiCraftingCPU )
+				((GuiCraftingCPU) gs).clearItems();
+			return;
 		}
 		else if ( c instanceof IConfigureableObject )
 		{

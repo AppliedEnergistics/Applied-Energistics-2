@@ -32,9 +32,9 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	public void initGui()
 	{
 		super.initGui();
-		buttonList.add( tabCraftButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 179, new ItemStack( Blocks.crafting_table ),
+		buttonList.add( tabCraftButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 177, new ItemStack( Blocks.crafting_table ),
 				GuiText.CraftingPattern.getLocal(), itemRender ) );
-		buttonList.add( tabProcessButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 179, new ItemStack( Blocks.furnace ),
+		buttonList.add( tabProcessButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 177, new ItemStack( Blocks.furnace ),
 				GuiText.ProcessingPattern.getLocal(), itemRender ) );
 
 		// buttonList.add( substitutionsBtn = new GuiImgButton( this.guiLeft + 84, this.guiTop + this.ySize - 163,

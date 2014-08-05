@@ -23,6 +23,7 @@ import appeng.api.util.IConfigureableObject;
 import appeng.client.gui.AEBaseMEGui;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiScrollbar;
+import appeng.client.gui.widgets.GuiTabButton;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.MEGuiTextField;
 import appeng.client.me.InternalSlotME;
@@ -35,7 +36,9 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
+import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.integration.IntegrationType;
@@ -46,6 +49,8 @@ import appeng.util.Platform;
 
 public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfigManagerHost
 {
+
+	GuiTabButton craftingStatusBtn;
 
 	MEGuiTextField searchField;
 	private static String memoryText = "";
@@ -227,6 +232,13 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		searchField.setTextColor( 0xFFFFFF );
 		searchField.setVisible( true );
 
+		if ( viewCell || this instanceof GuiWirelessTerm )
+		{
+			buttonList.add( craftingStatusBtn = new GuiTabButton( this.guiLeft + 170, this.guiTop - 4, 2 + 11 * 16, GuiText.CraftingStatus.getLocal(),
+					itemRender ) );
+			craftingStatusBtn.hideEdge = 13;
+		}
+
 		// Enum setting = AEConfig.instance.getSetting( "Terminal", SearchBoxMode.class, SearchBoxMode.AUTOSEARCH );
 		Enum setting = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
 		searchField.setFocused( SearchBoxMode.AUTOSEARCH == setting || SearchBoxMode.NEI_AUTOSEARCH == setting );
@@ -273,6 +285,18 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	@Override
 	protected void actionPerformed(GuiButton btn)
 	{
+		if ( btn == craftingStatusBtn )
+		{
+			try
+			{
+				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_CRAFTING_STATUS ) );
+			}
+			catch (IOException e)
+			{
+				AELog.error( e );
+			}
+		}
+
 		if ( btn instanceof GuiImgButton )
 		{
 			boolean backwards = Mouse.isButtonDown( 1 );

@@ -26,7 +26,6 @@ import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
-import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
 
 import com.google.common.base.Joiner;
@@ -42,11 +41,23 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 	List<IAEItemStack> visual = new ArrayList();
 
-	public GuiCraftingCPU(InventoryPlayer inventoryPlayer, TileCraftingTile te) {
-		super( new ContainerCraftingCPU( inventoryPlayer, te ) );
+	public void clearItems()
+	{
+		storage = AEApi.instance().storage().createItemList();
+		active = AEApi.instance().storage().createItemList();
+		pending = AEApi.instance().storage().createItemList();
+		visual = new ArrayList();
+	}
+
+	protected GuiCraftingCPU(ContainerCraftingCPU container) {
+		super( container );
 		this.ySize = 184;
 		this.xSize = 238;
 		myScrollBar = new GuiScrollbar();
+	}
+
+	public GuiCraftingCPU(InventoryPlayer inventoryPlayer, Object te) {
+		this( new ContainerCraftingCPU( inventoryPlayer, te ) );
 	}
 
 	GuiButton cancel;
@@ -205,6 +216,8 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	@Override
 	public void drawScreen(int mouse_x, int mouse_y, float btn)
 	{
+		cancel.enabled = !visual.isEmpty();
+
 		int x = 0;
 		int y = 0;
 
@@ -398,4 +411,5 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	{
 		return ViewItems.ALL;
 	}
+
 }

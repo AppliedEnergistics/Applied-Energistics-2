@@ -18,6 +18,8 @@ public class GuiTabButton extends GuiButton implements ITooltip
 	RenderItem itemRenderer;
 
 	int myIcon = -1;
+	public int hideEdge = 0;
+
 	ItemStack myItem;
 
 	String Msg;
@@ -66,16 +68,18 @@ public class GuiTabButton extends GuiButton implements ITooltip
 			this.field_146123_n = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
 
 			int uv_y = (int) Math.floor( 13 / 16 );
-			int uv_x = 13 - uv_y * 16;
+			int uv_x = (hideEdge > 0 ? 11 : 13) - uv_y * 16;
 
-			this.drawTexturedModalRect( this.xPosition, this.yPosition, uv_x * 16, uv_y * 16, 22, 22 );
+			int offsetX = hideEdge > 0 ? 1 : 0;
+
+			this.drawTexturedModalRect( this.xPosition, this.yPosition, uv_x * 16, uv_y * 16, 25, 22 );
 
 			if ( myIcon >= 0 )
 			{
 				uv_y = (int) Math.floor( myIcon / 16 );
 				uv_x = myIcon - uv_y * 16;
 
-				this.drawTexturedModalRect( this.xPosition + 3, this.yPosition + 3, uv_x * 16, uv_y * 16, 16, 16 );
+				this.drawTexturedModalRect( offsetX + this.xPosition + 3, this.yPosition + 3, uv_x * 16, uv_y * 16, 16, 16 );
 			}
 
 			this.mouseDragged( par1Minecraft, par2, par3 );
@@ -89,7 +93,7 @@ public class GuiTabButton extends GuiButton implements ITooltip
 				GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 				RenderHelper.enableGUIStandardItemLighting();
 				FontRenderer fontrenderer = par1Minecraft.fontRenderer;
-				itemRenderer.renderItemAndEffectIntoGUI( fontrenderer, par1Minecraft.renderEngine, myItem, this.xPosition + 3, this.yPosition + 3 );
+				itemRenderer.renderItemAndEffectIntoGUI( fontrenderer, par1Minecraft.renderEngine, myItem, offsetX + this.xPosition + 3, this.yPosition + 3 );
 				GL11.glDisable( GL11.GL_LIGHTING );
 
 				itemRenderer.zLevel = 0.0F;
