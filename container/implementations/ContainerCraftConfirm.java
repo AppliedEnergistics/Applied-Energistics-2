@@ -39,7 +39,6 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.parts.reporting.PartTerminal;
-import appeng.util.ItemSorters;
 import appeng.util.Platform;
 
 import com.google.common.collect.ImmutableSet;
@@ -76,35 +75,6 @@ public class ContainerCraftConfirm extends AEBaseContainer
 	public String myName = "";
 
 	protected long cpuIdx = Long.MIN_VALUE;
-
-	public class CraftingCPURecord implements Comparable<CraftingCPURecord>
-	{
-
-		ICraftingCPU cpu;
-
-		long id = cpuIdx++;
-		long size;
-		int processors;
-
-		public String myName;
-
-		CraftingCPURecord(long size, int proc, ICraftingCPU server) {
-			this.size = size;
-			this.processors = proc;
-			this.cpu = server;
-			myName = server.getName();
-		}
-
-		@Override
-		public int compareTo(CraftingCPURecord o)
-		{
-			int a = ItemSorters.compareLong( o.processors, processors );
-			if ( a != 0 )
-				return a;
-			return ItemSorters.compareLong( o.size, size );
-		}
-
-	};
 
 	public ArrayList<CraftingCPURecord> cpus = new ArrayList();
 
