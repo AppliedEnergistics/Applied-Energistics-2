@@ -5,10 +5,12 @@ import java.util.concurrent.Future;
 
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
+import appeng.api.features.IWorldGen.WorldGenType;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.WorldSettings;
+import appeng.core.features.registries.WorldGenRegistry;
 import appeng.helpers.MeteoritePlacer;
 import appeng.services.helpers.ICompassCallback;
 import cpw.mods.fml.common.IWorldGenerator;
@@ -35,7 +37,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 	@Override
 	public void generate(Random r, int chunkX, int chunkZ, World w, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
 	{
-		if ( r.nextFloat() > 0.9 )
+		if ( WorldGenRegistry.instance.isWorldGenEnabled( WorldGenType.Metorites, w ) && r.nextFloat() > 0.9 )
 		{
 			int x = r.nextInt( 16 ) + (chunkX << 4);
 			int z = r.nextInt( 16 ) + (chunkZ << 4);

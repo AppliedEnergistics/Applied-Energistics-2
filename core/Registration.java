@@ -19,6 +19,7 @@ import appeng.api.definitions.Materials;
 import appeng.api.definitions.Parts;
 import appeng.api.features.IRecipeHandlerRegistry;
 import appeng.api.features.IWirelessTermHandler;
+import appeng.api.features.IWorldGen.WorldGenType;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.networking.crafting.ICraftingGrid;
@@ -702,6 +703,20 @@ public class Registration
 		 * Whitelist AE2
 		 */
 		mr.whiteListTileEntity( AEBaseTile.class );
+
+		/**
+		 * world gen
+		 */
+		for (WorldGenType type : WorldGenType.values())
+		{
+			AEApi.instance().registries().worldgen().disableWorldGenForProviderID( type, StorageWorldProvider.class );
+
+			// end
+			AEApi.instance().registries().worldgen().disableWorldGenForDimension( type, 1 );
+
+			// nether
+			AEApi.instance().registries().worldgen().disableWorldGenForDimension( type, -1 );
+		}
 
 		/**
 		 * initial recipe bake, if ore dictionary changes after this it re-bakes.

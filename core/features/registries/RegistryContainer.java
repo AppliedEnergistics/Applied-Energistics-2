@@ -9,6 +9,7 @@ import appeng.api.features.IRecipeHandlerRegistry;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.features.ISpecialComparisonRegistry;
 import appeng.api.features.IWirelessTermRegistery;
+import appeng.api.features.IWorldGen;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.storage.ICellRegistry;
@@ -28,7 +29,7 @@ public class RegistryContainer implements IRegistryContainer
 	private MovableTileRegistry MoveableReg = new MovableTileRegistry();
 	private MatterCannonAmmoRegistry matterCannonReg = new MatterCannonAmmoRegistry();
 	private PlayerRegistry playerreg = new PlayerRegistry();
-private IRecipeHandlerRegistry recipeReg = new RecipeHandlerRegistry();
+	private IRecipeHandlerRegistry recipeReg = new RecipeHandlerRegistry();
 
 	@Override
 	public IWirelessTermRegistery wireless()
@@ -97,8 +98,15 @@ private IRecipeHandlerRegistry recipeReg = new RecipeHandlerRegistry();
 	}
 
 	@Override
-	public IRecipeHandlerRegistry recipes() {
+	public IRecipeHandlerRegistry recipes()
+	{
 		return recipeReg;
+	}
+
+	@Override
+	public IWorldGen worldgen()
+	{
+		return WorldGenRegistry.instance;
 	}
 
 }

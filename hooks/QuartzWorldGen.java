@@ -8,7 +8,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import appeng.api.AEApi;
+import appeng.api.features.IWorldGen.WorldGenType;
 import appeng.core.AEConfig;
+import appeng.core.features.registries.WorldGenRegistry;
 import cpw.mods.fml.common.IWorldGenerator;
 
 final public class QuartzWorldGen implements IWorldGenerator
@@ -43,11 +45,16 @@ final public class QuartzWorldGen implements IWorldGenerator
 
 		for (int x = 0; x < (r.nextBoolean() ? scale * 2 : scale) / 2; ++x)
 		{
-			WorldGenMinable whichOre = r.nextFloat() > AEConfig.instance.spawnChargedChance ? oreCharged : oreNormal;
-			int a = chunkX * 16 + r.nextInt( 22 );
-			int b = r.nextInt( 40 * sealevel / 64 ) + r.nextInt( 22 * sealevel / 64 ) + 12 * sealevel / 64;
-			int c = chunkZ * 16 + r.nextInt( 22 );
-			whichOre.generate( w, r, a, b, c );
+			boolean isCharged = r.nextFloat() > AEConfig.instance.spawnChargedChance;
+			WorldGenMinable whichOre = isCharged ? oreCharged : oreNormal;
+
+			if ( WorldGenRegistry.instance.isWorldGenEnabled( isCharged ? WorldGenType.ChargedCertusQuartz : WorldGenType.CertusQuartz, w ) )
+			{
+				int cx = chunkX * 16 + r.nextInt( 22 );
+				int cy = r.nextInt( 40 * sealevel / 64 ) + r.nextInt( 22 * sealevel / 64 ) + 12 * sealevel / 64;
+				int cz = chunkZ * 16 + r.nextInt( 22 );
+				whichOre.generate( w, r, cx, cy, cz );
+			}
 		}
 
 	}
