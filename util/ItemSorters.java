@@ -7,6 +7,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IInvTweaks;
+import appeng.util.item.AEItemStack;
 
 public class ItemSorters
 {
@@ -63,6 +64,28 @@ public class ItemSorters
 		}
 	};
 
+	public static Comparator<IAEItemStack> ConfigBased_SortByMod = new Comparator<IAEItemStack>() {
+
+		@Override
+		public int compare(IAEItemStack o1, IAEItemStack o2)
+		{
+			AEItemStack op1 = (AEItemStack) o1;
+			AEItemStack op2 = (AEItemStack) o2;
+
+			if ( Direction == SortDir.ASCENDING )
+				return secondarySort( op2.getModID().compareToIgnoreCase( op1.getModID() ), o1, o2 );
+			return secondarySort( op1.getModID().compareToIgnoreCase( op2.getModID() ), o2, o1 );
+		}
+
+		private int secondarySort(int compareToIgnoreCase, IAEItemStack o1, IAEItemStack o2)
+		{
+			if ( compareToIgnoreCase == 0 )
+				return Platform.getItemDisplayName( o2 ).compareToIgnoreCase( Platform.getItemDisplayName( o1 ) );
+
+			return compareToIgnoreCase;
+		}
+	};
+
 	public static Comparator<IAEItemStack> ConfigBased_SortBySize = new Comparator<IAEItemStack>() {
 
 		@Override
@@ -73,6 +96,7 @@ public class ItemSorters
 			return compareLong( o1.getStackSize(), o2.getStackSize() );
 		}
 	};
+
 	public static Comparator<IAEItemStack> ConfigBased_SortByInvTweaks = new Comparator<IAEItemStack>() {
 
 		@Override
