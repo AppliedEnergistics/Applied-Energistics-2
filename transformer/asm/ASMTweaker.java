@@ -23,11 +23,23 @@ import cpw.mods.fml.relauncher.FMLRelaunchLog;
 public class ASMTweaker implements IClassTransformer
 {
 
-	Multimap<String, String> privateToPublicMethods = HashMultimap.create();
+	class publicLine
+	{
+
+		public publicLine(String name, String desc) {
+			this.name = name;
+			this.desc = desc;
+		}
+
+		final String name, desc;
+
+	};
+
+	Multimap<String, publicLine> privateToPublicMethods = HashMultimap.create();
 
 	public ASMTweaker() {
-		privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", "func_146977_a" );
-		privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", "a" );
+		privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new publicLine( "func_146977_a", "(Lnet/minecraft/inventory/Slot;)V" ) );
+		privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new publicLine( "a", "(Lzk;)V" ) );
 	}
 
 	@Override
@@ -35,7 +47,7 @@ public class ASMTweaker implements IClassTransformer
 	{
 		if ( basicClass == null )
 			return basicClass;
-		
+
 		try
 		{
 			if ( transformedName != null && privateToPublicMethods.containsKey( transformedName ) )
@@ -44,7 +56,7 @@ public class ASMTweaker implements IClassTransformer
 				ClassReader classReader = new ClassReader( basicClass );
 				classReader.accept( classNode, 0 );
 
-				for (String Set : privateToPublicMethods.get( transformedName ))
+				for (publicLine Set : privateToPublicMethods.get( transformedName ))
 				{
 					makePublic( classNode, Set );
 				}
@@ -108,16 +120,15 @@ public class ASMTweaker implements IClassTransformer
 		FMLRelaunchLog.log( "AE2-CORE", Level.INFO, string );
 	}
 
-	private void makePublic(ClassNode classNode, String set)
+	private void makePublic(ClassNode classNode, publicLine set)
 	{
 		for (MethodNode mn : classNode.methods)
 		{
-			if ( mn.name.equals( set ) )
+			if ( mn.name.equals( set.name ) && mn.desc.equals( set.desc ) )
 			{
-				mn.access = Opcodes.ACC_PUBLIC;
+				mn.access = (mn.access & (~(Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED))) | Opcodes.ACC_PUBLIC;
 				log( mn.name + mn.desc + " - Public" );
 			}
 		}
 	}
-
 }
