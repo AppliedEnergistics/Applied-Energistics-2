@@ -43,7 +43,7 @@ public class ItemSorters
 		return 1;
 	}
 
-	public static int comparDouble(double a, double b)
+	public static int compareDouble(double a, double b)
 	{
 		if ( a == b )
 			return 0;

@@ -29,7 +29,7 @@ public class EnergyThreshold implements Comparable<EnergyThreshold>
 	@Override
 	public int compareTo(EnergyThreshold o)
 	{
-		return ItemSorters.comparDouble( Limit, o.Limit );
+		return ItemSorters.compareDouble( Limit, o.Limit );
 	}
 
 }
