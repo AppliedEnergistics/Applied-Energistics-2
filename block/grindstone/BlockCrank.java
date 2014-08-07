@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.block.AEBaseBlock;
@@ -32,11 +33,13 @@ public class BlockCrank extends AEBaseBlock
 	@Override
 	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
 	{
+		if ( p instanceof FakePlayer )
+			return true;
+
 		AEBaseTile tile = getTileEntity( w, x, y, z );
 		if ( tile instanceof TileCrank )
-		{
 			((TileCrank) tile).power();
-		}
+
 		return true;
 	}
 
