@@ -1066,6 +1066,9 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 							if ( g != null )
 								what = g;
 						}
+
+						if ( what.getItem() != null )
+							return what.getUnlocalizedName();
 					}
 				}
 			}
@@ -1073,9 +1076,6 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			{
 				badBlocks.add( blk ); // nope!
 			}
-
-			if ( what.getItem() != null )
-				return what.getUnlocalizedName();
 		}
 
 		return "Nothing";
