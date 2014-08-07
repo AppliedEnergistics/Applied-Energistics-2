@@ -1,20 +1,15 @@
 package appeng.spatial;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S21PacketChunkData;
-import net.minecraft.server.management.PlayerManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.NextTickListEntry;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -25,7 +20,6 @@ import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.WorldSettings;
 import appeng.util.Platform;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class CachedPlane
 {
@@ -400,47 +394,10 @@ public class CachedPlane
 				for (int y = 1; y < 255; y += 32)
 					WorldSettings.getInstance().getCompass().updateArea( wrld, c.xPosition << 4, y, c.zPosition << 4 );
 
-				try
-				{
-					WorldServer ws = (WorldServer) c.worldObj;
-					PlayerManager pm = ws.getPlayerManager();
-
-					if ( getOrCreateChunkWatcher == null )
-					{
-						getOrCreateChunkWatcher = ReflectionHelper.findMethod( PlayerManager.class, pm, new String[] { "getOrCreateChunkWatcher",
-								"func_72690_a" }, int.class, int.class, boolean.class );
-					}
-
-					if ( getOrCreateChunkWatcher != null )
-					{
-						Object playerinstance = getOrCreateChunkWatcher.invoke( pm, c.xPosition, c.zPosition, false );
-						if ( playerinstance != null )
-						{
-							Playerinstance = playerinstance.getClass();
-
-							if ( sendToAllPlayersWatchingChunk == null )
-							{
-								sendToAllPlayersWatchingChunk = ReflectionHelper.findMethod( Playerinstance, playerinstance, new String[] {
-										"sendToAllPlayersWatchingChunk", "func_151251_a" }, Packet.class );
-							}
-
-							if ( sendToAllPlayersWatchingChunk != null )
-								sendToAllPlayersWatchingChunk.invoke( playerinstance, new S21PacketChunkData( c, false, verticalBits ) );
-						}
-					}
-
-				}
-				catch (Throwable t)
-				{
-					AELog.error( t );
-				}
+				Platform.sendChunk( c, verticalBits );
 
 			}
 
 	}
-
-	Class Playerinstance;
-	Method getOrCreateChunkWatcher;
-	Method sendToAllPlayersWatchingChunk;
 
 }

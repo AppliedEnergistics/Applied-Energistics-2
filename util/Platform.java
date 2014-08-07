@@ -1,6 +1,7 @@
 package appeng.util;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +38,9 @@ import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S21PacketChunkData;
+import net.minecraft.server.management.PlayerManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.AxisAlignedBB;
@@ -47,6 +51,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
@@ -101,6 +106,7 @@ import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -1719,5 +1725,47 @@ public class Platform
 		}
 
 		return is;
+	}
+
+	private static Class Playerinstance;
+	private static Method getOrCreateChunkWatcher;
+	private static Method sendToAllPlayersWatchingChunk;
+
+	public static void sendChunk(Chunk c, int verticalBits)
+	{
+		try
+		{
+			WorldServer ws = (WorldServer) c.worldObj;
+			PlayerManager pm = ws.getPlayerManager();
+
+			if ( getOrCreateChunkWatcher == null )
+			{
+				getOrCreateChunkWatcher = ReflectionHelper.findMethod( PlayerManager.class, pm, new String[] { "getOrCreateChunkWatcher", "func_72690_a" },
+						int.class, int.class, boolean.class );
+			}
+
+			if ( getOrCreateChunkWatcher != null )
+			{
+				Object playerinstance = getOrCreateChunkWatcher.invoke( pm, c.xPosition, c.zPosition, false );
+				if ( playerinstance != null )
+				{
+					Playerinstance = playerinstance.getClass();
+
+					if ( sendToAllPlayersWatchingChunk == null )
+					{
+						sendToAllPlayersWatchingChunk = ReflectionHelper.findMethod( Playerinstance, playerinstance, new String[] {
+								"sendToAllPlayersWatchingChunk", "func_151251_a" }, Packet.class );
+					}
+
+					if ( sendToAllPlayersWatchingChunk != null )
+						sendToAllPlayersWatchingChunk.invoke( playerinstance, new S21PacketChunkData( c, false, verticalBits ) );
+				}
+			}
+
+		}
+		catch (Throwable t)
+		{
+			AELog.error( t );
+		}
 	}
 }

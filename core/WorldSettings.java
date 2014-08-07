@@ -1,13 +1,19 @@
 package appeng.core;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.WeakHashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
@@ -41,6 +47,10 @@ public class WorldSettings extends Configuration
 
 		compass = new CompassService( AEFolder );
 
+		File spawnData = new File( AEFolder, "spawndata" );
+		if ( !spawnData.exists() || !spawnData.isDirectory() )
+			spawnData.mkdir();
+
 		for (int dimID : get( "DimensionManager", "StorageCells", new int[0] ).getIntList())
 		{
 			storageCellDims.add( dimID );
@@ -56,6 +66,123 @@ public class WorldSettings extends Configuration
 		{
 			lastGridStorage = 0;
 			lastPlayer = 0;
+		}
+	}
+
+	NBTTagCompound loadSpawnData(int dim, int chunkX, int chunkZ)
+	{
+		if ( !Thread.holdsLock( WorldSettings.class ) )
+			throw new RuntimeException( "Invalid Request" );
+
+		File f = new File( AEFolder, "spawndata" + File.separatorChar + dim + "_" + (chunkX >> 4) + "_" + (chunkZ >> 4) + ".dat" );
+
+		if ( f.isFile() && f.exists() )
+		{
+			// open
+			FileInputStream fis;
+			try
+			{
+				fis = new FileInputStream( f );
+				NBTTagCompound data = CompressedStreamTools.readCompressed( fis );
+				fis.close();
+
+				return data;
+			}
+			catch (Throwable e)
+			{
+
+			}
+
+		}
+
+		return new NBTTagCompound();
+	}
+
+	void writeSpawnData(int dim, int chunkX, int chunkZ, NBTTagCompound data)
+	{
+		if ( !Thread.holdsLock( WorldSettings.class ) )
+			throw new RuntimeException( "Invalid Request" );
+
+		File f = new File( AEFolder, "spawndata" + File.separatorChar + dim + "_" + (chunkX >> 4) + "_" + (chunkZ >> 4) + ".dat" );
+
+		try
+		{
+			// save
+			FileOutputStream fos = new FileOutputStream( f );
+			CompressedStreamTools.writeCompressed( data, fos );
+			fos.close();
+		}
+		catch (Throwable e)
+		{
+
+		}
+	}
+
+	public Collection<NBTTagCompound> getNearByMetetorites(int dim, int chunkX, int chunkZ)
+	{
+		LinkedList<NBTTagCompound> ll = new LinkedList<NBTTagCompound>();
+
+		synchronized (WorldSettings.class)
+		{
+			for (int x = -1; x <= 1; x++)
+			{
+				for (int z = -1; z <= 1; z++)
+				{
+					int cx = x + (chunkX >> 4);
+					int cz = z + (chunkZ >> 4);
+
+					NBTTagCompound data = loadSpawnData( dim, cx << 4, cz << 4 );
+
+					if ( data != null )
+					{
+						// edit.
+						int size = data.getInteger( "num" );
+						for (int s = 0; s < size; s++)
+							ll.add( data.getCompoundTag( "" + s ) );
+					}
+				}
+			}
+		}
+
+		return ll;
+	}
+
+	public boolean hasGenerated(int dim, int chunkX, int chunkZ)
+	{
+		synchronized (WorldSettings.class)
+		{
+			NBTTagCompound data = loadSpawnData( dim, chunkX, chunkZ );
+			return data.getBoolean( chunkX + "," + chunkZ );
+		}
+	}
+
+	public void setGenerated(int dim, int chunkX, int chunkZ)
+	{
+		synchronized (WorldSettings.class)
+		{
+			NBTTagCompound data = loadSpawnData( dim, chunkX, chunkZ );
+
+			// edit.
+			data.setBoolean( chunkX + "," + chunkZ, true );
+
+			writeSpawnData( dim, chunkX, chunkZ, data );
+		}
+	}
+
+	public boolean addNearByMetetorites(int dim, int chunkX, int chunkZ, NBTTagCompound newData)
+	{
+		synchronized (WorldSettings.class)
+		{
+			NBTTagCompound data = loadSpawnData( dim, chunkX, chunkZ );
+
+			// edit.
+			int size = data.getInteger( "num" );
+			data.setTag( "" + size, newData );
+			data.setInteger( "num", size + 1 );
+
+			writeSpawnData( dim, chunkX, chunkZ, data );
+
+			return true;
 		}
 	}
 

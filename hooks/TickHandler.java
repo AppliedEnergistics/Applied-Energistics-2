@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.ChunkEvent;
@@ -25,6 +26,7 @@ import appeng.me.NetworkList;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -251,18 +253,27 @@ public class TickHandler
 		if ( queue == null )
 			return;
 
+		Stopwatch sw = Stopwatch.createStarted();
+
 		Callable c = null;
 		while ((c = queue.poll()) != null)
 		{
 			try
 			{
 				c.call();
+
+				if ( sw.elapsed( TimeUnit.MILLISECONDS ) > 50 )
+					break;
 			}
 			catch (Exception e)
 			{
 				AELog.error( e );
 			}
 		}
+
+		// long time = sw.elapsed( TimeUnit.MILLISECONDS );
+		// if ( time > 0 )
+		// AELog.info( "processQueue Time: " + time + "ms" );
 	}
 
 	Multimap<World, CraftingJob> craftingJobs = LinkedListMultimap.create();

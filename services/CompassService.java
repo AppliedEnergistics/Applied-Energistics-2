@@ -18,6 +18,8 @@ import appeng.services.helpers.ICompassCallback;
 public class CompassService implements ThreadFactory
 {
 
+	int jobSize = 0;
+
 	private class CMUpdatePost implements Runnable
 	{
 
@@ -38,9 +40,13 @@ public class CompassService implements ThreadFactory
 		@Override
 		public void run()
 		{
+			jobSize--;
+
 			CompassReader cr = getReader( world );
 			cr.setHasBeacon( chunkX, chunkZ, doubleChunkY, value );
-			cr.close();
+
+			if ( jobSize() < 2 )
+				cleanUp();
 		}
 
 	};
@@ -61,6 +67,8 @@ public class CompassService implements ThreadFactory
 		@Override
 		public void run()
 		{
+			jobSize--;
+
 			int cx = coord.x >> 4;
 			int cz = coord.z >> 4;
 
@@ -70,6 +78,10 @@ public class CompassService implements ThreadFactory
 			if ( cr.hasBeacon( cx, cz ) )
 			{
 				callback.calculatedDirection( true, true, -999, 0 );
+
+				if ( jobSize() < 2 )
+					cleanUp();
+
 				return;
 			}
 
@@ -138,22 +150,43 @@ public class CompassService implements ThreadFactory
 				if ( closest < Integer.MAX_VALUE )
 				{
 					callback.calculatedDirection( true, false, rad( cx, cz, chosen_x, chosen_z ), dist( cx, cz, chosen_x, chosen_z ) );
+
+					if ( jobSize() < 2 )
+						cleanUp();
+
 					return;
 				}
 			}
 
 			// didn't find shit...
 			callback.calculatedDirection( false, true, -999, 999 );
+
+			if ( jobSize() < 2 )
+				cleanUp();
 		}
 	};
 
 	public Future<?> getCompassDirection(DimensionalCoord coord, int maxRange, ICompassCallback cc)
 	{
+		jobSize++;
 		return executor.submit( new CMDirectionRequest( coord, maxRange, cc ) );
+	}
+
+	public int jobSize()
+	{
+		return jobSize;
+	}
+
+	public void cleanUp()
+	{
+		for (CompassReader cr : worldSet.values())
+			cr.close();
 	}
 
 	public Future<?> updateArea(World w, int x, int y, int z)
 	{
+		jobSize++;
+
 		int cx = x >> 4;
 		int cdy = y >> 5;
 		int cz = z >> 4;
@@ -194,6 +227,7 @@ public class CompassService implements ThreadFactory
 	public CompassService(File aEFolder) {
 		rootFolder = aEFolder;
 		executor = Executors.newSingleThreadExecutor( this );
+		jobSize = 0;
 	}
 
 	private CompassReader getReader(World w)
@@ -232,6 +266,7 @@ public class CompassService implements ThreadFactory
 		try
 		{
 			executor.awaitTermination( 6, TimeUnit.MINUTES );
+			jobSize = 0;
 
 			for (CompassReader cr : worldSet.values())
 			{
