@@ -3,11 +3,11 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.client.gui.AEBaseGui;
+import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerPriority;
@@ -29,7 +29,7 @@ import appeng.tile.storage.TileDrive;
 public class GuiPriority extends AEBaseGui
 {
 
-	GuiTextField priority;
+	GuiNumberBox priority;
 	GuiTabButton originalGuiBtn;
 
 	GuiButton plus1, plus10, plus100, plus1000;
@@ -103,7 +103,7 @@ public class GuiPriority extends AEBaseGui
 		if ( OriginalGui != null )
 			buttonList.add( originalGuiBtn = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), itemRender ) );
 
-		priority = new GuiTextField( fontRendererObj, this.guiLeft + 62, this.guiTop + 57, 59, fontRendererObj.FONT_HEIGHT );
+		priority = new GuiNumberBox( fontRendererObj, this.guiLeft + 62, this.guiTop + 57, 59, fontRendererObj.FONT_HEIGHT, Long.class );
 		priority.setEnableBackgroundDrawing( false );
 		priority.setMaxStringLength( 16 );
 		priority.setTextColor( 0xFFFFFF );
@@ -161,6 +161,11 @@ public class GuiPriority extends AEBaseGui
 			priority.setText( Out = Long.toString( result ) );
 
 			NetworkHandler.instance.sendToServer( new PacketValueConfig( "PriorityHost.Priority", Out ) );
+		}
+		catch(NumberFormatException e )
+		{
+			// nope..
+			priority.setText( "0" );
 		}
 		catch (IOException e)
 		{

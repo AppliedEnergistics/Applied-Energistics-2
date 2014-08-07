@@ -3,12 +3,12 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.api.storage.ITerminalHost;
 import appeng.client.gui.AEBaseGui;
+import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerCraftAmount;
@@ -27,7 +27,7 @@ import appeng.parts.reporting.PartTerminal;
 public class GuiCraftAmount extends AEBaseGui
 {
 
-	GuiTextField amountToCraft;
+	GuiNumberBox amountToCraft;
 	GuiTabButton originalGuiBtn;
 
 	GuiButton next;
@@ -93,7 +93,7 @@ public class GuiCraftAmount extends AEBaseGui
 		if ( OriginalGui != null )
 			buttonList.add( originalGuiBtn = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), itemRender ) );
 
-		amountToCraft = new GuiTextField( fontRendererObj, this.guiLeft + 62, this.guiTop + 57, 59, fontRendererObj.FONT_HEIGHT );
+		amountToCraft = new GuiNumberBox( fontRendererObj, this.guiLeft + 62, this.guiTop + 57, 59, fontRendererObj.FONT_HEIGHT, Integer.class );
 		amountToCraft.setEnableBackgroundDrawing( false );
 		amountToCraft.setMaxStringLength( 16 );
 		amountToCraft.setTextColor( 0xFFFFFF );
@@ -109,6 +109,7 @@ public class GuiCraftAmount extends AEBaseGui
 
 		try
 		{
+			
 			if ( btn == originalGuiBtn )
 			{
 				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( OriginalGui ) );
@@ -120,6 +121,11 @@ public class GuiCraftAmount extends AEBaseGui
 						.getText() ), isShiftKeyDown() ) );
 			}
 
+		}
+		catch(NumberFormatException e )
+		{
+			// nope..
+			amountToCraft.setText( "1" );
 		}
 		catch (IOException e)
 		{
@@ -152,7 +158,7 @@ public class GuiCraftAmount extends AEBaseGui
 			if ( Out.length() == 0 )
 				Out = "0";
 
-			long result = Long.parseLong( Out );
+			long result = Integer.parseInt( Out );
 
 			if ( result == 1 && i > 1 )
 				result = 0;
@@ -160,8 +166,10 @@ public class GuiCraftAmount extends AEBaseGui
 			result += i;
 			if ( result < 1 )
 				result = 1;
-
-			amountToCraft.setText( Out = Long.toString( result ) );
+			
+			Out = Long.toString( result );
+			Integer.parseInt( Out );
+			amountToCraft.setText( Out );
 		}
 		catch (NumberFormatException e)
 		{

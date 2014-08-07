@@ -3,7 +3,6 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.input.Mouse;
@@ -14,6 +13,7 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -26,7 +26,7 @@ import appeng.parts.automation.PartLevelEmitter;
 public class GuiLevelEmitter extends GuiUpgradeable
 {
 
-	GuiTextField level;
+	GuiNumberBox level;
 
 	GuiButton plus1, plus10, plus100, plus1000;
 	GuiButton minus1, minus10, minus100, minus1000;
@@ -42,7 +42,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	{
 		super.initGui();
 
-		level = new GuiTextField( fontRendererObj, this.guiLeft + 24, this.guiTop + 43, 79, fontRendererObj.FONT_HEIGHT );
+		level = new GuiNumberBox( fontRendererObj, this.guiLeft + 24, this.guiTop + 43, 79, fontRendererObj.FONT_HEIGHT, Long.class );
 		level.setEnableBackgroundDrawing( false );
 		level.setMaxStringLength( 16 );
 		level.setTextColor( 0xFFFFFF );
@@ -129,6 +129,11 @@ public class GuiLevelEmitter extends GuiUpgradeable
 			level.setText( Out = Long.toString( result ) );
 
 			NetworkHandler.instance.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
+		}
+		catch(NumberFormatException e )
+		{
+			// nope..
+			level.setText( "0" );
 		}
 		catch (IOException e)
 		{
