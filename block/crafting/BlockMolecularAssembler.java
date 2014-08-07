@@ -21,7 +21,7 @@ public class BlockMolecularAssembler extends AEBaseBlock
 
 	public BlockMolecularAssembler() {
 		super( BlockMolecularAssembler.class, Material.iron );
-		setfeature( EnumSet.of( AEFeature.Crafting ) );
+		setfeature( EnumSet.of( AEFeature.MolecularAssembler ) );
 		setTileEntiy( TileMolecularAssembler.class );
 		isOpaque = false;
 		lightOpacity = 1;

@@ -27,7 +27,7 @@ public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
 
 	public BlockSkyCompass() {
 		super( BlockSkyCompass.class, Material.iron );
-		setfeature( EnumSet.of( AEFeature.Core ) );
+		setfeature( EnumSet.of( AEFeature.MeteoriteCompass ) );
 		setTileEntiy( TileSkyCompass.class );
 		isOpaque = isFullSize = false;
 		lightOpacity = 0;

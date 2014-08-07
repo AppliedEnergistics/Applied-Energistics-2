@@ -26,7 +26,7 @@ public enum AEFeature
 
 	ChargedStaff("Tools"), EntropyManipulator("Tools"), MatterCannon("Tools"), WirelessAccessTerminal("Tools"), ColorApplicator("Tools"),
 
-	Crafting("NetworkFeatures"), PowerGen("NetworkFeatures"), Security("NetworkFeatures"),
+	CraftingCPU("CraftingFeatures"), PowerGen("NetworkFeatures"), Security("NetworkFeatures"),
 
 	// Crafting("NetworkFeatures"), MolecularAssembler("NetworkFeatures"),
 
@@ -54,7 +54,7 @@ public enum AEFeature
 
 	AlphaPass("Rendering"), PaintBalls("Tools"), PacketLogging("Misc", false), CraftingLog("Misc", false), InterfaceTerminal("Crafting"), LightDetector("Misc"),
 
-	enableDisassemblyCrafting("Crafting");
+	enableDisassemblyCrafting("Crafting"), MolecularAssembler("CraftingFeatures"), MeteoriteCompass("Tools"), Patterns("CraftingFeatures");
 
 	String Category;
 	boolean visible = true;

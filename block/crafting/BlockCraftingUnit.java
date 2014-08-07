@@ -30,7 +30,7 @@ public class BlockCraftingUnit extends AEBaseBlock
 	public BlockCraftingUnit(Class<? extends BlockCraftingUnit> childClass) {
 		super( childClass, Material.iron );
 		hasSubtypes = true;
-		setfeature( EnumSet.of( AEFeature.Crafting ) );
+		setfeature( EnumSet.of( AEFeature.CraftingCPU ) );
 	}
 
 	public BlockCraftingUnit() {
