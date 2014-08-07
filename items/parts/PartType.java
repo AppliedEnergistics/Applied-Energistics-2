@@ -79,7 +79,7 @@ public enum PartType
 
 	// CraftingMonitor(AEFeature.Crafting, PartCraftingMonitor.class),
 
-	PatternTerminal(340, AEFeature.CraftingTerminal, PartPatternTerminal.class),
+	PatternTerminal(340, AEFeature.Patterns, PartPatternTerminal.class),
 
 	CraftingTerminal(360, AEFeature.CraftingTerminal, PartCraftingTerminal.class),
 
