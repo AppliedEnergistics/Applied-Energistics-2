@@ -44,6 +44,8 @@ import appeng.items.AEBaseItem;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
+import com.google.common.collect.ImmutableSet;
+
 public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule
 {
 
@@ -168,7 +170,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 
 	public void unduplicate()
 	{
-		for (MaterialType mt : dmgToMaterial.values())
+		for (MaterialType mt : ImmutableSet.copyOf( dmgToMaterial.values() ))
 		{
 			if ( mt.getOreName() != null )
 			{
@@ -203,6 +205,9 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 				}
 				else
 				{
+					if ( mt.itemInstance == this )
+						dmgToMaterial.remove( mt.damageValue );
+
 					mt.itemInstance = replacement.getItem();
 					mt.damageValue = replacement.getItemDamage();
 				}
