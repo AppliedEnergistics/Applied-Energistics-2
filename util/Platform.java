@@ -1768,4 +1768,27 @@ public class Platform
 			AELog.error( t );
 		}
 	}
+
+	public static AxisAlignedBB getPrimaryBox(ForgeDirection side, int facadeThickness)
+	{
+		switch (side)
+		{
+		case DOWN:
+			return AxisAlignedBB.getBoundingBox( 0.0, 0.0, 0.0, 1.0, (facadeThickness) / 16.0, 1.0 );
+		case EAST:
+			return AxisAlignedBB.getBoundingBox( (16.0 - facadeThickness) / 16.0, 0.0, 0.0, 1.0, 1.0, 1.0 );
+		case NORTH:
+			return AxisAlignedBB.getBoundingBox( 0.0, 0.0, 0.0, 1.0, 1.0, (facadeThickness) / 16.0 );
+		case SOUTH:
+			return AxisAlignedBB.getBoundingBox( 0.0, 0.0, (16.0 - facadeThickness) / 16.0, 1.0, 1.0, 1.0 );
+		case UP:
+			return AxisAlignedBB.getBoundingBox( 0.0, (16.0 - facadeThickness) / 16.0, 0.0, 1.0, 1.0, 1.0 );
+		case WEST:
+			return AxisAlignedBB.getBoundingBox( 0.0, 0.0, 0.0, (facadeThickness) / 16.0, 1.0, 1.0 );
+		default:
+			break;
+
+		}
+		return AxisAlignedBB.getBoundingBox( 0, 0, 0, 1, 1, 1 );
+	}
 }

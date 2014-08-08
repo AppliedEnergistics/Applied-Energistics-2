@@ -30,6 +30,7 @@ import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBC;
+import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -469,25 +470,7 @@ public class FacadePart implements IFacadePart
 	@Override
 	public AxisAlignedBB getPrimaryBox()
 	{
-		switch (side)
-		{
-		case DOWN:
-			return AxisAlignedBB.getBoundingBox( 0.0, 0.0, 0.0, 1.0, (getFacadeThickness()) / 16.0, 1.0 );
-		case EAST:
-			return AxisAlignedBB.getBoundingBox( (16.0 - getFacadeThickness()) / 16.0, 0.0, 0.0, 1.0, 1.0, 1.0 );
-		case NORTH:
-			return AxisAlignedBB.getBoundingBox( 0.0, 0.0, 0.0, 1.0, 1.0, (getFacadeThickness()) / 16.0 );
-		case SOUTH:
-			return AxisAlignedBB.getBoundingBox( 0.0, 0.0, (16.0 - getFacadeThickness()) / 16.0, 1.0, 1.0, 1.0 );
-		case UP:
-			return AxisAlignedBB.getBoundingBox( 0.0, (16.0 - getFacadeThickness()) / 16.0, 0.0, 1.0, 1.0, 1.0 );
-		case WEST:
-			return AxisAlignedBB.getBoundingBox( 0.0, 0.0, 0.0, (getFacadeThickness()) / 16.0, 1.0, 1.0 );
-		default:
-			break;
-
-		}
-		return AxisAlignedBB.getBoundingBox( 0, 0, 0, 1, 1, 1 );
+		return Platform.getPrimaryBox( side, getFacadeThickness() );
 	}
 
 	@Override
