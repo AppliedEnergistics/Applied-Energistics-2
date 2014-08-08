@@ -19,6 +19,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.implementations.parts.IPartCable;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
@@ -56,7 +57,11 @@ import codechicken.multipart.NormallyOccludedPart;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.scalatraits.TIInventoryTile;
 
-//TFacePart, 
+/**
+ * Implementing these might help improve visuals for hollow covers
+ * 
+ * TSlottedPart,ISidedHollowConnect
+ */
 public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IRedstonePart, IPartHost, AEMultiTile
 {
 
@@ -527,6 +532,92 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 
 		if ( world() != null && world().blockExists( x(), y(), z() ) && !CableBusContainer.isLoading() )
 			world().notifyBlocksOfNeighborChange( x(), y(), z(), Platform.air );
+	}
+
+	// @Override
+	public int getHollowSize(int side)
+	{
+		IPartCable cable = (IPartCable) getPart( ForgeDirection.UNKNOWN );
+
+		ForgeDirection dir = ForgeDirection.getOrientation( side );
+		if ( cable != null && cable.isConnected( dir ) )
+		{
+			List<AxisAlignedBB> boxes = new ArrayList();
+
+			BusCollisionHelper bch = new BusCollisionHelper( boxes, ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH, null, true );
+
+			for (ForgeDirection whichSide : ForgeDirection.values())
+			{
+				IPart fPart = getPart( whichSide );
+
+				if ( fPart != null )
+					fPart.getBoxes( bch );
+			}
+
+			AxisAlignedBB b = null;
+			AxisAlignedBB pb = Platform.getPrimaryBox( dir, 2 );
+
+			for (AxisAlignedBB bb : boxes)
+			{
+				if ( bb.intersectsWith( pb ) )
+				{
+					if ( b == null )
+						b = bb;
+					else
+					{
+						b.maxX = Math.max( b.maxX, bb.maxX );
+						b.maxY = Math.max( b.maxY, bb.maxY );
+						b.maxZ = Math.max( b.maxZ, bb.maxZ );
+						b.minX = Math.min( b.minX, bb.minX );
+						b.minY = Math.min( b.minY, bb.minY );
+						b.minZ = Math.min( b.minZ, bb.minZ );
+					}
+				}
+			}
+
+			if ( b == null )
+				return 0;
+
+			switch (dir)
+			{
+			case WEST:
+			case EAST:
+				return getSize( b.minZ, b.maxZ, b.minY, b.maxY );
+			case DOWN:
+			case NORTH:
+				return getSize( b.minX, b.maxX, b.minZ, b.maxZ );
+			case SOUTH:
+			case UP:
+				return getSize( b.minX, b.maxX, b.minY, b.maxY );
+			default:
+			}
+		}
+
+		return 12;
+	}
+
+	int getSize(double a, double b, double c, double d)
+	{
+		double r = Math.abs( a - 0.5 );
+		r = Math.max( Math.abs( b - 0.5 ), r );
+		r = Math.max( Math.abs( c - 0.5 ), r );
+		return (8 * (int) Math.max( Math.abs( d - 0.5 ), r ));
+	}
+
+	// @Override
+	public int getSlotMask()
+	{
+		int mask = 0;
+
+		for (ForgeDirection side : ForgeDirection.values())
+		{
+			if ( getPart( side ) != null )
+				mask |= 1 << side.ordinal();
+			else if ( side != ForgeDirection.UNKNOWN && getFacadeContainer().getFacade( side ) != null )
+				mask |= 1 << side.ordinal();
+		}
+
+		return mask;
 	}
 
 }
