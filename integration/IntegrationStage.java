@@ -5,5 +5,6 @@ public enum IntegrationStage
 
 	PREINIT, INIT, POSTINIT,
 
-	FAILED
+	FAILED, READY
+
 }

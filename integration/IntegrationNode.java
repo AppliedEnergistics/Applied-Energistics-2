@@ -30,6 +30,12 @@ public class IntegrationNode
 		name = n;
 	}
 
+	@Override
+	public String toString()
+	{
+		return shortName.name() + ":" + state.name();
+	}
+
 	void Call(IntegrationStage stage)
 	{
 		if ( state != IntegrationStage.FAILED )
@@ -66,12 +72,18 @@ public class IntegrationNode
 					else
 						throw new ModNotInstalled( modID );
 
+					state = IntegrationStage.INIT;
+
 					break;
 				case INIT:
 					mod.Init();
+					state = IntegrationStage.POSTINIT;
+
 					break;
 				case POSTINIT:
 					mod.PostInit();
+					state = IntegrationStage.READY;
+
 					break;
 				case FAILED:
 				default:
