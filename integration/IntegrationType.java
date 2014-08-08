@@ -38,7 +38,9 @@ public enum IntegrationType
 
 	CraftGuide(IntegrationSide.CLIENT, "Craft Guide", "craftguide"),
 
-	Mekanism(IntegrationSide.BOTH, "Mekanism", "Mekanism");
+	Mekanism(IntegrationSide.BOTH, "Mekanism", "Mekanism"),
+
+	ImmibisMicroblocks(IntegrationSide.BOTH, "ImmibisMicroblocks", "ImmibisMicroblocks");
 
 	public final IntegrationSide side;
 	public final String dspName;

@@ -35,6 +35,7 @@ import appeng.facade.IFacadeItem;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBC;
 import appeng.integration.abstraction.IFMP;
+import appeng.integration.abstraction.IImmibisMicroblocks;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -237,6 +238,9 @@ public class PartPlacement
 
 		if ( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
 			host = ((IFMP) AppEng.instance.getIntegration( IntegrationType.FMP )).getOrCreateHost( tile );
+
+		if ( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.ImmibisMicroblocks ) )
+			host = ((IImmibisMicroblocks) AppEng.instance.getIntegration( IntegrationType.ImmibisMicroblocks )).getOrCreateHost( player, face, tile );
 
 		// if ( held == null )
 		{
