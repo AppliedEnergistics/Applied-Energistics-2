@@ -49,7 +49,9 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 
 	ConfigManager cm = new ConfigManager( this );
 
-	final int sides[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+	final int input[] = { 0, 1, 2, 3, 4, 5 };
+	final int output[] = { 6, 7, 8, 9, 10, 11 };
+
 	final int outputSlots[] = { 6, 7, 8, 9, 10, 11 };
 
 	AppEngInternalInventory cells = new AppEngInternalInventory( this, 12 );
@@ -155,9 +157,12 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide(ForgeDirection side)
+	public int[] getAccessibleSlotsBySide(ForgeDirection d)
 	{
-		return sides;
+		if ( d == ForgeDirection.UP || d == ForgeDirection.DOWN )
+			return input;
+
+		return output;
 	}
 
 	@Override
