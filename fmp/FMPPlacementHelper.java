@@ -30,6 +30,14 @@ public class FMPPlacementHelper implements IPartHost
 
 	private CableBusPart getPart()
 	{
+		scala.collection.Iterator<TMultiPart> i = myMP.partList().iterator();
+		while (i.hasNext())
+		{
+			TMultiPart p = i.next();
+			if ( p instanceof CableBusPart )
+				myPart = (CableBusPart) p;
+		}
+
 		if ( myPart == null )
 			myPart = (CableBusPart) PartRegistry.CableBusPart.construct( 0 );
 
@@ -37,7 +45,7 @@ public class FMPPlacementHelper implements IPartHost
 
 		if ( myMP.canAddPart( myPart ) && Platform.isServer() )
 		{
-			TileMultipart.addPart( myMP.getWorldObj(), loc, myPart );
+			myMP = TileMultipart.addPart( myMP.getWorldObj(), loc, myPart );
 			hasPart = true;
 		}
 
@@ -54,7 +62,7 @@ public class FMPPlacementHelper implements IPartHost
 				TMultiPart p = i.next();
 				if ( p == myPart )
 				{
-					myMP.remPart( myPart );
+					myMP = myMP.remPart( myPart );
 					break;
 				}
 			}
