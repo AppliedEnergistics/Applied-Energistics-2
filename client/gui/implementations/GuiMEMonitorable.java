@@ -220,7 +220,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 				.getSetting( Settings.SEARCH_MODE ) ) );
 		offset += 20;
 
-		if ( !(this instanceof GuiMEPortableCell) )
+		if ( !(this instanceof GuiMEPortableCell) || this instanceof GuiWirelessTerm )
 		{
 			buttonList.add( terminalStyleBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, AEConfig.instance.settings
 					.getSetting( Settings.TERMINAL_STYLE ) ) );

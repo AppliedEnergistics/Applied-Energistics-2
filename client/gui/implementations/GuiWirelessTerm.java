@@ -11,4 +11,9 @@ public class GuiWirelessTerm extends GuiMEPortableCell
 		maxRows = Integer.MAX_VALUE;
 	}
 
+	@Override
+	int getMaxRows()
+	{
+		return defaultGetMaxRows();
+	}
 }
