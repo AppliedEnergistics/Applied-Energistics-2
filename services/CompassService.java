@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import appeng.api.AEApi;
 import appeng.api.util.DimensionalCoord;
 import appeng.services.helpers.CompassReader;
@@ -183,6 +184,22 @@ public class CompassService implements ThreadFactory
 			cr.close();
 	}
 
+	public void updateArea(World w, int chunkX, int chunkZ)
+	{
+		int x = chunkX << 4;
+		int z = chunkZ << 4;
+
+		updateArea( w, x, 16, z );
+		updateArea( w, x, 16 + 32, z );
+		updateArea( w, x, 16 + 64, z );
+		updateArea( w, x, 16 + 96, z );
+
+		updateArea( w, x, 16 + 128, z );
+		updateArea( w, x, 16 + 160, z );
+		updateArea( w, x, 16 + 192, z );
+		updateArea( w, x, 16 + 224, z );
+	}
+
 	public Future<?> updateArea(World w, int x, int y, int z)
 	{
 		jobSize++;
@@ -191,24 +208,22 @@ public class CompassService implements ThreadFactory
 		int cdy = y >> 5;
 		int cz = z >> 4;
 
-		int low_x = cx << 4;
-		int low_z = cz << 4;
 		int low_y = cdy << 5;
-
-		int hi_x = low_x + 16;
-		int hi_z = low_z + 16;
 		int hi_y = low_y + 32;
 
 		Block skystone = AEApi.instance().blocks().blockSkyStone.block();
 
-		for (int i = low_x; i < hi_x; i++)
+		// lower level...
+		Chunk c = w.getChunkFromBlockCoords( x, z );
+
+		for (int i = 0; i < 16; i++)
 		{
-			for (int j = low_z; j < hi_z; j++)
+			for (int j = 0; j < 16; j++)
 			{
 				for (int k = low_y; k < hi_y; k++)
 				{
-					Block blk = w.getBlock( i, k, j );
-					if ( blk == skystone && w.getBlockMetadata( i, k, j ) == 0 )
+					Block blk = c.getBlock( i, k, j );
+					if ( blk == skystone && c.getBlockMetadata( i, k, j ) == 0 )
 					{
 						return executor.submit( new CMUpdatePost( w, cx, cz, cdy, true ) );
 					}

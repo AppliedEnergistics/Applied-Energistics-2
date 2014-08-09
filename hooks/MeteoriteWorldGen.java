@@ -52,6 +52,8 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 			else
 				TickHandler.instance.addCallable( w, new MetoriteSpawn( chunkX << 4, 128, chunkZ << 4, w ) );
 		}
+		else
+			WorldSettings.getInstance().getCompass().updateArea( w, chunkX, chunkZ );
 	}
 
 	class MetoriteSpawn implements Callable
@@ -92,6 +94,8 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 				tryMetroite( w, depth, x, z );
 
 			WorldSettings.getInstance().setGenerated( w.provider.dimensionId, chunkX, chunkZ );
+			WorldSettings.getInstance().getCompass().updateArea( w, chunkX, chunkZ );
+
 			return null;
 		}
 	}
