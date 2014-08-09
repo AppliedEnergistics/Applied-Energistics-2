@@ -1043,39 +1043,40 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 
 			ItemStack what = new ItemStack( item, 1, blk.getDamageValue( w, tile.xCoord + s.offsetX, tile.yCoord + s.offsetY, tile.zCoord + s.offsetZ ) );
 
-			try
+			if ( te instanceof ICraftingMachine || InventoryAdaptor.getAdaptor( te, s.getOpposite() ) != null )
 			{
-				if ( mop != null && !badBlocks.contains( blk ) )
+				if ( te instanceof IInventory && ((IInventory) te).getSizeInventory() == 0 )
+					continue;
+
+				if ( te instanceof ISidedInventory )
 				{
-					if ( te instanceof ICraftingMachine || InventoryAdaptor.getAdaptor( te, s.getOpposite() ) != null )
+					int[] sides = ((ISidedInventory) te).getAccessibleSlotsFromSide( s.getOpposite().ordinal() );
+
+					if ( sides == null || sides.length == 0 )
+						continue;
+				}
+
+				try
+				{
+					if ( mop != null && !badBlocks.contains( blk ) )
 					{
-						if ( te instanceof IInventory && ((IInventory) te).getSizeInventory() == 0 )
-							continue;
-
-						if ( te instanceof ISidedInventory )
-						{
-							int[] sides = ((ISidedInventory) te).getAccessibleSlotsFromSide( s.getOpposite().ordinal() );
-
-							if ( sides == null || sides.length == 0 )
-								continue;
-						}
-
 						if ( mop.blockX == te.xCoord && mop.blockY == te.yCoord && mop.blockZ == te.zCoord )
 						{
 							ItemStack g = blk.getPickBlock( mop, w, te.xCoord, te.yCoord, te.zCoord );
 							if ( g != null )
 								what = g;
 						}
-
-						if ( what.getItem() != null )
-							return what.getUnlocalizedName();
 					}
 				}
+				catch (Throwable t)
+				{
+					badBlocks.add( blk ); // nope!
+				}
+
+				if ( what.getItem() != null )
+					return what.getUnlocalizedName();
 			}
-			catch (Throwable t)
-			{
-				badBlocks.add( blk ); // nope!
-			}
+
 		}
 
 		return "Nothing";
