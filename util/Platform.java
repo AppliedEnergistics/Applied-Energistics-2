@@ -92,6 +92,7 @@ import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
+import appeng.core.sync.GuiHostType;
 import appeng.hooks.TickHandler;
 import appeng.integration.IntegrationType;
 import appeng.me.GridAccessException;
@@ -307,7 +308,7 @@ public class Platform
 
 		if ( (type.getType().isItem() && tile == null) || type.hasPermissions( tile, x, y, z, side, p ) )
 		{
-			if ( tile == null )
+			if ( tile == null || type.getType() == GuiHostType.ITEM )
 				p.openGui( AppEng.instance, type.ordinal() << 4 | (1 << 3), p.getEntityWorld(), x, y, z );
 			else
 				p.openGui( AppEng.instance, type.ordinal() << 4 | (side.ordinal()), tile.getWorldObj(), x, y, z );
