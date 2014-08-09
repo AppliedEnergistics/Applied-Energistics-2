@@ -307,9 +307,10 @@ public enum GuiBridge implements IGuiHandler
 	public Object getServerGuiElement(int ID_ORDINAL, EntityPlayer player, World w, int x, int y, int z)
 	{
 		ForgeDirection side = ForgeDirection.getOrientation( ID_ORDINAL & 0x07 );
-		GuiBridge ID = values()[ID_ORDINAL >> 3];
+		GuiBridge ID = values()[ID_ORDINAL >> 4];
+		boolean istem = ((ID_ORDINAL >> 3) & 1) == 1;
 
-		if ( ID.type.isItem() )
+		if ( ID.type.isItem() && istem )
 		{
 			ItemStack it = player.inventory.getCurrentItem();
 			Object myItem = getGuiObject( it, player, w, x, y, z );
@@ -358,9 +359,10 @@ public enum GuiBridge implements IGuiHandler
 	public Object getClientGuiElement(int ID_ORDINAL, EntityPlayer player, World w, int x, int y, int z)
 	{
 		ForgeDirection side = ForgeDirection.getOrientation( ID_ORDINAL & 0x07 );
-		GuiBridge ID = values()[ID_ORDINAL >> 3];
+		GuiBridge ID = values()[ID_ORDINAL >> 4];
+		boolean istem = ((ID_ORDINAL >> 3) & 1) == 1;
 
-		if ( ID.type.isItem() )
+		if ( ID.type.isItem() && istem )
 		{
 			ItemStack it = player.inventory.getCurrentItem();
 			Object myItem = getGuiObject( it, player, w, x, y, z );

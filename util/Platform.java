@@ -308,9 +308,9 @@ public class Platform
 		if ( (type.getType().isItem() && tile == null) || type.hasPermissions( tile, x, y, z, side, p ) )
 		{
 			if ( tile == null )
-				p.openGui( AppEng.instance, type.ordinal() << 3, p.getEntityWorld(), x, y, z );
+				p.openGui( AppEng.instance, type.ordinal() << 4 | (1 << 3), p.getEntityWorld(), x, y, z );
 			else
-				p.openGui( AppEng.instance, type.ordinal() << 3 | (side.ordinal()), tile.getWorldObj(), x, y, z );
+				p.openGui( AppEng.instance, type.ordinal() << 4 | (side.ordinal()), tile.getWorldObj(), x, y, z );
 		}
 	}
 
