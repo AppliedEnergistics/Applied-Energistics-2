@@ -201,7 +201,11 @@ public class GuiImgButton extends GuiButton implements ITooltip
 				GL11.glTranslatef( this.xPosition, this.yPosition, 0.0F );
 				GL11.glScalef( 0.5f, 0.5f, 0.5f );
 
-				GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+				if ( enabled )
+					GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+				else
+					GL11.glColor4f( 0.5f, 0.5f, 0.5f, 1.0f );
+
 				par1Minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
 				this.field_146123_n = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width
 						&& par3 < this.yPosition + this.height;
@@ -217,7 +221,11 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			}
 			else
 			{
-				GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+				if ( enabled )
+					GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+				else
+					GL11.glColor4f( 0.5f, 0.5f, 0.5f, 1.0f );
+
 				par1Minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
 				this.field_146123_n = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width
 						&& par3 < this.yPosition + this.height;
@@ -230,6 +238,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 				this.mouseDragged( par1Minecraft, par2, par3 );
 			}
 		}
+		GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	}
 
 	private int getIconIndex()
