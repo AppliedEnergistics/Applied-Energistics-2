@@ -14,15 +14,24 @@ public class TmpFlipableIcon extends FlipableIcon
 
 	public void setOriginal(IIcon i)
 	{
+		setFlip( false, false );
+
 		while (i instanceof FlipableIcon)
-			i = ((FlipableIcon) i).getOriginal();
+		{
+			FlipableIcon fi = (FlipableIcon) i;
+			if ( fi.flip_u )
+				this.flip_u = !this.flip_u;
+
+			if ( fi.flip_v )
+				this.flip_v = !this.flip_v;
+
+			i = fi.getOriginal();
+		}
 
 		if ( i == null )
 			original = nullIcon;
 		else
 			original = i;
-
-		setFlip( false, false );
 	}
 
 }

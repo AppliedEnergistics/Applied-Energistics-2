@@ -397,7 +397,7 @@ public class PartDenseCable extends PartCable
 				renderer.uvRotateWest = 1;
 				renderer.uvRotateBottom = 2;
 				renderer.uvRotateTop = 1;
-				renderer.uvRotateSouth = 3;
+				renderer.uvRotateSouth = 0;
 				renderer.uvRotateNorth = 0;
 
 				AEBaseBlock blk = (AEBaseBlock) rh.getBlock();
@@ -409,12 +409,21 @@ public class PartDenseCable extends PartCable
 
 				Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
 
+				FlipableIcon fpA = new FlipableIcon( defa );
+				FlipableIcon fpB = new FlipableIcon( defb );
+
+				fpA = new FlipableIcon( defa );
+				fpB = new FlipableIcon( defb );
+
+				fpA.setFlip( true, false );
+				fpB.setFlip( true, false );
+
 				Tessellator.instance.setColorOpaque_I( getCableColor().blackVariant );
-				rh.setTexture( offa, offa, offa, offa, defa, defa );
+				rh.setTexture( offa, offa, offa, offa, defa, fpA );
 				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
 
 				Tessellator.instance.setColorOpaque_I( getCableColor().whiteVariant );
-				rh.setTexture( offb, offb, offb, offb, defb, defb );
+				rh.setTexture( offb, offb, offb, offb, defb, fpB );
 				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
 				break;
 			case NORTH:
