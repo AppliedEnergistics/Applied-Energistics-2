@@ -3,6 +3,7 @@ package appeng.parts.p2p;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -141,9 +142,29 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		return null;
 	}
 
+	static final ThreadLocal<Stack<PartP2PLiquids>> depth = new ThreadLocal<Stack<PartP2PLiquids>>();
+
+	private Stack<PartP2PLiquids> getDepth()
+	{
+		Stack<PartP2PLiquids> s = depth.get();
+
+		if ( s == null )
+			depth.set( s = new Stack<PartP2PLiquids>() );
+
+		return s;
+	}
+
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
+		Stack<PartP2PLiquids> stack = getDepth();
+
+		for (PartP2PLiquids t : stack)
+			if ( t == this )
+				return 0;
+
+		stack.push( this );
+
 		List<PartP2PLiquids> list = getOutputs( resource.getFluid() );
 		int requestTotal = 0;
 
@@ -164,10 +185,20 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		}
 
 		if ( requestTotal <= 0 )
+		{
+			if ( stack.pop() != this )
+				throw new RuntimeException( "Invalid Recursion detected." );
+
 			return 0;
+		}
 
 		if ( !doFill )
+		{
+			if ( stack.pop() != this )
+				throw new RuntimeException( "Invalid Recursion detected." );
+
 			return Math.min( resource.amount, requestTotal );
+		}
 
 		int avilable = resource.amount;
 		int used = 0;
@@ -191,6 +222,9 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 			avilable -= insert.amount;
 			used += insert.amount;
 		}
+
+		if ( stack.pop() != this )
+			throw new RuntimeException( "Invalid Recursion detected." );
 
 		return used;
 	}
