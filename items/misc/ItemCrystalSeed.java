@@ -21,6 +21,7 @@ import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.api.recipes.ResolverResult;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
+import appeng.core.localization.ButtonToolTips;
 import appeng.entity.EntityGrowingCrystal;
 import appeng.entity.EntityIds;
 import appeng.items.AEBaseItem;
@@ -76,7 +77,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
-	public int getEntityLifespan( ItemStack itemStack, World world )
+	public int getEntityLifespan(ItemStack itemStack, World world)
 	{
 		return Integer.MAX_VALUE;
 	}
@@ -125,6 +126,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer p, List l, boolean b)
 	{
+		l.add( ButtonToolTips.DosntDespawn.getLocal() );
 		int progress = getProgress( stack ) % SINGLE_OFFSET;
 		l.add( Math.floor( (float) progress / (float) (SINGLE_OFFSET / 100) ) + "%" );
 		super.addInformation( stack, p, l, b );
