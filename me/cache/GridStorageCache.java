@@ -27,7 +27,7 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.me.helpers.StorageInterestManager;
+import appeng.me.helpers.GenericInterestManager;
 import appeng.me.storage.ItemWatcher;
 import appeng.me.storage.NetworkInventoryHandler;
 
@@ -38,7 +38,7 @@ public class GridStorageCache implements IStorageGrid
 {
 
 	final private SetMultimap<IAEStack, ItemWatcher> interests = HashMultimap.create();
-	final public StorageInterestManager interestManager = new StorageInterestManager( interests );
+	final public GenericInterestManager interestManager = new GenericInterestManager( interests );
 
 	final HashSet<ICellProvider> activeCellProviders = new HashSet();
 	final HashSet<ICellProvider> inactiveCellProviders = new HashSet();

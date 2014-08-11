@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -19,6 +20,13 @@ import appeng.api.config.LevelType;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.api.config.YesNo;
+import appeng.api.networking.crafting.ICraftingGrid;
+import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.networking.crafting.ICraftingProvider;
+import appeng.api.networking.crafting.ICraftingProviderHelper;
+import appeng.api.networking.crafting.ICraftingWatcher;
+import appeng.api.networking.crafting.ICraftingWatcherHost;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.api.networking.energy.IEnergyWatcherHost;
@@ -48,7 +56,8 @@ import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherHost, IStackWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>
+public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherHost, IStackWatcherHost, ICraftingWatcherHost,
+		IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider
 {
 
 	final int FLAG_ON = 4;
@@ -62,6 +71,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 
 	IStackWatcher myWatcher;
 	IEnergyWatcher myEnergyWatcher;
+	ICraftingWatcher myCraftingWatcher;
 
 	public long getReportingValue()
 	{
@@ -102,13 +112,17 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 
 	private void updateState()
 	{
-		if ( prevState != isLevelEmitterOn() && proxy.isActive() )
+		if ( proxy.isActive() )
 		{
-			host.markForUpdate();
-			TileEntity te = host.getTile();
-			prevState = isLevelEmitterOn();
-			Platform.notifyBlocksOfNeighbors( te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord );
-			Platform.notifyBlocksOfNeighbors( te.getWorldObj(), te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ );
+			boolean isOn = isLevelEmitterOn();
+			if ( prevState != isOn )
+			{
+				host.markForUpdate();
+				TileEntity te = host.getTile();
+				prevState = isOn;
+				Platform.notifyBlocksOfNeighbors( te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord );
+				Platform.notifyBlocksOfNeighbors( te.getWorldObj(), te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ );
+			}
 		}
 	}
 
@@ -137,6 +151,13 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
+	public void updateWatcher(ICraftingWatcher newWatcher)
+	{
+		myCraftingWatcher = newWatcher;
+		confgiureWatchers();
+	}
+
+	@Override
 	public void updateWatcher(IStackWatcher newWatcher)
 	{
 		myWatcher = newWatcher;
@@ -160,6 +181,17 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 
 		if ( myEnergyWatcher != null )
 			myEnergyWatcher.clear();
+
+		if ( myCraftingWatcher != null )
+			myCraftingWatcher.clear();
+
+		if ( getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
+		{
+			if ( myCraftingWatcher != null )
+				myCraftingWatcher.add( myStack );
+
+			return;
+		}
 
 		if ( getConfigManager().getSetting( Settings.LEVEL_TYPE ) == LevelType.ENERGY_LEVEL )
 		{
@@ -279,6 +311,12 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
+	public void onRequestChange(ICraftingGrid craftingGrid, IAEItemStack what)
+	{
+		updateState();
+	}
+
+	@Override
 	public void onThreshholdPass(IEnergyGrid energyGrid)
 	{
 		lastReportedValue = (long) energyGrid.getStoredPower();
@@ -300,6 +338,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		getConfigManager().registerSetting( Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL );
 		getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 		getConfigManager().registerSetting( Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL );
+		getConfigManager().registerSetting( Settings.CRAFT_VIA_REDSTONE, YesNo.NO );
 	}
 
 	@Override
@@ -499,6 +538,20 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		if ( Platform.isClient() )
 			return (clientFlags & FLAG_ON) == FLAG_ON;
 
+		if ( getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
+		{
+			try
+			{
+				return proxy.getCrafting().isRequesting( config.getAEStackInSlot( 0 ) );
+			}
+			catch (GridAccessException e)
+			{
+				// :P
+			}
+
+			return prevState;
+		}
+
 		boolean flipState = getConfigManager().getSetting( Settings.REDSTONE_EMITTER ) == RedstoneMode.LOW_SIGNAL;
 		return flipState ? reportingValue >= lastReportedValue + 1 : reportingValue < lastReportedValue + 1;
 	}
@@ -596,4 +649,29 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		}
 	}
 
+	@Override
+	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isBusy()
+	{
+		return true;
+	}
+
+	@Override
+	public void provideCrafting(ICraftingProviderHelper craftingTracker)
+	{
+		if ( getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
+		{
+			if ( settings.getSetting( Settings.CRAFT_VIA_REDSTONE ) == YesNo.YES )
+			{
+				IAEItemStack what = config.getAEStackInSlot( 0 );
+				if ( what != null )
+					craftingTracker.setEmitable( what );
+			}
+		}
+	}
 }

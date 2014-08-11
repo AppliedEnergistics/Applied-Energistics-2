@@ -32,6 +32,8 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
 import appeng.api.networking.crafting.ICraftingRequester;
+import appeng.api.networking.crafting.ICraftingWatcher;
+import appeng.api.networking.crafting.ICraftingWatcherHost;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkCraftingCpuChange;
 import appeng.api.networking.events.MENetworkCraftingPatternChange;
@@ -48,15 +50,20 @@ import appeng.api.storage.data.IItemList;
 import appeng.crafting.CraftingJob;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.CraftingLinkNexus;
+import appeng.crafting.CraftingWatcher;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
+import appeng.me.helpers.GenericInterestManager;
+import appeng.me.storage.ItemWatcher;
 import appeng.tile.crafting.TileCraftingStorageTile;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.ItemSorters;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.SetMultimap;
 
 public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler
 {
@@ -64,15 +71,20 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	HashSet<CraftingCPUCluster> cpuClusters = new HashSet();
 	HashSet<ICraftingProvider> providers = new HashSet();
 
+	private HashMap<IGridNode, ICraftingWatcher> watchers = new HashMap<IGridNode, ICraftingWatcher>();
+
 	IGrid grid;
 	IStorageGrid sg;
 	IEnergyGrid eg;
 
 	HashMap<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap();
 	HashMap<IAEItemStack, ImmutableSet<ICraftingPatternDetails>> craftableItems = new HashMap();
+	HashSet<IAEItemStack> emitableItems = new HashSet();
 	HashMap<String, CraftingLinkNexus> links = new HashMap();
 
 	boolean updateList = false;
+	final private SetMultimap<IAEStack, ItemWatcher> interests = HashMultimap.create();
+	final public GenericInterestManager interestManager = new GenericInterestManager( interests );
 
 	class ActiveCpuIterator implements Iterator<ICraftingCPU>
 	{
@@ -183,6 +195,16 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	@Override
 	public void removeNode(IGridNode gridNode, IGridHost machine)
 	{
+		if ( machine instanceof ICraftingWatcherHost )
+		{
+			ICraftingWatcher myWatcher = watchers.get( machine );
+			if ( myWatcher != null )
+			{
+				myWatcher.clear();
+				watchers.remove( machine );
+			}
+		}
+
 		if ( machine instanceof ICraftingRequester )
 		{
 			Iterator<CraftingLinkNexus> nex = links.values().iterator();
@@ -206,6 +228,14 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	@Override
 	public void addNode(IGridNode gridNode, IGridHost machine)
 	{
+		if ( machine instanceof ICraftingWatcherHost )
+		{
+			ICraftingWatcherHost swh = (ICraftingWatcherHost) machine;
+			CraftingWatcher iw = new CraftingWatcher( this, (ICraftingWatcherHost) swh );
+			watchers.put( gridNode, iw );
+			swh.updateWatcher( iw );
+		}
+
 		if ( machine instanceof ICraftingRequester )
 		{
 			for (ICraftingLink l : ((ICraftingRequester) machine).getRequestedJobs())
@@ -521,6 +551,21 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	public boolean hasCpu(ICraftingCPU cpu)
 	{
 		return cpuClusters.contains( cpu );
+	}
+
+	@Override
+	public boolean isRequesting(IAEItemStack what)
+	{
+		for (CraftingCPUCluster c : cpuClusters)
+			if ( c.isMaking( what ) )
+				return true;
+		return false;
+	}
+
+	@Override
+	public boolean canEmitFor(IAEItemStack what)
+	{
+		return emitableItems.contains( what );
 	}
 
 }

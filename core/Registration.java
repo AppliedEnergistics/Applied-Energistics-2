@@ -589,31 +589,32 @@ public class Registration
 		Api.instance.partHelper.initFMPSupport();
 		((BlockCableBus) AEApi.instance().blocks().blockMultiPart.block()).setupTile();
 
-		// interface
+		// Interface
 		Upgrades.CRAFTING.registerItem( AEApi.instance().parts().partInterface.stack( 1 ), 1 );
 		Upgrades.CRAFTING.registerItem( AEApi.instance().blocks().blockInterface.stack( 1 ), 1 );
 
-		// IO PORT!
+		// IO Port!
 		Upgrades.SPEED.registerItem( AEApi.instance().blocks().blockIOPort.stack( 1 ), 3 );
 		Upgrades.REDSTONE.registerItem( AEApi.instance().blocks().blockIOPort.stack( 1 ), 1 );
 
-		// partLevelEmitter
+		// Level Emitter!
 		Upgrades.FUZZY.registerItem( AEApi.instance().parts().partLevelEmitter.stack( 1 ), 1 );
+		Upgrades.CRAFTING.registerItem( AEApi.instance().parts().partLevelEmitter.stack( 1 ), 1 );
 
-		// partImportBus
+		// Import Bus
 		Upgrades.FUZZY.registerItem( AEApi.instance().parts().partImportBus.stack( 1 ), 1 );
 		Upgrades.REDSTONE.registerItem( AEApi.instance().parts().partImportBus.stack( 1 ), 1 );
 		Upgrades.CAPACITY.registerItem( AEApi.instance().parts().partImportBus.stack( 1 ), 2 );
 		Upgrades.SPEED.registerItem( AEApi.instance().parts().partImportBus.stack( 1 ), 4 );
 
-		// partExportBus
+		// Export Bus
 		Upgrades.FUZZY.registerItem( AEApi.instance().parts().partExportBus.stack( 1 ), 1 );
 		Upgrades.REDSTONE.registerItem( AEApi.instance().parts().partExportBus.stack( 1 ), 1 );
 		Upgrades.CAPACITY.registerItem( AEApi.instance().parts().partExportBus.stack( 1 ), 2 );
 		Upgrades.SPEED.registerItem( AEApi.instance().parts().partExportBus.stack( 1 ), 4 );
 		Upgrades.CRAFTING.registerItem( AEApi.instance().parts().partExportBus.stack( 1 ), 1 );
 
-		// blockCellWorkbench
+		// Storage Cells
 		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemCell1k.stack( 1 ), 1 );
 		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemCell1k.stack( 1 ), 1 );
 
@@ -632,22 +633,22 @@ public class Registration
 		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemViewCell.stack( 1 ), 1 );
 		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemViewCell.stack( 1 ), 1 );
 
-		// partStorageBus
+		// Storage Bus
 		Upgrades.FUZZY.registerItem( AEApi.instance().parts().partStorageBus.stack( 1 ), 1 );
 		Upgrades.INVERTER.registerItem( AEApi.instance().parts().partStorageBus.stack( 1 ), 1 );
 		Upgrades.CAPACITY.registerItem( AEApi.instance().parts().partStorageBus.stack( 1 ), 5 );
 
-		// partFormationPlane
+		// Formation Plane
 		Upgrades.FUZZY.registerItem( AEApi.instance().parts().partFormationPlane.stack( 1 ), 1 );
 		Upgrades.INVERTER.registerItem( AEApi.instance().parts().partFormationPlane.stack( 1 ), 1 );
 		Upgrades.CAPACITY.registerItem( AEApi.instance().parts().partFormationPlane.stack( 1 ), 5 );
 
-		// matter cannon
+		// Matter Cannon
 		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemMassCannon.stack( 1 ), 1 );
 		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemMassCannon.stack( 1 ), 1 );
 		Upgrades.SPEED.registerItem( AEApi.instance().items().itemMassCannon.stack( 1 ), 4 );
 
-		// molecular assembler
+		// Molecular Assembler
 		Upgrades.SPEED.registerItem( AEApi.instance().blocks().blockMolecularAssembler.stack( 1 ), 5 );
 
 		AEApi.instance().registries().wireless().registerWirelessHandler( (IWirelessTermHandler) AEApi.instance().items().itemWirelessTerminal.item() );

@@ -130,7 +130,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 
 			NetworkHandler.instance.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
 		}
-		catch(NumberFormatException e )
+		catch (NumberFormatException e)
 		{
 			// nope..
 			level.setText( "0" );
@@ -187,6 +187,21 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
+		boolean notCraftingMode = bc.getInstalledUpgrades( Upgrades.CRAFTING ) == 0;
+
+		// configure enabled status...
+		level.setEnabled( notCraftingMode );
+		plus1.enabled = notCraftingMode;
+		plus10.enabled = notCraftingMode;
+		plus100.enabled = notCraftingMode;
+		plus1000.enabled = notCraftingMode;
+		minus1.enabled = notCraftingMode;
+		minus10.enabled = notCraftingMode;
+		minus100.enabled = notCraftingMode;
+		minus1000.enabled = notCraftingMode;
+		levelMode.enabled = notCraftingMode;
+		redstoneMode.enabled = notCraftingMode;
+
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
 
 		if ( levelMode != null )

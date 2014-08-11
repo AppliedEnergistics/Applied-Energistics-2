@@ -32,6 +32,7 @@ public class CraftingTreeNode
 	// what are the crafting patterns for this?
 	private ArrayList<CraftingTreeProcess> nodes = new ArrayList();
 
+	boolean canEmit = false;
 	boolean cannotUse = false;
 	long missing = 0;
 
@@ -49,12 +50,17 @@ public class CraftingTreeNode
 		this.job = job;
 		sim = false;
 
+		canEmit = cc.canEmitFor( what );
+		if ( canEmit )
+			return; // if you can emit for something, you can't make it with patterns.
+
 		for (ICraftingPatternDetails details : cc.getCraftingFor( what, parent == null ? null : parent.details, slot, world ))// in
 																																// order.
 		{
 			if ( parent == null || parent.notRecurive( details ) )
 				nodes.add( new CraftingTreeProcess( cc, job, details, this, depth + 1, world ) );
 		}
+
 	}
 
 	public IAEItemStack getStack(long size)

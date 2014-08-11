@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -44,6 +45,7 @@ import appeng.core.AELog;
 import appeng.crafting.CraftBranchFailure;
 import appeng.crafting.CraftingJob;
 import appeng.crafting.CraftingLink;
+import appeng.crafting.CraftingWatcher;
 import appeng.crafting.MECraftingInventory;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cluster.IAECluster;
@@ -51,6 +53,9 @@ import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+
+import com.google.common.collect.ImmutableSet;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CraftingCPUCluster implements IAECluster, ICraftingCPU
@@ -269,6 +274,22 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		return false;
 	}
 
+	public void postCraftingStatusChange(IAEItemStack diff)
+	{
+		CraftingGridCache sg = getGrid().getCache( ICraftingGrid.class );
+
+		if ( sg.interestManager.containsKey( diff ) )
+		{
+			Set<CraftingWatcher> list = sg.interestManager.get( diff );
+			if ( !list.isEmpty() )
+			{
+				for (CraftingWatcher iw : list)
+					iw.getHost().onRequestChange( sg, diff );
+			}
+		}
+
+	}
+
 	public IAEStack injectItems(IAEStack input, Actionable type, BaseActionSource src)
 	{
 		if ( input instanceof IAEItemStack && type == Actionable.SIMULATE )// causes crafting to lock up?
@@ -325,11 +346,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 				{
 					is.decStackSize( input.getStackSize() );
 					markDirty();
-
-					// AELog.info( "Task: " + is.getStackSize() + " remaining : " + getRemainingTasks() +
-					// " remaining : "
-					// + (is.getStackSize() + getRemainingTasks()) + " total left : waiting: " + (waiting ? "yes" :
-					// "no") );
+					postCraftingStatusChange( is );
 
 					if ( finalOutput.equals( input ) )
 					{
@@ -478,7 +495,13 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		isComplete = true;
 		myLastLink = null;
 		tasks.clear();
+
+		ImmutableSet<IAEItemStack> items = ImmutableSet.copyOf( waitingFor );
+
 		waitingFor.resetStatus();
+
+		for (IAEItemStack is : items)
+			postCraftingStatusChange( is );
 
 		finalOutput = null;
 		updateCPU();
@@ -642,6 +665,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 							{
 								postChange( out, machineSrc );
 								waitingFor.add( out.copy() );
+								postCraftingStatusChange( out.copy() );
 							}
 
 							if ( details.isCraftable() )
@@ -1035,6 +1059,11 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	public boolean isActive()
 	{
 		return getCore().getActionableNode().isActive();
+	}
+
+	public boolean isMaking(IAEItemStack what)
+	{
+		return waitingFor.findPrecise( what ) != null;
 	}
 
 }
