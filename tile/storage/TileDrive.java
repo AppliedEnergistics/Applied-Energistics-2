@@ -125,6 +125,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 		@Override
 		public void readFromNBT(NBTTagCompound data)
 		{
+			isCached = false;
 			priority = data.getInteger( "priority" );
 		}
 
@@ -175,8 +176,11 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	@Override
 	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added)
 	{
-		isCached = false; // recalculate the storage cell.
-		updateState();
+		if ( isCached )
+		{
+			isCached = false; // recalculate the storage cell.
+			updateState();
+		}
 
 		try
 		{
