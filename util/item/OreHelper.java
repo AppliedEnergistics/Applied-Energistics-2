@@ -68,7 +68,6 @@ public class OreHelper
 			OreRefrence ref = new OreRefrence();
 			Collection<Integer> ores = ref.getOres();
 			Collection<ItemStack> set = ref.getEquivilients();
-			Collection<IAEItemStack> aeset = ref.getAEEquivilients();
 
 			for (String ore : OreDictionary.getOreNames())
 			{
@@ -93,14 +92,7 @@ public class OreHelper
 			}
 
 			if ( !set.isEmpty() )
-			{
 				or.oreValue = ref;
-
-				// SUMMON AE STACKS!
-				for (ItemStack is : set)
-					if ( is.getItem() != null )
-						aeset.add( AEItemStack.create( is ) );
-			}
 		}
 
 		return or.oreValue;
@@ -118,7 +110,7 @@ public class OreHelper
 			return false;
 
 		Collection<Integer> bOres = b.getOres();
-		for (Integer ore : a.ores)
+		for (Integer ore : a.getOres())
 		{
 			if ( bOres.contains( ore ) )
 				return true;
@@ -134,9 +126,9 @@ public class OreHelper
 
 		if ( a == b )
 			return true;
-		
+
 		Collection<Integer> bOres = b.getOres();
-		for (Integer ore : a.ores)
+		for (Integer ore : a.getOres())
 		{
 			if ( bOres.contains( ore ) )
 				return true;
