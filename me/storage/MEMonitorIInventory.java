@@ -165,7 +165,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 		for (ItemSlot is : adaptor)
 		{
 			CachedItemStack old = memory.get( is.slot );
-			ItemStack newIS = is == null ? null : is.getItemStack();
+			ItemStack newIS = is == null || is.isExtractable == false ? null : is.getItemStack();
 			ItemStack oldIS = old == null ? null : old.itemStack;
 
 			if ( isDiffrent( newIS, oldIS ) )

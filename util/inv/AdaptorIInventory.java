@@ -341,8 +341,12 @@ public class AdaptorIInventory extends InventoryAdaptor
 		@Override
 		public ItemSlot next()
 		{
-			is.slot = x;
-			is.setItemStack( i.getStackInSlot( x++ ) );
+			ItemStack iss = i.getStackInSlot( x );
+
+			is.isExtractable = canRemoveStackFromSlot( x, iss );
+			is.setItemStack( iss );
+
+			is.slot = x++;
 			return is;
 		}
 
