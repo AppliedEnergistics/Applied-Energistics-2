@@ -54,7 +54,7 @@ public class BlockQuartzGrowthAccelerator extends AEBaseBlock implements IOrient
 
 		TileQuartzGrowthAccelerator tqga = getTileEntity( w, x, y, z );
 
-		if ( tqga.hasPower && CommonHelper.proxy.shouldAddParticles( r ) )
+		if ( tqga != null && tqga.hasPower && CommonHelper.proxy.shouldAddParticles( r ) )
 		{
 			double d0 = (double) (r.nextFloat() - 0.5F);
 			double d1 = (double) (r.nextFloat() - 0.5F);
