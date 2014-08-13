@@ -7,6 +7,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.api.storage.ITerminalHost;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.client.gui.widgets.GuiTabButton;
@@ -109,7 +110,7 @@ public class GuiCraftAmount extends AEBaseGui
 
 		try
 		{
-			
+
 			if ( btn == originalGuiBtn )
 			{
 				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( OriginalGui ) );
@@ -117,12 +118,13 @@ public class GuiCraftAmount extends AEBaseGui
 
 			if ( btn == next )
 			{
-				NetworkHandler.instance.sendToServer( new PacketCraftRequest( inventorySlots.getSlot( 0 ).getStack(), Integer.parseInt( this.amountToCraft
-						.getText() ), isShiftKeyDown() ) );
+				IAEItemStack what = AEApi.instance().storage().createItemStack( inventorySlots.getSlot( 0 ).getStack() );
+				if ( what != null )
+					NetworkHandler.instance.sendToServer( new PacketCraftRequest( what, Integer.parseInt( this.amountToCraft.getText() ), isShiftKeyDown() ) );
 			}
 
 		}
-		catch(NumberFormatException e )
+		catch (NumberFormatException e)
 		{
 			// nope..
 			amountToCraft.setText( "1" );
@@ -166,7 +168,7 @@ public class GuiCraftAmount extends AEBaseGui
 			result += i;
 			if ( result < 1 )
 				result = 1;
-			
+
 			Out = Long.toString( result );
 			Integer.parseInt( Out );
 			amountToCraft.setText( Out );

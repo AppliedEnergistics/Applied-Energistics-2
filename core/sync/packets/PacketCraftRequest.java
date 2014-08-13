@@ -7,10 +7,8 @@ import java.io.IOException;
 import java.util.concurrent.Future;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -90,8 +88,8 @@ public class PacketCraftRequest extends AppEngPacket
 		}
 	}
 
-	public PacketCraftRequest(ItemStack stack, int parseInt, boolean shift) throws IOException {
-		this.slotItem = AEApi.instance().storage().createItemStack( stack );
+	public PacketCraftRequest(IAEItemStack stack, int parseInt, boolean shift) throws IOException {
+		this.slotItem = stack;
 		this.slotItem.setStackSize( parseInt );
 		this.heldShift = shift;
 
