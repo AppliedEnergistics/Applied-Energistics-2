@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
+import appeng.api.config.StorageFilter;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.IMEInventory;
@@ -51,6 +52,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 	final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap();
 
 	public BaseActionSource mySource;
+	public StorageFilter mode = StorageFilter.EXTACTABLE_ONLY;
 
 	@Override
 	public void addListener(IMEMonitorHandlerReceiver<IAEItemStack> l, Object verificationToken)
@@ -165,7 +167,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 		for (ItemSlot is : adaptor)
 		{
 			CachedItemStack old = memory.get( is.slot );
-			ItemStack newIS = is == null || is.isExtractable == false ? null : is.getItemStack();
+			ItemStack newIS = is == null || is.isExtractable == false && mode == StorageFilter.EXTACTABLE_ONLY ? null : is.getItemStack();
 			ItemStack oldIS = old == null ? null : old.itemStack;
 
 			if ( isDiffrent( newIS, oldIS ) )

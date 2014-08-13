@@ -11,6 +11,7 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
+import appeng.api.config.StorageFilter;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerStorageBus;
@@ -27,6 +28,7 @@ public class GuiStorageBus extends GuiUpgradeable
 {
 
 	GuiImgButton rwMode;
+	GuiImgButton storageFilter;
 	GuiTabButton priority;
 	GuiImgButton partition;
 	GuiImgButton clear;
@@ -51,6 +53,9 @@ public class GuiStorageBus extends GuiUpgradeable
 		if ( fuzzyMode != null )
 			fuzzyMode.set( cvb.fzMode );
 
+		if ( storageFilter != null )
+			storageFilter.set( ((ContainerStorageBus) cvb).storageFilter );
+
 		if ( rwMode != null )
 			rwMode.set( ((ContainerStorageBus) cvb).rwMode );
 	}
@@ -61,10 +66,12 @@ public class GuiStorageBus extends GuiUpgradeable
 		clear = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.ACTIONS, ActionItems.CLOSE );
 		partition = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.ACTIONS, ActionItems.WRENCH );
 		rwMode = new GuiImgButton( this.guiLeft - 18, guiTop + 48, Settings.ACCESS, AccessRestriction.READ_WRITE );
-		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 68, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		storageFilter = new GuiImgButton( this.guiLeft - 18, guiTop + 68, Settings.STORAGE_FILTER, StorageFilter.EXTACTABLE_ONLY );
+		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 88, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 
 		buttonList.add( priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRender ) );
 
+		buttonList.add( storageFilter );
 		buttonList.add( fuzzyMode );
 		buttonList.add( rwMode );
 		buttonList.add( partition );
@@ -94,6 +101,10 @@ public class GuiStorageBus extends GuiUpgradeable
 
 			else if ( btn == rwMode )
 				NetworkHandler.instance.sendToServer( new PacketConfigButton( rwMode.getSetting(), backwards ) );
+
+			else if ( btn == storageFilter )
+				NetworkHandler.instance.sendToServer( new PacketConfigButton( storageFilter.getSetting(), backwards ) );
+
 		}
 		catch (IOException e)
 		{

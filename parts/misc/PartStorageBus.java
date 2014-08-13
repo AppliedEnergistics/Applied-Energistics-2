@@ -16,6 +16,7 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
 import appeng.api.config.Settings;
+import appeng.api.config.StorageFilter;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
@@ -75,6 +76,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		super( PartStorageBus.class, is );
 		getConfigManager().registerSetting( Settings.ACCESS, AccessRestriction.READ_WRITE );
 		getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		getConfigManager().registerSetting( Settings.STORAGE_FILTER, StorageFilter.EXTACTABLE_ONLY );
 		mySrc = new MachineSource( this );
 	}
 
@@ -272,7 +274,11 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 				IMEInventory inv = esh.getInventory( target, side.getOpposite(), StorageChannel.ITEMS, mySrc );
 
 				if ( inv instanceof MEMonitorIInventory )
-					((MEMonitorIInventory) inv).mySource = new MachineSource( this );
+				{
+					MEMonitorIInventory h = (MEMonitorIInventory) inv;
+					h.mode = (StorageFilter) getConfigManager().getSetting( Settings.STORAGE_FILTER );
+					h.mySource = new MachineSource( this );
+				}
 
 				if ( inv instanceof MEMonitorIInventory )
 					monitor = (MEMonitorIInventory) inv;
