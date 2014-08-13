@@ -10,6 +10,7 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
+import appeng.api.config.StorageFilter;
 import appeng.api.config.Upgrades;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEItemStack;
@@ -30,6 +31,9 @@ public class ContainerStorageBus extends ContainerUpgradeable
 
 	@GuiSync(3)
 	public AccessRestriction rwMode = AccessRestriction.READ_WRITE;
+
+	@GuiSync(4)
+	public StorageFilter storageFilter = StorageFilter.EXTACTABLE_ONLY;
 
 	public ContainerStorageBus(InventoryPlayer ip, PartStorageBus te) {
 		super( ip, te );
@@ -97,6 +101,7 @@ public class ContainerStorageBus extends ContainerUpgradeable
 		{
 			this.fzMode = (FuzzyMode) this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE );
 			this.rwMode = (AccessRestriction) this.myte.getConfigManager().getSetting( Settings.ACCESS );
+			this.storageFilter = (StorageFilter) this.myte.getConfigManager().getSetting( Settings.STORAGE_FILTER );
 		}
 
 		standardDetectAndSendChanges();

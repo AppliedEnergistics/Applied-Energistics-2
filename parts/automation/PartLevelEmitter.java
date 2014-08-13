@@ -31,6 +31,7 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.api.networking.energy.IEnergyWatcherHost;
 import appeng.api.networking.events.MENetworkChannelsChanged;
+import appeng.api.networking.events.MENetworkCraftingPatternChange;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.BaseActionSource;
@@ -185,9 +186,18 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		if ( myCraftingWatcher != null )
 			myCraftingWatcher.clear();
 
+		try
+		{
+			proxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, proxy.getNode() ) );
+		}
+		catch (GridAccessException e1)
+		{
+			// :/
+		}
+
 		if ( getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
 		{
-			if ( myCraftingWatcher != null )
+			if ( myCraftingWatcher != null && myStack != null )
 				myCraftingWatcher.add( myStack );
 
 			return;

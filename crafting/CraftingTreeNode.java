@@ -34,7 +34,9 @@ public class CraftingTreeNode
 
 	boolean canEmit = false;
 	boolean cannotUse = false;
+
 	long missing = 0;
+	long howManyEmitted = 0;
 
 	CraftingJob job;
 	IItemList<IAEItemStack> used = AEApi.instance().storage().createItemList();
@@ -148,6 +150,17 @@ public class CraftingTreeNode
 				if ( l == 0 )
 					return available;
 			}
+		}
+
+		if ( canEmit )
+		{
+			IAEItemStack wat = what.copy();
+			wat.setStackSize( l );
+
+			howManyEmitted = wat.getStackSize();
+			bytes += wat.getStackSize();
+
+			return wat;
 		}
 
 		exhausted = true;
@@ -267,6 +280,13 @@ public class CraftingTreeNode
 			craftingCPUCluster.addStorage( ex );
 		}
 
+		if ( howManyEmitted > 0 )
+		{
+			IAEItemStack i = what.copy();
+			i.setStackSize( howManyEmitted );
+			craftingCPUCluster.addEmitable( i );
+		}
+
 		for (CraftingTreeProcess pro : nodes)
 			pro.setJob( storage, craftingCPUCluster, src );
 	}
@@ -278,6 +298,13 @@ public class CraftingTreeNode
 			IAEItemStack o = what.copy();
 			o.setStackSize( missing );
 			plan.add( o );
+		}
+
+		if ( howManyEmitted > 0 )
+		{
+			IAEItemStack i = what.copy();
+			i.setCountRequestable( howManyEmitted );
+			plan.addRequestable( i );
 		}
 
 		for (IAEItemStack i : used)

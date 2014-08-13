@@ -12,6 +12,7 @@ import appeng.api.config.LevelType;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.api.config.YesNo;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.container.implementations.ContainerLevelEmitter;
@@ -32,6 +33,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	GuiButton minus1, minus10, minus100, minus1000;
 
 	GuiImgButton levelMode;
+	GuiImgButton craftingMode;
 
 	public GuiLevelEmitter(InventoryPlayer inventoryPlayer, PartLevelEmitter te) {
 		super( new ContainerLevelEmitter( inventoryPlayer, te ) );
@@ -57,6 +59,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		levelMode = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL );
 		redstoneMode = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL );
 		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 48, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		craftingMode = new GuiImgButton( this.guiLeft - 18, guiTop + 48, Settings.CRAFT_VIA_REDSTONE, YesNo.NO );
 
 		int a = AEConfig.instance.levelByStackAmounts( 0 );
 		int b = AEConfig.instance.levelByStackAmounts( 1 );
@@ -76,6 +79,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		buttonList.add( levelMode );
 		buttonList.add( redstoneMode );
 		buttonList.add( fuzzyMode );
+		buttonList.add( craftingMode );
 	}
 
 	@Override
@@ -87,6 +91,9 @@ public class GuiLevelEmitter extends GuiUpgradeable
 
 		try
 		{
+			if ( btn == craftingMode )
+				NetworkHandler.instance.sendToServer( new PacketConfigButton( craftingMode.getSetting(), backwards ) );
+
 			if ( btn == levelMode )
 				NetworkHandler.instance.sendToServer( new PacketConfigButton( levelMode.getSetting(), backwards ) );
 		}
@@ -143,6 +150,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 
 	protected void handleButtonVisiblity()
 	{
+		craftingMode.setVisibility( bc.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 );
 		fuzzyMode.setVisibility( bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );
 	}
 
@@ -203,6 +211,9 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		redstoneMode.enabled = notCraftingMode;
 
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
+
+		if ( craftingMode != null )
+			craftingMode.set( ((ContainerLevelEmitter) cvb).cmType );
 
 		if ( levelMode != null )
 			levelMode.set( ((ContainerLevelEmitter) cvb).lvType );

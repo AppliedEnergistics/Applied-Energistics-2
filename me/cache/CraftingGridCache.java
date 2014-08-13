@@ -297,6 +297,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		// erase list.
 		craftingMethods.clear();
 		craftableItems.clear();
+		emitableItems.clear();
 
 		// re-create list..
 		for (ICraftingProvider cp : providers)
@@ -373,6 +374,9 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	{
 		// add craftable items!
 		for (IAEItemStack st : craftableItems.keySet())
+			out.addCrafting( st );
+
+		for (IAEItemStack st : emitableItems)
 			out.addCrafting( st );
 
 		return out;
@@ -566,6 +570,12 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	public boolean canEmitFor(IAEItemStack what)
 	{
 		return emitableItems.contains( what );
+	}
+
+	@Override
+	public void setEmitable(IAEItemStack what)
+	{
+		emitableItems.add( what.copy() );
 	}
 
 }

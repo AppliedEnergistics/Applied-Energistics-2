@@ -684,6 +684,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 										IAEItemStack cItem = AEItemStack.create( output );
 										postChange( cItem, machineSrc );
 										waitingFor.add( cItem );
+										postCraftingStatusChange( cItem );
 									}
 								}
 							}
@@ -791,6 +792,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 			IItemList<IAEItemStack> list;
 			getListOfItem( list = AEApi.instance().storage().createItemList(), CraftingItemList.ALL );
+
 			for (IAEItemStack ge : list)
 				postChange( ge, machineSrc );
 
@@ -851,6 +853,12 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	public void addStorage(IAEItemStack extractItems)
 	{
 		inventory.injectItems( extractItems, Actionable.MODULATE, null );
+	}
+
+	public void addEmitable(IAEItemStack i)
+	{
+		waitingFor.add( i );
+		postCraftingStatusChange( i );
 	}
 
 	public void addCrafting(ICraftingPatternDetails details, long crafts)
@@ -950,6 +958,8 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		}
 
 		waitingFor = readList( (NBTTagList) data.getTag( "waitingFor" ) );
+		for (IAEItemStack is : waitingFor)
+			postCraftingStatusChange( is.copy() );
 	}
 
 	public void writeToNBT(NBTTagCompound data)
@@ -1066,7 +1076,8 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	public boolean isMaking(IAEItemStack what)
 	{
-		return waitingFor.findPrecise( what ) != null;
+		IAEItemStack wat = waitingFor.findPrecise( what );
+		return wat != null && wat.getStackSize() > 0;
 	}
 
 }
