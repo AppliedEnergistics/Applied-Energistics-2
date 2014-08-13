@@ -364,8 +364,8 @@ public class RenderBlocksWorkaround extends RenderBlocks
 			{
 				Tessellator tessellator = Tessellator.instance;
 
-				double d4 = (double) par8Icon.getInterpolatedU( this.renderMinZ * 16.0D );
-				double d3 = (double) par8Icon.getInterpolatedU( this.renderMaxZ * 16.0D );
+				double d3 = (double) par8Icon.getInterpolatedU( 16.0D - this.renderMinZ * 16.0D );
+				double d4 = (double) par8Icon.getInterpolatedU( 16.0D - this.renderMaxZ * 16.0D );
 				double d5 = (double) par8Icon.getInterpolatedV( 16.0D - this.renderMaxY * 16.0D );
 				double d6 = (double) par8Icon.getInterpolatedV( 16.0D - this.renderMinY * 16.0D );
 
@@ -554,8 +554,8 @@ public class RenderBlocksWorkaround extends RenderBlocks
 			{
 				Tessellator tessellator = Tessellator.instance;
 
-				double d4 = (double) par8Icon.getInterpolatedU( this.renderMinX * 16.0D );
-				double d3 = (double) par8Icon.getInterpolatedU( this.renderMaxX * 16.0D );
+				double d3 = (double) par8Icon.getInterpolatedU( 16.0D - this.renderMinX * 16.0D );
+				double d4 = (double) par8Icon.getInterpolatedU( 16.0D - this.renderMaxX * 16.0D );
 				double d5 = (double) par8Icon.getInterpolatedV( 16.0D - this.renderMaxY * 16.0D );
 				double d6 = (double) par8Icon.getInterpolatedV( 16.0D - this.renderMinY * 16.0D );
 

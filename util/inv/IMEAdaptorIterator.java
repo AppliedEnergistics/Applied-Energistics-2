@@ -33,6 +33,7 @@ public class IMEAdaptorIterator implements Iterator<ItemSlot>
 	public ItemSlot next()
 	{
 		slot.slot = offset++;
+		slot.isExtractable=true;
 
 		if ( parent.maxSlots < offset )
 			parent.maxSlots = offset;

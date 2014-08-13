@@ -1,4 +1,4 @@
-package appeng.integration.modules.helpers.dead;
+package appeng.integration.modules.helpers;
 
 import net.mcft.copy.betterstorage.api.ICrateStorage;
 import net.minecraft.item.ItemStack;

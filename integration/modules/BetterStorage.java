@@ -1,18 +1,18 @@
-package appeng.integration.modules.dead;
+package appeng.integration.modules;
 
 import net.mcft.copy.betterstorage.api.ICrateStorage;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.integration.IIntegrationModule;
-import appeng.integration.abstraction.IBS;
-import appeng.integration.modules.helpers.dead.BSCrateHandler;
-import appeng.integration.modules.helpers.dead.BSCrateStorageAdaptor;
+import appeng.integration.abstraction.IBetterStorage;
+import appeng.integration.modules.helpers.BSCrateHandler;
+import appeng.integration.modules.helpers.BSCrateStorageAdaptor;
 import appeng.util.InventoryAdaptor;
 
-public class BS implements IIntegrationModule, IBS
+public class BetterStorage implements IIntegrationModule, IBetterStorage
 {
 
-	public static BS instance;
+	public static BetterStorage instance;
 
 	@Override
 	public boolean isStorageCrate(Object te)

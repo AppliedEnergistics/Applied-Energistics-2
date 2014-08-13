@@ -631,8 +631,11 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 										{
 											postChange( input[x], machineSrc );
 											ic.setInventorySlotContents( x, is );
-											found = true;
-											continue;
+											if ( is.stackSize == input[x].getStackSize() )
+											{
+												found = true;
+												continue;
+											}
 										}
 									}
 

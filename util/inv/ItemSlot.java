@@ -13,6 +13,8 @@ public class ItemSlot
 	private IAEItemStack aeitemstack;
 	private ItemStack itemStack;
 
+	public boolean isExtractable;
+
 	public void setItemStack(ItemStack is)
 	{
 		aeitemstack = null;
