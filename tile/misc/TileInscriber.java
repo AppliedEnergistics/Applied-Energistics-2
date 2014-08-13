@@ -366,7 +366,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 
 				double powerReq = extractAEPower( 10, Actionable.SIMULATE, PowerMultiplier.CONFIG );
 
-				if ( powerReq < 9.99 )
+				if ( powerReq <= 9.99 )
 				{
 					src = eg;
 					powerReq = eg.extractAEPower( 10, Actionable.SIMULATE, PowerMultiplier.CONFIG );
