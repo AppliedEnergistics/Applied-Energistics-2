@@ -14,12 +14,15 @@ import net.minecraft.item.ItemStack;
 import appeng.client.gui.AEBaseMEGui;
 import appeng.client.gui.implementations.GuiCraftingTerm;
 import appeng.client.gui.implementations.GuiPatternTerm;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 import appeng.integration.BaseModule;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.INEI;
 import appeng.integration.modules.NEIHelpers.NEIAEShapedRecipeHandler;
 import appeng.integration.modules.NEIHelpers.NEIAEShapelessRecipeHandler;
 import appeng.integration.modules.NEIHelpers.NEICraftingHandler;
+import appeng.integration.modules.NEIHelpers.NEIFacadeRecipeHandler;
 import appeng.integration.modules.NEIHelpers.NEIGrinderRecipeHandler;
 import appeng.integration.modules.NEIHelpers.NEIInscriberRecipeHandler;
 import appeng.integration.modules.NEIHelpers.NEIWorldCraftingHandler;
@@ -63,6 +66,9 @@ public class NEI extends BaseModule implements IIntegrationModule, INEI, IContai
 		registerRecipeHandler( new NEIInscriberRecipeHandler() );
 		registerRecipeHandler( new NEIWorldCraftingHandler() );
 		registerRecipeHandler( new NEIGrinderRecipeHandler() );
+
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.Facades ) && AEConfig.instance.isFeatureEnabled( AEFeature.enableFacadeCrafting ) )
+			registerRecipeHandler( new NEIFacadeRecipeHandler() );
 
 		// large stack tooltips
 		GuiContainerManager.addTooltipHandler( this );

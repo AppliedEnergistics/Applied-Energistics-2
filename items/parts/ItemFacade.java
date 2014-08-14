@@ -67,6 +67,12 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 	List<ItemStack> subTypes = null;
 
+	public List<ItemStack> getFacades()
+	{
+		calculateSubTypes();
+		return subTypes;
+	}
+
 	public ItemStack getCreativeTabIcon()
 	{
 		calculateSubTypes();

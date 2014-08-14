@@ -48,7 +48,7 @@ public enum GuiText
 
 	InterfaceTerminalHint, Range, TransparentFacades, TransparentFacadesHint,
 
-	NoCraftingJobs, CPUs;
+	NoCraftingJobs, CPUs, FacadeCrafting, inWorldCraftingPresses, ChargedQuartzFind;
 
 	String root;
 

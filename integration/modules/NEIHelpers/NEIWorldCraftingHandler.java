@@ -47,7 +47,19 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 
 	private void addRecipes()
 	{
-		addRecipe( AEApi.instance().materials().materialCertusQuartzCrystalCharged, GuiText.ChargedQuartz.getLocal() );
+
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.CertusQuartzWorldGen ) )
+			addRecipe( AEApi.instance().materials().materialCertusQuartzCrystalCharged,
+					GuiText.ChargedQuartz.getLocal() + "\n\n" + GuiText.ChargedQuartzFind.getLocal() );
+		else
+			addRecipe( AEApi.instance().materials().materialCertusQuartzCrystalCharged, GuiText.ChargedQuartzFind.getLocal() );
+
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.MeteoriteWorldGen ) )
+		{
+			addRecipe( AEApi.instance().materials().materialLogicProcessorPress, GuiText.inWorldCraftingPresses.getLocal() );
+			addRecipe( AEApi.instance().materials().materialCalcProcessorPress, GuiText.inWorldCraftingPresses.getLocal() );
+			addRecipe( AEApi.instance().materials().materialEngProcessorPress, GuiText.inWorldCraftingPresses.getLocal() );
+		}
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.inWorldFluix ) )
 			addRecipe( AEApi.instance().materials().materialFluixCrystal, GuiText.inWorldFluix.getLocal() );
