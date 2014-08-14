@@ -88,7 +88,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 				minSqDist = Math.min( minSqDist, mp.getSqDistance( x, z ) );
 			}
 
-			boolean isCluster = (minSqDist < 30 * 30) && Platform.getRandomFloat() > 0.8;
+			boolean isCluster = (minSqDist < 30 * 30) && Platform.getRandomFloat() < AEConfig.instance.metoriteClusterChance;
 
 			if ( minSqDist > AEConfig.instance.minMeteoriteDistanceSq || isCluster )
 				tryMetroite( w, depth, x, z );

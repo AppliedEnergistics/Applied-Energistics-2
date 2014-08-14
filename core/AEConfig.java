@@ -123,6 +123,8 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 	public boolean updateable = false;
 	final private File myPath;
 
+	public double metoriteClusterChance = 0.1f;
+
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs)
 	{
@@ -224,6 +226,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 
 		spawnChargedChance = (float) (1.0 - get( "worldGen", "spawnChargedChance", 1.0 - spawnChargedChance ).getDouble( 1.0 - spawnChargedChance ));
 		minMeteoriteDistance = get( "worldGen", "minMeteoriteDistance", minMeteoriteDistance ).getInt( minMeteoriteDistance );
+		metoriteClusterChance = get( "worldGen", "metoriteClusterChance ", metoriteClusterChance ).getDouble( metoriteClusterChance );
 		quartzOresPerCluster = get( "worldGen", "quartzOresPerCluster", quartzOresPerCluster ).getInt( quartzOresPerCluster );
 
 		minMeteoriteDistanceSq = minMeteoriteDistance * minMeteoriteDistance;
