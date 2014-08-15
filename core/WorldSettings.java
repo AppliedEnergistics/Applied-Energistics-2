@@ -83,14 +83,26 @@ public class WorldSettings extends Configuration
 			try
 			{
 				fis = new FileInputStream( f );
-				NBTTagCompound data = CompressedStreamTools.readCompressed( fis );
-				fis.close();
 
+				NBTTagCompound data = null;
+				
+				try
+				{
+					data = CompressedStreamTools.readCompressed( fis );
+				}
+				catch (Throwable e)
+				{
+					data = new NBTTagCompound();
+					AELog.error( e );
+				}
+				
+				fis.close();
+				
 				return data;
 			}
 			catch (Throwable e)
 			{
-
+				AELog.error( e );
 			}
 
 		}
@@ -109,12 +121,21 @@ public class WorldSettings extends Configuration
 		{
 			// save
 			FileOutputStream fos = new FileOutputStream( f );
-			CompressedStreamTools.writeCompressed( data, fos );
+			
+			try
+			{
+				CompressedStreamTools.writeCompressed( data, fos );
+			}
+			catch( Throwable e )
+			{
+				AELog.error( e );
+			}
+			
 			fos.close();
 		}
 		catch (Throwable e)
 		{
-
+			AELog.error( e );
 		}
 	}
 
