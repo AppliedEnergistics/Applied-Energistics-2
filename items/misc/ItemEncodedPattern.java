@@ -110,25 +110,25 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	// rather simple client side cacheing.
-	static WeakHashMap<ItemStack, ICraftingPatternDetails> simpleCache = new WeakHashMap<ItemStack, ICraftingPatternDetails>();
+	static WeakHashMap<ItemStack, ItemStack> simpleCache = new WeakHashMap<ItemStack, ItemStack>();
 
 	public ItemStack getOutput(ItemStack item)
 	{
-		ICraftingPatternDetails details = simpleCache.get( item );
-		if ( details != null )
-			return details.getCondencedOutputs()[0].getItemStack();
+		ItemStack out = simpleCache.get( item );
+		if ( out != null )
+			return out;
 
 		World w = CommonHelper.proxy.getWorld();
 		if ( w == null )
 			return null;
 
-		details = getPatternForItem( item, w );
+		ICraftingPatternDetails details = getPatternForItem( item, w );
 
 		if ( details == null )
 			return null;
 
-		simpleCache.put( item, details );
-		return details.getCondencedOutputs()[0].getItemStack();
+		simpleCache.put( item, out = details.getCondencedOutputs()[0].getItemStack() );
+		return out;
 	}
 
 	@Override

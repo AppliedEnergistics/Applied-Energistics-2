@@ -300,7 +300,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 		if ( a == null || b == null )
 			return true;
 
-		return !a.equals( b );
+		return !ItemStack.areItemStacksEqual( a, b );
 	}
 
 	private void regenList(NBTTagCompound data)
