@@ -2,6 +2,7 @@ package appeng.items.misc;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.WeakHashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -108,17 +109,25 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		}
 	}
 
+	// rather simple client side cacheing.
+	static WeakHashMap<ItemStack, ICraftingPatternDetails> simpleCache = new WeakHashMap<ItemStack, ICraftingPatternDetails>();
+
 	public ItemStack getOutput(ItemStack item)
 	{
+		ICraftingPatternDetails details = simpleCache.get( item );
+		if ( details != null )
+			return details.getCondencedOutputs()[0].getItemStack();
+
 		World w = CommonHelper.proxy.getWorld();
 		if ( w == null )
 			return null;
 
-		ICraftingPatternDetails details = getPatternForItem( item, w );
+		details = getPatternForItem( item, w );
 
 		if ( details == null )
 			return null;
 
+		simpleCache.put( item, details );
 		return details.getCondencedOutputs()[0].getItemStack();
 	}
 
