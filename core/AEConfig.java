@@ -48,6 +48,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 
 	public float spawnChargedChance = 0.92f;
 	public int quartzOresPerCluster = 4;
+	public int quartzOresClusterAmount = 15;
 	public int chargedChange = 4;
 	public int minMeteoriteDistance = 707;
 	public int minMeteoriteDistanceSq = minMeteoriteDistance * minMeteoriteDistance;
@@ -227,9 +228,10 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 
 		spawnChargedChance = (float) (1.0 - get( "worldGen", "spawnChargedChance", 1.0 - spawnChargedChance ).getDouble( 1.0 - spawnChargedChance ));
 		minMeteoriteDistance = get( "worldGen", "minMeteoriteDistance", minMeteoriteDistance ).getInt( minMeteoriteDistance );
-		metoriteClusterChance = get( "worldGen", "metoriteClusterChance ", metoriteClusterChance ).getDouble( metoriteClusterChance );
-		metoriteSpawnChance = get( "worldGen", "metoriteSpawnChance ", metoriteSpawnChance ).getDouble( metoriteSpawnChance );
+		metoriteClusterChance = get( "worldGen", "metoriteClusterChance", metoriteClusterChance ).getDouble( metoriteClusterChance );
+		metoriteSpawnChance = get( "worldGen", "metoriteSpawnChance", metoriteSpawnChance ).getDouble( metoriteSpawnChance );
 		quartzOresPerCluster = get( "worldGen", "quartzOresPerCluster", quartzOresPerCluster ).getInt( quartzOresPerCluster );
+		quartzOresClusterAmount = get( "worldGen", "quartzOresClusterAmount", quartzOresClusterAmount ).getInt( quartzOresClusterAmount );
 
 		minMeteoriteDistanceSq = minMeteoriteDistance * minMeteoriteDistance;
 
