@@ -19,8 +19,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.hooks.TickHandler;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
-import appeng.server.AECommand;
-import appeng.services.Profiler;
 import appeng.services.VersionChecker;
 import appeng.util.Platform;
 
@@ -36,7 +34,6 @@ import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
@@ -129,12 +126,6 @@ public class AppEng
 
 		Registration.instance.PreInit( event );
 
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.Profiler ) )
-		{
-			AELog.info( "Starting Profiler" );
-			startService( "AE2 Profiler", (new Thread( Profiler.instance = new Profiler() )) );
-		}
-
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.VersionChecker ) )
 		{
 			AELog.info( "Starting VersionChecker" );
@@ -207,12 +198,6 @@ public class AppEng
 	public void serverStarting(FMLServerAboutToStartEvent evt)
 	{
 		WorldSettings.getInstance().init();
-	}
-
-	@EventHandler
-	public void serverStarting(FMLServerStartingEvent evt)
-	{
-		evt.registerServerCommand( new AECommand( evt.getServer() ) );
 	}
 
 }

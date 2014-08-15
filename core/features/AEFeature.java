@@ -46,7 +46,7 @@ public enum AEFeature
 
 	MassCannonBlockDamage("BlockFeatures"), TinyTNTBlockDamage("BlockFeatures"), Facades("Facades"),
 
-	Profiler("Services", false), VersionChecker("Services"), UnsupportedDeveloperTools("Misc", false), Creative("Misc"),
+	VersionChecker("Services"), UnsupportedDeveloperTools("Misc", false), Creative("Misc"),
 
 	GrinderLogging("Misc", false), Logging("Misc"), IntegrationLogging("Misc", false), CustomRecipes("Crafting", false), WebsiteRecipes("Misc", false),
 
