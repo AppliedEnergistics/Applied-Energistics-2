@@ -37,6 +37,13 @@ final public class QuartzWorldGen implements IWorldGenerator
 	{
 		int sealevel = w.provider.getAverageGroundLevel() + 1;
 
+		if ( sealevel < 20 )
+		{
+			int x = (chunkX << 4) + 8;
+			int z = (chunkZ << 4) + 8;
+			sealevel = w.getHeightValue( x, z );
+		}
+
 		if ( oreNormal == null || oreCharged == null )
 			return;
 
