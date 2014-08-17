@@ -287,17 +287,16 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 	private void updatePatterns()
 	{
-		// update the stuff that was in the list...
-		for (IAEItemStack out : craftableItems.keySet())
-		{
-			out.reset();
-			sg.postAlterationOfStoredItems( StorageChannel.ITEMS, out, new BaseActionSource() );
-		}
+		HashMap<IAEItemStack, ImmutableSet<ICraftingPatternDetails>> oldItems = craftableItems;
 
 		// erase list.
 		craftingMethods.clear();
-		craftableItems.clear();
+		craftableItems = new HashMap();
 		emitableItems.clear();
+
+		// update the stuff that was in the list...
+		for (IAEItemStack out : oldItems.keySet())
+			sg.postAlterationOfStoredItems( StorageChannel.ITEMS, out, new BaseActionSource() );
 
 		// re-create list..
 		for (ICraftingProvider cp : providers)
@@ -320,7 +319,6 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 					tmpCraft.put( out, methods = new HashSet() );
 
 				methods.add( details );
-				sg.postAlterationOfStoredItems( StorageChannel.ITEMS, out, new BaseActionSource() );
 			}
 		}
 
@@ -328,6 +326,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		for (Entry<IAEItemStack, Set<ICraftingPatternDetails>> e : tmpCraft.entrySet())
 		{
 			craftableItems.put( e.getKey(), ImmutableSortedSet.copyOf( e.getValue() ) );
+			sg.postAlterationOfStoredItems( StorageChannel.ITEMS, e.getKey(), new BaseActionSource() );
 		}
 	}
 
