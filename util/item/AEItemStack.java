@@ -519,6 +519,14 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			{
 				newDef.dspDamage = 0;
 			}
+			else if ( fuzzy == FuzzyMode.PERCENT_99 )
+			{
+				if ( def.damageValue == 0 )
+					newDef.dspDamage = 0;
+				else
+					newDef.dspDamage = 1;
+
+			}
 			else
 			{
 				int breakpoint = fuzzy.calculateBreakPoint( def.maxDamage );
@@ -550,6 +558,13 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			if ( fuzzy == FuzzyMode.IGNORE_ALL )
 			{
 				newDef.dspDamage = def.maxDamage + 1;
+			}
+			else if ( fuzzy == FuzzyMode.PERCENT_99 )
+			{
+				if ( def.damageValue == 0 )
+					newDef.dspDamage = 0;
+				else
+					newDef.dspDamage = def.maxDamage + 1;
 			}
 			else
 			{

@@ -19,11 +19,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 
 import appeng.api.AEApi;
+import appeng.api.parts.IBoxProvider;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartCollsionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.ISimplifiedBundle;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.RenderBlocksWorkaround;
 import appeng.core.AELog;
@@ -34,12 +36,15 @@ import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class FacadePart implements IFacadePart
+public class FacadePart implements IFacadePart, IBoxProvider
 {
 
 	public final ItemStack facade;
 	public final ForgeDirection side;
 	public int thickness = 2;
+
+	@SideOnly(Side.CLIENT)
+	ISimplifiedBundle prevLight;
 
 	public FacadePart(ItemStack facade, ForgeDirection side) {
 		if ( facade == null )
@@ -68,6 +73,13 @@ public class FacadePart implements IFacadePart
 			// the box is 15.9 for transition planes to pick up collision events.
 			ch.addBox( 0.0, 0.0, 14, 16.0, 16.0, 15.9 );
 		}
+	}
+
+	@Override
+	public void getBoxes(IPartCollsionHelper bch)
+	{
+		getBoxes( bch, null );
+
 	}
 
 	public static boolean isFacade(ItemStack is)
@@ -183,9 +195,15 @@ public class FacadePart implements IFacadePart
 							rbw.calculations = true;
 							rbw.faces = EnumSet.noneOf( ForgeDirection.class );
 
-							instance.setRenderColor( color );
-							rbw.renderStandardBlock( instance.getBlock(), x, y, z );
-							instance.setRenderColor( 0xffffff );
+							if ( prevLight != null && rbw.similarLighting( blk, rbw.blockAccess, x, y, z, prevLight ) )
+								rbw.populate( prevLight );
+							else
+							{
+								instance.setRenderColor( color );
+								rbw.renderStandardBlock( instance.getBlock(), x, y, z );
+								instance.setRenderColor( 0xffffff );
+								prevLight = rbw.getLightingCache();
+							}
 
 							rbw.calculations = false;
 							rbw.faces = calculateFaceOpenFaces( rbw.blockAccess, fc, x, y, z, side );
@@ -516,4 +534,5 @@ public class FacadePart implements IFacadePart
 
 		return false;
 	}
+
 }
