@@ -367,6 +367,31 @@ public class FacadePart implements IFacadePart, IBoxProvider
 				out.remove( ForgeDirection.NORTH );
 		}
 
+		/*
+		 * if ( out.contains( ForgeDirection.EAST ) && (side.offsetZ != 0) ) { IFacadePart fp = fc.getFacade(
+		 * ForgeDirection.EAST ); if ( fp != null && (fp.isTransparent() == facade.isTransparent()) ) out.remove(
+		 * ForgeDirection.EAST ); }
+		 * 
+		 * if ( out.contains( ForgeDirection.WEST ) && (side.offsetZ != 0) ) { IFacadePart fp = fc.getFacade(
+		 * ForgeDirection.WEST ); if ( fp != null && (fp.isTransparent() == facade.isTransparent()) ) out.remove(
+		 * ForgeDirection.WEST ); }
+		 * 
+		 * if ( out.contains( ForgeDirection.NORTH ) && (side.offsetY != 0) ) { IFacadePart fp = fc.getFacade(
+		 * ForgeDirection.NORTH ); if ( fp != null && (fp.isTransparent() == facade.isTransparent()) ) out.remove(
+		 * ForgeDirection.NORTH ); }
+		 * 
+		 * if ( out.contains( ForgeDirection.SOUTH ) && (side.offsetY != 0) ) { IFacadePart fp = fc.getFacade(
+		 * ForgeDirection.SOUTH ); if ( fp != null && (fp.isTransparent() == facade.isTransparent()) ) out.remove(
+		 * ForgeDirection.SOUTH ); }
+		 * 
+		 * if ( out.contains( ForgeDirection.EAST ) && (side.offsetY != 0) ) { IFacadePart fp = fc.getFacade(
+		 * ForgeDirection.EAST ); if ( fp != null && (fp.isTransparent() == facade.isTransparent()) ) out.remove(
+		 * ForgeDirection.EAST ); }
+		 * 
+		 * if ( out.contains( ForgeDirection.WEST ) && (side.offsetY != 0) ) { IFacadePart fp = fc.getFacade(
+		 * ForgeDirection.WEST ); if ( fp != null && (fp.isTransparent() == facade.isTransparent()) ) out.remove(
+		 * ForgeDirection.WEST ); }
+		 */
 		return out;
 	}
 
