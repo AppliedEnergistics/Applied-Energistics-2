@@ -17,7 +17,6 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.tiles.ICrankable;
-import appeng.api.networking.GridFlags;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.me.GridAccessException;
@@ -141,7 +140,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 
 	public TileCharger() {
 		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
-		gridProxy.setFlags( GridFlags.CANNOT_CARRY );
+		gridProxy.setFlags();
 		internalMaxPower = 1500;
 		gridProxy.setIdlePowerUsage( 0 );
 		addNewHandler( new TileChargerHandler() );
