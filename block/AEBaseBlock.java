@@ -38,6 +38,7 @@ import appeng.client.render.BlockRenderInfo;
 import appeng.client.render.WorldRender;
 import appeng.client.texture.FlipableIcon;
 import appeng.client.texture.MissingIcon;
+import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
 import appeng.core.features.IAEFeature;
@@ -531,7 +532,8 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		{
 			if ( Platform.isClient() )
 			{
-				LookDirection ld = Platform.getPlayerRay( Minecraft.getMinecraft().thePlayer );
+				EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+				LookDirection ld = Platform.getPlayerRay( player, Platform.getEyeOffset(player ) );
 
 				Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxsFromPool( w, x, y, z, Minecraft.getMinecraft().thePlayer, true );
 				AxisAlignedBB br = null;

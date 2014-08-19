@@ -16,6 +16,7 @@ public class PacketPartPlacement extends AppEngPacket
 {
 
 	int x, y, z, face;
+	float eyeHeight;
 
 	// automatic.
 	public PacketPartPlacement(ByteBuf stream) throws IOException {
@@ -23,6 +24,7 @@ public class PacketPartPlacement extends AppEngPacket
 		y = stream.readInt();
 		z = stream.readInt();
 		face = stream.readByte();
+		eyeHeight = stream.readFloat();
 	}
 
 	@Override
@@ -30,12 +32,13 @@ public class PacketPartPlacement extends AppEngPacket
 	{
 		EntityPlayerMP sender = (EntityPlayerMP) player;
 		CommonHelper.proxy.updateRenderMode( sender );
+		PartPlacement.eyeHeight = eyeHeight;
 		PartPlacement.place( sender.getHeldItem(), x, y, z, face, sender, sender.worldObj, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
 		CommonHelper.proxy.updateRenderMode( null );
 	}
 
 	// api
-	public PacketPartPlacement(int x, int y, int z, int face) throws IOException {
+	public PacketPartPlacement(int x, int y, int z, int face, float eyeHeight ) throws IOException {
 
 		ByteBuf data = Unpooled.buffer();
 
@@ -44,7 +47,8 @@ public class PacketPartPlacement extends AppEngPacket
 		data.writeInt( y );
 		data.writeInt( z );
 		data.writeByte( face );
-
+		data.writeFloat( eyeHeight );
+		
 		configureWrite( data );
 	}
 

@@ -134,7 +134,7 @@ public class PartPlacement
 			{
 				if ( !world.isRemote )
 				{
-					LookDirection dir = Platform.getPlayerRay( player );
+					LookDirection dir = Platform.getPlayerRay( player, getEyeOffset(player) );
 					MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.a, dir.b );
 					if ( mop != null )
 					{
@@ -169,7 +169,7 @@ public class PartPlacement
 					player.swingItem();
 					try
 					{
-						NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face ) );
+						NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
 					}
 					catch (IOException e)
 					{
@@ -223,7 +223,7 @@ public class PartPlacement
 						player.swingItem();
 						try
 						{
-							NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face ) );
+							NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
 							return true;
 						}
 						catch (IOException e)
@@ -247,7 +247,7 @@ public class PartPlacement
 			Block block = world.getBlock( x, y, z );
 			if ( host != null && player.isSneaking() && block != null )
 			{
-				LookDirection dir = Platform.getPlayerRay( player );
+				LookDirection dir = Platform.getPlayerRay( player, getEyeOffset(player) );
 				MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.a, dir.b );
 				if ( mop != null )
 				{
@@ -260,7 +260,7 @@ public class PartPlacement
 							{
 								try
 								{
-									NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face ) );
+									NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
 								}
 								catch (IOException e)
 								{
@@ -323,7 +323,7 @@ public class PartPlacement
 					player.swingItem();
 					try
 					{
-						NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face ) );
+						NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
 					}
 					catch (IOException e)
 					{
@@ -365,7 +365,7 @@ public class PartPlacement
 		if ( !world.isRemote )
 		{
 			Block block = world.getBlock( x, y, z );
-			LookDirection dir = Platform.getPlayerRay( player );
+			LookDirection dir = Platform.getPlayerRay( player, getEyeOffset(player) );
 			MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.a, dir.b );
 			if ( mop != null )
 			{
@@ -402,7 +402,7 @@ public class PartPlacement
 			player.swingItem();
 			try
 			{
-				NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face ) );
+				NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
 			}
 			catch (IOException e)
 			{
@@ -410,6 +410,15 @@ public class PartPlacement
 			}
 		}
 		return true;
+	}
+
+	public static float eyeHeight = 0.0f;
+	private static float getEyeOffset( EntityPlayer p )
+	{
+		if ( p.worldObj.isRemote )
+			return Platform.getEyeOffset( p );
+		
+		return eyeHeight;
 	}
 
 	private static SelectedPart selectPart(EntityPlayer player, IPartHost host, Vec3 pos)

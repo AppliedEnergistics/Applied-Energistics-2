@@ -1200,16 +1200,15 @@ public class Platform
 		return a.isItemEqual( b );
 	}
 
-	public static LookDirection getPlayerRay(EntityPlayer player)
+	public static LookDirection getPlayerRay(EntityPlayer player, float eyeoffset)
 	{
 		float f = 1.0F;
 		float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
 		float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
 		double d0 = player.prevPosX + (player.posX - player.prevPosX) * (double) f;
-		double d1 = player.prevPosY + (player.posY - player.prevPosY) * (double) f
-				+ (double) (player.worldObj.isRemote ? player.getEyeHeight() - player.getDefaultEyeHeight() : player.getEyeHeight()); // isRemote
-
+		double d1 = eyeoffset;
 		double d2 = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) f;
+		
 		Vec3 vec3 = Vec3.createVectorHelper( d0, d1, d2 );
 		float f3 = MathHelper.cos( -f2 * 0.017453292F - (float) Math.PI );
 		float f4 = MathHelper.sin( -f2 * 0.017453292F - (float) Math.PI );
@@ -1791,5 +1790,11 @@ public class Platform
 
 		}
 		return AxisAlignedBB.getBoundingBox( 0, 0, 0, 1, 1, 1 );
+	}
+
+	public static float getEyeOffset(EntityPlayer player)
+	{
+		assert player.worldObj.isRemote : "Valid only on client";
+		return (float) (player.posY +player.getEyeHeight() - player.getDefaultEyeHeight());
 	}
 }
