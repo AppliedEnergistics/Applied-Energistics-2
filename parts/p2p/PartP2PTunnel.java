@@ -70,6 +70,9 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 	{
 		ItemStack is = player.inventory.getCurrentItem();
 
+		// UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor( is.getItem() );
+		// AELog.info( "ID:" + id.toString() + " : " + is.getItemDamage() );
+
 		TunnelType tt = AEApi.instance().registries().p2pTunnel().getTunnelTypeByItem( is );
 		if ( is != null && is.getItem() instanceof IMemoryCard )
 		{

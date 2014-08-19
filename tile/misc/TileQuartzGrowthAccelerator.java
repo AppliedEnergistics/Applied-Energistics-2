@@ -7,7 +7,6 @@ import java.util.EnumSet;
 
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.IPowerChannelState;
-import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.util.AECableType;
@@ -66,7 +65,7 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 
 	public TileQuartzGrowthAccelerator() {
 		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
-		gridProxy.setFlags( GridFlags.CANNOT_CARRY );
+		gridProxy.setFlags();
 		gridProxy.setIdlePowerUsage( 8 );
 		addNewHandler( new TileChargerHandler() );
 	}

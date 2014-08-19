@@ -566,9 +566,6 @@ public class Registration
 
 		AEApi.instance().registries().matterCannon().registerAmmo( AEApi.instance().materials().materialMatterBall.stack( 1 ), 32.0 );
 
-		// default settings..
-		((P2PTunnelRegistry) AEApi.instance().registries().p2pTunnel()).configure();
-
 		recipeHandler.injectRecipes();
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.enableDisassemblyCrafting ) )
@@ -581,6 +578,9 @@ public class Registration
 	public void PostInit(FMLPostInitializationEvent event)
 	{
 		registerSpatial( true );
+
+		// default settings..
+		((P2PTunnelRegistry) AEApi.instance().registries().p2pTunnel()).configure();
 
 		// add to localizaiton..
 		PlayerMessages.values();

@@ -709,14 +709,14 @@ public class BaseBlockRender
 		double maxY = (forward.offsetY > 0 ? 1 : 0) + mapFaceUV( west.offsetY, u2 ) + mapFaceUV( up.offsetY, v2 );
 		double maxZ = (forward.offsetZ > 0 ? 1 : 0) + mapFaceUV( west.offsetZ, u2 ) + mapFaceUV( up.offsetZ, v2 );
 
-		renderer.renderMinX = Math.max( 0.0, Math.min( minX, maxX ) - 0.001 );
-		renderer.renderMaxX = Math.min( 1.0, Math.max( minX, maxX ) + 0.001 );
+		renderer.renderMinX = Math.max( 0.0, Math.min( minX, maxX ) - (forward.offsetX != 0 ? 0 : 0.001) );
+		renderer.renderMaxX = Math.min( 1.0, Math.max( minX, maxX ) + (forward.offsetX != 0 ? 0 : 0.001) );
 
-		renderer.renderMinY = Math.max( 0.0, Math.min( minY, maxY ) - 0.001 );
-		renderer.renderMaxY = Math.min( 1.0, Math.max( minY, maxY ) + 0.001 );
+		renderer.renderMinY = Math.max( 0.0, Math.min( minY, maxY ) - (forward.offsetY != 0 ? 0 : 0.001) );
+		renderer.renderMaxY = Math.min( 1.0, Math.max( minY, maxY ) + (forward.offsetY != 0 ? 0 : 0.001) );
 
-		renderer.renderMinZ = Math.max( 0.0, Math.min( minZ, maxZ ) - 0.001 );
-		renderer.renderMaxZ = Math.min( 1.0, Math.max( minZ, maxZ ) + 0.001 );
+		renderer.renderMinZ = Math.max( 0.0, Math.min( minZ, maxZ ) - (forward.offsetZ != 0 ? 0 : 0.001) );
+		renderer.renderMaxZ = Math.min( 1.0, Math.max( minZ, maxZ ) + (forward.offsetZ != 0 ? 0 : 0.001) );
 	}
 
 	private double mapFaceUV(int offset, int uv)

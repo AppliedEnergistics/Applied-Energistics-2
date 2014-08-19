@@ -10,7 +10,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.Actionable;
-import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.ticking.IGridTickable;
@@ -88,7 +87,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 
 	public TileVibrationChamber() {
 		gridProxy.setIdlePowerUsage( 0 );
-		gridProxy.setFlags( GridFlags.CANNOT_CARRY );
+		gridProxy.setFlags();
 		addNewHandler( new TileVibrationChamberHandler() );
 	}
 
