@@ -72,7 +72,7 @@ public class FMPEvent
 		if ( held.getItem() instanceof AEBaseItemBlock )
 		{
 			AEBaseItemBlock ib = (AEBaseItemBlock) held.getItem();
-			blk = Block.getBlockFromItem(ib);
+			blk = Block.getBlockFromItem( ib );
 			part = PartRegistry.getPartByBlock( blk, hit.sideHit );
 		}
 
@@ -88,9 +88,9 @@ public class FMPEvent
 					&& block.onBlockActivated( world, hit.blockX, hit.blockY, hit.blockZ, player, hit.sideHit, (float) f.x, (float) f.y, (float) f.z ) )
 			{
 				player.swingItem();
-				PacketCustom.sendToServer(new C08PacketPlayerBlockPlacement( hit.blockX, hit.blockY, hit.blockZ, hit.sideHit, player.inventory.getCurrentItem(), (float) f.x,
-						(float) f.y, (float) f.z ) );
-				return false;
+				PacketCustom.sendToServer( new C08PacketPlayerBlockPlacement( hit.blockX, hit.blockY, hit.blockZ, hit.sideHit, player.inventory
+						.getCurrentItem(), (float) f.x, (float) f.y, (float) f.z ) );
+				return true;
 			}
 		}
 
