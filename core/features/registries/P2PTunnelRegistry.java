@@ -53,6 +53,7 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 		addNewAttunement( new ItemStack( Blocks.redstone_wire ), TunnelType.REDSTONE );
 		addNewAttunement( new ItemStack( Blocks.redstone_block ), TunnelType.REDSTONE );
 		addNewAttunement( new ItemStack( Blocks.lever ), TunnelType.REDSTONE );
+		addNewAttunement( getModItem( "EnderIO", "itemRedstoneConduit", OreDictionary.WILDCARD_VALUE ), TunnelType.REDSTONE );
 
 		/**
 		 * attune based on lots of random item related stuff
@@ -69,6 +70,8 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 		addNewAttunement( new ItemStack( Blocks.chest ), TunnelType.ITEM );
 		addNewAttunement( new ItemStack( Blocks.trapped_chest ), TunnelType.ITEM );
 		addNewAttunement( getModItem( "ExtraUtilities", "extractor_base", 0 ), TunnelType.ITEM );
+		addNewAttunement( getModItem( "Mekanism", "PartTransmitter", 9 ), TunnelType.ITEM );
+		addNewAttunement( getModItem( "EnderIO", "itemItemConduit", OreDictionary.WILDCARD_VALUE ), TunnelType.ITEM );
 
 		/**
 		 * attune based on lots of random item related stuff
@@ -77,7 +80,11 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 		addNewAttunement( new ItemStack( Items.lava_bucket ), TunnelType.FLUID );
 		addNewAttunement( new ItemStack( Items.milk_bucket ), TunnelType.FLUID );
 		addNewAttunement( new ItemStack( Items.water_bucket ), TunnelType.FLUID );
+		addNewAttunement( getModItem( "Mekanism", "MachineBlock2", 11 ), TunnelType.FLUID );
+		addNewAttunement( getModItem( "Mekanism", "PartTransmitter", 4 ), TunnelType.FLUID );
 		addNewAttunement( getModItem( "ExtraUtilities", "extractor_base", 6 ), TunnelType.FLUID );
+		addNewAttunement( getModItem( "ExtraUtilities", "drum", OreDictionary.WILDCARD_VALUE ), TunnelType.FLUID );
+		addNewAttunement( getModItem( "EnderIO", "itemLiquidConduit", OreDictionary.WILDCARD_VALUE ), TunnelType.FLUID );
 
 		for (AEColor c : AEColor.values())
 		{
