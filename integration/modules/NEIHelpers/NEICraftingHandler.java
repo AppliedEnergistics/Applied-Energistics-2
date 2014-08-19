@@ -55,7 +55,7 @@ public class NEICraftingHandler implements IOverlayHandler
 					PositionedStack pstack = ingredients.get( i );
 					int col = (pstack.relx - 25) / 18;
 					int row = (pstack.rely - 6) / 18;
-					if ( pstack.item != null )
+					if ( pstack.items != null && pstack.items.length > 0 )
 					{
 						for (Slot slot : (List<Slot>) gui.inventorySlots.inventorySlots)
 						{
@@ -64,9 +64,14 @@ public class NEICraftingHandler implements IOverlayHandler
 								Slot ctSlot = (Slot) slot;
 								if ( ctSlot.getSlotIndex() == col + row * 3 )
 								{
-									NBTTagCompound inbt = new NBTTagCompound();
-									pstack.item.writeToNBT( inbt );
-									recipe.setTag( "#" + ctSlot.getSlotIndex(), inbt );
+									NBTTagList ilist = new NBTTagList();
+									for ( int x = 0; x < pstack.items.length; x++ )
+									{
+										NBTTagCompound inbt = new NBTTagCompound();
+										pstack.items[x].writeToNBT( inbt );
+										ilist.addtag( inbt );
+									}
+									recipe.setTag( "#" + ctSlot.getSlotIndex(), ilist );
 									break;
 								}
 							}

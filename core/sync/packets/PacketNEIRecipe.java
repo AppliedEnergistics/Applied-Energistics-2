@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -37,7 +38,7 @@ import appeng.util.item.AEItemStack;
 public class PacketNEIRecipe extends AppEngPacket
 {
 
-	ItemStack[] recipe;
+	ItemStack[][] recipe;
 
 	// automatic.
 	public PacketNEIRecipe(ByteBuf stream) throws IOException {
@@ -46,10 +47,18 @@ public class PacketNEIRecipe extends AppEngPacket
 		NBTTagCompound comp = CompressedStreamTools.readCompressed( bytes );
 		if ( comp != null )
 		{
-			recipe = new ItemStack[9];
+			recipe = new ItemStack[9][];
 			for (int x = 0; x < recipe.length; x++)
 			{
-				recipe[x] = ItemStack.loadItemStackFromNBT( comp.getCompoundTag( "#" + x ) );
+				NBTTagList list = comp.getTagList( "#"+x, 10 );
+				if ( list.tagCount() > 0 )
+				{
+					recipe[x] = new ItemStack[ list.tagCount() ];
+					for ( int y = 0; y < list.tagCount(); y++ )
+					{
+						recipe[x][y] = ItemStack.loadItemStackFromNBT( list.getCompoundTagAt(y) );
+					}
+				}
 			}
 		}
 	}
@@ -81,8 +90,13 @@ public class PacketNEIRecipe extends AppEngPacket
 				{
 					InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
 					for (int x = 0; x < 9; x++)
-						ic.setInventorySlotContents( x, recipe[x] );
-
+					{
+						if (  recipe[x] != null &&  recipe[x].length > 0 )
+						{
+							ic.setInventorySlotContents( x, recipe[x][0] );
+						}
+					}
+					
 					IRecipe r = Platform.findMatchingRecipe( ic, pmp.worldObj );
 
 					if ( r != null && security.hasPermission( player, SecurityPermissions.EXTRACT ) )
@@ -124,8 +138,28 @@ public class PacketNEIRecipe extends AppEngPacket
 
 								if ( PatternItem != null && currentItem == null )
 								{
-									craftMatrix.setInventorySlotContents( x, Platform.extractItemsByRecipe( energy, cct.getSource(), stor, player.worldObj, r,
-											is, ic, PatternItem, x, all, realForFake ) );
+									ItemStack whichItem = Platform.extractItemsByRecipe( energy, cct.getSource(), stor, player.worldObj, r,
+											is, ic, PatternItem, x, all, realForFake );
+									
+									if ( whichItem == null )
+									{
+										for ( int y = 0; y < recipe[x].length; y++ )
+										{
+											IAEItemStack request = AEItemStack.create( recipe[x][y] );
+											if ( request != null )
+											{
+												request.setStackSize( 1 );
+												IAEItemStack out = Platform.poweredExtraction( energy, stor, request, cct.getSource() );
+												if ( out != null )
+												{
+													whichItem = out.getItemStack();
+													break;
+												}
+											}
+										}
+									}
+									
+									craftMatrix.setInventorySlotContents( x, whichItem );
 								}
 							}
 							con.onCraftMatrixChanged( craftMatrix );
