@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import appeng.client.gui.implementations.GuiCraftingTerm;
 import appeng.client.gui.implementations.GuiPatternTerm;
 import appeng.container.slot.SlotCraftingMatrix;
@@ -65,11 +66,11 @@ public class NEICraftingHandler implements IOverlayHandler
 								if ( ctSlot.getSlotIndex() == col + row * 3 )
 								{
 									NBTTagList ilist = new NBTTagList();
-									for ( int x = 0; x < pstack.items.length; x++ )
+									for (int x = 0; x < pstack.items.length; x++)
 									{
 										NBTTagCompound inbt = new NBTTagCompound();
 										pstack.items[x].writeToNBT( inbt );
-										ilist.addtag( inbt );
+										ilist.appendTag( inbt );
 									}
 									recipe.setTag( "#" + ctSlot.getSlotIndex(), ilist );
 									break;
