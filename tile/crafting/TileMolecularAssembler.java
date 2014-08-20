@@ -386,6 +386,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 			pushOut( inv.getStackInSlot( 9 ) );
 			ejectHeldItems();
 			updateSleepyness();
+			progress = 0;
 			return isAwake ? TickRateModulation.IDLE : TickRateModulation.SLEEP;
 		}
 
@@ -398,6 +399,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		if ( reboot )
 			TicksSinceLastCall = 1;
 
+		if ( ! isAwake )
+			return TickRateModulation.SLEEP;
+		
 		reboot = false;
 		int speed = 10;
 		switch (upgrades.getInstalledUpgrades( Upgrades.SPEED ))
@@ -468,17 +472,20 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 
 	private void ejectHeldItems()
 	{
-		if ( myPlan == null && inv.getStackInSlot( 9 ) == null )
+		if ( inv.getStackInSlot( 9 ) == null )
 		{
 			for (int x = 0; x < 9; x++)
 			{
 				ItemStack is = inv.getStackInSlot( x );
 				if ( is != null )
 				{
-					inv.setInventorySlotContents( 9, is );
-					inv.setInventorySlotContents( x, null );
-					markDirty();
-					return;
+					if ( myPlan == null || ! myPlan.isValidItemForSlot( x, is, worldObj ) )
+					{
+						inv.setInventorySlotContents( 9, is );
+						inv.setInventorySlotContents( x, null );
+						markDirty();
+						return;
+					}
 				}
 			}
 		}
