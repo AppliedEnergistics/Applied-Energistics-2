@@ -1,6 +1,8 @@
 package appeng.debug;
 
 import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.LinkedList;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -13,6 +15,8 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.pathing.ControllerState;
+import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
@@ -23,6 +27,7 @@ import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.me.cache.TickManagerCache;
 import appeng.parts.p2p.PartP2PTunnel;
+import appeng.tile.networking.TileController;
 import appeng.util.Platform;
 
 public class ToolDebugCard extends AEBaseItem
@@ -74,6 +79,40 @@ public class ToolDebugCard extends AEBaseItem
 					IGridNode center = g.getPivot();
 					outputMsg( player, "This Node: " + node.toString() );
 					outputMsg( player, "Center Node: " + center.toString() );
+					
+					IPathingGrid pg = g.getCache( IPathingGrid.class );
+					if ( pg.getControllerState() == ControllerState.CONTROLLER_ONLINE )
+					{
+						int length = 0;
+						
+						HashSet<IGridNode> next = new HashSet();
+						next.add( node );
+						
+						int maxLength = 10000;
+						
+						outer: while ( ! next.isEmpty() )
+						{
+							HashSet<IGridNode> current = next;
+							next = new HashSet();
+							
+							for ( IGridNode n : current )
+							{
+								if ( n.getMachine() instanceof TileController )
+									break outer;
+								
+								for ( IGridConnection c : n.getConnections() )
+									next.add( c.getOtherSide( n ) );
+							}
+							
+							length++;
+							
+							if ( length > maxLength )
+								break;
+						}
+						
+						outputMsg( player, "Cable Distance: " + length );
+					}
+					
 					if ( center.getMachine() instanceof PartP2PTunnel )
 					{
 						outputMsg( player, "Freq: " + ((PartP2PTunnel) center.getMachine()).freq );
