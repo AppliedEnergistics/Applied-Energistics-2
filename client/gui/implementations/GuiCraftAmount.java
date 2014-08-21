@@ -7,7 +7,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.client.gui.widgets.GuiTabButton;
@@ -118,9 +117,7 @@ public class GuiCraftAmount extends AEBaseGui
 
 			if ( btn == next )
 			{
-				IAEItemStack what = AEApi.instance().storage().createItemStack( inventorySlots.getSlot( 0 ).getStack() );
-				if ( what != null )
-					NetworkHandler.instance.sendToServer( new PacketCraftRequest( what, Integer.parseInt( this.amountToCraft.getText() ), isShiftKeyDown() ) );
+				NetworkHandler.instance.sendToServer( new PacketCraftRequest( Integer.parseInt( this.amountToCraft.getText() ), isShiftKeyDown() ) );
 			}
 
 		}

@@ -18,8 +18,8 @@ public class ContainerCraftAmount extends AEBaseContainer
 {
 
 	ITerminalHost priHost;
-	IAEItemStack stack;
 
+	public IAEItemStack whatToMake;
 	public Slot craftingItem;
 
 	public ContainerCraftAmount(InventoryPlayer ip, ITerminalHost te) {

@@ -14,7 +14,6 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingJob;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerOpenContext;
 import appeng.container.implementations.ContainerCraftAmount;
 import appeng.container.implementations.ContainerCraftConfirm;
@@ -23,18 +22,17 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
 
 public class PacketCraftRequest extends AppEngPacket
 {
 
-	final public IAEItemStack slotItem;
+	final public long amount;
 	final public boolean heldShift;
 
 	// automatic.
 	public PacketCraftRequest(ByteBuf stream) throws IOException {
 		heldShift = stream.readBoolean();
-		slotItem = AEItemStack.loadItemStackFromPacket( stream );
+		amount = stream.readLong();
 	}
 
 	@Override
@@ -52,15 +50,17 @@ public class PacketCraftRequest extends AppEngPacket
 					return;
 
 				IGrid g = gn.getGrid();
-				if ( g == null )
+				if ( g == null || cca.whatToMake == null )
 					return;
 
 				Future<ICraftingJob> futureJob = null;
 
+				cca.whatToMake.setStackSize( amount );
+
 				try
 				{
 					ICraftingGrid cg = g.getCache( ICraftingGrid.class );
-					futureJob = cg.beginCraftingJob( cca.getWorld(), cca.getGrid(), cca.getActionSrc(), slotItem, null );
+					futureJob = cg.beginCraftingJob( cca.getWorld(), cca.getGrid(), cca.getActionSrc(), cca.whatToMake, null );
 
 					ContainerOpenContext context = cca.openContext;
 					if ( context != null )
@@ -88,16 +88,16 @@ public class PacketCraftRequest extends AppEngPacket
 		}
 	}
 
-	public PacketCraftRequest(IAEItemStack stack, int parseInt, boolean shift) throws IOException {
-		this.slotItem = stack;
-		this.slotItem.setStackSize( parseInt );
+	public PacketCraftRequest(int craftAmt, boolean shift) throws IOException {
+
+		this.amount = craftAmt;
 		this.heldShift = shift;
 
 		ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( getPacketID() );
 		data.writeBoolean( shift );
-		slotItem.writeToPacket( data );
+		data.writeLong( amount );
 
 		configureWrite( data );
 	}

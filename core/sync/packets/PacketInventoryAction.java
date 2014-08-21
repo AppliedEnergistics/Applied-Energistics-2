@@ -58,8 +58,13 @@ public class PacketInventoryAction extends AppEngPacket
 					if ( sender.openContainer instanceof ContainerCraftAmount )
 					{
 						ContainerCraftAmount cca = (ContainerCraftAmount) sender.openContainer;
+
 						if ( aebc.getTargetStack() != null )
+						{
 							cca.craftingItem.putStack( aebc.getTargetStack().getItemStack() );
+							cca.whatToMake = aebc.getTargetStack();
+						}
+
 						cca.detectAndSendChanges();
 					}
 				}
