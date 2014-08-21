@@ -253,7 +253,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		if ( craftingMode )
 		{
 			ItemStack out = getAndUpdateOutput();
-			if ( out != null )
+			if ( out != null && out.stackSize > 0 )
 				return new ItemStack[] { out };
 		}
 		else
@@ -264,7 +264,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			for (int x = 0; x < outputSlots.length; x++)
 			{
 				ItemStack out = outputSlots[x].getStack();
-				if ( out != null )
+				if ( out != null && out.stackSize > 0 )
 				{
 					list.add( out );
 					hasValue = true;
