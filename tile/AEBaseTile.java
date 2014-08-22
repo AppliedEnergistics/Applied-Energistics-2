@@ -48,6 +48,11 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	public int renderFragment = 0;
 	public String customName;
 
+	public boolean notLoaded()
+	{
+		return !worldObj.blockExists( xCoord, yCoord, zCoord );
+	}
+
 	public TileEntity getTile()
 	{
 		return this;
