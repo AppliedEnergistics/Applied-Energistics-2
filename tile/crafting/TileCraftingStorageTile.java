@@ -37,7 +37,7 @@ public class TileCraftingStorageTile extends TileCraftingTile
 
 	public int getStorageBytes()
 	{
-		if ( worldObj == null )
+		if ( worldObj == null || notLoaded() )
 			return 0;
 
 		switch (worldObj.getBlockMetadata( xCoord, yCoord, zCoord ) & 3)

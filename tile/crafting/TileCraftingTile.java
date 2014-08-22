@@ -154,6 +154,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 
 	public void updateMeta(boolean updateFormed)
 	{
+		if ( worldObj == null || notLoaded() )
+			return;
+
 		boolean formed = isFormed();
 		boolean power = false;
 

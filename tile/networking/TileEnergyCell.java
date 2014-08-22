@@ -31,6 +31,9 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 
 	private void changePowerLevel()
 	{
+		if ( notLoaded() )
+			return;
+
 		byte leel = (byte) (8.0 * (internalCurrentPower / internalMaxPower));
 
 		if ( leel > 7 )
