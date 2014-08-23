@@ -272,7 +272,8 @@ public class GridNode implements IGridNode, IPathItem
 					}
 					else
 					{
-						throw new GridException( "invalid state found, encountered connection to phantom block." );
+						con.destroy();
+						// throw new GridException( "invalid state found, encountered connection to phantom block." );
 					}
 				}
 				else if ( isValidConnection )
