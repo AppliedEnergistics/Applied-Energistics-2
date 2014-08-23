@@ -21,6 +21,7 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.cache.SecurityCache;
+import appeng.util.ItemSorters;
 
 public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
@@ -30,7 +31,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 		@Override
 		public int compare(Integer o1, Integer o2)
 		{
-			return o2 - o1;
+			return ItemSorters.compareInt( o2, o1 );
 		}
 
 	};
