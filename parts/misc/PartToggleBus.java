@@ -103,6 +103,7 @@ public class PartToggleBus extends PartBasicState
 	{
 		super.addToWorld();
 		outerProxy.onReady();
+		hasRedstone = getHost().hasRedstone( side );
 		updateInternalState();
 	}
 

@@ -21,6 +21,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
+import appeng.api.config.YesNo;
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.implementations.parts.IPartCable;
 import appeng.api.networking.IGridHost;
@@ -57,7 +58,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	private FacadeContainer fc = new FacadeContainer();
 	private EnumSet<LayerFlags> myLayerFlags = EnumSet.noneOf( LayerFlags.class );
 
-	public boolean hasRedstone = false;
+	public YesNo hasRedstone = YesNo.UNDECIDED;
 	public IPartHost tcb;
 
 	boolean inWorld = false;
@@ -336,7 +337,6 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 		isLoading.set( true );
 
 		TileEntity te = getTile();
-		hasRedstone = te.getWorldObj().isBlockIndirectlyGettingPowered( te.xCoord, te.yCoord, te.zCoord );
 
 		// start with the center, then install the side parts into the grid.
 		for (int x = 6; x >= 0; x--)
@@ -492,7 +492,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	public void onNeighborChanged()
 	{
 		TileEntity te = getTile();
-		hasRedstone = te.getWorldObj().isBlockIndirectlyGettingPowered( te.xCoord, te.yCoord, te.zCoord );
+		hasRedstone = YesNo.UNDECIDED;
 
 		for (ForgeDirection s : ForgeDirection.values())
 		{
@@ -500,6 +500,12 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 			if ( part != null )
 				part.onNeighborChanged();
 		}
+	}
+
+	private void updateRedstone()
+	{
+		TileEntity te = getTile();
+		hasRedstone = te.getWorldObj().isBlockIndirectlyGettingPowered( te.xCoord, te.yCoord, te.zCoord ) ? YesNo.YES : YesNo.NO;
 	}
 
 	public boolean isSolidOnSide(ForgeDirection side)
@@ -637,6 +643,8 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 
 	public void writeToNBT(NBTTagCompound data)
 	{
+		data.setInteger( "hasRedstone", hasRedstone.ordinal() );
+
 		for (ForgeDirection s : ForgeDirection.values())
 		{
 			fc.writeToNBT( data );
@@ -658,6 +666,9 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 
 	public void readFromNBT(NBTTagCompound data)
 	{
+		if ( data.hasKey( "hasRedstone" ) )
+			hasRedstone = YesNo.values()[data.getInteger( "hasRedstone" )];
+
 		for (int x = 0; x < 7; x++)
 		{
 			ForgeDirection side = ForgeDirection.getOrientation( x );
@@ -921,7 +932,10 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	@Override
 	public boolean hasRedstone(ForgeDirection side)
 	{
-		return hasRedstone;
+		if ( hasRedstone == YesNo.UNDECIDED )
+			updateRedstone();
+
+		return hasRedstone == YesNo.YES;
 	}
 
 	public boolean isLadder(EntityLivingBase entity)

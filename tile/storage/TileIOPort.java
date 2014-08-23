@@ -11,6 +11,7 @@ import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.api.config.YesNo;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
@@ -59,7 +60,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 
 	BaseActionSource mySrc = new MachineSource( this );
 
-	boolean lastRedstoneState = false;
+	YesNo lastRedstoneState = YesNo.UNDECIDED;
 
 	class TileIOPortHandler extends AETileEventHandler
 	{
@@ -74,6 +75,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 			cm.writeToNBT( data );
 			cells.writeToNBT( data, "cells" );
 			upgrades.writeToNBT( data, "upgrades" );
+			data.setInteger( "lastRedstoneState", lastRedstoneState.ordinal() );
 		}
 
 		@Override
@@ -82,6 +84,8 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 			cm.readFromNBT( data );
 			cells.readFromNBT( data, "cells" );
 			upgrades.readFromNBT( data, "upgrades" );
+			if ( data.hasKey( "lastRedstoneState" ) )
+				lastRedstoneState = YesNo.values()[data.getInteger( "lastRedstoneState" )];
 		}
 	};
 
@@ -137,12 +141,20 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 
 	public void updateRedstoneState()
 	{
-		boolean currentState = worldObj.isBlockIndirectlyGettingPowered( xCoord, yCoord, zCoord );
+		YesNo currentState = worldObj.isBlockIndirectlyGettingPowered( xCoord, yCoord, zCoord ) ? YesNo.YES : YesNo.NO;
 		if ( lastRedstoneState != currentState )
 		{
 			lastRedstoneState = currentState;
 			updateTask();
 		}
+	}
+
+	public boolean getRedstoneState()
+	{
+		if ( lastRedstoneState == YesNo.UNDECIDED )
+			updateRedstoneState();
+
+		return lastRedstoneState == YesNo.YES;
 	}
 
 	private boolean isEnabled()
@@ -152,8 +164,8 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 
 		RedstoneMode rs = (RedstoneMode) cm.getSetting( Settings.REDSTONE_CONTROLLED );
 		if ( rs == RedstoneMode.HIGH_SIGNAL )
-			return lastRedstoneState;
-		return !lastRedstoneState;
+			return getRedstoneState();
+		return !getRedstoneState();
 	}
 
 	@Override

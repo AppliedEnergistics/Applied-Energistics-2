@@ -4,9 +4,11 @@ import java.util.concurrent.Callable;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.config.YesNo;
 import appeng.api.implementations.TransitionResult;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.networking.GridFlags;
@@ -20,6 +22,8 @@ import appeng.api.util.DimensionalCoord;
 import appeng.hooks.TickHandler;
 import appeng.items.storage.ItemSpatialStorageCell;
 import appeng.me.cache.SpatialPylonCache;
+import appeng.tile.events.AETileEventHandler;
+import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
@@ -30,23 +34,51 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 
 	final int sides[] = { 0, 1 };
 	AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
-	boolean lastRedstoneState = false;
+	YesNo lastRedstoneState = YesNo.UNDECIDED;
+
+	class SpatialTileIOPortHandler extends AETileEventHandler
+	{
+
+		public SpatialTileIOPortHandler() {
+			super( TileEventType.WORLD_NBT );
+		}
+
+		@Override
+		public void writeToNBT(NBTTagCompound data)
+		{
+			data.setInteger( "lastRedstoneState", lastRedstoneState.ordinal() );
+		}
+
+		@Override
+		public void readFromNBT(NBTTagCompound data)
+		{
+			if ( data.hasKey( "lastRedstoneState" ) )
+				lastRedstoneState = YesNo.values()[data.getInteger( "lastRedstoneState" )];
+		}
+	};
 
 	public TileSpatialIOPort() {
+		addNewHandler( new SpatialTileIOPortHandler() );
 		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 	}
 
 	public void updateRedstoneState()
 	{
-		boolean currentState = worldObj.isBlockIndirectlyGettingPowered( xCoord, yCoord, zCoord );
+		YesNo currentState = worldObj.isBlockIndirectlyGettingPowered( xCoord, yCoord, zCoord ) ? YesNo.YES : YesNo.NO;
 		if ( lastRedstoneState != currentState )
 		{
 			lastRedstoneState = currentState;
-			if ( currentState )
-			{
+			if ( lastRedstoneState == YesNo.YES )
 				triggerTransition();
-			}
 		}
+	}
+
+	public boolean getRedstoneState()
+	{
+		if ( lastRedstoneState == YesNo.UNDECIDED )
+			updateRedstoneState();
+
+		return lastRedstoneState == YesNo.YES;
 	}
 
 	private void triggerTransition()
@@ -81,7 +113,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 				if ( Math.abs( pr - req ) < req * 0.001 )
 				{
 					MENetworkEvent res = gi.postEvent( new MENetworkSpatialEvent( this, req ) );
-					if ( ! res.isCanceled() )
+					if ( !res.isCanceled() )
 					{
 						TransitionResult tr = sc.doSpatialTransition( cell, worldObj, spc.getMin(), spc.getMax(), true );
 						if ( tr.success )

@@ -35,6 +35,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	}
 
 	int lastValue = 0;
+	float opacity = -1;
 
 	public void setLightLevel(int out)
 	{
@@ -53,8 +54,12 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 
 	private int blockLight(int emit)
 	{
-		TileEntity te = this.getTile();
-		float opacity = 255 - te.getWorldObj().getBlockLightOpacity( te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ );
+		if ( opacity < 0 )
+		{
+			TileEntity te = this.getTile();
+			opacity = 255 - te.getWorldObj().getBlockLightOpacity( te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ );
+		}
+
 		return (int) (emit * (opacity / 255.0f));
 	}
 
@@ -96,7 +101,10 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	@Override
 	public void onNeighborChanged()
 	{
+		opacity = -1;
+
 		doWork();
+
 		if ( output )
 			getHost().markForUpdate();
 	}
@@ -105,6 +113,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	public void writeToNBT(NBTTagCompound tag)
 	{
 		super.writeToNBT( tag );
+		tag.setFloat( "opacity", opacity );
 		tag.setInteger( "lastValue", lastValue );
 	}
 
@@ -112,6 +121,8 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	public void readFromNBT(NBTTagCompound tag)
 	{
 		super.readFromNBT( tag );
+		if ( tag.hasKey( "opacity" ) )
+			opacity = tag.getFloat( "opacity" );
 		lastValue = tag.getInteger( "lastValue" );
 	}
 

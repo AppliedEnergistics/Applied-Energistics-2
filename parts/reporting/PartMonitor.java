@@ -44,6 +44,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 
 	byte spin = 0; // 0-3
 	int clientFlags = 0; // sent as byte.
+	float opacity = -1;
 
 	@Override
 	public void onPlacement(EntityPlayer player, ItemStack held, ForgeDirection side)
@@ -61,6 +62,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	public void writeToNBT(NBTTagCompound data)
 	{
 		super.writeToNBT( data );
+		data.setFloat( "opacity", opacity );
 		data.setByte( "spin", (byte) spin );
 	}
 
@@ -68,6 +70,8 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	public void readFromNBT(NBTTagCompound data)
 	{
 		super.readFromNBT( data );
+		if ( data.hasKey( "opacity" ) )
+			opacity = data.getFloat( "opacity" );
 		spin = data.getByte( "spin" );
 	}
 
@@ -118,6 +122,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	@Override
 	public void onNeighborChanged()
 	{
+		opacity = -1;
 		getHost().markForUpdate();
 	}
 
@@ -173,8 +178,12 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 
 	private int blockLight(int emit)
 	{
-		TileEntity te = this.getTile();
-		float opacity = 255 - te.getWorldObj().getBlockLightOpacity( te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ );
+		if ( opacity < 0 )
+		{
+			TileEntity te = this.getTile();
+			opacity = 255 - te.getWorldObj().getBlockLightOpacity( te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ );
+		}
+
 		return (int) (emit * (opacity / 255.0f));
 	}
 
