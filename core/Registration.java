@@ -92,6 +92,7 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.debug.BlockChunkloader;
 import appeng.debug.BlockItemGen;
+import appeng.debug.BlockPhantomNode;
 import appeng.debug.ToolDebugCard;
 import appeng.debug.ToolEraser;
 import appeng.debug.ToolMeteoritePlacer;
@@ -418,6 +419,7 @@ public class Registration
 		addFeature( ToolReplicatorCard.class );
 		addFeature( BlockItemGen.class );
 		addFeature( BlockChunkloader.class );
+		addFeature( BlockPhantomNode.class );
 	}
 
 	private AEItemDefinition addFeature(Class c, Object... Args)
