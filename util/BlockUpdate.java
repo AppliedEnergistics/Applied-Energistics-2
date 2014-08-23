@@ -20,7 +20,9 @@ public class BlockUpdate implements Callable
 	@Override
 	public Object call() throws Exception
 	{
-		w.notifyBlocksOfNeighborChange( x, y, z, Platform.air );
+		if ( w.blockExists( x, y, z ) )
+			w.notifyBlocksOfNeighborChange( x, y, z, Platform.air );
+
 		return true;
 	}
 
