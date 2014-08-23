@@ -212,7 +212,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 		if ( host != null )
 		{
 			IGridNode agn = host.getActionableNode();
-			if ( agn.isActive() )
+			if ( agn != null && agn.isActive() )
 			{
 				for (IGridNode gn : g.getMachines( TileInterface.class ))
 				{
@@ -312,7 +312,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 		if ( host != null )
 		{
 			IGridNode agn = host.getActionableNode();
-			if ( agn.isActive() )
+			if ( agn != null && agn.isActive() )
 			{
 				for (IGridNode gn : g.getMachines( TileInterface.class ))
 				{
