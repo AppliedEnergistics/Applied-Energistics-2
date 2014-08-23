@@ -71,14 +71,6 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		return src.stack( 1 );
 	}
 
-	/**
-	 * isRedstonePowerd has already changed.
-	 */
-	public void onRedstoneEvent()
-	{
-
-	}
-
 	protected boolean hasHandlerFor(TileEventType type)
 	{
 		List<AETileEventHandler> list = handlers.get( type );
