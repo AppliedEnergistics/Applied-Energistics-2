@@ -5,7 +5,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ChunkEvent;
+import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.features.AEFeature;
 import appeng.server.ISubCommand;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -20,6 +22,24 @@ public class ChunkLogger implements ISubCommand
 		if ( !load.world.isRemote )
 		{
 			AELog.info( "Chunk Loaded:   " + load.getChunk().xPosition + ", " + load.getChunk().zPosition );
+			displayStack();
+		}
+	}
+
+	private void displayStack()
+	{
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.ChunkLoggerTrace ) )
+		{
+			boolean output = false;
+			for (StackTraceElement e : Thread.currentThread().getStackTrace())
+			{
+				if ( output )
+					AELog.info( "		" + e.getClassName() + "." + e.getMethodName() + " (" + e.getLineNumber() + ")" );
+				else
+				{
+					output = e.getClassName().contains( "EventBus" ) && e.getMethodName().contains( "post" );
+				}
+			}
 		}
 	}
 
@@ -29,6 +49,7 @@ public class ChunkLogger implements ISubCommand
 		if ( !unload.world.isRemote )
 		{
 			AELog.info( "Chunk Unloaded: " + unload.getChunk().xPosition + ", " + unload.getChunk().zPosition );
+			displayStack();
 		}
 	}
 

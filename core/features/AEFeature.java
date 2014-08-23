@@ -54,7 +54,9 @@ public enum AEFeature
 
 	AlphaPass("Rendering"), PaintBalls("Tools"), PacketLogging("Misc", false), CraftingLog("Misc", false), InterfaceTerminal("Crafting"), LightDetector("Misc"),
 
-	enableDisassemblyCrafting("Crafting"), MolecularAssembler("CraftingFeatures"), MeteoriteCompass("Tools"), Patterns("CraftingFeatures");
+	enableDisassemblyCrafting("Crafting"), MolecularAssembler("CraftingFeatures"), MeteoriteCompass("Tools"), Patterns("CraftingFeatures"),
+
+	ChunkLoggerTrace("Commands", false);
 
 	String Category;
 	boolean visible = true;
