@@ -5,6 +5,8 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import appeng.core.AELog;
+
 public class CompassRegion
 {
 
@@ -159,7 +161,10 @@ public class CompassRegion
 		File folderFile = new File( folder );
 
 		if ( !folderFile.exists() || !folderFile.isDirectory() )
-			folderFile.mkdir();
+		{
+			if ( !folderFile.mkdir() )
+				AELog.info( "Failed to created AE2/compass/" );
+		}
 
 		return new File( folder + File.separatorChar + world + "_" + low_x + "_" + low_z + ".dat" );
 	}

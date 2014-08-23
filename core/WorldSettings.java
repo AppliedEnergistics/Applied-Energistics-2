@@ -47,10 +47,6 @@ public class WorldSettings extends Configuration
 
 		compass = new CompassService( AEFolder );
 
-		File spawnData = new File( AEFolder, "spawndata" );
-		if ( !spawnData.exists() || !spawnData.isDirectory() )
-			spawnData.mkdir();
-
 		for (int dimID : get( "DimensionManager", "StorageCells", new int[0] ).getIntList())
 		{
 			storageCellDims.add( dimID );
@@ -85,7 +81,7 @@ public class WorldSettings extends Configuration
 				fis = new FileInputStream( f );
 
 				NBTTagCompound data = null;
-				
+
 				try
 				{
 					data = CompressedStreamTools.readCompressed( fis );
@@ -95,9 +91,9 @@ public class WorldSettings extends Configuration
 					data = new NBTTagCompound();
 					AELog.error( e );
 				}
-				
+
 				fis.close();
-				
+
 				return data;
 			}
 			catch (Throwable e)
@@ -121,16 +117,16 @@ public class WorldSettings extends Configuration
 		{
 			// save
 			FileOutputStream fos = new FileOutputStream( f );
-			
+
 			try
 			{
 				CompressedStreamTools.writeCompressed( data, fos );
 			}
-			catch( Throwable e )
+			catch (Throwable e)
 			{
 				AELog.error( e );
 			}
-			
+
 			fos.close();
 		}
 		catch (Throwable e)
@@ -256,12 +252,29 @@ public class WorldSettings extends Configuration
 		{
 			File world = DimensionManager.getCurrentSaveRootDirectory();
 
-			File f = new File( world.getPath() + File.separatorChar + "AE2" );
+			File aeBaseFolder = new File( world.getPath() + File.separatorChar + "AE2" );
 
-			if ( !f.exists() || !f.isDirectory() )
-				f.mkdir();
+			if ( !aeBaseFolder.exists() || !aeBaseFolder.isDirectory() )
+				if ( !aeBaseFolder.mkdir() )
+				{
+					throw new RuntimeException( "Failed to create " + aeBaseFolder.getAbsolutePath() );
+				}
 
-			instance = new WorldSettings( f );
+			File compass = new File( aeBaseFolder, "compass" );
+			if ( !compass.exists() || !compass.isDirectory() )
+				if ( !compass.mkdir() )
+				{
+					throw new RuntimeException( "Failed to create " + compass.getAbsolutePath() );
+				}
+
+			File spawnData = new File( aeBaseFolder, "spawndata" );
+			if ( !spawnData.exists() || !spawnData.isDirectory() )
+				if ( !spawnData.mkdir() )
+				{
+					throw new RuntimeException( "Failed to create " + spawnData.getAbsolutePath() );
+				}
+
+			instance = new WorldSettings( aeBaseFolder );
 		}
 
 		return instance;
