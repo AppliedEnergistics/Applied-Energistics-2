@@ -8,7 +8,7 @@ public enum AEFeature
 
 	CertusQuartzWorldGen("World"), MeteoriteWorldGen("World"),
 
-	DecorativeLights("World"), DecorativeQuartzBlocks("World"), SkyStoneChests("World"),
+	DecorativeLights("World"), DecorativeQuartzBlocks("World"), SkyStoneChests("World"), SpawnPressesInMeteorites("World"),
 
 	GrindStone("World"), Flour("World"), Inscriber("World"),
 

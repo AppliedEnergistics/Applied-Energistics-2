@@ -18,7 +18,9 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.AEApi;
+import appeng.core.AEConfig;
 import appeng.core.WorldSettings;
+import appeng.core.features.AEFeature;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
@@ -626,90 +628,93 @@ public class MeteoritePlacer
 						put( w, i, j, k, skystone );
 				}
 
-		put( w, x, y, z, skychest );
-		TileEntity te = w.getTileEntity( x, y, z );
-		if ( te != null && te instanceof IInventory )
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.SpawnPressesInMeteorites ) )
 		{
-			InventoryAdaptor ap = InventoryAdaptor.getAdaptor( te, ForgeDirection.UP );
-
-			int primary = Math.max( 1, (int) (Math.random() * 4) );
-
-			if ( primary > 3 ) // in case math breaks...
-				primary = 3;
-
-			for (int zz = 0; zz < primary; zz++)
+			put( w, x, y, z, skychest );
+			TileEntity te = w.getTileEntity( x, y, z );
+			if ( te != null && te instanceof IInventory )
 			{
-				int r = 0;
-				boolean duplicate = false;
+				InventoryAdaptor ap = InventoryAdaptor.getAdaptor( te, ForgeDirection.UP );
 
-				do
+				int primary = Math.max( 1, (int) (Math.random() * 4) );
+
+				if ( primary > 3 ) // in case math breaks...
+					primary = 3;
+
+				for (int zz = 0; zz < primary; zz++)
 				{
-					duplicate = false;
+					int r = 0;
+					boolean duplicate = false;
 
-					if ( Math.random() > 0.7 )
-						r = WorldSettings.getInstance().getNextOrderedValue( "presses" );
-					else
-						r = (int) (Math.random() * 1000);
+					do
+					{
+						duplicate = false;
 
-					ItemStack toAdd = null;
+						if ( Math.random() > 0.7 )
+							r = WorldSettings.getInstance().getNextOrderedValue( "presses" );
+						else
+							r = (int) (Math.random() * 1000);
 
-					switch (r % 4)
+						ItemStack toAdd = null;
+
+						switch (r % 4)
+						{
+						case 0:
+							toAdd = AEApi.instance().materials().materialCalcProcessorPress.stack( 1 );
+							break;
+						case 1:
+							toAdd = AEApi.instance().materials().materialEngProcessorPress.stack( 1 );
+							break;
+						case 2:
+							toAdd = AEApi.instance().materials().materialLogicProcessorPress.stack( 1 );
+							break;
+						case 3:
+							toAdd = AEApi.instance().materials().materialSiliconPress.stack( 1 );
+							break;
+						default:
+						}
+
+						if ( toAdd != null )
+						{
+							if ( ap.simulateRemove( 1, toAdd, null ) == null )
+								ap.addItems( toAdd );
+							else
+								duplicate = true;
+						}
+					}
+					while (duplicate);
+				}
+
+				int secondary = Math.max( 1, (int) (Math.random() * 3) );
+				for (int zz = 0; zz < secondary; zz++)
+				{
+					switch ((int) (Math.random() * 1000) % 3)
 					{
 					case 0:
-						toAdd = AEApi.instance().materials().materialCalcProcessorPress.stack( 1 );
+						ap.addItems( AEApi.instance().blocks().blockSkyStone.stack( (int) (Math.random() * 12) + 1 ) );
 						break;
 					case 1:
-						toAdd = AEApi.instance().materials().materialEngProcessorPress.stack( 1 );
-						break;
-					case 2:
-						toAdd = AEApi.instance().materials().materialLogicProcessorPress.stack( 1 );
-						break;
-					case 3:
-						toAdd = AEApi.instance().materials().materialSiliconPress.stack( 1 );
-						break;
-					default:
-					}
+						List<ItemStack> possibles = new LinkedList();
+						possibles.addAll( OreDictionary.getOres( "nuggetIron" ) );
+						possibles.addAll( OreDictionary.getOres( "nuggetCopper" ) );
+						possibles.addAll( OreDictionary.getOres( "nuggetTin" ) );
+						possibles.addAll( OreDictionary.getOres( "nuggetSilver" ) );
+						possibles.addAll( OreDictionary.getOres( "nuggetLead" ) );
+						possibles.addAll( OreDictionary.getOres( "nuggetPlatinum" ) );
+						possibles.addAll( OreDictionary.getOres( "nuggetNickel" ) );
+						possibles.addAll( OreDictionary.getOres( "nuggetAluminium" ) );
+						possibles.addAll( OreDictionary.getOres( "nuggetElectrum" ) );
+						possibles.add( new ItemStack( net.minecraft.init.Items.gold_nugget ) );
 
-					if ( toAdd != null )
-					{
-						if ( ap.simulateRemove( 1, toAdd, null ) == null )
-							ap.addItems( toAdd );
-						else
-							duplicate = true;
+						ItemStack nugget = Platform.pickRandom( possibles );
+						if ( nugget != null )
+						{
+							nugget = nugget.copy();
+							nugget.stackSize = (int) (Math.random() * 12) + 1;
+							ap.addItems( nugget );
+						}
+						break;
 					}
-				}
-				while (duplicate);
-			}
-
-			int secondary = Math.max( 1, (int) (Math.random() * 3) );
-			for (int zz = 0; zz < secondary; zz++)
-			{
-				switch ((int) (Math.random() * 1000) % 3)
-				{
-				case 0:
-					ap.addItems( AEApi.instance().blocks().blockSkyStone.stack( (int) (Math.random() * 12) + 1 ) );
-					break;
-				case 1:
-					List<ItemStack> possibles = new LinkedList();
-					possibles.addAll( OreDictionary.getOres( "nuggetIron" ) );
-					possibles.addAll( OreDictionary.getOres( "nuggetCopper" ) );
-					possibles.addAll( OreDictionary.getOres( "nuggetTin" ) );
-					possibles.addAll( OreDictionary.getOres( "nuggetSilver" ) );
-					possibles.addAll( OreDictionary.getOres( "nuggetLead" ) );
-					possibles.addAll( OreDictionary.getOres( "nuggetPlatinum" ) );
-					possibles.addAll( OreDictionary.getOres( "nuggetNickel" ) );
-					possibles.addAll( OreDictionary.getOres( "nuggetAluminium" ) );
-					possibles.addAll( OreDictionary.getOres( "nuggetElectrum" ) );
-					possibles.add( new ItemStack( net.minecraft.init.Items.gold_nugget ) );
-
-					ItemStack nugget = Platform.pickRandom( possibles );
-					if ( nugget != null )
-					{
-						nugget = nugget.copy();
-						nugget.stackSize = (int) (Math.random() * 12) + 1;
-						ap.addItems( nugget );
-					}
-					break;
 				}
 			}
 		}
