@@ -47,9 +47,9 @@ public enum PartType
 
 	CableCovered(20, AEFeature.Core, PartCableCovered.class),
 
-	CableSmart(40, AEFeature.Core, PartCableSmart.class),
+	CableSmart(40, AEFeature.Channels, PartCableSmart.class),
 
-	CableDense(60, AEFeature.DenseCables, PartDenseCable.class),
+	CableDense(60, AEFeature.Channels, PartDenseCable.class),
 
 	ToggleBus(80, AEFeature.Core, PartToggleBus.class),
 
@@ -76,8 +76,6 @@ public enum PartType
 	AnnihilationPlane(300, AEFeature.AnnihilationPlane, PartAnnihilationPlane.class),
 
 	FormationPlane(320, AEFeature.FormationPlane, PartFormationPlane.class),
-
-	// CraftingMonitor(AEFeature.Crafting, PartCraftingMonitor.class),
 
 	PatternTerminal(340, AEFeature.Patterns, PartPatternTerminal.class),
 

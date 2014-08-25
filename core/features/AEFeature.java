@@ -28,9 +28,7 @@ public enum AEFeature
 
 	CraftingCPU("CraftingFeatures"), PowerGen("NetworkFeatures"), Security("NetworkFeatures"),
 
-	// Crafting("NetworkFeatures"), MolecularAssembler("NetworkFeatures"),
-
-	SpatialIO("NetworkFeatures"), QuantumNetworkBridge("NetworkFeatures"),
+	SpatialIO("NetworkFeatures"), QuantumNetworkBridge("NetworkFeatures"), Channels("NetworkFeatures"),
 
 	LevelEmiter("NetworkBuses"), CraftingTerminal("NetworkBuses"), StorageMonitor("NetworkBuses"), P2PTunnel("NetworkBuses"), FormationPlane("NetworkBuses"), AnnihilationPlane(
 			"NetworkBuses"), ImportBus("NetworkBuses"), ExportBus("NetworkBuses"), StorageBus("NetworkBuses"), PartConversionMonitor("NetworkBuses"),

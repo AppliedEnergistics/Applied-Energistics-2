@@ -23,6 +23,8 @@ import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.util.DimensionalCoord;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
 import appeng.me.pathfinding.AdHocChannelUpdater;
@@ -78,7 +80,18 @@ public class PathGridCache implements IPathingGrid
 			updateNetwork = false;
 			instance++;
 
-			if ( controllerState == ControllerState.NO_CONTROLLER )
+			if ( !AEConfig.instance.isFeatureEnabled( AEFeature.Channels ) )
+			{
+				int used = calculateRequiredChanels();
+
+				int nodes = myGrid.getNodes().size();
+				ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
+				channelsByBlocks = nodes * used;
+				channelPowerUsage = (double) channelsByBlocks / 128.0;
+
+				myGrid.getPivot().beginVisition( new AdHocChannelUpdater( used ) );
+			}
+			else if ( controllerState == ControllerState.NO_CONTROLLER )
 			{
 				int requiredChannels = calculateRequiredChanels();
 				int used = requiredChannels;
