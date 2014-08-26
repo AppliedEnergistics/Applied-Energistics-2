@@ -211,7 +211,10 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 		super( c, is );
 
 		if ( requireChannel )
+		{
 			proxy.setFlags( GridFlags.REQUIRE_CHANNEL );
+			proxy.setIdlePowerUsage( 1.0 / 2.0 );
+		}
 		else
 			proxy.setIdlePowerUsage( 1.0 / 16.0 ); // lights drain a little bit.
 
