@@ -147,6 +147,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 		public PositionedStack result;
 
 		public CachedShapedRecipe(ItemStack output) {
+			output.stackSize = 4;
 			result = new PositionedStack( output, 119, 24 );
 			ingredients = new ArrayList<PositionedStack>();
 			ItemStack in = ifa.getTextureItem( output );
