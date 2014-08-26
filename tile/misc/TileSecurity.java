@@ -242,16 +242,12 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		return isActive && gridProxy.isActive();
 	}
 
-	public void updateNodeCount(int nodes)
-	{
-		gridProxy.setIdlePowerUsage( 2.0 + ((double) nodes / 0.033) );
-	}
-
 	public TileSecurity() {
 		addNewHandler( new SecurityHandler() );
 		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 		gridProxy.setIdlePowerUsage( 2.0 );
 		diffrence++;
+
 		securityKey = System.currentTimeMillis() * 10 + diffrence;
 		if ( diffrence > 10 )
 			diffrence = 0;
