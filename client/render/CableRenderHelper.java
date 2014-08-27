@@ -8,9 +8,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
+import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
-import appeng.facade.FacadeContainer;
 import appeng.parts.BusCollisionHelper;
 import appeng.parts.CableBusContainer;
 
@@ -71,7 +71,7 @@ public class CableRenderHelper
 		BusRenderHelper.instance.setOrientation( ax, ay, az );
 	}
 
-	public void renderStatic(CableBusContainer cableBusContainer, FacadeContainer fc)
+	public void renderStatic(CableBusContainer cableBusContainer, IFacadeContainer iFacadeContainer)
 	{
 		TileEntity te = cableBusContainer.getTile();
 		RenderBlocksWorkaround renderer = BusRenderer.instance.renderer;
@@ -101,7 +101,7 @@ public class CableRenderHelper
 			}
 		}
 
-		if ( !fc.isEmpty() )
+		if ( !iFacadeContainer.isEmpty() )
 		{
 			/**
 			 * snag list of boxes...
@@ -139,7 +139,7 @@ public class CableRenderHelper
 
 			for (ForgeDirection s : ForgeDirection.VALID_DIRECTIONS)
 			{
-				IFacadePart fPart = fc.getFacade( s );
+				IFacadePart fPart = iFacadeContainer.getFacade( s );
 				if ( fPart != null )
 				{
 					AxisAlignedBB b = null;
@@ -167,7 +167,8 @@ public class CableRenderHelper
 					renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 
 					setSide( s );
-					fPart.renderStatic( te.xCoord, te.yCoord, te.zCoord, BusRenderHelper.instance, renderer, fc, b, cableBusContainer.getPart( s ) == null );
+					fPart.renderStatic( te.xCoord, te.yCoord, te.zCoord, BusRenderHelper.instance, renderer, iFacadeContainer, b,
+							cableBusContainer.getPart( s ) == null );
 				}
 			}
 

@@ -17,23 +17,29 @@ import appeng.core.AppEng;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBC;
 import appeng.items.parts.ItemFacade;
+import appeng.parts.CableBusStorage;
 
 public class FacadeContainer implements IFacadeContainer
 {
 
-	final private IFacadePart facades[] = new FacadePart[6];
+	final int facades = 6;
+	final CableBusStorage storage;
+
+	public FacadeContainer(CableBusStorage cbs) {
+		storage = cbs;
+	}
 
 	public void writeToStream(ByteBuf out) throws IOException
 	{
 		int facadeSides = 0;
-		for (int x = 0; x < facades.length; x++)
+		for (int x = 0; x < facades; x++)
 		{
 			if ( getFacade( ForgeDirection.getOrientation( x ) ) != null )
 				facadeSides = facadeSides | (1 << x);
 		}
 		out.writeByte( (byte) facadeSides );
 
-		for (int x = 0; x < facades.length; x++)
+		for (int x = 0; x < facades; x++)
 		{
 			IFacadePart part = getFacade( ForgeDirection.getOrientation( x ) );
 			if ( part != null )
@@ -53,7 +59,7 @@ public class FacadeContainer implements IFacadeContainer
 		boolean changed = false;
 
 		int ids[] = new int[2];
-		for (int x = 0; x < facades.length; x++)
+		for (int x = 0; x < facades; x++)
 		{
 			ForgeDirection side = ForgeDirection.getOrientation( x );
 			int ix = (1 << x);
@@ -67,8 +73,8 @@ public class FacadeContainer implements IFacadeContainer
 				if ( isBC && AppEng.instance.isIntegrationEnabled( IntegrationType.BC ) )
 				{
 					IBC bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
-					changed = changed || facades[x] == null;
-					facades[x] = bc.createFacadePart( (Block) Block.blockRegistry.getObjectById( ids[0] ), ids[1], side );
+					changed = changed || storage.getFacade( x ) == null;
+					storage.setFacade( x, bc.createFacadePart( (Block) Block.blockRegistry.getObjectById( ids[0] ), ids[1], side ) );
 				}
 				else if ( !isBC )
 				{
@@ -76,15 +82,15 @@ public class FacadeContainer implements IFacadeContainer
 					ItemStack facade = ifa.createFromInts( ids );
 					if ( facade != null )
 					{
-						changed = changed || facades[x] == null;
-						facades[x] = ifa.createPartFromItemStack( facade, side );
+						changed = changed || storage.getFacade( x ) == null;
+						storage.setFacade( x, ifa.createPartFromItemStack( facade, side ) );
 					}
 				}
 			}
 			else
 			{
-				changed = changed || facades[x] != null;
-				facades[x] = null;
+				changed = changed || storage.getFacade( x ) != null;
+				storage.setFacade( x, null );
 			}
 		}
 
@@ -93,9 +99,9 @@ public class FacadeContainer implements IFacadeContainer
 
 	public void readFromNBT(NBTTagCompound c)
 	{
-		for (int x = 0; x < facades.length; x++)
+		for (int x = 0; x < facades; x++)
 		{
-			facades[x] = null;
+			storage.setFacade( x, null );
 
 			NBTTagCompound t = c.getCompoundTag( "facade:" + x );
 			if ( t != null )
@@ -105,14 +111,14 @@ public class FacadeContainer implements IFacadeContainer
 				{
 					Item i = is.getItem();
 					if ( i instanceof IFacadeItem )
-						facades[x] = ((IFacadeItem) i).createPartFromItemStack( is, ForgeDirection.getOrientation( x ) );
+						storage.setFacade( x, ((IFacadeItem) i).createPartFromItemStack( is, ForgeDirection.getOrientation( x ) ) );
 					else
 					{
 						if ( AppEng.instance.isIntegrationEnabled( IntegrationType.BC ) )
 						{
 							IBC bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
 							if ( bc.isFacade( is ) )
-								facades[x] = bc.createFacadePart( is, ForgeDirection.getOrientation( x ) );
+								storage.setFacade( x, bc.createFacadePart( is, ForgeDirection.getOrientation( x ) ) );
 						}
 					}
 				}
@@ -122,12 +128,12 @@ public class FacadeContainer implements IFacadeContainer
 
 	public void writeToNBT(NBTTagCompound c)
 	{
-		for (int x = 0; x < facades.length; x++)
+		for (int x = 0; x < facades; x++)
 		{
-			if ( facades[x] != null )
+			if ( storage.getFacade( x ) != null )
 			{
 				NBTTagCompound data = new NBTTagCompound();
-				facades[x].getItemStack().writeToNBT( data );
+				storage.getFacade( x ).getItemStack().writeToNBT( data );
 				c.setTag( "facade:" + x, data );
 			}
 		}
@@ -138,7 +144,7 @@ public class FacadeContainer implements IFacadeContainer
 	{
 		if ( getFacade( a.getSide() ) == null )
 		{
-			facades[a.getSide().ordinal()] = a;
+			storage.setFacade( a.getSide().ordinal(), a );
 			return true;
 		}
 		return false;
@@ -149,9 +155,9 @@ public class FacadeContainer implements IFacadeContainer
 	{
 		if ( side != null && side != ForgeDirection.UNKNOWN )
 		{
-			if ( facades[side.ordinal()] != null )
+			if ( storage.getFacade( side.ordinal() ) != null )
 			{
-				facades[side.ordinal()] = null;
+				storage.setFacade( side.ordinal(), null );
 				if ( host != null )
 					host.markForUpdate();
 			}
@@ -161,13 +167,13 @@ public class FacadeContainer implements IFacadeContainer
 	@Override
 	public IFacadePart getFacade(ForgeDirection s)
 	{
-		return facades[s.ordinal()];
+		return storage.getFacade( s.ordinal() );
 	}
 
 	public boolean isEmpty()
 	{
-		for (int x = 0; x < facades.length; x++)
-			if ( facades[x] != null )
+		for (int x = 0; x < facades; x++)
+			if ( storage.getFacade( x ) != null )
 				return false;
 		return true;
 	}
@@ -176,15 +182,16 @@ public class FacadeContainer implements IFacadeContainer
 	{
 		IFacadePart newfacades[] = new FacadePart[6];
 
-		newfacades[ForgeDirection.UP.ordinal()] = facades[ForgeDirection.UP.ordinal()];
-		newfacades[ForgeDirection.DOWN.ordinal()] = facades[ForgeDirection.DOWN.ordinal()];
+		newfacades[ForgeDirection.UP.ordinal()] = storage.getFacade( ForgeDirection.UP.ordinal() );
+		newfacades[ForgeDirection.DOWN.ordinal()] = storage.getFacade( ForgeDirection.DOWN.ordinal() );
 
-		newfacades[ForgeDirection.EAST.ordinal()] = facades[ForgeDirection.NORTH.ordinal()];
-		newfacades[ForgeDirection.SOUTH.ordinal()] = facades[ForgeDirection.EAST.ordinal()];
-		newfacades[ForgeDirection.WEST.ordinal()] = facades[ForgeDirection.SOUTH.ordinal()];
-		newfacades[ForgeDirection.NORTH.ordinal()] = facades[ForgeDirection.WEST.ordinal()];
+		newfacades[ForgeDirection.EAST.ordinal()] = storage.getFacade( ForgeDirection.NORTH.ordinal() );
+		newfacades[ForgeDirection.SOUTH.ordinal()] = storage.getFacade( ForgeDirection.EAST.ordinal() );
 
-		for (int x = 0; x < facades.length; x++)
-			facades[x] = newfacades[x];
+		newfacades[ForgeDirection.WEST.ordinal()] = storage.getFacade( ForgeDirection.SOUTH.ordinal() );
+		newfacades[ForgeDirection.NORTH.ordinal()] = storage.getFacade( ForgeDirection.WEST.ordinal() );
+
+		for (int x = 0; x < facades; x++)
+			storage.setFacade( x, newfacades[x] );
 	}
 }

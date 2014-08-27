@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.parts.IFacadeContainer;
+import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.LayerFlags;
@@ -16,6 +17,7 @@ import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.facade.FacadeContainer;
+import appeng.parts.CableBusStorage;
 import appeng.util.Platform;
 import codechicken.lib.vec.BlockCoord;
 import codechicken.multipart.TMultiPart;
@@ -23,6 +25,25 @@ import codechicken.multipart.TileMultipart;
 
 public class FMPPlacementHelper implements IPartHost
 {
+
+	static class NullStorage extends CableBusStorage
+	{
+
+		@Override
+		public IFacadePart getFacade(int x)
+		{
+			return null;
+		}
+
+		@Override
+		public void setFacade(int x, IFacadePart facade)
+		{
+
+		}
+
+	};
+
+	final private static CableBusStorage nullStorage = new NullStorage();
 
 	private boolean hasPart = false;
 	private TileMultipart myMP;
@@ -79,7 +100,7 @@ public class FMPPlacementHelper implements IPartHost
 	public IFacadeContainer getFacadeContainer()
 	{
 		if ( myPart == null )
-			return new FacadeContainer();
+			return new FacadeContainer( nullStorage );
 		return myPart.getFacadeContainer();
 	}
 

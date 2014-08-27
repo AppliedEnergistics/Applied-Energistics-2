@@ -50,12 +50,9 @@ import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class CableBusContainer implements AEMultiTile, ICableBusContainer
+public class CableBusContainer extends CableBusStorage implements AEMultiTile, ICableBusContainer
 {
 
-	private IPartCable center;
-	private IPart sides[] = new IPart[6];
-	private FacadeContainer fc = new FacadeContainer();
 	private EnumSet<LayerFlags> myLayerFlags = EnumSet.noneOf( LayerFlags.class );
 
 	public YesNo hasRedstone = YesNo.UNDECIDED;
@@ -84,25 +81,26 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	public IPart getPart(ForgeDirection side)
 	{
 		if ( side == ForgeDirection.UNKNOWN )
-			return center;
-		return sides[side.ordinal()];
+			return getCenter();
+		return getSide( side );
 	}
 
 	public void rotateLeft()
 	{
 		IPart newSides[] = new IPart[6];
 
-		newSides[ForgeDirection.UP.ordinal()] = sides[ForgeDirection.UP.ordinal()];
-		newSides[ForgeDirection.DOWN.ordinal()] = sides[ForgeDirection.DOWN.ordinal()];
+		newSides[ForgeDirection.UP.ordinal()] = getSide( ForgeDirection.UP );
+		newSides[ForgeDirection.DOWN.ordinal()] = getSide( ForgeDirection.DOWN );
 
-		newSides[ForgeDirection.EAST.ordinal()] = sides[ForgeDirection.NORTH.ordinal()];
-		newSides[ForgeDirection.SOUTH.ordinal()] = sides[ForgeDirection.EAST.ordinal()];
-		newSides[ForgeDirection.WEST.ordinal()] = sides[ForgeDirection.SOUTH.ordinal()];
-		newSides[ForgeDirection.NORTH.ordinal()] = sides[ForgeDirection.WEST.ordinal()];
+		newSides[ForgeDirection.EAST.ordinal()] = getSide( ForgeDirection.NORTH );
+		newSides[ForgeDirection.SOUTH.ordinal()] = getSide( ForgeDirection.EAST );
+		newSides[ForgeDirection.WEST.ordinal()] = getSide( ForgeDirection.SOUTH );
+		newSides[ForgeDirection.NORTH.ordinal()] = getSide( ForgeDirection.WEST );
 
-		sides = newSides;
+		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+			setSide( dir, newSides[dir.ordinal()] );
 
-		fc.rotateLeft();
+		getFacadeContainer().rotateLeft();
 	}
 
 	public void updateDynamicRender()
@@ -121,15 +119,15 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	{
 		if ( side == ForgeDirection.UNKNOWN )
 		{
-			if ( center != null )
-				center.removeFromWorld();
-			center = null;
+			if ( getCenter() != null )
+				getCenter().removeFromWorld();
+			setCenter( null );
 		}
 		else
 		{
-			if ( sides[side.ordinal()] != null )
-				sides[side.ordinal()].removeFromWorld();
-			sides[side.ordinal()] = null;
+			if ( getSide( side ) != null )
+				getSide( side ).removeFromWorld();
+			setSide( side, null );
 		}
 
 		if ( !supressUpdate )
@@ -146,7 +144,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	 */
 	public void updateConnections()
 	{
-		if ( center != null )
+		if ( getCenter() != null )
 		{
 			EnumSet<ForgeDirection> sides = EnumSet.allOf( ForgeDirection.class );
 
@@ -156,8 +154,8 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 					sides.remove( s );
 			}
 
-			center.setValidSides( sides );
-			IGridNode n = center.getGridNode();
+			getCenter().setValidSides( sides );
+			IGridNode n = getCenter().getGridNode();
 			if ( n != null )
 				n.updateState();
 		}
@@ -230,7 +228,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 					if ( getPart( ForgeDirection.UNKNOWN ) != null )
 						return null;
 
-					center = (IPartCable) bp;
+					setCenter( (IPartCable) bp );
 					bp.setPartHostInfo( ForgeDirection.UNKNOWN, this, tcb.getTile() );
 
 					if ( player != null )
@@ -239,7 +237,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 					if ( inWorld )
 						bp.addToWorld();
 
-					IGridNode cn = center.getGridNode();
+					IGridNode cn = getCenter().getGridNode();
 					if ( cn != null )
 					{
 						for (ForgeDirection ins : ForgeDirection.VALID_DIRECTIONS)
@@ -259,7 +257,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 										// ekk!
 
 										bp.removeFromWorld();
-										center = null;
+										setCenter( null );
 										return null;
 									}
 								}
@@ -278,7 +276,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 					if ( cable != null && !bp.canBePlacedOn( ((IPartCable) cable).supportsBuses() ) )
 						return null;
 
-					sides[side.ordinal()] = bp;
+					setSide( side, bp );
 					bp.setPartHostInfo( side, this, this.getTile() );
 
 					if ( player != null )
@@ -287,9 +285,9 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 					if ( inWorld )
 						bp.addToWorld();
 
-					if ( center != null )
+					if ( getCenter() != null )
 					{
-						IGridNode cn = center.getGridNode();
+						IGridNode cn = getCenter().getGridNode();
 						IGridNode sn = bp.getGridNode();
 
 						if ( cn != null && sn != null )
@@ -303,7 +301,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 								// ekk!
 
 								bp.removeFromWorld();
-								sides[side.ordinal()] = null;
+								setSide( side, null );
 								return null;
 							}
 						}
@@ -424,8 +422,8 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 				return n;
 		}
 
-		if ( center != null )
-			return center.getGridNode();
+		if ( getCenter() != null )
+			return getCenter().getGridNode();
 
 		return null;
 	}
@@ -434,6 +432,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	{
 		List<AxisAlignedBB> boxes = new LinkedList<AxisAlignedBB>();
 
+		IFacadeContainer fc = getFacadeContainer();
 		for (ForgeDirection s : ForgeDirection.values())
 		{
 			IPartCollsionHelper bch = new BusCollisionHelper( boxes, s, e, visual );
@@ -473,6 +472,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 
 	public boolean isEmpty()
 	{
+		IFacadeContainer fc = getFacadeContainer();
 		for (ForgeDirection s : ForgeDirection.values())
 		{
 			IPart part = getPart( s );
@@ -514,7 +514,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 			return false;
 
 		// facades are solid..
-		IFacadePart fp = fc.getFacade( side );
+		IFacadePart fp = getFacadeContainer().getFacade( side );
 		if ( fp != null )
 			return true;
 
@@ -538,7 +538,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	@SideOnly(Side.CLIENT)
 	public void renderStatic(double x, double y, double z)
 	{
-		CableRenderHelper.getInstance().renderStatic( this, fc );
+		CableRenderHelper.getInstance().renderStatic( this, getFacadeContainer() );
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -577,7 +577,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 			}
 		}
 
-		fc.writeToStream( data );
+		getFacadeContainer().writeToStream( data );
 	}
 
 	public boolean readFromStream(ByteBuf data) throws IOException
@@ -621,21 +621,22 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 				removePart( side, false );
 		}
 
-		if ( fc.readFromStream( data ) )
+		if ( getFacadeContainer().readFromStream( data ) )
 			return true;
+
 		return updateBlock;
 	}
 
 	ForgeDirection getSide(IPart part)
 	{
-		if ( center == part )
+		if ( getCenter() == part )
 			return ForgeDirection.UNKNOWN;
 		else
 		{
-			for (int x = 0; x < 6; x++)
-				if ( sides[x] == part )
+			for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+				if ( getSide( side ) == part )
 				{
-					return ForgeDirection.getOrientation( x );
+					return side;
 				}
 		}
 		throw new RuntimeException( "Uhh Bad Part on Side." );
@@ -645,6 +646,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	{
 		data.setInteger( "hasRedstone", hasRedstone.ordinal() );
 
+		IFacadeContainer fc = getFacadeContainer();
 		for (ForgeDirection s : ForgeDirection.values())
 		{
 			fc.writeToNBT( data );
@@ -705,7 +707,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 				removePart( side, false );
 		}
 
-		fc.readFromNBT( data );
+		getFacadeContainer().readFromNBT( data );
 	}
 
 	public List getDrops(List drops)
@@ -759,9 +761,9 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 				return t;
 		}
 
-		if ( center != null )
+		if ( getCenter() != null )
 		{
-			IPartCable c = center;
+			IPartCable c = getCenter();
 			return c.getCableConnectionType();
 		}
 		return AECableType.NONE;
@@ -770,9 +772,9 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	@Override
 	public AEColor getColor()
 	{
-		if ( center != null )
+		if ( getCenter() != null )
 		{
-			IPartCable c = center;
+			IPartCable c = getCenter();
 			return c.getCableColor();
 		}
 		return AEColor.Transparent;
@@ -781,7 +783,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	@Override
 	public IFacadeContainer getFacadeContainer()
 	{
-		return fc;
+		return new FacadeContainer( this );
 	}
 
 	@Override
@@ -860,6 +862,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 
 		if ( AEApi.instance().partHelper().getCableRenderMode().opaqueFacades )
 		{
+			IFacadeContainer fc = getFacadeContainer();
 			for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
 				IFacadePart p = fc.getFacade( side );
@@ -887,10 +890,11 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 	@Override
 	public void partChanged()
 	{
-		if ( center == null )
+		if ( getCenter() == null )
 		{
 			List<ItemStack> facades = new LinkedList();
 
+			IFacadeContainer fc = getFacadeContainer();
 			for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
 			{
 				IFacadePart fp = fc.getFacade( d );
