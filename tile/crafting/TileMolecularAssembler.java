@@ -248,6 +248,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 	public TileMolecularAssembler() {
 		settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		inv.setMaxStackSize( 1 );
+		gridProxy.setIdlePowerUsage( 0.0 );
 		addNewHandler( new TileMolecularAssemblerHandler() );
 	}
 
@@ -399,9 +400,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		if ( reboot )
 			TicksSinceLastCall = 1;
 
-		if ( ! isAwake )
+		if ( !isAwake )
 			return TickRateModulation.SLEEP;
-		
+
 		reboot = false;
 		int speed = 10;
 		switch (upgrades.getInstalledUpgrades( Upgrades.SPEED ))
@@ -479,7 +480,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 				ItemStack is = inv.getStackInSlot( x );
 				if ( is != null )
 				{
-					if ( myPlan == null || ! myPlan.isValidItemForSlot( x, is, worldObj ) )
+					if ( myPlan == null || !myPlan.isValidItemForSlot( x, is, worldObj ) )
 					{
 						inv.setInventorySlotContents( 9, is );
 						inv.setInventorySlotContents( x, null );

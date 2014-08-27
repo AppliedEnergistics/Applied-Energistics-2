@@ -336,7 +336,8 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 	@Override
 	public void onNeighborChange(IBlockAccess w, int x, int y, int z, int tileX, int tileY, int tileZ)
 	{
-		cb( w, x, y, z ).onNeighborChanged();
+		if ( Platform.isServer() )
+			cb( w, x, y, z ).onNeighborChanged();
 	}
 
 	@Override

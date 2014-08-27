@@ -58,15 +58,6 @@ public class EnergyFx extends EntityBreakingFX
 
 	public void renderParticle(Tessellator par1Tessellator, float par2, float par3, float par4, float par5, float par6, float par7)
 	{
-		/*
-		 * Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.locationBlocksTexture );
-		 * 
-		 * GL11.glPushMatrix(); GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS ); GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		 * 
-		 * GL11.glDepthMask( false ); GL11.glEnable( GL11.GL_BLEND ); GL11.glBlendFunc( GL11.GL_SRC_ALPHA,
-		 * GL11.GL_ONE_MINUS_SRC_ALPHA ); GL11.glAlphaFunc( GL11.GL_GREATER, 0.003921569F );
-		 */
-
 		float f6 = this.particleTextureIndex.getMinU();
 		float f7 = this.particleTextureIndex.getMaxU();
 		float f8 = this.particleTextureIndex.getMinV();
@@ -94,9 +85,6 @@ public class EnergyFx extends EntityBreakingFX
 			par1Tessellator.addVertexWithUV( (double) (f11 + par3 * f10 - par6 * f10), (double) (f12 - par4 * f10), (double) (f13 + par5 * f10 - par7 * f10),
 					(double) f6, (double) f9 );
 		}
-
-		// GL11.glPopAttrib();
-		// GL11.glPopMatrix();
 	}
 
 }

@@ -57,47 +57,42 @@ public class CraftingFx extends EntityBreakingFX
 		this.particleAlpha *= 0.51f;
 	}
 
-	public void renderParticle(Tessellator par1Tessellator, float par2, float par3, float par4, float par5, float par6, float par7)
+	public void renderParticle(Tessellator par1Tessellator, float partialTick, float x, float y, float z, float rx, float rz)
 	{
-		/*
-		 * Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.locationBlocksTexture );
-		 * 
-		 * GL11.glPushMatrix(); GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS ); GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		 * 
-		 * GL11.glDepthMask( false ); GL11.glEnable( GL11.GL_BLEND ); GL11.glBlendFunc( GL11.GL_SRC_ALPHA,
-		 * GL11.GL_ONE_MINUS_SRC_ALPHA ); GL11.glAlphaFunc( GL11.GL_GREATER, 0.003921569F );
-		 */
+		if ( partialTick < 0 || partialTick > 1 )
+			return;
 
 		float f6 = this.particleTextureIndex.getMinU();
 		float f7 = this.particleTextureIndex.getMaxU();
 		float f8 = this.particleTextureIndex.getMinV();
 		float f9 = this.particleTextureIndex.getMaxV();
-		float f10 = 0.1F * this.particleScale;
+		float scale = 0.1F * this.particleScale;
 
-		float f11 = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) par2 - interpPosX);
-		float f12 = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) par2 - interpPosY);
-		float f13 = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) par2 - interpPosZ);
+		float offx = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTick);
+		float offy = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTick);
+		float offz = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTick);
 		float f14 = 1.0F;
 
-		int blkX = MathHelper.floor_double( posX );
-		int blkY = MathHelper.floor_double( posY );
-		int blkZ = MathHelper.floor_double( posZ );
-
+		int blkX = MathHelper.floor_double( offx );
+		int blkY = MathHelper.floor_double( offy );
+		int blkZ = MathHelper.floor_double( offz );
 		if ( blkX == startBlkX && blkY == startBlkY && blkZ == startBlkZ )
 		{
+			offx -= interpPosX;
+			offy -= interpPosY;
+			offz -= interpPosZ;
+
+			// AELog.info( "" + partialTick );
 			par1Tessellator.setColorRGBA_F( this.particleRed * f14, this.particleGreen * f14, this.particleBlue * f14, this.particleAlpha );
-			par1Tessellator.addVertexWithUV( (double) (f11 - par3 * f10 - par6 * f10), (double) (f12 - par4 * f10), (double) (f13 - par5 * f10 - par7 * f10),
+			par1Tessellator.addVertexWithUV( (double) (offx - x * scale - rx * scale), (double) (offy - y * scale), (double) (offz - z * scale - rz * scale),
 					(double) f7, (double) f9 );
-			par1Tessellator.addVertexWithUV( (double) (f11 - par3 * f10 + par6 * f10), (double) (f12 + par4 * f10), (double) (f13 - par5 * f10 + par7 * f10),
+			par1Tessellator.addVertexWithUV( (double) (offx - x * scale + rx * scale), (double) (offy + y * scale), (double) (offz - z * scale + rz * scale),
 					(double) f7, (double) f8 );
-			par1Tessellator.addVertexWithUV( (double) (f11 + par3 * f10 + par6 * f10), (double) (f12 + par4 * f10), (double) (f13 + par5 * f10 + par7 * f10),
+			par1Tessellator.addVertexWithUV( (double) (offx + x * scale + rx * scale), (double) (offy + y * scale), (double) (offz + z * scale + rz * scale),
 					(double) f6, (double) f8 );
-			par1Tessellator.addVertexWithUV( (double) (f11 + par3 * f10 - par6 * f10), (double) (f12 - par4 * f10), (double) (f13 + par5 * f10 - par7 * f10),
+			par1Tessellator.addVertexWithUV( (double) (offx + x * scale - rx * scale), (double) (offy - y * scale), (double) (offz + z * scale - rz * scale),
 					(double) f6, (double) f9 );
 		}
-
-		// GL11.glPopAttrib();
-		// GL11.glPopMatrix();
 	}
 
 }

@@ -9,8 +9,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import org.lwjgl.opengl.GL11;
-
 public class LightningFX extends EntityFX
 {
 
@@ -167,12 +165,10 @@ public class LightningFX extends EntityFX
 				}
 			}
 		}
-
-		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
-		GL11.glDisable( GL11.GL_CULL_FACE );
-		tess.draw();
-		GL11.glPopAttrib();
-		tess.startDrawingQuads();
+		/*
+		 * GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS ); GL11.glDisable( GL11.GL_CULL_FACE ); tess.draw();
+		 * GL11.glPopAttrib(); tess.startDrawingQuads();
+		 */
 	}
 
 	boolean hasData = false;
