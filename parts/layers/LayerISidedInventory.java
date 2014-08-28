@@ -29,10 +29,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	// a simple empty array for empty stuff..
 	private final static int[] nullSides = new int[] {};
 
-	// cache of inventory state.
-	private int sides[][] = null;
-	private List<ISidedInventory> invs = null;
-	private List<InvSot> slots = null;
+	InvLayerData invLayer = null;
 
 	/**
 	 * Recalculate inventory wrapper cache.
@@ -40,6 +37,11 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	@Override
 	public void notifyNeighbors()
 	{
+		// cache of inventory state.
+		int sideData[][] = null;
+		List<ISidedInventory> invs = null;
+		List<InvSot> slots = null;
+
 		invs = new ArrayList();
 		int slotCount = 0;
 
@@ -57,12 +59,12 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 		if ( invs.isEmpty() || slotCount == 0 )
 		{
 			invs = null;
-			sides = null;
+			sideData = null;
 			slots = null;
 		}
 		else
 		{
-			sides = new int[][] { nullSides, nullSides, nullSides, nullSides, nullSides, nullSides };
+			sideData = new int[][] { nullSides, nullSides, nullSides, nullSides, nullSides, nullSides };
 			slots = new ArrayList<InvSot>( Collections.nCopies( slotCount, (InvSot) null ) );
 
 			int offsetForLayer = 0;
@@ -80,7 +82,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 						break;
 					}
 
-				int cSidesList[] = this.sides[currentSide.ordinal()] = new int[slotCount];
+				int cSidesList[] = sideData[currentSide.ordinal()] = new int[slotCount];
 				for (int cSlot = 0; cSlot < slotCount; cSlot++)
 				{
 					cSidesList[cSlot] = offsetForLayer;
@@ -89,100 +91,94 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 			}
 		}
 
+		if ( sideData == null || slots == null )
+			invLayer = null;
+		else
+			invLayer = new InvLayerData( sideData, invs, slots );
+
 		// make sure inventory is updated before we call FMP.
 		super.notifyNeighbors();
-	}
-
-	/**
-	 * check if a slot index is valid, prevent crashes from bad code :)
-	 * 
-	 * @param slot
-	 * @return true, if the slot exists.
-	 */
-	boolean isSlotValid(int slot)
-	{
-		return slots != null && slot >= 0 && slot < slots.size();
 	}
 
 	@Override
 	public ItemStack decrStackSize(int slot, int amount)
 	{
-		if ( isSlotValid( slot ) )
-			return slots.get( slot ).decrStackSize( amount );
+		if ( invLayer == null )
+			return null;
 
-		return null;
+		return invLayer.decrStackSize( slot, amount );
 	}
 
 	@Override
 	public int getSizeInventory()
 	{
-		if ( slots == null )
+		if ( invLayer == null )
 			return 0;
 
-		return slots.size();
+		return invLayer.getSizeInventory();
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int slot)
 	{
-		if ( isSlotValid( slot ) )
-			return slots.get( slot ).getStackInSlot();
+		if ( invLayer == null )
+			return null;
 
-		return null;
+		return invLayer.getStackInSlot( slot );
 	}
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack itemstack)
 	{
-		if ( isSlotValid( slot ) )
-			return slots.get( slot ).isItemValidForSlot( itemstack );
+		if ( invLayer == null )
+			return false;
 
-		return false;
+		return invLayer.isItemValidForSlot( slot, itemstack );
 	}
 
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack itemstack)
 	{
-		if ( isSlotValid( slot ) )
-			slots.get( slot ).setInventorySlotContents( itemstack );
+		if ( invLayer == null )
+			return;
+
+		invLayer.setInventorySlotContents( slot, itemstack );
 	}
 
 	@Override
 	public boolean canExtractItem(int slot, ItemStack itemstack, int side)
 	{
-		if ( isSlotValid( slot ) )
-			return slots.get( slot ).canExtractItem( itemstack, side );
+		if ( invLayer == null )
+			return false;
 
-		return false;
+		return invLayer.canExtractItem( slot, itemstack, side );
 	}
 
 	@Override
 	public boolean canInsertItem(int slot, ItemStack itemstack, int side)
 	{
-		if ( isSlotValid( slot ) )
-			return slots.get( slot ).canInsertItem( itemstack, side );
+		if ( invLayer == null )
+			return false;
 
-		return false;
+		return invLayer.canInsertItem( slot, itemstack, side );
 	}
 
 	@Override
 	public void markDirty()
 	{
-		super.markForSave();
+		if ( invLayer != null )
+			invLayer.markDirty();
 
-		if ( invs != null )
-		{
-			for (IInventory inv : invs)
-				inv.markDirty();
-		}
+		super.markForSave();
 	}
 
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		if ( sides == null || side < 0 || side > 5 )
-			return nullSides;
-		return sides[side];
+		if ( invLayer != null )
+			return invLayer.getAccessibleSlotsFromSide( side );
+
+		return nullSides;
 	}
 
 	@Override
@@ -224,5 +220,4 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	public void openInventory()
 	{
 	}
-
 }
