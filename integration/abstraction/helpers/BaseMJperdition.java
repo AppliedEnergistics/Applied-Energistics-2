@@ -1,16 +1,11 @@
 package appeng.integration.abstraction.helpers;
 
-import appeng.tile.events.AETileEventHandler;
-import appeng.tile.events.TileEventType;
+import net.minecraft.nbt.NBTTagCompound;
 import appeng.transformer.annotations.integration.Method;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 
-public abstract class BaseMJperdition extends AETileEventHandler
+public abstract class BaseMJperdition
 {
-
-	public BaseMJperdition() {
-		super( TileEventType.TICK, TileEventType.WORLD_NBT );
-	}
 
 	@Method(iname = "MJ5")
 	public abstract PowerReceiver getPowerReceiver();
@@ -20,5 +15,11 @@ public abstract class BaseMJperdition extends AETileEventHandler
 	public abstract void addEnergy(float failed);
 
 	public abstract void configure(int i, int j, float f, int k);
+
+	public abstract void writeToNBT(NBTTagCompound tag);
+
+	public abstract void readFromNBT(NBTTagCompound tag);
+
+	public abstract void Tick();
 
 }

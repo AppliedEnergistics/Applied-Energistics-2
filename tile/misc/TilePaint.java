@@ -19,7 +19,7 @@ import appeng.api.util.AEColor;
 import appeng.helpers.Splot;
 import appeng.items.misc.ItemPaintBall;
 import appeng.tile.AEBaseTile;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 
 import com.google.common.collect.ImmutableList;
@@ -73,45 +73,33 @@ public class TilePaint extends AEBaseTile
 		maxLit();
 	}
 
-	class PaintHandler extends AETileEventHandler
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_TilePaint(NBTTagCompound data)
 	{
-
-		public PaintHandler() {
-			super( TileEventType.NETWORK, TileEventType.WORLD_NBT );
-		}
-
-		@Override
-		public void writeToNBT(NBTTagCompound data)
-		{
-			ByteBuf myDat = Unpooled.buffer();
-			writeBuffer( myDat );
-			if ( myDat.hasArray() )
-				data.setByteArray( "dots", myDat.array() );
-		}
-
-		@Override
-		public void readFromNBT(NBTTagCompound data)
-		{
-			if ( data.hasKey( "dots" ) )
-				readBuffer( Unpooled.copiedBuffer( data.getByteArray( "dots" ) ) );
-		}
-
-		@Override
-		public void writeToStream(ByteBuf data) throws IOException
-		{
-			writeBuffer( data );
-		}
-
-		@Override
-		public boolean readFromStream(ByteBuf data) throws IOException
-		{
-			readBuffer( data );
-			return true;
-		}
+		ByteBuf myDat = Unpooled.buffer();
+		writeBuffer( myDat );
+		if ( myDat.hasArray() )
+			data.setByteArray( "dots", myDat.array() );
 	}
 
-	public TilePaint() {
-		addNewHandler( new PaintHandler() );
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_TilePaint(NBTTagCompound data)
+	{
+		if ( data.hasKey( "dots" ) )
+			readBuffer( Unpooled.copiedBuffer( data.getByteArray( "dots" ) ) );
+	}
+
+	@TileEvent(TileEventType.NETWORK_WRITE)
+	public void writeToStream_TilePaint(ByteBuf data) throws IOException
+	{
+		writeBuffer( data );
+	}
+
+	@TileEvent(TileEventType.NETWORK_READ)
+	public boolean readFromStream_TilePaint(ByteBuf data) throws IOException
+	{
+		readBuffer( data );
+		return true;
 	}
 
 	public void onNeighborBlockChange()

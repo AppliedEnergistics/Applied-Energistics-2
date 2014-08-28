@@ -36,7 +36,7 @@ import appeng.api.util.IConfigureableObject;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.InvOperation;
@@ -100,36 +100,24 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 		duality.gridChanged();
 	}
 
-	class TileInterfaceHandler extends AETileEventHandler
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_TileInterface(NBTTagCompound data)
 	{
+		data.setInteger( "pointAt", pointAt.ordinal() );
+		duality.writeToNBT( data );
+	}
 
-		public TileInterfaceHandler() {
-			super( TileEventType.WORLD_NBT );
-		}
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_TileInterface(NBTTagCompound data)
+	{
+		int val = data.getInteger( "pointAt" );
 
-		@Override
-		public void writeToNBT(NBTTagCompound data)
-		{
-			data.setInteger( "pointAt", pointAt.ordinal() );
-			duality.writeToNBT( data );
-		}
+		if ( val >= 0 && val < ForgeDirection.values().length )
+			pointAt = ForgeDirection.values()[val];
+		else
+			pointAt = ForgeDirection.UNKNOWN;
 
-		@Override
-		public void readFromNBT(NBTTagCompound data)
-		{
-			int val = data.getInteger( "pointAt" );
-
-			if ( val >= 0 && val < ForgeDirection.values().length )
-				pointAt = ForgeDirection.values()[val];
-			else
-				pointAt = ForgeDirection.UNKNOWN;
-
-			duality.readFromNBT( data );
-		}
-	};
-
-	public TileInterface() {
-		addNewHandler( new TileInterfaceHandler() );
+		duality.readFromNBT( data );
 	}
 
 	@Override

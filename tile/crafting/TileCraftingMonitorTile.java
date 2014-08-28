@@ -10,7 +10,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.util.item.AEItemStack;
 import cpw.mods.fml.relauncher.Side;
@@ -28,61 +28,48 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	IAEItemStack dspPlay;
 	AEColor paintedColor = AEColor.Transparent;
 
-	class CraftingMonitorHandler extends AETileEventHandler
+	@TileEvent(TileEventType.NETWORK_READ)
+	public boolean readFromStream_TileCraftingMonitorTile(ByteBuf data) throws IOException
 	{
+		AEColor oldPaintedColor = paintedColor;
+		paintedColor = AEColor.values()[data.readByte()];
 
-		public CraftingMonitorHandler() {
-			super( TileEventType.NETWORK, TileEventType.WORLD_NBT );
-		}
+		boolean hasItem = data.readBoolean();
 
-		@Override
-		public boolean readFromStream(ByteBuf data) throws IOException
+		if ( hasItem )
+			dspPlay = AEItemStack.loadItemStackFromPacket( data );
+		else
+			dspPlay = null;
+
+		updateList = true;
+		return oldPaintedColor != paintedColor; // tesr!
+	}
+
+	@TileEvent(TileEventType.NETWORK_WRITE)
+	public void writeToStream_TileCraftingMonitorTile(ByteBuf data) throws IOException
+	{
+		data.writeByte( paintedColor.ordinal() );
+
+		if ( dspPlay == null )
+			data.writeBoolean( false );
+		else
 		{
-			AEColor oldPaintedColor = paintedColor;
-			paintedColor = AEColor.values()[data.readByte()];
-
-			boolean hasItem = data.readBoolean();
-
-			if ( hasItem )
-				dspPlay = AEItemStack.loadItemStackFromPacket( data );
-			else
-				dspPlay = null;
-
-			updateList = true;
-			return oldPaintedColor != paintedColor; // tesr!
+			data.writeBoolean( true );
+			dspPlay.writeToPacket( data );
 		}
+	}
 
-		@Override
-		public void writeToStream(ByteBuf data) throws IOException
-		{
-			data.writeByte( paintedColor.ordinal() );
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_TileCraftingMonitorTile(NBTTagCompound data)
+	{
+		if ( data.hasKey( "paintedColor" ) )
+			paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
+	}
 
-			if ( dspPlay == null )
-				data.writeBoolean( false );
-			else
-			{
-				data.writeBoolean( true );
-				dspPlay.writeToPacket( data );
-			}
-		}
-
-		@Override
-		public void readFromNBT(NBTTagCompound data)
-		{
-			if ( data.hasKey( "paintedColor" ) )
-				paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
-		}
-
-		@Override
-		public void writeToNBT(NBTTagCompound data)
-		{
-			data.setByte( "paintedColor", (byte) paintedColor.ordinal() );
-		}
-
-	};
-
-	public TileCraftingMonitorTile() {
-		addNewHandler( new CraftingMonitorHandler() );
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_TileCraftingMonitorTile(NBTTagCompound data)
+	{
+		data.setByte( "paintedColor", (byte) paintedColor.ordinal() );
 	}
 
 	public boolean isAccelerator()

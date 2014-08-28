@@ -3,9 +3,10 @@ package appeng.tile.powersink;
 import net.minecraftforge.common.util.ForgeDirection;
 import Reika.RotaryCraft.API.ShaftPowerReceiver;
 import appeng.api.config.PowerUnits;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.transformer.annotations.integration.Interface;
+import appeng.transformer.annotations.integration.Method;
 import appeng.util.Platform;
 
 @Interface(iname = "RotaryCraft", iface = "Reika.RotaryCraft.API.ShaftPowerReceiver")
@@ -17,25 +18,12 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	private long power = 0;
 	private int alpha = 0;
 
-	class RotaryCraftHandler extends AETileEventHandler
+	@TileEvent(TileEventType.TICK)
+	@Method(iname = "RotaryCraft")
+	public void Tick_RotaryCraft()
 	{
-
-		public RotaryCraftHandler() {
-			super( TileEventType.TICK );
-		}
-
-		@Override
-		public void Tick()
-		{
-			if ( power > 0 )
-				injectExternalPower( PowerUnits.WA, power );
-		}
-
-	};
-
-	public RotaryCraft() {
-		if ( Platform.isServer() )
-			addNewHandler( new RotaryCraftHandler() );
+		if ( worldObj != null && !worldObj.isRemote && power > 0 )
+			injectExternalPower( PowerUnits.WA, power );
 	}
 
 	@Override

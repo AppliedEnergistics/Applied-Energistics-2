@@ -3,46 +3,107 @@ package appeng.tile.events;
 import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
-import java.util.EnumSet;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import net.minecraft.nbt.NBTTagCompound;
+import appeng.tile.AEBaseTile;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class AETileEventHandler
+public class AETileEventHandler
 {
 
-	final EnumSet<TileEventType> supportedEvents;
+	private final Method method;
+	private final TileEventType type;
 
-	public AETileEventHandler(TileEventType... events) {
-		supportedEvents = EnumSet.noneOf( TileEventType.class );
-		for (TileEventType t : events)
-			supportedEvents.add( t );
-	}
-
-	public EnumSet<TileEventType> getSubscribedEvents()
-	{
-		return supportedEvents;
+	public AETileEventHandler(Method m, TileEventType which) {
+		method = m;
+		type = which;
 	}
 
 	// TICK
-	public void Tick()
+	public void Tick(AEBaseTile tile)
 	{
+		try
+		{
+			method.invoke( tile );
+		}
+		catch (IllegalAccessException e)
+		{
+			throw new RuntimeException( e );
+		}
+		catch (IllegalArgumentException e)
+		{
+			throw new RuntimeException( e );
+		}
+		catch (InvocationTargetException e)
+		{
+			throw new RuntimeException( e );
+		}
 	}
 
 	// WORLD_NBT
-	public void writeToNBT(NBTTagCompound data)
+	public void writeToNBT(AEBaseTile tile, NBTTagCompound data)
 	{
+		try
+		{
+			method.invoke( tile, data );
+		}
+		catch (IllegalAccessException e)
+		{
+			throw new RuntimeException( e );
+		}
+		catch (IllegalArgumentException e)
+		{
+			throw new RuntimeException( e );
+		}
+		catch (InvocationTargetException e)
+		{
+			throw new RuntimeException( e );
+		}
 	}
 
 	// WORLD NBT
-	public void readFromNBT(NBTTagCompound data)
+	public void readFromNBT(AEBaseTile tile, NBTTagCompound data)
 	{
+		try
+		{
+			method.invoke( tile, data );
+		}
+		catch (IllegalAccessException e)
+		{
+			throw new RuntimeException( e );
+		}
+		catch (IllegalArgumentException e)
+		{
+			throw new RuntimeException( e );
+		}
+		catch (InvocationTargetException e)
+		{
+			throw new RuntimeException( e );
+		}
 	}
 
 	// NETWORK
-	public void writeToStream(ByteBuf data) throws IOException
+	public void writeToStream(AEBaseTile tile, ByteBuf data) throws IOException
 	{
+		try
+		{
+			method.invoke( tile, data );
+		}
+		catch (IllegalAccessException e)
+		{
+			throw new RuntimeException( e );
+		}
+		catch (IllegalArgumentException e)
+		{
+			throw new RuntimeException( e );
+		}
+		catch (InvocationTargetException e)
+		{
+			throw new RuntimeException( e );
+		}
 	}
 
 	// NETWORK
@@ -54,9 +115,24 @@ public abstract class AETileEventHandler
 	 * @throws IOException
 	 */
 	@SideOnly(Side.CLIENT)
-	public boolean readFromStream(ByteBuf data) throws IOException
+	public boolean readFromStream(AEBaseTile tile, ByteBuf data) throws IOException
 	{
-		return false;
+		try
+		{
+			return (Boolean) method.invoke( tile, data );
+		}
+		catch (IllegalAccessException e)
+		{
+			throw new RuntimeException( e );
+		}
+		catch (IllegalArgumentException e)
+		{
+			throw new RuntimeException( e );
+		}
+		catch (InvocationTargetException e)
+		{
+			throw new RuntimeException( e );
+		}
 	}
 
 }

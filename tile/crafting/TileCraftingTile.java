@@ -28,7 +28,7 @@ import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.AENetworkProxyMultiblock;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 import appeng.util.Platform;
@@ -78,38 +78,28 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			clust.updateName();
 	}
 
-	private class CraftingHandler extends AETileEventHandler
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_TileCraftingTile(NBTTagCompound data)
 	{
+		data.setBoolean( "core", isCoreBlock );
+		if ( isCoreBlock && clust != null )
+			clust.writeToNBT( data );
+	}
 
-		public CraftingHandler() {
-			super( TileEventType.WORLD_NBT );
-		}
-
-		@Override
-		public void writeToNBT(NBTTagCompound data)
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_TileCraftingTile(NBTTagCompound data)
+	{
+		isCoreBlock = data.getBoolean( "core" );
+		if ( isCoreBlock )
 		{
-			data.setBoolean( "core", isCoreBlock );
-			if ( isCoreBlock && clust != null )
-				clust.writeToNBT( data );
+			if ( clust != null )
+				clust.readFromNBT( data );
+			else
+				previousState = (NBTTagCompound) data.copy();
 		}
-
-		@Override
-		public void readFromNBT(NBTTagCompound data)
-		{
-			isCoreBlock = data.getBoolean( "core" );
-			if ( isCoreBlock )
-			{
-				if ( clust != null )
-					clust.readFromNBT( data );
-				else
-					previousState = (NBTTagCompound) data.copy();
-			}
-		}
-
-	};
+	}
 
 	public TileCraftingTile() {
-		addNewHandler( new CraftingHandler() );
 		gridProxy.setFlags( GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL );
 		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 	}

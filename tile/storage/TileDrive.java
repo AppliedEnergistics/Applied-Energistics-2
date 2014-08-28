@@ -32,7 +32,7 @@ import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.storage.DriveWatcher;
 import appeng.me.storage.MEInventoryHandler;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -87,55 +87,46 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 			markForUpdate();
 	}
 
-	private class invManger extends AETileEventHandler
+	@TileEvent(TileEventType.NETWORK_WRITE)
+	public void writeToStream_TileDrive(ByteBuf data) throws IOException
 	{
+		if ( worldObj.getTotalWorldTime() - lastStateChange > 8 )
+			state = 0;
+		else
+			state &= 0x24924924; // just keep the blinks...
 
-		public invManger() {
-			super( TileEventType.WORLD_NBT, TileEventType.NETWORK );
-		}
+		if ( gridProxy.isActive() )
+			state |= 0x80000000;
+		else
+			state &= ~0x80000000;
 
-		@Override
-		public void writeToStream(ByteBuf data) throws IOException
-		{
-			if ( worldObj.getTotalWorldTime() - lastStateChange > 8 )
-				state = 0;
-			else
-				state &= 0x24924924; // just keep the blinks...
+		for (int x = 0; x < getCellCount(); x++)
+			state |= (getCellStatus( x ) << (3 * x));
 
-			if ( gridProxy.isActive() )
-				state |= 0x80000000;
-			else
-				state &= ~0x80000000;
+		data.writeInt( state );
+	}
 
-			for (int x = 0; x < getCellCount(); x++)
-				state |= (getCellStatus( x ) << (3 * x));
+	@TileEvent(TileEventType.NETWORK_READ)
+	public boolean readFromStream_TileDrive(ByteBuf data) throws IOException
+	{
+		int oldState = state;
+		state = data.readInt();
+		lastStateChange = worldObj.getTotalWorldTime();
+		return (state & 0xDB6DB6DB) != (oldState & 0xDB6DB6DB);
+	}
 
-			data.writeInt( state );
-		}
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_TileDrive(NBTTagCompound data)
+	{
+		isCached = false;
+		priority = data.getInteger( "priority" );
+	}
 
-		@Override
-		public boolean readFromStream(ByteBuf data) throws IOException
-		{
-			int oldState = state;
-			state = data.readInt();
-			lastStateChange = worldObj.getTotalWorldTime();
-			return (state & 0xDB6DB6DB) != (oldState & 0xDB6DB6DB);
-		}
-
-		@Override
-		public void readFromNBT(NBTTagCompound data)
-		{
-			isCached = false;
-			priority = data.getInteger( "priority" );
-		}
-
-		@Override
-		public void writeToNBT(NBTTagCompound data)
-		{
-			data.setInteger( "priority", priority );
-		}
-
-	};
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_TileDrive(NBTTagCompound data)
+	{
+		data.setInteger( "priority", priority );
+	}
 
 	@MENetworkEventSubscribe
 	public void powerRender(MENetworkPowerStatusChange c)
@@ -152,7 +143,6 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	public TileDrive() {
 		mySrc = new MachineSource( this );
 		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
-		addNewHandler( new invManger() );
 	}
 
 	@Override

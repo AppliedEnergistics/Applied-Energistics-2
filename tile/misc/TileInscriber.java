@@ -23,7 +23,7 @@ import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.recipes.handlers.Inscribe;
 import appeng.recipes.handlers.Inscribe.InscriberRecipe;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkPowerTile;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -57,73 +57,64 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 		return AECableType.COVERED;
 	}
 
-	private class TileInscriberHandler extends AETileEventHandler
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_TileInscriber(NBTTagCompound data)
 	{
+		inv.writeToNBT( data, "inscriberInv" );
+	}
 
-		public TileInscriberHandler() {
-			super( TileEventType.WORLD_NBT, TileEventType.NETWORK );
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_TileInscriber(NBTTagCompound data)
+	{
+		inv.readFromNBT( data, "inscriberInv" );
+	}
+
+	@TileEvent(TileEventType.NETWORK_READ)
+	public boolean readFromStream_TileInscriber(ByteBuf data) throws IOException
+	{
+		int slot = data.readByte();
+
+		boolean oldSmash = smash;
+		boolean newSmash = (slot & 64) == 64;
+
+		if ( oldSmash != newSmash && newSmash )
+		{
+			smash = true;
+			clientStart = System.currentTimeMillis();
 		}
 
-		@Override
-		public void writeToNBT(NBTTagCompound data)
+		for (int num = 0; num < inv.getSizeInventory(); num++)
 		{
-			inv.writeToNBT( data, "inscriberInv" );
+			if ( (slot & (1 << num)) > 0 )
+				inv.setInventorySlotContents( num, AEItemStack.loadItemStackFromPacket( data ).getItemStack() );
+			else
+				inv.setInventorySlotContents( num, null );
 		}
 
-		@Override
-		public void readFromNBT(NBTTagCompound data)
+		return false;
+	}
+
+	@TileEvent(TileEventType.NETWORK_WRITE)
+	public void writeToStream_TileInscriber(ByteBuf data) throws IOException
+	{
+		int slot = smash ? 64 : 0;
+
+		for (int num = 0; num < inv.getSizeInventory(); num++)
 		{
-			inv.readFromNBT( data, "inscriberInv" );
+			if ( inv.getStackInSlot( num ) != null )
+				slot = slot | (1 << num);
 		}
 
-		@Override
-		public boolean readFromStream(ByteBuf data) throws IOException
+		data.writeByte( slot );
+		for (int num = 0; num < inv.getSizeInventory(); num++)
 		{
-			int slot = data.readByte();
-
-			boolean oldSmash = smash;
-			boolean newSmash = (slot & 64) == 64;
-
-			if ( oldSmash != newSmash && newSmash )
+			if ( (slot & (1 << num)) > 0 )
 			{
-				smash = true;
-				clientStart = System.currentTimeMillis();
-			}
-
-			for (int num = 0; num < inv.getSizeInventory(); num++)
-			{
-				if ( (slot & (1 << num)) > 0 )
-					inv.setInventorySlotContents( num, AEItemStack.loadItemStackFromPacket( data ).getItemStack() );
-				else
-					inv.setInventorySlotContents( num, null );
-			}
-
-			return false;
-		}
-
-		@Override
-		public void writeToStream(ByteBuf data) throws IOException
-		{
-			int slot = smash ? 64 : 0;
-
-			for (int num = 0; num < inv.getSizeInventory(); num++)
-			{
-				if ( inv.getStackInSlot( num ) != null )
-					slot = slot | (1 << num);
-			}
-
-			data.writeByte( slot );
-			for (int num = 0; num < inv.getSizeInventory(); num++)
-			{
-				if ( (slot & (1 << num)) > 0 )
-				{
-					AEItemStack st = AEItemStack.create( inv.getStackInSlot( num ) );
-					st.writeToPacket( data );
-				}
+				AEItemStack st = AEItemStack.create( inv.getStackInSlot( num ) );
+				st.writeToPacket( data );
 			}
 		}
-
-	};
+	}
 
 	@Override
 	public boolean requiresTESR()
@@ -135,7 +126,6 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 		internalMaxPower = 1500;
 		gridProxy.setIdlePowerUsage( 0 );
-		addNewHandler( new TileInscriberHandler() );
 	}
 
 	@Override

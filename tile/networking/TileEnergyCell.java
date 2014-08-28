@@ -10,7 +10,7 @@ import appeng.api.networking.events.MENetworkPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.api.util.AECableType;
 import appeng.me.GridAccessException;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 import appeng.util.SettingsFrom;
@@ -48,31 +48,21 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 		}
 	}
 
-	private class TileEnergyCellHandler extends AETileEventHandler
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_TileEnergyCell(NBTTagCompound data)
 	{
+		if ( !worldObj.isRemote )
+			data.setDouble( "internalCurrentPower", internalCurrentPower );
+	}
 
-		public TileEnergyCellHandler() {
-			super( TileEventType.WORLD_NBT );
-		}
-
-		@Override
-		public void writeToNBT(NBTTagCompound data)
-		{
-			if ( !worldObj.isRemote )
-				data.setDouble( "internalCurrentPower", internalCurrentPower );
-		}
-
-		@Override
-		public void readFromNBT(NBTTagCompound data)
-		{
-			internalCurrentPower = data.getDouble( "internalCurrentPower" );
-		}
-
-	};
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_TileEnergyCell(NBTTagCompound data)
+	{
+		internalCurrentPower = data.getDouble( "internalCurrentPower" );
+	}
 
 	public TileEnergyCell() {
 		gridProxy.setIdlePowerUsage( 0 );
-		addNewHandler( new TileEnergyCellHandler() );
 	}
 
 	@Override

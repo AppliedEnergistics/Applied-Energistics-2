@@ -12,7 +12,7 @@ import net.minecraftforge.common.ForgeChunkManager.Type;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.tile.AEBaseTile;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -23,27 +23,14 @@ public class TileChunkLoader extends AEBaseTile
 	boolean requestTicket = true;
 	Ticket ct;
 
-	class ChunkLoaderHandler extends AETileEventHandler
+	@TileEvent(TileEventType.TICK)
+	public void Tick_TileChunkLoader()
 	{
-
-		public ChunkLoaderHandler() {
-			super( TileEventType.TICK );
-		}
-
-		@Override
-		public void Tick()
+		if ( requestTicket )
 		{
-			if ( requestTicket )
-			{
-				requestTicket = false;
-				initTicket();
-			}
+			requestTicket = false;
+			initTicket();
 		}
-
-	};
-
-	public TileChunkLoader() {
-		addNewHandler( new ChunkLoaderHandler() );
 	}
 
 	void initTicket()

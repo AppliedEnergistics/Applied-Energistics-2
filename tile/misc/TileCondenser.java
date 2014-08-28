@@ -15,7 +15,7 @@ import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
 import appeng.tile.AEBaseInvTile;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
@@ -34,31 +34,21 @@ public class TileCondenser extends AEBaseInvTile implements IAEAppEngInventory, 
 
 	public double storedPower = 0;
 
-	private class TileCondenserHandler extends AETileEventHandler
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_TileCondenser(NBTTagCompound data)
 	{
+		cm.writeToNBT( data );
+		data.setDouble( "storedPower", storedPower );
+	}
 
-		public TileCondenserHandler() {
-			super( TileEventType.WORLD_NBT );
-		}
-
-		@Override
-		public void writeToNBT(NBTTagCompound data)
-		{
-			cm.writeToNBT( data );
-			data.setDouble( "storedPower", storedPower );
-		}
-
-		@Override
-		public void readFromNBT(NBTTagCompound data)
-		{
-			cm.readFromNBT( data );
-			storedPower = data.getDouble( "storedPower" );
-		}
-
-	};
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_TileCondenser(NBTTagCompound data)
+	{
+		cm.readFromNBT( data );
+		storedPower = data.getDouble( "storedPower" );
+	}
 
 	public TileCondenser() {
-		addNewHandler( new TileCondenserHandler() );
 		cm.registerSetting( Settings.CONDENSER_OUTPUT, CondenserOuput.TRASH );
 	}
 

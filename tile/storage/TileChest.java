@@ -57,7 +57,7 @@ import appeng.api.util.IConfigManager;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkPowerTile;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -143,114 +143,105 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			recalculateDisplay();
 	}
 
-	private class invManger extends AETileEventHandler
+	@TileEvent(TileEventType.TICK)
+	public void Tick_TileChest()
 	{
+		if ( worldObj.isRemote )
+			return;
 
-		public invManger() {
-			super( TileEventType.TICK, TileEventType.NETWORK, TileEventType.WORLD_NBT );
-		}
+		double idleUsage = gridProxy.getIdlePowerUsage();
 
-		@Override
-		public void Tick()
+		try
 		{
-			if ( worldObj.isRemote )
-				return;
-
-			double idleUsage = gridProxy.getIdlePowerUsage();
-
-			try
+			if ( !gridProxy.getEnergy().isNetworkPowered() )
 			{
-				if ( !gridProxy.getEnergy().isNetworkPowered() )
-				{
-					double powerUsed = extractAEPower( idleUsage, Actionable.MODULATE, PowerMultiplier.CONFIG ); // drain
-					if ( powerUsed + 0.1 >= idleUsage != (state & 0x40) > 0 )
-						recalculateDisplay();
-				}
-			}
-			catch (GridAccessException e)
-			{
-				double powerUsed = extractAEPower( gridProxy.getIdlePowerUsage(), Actionable.MODULATE, PowerMultiplier.CONFIG ); // drain
+				double powerUsed = extractAEPower( idleUsage, Actionable.MODULATE, PowerMultiplier.CONFIG ); // drain
 				if ( powerUsed + 0.1 >= idleUsage != (state & 0x40) > 0 )
 					recalculateDisplay();
 			}
-
-			if ( inv.getStackInSlot( 0 ) != null )
-			{
-				tryToStoreContents();
-			}
 		}
-
-		@Override
-		public void writeToStream(ByteBuf data) throws IOException
+		catch (GridAccessException e)
 		{
-			if ( worldObj.getTotalWorldTime() - lastStateChange > 8 )
-				state = 0;
-			else
-				state &= 0x24924924; // just keep the blinks...
-
-			for (int x = 0; x < getCellCount(); x++)
-				state |= (getCellStatus( x ) << (3 * x));
-
-			if ( isPowered() )
-				state |= 0x40;
-			else
-				state &= ~0x40;
-
-			data.writeByte( state );
-			data.writeByte( paintedColor.ordinal() );
-
-			ItemStack is = inv.getStackInSlot( 1 );
-
-			if ( is == null )
-			{
-				data.writeInt( 0 );
-			}
-			else
-			{
-				data.writeInt( (is.getItemDamage() << Platform.DEF_OFFSET) | Item.getIdFromItem( is.getItem() ) );
-			}
+			double powerUsed = extractAEPower( gridProxy.getIdlePowerUsage(), Actionable.MODULATE, PowerMultiplier.CONFIG ); // drain
+			if ( powerUsed + 0.1 >= idleUsage != (state & 0x40) > 0 )
+				recalculateDisplay();
 		}
 
-		@Override
-		public boolean readFromStream(ByteBuf data) throws IOException
+		if ( inv.getStackInSlot( 0 ) != null )
 		{
-			int oldState = state;
-			ItemStack oldType = storageType;
-
-			state = data.readByte();
-			AEColor oldPaintedColor = paintedColor;
-			paintedColor = AEColor.values()[data.readByte()];
-
-			int item = data.readInt();
-
-			if ( item == 0 )
-				storageType = null;
-			else
-				storageType = new ItemStack( Item.getItemById( item & 0xffff ), 1, item >> Platform.DEF_OFFSET );
-
-			lastStateChange = worldObj.getTotalWorldTime();
-
-			return oldPaintedColor != paintedColor || (state & 0xDB6DB6DB) != (oldState & 0xDB6DB6DB) || !Platform.isSameItemPrecise( oldType, storageType );
+			tryToStoreContents();
 		}
+	}
 
-		@Override
-		public void readFromNBT(NBTTagCompound data)
+	@TileEvent(TileEventType.NETWORK_WRITE)
+	public void writeToStream_TileChest(ByteBuf data) throws IOException
+	{
+		if ( worldObj.getTotalWorldTime() - lastStateChange > 8 )
+			state = 0;
+		else
+			state &= 0x24924924; // just keep the blinks...
+
+		for (int x = 0; x < getCellCount(); x++)
+			state |= (getCellStatus( x ) << (3 * x));
+
+		if ( isPowered() )
+			state |= 0x40;
+		else
+			state &= ~0x40;
+
+		data.writeByte( state );
+		data.writeByte( paintedColor.ordinal() );
+
+		ItemStack is = inv.getStackInSlot( 1 );
+
+		if ( is == null )
 		{
-			config.readFromNBT( data );
-			priority = data.getInteger( "priority" );
-			if ( data.hasKey( "paintedColor" ) )
-				paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
+			data.writeInt( 0 );
 		}
-
-		@Override
-		public void writeToNBT(NBTTagCompound data)
+		else
 		{
-			config.writeToNBT( data );
-			data.setInteger( "priority", priority );
-			data.setByte( "paintedColor", (byte) paintedColor.ordinal() );
+			data.writeInt( (is.getItemDamage() << Platform.DEF_OFFSET) | Item.getIdFromItem( is.getItem() ) );
 		}
+	}
 
-	};
+	@TileEvent(TileEventType.NETWORK_READ)
+	public boolean readFromStream_TileChest(ByteBuf data) throws IOException
+	{
+		int oldState = state;
+		ItemStack oldType = storageType;
+
+		state = data.readByte();
+		AEColor oldPaintedColor = paintedColor;
+		paintedColor = AEColor.values()[data.readByte()];
+
+		int item = data.readInt();
+
+		if ( item == 0 )
+			storageType = null;
+		else
+			storageType = new ItemStack( Item.getItemById( item & 0xffff ), 1, item >> Platform.DEF_OFFSET );
+
+		lastStateChange = worldObj.getTotalWorldTime();
+
+		return oldPaintedColor != paintedColor || (state & 0xDB6DB6DB) != (oldState & 0xDB6DB6DB) || !Platform.isSameItemPrecise( oldType, storageType );
+	}
+
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_TileChest(NBTTagCompound data)
+	{
+		config.readFromNBT( data );
+		priority = data.getInteger( "priority" );
+		if ( data.hasKey( "paintedColor" ) )
+			paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
+	}
+
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_TileChest(NBTTagCompound data)
+	{
+		config.writeToNBT( data );
+		data.setInteger( "priority", priority );
+		data.setByte( "paintedColor", (byte) paintedColor.ordinal() );
+	}
 
 	@MENetworkEventSubscribe
 	public void powerRender(MENetworkPowerStatusChange c)
@@ -267,7 +258,6 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	public TileChest() {
 		internalMaxPower = PowerMultiplier.CONFIG.multiply( 40 );
 		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
-		addNewHandler( new invManger() );
 		config.registerSetting( Settings.SORT_BY, SortOrder.NAME );
 		config.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
 		config.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );

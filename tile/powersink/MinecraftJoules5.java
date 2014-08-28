@@ -7,6 +7,8 @@ import appeng.core.AppEng;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IMJ5;
 import appeng.integration.abstraction.helpers.BaseMJperdition;
+import appeng.tile.TileEvent;
+import appeng.tile.events.TileEventType;
 import appeng.transformer.annotations.integration.Interface;
 import appeng.transformer.annotations.integration.Method;
 import appeng.util.Platform;
@@ -20,6 +22,14 @@ public abstract class MinecraftJoules5 extends AERootPoweredTile implements IPow
 
 	BaseMJperdition bcPowerWrapper;
 
+	@Method(iname = "MJ5")
+	@TileEvent(TileEventType.TICK)
+	public void Tick_MinecraftJoules5()
+	{
+		if ( bcPowerWrapper != null )
+			bcPowerWrapper.Tick();
+	}
+
 	public MinecraftJoules5() {
 		if ( Platform.isServer() )
 		{
@@ -30,7 +40,7 @@ public abstract class MinecraftJoules5 extends AERootPoweredTile implements IPow
 					IMJ5 mjIntegration = (IMJ5) AppEng.instance.getIntegration( IntegrationType.MJ5 );
 					if ( mjIntegration != null )
 					{
-						addNewHandler( bcPowerWrapper = (BaseMJperdition) mjIntegration.createPerdition( this ) );
+						bcPowerWrapper = (BaseMJperdition) mjIntegration.createPerdition( this );
 						if ( bcPowerWrapper != null )
 							bcPowerWrapper.configure( 1, 380, 1.0f / 5.0f, 1000 );
 					}

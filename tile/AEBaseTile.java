@@ -3,9 +3,9 @@ package appeng.tile;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,8 +38,8 @@ import appeng.util.SettingsFrom;
 public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, ICustomNameObject
 {
 
-	private final EnumMap<TileEventType, List<AETileEventHandler>> handlers = new EnumMap<TileEventType, List<AETileEventHandler>>( TileEventType.class );
-	private final static HashMap<Class, ItemStackSrc> myItem = new HashMap();
+	static private final HashMap<Class, EnumMap<TileEventType, List<AETileEventHandler>>> handlers = new HashMap<Class, EnumMap<TileEventType, List<AETileEventHandler>>>();
+	static private final HashMap<Class, ItemStackSrc> myItem = new HashMap();
 
 	private ForgeDirection forward = ForgeDirection.UNKNOWN;
 	private ForgeDirection up = ForgeDirection.UNKNOWN;
@@ -73,26 +73,45 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	protected boolean hasHandlerFor(TileEventType type)
 	{
-		List<AETileEventHandler> list = handlers.get( type );
+		List<AETileEventHandler> list = getHandlerListFor( type );
 		return list != null;
 	}
 
 	protected List<AETileEventHandler> getHandlerListFor(TileEventType type)
 	{
-		List<AETileEventHandler> list = handlers.get( type );
+		Class clz = getClass();
+		EnumMap<TileEventType, List<AETileEventHandler>> handlerSet = handlers.get( clz );
+
+		if ( handlerSet == null )
+		{
+			handlers.put( clz, handlerSet = new EnumMap<TileEventType, List<AETileEventHandler>>( TileEventType.class ) );
+
+			for (Method m : clz.getMethods())
+			{
+				TileEvent te = m.getAnnotation( TileEvent.class );
+				if ( te != null )
+				{
+					addHandler( handlerSet, te.value(), m );
+				}
+			}
+		}
+
+		List<AETileEventHandler> list = handlerSet.get( type );
 
 		if ( list == null )
-			handlers.put( type, list = new LinkedList<AETileEventHandler>() );
+			handlerSet.put( type, list = new LinkedList<AETileEventHandler>() );
 
 		return list;
 	}
 
-	protected void addNewHandler(AETileEventHandler handler)
+	private void addHandler(EnumMap<TileEventType, List<AETileEventHandler>> handlerSet, TileEventType value, Method m)
 	{
-		EnumSet<TileEventType> types = handler.getSubscribedEvents();
+		List<AETileEventHandler> list = handlerSet.get( value );
 
-		for (TileEventType type : types)
-			getHandlerListFor( type ).add( handler );
+		if ( list == null )
+			handlerSet.put( value, list = new ArrayList() );
+
+		list.add( new AETileEventHandler( m, value ) );
 	}
 
 	@Override
@@ -101,11 +120,16 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		return hasHandlerFor( TileEventType.TICK );
 	}
 
+	final public void Tick()
+	{
+
+	}
+
 	@Override
 	final public void updateEntity()
 	{
 		for (AETileEventHandler h : getHandlerListFor( TileEventType.TICK ))
-			h.Tick();
+			h.Tick( this );
 	}
 
 	@Override
@@ -126,7 +150,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	@Override
 	// NOTE: WAS FINAL, changed for Immibis
-	public void writeToNBT(NBTTagCompound data)
+	final public void writeToNBT(NBTTagCompound data)
 	{
 		super.writeToNBT( data );
 
@@ -139,13 +163,13 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		if ( customName != null )
 			data.setString( "customName", customName );
 
-		for (AETileEventHandler h : getHandlerListFor( TileEventType.WORLD_NBT ))
-			h.writeToNBT( data );
+		for (AETileEventHandler h : getHandlerListFor( TileEventType.WORLD_NBT_WRITE ))
+			h.writeToNBT( this, data );
 	}
 
 	@Override
 	// NOTE: WAS FINAL, changed for Immibis
-	public void readFromNBT(NBTTagCompound data)
+	final public void readFromNBT(NBTTagCompound data)
 	{
 		super.readFromNBT( data );
 
@@ -166,9 +190,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		{
 		}
 
-		for (AETileEventHandler h : getHandlerListFor( TileEventType.WORLD_NBT ))
+		for (AETileEventHandler h : getHandlerListFor( TileEventType.WORLD_NBT_READ ))
 		{
-			h.readFromNBT( data );
+			h.readFromNBT( this, data );
 		}
 	}
 
@@ -182,8 +206,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 				data.writeByte( orientation );
 			}
 
-			for (AETileEventHandler h : getHandlerListFor( TileEventType.NETWORK ))
-				h.writeToStream( data );
+			for (AETileEventHandler h : getHandlerListFor( TileEventType.NETWORK_WRITE ))
+				h.writeToStream( this, data );
 		}
 		catch (Throwable t)
 		{
@@ -191,7 +215,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		}
 	}
 
-	final public boolean readfromStream(ByteBuf data)
+	final public boolean readFromStream(ByteBuf data)
 	{
 		boolean output = false;
 
@@ -211,8 +235,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			}
 
 			renderFragment = 100;
-			for (AETileEventHandler h : getHandlerListFor( TileEventType.NETWORK ))
-				if ( h.readFromStream( data ) )
+			for (AETileEventHandler h : getHandlerListFor( TileEventType.NETWORK_READ ))
+				if ( h.readFromStream( this, data ) )
 					output = true;
 
 			if ( (renderFragment & 1) == 1 )
@@ -296,7 +320,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		if ( pkt.func_148853_f() == 64 )
 		{
 			ByteBuf stream = Unpooled.copiedBuffer( pkt.func_148857_g().getByteArray( "X" ) );
-			if ( readfromStream( stream ) )
+			if ( readFromStream( stream ) )
 				markForUpdate();
 		}
 	}

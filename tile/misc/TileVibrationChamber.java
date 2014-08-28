@@ -19,7 +19,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -46,49 +46,39 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		return AECableType.COVERED;
 	}
 
-	private class TileVibrationChamberHandler extends AETileEventHandler
+	@TileEvent(TileEventType.NETWORK_READ)
+	public boolean readFromStream_TileVibrationChamber(ByteBuf data) throws IOException
 	{
+		boolean wasOn = isOn;
+		isOn = data.readBoolean();
+		return wasOn != isOn; // TESR dosn't need updates!
+	}
 
-		public TileVibrationChamberHandler() {
-			super( TileEventType.NETWORK, TileEventType.WORLD_NBT );
-		}
+	@TileEvent(TileEventType.NETWORK_WRITE)
+	public void writeToStream_TileVibrationChamber(ByteBuf data) throws IOException
+	{
+		data.writeBoolean( burnTime > 0 );
+	}
 
-		@Override
-		public boolean readFromStream(ByteBuf data) throws IOException
-		{
-			boolean wasOn = isOn;
-			isOn = data.readBoolean();
-			return wasOn != isOn; // TESR dosn't need updates!
-		}
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_TileVibrationChamber(NBTTagCompound data)
+	{
+		data.setDouble( "burnTime", burnTime );
+		data.setDouble( "maxBurnTime", maxBurnTime );
+		data.setInteger( "burnSpeed", burnSpeed );
+	}
 
-		@Override
-		public void writeToStream(ByteBuf data) throws IOException
-		{
-			data.writeBoolean( burnTime > 0 );
-		}
-
-		@Override
-		public void writeToNBT(NBTTagCompound data)
-		{
-			data.setDouble( "burnTime", burnTime );
-			data.setDouble( "maxBurnTime", maxBurnTime );
-			data.setInteger( "burnSpeed", burnSpeed );
-		}
-
-		@Override
-		public void readFromNBT(NBTTagCompound data)
-		{
-			burnTime = data.getDouble( "burnTime" );
-			maxBurnTime = data.getDouble( "maxBurnTime" );
-			burnSpeed = data.getInteger( "burnSpeed" );
-		}
-
-	};
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_TileVibrationChamber(NBTTagCompound data)
+	{
+		burnTime = data.getDouble( "burnTime" );
+		maxBurnTime = data.getDouble( "maxBurnTime" );
+		burnSpeed = data.getInteger( "burnSpeed" );
+	}
 
 	public TileVibrationChamber() {
 		gridProxy.setIdlePowerUsage( 0 );
 		gridProxy.setFlags();
-		addNewHandler( new TileVibrationChamberHandler() );
 	}
 
 	@Override

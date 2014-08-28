@@ -11,7 +11,7 @@ import appeng.api.config.PowerUnits;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.tile.AEBaseInvTile;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 
 public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowerStorage
@@ -40,29 +40,16 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 		return internalPowerSides.clone();
 	}
 
-	private class AEPoweredRootHandler extends AETileEventHandler
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_AERootPoweredTile(NBTTagCompound data)
 	{
+		data.setDouble( "internalCurrentPower", internalCurrentPower );
+	}
 
-		public AEPoweredRootHandler() {
-			super( TileEventType.WORLD_NBT );
-		}
-
-		@Override
-		public void writeToNBT(NBTTagCompound data)
-		{
-			data.setDouble( "internalCurrentPower", internalCurrentPower );
-		}
-
-		@Override
-		public void readFromNBT(NBTTagCompound data)
-		{
-			internalCurrentPower = data.getDouble( "internalCurrentPower" );
-		}
-
-	};
-
-	public AERootPoweredTile() {
-		addNewHandler( new AEPoweredRootHandler() );
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_AERootPoweredTile(NBTTagCompound data)
+	{
+		internalCurrentPower = data.getDouble( "internalCurrentPower" );
 	}
 
 	final protected double getExternalPowerDemand(PowerUnits externalUnit, double maxPowerRequired)

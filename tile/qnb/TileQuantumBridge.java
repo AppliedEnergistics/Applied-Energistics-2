@@ -21,7 +21,7 @@ import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.QuantumCalculator;
 import appeng.me.cluster.implementations.QuantumCluster;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -50,57 +50,46 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	private boolean updateStatus = false;
 
-	class QBridgeHandler extends AETileEventHandler
+	@TileEvent(TileEventType.TICK)
+	public void Tick_TileQuantumBridge()
 	{
-
-		public QBridgeHandler() {
-			super( TileEventType.NETWORK, TileEventType.TICK );
-			gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
-			gridProxy.setFlags( GridFlags.DENSE_CAPACITY );
-			gridProxy.setIdlePowerUsage( 22 );
-			inv.setMaxStackSize( 1 );
-		}
-
-		@Override
-		public void Tick()
+		if ( updateStatus )
 		{
-			if ( updateStatus )
-			{
-				updateStatus = false;
-				if ( clust != null )
-					clust.updateStatus( true );
-				markForUpdate();
-			}
+			updateStatus = false;
+			if ( clust != null )
+				clust.updateStatus( true );
+			markForUpdate();
 		}
+	}
 
-		@Override
-		public void writeToStream(ByteBuf data) throws IOException
-		{
-			int out = xdex;
+	@TileEvent(TileEventType.NETWORK_WRITE)
+	public void writeToStream_TileQuantumBridge(ByteBuf data) throws IOException
+	{
+		int out = xdex;
 
-			if ( getStackInSlot( 0 ) != null && xdex != -1 )
-				out = out | hasSingularity;
+		if ( getStackInSlot( 0 ) != null && xdex != -1 )
+			out = out | hasSingularity;
 
-			if ( gridProxy.isActive() && xdex != -1 )
-				out = out | powered;
+		if ( gridProxy.isActive() && xdex != -1 )
+			out = out | powered;
 
-			data.writeByte( (byte) out );
-		}
+		data.writeByte( (byte) out );
+	}
 
-		@Override
-		public boolean readFromStream(ByteBuf data) throws IOException
-		{
-			int oldValue = xdex;
-			xdex = data.readByte();
-			bridgePowered = (xdex | powered) == powered;
-			return xdex != oldValue;
-		}
-
-	};
+	@TileEvent(TileEventType.NETWORK_READ)
+	public boolean readFromStream_TileQuantumBridge(ByteBuf data) throws IOException
+	{
+		int oldValue = xdex;
+		xdex = data.readByte();
+		bridgePowered = (xdex | powered) == powered;
+		return xdex != oldValue;
+	}
 
 	public TileQuantumBridge() {
-		addNewHandler( new QBridgeHandler() );
+		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 		gridProxy.setFlags( GridFlags.DENSE_CAPACITY );
+		gridProxy.setIdlePowerUsage( 22 );
+		inv.setMaxStackSize( 1 );
 	}
 
 	public IInventory getInternalInventory()

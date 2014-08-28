@@ -47,7 +47,7 @@ import appeng.api.util.IConfigManager;
 import appeng.helpers.PlayerSecuirtyWrapper;
 import appeng.me.GridAccessException;
 import appeng.me.storage.SecurityInventory;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -122,75 +122,67 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		isActive = false;
 	}
 
-	class SecurityHandler extends AETileEventHandler
+	@TileEvent(TileEventType.NETWORK_READ)
+	public boolean readFromStream_TileSecurity(ByteBuf data) throws IOException
 	{
+		boolean wasActive = isActive;
+		isActive = data.readBoolean();
 
-		public SecurityHandler() {
-			super( TileEventType.WORLD_NBT, TileEventType.NETWORK );
+		AEColor oldPaintedColor = paintedColor;
+		paintedColor = AEColor.values()[data.readByte()];
+
+		return oldPaintedColor != paintedColor || wasActive != isActive;
+	}
+
+	@TileEvent(TileEventType.NETWORK_WRITE)
+	public void writeToStream_TileSecurity(ByteBuf data) throws IOException
+	{
+		data.writeBoolean( gridProxy.isActive() );
+		data.writeByte( paintedColor.ordinal() );
+	}
+
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_TileSecurity(NBTTagCompound data)
+	{
+		cm.writeToNBT( data );
+		data.setByte( "paintedColor", (byte) paintedColor.ordinal() );
+
+		data.setLong( "securityKey", securityKey );
+		configSlot.writeToNBT( data, "config" );
+
+		NBTTagCompound storedItems = new NBTTagCompound();
+
+		int offset = 0;
+		for (IAEItemStack ais : inventory.storedItems)
+		{
+			NBTTagCompound it = new NBTTagCompound();
+			ais.getItemStack().writeToNBT( it );
+			storedItems.setTag( "" + (offset++), it );
 		}
 
-		@Override
-		public boolean readFromStream(ByteBuf data) throws IOException
+		data.setTag( "storedItems", storedItems );
+	}
+
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_TileSecurity(NBTTagCompound data)
+	{
+		cm.readFromNBT( data );
+		if ( data.hasKey( "paintedColor" ) )
+			paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
+
+		securityKey = data.getLong( "securityKey" );
+		configSlot.readFromNBT( data, "config" );
+
+		NBTTagCompound storedItems = data.getCompoundTag( "storedItems" );
+		for (Object key : storedItems.func_150296_c())
 		{
-			boolean wasActive = isActive;
-			isActive = data.readBoolean();
-
-			AEColor oldPaintedColor = paintedColor;
-			paintedColor = AEColor.values()[data.readByte()];
-
-			return oldPaintedColor != paintedColor || wasActive != isActive;
-		}
-
-		@Override
-		public void writeToStream(ByteBuf data) throws IOException
-		{
-			data.writeBoolean( gridProxy.isActive() );
-			data.writeByte( paintedColor.ordinal() );
-		}
-
-		@Override
-		public void writeToNBT(NBTTagCompound data)
-		{
-			cm.writeToNBT( data );
-			data.setByte( "paintedColor", (byte) paintedColor.ordinal() );
-
-			data.setLong( "securityKey", securityKey );
-			configSlot.writeToNBT( data, "config" );
-
-			NBTTagCompound storedItems = new NBTTagCompound();
-
-			int offset = 0;
-			for (IAEItemStack ais : inventory.storedItems)
+			NBTBase obj = storedItems.getTag( (String) key );
+			if ( obj instanceof NBTTagCompound )
 			{
-				NBTTagCompound it = new NBTTagCompound();
-				ais.getItemStack().writeToNBT( it );
-				storedItems.setTag( "" + (offset++), it );
-			}
-
-			data.setTag( "storedItems", storedItems );
-		}
-
-		@Override
-		public void readFromNBT(NBTTagCompound data)
-		{
-			cm.readFromNBT( data );
-			if ( data.hasKey( "paintedColor" ) )
-				paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
-
-			securityKey = data.getLong( "securityKey" );
-			configSlot.readFromNBT( data, "config" );
-
-			NBTTagCompound storedItems = data.getCompoundTag( "storedItems" );
-			for (Object key : storedItems.func_150296_c())
-			{
-				NBTBase obj = storedItems.getTag( (String) key );
-				if ( obj instanceof NBTTagCompound )
-				{
-					inventory.storedItems.add( AEItemStack.create( ItemStack.loadItemStackFromNBT( (NBTTagCompound) obj ) ) );
-				}
+				inventory.storedItems.add( AEItemStack.create( ItemStack.loadItemStackFromNBT( (NBTTagCompound) obj ) ) );
 			}
 		}
-	};
+	}
 
 	public void inventoryChanged()
 	{
@@ -243,7 +235,6 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	}
 
 	public TileSecurity() {
-		addNewHandler( new SecurityHandler() );
 		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 		gridProxy.setIdlePowerUsage( 2.0 );
 		diffrence++;

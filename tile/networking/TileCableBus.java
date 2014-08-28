@@ -33,7 +33,7 @@ import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IImmibisMicroblocks;
 import appeng.parts.CableBusContainer;
 import appeng.tile.AEBaseTile;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 
@@ -43,49 +43,40 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	public CableBusContainer cb = new CableBusContainer( this );
 	private int oldLV = -1; // on re-calculate light when it changes
 
-	class CableBusHandler extends AETileEventHandler
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_TileCableBus(NBTTagCompound data)
 	{
+		cb.readFromNBT( data );
+	}
 
-		public CableBusHandler() {
-			super( TileEventType.NETWORK, TileEventType.WORLD_NBT );
-		}
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_TileCableBus(NBTTagCompound data)
+	{
+		cb.writeToNBT( data );
+	}
 
-		@Override
-		public void readFromNBT(NBTTagCompound data)
+	@TileEvent(TileEventType.NETWORK_READ)
+	public boolean readFromStream_TileCableBus(ByteBuf data) throws IOException
+	{
+		boolean ret = cb.readFromStream( data );
+
+		int newLV = cb.getLightValue();
+		if ( newLV != oldLV )
 		{
-			cb.readFromNBT( data );
+			oldLV = newLV;
+			worldObj.func_147451_t( xCoord, yCoord, zCoord );
+			// worldObj.updateAllLightTypes( xCoord, yCoord, zCoord );
 		}
 
-		@Override
-		public void writeToNBT(NBTTagCompound data)
-		{
-			cb.writeToNBT( data );
-		}
+		updateTileSetting();
+		return ret;
+	}
 
-		@Override
-		public boolean readFromStream(ByteBuf data) throws IOException
-		{
-			boolean ret = cb.readFromStream( data );
-
-			int newLV = cb.getLightValue();
-			if ( newLV != oldLV )
-			{
-				oldLV = newLV;
-				worldObj.func_147451_t( xCoord, yCoord, zCoord );
-				// worldObj.updateAllLightTypes( xCoord, yCoord, zCoord );
-			}
-
-			updateTileSetting();
-			return ret;
-		}
-
-		@Override
-		public void writeToStream(ByteBuf data) throws IOException
-		{
-			cb.writeToStream( data );
-		}
-
-	};
+	@TileEvent(TileEventType.NETWORK_WRITE)
+	public void writeToStream_TileCableBus(ByteBuf data) throws IOException
+	{
+		cb.writeToStream( data );
+	}
 
 	@Override
 	public boolean isInWorld()
@@ -169,10 +160,6 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	public void getDrops(World w, int x, int y, int z, ArrayList drops)
 	{
 		cb.getDrops( drops );
-	}
-
-	public TileCableBus() {
-		addNewHandler( new CableBusHandler() );
 	}
 
 	@Override

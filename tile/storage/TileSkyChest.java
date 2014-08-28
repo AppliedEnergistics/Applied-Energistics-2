@@ -8,7 +8,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.tile.AEBaseInvTile;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
@@ -20,35 +20,22 @@ public class TileSkyChest extends AEBaseInvTile
 	final int sides[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35 };
 	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 * 4 );
 
-	class SkyChestHnadler extends AETileEventHandler
+	@TileEvent(TileEventType.NETWORK_WRITE)
+	public void writeToStream_TileSkyChest(ByteBuf data) throws IOException
 	{
+		data.writeBoolean( playerOpen > 0 );
+	}
 
-		public SkyChestHnadler() {
-			super( TileEventType.NETWORK );
-		}
+	@TileEvent(TileEventType.NETWORK_READ)
+	public boolean readFromStream_TileSkyChest(ByteBuf data) throws IOException
+	{
+		int wasOpen = playerOpen;
+		playerOpen = data.readBoolean() ? 1 : 0;
 
-		@Override
-		public void writeToStream(ByteBuf data) throws IOException
-		{
-			data.writeBoolean( playerOpen > 0 );
-		}
+		if ( wasOpen != playerOpen )
+			lastEvent = System.currentTimeMillis();
 
-		@Override
-		public boolean readFromStream(ByteBuf data) throws IOException
-		{
-			int wasOpen = playerOpen;
-			playerOpen = data.readBoolean() ? 1 : 0;
-
-			if ( wasOpen != playerOpen )
-				lastEvent = System.currentTimeMillis();
-
-			return false; // TESR yo!
-		}
-
-	};
-
-	public TileSkyChest() {
-		addNewHandler( new SkyChestHnadler() );
+		return false; // TESR yo!
 	}
 
 	// server

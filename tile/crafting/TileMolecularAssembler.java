@@ -41,7 +41,7 @@ import appeng.core.sync.packets.PacketAssemblerAnimation;
 import appeng.items.misc.ItemEncodedPattern;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.UpgradeInventory;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -175,81 +175,71 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		return 5;
 	}
 
-	private class TileMolecularAssemblerHandler extends AETileEventHandler
+	@TileEvent(TileEventType.NETWORK_READ)
+	public boolean readFromStream_TileMolecularAssembler(ByteBuf data) throws IOException
 	{
+		boolean oldPower = isPowered;
+		isPowered = data.readBoolean();
+		return isPowered != oldPower;
+	}
 
-		public TileMolecularAssemblerHandler() {
-			super( TileEventType.WORLD_NBT, TileEventType.NETWORK );
-		}
+	@TileEvent(TileEventType.NETWORK_WRITE)
+	public void writeToStream_TileMolecularAssembler(ByteBuf data) throws IOException
+	{
+		data.writeBoolean( isPowered );
+	}
 
-		@Override
-		public boolean readFromStream(ByteBuf data) throws IOException
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_TileMolecularAssembler(NBTTagCompound data)
+	{
+		if ( forcePlan && myPlan != null )
 		{
-			boolean oldPower = isPowered;
-			isPowered = data.readBoolean();
-			return isPowered != oldPower;
-		}
-
-		@Override
-		public void writeToStream(ByteBuf data) throws IOException
-		{
-			data.writeBoolean( isPowered );
-		}
-
-		@Override
-		public void writeToNBT(NBTTagCompound data)
-		{
-			if ( forcePlan && myPlan != null )
+			ItemStack pattern = myPlan.getPattern();
+			if ( pattern != null )
 			{
-				ItemStack pattern = myPlan.getPattern();
-				if ( pattern != null )
+				NBTTagCompound pdata = new NBTTagCompound();
+				pattern.writeToNBT( pdata );
+				data.setTag( "myPlan", pdata );
+				data.setInteger( "pushDirection", pushDirection.ordinal() );
+			}
+		}
+
+		upgrades.writeToNBT( data, "upgrades" );
+		inv.writeToNBT( data, "inv" );
+		settings.writeToNBT( data );
+	}
+
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_TileMolecularAssembler(NBTTagCompound data)
+	{
+		if ( data.hasKey( "myPlan" ) )
+		{
+			ItemStack myPat = ItemStack.loadItemStackFromNBT( data.getCompoundTag( "myPlan" ) );
+
+			if ( myPat != null && myPat.getItem() instanceof ItemEncodedPattern )
+			{
+				World w = getWorldObj();
+				ItemEncodedPattern iep = (ItemEncodedPattern) myPat.getItem();
+				ICraftingPatternDetails ph = iep.getPatternForItem( myPat, w );
+				if ( ph != null && ph.isCraftable() )
 				{
-					NBTTagCompound pdata = new NBTTagCompound();
-					pattern.writeToNBT( pdata );
-					data.setTag( "myPlan", pdata );
-					data.setInteger( "pushDirection", pushDirection.ordinal() );
+					forcePlan = true;
+					myPlan = ph;
+					pushDirection = ForgeDirection.getOrientation( data.getInteger( "pushDirection" ) );
 				}
 			}
-
-			upgrades.writeToNBT( data, "upgrades" );
-			inv.writeToNBT( data, "inv" );
-			settings.writeToNBT( data );
 		}
 
-		@Override
-		public void readFromNBT(NBTTagCompound data)
-		{
-			if ( data.hasKey( "myPlan" ) )
-			{
-				ItemStack myPat = ItemStack.loadItemStackFromNBT( data.getCompoundTag( "myPlan" ) );
-
-				if ( myPat != null && myPat.getItem() instanceof ItemEncodedPattern )
-				{
-					World w = getWorldObj();
-					ItemEncodedPattern iep = (ItemEncodedPattern) myPat.getItem();
-					ICraftingPatternDetails ph = iep.getPatternForItem( myPat, w );
-					if ( ph != null && ph.isCraftable() )
-					{
-						forcePlan = true;
-						myPlan = ph;
-						pushDirection = ForgeDirection.getOrientation( data.getInteger( "pushDirection" ) );
-					}
-				}
-			}
-
-			upgrades.readFromNBT( data, "upgrades" );
-			inv.readFromNBT( data, "inv" );
-			settings.readFromNBT( data );
-			recalculatePlan();
-		}
-
-	};
+		upgrades.readFromNBT( data, "upgrades" );
+		inv.readFromNBT( data, "inv" );
+		settings.readFromNBT( data );
+		recalculatePlan();
+	}
 
 	public TileMolecularAssembler() {
 		settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		inv.setMaxStackSize( 1 );
 		gridProxy.setIdlePowerUsage( 0.0 );
-		addNewHandler( new TileMolecularAssemblerHandler() );
 	}
 
 	@Override

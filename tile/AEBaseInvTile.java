@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
-import appeng.tile.events.AETileEventHandler;
 import appeng.tile.events.TileEventType;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
@@ -16,38 +15,32 @@ import appeng.tile.inventory.InvOperation;
 public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventory, IAEAppEngInventory
 {
 
-	public AEBaseInvTile() {
-		addNewHandler( new AETileEventHandler( TileEventType.WORLD_NBT ) {
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_AEBaseInvTile(net.minecraft.nbt.NBTTagCompound data)
+	{
+		IInventory inv = getInternalInventory();
+		NBTTagCompound opt = data.getCompoundTag( "inv" );
+		for (int x = 0; x < inv.getSizeInventory(); x++)
+		{
+			NBTTagCompound item = opt.getCompoundTag( "item" + x );
+			inv.setInventorySlotContents( x, ItemStack.loadItemStackFromNBT( item ) );
+		}
+	}
 
-			@Override
-			public void readFromNBT(net.minecraft.nbt.NBTTagCompound data)
-			{
-				IInventory inv = getInternalInventory();
-				NBTTagCompound opt = data.getCompoundTag( "inv" );
-				for (int x = 0; x < inv.getSizeInventory(); x++)
-				{
-					NBTTagCompound item = opt.getCompoundTag( "item" + x );
-					inv.setInventorySlotContents( x, ItemStack.loadItemStackFromNBT( item ) );
-				}
-			}
-
-			@Override
-			public void writeToNBT(net.minecraft.nbt.NBTTagCompound data)
-			{
-				IInventory inv = getInternalInventory();
-				NBTTagCompound opt = new NBTTagCompound();
-				for (int x = 0; x < inv.getSizeInventory(); x++)
-				{
-					NBTTagCompound item = new NBTTagCompound();
-					ItemStack is = getStackInSlot( x );
-					if ( is != null )
-						is.writeToNBT( item );
-					opt.setTag( "item" + x, item );
-				}
-				data.setTag( "inv", opt );
-			}
-
-		} );
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_AEBaseInvTile(net.minecraft.nbt.NBTTagCompound data)
+	{
+		IInventory inv = getInternalInventory();
+		NBTTagCompound opt = new NBTTagCompound();
+		for (int x = 0; x < inv.getSizeInventory(); x++)
+		{
+			NBTTagCompound item = new NBTTagCompound();
+			ItemStack is = getStackInSlot( x );
+			if ( is != null )
+				is.writeToNBT( item );
+			opt.setTag( "item" + x, item );
+		}
+		data.setTag( "inv", opt );
 	}
 
 	@Override

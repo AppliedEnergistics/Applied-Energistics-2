@@ -11,7 +11,7 @@ import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.util.AECableType;
 import appeng.me.GridAccessException;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 import appeng.util.Platform;
@@ -33,41 +33,31 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 		return AECableType.COVERED;
 	}
 
-	private class TileChargerHandler extends AETileEventHandler
+	@TileEvent(TileEventType.NETWORK_READ)
+	public boolean readFromStream_TileQuartzGrowthAccelerator(ByteBuf data) throws IOException
 	{
+		boolean hadPower = hasPower;
+		hasPower = data.readBoolean();
+		return hasPower != hadPower;
+	}
 
-		public TileChargerHandler() {
-			super( TileEventType.NETWORK );
-		}
-
-		@Override
-		public boolean readFromStream(ByteBuf data) throws IOException
+	@TileEvent(TileEventType.NETWORK_WRITE)
+	public void writeToStream_TileQuartzGrowthAccelerator(ByteBuf data) throws IOException
+	{
+		try
 		{
-			boolean hadPower = hasPower;
-			hasPower = data.readBoolean();
-			return hasPower != hadPower;
+			data.writeBoolean( gridProxy.getEnergy().isNetworkPowered() );
 		}
-
-		@Override
-		public void writeToStream(ByteBuf data) throws IOException
+		catch (GridAccessException e)
 		{
-			try
-			{
-				data.writeBoolean( gridProxy.getEnergy().isNetworkPowered() );
-			}
-			catch (GridAccessException e)
-			{
-				data.writeBoolean( false );
-			}
+			data.writeBoolean( false );
 		}
-
-	};
+	}
 
 	public TileQuartzGrowthAccelerator() {
 		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 		gridProxy.setFlags();
 		gridProxy.setIdlePowerUsage( 8 );
-		addNewHandler( new TileChargerHandler() );
 	}
 
 	@Override

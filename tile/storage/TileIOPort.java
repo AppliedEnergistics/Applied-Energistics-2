@@ -34,7 +34,7 @@ import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.UpgradeInventory;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -62,35 +62,26 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 
 	YesNo lastRedstoneState = YesNo.UNDECIDED;
 
-	class TileIOPortHandler extends AETileEventHandler
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_TileIOPort(NBTTagCompound data)
 	{
+		cm.writeToNBT( data );
+		cells.writeToNBT( data, "cells" );
+		upgrades.writeToNBT( data, "upgrades" );
+		data.setInteger( "lastRedstoneState", lastRedstoneState.ordinal() );
+	}
 
-		public TileIOPortHandler() {
-			super( TileEventType.WORLD_NBT );
-		}
-
-		@Override
-		public void writeToNBT(NBTTagCompound data)
-		{
-			cm.writeToNBT( data );
-			cells.writeToNBT( data, "cells" );
-			upgrades.writeToNBT( data, "upgrades" );
-			data.setInteger( "lastRedstoneState", lastRedstoneState.ordinal() );
-		}
-
-		@Override
-		public void readFromNBT(NBTTagCompound data)
-		{
-			cm.readFromNBT( data );
-			cells.readFromNBT( data, "cells" );
-			upgrades.readFromNBT( data, "upgrades" );
-			if ( data.hasKey( "lastRedstoneState" ) )
-				lastRedstoneState = YesNo.values()[data.getInteger( "lastRedstoneState" )];
-		}
-	};
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_TileIOPort(NBTTagCompound data)
+	{
+		cm.readFromNBT( data );
+		cells.readFromNBT( data, "cells" );
+		upgrades.readFromNBT( data, "upgrades" );
+		if ( data.hasKey( "lastRedstoneState" ) )
+			lastRedstoneState = YesNo.values()[data.getInteger( "lastRedstoneState" )];
+	}
 
 	public TileIOPort() {
-		addNewHandler( new TileIOPortHandler() );
 		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 		cm.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		cm.registerSetting( Settings.FULLNESS_MODE, FullnessMode.EMPTY );

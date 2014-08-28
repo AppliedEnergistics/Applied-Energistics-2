@@ -8,7 +8,7 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.util.AECableType;
 import appeng.me.GridAccessException;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkPowerTile;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -26,36 +26,28 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 		return AECableType.COVERED;
 	}
 
-	private class TilePowerRelayHandler extends AETileEventHandler
+	@TileEvent(TileEventType.TICK)
+	public void Tick_TileEnergyAcceptor()
 	{
-
-		public TilePowerRelayHandler() {
-			super( TileEventType.TICK );
-		}
-
-		@Override
-		public void Tick()
+		if ( internalCurrentPower > 0 )
 		{
-			if ( internalCurrentPower > 0 )
+			try
 			{
-				try
-				{
-					IEnergyGrid eg = gridProxy.getEnergy();
-					double powerRequested = internalCurrentPower - eg.injectPower( internalCurrentPower, Actionable.SIMULATE );
+				IEnergyGrid eg = gridProxy.getEnergy();
+				double powerRequested = internalCurrentPower - eg.injectPower( internalCurrentPower, Actionable.SIMULATE );
 
-					if ( powerRequested > 0 )
-					{
-						eg.injectPower( extractAEPower( powerRequested, Actionable.MODULATE, PowerMultiplier.ONE ), Actionable.MODULATE );
-					}
-				}
-				catch (GridAccessException e)
+				if ( powerRequested > 0 )
 				{
-					// null net, probably bads.
+					eg.injectPower( extractAEPower( powerRequested, Actionable.MODULATE, PowerMultiplier.ONE ), Actionable.MODULATE );
 				}
-
 			}
+			catch (GridAccessException e)
+			{
+				// null net, probably bads.
+			}
+
 		}
-	};
+	}
 
 	@Override
 	protected double getFunnelPowerDemand(double maxRequired)
@@ -90,7 +82,6 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 
 	public TileEnergyAcceptor() {
 		gridProxy.setIdlePowerUsage( 0.0 );
-		addNewHandler( new TilePowerRelayHandler() );
 		internalMaxPower = 100;
 	}
 

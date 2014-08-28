@@ -13,7 +13,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.AEBaseTile;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 
@@ -29,42 +29,36 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 	public int hits = 0;
 	public int rotation = 0;
 
-	public TileCrank() {
-		addNewHandler( new AETileEventHandler( TileEventType.NETWORK, TileEventType.TICK ) {
-
-			@Override
-			public void Tick()
+	@TileEvent(TileEventType.TICK)
+	public void Tick_TileCrank()
+	{
+		if ( rotation > 0 )
+		{
+			visibleRotation -= 360 / (ticksPerRoation);
+			charge++;
+			if ( charge >= ticksPerRoation )
 			{
-				if ( rotation > 0 )
-				{
-					visibleRotation -= 360 / (ticksPerRoation);
-					charge++;
-					if ( charge >= ticksPerRoation )
-					{
-						charge -= ticksPerRoation;
-						ICrankable g = getGrinder();
-						if ( g != null )
-							g.applyTurn();
-					}
-
-					rotation--;
-				}
+				charge -= ticksPerRoation;
+				ICrankable g = getGrinder();
+				if ( g != null )
+					g.applyTurn();
 			}
 
-			@Override
-			public boolean readFromStream(ByteBuf data) throws java.io.IOException
-			{
-				rotation = data.readInt();
-				return false;
-			}
+			rotation--;
+		}
+	}
 
-			@Override
-			public void writeToStream(ByteBuf data) throws java.io.IOException
-			{
-				data.writeInt( rotation );
-			}
+	@TileEvent(TileEventType.NETWORK_READ)
+	public boolean readFromStream_TileCrank(ByteBuf data) throws java.io.IOException
+	{
+		rotation = data.readInt();
+		return false;
+	}
 
-		} );
+	@TileEvent(TileEventType.NETWORK_WRITE)
+	public void writeToStream_TileCrank(ByteBuf data) throws java.io.IOException
+	{
+		data.writeInt( rotation );
 	}
 
 	public ICrankable getGrinder()

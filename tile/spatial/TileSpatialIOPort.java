@@ -22,7 +22,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.hooks.TickHandler;
 import appeng.items.storage.ItemSpatialStorageCell;
 import appeng.me.cache.SpatialPylonCache;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -36,29 +36,20 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 	AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
 	YesNo lastRedstoneState = YesNo.UNDECIDED;
 
-	class SpatialTileIOPortHandler extends AETileEventHandler
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_TileSpatialIOPort(NBTTagCompound data)
 	{
+		data.setInteger( "lastRedstoneState", lastRedstoneState.ordinal() );
+	}
 
-		public SpatialTileIOPortHandler() {
-			super( TileEventType.WORLD_NBT );
-		}
-
-		@Override
-		public void writeToNBT(NBTTagCompound data)
-		{
-			data.setInteger( "lastRedstoneState", lastRedstoneState.ordinal() );
-		}
-
-		@Override
-		public void readFromNBT(NBTTagCompound data)
-		{
-			if ( data.hasKey( "lastRedstoneState" ) )
-				lastRedstoneState = YesNo.values()[data.getInteger( "lastRedstoneState" )];
-		}
-	};
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_TileSpatialIOPort(NBTTagCompound data)
+	{
+		if ( data.hasKey( "lastRedstoneState" ) )
+			lastRedstoneState = YesNo.values()[data.getInteger( "lastRedstoneState" )];
+	}
 
 	public TileSpatialIOPort() {
-		addNewHandler( new SpatialTileIOPortHandler() );
 		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 	}
 

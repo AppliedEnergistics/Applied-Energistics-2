@@ -19,7 +19,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.me.GridAccessException;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -40,7 +40,6 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	public TileWireless() {
 		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
-		addNewHandler( new TileWirelessHandler() );
 	}
 
 	@Override
@@ -62,45 +61,34 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 		markForUpdate();
 	}
 
-	class TileWirelessHandler extends AETileEventHandler
+	@TileEvent(TileEventType.NETWORK_READ)
+	public boolean readFromStream_TileWireless(ByteBuf data) throws IOException
 	{
+		int old = clientFlags;
+		clientFlags = data.readByte();
 
-		public TileWirelessHandler() {
-			super( TileEventType.NETWORK );
-		}
+		return old != clientFlags;
+	}
 
-		@Override
-		public boolean readFromStream(ByteBuf data) throws IOException
+	@TileEvent(TileEventType.NETWORK_WRITE)
+	public void writeToStream_TileWireless(ByteBuf data) throws IOException
+	{
+		clientFlags = 0;
+
+		try
 		{
-			boolean eh = super.readFromStream( data );
+			if ( gridProxy.getEnergy().isNetworkPowered() )
+				clientFlags |= POWERED_FLAG;
 
-			int old = clientFlags;
-			clientFlags = data.readByte();
-
-			return eh || old != clientFlags;
+			if ( gridProxy.getNode().meetsChannelRequirements() )
+				clientFlags |= CHANNEL_FLAG;
 		}
-
-		@Override
-		public void writeToStream(ByteBuf data) throws IOException
+		catch (GridAccessException e)
 		{
-
-			clientFlags = 0;
-
-			try
-			{
-				if ( gridProxy.getEnergy().isNetworkPowered() )
-					clientFlags |= POWERED_FLAG;
-
-				if ( gridProxy.getNode().meetsChannelRequirements() )
-					clientFlags |= CHANNEL_FLAG;
-			}
-			catch (GridAccessException e)
-			{
-				// meh
-			}
-
-			data.writeByte( (byte) clientFlags );
+			// meh
 		}
+
+		data.writeByte( (byte) clientFlags );
 	}
 
 	@Override

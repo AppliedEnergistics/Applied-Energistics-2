@@ -14,7 +14,7 @@ import appeng.api.storage.ICellWorkbenchItem;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigureableObject;
 import appeng.tile.AEBaseTile;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -75,33 +75,23 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 		return cacheConfig;
 	}
 
-	class TileCellWorkbenchHandler extends AETileEventHandler
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_TileCellWorkbench(NBTTagCompound data)
 	{
+		cell.writeToNBT( data, "cell" );
+		config.writeToNBT( data, "config" );
+		cm.writeToNBT( data );
+	}
 
-		public TileCellWorkbenchHandler() {
-			super( TileEventType.WORLD_NBT );
-		}
-
-		@Override
-		public void writeToNBT(NBTTagCompound data)
-		{
-			cell.writeToNBT( data, "cell" );
-			config.writeToNBT( data, "config" );
-			cm.writeToNBT( data );
-		}
-
-		@Override
-		public void readFromNBT(NBTTagCompound data)
-		{
-			cell.readFromNBT( data, "cell" );
-			config.readFromNBT( data, "config" );
-			cm.readFromNBT( data );
-		}
-
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_TileCellWorkbench(NBTTagCompound data)
+	{
+		cell.readFromNBT( data, "cell" );
+		config.readFromNBT( data, "config" );
+		cm.readFromNBT( data );
 	}
 
 	public TileCellWorkbench() {
-		addNewHandler( new TileCellWorkbenchHandler() );
 		cm.registerSetting( Settings.COPY_MODE, CopyMode.CLEAR_ON_REMOVE );
 		cell.enableClientEvents = true;
 	}

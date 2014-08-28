@@ -16,7 +16,7 @@ import appeng.me.cluster.implementations.SpatialPylonCalculator;
 import appeng.me.cluster.implementations.SpatialPylonCluster;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.AENetworkProxyMultiblock;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 
@@ -53,34 +53,24 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 		return false;
 	}
 
-	private class TileSpatialPylonHandler extends AETileEventHandler
+	@TileEvent(TileEventType.NETWORK_READ)
+	public boolean readFromStream_TileSpatialPylon(ByteBuf data) throws IOException
 	{
+		int old = displayBits;
+		displayBits = data.readByte();
+		return old != displayBits;
+	}
 
-		public TileSpatialPylonHandler() {
-			super( TileEventType.NETWORK );
-		}
-
-		@Override
-		public boolean readFromStream(ByteBuf data) throws IOException
-		{
-			int old = displayBits;
-			displayBits = data.readByte();
-			return old != displayBits;
-		}
-
-		@Override
-		public void writeToStream(ByteBuf data) throws IOException
-		{
-			data.writeByte( displayBits );
-		}
-
-	};
+	@TileEvent(TileEventType.NETWORK_WRITE)
+	public void writeToStream_TileSpatialPylon(ByteBuf data) throws IOException
+	{
+		data.writeByte( displayBits );
+	}
 
 	public TileSpatialPylon() {
 		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL, GridFlags.MULTIBLOCK );
 		gridProxy.setIdlePowerUsage( 0.5 );
 		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
-		addNewHandler( new TileSpatialPylonHandler() );
 	}
 
 	@Override
@@ -127,14 +117,14 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	@Override
 	public void invalidate()
 	{
-		disconnect(false);
+		disconnect( false );
 		super.invalidate();
 	}
 
 	@Override
 	public void onChunkUnload()
 	{
-		disconnect(false);
+		disconnect( false );
 		super.onChunkUnload();
 	}
 

@@ -8,36 +8,23 @@ import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
-import appeng.tile.events.AETileEventHandler;
+import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.powersink.AEBasePoweredTile;
 
 public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IActionHost, IGridProxyable
 {
 
-	class AENetworkPowerTileHandler extends AETileEventHandler
+	@TileEvent(TileEventType.WORLD_NBT_READ)
+	public void readFromNBT_AENetwork(NBTTagCompound data)
 	{
+		gridProxy.readFromNBT( data );
+	}
 
-		public AENetworkPowerTileHandler() {
-			super( TileEventType.WORLD_NBT );
-		}
-
-		@Override
-		public void readFromNBT(NBTTagCompound data)
-		{
-			gridProxy.readFromNBT( data );
-		}
-
-		@Override
-		public void writeToNBT(NBTTagCompound data)
-		{
-			gridProxy.writeToNBT( data );
-		}
-
-	};
-
-	public AENetworkPowerTile() {
-		addNewHandler( new AENetworkPowerTileHandler() );
+	@TileEvent(TileEventType.WORLD_NBT_WRITE)
+	public void writeToNBT_AENetwork(NBTTagCompound data)
+	{
+		gridProxy.writeToNBT( data );
 	}
 
 	protected AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", getItemFromTile( this ), true );
