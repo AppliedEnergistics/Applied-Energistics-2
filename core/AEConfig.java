@@ -91,8 +91,8 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		return prop;
 	}
 
-	public double spatialPowerScaler = 1.5;
-	public double spatialPowerMultiplier = 1500.0;
+	public double spatialPowerScaler = 1.35;
+	public double spatialPowerMultiplier = 1250.0;
 
 	public String grinderOres[] = {
 			// Vanilla Items
