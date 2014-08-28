@@ -37,6 +37,7 @@ public class GridNode implements IGridNode, IPathItem
 {
 
 	final static private MENetworkChannelsChanged event = new MENetworkChannelsChanged();
+	final static private int channelCount[] = new int[] { 0, 8, 32 };
 
 	final List<IGridConnection> Connections = new LinkedList();
 	GridStorage myStorage = null;
@@ -47,13 +48,42 @@ public class GridNode implements IGridNode, IPathItem
 	Object visitorIterationNumber = null;
 
 	// connection criteria
-	AEColor myColor = AEColor.Transparent;
-	EnumSet<ForgeDirection> validDirections = EnumSet.noneOf( ForgeDirection.class );
+	private int compressedData = 0;
+
+	@Override
+	public void updateState()
+	{
+		EnumSet<GridFlags> set = gridProxy.getFlags();
+
+		compressedData = set.contains( GridFlags.CANNOT_CARRY ) ? 0 : (set.contains( GridFlags.DENSE_CAPACITY ) ? 2 : 1);
+
+		compressedData = compressedData | (gridProxy.getGridColor().ordinal() << 3);
+
+		for (ForgeDirection dir : gridProxy.getConnectableSides())
+			compressedData = compressedData | (1 << (dir.ordinal() + 8));
+
+		FindConnections();
+		getInternalGrid();
+	}
+
+	public int getMaxChannels()
+	{
+		return channelCount[compressedData & 0x03];
+	}
+
+	public AEColor getColor()
+	{
+		return AEColor.values()[(compressedData >> 3) & 0x1F];
+	}
+
+	private boolean isValidDirection(ForgeDirection dir)
+	{
+		return (compressedData & (1 << (8 + dir.ordinal()))) > 0;
+	}
 
 	// old power draw, used to diff
 	public double previousDraw = 0.0;
 
-	private int maxChannels = 8;
 	private int channelData = 0;
 
 	public long lastSecurityKey = -1;
@@ -69,11 +99,6 @@ public class GridNode implements IGridNode, IPathItem
 	public int usedChannels()
 	{
 		return channelData >> 8;
-	}
-
-	public AEColor getColor()
-	{
-		return myColor;
 	}
 
 	public GridNode(IGridBlock what) {
@@ -135,17 +160,6 @@ public class GridNode implements IGridNode, IPathItem
 	public IGridHost getMachine()
 	{
 		return gridProxy.getMachine();
-	}
-
-	@Override
-	public void updateState()
-	{
-		EnumSet<GridFlags> set = gridProxy.getFlags();
-		maxChannels = set.contains( GridFlags.CANNOT_CARRY ) ? 0 : (set.contains( GridFlags.DENSE_CAPACITY ) ? 32 : 8);
-		myColor = gridProxy.getGridColor();
-		validDirections = gridProxy.getConnectableSides();
-		FindConnections();
-		getInternalGrid();
 	}
 
 	@Override
@@ -399,7 +413,7 @@ public class GridNode implements IGridNode, IPathItem
 
 	public boolean canConnect(GridNode from, ForgeDirection dir)
 	{
-		if ( !validDirections.contains( dir ) )
+		if ( !isValidDirection( dir ) )
 			return false;
 
 		if ( !from.getColor().matches( getColor() ) )
@@ -502,7 +516,7 @@ public class GridNode implements IGridNode, IPathItem
 	@Override
 	public boolean canSupportMoreChannels()
 	{
-		return getUsedChannels() < maxChannels;
+		return getUsedChannels() < getMaxChannels();
 	}
 
 	@Override
