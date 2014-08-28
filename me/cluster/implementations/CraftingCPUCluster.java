@@ -276,6 +276,9 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	public void postCraftingStatusChange(IAEItemStack diff)
 	{
+		if ( getGrid() == null )
+			return;
+
 		CraftingGridCache sg = getGrid().getCache( ICraftingGrid.class );
 
 		if ( sg.interestManager.containsKey( diff ) )
@@ -1071,7 +1074,15 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	public boolean isActive()
 	{
-		return getCore().getActionableNode().isActive();
+		TileCraftingTile core = getCore();
+		if ( core == null )
+			return false;
+
+		IGridNode node = core.getActionableNode();
+		if ( node == null )
+			return false;
+
+		return node.isActive();
 	}
 
 	public boolean isMaking(IAEItemStack what)
