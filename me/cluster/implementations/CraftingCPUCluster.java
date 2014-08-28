@@ -276,6 +276,9 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	public void postCraftingStatusChange(IAEItemStack diff)
 	{
+		if ( getGrid() == null )
+			return;
+
 		CraftingGridCache sg = getGrid().getCache( ICraftingGrid.class );
 
 		if ( sg.interestManager.containsKey( diff ) )
