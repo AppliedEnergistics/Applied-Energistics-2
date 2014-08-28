@@ -191,7 +191,12 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		{
 			PartType t = getTypeByStack( is );
 			if ( t != null )
-				return t.getPart().getConstructor( ItemStack.class ).newInstance( is );
+			{
+				if ( t.constructor == null )
+					t.constructor = t.getPart().getConstructor( ItemStack.class );
+
+				return t.constructor.newInstance( is );
+			}
 		}
 		catch (Throwable e)
 		{

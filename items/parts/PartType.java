@@ -1,5 +1,6 @@
 package appeng.items.parts;
 
+import java.lang.reflect.Constructor;
 import java.util.EnumSet;
 
 import appeng.api.parts.IPart;
@@ -111,6 +112,8 @@ public enum PartType
 	private final Class<? extends IPart> myPart;
 	private final GuiText extraName;
 	public final int baseDamage;
+
+	public Constructor<? extends IPart> constructor;
 
 	PartType(int baseMetaValue, AEFeature part, Class<? extends IPart> c) {
 		this( baseMetaValue, part, c, null );
