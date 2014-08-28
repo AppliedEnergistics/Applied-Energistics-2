@@ -289,6 +289,8 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		{
 			storageBiomeID = get( "spatialio", "storageBiomeID", storageBiomeID ).getInt( storageBiomeID );
 			storageProviderID = get( "spatialio", "storageProviderID", storageProviderID ).getInt( storageProviderID );
+			spatialPowerMultiplier = get( "spatialio", "spatialPowerMultiplier", spatialPowerMultiplier ).getDouble( spatialPowerMultiplier );
+			spatialPowerScaler = get( "spatialio", "spatialPowerScaler", spatialPowerScaler ).getDouble( spatialPowerScaler );
 		}
 
 		if ( isFeatureEnabled( AEFeature.VersionChecker ) )
