@@ -74,7 +74,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	protected boolean hasHandlerFor(TileEventType type)
 	{
 		List<AETileEventHandler> list = getHandlerListFor( type );
-		return list != null;
+		return list != null && !list.isEmpty();
 	}
 
 	protected List<AETileEventHandler> getHandlerListFor(TileEventType type)
