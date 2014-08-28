@@ -2,7 +2,6 @@ package appeng.debug;
 
 import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.LinkedList;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

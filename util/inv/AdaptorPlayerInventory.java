@@ -1,21 +1,24 @@
 package appeng.util.inv;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 public class AdaptorPlayerInventory implements IInventory
 {
 
-	private InventoryPlayer src;
-	private int min;
-	private int size;
+	private final IInventory src;
+	private final int min=0;
+	private final int size=36;
 
-	public AdaptorPlayerInventory(InventoryPlayer a) {
-		src = a;
-		min = 0; // a.getStartInventorySide( d );
-		size = 36; // a.getSizeInventorySide( d );
+	public AdaptorPlayerInventory(IInventory playerInv, boolean swap)
+	{
+		
+		if ( swap )
+			src = new WrapperChainedInventory( new WrapperInventoryRange( playerInv, 9, size-9, false ), new WrapperInventoryRange( playerInv, 0, 9, false )  );
+		else
+			src = playerInv;
+		
 	}
 
 	@Override
