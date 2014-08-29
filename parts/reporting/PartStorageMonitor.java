@@ -210,7 +210,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	{
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 		ForgeDirection d = side;
-		GL11.glTranslated( d.offsetX * 0.76, d.offsetY * 0.76, d.offsetZ * 0.76 );
+		GL11.glTranslated( d.offsetX * 0.77, d.offsetY * 0.77, d.offsetZ * 0.77 );
 
 		if ( d == ForgeDirection.UP )
 		{
