@@ -25,6 +25,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
+import appeng.api.util.DimensionalCoord;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.CommonHelper;
@@ -123,6 +124,9 @@ public class PartPlacement
 
 		if ( held != null && Platform.isWrench( player, held, x, y, z ) && player.isSneaking() )
 		{
+			if ( !Platform.hasPermissions( new DimensionalCoord( world, x, y, z ), player ) )
+				return false;
+
 			Block block = world.getBlock( x, y, z );
 			TileEntity tile = world.getTileEntity( x, y, z );
 			IPartHost host = null;
@@ -134,7 +138,7 @@ public class PartPlacement
 			{
 				if ( !world.isRemote )
 				{
-					LookDirection dir = Platform.getPlayerRay( player, getEyeOffset(player) );
+					LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
 					MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.a, dir.b );
 					if ( mop != null )
 					{
@@ -247,7 +251,7 @@ public class PartPlacement
 			Block block = world.getBlock( x, y, z );
 			if ( host != null && player.isSneaking() && block != null )
 			{
-				LookDirection dir = Platform.getPlayerRay( player, getEyeOffset(player) );
+				LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
 				MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.a, dir.b );
 				if ( mop != null )
 				{
@@ -365,7 +369,7 @@ public class PartPlacement
 		if ( !world.isRemote )
 		{
 			Block block = world.getBlock( x, y, z );
-			LookDirection dir = Platform.getPlayerRay( player, getEyeOffset(player) );
+			LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
 			MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.a, dir.b );
 			if ( mop != null )
 			{
@@ -377,6 +381,10 @@ public class PartPlacement
 						return false;
 				}
 			}
+
+			DimensionalCoord dc = host.getLocation();
+			if ( !Platform.hasPermissions( dc, player ) )
+				return false;
 
 			ForgeDirection mySide = host.addPart( held, side, player );
 			if ( mySide != null )
@@ -413,11 +421,12 @@ public class PartPlacement
 	}
 
 	public static float eyeHeight = 0.0f;
-	private static float getEyeOffset( EntityPlayer p )
+
+	private static float getEyeOffset(EntityPlayer p)
 	{
 		if ( p.worldObj.isRemote )
 			return Platform.getEyeOffset( p );
-		
+
 		return eyeHeight;
 	}
 

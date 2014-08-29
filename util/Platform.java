@@ -87,6 +87,7 @@ import appeng.api.storage.data.IAETagCompound;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEItemDefinition;
+import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -98,7 +99,6 @@ import appeng.integration.IntegrationType;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;
 import appeng.me.helpers.AENetworkProxy;
-import appeng.server.AccessType;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.AESharedNBT;
 import appeng.util.item.OreHelper;
@@ -315,9 +315,9 @@ public class Platform
 		}
 	}
 
-	public static boolean hasPermissions(int x, int y, int z, EntityPlayer player, AccessType blockAccess)
+	public static boolean hasPermissions(DimensionalCoord dc, EntityPlayer player)
 	{
-		return true;
+		return dc.getWorld().canMineBlock( player, dc.x, dc.y, dc.z );
 	}
 
 	/*
@@ -1208,7 +1208,7 @@ public class Platform
 		double d0 = player.prevPosX + (player.posX - player.prevPosX) * (double) f;
 		double d1 = eyeoffset;
 		double d2 = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) f;
-		
+
 		Vec3 vec3 = Vec3.createVectorHelper( d0, d1, d2 );
 		float f3 = MathHelper.cos( -f2 * 0.017453292F - (float) Math.PI );
 		float f4 = MathHelper.sin( -f2 * 0.017453292F - (float) Math.PI );
@@ -1795,6 +1795,6 @@ public class Platform
 	public static float getEyeOffset(EntityPlayer player)
 	{
 		assert player.worldObj.isRemote : "Valid only on client";
-		return (float) (player.posY +player.getEyeHeight() - player.getDefaultEyeHeight());
+		return (float) (player.posY + player.getEyeHeight() - player.getDefaultEyeHeight());
 	}
 }

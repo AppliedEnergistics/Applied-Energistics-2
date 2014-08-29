@@ -28,6 +28,7 @@ import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.storage.ITerminalHost;
+import appeng.api.util.DimensionalCoord;
 import appeng.client.gui.GuiNull;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerNull;
@@ -75,7 +76,6 @@ import appeng.parts.misc.PartStorageBus;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartMonitor;
 import appeng.parts.reporting.PartPatternTerminal;
-import appeng.server.AccessType;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.tile.grindstone.TileGrinder;
@@ -395,7 +395,7 @@ public enum GuiBridge implements IGuiHandler
 	{
 		World w = player.getEntityWorld();
 
-		if ( Platform.hasPermissions( x, y, z, player, AccessType.BLOCK_ACCESS ) )
+		if ( Platform.hasPermissions( te != null ? new DimensionalCoord( te ) : new DimensionalCoord( player.worldObj, x, y, z ), player ) )
 		{
 			if ( type.isItem() )
 			{
