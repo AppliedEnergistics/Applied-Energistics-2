@@ -35,6 +35,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
+import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.CommonHelper;
@@ -265,6 +266,9 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				int y = pos.blockY + side.offsetY;
 				int z = pos.blockZ + side.offsetZ;
 
+				if ( !Platform.hasPermissions( new DimensionalCoord( w, x, y, z ), p ) )
+					return;
+
 				Block whatsThere = w.getBlock( x, y, z );
 				if ( whatsThere == AEApi.instance().blocks().blockPaint.block() )
 				{
@@ -398,7 +402,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						float hardness = b.getBlockHardness( w, pos.blockX, pos.blockY, pos.blockZ ) * 9.0f;
 						if ( hardness >= 0.0 )
 						{
-							if ( penitration > hardness )
+							if ( penitration > hardness && Platform.hasPermissions( new DimensionalCoord( w, pos.blockX, pos.blockY, pos.blockZ ), p ) )
 							{
 								hasDestroyedSomething = true;
 								penitration -= hardness;

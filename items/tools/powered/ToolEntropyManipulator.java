@@ -21,6 +21,7 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
+import appeng.api.util.DimensionalCoord;
 import appeng.block.misc.BlockTinyTNT;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
@@ -193,7 +194,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 				if ( w.getBlock( x, y, z ).getMaterial() == Material.lava || w.getBlock( x, y, z ).getMaterial() == Material.water )
 				{
-					if ( w.canMineBlock( p, x, y, z ) )
+					if ( Platform.hasPermissions( new DimensionalCoord( w, x, y, z ), p ) )
 					{
 						onItemUse( item, p, w, x, y, z, 0, 0.0F, 0.0F, 0.0F );
 					}

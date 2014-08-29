@@ -17,6 +17,7 @@ import appeng.api.implementations.items.IAEWrench;
 import appeng.api.networking.IGridHost;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
+import appeng.api.util.DimensionalCoord;
 import appeng.api.util.INetworkToolAgent;
 import appeng.client.ClientHelper;
 import appeng.container.AEBaseContainer;
@@ -110,6 +111,9 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	{
 		if ( side >= 0 )
 		{
+			if ( !Platform.hasPermissions( new DimensionalCoord( w, x, y, z ), p ) )
+				return false;
+
 			Block b = w.getBlock( x, y, z );
 			if ( b != null && !p.isSneaking() )
 			{

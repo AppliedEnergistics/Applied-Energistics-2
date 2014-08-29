@@ -35,6 +35,7 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
+import appeng.api.util.DimensionalCoord;
 import appeng.block.misc.BlockPaint;
 import appeng.block.networking.BlockCableBus;
 import appeng.client.render.items.ToolColorApplicatorRender;
@@ -225,6 +226,9 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			}
 			else
 				paintBall = null;
+
+			if ( !Platform.hasPermissions( new DimensionalCoord( w, x, y, z ), p ) )
+				return false;
 
 			if ( paintBall != null && paintBall.getItem() instanceof ItemSnowball )
 			{
