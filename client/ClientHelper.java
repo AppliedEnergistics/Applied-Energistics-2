@@ -90,6 +90,9 @@ public class ClientHelper extends ServerHelper
 	public void triggerUpdates()
 	{
 		Minecraft mc = Minecraft.getMinecraft();
+		if ( mc == null || mc.thePlayer == null || mc.theWorld == null )
+			return;
+
 		EntityPlayer player = mc.thePlayer;
 
 		if ( player == null )
