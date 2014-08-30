@@ -310,6 +310,9 @@ public class PartPlacement
 			if ( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
 				host = ((IFMP) AppEng.instance.getIntegration( IntegrationType.FMP )).getOrCreateHost( tile );
 
+			if ( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.ImmibisMicroblocks ) )
+				host = ((IImmibisMicroblocks) AppEng.instance.getIntegration( IntegrationType.ImmibisMicroblocks )).getOrCreateHost( player, face, tile );
+
 			if ( host == null && AEApi.instance().blocks().blockMultiPart.block().canPlaceBlockAt( world, te_x, te_y, te_z )
 					&& ib.placeBlockAt( is, player, world, te_x, te_y, te_z, side.ordinal(), 0.5f, 0.5f, 0.5f, 0 ) )
 			{
