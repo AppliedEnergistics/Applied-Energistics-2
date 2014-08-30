@@ -105,7 +105,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 			// AE
 			"CertusQuartz", "Wheat", "Fluix",
 			// Other Mod Ores
-			"Brass", "Platinum", "Nickel", "Invar", "Aluminium", "Electrum" };
+			"Brass", "Platinum", "Nickel", "Invar", "Aluminium", "Electrum", "Osmium" };
 
 	public double oreDoublePercentage = 90.0;
 
