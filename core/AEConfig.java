@@ -1,7 +1,9 @@
 package appeng.core;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.List;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -22,6 +24,7 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class AEConfig extends Configuration implements IConfigureableObject, IConfigManagerHost
@@ -268,8 +271,13 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 				featureFlags.add( feature );
 		}
 
-		if ( cpw.mods.fml.common.Loader.isModLoaded( "ImmibisMicroblocks" ) )
-			featureFlags.remove( AEFeature.AlphaPass );
+		ModContainer imb = cpw.mods.fml.common.Loader.instance().getIndexedModList().get( "ImmibisCore" );
+		if ( imb != null )
+		{
+			List<String> version = Arrays.asList( new String[] { "59.0.0", "59.0.1", "59.0.2" } );
+			if ( version.contains( imb.getVersion() ) )
+				featureFlags.remove( AEFeature.AlphaPass );
+		}
 
 		try
 		{
