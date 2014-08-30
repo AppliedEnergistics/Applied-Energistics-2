@@ -16,6 +16,7 @@ import appeng.api.AEApi;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.CableRenderMode;
 import appeng.api.util.AEColor;
+import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.CommonHelper;
 import appeng.core.sync.packets.PacketPaintedEntity;
@@ -210,12 +211,17 @@ public class TickHandler
 			WorldTickEvent wte = (WorldTickEvent) ev;
 			synchronized (craftingJobs)
 			{
-				Iterator<CraftingJob> i = craftingJobs.get( wte.world ).iterator();
-				while (i.hasNext())
+				Collection<CraftingJob> jobSet = craftingJobs.get( wte.world );
+				if ( !jobSet.isEmpty() )
 				{
-					CraftingJob cj = i.next();
-					if ( !cj.simulateFor( 5 ) )
-						i.remove();
+					int simTime = Math.max( 1, AEConfig.instance.craftingCalculationTimePerTick / jobSet.size() );
+					Iterator<CraftingJob> i = jobSet.iterator();
+					while (i.hasNext())
+					{
+						CraftingJob cj = i.next();
+						if ( !cj.simulateFor( simTime ) )
+							i.remove();
+					}
 				}
 			}
 		}

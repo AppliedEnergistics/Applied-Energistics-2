@@ -130,6 +130,8 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 	public double metoriteClusterChance = 0.1;
 	public double metoriteSpawnChance = 0.3;
 
+	public int craftingCalculationTimePerTick = 5;
+
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs)
 	{
@@ -299,6 +301,12 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 			storageProviderID = get( "spatialio", "storageProviderID", storageProviderID ).getInt( storageProviderID );
 			spatialPowerMultiplier = get( "spatialio", "spatialPowerMultiplier", spatialPowerMultiplier ).getDouble( spatialPowerMultiplier );
 			spatialPowerScaler = get( "spatialio", "spatialPowerScaler", spatialPowerScaler ).getDouble( spatialPowerScaler );
+		}
+
+		if ( isFeatureEnabled( AEFeature.CraftingCPU ) )
+		{
+			craftingCalculationTimePerTick = get( "craftingcpu", "craftingCalculationTimePerTick", craftingCalculationTimePerTick ).getInt(
+					craftingCalculationTimePerTick );
 		}
 
 		if ( isFeatureEnabled( AEFeature.VersionChecker ) )
