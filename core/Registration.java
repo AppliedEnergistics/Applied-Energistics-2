@@ -90,6 +90,7 @@ import appeng.core.features.registries.entries.BasicCellHandler;
 import appeng.core.features.registries.entries.CreativeCellHandler;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
+import appeng.core.stats.PlayerStatsRegistration;
 import appeng.debug.BlockChunkloader;
 import appeng.debug.BlockItemGen;
 import appeng.debug.BlockPhantomNode;
@@ -569,6 +570,8 @@ public class Registration
 		AEApi.instance().registries().matterCannon().registerAmmo( AEApi.instance().materials().materialMatterBall.stack( 1 ), 32.0 );
 
 		recipeHandler.injectRecipes();
+
+		PlayerStatsRegistration.instance.init();
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.enableDisassemblyCrafting ) )
 			CraftingManager.getInstance().getRecipeList().add( new DisassembleRecipe() );

@@ -80,10 +80,13 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 		getBlockType().onNeighborBlockChange( worldObj, xCoord, yCoord, zCoord, Platform.air );
 	}
 
-	public void power()
+	/**
+	 * return true if this should count towards stats.
+	 */
+	public boolean power()
 	{
 		if ( Platform.isClient() )
-			return;
+			return false;
 
 		if ( rotation < 3 )
 		{
@@ -95,6 +98,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 					hits = 0;
 					rotation += ticksPerRoation;
 					this.markForUpdate();
+					return true;
 				}
 				else
 				{
@@ -107,6 +111,8 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 				}
 			}
 		}
+
+		return false;
 	}
 
 	@Override

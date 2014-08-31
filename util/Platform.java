@@ -92,6 +92,7 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
+import appeng.core.stats.Stats;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.GuiHostType;
 import appeng.hooks.TickHandler;
@@ -1337,6 +1338,11 @@ public class Platform
 			possible.setStackSize( itemToExtract );
 			StackType ret = cell.extractItems( possible, Actionable.MODULATE, src );
 
+			if ( ret != null && src.isPlayer() )
+			{
+				Stats.ItemsExtracted.addToPlayer( ((PlayerSource) src).player, (int) ret.getStackSize() );
+			}
+
 			return ret;
 		}
 
@@ -1361,14 +1367,28 @@ public class Platform
 
 			if ( itemToAdd < input.getStackSize() )
 			{
+				long original = input.getStackSize();
 				StackType split = (StackType) input.copy();
 				split.decStackSize( itemToAdd );
 				input.setStackSize( itemToAdd );
 				split.add( cell.injectItems( input, Actionable.MODULATE, src ) );
+
+				if ( src.isPlayer() )
+				{
+					long diff = original - split.getStackSize();
+					Stats.ItemsInserted.addToPlayer( ((PlayerSource) src).player, (int) diff );
+				}
+
 				return split;
 			}
 
 			StackType ret = cell.injectItems( input, Actionable.MODULATE, src );
+
+			if ( src.isPlayer() )
+			{
+				long diff = ret == null ? input.getStackSize() : input.getStackSize() - ret.getStackSize();
+				Stats.ItemsInserted.addToPlayer( ((PlayerSource) src).player, (int) diff );
+			}
 
 			return ret;
 		}

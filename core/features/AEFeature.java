@@ -54,7 +54,7 @@ public enum AEFeature
 
 	enableDisassemblyCrafting("Crafting"), MolecularAssembler("CraftingFeatures"), MeteoriteCompass("Tools"), Patterns("CraftingFeatures"),
 
-	ChunkLoggerTrace("Commands", false);
+	ChunkLoggerTrace("Commands", false), Achievements("Misc");
 
 	String Category;
 	boolean visible = true;

@@ -8,12 +8,14 @@ import java.lang.reflect.Constructor;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.definitions.Materials;
 import appeng.api.exceptions.AppEngException;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.IUpgradeableHost;
@@ -66,6 +68,7 @@ import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.container.implementations.ContainerWireless;
 import appeng.container.implementations.ContainerWirelessTerm;
+import appeng.core.stats.Achievements;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.helpers.WirelessTerminalGuiObject;
@@ -234,7 +237,31 @@ public enum GuiBridge implements IGuiHandler
 				throw new RuntimeException( "Cannot find " + Container.getName() + "( " + typeName( inventory ) + ", " + typeName( tE ) + " )" );
 			}
 
-			return target.newInstance( inventory, tE );
+			Object o = target.newInstance( inventory, tE );
+
+			/**
+			 * triggers achivemnet when the player sees presses.
+			 */
+			if ( o instanceof AEBaseContainer )
+			{
+				AEBaseContainer bc = (AEBaseContainer) o;
+				for (Object so : bc.inventorySlots)
+				{
+					if ( so instanceof Slot )
+					{
+						ItemStack is = ((Slot) so).getStack();
+
+						Materials m = AEApi.instance().materials();
+						if ( m.materialLogicProcessorPress.sameAsStack( is ) || m.materialEngProcessorPress.sameAsStack( is )
+								|| m.materialCalcProcessorPress.sameAsStack( is ) || m.materialSiliconPress.sameAsStack( is ) )
+						{
+							Achievements.Presses.addToPlayer( inventory.player );
+						}
+					}
+				}
+			}
+
+			return o;
 		}
 		catch (Throwable t)
 		{

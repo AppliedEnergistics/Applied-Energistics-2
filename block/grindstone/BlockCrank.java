@@ -16,6 +16,7 @@ import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockCrank;
 import appeng.core.features.AEFeature;
+import appeng.core.stats.Stats;
 import appeng.tile.AEBaseTile;
 import appeng.tile.grindstone.TileCrank;
 
@@ -33,12 +34,17 @@ public class BlockCrank extends AEBaseBlock
 	@Override
 	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
 	{
-		if ( p instanceof FakePlayer )
+		if ( p instanceof FakePlayer || p == null )
 			return true;
 
 		AEBaseTile tile = getTileEntity( w, x, y, z );
 		if ( tile instanceof TileCrank )
-			((TileCrank) tile).power();
+		{
+			if ( ((TileCrank) tile).power() )
+			{
+				Stats.TurnedCranks.addToPlayer( p, 1 );
+			}
+		}
 
 		return true;
 	}

@@ -16,6 +16,7 @@ import net.minecraft.world.WorldServer;
 import appeng.api.AEApi;
 import appeng.api.util.WorldCoord;
 import appeng.block.spatial.BlockMatrixFrame;
+import appeng.core.stats.Achievements;
 import appeng.util.Platform;
 
 public class StorageHelper
@@ -180,6 +181,9 @@ public class StorageHelper
 		{
 			if ( player != null )
 			{
+				if ( link.dim.provider instanceof StorageWorldProvider )
+					Achievements.SpatialIOExplorerer.addToPlayer( player );
+
 				player.mcServer.getConfigurationManager().transferPlayerToDimension( player, link.dim.provider.dimensionId, new METeleporter( newWorld, link ) );
 			}
 			else
