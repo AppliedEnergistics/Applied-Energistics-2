@@ -1,6 +1,6 @@
 package appeng.integration.modules.helpers;
 
-import net.mcft.copy.betterstorage.api.ICrateStorage;
+import net.mcft.copy.betterstorage.api.crate.ICrateStorage;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.Actionable;
@@ -34,7 +34,7 @@ public class BSCrate implements IMEInventory<IAEItemStack>
 		if ( mode == Actionable.SIMULATE )
 			return null;
 
-		ItemStack failed = cs.insertItems( side, input.getItemStack() );
+		ItemStack failed = cs.insertItems( input.getItemStack() );
 		if ( failed == null )
 			return null;
 		input.setStackSize( failed.stackSize );
@@ -46,18 +46,18 @@ public class BSCrate implements IMEInventory<IAEItemStack>
 	{
 		if ( mode == Actionable.SIMULATE )
 		{
-			int howMany = cs.getItemCount( side, request.getItemStack() );
+			int howMany = cs.getItemCount( request.getItemStack() );
 			return howMany > request.getStackSize() ? request : request.copy().setStackSize( howMany );
 		}
 
-		ItemStack Obtained = cs.extractItems( side, request.getItemStack() );
+		ItemStack Obtained = cs.extractItems( request.getItemStack(), (int) request.getStackSize() );
 		return AEItemStack.create( Obtained );
 	}
 
 	@Override
 	public IItemList getAvailableItems(IItemList out)
 	{
-		for (ItemStack is : cs.getContents( side ))
+		for (ItemStack is : cs.getContents())
 		{
 			out.add( AEItemStack.create( is ) );
 		}

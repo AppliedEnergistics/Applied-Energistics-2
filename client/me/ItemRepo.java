@@ -44,6 +44,7 @@ public class ItemRepo
 	public int rowSize = 9;
 
 	public String searchString = "";
+	private String innerSearch = "";
 
 	public ItemRepo(IScrollSource src, ISortSource sortSrc) {
 		this.src = src;
@@ -172,7 +173,7 @@ public class ItemRepo
 				Method b = searchField.getClass().getMethod( "onTextChange", String.class );
 
 				NEIWord = filter;
-				a.invoke( searchField, filter );
+				a.invoke( searchField, new String( filter ) );
 				b.invoke( searchField, "" );
 			}
 		}
@@ -195,26 +196,27 @@ public class ItemRepo
 		if ( mode == SearchBoxMode.NEI_AUTOSEARCH || mode == SearchBoxMode.NEI_MANUAL_SEARCH )
 			updateNEI( searchString );
 
+		innerSearch = searchString;
 		boolean terminalSearchToolTips = AEConfig.instance.settings.getSetting( Settings.SEARCH_TOOLTIPS ) != YesNo.NO;
 		// boolean terminalSearchMods = Configuration.instance.settings.getSetting( Settings.SEARCH_MODS ) != YesNo.NO;
 
 		boolean searchMod = false;
-		if ( searchString.startsWith( "@" ) )
+		if ( innerSearch.startsWith( "@" ) )
 		{
 			searchMod = true;
-			searchString = searchString.substring( 1 );
+			innerSearch = innerSearch.substring( 1 );
 		}
 
 		Pattern m = null;
 		try
 		{
-			m = Pattern.compile( searchString.toLowerCase(), Pattern.CASE_INSENSITIVE );
+			m = Pattern.compile( innerSearch.toLowerCase(), Pattern.CASE_INSENSITIVE );
 		}
 		catch (Throwable _)
 		{
 			try
 			{
-				m = Pattern.compile( Pattern.quote( searchString.toLowerCase() ), Pattern.CASE_INSENSITIVE );
+				m = Pattern.compile( Pattern.quote( innerSearch.toLowerCase() ), Pattern.CASE_INSENSITIVE );
 			}
 			catch (Throwable __)
 			{

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -24,7 +26,7 @@ public class WrapperChainedInventory implements IInventory
 	private List<IInventory> l;
 	private HashMap<Integer, InvOffset> offsets;
 
-	public WrapperChainedInventory(IInventory ilist) {
+	public WrapperChainedInventory(IInventory... ilist) {
 		setInventory( ilist );
 	}
 
@@ -67,10 +69,9 @@ public class WrapperChainedInventory implements IInventory
 		fullSize = offset;
 	}
 
-	public void setInventory(IInventory a)
+	public void setInventory(IInventory... a)
 	{
-		l = new ArrayList();
-		l.add( a );
+		l = ImmutableList.copyOf( a );
 		calculateSizes();
 	}
 

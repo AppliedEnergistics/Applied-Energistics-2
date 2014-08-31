@@ -2,7 +2,7 @@ package appeng.integration.modules.helpers;
 
 import java.util.Iterator;
 
-import net.mcft.copy.betterstorage.api.ICrateStorage;
+import net.mcft.copy.betterstorage.api.crate.ICrateStorage;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.FuzzyMode;
@@ -28,7 +28,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	{
 		ItemStack target = null;
 
-		for (ItemStack is : cs.getContents( side ))
+		for (ItemStack is : cs.getContents())
 		{
 			if ( is != null )
 			{
@@ -47,7 +47,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 		{
 			ItemStack f = Platform.cloneItemStack( target );
 			f.stackSize = how_many;
-			return cs.extractItems( side, f );
+			return cs.extractItems( f, how_many );
 		}
 
 		return null;
@@ -58,7 +58,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	{
 		ItemStack target = null;
 
-		for (ItemStack is : cs.getContents( side ))
+		for (ItemStack is : cs.getContents())
 		{
 			if ( is != null )
 			{
@@ -75,7 +75,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 
 		if ( target != null )
 		{
-			int cnt = cs.getItemCount( side, target );
+			int cnt = cs.getItemCount( target );
 			if ( cnt == 0 )
 				return null;
 			if ( cnt > how_many )
@@ -93,7 +93,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	{
 		ItemStack target = null;
 
-		for (ItemStack is : cs.getContents( side ))
+		for (ItemStack is : cs.getContents())
 		{
 			if ( is != null )
 			{
@@ -112,7 +112,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 		{
 			ItemStack f = Platform.cloneItemStack( target );
 			f.stackSize = amount;
-			return cs.extractItems( side, f );
+			return cs.extractItems( f, amount );
 		}
 
 		return null;
@@ -123,7 +123,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	{
 		ItemStack target = null;
 
-		for (ItemStack is : cs.getContents( side ))
+		for (ItemStack is : cs.getContents())
 		{
 			if ( is != null )
 			{
@@ -140,7 +140,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 
 		if ( target != null )
 		{
-			int cnt = cs.getItemCount( side, target );
+			int cnt = cs.getItemCount( target );
 			if ( cnt == 0 )
 				return null;
 			if ( cnt > how_many )
@@ -156,13 +156,13 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	@Override
 	public ItemStack addItems(ItemStack A)
 	{
-		return cs.insertItems( side, A );
+		return cs.insertItems( A );
 	}
 
 	@Override
 	public ItemStack simulateAdd(ItemStack A)
 	{
-		int items = cs.spaceForItem( side, A );
+		int items = cs.getSpaceForItem( A );
 		ItemStack B = Platform.cloneItemStack( A );
 		if ( A.stackSize <= items )
 			return null;
@@ -173,13 +173,13 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	@Override
 	public boolean containsItems()
 	{
-		return cs.getContents( side ).size() > 0;
+		return cs.getUniqueItems() > 0;
 	}
 
 	@Override
 	public Iterator<ItemSlot> iterator()
 	{
-		return new StackToSlotIterator( cs.getContents( side ).iterator() );
+		return new StackToSlotIterator( cs.getContents().iterator() );
 	}
 
 }

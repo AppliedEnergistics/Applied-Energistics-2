@@ -9,6 +9,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent.ServerConnectionFromClientEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
@@ -57,10 +58,16 @@ public class NetworkHandler
 	}
 
 	@SubscribeEvent
+	public void newConection(ServerConnectionFromClientEvent ev)
+	{
+		WorldSettings.getInstance().sendToPlayer( ev.manager, null );
+	}
+
+	@SubscribeEvent
 	public void newConection(PlayerLoggedInEvent loginEvent)
 	{
 		if ( loginEvent.player instanceof EntityPlayerMP )
-			WorldSettings.getInstance().sendToPlayer( (EntityPlayerMP) loginEvent.player );
+			WorldSettings.getInstance().sendToPlayer( null, (EntityPlayerMP) loginEvent.player );
 	}
 
 	@SubscribeEvent

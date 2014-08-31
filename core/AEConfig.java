@@ -1,7 +1,9 @@
 package appeng.core;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.List;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -22,6 +24,7 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class AEConfig extends Configuration implements IConfigureableObject, IConfigManagerHost
@@ -91,8 +94,8 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		return prop;
 	}
 
-	public double spatialPowerScaler = 1.5;
-	public double spatialPowerMultiplier = 1500.0;
+	public double spatialPowerScaler = 1.35;
+	public double spatialPowerMultiplier = 1250.0;
 
 	public String grinderOres[] = {
 			// Vanilla Items
@@ -102,7 +105,7 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 			// AE
 			"CertusQuartz", "Wheat", "Fluix",
 			// Other Mod Ores
-			"Brass", "Platinum", "Nickel", "Invar", "Aluminium", "Electrum" };
+			"Brass", "Platinum", "Nickel", "Invar", "Aluminium", "Electrum", "Osmium" };
 
 	public double oreDoublePercentage = 90.0;
 
@@ -126,6 +129,8 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 
 	public double metoriteClusterChance = 0.1;
 	public double metoriteSpawnChance = 0.3;
+
+	public int craftingCalculationTimePerTick = 5;
 
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs)
@@ -268,8 +273,13 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 				featureFlags.add( feature );
 		}
 
-		if ( cpw.mods.fml.common.Loader.isModLoaded( "ImmibisMicroblocks" ) )
-			featureFlags.remove( AEFeature.AlphaPass );
+		ModContainer imb = cpw.mods.fml.common.Loader.instance().getIndexedModList().get( "ImmibisCore" );
+		if ( imb != null )
+		{
+			List<String> version = Arrays.asList( new String[] { "59.0.0", "59.0.1", "59.0.2" } );
+			if ( version.contains( imb.getVersion() ) )
+				featureFlags.remove( AEFeature.AlphaPass );
+		}
 
 		try
 		{
@@ -289,6 +299,14 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		{
 			storageBiomeID = get( "spatialio", "storageBiomeID", storageBiomeID ).getInt( storageBiomeID );
 			storageProviderID = get( "spatialio", "storageProviderID", storageProviderID ).getInt( storageProviderID );
+			spatialPowerMultiplier = get( "spatialio", "spatialPowerMultiplier", spatialPowerMultiplier ).getDouble( spatialPowerMultiplier );
+			spatialPowerScaler = get( "spatialio", "spatialPowerScaler", spatialPowerScaler ).getDouble( spatialPowerScaler );
+		}
+
+		if ( isFeatureEnabled( AEFeature.CraftingCPU ) )
+		{
+			craftingCalculationTimePerTick = get( "craftingcpu", "craftingCalculationTimePerTick", craftingCalculationTimePerTick ).getInt(
+					craftingCalculationTimePerTick );
 		}
 
 		if ( isFeatureEnabled( AEFeature.VersionChecker ) )

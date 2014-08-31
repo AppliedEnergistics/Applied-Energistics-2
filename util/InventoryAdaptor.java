@@ -51,7 +51,7 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 		
 		if ( te instanceof EntityPlayer )
 		{
-			return new AdaptorIInventory( new AdaptorPlayerInventory( ((EntityPlayer) te).inventory ) );
+			return new AdaptorIInventory( new AdaptorPlayerInventory( ((EntityPlayer) te).inventory, false ) );
 		}
 		else if ( te instanceof ArrayList )
 		{

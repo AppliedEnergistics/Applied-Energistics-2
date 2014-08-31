@@ -491,7 +491,6 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 	public void onNeighborChanged()
 	{
-		TileEntity te = getTile();
 		hasRedstone = YesNo.UNDECIDED;
 
 		for (ForgeDirection s : ForgeDirection.values())

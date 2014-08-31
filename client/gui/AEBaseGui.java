@@ -73,10 +73,10 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		try
 		{
-			DecimalFormat df = new DecimalFormat("+#;-#");
+			DecimalFormat df = new DecimalFormat( "+#;-#" );
 			return df.parse( btn.displayString ).intValue();
 		}
-		catch(ParseException e )
+		catch (ParseException e)
 		{
 			return 0;
 		}
@@ -597,6 +597,7 @@ public abstract class AEBaseGui extends GuiContainer
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 		GL11.glEnable( GL11.GL_LIGHTING );
 		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
+		GL11.glEnable( GL11.GL_DEPTH_TEST );
 		RenderHelper.enableGUIStandardItemLighting();
 		itemRender.renderItemAndEffectIntoGUI( this.fontRendererObj, this.mc.renderEngine, is, x, y );
 		GL11.glPopAttrib();

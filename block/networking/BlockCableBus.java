@@ -49,6 +49,7 @@ import appeng.tile.networking.TileCableBusTESR;
 import appeng.transformer.annotations.integration.Interface;
 import appeng.transformer.annotations.integration.Method;
 import appeng.util.Platform;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -402,6 +403,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 		if ( Platform.isClient() )
 		{
 			tesrTile = Api.instance.partHelper.getCombinedInstance( TileCableBusTESR.class.getName() );
+			GameRegistry.registerTileEntity( tesrTile, "ClientOnly_TESR_CableBus" );
 			CommonHelper.proxy.bindTileEntitySpecialRenderer( tesrTile, this );
 		}
 	}

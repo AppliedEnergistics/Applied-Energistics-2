@@ -1,5 +1,7 @@
 package appeng.core;
 
+import io.netty.util.concurrent.GenericFutureListener;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -14,6 +16,7 @@ import java.util.WeakHashMap;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
@@ -280,22 +283,27 @@ public class WorldSettings extends Configuration
 		return instance;
 	}
 
-	public void sendToPlayer(EntityPlayerMP player)
+	public void sendToPlayer(NetworkManager manager, EntityPlayerMP player)
 	{
-		for (int newDim : get( "DimensionManager", "StorageCells", new int[0] ).getIntList())
+		if ( manager != null )
 		{
-			try
+			for (int newDim : get( "DimensionManager", "StorageCells", new int[0] ).getIntList())
 			{
-				NetworkHandler.instance.sendTo( new PacketNewStorageDimension( newDim ), player );
-			}
-			catch (IOException e)
-			{
-				AELog.error( e );
+				try
+				{
+					manager.scheduleOutboundPacket( (new PacketNewStorageDimension( newDim )).getProxy(), new GenericFutureListener[0] );
+				}
+				catch (IOException e)
+				{
+					AELog.error( e );
+				}
 			}
 		}
-
-		for (PlayerColor pc : TickHandler.instance.getPlayerColors().values())
-			NetworkHandler.instance.sendToAll( pc.getPacket() );
+		else
+		{
+			for (PlayerColor pc : TickHandler.instance.getPlayerColors().values())
+				NetworkHandler.instance.sendToAll( pc.getPacket() );
+		}
 	}
 
 	public void init()

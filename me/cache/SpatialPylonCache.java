@@ -157,14 +157,15 @@ public class SpatialPylonCache implements IGridCache, ISpatialCache
 			reqX = captureMax.x - captureMin.x;
 			reqY = captureMax.y - captureMin.y;
 			reqZ = captureMax.z - captureMin.z;
-			requirePylongBlocks = ((reqX * reqZ + reqX * reqY + reqY * reqZ) * 3) / 5;
-
+			requirePylongBlocks = Math.max( 6, ((reqX * reqZ + reqX * reqY + reqY * reqZ) * 3) / 8 );
+			
 			effiency = (double) pylonBlocks / (double) requirePylongBlocks;
+			
 			if ( effiency > 1.0 )
 				effiency = 1.0;
 			if ( effiency < 0.0 )
 				effiency = 0.0;
-
+			
 			minPower = (double) reqX * (double) reqY * reqZ * AEConfig.instance.spatialPowerMultiplier;
 			maxPower = Math.pow( minPower, AEConfig.instance.spatialPowerScaler );
 		}

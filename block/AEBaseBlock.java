@@ -38,7 +38,6 @@ import appeng.client.render.BlockRenderInfo;
 import appeng.client.render.WorldRender;
 import appeng.client.texture.FlipableIcon;
 import appeng.client.texture.MissingIcon;
-import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
 import appeng.core.features.IAEFeature;
