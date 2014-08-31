@@ -40,6 +40,14 @@ public class ASMTweaker implements IClassTransformer
 	public ASMTweaker() {
 		privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new publicLine( "func_146977_a", "(Lnet/minecraft/inventory/Slot;)V" ) );
 		privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new publicLine( "a", "(Lzk;)V" ) );
+
+		privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "writeToNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
+		privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "func_77955_b", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
+		privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "b", "(Ldh;)V" ) );
+
+		privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "readFromNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
+		privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "func_145839_a", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
+		privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "a", "(Ldh;)V" ) );
 	}
 
 	@Override
@@ -126,8 +134,8 @@ public class ASMTweaker implements IClassTransformer
 		{
 			if ( mn.name.equals( set.name ) && mn.desc.equals( set.desc ) )
 			{
-				mn.access = (mn.access & (~(Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED))) | Opcodes.ACC_PUBLIC;
-				log( mn.name + mn.desc + " - Public" );
+				mn.access = (mn.access & (~(Opcodes.ACC_FINAL | Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED))) | Opcodes.ACC_PUBLIC;
+				log( mn.name + mn.desc + " - Transformed" );
 			}
 		}
 	}
