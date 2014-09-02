@@ -3,6 +3,9 @@ package appeng.me.cache;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
+import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.CrashReportCategory;
+import net.minecraft.util.ReportedException;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -52,45 +55,56 @@ public class TickManagerCache implements ITickManager
 	@Override
 	public void onUpdateTick()
 	{
-		currentTick++;
-		while (!upcomingTicks.isEmpty())
+		TickTracker tt = null;
+		try
 		{
-			TickTracker tt = upcomingTicks.peek();
-			int diff = (int) (currentTick - tt.lastTick);
-			if ( diff >= tt.current_rate )
+			currentTick++;
+			while (!upcomingTicks.isEmpty())
 			{
-				// remove tt..
-				upcomingTicks.poll();
-				TickRateModulation mod = tt.gt.tickingRequest( tt.node, diff );
-
-				switch (mod)
+				tt = upcomingTicks.peek();
+				int diff = (int) (currentTick - tt.lastTick);
+				if ( diff >= tt.current_rate )
 				{
-				case FASTER:
-					tt.setRate( tt.current_rate - 2 );
-					break;
-				case IDLE:
-					tt.setRate( tt.request.maxTickRate );
-					break;
-				case SAME:
-					break;
-				case SLEEP:
-					sleepDevice( tt.node );
-					break;
-				case SLOWER:
-					tt.setRate( tt.current_rate + 1 );
-					break;
-				case URGENT:
-					tt.setRate( 0 );
-					break;
-				default:
-					break;
+					// remove tt..
+					upcomingTicks.poll();
+					TickRateModulation mod = tt.gt.tickingRequest( tt.node, diff );
+	
+					switch (mod)
+					{
+					case FASTER:
+						tt.setRate( tt.current_rate - 2 );
+						break;
+					case IDLE:
+						tt.setRate( tt.request.maxTickRate );
+						break;
+					case SAME:
+						break;
+					case SLEEP:
+						sleepDevice( tt.node );
+						break;
+					case SLOWER:
+						tt.setRate( tt.current_rate + 1 );
+						break;
+					case URGENT:
+						tt.setRate( 0 );
+						break;
+					default:
+						break;
+					}
+	
+					if ( awake.containsKey( tt.node ) )
+						addToQueue( tt );
 				}
-
-				if ( awake.containsKey( tt.node ) )
-					addToQueue( tt );
+				else
+					return; // done!
 			}
-			else
-				return; // done!
+		}
+		catch( Throwable t )
+		{
+	        CrashReport crashreport = CrashReport.makeCrashReport(t, "Ticking GridNode");
+	        CrashReportCategory crashreportcategory = crashreport.makeCategory( tt.gt.getClass().getSimpleName() + " being ticked." );
+            tt.addEntityCrashInfo(crashreportcategory);
+            throw new ReportedException(crashreport);
 		}
 	}
 

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -506,5 +507,10 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	public IIcon getBreakingTexture()
 	{
 		return null;
+	}
+
+	public void addEntityCrashInfo(CrashReportCategory crashreportcategory)
+	{
+		crashreportcategory.addCrashSection( "Part Side", side );
 	}
 }
