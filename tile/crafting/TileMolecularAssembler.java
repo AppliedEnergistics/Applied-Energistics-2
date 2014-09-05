@@ -385,6 +385,11 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		if ( inv.getStackInSlot( 9 ) != null )
 		{
 			pushOut( inv.getStackInSlot( 9 ) );
+
+			// did it eject?
+			if ( inv.getStackInSlot( 9 ) == null )
+				markDirty();
+
 			ejectHeldItems();
 			updateSleepyness();
 			progress = 0;
@@ -463,6 +468,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 					// ;P
 				}
 
+				markDirty();
 				updateSleepyness();
 				return isAwake ? TickRateModulation.IDLE : TickRateModulation.SLEEP;
 			}
