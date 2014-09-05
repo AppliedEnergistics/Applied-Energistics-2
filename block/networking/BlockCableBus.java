@@ -282,7 +282,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 		{
 			AEBaseTile tile = getTileEntity( world, x, y, z );
 			if ( tile != null )
-				tile.dropItems = false;
+				tile.disableDrops();
 			// maybe ray trace?
 		}
 		return super.removedByPlayer( world, player, x, y, z );

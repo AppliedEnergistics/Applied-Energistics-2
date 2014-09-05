@@ -731,6 +731,20 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return drops;
 	}
 
+	public List getNoDrops(List drops)
+	{
+		for (ForgeDirection s : ForgeDirection.values())
+		{
+			IPart part = getPart( s );
+			if ( part != null )
+			{
+				part.getDrops( drops, false );
+			}
+		}
+
+		return drops;
+	}
+
 	@Override
 	public void markForUpdate()
 	{

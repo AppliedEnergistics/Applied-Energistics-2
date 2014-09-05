@@ -441,14 +441,14 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		AEBaseTile te = getTileEntity( w, x, y, z );
 		if ( te != null )
 		{
-			if ( te.dropItems )
-			{
-				ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
+			ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
+			if ( te.dropItems() )
 				te.getDrops( w, x, y, z, drops );
+			else
+				te.getNoDrops( w, x, y, z, drops );
 
-				// Cry ;_; ...
-				Platform.spawnDrops( w, x, y, z, drops );
-			}
+			// Cry ;_; ...
+			Platform.spawnDrops( w, x, y, z, drops );
 		}
 
 		super.breakBlock( w, x, y, z, a, b );
@@ -532,7 +532,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 			if ( Platform.isClient() )
 			{
 				EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-				LookDirection ld = Platform.getPlayerRay( player, Platform.getEyeOffset(player ) );
+				LookDirection ld = Platform.getPlayerRay( player, Platform.getEyeOffset( player ) );
 
 				Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxsFromPool( w, x, y, z, Minecraft.getMinecraft().thePlayer, true );
 				AxisAlignedBB br = null;

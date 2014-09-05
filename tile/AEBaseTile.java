@@ -3,6 +3,7 @@ package appeng.tile;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -44,7 +45,19 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	private ForgeDirection forward = ForgeDirection.UNKNOWN;
 	private ForgeDirection up = ForgeDirection.UNKNOWN;
 
-	public boolean dropItems = true;
+	public static ThreadLocal<WeakReference<AEBaseTile>> dropNoItems = new ThreadLocal();
+
+	public void disableDrops()
+	{
+		dropNoItems.set( new WeakReference<AEBaseTile>( this ) );
+	}
+
+	public boolean dropItems()
+	{
+		WeakReference<AEBaseTile> what = dropNoItems.get();
+		return what == null || what.get() != this;
+	}
+
 	public int renderFragment = 0;
 	public String customName;
 
@@ -366,6 +379,11 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	}
 
+	public void getNoDrops(World w, int x, int y, int z, ArrayList<ItemStack> drops)
+	{
+
+	}
+
 	public void onReady()
 	{
 
@@ -450,9 +468,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	public void securityBreak()
 	{
-		worldObj.func_147480_a( xCoord, yCoord, zCoord, true ); // worldObj.destroyBlock( xCoord, yCoord, zCoord, true
-																// );
-		dropItems = false;
+		worldObj.func_147480_a( xCoord, yCoord, zCoord, true );
+		disableDrops();
 	}
 
 	public void saveChanges()
