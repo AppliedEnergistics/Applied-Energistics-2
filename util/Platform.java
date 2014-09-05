@@ -1504,6 +1504,11 @@ public class Platform
 		boolean a_isSecure = isPowered( a.getGrid() ) && a.lastSecurityKey != -1;
 		boolean b_isSecure = isPowered( b.getGrid() ) && b.lastSecurityKey != -1;
 
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.LogSecurityAudits ) )
+		{
+			AELog.info( "Audit: " + a_isSecure + " : " + b_isSecure + " @ " + a.lastSecurityKey + " vs " + b.lastSecurityKey );
+		}
+
 		// can't do that son...
 		if ( a_isSecure && b_isSecure )
 			return true;
