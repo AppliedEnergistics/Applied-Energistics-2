@@ -1681,7 +1681,7 @@ public class Platform
 		}
 
 		ItemStack ci = i.getContainerItem( stackInSlot.copy() );
-		if ( ci.isItemStackDamageable() && ci.getItemDamage() == ci.getMaxDamage() )
+		if ( ci != null && ci.isItemStackDamageable() && ci.getItemDamage() == ci.getMaxDamage() )
 			ci = null;
 
 		return ci;
