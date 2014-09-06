@@ -62,6 +62,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 
 	public void updateStatus(CraftingCPUCluster c)
 	{
+		if ( clust != null && clust != c )
+			clust.breakCluster();
+
 		clust = c;
 		updateMeta( true );
 	}
