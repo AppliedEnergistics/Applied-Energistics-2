@@ -29,7 +29,8 @@ public class CraftingTreeProcess
 	CraftingJob job;
 
 	long crafts = 0;
-	boolean damageable;
+	boolean containerItems;
+	boolean limitQty;
 	boolean fullsimulation;
 
 	private long bytes = 0;
@@ -70,14 +71,24 @@ public class CraftingTreeProcess
 				{
 					ItemStack g = part.getItemStack();
 
+					boolean isAnInput = false;
+					for (IAEItemStack a : is)
+					{
+						if ( g != null && a != null && a.equals( g ) )
+							isAnInput = true;
+					}
+
+					if ( isAnInput )
+						limitQty = true;
+
 					if ( g.getItem().hasContainerItem( g ) )
-						damageable = true;
+						limitQty = containerItems = true;
 				}
 			}
 
 			boolean complicated = false;
 
-			if ( damageable || complicated )
+			if ( containerItems || complicated )
 			{
 				for (int x = 0; x < list.length; x++)
 				{
@@ -106,6 +117,28 @@ public class CraftingTreeProcess
 		}
 		else
 		{
+			IAEItemStack list[] = details.getInputs();
+			IAEItemStack[] is = details.getInputs();
+
+			for (int x = 0; x < list.length; x++)
+			{
+				IAEItemStack part = list[x];
+				if ( part != null )
+				{
+					ItemStack g = part.getItemStack();
+
+					boolean isAnInput = false;
+					for (IAEItemStack a : is)
+					{
+						if ( g != null && a != null && a.equals( g ) )
+							isAnInput = true;
+					}
+
+					if ( isAnInput )
+						limitQty = true;
+				}
+			}
+
 			for (IAEItemStack part : details.getCondencedInputs())
 			{
 				nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, -1, depth + 1 ), part.getStackSize() );
@@ -120,7 +153,7 @@ public class CraftingTreeProcess
 
 	long getTimes(long remaining, long stackSize)
 	{
-		if ( damageable || fullsimulation )
+		if ( limitQty || fullsimulation )
 			return 1;
 		return (remaining / stackSize) + (remaining % stackSize != 0 ? 1 : 0);
 	}
@@ -190,7 +223,7 @@ public class CraftingTreeProcess
 				IAEItemStack item = entry.getKey().getStack( entry.getValue() );
 				IAEItemStack stack = entry.getKey().request( inv, item.getStackSize() * i, src );
 
-				if ( damageable )
+				if ( containerItems )
 				{
 					ItemStack is = Platform.getContainerItem( stack.getItemStack() );
 					IAEItemStack o = AEApi.instance().storage().createItemStack( is );
