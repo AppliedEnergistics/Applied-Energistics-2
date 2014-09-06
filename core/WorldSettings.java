@@ -258,21 +258,21 @@ public class WorldSettings extends Configuration
 			File aeBaseFolder = new File( world.getPath() + File.separatorChar + "AE2" );
 
 			if ( !aeBaseFolder.exists() || !aeBaseFolder.isDirectory() )
-				if ( !aeBaseFolder.mkdir() )
+				if ( !aeBaseFolder.mkdir() || !aeBaseFolder.exists() )
 				{
 					throw new RuntimeException( "Failed to create " + aeBaseFolder.getAbsolutePath() );
 				}
 
 			File compass = new File( aeBaseFolder, "compass" );
 			if ( !compass.exists() || !compass.isDirectory() )
-				if ( !compass.mkdir() )
+				if ( !compass.mkdir() || !compass.exists() )
 				{
 					throw new RuntimeException( "Failed to create " + compass.getAbsolutePath() );
 				}
 
 			File spawnData = new File( aeBaseFolder, "spawndata" );
 			if ( !spawnData.exists() || !spawnData.isDirectory() )
-				if ( !spawnData.mkdir() )
+				if ( !spawnData.mkdir() || !spawnData.exists() )
 				{
 					throw new RuntimeException( "Failed to create " + spawnData.getAbsolutePath() );
 				}
