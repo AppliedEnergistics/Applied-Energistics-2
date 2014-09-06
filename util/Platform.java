@@ -54,6 +54,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -1639,7 +1640,10 @@ public class Platform
 				}
 			}
 
-			if ( aitems != null && (ae_req.isOre() || providedTemplate.hasTagCompound() || providedTemplate.isItemStackDamageable()) )
+			boolean checkFuzzy = ae_req.isOre() || providedTemplate.getItemDamage() == OreDictionary.WILDCARD_VALUE || providedTemplate.hasTagCompound()
+					|| providedTemplate.isItemStackDamageable();
+
+			if ( aitems != null && checkFuzzy )
 			{
 				for (IAEItemStack x : aitems)
 				{
