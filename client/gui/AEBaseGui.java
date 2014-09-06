@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -53,6 +54,9 @@ import appeng.helpers.InventoryAction;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.INEI;
 import appeng.util.Platform;
+
+import com.google.common.base.Stopwatch;
+
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
 public abstract class AEBaseGui extends GuiContainer
@@ -168,6 +172,10 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 		super.mouseClicked( xCoord, yCoord, btn );
 	}
+
+	Stopwatch dbl_clickTimer = Stopwatch.createStarted();
+	ItemStack dbl_whichItem;
+	Slot bl_clicked;
 
 	@Override
 	protected void handleMouseClick(Slot slot, int slotIdx, int ctrlDown, int key)
@@ -362,6 +370,33 @@ public abstract class AEBaseGui extends GuiContainer
 			}
 
 			return;
+		}
+
+		if ( dbl_whichItem == null || bl_clicked != slot || dbl_clickTimer.elapsed( TimeUnit.MILLISECONDS ) > 150 )
+		{
+			// some simple double click logic.
+			bl_clicked = slot;
+			dbl_clickTimer = Stopwatch.createStarted();
+			if ( slot != null )
+				dbl_whichItem = slot.getHasStack() ? slot.getStack().copy() : null;
+			else
+				dbl_whichItem = null;
+		}
+		else if ( dbl_whichItem != null )
+		{
+			// a replica of the weird broken vanilla feature.
+			Iterator iterator = this.inventorySlots.inventorySlots.iterator();
+
+			while (iterator.hasNext())
+			{
+				Slot targetSlot = (Slot) iterator.next();
+
+				if ( targetSlot != null && targetSlot.canTakeStack( this.mc.thePlayer ) && targetSlot.getHasStack() && targetSlot.inventory == slot.inventory
+						&& Container.func_94527_a( targetSlot, dbl_whichItem, true ) )
+				{
+					this.handleMouseClick( targetSlot, targetSlot.slotNumber, ctrlDown, 1 );
+				}
+			}
 		}
 
 		super.handleMouseClick( slot, slotIdx, ctrlDown, key );
