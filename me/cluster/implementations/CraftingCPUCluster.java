@@ -76,6 +76,8 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	boolean waiting = false;
 	private boolean isComplete = true;
+	int usedOps[] = new int[3];
+
 	Map<ICraftingPatternDetails, TaskProgress> tasks = new HashMap<ICraftingPatternDetails, TaskProgress>();
 	IItemList<IAEItemStack> waitingFor = AEApi.instance().storage().createItemList();
 
@@ -539,14 +541,21 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		if ( waiting || tasks.isEmpty() ) // nothing to do here...
 			return;
 
-		remainingOperations = accelerator + 1;
+		remainingOperations = accelerator + 1 - (usedOps[0] + usedOps[1] + usedOps[2]);
+		int started = remainingOperations;
 
-		do
+		if ( remainingOperations > 0 )
 		{
-			didsomething = false;
-			executeCrafting( eg, cc );
+			do
+			{
+				didsomething = false;
+				executeCrafting( eg, cc );
+			}
+			while (didsomething && remainingOperations > 0);
 		}
-		while (didsomething && remainingOperations > 0);
+		usedOps[2] = usedOps[1];
+		usedOps[1] = usedOps[0];
+		usedOps[0] = started - remainingOperations;
 
 		if ( remainingOperations > 0 && didsomething == false )
 			waiting = true;
@@ -1089,6 +1098,13 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	{
 		IAEItemStack wat = waitingFor.findPrecise( what );
 		return wat != null && wat.getStackSize() > 0;
+	}
+
+	public void breakCluster()
+	{
+		TileCraftingTile t = getCore();
+		if ( t != null )
+			t.breakCluster();
 	}
 
 }
