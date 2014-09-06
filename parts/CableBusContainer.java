@@ -137,6 +137,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 			updateDynamicRender();
 			updateConnections();
 			markForUpdate();
+			markForSave();
 			partChanged();
 		}
 	}
@@ -269,6 +270,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 
 					updateConnections();
 					markForUpdate();
+					markForSave();
 					partChanged();
 					return ForgeDirection.UNKNOWN;
 				}
@@ -312,6 +314,7 @@ public class CableBusContainer implements AEMultiTile, ICableBusContainer
 					updateDynamicRender();
 					updateConnections();
 					markForUpdate();
+					markForSave();
 					partChanged();
 					return side;
 				}
