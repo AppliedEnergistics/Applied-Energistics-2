@@ -47,6 +47,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.IConfigManager;
 import appeng.client.texture.CableBusTextures;
+import appeng.core.AEConfig;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
@@ -111,6 +112,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		{
 			wasActive = currentActive;
 			updateHandler();// proxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+			getHost().markForUpdate();
 		}
 	}
 
@@ -122,6 +124,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		{
 			wasActive = currentActive;
 			updateHandler();// proxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+			getHost().markForUpdate();
 		}
 	}
 
@@ -449,7 +452,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 				for (List Z : c.entityLists)
 					sum += Z.size();
 
-				if ( sum < 32 )
+				if ( sum < AEConfig.instance.formationPlaneEntityLimit )
 				{
 					if ( type == Actionable.MODULATE )
 					{
