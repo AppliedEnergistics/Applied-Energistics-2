@@ -173,6 +173,7 @@ public abstract class AEBaseGui extends GuiContainer
 		super.mouseClicked( xCoord, yCoord, btn );
 	}
 
+	boolean disableShiftClick = false;
 	Stopwatch dbl_clickTimer = Stopwatch.createStarted();
 	ItemStack dbl_whichItem;
 	Slot bl_clicked;
@@ -372,31 +373,38 @@ public abstract class AEBaseGui extends GuiContainer
 			return;
 		}
 
-		if ( dbl_whichItem == null || bl_clicked != slot || dbl_clickTimer.elapsed( TimeUnit.MILLISECONDS ) > 150 )
+		if ( disableShiftClick == false )
 		{
-			// some simple double click logic.
-			bl_clicked = slot;
-			dbl_clickTimer = Stopwatch.createStarted();
-			if ( slot != null )
-				dbl_whichItem = slot.getHasStack() ? slot.getStack().copy() : null;
-			else
-				dbl_whichItem = null;
-		}
-		else if ( dbl_whichItem != null )
-		{
-			// a replica of the weird broken vanilla feature.
-			Iterator iterator = this.inventorySlots.inventorySlots.iterator();
+			disableShiftClick = true;
 
-			while (iterator.hasNext())
+			if ( dbl_whichItem == null || bl_clicked != slot || dbl_clickTimer.elapsed( TimeUnit.MILLISECONDS ) > 150 )
 			{
-				Slot targetSlot = (Slot) iterator.next();
+				// some simple double click logic.
+				bl_clicked = slot;
+				dbl_clickTimer = Stopwatch.createStarted();
+				if ( slot != null )
+					dbl_whichItem = slot.getHasStack() ? slot.getStack().copy() : null;
+				else
+					dbl_whichItem = null;
+			}
+			else if ( dbl_whichItem != null )
+			{
+				// a replica of the weird broken vanilla feature.
+				Iterator iterator = this.inventorySlots.inventorySlots.iterator();
 
-				if ( targetSlot != null && targetSlot.canTakeStack( this.mc.thePlayer ) && targetSlot.getHasStack() && targetSlot.inventory == slot.inventory
-						&& Container.func_94527_a( targetSlot, dbl_whichItem, true ) )
+				while (iterator.hasNext())
 				{
-					this.handleMouseClick( targetSlot, targetSlot.slotNumber, ctrlDown, 1 );
+					Slot targetSlot = (Slot) iterator.next();
+
+					if ( targetSlot != null && targetSlot.canTakeStack( this.mc.thePlayer ) && targetSlot.getHasStack()
+							&& targetSlot.inventory == slot.inventory && Container.func_94527_a( targetSlot, dbl_whichItem, true ) )
+					{
+						this.handleMouseClick( targetSlot, targetSlot.slotNumber, ctrlDown, 1 );
+					}
 				}
 			}
+
+			disableShiftClick = false;
 		}
 
 		super.handleMouseClick( slot, slotIdx, ctrlDown, key );
