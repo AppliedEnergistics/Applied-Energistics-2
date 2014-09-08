@@ -65,7 +65,7 @@ public class BasicCellHandler implements ICellHandler
 		if ( handler instanceof CellInventoryHandler )
 		{
 			CellInventoryHandler ci = (CellInventoryHandler) handler;
-			return ci.getCellInv().getStatusForCell();
+			return ci.getStatusForCell();
 		}
 		return 0;
 	}

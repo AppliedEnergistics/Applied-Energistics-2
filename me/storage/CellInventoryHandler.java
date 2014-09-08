@@ -93,4 +93,31 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 			}
 		}
 	}
+
+	public boolean isPreformatted() 
+	{
+		return ! myPartitionList.isEmpty();
+	}
+
+	public boolean isFuzzy()
+	{
+		return myPartitionList instanceof FuzzyPriorityList;
+	}
+
+	@Override
+	public IncludeExclude getIncludeExcludeMode()
+	{
+		return myWhitelist;
+	}
+
+	public int getStatusForCell()
+	{
+			int val = getCellInv().getStatusForCell();
+			
+			if ( val == 1 && isPreformatted() )
+				val = 2;
+			
+			return val;
+	}
+
 }
