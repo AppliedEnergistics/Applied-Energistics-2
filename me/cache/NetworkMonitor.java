@@ -1,14 +1,11 @@
 package appeng.me.cache;
 
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import appeng.api.networking.events.MENetworkStorageEvent;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.MEMonitorHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEStack;
@@ -26,18 +23,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 	public void forceUpdate()
 	{
 		hasChanged = true;
-
-		Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = getListeners();
-		while (i.hasNext())
-		{
-			Entry<IMEMonitorHandlerReceiver<T>, Object> o = i.next();
-			IMEMonitorHandlerReceiver<T> recv = o.getKey();
-
-			if ( recv.isValid( o.getValue() ) )
-				recv.onListUpdate();
-			else
-				i.remove();
-		}
+		sendEvent = true;
 	}
 
 	public NetworkMonitor(GridStorageCache cache, StorageChannel chan) {
@@ -46,45 +32,27 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 		myChannel = chan;
 	}
 
-	final static public LinkedList depth = new LinkedList();
+	final private LinkedList<ChangeRecord<T>> changes = new LinkedList();
+
+	class ChangeRecord<G extends IAEStack<T>>
+	{
+		
+		public ChangeRecord(G diff2, BaseActionSource src2) {
+			diff = diff2;
+			src = src2;
+		}
+		
+		G diff;
+		BaseActionSource src;
+		
+	};
 
 	@Override
 	protected void postChange(T diff, BaseActionSource src)
 	{
-		if ( depth.contains( this ) )
-			return;
-
-		depth.push( this );
-
 		sendEvent = true;
-		super.postChange( diff, src );
-
-		if ( myGridCache.interestManager.containsKey( diff ) )
-		{
-			Set<ItemWatcher> list = myGridCache.interestManager.get( diff );
-			if ( !list.isEmpty() )
-			{
-				IItemList<T> myStorageList = getStorageList();
-
-				IAEStack fullStack = myStorageList.findPrecise( diff );
-				if ( fullStack == null )
-				{
-					fullStack = diff.copy();
-					fullStack.setStackSize( 0 );
-				}
-				
-				myGridCache.interestManager.enableTransactions();
-				
-				for (ItemWatcher iw : list)
-					iw.getHost().onStackChange( myStorageList, fullStack, diff, src, getChannel() );
-				
-				myGridCache.interestManager.disableTransactions();
-			}
-		}
-
-		Object last = depth.pop();
-		if ( last != this )
-			throw new RuntimeException( "Invalid Access to Networked Storage API detected." );
+		hasChanged = true;
+		changes.add( new ChangeRecord( diff, src ) );
 	}
 
 	public void onTick()
@@ -92,6 +60,39 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 		if ( sendEvent )
 		{
 			sendEvent = false;
+			
+			ChangeRecord<T> cr;
+			while ( (cr=changes.poll()) != null )
+			{
+				T diff = cr.diff;
+				BaseActionSource src = cr.src;
+				
+				IItemList<T> myStorageList = getStorageList();				
+				
+				postChangeToListeners( diff, src );
+				
+				if ( myGridCache.interestManager.containsKey( diff ) )
+				{
+					Set<ItemWatcher> list = myGridCache.interestManager.get( diff );
+					if ( !list.isEmpty() )
+					{
+						IAEStack fullStack = myStorageList.findPrecise( diff );
+						if ( fullStack == null )
+						{
+							fullStack = diff.copy();
+							fullStack.setStackSize( 0 );
+						}
+						
+						myGridCache.interestManager.enableTransactions();
+						
+						for (ItemWatcher iw : list)
+							iw.getHost().onStackChange( myStorageList, fullStack, diff, src, getChannel() );
+						
+						myGridCache.interestManager.disableTransactions();
+					}
+				}
+			}
+			
 			myGridCache.myGrid.postEvent( new MENetworkStorageEvent( this, myChannel ) );
 		}
 	}
