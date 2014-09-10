@@ -245,7 +245,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	@Override
 	public List<IMEInventoryHandler> getCellArray(StorageChannel channel)
 	{
-		if ( proxy.isActive() )
+		if ( proxy.isActive() && channel == StorageChannel.ITEMS )
 		{
 			List<IMEInventoryHandler> Handler = new ArrayList( 1 );
 			Handler.add( myHandler );
