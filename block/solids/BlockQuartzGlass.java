@@ -8,6 +8,7 @@ import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderQuartzGlass;
 import appeng.core.features.AEFeature;
+import appeng.helpers.AEGlassMaterial;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -28,7 +29,8 @@ public class BlockQuartzGlass extends AEBaseBlock
 	@Override
 	public boolean shouldSideBeRendered(IBlockAccess w, int x, int y, int z, int side)
 	{
-		if ( w.getBlock( x, y, z ).getMaterial() == Material.glass )
+		Material mat = w.getBlock( x, y, z ).getMaterial();
+		if ( mat == Material.glass || mat == AEGlassMaterial.instance )
 		{
 			if ( w.getBlock( x, y, z ).getRenderType() == this.getRenderType() )
 				return false;

@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
@@ -16,6 +15,7 @@ import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockWireless;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
+import appeng.helpers.AEGlassMaterial;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.networking.TileWireless;
 import appeng.util.Platform;
@@ -24,7 +24,7 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 {
 
 	public BlockWireless() {
-		super( BlockWireless.class, Material.glass );
+		super( BlockWireless.class, AEGlassMaterial.instance );
 		setfeature( EnumSet.of( AEFeature.Core, AEFeature.WirelessAccessTerminal ) );
 		setTileEntiy( TileWireless.class );
 		setLightOpacity( 0 );

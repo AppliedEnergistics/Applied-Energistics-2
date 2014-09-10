@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -39,6 +38,7 @@ import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
+import appeng.helpers.AEGlassMaterial;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IFMP;
 import appeng.parts.ICableBusContainer;
@@ -75,7 +75,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 	}
 
 	public BlockCableBus() {
-		super( BlockCableBus.class, Material.glass );
+		super( BlockCableBus.class, AEGlassMaterial.instance );
 		setfeature( EnumSet.of( AEFeature.Core ) );
 		setLightOpacity( 0 );
 		isFullSize = isOpaque = false;

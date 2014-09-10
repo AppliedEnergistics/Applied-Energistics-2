@@ -3,7 +3,6 @@ package appeng.block.networking;
 import java.util.EnumSet;
 import java.util.List;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,6 +14,7 @@ import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockEnergyCube;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.features.AEFeature;
+import appeng.helpers.AEGlassMaterial;
 import appeng.tile.networking.TileEnergyCell;
 import appeng.util.Platform;
 
@@ -27,7 +27,7 @@ public class BlockEnergyCell extends AEBaseBlock
 	}
 
 	public BlockEnergyCell(Class c) {
-		super( c, Material.glass );
+		super( c, AEGlassMaterial.instance );
 	}
 
 	public BlockEnergyCell() {
