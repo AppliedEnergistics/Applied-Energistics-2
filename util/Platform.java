@@ -1507,7 +1507,8 @@ public class Platform
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.LogSecurityAudits ) )
 		{
-			AELog.info( "Audit: " + a_isSecure + " : " + b_isSecure + " @ " + a.lastSecurityKey + " vs " + b.lastSecurityKey );
+			AELog.info( "Audit: " + a_isSecure + " : " + b_isSecure + " @ " + a.lastSecurityKey + " vs " + b.lastSecurityKey + " & " + a.playerID + " vs "
+					+ b.playerID );
 		}
 
 		// can't do that son...
