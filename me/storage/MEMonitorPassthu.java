@@ -90,7 +90,7 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 	}
 
 	@Override
-	public void postChange(IBaseMonitor<T> monitor, T change, BaseActionSource source)
+	public void postChange(IBaseMonitor<T> monitor, Iterable<T> change, BaseActionSource source)
 	{
 		Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = listeners.entrySet().iterator();
 		while (i.hasNext())

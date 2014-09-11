@@ -450,7 +450,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public void postChange(IBaseMonitor<IAEItemStack> monitor, IAEItemStack change, BaseActionSource source)
+	public void postChange(IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource source)
 	{
 		try
 		{

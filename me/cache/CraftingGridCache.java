@@ -295,8 +295,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		emitableItems.clear();
 
 		// update the stuff that was in the list...
-		for (IAEItemStack out : oldItems.keySet())
-			sg.postAlterationOfStoredItems( StorageChannel.ITEMS, out, new BaseActionSource() );
+		sg.postAlterationOfStoredItems( StorageChannel.ITEMS, oldItems.keySet(), new BaseActionSource() );
 
 		// re-create list..
 		for (ICraftingProvider cp : providers)
@@ -324,10 +323,9 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 		// make them immutable
 		for (Entry<IAEItemStack, Set<ICraftingPatternDetails>> e : tmpCraft.entrySet())
-		{
 			craftableItems.put( e.getKey(), ImmutableSortedSet.copyOf( e.getValue() ) );
-			sg.postAlterationOfStoredItems( StorageChannel.ITEMS, e.getKey(), new BaseActionSource() );
-		}
+
+		sg.postAlterationOfStoredItems( StorageChannel.ITEMS, craftableItems.keySet(), new BaseActionSource() );
 	}
 
 	@Override

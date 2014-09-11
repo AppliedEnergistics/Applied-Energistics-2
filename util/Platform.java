@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -1379,28 +1380,25 @@ public class Platform
 
 	public static void postChanges(IStorageGrid gs, ItemStack removed, ItemStack added, BaseActionSource src)
 	{
+		IItemList<IAEItemStack> itemChanges = AEApi.instance().storage().createItemList();
+		IItemList<IAEFluidStack> fluidChanges = AEApi.instance().storage().createFluidList();
+
 		if ( removed != null )
 		{
 			IMEInventory<IAEItemStack> myItems = AEApi.instance().registries().cell().getCellInventory( removed, null, StorageChannel.ITEMS );
 
 			if ( myItems != null )
 			{
-				for (IAEItemStack is : myItems.getAvailableItems( AEApi.instance().storage().createItemList() ))
-				{
+				for (IAEItemStack is : myItems.getAvailableItems( itemChanges ))
 					is.setStackSize( -is.getStackSize() );
-					gs.postAlterationOfStoredItems( StorageChannel.ITEMS, is, src );
-				}
 			}
 
 			IMEInventory<IAEFluidStack> myFluids = AEApi.instance().registries().cell().getCellInventory( removed, null, StorageChannel.FLUIDS );
 
 			if ( myFluids != null )
 			{
-				for (IAEFluidStack is : myFluids.getAvailableItems( AEApi.instance().storage().createFluidList() ))
-				{
+				for (IAEFluidStack is : myFluids.getAvailableItems( fluidChanges ))
 					is.setStackSize( -is.getStackSize() );
-					gs.postAlterationOfStoredItems( StorageChannel.FLUIDS, is, src );
-				}
 			}
 		}
 
@@ -1409,28 +1407,22 @@ public class Platform
 			IMEInventory<IAEItemStack> myItems = AEApi.instance().registries().cell().getCellInventory( added, null, StorageChannel.ITEMS );
 
 			if ( myItems != null )
-			{
-				for (IAEItemStack is : myItems.getAvailableItems( AEApi.instance().storage().createItemList() ))
-				{
-					gs.postAlterationOfStoredItems( StorageChannel.ITEMS, is, src );
-				}
-			}
+				myItems.getAvailableItems( itemChanges );
 
 			IMEInventory<IAEFluidStack> myFluids = AEApi.instance().registries().cell().getCellInventory( added, null, StorageChannel.FLUIDS );
 
 			if ( myFluids != null )
-			{
-				for (IAEFluidStack is : myFluids.getAvailableItems( AEApi.instance().storage().createFluidList() ))
-				{
-					gs.postAlterationOfStoredItems( StorageChannel.FLUIDS, is, src );
-				}
-			}
+				myFluids.getAvailableItems( fluidChanges );
 		}
+
+		gs.postAlterationOfStoredItems( StorageChannel.ITEMS, itemChanges, src );
 	}
 
 	static public <T extends IAEStack<T>> void postListChanges(IItemList<T> before, IItemList<T> after, IMEMonitorHandlerReceiver<T> meMonitorPassthu,
 			BaseActionSource source)
 	{
+		LinkedList<T> changes = new LinkedList();
+
 		for (T is : before)
 			is.setStackSize( -is.getStackSize() );
 
@@ -1441,9 +1433,12 @@ public class Platform
 		{
 			if ( is.getStackSize() != 0 )
 			{
-				meMonitorPassthu.postChange( null, is, source );
+				changes.add( is );
 			}
 		}
+
+		if ( !changes.isEmpty() )
+			meMonitorPassthu.postChange( null, changes, source );
 	}
 
 	public static int generateTileHash(TileEntity target)

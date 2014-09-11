@@ -54,6 +54,7 @@ import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -108,16 +109,18 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	{
 		Iterator<Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object>> i = getListeners();
 
+		ImmutableList<IAEItemStack> single = null;
+
 		// protect integrity
 		if ( i.hasNext() )
-			diff = diff.copy();
+			single = ImmutableList.of( diff.copy() );
 
 		while (i.hasNext())
 		{
 			Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object> o = i.next();
 			IMEMonitorHandlerReceiver<IAEItemStack> recv = o.getKey();
 			if ( recv.isValid( o.getValue() ) )
-				recv.postChange( null, diff, src );
+				recv.postChange( null, single, src );
 			else
 				i.remove();
 		}
@@ -494,8 +497,8 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 		IItemList<IAEItemStack> list;
 		getListOfItem( list = AEApi.instance().storage().createItemList(), CraftingItemList.ALL );
-		for (IAEItemStack g : list)
-			postChange( g, machineSrc );
+		for (IAEItemStack is : list)
+			postChange( is, machineSrc );
 
 		isComplete = true;
 		myLastLink = null;

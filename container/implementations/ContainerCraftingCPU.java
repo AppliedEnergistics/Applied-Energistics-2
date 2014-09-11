@@ -57,9 +57,9 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 
 	protected void setCPU(ICraftingCPU c)
 	{
-		if ( c== monitor)
+		if ( c == monitor )
 			return;
-		
+
 		if ( monitor != null )
 			monitor.removeListener( this );
 
@@ -185,11 +185,14 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	}
 
 	@Override
-	public void postChange(IBaseMonitor<IAEItemStack> monitor, IAEItemStack change, BaseActionSource actionSource)
+	public void postChange(IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource actionSource)
 	{
-		change = change.copy();
-		change.setStackSize( 1 );
-		list.add( change );
+		for (IAEItemStack is : change)
+		{
+			is = is.copy();
+			is.setStackSize( 1 );
+			list.add( is );
+		}
 	}
 
 	@Override

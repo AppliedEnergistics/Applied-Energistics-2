@@ -48,8 +48,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 
 	final static public LinkedList depth = new LinkedList();
 
-	@Override
-	protected void postChange(T diff, BaseActionSource src)
+	protected void postChange(boolean Add, Iterable<T> changes, BaseActionSource src)
 	{
 		if ( depth.contains( this ) )
 			return;
@@ -57,28 +56,36 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 		depth.push( this );
 
 		sendEvent = true;
-		super.postChange( diff, src );
+		postChangeToListeners( changes, src );
 
-		if ( myGridCache.interestManager.containsKey( diff ) )
+		IItemList<T> myStorageList = getStorageList();
+
+		for (T changedItem : changes)
 		{
-			Set<ItemWatcher> list = myGridCache.interestManager.get( diff );
-			if ( !list.isEmpty() )
-			{
-				IItemList<T> myStorageList = getStorageList();
+			T diffrence = changedItem;
 
-				IAEStack fullStack = myStorageList.findPrecise( diff );
-				if ( fullStack == null )
+			if ( !Add && changedItem != null )
+				(diffrence = changedItem.copy()).setStackSize( -changedItem.getStackSize() );
+
+			if ( myGridCache.interestManager.containsKey( changedItem ) )
+			{
+				Set<ItemWatcher> list = myGridCache.interestManager.get( changedItem );
+				if ( !list.isEmpty() )
 				{
-					fullStack = diff.copy();
-					fullStack.setStackSize( 0 );
+					IAEStack fullStack = myStorageList.findPrecise( changedItem );
+					if ( fullStack == null )
+					{
+						fullStack = changedItem.copy();
+						fullStack.setStackSize( 0 );
+					}
+
+					myGridCache.interestManager.enableTransactions();
+
+					for (ItemWatcher iw : list)
+						iw.getHost().onStackChange( myStorageList, fullStack, diffrence, src, getChannel() );
+
+					myGridCache.interestManager.disableTransactions();
 				}
-				
-				myGridCache.interestManager.enableTransactions();
-				
-				for (ItemWatcher iw : list)
-					iw.getHost().onStackChange( myStorageList, fullStack, diff, src, getChannel() );
-				
-				myGridCache.interestManager.disableTransactions();
 			}
 		}
 

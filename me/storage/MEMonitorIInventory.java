@@ -2,6 +2,7 @@ package appeng.me.storage;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -163,6 +164,8 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 	{
 		boolean changed = false;
 
+		LinkedList<IAEItemStack> changes = new LinkedList<IAEItemStack>();
+
 		list.resetStatus();
 		for (ItemSlot is : adaptor)
 		{
@@ -178,12 +181,12 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 				if ( old != null && old.aeStack != null )
 				{
 					old.aeStack.setStackSize( -old.aeStack.getStackSize() );
-					postDiffrence( old.aeStack );
+					changes.add( old.aeStack );
 				}
 
 				if ( cis != null && cis.aeStack != null )
 				{
-					postDiffrence( cis.aeStack );
+					changes.add( cis.aeStack );
 					list.add( cis.aeStack );
 				}
 
@@ -208,11 +211,14 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 
 					IAEItemStack a = stack.copy();
 					a.setStackSize( diff );
-					postDiffrence( a );
+					changes.add( a );
 					changed = true;
 				}
 			}
 		}
+
+		if ( !changes.isEmpty() )
+			postDiffrence( changes );
 
 		return changed ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
 	}
@@ -228,7 +234,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 		return !Platform.isSameItemPrecise( a, b );
 	}
 
-	private void postDiffrence(IAEItemStack a)
+	private void postDiffrence(Iterable<IAEItemStack> a)
 	{
 		// AELog.info( a.getItemStack().getUnlocalizedName() + " @ " + a.getStackSize() );
 		if ( a != null )

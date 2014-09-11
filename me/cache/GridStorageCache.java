@@ -232,28 +232,10 @@ public class GridStorageCache implements IStorageGrid
 		switch (chan)
 		{
 		case FLUIDS:
-			for (IAEFluidStack fs : ((IItemList<IAEFluidStack>) availableItems))
-			{
-				if ( up_or_down > 0 )
-					fluidMonitor.postChange( fs, src );
-				else
-				{
-					fs.setStackSize( -fs.getStackSize() );
-					fluidMonitor.postChange( fs, src );
-				}
-			}
+			fluidMonitor.postChange( up_or_down > 0, (IItemList<IAEFluidStack>) availableItems, src );
 			break;
 		case ITEMS:
-			for (IAEItemStack fs : ((IItemList<IAEItemStack>) availableItems))
-			{
-				if ( up_or_down > 0 )
-					itemMonitor.postChange( fs, src );
-				else
-				{
-					fs.setStackSize( -fs.getStackSize() );
-					itemMonitor.postChange( fs, src );
-				}
-			}
+			itemMonitor.postChange( up_or_down > 0, (IItemList<IAEItemStack>) availableItems, src );
 			break;
 		default:
 		}
@@ -274,12 +256,12 @@ public class GridStorageCache implements IStorageGrid
 	}
 
 	@Override
-	public void postAlterationOfStoredItems(StorageChannel chan, IAEStack input, BaseActionSource src)
+	public void postAlterationOfStoredItems(StorageChannel chan, Iterable<? extends IAEStack> input, BaseActionSource src)
 	{
 		if ( chan == StorageChannel.ITEMS )
-			itemMonitor.postChange( (IAEItemStack) input, src );
+			itemMonitor.postChange( true, (Iterable<IAEItemStack>) input, src );
 		else if ( chan == StorageChannel.FLUIDS )
-			fluidMonitor.postChange( (IAEFluidStack) input, src );
+			fluidMonitor.postChange( true, (Iterable<IAEFluidStack>) input, src );
 	}
 
 	@Override
