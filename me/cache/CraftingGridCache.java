@@ -438,7 +438,6 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 				if ( cpu.isActive() && !cpu.isBusy() && cpu.getAvailableStorage() >= job.getByteTotal() )
 				{
 					validCpusClusters.add( cpu );
-					break;
 				}
 			}
 
