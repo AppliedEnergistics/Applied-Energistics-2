@@ -384,8 +384,17 @@ public class EnergyGridCache implements IEnergyGrid
 		tickInjectionPerTick = 0;
 
 		// power information.
-		double drained = extractAEPower( getIdlePowerUsage(), Actionable.MODULATE, PowerMultiplier.CONFIG );
-		boolean currentlyHasPower = drained >= drainPerTick - 0.001;
+		boolean currentlyHasPower = false;
+
+		if ( drainPerTick > 0.0001 )
+		{
+			double drained = extractAEPower( getIdlePowerUsage(), Actionable.MODULATE, PowerMultiplier.CONFIG );
+			currentlyHasPower = drained >= drainPerTick - 0.001;
+		}
+		else
+		{
+			currentlyHasPower = extractAEPower( 0.1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0;
+		}
 
 		// ticks since change..
 		if ( currentlyHasPower == hasPower )
