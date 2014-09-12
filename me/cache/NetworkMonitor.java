@@ -47,7 +47,13 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 	}
 
 	final static public LinkedList depth = new LinkedList();
-
+	
+	@Override
+	protected void postChangesToListeners(Iterable<T> changes, BaseActionSource src)
+	{
+		postChange( true, changes, src );
+	}
+	
 	protected void postChange(boolean Add, Iterable<T> changes, BaseActionSource src)
 	{
 		if ( depth.contains( this ) )
@@ -56,7 +62,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 		depth.push( this );
 
 		sendEvent = true;
-		postChangeToListeners( changes, src );
+		notifyListenersOfChange( changes, src );
 
 		IItemList<T> myStorageList = getStorageList();
 
