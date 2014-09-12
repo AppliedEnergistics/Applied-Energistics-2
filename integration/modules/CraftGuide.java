@@ -22,6 +22,9 @@ import uristqwerty.CraftGuide.api.StackInfo;
 import uristqwerty.CraftGuide.api.StackInfoSource;
 import uristqwerty.gui_craftguide.texture.DynamicTexture;
 import uristqwerty.gui_craftguide.texture.TextureClip;
+import appeng.api.exceptions.MissingIngredientError;
+import appeng.api.exceptions.RegistrationError;
+import appeng.api.recipes.IIngredient;
 import appeng.integration.IIntegrationModule;
 import appeng.recipes.game.ShapedRecipe;
 import appeng.recipes.game.ShapelessRecipe;
@@ -222,8 +225,21 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 			if ( output[i] instanceof ItemStack[] )
 				output[i] = Arrays.asList( (ItemStack[]) output[i] );
 
-			// if ( output[i] instanceof List )
-			// output[i] = ((List) output[i]).get( 0 );
+			if ( output[i] instanceof IIngredient )
+			{
+				try
+				{
+					output[i] = toCG( ((IIngredient) output[i]).getItemStackSet() );
+				}
+				catch (RegistrationError e)
+				{
+
+				}
+				catch (MissingIngredientError e)
+				{
+
+				}
+			}
 		}
 
 		output[9] = recipeOutput;
@@ -244,8 +260,21 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 				if ( output[i] instanceof ItemStack[] )
 					output[i] = Arrays.asList( (ItemStack[]) output[i] );
 
-				// if ( output[i] instanceof List )
-				// output[i] = ((List) output[i]).get( 0 );
+				if ( output[i] instanceof IIngredient )
+				{
+					try
+					{
+						output[i] = toCG( ((IIngredient) output[i]).getItemStackSet() );
+					}
+					catch (RegistrationError e)
+					{
+
+					}
+					catch (MissingIngredientError e)
+					{
+
+					}
+				}
 			}
 		}
 
@@ -267,13 +296,40 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 				if ( output[i] instanceof ItemStack[] )
 					output[i] = Arrays.asList( (ItemStack[]) output[i] );
 
-				// if ( output[i] instanceof List )
-				// output[i] = ((List) output[i]).get( 0 );
+				if ( output[i] instanceof IIngredient )
+				{
+					try
+					{
+						output[i] = toCG( ((IIngredient) output[i]).getItemStackSet() );
+					}
+					catch (RegistrationError e)
+					{
+
+					}
+					catch (MissingIngredientError e)
+					{
+
+					}
+				}
 			}
 		}
 
 		output[4] = recipeOutput;
 		return output;
+	}
+
+	private Object toCG(ItemStack[] itemStackSet)
+	{
+		List<ItemStack> list = Arrays.asList( itemStackSet );
+
+		for (int x = 0; x < list.size(); x++)
+		{
+			list.set( x, list.get( x ).copy() );
+			if ( list.get( x ).stackSize == 0 )
+				list.get( x ).stackSize = 1;
+		}
+
+		return list;
 	}
 
 	@Override
