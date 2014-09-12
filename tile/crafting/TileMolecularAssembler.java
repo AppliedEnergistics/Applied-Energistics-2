@@ -559,7 +559,22 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 	@MENetworkEventSubscribe
 	public void onPowerEvent(MENetworkPowerStatusChange p)
 	{
-		boolean newState = gridProxy.isActive();
+		updatePowerState();
+	}
+
+	private void updatePowerState()
+	{
+		boolean newState = false;
+
+		try
+		{
+			newState = gridProxy.isActive() && gridProxy.getEnergy().extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.0001;
+		}
+		catch (GridAccessException e)
+		{
+
+		}
+
 		if ( newState != isPowered )
 		{
 			isPowered = newState;
