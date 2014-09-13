@@ -26,7 +26,8 @@ public class VersionChecker implements Runnable
 	private long delay = 0;
 	private boolean VersionChecker = true;
 
-	public VersionChecker() {
+	public VersionChecker()
+	{
 		long now = (new Date()).getTime();
 		delay = (1000 * 3600 * 5) - (now - AEConfig.instance.latestTimeStamp);
 		if ( delay < 1 )
@@ -38,19 +39,21 @@ public class VersionChecker implements Runnable
 	{
 		try
 		{
-			Thread.sleep( delay );
+			sleep( delay );
 		}
 		catch (InterruptedException e)
 		{
+			// :(
 		}
 
 		while (true)
 		{
 			Thread.yield();
+
 			try
 			{
 				String MCVersion = cpw.mods.fml.common.Loader.instance().getMCVersionString().replace( "Minecraft ", "" );
-				URL url = new URL( "http://ae2.ae-mod.info/builds/latest.json?VersionMC=" + MCVersion + "&Channel=" + AEConfig.CHANNEL + "&CurrentVersion="
+				URL url = new URL( "http://feeds.ae-mod.info/latest.json?VersionMC=" + MCVersion + "&Channel=" + AEConfig.CHANNEL + "&CurrentVersion="
 						+ AEConfig.VERSION );
 
 				URLConnection yc = url.openConnection();
@@ -105,13 +108,13 @@ public class VersionChecker implements Runnable
 					}
 				}
 
-				Thread.sleep( 1000 * 3600 * 4 );
+				sleep( 1000 * 3600 * 4 );
 			}
 			catch (Exception e)
 			{
 				try
 				{
-					Thread.sleep( 1000 * 3600 * 4 );
+					sleep( 1000 * 3600 * 4 );
 				}
 				catch (InterruptedException e1)
 				{
@@ -119,5 +122,10 @@ public class VersionChecker implements Runnable
 				}
 			}
 		}
+	}
+
+	private void sleep(long i) throws InterruptedException
+	{
+		Thread.sleep( i );
 	}
 }
