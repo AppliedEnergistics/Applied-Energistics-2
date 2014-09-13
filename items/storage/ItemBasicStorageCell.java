@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.IncludeExclude;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.ICellInventory;
@@ -75,28 +76,38 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	{
 		IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( i, null, StorageChannel.ITEMS );
 
-		if ( cdi instanceof CellInventoryHandler )
+		if ( cdi instanceof ICellInventoryHandler )
 		{
+			ICellInventoryHandler CI = (ICellInventoryHandler) cdi;
+			
 			ICellInventory cd = ((ICellInventoryHandler) cdi).getCellInv();
-			if ( cd != null )
+			if (cd != null)
 			{
-				l.add( cd.getUsedBytes() + " " + GuiText.Of.getLocal() + " " + cd.getTotalBytes() + " " + GuiText.BytesUsed.getLocal() );
-				l.add( cd.getStoredItemTypes() + " " + GuiText.Of.getLocal() + " " + cd.getTotalItemTypes() + " " + GuiText.Types.getLocal() );
-				/*
-				 * if ( cd.isPreformatted() ) { String List = StatCollector.translateToLocal( cd.getListMode() ==
-				 * ListMode.WHITELIST ? "AppEng.Gui.Whitelisted" : "AppEng.Gui.Blacklisted" ); if (
-				 * cd.isFuzzyPreformatted() ) l.add( StatCollector.translateToLocal( "Appeng.GuiITooltip.Partitioned" )
-				 * + " - " + List + " " + StatCollector.translateToLocal( "Appeng.GuiITooltip.Fuzzy" ) ); else l.add(
-				 * StatCollector.translateToLocal( "Appeng.GuiITooltip.Partitioned" ) + " - " + List + " " +
-				 * StatCollector.translateToLocal( "Appeng.GuiITooltip.Precise" ) ); }
-				 */
+				l.add(cd.getUsedBytes() + " " + GuiText.Of.getLocal() + " "
+						+ cd.getTotalBytes() + " "
+						+ GuiText.BytesUsed.getLocal());
+				
+				l.add(cd.getStoredItemTypes() + " " + GuiText.Of.getLocal()
+						+ " " + cd.getTotalItemTypes() + " "
+						+ GuiText.Types.getLocal());
+				
+				if ( CI.isPreformatted() )
+				{
+					String List = (CI.getIncludeExcludeMode() == IncludeExclude.WHITELIST ? GuiText.Included
+									: GuiText.Excluded ).getLocal();
+					
+					if ( CI.isFuzzy() )
+						l.add( GuiText.Partitioned.getLocal() + " - " + List + " " + GuiText.Fuzzy.getLocal() );
+					else
+						l.add( GuiText.Partitioned.getLocal() + " - " + List + " " + GuiText.Precise.getLocal()  );
+					
+				}
 			}
 		}
 	}
 
 	@Override
-	public int getBytes(ItemStack cellItem)
-	{
+	public int getBytes(ItemStack cellItem) {
 		return totalBytes;
 	}
 

@@ -9,11 +9,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import appeng.api.implementations.items.IGrowableCrystal;
+import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
-import appeng.tile.misc.TileQuartzGrowthAccelerator;
 import appeng.util.Platform;
 
 final public class EntityGrowingCrystal extends EntityItem
@@ -145,8 +145,8 @@ final public class EntityGrowingCrystal extends EntityItem
 	private boolean isAccel(int x, int y, int z)
 	{
 		TileEntity te = worldObj.getTileEntity( x, y, z );
-		if ( te instanceof TileQuartzGrowthAccelerator )
-			return ((TileQuartzGrowthAccelerator) te).isPowered();
+		if ( te instanceof ICrystalGrowthAccelerator )
+			return ((ICrystalGrowthAccelerator) te).isPowered();
 		return false;
 	}
 

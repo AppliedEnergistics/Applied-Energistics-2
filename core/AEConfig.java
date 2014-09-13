@@ -49,6 +49,8 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 	public int storageBiomeID = -1;
 	public int storageProviderID = -1;
 
+	public int formationPlaneEntityLimit = 128;
+
 	public float spawnChargedChance = 0.92f;
 	public int quartzOresPerCluster = 4;
 	public int quartzOresClusterAmount = 15;
@@ -252,6 +254,8 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		WirelessBoosterExp = get( "wireless", "WirelessBoosterExp", WirelessBoosterExp ).getDouble( WirelessBoosterExp );
 		WirelessTerminalDrainMultiplier = get( "wireless", "WirelessTerminalDrainMultiplier", WirelessTerminalDrainMultiplier ).getDouble(
 				WirelessTerminalDrainMultiplier );
+
+		formationPlaneEntityLimit = get( "automation", "formationPlaneEntityLimit", formationPlaneEntityLimit ).getInt( formationPlaneEntityLimit );
 
 		wireless_battery = get( "battery", "wireless", wireless_battery ).getInt( wireless_battery );
 		staff_battery = get( "battery", "staff", staff_battery ).getInt( staff_battery );

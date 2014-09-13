@@ -42,6 +42,7 @@ import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
 import appeng.core.features.IAEFeature;
 import appeng.core.features.ItemStackSrc;
+import appeng.helpers.AEGlassMaterial;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
@@ -203,7 +204,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	protected AEBaseBlock(Class<?> c, Material mat, String subname) {
 		super( mat );
 
-		if ( mat == Material.glass )
+		if ( mat == AEGlassMaterial.instance )
+			setStepSound( Block.soundTypeGlass );
+		else if ( mat == Material.glass )
 			setStepSound( Block.soundTypeGlass );
 		else if ( mat == Material.rock )
 			setStepSound( Block.soundTypeStone );

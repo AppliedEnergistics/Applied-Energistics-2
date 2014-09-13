@@ -317,9 +317,10 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
-	public void postChange(IBaseMonitor<IAEItemStack> monitor, IAEItemStack change, BaseActionSource source)
+	public void postChange(IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource source)
 	{
-		items.add( change );
+		for (IAEItemStack is : change)
+			items.add( is );
 	}
 
 	@Override

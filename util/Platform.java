@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -54,6 +55,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -1398,28 +1400,25 @@ public class Platform
 
 	public static void postChanges(IStorageGrid gs, ItemStack removed, ItemStack added, BaseActionSource src)
 	{
+		IItemList<IAEItemStack> itemChanges = AEApi.instance().storage().createItemList();
+		IItemList<IAEFluidStack> fluidChanges = AEApi.instance().storage().createFluidList();
+
 		if ( removed != null )
 		{
 			IMEInventory<IAEItemStack> myItems = AEApi.instance().registries().cell().getCellInventory( removed, null, StorageChannel.ITEMS );
 
 			if ( myItems != null )
 			{
-				for (IAEItemStack is : myItems.getAvailableItems( AEApi.instance().storage().createItemList() ))
-				{
+				for (IAEItemStack is : myItems.getAvailableItems( itemChanges ))
 					is.setStackSize( -is.getStackSize() );
-					gs.postAlterationOfStoredItems( StorageChannel.ITEMS, is, src );
-				}
 			}
 
 			IMEInventory<IAEFluidStack> myFluids = AEApi.instance().registries().cell().getCellInventory( removed, null, StorageChannel.FLUIDS );
 
 			if ( myFluids != null )
 			{
-				for (IAEFluidStack is : myFluids.getAvailableItems( AEApi.instance().storage().createFluidList() ))
-				{
+				for (IAEFluidStack is : myFluids.getAvailableItems( fluidChanges ))
 					is.setStackSize( -is.getStackSize() );
-					gs.postAlterationOfStoredItems( StorageChannel.FLUIDS, is, src );
-				}
 			}
 		}
 
@@ -1428,28 +1427,22 @@ public class Platform
 			IMEInventory<IAEItemStack> myItems = AEApi.instance().registries().cell().getCellInventory( added, null, StorageChannel.ITEMS );
 
 			if ( myItems != null )
-			{
-				for (IAEItemStack is : myItems.getAvailableItems( AEApi.instance().storage().createItemList() ))
-				{
-					gs.postAlterationOfStoredItems( StorageChannel.ITEMS, is, src );
-				}
-			}
+				myItems.getAvailableItems( itemChanges );
 
 			IMEInventory<IAEFluidStack> myFluids = AEApi.instance().registries().cell().getCellInventory( added, null, StorageChannel.FLUIDS );
 
 			if ( myFluids != null )
-			{
-				for (IAEFluidStack is : myFluids.getAvailableItems( AEApi.instance().storage().createFluidList() ))
-				{
-					gs.postAlterationOfStoredItems( StorageChannel.FLUIDS, is, src );
-				}
-			}
+				myFluids.getAvailableItems( fluidChanges );
 		}
+
+		gs.postAlterationOfStoredItems( StorageChannel.ITEMS, itemChanges, src );
 	}
 
 	static public <T extends IAEStack<T>> void postListChanges(IItemList<T> before, IItemList<T> after, IMEMonitorHandlerReceiver<T> meMonitorPassthu,
 			BaseActionSource source)
 	{
+		LinkedList<T> changes = new LinkedList();
+
 		for (T is : before)
 			is.setStackSize( -is.getStackSize() );
 
@@ -1460,9 +1453,12 @@ public class Platform
 		{
 			if ( is.getStackSize() != 0 )
 			{
-				meMonitorPassthu.postChange( null, is, source );
+				changes.add( is );
 			}
 		}
+
+		if ( !changes.isEmpty() )
+			meMonitorPassthu.postChange( null, changes, source );
 	}
 
 	public static int generateTileHash(TileEntity target)
@@ -1523,6 +1519,12 @@ public class Platform
 
 		boolean a_isSecure = isPowered( a.getGrid() ) && a.lastSecurityKey != -1;
 		boolean b_isSecure = isPowered( b.getGrid() ) && b.lastSecurityKey != -1;
+
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.LogSecurityAudits ) )
+		{
+			AELog.info( "Audit: " + a_isSecure + " : " + b_isSecure + " @ " + a.lastSecurityKey + " vs " + b.lastSecurityKey + " & " + a.playerID + " vs "
+					+ b.playerID );
+		}
 
 		// can't do that son...
 		if ( a_isSecure && b_isSecure )
@@ -1654,7 +1656,10 @@ public class Platform
 				}
 			}
 
-			if ( aitems != null && (ae_req.isOre() || providedTemplate.hasTagCompound() || providedTemplate.isItemStackDamageable()) )
+			boolean checkFuzzy = ae_req.isOre() || providedTemplate.getItemDamage() == OreDictionary.WILDCARD_VALUE || providedTemplate.hasTagCompound()
+					|| providedTemplate.isItemStackDamageable();
+
+			if ( aitems != null && checkFuzzy )
 			{
 				for (IAEItemStack x : aitems)
 				{
@@ -1701,7 +1706,7 @@ public class Platform
 		}
 
 		ItemStack ci = i.getContainerItem( stackInSlot.copy() );
-		if ( ci.isItemStackDamageable() && ci.getItemDamage() == ci.getMaxDamage() )
+		if ( ci != null && ci.isItemStackDamageable() && ci.getItemDamage() == ci.getMaxDamage() )
 			ci = null;
 
 		return ci;

@@ -69,7 +69,6 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	public ItemCrystalSeed() {
 		super( ItemCrystalSeed.class );
 		setHasSubtypes( true );
-		setMaxStackSize( 8 );
 		setfeature( EnumSet.of( AEFeature.Core ) );
 
 		EntityRegistry.registerModEntity( EntityGrowingCrystal.class, EntityGrowingCrystal.class.getSimpleName(), EntityIds.get( EntityGrowingCrystal.class ),

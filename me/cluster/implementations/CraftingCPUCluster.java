@@ -54,6 +54,7 @@ import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -76,6 +77,8 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	boolean waiting = false;
 	private boolean isComplete = true;
+	int usedOps[] = new int[3];
+
 	Map<ICraftingPatternDetails, TaskProgress> tasks = new HashMap<ICraftingPatternDetails, TaskProgress>();
 	IItemList<IAEItemStack> waitingFor = AEApi.instance().storage().createItemList();
 
@@ -106,16 +109,18 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	{
 		Iterator<Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object>> i = getListeners();
 
+		ImmutableList<IAEItemStack> single = null;
+
 		// protect integrity
 		if ( i.hasNext() )
-			diff = diff.copy();
+			single = ImmutableList.of( diff.copy() );
 
 		while (i.hasNext())
 		{
 			Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object> o = i.next();
 			IMEMonitorHandlerReceiver<IAEItemStack> recv = o.getKey();
 			if ( recv.isValid( o.getValue() ) )
-				recv.postChange( null, diff, src );
+				recv.postChange( null, single, src );
 			else
 				i.remove();
 		}
@@ -492,8 +497,8 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 		IItemList<IAEItemStack> list;
 		getListOfItem( list = AEApi.instance().storage().createItemList(), CraftingItemList.ALL );
-		for (IAEItemStack g : list)
-			postChange( g, machineSrc );
+		for (IAEItemStack is : list)
+			postChange( is, machineSrc );
 
 		isComplete = true;
 		myLastLink = null;
@@ -539,14 +544,21 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		if ( waiting || tasks.isEmpty() ) // nothing to do here...
 			return;
 
-		remainingOperations = accelerator + 1;
+		remainingOperations = accelerator + 1 - (usedOps[0] + usedOps[1] + usedOps[2]);
+		int started = remainingOperations;
 
-		do
+		if ( remainingOperations > 0 )
 		{
-			didsomething = false;
-			executeCrafting( eg, cc );
+			do
+			{
+				didsomething = false;
+				executeCrafting( eg, cc );
+			}
+			while (didsomething && remainingOperations > 0);
 		}
-		while (didsomething && remainingOperations > 0);
+		usedOps[2] = usedOps[1];
+		usedOps[1] = usedOps[0];
+		usedOps[0] = started - remainingOperations;
 
 		if ( remainingOperations > 0 && didsomething == false )
 			waiting = true;
@@ -1089,6 +1101,13 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	{
 		IAEItemStack wat = waitingFor.findPrecise( what );
 		return wat != null && wat.getStackSize() > 0;
+	}
+
+	public void breakCluster()
+	{
+		TileCraftingTile t = getCore();
+		if ( t != null )
+			t.breakCluster();
 	}
 
 }

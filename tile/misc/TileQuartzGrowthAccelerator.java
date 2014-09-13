@@ -7,6 +7,7 @@ import java.util.EnumSet;
 
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.IPowerChannelState;
+import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.util.AECableType;
@@ -16,7 +17,7 @@ import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 import appeng.util.Platform;
 
-public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPowerChannelState
+public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPowerChannelState, ICrystalGrowthAccelerator
 {
 
 	public boolean hasPower = false;

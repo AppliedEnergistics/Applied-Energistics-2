@@ -294,7 +294,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		}
 
 		@Override
-		public void postChange(IBaseMonitor<T> monitor, T change, BaseActionSource source)
+		public void postChange(IBaseMonitor<T> monitor, Iterable<T> change, BaseActionSource source)
 		{
 			if ( source == mySrc || (source instanceof PlayerSource && ((PlayerSource) source).via == TileChest.this) )
 			{

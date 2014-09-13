@@ -322,6 +322,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			AELog.error( t );
 		}
 
+		stream.capacity( stream.readableBytes() );
 		data.setByteArray( "X", stream.array() );
 		return new S35PacketUpdateTileEntity( xCoord, yCoord, zCoord, 64, data );
 	}

@@ -375,6 +375,11 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		if ( inv.getStackInSlot( 9 ) != null )
 		{
 			pushOut( inv.getStackInSlot( 9 ) );
+
+			// did it eject?
+			if ( inv.getStackInSlot( 9 ) == null )
+				markDirty();
+
 			ejectHeldItems();
 			updateSleepyness();
 			progress = 0;
@@ -453,6 +458,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 					// ;P
 				}
 
+				markDirty();
 				updateSleepyness();
 				return isAwake ? TickRateModulation.IDLE : TickRateModulation.SLEEP;
 			}
@@ -543,7 +549,22 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 	@MENetworkEventSubscribe
 	public void onPowerEvent(MENetworkPowerStatusChange p)
 	{
-		boolean newState = gridProxy.isActive();
+		updatePowerState();
+	}
+
+	private void updatePowerState()
+	{
+		boolean newState = false;
+
+		try
+		{
+			newState = gridProxy.isActive() && gridProxy.getEnergy().extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.0001;
+		}
+		catch (GridAccessException e)
+		{
+
+		}
+
 		if ( newState != isPowered )
 		{
 			isPowered = newState;

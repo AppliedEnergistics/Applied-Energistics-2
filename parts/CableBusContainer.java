@@ -135,6 +135,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			updateDynamicRender();
 			updateConnections();
 			markForUpdate();
+			markForSave();
 			partChanged();
 		}
 	}
@@ -267,6 +268,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 					updateConnections();
 					markForUpdate();
+					markForSave();
 					partChanged();
 					return ForgeDirection.UNKNOWN;
 				}
@@ -310,6 +312,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 					updateDynamicRender();
 					updateConnections();
 					markForUpdate();
+					markForSave();
 					partChanged();
 					return side;
 				}

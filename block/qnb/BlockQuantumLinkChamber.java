@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
@@ -19,6 +18,7 @@ import appeng.client.render.blocks.RenderQNB;
 import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
+import appeng.helpers.AEGlassMaterial;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.qnb.TileQuantumBridge;
 import appeng.util.Platform;
@@ -29,7 +29,7 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 {
 
 	public BlockQuantumLinkChamber() {
-		super( BlockQuantumLinkChamber.class, Material.glass );
+		super( BlockQuantumLinkChamber.class, AEGlassMaterial.instance );
 		setfeature( EnumSet.of( AEFeature.QuantumNetworkBridge ) );
 		setTileEntiy( TileQuantumBridge.class );
 		float shave = 2.0f / 16.0f;

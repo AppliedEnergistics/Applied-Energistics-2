@@ -164,6 +164,13 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	}
 
 	@Override
+	public void onReady()
+	{
+		super.onReady();
+		updateState();
+	}
+
+	@Override
 	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added)
 	{
 		if ( isCached )

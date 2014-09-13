@@ -33,7 +33,7 @@ public class ItemPaintBall extends AEBaseItem
 
 	public String getExtraName(ItemStack is)
 	{
-		return (is.getItemDamage() >= 20 ? GuiText.Lumen + " " : "") + getColor( is );
+		return (is.getItemDamage() >= 20 ? GuiText.Lumen.getLocal() + " " : "") + getColor( is );
 	}
 
 	public AEColor getColor(ItemStack is)

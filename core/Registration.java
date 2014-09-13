@@ -92,6 +92,7 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.stats.PlayerStatsRegistration;
 import appeng.debug.BlockChunkloader;
+import appeng.debug.BlockCubeGenerator;
 import appeng.debug.BlockItemGen;
 import appeng.debug.BlockPhantomNode;
 import appeng.debug.ToolDebugCard;
@@ -421,6 +422,7 @@ public class Registration
 		addFeature( BlockItemGen.class );
 		addFeature( BlockChunkloader.class );
 		addFeature( BlockPhantomNode.class );
+		addFeature( BlockCubeGenerator.class );
 	}
 
 	private AEItemDefinition addFeature(Class c, Object... Args)

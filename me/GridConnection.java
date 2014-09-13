@@ -11,6 +11,9 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.util.IReadOnlyCollection;
+import appeng.core.AEConfig;
+import appeng.core.AELog;
+import appeng.core.features.AEFeature;
 import appeng.me.pathfinding.IPathItem;
 import appeng.util.Platform;
 import appeng.util.ReadOnlyCollection;
@@ -34,7 +37,15 @@ public class GridConnection implements IGridConnection, IPathItem
 		GridNode b = (GridNode) bNode;
 
 		if ( Platform.securityCheck( a, b ) )
+		{
+			if ( AEConfig.instance.isFeatureEnabled( AEFeature.LogSecurityAudits ) )
+			{
+				AELog.info( "Audit Failed 1: " + a.getGridBlock().getLocation() );
+				AELog.info( "Audit Failed 2: " + b.getGridBlock().getLocation() );
+			}
+
 			throw new FailedConnection();
+		}
 
 		if ( a == null || b == null )
 			throw new GridException( "Connection Forged Between null enties." );
