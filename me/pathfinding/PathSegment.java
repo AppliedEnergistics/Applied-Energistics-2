@@ -25,7 +25,8 @@ public class PathSegment
 
 	PathGridCache pgc;
 
-	public PathSegment(PathGridCache myPGC, List open, Set semiopen, Set closed) {
+	public PathSegment(PathGridCache myPGC, List open, Set semiopen, Set closed)
+	{
 		this.open = open;
 		this.semiopen = semiopen;
 		this.closed = closed;
@@ -110,6 +111,7 @@ public class PathSegment
 			pi = pi.getControllerRoute();
 		}
 
+		pgc.channelsInUse++;
 		return true;
 	}
 
@@ -132,6 +134,7 @@ public class PathSegment
 			pi = pi.getControllerRoute();
 		}
 
+		pgc.channelsInUse++;
 		return true;
 	}
 

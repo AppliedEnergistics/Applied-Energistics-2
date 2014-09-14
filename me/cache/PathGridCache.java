@@ -25,6 +25,7 @@ import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
+import appeng.core.stats.Achievements;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
 import appeng.me.pathfinding.AdHocChannelUpdater;
@@ -33,6 +34,7 @@ import appeng.me.pathfinding.ControllerValidator;
 import appeng.me.pathfinding.IPathItem;
 import appeng.me.pathfinding.PathSegment;
 import appeng.tile.networking.TileController;
+import appeng.util.Platform;
 
 public class PathGridCache implements IPathingGrid
 {
@@ -48,6 +50,9 @@ public class PathGridCache implements IPathingGrid
 	int instance = Integer.MIN_VALUE;
 
 	int ticksUntilReady = 20;
+	public int channelsInUse = 0;
+	int lastChannels = 0;
+
 	final Set<TileController> controllers = new HashSet();
 	final Set<IGridNode> requireChannels = new HashSet();
 	final Set<IGridNode> blockDense = new HashSet();
@@ -59,7 +64,8 @@ public class PathGridCache implements IPathingGrid
 	public int channelsByBlocks = 0;
 	public double channelPowerUsage = 0.0;
 
-	public PathGridCache(IGrid g) {
+	public PathGridCache(IGrid g)
+	{
 		myGrid = g;
 	}
 
@@ -79,6 +85,7 @@ public class PathGridCache implements IPathingGrid
 			booting = true;
 			updateNetwork = false;
 			instance++;
+			channelsInUse = 0;
 
 			if ( !AEConfig.instance.isFeatureEnabled( AEFeature.Channels ) )
 			{
@@ -99,6 +106,8 @@ public class PathGridCache implements IPathingGrid
 					used = 0;
 
 				int nodes = myGrid.getNodes().size();
+				channelsInUse = used;
+
 				ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
 				channelsByBlocks = nodes * used;
 				channelPowerUsage = (double) channelsByBlocks / 128.0;
@@ -164,11 +173,49 @@ public class PathGridCache implements IPathingGrid
 					}
 				}
 
+				// check for achievements
+				achievementPost();
+
 				booting = false;
 				channelPowerUsage = (double) channelsByBlocks / 128.0;
 				myGrid.postEvent( new MENetworkBootingStatusChange() );
 			}
 		}
+	}
+
+	private void achievementPost()
+	{
+		if ( lastChannels != channelsInUse && AEConfig.instance.isFeatureEnabled( AEFeature.Channels ) )
+		{
+			Achievements currentBracket = getAchievementBracket( channelsInUse );
+			Achievements lastBracket = getAchievementBracket( lastChannels );
+			if ( currentBracket != lastBracket && currentBracket != null )
+			{
+				Set<Integer> players = new HashSet();
+				for (IGridNode n : requireChannels)
+					players.add( n.getPlayerID() );
+
+				for (int id : players)
+				{
+					Platform.addStat( id, currentBracket.getAchivement() );
+				}
+			}
+		}
+		lastChannels = channelsInUse;
+	}
+
+	private Achievements getAchievementBracket(int ch)
+	{
+		if ( ch < 8 )
+			return null;
+
+		if ( ch < 128 )
+			return Achievements.Networking1;
+
+		if ( ch < 2048 )
+			return Achievements.Networking2;
+
+		return Achievements.Networking3;
 	}
 
 	private int calculateRequiredChanels()

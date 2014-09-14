@@ -42,9 +42,11 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S21PacketChunkData;
 import net.minecraft.server.management.PlayerManager;
+import net.minecraft.stats.Achievement;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
@@ -385,7 +387,8 @@ public class Platform
 		{
 			switch (id)
 			{
-			case 10: {
+			case 10:
+			{
 				NBTTagCompound ctA = (NBTTagCompound) A;
 				NBTTagCompound ctB = (NBTTagCompound) B;
 
@@ -511,7 +514,8 @@ public class Platform
 		hash += id;
 		switch (id)
 		{
-		case 10: {
+		case 10:
+		{
 			NBTTagCompound ctA = (NBTTagCompound) A;
 
 			Set<String> cA = ctA.func_150296_c();
@@ -1821,5 +1825,15 @@ public class Platform
 	{
 		assert player.worldObj.isRemote : "Valid only on client";
 		return (float) (player.posY + player.getEyeHeight() - player.getDefaultEyeHeight());
+	}
+
+	public static void addStat(int playerID, Achievement achivement)
+	{
+		EntityPlayer p = AEApi.instance().registries().players().findPlayer( playerID );
+		if ( p != null )
+		{
+			p.addChatMessage( new ChatComponentText( "RWAR!" ) );
+			// p.addStat( achivement, 1 );
+		}
 	}
 }

@@ -21,4 +21,10 @@ public class PlayerRegistry implements IPlayerRegistry
 		return WorldSettings.getInstance().getPlayerID( player.getGameProfile() );
 	}
 
+	@Override
+	public EntityPlayer findPlayer(int playerID)
+	{
+		return WorldSettings.getInstance().getPlayerFromID( playerID );
+	}
+
 }

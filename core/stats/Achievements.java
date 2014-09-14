@@ -52,22 +52,22 @@ public enum Achievements
 	// done
 	GlassCable(2, 0, AEApi.instance().parts().partCableGlass, AchievementType.Craft),
 
-	// TODO: detect stuff
+	// done
 	Networking1(4, -6, AEApi.instance().parts().partCableCovered, AchievementType.Custom),
 
 	// done
 	Controller(4, -4, AEApi.instance().blocks().blockController, AchievementType.Craft),
 
-	// TODO: detect stuff
+	// done
 	Networking2(4, 0, AEApi.instance().parts().partCableSmart, AchievementType.Custom),
 
-	// TODO: detect stuff
+	// done
 	Networking3(4, 2, AEApi.instance().parts().partCableDense, AchievementType.Custom),
 
 	// done
 	P2P(2, -2, AEApi.instance().parts().partP2PTunnelME, AchievementType.Craft),
 
-	// TODO: detect stuff
+	// done
 	Recursive(6, -2, AEApi.instance().blocks().blockInterface, AchievementType.Craft),
 
 	// done
@@ -112,21 +112,24 @@ public enum Achievements
 		return stat;
 	}
 
-	private Achievements(int x, int y, AEColoredItemDefinition which, AchievementType type) {
+	private Achievements(int x, int y, AEColoredItemDefinition which, AchievementType type)
+	{
 		stack = which.stack( AEColor.Transparent, 1 );
 		this.type = type;
 		this.x = x;
 		this.y = y;
 	}
 
-	private Achievements(int x, int y, AEItemDefinition which, AchievementType type) {
+	private Achievements(int x, int y, AEItemDefinition which, AchievementType type)
+	{
 		stack = which.stack( 1 );
 		this.type = type;
 		this.x = x;
 		this.y = y;
 	}
 
-	private Achievements(int x, int y, ItemStack which, AchievementType type) {
+	private Achievements(int x, int y, ItemStack which, AchievementType type)
+	{
 		stack = which;
 		this.type = type;
 		this.x = x;

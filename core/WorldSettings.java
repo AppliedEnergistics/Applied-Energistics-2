@@ -9,10 +9,14 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.WeakHashMap;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -44,7 +48,8 @@ public class WorldSettings extends Configuration
 
 	File AEFolder;
 
-	public WorldSettings(File aeFolder) {
+	public WorldSettings(File aeFolder)
+	{
 		super( new File( aeFolder.getPath() + File.separatorChar + "settings.cfg" ) );
 		AEFolder = aeFolder;
 
@@ -220,6 +225,7 @@ public class WorldSettings extends Configuration
 	}
 
 	List<Integer> storageCellDims = new ArrayList();
+	HashMap<Integer, UUID> idToUUID;
 
 	public void addStorageCellDim(int newDim)
 	{
@@ -425,9 +431,40 @@ public class WorldSettings extends Configuration
 		else
 		{
 			playerList.put( uuid, prop = new Property( uuid, "" + nextPlayer(), Property.Type.INTEGER ) );
+			getUUIDMap().put( prop.getInt(), profile.getId() ); // add to reverse map
 			save();
 			return prop.getInt();
 		}
 	}
 
+	public HashMap<Integer, UUID> getUUIDMap()
+	{
+		if ( idToUUID == null )
+		{
+			idToUUID = new HashMap<Integer, UUID>();
+
+			ConfigCategory playerList = this.getCategory( "players" );
+
+			for (Entry<String, Property> b : playerList.getValues().entrySet())
+				idToUUID.put( b.getValue().getInt(), UUID.fromString( b.getKey() ) );
+		}
+
+		return idToUUID;
+	}
+
+	public EntityPlayer getPlayerFromID(int playerID)
+	{
+		UUID id = getUUIDMap().get( playerID );
+
+		if ( id != null )
+		{
+			for (EntityPlayer player : CommonHelper.proxy.getPlayers())
+			{
+				if ( player.getUniqueID().equals( id ) )
+					return player;
+			}
+		}
+
+		return null;
+	}
 }
