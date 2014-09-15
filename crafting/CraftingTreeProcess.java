@@ -64,26 +64,22 @@ public class CraftingTreeProcess
 					fullsimulation = true;
 			}
 
-			for (int x = 0; x < list.length; x++)
+			for ( IAEItemStack part : details.getCondencedInputs() )
 			{
-				IAEItemStack part = list[x];
-				if ( part != null )
+				ItemStack g = part.getItemStack();
+
+				boolean isAnInput = false;
+				for ( IAEItemStack a : details.getCondencedOutputs() )
 				{
-					ItemStack g = part.getItemStack();
-
-					boolean isAnInput = false;
-					for (IAEItemStack a : is)
-					{
-						if ( g != null && a != null && a.equals( g ) )
-							isAnInput = true;
-					}
-
-					if ( isAnInput )
-						limitQty = true;
-
-					if ( g.getItem().hasContainerItem( g ) )
-						limitQty = containerItems = true;
+					if ( g != null && a != null && a.equals( g ) )
+						isAnInput = true;
 				}
+
+				if ( isAnInput )
+					limitQty = true;
+
+				if ( g.getItem().hasContainerItem( g ) )
+					limitQty = containerItems = true;
 			}
 
 			boolean complicated = false;
@@ -117,26 +113,19 @@ public class CraftingTreeProcess
 		}
 		else
 		{
-			IAEItemStack list[] = details.getInputs();
-			IAEItemStack[] is = details.getInputs();
-
-			for (int x = 0; x < list.length; x++)
+			for ( IAEItemStack part : details.getCondencedInputs() )
 			{
-				IAEItemStack part = list[x];
-				if ( part != null )
+				ItemStack g = part.getItemStack();
+
+				boolean isAnInput = false;
+				for (IAEItemStack a : details.getCondencedOutputs())
 				{
-					ItemStack g = part.getItemStack();
-
-					boolean isAnInput = false;
-					for (IAEItemStack a : is)
-					{
-						if ( g != null && a != null && a.equals( g ) )
-							isAnInput = true;
-					}
-
-					if ( isAnInput )
-						limitQty = true;
+					if ( g != null && a != null && a.equals( g ) )
+						isAnInput = true;
 				}
+
+				if ( isAnInput )
+					limitQty = true;
 			}
 
 			for (IAEItemStack part : details.getCondencedInputs())
