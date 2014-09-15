@@ -3,6 +3,7 @@ package appeng.me.storage;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.NavigableMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -165,11 +166,14 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 		boolean changed = false;
 
 		LinkedList<IAEItemStack> changes = new LinkedList<IAEItemStack>();
-
+		
+		int high = 0;
 		list.resetStatus();
 		for (ItemSlot is : adaptor)
 		{
 			CachedItemStack old = memory.get( is.slot );
+			high = Math.max( high, is.slot );
+			
 			ItemStack newIS = is == null || is.isExtractable == false && mode == StorageFilter.EXTACTABLE_ONLY ? null : is.getItemStack();
 			ItemStack oldIS = old == null ? null : old.itemStack;
 
@@ -216,7 +220,21 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 				}
 			}
 		}
-
+		
+		// detect dropped items; should fix non IISided Inventory Changes.
+	 	NavigableMap<Integer,CachedItemStack> end = memory.tailMap( high, false );
+	 	if ( ! end.isEmpty() )
+	 	{
+			for ( CachedItemStack cis : end.values() )
+			{
+				IAEItemStack a = cis.aeStack.copy();
+				a.setStackSize( - a.getStackSize() );
+				changes.add( a );
+				changed = true;
+			}
+			end.clear();
+	 	}
+	 	
 		if ( !changes.isEmpty() )
 			postDiffrence( changes );
 
