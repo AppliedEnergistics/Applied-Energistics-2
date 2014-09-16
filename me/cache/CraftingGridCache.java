@@ -62,7 +62,6 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.SetMultimap;
 
 public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler
@@ -78,7 +77,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	IEnergyGrid eg;
 
 	HashMap<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap();
-	HashMap<IAEItemStack, ImmutableSet<ICraftingPatternDetails>> craftableItems = new HashMap();
+	HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>> craftableItems = new HashMap();
 	HashSet<IAEItemStack> emitableItems = new HashSet();
 	HashMap<String, CraftingLinkNexus> links = new HashMap();
 
@@ -92,7 +91,8 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		final Iterator<CraftingCPUCluster> i;
 		CraftingCPUCluster c = null;
 
-		public ActiveCpuIterator(Collection<CraftingCPUCluster> o) {
+		public ActiveCpuIterator(Collection<CraftingCPUCluster> o)
+		{
 			i = o.iterator();
 		}
 
@@ -135,7 +135,8 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		return ImmutableSet.copyOf( new ActiveCpuIterator( cpuClusters ) );
 	}
 
-	public CraftingGridCache(IGrid g) {
+	public CraftingGridCache(IGrid g)
+	{
 		grid = g;
 	}
 
@@ -287,7 +288,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 	private void updatePatterns()
 	{
-		HashMap<IAEItemStack, ImmutableSet<ICraftingPatternDetails>> oldItems = craftableItems;
+		HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>> oldItems = craftableItems;
 
 		// erase list.
 		craftingMethods.clear();
@@ -323,7 +324,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 		// make them immutable
 		for (Entry<IAEItemStack, Set<ICraftingPatternDetails>> e : tmpCraft.entrySet())
-			craftableItems.put( e.getKey(), ImmutableSortedSet.copyOf( e.getValue() ) );
+			craftableItems.put( e.getKey(), ImmutableList.copyOf( e.getValue() ) );
 
 		sg.postAlterationOfStoredItems( StorageChannel.ITEMS, craftableItems.keySet(), new BaseActionSource() );
 	}
@@ -481,7 +482,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	@Override
 	public ImmutableCollection<ICraftingPatternDetails> getCraftingFor(IAEItemStack whatToCraft, ICraftingPatternDetails details, int slotIndex, World world)
 	{
-		ImmutableSet<ICraftingPatternDetails> res = craftableItems.get( whatToCraft );
+		ImmutableList<ICraftingPatternDetails> res = craftableItems.get( whatToCraft );
 
 		if ( res == null )
 		{
