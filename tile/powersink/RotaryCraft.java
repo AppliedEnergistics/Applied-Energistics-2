@@ -74,19 +74,17 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 		alpha = io;
 	}
 
-	@Override
+	
 	final public int getMachineX()
 	{
 		return xCoord;
 	}
 
-	@Override
 	final public int getMachineY()
 	{
 		return yCoord;
 	}
 
-	@Override
 	final public int getMachineZ()
 	{
 		return zCoord;
@@ -113,7 +111,6 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 		power = p;
 	}
 
-	@Override
 	final public boolean canReadFromBlock(int x, int y, int z)
 	{
 		ForgeDirection side = ForgeDirection.UNKNOWN;
@@ -146,6 +143,18 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 		power = 0;
 		torque = 0;
 		omega = 0;
+	}
+
+	@Override
+	final public boolean canReadFrom(ForgeDirection side)
+	{
+		return internalCanAcceptPower && getPowerSides().contains( side );
+	}
+
+	@Override
+	final public int getMinTorque(int available)
+	{
+		return 0;
 	}
 
 }
