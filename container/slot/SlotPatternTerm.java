@@ -11,6 +11,7 @@ import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.packets.PacketPatternSlot;
+import appeng.helpers.IContainerCraftingPacket;
 
 public class SlotPatternTerm extends SlotCraftingTerm
 {
@@ -19,8 +20,9 @@ public class SlotPatternTerm extends SlotCraftingTerm
 	IOptionalSlotHost host;
 
 	public SlotPatternTerm(EntityPlayer player, BaseActionSource mySrc, IEnergySource energySrc, IStorageMonitorable storage, IInventory cMatrix,
-			IInventory secondMatrix, IInventory output, int x, int y, IOptionalSlotHost h, int grpnum) {
-		super( player, mySrc, energySrc, storage, cMatrix, secondMatrix, output, x, y );
+			IInventory secondMatrix, IInventory output, int x, int y, IOptionalSlotHost h, int grpnum, IContainerCraftingPacket c)
+	{
+		super( player, mySrc, energySrc, storage, cMatrix, secondMatrix, output, x, y, c );
 
 		host = h;
 		groupNum = grpnum;

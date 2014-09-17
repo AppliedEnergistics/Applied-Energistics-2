@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
@@ -344,4 +345,13 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		return clientCM;
 	}
 
+	public ItemStack[] getViewCells()
+	{
+		ItemStack[] list = new ItemStack[cellView.length];
+
+		for (int x = 0; x < cellView.length; x++)
+			list[x] = cellView[x].getStack();
+
+		return list;
+	}
 }

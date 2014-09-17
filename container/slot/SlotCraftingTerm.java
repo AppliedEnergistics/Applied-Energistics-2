@@ -17,7 +17,9 @@ import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
+import appeng.helpers.IContainerCraftingPacket;
 import appeng.helpers.InventoryAction;
+import appeng.items.storage.ItemViewCell;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorPlayerHand;
@@ -32,15 +34,18 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 	private final BaseActionSource mySrc;
 	private final IEnergySource energySrc;
 	private final IStorageMonitorable storage;
+	private final IContainerCraftingPacket container;
 
 	public SlotCraftingTerm(EntityPlayer player, BaseActionSource mySrc, IEnergySource energySrc, IStorageMonitorable storage, IInventory cMatrix,
-			IInventory secondMatrix, IInventory output, int x, int y) {
+			IInventory secondMatrix, IInventory output, int x, int y, IContainerCraftingPacket ccp)
+	{
 		super( player, cMatrix, output, 0, x, y );
 		this.energySrc = energySrc;
 		this.storage = storage;
 		this.mySrc = mySrc;
 		pattern = cMatrix;
 		craftInv = secondMatrix;
+		container = ccp;
 	}
 
 	public IInventory getCraftingMatrix()
@@ -114,7 +119,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 						if ( pattern.getStackInSlot( x ) != null )
 						{
 							set[x] = Platform.extractItemsByRecipe( energySrc, mySrc, inv, p.worldObj, r, is, ic, pattern.getStackInSlot( x ), x, all,
-									Actionable.MODULATE );
+									Actionable.MODULATE, ItemViewCell.createFilter( container.getViewCells() ) );
 							ic.setInventorySlotContents( x, set[x] );
 						}
 					}

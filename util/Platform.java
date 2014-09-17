@@ -105,6 +105,7 @@ import appeng.util.item.AEItemStack;
 import appeng.util.item.AESharedNBT;
 import appeng.util.item.OreHelper;
 import appeng.util.item.OreRefrence;
+import appeng.util.prioitylist.IPartitionList;
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
@@ -384,7 +385,8 @@ public class Platform
 		{
 			switch (id)
 			{
-			case 10: {
+			case 10:
+			{
 				NBTTagCompound ctA = (NBTTagCompound) A;
 				NBTTagCompound ctB = (NBTTagCompound) B;
 
@@ -510,7 +512,8 @@ public class Platform
 		hash += id;
 		switch (id)
 		{
-		case 10: {
+		case 10:
+		{
 			NBTTagCompound ctA = (NBTTagCompound) A;
 
 			Set<String> cA = ctA.func_150296_c();
@@ -1615,7 +1618,8 @@ public class Platform
 	}
 
 	public static ItemStack extractItemsByRecipe(IEnergySource energySrc, BaseActionSource mySrc, IMEMonitor<IAEItemStack> src, World w, IRecipe r,
-			ItemStack output, InventoryCrafting ci, ItemStack providedTemplate, int slot, IItemList<IAEItemStack> aitems, Actionable realForFake)
+			ItemStack output, InventoryCrafting ci, ItemStack providedTemplate, int slot, IItemList<IAEItemStack> aitems, Actionable realForFake,
+			IPartitionList<IAEItemStack> filter)
 	{
 		if ( energySrc.extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.9 )
 		{
@@ -1625,14 +1629,17 @@ public class Platform
 			AEItemStack ae_req = AEItemStack.create( providedTemplate );
 			ae_req.setStackSize( 1 );
 
-			IAEItemStack ae_ext = src.extractItems( ae_req, realForFake, mySrc );
-			if ( ae_ext != null )
+			if ( filter == null || filter.isListed( ae_req ) )
 			{
-				ItemStack extracted = ae_ext.getItemStack();
-				if ( extracted != null )
+				IAEItemStack ae_ext = src.extractItems( ae_req, realForFake, mySrc );
+				if ( ae_ext != null )
 				{
-					energySrc.extractAEPower( 1, realForFake, PowerMultiplier.CONFIG );
-					return extracted;
+					ItemStack extracted = ae_ext.getItemStack();
+					if ( extracted != null )
+					{
+						energySrc.extractAEPower( 1, realForFake, PowerMultiplier.CONFIG );
+						return extracted;
+					}
 				}
 			}
 
@@ -1653,11 +1660,14 @@ public class Platform
 						{
 							IAEItemStack ax = x.copy();
 							ax.setStackSize( 1 );
-							IAEItemStack ex = src.extractItems( ax, realForFake, mySrc );
-							if ( ex != null )
+							if ( filter == null || filter.isListed( ax ) )
 							{
-								energySrc.extractAEPower( 1, realForFake, PowerMultiplier.CONFIG );
-								return ex.getItemStack();
+								IAEItemStack ex = src.extractItems( ax, realForFake, mySrc );
+								if ( ex != null )
+								{
+									energySrc.extractAEPower( 1, realForFake, PowerMultiplier.CONFIG );
+									return ex.getItemStack();
+								}
 							}
 						}
 						ci.setInventorySlotContents( slot, providedTemplate );
