@@ -1,6 +1,7 @@
 package appeng.helpers;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.BaseActionSource;
 
@@ -27,5 +28,10 @@ public interface IContainerCraftingPacket
 	 * @return consume items?
 	 */
 	boolean useRealItems();
+
+	/**
+	 * @return array of view cells
+	 */
+	ItemStack[] getViewCells();
 
 }

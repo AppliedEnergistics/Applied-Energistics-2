@@ -6,17 +6,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.regex.Pattern;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
-import appeng.api.config.FuzzyMode;
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
 import appeng.api.config.SortOrder;
-import appeng.api.config.Upgrades;
 import appeng.api.config.ViewItems;
 import appeng.api.config.YesNo;
-import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.gui.widgets.IScrollSource;
@@ -25,11 +21,7 @@ import appeng.core.AEConfig;
 import appeng.items.storage.ItemViewCell;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
-import appeng.util.prioitylist.FuzzyPriorityList;
 import appeng.util.prioitylist.IPartitionList;
-import appeng.util.prioitylist.MergedPriorityList;
-import appeng.util.prioitylist.PrecisePriorityList;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class ItemRepo
@@ -46,7 +38,8 @@ public class ItemRepo
 	public String searchString = "";
 	private String innerSearch = "";
 
-	public ItemRepo(IScrollSource src, ISortSource sortSrc) {
+	public ItemRepo(IScrollSource src, ISortSource sortSrc)
+	{
 		this.src = src;
 		this.sortSrc = sortSrc;
 	}
@@ -91,69 +84,7 @@ public class ItemRepo
 
 	public void setViewCell(ItemStack[] list)
 	{
-		myPartitionList = null;
-		MergedPriorityList<IAEItemStack> myMergedList = new MergedPriorityList<IAEItemStack>();
-
-		for (ItemStack currentViewCell : list)
-		{
-			if ( currentViewCell == null )
-				continue;
-
-			if ( (currentViewCell.getItem() instanceof ItemViewCell) )
-			{
-				boolean hasInverter = false;
-				boolean hasFuzzy = false;
-				IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
-
-				ItemViewCell vc = (ItemViewCell) currentViewCell.getItem();
-				IInventory upgrades = vc.getUpgradesInventory( currentViewCell );
-				IInventory config = vc.getConfigInventory( currentViewCell );
-				FuzzyMode fzMode = vc.getFuzzyMode( currentViewCell );
-
-				hasInverter = false;
-				hasFuzzy = false;
-
-				for (int x = 0; x < upgrades.getSizeInventory(); x++)
-				{
-					ItemStack is = upgrades.getStackInSlot( x );
-					if ( is != null && is.getItem() instanceof IUpgradeModule )
-					{
-						Upgrades u = ((IUpgradeModule) is.getItem()).getType( is );
-						if ( u != null )
-						{
-							switch (u)
-							{
-							case FUZZY:
-								hasFuzzy = true;
-								break;
-							case INVERTER:
-								hasInverter = true;
-								break;
-							default:
-							}
-						}
-					}
-				}
-
-				for (int x = 0; x < config.getSizeInventory(); x++)
-				{
-					ItemStack is = config.getStackInSlot( x );
-					if ( is != null )
-						priorityList.add( AEItemStack.create( is ) );
-				}
-
-				if ( !priorityList.isEmpty() )
-				{
-					if ( hasFuzzy )
-						myMergedList.addNewList( new FuzzyPriorityList<IAEItemStack>( priorityList, fzMode ), !hasInverter );
-					else
-						myMergedList.addNewList( new PrecisePriorityList<IAEItemStack>( priorityList ), !hasInverter );
-
-					myPartitionList = myMergedList;
-				}
-			}
-		}
-
+		myPartitionList = ItemViewCell.createFilter( list );
 		updateView();
 	}
 

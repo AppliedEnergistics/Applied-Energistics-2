@@ -36,6 +36,7 @@ import appeng.container.slot.SlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.core.sync.packets.PacketPatternSlot;
 import appeng.helpers.IContainerCraftingPacket;
+import appeng.items.storage.ItemViewCell;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
@@ -61,7 +62,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 	public PartPatternTerminal ct;
 
-	public ContainerPatternTerm(InventoryPlayer ip, ITerminalHost montiorable) {
+	public ContainerPatternTerm(InventoryPlayer ip, ITerminalHost montiorable)
+	{
 		super( ip, montiorable, false );
 		ct = (PartPatternTerminal) montiorable;
 
@@ -73,7 +75,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			for (int x = 0; x < 3; x++)
 				addSlotToContainer( craftingSlots[x + y * 3] = new SlotFakeCraftingMatrix( crafting, x + y * 3, 18 + x * 18, -76 + y * 18 ) );
 
-		addSlotToContainer( craftSlot = new SlotPatternTerm( ip.player, mySrc, powerSrc, montiorable, crafting, patternInv, cOut, 110, -76 + 18, this, 2 ) );
+		addSlotToContainer( craftSlot = new SlotPatternTerm( ip.player, mySrc, powerSrc, montiorable, crafting, patternInv, cOut, 110, -76 + 18, this, 2, this ) );
 		craftSlot.IIcon = -1;
 
 		for (int y = 0; y < 3; y++)
@@ -352,7 +354,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 					if ( ic.getStackInSlot( x ) != null )
 					{
 						ItemStack pulled = Platform.extractItemsByRecipe( powerSrc, mySrc, storage, p.worldObj, r, is, ic, ic.getStackInSlot( x ), x, all,
-								Actionable.MODULATE );
+								Actionable.MODULATE, ItemViewCell.createFilter( getViewCells() ) );
 						real.setInventorySlotContents( x, pulled );
 					}
 				}

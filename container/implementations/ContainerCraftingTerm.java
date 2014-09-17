@@ -49,7 +49,7 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 			for (int x = 0; x < 3; x++)
 				addSlotToContainer( craftingSlots[x + y * 3] = new SlotCraftingMatrix( this, crafting, x + y * 3, 37 + x * 18, -72 + y * 18 ) );
 
-		addSlotToContainer( outputSlot = new SlotCraftingTerm( getPlayerInv().player, mySrc, powerSrc, montiorable, crafting, crafting, output, 131, -72 + 18 ) );
+		addSlotToContainer( outputSlot = new SlotCraftingTerm( getPlayerInv().player, mySrc, powerSrc, montiorable, crafting, crafting, output, 131, -72 + 18, this ) );
 
 		bindPlayerInventory( ip, 0, 0 );
 

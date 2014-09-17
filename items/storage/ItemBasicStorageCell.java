@@ -28,7 +28,6 @@ import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.materials.MaterialType;
-import appeng.me.storage.CellInventoryHandler;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 

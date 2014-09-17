@@ -39,7 +39,7 @@ public class ColoredItemDefinition implements AEColoredItemDefinition
 	{
 		ItemStackSrc is = colors[color.ordinal()];
 
-		if ( comparableItem == null )
+		if ( comparableItem == null || is == null )
 			return false;
 
 		return comparableItem.getItem() == is.item && comparableItem.getItemDamage() == is.damage;

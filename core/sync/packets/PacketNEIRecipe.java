@@ -32,8 +32,10 @@ import appeng.container.ContainerNull;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.IContainerCraftingPacket;
+import appeng.items.storage.ItemViewCell;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import appeng.util.prioitylist.IPartitionList;
 
 public class PacketNEIRecipe extends AppEngPacket
 {
@@ -41,7 +43,8 @@ public class PacketNEIRecipe extends AppEngPacket
 	ItemStack[][] recipe;
 
 	// automatic.
-	public PacketNEIRecipe(ByteBuf stream) throws IOException {
+	public PacketNEIRecipe(ByteBuf stream) throws IOException
+	{
 		ByteArrayInputStream bytes = new ByteArrayInputStream( stream.array() );
 		bytes.skip( stream.readerIndex() );
 		NBTTagCompound comp = CompressedStreamTools.readCompressed( bytes );
@@ -50,13 +53,13 @@ public class PacketNEIRecipe extends AppEngPacket
 			recipe = new ItemStack[9][];
 			for (int x = 0; x < recipe.length; x++)
 			{
-				NBTTagList list = comp.getTagList( "#"+x, 10 );
+				NBTTagList list = comp.getTagList( "#" + x, 10 );
 				if ( list.tagCount() > 0 )
 				{
-					recipe[x] = new ItemStack[ list.tagCount() ];
-					for ( int y = 0; y < list.tagCount(); y++ )
+					recipe[x] = new ItemStack[list.tagCount()];
+					for (int y = 0; y < list.tagCount(); y++)
 					{
-						recipe[x][y] = ItemStack.loadItemStackFromNBT( list.getCompoundTagAt(y) );
+						recipe[x][y] = ItemStack.loadItemStackFromNBT( list.getCompoundTagAt( y ) );
 					}
 				}
 			}
@@ -91,12 +94,12 @@ public class PacketNEIRecipe extends AppEngPacket
 					InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
 					for (int x = 0; x < 9; x++)
 					{
-						if (  recipe[x] != null &&  recipe[x].length > 0 )
+						if ( recipe[x] != null && recipe[x].length > 0 )
 						{
 							ic.setInventorySlotContents( x, recipe[x][0] );
 						}
 					}
-					
+
 					IRecipe r = Platform.findMatchingRecipe( ic, pmp.worldObj );
 
 					if ( r != null && security.hasPermission( player, SecurityPermissions.EXTRACT ) )
@@ -107,6 +110,7 @@ public class PacketNEIRecipe extends AppEngPacket
 						{
 							IMEMonitor<IAEItemStack> stor = inv.getItemInventory();
 							IItemList all = stor.getStorageList();
+							IPartitionList<IAEItemStack> filter = ItemViewCell.createFilter( cct.getViewCells() );
 
 							for (int x = 0; x < craftMatrix.getSizeInventory(); x++)
 							{
@@ -138,27 +142,30 @@ public class PacketNEIRecipe extends AppEngPacket
 
 								if ( PatternItem != null && currentItem == null )
 								{
-									ItemStack whichItem = Platform.extractItemsByRecipe( energy, cct.getSource(), stor, player.worldObj, r,
-											is, ic, PatternItem, x, all, realForFake );
-									
+									ItemStack whichItem = Platform.extractItemsByRecipe( energy, cct.getSource(), stor, player.worldObj, r, is, ic,
+											PatternItem, x, all, realForFake, filter );
+
 									if ( whichItem == null )
 									{
-										for ( int y = 0; y < recipe[x].length; y++ )
+										for (int y = 0; y < recipe[x].length; y++)
 										{
 											IAEItemStack request = AEItemStack.create( recipe[x][y] );
 											if ( request != null )
 											{
-												request.setStackSize( 1 );
-												IAEItemStack out = Platform.poweredExtraction( energy, stor, request, cct.getSource() );
-												if ( out != null )
+												if ( filter == null || filter.isListed( request ) )
 												{
-													whichItem = out.getItemStack();
-													break;
+													request.setStackSize( 1 );
+													IAEItemStack out = Platform.poweredExtraction( energy, stor, request, cct.getSource() );
+													if ( out != null )
+													{
+														whichItem = out.getItemStack();
+														break;
+													}
 												}
 											}
 										}
 									}
-									
+
 									craftMatrix.setInventorySlotContents( x, whichItem );
 								}
 							}
@@ -171,7 +178,8 @@ public class PacketNEIRecipe extends AppEngPacket
 	}
 
 	// api
-	public PacketNEIRecipe(NBTTagCompound recipe) throws IOException {
+	public PacketNEIRecipe(NBTTagCompound recipe) throws IOException
+	{
 		ByteBuf data = Unpooled.buffer();
 
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();

@@ -1,9 +1,11 @@
 package appeng.integration.modules.NEIHelpers;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import appeng.client.gui.implementations.GuiCraftingTerm;
@@ -12,6 +14,7 @@ import appeng.container.slot.SlotCraftingMatrix;
 import appeng.container.slot.SlotFakeCraftingMatrix;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketNEIRecipe;
+import appeng.util.Platform;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.api.IOverlayHandler;
 import codechicken.nei.recipe.IRecipeHandler;
@@ -19,7 +22,8 @@ import codechicken.nei.recipe.IRecipeHandler;
 public class NEICraftingHandler implements IOverlayHandler
 {
 
-	public NEICraftingHandler(int x, int y) {
+	public NEICraftingHandler(int x, int y)
+	{
 		offsetx = x;
 		offsety = y;
 	}
@@ -66,12 +70,24 @@ public class NEICraftingHandler implements IOverlayHandler
 								if ( ctSlot.getSlotIndex() == col + row * 3 )
 								{
 									NBTTagList ilist = new NBTTagList();
+									List<ItemStack> list = new LinkedList();
+
+									// prefer pure crystals.
 									for (int x = 0; x < pstack.items.length; x++)
 									{
+										if ( Platform.isRecipePrioritized( pstack.items[x] ) )
+											list.add( 0, pstack.items[x] );
+										else
+											list.add( pstack.items[x] );
+									}
+
+									for (ItemStack is : list)
+									{
 										NBTTagCompound inbt = new NBTTagCompound();
-										pstack.items[x].writeToNBT( inbt );
+										is.writeToNBT( inbt );
 										ilist.appendTag( inbt );
 									}
+
 									recipe.setTag( "#" + ctSlot.getSlotIndex(), ilist );
 									break;
 								}
