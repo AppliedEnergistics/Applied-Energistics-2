@@ -1802,4 +1802,11 @@ public class Platform
 		assert player.worldObj.isRemote : "Valid only on client";
 		return (float) (player.posY + player.getEyeHeight() - player.getDefaultEyeHeight());
 	}
+
+	public static boolean isRecipePrioritized(ItemStack what)
+	{
+		return AEApi.instance().materials().materialPureifiedCertusQuartzCrystal.sameAsStack( what )
+				|| AEApi.instance().materials().materialPureifiedFluixCrystal.sameAsStack( what )
+				|| AEApi.instance().materials().materialPureifiedNetherQuartzCrystal.sameAsStack( what );
+	}
 }
