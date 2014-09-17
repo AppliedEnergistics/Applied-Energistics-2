@@ -156,6 +156,9 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 				newType = AEApi.instance().parts().partP2PTunnelRedstone.stack( 1 );
 				break;
 
+			default:
+				break;
+
 			}
 
 			if ( newType != null && !Platform.isSameItem( newType, this.is ) )
