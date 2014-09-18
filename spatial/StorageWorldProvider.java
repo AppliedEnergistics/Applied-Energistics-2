@@ -38,6 +38,12 @@ public class StorageWorldProvider extends WorldProvider
 		super.worldChunkMgr = new WorldChunkManagerHell( Registration.instance.storageBiome, 0.0F );
 	}
 
+    @SideOnly(Side.CLIENT)
+    public float[] calcSunriseSunsetColors(float p_76560_1_, float p_76560_2_)
+    {
+        return null;
+    }
+
 	@Override
 	public float getStarBrightness(float par1)
 	{
@@ -77,7 +83,7 @@ public class StorageWorldProvider extends WorldProvider
 	@Override
 	public Vec3 getSkyColor(Entity cameraEntity, float partialTicks)
 	{
-		return Vec3.createVectorHelper( 0.0, 0.0, 0.0 );
+		return Vec3.createVectorHelper( 0.07, 0.07, 0.07 );
 	}
 
 	@Override
@@ -96,13 +102,13 @@ public class StorageWorldProvider extends WorldProvider
 	@SideOnly(Side.CLIENT)
 	public boolean isSkyColored()
 	{
-		return false;
+		return true;
 	}
 
 	@Override
 	public Vec3 getFogColor(float par1, float par2)
 	{
-		return Vec3.createVectorHelper( 0.0, 0.0, 0.0 );
+		return Vec3.createVectorHelper( 0.07, 0.07, 0.07 );
 	}
 
 	@Override
@@ -116,7 +122,7 @@ public class StorageWorldProvider extends WorldProvider
 	{
 		return "Storage Cell";
 	}
-
+	
 	@Override
 	public IRenderHandler getSkyRenderer()
 	{
