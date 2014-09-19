@@ -67,7 +67,8 @@ public abstract class AEBaseGui extends GuiContainer
 	static public boolean switchingGuis;
 	private boolean subGui;
 
-	public AEBaseGui(Container container) {
+	public AEBaseGui(Container container)
+	{
 		super( container );
 		subGui = switchingGuis;
 		switchingGuis = false;
@@ -417,14 +418,17 @@ public abstract class AEBaseGui extends GuiContainer
 
 		if ( slot instanceof SlotFake && itemstack != null )
 		{
-			try
+			if ( c == 0 )
 			{
-				PacketInventoryAction p = new PacketInventoryAction( InventoryAction.PICKUP_OR_SETDOWN, slot.slotNumber, 0 );
-				NetworkHandler.instance.sendToServer( p );
-			}
-			catch (IOException e)
-			{
-				AELog.error( e );
+				try
+				{
+					PacketInventoryAction p = new PacketInventoryAction( InventoryAction.PICKUP_OR_SETDOWN, slot.slotNumber, 0 );
+					NetworkHandler.instance.sendToServer( p );
+				}
+				catch (IOException e)
+				{
+					AELog.error( e );
+				}
 			}
 		}
 		else
