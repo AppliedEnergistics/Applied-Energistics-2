@@ -229,7 +229,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 		{
 			for (CachedItemStack cis : end.values())
 			{
-				if ( cis != null )
+				if ( cis != null && cis.aeStack != null )
 				{
 					IAEItemStack a = cis.aeStack.copy();
 					a.setStackSize( -a.getStackSize() );
