@@ -4,6 +4,7 @@ import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;
+import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -16,9 +17,6 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 	final IMEInventory<IAEItemStack> target;
 	final IItemList<IAEItemStack> localCache;
 
-	private BaseActionSource usePermissions = null;
-	private final IItemList<IAEItemStack> permissionsCache = AEApi.instance().storage().createItemList();
-
 	final boolean logExtracted;
 	final IItemList<IAEItemStack> extractedCache;
 
@@ -27,26 +25,6 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 	final boolean logMissing;
 	final IItemList<IAEItemStack> missingCache;
-
-	private void filter(IAEItemStack input, BaseActionSource src)
-	{
-		if ( usePermissions != null && input != null )
-		{
-			if ( permissionsCache.findPrecise( input ) == null )
-			{
-				IAEItemStack what = input.copy();
-				what.setStackSize( 1 );
-				permissionsCache.add( what );
-
-				IAEItemStack localItem = localCache.findPrecise( input );
-				if ( localItem != null )
-				{
-					IAEItemStack realSize = target.extractItems( input, Actionable.SIMULATE, usePermissions );
-					localItem.setStackSize( realSize == null ? 0 : realSize.getStackSize() );
-				}
-			}
-		}
-	}
 
 	public MECraftingInventory()
 	{
@@ -67,10 +45,6 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		this.logExtracted = parrent.logExtracted;
 		this.logInjections = parrent.logInjections;
 		this.logMissing = parrent.logMissing;
-		this.usePermissions = parrent.usePermissions;
-
-		for (IAEItemStack is : parrent.permissionsCache)
-			permissionsCache.add( is );
 
 		if ( logMissing )
 			missingCache = AEApi.instance().storage().createItemList();
@@ -92,20 +66,41 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		par = parrent;
 	}
 
-	public MECraftingInventory(IMEInventory<IAEItemStack> target, boolean logExtracted, boolean logInjections, boolean logMissing)
+	public MECraftingInventory(IMEMonitor<IAEItemStack> target, BaseActionSource src, boolean logExtracted, boolean logInjections, boolean logMissing)
 	{
 		this.target = target;
 		this.logExtracted = logExtracted;
 		this.logInjections = logInjections;
 		this.logMissing = logMissing;
 
-		if ( target instanceof MECraftingInventory )
-		{
-			MECraftingInventory parrent = (MECraftingInventory) target;
-			this.usePermissions = parrent.usePermissions;
-			for (IAEItemStack is : parrent.permissionsCache)
-				permissionsCache.add( is );
-		}
+		if ( logMissing )
+			missingCache = AEApi.instance().storage().createItemList();
+		else
+			missingCache = null;
+
+		if ( logExtracted )
+			extractedCache = AEApi.instance().storage().createItemList();
+		else
+			extractedCache = null;
+
+		if ( logInjections )
+			injectedCache = AEApi.instance().storage().createItemList();
+		else
+			injectedCache = null;
+
+		localCache = AEApi.instance().storage().createItemList();
+		for ( IAEItemStack is : target.getStorageList() )
+			localCache.add( target.extractItems(is, Actionable.SIMULATE, src ) );
+		
+		par = null;
+	}
+
+	public MECraftingInventory(IMEInventory<IAEItemStack> target, boolean logExtracted, boolean logInjections, boolean logMissing)
+	{
+		this.target = target;
+		this.logExtracted = logExtracted;
+		this.logInjections = logInjections;
+		this.logMissing = logMissing;
 
 		if ( logMissing )
 			missingCache = AEApi.instance().storage().createItemList();
@@ -126,18 +121,11 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		par = null;
 	}
 
-	public void filterPermissions(BaseActionSource src)
-	{
-		usePermissions = src;
-	}
-
 	@Override
 	public IAEItemStack injectItems(IAEItemStack input, Actionable mode, BaseActionSource src)
 	{
 		if ( input == null )
 			return null;
-
-		filter( input, src );
 
 		if ( mode == Actionable.MODULATE )
 		{
@@ -154,8 +142,6 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 	{
 		if ( request == null )
 			return null;
-
-		filter( request, src );
 
 		IAEItemStack list = localCache.findPrecise( request );
 		if ( list == null || list.getStackSize() == 0 )
@@ -274,12 +260,5 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		IAEItemStack list = localCache.findPrecise( what );
 		if ( list != null )
 			list.setStackSize( 0 );
-
-		if ( usePermissions != null )
-		{
-			IAEItemStack hmm = what.copy();
-			hmm.setStackSize( 1 );
-			permissionsCache.add( hmm );
-		}
 	}
 }
