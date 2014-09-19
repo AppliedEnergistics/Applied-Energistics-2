@@ -16,6 +16,9 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 	final IMEInventory<IAEItemStack> target;
 	final IItemList<IAEItemStack> localCache;
 
+	private BaseActionSource usePermissions = null;
+	private final IItemList<IAEItemStack> permissionsCache = AEApi.instance().storage().createItemList();
+
 	final boolean logExtracted;
 	final IItemList<IAEItemStack> extractedCache;
 
@@ -25,7 +28,28 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 	final boolean logMissing;
 	final IItemList<IAEItemStack> missingCache;
 
-	public MECraftingInventory() {
+	private void filter(IAEItemStack input, BaseActionSource src)
+	{
+		if ( usePermissions != null && input != null )
+		{
+			if ( permissionsCache.findPrecise( input ) == null )
+			{
+				IAEItemStack what = input.copy();
+				what.setStackSize( 1 );
+				permissionsCache.add( what );
+
+				IAEItemStack localItem = localCache.findPrecise( input );
+				if ( localItem != null )
+				{
+					IAEItemStack realSize = target.extractItems( input, Actionable.SIMULATE, usePermissions );
+					localItem.setStackSize( realSize == null ? 0 : realSize.getStackSize() );
+				}
+			}
+		}
+	}
+
+	public MECraftingInventory()
+	{
 		localCache = AEApi.instance().storage().createItemList();
 		extractedCache = null;
 		injectedCache = null;
@@ -37,11 +61,16 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		par = null;
 	}
 
-	public MECraftingInventory(MECraftingInventory parrent) {
+	public MECraftingInventory(MECraftingInventory parrent)
+	{
 		this.target = parrent;
 		this.logExtracted = parrent.logExtracted;
 		this.logInjections = parrent.logInjections;
 		this.logMissing = parrent.logMissing;
+		this.usePermissions = parrent.usePermissions;
+
+		for (IAEItemStack is : parrent.permissionsCache)
+			permissionsCache.add( is );
 
 		if ( logMissing )
 			missingCache = AEApi.instance().storage().createItemList();
@@ -63,11 +92,20 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		par = parrent;
 	}
 
-	public MECraftingInventory(IMEInventory<IAEItemStack> target, boolean logExtracted, boolean logInjections, boolean logMissing) {
+	public MECraftingInventory(IMEInventory<IAEItemStack> target, boolean logExtracted, boolean logInjections, boolean logMissing)
+	{
 		this.target = target;
 		this.logExtracted = logExtracted;
 		this.logInjections = logInjections;
 		this.logMissing = logMissing;
+
+		if ( target instanceof MECraftingInventory )
+		{
+			MECraftingInventory parrent = (MECraftingInventory) target;
+			this.usePermissions = parrent.usePermissions;
+			for (IAEItemStack is : parrent.permissionsCache)
+				permissionsCache.add( is );
+		}
 
 		if ( logMissing )
 			missingCache = AEApi.instance().storage().createItemList();
@@ -88,11 +126,18 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		par = null;
 	}
 
+	public void filterPermissions(BaseActionSource src)
+	{
+		usePermissions = src;
+	}
+
 	@Override
 	public IAEItemStack injectItems(IAEItemStack input, Actionable mode, BaseActionSource src)
 	{
 		if ( input == null )
 			return null;
+
+		filter( input, src );
 
 		if ( mode == Actionable.MODULATE )
 		{
@@ -109,6 +154,8 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 	{
 		if ( request == null )
 			return null;
+
+		filter( request, src );
 
 		IAEItemStack list = localCache.findPrecise( request );
 		if ( list == null || list.getStackSize() == 0 )
@@ -160,7 +207,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		boolean failed = false;
 
 		if ( logExtracted )
-	{
+		{
 			for (IAEItemStack extra : extractedCache)
 			{
 				IAEItemStack result = null;
@@ -227,5 +274,12 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		IAEItemStack list = localCache.findPrecise( what );
 		if ( list != null )
 			list.setStackSize( 0 );
+
+		if ( usePermissions != null )
+		{
+			IAEItemStack hmm = what.copy();
+			hmm.setStackSize( 1 );
+			permissionsCache.add( hmm );
+		}
 	}
 }
