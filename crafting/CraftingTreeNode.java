@@ -44,7 +44,8 @@ public class CraftingTreeNode
 
 	boolean sim;
 
-	public CraftingTreeNode(ICraftingGrid cc, CraftingJob job, IAEItemStack wat, CraftingTreeProcess par, int slot, int depth) {
+	public CraftingTreeNode(ICraftingGrid cc, CraftingJob job, IAEItemStack wat, CraftingTreeProcess par, int slot, int depth)
+	{
 		what = wat;
 		parent = par;
 		this.slot = slot;
@@ -206,7 +207,8 @@ public class CraftingTreeNode
 
 						if ( available != null )
 						{
-							subInv.commit( src );
+							if ( !subInv.commit( src ) )
+								throw new CraftBranchFailure( what, l );
 
 							bytes += available.getStackSize();
 							l -= available.getStackSize();

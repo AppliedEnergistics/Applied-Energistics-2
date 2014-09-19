@@ -153,18 +153,59 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		return StorageChannel.ITEMS;
 	}
 
-	public void commit(BaseActionSource src)
+	public boolean commit(BaseActionSource src)
 	{
+		IItemList<IAEItemStack> added = AEApi.instance().storage().createItemList();
+		IItemList<IAEItemStack> pulled = AEApi.instance().storage().createItemList();
+		boolean failed = false;
+
+		if ( logExtracted )
+	{
+			for (IAEItemStack extra : extractedCache)
+			{
+				IAEItemStack result = null;
+				pulled.add( result = target.extractItems( extra, Actionable.MODULATE, src ) );
+
+				if ( result == null || result.getStackSize() != extra.getStackSize() )
+				{
+					failed = true;
+					break;
+				}
+			}
+		}
+
+		if ( failed )
+		{
+			for (IAEItemStack is : pulled)
+				target.injectItems( is, Actionable.MODULATE, src );
+
+			return false;
+		}
+
 		if ( logInjections )
 		{
 			for (IAEItemStack injec : injectedCache)
-				target.injectItems( injec, Actionable.MODULATE, src );
+			{
+				IAEItemStack result = null;
+				added.add( result = target.injectItems( injec, Actionable.MODULATE, src ) );
+
+				if ( result != null )
+				{
+					failed = true;
+					break;
+				}
+			}
 		}
 
-		if ( logExtracted )
+		if ( failed )
 		{
-			for (IAEItemStack extra : extractedCache)
-				target.extractItems( extra, Actionable.MODULATE, src );
+			for (IAEItemStack is : added)
+				target.extractItems( is, Actionable.MODULATE, src );
+
+			for (IAEItemStack is : pulled)
+				target.injectItems( is, Actionable.MODULATE, src );
+
+			return false;
 		}
 
 		if ( logMissing && par != null )
@@ -172,6 +213,8 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 			for (IAEItemStack extra : missingCache)
 				par.addMissing( extra );
 		}
+
+		return true;
 	}
 
 	public void addMissing(IAEItemStack extra)
