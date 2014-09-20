@@ -32,10 +32,10 @@ public class CellInventory implements ICellInventory
 	static final String ITEM_COUNT_TAG = "ic";
 	static final String ITEM_SLOT = "#";
 	static final String ITEM_SLOTCOUNT = "@";
-	static final String ITEM_PRE_FORMATED_COUNT = "PF";
-	static final String ITEM_PRE_FORMATED_SLOT = "PF#";
-	static final String ITEM_PRE_FORMATED_NAME = "PN";
-	static final String ITEM_PRE_FORMATED_FUZZY = "FP";
+	static final String ITEM_PRE_FORMATTED_COUNT = "PF";
+	static final String ITEM_PRE_FORMATTED_SLOT = "PF#";
+	static final String ITEM_PRE_FORMATTED_NAME = "PN";
+	static final String ITEM_PRE_FORMATTED_FUZZY = "FP";
 
 	static protected String[] ITEM_SLOT_ARR;
 	static protected String[] ITEM_SLOTCOUNT_ARR;
