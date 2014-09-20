@@ -89,7 +89,7 @@ public class PathGridCache implements IPathingGrid
 
 			if ( !AEConfig.instance.isFeatureEnabled( AEFeature.Channels ) )
 			{
-				int used = calculateRequiredChanels();
+				int used = calculateRequiredChannels();
 
 				int nodes = myGrid.getNodes().size();
 				ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
@@ -100,7 +100,7 @@ public class PathGridCache implements IPathingGrid
 			}
 			else if ( controllerState == ControllerState.NO_CONTROLLER )
 			{
-				int requiredChannels = calculateRequiredChanels();
+				int requiredChannels = calculateRequiredChannels();
 				int used = requiredChannels;
 				if ( requiredChannels > 8 )
 					used = 0;
@@ -218,7 +218,7 @@ public class PathGridCache implements IPathingGrid
 		return Achievements.Networking3;
 	}
 
-	private int calculateRequiredChanels()
+	private int calculateRequiredChannels()
 	{
 		int depth = 0;
 		semiOpen.clear();
