@@ -283,9 +283,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 
 			if ( matchA || matchB )
 			{
-				for (ItemStack opion : i.imprintable)
+				for (ItemStack option : i.imprintable)
 				{
-					if ( Platform.isSameItemPrecise( opion, getStackInSlot( 2 ) ) )
+					if ( Platform.isSameItemPrecise( option, getStackInSlot( 2 ) ) )
 						return i;
 				}
 			}
