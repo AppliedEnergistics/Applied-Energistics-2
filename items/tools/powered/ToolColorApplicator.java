@@ -250,12 +250,12 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 				// clean paint balls..
 				Block testBlk = w.getBlock( x + oside.offsetX, y + oside.offsetY, z + oside.offsetZ );
-				TileEntity painte = w.getTileEntity( x + oside.offsetX, y + oside.offsetY, z + oside.offsetZ );
-				if ( getAECurrentPower( is ) > powerPerUse && testBlk instanceof BlockPaint && painte instanceof TilePaint )
+				TileEntity painted = w.getTileEntity( x + oside.offsetX, y + oside.offsetY, z + oside.offsetZ );
+				if ( getAECurrentPower( is ) > powerPerUse && testBlk instanceof BlockPaint && painted instanceof TilePaint )
 				{
 					inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 					extractAEPower( is, powerPerUse );
-					((TilePaint) painte).cleanSide( oside.getOpposite() );
+					((TilePaint) painted).cleanSide( oside.getOpposite() );
 					return true;
 				}
 			}
