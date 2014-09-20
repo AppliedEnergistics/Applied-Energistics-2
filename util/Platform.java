@@ -1260,7 +1260,7 @@ public class Platform
 				Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
 
 		Entity entity = null;
-		double Closeest = 9999999.0D;
+		double closest = 9999999.0D;
 		if ( hitEntities )
 		{
 			List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
@@ -1286,10 +1286,10 @@ public class Platform
 						{
 							double nd = vec3.squareDistanceTo( movingobjectposition1.hitVec );
 
-							if ( nd < Closeest )
+							if ( nd < closest )
 							{
 								entity = entity1;
-								Closeest = nd;
+								closest = nd;
 							}
 						}
 					}
@@ -1306,7 +1306,7 @@ public class Platform
 			pos = w.rayTraceBlocks( vec3, vec31, true );
 		}
 
-		if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( Srec ) > Closeest )
+		if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( Srec ) > closest )
 		{
 			pos = new MovingObjectPosition( entity );
 		}
