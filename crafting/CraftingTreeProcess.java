@@ -69,7 +69,7 @@ public class CraftingTreeProcess
 				ItemStack g = part.getItemStack();
 
 				boolean isAnInput = false;
-				for ( IAEItemStack a : details.getCondencedOutputs() )
+				for ( IAEItemStack a : details.getCondensedOutputs() )
 				{
 					if ( g != null && a != null && a.equals( g ) )
 						isAnInput = true;
@@ -118,7 +118,7 @@ public class CraftingTreeProcess
 				ItemStack g = part.getItemStack();
 
 				boolean isAnInput = false;
-				for (IAEItemStack a : details.getCondencedOutputs())
+				for (IAEItemStack a : details.getCondensedOutputs())
 				{
 					if ( g != null && a != null && a.equals( g ) )
 						isAnInput = true;
@@ -149,7 +149,7 @@ public class CraftingTreeProcess
 
 	IAEItemStack getAmountCrafted(IAEItemStack what2)
 	{
-		for (IAEItemStack is : details.getCondencedOutputs())
+		for (IAEItemStack is : details.getCondensedOutputs())
 		{
 			if ( is.equals( what2 ) )
 			{
@@ -160,7 +160,7 @@ public class CraftingTreeProcess
 		}
 
 		// more fuzzy!
-		for (IAEItemStack is : details.getCondencedOutputs())
+		for (IAEItemStack is : details.getCondensedOutputs())
 		{
 			if ( is.getItem() == what2.getItem() && (is.getItem().isDamageable() || is.getItemDamage() == what2.getItemDamage()) )
 			{
@@ -228,7 +228,7 @@ public class CraftingTreeProcess
 		// assume its possible.
 
 		// add crafting results..
-		for (IAEItemStack out : details.getCondencedOutputs())
+		for (IAEItemStack out : details.getCondensedOutputs())
 		{
 			IAEItemStack o = out.copy();
 			o.setStackSize( o.getStackSize() * i );

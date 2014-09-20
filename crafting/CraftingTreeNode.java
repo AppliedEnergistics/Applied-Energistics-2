@@ -75,7 +75,7 @@ public class CraftingTreeNode
 
 	boolean notRecurive(ICraftingPatternDetails details)
 	{
-		IAEItemStack[] o = details.getCondencedOutputs();
+		IAEItemStack[] o = details.getCondensedOutputs();
 		for (IAEItemStack i : o)
 			if ( i.equals( what ) )
 				return false;
