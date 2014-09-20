@@ -156,7 +156,7 @@ public class Grid implements IGrid
 	@Override
 	public IReadOnlyCollection<IGridNode> getNodes()
 	{
-		return new NodeIteratable( Machines );
+		return new NodeIterable( Machines );
 	}
 
 	@Override
