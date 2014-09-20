@@ -133,7 +133,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 				postCraft( p, inv, set, is );
 			}
 
-			// shouldn't be nessiary...
+			// shouldn't be necessary...
 			p.openContainer.onCraftMatrixChanged( getCraftingMatrix() );
 
 			return is;
