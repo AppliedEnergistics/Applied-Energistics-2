@@ -1088,7 +1088,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		return (te.zCoord << 24) ^ (te.xCoord << 8) ^ te.yCoord;
 	}
 
-	public void initalize()
+	public void initialize()
 	{
 		updateCraftingList();
 	}

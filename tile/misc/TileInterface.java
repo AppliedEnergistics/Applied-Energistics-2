@@ -125,7 +125,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 	{
 		gridProxy.setValidSides( EnumSet.complementOf( EnumSet.of( pointAt ) ) );
 		super.onReady();
-		duality.initalize();
+		duality.initialize();
 	}
 
 	@Override
