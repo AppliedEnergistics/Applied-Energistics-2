@@ -666,7 +666,7 @@ public class Platform
 	}
 
 	/*
-	 * Generates Item entiies in the world similar to how items are generally droped.
+	 * Generates Item entities in the world similar to how items are generally dropped.
 	 */
 	public static void spawnDrops(World w, int x, int y, int z, List<ItemStack> drops)
 	{
