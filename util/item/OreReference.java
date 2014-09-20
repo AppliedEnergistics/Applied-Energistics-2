@@ -9,7 +9,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import appeng.api.storage.data.IAEItemStack;
 
-public class OreRefrence
+public class OreReference
 {
 
 	private LinkedList<ItemStack> otherOptions = new LinkedList();

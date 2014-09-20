@@ -206,7 +206,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 		AEItemStack ais = (AEItemStack) filter;
 		if ( ais.isOre() )
 		{
-			OreRefrence or = ais.def.isOre;
+			OreReference or = ais.def.isOre;
 			if ( or.getAEEquivilients().size() == 1 )
 			{
 				IAEItemStack is = or.getAEEquivilients().get( 0 );

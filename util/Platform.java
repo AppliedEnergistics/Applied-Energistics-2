@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import appeng.util.item.OreReference;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
@@ -107,7 +108,6 @@ import appeng.me.helpers.AENetworkProxy;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.AESharedNBT;
 import appeng.util.item.OreHelper;
-import appeng.util.item.OreRefrence;
 import appeng.util.prioitylist.IPartitionList;
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -1185,8 +1185,8 @@ public class Platform
 			}
 		}
 
-		OreRefrence aOR = OreHelper.instance.isOre( a );
-		OreRefrence bOR = OreHelper.instance.isOre( b );
+		OreReference aOR = OreHelper.instance.isOre( a );
+		OreReference bOR = OreHelper.instance.isOre( b );
 
 		if ( OreHelper.instance.sameOre( aOR, bOR ) )
 			return true;

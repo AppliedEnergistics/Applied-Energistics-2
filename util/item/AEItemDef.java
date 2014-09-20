@@ -36,7 +36,7 @@ public class AEItemDef
 	@SideOnly(Side.CLIENT)
 	public UniqueIdentifier uniqueID;
 
-	public OreRefrence isOre;
+	public OreReference isOre;
 
 	static AESharedNBT lowTag = new AESharedNBT( Integer.MIN_VALUE );
 	static AESharedNBT highTag = new AESharedNBT( Integer.MAX_VALUE );
