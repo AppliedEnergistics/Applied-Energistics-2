@@ -42,7 +42,7 @@ public class MissingCoreMod extends CustomModLoadingErrorDisplayException
 		}
 		else
 		{
-			drawCenteredString( fontRenderer, "You're launcher may refer to this by diffrent names,", errorScreen.width / 2, offset += 15, 0xffffff );
+			drawCenteredString( fontRenderer, "You're launcher may refer to this by different names,", errorScreen.width / 2, offset += 15, 0xffffff );
 
 			offset += 5;
 

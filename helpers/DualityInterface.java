@@ -355,7 +355,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 				requireWork[slot] = req.copy();
 				return;
 			}
-			else if ( req.isSameType( Stored ) ) // same type ( qty diffrent? )!
+			else if ( req.isSameType( Stored ) ) // same type ( qty different? )!
 			{
 				if ( req.getStackSize() != Stored.stackSize )
 				{
