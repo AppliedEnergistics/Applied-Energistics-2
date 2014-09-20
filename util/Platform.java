@@ -884,7 +884,7 @@ public class Platform
 					return wrench.canWrench( player, x, y, z );
 				}
 			}
-			catch (Throwable _)
+			catch (Throwable ignore)
 			{ // explodes without BC
 
 			}
@@ -1847,8 +1847,8 @@ public class Platform
 
 	public static boolean isRecipePrioritized(ItemStack what)
 	{
-		return AEApi.instance().materials().materialPureifiedCertusQuartzCrystal.sameAsStack( what )
-				|| AEApi.instance().materials().materialPureifiedFluixCrystal.sameAsStack( what )
-				|| AEApi.instance().materials().materialPureifiedNetherQuartzCrystal.sameAsStack( what );
+		return AEApi.instance().materials().materialPurifiedCertusQuartzCrystal.sameAsStack( what )
+				|| AEApi.instance().materials().materialPurifiedFluixCrystal.sameAsStack( what )
+				|| AEApi.instance().materials().materialPurifiedNetherQuartzCrystal.sameAsStack( what );
 	}
 }

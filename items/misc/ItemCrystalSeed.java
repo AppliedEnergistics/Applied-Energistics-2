@@ -104,11 +104,11 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		int newDamage = getProgress( is ) + 1;
 
 		if ( newDamage == Certus + SINGLE_OFFSET )
-			return AEApi.instance().materials().materialPureifiedCertusQuartzCrystal.stack( is.stackSize );
+			return AEApi.instance().materials().materialPurifiedCertusQuartzCrystal.stack( is.stackSize );
 		if ( newDamage == Nether + SINGLE_OFFSET )
-			return AEApi.instance().materials().materialPureifiedNetherQuartzCrystal.stack( is.stackSize );
+			return AEApi.instance().materials().materialPurifiedNetherQuartzCrystal.stack( is.stackSize );
 		if ( newDamage == Fluix + SINGLE_OFFSET )
-			return AEApi.instance().materials().materialPureifiedFluixCrystal.stack( is.stackSize );
+			return AEApi.instance().materials().materialPurifiedFluixCrystal.stack( is.stackSize );
 		if ( newDamage > END )
 			return null;
 

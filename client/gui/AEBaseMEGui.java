@@ -34,7 +34,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 					SlotME theSlotField = (SlotME) s;
 					myStack = theSlotField.getAEStack();
 				}
-				catch (Throwable _)
+				catch (Throwable ignore)
 				{
 				}
 
@@ -72,7 +72,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 				SlotME theSlotField = (SlotME) s;
 				myStack = theSlotField.getAEStack();
 			}
-			catch (Throwable _)
+			catch (Throwable ignore)
 			{
 			}
 

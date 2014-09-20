@@ -40,7 +40,7 @@ public class LocateableRegistry implements ILocatableRegistry
 	 * Find a locate-able object by its serial.
 	 */
 	@Override
-	public Object findLocateableBySerial(long ser)
+	public Object findLocatableBySerial(long ser)
 	{
 		return set.get( ser );
 	}

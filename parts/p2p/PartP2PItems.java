@@ -82,7 +82,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 						{
 							output = new WrapperBCPipe( te, side.getOpposite() );
 						}
-						catch (Throwable _)
+						catch (Throwable ignore)
 						{
 						}
 					}
@@ -92,7 +92,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 			/*
 			 * if ( AppEng.instance.isIntegrationEnabled( "TE" ) ) { ITE thermal = (ITE) AppEng.instance.getIntegration(
 			 * "TE" ); if ( thermal != null ) { if ( thermal.isPipe( te, side.getOpposite() ) ) { try { output = new
-			 * WrapperTEPipe( te, side.getOpposite() ); } catch (Throwable _) { } } } }
+			 * WrapperTEPipe( te, side.getOpposite() ); } catch (Throwable ignore) { } } } }
 			 */
 
 			if ( output == null )

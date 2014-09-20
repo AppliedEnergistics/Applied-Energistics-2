@@ -324,7 +324,7 @@ public class Registration
 
 		blocks.blockQuartzGlass = addFeature( BlockQuartzGlass.class );
 		blocks.blockQuartzVibrantGlass = addFeature( BlockQuartzLamp.class );
-		blocks.blockQuartzPiller = addFeature( BlockQuartzPillar.class );
+		blocks.blockQuartzPillar = addFeature( BlockQuartzPillar.class );
 		blocks.blockQuartzChiseled = addFeature( BlockQuartzChiseled.class );
 		blocks.blockQuartzTorch = addFeature( BlockQuartzTorch.class );
 		blocks.blockLightDetector = addFeature( BlockLightDetector.class );
@@ -679,7 +679,7 @@ public class Registration
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.MeteoriteWorldGen ) )
 			GameRegistry.registerWorldGenerator( new MeteoriteWorldGen(), 0 );
 
-		IMovableRegistry mr = AEApi.instance().registries().moveable();
+		IMovableRegistry mr = AEApi.instance().registries().movable();
 
 		/**
 		 * You can't move bed rock.

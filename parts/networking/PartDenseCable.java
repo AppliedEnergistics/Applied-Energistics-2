@@ -19,7 +19,7 @@ import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.BusSupport;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AECableType;
@@ -56,7 +56,7 @@ public class PartDenseCable extends PartCable
 
 	public PartDenseCable(Class c, ItemStack is) {
 		super( c, is );
-		proxy.setFlags( GridFlags.DENSE_CAPACITY, GridFlags.PREFERED );
+		proxy.setFlags( GridFlags.DENSE_CAPACITY, GridFlags.PREFERRED );
 	}
 
 	public PartDenseCable(ItemStack is) {
@@ -127,7 +127,7 @@ public class PartDenseCable extends PartCable
 	}
 
 	@Override
-	public void getBoxes(IPartCollsionHelper bch)
+	public void getBoxes(IPartCollisionHelper bch)
 	{
 		boolean noLadder = !bch.isBBCollision();
 		double min = noLadder ? 3.0 : 4.9;
@@ -320,7 +320,7 @@ public class PartDenseCable extends PartCable
 	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		renderCache = rh.useSimpliedRendering( x, y, z, this, renderCache );
+		renderCache = rh.useSimplifiedRendering( x, y, z, this, renderCache );
 		rh.setTexture( getTexture( getCableColor() ) );
 
 		EnumSet<ForgeDirection> sides = connections.clone();

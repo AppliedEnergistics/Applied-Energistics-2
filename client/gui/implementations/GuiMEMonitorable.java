@@ -19,7 +19,7 @@ import appeng.api.implementations.tiles.IViewCellStorage;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigureableObject;
+import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.AEBaseMEGui;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiScrollbar;
@@ -103,7 +103,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		standardSize = xSize;
 
-		configSrc = ((IConfigureableObject) inventorySlots).getConfigManager();
+		configSrc = ((IConfigurableObject) inventorySlots).getConfigManager();
 		(mecontainer = (ContainerMEMonitorable) inventorySlots).gui = this;
 
 		viewCell = te instanceof IViewCellStorage;

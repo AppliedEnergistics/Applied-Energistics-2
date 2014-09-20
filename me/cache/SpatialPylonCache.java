@@ -183,7 +183,7 @@ public class SpatialPylonCache implements IGridCache, ISpatialCache
 	}
 
 	@Override
-	public float currentEffiency()
+	public float currentEfficiency()
 	{
 		return (float) effiency * 100;
 	}

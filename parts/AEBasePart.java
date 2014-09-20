@@ -31,7 +31,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.ISimplifiedBundle;
@@ -40,7 +40,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigureableObject;
+import appeng.api.util.IConfigurableObject;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.AENetworkProxy;
@@ -225,7 +225,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	}
 
 	@Override
-	public void getBoxes(IPartCollsionHelper bch)
+	public void getBoxes(IPartCollisionHelper bch)
 	{
 
 	}
@@ -299,9 +299,9 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	 */
 	public void uploadSettings(SettingsFrom from, NBTTagCompound compound)
 	{
-		if ( compound != null && this instanceof IConfigureableObject )
+		if ( compound != null && this instanceof IConfigurableObject )
 		{
-			IConfigManager cm = ((IConfigureableObject) this).getConfigManager();
+			IConfigManager cm = ((IConfigurableObject) this).getConfigManager();
 			if ( cm != null )
 				cm.readFromNBT( compound );
 		}
@@ -336,7 +336,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	{
 		NBTTagCompound output = new NBTTagCompound();
 
-		if ( this instanceof IConfigureableObject )
+		if ( this instanceof IConfigurableObject )
 		{
 			IConfigManager cm = this.getConfigManager();
 			if ( cm != null )

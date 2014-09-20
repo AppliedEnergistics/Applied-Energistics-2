@@ -29,7 +29,7 @@ import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageMonitorable;
@@ -128,7 +128,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		renderCache = rh.useSimpliedRendering( x, y, z, this, renderCache );
+		renderCache = rh.useSimplifiedRendering( x, y, z, this, renderCache );
 		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
 				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
@@ -158,7 +158,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	}
 
 	@Override
-	public void getBoxes(IPartCollsionHelper bch)
+	public void getBoxes(IPartCollisionHelper bch)
 	{
 		bch.addBox( 2, 2, 14, 14, 14, 16 );
 		bch.addBox( 5, 5, 12, 11, 11, 14 );
@@ -381,9 +381,9 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	}
 
 	@Override
-	public IAEItemStack injectCratedItems(ICraftingLink link, IAEItemStack items, Actionable mode)
+	public IAEItemStack injectCraftedItems(ICraftingLink link, IAEItemStack items, Actionable mode)
 	{
-		return duality.injectCratedItems( link, items, mode );
+		return duality.injectCraftedItems( link, items, mode );
 	}
 
 	@Override

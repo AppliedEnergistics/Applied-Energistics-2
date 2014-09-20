@@ -8,12 +8,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import appeng.api.features.IWirelessTermHandler;
-import appeng.api.features.IWirelessTermRegistery;
+import appeng.api.features.IWirelessTermRegistry;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.GuiBridge;
 import appeng.util.Platform;
 
-public class WirelessRegistry implements IWirelessTermRegistery
+public class WirelessRegistry implements IWirelessTermRegistry
 {
 
 	List<IWirelessTermHandler> handlers;
@@ -52,7 +52,7 @@ public class WirelessRegistry implements IWirelessTermRegistery
 	}
 
 	@Override
-	public void OpenWirelessTermainlGui(ItemStack item, World w, EntityPlayer player)
+	public void openWirelessTerminalGui(ItemStack item, World w, EntityPlayer player)
 	{
 		if ( Platform.isClient() )
 			return;

@@ -32,7 +32,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigureableObject;
+import appeng.api.util.IConfigurableObject;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
@@ -46,7 +46,7 @@ import appeng.util.inv.IInventoryDestination;
 import com.google.common.collect.ImmutableSet;
 
 public class TileInterface extends AENetworkInvTile implements IGridTickable, ISegmentedInventory, ITileStorageMonitorable, IStorageMonitorable,
-		IInventoryDestination, IInterfaceHost, IConfigureableObject, IPriorityHost
+		IInventoryDestination, IInterfaceHost, IConfigurableObject, IPriorityHost
 {
 
 	ForgeDirection pointAt = ForgeDirection.UNKNOWN;
@@ -263,9 +263,9 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 	}
 
 	@Override
-	public IAEItemStack injectCratedItems(ICraftingLink link, IAEItemStack items, Actionable mode)
+	public IAEItemStack injectCraftedItems(ICraftingLink link, IAEItemStack items, Actionable mode)
 	{
-		return duality.injectCratedItems( link, items, mode );
+		return duality.injectCraftedItems( link, items, mode );
 	}
 
 	@Override

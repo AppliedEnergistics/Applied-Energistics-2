@@ -29,7 +29,7 @@ public enum MaterialType
 
 	FluixCrystal(7, AEFeature.Core, "crystalFluix"), FluixDust(8, AEFeature.Core, "dustFluix"), FluixPearl(9, AEFeature.Core, "pearlFluix"),
 
-	PureifiedCertusQuartzCrystal(10), PureifiedNetherQuartzCrystal(11), PureifiedFluixCrystal(12),
+	PurifiedCertusQuartzCrystal(10), PurifiedNetherQuartzCrystal(11), PurifiedFluixCrystal(12),
 
 	CalcProcessorPress(13), EngProcessorPress(14), LogicProcessorPress(15),
 

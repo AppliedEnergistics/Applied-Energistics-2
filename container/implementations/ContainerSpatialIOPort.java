@@ -64,7 +64,7 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 					currentPower = (long) (100.0 * eg.getStoredPower());
 					maxPower = (long) (100.0 * eg.getMaxStoredPower());
 					reqPower = (long) (100.0 * sc.requiredPower());
-					eff = (long) (100.0f * sc.currentEffiency());
+					eff = (long) (100.0f * sc.currentEfficiency());
 				}
 			}
 		}

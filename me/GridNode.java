@@ -17,7 +17,7 @@ import appeng.api.networking.GridNotification;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridCache;
-import appeng.api.networking.IGridConnecitonVisitor;
+import appeng.api.networking.IGridConnectionVisitor;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -163,7 +163,7 @@ public class GridNode implements IGridNode, IPathItem
 	}
 
 	@Override
-	public void beginVisition(IGridVisitor g)
+	public void beginVisit(IGridVisitor g)
 	{
 		Object tracker = new Object();
 
@@ -172,10 +172,10 @@ public class GridNode implements IGridNode, IPathItem
 
 		visitorIterationNumber = tracker;
 
-		if ( g instanceof IGridConnecitonVisitor )
+		if ( g instanceof IGridConnectionVisitor )
 		{
 			LinkedList<IGridConnection> nextConn = new LinkedList();
-			IGridConnecitonVisitor gcv = (IGridConnecitonVisitor) g;
+			IGridConnectionVisitor gcv = (IGridConnectionVisitor) g;
 
 			while (!nextRun.isEmpty())
 			{
@@ -247,7 +247,7 @@ public class GridNode implements IGridNode, IPathItem
 
 	public void FindConnections()
 	{
-		if ( !gridProxy.isWorldAccessable() )
+		if ( !gridProxy.isWorldAccessible() )
 			return;
 
 		EnumSet<ForgeDirection> newSecurityConnections = EnumSet.noneOf( ForgeDirection.class );
@@ -379,8 +379,8 @@ public class GridNode implements IGridNode, IPathItem
 			@Override
 			public int compare(IGridConnection o1, IGridConnection o2)
 			{
-				boolean preferedA = o1.getOtherSide( gn ).hasFlag( GridFlags.PREFERED );
-				boolean preferedB = o2.getOtherSide( gn ).hasFlag( GridFlags.PREFERED );
+				boolean preferedA = o1.getOtherSide( gn ).hasFlag( GridFlags.PREFERRED );
+				boolean preferedB = o2.getOtherSide( gn ).hasFlag( GridFlags.PREFERRED );
 
 				return preferedA == preferedB ? 0 : (preferedA ? -1 : 1);
 			}
@@ -461,11 +461,11 @@ public class GridNode implements IGridNode, IPathItem
 	public void validateGrid()
 	{
 		GridSplitDetector gsd = new GridSplitDetector( getInternalGrid().getPivot() );
-		beginVisition( gsd );
+		beginVisit( gsd );
 		if ( !gsd.pivotFound )
 		{
 			GridPropagator gp = new GridPropagator( new Grid( this ) );
-			beginVisition( gp );
+			beginVisit( gp );
 		}
 	}
 

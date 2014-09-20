@@ -66,22 +66,22 @@ public class GridConnection implements IGridConnection, IPathItem
 			if ( a.myGrid == null )
 			{
 				GridPropagator gp = new GridPropagator( b.getInternalGrid() );
-				a.beginVisition( gp );
+				a.beginVisit( gp );
 			}
 			else if ( b.myGrid == null )
 			{
 				GridPropagator gp = new GridPropagator( a.getInternalGrid() );
-				b.beginVisition( gp );
+				b.beginVisit( gp );
 			}
 			else if ( isNetworkABetter( a, b ) )
 			{
 				GridPropagator gp = new GridPropagator( a.getInternalGrid() );
-				b.beginVisition( gp );
+				b.beginVisit( gp );
 			}
 			else
 			{
 				GridPropagator gp = new GridPropagator( b.getInternalGrid() );
-				a.beginVisition( gp );
+				a.beginVisit( gp );
 			}
 		}
 

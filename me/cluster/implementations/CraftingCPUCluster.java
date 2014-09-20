@@ -155,7 +155,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		case PENDING:
 			for (Entry<ICraftingPatternDetails, TaskProgress> t : tasks.entrySet())
 			{
-				for (IAEItemStack ais : t.getKey().getCondencedOutputs())
+				for (IAEItemStack ais : t.getKey().getCondensedOutputs())
 				{
 					ais = ais.copy();
 					ais.setStackSize( ais.getStackSize() * t.getValue().value );
@@ -175,7 +175,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 			for (Entry<ICraftingPatternDetails, TaskProgress> t : tasks.entrySet())
 			{
-				for (IAEItemStack ais : t.getKey().getCondencedOutputs())
+				for (IAEItemStack ais : t.getKey().getCondensedOutputs())
 				{
 					ais = ais.copy();
 					ais.setStackSize( ais.getStackSize() * t.getValue().value );
@@ -581,7 +581,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			}
 
 			ICraftingPatternDetails details = e.getKey();
-			if ( canCraft( details, details.getCondencedInputs() ) )
+			if ( canCraft( details, details.getCondensedInputs() ) )
 			{
 				InventoryCrafting ic = null;
 
@@ -680,7 +680,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 							didsomething = true;
 							remainingOperations--;
 
-							for (IAEItemStack out : details.getCondencedOutputs())
+							for (IAEItemStack out : details.getCondensedOutputs())
 							{
 								postChange( out, machineSrc );
 								waitingFor.add( out.copy() );
@@ -925,7 +925,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 			for (Entry<ICraftingPatternDetails, TaskProgress> t : tasks.entrySet())
 			{
-				for (IAEItemStack ais : t.getKey().getCondencedOutputs())
+				for (IAEItemStack ais : t.getKey().getCondensedOutputs())
 				{
 					if ( ais.equals( is ) )
 						is.setStackSize( is.getStackSize() + ais.getStackSize() * t.getValue().value );

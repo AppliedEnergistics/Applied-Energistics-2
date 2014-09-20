@@ -108,7 +108,7 @@ public class ItemRepo
 				b.invoke( searchField, "" );
 			}
 		}
-		catch (Throwable _)
+		catch (Throwable ignore)
 		{
 
 		}
@@ -143,7 +143,7 @@ public class ItemRepo
 		{
 			m = Pattern.compile( innerSearch.toLowerCase(), Pattern.CASE_INSENSITIVE );
 		}
-		catch (Throwable _)
+		catch (Throwable ignore)
 		{
 			try
 			{

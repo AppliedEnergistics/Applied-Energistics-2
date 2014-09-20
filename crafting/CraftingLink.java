@@ -136,7 +136,7 @@ public class CraftingLink implements ICraftingLink
 		if ( tie == null || tie.req == null || tie.req.req == null )
 			return input;
 
-		return tie.req.req.injectCratedItems( tie.req, input, mode );
+		return tie.req.req.injectCraftedItems( tie.req, input, mode );
 	}
 
 	public void markDone()

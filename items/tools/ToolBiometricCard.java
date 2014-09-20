@@ -13,7 +13,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.implementations.items.IBiometricCard;
-import appeng.api.networking.security.ISecurityRegister;
+import appeng.api.networking.security.ISecurityRegistry;
 import appeng.client.render.items.ToolBiometricCardRender;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
@@ -161,7 +161,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	}
 
 	@Override
-	public void registerPermissions(ISecurityRegister register, IPlayerRegistry pr, ItemStack is)
+	public void registerPermissions(ISecurityRegistry register, IPlayerRegistry pr, ItemStack is)
 	{
 		register.addPlayer( pr.getID( getProfile( is ) ), getPermissions( is ) );
 	}

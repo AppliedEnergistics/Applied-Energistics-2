@@ -35,7 +35,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	@Override
 	public ItemStack onItemRightClick(ItemStack item, World w, EntityPlayer player)
 	{
-		AEApi.instance().registries().wireless().OpenWirelessTermainlGui( item, w, player );
+		AEApi.instance().registries().wireless().openWirelessTerminalGui( item, w, player );
 		return item;
 	}
 

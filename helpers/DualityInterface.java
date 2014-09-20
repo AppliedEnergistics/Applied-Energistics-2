@@ -53,7 +53,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigureableObject;
+import appeng.api.util.IConfigurableObject;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
@@ -77,7 +77,7 @@ import appeng.util.item.AEItemStack;
 import com.google.common.collect.ImmutableSet;
 
 public class DualityInterface implements IGridTickable, ISegmentedInventory, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory,
-		IConfigureableObject, IConfigManagerHost, ICraftingProvider, IUpgradeableHost, IPriorityHost
+		IConfigurableObject, IConfigManagerHost, ICraftingProvider, IUpgradeableHost, IPriorityHost
 {
 
 	final int sides[] = new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
@@ -970,7 +970,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		return craftingTracker.getRequestedJobs();
 	}
 
-	public IAEItemStack injectCratedItems(ICraftingLink link, IAEItemStack aquired, Actionable mode)
+	public IAEItemStack injectCraftedItems(ICraftingLink link, IAEItemStack aquired, Actionable mode)
 	{
 		int slot = craftingTracker.getSlot( link );
 

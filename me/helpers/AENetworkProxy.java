@@ -292,7 +292,7 @@ public class AENetworkProxy implements IGridBlock
 	}
 
 	@Override
-	public boolean isWorldAccessable()
+	public boolean isWorldAccessible()
 	{
 		return worldNode;
 	}

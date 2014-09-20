@@ -14,7 +14,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	protected long countRequestable;
 
 	@Override
-	public boolean isMeaninful()
+	public boolean isMeaningful()
 	{
 		return stackSize != 0 || getCountRequestable() > 0 || isCraftable();
 	}

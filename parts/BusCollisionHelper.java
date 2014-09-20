@@ -5,9 +5,9 @@ import java.util.List;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 
-public class BusCollisionHelper implements IPartCollsionHelper
+public class BusCollisionHelper implements IPartCollisionHelper
 {
 
 	final List<AxisAlignedBB> boxes;

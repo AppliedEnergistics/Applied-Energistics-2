@@ -212,7 +212,7 @@ public class BC extends BaseModule implements IBC
 		addFacade( b.blockFluix.stack( 1 ) );
 		addFacade( b.blockQuartz.stack( 1 ) );
 		addFacade( b.blockQuartzChiseled.stack( 1 ) );
-		addFacade( b.blockQuartzPiller.stack( 1 ) );
+		addFacade( b.blockQuartzPillar.stack( 1 ) );
 
 		try
 		{

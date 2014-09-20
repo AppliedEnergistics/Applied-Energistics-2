@@ -81,8 +81,8 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 		boolean isCrafting = details.isCraftable();
 
-		IAEItemStack[] in = details.getCondencedInputs();
-		IAEItemStack[] out = details.getCondencedOutputs();
+		IAEItemStack[] in = details.getCondensedInputs();
+		IAEItemStack[] out = details.getCondensedOutputs();
 
 		String label = (isCrafting ? GuiText.Crafts.getLocal() : GuiText.Creates.getLocal()) + ": ";
 		String and = " " + GuiText.And.getLocal() + " ";
@@ -127,7 +127,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		if ( details == null )
 			return null;
 
-		simpleCache.put( item, out = details.getCondencedOutputs()[0].getItemStack() );
+		simpleCache.put( item, out = details.getCondensedOutputs()[0].getItemStack() );
 		return out;
 	}
 

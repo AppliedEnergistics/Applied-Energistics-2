@@ -33,7 +33,7 @@ public class ContainerStorageBus extends ContainerUpgradeable
 	public AccessRestriction rwMode = AccessRestriction.READ_WRITE;
 
 	@GuiSync(4)
-	public StorageFilter storageFilter = StorageFilter.EXTACTABLE_ONLY;
+	public StorageFilter storageFilter = StorageFilter.EXTRACTABLE_ONLY;
 
 	public ContainerStorageBus(InventoryPlayer ip, PartStorageBus te) {
 		super( ip, te );

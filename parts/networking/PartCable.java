@@ -25,7 +25,7 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AECableType;
@@ -53,7 +53,7 @@ public class PartCable extends AEBasePart implements IPartCable
 
 	public PartCable(Class c, ItemStack is) {
 		super( c, is );
-		proxy.setFlags( GridFlags.PREFERED );
+		proxy.setFlags( GridFlags.PREFERRED );
 		proxy.setIdlePowerUsage( 0.0 );
 		proxy.myColor = AEColor.values()[((ItemMultiPart) is.getItem()).varientOf( is.getItemDamage() )];
 	}
@@ -346,7 +346,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public void getBoxes(IPartCollsionHelper bch)
+	public void getBoxes(IPartCollisionHelper bch)
 	{
 		bch.addBox( 6.0, 6.0, 6.0, 10.0, 10.0, 10.0 );
 
@@ -847,7 +847,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		renderCache = rh.useSimpliedRendering( x, y, z, this, renderCache );
+		renderCache = rh.useSimplifiedRendering( x, y, z, this, renderCache );
 		boolean useCovered = false;
 		boolean requireDetailed = false;
 

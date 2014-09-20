@@ -38,7 +38,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 	@Override
 	public void generate(Random r, int chunkX, int chunkZ, World w, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
 	{
-		if ( WorldGenRegistry.instance.isWorldGenEnabled( WorldGenType.Metorites, w ) )
+		if ( WorldGenRegistry.instance.isWorldGenEnabled( WorldGenType.Meteorites, w ) )
 		{
 			// add new metorites?
 			if ( r.nextFloat() < AEConfig.instance.metoriteSpawnChance )

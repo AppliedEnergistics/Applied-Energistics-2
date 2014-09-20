@@ -66,7 +66,7 @@ public class GuiStorageBus extends GuiUpgradeable
 		clear = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.ACTIONS, ActionItems.CLOSE );
 		partition = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.ACTIONS, ActionItems.WRENCH );
 		rwMode = new GuiImgButton( this.guiLeft - 18, guiTop + 48, Settings.ACCESS, AccessRestriction.READ_WRITE );
-		storageFilter = new GuiImgButton( this.guiLeft - 18, guiTop + 68, Settings.STORAGE_FILTER, StorageFilter.EXTACTABLE_ONLY );
+		storageFilter = new GuiImgButton( this.guiLeft - 18, guiTop + 68, Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY );
 		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 88, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 
 		buttonList.add( priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRender ) );

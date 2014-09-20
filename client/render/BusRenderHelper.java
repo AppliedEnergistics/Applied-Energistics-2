@@ -9,7 +9,7 @@ import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.parts.IBoxProvider;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.ISimplifiedBundle;
 import appeng.block.AEBaseBlock;
@@ -41,7 +41,7 @@ public class BusRenderHelper implements IPartRenderHelper
 
 	int color = 0xffffff;
 
-	class BoundBoxCalculator implements IPartCollsionHelper
+	class BoundBoxCalculator implements IPartCollisionHelper
 	{
 
 		public boolean started = false;
@@ -149,7 +149,7 @@ public class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public ISimplifiedBundle useSimpliedRendering(int x, int y, int z, IBoxProvider p, ISimplifiedBundle sim)
+	public ISimplifiedBundle useSimplifiedRendering(int x, int y, int z, IBoxProvider p, ISimplifiedBundle sim)
 	{
 		RenderBlocksWorkaround rbw = BusRenderer.instance.renderer;
 

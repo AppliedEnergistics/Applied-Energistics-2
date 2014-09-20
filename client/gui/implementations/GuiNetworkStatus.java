@@ -227,7 +227,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 					SlotME theSlotField = (SlotME) s;
 					myStack = theSlotField.getAEStack();
 				}
-				catch (Throwable _)
+				catch (Throwable ignore)
 				{
 				}
 
@@ -255,7 +255,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 				SlotME theSlotField = (SlotME) s;
 				myStack = theSlotField.getAEStack();
 			}
-			catch (Throwable _)
+			catch (Throwable ignore)
 			{
 			}
 

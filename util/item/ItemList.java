@@ -150,7 +150,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 
 	/*
 	 * synchronized public void clean() { Iterator<StackType> i = iterator(); while (i.hasNext()) { StackType AEI =
-	 * i.next(); if ( !AEI.isMeaninful() ) i.remove(); } }
+	 * i.next(); if ( !AEI.isMeaningful() ) i.remove(); } }
 	 */
 
 	@Override

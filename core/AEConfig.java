@@ -7,7 +7,7 @@ import java.util.List;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import appeng.api.config.CondenserOuput;
+import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.SearchBoxMode;
@@ -15,7 +15,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
 import appeng.api.config.YesNo;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigureableObject;
+import appeng.api.util.IConfigurableObject;
 import appeng.core.features.AEFeature;
 import appeng.core.settings.TickRates;
 import appeng.items.materials.MaterialType;
@@ -27,7 +27,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class AEConfig extends Configuration implements IConfigureableObject, IConfigManagerHost
+public class AEConfig extends Configuration implements IConfigurableObject, IConfigManagerHost
 {
 
 	public static AEConfig instance;
@@ -223,8 +223,8 @@ public class AEConfig extends Configuration implements IConfigureableObject, ICo
 		double usageEffective = get( "PowerRatios", "UsageMultiplier", 1.0 ).getDouble( 1.0 );
 		PowerMultiplier.CONFIG.multiplier = Math.max( 0.01, usageEffective );
 
-		CondenserOuput.MATTER_BALLS.requiredPower = get( "Condenser", "MatterBalls", 256 ).getInt( 256 );
-		CondenserOuput.SINGULARITY.requiredPower = get( "Condenser", "Singularity", 256000 ).getInt( 256000 );
+		CondenserOutput.MATTER_BALLS.requiredPower = get( "Condenser", "MatterBalls", 256 ).getInt( 256 );
+		CondenserOutput.SINGULARITY.requiredPower = get( "Condenser", "Singularity", 256000 ).getInt( 256000 );
 
 		grinderOres = get( "GrindStone", "grinderOres", grinderOres ).getStringList();
 		oreDoublePercentage = get( "GrindStone", "oreDoublePercentage", oreDoublePercentage ).getDouble( oreDoublePercentage );

@@ -9,11 +9,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import appeng.api.AEApi;
-import appeng.api.config.CondenserOuput;
+import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigureableObject;
+import appeng.api.util.IConfigurableObject;
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
@@ -24,7 +24,7 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
-public class TileCondenser extends AEBaseInvTile implements IAEAppEngInventory, IFluidHandler, IConfigManagerHost, IConfigureableObject
+public class TileCondenser extends AEBaseInvTile implements IAEAppEngInventory, IFluidHandler, IConfigManagerHost, IConfigurableObject
 {
 
 	int sides[] = new int[] { 0, 1 };
@@ -49,7 +49,7 @@ public class TileCondenser extends AEBaseInvTile implements IAEAppEngInventory, 
 	}
 
 	public TileCondenser() {
-		cm.registerSetting( Settings.CONDENSER_OUTPUT, CondenserOuput.TRASH );
+		cm.registerSetting( Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH );
 	}
 
 	public double getStorage()
@@ -112,7 +112,7 @@ public class TileCondenser extends AEBaseInvTile implements IAEAppEngInventory, 
 
 	private ItemStack getOutput()
 	{
-		switch ((CondenserOuput) cm.getSetting( Settings.CONDENSER_OUTPUT ))
+		switch ((CondenserOutput) cm.getSetting( Settings.CONDENSER_OUTPUT ))
 		{
 		case MATTER_BALLS:
 			return AEApi.instance().materials().materialMatterBall.stack( 1 );
@@ -126,7 +126,7 @@ public class TileCondenser extends AEBaseInvTile implements IAEAppEngInventory, 
 
 	public double getRequiredPower()
 	{
-		return ((CondenserOuput) cm.getSetting( Settings.CONDENSER_OUTPUT )).requiredPower;
+		return ((CondenserOutput) cm.getSetting( Settings.CONDENSER_OUTPUT )).requiredPower;
 	}
 
 	@Override

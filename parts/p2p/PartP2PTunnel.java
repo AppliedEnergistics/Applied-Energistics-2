@@ -18,7 +18,7 @@ import appeng.api.config.TunnelType;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.parts.IPart;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
@@ -319,7 +319,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		renderCache = rh.useSimpliedRendering( x, y, z, this, renderCache );
+		renderCache = rh.useSimplifiedRendering( x, y, z, this, renderCache );
 		rh.setTexture( getTypeTexture() );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
@@ -373,7 +373,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 	}
 
 	@Override
-	public void getBoxes(IPartCollsionHelper bch)
+	public void getBoxes(IPartCollisionHelper bch)
 	{
 		bch.addBox( 5, 5, 12, 11, 11, 13 );
 		bch.addBox( 3, 3, 13, 13, 13, 14 );

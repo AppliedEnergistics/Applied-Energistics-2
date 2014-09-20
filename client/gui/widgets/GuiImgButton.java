@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
-import appeng.api.config.CondenserOuput;
+import appeng.api.config.CondenserOutput;
 import appeng.api.config.FullnessMode;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
@@ -102,9 +102,9 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		if ( Appearances == null )
 		{
 			Appearances = new HashMap();
-			registerApp( 16 * 7 + 0, Settings.CONDENSER_OUTPUT, CondenserOuput.TRASH, ButtonToolTips.CondenserOutput, ButtonToolTips.Trash );
-			registerApp( 16 * 7 + 1, Settings.CONDENSER_OUTPUT, CondenserOuput.MATTER_BALLS, ButtonToolTips.CondenserOutput, ButtonToolTips.MatterBalls );
-			registerApp( 16 * 7 + 2, Settings.CONDENSER_OUTPUT, CondenserOuput.SINGULARITY, ButtonToolTips.CondenserOutput, ButtonToolTips.Singularity );
+			registerApp( 16 * 7 + 0, Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH, ButtonToolTips.CondenserOutput, ButtonToolTips.Trash );
+			registerApp( 16 * 7 + 1, Settings.CONDENSER_OUTPUT, CondenserOutput.MATTER_BALLS, ButtonToolTips.CondenserOutput, ButtonToolTips.MatterBalls );
+			registerApp( 16 * 7 + 2, Settings.CONDENSER_OUTPUT, CondenserOutput.SINGULARITY, ButtonToolTips.CondenserOutput, ButtonToolTips.Singularity );
 
 			registerApp( 16 * 9 + 1, Settings.ACCESS, AccessRestriction.READ, ButtonToolTips.IOMode, ButtonToolTips.Read );
 			registerApp( 16 * 9 + 0, Settings.ACCESS, AccessRestriction.WRITE, ButtonToolTips.IOMode, ButtonToolTips.Write );
@@ -181,7 +181,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			registerApp( 16 * 11 + 2, Settings.CRAFT_VIA_REDSTONE, YesNo.YES, ButtonToolTips.EmitterMode, ButtonToolTips.CraftViaRedstone );
 			registerApp( 16 * 11 + 1, Settings.CRAFT_VIA_REDSTONE, YesNo.NO, ButtonToolTips.EmitterMode, ButtonToolTips.EmitWhenCrafing );
 
-			registerApp( 16 * 3 + 5, Settings.STORAGE_FILTER, StorageFilter.EXTACTABLE_ONLY, ButtonToolTips.ReportInaccessibleItems,
+			registerApp( 16 * 3 + 5, Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY, ButtonToolTips.ReportInaccessibleItems,
 					ButtonToolTips.ReportInaccessibleItemsNo );
 			registerApp( 16 * 3 + 6, Settings.STORAGE_FILTER, StorageFilter.NONE, ButtonToolTips.ReportInaccessibleItems,
 					ButtonToolTips.ReportInaccessibleItemsYes );
