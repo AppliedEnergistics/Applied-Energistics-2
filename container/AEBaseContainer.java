@@ -115,7 +115,7 @@ public abstract class AEBaseContainer extends Container
 
 	public void setTargetStack(IAEItemStack stack)
 	{
-		// client dosn't need to re-send, makes for lower overhead rapid packets.
+		// client doesn't need to re-send, makes for lower overhead rapid packets.
 		if ( Platform.isClient() )
 		{
 			ItemStack a = stack == null ? null : stack.getItemStack();
