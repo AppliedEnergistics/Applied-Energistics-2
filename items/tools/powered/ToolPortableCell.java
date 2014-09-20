@@ -92,7 +92,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
-	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requsetedAddition)
+	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requestedAddition)
 	{
 		return false;
 	}
