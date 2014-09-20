@@ -393,9 +393,9 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 			}
 			else
 			{
-				String stordName = memc.getSettingsName( memCardIS );
+				String storedName = memc.getSettingsName( memCardIS );
 				NBTTagCompound data = memc.getData( memCardIS );
-				if ( name.equals( stordName ) )
+				if ( name.equals( storedName ) )
 				{
 					uploadSettings( SettingsFrom.MEMORY_CARD, data );
 					memc.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
