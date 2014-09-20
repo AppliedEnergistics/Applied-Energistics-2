@@ -131,7 +131,7 @@ public class StorageHelper
 	Method onEntityRemoved;
 
 	/**
-	 * Mostly from dimentional doors.. which mostly got it form X-Comp.
+	 * Mostly from dimensional doors.. which mostly got it form X-Comp.
 	 * 
 	 * @param world
 	 * @param entity
