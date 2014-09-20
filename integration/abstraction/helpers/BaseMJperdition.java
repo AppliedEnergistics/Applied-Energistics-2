@@ -10,7 +10,7 @@ public abstract class BaseMJperdition
 	@Method(iname = "MJ5")
 	public abstract PowerReceiver getPowerReceiver();
 
-	public abstract double useEnergy(double f, double requred, boolean b);
+	public abstract double useEnergy(double f, double required, boolean b);
 
 	public abstract void addEnergy(float failed);
 
