@@ -805,7 +805,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	@Override
 	public void clearContainer()
 	{
-		throw new RuntimeException( "Now thats silly!" );
+		throw new RuntimeException( "Now that is silly!" );
 	}
 
 	@Override
