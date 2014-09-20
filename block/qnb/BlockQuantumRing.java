@@ -54,7 +54,7 @@ public class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxsFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
 	{
 		double OnePx = 2.0 / 16.0;
 		TileQuantumBridge bridge = getTileEntity( w, x, y, z );
