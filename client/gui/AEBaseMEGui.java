@@ -55,7 +55,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 		return currenttip;
 	}
 
-	// Vanillia version...
+	// Vanilla version...
 	// protected void drawItemStackTooltip(ItemStack stack, int x, int y)
 	@Override
 	protected void renderToolTip(ItemStack stack, int x, int y)
