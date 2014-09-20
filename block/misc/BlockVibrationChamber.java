@@ -23,7 +23,7 @@ public class BlockVibrationChamber extends AEBaseBlock
 
 	public BlockVibrationChamber() {
 		super( BlockVibrationChamber.class, Material.iron );
-		setfeature( EnumSet.of( AEFeature.PowerGen ) );
+		setFeature( EnumSet.of( AEFeature.PowerGen ) );
 		setTileEntity( TileVibrationChamber.class );
 		setHardness( 4.2F );
 	}

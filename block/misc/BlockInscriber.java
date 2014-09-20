@@ -19,7 +19,7 @@ public class BlockInscriber extends AEBaseBlock
 
 	public BlockInscriber() {
 		super( BlockInscriber.class, Material.iron );
-		setfeature( EnumSet.of( AEFeature.Inscriber ) );
+		setFeature( EnumSet.of( AEFeature.Inscriber ) );
 		setTileEntity( TileInscriber.class );
 		setLightOpacity( 2 );
 		isFullSize = isOpaque = false;

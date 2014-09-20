@@ -11,7 +11,7 @@ public class BlockQuartzChiseled extends AEDecorativeBlock
 
 	public BlockQuartzChiseled() {
 		super( BlockQuartzChiseled.class, Material.rock );
-		setfeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
+		setFeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
 	}
 
 }

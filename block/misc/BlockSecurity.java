@@ -19,7 +19,7 @@ public class BlockSecurity extends AEBaseBlock
 
 	public BlockSecurity() {
 		super( BlockSecurity.class, Material.iron );
-		setfeature( EnumSet.of( AEFeature.Security ) );
+		setFeature( EnumSet.of( AEFeature.Security ) );
 		setTileEntity( TileSecurity.class );
 	}
 

@@ -33,7 +33,7 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 
 	public BlockCharger() {
 		super( BlockCharger.class, Material.iron );
-		setfeature( EnumSet.of( AEFeature.Core ) );
+		setFeature( EnumSet.of( AEFeature.Core ) );
 		setTileEntity( TileCharger.class );
 		setLightOpacity( 2 );
 		isFullSize = isOpaque = false;

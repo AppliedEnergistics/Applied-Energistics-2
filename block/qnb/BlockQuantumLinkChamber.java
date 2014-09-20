@@ -30,7 +30,7 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 
 	public BlockQuantumLinkChamber() {
 		super( BlockQuantumLinkChamber.class, AEGlassMaterial.instance );
-		setfeature( EnumSet.of( AEFeature.QuantumNetworkBridge ) );
+		setFeature( EnumSet.of( AEFeature.QuantumNetworkBridge ) );
 		setTileEntity( TileQuantumBridge.class );
 		float shave = 2.0f / 16.0f;
 		setBlockBounds( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );

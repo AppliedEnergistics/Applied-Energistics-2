@@ -19,7 +19,7 @@ public class BlockDrive extends AEBaseBlock
 
 	public BlockDrive() {
 		super( BlockDrive.class, Material.iron );
-		setfeature( EnumSet.of( AEFeature.StorageCells, AEFeature.MEDrive ) );
+		setFeature( EnumSet.of( AEFeature.StorageCells, AEFeature.MEDrive ) );
 		setTileEntity( TileDrive.class );
 	}
 

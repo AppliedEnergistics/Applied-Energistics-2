@@ -18,7 +18,7 @@ public class BlockIOPort extends AEBaseBlock
 
 	public BlockIOPort() {
 		super( BlockIOPort.class, Material.iron );
-		setfeature( EnumSet.of( AEFeature.StorageCells, AEFeature.IOPort ) );
+		setFeature( EnumSet.of( AEFeature.StorageCells, AEFeature.IOPort ) );
 		setTileEntity( TileIOPort.class );
 	}
 

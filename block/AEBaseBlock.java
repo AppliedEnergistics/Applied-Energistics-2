@@ -181,7 +181,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		setTileProvider( hasBlockTileEntity() );
 	}
 
-	protected void setfeature(EnumSet<AEFeature> f)
+	protected void setFeature(EnumSet<AEFeature> f)
 	{
 		feature = new AEFeatureHandler( f, this, FeatureSubname );
 	}
