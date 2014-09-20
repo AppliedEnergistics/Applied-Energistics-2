@@ -126,7 +126,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 
 	public boolean disableColoredCableRecipesInNEI = true;
 
-	public boolean updateable = false;
+	public boolean updatable = false;
 	final private File myPath;
 
 	public double metoriteClusterChance = 0.1;
@@ -326,7 +326,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 			}
 		}
 
-		updateable = true;
+		updatable = true;
 	}
 
 	public boolean useAEVersion(MaterialType mt)
@@ -377,7 +377,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 			}
 		}
 
-		if ( updateable )
+		if ( updatable )
 			save();
 	}
 
