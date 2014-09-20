@@ -492,13 +492,13 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 	}
 
 	@Override
-	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requsetedAddition)
+	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requestedAddition)
 	{
-		float pen = AEApi.instance().registries().matterCannon().getPenetration( requsetedAddition.getItemStack() );
+		float pen = AEApi.instance().registries().matterCannon().getPenetration( requestedAddition.getItemStack() );
 		if ( pen > 0 )
 			return false;
 
-		if ( requsetedAddition.getItem() instanceof ItemPaintBall )
+		if ( requestedAddition.getItem() instanceof ItemPaintBall )
 			return false;
 
 		return true;
