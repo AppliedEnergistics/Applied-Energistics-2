@@ -89,9 +89,9 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 			injectedCache = null;
 
 		localCache = AEApi.instance().storage().createItemList();
-		for ( IAEItemStack is : target.getStorageList() )
-			localCache.add( target.extractItems(is, Actionable.SIMULATE, src ) );
-		
+		for (IAEItemStack is : target.getStorageList())
+			localCache.add( target.extractItems( is, Actionable.SIMULATE, src ) );
+
 		par = null;
 	}
 
@@ -147,21 +147,27 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		if ( list == null || list.getStackSize() == 0 )
 			return null;
 
-		if ( mode == Actionable.MODULATE && logExtracted )
-			extractedCache.add( request );
-
 		if ( list.getStackSize() >= request.getStackSize() )
 		{
 			if ( mode == Actionable.MODULATE )
+			{
 				list.decStackSize( request.getStackSize() );
+				if ( logExtracted )
+					extractedCache.add( request );
+			}
 
 			return request;
 		}
 
 		IAEItemStack ret = request.copy();
 		ret.setStackSize( list.getStackSize() );
+
 		if ( mode == Actionable.MODULATE )
+		{
 			list.reset();
+			if ( logExtracted )
+				extractedCache.add( ret );
+		}
 
 		return ret;
 	}
@@ -192,14 +198,14 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		IItemList<IAEItemStack> pulled = AEApi.instance().storage().createItemList();
 		boolean failed = false;
 
-		if ( logExtracted )
+		if ( logInjections )
 		{
-			for (IAEItemStack extra : extractedCache)
+			for (IAEItemStack injec : injectedCache)
 			{
 				IAEItemStack result = null;
-				pulled.add( result = target.extractItems( extra, Actionable.MODULATE, src ) );
+				added.add( result = target.injectItems( injec, Actionable.MODULATE, src ) );
 
-				if ( result == null || result.getStackSize() != extra.getStackSize() )
+				if ( result != null )
 				{
 					failed = true;
 					break;
@@ -209,20 +215,20 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 		if ( failed )
 		{
-			for (IAEItemStack is : pulled)
-				target.injectItems( is, Actionable.MODULATE, src );
+			for (IAEItemStack is : added)
+				target.extractItems( is, Actionable.MODULATE, src );
 
 			return false;
 		}
 
-		if ( logInjections )
+		if ( logExtracted )
 		{
-			for (IAEItemStack injec : injectedCache)
+			for (IAEItemStack extra : extractedCache)
 			{
 				IAEItemStack result = null;
-				added.add( result = target.injectItems( injec, Actionable.MODULATE, src ) );
+				pulled.add( result = target.extractItems( extra, Actionable.MODULATE, src ) );
 
-				if ( result != null )
+				if ( result == null || result.getStackSize() != extra.getStackSize() )
 				{
 					failed = true;
 					break;
