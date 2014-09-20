@@ -559,7 +559,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void renderCoveredConection(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of)
+	public void renderCoveredConnection(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of)
 	{
 		TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
 		IPartHost ccph = te instanceof IPartHost ? (IPartHost) te : null;

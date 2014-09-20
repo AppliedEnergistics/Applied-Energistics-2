@@ -341,7 +341,7 @@ public class PartDenseCable extends PartCable
 				else if ( isSmart( of ) )
 					renderSmartConection( x, y, z, rh, renderer, channelsOnSide[of.ordinal()], of );
 				else
-					renderCoveredConection( x, y, z, rh, renderer, channelsOnSide[of.ordinal()], of );
+					renderCoveredConnection( x, y, z, rh, renderer, channelsOnSide[of.ordinal()], of );
 			}
 
 			rh.setTexture( getDenseTexture( getCableColor() ) );
