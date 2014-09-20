@@ -213,12 +213,12 @@ public class ContainerCraftConfirm extends AEBaseContainer
 						p.setStackSize( out.getCountRequestable() );
 
 						IStorageGrid sg = getGrid().getCache( IStorageGrid.class );
-						IMEInventory<IAEItemStack> itemsg = sg.getItemInventory();
+						IMEInventory<IAEItemStack> items = sg.getItemInventory();
 
 						if ( c != null && result.isSimulation() )
 						{
 							m = o.copy();
-							o = itemsg.extractItems( o, Actionable.SIMULATE, mySrc );
+							o = items.extractItems( o, Actionable.SIMULATE, mySrc );
 
 							if ( o == null )
 							{
