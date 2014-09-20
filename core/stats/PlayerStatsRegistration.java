@@ -94,7 +94,7 @@ public class PlayerStatsRegistration
 
 		Achievements.GlassCable.setParent( Achievements.Charger );
 
-		Achievements.SpatialIOExplorerer.setParent( Achievements.SpatialIO );
+		Achievements.SpatialIOExplorer.setParent( Achievements.SpatialIO );
 
 		Achievements.IOPort.setParent( Achievements.StorageCell );
 

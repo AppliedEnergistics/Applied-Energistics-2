@@ -23,7 +23,7 @@ public enum Achievements
 	SpatialIO(-4, -4, AEApi.instance().blocks().blockSpatialIOPort, AchievementType.Craft),
 
 	// done
-	SpatialIOExplorerer(-4, -2, AEApi.instance().items().itemSpatialCell128, AchievementType.Custom),
+	SpatialIOExplorer(-4, -2, AEApi.instance().items().itemSpatialCell128, AchievementType.Custom),
 
 	// done
 	StorageCell(-6, -4, AEApi.instance().items().itemCell64k, AchievementType.CraftItem),

@@ -182,7 +182,7 @@ public class StorageHelper
 			if ( player != null )
 			{
 				if ( link.dim.provider instanceof StorageWorldProvider )
-					Achievements.SpatialIOExplorerer.addToPlayer( player );
+					Achievements.SpatialIOExplorer.addToPlayer( player );
 
 				player.mcServer.getConfigurationManager().transferPlayerToDimension( player, link.dim.provider.dimensionId, new METeleporter( newWorld, link ) );
 			}
