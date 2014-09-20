@@ -70,7 +70,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 
 		ItemStack isc = new ItemStack( itemID, 1, damageValue );
 		isc.setTagCompound( c );
-		x.comp = AEApi.instance().registries().specialComparson().getSpecialComparion( isc );
+		x.comp = AEApi.instance().registries().specialComparson().getSpecialComparison( isc );
 
 		return x;
 	}

@@ -18,7 +18,7 @@ public class SpecialComparisonRegistry implements ISpecialComparisonRegistry
 	}
 
 	@Override
-	public IItemComparison getSpecialComparion(ItemStack stack)
+	public IItemComparison getSpecialComparison(ItemStack stack)
 	{
 		for (IItemComparisonProvider i : CompRegistry)
 		{
