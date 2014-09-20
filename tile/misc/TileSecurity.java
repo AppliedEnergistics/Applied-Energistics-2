@@ -1,5 +1,6 @@
 package appeng.tile.misc;
 
+import appeng.helpers.PlayerSecurityWrapper;
 import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
@@ -44,7 +45,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
-import appeng.helpers.PlayerSecuirtyWrapper;
 import appeng.me.GridAccessException;
 import appeng.me.storage.SecurityInventory;
 import appeng.tile.TileEvent;
@@ -209,7 +209,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 			if ( i instanceof IBiometricCard )
 			{
 				IBiometricCard bc = (IBiometricCard) i;
-				bc.registerPermissions( new PlayerSecuirtyWrapper( playerPerms ), pr, is );
+				bc.registerPermissions( new PlayerSecurityWrapper( playerPerms ), pr, is );
 			}
 		}
 
