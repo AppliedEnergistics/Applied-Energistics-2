@@ -20,7 +20,7 @@ public class MeanfulIterator<StackType extends IAEStack> implements Iterator
 		while (parent.hasNext())
 		{
 			next = parent.next();
-			if ( next.isMeaninful() )
+			if ( next.isMeaningful() )
 				return true;
 			else
 				parent.remove(); // self cleaning :3

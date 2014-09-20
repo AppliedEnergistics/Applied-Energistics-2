@@ -122,7 +122,7 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 
 			for (IAEItemStack ais : storedItems)
 			{
-				if ( ais.isMeaninful() )
+				if ( ais.isMeaningful() )
 				{
 					GameProfile thisUser = tbc.getProfile( ais.getItemStack() );
 					if ( thisUser == newUser )
