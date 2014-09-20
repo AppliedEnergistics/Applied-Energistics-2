@@ -54,7 +54,7 @@ public class EnergyWatcher implements IEnergyWatcher
 
 	public void post(EnergyGridCache energyGridCache)
 	{
-		myObject.onThreshholdPass( energyGridCache );
+		myObject.onThresholdPass( energyGridCache );
 	}
 
 	public EnergyWatcher(EnergyGridCache cache, IEnergyWatcherHost host) {

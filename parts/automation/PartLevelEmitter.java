@@ -327,7 +327,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public void onThreshholdPass(IEnergyGrid energyGrid)
+	public void onThresholdPass(IEnergyGrid energyGrid)
 	{
 		lastReportedValue = (long) energyGrid.getStoredPower();
 		updateState();
