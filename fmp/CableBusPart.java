@@ -24,7 +24,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.LayerFlags;
@@ -315,7 +315,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 			if ( !(side == null || side == ForgeDirection.UNKNOWN || tile() == null) )
 			{
 				List<AxisAlignedBB> boxes = new ArrayList();
-				IPartCollsionHelper bch = new BusCollisionHelper( boxes, side, null, true );
+				IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
 				fp.getBoxes( bch, null );
 				for (AxisAlignedBB bb : boxes)
 				{
@@ -342,7 +342,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 			if ( !(side == null || side == ForgeDirection.UNKNOWN || tile() == null) )
 			{
 				List<AxisAlignedBB> boxes = new ArrayList();
-				IPartCollsionHelper bch = new BusCollisionHelper( boxes, side, null, true );
+				IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
 				bp.getBoxes( bch );
 				for (AxisAlignedBB bb : boxes)
 				{

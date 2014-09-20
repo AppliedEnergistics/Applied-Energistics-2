@@ -13,7 +13,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.networking.IGridHost;
 import appeng.api.parts.IBoxProvider;
 import appeng.api.parts.IPart;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseBlock;
@@ -251,7 +251,7 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 	}
  
 	@Override
-	public void getBoxes(IPartCollsionHelper bch)
+	public void getBoxes(IPartCollisionHelper bch)
 	{
 		bch.addBox( 0, 0, 0, 16, 16, 16 );
 	}

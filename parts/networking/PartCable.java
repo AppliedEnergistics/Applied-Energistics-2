@@ -25,7 +25,7 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AECableType;
@@ -346,7 +346,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public void getBoxes(IPartCollsionHelper bch)
+	public void getBoxes(IPartCollisionHelper bch)
 	{
 		bch.addBox( 6.0, 6.0, 6.0, 10.0, 10.0, 10.0 );
 

@@ -15,7 +15,7 @@ import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.IPart;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AECableType;
@@ -61,7 +61,7 @@ public class PartCableCovered extends PartCable
 	}
 
 	@Override
-	public void getBoxes(IPartCollsionHelper bch)
+	public void getBoxes(IPartCollisionHelper bch)
 	{
 		bch.addBox( 5.0, 5.0, 5.0, 11.0, 11.0, 11.0 );
 

@@ -19,7 +19,7 @@ import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.BusSupport;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AECableType;
@@ -127,7 +127,7 @@ public class PartDenseCable extends PartCable
 	}
 
 	@Override
-	public void getBoxes(IPartCollsionHelper bch)
+	public void getBoxes(IPartCollisionHelper bch)
 	{
 		boolean noLadder = !bch.isBBCollision();
 		double min = noLadder ? 3.0 : 4.9;

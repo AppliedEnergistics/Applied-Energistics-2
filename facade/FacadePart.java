@@ -22,7 +22,7 @@ import appeng.api.AEApi;
 import appeng.api.parts.IBoxProvider;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.ISimplifiedBundle;
@@ -61,7 +61,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	}
 
 	@Override
-	public void getBoxes(IPartCollsionHelper ch, Entity e)
+	public void getBoxes(IPartCollisionHelper ch, Entity e)
 	{
 		if ( e instanceof EntityLivingBase )
 		{
@@ -76,7 +76,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	}
 
 	@Override
-	public void getBoxes(IPartCollsionHelper bch)
+	public void getBoxes(IPartCollisionHelper bch)
 	{
 		getBoxes( bch, null );
 

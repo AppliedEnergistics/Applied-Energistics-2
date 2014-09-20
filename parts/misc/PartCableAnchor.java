@@ -20,7 +20,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
-import appeng.api.parts.IPartCollsionHelper;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.ISimplifiedBundle;
@@ -73,7 +73,7 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public void getBoxes(IPartCollsionHelper bch)
+	public void getBoxes(IPartCollisionHelper bch)
 	{
 		if ( host != null && host.getFacadeContainer().getFacade( mySide ) != null )
 			bch.addBox( 7, 7, 10, 9, 9, 14 );
