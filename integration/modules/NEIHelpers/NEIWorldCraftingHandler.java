@@ -69,9 +69,9 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.inWorldPurification ) )
 		{
-			addRecipe( AEApi.instance().materials().materialPureifiedCertusQuartzCrystal, GuiText.inWorldPurificationCertus.getLocal() );
-			addRecipe( AEApi.instance().materials().materialPureifiedNetherQuartzCrystal, GuiText.inWorldPurificationNether.getLocal() );
-			addRecipe( AEApi.instance().materials().materialPureifiedFluixCrystal, GuiText.inWorldPurificationFluix.getLocal() );
+			addRecipe( AEApi.instance().materials().materialPurifiedCertusQuartzCrystal, GuiText.inWorldPurificationCertus.getLocal() );
+			addRecipe( AEApi.instance().materials().materialPurifiedNetherQuartzCrystal, GuiText.inWorldPurificationNether.getLocal() );
+			addRecipe( AEApi.instance().materials().materialPurifiedFluixCrystal, GuiText.inWorldPurificationFluix.getLocal() );
 		}
 	}
 
