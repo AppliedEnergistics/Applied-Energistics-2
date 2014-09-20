@@ -2,6 +2,7 @@ package appeng.client.render.blocks;
 
 import java.util.EnumSet;
 
+import appeng.client.texture.FlippableIcon;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
@@ -15,7 +16,6 @@ import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
-import appeng.client.texture.FlipableIcon;
 import appeng.client.texture.OffsetIcon;
 import appeng.tile.storage.TileChest;
 import appeng.util.Platform;
@@ -68,7 +68,7 @@ public class RenderMEChest extends BaseBlockRender
 		Tessellator.instance.setBrightness( b );
 		Tessellator.instance.setColorOpaque_I( 0xffffff );
 
-		FlipableIcon fico = new FlipableIcon( new OffsetIcon( ExtraBlockTextures.MEStorageCellTextures.getIcon(), offsetU, offsetV ) );
+		FlippableIcon fico = new FlippableIcon( new OffsetIcon( ExtraBlockTextures.MEStorageCellTextures.getIcon(), offsetU, offsetV ) );
 		if ( forward == ForgeDirection.EAST && (up == ForgeDirection.NORTH || up == ForgeDirection.SOUTH) )
 			fico.setFlip( true, false );
 		else if ( forward == ForgeDirection.NORTH && up == ForgeDirection.EAST )

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import appeng.client.texture.FlippableIcon;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -36,7 +37,6 @@ import appeng.block.networking.BlockCableBus;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
 import appeng.client.render.WorldRender;
-import appeng.client.texture.FlipableIcon;
 import appeng.client.texture.MissingIcon;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
@@ -94,11 +94,11 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@SideOnly(Side.CLIENT)
-	private FlipableIcon optionaIcon(IIconRegister ir, String Name, IIcon substitute)
+	private FlippableIcon optionaIcon(IIconRegister ir, String Name, IIcon substitute)
 	{
 		// if the input is an flippable IIcon find the original.
-		while (substitute instanceof FlipableIcon)
-			substitute = ((FlipableIcon) substitute).getOriginal();
+		while (substitute instanceof FlippableIcon)
+			substitute = ((FlippableIcon) substitute).getOriginal();
 
 		if ( substitute != null )
 		{
@@ -110,15 +110,15 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 				IResource res = Minecraft.getMinecraft().getResourceManager().getResource( resLoc );
 				if ( res != null )
-					return new FlipableIcon( ir.registerIcon( Name ) );
+					return new FlippableIcon( ir.registerIcon( Name ) );
 			}
 			catch (Throwable e)
 			{
-				return new FlipableIcon( substitute );
+				return new FlippableIcon( substitute );
 			}
 		}
 
-		return new FlipableIcon( ir.registerIcon( Name ) );
+		return new FlippableIcon( ir.registerIcon( Name ) );
 	}
 
 	@Override
@@ -126,13 +126,13 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	public void registerBlockIcons(IIconRegister iconRegistry)
 	{
 		BlockRenderInfo info = getRendererInstance();
-		FlipableIcon topIcon;
-		FlipableIcon bottomIcon;
-		FlipableIcon sideIcon;
-		FlipableIcon eastIcon;
-		FlipableIcon westIcon;
-		FlipableIcon southIcon;
-		FlipableIcon northIcon;
+		FlippableIcon topIcon;
+		FlippableIcon bottomIcon;
+		FlippableIcon sideIcon;
+		FlippableIcon eastIcon;
+		FlippableIcon westIcon;
+		FlippableIcon southIcon;
+		FlippableIcon northIcon;
 
 		this.blockIcon = topIcon = optionaIcon( iconRegistry, this.getTextureName(), null );
 		bottomIcon = optionaIcon( iconRegistry, this.getTextureName() + "Bottom", topIcon );
@@ -148,7 +148,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	public void registerNoIcons()
 	{
 		BlockRenderInfo info = getRendererInstance();
-		FlipableIcon i = new FlipableIcon( new MissingIcon( this ) );
+		FlippableIcon i = new FlippableIcon( new MissingIcon( this ) );
 		info.updateIcons( i, i, i, i, i, i );
 	}
 

@@ -1,5 +1,6 @@
 package appeng.parts.networking;
 
+import appeng.client.texture.FlippableIcon;
 import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
@@ -33,7 +34,6 @@ import appeng.api.util.AEColor;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.block.AEBaseBlock;
 import appeng.client.texture.CableBusTextures;
-import appeng.client.texture.FlipableIcon;
 import appeng.client.texture.TaughtIcon;
 import appeng.items.parts.ItemMultiPart;
 import appeng.me.GridAccessException;
@@ -648,7 +648,7 @@ public class PartCable extends AEBasePart implements IPartCable
 			if ( of == ForgeDirection.EAST || of == ForgeDirection.WEST )
 			{
 				AEBaseBlock blk = (AEBaseBlock) rh.getBlock();
-				FlipableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST );
+				FlippableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST );
 				ico.setFlip( false, true );
 			}
 
@@ -721,7 +721,7 @@ public class PartCable extends AEBasePart implements IPartCable
 				if ( of == ForgeDirection.EAST || of == ForgeDirection.WEST )
 				{
 					AEBaseBlock blk = (AEBaseBlock) rh.getBlock();
-					FlipableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST );
+					FlippableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST );
 					ico.setFlip( false, true );
 				}
 
