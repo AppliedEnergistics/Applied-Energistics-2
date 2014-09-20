@@ -8,7 +8,7 @@ import appeng.api.features.IPlayerRegistry;
 import appeng.api.features.IRecipeHandlerRegistry;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.features.ISpecialComparisonRegistry;
-import appeng.api.features.IWirelessTermRegistery;
+import appeng.api.features.IWirelessTermRegistry;
 import appeng.api.features.IWorldGen;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.networking.IGridCacheRegistry;
@@ -32,7 +32,7 @@ public class RegistryContainer implements IRegistryContainer
 	private IRecipeHandlerRegistry recipeReg = new RecipeHandlerRegistry();
 
 	@Override
-	public IWirelessTermRegistery wireless()
+	public IWirelessTermRegistry wireless()
 	{
 		return WirelessRegistery;
 	}
