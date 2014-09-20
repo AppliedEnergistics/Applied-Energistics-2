@@ -42,7 +42,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 
 	AppEngInternalInventory inv = new AppEngInternalInventory( this, 4 );
 
-	public final int maxProessingTime = 100;
+	public final int maxProcessingTime = 100;
 	public int processingTime = 0;
 
 	// cycles from 0 - 16, at 8 it preforms the action, at 16 it reenables the normal rotuine.
@@ -377,9 +377,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 				// :P
 			}
 
-			if ( processingTime > maxProessingTime )
+			if ( processingTime > maxProcessingTime )
 			{
-				processingTime = maxProessingTime;
+				processingTime = maxProcessingTime;
 				InscriberRecipe out = getTask();
 				if ( out != null )
 				{

@@ -41,7 +41,7 @@ public class GuiInscriber extends AEBaseGui
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		pb.max = cvc.maxProessingTime;
+		pb.max = cvc.maxProcessingTime;
 		pb.current = cvc.processingTime;
 		pb.FullMsg = (pb.current * 100 / pb.max) + "%";
 

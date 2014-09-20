@@ -24,7 +24,7 @@ public class ContainerInscriber extends AEBaseContainer
 	Slot bottom;
 
 	@GuiSync(0)
-	public int maxProessingTime = -1;
+	public int maxProcessingTime = -1;
 
 	@GuiSync(1)
 	public int processingTime = -1;
@@ -125,7 +125,7 @@ public class ContainerInscriber extends AEBaseContainer
 
 		if ( Platform.isServer() )
 		{
-			this.maxProessingTime = myte.maxProessingTime;
+			this.maxProcessingTime = myte.maxProcessingTime;
 			this.processingTime = myte.processingTime;
 		}
 	}
