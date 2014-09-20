@@ -61,7 +61,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 
 	public boolean canUseNode(long qe)
 	{
-		QuantumCluster qc = (QuantumCluster) AEApi.instance().registries().locateable().findLocateableBySerial( qe );
+		QuantumCluster qc = (QuantumCluster) AEApi.instance().registries().locatable().findLocateableBySerial( qe );
 		if ( qc != null && qc.center instanceof TileQuantumBridge )
 		{
 			World theWorld = qc.getCenter().getWorldObj();
@@ -127,7 +127,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 			}
 		}
 
-		Object myOtherSide = otherSide == 0 ? null : AEApi.instance().registries().locateable().findLocateableBySerial( otherSide );
+		Object myOtherSide = otherSide == 0 ? null : AEApi.instance().registries().locatable().findLocateableBySerial( otherSide );
 
 		boolean shutdown = false;
 

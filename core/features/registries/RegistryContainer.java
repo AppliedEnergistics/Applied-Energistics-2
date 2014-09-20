@@ -62,7 +62,7 @@ public class RegistryContainer implements IRegistryContainer
 	}
 
 	@Override
-	public ILocatableRegistry locateable()
+	public ILocatableRegistry locatable()
 	{
 		return LocateableRegistry;
 	}

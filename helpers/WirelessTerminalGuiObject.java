@@ -62,7 +62,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 		try
 		{
 			long encKey = Long.parseLong( encryptionKey );
-			obj = AEApi.instance().registries().locateable().findLocateableBySerial( encKey );
+			obj = AEApi.instance().registries().locatable().findLocateableBySerial( encKey );
 		}
 		catch (NumberFormatException err)
 		{
