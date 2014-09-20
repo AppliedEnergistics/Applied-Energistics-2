@@ -247,7 +247,7 @@ public class GridNode implements IGridNode, IPathItem
 
 	public void FindConnections()
 	{
-		if ( !gridProxy.isWorldAccessable() )
+		if ( !gridProxy.isWorldAccessible() )
 			return;
 
 		EnumSet<ForgeDirection> newSecurityConnections = EnumSet.noneOf( ForgeDirection.class );
