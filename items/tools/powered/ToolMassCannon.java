@@ -180,7 +180,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 		Entity entity = null;
 		List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
-		double Closeest = 9999999.0D;
+		double closest = 9999999.0D;
 		int l;
 
 		for (l = 0; l < list.size(); ++l)
@@ -203,10 +203,10 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 					{
 						double nd = vec3.squareDistanceTo( movingobjectposition1.hitVec );
 
-						if ( nd < Closeest )
+						if ( nd < closest )
 						{
 							entity = entity1;
-							Closeest = nd;
+							closest = nd;
 						}
 					}
 				}
@@ -216,7 +216,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 		MovingObjectPosition pos = w.rayTraceBlocks( vec3, vec31, false );
 
 		Vec3 Srec = Vec3.createVectorHelper( d0, d1, d2 );
-		if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( Srec ) > Closeest )
+		if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( Srec ) > closest )
 		{
 			pos = new MovingObjectPosition( entity );
 		}
