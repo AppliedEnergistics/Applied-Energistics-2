@@ -40,7 +40,7 @@ public class AETrading implements IVillageTradeHandler
 		addToList( list, From, To );
 	}
 
-	private void addMerchent(MerchantRecipeList list, ItemStack item, int emera, Random rand, int greed)
+	private void addMerchant(MerchantRecipeList list, ItemStack item, int emera, Random rand, int greed)
 	{
 		if ( item == null )
 			return;
@@ -77,9 +77,9 @@ public class AETrading implements IVillageTradeHandler
 	@Override
 	public void manipulateTradesForVillager(EntityVillager villager, MerchantRecipeList recipeList, Random random)
 	{
-		addMerchent( recipeList, AEApi.instance().materials().materialSilicon.stack( 1 ), 1, random, 2 );
-		addMerchent( recipeList, AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 ), 2, random, 4 );
-		addMerchent( recipeList, AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ), 1, random, 3 );
+		addMerchant( recipeList, AEApi.instance().materials().materialSilicon.stack( 1 ), 1, random, 2 );
+		addMerchant( recipeList, AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 ), 2, random, 4 );
+		addMerchant( recipeList, AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ), 1, random, 3 );
 
 		addTrade( recipeList, AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ),
 				AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 ), random, 2 );
