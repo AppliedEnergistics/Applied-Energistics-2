@@ -324,13 +324,13 @@ public class CachedPlane
 		world.scheduleBlockUpdate( x + x_offset, y + y_offset, z + z_offset, ntle.func_151351_a(), (int) ntle.scheduledTime );
 	}
 
-	private void addTile(int x, int y, int z, TileEntity te, CachedPlane alernateDest, IMovableRegistry mr)
+	private void addTile(int x, int y, int z, TileEntity te, CachedPlane alternateDest, IMovableRegistry mr)
 	{
 		try
 		{
 			Column c = myColumns[x][z];
 
-			if ( c.dontSkip( y + y_offset ) || alernateDest == null )
+			if ( c.dontSkip( y + y_offset ) || alternateDest == null )
 			{
 				IMovableHandler handler = getHandler( te );
 
@@ -362,7 +362,7 @@ public class CachedPlane
 			}
 			else
 			{
-				alernateDest.addTile( x, y, z, te, null, mr );
+				alternateDest.addTile( x, y, z, te, null, mr );
 			}
 		}
 		catch (Throwable e)
