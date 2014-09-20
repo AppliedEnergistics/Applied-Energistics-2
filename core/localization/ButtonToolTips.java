@@ -36,7 +36,7 @@ public enum ButtonToolTips
 
 	Stash, StashDesc, Encode, EncodeDescription, Substitutions, SubstitutionsOn, SubstitutionsOff, SubstitutionsDesc, CraftOnly, CraftEither,
 
-	Craft, Mod, DosntDespawn, EmitterMode, CraftViaRedstone, EmitWhenCrafing, ReportInaccessibleItems, ReportInaccessibleItemsYes, ReportInaccessibleItemsNo;
+	Craft, Mod, DoesntDespawn, EmitterMode, CraftViaRedstone, EmitWhenCrafing, ReportInaccessibleItems, ReportInaccessibleItemsYes, ReportInaccessibleItemsNo;
 
 	String root;
 
