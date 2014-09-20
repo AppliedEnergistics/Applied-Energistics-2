@@ -30,7 +30,7 @@ public class SlotRestrictedInput extends AppEngSlot
 	{
 		STORAGE_CELLS(15), ORE(1 * 16 + 15), STORAGE_COMPONENT(3 * 16 + 15),
 
-		ENCODEABLE_ITEM(4 * 16 + 15), TRASH(5 * 16 + 15), VALID_ENCODED_PATTERN_W_OUPUT(7 * 16 + 15), ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15),
+		ENCODEABLE_ITEM(4 * 16 + 15), TRASH(5 * 16 + 15), VALID_ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15), ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15),
 
 		ENCODED_CRAFTING_PATTERN(7 * 16 + 15), ENCODED_PATTERN(7 * 16 + 15), PATTERN(8 * 16 + 15), BLANK_PATTERN(8 * 16 + 15), POWERED_TOOL(9 * 16 + 15),
 
@@ -57,7 +57,7 @@ public class SlotRestrictedInput extends AppEngSlot
 
 	public boolean isValid(ItemStack is, World theWorld)
 	{
-		if ( which == PlaceableItemType.VALID_ENCODED_PATTERN_W_OUPUT )
+		if ( which == PlaceableItemType.VALID_ENCODED_PATTERN_W_OUTPUT )
 		{
 			ICraftingPatternDetails ap = is.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem) is.getItem()).getPatternForItem( is, theWorld )
 					: null;
@@ -139,7 +139,7 @@ public class SlotRestrictedInput extends AppEngSlot
 					return de.isCraftable();
 			}
 			return false;
-		case VALID_ENCODED_PATTERN_W_OUPUT:
+		case VALID_ENCODED_PATTERN_W_OUTPUT:
 		case ENCODED_PATTERN_W_OUTPUT:
 		case ENCODED_PATTERN: {
 			if ( i.getItem() instanceof ICraftingPatternItem )
