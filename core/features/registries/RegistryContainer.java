@@ -23,7 +23,7 @@ public class RegistryContainer implements IRegistryContainer
 	private CellRegistry CellRegistry = new CellRegistry();
 	private LocatableRegistry LocatableRegistry = new LocatableRegistry();
 	private SpecialComparisonRegistry SpecialComparsonRegistry = new SpecialComparisonRegistry();
-	private WirelessRegistry WirelessRegistery = new WirelessRegistry();
+	private WirelessRegistry WirelessRegistry = new WirelessRegistry();
 	private GridCacheRegistry GridCacheRegistry = new GridCacheRegistry();
 	private P2PTunnelRegistry P2PRegistry = new P2PTunnelRegistry();
 	private MovableTileRegistry MoveableReg = new MovableTileRegistry();
@@ -34,7 +34,7 @@ public class RegistryContainer implements IRegistryContainer
 	@Override
 	public IWirelessTermRegistry wireless()
 	{
-		return WirelessRegistery;
+		return WirelessRegistry;
 	}
 
 	@Override
