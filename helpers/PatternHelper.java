@@ -33,8 +33,8 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	final ItemStack correctOutput;
 	final IRecipe standardRecipe;
 
-	final IAEItemStack condencedInputs[];
-	final IAEItemStack condencedOutputs[];
+	final IAEItemStack condensedInputs[];
+	final IAEItemStack condensedOutputs[];
 	final IAEItemStack inputs[];
 	final IAEItemStack outputs[];
 
@@ -196,14 +196,14 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			throw new RuntimeException( "No pattern here!" );
 		
 		int offset = 0;
-		condencedInputs = new IAEItemStack[tmpInputs.size()];
+		condensedInputs = new IAEItemStack[tmpInputs.size()];
 		for (IAEItemStack io : tmpInputs.values())
-			condencedInputs[offset++] = io;
+			condensedInputs[offset++] = io;
 
 		offset = 0;
-		condencedOutputs = new IAEItemStack[tmpOutputs.size()];
+		condensedOutputs = new IAEItemStack[tmpOutputs.size()];
 		for (IAEItemStack io : tmpOutputs.values())
-			condencedOutputs[offset++] = io;
+			condensedOutputs[offset++] = io;
 	}
 
 	synchronized public boolean isValidItemForSlot(int slotIndex, ItemStack i, World w)
@@ -313,13 +313,13 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	@Override
 	public IAEItemStack[] getCondensedInputs()
 	{
-		return condencedInputs;
+		return condensedInputs;
 	}
 
 	@Override
 	public IAEItemStack[] getCondensedOutputs()
 	{
-		return condencedOutputs;
+		return condensedOutputs;
 	}
 
 	@Override
