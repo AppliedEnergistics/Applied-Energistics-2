@@ -267,7 +267,7 @@ public class Registration
 				else
 				{
 					Field f = partClass.getField( "part" + type.name() );
-					Enum varients[] = type.getVarients();
+					Enum varients[] = type.getVariants();
 					if ( varients == null )
 					{
 						ItemStackSrc is = ((ItemMultiPart) partItem.item()).createPart( type, null );

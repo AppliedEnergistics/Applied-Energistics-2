@@ -157,7 +157,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		if ( pt == null )
 			return "Unnamed";
 
-		Enum[] varients = pt.getVarients();
+		Enum[] varients = pt.getVariants();
 
 		if ( varients != null )
 			return super.getItemStackDisplayName( is ) + " - " + varients[dmgToPart.get( is.getItemDamage() ).varient].toString();
