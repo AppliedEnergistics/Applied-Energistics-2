@@ -46,7 +46,7 @@ public class Shaped implements ICraftHandler, IWebsiteSeralizer
 					throw new RecipeError( "Crafting recipes must have 1-3 columns." );
 			}
 			else
-				throw new RecipeError( "shaped crafting recpies must have 1-3 rows." );
+				throw new RecipeError( "shaped crafting recipes must have 1-3 rows." );
 		}
 		else
 			throw new RecipeError( "Crafting must produce a single output." );
