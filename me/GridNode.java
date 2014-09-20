@@ -379,8 +379,8 @@ public class GridNode implements IGridNode, IPathItem
 			@Override
 			public int compare(IGridConnection o1, IGridConnection o2)
 			{
-				boolean preferedA = o1.getOtherSide( gn ).hasFlag( GridFlags.PREFERED );
-				boolean preferedB = o2.getOtherSide( gn ).hasFlag( GridFlags.PREFERED );
+				boolean preferedA = o1.getOtherSide( gn ).hasFlag( GridFlags.PREFERRED );
+				boolean preferedB = o2.getOtherSide( gn ).hasFlag( GridFlags.PREFERRED );
 
 				return preferedA == preferedB ? 0 : (preferedA ? -1 : 1);
 			}
