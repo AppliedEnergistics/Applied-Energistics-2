@@ -1744,7 +1744,7 @@ public class Platform
 		return false;
 	}
 
-	public static Object findPrefered(ItemStack[] is)
+	public static Object findPreferred(ItemStack[] is)
 	{
 		for (ItemStack stack : is)
 		{
