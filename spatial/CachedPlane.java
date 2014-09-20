@@ -110,7 +110,7 @@ public class CachedPlane
 	LinkedList<TileEntity> tiles = new LinkedList<TileEntity>();
 	LinkedList<NextTickListEntry> ticks = new LinkedList<NextTickListEntry>();
 
-	World wrld;
+	World world;
 	Block matrixFrame = AEApi.instance().blocks().blockMatrixFrame.block();
 	IMovableRegistry reg = AEApi.instance().registries().movable();
 
@@ -118,7 +118,7 @@ public class CachedPlane
 
 	public CachedPlane(World w, int minx, int miny, int minz, int maxx, int maxy, int maxz) {
 
-		wrld = w;
+		world = w;
 
 		x_size = maxx - minx + 1;
 		y_size = maxy - miny + 1;
@@ -200,8 +200,8 @@ public class CachedPlane
 					c.chunkTileEntityMap.remove( cp );
 				}
 
-				long k = wrld.getTotalWorldTime();
-				List list = wrld.getPendingBlockUpdates( c, false );
+				long k = world.getTotalWorldTime();
+				List list = world.getPendingBlockUpdates( c, false );
 				if ( list != null )
 				{
 					for (Object o : list)
@@ -223,7 +223,7 @@ public class CachedPlane
 		{
 			try
 			{
-				wrld.loadedTileEntityList.remove( te );
+				world.loadedTileEntityList.remove( te );
 			}
 			catch (Exception e)
 			{
@@ -321,7 +321,7 @@ public class CachedPlane
 
 	private void addTick(int x, int y, int z, NextTickListEntry ntle)
 	{
-		wrld.scheduleBlockUpdate( x + x_offset, y + y_offset, z + z_offset, ntle.func_151351_a(), (int) ntle.scheduledTime );
+		world.scheduleBlockUpdate( x + x_offset, y + y_offset, z + z_offset, ntle.func_151351_a(), (int) ntle.scheduledTime );
 	}
 
 	private void addTile(int x, int y, int z, TileEntity te, CachedPlane alernateDest, IMovableRegistry mr)
@@ -336,14 +336,14 @@ public class CachedPlane
 
 				try
 				{
-					handler.moveTile( te, wrld, x + x_offset, y + y_offset, z + z_offset );
+					handler.moveTile( te, world, x + x_offset, y + y_offset, z + z_offset );
 				}
 				catch (Throwable e)
 				{
 					AELog.error( e );
 
 					// attempt recovery...
-					te.setWorldObj( wrld );
+					te.setWorldObj( world );
 					te.xCoord = x;
 					te.yCoord = y;
 					te.zCoord = z;
@@ -353,8 +353,8 @@ public class CachedPlane
 
 					if ( c.c.isChunkLoaded )
 					{
-						wrld.addTileEntity( te );
-						wrld.markBlockForUpdate( x, y, z );
+						world.addTileEntity( te );
+						world.markBlockForUpdate( x, y, z );
 					}
 				}
 
@@ -392,7 +392,7 @@ public class CachedPlane
 				Chunk c = myChunks[x][z];
 
 				for (int y = 1; y < 255; y += 32)
-					WorldSettings.getInstance().getCompass().updateArea( wrld, c.xPosition << 4, y, c.zPosition << 4 );
+					WorldSettings.getInstance().getCompass().updateArea( world, c.xPosition << 4, y, c.zPosition << 4 );
 
 				Platform.sendChunk( c, verticalBits );
 
