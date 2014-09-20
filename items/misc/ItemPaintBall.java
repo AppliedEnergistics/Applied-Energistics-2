@@ -19,7 +19,7 @@ public class ItemPaintBall extends AEBaseItem
 
 	public ItemPaintBall() {
 		super( ItemPaintBall.class );
-		setfeature( EnumSet.of( AEFeature.PaintBalls ) );
+		setFeature( EnumSet.of( AEFeature.PaintBalls ) );
 		hasSubtypes = true;
 		if ( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, new PaintBallRender() );

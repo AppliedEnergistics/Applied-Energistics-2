@@ -27,7 +27,7 @@ public class AEBaseItem extends Item implements IAEFeature
 		return feature;
 	}
 
-	public void setfeature(EnumSet<AEFeature> f)
+	public void setFeature(EnumSet<AEFeature> f)
 	{
 		feature = new AEFeatureHandler( f, this, FeatureSubname );
 	}

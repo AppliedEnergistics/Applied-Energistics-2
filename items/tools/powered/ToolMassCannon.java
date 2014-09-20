@@ -60,7 +60,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 	public ToolMassCannon() {
 		super( ToolMassCannon.class, null );
-		setfeature( EnumSet.of( AEFeature.MatterCannon, AEFeature.PoweredTools ) );
+		setFeature( EnumSet.of( AEFeature.MatterCannon, AEFeature.PoweredTools ) );
 		maxStoredPower = AEConfig.instance.mattercannon_battery;
 	}
 

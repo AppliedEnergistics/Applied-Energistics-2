@@ -27,7 +27,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 
 	public ToolBiometricCard() {
 		super( ToolBiometricCard.class );
-		setfeature( EnumSet.of( AEFeature.Security ) );
+		setFeature( EnumSet.of( AEFeature.Security ) );
 		setMaxStackSize( 1 );
 		if ( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, new ToolBiometricCardRender() );

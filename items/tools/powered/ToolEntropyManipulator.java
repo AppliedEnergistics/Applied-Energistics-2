@@ -136,7 +136,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 	public ToolEntropyManipulator() {
 		super( ToolEntropyManipulator.class, null );
-		setfeature( EnumSet.of( AEFeature.EntropyManipulator, AEFeature.PoweredTools ) );
+		setFeature( EnumSet.of( AEFeature.EntropyManipulator, AEFeature.PoweredTools ) );
 		maxStoredPower = AEConfig.instance.manipulator_battery;
 
 		coolDown = new Hashtable<Combo, InWorldToolOperationResult>();

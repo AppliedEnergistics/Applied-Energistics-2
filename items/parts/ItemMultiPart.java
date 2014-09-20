@@ -49,7 +49,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 
 	public ItemMultiPart() {
 		super( ItemMultiPart.class );
-		setfeature( EnumSet.of( AEFeature.Core ) );
+		setFeature( EnumSet.of( AEFeature.Core ) );
 		AEApi.instance().partHelper().setItemBusRenderer( this );
 		setHasSubtypes( true );
 		instance = this;

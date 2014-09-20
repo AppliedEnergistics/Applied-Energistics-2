@@ -18,7 +18,7 @@ public class ToolMeteoritePlacer extends AEBaseItem
 
 	public ToolMeteoritePlacer() {
 		super( ToolMeteoritePlacer.class );
-		setfeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
+		setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
 
 	@Override

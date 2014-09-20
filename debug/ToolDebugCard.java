@@ -34,7 +34,7 @@ public class ToolDebugCard extends AEBaseItem
 
 	public ToolDebugCard() {
 		super( ToolDebugCard.class );
-		setfeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
+		setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
 
 	public String timeMeasurement(long nanos)

@@ -41,7 +41,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 
 	public ItemBasicStorageCell(MaterialType whichCell, int Kilobytes) {
 		super( ItemBasicStorageCell.class, Kilobytes + "k" );
-		setfeature( EnumSet.of( AEFeature.StorageCells ) );
+		setFeature( EnumSet.of( AEFeature.StorageCells ) );
 		setMaxStackSize( 1 );
 		totalBytes = Kilobytes * 1024;
 		component = whichCell;

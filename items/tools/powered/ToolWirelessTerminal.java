@@ -28,7 +28,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 
 	public ToolWirelessTerminal() {
 		super( ToolWirelessTerminal.class, null );
-		setfeature( EnumSet.of( AEFeature.WirelessAccessTerminal, AEFeature.PoweredTools ) );
+		setFeature( EnumSet.of( AEFeature.WirelessAccessTerminal, AEFeature.PoweredTools ) );
 		maxStoredPower = AEConfig.instance.wireless_battery;
 	}
 
