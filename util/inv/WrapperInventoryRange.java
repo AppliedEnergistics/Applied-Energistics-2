@@ -11,7 +11,7 @@ public class WrapperInventoryRange implements IInventory
 	int[] slots;
 	protected boolean ignoreValidItems = false;
 
-	public static String concateLines(int[] s, String separator)
+	public static String concatLines(int[] s, String separator)
 	{
 		if ( s.length > 0 )
 		{
