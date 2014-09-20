@@ -224,7 +224,7 @@ public class PartDenseCable extends PartCable
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void renderDenseConection(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of)
+	public void renderDenseConnection(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of)
 	{
 		TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
 		IPartHost ccph = te instanceof IPartHost ? (IPartHost) te : null;
@@ -337,7 +337,7 @@ public class PartDenseCable extends PartCable
 			for (ForgeDirection of : connections)
 			{
 				if ( isDense( of ) )
-					renderDenseConection( x, y, z, rh, renderer, channelsOnSide[of.ordinal()], of );
+					renderDenseConnection( x, y, z, rh, renderer, channelsOnSide[of.ordinal()], of );
 				else if ( isSmart( of ) )
 					renderSmartConection( x, y, z, rh, renderer, channelsOnSide[of.ordinal()], of );
 				else
