@@ -200,7 +200,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 			return Math.min( resource.amount, requestTotal );
 		}
 
-		int avilable = resource.amount;
+		int available = resource.amount;
 		int used = 0;
 
 		i = list.iterator();
@@ -210,8 +210,8 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 
 			FluidStack insert = resource.copy();
 			insert.amount = (int) Math.ceil( insert.amount * ((double) l.tmpUsed / (double) requestTotal) );
-			if ( insert.amount > avilable )
-				insert.amount = avilable;
+			if ( insert.amount > available )
+				insert.amount = available;
 
 			IFluidHandler tank = l.getTarget();
 			if ( tank != null )
@@ -219,7 +219,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 			else
 				l.tmpUsed = 0;
 
-			avilable -= insert.amount;
+			available -= insert.amount;
 			used += insert.amount;
 		}
 
