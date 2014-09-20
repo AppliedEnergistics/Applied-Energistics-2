@@ -41,10 +41,58 @@ public class SpatialSkyRender extends IRenderHandler
 		fade /= 1000;
 		fade = 0.15f * (1.0f - Math.abs( (fade - 1.0f) * (fade - 1.0f) ));
 
-		if ( fade > 0.0f )
-		{
-			GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
+		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
+        GL11.glDisable(GL11.GL_FOG);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glDepthMask(false);
+        GL11.glColor4f( 0.0f, 0.0f, 0.0f, 1.0f );
+        Tessellator tessellator = Tessellator.instance;
+
+        for (int i = 0; i < 6; ++i)
+        {
+            GL11.glPushMatrix();
+
+            if (i == 1)
+            {
+                GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
+            }
+
+            if (i == 2)
+            {
+                GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
+            }
+
+            if (i == 3)
+            {
+                GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
+            }
+
+            if (i == 4)
+            {
+                GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
+            }
+
+            if (i == 5)
+            {
+                GL11.glRotatef(-90.0F, 0.0F, 0.0F, 1.0F);
+            }
+
+            tessellator.startDrawingQuads();
+            tessellator.setColorOpaque_I(0);
+            tessellator.addVertexWithUV(-100.0D, -100.0D, -100.0D, 0.0D, 0.0D);
+            tessellator.addVertexWithUV(-100.0D, -100.0D, 100.0D, 0.0D, 16.0D);
+            tessellator.addVertexWithUV(100.0D, -100.0D, 100.0D, 16.0D, 16.0D);
+            tessellator.addVertexWithUV(100.0D, -100.0D, -100.0D, 16.0D, 0.0D);
+            tessellator.draw();
+            GL11.glPopMatrix();
+        }
+
+        GL11.glDepthMask(true);
+        
+		if ( fade > 0.0f )
+		{            
 			GL11.glDisable( GL11.GL_FOG );
 			GL11.glDisable( GL11.GL_ALPHA_TEST );
 			GL11.glEnable( GL11.GL_BLEND );
@@ -52,7 +100,6 @@ public class SpatialSkyRender extends IRenderHandler
 			GL11.glEnable( GL11.GL_FOG );
 			GL11.glDisable( GL11.GL_FOG );
 			GL11.glDisable( GL11.GL_ALPHA_TEST );
-			GL11.glEnable( GL11.GL_BLEND );
 			GL11.glDisable( GL11.GL_TEXTURE_2D );
 			OpenGlHelper.glBlendFunc( 770, 771, 1, 0 );
 			RenderHelper.disableStandardItemLighting();
@@ -60,9 +107,11 @@ public class SpatialSkyRender extends IRenderHandler
 
 			GL11.glColor4f( fade, fade, fade, 1.0f );
 			GL11.glCallList( dspList );
-			GL11.glPopAttrib();
 		}
 
+		GL11.glPopAttrib();
+		
+		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 	private void renderTwinkles()

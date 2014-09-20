@@ -255,7 +255,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		recalculateDisplay();
 	}
 
-	public TileChest() {
+	public TileChest()
+	{
 		internalMaxPower = PowerMultiplier.CONFIG.multiply( 40 );
 		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 		config.registerSetting( Settings.SORT_BY, SortOrder.NAME );
@@ -289,7 +290,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 		final StorageChannel chan;
 
-		public ChestNetNotifier(StorageChannel chan) {
+		public ChestNetNotifier(StorageChannel chan)
+		{
 			this.chan = chan;
 		}
 
@@ -333,7 +335,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	class ChestMonitorHandler<T extends IAEStack> extends MEMonitorHandler<T>
 	{
 
-		public ChestMonitorHandler(IMEInventoryHandler<T> t) {
+		public ChestMonitorHandler(IMEInventoryHandler<T> t)
+		{
 			super( t );
 		}
 
@@ -510,7 +513,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		if ( ForgeDirection.SOUTH == side )
 			return front;
 
-		if ( gridProxy.isActive() )
+		if ( isPowered() )
 		{
 			try
 			{

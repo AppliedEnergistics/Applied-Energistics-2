@@ -47,7 +47,8 @@ public class CraftingJob implements Runnable, ICraftingJob
 		return output;
 	}
 
-	public CraftingJob(World w, NBTTagCompound data) {
+	public CraftingJob(World w, NBTTagCompound data)
+	{
 		world = wrapWorld( w );
 		storage = AEApi.instance().storage().createItemList();
 		prophecies = new HashSet();
@@ -65,7 +66,8 @@ public class CraftingJob implements Runnable, ICraftingJob
 		return availableCheck.extractItems( available, Actionable.MODULATE, this.actionSrc );
 	}
 
-	public CraftingJob(World w, IGrid grid, BaseActionSource actionSrc, IAEItemStack what, ICraftingCallback callback) {
+	public CraftingJob(World w, IGrid grid, BaseActionSource actionSrc, IAEItemStack what, ICraftingCallback callback)
+	{
 		world = wrapWorld( w );
 		output = what.copy();
 		storage = AEApi.instance().storage().createItemList();
@@ -75,7 +77,8 @@ public class CraftingJob implements Runnable, ICraftingJob
 		this.callback = callback;
 		ICraftingGrid cc = grid.getCache( ICraftingGrid.class );
 		IStorageGrid sg = grid.getCache( IStorageGrid.class );
-		original = new MECraftingInventory( sg.getItemInventory(), false, false, false );
+		original = new MECraftingInventory( sg.getItemInventory(), actionSrc, false, false, false );
+
 		tree = getCraftingTree( cc, what );
 		availableCheck = null;
 	}

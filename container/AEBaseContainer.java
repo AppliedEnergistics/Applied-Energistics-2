@@ -676,7 +676,7 @@ public abstract class AEBaseContainer extends Container
 			else
 				addSlotToContainer( new SlotPlayerHotBar( inventoryPlayer, i, 8 + i * 18 + offset_x, 58 + offset_y ) );
 		}
-		
+
 		for (int i = 0; i < 3; i++)
 		{
 			for (int j = 0; j < 9; j++)
@@ -730,6 +730,16 @@ public abstract class AEBaseContainer extends Container
 						s.putStack( null );
 					else
 						s.putStack( hand.copy() );
+
+					break;
+				case PLACE_SINGLE:
+
+					if ( hand != null )
+					{
+						ItemStack is = hand.copy();
+						is.stackSize = 1;
+						s.putStack( is );
+					}
 
 					break;
 				case SPLIT_OR_PLACESINGLE:

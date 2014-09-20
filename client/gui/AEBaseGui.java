@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import net.minecraft.client.Minecraft;
@@ -67,7 +69,8 @@ public abstract class AEBaseGui extends GuiContainer
 	static public boolean switchingGuis;
 	private boolean subGui;
 
-	public AEBaseGui(Container container) {
+	public AEBaseGui(Container container)
+	{
 		super( container );
 		subGui = switchingGuis;
 		switchingGuis = false;
@@ -158,6 +161,8 @@ public abstract class AEBaseGui extends GuiContainer
 	@Override
 	protected void mouseClicked(int xCoord, int yCoord, int btn)
 	{
+		drag_click.clear();
+
 		if ( btn == 1 )
 		{
 			for (Object o : this.buttonList)
@@ -170,6 +175,7 @@ public abstract class AEBaseGui extends GuiContainer
 				}
 			}
 		}
+
 		super.mouseClicked( xCoord, yCoord, btn );
 	}
 
@@ -177,6 +183,9 @@ public abstract class AEBaseGui extends GuiContainer
 	Stopwatch dbl_clickTimer = Stopwatch.createStarted();
 	ItemStack dbl_whichItem;
 	Slot bl_clicked;
+
+	// dragy
+	Set<Slot> drag_click = new HashSet();
 
 	@Override
 	protected void handleMouseClick(Slot slot, int slotIdx, int ctrlDown, int key)
@@ -187,6 +196,9 @@ public abstract class AEBaseGui extends GuiContainer
 		{
 			InventoryAction action = null;
 			action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACESINGLE : InventoryAction.PICKUP_OR_SETDOWN;
+
+			if ( drag_click.size() > 1 )
+				return;
 
 			if ( action != null )
 			{
@@ -417,14 +429,22 @@ public abstract class AEBaseGui extends GuiContainer
 
 		if ( slot instanceof SlotFake && itemstack != null )
 		{
-			try
+			drag_click.add( slot );
+			if ( drag_click.size() > 1 )
 			{
-				PacketInventoryAction p = new PacketInventoryAction( InventoryAction.PICKUP_OR_SETDOWN, slot.slotNumber, 0 );
-				NetworkHandler.instance.sendToServer( p );
-			}
-			catch (IOException e)
-			{
-				AELog.error( e );
+				try
+				{
+					for (Slot dr : drag_click)
+					{
+						PacketInventoryAction p = new PacketInventoryAction( c == 0 ? InventoryAction.PICKUP_OR_SETDOWN : InventoryAction.PLACE_SINGLE,
+								dr.slotNumber, 0 );
+						NetworkHandler.instance.sendToServer( p );
+					}
+				}
+				catch (IOException e)
+				{
+					AELog.error( e );
+				}
 			}
 		}
 		else

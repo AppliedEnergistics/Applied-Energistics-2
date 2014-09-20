@@ -9,6 +9,7 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
 import appeng.api.AEApi;
@@ -187,7 +188,8 @@ public class Registration
 	public RecipeHandler recipeHandler;
 	public BiomeGenBase storageBiome;
 
-	private Registration() {
+	private Registration()
+	{
 		recipeHandler = new RecipeHandler();
 	}
 
@@ -706,6 +708,9 @@ public class Registration
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityFlowerPot.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityNote.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityHopper.class );
+
+		// very silly fix cause Reika decided to pair the item with a block.
+		OreDictionary.registerOre( "itemWheat", net.minecraft.init.Items.wheat );
 
 		/**
 		 * Whitelist AE2

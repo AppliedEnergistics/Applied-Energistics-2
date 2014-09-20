@@ -198,7 +198,8 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		return inventory;
 	}
 
-	public CraftingCPUCluster(WorldCoord _min, WorldCoord _max) {
+	public CraftingCPUCluster(WorldCoord _min, WorldCoord _max)
+	{
 		min = _min;
 		max = _max;
 	}
@@ -786,32 +787,39 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		{
 			waitingFor.resetStatus();
 			((CraftingJob) job).tree.setJob( ci, this, src );
-			ci.commit( src );
-			finalOutput = job.getOutput();
-			waiting = false;
-			isComplete = false;
-			markDirty();
+			if ( ci.commit( src ) )
+			{
+				finalOutput = job.getOutput();
+				waiting = false;
+				isComplete = false;
+				markDirty();
 
-			updateCPU();
-			String craftID = generateCraftingID();
+				updateCPU();
+				String craftID = generateCraftingID();
 
-			myLastLink = new CraftingLink( generateLinkData( craftID, requestingMachine == null, false ), this );
+				myLastLink = new CraftingLink( generateLinkData( craftID, requestingMachine == null, false ), this );
 
-			if ( requestingMachine == null )
-				return myLastLink;
+				if ( requestingMachine == null )
+					return myLastLink;
 
-			ICraftingLink whatLink = new CraftingLink( generateLinkData( craftID, requestingMachine == null, true ), requestingMachine );
+				ICraftingLink whatLink = new CraftingLink( generateLinkData( craftID, requestingMachine == null, true ), requestingMachine );
 
-			submitLink( myLastLink );
-			submitLink( whatLink );
+				submitLink( myLastLink );
+				submitLink( whatLink );
 
-			IItemList<IAEItemStack> list;
-			getListOfItem( list = AEApi.instance().storage().createItemList(), CraftingItemList.ALL );
+				IItemList<IAEItemStack> list;
+				getListOfItem( list = AEApi.instance().storage().createItemList(), CraftingItemList.ALL );
 
-			for (IAEItemStack ge : list)
-				postChange( ge, machineSrc );
+				for (IAEItemStack ge : list)
+					postChange( ge, machineSrc );
 
-			return whatLink;
+				return whatLink;
+			}
+			else
+			{
+				tasks.clear();
+				inventory.getItemList().resetStatus();
+			}
 		}
 		catch (CraftBranchFailure e)
 		{
