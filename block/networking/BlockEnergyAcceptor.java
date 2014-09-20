@@ -13,7 +13,7 @@ public class BlockEnergyAcceptor extends AEBaseBlock
 	public BlockEnergyAcceptor() {
 		super( BlockEnergyAcceptor.class, Material.iron );
 		setfeature( EnumSet.of( AEFeature.Core ) );
-		setTileEntiy( TileEnergyAcceptor.class );
+		setTileEntity( TileEnergyAcceptor.class );
 	}
 
 }

@@ -19,7 +19,7 @@ public class BlockDenseEnergyCell extends BlockEnergyCell
 	public BlockDenseEnergyCell() {
 		super( BlockDenseEnergyCell.class );
 		setfeature( EnumSet.of( AEFeature.DenseEnergyCells ) );
-		setTileEntiy( TileDenseEnergyCell.class );
+		setTileEntity( TileDenseEnergyCell.class );
 	}
 
 	@Override

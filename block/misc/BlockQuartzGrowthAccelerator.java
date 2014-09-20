@@ -30,7 +30,7 @@ public class BlockQuartzGrowthAccelerator extends AEBaseBlock implements IOrient
 	public BlockQuartzGrowthAccelerator() {
 		super( BlockQuartzGrowthAccelerator.class, Material.rock );
 		setfeature( EnumSet.of( AEFeature.Core ) );
-		setTileEntiy( TileQuartzGrowthAccelerator.class );
+		setTileEntity( TileQuartzGrowthAccelerator.class );
 	}
 
 	@Override

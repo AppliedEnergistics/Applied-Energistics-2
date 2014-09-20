@@ -26,7 +26,7 @@ public class BlockCrank extends AEBaseBlock
 	public BlockCrank() {
 		super( BlockCrank.class, Material.wood );
 		setfeature( EnumSet.of( AEFeature.GrindStone ) );
-		setTileEntiy( TileCrank.class );
+		setTileEntity( TileCrank.class );
 		setLightOpacity( 0 );
 		isFullSize = isOpaque = false;
 	}

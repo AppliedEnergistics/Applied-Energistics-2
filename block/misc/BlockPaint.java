@@ -25,7 +25,7 @@ public class BlockPaint extends AEBaseBlock
 	public BlockPaint() {
 		super( BlockPaint.class, new MaterialLiquid( MapColor.airColor ) );
 		setfeature( EnumSet.of( AEFeature.PaintBalls ) );
-		setTileEntiy( TilePaint.class );
+		setTileEntity( TilePaint.class );
 		setLightOpacity( 0 );
 		isFullSize = false;
 		isOpaque = false;

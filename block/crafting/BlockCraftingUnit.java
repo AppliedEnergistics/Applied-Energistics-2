@@ -35,7 +35,7 @@ public class BlockCraftingUnit extends AEBaseBlock
 
 	public BlockCraftingUnit() {
 		this( BlockCraftingUnit.class );
-		setTileEntiy( TileCraftingTile.class );
+		setTileEntity( TileCraftingTile.class );
 	}
 
 	@Override

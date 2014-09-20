@@ -19,7 +19,7 @@ public class BlockSpatialIOPort extends AEBaseBlock
 	public BlockSpatialIOPort() {
 		super( BlockSpatialIOPort.class, Material.iron );
 		setfeature( EnumSet.of( AEFeature.SpatialIO ) );
-		setTileEntiy( TileSpatialIOPort.class );
+		setTileEntity( TileSpatialIOPort.class );
 	}
 
 	@Override

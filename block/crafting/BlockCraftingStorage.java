@@ -14,7 +14,7 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 
 	public BlockCraftingStorage() {
 		super( BlockCraftingStorage.class );
-		setTileEntiy( TileCraftingStorageTile.class );
+		setTileEntity( TileCraftingStorageTile.class );
 	}
 
 	@Override

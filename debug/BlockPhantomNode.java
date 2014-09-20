@@ -15,7 +15,7 @@ public class BlockPhantomNode extends AEBaseBlock
 	public BlockPhantomNode() {
 		super( BlockPhantomNode.class, Material.iron );
 		setfeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
-		setTileEntiy( TilePhantomNode.class );
+		setTileEntity( TilePhantomNode.class );
 	}
 
 	@Override

@@ -173,7 +173,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		return getIcon( mapRotation( w, x, y, z, s ), w.getBlockMetadata( x, y, z ) );
 	}
 
-	protected void setTileEntiy(Class<? extends TileEntity> c)
+	protected void setTileEntity(Class<? extends TileEntity> c)
 	{
 		AEBaseTile.registerTileItem( c, new ItemStackSrc( this, 0 ) );
 		GameRegistry.registerTileEntity( tileEntityType = c, FeatureFullname );

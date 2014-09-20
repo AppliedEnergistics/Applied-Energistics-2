@@ -13,7 +13,7 @@ public class BlockCreativeEnergyCell extends AEBaseBlock
 	public BlockCreativeEnergyCell() {
 		super( BlockCreativeEnergyCell.class, AEGlassMaterial.instance );
 		setfeature( EnumSet.of( AEFeature.Creative ) );
-		setTileEntiy( TileCreativeEnergyCell.class );
+		setTileEntity( TileCreativeEnergyCell.class );
 	}
 
 }

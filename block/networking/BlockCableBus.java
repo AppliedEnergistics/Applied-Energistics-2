@@ -399,7 +399,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 
 	public void setupTile()
 	{
-		setTileEntiy( noTesrTile = Api.instance.partHelper.getCombinedInstance( TileCableBus.class.getName() ) );
+		setTileEntity( noTesrTile = Api.instance.partHelper.getCombinedInstance( TileCableBus.class.getName() ) );
 		if ( Platform.isClient() )
 		{
 			tesrTile = Api.instance.partHelper.getCombinedInstance( TileCableBusTESR.class.getName() );
