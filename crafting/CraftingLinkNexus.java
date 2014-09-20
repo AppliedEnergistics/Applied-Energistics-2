@@ -112,7 +112,7 @@ public class CraftingLinkNexus
 	public void removeNode()
 	{
 		if ( req != null )
-			req.setNextus( null );
+			req.setNexus( null );
 
 		req = null;
 		tickOfDeath = 0;

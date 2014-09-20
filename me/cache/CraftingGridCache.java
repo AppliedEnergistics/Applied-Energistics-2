@@ -158,7 +158,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		if ( n == null )
 			links.put( l.getCraftingID(), n = new CraftingLinkNexus( l.getCraftingID() ) );
 
-		l.setNextus( n );
+		l.setNexus( n );
 	}
 
 	@Override
