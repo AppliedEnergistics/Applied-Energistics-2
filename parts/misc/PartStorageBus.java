@@ -80,7 +80,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		super( PartStorageBus.class, is );
 		getConfigManager().registerSetting( Settings.ACCESS, AccessRestriction.READ_WRITE );
 		getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
-		getConfigManager().registerSetting( Settings.STORAGE_FILTER, StorageFilter.EXTACTABLE_ONLY );
+		getConfigManager().registerSetting( Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY );
 		mySrc = new MachineSource( this );
 	}
 

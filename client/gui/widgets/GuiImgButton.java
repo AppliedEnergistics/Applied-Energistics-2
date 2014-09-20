@@ -181,7 +181,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			registerApp( 16 * 11 + 2, Settings.CRAFT_VIA_REDSTONE, YesNo.YES, ButtonToolTips.EmitterMode, ButtonToolTips.CraftViaRedstone );
 			registerApp( 16 * 11 + 1, Settings.CRAFT_VIA_REDSTONE, YesNo.NO, ButtonToolTips.EmitterMode, ButtonToolTips.EmitWhenCrafing );
 
-			registerApp( 16 * 3 + 5, Settings.STORAGE_FILTER, StorageFilter.EXTACTABLE_ONLY, ButtonToolTips.ReportInaccessibleItems,
+			registerApp( 16 * 3 + 5, Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY, ButtonToolTips.ReportInaccessibleItems,
 					ButtonToolTips.ReportInaccessibleItemsNo );
 			registerApp( 16 * 3 + 6, Settings.STORAGE_FILTER, StorageFilter.NONE, ButtonToolTips.ReportInaccessibleItems,
 					ButtonToolTips.ReportInaccessibleItemsYes );

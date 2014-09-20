@@ -55,7 +55,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 	final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap();
 
 	public BaseActionSource mySource;
-	public StorageFilter mode = StorageFilter.EXTACTABLE_ONLY;
+	public StorageFilter mode = StorageFilter.EXTRACTABLE_ONLY;
 
 	@Override
 	public void addListener(IMEMonitorHandlerReceiver<IAEItemStack> l, Object verificationToken)
@@ -176,7 +176,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 			CachedItemStack old = memory.get( is.slot );
 			high = Math.max( high, is.slot );
 
-			ItemStack newIS = is == null || is.isExtractable == false && mode == StorageFilter.EXTACTABLE_ONLY ? null : is.getItemStack();
+			ItemStack newIS = is == null || is.isExtractable == false && mode == StorageFilter.EXTRACTABLE_ONLY ? null : is.getItemStack();
 			ItemStack oldIS = old == null ? null : old.itemStack;
 
 			if ( isDiffrent( newIS, oldIS ) )
