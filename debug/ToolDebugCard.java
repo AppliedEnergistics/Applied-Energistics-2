@@ -172,7 +172,7 @@ public class ToolDebugCard extends AEBaseItem
 					if ( node != null && node.getGrid() != null )
 					{
 						IEnergyGrid eg = node.getGrid().getCache( IEnergyGrid.class );
-						outputMsg( player, "GridEnerg: " + eg.getStoredPower() + " : " + eg.getEnergyDemand( Double.MAX_VALUE ) );
+						outputMsg( player, "GridEnergy: " + eg.getStoredPower() + " : " + eg.getEnergyDemand( Double.MAX_VALUE ) );
 					}
 				}
 			}
