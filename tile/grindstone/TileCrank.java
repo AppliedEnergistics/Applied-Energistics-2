@@ -20,7 +20,7 @@ import appeng.util.Platform;
 public class TileCrank extends AEBaseTile implements ICustomCollision
 {
 
-	final int ticksPerRoation = 18;
+	final int ticksPerRotation = 18;
 
 	// sided values..
 	public float visibleRotation = 0;
@@ -34,11 +34,11 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 	{
 		if ( rotation > 0 )
 		{
-			visibleRotation -= 360 / (ticksPerRoation);
+			visibleRotation -= 360 / (ticksPerRotation);
 			charge++;
-			if ( charge >= ticksPerRoation )
+			if ( charge >= ticksPerRotation )
 			{
-				charge -= ticksPerRoation;
+				charge -= ticksPerRotation;
 				ICrankable g = getGrinder();
 				if ( g != null )
 					g.applyTurn();
@@ -96,7 +96,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 				if ( g.canTurn() )
 				{
 					hits = 0;
-					rotation += ticksPerRoation;
+					rotation += ticksPerRotation;
 					this.markForUpdate();
 					return true;
 				}
