@@ -21,7 +21,7 @@ public class RegistryContainer implements IRegistryContainer
 	private GrinderRecipeManager GrinderRecipes = new GrinderRecipeManager();
 	private ExternalStorageRegistry ExternalStorageHandlers = new ExternalStorageRegistry();
 	private CellRegistry CellRegistry = new CellRegistry();
-	private LocateableRegistry LocateableRegistry = new LocateableRegistry();
+	private LocatableRegistry LocatableRegistry = new LocatableRegistry();
 	private SpecialComparisonRegistry SpecialComparsonRegistry = new SpecialComparisonRegistry();
 	private WirelessRegistry WirelessRegistery = new WirelessRegistry();
 	private GridCacheRegistry GridCacheRegistry = new GridCacheRegistry();
@@ -64,7 +64,7 @@ public class RegistryContainer implements IRegistryContainer
 	@Override
 	public ILocatableRegistry locatable()
 	{
-		return LocateableRegistry;
+		return LocatableRegistry;
 	}
 
 	@Override
