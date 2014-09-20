@@ -143,7 +143,7 @@ public class WorldSettings extends Configuration
 		}
 	}
 
-	public Collection<NBTTagCompound> getNearByMetetorites(int dim, int chunkX, int chunkZ)
+	public Collection<NBTTagCompound> getNearByMeteorites(int dim, int chunkX, int chunkZ)
 	{
 		LinkedList<NBTTagCompound> ll = new LinkedList<NBTTagCompound>();
 
