@@ -270,7 +270,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 		{
 			if ( feature.isVisible() )
 			{
-				if ( get( "Features." + feature.getCategory(), feature.name(), feature.defaultVaue() ).getBoolean( feature.defaultVaue() ) )
+				if ( get( "Features." + feature.getCategory(), feature.name(), feature.defaultValue() ).getBoolean( feature.defaultValue() ) )
 					featureFlags.add( feature );
 			}
 			else

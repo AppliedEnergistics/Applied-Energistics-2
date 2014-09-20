@@ -75,7 +75,7 @@ public enum AEFeature
 		return Category;
 	}
 
-	public Boolean defaultVaue()
+	public Boolean defaultValue()
 	{
 		return defValue;
 	}
