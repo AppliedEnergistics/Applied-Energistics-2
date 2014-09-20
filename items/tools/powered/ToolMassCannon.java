@@ -292,10 +292,10 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 		}
 	}
 
-	private void standardAmmo(float penitration, World w, EntityPlayer p, Vec3 vec3, Vec3 vec31, Vec3 direction, double d0, double d1, double d2)
+	private void standardAmmo(float penetration, World w, EntityPlayer p, Vec3 vec3, Vec3 vec31, Vec3 direction, double d0, double d1, double d2)
 	{
 		boolean hasDestroyedSomething = true;
-		while (penitration > 0 && hasDestroyedSomething)
+		while (penetration > 0 && hasDestroyedSomething)
 		{
 			hasDestroyedSomething = false;
 
@@ -367,11 +367,11 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 				if ( pos.typeOfHit == MovingObjectType.ENTITY )
 				{
-					int dmg = (int) Math.ceil( penitration / 20.0f );
+					int dmg = (int) Math.ceil( penetration / 20.0f );
 					if ( pos.entityHit instanceof EntityLivingBase )
 					{
 						EntityLivingBase el = (EntityLivingBase) pos.entityHit;
-						penitration -= dmg;
+						penetration -= dmg;
 						el.knockBack( p, 0, (double) -direction.xCoord, (double) -direction.zCoord );
 						// el.knockBack( p, 0, vec3.xCoord,
 						// vec3.zCoord );
@@ -392,7 +392,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				else if ( pos.typeOfHit == MovingObjectType.BLOCK )
 				{
 					if ( !AEConfig.instance.isFeatureEnabled( AEFeature.MassCannonBlockDamage ) )
-						penitration = 0;
+						penetration = 0;
 					else
 					{
 						Block b = w.getBlock( pos.blockX, pos.blockY, pos.blockZ );
@@ -402,11 +402,11 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						float hardness = b.getBlockHardness( w, pos.blockX, pos.blockY, pos.blockZ ) * 9.0f;
 						if ( hardness >= 0.0 )
 						{
-							if ( penitration > hardness && Platform.hasPermissions( new DimensionalCoord( w, pos.blockX, pos.blockY, pos.blockZ ), p ) )
+							if ( penetration > hardness && Platform.hasPermissions( new DimensionalCoord( w, pos.blockX, pos.blockY, pos.blockZ ), p ) )
 							{
 								hasDestroyedSomething = true;
-								penitration -= hardness;
-								penitration *= 0.60;
+								penetration -= hardness;
+								penetration *= 0.60;
 								w.func_147480_a( pos.blockX, pos.blockY, pos.blockZ, true );
 								// w.destroyBlock( pos.blockX, pos.blockY, pos.blockZ, true );
 							}
