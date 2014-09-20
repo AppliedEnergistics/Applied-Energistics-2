@@ -62,10 +62,10 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 	public PartPatternTerminal ct;
 
-	public ContainerPatternTerm(InventoryPlayer ip, ITerminalHost montiorable)
+	public ContainerPatternTerm(InventoryPlayer ip, ITerminalHost monitorable)
 	{
-		super( ip, montiorable, false );
-		ct = (PartPatternTerminal) montiorable;
+		super( ip, monitorable, false );
+		ct = (PartPatternTerminal) monitorable;
 
 		IInventory patternInv = ct.getInventoryByName( "pattern" );
 		IInventory output = ct.getInventoryByName( "output" );
@@ -75,7 +75,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			for (int x = 0; x < 3; x++)
 				addSlotToContainer( craftingSlots[x + y * 3] = new SlotFakeCraftingMatrix( crafting, x + y * 3, 18 + x * 18, -76 + y * 18 ) );
 
-		addSlotToContainer( craftSlot = new SlotPatternTerm( ip.player, mySrc, powerSrc, montiorable, crafting, patternInv, cOut, 110, -76 + 18, this, 2, this ) );
+		addSlotToContainer( craftSlot = new SlotPatternTerm( ip.player, mySrc, powerSrc, monitorable, crafting, patternInv, cOut, 110, -76 + 18, this, 2, this ) );
 		craftSlot.IIcon = -1;
 
 		for (int y = 0; y < 3; y++)

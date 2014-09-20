@@ -33,10 +33,10 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 
 	TileSecurity securityBox;
 
-	public ContainerSecurity(InventoryPlayer ip, ITerminalHost montiorable) {
-		super( ip, montiorable, false );
+	public ContainerSecurity(InventoryPlayer ip, ITerminalHost monitorable) {
+		super( ip, monitorable, false );
 
-		securityBox = (TileSecurity) montiorable;
+		securityBox = (TileSecurity) monitorable;
 
 		addSlotToContainer( configSlot = new SlotRestrictedInput( PlaceableItemType.BIOMETRIC_CARD, securityBox.configSlot, 0, 37, -33, ip ) );
 

@@ -11,9 +11,9 @@ public class ContainerWirelessTerm extends ContainerMEPortableCell
 
 	WirelessTerminalGuiObject wtgo;
 
-	public ContainerWirelessTerm(InventoryPlayer ip, WirelessTerminalGuiObject montiorable) {
-		super( ip, montiorable );
-		wtgo = montiorable;
+	public ContainerWirelessTerm(InventoryPlayer ip, WirelessTerminalGuiObject monitorable) {
+		super( ip, monitorable );
+		wtgo = monitorable;
 	}
 
 	@Override

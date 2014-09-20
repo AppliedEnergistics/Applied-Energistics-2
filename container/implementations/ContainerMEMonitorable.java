@@ -73,8 +73,8 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		return networkNode;
 	}
 
-	protected ContainerMEMonitorable(InventoryPlayer ip, ITerminalHost montiorable, boolean bindInventory) {
-		super( ip, montiorable instanceof TileEntity ? (TileEntity) montiorable : null, montiorable instanceof IPart ? (IPart) montiorable : null );
+	protected ContainerMEMonitorable(InventoryPlayer ip, ITerminalHost monitorable, boolean bindInventory) {
+		super( ip, monitorable instanceof TileEntity ? (TileEntity) monitorable : null, monitorable instanceof IPart ? (IPart) monitorable : null );
 
 		clientCM = new ConfigManager( this );
 
@@ -84,22 +84,22 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 
 		if ( Platform.isServer() )
 		{
-			serverCM = montiorable.getConfigManager();
+			serverCM = monitorable.getConfigManager();
 
-			monitor = montiorable.getItemInventory();
+			monitor = monitorable.getItemInventory();
 			if ( monitor != null )
 			{
 				monitor.addListener( this, null );
 
 				cellInv = monitor;
 
-				if ( montiorable instanceof IPortableCell )
-					powerSrc = (IPortableCell) montiorable;
-				else if ( montiorable instanceof IMEChest )
-					powerSrc = (IMEChest) montiorable;
-				else if ( montiorable instanceof IGridHost )
+				if ( monitorable instanceof IPortableCell )
+					powerSrc = (IPortableCell) monitorable;
+				else if ( monitorable instanceof IMEChest )
+					powerSrc = (IMEChest) monitorable;
+				else if ( monitorable instanceof IGridHost )
 				{
-					IGridNode node = ((IGridHost) montiorable).getGridNode( ForgeDirection.UNKNOWN );
+					IGridNode node = ((IGridHost) monitorable).getGridNode( ForgeDirection.UNKNOWN );
 					if ( node != null )
 					{
 						networkNode = node;
@@ -116,11 +116,11 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 			monitor = null;
 
 		canAccessViewCells = false;
-		if ( montiorable instanceof IViewCellStorage )
+		if ( monitorable instanceof IViewCellStorage )
 		{
 			for (int y = 0; y < 5; y++)
 			{
-				cellView[y] = new SlotRestrictedInput( PlaceableItemType.VIEWCELL, ((IViewCellStorage) montiorable).getViewCellStorage(), y, 206, y * 18 + 8,
+				cellView[y] = new SlotRestrictedInput( PlaceableItemType.VIEWCELL, ((IViewCellStorage) monitorable).getViewCellStorage(), y, 206, y * 18 + 8,
 						invPlayer );
 				cellView[y].allowEdit = canAccessViewCells;
 				addSlotToContainer( cellView[y] );
@@ -131,8 +131,8 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 			bindPlayerInventory( ip, 0, 0 );
 	}
 
-	public ContainerMEMonitorable(InventoryPlayer ip, ITerminalHost montiorable) {
-		this( ip, montiorable, true );
+	public ContainerMEMonitorable(InventoryPlayer ip, ITerminalHost monitorable) {
+		this( ip, monitorable, true );
 	}
 
 	@Override
