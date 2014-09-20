@@ -402,11 +402,11 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	}
 
 	@Override
-	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requsetedAddition)
+	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requestedAddition)
 	{
-		if ( requsetedAddition != null )
+		if ( requestedAddition != null )
 		{
-			int[] id = OreDictionary.getOreIDs( requsetedAddition.getItemStack() );
+			int[] id = OreDictionary.getOreIDs( requestedAddition.getItemStack() );
 
 			for (int x : id)
 			{
@@ -414,10 +414,10 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					return false;
 			}
 
-			if ( requsetedAddition.getItem() instanceof ItemSnowball )
+			if ( requestedAddition.getItem() instanceof ItemSnowball )
 				return false;
 
-			return !(requsetedAddition.getItem() instanceof ItemPaintBall && requsetedAddition.getItemDamage() < 20);
+			return !(requestedAddition.getItem() instanceof ItemPaintBall && requestedAddition.getItemDamage() < 20);
 		}
 		return true;
 	}
