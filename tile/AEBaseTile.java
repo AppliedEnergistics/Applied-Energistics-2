@@ -24,7 +24,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.util.ICommonTile;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigureableObject;
+import appeng.api.util.IConfigurableObject;
 import appeng.api.util.IOrientable;
 import appeng.core.AELog;
 import appeng.core.features.ItemStackSrc;
@@ -398,9 +398,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	 */
 	public void uploadSettings(SettingsFrom from, NBTTagCompound compound)
 	{
-		if ( compound != null && this instanceof IConfigureableObject )
+		if ( compound != null && this instanceof IConfigurableObject )
 		{
-			IConfigManager cm = ((IConfigureableObject) this).getConfigManager();
+			IConfigManager cm = ((IConfigurableObject) this).getConfigManager();
 			if ( cm != null )
 				cm.readFromNBT( compound );
 		}
@@ -442,9 +442,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			output.setTag( "display", dsp );
 		}
 
-		if ( this instanceof IConfigureableObject )
+		if ( this instanceof IConfigurableObject )
 		{
-			IConfigManager cm = ((IConfigureableObject) this).getConfigManager();
+			IConfigManager cm = ((IConfigurableObject) this).getConfigManager();
 			if ( cm != null )
 				cm.writeToNBT( output );
 		}

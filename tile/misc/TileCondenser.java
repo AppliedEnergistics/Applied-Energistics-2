@@ -13,7 +13,7 @@ import appeng.api.config.CondenserOuput;
 import appeng.api.config.Settings;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigureableObject;
+import appeng.api.util.IConfigurableObject;
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
@@ -24,7 +24,7 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
-public class TileCondenser extends AEBaseInvTile implements IAEAppEngInventory, IFluidHandler, IConfigManagerHost, IConfigureableObject
+public class TileCondenser extends AEBaseInvTile implements IAEAppEngInventory, IFluidHandler, IConfigManagerHost, IConfigurableObject
 {
 
 	int sides[] = new int[] { 0, 1 };

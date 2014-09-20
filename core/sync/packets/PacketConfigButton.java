@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigureableObject;
+import appeng.api.util.IConfigurableObject;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -32,9 +32,9 @@ public class PacketConfigButton extends AppEngPacket
 	{
 		EntityPlayerMP sender = (EntityPlayerMP) player;
 		AEBaseContainer aebc = (AEBaseContainer) sender.openContainer;
-		if ( aebc.getTarget() instanceof IConfigureableObject )
+		if ( aebc.getTarget() instanceof IConfigurableObject )
 		{
-			IConfigManager cm = ((IConfigureableObject) aebc.getTarget()).getConfigManager();
+			IConfigManager cm = ((IConfigurableObject) aebc.getTarget()).getConfigManager();
 			Enum newState = Platform.rotateEnum( cm.getSetting( option ), rotationDirection, option.getPossibleValues() );
 			cm.putSetting( option, newState );
 		}

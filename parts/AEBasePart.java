@@ -40,7 +40,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigureableObject;
+import appeng.api.util.IConfigurableObject;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.AENetworkProxy;
@@ -299,9 +299,9 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	 */
 	public void uploadSettings(SettingsFrom from, NBTTagCompound compound)
 	{
-		if ( compound != null && this instanceof IConfigureableObject )
+		if ( compound != null && this instanceof IConfigurableObject )
 		{
-			IConfigManager cm = ((IConfigureableObject) this).getConfigManager();
+			IConfigManager cm = ((IConfigurableObject) this).getConfigManager();
 			if ( cm != null )
 				cm.readFromNBT( compound );
 		}
@@ -336,7 +336,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	{
 		NBTTagCompound output = new NBTTagCompound();
 
-		if ( this instanceof IConfigureableObject )
+		if ( this instanceof IConfigurableObject )
 		{
 			IConfigManager cm = this.getConfigManager();
 			if ( cm != null )

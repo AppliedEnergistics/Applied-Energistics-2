@@ -15,7 +15,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
 import appeng.api.config.YesNo;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigureableObject;
+import appeng.api.util.IConfigurableObject;
 import appeng.core.features.AEFeature;
 import appeng.core.settings.TickRates;
 import appeng.items.materials.MaterialType;
@@ -27,7 +27,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class AEConfig extends Configuration implements IConfigureableObject, IConfigManagerHost
+public class AEConfig extends Configuration implements IConfigurableObject, IConfigManagerHost
 {
 
 	public static AEConfig instance;

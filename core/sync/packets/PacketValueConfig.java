@@ -16,7 +16,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import appeng.api.config.FuzzyMode;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigureableObject;
+import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.implementations.GuiCraftingCPU;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerCellWorkbench;
@@ -169,9 +169,9 @@ public class PacketValueConfig extends AppEngPacket
 				((ContainerNetworkTool) c).toggleFacadeMode();
 			}
 		}
-		else if ( c instanceof IConfigureableObject )
+		else if ( c instanceof IConfigurableObject )
 		{
-			IConfigManager cm = ((IConfigureableObject) c).getConfigManager();
+			IConfigManager cm = ((IConfigurableObject) c).getConfigManager();
 
 			for (Enum e : cm.getSettings())
 			{
@@ -215,9 +215,9 @@ public class PacketValueConfig extends AppEngPacket
 				((GuiCraftingCPU) gs).clearItems();
 			return;
 		}
-		else if ( c instanceof IConfigureableObject )
+		else if ( c instanceof IConfigurableObject )
 		{
-			IConfigManager cm = ((IConfigureableObject) c).getConfigManager();
+			IConfigManager cm = ((IConfigurableObject) c).getConfigManager();
 
 			for (Enum e : cm.getSettings())
 			{
