@@ -292,7 +292,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	}
 
 	/**
-	 * depending on the from, diffrent settings will be accepted, don't call this with null
+	 * depending on the from, different settings will be accepted, don't call this with null
 	 * 
 	 * @param from
 	 * @param compound
