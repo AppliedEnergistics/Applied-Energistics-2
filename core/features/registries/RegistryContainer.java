@@ -50,7 +50,7 @@ public class RegistryContainer implements IRegistryContainer
 	}
 
 	@Override
-	public ISpecialComparisonRegistry specialComparson()
+	public ISpecialComparisonRegistry specialComparison()
 	{
 		return SpecialComparsonRegistry;
 	}
