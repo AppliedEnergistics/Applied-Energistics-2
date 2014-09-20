@@ -75,7 +75,7 @@ public class SpatialPylonCache implements IGridCache, ISpatialCache
 		int reqX = 0;
 		int reqY = 0;
 		int reqZ = 0;
-		int requirePylongBlocks = 1;
+		int requirePylonBlocks = 1;
 
 		double minPower = 0;
 		double maxPower = 0;
@@ -157,9 +157,9 @@ public class SpatialPylonCache implements IGridCache, ISpatialCache
 			reqX = captureMax.x - captureMin.x;
 			reqY = captureMax.y - captureMin.y;
 			reqZ = captureMax.z - captureMin.z;
-			requirePylongBlocks = Math.max( 6, ((reqX * reqZ + reqX * reqY + reqY * reqZ) * 3) / 8 );
+			requirePylonBlocks = Math.max( 6, ((reqX * reqZ + reqX * reqY + reqY * reqZ) * 3) / 8 );
 			
-			efficiency = (double) pylonBlocks / (double) requirePylongBlocks;
+			efficiency = (double) pylonBlocks / (double) requirePylonBlocks;
 			
 			if ( efficiency > 1.0 )
 				efficiency = 1.0;
