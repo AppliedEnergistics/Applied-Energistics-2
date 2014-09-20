@@ -102,10 +102,10 @@ public class CompassService implements ThreadFactory
 				{
 					if ( cr.hasBeacon( minx, z ) )
 					{
-						int closness = dist( cx, cz, minx, z );
-						if ( closness < closest )
+						int closeness = dist( cx, cz, minx, z );
+						if ( closeness < closest )
 						{
-							closest = closness;
+							closest = closeness;
 							chosen_x = minx;
 							chosen_z = z;
 						}
@@ -113,10 +113,10 @@ public class CompassService implements ThreadFactory
 
 					if ( cr.hasBeacon( maxx, z ) )
 					{
-						int closness = dist( cx, cz, maxx, z );
-						if ( closness < closest )
+						int closeness = dist( cx, cz, maxx, z );
+						if ( closeness < closest )
 						{
-							closest = closness;
+							closest = closeness;
 							chosen_x = maxx;
 							chosen_z = z;
 						}
@@ -127,10 +127,10 @@ public class CompassService implements ThreadFactory
 				{
 					if ( cr.hasBeacon( x, minz ) )
 					{
-						int closness = dist( cx, cz, x, minz );
-						if ( closness < closest )
+						int closeness = dist( cx, cz, x, minz );
+						if ( closeness < closest )
 						{
-							closest = closness;
+							closest = closeness;
 							chosen_x = x;
 							chosen_z = minz;
 						}
@@ -138,10 +138,10 @@ public class CompassService implements ThreadFactory
 
 					if ( cr.hasBeacon( x, maxz ) )
 					{
-						int closness = dist( cx, cz, x, maxz );
-						if ( closness < closest )
+						int closeness = dist( cx, cz, x, maxz );
+						if ( closeness < closest )
 						{
-							closest = closness;
+							closest = closeness;
 							chosen_x = x;
 							chosen_z = maxz;
 						}
