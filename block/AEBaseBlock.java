@@ -94,7 +94,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@SideOnly(Side.CLIENT)
-	private FlippableIcon optionaIcon(IIconRegister ir, String Name, IIcon substitute)
+	private FlippableIcon optionalIcon(IIconRegister ir, String Name, IIcon substitute)
 	{
 		// if the input is an flippable IIcon find the original.
 		while (substitute instanceof FlippableIcon)
@@ -134,13 +134,13 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		FlippableIcon southIcon;
 		FlippableIcon northIcon;
 
-		this.blockIcon = topIcon = optionaIcon( iconRegistry, this.getTextureName(), null );
-		bottomIcon = optionaIcon( iconRegistry, this.getTextureName() + "Bottom", topIcon );
-		sideIcon = optionaIcon( iconRegistry, this.getTextureName() + "Side", topIcon );
-		eastIcon = optionaIcon( iconRegistry, this.getTextureName() + "East", sideIcon );
-		westIcon = optionaIcon( iconRegistry, this.getTextureName() + "West", sideIcon );
-		southIcon = optionaIcon( iconRegistry, this.getTextureName() + "Front", sideIcon );
-		northIcon = optionaIcon( iconRegistry, this.getTextureName() + "Back", sideIcon );
+		this.blockIcon = topIcon = optionalIcon( iconRegistry, this.getTextureName(), null );
+		bottomIcon = optionalIcon( iconRegistry, this.getTextureName() + "Bottom", topIcon );
+		sideIcon = optionalIcon( iconRegistry, this.getTextureName() + "Side", topIcon );
+		eastIcon = optionalIcon( iconRegistry, this.getTextureName() + "East", sideIcon );
+		westIcon = optionalIcon( iconRegistry, this.getTextureName() + "West", sideIcon );
+		southIcon = optionalIcon( iconRegistry, this.getTextureName() + "Front", sideIcon );
+		northIcon = optionalIcon( iconRegistry, this.getTextureName() + "Back", sideIcon );
 
 		info.updateIcons( bottomIcon, topIcon, northIcon, southIcon, eastIcon, westIcon );
 	}
