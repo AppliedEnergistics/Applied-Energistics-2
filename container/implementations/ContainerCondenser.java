@@ -1,7 +1,7 @@
 package appeng.container.implementations;
 
 import net.minecraft.entity.player.InventoryPlayer;
-import appeng.api.config.CondenserOuput;
+import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
@@ -38,7 +38,7 @@ public class ContainerCondenser extends AEBaseContainer
 
 			this.requiredEnergy = (int) maxDisplay;
 			this.storedPower = (int) this.myte.storedPower;
-			this.output = (CondenserOuput) this.myte.getConfigManager().getSetting( Settings.CONDENSER_OUTPUT );
+			this.output = (CondenserOutput) this.myte.getConfigManager().getSetting( Settings.CONDENSER_OUTPUT );
 		}
 
 		super.detectAndSendChanges();
@@ -51,6 +51,6 @@ public class ContainerCondenser extends AEBaseContainer
 	public long storedPower = 0;
 
 	@GuiSync(2)
-	public CondenserOuput output = CondenserOuput.TRASH;
+	public CondenserOutput output = CondenserOutput.TRASH;
 
 }
