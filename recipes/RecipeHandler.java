@@ -102,7 +102,7 @@ public class RecipeHandler implements IRecipeHandler
 				}
 				catch (RegistrationError e)
 				{
-					AELog.warning( "Unable to regsiter a recipe: " + e.getMessage() );
+					AELog.warning( "Unable to register a recipe: " + e.getMessage() );
 					if ( data.exceptions )
 						AELog.error( e );
 					if ( data.crash )
@@ -112,7 +112,7 @@ public class RecipeHandler implements IRecipeHandler
 				{
 					if ( data.erroronmissing )
 					{
-						AELog.warning( "Unable to regsiter a recipe:" + e.getMessage() );
+						AELog.warning( "Unable to register a recipe:" + e.getMessage() );
 						if ( data.exceptions )
 							AELog.error( e );
 						if ( data.crash )
