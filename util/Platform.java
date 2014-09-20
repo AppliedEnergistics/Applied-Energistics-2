@@ -1835,13 +1835,13 @@ public class Platform
 		return (float) (player.posY + player.getEyeHeight() - player.getDefaultEyeHeight());
 	}
 
-	public static void addStat(int playerID, Achievement achivement)
+	public static void addStat(int playerID, Achievement achievement)
 	{
 		EntityPlayer p = AEApi.instance().registries().players().findPlayer( playerID );
 		if ( p != null )
 		{
 			p.addChatMessage( new ChatComponentText( "RWAR!" ) );
-			// p.addStat( achivement, 1 );
+			// p.addStat( achievement, 1 );
 		}
 	}
 
