@@ -380,7 +380,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		renderCache = rh.useSimpliedRendering( x, y, z, this, renderCache );
+		renderCache = rh.useSimplifiedRendering( x, y, z, this, renderCache );
 		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(),
 				is.getIconIndex(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
 

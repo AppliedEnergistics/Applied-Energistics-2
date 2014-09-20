@@ -44,7 +44,7 @@ public class PartCableAnchor implements IPart
 	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		renderCache = rh.useSimpliedRendering( x, y, z, this, renderCache );
+		renderCache = rh.useSimplifiedRendering( x, y, z, this, renderCache );
 		IIcon myIcon = is.getIconIndex();
 		rh.setTexture( myIcon );
 		if ( host != null && host.getFacadeContainer().getFacade( mySide ) != null )

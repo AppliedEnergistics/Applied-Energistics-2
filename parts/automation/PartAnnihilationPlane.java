@@ -98,7 +98,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 		boolean isActive = (clientFlags & (POWERED_FLAG | CHANNEL_FLAG)) == (POWERED_FLAG | CHANNEL_FLAG);
 
-		renderCache = rh.useSimpliedRendering( x, y, z, this, renderCache );
+		renderCache = rh.useSimplifiedRendering( x, y, z, this, renderCache );
 		rh.setTexture( CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon(),
 				CableBusTextures.PartTransitionPlaneBack.getIcon(), isActive ? CableBusTextures.BlockAnnihilationPlaneOn.getIcon() : is.getIconIndex(),
 				CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon() );

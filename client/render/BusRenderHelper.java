@@ -149,7 +149,7 @@ public class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public ISimplifiedBundle useSimpliedRendering(int x, int y, int z, IBoxProvider p, ISimplifiedBundle sim)
+	public ISimplifiedBundle useSimplifiedRendering(int x, int y, int z, IBoxProvider p, ISimplifiedBundle sim)
 	{
 		RenderBlocksWorkaround rbw = BusRenderer.instance.renderer;
 

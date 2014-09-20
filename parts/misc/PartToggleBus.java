@@ -169,7 +169,7 @@ public class PartToggleBus extends PartBasicState
 	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		renderCache = rh.useSimpliedRendering( x, y, z, this, renderCache );
+		renderCache = rh.useSimplifiedRendering( x, y, z, this, renderCache );
 		rh.setTexture( is.getIconIndex() );
 
 		rh.setBounds( 6, 6, 14, 10, 10, 16 );

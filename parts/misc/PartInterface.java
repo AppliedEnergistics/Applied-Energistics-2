@@ -128,7 +128,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		renderCache = rh.useSimpliedRendering( x, y, z, this, renderCache );
+		renderCache = rh.useSimplifiedRendering( x, y, z, this, renderCache );
 		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
 				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 

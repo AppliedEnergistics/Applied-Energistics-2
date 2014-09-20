@@ -160,7 +160,7 @@ public class PartCableSmart extends PartCable
 	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		renderCache = rh.useSimpliedRendering( x, y, z, this, renderCache );
+		renderCache = rh.useSimplifiedRendering( x, y, z, this, renderCache );
 		rh.setTexture( getTexture( getCableColor() ) );
 
 		EnumSet<ForgeDirection> sides = connections.clone();

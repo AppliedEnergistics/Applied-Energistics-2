@@ -182,7 +182,7 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 
 		preRenderInWorld( block, world, x, y, z, renderer );
 
-		tma.lightCache = BusRenderHelper.instance.useSimpliedRendering( x, y, z, this, tma.lightCache );
+		tma.lightCache = BusRenderHelper.instance.useSimplifiedRendering( x, y, z, this, tma.lightCache );
 
 		BusRenderer.instance.renderer.isFacade = true;
 		IOrientable te = getOrientable( block, world, x, y, z );
