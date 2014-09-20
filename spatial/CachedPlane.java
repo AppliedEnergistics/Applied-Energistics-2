@@ -112,7 +112,7 @@ public class CachedPlane
 
 	World wrld;
 	Block matrixFrame = AEApi.instance().blocks().blockMatrixFrame.block();
-	IMovableRegistry reg = AEApi.instance().registries().moveable();
+	IMovableRegistry reg = AEApi.instance().registries().movable();
 
 	LinkedList<WorldCoord> updates = new LinkedList<WorldCoord>();
 
@@ -154,7 +154,7 @@ public class CachedPlane
 				myColumns[x][z] = new Column( w.getChunkFromChunkCoords( (minx + x) >> 4, (minz + z) >> 4 ), (minx + x) & 0xF, (minz + z) & 0xF, minCY, cy_size );
 			}
 
-		IMovableRegistry mr = AEApi.instance().registries().moveable();
+		IMovableRegistry mr = AEApi.instance().registries().movable();
 
 		for (int cx = 0; cx < cx_size; cx++)
 			for (int cz = 0; cz < cz_size; cz++)
@@ -234,13 +234,13 @@ public class CachedPlane
 
 	private IMovableHandler getHandler(TileEntity te)
 	{
-		IMovableRegistry mr = AEApi.instance().registries().moveable();
+		IMovableRegistry mr = AEApi.instance().registries().movable();
 		return mr.getHandler( te );
 	}
 
 	void Swap(CachedPlane dst)
 	{
-		IMovableRegistry mr = AEApi.instance().registries().moveable();
+		IMovableRegistry mr = AEApi.instance().registries().movable();
 
 		if ( dst.x_size == x_size && dst.y_size == y_size && dst.z_size == z_size )
 		{

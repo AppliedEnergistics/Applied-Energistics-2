@@ -20,7 +20,7 @@ public class IMCBlackListSpatial implements IIMCHandler
 			Block blk = Block.getBlockFromItem( is.getItem() );
 			if ( blk != null )
 			{
-				AEApi.instance().registries().moveable().blacklistBlock( blk );
+				AEApi.instance().registries().movable().blacklistBlock( blk );
 				return;
 			}
 		}

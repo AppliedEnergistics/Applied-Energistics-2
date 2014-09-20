@@ -74,7 +74,7 @@ public class RegistryContainer implements IRegistryContainer
 	}
 
 	@Override
-	public IMovableRegistry moveable()
+	public IMovableRegistry movable()
 	{
 		return MoveableReg;
 	}

@@ -20,7 +20,7 @@ public class IMCSpatial implements IIMCHandler
 		try
 		{
 			Class classInstance = Class.forName( m.getStringValue() );
-			AEApi.instance().registries().moveable().whiteListTileEntity( classInstance );
+			AEApi.instance().registries().movable().whiteListTileEntity( classInstance );
 		}
 		catch (ClassNotFoundException e)
 		{

@@ -679,7 +679,7 @@ public class Registration
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.MeteoriteWorldGen ) )
 			GameRegistry.registerWorldGenerator( new MeteoriteWorldGen(), 0 );
 
-		IMovableRegistry mr = AEApi.instance().registries().moveable();
+		IMovableRegistry mr = AEApi.instance().registries().movable();
 
 		/**
 		 * You can't move bed rock.
