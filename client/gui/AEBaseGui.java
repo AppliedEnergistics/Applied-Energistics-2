@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import appeng.container.slot.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -36,17 +37,8 @@ import appeng.client.me.SlotDisconnected;
 import appeng.client.me.SlotME;
 import appeng.client.render.AppEngRenderItem;
 import appeng.container.AEBaseContainer;
-import appeng.container.slot.AppEngCraftingSlot;
-import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.AppEngSlot.hasCalculatedValidness;
-import appeng.container.slot.OptionalSlotFake;
-import appeng.container.slot.SlotCraftingTerm;
-import appeng.container.slot.SlotDisabled;
-import appeng.container.slot.SlotFake;
-import appeng.container.slot.SlotInaccessable;
-import appeng.container.slot.SlotOutput;
-import appeng.container.slot.SlotPatternTerm;
-import appeng.container.slot.SlotRestrictedInput;
+import appeng.container.slot.SlotInaccessible;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
@@ -909,7 +901,7 @@ public abstract class AEBaseGui extends GuiContainer
 					if ( ((AppEngSlot) s).isValid == hasCalculatedValidness.NotAvailable )
 					{
 						boolean isValid = s.isItemValid( is ) || s instanceof SlotOutput || s instanceof AppEngCraftingSlot || s instanceof SlotDisabled
-								|| s instanceof SlotInaccessable || s instanceof SlotFake || s instanceof SlotRestrictedInput || s instanceof SlotDisconnected;
+								|| s instanceof SlotInaccessible || s instanceof SlotFake || s instanceof SlotRestrictedInput || s instanceof SlotDisconnected;
 						if ( isValid && s instanceof SlotRestrictedInput )
 						{
 							try
