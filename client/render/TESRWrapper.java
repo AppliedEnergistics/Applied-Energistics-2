@@ -55,7 +55,7 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 					blkRender.renderTile( (AEBaseBlock) b, (AEBaseTile) te, tess, x, y, z, f, rbinstance );
 
 					if ( Platform.isDrawing( tess ) )
-						throw new RuntimeException( "Error durring rendering." );
+						throw new RuntimeException( "Error during rendering." );
 
 					GL11.glPopAttrib();
 					GL11.glPopMatrix();
