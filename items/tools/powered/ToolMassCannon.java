@@ -144,8 +144,8 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						Vec3 direction = Vec3.createVectorHelper( (double) f7 * d3, (double) f6 * d3, (double) f8 * d3 );
 						direction.normalize();
 
-						float penitration = AEApi.instance().registries().matterCannon().getPenetration( ammo ); // 196.96655f;
-						if ( penitration <= 0 )
+						float penetration = AEApi.instance().registries().matterCannon().getPenetration( ammo ); // 196.96655f;
+						if ( penetration <= 0 )
 						{
 							ItemStack type = ((IAEItemStack) aeammo).getItemStack();
 							if ( type.getItem() instanceof ItemPaintBall )
@@ -156,7 +156,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						}
 						else
 						{
-							standardAmmo( penitration, w, p, vec3, vec31, direction, d0, d1, d2 );
+							standardAmmo( penetration, w, p, vec3, vec31, direction, d0, d1, d2 );
 						}
 
 					}
