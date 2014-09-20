@@ -884,7 +884,7 @@ public class Platform
 					return wrench.canWrench( player, x, y, z );
 				}
 			}
-			catch (Throwable _)
+			catch (Throwable ignore)
 			{ // explodes without BC
 
 			}
