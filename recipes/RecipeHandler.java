@@ -592,11 +592,11 @@ public class RecipeHandler implements IRecipeHandler
 				{
 					if ( hasQty )
 					{
-						cList.add( findIngrident( v, qty ) );
+						cList.add( findIngredient( v, qty ) );
 						hasQty = false;
 					}
 					else
-						cList.add( findIngrident( v, 1 ) );
+						cList.add( findIngredient( v, 1 ) );
 				}
 			}
 		}
@@ -607,7 +607,7 @@ public class RecipeHandler implements IRecipeHandler
 		return out;
 	}
 
-	private IIngredient findIngrident(String v, int qty) throws RecipeError
+	private IIngredient findIngredient(String v, int qty) throws RecipeError
 	{
 		GroupIngredient gi = data.groups.get( v );
 
