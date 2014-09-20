@@ -65,7 +65,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	{
 		if ( e instanceof EntityLivingBase )
 		{
-			// prevent weird snagg behavior
+			// prevent weird snag behavior
 			ch.addBox( 0.0, 0.0, 14, 16.0, 16.0, 16.0 );
 		}
 		else
