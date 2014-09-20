@@ -338,7 +338,7 @@ public class ApiPart implements IPartHelper
 				return true;
 			}
 			else
-				AELog.info( "Layer " + layer + " not registered, " + layerInterface + " aready has a layer." );
+				AELog.info( "Layer " + layer + " not registered, " + layerInterface + " already has a layer." );
 		}
 		catch (Throwable t)
 		{
