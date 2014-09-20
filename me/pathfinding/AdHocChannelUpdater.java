@@ -1,12 +1,12 @@
 package appeng.me.pathfinding;
 
-import appeng.api.networking.IGridConnecitonVisitor;
+import appeng.api.networking.IGridConnectionVisitor;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
 
-public class AdHocChannelUpdater implements IGridConnecitonVisitor
+public class AdHocChannelUpdater implements IGridConnectionVisitor
 {
 
 	final private int usedChannels;

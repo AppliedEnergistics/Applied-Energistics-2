@@ -17,7 +17,7 @@ import appeng.api.networking.GridNotification;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridCache;
-import appeng.api.networking.IGridConnecitonVisitor;
+import appeng.api.networking.IGridConnectionVisitor;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -172,10 +172,10 @@ public class GridNode implements IGridNode, IPathItem
 
 		visitorIterationNumber = tracker;
 
-		if ( g instanceof IGridConnecitonVisitor )
+		if ( g instanceof IGridConnectionVisitor )
 		{
 			LinkedList<IGridConnection> nextConn = new LinkedList();
-			IGridConnecitonVisitor gcv = (IGridConnecitonVisitor) g;
+			IGridConnectionVisitor gcv = (IGridConnectionVisitor) g;
 
 			while (!nextRun.isEmpty())
 			{
