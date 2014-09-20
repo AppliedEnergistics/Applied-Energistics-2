@@ -271,7 +271,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 		if ( output || !proxy.isActive() )
 			return 0;
 
-		double originaInput = mj;
+		double originalInput = mj;
 
 		try
 		{
@@ -295,7 +295,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 				IBatteryObject o = g.getTargetBattery();
 				if ( o != null )
 				{
-					double fraction = originaInput / outputs;
+					double fraction = originalInput / outputs;
 					if ( cycleLimitMode )
 						fraction = o.addEnergy( fraction );
 					else
@@ -319,7 +319,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 				}
 			}
 
-			return originaInput - mj;
+			return originalInput - mj;
 		}
 		catch (GridAccessException e)
 		{
