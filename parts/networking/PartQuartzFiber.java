@@ -127,12 +127,12 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	@Override
 	public double extractAEPower(double amt, Actionable mode, Set<IEnergyGrid> seen)
 	{
-		double aquiredPower = 0;
+		double acquiredPower = 0;
 
 		try
 		{
 			IEnergyGrid eg = proxy.getEnergy();
-			aquiredPower += eg.extractAEPower( amt - aquiredPower, mode, seen );
+			acquiredPower += eg.extractAEPower( amt - acquiredPower, mode, seen );
 		}
 		catch (GridAccessException e)
 		{
@@ -142,14 +142,14 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 		try
 		{
 			IEnergyGrid eg = outerProxy.getEnergy();
-			aquiredPower += eg.extractAEPower( amt - aquiredPower, mode, seen );
+			acquiredPower += eg.extractAEPower( amt - acquiredPower, mode, seen );
 		}
 		catch (GridAccessException e)
 		{
 			// :P
 		}
 
-		return aquiredPower;
+		return acquiredPower;
 	}
 
 	@Override
