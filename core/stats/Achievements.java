@@ -98,10 +98,10 @@ public enum Achievements
 
 	public void setParent(Achievements parent)
 	{
-		this.parent = parent.getAchivement();
+		this.parent = parent.getAchievement();
 	}
 
-	public Achievement getAchivement()
+	public Achievement getAchievement()
 	{
 		if ( stat == null && stack != null )
 		{
@@ -138,7 +138,7 @@ public enum Achievements
 
 	public void addToPlayer(EntityPlayer player)
 	{
-		player.addStat( getAchivement(), 1 );
+		player.addStat( getAchievement(), 1 );
 	}
 
 }

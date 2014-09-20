@@ -197,7 +197,7 @@ public class PathGridCache implements IPathingGrid
 
 				for (int id : players)
 				{
-					Platform.addStat( id, currentBracket.getAchivement() );
+					Platform.addStat( id, currentBracket.getAchievement() );
 				}
 			}
 		}

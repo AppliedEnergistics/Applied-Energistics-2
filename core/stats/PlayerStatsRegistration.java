@@ -128,7 +128,7 @@ public class PlayerStatsRegistration
 
 			for (Achievements a : Achievements.values())
 			{
-				Achievement ach = a.getAchivement();
+				Achievement ach = a.getAchievement();
 				if ( ach != null )
 					list.add( ach );
 			}

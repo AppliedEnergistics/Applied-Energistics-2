@@ -354,8 +354,8 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 		if ( achiv != null )
 		{
-			Platform.addStat( achiv.getActionableNode().getPlayerID(), Achievements.Recursive.getAchivement() );
-			Platform.addStat( getActionableNode().getPlayerID(), Achievements.Recursive.getAchivement() );
+			Platform.addStat( achiv.getActionableNode().getPlayerID(), Achievements.Recursive.getAchievement() );
+			Platform.addStat( getActionableNode().getPlayerID(), Achievements.Recursive.getAchievement() );
 		}
 	}
 
