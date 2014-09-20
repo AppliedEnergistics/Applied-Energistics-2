@@ -58,7 +58,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 		{
 			inv.setInventorySlotContents( 0, null );
 		}
-		return false; // TESR dosn't need updates!
+		return false; // TESR doesn't need updates!
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
@@ -94,7 +94,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 			{
 				injectExternalPower( PowerUnits.AE,
 						gridProxy.getEnergy().extractAEPower( Math.min( 150.0, 1500.0 - internalCurrentPower ), Actionable.MODULATE, PowerMultiplier.ONE ) );
-				tickTickTimer = 20; // keep tickin...
+				tickTickTimer = 20; // keep ticking...
 			}
 			catch (GridAccessException e)
 			{
@@ -116,7 +116,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 				internalCurrentPower += adjustment;
 				if ( oldPower > internalCurrentPower )
 					requiresUpdate = true;
-				tickTickTimer = 20; // keep tickin...
+				tickTickTimer = 20; // keep ticking...
 			}
 		}
 		else if ( internalCurrentPower > 1499 && AEApi.instance().materials().materialCertusQuartzCrystal.sameAsStack( myItem ) )
