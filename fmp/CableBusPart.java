@@ -370,9 +370,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	}
 
 	@Override
-	public void removePart(ForgeDirection side, boolean supressUpdate)
+	public void removePart(ForgeDirection side, boolean gsuppressUpdate)
 	{
-		cb.removePart( side, supressUpdate );
+		cb.removePart( side, suppressUpdate );
 	}
 
 	boolean canUpdate = false;

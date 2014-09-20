@@ -186,9 +186,9 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public void removePart(ForgeDirection side, boolean supressUpdate)
+	public void removePart(ForgeDirection side, boolean suppressUpdate)
 	{
-		cb.removePart( side, supressUpdate );
+		cb.removePart( side, suppressUpdate );
 	}
 
 	@Override
