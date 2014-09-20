@@ -72,7 +72,7 @@ public enum PartType
 
 	ExportBus(260, AEFeature.ExportBus, PartExportBus.class),
 
-	LevelEmitter(280, AEFeature.LevelEmiter, PartLevelEmitter.class),
+	LevelEmitter(280, AEFeature.LevelEmitter, PartLevelEmitter.class),
 
 	AnnihilationPlane(300, AEFeature.AnnihilationPlane, PartAnnihilationPlane.class),
 

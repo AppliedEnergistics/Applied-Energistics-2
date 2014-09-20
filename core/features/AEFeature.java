@@ -30,7 +30,7 @@ public enum AEFeature
 
 	SpatialIO("NetworkFeatures"), QuantumNetworkBridge("NetworkFeatures"), Channels("NetworkFeatures"),
 
-	LevelEmiter("NetworkBuses"), CraftingTerminal("NetworkBuses"), StorageMonitor("NetworkBuses"), P2PTunnel("NetworkBuses"), FormationPlane("NetworkBuses"), AnnihilationPlane(
+	LevelEmitter("NetworkBuses"), CraftingTerminal("NetworkBuses"), StorageMonitor("NetworkBuses"), P2PTunnel("NetworkBuses"), FormationPlane("NetworkBuses"), AnnihilationPlane(
 			"NetworkBuses"), ImportBus("NetworkBuses"), ExportBus("NetworkBuses"), StorageBus("NetworkBuses"), PartConversionMonitor("NetworkBuses"),
 
 	StorageCells("Storage"), PortableCell("PortableCell"), MEChest("Storage"), MEDrive("Storage"), IOPort("Storage"),
