@@ -52,7 +52,7 @@ public class WirelessRegistry implements IWirelessTermRegistry
 	}
 
 	@Override
-	public void OpenWirelessTermainlGui(ItemStack item, World w, EntityPlayer player)
+	public void openWirelessTerminalGui(ItemStack item, World w, EntityPlayer player)
 	{
 		if ( Platform.isClient() )
 			return;
