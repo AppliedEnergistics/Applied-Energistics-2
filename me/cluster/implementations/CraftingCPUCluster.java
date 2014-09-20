@@ -581,7 +581,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			}
 
 			ICraftingPatternDetails details = e.getKey();
-			if ( canCraft( details, details.getCondencedInputs() ) )
+			if ( canCraft( details, details.getCondensedInputs() ) )
 			{
 				InventoryCrafting ic = null;
 

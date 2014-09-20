@@ -80,7 +80,7 @@ public class CraftingTreeNode
 			if ( i.equals( what ) )
 				return false;
 
-		o = details.getCondencedInputs();
+		o = details.getCondensedInputs();
 		for (IAEItemStack i : o)
 			if ( i.equals( what ) )
 				return false;

@@ -64,7 +64,7 @@ public class CraftingTreeProcess
 					fullsimulation = true;
 			}
 
-			for ( IAEItemStack part : details.getCondencedInputs() )
+			for ( IAEItemStack part : details.getCondensedInputs() )
 			{
 				ItemStack g = part.getItemStack();
 
@@ -96,7 +96,7 @@ public class CraftingTreeProcess
 			else
 			{
 				// this is minorly different then below, this slot uses the pattern, but kinda fudges it.
-				for (IAEItemStack part : details.getCondencedInputs())
+				for (IAEItemStack part : details.getCondensedInputs())
 				{
 					for (int x = 0; x < list.length; x++)
 					{
@@ -113,7 +113,7 @@ public class CraftingTreeProcess
 		}
 		else
 		{
-			for ( IAEItemStack part : details.getCondencedInputs() )
+			for ( IAEItemStack part : details.getCondensedInputs() )
 			{
 				ItemStack g = part.getItemStack();
 
@@ -128,7 +128,7 @@ public class CraftingTreeProcess
 					limitQty = true;
 			}
 
-			for (IAEItemStack part : details.getCondencedInputs())
+			for (IAEItemStack part : details.getCondensedInputs())
 			{
 				nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, -1, depth + 1 ), part.getStackSize() );
 			}

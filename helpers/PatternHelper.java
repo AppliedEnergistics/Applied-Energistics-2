@@ -311,7 +311,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	}
 
 	@Override
-	public IAEItemStack[] getCondencedInputs()
+	public IAEItemStack[] getCondensedInputs()
 	{
 		return condencedInputs;
 	}
