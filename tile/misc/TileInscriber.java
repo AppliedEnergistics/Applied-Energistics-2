@@ -45,7 +45,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 	public final int maxProcessingTime = 100;
 	public int processingTime = 0;
 
-	// cycles from 0 - 16, at 8 it preforms the action, at 16 it reenables the normal rotuine.
+	// cycles from 0 - 16, at 8 it preforms the action, at 16 it re-enables the normal routine.
 	public boolean smash;
 	public int finalStep;
 
