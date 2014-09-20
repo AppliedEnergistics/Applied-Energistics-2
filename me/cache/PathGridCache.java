@@ -96,7 +96,7 @@ public class PathGridCache implements IPathingGrid
 				channelsByBlocks = nodes * used;
 				channelPowerUsage = (double) channelsByBlocks / 128.0;
 
-				myGrid.getPivot().beginVisition( new AdHocChannelUpdater( used ) );
+				myGrid.getPivot().beginVisit( new AdHocChannelUpdater( used ) );
 			}
 			else if ( controllerState == ControllerState.NO_CONTROLLER )
 			{
@@ -112,12 +112,12 @@ public class PathGridCache implements IPathingGrid
 				channelsByBlocks = nodes * used;
 				channelPowerUsage = (double) channelsByBlocks / 128.0;
 
-				myGrid.getPivot().beginVisition( new AdHocChannelUpdater( used ) );
+				myGrid.getPivot().beginVisit( new AdHocChannelUpdater( used ) );
 			}
 			else if ( controllerState == ControllerState.CONTROLLER_CONFLICT )
 			{
 				ticksUntilReady = 20;
-				myGrid.getPivot().beginVisition( new AdHocChannelUpdater( 0 ) );
+				myGrid.getPivot().beginVisit( new AdHocChannelUpdater( 0 ) );
 			}
 			else
 			{
@@ -126,7 +126,7 @@ public class PathGridCache implements IPathingGrid
 				closedList = new HashSet();
 				semiOpen = new HashSet();
 
-				// myGrid.getPivot().beginVisition( new AdHocChannelUpdater( 0 )
+				// myGrid.getPivot().beginVisit( new AdHocChannelUpdater( 0 )
 				// );
 				for (IGridNode node : myGrid.getMachines( TileController.class ))
 				{
@@ -168,7 +168,7 @@ public class PathGridCache implements IPathingGrid
 				{
 					for (TileController tc : controllers)
 					{
-						tc.getGridNode( ForgeDirection.UNKNOWN ).beginVisition( new ControllerChannelUpdater() );
+						tc.getGridNode( ForgeDirection.UNKNOWN ).beginVisit( new ControllerChannelUpdater() );
 						break;
 					}
 				}
@@ -332,7 +332,7 @@ public class PathGridCache implements IPathingGrid
 			DimensionalCoord dc = startingNode.getGridBlock().getLocation();
 			ControllerValidator cv = new ControllerValidator( dc.x, dc.y, dc.z );
 
-			startingNode.beginVisition( cv );
+			startingNode.beginVisit( cv );
 
 			if ( cv.isValid && cv.found == controllers.size() )
 				controllerState = ControllerState.CONTROLLER_ONLINE;

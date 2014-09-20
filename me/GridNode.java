@@ -163,7 +163,7 @@ public class GridNode implements IGridNode, IPathItem
 	}
 
 	@Override
-	public void beginVisition(IGridVisitor g)
+	public void beginVisit(IGridVisitor g)
 	{
 		Object tracker = new Object();
 
@@ -461,11 +461,11 @@ public class GridNode implements IGridNode, IPathItem
 	public void validateGrid()
 	{
 		GridSplitDetector gsd = new GridSplitDetector( getInternalGrid().getPivot() );
-		beginVisition( gsd );
+		beginVisit( gsd );
 		if ( !gsd.pivotFound )
 		{
 			GridPropagator gp = new GridPropagator( new Grid( this ) );
-			beginVisition( gp );
+			beginVisit( gp );
 		}
 	}
 
