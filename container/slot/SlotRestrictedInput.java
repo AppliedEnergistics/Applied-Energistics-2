@@ -34,7 +34,7 @@ public class SlotRestrictedInput extends AppEngSlot
 
 		ENCODED_CRAFTING_PATTERN(7 * 16 + 15), ENCODED_PATTERN(7 * 16 + 15), PATTERN(8 * 16 + 15), BLANK_PATTERN(8 * 16 + 15), POWERED_TOOL(9 * 16 + 15),
 
-		RANGE_BOOSTER(6 * 16 + 15), QE_SINGULARTIY(10 * 16 + 15), SPATIAL_STORAGE_CELLS(11 * 16 + 15),
+		RANGE_BOOSTER(6 * 16 + 15), QE_SINGULARITY(10 * 16 + 15), SPATIAL_STORAGE_CELLS(11 * 16 + 15),
 
 		FUEL(12 * 16 + 15), UPGRADES(13 * 16 + 15), WORKBENCH_CELL(15), BIOMETRIC_CARD(14 * 16 + 15), VIEWCELL(4 * 16 + 14),
 
@@ -187,7 +187,7 @@ public class SlotRestrictedInput extends AppEngSlot
 			return TileEntityFurnace.getItemBurnTime( i ) > 0;
 		case POWERED_TOOL:
 			return Platform.isChargeable( i );
-		case QE_SINGULARTIY:
+		case QE_SINGULARITY:
 			return api.materials().materialQESingularity.sameAsStack( i );
 		case RANGE_BOOSTER:
 			return api.materials().materialWirelessBooster.sameAsStack( i );
