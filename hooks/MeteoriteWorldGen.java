@@ -41,7 +41,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 		if ( WorldGenRegistry.instance.isWorldGenEnabled( WorldGenType.Meteorites, w ) )
 		{
 			// add new metorites?
-			if ( r.nextFloat() < AEConfig.instance.metoriteSpawnChance )
+			if ( r.nextFloat() < AEConfig.instance.meteoriteSpawnChance )
 			{
 				int x = r.nextInt( 16 ) + (chunkX << 4);
 				int z = r.nextInt( 16 ) + (chunkZ << 4);

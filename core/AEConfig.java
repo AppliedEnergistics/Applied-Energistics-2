@@ -130,7 +130,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 	final private File myPath;
 
 	public double meteoriteClusterChance = 0.1;
-	public double metoriteSpawnChance = 0.3;
+	public double meteoriteSpawnChance = 0.3;
 
 	public int craftingCalculationTimePerTick = 5;
 
@@ -236,7 +236,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 		spawnChargedChance = (float) (1.0 - get( "worldGen", "spawnChargedChance", 1.0 - spawnChargedChance ).getDouble( 1.0 - spawnChargedChance ));
 		minMeteoriteDistance = get( "worldGen", "minMeteoriteDistance", minMeteoriteDistance ).getInt( minMeteoriteDistance );
 		meteoriteClusterChance = get( "worldGen", "meteoriteClusterChance", meteoriteClusterChance ).getDouble( meteoriteClusterChance );
-		metoriteSpawnChance = get( "worldGen", "metoriteSpawnChance", metoriteSpawnChance ).getDouble( metoriteSpawnChance );
+		meteoriteSpawnChance = get( "worldGen", "meteoriteSpawnChance", meteoriteSpawnChance ).getDouble( meteoriteSpawnChance );
 		quartzOresPerCluster = get( "worldGen", "quartzOresPerCluster", quartzOresPerCluster ).getInt( quartzOresPerCluster );
 		quartzOresClusterAmount = get( "worldGen", "quartzOresClusterAmount", quartzOresClusterAmount ).getInt( quartzOresClusterAmount );
 
