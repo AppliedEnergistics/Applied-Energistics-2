@@ -121,7 +121,7 @@ public class TickManagerCache implements ITickManager
 		if ( tt == null )
 			return false;
 		// throw new RuntimeException(
-		// "Invalid Alertted device, this node is not marked as alertable, or part of this grid." );
+		// "Invalid alerted device, this node is not marked as alertable, or part of this grid." );
 
 		// set to awake, this is for sanity.
 		sleeping.remove( node );
