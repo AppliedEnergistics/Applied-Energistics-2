@@ -87,12 +87,12 @@ public class RenderBlockSkyChest extends BaseBlockRender
 		GL11.glTranslatef( -0.0F, -1.0F, -1.0F );
 
 		long now = System.currentTimeMillis();
-		long distnace = now - skyChest.lastEvent;
+		long distance = now - skyChest.lastEvent;
 
 		if ( skyChest.playerOpen > 0 )
-			skyChest.lidAngle += distnace * 0.0001;
+			skyChest.lidAngle += distance * 0.0001;
 		else
-			skyChest.lidAngle -= distnace * 0.0001;
+			skyChest.lidAngle -= distance * 0.0001;
 
 		if ( skyChest.lidAngle > 0.5f )
 			skyChest.lidAngle = 0.5f;
