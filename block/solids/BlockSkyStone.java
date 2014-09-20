@@ -175,7 +175,7 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 			WorldSettings.getInstance().getCompass().updateArea( w, x, y, z );
 	}
 
-	// use AE2's enderer, no rotatable blocks.
+	// use AE2's renderer, no rotatable blocks.
 	int getRealRenderType()
 	{
 		return getRenderType();
