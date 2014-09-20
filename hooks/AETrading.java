@@ -28,13 +28,13 @@ public class AETrading implements IVillageTradeHandler
 		l.add( new MerchantRecipe( a, b ) );
 	}
 
-	private void addTrade(MerchantRecipeList list, ItemStack a, ItemStack b, Random rand, int convertion_Variance)
+	private void addTrade(MerchantRecipeList list, ItemStack a, ItemStack b, Random rand, int conversion_Variance)
 	{
 		// Sell
 		ItemStack From = a.copy();
 		ItemStack To = b.copy();
 
-		From.stackSize = 1 + (Math.abs( rand.nextInt() ) % (1 + convertion_Variance));
+		From.stackSize = 1 + (Math.abs( rand.nextInt() ) % (1 + conversion_Variance));
 		To.stackSize = 1;
 
 		addToList( list, From, To );
