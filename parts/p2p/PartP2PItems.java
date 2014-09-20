@@ -53,7 +53,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	}
 
 	int oldSize = 0;
-	boolean requsted;
+	boolean requested;
 	IInventory cachedInv;
 
 	LinkedList<IInventory> which = new LinkedList<IInventory>();
@@ -135,18 +135,18 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	@Override
 	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
 	{
-		boolean wasReq = requsted;
+		boolean wasReq = requested;
 
-		if ( requsted && cachedInv != null )
+		if ( requested && cachedInv != null )
 			((WrapperChainedInventory) cachedInv).cycleOrder();
 
-		requsted = false;
+		requested = false;
 		return wasReq ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
 	}
 
 	IInventory getDest()
 	{
-		requsted = true;
+		requested = true;
 
 		if ( cachedInv != null )
 			return cachedInv;
