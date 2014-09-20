@@ -558,7 +558,7 @@ public class MeteoritePlacer
 			settings.setInteger( "skyMode", skyMode );
 			w.done();
 
-			WorldSettings.getInstance().addNearByMetetorites( w.getWorld().provider.dimensionId, x >> 4, z >> 4, settings );
+			WorldSettings.getInstance().addNearByMeteorites( w.getWorld().provider.dimensionId, x >> 4, z >> 4, settings );
 			return true;
 		}
 		return false;

@@ -80,7 +80,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 			double minSqDist = Double.MAX_VALUE;
 
 			// near by meteorites!
-			for (NBTTagCompound data : getNearByMetetorites( w, chunkX, chunkZ ))
+			for (NBTTagCompound data : getNearByMeteorites( w, chunkX, chunkZ ))
 			{
 				MeteoritePlacer mp = new MeteoritePlacer();
 				mp.spawnMeteorite( new MeteoritePlacer.ChunkOnly( w, chunkX, chunkZ ), data );
@@ -138,7 +138,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 		return false;
 	}
 
-	private Collection<NBTTagCompound> getNearByMetetorites(World w, int chunkX, int chunkZ)
+	private Collection<NBTTagCompound> getNearByMeteorites(World w, int chunkX, int chunkZ)
 	{
 		return WorldSettings.getInstance().getNearByMeteorites( w.provider.dimensionId, chunkX, chunkZ );
 	}

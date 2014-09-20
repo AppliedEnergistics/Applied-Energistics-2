@@ -194,7 +194,7 @@ public class WorldSettings extends Configuration
 		}
 	}
 
-	public boolean addNearByMetetorites(int dim, int chunkX, int chunkZ, NBTTagCompound newData)
+	public boolean addNearByMeteorites(int dim, int chunkX, int chunkZ, NBTTagCompound newData)
 	{
 		synchronized (WorldSettings.class)
 		{
