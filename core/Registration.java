@@ -324,7 +324,7 @@ public class Registration
 
 		blocks.blockQuartzGlass = addFeature( BlockQuartzGlass.class );
 		blocks.blockQuartzVibrantGlass = addFeature( BlockQuartzLamp.class );
-		blocks.blockQuartzPiller = addFeature( BlockQuartzPillar.class );
+		blocks.blockQuartzPillar = addFeature( BlockQuartzPillar.class );
 		blocks.blockQuartzChiseled = addFeature( BlockQuartzChiseled.class );
 		blocks.blockQuartzTorch = addFeature( BlockQuartzTorch.class );
 		blocks.blockLightDetector = addFeature( BlockLightDetector.class );

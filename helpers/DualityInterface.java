@@ -970,7 +970,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		return craftingTracker.getRequestedJobs();
 	}
 
-	public IAEItemStack injectCratedItems(ICraftingLink link, IAEItemStack aquired, Actionable mode)
+	public IAEItemStack injectCraftedItems(ICraftingLink link, IAEItemStack aquired, Actionable mode)
 	{
 		int slot = craftingTracker.getSlot( link );
 

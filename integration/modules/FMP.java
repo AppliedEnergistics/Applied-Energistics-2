@@ -66,7 +66,7 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	public void Init() throws Throwable
 	{
 		createAndRegister( AEApi.instance().blocks().blockQuartz.block(), 0 );
-		createAndRegister( AEApi.instance().blocks().blockQuartzPiller.block(), 0 );
+		createAndRegister( AEApi.instance().blocks().blockQuartzPillar.block(), 0 );
 		createAndRegister( AEApi.instance().blocks().blockQuartzChiseled.block(), 0 );
 		createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 0 );
 		createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 1 );

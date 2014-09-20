@@ -270,7 +270,7 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable, I
 	}
 
 	@Override
-	public IAEItemStack injectCratedItems(ICraftingLink link, IAEItemStack items, Actionable mode)
+	public IAEItemStack injectCraftedItems(ICraftingLink link, IAEItemStack items, Actionable mode)
 	{
 		InventoryAdaptor d = getHandler();
 

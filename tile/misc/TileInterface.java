@@ -263,9 +263,9 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 	}
 
 	@Override
-	public IAEItemStack injectCratedItems(ICraftingLink link, IAEItemStack items, Actionable mode)
+	public IAEItemStack injectCraftedItems(ICraftingLink link, IAEItemStack items, Actionable mode)
 	{
-		return duality.injectCratedItems( link, items, mode );
+		return duality.injectCraftedItems( link, items, mode );
 	}
 
 	@Override
