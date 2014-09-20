@@ -51,7 +51,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	{
 		boolean wasOn = isOn;
 		isOn = data.readBoolean();
-		return wasOn != isOn; // TESR dosn't need updates!
+		return wasOn != isOn; // TESR doesn't need updates!
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
