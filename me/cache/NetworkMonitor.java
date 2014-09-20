@@ -68,10 +68,10 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 
 		for (T changedItem : changes)
 		{
-			T diffrence = changedItem;
+			T difference = changedItem;
 
 			if ( !Add && changedItem != null )
-				(diffrence = changedItem.copy()).setStackSize( -changedItem.getStackSize() );
+				(difference = changedItem.copy()).setStackSize( -changedItem.getStackSize() );
 
 			if ( myGridCache.interestManager.containsKey( changedItem ) )
 			{
@@ -88,7 +88,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 					myGridCache.interestManager.enableTransactions();
 
 					for (ItemWatcher iw : list)
-						iw.getHost().onStackChange( myStorageList, fullStack, diffrence, src, getChannel() );
+						iw.getHost().onStackChange( myStorageList, fullStack, difference, src, getChannel() );
 
 					myGridCache.interestManager.disableTransactions();
 				}
