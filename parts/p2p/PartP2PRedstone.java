@@ -114,7 +114,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 
 		Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord, zCoord );
 
-		// and this cause somtimes it can go thought walls.
+		// and this cause sometimes it can go thought walls.
 		Platform.notifyBlocksOfNeighbors( worldObj, xCoord - 1, yCoord, zCoord );
 		Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord - 1, zCoord );
 		Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord, zCoord - 1 );
