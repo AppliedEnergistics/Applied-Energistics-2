@@ -65,21 +65,21 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 
 		} );
 
-		ByteBuf uncompesssed = Unpooled.buffer( stream.readableBytes() );
+		ByteBuf uncompressed = Unpooled.buffer( stream.readableBytes() );
 		byte tmp[] = new byte[1024];
 		while (gzReader.available() != 0)
 		{
 			int bytes = gzReader.read( tmp );
 			if ( bytes > 0 )
-				uncompesssed.writeBytes( tmp, 0, bytes );
+				uncompressed.writeBytes( tmp, 0, bytes );
 		}
 		gzReader.close();
 
-		// int uncompesssedBytes = uncompesssed.readableBytes();
-		// AELog.info( "Recv: " + originalBytes + " -> " + uncompesssedBytes );
+		// int uncompressedBytes = uncompressed.readableBytes();
+		// AELog.info( "Recv: " + originalBytes + " -> " + uncompressedBytes );
 
-		while (uncompesssed.readableBytes() > 0)
-			list.add( AEItemStack.loadItemStackFromPacket( uncompesssed ) );
+		while (uncompressed.readableBytes() > 0)
+			list.add( AEItemStack.loadItemStackFromPacket( uncompressed ) );
 
 		empty = list.isEmpty();
 	}
