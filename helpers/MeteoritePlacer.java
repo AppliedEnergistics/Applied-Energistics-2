@@ -450,7 +450,7 @@ public class MeteoritePlacer
 		if ( skyMode > 10 )
 			placeCrator( w, x, y, z );
 
-		placeMetor( w, x, y, z );
+		placeMeteorite( w, x, y, z );
 
 		// collapse blocks...
 		if ( skyMode > 3 )
@@ -549,7 +549,7 @@ public class MeteoritePlacer
 			if ( skyMode > 10 )
 				placeCrator( w, x, y, z );
 
-			placeMetor( w, x, y, z );
+			placeMeteorite( w, x, y, z );
 
 			// collapse blocks...
 			if ( skyMode > 3 )
@@ -608,7 +608,7 @@ public class MeteoritePlacer
 		}
 	}
 
-	private void placeMetor(IMeteoriteWorld w, int x, int y, int z)
+	private void placeMeteorite(IMeteoriteWorld w, int x, int y, int z)
 	{
 		int Xmeteor_l = w.minX( x - 8 );
 		int Xmeteor_h = w.maxX( x + 8 );
