@@ -200,10 +200,10 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 		if ( logInjections )
 		{
-			for (IAEItemStack injec : injectedCache)
+			for (IAEItemStack inject : injectedCache)
 			{
 				IAEItemStack result = null;
-				added.add( result = target.injectItems( injec, Actionable.MODULATE, src ) );
+				added.add( result = target.injectItems( inject, Actionable.MODULATE, src ) );
 
 				if ( result != null )
 				{
