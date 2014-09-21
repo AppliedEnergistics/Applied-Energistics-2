@@ -109,7 +109,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		}
 	}
 
-	// rather simple client side cacheing.
+	// rather simple client side caching.
 	static WeakHashMap<ItemStack, ItemStack> simpleCache = new WeakHashMap<ItemStack, ItemStack>();
 
 	public ItemStack getOutput(ItemStack item)
