@@ -246,7 +246,7 @@ public class PartDenseCable extends PartCable
 		 * -0.2f );
 		 * 
 		 * if ( of == ForgeDirection.EAST || of == ForgeDirection.WEST ) { AEBaseBlock blk = (AEBaseBlock)
-		 * rh.getBlock(); FlipableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST ); ico.setFlip(
+		 * rh.getBlock(); FlippableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST ); ico.setFlip(
 		 * false, true ); }
 		 * 
 		 * Tessellator.instance.setBrightness( 15 << 20 | 15 << 5 ); Tessellator.instance.setColorOpaque_I(
