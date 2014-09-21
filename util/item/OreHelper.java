@@ -53,17 +53,17 @@ public class OreHelper
 
 	};
 
-	HashMap<ItemRef, OreResult> refrences = new HashMap();
+	HashMap<ItemRef, OreResult> references = new HashMap();
 
 	public OreReference isOre(ItemStack ItemStack)
 	{
 		ItemRef ir = new ItemRef( ItemStack );
-		OreResult or = refrences.get( ir );
+		OreResult or = references.get( ir );
 
 		if ( or == null )
 		{
 			or = new OreResult();
-			refrences.put( ir, or );
+			references.put( ir, or );
 
 			OreReference ref = new OreReference();
 			Collection<Integer> ores = ref.getOres();
