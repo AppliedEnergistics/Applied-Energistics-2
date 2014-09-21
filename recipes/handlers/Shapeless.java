@@ -15,7 +15,7 @@ import appeng.recipes.game.ShapelessRecipe;
 import appeng.util.Platform;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class Shapeless implements ICraftHandler, IWebsiteSeralizer
+public class Shapeless implements ICraftHandler, IWebsiteSerializer
 {
 
 	List<IIngredient> inputs;

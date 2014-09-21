@@ -12,7 +12,7 @@ import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class Smelt implements ICraftHandler, IWebsiteSeralizer
+public class Smelt implements ICraftHandler, IWebsiteSerializer
 {
 
 	IIngredient in;

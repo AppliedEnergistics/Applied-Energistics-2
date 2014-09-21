@@ -14,7 +14,7 @@ import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
 import cpw.mods.fml.common.event.FMLInterModComms;
 
-public class HCCrusher implements ICraftHandler, IWebsiteSeralizer
+public class HCCrusher implements ICraftHandler, IWebsiteSerializer
 {
 
 	IIngredient pro_input;

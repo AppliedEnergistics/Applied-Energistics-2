@@ -15,7 +15,7 @@ import appeng.integration.abstraction.IFZ;
 import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
 
-public class GrindFZ implements ICraftHandler, IWebsiteSeralizer
+public class GrindFZ implements ICraftHandler, IWebsiteSerializer
 {
 
 	IIngredient pro_input;

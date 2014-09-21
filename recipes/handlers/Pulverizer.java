@@ -13,7 +13,7 @@ import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
 import cpw.mods.fml.common.event.FMLInterModComms;
 
-public class Pulverizer implements ICraftHandler, IWebsiteSeralizer
+public class Pulverizer implements ICraftHandler, IWebsiteSerializer
 {
 
 	IIngredient pro_input;

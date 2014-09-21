@@ -15,7 +15,7 @@ import appeng.recipes.game.ShapedRecipe;
 import appeng.util.Platform;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class Shaped implements ICraftHandler, IWebsiteSeralizer
+public class Shaped implements ICraftHandler, IWebsiteSerializer
 {
 
 	private int rows;

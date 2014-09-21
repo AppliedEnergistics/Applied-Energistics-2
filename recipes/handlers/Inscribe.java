@@ -13,7 +13,7 @@ import appeng.api.recipes.IIngredient;
 import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
 
-public class Inscribe implements ICraftHandler, IWebsiteSeralizer
+public class Inscribe implements ICraftHandler, IWebsiteSerializer
 {
 
 	public static class InscriberRecipe
