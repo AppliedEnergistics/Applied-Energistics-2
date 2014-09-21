@@ -241,7 +241,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 		}
 
 		if ( !changes.isEmpty() )
-			postDiffrence( changes );
+			postDifference( changes );
 
 		return changed ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
 	}
@@ -257,7 +257,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 		return !Platform.isSameItemPrecise( a, b );
 	}
 
-	private void postDiffrence(Iterable<IAEItemStack> a)
+	private void postDifference(Iterable<IAEItemStack> a)
 	{
 		// AELog.info( a.getItemStack().getUnlocalizedName() + " @ " + a.getStackSize() );
 		if ( a != null )
