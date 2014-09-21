@@ -179,7 +179,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 			ItemStack newIS = is == null || is.isExtractable == false && mode == StorageFilter.EXTRACTABLE_ONLY ? null : is.getItemStack();
 			ItemStack oldIS = old == null ? null : old.itemStack;
 
-			if ( isDiffrent( newIS, oldIS ) )
+			if ( isDifferent( newIS, oldIS ) )
 			{
 				CachedItemStack cis = new CachedItemStack( is.getItemStack() );
 				memory.put( is.slot, cis );
@@ -246,7 +246,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 		return changed ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
 	}
 
-	private boolean isDiffrent(ItemStack a, ItemStack b)
+	private boolean isDifferent(ItemStack a, ItemStack b)
 	{
 		if ( a == b && b == null )
 			return false;
