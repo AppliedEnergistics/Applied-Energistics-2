@@ -504,7 +504,7 @@ public class Platform
 	}
 
 	/*
-	 * Orderless hash on NBT Data, used to work thought huge piles fast, but ignroes the order just in case MC decided
+	 * Orderless hash on NBT Data, used to work thought huge piles fast, but ignores the order just in case MC decided
 	 * to change it... WHICH IS BAD...
 	 */
 	public static int NBTOrderlessHash(NBTBase A)
