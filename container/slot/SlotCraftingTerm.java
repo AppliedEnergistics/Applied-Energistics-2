@@ -71,7 +71,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 
 	public ItemStack craftItem(EntityPlayer p, ItemStack request, IMEMonitor<IAEItemStack> inv, IItemList all)
 	{
-		// update crafting matrx...
+		// update crafting matrix...
 		ItemStack is = getStack();
 
 		if ( is != null && Platform.isSameItem( request, is ) )
