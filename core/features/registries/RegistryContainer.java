@@ -22,7 +22,7 @@ public class RegistryContainer implements IRegistryContainer
 	private ExternalStorageRegistry ExternalStorageHandlers = new ExternalStorageRegistry();
 	private CellRegistry CellRegistry = new CellRegistry();
 	private LocatableRegistry LocatableRegistry = new LocatableRegistry();
-	private SpecialComparisonRegistry SpecialComparsonRegistry = new SpecialComparisonRegistry();
+	private SpecialComparisonRegistry SpecialComparisonRegistry = new SpecialComparisonRegistry();
 	private WirelessRegistry WirelessRegistry = new WirelessRegistry();
 	private GridCacheRegistry GridCacheRegistry = new GridCacheRegistry();
 	private P2PTunnelRegistry P2PRegistry = new P2PTunnelRegistry();
@@ -52,7 +52,7 @@ public class RegistryContainer implements IRegistryContainer
 	@Override
 	public ISpecialComparisonRegistry specialComparison()
 	{
-		return SpecialComparsonRegistry;
+		return SpecialComparisonRegistry;
 	}
 
 	@Override
