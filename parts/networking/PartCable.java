@@ -447,7 +447,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void rendereGlassConection(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, ForgeDirection of)
+	public void renderGlassConnection(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, ForgeDirection of)
 	{
 		TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
 		IPartHost ccph = te instanceof IPartHost ? (IPartHost) te : null;
@@ -935,7 +935,7 @@ public class PartCable extends AEBasePart implements IPartCable
 
 			for (ForgeDirection of : connections)
 			{
-				rendereGlassConection( x, y, z, rh, renderer, of );
+				renderGlassConnection( x, y, z, rh, renderer, of );
 			}
 		}
 		else
