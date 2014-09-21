@@ -277,7 +277,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 		for (int z = viewStart; z < Math.min( viewEnd, visual.size() ); z++)
 		{
-			IAEItemStack refStack = visual.get( z );// repo.getRefrenceItem( z );
+			IAEItemStack refStack = visual.get( z );// repo.getReferenceItem( z );
 			if ( refStack != null )
 			{
 				GL11.glPushMatrix();
