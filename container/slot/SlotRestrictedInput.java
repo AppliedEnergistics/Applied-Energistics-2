@@ -26,7 +26,7 @@ import appeng.util.Platform;
 public class SlotRestrictedInput extends AppEngSlot
 {
 
-	public enum PlaceableItemType
+	public enum PlacableItemType
 	{
 		STORAGE_CELLS(15), ORE(1 * 16 + 15), STORAGE_COMPONENT(3 * 16 + 15),
 
@@ -42,7 +42,7 @@ public class SlotRestrictedInput extends AppEngSlot
 
 		public final int IIcon;
 
-		private PlaceableItemType(int o) {
+		private PlacableItemType(int o) {
 			IIcon = o;
 		}
 	};
@@ -57,7 +57,7 @@ public class SlotRestrictedInput extends AppEngSlot
 
 	public boolean isValid(ItemStack is, World theWorld)
 	{
-		if ( which == PlaceableItemType.VALID_ENCODED_PATTERN_W_OUTPUT )
+		if ( which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT )
 		{
 			ICraftingPatternDetails ap = is.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem) is.getItem()).getPatternForItem( is, theWorld )
 					: null;
@@ -68,7 +68,7 @@ public class SlotRestrictedInput extends AppEngSlot
 		return true;
 	}
 
-	public PlaceableItemType which;
+	public PlacableItemType which;
 	public boolean allowEdit = true;
 	public int stackLimit = -1;
 	private InventoryPlayer p;
@@ -85,7 +85,7 @@ public class SlotRestrictedInput extends AppEngSlot
 		return this;
 	}
 
-	public SlotRestrictedInput(PlaceableItemType valid, IInventory i, int slotnum, int x, int y, InventoryPlayer p) {
+	public SlotRestrictedInput(PlacableItemType valid, IInventory i, int slotnum, int x, int y, InventoryPlayer p) {
 		super( i, slotnum, x, y );
 		which = valid;
 		IIcon = valid.IIcon;
@@ -95,7 +95,7 @@ public class SlotRestrictedInput extends AppEngSlot
 	@Override
 	public ItemStack getDisplayStack()
 	{
-		if ( Platform.isClient() && (which == PlaceableItemType.ENCODED_PATTERN) )
+		if ( Platform.isClient() && (which == PlacableItemType.ENCODED_PATTERN) )
 		{
 			ItemStack is = super.getStack();
 			if ( is != null && is.getItem() instanceof ItemEncodedPattern )

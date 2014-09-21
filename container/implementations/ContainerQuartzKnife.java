@@ -11,7 +11,6 @@ import appeng.api.AEApi;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.QuartzKnifeOutput;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.items.contents.QuartzKnifeObj;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
@@ -37,7 +36,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 		super( ip, null, null );
 		toolInv = te;
 
-		addSlotToContainer( metals = new SlotRestrictedInput( PlaceableItemType.METAL_INGOTS, inSlot, 0, 94, 44, ip ) );
+		addSlotToContainer( metals = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.METAL_INGOTS, inSlot, 0, 94, 44, ip ) );
 		addSlotToContainer( output = new QuartzKnifeOutput( this, 0, 134, 44, -1 ) );
 
 		lockPlayerInventorySlot( ip.currentItem );

@@ -10,7 +10,6 @@ import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.tile.spatial.TileSpatialIOPort;
 import appeng.util.Platform;
 
@@ -39,8 +38,8 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 		if ( Platform.isServer() )
 			network = te.getGridNode( ForgeDirection.UNKNOWN ).getGrid();
 
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.SPATIAL_STORAGE_CELLS, te, 0, 52, 48, invPlayer ) );
-		addSlotToContainer( new SlotOutput( te, 1, 113, 48, PlaceableItemType.SPATIAL_STORAGE_CELLS.IIcon ) );
+		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS, te, 0, 52, 48, invPlayer ) );
+		addSlotToContainer( new SlotOutput( te, 1, 113, 48, SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS.IIcon ) );
 
 		bindPlayerInventory( ip, 0, 197 - /* height of playerinventory */82 );
 	}

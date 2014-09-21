@@ -21,7 +21,6 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OptionalSlotRestrictedInput;
 import appeng.container.slot.SlotFakeTypeOnly;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.tile.inventory.AppEngNullInventory;
 import appeng.tile.misc.TileCellWorkbench;
 import appeng.util.Platform;
@@ -197,7 +196,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		int offset = 0;
 
 		IInventory cell = myte.getInventoryByName( "cell" );
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.WORKBENCH_CELL, cell, 0, 152, 8, invPlayer ) );
+		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.WORKBENCH_CELL, cell, 0, 152, 8, invPlayer ) );
 
 		IInventory inv = myte.getInventoryByName( "config" );
 		UpgradeInventoryWrapper = new Upgrades();// Platform.isServer() ? new Upgrades() : new AppEngInternalInventory(
@@ -211,7 +210,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 			for (int z = 0; z < 8; z++)
 			{
 				int iSLot = zz * 8 + z;
-				addSlotToContainer( new OptionalSlotRestrictedInput( PlaceableItemType.UPGRADES, UpgradeInventoryWrapper, this, iSLot, 187 + zz * 18,
+				addSlotToContainer( new OptionalSlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, UpgradeInventoryWrapper, this, iSLot, 187 + zz * 18,
 						8 + 18 * z, iSLot, invPlayer ) );
 			}
 		/*

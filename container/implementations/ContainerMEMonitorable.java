@@ -38,7 +38,6 @@ import appeng.api.util.IConfigurableObject;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
@@ -120,7 +119,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		{
 			for (int y = 0; y < 5; y++)
 			{
-				cellView[y] = new SlotRestrictedInput( PlaceableItemType.VIEWCELL, ((IViewCellStorage) monitorable).getViewCellStorage(), y, 206, y * 18 + 8,
+				cellView[y] = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.VIEWCELL, ((IViewCellStorage) monitorable).getViewCellStorage(), y, 206, y * 18 + 8,
 						invPlayer );
 				cellView[y].allowEdit = canAccessViewCells;
 				addSlotToContainer( cellView[y] );

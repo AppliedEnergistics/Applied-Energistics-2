@@ -9,7 +9,6 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotFake;
 import appeng.container.slot.SlotNormal;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 
@@ -30,7 +29,7 @@ public class ContainerInterface extends ContainerUpgradeable
 		myDuality = te.getInterfaceDuality();
 
 		for (int x = 0; x < 9; x++)
-			addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.ENCODED_PATTERN, myDuality.getPatterns(), x, 8 + 18 * x, 90 + 7, invPlayer ) );
+			addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODED_PATTERN, myDuality.getPatterns(), x, 8 + 18 * x, 90 + 7, invPlayer ) );
 
 		for (int x = 0; x < 8; x++)
 			addSlotToContainer( new SlotFake( myDuality.getConfig(), x, 17 + 18 * x, 35 ) );
