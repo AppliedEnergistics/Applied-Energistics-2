@@ -40,7 +40,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 	{
 		if ( WorldGenRegistry.instance.isWorldGenEnabled( WorldGenType.Meteorites, w ) )
 		{
-			// add new metorites?
+			// add new meteorites?
 			if ( r.nextFloat() < AEConfig.instance.meteoriteSpawnChance )
 			{
 				int x = r.nextInt( 16 ) + (chunkX << 4);
@@ -91,7 +91,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 			boolean isCluster = (minSqDist < 30 * 30) && Platform.getRandomFloat() < AEConfig.instance.meteoriteClusterChance;
 
 			if ( minSqDist > AEConfig.instance.minMeteoriteDistanceSq || isCluster )
-				tryMetroite( w, depth, x, z );
+				tryMeteorite( w, depth, x, z );
 
 			WorldSettings.getInstance().setGenerated( w.provider.dimensionId, chunkX, chunkZ );
 			WorldSettings.getInstance().getCompass().updateArea( w, chunkX, chunkZ );
@@ -100,7 +100,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 		}
 	}
 
-	private boolean tryMetroite(World w, int depth, int x, int z)
+	private boolean tryMeteorite(World w, int depth, int x, int z)
 	{
 		for (int trys = 0; trys < 20; trys++)
 		{
