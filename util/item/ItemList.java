@@ -156,7 +156,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	@Override
 	synchronized public Iterator iterator()
 	{
-		return new MeanfulIterator( records.values().iterator() );
+		return new MeaningfulIterator( records.values().iterator() );
 	}
 
 	@Override
