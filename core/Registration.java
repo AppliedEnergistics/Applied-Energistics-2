@@ -267,8 +267,8 @@ public class Registration
 				else
 				{
 					Field f = partClass.getField( "part" + type.name() );
-					Enum varients[] = type.getVariants();
-					if ( varients == null )
+					Enum variants[] = type.getVariants();
+					if ( variants == null )
 					{
 						ItemStackSrc is = ((ItemMultiPart) partItem.item()).createPart( type, null );
 						if ( is != null )
@@ -278,11 +278,11 @@ public class Registration
 					}
 					else
 					{
-						if ( varients[0] instanceof AEColor )
+						if ( variants[0] instanceof AEColor )
 						{
 							ColoredItemDefinition def = new ColoredItemDefinition();
 
-							for (Enum v : varients)
+							for (Enum v : variants)
 							{
 								ItemStackSrc is = ((ItemMultiPart) partItem.item()).createPart( type, v );
 								if ( is != null )
