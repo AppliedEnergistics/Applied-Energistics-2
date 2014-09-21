@@ -543,7 +543,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	public Future<ICraftingJob> beginCraftingJob(World world, IGrid grid, BaseActionSource actionSrc, IAEItemStack slotItem, ICraftingCallback cb)
 	{
 		if ( world == null || grid == null || actionSrc == null || slotItem == null )
-			throw new RuntimeException( "Invalid Craftinb Job Request" );
+			throw new RuntimeException( "Invalid Crafting Job Request" );
 
 		CraftingJob cj = new CraftingJob( world, grid, actionSrc, slotItem, cb );
 		return craftingPool.submit( cj, (ICraftingJob) cj );
