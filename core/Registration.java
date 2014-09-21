@@ -199,24 +199,24 @@ public class Registration
 	{
 		registerSpatial( false );
 
-		IRecipeHandlerRegistry recipeRegistery = AEApi.instance().registries().recipes();
-		recipeRegistery.addNewSubItemResolver( new AEItemResolver() );
+		IRecipeHandlerRegistry recipeRegistry = AEApi.instance().registries().recipes();
+		recipeRegistry.addNewSubItemResolver( new AEItemResolver() );
 
-		recipeRegistery.addNewCraftHandler( "hccrusher", HCCrusher.class );
-		recipeRegistery.addNewCraftHandler( "mekcrusher", MekCrusher.class );
-		recipeRegistery.addNewCraftHandler( "mekechamber", MekEnrichment.class );
-		recipeRegistery.addNewCraftHandler( "grind", Grind.class );
-		recipeRegistery.addNewCraftHandler( "crusher", Crusher.class );
-		recipeRegistery.addNewCraftHandler( "grindfz", GrindFZ.class );
-		recipeRegistery.addNewCraftHandler( "pulverizer", Pulverizer.class );
-		recipeRegistery.addNewCraftHandler( "macerator", Macerator.class );
+		recipeRegistry.addNewCraftHandler( "hccrusher", HCCrusher.class );
+		recipeRegistry.addNewCraftHandler( "mekcrusher", MekCrusher.class );
+		recipeRegistry.addNewCraftHandler( "mekechamber", MekEnrichment.class );
+		recipeRegistry.addNewCraftHandler( "grind", Grind.class );
+		recipeRegistry.addNewCraftHandler( "crusher", Crusher.class );
+		recipeRegistry.addNewCraftHandler( "grindfz", GrindFZ.class );
+		recipeRegistry.addNewCraftHandler( "pulverizer", Pulverizer.class );
+		recipeRegistry.addNewCraftHandler( "macerator", Macerator.class );
 
-		recipeRegistery.addNewCraftHandler( "smelt", Smelt.class );
-		recipeRegistery.addNewCraftHandler( "inscribe", Inscribe.class );
-		recipeRegistery.addNewCraftHandler( "press", Press.class );
+		recipeRegistry.addNewCraftHandler( "smelt", Smelt.class );
+		recipeRegistry.addNewCraftHandler( "inscribe", Inscribe.class );
+		recipeRegistry.addNewCraftHandler( "press", Press.class );
 
-		recipeRegistery.addNewCraftHandler( "shaped", Shaped.class );
-		recipeRegistery.addNewCraftHandler( "shapeless", Shapeless.class );
+		recipeRegistry.addNewCraftHandler( "shaped", Shaped.class );
+		recipeRegistry.addNewCraftHandler( "shapeless", Shapeless.class );
 
 		RecipeSorter.register( "AE2-Facade", FacadeRecipe.class, Category.SHAPED, "" );
 		RecipeSorter.register( "AE2-Shaped", ShapedRecipe.class, Category.SHAPED, "" );
