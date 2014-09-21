@@ -22,13 +22,13 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 
 	public ItemStack getModItem(String modID, String Name, int meta)
 	{
-		ItemStack myItmeStack = GameRegistry.findItemStack( modID, Name, 1 );
+		ItemStack myItemStack = GameRegistry.findItemStack( modID, Name, 1 );
 
-		if ( myItmeStack == null )
+		if ( myItemStack == null )
 			return null;
 
-		myItmeStack.setItemDamage( meta );
-		return myItmeStack;
+		myItemStack.setItemDamage( meta );
+		return myItemStack;
 	}
 
 	public void configure()
