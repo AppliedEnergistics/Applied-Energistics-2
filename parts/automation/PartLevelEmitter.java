@@ -214,7 +214,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 				lastReportedValue = (long) proxy.getEnergy().getStoredPower();
 				updateState();
 
-				// no more item stuf..
+				// no more item stuff..
 				proxy.getStorage().getItemInventory().removeListener( this );
 			}
 			catch (GridAccessException e)
