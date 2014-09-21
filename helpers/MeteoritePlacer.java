@@ -380,10 +380,10 @@ public class MeteoritePlacer
 	Block skystone = AEApi.instance().blocks().blockSkyStone.block();
 	Block skychest;
 
-	double real_sizeOfMetorite = (Math.random() * 6.0) + 2;
-	double real_crator = real_sizeOfMetorite * 2 + 5;
+	double real_sizeOfMeteorite = (Math.random() * 6.0) + 2;
+	double real_crator = real_sizeOfMeteorite * 2 + 5;
 
-	double sizeOfMetorite = real_sizeOfMetorite * real_sizeOfMetorite;
+	double sizeOfMeteorite = real_sizeOfMeteorite * real_sizeOfMeteorite;
 	double crator = real_crator * real_crator;
 
 	public MeteoritePlacer() {
@@ -430,9 +430,9 @@ public class MeteoritePlacer
 		int y = settings.getInteger( "y" );
 		int z = settings.getInteger( "z" );
 
-		real_sizeOfMetorite = settings.getDouble( "real_sizeOfMetorite" );
+		real_sizeOfMeteorite = settings.getDouble( "real_sizeOfMeteorite" );
 		real_crator = settings.getDouble( "real_crator" );
-		sizeOfMetorite = settings.getDouble( "sizeOfMetorite" );
+		sizeOfMeteorite = settings.getDouble( "sizeOfMeteorite" );
 		crator = settings.getDouble( "crator" );
 
 		Block blk = Block.getBlockById( settings.getInteger( "blk" ) );
@@ -485,9 +485,9 @@ public class MeteoritePlacer
 		settings.setInteger( "z", z );
 		settings.setInteger( "blk", Block.getIdFromBlock( blk ) );
 
-		settings.setDouble( "real_sizeOfMetorite", real_sizeOfMetorite );
+		settings.setDouble( "real_sizeOfMeteorite", real_sizeOfMeteorite );
 		settings.setDouble( "real_crator", real_crator );
-		settings.setDouble( "sizeOfMetorite", sizeOfMetorite );
+		settings.setDouble( "sizeOfMeteorite", sizeOfMeteorite );
 		settings.setDouble( "crator", crator );
 
 		settings.setBoolean( "lava", Math.random() > 0.9 );
@@ -583,7 +583,7 @@ public class MeteoritePlacer
 				{
 					double dx = i - x;
 					double dz = k - z;
-					double h = y - real_sizeOfMetorite + 1 + type.adjustCrator();
+					double h = y - real_sizeOfMeteorite + 1 + type.adjustCrator();
 
 					double distanceFrom = dx * dx + dz * dz;
 
@@ -624,7 +624,7 @@ public class MeteoritePlacer
 					double dy = j - y;
 					double dz = k - z;
 
-					if ( dx * dx * 0.7 + dy * dy * (j > y ? 1.4 : 0.8) + dz * dz * 0.7 < sizeOfMetorite )
+					if ( dx * dx * 0.7 + dy * dy * (j > y ? 1.4 : 0.8) + dz * dz * 0.7 < sizeOfMeteorite )
 						put( w, i, j, k, skystone );
 				}
 

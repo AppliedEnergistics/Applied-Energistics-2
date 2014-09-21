@@ -47,16 +47,16 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 				int z = r.nextInt( 16 ) + (chunkZ << 4);
 
 				int depth = 180 + r.nextInt( 20 );
-				TickHandler.instance.addCallable( w, new MetoriteSpawn( x, depth, z, w ) );
+				TickHandler.instance.addCallable( w, new MeteoriteSpawn( x, depth, z, w ) );
 			}
 			else
-				TickHandler.instance.addCallable( w, new MetoriteSpawn( chunkX << 4, 128, chunkZ << 4, w ) );
+				TickHandler.instance.addCallable( w, new MeteoriteSpawn( chunkX << 4, 128, chunkZ << 4, w ) );
 		}
 		else
 			WorldSettings.getInstance().getCompass().updateArea( w, chunkX, chunkZ );
 	}
 
-	class MetoriteSpawn implements Callable
+	class MeteoriteSpawn implements Callable
 	{
 
 		final int x;
@@ -64,7 +64,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 		final World w;
 		int depth;
 
-		public MetoriteSpawn(int x, int depth, int z, World w) {
+		public MeteoriteSpawn(int x, int depth, int z, World w) {
 			this.x = x;
 			this.z = z;
 			this.w = w;
