@@ -97,14 +97,14 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 			if ( power != newPower )
 			{
 				power = newPower;
-				notifyNeightbors();
+				notifyNeighbors();
 			}
 		}
 		recursive = false;
 
 	}
 
-	public void notifyNeightbors()
+	public void notifyNeighbors()
 	{
 		World worldObj = tile.getWorldObj();
 
