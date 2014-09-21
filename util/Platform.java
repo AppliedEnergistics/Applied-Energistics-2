@@ -342,7 +342,7 @@ public class Platform
 	}
 
 	/*
-	 * Lots of sillyness to try and account for weird tag related junk, basically requires that two tags have at least
+	 * Lots of silliness to try and account for weird tag related junk, basically requires that two tags have at least
 	 * something in their tags before it wasts its time comparing them.
 	 */
 	public static boolean sameStackStags(ItemStack a, ItemStack b)
