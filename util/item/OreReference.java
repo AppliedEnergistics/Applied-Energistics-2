@@ -16,12 +16,12 @@ public class OreReference
 	private ArrayList aeotherOptions = null;
 	private HashSet<Integer> ores = new HashSet<Integer>();
 
-	public Collection<ItemStack> getEquivilients()
+	public Collection<ItemStack> getEquivalents()
 	{
 		return otherOptions;
 	}
 
-	public List<IAEItemStack> getAEEquivilients()
+	public List<IAEItemStack> getAEEquivalents()
 	{
 		if ( aeotherOptions == null )
 		{

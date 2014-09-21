@@ -207,16 +207,16 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 		if ( ais.isOre() )
 		{
 			OreReference or = ais.def.isOre;
-			if ( or.getAEEquivilients().size() == 1 )
+			if ( or.getAEEquivalents().size() == 1 )
 			{
-				IAEItemStack is = or.getAEEquivilients().get( 0 );
+				IAEItemStack is = or.getAEEquivalents().get( 0 );
 				return findFuzzyDamage( (AEItemStack) is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE );
 			}
 			else
 			{
 				Collection<StackType> output = new LinkedList();
 
-				for (IAEItemStack is : or.getAEEquivilients())
+				for (IAEItemStack is : or.getAEEquivalents())
 					output.addAll( findFuzzyDamage( (AEItemStack) is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE ) );
 
 				return output;

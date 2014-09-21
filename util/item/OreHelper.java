@@ -67,7 +67,7 @@ public class OreHelper
 
 			OreReference ref = new OreReference();
 			Collection<Integer> ores = ref.getOres();
-			Collection<ItemStack> set = ref.getEquivilients();
+			Collection<ItemStack> set = ref.getEquivalents();
 
 			for (String ore : OreDictionary.getOreNames())
 			{
@@ -143,7 +143,7 @@ public class OreHelper
 		if ( a == null )
 			return false;
 
-		for (ItemStack oreItem : a.getEquivilients())
+		for (ItemStack oreItem : a.getEquivalents())
 		{
 			if ( OreDictionary.itemMatches( oreItem, o, false ) )
 				return true;
