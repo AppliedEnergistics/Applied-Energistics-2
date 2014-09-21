@@ -35,7 +35,7 @@ public class MeteoritePlacer
 			return 0;
 		}
 
-		public void getRandomFall(IMetroiteWorld w, int x, int y, int z)
+		public void getRandomFall(IMeteoriteWorld w, int x, int y, int z)
 		{
 			double a = Math.random();
 			if ( a > 0.9 )
@@ -48,7 +48,7 @@ public class MeteoritePlacer
 				put( w, x, y, z, Blocks.gravel );
 		}
 
-		public void getRandomInset(IMetroiteWorld w, int x, int y, int z)
+		public void getRandomInset(IMeteoriteWorld w, int x, int y, int z)
 		{
 			double a = Math.random();
 			if ( a > 0.9 )
@@ -73,17 +73,17 @@ public class MeteoritePlacer
 		Block blk;
 		int meta;
 
-		public FalloutCopy(IMetroiteWorld w, int x, int y, int z) {
+		public FalloutCopy(IMeteoriteWorld w, int x, int y, int z) {
 			blk = w.getBlock( x, y, z );
 			meta = w.getBlockMetadata( x, y, z );
 		}
 
-		public void getOther(IMetroiteWorld w, int x, int y, int z, double a)
+		public void getOther(IMeteoriteWorld w, int x, int y, int z, double a)
 		{
 
 		}
 
-		public void getRandomFall(IMetroiteWorld w, int x, int y, int z)
+		public void getRandomFall(IMeteoriteWorld w, int x, int y, int z)
 		{
 			double a = Math.random();
 			if ( a > 0.9 )
@@ -92,7 +92,7 @@ public class MeteoritePlacer
 				getOther( w, x, y, z, a );
 		}
 
-		public void getRandomInset(IMetroiteWorld w, int x, int y, int z)
+		public void getRandomInset(IMeteoriteWorld w, int x, int y, int z)
 		{
 			double a = Math.random();
 			if ( a > 0.9 )
@@ -107,7 +107,7 @@ public class MeteoritePlacer
 	private class FalloutSand extends FalloutCopy
 	{
 
-		public FalloutSand(IMetroiteWorld w, int x, int y, int z) {
+		public FalloutSand(IMeteoriteWorld w, int x, int y, int z) {
 			super( w, x, y, z );
 		}
 
@@ -116,7 +116,7 @@ public class MeteoritePlacer
 			return 2;
 		}
 
-		public void getOther(IMetroiteWorld w, int x, int y, int z, double a)
+		public void getOther(IMeteoriteWorld w, int x, int y, int z, double a)
 		{
 			if ( a > 0.66 )
 				put( w, x, y, z, Blocks.glass );
@@ -127,7 +127,7 @@ public class MeteoritePlacer
 	private class FalloutSnow extends FalloutCopy
 	{
 
-		public FalloutSnow(IMetroiteWorld w, int x, int y, int z) {
+		public FalloutSnow(IMeteoriteWorld w, int x, int y, int z) {
 			super( w, x, y, z );
 		}
 
@@ -136,7 +136,7 @@ public class MeteoritePlacer
 			return 2;
 		}
 
-		public void getOther(IMetroiteWorld w, int x, int y, int z, double a)
+		public void getOther(IMeteoriteWorld w, int x, int y, int z, double a)
 		{
 			if ( a > 0.7 )
 				put( w, x, y, z, Blocks.snow );
@@ -146,7 +146,7 @@ public class MeteoritePlacer
 
 	};
 
-	public interface IMetroiteWorld
+	public interface IMeteoriteWorld
 	{
 
 		int minX(int in);
@@ -177,7 +177,7 @@ public class MeteoritePlacer
 
 	};
 
-	static public class StandardWorld implements IMetroiteWorld
+	static public class StandardWorld implements IMeteoriteWorld
 	{
 
 		protected World w;
@@ -422,7 +422,7 @@ public class MeteoritePlacer
 
 	NBTTagCompound settings;
 
-	public boolean spawnMeteorite(IMetroiteWorld w, NBTTagCompound metoriteBlob)
+	public boolean spawnMeteorite(IMeteoriteWorld w, NBTTagCompound metoriteBlob)
 	{
 		settings = metoriteBlob;
 
@@ -468,7 +468,7 @@ public class MeteoritePlacer
 		return Cx * Cx + Cz * Cz;
 	}
 
-	public boolean spawnMeteorite(IMetroiteWorld w, int x, int y, int z)
+	public boolean spawnMeteorite(IMeteoriteWorld w, int x, int y, int z)
 	{
 		int validBlocks = 0;
 
@@ -564,7 +564,7 @@ public class MeteoritePlacer
 		return false;
 	}
 
-	private void placeCrator(IMetroiteWorld w, int x, int y, int z)
+	private void placeCrator(IMeteoriteWorld w, int x, int y, int z)
 	{
 		boolean lava = settings.getBoolean( "lava" );
 
@@ -608,7 +608,7 @@ public class MeteoritePlacer
 		}
 	}
 
-	private void placeMetor(IMetroiteWorld w, int x, int y, int z)
+	private void placeMetor(IMeteoriteWorld w, int x, int y, int z)
 	{
 		int Xmeteor_l = w.minX( x - 8 );
 		int Xmeteor_h = w.maxX( x + 8 );
@@ -720,7 +720,7 @@ public class MeteoritePlacer
 		}
 	}
 
-	private void Decay(IMetroiteWorld w, int x, int y, int z)
+	private void Decay(IMeteoriteWorld w, int x, int y, int z)
 	{
 		double randomShit = 0;
 
@@ -794,7 +794,7 @@ public class MeteoritePlacer
 				}
 	}
 
-	private boolean put(IMetroiteWorld w, int i, int j, int k, Block blk)
+	private boolean put(IMeteoriteWorld w, int i, int j, int k, Block blk)
 	{
 		Block original = w.getBlock( i, j, k );
 
@@ -805,7 +805,7 @@ public class MeteoritePlacer
 		return true;
 	}
 
-	private void put(IMetroiteWorld w, int i, int j, int k, Block blk, int meta)
+	private void put(IMeteoriteWorld w, int i, int j, int k, Block blk, int meta)
 	{
 		if ( w.getBlock( i, j, k ) == Blocks.bedrock )
 			return;
