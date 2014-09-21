@@ -26,7 +26,7 @@ public class MetaRotation implements IOrientable
 		if ( w instanceof World )
 			((World) w).setBlockMetadataWithNotify( x, y, z, Up.ordinal(), 1 + 2 );
 		else
-			throw new RuntimeException( w.getClass().getName() + " recieved, exptected World" );
+			throw new RuntimeException( w.getClass().getName() + " received, exptected World" );
 	}
 
 	@Override

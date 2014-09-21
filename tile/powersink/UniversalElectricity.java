@@ -19,17 +19,17 @@ public abstract class UniversalElectricity extends ThermalExpansion implements I
 	final public float receiveElectricity(ForgeDirection from, ElectricityPack receive, boolean doReceive)
 	{
 		float accepted = 0;
-		double recievedPower = receive.getWatts();
+		double receivedPower = receive.getWatts();
 
 		if ( doReceive )
 		{
-			accepted = (float) (recievedPower - injectExternalPower( PowerUnits.KJ, recievedPower ));
+			accepted = (float) (receivedPower - injectExternalPower( PowerUnits.KJ, receivedPower ));
 		}
 		else
 		{
 			double whatIWant = getExternalPowerDemand( PowerUnits.KJ );
-			if ( whatIWant > recievedPower )
-				accepted = (float) recievedPower;
+			if ( whatIWant > receivedPower )
+				accepted = (float) receivedPower;
 			else
 				accepted = (float) whatIWant;
 		}
