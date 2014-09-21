@@ -102,7 +102,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 
 	private boolean tryMeteorite(World w, int depth, int x, int z)
 	{
-		for (int trys = 0; trys < 20; trys++)
+		for (int tries = 0; tries < 20; tries++)
 		{
 			MeteoritePlacer mp = new MeteoritePlacer();
 
