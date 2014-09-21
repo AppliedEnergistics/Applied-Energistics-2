@@ -242,7 +242,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 		return currenttip;
 	}
 
-	// Vanillia version...
+	// Vanilla version...
 	protected void drawItemStackTooltip(ItemStack stack, int x, int y)
 	{
 		Slot s = getSlot( x, y );
