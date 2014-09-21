@@ -50,7 +50,7 @@ public abstract class MBCalculator
 	public abstract void disconnect();
 
 	/**
-	 * verify if the structure is the correct dimentions, or size
+	 * verify if the structure is the correct dimensions, or size
 	 * 
 	 * @param min
 	 * @param max
