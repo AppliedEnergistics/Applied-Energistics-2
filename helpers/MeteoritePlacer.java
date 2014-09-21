@@ -422,9 +422,9 @@ public class MeteoritePlacer
 
 	NBTTagCompound settings;
 
-	public boolean spawnMeteorite(IMeteoriteWorld w, NBTTagCompound metoriteBlob)
+	public boolean spawnMeteorite(IMeteoriteWorld w, NBTTagCompound meteoriteBlob)
 	{
-		settings = metoriteBlob;
+		settings = meteoriteBlob;
 
 		int x = settings.getInteger( "x" );
 		int y = settings.getInteger( "y" );
