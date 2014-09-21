@@ -148,7 +148,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		}
 	}
 
-	protected void handleButtonVisiblity()
+	protected void handleButtonVisibility()
 	{
 		craftingMode.setVisibility( bc.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 );
 		fuzzyMode.setVisibility( bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );

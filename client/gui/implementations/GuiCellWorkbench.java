@@ -56,7 +56,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		handleButtonVisiblity();
+		handleButtonVisibility();
 
 		bindTexture( getBackground() );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, ySize );
@@ -148,7 +148,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 		buttonList.add( copyMode );
 	}
 
-	protected void handleButtonVisiblity()
+	protected void handleButtonVisibility()
 	{
 		copyMode.setState( ccwb.copyMode == CopyMode.CLEAR_ON_REMOVE );
 
