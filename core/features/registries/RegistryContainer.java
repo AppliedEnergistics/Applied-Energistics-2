@@ -26,7 +26,7 @@ public class RegistryContainer implements IRegistryContainer
 	private WirelessRegistry WirelessRegistry = new WirelessRegistry();
 	private GridCacheRegistry GridCacheRegistry = new GridCacheRegistry();
 	private P2PTunnelRegistry P2PRegistry = new P2PTunnelRegistry();
-	private MovableTileRegistry MoveableReg = new MovableTileRegistry();
+	private MovableTileRegistry MovableReg = new MovableTileRegistry();
 	private MatterCannonAmmoRegistry matterCannonReg = new MatterCannonAmmoRegistry();
 	private PlayerRegistry playerreg = new PlayerRegistry();
 	private IRecipeHandlerRegistry recipeReg = new RecipeHandlerRegistry();
@@ -76,7 +76,7 @@ public class RegistryContainer implements IRegistryContainer
 	@Override
 	public IMovableRegistry movable()
 	{
-		return MoveableReg;
+		return MovableReg;
 	}
 
 	@Override
