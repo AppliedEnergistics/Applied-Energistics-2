@@ -48,7 +48,7 @@ public class GridConnection implements IGridConnection, IPathItem
 		}
 
 		if ( a == null || b == null )
-			throw new GridException( "Connection Forged Between null enties." );
+			throw new GridException( "Connection Forged Between null entities." );
 
 		if ( a.hasConnection( b ) || b.hasConnection( a ) )
 			throw new GridException( "Connection already exists." );

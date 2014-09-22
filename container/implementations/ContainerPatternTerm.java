@@ -33,7 +33,6 @@ import appeng.container.slot.SlotFakeCraftingMatrix;
 import appeng.container.slot.SlotPatternOutputs;
 import appeng.container.slot.SlotPatternTerm;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.core.sync.packets.PacketPatternSlot;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ItemViewCell;
@@ -62,10 +61,10 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 	public PartPatternTerminal ct;
 
-	public ContainerPatternTerm(InventoryPlayer ip, ITerminalHost montiorable)
+	public ContainerPatternTerm(InventoryPlayer ip, ITerminalHost monitorable)
 	{
-		super( ip, montiorable, false );
-		ct = (PartPatternTerminal) montiorable;
+		super( ip, monitorable, false );
+		ct = (PartPatternTerminal) monitorable;
 
 		IInventory patternInv = ct.getInventoryByName( "pattern" );
 		IInventory output = ct.getInventoryByName( "output" );
@@ -75,7 +74,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			for (int x = 0; x < 3; x++)
 				addSlotToContainer( craftingSlots[x + y * 3] = new SlotFakeCraftingMatrix( crafting, x + y * 3, 18 + x * 18, -76 + y * 18 ) );
 
-		addSlotToContainer( craftSlot = new SlotPatternTerm( ip.player, mySrc, powerSrc, montiorable, crafting, patternInv, cOut, 110, -76 + 18, this, 2, this ) );
+		addSlotToContainer( craftSlot = new SlotPatternTerm( ip.player, mySrc, powerSrc, monitorable, crafting, patternInv, cOut, 110, -76 + 18, this, 2, this ) );
 		craftSlot.IIcon = -1;
 
 		for (int y = 0; y < 3; y++)
@@ -85,8 +84,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			outputSlots[y].IIcon = -1;
 		}
 
-		addSlotToContainer( patternSlotIN = new SlotRestrictedInput( PlaceableItemType.BLANK_PATTERN, patternInv, 0, 147, -72 - 9, invPlayer ) );
-		addSlotToContainer( patternSlotOUT = new SlotRestrictedInput( PlaceableItemType.ENCODED_PATTERN, patternInv, 1, 147, -72 + 34, invPlayer ) );
+		addSlotToContainer( patternSlotIN = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.BLANK_PATTERN, patternInv, 0, 147, -72 - 9, invPlayer ) );
+		addSlotToContainer( patternSlotOUT = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODED_PATTERN, patternInv, 1, 147, -72 + 34, invPlayer ) );
 
 		patternSlotOUT.setStackLimit( 1 );
 

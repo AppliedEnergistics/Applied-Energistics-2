@@ -14,10 +14,10 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 	double powerMultiplier = 0.5;
 	IPortableCell civ;
 
-	public ContainerMEPortableCell(InventoryPlayer ip, IPortableCell montiorable) {
-		super( ip, (ITerminalHost) montiorable, false );
+	public ContainerMEPortableCell(InventoryPlayer ip, IPortableCell monitorable) {
+		super( ip, (ITerminalHost) monitorable, false );
 		lockPlayerInventorySlot( ip.currentItem );
-		civ = montiorable;
+		civ = monitorable;
 		bindPlayerInventory( ip, 0, 0 );
 	}
 

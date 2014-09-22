@@ -131,7 +131,7 @@ public class StorageHelper
 	Method onEntityRemoved;
 
 	/**
-	 * Mostly from dimentional doors.. which mostly got it form X-Comp.
+	 * Mostly from dimensional doors.. which mostly got it form X-Comp.
 	 * 
 	 * @param world
 	 * @param entity
@@ -182,7 +182,7 @@ public class StorageHelper
 			if ( player != null )
 			{
 				if ( link.dim.provider instanceof StorageWorldProvider )
-					Achievements.SpatialIOExplorerer.addToPlayer( player );
+					Achievements.SpatialIOExplorer.addToPlayer( player );
 
 				player.mcServer.getConfigurationManager().transferPlayerToDimension( player, link.dim.provider.dimensionId, new METeleporter( newWorld, link ) );
 			}
@@ -299,10 +299,10 @@ public class StorageHelper
 		}
 
 		for (WorldCoord wc : cDst.updates)
-			cDst.wrld.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.air );
+			cDst.world.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.air );
 
 		for (WorldCoord wc : cSrc.updates)
-			cSrc.wrld.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.air );
+			cSrc.world.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.air );
 
 		transverseEdges( x - 1, y - 1, z - 1, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1, new triggerUpdates( src ) );
 		transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new triggerUpdates( dst ) );

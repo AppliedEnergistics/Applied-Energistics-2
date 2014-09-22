@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import appeng.recipes.handlers.IWebsiteSerializer;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingIngredientError;
@@ -28,7 +29,6 @@ import appeng.core.features.AEFeature;
 import appeng.items.materials.ItemMultiMaterial;
 import appeng.items.misc.ItemCrystalSeed;
 import appeng.items.parts.ItemMultiPart;
-import appeng.recipes.handlers.IWebsiteSeralizer;
 import appeng.recipes.handlers.OreRegistration;
 
 import com.google.common.collect.HashMultimap;
@@ -56,17 +56,17 @@ public class RecipeHandler implements IRecipeHandler
 		data.Handlers.add( ch );
 	}
 
-	public List<IWebsiteSeralizer> findRecipe(ItemStack output)
+	public List<IWebsiteSerializer> findRecipe(ItemStack output)
 	{
-		List<IWebsiteSeralizer> out = new LinkedList<IWebsiteSeralizer>();
+		List<IWebsiteSerializer> out = new LinkedList<IWebsiteSerializer>();
 
 		for (ICraftHandler ch : data.Handlers)
 		{
 			try
 			{
-				if ( ch instanceof IWebsiteSeralizer && ((IWebsiteSeralizer) ch).canCraft( output ) )
+				if ( ch instanceof IWebsiteSerializer && ((IWebsiteSerializer) ch).canCraft( output ) )
 				{
-					out.add( (IWebsiteSeralizer) ch );
+					out.add( (IWebsiteSerializer) ch );
 				}
 			}
 			catch (Throwable t)
@@ -102,7 +102,7 @@ public class RecipeHandler implements IRecipeHandler
 				}
 				catch (RegistrationError e)
 				{
-					AELog.warning( "Unable to regsiter a recipe: " + e.getMessage() );
+					AELog.warning( "Unable to register a recipe: " + e.getMessage() );
 					if ( data.exceptions )
 						AELog.error( e );
 					if ( data.crash )
@@ -112,7 +112,7 @@ public class RecipeHandler implements IRecipeHandler
 				{
 					if ( data.erroronmissing )
 					{
-						AELog.warning( "Unable to regsiter a recipe:" + e.getMessage() );
+						AELog.warning( "Unable to register a recipe:" + e.getMessage() );
 						if ( data.exceptions )
 							AELog.error( e );
 						if ( data.crash )
@@ -140,7 +140,7 @@ public class RecipeHandler implements IRecipeHandler
 			{
 				ZipOutputStream out = new ZipOutputStream( new FileOutputStream( "recipes.zip" ) );
 
-				HashMultimap<String, IWebsiteSeralizer> combined = HashMultimap.create();
+				HashMultimap<String, IWebsiteSerializer> combined = HashMultimap.create();
 
 				for (String s : data.knownItem)
 				{
@@ -152,7 +152,7 @@ public class RecipeHandler implements IRecipeHandler
 						for (ItemStack is : i.getItemStackSet())
 						{
 							String realName = getName( is );
-							List<IWebsiteSeralizer> recipes = findRecipe( is );
+							List<IWebsiteSerializer> recipes = findRecipe( is );
 							if ( !recipes.isEmpty() )
 								combined.putAll( realName, recipes );
 						}
@@ -180,7 +180,7 @@ public class RecipeHandler implements IRecipeHandler
 				{
 					int offset = 0;
 
-					for (IWebsiteSeralizer ws : combined.get( realName ))
+					for (IWebsiteSerializer ws : combined.get( realName ))
 					{
 						String rew = ws.getPattern( this );
 						if ( rew != null && rew.length() > 0 )
@@ -592,11 +592,11 @@ public class RecipeHandler implements IRecipeHandler
 				{
 					if ( hasQty )
 					{
-						cList.add( findIngrident( v, qty ) );
+						cList.add( findIngredient( v, qty ) );
 						hasQty = false;
 					}
 					else
-						cList.add( findIngrident( v, 1 ) );
+						cList.add( findIngredient( v, 1 ) );
 				}
 			}
 		}
@@ -607,7 +607,7 @@ public class RecipeHandler implements IRecipeHandler
 		return out;
 	}
 
-	private IIngredient findIngrident(String v, int qty) throws RecipeError
+	private IIngredient findIngredient(String v, int qty) throws RecipeError
 	{
 		GroupIngredient gi = data.groups.get( v );
 

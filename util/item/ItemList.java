@@ -156,7 +156,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	@Override
 	synchronized public Iterator iterator()
 	{
-		return new MeanfulIterator( records.values().iterator() );
+		return new MeaningfulIterator( records.values().iterator() );
 	}
 
 	@Override
@@ -206,17 +206,17 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 		AEItemStack ais = (AEItemStack) filter;
 		if ( ais.isOre() )
 		{
-			OreRefrence or = ais.def.isOre;
-			if ( or.getAEEquivilients().size() == 1 )
+			OreReference or = ais.def.isOre;
+			if ( or.getAEEquivalents().size() == 1 )
 			{
-				IAEItemStack is = or.getAEEquivilients().get( 0 );
+				IAEItemStack is = or.getAEEquivalents().get( 0 );
 				return findFuzzyDamage( (AEItemStack) is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE );
 			}
 			else
 			{
 				Collection<StackType> output = new LinkedList();
 
-				for (IAEItemStack is : or.getAEEquivilients())
+				for (IAEItemStack is : or.getAEEquivalents())
 					output.addAll( findFuzzyDamage( (AEItemStack) is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE ) );
 
 				return output;

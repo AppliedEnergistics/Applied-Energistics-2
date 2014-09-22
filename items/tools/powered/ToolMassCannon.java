@@ -60,7 +60,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 	public ToolMassCannon() {
 		super( ToolMassCannon.class, null );
-		setfeature( EnumSet.of( AEFeature.MatterCannon, AEFeature.PoweredTools ) );
+		setFeature( EnumSet.of( AEFeature.MatterCannon, AEFeature.PoweredTools ) );
 		maxStoredPower = AEConfig.instance.mattercannon_battery;
 	}
 
@@ -144,8 +144,8 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						Vec3 direction = Vec3.createVectorHelper( (double) f7 * d3, (double) f6 * d3, (double) f8 * d3 );
 						direction.normalize();
 
-						float penitration = AEApi.instance().registries().matterCannon().getPenetration( ammo ); // 196.96655f;
-						if ( penitration <= 0 )
+						float penetration = AEApi.instance().registries().matterCannon().getPenetration( ammo ); // 196.96655f;
+						if ( penetration <= 0 )
 						{
 							ItemStack type = ((IAEItemStack) aeammo).getItemStack();
 							if ( type.getItem() instanceof ItemPaintBall )
@@ -156,7 +156,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						}
 						else
 						{
-							standardAmmo( penitration, w, p, vec3, vec31, direction, d0, d1, d2 );
+							standardAmmo( penetration, w, p, vec3, vec31, direction, d0, d1, d2 );
 						}
 
 					}
@@ -180,7 +180,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 		Entity entity = null;
 		List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
-		double Closeest = 9999999.0D;
+		double closest = 9999999.0D;
 		int l;
 
 		for (l = 0; l < list.size(); ++l)
@@ -203,10 +203,10 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 					{
 						double nd = vec3.squareDistanceTo( movingobjectposition1.hitVec );
 
-						if ( nd < Closeest )
+						if ( nd < closest )
 						{
 							entity = entity1;
-							Closeest = nd;
+							closest = nd;
 						}
 					}
 				}
@@ -216,7 +216,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 		MovingObjectPosition pos = w.rayTraceBlocks( vec3, vec31, false );
 
 		Vec3 Srec = Vec3.createVectorHelper( d0, d1, d2 );
-		if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( Srec ) > Closeest )
+		if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( Srec ) > closest )
 		{
 			pos = new MovingObjectPosition( entity );
 		}
@@ -292,10 +292,10 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 		}
 	}
 
-	private void standardAmmo(float penitration, World w, EntityPlayer p, Vec3 vec3, Vec3 vec31, Vec3 direction, double d0, double d1, double d2)
+	private void standardAmmo(float penetration, World w, EntityPlayer p, Vec3 vec3, Vec3 vec31, Vec3 direction, double d0, double d1, double d2)
 	{
 		boolean hasDestroyedSomething = true;
-		while (penitration > 0 && hasDestroyedSomething)
+		while (penetration > 0 && hasDestroyedSomething)
 		{
 			hasDestroyedSomething = false;
 
@@ -305,7 +305,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 			Entity entity = null;
 			List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
-			double Closeest = 9999999.0D;
+			double closest = 9999999.0D;
 			int l;
 
 			for (l = 0; l < list.size(); ++l)
@@ -328,10 +328,10 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						{
 							double nd = vec3.squareDistanceTo( movingobjectposition1.hitVec );
 
-							if ( nd < Closeest )
+							if ( nd < closest )
 							{
 								entity = entity1;
-								Closeest = nd;
+								closest = nd;
 							}
 						}
 					}
@@ -340,7 +340,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 			Vec3 Srec = Vec3.createVectorHelper( d0, d1, d2 );
 			MovingObjectPosition pos = w.rayTraceBlocks( vec3, vec31, true );
-			if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( Srec ) > Closeest )
+			if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( Srec ) > closest )
 			{
 				pos = new MovingObjectPosition( entity );
 			}
@@ -367,11 +367,11 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 				if ( pos.typeOfHit == MovingObjectType.ENTITY )
 				{
-					int dmg = (int) Math.ceil( penitration / 20.0f );
+					int dmg = (int) Math.ceil( penetration / 20.0f );
 					if ( pos.entityHit instanceof EntityLivingBase )
 					{
 						EntityLivingBase el = (EntityLivingBase) pos.entityHit;
-						penitration -= dmg;
+						penetration -= dmg;
 						el.knockBack( p, 0, (double) -direction.xCoord, (double) -direction.zCoord );
 						// el.knockBack( p, 0, vec3.xCoord,
 						// vec3.zCoord );
@@ -392,7 +392,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				else if ( pos.typeOfHit == MovingObjectType.BLOCK )
 				{
 					if ( !AEConfig.instance.isFeatureEnabled( AEFeature.MassCannonBlockDamage ) )
-						penitration = 0;
+						penetration = 0;
 					else
 					{
 						Block b = w.getBlock( pos.blockX, pos.blockY, pos.blockZ );
@@ -402,11 +402,11 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						float hardness = b.getBlockHardness( w, pos.blockX, pos.blockY, pos.blockZ ) * 9.0f;
 						if ( hardness >= 0.0 )
 						{
-							if ( penitration > hardness && Platform.hasPermissions( new DimensionalCoord( w, pos.blockX, pos.blockY, pos.blockZ ), p ) )
+							if ( penetration > hardness && Platform.hasPermissions( new DimensionalCoord( w, pos.blockX, pos.blockY, pos.blockZ ), p ) )
 							{
 								hasDestroyedSomething = true;
-								penitration -= hardness;
-								penitration *= 0.60;
+								penetration -= hardness;
+								penetration *= 0.60;
 								w.func_147480_a( pos.blockX, pos.blockY, pos.blockZ, true );
 								// w.destroyBlock( pos.blockX, pos.blockY, pos.blockZ, true );
 							}
@@ -492,13 +492,13 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 	}
 
 	@Override
-	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requsetedAddition)
+	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requestedAddition)
 	{
-		float pen = AEApi.instance().registries().matterCannon().getPenetration( requsetedAddition.getItemStack() );
+		float pen = AEApi.instance().registries().matterCannon().getPenetration( requestedAddition.getItemStack() );
 		if ( pen > 0 )
 			return false;
 
-		if ( requsetedAddition.getItem() instanceof ItemPaintBall )
+		if ( requestedAddition.getItem() instanceof ItemPaintBall )
 			return false;
 
 		return true;

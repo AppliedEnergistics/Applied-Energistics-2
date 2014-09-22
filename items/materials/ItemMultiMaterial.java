@@ -55,7 +55,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 
 	public ItemMultiMaterial() {
 		super( ItemMultiMaterial.class );
-		setfeature( EnumSet.of( AEFeature.Core ) );
+		setFeature( EnumSet.of( AEFeature.Core ) );
 		setHasSubtypes( true );
 		instance = this;
 	}

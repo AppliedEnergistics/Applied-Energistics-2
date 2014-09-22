@@ -115,7 +115,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public void removePart(ForgeDirection side, boolean supressUpdate)
+	public void removePart(ForgeDirection side, boolean suppressUpdate)
 	{
 		if ( side == ForgeDirection.UNKNOWN )
 		{
@@ -130,7 +130,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			setSide( side, null );
 		}
 
-		if ( !supressUpdate )
+		if ( !suppressUpdate )
 		{
 			updateDynamicRender();
 			updateConnections();
@@ -805,7 +805,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	@Override
 	public void clearContainer()
 	{
-		throw new RuntimeException( "Now thats silly!" );
+		throw new RuntimeException( "Now that is silly!" );
 	}
 
 	@Override

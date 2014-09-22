@@ -126,11 +126,11 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 
 	public boolean disableColoredCableRecipesInNEI = true;
 
-	public boolean updateable = false;
+	public boolean updatable = false;
 	final private File myPath;
 
-	public double metoriteClusterChance = 0.1;
-	public double metoriteSpawnChance = 0.3;
+	public double meteoriteClusterChance = 0.1;
+	public double meteoriteSpawnChance = 0.3;
 
 	public int craftingCalculationTimePerTick = 5;
 
@@ -235,8 +235,8 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 
 		spawnChargedChance = (float) (1.0 - get( "worldGen", "spawnChargedChance", 1.0 - spawnChargedChance ).getDouble( 1.0 - spawnChargedChance ));
 		minMeteoriteDistance = get( "worldGen", "minMeteoriteDistance", minMeteoriteDistance ).getInt( minMeteoriteDistance );
-		metoriteClusterChance = get( "worldGen", "metoriteClusterChance", metoriteClusterChance ).getDouble( metoriteClusterChance );
-		metoriteSpawnChance = get( "worldGen", "metoriteSpawnChance", metoriteSpawnChance ).getDouble( metoriteSpawnChance );
+		meteoriteClusterChance = get( "worldGen", "meteoriteClusterChance", meteoriteClusterChance ).getDouble( meteoriteClusterChance );
+		meteoriteSpawnChance = get( "worldGen", "meteoriteSpawnChance", meteoriteSpawnChance ).getDouble( meteoriteSpawnChance );
 		quartzOresPerCluster = get( "worldGen", "quartzOresPerCluster", quartzOresPerCluster ).getInt( quartzOresPerCluster );
 		quartzOresClusterAmount = get( "worldGen", "quartzOresClusterAmount", quartzOresClusterAmount ).getInt( quartzOresClusterAmount );
 
@@ -270,7 +270,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 		{
 			if ( feature.isVisible() )
 			{
-				if ( get( "Features." + feature.getCategory(), feature.name(), feature.defaultVaue() ).getBoolean( feature.defaultVaue() ) )
+				if ( get( "Features." + feature.getCategory(), feature.name(), feature.defaultValue() ).getBoolean( feature.defaultValue() ) )
 					featureFlags.add( feature );
 			}
 			else
@@ -326,7 +326,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 			}
 		}
 
-		updateable = true;
+		updatable = true;
 	}
 
 	public boolean useAEVersion(MaterialType mt)
@@ -377,7 +377,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 			}
 		}
 
-		if ( updateable )
+		if ( updatable )
 			save();
 	}
 

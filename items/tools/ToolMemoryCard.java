@@ -21,7 +21,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 
 	public ToolMemoryCard() {
 		super( ToolMemoryCard.class );
-		setfeature( EnumSet.of( AEFeature.Core ) );
+		setFeature( EnumSet.of( AEFeature.Core ) );
 		setMaxStackSize( 1 );
 	}
 

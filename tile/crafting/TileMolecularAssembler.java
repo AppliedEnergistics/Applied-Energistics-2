@@ -94,7 +94,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 				for (int x = 0; x < table.getSizeInventory(); x++)
 					inv.setInventorySlotContents( x, table.getStackInSlot( x ) );
 
-				updateSleepyness();
+				updateSleepiness();
 				markDirty();
 				return true;
 			}
@@ -136,10 +136,10 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 			pushDirection = ForgeDirection.UNKNOWN;
 		}
 
-		updateSleepyness();
+		updateSleepiness();
 	}
 
-	private void updateSleepyness()
+	private void updateSleepiness()
 	{
 		boolean wasEnabled = isAwake;
 		isAwake = myPlan != null && hasMats() || canPush();
@@ -354,7 +354,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 	public TickingRequest getTickingRequest(IGridNode node)
 	{
 		recalculatePlan();
-		updateSleepyness();
+		updateSleepiness();
 		return new TickingRequest( 1, 1, !isAwake, false );
 	}
 
@@ -381,14 +381,14 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 				markDirty();
 
 			ejectHeldItems();
-			updateSleepyness();
+			updateSleepiness();
 			progress = 0;
 			return isAwake ? TickRateModulation.IDLE : TickRateModulation.SLEEP;
 		}
 
 		if ( myPlan == null )
 		{
-			updateSleepyness();
+			updateSleepiness();
 			return TickRateModulation.SLEEP;
 		}
 
@@ -459,7 +459,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 				}
 
 				markDirty();
-				updateSleepyness();
+				updateSleepiness();
 				return isAwake ? TickRateModulation.IDLE : TickRateModulation.SLEEP;
 			}
 		}

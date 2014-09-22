@@ -37,7 +37,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 	public ItemFacade() {
 		super( ItemFacade.class );
-		setfeature( EnumSet.of( AEFeature.Facades ) );
+		setFeature( EnumSet.of( AEFeature.Facades ) );
 		setHasSubtypes( true );
 		if ( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, BusRenderer.instance );

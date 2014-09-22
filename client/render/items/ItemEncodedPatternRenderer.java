@@ -15,14 +15,14 @@ public class ItemEncodedPatternRenderer implements IItemRenderer
 {
 
 	RenderItem ri = new RenderItem();
-	boolean resursive;
+	boolean recursive;
 
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
 	{
 		boolean isShiftHeld = Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT );
 
-		if ( resursive == false && type == IItemRenderer.ItemRenderType.INVENTORY && isShiftHeld )
+		if ( recursive == false && type == IItemRenderer.ItemRenderType.INVENTORY && isShiftHeld )
 		{
 			ItemEncodedPattern iep = (ItemEncodedPattern) item.getItem();
 			if ( iep.getOutput( item ) != null )
@@ -41,7 +41,7 @@ public class ItemEncodedPatternRenderer implements IItemRenderer
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
 	{
-		resursive = true;
+		recursive = true;
 
 		ItemEncodedPattern iep = (ItemEncodedPattern) item.getItem();
 
@@ -54,6 +54,6 @@ public class ItemEncodedPatternRenderer implements IItemRenderer
 		RenderHelper.disableStandardItemLighting();
 		GL11.glPopAttrib();
 
-		resursive = false;
+		recursive = false;
 	}
 }

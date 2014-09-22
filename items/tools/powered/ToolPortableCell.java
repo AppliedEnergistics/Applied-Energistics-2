@@ -36,7 +36,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 
 	public ToolPortableCell() {
 		super( ToolPortableCell.class, null );
-		setfeature( EnumSet.of( AEFeature.PortableCell, AEFeature.StorageCells, AEFeature.PoweredTools ) );
+		setFeature( EnumSet.of( AEFeature.PortableCell, AEFeature.StorageCells, AEFeature.PoweredTools ) );
 		maxStoredPower = AEConfig.instance.portablecell_battery;
 	}
 
@@ -92,7 +92,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
-	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requsetedAddition)
+	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requestedAddition)
 	{
 		return false;
 	}

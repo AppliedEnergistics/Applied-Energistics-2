@@ -32,7 +32,7 @@ public class IC2 extends AERootPoweredItem implements IElectricItemManager, ISpe
 	}
 
 	@Override
-	public double discharge(ItemStack itemStack, double amount, int tier, boolean ignoreTransferLimit, boolean externaly, boolean simulate)
+	public double discharge(ItemStack itemStack, double amount, int tier, boolean ignoreTransferLimit, boolean externally, boolean simulate)
 	{
 		return 0;
 	}

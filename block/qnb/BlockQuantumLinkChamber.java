@@ -30,8 +30,8 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 
 	public BlockQuantumLinkChamber() {
 		super( BlockQuantumLinkChamber.class, AEGlassMaterial.instance );
-		setfeature( EnumSet.of( AEFeature.QuantumNetworkBridge ) );
-		setTileEntiy( TileQuantumBridge.class );
+		setFeature( EnumSet.of( AEFeature.QuantumNetworkBridge ) );
+		setTileEntity( TileQuantumBridge.class );
 		float shave = 2.0f / 16.0f;
 		setBlockBounds( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
 		setLightOpacity( 0 );
@@ -94,7 +94,7 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxsFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
 	{
 		double OnePx = 2.0 / 16.0;
 		return Arrays.asList( new AxisAlignedBB[] { AxisAlignedBB.getBoundingBox( OnePx, OnePx, OnePx, 1.0 - OnePx, 1.0 - OnePx, 1.0 - OnePx ) } );

@@ -143,7 +143,7 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	}
 
 	@Override
-	public void registerPassThru(Class<?> layerInterface)
+	public void registerPassThrough(Class<?> layerInterface)
 	{
 		try
 		{

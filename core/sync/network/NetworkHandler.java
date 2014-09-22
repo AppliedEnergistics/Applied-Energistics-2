@@ -58,13 +58,13 @@ public class NetworkHandler
 	}
 
 	@SubscribeEvent
-	public void newConection(ServerConnectionFromClientEvent ev)
+	public void newConnection(ServerConnectionFromClientEvent ev)
 	{
 		WorldSettings.getInstance().sendToPlayer( ev.manager, null );
 	}
 
 	@SubscribeEvent
-	public void newConection(PlayerLoggedInEvent loginEvent)
+	public void newConnection(PlayerLoggedInEvent loginEvent)
 	{
 		if ( loginEvent.player instanceof EntityPlayerMP )
 			WorldSettings.getInstance().sendToPlayer( null, (EntityPlayerMP) loginEvent.player );

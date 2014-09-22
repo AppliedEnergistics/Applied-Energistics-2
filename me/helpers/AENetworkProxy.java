@@ -303,11 +303,11 @@ public class AENetworkProxy implements IGridBlock
 		return flags;
 	}
 
-	public void setFlags(GridFlags... requreChannel)
+	public void setFlags(GridFlags... requireChannel)
 	{
 		EnumSet<GridFlags> flags = EnumSet.noneOf( GridFlags.class );
 
-		for (GridFlags gf : requreChannel)
+		for (GridFlags gf : requireChannel)
 			flags.add( gf );
 
 		this.flags = flags;

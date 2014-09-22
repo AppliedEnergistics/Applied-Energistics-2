@@ -292,7 +292,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	}
 
 	/**
-	 * depending on the from, diffrent settings will be accepted, don't call this with null
+	 * depending on the from, different settings will be accepted, don't call this with null
 	 * 
 	 * @param from
 	 * @param compound
@@ -393,9 +393,9 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 			}
 			else
 			{
-				String stordName = memc.getSettingsName( memCardIS );
+				String storedName = memc.getSettingsName( memCardIS );
 				NBTTagCompound data = memc.getData( memCardIS );
-				if ( name.equals( stordName ) )
+				if ( name.equals( storedName ) )
 				{
 					uploadSettings( SettingsFrom.MEMORY_CARD, data );
 					memc.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );

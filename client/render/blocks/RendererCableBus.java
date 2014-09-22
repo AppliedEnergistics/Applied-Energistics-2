@@ -22,7 +22,7 @@ public class RendererCableBus extends BaseBlockRender
 	@Override
 	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
-		// nothin.
+		// nothing.
 	}
 
 	@Override

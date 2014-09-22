@@ -4,7 +4,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.util.Platform;
 
@@ -17,7 +16,7 @@ public class ContainerVibrationChamber extends AEBaseContainer
 		super( ip, te, null );
 		myte = te;
 
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.FUEL, te, 0, 80, 37, invPlayer ) );
+		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.FUEL, te, 0, 80, 37, invPlayer ) );
 
 		bindPlayerInventory( ip, 0, 166 - /* height of playerinventory */82 );
 	}

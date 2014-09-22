@@ -2,6 +2,7 @@ package appeng.parts.networking;
 
 import java.util.EnumSet;
 
+import appeng.client.texture.FlippableIcon;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
@@ -26,7 +27,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlock;
 import appeng.client.texture.CableBusTextures;
-import appeng.client.texture.FlipableIcon;
 import appeng.client.texture.OffsetIcon;
 import appeng.client.texture.TaughtIcon;
 import appeng.util.Platform;
@@ -224,7 +224,7 @@ public class PartDenseCable extends PartCable
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void renderDenseConection(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of)
+	public void renderDenseConnection(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of)
 	{
 		TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
 		IPartHost ccph = te instanceof IPartHost ? (IPartHost) te : null;
@@ -246,7 +246,7 @@ public class PartDenseCable extends PartCable
 		 * -0.2f );
 		 * 
 		 * if ( of == ForgeDirection.EAST || of == ForgeDirection.WEST ) { AEBaseBlock blk = (AEBaseBlock)
-		 * rh.getBlock(); FlipableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST ); ico.setFlip(
+		 * rh.getBlock(); FlippableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST ); ico.setFlip(
 		 * false, true ); }
 		 * 
 		 * Tessellator.instance.setBrightness( 15 << 20 | 15 << 5 ); Tessellator.instance.setColorOpaque_I(
@@ -337,11 +337,11 @@ public class PartDenseCable extends PartCable
 			for (ForgeDirection of : connections)
 			{
 				if ( isDense( of ) )
-					renderDenseConection( x, y, z, rh, renderer, channelsOnSide[of.ordinal()], of );
+					renderDenseConnection( x, y, z, rh, renderer, channelsOnSide[of.ordinal()], of );
 				else if ( isSmart( of ) )
 					renderSmartConection( x, y, z, rh, renderer, channelsOnSide[of.ordinal()], of );
 				else
-					renderCoveredConection( x, y, z, rh, renderer, channelsOnSide[of.ordinal()], of );
+					renderCoveredConnection( x, y, z, rh, renderer, channelsOnSide[of.ordinal()], of );
 			}
 
 			rh.setTexture( getDenseTexture( getCableColor() ) );
@@ -402,7 +402,7 @@ public class PartDenseCable extends PartCable
 				renderer.uvRotateNorth = 0;
 
 				AEBaseBlock blk = (AEBaseBlock) rh.getBlock();
-				FlipableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST );
+				FlippableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST );
 				ico.setFlip( false, true );
 
 				renderer.setRenderBounds( 0, 3 / 16.0, 3 / 16.0, 16 / 16.0, 13 / 16.0, 13 / 16.0 );
@@ -410,11 +410,11 @@ public class PartDenseCable extends PartCable
 
 				Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
 
-				FlipableIcon fpA = new FlipableIcon( defa );
-				FlipableIcon fpB = new FlipableIcon( defb );
+				FlippableIcon fpA = new FlippableIcon( defa );
+				FlippableIcon fpB = new FlippableIcon( defb );
 
-				fpA = new FlipableIcon( defa );
-				fpB = new FlipableIcon( defb );
+				fpA = new FlippableIcon( defa );
+				fpB = new FlippableIcon( defb );
 
 				fpA.setFlip( true, false );
 				fpB.setFlip( true, false );

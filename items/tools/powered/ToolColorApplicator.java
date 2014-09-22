@@ -75,7 +75,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 	public ToolColorApplicator() {
 		super( ToolColorApplicator.class, null );
-		setfeature( EnumSet.of( AEFeature.ColorApplicator, AEFeature.PoweredTools ) );
+		setFeature( EnumSet.of( AEFeature.ColorApplicator, AEFeature.PoweredTools ) );
 		maxStoredPower = AEConfig.instance.colorapplicator_battery;
 		if ( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, new ToolColorApplicatorRender() );
@@ -250,12 +250,12 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 				// clean paint balls..
 				Block testBlk = w.getBlock( x + oside.offsetX, y + oside.offsetY, z + oside.offsetZ );
-				TileEntity painte = w.getTileEntity( x + oside.offsetX, y + oside.offsetY, z + oside.offsetZ );
-				if ( getAECurrentPower( is ) > powerPerUse && testBlk instanceof BlockPaint && painte instanceof TilePaint )
+				TileEntity painted = w.getTileEntity( x + oside.offsetX, y + oside.offsetY, z + oside.offsetZ );
+				if ( getAECurrentPower( is ) > powerPerUse && testBlk instanceof BlockPaint && painted instanceof TilePaint )
 				{
 					inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 					extractAEPower( is, powerPerUse );
-					((TilePaint) painte).cleanSide( oside.getOpposite() );
+					((TilePaint) painted).cleanSide( oside.getOpposite() );
 					return true;
 				}
 			}
@@ -402,11 +402,11 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	}
 
 	@Override
-	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requsetedAddition)
+	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requestedAddition)
 	{
-		if ( requsetedAddition != null )
+		if ( requestedAddition != null )
 		{
-			int[] id = OreDictionary.getOreIDs( requsetedAddition.getItemStack() );
+			int[] id = OreDictionary.getOreIDs( requestedAddition.getItemStack() );
 
 			for (int x : id)
 			{
@@ -414,10 +414,10 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					return false;
 			}
 
-			if ( requsetedAddition.getItem() instanceof ItemSnowball )
+			if ( requestedAddition.getItem() instanceof ItemSnowball )
 				return false;
 
-			return !(requsetedAddition.getItem() instanceof ItemPaintBall && requsetedAddition.getItemDamage() < 20);
+			return !(requestedAddition.getItem() instanceof ItemPaintBall && requestedAddition.getItemDamage() < 20);
 		}
 		return true;
 	}

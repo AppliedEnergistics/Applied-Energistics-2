@@ -135,9 +135,9 @@ public class CraftingTreeProcess
 		}
 	}
 
-	public boolean notRecurive(ICraftingPatternDetails details)
+	public boolean notRecursive(ICraftingPatternDetails details)
 	{
-		return parent == null || parent.notRecurive( details );
+		return parent == null || parent.notRecursive( details );
 	}
 
 	long getTimes(long remaining, long stackSize)

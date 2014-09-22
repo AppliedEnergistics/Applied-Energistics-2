@@ -15,7 +15,7 @@ import appeng.integration.abstraction.IIC2;
 import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
 
-public class Macerator implements ICraftHandler, IWebsiteSeralizer
+public class Macerator implements ICraftHandler, IWebsiteSerializer
 {
 
 	IIngredient pro_input;

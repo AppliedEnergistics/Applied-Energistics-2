@@ -23,8 +23,8 @@ public class BlockChest extends AEBaseBlock
 
 	public BlockChest() {
 		super( BlockChest.class, Material.iron );
-		setfeature( EnumSet.of( AEFeature.StorageCells, AEFeature.MEChest ) );
-		setTileEntiy( TileChest.class );
+		setFeature( EnumSet.of( AEFeature.StorageCells, AEFeature.MEChest ) );
+		setTileEntity( TileChest.class );
 	}
 
 	@Override

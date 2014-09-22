@@ -21,7 +21,6 @@ import appeng.container.slot.OptionalSlotFake;
 import appeng.container.slot.OptionalSlotFakeTypeOnly;
 import appeng.container.slot.SlotFakeTypeOnly;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.items.contents.NetworkToolViewer;
 import appeng.items.tools.ToolNetworkTool;
 import appeng.parts.automation.PartExportBus;
@@ -78,7 +77,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		{
 			for (int v = 0; v < 3; v++)
 				for (int u = 0; u < 3; u++)
-					addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, tbinv, u + v * 3, 186 + u * 18, getHeight() - 82 + v * 18,
+					addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, tbinv, u + v * 3, 186 + u * 18, getHeight() - 82 + v * 18,
 							invPlayer )).setPlayerSide() );
 		}
 
@@ -91,13 +90,13 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	{
 		IInventory upgrades = myte.getInventoryByName( "upgrades" );
 		if ( availableUpgrades() > 0 )
-			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0, invPlayer )).setNotDraggable() );
+			addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0, invPlayer )).setNotDraggable() );
 		if ( availableUpgrades() > 1 )
-			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 1, 187, 8 + 18 * 1, invPlayer )).setNotDraggable() );
+			addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18 * 1, invPlayer )).setNotDraggable() );
 		if ( availableUpgrades() > 2 )
-			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, invPlayer )).setNotDraggable() );
+			addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, invPlayer )).setNotDraggable() );
 		if ( availableUpgrades() > 3 )
-			addSlotToContainer( (new SlotRestrictedInput( PlaceableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, invPlayer )).setNotDraggable() );
+			addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, invPlayer )).setNotDraggable() );
 	}
 
 	protected void setupConfig()

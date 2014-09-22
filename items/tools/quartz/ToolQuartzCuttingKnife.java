@@ -21,7 +21,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 
 	public ToolQuartzCuttingKnife(AEFeature Type) {
 		super( ToolQuartzCuttingKnife.class, Type.name() );
-		setfeature( EnumSet.of( type = Type, AEFeature.QuartzKnife ) );
+		setFeature( EnumSet.of( type = Type, AEFeature.QuartzKnife ) );
 		setMaxDamage( 50 );
 		setMaxStackSize( 1 );
 	}

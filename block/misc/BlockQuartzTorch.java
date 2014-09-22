@@ -39,7 +39,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 
 	public BlockQuartzTorch() {
 		this( BlockQuartzTorch.class );
-		setfeature( EnumSet.of( AEFeature.DecorativeLights ) );
+		setFeature( EnumSet.of( AEFeature.DecorativeLights ) );
 		setLightLevel( 0.9375F );
 	}
 
@@ -91,7 +91,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxsFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
 	{
 		ForgeDirection up = getOrientable( w, x, y, z ).getUp();
 		double xOff = -0.3 * up.offsetX;

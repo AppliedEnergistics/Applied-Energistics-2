@@ -32,8 +32,8 @@ public class BlockEnergyCell extends AEBaseBlock
 
 	public BlockEnergyCell() {
 		this( BlockEnergyCell.class );
-		setfeature( EnumSet.of( AEFeature.Core ) );
-		setTileEntiy( TileEnergyCell.class );
+		setFeature( EnumSet.of( AEFeature.Core ) );
+		setTileEntity( TileEnergyCell.class );
 	}
 
 	@Override

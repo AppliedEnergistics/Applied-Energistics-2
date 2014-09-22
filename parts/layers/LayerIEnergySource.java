@@ -123,7 +123,7 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 			IPart part = getPart( dir );
 			if ( part instanceof IEnergySource )
 			{
-				// use lower number cause ic2 deletes power it sends that isn't recieved.
+				// use lower number cause ic2 deletes power it sends that isn't received.
 				return ((IEnergySource) part).getOfferedEnergy();
 			}
 		}

@@ -37,7 +37,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 	{
 
 		PartType part;
-		int varient;
+		int variant;
 
 		@SideOnly(Side.CLIENT)
 		IIcon ico;
@@ -49,13 +49,13 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 
 	public ItemMultiPart() {
 		super( ItemMultiPart.class );
-		setfeature( EnumSet.of( AEFeature.Core ) );
+		setFeature( EnumSet.of( AEFeature.Core ) );
 		AEApi.instance().partHelper().setItemBusRenderer( this );
 		setHasSubtypes( true );
 		instance = this;
 	}
 
-	public ItemStackSrc createPart(PartType mat, Enum varient)
+	public ItemStackSrc createPart(PartType mat, Enum variant)
 	{
 		try
 		{
@@ -69,12 +69,12 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 			return null; // part not supported..
 		}
 
-		int varID = varient == null ? 0 : varient.ordinal();
+		int varID = variant == null ? 0 : variant.ordinal();
 
 		// verify
 		for (PartTypeIst p : dmgToPart.values())
 		{
-			if ( p.part == mat && p.varient == varID )
+			if ( p.part == mat && p.variant == varID )
 				throw new RuntimeException( "Cannot create the same material twice..." );
 		}
 
@@ -89,7 +89,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 
 			PartTypeIst pti = new PartTypeIst();
 			pti.part = mat;
-			pti.varient = varID;
+			pti.variant = varID;
 
 			if ( dmgToPart.get( newPartNum ) == null )
 			{
@@ -157,10 +157,10 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		if ( pt == null )
 			return "Unnamed";
 
-		Enum[] varients = pt.getVarients();
+		Enum[] variants = pt.getVariants();
 
-		if ( varients != null )
-			return super.getItemStackDisplayName( is ) + " - " + varients[dmgToPart.get( is.getItemDamage() ).varient].toString();
+		if ( variants != null )
+			return super.getItemStackDisplayName( is ) + " - " + variants[dmgToPart.get( is.getItemDamage() ).variant].toString();
 
 		if ( pt.getExtraName() != null )
 			return super.getItemStackDisplayName( is ) + " - " + pt.getExtraName().getLocal();
@@ -224,10 +224,10 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 			cList.add( new ItemStack( this, 1, part.getKey() ) );
 	}
 
-	public int varientOf(int itemDamage)
+	public int variantOf(int itemDamage)
 	{
 		if ( dmgToPart.containsKey( itemDamage ) )
-			return dmgToPart.get( itemDamage ).varient;
+			return dmgToPart.get( itemDamage ).variant;
 		return 0;
 	}
 
@@ -266,8 +266,8 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		return null;
 	}
 
-	public ItemStack getStackFromTypeAndVarient(PartType mt, int varient)
+	public ItemStack getStackFromTypeAndVarient(PartType mt, int variant)
 	{
-		return new ItemStack( this, 1, mt.baseDamage + varient );
+		return new ItemStack( this, 1, mt.baseDamage + variant );
 	}
 }

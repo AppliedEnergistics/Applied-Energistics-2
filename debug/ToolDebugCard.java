@@ -34,7 +34,7 @@ public class ToolDebugCard extends AEBaseItem
 
 	public ToolDebugCard() {
 		super( ToolDebugCard.class );
-		setfeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
+		setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
 
 	public String timeMeasurement(long nanos)
@@ -172,7 +172,7 @@ public class ToolDebugCard extends AEBaseItem
 					if ( node != null && node.getGrid() != null )
 					{
 						IEnergyGrid eg = node.getGrid().getCache( IEnergyGrid.class );
-						outputMsg( player, "GridEnerg: " + eg.getStoredPower() + " : " + eg.getEnergyDemand( Double.MAX_VALUE ) );
+						outputMsg( player, "GridEnergy: " + eg.getStoredPower() + " : " + eg.getEnergyDemand( Double.MAX_VALUE ) );
 					}
 				}
 			}

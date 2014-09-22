@@ -125,7 +125,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		else if ( !isLocked )
 		{
 			configuredItem = AEItemStack.create( eq );
-			confgiureWatchers();
+			configureWatchers();
 			this.getHost().markForUpdate();
 		}
 		else
@@ -318,11 +318,11 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	public void updateWatcher(IStackWatcher newWatcher)
 	{
 		myWatcher = newWatcher;
-		confgiureWatchers();
+		configureWatchers();
 	}
 
 	// update the system...
-	public void confgiureWatchers()
+	public void configureWatchers()
 	{
 		if ( myWatcher != null )
 			myWatcher.clear();

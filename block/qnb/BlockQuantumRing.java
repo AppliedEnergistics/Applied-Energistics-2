@@ -21,8 +21,8 @@ public class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
 
 	public BlockQuantumRing() {
 		super( BlockQuantumRing.class, Material.iron );
-		setfeature( EnumSet.of( AEFeature.QuantumNetworkBridge ) );
-		setTileEntiy( TileQuantumBridge.class );
+		setFeature( EnumSet.of( AEFeature.QuantumNetworkBridge ) );
+		setTileEntity( TileQuantumBridge.class );
 		float shave = 2.0f / 16.0f;
 		setBlockBounds( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
 		setLightOpacity( 1 );
@@ -54,7 +54,7 @@ public class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxsFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
 	{
 		double OnePx = 2.0 / 16.0;
 		TileQuantumBridge bridge = getTileEntity( w, x, y, z );

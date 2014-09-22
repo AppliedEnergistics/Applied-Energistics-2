@@ -17,8 +17,8 @@ public class BlockSpatialPylon extends AEBaseBlock
 
 	public BlockSpatialPylon() {
 		super( BlockSpatialPylon.class, AEGlassMaterial.instance );
-		setfeature( EnumSet.of( AEFeature.SpatialIO ) );
-		setTileEntiy( TileSpatialPylon.class );
+		setFeature( EnumSet.of( AEFeature.SpatialIO ) );
+		setTileEntity( TileSpatialPylon.class );
 	}
 
 	@Override

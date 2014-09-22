@@ -1,5 +1,6 @@
 package appeng.tile.misc;
 
+import appeng.helpers.PlayerSecurityWrapper;
 import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
@@ -44,7 +45,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
-import appeng.helpers.PlayerSecuirtyWrapper;
 import appeng.me.GridAccessException;
 import appeng.me.storage.SecurityInventory;
 import appeng.tile.TileEvent;
@@ -61,7 +61,7 @@ import appeng.util.item.AEItemStack;
 public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEAppEngInventory, ILocatable, IConfigManagerHost, ISecurityProvider, IColorableTile
 {
 
-	private static int diffrence = 0;
+	private static int difference = 0;
 	private IConfigManager cm = new ConfigManager( this );
 
 	private SecurityInventory inventory = new SecurityInventory( this );
@@ -209,7 +209,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 			if ( i instanceof IBiometricCard )
 			{
 				IBiometricCard bc = (IBiometricCard) i;
-				bc.registerPermissions( new PlayerSecuirtyWrapper( playerPerms ), pr, is );
+				bc.registerPermissions( new PlayerSecurityWrapper( playerPerms ), pr, is );
 			}
 		}
 
@@ -237,11 +237,11 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	public TileSecurity() {
 		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 		gridProxy.setIdlePowerUsage( 2.0 );
-		diffrence++;
+		difference++;
 
-		securityKey = System.currentTimeMillis() * 10 + diffrence;
-		if ( diffrence > 10 )
-			diffrence = 0;
+		securityKey = System.currentTimeMillis() * 10 + difference;
+		if ( difference > 10 )
+			difference = 0;
 
 		cm.registerSetting( Settings.SORT_BY, SortOrder.NAME );
 		cm.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );

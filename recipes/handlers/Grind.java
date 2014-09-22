@@ -12,7 +12,7 @@ import appeng.api.recipes.IIngredient;
 import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
 
-public class Grind implements ICraftHandler, IWebsiteSeralizer
+public class Grind implements ICraftHandler, IWebsiteSerializer
 {
 
 	IIngredient pro_input;

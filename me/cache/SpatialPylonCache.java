@@ -23,7 +23,7 @@ public class SpatialPylonCache implements IGridCache, ISpatialCache
 {
 
 	long powerRequired = 0;
-	double effiency = 0.0;
+	double efficiency = 0.0;
 
 	DimensionalCoord captureMin;
 	DimensionalCoord captureMax;
@@ -75,7 +75,7 @@ public class SpatialPylonCache implements IGridCache, ISpatialCache
 		int reqX = 0;
 		int reqY = 0;
 		int reqZ = 0;
-		int requirePylongBlocks = 1;
+		int requirePylonBlocks = 1;
 
 		double minPower = 0;
 		double maxPower = 0;
@@ -157,21 +157,21 @@ public class SpatialPylonCache implements IGridCache, ISpatialCache
 			reqX = captureMax.x - captureMin.x;
 			reqY = captureMax.y - captureMin.y;
 			reqZ = captureMax.z - captureMin.z;
-			requirePylongBlocks = Math.max( 6, ((reqX * reqZ + reqX * reqY + reqY * reqZ) * 3) / 8 );
+			requirePylonBlocks = Math.max( 6, ((reqX * reqZ + reqX * reqY + reqY * reqZ) * 3) / 8 );
 			
-			effiency = (double) pylonBlocks / (double) requirePylongBlocks;
+			efficiency = (double) pylonBlocks / (double) requirePylonBlocks;
 			
-			if ( effiency > 1.0 )
-				effiency = 1.0;
-			if ( effiency < 0.0 )
-				effiency = 0.0;
+			if ( efficiency > 1.0 )
+				efficiency = 1.0;
+			if ( efficiency < 0.0 )
+				efficiency = 0.0;
 			
 			minPower = (double) reqX * (double) reqY * reqZ * AEConfig.instance.spatialPowerMultiplier;
 			maxPower = Math.pow( minPower, AEConfig.instance.spatialPowerScaler );
 		}
 
-		double affective_effiency = Math.pow( effiency, 0.25 );
-		powerRequired = (long) (affective_effiency * minPower + (1.0 - affective_effiency) * maxPower);
+		double affective_efficiency = Math.pow( efficiency, 0.25 );
+		powerRequired = (long) (affective_efficiency * minPower + (1.0 - affective_efficiency) * maxPower);
 
 		for (SpatialPylonCluster cl : clusters.values())
 		{
@@ -185,7 +185,7 @@ public class SpatialPylonCache implements IGridCache, ISpatialCache
 	@Override
 	public float currentEfficiency()
 	{
-		return (float) effiency * 100;
+		return (float) efficiency * 100;
 	}
 
 	@MENetworkEventSubscribe

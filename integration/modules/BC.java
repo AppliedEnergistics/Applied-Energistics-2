@@ -2,6 +2,7 @@ package appeng.integration.modules;
 
 import java.lang.reflect.Field;
 
+import appeng.integration.modules.BCHelpers.AERotatableBlockSchematic;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -22,7 +23,6 @@ import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IBC;
 import appeng.integration.modules.BCHelpers.AECableSchematicTile;
 import appeng.integration.modules.BCHelpers.AEGenericSchematicTile;
-import appeng.integration.modules.BCHelpers.AERotateableBlockSchematic;
 import appeng.integration.modules.BCHelpers.BCPipeHandler;
 import buildcraft.BuildCraftEnergy;
 import buildcraft.BuildCraftTransport;
@@ -250,7 +250,7 @@ public class BC extends BaseModule implements IBC
 					Block myBlock = def.block();
 					if ( myBlock instanceof IOrientableBlock && ((IOrientableBlock) myBlock).usesMetadata() && def.entity() == null )
 					{
-						SchematicRegistry.registerSchematicBlock( myBlock, AERotateableBlockSchematic.class );
+						SchematicRegistry.registerSchematicBlock( myBlock, AERotatableBlockSchematic.class );
 					}
 					else if ( myBlock == cable )
 					{

@@ -185,7 +185,7 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 						try
 						{
 							ItemStack[] is = ing.getItemStackSet();
-							PositionedStack stack = new PositionedStack( useSingleItems ? Platform.findPrefered( is ) : ing.getItemStackSet(), 25 + x * 18,
+							PositionedStack stack = new PositionedStack( useSingleItems ? Platform.findPreferred( is ) : ing.getItemStackSet(), 25 + x * 18,
 									6 + y * 18, false );
 							stack.setMaxSize( 1 );
 							this.ingredients.add( stack );

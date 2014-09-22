@@ -39,21 +39,21 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	final StorageChannel myChannel;
 	final SecurityCache security;
 
-	// final TreeMultimap<Integer, IMEInventoryHandler<T>> prorityInventory;
-	final TreeMap<Integer, List<IMEInventoryHandler<T>>> prorityInventory;
+	// final TreeMultimap<Integer, IMEInventoryHandler<T>> priorityInventory;
+	final TreeMap<Integer, List<IMEInventoryHandler<T>>> priorityInventory;
 
 	public NetworkInventoryHandler(StorageChannel chan, SecurityCache security) {
 		myChannel = chan;
 		this.security = security;
-		prorityInventory = new TreeMap( prioritySorter ); // TreeMultimap.create( prioritySorter, hashSorter );
+		priorityInventory = new TreeMap( prioritySorter ); // TreeMultimap.create( prioritySorter, hashSorter );
 	}
 
 	public void addNewStorage(IMEInventoryHandler<T> h)
 	{
 		int priority = h.getPriority();
-		List<IMEInventoryHandler<T>> list = prorityInventory.get( priority );
+		List<IMEInventoryHandler<T>> list = priorityInventory.get( priority );
 		if ( list == null )
-			prorityInventory.put( priority, list = new ArrayList() );
+			priorityInventory.put( priority, list = new ArrayList() );
 
 		list.add( h );
 	}
@@ -155,7 +155,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 			return input;
 		}
 
-		Iterator<List<IMEInventoryHandler<T>>> i = prorityInventory.values().iterator();// asMap().entrySet().iterator();
+		Iterator<List<IMEInventoryHandler<T>>> i = priorityInventory.values().iterator();// asMap().entrySet().iterator();
 
 		while (i.hasNext())
 		{
@@ -197,7 +197,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 			return null;
 		}
 
-		Iterator<List<IMEInventoryHandler<T>>> i = prorityInventory.descendingMap().values().iterator();// prorityInventory.asMap().descendingMap().entrySet().iterator();
+		Iterator<List<IMEInventoryHandler<T>>> i = priorityInventory.descendingMap().values().iterator();// priorityInventory.asMap().descendingMap().entrySet().iterator();
 
 		T output = request.copy();
 		request = request.copy();
@@ -232,8 +232,8 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 		if ( diveIteration( this, Actionable.SIMULATE ) )
 			return out;
 
-		// for (Entry<Integer, IMEInventoryHandler<T>> h : prorityInventory.entries())
-		for (List<IMEInventoryHandler<T>> i : prorityInventory.values())
+		// for (Entry<Integer, IMEInventoryHandler<T>> h : priorityInventory.entries())
+		for (List<IMEInventoryHandler<T>> i : priorityInventory.values())
 			for (IMEInventoryHandler<T> j : i)
 				out = j.getAvailableItems( out );
 

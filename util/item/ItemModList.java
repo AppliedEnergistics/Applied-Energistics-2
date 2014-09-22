@@ -48,9 +48,7 @@ public class ItemModList implements IItemContainer<IAEItemStack>
 	@Override
 	public Collection<IAEItemStack> findFuzzy(IAEItemStack input, FuzzyMode fuzzy)
 	{
-		Collection<IAEItemStack> overrrides = overrides.findFuzzy( input, fuzzy );
-
-		return overrrides;
+		return overrides.findFuzzy( input, fuzzy );
 	}
 
 	@Override

@@ -25,7 +25,7 @@ public class OreQuartz extends AEBaseBlock
 
 	public OreQuartz(Class self) {
 		super( self, Material.rock );
-		setfeature( EnumSet.of( AEFeature.Core ) );
+		setFeature( EnumSet.of( AEFeature.Core ) );
 		setHardness( 3.0F );
 		setResistance( 5.0F );
 		boostBrightnessLow = 0;

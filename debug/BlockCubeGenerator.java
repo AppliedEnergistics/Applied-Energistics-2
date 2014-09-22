@@ -14,8 +14,8 @@ public class BlockCubeGenerator extends AEBaseBlock
 
 	public BlockCubeGenerator() {
 		super( BlockCubeGenerator.class, Material.iron );
-		setfeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
-		setTileEntiy( TileCubeGenerator.class );
+		setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
+		setTileEntity( TileCubeGenerator.class );
 	}
 
 	@Override

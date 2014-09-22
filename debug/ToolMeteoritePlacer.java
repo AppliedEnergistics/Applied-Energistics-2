@@ -18,7 +18,7 @@ public class ToolMeteoritePlacer extends AEBaseItem
 
 	public ToolMeteoritePlacer() {
 		super( ToolMeteoritePlacer.class );
-		setfeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
+		setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public class ToolMeteoritePlacer extends AEBaseItem
 		boolean worked = mp.spawnMeteorite( new MeteoritePlacer.StandardWorld( world ), x, y, z );
 
 		if ( !worked )
-			player.addChatMessage( new ChatComponentText( "Un-suiteable Location." ) );
+			player.addChatMessage( new ChatComponentText( "Un-suitable Location." ) );
 
 		return true;
 	}

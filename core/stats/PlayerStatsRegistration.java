@@ -94,7 +94,7 @@ public class PlayerStatsRegistration
 
 		Achievements.GlassCable.setParent( Achievements.Charger );
 
-		Achievements.SpatialIOExplorerer.setParent( Achievements.SpatialIO );
+		Achievements.SpatialIOExplorer.setParent( Achievements.SpatialIO );
 
 		Achievements.IOPort.setParent( Achievements.StorageCell );
 
@@ -128,7 +128,7 @@ public class PlayerStatsRegistration
 
 			for (Achievements a : Achievements.values())
 			{
-				Achievement ach = a.getAchivement();
+				Achievement ach = a.getAchievement();
 				if ( ach != null )
 					list.add( ach );
 			}

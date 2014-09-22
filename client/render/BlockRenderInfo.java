@@ -1,9 +1,9 @@
 package appeng.client.render;
 
+import appeng.client.texture.FlippableIcon;
+import appeng.client.texture.TmpFlippableIcon;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
-import appeng.client.texture.FlipableIcon;
-import appeng.client.texture.TmpFlipableIcon;
 
 public class BlockRenderInfo
 {
@@ -15,21 +15,21 @@ public class BlockRenderInfo
 	final public BaseBlockRender rendererInstance;
 
 	private boolean useTmp = false;
-	private TmpFlipableIcon tmpTopIcon = new TmpFlipableIcon();
-	private TmpFlipableIcon tmpBottomIcon = new TmpFlipableIcon();
-	private TmpFlipableIcon tmpSouthIcon = new TmpFlipableIcon();
-	private TmpFlipableIcon tmpNorthIcon = new TmpFlipableIcon();
-	private TmpFlipableIcon tmpEastIcon = new TmpFlipableIcon();
-	private TmpFlipableIcon tmpWestIcon = new TmpFlipableIcon();
+	private TmpFlippableIcon tmpTopIcon = new TmpFlippableIcon();
+	private TmpFlippableIcon tmpBottomIcon = new TmpFlippableIcon();
+	private TmpFlippableIcon tmpSouthIcon = new TmpFlippableIcon();
+	private TmpFlippableIcon tmpNorthIcon = new TmpFlippableIcon();
+	private TmpFlippableIcon tmpEastIcon = new TmpFlippableIcon();
+	private TmpFlippableIcon tmpWestIcon = new TmpFlippableIcon();
 
-	private FlipableIcon topIcon = null;
-	private FlipableIcon bottomIcon = null;
-	private FlipableIcon southIcon = null;
-	private FlipableIcon northIcon = null;
-	private FlipableIcon eastIcon = null;
-	private FlipableIcon westIcon = null;
+	private FlippableIcon topIcon = null;
+	private FlippableIcon bottomIcon = null;
+	private FlippableIcon southIcon = null;
+	private FlippableIcon northIcon = null;
+	private FlippableIcon eastIcon = null;
+	private FlippableIcon westIcon = null;
 
-	public void updateIcons(FlipableIcon Bottom, FlipableIcon Top, FlipableIcon North, FlipableIcon South, FlipableIcon East, FlipableIcon West)
+	public void updateIcons(FlippableIcon Bottom, FlippableIcon Top, FlippableIcon North, FlippableIcon South, FlippableIcon East, FlippableIcon West)
 	{
 		topIcon = Top;
 		bottomIcon = Bottom;
@@ -67,7 +67,7 @@ public class BlockRenderInfo
 		useTmp = true;
 	}
 
-	public FlipableIcon getTexture(ForgeDirection dir)
+	public FlippableIcon getTexture(ForgeDirection dir)
 	{
 		if ( useTmp )
 		{

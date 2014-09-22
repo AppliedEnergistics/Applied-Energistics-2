@@ -1,5 +1,6 @@
 package appeng.parts.networking;
 
+import appeng.client.texture.FlippableIcon;
 import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
@@ -33,7 +34,6 @@ import appeng.api.util.AEColor;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.block.AEBaseBlock;
 import appeng.client.texture.CableBusTextures;
-import appeng.client.texture.FlipableIcon;
 import appeng.client.texture.TaughtIcon;
 import appeng.items.parts.ItemMultiPart;
 import appeng.me.GridAccessException;
@@ -55,7 +55,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		super( c, is );
 		proxy.setFlags( GridFlags.PREFERRED );
 		proxy.setIdlePowerUsage( 0.0 );
-		proxy.myColor = AEColor.values()[((ItemMultiPart) is.getItem()).varientOf( is.getItemDamage() )];
+		proxy.myColor = AEColor.values()[((ItemMultiPart) is.getItem()).variantOf( is.getItemDamage() )];
 	}
 
 	@Override
@@ -447,7 +447,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void rendereGlassConection(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, ForgeDirection of)
+	public void renderGlassConnection(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, ForgeDirection of)
 	{
 		TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
 		IPartHost ccph = te instanceof IPartHost ? (IPartHost) te : null;
@@ -559,7 +559,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void renderCoveredConection(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of)
+	public void renderCoveredConnection(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer, int channels, ForgeDirection of)
 	{
 		TileEntity te = this.tile.getWorldObj().getTileEntity( x + of.offsetX, y + of.offsetY, z + of.offsetZ );
 		IPartHost ccph = te instanceof IPartHost ? (IPartHost) te : null;
@@ -648,7 +648,7 @@ public class PartCable extends AEBasePart implements IPartCable
 			if ( of == ForgeDirection.EAST || of == ForgeDirection.WEST )
 			{
 				AEBaseBlock blk = (AEBaseBlock) rh.getBlock();
-				FlipableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST );
+				FlippableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST );
 				ico.setFlip( false, true );
 			}
 
@@ -721,7 +721,7 @@ public class PartCable extends AEBasePart implements IPartCable
 				if ( of == ForgeDirection.EAST || of == ForgeDirection.WEST )
 				{
 					AEBaseBlock blk = (AEBaseBlock) rh.getBlock();
-					FlipableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST );
+					FlippableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST );
 					ico.setFlip( false, true );
 				}
 
@@ -935,7 +935,7 @@ public class PartCable extends AEBasePart implements IPartCable
 
 			for (ForgeDirection of : connections)
 			{
-				rendereGlassConection( x, y, z, rh, renderer, of );
+				renderGlassConnection( x, y, z, rh, renderer, of );
 			}
 		}
 		else

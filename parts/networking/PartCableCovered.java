@@ -195,7 +195,7 @@ public class PartCableCovered extends PartCable
 		{
 			for (ForgeDirection of : connections)
 			{
-				renderCoveredConection( x, y, z, rh, renderer, channelsOnSide[of.ordinal()], of );
+				renderCoveredConnection( x, y, z, rh, renderer, channelsOnSide[of.ordinal()], of );
 			}
 
 			rh.setTexture( getTexture( getCableColor() ) );

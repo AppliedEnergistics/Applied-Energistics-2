@@ -391,7 +391,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	}
 
 	/**
-	 * depending on the from, diffrent settings will be accepted, don't call this with null
+	 * depending on the from, different settings will be accepted, don't call this with null
 	 * 
 	 * @param from
 	 * @param compound

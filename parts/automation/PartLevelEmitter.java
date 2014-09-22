@@ -83,7 +83,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	{
 		reportingValue = v;
 		if ( getConfigManager().getSetting( Settings.LEVEL_TYPE ) == LevelType.ENERGY_LEVEL )
-			confgiureWatchers();
+			configureWatchers();
 		else
 			updateState();
 	}
@@ -102,13 +102,13 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 
 	public void upgradesChanged()
 	{
-		confgiureWatchers();
+		configureWatchers();
 	}
 
 	@Override
 	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
 	{
-		confgiureWatchers();
+		configureWatchers();
 	}
 
 	private void updateState()
@@ -155,25 +155,25 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	public void updateWatcher(ICraftingWatcher newWatcher)
 	{
 		myCraftingWatcher = newWatcher;
-		confgiureWatchers();
+		configureWatchers();
 	}
 
 	@Override
 	public void updateWatcher(IStackWatcher newWatcher)
 	{
 		myWatcher = newWatcher;
-		confgiureWatchers();
+		configureWatchers();
 	}
 
 	@Override
 	public void updateWatcher(IEnergyWatcher newWatcher)
 	{
 		myEnergyWatcher = newWatcher;
-		confgiureWatchers();
+		configureWatchers();
 	}
 
 	// update the system...
-	public void confgiureWatchers()
+	public void configureWatchers()
 	{
 		IAEItemStack myStack = config.getAEStackInSlot( 0 );
 
@@ -214,7 +214,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 				lastReportedValue = (long) proxy.getEnergy().getStoredPower();
 				updateState();
 
-				// no more item stuf..
+				// no more item stuff..
 				proxy.getStorage().getItemInventory().removeListener( this );
 			}
 			catch (GridAccessException e)
@@ -251,7 +251,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
 	{
 		if ( inv == config )
-			confgiureWatchers();
+			configureWatchers();
 
 		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
 	}

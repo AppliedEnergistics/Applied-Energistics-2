@@ -6,12 +6,12 @@ import java.util.HashMap;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.security.ISecurityRegistry;
 
-public class PlayerSecuirtyWrapper implements ISecurityRegistry
+public class PlayerSecurityWrapper implements ISecurityRegistry
 {
 
 	final HashMap<Integer, EnumSet<SecurityPermissions>> target;
 
-	public PlayerSecuirtyWrapper(HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms) {
+	public PlayerSecurityWrapper(HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms) {
 		target = playerPerms;
 	}
 

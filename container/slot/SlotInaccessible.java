@@ -4,10 +4,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
-public class SlotInaccessable extends AppEngSlot
+public class SlotInaccessible extends AppEngSlot
 {
 
-	public SlotInaccessable(IInventory i, int slotIdx, int x, int y) {
+	public SlotInaccessible(IInventory i, int slotIdx, int x, int y) {
 		super( i, slotIdx, x, y );
 	}
 

@@ -355,7 +355,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 				requireWork[slot] = req.copy();
 				return;
 			}
-			else if ( req.isSameType( Stored ) ) // same type ( qty diffrent? )!
+			else if ( req.isSameType( Stored ) ) // same type ( qty different? )!
 			{
 				if ( req.getStackSize() != Stored.stackSize )
 				{
@@ -429,11 +429,11 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 					throw new GridAccessException();
 				}
 
-				IAEItemStack aquired = Platform.poweredExtraction( src, destination, itemStack, mySrc );
-				if ( aquired != null )
+				IAEItemStack acquired = Platform.poweredExtraction( src, destination, itemStack, mySrc );
+				if ( acquired != null )
 				{
 					changed = true;
-					ItemStack issue = adaptor.addItems( aquired.getItemStack() );
+					ItemStack issue = adaptor.addItems( acquired.getItemStack() );
 					if ( issue != null )
 						throw new RuntimeException( "bad attempt at managing inventory. ( addItems )" );
 				}
@@ -970,25 +970,25 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		return craftingTracker.getRequestedJobs();
 	}
 
-	public IAEItemStack injectCraftedItems(ICraftingLink link, IAEItemStack aquired, Actionable mode)
+	public IAEItemStack injectCraftedItems(ICraftingLink link, IAEItemStack acquired, Actionable mode)
 	{
 		int slot = craftingTracker.getSlot( link );
 
-		if ( aquired != null && slot >= 0 && slot <= requireWork.length )
+		if ( acquired != null && slot >= 0 && slot <= requireWork.length )
 		{
 			InventoryAdaptor adaptor = getAdaptor( slot );
 
 			if ( mode == Actionable.SIMULATE )
-				return AEItemStack.create( adaptor.simulateAdd( aquired.getItemStack() ) );
+				return AEItemStack.create( adaptor.simulateAdd( acquired.getItemStack() ) );
 			else
 			{
-				IAEItemStack is = AEItemStack.create( adaptor.addItems( aquired.getItemStack() ) );
+				IAEItemStack is = AEItemStack.create( adaptor.addItems( acquired.getItemStack() ) );
 				updatePlan( slot );
 				return is;
 			}
 		}
 
-		return aquired;
+		return acquired;
 	}
 
 	public void jobStateChange(ICraftingLink link)
@@ -1088,7 +1088,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		return (te.zCoord << 24) ^ (te.xCoord << 8) ^ te.yCoord;
 	}
 
-	public void initalize()
+	public void initialize()
 	{
 		updateCraftingList();
 	}

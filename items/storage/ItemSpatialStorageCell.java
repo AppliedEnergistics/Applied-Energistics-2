@@ -28,7 +28,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 
 	public ItemSpatialStorageCell(MaterialType whichCell, int spatialScale) {
 		super( ItemSpatialStorageCell.class, spatialScale + "Cubed" );
-		setfeature( EnumSet.of( AEFeature.SpatialIO ) );
+		setFeature( EnumSet.of( AEFeature.SpatialIO ) );
 		setMaxStackSize( 1 );
 		maxRegion = spatialScale;
 		component = whichCell;

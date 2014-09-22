@@ -8,7 +8,6 @@ import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.recipes.handlers.Inscribe;
 import appeng.recipes.handlers.Inscribe.InscriberRecipe;
 import appeng.tile.misc.TileInscriber;
@@ -24,7 +23,7 @@ public class ContainerInscriber extends AEBaseContainer
 	Slot bottom;
 
 	@GuiSync(0)
-	public int maxProessingTime = -1;
+	public int maxProcessingTime = -1;
 
 	@GuiSync(1)
 	public int processingTime = -1;
@@ -33,9 +32,9 @@ public class ContainerInscriber extends AEBaseContainer
 		super( ip, te, null );
 		myte = te;
 
-		addSlotToContainer( top = new SlotRestrictedInput( PlaceableItemType.INSCRIBER_PLATE, myte, 0, 45, 16, invPlayer ) );
-		addSlotToContainer( bottom = new SlotRestrictedInput( PlaceableItemType.INSCRIBER_PLATE, myte, 1, 45, 62, invPlayer ) );
-		addSlotToContainer( middle = new SlotRestrictedInput( PlaceableItemType.INSCRIBER_INPUT, myte, 2, 63, 39, invPlayer ) );
+		addSlotToContainer( top = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, myte, 0, 45, 16, invPlayer ) );
+		addSlotToContainer( bottom = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, myte, 1, 45, 62, invPlayer ) );
+		addSlotToContainer( middle = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_INPUT, myte, 2, 63, 39, invPlayer ) );
 
 		addSlotToContainer( new SlotOutput( myte, 3, 113, 40, -1 ) );
 
@@ -125,7 +124,7 @@ public class ContainerInscriber extends AEBaseContainer
 
 		if ( Platform.isServer() )
 		{
-			this.maxProessingTime = myte.maxProessingTime;
+			this.maxProcessingTime = myte.maxProcessingTime;
 			this.processingTime = myte.processingTime;
 		}
 	}

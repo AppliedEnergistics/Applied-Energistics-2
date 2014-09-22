@@ -15,7 +15,7 @@ import appeng.integration.abstraction.IMekanism;
 import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
 
-public class MekEnrichment implements ICraftHandler, IWebsiteSeralizer
+public class MekEnrichment implements ICraftHandler, IWebsiteSerializer
 {
 
 	IIngredient pro_input;

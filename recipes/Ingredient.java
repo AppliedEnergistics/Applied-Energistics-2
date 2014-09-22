@@ -80,7 +80,7 @@ public class Ingredient implements IIngredient
 					}
 					catch (IllegalArgumentException e)
 					{
-						throw new RecipeError( tmpName + " is not a valid ae2 item defintion." );
+						throw new RecipeError( tmpName + " is not a valid ae2 item definition." );
 					}
 				}
 

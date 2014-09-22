@@ -13,7 +13,7 @@ public class WorldGenRegistry implements IWorldGen
 	{
 
 		HashSet<Class<? extends WorldProvider>> badProviders = new HashSet();
-		HashSet<Integer> badDimentions = new HashSet();
+		HashSet<Integer> badDimensions = new HashSet();
 
 	};
 
@@ -41,7 +41,7 @@ public class WorldGenRegistry implements IWorldGen
 		if ( w == null )
 			throw new IllegalArgumentException( "Bad Provider Passed" );
 
-		if ( types[type.ordinal()].badProviders.contains( w.provider.getClass() ) || types[type.ordinal()].badDimentions.contains( w.provider.dimensionId ) )
+		if ( types[type.ordinal()].badProviders.contains( w.provider.getClass() ) || types[type.ordinal()].badDimensions.contains( w.provider.dimensionId ) )
 			return false;
 
 		return true;
@@ -65,7 +65,7 @@ public class WorldGenRegistry implements IWorldGen
 		if ( type == null )
 			throw new IllegalArgumentException( "Bad Type Passed" );
 
-		types[type.ordinal()].badDimentions.add( dimid );
+		types[type.ordinal()].badDimensions.add( dimid );
 	}
 
 }

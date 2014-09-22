@@ -49,25 +49,25 @@ public class OreHelper
 	class OreResult
 	{
 
-		public OreRefrence oreValue = null;
+		public OreReference oreValue = null;
 
 	};
 
-	HashMap<ItemRef, OreResult> refrences = new HashMap();
+	HashMap<ItemRef, OreResult> references = new HashMap();
 
-	public OreRefrence isOre(ItemStack ItemStack)
+	public OreReference isOre(ItemStack ItemStack)
 	{
 		ItemRef ir = new ItemRef( ItemStack );
-		OreResult or = refrences.get( ir );
+		OreResult or = references.get( ir );
 
 		if ( or == null )
 		{
 			or = new OreResult();
-			refrences.put( ir, or );
+			references.put( ir, or );
 
-			OreRefrence ref = new OreRefrence();
+			OreReference ref = new OreReference();
 			Collection<Integer> ores = ref.getOres();
-			Collection<ItemStack> set = ref.getEquivilients();
+			Collection<ItemStack> set = ref.getEquivalents();
 
 			for (String ore : OreDictionary.getOreNames())
 			{
@@ -100,8 +100,8 @@ public class OreHelper
 
 	public boolean sameOre(AEItemStack aeItemStack, IAEItemStack is)
 	{
-		OreRefrence a = aeItemStack.def.isOre;
-		OreRefrence b = ((AEItemStack) aeItemStack).def.isOre;
+		OreReference a = aeItemStack.def.isOre;
+		OreReference b = ((AEItemStack) aeItemStack).def.isOre;
 
 		if ( a == b )
 			return true;
@@ -119,7 +119,7 @@ public class OreHelper
 		return false;
 	}
 
-	public boolean sameOre(OreRefrence a, OreRefrence b)
+	public boolean sameOre(OreReference a, OreReference b)
 	{
 		if ( a == null || b == null )
 			return false;
@@ -139,11 +139,11 @@ public class OreHelper
 
 	public boolean sameOre(AEItemStack aeItemStack, ItemStack o)
 	{
-		OreRefrence a = aeItemStack.def.isOre;
+		OreReference a = aeItemStack.def.isOre;
 		if ( a == null )
 			return false;
 
-		for (ItemStack oreItem : a.getEquivilients())
+		for (ItemStack oreItem : a.getEquivalents())
 		{
 			if ( OreDictionary.itemMatches( oreItem, o, false ) )
 				return true;

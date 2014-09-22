@@ -27,7 +27,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 	public ItemEncodedPattern() {
 		super( ItemEncodedPattern.class );
-		setfeature( EnumSet.of( AEFeature.Patterns ) );
+		setFeature( EnumSet.of( AEFeature.Patterns ) );
 		setMaxStackSize( 1 );
 		if ( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, new ItemEncodedPatternRenderer() );
@@ -109,7 +109,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		}
 	}
 
-	// rather simple client side cacheing.
+	// rather simple client side caching.
 	static WeakHashMap<ItemStack, ItemStack> simpleCache = new WeakHashMap<ItemStack, ItemStack>();
 
 	public ItemStack getOutput(ItemStack item)

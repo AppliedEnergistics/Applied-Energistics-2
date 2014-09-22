@@ -124,7 +124,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 			IPart part = getPart( dir );
 			if ( part instanceof IEnergySink )
 			{
-				// use lower number cause ic2 deletes power it sends that isn't recieved.
+				// use lower number cause ic2 deletes power it sends that isn't received.
 				return ((IEnergySink) part).getDemandedEnergy();
 			}
 		}

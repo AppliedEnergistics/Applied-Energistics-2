@@ -28,7 +28,7 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 	public ItemViewCell()
 	{
 		super( ItemViewCell.class );
-		setfeature( EnumSet.of( AEFeature.Core ) );
+		setFeature( EnumSet.of( AEFeature.Core ) );
 		setMaxStackSize( 1 );
 	}
 

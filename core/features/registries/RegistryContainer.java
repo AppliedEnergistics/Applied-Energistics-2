@@ -21,12 +21,12 @@ public class RegistryContainer implements IRegistryContainer
 	private GrinderRecipeManager GrinderRecipes = new GrinderRecipeManager();
 	private ExternalStorageRegistry ExternalStorageHandlers = new ExternalStorageRegistry();
 	private CellRegistry CellRegistry = new CellRegistry();
-	private LocateableRegistry LocateableRegistry = new LocateableRegistry();
-	private SpecialComparisonRegistry SpecialComparsonRegistry = new SpecialComparisonRegistry();
-	private WirelessRegistry WirelessRegistery = new WirelessRegistry();
+	private LocatableRegistry LocatableRegistry = new LocatableRegistry();
+	private SpecialComparisonRegistry SpecialComparisonRegistry = new SpecialComparisonRegistry();
+	private WirelessRegistry WirelessRegistry = new WirelessRegistry();
 	private GridCacheRegistry GridCacheRegistry = new GridCacheRegistry();
 	private P2PTunnelRegistry P2PRegistry = new P2PTunnelRegistry();
-	private MovableTileRegistry MoveableReg = new MovableTileRegistry();
+	private MovableTileRegistry MovableReg = new MovableTileRegistry();
 	private MatterCannonAmmoRegistry matterCannonReg = new MatterCannonAmmoRegistry();
 	private PlayerRegistry playerreg = new PlayerRegistry();
 	private IRecipeHandlerRegistry recipeReg = new RecipeHandlerRegistry();
@@ -34,7 +34,7 @@ public class RegistryContainer implements IRegistryContainer
 	@Override
 	public IWirelessTermRegistry wireless()
 	{
-		return WirelessRegistery;
+		return WirelessRegistry;
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class RegistryContainer implements IRegistryContainer
 	@Override
 	public ISpecialComparisonRegistry specialComparison()
 	{
-		return SpecialComparsonRegistry;
+		return SpecialComparisonRegistry;
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class RegistryContainer implements IRegistryContainer
 	@Override
 	public ILocatableRegistry locatable()
 	{
-		return LocateableRegistry;
+		return LocatableRegistry;
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class RegistryContainer implements IRegistryContainer
 	@Override
 	public IMovableRegistry movable()
 	{
-		return MoveableReg;
+		return MovableReg;
 	}
 
 	@Override

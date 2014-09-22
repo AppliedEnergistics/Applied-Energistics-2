@@ -39,12 +39,12 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		par = null;
 	}
 
-	public MECraftingInventory(MECraftingInventory parrent)
+	public MECraftingInventory(MECraftingInventory parent)
 	{
-		this.target = parrent;
-		this.logExtracted = parrent.logExtracted;
-		this.logInjections = parrent.logInjections;
-		this.logMissing = parrent.logMissing;
+		this.target = parent;
+		this.logExtracted = parent.logExtracted;
+		this.logInjections = parent.logInjections;
+		this.logMissing = parent.logMissing;
 
 		if ( logMissing )
 			missingCache = AEApi.instance().storage().createItemList();
@@ -63,7 +63,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 		localCache = target.getAvailableItems( AEApi.instance().storage().createItemList() );
 
-		par = parrent;
+		par = parent;
 	}
 
 	public MECraftingInventory(IMEMonitor<IAEItemStack> target, BaseActionSource src, boolean logExtracted, boolean logInjections, boolean logMissing)
@@ -200,10 +200,10 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 		if ( logInjections )
 		{
-			for (IAEItemStack injec : injectedCache)
+			for (IAEItemStack inject : injectedCache)
 			{
 				IAEItemStack result = null;
-				added.add( result = target.injectItems( injec, Actionable.MODULATE, src ) );
+				added.add( result = target.injectItems( inject, Actionable.MODULATE, src ) );
 
 				if ( result != null )
 				{

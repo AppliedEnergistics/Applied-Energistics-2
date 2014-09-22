@@ -63,7 +63,7 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 
 	public BlockSkyStone() {
 		super( BlockSkyStone.class, Material.rock );
-		setfeature( EnumSet.of( AEFeature.Core ) );
+		setFeature( EnumSet.of( AEFeature.Core ) );
 		setHardness( 50 );
 		hasSubtypes = true;
 		blockResistance = 150.0f;
@@ -175,7 +175,7 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 			WorldSettings.getInstance().getCompass().updateArea( w, x, y, z );
 	}
 
-	// use AE2's enderer, no rotatable blocks.
+	// use AE2's renderer, no rotatable blocks.
 	int getRealRenderType()
 	{
 		return getRenderType();

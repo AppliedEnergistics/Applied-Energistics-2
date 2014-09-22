@@ -15,8 +15,8 @@ public class BlockLightDetector extends BlockQuartzTorch
 
 	public BlockLightDetector() {
 		super( BlockLightDetector.class );
-		setfeature( EnumSet.of( AEFeature.LightDetector ) );
-		setTileEntiy( TileLightDetector.class );
+		setFeature( EnumSet.of( AEFeature.LightDetector ) );
+		setTileEntity( TileLightDetector.class );
 	}
 
 	@Override

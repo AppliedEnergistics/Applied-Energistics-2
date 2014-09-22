@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import appeng.client.texture.FlippableIcon;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -36,7 +37,6 @@ import appeng.block.networking.BlockCableBus;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
 import appeng.client.render.WorldRender;
-import appeng.client.texture.FlipableIcon;
 import appeng.client.texture.MissingIcon;
 import appeng.core.features.AEFeature;
 import appeng.core.features.AEFeatureHandler;
@@ -94,11 +94,11 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@SideOnly(Side.CLIENT)
-	private FlipableIcon optionaIcon(IIconRegister ir, String Name, IIcon substitute)
+	private FlippableIcon optionalIcon(IIconRegister ir, String Name, IIcon substitute)
 	{
 		// if the input is an flippable IIcon find the original.
-		while (substitute instanceof FlipableIcon)
-			substitute = ((FlipableIcon) substitute).getOriginal();
+		while (substitute instanceof FlippableIcon)
+			substitute = ((FlippableIcon) substitute).getOriginal();
 
 		if ( substitute != null )
 		{
@@ -110,15 +110,15 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 				IResource res = Minecraft.getMinecraft().getResourceManager().getResource( resLoc );
 				if ( res != null )
-					return new FlipableIcon( ir.registerIcon( Name ) );
+					return new FlippableIcon( ir.registerIcon( Name ) );
 			}
 			catch (Throwable e)
 			{
-				return new FlipableIcon( substitute );
+				return new FlippableIcon( substitute );
 			}
 		}
 
-		return new FlipableIcon( ir.registerIcon( Name ) );
+		return new FlippableIcon( ir.registerIcon( Name ) );
 	}
 
 	@Override
@@ -126,21 +126,21 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	public void registerBlockIcons(IIconRegister iconRegistry)
 	{
 		BlockRenderInfo info = getRendererInstance();
-		FlipableIcon topIcon;
-		FlipableIcon bottomIcon;
-		FlipableIcon sideIcon;
-		FlipableIcon eastIcon;
-		FlipableIcon westIcon;
-		FlipableIcon southIcon;
-		FlipableIcon northIcon;
+		FlippableIcon topIcon;
+		FlippableIcon bottomIcon;
+		FlippableIcon sideIcon;
+		FlippableIcon eastIcon;
+		FlippableIcon westIcon;
+		FlippableIcon southIcon;
+		FlippableIcon northIcon;
 
-		this.blockIcon = topIcon = optionaIcon( iconRegistry, this.getTextureName(), null );
-		bottomIcon = optionaIcon( iconRegistry, this.getTextureName() + "Bottom", topIcon );
-		sideIcon = optionaIcon( iconRegistry, this.getTextureName() + "Side", topIcon );
-		eastIcon = optionaIcon( iconRegistry, this.getTextureName() + "East", sideIcon );
-		westIcon = optionaIcon( iconRegistry, this.getTextureName() + "West", sideIcon );
-		southIcon = optionaIcon( iconRegistry, this.getTextureName() + "Front", sideIcon );
-		northIcon = optionaIcon( iconRegistry, this.getTextureName() + "Back", sideIcon );
+		this.blockIcon = topIcon = optionalIcon( iconRegistry, this.getTextureName(), null );
+		bottomIcon = optionalIcon( iconRegistry, this.getTextureName() + "Bottom", topIcon );
+		sideIcon = optionalIcon( iconRegistry, this.getTextureName() + "Side", topIcon );
+		eastIcon = optionalIcon( iconRegistry, this.getTextureName() + "East", sideIcon );
+		westIcon = optionalIcon( iconRegistry, this.getTextureName() + "West", sideIcon );
+		southIcon = optionalIcon( iconRegistry, this.getTextureName() + "Front", sideIcon );
+		northIcon = optionalIcon( iconRegistry, this.getTextureName() + "Back", sideIcon );
 
 		info.updateIcons( bottomIcon, topIcon, northIcon, southIcon, eastIcon, westIcon );
 	}
@@ -148,7 +148,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	public void registerNoIcons()
 	{
 		BlockRenderInfo info = getRendererInstance();
-		FlipableIcon i = new FlipableIcon( new MissingIcon( this ) );
+		FlippableIcon i = new FlippableIcon( new MissingIcon( this ) );
 		info.updateIcons( i, i, i, i, i, i );
 	}
 
@@ -173,7 +173,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		return getIcon( mapRotation( w, x, y, z, s ), w.getBlockMetadata( x, y, z ) );
 	}
 
-	protected void setTileEntiy(Class<? extends TileEntity> c)
+	protected void setTileEntity(Class<? extends TileEntity> c)
 	{
 		AEBaseTile.registerTileItem( c, new ItemStackSrc( this, 0 ) );
 		GameRegistry.registerTileEntity( tileEntityType = c, FeatureFullname );
@@ -181,7 +181,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		setTileProvider( hasBlockTileEntity() );
 	}
 
-	protected void setfeature(EnumSet<AEFeature> f)
+	protected void setFeature(EnumSet<AEFeature> f)
 	{
 		feature = new AEFeatureHandler( f, this, FeatureSubname );
 	}
@@ -475,7 +475,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 		if ( collisionHandler != null )
 		{
-			Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxsFromPool( w, x, y, z, null, true );
+			Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxesFromPool( w, x, y, z, null, true );
 			MovingObjectPosition br = null;
 
 			double lastDist = 0;
@@ -537,7 +537,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 				EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 				LookDirection ld = Platform.getPlayerRay( player, Platform.getEyeOffset( player ) );
 
-				Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxsFromPool( w, x, y, z, Minecraft.getMinecraft().thePlayer, true );
+				Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxesFromPool( w, x, y, z, Minecraft.getMinecraft().thePlayer, true );
 				AxisAlignedBB br = null;
 
 				double lastDist = 0;
@@ -572,7 +572,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 				}
 			}
 
-			for (AxisAlignedBB bx : collisionHandler.getSelectedBoundingBoxsFromPool( w, x, y, z, null, false ))
+			for (AxisAlignedBB bx : collisionHandler.getSelectedBoundingBoxesFromPool( w, x, y, z, null, false ))
 			{
 				if ( b == null )
 					b = bx;

@@ -41,7 +41,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 
 	public ItemBasicStorageCell(MaterialType whichCell, int Kilobytes) {
 		super( ItemBasicStorageCell.class, Kilobytes + "k" );
-		setfeature( EnumSet.of( AEFeature.StorageCells ) );
+		setFeature( EnumSet.of( AEFeature.StorageCells ) );
 		setMaxStackSize( 1 );
 		totalBytes = Kilobytes * 1024;
 		component = whichCell;
@@ -123,7 +123,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	}
 
 	@Override
-	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requsetedAddition)
+	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requestedAddition)
 	{
 		return false;
 	}
@@ -190,7 +190,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 		return true;
 	}
 
-	private boolean dissassembleDrive(ItemStack stack, World world, EntityPlayer player)
+	private boolean disassembleDrive(ItemStack stack, World world, EntityPlayer player)
 	{
 		if ( player.isSneaking() )
 		{
@@ -228,14 +228,14 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		dissassembleDrive( stack, world, player );
+		disassembleDrive( stack, world, player );
 		return stack;
 	}
 
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
-		return dissassembleDrive( stack, world, player );
+		return disassembleDrive( stack, world, player );
 	}
 
 	@Override

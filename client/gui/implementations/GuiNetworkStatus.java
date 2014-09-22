@@ -160,7 +160,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 		for (int z = viewStart; z < Math.min( viewEnd, repo.size() ); z++)
 		{
-			IAEItemStack refStack = repo.getRefrenceItem( z );
+			IAEItemStack refStack = repo.getReferenceItem( z );
 			if ( refStack != null )
 			{
 				GL11.glPushMatrix();
@@ -242,7 +242,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 		return currenttip;
 	}
 
-	// Vanillia version...
+	// Vanilla version...
 	protected void drawItemStackTooltip(ItemStack stack, int x, int y)
 	{
 		Slot s = getSlot( x, y );

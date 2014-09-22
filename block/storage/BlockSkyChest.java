@@ -33,8 +33,8 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 
 	public BlockSkyChest() {
 		super( BlockSkyChest.class, Material.rock );
-		setfeature( EnumSet.of( AEFeature.Core, AEFeature.SkyStoneChests ) );
-		setTileEntiy( TileSkyChest.class );
+		setFeature( EnumSet.of( AEFeature.Core, AEFeature.SkyStoneChests ) );
+		setTileEntity( TileSkyChest.class );
 		isOpaque = isFullSize = false;
 		lightOpacity = 0;
 		hasSubtypes = true;
@@ -97,7 +97,7 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxsFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
 	{
 		TileSkyChest sk = getTileEntity( w, x, y, z );
 		double sc = 0.06;

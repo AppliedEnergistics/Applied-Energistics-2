@@ -134,13 +134,13 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	}
 
 	@MENetworkEventSubscribe
-	public void onPowerStateChage(MENetworkChannelsChanged ev)
+	public void onPowerStateChange(MENetworkChannelsChanged ev)
 	{
 		updateMeta( false );
 	}
 
 	@MENetworkEventSubscribe
-	public void onPowerStateChage(MENetworkPowerStatusChange ev)
+	public void onPowerStateChange(MENetworkPowerStatusChange ev)
 	{
 		updateMeta( false );
 	}

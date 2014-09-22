@@ -9,19 +9,19 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import appeng.api.storage.data.IAEItemStack;
 
-public class OreRefrence
+public class OreReference
 {
 
 	private LinkedList<ItemStack> otherOptions = new LinkedList();
 	private ArrayList aeotherOptions = null;
 	private HashSet<Integer> ores = new HashSet<Integer>();
 
-	public Collection<ItemStack> getEquivilients()
+	public Collection<ItemStack> getEquivalents()
 	{
 		return otherOptions;
 	}
 
-	public List<IAEItemStack> getAEEquivilients()
+	public List<IAEItemStack> getAEEquivalents()
 	{
 		if ( aeotherOptions == null )
 		{

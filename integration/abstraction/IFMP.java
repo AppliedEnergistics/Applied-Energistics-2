@@ -13,7 +13,7 @@ public interface IFMP
 
 	CableBusContainer getCableContainer(TileEntity te);
 
-	void registerPassThru(Class<?> layerInterface);
+	void registerPassThrough(Class<?> layerInterface);
 
 	Event newFMPPacketEvent(EntityPlayerMP sender);
 

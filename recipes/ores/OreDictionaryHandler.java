@@ -56,7 +56,7 @@ public class OreDictionaryHandler
 	{
 		ol.add( n );
 
-		// notify the listener of any ore already in existance.
+		// notify the listener of any ore already in existence.
 		for (String name : OreDictionary.getOreNames())
 		{
 			if ( name != null && shouldCare( name ) )

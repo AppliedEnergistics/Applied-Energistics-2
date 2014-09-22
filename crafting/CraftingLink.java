@@ -101,7 +101,7 @@ public class CraftingLink implements ICraftingLink
 		tag.setBoolean( "req", req != null );
 	}
 
-	public void setNextus(CraftingLinkNexus n)
+	public void setNexus(CraftingLinkNexus n)
 	{
 		if ( tie != null )
 			tie.remove( this );

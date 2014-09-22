@@ -39,9 +39,9 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 		outputSlot.putStack( CraftingManager.getInstance().findMatchingRecipe( ic, getPlayerInv().player.worldObj ) );
 	}
 
-	public ContainerCraftingTerm(InventoryPlayer ip, ITerminalHost montiorable) {
-		super( ip, montiorable, false );
-		ct = (PartCraftingTerminal) montiorable;
+	public ContainerCraftingTerm(InventoryPlayer ip, ITerminalHost monitorable) {
+		super( ip, monitorable, false );
+		ct = (PartCraftingTerminal) monitorable;
 
 		IInventory crafting = ct.getInventoryByName( "crafting" );
 
@@ -49,7 +49,7 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 			for (int x = 0; x < 3; x++)
 				addSlotToContainer( craftingSlots[x + y * 3] = new SlotCraftingMatrix( this, crafting, x + y * 3, 37 + x * 18, -72 + y * 18 ) );
 
-		addSlotToContainer( outputSlot = new SlotCraftingTerm( getPlayerInv().player, mySrc, powerSrc, montiorable, crafting, crafting, output, 131, -72 + 18, this ) );
+		addSlotToContainer( outputSlot = new SlotCraftingTerm( getPlayerInv().player, mySrc, powerSrc, monitorable, crafting, crafting, output, 131, -72 + 18, this ) );
 
 		bindPlayerInventory( ip, 0, 0 );
 

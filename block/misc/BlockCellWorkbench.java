@@ -17,8 +17,8 @@ public class BlockCellWorkbench extends AEBaseBlock
 
 	public BlockCellWorkbench() {
 		super( BlockCellWorkbench.class, Material.iron );
-		setfeature( EnumSet.of( AEFeature.StorageCells ) );
-		setTileEntiy( TileCellWorkbench.class );
+		setFeature( EnumSet.of( AEFeature.StorageCells ) );
+		setTileEntity( TileCellWorkbench.class );
 	}
 
 	@Override

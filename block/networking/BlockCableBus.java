@@ -76,7 +76,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 
 	public BlockCableBus() {
 		super( BlockCableBus.class, AEGlassMaterial.instance );
-		setfeature( EnumSet.of( AEFeature.Core ) );
+		setFeature( EnumSet.of( AEFeature.Core ) );
 		setLightOpacity( 0 );
 		isFullSize = isOpaque = false;
 	}
@@ -399,7 +399,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 
 	public void setupTile()
 	{
-		setTileEntiy( noTesrTile = Api.instance.partHelper.getCombinedInstance( TileCableBus.class.getName() ) );
+		setTileEntity( noTesrTile = Api.instance.partHelper.getCombinedInstance( TileCableBus.class.getName() ) );
 		if ( Platform.isClient() )
 		{
 			tesrTile = Api.instance.partHelper.getCombinedInstance( TileCableBusTESR.class.getName() );

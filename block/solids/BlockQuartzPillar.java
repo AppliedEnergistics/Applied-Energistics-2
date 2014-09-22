@@ -15,7 +15,7 @@ public class BlockQuartzPillar extends AEBaseBlock implements IOrientableBlock
 
 	public BlockQuartzPillar() {
 		super( BlockQuartzPillar.class, Material.rock );
-		setfeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
+		setFeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
 	}
 
 	@Override

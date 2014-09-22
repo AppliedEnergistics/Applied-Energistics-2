@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import appeng.util.item.OreReference;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
@@ -107,7 +108,6 @@ import appeng.me.helpers.AENetworkProxy;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.AESharedNBT;
 import appeng.util.item.OreHelper;
-import appeng.util.item.OreRefrence;
 import appeng.util.prioitylist.IPartitionList;
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -342,7 +342,7 @@ public class Platform
 	}
 
 	/*
-	 * Lots of sillyness to try and account for weird tag related junk, basically requires that two tags have at least
+	 * Lots of silliness to try and account for weird tag related junk, basically requires that two tags have at least
 	 * something in their tags before it wasts its time comparing them.
 	 */
 	public static boolean sameStackStags(ItemStack a, ItemStack b)
@@ -504,7 +504,7 @@ public class Platform
 	}
 
 	/*
-	 * Orderless hash on NBT Data, used to work thought huge piles fast, but ignroes the order just in case MC decided
+	 * Orderless hash on NBT Data, used to work thought huge piles fast, but ignores the order just in case MC decided
 	 * to change it... WHICH IS BAD...
 	 */
 	public static int NBTOrderlessHash(NBTBase A)
@@ -666,7 +666,7 @@ public class Platform
 	}
 
 	/*
-	 * Generates Item entiies in the world similar to how items are generally droped.
+	 * Generates Item entities in the world similar to how items are generally dropped.
 	 */
 	public static void spawnDrops(World w, int x, int y, int z, List<ItemStack> drops)
 	{
@@ -1185,8 +1185,8 @@ public class Platform
 			}
 		}
 
-		OreRefrence aOR = OreHelper.instance.isOre( a );
-		OreRefrence bOR = OreHelper.instance.isOre( b );
+		OreReference aOR = OreHelper.instance.isOre( a );
+		OreReference bOR = OreHelper.instance.isOre( b );
 
 		if ( OreHelper.instance.sameOre( aOR, bOR ) )
 			return true;
@@ -1260,7 +1260,7 @@ public class Platform
 				Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
 
 		Entity entity = null;
-		double Closeest = 9999999.0D;
+		double closest = 9999999.0D;
 		if ( hitEntities )
 		{
 			List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
@@ -1286,10 +1286,10 @@ public class Platform
 						{
 							double nd = vec3.squareDistanceTo( movingobjectposition1.hitVec );
 
-							if ( nd < Closeest )
+							if ( nd < closest )
 							{
 								entity = entity1;
-								Closeest = nd;
+								closest = nd;
 							}
 						}
 					}
@@ -1306,7 +1306,7 @@ public class Platform
 			pos = w.rayTraceBlocks( vec3, vec31, true );
 		}
 
-		if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( Srec ) > Closeest )
+		if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( Srec ) > closest )
 		{
 			pos = new MovingObjectPosition( entity );
 		}
@@ -1744,7 +1744,7 @@ public class Platform
 		return false;
 	}
 
-	public static Object findPrefered(ItemStack[] is)
+	public static Object findPreferred(ItemStack[] is)
 	{
 		for (ItemStack stack : is)
 		{
@@ -1835,13 +1835,13 @@ public class Platform
 		return (float) (player.posY + player.getEyeHeight() - player.getDefaultEyeHeight());
 	}
 
-	public static void addStat(int playerID, Achievement achivement)
+	public static void addStat(int playerID, Achievement achievement)
 	{
 		EntityPlayer p = AEApi.instance().registries().players().findPlayer( playerID );
 		if ( p != null )
 		{
 			p.addChatMessage( new ChatComponentText( "RWAR!" ) );
-			// p.addStat( achivement, 1 );
+			// p.addStat( achievement, 1 );
 		}
 	}
 

@@ -96,7 +96,7 @@ public class GuiUpgradeable extends AEBaseGui
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		handleButtonVisiblity();
+		handleButtonVisibility();
 
 		bindTexture( getBackground() );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, ySize );
@@ -116,7 +116,7 @@ public class GuiUpgradeable extends AEBaseGui
 		return "guis/bus.png";
 	}
 
-	protected void handleButtonVisiblity()
+	protected void handleButtonVisibility()
 	{
 		if ( redstoneMode != null )
 			redstoneMode.setVisibility( bc.getInstalledUpgrades( Upgrades.REDSTONE ) > 0 );

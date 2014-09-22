@@ -44,7 +44,7 @@ public class ItemRepo
 		this.sortSrc = sortSrc;
 	}
 
-	public IAEItemStack getRefrenceItem(int idx)
+	public IAEItemStack getReferenceItem(int idx)
 	{
 		idx += src.getCurrentScroll() * rowSize;
 

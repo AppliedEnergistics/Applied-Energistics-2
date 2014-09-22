@@ -5,7 +5,7 @@ import appeng.util.Platform;
 import buildcraft.api.blueprints.IBuilderContext;
 import buildcraft.api.blueprints.SchematicBlock;
 
-public class AERotateableBlockSchematic extends SchematicBlock
+public class AERotatableBlockSchematic extends SchematicBlock
 {
 
 	@Override

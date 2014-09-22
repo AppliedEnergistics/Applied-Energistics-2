@@ -17,7 +17,7 @@ import appeng.tile.events.TileEventType;
 public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowerStorage
 {
 
-	// values that determin general function, are set by inheriting classes if
+	// values that determine general function, are set by inheriting classes if
 	// needed. These should generally remain static.
 	protected double internalMaxPower = 10000;
 	protected boolean internalCanAcceptPower = true;

@@ -33,7 +33,7 @@ public class AppEngCore extends DummyModContainer implements IFMLLoadingPlugin
 		md.version = getVersion();
 		md.name = getName();
 		md.url = "http://ae2.ae-mod.info";
-		md.description = "Embeded Coremod for Applied Energistics 2";
+		md.description = "Embedded Coremod for Applied Energistics 2";
 	}
 
 	@EventHandler

@@ -240,7 +240,7 @@ public enum GuiBridge implements IGuiHandler
 			Object o = target.newInstance( inventory, tE );
 
 			/**
-			 * triggers achivemnet when the player sees presses.
+			 * triggers achievement when the player sees presses.
 			 */
 			if ( o instanceof AEBaseContainer )
 			{

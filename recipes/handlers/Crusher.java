@@ -15,7 +15,7 @@ import appeng.integration.abstraction.IRC;
 import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
 
-public class Crusher implements ICraftHandler, IWebsiteSeralizer
+public class Crusher implements ICraftHandler, IWebsiteSerializer
 {
 
 	IIngredient pro_input;

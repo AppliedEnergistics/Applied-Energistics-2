@@ -447,9 +447,9 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		isComplete = true;
 	}
 
-	private boolean canCraft(ICraftingPatternDetails details, IAEItemStack[] condencedInputs)
+	private boolean canCraft(ICraftingPatternDetails details, IAEItemStack[] condensedInputs)
 	{
-		for (IAEItemStack g : condencedInputs)
+		for (IAEItemStack g : condensedInputs)
 		{
 
 			if ( details.isCraftable() )

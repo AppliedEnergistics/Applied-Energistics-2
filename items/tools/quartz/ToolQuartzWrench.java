@@ -21,7 +21,7 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWren
 
 	public ToolQuartzWrench(AEFeature type) {
 		super( ToolQuartzWrench.class, type.name() );
-		setfeature( EnumSet.of( type, AEFeature.QuartzWrench ) );
+		setFeature( EnumSet.of( type, AEFeature.QuartzWrench ) );
 		setMaxStackSize( 1 );
 	}
 

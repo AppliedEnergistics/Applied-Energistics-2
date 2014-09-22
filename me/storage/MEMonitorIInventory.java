@@ -179,7 +179,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 			ItemStack newIS = is == null || is.isExtractable == false && mode == StorageFilter.EXTRACTABLE_ONLY ? null : is.getItemStack();
 			ItemStack oldIS = old == null ? null : old.itemStack;
 
-			if ( isDiffrent( newIS, oldIS ) )
+			if ( isDifferent( newIS, oldIS ) )
 			{
 				CachedItemStack cis = new CachedItemStack( is.getItemStack() );
 				memory.put( is.slot, cis );
@@ -241,12 +241,12 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 		}
 
 		if ( !changes.isEmpty() )
-			postDiffrence( changes );
+			postDifference( changes );
 
 		return changed ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
 	}
 
-	private boolean isDiffrent(ItemStack a, ItemStack b)
+	private boolean isDifferent(ItemStack a, ItemStack b)
 	{
 		if ( a == b && b == null )
 			return false;
@@ -257,7 +257,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 		return !Platform.isSameItemPrecise( a, b );
 	}
 
-	private void postDiffrence(Iterable<IAEItemStack> a)
+	private void postDifference(Iterable<IAEItemStack> a)
 	{
 		// AELog.info( a.getItemStack().getUnlocalizedName() + " @ " + a.getStackSize() );
 		if ( a != null )

@@ -1,11 +1,10 @@
 package appeng.container.implementations;
 
+import appeng.container.slot.SlotInaccessible;
 import net.minecraft.entity.player.InventoryPlayer;
 import appeng.container.AEBaseContainer;
-import appeng.container.slot.SlotInaccessable;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.container.slot.SlotRestrictedInput.PlaceableItemType;
 import appeng.tile.grindstone.TileGrinder;
 
 public class ContainerGrinder extends AEBaseContainer
@@ -17,11 +16,11 @@ public class ContainerGrinder extends AEBaseContainer
 		super( ip, te, null );
 		myte = te;
 
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.ORE, te, 0, 12, 17, invPlayer ) );
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.ORE, te, 1, 12 + 18, 17, invPlayer ) );
-		addSlotToContainer( new SlotRestrictedInput( PlaceableItemType.ORE, te, 2, 12 + 36, 17, invPlayer ) );
+		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, te, 0, 12, 17, invPlayer ) );
+		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, te, 1, 12 + 18, 17, invPlayer ) );
+		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, te, 2, 12 + 36, 17, invPlayer ) );
 
-		addSlotToContainer( new SlotInaccessable( te, 6, 80, 40 ) );
+		addSlotToContainer( new SlotInaccessible( te, 6, 80, 40 ) );
 
 		addSlotToContainer( new SlotOutput( te, 3, 112, 63, 2 * 16 + 15 ) );
 		addSlotToContainer( new SlotOutput( te, 4, 112 + 18, 63, 2 * 16 + 15 ) );

@@ -25,8 +25,8 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 
 	public BlockWireless() {
 		super( BlockWireless.class, AEGlassMaterial.instance );
-		setfeature( EnumSet.of( AEFeature.Core, AEFeature.WirelessAccessTerminal ) );
-		setTileEntiy( TileWireless.class );
+		setFeature( EnumSet.of( AEFeature.Core, AEFeature.WirelessAccessTerminal ) );
+		setTileEntity( TileWireless.class );
 		setLightOpacity( 0 );
 		isFullSize = false;
 		isOpaque = false;
@@ -45,7 +45,7 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxsFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
 	{
 		TileWireless tile = getTileEntity( w, x, y, z );
 		if ( tile != null )

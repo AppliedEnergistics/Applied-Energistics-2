@@ -60,7 +60,7 @@ public class CraftingTreeNode
 		for (ICraftingPatternDetails details : cc.getCraftingFor( what, parent == null ? null : parent.details, slot, world ))// in
 																																// order.
 		{
-			if ( parent == null || parent.notRecurive( details ) )
+			if ( parent == null || parent.notRecursive( details ) )
 				nodes.add( new CraftingTreeProcess( cc, job, details, this, depth + 1, world ) );
 		}
 
@@ -73,7 +73,7 @@ public class CraftingTreeNode
 		return is;
 	}
 
-	boolean notRecurive(ICraftingPatternDetails details)
+	boolean notRecursive(ICraftingPatternDetails details)
 	{
 		IAEItemStack[] o = details.getCondensedOutputs();
 		for (IAEItemStack i : o)
@@ -88,7 +88,7 @@ public class CraftingTreeNode
 		if ( parent == null )
 			return true;
 
-		return parent.notRecurive( details );
+		return parent.notRecursive( details );
 	}
 
 	public IAEItemStack request(MECraftingInventory inv, long l, BaseActionSource src) throws CraftBranchFailure, InterruptedException

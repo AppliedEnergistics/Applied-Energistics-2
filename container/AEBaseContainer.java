@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import appeng.container.slot.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -41,14 +42,7 @@ import appeng.client.me.InternalSlotME;
 import appeng.client.me.SlotME;
 import appeng.container.guisync.GuiSync;
 import appeng.container.guisync.SyncDat;
-import appeng.container.slot.AppEngSlot;
-import appeng.container.slot.SlotCraftingMatrix;
-import appeng.container.slot.SlotCraftingTerm;
-import appeng.container.slot.SlotDisabled;
-import appeng.container.slot.SlotFake;
-import appeng.container.slot.SlotInaccessable;
-import appeng.container.slot.SlotPlayerHotBar;
-import appeng.container.slot.SlotPlayerInv;
+import appeng.container.slot.SlotInaccessible;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
@@ -115,7 +109,7 @@ public abstract class AEBaseContainer extends Container
 
 	public void setTargetStack(IAEItemStack stack)
 	{
-		// client dosn't need to re-send, makes for lower overhead rapid packets.
+		// client doesn't need to re-send, makes for lower overhead rapid packets.
 		if ( Platform.isClient() )
 		{
 			ItemStack a = stack == null ? null : stack.getItemStack();
@@ -346,7 +340,7 @@ public abstract class AEBaseContainer extends Container
 		ItemStack tis = null;
 		AppEngSlot clickSlot = (AppEngSlot) this.inventorySlots.get( idx ); // require AE SLots!
 
-		if ( clickSlot instanceof SlotDisabled || clickSlot instanceof SlotInaccessable )
+		if ( clickSlot instanceof SlotDisabled || clickSlot instanceof SlotInaccessible )
 			return null;
 		if ( clickSlot != null && clickSlot.getHasStack() )
 		{

@@ -26,7 +26,7 @@ public class InternalSlotME
 
 	public IAEItemStack getAEStack()
 	{
-		return repo.getRefrenceItem( offset );
+		return repo.getReferenceItem( offset );
 	}
 
 	public boolean hasPower()
