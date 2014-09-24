@@ -1,0 +1,33 @@
+# exclude all
+/*
+
+# include important folders
+# need gradle 
+!gradle/
+!gradlew
+!gradlew.bat
+!build.gradle
+!build.properties
+
+# include markdowns
+!README.md
+!License.md
+
+# include sourcecode
+!src/
+
+# include important mods required for running
+# need to include run first to exclude all existing to add mods later on
+!run/
+run/*
+!run/mods
+
+# include special libs like BC
+!libs/
+
+# include git important files
+!.gitmodules
+!.gitignore
+
+# include travis build
+!.travis.yml
