@@ -1,0 +1,234 @@
+
+# Quartz Fiber
+shaped=
+	glass glass glass,
+	dustQuartz dustQuartz dustQuartz,
+	glass glass glass
+	-> 3 ae2:ItemPart.QuartzFiber
+
+# Glass Cable
+shapeless=
+	ae2:ItemPart.QuartzFiber fluixCrystal fluixCrystal
+	-> 4 ae2:CableGlass.Fluix
+
+# Covered Cable
+shapeless=
+	ae2:CableGlass
+	wool
+	-> ae2:CableCovered.Fluix
+
+# Smart Cable
+shapeless=
+	ae2:CableCovered
+	mc:redstone mc:glowstone_dust
+	-> ae2:CableSmart.Fluix
+
+# Smart Cable
+shapeless=
+	ae2:CableCovered ae2:CableCovered ae2:CableCovered ae2:CableCovered 
+	mc:redstone mc:glowstone_dust
+	-> ae2:CableDense.Fluix
+
+shapeless=
+	ae2:CableSmart mc:water_bucket
+	-> ae2:CableSmart.Fluix
+
+shapeless=
+	ae2:CableCovered mc:water_bucket
+	-> ae2:CableCovered.Fluix
+
+shapeless=
+	ae2:CableGlass mc:water_bucket
+	-> ae2:CableGlass.Fluix
+
+shapeless=
+	ae2:CableDense mc:water_bucket
+	-> ae2:CableDense.Fluix
+
+# Planes
+
+shaped=
+	fluixCrystal fluixCrystal fluixCrystal,
+	mc:iron_ingot ae2:ItemMaterial.FormationCore mc:iron_ingot
+	-> ae2:ItemPart.FormationPlane
+
+shaped=
+	fluixCrystal fluixCrystal fluixCrystal,
+	mc:iron_ingot ae2:ItemMaterial.AnnihilationCore mc:iron_ingot
+	-> ae2:ItemPart.AnnihilationPlane
+
+shaped=
+	glass	ae2:ItemPart.Terminal	glass,
+	cable						_								cable,
+	mc:iron_ingot			fluixCrystal				mc:iron_ingot,
+	-> ae2:BlockChest
+
+# Storage
+
+shaped=
+	mc:iron_ingot ae2:ItemMaterial.EngProcessor mc:iron_ingot,
+	cable _ cable,
+	mc:iron_ingot ae2:ItemMaterial.EngProcessor mc:iron_ingot
+	-> ae2:BlockDrive
+
+# Misc
+shaped=
+	mc:iron_ingot glass mc:iron_ingot,
+	glass oredictionary:dustFluix glass,
+	mc:iron_ingot glass mc:iron_ingot
+	-> ae2:BlockCondenser
+
+shaped=
+	ae2:BlockSkyStone:1 ae2:ItemMaterial.PureifiedFluixCrystal ae2:BlockSkyStone:1,
+	ae2:ItemMaterial.PureifiedFluixCrystal ae2:ItemMaterial.EngProcessor ae2:ItemMaterial.PureifiedFluixCrystal,
+	ae2:BlockSkyStone:1 ae2:ItemMaterial.PureifiedFluixCrystal ae2:BlockSkyStone:1
+	-> ae2:BlockController
+
+shapeless=
+	metalIngots knife
+	-> 3 ae2:ItemPart.CableAnchor
+
+shapeless=
+	monitor ae2:ItemMaterial.FormationCore ae2:ItemMaterial.AnnihilationCore ae2:ItemMaterial.LogicProcessor
+	-> ae2:ItemPart.Terminal
+
+shapeless=
+	ae2:ItemPart.Terminal mc:crafting_table ae2:ItemMaterial.CalcProcessor
+	-> ae2:ItemPart.CraftingTerminal
+
+shaped=
+	_ mc:redstone _,
+	cable mc:lever cable,
+	_ mc:redstone _
+	-> ae2:ItemPart.ToggleBus
+
+shapeless=
+	ae2:ItemPart.ToggleBus
+	-> ae2:ItemPart.InvertedToggleBus
+
+shapeless=
+	ae2:ItemPart.InvertedToggleBus
+	-> ae2:ItemPart.ToggleBus
+
+shaped=
+	glass glass glass,
+	ae2:BlockDrive cable ae2:BlockDrive,
+	mc:iron_ingot ae2:ItemMaterial.LogicProcessor mc:iron_ingot
+	-> ae2:BlockIOPort
+
+shaped=
+	glass glass glass,
+	cable ae2:BlockIOPort cable,
+	mc:iron_ingot ae2:ItemMaterial.EngProcessor mc:iron_ingot
+	-> ae2:BlockSpatialIOPort
+
+shaped=
+	ae2:BlockQuartzGlass cable ae2:BlockQuartzGlass,
+	oredictionary:dustFluix fluixCrystal oredictionary:dustFluix,
+	ae2:BlockQuartzGlass cable ae2:BlockQuartzGlass
+	-> ae2:BlockSpatialPylon
+
+shaped=
+	mc:iron_ingot ae2:BlockQuartzGlass mc:iron_ingot,
+	ae2:BlockQuartzGlass  fluixCrystal ae2:BlockQuartzGlass,
+	mc:iron_ingot ae2:BlockQuartzGlass mc:iron_ingot
+	-> ae2:BlockEnergyAcceptor
+
+shaped=
+	mc:iron_ingot cable mc:iron_ingot,
+	ae2:BlockQuartzGlass  ae2:BlockFluix ae2:BlockQuartzGlass,
+	mc:iron_ingot cable mc:iron_ingot
+	-> ae2:BlockQuartzGrowthAccelerator
+
+shaped=
+	mc:iron_ingot fluixCrystal mc:iron_ingot,
+	mc:iron_ingot _ _,
+	mc:iron_ingot fluixCrystal mc:iron_ingot
+	-> ae2:BlockCharger
+
+shapeless=
+	ae2:ItemMaterial.CalcProcessor mc:redstone_torch
+	-> ae2:ItemPart.LevelEmitter
+
+shaped=
+	mc:iron_ingot ae2:ItemMaterial.FormationCore mc:iron_ingot,
+	_ mc:piston _
+	-> ae2:ItemPart.ExportBus
+
+shaped=
+	_ ae2:ItemMaterial.AnnihilationCore _,
+	mc:iron_ingot mc:sticky_piston mc:iron_ingot
+	-> ae2:ItemPart.ImportBus
+
+shaped=
+	mc:iron_ingot fluixCrystal,
+	ae2:ItemMaterial.AnnihilationCore fluixCrystal,
+	mc:iron_ingot fluixCrystal
+	-> ae2:ItemPart.AnnihilationPlane
+
+shaped=
+	mc:iron_ingot fluixCrystal,
+	ae2:ItemMaterial.FormationCore fluixCrystal,
+	mc:iron_ingot fluixCrystal
+	-> ae2:ItemPart.FormationPlane
+
+shapeless=
+	interface mc:sticky_piston mc:piston
+	-> ae2:ItemPart.StorageBus
+
+shapeless=
+	ae2:ItemPart.LevelEmitter monitor
+	-> ae2:ItemPart.StorageMonitor
+
+shapeless=
+	ae2:ItemPart.Interface
+	-> ae2:BlockInterface
+
+shapeless=
+	ae2:BlockInterface
+	-> ae2:ItemPart.Interface
+
+shaped=
+	mc:iron_ingot glass mc:iron_ingot,
+	ae2:ItemMaterial.AnnihilationCore _ ae2:ItemMaterial.FormationCore,
+	mc:iron_ingot glass mc:iron_ingot
+	-> ae2:BlockInterface
+
+# Matter Cannon
+shaped=
+	mc:iron_ingot mc:iron_ingot ae2:ItemMaterial.FormationCore,
+	ae2:ItemMaterial.Cell4kPart ae2:BlockEnergyCell _,
+	mc:iron_ingot _ _
+	-> ae2:ToolMassCannon
+
+# Wireless
+
+shaped=
+	_ ae2:ItemMaterial.FluixPearl _,
+	mc:iron_ingot ae2:ItemPart.QuartzFiber mc:iron_ingot,
+	_ mc:iron_ingot _
+	-> ae2:ItemMaterial.Wireless
+
+shaped=
+	ae2:ItemMaterial.Wireless,
+	ae2:ItemMaterial.CalcProcessor,
+	cable
+	-> ae2:BlockWireless
+
+shaped=
+	ae2:ItemMaterial.Wireless,
+	ae2:ItemPart.Terminal,
+	ae2:BlockDenseEnergyCell
+	-> ae2:ToolWirelessTerminal
+
+shaped=
+	oredictionary:dustFluix certusCrystal dustEnder,
+	mc:iron_ingot mc:iron_ingot mc:iron_ingot,
+	-> 2 ae2:ItemMaterial.WirelessBooster
+
+shaped=
+	dustQuartz mc:gunpowder,
+	mc:gunpowder dustQuartz
+	-> ae2:BlockTinyTNT
+
+import=hightech.recipe

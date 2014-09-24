@@ -1,0 +1,22 @@
+
+blkPreformatter
+glass materialConvMatrix glass
+mc:iron_ingot itemWorkbench mc:iron_ingot
+mc:iron_ingot mc:iron_ingot mc:iron_ingot
+
+
+blkQLink
+blkQuartzGlass materialFluixPearl blkQuartzGlass
+materialFluixPearl _ materialFluixPearl
+blkQuartzGlass materialFluixPearl blkQuartzGlass
+
+
+blkTinyTNT
+_ _ _
+itemAnyQuartzDust itemGunpowder _
+itemGunpowder itemAnyQuartzDust _
+
+blkWireless
+mc:iron_ingot glass mc:iron_ingot
+blkCable ae2:ItemMaterial.Wireless glass
+mc:iron_ingot glass mc:iron_ingot

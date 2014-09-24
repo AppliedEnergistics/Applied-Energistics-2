@@ -1,0 +1,69 @@
+
+shaped=
+	ae2:BlockQuartzGlass mc:glowstone_dust ae2:BlockQuartzGlass,
+	mc:glowstone_dust certusCrystal mc:glowstone_dust,
+	mc:iron_ingot mc:iron_ingot mc:iron_ingot
+	-> ae2:ItemMaterial.BlankPattern
+
+shaped=
+	ae2:ItemMaterial.BasicCard mc:crafting_table
+	-> ae2:ItemMaterial.CardCrafting
+
+shaped=
+	ae2:ItemMaterial.FormationCore mc:iron_ingot _,
+	mc:iron_ingot ae2:ItemMaterial.Cell4kPart _,
+	_ _ ae2:BlockEnergyCell
+	-> ae2:ToolColorApplicator
+
+shapeless=
+	monitor interface ae2:ItemMaterial.EngProcessor
+	-> ae2:ItemPart.InterfaceTerminal
+
+shapeless=
+	ae2:ItemPart.CraftingTerminal ae2:ItemMaterial.EngProcessor
+	-> ae2:ItemPart.PatternTerminal
+
+shaped=
+	mc:iron_ingot ae2:BlockQuartzGlass mc:iron_ingot,
+	ae2:ItemMaterial.AnnihilationCore mc:crafting_table ae2:ItemMaterial.FormationCore,
+	mc:iron_ingot ae2:BlockQuartzGlass mc:iron_ingot
+	-> ae2:BlockMolecularAssembler
+
+shaped=
+	mc:iron_ingot ae2:ItemMaterial.CalcProcessor mc:iron_ingot,
+	cable ae2:ItemMaterial.LogicProcessor cable,
+	mc:iron_ingot ae2:ItemMaterial.CalcProcessor mc:iron_ingot
+	-> ae2:BlockCraftingUnit:0
+
+# co processor
+shapeless=
+	ae2:BlockCraftingUnit:0
+	ae2:ItemMaterial.EngProcessor
+	-> ae2:BlockCraftingUnit:1
+
+shapeless=
+	ae2:BlockCraftingUnit:0
+	ae2:ItemPart.StorageMonitor
+	-> ae2:BlockCraftingMonitor
+
+# various storage sizes
+
+shapeless=
+	ae2:BlockCraftingUnit:0
+	ae2:ItemMaterial.Cell1kPart
+	-> ae2:BlockCraftingStorage:0
+
+shapeless=
+	ae2:BlockCraftingUnit:0
+	ae2:ItemMaterial.Cell4kPart
+	-> ae2:BlockCraftingStorage:1
+
+shapeless=
+	ae2:BlockCraftingUnit:0
+	ae2:ItemMaterial.Cell16kPart
+	-> ae2:BlockCraftingStorage:2
+
+shapeless=
+	ae2:BlockCraftingUnit:0
+	ae2:ItemMaterial.Cell64kPart
+	-> ae2:BlockCraftingStorage:3

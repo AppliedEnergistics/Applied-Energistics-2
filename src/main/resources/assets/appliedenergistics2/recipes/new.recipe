@@ -1,0 +1,189 @@
+
+# Processor Recipes
+
+inscribe=
+	mc:iron_block ae2:ItemMaterial.LogicProcessorPress
+	-> ae2:ItemMaterial.LogicProcessorPress
+
+inscribe=
+	mc:iron_block ae2:ItemMaterial.CalcProcessorPress
+	-> ae2:ItemMaterial.CalcProcessorPress
+
+inscribe=
+	mc:iron_block ae2:ItemMaterial.EngProcessorPress
+	-> ae2:ItemMaterial.EngProcessorPress
+
+inscribe=
+	mc:iron_block ae2:ItemMaterial.SiliconPress
+	-> ae2:ItemMaterial.SiliconPress
+
+inscribe=
+	mc:gold_ingot ae2:ItemMaterial.LogicProcessorPress
+	-> ae2:ItemMaterial.LogicProcessorPrint
+
+inscribe=
+	ae2:ItemMaterial.PureifiedCertusQuartzCrystal ae2:ItemMaterial.CalcProcessorPress
+	-> ae2:ItemMaterial.CalcProcessorPrint
+
+inscribe=
+	oredictionary:gemDiamond ae2:ItemMaterial.EngProcessorPress
+	-> ae2:ItemMaterial.EngProcessorPrint
+
+inscribe=
+	oredictionary:itemSilicon ae2:ItemMaterial.SiliconPress
+	-> ae2:ItemMaterial.SiliconPrint
+
+press=
+	mc:redstone ae2:ItemMaterial.LogicProcessorPrint ae2:ItemMaterial.SiliconPrint
+	-> ae2:ItemMaterial.LogicProcessor
+
+press=
+	mc:redstone ae2:ItemMaterial.CalcProcessorPrint ae2:ItemMaterial.SiliconPrint
+	-> ae2:ItemMaterial.CalcProcessor
+
+press=
+	mc:redstone ae2:ItemMaterial.EngProcessorPrint ae2:ItemMaterial.SiliconPrint
+	-> ae2:ItemMaterial.EngProcessor
+
+# Other New stuff
+
+shaped=
+	mc:iron_ingot mc:iron_ingot mc:iron_ingot,
+	mc:iron_ingot mc:furnace mc:iron_ingot,
+	mc:iron_ingot ae2:BlockEnergyAcceptor mc:iron_ingot
+	-> ae2:BlockVibrationChamber
+
+shaped=
+	mc:iron_ingot ae2:BlockChest mc:iron_ingot,
+	cable ae2:ItemMaterial.Cell16kPart cable,
+	mc:iron_ingot ae2:ItemMaterial.EngProcessor mc:iron_ingot
+	-> ae2:BlockSecurity
+
+shapeless=
+	wrench monitor ae2:ItemMaterial.CalcProcessor mc:chest
+	-> ae2:ToolNetworkTool
+
+shaped=
+	certusCrystal oredictionary:dustFluix certusCrystal,
+	oredictionary:dustFluix ae2:BlockQuartzGlass oredictionary:dustFluix,
+	certusCrystal oredictionary:dustFluix certusCrystal
+	-> ae2:BlockEnergyCell
+
+shaped=
+	ae2:BlockEnergyCell ae2:BlockEnergyCell ae2:BlockEnergyCell,
+	ae2:BlockEnergyCell ae2:ItemMaterial.CalcProcessor ae2:BlockEnergyCell,
+	ae2:BlockEnergyCell ae2:BlockEnergyCell ae2:BlockEnergyCell
+	-> ae2:BlockDenseEnergyCell
+
+shaped=
+	ae2:BlockChest ae2:ItemMaterial.Cell1kPart ae2:BlockEnergyCell
+	-> ae2:ToolPortableCell
+
+shaped=
+	ae2:ItemMaterial.CertusQuartzCrystalCharged _ _,
+	_ mc:iron_ingot _,
+	_ _ mc:iron_ingot
+	-> ae2:ToolChargedStaff
+
+shaped=
+	fluixCrystal ae2:BlockEnergyCell _,
+	ae2:ItemMaterial.EngProcessor mc:iron_ingot _,
+	_ _ mc:iron_ingot
+	-> ae2:ToolEntropyManipulator
+
+shaped=
+	netherCrystal oreDictionary:dustFluix ae2:ItemMaterial.LogicProcessor
+	-> 2 ae2:ItemMaterial.AnnihilationCore
+
+shaped=
+	certusCrystal oreDictionary:dustFluix ae2:ItemMaterial.LogicProcessor
+	-> 2 ae2:ItemMaterial.FormationCore
+
+shaped=
+	ae2:ItemMaterial.EngProcessor mc:iron_ingot mc:iron_ingot,
+	mc:gold_ingot mc:redstone mc:gold_ingot
+	-> ae2:ToolBiometricCard
+
+# Memory Card
+shaped=
+	ae2:ItemMaterial.CalcProcessor mc:iron_ingot mc:iron_ingot,
+	mc:gold_ingot mc:redstone mc:gold_ingot
+	-> ae2:ToolMemoryCard
+
+shaped=
+	mc:gold_ingot mc:iron_ingot _,
+	mc:redstone ae2:ItemMaterial.CalcProcessor mc:iron_ingot,
+	mc:gold_ingot mc:iron_ingot _
+	-> 2 ae2:ItemMaterial.BasicCard
+
+shaped=
+	_ 					mc:glowstone_dust ae2:BlockQuartzGlass,
+	mc:iron_ingot	mc:redstone ae2:BlockQuartzGlass,
+	_					mc:glowstone_dust ae2:BlockQuartzGlass
+	-> 3 ae2:ItemPart.SemiDarkMonitor
+
+shapeless=
+	ae2:ItemPart.DarkMonitor
+	-> ae2:ItemPart.SemiDarkMonitor
+
+shapeless=
+	ae2:ItemPart.SemiDarkMonitor
+	-> ae2:ItemPart.Monitor
+
+shapeless=
+	ae2:ItemPart.Monitor
+	-> ae2:ItemPart.DarkMonitor
+
+shaped=
+	oredictionary:gemDiamond mc:iron_ingot _,
+	mc:redstone ae2:ItemMaterial.CalcProcessor mc:iron_ingot,
+	oredictionary:gemDiamond mc:iron_ingot _
+	-> 2 ae2:ItemMaterial.AdvCard
+
+shapeless=
+	ae2:ItemMaterial.BasicCard certusCrystal
+	-> ae2:ItemMaterial.CardCapacity
+
+shapeless=
+	ae2:ItemMaterial.BasicCard mc:redstone_torch
+	-> ae2:ItemMaterial.CardRedstone
+
+shapeless=
+	ae2:ItemMaterial.AdvCard wool
+	-> ae2:ItemMaterial.CardFuzzy
+
+shapeless=
+	ae2:ItemMaterial.AdvCard mc:redstone_torch
+	-> ae2:ItemMaterial.CardInverter
+
+shapeless=
+	ae2:ItemMaterial.AdvCard fluixCrystal
+	-> ae2:ItemMaterial.CardSpeed
+
+shapeless=
+	ae2:ItemMaterial.AnnihilationCore ae2:ItemPart.StorageMonitor ae2:ItemMaterial.FormationCore
+	-> ae2:ItemPart.ConversionMonitor
+
+shaped=
+	_					mc:iron_ingot								_,
+	mc:iron_ingot	ae2:ItemMaterial.EngProcessor			mc:iron_ingot,
+	fluixCrystal	fluixCrystal								fluixCrystal
+	-> ae2:ItemPart.P2PTunnelME
+
+shaped=
+	wool	ae2:ItemMaterial.CalcProcessor	wool,
+	mc:iron_ingot	mc:chest							mc:iron_ingot,
+	mc:iron_ingot	mc:iron_ingot					mc:iron_ingot
+	-> ae2:BlockCellWorkbench
+
+shaped=
+	mc:iron_ingot	mc:sticky_piston	mc:iron_ingot,
+	fluixCrystal	_						mc:iron_ingot,
+	mc:iron_ingot	mc:sticky_piston	mc:iron_ingot
+	-> ae2:BlockInscriber
+
+shaped=
+	_ mc:iron_ingot _,
+	mc:iron_ingot ae2:ItemMaterial.CertusQuartzCrystalCharged mc:iron_ingot,
+	_ mc:iron_ingot _
+	-> ae2:BlockSkyCompass

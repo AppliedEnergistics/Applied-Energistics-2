@@ -1,0 +1,133 @@
+
+# Storage Assembly
+
+shapeless=
+	ae2:ItemMaterial.Cell1kPart ae2:ItemMaterial.EmptyStorageCell -> ae2:ItemBasicStorageCell.1k
+
+shapeless=
+	ae2:ItemMaterial.Cell4kPart ae2:ItemMaterial.EmptyStorageCell -> ae2:ItemBasicStorageCell.4k
+
+shapeless=
+	ae2:ItemMaterial.Cell16kPart ae2:ItemMaterial.EmptyStorageCell -> ae2:ItemBasicStorageCell.16k
+
+shapeless=
+	ae2:ItemMaterial.Cell64kPart ae2:ItemMaterial.EmptyStorageCell -> ae2:ItemBasicStorageCell.64k
+
+shapeless=
+	certusCrystal ae2:ItemMaterial.EmptyStorageCell -> ae2:ItemViewCell
+
+# Spatial Assembly
+
+shapeless=
+	ae2:ItemMaterial.Cell2SpatialPart ae2:ItemMaterial.EmptyStorageCell -> ae2:ItemSpatialStorageCell.2Cubed
+
+shapeless=
+	ae2:ItemMaterial.Cell16SpatialPart ae2:ItemMaterial.EmptyStorageCell -> ae2:ItemSpatialStorageCell.16Cubed
+
+shapeless=
+	ae2:ItemMaterial.Cell128SpatialPart ae2:ItemMaterial.EmptyStorageCell -> ae2:ItemSpatialStorageCell.128Cubed
+
+
+# Empty Storage Cell
+shaped=
+	ae2:BlockQuartzGlass mc:redstone ae2:BlockQuartzGlass,
+	mc:redstone _ mc:redstone,
+	mc:iron_ingot mc:iron_ingot mc:iron_ingot
+	-> ae2:ItemMaterial.EmptyStorageCell
+
+# Spatial Cells
+
+shaped=
+	ae2:BlockQuartzGlass mc:redstone ae2:BlockQuartzGlass,
+	mc:redstone ae2:ItemMaterial.Cell2SpatialPart mc:redstone,
+	mc:iron_ingot mc:iron_ingot mc:iron_ingot
+	-> ae2:ItemSpatialStorageCell.2Cubed
+
+shaped=
+	ae2:BlockQuartzGlass mc:redstone ae2:BlockQuartzGlass,
+	mc:redstone ae2:ItemMaterial.Cell16SpatialPart mc:redstone,
+	mc:iron_ingot mc:iron_ingot mc:iron_ingot
+	-> ae2:ItemSpatialStorageCell.16Cubed
+
+shaped=
+	ae2:BlockQuartzGlass mc:redstone ae2:BlockQuartzGlass,
+	mc:redstone ae2:ItemMaterial.Cell128SpatialPart mc:redstone,
+	mc:iron_ingot mc:iron_ingot mc:iron_ingot
+	-> ae2:ItemSpatialStorageCell.128Cubed
+
+
+# Cells
+shaped=
+	ae2:BlockQuartzGlass mc:redstone ae2:BlockQuartzGlass,
+	mc:redstone ae2:ItemMaterial.Cell1kPart mc:redstone,
+	mc:iron_ingot mc:iron_ingot mc:iron_ingot
+	-> ae2:ItemBasicStorageCell.1k
+
+shaped=
+	ae2:BlockQuartzGlass mc:redstone ae2:BlockQuartzGlass,
+	mc:redstone ae2:ItemMaterial.Cell4kPart mc:redstone,
+	mc:iron_ingot mc:iron_ingot mc:iron_ingot
+	-> ae2:ItemBasicStorageCell.4k
+
+shaped=
+	ae2:BlockQuartzGlass mc:redstone ae2:BlockQuartzGlass,
+	mc:redstone ae2:ItemMaterial.Cell16kPart mc:redstone,
+	mc:iron_ingot mc:iron_ingot mc:iron_ingot
+	-> ae2:ItemBasicStorageCell.16k
+
+shaped=
+	ae2:BlockQuartzGlass mc:redstone ae2:BlockQuartzGlass,
+	mc:redstone ae2:ItemMaterial.Cell64kPart mc:redstone,
+	mc:iron_ingot mc:iron_ingot mc:iron_ingot
+	-> ae2:ItemBasicStorageCell.64k
+
+shaped=
+	ae2:BlockQuartzGlass mc:redstone ae2:BlockQuartzGlass,
+	mc:redstone certusCrystal mc:redstone,
+	mc:iron_ingot mc:iron_ingot mc:iron_ingot
+	-> ae2:ItemViewCell
+
+# Spatial Cell Parts
+
+shaped=
+	mc:glowstone_dust ae2:ItemMaterial.FluixPearl mc:glowstone_dust,
+	ae2:ItemMaterial.FluixPearl ae2:ItemMaterial.EngProcessor ae2:ItemMaterial.FluixPearl,
+	mc:glowstone_dust ae2:ItemMaterial.FluixPearl mc:glowstone_dust
+	-> ae2:ItemMaterial.Cell2SpatialPart
+
+shaped=
+	mc:glowstone_dust ae2:ItemMaterial.Cell2SpatialPart mc:glowstone_dust,
+	ae2:ItemMaterial.Cell2SpatialPart ae2:ItemMaterial.EngProcessor ae2:ItemMaterial.Cell2SpatialPart,
+	mc:glowstone_dust ae2:ItemMaterial.Cell2SpatialPart mc:glowstone_dust
+	-> ae2:ItemMaterial.Cell16SpatialPart
+
+shaped=
+	mc:glowstone_dust ae2:ItemMaterial.Cell16SpatialPart mc:glowstone_dust,
+	ae2:ItemMaterial.Cell16SpatialPart ae2:ItemMaterial.EngProcessor ae2:ItemMaterial.Cell16SpatialPart,
+	mc:glowstone_dust ae2:ItemMaterial.Cell16SpatialPart mc:glowstone_dust
+	-> ae2:ItemMaterial.Cell128SpatialPart
+
+# Cell Parts
+shaped=
+	mc:redstone certusCrystal mc:redstone,
+	certusCrystal ae2:ItemMaterial.LogicProcessor certusCrystal,
+	mc:redstone certusCrystal mc:redstone
+	-> ae2:ItemMaterial.Cell1kPart
+
+shaped=
+	mc:redstone ae2:ItemMaterial.CalcProcessor mc:redstone,
+	ae2:ItemMaterial.Cell1kPart ae2:BlockQuartzGlass ae2:ItemMaterial.Cell1kPart,
+	mc:redstone ae2:ItemMaterial.Cell1kPart mc:redstone
+	-> ae2:ItemMaterial.Cell4kPart
+
+shaped=
+	mc:glowstone_dust ae2:ItemMaterial.EngProcessor mc:glowstone_dust,
+	ae2:ItemMaterial.Cell4kPart ae2:BlockQuartzGlass ae2:ItemMaterial.Cell4kPart,
+	mc:glowstone_dust ae2:ItemMaterial.Cell4kPart mc:glowstone_dust
+	-> ae2:ItemMaterial.Cell16kPart
+
+shaped=
+	mc:glowstone_dust ae2:ItemMaterial.EngProcessor mc:glowstone_dust,
+	ae2:ItemMaterial.Cell16kPart ae2:BlockQuartzGlass ae2:ItemMaterial.Cell16kPart,
+	mc:glowstone_dust ae2:ItemMaterial.Cell16kPart mc:glowstone_dust
+	-> ae2:ItemMaterial.Cell64kPart
