@@ -9,6 +9,16 @@ Applied Energistics 2
 
 [IRC #appliedenergistics on esper.net](http://webchat.esper.net/?channels=appliedenergistics&prompt=1)
 
+### Workspace / Building
+
+Clone Repo, make sure you use --recursive.
+
+Download and unzip http://ae-mod.info/assets/CompileDeps.zip into the root folder ( hopefully this is temporary and a better solution is created )
+
+gradle setupDecompWorkspace
+
+gradlew eclipse / idea / build
+
 ### Contributing
 
 Bugfixes and Compatability patches are generally welcome. If you want to contribute something which changes game mechanics, no matter how small, please talk to someone with commit privileges first, its best to remember that those with commit access determine the direction of the mod as a whole.
