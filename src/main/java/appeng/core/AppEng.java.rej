@@ -1,9 +1,0 @@
-diff a/core/AppEng.java b/core/AppEng.java	(rejected hunks)
-@@ -34,7 +34,6 @@
- import cpw.mods.fml.common.event.FMLPostInitializationEvent;
- import cpw.mods.fml.common.event.FMLPreInitializationEvent;
- import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
--import cpw.mods.fml.common.event.FMLServerStartingEvent;
- import cpw.mods.fml.common.event.FMLServerStoppingEvent;
- import cpw.mods.fml.common.network.NetworkRegistry;
- 
