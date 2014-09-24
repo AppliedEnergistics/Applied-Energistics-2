@@ -1,3 +1,7 @@
-[submodule "api"]
-	path = api
-	url = https://github.com/AlgorithmX2/Applied-Energistics-2-API.git
+
+[submodule "src/main/java/appeng/api"]
+	path = src/main/java/appeng/api
+	url = https://github.com/AppliedEnergistics/Applied-Energistics-2-API.git
+[submodule "src/main/resources/assets/appliedenergistics2/lang"]
+	path = src/main/resources/assets/appliedenergistics2/lang
+	url = https://github.com/AppliedEnergistics/AppliedEnergistics-2-Localization.git
