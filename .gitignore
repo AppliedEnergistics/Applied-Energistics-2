@@ -31,3 +31,6 @@ run/*
 
 # include travis build
 !.travis.yml
+
+#mac
+.DS_Store
