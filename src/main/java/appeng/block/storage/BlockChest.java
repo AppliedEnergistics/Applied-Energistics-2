@@ -53,7 +53,10 @@ public class BlockChest extends AEBaseBlock
 				{
 					ICellHandler ch = AEApi.instance().registries().cell().getHandler( cell );
 
-					tg.openGui( p, ch, cell, side );
+					if ( GuiBridge.GUI_CHEST.hasPermissions(tg, x, y, z, ForgeDirection.values()[side], p) )
+					{
+						tg.openGui( p, ch, cell, side );
+					}
 				}
 				else
 					p.addChatMessage( PlayerMessages.ChestCannotReadStorageCell.get() );
