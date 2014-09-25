@@ -113,8 +113,6 @@ sourceSets {
 
         java {
             srcDirs += 'src/main/java/'
-            srcDirs += 'src/api/java/'
-            include 'appeng/api/**'
         }
 
         resources {
