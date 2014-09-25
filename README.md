@@ -20,7 +20,9 @@ gradle setupDecompWorkspace
 gradlew eclipse / idea / build
 
 In order to have FML detect AE from your dev enviornment, add the following VM Option to your run profile
+```
 -Dfml.coreMods.load=appeng.transformer.AppEngCore
+```
 
 ### Contributing
 
