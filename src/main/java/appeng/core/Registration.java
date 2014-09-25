@@ -660,6 +660,9 @@ public class Registration
 		// Molecular Assembler
 		Upgrades.SPEED.registerItem( AEApi.instance().blocks().blockMolecularAssembler.stack( 1 ), 5 );
 
+		// Inscriber
+		Upgrades.SPEED.registerItem( AEApi.instance().blocks().blockInscriber.stack( 1 ), 3 );
+
 		AEApi.instance().registries().wireless().registerWirelessHandler( (IWirelessTermHandler) AEApi.instance().items().itemWirelessTerminal.item() );
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.ChestLoot ) )
