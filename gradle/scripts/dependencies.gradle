@@ -35,7 +35,7 @@ dependencies {
     compile(group: 'api', name: 'mfr', version: '1')
     compile(group: 'api', name: 'railcraft', version: '1')
     compile(group: 'api', name: 'rblocks', version: '1')
-	compile(group: 'api', name: 'rf', version: '1')
+    compile(group: 'api', name: 'rf', version: '1')
     compile(group: 'api', name: 'rotarycraft', version: '1')
     compile(group: 'dev', name: 'buildcraft', version: '1')
 
