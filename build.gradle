@@ -94,7 +94,7 @@ compileJava {
     exclude("appeng/api/integration/*")
     exclude("appeng/integration/modules/helpers/dead/**")
     exclude("appeng/integration/modules/dead/**")
-//  exclude("appeng/fmp/**")
+//	exclude("appeng/fmp/**")
 
 }
 
@@ -113,6 +113,7 @@ sourceSets {
 
         java {
             srcDirs += 'src/main/java/'
+			exclude("src/api/**")
         }
 
         resources {
