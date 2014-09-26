@@ -39,18 +39,15 @@ You install this mod by putting it into the `minecraft/mods/` folder. It has no 
   - SSH `git clone --recursive git@github.com:AppliedEnergistics/Applied-Energistics-2.git` or 
   - HTTPS `git clone --recursive https://github.com/AppliedEnergistics/Applied-Energistics-2.git`
   - Note the `--recursive` option. This enables to automatically clones of all submodules. AE2 uses the [AE2-API](https://github.com/AlgorithmX2/Applied-Energistics-2-API) and [AE2-Lang](https://github.com/AppliedEnergistics/AppliedEnergistics-2-Localization) repositories. 
-2. Extract 3rd party APIs (better solution coming soon)
-  - http://ae-mod.info/assets/CompileDeps.zip
-  - Extract to the project root
-3. Setup workspace 
+2. Setup workspace 
   - Decompiled source `gradlew setupDecompWorkspace`
   - Obfuscated source `gradlew setupDevWorkspace`
   - CI server `gradlew setupCIWorkspace`
-4. Setup IDE
+3. Setup IDE
   - IntelliJ: Import into IDE and execute `gradlew genIntellijRuns` afterwards
   - Eclipse: execute `gradlew eclipse`
-5. Build `gradlew build`. Jar will be in `build/libs`
-6. (In order to have FML detect AE from your dev environment, add the following VM Option to your run profile `-Dfml.coreMods.load=appeng.transformer.AppEngCore` TODO)
+4. Build `gradlew build`. Jar will be in `build/libs`
+5. (In order to have FML detect AE from your dev environment, add the following VM Option to your run profile `-Dfml.coreMods.load=appeng.transformer.AppEngCore` TODO)
 
 ## Contribution
 
