@@ -39,7 +39,10 @@ You install this mod by putting it into the `minecraft/mods/` folder. It has no 
   - SSH `git clone --recursive git@github.com:AppliedEnergistics/Applied-Energistics-2.git` or 
   - HTTPS `git clone --recursive https://github.com/AppliedEnergistics/Applied-Energistics-2.git`
   - Note the `--recursive` option. This enables to automatically clones of all submodules. AE2 uses the [AE2-API](https://github.com/AlgorithmX2/Applied-Energistics-2-API) and [AE2-Lang](https://github.com/AppliedEnergistics/AppliedEnergistics-2-Localization) repositories. 
-2. Setup workspace 
+2. Extract 3rd party APIs (better solution coming soon)
+  - http://ae-mod.info/assets/CompileDeps.zip
+  - Extract to the project root
+3. Setup workspace 
   - Decompiled source `gradlew setupDecompWorkspace`
   - Obfuscated source `gradlew setupDevWorkspace`
   - CI server `gradlew setupCIWorkspace`
