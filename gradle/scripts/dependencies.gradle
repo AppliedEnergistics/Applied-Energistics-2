@@ -1,0 +1,33 @@
+repositories {
+
+    maven {
+        name 'CB Maven FS'
+        url "http://chickenbones.net/maven/"
+    }
+
+    maven {
+        name "IC2 Player Repo"
+        url "http://maven.ic2.player.to/"
+    }
+
+    maven {
+        name "Waila Mobius Repo"
+        url "http://mobiusstrip.eu/maven"
+    }
+
+}
+
+dependencies {
+
+    compile "net.industrial-craft:industrialcraft-2:${config.ic2_version}-experimental:dev"
+
+    compile "codechicken:ForgeMultipart:${config.cb_minecraft_version}-${config.fmp_version}:dev"
+    compile "codechicken:CodeChickenLib:${config.cb_minecraft_version}-${config.code_chicken_lib_version}:dev"
+    compile "codechicken:CodeChickenCore:${config.cb_minecraft_version}-${config.code_chicken_core_version}:dev"
+    compile "codechicken:NotEnoughItems:${config.cb_minecraft_version}-${config.nei_version}:dev"
+
+    compile "mcp.mobius.waila:Waila:${config.waila_version}"
+
+    // add hacked buildcraft jar to compile time (for facades)
+    compile fileTree(dir: 'libs', include: '*.jar')
+}

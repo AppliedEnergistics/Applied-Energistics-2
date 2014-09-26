@@ -16,12 +16,6 @@
 # include sourcecode
 !src/
 
-# include important mods required for running
-# need to include run first to exclude all existing to add mods later on
-!run/
-run/*
-!run/mods
-
 # include special libs like BC
 !libs/
 
@@ -29,5 +23,5 @@ run/*
 !.gitmodules
 !.gitignore
 
-# include travis build
-!.travis.yml
+# code format to reduce noise in git commits
+!codeformat/
