@@ -2,6 +2,9 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
+import appeng.api.networking.security.ISecurityGrid;
+import appeng.util.Platform;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,6 +13,8 @@ import appeng.core.sync.GuiBridge;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
+import net.minecraft.util.Vec3;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class PartCraftingTerminal extends PartTerminal implements IAEAppEngInventory
 {
@@ -48,9 +53,19 @@ public class PartCraftingTerminal extends PartTerminal implements IAEAppEngInven
 		// frontSolid = CableBusTextures.PartCraftingTerm_Solid;
 	}
 
-	public GuiBridge getGui()
+	public GuiBridge getGui( EntityPlayer p )
 	{
-		return GuiBridge.GUI_CRAFTING_TERMINAL;
+		int x = (int) p.posX, y = (int) p.posY, z = (int) p.posZ;
+		if ( getHost().getTile() != null )
+		{
+			x = tile.xCoord;
+			y = tile.yCoord;
+			z = tile.zCoord;
+		}
+
+		if( GuiBridge.GUI_CRAFTING_TERMINAL.hasPermissions( getHost().getTile(), x, y, z, side, p ) )
+			return GuiBridge.GUI_CRAFTING_TERMINAL;
+		return GuiBridge.GUI_ME;
 	}
 
 	@Override
