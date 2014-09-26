@@ -73,4 +73,4 @@ Thanks to
 * Notch et al for Minecraft
 * Lex et al for MinecraftForge
 * AlgorithmX2 for AppliedEnergistics2
-* all [contributors](https://github.com/thatsIch/IntelliE-Scala/graphs/contributors) helping making this mod.
+* all [contributors](https://github.com/AppliedEnergistics/Applied-Energistics-2/graphs/contributors) helping making this mod.
