@@ -97,21 +97,21 @@ shaped=
 
 # Pure Storage Blocks
 	shaped=
-		ae2:ItemMaterial.PureifiedNetherQuartzCrystal ae2:ItemMaterial.PureifiedNetherQuartzCrystal ae2:ItemMaterial.PureifiedNetherQuartzCrystal,
-		ae2:ItemMaterial.PureifiedNetherQuartzCrystal _                                             ae2:ItemMaterial.PureifiedNetherQuartzCrystal,
-		ae2:ItemMaterial.PureifiedNetherQuartzCrystal ae2:ItemMaterial.PureifiedNetherQuartzCrystal ae2:ItemMaterial.PureifiedNetherQuartzCrystal
+		ae2:ItemMaterial.PurifiedNetherQuartzCrystal ae2:ItemMaterial.PurifiedNetherQuartzCrystal ae2:ItemMaterial.PurifiedNetherQuartzCrystal,
+		ae2:ItemMaterial.PurifiedNetherQuartzCrystal _                                             ae2:ItemMaterial.PurifiedNetherQuartzCrystal,
+		ae2:ItemMaterial.PurifiedNetherQuartzCrystal ae2:ItemMaterial.PurifiedNetherQuartzCrystal ae2:ItemMaterial.PurifiedNetherQuartzCrystal
 		-> mc:quartz_block
 
 	shaped=
-		ae2:ItemMaterial.PureifiedCertusQuartzCrystal ae2:ItemMaterial.PureifiedCertusQuartzCrystal ae2:ItemMaterial.PureifiedCertusQuartzCrystal,
-		ae2:ItemMaterial.PureifiedCertusQuartzCrystal _                                             ae2:ItemMaterial.PureifiedCertusQuartzCrystal,
-		ae2:ItemMaterial.PureifiedCertusQuartzCrystal ae2:ItemMaterial.PureifiedCertusQuartzCrystal ae2:ItemMaterial.PureifiedCertusQuartzCrystal
+		ae2:ItemMaterial.PurifiedCertusQuartzCrystal ae2:ItemMaterial.PurifiedCertusQuartzCrystal ae2:ItemMaterial.PurifiedCertusQuartzCrystal,
+		ae2:ItemMaterial.PurifiedCertusQuartzCrystal _                                             ae2:ItemMaterial.PurifiedCertusQuartzCrystal,
+		ae2:ItemMaterial.PurifiedCertusQuartzCrystal ae2:ItemMaterial.PurifiedCertusQuartzCrystal ae2:ItemMaterial.PurifiedCertusQuartzCrystal
 		-> ae2:BlockQuartz
 
 	shaped=
-		ae2:ItemMaterial.PureifiedFluixCrystal ae2:ItemMaterial.PureifiedFluixCrystal ae2:ItemMaterial.PureifiedFluixCrystal,
-		ae2:ItemMaterial.PureifiedFluixCrystal _                                      ae2:ItemMaterial.PureifiedFluixCrystal,
-		ae2:ItemMaterial.PureifiedFluixCrystal ae2:ItemMaterial.PureifiedFluixCrystal ae2:ItemMaterial.PureifiedFluixCrystal
+		ae2:ItemMaterial.PurifiedFluixCrystal ae2:ItemMaterial.PurifiedFluixCrystal ae2:ItemMaterial.PurifiedFluixCrystal,
+		ae2:ItemMaterial.PurifiedFluixCrystal _                                      ae2:ItemMaterial.PurifiedFluixCrystal,
+		ae2:ItemMaterial.PurifiedFluixCrystal ae2:ItemMaterial.PurifiedFluixCrystal ae2:ItemMaterial.PurifiedFluixCrystal
 		-> ae2:BlockFluix
 
 

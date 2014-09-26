@@ -22,7 +22,7 @@ inscribe=
 	-> ae2:ItemMaterial.LogicProcessorPrint
 
 inscribe=
-	ae2:ItemMaterial.PureifiedCertusQuartzCrystal ae2:ItemMaterial.CalcProcessorPress
+	ae2:ItemMaterial.PurifiedCertusQuartzCrystal ae2:ItemMaterial.CalcProcessorPress
 	-> ae2:ItemMaterial.CalcProcessorPrint
 
 inscribe=
