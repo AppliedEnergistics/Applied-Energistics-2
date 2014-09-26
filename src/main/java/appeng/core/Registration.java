@@ -709,9 +709,6 @@ public class Registration
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityNote.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityHopper.class );
 
-		// very silly fix cause Reika decided to pair the item with a block.
-		OreDictionary.registerOre( "itemWheat", net.minecraft.init.Items.wheat );
-
 		/**
 		 * Whitelist AE2
 		 */
