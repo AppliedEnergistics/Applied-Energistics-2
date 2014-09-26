@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -286,6 +287,14 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			details.add( medium );
 	}
 
+	static Comparator<ICraftingPatternDetails> comp = new Comparator<ICraftingPatternDetails>(){
+		@Override
+		public int compare(ICraftingPatternDetails o1,
+				ICraftingPatternDetails o2) {
+			return o2.getPriority() - o1.getPriority();
+		}
+	};
+
 	private void updatePatterns()
 	{
 		HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>> oldItems = craftableItems;
@@ -316,7 +325,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 				Set<ICraftingPatternDetails> methods = tmpCraft.get( out );
 
 				if ( methods == null )
-					tmpCraft.put( out, methods = new HashSet() );
+					tmpCraft.put( out, methods = new TreeSet<ICraftingPatternDetails>(comp) );
 
 				methods.add( details );
 			}
