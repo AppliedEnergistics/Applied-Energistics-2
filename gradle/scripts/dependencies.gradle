@@ -6,20 +6,17 @@ repositories {
     }
 
     maven {
-        name "IC2 Player Repo"
-        url "http://maven.ic2.player.to/"
-    }
-
-    maven {
         name "Waila Mobius Repo"
         url "http://mobiusstrip.eu/maven"
     }
 
+    maven {
+        name "FireBall API Depo"
+        url "http://dl.tsr.me/artifactory/libs-release-local"
+    }
 }
 
 dependencies {
-
-    compile "net.industrial-craft:industrialcraft-2:${config.ic2_version}-experimental:dev"
 
     compile "codechicken:ForgeMultipart:${config.cb_minecraft_version}-${config.fmp_version}:dev"
     compile "codechicken:CodeChickenLib:${config.cb_minecraft_version}-${config.code_chicken_lib_version}:dev"
@@ -27,6 +24,20 @@ dependencies {
     compile "codechicken:NotEnoughItems:${config.cb_minecraft_version}-${config.nei_version}:dev"
 
     compile "mcp.mobius.waila:Waila:${config.waila_version}"
+	
+    compile(group: 'api', name: 'betterstorage', version: '1')
+    compile(group: 'api', name: 'coloredlightscore', version: '1')
+    compile(group: 'api', name: 'craftguide', version: '1')
+    compile(group: 'api', name: 'ic2', version: '1')
+    compile(group: 'api', name: 'immibis', version: '1')
+    compile(group: 'api', name: 'invtweaks', version: '1')
+    compile(group: 'api', name: 'mekansim', version: '1')
+    compile(group: 'api', name: 'mfr', version: '1')
+    compile(group: 'api', name: 'railcraft', version: '1')
+    compile(group: 'api', name: 'rblocks', version: '1')
+	compile(group: 'api', name: 'rf', version: '1')
+    compile(group: 'api', name: 'rotarycraft', version: '1')
+    compile(group: 'dev', name: 'buildcraft', version: '1')
 
     // add hacked buildcraft jar to compile time (for facades)
     compile fileTree(dir: 'libs', include: '*.jar')
