@@ -54,7 +54,7 @@ You install this mod by putting it into the `minecraft/mods/` folder. It has no 
 
 ## Contribution
 
-Before you want to add major changes, you might want to discuss them with me first, before wasting your time.
+Before you want to add major changes, you might want to discuss them with us first, before wasting your time.
 If you are still willing to contribute to this project, you can contribute via [Pull-Request](https://help.github.com/articles/creating-a-pull-request).
 
 1. Fork this repository
