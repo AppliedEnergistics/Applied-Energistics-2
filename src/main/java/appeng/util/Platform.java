@@ -1840,8 +1840,7 @@ public class Platform
 		EntityPlayer p = AEApi.instance().registries().players().findPlayer( playerID );
 		if ( p != null )
 		{
-			p.addChatMessage( new ChatComponentText( "RWAR!" ) );
-			// p.addStat( achievement, 1 );
+			p.addStat( achievement, 1 );
 		}
 	}
 
