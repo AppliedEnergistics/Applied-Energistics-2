@@ -2,6 +2,7 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -58,9 +59,19 @@ public class PartPatternTerminal extends PartTerminal implements IAEAppEngInvent
 		frontDark = CableBusTextures.PartPatternTerm_Dark;
 	}
 
-	public GuiBridge getGui()
+	public GuiBridge getGui( EntityPlayer p )
 	{
-		return GuiBridge.GUI_PATTERN_TERMINAL;
+		int x = (int) p.posX, y = (int) p.posY, z = (int) p.posZ;
+		if ( getHost().getTile() != null )
+		{
+			x = tile.xCoord;
+			y = tile.yCoord;
+			z = tile.zCoord;
+		}
+
+		if( GuiBridge.GUI_PATTERN_TERMINAL.hasPermissions( getHost().getTile(), x, y, z, side, p ) )
+			return GuiBridge.GUI_PATTERN_TERMINAL;
+		return GuiBridge.GUI_ME;
 	}
 
 	@Override
