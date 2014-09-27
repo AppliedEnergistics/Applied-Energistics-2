@@ -12,6 +12,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.config.Upgrades;
+import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergySource;
@@ -19,8 +21,10 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
+import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
+import appeng.parts.automation.UpgradeInventory;
 import appeng.recipes.handlers.Inscribe;
 import appeng.recipes.handlers.Inscribe.InscriberRecipe;
 import appeng.tile.TileEvent;
@@ -28,12 +32,14 @@ import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkPowerTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
+import appeng.util.ConfigManager;
+import appeng.util.IConfigManagerHost;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.WrapperInventoryRange;
 import appeng.util.item.AEItemStack;
 
-public class TileInscriber extends AENetworkPowerTile implements IGridTickable
+public class TileInscriber extends AENetworkPowerTile implements IGridTickable, IUpgradeableHost, IConfigManagerHost
 {
 
 	final int top[] = new int[] { 0 };
@@ -51,6 +57,10 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 
 	public long clientStart;
 
+	static final ItemStack inscriberStack = AEApi.instance().blocks().blockInscriber.stack( 1 );
+	private IConfigManager settings = new ConfigManager( this );
+	private UpgradeInventory upgrades = new UpgradeInventory( inscriberStack, this, getUpgradeSlots() );
+
 	@Override
 	public AECableType getCableConnectionType(ForgeDirection dir)
 	{
@@ -61,12 +71,16 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 	public void writeToNBT_TileInscriber(NBTTagCompound data)
 	{
 		inv.writeToNBT( data, "inscriberInv" );
+		upgrades.writeToNBT( data, "upgrades" );
+		settings.writeToNBT( data );
 	}
 
 	@TileEvent(TileEventType.WORLD_NBT_READ)
 	public void readFromNBT_TileInscriber(NBTTagCompound data)
 	{
 		inv.readFromNBT( data, "inscriberInv" );
+		upgrades.readFromNBT( data, "upgrades" );
+		settings.readFromNBT( data );
 	}
 
 	@TileEvent(TileEventType.NETWORK_READ)
@@ -122,7 +136,8 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 		return true;
 	}
 
-	public TileInscriber() {
+	public TileInscriber()
+	{
 		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 		internalMaxPower = 1500;
 		gridProxy.setIdlePowerUsage( 0 );
@@ -314,6 +329,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 	{
 		if ( smash )
 		{
+
 			finalStep++;
 			if ( finalStep == 8 )
 			{
@@ -354,22 +370,26 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 				eg = gridProxy.getEnergy();
 				IEnergySource src = this;
 
-				double powerReq = extractAEPower( 10, Actionable.SIMULATE, PowerMultiplier.CONFIG );
+				// Base 1, increase by 1 for each card
+				int speedFactor = 1 + upgrades.getInstalledUpgrades( Upgrades.SPEED );
+				int powerConsumption = 10 * speedFactor;
+				double powerThreshold = powerConsumption - 0.01;
+				double powerReq = extractAEPower( powerConsumption, Actionable.SIMULATE, PowerMultiplier.CONFIG );
 
-				if ( powerReq <= 9.99 )
+				if ( powerReq <= powerThreshold )
 				{
 					src = eg;
-					powerReq = eg.extractAEPower( 10, Actionable.SIMULATE, PowerMultiplier.CONFIG );
+					powerReq = eg.extractAEPower( powerConsumption, Actionable.SIMULATE, PowerMultiplier.CONFIG );
 				}
 
-				if ( powerReq > 9.99 )
+				if ( powerReq > powerThreshold )
 				{
-					src.extractAEPower( 10, Actionable.MODULATE, PowerMultiplier.CONFIG );
+					src.extractAEPower( powerConsumption, Actionable.MODULATE, PowerMultiplier.CONFIG );
 
 					if ( processingTime == 0 )
-						processingTime++;
+						processingTime = processingTime + speedFactor;
 					else
-						processingTime += TicksSinceLastCall;
+						processingTime += TicksSinceLastCall * speedFactor;
 				}
 			}
 			catch (GridAccessException e)
@@ -396,5 +416,39 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable
 		}
 
 		return hasWork() ? TickRateModulation.URGENT : TickRateModulation.SLEEP;
+	}
+
+	@Override
+	public IConfigManager getConfigManager()
+	{
+		return settings;
+	}
+
+	@Override
+	public IInventory getInventoryByName(String name)
+	{
+		if ( name.equals( "inv" ) )
+			return inv;
+
+		if ( name.equals( "upgrades" ) )
+			return upgrades;
+
+		return null;
+	}
+
+	@Override
+	public int getInstalledUpgrades(Upgrades u)
+	{
+		return upgrades.getInstalledUpgrades( u );
+	}
+
+	protected int getUpgradeSlots()
+	{
+		return 3;
+	}
+
+	@Override
+	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
+	{
 	}
 }
