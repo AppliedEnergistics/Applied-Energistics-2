@@ -3,8 +3,8 @@ package appeng.me;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.lang.ref.WeakReference;
+import java.util.WeakHashMap;
 
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,13 +16,13 @@ import appeng.core.WorldSettings;
 public class GridStorage implements IGridStorage
 {
 
-	IGrid myGrid = null;
+	private WeakReference<IGrid> internalGrid = null;
 
 	final long myID;
 	final NBTTagCompound data;
 
 	public boolean isDirty = false;
-	private Set<GridStorage> divlist = new HashSet();
+	private WeakHashMap<GridStorage,Boolean> divlist = new WeakHashMap();
 	final GridStorageSearch mySearchEntry; // keep myself in the list until I'm
 											// lost...
 
@@ -76,9 +76,10 @@ public class GridStorage implements IGridStorage
 	{
 		isDirty = false;
 
-		if ( myGrid != null )
+		Grid currentGrid = (Grid) getGrid();
+		if ( currentGrid != null )
 		{
-			((Grid) myGrid).saveState();
+			currentGrid.saveState();
 		}
 
 		try
@@ -114,22 +115,22 @@ public class GridStorage implements IGridStorage
 
 	public IGrid getGrid()
 	{
-		return myGrid;
+		return internalGrid == null ? null : internalGrid.get();
 	}
 
 	public void setGrid(Grid grid)
 	{
-		myGrid = grid;
+		internalGrid = new WeakReference<IGrid>( grid );
 	}
 
 	public void addDivided(GridStorage gs)
 	{
-		divlist.add( gs );
+		divlist.put( gs, true );
 	}
 
 	public boolean hasDivided(GridStorage myStorage)
 	{
-		return divlist.contains( myStorage );
+		return divlist.containsKey( myStorage );
 	}
 
 	public void remove()
