@@ -1,5 +1,6 @@
 package appeng.me.helpers;
 
+import java.util.Collections;
 import java.util.EnumSet;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -307,8 +308,7 @@ public class AENetworkProxy implements IGridBlock
 	{
 		EnumSet<GridFlags> flags = EnumSet.noneOf( GridFlags.class );
 
-		for (GridFlags gf : requireChannel)
-			flags.add( gf );
+		Collections.addAll( flags, requireChannel );
 
 		this.flags = flags;
 	}

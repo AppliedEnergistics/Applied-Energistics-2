@@ -74,7 +74,7 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 					first++;
 				}
 			}
-			args.add( y, new String( row ) );
+			args.add( y, row );
 		}
 
 		ItemStack outIS = output.getItemStack();

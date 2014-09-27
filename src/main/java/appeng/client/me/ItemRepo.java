@@ -104,7 +104,7 @@ public class ItemRepo
 				Method b = searchField.getClass().getMethod( "onTextChange", String.class );
 
 				NEIWord = filter;
-				a.invoke( searchField, new String( filter ) );
+				a.invoke( searchField, filter );
 				b.invoke( searchField, "" );
 			}
 		}

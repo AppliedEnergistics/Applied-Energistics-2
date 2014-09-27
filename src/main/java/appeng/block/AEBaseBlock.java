@@ -1,10 +1,12 @@
 package appeng.block;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
 import appeng.client.texture.FlippableIcon;
+import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -677,9 +679,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 						if ( id.removedByPlayer( w, player, x, y, z, false ) )
 						{
-							List<ItemStack> l = new ArrayList<ItemStack>();
-							for (ItemStack iss : drops)
-								l.add( iss );
+							List<ItemStack> l = Lists.newArrayList(drops);
 							Platform.spawnDrops( w, x, y, z, l );
 							w.setBlockToAir( x, y, z );
 						}

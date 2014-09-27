@@ -1,5 +1,6 @@
 package appeng.recipes.handlers;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -76,16 +77,13 @@ public class Inscribe implements ICraftHandler, IWebsiteSerializer
 	public void register() throws RegistrationError, MissingIngredientError
 	{
 		if ( imprintable != null )
-			for (ItemStack s : imprintable.getItemStackSet())
-				inputs.add( s );
+			Collections.addAll( inputs, imprintable.getItemStackSet() );
 
 		if ( plateA != null )
-			for (ItemStack s : plateA.getItemStackSet())
-				plates.add( s );
+			Collections.addAll( plates, plateA.getItemStackSet() );
 
 		if ( plateB != null )
-			for (ItemStack s : plateB.getItemStackSet())
-				plates.add( s );
+			Collections.addAll( plates, plateB.getItemStackSet() );
 
 		InscriberRecipe ir = new InscriberRecipe( imprintable.getItemStackSet(), plateA == null ? null : plateA.getItemStack(), plateB == null ? null
 				: plateB.getItemStack(), output.getItemStack(), usePlates );
