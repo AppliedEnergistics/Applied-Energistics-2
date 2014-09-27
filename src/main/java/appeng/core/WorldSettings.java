@@ -338,8 +338,8 @@ public class WorldSettings extends Configuration
 	/**
 	 * lazy loading, can load any id, even ones that don't exist anymore.
 	 * 
-	 * @param storageID
-	 * @return
+	 * @param storageID ID of grid storage
+	 * @return corresponding grid storage
 	 */
 	public GridStorage getGridStorage(long storageID)
 	{

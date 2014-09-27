@@ -19,28 +19,28 @@ public abstract class MBCalculator
 	/**
 	 * check if the tile entities are correct for the structure.
 	 * 
-	 * @param te
-	 * @return
+	 * @param te to be checked tile entity
+	 * @return true if tile entity is valid for structure
 	 */
 	public abstract boolean isValidTile(TileEntity te);
 
 	/**
 	 * construct the correct cluster, usually very simple.
 	 * 
-	 * @param w
-	 * @param min
-	 * @param max
-	 * @return
+	 * @param w world
+	 * @param min min world coord
+	 * @param max max world coord
+	 * @return created cluster
 	 */
 	public abstract IAECluster createCluster(World w, WorldCoord min, WorldCoord max);
 
 	/**
 	 * configure the mutli-block tiles, most of the important stuff is in here.
 	 * 
-	 * @param c
-	 * @param w
-	 * @param min
-	 * @param max
+	 * @param c updated cluster
+	 * @param w in world
+	 * @param min min world coord
+	 * @param max max world coord
 	 */
 	public abstract void updateTiles(IAECluster c, World w, WorldCoord min, WorldCoord max);
 
@@ -52,9 +52,9 @@ public abstract class MBCalculator
 	/**
 	 * verify if the structure is the correct dimensions, or size
 	 * 
-	 * @param min
-	 * @param max
-	 * @return
+	 * @param min min world coord
+	 * @param max max world coord
+	 * @return true if structure has correct dimensions or size
 	 */
 	public abstract boolean checkMultiblockScale(WorldCoord min, WorldCoord max);
 

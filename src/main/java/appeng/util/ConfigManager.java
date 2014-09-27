@@ -20,7 +20,7 @@ public class ConfigManager implements IConfigManager
 	/**
 	 * read all settings using config manager.
 	 * 
-	 * @param tagCompound
+	 * @param tagCompound to be read from compound
 	 */
 	@Override
 	public void readFromNBT(NBTTagCompound tagCompound)
@@ -49,7 +49,7 @@ public class ConfigManager implements IConfigManager
 	/**
 	 * save all settings using config manager.
 	 * 
-	 * @param tagCompound
+	 * @param tagCompound to be written to compound
 	 */
 	@Override
 	public void writeToNBT(NBTTagCompound tagCompound)

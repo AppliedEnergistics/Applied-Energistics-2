@@ -294,8 +294,8 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	/**
 	 * depending on the from, different settings will be accepted, don't call this with null
 	 * 
-	 * @param from
-	 * @param compound
+	 * @param from source of settings
+	 * @param compound compound of source
 	 */
 	public void uploadSettings(SettingsFrom from, NBTTagCompound compound)
 	{
@@ -329,8 +329,8 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	/**
 	 * null means nothing to store...
 	 * 
-	 * @param from
-	 * @return
+	 * @param from source of settings
+	 * @return compound of source
 	 */
 	public NBTTagCompound downloadSettings(SettingsFrom from)
 	{

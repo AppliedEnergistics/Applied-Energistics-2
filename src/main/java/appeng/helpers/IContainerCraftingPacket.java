@@ -14,7 +14,7 @@ public interface IContainerCraftingPacket
 	IGridNode getNetworkNode();
 
 	/**
-	 * @param string
+	 * @param string name of inventory
 	 * @return the inventory of the part/tile by name.
 	 */
 	IInventory getInventoryByName(String string);

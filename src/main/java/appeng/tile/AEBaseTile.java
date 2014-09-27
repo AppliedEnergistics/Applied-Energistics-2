@@ -267,7 +267,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	/**
 	 * By default all blocks can have orientation, this handles saving, and loading, as well as synchronization.
 	 * 
-	 * @return
+	 * @return true if tile can be rotated
 	 */
 	@Override
 	public boolean canBeRotated()
@@ -357,11 +357,11 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	/**
 	 * returns the contents of the tile entity, into the world, defaults to dropping everything in the inventory.
 	 * 
-	 * @param w
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param drops
+	 * @param w world
+	 * @param x x pos of tile entity
+	 * @param y y pos of tile entity
+	 * @param z z pos of tile entity
+	 * @param drops drops of tile entity
 	 */
 	@Override
 	public void getDrops(World w, int x, int y, int z, ArrayList<ItemStack> drops)
@@ -393,8 +393,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	/**
 	 * depending on the from, different settings will be accepted, don't call this with null
 	 * 
-	 * @param from
-	 * @param compound
+	 * @param from source of settings
+	 * @param compound compound of source
 	 */
 	public void uploadSettings(SettingsFrom from, NBTTagCompound compound)
 	{
@@ -428,8 +428,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	/**
 	 * null means nothing to store...
 	 * 
-	 * @param from
-	 * @return
+	 * @param from source of settings
+	 * @return compound of source
 	 */
 	public NBTTagCompound downloadSettings(SettingsFrom from)
 	{
