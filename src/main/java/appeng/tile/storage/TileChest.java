@@ -1,5 +1,9 @@
 package appeng.tile.storage;
 
+import appeng.api.config.*;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.security.*;
 import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
@@ -18,13 +22,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import appeng.api.AEApi;
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.networking.GridFlags;
@@ -35,9 +32,6 @@ import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.events.MENetworkPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.MachineSource;
-import appeng.api.networking.security.PlayerSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.ICellHandler;
@@ -346,6 +340,54 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			if ( h instanceof MEInventoryHandler )
 				return (IMEInventoryHandler<T>) ((MEInventoryHandler) h).getInternal();
 			return this.getHandler();
+		}
+
+		private boolean securityCheck(EntityPlayer player, SecurityPermissions requiredPermission)
+		{
+			if ( getTile() instanceof IActionHost && requiredPermission != null )
+			{
+				boolean requirePower = false;
+
+				IGridNode gn = ((IActionHost) getTile()).getActionableNode();
+				if ( gn != null )
+				{
+					IGrid g = gn.getGrid();
+					if ( g != null )
+					{
+						if ( requirePower )
+						{
+							IEnergyGrid eg = g.getCache( IEnergyGrid.class );
+							if ( !eg.isNetworkPowered() )
+							{
+								return false;
+							}
+						}
+
+						ISecurityGrid sg = g.getCache( ISecurityGrid.class );
+						if ( sg.hasPermission( player, requiredPermission ) )
+							return true;
+					}
+				}
+
+				return false;
+			}
+			return true;
+		}
+
+		@Override
+		public T injectItems(T input, Actionable mode, BaseActionSource src)
+		{
+			if ( src.isPlayer() && !securityCheck(((PlayerSource) src).player, SecurityPermissions.INJECT) )
+				return input;
+			return super.injectItems(input, mode, src);
+		}
+
+		@Override
+		public T extractItems(T request, Actionable mode, BaseActionSource src)
+		{
+			if ( src.isPlayer() && !securityCheck(((PlayerSource) src).player, SecurityPermissions.EXTRACT) )
+				return null;
+			return super.extractItems(request, mode, src);
 		}
 
 	};
