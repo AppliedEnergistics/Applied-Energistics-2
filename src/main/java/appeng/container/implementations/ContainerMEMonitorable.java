@@ -66,6 +66,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 
 	public IConfigManagerHost gui;
 	private IGridNode networkNode;
+	private ITerminalHost host;
 
 	public IGridNode getNetworkNode()
 	{
@@ -75,6 +76,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	protected ContainerMEMonitorable(InventoryPlayer ip, ITerminalHost monitorable, boolean bindInventory) {
 		super( ip, monitorable instanceof TileEntity ? (TileEntity) monitorable : null, monitorable instanceof IPart ? (IPart) monitorable : null );
 
+		host = monitorable;
 		clientCM = new ConfigManager( this );
 
 		clientCM.registerSetting( Settings.SORT_BY, SortOrder.NAME );
@@ -139,6 +141,9 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	{
 		if ( Platform.isServer() )
 		{
+			if ( monitor != host.getItemInventory() )
+				isContainerValid = false;
+			
 			for (Enum set : serverCM.getSettings())
 			{
 				Enum sideLocal = serverCM.getSetting( set );
