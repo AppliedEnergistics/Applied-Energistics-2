@@ -31,8 +31,8 @@ public class DefaultSpatialHandler implements IMovableHandler
 	/**
 	 * never called for the default.
 	 * 
-	 * @param tile
-	 * @return
+	 * @param tile tile entity
+	 * @return true
 	 */
 	@Override
 	public boolean canHandle(Class<? extends TileEntity> myClass, TileEntity tile)

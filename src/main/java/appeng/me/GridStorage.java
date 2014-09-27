@@ -29,8 +29,8 @@ public class GridStorage implements IGridStorage
 	/**
 	 * for use with world settings
 	 * 
-	 * @param id
-	 * @param gss
+	 * @param id ID of grid storage
+	 * @param gss grid storage search
 	 */
 	public GridStorage(long id, GridStorageSearch gss) {
 		myID = id;
@@ -41,9 +41,9 @@ public class GridStorage implements IGridStorage
 	/**
 	 * for use with world settings
 	 * 
-	 * @param input
-	 * @param id
-	 * @param gss
+	 * @param input array of bytes string
+	 * @param id ID of grid storage
+	 * @param gss grid storage search
 	 */
 	public GridStorage(String input, long id, GridStorageSearch gss) {
 		myID = id;

@@ -261,8 +261,8 @@ public class CraftingJob implements Runnable, ICraftingJob
 	/**
 	 * returns true if this needs more simulation.
 	 * 
-	 * @param milli
-	 * @return
+	 * @param milli milliseconds of simulation
+	 * @return true if this needs more simulation
 	 */
 	public boolean simulateFor(int milli)
 	{

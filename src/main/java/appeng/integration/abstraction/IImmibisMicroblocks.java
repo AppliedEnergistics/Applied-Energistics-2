@@ -10,7 +10,7 @@ public interface IImmibisMicroblocks
 	IPartHost getOrCreateHost(EntityPlayer player, int side, TileEntity te);
 
 	/**
-	 * @param te
+	 * @param te to be left tile entity
 	 * @return true if this worked..
 	 */
 	boolean leaveParts(TileEntity te);
