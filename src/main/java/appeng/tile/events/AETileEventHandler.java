@@ -110,8 +110,8 @@ public class AETileEventHandler
 	/**
 	 * returning true from this method, will update the block's render
 	 * 
-	 * @param data
-	 * @return
+	 * @param data data of stream
+	 * @return true of method could be invoked
 	 * @throws IOException
 	 */
 	@SideOnly(Side.CLIENT)

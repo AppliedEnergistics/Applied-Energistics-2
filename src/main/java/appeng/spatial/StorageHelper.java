@@ -133,10 +133,9 @@ public class StorageHelper
 	/**
 	 * Mostly from dimensional doors.. which mostly got it form X-Comp.
 	 * 
-	 * @param world
-	 * @param entity
-	 * @param link
-	 * @return
+	 * @param entity to be teleported entity
+	 * @param link destination
+	 * @return teleported entity
 	 */
 	public Entity teleportEntity(Entity entity, TelDestination link)
 	{

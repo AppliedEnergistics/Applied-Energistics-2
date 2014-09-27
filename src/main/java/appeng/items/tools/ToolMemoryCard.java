@@ -28,8 +28,8 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	/**
 	 * Find the localized string...
 	 * 
-	 * @param name
-	 * @return
+	 * @param name possible names for the localized string
+	 * @return localized name
 	 */
 	private String getLocalizedName(String... name)
 	{

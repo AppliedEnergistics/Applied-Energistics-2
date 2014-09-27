@@ -96,7 +96,7 @@ public class TileCondenser extends AEBaseInvTile implements IAEAppEngInventory, 
 	/**
 	 * make sure you validate with canAddOutput prior to this.
 	 * 
-	 * @param output
+	 * @param output to be added output
 	 */
 	private void addOutput(ItemStack output)
 	{

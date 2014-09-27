@@ -36,8 +36,6 @@ public interface IPathItem
 
 	/**
 	 * channels are done, wrap it up.
-	 * 
-	 * @return
 	 */
 	void finalizeChannels();
 

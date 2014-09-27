@@ -147,9 +147,9 @@ public class Platform
 	/**
 	 * This displays the value for encoded longs ( double *100 )
 	 * 
-	 * @param n
-	 * @param isRate
-	 * @return
+	 * @param n to be formatted long value
+	 * @param isRate if true it adds a /t to the formatted string
+	 * @return formatted long value
 	 */
 	public static String formatPowerLong(long n, boolean isRate)
 	{

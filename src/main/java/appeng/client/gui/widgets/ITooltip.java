@@ -10,7 +10,7 @@ public interface ITooltip
 	/**
 	 * returns the tooltip message.
 	 * 
-	 * @return
+	 * @return tooltip message
 	 */
 	String getMsg();
 
