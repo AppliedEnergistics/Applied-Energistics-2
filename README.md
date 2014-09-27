@@ -64,7 +64,7 @@ If you are still willing to contribute to this project, you can contribute via [
 6. Push to your fork `git push`
 7. Create a Pull-Request on GitHub
 
-If you are only doing single file pull requests, GitHub supports using a quick way without the need of cloning your fork.
+If you are only doing single file pull requests, GitHub supports using a quick way without the need of cloning your fork. Also read up about [synching](https://help.github.com/articles/syncing-a-fork) if you plan to contribute on regular basis.
 
 ## Credits
 
