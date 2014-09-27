@@ -19,7 +19,7 @@ public class WrapperChainedInventory implements IInventory
 		int offset;
 		int size;
 		IInventory i;
-	};
+	}
 
 	int fullSize = 0;
 

@@ -13,7 +13,7 @@ public class AppEngSlot extends Slot
 	public enum hasCalculatedValidness
 	{
 		NotAvailable, Valid, Invalid
-	};
+	}
 
 	public boolean isDraggable = true;
 	public boolean isPlayerSide = false;

@@ -57,7 +57,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			return blk == ((Combo) obj).blk && meta == ((Combo) obj).meta;
 		}
 
-	};
+	}
 
 	static private Hashtable<Combo, InWorldToolOperationResult> heatUp;
 	static private Hashtable<Combo, InWorldToolOperationResult> coolDown;

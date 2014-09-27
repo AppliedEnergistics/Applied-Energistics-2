@@ -72,12 +72,12 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			return b.slot == slot && b.ref == ref;
 		}
 
-	};
+	}
 
 	enum TestStatus
 	{
 		ACCEPT, DECLINE, TEST
-	};
+	}
 
 	HashSet<TestLookup> failCache = new HashSet();
 	HashSet<TestLookup> passCache = new HashSet();

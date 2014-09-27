@@ -127,7 +127,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			// no..
 		}
 
-	};
+	}
 
 	@Override
 	public ImmutableSet<ICraftingCPU> getCpus()

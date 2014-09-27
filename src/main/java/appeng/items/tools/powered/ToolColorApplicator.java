@@ -71,7 +71,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			oreToColor.put( OreDictionary.getOreID( "dye" + col.name() ), col );
 		}
 
-	};
+	}
 
 	public ToolColorApplicator() {
 		super( ToolColorApplicator.class, null );

@@ -126,7 +126,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	public float getPowerDrainPerTick()
 	{
 		return 0.5f;
-	};
+	}
 
 	@Override
 	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)

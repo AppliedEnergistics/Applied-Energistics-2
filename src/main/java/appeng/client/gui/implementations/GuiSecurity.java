@@ -79,7 +79,7 @@ public class GuiSecurity extends GuiMEMonitorable
 			}
 		}
 
-	};
+	}
 
 	protected String getBackground()
 	{

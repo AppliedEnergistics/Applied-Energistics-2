@@ -65,7 +65,7 @@ public class MeteoritePlacer
 				put( w, x, y, z, Platform.air );
 		}
 
-	};
+	}
 
 	private class FalloutCopy extends Fallout
 	{
@@ -102,7 +102,7 @@ public class MeteoritePlacer
 			else
 				getOther( w, x, y, z, a - 0.1 );
 		}
-	};
+	}
 
 	private class FalloutSand extends FalloutCopy
 	{
@@ -122,7 +122,7 @@ public class MeteoritePlacer
 				put( w, x, y, z, Blocks.glass );
 		}
 
-	};
+	}
 
 	private class FalloutSnow extends FalloutCopy
 	{
@@ -144,7 +144,7 @@ public class MeteoritePlacer
 				put( w, x, y, z, Blocks.ice );
 		}
 
-	};
+	}
 
 	public interface IMeteoriteWorld
 	{
@@ -175,7 +175,7 @@ public class MeteoritePlacer
 
 		void done();
 
-	};
+	}
 
 	static public class StandardWorld implements IMeteoriteWorld
 	{
@@ -369,7 +369,7 @@ public class MeteoritePlacer
 		{
 			return Math.min( in, (cz + 1) << 4 );
 		}
-	};
+	}
 
 	int minBLocks = 200;
 	HashSet<Block> validSpawn = new HashSet();

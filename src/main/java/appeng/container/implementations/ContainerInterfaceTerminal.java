@@ -59,7 +59,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 		IInventory server;
 		public long sortBy;
 
-	};
+	}
 
 	Map<IInterfaceHost, InvTracker> diList = new HashMap();
 	Map<Long, InvTracker> byId = new HashMap();
@@ -89,7 +89,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 			return itemstack != null && itemstack.getItem() instanceof ItemEncodedPattern;
 		}
 
-	};
+	}
 
 	@Override
 	public void doAction(EntityPlayerMP player, InventoryAction action, int slot, long id)

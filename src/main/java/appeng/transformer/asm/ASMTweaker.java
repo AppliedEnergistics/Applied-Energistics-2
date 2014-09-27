@@ -33,7 +33,7 @@ public class ASMTweaker implements IClassTransformer
 
 		final String name, desc;
 
-	};
+	}
 
 	Multimap<String, publicLine> privateToPublicMethods = HashMultimap.create();
 

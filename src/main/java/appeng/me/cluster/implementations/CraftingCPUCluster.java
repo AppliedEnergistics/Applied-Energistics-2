@@ -67,7 +67,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 		long value;
 
-	};
+	}
 
 	/**
 	 * crafting job info

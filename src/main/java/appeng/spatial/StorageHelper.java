@@ -46,7 +46,7 @@ public class StorageHelper
 			Block blk = dst.getBlock( x, y, z );
 			blk.onNeighborBlockChange( dst, x, y, z, Platform.air );
 		}
-	};
+	}
 
 	class WrapInMatrixFrame implements ISpatialVisitor
 	{
@@ -66,7 +66,7 @@ public class StorageHelper
 		{
 			dst.setBlock( x, y, z, blkID, Meta, 3 );
 		}
-	};
+	}
 
 	class TelDestination
 	{
@@ -89,7 +89,7 @@ public class StorageHelper
 		final int xOff;
 		final int yOff;
 		final int zOff;
-	};
+	}
 
 	class METeleporter extends Teleporter
 	{
@@ -126,7 +126,7 @@ public class StorageHelper
 
 		}
 
-	};
+	}
 
 	Method onEntityRemoved;
 

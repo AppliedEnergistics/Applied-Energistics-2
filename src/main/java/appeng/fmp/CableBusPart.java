@@ -243,7 +243,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	{
 		canUpdate = false;
 		cb.removeFromWorld();
-	};
+	}
 
 	@Override
 	public boolean canConnectRedstone(int side)
