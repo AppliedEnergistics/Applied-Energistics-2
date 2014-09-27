@@ -359,7 +359,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 		AEColor selected = getActiveColor( par1ItemStack );
 
-		if ( selected != null )
+		if ( selected != null && Platform.isClient() )
 			extra = Platform.gui_localize( selected.unlocalizedName );
 
 		return super.getItemStackDisplayName( par1ItemStack ) + " - " + extra;
