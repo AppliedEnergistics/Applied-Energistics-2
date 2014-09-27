@@ -444,7 +444,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		cenz = baseZ + 0.5;
 
 		baseY += 7.0 / 16.0;
-		;
+
 		double par10 = 0;
 		// double par11 = 0;
 		double Zero = 0;
@@ -541,7 +541,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		this.addVertexWithUV( var36, baseY + 1.0D, baseZ - var44, (double) var17, (double) var18 );
 	}
 
-	boolean status = false;;
+	boolean status = false;
 
 	private boolean isLevelEmitterOn()
 	{

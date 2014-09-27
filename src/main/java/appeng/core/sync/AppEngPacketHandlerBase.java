@@ -127,6 +127,6 @@ public class AppEngPacketHandlerBase
 			return AppEngPacketHandlerBase.reverseLookup.get( c );
 		}
 
-	};
+	}
 
 }

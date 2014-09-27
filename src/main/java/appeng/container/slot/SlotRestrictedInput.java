@@ -45,7 +45,7 @@ public class SlotRestrictedInput extends AppEngSlot
 		private PlacableItemType(int o) {
 			IIcon = o;
 		}
-	};
+	}
 
 	@Override
 	public int getSlotStackLimit()

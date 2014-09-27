@@ -148,7 +148,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 	public float getPowerDrainPerTick()
 	{
 		return 0.5f;
-	};
+	}
 
 	@Method(iname = "MJ6")
 	private IBatteryObject getTargetBattery()

@@ -11,7 +11,7 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 	public enum Direction
 	{
 		HORIZONTAL, VERTICAL
-	};
+	}
 
 	private ResourceLocation texture;
 	private int fill_u;

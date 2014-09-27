@@ -356,7 +356,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 			// nothing!
 		}
 
-	};
+	}
 
 	@Override
 	public Iterator<ItemSlot> iterator()

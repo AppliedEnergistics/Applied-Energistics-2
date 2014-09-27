@@ -90,7 +90,7 @@ public class GridStorageCache implements IStorageGrid
 			postChangesToNetwork( channel, up_or_down, list, src );
 		}
 
-	};
+	}
 
 	private class CellChangeTracker
 	{
@@ -107,7 +107,7 @@ public class GridStorageCache implements IStorageGrid
 			for (CellChangeTrackerRecord rec : data)
 				rec.applyChanges();
 		}
-	};
+	}
 
 	@Override
 	public void registerCellProvider(ICellProvider provider)

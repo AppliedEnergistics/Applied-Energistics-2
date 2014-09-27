@@ -44,14 +44,14 @@ public class OreHelper
 			return hash;
 		}
 
-	};
+	}
 
 	class OreResult
 	{
 
 		public OreReference oreValue = null;
 
-	};
+	}
 
 	HashMap<ItemRef, OreResult> references = new HashMap();
 

@@ -46,7 +46,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 
 		final ItemStack itemStack;
 		final IAEItemStack aeStack;
-	};
+	}
 
 	final InventoryAdaptor adaptor;
 

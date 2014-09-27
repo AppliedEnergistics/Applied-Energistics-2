@@ -405,7 +405,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			return super.extractItems( request, type, src );
 		}
 
-	};
+	}
 
 	private boolean usePlan(int x, IAEItemStack itemStack)
 	{

@@ -326,7 +326,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	public float getPowerDrainPerTick()
 	{
 		return 2.0f;
-	};
+	}
 
 	@Override
 	public boolean canInsertItem(int i, ItemStack itemstack, int j)

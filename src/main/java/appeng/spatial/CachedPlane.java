@@ -88,7 +88,7 @@ public class CachedPlane
 			skipThese.add( yCoord );
 		}
 
-	};
+	}
 
 	int verticalBits;
 

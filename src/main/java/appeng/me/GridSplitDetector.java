@@ -21,4 +21,4 @@ class GridSplitDetector implements IGridVisitor
 
 		return !pivotFound;
 	}
-};
+}

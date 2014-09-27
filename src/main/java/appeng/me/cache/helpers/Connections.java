@@ -39,4 +39,4 @@ public class Connections implements Callable
 		destroy = false;
 	}
 
-};
+}

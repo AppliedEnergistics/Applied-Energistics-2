@@ -102,7 +102,7 @@ public class BusRenderHelper implements IPartRenderHelper
 			return false;
 		}
 
-	};
+	}
 
 	BoundBoxCalculator bbc = new BoundBoxCalculator();
 

@@ -41,7 +41,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 
 		@SideOnly(Side.CLIENT)
 		IIcon ico;
-	};
+	}
 
 	HashMap<Integer, PartTypeIst> dmgToPart = new HashMap();
 
