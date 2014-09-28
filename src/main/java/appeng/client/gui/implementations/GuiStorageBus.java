@@ -96,9 +96,6 @@ public class GuiStorageBus extends GuiUpgradeable
 			else if ( btn == priority )
 				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
 
-			else if ( btn == fuzzyMode )
-				NetworkHandler.instance.sendToServer( new PacketConfigButton( fuzzyMode.getSetting(), backwards ) );
-
 			else if ( btn == rwMode )
 				NetworkHandler.instance.sendToServer( new PacketConfigButton( rwMode.getSetting(), backwards ) );
 
