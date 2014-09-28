@@ -224,7 +224,7 @@ public class WorldSettings extends Configuration
 		instance = null;
 	}
 
-	List<Integer> storageCellDims = new ArrayList();
+	List<Integer> storageCellDims = new ArrayList<Integer>();
 	HashMap<Integer, UUID> idToUUID;
 
 	public void addStorageCellDim(int newDim)
