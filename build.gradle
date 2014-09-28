@@ -37,7 +37,7 @@ group = config.group
 archivesBaseName = config.archivesBaseName
 
 if (hasProperty("teamcity")) {
-    version = "rv" + teamcity["rvNumber"] + "-" + teamcity["buildType"] + "-" + teamcity["build.number"]
+    version = teamcity["build.number"]
 }
 
 // Add Coremod Manifest
