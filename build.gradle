@@ -41,9 +41,7 @@ if (hasProperty("teamcity")) {
     version = teamcity["build.number"]
 
     // Fix for main branch being built
-    if (teamcity["teamcity.build.branch.is_default"]) {
-        version = version.replaceAll("/", "-")
-    }
+    version = version.replaceAll("/", "-")
 }
 
 // Add Coremod Manifest
