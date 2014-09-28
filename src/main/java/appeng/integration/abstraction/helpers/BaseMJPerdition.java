@@ -4,9 +4,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import appeng.transformer.annotations.integration.Method;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 
-public abstract class BaseMJperdition
+public abstract class BaseMJPerdition
 {
-
 	@Method(iname = "MJ5")
 	public abstract PowerReceiver getPowerReceiver();
 
@@ -21,5 +20,4 @@ public abstract class BaseMJperdition
 	public abstract void readFromNBT(NBTTagCompound tag);
 
 	public abstract void Tick();
-
 }

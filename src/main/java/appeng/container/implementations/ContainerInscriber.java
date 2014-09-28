@@ -4,6 +4,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
+import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
@@ -38,7 +39,7 @@ public class ContainerInscriber extends ContainerUpgradeable
 
 		addSlotToContainer( new SlotOutput( ti, 3, 113, 40, -1 ) );
 
-		bindPlayerInventory( ip, 0, getHeight() - /* height of playerinventory */82 );
+		bindPlayerInventory( ip, 0, getHeight() - /* height of player inventory */82 );
 
 	}
 

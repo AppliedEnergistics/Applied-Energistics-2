@@ -18,11 +18,11 @@ public abstract class AEBaseMEGui extends AEBaseGui
 		super( container );
 	}
 
-	public List<String> handleItemTooltip(ItemStack stack, int mousex, int mousey, List<String> currenttip)
+	public List<String> handleItemTooltip(ItemStack stack, int mouseX, int mouseY, List<String> currentToolTip)
 	{
 		if ( stack != null )
 		{
-			Slot s = getSlot( mousex, mousey );
+			Slot s = getSlot( mouseX, mouseY );
 			if ( s instanceof SlotME )
 			{
 				int BigNumber = AEConfig.instance.useTerminalUseLargeFont() ? 999 : 9999;
@@ -41,18 +41,18 @@ public abstract class AEBaseMEGui extends AEBaseGui
 				if ( myStack != null )
 				{
 					if ( myStack.getStackSize() > BigNumber || (myStack.getStackSize() > 1 && stack.isItemDamaged()) )
-						currenttip.add( "\u00a77Items Stored: " + NumberFormat.getNumberInstance( Locale.US ).format( myStack.getStackSize() ) );
+						currentToolTip.add( "\u00a77Items Stored: " + NumberFormat.getNumberInstance( Locale.US ).format( myStack.getStackSize() ) );
 
 					if ( myStack.getCountRequestable() > 0 )
-						currenttip.add( "\u00a77Items Requestable: " + NumberFormat.getNumberInstance( Locale.US ).format( myStack.getCountRequestable() ) );
+						currentToolTip.add( "\u00a77Items Requestable: " + NumberFormat.getNumberInstance( Locale.US ).format( myStack.getCountRequestable() ) );
 				}
 				else if ( stack.stackSize > BigNumber || (stack.stackSize > 1 && stack.isItemDamaged()) )
 				{
-					currenttip.add( "\u00a77Items Stored: " + NumberFormat.getNumberInstance( Locale.US ).format( stack.stackSize ) );
+					currentToolTip.add( "\u00a77Items Stored: " + NumberFormat.getNumberInstance( Locale.US ).format( stack.stackSize ) );
 				}
 			}
 		}
-		return currenttip;
+		return currentToolTip;
 	}
 
 	// Vanilla version...
@@ -78,15 +78,15 @@ public abstract class AEBaseMEGui extends AEBaseGui
 
 			if ( myStack != null )
 			{
-				List currenttip = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
+				List currentToolTip = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
 
 				if ( myStack.getStackSize() > BigNumber || (myStack.getStackSize() > 1 && stack.isItemDamaged()) )
-					currenttip.add( "Items Stored: " + NumberFormat.getNumberInstance( Locale.US ).format( myStack.getStackSize() ) );
+					currentToolTip.add( "Items Stored: " + NumberFormat.getNumberInstance( Locale.US ).format( myStack.getStackSize() ) );
 
 				if ( myStack.getCountRequestable() > 0 )
-					currenttip.add( "Items Requestable: " + NumberFormat.getNumberInstance( Locale.US ).format( myStack.getCountRequestable() ) );
+					currentToolTip.add( "Items Requestable: " + NumberFormat.getNumberInstance( Locale.US ).format( myStack.getCountRequestable() ) );
 
-				drawTooltip( x, y, 0, join( currenttip, "\n" ) );
+				drawTooltip( x, y, 0, join( currentToolTip, "\n" ) );
 			}
 			else if ( stack != null && stack.stackSize > BigNumber )
 			{

@@ -23,10 +23,10 @@ public class PartConversionMonitor extends PartStorageMonitor
 
 	public PartConversionMonitor(ItemStack is) {
 		super( PartConversionMonitor.class, is );
-		frontBright = CableBusTextures.PartConvMonitor_Bright;
-		frontColored = CableBusTextures.PartConvMonitor_Colored;
-		frontDark = CableBusTextures.PartConvMonitor_Dark;
-		// frontSolid = CableBusTextures.PartConvMonitor_Solid;
+		frontBright = CableBusTextures.PartConversionMonitor_Bright;
+		frontColored = CableBusTextures.PartConversionMonitor_Colored;
+		frontDark = CableBusTextures.PartConversionMonitor_Dark;
+		// frontSolid = CableBusTextures.PartConversionMonitor_Solid;
 	}
 
 	@Override

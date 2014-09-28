@@ -39,7 +39,7 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 
 		addSlotToContainer( configSlot = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.BIOMETRIC_CARD, securityBox.configSlot, 0, 37, -33, ip ) );
 
-		addSlotToContainer( wirelessIn = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODEABLE_ITEM, wirelessEncoder, 0, 212, 10, ip ) );
+		addSlotToContainer( wirelessIn = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODABLE_ITEM, wirelessEncoder, 0, 212, 10, ip ) );
 		addSlotToContainer( wirelessOut = new SlotOutput( wirelessEncoder, 1, 212, 68, -1 ) );
 
 		bindPlayerInventory( ip, 0, 0 );
@@ -117,18 +117,18 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 			if ( wirelessIn.getHasStack() )
 			{
 				ItemStack term = wirelessIn.getStack().copy();
-				INetworkEncodable netEncodeable = null;
+				INetworkEncodable networkEncodable = null;
 
 				if ( term.getItem() instanceof INetworkEncodable )
-					netEncodeable = (INetworkEncodable) term.getItem();
+					networkEncodable = (INetworkEncodable) term.getItem();
 
 				IWirelessTermHandler wTermHandler = AEApi.instance().registries().wireless().getWirelessTerminalHandler( term );
 				if ( wTermHandler != null )
-					netEncodeable = wTermHandler;
+					networkEncodable = wTermHandler;
 
-				if ( netEncodeable != null )
+				if ( networkEncodable != null )
 				{
-					netEncodeable.setEncryptionKey( term, "" + securityBox.securityKey, "" );
+					networkEncodable.setEncryptionKey( term, "" + securityBox.securityKey, "" );
 
 					wirelessIn.putStack( null );
 					wirelessOut.putStack( term );

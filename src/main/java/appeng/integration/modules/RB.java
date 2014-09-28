@@ -42,7 +42,7 @@ public class RB extends BaseModule implements IRB
 			internal.setOrientation( Forward, Up );
 		}
 
-	};
+	}
 
 	public static RB instance;
 

@@ -83,7 +83,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 			if ( Platform.isClient() )
 				return true;
 
-			Platform.openGUI( player, getHost().getTile(), side, GuiBridge.GUI_FPLANE );
+			Platform.openGUI( player, getHost().getTile(), side, GuiBridge.GUI_FORMATION_PLANE );
 			return true;
 		}
 
@@ -117,7 +117,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@MENetworkEventSubscribe
-	public void updateChannels(MENetworkChannelsChanged chann)
+	public void updateChannels(MENetworkChannelsChanged changedChannels)
 	{
 		boolean currentActive = proxy.isActive();
 		if ( wasActive != currentActive )

@@ -51,8 +51,8 @@ public class PacketPatternSlot extends AppEngPacket
 		EntityPlayerMP sender = (EntityPlayerMP) player;
 		if ( sender.openContainer instanceof ContainerPatternTerm )
 		{
-			ContainerPatternTerm aebc = (ContainerPatternTerm) sender.openContainer;
-			aebc.craftOrGetItem( this );
+			ContainerPatternTerm patternTerminal = (ContainerPatternTerm) sender.openContainer;
+			patternTerminal.craftOrGetItem( this );
 		}
 	}
 

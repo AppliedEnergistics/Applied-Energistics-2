@@ -126,7 +126,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 			lightHash = 0;
 		}
 
-	};
+	}
 
 	private LightingCache lightState = new LightingCache();
 

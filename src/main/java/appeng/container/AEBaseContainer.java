@@ -610,11 +610,11 @@ public abstract class AEBaseContainer extends Container
 		{
 			if ( f.isAnnotationPresent( GuiSync.class ) )
 			{
-				GuiSync anno = f.getAnnotation( GuiSync.class );
-				if ( syncData.containsKey( anno.value() ) )
-					AELog.warning( "Channel already in use: " + anno.value() + " for " + f.getName() );
+				GuiSync annotation = f.getAnnotation( GuiSync.class );
+				if ( syncData.containsKey( annotation.value() ) )
+					AELog.warning( "Channel already in use: " + annotation.value() + " for " + f.getName() );
 				else
-					syncData.put( anno.value(), new SyncDat( this, f, anno ) );
+					syncData.put( annotation.value(), new SyncDat( this, f, annotation ) );
 			}
 		}
 	}
@@ -718,7 +718,7 @@ public abstract class AEBaseContainer extends Container
 
 				switch (action)
 				{
-				case PICKUP_OR_SETDOWN:
+				case PICKUP_OR_SET_DOWN:
 
 					if ( hand == null )
 						s.putStack( null );
@@ -736,7 +736,7 @@ public abstract class AEBaseContainer extends Container
 					}
 
 					break;
-				case SPLIT_OR_PLACESINGLE:
+				case SPLIT_OR_PLACE_SINGLE:
 
 					ItemStack is = s.getStack();
 					if ( is != null )
@@ -815,7 +815,7 @@ public abstract class AEBaseContainer extends Container
 					adp.addItems( ais.getItemStack() );
 			}
 			break;
-		case ROLLDOWN:
+		case ROLL_DOWN:
 			if ( powerSrc == null || cellInv == null )
 				return;
 
@@ -842,7 +842,7 @@ public abstract class AEBaseContainer extends Container
 			}
 
 			break;
-		case ROLLUP:
+		case ROLL_UP:
 		case PICKUP_SINGLE:
 			if ( powerSrc == null || cellInv == null )
 				return;
@@ -850,13 +850,13 @@ public abstract class AEBaseContainer extends Container
 			if ( slotItem != null )
 			{
 				int liftQty = 1;
-				ItemStack isgg = player.inventory.getItemStack();
+				ItemStack item = player.inventory.getItemStack();
 
-				if ( isgg != null )
+				if ( item != null )
 				{
-					if ( isgg.stackSize >= isgg.getMaxStackSize() )
+					if ( item.stackSize >= item.getMaxStackSize() )
 						liftQty = 0;
-					if ( !Platform.isSameItemPrecise( slotItem.getItemStack(), isgg ) )
+					if ( !Platform.isSameItemPrecise( slotItem.getItemStack(), item ) )
 						liftQty = 0;
 				}
 
@@ -878,7 +878,7 @@ public abstract class AEBaseContainer extends Container
 				}
 			}
 			break;
-		case PICKUP_OR_SETDOWN:
+		case PICKUP_OR_SET_DOWN:
 			if ( powerSrc == null || cellInv == null )
 				return;
 
@@ -908,7 +908,7 @@ public abstract class AEBaseContainer extends Container
 			}
 
 			break;
-		case SPLIT_OR_PLACESINGLE:
+		case SPLIT_OR_PLACE_SINGLE:
 			if ( powerSrc == null || cellInv == null )
 				return;
 

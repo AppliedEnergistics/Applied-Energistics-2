@@ -29,11 +29,16 @@ configurations.all {
     resolutionStrategy.cacheDynamicVersionsFor 7200, 'hours'
 }
 
+sourceCompatibility = JavaVersion.VERSION_1_6
 targetCompatibility = JavaVersion.VERSION_1_6
 
 version = config.version + "-" + config.aechannel + "-" + config.build
 group = config.group
 archivesBaseName = config.archivesBaseName
+
+if (hasProperty("teamcity")) {
+    version = teamcity["build.number"]
+}
 
 // Add Coremod Manifest
 jar {

@@ -270,7 +270,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 			if ( Platform.isClient() )
 				return true;
 
-			Platform.openGUI( player, getHost().getTile(), side, GuiBridge.GUI_LEVELEMITTER );
+			Platform.openGUI( player, getHost().getTile(), side, GuiBridge.GUI_LEVEL_EMITTER );
 			return true;
 		}
 
@@ -363,17 +363,17 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		// rh.renderInventoryBox( renderer );
 	}
 
-	double cenx;
-	double ceny;
-	double cenz;
+	double centerX;
+	double centerY;
+	double centerZ;
 
 	public void addVertexWithUV(double x, double y, double z, double u, double v)
 	{
 		Tessellator var12 = Tessellator.instance;
 
-		x -= cenx;
-		y -= ceny;
-		z -= cenz;
+		x -= centerX;
+		y -= centerY;
+		z -= centerZ;
 
 		if ( side == ForgeDirection.DOWN )
 		{
@@ -411,9 +411,9 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 			y = m;
 		}
 
-		x += cenx;// + orientation.offsetX * 0.4;
-		y += ceny;// + orientation.offsetY * 0.4;
-		z += cenz;// + orientation.offsetZ * 0.4;
+		x += centerX;// + orientation.offsetX * 0.4;
+		y += centerY;// + orientation.offsetY * 0.4;
+		z += centerZ;// + orientation.offsetZ * 0.4;
 
 		var12.addVertexWithUV( x, y, z, u, v );
 	}
@@ -439,12 +439,12 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		IIcon offTexture = is.getIconIndex();
 		IIcon IIcon = (isOn ? CableBusTextures.LevelEmitterTorchOn.getIcon() : offTexture);
 		//
-		cenx = baseX + 0.5;
-		ceny = baseY + 0.5;
-		cenz = baseZ + 0.5;
+		centerX = baseX + 0.5;
+		centerY = baseY + 0.5;
+		centerZ = baseZ + 0.5;
 
 		baseY += 7.0 / 16.0;
-		;
+
 		double par10 = 0;
 		// double par11 = 0;
 		double Zero = 0;
@@ -541,7 +541,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		this.addVertexWithUV( var36, baseY + 1.0D, baseZ - var44, (double) var17, (double) var18 );
 	}
 
-	boolean status = false;;
+	boolean status = false;
 
 	private boolean isLevelEmitterOn()
 	{

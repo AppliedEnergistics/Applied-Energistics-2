@@ -209,7 +209,7 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public void postinit()
+	public void postInit()
 	{
 		RenderingRegistry.registerBlockHandler( WorldRender.instance );
 		RenderManager.instance.entityRenderMap.put( EntityTinyTNTPrimed.class, new RenderTinyTNTPrimed() );

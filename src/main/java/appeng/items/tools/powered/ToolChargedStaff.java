@@ -19,7 +19,7 @@ public class ToolChargedStaff extends AEBasePoweredItem
 	public ToolChargedStaff() {
 		super( ToolChargedStaff.class, null );
 		setFeature( EnumSet.of( AEFeature.ChargedStaff, AEFeature.PoweredTools ) );
-		maxStoredPower = AEConfig.instance.staff_battery;
+		maxStoredPower = AEConfig.instance.chargedStaffBattery;
 	}
 
 	@Override

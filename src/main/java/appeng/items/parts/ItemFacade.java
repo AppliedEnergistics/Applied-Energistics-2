@@ -88,7 +88,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		list.addAll( subTypes );
 	}
 
-	public ItemStack createFromInts(int[] ids)
+	public ItemStack createFromIDs(int[] ids)
 	{
 		ItemStack is = new ItemStack( AEApi.instance().items().itemFacade.item() );
 		NBTTagCompound data = new NBTTagCompound();

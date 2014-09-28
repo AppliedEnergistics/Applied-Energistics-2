@@ -58,7 +58,7 @@ import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.storage.MEMonitorIInventory;
-import appeng.me.storage.MEMonitorPassthu;
+import appeng.me.storage.MEMonitorPassThrough;
 import appeng.me.storage.NullInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.inventory.AppEngInternalAEInventory;
@@ -196,8 +196,8 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		}
 	}
 
-	public DualityInterface(AENetworkProxy prox, IInterfaceHost ih) {
-		gridProxy = prox;
+	public DualityInterface(AENetworkProxy networkProxy, IInterfaceHost ih) {
+		gridProxy = networkProxy;
 		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 
 		upgrades = new UpgradeInventory( gridProxy.getMachineRepresentation(), this, 1 );
@@ -250,7 +250,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			}
 		}
 
-		notifyNeightbors();
+		notifyNeighbors();
 	}
 
 	public void writeToNBT(NBTTagCompound data)
@@ -405,7 +405,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			return super.extractItems( request, type, src );
 		}
 
-	};
+	}
 
 	private boolean usePlan(int x, IAEItemStack itemStack)
 	{
@@ -513,8 +513,8 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		return patterns;
 	}
 
-	MEMonitorPassthu<IAEItemStack> items = new MEMonitorPassthu<IAEItemStack>( new NullInventory(), StorageChannel.ITEMS );
-	MEMonitorPassthu<IAEFluidStack> fluids = new MEMonitorPassthu<IAEFluidStack>( new NullInventory(), StorageChannel.FLUIDS );
+	MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<IAEItemStack>( new NullInventory(), StorageChannel.ITEMS );
+	MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<IAEFluidStack>( new NullInventory(), StorageChannel.FLUIDS );
 
 	public void gridChanged()
 	{
@@ -529,7 +529,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			fluids.setInternal( new NullInventory() );
 		}
 
-		notifyNeightbors();
+		notifyNeighbors();
 	}
 
 	public AECableType getCableConnectionType(ForgeDirection dir)
@@ -936,7 +936,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 				drops.add( is );
 	}
 
-	public void notifyNeightbors()
+	public void notifyNeighbors()
 	{
 		if ( gridProxy.isActive() )
 		{

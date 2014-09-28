@@ -15,7 +15,7 @@ public class WorldGenRegistry implements IWorldGen
 		HashSet<Class<? extends WorldProvider>> badProviders = new HashSet();
 		HashSet<Integer> badDimensions = new HashSet();
 
-	};
+	}
 
 	TypeSet[] types;
 
@@ -60,12 +60,12 @@ public class WorldGenRegistry implements IWorldGen
 	}
 
 	@Override
-	public void disableWorldGenForDimension(WorldGenType type, int dimid)
+	public void disableWorldGenForDimension(WorldGenType type, int dimensionID)
 	{
 		if ( type == null )
 			throw new IllegalArgumentException( "Bad Type Passed" );
 
-		types[type.ordinal()].badDimensions.add( dimid );
+		types[type.ordinal()].badDimensions.add( dimensionID );
 	}
 
 }

@@ -68,26 +68,26 @@ public class RenderMEChest extends BaseBlockRender
 		Tessellator.instance.setBrightness( b );
 		Tessellator.instance.setColorOpaque_I( 0xffffff );
 
-		FlippableIcon fico = new FlippableIcon( new OffsetIcon( ExtraBlockTextures.MEStorageCellTextures.getIcon(), offsetU, offsetV ) );
+		FlippableIcon flippableIcon = new FlippableIcon( new OffsetIcon( ExtraBlockTextures.MEStorageCellTextures.getIcon(), offsetU, offsetV ) );
 		if ( forward == ForgeDirection.EAST && (up == ForgeDirection.NORTH || up == ForgeDirection.SOUTH) )
-			fico.setFlip( true, false );
+			flippableIcon.setFlip( true, false );
 		else if ( forward == ForgeDirection.NORTH && up == ForgeDirection.EAST )
-			fico.setFlip( false, true );
+			flippableIcon.setFlip( false, true );
 		else if ( forward == ForgeDirection.NORTH && up == ForgeDirection.WEST )
-			fico.setFlip( true, false );
+			flippableIcon.setFlip( true, false );
 		else if ( forward == ForgeDirection.DOWN && up == ForgeDirection.EAST )
-			fico.setFlip( false, true );
+			flippableIcon.setFlip( false, true );
 		else if ( forward == ForgeDirection.DOWN )
-			fico.setFlip( true, false );
+			flippableIcon.setFlip( true, false );
 
 		/*
 		 * 1.7.2
 		 * 
-		 * else if ( forward == ForgeDirection.EAST && up == ForgeDirection.UP ) fico.setFlip( true, false ); else if (
-		 * forward == ForgeDirection.NORTH && up == ForgeDirection.UP ) fico.setFlip( true, false );
+		 * else if ( forward == ForgeDirection.EAST && up == ForgeDirection.UP ) flippableIcon.setFlip( true, false ); else if (
+		 * forward == ForgeDirection.NORTH && up == ForgeDirection.UP ) flippableIcon.setFlip( true, false );
 		 */
 
-		renderFace( x, y, z, imb, fico, renderer, forward );
+		renderFace( x, y, z, imb, flippableIcon, renderer, forward );
 
 		if ( stat != 0 )
 		{

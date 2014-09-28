@@ -10,31 +10,31 @@ public class ItemSlot
 	public int slot;
 
 	// one or the other..
-	private IAEItemStack aeitemstack;
+	private IAEItemStack aeItemStack;
 	private ItemStack itemStack;
 
 	public boolean isExtractable;
 
 	public void setItemStack(ItemStack is)
 	{
-		aeitemstack = null;
+		aeItemStack = null;
 		itemStack = is;
 	}
 
 	public void setAEItemStack(IAEItemStack is)
 	{
-		aeitemstack = is;
+		aeItemStack = is;
 		itemStack = null;
 	}
 
 	public ItemStack getItemStack()
 	{
-		return itemStack == null ? (aeitemstack == null ? null : (itemStack = aeitemstack.getItemStack())) : itemStack;
+		return itemStack == null ? (aeItemStack == null ? null : (itemStack = aeItemStack.getItemStack())) : itemStack;
 	}
 
 	public IAEItemStack getAEItemStack()
 	{
-		return aeitemstack == null ? (itemStack == null ? null : (aeitemstack = AEItemStack.create( itemStack ))) : aeitemstack;
+		return aeItemStack == null ? (itemStack == null ? null : (aeItemStack = AEItemStack.create( itemStack ))) : aeItemStack;
 	}
 
 }

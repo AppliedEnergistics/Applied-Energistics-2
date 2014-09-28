@@ -16,7 +16,7 @@ import appeng.util.Platform;
 public class ContainerSpatialIOPort extends AEBaseContainer
 {
 
-	TileSpatialIOPort myte;
+	TileSpatialIOPort spatialIOPort;
 
 	IGrid network;
 
@@ -31,17 +31,17 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 
 	int delay = 40;
 
-	public ContainerSpatialIOPort(InventoryPlayer ip, TileSpatialIOPort te) {
-		super( ip, te, null );
-		myte = te;
+	public ContainerSpatialIOPort(InventoryPlayer ip, TileSpatialIOPort spatialIOPort) {
+		super( ip, spatialIOPort, null );
+		this.spatialIOPort = spatialIOPort;
 
 		if ( Platform.isServer() )
-			network = te.getGridNode( ForgeDirection.UNKNOWN ).getGrid();
+			network = spatialIOPort.getGridNode( ForgeDirection.UNKNOWN ).getGrid();
 
-		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS, te, 0, 52, 48, invPlayer ) );
-		addSlotToContainer( new SlotOutput( te, 1, 113, 48, SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS.IIcon ) );
+		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS, spatialIOPort, 0, 52, 48, invPlayer ) );
+		addSlotToContainer( new SlotOutput( spatialIOPort, 1, 113, 48, SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS.IIcon ) );
 
-		bindPlayerInventory( ip, 0, 197 - /* height of playerinventory */82 );
+		bindPlayerInventory( ip, 0, 197 - /* height of player inventory */82 );
 	}
 
 	@Override

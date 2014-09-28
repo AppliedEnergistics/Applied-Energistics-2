@@ -2,6 +2,7 @@ package appeng.client.render.blocks;
 
 import java.util.EnumSet;
 
+import appeng.helpers.Splotch;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
@@ -12,7 +13,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
-import appeng.helpers.Splot;
 import appeng.tile.misc.TilePaint;
 
 public class RenderBlockPaint extends BaseBlockRender
@@ -42,9 +42,9 @@ public class RenderBlockPaint extends BaseBlockRender
 			Tessellator tess = Tessellator.instance;
 
 			int lumen = 14 << 20 | 14 << 4;
-			int worldb = imb.getMixedBrightnessForBlock( world, x, y, z );
+			int brightness = imb.getMixedBrightnessForBlock( world, x, y, z );
 
-			double offoff = 0.001;
+			double offsetConstant = 0.001;
 
 			EnumSet<ForgeDirection> validSides = EnumSet.noneOf( ForgeDirection.class );
 
@@ -54,7 +54,7 @@ public class RenderBlockPaint extends BaseBlockRender
 					validSides.add( side );
 			}
 
-			for (Splot s : tp.getDots())
+			for (Splotch s : tp.getDots())
 			{
 				if ( !validSides.contains( s.side ) )
 					continue;
@@ -67,11 +67,11 @@ public class RenderBlockPaint extends BaseBlockRender
 				else
 				{
 					tess.setColorOpaque_I( s.color.mediumVariant );
-					tess.setBrightness( worldb );
+					tess.setBrightness( brightness );
 				}
 
-				double offset = offoff;
-				offoff += 0.001;
+				double offset = offsetConstant;
+				offsetConstant += 0.001;
 
 				double H = 0.1;
 

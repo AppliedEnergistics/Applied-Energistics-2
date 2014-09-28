@@ -15,8 +15,8 @@ import appeng.transformer.annotations.integration.Method;
 public class IC2 extends AERootPoweredItem implements IElectricItemManager, ISpecialElectricItem
 {
 
-	public IC2(Class c, String subname) {
-		super( c, subname );
+	public IC2(Class c, String subName) {
+		super( c, subName );
 	}
 
 	@Override

@@ -31,7 +31,7 @@ public class BlockCellWorkbench extends AEBaseBlock
 		if ( tg != null )
 		{
 			if ( Platform.isServer() )
-				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_CELLWORKBENCH );
+				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_CELL_WORKBENCH );
 			return true;
 		}
 		return false;

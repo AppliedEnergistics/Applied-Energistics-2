@@ -13,17 +13,17 @@ import appeng.util.Platform;
 public class ContainerCondenser extends AEBaseContainer
 {
 
-	TileCondenser myte;
+	TileCondenser condenser;
 
-	public ContainerCondenser(InventoryPlayer ip, TileCondenser te) {
-		super( ip, te, null );
-		myte = te;
+	public ContainerCondenser(InventoryPlayer ip, TileCondenser condenser) {
+		super( ip, condenser, null );
+		this.condenser = condenser;
 
-		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.TRASH, te, 0, 51, 52, ip ) );
-		addSlotToContainer( new SlotOutput( te, 1, 105, 52, -1 ) );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_COMPONENT, te.getInternalInventory(), 2, 101, 26, ip )).setStackLimit( 1 ) );
+		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.TRASH, condenser, 0, 51, 52, ip ) );
+		addSlotToContainer( new SlotOutput( condenser, 1, 105, 52, -1 ) );
+		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_COMPONENT, condenser.getInternalInventory(), 2, 101, 26, ip )).setStackLimit( 1 ) );
 
-		bindPlayerInventory( ip, 0, 197 - /* height of playerinventory */82 );
+		bindPlayerInventory( ip, 0, 197 - /* height of player inventory */82 );
 	}
 
 	@Override
@@ -31,13 +31,13 @@ public class ContainerCondenser extends AEBaseContainer
 	{
 		if ( Platform.isServer() )
 		{
-			double maxStorage = this.myte.getStorage();
-			double requiredEnergy = this.myte.getRequiredPower();
+			double maxStorage = this.condenser.getStorage();
+			double requiredEnergy = this.condenser.getRequiredPower();
 			int maxDisplay = requiredEnergy == 0 ? (int) maxStorage : (int) Math.min( requiredEnergy, maxStorage );
 
 			this.requiredEnergy = (int) maxDisplay;
-			this.storedPower = (int) this.myte.storedPower;
-			this.output = (CondenserOutput) this.myte.getConfigManager().getSetting( Settings.CONDENSER_OUTPUT );
+			this.storedPower = (int) this.condenser.storedPower;
+			this.output = (CondenserOutput) this.condenser.getConfigManager().getSetting( Settings.CONDENSER_OUTPUT );
 		}
 
 		super.detectAndSendChanges();

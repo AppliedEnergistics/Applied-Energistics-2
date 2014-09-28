@@ -19,7 +19,7 @@ public class NetworkEventBus
 
 		private static final long serialVersionUID = -3079021487019171205L;
 
-	};
+	}
 
 	class EventMethod
 	{
@@ -52,7 +52,7 @@ public class NetworkEventBus
 			if ( e.isCanceled() )
 				throw new NetworkEventDone();
 		}
-	};
+	}
 
 	class MENetworkEventInfo
 	{
@@ -69,7 +69,7 @@ public class NetworkEventBus
 			for (EventMethod em : methods)
 				em.invoke( obj, e );
 		}
-	};
+	}
 
 	private static Set<Class> readClasses = new HashSet();
 	private static Hashtable<Class<? extends MENetworkEvent>, Hashtable<Class, MENetworkEventInfo>> events = new Hashtable();

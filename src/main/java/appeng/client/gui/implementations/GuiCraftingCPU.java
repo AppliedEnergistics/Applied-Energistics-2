@@ -223,18 +223,18 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 		int gx = (width - xSize) / 2;
 		int gy = (height - ySize) / 2;
-		int yoff = 23;
+		int offY = 23;
 
 		tooltip = -1;
 
 		for (int z = 0; z <= 4 * 5; z++)
 		{
 			int minX = gx + 9 + x * 67;
-			int minY = gy + 22 + y * yoff;
+			int minY = gy + 22 + y * offY;
 
 			if ( minX < mouse_x && minX + 67 > mouse_x )
 			{
-				if ( minY < mouse_y && minY + yoff - 2 > mouse_y )
+				if ( minY < mouse_y && minY + offY - 2 > mouse_y )
 				{
 					tooltip = z;
 					break;

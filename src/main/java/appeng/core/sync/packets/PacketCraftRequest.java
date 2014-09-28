@@ -41,10 +41,10 @@ public class PacketCraftRequest extends AppEngPacket
 		if ( player.openContainer instanceof ContainerCraftAmount )
 		{
 			ContainerCraftAmount cca = (ContainerCraftAmount) player.openContainer;
-			Object targ = cca.getTarget();
-			if ( targ instanceof IGridHost )
+			Object target = cca.getTarget();
+			if ( target instanceof IGridHost )
 			{
-				IGridHost gh = (IGridHost) targ;
+				IGridHost gh = (IGridHost) target;
 				IGridNode gn = gh.getGridNode( ForgeDirection.UNKNOWN );
 				if ( gn == null )
 					return;

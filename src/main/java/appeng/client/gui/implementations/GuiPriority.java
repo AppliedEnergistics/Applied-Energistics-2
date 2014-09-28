@@ -73,7 +73,7 @@ public class GuiPriority extends AEBaseGui
 		if ( target instanceof PartFormationPlane )
 		{
 			myIcon = AEApi.instance().parts().partFormationPlane.stack( 1 );
-			OriginalGui = GuiBridge.GUI_FPLANE;
+			OriginalGui = GuiBridge.GUI_FORMATION_PLANE;
 		}
 
 		if ( target instanceof TileDrive )

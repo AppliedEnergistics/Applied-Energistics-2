@@ -62,7 +62,7 @@ final public class EntityChargedQuartz extends EntityItem
 		}
 		else
 			transformTime = 0;
-	};
+	}
 
 	public boolean transform()
 	{

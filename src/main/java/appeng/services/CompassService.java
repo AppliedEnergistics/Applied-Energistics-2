@@ -50,7 +50,7 @@ public class CompassService implements ThreadFactory
 				cleanUp();
 		}
 
-	};
+	}
 
 	private class CMDirectionRequest implements Runnable
 	{
@@ -89,61 +89,61 @@ public class CompassService implements ThreadFactory
 			// spiral outward...
 			for (int offset = 1; offset < maxRange; offset++)
 			{
-				int minx = cx - offset;
-				int minz = cz - offset;
-				int maxx = cx + offset;
-				int maxz = cz + offset;
+				int minX = cx - offset;
+				int minZ = cz - offset;
+				int maxX = cx + offset;
+				int maxZ = cz + offset;
 
 				int closest = Integer.MAX_VALUE;
 				int chosen_x = cx;
 				int chosen_z = cz;
 
-				for (int z = minz; z <= maxz; z++)
+				for (int z = minZ; z <= maxZ; z++)
 				{
-					if ( cr.hasBeacon( minx, z ) )
+					if ( cr.hasBeacon( minX, z ) )
 					{
-						int closeness = dist( cx, cz, minx, z );
+						int closeness = dist( cx, cz, minX, z );
 						if ( closeness < closest )
 						{
 							closest = closeness;
-							chosen_x = minx;
+							chosen_x = minX;
 							chosen_z = z;
 						}
 					}
 
-					if ( cr.hasBeacon( maxx, z ) )
+					if ( cr.hasBeacon( maxX, z ) )
 					{
-						int closeness = dist( cx, cz, maxx, z );
+						int closeness = dist( cx, cz, maxX, z );
 						if ( closeness < closest )
 						{
 							closest = closeness;
-							chosen_x = maxx;
+							chosen_x = maxX;
 							chosen_z = z;
 						}
 					}
 				}
 
-				for (int x = minx + 1; x < maxx; x++)
+				for (int x = minX + 1; x < maxX; x++)
 				{
-					if ( cr.hasBeacon( x, minz ) )
+					if ( cr.hasBeacon( x, minZ ) )
 					{
-						int closeness = dist( cx, cz, x, minz );
+						int closeness = dist( cx, cz, x, minZ );
 						if ( closeness < closest )
 						{
 							closest = closeness;
 							chosen_x = x;
-							chosen_z = minz;
+							chosen_z = minZ;
 						}
 					}
 
-					if ( cr.hasBeacon( x, maxz ) )
+					if ( cr.hasBeacon( x, maxZ ) )
 					{
-						int closeness = dist( cx, cz, x, maxz );
+						int closeness = dist( cx, cz, x, maxZ );
 						if ( closeness < closest )
 						{
 							closest = closeness;
 							chosen_x = x;
-							chosen_z = maxz;
+							chosen_z = maxZ;
 						}
 					}
 				}
@@ -165,7 +165,7 @@ public class CompassService implements ThreadFactory
 			if ( jobSize() < 2 )
 				cleanUp();
 		}
-	};
+	}
 
 	public Future<?> getCompassDirection(DimensionalCoord coord, int maxRange, ICompassCallback cc)
 	{

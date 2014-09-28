@@ -156,10 +156,10 @@ public class AppEng
 		AELog.info( "PostInit" );
 
 		Registration.instance.PostInit( event );
-		IntegrationRegistry.instance.postinit();
+		IntegrationRegistry.instance.postInit();
 		FMLCommonHandler.instance().registerCrashCallable( new CrashEnhancement( CrashInfo.INTEGRATION ) );
 
-		CommonHelper.proxy.postinit();
+		CommonHelper.proxy.postInit();
 		AEConfig.instance.save();
 
 		NetworkRegistry.INSTANCE.registerGuiHandler( this, GuiBridge.GUI_Handler );

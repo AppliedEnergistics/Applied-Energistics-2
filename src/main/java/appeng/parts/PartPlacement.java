@@ -113,7 +113,7 @@ public class PartPlacement
 	public enum PlaceType
 	{
 		PLACE_ITEM, INTERACT_FIRST_PASS, INTERACT_SECOND_PASS
-	};
+	}
 
 	public static boolean place(ItemStack held, int x, int y, int z, int face, EntityPlayer player, World world, PlaceType pass, int depth)
 	{

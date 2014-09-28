@@ -3,7 +3,7 @@ package appeng.integration;
 public enum IntegrationStage
 {
 
-	PREINIT, INIT, POSTINIT,
+	PRE_INIT, INIT, POST_INIT,
 
 	FAILED, READY
 

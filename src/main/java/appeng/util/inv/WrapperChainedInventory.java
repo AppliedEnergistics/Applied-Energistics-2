@@ -19,19 +19,19 @@ public class WrapperChainedInventory implements IInventory
 		int offset;
 		int size;
 		IInventory i;
-	};
+	}
 
 	int fullSize = 0;
 
 	private List<IInventory> l;
 	private HashMap<Integer, InvOffset> offsets;
 
-	public WrapperChainedInventory(IInventory... ilist) {
-		setInventory( ilist );
+	public WrapperChainedInventory(IInventory... inventories) {
+		setInventory( inventories );
 	}
 
-	public WrapperChainedInventory(List<IInventory> ilist) {
-		setInventory( ilist );
+	public WrapperChainedInventory(List<IInventory> inventories) {
+		setInventory( inventories );
 	}
 
 	public void cycleOrder()

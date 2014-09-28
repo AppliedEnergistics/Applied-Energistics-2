@@ -28,7 +28,7 @@ public class RegistryContainer implements IRegistryContainer
 	private P2PTunnelRegistry P2PRegistry = new P2PTunnelRegistry();
 	private MovableTileRegistry MovableReg = new MovableTileRegistry();
 	private MatterCannonAmmoRegistry matterCannonReg = new MatterCannonAmmoRegistry();
-	private PlayerRegistry playerreg = new PlayerRegistry();
+	private PlayerRegistry playerRegistry = new PlayerRegistry();
 	private IRecipeHandlerRegistry recipeReg = new RecipeHandlerRegistry();
 
 	@Override
@@ -94,7 +94,7 @@ public class RegistryContainer implements IRegistryContainer
 	@Override
 	public IPlayerRegistry players()
 	{
-		return playerreg;
+		return playerRegistry;
 	}
 
 	@Override

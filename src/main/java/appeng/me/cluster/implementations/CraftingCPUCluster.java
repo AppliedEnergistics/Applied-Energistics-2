@@ -67,7 +67,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 		long value;
 
-	};
+	}
 
 	/**
 	 * crafting job info
@@ -118,9 +118,9 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		while (i.hasNext())
 		{
 			Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object> o = i.next();
-			IMEMonitorHandlerReceiver<IAEItemStack> recv = o.getKey();
-			if ( recv.isValid( o.getValue() ) )
-				recv.postChange( null, single, src );
+			IMEMonitorHandlerReceiver<IAEItemStack> receiver = o.getKey();
+			if ( receiver.isValid( o.getValue() ) )
+				receiver.postChange( null, single, src );
 			else
 				i.remove();
 		}
@@ -552,21 +552,21 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		{
 			do
 			{
-				didsomething = false;
+				somethingChanged = false;
 				executeCrafting( eg, cc );
 			}
-			while (didsomething && remainingOperations > 0);
+			while (somethingChanged && remainingOperations > 0);
 		}
 		usedOps[2] = usedOps[1];
 		usedOps[1] = usedOps[0];
 		usedOps[0] = started - remainingOperations;
 
-		if ( remainingOperations > 0 && didsomething == false )
+		if ( remainingOperations > 0 && somethingChanged == false )
 			waiting = true;
 	}
 
 	private int remainingOperations;
-	private boolean didsomething;
+	private boolean somethingChanged;
 
 	private void executeCrafting(IEnergyGrid eg, CraftingGridCache cc)
 	{
@@ -677,7 +677,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 						if ( m.pushPattern( details, ic ) )
 						{
-							didsomething = true;
+							somethingChanged = true;
 							remainingOperations--;
 
 							for (IAEItemStack out : details.getCondensedOutputs())

@@ -46,7 +46,7 @@ public class ItemWatcher implements IStackWatcher
 			interestIterator.remove();
 		}
 
-	};
+	}
 
 	GridStorageCache gsc;
 	IStackWatcherHost myObject;

@@ -41,7 +41,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 
 		@SideOnly(Side.CLIENT)
 		IIcon ico;
-	};
+	}
 
 	HashMap<Integer, PartTypeIst> dmgToPart = new HashMap();
 
@@ -142,10 +142,10 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 	@Override
 	public String getUnlocalizedName(ItemStack is)
 	{
-		return "item.appliedenergistics2." + getname( is );
+		return "item.appliedenergistics2." + getName( is );
 	}
 
-	public String getname(ItemStack is)
+	public String getName(ItemStack is)
 	{
 		return AEFeatureHandler.getName( ItemMultiPart.class, getTypeByStack( is ).name() );
 	}
@@ -173,7 +173,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 	{
 		for (Entry<Integer, PartTypeIst> part : dmgToPart.entrySet())
 		{
-			String tex = "appliedenergistics2:" + getname( new ItemStack( this, 1, part.getKey() ) );
+			String tex = "appliedenergistics2:" + getName( new ItemStack( this, 1, part.getKey() ) );
 			part.getValue().ico = par1IconRegister.registerIcon( tex );
 		}
 	}
@@ -266,7 +266,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		return null;
 	}
 
-	public ItemStack getStackFromTypeAndVarient(PartType mt, int variant)
+	public ItemStack getStackFromTypeAndVariant(PartType mt, int variant)
 	{
 		return new ItemStack( this, 1, mt.baseDamage + variant );
 	}

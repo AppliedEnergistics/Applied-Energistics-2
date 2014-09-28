@@ -13,7 +13,7 @@ public class CompassManager
 
 	public static CompassManager instance = new CompassManager();
 
-	class CompassReq
+	class CompassRequest
 	{
 
 		final int hash;
@@ -21,7 +21,7 @@ public class CompassManager
 		final long attunement;
 		final int cx, cdy, cz;
 
-		public CompassReq(long attunement, int x, int y, int z) {
+		public CompassRequest(long attunement, int x, int y, int z) {
 			this.attunement = attunement;
 			cx = x >> 4;
 			cdy = y >> 5;
@@ -38,25 +38,25 @@ public class CompassManager
 		@Override
 		public boolean equals(Object obj)
 		{
-			CompassReq b = (CompassReq) obj;
+			CompassRequest b = (CompassRequest) obj;
 			return attunement == b.attunement && cx == b.cx && cdy == b.cdy && cz == b.cz;
 		}
 
 	}
 
-	HashMap<CompassReq, CompassResult> reqs = new HashMap();
+	HashMap<CompassRequest, CompassResult> requests = new HashMap();
 
-	public void postResult(long attunement, int x, int y, int z, CompassResult res)
+	public void postResult(long attunement, int x, int y, int z, CompassResult result)
 	{
-		CompassReq r = new CompassReq( attunement, x, y, z );
-		reqs.put( r, res );
+		CompassRequest r = new CompassRequest( attunement, x, y, z );
+		requests.put( r, result );
 	}
 
 	public CompassResult getCompassDirection(long attunement, int x, int y, int z)
 	{
 		long now = System.currentTimeMillis();
 
-		Iterator<CompassResult> i = reqs.values().iterator();
+		Iterator<CompassResult> i = requests.values().iterator();
 		while (i.hasNext())
 		{
 			CompassResult res = i.next();
@@ -65,13 +65,13 @@ public class CompassManager
 				i.remove();
 		}
 
-		CompassReq r = new CompassReq( attunement, x, y, z );
-		CompassResult res = reqs.get( r );
+		CompassRequest r = new CompassRequest( attunement, x, y, z );
+		CompassResult res = requests.get( r );
 
 		if ( res == null )
 		{
 			res = new CompassResult( false, true, 0 );
-			reqs.put( r, res );
+			requests.put( r, res );
 			requestUpdate( r );
 		}
 		else if ( now - res.time > 1000 * 3 )
@@ -86,7 +86,7 @@ public class CompassManager
 		return res;
 	}
 
-	private void requestUpdate(CompassReq r)
+	private void requestUpdate(CompassRequest r)
 	{
 
 		try

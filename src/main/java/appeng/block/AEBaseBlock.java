@@ -60,8 +60,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class AEBaseBlock extends BlockContainer implements IAEFeature
 {
 
-	private String FeatureFullname;
-	private String FeatureSubname;
+	private String featureFullName;
+	private String featureSubName;
 	private AEFeatureHandler feature;
 
 	private Class<? extends TileEntity> tileEntityType = null;
@@ -79,7 +79,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@Override
 	public String toString()
 	{
-		return FeatureFullname;
+		return featureFullName;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -178,14 +178,14 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	protected void setTileEntity(Class<? extends TileEntity> c)
 	{
 		AEBaseTile.registerTileItem( c, new ItemStackSrc( this, 0 ) );
-		GameRegistry.registerTileEntity( tileEntityType = c, FeatureFullname );
+		GameRegistry.registerTileEntity( tileEntityType = c, featureFullName );
 		isInventory = IInventory.class.isAssignableFrom( c );
 		setTileProvider( hasBlockTileEntity() );
 	}
 
 	protected void setFeature(EnumSet<AEFeature> f)
 	{
-		feature = new AEFeatureHandler( f, this, FeatureSubname );
+		feature = new AEFeatureHandler( f, this, featureSubName );
 	}
 
 	protected AEBaseBlock(Class<?> c, Material mat) {
@@ -203,7 +203,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		ReflectionHelper.setPrivateValue( Block.class, this, b, "isTileProvider" );
 	}
 
-	protected AEBaseBlock(Class<?> c, Material mat, String subname) {
+	protected AEBaseBlock(Class<?> c, Material mat, String subName) {
 		super( mat );
 
 		if ( mat == AEGlassMaterial.instance )
@@ -215,8 +215,8 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		else
 			setStepSound( Block.soundTypeMetal );
 
-		FeatureFullname = AEFeatureHandler.getName( c, subname );
-		FeatureSubname = subname;
+		featureFullName = AEFeatureHandler.getName( c, subName );
+		featureSubName = subName;
 	}
 
 	@Override
@@ -689,7 +689,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 				if ( is.getItem() instanceof IMemoryCard && !(this instanceof BlockCableBus) )
 				{
-					IMemoryCard memc = (IMemoryCard) is.getItem();
+					IMemoryCard memoryCard = (IMemoryCard) is.getItem();
 					if ( player.isSneaking() )
 					{
 						AEBaseTile t = getTileEntity( w, x, y, z );
@@ -699,24 +699,24 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 							NBTTagCompound data = t.downloadSettings( SettingsFrom.MEMORY_CARD );
 							if ( data != null )
 							{
-								memc.setMemoryCardContents( is, name, data );
-								memc.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
+								memoryCard.setMemoryCardContents( is, name, data );
+								memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
 								return true;
 							}
 						}
 					}
 					else
 					{
-						String name = memc.getSettingsName( is );
-						NBTTagCompound data = memc.getData( is );
+						String name = memoryCard.getSettingsName( is );
+						NBTTagCompound data = memoryCard.getData( is );
 						if ( getUnlocalizedName().equals( name ) )
 						{
 							AEBaseTile t = getTileEntity( w, x, y, z );
 							t.uploadSettings( SettingsFrom.MEMORY_CARD, data );
-							memc.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
+							memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
 						}
 						else
-							memc.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
+							memoryCard.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
 						return false;
 					}
 				}

@@ -127,9 +127,9 @@ public class ASMIntegration implements IClassTransformer
 		return changed;
 	}
 
-	private boolean hasAnnotation(AnnotationNode ann, Class anno)
+	private boolean hasAnnotation(AnnotationNode ann, Class annotation)
 	{
-		return ann.desc.equals( Type.getDescriptor( anno ) );
+		return ann.desc.equals( Type.getDescriptor( annotation ) );
 	}
 
 	private boolean stripMethod(ClassNode classNode, MethodNode mn, Iterator<MethodNode> i, Class class1, AnnotationNode an)

@@ -9,8 +9,8 @@ import cofh.api.energy.IEnergyContainerItem;
 public class RedstoneFlux extends IC2 implements IEnergyContainerItem
 {
 
-	public RedstoneFlux(Class c, String subname) {
-		super( c, subname );
+	public RedstoneFlux(Class c, String subName) {
+		super( c, subName );
 	}
 
 	@Override

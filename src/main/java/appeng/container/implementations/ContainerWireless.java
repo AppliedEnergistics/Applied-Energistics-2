@@ -10,7 +10,7 @@ import appeng.tile.networking.TileWireless;
 public class ContainerWireless extends AEBaseContainer
 {
 
-	TileWireless myte;
+	TileWireless wirelessTerminal;
 
 	@GuiSync(1)
 	public long range = 0;
@@ -22,11 +22,11 @@ public class ContainerWireless extends AEBaseContainer
 
 	public ContainerWireless(InventoryPlayer ip, TileWireless te) {
 		super( ip, te, null );
-		myte = te;
+		wirelessTerminal = te;
 
-		addSlotToContainer( boosterSlot = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.RANGE_BOOSTER, myte, 0, 80, 47, invPlayer ) );
+		addSlotToContainer( boosterSlot = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.RANGE_BOOSTER, wirelessTerminal, 0, 80, 47, invPlayer ) );
 
-		bindPlayerInventory( ip, 0, 166 - /* height of playerinventory */82 );
+		bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
 	}
 
 	@Override

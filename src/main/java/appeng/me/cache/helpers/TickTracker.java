@@ -73,4 +73,4 @@ public class TickTracker implements Comparable<TickTracker>
 		if ( dc != null )
 			crashreportcategory.addCrashSection( "Location", dc );
 	}
-};
+}

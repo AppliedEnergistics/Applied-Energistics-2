@@ -46,7 +46,7 @@ public class EnergyWatcher implements IEnergyWatcher
 			interestIterator.remove();
 		}
 
-	};
+	}
 
 	EnergyGridCache gsc;
 	IEnergyWatcherHost myObject;

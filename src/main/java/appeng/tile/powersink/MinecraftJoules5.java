@@ -1,12 +1,12 @@
 package appeng.tile.powersink;
 
+import appeng.integration.abstraction.helpers.BaseMJPerdition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.PowerUnits;
 import appeng.core.AppEng;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IMJ5;
-import appeng.integration.abstraction.helpers.BaseMJperdition;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.transformer.annotations.integration.Interface;
@@ -20,7 +20,7 @@ import buildcraft.api.power.PowerHandler.PowerReceiver;
 public abstract class MinecraftJoules5 extends AERootPoweredTile implements IPowerReceptor
 {
 
-	BaseMJperdition bcPowerWrapper;
+	BaseMJPerdition bcPowerWrapper;
 
 	@Method(iname = "MJ5")
 	@TileEvent(TileEventType.TICK)
@@ -40,7 +40,7 @@ public abstract class MinecraftJoules5 extends AERootPoweredTile implements IPow
 					IMJ5 mjIntegration = (IMJ5) AppEng.instance.getIntegration( IntegrationType.MJ5 );
 					if ( mjIntegration != null )
 					{
-						bcPowerWrapper = (BaseMJperdition) mjIntegration.createPerdition( this );
+						bcPowerWrapper = (BaseMJPerdition) mjIntegration.createPerdition( this );
 						if ( bcPowerWrapper != null )
 							bcPowerWrapper.configure( 1, 380, 1.0f / 5.0f, 1000 );
 					}

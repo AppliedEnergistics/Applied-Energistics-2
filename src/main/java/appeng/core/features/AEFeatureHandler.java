@@ -21,32 +21,32 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class AEFeatureHandler implements AEItemDefinition
 {
 
-	private final EnumSet<AEFeature> myFeatures;
+	private final EnumSet<AEFeature> features;
 
-	private final String subname;
-	private IAEFeature obj;
+	private final String subName;
+	private IAEFeature feature;
 
 	private Item ItemData;
 	private Block BlockData;
 
-	public AEFeatureHandler(EnumSet<AEFeature> featureSet, IAEFeature _obj, String _subname) {
-		myFeatures = featureSet;
-		obj = _obj;
-		subname = _subname;
+	public AEFeatureHandler(EnumSet<AEFeature> features, IAEFeature feature, String subName) {
+		this.features = features;
+		this.feature = feature;
+		this.subName = subName;
 	}
 
 	public void register()
 	{
 		if ( isFeatureAvailable() )
 		{
-			if ( obj instanceof Item )
-				initItem( (Item) obj );
-			if ( obj instanceof Block )
-				initBlock( (Block) obj );
+			if ( feature instanceof Item )
+				initItem( (Item) feature );
+			if ( feature instanceof Block )
+				initBlock( (Block) feature );
 		}
 	}
 
-	public static String getName(Class o, String subname)
+	public static String getName(Class o, String subName)
 	{
 		String name = o.getSimpleName();
 
@@ -55,19 +55,19 @@ public class AEFeatureHandler implements AEItemDefinition
 		else if ( name.startsWith( "ItemMultiMaterial" ) )
 			name = name.replace( "ItemMultiMaterial", "ItemMaterial" );
 
-		if ( subname != null )
+		if ( subName != null )
 		{
 			// simple hack to allow me to do get nice names for these without
 			// mode code outside of AEBaseItem
-			if ( subname.startsWith( "P2PTunnel" ) )
+			if ( subName.startsWith( "P2PTunnel" ) )
 				return "ItemPart.P2PTunnel";
 
-			if ( subname.equals( "CertusQuartzTools" ) )
+			if ( subName.equals( "CertusQuartzTools" ) )
 				return name.replace( "Quartz", "CertusQuartz" );
-			if ( subname.equals( "NetherQuartzTools" ) )
+			if ( subName.equals( "NetherQuartzTools" ) )
 				return name.replace( "Quartz", "NetherQuartz" );
 
-			name += "." + subname;
+			name += "." + subName;
 		}
 
 		return name;
@@ -77,7 +77,7 @@ public class AEFeatureHandler implements AEItemDefinition
 	{
 		ItemData = i;
 
-		String name = getName( i.getClass(), subname );
+		String name = getName( i.getClass(), subName );
 		i.setTextureName( "appliedenergistics2:" + name );
 		i.setUnlocalizedName( /* "item." */"appliedenergistics2." + name );
 
@@ -98,7 +98,7 @@ public class AEFeatureHandler implements AEItemDefinition
 	{
 		BlockData = b;
 
-		String name = getName( b.getClass(), subname );
+		String name = getName( b.getClass(), subName );
 		b.setCreativeTab( CreativeTab.instance );
 		b.setBlockName( /* "tile." */"appliedenergistics2." + name );
 		b.setBlockTextureName( "appliedenergistics2:" + name );
@@ -118,14 +118,14 @@ public class AEFeatureHandler implements AEItemDefinition
 
 	public EnumSet<AEFeature> getFeatures()
 	{
-		return myFeatures.clone();
+		return features.clone();
 	}
 
 	public boolean isFeatureAvailable()
 	{
 		boolean enabled = true;
 
-		for (AEFeature f : myFeatures)
+		for (AEFeature f : features)
 			enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
 
 		return enabled;

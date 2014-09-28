@@ -25,7 +25,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 {
 
 	final ItemStack patternItem;
-	private IAEItemStack aepattern;
+	private IAEItemStack pattern;
 
 	final InventoryCrafting crafting = new InventoryCrafting( new ContainerNull(), 3, 3 );
 	final InventoryCrafting testFrame = new InventoryCrafting( new ContainerNull(), 3, 3 );
@@ -72,12 +72,12 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			return b.slot == slot && b.ref == ref;
 		}
 
-	};
+	}
 
 	enum TestStatus
 	{
 		ACCEPT, DECLINE, TEST
-	};
+	}
 
 	HashSet<TestLookup> failCache = new HashSet();
 	HashSet<TestLookup> passCache = new HashSet();
@@ -120,7 +120,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		NBTTagList outTag = encodedValue.getTagList( "out", 10 );
 		isCrafting = encodedValue.getBoolean( "crafting" );
 		patternItem = is;
-		aepattern = AEItemStack.create( is );
+		pattern = AEItemStack.create( is );
 
 		List<IAEItemStack> in = new ArrayList();
 		List<IAEItemStack> out = new ArrayList();
@@ -331,13 +331,13 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	@Override
 	public int hashCode()
 	{
-		return aepattern.hashCode();
+		return pattern.hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
-		return aepattern.equals( ((PatternHelper) obj).aepattern );
+		return pattern.equals( ((PatternHelper) obj).pattern );
 	}
 
 	@Override

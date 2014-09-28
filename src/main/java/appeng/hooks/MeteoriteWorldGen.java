@@ -33,7 +33,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 				distance = Double.MAX_VALUE;
 		}
 
-	};
+	}
 
 	@Override
 	public void generate(Random r, int chunkX, int chunkZ, World w, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)

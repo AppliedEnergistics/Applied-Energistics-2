@@ -22,7 +22,7 @@ public class GenericInterestManager<T>
 			stack = myStack;
 			iw = watcher;
 		}
-	};
+	}
 
 	private final SetMultimap<IAEStack, T> container;
 	private LinkedList<SavedTransactions> transactions = null;
