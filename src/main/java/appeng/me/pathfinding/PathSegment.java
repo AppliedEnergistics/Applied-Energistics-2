@@ -25,7 +25,7 @@ public class PathSegment
 
 	PathGridCache pgc;
 
-	public PathSegment(PathGridCache myPGC, List open, Set semiOpen, Set closed)
+	public PathSegment(PathGridCache myPGC, List<IPathItem> open, Set<IPathItem> semiOpen, Set<IPathItem> closed)
 	{
 		this.open = open;
 		this.semiOpen = semiOpen;
@@ -41,7 +41,7 @@ public class PathSegment
 	public boolean step()
 	{
 		List<IPathItem> oldOpen = open;
-		open = new LinkedList();
+		open = new LinkedList<IPathItem>();
 
 		for (IPathItem i : oldOpen)
 		{

@@ -18,7 +18,7 @@ import appeng.api.storage.data.IItemList;
 public final class ItemList<StackType extends IAEStack> implements IItemList<StackType>
 {
 
-	private final TreeMap<StackType, StackType> records = new TreeMap();
+	private final TreeMap<StackType, StackType> records = new TreeMap<StackType, StackType>();
 	private final Class<? extends IAEStack> clz;
 
 	// private int currentPriority = Integer.MIN_VALUE;
@@ -154,9 +154,9 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	 */
 
 	@Override
-	synchronized public Iterator iterator()
+	synchronized public Iterator<StackType> iterator()
 	{
-		return new MeaningfulIterator( records.values().iterator() );
+		return new MeaningfulIterator<StackType>( records.values().iterator() );
 	}
 
 	@Override
@@ -197,7 +197,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	public Collection<StackType> findFuzzy(StackType filter, FuzzyMode fuzzy)
 	{
 		if ( checkStackType( filter ) )
-			return new ArrayList();
+			return new ArrayList<StackType>();
 
 		if ( filter instanceof IAEFluidStack )
 			return filter.equals( this ) ? (List<StackType>) Arrays.asList( new IAEFluidStack[] { (IAEFluidStack) filter } ) : (List<StackType>) Arrays
@@ -214,7 +214,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 			}
 			else
 			{
-				Collection<StackType> output = new LinkedList();
+				Collection<StackType> output = new LinkedList<StackType>();
 
 				for (IAEItemStack is : or.getAEEquivalents())
 					output.addAll( findFuzzyDamage( (AEItemStack) is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE ) );

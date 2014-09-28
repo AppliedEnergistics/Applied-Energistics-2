@@ -42,7 +42,7 @@ public class ServerHelper extends CommonHelper
 				return server.getConfigurationManager().playerEntityList;
 		}
 
-		return new ArrayList();
+		return new ArrayList<EntityPlayer>();
 	}
 
 	@Override

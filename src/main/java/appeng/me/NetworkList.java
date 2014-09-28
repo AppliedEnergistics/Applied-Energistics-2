@@ -8,7 +8,7 @@ import java.util.List;
 public class NetworkList implements Collection<Grid>
 {
 
-	private List<Grid> networks = new LinkedList();
+	private List<Grid> networks = new LinkedList<Grid>();
 
 	@Override
 	public boolean add(Grid e)

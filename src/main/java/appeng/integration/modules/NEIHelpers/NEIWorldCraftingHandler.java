@@ -30,8 +30,8 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 {
 
 	HashMap<AEItemDefinition, String> details = new HashMap<AEItemDefinition, String>();
-	List<AEItemDefinition> offsets = new LinkedList();
-	List<PositionedStack> outputs = new LinkedList();
+	List<AEItemDefinition> offsets = new LinkedList<AEItemDefinition>();
+	List<PositionedStack> outputs = new LinkedList<PositionedStack>();
 
 	ItemStack target;
 

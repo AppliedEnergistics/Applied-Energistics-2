@@ -317,7 +317,7 @@ public class WorldSettings extends Configuration
 		save();
 	}
 
-	private WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>> loadedStorage = new WeakHashMap();
+	private WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>> loadedStorage = new WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>>();
 
 	public WorldCoord getStoredSize(int dim)
 	{

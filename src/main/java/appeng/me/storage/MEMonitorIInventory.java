@@ -52,7 +52,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 
 	final TreeMap<Integer, CachedItemStack> memory;
 	final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
-	final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap();
+	final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object>();
 
 	public BaseActionSource mySource;
 	public StorageFilter mode = StorageFilter.EXTRACTABLE_ONLY;
@@ -72,7 +72,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 	public MEMonitorIInventory(InventoryAdaptor adaptor)
 	{
 		this.adaptor = adaptor;
-		memory = new TreeMap();
+		memory = new TreeMap<Integer, CachedItemStack>();
 	}
 
 	@Override

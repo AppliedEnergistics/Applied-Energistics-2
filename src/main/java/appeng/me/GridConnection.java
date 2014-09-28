@@ -156,7 +156,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	@Override
 	public IReadOnlyCollection<IPathItem> getPossibleOptions()
 	{
-		return new ReadOnlyCollection( Arrays.asList( new IPathItem[] { (IPathItem) a(), (IPathItem) b() } ) );
+		return new ReadOnlyCollection<IPathItem>( Arrays.asList( (IPathItem) a(), (IPathItem) b() ) );
 	}
 
 	@Override

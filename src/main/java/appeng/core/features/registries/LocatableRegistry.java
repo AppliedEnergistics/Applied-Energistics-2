@@ -32,7 +32,7 @@ public class LocatableRegistry implements ILocatableRegistry
 	}
 
 	public LocatableRegistry() {
-		set = new HashMap();
+		set = new HashMap<Long, ILocatable>();
 		MinecraftForge.EVENT_BUS.register( this );
 	}
 

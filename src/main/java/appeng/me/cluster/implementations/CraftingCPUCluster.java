@@ -83,7 +83,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	IItemList<IAEItemStack> waitingFor = AEApi.instance().storage().createItemList();
 
 	// instance sate
-	final private LinkedList<TileCraftingTile> tiles = new LinkedList();
+	final private LinkedList<TileCraftingTile> tiles = new LinkedList<TileCraftingTile>();
 	final private LinkedList<TileCraftingTile> storage = new LinkedList<TileCraftingTile>();
 	final private LinkedList<TileCraftingMonitorTile> status = new LinkedList<TileCraftingMonitorTile>();
 

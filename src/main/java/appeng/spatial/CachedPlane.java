@@ -159,7 +159,7 @@ public class CachedPlane
 		for (int cx = 0; cx < cx_size; cx++)
 			for (int cz = 0; cz < cz_size; cz++)
 			{
-				LinkedList<Entry<ChunkPosition, TileEntity>> rwarTiles = new LinkedList();
+				LinkedList<Entry<ChunkPosition, TileEntity>> rwarTiles = new LinkedList<Entry<ChunkPosition, TileEntity>>();
 				LinkedList<ChunkPosition> deadTiles = new LinkedList<ChunkPosition>();
 
 				Chunk c = w.getChunkFromChunkCoords( minCX + cx, minCZ + cz );

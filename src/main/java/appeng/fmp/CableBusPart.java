@@ -314,7 +314,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		{
 			if ( !(side == null || side == ForgeDirection.UNKNOWN || tile() == null) )
 			{
-				List<AxisAlignedBB> boxes = new ArrayList();
+				List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
 				IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
 				fp.getBoxes( bch, null );
 				for (AxisAlignedBB bb : boxes)
@@ -341,7 +341,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 			IPart bp = bi.createPartFromItemStack( is );
 			if ( !(side == null || side == ForgeDirection.UNKNOWN || tile() == null) )
 			{
-				List<AxisAlignedBB> boxes = new ArrayList();
+				List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
 				IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
 				bp.getBoxes( bch );
 				for (AxisAlignedBB bb : boxes)
@@ -411,7 +411,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public Iterable<Cuboid6> getCollisionBoxes()
 	{
-		LinkedList l = new LinkedList();
+		LinkedList<Cuboid6> l = new LinkedList<Cuboid6>();
 		for (AxisAlignedBB b : cb.getSelectedBoundingBoxesFromPool( false, true, null, false ))
 		{
 			l.add( new Cuboid6( b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ ) );
@@ -423,7 +423,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public Iterable<IndexedCuboid6> getSubParts()
 	{
-		LinkedList<IndexedCuboid6> l = new LinkedList();
+		LinkedList<IndexedCuboid6> l = new LinkedList<IndexedCuboid6>();
 		for (Cuboid6 c : getCollisionBoxes())
 		{
 			l.add( new IndexedCuboid6( 0, c ) );
@@ -434,7 +434,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public Iterable<Cuboid6> getOcclusionBoxes()
 	{
-		LinkedList l = new LinkedList();
+		LinkedList<Cuboid6> l = new LinkedList<Cuboid6>();
 		for (AxisAlignedBB b : cb.getSelectedBoundingBoxesFromPool( true, disableFacadeOcclusion.get() == null, null, true ))
 		{
 			l.add( new Cuboid6( b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ ) );
@@ -543,7 +543,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		ForgeDirection dir = ForgeDirection.getOrientation( side );
 		if ( cable != null && cable.isConnected( dir ) )
 		{
-			List<AxisAlignedBB> boxes = new ArrayList();
+			List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
 
 			BusCollisionHelper bch = new BusCollisionHelper( boxes, ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH, null, true );
 

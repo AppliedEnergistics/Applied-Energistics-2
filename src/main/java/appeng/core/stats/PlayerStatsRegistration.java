@@ -124,7 +124,7 @@ public class PlayerStatsRegistration
 			/**
 			 * register
 			 */
-			ArrayList<Achievement> list = new ArrayList();
+			ArrayList<Achievement> list = new ArrayList<Achievement>();
 
 			for (Achievements a : Achievements.values())
 			{

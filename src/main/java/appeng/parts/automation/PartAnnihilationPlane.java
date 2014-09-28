@@ -170,7 +170,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	}
 
 	boolean breaking = false;
-	LinkedList<IAEItemStack> Buffer = new LinkedList();
+	LinkedList<IAEItemStack> Buffer = new LinkedList<IAEItemStack>();
 	BaseActionSource mySrc = new MachineSource( this );
 
 	@Override

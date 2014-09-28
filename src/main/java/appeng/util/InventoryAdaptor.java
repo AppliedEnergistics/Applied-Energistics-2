@@ -55,7 +55,7 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 		}
 		else if ( te instanceof ArrayList )
 		{
-			return new AdaptorList( (ArrayList) te );
+			return new AdaptorList( (ArrayList<ItemStack>) te );
 		}
 		else if ( bs != null && bs.isStorageCrate( te )  )
 		{

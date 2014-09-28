@@ -169,7 +169,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			if ( details != null )
 			{
 				if ( craftingList == null )
-					craftingList = new LinkedList();
+					craftingList = new LinkedList<ICraftingPatternDetails>();
 
 				craftingList.add( details );
 			}
@@ -182,7 +182,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			return;
 
 		if ( waitingToSend == null )
-			waitingToSend = new LinkedList();
+			waitingToSend = new LinkedList<ItemStack>();
 
 		waitingToSend.add( is );
 
@@ -513,8 +513,8 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		return patterns;
 	}
 
-	MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<IAEItemStack>( new NullInventory(), StorageChannel.ITEMS );
-	MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<IAEFluidStack>( new NullInventory(), StorageChannel.FLUIDS );
+	MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<IAEItemStack>( new NullInventory<IAEItemStack>(), StorageChannel.ITEMS );
+	MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<IAEFluidStack>( new NullInventory<IAEFluidStack>(), StorageChannel.FLUIDS );
 
 	public void gridChanged()
 	{
@@ -525,8 +525,8 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		}
 		catch (GridAccessException gae)
 		{
-			items.setInternal( new NullInventory() );
-			fluids.setInternal( new NullInventory() );
+			items.setInternal( new NullInventory<IAEItemStack>() );
+			fluids.setInternal( new NullInventory<IAEFluidStack>() );
 		}
 
 		notifyNeighbors();
@@ -996,7 +996,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		craftingTracker.jobStateChange( link );
 	}
 
-	static final Set<Block> badBlocks = new HashSet();
+	static final Set<Block> badBlocks = new HashSet<Block>();
 
 	public String getTermName()
 	{

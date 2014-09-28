@@ -42,7 +42,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 		List<ISidedInventory> inventories = null;
 		List<InvSot> slots = null;
 
-		inventories = new ArrayList();
+		inventories = new ArrayList<ISidedInventory>();
 		int slotCount = 0;
 
 		for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)

@@ -106,7 +106,7 @@ public class CableRenderHelper
 			/**
 			 * snag list of boxes...
 			 */
-			List<AxisAlignedBB> boxes = new ArrayList();
+			List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
 			for (ForgeDirection s : ForgeDirection.values())
 			{
 				IPart part = cableBusContainer.getPart( s );

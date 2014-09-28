@@ -101,7 +101,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 
 		if ( Appearances == null )
 		{
-			Appearances = new HashMap();
+			Appearances = new HashMap<EnumPair, BtnAppearance>();
 			registerApp( 16 * 7 + 0, Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH, ButtonToolTips.CondenserOutput, ButtonToolTips.Trash );
 			registerApp( 16 * 7 + 1, Settings.CONDENSER_OUTPUT, CondenserOutput.MATTER_BALLS, ButtonToolTips.CondenserOutput, ButtonToolTips.MatterBalls );
 			registerApp( 16 * 7 + 2, Settings.CONDENSER_OUTPUT, CondenserOutput.SINGULARITY, ButtonToolTips.CondenserOutput, ButtonToolTips.Singularity );

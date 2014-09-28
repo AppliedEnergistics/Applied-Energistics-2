@@ -142,7 +142,7 @@ public class PartPlacement
 					MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.a, dir.b );
 					if ( mop != null )
 					{
-						List<ItemStack> is = new LinkedList();
+						List<ItemStack> is = new LinkedList<ItemStack>();
 						SelectedPart sp = selectPart( player, host, mop.hitVec.addVector( -mop.blockX, -mop.blockY, -mop.blockZ ) );
 
 						if ( sp.part != null )
