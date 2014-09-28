@@ -345,4 +345,9 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	{
 		this.priority = priority;
 	}
+
+	@Override
+	public int getPriority() {
+		return priority;
+	}
 }
