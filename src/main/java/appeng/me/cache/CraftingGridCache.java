@@ -83,8 +83,8 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	HashMap<String, CraftingLinkNexus> links = new HashMap<String, CraftingLinkNexus>();
 
 	boolean updateList = false;
-	final private SetMultimap<IAEStack, Collection<IAEStack>> interests = HashMultimap.create();
-	final public GenericInterestManager<Collection<IAEStack>> interestManager = new GenericInterestManager<Collection<IAEStack>>( interests );
+	final private SetMultimap<IAEStack, CraftingWatcher> interests = HashMultimap.create();
+	final public GenericInterestManager<CraftingWatcher> interestManager = new GenericInterestManager<CraftingWatcher>( interests );
 
 	class ActiveCpuIterator implements Iterator<ICraftingCPU>
 	{
