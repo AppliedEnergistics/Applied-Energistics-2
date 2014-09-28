@@ -39,7 +39,7 @@ public class BlockVibrationChamber extends AEBaseBlock
 			TileVibrationChamber tc = getTileEntity( w, x, y, z );
 			if ( tc != null && !player.isSneaking() )
 			{
-				Platform.openGUI( player, tc, ForgeDirection.getOrientation( side ), GuiBridge.GUI_VIBRATIONCHAMBER );
+				Platform.openGUI( player, tc, ForgeDirection.getOrientation( side ), GuiBridge.GUI_VIBRATION_CHAMBER );
 				return true;
 			}
 		}

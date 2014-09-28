@@ -96,7 +96,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 		return prop;
 	}
 
-	public double spatialPowerScaler = 1.35;
+	public double spatialPowerExponent = 1.35;
 	public double spatialPowerMultiplier = 1250.0;
 
 	public String grinderOres[] = {
@@ -117,12 +117,12 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 	public int[] priorityByStacks = new int[] { 1, 10, 100, 1000 };
 	public int[] levelByStacks = new int[] { 1, 10, 100, 1000 };
 
-	public int wireless_battery = 1600000;
-	public int manipulator_battery = 200000;
-	public int mattercannon_battery = 200000;
-	public int portablecell_battery = 20000;
-	public int colorapplicator_battery = 20000;
-	public int staff_battery = 8000;
+	public int wirelessTerminalBattery = 1600000;
+	public int entropyManipulatorBattery = 200000;
+	public int matterCannonBattery = 200000;
+	public int portableCellBattery = 20000;
+	public int colorApplicatorBattery = 20000;
+	public int chargedStaffBattery = 8000;
 
 	public boolean disableColoredCableRecipesInNEI = true;
 
@@ -257,20 +257,20 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 
 		formationPlaneEntityLimit = get( "automation", "formationPlaneEntityLimit", formationPlaneEntityLimit ).getInt( formationPlaneEntityLimit );
 
-		wireless_battery = get( "battery", "wireless", wireless_battery ).getInt( wireless_battery );
-		staff_battery = get( "battery", "staff", staff_battery ).getInt( staff_battery );
-		manipulator_battery = get( "battery", "manipulator", manipulator_battery ).getInt( manipulator_battery );
-		portablecell_battery = get( "battery", "portablecell", portablecell_battery ).getInt( portablecell_battery );
-		colorapplicator_battery = get( "battery", "colorapplicator", colorapplicator_battery ).getInt( colorapplicator_battery );
-		mattercannon_battery = get( "battery", "mattercannon", mattercannon_battery ).getInt( mattercannon_battery );
+		wirelessTerminalBattery = get( "battery", "wirelessTerminal", wirelessTerminalBattery ).getInt( wirelessTerminalBattery );
+		chargedStaffBattery = get( "battery", "chargedStaff", chargedStaffBattery ).getInt( chargedStaffBattery );
+		entropyManipulatorBattery = get( "battery", "entropyManipulator", entropyManipulatorBattery ).getInt( entropyManipulatorBattery );
+		portableCellBattery = get( "battery", "portableCell", portableCellBattery ).getInt( portableCellBattery );
+		colorApplicatorBattery = get( "battery", "colorApplicator", colorApplicatorBattery ).getInt( colorApplicatorBattery );
+		matterCannonBattery = get( "battery", "matterCannon", matterCannonBattery ).getInt( matterCannonBattery );
 
 		clientSync();
 
 		for (AEFeature feature : AEFeature.values())
 		{
-			if ( feature.isVisible() )
+			if ( feature.isVisible )
 			{
-				if ( get( "Features." + feature.getCategory(), feature.name(), feature.defaultValue() ).getBoolean( feature.defaultValue() ) )
+				if ( get( "Features." + feature.category, feature.name(), feature.defaultValue ).getBoolean( feature.defaultValue ) )
 					featureFlags.add( feature );
 			}
 			else
@@ -304,12 +304,12 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 			storageBiomeID = get( "spatialio", "storageBiomeID", storageBiomeID ).getInt( storageBiomeID );
 			storageProviderID = get( "spatialio", "storageProviderID", storageProviderID ).getInt( storageProviderID );
 			spatialPowerMultiplier = get( "spatialio", "spatialPowerMultiplier", spatialPowerMultiplier ).getDouble( spatialPowerMultiplier );
-			spatialPowerScaler = get( "spatialio", "spatialPowerScaler", spatialPowerScaler ).getDouble( spatialPowerScaler );
+			spatialPowerExponent = get( "spatialio", "spatialPowerExponent", spatialPowerExponent ).getDouble( spatialPowerExponent );
 		}
 
 		if ( isFeatureEnabled( AEFeature.CraftingCPU ) )
 		{
-			craftingCalculationTimePerTick = get( "craftingcpu", "craftingCalculationTimePerTick", craftingCalculationTimePerTick ).getInt(
+			craftingCalculationTimePerTick = get( "craftingCPU", "craftingCalculationTimePerTick", craftingCalculationTimePerTick ).getInt(
 					craftingCalculationTimePerTick );
 		}
 

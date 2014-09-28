@@ -237,16 +237,16 @@ public class RenderDrive extends BaseBlockRender
 
 				if ( stat != 0 )
 				{
-					IIcon wico = ExtraBlockTextures.White.getIcon();
-					u1 = wico.getInterpolatedU( (spin % 4 < 2) ? 1 : 6 );
-					u2 = wico.getInterpolatedU( ((spin + 1) % 4 < 2) ? 1 : 6 );
-					u3 = wico.getInterpolatedU( ((spin + 2) % 4 < 2) ? 1 : 6 );
-					u4 = wico.getInterpolatedU( ((spin + 3) % 4 < 2) ? 1 : 6 );
+					IIcon whiteIcon = ExtraBlockTextures.White.getIcon();
+					u1 = whiteIcon.getInterpolatedU( (spin % 4 < 2) ? 1 : 6 );
+					u2 = whiteIcon.getInterpolatedU( ((spin + 1) % 4 < 2) ? 1 : 6 );
+					u3 = whiteIcon.getInterpolatedU( ((spin + 2) % 4 < 2) ? 1 : 6 );
+					u4 = whiteIcon.getInterpolatedU( ((spin + 3) % 4 < 2) ? 1 : 6 );
 
-					v1 = wico.getInterpolatedV( ((spin + 1) % 4 < 2) ? 1 : 3 );
-					v2 = wico.getInterpolatedV( ((spin + 2) % 4 < 2) ? 1 : 3 );
-					v3 = wico.getInterpolatedV( ((spin + 3) % 4 < 2) ? 1 : 3 );
-					v4 = wico.getInterpolatedV( ((spin + 0) % 4 < 2) ? 1 : 3 );
+					v1 = whiteIcon.getInterpolatedV( ((spin + 1) % 4 < 2) ? 1 : 3 );
+					v2 = whiteIcon.getInterpolatedV( ((spin + 2) % 4 < 2) ? 1 : 3 );
+					v3 = whiteIcon.getInterpolatedV( ((spin + 3) % 4 < 2) ? 1 : 3 );
+					v4 = whiteIcon.getInterpolatedV( ((spin + 0) % 4 < 2) ? 1 : 3 );
 
 					if ( sp.isPowered() )
 						tess.setBrightness( 15 << 20 | 15 << 4 );

@@ -76,7 +76,7 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public void postinit()
+	public void postInit()
 	{
 
 	}

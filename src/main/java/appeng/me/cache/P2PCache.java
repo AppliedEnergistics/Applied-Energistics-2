@@ -33,7 +33,7 @@ public class P2PCache implements IGridCache
 	}
 
 	@MENetworkEventSubscribe
-	public void bootComplete(MENetworkBootingStatusChange bootstat)
+	public void bootComplete(MENetworkBootingStatusChange bootStatus)
 	{
 		ITickManager tm = myGrid.getCache( ITickManager.class );
 		for (PartP2PTunnel me : inputs.values())

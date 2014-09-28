@@ -68,29 +68,29 @@ public class CraftingFx extends EntityBreakingFX
 		float f9 = this.particleTextureIndex.getMaxV();
 		float scale = 0.1F * this.particleScale;
 
-		float offx = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTick);
-		float offy = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTick);
-		float offz = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTick);
+		float offX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTick);
+		float offY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTick);
+		float offZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTick);
 		float f14 = 1.0F;
 
-		int blkX = MathHelper.floor_double( offx );
-		int blkY = MathHelper.floor_double( offy );
-		int blkZ = MathHelper.floor_double( offz );
+		int blkX = MathHelper.floor_double( offX );
+		int blkY = MathHelper.floor_double( offY );
+		int blkZ = MathHelper.floor_double( offZ );
 		if ( blkX == startBlkX && blkY == startBlkY && blkZ == startBlkZ )
 		{
-			offx -= interpPosX;
-			offy -= interpPosY;
-			offz -= interpPosZ;
+			offX -= interpPosX;
+			offY -= interpPosY;
+			offZ -= interpPosZ;
 
 			// AELog.info( "" + partialTick );
 			par1Tessellator.setColorRGBA_F( this.particleRed * f14, this.particleGreen * f14, this.particleBlue * f14, this.particleAlpha );
-			par1Tessellator.addVertexWithUV( (double) (offx - x * scale - rx * scale), (double) (offy - y * scale), (double) (offz - z * scale - rz * scale),
+			par1Tessellator.addVertexWithUV( (double) (offX - x * scale - rx * scale), (double) (offY - y * scale), (double) (offZ - z * scale - rz * scale),
 					(double) f7, (double) f9 );
-			par1Tessellator.addVertexWithUV( (double) (offx - x * scale + rx * scale), (double) (offy + y * scale), (double) (offz - z * scale + rz * scale),
+			par1Tessellator.addVertexWithUV( (double) (offX - x * scale + rx * scale), (double) (offY + y * scale), (double) (offZ - z * scale + rz * scale),
 					(double) f7, (double) f8 );
-			par1Tessellator.addVertexWithUV( (double) (offx + x * scale + rx * scale), (double) (offy + y * scale), (double) (offz + z * scale + rz * scale),
+			par1Tessellator.addVertexWithUV( (double) (offX + x * scale + rx * scale), (double) (offY + y * scale), (double) (offZ + z * scale + rz * scale),
 					(double) f6, (double) f8 );
-			par1Tessellator.addVertexWithUV( (double) (offx + x * scale - rx * scale), (double) (offy - y * scale), (double) (offz + z * scale - rz * scale),
+			par1Tessellator.addVertexWithUV( (double) (offX + x * scale - rx * scale), (double) (offY - y * scale), (double) (offZ + z * scale - rz * scale),
 					(double) f6, (double) f9 );
 		}
 	}

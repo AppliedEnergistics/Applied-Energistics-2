@@ -31,7 +31,7 @@ public class CraftingTreeProcess
 	long crafts = 0;
 	boolean containerItems;
 	boolean limitQty;
-	boolean fullsimulation;
+	boolean fullSimulation;
 
 	private long bytes = 0;
 	final private int depth;
@@ -61,7 +61,7 @@ public class CraftingTreeProcess
 			{
 				ItemStack g = ic.getStackInSlot( x );
 				if ( g != null && g.stackSize > 1 )
-					fullsimulation = true;
+					fullSimulation = true;
 			}
 
 			for ( IAEItemStack part : details.getCondensedInputs() )
@@ -100,8 +100,8 @@ public class CraftingTreeProcess
 				{
 					for (int x = 0; x < list.length; x++)
 					{
-						IAEItemStack ppart = list[x];
-						if ( part != null && part.equals( ppart ) )
+						IAEItemStack comparePart = list[x];
+						if ( part != null && part.equals( comparePart ) )
 						{
 							// use the first slot...
 							nodes.put( new CraftingTreeNode( cc, job, part.copy(), this, x, depth + 1 ), part.getStackSize() );
@@ -142,7 +142,7 @@ public class CraftingTreeProcess
 
 	long getTimes(long remaining, long stackSize)
 	{
-		if ( limitQty || fullsimulation )
+		if ( limitQty || fullSimulation )
 			return 1;
 		return (remaining / stackSize) + (remaining % stackSize != 0 ? 1 : 0);
 	}
@@ -175,9 +175,9 @@ public class CraftingTreeProcess
 
 	public void request(MECraftingInventory inv, long i, BaseActionSource src) throws CraftBranchFailure, InterruptedException
 	{
-		job.handlepausing();
+		job.handlePausing();
 
-		if ( fullsimulation )
+		if ( fullSimulation )
 		{
 			InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
 

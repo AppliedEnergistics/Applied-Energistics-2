@@ -16,7 +16,7 @@ import appeng.util.Platform;
 public class ContainerInscriber extends AEBaseContainer
 {
 
-	TileInscriber myte;
+	TileInscriber inscriber;
 
 	Slot top;
 	Slot middle;
@@ -28,23 +28,23 @@ public class ContainerInscriber extends AEBaseContainer
 	@GuiSync(1)
 	public int processingTime = -1;
 
-	public ContainerInscriber(InventoryPlayer ip, TileInscriber te) {
-		super( ip, te, null );
-		myte = te;
+	public ContainerInscriber(InventoryPlayer ip, TileInscriber inscriber) {
+		super( ip, inscriber, null );
+		this.inscriber = inscriber;
 
-		addSlotToContainer( top = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, myte, 0, 45, 16, invPlayer ) );
-		addSlotToContainer( bottom = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, myte, 1, 45, 62, invPlayer ) );
-		addSlotToContainer( middle = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_INPUT, myte, 2, 63, 39, invPlayer ) );
+		addSlotToContainer( top = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, this.inscriber, 0, 45, 16, invPlayer ) );
+		addSlotToContainer( bottom = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, this.inscriber, 1, 45, 62, invPlayer ) );
+		addSlotToContainer( middle = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_INPUT, this.inscriber, 2, 63, 39, invPlayer ) );
 
-		addSlotToContainer( new SlotOutput( myte, 3, 113, 40, -1 ) );
+		addSlotToContainer( new SlotOutput( this.inscriber, 3, 113, 40, -1 ) );
 
-		bindPlayerInventory( ip, 0, 176 - /* height of playerinventory */82 );
+		bindPlayerInventory( ip, 0, 176 - /* height of player inventory */82 );
 	}
 
 	public boolean isValidForSlot(Slot s, ItemStack is)
 	{
-		ItemStack PlateA = myte.getStackInSlot( 0 );
-		ItemStack PlateB = myte.getStackInSlot( 1 );
+		ItemStack PlateA = inscriber.getStackInSlot( 0 );
+		ItemStack PlateB = inscriber.getStackInSlot( 1 );
 
 		if ( s == middle )
 		{
@@ -124,8 +124,8 @@ public class ContainerInscriber extends AEBaseContainer
 
 		if ( Platform.isServer() )
 		{
-			this.maxProcessingTime = myte.maxProcessingTime;
-			this.processingTime = myte.processingTime;
+			this.maxProcessingTime = inscriber.maxProcessingTime;
+			this.processingTime = inscriber.processingTime;
 		}
 	}
 }

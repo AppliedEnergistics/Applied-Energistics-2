@@ -237,14 +237,14 @@ public class BC extends BaseModule implements IBC
 	{
 		SchematicRegistry.declareBlueprintSupport( AppEng.modid );
 
-		Blocks blks = AEApi.instance().blocks();
-		Block cable = blks.blockMultiPart.block();
-		for (Field f : blks.getClass().getFields())
+		Blocks blocks = AEApi.instance().blocks();
+		Block cable = blocks.blockMultiPart.block();
+		for (Field f : blocks.getClass().getFields())
 		{
 			AEItemDefinition def;
 			try
 			{
-				def = (AEItemDefinition) f.get( blks );
+				def = (AEItemDefinition) f.get( blocks );
 				if ( def != null )
 				{
 					Block myBlock = def.block();

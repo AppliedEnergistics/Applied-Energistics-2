@@ -197,9 +197,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 			ItemStack pattern = myPlan.getPattern();
 			if ( pattern != null )
 			{
-				NBTTagCompound pdata = new NBTTagCompound();
-				pattern.writeToNBT( pdata );
-				data.setTag( "myPlan", pdata );
+				NBTTagCompound compound = new NBTTagCompound();
+				pattern.writeToNBT( compound );
+				data.setTag( "myPlan", compound );
 				data.setInteger( "pushDirection", pushDirection.ordinal() );
 			}
 		}

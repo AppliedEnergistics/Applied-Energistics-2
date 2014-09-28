@@ -25,17 +25,17 @@ public class PathSegment
 
 	PathGridCache pgc;
 
-	public PathSegment(PathGridCache myPGC, List open, Set semiopen, Set closed)
+	public PathSegment(PathGridCache myPGC, List open, Set semiOpen, Set closed)
 	{
 		this.open = open;
-		this.semiopen = semiopen;
+		this.semiOpen = semiOpen;
 		this.closed = closed;
 		pgc = myPGC;
 		isDead = false;
 	}
 
 	List<IPathItem> open;
-	Set<IPathItem> semiopen;
+	Set<IPathItem> semiOpen;
 	Set<IPathItem> closed;
 
 	public boolean step()
@@ -56,7 +56,7 @@ public class PathSegment
 					if ( flags.contains( GridFlags.REQUIRE_CHANNEL ) )
 					{
 						// close the semi open.
-						if ( !semiopen.contains( pi ) )
+						if ( !semiOpen.contains( pi ) )
 						{
 							boolean worked = false;
 
@@ -72,14 +72,14 @@ public class PathSegment
 								{
 									IGridNode otherNodes = oni.next();
 									if ( otherNodes != pi )
-										semiopen.add( (IPathItem) otherNodes );
+										semiOpen.add( (IPathItem) otherNodes );
 								}
 							}
 						}
 						else
 						{
 							pi.incrementChannelCount( 1 ); // give a channel.
-							semiopen.remove( pi );
+							semiOpen.remove( pi );
 						}
 					}
 

@@ -30,13 +30,13 @@ public class SlotRestrictedInput extends AppEngSlot
 	{
 		STORAGE_CELLS(15), ORE(1 * 16 + 15), STORAGE_COMPONENT(3 * 16 + 15),
 
-		ENCODEABLE_ITEM(4 * 16 + 15), TRASH(5 * 16 + 15), VALID_ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15), ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15),
+		ENCODABLE_ITEM(4 * 16 + 15), TRASH(5 * 16 + 15), VALID_ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15), ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15),
 
 		ENCODED_CRAFTING_PATTERN(7 * 16 + 15), ENCODED_PATTERN(7 * 16 + 15), PATTERN(8 * 16 + 15), BLANK_PATTERN(8 * 16 + 15), POWERED_TOOL(9 * 16 + 15),
 
 		RANGE_BOOSTER(6 * 16 + 15), QE_SINGULARITY(10 * 16 + 15), SPATIAL_STORAGE_CELLS(11 * 16 + 15),
 
-		FUEL(12 * 16 + 15), UPGRADES(13 * 16 + 15), WORKBENCH_CELL(15), BIOMETRIC_CARD(14 * 16 + 15), VIEWCELL(4 * 16 + 14),
+		FUEL(12 * 16 + 15), UPGRADES(13 * 16 + 15), WORKBENCH_CELL(15), BIOMETRIC_CARD(14 * 16 + 15), VIEW_CELL(4 * 16 + 14),
 
 		INSCRIBER_PLATE(2 * 16 + 14), INSCRIBER_INPUT(3 * 16 + 14), METAL_INGOTS(3 * 16 + 14);
 
@@ -85,8 +85,8 @@ public class SlotRestrictedInput extends AppEngSlot
 		return this;
 	}
 
-	public SlotRestrictedInput(PlacableItemType valid, IInventory i, int slotnum, int x, int y, InventoryPlayer p) {
-		super( i, slotnum, x, y );
+	public SlotRestrictedInput(PlacableItemType valid, IInventory i, int slotIndex, int x, int y, InventoryPlayer p) {
+		super( i, slotIndex, x, y );
 		which = valid;
 		IIcon = valid.IIcon;
 		this.p = p;
@@ -179,7 +179,7 @@ public class SlotRestrictedInput extends AppEngSlot
 
 			return isMetalIngot( i );
 
-		case VIEWCELL:
+		case VIEW_CELL:
 			return AEApi.instance().items().itemViewCell.sameAsStack( i );
 		case ORE:
 			return appeng.api.AEApi.instance().registries().grinder().getRecipeForInput( i ) != null;
@@ -206,7 +206,7 @@ public class SlotRestrictedInput extends AppEngSlot
 			if ( i.getItem() instanceof IStorageComponent && ((IStorageComponent) i.getItem()).isStorageComponent( i ) )
 				return false;
 			return true;
-		case ENCODEABLE_ITEM:
+		case ENCODABLE_ITEM:
 			return i.getItem() instanceof INetworkEncodable || AEApi.instance().registries().wireless().isWirelessTerminal( i );
 		case BIOMETRIC_CARD:
 			return i.getItem() instanceof IBiometricCard;

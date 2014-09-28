@@ -43,7 +43,7 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 			}
 			catch (GridAccessException e)
 			{
-				// null net, probably bads.
+				// null net, probably bad.
 			}
 
 		}

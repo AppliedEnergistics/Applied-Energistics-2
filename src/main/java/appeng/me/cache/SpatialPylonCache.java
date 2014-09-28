@@ -167,7 +167,7 @@ public class SpatialPylonCache implements IGridCache, ISpatialCache
 				efficiency = 0.0;
 			
 			minPower = (double) reqX * (double) reqY * reqZ * AEConfig.instance.spatialPowerMultiplier;
-			maxPower = Math.pow( minPower, AEConfig.instance.spatialPowerScaler );
+			maxPower = Math.pow( minPower, AEConfig.instance.spatialPowerExponent );
 		}
 
 		double affective_efficiency = Math.pow( efficiency, 0.25 );

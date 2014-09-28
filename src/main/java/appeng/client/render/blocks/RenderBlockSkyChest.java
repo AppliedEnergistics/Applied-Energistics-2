@@ -39,13 +39,13 @@ public class RenderBlockSkyChest extends BaseBlockRender
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture( loc );
 
-		float lidangle = 0.0f;
+		float lidAngle = 0.0f;
 
 		GL11.glScalef( 1.0F, -1F, -1F );
 		GL11.glTranslatef( -0.0F, -1.0F, -1.0F );
 
 		model.chestLid.offsetY = -(0.9f / 16.0f);
-		model.chestLid.rotateAngleX = -((lidangle * 3.141593F) / 2.0F);
+		model.chestLid.rotateAngleX = -((lidAngle * 3.141593F) / 2.0F);
 		model.renderAll();
 
 		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);
@@ -100,12 +100,12 @@ public class RenderBlockSkyChest extends BaseBlockRender
 		if ( skyChest.lidAngle < 0.0f )
 			skyChest.lidAngle = 0.0f;
 
-		float lidangle = skyChest.lidAngle;
-		lidangle = 1.0F - lidangle;
-		lidangle = 1.0F - lidangle * lidangle * lidangle;
+		float lidAngle = skyChest.lidAngle;
+		lidAngle = 1.0F - lidAngle;
+		lidAngle = 1.0F - lidAngle * lidAngle * lidAngle;
 
 		model.chestLid.offsetY = -(1.01f / 16.0f);
-		model.chestLid.rotateAngleX = -((lidangle * 3.141593F) / 2.0F);
+		model.chestLid.rotateAngleX = -((lidAngle * 3.141593F) / 2.0F);
 		model.renderAll();
 
 		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);

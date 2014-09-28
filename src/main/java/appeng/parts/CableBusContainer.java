@@ -431,7 +431,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return null;
 	}
 
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxsFromPool(boolean ignoreCableConnections, boolean includeFacades, Entity e, boolean visual)
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(boolean ignoreCableConnections, boolean includeFacades, Entity e, boolean visual)
 	{
 		List<AxisAlignedBB> boxes = new LinkedList<AxisAlignedBB>();
 

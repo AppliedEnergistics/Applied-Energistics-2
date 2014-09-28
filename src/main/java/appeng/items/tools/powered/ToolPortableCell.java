@@ -37,7 +37,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	public ToolPortableCell() {
 		super( ToolPortableCell.class, null );
 		setFeature( EnumSet.of( AEFeature.PortableCell, AEFeature.StorageCells, AEFeature.PoweredTools ) );
-		maxStoredPower = AEConfig.instance.portablecell_battery;
+		maxStoredPower = AEConfig.instance.portableCellBattery;
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	
 	@Override
 	public boolean onItemUse(ItemStack item, EntityPlayer player, World w, int x, int y, int z, int side,
-			float hitx, float hity, float hitz)
+			float hitX, float hitY, float hitZ)
 	{
 		onItemRightClick( item, w, player );
 		return true;
@@ -80,7 +80,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
-	public int BytePerType(ItemStack iscellItem)
+	public int BytePerType(ItemStack cell)
 	{
 		return 8;
 	}

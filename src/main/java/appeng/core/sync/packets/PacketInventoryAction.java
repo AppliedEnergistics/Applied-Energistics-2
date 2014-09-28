@@ -46,23 +46,23 @@ public class PacketInventoryAction extends AppEngPacket
 		EntityPlayerMP sender = (EntityPlayerMP) player;
 		if ( sender.openContainer instanceof AEBaseContainer )
 		{
-			AEBaseContainer aebc = (AEBaseContainer) sender.openContainer;
-			if ( action == InventoryAction.AUTOCRAFT )
+			AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
+			if ( action == InventoryAction.AUTO_CRAFT )
 			{
-				ContainerOpenContext context = aebc.openContext;
+				ContainerOpenContext context = baseContainer.openContext;
 				if ( context != null )
 				{
 					TileEntity te = context.getTile();
-					Platform.openGUI( sender, te, aebc.openContext.side, GuiBridge.GUI_CRAFTING_AMOUNT );
+					Platform.openGUI( sender, te, baseContainer.openContext.side, GuiBridge.GUI_CRAFTING_AMOUNT );
 
 					if ( sender.openContainer instanceof ContainerCraftAmount )
 					{
 						ContainerCraftAmount cca = (ContainerCraftAmount) sender.openContainer;
 
-						if ( aebc.getTargetStack() != null )
+						if ( baseContainer.getTargetStack() != null )
 						{
-							cca.craftingItem.putStack( aebc.getTargetStack().getItemStack() );
-							cca.whatToMake = aebc.getTargetStack();
+							cca.craftingItem.putStack( baseContainer.getTargetStack().getItemStack() );
+							cca.whatToMake = baseContainer.getTargetStack();
 						}
 
 						cca.detectAndSendChanges();
@@ -71,7 +71,7 @@ public class PacketInventoryAction extends AppEngPacket
 			}
 			else
 			{
-				aebc.doAction( sender, action, slot, id );
+				baseContainer.doAction( sender, action, slot, id );
 			}
 		}
 	}

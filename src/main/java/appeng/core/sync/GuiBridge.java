@@ -128,7 +128,7 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_DRIVE(ContainerDrive.class, TileDrive.class, WORLD, SecurityPermissions.BUILD),
 
-	GUI_VIBRATIONCHAMBER(ContainerVibrationChamber.class, TileVibrationChamber.class, WORLD, null),
+	GUI_VIBRATION_CHAMBER(ContainerVibrationChamber.class, TileVibrationChamber.class, WORLD, null),
 
 	GUI_CONDENSER(ContainerCondenser.class, TileCondenser.class, WORLD, null),
 
@@ -140,7 +140,7 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_STORAGEBUS(ContainerStorageBus.class, PartStorageBus.class, WORLD, SecurityPermissions.BUILD),
 
-	GUI_FPLANE(ContainerFormationPlane.class, PartFormationPlane.class, WORLD, SecurityPermissions.BUILD),
+	GUI_FORMATION_PLANE(ContainerFormationPlane.class, PartFormationPlane.class, WORLD, SecurityPermissions.BUILD),
 
 	GUI_PRIORITY(ContainerPriority.class, IPriorityHost.class, WORLD, SecurityPermissions.BUILD),
 
@@ -151,13 +151,13 @@ public enum GuiBridge implements IGuiHandler
 	GUI_PATTERN_TERMINAL(ContainerPatternTerm.class, PartPatternTerminal.class, WORLD, SecurityPermissions.CRAFT),
 
 	// extends (Container/Gui) + Bus
-	GUI_LEVELEMITTER(ContainerLevelEmitter.class, PartLevelEmitter.class, WORLD, SecurityPermissions.BUILD),
+	GUI_LEVEL_EMITTER(ContainerLevelEmitter.class, PartLevelEmitter.class, WORLD, SecurityPermissions.BUILD),
 
-	GUI_SPATIALIOPORT(ContainerSpatialIOPort.class, TileSpatialIOPort.class, WORLD, SecurityPermissions.BUILD),
+	GUI_SPATIAL_IO_PORT(ContainerSpatialIOPort.class, TileSpatialIOPort.class, WORLD, SecurityPermissions.BUILD),
 
 	GUI_INSCRIBER(ContainerInscriber.class, TileInscriber.class, WORLD, null),
 
-	GUI_CELLWORKBENCH(ContainerCellWorkbench.class, TileCellWorkbench.class, WORLD, null),
+	GUI_CELL_WORKBENCH(ContainerCellWorkbench.class, TileCellWorkbench.class, WORLD, null),
 
 	GUI_MAC(ContainerMAC.class, TileMolecularAssembler.class, WORLD, null),
 
@@ -335,9 +335,9 @@ public enum GuiBridge implements IGuiHandler
 	{
 		ForgeDirection side = ForgeDirection.getOrientation( ID_ORDINAL & 0x07 );
 		GuiBridge ID = values()[ID_ORDINAL >> 4];
-		boolean istem = ((ID_ORDINAL >> 3) & 1) == 1;
+		boolean stem = ((ID_ORDINAL >> 3) & 1) == 1;
 
-		if ( ID.type.isItem() && istem )
+		if ( ID.type.isItem() && stem )
 		{
 			ItemStack it = player.inventory.getCurrentItem();
 			Object myItem = getGuiObject( it, player, w, x, y, z );
@@ -387,9 +387,9 @@ public enum GuiBridge implements IGuiHandler
 	{
 		ForgeDirection side = ForgeDirection.getOrientation( ID_ORDINAL & 0x07 );
 		GuiBridge ID = values()[ID_ORDINAL >> 4];
-		boolean istem = ((ID_ORDINAL >> 3) & 1) == 1;
+		boolean stem = ((ID_ORDINAL >> 3) & 1) == 1;
 
-		if ( ID.type.isItem() && istem )
+		if ( ID.type.isItem() && stem )
 		{
 			ItemStack it = player.inventory.getCurrentItem();
 			Object myItem = getGuiObject( it, player, w, x, y, z );

@@ -15,15 +15,15 @@ import appeng.core.AEConfig;
 public class StorageChunkProvider extends ChunkProviderGenerate implements IChunkProvider
 {
 
-	final static Block[] ablock;
+	final static Block[] blocks;
 	
 	static {
 		
-		ablock = new Block[255 * 256];
+		blocks = new Block[255 * 256];
 		
 		Block matrixFrame = AEApi.instance().blocks().blockMatrixFrame.block();
-		for (int x = 0; x < ablock.length; x++)
-			ablock[x] = matrixFrame;
+		for (int x = 0; x < blocks.length; x++)
+			blocks[x] = matrixFrame;
 		
 	}
 	
@@ -43,13 +43,13 @@ public class StorageChunkProvider extends ChunkProviderGenerate implements IChun
 	@Override
 	public Chunk provideChunk(int x, int z)
 	{
-		Chunk chunk = new Chunk( w, ablock, x, z );
+		Chunk chunk = new Chunk( w, blocks, x, z );
 
-		byte[] abyte = chunk.getBiomeArray();
+		byte[] biomes = chunk.getBiomeArray();
 		AEConfig config = AEConfig.instance;
 
-		for (int k = 0; k < abyte.length; ++k)
-			abyte[k] = (byte) config.storageBiomeID;
+		for (int k = 0; k < biomes.length; ++k)
+			biomes[k] = (byte) config.storageBiomeID;
 
 		if ( !chunk.isTerrainPopulated )
 		{

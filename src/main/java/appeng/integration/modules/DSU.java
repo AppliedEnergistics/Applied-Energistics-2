@@ -1,12 +1,12 @@
 package appeng.integration.modules;
 
+import appeng.integration.modules.helpers.MinefactoryReloadedDeepStorageUnit;
 import net.minecraft.tileentity.TileEntity;
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 import appeng.api.AEApi;
 import appeng.api.storage.IMEInventory;
 import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IDSU;
-import appeng.integration.modules.helpers.MFRDSU;
 import appeng.integration.modules.helpers.MFRDSUHandler;
 
 public class DSU extends BaseModule implements IDSU
@@ -17,7 +17,7 @@ public class DSU extends BaseModule implements IDSU
 	@Override
 	public IMEInventory getDSU(TileEntity te)
 	{
-		return new MFRDSU( te );
+		return new MinefactoryReloadedDeepStorageUnit( te );
 	}
 
 	@Override

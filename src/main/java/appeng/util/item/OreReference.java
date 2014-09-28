@@ -12,8 +12,8 @@ import appeng.api.storage.data.IAEItemStack;
 public class OreReference
 {
 
-	private LinkedList<ItemStack> otherOptions = new LinkedList();
-	private ArrayList aeotherOptions = null;
+	private LinkedList<ItemStack> otherOptions = new LinkedList<ItemStack>();
+	private ArrayList<IAEItemStack> aeOtherOptions = null;
 	private HashSet<Integer> ores = new HashSet<Integer>();
 
 	public Collection<ItemStack> getEquivalents()
@@ -23,17 +23,17 @@ public class OreReference
 
 	public List<IAEItemStack> getAEEquivalents()
 	{
-		if ( aeotherOptions == null )
+		if ( aeOtherOptions == null )
 		{
-			aeotherOptions = new ArrayList( otherOptions.size() );
+			aeOtherOptions = new ArrayList<IAEItemStack>( otherOptions.size() );
 
 			// SUMMON AE STACKS!
 			for (ItemStack is : otherOptions)
 				if ( is.getItem() != null )
-					aeotherOptions.add( AEItemStack.create( is ) );
+					aeOtherOptions.add( AEItemStack.create( is ) );
 		}
 
-		return aeotherOptions;
+		return aeOtherOptions;
 	}
 
 	public Collection<Integer> getOres()

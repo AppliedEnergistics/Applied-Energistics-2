@@ -30,7 +30,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 {
 
 	ContainerCraftingStatus ccc;
-	GuiButton selectcpu;
+	GuiButton selectCPU;
 
 	GuiTabButton originalGuiBtn;
 	GuiBridge OriginalGui;
@@ -74,7 +74,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 
 		boolean backwards = Mouse.isButtonDown( 1 );
 
-		if ( btn == selectcpu )
+		if ( btn == selectCPU )
 		{
 			try
 			{
@@ -110,9 +110,9 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	{
 		super.initGui();
 
-		selectcpu = new GuiButton( 0, this.guiLeft + 8, this.guiTop + ySize - 25, 150, 20, GuiText.CraftingCPU.getLocal() + ": " + GuiText.NoCraftingCPUs );
-		// selectcpu.enabled = false;
-		buttonList.add( selectcpu );
+		selectCPU = new GuiButton( 0, this.guiLeft + 8, this.guiTop + ySize - 25, 150, 20, GuiText.CraftingCPU.getLocal() + ": " + GuiText.NoCraftingCPUs );
+		// selectCPU.enabled = false;
+		buttonList.add( selectCPU );
 
 		if ( myIcon != null )
 		{
@@ -139,7 +139,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 		if ( ccc.noCPU )
 			btnTextText = GuiText.NoCraftingJobs.getLocal();
 
-		selectcpu.displayString = btnTextText;
+		selectCPU.displayString = btnTextText;
 	}
 
 	@Override

@@ -114,12 +114,12 @@ public class NEI extends BaseModule implements IIntegrationModule, INEI, IContai
 	}
 
 	@Override
-	public RenderItem setItemRender(RenderItem aeri2)
+	public RenderItem setItemRender(RenderItem renderItem)
 	{
 		try
 		{
 			RenderItem ri = GuiContainerManager.drawItems;
-			GuiContainerManager.drawItems = aeri2;
+			GuiContainerManager.drawItems = renderItem;
 			return ri;
 		}
 		catch (Throwable t)
@@ -135,12 +135,12 @@ public class NEI extends BaseModule implements IIntegrationModule, INEI, IContai
 	}
 
 	@Override
-	public List<String> handleItemTooltip(GuiContainer guiScreen, ItemStack stack, int mousex, int mousey, List<String> currenttip)
+	public List<String> handleItemTooltip(GuiContainer guiScreen, ItemStack stack, int mouseX, int mouseY, List<String> currentToolTip)
 	{
 		if ( guiScreen instanceof AEBaseMEGui )
-			return ((AEBaseMEGui) guiScreen).handleItemTooltip( stack, mousex, mousey, currenttip );
+			return ((AEBaseMEGui) guiScreen).handleItemTooltip( stack, mouseX, mouseY, currentToolTip );
 
-		return currenttip;
+		return currentToolTip;
 	}
 
 	@Override

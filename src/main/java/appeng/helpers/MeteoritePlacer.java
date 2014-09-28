@@ -30,7 +30,7 @@ public class MeteoritePlacer
 	private class Fallout
 	{
 
-		public int adjustCrator()
+		public int adjustCrater()
 		{
 			return 0;
 		}
@@ -111,7 +111,7 @@ public class MeteoritePlacer
 			super( w, x, y, z );
 		}
 
-		public int adjustCrator()
+		public int adjustCrater()
 		{
 			return 2;
 		}
@@ -131,7 +131,7 @@ public class MeteoritePlacer
 			super( w, x, y, z );
 		}
 
-		public int adjustCrator()
+		public int adjustCrater()
 		{
 			return 2;
 		}
@@ -381,10 +381,10 @@ public class MeteoritePlacer
 	Block skychest;
 
 	double real_sizeOfMeteorite = (Math.random() * 6.0) + 2;
-	double real_crator = real_sizeOfMeteorite * 2 + 5;
+	double realCrater = real_sizeOfMeteorite * 2 + 5;
 
 	double sizeOfMeteorite = real_sizeOfMeteorite * real_sizeOfMeteorite;
-	double crator = real_crator * real_crator;
+	double crater = realCrater * realCrater;
 
 	public MeteoritePlacer() {
 
@@ -431,9 +431,9 @@ public class MeteoritePlacer
 		int z = settings.getInteger( "z" );
 
 		real_sizeOfMeteorite = settings.getDouble( "real_sizeOfMeteorite" );
-		real_crator = settings.getDouble( "real_crator" );
+		realCrater = settings.getDouble( "realCrater" );
 		sizeOfMeteorite = settings.getDouble( "sizeOfMeteorite" );
-		crator = settings.getDouble( "crator" );
+		crater = settings.getDouble( "crater" );
 
 		Block blk = Block.getBlockById( settings.getInteger( "blk" ) );
 
@@ -448,7 +448,7 @@ public class MeteoritePlacer
 
 		// creator
 		if ( skyMode > 10 )
-			placeCrator( w, x, y, z );
+			placeCrater( w, x, y, z );
 
 		placeMeteorite( w, x, y, z );
 
@@ -486,9 +486,9 @@ public class MeteoritePlacer
 		settings.setInteger( "blk", Block.getIdFromBlock( blk ) );
 
 		settings.setDouble( "real_sizeOfMeteorite", real_sizeOfMeteorite );
-		settings.setDouble( "real_crator", real_crator );
+		settings.setDouble( "realCrater", realCrater );
 		settings.setDouble( "sizeOfMeteorite", sizeOfMeteorite );
-		settings.setDouble( "crator", crator );
+		settings.setDouble( "crater", crater );
 
 		settings.setBoolean( "lava", Math.random() > 0.9 );
 
@@ -547,7 +547,7 @@ public class MeteoritePlacer
 
 			// creator
 			if ( skyMode > 10 )
-				placeCrator( w, x, y, z );
+				placeCrater( w, x, y, z );
 
 			placeMeteorite( w, x, y, z );
 
@@ -564,7 +564,7 @@ public class MeteoritePlacer
 		return false;
 	}
 
-	private void placeCrator(IMeteoriteWorld w, int x, int y, int z)
+	private void placeCrater(IMeteoriteWorld w, int x, int y, int z)
 	{
 		boolean lava = settings.getBoolean( "lava" );
 
@@ -583,7 +583,7 @@ public class MeteoritePlacer
 				{
 					double dx = i - x;
 					double dz = k - z;
-					double h = y - real_sizeOfMeteorite + 1 + type.adjustCrator();
+					double h = y - real_sizeOfMeteorite + 1 + type.adjustCrater();
 
 					double distanceFrom = dx * dx + dz * dz;
 
@@ -610,15 +610,15 @@ public class MeteoritePlacer
 
 	private void placeMeteorite(IMeteoriteWorld w, int x, int y, int z)
 	{
-		int Xmeteor_l = w.minX( x - 8 );
-		int Xmeteor_h = w.maxX( x + 8 );
-		int Zmeteor_l = w.minZ( z - 8 );
-		int Zmeteor_h = w.maxZ( z + 8 );
+		int meteorXLength = w.minX( x - 8 );
+		int meteorXHeight = w.maxX( x + 8 );
+		int meteorZLength = w.minZ( z - 8 );
+		int meteorZHeight = w.maxZ( z + 8 );
 
-		// spawn metor
-		for (int i = Xmeteor_l; i < Xmeteor_h; i++)
+		// spawn meteor
+		for (int i = meteorXLength; i < meteorXHeight; i++)
 			for (int j = y - 8; j < y + 8; j++)
-				for (int k = Zmeteor_l; k < Zmeteor_h; k++)
+				for (int k = meteorZLength; k < meteorZHeight; k++)
 				{
 					double dx = i - x;
 					double dy = j - y;
@@ -724,13 +724,13 @@ public class MeteoritePlacer
 	{
 		double randomShit = 0;
 
-		int Xmeteor_l = w.minX( x - 30 );
-		int Xmeteor_h = w.maxX( x + 30 );
-		int Zmeteor_l = w.minZ( z - 30 );
-		int Zmeteor_h = w.maxZ( z + 30 );
+		int meteorXLength = w.minX( x - 30 );
+		int meteorXHeight = w.maxX( x + 30 );
+		int meteorZLength = w.minZ( z - 30 );
+		int meteorZHeight = w.maxZ( z + 30 );
 
-		for (int i = Xmeteor_l; i < Xmeteor_h; i++)
-			for (int k = Zmeteor_l; k < Zmeteor_h; k++)
+		for (int i = meteorXLength; i < meteorXHeight; i++)
+			for (int k = meteorZLength; k < meteorZHeight; k++)
 				for (int j = y - 9; j < y + 30; j++)
 				{
 					Block blk = w.getBlock( i, j, k );
@@ -749,7 +749,7 @@ public class MeteoritePlacer
 							w.setBlock( i, j, k, blk_b, meta_b, 3 );
 							w.setBlock( i, j + 1, k, blk );
 						}
-						else if ( randomShit < 100 * crator )
+						else if ( randomShit < 100 * crater )
 						{
 							double dx = i - x;
 							double dy = j - y;
@@ -759,8 +759,8 @@ public class MeteoritePlacer
 							Block xf = w.getBlock( i, j - 1, k );
 							if ( !xf.isReplaceable( w.getWorld(), i, j - 1, k ) )
 							{
-								double extrRange = Math.random() * 0.6;
-								double height = crator * (extrRange + 0.2) - Math.abs( dist - crator * 1.7 );
+								double extraRange = Math.random() * 0.6;
+								double height = crater * (extraRange + 0.2) - Math.abs( dist - crater * 1.7 );
 
 								if ( xf != blk && height > 0 && Math.random() > 0.6 )
 								{
@@ -782,7 +782,7 @@ public class MeteoritePlacer
 								double dy = j - y;
 								double dz = k - z;
 
-								if ( dx * dx + dy * dy + dz * dz < crator * 1.6 )
+								if ( dx * dx + dy * dy + dz * dz < crater * 1.6 )
 								{
 									type.getRandomInset( w, i, j, k );
 								}

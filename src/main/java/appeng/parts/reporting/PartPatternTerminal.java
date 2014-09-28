@@ -94,14 +94,14 @@ public class PartPatternTerminal extends PartTerminal implements IAEAppEngInvent
 
 					for (int x = 0; x < crafting.getSizeInventory() && x < details.getInputs().length; x++)
 					{
-						IAEItemStack aeis = details.getInputs()[x];
-						crafting.setInventorySlotContents( x, aeis == null ? null : aeis.getItemStack() );
+						IAEItemStack item = details.getInputs()[x];
+						crafting.setInventorySlotContents( x, item == null ? null : item.getItemStack() );
 					}
 
 					for (int x = 0; x < output.getSizeInventory() && x < details.getOutputs().length; x++)
 					{
-						IAEItemStack aeis = details.getOutputs()[x];
-						output.setInventorySlotContents( x, aeis == null ? null : aeis.getItemStack() );
+						IAEItemStack item = details.getOutputs()[x];
+						output.setInventorySlotContents( x, item == null ? null : item.getItemStack() );
 					}
 				}
 			}

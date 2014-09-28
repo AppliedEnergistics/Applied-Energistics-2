@@ -114,9 +114,9 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 				{
 					if ( Platform.getRandomInt() % 2 > 0 )
 					{
-						int recv = t.getOutput().receiveEnergy( t.side.getOpposite(), maxReceive, simulate );
-						maxReceive -= recv;
-						total += recv;
+						int receiver = t.getOutput().receiveEnergy( t.side.getOpposite(), maxReceive, simulate );
+						maxReceive -= receiver;
+						total += receiver;
 
 						if ( maxReceive <= 0 )
 							break;
@@ -127,9 +127,9 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 				{
 					for (PartP2PRFPower t : getOutputs())
 					{
-						int recv = t.getOutput().receiveEnergy( t.side.getOpposite(), maxReceive, simulate );
-						maxReceive -= recv;
-						total += recv;
+						int receiver = t.getOutput().receiveEnergy( t.side.getOpposite(), maxReceive, simulate );
+						maxReceive -= receiver;
+						total += receiver;
 
 						if ( maxReceive <= 0 )
 							break;

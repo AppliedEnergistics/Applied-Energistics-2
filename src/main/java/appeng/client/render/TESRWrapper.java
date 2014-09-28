@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TESRWrapper extends TileEntitySpecialRenderer
 {
 
-	final public RenderBlocks rbinstance = new RenderBlocks();
+	final public RenderBlocks renderBlocksInstance = new RenderBlocks();
 
 	final BaseBlockRender blkRender;
 	final double MAX_DISTANCE;
@@ -51,8 +51,8 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 					GL11.glPushMatrix();
 					GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
-					rbinstance.blockAccess = te.getWorldObj();
-					blkRender.renderTile( (AEBaseBlock) b, (AEBaseTile) te, tess, x, y, z, f, rbinstance );
+					renderBlocksInstance.blockAccess = te.getWorldObj();
+					blkRender.renderTile( (AEBaseBlock) b, (AEBaseTile) te, tess, x, y, z, f, renderBlocksInstance );
 
 					if ( Platform.isDrawing( tess ) )
 						throw new RuntimeException( "Error during rendering." );

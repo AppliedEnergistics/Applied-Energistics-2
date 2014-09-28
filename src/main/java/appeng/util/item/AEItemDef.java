@@ -22,7 +22,7 @@ public class AEItemDef
 	public Item item;
 	public int damageValue;
 
-	public int dspDamage;
+	public int displayDamage;
 	public int maxDamage;
 
 	public AESharedNBT tagCompound;
@@ -51,7 +51,7 @@ public class AEItemDef
 		AEItemDef t = new AEItemDef( item );
 		t.def = def;
 		t.damageValue = damageValue;
-		t.dspDamage = dspDamage;
+		t.displayDamage = displayDamage;
 		t.maxDamage = maxDamage;
 		t.tagCompound = tagCompound;
 		t.isOre = isOre;
