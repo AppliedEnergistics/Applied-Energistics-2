@@ -3,14 +3,16 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.InventoryPlayer;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
+import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.util.Platform;
 
-public class ContainerVibrationChamber extends AEBaseContainer
+public class ContainerVibrationChamber extends AEBaseContainer implements IProgressProvider
 {
 
 	TileVibrationChamber vibrationChamber;
+	private static final int MAX_BURN_TIME = 200;
 
 	public ContainerVibrationChamber(InventoryPlayer ip, TileVibrationChamber vibrationChamber) {
 		super( ip, vibrationChamber, null );
@@ -39,6 +41,18 @@ public class ContainerVibrationChamber extends AEBaseContainer
 		}
 
 		super.detectAndSendChanges();
+	}
+
+	@Override
+	public int getCurrentProgress()
+	{
+		return burnProgress > 0 ? burnSpeed : 0;
+	}
+
+	@Override
+	public int getMaxProgress()
+	{
+		return MAX_BURN_TIME;
 	}
 
 }

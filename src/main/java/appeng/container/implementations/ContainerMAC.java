@@ -9,6 +9,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.container.guisync.GuiSync;
+import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.SlotMACPattern;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
@@ -16,12 +17,14 @@ import appeng.items.misc.ItemEncodedPattern;
 import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.util.Platform;
 
-public class ContainerMAC extends ContainerUpgradeable
+public class ContainerMAC extends ContainerUpgradeable implements IProgressProvider
 {
 
 	TileMolecularAssembler tma;
+	private static final int MAX_CRAFT_PROGRESS = 100;
 
-	public ContainerMAC(InventoryPlayer ip, TileMolecularAssembler te) {
+	public ContainerMAC(InventoryPlayer ip, TileMolecularAssembler te)
+	{
 		super( ip, te );
 		tma = te;
 	}
@@ -92,11 +95,16 @@ public class ContainerMAC extends ContainerUpgradeable
 		offY = 17;
 
 		IInventory upgrades = upgradeable.getInventoryByName( "upgrades" );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0, invPlayer )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18 * 1, invPlayer )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, invPlayer )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, invPlayer )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187, 8 + 18 * 4, invPlayer )).setNotDraggable() );
+		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0, invPlayer ))
+				.setNotDraggable() );
+		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18 * 1, invPlayer ))
+				.setNotDraggable() );
+		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, invPlayer ))
+				.setNotDraggable() );
+		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, invPlayer ))
+				.setNotDraggable() );
+		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187, 8 + 18 * 4, invPlayer ))
+				.setNotDraggable() );
 	}
 
 	@Override
@@ -112,6 +120,18 @@ public class ContainerMAC extends ContainerUpgradeable
 		craftProgress = this.tma.getCraftingProgress();
 
 		standardDetectAndSendChanges();
+	}
+
+	@Override
+	public int getCurrentProgress()
+	{
+		return craftProgress;
+	}
+
+	@Override
+	public int getMaxProgress()
+	{
+		return MAX_CRAFT_PROGRESS;
 	}
 
 }

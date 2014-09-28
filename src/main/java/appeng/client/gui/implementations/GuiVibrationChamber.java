@@ -17,7 +17,8 @@ public class GuiVibrationChamber extends AEBaseGui
 	ContainerVibrationChamber cvc;
 	GuiProgressBar pb;
 
-	public GuiVibrationChamber(InventoryPlayer inventoryPlayer, TileVibrationChamber te) {
+	public GuiVibrationChamber(InventoryPlayer inventoryPlayer, TileVibrationChamber te)
+	{
 		super( new ContainerVibrationChamber( inventoryPlayer, te ) );
 		cvc = (ContainerVibrationChamber) inventorySlots;
 		this.ySize = 166;
@@ -28,7 +29,7 @@ public class GuiVibrationChamber extends AEBaseGui
 	{
 		super.initGui();
 
-		pb = new GuiProgressBar( "guis/vibchamber.png", 99, 36, 176, 14, 6, 18, Direction.VERTICAL );
+		pb = new GuiProgressBar( cvc, "guis/vibchamber.png", 99, 36, 176, 14, 6, 18, Direction.VERTICAL );
 		this.buttonList.add( pb );
 	}
 
@@ -50,13 +51,11 @@ public class GuiVibrationChamber extends AEBaseGui
 		int k = 25;
 		int l = -15;
 
-		pb.max = 200;
-		pb.current = cvc.burnProgress > 0 ? cvc.burnSpeed : 0;
-		pb.FullMsg = (cvc.aePerTick * pb.current / 100) + " ae/t";
+		pb.setFullMsg( cvc.aePerTick * cvc.getCurrentProgress() / 100 + " ae/t" );
 
-		if ( cvc.burnProgress > 0 )
+		if ( cvc.getCurrentProgress() > 0 )
 		{
-			int i1 = cvc.burnProgress;
+			int i1 = cvc.getCurrentProgress();
 			bindTexture( "guis/vibchamber.png" );
 			GL11.glColor3f( 1, 1, 1 );
 			this.drawTexturedModalRect( k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2 );
