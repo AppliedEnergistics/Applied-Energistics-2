@@ -81,8 +81,6 @@ public class GuiStorageBus extends GuiUpgradeable
 	@Override
 	protected void actionPerformed(GuiButton btn)
 	{
-		super.actionPerformed( btn );
-
 		boolean backwards = Mouse.isButtonDown( 1 );
 
 		try
@@ -104,6 +102,8 @@ public class GuiStorageBus extends GuiUpgradeable
 
 			else if ( btn == storageFilter )
 				NetworkHandler.instance.sendToServer( new PacketConfigButton( storageFilter.getSetting(), backwards ) );
+			else
+				super.actionPerformed( btn );
 
 		}
 		catch (IOException e)
