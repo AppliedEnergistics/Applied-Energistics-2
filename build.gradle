@@ -36,6 +36,7 @@ version = config.version + "-" + config.aechannel + "-" + config.build
 group = config.group
 archivesBaseName = config.archivesBaseName
 
+// If TeamCity is running this build, lets set the version info
 if (hasProperty("teamcity")) {
     version = teamcity["build.number"]
 }
