@@ -24,4 +24,4 @@
 !codeformat/
 
 # include checkstyle
-!guidelines/ae.checkstyle
+!guidelines/
