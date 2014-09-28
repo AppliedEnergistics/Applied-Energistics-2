@@ -49,22 +49,22 @@ public class ContainerIOPort extends ContainerUpgradeable
 	@Override
 	protected void setupConfig()
 	{
-		int offx = 19;
-		int offy = 17;
+		int offX = 19;
+		int offY = 17;
 
-		IInventory cells = myte.getInventoryByName( "cells" );
+		IInventory cells = upgradeable.getInventoryByName( "cells" );
 
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 2; x++)
-				addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, cells, x + y * 2, offx + x * 18, offy + y * 18, invPlayer ) );
+				addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, cells, x + y * 2, offX + x * 18, offY + y * 18, invPlayer ) );
 
-		offx = 122;
-		offy = 17;
+		offX = 122;
+		offY = 17;
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 2; x++)
-				addSlotToContainer( new SlotOutput( cells, 6 + x + y * 2, offx + x * 18, offy + y * 18, SlotRestrictedInput.PlacableItemType.STORAGE_CELLS.IIcon ) );
+				addSlotToContainer( new SlotOutput( cells, 6 + x + y * 2, offX + x * 18, offY + y * 18, SlotRestrictedInput.PlacableItemType.STORAGE_CELLS.IIcon ) );
 
-		IInventory upgrades = myte.getInventoryByName( "upgrades" );
+		IInventory upgrades = upgradeable.getInventoryByName( "upgrades" );
 		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0, invPlayer )).setNotDraggable() );
 		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18 * 1, invPlayer )).setNotDraggable() );
 		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, invPlayer )).setNotDraggable() );
@@ -77,9 +77,9 @@ public class ContainerIOPort extends ContainerUpgradeable
 
 		if ( Platform.isServer() )
 		{
-			this.opMode = (OperationMode) myte.getConfigManager().getSetting( Settings.OPERATION_MODE );
-			this.fMode = (FullnessMode) this.myte.getConfigManager().getSetting( Settings.FULLNESS_MODE );
-			this.rsMode = (RedstoneMode) this.myte.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
+			this.opMode = (OperationMode) upgradeable.getConfigManager().getSetting( Settings.OPERATION_MODE );
+			this.fMode = (FullnessMode) this.upgradeable.getConfigManager().getSetting( Settings.FULLNESS_MODE );
+			this.rsMode = (RedstoneMode) this.upgradeable.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
 		}
 
 		standardDetectAndSendChanges();

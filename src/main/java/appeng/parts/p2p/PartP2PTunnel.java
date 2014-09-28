@@ -118,7 +118,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 			}
 			mc.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
 		}
-		else if ( tt != null ) // attune-ment
+		else if ( tt != null ) // attunement
 		{
 			ItemStack newType = null;
 
@@ -268,12 +268,12 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 		if ( freq == 0 )
 			return null;
 
-		PartP2PTunnel tunn;
+		PartP2PTunnel tunnel;
 		try
 		{
-			tunn = proxy.getP2P().getInput( freq );
-			if ( getClass().isInstance( tunn ) )
-				return (T) tunn;
+			tunnel = proxy.getP2P().getInput( freq );
+			if ( getClass().isInstance( tunnel ) )
+				return (T) tunnel;
 		}
 		catch (GridAccessException e)
 		{

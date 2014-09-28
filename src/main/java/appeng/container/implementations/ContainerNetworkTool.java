@@ -27,7 +27,7 @@ public class ContainerNetworkTool extends AEBaseContainer
 			for (int x = 0; x < 3; x++)
 				addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, te, y * 3 + x, 80 - 18 + x * 18, 37 - 18 + y * 18, invPlayer )) );
 
-		bindPlayerInventory( ip, 0, 166 - /* height of playerinventory */82 );
+		bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
 	}
 
 	public void toggleFacadeMode()

@@ -106,13 +106,13 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 	}
 
 	@Override
-	public List<PositionedStack> getIngredientStacks(int recipe)
+	public List<PositionedStack> getIngredientStacks(int recipeIndex)
 	{
 		return new ArrayList<PositionedStack>();
 	}
 
 	@Override
-	public List<PositionedStack> getOtherStacks(int recipetype)
+	public List<PositionedStack> getOtherStacks(int recipeIndex)
 	{
 		return new ArrayList<PositionedStack>();
 	}
@@ -154,15 +154,15 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 	}
 
 	@Override
-	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe)
+	public List<String> handleTooltip(GuiRecipe gui, List<String> currentToolTip, int recipe)
 	{
-		return currenttip;
+		return currentToolTip;
 	}
 
 	@Override
-	public List<String> handleItemTooltip(GuiRecipe gui, ItemStack stack, List<String> currenttip, int recipe)
+	public List<String> handleItemTooltip(GuiRecipe gui, ItemStack stack, List<String> currentToolTip, int recipe)
 	{
-		return currenttip;
+		return currentToolTip;
 	}
 
 	@Override

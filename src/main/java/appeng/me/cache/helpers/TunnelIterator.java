@@ -22,8 +22,8 @@ public class TunnelIterator<T extends PartP2PTunnel> implements Iterator<T>
 		}
 	}
 
-	public TunnelIterator(Collection<T> tunnelsource, Class clz) {
-		wrapped = tunnelsource.iterator();
+	public TunnelIterator(Collection<T> tunnelSources, Class clz) {
+		wrapped = tunnelSources.iterator();
 		targetType = clz;
 		findNext();
 	}

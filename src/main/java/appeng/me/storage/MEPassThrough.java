@@ -9,7 +9,7 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
-public class MEPassthru<T extends IAEStack<T>> implements IMEInventoryHandler<T>
+public class MEPassThrough<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
 
 	private IMEInventory<T> internal;
@@ -20,7 +20,7 @@ public class MEPassthru<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 		return internal;
 	}
 
-	public MEPassthru(IMEInventory<T> i, StorageChannel channel) {
+	public MEPassThrough(IMEInventory<T> i, StorageChannel channel) {
 		this.channel = channel;
 		setInternal( i );
 	}

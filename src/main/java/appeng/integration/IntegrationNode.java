@@ -10,8 +10,8 @@ import cpw.mods.fml.common.Loader;
 public class IntegrationNode
 {
 
-	IntegrationStage state = IntegrationStage.PREINIT;
-	IntegrationStage failedStage = IntegrationStage.PREINIT;
+	IntegrationStage state = IntegrationStage.PRE_INIT;
+	IntegrationStage failedStage = IntegrationStage.PRE_INIT;
 	Throwable exception = null;
 
 	String displayName;
@@ -23,11 +23,11 @@ public class IntegrationNode
 	Object instance;
 	IIntegrationModule mod = null;
 
-	public IntegrationNode(String dspname, String _modID, IntegrationType sName, String n) {
-		displayName = dspname;
-		shortName = sName;
-		modID = _modID;
-		name = n;
+	public IntegrationNode(String displayName, String modID, IntegrationType shortName, String name) {
+		this.displayName = displayName;
+		this.shortName = shortName;
+		this.modID = modID;
+		this.name = name;
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class IntegrationNode
 			{
 				switch (stage)
 				{
-				case PREINIT:
+				case PRE_INIT:
 
 					boolean enabled = modID == null || Loader.isModLoaded( modID );
 
@@ -77,10 +77,10 @@ public class IntegrationNode
 					break;
 				case INIT:
 					mod.Init();
-					state = IntegrationStage.POSTINIT;
+					state = IntegrationStage.POST_INIT;
 
 					break;
-				case POSTINIT:
+				case POST_INIT:
 					mod.PostInit();
 					state = IntegrationStage.READY;
 
@@ -98,7 +98,7 @@ public class IntegrationNode
 			}
 		}
 
-		if ( stage == IntegrationStage.POSTINIT )
+		if ( stage == IntegrationStage.POST_INIT )
 		{
 			if ( state == IntegrationStage.FAILED )
 			{
@@ -115,8 +115,8 @@ public class IntegrationNode
 
 	public boolean isActive()
 	{
-		if ( state == IntegrationStage.PREINIT )
-			Call( IntegrationStage.PREINIT );
+		if ( state == IntegrationStage.PRE_INIT )
+			Call( IntegrationStage.PRE_INIT );
 
 		return state != IntegrationStage.FAILED;
 	}

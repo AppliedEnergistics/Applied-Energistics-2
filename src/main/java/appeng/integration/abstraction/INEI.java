@@ -8,6 +8,6 @@ public interface INEI
 
 	void drawSlot(Slot s);
 
-	RenderItem setItemRender(RenderItem aeri2);
+	RenderItem setItemRender(RenderItem renderItem);
 
 }

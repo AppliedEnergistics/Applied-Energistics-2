@@ -117,7 +117,7 @@ public class CompassRegion
 			// raf.seek( cx + cz * 0x400 );
 			// return raf.readByte();
 		}
-		catch (IndexOutOfBoundsException outofBounds)
+		catch (IndexOutOfBoundsException outOfBounds)
 		{
 			return 0;
 		}

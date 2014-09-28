@@ -195,10 +195,10 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		int y = 29;
 		int offset = 0;
 
-		IInventory cell = myte.getInventoryByName( "cell" );
+		IInventory cell = upgradeable.getInventoryByName( "cell" );
 		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.WORKBENCH_CELL, cell, 0, 152, 8, invPlayer ) );
 
-		IInventory inv = myte.getInventoryByName( "config" );
+		IInventory inv = upgradeable.getInventoryByName( "config" );
 		UpgradeInventoryWrapper = new Upgrades();// Platform.isServer() ? new Upgrades() : new AppEngInternalInventory(
 													// null, 3 * 8 );
 
@@ -271,7 +271,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 
 	public void clear()
 	{
-		IInventory inv = myte.getInventoryByName( "config" );
+		IInventory inv = upgradeable.getInventoryByName( "config" );
 		for (int x = 0; x < inv.getSizeInventory(); x++)
 			inv.setInventorySlotContents( x, null );
 		detectAndSendChanges();
@@ -279,10 +279,10 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 
 	public void partition()
 	{
-		IInventory inv = myte.getInventoryByName( "config" );
+		IInventory inv = upgradeable.getInventoryByName( "config" );
 
 		IMEInventory<IAEItemStack> cellInv = AEApi.instance().registries().cell()
-				.getCellInventory( myte.getInventoryByName( "cell" ).getStackInSlot( 0 ), null, StorageChannel.ITEMS );
+				.getCellInventory( upgradeable.getInventoryByName( "cell" ).getStackInSlot( 0 ), null, StorageChannel.ITEMS );
 
 		Iterator<IAEItemStack> i = new NullIterator<IAEItemStack>();
 		if ( cellInv != null )

@@ -178,7 +178,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		ItemStack[] in = getInputs();
 		ItemStack[] out = getOutputs();
 
-		// if theres no input, this would be silly.
+		// if there is no input, this would be silly.
 		if ( in == null || out == null )
 			return;
 

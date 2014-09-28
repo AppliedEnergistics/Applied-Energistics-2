@@ -1208,13 +1208,13 @@ public class Platform
 		return a.isItemEqual( b );
 	}
 
-	public static LookDirection getPlayerRay(EntityPlayer player, float eyeoffset)
+	public static LookDirection getPlayerRay(EntityPlayer player, float eyeOffset)
 	{
 		float f = 1.0F;
 		float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
 		float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
 		double d0 = player.prevPosX + (player.posX - player.prevPosX) * (double) f;
-		double d1 = eyeoffset;
+		double d1 = eyeOffset;
 		double d2 = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) f;
 
 		Vec3 vec3 = Vec3.createVectorHelper( d0, d1, d2 );
@@ -1279,12 +1279,12 @@ public class Platform
 							continue;
 
 						f1 = 0.3F;
-						AxisAlignedBB axisalignedbb1 = entity1.boundingBox.expand( (double) f1, (double) f1, (double) f1 );
-						MovingObjectPosition movingobjectposition1 = axisalignedbb1.calculateIntercept( vec3, vec31 );
+						AxisAlignedBB boundingBox = entity1.boundingBox.expand( (double) f1, (double) f1, (double) f1 );
+						MovingObjectPosition movingObjectPosition = boundingBox.calculateIntercept( vec3, vec31 );
 
-						if ( movingobjectposition1 != null )
+						if ( movingObjectPosition != null )
 						{
-							double nd = vec3.squareDistanceTo( movingobjectposition1.hitVec );
+							double nd = vec3.squareDistanceTo( movingObjectPosition.hitVec );
 
 							if ( nd < closest )
 							{
@@ -1298,15 +1298,15 @@ public class Platform
 		}
 
 		MovingObjectPosition pos = null;
-		Vec3 Srec = null;
+		Vec3 vec = null;
 
 		if ( hitBlocks )
 		{
-			Srec = Vec3.createVectorHelper( d0, d1, d2 );
+			vec = Vec3.createVectorHelper( d0, d1, d2 );
 			pos = w.rayTraceBlocks( vec3, vec31, true );
 		}
 
-		if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( Srec ) > closest )
+		if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( vec ) > closest )
 		{
 			pos = new MovingObjectPosition( entity );
 		}
@@ -1443,7 +1443,7 @@ public class Platform
 		gs.postAlterationOfStoredItems( StorageChannel.ITEMS, itemChanges, src );
 	}
 
-	static public <T extends IAEStack<T>> void postListChanges(IItemList<T> before, IItemList<T> after, IMEMonitorHandlerReceiver<T> meMonitorPassthu,
+	static public <T extends IAEStack<T>> void postListChanges(IItemList<T> before, IItemList<T> after, IMEMonitorHandlerReceiver<T> meMonitorPassthrough,
 			BaseActionSource source)
 	{
 		LinkedList<T> changes = new LinkedList();
@@ -1463,7 +1463,7 @@ public class Platform
 		}
 
 		if ( !changes.isEmpty() )
-			meMonitorPassthu.postChange( null, changes, source );
+			meMonitorPassthrough.postChange( null, changes, source );
 	}
 
 	public static int generateTileHash(TileEntity target)
@@ -1477,16 +1477,16 @@ public class Platform
 			return 0;
 		else if ( target instanceof TileEntityChest )
 		{
-			TileEntityChest targ = (TileEntityChest) target;
-			targ.checkForAdjacentChests();
-			if ( targ.adjacentChestZNeg != null )
-				hash ^= targ.adjacentChestZNeg.hashCode();
-			else if ( targ.adjacentChestZPos != null )
-				hash ^= targ.adjacentChestZPos.hashCode();
-			else if ( targ.adjacentChestXPos != null )
-				hash ^= targ.adjacentChestXPos.hashCode();
-			else if ( targ.adjacentChestXNeg != null )
-				hash ^= targ.adjacentChestXNeg.hashCode();
+			TileEntityChest chest = (TileEntityChest) target;
+			chest.checkForAdjacentChests();
+			if ( chest.adjacentChestZNeg != null )
+				hash ^= chest.adjacentChestZNeg.hashCode();
+			else if ( chest.adjacentChestZPos != null )
+				hash ^= chest.adjacentChestZPos.hashCode();
+			else if ( chest.adjacentChestXPos != null )
+				hash ^= chest.adjacentChestXPos.hashCode();
+			else if ( chest.adjacentChestXNeg != null )
+				hash ^= chest.adjacentChestXNeg.hashCode();
 		}
 		else if ( target instanceof IInventory )
 		{
@@ -1640,7 +1640,7 @@ public class Platform
 	}
 
 	public static ItemStack extractItemsByRecipe(IEnergySource energySrc, BaseActionSource mySrc, IMEMonitor<IAEItemStack> src, World w, IRecipe r,
-			ItemStack output, InventoryCrafting ci, ItemStack providedTemplate, int slot, IItemList<IAEItemStack> aitems, Actionable realForFake,
+			ItemStack output, InventoryCrafting ci, ItemStack providedTemplate, int slot, IItemList<IAEItemStack> items, Actionable realForFake,
 			IPartitionList<IAEItemStack> filter)
 	{
 		if ( energySrc.extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.9 )
@@ -1668,9 +1668,9 @@ public class Platform
 			boolean checkFuzzy = ae_req.isOre() || providedTemplate.getItemDamage() == OreDictionary.WILDCARD_VALUE || providedTemplate.hasTagCompound()
 					|| providedTemplate.isItemStackDamageable();
 
-			if ( aitems != null && checkFuzzy )
+			if ( items != null && checkFuzzy )
 			{
-				for (IAEItemStack x : aitems)
+				for (IAEItemStack x : items)
 				{
 					ItemStack sh = x.getItemStack();
 					if ( (Platform.isSameItemType( providedTemplate, sh ) || ae_req.sameOre( x )) && !Platform.isSameItem( sh, output ) )
@@ -1764,7 +1764,7 @@ public class Platform
 		return is;
 	}
 
-	private static Class Playerinstance;
+	private static Class playerInstance;
 	private static Method getOrCreateChunkWatcher;
 	private static Method sendToAllPlayersWatchingChunk;
 
@@ -1783,19 +1783,19 @@ public class Platform
 
 			if ( getOrCreateChunkWatcher != null )
 			{
-				Object playerinstance = getOrCreateChunkWatcher.invoke( pm, c.xPosition, c.zPosition, false );
-				if ( playerinstance != null )
+				Object playerInstance = getOrCreateChunkWatcher.invoke( pm, c.xPosition, c.zPosition, false );
+				if ( playerInstance != null )
 				{
-					Playerinstance = playerinstance.getClass();
+					Platform.playerInstance = playerInstance.getClass();
 
 					if ( sendToAllPlayersWatchingChunk == null )
 					{
-						sendToAllPlayersWatchingChunk = ReflectionHelper.findMethod( Playerinstance, playerinstance, new String[] {
+						sendToAllPlayersWatchingChunk = ReflectionHelper.findMethod( Platform.playerInstance, playerInstance, new String[] {
 								"sendToAllPlayersWatchingChunk", "func_151251_a" }, Packet.class );
 					}
 
 					if ( sendToAllPlayersWatchingChunk != null )
-						sendToAllPlayersWatchingChunk.invoke( playerinstance, new S21PacketChunkData( c, false, verticalBits ) );
+						sendToAllPlayersWatchingChunk.invoke( playerInstance, new S21PacketChunkData( c, false, verticalBits ) );
 				}
 			}
 

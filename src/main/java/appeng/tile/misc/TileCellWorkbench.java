@@ -37,15 +37,15 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	{
 		if ( cacheUpgrades == null )
 		{
-			ICellWorkbenchItem cwbi = getCell();
-			if ( cwbi == null )
+			ICellWorkbenchItem cell = getCell();
+			if ( cell == null )
 				return null;
 
-			ItemStack is = cell.getStackInSlot( 0 );
+			ItemStack is = this.cell.getStackInSlot( 0 );
 			if ( is == null )
 				return null;
 
-			IInventory inv = cwbi.getUpgradesInventory( is );
+			IInventory inv = cell.getUpgradesInventory( is );
 			if ( inv == null )
 				return null;
 
@@ -58,15 +58,15 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	{
 		if ( cacheConfig == null )
 		{
-			ICellWorkbenchItem cwbi = getCell();
-			if ( cwbi == null )
+			ICellWorkbenchItem cell = getCell();
+			if ( cell == null )
 				return null;
 
-			ItemStack is = cell.getStackInSlot( 0 );
+			ItemStack is = this.cell.getStackInSlot( 0 );
 			if ( is == null )
 				return null;
 
-			IInventory inv = cwbi.getConfigInventory( is );
+			IInventory inv = cell.getConfigInventory( is );
 			if ( inv == null )
 				return null;
 

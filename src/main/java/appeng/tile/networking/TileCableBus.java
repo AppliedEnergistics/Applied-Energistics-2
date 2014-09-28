@@ -212,7 +212,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean visual)
 	{
-		return cb.getSelectedBoundingBoxsFromPool( false, true, e, visual );
+		return cb.getSelectedBoundingBoxesFromPool( false, true, e, visual );
 	}
 
 	@Override

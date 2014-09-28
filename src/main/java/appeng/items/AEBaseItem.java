@@ -11,14 +11,14 @@ import appeng.core.features.IAEFeature;
 public class AEBaseItem extends Item implements IAEFeature
 {
 
-	String FeatureFullname;
-	String FeatureSubname;
+	String featureFullName;
+	String featureSubName;
 	AEFeatureHandler feature;
 
 	@Override
 	public String toString()
 	{
-		return FeatureFullname;
+		return featureFullName;
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class AEBaseItem extends Item implements IAEFeature
 
 	public void setFeature(EnumSet<AEFeature> f)
 	{
-		feature = new AEFeatureHandler( f, this, FeatureSubname );
+		feature = new AEFeatureHandler( f, this, featureSubName );
 	}
 
 	public AEBaseItem(Class c) {
@@ -37,9 +37,9 @@ public class AEBaseItem extends Item implements IAEFeature
 		canRepair = false;
 	}
 
-	public AEBaseItem(Class c, String subname) {
-		FeatureSubname = subname;
-		FeatureFullname = AEFeatureHandler.getName( c, subname );
+	public AEBaseItem(Class c, String subName) {
+		featureSubName = subName;
+		featureFullName = AEFeatureHandler.getName( c, subName );
 	}
 
 	@Override

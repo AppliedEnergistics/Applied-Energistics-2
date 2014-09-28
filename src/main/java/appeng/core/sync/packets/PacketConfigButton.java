@@ -31,10 +31,10 @@ public class PacketConfigButton extends AppEngPacket
 	public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player)
 	{
 		EntityPlayerMP sender = (EntityPlayerMP) player;
-		AEBaseContainer aebc = (AEBaseContainer) sender.openContainer;
-		if ( aebc.getTarget() instanceof IConfigurableObject )
+		AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
+		if ( baseContainer.getTarget() instanceof IConfigurableObject )
 		{
-			IConfigManager cm = ((IConfigurableObject) aebc.getTarget()).getConfigManager();
+			IConfigManager cm = ((IConfigurableObject) baseContainer.getTarget()).getConfigManager();
 			Enum newState = Platform.rotateEnum( cm.getSetting( option ), rotationDirection, option.getPossibleValues() );
 			cm.putSetting( option, newState );
 		}

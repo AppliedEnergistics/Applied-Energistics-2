@@ -29,16 +29,16 @@ public class IntegrationRegistry
 	public void init()
 	{
 		for (IntegrationNode node : modules)
-			node.Call( IntegrationStage.PREINIT );
+			node.Call( IntegrationStage.PRE_INIT );
 
 		for (IntegrationNode node : modules)
 			node.Call( IntegrationStage.INIT );
 	}
 
-	public void postinit()
+	public void postInit()
 	{
 		for (IntegrationNode node : modules)
-			node.Call( IntegrationStage.POSTINIT );
+			node.Call( IntegrationStage.POST_INIT );
 	}
 
 	public String getStatus()

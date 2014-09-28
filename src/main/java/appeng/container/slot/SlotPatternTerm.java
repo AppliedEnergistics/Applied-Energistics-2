@@ -20,12 +20,12 @@ public class SlotPatternTerm extends SlotCraftingTerm
 	IOptionalSlotHost host;
 
 	public SlotPatternTerm(EntityPlayer player, BaseActionSource mySrc, IEnergySource energySrc, IStorageMonitorable storage, IInventory cMatrix,
-			IInventory secondMatrix, IInventory output, int x, int y, IOptionalSlotHost h, int grpnum, IContainerCraftingPacket c)
+			IInventory secondMatrix, IInventory output, int x, int y, IOptionalSlotHost h, int groupNumber, IContainerCraftingPacket c)
 	{
 		super( player, mySrc, energySrc, storage, cMatrix, secondMatrix, output, x, y, c );
 
 		host = h;
-		groupNum = grpnum;
+		groupNum = groupNumber;
 
 	}
 

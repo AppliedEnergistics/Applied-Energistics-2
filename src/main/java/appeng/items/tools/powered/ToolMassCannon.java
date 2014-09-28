@@ -61,7 +61,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 	public ToolMassCannon() {
 		super( ToolMassCannon.class, null );
 		setFeature( EnumSet.of( AEFeature.MatterCannon, AEFeature.PoweredTools ) );
-		maxStoredPower = AEConfig.instance.mattercannon_battery;
+		maxStoredPower = AEConfig.instance.matterCannonBattery;
 	}
 
 	@Override
@@ -104,10 +104,10 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 			if ( inv != null )
 			{
 				IItemList itemList = inv.getAvailableItems( AEApi.instance().storage().createItemList() );
-				IAEStack aeammo = itemList.getFirstItem();
-				if ( aeammo instanceof IAEItemStack )
+				IAEStack aeAmmo = itemList.getFirstItem();
+				if ( aeAmmo instanceof IAEItemStack )
 				{
-					shots = Math.min( shots, (int) aeammo.getStackSize() );
+					shots = Math.min( shots, (int) aeAmmo.getStackSize() );
 					for (int sh = 0; sh < shots; sh++)
 					{
 						extractAEPower( item, 1600 );
@@ -115,14 +115,14 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						if ( Platform.isClient() )
 							return item;
 
-						aeammo.setStackSize( 1 );
-						ItemStack ammo = ((IAEItemStack) aeammo).getItemStack();
+						aeAmmo.setStackSize( 1 );
+						ItemStack ammo = ((IAEItemStack) aeAmmo).getItemStack();
 						if ( ammo == null )
 							return item;
 
 						ammo.stackSize = 1;
-						aeammo = inv.extractItems( aeammo, Actionable.MODULATE, new PlayerSource( p, null ) );
-						if ( aeammo == null )
+						aeAmmo = inv.extractItems( aeAmmo, Actionable.MODULATE, new PlayerSource( p, null ) );
+						if ( aeAmmo == null )
 							return item;
 
 						float f = 1.0F;
@@ -147,7 +147,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						float penetration = AEApi.instance().registries().matterCannon().getPenetration( ammo ); // 196.96655f;
 						if ( penetration <= 0 )
 						{
-							ItemStack type = ((IAEItemStack) aeammo).getItemStack();
+							ItemStack type = ((IAEItemStack) aeAmmo).getItemStack();
 							if ( type.getItem() instanceof ItemPaintBall )
 							{
 								shootPaintBalls( type, w, p, vec3, vec31, direction, d0, d1, d2 );

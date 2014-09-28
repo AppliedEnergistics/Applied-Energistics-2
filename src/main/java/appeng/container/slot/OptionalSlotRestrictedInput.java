@@ -9,9 +9,9 @@ public class OptionalSlotRestrictedInput extends SlotRestrictedInput
 	final int groupNum;
 	IOptionalSlotHost host;
 
-	public OptionalSlotRestrictedInput(PlacableItemType valid, IInventory i, IOptionalSlotHost host, int slotnum, int x, int y, int grpNum,
+	public OptionalSlotRestrictedInput(PlacableItemType valid, IInventory i, IOptionalSlotHost host, int slotIndex, int x, int y, int grpNum,
 			InventoryPlayer invPlayer) {
-		super( valid, i, slotnum, x, y, invPlayer );
+		super( valid, i, slotIndex, x, y, invPlayer );
 		this.groupNum = grpNum;
 		this.host = host;
 	}

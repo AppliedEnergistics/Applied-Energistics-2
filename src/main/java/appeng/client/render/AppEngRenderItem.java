@@ -14,7 +14,7 @@ import appeng.core.AEConfig;
 public class AppEngRenderItem extends RenderItem
 {
 
-	public IAEItemStack aestack;
+	public IAEItemStack aeStack;
 
 	private void renderQuad(Tessellator par1Tessellator, int par2, int par3, int par4, int par5, int par6)
 	{
@@ -83,7 +83,7 @@ public class AppEngRenderItem extends RenderItem
 				GL11.glEnable( GL11.GL_DEPTH_TEST );
 			}
 
-			long amount = aestack != null ? aestack.getStackSize() : is.stackSize;
+			long amount = aeStack != null ? aeStack.getStackSize() : is.stackSize;
 			if ( amount > 999999999999L )
 				amount = 999999999999L;
 

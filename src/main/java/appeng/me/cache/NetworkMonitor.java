@@ -31,10 +31,10 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 		while (i.hasNext())
 		{
 			Entry<IMEMonitorHandlerReceiver<T>, Object> o = i.next();
-			IMEMonitorHandlerReceiver<T> recv = o.getKey();
+			IMEMonitorHandlerReceiver<T> receiver = o.getKey();
 
-			if ( recv.isValid( o.getValue() ) )
-				recv.onListUpdate();
+			if ( receiver.isValid( o.getValue() ) )
+				receiver.onListUpdate();
 			else
 				i.remove();
 		}

@@ -76,7 +76,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		gzReader.close();
 
 		// int uncompressedBytes = uncompressed.readableBytes();
-		// AELog.info( "Recv: " + originalBytes + " -> " + uncompressedBytes );
+		// AELog.info( "Receiver: " + originalBytes + " -> " + uncompressedBytes );
 
 		while (uncompressed.readableBytes() > 0)
 			list.add( AEItemStack.loadItemStackFromPacket( uncompressed ) );

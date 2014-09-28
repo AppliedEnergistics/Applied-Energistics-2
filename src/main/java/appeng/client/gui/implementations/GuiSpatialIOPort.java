@@ -17,13 +17,13 @@ import appeng.util.Platform;
 public class GuiSpatialIOPort extends AEBaseGui
 {
 
-	ContainerSpatialIOPort csiop;
+	ContainerSpatialIOPort container;
 	GuiImgButton units;
 
 	public GuiSpatialIOPort(InventoryPlayer inventoryPlayer, TileSpatialIOPort te) {
 		super( new ContainerSpatialIOPort( inventoryPlayer, te ) );
 		this.ySize = 199;
-		csiop = (ContainerSpatialIOPort) inventorySlots;
+		container = (ContainerSpatialIOPort) inventorySlots;
 	}
 
 	@Override
@@ -59,10 +59,10 @@ public class GuiSpatialIOPort extends AEBaseGui
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString( GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong( csiop.currentPower, false ), 13, 21, 4210752 );
-		fontRendererObj.drawString( GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong( csiop.maxPower, false ), 13, 31, 4210752 );
-		fontRendererObj.drawString( GuiText.RequiredPower.getLocal() + ": " + Platform.formatPowerLong( csiop.reqPower, false ), 13, 78, 4210752 );
-		fontRendererObj.drawString( GuiText.Efficiency.getLocal() + ": " + (((float) csiop.eff) / 100) + "%", 13, 88, 4210752 );
+		fontRendererObj.drawString( GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong( container.currentPower, false ), 13, 21, 4210752 );
+		fontRendererObj.drawString( GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong( container.maxPower, false ), 13, 31, 4210752 );
+		fontRendererObj.drawString( GuiText.RequiredPower.getLocal() + ": " + Platform.formatPowerLong( container.reqPower, false ), 13, 78, 4210752 );
+		fontRendererObj.drawString( GuiText.Efficiency.getLocal() + ": " + (((float) container.eff) / 100) + "%", 13, 88, 4210752 );
 
 		fontRendererObj.drawString( getGuiDisplayName( GuiText.SpatialIOPort.getLocal() ), 8, 6, 4210752 );
 		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96, 4210752 );

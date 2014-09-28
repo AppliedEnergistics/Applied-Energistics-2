@@ -262,13 +262,13 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		for (IGridNode cst : grid.getMachines( TileCraftingStorageTile.class ))
 		{
 			TileCraftingStorageTile tile = (TileCraftingStorageTile) cst.getMachine();
-			CraftingCPUCluster clust = (CraftingCPUCluster) tile.getCluster();
-			if ( clust != null )
+			CraftingCPUCluster cluster = (CraftingCPUCluster) tile.getCluster();
+			if ( cluster != null )
 			{
-				cpuClusters.add( clust );
+				cpuClusters.add( cluster );
 
-				if ( clust.myLastLink != null )
-					addLink( (CraftingLink) clust.myLastLink );
+				if ( cluster.myLastLink != null )
+					addLink( (CraftingLink) cluster.myLastLink );
 			}
 		}
 	}
@@ -433,10 +433,10 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		if ( job.isSimulation() )
 			return null;
 
-		CraftingCPUCluster cpuClust = null;
+		CraftingCPUCluster cpuCluster = null;
 
 		if ( target instanceof CraftingCPUCluster )
-			cpuClust = (CraftingCPUCluster) target;
+			cpuCluster = (CraftingCPUCluster) target;
 
 		if ( target == null )
 		{
@@ -471,12 +471,12 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			} );
 
 			if ( !validCpusClusters.isEmpty() )
-				cpuClust = validCpusClusters.get( 0 );
+				cpuCluster = validCpusClusters.get( 0 );
 		}
 
-		if ( cpuClust != null )
+		if ( cpuCluster != null )
 		{
-			return cpuClust.submitJob( grid, job, src, requestingMachine );
+			return cpuCluster.submitJob( grid, job, src, requestingMachine );
 		}
 
 		return null;

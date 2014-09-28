@@ -44,14 +44,14 @@ public class RenderSpatialPylon extends BaseBlockRender
 			if ( (displayBits & sp.DISPLAY_Z) == sp.DISPLAY_X )
 			{
 				ori = ForgeDirection.EAST;
-				if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_ENDMAX )
+				if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_END_MAX )
 				{
 					renderer.uvRotateEast = 1;
 					renderer.uvRotateWest = 2;
 					renderer.uvRotateTop = 2;
 					renderer.uvRotateBottom = 1;
 				}
-				else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_ENDMIN )
+				else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_END_MIN )
 				{
 					renderer.uvRotateEast = 2;
 					renderer.uvRotateWest = 1;
@@ -70,7 +70,7 @@ public class RenderSpatialPylon extends BaseBlockRender
 			else if ( (displayBits & sp.DISPLAY_Z) == sp.DISPLAY_Y )
 			{
 				ori = ForgeDirection.UP;
-				if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_ENDMAX )
+				if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_END_MAX )
 				{
 					renderer.uvRotateNorth = 3;
 					renderer.uvRotateSouth = 3;
@@ -82,12 +82,12 @@ public class RenderSpatialPylon extends BaseBlockRender
 			else if ( (displayBits & sp.DISPLAY_Z) == sp.DISPLAY_Z )
 			{
 				ori = ForgeDirection.NORTH;
-				if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_ENDMAX )
+				if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_END_MAX )
 				{
 					renderer.uvRotateSouth = 1;
 					renderer.uvRotateNorth = 2;
 				}
-				else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_ENDMIN )
+				else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_END_MIN )
 				{
 					renderer.uvRotateNorth = 1;
 					renderer.uvRotateSouth = 2;
@@ -112,7 +112,7 @@ public class RenderSpatialPylon extends BaseBlockRender
 
 			boolean r = renderer.renderStandardBlock( imb, x, y, z );
 
-			if ( (displayBits & sp.DISPLAY_POWEREDENABLED) == sp.DISPLAY_POWEREDENABLED )
+			if ( (displayBits & sp.DISPLAY_POWERED_ENABLED) == sp.DISPLAY_POWERED_ENABLED )
 			{
 				int bn = 15;
 				Tessellator.instance.setBrightness( bn << 20 | bn << 4 );
@@ -159,10 +159,10 @@ public class RenderSpatialPylon extends BaseBlockRender
 		if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_MIDDLE )
 			return ExtraBlockTextures.BlockSpatialPylonC.getIcon();
 
-		else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_ENDMIN )
+		else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_END_MIN )
 			return ExtraBlockTextures.BlockSpatialPylonE.getIcon();
 
-		else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_ENDMAX )
+		else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_END_MAX )
 			return ExtraBlockTextures.BlockSpatialPylonE.getIcon();
 
 		return blk.getIcon( 0, 0 );
@@ -178,10 +178,10 @@ public class RenderSpatialPylon extends BaseBlockRender
 		if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_MIDDLE )
 			return good ? ExtraBlockTextures.BlockSpatialPylonC_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylonC_red.getIcon();
 
-		else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_ENDMIN )
+		else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_END_MIN )
 			return good ? ExtraBlockTextures.BlockSpatialPylonE_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylonE_red.getIcon();
 
-		else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_ENDMAX )
+		else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_END_MAX )
 			return good ? ExtraBlockTextures.BlockSpatialPylonE_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylonE_red.getIcon();
 
 		return blk.getIcon( 0, 0 );

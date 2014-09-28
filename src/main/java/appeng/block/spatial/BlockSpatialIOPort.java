@@ -40,7 +40,7 @@ public class BlockSpatialIOPort extends AEBaseBlock
 		if ( tg != null )
 		{
 			if ( Platform.isServer() )
-				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_SPATIALIOPORT );
+				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_SPATIAL_IO_PORT );
 			return true;
 		}
 		return false;

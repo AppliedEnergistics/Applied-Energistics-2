@@ -88,7 +88,7 @@ public class ImmibisMicroblocks extends BaseModule implements IImmibisMicroblock
 			catch (Throwable e)
 			{
 				canConvertTiles = false;
-				return null; // nevermind..
+				return null;
 			}
 
 			TileEntity tx = w.getTileEntity( x, y, z );

@@ -13,7 +13,7 @@ import appeng.tile.crafting.TileMolecularAssembler;
 public class GuiMAC extends GuiUpgradeable
 {
 
-	ContainerMAC cmac;
+	ContainerMAC container;
 	GuiProgressBar pb;
 
 	@Override
@@ -37,7 +37,7 @@ public class GuiMAC extends GuiUpgradeable
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
 		pb.max = 100;
-		pb.current = cmac.craftProgress;
+		pb.current = container.craftProgress;
 		pb.FullMsg = pb.current + "%";
 
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
@@ -58,7 +58,7 @@ public class GuiMAC extends GuiUpgradeable
 	public GuiMAC(InventoryPlayer inventoryPlayer, TileMolecularAssembler te) {
 		super( new ContainerMAC( inventoryPlayer, te ) );
 		this.ySize = 197;
-		this.cmac = (ContainerMAC) this.inventorySlots;
+		this.container = (ContainerMAC) this.inventorySlots;
 	}
 
 	protected GuiText getName()

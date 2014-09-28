@@ -144,17 +144,17 @@ public class RenderBlockInscriber extends BaseBlockRender
 		float press = 0.2f;
 		float base = 0.4f;
 
-		long lprogress = 0;
+		long absoluteProgress = 0;
 		if ( inv.smash )
 		{
 			long currentTime = System.currentTimeMillis();
-			lprogress = currentTime - inv.clientStart;
-			if ( lprogress > 800 )
+			absoluteProgress = currentTime - inv.clientStart;
+			if ( absoluteProgress > 800 )
 				inv.smash = false;
 		}
 
-		float rprogress = (float) (lprogress % 800) / 400.0f;
-		float progress = rprogress;
+		float relativeProgress = (float) (absoluteProgress % 800) / 400.0f;
+		float progress = relativeProgress;
 
 		if ( progress > 1.0f )
 			progress = 1.0f - (progress - 1.0f);
@@ -197,7 +197,7 @@ public class RenderBlockInscriber extends BaseBlockRender
 		if ( inv.getStackInSlot( 2 ) != null )
 			items++;
 
-		if ( rprogress > 1.0f || items == 0 )
+		if ( relativeProgress > 1.0f || items == 0 )
 		{
 			ItemStack is = inv.getStackInSlot( 3 );
 
