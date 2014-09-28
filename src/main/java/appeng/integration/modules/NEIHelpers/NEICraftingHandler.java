@@ -66,7 +66,7 @@ public class NEICraftingHandler implements IOverlayHandler
 						{
 							if ( slot instanceof SlotCraftingMatrix || slot instanceof SlotFakeCraftingMatrix )
 							{
-								Slot ctSlot = (Slot) slot;
+								Slot ctSlot = slot;
 								if ( ctSlot.getSlotIndex() == col + row * 3 )
 								{
 									NBTTagList tags = new NBTTagList();

@@ -51,7 +51,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	{
 		super.onPlacement( player, held, side );
 
-		byte rotation = (byte) (MathHelper.floor_double( (double) ((player.rotationYaw * 4F) / 360F) + 2.5D ) & 3);
+		byte rotation = (byte) (MathHelper.floor_double( (player.rotationYaw * 4F) / 360F + 2.5D ) & 3);
 		if ( side == ForgeDirection.UP )
 			spin = rotation;
 		else if ( side == ForgeDirection.DOWN )
@@ -63,7 +63,7 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	{
 		super.writeToNBT( data );
 		data.setFloat( "opacity", opacity );
-		data.setByte( "spin", (byte) spin );
+		data.setByte( "spin", spin );
 	}
 
 	@Override

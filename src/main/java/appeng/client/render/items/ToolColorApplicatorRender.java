@@ -32,10 +32,10 @@ public class ToolColorApplicatorRender implements IItemRenderer
 	{
 		IIcon par2Icon = item.getIconIndex();
 
-		float f4 = ((IIcon) par2Icon).getMinU();
-		float f5 = ((IIcon) par2Icon).getMaxU();
-		float f6 = ((IIcon) par2Icon).getMinV();
-		float f7 = ((IIcon) par2Icon).getMaxV();
+		float f4 = par2Icon.getMinU();
+		float f5 = par2Icon.getMaxU();
+		float f6 = par2Icon.getMinV();
+		float f7 = par2Icon.getMaxV();
 		float f12 = 0.0625F;
 
 		Tessellator tessellator = Tessellator.instance;
@@ -52,10 +52,10 @@ public class ToolColorApplicatorRender implements IItemRenderer
 
 			tessellator.startDrawingQuads();
 			tessellator.setNormal( 0.0F, 1.0F, 0.0F );
-			tessellator.addVertexWithUV( 0, 0, 0, (double) f4, (double) f7 );
-			tessellator.addVertexWithUV( 1, 0, 0, (double) f5, (double) f7 );
-			tessellator.addVertexWithUV( 1, 1, 0, (double) f5, (double) f6 );
-			tessellator.addVertexWithUV( 0, 1, 0, (double) f4, (double) f6 );
+			tessellator.addVertexWithUV( 0, 0, 0, f4, f7 );
+			tessellator.addVertexWithUV( 1, 0, 0, f5, f7 );
+			tessellator.addVertexWithUV( 1, 1, 0, f5, f6 );
+			tessellator.addVertexWithUV( 0, 1, 0, f4, f6 );
 			tessellator.draw();
 		}
 		else
@@ -66,7 +66,7 @@ public class ToolColorApplicatorRender implements IItemRenderer
 				GL11.glTranslatef( 0.0F, 0.0F, 0.0F );
 			else
 				GL11.glTranslatef( -0.5F, -0.3F, 0.01F );
-			ItemRenderer.renderItemIn2D( tessellator, f5, f6, f4, f7, ((IIcon) par2Icon).getIconWidth(), ((IIcon) par2Icon).getIconHeight(), f12 );
+			ItemRenderer.renderItemIn2D( tessellator, f5, f6, f4, f7, par2Icon.getIconWidth(), par2Icon.getIconHeight(), f12 );
 
 			GL11.glDisable( GL11.GL_CULL_FACE );
 			GL11.glColor4f( 1, 1, 1, 1.0F );
@@ -92,38 +92,38 @@ public class ToolColorApplicatorRender implements IItemRenderer
 		{
 			tessellator.startDrawingQuads();
 
-			f4 = ((IIcon) dark).getMinU();
-			f5 = ((IIcon) dark).getMaxU();
-			f6 = ((IIcon) dark).getMinV();
-			f7 = ((IIcon) dark).getMaxV();
+			f4 = dark.getMinU();
+			f5 = dark.getMaxU();
+			f6 = dark.getMinV();
+			f7 = dark.getMaxV();
 
 			tessellator.setColorOpaque_I( col.blackVariant );
-			tessellator.addVertexWithUV( 0, 0, 0, (double) f4, (double) f7 );
-			tessellator.addVertexWithUV( 16, 0, 0, (double) f5, (double) f7 );
-			tessellator.addVertexWithUV( 16, 16, 0, (double) f5, (double) f6 );
-			tessellator.addVertexWithUV( 0, 16, 0, (double) f4, (double) f6 );
+			tessellator.addVertexWithUV( 0, 0, 0, f4, f7 );
+			tessellator.addVertexWithUV( 16, 0, 0, f5, f7 );
+			tessellator.addVertexWithUV( 16, 16, 0, f5, f6 );
+			tessellator.addVertexWithUV( 0, 16, 0, f4, f6 );
 
-			f4 = ((IIcon) light).getMinU();
-			f5 = ((IIcon) light).getMaxU();
-			f6 = ((IIcon) light).getMinV();
-			f7 = ((IIcon) light).getMaxV();
+			f4 = light.getMinU();
+			f5 = light.getMaxU();
+			f6 = light.getMinV();
+			f7 = light.getMaxV();
 
 			tessellator.setColorOpaque_I( col.whiteVariant );
-			tessellator.addVertexWithUV( 0, 0, 0, (double) f4, (double) f7 );
-			tessellator.addVertexWithUV( 16, 0, 0, (double) f5, (double) f7 );
-			tessellator.addVertexWithUV( 16, 16, 0, (double) f5, (double) f6 );
-			tessellator.addVertexWithUV( 0, 16, 0, (double) f4, (double) f6 );
+			tessellator.addVertexWithUV( 0, 0, 0, f4, f7 );
+			tessellator.addVertexWithUV( 16, 0, 0, f5, f7 );
+			tessellator.addVertexWithUV( 16, 16, 0, f5, f6 );
+			tessellator.addVertexWithUV( 0, 16, 0, f4, f6 );
 
-			f4 = ((IIcon) med).getMinU();
-			f5 = ((IIcon) med).getMaxU();
-			f6 = ((IIcon) med).getMinV();
-			f7 = ((IIcon) med).getMaxV();
+			f4 = med.getMinU();
+			f5 = med.getMaxU();
+			f6 = med.getMinV();
+			f7 = med.getMaxV();
 
 			tessellator.setColorOpaque_I( col.mediumVariant );
-			tessellator.addVertexWithUV( 0, 0, 0, (double) f4, (double) f7 );
-			tessellator.addVertexWithUV( 16, 0, 0, (double) f5, (double) f7 );
-			tessellator.addVertexWithUV( 16, 16, 0, (double) f5, (double) f6 );
-			tessellator.addVertexWithUV( 0, 16, 0, (double) f4, (double) f6 );
+			tessellator.addVertexWithUV( 0, 0, 0, f4, f7 );
+			tessellator.addVertexWithUV( 16, 0, 0, f5, f7 );
+			tessellator.addVertexWithUV( 16, 16, 0, f5, f6 );
+			tessellator.addVertexWithUV( 0, 16, 0, f4, f6 );
 
 			tessellator.draw();
 		}

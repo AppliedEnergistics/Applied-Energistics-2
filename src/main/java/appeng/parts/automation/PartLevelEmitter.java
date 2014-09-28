@@ -428,9 +428,9 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		{
 			ForgeDirection d = side;
 
-			double d0 = (double) ((float) d.offsetX * 0.45F) + (double) (r.nextFloat() - 0.5F) * 0.2D;
-			double d1 = (double) ((float) d.offsetY * 0.45F) + (double) (r.nextFloat() - 0.5F) * 0.2D;
-			double d2 = (double) ((float) d.offsetZ * 0.45F) + (double) (r.nextFloat() - 0.5F) * 0.2D;
+			double d0 = d.offsetX * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
+			double d1 = d.offsetY * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
+			double d2 = d.offsetZ * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
 
 			world.spawnParticle( "reddust", 0.5 + x + d0, 0.5 + y + d1, 0.5 + z + d2, 0.0D, 0.0D, 0.0D );
 		}
@@ -469,20 +469,20 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		 * float var16 = (float)var14 / 256.0F; float var17 = ((float)var14 + 15.99F) / 256.0F; float var18 =
 		 * (float)var15 / 256.0F; float var19 = ((float)var15 + 15.99F) / 256.0F;
 		 */
-		double var20b = (double) offTexture.getInterpolatedU( 7.0D );
-		double var24b = (double) offTexture.getInterpolatedU( 9.0D );
+		double var20b = offTexture.getInterpolatedU( 7.0D );
+		double var24b = offTexture.getInterpolatedU( 9.0D );
 
-		double var20 = (double) IIcon.getInterpolatedU( 7.0D );
-		double var24 = (double) IIcon.getInterpolatedU( 9.0D );
-		double var22 = (double) IIcon.getInterpolatedV( 6.0D + (isOn ? 0 : 1.0D) );
-		double var26 = (double) IIcon.getInterpolatedV( 8.0D + (isOn ? 0 : 1.0D) );
-		double var28 = (double) IIcon.getInterpolatedU( 7.0D );
-		double var30 = (double) IIcon.getInterpolatedV( 13.0D );
-		double var32 = (double) IIcon.getInterpolatedU( 9.0D );
-		double var34 = (double) IIcon.getInterpolatedV( 15.0D );
+		double var20 = IIcon.getInterpolatedU( 7.0D );
+		double var24 = IIcon.getInterpolatedU( 9.0D );
+		double var22 = IIcon.getInterpolatedV( 6.0D + (isOn ? 0 : 1.0D) );
+		double var26 = IIcon.getInterpolatedV( 8.0D + (isOn ? 0 : 1.0D) );
+		double var28 = IIcon.getInterpolatedU( 7.0D );
+		double var30 = IIcon.getInterpolatedV( 13.0D );
+		double var32 = IIcon.getInterpolatedU( 9.0D );
+		double var34 = IIcon.getInterpolatedV( 15.0D );
 
-		double var22b = (double) IIcon.getInterpolatedV( 9.0D );
-		double var26b = (double) IIcon.getInterpolatedV( 11.0D );
+		double var22b = IIcon.getInterpolatedV( 9.0D );
+		double var26b = IIcon.getInterpolatedV( 11.0D );
 
 		baseX += 0.5D;
 		baseZ += 0.5D;
@@ -523,25 +523,25 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		this.addVertexWithUV( baseX - var44 + Zero, baseY, baseZ + var44 + par10, var28, var34 );
 		this.addVertexWithUV( baseX - var44 + Zero, baseY, baseZ - var44 + par10, var28, var30 );
 
-		this.addVertexWithUV( baseX - var44, baseY + 1.0D, var40, (double) var16, (double) var18 );
-		this.addVertexWithUV( baseX - var44 + Zero, baseY + 0.0D, var40 + par10, (double) var16, (double) var19 );
-		this.addVertexWithUV( baseX - var44 + Zero, baseY + 0.0D, var42 + par10, (double) var17, (double) var19 );
-		this.addVertexWithUV( baseX - var44, baseY + 1.0D, var42, (double) var17, (double) var18 );
+		this.addVertexWithUV( baseX - var44, baseY + 1.0D, var40, var16, var18 );
+		this.addVertexWithUV( baseX - var44 + Zero, baseY + 0.0D, var40 + par10, var16, var19 );
+		this.addVertexWithUV( baseX - var44 + Zero, baseY + 0.0D, var42 + par10, var17, var19 );
+		this.addVertexWithUV( baseX - var44, baseY + 1.0D, var42, var17, var18 );
 
-		this.addVertexWithUV( baseX + var44, baseY + 1.0D, var42, (double) var16, (double) var18 );
-		this.addVertexWithUV( baseX + Zero + var44, baseY + 0.0D, var42 + par10, (double) var16, (double) var19 );
-		this.addVertexWithUV( baseX + Zero + var44, baseY + 0.0D, var40 + par10, (double) var17, (double) var19 );
-		this.addVertexWithUV( baseX + var44, baseY + 1.0D, var40, (double) var17, (double) var18 );
+		this.addVertexWithUV( baseX + var44, baseY + 1.0D, var42, var16, var18 );
+		this.addVertexWithUV( baseX + Zero + var44, baseY + 0.0D, var42 + par10, var16, var19 );
+		this.addVertexWithUV( baseX + Zero + var44, baseY + 0.0D, var40 + par10, var17, var19 );
+		this.addVertexWithUV( baseX + var44, baseY + 1.0D, var40, var17, var18 );
 
-		this.addVertexWithUV( var36, baseY + 1.0D, baseZ + var44, (double) var16, (double) var18 );
-		this.addVertexWithUV( var36 + Zero, baseY + 0.0D, baseZ + var44 + par10, (double) var16, (double) var19 );
-		this.addVertexWithUV( var38 + Zero, baseY + 0.0D, baseZ + var44 + par10, (double) var17, (double) var19 );
-		this.addVertexWithUV( var38, baseY + 1.0D, baseZ + var44, (double) var17, (double) var18 );
+		this.addVertexWithUV( var36, baseY + 1.0D, baseZ + var44, var16, var18 );
+		this.addVertexWithUV( var36 + Zero, baseY + 0.0D, baseZ + var44 + par10, var16, var19 );
+		this.addVertexWithUV( var38 + Zero, baseY + 0.0D, baseZ + var44 + par10, var17, var19 );
+		this.addVertexWithUV( var38, baseY + 1.0D, baseZ + var44, var17, var18 );
 
-		this.addVertexWithUV( var38, baseY + 1.0D, baseZ - var44, (double) var16, (double) var18 );
-		this.addVertexWithUV( var38 + Zero, baseY + 0.0D, baseZ - var44 + par10, (double) var16, (double) var19 );
-		this.addVertexWithUV( var36 + Zero, baseY + 0.0D, baseZ - var44 + par10, (double) var17, (double) var19 );
-		this.addVertexWithUV( var36, baseY + 1.0D, baseZ - var44, (double) var17, (double) var18 );
+		this.addVertexWithUV( var38, baseY + 1.0D, baseZ - var44, var16, var18 );
+		this.addVertexWithUV( var38 + Zero, baseY + 0.0D, baseZ - var44 + par10, var16, var19 );
+		this.addVertexWithUV( var36 + Zero, baseY + 0.0D, baseZ - var44 + par10, var17, var19 );
+		this.addVertexWithUV( var36, baseY + 1.0D, baseZ - var44, var17, var18 );
 	}
 
 	boolean status = false;

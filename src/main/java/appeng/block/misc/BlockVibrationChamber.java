@@ -73,9 +73,9 @@ public class BlockVibrationChamber extends AEBaseBlock
 			TileVibrationChamber tc = (TileVibrationChamber) tile;
 			if ( tc.isOn )
 			{
-				float f1 = (float) x + 0.5F;
-				float f2 = (float) y + 0.5F;
-				float f3 = (float) z + 0.5F;
+				float f1 = x + 0.5F;
+				float f2 = y + 0.5F;
+				float f3 = z + 0.5F;
 
 				ForgeDirection forward = tc.getForward();
 				ForgeDirection up = tc.getUp();
@@ -99,8 +99,8 @@ public class BlockVibrationChamber extends AEBaseBlock
 				f2 += west_y * (0.3 * ox - 0.15);
 				f3 += west_z * (0.3 * ox - 0.15);
 
-				w.spawnParticle( "smoke", (double) f1, (double) f2, (double) f3, 0.0D, 0.0D, 0.0D );
-				w.spawnParticle( "flame", (double) f1, (double) f2, (double) f3, 0.0D, 0.0D, 0.0D );
+				w.spawnParticle( "smoke", f1, f2, f3, 0.0D, 0.0D, 0.0D );
+				w.spawnParticle( "flame", f1, f2, f3, 0.0D, 0.0D, 0.0D );
 			}
 		}
 	}

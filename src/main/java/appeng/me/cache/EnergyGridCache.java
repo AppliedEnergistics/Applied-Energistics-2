@@ -305,7 +305,7 @@ public class EnergyGridCache implements IEnergyGrid
 		if ( machine instanceof IEnergyWatcherHost )
 		{
 			IEnergyWatcherHost swh = (IEnergyWatcherHost) machine;
-			EnergyWatcher iw = new EnergyWatcher( this, (IEnergyWatcherHost) swh );
+			EnergyWatcher iw = new EnergyWatcher( this, swh );
 			watchers.put( node, iw );
 			swh.updateWatcher( iw );
 		}

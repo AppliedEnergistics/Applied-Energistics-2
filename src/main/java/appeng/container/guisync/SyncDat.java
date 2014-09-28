@@ -118,15 +118,15 @@ public class SyncDat
 				if ( field.getType().equals( int.class ) )
 					field.set( source, (int) val );
 				else if ( field.getType().equals( long.class ) )
-					field.set( source, (long) val );
+					field.set( source, val );
 				else if ( field.getType().equals( boolean.class ) )
 					field.set( source, val == 1 );
 				else if ( field.getType().equals( Integer.class ) )
-					field.set( source, (Integer) (int) val );
+					field.set( source, (int) val );
 				else if ( field.getType().equals( Long.class ) )
-					field.set( source, (Long) val );
+					field.set( source, val );
 				else if ( field.getType().equals( Boolean.class ) )
-					field.set( source, (Boolean) (val == 1) );
+					field.set( source, val == 1 );
 			}
 
 			source.onUpdate( field.getName(), oldValue, field.get( source ) );

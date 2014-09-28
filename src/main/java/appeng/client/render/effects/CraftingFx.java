@@ -71,9 +71,9 @@ public class CraftingFx extends EntityBreakingFX
 		float f9 = this.particleTextureIndex.getMaxV();
 		float scale = 0.1F * this.particleScale;
 
-		float offX = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTick);
-		float offY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTick);
-		float offZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTick);
+		float offX = (float) (this.prevPosX + (this.posX - this.prevPosX) * partialTick);
+		float offY = (float) (this.prevPosY + (this.posY - this.prevPosY) * partialTick);
+		float offZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * partialTick);
 		float f14 = 1.0F;
 
 		int blkX = MathHelper.floor_double( offX );
@@ -87,14 +87,14 @@ public class CraftingFx extends EntityBreakingFX
 
 			// AELog.info( "" + partialTick );
 			par1Tessellator.setColorRGBA_F( this.particleRed * f14, this.particleGreen * f14, this.particleBlue * f14, this.particleAlpha );
-			par1Tessellator.addVertexWithUV( (double) (offX - x * scale - rx * scale), (double) (offY - y * scale), (double) (offZ - z * scale - rz * scale),
-					(double) f7, (double) f9 );
-			par1Tessellator.addVertexWithUV( (double) (offX - x * scale + rx * scale), (double) (offY + y * scale), (double) (offZ - z * scale + rz * scale),
-					(double) f7, (double) f8 );
-			par1Tessellator.addVertexWithUV( (double) (offX + x * scale + rx * scale), (double) (offY + y * scale), (double) (offZ + z * scale + rz * scale),
-					(double) f6, (double) f8 );
-			par1Tessellator.addVertexWithUV( (double) (offX + x * scale - rx * scale), (double) (offY - y * scale), (double) (offZ + z * scale - rz * scale),
-					(double) f6, (double) f9 );
+			par1Tessellator.addVertexWithUV( offX - x * scale - rx * scale, offY - y * scale, offZ - z * scale - rz * scale,
+					f7, f9 );
+			par1Tessellator.addVertexWithUV( offX - x * scale + rx * scale, offY + y * scale, offZ - z * scale + rz * scale,
+					f7, f8 );
+			par1Tessellator.addVertexWithUV( offX + x * scale + rx * scale, offY + y * scale, offZ + z * scale + rz * scale,
+					f6, f8 );
+			par1Tessellator.addVertexWithUV( offX + x * scale - rx * scale, offY - y * scale, offZ + z * scale - rz * scale,
+					f6, f9 );
 		}
 	}
 

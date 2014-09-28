@@ -197,7 +197,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		this.ySize = magicNumber + rows * 18 + reservedSpace;
 		// this.guiTop = top;
 		int unusedSpace = height - ySize;
-		guiTop = (int) Math.floor( (float) unusedSpace / (unusedSpace < 0 ? 3.8f : 2.0f) );
+		guiTop = (int) Math.floor( unusedSpace / (unusedSpace < 0 ? 3.8f : 2.0f) );
 
 		int offset = guiTop + 8;
 

@@ -25,7 +25,7 @@ public class DefaultPriorityList<T extends IAEStack<T>> implements IPartitionLis
 	@Override
 	public Iterable<T> getItems()
 	{
-		return (Iterable<T>) nullList;
+		return nullList;
 	}
 
 }

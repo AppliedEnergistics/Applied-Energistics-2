@@ -206,7 +206,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 	public PowerReceiver getPowerReceiver(ForgeDirection side)
 	{
 		if ( side.equals( side ) )
-			return ((BaseMJPerdition) pp).getPowerReceiver();
+			return pp.getPowerReceiver();
 		return null;
 	}
 

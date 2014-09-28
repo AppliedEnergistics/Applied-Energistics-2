@@ -36,7 +36,7 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 		if ( tile instanceof TileCraftingMonitorTile )
 		{
 			TileCraftingMonitorTile cmt = (TileCraftingMonitorTile) tile;
-			IAEItemStack ais = (IAEItemStack) cmt.getJobProgress();
+			IAEItemStack ais = cmt.getJobProgress();
 
 			if ( cmt.dspList == null )
 			{
@@ -89,14 +89,14 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 		{
 			GL11.glScalef( 1.0f, -1.0f, 1.0f );
 			GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
-			GL11.glRotatef( (float) spin * 90.0F, 0, 0, 1 );
+			GL11.glRotatef( spin * 90.0F, 0, 0, 1 );
 		}
 
 		if ( d == ForgeDirection.DOWN )
 		{
 			GL11.glScalef( 1.0f, -1.0f, 1.0f );
 			GL11.glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
-			GL11.glRotatef( (float) spin * -90.0F, 0, 0, 1 );
+			GL11.glRotatef( spin * -90.0F, 0, 0, 1 );
 		}
 
 		if ( d == ForgeDirection.EAST )

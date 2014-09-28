@@ -560,7 +560,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 			for (var6 = 0; var6 < var4.length; ++var6)
 			{
-				var7 = fontRendererObj.getStringWidth( (String) var4[var6] );
+				var7 = fontRendererObj.getStringWidth( var4[var6] );
 
 				if ( var7 > var5 )
 				{
@@ -602,7 +602,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 			for (int var13 = 0; var13 < var4.length; ++var13)
 			{
-				String var14 = (String) var4[var13];
+				String var14 = var4[var13];
 
 				if ( var13 == 0 )
 				{
@@ -877,14 +877,14 @@ public abstract class AEBaseGui extends GuiContainer
 							float f1 = 0.00390625F;
 							tessellator.startDrawingQuads();
 							tessellator.setColorRGBA_F( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() );
-							tessellator.addVertexWithUV( (double) (par1 + 0), (double) (par2 + par6), (double) this.zLevel, (double) ((float) (par3 + 0) * f),
-									(double) ((float) (par4 + par6) * f1) );
-							tessellator.addVertexWithUV( (double) (par1 + par5), (double) (par2 + par6), (double) this.zLevel,
-									(double) ((float) (par3 + par5) * f), (double) ((float) (par4 + par6) * f1) );
-							tessellator.addVertexWithUV( (double) (par1 + par5), (double) (par2 + 0), (double) this.zLevel,
-									(double) ((float) (par3 + par5) * f), (double) ((float) (par4 + 0) * f1) );
-							tessellator.addVertexWithUV( (double) (par1 + 0), (double) (par2 + 0), (double) this.zLevel, (double) ((float) (par3 + 0) * f),
-									(double) ((float) (par4 + 0) * f1) );
+							tessellator.addVertexWithUV( par1 + 0, par2 + par6, this.zLevel, (par3 + 0) * f,
+									(par4 + par6) * f1 );
+							tessellator.addVertexWithUV( par1 + par5, par2 + par6, this.zLevel,
+									(par3 + par5) * f, (par4 + par6) * f1 );
+							tessellator.addVertexWithUV( par1 + par5, par2 + 0, this.zLevel,
+									(par3 + par5) * f, (par4 + 0) * f1 );
+							tessellator.addVertexWithUV( par1 + 0, par2 + 0, this.zLevel, (par3 + 0) * f,
+									(par4 + 0) * f1 );
 							tessellator.setColorRGBA_F( 1.0f, 1.0f, 1.0f, 1.0f );
 							tessellator.draw();
 						}

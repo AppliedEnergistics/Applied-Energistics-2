@@ -5,7 +5,6 @@ import net.minecraft.item.ItemStack;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.guiobjects.IPortableCell;
-import appeng.api.storage.ITerminalHost;
 import appeng.util.Platform;
 
 public class ContainerMEPortableCell extends ContainerMEMonitorable
@@ -15,7 +14,7 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 	IPortableCell civ;
 
 	public ContainerMEPortableCell(InventoryPlayer ip, IPortableCell monitorable) {
-		super( ip, (ITerminalHost) monitorable, false );
+		super( ip, monitorable, false );
 		lockPlayerInventorySlot( ip.currentItem );
 		civ = monitorable;
 		bindPlayerInventory( ip, 0, 0 );
@@ -50,7 +49,7 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 		ticks++;
 		if ( ticks > 10 )
 		{
-			civ.extractAEPower( powerMultiplier * (double) ticks, Actionable.MODULATE, PowerMultiplier.CONFIG );
+			civ.extractAEPower( powerMultiplier * ticks, Actionable.MODULATE, PowerMultiplier.CONFIG );
 			ticks = 0;
 		}
 		super.detectAndSendChanges();

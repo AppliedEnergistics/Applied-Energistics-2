@@ -6,7 +6,6 @@ import io.netty.buffer.Unpooled;
 import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.world.World;
@@ -51,7 +50,7 @@ public class PacketMatterCannon extends AppEngPacket
 			{
 				MatterCannonFX fx = new MatterCannonFX( world, x + dx * a, y + dy * a, z + dz * a, Items.diamond );
 
-				Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 			}
 		}
 		catch (Exception err)

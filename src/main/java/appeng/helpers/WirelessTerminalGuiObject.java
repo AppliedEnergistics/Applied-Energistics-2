@@ -126,9 +126,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 
 		if ( dc.getWorld() == myPlayer.worldObj )
 		{
-			double offX = (double) dc.x - myPlayer.posX;
-			double offY = (double) dc.y - myPlayer.posY;
-			double offZ = (double) dc.z - myPlayer.posZ;
+			double offX = dc.x - myPlayer.posX;
+			double offY = dc.y - myPlayer.posY;
+			double offZ = dc.z - myPlayer.posZ;
 
 			double r = offX * offX + offY * offY + offZ * offZ;
 			if ( r < rangeLimit && sqRange > r )

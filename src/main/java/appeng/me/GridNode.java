@@ -277,7 +277,7 @@ public class GridNode implements IGridNode, IPathItem
 
 				if ( con != null )
 				{
-					IGridNode os = (IGridNode) con.getOtherSide( this );
+					IGridNode os = con.getOtherSide( this );
 					if ( os == node )
 					{
 						// if this connection is no longer valid, destroy it.

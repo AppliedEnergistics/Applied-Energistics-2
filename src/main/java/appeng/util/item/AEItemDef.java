@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import appeng.util.Platform;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 import cpw.mods.fml.relauncher.Side;
@@ -81,7 +80,7 @@ public class AEItemDef
 				return true;
 
 			if ( tagCompound != null && otherStack.hasTagCompound() )
-				return Platform.NBTEqualityTest( (NBTBase) tagCompound, otherStack.getTagCompound() );
+				return Platform.NBTEqualityTest( tagCompound, otherStack.getTagCompound() );
 
 			return true;
 		}

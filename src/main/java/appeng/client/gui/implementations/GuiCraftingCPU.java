@@ -309,8 +309,8 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 					str = GuiText.Stored.getLocal() + ": " + str;
 					int w = 4 + fontRendererObj.getStringWidth( str );
-					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - ((float) w * 0.5)) * 2), (int) ((y * offY + yo
-							+ 6 - negY + downY) * 2), 4210752 );
+					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
+							+ 6 - negY + downY) * 2, 4210752 );
 
 					if ( tooltip == z - viewStart )
 						lineList.add( GuiText.Stored.getLocal() + ": " + Long.toString( stored.getStackSize() ) );
@@ -328,8 +328,8 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 					str = GuiText.Crafting.getLocal() + ": " + str;
 					int w = 4 + fontRendererObj.getStringWidth( str );
-					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - ((float) w * 0.5)) * 2), (int) ((y * offY + yo
-							+ 6 - negY + downY) * 2), 4210752 );
+					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
+							+ 6 - negY + downY) * 2, 4210752 );
 
 					if ( tooltip == z - viewStart )
 						lineList.add( GuiText.Crafting.getLocal() + ": " + Long.toString( activeStack.getStackSize() ) );
@@ -347,8 +347,8 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 					str = GuiText.Scheduled.getLocal() + ": " + str;
 					int w = 4 + fontRendererObj.getStringWidth( str );
-					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - ((float) w * 0.5)) * 2), (int) ((y * offY + yo
-							+ 6 - negY + downY) * 2), 4210752 );
+					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
+							+ 6 - negY + downY) * 2, 4210752 );
 
 					if ( tooltip == z - viewStart )
 						lineList.add( GuiText.Scheduled.getLocal() + ": " + Long.toString( pendingStack.getStackSize() ) );

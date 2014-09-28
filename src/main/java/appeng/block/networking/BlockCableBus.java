@@ -115,15 +115,15 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 					{
 						for (int k1 = 0; k1 < b0; ++k1)
 						{
-							double d0 = (double) target.blockX + ((double) i1 + 0.5D) / (double) b0;
-							double d1 = (double) target.blockY + ((double) j1 + 0.5D) / (double) b0;
-							double d2 = (double) target.blockZ + ((double) k1 + 0.5D) / (double) b0;
+							double d0 = target.blockX + (i1 + 0.5D) / b0;
+							double d1 = target.blockY + (j1 + 0.5D) / b0;
+							double d2 = target.blockZ + (k1 + 0.5D) / b0;
 
 							double dd0 = target.hitVec.xCoord;
 							double dd1 = target.hitVec.yCoord;
 							double dd2 = target.hitVec.zCoord;
-							EntityDiggingFX fx = (new EntityDiggingFX( world, dd0, dd1, dd2, d0 - (double) target.blockX - 0.5D, d1 - (double) target.blockY
-									- 0.5D, d2 - (double) target.blockZ - 0.5D, this, 0 )).applyColourMultiplier( target.blockX, target.blockY, target.blockZ );
+							EntityDiggingFX fx = (new EntityDiggingFX( world, dd0, dd1, dd2, d0 - target.blockX - 0.5D, d1 - target.blockY
+									- 0.5D, d2 - target.blockZ - 0.5D, this, 0 )).applyColourMultiplier( target.blockX, target.blockY, target.blockZ );
 
 							fx.setParticleIcon( ico );
 
@@ -162,10 +162,10 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 					{
 						for (int k1 = 0; k1 < b0; ++k1)
 						{
-							double d0 = (double) x + ((double) i1 + 0.5D) / (double) b0;
-							double d1 = (double) y + ((double) j1 + 0.5D) / (double) b0;
-							double d2 = (double) z + ((double) k1 + 0.5D) / (double) b0;
-							EntityDiggingFX fx = (new EntityDiggingFX( world, d0, d1, d2, d0 - (double) x - 0.5D, d1 - (double) y - 0.5D, d2 - (double) z
+							double d0 = x + (i1 + 0.5D) / b0;
+							double d1 = y + (j1 + 0.5D) / b0;
+							double d2 = z + (k1 + 0.5D) / b0;
+							EntityDiggingFX fx = (new EntityDiggingFX( world, d0, d1, d2, d0 - x - 0.5D, d1 - y - 0.5D, d2 - z
 									- 0.5D, this, meta )).applyColourMultiplier( x, y, z );
 
 							fx.setParticleIcon( ico );

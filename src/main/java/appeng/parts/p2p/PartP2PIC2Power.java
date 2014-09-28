@@ -169,7 +169,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 		if ( Options.isEmpty() )
 			return amount;
 
-		PartP2PIC2Power x = (PartP2PIC2Power) Platform.pickRandom( Options );
+		PartP2PIC2Power x = Platform.pickRandom( Options );
 
 		if ( x != null && x.OutputEnergyA <= 0.001 )
 		{

@@ -52,7 +52,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 
 		if ( te instanceof IPart )
 		{
-			IUpgradeableHost myTile = (IUpgradeableHost) te;
+			IUpgradeableHost myTile = te;
 			TileEntity mk = myTile.getTile();
 			w = mk.getWorldObj();
 			xCoord = mk.xCoord;
@@ -186,7 +186,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 			{
 				OptionalSlotFake fs = (OptionalSlotFake) o;
 				if ( !fs.isEnabled() && fs.getDisplayStack() != null )
-					((OptionalSlotFake) fs).clearStack();
+					fs.clearStack();
 			}
 		}
 

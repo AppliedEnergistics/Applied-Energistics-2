@@ -251,7 +251,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 								{
 									try
 									{
-										new GridConnection( (IGridNode) cn, (IGridNode) sn, ForgeDirection.UNKNOWN );
+										new GridConnection( cn, sn, ForgeDirection.UNKNOWN );
 									}
 									catch (FailedConnection e)
 									{
@@ -296,7 +296,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 						{
 							try
 							{
-								new GridConnection( (IGridNode) cn, (IGridNode) sn, ForgeDirection.UNKNOWN );
+								new GridConnection( cn, sn, ForgeDirection.UNKNOWN );
 							}
 							catch (FailedConnection e)
 							{

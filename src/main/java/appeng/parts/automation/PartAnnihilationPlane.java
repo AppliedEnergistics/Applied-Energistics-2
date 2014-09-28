@@ -247,8 +247,8 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 				Block blk = w.getBlock( x, y, z );
 
-				IStorageGrid storage = (IStorageGrid) proxy.getStorage();
-				IEnergyGrid energy = (IEnergyGrid) proxy.getEnergy();
+				IStorageGrid storage = proxy.getStorage();
+				IEnergyGrid energy = proxy.getEnergy();
 
 				Material mat = blk.getMaterial();
 				boolean ignore = mat == Material.air || mat == Material.lava || mat == Material.water || mat.isLiquid() || blk == Blocks.bedrock
@@ -430,8 +430,8 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	{
 		try
 		{
-			IStorageGrid storage = (IStorageGrid) proxy.getStorage();
-			IEnergyGrid energy = (IEnergyGrid) proxy.getEnergy();
+			IStorageGrid storage = proxy.getStorage();
+			IEnergyGrid energy = proxy.getEnergy();
 
 			while (!Buffer.isEmpty())
 			{

@@ -36,7 +36,7 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 		if ( ne instanceof IGridHost && ne instanceof IPartHost )
 		{
 			IPartHost ph = (IPartHost) ne;
-			IPart pcx = (IPart) ph.getPart( ForgeDirection.UNKNOWN );
+			IPart pcx = ph.getPart( ForgeDirection.UNKNOWN );
 			if ( pcx instanceof PartCable )
 			{
 				PartCable pc = (PartCable) pcx;

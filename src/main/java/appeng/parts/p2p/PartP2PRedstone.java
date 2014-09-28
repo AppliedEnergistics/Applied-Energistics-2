@@ -80,7 +80,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		{
 			PartP2PRedstone in = getInput();
 			if ( in != null )
-				putInput( ((PartP2PRedstone) in).power );
+				putInput( in.power );
 		}
 	}
 

@@ -63,12 +63,12 @@ public class Splotch
 
 	public float x()
 	{
-		return (float) (pos & 0x0f) / 15.0f;
+		return (pos & 0x0f) / 15.0f;
 	}
 
 	public float y()
 	{
-		return (float) ((pos >> 4) & 0x0f) / 15.0f;
+		return ((pos >> 4) & 0x0f) / 15.0f;
 	}
 
 	public int getSeed()

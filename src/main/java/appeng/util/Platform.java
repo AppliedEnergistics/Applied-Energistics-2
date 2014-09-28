@@ -1212,9 +1212,9 @@ public class Platform
 		float f = 1.0F;
 		float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
 		float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
-		double d0 = player.prevPosX + (player.posX - player.prevPosX) * (double) f;
+		double d0 = player.prevPosX + (player.posX - player.prevPosX) * f;
 		double d1 = eyeOffset;
-		double d2 = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) f;
+		double d2 = player.prevPosZ + (player.posZ - player.prevPosZ) * f;
 
 		Vec3 vec3 = Vec3.createVectorHelper( d0, d1, d2 );
 		float f3 = MathHelper.cos( -f2 * 0.017453292F - (float) Math.PI );
@@ -1229,7 +1229,7 @@ public class Platform
 		{
 			d3 = ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance();
 		}
-		Vec3 vec31 = vec3.addVector( (double) f7 * d3, (double) f6 * d3, (double) f8 * d3 );
+		Vec3 vec31 = vec3.addVector( f7 * d3, f6 * d3, f8 * d3 );
 		return new LookDirection( vec3, vec31 );
 	}
 
@@ -1240,9 +1240,9 @@ public class Platform
 		float f = 1.0F;
 		float f1 = p.prevRotationPitch + (p.rotationPitch - p.prevRotationPitch) * f;
 		float f2 = p.prevRotationYaw + (p.rotationYaw - p.prevRotationYaw) * f;
-		double d0 = p.prevPosX + (p.posX - p.prevPosX) * (double) f;
-		double d1 = p.prevPosY + (p.posY - p.prevPosY) * (double) f + 1.62D - (double) p.yOffset;
-		double d2 = p.prevPosZ + (p.posZ - p.prevPosZ) * (double) f;
+		double d0 = p.prevPosX + (p.posX - p.prevPosX) * f;
+		double d1 = p.prevPosY + (p.posY - p.prevPosY) * f + 1.62D - p.yOffset;
+		double d2 = p.prevPosZ + (p.posZ - p.prevPosZ) * f;
 		Vec3 vec3 = Vec3.createVectorHelper( d0, d1, d2 );
 		float f3 = MathHelper.cos( -f2 * 0.017453292F - (float) Math.PI );
 		float f4 = MathHelper.sin( -f2 * 0.017453292F - (float) Math.PI );
@@ -1252,7 +1252,7 @@ public class Platform
 		float f8 = f3 * f5;
 		double d3 = 32.0D;
 
-		Vec3 vec31 = vec3.addVector( (double) f7 * d3, (double) f6 * d3, (double) f8 * d3 );
+		Vec3 vec31 = vec3.addVector( f7 * d3, f6 * d3, f8 * d3 );
 
 		AxisAlignedBB bb = AxisAlignedBB.getBoundingBox( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ),
 				Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ),
@@ -1278,7 +1278,7 @@ public class Platform
 							continue;
 
 						f1 = 0.3F;
-						AxisAlignedBB boundingBox = entity1.boundingBox.expand( (double) f1, (double) f1, (double) f1 );
+						AxisAlignedBB boundingBox = entity1.boundingBox.expand( f1, f1, f1 );
 						MovingObjectPosition movingObjectPosition = boundingBox.calculateIntercept( vec3, vec31 );
 
 						if ( movingObjectPosition != null )
@@ -1603,9 +1603,9 @@ public class Platform
 			break;
 		}
 
-		player.posX = (float) tile.xCoord + 0.5;
-		player.posY = (float) tile.yCoord + 0.5;
-		player.posZ = (float) tile.zCoord + 0.5;
+		player.posX = tile.xCoord + 0.5;
+		player.posY = tile.yCoord + 0.5;
+		player.posZ = tile.zCoord + 0.5;
 
 		player.rotationPitch = player.prevCameraPitch = player.cameraPitch = pitch;
 		player.rotationYaw = player.prevCameraYaw = player.cameraYaw = yaw;

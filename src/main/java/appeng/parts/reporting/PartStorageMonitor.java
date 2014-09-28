@@ -216,14 +216,14 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		{
 			GL11.glScalef( 1.0f, -1.0f, 1.0f );
 			GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
-			GL11.glRotatef( (float) spin * 90.0F, 0, 0, 1 );
+			GL11.glRotatef( spin * 90.0F, 0, 0, 1 );
 		}
 
 		if ( d == ForgeDirection.DOWN )
 		{
 			GL11.glScalef( 1.0f, -1.0f, 1.0f );
 			GL11.glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
-			GL11.glRotatef( (float) spin * -90.0F, 0, 0, 1 );
+			GL11.glRotatef( spin * -90.0F, 0, 0, 1 );
 		}
 
 		if ( d == ForgeDirection.EAST )

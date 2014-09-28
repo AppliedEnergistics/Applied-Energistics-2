@@ -133,7 +133,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 
 		if ( myOtherSide instanceof QuantumCluster )
 		{
-			QuantumCluster sideA = (QuantumCluster) this;
+			QuantumCluster sideA = this;
 			QuantumCluster sideB = (QuantumCluster) myOtherSide;
 
 			if ( sideA.isActive() && sideB.isActive() )

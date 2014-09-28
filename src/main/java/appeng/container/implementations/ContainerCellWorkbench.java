@@ -262,7 +262,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 			}
 
 			this.copyMode = getCopyMode();
-			this.fzMode = (FuzzyMode) getFuzzyMode();
+			this.fzMode = getFuzzyMode();
 		}
 
 		prevStack = is;

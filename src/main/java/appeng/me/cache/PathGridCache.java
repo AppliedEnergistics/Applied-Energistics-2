@@ -94,7 +94,7 @@ public class PathGridCache implements IPathingGrid
 				int nodes = myGrid.getNodes().size();
 				ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
 				channelsByBlocks = nodes * used;
-				channelPowerUsage = (double) channelsByBlocks / 128.0;
+				channelPowerUsage = channelsByBlocks / 128.0;
 
 				myGrid.getPivot().beginVisit( new AdHocChannelUpdater( used ) );
 			}
@@ -110,7 +110,7 @@ public class PathGridCache implements IPathingGrid
 
 				ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
 				channelsByBlocks = nodes * used;
-				channelPowerUsage = (double) channelsByBlocks / 128.0;
+				channelPowerUsage = channelsByBlocks / 128.0;
 
 				myGrid.getPivot().beginVisit( new AdHocChannelUpdater( used ) );
 			}
@@ -177,7 +177,7 @@ public class PathGridCache implements IPathingGrid
 				achievementPost();
 
 				booting = false;
-				channelPowerUsage = (double) channelsByBlocks / 128.0;
+				channelPowerUsage = channelsByBlocks / 128.0;
 				myGrid.postEvent( new MENetworkBootingStatusChange() );
 			}
 		}

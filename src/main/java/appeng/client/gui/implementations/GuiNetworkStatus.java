@@ -171,7 +171,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 					str = Long.toString( refStack.getStackSize() / 1000 ) + "k";
 
 				int w = fontRendererObj.getStringWidth( str );
-				fontRendererObj.drawString( str, (int) ((x * sectionLength + xo + sectionLength - 19 - ((float) w * 0.5)) * 2), (int) ((y * 18 + yo + 6) * 2),
+				fontRendererObj.drawString( str, (int) ((x * sectionLength + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * 18 + yo + 6) * 2,
 						4210752 );
 
 				GL11.glPopMatrix();

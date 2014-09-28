@@ -121,7 +121,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 			if ( is.getItem() == def.item && is.getItemDamage() == this.def.damageValue )
 			{
-				NBTTagCompound ta = (NBTTagCompound) def.tagCompound;
+				NBTTagCompound ta = def.tagCompound;
 				NBTTagCompound tb = is.getTagCompound();
 				if ( ta == tb )
 					return true;
@@ -203,7 +203,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		i.setShort( "Damage", (short) this.def.damageValue );
 
 		if ( def.tagCompound != null )
-			i.setTag( "tag", (NBTTagCompound) def.tagCompound );
+			i.setTag( "tag", def.tagCompound );
 		else
 			i.removeTag( "tag" );
 

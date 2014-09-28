@@ -95,7 +95,7 @@ public class GridConnection implements IGridConnection, IPathItem
 
 	private boolean isNetworkABetter(GridNode a, GridNode b)
 	{
-		return ((Grid) a.myGrid).isImportant > ((Grid) b.myGrid).isImportant || a.myGrid.size() > b.myGrid.size();
+		return a.myGrid.isImportant > b.myGrid.isImportant || a.myGrid.size() > b.myGrid.size();
 	}
 
 	@Override
