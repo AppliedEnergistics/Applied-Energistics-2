@@ -459,6 +459,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		repo.updateView();
 	}
 
+	@Override
 	protected boolean isPowered()
 	{
 		return repo.hasPower();

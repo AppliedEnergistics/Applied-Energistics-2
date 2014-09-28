@@ -91,6 +91,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	int handlerHash = 0;
 	boolean wasActive = false;
 
+	@Override
 	@MENetworkEventSubscribe
 	public void powerRender(MENetworkPowerStatusChange c)
 	{
@@ -136,6 +137,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		return false;
 	}
 
+	@Override
 	protected int getUpgradeSlots()
 	{
 		return 5;
@@ -446,6 +448,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		data.setInteger( "priority", priority );
 	}
 
+	@Override
 	public void readFromNBT(NBTTagCompound data)
 	{
 		super.readFromNBT( data );

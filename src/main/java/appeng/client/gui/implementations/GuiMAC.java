@@ -50,6 +50,7 @@ public class GuiMAC extends GuiUpgradeable
 		buttonList.add( redstoneMode );
 	}
 
+	@Override
 	protected String getBackground()
 	{
 		return "guis/mac.png";
@@ -61,6 +62,7 @@ public class GuiMAC extends GuiUpgradeable
 		this.container = (ContainerMAC) this.inventorySlots;
 	}
 
+	@Override
 	protected GuiText getName()
 	{
 		return GuiText.MolecularAssembler;

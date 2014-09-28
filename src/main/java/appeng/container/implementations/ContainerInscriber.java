@@ -70,6 +70,7 @@ public class ContainerInscriber extends ContainerUpgradeable
 		setupUpgrades();
 	}
 
+	@Override
 	public boolean isValidForSlot(Slot s, ItemStack is)
 	{
 		ItemStack PlateA = ti.getStackInSlot( 0 );

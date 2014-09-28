@@ -216,6 +216,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 				drops.add( is.getItemStack() );
 	}
 
+	@Override
 	@MENetworkEventSubscribe
 	public void chanRender(MENetworkChannelsChanged c)
 	{
@@ -223,6 +224,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		getHost().markForUpdate();
 	}
 
+	@Override
 	@MENetworkEventSubscribe
 	public void powerRender(MENetworkPowerStatusChange c)
 	{

@@ -25,6 +25,7 @@ public class IngredientSet implements IIngredient
 
 	boolean isInside = false;
 
+	@Override
 	public int getDamageValue()
 	{
 		return OreDictionary.WILDCARD_VALUE;
@@ -63,6 +64,7 @@ public class IngredientSet implements IIngredient
 		return out.toArray( new ItemStack[out.size()] );
 	}
 
+	@Override
 	public String getNameSpace()
 	{
 		return "";

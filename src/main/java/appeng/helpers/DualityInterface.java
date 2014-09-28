@@ -690,6 +690,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		return (IPart) (iHost instanceof IPart ? iHost : null);
 	}
 
+	@Override
 	public appeng.api.util.IConfigManager getConfigManager()
 	{
 		return cm;

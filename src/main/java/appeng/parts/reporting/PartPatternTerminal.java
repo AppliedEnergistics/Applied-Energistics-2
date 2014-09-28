@@ -59,6 +59,7 @@ public class PartPatternTerminal extends PartTerminal implements IAEAppEngInvent
 		frontDark = CableBusTextures.PartPatternTerm_Dark;
 	}
 
+	@Override
 	public GuiBridge getGui( EntityPlayer p )
 	{
 		int x = (int) p.posX, y = (int) p.posY, z = (int) p.posZ;

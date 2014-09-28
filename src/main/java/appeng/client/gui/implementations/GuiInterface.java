@@ -81,6 +81,7 @@ public class GuiInterface extends GuiUpgradeable
 		buttonList.add( interfaceMode );
 	}
 
+	@Override
 	protected String getBackground()
 	{
 		return "guis/interface.png";

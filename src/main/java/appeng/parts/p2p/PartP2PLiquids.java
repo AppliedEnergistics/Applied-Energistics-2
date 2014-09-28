@@ -26,6 +26,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	private final static FluidTankInfo[] activeTank = new FluidTankInfo[] { new FluidTankInfo( null, 10000 ) };
 	private final static FluidTankInfo[] inactiveTank = new FluidTankInfo[] { new FluidTankInfo( null, 0 ) };
 
+	@Override
 	public TunnelType getTunnelType()
 	{
 		return TunnelType.FLUID;
@@ -67,6 +68,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 
 	private int tmpUsed;
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getTypeTexture()
 	{

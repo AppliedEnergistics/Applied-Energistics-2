@@ -94,11 +94,13 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 		}
 	}
 
+	@Override
 	public boolean isPreformatted() 
 	{
 		return ! myPartitionList.isEmpty();
 	}
 
+	@Override
 	public boolean isFuzzy()
 	{
 		return myPartitionList instanceof FuzzyPriorityList;

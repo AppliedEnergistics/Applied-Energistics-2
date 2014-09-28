@@ -20,6 +20,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 {
 
+	@Override
 	public TunnelType getTunnelType()
 	{
 		return TunnelType.REDSTONE;
@@ -137,6 +138,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		power = tag.getInteger( "power" );
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getTypeTexture()
 	{

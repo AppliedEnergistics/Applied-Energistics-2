@@ -61,6 +61,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 	static public Class<? extends TileEntity> noTesrTile;
 	static public Class<? extends TileEntity> tesrTile;
 
+	@Override
 	public <T extends TileEntity> T getTileEntity(IBlockAccess w, int x, int y, int z)
 	{
 		TileEntity te = w.getTileEntity( x, y, z );
@@ -89,6 +90,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 		return 0;
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean addHitEffects(World world, MovingObjectPosition target, EffectRenderer effectRenderer)
 	{
@@ -135,6 +137,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 		return true;
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean addDestroyEffects(World world, int x, int y, int z, int meta, EffectRenderer effectRenderer)
 	{

@@ -95,6 +95,7 @@ public class AppEngCore extends DummyModContainer implements IFMLLoadingPlugin
 		return getVersion();
 	}
 
+	@Override
 	public ModMetadata getMetadata()
 	{
 		return md;

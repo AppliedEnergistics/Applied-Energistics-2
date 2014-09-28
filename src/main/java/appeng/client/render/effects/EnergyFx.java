@@ -21,6 +21,7 @@ public class EnergyFx extends EntityBreakingFX
 	private int startBlkY;
 	private int startBlkZ;
 
+	@Override
 	public int getFXLayer()
 	{
 		return 1;
@@ -49,6 +50,7 @@ public class EnergyFx extends EntityBreakingFX
 		this.particleScale *= 0.8f;
 	}
 
+	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
@@ -56,6 +58,7 @@ public class EnergyFx extends EntityBreakingFX
 		this.particleAlpha *= 0.89f;
 	}
 
+	@Override
 	public void renderParticle(Tessellator par1Tessellator, float par2, float par3, float par4, float par5, float par6, float par7)
 	{
 		float f6 = this.particleTextureIndex.getMinU();

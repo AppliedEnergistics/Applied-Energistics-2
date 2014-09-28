@@ -21,6 +21,7 @@ public class CraftingFx extends EntityBreakingFX
 	private int startBlkY;
 	private int startBlkZ;
 
+	@Override
 	public int getFXLayer()
 	{
 		return 1;
@@ -50,6 +51,7 @@ public class CraftingFx extends EntityBreakingFX
 		this.particleScale *= 0.8f;
 	}
 
+	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
@@ -57,6 +59,7 @@ public class CraftingFx extends EntityBreakingFX
 		this.particleAlpha *= 0.51f;
 	}
 
+	@Override
 	public void renderParticle(Tessellator par1Tessellator, float partialTick, float x, float y, float z, float rx, float rz)
 	{
 		if ( partialTick < 0 || partialTick > 1 )

@@ -414,6 +414,7 @@ public abstract class AEBaseGui extends GuiContainer
 		super.handleMouseClick( slot, slotIdx, ctrlDown, key );
 	}
 
+	@Override
 	protected void mouseClickMove(int x, int y, int c, long d)
 	{
 		Slot slot = this.getSlot( x, y );

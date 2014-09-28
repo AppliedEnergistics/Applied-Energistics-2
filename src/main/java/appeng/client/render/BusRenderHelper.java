@@ -370,6 +370,7 @@ public class BusRenderHelper implements IPartRenderHelper
 		BusRenderer.instance.renderer.renderFaces = faces;
 	}
 
+	@Override
 	public void renderBlockCurrentBounds(int x, int y, int z, RenderBlocks renderer)
 	{
 		if ( !renderThis() )

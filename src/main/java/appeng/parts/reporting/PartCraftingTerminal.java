@@ -53,6 +53,7 @@ public class PartCraftingTerminal extends PartTerminal implements IAEAppEngInven
 		// frontSolid = CableBusTextures.PartCraftingTerm_Solid;
 	}
 
+	@Override
 	public GuiBridge getGui( EntityPlayer p )
 	{
 		int x = (int) p.posX, y = (int) p.posY, z = (int) p.posZ;

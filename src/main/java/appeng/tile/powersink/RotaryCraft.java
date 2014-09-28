@@ -63,16 +63,19 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	}
 
 	
+	@Override
 	final public int getMachineX()
 	{
 		return xCoord;
 	}
 
+	@Override
 	final public int getMachineY()
 	{
 		return yCoord;
 	}
 
+	@Override
 	final public int getMachineZ()
 	{
 		return zCoord;

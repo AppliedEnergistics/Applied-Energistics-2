@@ -43,6 +43,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeConnection, IInventory, ISidedInventory, IGridTickable
 {
 
+	@Override
 	public TunnelType getTunnelType()
 	{
 		return TunnelType.ITEM;
@@ -244,6 +245,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 		}
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getTypeTexture()
 	{

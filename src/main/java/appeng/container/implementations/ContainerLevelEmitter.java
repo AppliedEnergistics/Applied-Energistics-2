@@ -103,6 +103,7 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 		standardDetectAndSendChanges();
 	}
 
+	@Override
 	public void onUpdate(String field, Object oldValue, Object newValue)
 	{
 		if ( field.equals( "EmitterValue" ) )

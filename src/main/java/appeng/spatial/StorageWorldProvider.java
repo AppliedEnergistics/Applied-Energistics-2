@@ -38,7 +38,8 @@ public class StorageWorldProvider extends WorldProvider
 		super.worldChunkMgr = new WorldChunkManagerHell( Registration.instance.storageBiome, 0.0F );
 	}
 
-    @SideOnly(Side.CLIENT)
+    @Override
+	@SideOnly(Side.CLIENT)
     public float[] calcSunriseSunsetColors(float p_76560_1_, float p_76560_2_)
     {
         return null;

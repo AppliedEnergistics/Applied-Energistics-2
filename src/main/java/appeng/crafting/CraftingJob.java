@@ -42,6 +42,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 	long bytes = 0;
 	World world;
 
+	@Override
 	public IAEItemStack getOutput()
 	{
 		return output;
@@ -93,6 +94,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		return new CraftingTreeNode( cc, this, what, null, -1, 0 );
 	}
 
+	@Override
 	public long getByteTotal()
 	{
 		return bytes;
@@ -237,6 +239,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		}
 	}
 
+	@Override
 	public boolean isSimulation()
 	{
 		return simulate;

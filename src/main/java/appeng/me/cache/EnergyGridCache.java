@@ -167,6 +167,7 @@ public class EnergyGridCache implements IEnergyGrid
 		return getEnergyDemand( maxRequired, localSeen );
 	}
 
+	@Override
 	public double getEnergyDemand(double maxRequired, Set<IEnergyGrid> seen)
 	{
 		if ( !seen.add( this ) )
@@ -199,6 +200,7 @@ public class EnergyGridCache implements IEnergyGrid
 		return injectAEPower( amt, mode, localSeen );
 	}
 
+	@Override
 	public double injectAEPower(double amt, Actionable mode, Set<IEnergyGrid> seen)
 	{
 		if ( !seen.add( this ) )

@@ -856,6 +856,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		return false;
 	}
 
+	@Override
 	public AEColor getColor()
 	{
 		return paintedColor;

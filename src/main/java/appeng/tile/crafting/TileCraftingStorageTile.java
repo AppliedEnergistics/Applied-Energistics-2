@@ -25,16 +25,19 @@ public class TileCraftingStorageTile extends TileCraftingTile
 		return super.getItemFromTile( obj );
 	}
 
+	@Override
 	public boolean isAccelerator()
 	{
 		return false;
 	}
 
+	@Override
 	public boolean isStorage()
 	{
 		return true;
 	}
 
+	@Override
 	public int getStorageBytes()
 	{
 		if ( worldObj == null || notLoaded() )

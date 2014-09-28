@@ -29,6 +29,7 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 {
 
+	@Override
 	public void drawBackground(int recipe)
 	{
 		GL11.glColor4f( 1, 1, 1, 1 );
@@ -62,11 +63,13 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
 	public void loadTransferRects()
 	{
 		this.transferRects.add( new TemplateRecipeHandler.RecipeTransferRect( new Rectangle( 84, 23, 24, 18 ), "grindstone", new Object[0] ) );
 	}
 
+	@Override
 	public Class<? extends GuiContainer> getGuiClass()
 	{
 		return GuiGrinder.class;
@@ -96,6 +99,7 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
 		for (IGrinderEntry recipe : AEApi.instance().registries().grinder().getRecipes())
@@ -109,6 +113,7 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
 		for (IGrinderEntry recipe : AEApi.instance().registries().grinder().getRecipes())
@@ -127,6 +132,7 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
 	public String getGuiTexture()
 	{
 		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/guis/grinder.png" );
@@ -134,6 +140,7 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 		return f;
 	}
 
+	@Override
 	public String getOverlayIdentifier()
 	{
 		return "grindstone";

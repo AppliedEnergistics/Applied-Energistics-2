@@ -74,6 +74,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		calc.calculateMultiblock( worldObj, getLocation() );
 	}
 
+	@Override
 	public void setName(String name)
 	{
 		super.setName( name );

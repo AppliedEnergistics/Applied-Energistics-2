@@ -37,6 +37,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	/**
 	 * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
 	 */
+	@Override
 	public boolean isItemValid(ItemStack par1ItemStack)
 	{
 		return false;
@@ -46,6 +47,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	 * Decrease the size of the stack in slot (first int arg) by the amount of the second int arg. Returns the new
 	 * stack.
 	 */
+	@Override
 	public ItemStack decrStackSize(int par1)
 	{
 		if ( this.getHasStack() )
@@ -60,6 +62,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	 * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not ore and wood. Typically increases an
 	 * internal count then calls onCrafting(item).
 	 */
+	@Override
 	protected void onCrafting(ItemStack par1ItemStack, int par2)
 	{
 		this.amountCrafted += par2;
@@ -69,6 +72,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	/**
 	 * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not ore and wood.
 	 */
+	@Override
 	protected void onCrafting(ItemStack par1ItemStack)
 	{
 		par1ItemStack.onCrafting( this.thePlayer.worldObj, this.thePlayer, this.amountCrafted );
@@ -125,6 +129,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 		}
 	}
 
+	@Override
 	public void onPickupFromSlot(EntityPlayer par1EntityPlayer, ItemStack par2ItemStack)
 	{
 		FMLCommonHandler.instance().firePlayerCraftingEvent( par1EntityPlayer, par2ItemStack, craftMatrix );

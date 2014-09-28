@@ -12,6 +12,7 @@ public class PrecisePriorityList<T extends IAEStack<T>> implements IPartitionLis
 		list = in;
 	}
 
+	@Override
 	public boolean isListed(T input)
 	{
 		return list.findPrecise( input ) != null;

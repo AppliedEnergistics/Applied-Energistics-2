@@ -276,6 +276,7 @@ public abstract class AEBaseContainer extends Container
 		return null;
 	}
 
+	@Override
 	public boolean canDragIntoSlot(Slot s)
 	{
 		return ((AppEngSlot) s).isDraggable;
@@ -574,6 +575,7 @@ public abstract class AEBaseContainer extends Container
 		super.detectAndSendChanges();
 	}
 
+	@Override
 	final public void updateProgressBar(int idx, int value)
 	{
 		if ( syncData.containsKey( idx ) )

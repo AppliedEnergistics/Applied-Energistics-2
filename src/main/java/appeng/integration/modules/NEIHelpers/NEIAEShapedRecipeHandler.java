@@ -29,11 +29,13 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 {
 
+	@Override
 	public void loadTransferRects()
 	{
 		this.transferRects.add( new TemplateRecipeHandler.RecipeTransferRect( new Rectangle( 84, 23, 24, 18 ), "crafting", new Object[0] ) );
 	}
 
+	@Override
 	public Class<? extends GuiContainer> getGuiClass()
 	{
 		return GuiCrafting.class;
@@ -70,6 +72,7 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
 		List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
@@ -87,6 +90,7 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
 		List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
@@ -109,11 +113,13 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
 	public String getGuiTexture()
 	{
 		return "textures/gui/container/crafting_table.png";
 	}
 
+	@Override
 	public String getOverlayIdentifier()
 	{
 		return "crafting";

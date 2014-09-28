@@ -100,6 +100,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		updateState();
 	}
 
+	@Override
 	public void upgradesChanged()
 	{
 		configureWatchers();
@@ -127,6 +128,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		}
 	}
 
+	@Override
 	public void writeToNBT(NBTTagCompound data)
 	{
 		super.writeToNBT( data );
@@ -136,6 +138,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		config.writeToNBT( data, "config" );
 	}
 
+	@Override
 	public void readFromNBT(NBTTagCompound data)
 	{
 		super.readFromNBT( data );

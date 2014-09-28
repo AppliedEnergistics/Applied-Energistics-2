@@ -90,6 +90,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		return false;
 	}
 
+	@Override
 	protected int getUpgradeSlots()
 	{
 		return 5;
@@ -104,6 +105,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		return super.getInventoryByName( name );
 	}
 
+	@Override
 	@MENetworkEventSubscribe
 	public void powerRender(MENetworkPowerStatusChange c)
 	{
@@ -278,6 +280,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 			updateHandler();
 	}
 
+	@Override
 	public void upgradesChanged()
 	{
 		updateHandler();
@@ -322,6 +325,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		data.setInteger( "priority", priority );
 	}
 
+	@Override
 	public void readFromNBT(NBTTagCompound data)
 	{
 		super.readFromNBT( data );
