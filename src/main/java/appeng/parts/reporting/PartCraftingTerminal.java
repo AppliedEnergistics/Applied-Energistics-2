@@ -2,8 +2,6 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
-import appeng.api.networking.security.ISecurityGrid;
-import appeng.util.Platform;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -13,8 +11,6 @@ import appeng.core.sync.GuiBridge;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
-import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public class PartCraftingTerminal extends PartTerminal implements IAEAppEngInventory
 {

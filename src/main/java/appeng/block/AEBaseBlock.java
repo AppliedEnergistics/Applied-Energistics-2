@@ -1,7 +1,6 @@
 package appeng.block;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
