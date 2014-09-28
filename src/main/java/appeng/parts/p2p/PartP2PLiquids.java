@@ -67,18 +67,6 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 
 	private int tmpUsed;
 
-	@Override
-	public void writeToNBT(NBTTagCompound tag)
-	{
-		super.writeToNBT( tag );
-	}
-
-	@Override
-	public void readFromNBT(NBTTagCompound tag)
-	{
-		super.readFromNBT( tag );
-	}
-
 	@SideOnly(Side.CLIENT)
 	public IIcon getTypeTexture()
 	{

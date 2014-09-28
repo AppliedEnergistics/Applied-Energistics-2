@@ -41,12 +41,6 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 	}
 
 	@Override
-	public void setInventorySlotContents(int slot, ItemStack newItemStack)
-	{
-		super.setInventorySlotContents( slot, newItemStack );
-	}
-
-	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
 		if ( itemstack == null )
