@@ -48,12 +48,6 @@ public class GuiCellWorkbench extends GuiUpgradeable
 	}
 
 	@Override
-	public void initGui()
-	{
-		super.initGui();
-	}
-
-	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
 		handleButtonVisibility();
