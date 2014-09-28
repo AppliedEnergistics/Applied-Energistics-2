@@ -389,7 +389,6 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 				return null;
 			return super.extractItems(request, mode, src);
 		}
-
 	}
 
 	private <StackType extends IAEStack> MEMonitorHandler<StackType> wrap(IMEInventoryHandler h)
