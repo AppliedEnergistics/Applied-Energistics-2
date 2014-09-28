@@ -346,16 +346,13 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 			ItemStack is = r.getCraftingResult( ic );
 
-			if ( r != null && inv != null )
+			for (int x = 0; x < ic.getSizeInventory(); x++)
 			{
-				for (int x = 0; x < ic.getSizeInventory(); x++)
+				if ( ic.getStackInSlot( x ) != null )
 				{
-					if ( ic.getStackInSlot( x ) != null )
-					{
-						ItemStack pulled = Platform.extractItemsByRecipe( powerSrc, mySrc, storage, p.worldObj, r, is, ic, ic.getStackInSlot( x ), x, all,
-								Actionable.MODULATE, ItemViewCell.createFilter( getViewCells() ) );
-						real.setInventorySlotContents( x, pulled );
-					}
+					ItemStack pulled = Platform.extractItemsByRecipe( powerSrc, mySrc, storage, p.worldObj, r, is, ic, ic.getStackInSlot( x ), x, all,
+							Actionable.MODULATE, ItemViewCell.createFilter( getViewCells() ) );
+					real.setInventorySlotContents( x, pulled );
 				}
 			}
 

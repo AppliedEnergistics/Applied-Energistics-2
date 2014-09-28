@@ -112,7 +112,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 
 				is = r.getCraftingResult( ic );
 
-				if ( r != null && inv != null )
+				if ( inv != null )
 				{
 					for (int x = 0; x < pattern.getSizeInventory(); x++)
 					{

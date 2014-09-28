@@ -88,7 +88,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 
 				drawTooltip( x, y, 0, join( currentToolTip, "\n" ) );
 			}
-			else if ( stack != null && stack.stackSize > BigNumber )
+			else if ( stack.stackSize > BigNumber )
 			{
 				List var4 = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
 				var4.add( "Items Stored: " + NumberFormat.getNumberInstance( Locale.US ).format( stack.stackSize ) );

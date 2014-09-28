@@ -404,7 +404,7 @@ public abstract class AEBaseContainer extends Container
 								return null;
 							else if ( dest == null )
 							{
-								cs.putStack( tis != null ? tis.copy() : null );
+								cs.putStack( tis.copy() );
 								cs.onSlotChanged();
 								updateSlot( cs );
 								return null;
@@ -422,13 +422,13 @@ public abstract class AEBaseContainer extends Container
 					if ( d instanceof SlotDisabled || d instanceof SlotME )
 						continue;
 
-					if ( d.isItemValid( tis ) && tis != null )
+					if ( d.isItemValid( tis ) )
 					{
 						if ( d.getHasStack() )
 						{
 							ItemStack t = d.getStack();
 
-							if ( tis != null && Platform.isSameItemPrecise( tis, t ) ) // t.isItemEqual(tis))
+							if ( Platform.isSameItemPrecise( tis, t ) ) // t.isItemEqual(tis))
 							{
 								int maxSize = t.getMaxStackSize();
 								if ( maxSize > d.getSlotStackLimit() )
@@ -468,13 +468,13 @@ public abstract class AEBaseContainer extends Container
 					if ( d instanceof SlotDisabled || d instanceof SlotME )
 						continue;
 
-					if ( d.isItemValid( tis ) && tis != null )
+					if ( d.isItemValid( tis ) )
 					{
 						if ( d.getHasStack() )
 						{
 							ItemStack t = d.getStack();
 
-							if ( tis != null && Platform.isSameItemPrecise( t, tis ) )
+							if ( Platform.isSameItemPrecise( t, tis ) )
 							{
 								int maxSize = t.getMaxStackSize();
 								if ( d.getSlotStackLimit() < maxSize )

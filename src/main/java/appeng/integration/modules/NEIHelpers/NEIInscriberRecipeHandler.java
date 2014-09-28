@@ -58,11 +58,8 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 			for (InscriberRecipe recipe : Inscribe.recipes)
 			{
 				CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
-				if ( cachedRecipe != null )
-				{
-					cachedRecipe.computeVisuals();
-					this.arecipes.add( cachedRecipe );
-				}
+				cachedRecipe.computeVisuals();
+				this.arecipes.add( cachedRecipe );
 			}
 		}
 		else
@@ -90,7 +87,7 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 		{
 			CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
 
-			if ( (cachedRecipe != null) && (cachedRecipe.contains( cachedRecipe.ingredients, ingredient.getItem() )) )
+			if ( (cachedRecipe.contains( cachedRecipe.ingredients, ingredient.getItem() )) )
 			{
 				cachedRecipe.computeVisuals();
 				if ( cachedRecipe.contains( cachedRecipe.ingredients, ingredient ) )

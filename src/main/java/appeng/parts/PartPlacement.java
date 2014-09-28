@@ -162,7 +162,7 @@ public class PartPlacement
 						if ( host.isEmpty() )
 							host.cleanup();
 
-						if ( is != null && !is.isEmpty() )
+						if ( !is.isEmpty() )
 						{
 							Platform.spawnDrops( world, x, y, z, is );
 						}

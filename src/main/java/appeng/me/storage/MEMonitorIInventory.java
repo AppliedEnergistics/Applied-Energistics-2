@@ -176,7 +176,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 			CachedItemStack old = memory.get( is.slot );
 			high = Math.max( high, is.slot );
 
-			ItemStack newIS = is == null || is.isExtractable == false && mode == StorageFilter.EXTRACTABLE_ONLY ? null : is.getItemStack();
+			ItemStack newIS = is.isExtractable == false && mode == StorageFilter.EXTRACTABLE_ONLY ? null : is.getItemStack();
 			ItemStack oldIS = old == null ? null : old.itemStack;
 
 			if ( isDifferent( newIS, oldIS ) )
@@ -190,7 +190,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 					changes.add( old.aeStack );
 				}
 
-				if ( cis != null && cis.aeStack != null )
+				if ( cis.aeStack != null )
 				{
 					changes.add( cis.aeStack );
 					list.add( cis.aeStack );
@@ -198,7 +198,7 @@ public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonit
 
 				changed = true;
 			}
-			else if ( is != null )
+			else
 			{
 				int newSize = (newIS == null ? 0 : newIS.stackSize);
 				int diff = newSize - (oldIS == null ? 0 : oldIS.stackSize);

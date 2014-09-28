@@ -59,8 +59,6 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 		if ( inventories.isEmpty() || slotCount == 0 )
 		{
 			inventories = null;
-			sideData = null;
-			slots = null;
 		}
 		else
 		{
