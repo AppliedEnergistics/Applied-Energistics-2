@@ -62,7 +62,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 	public boolean canUseNode(long qe)
 	{
 		QuantumCluster qc = (QuantumCluster) AEApi.instance().registries().locatable().findLocatableBySerial( qe );
-		if ( qc != null && qc.center instanceof TileQuantumBridge )
+		if ( qc != null )
 		{
 			World theWorld = qc.getCenter().getWorldObj();
 			if ( !qc.isDestroyed )

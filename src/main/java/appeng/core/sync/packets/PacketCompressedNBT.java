@@ -54,7 +54,9 @@ public class PacketCompressedNBT extends AppEngPacket
 
 		} );
 
-		in = CompressedStreamTools.read( new DataInputStream( gzReader ) );
+		DataInputStream inStream = new DataInputStream( gzReader );
+		in = CompressedStreamTools.read( inStream );
+		inStream.close();
 	}
 
 	@Override

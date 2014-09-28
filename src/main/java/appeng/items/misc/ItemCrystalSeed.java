@@ -221,8 +221,8 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		egc.motionY = location.motionY;
 		egc.motionZ = location.motionZ;
 
-		if ( location instanceof EntityItem && egc instanceof EntityItem )
-			((EntityItem) egc).delayBeforeCanPickup = ((EntityItem) location).delayBeforeCanPickup;
+		if ( location instanceof EntityItem )
+			egc.delayBeforeCanPickup = ((EntityItem) location).delayBeforeCanPickup;
 
 		return egc;
 	}

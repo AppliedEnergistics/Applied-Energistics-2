@@ -299,7 +299,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	 */
 	public void uploadSettings(SettingsFrom from, NBTTagCompound compound)
 	{
-		if ( compound != null && this instanceof IConfigurableObject )
+		if ( compound != null )
 		{
 			IConfigManager cm = ((IConfigurableObject) this).getConfigManager();
 			if ( cm != null )
@@ -312,17 +312,14 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 			pHost.setPriority( compound.getInteger( "priority" ) );
 		}
 
-		if ( this instanceof ISegmentedInventory )
+		IInventory inv = ((ISegmentedInventory) this).getInventoryByName( "config" );
+		if ( inv != null && inv instanceof AppEngInternalAEInventory )
 		{
-			IInventory inv = ((ISegmentedInventory) this).getInventoryByName( "config" );
-			if ( inv != null && inv instanceof AppEngInternalAEInventory )
-			{
-				AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
-				AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSizeInventory() );
-				tmp.readFromNBT( compound, "config" );
-				for (int x = 0; x < tmp.getSizeInventory(); x++)
-					target.setInventorySlotContents( x, tmp.getStackInSlot( x ) );
-			}
+			AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
+			AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSizeInventory() );
+			tmp.readFromNBT( compound, "config" );
+			for (int x = 0; x < tmp.getSizeInventory(); x++)
+				target.setInventorySlotContents( x, tmp.getStackInSlot( x ) );
 		}
 	}
 
@@ -336,12 +333,9 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	{
 		NBTTagCompound output = new NBTTagCompound();
 
-		if ( this instanceof IConfigurableObject )
-		{
-			IConfigManager cm = this.getConfigManager();
-			if ( cm != null )
-				cm.writeToNBT( output );
-		}
+		IConfigManager cm = this.getConfigManager();
+		if ( cm != null )
+			cm.writeToNBT( output );
 
 		if ( this instanceof IPriorityHost )
 		{
@@ -349,13 +343,10 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 			output.setInteger( "priority", pHost.getPriority() );
 		}
 
-		if ( this instanceof ISegmentedInventory )
+		IInventory inv = ((ISegmentedInventory) this).getInventoryByName( "config" );
+		if ( inv != null && inv instanceof AppEngInternalAEInventory )
 		{
-			IInventory inv = ((ISegmentedInventory) this).getInventoryByName( "config" );
-			if ( inv != null && inv instanceof AppEngInternalAEInventory )
-			{
-				((AppEngInternalAEInventory) inv).writeToNBT( output, "config" );
-			}
+			((AppEngInternalAEInventory) inv).writeToNBT( output, "config" );
 		}
 
 		return output.hasNoTags() ? null : output;

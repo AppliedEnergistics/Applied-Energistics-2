@@ -35,7 +35,7 @@ public class Inscribe implements ICraftHandler, IWebsiteSerializer
 		final public ItemStack plateB;
 		final public ItemStack output;
 
-	};
+	}
 
 	public boolean usePlates = false;
 

@@ -61,8 +61,8 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	{
 		int oldState = 0;
 
-		boolean currentActive;
-		if ( currentActive = gridProxy.isActive() )
+		boolean currentActive = gridProxy.isActive();
+		if ( currentActive )
 			state |= 0x80000000;
 		else
 			state &= ~0x80000000;
