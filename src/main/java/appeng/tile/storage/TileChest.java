@@ -635,7 +635,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			try
 			{
 				IMEInventoryHandler handler = getHandler( StorageChannel.ITEMS );
-				if ( ch != null && handler instanceof ChestMonitorHandler )
+				if ( handler instanceof ChestMonitorHandler )
 					return ch.getStatusForCell( cell, ((ChestMonitorHandler) handler).getInternalHandler() );
 			}
 			catch (ChestNoHandler e)
@@ -645,7 +645,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			try
 			{
 				IMEInventoryHandler handler = getHandler( StorageChannel.FLUIDS );
-				if ( ch != null && handler instanceof ChestMonitorHandler )
+				if ( handler instanceof ChestMonitorHandler )
 					return ch.getStatusForCell( cell, ((ChestMonitorHandler) handler).getInternalHandler() );
 			}
 			catch (ChestNoHandler e)

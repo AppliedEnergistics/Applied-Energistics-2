@@ -364,7 +364,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 					return;
 				}
 			}
-			else if ( Stored != null ) // dispose!
+			else // Stored != null; dispose!
 			{
 				IAEItemStack work = AEApi.instance().storage().createItemStack( Stored );
 				requireWork[slot] = work.setStackSize( -work.getStackSize() );

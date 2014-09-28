@@ -196,7 +196,7 @@ public class SlotRestrictedInput extends AppEngSlot
 		case STORAGE_CELLS:
 			return AEApi.instance().registries().cell().isCellHandled( i );
 		case WORKBENCH_CELL:
-			return i != null && i.getItem() instanceof ICellWorkbenchItem && ((ICellWorkbenchItem) i.getItem()).isEditable( i );
+			return i.getItem() instanceof ICellWorkbenchItem && ((ICellWorkbenchItem) i.getItem()).isEditable( i );
 		case STORAGE_COMPONENT:
 			boolean isComp = i.getItem() instanceof IStorageComponent && ((IStorageComponent) i.getItem()).isStorageComponent( i );
 			return isComp;

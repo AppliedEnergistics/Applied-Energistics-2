@@ -74,8 +74,6 @@ public class MultiCraftingTracker
 				{
 					if ( craftingJob.isDone() )
 						job = craftingJob.get();
-					else if ( craftingJob.isCancelled() )
-						job = null;
 
 					if ( job != null )
 					{

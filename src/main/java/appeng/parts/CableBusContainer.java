@@ -247,7 +247,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 							if ( sbp != null )
 							{
 								IGridNode sn = sbp.getGridNode();
-								if ( sn != null && cn != null )
+								if ( sn != null )
 								{
 									try
 									{
@@ -574,8 +574,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				data.writeShort( Item.getIdFromItem( is.getItem() ) );
 				data.writeShort( is.getItemDamage() );
 
-				if ( p != null )
-					p.writeToStream( data );
+				p.writeToStream( data );
 			}
 		}
 
@@ -921,7 +920,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				}
 			}
 
-			if ( facades != null && !facades.isEmpty() )
+			if ( !facades.isEmpty() )
 			{
 				TileEntity te = tcb.getTile();
 				Platform.spawnDrops( te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord, facades );

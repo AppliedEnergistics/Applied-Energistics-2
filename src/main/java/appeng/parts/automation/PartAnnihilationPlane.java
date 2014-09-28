@@ -254,7 +254,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 				if ( !ignore )
 				{
-					if ( !w.isAirBlock( x, y, z ) && w.blockExists( x, y, z ) && blk != null && w.canMineBlock( Platform.getPlayer( w ), x, y, z ) )
+					if ( !w.isAirBlock( x, y, z ) && w.blockExists( x, y, z ) && w.canMineBlock( Platform.getPlayer( w ), x, y, z ) )
 					{
 						float hardness = blk.getBlockHardness( w, x, y, z );
 						if ( hardness >= 0.0 )

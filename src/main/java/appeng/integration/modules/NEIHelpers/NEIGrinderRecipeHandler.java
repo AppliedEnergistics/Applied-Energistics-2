@@ -86,11 +86,8 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 			for (IGrinderEntry recipe : AEApi.instance().registries().grinder().getRecipes())
 			{
 				CachedGrindStoneRecipe cachedRecipe = new CachedGrindStoneRecipe( recipe );
-				if ( cachedRecipe != null )
-				{
-					cachedRecipe.computeVisuals();
-					this.arecipes.add( cachedRecipe );
-				}
+				cachedRecipe.computeVisuals();
+				this.arecipes.add( cachedRecipe );
 			}
 		}
 		else
@@ -118,7 +115,7 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 		{
 			CachedGrindStoneRecipe cachedRecipe = new CachedGrindStoneRecipe( recipe );
 
-			if ( (cachedRecipe != null) && (cachedRecipe.contains( cachedRecipe.ingredients, ingredient.getItem() )) )
+			if ( (cachedRecipe.contains( cachedRecipe.ingredients, ingredient.getItem() )) )
 			{
 				cachedRecipe.computeVisuals();
 				if ( cachedRecipe.contains( cachedRecipe.ingredients, ingredient ) )

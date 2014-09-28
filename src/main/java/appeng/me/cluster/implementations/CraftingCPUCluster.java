@@ -802,7 +802,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 				if ( requestingMachine == null )
 					return myLastLink;
 
-				ICraftingLink whatLink = new CraftingLink( generateLinkData( craftID, requestingMachine == null, true ), requestingMachine );
+				ICraftingLink whatLink = new CraftingLink( generateLinkData( craftID, false, true ), requestingMachine );
 
 				submitLink( myLastLink );
 				submitLink( whatLink );
