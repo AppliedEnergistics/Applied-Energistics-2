@@ -50,7 +50,7 @@ public class CompassService implements ThreadFactory
 				cleanUp();
 		}
 
-	};
+	}
 
 	private class CMDirectionRequest implements Runnable
 	{
@@ -165,7 +165,7 @@ public class CompassService implements ThreadFactory
 			if ( jobSize() < 2 )
 				cleanUp();
 		}
-	};
+	}
 
 	public Future<?> getCompassDirection(DimensionalCoord coord, int maxRange, ICompassCallback cc)
 	{

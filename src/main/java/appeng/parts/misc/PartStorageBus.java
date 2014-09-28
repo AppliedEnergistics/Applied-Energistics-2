@@ -451,7 +451,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		super.readFromNBT( data );
 		Config.readFromNBT( data, "config" );
 		priority = data.getInteger( "priority" );
-	};
+	}
 
 	@Override
 	public List<IMEInventoryHandler> getCellArray(StorageChannel channel)

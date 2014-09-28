@@ -146,7 +146,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	public float getPowerDrainPerTick()
 	{
 		return 0.5f;
-	};
+	}
 
 	@Override
 	public void onNeighborChanged()

@@ -63,7 +63,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	public float getPowerDrainPerTick()
 	{
 		return 2.0f;
-	};
+	}
 
 	private int tmpUsed;
 
@@ -119,7 +119,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 			if ( in != null )
 				in.onTunnelNetworkChange();
 		}
-	};
+	}
 
 	@Override
 	public void onTunnelNetworkChange()

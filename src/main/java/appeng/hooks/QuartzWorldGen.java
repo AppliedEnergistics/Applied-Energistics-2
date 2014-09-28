@@ -30,7 +30,7 @@ final public class QuartzWorldGen implements IWorldGenerator
 		}
 		else
 			oreNormal = oreCharged = null;
-	};
+	}
 
 	@Override
 	public void generate(Random r, int chunkX, int chunkZ, World w, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)

@@ -53,7 +53,7 @@ public class TickHandler
 			networks = new NetworkList();
 		}
 
-	};
+	}
 
 	final public static TickHandler instance = new TickHandler();
 
@@ -81,7 +81,7 @@ public class TickHandler
 			ticksLeft = ticks;
 		}
 
-	};
+	}
 
 	final private HashMap<Integer, PlayerColor> cliPlayerColors = new HashMap();
 	final private HashMap<Integer, PlayerColor> srvPlayerColors = new HashMap();

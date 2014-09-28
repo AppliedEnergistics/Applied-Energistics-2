@@ -127,7 +127,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 		public long perOp = 0;
 		public long times = 0;
-	};
+	}
 
 	HashMap<String, twoIntegers> opsAndMultiplier = new HashMap();
 

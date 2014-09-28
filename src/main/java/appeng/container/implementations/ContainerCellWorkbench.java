@@ -149,7 +149,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		{
 			return getCellUpgradeInventory().isItemValidForSlot( i, itemstack );
 		}
-	};
+	}
 
 	IInventory UpgradeInventoryWrapper;
 

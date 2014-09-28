@@ -46,7 +46,7 @@ public class CraftingWatcher implements ICraftingWatcher
 			interestIterator.remove();
 		}
 
-	};
+	}
 
 	CraftingGridCache gsc;
 	ICraftingWatcherHost myObject;

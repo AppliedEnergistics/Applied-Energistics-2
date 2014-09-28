@@ -21,7 +21,7 @@ public class PathSegment
 
 		private static final long serialVersionUID = 810456465120286110L;
 
-	};
+	}
 
 	PathGridCache pgc;
 

@@ -57,7 +57,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			return d.setting.equals( setting ) && d.value.equals( value );
 		}
 
-	};
+	}
 
 	class BtnAppearance
 	{
@@ -65,7 +65,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		public int index;
 		public String DisplayName;
 		public String DisplayValue;
-	};
+	}
 
 	public boolean halfSize = false;
 	public String FillVar;

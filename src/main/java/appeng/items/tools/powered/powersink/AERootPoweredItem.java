@@ -21,7 +21,7 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 	private enum batteryOperation
 	{
 		STORAGE, INJECT, EXTRACT
-	};
+	}
 
 	public double maxStoredPower = 200000;
 

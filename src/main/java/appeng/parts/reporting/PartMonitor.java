@@ -137,7 +137,6 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	{
 		super.writeToStream( data );
 		clientFlags = spin & 3;
-		;
 
 		try
 		{

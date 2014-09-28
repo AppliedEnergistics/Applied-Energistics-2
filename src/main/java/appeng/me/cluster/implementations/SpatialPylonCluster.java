@@ -15,7 +15,7 @@ public class SpatialPylonCluster implements IAECluster
 	public enum Axis
 	{
 		X, Y, Z, UNFORMED
-	};
+	}
 
 	final public DimensionalCoord min;
 	final public DimensionalCoord max;
