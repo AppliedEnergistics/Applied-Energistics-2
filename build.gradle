@@ -39,6 +39,9 @@ archivesBaseName = config.archivesBaseName
 // If TeamCity is running this build, lets set the version info
 if (hasProperty("teamcity")) {
     version = teamcity["build.number"]
+
+    // Fix for main branch being built
+    version = version.replaceAll("/", "-")
 }
 
 // Add Coremod Manifest

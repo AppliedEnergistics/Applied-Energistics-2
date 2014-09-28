@@ -39,12 +39,6 @@ public class GuiStorageBus extends GuiUpgradeable
 	}
 
 	@Override
-	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
-	{
-		super.drawBG( offsetX, offsetY, mouseX, mouseY );
-	}
-
-	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
 		fontRendererObj.drawString( getGuiDisplayName( GuiText.StorageBus.getLocal() ), 8, 6, 4210752 );
