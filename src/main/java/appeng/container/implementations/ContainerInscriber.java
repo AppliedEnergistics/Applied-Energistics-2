@@ -39,7 +39,7 @@ public class ContainerInscriber extends ContainerUpgradeable
 
 		addSlotToContainer( new SlotOutput( ti, 3, 113, 40, -1 ) );
 
-		bindPlayerInventory( ip, 0, getHeight() - /* height of playerinventory */82 );
+		bindPlayerInventory( ip, 0, getHeight() - /* height of player inventory */82 );
 
 	}
 
