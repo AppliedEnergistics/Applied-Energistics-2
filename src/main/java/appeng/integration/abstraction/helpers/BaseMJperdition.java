@@ -6,7 +6,6 @@ import buildcraft.api.power.PowerHandler.PowerReceiver;
 
 public abstract class BaseMJPerdition
 {
-
 	@Method(iname = "MJ5")
 	public abstract PowerReceiver getPowerReceiver();
 
@@ -21,5 +20,4 @@ public abstract class BaseMJPerdition
 	public abstract void readFromNBT(NBTTagCompound tag);
 
 	public abstract void Tick();
-
 }
