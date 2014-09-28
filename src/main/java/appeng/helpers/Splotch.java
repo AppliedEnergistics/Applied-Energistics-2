@@ -5,10 +5,10 @@ import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.util.AEColor;
 
-public class Splot
+public class Splotch
 {
 
-	public Splot(AEColor col, boolean lit, ForgeDirection side, Vec3 Pos) {
+	public Splotch(AEColor col, boolean lit, ForgeDirection side, Vec3 Pos) {
 		color = col;
 		lumen = lit;
 
@@ -39,7 +39,7 @@ public class Splot
 		this.side = side;
 	}
 
-	public Splot(ByteBuf data) {
+	public Splotch(ByteBuf data) {
 
 		pos = data.readByte();
 		int val = data.readByte();

@@ -213,11 +213,11 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	}
 
 	// @Override - NEI
-	public List<String> handleItemTooltip(ItemStack stack, int mousex, int mousey, List<String> currenttip)
+	public List<String> handleItemTooltip(ItemStack stack, int mouseX, int mouseY, List<String> currentToolTip)
 	{
 		if ( stack != null )
 		{
-			Slot s = getSlot( mousex, mousey );
+			Slot s = getSlot( mouseX, mouseY );
 			if ( s instanceof SlotME )
 			{
 				IAEItemStack myStack = null;
@@ -233,13 +233,13 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 				if ( myStack != null )
 				{
-					while (currenttip.size() > 1)
-						currenttip.remove( 1 );
+					while (currentToolTip.size() > 1)
+						currentToolTip.remove( 1 );
 
 				}
 			}
 		}
-		return currenttip;
+		return currentToolTip;
 	}
 
 	// Vanilla version...
@@ -261,15 +261,15 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 			if ( myStack != null )
 			{
-				List currenttip = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
+				List currentToolTip = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
 
-				while (currenttip.size() > 1)
-					currenttip.remove( 1 );
+				while (currentToolTip.size() > 1)
+					currentToolTip.remove( 1 );
 
-				currenttip.add( GuiText.Installed.getLocal() + ": " + (myStack.getStackSize()) );
-				currenttip.add( GuiText.EnergyDrain.getLocal() + ": " + Platform.formatPowerLong( myStack.getCountRequestable(), true ) );
+				currentToolTip.add( GuiText.Installed.getLocal() + ": " + (myStack.getStackSize()) );
+				currentToolTip.add( GuiText.EnergyDrain.getLocal() + ": " + Platform.formatPowerLong( myStack.getCountRequestable(), true ) );
 
-				drawTooltip( x, y, 0, join( currenttip, "\n" ) );
+				drawTooltip( x, y, 0, join( currentToolTip, "\n" ) );
 			}
 		}
 		// super.drawItemStackTooltip( stack, x, y );

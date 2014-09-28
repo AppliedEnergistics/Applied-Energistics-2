@@ -50,16 +50,16 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 	{
 		if ( (outputId.equals( "crafting" )) && (getClass() == NEIAEShapelessRecipeHandler.class) )
 		{
-			List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
-			for (IRecipe irecipe : allrecipes)
+			List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
+			for (IRecipe recipe : recipes)
 			{
-				if ( (irecipe instanceof ShapelessRecipe) )
+				if ( (recipe instanceof ShapelessRecipe) )
 				{
-					if ( ((ShapelessRecipe) irecipe).isEnabled() )
+					if ( ((ShapelessRecipe) recipe).isEnabled() )
 					{
-						CachedShapelessRecipe recipe = new CachedShapelessRecipe( (ShapelessRecipe) irecipe );
-						recipe.computeVisuals();
-						this.arecipes.add( recipe );
+						CachedShapelessRecipe cachedRecipe = new CachedShapelessRecipe( (ShapelessRecipe) recipe );
+						cachedRecipe.computeVisuals();
+						this.arecipes.add( cachedRecipe );
 					}
 				}
 			}
@@ -72,16 +72,16 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
-		for (IRecipe irecipe : allrecipes)
+		List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
+		for (IRecipe recipe : recipes)
 		{
-			if ( (irecipe instanceof ShapelessRecipe) )
+			if ( (recipe instanceof ShapelessRecipe) )
 			{
-				if ( ((ShapelessRecipe) irecipe).isEnabled() && NEIServerUtils.areStacksSameTypeCrafting( irecipe.getRecipeOutput(), result ) )
+				if ( ((ShapelessRecipe) recipe).isEnabled() && NEIServerUtils.areStacksSameTypeCrafting( recipe.getRecipeOutput(), result ) )
 				{
-					CachedShapelessRecipe recipe = new CachedShapelessRecipe( (ShapelessRecipe) irecipe );
-					recipe.computeVisuals();
-					arecipes.add( recipe );
+					CachedShapelessRecipe cachedRecipe = new CachedShapelessRecipe( (ShapelessRecipe) recipe );
+					cachedRecipe.computeVisuals();
+					arecipes.add( cachedRecipe );
 				}
 			}
 		}
@@ -89,20 +89,20 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
-		for (IRecipe irecipe : allrecipes)
+		List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
+		for (IRecipe recipe : recipes)
 		{
-			if ( (irecipe instanceof ShapelessRecipe) )
+			if ( (recipe instanceof ShapelessRecipe) )
 			{
-				CachedShapelessRecipe recipe = new CachedShapelessRecipe( (ShapelessRecipe) irecipe );
+				CachedShapelessRecipe cachedRecipe = new CachedShapelessRecipe( (ShapelessRecipe) recipe );
 
-				if ( ((ShapelessRecipe) irecipe).isEnabled() && recipe.contains( recipe.ingredients, ingredient.getItem() ) )
+				if ( ((ShapelessRecipe) recipe).isEnabled() && cachedRecipe.contains( cachedRecipe.ingredients, ingredient.getItem() ) )
 				{
-					recipe.computeVisuals();
-					if ( recipe.contains( recipe.ingredients, ingredient ) )
+					cachedRecipe.computeVisuals();
+					if ( cachedRecipe.contains( cachedRecipe.ingredients, ingredient ) )
 					{
-						recipe.setIngredientPermutation( recipe.ingredients, ingredient );
-						this.arecipes.add( recipe );
+						cachedRecipe.setIngredientPermutation( cachedRecipe.ingredients, ingredient );
+						this.arecipes.add( cachedRecipe );
 					}
 				}
 			}
@@ -165,10 +165,10 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 		public ArrayList<PositionedStack> ingredients;
 		public PositionedStack result;
 
-		public CachedShapelessRecipe(ShapelessRecipe irecipe) {
-			result = new PositionedStack( irecipe.getRecipeOutput(), 119, 24 );
+		public CachedShapelessRecipe(ShapelessRecipe recipe) {
+			result = new PositionedStack( recipe.getRecipeOutput(), 119, 24 );
 			ingredients = new ArrayList<PositionedStack>();
-			setIngredients( irecipe.getInput().toArray() );
+			setIngredients( recipe.getInput().toArray() );
 		}
 
 		public void setIngredients(Object[] items)

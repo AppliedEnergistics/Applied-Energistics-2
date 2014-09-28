@@ -30,8 +30,8 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 		this.setSize( 0.35F, 0.35F );
 	}
 
-	public EntityTinyTNTPrimed(World w, double x, double y, double z, EntityLivingBase ignitor) {
-		super( w, x, y, z, ignitor );
+	public EntityTinyTNTPrimed(World w, double x, double y, double z, EntityLivingBase igniter) {
+		super( w, x, y, z, igniter );
 		this.setSize( 0.55F, 0.55F );
 		this.yOffset = this.height / 2.0F;
 	}

@@ -1,5 +1,6 @@
 package appeng.tile.misc;
 
+import appeng.helpers.Splotch;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -16,7 +17,6 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.util.AEColor;
-import appeng.helpers.Splot;
 import appeng.items.misc.ItemPaintBall;
 import appeng.tile.AEBaseTile;
 import appeng.tile.TileEvent;
@@ -30,7 +30,7 @@ public class TilePaint extends AEBaseTile
 	static final int LIGHT_PER_DOT = 12;
 
 	int isLit = 0;
-	ArrayList<Splot> dots = null;
+	ArrayList<Splotch> dots = null;
 
 	void writeBuffer(ByteBuf out)
 	{
@@ -42,7 +42,7 @@ public class TilePaint extends AEBaseTile
 
 		out.writeByte( dots.size() );
 
-		for (Splot s : dots)
+		for (Splotch s : dots)
 			s.writeToStream( out );
 	}
 
@@ -59,10 +59,10 @@ public class TilePaint extends AEBaseTile
 
 		dots = new ArrayList( howMany );
 		for (int x = 0; x < howMany; x++)
-			dots.add( new Splot( in ) );
+			dots.add( new Splotch( in ) );
 
 		isLit = 0;
-		for (Splot s : dots)
+		for (Splotch s : dots)
 		{
 			if ( s.lumen )
 			{
@@ -119,7 +119,7 @@ public class TilePaint extends AEBaseTile
 	private void updateData()
 	{
 		isLit = 0;
-		for (Splot s : dots)
+		for (Splotch s : dots)
 		{
 			if ( s.lumen )
 			{
@@ -154,10 +154,10 @@ public class TilePaint extends AEBaseTile
 
 	private void removeSide(ForgeDirection side)
 	{
-		Iterator<Splot> i = dots.iterator();
+		Iterator<Splotch> i = dots.iterator();
 		while (i.hasNext())
 		{
-			Splot s = i.next();
+			Splotch s = i.next();
 			if ( s.side == side )
 				i.remove();
 		}
@@ -187,7 +187,7 @@ public class TilePaint extends AEBaseTile
 			if ( dots.size() > 20 )
 				dots.remove( 0 );
 
-			dots.add( new Splot( col, lit, side, hitVec ) );
+			dots.add( new Splotch( col, lit, side, hitVec ) );
 			if ( lit )
 				isLit += LIGHT_PER_DOT;
 
@@ -206,7 +206,7 @@ public class TilePaint extends AEBaseTile
 			worldObj.updateLightByType( EnumSkyBlock.Block, xCoord, yCoord, zCoord );
 	}
 
-	public Collection<Splot> getDots()
+	public Collection<Splotch> getDots()
 	{
 		if ( dots == null )
 			return ImmutableList.of();

@@ -113,11 +113,11 @@ public class OreQuartz extends AEBaseBlock
 	}
 
 	@Override
-	public void dropBlockAsItemWithChance(World w, int x, int y, int z, int blockid, float something, int meta)
+	public void dropBlockAsItemWithChance(World w, int x, int y, int z, int blockID, float something, int meta)
 	{
-		super.dropBlockAsItemWithChance( w, x, y, z, blockid, something, meta );
+		super.dropBlockAsItemWithChance( w, x, y, z, blockID, something, meta );
 
-		if ( getItemDropped( blockid, w.rand, meta ) != Item.getItemFromBlock( this ) )
+		if ( getItemDropped( blockID, w.rand, meta ) != Item.getItemFromBlock( this ) )
 		{
 			int xp = MathHelper.getRandomIntegerInRange( w.rand, 2, 5 );
 

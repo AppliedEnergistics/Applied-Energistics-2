@@ -59,7 +59,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack is, EntityPlayer p, World w, int x, int y, int z, int s, float hitx, float hity, float hitz)
+	public boolean onItemUse(ItemStack is, EntityPlayer p, World w, int x, int y, int z, int s, float hitX, float hitY, float hitZ)
 	{
 		if ( Platform.isServer() )
 			Platform.openGUI( p, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_QUARTZ_KNIFE );

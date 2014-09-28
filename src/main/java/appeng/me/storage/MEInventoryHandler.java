@@ -31,7 +31,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 		if ( i instanceof IMEInventoryHandler )
 			internal = (IMEInventoryHandler<T>) i;
 		else
-			internal = new MEPassthru<T>( i, channel );
+			internal = new MEPassThrough<T>( i, channel );
 
 		monitor = internal instanceof IMEMonitor ? (IMEMonitor<T>) internal : null;
 	}

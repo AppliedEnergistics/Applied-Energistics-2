@@ -183,12 +183,12 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			{
 				lines.add( n );
 
-				ArrayList<ClientDCInternalInv> lset = new ArrayList();
-				lset.addAll( byName.get( n ) );
+				ArrayList<ClientDCInternalInv> clientInventories = new ArrayList();
+				clientInventories.addAll( byName.get( n ) );
 
-				Collections.sort( lset );
+				Collections.sort( clientInventories );
 
-				for (ClientDCInternalInv i : lset)
+				for (ClientDCInternalInv i : clientInventories)
 				{
 					lines.add( i );
 				}

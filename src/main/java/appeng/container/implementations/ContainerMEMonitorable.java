@@ -121,7 +121,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		{
 			for (int y = 0; y < 5; y++)
 			{
-				cellView[y] = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.VIEWCELL, ((IViewCellStorage) monitorable).getViewCellStorage(), y, 206, y * 18 + 8,
+				cellView[y] = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.VIEW_CELL, ((IViewCellStorage) monitorable).getViewCellStorage(), y, 206, y * 18 + 8,
 						invPlayer );
 				cellView[y].allowEdit = canAccessViewCells;
 				addSlotToContainer( cellView[y] );

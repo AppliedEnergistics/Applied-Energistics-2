@@ -23,8 +23,8 @@ import appeng.tile.grid.AENetworkTile;
 public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 {
 
-	public final int DISPLAY_ENDMIN = 0x01;
-	public final int DISPLAY_ENDMAX = 0x02;
+	public final int DISPLAY_END_MIN = 0x01;
+	public final int DISPLAY_END_MAX = 0x02;
 	public final int DISPLAY_MIDDLE = 0x01 + 0x02;
 	public final int DISPLAY_X = 0x04;
 	public final int DISPLAY_Y = 0x08;
@@ -32,11 +32,11 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	public final int MB_STATUS = 0x01 + 0x02 + 0x04 + 0x08;
 
 	public final int DISPLAY_ENABLED = 0x10;
-	public final int DISPLAY_POWEREDENABLED = 0x20;
+	public final int DISPLAY_POWERED_ENABLED = 0x20;
 	public final int NET_STATUS = 0x10 + 0x20;
 
 	int displayBits = 0;
-	SpatialPylonCluster clust;
+	SpatialPylonCluster cluster;
 	final SpatialPylonCalculator calc = new SpatialPylonCalculator( this );
 
 	boolean didHaveLight = false;
@@ -95,7 +95,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 
 	public int getLightValue()
 	{
-		if ( (displayBits & DISPLAY_POWEREDENABLED) == DISPLAY_POWEREDENABLED )
+		if ( (displayBits & DISPLAY_POWERED_ENABLED) == DISPLAY_POWERED_ENABLED )
 		{
 			return 8;
 		}
@@ -136,7 +136,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	@Override
 	public SpatialPylonCluster getCluster()
 	{
-		return clust;
+		return cluster;
 	}
 
 	public void recalculateDisplay()
@@ -145,16 +145,16 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 
 		displayBits = 0;
 
-		if ( clust != null )
+		if ( cluster != null )
 		{
-			if ( clust.min.equals( getLocation() ) )
-				displayBits = DISPLAY_ENDMIN;
-			else if ( clust.max.equals( getLocation() ) )
-				displayBits = DISPLAY_ENDMAX;
+			if ( cluster.min.equals( getLocation() ) )
+				displayBits = DISPLAY_END_MIN;
+			else if ( cluster.max.equals( getLocation() ) )
+				displayBits = DISPLAY_END_MAX;
 			else
 				displayBits = DISPLAY_MIDDLE;
 
-			switch (clust.currentAxis)
+			switch (cluster.currentAxis)
 			{
 			case X:
 				displayBits |= DISPLAY_X;
@@ -173,9 +173,9 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 			try
 			{
 				if ( gridProxy.getEnergy().isNetworkPowered() )
-					displayBits |= DISPLAY_POWEREDENABLED;
+					displayBits |= DISPLAY_POWERED_ENABLED;
 
-				if ( clust.isValid && gridProxy.isActive() )
+				if ( cluster.isValid && gridProxy.isActive() )
 					displayBits |= DISPLAY_ENABLED;
 			}
 			catch (GridAccessException e)
@@ -191,7 +191,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 
 	public void updateStatus(SpatialPylonCluster c)
 	{
-		clust = c;
+		cluster = c;
 		gridProxy.setValidSides( c == null ? EnumSet.noneOf( ForgeDirection.class ) : EnumSet.allOf( ForgeDirection.class ) );
 		recalculateDisplay();
 	}
@@ -199,9 +199,9 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	@Override
 	public void disconnect(boolean b)
 	{
-		if ( clust != null )
+		if ( cluster != null )
 		{
-			clust.destroy();
+			cluster.destroy();
 			updateStatus( null );
 		}
 	}

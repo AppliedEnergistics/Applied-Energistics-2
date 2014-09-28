@@ -22,7 +22,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	public boolean enableClientEvents = false;
 	protected ItemStack inv[];
 
-	public IMEInventory getIMEI()
+	public IMEInventory getMEInventory()
 	{
 		return new MEIInventoryWrapper( this, null );
 	}
@@ -76,7 +76,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 
 			if ( te != null && eventsEnabled() )
 			{
-				te.onChangeInventory( this, slot, InvOperation.decrStackSize, ns, null );
+				te.onChangeInventory( this, slot, InvOperation.decreaseStackSize, ns, null );
 			}
 
 			markDirty();

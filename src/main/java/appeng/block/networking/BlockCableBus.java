@@ -92,10 +92,10 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 	@SideOnly(Side.CLIENT)
 	public boolean addHitEffects(World world, MovingObjectPosition target, EffectRenderer effectRenderer)
 	{
-		Object pobj = cb( world, target.blockX, target.blockY, target.blockZ );
-		if ( pobj instanceof IPartHost )
+		Object object = cb( world, target.blockX, target.blockY, target.blockZ );
+		if ( object instanceof IPartHost )
 		{
-			IPartHost host = (IPartHost) pobj;
+			IPartHost host = (IPartHost) object;
 
 			for (ForgeDirection side : ForgeDirection.values())
 			{
@@ -138,10 +138,10 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 	@SideOnly(Side.CLIENT)
 	public boolean addDestroyEffects(World world, int x, int y, int z, int meta, EffectRenderer effectRenderer)
 	{
-		Object pobj = cb( world, x, y, z );
-		if ( pobj instanceof IPartHost )
+		Object object = cb( world, x, y, z );
+		if ( object instanceof IPartHost )
 		{
-			IPartHost host = (IPartHost) pobj;
+			IPartHost host = (IPartHost) object;
 
 			for (ForgeDirection side : ForgeDirection.values())
 			{

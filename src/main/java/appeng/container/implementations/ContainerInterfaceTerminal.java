@@ -71,7 +71,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 		if ( Platform.isServer() )
 			g = anchor.getActionableNode().getGrid();
 
-		bindPlayerInventory( ip, 0, 222 - /* height of playerinventory */82 );
+		bindPlayerInventory( ip, 0, 222 - /* height of player inventory */82 );
 	}
 
 	NBTTagCompound data = new NBTTagCompound();
@@ -109,7 +109,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 
 			switch (action)
 			{
-			case PICKUP_OR_SETDOWN:
+			case PICKUP_OR_SET_DOWN:
 
 				if ( hasItemInHand )
 				{
@@ -142,7 +142,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 				}
 
 				break;
-			case SPLIT_OR_PLACESINGLE:
+			case SPLIT_OR_PLACE_SINGLE:
 
 				if ( hasItemInHand )
 				{
@@ -345,12 +345,12 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 	private void addItems(NBTTagCompound data, InvTracker inv, int offset, int length)
 	{
 		String name = "=" + Long.toString( inv.which, Character.MAX_RADIX );
-		NBTTagCompound invv = data.getCompoundTag( name );
+		NBTTagCompound tag = data.getCompoundTag( name );
 
-		if ( invv.hasNoTags() )
+		if ( tag.hasNoTags() )
 		{
-			invv.setLong( "sortBy", inv.sortBy );
-			invv.setString( "un", inv.unlocalizedName );
+			tag.setLong( "sortBy", inv.sortBy );
+			tag.setString( "un", inv.unlocalizedName );
 		}
 
 		for (int x = 0; x < length; x++)
@@ -365,9 +365,9 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 			if ( is != null )
 				is.writeToNBT( itemNBT );
 
-			invv.setTag( Integer.toString( x + offset ), itemNBT );
+			tag.setTag( Integer.toString( x + offset ), itemNBT );
 		}
 
-		data.setTag( name, invv );
+		data.setTag( name, tag );
 	}
 }

@@ -98,7 +98,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@MENetworkEventSubscribe
-	public void updateChannels(MENetworkChannelsChanged chann)
+	public void updateChannels(MENetworkChannelsChanged changedChannels)
 	{
 		updateStatus();
 	}
@@ -340,21 +340,21 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 	private void checkInterfaceVsStorageBus(TileEntity target, ForgeDirection side)
 	{
-		IInterfaceHost achiv = null;
+		IInterfaceHost achievement = null;
 
 		if ( target instanceof IInterfaceHost )
-			achiv = (IInterfaceHost) target;
+			achievement = (IInterfaceHost) target;
 
 		if ( target instanceof IPartHost )
 		{
 			Object part = ((IPartHost) target).getPart( side );
 			if ( part instanceof IInterfaceHost )
-				achiv = (IInterfaceHost) part;
+				achievement = (IInterfaceHost) part;
 		}
 
-		if ( achiv != null )
+		if ( achievement != null )
 		{
-			Platform.addStat( achiv.getActionableNode().getPlayerID(), Achievements.Recursive.getAchievement() );
+			Platform.addStat( achievement.getActionableNode().getPlayerID(), Achievements.Recursive.getAchievement() );
 			Platform.addStat( getActionableNode().getPlayerID(), Achievements.Recursive.getAchievement() );
 		}
 	}

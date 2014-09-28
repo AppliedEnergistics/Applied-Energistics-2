@@ -401,11 +401,11 @@ public class GridNode implements IGridNode, IPathItem
 		return new ReadOnlyCollection<IGridConnection>( Connections );
 	}
 
-	public boolean hasConnection(IGridNode otherside)
+	public boolean hasConnection(IGridNode otherSide)
 	{
 		for (IGridConnection gc : Connections)
 		{
-			if ( gc.a() == otherside || gc.b() == otherside )
+			if ( gc.a() == otherSide || gc.b() == otherSide )
 				return true;
 		}
 		return false;

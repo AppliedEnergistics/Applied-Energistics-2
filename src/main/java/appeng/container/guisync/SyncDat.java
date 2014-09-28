@@ -22,11 +22,11 @@ public class SyncDat
 
 	private int channel;
 
-	public SyncDat(AEBaseContainer container, Field field, GuiSync anno) {
+	public SyncDat(AEBaseContainer container, Field field, GuiSync annotation) {
 		clientVersion = null;
 		this.source = container;
 		this.field = field;
-		channel = anno.value();
+		channel = annotation.value();
 	}
 
 	public int getChannel()

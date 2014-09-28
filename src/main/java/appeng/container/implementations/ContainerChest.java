@@ -8,15 +8,15 @@ import appeng.tile.storage.TileChest;
 public class ContainerChest extends AEBaseContainer
 {
 
-	TileChest myte;
+	TileChest chest;
 
-	public ContainerChest(InventoryPlayer ip, TileChest te) {
-		super( ip, te, null );
-		myte = te;
+	public ContainerChest(InventoryPlayer ip, TileChest chest) {
+		super( ip, chest, null );
+		this.chest = chest;
 
-		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, myte, 1, 80, 37, invPlayer ) );
+		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, this.chest, 1, 80, 37, invPlayer ) );
 
-		bindPlayerInventory( ip, 0, 166 - /* height of playerinventory */82 );
+		bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
 	}
 
 }

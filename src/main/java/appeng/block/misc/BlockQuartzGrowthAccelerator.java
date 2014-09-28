@@ -52,15 +52,15 @@ public class BlockQuartzGrowthAccelerator extends AEBaseBlock implements IOrient
 		if ( !AEConfig.instance.enableEffects )
 			return;
 
-		TileQuartzGrowthAccelerator tqga = getTileEntity( w, x, y, z );
+		TileQuartzGrowthAccelerator tileQuartzGrowthAccelerator = getTileEntity( w, x, y, z );
 
-		if ( tqga != null && tqga.hasPower && CommonHelper.proxy.shouldAddParticles( r ) )
+		if ( tileQuartzGrowthAccelerator != null && tileQuartzGrowthAccelerator.hasPower && CommonHelper.proxy.shouldAddParticles( r ) )
 		{
 			double d0 = (double) (r.nextFloat() - 0.5F);
 			double d1 = (double) (r.nextFloat() - 0.5F);
 
-			ForgeDirection up = tqga.getUp();
-			ForgeDirection forward = tqga.getForward();
+			ForgeDirection up = tileQuartzGrowthAccelerator.getUp();
+			ForgeDirection forward = tileQuartzGrowthAccelerator.getForward();
 			ForgeDirection west = Platform.crossProduct( forward, up );
 
 			double rx = 0.5 + x;

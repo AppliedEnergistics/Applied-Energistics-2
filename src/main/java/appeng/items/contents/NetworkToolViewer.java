@@ -19,7 +19,7 @@ public class NetworkToolViewer implements INetworkTool
 		this.is = is;
 		gh = gHost;
 		inv = new AppEngInternalInventory( null, 9 );
-		if ( is.hasTagCompound() ) // prevent crash when opening network status creen.
+		if ( is.hasTagCompound() ) // prevent crash when opening network status screen.
 			inv.readFromNBT( Platform.openNbtData( is ), "inv" );
 	}
 

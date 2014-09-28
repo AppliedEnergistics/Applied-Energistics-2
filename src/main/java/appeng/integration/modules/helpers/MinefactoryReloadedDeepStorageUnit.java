@@ -11,13 +11,13 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.item.AEItemStack;
 
-public class MFRDSU implements IMEInventory<IAEItemStack>
+public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemStack>
 {
 
 	IDeepStorageUnit dsu;
 	TileEntity te;
 
-	public MFRDSU(TileEntity ta) {
+	public MinefactoryReloadedDeepStorageUnit(TileEntity ta) {
 		te = ta;
 		dsu = (IDeepStorageUnit) ta;
 	}

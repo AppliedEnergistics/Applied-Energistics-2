@@ -16,7 +16,7 @@ import appeng.util.Platform;
 public class UpgradeInventory extends AppEngInternalInventory implements IAEAppEngInventory
 {
 
-	private final Object itemorblock;
+	private final Object itemOrBlock;
 	private final IAEAppEngInventory parent;
 
 	private boolean cached = false;
@@ -31,7 +31,7 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 		super( null, s );
 		te = this;
 		parent = _te;
-		itemorblock = itemOrBlock;
+		this.itemOrBlock = itemOrBlock;
 	}
 
 	@Override
@@ -68,17 +68,17 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 		Integer max = null;
 		for (ItemStack is : u.getSupported().keySet())
 		{
-			if ( is.getItem() == itemorblock )
+			if ( is.getItem() == itemOrBlock )
 			{
 				max = u.getSupported().get( is );
 				break;
 			}
-			else if ( is.getItem() instanceof ItemBlock && Block.getBlockFromItem( is.getItem() ) == itemorblock )
+			else if ( is.getItem() instanceof ItemBlock && Block.getBlockFromItem( is.getItem() ) == itemOrBlock )
 			{
 				max = u.getSupported().get( is );
 				break;
 			}
-			else if ( itemorblock instanceof ItemStack && Platform.isSameItem( (ItemStack) itemorblock, is ) )
+			else if ( itemOrBlock instanceof ItemStack && Platform.isSameItem( (ItemStack) itemOrBlock, is ) )
 			{
 				max = u.getSupported().get( is );
 				break;
