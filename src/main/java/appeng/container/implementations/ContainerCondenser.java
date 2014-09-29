@@ -14,7 +14,7 @@ import appeng.util.Platform;
 public class ContainerCondenser extends AEBaseContainer implements IProgressProvider
 {
 
-	TileCondenser condenser;
+	final TileCondenser condenser;
 
 	public ContainerCondenser(InventoryPlayer ip, TileCondenser condenser) {
 		super( ip, condenser, null );

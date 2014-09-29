@@ -15,14 +15,14 @@ import appeng.spatial.DefaultSpatialHandler;
 public class MovableTileRegistry implements IMovableRegistry
 {
 
-	private HashSet<Block> blacklisted = new HashSet<Block>();
+	private final HashSet<Block> blacklisted = new HashSet<Block>();
 
-	private HashMap<Class<? extends TileEntity>, IMovableHandler> Valid = new HashMap<Class<? extends TileEntity>, IMovableHandler>();
-	private LinkedList<Class<? extends TileEntity>> test = new LinkedList<Class<? extends TileEntity>>();
-	private LinkedList<IMovableHandler> handlers = new LinkedList<IMovableHandler>();
-	private DefaultSpatialHandler dsh = new DefaultSpatialHandler();
+	private final HashMap<Class<? extends TileEntity>, IMovableHandler> Valid = new HashMap<Class<? extends TileEntity>, IMovableHandler>();
+	private final LinkedList<Class<? extends TileEntity>> test = new LinkedList<Class<? extends TileEntity>>();
+	private final LinkedList<IMovableHandler> handlers = new LinkedList<IMovableHandler>();
+	private final DefaultSpatialHandler dsh = new DefaultSpatialHandler();
 
-	private IMovableHandler nullHandler = new DefaultSpatialHandler();
+	private final IMovableHandler nullHandler = new DefaultSpatialHandler();
 
 	private IMovableHandler testClass(Class myClass, TileEntity te)
 	{

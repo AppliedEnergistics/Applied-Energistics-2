@@ -20,7 +20,7 @@ import appeng.util.Platform;
 public class ContainerMAC extends ContainerUpgradeable implements IProgressProvider
 {
 
-	TileMolecularAssembler tma;
+	final TileMolecularAssembler tma;
 	private static final int MAX_CRAFT_PROGRESS = 100;
 
 	public ContainerMAC(InventoryPlayer ip, TileMolecularAssembler te)

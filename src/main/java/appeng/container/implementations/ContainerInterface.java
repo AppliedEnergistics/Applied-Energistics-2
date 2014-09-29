@@ -15,7 +15,7 @@ import appeng.helpers.IInterfaceHost;
 public class ContainerInterface extends ContainerUpgradeable
 {
 
-	DualityInterface myDuality;
+	final DualityInterface myDuality;
 
 	@GuiSync(3)
 	public YesNo bMode = YesNo.NO;

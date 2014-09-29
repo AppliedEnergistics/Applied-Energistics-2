@@ -26,7 +26,7 @@ import appeng.util.iterators.NullIterator;
 public class ContainerStorageBus extends ContainerUpgradeable
 {
 
-	PartStorageBus storageBus;
+	final PartStorageBus storageBus;
 
 	@GuiSync(3)
 	public AccessRestriction rwMode = AccessRestriction.READ_WRITE;

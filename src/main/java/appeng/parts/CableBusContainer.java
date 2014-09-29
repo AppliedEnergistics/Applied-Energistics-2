@@ -53,7 +53,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class CableBusContainer extends CableBusStorage implements AEMultiTile, ICableBusContainer
 {
 
-	private EnumSet<LayerFlags> myLayerFlags = EnumSet.noneOf( LayerFlags.class );
+	private final EnumSet<LayerFlags> myLayerFlags = EnumSet.noneOf( LayerFlags.class );
 
 	public YesNo hasRedstone = YesNo.UNDECIDED;
 	public IPartHost tcb;

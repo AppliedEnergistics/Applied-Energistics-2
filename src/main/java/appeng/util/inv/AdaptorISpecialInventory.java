@@ -12,10 +12,10 @@ import buildcraft.api.inventory.ISpecialInventory;
 public class AdaptorISpecialInventory extends InventoryAdaptor
 {
 
-	private AdaptorIInventory remover;
+	private final AdaptorIInventory remover;
 
-	private ISpecialInventory i;
-	private ForgeDirection d;
+	private final ISpecialInventory i;
+	private final ForgeDirection d;
 
 	public AdaptorISpecialInventory(ISpecialInventory s, ForgeDirection dd) {
 		i = s;

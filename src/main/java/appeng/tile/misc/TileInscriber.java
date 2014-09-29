@@ -46,7 +46,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	final int bottom[] = new int[] { 1 };
 	final int sides[] = new int[] { 2, 3 };
 
-	AppEngInternalInventory inv = new AppEngInternalInventory( this, 4 );
+	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 4 );
 
 	public final int maxProcessingTime = 100;
 	public int processingTime = 0;
@@ -58,8 +58,8 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	public long clientStart;
 
 	static final ItemStack inscriberStack = AEApi.instance().blocks().blockInscriber.stack( 1 );
-	private IConfigManager settings = new ConfigManager( this );
-	private UpgradeInventory upgrades = new UpgradeInventory( inscriberStack, this, getUpgradeSlots() );
+	private final IConfigManager settings = new ConfigManager( this );
+	private final UpgradeInventory upgrades = new UpgradeInventory( inscriberStack, this, getUpgradeSlots() );
 
 	@Override
 	public AECableType getCableConnectionType(ForgeDirection dir)

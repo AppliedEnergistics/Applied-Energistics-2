@@ -9,8 +9,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class WrapperTEPipe implements IInventory
 {
 
-	TileEntity ad;
-	ForgeDirection dir;
+	final TileEntity ad;
+	final ForgeDirection dir;
 
 	public WrapperTEPipe(TileEntity te, ForgeDirection d) {
 		ad = te;

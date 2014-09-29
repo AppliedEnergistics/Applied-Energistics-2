@@ -11,7 +11,7 @@ final public class EntityFloatingItem extends EntityItem
 	public static int ageStatic = 0;
 
 	int superDeath = 0;
-	private Entity parent;
+	private final Entity parent;
 	float progress = 0;
 
 	public EntityFloatingItem(Entity parent, World p_i1710_1_, double p_i1710_2_, double p_i1710_4_, double p_i1710_6_, ItemStack p_i1710_8_) {

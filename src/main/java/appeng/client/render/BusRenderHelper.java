@@ -32,8 +32,8 @@ public class BusRenderHelper implements IPartRenderHelper
 	double maxY = 16;
 	double maxZ = 16;
 
-	AEBaseBlock blk = (AEBaseBlock) AEApi.instance().blocks().blockMultiPart.block();
-	BaseBlockRender bbr = new BaseBlockRender();
+	final AEBaseBlock blk = (AEBaseBlock) AEApi.instance().blocks().blockMultiPart.block();
+	final BaseBlockRender bbr = new BaseBlockRender();
 
 	private ForgeDirection ax = ForgeDirection.EAST;
 	private ForgeDirection ay = ForgeDirection.UP;
@@ -104,12 +104,12 @@ public class BusRenderHelper implements IPartRenderHelper
 
 	}
 
-	BoundBoxCalculator bbc = new BoundBoxCalculator();
+	final BoundBoxCalculator bbc = new BoundBoxCalculator();
 
 	int renderingForPass = 0;
 	int currentPass = 0;
 	int itemsRendered = 0;
-	boolean noAlphaPass = AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass ) == false;
+	final boolean noAlphaPass = AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass ) == false;
 
 	public int getItemsRendered()
 	{

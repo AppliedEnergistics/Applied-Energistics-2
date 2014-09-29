@@ -8,7 +8,7 @@ import appeng.tile.storage.TileDrive;
 public class ContainerDrive extends AEBaseContainer
 {
 
-	TileDrive drive;
+	final TileDrive drive;
 
 	public ContainerDrive(InventoryPlayer ip, TileDrive drive) {
 		super( ip, drive, null );

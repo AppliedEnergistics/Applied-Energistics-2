@@ -44,12 +44,12 @@ public class ApiPart implements IPartHelper
 
 	int classNum = 1;
 
-	HashMap<String, Class> TileImplementations = new HashMap<String, Class>();
+	final HashMap<String, Class> TileImplementations = new HashMap<String, Class>();
 	HashMap<String, ClassNode> readerCache = new HashMap<String, ClassNode>();
-	HashMap<Class, String> interfaces2Layer = new HashMap<Class, String>();
-	HashMap<String, Class> roots = new HashMap<String, Class>();
+	final HashMap<Class, String> interfaces2Layer = new HashMap<Class, String>();
+	final HashMap<String, Class> roots = new HashMap<String, Class>();
 
-	List<String> desc = new LinkedList<String>();
+	final List<String> desc = new LinkedList<String>();
 
 	public void initFMPSupport()
 	{
@@ -199,7 +199,7 @@ public class ApiPart implements IPartHelper
 	class DefaultPackageClassNameRemapper extends Remapper
 	{
 
-		public HashMap<String, String> inputOutput = new HashMap<String, String>();
+		public final HashMap<String, String> inputOutput = new HashMap<String, String>();
 
 		@Override
 		public String map(String typeName)

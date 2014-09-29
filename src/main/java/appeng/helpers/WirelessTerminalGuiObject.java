@@ -32,8 +32,8 @@ import appeng.tile.networking.TileWireless;
 public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 {
 
-	IWirelessTermHandler wth;
-	String encryptionKey;
+	final IWirelessTermHandler wth;
+	final String encryptionKey;
 
 	IGrid targetGrid;
 	IStorageGrid sg;
@@ -43,8 +43,8 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 	double sqRange = Double.MAX_VALUE;
 	double myRange = Double.MAX_VALUE;
 
-	EntityPlayer myPlayer;
-	public ItemStack effectiveItem;
+	final EntityPlayer myPlayer;
+	public final ItemStack effectiveItem;
 
 	public double getRange()
 	{

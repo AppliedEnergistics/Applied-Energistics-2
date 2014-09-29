@@ -14,7 +14,7 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 		HORIZONTAL, VERTICAL
 	}
 
-	private IProgressProvider source;
+	private final IProgressProvider source;
 	private ResourceLocation texture;
 	private int fill_u;
 	private int fill_v;

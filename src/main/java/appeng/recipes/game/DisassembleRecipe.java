@@ -16,9 +16,9 @@ import appeng.api.storage.data.IItemList;
 public class DisassembleRecipe implements IRecipe
 {
 
-	private Materials mats = AEApi.instance().materials();
-	private Items items = AEApi.instance().items();
-	private Blocks blocks = AEApi.instance().blocks();
+	private final Materials mats = AEApi.instance().materials();
+	private final Items items = AEApi.instance().items();
+	private final Blocks blocks = AEApi.instance().blocks();
 
 	private ItemStack getOutput(InventoryCrafting inv, boolean createFacade)
 	{

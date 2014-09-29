@@ -27,7 +27,7 @@ public class StorageChunkProvider extends ChunkProviderGenerate implements IChun
 		
 	}
 	
-	World w;
+	final World w;
 
 	public StorageChunkProvider(World wrd, long i) {
 		super( wrd, i, false );

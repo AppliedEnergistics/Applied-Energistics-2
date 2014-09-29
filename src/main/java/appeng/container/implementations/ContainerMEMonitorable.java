@@ -54,7 +54,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	final IItemList<IAEItemStack> items = AEApi.instance().storage().createItemList();
 
 	IConfigManager serverCM;
-	IConfigManager clientCM;
+	final IConfigManager clientCM;
 
 	@GuiSync(99)
 	public boolean canAccessViewCells = false;
@@ -62,11 +62,11 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	@GuiSync(98)
 	public boolean hasPower = false;
 
-	public SlotRestrictedInput cellView[] = new SlotRestrictedInput[5];
+	public final SlotRestrictedInput[] cellView = new SlotRestrictedInput[5];
 
 	public IConfigManagerHost gui;
 	private IGridNode networkNode;
-	private ITerminalHost host;
+	private final ITerminalHost host;
 
 	public IGridNode getNetworkNode()
 	{

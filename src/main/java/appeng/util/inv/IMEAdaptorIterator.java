@@ -8,8 +8,8 @@ import appeng.api.storage.data.IItemList;
 public class IMEAdaptorIterator implements Iterator<ItemSlot>
 {
 
-	Iterator<IAEItemStack> stack;
-	ItemSlot slot = new ItemSlot();
+	final Iterator<IAEItemStack> stack;
+	final ItemSlot slot = new ItemSlot();
 	int offset = 0;
 	boolean hasNext;
 

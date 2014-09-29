@@ -15,8 +15,8 @@ import appeng.hooks.TickHandler.PlayerColor;
 public class PacketPaintedEntity extends AppEngPacket
 {
 
-	private AEColor myColor;
-	private int entityId;
+	private final AEColor myColor;
+	private final int entityId;
 	private int ticks;
 
 	// automatic.

@@ -15,14 +15,14 @@ import appeng.client.texture.ExtraBlockTextures;
 public class GuiTabButton extends GuiButton implements ITooltip
 {
 
-	RenderItem itemRenderer;
+	final RenderItem itemRenderer;
 
 	int myIcon = -1;
 	public int hideEdge = 0;
 
 	ItemStack myItem;
 
-	String Msg;
+	final String Msg;
 
 	public void setVisibility(boolean vis)
 	{

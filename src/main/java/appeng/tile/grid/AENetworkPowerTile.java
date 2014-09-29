@@ -27,7 +27,7 @@ public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IA
 		gridProxy.writeToNBT( data );
 	}
 
-	protected AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", getItemFromTile( this ), true );
+	protected final AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", getItemFromTile( this ), true );
 
 	@Override
 	public AENetworkProxy getProxy()

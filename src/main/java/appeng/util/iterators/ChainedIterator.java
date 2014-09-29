@@ -6,7 +6,7 @@ public class ChainedIterator<T> implements Iterator<T>
 {
 
 	int offset = 0;
-	T[] list;
+	final T[] list;
 
 	public ChainedIterator(T... list) {
 		this.list = list;

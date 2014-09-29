@@ -6,14 +6,14 @@ import net.minecraft.client.model.ModelRenderer;
 public class ModelCompass extends ModelBase
 {
 
-	ModelRenderer Ring1;
-	ModelRenderer Ring2;
-	ModelRenderer Ring3;
-	ModelRenderer Ring4;
-	ModelRenderer Middle;
-	ModelRenderer Base;
+	final ModelRenderer Ring1;
+	final ModelRenderer Ring2;
+	final ModelRenderer Ring3;
+	final ModelRenderer Ring4;
+	final ModelRenderer Middle;
+	final ModelRenderer Base;
 
-	ModelRenderer Pointer;
+	final ModelRenderer Pointer;
 
 	public ModelCompass() {
 		textureWidth = 16;

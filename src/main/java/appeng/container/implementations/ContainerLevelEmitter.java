@@ -21,7 +21,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ContainerLevelEmitter extends ContainerUpgradeable
 {
 
-	PartLevelEmitter lvlEmitter;
+	final PartLevelEmitter lvlEmitter;
 
 	@SideOnly(Side.CLIENT)
 	public GuiTextField textField;

@@ -19,7 +19,7 @@ import appeng.tile.storage.TileSkyChest;
 public class RenderBlockSkyChest extends BaseBlockRender
 {
 
-	ModelChest model = new ModelChest();
+	final ModelChest model = new ModelChest();
 
 	public RenderBlockSkyChest() {
 		super( true, 80 );

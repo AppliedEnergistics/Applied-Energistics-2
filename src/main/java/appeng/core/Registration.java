@@ -183,7 +183,7 @@ public class Registration
 
 	final public static Registration instance = new Registration();
 
-	public RecipeHandler recipeHandler;
+	public final RecipeHandler recipeHandler;
 	public BiomeGenBase storageBiome;
 
 	private Registration()

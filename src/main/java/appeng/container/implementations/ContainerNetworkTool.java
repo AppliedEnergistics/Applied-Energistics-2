@@ -12,7 +12,7 @@ import appeng.util.Platform;
 public class ContainerNetworkTool extends AEBaseContainer
 {
 
-	INetworkTool toolInv;
+	final INetworkTool toolInv;
 
 	@GuiSync(1)
 	public boolean facadeMode;

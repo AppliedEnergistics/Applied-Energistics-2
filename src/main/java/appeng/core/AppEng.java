@@ -53,7 +53,7 @@ public class AppEng
 	public final static String modid = "appliedenergistics2";
 	public final static String name = "Applied Energistics 2";
 
-	HashMap<String, IIMCHandler> IMCHandlers = new HashMap<String, IIMCHandler>();
+	final HashMap<String, IIMCHandler> IMCHandlers = new HashMap<String, IIMCHandler>();
 
 	public static AppEng instance;
 

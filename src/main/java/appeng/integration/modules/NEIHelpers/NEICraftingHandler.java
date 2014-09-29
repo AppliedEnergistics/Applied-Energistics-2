@@ -28,8 +28,8 @@ public class NEICraftingHandler implements IOverlayHandler
 		offsetY = y;
 	}
 
-	int offsetX;
-	int offsetY;
+	final int offsetX;
+	final int offsetY;
 
 	@Override
 	public void overlayRecipe(GuiContainer gui, IRecipeHandler recipe, int recipeIndex, boolean shift)

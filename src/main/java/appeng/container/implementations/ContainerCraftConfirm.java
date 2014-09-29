@@ -46,7 +46,7 @@ import com.google.common.collect.ImmutableSet;
 public class ContainerCraftConfirm extends AEBaseContainer
 {
 
-	ITerminalHost priHost;
+	final ITerminalHost priHost;
 	public Future<ICraftingJob> job;
 	public ICraftingJob result;
 
@@ -76,7 +76,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 
 	protected long cpuIdx = Long.MIN_VALUE;
 
-	public ArrayList<CraftingCPURecord> cpus = new ArrayList<CraftingCPURecord>();
+	public final ArrayList<CraftingCPURecord> cpus = new ArrayList<CraftingCPURecord>();
 
 	public ContainerCraftConfirm(InventoryPlayer ip, ITerminalHost te) {
 		super( ip, te );

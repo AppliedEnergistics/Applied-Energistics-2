@@ -139,8 +139,8 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	public class CachedInscriberRecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 
-		public ArrayList<PositionedStack> ingredients;
-		public PositionedStack result;
+		public final ArrayList<PositionedStack> ingredients;
+		public final PositionedStack result;
 
 		public CachedInscriberRecipe(InscriberRecipe recipe) {
 			result = new PositionedStack( recipe.output, 108, 29 );

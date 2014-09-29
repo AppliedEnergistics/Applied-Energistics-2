@@ -22,7 +22,7 @@ public class GridStorage implements IGridStorage
 	final NBTTagCompound data;
 
 	public boolean isDirty = false;
-	private WeakHashMap<GridStorage,Boolean> divided = new WeakHashMap<GridStorage,Boolean>();
+	private final WeakHashMap<GridStorage,Boolean> divided = new WeakHashMap<GridStorage,Boolean>();
 	final GridStorageSearch mySearchEntry; // keep myself in the list until I'm
 											// lost...
 

@@ -36,13 +36,13 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	final int sidesRing[] = new int[] {};
 	final int sidesLink[] = new int[] { 0 };
 
-	AppEngInternalInventory inv = new AppEngInternalInventory( this, 1 );
+	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 1 );
 
 	public final byte corner = 16;
 	final byte hasSingularity = 32;
 	final byte powered = 64;
 
-	private QuantumCalculator calc = new QuantumCalculator( this );
+	private final QuantumCalculator calc = new QuantumCalculator( this );
 	byte constructed = -1;
 
 	QuantumCluster cluster;

@@ -14,7 +14,7 @@ import appeng.core.features.registries.entries.ExternalIInv;
 public class ExternalStorageRegistry implements IExternalStorageRegistry
 {
 
-	List<IExternalStorageHandler> Handlers;
+	final List<IExternalStorageHandler> Handlers;
 	final ExternalIInv lastHandler = new ExternalIInv();
 
 	public ExternalStorageRegistry() {

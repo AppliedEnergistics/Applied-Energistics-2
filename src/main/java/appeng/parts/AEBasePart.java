@@ -57,7 +57,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 
 	protected ISimplifiedBundle renderCache = null;
 
-	protected AENetworkProxy proxy;
+	protected final AENetworkProxy proxy;
 	protected TileEntity tile = null;
 	protected IPartHost host = null;
 	protected ForgeDirection side = null;

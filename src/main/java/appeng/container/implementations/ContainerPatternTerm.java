@@ -48,18 +48,18 @@ import appeng.util.item.AEItemStack;
 public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEAppEngInventory, IOptionalSlotHost, IContainerCraftingPacket
 {
 
-	AppEngInternalInventory cOut = new AppEngInternalInventory( null, 1 );
-	IInventory crafting;
+	final AppEngInternalInventory cOut = new AppEngInternalInventory( null, 1 );
+	final IInventory crafting;
 
-	SlotFakeCraftingMatrix craftingSlots[] = new SlotFakeCraftingMatrix[9];
-	OptionalSlotFake outputSlots[] = new OptionalSlotFake[3];
+	final SlotFakeCraftingMatrix[] craftingSlots = new SlotFakeCraftingMatrix[9];
+	final OptionalSlotFake[] outputSlots = new OptionalSlotFake[3];
 
-	SlotPatternTerm craftSlot;
+	final SlotPatternTerm craftSlot;
 
-	SlotRestrictedInput patternSlotIN;
-	SlotRestrictedInput patternSlotOUT;
+	final SlotRestrictedInput patternSlotIN;
+	final SlotRestrictedInput patternSlotOUT;
 
-	public PartPatternTerminal ct;
+	public final PartPatternTerminal ct;
 
 	public ContainerPatternTerm(InventoryPlayer ip, ITerminalHost monitorable)
 	{

@@ -15,7 +15,7 @@ public class OreDictionaryHandler
 
 	public static final OreDictionaryHandler instance = new OreDictionaryHandler();
 
-	private List<IOreListener> ol = new ArrayList<IOreListener>();
+	private final List<IOreListener> ol = new ArrayList<IOreListener>();
 
 	private boolean enableRebaking = false;
 

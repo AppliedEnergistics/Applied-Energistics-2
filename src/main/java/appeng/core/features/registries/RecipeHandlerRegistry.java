@@ -13,8 +13,8 @@ import appeng.recipes.RecipeHandler;
 public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 {
 
-	HashMap<String, Class<? extends ICraftHandler>> handlers = new HashMap<String, Class<? extends ICraftHandler>>();
-	LinkedList<ISubItemResolver> resolvers = new LinkedList<ISubItemResolver>();
+	final HashMap<String, Class<? extends ICraftHandler>> handlers = new HashMap<String, Class<? extends ICraftHandler>>();
+	final LinkedList<ISubItemResolver> resolvers = new LinkedList<ISubItemResolver>();
 
 	@Override
 	public void addNewCraftHandler(String name, Class<? extends ICraftHandler> handler)

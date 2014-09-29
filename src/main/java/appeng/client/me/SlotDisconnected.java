@@ -10,7 +10,7 @@ import appeng.util.Platform;
 public class SlotDisconnected extends AppEngSlot
 {
 
-	public ClientDCInternalInv mySlot;
+	public final ClientDCInternalInv mySlot;
 
 	public SlotDisconnected(ClientDCInternalInv me, int which, int x, int y) {
 		super( me.inv, which, x, y );

@@ -59,8 +59,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class AEBaseBlock extends BlockContainer implements IAEFeature
 {
 
-	private String featureFullName;
-	private String featureSubName;
+	private final String featureFullName;
+	private final String featureSubName;
 	private AEFeatureHandler feature;
 
 	private Class<? extends TileEntity> tileEntityType = null;

@@ -14,8 +14,8 @@ import appeng.util.item.AEItemStack;
 public class BSCrate implements IMEInventory<IAEItemStack>
 {
 
-	ICrateStorage cs;
-	ForgeDirection side;
+	final ICrateStorage cs;
+	final ForgeDirection side;
 
 	public BSCrate(Object object, ForgeDirection d) {
 		cs = (ICrateStorage) object;

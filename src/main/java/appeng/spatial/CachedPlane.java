@@ -33,7 +33,7 @@ public class CachedPlane
 		private final Object ch[] = { 0, 0, 0 };
 		private List<Integer> skipThese = null;
 
-		private ExtendedBlockStorage[] storage;
+		private final ExtendedBlockStorage[] storage;
 
 		public Column(Chunk _c, int _x, int _z, int cy, int chunkHeight) {
 			x = _x;
@@ -92,29 +92,29 @@ public class CachedPlane
 
 	int verticalBits;
 
-	int x_size;
-	int z_size;
+	final int x_size;
+	final int z_size;
 
-	int cx_size;
-	int cz_size;
+	final int cx_size;
+	final int cz_size;
 
-	int x_offset;
-	int y_offset;
-	int z_offset;
+	final int x_offset;
+	final int y_offset;
+	final int z_offset;
 
-	int y_size;
+	final int y_size;
 
-	Chunk myChunks[][];
-	Column myColumns[][];
+	final Chunk[][] myChunks;
+	final Column[][] myColumns;
 
-	LinkedList<TileEntity> tiles = new LinkedList<TileEntity>();
-	LinkedList<NextTickListEntry> ticks = new LinkedList<NextTickListEntry>();
+	final LinkedList<TileEntity> tiles = new LinkedList<TileEntity>();
+	final LinkedList<NextTickListEntry> ticks = new LinkedList<NextTickListEntry>();
 
-	World world;
-	Block matrixFrame = AEApi.instance().blocks().blockMatrixFrame.block();
-	IMovableRegistry reg = AEApi.instance().registries().movable();
+	final World world;
+	final Block matrixFrame = AEApi.instance().blocks().blockMatrixFrame.block();
+	final IMovableRegistry reg = AEApi.instance().registries().movable();
 
-	LinkedList<WorldCoord> updates = new LinkedList<WorldCoord>();
+	final LinkedList<WorldCoord> updates = new LinkedList<WorldCoord>();
 
 	public CachedPlane(World w, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
 

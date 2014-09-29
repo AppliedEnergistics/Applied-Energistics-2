@@ -25,7 +25,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 {
 
 	float r = 0;
-	ModelCompass model = new ModelCompass();
+	final ModelCompass model = new ModelCompass();
 
 	public RenderBlockSkyCompass() {
 		super( true, 80 );

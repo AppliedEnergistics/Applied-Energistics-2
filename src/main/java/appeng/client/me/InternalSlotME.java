@@ -8,9 +8,9 @@ public class InternalSlotME
 
 	private final ItemRepo repo;
 
-	public int offset;
-	public int xPos;
-	public int yPos;
+	public final int offset;
+	public final int xPos;
+	public final int yPos;
 
 	public InternalSlotME(ItemRepo def, int offset, int displayX, int displayY) {
 		this.repo = def;

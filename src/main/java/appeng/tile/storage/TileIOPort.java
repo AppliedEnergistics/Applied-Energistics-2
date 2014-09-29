@@ -48,17 +48,17 @@ import appeng.util.inv.WrapperInventoryRange;
 public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IConfigManagerHost, IGridTickable
 {
 
-	ConfigManager cm = new ConfigManager( this );
+	final ConfigManager cm = new ConfigManager( this );
 
 	final int input[] = { 0, 1, 2, 3, 4, 5 };
 	final int output[] = { 6, 7, 8, 9, 10, 11 };
 
 	final int outputSlots[] = { 6, 7, 8, 9, 10, 11 };
 
-	AppEngInternalInventory cells = new AppEngInternalInventory( this, 12 );
-	UpgradeInventory upgrades = new UpgradeInventory( AEApi.instance().blocks().blockIOPort.block(), this, 3 );
+	final AppEngInternalInventory cells = new AppEngInternalInventory( this, 12 );
+	final UpgradeInventory upgrades = new UpgradeInventory( AEApi.instance().blocks().blockIOPort.block(), this, 3 );
 
-	BaseActionSource mySrc = new MachineSource( this );
+	final BaseActionSource mySrc = new MachineSource( this );
 
 	YesNo lastRedstoneState = YesNo.UNDECIDED;
 

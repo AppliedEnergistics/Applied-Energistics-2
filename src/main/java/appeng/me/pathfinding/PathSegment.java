@@ -23,7 +23,7 @@ public class PathSegment
 
 	}
 
-	PathGridCache pgc;
+	final PathGridCache pgc;
 
 	public PathSegment(PathGridCache myPGC, List<IPathItem> open, Set<IPathItem> semiOpen, Set<IPathItem> closed)
 	{
@@ -35,8 +35,8 @@ public class PathSegment
 	}
 
 	List<IPathItem> open;
-	Set<IPathItem> semiOpen;
-	Set<IPathItem> closed;
+	final Set<IPathItem> semiOpen;
+	final Set<IPathItem> closed;
 
 	public boolean step()
 	{

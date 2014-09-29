@@ -32,7 +32,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class FMPEvent
 {
 
-	private ThreadLocal<Object> placing = new ThreadLocal<Object>();
+	private final ThreadLocal<Object> placing = new ThreadLocal<Object>();
 
 	@SubscribeEvent
 	public void ServerFMPEvent(FMPPacketEvent event)

@@ -58,14 +58,14 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	public static int CraftingGridOffsetX;
 	public static int CraftingGridOffsetY;
 
-	ItemRepo repo;
+	final ItemRepo repo;
 
 	GuiText myName;
 
-	int offsetX = 9;
+	final int offsetX = 9;
 	int perRow = 9;
 	int reservedSpace = 0;
-	int lowerTextureOffset = 0;
+	final int lowerTextureOffset = 0;
 	boolean customSortOrder = true;
 
 	int rows = 0;
@@ -73,17 +73,17 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 	int standardSize;
 
-	IConfigManager configSrc;
+	final IConfigManager configSrc;
 
 	GuiImgButton ViewBox;
 	GuiImgButton SortByBox;
 	GuiImgButton SortDirBox;
 
 	GuiImgButton searchBoxSettings, terminalStyleBox;
-	boolean viewCell;
+	final boolean viewCell;
 
-	ItemStack myCurrentViewCells[] = new ItemStack[5];
-	ContainerMEMonitorable monitorableContainer;
+	final ItemStack[] myCurrentViewCells = new ItemStack[5];
+	final ContainerMEMonitorable monitorableContainer;
 
 	public GuiMEMonitorable(InventoryPlayer inventoryPlayer, ITerminalHost te) {
 		this( inventoryPlayer, te, new ContainerMEMonitorable( inventoryPlayer, te ) );

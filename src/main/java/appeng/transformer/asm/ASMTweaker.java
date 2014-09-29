@@ -35,7 +35,7 @@ public class ASMTweaker implements IClassTransformer
 
 	}
 
-	Multimap<String, publicLine> privateToPublicMethods = HashMultimap.create();
+	final Multimap<String, publicLine> privateToPublicMethods = HashMultimap.create();
 
 	public ASMTweaker() {
 		privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new publicLine( "func_146977_a", "(Lnet/minecraft/inventory/Slot;)V" ) );

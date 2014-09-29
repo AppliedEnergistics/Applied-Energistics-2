@@ -22,7 +22,7 @@ import appeng.tile.misc.TileCondenser;
 public class GuiCondenser extends AEBaseGui
 {
 
-	ContainerCondenser cvc;
+	final ContainerCondenser cvc;
 	GuiProgressBar pb;
 	GuiImgButton mode;
 

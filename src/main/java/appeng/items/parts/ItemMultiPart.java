@@ -43,7 +43,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		IIcon ico;
 	}
 
-	HashMap<Integer, PartTypeIst> dmgToPart = new HashMap<Integer, PartTypeIst>();
+	final HashMap<Integer, PartTypeIst> dmgToPart = new HashMap<Integer, PartTypeIst>();
 
 	public static ItemMultiPart instance;
 

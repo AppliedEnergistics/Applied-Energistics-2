@@ -57,7 +57,7 @@ public class NetworkEventBus
 	class MENetworkEventInfo
 	{
 
-		private ArrayList<EventMethod> methods = new ArrayList<EventMethod>();
+		private final ArrayList<EventMethod> methods = new ArrayList<EventMethod>();
 
 		public void Add(Class Event, Class ObjClass, Method ObjMethod)
 		{
@@ -71,8 +71,8 @@ public class NetworkEventBus
 		}
 	}
 
-	private static Set<Class> readClasses = new HashSet<Class>();
-	private static Hashtable<Class<? extends MENetworkEvent>, Hashtable<Class, MENetworkEventInfo>> events = new Hashtable<Class<? extends MENetworkEvent>, Hashtable<Class, MENetworkEventInfo>>();
+	private static final Set<Class> readClasses = new HashSet<Class>();
+	private static final Hashtable<Class<? extends MENetworkEvent>, Hashtable<Class, MENetworkEventInfo>> events = new Hashtable<Class<? extends MENetworkEvent>, Hashtable<Class, MENetworkEventInfo>>();
 
 	public void readClass(Class listAs, Class c)
 	{

@@ -37,7 +37,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartImportBus extends PartSharedItemBus implements IGridTickable, IInventoryDestination
 {
 
-	BaseActionSource mySrc;
+	final BaseActionSource mySrc;
 	IMEInventory<IAEItemStack> destination = null;
 	IAEItemStack lastItemChecked = null;
 

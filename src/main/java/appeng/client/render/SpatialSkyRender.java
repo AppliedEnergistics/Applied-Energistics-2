@@ -15,11 +15,11 @@ import org.lwjgl.opengl.GL11;
 public class SpatialSkyRender extends IRenderHandler
 {
 
-	private static SpatialSkyRender instance = new SpatialSkyRender();
+	private static final SpatialSkyRender instance = new SpatialSkyRender();
 
-	private Random random = new Random();
+	private final Random random = new Random();
 	private long cycle = 0;
-	private int dspList;
+	private final int dspList;
 
 	public SpatialSkyRender() {
 		dspList = GLAllocation.generateDisplayLists( 1 );

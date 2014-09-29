@@ -11,8 +11,8 @@ import appeng.items.parts.ItemFacade;
 public class FacadeRecipe implements IRecipe
 {
 
-	private AEItemDefinition anchor = AEApi.instance().parts().partCableAnchor;
-	private ItemFacade facade = (ItemFacade) AEApi.instance().items().itemFacade.item();
+	private final AEItemDefinition anchor = AEApi.instance().parts().partCableAnchor;
+	private final ItemFacade facade = (ItemFacade) AEApi.instance().items().itemFacade.item();
 
 	private ItemStack getOutput(InventoryCrafting inv, boolean createFacade)
 	{

@@ -17,8 +17,8 @@ import appeng.util.IConfigManagerHost;
 public class PartUpgradeable extends PartBasicState implements ISegmentedInventory, IAEAppEngInventory, IConfigManagerHost
 {
 
-	IConfigManager settings = new ConfigManager( this );
-	private UpgradeInventory upgrades = new UpgradeInventory( is, this, getUpgradeSlots() );
+	final IConfigManager settings = new ConfigManager( this );
+	private final UpgradeInventory upgrades = new UpgradeInventory( is, this, getUpgradeSlots() );
 
 	@Override
 	public int getInstalledUpgrades(Upgrades u)

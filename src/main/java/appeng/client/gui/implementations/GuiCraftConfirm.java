@@ -38,15 +38,15 @@ import com.google.common.base.Joiner;
 public class GuiCraftConfirm extends AEBaseGui
 {
 
-	ContainerCraftConfirm ccc;
+	final ContainerCraftConfirm ccc;
 
-	int rows = 5;
+	final int rows = 5;
 
-	IItemList<IAEItemStack> storage = AEApi.instance().storage().createItemList();
-	IItemList<IAEItemStack> pending = AEApi.instance().storage().createItemList();
-	IItemList<IAEItemStack> missing = AEApi.instance().storage().createItemList();
+	final IItemList<IAEItemStack> storage = AEApi.instance().storage().createItemList();
+	final IItemList<IAEItemStack> pending = AEApi.instance().storage().createItemList();
+	final IItemList<IAEItemStack> missing = AEApi.instance().storage().createItemList();
 
-	List<IAEItemStack> visual = new ArrayList<IAEItemStack>();
+	final List<IAEItemStack> visual = new ArrayList<IAEItemStack>();
 
 	GuiBridge OriginalGui;
 

@@ -13,8 +13,8 @@ import appeng.api.recipes.IIngredient;
 public class OreRegistration implements ICraftHandler
 {
 
-	List<IIngredient> inputs;
-	String name;
+	final List<IIngredient> inputs;
+	final String name;
 
 	public OreRegistration(List<IIngredient> in, String out) {
 		inputs = in;

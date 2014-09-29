@@ -68,19 +68,19 @@ import com.google.common.collect.SetMultimap;
 public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler
 {
 
-	HashSet<CraftingCPUCluster> cpuClusters = new HashSet<CraftingCPUCluster>();
-	HashSet<ICraftingProvider> providers = new HashSet<ICraftingProvider>();
+	final HashSet<CraftingCPUCluster> cpuClusters = new HashSet<CraftingCPUCluster>();
+	final HashSet<ICraftingProvider> providers = new HashSet<ICraftingProvider>();
 
-	private HashMap<IGridNode, ICraftingWatcher> watchers = new HashMap<IGridNode, ICraftingWatcher>();
+	private final HashMap<IGridNode, ICraftingWatcher> watchers = new HashMap<IGridNode, ICraftingWatcher>();
 
-	IGrid grid;
+	final IGrid grid;
 	IStorageGrid sg;
 	IEnergyGrid eg;
 
-	HashMap<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap<ICraftingPatternDetails, List<ICraftingMedium>>();
+	final HashMap<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap<ICraftingPatternDetails, List<ICraftingMedium>>();
 	HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>> craftableItems = new HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>>();
-	HashSet<IAEItemStack> emitableItems = new HashSet<IAEItemStack>();
-	HashMap<String, CraftingLinkNexus> links = new HashMap<String, CraftingLinkNexus>();
+	final HashSet<IAEItemStack> emitableItems = new HashSet<IAEItemStack>();
+	final HashMap<String, CraftingLinkNexus> links = new HashMap<String, CraftingLinkNexus>();
 
 	boolean updateList = false;
 	final private SetMultimap<IAEStack, CraftingWatcher> interests = HashMultimap.create();
@@ -287,7 +287,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			details.add( medium );
 	}
 
-	static Comparator<ICraftingPatternDetails> comp = new Comparator<ICraftingPatternDetails>(){
+	static final Comparator<ICraftingPatternDetails> comp = new Comparator<ICraftingPatternDetails>(){
 		@Override
 		public int compare(ICraftingPatternDetails o1,
 				ICraftingPatternDetails o2) {

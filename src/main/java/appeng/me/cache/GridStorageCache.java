@@ -46,12 +46,12 @@ public class GridStorageCache implements IStorageGrid
 	final public IGrid myGrid;
 
 	private NetworkInventoryHandler<IAEItemStack> myItemNetwork;
-	private NetworkMonitor<IAEItemStack> itemMonitor = new NetworkMonitor<IAEItemStack>( this, StorageChannel.ITEMS );
+	private final NetworkMonitor<IAEItemStack> itemMonitor = new NetworkMonitor<IAEItemStack>( this, StorageChannel.ITEMS );
 
 	private NetworkInventoryHandler<IAEFluidStack> myFluidNetwork;
-	private NetworkMonitor<IAEFluidStack> fluidMonitor = new NetworkMonitor<IAEFluidStack>( this, StorageChannel.FLUIDS );
+	private final NetworkMonitor<IAEFluidStack> fluidMonitor = new NetworkMonitor<IAEFluidStack>( this, StorageChannel.FLUIDS );
 
-	private HashMap<IGridNode, IStackWatcher> watchers = new HashMap<IGridNode, IStackWatcher>();
+	private final HashMap<IGridNode, IStackWatcher> watchers = new HashMap<IGridNode, IStackWatcher>();
 
 	public GridStorageCache(IGrid g) {
 		myGrid = g;
@@ -95,7 +95,7 @@ public class GridStorageCache implements IStorageGrid
 	private class CellChangeTracker
 	{
 
-		List<CellChangeTrackerRecord> data = new LinkedList<CellChangeTrackerRecord>();
+		final List<CellChangeTrackerRecord> data = new LinkedList<CellChangeTrackerRecord>();
 
 		public void postChanges(StorageChannel channel, int i, IMEInventoryHandler<? extends IAEStack> h, BaseActionSource actionSrc)
 		{

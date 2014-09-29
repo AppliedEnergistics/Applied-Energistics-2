@@ -11,8 +11,8 @@ import appeng.util.Platform;
 public class AdaptorIInventory extends InventoryAdaptor
 {
 
-	private IInventory i;
-	private boolean wrapperEnabled;
+	private final IInventory i;
+	private final boolean wrapperEnabled;
 
 	public AdaptorIInventory(IInventory s) {
 		i = s;

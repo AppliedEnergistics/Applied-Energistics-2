@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 public class SlotFake extends AppEngSlot
 {
 
-	int invSlot;
+	final int invSlot;
 
 	public SlotFake(IInventory inv, int idx, int x, int y) {
 		super( inv, idx, x, y );

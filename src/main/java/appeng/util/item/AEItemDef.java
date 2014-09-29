@@ -17,8 +17,8 @@ public class AEItemDef
 
 	public int def;
 
-	private int itemID;
-	public Item item;
+	private final int itemID;
+	public final Item item;
 	public int damageValue;
 
 	public int displayDamage;
@@ -37,8 +37,8 @@ public class AEItemDef
 
 	public OreReference isOre;
 
-	static AESharedNBT lowTag = new AESharedNBT( Integer.MIN_VALUE );
-	static AESharedNBT highTag = new AESharedNBT( Integer.MAX_VALUE );
+	static final AESharedNBT lowTag = new AESharedNBT( Integer.MIN_VALUE );
+	static final AESharedNBT highTag = new AESharedNBT( Integer.MAX_VALUE );
 
 	public AEItemDef(Item it) {
 		item = it;

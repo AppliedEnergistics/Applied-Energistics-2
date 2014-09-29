@@ -58,7 +58,7 @@ public class TickHandler
 	final public static TickHandler instance = new TickHandler();
 
 	final private WeakHashMap<World, Queue<Callable>> callQueue = new WeakHashMap<World, Queue<Callable>>();
-	Queue<Callable> serverQueue = new LinkedList<Callable>();
+	final Queue<Callable> serverQueue = new LinkedList<Callable>();
 
 	final private HandlerRep server = new HandlerRep();
 	final private HandlerRep client = new HandlerRep();
@@ -282,7 +282,7 @@ public class TickHandler
 		// AELog.info( "processQueue Time: " + time + "ms" );
 	}
 
-	Multimap<World, CraftingJob> craftingJobs = LinkedListMultimap.create();
+	final Multimap<World, CraftingJob> craftingJobs = LinkedListMultimap.create();
 
 	public void registerCraftingSimulation(World world, CraftingJob craftingJob)
 	{

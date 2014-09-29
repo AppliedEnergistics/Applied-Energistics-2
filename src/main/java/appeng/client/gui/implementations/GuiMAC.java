@@ -13,7 +13,7 @@ import appeng.tile.crafting.TileMolecularAssembler;
 public class GuiMAC extends GuiUpgradeable
 {
 
-	ContainerMAC container;
+	final ContainerMAC container;
 	GuiProgressBar pb;
 
 	@Override

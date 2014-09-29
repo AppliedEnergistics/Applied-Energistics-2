@@ -18,12 +18,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class WorldRender implements ISimpleBlockRenderingHandler
 {
 
-	private RenderBlocks renderer = new RenderBlocks();
+	private final RenderBlocks renderer = new RenderBlocks();
 	final int renderID = RenderingRegistry.getNextAvailableRenderId();
 	public static final WorldRender instance = new WorldRender();
 	boolean hasError = false;
 
-	public HashMap<AEBaseBlock, BaseBlockRender> blockRenders = new HashMap<AEBaseBlock, BaseBlockRender>();
+	public final HashMap<AEBaseBlock, BaseBlockRender> blockRenders = new HashMap<AEBaseBlock, BaseBlockRender>();
 
 	void setRender(AEBaseBlock in, BaseBlockRender r)
 	{

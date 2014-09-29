@@ -23,8 +23,8 @@ import appeng.util.Platform;
 public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implements IPortableCell
 {
 
-	private ItemStack target;
-	private IAEItemPowerStorage ips;
+	private final ItemStack target;
+	private final IAEItemPowerStorage ips;
 
 	public PortableCellViewer(ItemStack is) {
 		super( CellInventory.getCell( is, null ) );

@@ -44,9 +44,9 @@ public class WorldSettings extends Configuration
 	long lastGridStorage = 0;
 	int lastPlayer = 0;
 
-	private CompassService compass;
+	private final CompassService compass;
 
-	File AEFolder;
+	final File AEFolder;
 
 	public WorldSettings(File aeFolder)
 	{
@@ -224,7 +224,7 @@ public class WorldSettings extends Configuration
 		instance = null;
 	}
 
-	List<Integer> storageCellDims = new ArrayList<Integer>();
+	final List<Integer> storageCellDims = new ArrayList<Integer>();
 	HashMap<Integer, UUID> idToUUID;
 
 	public void addStorageCellDim(int newDim)
@@ -317,7 +317,7 @@ public class WorldSettings extends Configuration
 		save();
 	}
 
-	private WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>> loadedStorage = new WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>>();
+	private final WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>> loadedStorage = new WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>>();
 
 	public WorldCoord getStoredSize(int dim)
 	{

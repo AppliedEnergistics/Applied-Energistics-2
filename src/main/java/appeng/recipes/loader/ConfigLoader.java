@@ -10,7 +10,7 @@ import appeng.api.recipes.IRecipeLoader;
 public class ConfigLoader implements IRecipeLoader
 {
 
-	private String rootPath;
+	private final String rootPath;
 
 	public ConfigLoader(String s) {
 		rootPath = s;

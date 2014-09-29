@@ -57,7 +57,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	boolean requested;
 	IInventory cachedInv;
 
-	LinkedList<IInventory> which = new LinkedList<IInventory>();
+	final LinkedList<IInventory> which = new LinkedList<IInventory>();
 
 	IInventory getOutputInv()
 	{

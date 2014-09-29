@@ -25,7 +25,7 @@ public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionH
 		gridProxy.writeToNBT( data );
 	}
 
-	protected AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", getItemFromTile( this ), true );
+	protected final AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", getItemFromTile( this ), true );
 
 	@Override
 	public AENetworkProxy getProxy()

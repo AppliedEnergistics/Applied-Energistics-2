@@ -34,7 +34,7 @@ public class StorageHelper
 	class triggerUpdates implements ISpatialVisitor
 	{
 
-		World dst;
+		final World dst;
 
 		public triggerUpdates(World dst2) {
 			dst = dst2;
@@ -51,9 +51,9 @@ public class StorageHelper
 	class WrapInMatrixFrame implements ISpatialVisitor
 	{
 
-		World dst;
-		Block blkID;
-		int Meta;
+		final World dst;
+		final Block blkID;
+		final int Meta;
 
 		public WrapInMatrixFrame(Block blockID, int metaData, World dst2) {
 			dst = dst2;
@@ -94,7 +94,7 @@ public class StorageHelper
 	class METeleporter extends Teleporter
 	{
 
-		TelDestination dest;
+		final TelDestination dest;
 
 		public METeleporter(WorldServer par1WorldServer, TelDestination d) {
 			super( par1WorldServer );

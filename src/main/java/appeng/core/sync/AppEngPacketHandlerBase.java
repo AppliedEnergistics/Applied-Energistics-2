@@ -35,7 +35,7 @@ import appeng.core.sync.packets.PacketValueConfig;
 public class AppEngPacketHandlerBase
 {
 
-	public static Map<Class, PacketTypes> reverseLookup = new HashMap<Class, AppEngPacketHandlerBase.PacketTypes>();
+	public static final Map<Class, PacketTypes> reverseLookup = new HashMap<Class, AppEngPacketHandlerBase.PacketTypes>();
 
 	public enum PacketTypes
 	{

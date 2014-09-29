@@ -70,8 +70,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class ClientHelper extends ServerHelper
 {
 
-	private static RenderItem itemRenderer = new RenderItem();
-	private static RenderBlocks blockRenderer = new RenderBlocks();
+	private static final RenderItem itemRenderer = new RenderItem();
+	private static final RenderBlocks blockRenderer = new RenderBlocks();
 
 	@Override
 	public CableRenderMode getRenderMode()

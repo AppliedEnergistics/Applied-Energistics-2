@@ -13,8 +13,8 @@ public class LightningFX extends EntityFX
 {
 
 	final int steps = getSteps();
-	static Random rng = new Random();
-	double[][] Steps;
+	static final Random rng = new Random();
+	final double[][] Steps;
 
 	protected LightningFX(World w, double x, double y, double z, double r, double g, double b, int maxAge) {
 		super( w, x, y, z, r, g, b );
@@ -172,8 +172,8 @@ public class LightningFX extends EntityFX
 	}
 
 	boolean hasData = false;
-	double[] I = new double[3];
-	double[] K = new double[3];
+	final double[] I = new double[3];
+	final double[] K = new double[3];
 
 	private void draw(Tessellator tess, double[] a, double[] b, double f6, double f8)
 	{

@@ -16,7 +16,7 @@ import appeng.util.Platform;
 public class WirelessRegistry implements IWirelessTermRegistry
 {
 
-	List<IWirelessTermHandler> handlers;
+	final List<IWirelessTermHandler> handlers;
 
 	public WirelessRegistry() {
 		handlers = new ArrayList<IWirelessTermHandler>();

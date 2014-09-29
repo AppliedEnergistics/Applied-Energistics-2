@@ -15,7 +15,7 @@ import appeng.util.iterators.NullIterator;
 public class AdaptorPlayerHand extends InventoryAdaptor
 {
 
-	private EntityPlayer p;
+	private final EntityPlayer p;
 
 	public AdaptorPlayerHand(EntityPlayer _p) {
 		p = _p;

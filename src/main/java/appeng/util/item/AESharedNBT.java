@@ -18,8 +18,9 @@ import appeng.util.Platform;
 public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 {
 
-	private Item item;
-	private int meta, hash;
+	private final Item item;
+	private final int meta;
+	private int hash;
 	public SharedSearchObject sso;
 	private IItemComparison comp;
 
@@ -120,7 +121,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 	/*
 	 * Shared Tag Compound Cache.
 	 */
-	private static WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>> sharedTagCompounds = new WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>>();
+	private static final WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>> sharedTagCompounds = new WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>>();
 
 	/*
 	 * Debug purposes.

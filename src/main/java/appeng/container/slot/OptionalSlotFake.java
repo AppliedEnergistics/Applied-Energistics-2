@@ -6,14 +6,14 @@ import net.minecraft.item.ItemStack;
 public class OptionalSlotFake extends SlotFake
 {
 
-	int invSlot;
+	final int invSlot;
 	final int groupNum;
-	IOptionalSlotHost host;
+	final IOptionalSlotHost host;
 
 	public boolean renderDisabled = true;
 
-	public int srcX;
-	public int srcY;
+	public final int srcX;
+	public final int srcY;
 
 	public OptionalSlotFake(IInventory inv, IOptionalSlotHost containerBus, int idx, int x, int y, int offX, int offY, int groupNum) {
 		super( inv, idx, x + offX * 18, y + offY * 18 );
