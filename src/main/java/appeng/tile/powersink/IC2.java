@@ -76,7 +76,7 @@ public abstract class IC2 extends MinecraftJoules6 implements IEnergySink
 		addToENet();
 	}
 
-	final private void addToENet()
+	private void addToENet()
 	{
 		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.IC2 ) )
 		{
@@ -89,7 +89,7 @@ public abstract class IC2 extends MinecraftJoules6 implements IEnergySink
 		}
 	}
 
-	final private void removeFromENet()
+	private void removeFromENet()
 	{
 		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.IC2 ) )
 		{

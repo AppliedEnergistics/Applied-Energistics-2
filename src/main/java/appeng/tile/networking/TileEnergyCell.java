@@ -102,7 +102,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 		return 0;
 	}
 
-	final private double extractAEPower(double amt, Actionable mode)
+	private double extractAEPower(double amt, Actionable mode)
 	{
 		if ( mode == Actionable.SIMULATE )
 		{
