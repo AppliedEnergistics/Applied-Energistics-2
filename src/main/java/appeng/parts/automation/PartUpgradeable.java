@@ -45,6 +45,7 @@ public class PartUpgradeable extends PartBasicState implements ISegmentedInvento
 				drops.add( is );
 	}
 
+	@Override
 	public void writeToNBT(net.minecraft.nbt.NBTTagCompound extra)
 	{
 		super.writeToNBT( extra );
@@ -52,6 +53,7 @@ public class PartUpgradeable extends PartBasicState implements ISegmentedInvento
 		upgrades.writeToNBT( extra, "upgrades" );
 	}
 
+	@Override
 	public void readFromNBT(net.minecraft.nbt.NBTTagCompound extra)
 	{
 		super.readFromNBT( extra );

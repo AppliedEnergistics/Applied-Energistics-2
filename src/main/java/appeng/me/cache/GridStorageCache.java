@@ -249,7 +249,7 @@ public class GridStorageCache implements IStorageGrid
 		if ( machine instanceof IStackWatcherHost )
 		{
 			IStackWatcherHost swh = (IStackWatcherHost) machine;
-			ItemWatcher iw = new ItemWatcher( this, (IStackWatcherHost) swh );
+			ItemWatcher iw = new ItemWatcher( this, swh );
 			watchers.put( node, iw );
 			swh.updateWatcher( iw );
 		}
@@ -286,10 +286,10 @@ public class GridStorageCache implements IStorageGrid
 		switch (chan)
 		{
 		case FLUIDS:
-			fluidMonitor.postChange( up_or_down > 0, (IItemList<IAEFluidStack>) availableItems, src );
+			fluidMonitor.postChange( up_or_down > 0, availableItems, src );
 			break;
 		case ITEMS:
-			itemMonitor.postChange( up_or_down > 0, (IItemList<IAEItemStack>) availableItems, src );
+			itemMonitor.postChange( up_or_down > 0, availableItems, src );
 			break;
 		default:
 		}

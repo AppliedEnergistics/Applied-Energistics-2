@@ -10,6 +10,7 @@ public class AEGlassMaterial extends Material
 		super( p_i2116_1_ );
 	}
 
+	@Override
 	public boolean isOpaque()
 	{
 		return false;

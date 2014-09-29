@@ -24,6 +24,7 @@ final public class EntityFloatingItem extends EntityItem
 
 	// public boolean isEntityAlive()
 
+	@Override
 	public void onUpdate()
 	{
 		if ( !isDead && parent.isDead )

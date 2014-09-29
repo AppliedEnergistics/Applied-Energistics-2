@@ -71,14 +71,17 @@ public class SortedList<T> implements Iterable<T>, List<T>, Cloneable {
 
 		return new Iterator<T>() {
 
+			@Override
 			public boolean hasNext() {
 				return listIterator.hasPrevious();
 			}
 
+			@Override
 			public T next() {
 				return listIterator.previous();
 			}
 
+			@Override
 			public void remove() {
 				listIterator.remove();
 			}

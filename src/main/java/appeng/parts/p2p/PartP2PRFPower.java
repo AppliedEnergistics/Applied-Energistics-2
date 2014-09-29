@@ -30,6 +30,7 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 	boolean cachedTarget = false;
 	IEnergyHandler outputTarget;
 
+	@Override
 	public TunnelType getTunnelType()
 	{
 		return TunnelType.RF_POWER;
@@ -61,6 +62,7 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 		cachedTarget = false;
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getTypeTexture()
 	{

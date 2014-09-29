@@ -49,12 +49,14 @@ public class PacketCompressedNBT extends AppEngPacket
 				if ( stream.readableBytes() <= 0 )
 					return -1;
 
-				return (int) stream.readByte() & 0xff;
+				return stream.readByte() & 0xff;
 			}
 
 		} );
 
-		in = CompressedStreamTools.read( new DataInputStream( gzReader ) );
+		DataInputStream inStream = new DataInputStream( gzReader );
+		in = CompressedStreamTools.read( inStream );
+		inStream.close();
 	}
 
 	@Override

@@ -30,6 +30,7 @@ import appeng.me.helpers.AENetworkProxy;
 public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements IGridTickable
 {
 
+	@Override
 	public TunnelType getTunnelType()
 	{
 		return TunnelType.ME;

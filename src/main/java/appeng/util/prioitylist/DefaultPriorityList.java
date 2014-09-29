@@ -10,6 +10,7 @@ public class DefaultPriorityList<T extends IAEStack<T>> implements IPartitionLis
 
 	final static List nullList = new ArrayList();
 
+	@Override
 	public boolean isListed(T input)
 	{
 		return false;
@@ -24,7 +25,7 @@ public class DefaultPriorityList<T extends IAEStack<T>> implements IPartitionLis
 	@Override
 	public Iterable<T> getItems()
 	{
-		return (Iterable<T>) nullList;
+		return nullList;
 	}
 
 }

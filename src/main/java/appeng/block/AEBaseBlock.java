@@ -1,7 +1,6 @@
 package appeng.block;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -757,11 +756,13 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		return hasSubtypes;
 	}
 
+	@Override
 	public boolean hasComparatorInputOverride()
 	{
 		return isInventory;
 	}
 
+	@Override
 	public int getComparatorInputOverride(World w, int x, int y, int z, int s)
 	{
 		TileEntity te = getTileEntity( w, x, y, z );

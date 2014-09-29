@@ -311,7 +311,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 					if ( finalOutput.equals( what ) )
 					{
 						if ( myLastLink != null )
-							return ((CraftingLink) myLastLink).injectItems( (IAEItemStack) what.copy(), type );
+							return ((CraftingLink) myLastLink).injectItems( what.copy(), type );
 
 						return what; // ignore it.
 					}
@@ -329,7 +329,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 				{
 					if ( myLastLink != null )
 					{
-						leftOver.add( ((CraftingLink) myLastLink).injectItems( (IAEItemStack) used.copy(), type ) );
+						leftOver.add( ((CraftingLink) myLastLink).injectItems( used.copy(), type ) );
 						return leftOver;
 					}
 
@@ -389,7 +389,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 					if ( myLastLink != null )
 					{
-						what.add( ((CraftingLink) myLastLink).injectItems( (IAEItemStack) insert.copy(), type ) );
+						what.add( ((CraftingLink) myLastLink).injectItems( insert.copy(), type ) );
 						return what;
 					}
 

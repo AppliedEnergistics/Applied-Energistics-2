@@ -233,7 +233,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		if ( machine instanceof ICraftingWatcherHost )
 		{
 			ICraftingWatcherHost swh = (ICraftingWatcherHost) machine;
-			CraftingWatcher iw = new CraftingWatcher( this, (ICraftingWatcherHost) swh );
+			CraftingWatcher iw = new CraftingWatcher( this, swh );
 			watchers.put( gridNode, iw );
 			swh.updateWatcher( iw );
 		}
@@ -420,7 +420,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	public boolean canAccept(IAEStack input)
 	{
 		for (CraftingCPUCluster cpu : cpuClusters)
-			if ( cpu.canAccept( (IAEItemStack) input ) )
+			if ( cpu.canAccept( input ) )
 				return true;
 
 		return false;

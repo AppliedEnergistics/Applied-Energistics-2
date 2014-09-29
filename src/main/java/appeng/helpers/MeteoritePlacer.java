@@ -83,6 +83,7 @@ public class MeteoritePlacer
 
 		}
 
+		@Override
 		public void getRandomFall(IMeteoriteWorld w, int x, int y, int z)
 		{
 			double a = Math.random();
@@ -92,6 +93,7 @@ public class MeteoritePlacer
 				getOther( w, x, y, z, a );
 		}
 
+		@Override
 		public void getRandomInset(IMeteoriteWorld w, int x, int y, int z)
 		{
 			double a = Math.random();
@@ -111,11 +113,13 @@ public class MeteoritePlacer
 			super( w, x, y, z );
 		}
 
+		@Override
 		public int adjustCrater()
 		{
 			return 2;
 		}
 
+		@Override
 		public void getOther(IMeteoriteWorld w, int x, int y, int z, double a)
 		{
 			if ( a > 0.66 )
@@ -131,11 +135,13 @@ public class MeteoritePlacer
 			super( w, x, y, z );
 		}
 
+		@Override
 		public int adjustCrater()
 		{
 			return 2;
 		}
 
+		@Override
 		public void getOther(IMeteoriteWorld w, int x, int y, int z, double a)
 		{
 			if ( a > 0.7 )

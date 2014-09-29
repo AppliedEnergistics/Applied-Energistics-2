@@ -77,7 +77,6 @@ import appeng.block.storage.BlockDrive;
 import appeng.block.storage.BlockIOPort;
 import appeng.block.storage.BlockSkyChest;
 import appeng.core.features.AEFeature;
-import appeng.core.features.AEFeatureHandler;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.DamagedItemDefinition;
 import appeng.core.features.IAEFeature;
@@ -228,7 +227,7 @@ public class Registration
 		Parts parts = appeng.core.Api.instance.parts();
 		Blocks blocks = appeng.core.Api.instance.blocks();
 
-		AEItemDefinition materialItem = (AEFeatureHandler) addFeature( ItemMultiMaterial.class );
+		AEItemDefinition materialItem = addFeature( ItemMultiMaterial.class );
 
 		Class materialClass = materials.getClass();
 		for (MaterialType mat : MaterialType.values())
@@ -254,7 +253,7 @@ public class Registration
 			}
 		}
 
-		AEItemDefinition partItem = (AEFeatureHandler) addFeature( ItemMultiPart.class );
+		AEItemDefinition partItem = addFeature( ItemMultiPart.class );
 
 		Class partClass = parts.getClass();
 		for (PartType type : PartType.values())

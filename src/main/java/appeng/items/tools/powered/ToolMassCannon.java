@@ -128,9 +128,9 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						float f = 1.0F;
 						float f1 = p.prevRotationPitch + (p.rotationPitch - p.prevRotationPitch) * f;
 						float f2 = p.prevRotationYaw + (p.rotationYaw - p.prevRotationYaw) * f;
-						double d0 = p.prevPosX + (p.posX - p.prevPosX) * (double) f;
-						double d1 = p.prevPosY + (p.posY - p.prevPosY) * (double) f + 1.62D - (double) p.yOffset;
-						double d2 = p.prevPosZ + (p.posZ - p.prevPosZ) * (double) f;
+						double d0 = p.prevPosX + (p.posX - p.prevPosX) * f;
+						double d1 = p.prevPosY + (p.posY - p.prevPosY) * f + 1.62D - p.yOffset;
+						double d2 = p.prevPosZ + (p.posZ - p.prevPosZ) * f;
 						Vec3 vec3 = Vec3.createVectorHelper( d0, d1, d2 );
 						float f3 = MathHelper.cos( -f2 * 0.017453292F - (float) Math.PI );
 						float f4 = MathHelper.sin( -f2 * 0.017453292F - (float) Math.PI );
@@ -140,8 +140,8 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						float f8 = f3 * f5;
 						double d3 = 32.0D;
 
-						Vec3 vec31 = vec3.addVector( (double) f7 * d3, (double) f6 * d3, (double) f8 * d3 );
-						Vec3 direction = Vec3.createVectorHelper( (double) f7 * d3, (double) f6 * d3, (double) f8 * d3 );
+						Vec3 vec31 = vec3.addVector( f7 * d3, f6 * d3, f8 * d3 );
+						Vec3 direction = Vec3.createVectorHelper( f7 * d3, f6 * d3, f8 * d3 );
 						direction.normalize();
 
 						float penetration = AEApi.instance().registries().matterCannon().getPenetration( ammo ); // 196.96655f;
@@ -196,7 +196,8 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						continue;
 
 					float f1 = 0.3F;
-					AxisAlignedBB boundingBox = entity1.boundingBox.expand( (double) f1, (double) f1, (double) f1 );
+
+					AxisAlignedBB boundingBox = entity1.boundingBox.expand( f1, f1, f1 );
 					MovingObjectPosition movingObjectPosition = boundingBox.calculateIntercept( vec3, vec31 );
 
 					if ( movingObjectPosition != null )
@@ -255,7 +256,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 					sh.setFleeceColor( col.ordinal() );
 				}
 
-				pos.entityHit.attackEntityFrom( DamageSource.causePlayerDamage( p ), (float) 0 );
+				pos.entityHit.attackEntityFrom( DamageSource.causePlayerDamage( p ), 0 );
 				NetworkHandler.instance.sendToAll( marker.getPacket() );
 			}
 			else if ( pos.typeOfHit == MovingObjectType.BLOCK )
@@ -321,7 +322,8 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 							continue;
 
 						float f1 = 0.3F;
-						AxisAlignedBB boundingBox = entity1.boundingBox.expand( (double) f1, (double) f1, (double) f1 );
+
+						AxisAlignedBB boundingBox = entity1.boundingBox.expand( f1, f1, f1 );
 						MovingObjectPosition movingObjectPosition = boundingBox.calculateIntercept( vec3, vec31 );
 
 						if ( movingObjectPosition != null )
@@ -372,7 +374,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 					{
 						EntityLivingBase el = (EntityLivingBase) pos.entityHit;
 						penetration -= dmg;
-						el.knockBack( p, 0, (double) -direction.xCoord, (double) -direction.zCoord );
+						el.knockBack( p, 0, -direction.xCoord, -direction.zCoord );
 						// el.knockBack( p, 0, vec3.xCoord,
 						// vec3.zCoord );
 						el.attackEntityFrom( dmgSrc, dmg );

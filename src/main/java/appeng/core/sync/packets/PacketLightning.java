@@ -6,7 +6,6 @@ import io.netty.buffer.Unpooled;
 import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.player.EntityPlayer;
 import appeng.client.ClientHelper;
 import appeng.client.render.effects.LightningFX;
@@ -40,7 +39,7 @@ public class PacketLightning extends AppEngPacket
 			if ( Platform.isClient() && AEConfig.instance.enableEffects )
 			{
 				LightningFX fx = new LightningFX( ClientHelper.proxy.getWorld(), x, y, z, 0.0f, 0.0f, 0.0f );
-				Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 			}
 		}
 		catch (Exception err)

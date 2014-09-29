@@ -90,6 +90,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		return false;
 	}
 
+	@Override
 	protected int getUpgradeSlots()
 	{
 		return 5;
@@ -104,6 +105,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		return super.getInventoryByName( name );
 	}
 
+	@Override
 	@MENetworkEventSubscribe
 	public void powerRender(MENetworkPowerStatusChange c)
 	{
@@ -278,6 +280,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 			updateHandler();
 	}
 
+	@Override
 	public void upgradesChanged()
 	{
 		updateHandler();
@@ -322,6 +325,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		data.setInteger( "priority", priority );
 	}
 
+	@Override
 	public void readFromNBT(NBTTagCompound data)
 	{
 		super.readFromNBT( data );
@@ -459,9 +463,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 						is.stackSize = (int) maxStorage;
 						EntityItem ei = new EntityItem( w, // w
-								((side.offsetX != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetX * -0.3 + (double) x, // spawn
-								((side.offsetY != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetY * -0.3 + (double) y, // spawn
-								((side.offsetZ != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetZ * -0.3 + (double) z, // spawn
+								((side.offsetX != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetX * -0.3 + x, // spawn
+								((side.offsetY != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetY * -0.3 + y, // spawn
+								((side.offsetZ != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetZ * -0.3 + z, // spawn
 								is.copy() );
 
 						Entity result = ei;

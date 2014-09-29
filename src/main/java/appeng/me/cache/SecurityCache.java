@@ -101,7 +101,7 @@ public class SecurityCache implements IGridCache, ISecurityGrid
 	{
 		if ( machine instanceof ISecurityProvider )
 		{
-			securityProvider.remove( (ISecurityProvider) machine );
+			securityProvider.remove( machine );
 			updateSecurityKey();
 		}
 	}

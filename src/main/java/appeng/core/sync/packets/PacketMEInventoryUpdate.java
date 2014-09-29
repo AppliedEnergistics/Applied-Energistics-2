@@ -60,7 +60,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 				if ( stream.readableBytes() <= 0 )
 					return -1;
 
-				return (int) stream.readByte() & 0xff;
+				return stream.readByte() & 0xff;
 			}
 
 		} );

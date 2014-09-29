@@ -160,6 +160,7 @@ public class FZ implements IFZ, IIntegrationModule
 		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new FactorizationHandler() );
 	}
 
+	@Override
 	public void grinderRecipe(ItemStack in, ItemStack out)
 	{
 		try

@@ -121,10 +121,10 @@ public class SpatialSkyRender extends IRenderHandler
 
 		for (int i = 0; i < 50; ++i)
 		{
-			double iX = (double) (random.nextFloat() * 2.0F - 1.0F);
-			double iY = (double) (random.nextFloat() * 2.0F - 1.0F);
-			double iZ = (double) (random.nextFloat() * 2.0F - 1.0F);
-			double d3 = (double) (0.05F + random.nextFloat() * 0.1F);
+			double iX = random.nextFloat() * 2.0F - 1.0F;
+			double iY = random.nextFloat() * 2.0F - 1.0F;
+			double iZ = random.nextFloat() * 2.0F - 1.0F;
+			double d3 = 0.05F + random.nextFloat() * 0.1F;
 			double dist = iX * iX + iY * iY + iZ * iZ;
 
 			if ( dist < 1.0D && dist > 0.01D )
@@ -149,8 +149,8 @@ public class SpatialSkyRender extends IRenderHandler
 				for (int j = 0; j < 4; ++j)
 				{
 					double d17 = 0.0D;
-					double d18 = (double) ((j & 2) - 1) * d3;
-					double d19 = (double) ((j + 1 & 2) - 1) * d3;
+					double d18 = ((j & 2) - 1) * d3;
+					double d19 = ((j + 1 & 2) - 1) * d3;
 					double d20 = d18 * d16 - d19 * d15;
 					double d21 = d19 * d16 + d18 * d15;
 					double d22 = d20 * d12 + d17 * d13;

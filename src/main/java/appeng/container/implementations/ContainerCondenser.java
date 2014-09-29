@@ -35,7 +35,7 @@ public class ContainerCondenser extends AEBaseContainer
 			double requiredEnergy = this.condenser.getRequiredPower();
 			int maxDisplay = requiredEnergy == 0 ? (int) maxStorage : (int) Math.min( requiredEnergy, maxStorage );
 
-			this.requiredEnergy = (int) maxDisplay;
+			this.requiredEnergy = maxDisplay;
 			this.storedPower = (int) this.condenser.storedPower;
 			this.output = (CondenserOutput) this.condenser.getConfigManager().getSetting( Settings.CONDENSER_OUTPUT );
 		}

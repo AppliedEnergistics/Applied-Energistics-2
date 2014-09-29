@@ -64,7 +64,7 @@ public class GuiWireless extends AEBaseGui
 
 		if ( cw.range > 0 )
 		{
-			String firstMessage = GuiText.Range.getLocal() + ": " + ((double) cw.range / 10.0) + " m";
+			String firstMessage = GuiText.Range.getLocal() + ": " + (cw.range / 10.0) + " m";
 			String secondMessage = GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong( cw.drain, true );
 
 			int strWidth = Math.max( fontRendererObj.getStringWidth( firstMessage ), fontRendererObj.getStringWidth( secondMessage ) );

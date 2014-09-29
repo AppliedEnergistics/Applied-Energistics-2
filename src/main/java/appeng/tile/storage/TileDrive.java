@@ -61,8 +61,8 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	{
 		int oldState = 0;
 
-		boolean currentActive;
-		if ( currentActive = gridProxy.isActive() )
+		boolean currentActive = gridProxy.isActive();
+		if ( currentActive )
 			state |= 0x80000000;
 		else
 			state &= ~0x80000000;
@@ -357,6 +357,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 		}
 	}
 
+	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
 		return itemstack != null && AEApi.instance().registries().cell().isCellHandled( itemstack );

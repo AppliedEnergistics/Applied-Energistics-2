@@ -101,7 +101,7 @@ public class OreHelper
 	public boolean sameOre(AEItemStack aeItemStack, IAEItemStack is)
 	{
 		OreReference a = aeItemStack.def.isOre;
-		OreReference b = ((AEItemStack) aeItemStack).def.isOre;
+		OreReference b = aeItemStack.def.isOre;
 
 		if ( a == b )
 			return true;

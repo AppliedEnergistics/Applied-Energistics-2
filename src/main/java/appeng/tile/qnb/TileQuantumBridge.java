@@ -92,6 +92,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		inv.setMaxStackSize( 1 );
 	}
 
+	@Override
 	public IInventory getInternalInventory()
 	{
 		return inv;

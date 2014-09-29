@@ -89,6 +89,7 @@ public class PartConversionMonitor extends PartStorageMonitor
 		return true;
 	}
 
+	@Override
 	protected void extractItem(EntityPlayer player)
 	{
 		IAEItemStack input = (IAEItemStack) getDisplayed();

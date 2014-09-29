@@ -83,6 +83,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 		// }
 	}
 
+	@Override
 	protected void repositionSlot(AppEngSlot s)
 	{
 		if ( s.isPlayerSide() )
@@ -97,6 +98,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 		reservedSpace = 81;
 	}
 
+	@Override
 	protected String getBackground()
 	{
 		if ( container.craftingMode )

@@ -157,6 +157,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 				Collections.sort( list, new Comparator<IAEItemStack>() {
 
+					@Override
 					public int compare(IAEItemStack a, IAEItemStack b)
 					{
 						return ItemSorters.compareInt( a.getItemDamage(), b.getItemDamage() );

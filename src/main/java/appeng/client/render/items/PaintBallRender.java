@@ -34,10 +34,10 @@ public class PaintBallRender implements IItemRenderer
 		if ( item.getItemDamage() >= 20 )
 			par2Icon = ExtraItemTextures.ItemPaintBallShimmer.getIcon();
 
-		float f4 = ((IIcon) par2Icon).getMinU();
-		float f5 = ((IIcon) par2Icon).getMaxU();
-		float f6 = ((IIcon) par2Icon).getMinV();
-		float f7 = ((IIcon) par2Icon).getMaxV();
+		float f4 = par2Icon.getMinU();
+		float f5 = par2Icon.getMaxU();
+		float f6 = par2Icon.getMinV();
+		float f7 = par2Icon.getMaxV();
 		float f12 = 0.0625F;
 
 		ItemPaintBall ipb = (ItemPaintBall) item.getItem();
@@ -70,10 +70,10 @@ public class PaintBallRender implements IItemRenderer
 
 			tessellator.startDrawingQuads();
 			tessellator.setNormal( 0.0F, 1.0F, 0.0F );
-			tessellator.addVertexWithUV( 0, 0, 0, (double) f4, (double) f7 );
-			tessellator.addVertexWithUV( 1, 0, 0, (double) f5, (double) f7 );
-			tessellator.addVertexWithUV( 1, 1, 0, (double) f5, (double) f6 );
-			tessellator.addVertexWithUV( 0, 1, 0, (double) f4, (double) f6 );
+			tessellator.addVertexWithUV( 0, 0, 0, f4, f7 );
+			tessellator.addVertexWithUV( 1, 0, 0, f5, f7 );
+			tessellator.addVertexWithUV( 1, 1, 0, f5, f6 );
+			tessellator.addVertexWithUV( 0, 1, 0, f4, f6 );
 			tessellator.draw();
 		}
 		else
@@ -82,7 +82,7 @@ public class PaintBallRender implements IItemRenderer
 				GL11.glTranslatef( 0.0F, 0.0F, 0.0F );
 			else
 				GL11.glTranslatef( -0.5F, -0.3F, 0.01F );
-			ItemRenderer.renderItemIn2D( tessellator, f5, f6, f4, f7, ((IIcon) par2Icon).getIconWidth(), ((IIcon) par2Icon).getIconHeight(), f12 );
+			ItemRenderer.renderItemIn2D( tessellator, f5, f6, f4, f7, par2Icon.getIconWidth(), par2Icon.getIconHeight(), f12 );
 
 			GL11.glDisable( GL11.GL_CULL_FACE );
 			GL11.glColor4f( 1, 1, 1, 1.0F );

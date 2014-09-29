@@ -25,11 +25,13 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 	final ItemFacade ifa = (ItemFacade) AEApi.instance().items().itemFacade.item();
 	final ItemStack cable_anchor = AEApi.instance().parts().partCableAnchor.stack( 1 );
 
+	@Override
 	public void loadTransferRects()
 	{
 		this.transferRects.add( new TemplateRecipeHandler.RecipeTransferRect( new Rectangle( 84, 23, 24, 18 ), "crafting", new Object[0] ) );
 	}
 
+	@Override
 	public Class<? extends GuiContainer> getGuiClass()
 	{
 		return GuiCrafting.class;
@@ -61,6 +63,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
 		if ( result.getItem() == ifa )
@@ -71,6 +74,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
 		List<ItemStack> facades = ifa.getFacades();
@@ -90,11 +94,13 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
 	public String getGuiTexture()
 	{
 		return "textures/gui/container/crafting_table.png";
 	}
 
+	@Override
 	public String getOverlayIdentifier()
 	{
 		return "crafting";

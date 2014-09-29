@@ -423,8 +423,8 @@ public class GuiCraftConfirm extends AEBaseGui
 
 					str = GuiText.FromStorage.getLocal() + ": " + str;
 					int w = 4 + fontRendererObj.getStringWidth( str );
-					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - ((float) w * 0.5)) * 2), (int) ((y * offY + yo
-							+ 6 - negY + downY) * 2), 4210752 );
+					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
+							+ 6 - negY + downY) * 2, 4210752 );
 
 					if ( tooltip == z - viewStart )
 						lineList.add( GuiText.FromStorage.getLocal() + ": " + Long.toString( stored.getStackSize() ) );
@@ -442,8 +442,8 @@ public class GuiCraftConfirm extends AEBaseGui
 
 					str = GuiText.Missing.getLocal() + ": " + str;
 					int w = 4 + fontRendererObj.getStringWidth( str );
-					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - ((float) w * 0.5)) * 2), (int) ((y * offY + yo
-							+ 6 - negY + downY) * 2), 4210752 );
+					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
+							+ 6 - negY + downY) * 2, 4210752 );
 
 					if ( tooltip == z - viewStart )
 						lineList.add( GuiText.Missing.getLocal() + ": " + Long.toString( missingStack.getStackSize() ) );
@@ -462,8 +462,8 @@ public class GuiCraftConfirm extends AEBaseGui
 
 					str = GuiText.ToCraft.getLocal() + ": " + str;
 					int w = 4 + fontRendererObj.getStringWidth( str );
-					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - ((float) w * 0.5)) * 2), (int) ((y * offY + yo
-							+ 6 - negY + downY) * 2), 4210752 );
+					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
+							+ 6 - negY + downY) * 2, 4210752 );
 
 					if ( tooltip == z - viewStart )
 						lineList.add( GuiText.ToCraft.getLocal() + ": " + Long.toString( pendingStack.getStackSize() ) );

@@ -690,6 +690,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		return (IPart) (iHost instanceof IPart ? iHost : null);
 	}
 
+	@Override
 	public appeng.api.util.IConfigManager getConfigManager()
 	{
 		return cm;
@@ -1009,7 +1010,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		EnumSet<ForgeDirection> possibleDirections = iHost.getTargets();
 		for (ForgeDirection s : possibleDirections)
 		{
-			Vec3 from = Vec3.createVectorHelper( (double) tile.xCoord + 0.5, (double) tile.yCoord + 0.5, (double) tile.zCoord + 0.5 );
+			Vec3 from = Vec3.createVectorHelper( tile.xCoord + 0.5, tile.yCoord + 0.5, tile.zCoord + 0.5 );
 			from = from.addVector( s.offsetX * 0.501, s.offsetY * 0.501, s.offsetZ * 0.501 );
 			Vec3 to = from.addVector( s.offsetX, s.offsetY, s.offsetZ );
 

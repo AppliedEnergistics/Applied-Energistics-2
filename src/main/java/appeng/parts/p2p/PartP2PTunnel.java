@@ -244,6 +244,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 	{
 	}
 
+	@Override
 	public ItemStack getItemStack(PartItemStack type)
 	{
 		if ( type == PartItemStack.World || type == PartItemStack.Network || type == PartItemStack.Wrench || type == PartItemStack.Pick )

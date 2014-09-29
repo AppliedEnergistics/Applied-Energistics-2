@@ -213,6 +213,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		return AECableType.GLASS;
 	}
 
+	@Override
 	public AENetworkProxy getProxy()
 	{
 		return proxy;

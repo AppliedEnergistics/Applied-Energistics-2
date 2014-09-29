@@ -3,7 +3,6 @@ package appeng.block.solids;
 import java.util.Random;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import appeng.api.AEApi;
@@ -35,9 +34,9 @@ public class OreQuartzCharged extends OreQuartz
 		if ( !AEConfig.instance.enableEffects )
 			return;
 
-		double xOff = (double) (r.nextFloat());
-		double yOff = (double) (r.nextFloat());
-		double zOff = (double) (r.nextFloat());
+		double xOff = (r.nextFloat());
+		double yOff = (r.nextFloat());
+		double zOff = (r.nextFloat());
 
 		switch (r.nextInt( 6 ))
 		{
@@ -67,7 +66,7 @@ public class OreQuartzCharged extends OreQuartz
 		if ( CommonHelper.proxy.shouldAddParticles( r ) )
 		{
 			ChargedOreFX fx = new ChargedOreFX( w, x + xOff, y + yOff, z + zOff, 0.0f, 0.0f, 0.0f );
-			Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+			Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 		}
 	}
 

@@ -173,7 +173,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	@Override
 	public TileEntity getTileEntity()
 	{
-		return (TileEntity) super.getHost().getTile();
+		return super.getHost().getTile();
 	}
 
 	@Override

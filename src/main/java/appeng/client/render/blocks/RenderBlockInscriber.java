@@ -153,7 +153,7 @@ public class RenderBlockInscriber extends BaseBlockRender
 				inv.smash = false;
 		}
 
-		float relativeProgress = (float) (absoluteProgress % 800) / 400.0f;
+		float relativeProgress = absoluteProgress % 800 / 400.0f;
 		float progress = relativeProgress;
 
 		if ( progress > 1.0f )

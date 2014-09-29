@@ -28,6 +28,7 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 	/**
 	 * Callback for when the crafting matrix is changed.
 	 */
+	@Override
 	public void onCraftMatrixChanged(IInventory par1IInventory)
 	{
 		ContainerNull cn = new ContainerNull();

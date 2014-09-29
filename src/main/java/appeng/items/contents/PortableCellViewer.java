@@ -32,6 +32,7 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 		target = is;
 	}
 
+	@Override
 	public ItemStack getItemStack()
 	{
 		return target;

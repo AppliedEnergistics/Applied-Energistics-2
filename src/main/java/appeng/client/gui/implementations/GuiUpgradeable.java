@@ -38,7 +38,7 @@ public class GuiUpgradeable extends AEBaseGui
 
 	public GuiUpgradeable(ContainerUpgradeable te) {
 		super( te );
-		cvb = (ContainerUpgradeable) te;
+		cvb = te;
 
 		bc = (IUpgradeableHost) te.getTarget();
 		this.xSize = hasToolbox() ? 246 : 211;

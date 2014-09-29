@@ -26,6 +26,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 		setMaxStackSize( 1 );
 	}
 
+	@Override
 	public boolean getIsRepairable(ItemStack a, ItemStack b)
 	{
 		return Platform.canRepair( type, a, b );

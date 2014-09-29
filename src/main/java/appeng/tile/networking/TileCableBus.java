@@ -162,6 +162,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		cb.getDrops( drops );
 	}
 
+	@Override
 	public void getNoDrops(World w, int x, int y, int z, ArrayList<ItemStack> drops)
 	{
 		cb.getNoDrops( drops );

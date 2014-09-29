@@ -27,6 +27,7 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 {
 
+	@Override
 	public void drawBackground(int recipe)
 	{
 		GL11.glColor4f( 1, 1, 1, 1 );
@@ -34,11 +35,13 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 		drawTexturedModalRect( 0, 0, 5, 11, 166, 75 );
 	}
 
+	@Override
 	public void loadTransferRects()
 	{
 		this.transferRects.add( new TemplateRecipeHandler.RecipeTransferRect( new Rectangle( 84, 23, 24, 18 ), "inscriber", new Object[0] ) );
 	}
 
+	@Override
 	public Class<? extends GuiContainer> getGuiClass()
 	{
 		return GuiInscriber.class;
@@ -68,6 +71,7 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
 		for (InscriberRecipe recipe : Inscribe.recipes)
@@ -81,6 +85,7 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
 		for (InscriberRecipe recipe : Inscribe.recipes)
@@ -99,6 +104,7 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
 	public String getGuiTexture()
 	{
 		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/guis/inscriber.png" );
@@ -106,6 +112,7 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 		return f;
 	}
 
+	@Override
 	public String getOverlayIdentifier()
 	{
 		return "inscriber";

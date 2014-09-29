@@ -64,6 +64,7 @@ public class GuiFormationPlane extends GuiUpgradeable
 		}
 	}
 
+	@Override
 	protected String getBackground()
 	{
 		return "guis/storagebus.png";

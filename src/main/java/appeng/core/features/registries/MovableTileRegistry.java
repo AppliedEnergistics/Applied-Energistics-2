@@ -137,6 +137,7 @@ public class MovableTileRegistry implements IMovableRegistry
 		blacklisted.add( blk );
 	}
 
+	@Override
 	public boolean isBlacklisted(Block blk)
 	{
 		return blacklisted.contains( blk );

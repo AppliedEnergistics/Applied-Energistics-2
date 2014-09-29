@@ -44,12 +44,14 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		return Math.min( 1 + getInstalledUpgrades( Upgrades.CAPACITY ) * 4, config.getSizeInventory() );
 	}
 
+	@Override
 	public void writeToNBT(net.minecraft.nbt.NBTTagCompound extra)
 	{
 		super.writeToNBT( extra );
 		config.writeToNBT( extra, "config" );
 	}
 
+	@Override
 	public void readFromNBT(net.minecraft.nbt.NBTTagCompound extra)
 	{
 		super.readFromNBT( extra );

@@ -23,7 +23,7 @@ public final class AppEngServerPacketHandler extends AppEngPacketHandlerBase imp
 		{
 			packetType = stream.readInt();
 			AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
-			pack.serverPacketData( manager, pack, (EntityPlayer) player );
+			pack.serverPacketData( manager, pack, player );
 		}
 		catch (InstantiationException e)
 		{

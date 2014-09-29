@@ -206,6 +206,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			condensedOutputs[offset++] = io;
 	}
 
+	@Override
 	synchronized public boolean isValidItemForSlot(int slotIndex, ItemStack i, World w)
 	{
 		if ( isCrafting == false )

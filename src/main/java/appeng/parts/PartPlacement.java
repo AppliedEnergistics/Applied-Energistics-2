@@ -64,7 +64,7 @@ public class PartPlacement
 			Minecraft mc = Minecraft.getMinecraft();
 
 			float f = 1.0F;
-			double d0 = (double) mc.playerController.getBlockReachDistance();
+			double d0 = mc.playerController.getBlockReachDistance();
 			Vec3 vec3 = mc.renderViewEntity.getPosition( f );
 
 			if ( mop != null && mop.hitVec.distanceTo( vec3 ) < d0 )

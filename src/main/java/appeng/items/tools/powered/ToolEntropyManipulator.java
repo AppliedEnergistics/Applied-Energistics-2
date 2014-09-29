@@ -261,7 +261,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 					{
 						if ( result.getItem() instanceof ItemBlock )
 						{
-							if ( Block.getBlockFromItem( (ItemBlock) result.getItem() ) == Blk && result.getItem().getDamage( result ) == Metadata )
+							if ( Block.getBlockFromItem( result.getItem() ) == Blk && result.getItem().getDamage( result ) == Metadata )
 							{
 								canFurnaceable = false;
 							}
@@ -280,7 +280,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 				{
 					extractAEPower( item, 1600 );
 					InWorldToolOperationResult or = InWorldToolOperationResult.getBlockOperationResult( out.toArray( new ItemStack[out.size()] ) );
-					w.playSoundEffect( (double) x + 0.5D, (double) y + 0.5D, (double) z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
+					w.playSoundEffect( x + 0.5D, y + 0.5D, z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
 
 					if ( or.BlockItem == null )
 					{
@@ -311,7 +311,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 					if ( w.isAirBlock( x, y, z ) )
 					{
 						extractAEPower( item, 1600 );
-						w.playSoundEffect( (double) x + 0.5D, (double) y + 0.5D, (double) z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
+						w.playSoundEffect( x + 0.5D, y + 0.5D, z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
 						w.setBlock( x, y, z, Blocks.fire );
 					}
 

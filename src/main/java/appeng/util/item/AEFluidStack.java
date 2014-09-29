@@ -157,7 +157,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		 * if ( FluidName != null && FluidName instanceof NBTTagString ) ((NBTTagString) FluidName).data = (String)
 		 * this.fluid.getName(); else
 		 */
-		i.setString( "FluidName", (String) this.fluid.getName() );
+		i.setString( "FluidName", this.fluid.getName() );
 
 		/*
 		 * if ( Count != null && Count instanceof NBTTagByte ) ((NBTTagByte) Count).data = (byte) 0; else

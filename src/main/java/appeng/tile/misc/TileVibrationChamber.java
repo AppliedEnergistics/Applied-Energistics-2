@@ -162,7 +162,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		burnSpeed = Math.max( 20, Math.min( burnSpeed, 200 ) );
 		double dilation = burnSpeed / 100.0;
 
-		double timePassed = (double) TicksSinceLastCall * dilation;
+		double timePassed = TicksSinceLastCall * dilation;
 		burnTime -= timePassed;
 		if ( burnTime < 0 )
 		{

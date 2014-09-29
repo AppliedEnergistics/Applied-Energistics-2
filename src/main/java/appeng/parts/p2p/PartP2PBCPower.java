@@ -42,6 +42,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 
 	BaseMJPerdition pp;
 
+	@Override
 	public TunnelType getTunnelType()
 	{
 		return TunnelType.BC_POWER;
@@ -193,6 +194,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 			pp.readFromNBT( tag );
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getTypeTexture()
 	{
@@ -204,7 +206,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 	public PowerReceiver getPowerReceiver(ForgeDirection side)
 	{
 		if ( side.equals( side ) )
-			return ((BaseMJPerdition) pp).getPowerReceiver();
+			return pp.getPowerReceiver();
 		return null;
 	}
 

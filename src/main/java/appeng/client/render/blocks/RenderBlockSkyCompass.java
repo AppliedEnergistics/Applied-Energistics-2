@@ -101,7 +101,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 				if ( cr.spin )
 				{
 					now = now % 100000;
-					model.renderAll( ((float) now / 50000.0f) * (float) Math.PI * 500.0f );
+					model.renderAll( (now / 50000.0f) * (float) Math.PI * 500.0f );
 				}
 				else
 				{
@@ -122,14 +122,14 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 			else
 			{
 				now = now % 1000000;
-				model.renderAll( ((float) now / 500000.0f) * (float) Math.PI * 500.0f );
+				model.renderAll( (now / 500000.0f) * (float) Math.PI * 500.0f );
 			}
 
 		}
 		else
 		{
 			now = now % 100000;
-			model.renderAll( ((float) now / 50000.0f) * (float) Math.PI * 500.0f );
+			model.renderAll( (now / 50000.0f) * (float) Math.PI * 500.0f );
 		}
 
 		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);
@@ -178,7 +178,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 			if ( cr.spin )
 			{
 				now = now % 100000;
-				model.renderAll( ((float) now / 50000.0f) * (float) Math.PI * 500.0f );
+				model.renderAll( (now / 50000.0f) * (float) Math.PI * 500.0f );
 			}
 			else
 				model.renderAll( (float) (skyCompass.getForward() == ForgeDirection.DOWN ? flipidiy( cr.rad ) : cr.rad) );
@@ -187,7 +187,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 		else
 		{
 			now = now % 1000000;
-			model.renderAll( ((float) now / 500000.0f) * (float) Math.PI * 500.0f );
+			model.renderAll( (now / 500000.0f) * (float) Math.PI * 500.0f );
 		}
 
 		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);

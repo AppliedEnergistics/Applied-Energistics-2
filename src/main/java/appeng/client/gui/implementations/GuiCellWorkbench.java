@@ -142,6 +142,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 		buttonList.add( copyMode );
 	}
 
+	@Override
 	protected void handleButtonVisibility()
 	{
 		copyMode.setState( workbench.copyMode == CopyMode.CLEAR_ON_REMOVE );
@@ -160,11 +161,13 @@ public class GuiCellWorkbench extends GuiUpgradeable
 		fuzzyMode.setVisibility( hasFuzzy );
 	}
 
+	@Override
 	protected String getBackground()
 	{
 		return "guis/cellworkbench.png";
 	}
 
+	@Override
 	protected GuiText getName()
 	{
 		return GuiText.CellWorkbench;

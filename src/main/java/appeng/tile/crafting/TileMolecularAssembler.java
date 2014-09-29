@@ -77,6 +77,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 	private boolean reboot = true;
 	public ISimplifiedBundle lightCache;
 
+	@Override
 	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table, ForgeDirection where)
 	{
 		if ( myPattern == null )

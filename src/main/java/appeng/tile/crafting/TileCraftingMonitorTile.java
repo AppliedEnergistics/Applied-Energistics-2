@@ -72,11 +72,13 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 		data.setByte( "paintedColor", (byte) paintedColor.ordinal() );
 	}
 
+	@Override
 	public boolean isAccelerator()
 	{
 		return false;
 	}
 
+	@Override
 	public boolean isStatus()
 	{
 		return true;
@@ -110,6 +112,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 		return getJobProgress() != null;
 	}
 
+	@Override
 	public AEColor getColor()
 	{
 		return paintedColor;

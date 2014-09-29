@@ -39,10 +39,10 @@ public class ToolDebugCard extends AEBaseItem
 
 	public String timeMeasurement(long nanos)
 	{
-		long ms = (long) (nanos / 100000);
+		long ms = nanos / 100000;
 		if ( nanos <= 100000 )
 			return nanos + "ns";
-		return (((float) ms) / 10.0f) + "ms";
+		return (ms / 10.0f) + "ms";
 	}
 
 	@Override
@@ -168,7 +168,7 @@ public class ToolDebugCard extends AEBaseItem
 
 				if ( te instanceof IGridHost )
 				{
-					IGridNode node = (IGridNode) ((IGridHost) te).getGridNode( ForgeDirection.getOrientation( side ) );
+					IGridNode node = ((IGridHost) te).getGridNode( ForgeDirection.getOrientation( side ) );
 					if ( node != null && node.getGrid() != null )
 					{
 						IEnergyGrid eg = node.getGrid().getCache( IEnergyGrid.class );

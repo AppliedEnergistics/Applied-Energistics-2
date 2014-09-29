@@ -61,7 +61,7 @@ public class QuantumCalculator extends MBCalculator
 					num++;
 					if ( num == 5 )
 					{
-						flags = (byte) (num);
+						flags = num;
 						c.setCenter( te );
 					}
 					else
@@ -69,7 +69,7 @@ public class QuantumCalculator extends MBCalculator
 						if ( num == 1 || num == 3 || num == 7 || num == 9 )
 							flags = (byte) (tqb.corner | num);
 						else
-							flags = (byte) (num);
+							flags = num;
 						c.Ring[ringNum++] = te;
 					}
 
