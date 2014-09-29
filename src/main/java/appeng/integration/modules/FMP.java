@@ -39,7 +39,7 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	{
 		for (PartRegistry pr : PartRegistry.values())
 		{
-			if ( pr.getName() == name )
+			if ( pr.getName().equals( name ) )
 				return pr.construct( 0 );
 		}
 
