@@ -28,7 +28,7 @@ If this is a crash, provide the crash log. You can use [PasteBin](http://pastebi
 to upload the log.
 
 If a specific setup is causing the crash or failure, post a screen shot. You can
-use [Imgur](http://imgur.com/) or [Puush.me](http://puush.me/) to host the screen shot. In some cases a world download is required with a minimal setup of the bug to reproduce this.
+use http://imgur.com/ or http://puush.me/ to host the screen shot. In some cases a world download is required with a minimal setup of the bug to reproduce this.
 
 Describe in full detail exactly how to reproduce the failure.
 ````
