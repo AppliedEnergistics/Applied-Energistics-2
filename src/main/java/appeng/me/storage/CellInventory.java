@@ -89,15 +89,15 @@ public class CellInventory implements ICellInventory
 
 		// add new pretty stuff...
 		int x = 0;
-		Iterator<IAEItemStack> i = cellItems.iterator();
-		while (i.hasNext())
+		for (IAEItemStack v : cellItems)
 		{
-			IAEItemStack v = i.next();
 			itemCount += v.getStackSize();
 
 			NBTBase c = tagCompound.getTag( ITEM_SLOT_ARR[x] );
 			if ( c instanceof NBTTagCompound )
+			{
 				v.writeToNBT( (NBTTagCompound) c );
+			}
 			else
 			{
 				NBTTagCompound g = new NBTTagCompound();

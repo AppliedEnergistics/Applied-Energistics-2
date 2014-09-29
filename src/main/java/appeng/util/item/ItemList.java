@@ -135,9 +135,10 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	@Override
 	synchronized public StackType getFirstItem()
 	{
-		Iterator<StackType> i = this.iterator();
-		while (i.hasNext())
-			return i.next();
+		for (StackType stackType : this)
+		{
+			return stackType;
+		}
 		return null;
 	}
 

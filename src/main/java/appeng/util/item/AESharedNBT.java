@@ -58,11 +58,9 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		AESharedNBT x = new AESharedNBT( itemID, damageValue );
 
 		// c.getTags()
-		Iterator var2 = c.func_150296_c().iterator();
-
-		while (var2.hasNext())
+		for (Object o : c.func_150296_c())
 		{
-			String name = (String) var2.next();
+			String name = (String) o;
 			x.setTag( name, c.getTag( name ).copy() );
 		}
 
