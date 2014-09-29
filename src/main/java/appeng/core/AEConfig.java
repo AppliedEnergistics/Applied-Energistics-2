@@ -280,7 +280,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 		ModContainer imb = cpw.mods.fml.common.Loader.instance().getIndexedModList().get( "ImmibisCore" );
 		if ( imb != null )
 		{
-			List<String> version = Arrays.asList( new String[] { "59.0.0", "59.0.1", "59.0.2" } );
+			List<String> version = Arrays.asList( "59.0.0", "59.0.1", "59.0.2" );
 			if ( version.contains( imb.getVersion() ) )
 				featureFlags.remove( AEFeature.AlphaPass );
 		}

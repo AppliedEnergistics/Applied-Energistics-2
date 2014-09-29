@@ -1,12 +1,6 @@
 package appeng.util.item;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
 import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.config.FuzzyMode;
@@ -14,6 +8,8 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+
+import com.google.common.collect.Lists;
 
 public final class ItemList<StackType extends IAEStack> implements IItemList<StackType>
 {
@@ -26,7 +22,8 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	int iteration = Integer.MIN_VALUE;
 	public Throwable stacktrace;
 
-	public ItemList(Class<? extends IAEStack> cla) {
+	public ItemList(Class<? extends IAEStack> cla)
+	{
 		clz = cla;
 	}
 
@@ -200,8 +197,16 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 			return new ArrayList<StackType>();
 
 		if ( filter instanceof IAEFluidStack )
-			return filter.equals( this ) ? (List<StackType>) Arrays.asList( new IAEFluidStack[] { (IAEFluidStack) filter } ) : (List<StackType>) Arrays
-					.asList( new IAEFluidStack[] {} );
+		{
+			List<StackType> result = Lists.newArrayList();
+
+			if ( filter.equals( this ) )
+			{
+				result.add( filter );
+			}
+
+			return result;
+		}
 
 		AEItemStack ais = (AEItemStack) filter;
 		if ( ais.isOre() )

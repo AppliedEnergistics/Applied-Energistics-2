@@ -588,7 +588,7 @@ public abstract class AEBaseContainer extends Container
 	{
 		if ( syncData.containsKey( idx ) )
 		{
-			syncData.get( idx ).update( (long) value );
+			syncData.get( idx ).update( value );
 			return;
 		}
 
@@ -600,7 +600,6 @@ public abstract class AEBaseContainer extends Container
 		if ( syncData.containsKey( idx ) )
 		{
 			syncData.get( idx ).update( value );
-			return;
 		}
 	}
 

@@ -66,7 +66,7 @@ public class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
 		{
 			OnePx = 1.0 / 16.0;
 		}
-		return Arrays.asList( new AxisAlignedBB[] { AxisAlignedBB.getBoundingBox( OnePx, OnePx, OnePx, 1.0 - OnePx, 1.0 - OnePx, 1.0 - OnePx ) } );
+		return Arrays.asList( AxisAlignedBB.getBoundingBox( OnePx, OnePx, OnePx, 1.0 - OnePx, 1.0 - OnePx, 1.0 - OnePx ) );
 	}
 
 	@Override

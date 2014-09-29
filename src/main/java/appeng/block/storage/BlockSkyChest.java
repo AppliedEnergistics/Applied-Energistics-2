@@ -110,9 +110,9 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 		double Y = o.offsetY == 0 ? 0.06 : 0.0;
 		double Z = o.offsetZ == 0 ? 0.06 : 0.0;
 
-		return Arrays.asList( new AxisAlignedBB[] { AxisAlignedBB.getBoundingBox( Math.max( 0.0, X - o.offsetX * sc ), Math.max( 0.0, Y - o.offsetY * sc ),
+		return Arrays.asList( AxisAlignedBB.getBoundingBox( Math.max( 0.0, X - o.offsetX * sc ), Math.max( 0.0, Y - o.offsetY * sc ),
 				Math.max( 0.0, Z - o.offsetZ * sc ), Math.min( 1.0, (1.0 - X) - o.offsetX * sc ), Math.min( 1.0, (1.0 - Y) - o.offsetY * sc ),
-				Math.min( 1.0, (1.0 - Z) - o.offsetZ * sc ) ) } );
+				Math.min( 1.0, (1.0 - Z) - o.offsetZ * sc ) ) );
 	}
 
 	@Override

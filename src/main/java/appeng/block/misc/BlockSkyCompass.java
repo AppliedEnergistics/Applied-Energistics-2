@@ -142,9 +142,9 @@ public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
 				break;
 			}
 
-			return Arrays.asList( new AxisAlignedBB[] { AxisAlignedBB.getBoundingBox( minX, minY, minZ, maxX, maxY, maxZ ) } );
+			return Arrays.asList( AxisAlignedBB.getBoundingBox( minX, minY, minZ, maxX, maxY, maxZ ) );
 		}
-		return Arrays.asList( new AxisAlignedBB[] { AxisAlignedBB.getBoundingBox( 0.0, 0, 0.0, 1.0, 1.0, 1.0 ) } );
+		return Arrays.asList( AxisAlignedBB.getBoundingBox( 0.0, 0, 0.0, 1.0, 1.0, 1.0 ) );
 	}
 
 	@Override

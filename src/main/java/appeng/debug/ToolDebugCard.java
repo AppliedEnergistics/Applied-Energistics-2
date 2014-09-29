@@ -168,7 +168,7 @@ public class ToolDebugCard extends AEBaseItem
 
 				if ( te instanceof IGridHost )
 				{
-					IGridNode node = (IGridNode) ((IGridHost) te).getGridNode( ForgeDirection.getOrientation( side ) );
+					IGridNode node = ((IGridHost) te).getGridNode( ForgeDirection.getOrientation( side ) );
 					if ( node != null && node.getGrid() != null )
 					{
 						IEnergyGrid eg = node.getGrid().getCache( IEnergyGrid.class );

@@ -64,7 +64,7 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 
 	public void loadTransferRects()
 	{
-		this.transferRects.add( new TemplateRecipeHandler.RecipeTransferRect( new Rectangle( 84, 23, 24, 18 ), "grindstone", new Object[0] ) );
+		this.transferRects.add( new TemplateRecipeHandler.RecipeTransferRect( new Rectangle( 84, 23, 24, 18 ), "grindstone" ) );
 	}
 
 	public Class<? extends GuiContainer> getGuiClass()

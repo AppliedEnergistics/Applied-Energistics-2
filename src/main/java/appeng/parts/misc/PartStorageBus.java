@@ -460,7 +460,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		{
 			IMEInventoryHandler out = proxy.isActive() ? getInternalHandler() : null;
 			if ( out != null )
-				return Arrays.asList( new IMEInventoryHandler[] { out } );
+				return Arrays.asList( out );
 		}
 		return Arrays.asList( new IMEInventoryHandler[] {} );
 	}
