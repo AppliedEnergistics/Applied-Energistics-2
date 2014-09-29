@@ -313,6 +313,7 @@ public class ClientHelper extends ServerHelper
 			case LightningArc:
 				spawnLightningArc( worldObj, posX, posY, posZ, (Vec3) o );
 				return;
+			default:
 			}
 		}
 	}
