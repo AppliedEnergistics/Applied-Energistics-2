@@ -856,7 +856,7 @@ public class Platform
 		if ( willAdd == null )
 			return false;
 		IAETagCompound tag = willAdd.getTagCompound();
-		if ( tag != null && ((AESharedNBT) tag).getSpecialComparison() != null )
+		if ( tag != null && tag.getSpecialComparison() != null )
 			return true;
 		return false;
 	}
@@ -1548,7 +1548,7 @@ public class Platform
 		if ( grid == null )
 			return false;
 
-		IEnergyGrid eg = (IEnergyGrid) grid.getCache( IEnergyGrid.class );
+		IEnergyGrid eg = grid.getCache( IEnergyGrid.class );
 		return eg.isNetworkPowered();
 	}
 
@@ -1557,7 +1557,7 @@ public class Platform
 		if ( grid == null )
 			return false;
 
-		ISecurityGrid gs = (ISecurityGrid) grid.getCache( ISecurityGrid.class );
+		ISecurityGrid gs = grid.getCache( ISecurityGrid.class );
 
 		if ( gs == null )
 			return false;

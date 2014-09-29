@@ -117,7 +117,7 @@ public class ToolDebugCard extends AEBaseItem
 						outputMsg( player, "Freq: " + ((PartP2PTunnel) center.getMachine()).freq );
 					}
 
-					TickManagerCache tmc = (TickManagerCache) g.getCache( ITickManager.class );
+					TickManagerCache tmc = g.getCache( ITickManager.class );
 					for (Class c : g.getMachineClasses())
 					{
 						int o = 0;

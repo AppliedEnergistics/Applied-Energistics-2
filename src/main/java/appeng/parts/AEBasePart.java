@@ -301,7 +301,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	{
 		if ( compound != null )
 		{
-			IConfigManager cm = ((IConfigurableObject) this).getConfigManager();
+			IConfigManager cm = this.getConfigManager();
 			if ( cm != null )
 				cm.readFromNBT( compound );
 		}
@@ -312,7 +312,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 			pHost.setPriority( compound.getInteger( "priority" ) );
 		}
 
-		IInventory inv = ((ISegmentedInventory) this).getInventoryByName( "config" );
+		IInventory inv = this.getInventoryByName( "config" );
 		if ( inv != null && inv instanceof AppEngInternalAEInventory )
 		{
 			AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
@@ -343,7 +343,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 			output.setInteger( "priority", pHost.getPriority() );
 		}
 
-		IInventory inv = ((ISegmentedInventory) this).getInventoryByName( "config" );
+		IInventory inv = this.getInventoryByName( "config" );
 		if ( inv != null && inv instanceof AppEngInternalAEInventory )
 		{
 			((AppEngInternalAEInventory) inv).writeToNBT( output, "config" );

@@ -337,22 +337,22 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 	{
 		if ( recipe instanceof ShapelessRecipe )
 		{
-			List items = (List) ReflectionHelper.getPrivateValue( ShapelessRecipe.class, (ShapelessRecipe) recipe, "input" );
-			return getCraftingShapelessRecipe( items, ((ShapelessRecipe) recipe).getRecipeOutput() );
+			List items = ReflectionHelper.getPrivateValue( ShapelessRecipe.class, (ShapelessRecipe) recipe, "input" );
+			return getCraftingShapelessRecipe( items, recipe.getRecipeOutput() );
 		}
 		else if ( recipe instanceof ShapedRecipe )
 		{
-			int width = (Integer) ReflectionHelper.getPrivateValue( ShapedRecipe.class, (ShapedRecipe) recipe, "width" );
-			int height = (Integer) ReflectionHelper.getPrivateValue( ShapedRecipe.class, (ShapedRecipe) recipe, "height" );
-			Object[] items = (Object[]) ReflectionHelper.getPrivateValue( ShapedRecipe.class, (ShapedRecipe) recipe, "input" );
+			int width = ReflectionHelper.getPrivateValue( ShapedRecipe.class, (ShapedRecipe) recipe, "width" );
+			int height = ReflectionHelper.getPrivateValue( ShapedRecipe.class, (ShapedRecipe) recipe, "height" );
+			Object[] items = ReflectionHelper.getPrivateValue( ShapedRecipe.class, (ShapedRecipe) recipe, "input" );
 
 			if ( allowSmallGrid && width < 3 && height < 3 )
 			{
-				return getSmallShapedRecipe( width, height, items, ((ShapedRecipe) recipe).getRecipeOutput() );
+				return getSmallShapedRecipe( width, height, items, recipe.getRecipeOutput() );
 			}
 			else
 			{
-				return getCraftingShapedRecipe( width, height, items, ((ShapedRecipe) recipe).getRecipeOutput() );
+				return getCraftingShapedRecipe( width, height, items, recipe.getRecipeOutput() );
 			}
 
 		}

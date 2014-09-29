@@ -137,8 +137,8 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 					for (int i = 0; i < this.crafters.size(); ++i)
 					{
 						ICrafting icrafting = (ICrafting) this.crafters.get( i );
-						((EntityPlayerMP) icrafting).sendSlotContents( this, wirelessIn.slotNumber, wirelessIn.getStack() );
-						((EntityPlayerMP) icrafting).sendSlotContents( this, wirelessOut.slotNumber, wirelessOut.getStack() );
+						icrafting.sendSlotContents( this, wirelessIn.slotNumber, wirelessIn.getStack() );
+						icrafting.sendSlotContents( this, wirelessOut.slotNumber, wirelessOut.getStack() );
 					}
 				}
 

@@ -30,7 +30,7 @@ public class AppEngRenderItem extends RenderItem
 	@Override
 	public void renderItemOverlayIntoGUI(FontRenderer par1FontRenderer, TextureManager par2RenderEngine, ItemStack par3ItemStack, int par4, int par5)
 	{
-		this.renderItemOverlayIntoGUI( par1FontRenderer, par2RenderEngine, par3ItemStack, par4, par5, (String) null );
+		this.renderItemOverlayIntoGUI( par1FontRenderer, par2RenderEngine, par3ItemStack, par4, par5, null );
 	}
 
 	@Override
