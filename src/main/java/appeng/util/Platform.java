@@ -447,7 +447,7 @@ public class Platform
 				return ((NBTTagLong) A).func_150291_c() == ((NBTTagLong) B).func_150291_c();
 
 			case 8: // else if ( A instanceof NBTTagString )
-				return ((NBTTagString) A).func_150285_a_() == ((NBTTagString) B).func_150285_a_()
+				return ((NBTTagString) A).func_150285_a_().equals( ((NBTTagString) B).func_150285_a_() )
 						|| ((NBTTagString) A).func_150285_a_().equals( ((NBTTagString) B).func_150285_a_() );
 
 			case 6: // else if ( A instanceof NBTTagDouble )
