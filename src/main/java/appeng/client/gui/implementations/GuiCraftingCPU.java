@@ -39,14 +39,14 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	IItemList<IAEItemStack> active = AEApi.instance().storage().createItemList();
 	IItemList<IAEItemStack> pending = AEApi.instance().storage().createItemList();
 
-	List<IAEItemStack> visual = new ArrayList();
+	List<IAEItemStack> visual = new ArrayList<IAEItemStack>();
 
 	public void clearItems()
 	{
 		storage = AEApi.instance().storage().createItemList();
 		active = AEApi.instance().storage().createItemList();
 		pending = AEApi.instance().storage().createItemList();
-		visual = new ArrayList();
+		visual = new ArrayList<IAEItemStack>();
 	}
 
 	protected GuiCraftingCPU(ContainerCraftingCPU container) {
@@ -269,7 +269,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		int viewEnd = viewStart + 3 * 6;
 
 		String dspToolTip = "";
-		List<String> lineList = new LinkedList();
+		List<String> lineList = new LinkedList<String>();
 		int toolPosX = 0;
 		int toolPosY = 0;
 

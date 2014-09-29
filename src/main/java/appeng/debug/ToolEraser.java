@@ -34,14 +34,14 @@ public class ToolEraser extends AEBaseItem
 		int meta = world.getBlockMetadata( x, y, z );
 
 		int blocks = 0;
-		List<WorldCoord> next = new LinkedList();
+		List<WorldCoord> next = new LinkedList<WorldCoord>();
 		next.add( new WorldCoord( x, y, z ) );
 
 		while (blocks < 90000 && !next.isEmpty())
 		{
 
 			List<WorldCoord> c = next;
-			next = new LinkedList();
+			next = new LinkedList<WorldCoord>();
 
 			for (WorldCoord wc : c)
 			{

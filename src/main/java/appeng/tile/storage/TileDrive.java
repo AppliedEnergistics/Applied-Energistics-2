@@ -48,8 +48,8 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	boolean isCached = false;
 	ICellHandler handlersBySlot[] = new ICellHandler[10];
 	DriveWatcher<IAEItemStack> invBySlot[] = new DriveWatcher[10];
-	List<MEInventoryHandler> items = new LinkedList();
-	List<MEInventoryHandler> fluids = new LinkedList();
+	List<MEInventoryHandler> items = new LinkedList<MEInventoryHandler>();
+	List<MEInventoryHandler> fluids = new LinkedList<MEInventoryHandler>();
 
 	BaseActionSource mySrc;
 	long lastStateChange = 0;

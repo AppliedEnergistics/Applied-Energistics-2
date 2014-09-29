@@ -234,7 +234,7 @@ public class CompassService implements ThreadFactory
 		return executor.submit( new CMUpdatePost( w, cx, cz, cdy, false ) );
 	}
 
-	HashMap<World, CompassReader> worldSet = new HashMap();
+	HashMap<World, CompassReader> worldSet = new HashMap<World, CompassReader>();
 	ExecutorService executor;
 
 	final File rootFolder;

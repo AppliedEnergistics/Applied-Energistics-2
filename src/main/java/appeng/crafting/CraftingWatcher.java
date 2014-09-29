@@ -49,17 +49,17 @@ public class CraftingWatcher implements ICraftingWatcher
 	}
 
 	CraftingGridCache gsc;
-	ICraftingWatcherHost myObject;
-	HashSet<IAEStack> myInterests = new HashSet();
+	ICraftingWatcherHost host;
+	HashSet<IAEStack> myInterests = new HashSet<IAEStack>();
 
 	public CraftingWatcher(CraftingGridCache cache, ICraftingWatcherHost host) {
 		gsc = cache;
-		myObject = host;
+		this.host = host;
 	}
 
 	public ICraftingWatcherHost getHost()
 	{
-		return myObject;
+		return host;
 	}
 
 	@Override

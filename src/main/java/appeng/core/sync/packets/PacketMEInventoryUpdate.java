@@ -47,7 +47,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	public PacketMEInventoryUpdate(final ByteBuf stream) throws IOException {
 		data = null;
 		compressFrame = null;
-		list = new LinkedList();
+		list = new LinkedList<IAEItemStack>();
 		ref = stream.readByte();
 
 		// int originalBytes = stream.readableBytes();

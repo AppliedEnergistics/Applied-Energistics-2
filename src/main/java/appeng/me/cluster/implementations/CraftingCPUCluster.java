@@ -1,11 +1,7 @@
 package appeng.me.cluster.implementations;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -83,7 +79,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	IItemList<IAEItemStack> waitingFor = AEApi.instance().storage().createItemList();
 
 	// instance sate
-	final private LinkedList<TileCraftingTile> tiles = new LinkedList();
+	final private LinkedList<TileCraftingTile> tiles = new LinkedList<TileCraftingTile>();
 	final private LinkedList<TileCraftingTile> storage = new LinkedList<TileCraftingTile>();
 	final private LinkedList<TileCraftingMonitorTile> status = new LinkedList<TileCraftingMonitorTile>();
 
@@ -290,9 +286,11 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		if ( sg.interestManager.containsKey( diff ) )
 		{
 			Set<CraftingWatcher> list = sg.interestManager.get( diff );
+
 			if ( !list.isEmpty() )
 			{
 				for (CraftingWatcher iw : list)
+
 					iw.getHost().onRequestChange( sg, diff );
 			}
 		}

@@ -12,8 +12,8 @@ public class WorldGenRegistry implements IWorldGen
 	private class TypeSet
 	{
 
-		HashSet<Class<? extends WorldProvider>> badProviders = new HashSet();
-		HashSet<Integer> badDimensions = new HashSet();
+		HashSet<Class<? extends WorldProvider>> badProviders = new HashSet<Class<? extends WorldProvider>>();
+		HashSet<Integer> badDimensions = new HashSet<Integer>();
 
 	}
 

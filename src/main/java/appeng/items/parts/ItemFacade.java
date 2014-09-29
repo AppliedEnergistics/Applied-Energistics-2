@@ -110,7 +110,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	{
 		if ( subTypes == null )
 		{
-			subTypes = new ArrayList();
+			subTypes = new ArrayList<ItemStack>();
 			for (Object blk : Block.blockRegistry)
 			{
 				Block b = (Block) blk;
@@ -118,7 +118,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 				{
 					Item item = Item.getItemFromBlock( b );
 
-					List<ItemStack> tmpList = new ArrayList();
+					List<ItemStack> tmpList = new ArrayList<ItemStack>();
 					b.getSubBlocks( item, b.getCreativeTabToDisplayOn(), tmpList );
 					for (ItemStack l : tmpList)
 					{

@@ -177,7 +177,7 @@ public abstract class AEBaseGui extends GuiContainer
 	Slot bl_clicked;
 
 	// drag y
-	Set<Slot> drag_click = new HashSet();
+	Set<Slot> drag_click = new HashSet<Slot>();
 
 	@Override
 	protected void handleMouseClick(Slot slot, int slotIdx, int ctrlDown, int key)

@@ -335,7 +335,7 @@ public class CellInventory implements ICellInventory
 		return 8 - div;
 	}
 
-	private static HashSet<Integer> blackList = new HashSet();
+	private static HashSet<Integer> blackList = new HashSet<Integer>();
 
 	public static void addBasicBlackList(int itemID, int Meta)
 	{

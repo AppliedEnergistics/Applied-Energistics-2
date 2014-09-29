@@ -22,7 +22,7 @@ import com.google.common.collect.Multimap;
 public class P2PCache implements IGridCache
 {
 
-	final private HashMap<Long, PartP2PTunnel> inputs = new HashMap();
+	final private HashMap<Long, PartP2PTunnel> inputs = new HashMap<Long, PartP2PTunnel>();
 	final private Multimap<Long, PartP2PTunnel> outputs = LinkedHashMultimap.create();
 	final private TunnelCollection NullColl = new TunnelCollection<PartP2PTunnel>( null, null );
 

@@ -184,7 +184,7 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems(IItemList out)
+	public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> out)
 	{
 		for (int x = 0; x < target.getSizeInventory(); x++)
 		{

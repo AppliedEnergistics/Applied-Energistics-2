@@ -16,7 +16,7 @@ public class CellRegistry implements ICellRegistry
 	List<ICellHandler> handlers;
 
 	public CellRegistry() {
-		handlers = new ArrayList();
+		handlers = new ArrayList<ICellHandler>();
 	}
 
 	@Override

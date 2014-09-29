@@ -106,7 +106,7 @@ final public class EntityChargedQuartz extends EntityItem
 				if ( netherQuartz.getEntityItem().stackSize <= 0 )
 					netherQuartz.setDead();
 
-				List<ItemStack> i = new ArrayList();
+				List<ItemStack> i = new ArrayList<ItemStack>();
 				i.add( AEApi.instance().materials().materialFluixCrystal.stack( 1 ) );
 
 				ItemStack Output = AEApi.instance().materials().materialFluixCrystal.stack( 2 );

@@ -17,7 +17,7 @@ public class AEGenericSchematicTile extends SchematicTile
 	public void writeRequirementsToBlueprint(IBuilderContext context, int x, int y, int z)
 	{
 		TileEntity tile = context.world().getTileEntity( x, y, z );
-		ArrayList<ItemStack> list = new ArrayList();
+		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
 		if ( tile instanceof AEBaseTile )
 		{
 			AEBaseTile tcb = (AEBaseTile) tile;

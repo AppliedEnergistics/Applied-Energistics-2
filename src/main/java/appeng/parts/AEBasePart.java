@@ -453,7 +453,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	{
 		if ( is.stackSize > 0 )
 		{
-			List<ItemStack> items = new ArrayList();
+			List<ItemStack> items = new ArrayList<ItemStack>();
 			items.add( is.copy() );
 			host.removePart( side, false );
 			Platform.spawnDrops( tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord, items );

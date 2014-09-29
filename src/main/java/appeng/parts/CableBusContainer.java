@@ -321,7 +321,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return null;
 	}
 
-	private static final ThreadLocal<Boolean> isLoading = new ThreadLocal();
+	private static final ThreadLocal<Boolean> isLoading = new ThreadLocal<Boolean>();
 
 	public static boolean isLoading()
 	{
@@ -907,7 +907,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	{
 		if ( getCenter() == null )
 		{
-			List<ItemStack> facades = new LinkedList();
+			List<ItemStack> facades = new LinkedList<ItemStack>();
 
 			IFacadeContainer fc = getFacadeContainer();
 			for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)

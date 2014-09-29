@@ -122,7 +122,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 	/*
 	 * Shared Tag Compound Cache.
 	 */
-	private static WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>> sharedTagCompounds = new WeakHashMap();
+	private static WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>> sharedTagCompounds = new WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>>();
 
 	/*
 	 * Debug purposes.

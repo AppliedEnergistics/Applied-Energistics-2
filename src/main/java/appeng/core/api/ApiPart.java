@@ -44,12 +44,12 @@ public class ApiPart implements IPartHelper
 
 	int classNum = 1;
 
-	HashMap<String, Class> TileImplementations = new HashMap();
-	HashMap<String, ClassNode> readerCache = new HashMap();
-	HashMap<Class, String> interfaces2Layer = new HashMap();
-	HashMap<String, Class> roots = new HashMap();
+	HashMap<String, Class> TileImplementations = new HashMap<String, Class>();
+	HashMap<String, ClassNode> readerCache = new HashMap<String, ClassNode>();
+	HashMap<Class, String> interfaces2Layer = new HashMap<Class, String>();
+	HashMap<String, Class> roots = new HashMap<String, Class>();
 
-	List<String> desc = new LinkedList();
+	List<String> desc = new LinkedList<String>();
 
 	public void initFMPSupport()
 	{

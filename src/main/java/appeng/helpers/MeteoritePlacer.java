@@ -372,8 +372,8 @@ public class MeteoritePlacer
 	}
 
 	int minBLocks = 200;
-	HashSet<Block> validSpawn = new HashSet();
-	HashSet<Block> invalidSpawn = new HashSet();
+	HashSet<Block> validSpawn = new HashSet<Block>();
+	HashSet<Block> invalidSpawn = new HashSet<Block>();
 
 	Fallout type = new Fallout();
 
@@ -694,7 +694,7 @@ public class MeteoritePlacer
 						ap.addItems( AEApi.instance().blocks().blockSkyStone.stack( (int) (Math.random() * 12) + 1 ) );
 						break;
 					case 1:
-						List<ItemStack> possibles = new LinkedList();
+						List<ItemStack> possibles = new LinkedList<ItemStack>();
 						possibles.addAll( OreDictionary.getOres( "nuggetIron" ) );
 						possibles.addAll( OreDictionary.getOres( "nuggetCopper" ) );
 						possibles.addAll( OreDictionary.getOres( "nuggetTin" ) );

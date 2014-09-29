@@ -84,7 +84,7 @@ public class ToolDebugCard extends AEBaseItem
 					{
 						int length = 0;
 						
-						HashSet<IGridNode> next = new HashSet();
+						HashSet<IGridNode> next = new HashSet<IGridNode>();
 						next.add( node );
 						
 						int maxLength = 10000;
@@ -92,7 +92,7 @@ public class ToolDebugCard extends AEBaseItem
 						outer: while ( ! next.isEmpty() )
 						{
 							HashSet<IGridNode> current = next;
-							next = new HashSet();
+							next = new HashSet<IGridNode>();
 							
 							for ( IGridNode n : current )
 							{
