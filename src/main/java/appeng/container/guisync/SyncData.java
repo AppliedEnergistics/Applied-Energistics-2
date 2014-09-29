@@ -12,7 +12,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketProgressBar;
 import appeng.core.sync.packets.PacketValueConfig;
 
-public class SyncDat
+public class SyncData
 {
 
 	private Object clientVersion;
@@ -22,7 +22,7 @@ public class SyncDat
 
 	private int channel;
 
-	public SyncDat(AEBaseContainer container, Field field, GuiSync annotation) {
+	public SyncData(AEBaseContainer container, Field field, GuiSync annotation) {
 		clientVersion = null;
 		this.source = container;
 		this.field = field;

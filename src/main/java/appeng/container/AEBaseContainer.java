@@ -41,7 +41,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.client.me.InternalSlotME;
 import appeng.client.me.SlotME;
 import appeng.container.guisync.GuiSync;
-import appeng.container.guisync.SyncDat;
+import appeng.container.guisync.SyncData;
 import appeng.container.slot.SlotInaccessible;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
@@ -554,7 +554,7 @@ public abstract class AEBaseContainer extends Container
 		detectAndSendChanges();
 	}
 
-	HashMap<Integer, SyncDat> syncData = new HashMap<Integer, SyncDat>();
+	HashMap<Integer, SyncData> syncData = new HashMap<Integer, SyncData>();
 
 	@Override
 	public void detectAndSendChanges()
@@ -567,7 +567,7 @@ public abstract class AEBaseContainer extends Container
 			{
 				ICrafting icrafting = (ICrafting) this.crafters.get( i );
 
-				for (SyncDat sd : syncData.values())
+				for (SyncData sd : syncData.values())
 					sd.tick( icrafting );
 			}
 		}
@@ -616,7 +616,7 @@ public abstract class AEBaseContainer extends Container
 				if ( syncData.containsKey( annotation.value() ) )
 					AELog.warning( "Channel already in use: " + annotation.value() + " for " + f.getName() );
 				else
-					syncData.put( annotation.value(), new SyncDat( this, f, annotation ) );
+					syncData.put( annotation.value(), new SyncData( this, f, annotation ) );
 			}
 		}
 	}
