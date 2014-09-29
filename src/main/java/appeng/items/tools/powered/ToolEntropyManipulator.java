@@ -146,7 +146,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		coolDown.put( new Combo( Blocks.flowing_lava, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult( new ItemStack( Blocks.obsidian ) ) );
 		coolDown.put( new Combo( Blocks.grass, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult( new ItemStack( Blocks.dirt ) ) );
 
-		List<ItemStack> snowBalls = new ArrayList();
+		List<ItemStack> snowBalls = new ArrayList<ItemStack>();
 		snowBalls.add( new ItemStack( Items.snowball ) );
 		coolDown.put( new Combo( Blocks.flowing_water, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult( null, snowBalls ) );
 		coolDown.put( new Combo( Blocks.water, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult( new ItemStack( Blocks.ice ) ) );

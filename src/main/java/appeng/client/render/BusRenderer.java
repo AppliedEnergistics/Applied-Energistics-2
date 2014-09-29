@@ -29,7 +29,7 @@ public class BusRenderer implements IItemRenderer
 	public static final BusRenderer instance = new BusRenderer();
 
 	public RenderBlocksWorkaround renderer = new RenderBlocksWorkaround();
-	public static final HashMap<Integer, IPart> renderPart = new HashMap();
+	public static final HashMap<Integer, IPart> renderPart = new HashMap<Integer, IPart>();
 
 	public IPart getRenderer(ItemStack is, IPartItem c)
 	{

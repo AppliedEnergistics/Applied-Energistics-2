@@ -79,8 +79,8 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		ACCEPT, DECLINE, TEST
 	}
 
-	HashSet<TestLookup> failCache = new HashSet();
-	HashSet<TestLookup> passCache = new HashSet();
+	HashSet<TestLookup> failCache = new HashSet<TestLookup>();
+	HashSet<TestLookup> passCache = new HashSet<TestLookup>();
 
 	private void markItemAs(int slotIndex, ItemStack i, TestStatus b)
 	{
@@ -122,8 +122,8 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		patternItem = is;
 		pattern = AEItemStack.create( is );
 
-		List<IAEItemStack> in = new ArrayList();
-		List<IAEItemStack> out = new ArrayList();
+		List<IAEItemStack> in = new ArrayList<IAEItemStack>();
+		List<IAEItemStack> out = new ArrayList<IAEItemStack>();
 
 		for (int x = 0; x < inTag.tagCount(); x++)
 		{

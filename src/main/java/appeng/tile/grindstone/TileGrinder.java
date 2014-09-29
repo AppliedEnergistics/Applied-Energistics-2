@@ -45,7 +45,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 
 			wc.add( getForward(), 1 );
 
-			List<ItemStack> out = new ArrayList();
+			List<ItemStack> out = new ArrayList<ItemStack>();
 			out.add( notAdded );
 
 			Platform.spawnDrops( worldObj, wc.x, wc.y, wc.z, out );

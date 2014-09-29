@@ -10,7 +10,7 @@ import appeng.core.AELog;
 public class ConfigManager implements IConfigManager
 {
 
-	HashMap<Enum, Enum> Settings = new HashMap();
+	HashMap<Enum, Enum> Settings = new HashMap<Enum, Enum>();
 	IConfigManagerHost target;
 
 	public ConfigManager(IConfigManagerHost tile) {

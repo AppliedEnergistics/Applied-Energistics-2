@@ -19,7 +19,7 @@ public class WirelessRegistry implements IWirelessTermRegistry
 	List<IWirelessTermHandler> handlers;
 
 	public WirelessRegistry() {
-		handlers = new ArrayList();
+		handlers = new ArrayList<IWirelessTermHandler>();
 	}
 
 	@Override

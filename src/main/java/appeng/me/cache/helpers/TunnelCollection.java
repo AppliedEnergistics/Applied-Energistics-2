@@ -21,8 +21,8 @@ public class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T>
 	public Iterator<T> iterator()
 	{
 		if ( tunnelSources == null )
-			return new NullIterator();
-		return new TunnelIterator( tunnelSources, clz );
+			return new NullIterator<T>();
+		return new TunnelIterator<T>( tunnelSources, clz );
 	}
 
 	public void setSource(Collection<T> c)

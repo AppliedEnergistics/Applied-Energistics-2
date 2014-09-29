@@ -26,7 +26,7 @@ import appeng.util.ItemSorters;
 public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
 
-	private final static Comparator prioritySorter = new Comparator<Integer>() {
+	private final static Comparator<Integer> prioritySorter = new Comparator<Integer>() {
 
 		@Override
 		public int compare(Integer o1, Integer o2)
@@ -45,7 +45,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	public NetworkInventoryHandler(StorageChannel chan, SecurityCache security) {
 		myChannel = chan;
 		this.security = security;
-		priorityInventory = new TreeMap( prioritySorter ); // TreeMultimap.create( prioritySorter, hashSorter );
+		priorityInventory = new TreeMap<Integer, List<IMEInventoryHandler<T>>>( prioritySorter ); // TreeMultimap.create( prioritySorter, hashSorter );
 	}
 
 	public void addNewStorage(IMEInventoryHandler<T> h)
@@ -53,7 +53,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 		int priority = h.getPriority();
 		List<IMEInventoryHandler<T>> list = priorityInventory.get( priority );
 		if ( list == null )
-			priorityInventory.put( priority, list = new ArrayList() );
+			priorityInventory.put( priority, list = new ArrayList<IMEInventoryHandler<T>>() );
 
 		list.add( h );
 	}

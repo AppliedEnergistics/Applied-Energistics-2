@@ -53,7 +53,7 @@ public class OreHelper
 
 	}
 
-	HashMap<ItemRef, OreResult> references = new HashMap();
+	HashMap<ItemRef, OreResult> references = new HashMap<ItemRef, OreResult>();
 
 	public OreReference isOre(ItemStack ItemStack)
 	{

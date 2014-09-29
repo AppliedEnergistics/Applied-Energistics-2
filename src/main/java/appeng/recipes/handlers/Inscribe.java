@@ -39,9 +39,9 @@ public class Inscribe implements ICraftHandler, IWebsiteSerializer
 
 	public boolean usePlates = false;
 
-	public static HashSet<ItemStack> plates = new HashSet();
-	public static HashSet<ItemStack> inputs = new HashSet();
-	public static LinkedList<InscriberRecipe> recipes = new LinkedList();
+	public static HashSet<ItemStack> plates = new HashSet<ItemStack>();
+	public static HashSet<ItemStack> inputs = new HashSet<ItemStack>();
+	public static LinkedList<InscriberRecipe> recipes = new LinkedList<InscriberRecipe>();
 
 	IIngredient imprintable;
 

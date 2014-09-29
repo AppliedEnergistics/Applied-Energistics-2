@@ -49,7 +49,7 @@ import com.google.common.collect.ImmutableSet;
 public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule
 {
 
-	HashMap<Integer, MaterialType> dmgToMaterial = new HashMap();
+	HashMap<Integer, MaterialType> dmgToMaterial = new HashMap<Integer, MaterialType>();
 
 	public static ItemMultiMaterial instance;
 
@@ -109,7 +109,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 		Upgrades u = getType( is );
 		if ( u != null )
 		{
-			List<String> textList = new LinkedList();
+			List<String> textList = new LinkedList<String>();
 			for (Entry<ItemStack, Integer> j : u.getSupported().entrySet())
 			{
 				String name = null;

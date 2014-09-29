@@ -36,7 +36,7 @@ public class CraftingTreeProcess
 	private long bytes = 0;
 	final private int depth;
 
-	Map<CraftingTreeNode, Long> nodes = new HashMap();
+	Map<CraftingTreeNode, Long> nodes = new HashMap<CraftingTreeNode, Long>();
 	public boolean possible = true;
 
 	public CraftingTreeProcess(ICraftingGrid cc, CraftingJob job, ICraftingPatternDetails details, CraftingTreeNode craftingTreeNode, int depth, World world) {

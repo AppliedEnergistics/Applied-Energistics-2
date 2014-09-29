@@ -65,7 +65,7 @@ public class GroupIngredient implements IIngredient
 		if ( isInside )
 			return new ItemStack[0];
 
-		List<ItemStack> out = new LinkedList();
+		List<ItemStack> out = new LinkedList<ItemStack>();
 		isInside = true;
 		try
 		{

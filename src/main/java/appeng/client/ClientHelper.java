@@ -280,7 +280,7 @@ public class ClientHelper extends ServerHelper
 	{
 		if ( Platform.isClient() )
 		{
-			List<EntityPlayer> o = new ArrayList();
+			List<EntityPlayer> o = new ArrayList<EntityPlayer>();
 			o.add( Minecraft.getMinecraft().thePlayer );
 			return o;
 		}

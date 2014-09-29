@@ -31,7 +31,7 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 	}
 
 	public GrinderRecipeManager() {
-		RecipeList = new ArrayList();
+		RecipeList = new ArrayList<IGrinderEntry>();
 
 		addOre( "Coal", new ItemStack( Items.coal ) );
 		addOre( "Charcoal", new ItemStack( Items.coal, 1, 1 ) );

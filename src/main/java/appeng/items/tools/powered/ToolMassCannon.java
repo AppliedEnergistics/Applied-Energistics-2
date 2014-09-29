@@ -196,12 +196,13 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						continue;
 
 					float f1 = 0.3F;
-					AxisAlignedBB axisalignedbb1 = entity1.boundingBox.expand( f1, f1, f1 );
-					MovingObjectPosition movingobjectposition1 = axisalignedbb1.calculateIntercept( vec3, vec31 );
 
-					if ( movingobjectposition1 != null )
+					AxisAlignedBB boundingBox = entity1.boundingBox.expand( f1, f1, f1 );
+					MovingObjectPosition movingObjectPosition = boundingBox.calculateIntercept( vec3, vec31 );
+
+					if ( movingObjectPosition != null )
 					{
-						double nd = vec3.squareDistanceTo( movingobjectposition1.hitVec );
+						double nd = vec3.squareDistanceTo( movingObjectPosition.hitVec );
 
 						if ( nd < closest )
 						{
@@ -215,8 +216,8 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 		MovingObjectPosition pos = w.rayTraceBlocks( vec3, vec31, false );
 
-		Vec3 Srec = Vec3.createVectorHelper( d0, d1, d2 );
-		if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( Srec ) > closest )
+		Vec3 vec = Vec3.createVectorHelper( d0, d1, d2 );
+		if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( vec ) > closest )
 		{
 			pos = new MovingObjectPosition( entity );
 		}
@@ -228,7 +229,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 		try
 		{
 			CommonHelper.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) direction.xCoord,
-					(float) direction.yCoord, (float) direction.zCoord, (byte) (pos == null ? 32 : pos.hitVec.squareDistanceTo( Srec ) + 1) ) );
+					(float) direction.yCoord, (float) direction.zCoord, (byte) (pos == null ? 32 : pos.hitVec.squareDistanceTo( vec ) + 1) ) );
 
 		}
 		catch (Exception err)
@@ -321,12 +322,13 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 							continue;
 
 						float f1 = 0.3F;
-						AxisAlignedBB axisalignedbb1 = entity1.boundingBox.expand( f1, f1, f1 );
-						MovingObjectPosition movingobjectposition1 = axisalignedbb1.calculateIntercept( vec3, vec31 );
 
-						if ( movingobjectposition1 != null )
+						AxisAlignedBB boundingBox = entity1.boundingBox.expand( f1, f1, f1 );
+						MovingObjectPosition movingObjectPosition = boundingBox.calculateIntercept( vec3, vec31 );
+
+						if ( movingObjectPosition != null )
 						{
-							double nd = vec3.squareDistanceTo( movingobjectposition1.hitVec );
+							double nd = vec3.squareDistanceTo( movingObjectPosition.hitVec );
 
 							if ( nd < closest )
 							{
@@ -338,9 +340,9 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				}
 			}
 
-			Vec3 Srec = Vec3.createVectorHelper( d0, d1, d2 );
+			Vec3 vec = Vec3.createVectorHelper( d0, d1, d2 );
 			MovingObjectPosition pos = w.rayTraceBlocks( vec3, vec31, true );
-			if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( Srec ) > closest )
+			if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( vec ) > closest )
 			{
 				pos = new MovingObjectPosition( entity );
 			}
@@ -352,7 +354,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 			try
 			{
 				CommonHelper.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) direction.xCoord,
-						(float) direction.yCoord, (float) direction.zCoord, (byte) (pos == null ? 32 : pos.hitVec.squareDistanceTo( Srec ) + 1) ) );
+						(float) direction.yCoord, (float) direction.zCoord, (byte) (pos == null ? 32 : pos.hitVec.squareDistanceTo( vec ) + 1) ) );
 
 			}
 			catch (Exception err)
@@ -480,7 +482,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 	}
 
 	@Override
-	public int BytePerType(ItemStack iscellItem)
+	public int BytePerType(ItemStack cell)
 	{
 		return 8;
 	}

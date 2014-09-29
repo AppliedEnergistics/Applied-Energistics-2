@@ -259,7 +259,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		}
 		else
 		{
-			List<ItemStack> list = new ArrayList( 3 );
+			List<ItemStack> list = new ArrayList<ItemStack>( 3 );
 			boolean hasValue = false;
 
 			for (int x = 0; x < outputSlots.length; x++)

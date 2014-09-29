@@ -249,11 +249,11 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	{
 		if ( proxy.isActive() && channel == StorageChannel.ITEMS )
 		{
-			List<IMEInventoryHandler> Handler = new ArrayList( 1 );
+			List<IMEInventoryHandler> Handler = new ArrayList<IMEInventoryHandler>( 1 );
 			Handler.add( myHandler );
 			return Handler;
 		}
-		return new ArrayList();
+		return new ArrayList<IMEInventoryHandler>();
 	}
 
 	@Override

@@ -43,7 +43,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		IIcon ico;
 	}
 
-	HashMap<Integer, PartTypeIst> dmgToPart = new HashMap();
+	HashMap<Integer, PartTypeIst> dmgToPart = new HashMap<Integer, PartTypeIst>();
 
 	public static ItemMultiPart instance;
 
@@ -209,7 +209,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 	@Override
 	public void getSubItems(Item number, CreativeTabs tab, List cList)
 	{
-		List<Entry<Integer, PartTypeIst>> types = new ArrayList( dmgToPart.entrySet() );
+		List<Entry<Integer, PartTypeIst>> types = new ArrayList<Entry<Integer, PartTypeIst>>( dmgToPart.entrySet() );
 		Collections.sort( types, new Comparator<Entry<Integer, PartTypeIst>>() {
 
 			@Override

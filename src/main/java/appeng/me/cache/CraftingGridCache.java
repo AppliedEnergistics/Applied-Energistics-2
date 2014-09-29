@@ -68,8 +68,8 @@ import com.google.common.collect.SetMultimap;
 public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler
 {
 
-	HashSet<CraftingCPUCluster> cpuClusters = new HashSet();
-	HashSet<ICraftingProvider> providers = new HashSet();
+	HashSet<CraftingCPUCluster> cpuClusters = new HashSet<CraftingCPUCluster>();
+	HashSet<ICraftingProvider> providers = new HashSet<ICraftingProvider>();
 
 	private HashMap<IGridNode, ICraftingWatcher> watchers = new HashMap<IGridNode, ICraftingWatcher>();
 
@@ -77,14 +77,14 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	IStorageGrid sg;
 	IEnergyGrid eg;
 
-	HashMap<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap();
-	HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>> craftableItems = new HashMap();
-	HashSet<IAEItemStack> emitableItems = new HashSet();
-	HashMap<String, CraftingLinkNexus> links = new HashMap();
+	HashMap<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap<ICraftingPatternDetails, List<ICraftingMedium>>();
+	HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>> craftableItems = new HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>>();
+	HashSet<IAEItemStack> emitableItems = new HashSet<IAEItemStack>();
+	HashMap<String, CraftingLinkNexus> links = new HashMap<String, CraftingLinkNexus>();
 
 	boolean updateList = false;
-	final private SetMultimap<IAEStack, ItemWatcher> interests = HashMultimap.create();
-	final public GenericInterestManager interestManager = new GenericInterestManager( interests );
+	final private SetMultimap<IAEStack, CraftingWatcher> interests = HashMultimap.create();
+	final public GenericInterestManager<CraftingWatcher> interestManager = new GenericInterestManager<CraftingWatcher>( interests );
 
 	class ActiveCpuIterator implements Iterator<ICraftingCPU>
 	{
@@ -301,7 +301,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 		// erase list.
 		craftingMethods.clear();
-		craftableItems = new HashMap();
+		craftableItems = new HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>>();
 		emitableItems.clear();
 
 		// update the stuff that was in the list...
@@ -311,7 +311,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		for (ICraftingProvider cp : providers)
 			cp.provideCrafting( this );
 
-		HashMap<IAEItemStack, Set<ICraftingPatternDetails>> tmpCraft = new HashMap();
+		HashMap<IAEItemStack, Set<ICraftingPatternDetails>> tmpCraft = new HashMap<IAEItemStack, Set<ICraftingPatternDetails>>();
 
 		// new craftables!
 		for (ICraftingPatternDetails details : craftingMethods.keySet())

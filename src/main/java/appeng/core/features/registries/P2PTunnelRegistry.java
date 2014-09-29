@@ -18,7 +18,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class P2PTunnelRegistry implements IP2PTunnelRegistry
 {
 
-	HashMap<ItemStack, TunnelType> Tunnels = new HashMap();
+	HashMap<ItemStack, TunnelType> Tunnels = new HashMap<ItemStack, TunnelType>();
 
 	public ItemStack getModItem(String modID, String Name, int meta)
 	{

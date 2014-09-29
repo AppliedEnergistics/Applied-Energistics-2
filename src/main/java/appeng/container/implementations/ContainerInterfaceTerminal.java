@@ -61,8 +61,8 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 
 	}
 
-	Map<IInterfaceHost, InvTracker> diList = new HashMap();
-	Map<Long, InvTracker> byId = new HashMap();
+	Map<IInterfaceHost, InvTracker> diList = new HashMap<IInterfaceHost, InvTracker>();
+	Map<Long, InvTracker> byId = new HashMap<Long, InvTracker>();
 	IGrid g;
 
 	public ContainerInterfaceTerminal(InventoryPlayer ip, PartMonitor anchor) {

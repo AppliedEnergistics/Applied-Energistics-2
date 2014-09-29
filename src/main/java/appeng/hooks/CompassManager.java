@@ -44,7 +44,7 @@ public class CompassManager
 
 	}
 
-	HashMap<CompassRequest, CompassResult> requests = new HashMap();
+	HashMap<CompassRequest, CompassResult> requests = new HashMap<CompassRequest, CompassResult>();
 
 	public void postResult(long attunement, int x, int y, int z, CompassResult result)
 	{

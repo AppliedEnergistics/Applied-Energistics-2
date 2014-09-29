@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 public class CompassReader
 {
 
-	HashMap<Long, CompassRegion> regions = new HashMap();
+	HashMap<Long, CompassRegion> regions = new HashMap<Long, CompassRegion>();
 	final int id;
 	final File rootFolder;
 

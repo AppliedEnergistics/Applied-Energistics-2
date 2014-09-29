@@ -39,10 +39,10 @@ public class GridStorageCache implements IStorageGrid
 {
 
 	final private SetMultimap<IAEStack, ItemWatcher> interests = HashMultimap.create();
-	final public GenericInterestManager interestManager = new GenericInterestManager( interests );
+	final public GenericInterestManager<ItemWatcher> interestManager = new GenericInterestManager<ItemWatcher>( interests );
 
-	final HashSet<ICellProvider> activeCellProviders = new HashSet();
-	final HashSet<ICellProvider> inactiveCellProviders = new HashSet();
+	final HashSet<ICellProvider> activeCellProviders = new HashSet<ICellProvider>();
+	final HashSet<ICellProvider> inactiveCellProviders = new HashSet<ICellProvider>();
 	final public IGrid myGrid;
 
 	private NetworkInventoryHandler<IAEItemStack> myItemNetwork;
@@ -95,7 +95,7 @@ public class GridStorageCache implements IStorageGrid
 	private class CellChangeTracker
 	{
 
-		List<CellChangeTrackerRecord> data = new LinkedList();
+		List<CellChangeTrackerRecord> data = new LinkedList<CellChangeTrackerRecord>();
 
 		public void postChanges(StorageChannel channel, int i, IMEInventoryHandler<? extends IAEStack> h, BaseActionSource actionSrc)
 		{

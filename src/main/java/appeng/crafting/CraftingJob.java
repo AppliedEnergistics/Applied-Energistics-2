@@ -52,7 +52,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 	{
 		world = wrapWorld( w );
 		storage = AEApi.instance().storage().createItemList();
-		prophecies = new HashSet();
+		prophecies = new HashSet<IAEItemStack>();
 		original = null;
 		availableCheck = null;
 	}
@@ -72,7 +72,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		world = wrapWorld( w );
 		output = what.copy();
 		storage = AEApi.instance().storage().createItemList();
-		prophecies = new HashSet();
+		prophecies = new HashSet<IAEItemStack>();
 		this.actionSrc = actionSrc;
 
 		this.callback = callback;
@@ -131,7 +131,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		public long times = 0;
 	}
 
-	HashMap<String, twoIntegers> opsAndMultiplier = new HashMap();
+	HashMap<String, twoIntegers> opsAndMultiplier = new HashMap<String, twoIntegers>();
 
 	@Override
 	public void run()

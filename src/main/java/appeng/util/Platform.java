@@ -499,7 +499,7 @@ public class Platform
 			AELog.error( t );
 		}
 
-		return new ArrayList();
+		return new ArrayList<NBTBase>();
 	}
 
 	/*
@@ -1445,7 +1445,7 @@ public class Platform
 	static public <T extends IAEStack<T>> void postListChanges(IItemList<T> before, IItemList<T> after, IMEMonitorHandlerReceiver<T> meMonitorPassthrough,
 			BaseActionSource source)
 	{
-		LinkedList<T> changes = new LinkedList();
+		LinkedList<T> changes = new LinkedList<T>();
 
 		for (T is : before)
 			is.setStackSize( -is.getStackSize() );

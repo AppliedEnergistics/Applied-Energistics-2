@@ -72,7 +72,7 @@ public abstract class AEBaseContainer extends Container
 	int ticksSinceCheck = 900;
 
 	IAEItemStack clientRequestedTargetItem = null;
-	List<PacketPartialItem> dataChunks = new LinkedList();
+	List<PacketPartialItem> dataChunks = new LinkedList<PacketPartialItem>();
 
 	public void postPartial(PacketPartialItem packetPartialItem)
 	{
@@ -129,7 +129,7 @@ public abstract class AEBaseContainer extends Container
 				CompressedStreamTools.writeCompressed( item, stream );
 
 				int maxChunkSize = 30000;
-				List<byte[]> miniPackets = new LinkedList();
+				List<byte[]> miniPackets = new LinkedList<byte[]>();
 
 				byte[] data = stream.toByteArray();
 
@@ -216,7 +216,7 @@ public abstract class AEBaseContainer extends Container
 	public ContainerOpenContext openContext;
 
 	protected IMEInventoryHandler<IAEItemStack> cellInv;
-	protected HashSet<Integer> locked = new HashSet();
+	protected HashSet<Integer> locked = new HashSet<Integer>();
 	protected IEnergySource powerSrc;
 
 	public void lockPlayerInventorySlot(int idx)
@@ -774,7 +774,7 @@ public abstract class AEBaseContainer extends Container
 
 			if ( action == InventoryAction.MOVE_REGION )
 			{
-				List<Slot> from = new LinkedList();
+				List<Slot> from = new LinkedList<Slot>();
 
 				for (Object j : inventorySlots)
 				{

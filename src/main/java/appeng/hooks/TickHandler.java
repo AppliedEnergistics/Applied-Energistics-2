@@ -43,13 +43,13 @@ public class TickHandler
 	class HandlerRep
 	{
 
-		public Queue<AEBaseTile> tiles = new LinkedList();
+		public Queue<AEBaseTile> tiles = new LinkedList<AEBaseTile>();
 
 		public Collection<Grid> networks = new NetworkList();
 
 		public void clear()
 		{
-			tiles = new LinkedList();
+			tiles = new LinkedList<AEBaseTile>();
 			networks = new NetworkList();
 		}
 
@@ -83,8 +83,8 @@ public class TickHandler
 
 	}
 
-	final private HashMap<Integer, PlayerColor> cliPlayerColors = new HashMap();
-	final private HashMap<Integer, PlayerColor> srvPlayerColors = new HashMap();
+	final private HashMap<Integer, PlayerColor> cliPlayerColors = new HashMap<Integer, PlayerColor>();
+	final private HashMap<Integer, PlayerColor> srvPlayerColors = new HashMap<Integer, PlayerColor>();
 
 	public HashMap<Integer, PlayerColor> getPlayerColors()
 	{
@@ -159,7 +159,7 @@ public class TickHandler
 	{
 		if ( Platform.isServer() ) // for no there is no reason to care about this on the client...
 		{
-			LinkedList<IGridNode> toDestroy = new LinkedList();
+			LinkedList<IGridNode> toDestroy = new LinkedList<IGridNode>();
 
 			for (Grid g : getRepo().networks)
 			{

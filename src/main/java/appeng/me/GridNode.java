@@ -39,7 +39,7 @@ public class GridNode implements IGridNode, IPathItem
 	final static private MENetworkChannelsChanged event = new MENetworkChannelsChanged();
 	final static private int channelCount[] = new int[] { 0, 8, 32 };
 
-	final List<IGridConnection> Connections = new LinkedList();
+	final List<IGridConnection> Connections = new LinkedList<IGridConnection>();
 	GridStorage myStorage = null;
 
 	IGridBlock gridProxy;
@@ -167,14 +167,14 @@ public class GridNode implements IGridNode, IPathItem
 	{
 		Object tracker = new Object();
 
-		LinkedList<GridNode> nextRun = new LinkedList();
+		LinkedList<GridNode> nextRun = new LinkedList<GridNode>();
 		nextRun.add( this );
 
 		visitorIterationNumber = tracker;
 
 		if ( g instanceof IGridConnectionVisitor )
 		{
-			LinkedList<IGridConnection> nextConn = new LinkedList();
+			LinkedList<IGridConnection> nextConn = new LinkedList<IGridConnection>();
 			IGridConnectionVisitor gcv = (IGridConnectionVisitor) g;
 
 			while (!nextRun.isEmpty())
@@ -183,7 +183,7 @@ public class GridNode implements IGridNode, IPathItem
 					gcv.visitConnection( nextConn.poll() );
 
 				LinkedList<GridNode> thisRun = nextRun;
-				nextRun = new LinkedList();
+				nextRun = new LinkedList<GridNode>();
 
 				for (GridNode n : thisRun)
 					n.visitorConnection( tracker, g, nextRun, nextConn );
@@ -194,7 +194,7 @@ public class GridNode implements IGridNode, IPathItem
 			while (!nextRun.isEmpty())
 			{
 				LinkedList<GridNode> thisRun = nextRun;
-				nextRun = new LinkedList();
+				nextRun = new LinkedList<GridNode>();
 
 				for (GridNode n : thisRun)
 					n.visitorNode( tracker, g, nextRun );

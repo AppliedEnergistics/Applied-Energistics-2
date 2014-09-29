@@ -175,24 +175,24 @@ public class AdaptorIInventory extends InventoryAdaptor
 			ItemStack is = i.getStackInSlot( x );
 			if ( is != null && canRemoveStackFromSlot( x, is ) && (filter == null || Platform.isSameItemPrecise( is, filter )) )
 			{
-				int boundAount = amount;
-				if ( boundAount > is.stackSize )
-					boundAount = is.stackSize;
+				int boundAmount = amount;
+				if ( boundAmount > is.stackSize )
+					boundAmount = is.stackSize;
 				if ( destination != null && !destination.canInsert( is ) )
-					boundAount = 0;
+					boundAmount = 0;
 
-				if ( boundAount > 0 )
+				if ( boundAmount > 0 )
 				{
 					if ( rv == null )
 					{
 						rv = is.copy();
-						rv.stackSize = boundAount;
-						amount -= boundAount;
+						rv.stackSize = boundAmount;
+						amount -= boundAmount;
 					}
 					else
 					{
-						rv.stackSize += boundAount;
-						amount -= boundAount;
+						rv.stackSize += boundAmount;
+						amount -= boundAmount;
 					}
 				}
 			}

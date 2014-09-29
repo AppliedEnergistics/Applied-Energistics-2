@@ -54,6 +54,18 @@ You install this mod by putting it into the `minecraft/mods/` folder. It has no 
 Before you want to add major changes, you might want to discuss them with us first, before wasting your time.
 If you are still willing to contribute to this project, you can contribute via [Pull-Request](https://help.github.com/articles/creating-a-pull-request).
 
+Here are a few things to keep in mind that will help get your PR approved.
+
+* A PR should be focused on content. Any PRs where the changes are only syntax will be rejected.
+* Use the file you are editing as a style guide.
+* Consider your feature. [Suggestion Guidelines](http://ae-mod.info/Suggestion-Guidelines/)
+  - Is your suggestion already possible using Vanilla + AE2?
+  - Make sure your feature isn't already in the works, or hasn't been rejected previously.
+  - Does your feature simplify another feature of AE2? These changes will not be accepted.
+  - If your feature can be done by any popular mod, discuss with us first.
+
+Getting Started
+
 1. Fork this repository
 2. Clone the fork via
   * SSH `git clone git@github.com:<your username>/Applied-Energistics-2.git` or 

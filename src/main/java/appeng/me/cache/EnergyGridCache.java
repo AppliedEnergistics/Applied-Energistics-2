@@ -71,15 +71,15 @@ public class EnergyGridCache implements IEnergyGrid
 	double extra = 0;
 
 	IAEPowerStorage lastProvider;
-	final Set<IAEPowerStorage> providers = new LinkedHashSet();
+	final Set<IAEPowerStorage> providers = new LinkedHashSet<IAEPowerStorage>();
 
 	IAEPowerStorage lastRequester;
-	final Set<IAEPowerStorage> requesters = new LinkedHashSet();
+	final Set<IAEPowerStorage> requesters = new LinkedHashSet<IAEPowerStorage>();
 
 	final public TreeSet<EnergyThreshold> interests = new TreeSet<EnergyThreshold>();
 	final private HashMap<IGridNode, IEnergyWatcher> watchers = new HashMap<IGridNode, IEnergyWatcher>();
 
-	final private Set<IEnergyGrid> localSeen = new HashSet();
+	final private Set<IEnergyGrid> localSeen = new HashSet<IEnergyGrid>();
 
 	private double buffer()
 	{
