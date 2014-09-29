@@ -16,7 +16,8 @@ public class OreHelper
 	class ItemRef
 	{
 
-		ItemRef(ItemStack stack) {
+		ItemRef(ItemStack stack)
+		{
 			ref = stack.getItem();
 
 			if ( stack.getItem().isDamageable() )
@@ -32,10 +33,14 @@ public class OreHelper
 		int hash;
 
 		@Override
-		public boolean equals(Object o)
+		public boolean equals(Object obj)
 		{
-			ItemRef obj = (ItemRef) o;
-			return damage == obj.damage && ref == obj.ref;
+			if ( obj == null )
+				return false;
+			if ( getClass() != obj.getClass() )
+				return false;
+			ItemRef other = (ItemRef) obj;
+			return damage == other.damage && ref == other.ref;
 		}
 
 		@Override
@@ -103,11 +108,11 @@ public class OreHelper
 		OreReference a = aeItemStack.def.isOre;
 		OreReference b = aeItemStack.def.isOre;
 
-		if ( a == b )
-			return true;
-
 		if ( a == null || b == null )
 			return false;
+
+		if ( a == b )
+			return true;
 
 		Collection<Integer> bOres = b.getOres();
 		for (Integer ore : a.getOres())

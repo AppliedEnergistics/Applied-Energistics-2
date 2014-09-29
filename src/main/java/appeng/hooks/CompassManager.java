@@ -38,8 +38,12 @@ public class CompassManager
 		@Override
 		public boolean equals(Object obj)
 		{
-			CompassRequest b = (CompassRequest) obj;
-			return attunement == b.attunement && cx == b.cx && cdy == b.cdy && cz == b.cz;
+			if ( obj == null )
+				return false;
+			if ( getClass() != obj.getClass() )
+				return false;
+			CompassRequest other = (CompassRequest) obj;
+			return attunement == other.attunement && cx == other.cx && cdy == other.cdy && cz == other.cz;
 		}
 
 	}

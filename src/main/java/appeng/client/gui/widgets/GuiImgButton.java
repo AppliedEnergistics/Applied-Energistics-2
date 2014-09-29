@@ -53,8 +53,12 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		@Override
 		public boolean equals(Object obj)
 		{
-			EnumPair d = (EnumPair) obj;
-			return d.setting.equals( setting ) && d.value.equals( value );
+			if ( obj == null )
+				return false;
+			if ( getClass() != obj.getClass() )
+				return false;
+			EnumPair other = (EnumPair) obj;
+			return other.setting.equals( setting ) && other.value.equals( value );
 		}
 
 	}
