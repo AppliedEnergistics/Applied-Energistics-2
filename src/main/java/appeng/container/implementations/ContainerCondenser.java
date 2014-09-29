@@ -5,12 +5,13 @@ import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
+import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.misc.TileCondenser;
 import appeng.util.Platform;
 
-public class ContainerCondenser extends AEBaseContainer
+public class ContainerCondenser extends AEBaseContainer implements IProgressProvider
 {
 
 	TileCondenser condenser;
@@ -51,5 +52,17 @@ public class ContainerCondenser extends AEBaseContainer
 
 	@GuiSync(2)
 	public CondenserOutput output = CondenserOutput.TRASH;
+
+	@Override
+	public int getCurrentProgress()
+	{
+		return (int) storedPower;
+	}
+
+	@Override
+	public int getMaxProgress()
+	{
+		return (int) requiredEnergy;
+	}
 
 }

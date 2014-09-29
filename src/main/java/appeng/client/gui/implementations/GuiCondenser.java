@@ -26,7 +26,8 @@ public class GuiCondenser extends AEBaseGui
 	GuiProgressBar pb;
 	GuiImgButton mode;
 
-	public GuiCondenser(InventoryPlayer inventoryPlayer, TileCondenser te) {
+	public GuiCondenser(InventoryPlayer inventoryPlayer, TileCondenser te)
+	{
 		super( new ContainerCondenser( inventoryPlayer, te ) );
 		cvc = (ContainerCondenser) inventorySlots;
 		this.ySize = 197;
@@ -57,8 +58,7 @@ public class GuiCondenser extends AEBaseGui
 	{
 		super.initGui();
 
-		pb = new GuiProgressBar( "guis/condenser.png", 120 + guiLeft, 25 + guiTop, 178, 25, 6, 18, Direction.VERTICAL );
-		pb.TitleName = GuiText.StoredEnergy.getLocal();
+		pb = new GuiProgressBar( cvc, "guis/condenser.png", 120 + guiLeft, 25 + guiTop, 178, 25, 6, 18, Direction.VERTICAL, GuiText.StoredEnergy.getLocal() );
 
 		mode = new GuiImgButton( 128 + guiLeft, 52 + guiTop, Settings.CONDENSER_OUTPUT, cvc.output );
 
@@ -83,8 +83,6 @@ public class GuiCondenser extends AEBaseGui
 		mode.set( cvc.output );
 		mode.FillVar = "" + cvc.output.requiredPower;
 
-		pb.max = (int) cvc.requiredEnergy;
-		pb.current = (int) cvc.storedPower;
 	}
 
 }
