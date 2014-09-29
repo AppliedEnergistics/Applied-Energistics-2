@@ -262,9 +262,9 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			List<ItemStack> list = new ArrayList<ItemStack>( 3 );
 			boolean hasValue = false;
 
-			for (int x = 0; x < outputSlots.length; x++)
+			for (OptionalSlotFake outputSlot : outputSlots)
 			{
-				ItemStack out = outputSlots[x].getStack();
+				ItemStack out = outputSlot.getStack();
 				if ( out != null && out.stackSize > 0 )
 				{
 					list.add( out );
@@ -395,9 +395,9 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	{
 		if ( s == patternSlotOUT && Platform.isServer() )
 		{
-			for (int i = 0; i < this.crafters.size(); ++i)
+			for (Object crafter : this.crafters)
 			{
-				ICrafting icrafting = (ICrafting) this.crafters.get( i );
+				ICrafting icrafting = (ICrafting) crafter;
 
 				for (Object g : inventorySlots)
 				{

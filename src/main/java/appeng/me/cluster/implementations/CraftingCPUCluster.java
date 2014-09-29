@@ -595,10 +595,12 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 							IAEItemStack[] input = details.getInputs();
 
 							double sum = 0;
-							for (int x = 0; x < input.length; x++)
+							for (IAEItemStack anInput : input)
 							{
-								if ( input[x] != null )
-									sum += input[x].getStackSize();
+								if ( anInput != null )
+								{
+									sum += anInput.getStackSize();
+								}
 							}
 
 							// power...

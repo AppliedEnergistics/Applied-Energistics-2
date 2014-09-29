@@ -576,10 +576,8 @@ public class Platform
 		CraftingManager cm = CraftingManager.getInstance();
 		List<IRecipe> rl = cm.getRecipeList();
 
-		for (int x = 0; x < rl.size(); ++x)
+		for (IRecipe r : rl)
 		{
-			IRecipe r = rl.get( x );
-
 			if ( r.matches( par1InventoryCrafting, par2World ) )
 			{
 				return r;

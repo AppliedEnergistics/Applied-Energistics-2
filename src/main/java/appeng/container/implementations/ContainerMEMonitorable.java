@@ -152,11 +152,11 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				if ( sideLocal != sideRemote )
 				{
 					clientCM.putSetting( set, sideLocal );
-					for (int j = 0; j < this.crafters.size(); ++j)
+					for (Object crafter : this.crafters)
 					{
 						try
 						{
-							NetworkHandler.instance.sendTo( new PacketValueConfig( set.name(), sideLocal.name() ), (EntityPlayerMP) this.crafters.get( j ) );
+							NetworkHandler.instance.sendTo( new PacketValueConfig( set.name(), sideLocal.name() ), (EntityPlayerMP) crafter );
 						}
 						catch (IOException e)
 						{
