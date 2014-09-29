@@ -39,9 +39,7 @@ public class SyncData
 		try
 		{
 			Object val = field.get( source );
-			if ( val == clientVersion )
-				return;
-			else if ( val != null && clientVersion == null )
+			if ( val != null && clientVersion == null )
 				send( c, val );
 			else if ( !val.equals( clientVersion ) )
 				send( c, val );
