@@ -81,7 +81,7 @@ public class ApiPart implements IPartHelper
 				Object[] argsA = new Object[] { Name, Name, b };
 				b = (byte[]) runTransformersMethod.invoke( loader, argsA );
 
-				Object[] args = new Object[] { Name, b, new Integer( 0 ), new Integer( b.length ) };
+				Object[] args = new Object[] { Name, b, 0, b.length };
 				clazz = (Class) defineClassMethod.invoke( loader, args );
 			}
 			finally
