@@ -54,7 +54,12 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		@Override
 		public boolean equals(Object obj)
 		{
-			return blk == ((Combo) obj).blk && meta == ((Combo) obj).meta;
+			if ( obj == null )
+				return false;
+			if ( getClass() != obj.getClass() )
+				return false;
+			Combo other = (Combo) obj;
+			return blk == other.blk && meta == other.meta;
 		}
 
 	}

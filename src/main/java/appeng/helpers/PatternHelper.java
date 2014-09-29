@@ -48,11 +48,13 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		final int ref;
 		final int hash;
 
-		public TestLookup(int slot, ItemStack i) {
+		public TestLookup(int slot, ItemStack i)
+		{
 			this( slot, i.getItem(), i.getItemDamage() );
 		}
 
-		public TestLookup(int slot, Item item, int dmg) {
+		public TestLookup(int slot, Item item, int dmg)
+		{
 			this.slot = slot;
 			ref = (dmg << Platform.DEF_OFFSET) | (Item.getIdFromItem( item ) & 0xffff);
 			int offset = 3 * slot;
@@ -110,7 +112,8 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		return TestStatus.TEST;
 	}
 
-	public PatternHelper(ItemStack is, World w) {
+	public PatternHelper(ItemStack is, World w)
+	{
 		NBTTagCompound encodedValue = is.getTagCompound();
 
 		if ( encodedValue == null )
@@ -191,10 +194,10 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			else
 				g.add( io );
 		}
-		
+
 		if ( tmpOutputs.isEmpty() || tmpInputs.isEmpty() )
 			throw new RuntimeException( "No pattern here!" );
-		
+
 		int offset = 0;
 		condensedInputs = new IAEItemStack[tmpInputs.size()];
 		for (IAEItemStack io : tmpInputs.values())
@@ -338,7 +341,14 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	@Override
 	public boolean equals(Object obj)
 	{
-		return pattern.equals( ((PatternHelper) obj).pattern );
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		PatternHelper other = (PatternHelper) obj;
+		if ( pattern != null && other.pattern != null )
+			return pattern.equals( other.pattern );
+		return false;
 	}
 
 	@Override
@@ -348,7 +358,8 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	}
 
 	@Override
-	public int getPriority() {
+	public int getPriority()
+	{
 		return priority;
 	}
 }

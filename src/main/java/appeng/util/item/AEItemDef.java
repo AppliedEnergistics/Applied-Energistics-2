@@ -60,8 +60,12 @@ public class AEItemDef
 	@Override
 	public boolean equals(Object obj)
 	{
-		AEItemDef def = (AEItemDef) obj;
-		return def.damageValue == damageValue && def.item == item && tagCompound == def.tagCompound;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		AEItemDef other = (AEItemDef) obj;
+		return other.damageValue == damageValue && other.item == item && tagCompound == other.tagCompound;
 	}
 
 	public int getDamageValueHack(ItemStack is)
