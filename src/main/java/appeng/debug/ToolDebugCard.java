@@ -42,7 +42,7 @@ public class ToolDebugCard extends AEBaseItem
 		long ms = nanos / 100000;
 		if ( nanos <= 100000 )
 			return nanos + "ns";
-		return ((ms) / 10.0f) + "ms";
+		return (ms / 10.0f) + "ms";
 	}
 
 	@Override
