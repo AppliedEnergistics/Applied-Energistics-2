@@ -1,15 +1,10 @@
 package appeng.container.implementations;
 
+import appeng.api.config.*;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.LevelType;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Settings;
-import appeng.api.config.YesNo;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotFakeTypeOnly;
 import appeng.container.slot.SlotRestrictedInput;
@@ -97,6 +92,7 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 			this.cmType = (YesNo) this.myte.getConfigManager().getSetting( Settings.CRAFT_VIA_REDSTONE );
 			this.lvType = (LevelType) this.myte.getConfigManager().getSetting( Settings.LEVEL_TYPE );
 			this.fzMode = (FuzzyMode) this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE );
+			this.mmMode = (ModMode) this.myte.getConfigManager().getSetting( Settings.MOD_MODE );
 			this.rsMode = (RedstoneMode) this.myte.getConfigManager().getSetting( Settings.REDSTONE_EMITTER );
 		}
 

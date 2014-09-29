@@ -1,5 +1,7 @@
 package appeng.me.storage;
 
+import appeng.api.config.ModMode;
+import appeng.util.prioitylist.ModPriorityList;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -49,6 +51,7 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 			IInventory upgrades = ci.getUpgradesInventory();
 			IInventory config = ci.getConfigInventory();
 			FuzzyMode fzMode = ci.getFuzzyMode();
+			ModMode mmMode = ci.getModMode();
 
 			boolean hasInverter = false;
 			boolean hasFuzzy = false;
@@ -87,14 +90,14 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 			if ( !priorityList.isEmpty() )
 			{
 				if ( hasFuzzy )
-					myPartitionList = new FuzzyPriorityList<IAEItemStack>( priorityList, fzMode );
+					myPartitionList = mmMode == ModMode.FILTER_BY_MOD ? new ModPriorityList<IAEItemStack>( priorityList ) : new FuzzyPriorityList<IAEItemStack>( priorityList, fzMode );
 				else
 					myPartitionList = new PrecisePriorityList<IAEItemStack>( priorityList );
 			}
 		}
 	}
 
-	public boolean isPreformatted() 
+	public boolean isPreformatted()
 	{
 		return ! myPartitionList.isEmpty();
 	}
@@ -113,10 +116,10 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 	public int getStatusForCell()
 	{
 			int val = getCellInv().getStatusForCell();
-			
+
 			if ( val == 1 && isPreformatted() )
 				val = 2;
-			
+
 			return val;
 	}
 

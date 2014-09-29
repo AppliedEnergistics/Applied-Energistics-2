@@ -1,16 +1,11 @@
 package appeng.container.implementations;
 
+import appeng.api.config.*;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.config.YesNo;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.parts.IPart;
 import appeng.api.util.IConfigManager;
@@ -143,6 +138,9 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	@GuiSync(1)
 	public FuzzyMode fzMode = FuzzyMode.IGNORE_ALL;
 
+	@GuiSync(6)
+	public ModMode mmMode = ModMode.FILTER_BY_ITEM;
+
 	@GuiSync(5)
 	public YesNo cMode = YesNo.NO;
 
@@ -196,6 +194,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	protected void loadSettingsFromHost(IConfigManager cm)
 	{
 		this.fzMode = (FuzzyMode) cm.getSetting( Settings.FUZZY_MODE );
+		this.mmMode = (ModMode) cm.getSetting( Settings.MOD_MODE );
 		this.rsMode = (RedstoneMode) cm.getSetting( Settings.REDSTONE_CONTROLLED );
 		if ( myte instanceof PartExportBus )
 			this.cMode = (YesNo) cm.getSetting( Settings.CRAFT_ONLY );

@@ -2,16 +2,12 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import appeng.api.config.*;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.input.Mouse;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.config.YesNo;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiImgButton;
@@ -30,6 +26,7 @@ public class GuiUpgradeable extends AEBaseGui
 
 	GuiImgButton redstoneMode;
 	GuiImgButton fuzzyMode;
+	GuiImgButton modMode;
 	GuiImgButton craftMode;
 
 	public GuiUpgradeable(InventoryPlayer inventoryPlayer, IUpgradeableHost te) {
@@ -56,11 +53,13 @@ public class GuiUpgradeable extends AEBaseGui
 	{
 		redstoneMode = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
-		craftMode = new GuiImgButton( this.guiLeft - 18, guiTop + 48, Settings.CRAFT_ONLY, YesNo.NO );
+		modMode = new GuiImgButton( this.guiLeft - 18, guiTop + 48, Settings.MOD_MODE, ModMode.FILTER_BY_ITEM );
+		craftMode = new GuiImgButton( this.guiLeft - 18, guiTop + 68, Settings.CRAFT_ONLY, YesNo.NO );
 
 		buttonList.add( craftMode );
-		buttonList.add( redstoneMode );
+		buttonList.add( modMode );
 		buttonList.add( fuzzyMode );
+		buttonList.add( redstoneMode );
 	}
 
 	@Override
@@ -81,6 +80,8 @@ public class GuiUpgradeable extends AEBaseGui
 			if ( btn == fuzzyMode )
 				NetworkHandler.instance.sendToServer( new PacketConfigButton( fuzzyMode.getSetting(), backwards ) );
 
+			if ( btn == modMode )
+				NetworkHandler.instance.sendToServer( new PacketConfigButton( modMode.getSetting(), backwards ) );
 		}
 		catch (IOException e)
 		{
@@ -122,6 +123,8 @@ public class GuiUpgradeable extends AEBaseGui
 			redstoneMode.setVisibility( bc.getInstalledUpgrades( Upgrades.REDSTONE ) > 0 );
 		if ( fuzzyMode != null )
 			fuzzyMode.setVisibility( bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );
+		if ( modMode != null )
+			modMode.setVisibility( bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );
 		if ( craftMode != null )
 			craftMode.setVisibility( bc.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 );
 	}
@@ -137,6 +140,9 @@ public class GuiUpgradeable extends AEBaseGui
 
 		if ( fuzzyMode != null )
 			fuzzyMode.set( cvb.fzMode );
+
+		if ( modMode != null )
+			modMode.set( cvb.mmMode );
 
 		if ( craftMode != null )
 			craftMode.set( cvb.cMode );

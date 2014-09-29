@@ -2,17 +2,12 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import appeng.api.config.*;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.input.Mouse;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.LevelType;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.config.YesNo;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.container.implementations.ContainerLevelEmitter;
@@ -59,7 +54,8 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		levelMode = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL );
 		redstoneMode = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL );
 		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 48, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
-		craftingMode = new GuiImgButton( this.guiLeft - 18, guiTop + 48, Settings.CRAFT_VIA_REDSTONE, YesNo.NO );
+		modMode = new GuiImgButton( this.guiLeft - 18, guiTop + 68, Settings.MOD_MODE, ModMode.FILTER_BY_ITEM );
+		craftingMode = new GuiImgButton( this.guiLeft - 18, guiTop + 88, Settings.CRAFT_VIA_REDSTONE, YesNo.NO );
 
 		int a = AEConfig.instance.levelByStackAmounts( 0 );
 		int b = AEConfig.instance.levelByStackAmounts( 1 );
@@ -79,6 +75,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		buttonList.add( levelMode );
 		buttonList.add( redstoneMode );
 		buttonList.add( fuzzyMode );
+		buttonList.add( modMode );
 		buttonList.add( craftingMode );
 	}
 
@@ -152,6 +149,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	{
 		craftingMode.setVisibility( bc.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 );
 		fuzzyMode.setVisibility( bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );
+		modMode.setVisibility( bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );
 	}
 
 	@Override

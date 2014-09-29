@@ -1,16 +1,11 @@
 package appeng.parts.automation;
 
+import appeng.api.config.*;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Vec3;
 import appeng.api.AEApi;
-import appeng.api.config.Actionable;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergySource;
@@ -45,6 +40,7 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 		super( PartImportBus.class, is );
 		settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		settings.registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		settings.registerSetting( Settings.MOD_MODE, ModMode.FILTER_BY_ITEM );
 		mySrc = new MachineSource( this );
 	}
 
@@ -68,7 +64,7 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 	{
 		if ( stack == null || stack.getItem() == null )
 			return false;
-		
+
 		IAEItemStack out = destination.injectItems( lastItemChecked = AEApi.instance().storage().createItemStack( stack ), Actionable.SIMULATE, mySrc );
 		if ( out == null )
 			return true;
@@ -235,7 +231,10 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 
 		ItemStack newItems;
 		if ( getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-			newItems = myAdaptor.removeSimilarItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), fzMode, configDest( inv ) );
+			if ( this.getConfigManager().getSetting( Settings.MOD_MODE ) == ModMode.FILTER_BY_MOD )
+				newItems = myAdaptor.removeModItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), configDest( inv ) );
+			else
+				newItems = myAdaptor.removeSimilarItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), fzMode, configDest( inv ) );
 		else
 			newItems = myAdaptor.removeItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), configDest( inv ) );
 

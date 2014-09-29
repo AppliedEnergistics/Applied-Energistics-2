@@ -1,11 +1,8 @@
 package appeng.container.implementations;
 
+import appeng.api.config.*;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
 import appeng.container.slot.OptionalSlotFakeTypeOnly;
 import appeng.container.slot.SlotFakeTypeOnly;
 import appeng.container.slot.SlotRestrictedInput;
@@ -82,6 +79,7 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 		if ( Platform.isServer() )
 		{
 			this.fzMode = (FuzzyMode) this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE );
+			this.mmMode = (ModMode) this.myte.getConfigManager().getSetting( Settings.MOD_MODE );
 		}
 
 		standardDetectAndSendChanges();

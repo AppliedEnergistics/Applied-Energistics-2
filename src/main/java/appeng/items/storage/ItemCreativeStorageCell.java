@@ -2,6 +2,7 @@ package appeng.items.storage;
 
 import java.util.EnumSet;
 
+import appeng.api.config.ModMode;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import appeng.api.config.FuzzyMode;
@@ -45,6 +46,18 @@ public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenc
 
 	@Override
 	public void setFuzzyMode(ItemStack is, FuzzyMode fzMode)
+	{
+
+	}
+
+	@Override
+	public ModMode getModMode(ItemStack is)
+	{
+		return ModMode.FILTER_BY_ITEM;
+	}
+
+	@Override
+	public void setModMode(ItemStack is, ModMode mmMode)
 	{
 
 	}

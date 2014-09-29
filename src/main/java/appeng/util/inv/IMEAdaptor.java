@@ -1,7 +1,10 @@
 package appeng.util.inv;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -60,6 +63,39 @@ public class IMEAdaptor extends InventoryAdaptor
 		return null;
 	}
 
+	public ItemStack doRemoveItemsMod(int how_many, ItemStack Filter, IInventoryDestination destination, Actionable type)
+	{
+		IAEItemStack reqFilter = AEItemStack.create( Filter );
+		if ( reqFilter == null )
+			return null;
+
+		IAEItemStack out = null;
+
+		for (IAEItemStack req : getItemsInMod( reqFilter.getItem(), getList() ) )
+		{
+			if ( req != null )
+			{
+				req.setStackSize( how_many );
+				out = target.extractItems( req, type, src );
+				if ( out != null )
+					return out.getItemStack();
+			}
+		}
+
+		return null;
+	}
+
+	private IAEItemStack[] getItemsInMod(Item parentItem, IItemList<IAEItemStack> list) {
+		ArrayList<IAEItemStack> items = new ArrayList<IAEItemStack>();
+		String modId = GameRegistry.findUniqueIdentifierFor(parentItem).modId;
+
+		for( IAEItemStack item : list )
+			if ( GameRegistry.findUniqueIdentifierFor(item.getItem()).modId.equals(modId) )
+				items.add(item);
+
+		return (IAEItemStack[]) items.toArray();
+	}
+
 	public ItemStack doRemoveItems(int how_many, ItemStack Filter, IInventoryDestination destination, Actionable type)
 	{
 		IAEItemStack req = null;
@@ -113,6 +149,22 @@ public class IMEAdaptor extends InventoryAdaptor
 		if ( filter == null )
 			return doRemoveItems( how_many, null, destination, Actionable.SIMULATE );
 		return doRemoveItemsFuzzy( how_many, filter, destination, Actionable.SIMULATE, fuzzyMode );
+	}
+
+	@Override
+	public ItemStack removeModItems(int how_many, ItemStack filter, IInventoryDestination destination)
+	{
+		if ( filter == null )
+			return doRemoveItems( how_many, null, destination, Actionable.MODULATE );
+		return doRemoveItemsMod(how_many, filter, destination, Actionable.MODULATE);
+	}
+
+	@Override
+	public ItemStack simulateModRemove(int how_many, ItemStack filter, IInventoryDestination destination)
+	{
+		if ( filter == null )
+			return doRemoveItems( how_many, null, destination, Actionable.SIMULATE );
+		return doRemoveItemsMod(how_many, filter, destination, Actionable.SIMULATE);
 	}
 
 	@Override

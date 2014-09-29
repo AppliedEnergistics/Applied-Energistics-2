@@ -2,6 +2,7 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
+import appeng.api.config.ModMode;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -51,6 +52,21 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		if ( cwi != null )
 			return cwi.getFuzzyMode( workBench.getInventoryByName( "cell" ).getStackInSlot( 0 ) );
 		return FuzzyMode.IGNORE_ALL;
+	}
+
+	public void setMod(ModMode valueOf)
+	{
+		ICellWorkbenchItem cwi = workBench.getCell();
+		if ( cwi != null )
+			cwi.setModMode( workBench.getInventoryByName( "cell" ).getStackInSlot( 0 ), valueOf );
+	}
+
+	private ModMode getModMode()
+	{
+		ICellWorkbenchItem cwi = workBench.getCell();
+		if ( cwi != null )
+			return cwi.getModMode( workBench.getInventoryByName( "cell" ).getStackInSlot( 0 ) );
+		return ModMode.FILTER_BY_ITEM;
 	}
 
 	public void nextCopyMode()
@@ -263,6 +279,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 
 			this.copyMode = getCopyMode();
 			this.fzMode = (FuzzyMode) getFuzzyMode();
+			this.mmMode = (ModMode) getModMode();
 		}
 
 		prevStack = is;

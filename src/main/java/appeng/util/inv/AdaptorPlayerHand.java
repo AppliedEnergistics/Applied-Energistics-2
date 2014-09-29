@@ -60,6 +60,44 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
+	public ItemStack removeModItems(int how_many, ItemStack Filter, IInventoryDestination dest)
+	{
+		ItemStack hand = p.inventory.getItemStack();
+		if ( hand == null )
+			return null;
+
+		if ( Filter == null || compareMods( hand.getItem(), Filter.getItem()) )
+		{
+			ItemStack result = hand.copy();
+			result.stackSize = hand.stackSize > how_many ? how_many : hand.stackSize;
+			hand.stackSize -= how_many;
+			if ( hand.stackSize <= 0 )
+				p.inventory.setItemStack( null );
+			return result;
+		}
+
+		return null;
+	}
+
+	@Override
+	public ItemStack simulateModRemove(int how_many, ItemStack Filter, IInventoryDestination dest)
+	{
+
+		ItemStack hand = p.inventory.getItemStack();
+		if ( hand == null )
+			return null;
+
+		if ( Filter == null || compareMods( hand.getItem(), Filter.getItem()) )
+		{
+			ItemStack result = hand.copy();
+			result.stackSize = hand.stackSize > how_many ? how_many : hand.stackSize;
+			return result;
+		}
+
+		return null;
+	}
+
+	@Override
 	public ItemStack removeItems(int how_many, ItemStack Filter, IInventoryDestination dest)
 	{
 		ItemStack hand = p.inventory.getItemStack();

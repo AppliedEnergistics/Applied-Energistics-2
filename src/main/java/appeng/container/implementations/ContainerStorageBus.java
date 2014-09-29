@@ -2,16 +2,11 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
+import appeng.api.config.*;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Settings;
-import appeng.api.config.StorageFilter;
-import appeng.api.config.Upgrades;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -99,6 +94,7 @@ public class ContainerStorageBus extends ContainerUpgradeable
 		if ( Platform.isServer() )
 		{
 			this.fzMode = (FuzzyMode) this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE );
+			this.mmMode = (ModMode) this.myte.getConfigManager().getSetting( Settings.MOD_MODE );
 			this.rwMode = (AccessRestriction) this.myte.getConfigManager().getSetting( Settings.ACCESS );
 			this.storageFilter = (StorageFilter) this.myte.getConfigManager().getSetting( Settings.STORAGE_FILTER );
 		}

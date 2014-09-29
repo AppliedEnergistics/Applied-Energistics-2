@@ -2,16 +2,12 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import appeng.api.config.*;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.input.Mouse;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.ActionItems;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.Settings;
-import appeng.api.config.StorageFilter;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerStorageBus;
@@ -53,6 +49,9 @@ public class GuiStorageBus extends GuiUpgradeable
 		if ( fuzzyMode != null )
 			fuzzyMode.set( cvb.fzMode );
 
+		if ( modMode != null )
+			modMode.set( cvb.mmMode );
+
 		if ( storageFilter != null )
 			storageFilter.set( ((ContainerStorageBus) cvb).storageFilter );
 
@@ -68,11 +67,13 @@ public class GuiStorageBus extends GuiUpgradeable
 		rwMode = new GuiImgButton( this.guiLeft - 18, guiTop + 48, Settings.ACCESS, AccessRestriction.READ_WRITE );
 		storageFilter = new GuiImgButton( this.guiLeft - 18, guiTop + 68, Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY );
 		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 88, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		modMode = new GuiImgButton( this.guiLeft - 18, guiTop + 108, Settings.MOD_MODE, ModMode.FILTER_BY_ITEM );
 
 		buttonList.add( priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRender ) );
 
 		buttonList.add( storageFilter );
 		buttonList.add( fuzzyMode );
+		buttonList.add( modMode );
 		buttonList.add( rwMode );
 		buttonList.add( partition );
 		buttonList.add( clear );

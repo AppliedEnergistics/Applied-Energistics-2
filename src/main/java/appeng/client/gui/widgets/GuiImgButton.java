@@ -3,30 +3,13 @@ package appeng.client.gui.widgets;
 import java.util.HashMap;
 import java.util.Map;
 
+import appeng.api.config.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.ActionItems;
-import appeng.api.config.CondenserOutput;
-import appeng.api.config.FullnessMode;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.LevelType;
-import appeng.api.config.OperationMode;
-import appeng.api.config.PowerUnits;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.RelativeDirection;
-import appeng.api.config.SearchBoxMode;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.StorageFilter;
-import appeng.api.config.TerminalStyle;
-import appeng.api.config.ViewItems;
-import appeng.api.config.YesNo;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.localization.ButtonToolTips;
 
@@ -167,6 +150,9 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			registerApp( 16 * 6 + 2, Settings.FUZZY_MODE, FuzzyMode.PERCENT_75, ButtonToolTips.FuzzyMode, ButtonToolTips.FZPercent_75 );
 			registerApp( 16 * 6 + 3, Settings.FUZZY_MODE, FuzzyMode.PERCENT_99, ButtonToolTips.FuzzyMode, ButtonToolTips.FZPercent_99 );
 			registerApp( 16 * 6 + 4, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, ButtonToolTips.FuzzyMode, ButtonToolTips.FZIgnoreAll );
+
+			registerApp( 16 * 14 + 0, Settings.MOD_MODE, ModMode.FILTER_BY_MOD, ButtonToolTips.ModMode, ButtonToolTips.FilterByMod );
+			registerApp( 16 * 14 + 1, Settings.MOD_MODE, ModMode.FILTER_BY_ITEM, ButtonToolTips.ModMode, ButtonToolTips.FilterByItem );
 
 			registerApp( 80, Settings.FULLNESS_MODE, FullnessMode.EMPTY, ButtonToolTips.OperationMode, ButtonToolTips.MoveWhenEmpty );
 			registerApp( 81, Settings.FULLNESS_MODE, FullnessMode.HALF, ButtonToolTips.OperationMode, ButtonToolTips.MoveWhenWorkIsDone );

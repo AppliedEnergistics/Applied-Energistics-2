@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import appeng.api.config.ModMode;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
@@ -78,28 +79,28 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 		if ( cdi instanceof ICellInventoryHandler )
 		{
 			ICellInventoryHandler CI = (ICellInventoryHandler) cdi;
-			
+
 			ICellInventory cd = ((ICellInventoryHandler) cdi).getCellInv();
 			if (cd != null)
 			{
 				l.add(cd.getUsedBytes() + " " + GuiText.Of.getLocal() + " "
 						+ cd.getTotalBytes() + " "
 						+ GuiText.BytesUsed.getLocal());
-				
+
 				l.add(cd.getStoredItemTypes() + " " + GuiText.Of.getLocal()
 						+ " " + cd.getTotalItemTypes() + " "
 						+ GuiText.Types.getLocal());
-				
+
 				if ( CI.isPreformatted() )
 				{
 					String List = (CI.getIncludeExcludeMode() == IncludeExclude.WHITELIST ? GuiText.Included
 									: GuiText.Excluded ).getLocal();
-					
+
 					if ( CI.isFuzzy() )
 						l.add( GuiText.Partitioned.getLocal() + " - " + List + " " + GuiText.Fuzzy.getLocal() );
 					else
 						l.add( GuiText.Partitioned.getLocal() + " - " + List + " " + GuiText.Precise.getLocal()  );
-					
+
 				}
 			}
 		}
@@ -176,6 +177,26 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	public void setFuzzyMode(ItemStack is, FuzzyMode fzMode)
 	{
 		Platform.openNbtData( is ).setString( "FuzzyMode", fzMode.name() );
+	}
+
+	@Override
+	public ModMode getModMode(ItemStack is)
+	{
+		String mm = Platform.openNbtData( is ).getString( "ModMode" );
+		try
+		{
+			return ModMode.valueOf( mm );
+		}
+		catch (Throwable t)
+		{
+			return ModMode.FILTER_BY_ITEM;
+		}
+	}
+
+	@Override
+	public void setModMode(ItemStack is, ModMode mmMode)
+	{
+		Platform.openNbtData( is ).setString( "ModMode", mmMode.name() );
 	}
 
 	@Override

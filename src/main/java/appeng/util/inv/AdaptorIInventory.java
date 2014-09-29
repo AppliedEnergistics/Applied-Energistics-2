@@ -111,6 +111,78 @@ public class AdaptorIInventory extends InventoryAdaptor
 	}
 
 	@Override
+	public ItemStack removeModItems(int how_many, ItemStack filter, IInventoryDestination destination)
+	{
+		int s = i.getSizeInventory();
+		for (int x = 0; x < s; x++)
+		{
+			ItemStack is = i.getStackInSlot( x );
+			if ( is != null && canRemoveStackFromSlot( x, is ) && (filter == null || compareMods( is.getItem(), filter.getItem()) ) )
+			{
+				int lhow_many = how_many;
+				if ( lhow_many > is.stackSize )
+					lhow_many = is.stackSize;
+				if ( destination != null && !destination.canInsert( is ) )
+					lhow_many = 0;
+
+				ItemStack rv = null;
+				if ( lhow_many > 0 )
+				{
+					rv = is.copy();
+					rv.stackSize = lhow_many;
+
+					if ( is.stackSize == rv.stackSize )
+					{
+						i.setInventorySlotContents( x, null );
+						i.markDirty();
+					}
+					else
+					{
+						ItemStack po = is.copy();
+						po.stackSize -= rv.stackSize;
+						i.setInventorySlotContents( x, po );
+						i.markDirty();
+					}
+				}
+
+				if ( rv != null )
+				{
+					// i.markDirty();
+					return rv;
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public ItemStack simulateModRemove(int how_many, ItemStack filter, IInventoryDestination destination)
+	{
+		int s = i.getSizeInventory();
+		for (int x = 0; x < s; x++)
+		{
+			ItemStack is = i.getStackInSlot( x );
+
+			if ( is != null && canRemoveStackFromSlot( x, is ) && (filter == null || compareMods( is.getItem(), filter.getItem()) ) )
+			{
+				int lhow_many = how_many;
+				if ( lhow_many > is.stackSize )
+					lhow_many = is.stackSize;
+				if ( destination != null && !destination.canInsert( is ) )
+					lhow_many = 0;
+
+				if ( lhow_many > 0 )
+				{
+					ItemStack rv = is.copy();
+					rv.stackSize = lhow_many;
+					return rv;
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public ItemStack removeItems(int how_many, ItemStack filter, IInventoryDestination destination)
 	{
 		int s = i.getSizeInventory();

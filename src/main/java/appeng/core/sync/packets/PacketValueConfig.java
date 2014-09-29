@@ -1,5 +1,6 @@
 package appeng.core.sync.packets;
 
+import appeng.api.config.ModMode;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -160,6 +161,10 @@ public class PacketValueConfig extends AppEngPacket
 			else if ( Name.equals( "CellWorkbench.Fuzzy" ) )
 			{
 				ccw.setFuzzy( FuzzyMode.valueOf( Value ) );
+			}
+			else if ( Name.equals( "CellWorkbench.Mod" ) )
+			{
+				ccw.setMod( ModMode.valueOf( Value ) );
 			}
 		}
 		else if ( c instanceof ContainerNetworkTool )
