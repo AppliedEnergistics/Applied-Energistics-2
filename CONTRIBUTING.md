@@ -1,6 +1,6 @@
 # How to contribute
 
-We want to keep it as easy as possible to contribute changes support
+We want to keep it as easy as possible to contribute changes to support
 the growth and stability of AE2. There are a few guidelines that we
 need contributors to follow so that we can have a chance of keeping on
 top of things.
@@ -28,7 +28,7 @@ If this is a crash, provide the crash log. You can use [PasteBin](http://pastebi
 to upload the log.
 
 If a specific setup is causing the crash or failure, post a screen shot. You can
-use [Puush.me](http://puush.me/) to host the screen shot.
+use [Imgur](http://imgur.com/) or [Puush.me](http://puush.me/) to host the screen shot. In some cases a world download is required with a minimal setup of the bug to reproduce this.
 
 Describe in full detail exactly how to reproduce the failure.
 ````
