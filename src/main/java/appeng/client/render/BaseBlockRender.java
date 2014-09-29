@@ -255,9 +255,9 @@ public class BaseBlockRender
 		this( false, 20 );
 	}
 
-	public BaseBlockRender(boolean enableTESR, double TESRrange) {
+	public BaseBlockRender(boolean enableTESR, double tileEntitySpecialRendererRange) {
 		hasTESR = enableTESR;
-		MAX_DISTANCE = TESRrange;
+		MAX_DISTANCE = tileEntitySpecialRendererRange;
 		setOriMap();
 	}
 
@@ -587,52 +587,52 @@ public class BaseBlockRender
 		Tessellator tess = Tessellator.instance;
 
 		double offsetX = 0.0, offsetY = 0.0, offsetZ = 0.0;
-		double layaX = 0.0, layaY = 0.0, layaZ = 0.0;
-		double laybX = 0.0, laybY = 0.0, laybZ = 0.0;
+		double layerAX = 0.0, layerAY = 0.0, layerAZ = 0.0;
+		double layerBX = 0.0, layerBY = 0.0, layerBZ = 0.0;
 
 		boolean flip = false;
 		switch (orientation)
 		{
 		case NORTH:
 
-			layaX = 1.0;
-			laybY = 1.0;
+			layerAX = 1.0;
+			layerBY = 1.0;
 			flip = true;
 
 			break;
 		case SOUTH:
 
-			layaX = 1.0;
-			laybY = 1.0;
+			layerAX = 1.0;
+			layerBY = 1.0;
 			offsetZ = 1.0;
 
 			break;
 		case EAST:
 
 			flip = true;
-			layaZ = 1.0;
-			laybY = 1.0;
+			layerAZ = 1.0;
+			layerBY = 1.0;
 			offsetX = 1.0;
 
 			break;
 		case WEST:
 
-			layaZ = 1.0;
-			laybY = 1.0;
+			layerAZ = 1.0;
+			layerBY = 1.0;
 
 			break;
 		case UP:
 
 			flip = true;
-			layaX = 1.0;
-			laybZ = 1.0;
+			layerAX = 1.0;
+			layerBZ = 1.0;
 			offsetY = 1.0;
 
 			break;
 		case DOWN:
 
-			layaX = 1.0;
-			laybZ = 1.0;
+			layerAX = 1.0;
+			layerBZ = 1.0;
 
 			break;
 		default:
@@ -643,25 +643,25 @@ public class BaseBlockRender
 		offsetY += y;
 		offsetZ += z;
 
-		renderFace( tess, offsetX, offsetY, offsetZ, layaX, layaY, layaZ, laybX, laybY, laybZ,
+		renderFace( tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
 		// u -> u
 				0, 1.0,
 				// v -> v
 				0, edgeThickness, ico, flip );
 
-		renderFace( tess, offsetX, offsetY, offsetZ, layaX, layaY, layaZ, laybX, laybY, laybZ,
+		renderFace( tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
 		// u -> u
 				0.0, edgeThickness,
 				// v -> v
 				edgeThickness, 1.0 - edgeThickness, ico, flip );
 
-		renderFace( tess, offsetX, offsetY, offsetZ, layaX, layaY, layaZ, laybX, laybY, laybZ,
+		renderFace( tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
 		// u -> u
 				1.0 - edgeThickness, 1.0,
 				// v -> v
 				edgeThickness, 1.0 - edgeThickness, ico, flip );
 
-		renderFace( tess, offsetX, offsetY, offsetZ, layaX, layaY, layaZ, laybX, laybY, laybZ,
+		renderFace( tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
 		// u -> u
 				0, 1.0,
 				// v -> v

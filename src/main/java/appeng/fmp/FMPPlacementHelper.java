@@ -41,7 +41,7 @@ public class FMPPlacementHelper implements IPartHost
 
 		}
 
-	};
+	}
 
 	final private static CableBusStorage nullStorage = new NullStorage();
 

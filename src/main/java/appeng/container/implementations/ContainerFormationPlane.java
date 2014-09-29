@@ -40,7 +40,7 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 	@Override
 	public boolean isSlotEnabled(int idx)
 	{
-		int upgrades = myte.getInstalledUpgrades( Upgrades.CAPACITY );
+		int upgrades = upgradeable.getInstalledUpgrades( Upgrades.CAPACITY );
 
 		return upgrades > idx;
 	}
@@ -51,7 +51,7 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 		int xo = 8;
 		int yo = 23 + 6;
 
-		IInventory config = myte.getInventoryByName( "config" );
+		IInventory config = upgradeable.getInventoryByName( "config" );
 		for (int y = 0; y < 7; y++)
 		{
 			for (int x = 0; x < 9; x++)
@@ -63,7 +63,7 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 			}
 		}
 
-		IInventory upgrades = myte.getInventoryByName( "upgrades" );
+		IInventory upgrades = upgradeable.getInventoryByName( "upgrades" );
 		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0, invPlayer )).setNotDraggable() );
 		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18 * 1, invPlayer )).setNotDraggable() );
 		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, invPlayer )).setNotDraggable() );
@@ -78,8 +78,8 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 
 		if ( Platform.isServer() )
 		{
-			this.fzMode = (FuzzyMode) this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE );
-			this.mmMode = (ModMode) this.myte.getConfigManager().getSetting( Settings.MOD_MODE );
+			this.fzMode = (FuzzyMode) this.upgradeable.getConfigManager().getSetting( Settings.FUZZY_MODE );
+			this.mmMode = (ModMode) this.upgradeable.getConfigManager().getSetting( Settings.MOD_MODE );
 		}
 
 		standardDetectAndSendChanges();

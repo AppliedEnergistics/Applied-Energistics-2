@@ -372,7 +372,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 
 		if ( memCardIS != null && useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard )
 		{
-			IMemoryCard memc = (IMemoryCard) memCardIS.getItem();
+			IMemoryCard memoryCard = (IMemoryCard) memCardIS.getItem();
 
 			ItemStack is = getItemStack( PartItemStack.Network );
 
@@ -387,21 +387,21 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 				NBTTagCompound data = downloadSettings( SettingsFrom.MEMORY_CARD );
 				if ( data != null )
 				{
-					memc.setMemoryCardContents( memCardIS, name, data );
-					memc.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
+					memoryCard.setMemoryCardContents( memCardIS, name, data );
+					memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
 				}
 			}
 			else
 			{
-				String storedName = memc.getSettingsName( memCardIS );
-				NBTTagCompound data = memc.getData( memCardIS );
+				String storedName = memoryCard.getSettingsName( memCardIS );
+				NBTTagCompound data = memoryCard.getData( memCardIS );
 				if ( name.equals( storedName ) )
 				{
 					uploadSettings( SettingsFrom.MEMORY_CARD, data );
-					memc.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
+					memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
 				}
 				else
-					memc.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
+					memoryCard.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
 			}
 			return true;
 		}
@@ -453,7 +453,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	{
 		if ( is.stackSize > 0 )
 		{
-			List<ItemStack> items = new ArrayList();
+			List<ItemStack> items = new ArrayList<ItemStack>();
 			items.add( is.copy() );
 			host.removePart( side, false );
 			Platform.spawnDrops( tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord, items );

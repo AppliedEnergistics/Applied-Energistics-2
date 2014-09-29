@@ -33,7 +33,7 @@ public class ASMTweaker implements IClassTransformer
 
 		final String name, desc;
 
-	};
+	}
 
 	Multimap<String, publicLine> privateToPublicMethods = HashMultimap.create();
 
@@ -69,7 +69,7 @@ public class ASMTweaker implements IClassTransformer
 					makePublic( classNode, Set );
 				}
 
-				// CALL VIRUAL!
+				// CALL VIRTUAL!
 				if ( transformedName.equals( "net.minecraft.client.gui.inventory.GuiContainer" ) )
 				{
 					for (MethodNode mn : classNode.methods)

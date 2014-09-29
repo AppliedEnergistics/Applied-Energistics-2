@@ -247,7 +247,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 							if ( sbp != null )
 							{
 								IGridNode sn = sbp.getGridNode();
-								if ( sn != null && cn != null )
+								if ( sn != null )
 								{
 									try
 									{
@@ -321,7 +321,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return null;
 	}
 
-	private static final ThreadLocal<Boolean> isLoading = new ThreadLocal();
+	private static final ThreadLocal<Boolean> isLoading = new ThreadLocal<Boolean>();
 
 	public static boolean isLoading()
 	{
@@ -431,7 +431,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return null;
 	}
 
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxsFromPool(boolean ignoreCableConnections, boolean includeFacades, Entity e, boolean visual)
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(boolean ignoreCableConnections, boolean includeFacades, Entity e, boolean visual)
 	{
 		List<AxisAlignedBB> boxes = new LinkedList<AxisAlignedBB>();
 
@@ -574,8 +574,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				data.writeShort( Item.getIdFromItem( is.getItem() ) );
 				data.writeShort( is.getItemDamage() );
 
-				if ( p != null )
-					p.writeToStream( data );
+				p.writeToStream( data );
 			}
 		}
 
@@ -908,7 +907,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	{
 		if ( getCenter() == null )
 		{
-			List<ItemStack> facades = new LinkedList();
+			List<ItemStack> facades = new LinkedList<ItemStack>();
 
 			IFacadeContainer fc = getFacadeContainer();
 			for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
@@ -921,7 +920,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				}
 			}
 
-			if ( facades != null && !facades.isEmpty() )
+			if ( !facades.isEmpty() )
 			{
 				TileEntity te = tcb.getTile();
 				Platform.spawnDrops( te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord, facades );

@@ -58,7 +58,7 @@ import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.storage.MEMonitorIInventory;
-import appeng.me.storage.MEMonitorPassthu;
+import appeng.me.storage.MEMonitorPassThrough;
 import appeng.me.storage.NullInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.inventory.AppEngInternalAEInventory;
@@ -169,7 +169,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			if ( details != null )
 			{
 				if ( craftingList == null )
-					craftingList = new LinkedList();
+					craftingList = new LinkedList<ICraftingPatternDetails>();
 
 				craftingList.add( details );
 			}
@@ -182,7 +182,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			return;
 
 		if ( waitingToSend == null )
-			waitingToSend = new LinkedList();
+			waitingToSend = new LinkedList<ItemStack>();
 
 		waitingToSend.add( is );
 
@@ -196,8 +196,8 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		}
 	}
 
-	public DualityInterface(AENetworkProxy prox, IInterfaceHost ih) {
-		gridProxy = prox;
+	public DualityInterface(AENetworkProxy networkProxy, IInterfaceHost ih) {
+		gridProxy = networkProxy;
 		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 
 		upgrades = new UpgradeInventory( gridProxy.getMachineRepresentation(), this, 1 );
@@ -250,7 +250,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			}
 		}
 
-		notifyNeightbors();
+		notifyNeighbors();
 	}
 
 	public void writeToNBT(NBTTagCompound data)
@@ -364,7 +364,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 					return;
 				}
 			}
-			else if ( Stored != null ) // dispose!
+			else // Stored != null; dispose!
 			{
 				IAEItemStack work = AEApi.instance().storage().createItemStack( Stored );
 				requireWork[slot] = work.setStackSize( -work.getStackSize() );
@@ -405,7 +405,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 			return super.extractItems( request, type, src );
 		}
 
-	};
+	}
 
 	private boolean usePlan(int x, IAEItemStack itemStack)
 	{
@@ -513,8 +513,8 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		return patterns;
 	}
 
-	MEMonitorPassthu<IAEItemStack> items = new MEMonitorPassthu<IAEItemStack>( new NullInventory(), StorageChannel.ITEMS );
-	MEMonitorPassthu<IAEFluidStack> fluids = new MEMonitorPassthu<IAEFluidStack>( new NullInventory(), StorageChannel.FLUIDS );
+	MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<IAEItemStack>( new NullInventory<IAEItemStack>(), StorageChannel.ITEMS );
+	MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<IAEFluidStack>( new NullInventory<IAEFluidStack>(), StorageChannel.FLUIDS );
 
 	public void gridChanged()
 	{
@@ -525,11 +525,11 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		}
 		catch (GridAccessException gae)
 		{
-			items.setInternal( new NullInventory() );
-			fluids.setInternal( new NullInventory() );
+			items.setInternal( new NullInventory<IAEItemStack>() );
+			fluids.setInternal( new NullInventory<IAEFluidStack>() );
 		}
 
-		notifyNeightbors();
+		notifyNeighbors();
 	}
 
 	public AECableType getCableConnectionType(ForgeDirection dir)
@@ -936,7 +936,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 				drops.add( is );
 	}
 
-	public void notifyNeightbors()
+	public void notifyNeighbors()
 	{
 		if ( gridProxy.isActive() )
 		{
@@ -996,7 +996,7 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		craftingTracker.jobStateChange( link );
 	}
 
-	static final Set<Block> badBlocks = new HashSet();
+	static final Set<Block> badBlocks = new HashSet<Block>();
 
 	public String getTermName()
 	{

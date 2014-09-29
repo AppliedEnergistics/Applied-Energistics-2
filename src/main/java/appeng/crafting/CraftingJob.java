@@ -51,7 +51,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 	{
 		world = wrapWorld( w );
 		storage = AEApi.instance().storage().createItemList();
-		prophecies = new HashSet();
+		prophecies = new HashSet<IAEItemStack>();
 		original = null;
 		availableCheck = null;
 	}
@@ -71,7 +71,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		world = wrapWorld( w );
 		output = what.copy();
 		storage = AEApi.instance().storage().createItemList();
-		prophecies = new HashSet();
+		prophecies = new HashSet<IAEItemStack>();
 		this.actionSrc = actionSrc;
 
 		this.callback = callback;
@@ -127,9 +127,9 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 		public long perOp = 0;
 		public long times = 0;
-	};
+	}
 
-	HashMap<String, twoIntegers> opsAndMultiplier = new HashMap();
+	HashMap<String, twoIntegers> opsAndMultiplier = new HashMap<String, twoIntegers>();
 
 	@Override
 	public void run()
@@ -139,15 +139,15 @@ public class CraftingJob implements Runnable, ICraftingJob
 			try
 			{
 				TickHandler.instance.registerCraftingSimulation( world, this );
-				handlepausing();
+				handlePausing();
 
 				Stopwatch timer = Stopwatch.createStarted();
 
-				MECraftingInventory meci = new MECraftingInventory( original, true, false, true );
-				meci.ignore( output );
+				MECraftingInventory craftingInventory = new MECraftingInventory( original, true, false, true );
+				craftingInventory.ignore( output );
 
 				availableCheck = new MECraftingInventory( original, false, false, false );
-				tree.request( meci, output.getStackSize(), actionSrc );
+				tree.request( craftingInventory, output.getStackSize(), actionSrc );
 				tree.dive( this );
 
 				for (String s : opsAndMultiplier.keySet())
@@ -158,7 +158,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 				AELog.crafting( "------------- " + getByteTotal() + "b real" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
 				// if ( mode == Actionable.MODULATE )
-				// meci.moveItemsToStorage( storage );
+				// craftingInventory.moveItemsToStorage( storage );
 			}
 			catch (CraftBranchFailure e)
 			{
@@ -167,13 +167,13 @@ public class CraftingJob implements Runnable, ICraftingJob
 				try
 				{
 					Stopwatch timer = Stopwatch.createStarted();
-					MECraftingInventory meci = new MECraftingInventory( original, true, false, true );
-					meci.ignore( output );
+					MECraftingInventory craftingInventory = new MECraftingInventory( original, true, false, true );
+					craftingInventory.ignore( output );
 
 					availableCheck = new MECraftingInventory( original, false, false, false );
 
 					tree.setSimulate();
-					tree.request( meci, output.getStackSize(), actionSrc );
+					tree.request( craftingInventory, output.getStackSize(), actionSrc );
 					tree.dive( this );
 
 					for (String s : opsAndMultiplier.keySet())
@@ -300,7 +300,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 	private int incTime = Integer.MAX_VALUE;
 
-	public void handlepausing() throws InterruptedException
+	public void handlePausing() throws InterruptedException
 	{
 		if ( incTime++ > 100 )
 		{

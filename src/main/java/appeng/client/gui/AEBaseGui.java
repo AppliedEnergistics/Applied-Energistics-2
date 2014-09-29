@@ -127,7 +127,7 @@ public abstract class AEBaseGui extends GuiContainer
 				try
 				{
 					((AEBaseContainer) inventorySlots).setTargetStack( item );
-					InventoryAction direction = wheel > 0 ? InventoryAction.ROLLDOWN : InventoryAction.ROLLUP;
+					InventoryAction direction = wheel > 0 ? InventoryAction.ROLL_DOWN : InventoryAction.ROLL_UP;
 					int times = Math.abs( wheel );
 					for (int h = 0; h < times; h++)
 					{
@@ -176,8 +176,8 @@ public abstract class AEBaseGui extends GuiContainer
 	ItemStack dbl_whichItem;
 	Slot bl_clicked;
 
-	// dragy
-	Set<Slot> drag_click = new HashSet();
+	// drag y
+	Set<Slot> drag_click = new HashSet<Slot>();
 
 	@Override
 	protected void handleMouseClick(Slot slot, int slotIdx, int ctrlDown, int key)
@@ -187,7 +187,7 @@ public abstract class AEBaseGui extends GuiContainer
 		if ( slot instanceof SlotFake )
 		{
 			InventoryAction action = null;
-			action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACESINGLE : InventoryAction.PICKUP_OR_SETDOWN;
+			action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 
 			if ( drag_click.size() > 1 )
 				return;
@@ -283,7 +283,7 @@ public abstract class AEBaseGui extends GuiContainer
 			switch (key)
 			{
 			case 0: // pickup / set-down.
-				action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACESINGLE : InventoryAction.PICKUP_OR_SETDOWN;
+				action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 				break;
 			case 1:
 				action = ctrlDown == 1 ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
@@ -327,11 +327,11 @@ public abstract class AEBaseGui extends GuiContainer
 			switch (key)
 			{
 			case 0: // pickup / set-down.
-				action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACESINGLE : InventoryAction.PICKUP_OR_SETDOWN;
+				action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 				stack = ((SlotME) slot).getAEStack();
 
-				if ( stack != null && action == InventoryAction.PICKUP_OR_SETDOWN && stack.getStackSize() == 0 && player.inventory.getItemStack() == null )
-					action = InventoryAction.AUTOCRAFT;
+				if ( stack != null && action == InventoryAction.PICKUP_OR_SET_DOWN && stack.getStackSize() == 0 && player.inventory.getItemStack() == null )
+					action = InventoryAction.AUTO_CRAFT;
 
 				break;
 			case 1:
@@ -343,7 +343,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 				stack = ((SlotME) slot).getAEStack();
 				if ( stack != null && stack.isCraftable() )
-					action = InventoryAction.AUTOCRAFT;
+					action = InventoryAction.AUTO_CRAFT;
 
 				else if ( player.capabilities.isCreativeMode )
 				{
@@ -428,7 +428,7 @@ public abstract class AEBaseGui extends GuiContainer
 				{
 					for (Slot dr : drag_click)
 					{
-						PacketInventoryAction p = new PacketInventoryAction( c == 0 ? InventoryAction.PICKUP_OR_SETDOWN : InventoryAction.PLACE_SINGLE,
+						PacketInventoryAction p = new PacketInventoryAction( c == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE,
 								dr.slotNumber, 0 );
 						NetworkHandler.instance.sendToServer( p );
 					}
@@ -724,14 +724,14 @@ public abstract class AEBaseGui extends GuiContainer
 		return false;
 	}
 
-	protected Slot getSlot(int mousex, int mousey)
+	protected Slot getSlot(int mouseX, int mouseY)
 	{
 		for (int j1 = 0; j1 < this.inventorySlots.inventorySlots.size(); ++j1)
 		{
 			Slot slot = (Slot) this.inventorySlots.inventorySlots.get( j1 );
 
 			// isPointInRegion
-			if ( func_146978_c( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mousex, mousey ) )
+			if ( func_146978_c( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY ) )
 			{
 				return slot;
 			}
@@ -743,11 +743,11 @@ public abstract class AEBaseGui extends GuiContainer
 	protected static String join(Collection<?> s, String delimiter)
 	{
 		StringBuilder builder = new StringBuilder();
-		Iterator iter = s.iterator();
-		while (iter.hasNext())
+		Iterator iterator = s.iterator();
+		while (iterator.hasNext())
 		{
-			builder.append( iter.next() );
-			if ( !iter.hasNext() )
+			builder.append( iterator.next() );
+			if ( !iterator.hasNext() )
 			{
 				break;
 			}
@@ -758,16 +758,16 @@ public abstract class AEBaseGui extends GuiContainer
 
 	boolean useNEI = false;
 
-	private RenderItem setItemRender(RenderItem aeri2)
+	private RenderItem setItemRender(RenderItem item)
 	{
 		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.NEI ) )
 		{
-			return ((INEI) AppEng.instance.getIntegration( IntegrationType.NEI )).setItemRender( aeri2 );
+			return ((INEI) AppEng.instance.getIntegration( IntegrationType.NEI )).setItemRender( item );
 		}
 		else
 		{
 			RenderItem ri = itemRender;
-			itemRender = aeri2;
+			itemRender = item;
 			return ri;
 		}
 	}
@@ -788,7 +788,7 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 	}
 
-	AppEngRenderItem aeri = new AppEngRenderItem();
+	AppEngRenderItem aeRenderItem = new AppEngRenderItem();
 
 	protected boolean isPowered()
 	{
@@ -809,7 +809,7 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		if ( s instanceof SlotME )
 		{
-			RenderItem pIR = setItemRender( aeri );
+			RenderItem pIR = setItemRender( aeRenderItem );
 			try
 			{
 				this.zLevel = 100.0F;
@@ -826,9 +826,9 @@ public abstract class AEBaseGui extends GuiContainer
 				itemRender.zLevel = 0.0F;
 
 				if ( s instanceof SlotME )
-					aeri.aestack = ((SlotME) s).getAEStack();
+					aeRenderItem.aeStack = ((SlotME) s).getAEStack();
 				else
-					aeri.aestack = null;
+					aeRenderItem.aeStack = null;
 
 				safeDrawSlot( s );
 			}

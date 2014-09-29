@@ -1,5 +1,6 @@
 package appeng.parts.p2p;
 
+import appeng.integration.abstraction.helpers.BaseMJPerdition;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,7 +19,6 @@ import appeng.core.settings.TickRates;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IMJ5;
 import appeng.integration.abstraction.IMJ6;
-import appeng.integration.abstraction.helpers.BaseMJperdition;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.transformer.annotations.integration.Interface;
@@ -40,7 +40,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPowerReceptor, ISidedBatteryProvider, IBatteryObject, IGridTickable
 {
 
-	BaseMJperdition pp;
+	BaseMJPerdition pp;
 
 	public TunnelType getTunnelType()
 	{
@@ -55,7 +55,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 
 		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.MJ5 ) )
 		{
-			pp = (BaseMJperdition) ((IMJ5) AppEng.instance.getIntegration( IntegrationType.MJ5 )).createPerdition( this );
+			pp = (BaseMJPerdition) ((IMJ5) AppEng.instance.getIntegration( IntegrationType.MJ5 )).createPerdition( this );
 			if ( pp != null )
 				pp.configure( 1, 380, 1.0f / 5.0f, 1000 );
 		}
@@ -75,18 +75,18 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 		if ( !output && proxy.isActive() )
 		{
 			float totalRequiredPower = 0.0f;
-			TunnelCollection<PartP2PBCPower> tunnelset;
+			TunnelCollection<PartP2PBCPower> tunnels;
 
 			try
 			{
-				tunnelset = getOutputs();
+				tunnels = getOutputs();
 			}
 			catch (GridAccessException e)
 			{
 				return TickRateModulation.IDLE;
 			}
 
-			for (PartP2PBCPower o : tunnelset)
+			for (PartP2PBCPower o : tunnels)
 			{
 				IPowerReceptor target = o.getPowerTarget();
 				if ( target != null )
@@ -94,14 +94,14 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 					PowerReceiver tp = target.getPowerReceiver( side.getOpposite() );
 					if ( tp != null )
 					{
-						double howmuch = tp.powerRequest();
+						double request = tp.powerRequest();
 
-						if ( howmuch > tp.getMaxEnergyReceived() )
-							howmuch = tp.getMaxEnergyReceived();
+						if ( request > tp.getMaxEnergyReceived() )
+							request = tp.getMaxEnergyReceived();
 
-						if ( howmuch > 0.01 && howmuch > tp.getMinEnergyReceived() )
+						if ( request > 0.01 && request > tp.getMinEnergyReceived() )
 						{
-							totalRequiredPower += howmuch;
+							totalRequiredPower += request;
 						}
 					}
 				}
@@ -114,7 +114,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 			if ( currentTotal < 0.01 )
 				return TickRateModulation.SLOWER;
 
-			for (PartP2PBCPower o : tunnelset)
+			for (PartP2PBCPower o : tunnels)
 			{
 				IPowerReceptor target = o.getPowerTarget();
 				if ( target != null )
@@ -122,14 +122,14 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 					PowerReceiver tp = target.getPowerReceiver( side.getOpposite() );
 					if ( tp != null )
 					{
-						double howmuch = tp.powerRequest();
+						double request = tp.powerRequest();
 
-						if ( howmuch > tp.getMaxEnergyReceived() )
-							howmuch = tp.getMaxEnergyReceived();
+						if ( request > tp.getMaxEnergyReceived() )
+							request = tp.getMaxEnergyReceived();
 
-						if ( howmuch > 0.01 && howmuch > tp.getMinEnergyReceived() )
+						if ( request > 0.01 && request > tp.getMinEnergyReceived() )
 						{
-							double toPull = currentTotal * (howmuch / totalRequiredPower);
+							double toPull = currentTotal * (request / totalRequiredPower);
 							double pulled = pp.useEnergy( 0, toPull, true );
 							QueueTunnelDrain( PowerUnits.MJ, pulled );
 
@@ -148,7 +148,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 	public float getPowerDrainPerTick()
 	{
 		return 0.5f;
-	};
+	}
 
 	@Method(iname = "MJ6")
 	private IBatteryObject getTargetBattery()
@@ -204,7 +204,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 	public PowerReceiver getPowerReceiver(ForgeDirection side)
 	{
 		if ( side.equals( side ) )
-			return ((BaseMJperdition) pp).getPowerReceiver();
+			return ((BaseMJPerdition) pp).getPowerReceiver();
 		return null;
 	}
 

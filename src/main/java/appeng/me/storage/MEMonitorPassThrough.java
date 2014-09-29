@@ -15,15 +15,15 @@ import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
 import appeng.util.inv.ItemListIgnoreCrafting;
 
-public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> implements IMEMonitor<T>, IMEMonitorHandlerReceiver<T>
+public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T> implements IMEMonitor<T>, IMEMonitorHandlerReceiver<T>
 {
 
-	HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap();
+	HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<T>, Object>();
 	IMEMonitor<T> monitor;
 
 	public BaseActionSource changeSource;
 
-	public MEMonitorPassthu(IMEInventory<T> i, StorageChannel channel) {
+	public MEMonitorPassThrough(IMEInventory<T> i, StorageChannel channel) {
 		super( i, channel );
 		if ( i instanceof IMEMonitor )
 			monitor = (IMEMonitor<T>) i;
@@ -96,9 +96,9 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 		while (i.hasNext())
 		{
 			Entry<IMEMonitorHandlerReceiver<T>, Object> e = i.next();
-			IMEMonitorHandlerReceiver<T> recv = e.getKey();
-			if ( recv.isValid( e.getValue() ) )
-				recv.postChange( this, change, source );
+			IMEMonitorHandlerReceiver<T> receiver = e.getKey();
+			if ( receiver.isValid( e.getValue() ) )
+				receiver.postChange( this, change, source );
 			else
 				i.remove();
 		}
@@ -111,9 +111,9 @@ public class MEMonitorPassthu<T extends IAEStack<T>> extends MEPassthru<T> imple
 		while (i.hasNext())
 		{
 			Entry<IMEMonitorHandlerReceiver<T>, Object> e = i.next();
-			IMEMonitorHandlerReceiver<T> recv = e.getKey();
-			if ( recv.isValid( e.getValue() ) )
-				recv.onListUpdate();
+			IMEMonitorHandlerReceiver<T> receiver = e.getKey();
+			if ( receiver.isValid( e.getValue() ) )
+				receiver.onListUpdate();
 			else
 				i.remove();
 		}

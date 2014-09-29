@@ -46,7 +46,7 @@ public class GuiCraftConfirm extends AEBaseGui
 	IItemList<IAEItemStack> pending = AEApi.instance().storage().createItemList();
 	IItemList<IAEItemStack> missing = AEApi.instance().storage().createItemList();
 
-	List<IAEItemStack> visual = new ArrayList();
+	List<IAEItemStack> visual = new ArrayList<IAEItemStack>();
 
 	GuiBridge OriginalGui;
 
@@ -84,7 +84,7 @@ public class GuiCraftConfirm extends AEBaseGui
 
 	GuiButton cancel;
 	GuiButton start;
-	GuiButton selectcpu;
+	GuiButton selectCPU;
 
 	@Override
 	public void initGui()
@@ -95,10 +95,10 @@ public class GuiCraftConfirm extends AEBaseGui
 		start.enabled = false;
 		buttonList.add( start );
 
-		selectcpu = new GuiButton( 0, this.guiLeft + (219 - 180) / 2, this.guiTop + ySize - 68, 180, 20, GuiText.CraftingCPU.getLocal() + ": "
+		selectCPU = new GuiButton( 0, this.guiLeft + (219 - 180) / 2, this.guiTop + ySize - 68, 180, 20, GuiText.CraftingCPU.getLocal() + ": "
 				+ GuiText.Automatic );
-		selectcpu.enabled = false;
-		buttonList.add( selectcpu );
+		selectCPU.enabled = false;
+		buttonList.add( selectCPU );
 
 		if ( OriginalGui != null )
 			cancel = new GuiButton( 0, this.guiLeft + 6, this.guiTop + ySize - 25, 50, 20, GuiText.Cancel.getLocal() );
@@ -123,7 +123,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		if ( ccc.noCPU )
 			btnTextText = GuiText.NoCraftingCPUs.getLocal();
 
-		selectcpu.displayString = btnTextText;
+		selectCPU.displayString = btnTextText;
 	}
 
 	@Override
@@ -133,7 +133,7 @@ public class GuiCraftConfirm extends AEBaseGui
 
 		boolean backwards = Mouse.isButtonDown( 1 );
 
-		if ( btn == selectcpu )
+		if ( btn == selectCPU )
 		{
 			try
 			{
@@ -315,25 +315,25 @@ public class GuiCraftConfirm extends AEBaseGui
 		updateCPUButtonText();
 
 		start.enabled = ccc.noCPU || isSimulation() ? false : true;
-		selectcpu.enabled = isSimulation() ? false : true;
+		selectCPU.enabled = isSimulation() ? false : true;
 
 		int x = 0;
 		int y = 0;
 
 		int gx = (width - xSize) / 2;
 		int gy = (height - ySize) / 2;
-		int yoff = 23;
+		int offY = 23;
 
 		tooltip = -1;
 
 		for (int z = 0; z <= 4 * 5; z++)
 		{
 			int minX = gx + 9 + x * 67;
-			int minY = gy + 22 + y * yoff;
+			int minY = gy + 22 + y * offY;
 
 			if ( minX < mouse_x && minX + 67 > mouse_x )
 			{
-				if ( minY < mouse_y && minY + yoff - 2 > mouse_y )
+				if ( minY < mouse_y && minY + offY - 2 > mouse_y )
 				{
 					tooltip = z;
 					break;
@@ -382,7 +382,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		int viewEnd = viewStart + 3 * rows;
 
 		String dspToolTip = "";
-		List<String> lineList = new LinkedList();
+		List<String> lineList = new LinkedList<String>();
 		int toolPosX = 0;
 		int toolPosY = 0;
 

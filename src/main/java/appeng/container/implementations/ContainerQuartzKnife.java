@@ -41,7 +41,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 
 		lockPlayerInventorySlot( ip.currentItem );
 
-		bindPlayerInventory( ip, 0, 184 - /* height of playerinventory */82 );
+		bindPlayerInventory( ip, 0, 184 - /* height of player inventory */82 );
 	}
 
 	@Override

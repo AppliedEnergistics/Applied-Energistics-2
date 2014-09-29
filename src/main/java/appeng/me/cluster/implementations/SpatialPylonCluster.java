@@ -15,7 +15,7 @@ public class SpatialPylonCluster implements IAECluster
 	public enum Axis
 	{
 		X, Y, Z, UNFORMED
-	};
+	}
 
 	final public DimensionalCoord min;
 	final public DimensionalCoord max;
@@ -23,7 +23,7 @@ public class SpatialPylonCluster implements IAECluster
 
 	public Axis currentAxis = Axis.UNFORMED;
 
-	final List<TileSpatialPylon> line = new ArrayList();
+	final List<TileSpatialPylon> line = new ArrayList<TileSpatialPylon>();
 	public boolean isValid;
 	public boolean hasPower;
 	public boolean hasChannel;

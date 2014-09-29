@@ -22,7 +22,7 @@ public class GenericInterestManager<T>
 			stack = myStack;
 			iw = watcher;
 		}
-	};
+	}
 
 	private final SetMultimap<IAEStack, T> container;
 	private LinkedList<SavedTransactions> transactions = null;
@@ -35,7 +35,7 @@ public class GenericInterestManager<T>
 	public void enableTransactions()
 	{
 		if ( transDepth == 0 )
-			transactions = new LinkedList();
+			transactions = new LinkedList<SavedTransactions>();
 
 		transDepth++;
 	}

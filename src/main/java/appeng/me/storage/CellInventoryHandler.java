@@ -34,8 +34,8 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 	{
 		Object o = this.internal;
 
-		if ( o instanceof MEPassthru )
-			o = ((MEPassthru) o).getInternal();
+		if ( o instanceof MEPassThrough )
+			o = ((MEPassThrough) o).getInternal();
 
 		return (ICellInventory) (o instanceof ICellInventory ? o : null);
 	}

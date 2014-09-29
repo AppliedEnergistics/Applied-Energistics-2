@@ -14,7 +14,7 @@ public class InvSot
 		index = slot;
 	}
 
-	public ItemStack decrStackSize(int j)
+	public ItemStack decreaseStackSize(int j)
 	{
 		return partInv.decrStackSize( index, j );
 	}

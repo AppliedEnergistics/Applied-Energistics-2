@@ -29,8 +29,8 @@ public class SpatialPylonCache implements IGridCache, ISpatialCache
 	DimensionalCoord captureMax;
 	boolean isValid = false;
 
-	List<TileSpatialIOPort> ioPorts = new LinkedList();
-	HashMap<SpatialPylonCluster, SpatialPylonCluster> clusters = new HashMap();
+	List<TileSpatialIOPort> ioPorts = new LinkedList<TileSpatialIOPort>();
+	HashMap<SpatialPylonCluster, SpatialPylonCluster> clusters = new HashMap<SpatialPylonCluster, SpatialPylonCluster>();
 
 	boolean needsUpdate = false;
 
@@ -80,8 +80,8 @@ public class SpatialPylonCache implements IGridCache, ISpatialCache
 		double minPower = 0;
 		double maxPower = 0;
 
-		clusters = new HashMap();
-		ioPorts = new LinkedList();
+		clusters = new HashMap<SpatialPylonCluster, SpatialPylonCluster>();
+		ioPorts = new LinkedList<TileSpatialIOPort>();
 
 		for (IGridNode gm : grid.getMachines( TileSpatialIOPort.class ))
 		{
@@ -167,7 +167,7 @@ public class SpatialPylonCache implements IGridCache, ISpatialCache
 				efficiency = 0.0;
 			
 			minPower = (double) reqX * (double) reqY * reqZ * AEConfig.instance.spatialPowerMultiplier;
-			maxPower = Math.pow( minPower, AEConfig.instance.spatialPowerScaler );
+			maxPower = Math.pow( minPower, AEConfig.instance.spatialPowerExponent );
 		}
 
 		double affective_efficiency = Math.pow( efficiency, 0.25 );

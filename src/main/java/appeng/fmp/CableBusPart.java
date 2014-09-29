@@ -154,8 +154,8 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		{
 			if ( len > 0 )
 			{
-				ByteBuf bybuff = Unpooled.wrappedBuffer( data );
-				cb.readFromStream( bybuff );
+				ByteBuf byteBuffer = Unpooled.wrappedBuffer( data );
+				cb.readFromStream( byteBuffer );
 			}
 		}
 		catch (IOException e)
@@ -169,7 +169,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	{
 		AxisAlignedBB b = null;
 
-		for (AxisAlignedBB bx : cb.getSelectedBoundingBoxsFromPool( false, true, null, true ))
+		for (AxisAlignedBB bx : cb.getSelectedBoundingBoxesFromPool( false, true, null, true ))
 		{
 			if ( b == null )
 				b = bx;
@@ -243,7 +243,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	{
 		canUpdate = false;
 		cb.removeFromWorld();
-	};
+	}
 
 	@Override
 	public boolean canConnectRedstone(int side)
@@ -314,7 +314,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		{
 			if ( !(side == null || side == ForgeDirection.UNKNOWN || tile() == null) )
 			{
-				List<AxisAlignedBB> boxes = new ArrayList();
+				List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
 				IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
 				fp.getBoxes( bch, null );
 				for (AxisAlignedBB bb : boxes)
@@ -341,7 +341,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 			IPart bp = bi.createPartFromItemStack( is );
 			if ( !(side == null || side == ForgeDirection.UNKNOWN || tile() == null) )
 			{
-				List<AxisAlignedBB> boxes = new ArrayList();
+				List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
 				IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
 				bp.getBoxes( bch );
 				for (AxisAlignedBB bb : boxes)
@@ -403,16 +403,16 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	}
 
 	@Override
-	public boolean occlusionTest(TMultiPart npart)
+	public boolean occlusionTest(TMultiPart part)
 	{
-		return NormalOcclusionTest.apply( this, npart );
+		return NormalOcclusionTest.apply( this, part );
 	}
 
 	@Override
 	public Iterable<Cuboid6> getCollisionBoxes()
 	{
-		LinkedList l = new LinkedList();
-		for (AxisAlignedBB b : cb.getSelectedBoundingBoxsFromPool( false, true, null, false ))
+		LinkedList<Cuboid6> l = new LinkedList<Cuboid6>();
+		for (AxisAlignedBB b : cb.getSelectedBoundingBoxesFromPool( false, true, null, false ))
 		{
 			l.add( new Cuboid6( b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ ) );
 		}
@@ -423,7 +423,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public Iterable<IndexedCuboid6> getSubParts()
 	{
-		LinkedList<IndexedCuboid6> l = new LinkedList();
+		LinkedList<IndexedCuboid6> l = new LinkedList<IndexedCuboid6>();
 		for (Cuboid6 c : getCollisionBoxes())
 		{
 			l.add( new IndexedCuboid6( 0, c ) );
@@ -434,8 +434,8 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public Iterable<Cuboid6> getOcclusionBoxes()
 	{
-		LinkedList l = new LinkedList();
-		for (AxisAlignedBB b : cb.getSelectedBoundingBoxsFromPool( true, disableFacadeOcclusion.get() == null, null, true ))
+		LinkedList<Cuboid6> l = new LinkedList<Cuboid6>();
+		for (AxisAlignedBB b : cb.getSelectedBoundingBoxesFromPool( true, disableFacadeOcclusion.get() == null, null, true ))
 		{
 			l.add( new Cuboid6( b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ ) );
 		}
@@ -543,7 +543,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		ForgeDirection dir = ForgeDirection.getOrientation( side );
 		if ( cable != null && cable.isConnected( dir ) )
 		{
-			List<AxisAlignedBB> boxes = new ArrayList();
+			List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
 
 			BusCollisionHelper bch = new BusCollisionHelper( boxes, ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH, null, true );
 

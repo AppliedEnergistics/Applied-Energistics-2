@@ -13,38 +13,67 @@ import appeng.recipes.handlers.Inscribe.InscriberRecipe;
 import appeng.tile.misc.TileInscriber;
 import appeng.util.Platform;
 
-public class ContainerInscriber extends AEBaseContainer
+public class ContainerInscriber extends ContainerUpgradeable
 {
 
-	TileInscriber myte;
+	TileInscriber ti;
 
 	Slot top;
 	Slot middle;
 	Slot bottom;
 
-	@GuiSync(0)
+	@GuiSync(2)
 	public int maxProcessingTime = -1;
 
-	@GuiSync(1)
+	@GuiSync(3)
 	public int processingTime = -1;
 
-	public ContainerInscriber(InventoryPlayer ip, TileInscriber te) {
-		super( ip, te, null );
-		myte = te;
+	public ContainerInscriber(InventoryPlayer ip, TileInscriber te)
+	{
+		super( ip, te );
+		ti = te;
 
-		addSlotToContainer( top = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, myte, 0, 45, 16, invPlayer ) );
-		addSlotToContainer( bottom = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, myte, 1, 45, 62, invPlayer ) );
-		addSlotToContainer( middle = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_INPUT, myte, 2, 63, 39, invPlayer ) );
+		addSlotToContainer( top = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, ti, 0, 45, 16, invPlayer ) );
+		addSlotToContainer( bottom = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, ti, 1, 45, 62, invPlayer ) );
+		addSlotToContainer( middle = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_INPUT, ti, 2, 63, 39, invPlayer ) );
 
-		addSlotToContainer( new SlotOutput( myte, 3, 113, 40, -1 ) );
+		addSlotToContainer( new SlotOutput( ti, 3, 113, 40, -1 ) );
 
-		bindPlayerInventory( ip, 0, 176 - /* height of playerinventory */82 );
+		bindPlayerInventory( ip, 0, getHeight() - /* height of player inventory */82 );
+
+	}
+
+	@Override
+	protected int getHeight()
+	{
+		return 176;
+	}
+
+	@Override
+	public int availableUpgrades()
+	{
+		return 3;
+	}
+
+	@Override
+	protected boolean supportCapacity()
+	{
+		return false;
+	}
+
+	@Override
+	/**
+	 * Overridden super.setupConfig to prevent setting up the fake slots
+	 */
+	protected void setupConfig()
+	{
+		setupUpgrades();
 	}
 
 	public boolean isValidForSlot(Slot s, ItemStack is)
 	{
-		ItemStack PlateA = myte.getStackInSlot( 0 );
-		ItemStack PlateB = myte.getStackInSlot( 1 );
+		ItemStack PlateA = ti.getStackInSlot( 0 );
+		ItemStack PlateB = ti.getStackInSlot( 1 );
 
 		if ( s == middle )
 		{
@@ -120,12 +149,12 @@ public class ContainerInscriber extends AEBaseContainer
 	@Override
 	public void detectAndSendChanges()
 	{
-		super.detectAndSendChanges();
+		standardDetectAndSendChanges();
 
 		if ( Platform.isServer() )
 		{
-			this.maxProcessingTime = myte.maxProcessingTime;
-			this.processingTime = myte.processingTime;
+			this.maxProcessingTime = ti.maxProcessingTime;
+			this.processingTime = ti.processingTime;
 		}
 	}
 }

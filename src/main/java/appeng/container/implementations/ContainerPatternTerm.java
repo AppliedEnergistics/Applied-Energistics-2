@@ -178,7 +178,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		ItemStack[] in = getInputs();
 		ItemStack[] out = getOutputs();
 
-		// if theres no input, this would be silly.
+		// if there is no input, this would be silly.
 		if ( in == null || out == null )
 			return;
 
@@ -259,7 +259,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		}
 		else
 		{
-			List<ItemStack> list = new ArrayList( 3 );
+			List<ItemStack> list = new ArrayList<ItemStack>( 3 );
 			boolean hasValue = false;
 
 			for (int x = 0; x < outputSlots.length; x++)
@@ -346,16 +346,13 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 			ItemStack is = r.getCraftingResult( ic );
 
-			if ( r != null && inv != null )
+			for (int x = 0; x < ic.getSizeInventory(); x++)
 			{
-				for (int x = 0; x < ic.getSizeInventory(); x++)
+				if ( ic.getStackInSlot( x ) != null )
 				{
-					if ( ic.getStackInSlot( x ) != null )
-					{
-						ItemStack pulled = Platform.extractItemsByRecipe( powerSrc, mySrc, storage, p.worldObj, r, is, ic, ic.getStackInSlot( x ), x, all,
-								Actionable.MODULATE, ItemViewCell.createFilter( getViewCells() ) );
-						real.setInventorySlotContents( x, pulled );
-					}
+					ItemStack pulled = Platform.extractItemsByRecipe( powerSrc, mySrc, storage, p.worldObj, r, is, ic, ic.getStackInSlot( x ), x, all,
+							Actionable.MODULATE, ItemViewCell.createFilter( getViewCells() ) );
+					real.setInventorySlotContents( x, pulled );
 				}
 			}
 

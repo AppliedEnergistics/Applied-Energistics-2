@@ -216,7 +216,7 @@ public class RecipeHandler implements IRecipeHandler
 				{
 					return getName( is );
 				}
-				catch (RecipeError notappicable)
+				catch (RecipeError ignored)
 				{
 				}
 			}

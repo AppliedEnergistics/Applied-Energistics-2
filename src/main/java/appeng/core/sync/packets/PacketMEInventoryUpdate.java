@@ -47,7 +47,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	public PacketMEInventoryUpdate(final ByteBuf stream) throws IOException {
 		data = null;
 		compressFrame = null;
-		list = new LinkedList();
+		list = new LinkedList<IAEItemStack>();
 		ref = stream.readByte();
 
 		// int originalBytes = stream.readableBytes();
@@ -76,7 +76,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		gzReader.close();
 
 		// int uncompressedBytes = uncompressed.readableBytes();
-		// AELog.info( "Recv: " + originalBytes + " -> " + uncompressedBytes );
+		// AELog.info( "Receiver: " + originalBytes + " -> " + uncompressedBytes );
 
 		while (uncompressed.readableBytes() > 0)
 			list.add( AEItemStack.loadItemStackFromPacket( uncompressed ) );

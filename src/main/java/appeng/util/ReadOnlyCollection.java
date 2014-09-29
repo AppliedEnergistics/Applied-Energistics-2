@@ -15,7 +15,7 @@ public class ReadOnlyCollection<T> implements IReadOnlyCollection<T>
 	}
 
 	@Override
-	public Iterator iterator()
+	public Iterator<T> iterator()
 	{
 		return c.iterator();
 	}

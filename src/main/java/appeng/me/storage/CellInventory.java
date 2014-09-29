@@ -32,14 +32,14 @@ public class CellInventory implements ICellInventory
 	static final String ITEM_TYPE_TAG = "it";
 	static final String ITEM_COUNT_TAG = "ic";
 	static final String ITEM_SLOT = "#";
-	static final String ITEM_SLOTCOUNT = "@";
+	static final String ITEM_SLOT_COUNT = "@";
 	static final String ITEM_PRE_FORMATTED_COUNT = "PF";
 	static final String ITEM_PRE_FORMATTED_SLOT = "PF#";
 	static final String ITEM_PRE_FORMATTED_NAME = "PN";
 	static final String ITEM_PRE_FORMATTED_FUZZY = "FP";
 
 	static protected String[] ITEM_SLOT_ARR;
-	static protected String[] ITEM_SLOTCOUNT_ARR;
+	static protected String[] ITEM_SLOT_COUNT_ARR;
 
 	final protected NBTTagCompound tagCompound;
 	protected int MAX_ITEM_TYPES = 63;
@@ -71,7 +71,7 @@ public class CellInventory implements ICellInventory
 			ItemStack t = ItemStack.loadItemStackFromNBT( tagCompound.getCompoundTag( ITEM_SLOT_ARR[x] ) );
 			if ( t != null )
 			{
-				t.stackSize = tagCompound.getInteger( ITEM_SLOTCOUNT_ARR[x] );
+				t.stackSize = tagCompound.getInteger( ITEM_SLOT_COUNT_ARR[x] );
 
 				if ( t.stackSize > 0 )
 				{
@@ -107,17 +107,17 @@ public class CellInventory implements ICellInventory
 			}
 
 			/*
-			 * NBTBase tagSlotCount = tagCompound.getTag( ITEM_SLOTCOUNT_ARR[x] ); if ( tagSlotCount instanceof
+			 * NBTBase tagSlotCount = tagCompound.getTag( ITEM_SLOT_COUNT_ARR[x] ); if ( tagSlotCount instanceof
 			 * NBTTagInt ) ((NBTTagInt) tagSlotCount).data = (int) v.getStackSize(); else
 			 */
-			tagCompound.setInteger( ITEM_SLOTCOUNT_ARR[x], (int) v.getStackSize() );
+			tagCompound.setInteger( ITEM_SLOT_COUNT_ARR[x], (int) v.getStackSize() );
 
 			x++;
 		}
 
 		// NBTBase tagType = tagCompound.getTag( ITEM_TYPE_TAG );
 		// NBTBase tagCount = tagCompound.getTag( ITEM_COUNT_TAG );
-		short oldStoreditems = storedItems;
+		short oldStoredItems = storedItems;
 
 		/*
 		 * if ( tagType instanceof NBTTagShort ) ((NBTTagShort) tagType).data = storedItems = (short) cellItems.size();
@@ -131,10 +131,10 @@ public class CellInventory implements ICellInventory
 		tagCompound.setInteger( ITEM_COUNT_TAG, storedItemCount = itemCount );
 
 		// clean any old crusty stuff...
-		for (; x < oldStoreditems && x < MAX_ITEM_TYPES; x++)
+		for (; x < oldStoredItems && x < MAX_ITEM_TYPES; x++)
 		{
 			tagCompound.removeTag( ITEM_SLOT_ARR[x] );
-			tagCompound.removeTag( ITEM_SLOTCOUNT_ARR[x] );
+			tagCompound.removeTag( ITEM_SLOT_COUNT_ARR[x] );
 		}
 
 		if ( container != null )
@@ -145,12 +145,12 @@ public class CellInventory implements ICellInventory
 		if ( ITEM_SLOT_ARR == null )
 		{
 			ITEM_SLOT_ARR = new String[MAX_ITEM_TYPES];
-			ITEM_SLOTCOUNT_ARR = new String[MAX_ITEM_TYPES];
+			ITEM_SLOT_COUNT_ARR = new String[MAX_ITEM_TYPES];
 
 			for (int x = 0; x < MAX_ITEM_TYPES; x++)
 			{
 				ITEM_SLOT_ARR[x] = ITEM_SLOT + x;
-				ITEM_SLOTCOUNT_ARR[x] = ITEM_SLOTCOUNT + x;
+				ITEM_SLOT_COUNT_ARR[x] = ITEM_SLOT_COUNT + x;
 			}
 		}
 
@@ -336,7 +336,7 @@ public class CellInventory implements ICellInventory
 		return 8 - div;
 	}
 
-	private static HashSet<Integer> blackList = new HashSet();
+	private static HashSet<Integer> blackList = new HashSet<Integer>();
 
 	public static void addBasicBlackList(int itemID, int Meta)
 	{
@@ -350,9 +350,9 @@ public class CellInventory implements ICellInventory
 		return blackList.contains( (input.getItemDamage() << Platform.DEF_OFFSET) | Item.getIdFromItem( input.getItem() ) );
 	}
 
-	private boolean isEmpty(IMEInventory meinv)
+	private boolean isEmpty(IMEInventory meInventory)
 	{
-		return meinv.getAvailableItems( AEApi.instance().storage().createItemList() ).isEmpty();
+		return meInventory.getAvailableItems( AEApi.instance().storage().createItemList() ).isEmpty();
 	}
 
 	@Override
@@ -370,8 +370,8 @@ public class CellInventory implements ICellInventory
 
 		if ( CellInventory.isStorageCell( sharedItemStack ) )
 		{
-			IMEInventory meinv = getCell( sharedItemStack, null );
-			if ( meinv != null && !isEmpty( meinv ) )
+			IMEInventory meInventory = getCell( sharedItemStack, null );
+			if ( meInventory != null && !isEmpty( meInventory ) )
 				return input;
 		}
 

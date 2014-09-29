@@ -126,7 +126,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	public float getPowerDrainPerTick()
 	{
 		return 0.5f;
-	};
+	}
 
 	@Override
 	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)
@@ -144,7 +144,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 		if ( outs.isEmpty() )
 			return amount;
 
-		LinkedList<PartP2PIC2Power> Options = new LinkedList();
+		LinkedList<PartP2PIC2Power> Options = new LinkedList<PartP2PIC2Power>();
 		for (PartP2PIC2Power o : outs)
 		{
 			if ( o.OutputEnergyA <= 0.01 )

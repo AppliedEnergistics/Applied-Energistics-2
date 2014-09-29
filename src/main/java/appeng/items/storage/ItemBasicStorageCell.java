@@ -112,7 +112,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	}
 
 	@Override
-	public int BytePerType(ItemStack iscellItem)
+	public int BytePerType(ItemStack cell)
 	{
 		return 8;
 	}
@@ -218,15 +218,15 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 			if ( Platform.isClient() )
 				return false;
 
-			InventoryPlayer pinv = player.inventory;
+			InventoryPlayer playerInventory = player.inventory;
 			IMEInventory<IAEItemStack> inv = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
-			if ( inv != null && pinv.getCurrentItem() == stack )
+			if ( inv != null && playerInventory.getCurrentItem() == stack )
 			{
 				InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
 				IItemList<IAEItemStack> list = inv.getAvailableItems( StorageChannel.ITEMS.createList() );
 				if ( list.isEmpty() && ia != null )
 				{
-					pinv.setInventorySlotContents( pinv.currentItem, null );
+					playerInventory.setInventorySlotContents( playerInventory.currentItem, null );
 
 					ItemStack extraB = ia.addItems( component.stack( 1 ) );
 					ItemStack extraA = ia.addItems( AEApi.instance().materials().materialEmptyStorageCell.stack( 1 ) );

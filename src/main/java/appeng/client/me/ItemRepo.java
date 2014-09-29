@@ -104,7 +104,7 @@ public class ItemRepo
 				Method b = searchField.getClass().getMethod( "onTextChange", String.class );
 
 				NEIWord = filter;
-				a.invoke( searchField, new String( filter ) );
+				a.invoke( searchField, filter );
 				b.invoke( searchField, "" );
 			}
 		}
@@ -122,9 +122,9 @@ public class ItemRepo
 		view.ensureCapacity( list.size() );
 		dsp.ensureCapacity( list.size() );
 
-		Enum vmode = sortSrc.getSortDisplay();
-		Enum mode = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
-		if ( mode == SearchBoxMode.NEI_AUTOSEARCH || mode == SearchBoxMode.NEI_MANUAL_SEARCH )
+		Enum viewMode = sortSrc.getSortDisplay();
+		Enum searchMode = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
+		if ( searchMode == SearchBoxMode.NEI_AUTOSEARCH || searchMode == SearchBoxMode.NEI_MANUAL_SEARCH )
 			updateNEI( searchString );
 
 		innerSearch = searchString;
@@ -164,16 +164,16 @@ public class ItemRepo
 					continue;
 			}
 
-			if ( vmode == ViewItems.CRAFTABLE && !is.isCraftable() )
+			if ( viewMode == ViewItems.CRAFTABLE && !is.isCraftable() )
 				continue;
 
-			if ( vmode == ViewItems.CRAFTABLE )
+			if ( viewMode == ViewItems.CRAFTABLE )
 			{
 				is = is.copy();
 				is.setStackSize( 0 );
 			}
 
-			if ( vmode == ViewItems.STORED && is.getStackSize() == 0 )
+			if ( viewMode == ViewItems.STORED && is.getStackSize() == 0 )
 				continue;
 
 			String dspName = searchMod ? Platform.getModId( is ) : Platform.getItemDisplayName( is );

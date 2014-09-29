@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 
 /*
- * Totaly useless container that does nothing.
+ * Totally useless container that does nothing.
  */
 public class ContainerNull extends Container
 {

@@ -54,7 +54,7 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 	}
 
 	@Override
-	public void onNeighborBlockChange(World w, int x, int y, int z, Block pointlessnumber)
+	public void onNeighborBlockChange(World w, int x, int y, int z, Block pointlessNumber)
 	{
 		TileQuantumBridge bridge = getTileEntity( w, x, y, z );
 		if ( bridge != null )

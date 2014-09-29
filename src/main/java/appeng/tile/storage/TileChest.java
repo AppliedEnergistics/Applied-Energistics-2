@@ -75,7 +75,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 	static final int sides[] = new int[] { 0 };
 	static final int front[] = new int[] { 1 };
-	static final int noslots[] = new int[] {};
+	static final int noSlots[] = new int[] {};
 
 	AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
 	BaseActionSource mySrc = new MachineSource( this );
@@ -264,19 +264,19 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	boolean isCached = false;
 
 	private ICellHandler cellHandler;
-	private MEMonitorHandler icell;
-	private MEMonitorHandler fcell;
+	private MEMonitorHandler itemCell;
+	private MEMonitorHandler fluidCell;
 
 	@Override
 	public IMEMonitor getItemInventory()
 	{
-		return icell;
+		return itemCell;
 	}
 
 	@Override
 	public IMEMonitor getFluidInventory()
 	{
-		return fcell;
+		return fluidCell;
 	}
 
 	class ChestNetNotifier<T extends IAEStack<T>> implements IMEMonitorHandlerReceiver<T>
@@ -312,9 +312,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		public boolean isValid(Object verificationToken)
 		{
 			if ( chan == StorageChannel.ITEMS )
-				return verificationToken == icell;
+				return verificationToken == itemCell;
 			if ( chan == StorageChannel.FLUIDS )
-				return verificationToken == fcell;
+				return verificationToken == fluidCell;
 			return false;
 		}
 
@@ -324,7 +324,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			// not used here
 		}
 
-	};
+	}
 
 	class ChestMonitorHandler<T extends IAEStack> extends MEMonitorHandler<T>
 	{
@@ -389,8 +389,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 				return null;
 			return super.extractItems(request, mode, src);
 		}
-
-	};
+	}
 
 	private <StackType extends IAEStack> MEMonitorHandler<StackType> wrap(IMEInventoryHandler h)
 	{
@@ -410,8 +409,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	{
 		if ( !isCached )
 		{
-			icell = null;
-			fcell = null;
+			itemCell = null;
+			fluidCell = null;
 
 			ItemStack is = inv.getStackInSlot( 1 );
 			if ( is != null )
@@ -432,8 +431,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 					gridProxy.setIdlePowerUsage( power );
 
-					icell = wrap( itemCell );
-					fcell = wrap( fluidCell );
+					this.itemCell = wrap( itemCell );
+					this.fluidCell = wrap( fluidCell );
 				}
 			}
 		}
@@ -441,13 +440,13 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		switch (channel)
 		{
 		case FLUIDS:
-			if ( fcell == null )
+			if ( fluidCell == null )
 				throw noHandler;
-			return fcell;
+			return fluidCell;
 		case ITEMS:
-			if ( icell == null )
+			if ( itemCell == null )
 				throw noHandler;
-			return icell;
+			return itemCell;
 		default:
 		}
 
@@ -465,8 +464,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	{
 		if ( slot == 1 )
 		{
-			icell = null;
-			fcell = null;
+			itemCell = null;
+			fluidCell = null;
 			isCached = false; // recalculate the storage cell.
 
 			try
@@ -567,7 +566,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 				// nope!
 			}
 		}
-		return noslots;
+		return noSlots;
 	}
 
 	@Override
@@ -636,7 +635,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			try
 			{
 				IMEInventoryHandler handler = getHandler( StorageChannel.ITEMS );
-				if ( ch != null && handler instanceof ChestMonitorHandler )
+				if ( handler instanceof ChestMonitorHandler )
 					return ch.getStatusForCell( cell, ((ChestMonitorHandler) handler).getInternalHandler() );
 			}
 			catch (ChestNoHandler e)
@@ -646,7 +645,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			try
 			{
 				IMEInventoryHandler handler = getHandler( StorageChannel.FLUIDS );
-				if ( ch != null && handler instanceof ChestMonitorHandler )
+				if ( handler instanceof ChestMonitorHandler )
 					return ch.getStatusForCell( cell, ((ChestMonitorHandler) handler).getInternalHandler() );
 			}
 			catch (ChestNoHandler e)
@@ -795,8 +794,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	{
 		priority = newValue;
 
-		icell = null;
-		fcell = null;
+		itemCell = null;
+		fluidCell = null;
 		isCached = false; // recalculate the storage cell.
 
 		try

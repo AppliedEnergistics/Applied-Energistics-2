@@ -49,7 +49,7 @@ import com.google.common.collect.ImmutableSet;
 public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule
 {
 
-	HashMap<Integer, MaterialType> dmgToMaterial = new HashMap();
+	HashMap<Integer, MaterialType> dmgToMaterial = new HashMap<Integer, MaterialType>();
 
 	public static ItemMultiMaterial instance;
 
@@ -92,9 +92,9 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	}
 
 	@Override
-	public void addInformation(ItemStack is, EntityPlayer player, List details, boolean moar)
+	public void addInformation(ItemStack is, EntityPlayer player, List details, boolean displayAdditionalInformation)
 	{
-		super.addInformation( is, player, details, moar );
+		super.addInformation( is, player, details, displayAdditionalInformation );
 
 		MaterialType mt = getTypeByStack( is );
 		if ( mt == null )
@@ -109,7 +109,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 		Upgrades u = getType( is );
 		if ( u != null )
 		{
-			List<String> textList = new LinkedList();
+			List<String> textList = new LinkedList<String>();
 			for (Entry<ItemStack, Integer> j : u.getSupported().entrySet())
 			{
 				String name = null;
@@ -168,7 +168,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 			throw new RuntimeException( "Cannot create the same material twice..." );
 	}
 
-	public void unduplicate()
+	public void makeUnique()
 	{
 		for (MaterialType mt : ImmutableSet.copyOf( dmgToMaterial.values() ))
 		{

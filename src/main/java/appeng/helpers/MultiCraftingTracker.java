@@ -62,20 +62,18 @@ public class MultiCraftingTracker
 	{
 		if ( ais != null && d.simulateAdd( ais.getItemStack() ) == null )
 		{
-			Future<ICraftingJob> cjob = getJob( x );
+			Future<ICraftingJob> craftingJob = getJob( x );
 			if ( getLink( x ) != null )
 			{
 				return false;
 			}
-			else if ( cjob != null )
+			else if ( craftingJob != null )
 			{
 				ICraftingJob job = null;
 				try
 				{
-					if ( cjob.isDone() )
-						job = cjob.get();
-					else if ( cjob.isCancelled() )
-						job = null;
+					if ( craftingJob.isDone() )
+						job = craftingJob.get();
 
 					if ( job != null )
 					{

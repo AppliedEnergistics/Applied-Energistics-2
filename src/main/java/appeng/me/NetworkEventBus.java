@@ -19,7 +19,7 @@ public class NetworkEventBus
 
 		private static final long serialVersionUID = -3079021487019171205L;
 
-	};
+	}
 
 	class EventMethod
 	{
@@ -52,12 +52,12 @@ public class NetworkEventBus
 			if ( e.isCanceled() )
 				throw new NetworkEventDone();
 		}
-	};
+	}
 
 	class MENetworkEventInfo
 	{
 
-		private ArrayList<EventMethod> methods = new ArrayList();
+		private ArrayList<EventMethod> methods = new ArrayList<EventMethod>();
 
 		public void Add(Class Event, Class ObjClass, Method ObjMethod)
 		{
@@ -69,10 +69,10 @@ public class NetworkEventBus
 			for (EventMethod em : methods)
 				em.invoke( obj, e );
 		}
-	};
+	}
 
-	private static Set<Class> readClasses = new HashSet();
-	private static Hashtable<Class<? extends MENetworkEvent>, Hashtable<Class, MENetworkEventInfo>> events = new Hashtable();
+	private static Set<Class> readClasses = new HashSet<Class>();
+	private static Hashtable<Class<? extends MENetworkEvent>, Hashtable<Class, MENetworkEventInfo>> events = new Hashtable<Class<? extends MENetworkEvent>, Hashtable<Class, MENetworkEventInfo>>();
 
 	public void readClass(Class listAs, Class c)
 	{
@@ -95,7 +95,7 @@ public class NetworkEventBus
 	
 							Hashtable<Class, MENetworkEventInfo> classEvents = events.get( types[0] );
 							if ( classEvents == null )
-								events.put( types[0], classEvents = new Hashtable() );
+								events.put( types[0], classEvents = new Hashtable<Class, MENetworkEventInfo>() );
 	
 							MENetworkEventInfo thisEvent = classEvents.get( listAs );
 							if ( thisEvent == null )

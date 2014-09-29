@@ -71,30 +71,30 @@ public class EnergyGridCache implements IEnergyGrid
 	double extra = 0;
 
 	IAEPowerStorage lastProvider;
-	final Set<IAEPowerStorage> providers = new LinkedHashSet();
+	final Set<IAEPowerStorage> providers = new LinkedHashSet<IAEPowerStorage>();
 
-	IAEPowerStorage lastRequestor;
-	final Set<IAEPowerStorage> requesters = new LinkedHashSet();
+	IAEPowerStorage lastRequester;
+	final Set<IAEPowerStorage> requesters = new LinkedHashSet<IAEPowerStorage>();
 
 	final public TreeSet<EnergyThreshold> interests = new TreeSet<EnergyThreshold>();
 	final private HashMap<IGridNode, IEnergyWatcher> watchers = new HashMap<IGridNode, IEnergyWatcher>();
 
-	final private Set<IEnergyGrid> localSeen = new HashSet();
+	final private Set<IEnergyGrid> localSeen = new HashSet<IEnergyGrid>();
 
 	private double buffer()
 	{
 		return providers.isEmpty() ? 1000.0 : 0.0;
 	}
 
-	private IAEPowerStorage getFirstRequestor()
+	private IAEPowerStorage getFirstRequester()
 	{
-		if ( lastRequestor == null )
+		if ( lastRequester == null )
 		{
 			Iterator<IAEPowerStorage> i = requesters.iterator();
-			lastRequestor = i.hasNext() ? i.next() : null;
+			lastRequester = i.hasNext() ? i.next() : null;
 		}
 
-		return lastRequestor;
+		return lastRequester;
 	}
 
 	private IAEPowerStorage getFirstProvider()
@@ -108,7 +108,7 @@ public class EnergyGridCache implements IEnergyGrid
 		return lastProvider;
 	}
 
-	final Multiset<IEnergyGridProvider> gproviders = HashMultiset.create();
+	final Multiset<IEnergyGridProvider> energyGridProviders = HashMultiset.create();
 
 	final IGrid myGrid;
 	PathGridCache pgc;
@@ -182,7 +182,7 @@ public class EnergyGridCache implements IEnergyGrid
 				required += Math.max( 0.0, node.getAEMaxPower() - node.getAECurrentPower() );
 		}
 
-		Iterator<IEnergyGridProvider> ix = gproviders.iterator();
+		Iterator<IEnergyGridProvider> ix = energyGridProviders.iterator();
 		while (required < maxRequired && ix.hasNext())
 		{
 			IEnergyGridProvider node = ix.next();
@@ -216,7 +216,7 @@ public class EnergyGridCache implements IEnergyGrid
 				amt = node.injectAEPower( amt, Actionable.SIMULATE );
 			}
 
-			Iterator<IEnergyGridProvider> i = gproviders.iterator();
+			Iterator<IEnergyGridProvider> i = energyGridProviders.iterator();
 			while (amt > 0 && i.hasNext())
 				amt = i.next().injectAEPower( amt, mode, seen );
 		}
@@ -227,17 +227,17 @@ public class EnergyGridCache implements IEnergyGrid
 
 			while (amt > 0 && !requesters.isEmpty())
 			{
-				IAEPowerStorage node = getFirstRequestor();
+				IAEPowerStorage node = getFirstRequester();
 
 				amt = node.injectAEPower( amt, Actionable.MODULATE );
 				if ( amt > 0 )
 				{
 					requesters.remove( node );
-					lastRequestor = null;
+					lastRequester = null;
 				}
 			}
 
-			Iterator<IEnergyGridProvider> i = gproviders.iterator();
+			Iterator<IEnergyGridProvider> i = energyGridProviders.iterator();
 			while (amt > 0 && i.hasNext())
 			{
 				IEnergyGridProvider what = i.next();
@@ -267,13 +267,13 @@ public class EnergyGridCache implements IEnergyGrid
 	public void addNode(IGridNode node, IGridHost machine)
 	{
 		if ( machine instanceof IEnergyGridProvider )
-			gproviders.add( (IEnergyGridProvider) machine );
+			energyGridProviders.add( (IEnergyGridProvider) machine );
 
 		// idle draw...
-		GridNode gnode = (GridNode) node;
-		IGridBlock gb = gnode.getGridBlock();
-		gnode.previousDraw = gb.getIdlePowerUsage();
-		drainPerTick += gnode.previousDraw;
+		GridNode gridNode = (GridNode) node;
+		IGridBlock gb = gridNode.getGridBlock();
+		gridNode.previousDraw = gb.getIdlePowerUsage();
+		drainPerTick += gridNode.previousDraw;
 
 		// power storage
 		if ( machine instanceof IAEPowerStorage )
@@ -315,11 +315,11 @@ public class EnergyGridCache implements IEnergyGrid
 	public void removeNode(IGridNode node, IGridHost machine)
 	{
 		if ( machine instanceof IEnergyGridProvider )
-			gproviders.remove( machine );
+			energyGridProviders.remove( machine );
 
 		// idle draw.
-		GridNode gnode = (GridNode) node;
-		drainPerTick -= gnode.previousDraw;
+		GridNode gridNode = (GridNode) node;
+		drainPerTick -= gridNode.previousDraw;
 
 		// power storage.
 		if ( machine instanceof IAEPowerStorage )
@@ -336,8 +336,8 @@ public class EnergyGridCache implements IEnergyGrid
 				if ( lastProvider == machine )
 					lastProvider = null;
 
-				if ( lastRequestor == machine )
-					lastRequestor = null;
+				if ( lastRequester == machine )
+					lastRequester = null;
 
 				providers.remove( machine );
 				requesters.remove( machine );
@@ -464,7 +464,7 @@ public class EnergyGridCache implements IEnergyGrid
 
 			if ( extractedPower < amt )
 			{
-				Iterator<IEnergyGridProvider> i = gproviders.iterator();
+				Iterator<IEnergyGridProvider> i = energyGridProviders.iterator();
 				while (extractedPower < amt && i.hasNext())
 					extractedPower += i.next().extractAEPower( amt - extractedPower, mode, seen );
 			}
@@ -489,7 +489,7 @@ public class EnergyGridCache implements IEnergyGrid
 
 		if ( extractedPower < amt )
 		{
-			Iterator<IEnergyGridProvider> i = gproviders.iterator();
+			Iterator<IEnergyGridProvider> i = energyGridProviders.iterator();
 			while (extractedPower < amt && i.hasNext())
 				extractedPower += i.next().extractAEPower( amt - extractedPower, mode, seen );
 		}

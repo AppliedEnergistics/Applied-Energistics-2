@@ -75,7 +75,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 
 			if ( te != null && Platform.isServer() )
 			{
-				te.onChangeInventory( this, slot, InvOperation.decrStackSize, ns, null );
+				te.onChangeInventory( this, slot, InvOperation.decreaseStackSize, ns, null );
 			}
 
 			return ns;
@@ -240,7 +240,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 		return new InvIterator( this );
 	}
 
-	public Iterator<IAEItemStack> aeiterator()
+	public Iterator<IAEItemStack> getNewAEIterator()
 	{
 		return new AEInvIterator( this );
 	}

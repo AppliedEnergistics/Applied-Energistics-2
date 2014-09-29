@@ -112,7 +112,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 
 				is = r.getCraftingResult( ic );
 
-				if ( r != null && inv != null )
+				if ( inv != null )
 				{
 					for (int x = 0; x < pattern.getSizeInventory(); x++)
 					{
@@ -149,7 +149,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 
 	public void postCraft(EntityPlayer p, IMEMonitor<IAEItemStack> inv, ItemStack set[], ItemStack result)
 	{
-		List<ItemStack> drops = new ArrayList();
+		List<ItemStack> drops = new ArrayList<ItemStack>();
 
 		// add one of each item to the items on the board...
 		if ( Platform.isServer() )
@@ -219,7 +219,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 				ItemStack extra = ia.addItems( craftItem( who, rs, inv, all ) );
 				if ( extra != null )
 				{
-					List<ItemStack> drops = new ArrayList();
+					List<ItemStack> drops = new ArrayList<ItemStack>();
 					drops.add( extra );
 					Platform.spawnDrops( who.worldObj, (int) who.posX, (int) who.posY, (int) who.posZ, drops );
 					return;

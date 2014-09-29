@@ -29,7 +29,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	public ToolWirelessTerminal() {
 		super( ToolWirelessTerminal.class, null );
 		setFeature( EnumSet.of( AEFeature.WirelessAccessTerminal, AEFeature.PoweredTools ) );
-		maxStoredPower = AEConfig.instance.wireless_battery;
+		maxStoredPower = AEConfig.instance.wirelessTerminalBattery;
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 
 	@Override
 	public boolean onItemUse(ItemStack item, EntityPlayer player, World w, int x, int y, int z, int side,
-			float hitx, float hity, float hitz)
+			float hitX, float hitY, float hitZ)
 	{
 		onItemRightClick( item, w, player );
 		return true;

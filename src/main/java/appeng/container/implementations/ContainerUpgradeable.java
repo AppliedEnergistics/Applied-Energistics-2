@@ -24,25 +24,25 @@ import appeng.util.Platform;
 public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSlotHost
 {
 
-	IUpgradeableHost myte;
+	IUpgradeableHost upgradeable;
 
-	int tbslot;
-	NetworkToolViewer tbinv;
+	int tbSlot;
+	NetworkToolViewer tbInventory;
 
 	public ContainerUpgradeable(InventoryPlayer ip, IUpgradeableHost te) {
 		super( ip, (TileEntity) (te instanceof TileEntity ? te : null), (IPart) (te instanceof IPart ? te : null) );
-		myte = te;
+		upgradeable = te;
 
 		World w = null;
-		int xCoor = 0, yCoor = 0, zCoor = 0;
+		int xCoord = 0, yCoord = 0, zCoord = 0;
 
 		if ( te instanceof TileEntity )
 		{
 			TileEntity myTile = (TileEntity) te;
 			w = myTile.getWorldObj();
-			xCoor = myTile.xCoord;
-			yCoor = myTile.yCoord;
-			zCoor = myTile.zCoord;
+			xCoord = myTile.xCoord;
+			yCoord = myTile.yCoord;
+			zCoord = myTile.zCoord;
 		}
 
 		if ( te instanceof IPart )
@@ -50,9 +50,9 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 			IUpgradeableHost myTile = (IUpgradeableHost) te;
 			TileEntity mk = myTile.getTile();
 			w = mk.getWorldObj();
-			xCoor = mk.xCoord;
-			yCoor = mk.yCoord;
-			zCoor = mk.zCoord;
+			xCoord = mk.xCoord;
+			yCoord = mk.yCoord;
+			zCoord = mk.zCoord;
 		}
 
 		IInventory pi = getPlayerInv();
@@ -62,8 +62,8 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 			if ( pii != null && pii.getItem() instanceof ToolNetworkTool )
 			{
 				lockPlayerInventorySlot( x );
-				tbslot = x;
-				tbinv = (NetworkToolViewer) ((ToolNetworkTool) pii.getItem()).getGuiObject( pii, w, xCoor, yCoor, zCoor );
+				tbSlot = x;
+				tbInventory = (NetworkToolViewer) ((ToolNetworkTool) pii.getItem()).getGuiObject( pii, w, xCoord, yCoord, zCoord );
 				break;
 			}
 		}
@@ -72,18 +72,18 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		{
 			for (int v = 0; v < 3; v++)
 				for (int u = 0; u < 3; u++)
-					addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, tbinv, u + v * 3, 186 + u * 18, getHeight() - 82 + v * 18,
+					addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, tbInventory, u + v * 3, 186 + u * 18, getHeight() - 82 + v * 18,
 							invPlayer )).setPlayerSide() );
 		}
 
 		setupConfig();
 
-		bindPlayerInventory( ip, 0, getHeight() - /* height of playerinventory */82 );
+		bindPlayerInventory( ip, 0, getHeight() - /* height of player inventory */82 );
 	}
 
 	protected void setupUpgrades()
 	{
-		IInventory upgrades = myte.getInventoryByName( "upgrades" );
+		IInventory upgrades = upgradeable.getInventoryByName( "upgrades" );
 		if ( availableUpgrades() > 0 )
 			addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0, invPlayer )).setNotDraggable() );
 		if ( availableUpgrades() > 1 )
@@ -100,7 +100,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		int y = 40;
 		setupUpgrades();
 
-		IInventory inv = myte.getInventoryByName( "config" );
+		IInventory inv = upgradeable.getInventoryByName( "config" );
 		addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
 
 		if ( supportCapacity() )
@@ -148,14 +148,14 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	{
 		if ( hasToolbox() )
 		{
-			ItemStack currentItem = getPlayerInv().getStackInSlot( tbslot );
+			ItemStack currentItem = getPlayerInv().getStackInSlot( tbSlot );
 
-			if ( currentItem != tbinv.getItemStack() )
+			if ( currentItem != tbInventory.getItemStack() )
 			{
 				if ( currentItem != null )
 				{
-					if ( Platform.isSameItem( tbinv.getItemStack(), currentItem ) )
-						getPlayerInv().setInventorySlotContents( tbslot, tbinv.getItemStack() );
+					if ( Platform.isSameItem( tbInventory.getItemStack(), currentItem ) )
+						getPlayerInv().setInventorySlotContents( tbSlot, tbInventory.getItemStack() );
 					else
 						isContainerValid = false;
 				}
@@ -172,7 +172,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 
 		if ( Platform.isServer() )
 		{
-			IConfigManager cm = this.myte.getConfigManager();
+			IConfigManager cm = this.upgradeable.getConfigManager();
 			loadSettingsFromHost( cm );
 		}
 
@@ -196,7 +196,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		this.fzMode = (FuzzyMode) cm.getSetting( Settings.FUZZY_MODE );
 		this.mmMode = (ModMode) cm.getSetting( Settings.MOD_MODE );
 		this.rsMode = (RedstoneMode) cm.getSetting( Settings.REDSTONE_CONTROLLED );
-		if ( myte instanceof PartExportBus )
+		if ( upgradeable instanceof PartExportBus )
 			this.cMode = (YesNo) cm.getSetting( Settings.CRAFT_ONLY );
 	}
 
@@ -207,13 +207,13 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 
 	public boolean hasToolbox()
 	{
-		return tbinv != null;
+		return tbInventory != null;
 	}
 
 	@Override
 	public boolean isSlotEnabled(int idx)
 	{
-		int upgrades = myte.getInstalledUpgrades( Upgrades.CAPACITY );
+		int upgrades = upgradeable.getInstalledUpgrades( Upgrades.CAPACITY );
 
 		if ( idx == 1 && upgrades > 0 )
 			return true;

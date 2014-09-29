@@ -22,7 +22,7 @@ public class GridStorage implements IGridStorage
 	final NBTTagCompound data;
 
 	public boolean isDirty = false;
-	private WeakHashMap<GridStorage,Boolean> divlist = new WeakHashMap();
+	private WeakHashMap<GridStorage,Boolean> divided = new WeakHashMap<GridStorage,Boolean>();
 	final GridStorageSearch mySearchEntry; // keep myself in the list until I'm
 											// lost...
 
@@ -52,8 +52,8 @@ public class GridStorage implements IGridStorage
 
 		try
 		{
-			byte[] dbata = javax.xml.bind.DatatypeConverter.parseBase64Binary( input );
-			myTag = CompressedStreamTools.readCompressed( new ByteArrayInputStream( dbata ) );
+			byte[] byteData = javax.xml.bind.DatatypeConverter.parseBase64Binary( input );
+			myTag = CompressedStreamTools.readCompressed( new ByteArrayInputStream( byteData ) );
 		}
 		catch (Throwable t)
 		{
@@ -125,12 +125,12 @@ public class GridStorage implements IGridStorage
 
 	public void addDivided(GridStorage gs)
 	{
-		divlist.put( gs, true );
+		divided.put( gs, true );
 	}
 
 	public boolean hasDivided(GridStorage myStorage)
 	{
-		return divlist.containsKey( myStorage );
+		return divided.containsKey( myStorage );
 	}
 
 	public void remove()

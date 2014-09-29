@@ -44,12 +44,12 @@ public class ApiPart implements IPartHelper
 
 	int classNum = 1;
 
-	HashMap<String, Class> TileImplementations = new HashMap();
-	HashMap<String, ClassNode> readerCache = new HashMap();
-	HashMap<Class, String> interfaces2Layer = new HashMap();
-	HashMap<String, Class> roots = new HashMap();
+	HashMap<String, Class> TileImplementations = new HashMap<String, Class>();
+	HashMap<String, ClassNode> readerCache = new HashMap<String, ClassNode>();
+	HashMap<Class, String> interfaces2Layer = new HashMap<Class, String>();
+	HashMap<String, Class> roots = new HashMap<String, Class>();
 
-	List<String> desc = new LinkedList();
+	List<String> desc = new LinkedList<String>();
 
 	public void initFMPSupport()
 	{
@@ -247,26 +247,26 @@ public class ApiPart implements IPartHelper
 		// n.accept( cw );
 
 		// n.accept( new TraceClassVisitor( new PrintWriter( System.out ) ) );
-		byte[] barray = cw.toByteArray();
-		int size = barray.length;
-		Class nclass = loadClass( n.name.replace( "/", "." ), barray );
+		byte[] byteArray = cw.toByteArray();
+		int size = byteArray.length;
+		Class clazz = loadClass( n.name.replace( "/", "." ), byteArray );
 
 		try
 		{
-			Object fish = nclass.newInstance();
+			Object fish = clazz.newInstance();
 			Class rootC = Class.forName( root );
 
-			boolean bads = false;
+			boolean hasError = false;
 
 			if ( !rootC.isInstance( fish ) )
 			{
-				bads = true;
+				hasError = true;
 				AELog.severe( "Error, Expected layer to implement " + root + " did not." );
 			}
 
 			if ( fish instanceof LayerBase )
 			{
-				bads = true;
+				hasError = true;
 				AELog.severe( "Error, Expected layer to NOT implement LayerBase but it DID." );
 			}
 
@@ -274,18 +274,18 @@ public class ApiPart implements IPartHelper
 			{
 				if ( !(fish instanceof TileCableBus) )
 				{
-					bads = true;
+					hasError = true;
 					AELog.severe( "Error, Expected layer to implement TileCableBus did not." );
 				}
 
 				if ( !(fish instanceof TileEntity) )
 				{
-					bads = true;
+					hasError = true;
 					AELog.severe( "Error, Expected layer to implement TileEntity did not." );
 				}
 			}
 
-			if ( !bads )
+			if ( !hasError )
 			{
 				AELog.info( "Layer: " + n.name + " loaded successfully - " + size + " bytes" );
 			}
@@ -297,8 +297,8 @@ public class ApiPart implements IPartHelper
 			AELog.error( t );
 		}
 
-		roots.put( fullPath, nclass );
-		return nclass;
+		roots.put( fullPath, clazz );
+		return clazz;
 	}
 
 	private void processNode(AbstractInsnNode next, String nePar)

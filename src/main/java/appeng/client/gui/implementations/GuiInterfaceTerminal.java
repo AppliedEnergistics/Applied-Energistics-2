@@ -25,11 +25,11 @@ import com.google.common.collect.HashMultimap;
 public class GuiInterfaceTerminal extends AEBaseGui
 {
 
-	HashMap<Long, ClientDCInternalInv> byId = new HashMap();
+	HashMap<Long, ClientDCInternalInv> byId = new HashMap<Long, ClientDCInternalInv>();
 	HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();
-	ArrayList<String> names = new ArrayList();
+	ArrayList<String> names = new ArrayList<String>();
 
-	ArrayList<Object> lines = new ArrayList();
+	ArrayList<Object> lines = new ArrayList<Object>();
 
 	private int getTotalRows()
 	{
@@ -43,7 +43,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		ySize = 222;
 	}
 
-	LinkedList<SlotDisconnected> dcSlots = new LinkedList();
+	LinkedList<SlotDisconnected> dcSlots = new LinkedList<SlotDisconnected>();
 
 	@Override
 	public void initGui()
@@ -178,17 +178,17 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 			Collections.sort( names );
 
-			lines = new ArrayList( getTotalRows() );
+			lines = new ArrayList<Object>( getTotalRows() );
 			for (String n : names)
 			{
 				lines.add( n );
 
-				ArrayList<ClientDCInternalInv> lset = new ArrayList();
-				lset.addAll( byName.get( n ) );
+				ArrayList<ClientDCInternalInv> clientInventories = new ArrayList<ClientDCInternalInv>();
+				clientInventories.addAll( byName.get( n ) );
 
-				Collections.sort( lset );
+				Collections.sort( clientInventories );
 
-				for (ClientDCInternalInv i : lset)
+				for (ClientDCInternalInv i : clientInventories)
 				{
 					lines.add( i );
 				}

@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -67,8 +68,8 @@ import com.google.common.collect.SetMultimap;
 public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler
 {
 
-	HashSet<CraftingCPUCluster> cpuClusters = new HashSet();
-	HashSet<ICraftingProvider> providers = new HashSet();
+	HashSet<CraftingCPUCluster> cpuClusters = new HashSet<CraftingCPUCluster>();
+	HashSet<ICraftingProvider> providers = new HashSet<ICraftingProvider>();
 
 	private HashMap<IGridNode, ICraftingWatcher> watchers = new HashMap<IGridNode, ICraftingWatcher>();
 
@@ -76,14 +77,14 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	IStorageGrid sg;
 	IEnergyGrid eg;
 
-	HashMap<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap();
-	HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>> craftableItems = new HashMap();
-	HashSet<IAEItemStack> emitableItems = new HashSet();
-	HashMap<String, CraftingLinkNexus> links = new HashMap();
+	HashMap<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap<ICraftingPatternDetails, List<ICraftingMedium>>();
+	HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>> craftableItems = new HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>>();
+	HashSet<IAEItemStack> emitableItems = new HashSet<IAEItemStack>();
+	HashMap<String, CraftingLinkNexus> links = new HashMap<String, CraftingLinkNexus>();
 
 	boolean updateList = false;
-	final private SetMultimap<IAEStack, ItemWatcher> interests = HashMultimap.create();
-	final public GenericInterestManager interestManager = new GenericInterestManager( interests );
+	final private SetMultimap<IAEStack, CraftingWatcher> interests = HashMultimap.create();
+	final public GenericInterestManager<CraftingWatcher> interestManager = new GenericInterestManager<CraftingWatcher>( interests );
 
 	class ActiveCpuIterator implements Iterator<ICraftingCPU>
 	{
@@ -127,7 +128,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			// no..
 		}
 
-	};
+	}
 
 	@Override
 	public ImmutableSet<ICraftingCPU> getCpus()
@@ -261,13 +262,13 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		for (IGridNode cst : grid.getMachines( TileCraftingStorageTile.class ))
 		{
 			TileCraftingStorageTile tile = (TileCraftingStorageTile) cst.getMachine();
-			CraftingCPUCluster clust = (CraftingCPUCluster) tile.getCluster();
-			if ( clust != null )
+			CraftingCPUCluster cluster = (CraftingCPUCluster) tile.getCluster();
+			if ( cluster != null )
 			{
-				cpuClusters.add( clust );
+				cpuClusters.add( cluster );
 
-				if ( clust.myLastLink != null )
-					addLink( (CraftingLink) clust.myLastLink );
+				if ( cluster.myLastLink != null )
+					addLink( (CraftingLink) cluster.myLastLink );
 			}
 		}
 	}
@@ -286,13 +287,21 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			details.add( medium );
 	}
 
+	static Comparator<ICraftingPatternDetails> comp = new Comparator<ICraftingPatternDetails>(){
+		@Override
+		public int compare(ICraftingPatternDetails o1,
+				ICraftingPatternDetails o2) {
+			return o2.getPriority() - o1.getPriority();
+		}
+	};
+
 	private void updatePatterns()
 	{
 		HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>> oldItems = craftableItems;
 
 		// erase list.
 		craftingMethods.clear();
-		craftableItems = new HashMap();
+		craftableItems = new HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>>();
 		emitableItems.clear();
 
 		// update the stuff that was in the list...
@@ -302,7 +311,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		for (ICraftingProvider cp : providers)
 			cp.provideCrafting( this );
 
-		HashMap<IAEItemStack, Set<ICraftingPatternDetails>> tmpCraft = new HashMap();
+		HashMap<IAEItemStack, Set<ICraftingPatternDetails>> tmpCraft = new HashMap<IAEItemStack, Set<ICraftingPatternDetails>>();
 
 		// new craftables!
 		for (ICraftingPatternDetails details : craftingMethods.keySet())
@@ -316,7 +325,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 				Set<ICraftingPatternDetails> methods = tmpCraft.get( out );
 
 				if ( methods == null )
-					tmpCraft.put( out, methods = new HashSet() );
+					tmpCraft.put( out, methods = new TreeSet<ICraftingPatternDetails>(comp) );
 
 				methods.add( details );
 			}
@@ -424,10 +433,10 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		if ( job.isSimulation() )
 			return null;
 
-		CraftingCPUCluster cpuClust = null;
+		CraftingCPUCluster cpuCluster = null;
 
 		if ( target instanceof CraftingCPUCluster )
-			cpuClust = (CraftingCPUCluster) target;
+			cpuCluster = (CraftingCPUCluster) target;
 
 		if ( target == null )
 		{
@@ -462,12 +471,12 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			} );
 
 			if ( !validCpusClusters.isEmpty() )
-				cpuClust = validCpusClusters.get( 0 );
+				cpuCluster = validCpusClusters.get( 0 );
 		}
 
-		if ( cpuClust != null )
+		if ( cpuCluster != null )
 		{
-			return cpuClust.submitJob( grid, job, src, requestingMachine );
+			return cpuCluster.submitJob( grid, job, src, requestingMachine );
 		}
 
 		return null;

@@ -57,7 +57,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			return blk == ((Combo) obj).blk && meta == ((Combo) obj).meta;
 		}
 
-	};
+	}
 
 	static private Hashtable<Combo, InWorldToolOperationResult> heatUp;
 	static private Hashtable<Combo, InWorldToolOperationResult> coolDown;
@@ -137,7 +137,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	public ToolEntropyManipulator() {
 		super( ToolEntropyManipulator.class, null );
 		setFeature( EnumSet.of( AEFeature.EntropyManipulator, AEFeature.PoweredTools ) );
-		maxStoredPower = AEConfig.instance.manipulator_battery;
+		maxStoredPower = AEConfig.instance.entropyManipulatorBattery;
 
 		coolDown = new Hashtable<Combo, InWorldToolOperationResult>();
 		coolDown.put( new Combo( Blocks.stone, 0 ), new InWorldToolOperationResult( new ItemStack( Blocks.cobblestone ) ) );
@@ -146,7 +146,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		coolDown.put( new Combo( Blocks.flowing_lava, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult( new ItemStack( Blocks.obsidian ) ) );
 		coolDown.put( new Combo( Blocks.grass, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult( new ItemStack( Blocks.dirt ) ) );
 
-		List<ItemStack> snowBalls = new ArrayList();
+		List<ItemStack> snowBalls = new ArrayList<ItemStack>();
 		snowBalls.add( new ItemStack( Items.snowball ) );
 		coolDown.put( new Combo( Blocks.flowing_water, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult( null, snowBalls ) );
 		coolDown.put( new Combo( Blocks.water, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult( new ItemStack( Blocks.ice ) ) );

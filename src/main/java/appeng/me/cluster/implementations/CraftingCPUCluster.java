@@ -1,11 +1,7 @@
 package appeng.me.cluster.implementations;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -67,7 +63,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 		long value;
 
-	};
+	}
 
 	/**
 	 * crafting job info
@@ -83,7 +79,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	IItemList<IAEItemStack> waitingFor = AEApi.instance().storage().createItemList();
 
 	// instance sate
-	final private LinkedList<TileCraftingTile> tiles = new LinkedList();
+	final private LinkedList<TileCraftingTile> tiles = new LinkedList<TileCraftingTile>();
 	final private LinkedList<TileCraftingTile> storage = new LinkedList<TileCraftingTile>();
 	final private LinkedList<TileCraftingMonitorTile> status = new LinkedList<TileCraftingMonitorTile>();
 
@@ -118,9 +114,9 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		while (i.hasNext())
 		{
 			Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object> o = i.next();
-			IMEMonitorHandlerReceiver<IAEItemStack> recv = o.getKey();
-			if ( recv.isValid( o.getValue() ) )
-				recv.postChange( null, single, src );
+			IMEMonitorHandlerReceiver<IAEItemStack> receiver = o.getKey();
+			if ( receiver.isValid( o.getValue() ) )
+				receiver.postChange( null, single, src );
 			else
 				i.remove();
 		}
@@ -290,9 +286,11 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		if ( sg.interestManager.containsKey( diff ) )
 		{
 			Set<CraftingWatcher> list = sg.interestManager.get( diff );
+
 			if ( !list.isEmpty() )
 			{
 				for (CraftingWatcher iw : list)
+
 					iw.getHost().onRequestChange( sg, diff );
 			}
 		}
@@ -552,21 +550,21 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		{
 			do
 			{
-				didsomething = false;
+				somethingChanged = false;
 				executeCrafting( eg, cc );
 			}
-			while (didsomething && remainingOperations > 0);
+			while (somethingChanged && remainingOperations > 0);
 		}
 		usedOps[2] = usedOps[1];
 		usedOps[1] = usedOps[0];
 		usedOps[0] = started - remainingOperations;
 
-		if ( remainingOperations > 0 && didsomething == false )
+		if ( remainingOperations > 0 && somethingChanged == false )
 			waiting = true;
 	}
 
 	private int remainingOperations;
-	private boolean didsomething;
+	private boolean somethingChanged;
 
 	private void executeCrafting(IEnergyGrid eg, CraftingGridCache cc)
 	{
@@ -677,7 +675,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 						if ( m.pushPattern( details, ic ) )
 						{
-							didsomething = true;
+							somethingChanged = true;
 							remainingOperations--;
 
 							for (IAEItemStack out : details.getCondensedOutputs())
@@ -802,7 +800,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 				if ( requestingMachine == null )
 					return myLastLink;
 
-				ICraftingLink whatLink = new CraftingLink( generateLinkData( craftID, requestingMachine == null, true ), requestingMachine );
+				ICraftingLink whatLink = new CraftingLink( generateLinkData( craftID, false, true ), requestingMachine );
 
 				submitLink( myLastLink );
 				submitLink( whatLink );

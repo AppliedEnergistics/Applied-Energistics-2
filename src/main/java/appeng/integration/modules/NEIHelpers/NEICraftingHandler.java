@@ -24,12 +24,12 @@ public class NEICraftingHandler implements IOverlayHandler
 
 	public NEICraftingHandler(int x, int y)
 	{
-		offsetx = x;
-		offsety = y;
+		offsetX = x;
+		offsetY = y;
 	}
 
-	int offsetx;
-	int offsety;
+	int offsetX;
+	int offsetY;
 
 	@Override
 	public void overlayRecipe(GuiContainer gui, IRecipeHandler recipe, int recipeIndex, boolean shift)
@@ -57,10 +57,10 @@ public class NEICraftingHandler implements IOverlayHandler
 			{
 				for (int i = 0; i < ingredients.size(); i++)// identify slots
 				{
-					PositionedStack pstack = ingredients.get( i );
-					int col = (pstack.relx - 25) / 18;
-					int row = (pstack.rely - 6) / 18;
-					if ( pstack.items != null && pstack.items.length > 0 )
+					PositionedStack positionedStack = ingredients.get( i );
+					int col = (positionedStack.relx - 25) / 18;
+					int row = (positionedStack.rely - 6) / 18;
+					if ( positionedStack.items != null && positionedStack.items.length > 0 )
 					{
 						for (Slot slot : (List<Slot>) gui.inventorySlots.inventorySlots)
 						{
@@ -69,26 +69,26 @@ public class NEICraftingHandler implements IOverlayHandler
 								Slot ctSlot = (Slot) slot;
 								if ( ctSlot.getSlotIndex() == col + row * 3 )
 								{
-									NBTTagList ilist = new NBTTagList();
-									List<ItemStack> list = new LinkedList();
+									NBTTagList tags = new NBTTagList();
+									List<ItemStack> list = new LinkedList<ItemStack>();
 
 									// prefer pure crystals.
-									for (int x = 0; x < pstack.items.length; x++)
+									for (int x = 0; x < positionedStack.items.length; x++)
 									{
-										if ( Platform.isRecipePrioritized( pstack.items[x] ) )
-											list.add( 0, pstack.items[x] );
+										if ( Platform.isRecipePrioritized( positionedStack.items[x] ) )
+											list.add( 0, positionedStack.items[x] );
 										else
-											list.add( pstack.items[x] );
+											list.add( positionedStack.items[x] );
 									}
 
 									for (ItemStack is : list)
 									{
-										NBTTagCompound inbt = new NBTTagCompound();
-										is.writeToNBT( inbt );
-										ilist.appendTag( inbt );
+										NBTTagCompound tag = new NBTTagCompound();
+										is.writeToNBT( tag );
+										tags.appendTag( tag );
 									}
 
-									recipe.setTag( "#" + ctSlot.getSlotIndex(), ilist );
+									recipe.setTag( "#" + ctSlot.getSlotIndex(), tags );
 									break;
 								}
 							}

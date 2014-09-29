@@ -35,12 +35,6 @@ public class GuiStorageBus extends GuiUpgradeable
 	}
 
 	@Override
-	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
-	{
-		super.drawBG( offsetX, offsetY, mouseX, mouseY );
-	}
-
-	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
 		fontRendererObj.drawString( getGuiDisplayName( GuiText.StorageBus.getLocal() ), 8, 6, 4210752 );
@@ -96,9 +90,6 @@ public class GuiStorageBus extends GuiUpgradeable
 
 			else if ( btn == priority )
 				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
-
-			else if ( btn == fuzzyMode )
-				NetworkHandler.instance.sendToServer( new PacketConfigButton( fuzzyMode.getSetting(), backwards ) );
 
 			else if ( btn == rwMode )
 				NetworkHandler.instance.sendToServer( new PacketConfigButton( rwMode.getSetting(), backwards ) );

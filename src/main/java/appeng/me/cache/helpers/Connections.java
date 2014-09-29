@@ -10,7 +10,7 @@ public class Connections implements Callable
 {
 
 	final private PartP2PTunnelME me;
-	final public HashMap<IGridNode, TunnelConnection> connections = new HashMap();
+	final public HashMap<IGridNode, TunnelConnection> connections = new HashMap<IGridNode, TunnelConnection>();
 
 	public boolean create = false;
 	public boolean destroy = false;
@@ -39,4 +39,4 @@ public class Connections implements Callable
 		destroy = false;
 	}
 
-};
+}

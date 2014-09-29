@@ -209,7 +209,7 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public void postinit()
+	public void postInit()
 	{
 		RenderingRegistry.registerBlockHandler( WorldRender.instance );
 		RenderManager.instance.entityRenderMap.put( EntityTinyTNTPrimed.class, new RenderTinyTNTPrimed() );
@@ -281,7 +281,7 @@ public class ClientHelper extends ServerHelper
 	{
 		if ( Platform.isClient() )
 		{
-			List<EntityPlayer> o = new ArrayList();
+			List<EntityPlayer> o = new ArrayList<EntityPlayer>();
 			o.add( Minecraft.getMinecraft().thePlayer );
 			return o;
 		}

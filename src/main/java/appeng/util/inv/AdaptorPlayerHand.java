@@ -218,6 +218,6 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	@Override
 	public Iterator<ItemSlot> iterator()
 	{
-		return new NullIterator();
+		return new NullIterator<ItemSlot>();
 	}
 }

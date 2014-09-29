@@ -55,14 +55,11 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	{
 		if ( (outputId.equals( "inscriber" )) && (getClass() == NEIInscriberRecipeHandler.class) )
 		{
-			for (InscriberRecipe irecipe : Inscribe.recipes)
+			for (InscriberRecipe recipe : Inscribe.recipes)
 			{
-				CachedInscriberRecipe recipe = new CachedInscriberRecipe( irecipe );
-				if ( recipe != null )
-				{
-					recipe.computeVisuals();
-					this.arecipes.add( recipe );
-				}
+				CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
+				cachedRecipe.computeVisuals();
+				this.arecipes.add( cachedRecipe );
 			}
 		}
 		else
@@ -73,30 +70,30 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for (InscriberRecipe irecipe : Inscribe.recipes)
+		for (InscriberRecipe recipe : Inscribe.recipes)
 		{
-			if ( NEIServerUtils.areStacksSameTypeCrafting( irecipe.output, result ) )
+			if ( NEIServerUtils.areStacksSameTypeCrafting( recipe.output, result ) )
 			{
-				CachedInscriberRecipe recipe = new CachedInscriberRecipe( irecipe );
-				recipe.computeVisuals();
-				this.arecipes.add( recipe );
+				CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
+				cachedRecipe.computeVisuals();
+				this.arecipes.add( cachedRecipe );
 			}
 		}
 	}
 
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for (InscriberRecipe irecipe : Inscribe.recipes)
+		for (InscriberRecipe recipe : Inscribe.recipes)
 		{
-			CachedInscriberRecipe recipe = new CachedInscriberRecipe( irecipe );
+			CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
 
-			if ( (recipe != null) && (recipe.contains( recipe.ingredients, ingredient.getItem() )) )
+			if ( (cachedRecipe.contains( cachedRecipe.ingredients, ingredient.getItem() )) )
 			{
-				recipe.computeVisuals();
-				if ( recipe.contains( recipe.ingredients, ingredient ) )
+				cachedRecipe.computeVisuals();
+				if ( cachedRecipe.contains( cachedRecipe.ingredients, ingredient ) )
 				{
-					recipe.setIngredientPermutation( recipe.ingredients, ingredient );
-					this.arecipes.add( recipe );
+					cachedRecipe.setIngredientPermutation( cachedRecipe.ingredients, ingredient );
+					this.arecipes.add( cachedRecipe );
 				}
 			}
 		}
@@ -138,18 +135,18 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 		public ArrayList<PositionedStack> ingredients;
 		public PositionedStack result;
 
-		public CachedInscriberRecipe(InscriberRecipe irecipe) {
-			result = new PositionedStack( irecipe.output, 108, 29 );
+		public CachedInscriberRecipe(InscriberRecipe recipe) {
+			result = new PositionedStack( recipe.output, 108, 29 );
 			ingredients = new ArrayList<PositionedStack>();
 
-			if ( irecipe.plateA != null )
-				ingredients.add( new PositionedStack( irecipe.plateA, 40, 5 ) );
+			if ( recipe.plateA != null )
+				ingredients.add( new PositionedStack( recipe.plateA, 40, 5 ) );
 
-			if ( irecipe.imprintable != null )
-				ingredients.add( new PositionedStack( irecipe.imprintable, 40 + 18, 28 ) );
+			if ( recipe.imprintable != null )
+				ingredients.add( new PositionedStack( recipe.imprintable, 40 + 18, 28 ) );
 
-			if ( irecipe.plateB != null )
-				ingredients.add( new PositionedStack( irecipe.plateB, 40, 51 ) );
+			if ( recipe.plateB != null )
+				ingredients.add( new PositionedStack( recipe.plateB, 40, 51 ) );
 		}
 
 		@Override

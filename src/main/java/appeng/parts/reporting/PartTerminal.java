@@ -77,7 +77,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 		cm.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 	}
 
-	public GuiBridge getGui()
+	public GuiBridge getGui( EntityPlayer player )
 	{
 		return GuiBridge.GUI_ME;
 	}
@@ -92,7 +92,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 				if ( Platform.isClient() )
 					return true;
 
-				Platform.openGUI( player, getHost().getTile(), side, getGui() );
+				Platform.openGUI( player, getHost().getTile(), side, getGui( player ) );
 
 				return true;
 			}
@@ -151,5 +151,4 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	{
 		host.markForSave();
 	}
-
 }

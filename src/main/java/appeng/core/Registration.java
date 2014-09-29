@@ -9,7 +9,6 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
 import appeng.api.AEApi;
@@ -403,17 +402,17 @@ public class Registration
 		items.itemFacade = addFeature( ItemFacade.class );
 		items.itemCrystalSeed = addFeature( ItemCrystalSeed.class );
 
-		ColoredItemDefinition pbreg, pbregl;
-		items.itemPaintBall = pbreg = new ColoredItemDefinition();
-		items.itemLumenPaintBall = pbregl = new ColoredItemDefinition();
+		ColoredItemDefinition paintBall, lumenPaintBall;
+		items.itemPaintBall = paintBall = new ColoredItemDefinition();
+		items.itemLumenPaintBall = lumenPaintBall = new ColoredItemDefinition();
 		AEItemDefinition pb = addFeature( ItemPaintBall.class );
 
 		for (AEColor c : AEColor.values())
 		{
 			if ( c != AEColor.Transparent )
 			{
-				pbreg.add( c, new ItemStackSrc( pb.item(), c.ordinal() ) );
-				pbregl.add( c, new ItemStackSrc( pb.item(), 20 + c.ordinal() ) );
+				paintBall.add( c, new ItemStackSrc( pb.item(), c.ordinal() ) );
+				lumenPaintBall.add( c, new ItemStackSrc( pb.item(), 20 + c.ordinal() ) );
 			}
 		}
 
@@ -519,7 +518,7 @@ public class Registration
 	public void Init(FMLInitializationEvent event)
 	{
 		// Perform ore camouflage!
-		ItemMultiMaterial.instance.unduplicate();
+		ItemMultiMaterial.instance.makeUnique();
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.CustomRecipes ) )
 			recipeHandler.parseRecipes( new ConfigLoader( AppEng.instance.getConfigPath() ), "index.recipe" );
@@ -591,7 +590,7 @@ public class Registration
 		// default settings..
 		((P2PTunnelRegistry) AEApi.instance().registries().p2pTunnel()).configure();
 
-		// add to localizaiton..
+		// add to localization..
 		PlayerMessages.values();
 		GuiText.values();
 
@@ -659,6 +658,9 @@ public class Registration
 
 		// Molecular Assembler
 		Upgrades.SPEED.registerItem( AEApi.instance().blocks().blockMolecularAssembler.stack( 1 ), 5 );
+
+		// Inscriber
+		Upgrades.SPEED.registerItem( AEApi.instance().blocks().blockInscriber.stack( 1 ), 3 );
 
 		AEApi.instance().registries().wireless().registerWirelessHandler( (IWirelessTermHandler) AEApi.instance().items().itemWirelessTerminal.item() );
 

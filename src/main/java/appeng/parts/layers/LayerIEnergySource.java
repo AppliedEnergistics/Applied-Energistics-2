@@ -84,7 +84,7 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 				interested++;
 			}
 		}
-		return interested == 1;// if more then one tile is interested we need to abandonship...
+		return interested == 1;// if more then one tile is interested we need to abandon...
 	}
 
 	@Override
