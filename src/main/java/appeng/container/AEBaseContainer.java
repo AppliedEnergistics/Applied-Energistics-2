@@ -360,28 +360,32 @@ public abstract class AEBaseContainer extends Container
 				tis = shiftStoreItem( tis );
 
 				// target slots in the container...
-				for (int x = 0; x < this.inventorySlots.size(); x++)
+				for (Object inventorySlot : this.inventorySlots)
 				{
-					AppEngSlot cs = (AppEngSlot) this.inventorySlots.get( x );
+					AppEngSlot cs = (AppEngSlot) inventorySlot;
 
 					if ( !(cs.isPlayerSide()) && !(cs instanceof SlotFake) && !(cs instanceof SlotCraftingMatrix) )
 					{
 						if ( cs.isItemValid( tis ) )
+						{
 							selectedSlots.add( cs );
+						}
 					}
 				}
 			}
 			else
 			{
 				// target slots in the container...
-				for (int x = 0; x < this.inventorySlots.size(); x++)
+				for (Object inventorySlot : this.inventorySlots)
 				{
-					AppEngSlot cs = (AppEngSlot) this.inventorySlots.get( x );
+					AppEngSlot cs = (AppEngSlot) inventorySlot;
 
 					if ( (cs.isPlayerSide()) && !(cs instanceof SlotFake) && !(cs instanceof SlotCraftingMatrix) )
 					{
 						if ( cs.isItemValid( tis ) )
+						{
 							selectedSlots.add( cs );
+						}
 					}
 				}
 			}
@@ -394,15 +398,17 @@ public abstract class AEBaseContainer extends Container
 				if ( tis != null )
 				{
 					// target slots in the container...
-					for (int x = 0; x < this.inventorySlots.size(); x++)
+					for (Object inventorySlot : this.inventorySlots)
 					{
-						AppEngSlot cs = (AppEngSlot) this.inventorySlots.get( x );
+						AppEngSlot cs = (AppEngSlot) inventorySlot;
 						ItemStack dest = cs.getStack();
 
 						if ( !(cs.isPlayerSide()) && cs instanceof SlotFake )
 						{
 							if ( Platform.isSameItemPrecise( dest, tis ) )
+							{
 								return null;
+							}
 							else if ( dest == null )
 							{
 								cs.putStack( tis.copy() );
@@ -563,12 +569,14 @@ public abstract class AEBaseContainer extends Container
 
 		if ( Platform.isServer() )
 		{
-			for (int i = 0; i < this.crafters.size(); ++i)
+			for (Object crafter : this.crafters)
 			{
-				ICrafting icrafting = (ICrafting) this.crafters.get( i );
+				ICrafting icrafting = (ICrafting) crafter;
 
 				for (SyncData sd : syncData.values())
+				{
 					sd.tick( icrafting );
+				}
 			}
 		}
 

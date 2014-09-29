@@ -35,9 +35,13 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 				cols = input.get( 0 ).size();
 				if ( cols <= 3 && cols >= 1 )
 				{
-					for (int x = 0; x < input.size(); x++)
-						if ( input.get( x ).size() != cols )
+					for (List<IIngredient> anInput : input)
+					{
+						if ( anInput.size() != cols )
+						{
 							throw new RecipeError( "all rows in a shaped crafting recipe must contain the same number of ingredients." );
+						}
+					}
 
 					inputs = input;
 					this.output = output.get( 0 ).get( 0 );

@@ -134,9 +134,9 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 					wirelessOut.putStack( term );
 
 					// update the two slots in question...
-					for (int i = 0; i < this.crafters.size(); ++i)
+					for (Object crafter : this.crafters)
 					{
-						ICrafting icrafting = (ICrafting) this.crafters.get( i );
+						ICrafting icrafting = (ICrafting) crafter;
 						((EntityPlayerMP) icrafting).sendSlotContents( this, wirelessIn.slotNumber, wirelessIn.getStack() );
 						((EntityPlayerMP) icrafting).sendSlotContents( this, wirelessOut.slotNumber, wirelessOut.getStack() );
 					}

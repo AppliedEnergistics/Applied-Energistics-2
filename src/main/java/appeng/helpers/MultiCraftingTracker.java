@@ -150,10 +150,12 @@ public class MultiCraftingTracker
 		jobs[slot] = l;
 
 		boolean hasStuff = false;
-		for (int x = 0; x < jobs.length; x++)
+		for (Future<ICraftingJob> job : jobs)
 		{
-			if ( jobs[x] != null )
+			if ( job != null )
+			{
 				hasStuff = true;
+			}
 		}
 
 		if ( hasStuff == false )

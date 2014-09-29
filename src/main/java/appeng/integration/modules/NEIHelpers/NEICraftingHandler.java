@@ -55,9 +55,8 @@ public class NEICraftingHandler implements IOverlayHandler
 
 			if ( gui instanceof GuiCraftingTerm || gui instanceof GuiPatternTerm )
 			{
-				for (int i = 0; i < ingredients.size(); i++)// identify slots
+				for (PositionedStack positionedStack : ingredients)
 				{
-					PositionedStack positionedStack = ingredients.get( i );
 					int col = (positionedStack.relx - 25) / 18;
 					int row = (positionedStack.rely - 6) / 18;
 					if ( positionedStack.items != null && positionedStack.items.length > 0 )
@@ -76,9 +75,13 @@ public class NEICraftingHandler implements IOverlayHandler
 									for (int x = 0; x < positionedStack.items.length; x++)
 									{
 										if ( Platform.isRecipePrioritized( positionedStack.items[x] ) )
+										{
 											list.add( 0, positionedStack.items[x] );
+										}
 										else
+										{
 											list.add( positionedStack.items[x] );
+										}
 									}
 
 									for (ItemStack is : list)
