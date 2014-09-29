@@ -23,7 +23,7 @@ A Mod about Matter, Energy and using them to conquer the world..
 
 ## License
 
-Applied Energistics 2 is (c) 2013 - 2014 AlgorithmX2 and licensed under LGPL v3. See the LICENSE.txt for details or go to http://www.gnu.org/licenses/lgpl-3.0.txt for more information.
+Applied Energistics 2 is (c) 2013 - 2014 AlgorithmX2 and licensed under LGPL v3. See the LICENSE.txt for details or go to http://www.gnu.org/licenses/lgpl-3.0.txt for more information. Textures and Models are licensed under Creative Commons 3.
 
 ## Downloads
 
