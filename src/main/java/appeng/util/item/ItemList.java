@@ -116,7 +116,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 		if ( st != null )
 		{
 			// st.setPriority( currentPriority );
-			((IAEItemStack) st).setCountRequestable( ((IAEItemStack) st).getCountRequestable() + ((IAEItemStack) option).getCountRequestable() );
+			((IAEItemStack) st).setCountRequestable( st.getCountRequestable() + option.getCountRequestable() );
 			return;
 		}
 

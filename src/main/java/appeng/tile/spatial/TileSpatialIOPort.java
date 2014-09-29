@@ -96,7 +96,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 
 			ItemSpatialStorageCell sc = (ItemSpatialStorageCell) cell.getItem();
 
-			SpatialPylonCache spc = (SpatialPylonCache) gi.getCache( ISpatialCache.class );
+			SpatialPylonCache spc = gi.getCache( ISpatialCache.class );
 			if ( spc.hasRegion() && spc.isValidRegion() )
 			{
 				double req = spc.requiredPower();
