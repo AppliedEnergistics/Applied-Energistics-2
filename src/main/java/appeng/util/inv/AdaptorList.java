@@ -52,16 +52,18 @@ public class AdaptorList extends InventoryAdaptor
 	@Override
 	public ItemStack simulateSimilarRemove(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination dest)
 	{
-		int s = i.size();
-		for (int x = 0; x < s; x++)
+		for (ItemStack is : i)
 		{
-			ItemStack is = i.get( x );
 			if ( is != null && (filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode )) )
 			{
 				if ( how_many > is.stackSize )
+				{
 					how_many = is.stackSize;
+				}
 				if ( dest != null && !dest.canInsert( is ) )
+				{
 					how_many = 0;
+				}
 
 				if ( how_many > 0 )
 				{
@@ -109,16 +111,18 @@ public class AdaptorList extends InventoryAdaptor
 	@Override
 	public ItemStack simulateRemove(int how_many, ItemStack filter, IInventoryDestination dest)
 	{
-		int s = i.size();
-		for (int x = 0; x < s; x++)
+		for (ItemStack is : i)
 		{
-			ItemStack is = i.get( x );
 			if ( is != null && (filter == null || Platform.isSameItemPrecise( is, filter )) )
 			{
 				if ( how_many > is.stackSize )
+				{
 					how_many = is.stackSize;
+				}
 				if ( dest != null && !dest.canInsert( is ) )
+				{
 					how_many = 0;
+				}
 
 				if ( how_many > 0 )
 				{
@@ -142,10 +146,8 @@ public class AdaptorList extends InventoryAdaptor
 
 		ItemStack left = A.copy();
 
-		int s = i.size();
-		for (int x = 0; x < s; x++)
+		for (ItemStack is : i)
 		{
-			ItemStack is = i.get( x );
 			if ( Platform.isSameItem( is, left ) )
 			{
 				is.stackSize += left.stackSize;
@@ -166,13 +168,12 @@ public class AdaptorList extends InventoryAdaptor
 	@Override
 	public boolean containsItems()
 	{
-
-		int s = i.size();
-		for (int x = 0; x < s; x++)
+		for (ItemStack is : i)
 		{
-			ItemStack is = i.get( x );
 			if ( is != null )
+			{
 				return true;
+			}
 		}
 		return false;
 	}

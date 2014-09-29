@@ -16,11 +16,13 @@ public class WrapperInventoryRange implements IInventory
 		if ( s.length > 0 )
 		{
 			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < s.length; i++)
+			for (int value : s)
 			{
 				if ( sb.length() > 0 )
+				{
 					sb.append( separator );
-				sb.append( s[i] );
+				}
+				sb.append( value );
 			}
 			return sb.toString();
 		}
