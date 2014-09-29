@@ -574,7 +574,9 @@ public abstract class AEBaseContainer extends Container
 				ICrafting icrafting = (ICrafting) crafter;
 
 				for (SyncData sd : syncData.values())
+				{
 					sd.tick( icrafting );
+				}
 			}
 		}
 
