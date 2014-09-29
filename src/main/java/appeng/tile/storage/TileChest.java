@@ -576,14 +576,14 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		{
 			try
 			{
-				return Arrays.asList( new IMEInventoryHandler[] { getHandler( channel ) } );
+				return Arrays.asList( getHandler( channel ) );
 			}
 			catch (ChestNoHandler e)
 			{
 				// :P
 			}
 		}
-		return new ArrayList();
+		return new ArrayList<IMEInventoryHandler>();
 	}
 
 	@Override

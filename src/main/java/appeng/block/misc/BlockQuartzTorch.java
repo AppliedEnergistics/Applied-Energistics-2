@@ -96,7 +96,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 		double xOff = -0.3 * up.offsetX;
 		double yOff = -0.3 * up.offsetY;
 		double zOff = -0.3 * up.offsetZ;
-		return Arrays.asList( new AxisAlignedBB[] { AxisAlignedBB.getBoundingBox( xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7 ) } );
+		return Arrays.asList( AxisAlignedBB.getBoundingBox( xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7 ) );
 	}
 
 	@Override

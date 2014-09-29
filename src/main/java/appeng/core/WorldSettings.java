@@ -297,7 +297,7 @@ public class WorldSettings extends Configuration
 			{
 				try
 				{
-					manager.scheduleOutboundPacket( (new PacketNewStorageDimension( newDim )).getProxy(), new GenericFutureListener[0] );
+					manager.scheduleOutboundPacket( (new PacketNewStorageDimension( newDim )).getProxy() );
 				}
 				catch (IOException e)
 				{

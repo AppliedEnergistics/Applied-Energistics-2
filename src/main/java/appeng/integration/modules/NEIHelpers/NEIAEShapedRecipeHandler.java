@@ -32,7 +32,7 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadTransferRects()
 	{
-		this.transferRects.add( new TemplateRecipeHandler.RecipeTransferRect( new Rectangle( 84, 23, 24, 18 ), "crafting", new Object[0] ) );
+		this.transferRects.add( new TemplateRecipeHandler.RecipeTransferRect( new Rectangle( 84, 23, 24, 18 ), "crafting" ) );
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return NEIClientUtils.translate( "recipe.shaped", new Object[0] );
+		return NEIClientUtils.translate( "recipe.shaped" );
 	}
 
 	@Override
