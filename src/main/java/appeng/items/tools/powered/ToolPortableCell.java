@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import appeng.api.config.ModMode;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -46,7 +47,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 		Platform.openGUI( player, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_PORTABLE_CELL );
 		return item;
 	}
-	
+
 	@Override
 	public boolean onItemUse(ItemStack item, EntityPlayer player, World w, int x, int y, int z, int side,
 			float hitX, float hitY, float hitZ)
@@ -142,6 +143,20 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
+	public ModMode getModMode(ItemStack is)
+	{
+		String mm = Platform.openNbtData( is ).getString( "ModMode" );
+		try
+		{
+			return ModMode.valueOf( mm );
+		}
+		catch (Throwable t)
+		{
+			return ModMode.FILTER_BY_ITEM;
+		}
+	}
+
+	@Override
 	public String getUnlocalizedGroupName(Set<ItemStack> others, ItemStack is)
 	{
 		return GuiText.StorageCells.getUnlocalized();
@@ -151,6 +166,12 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	public void setFuzzyMode(ItemStack is, FuzzyMode fzMode)
 	{
 		Platform.openNbtData( is ).setString( "FuzzyMode", fzMode.name() );
+	}
+
+	@Override
+	public void setModMode(ItemStack is, ModMode mmMode)
+	{
+		Platform.openNbtData( is ).setString( "ModMode", mmMode.name() );
 	}
 
 	@Override

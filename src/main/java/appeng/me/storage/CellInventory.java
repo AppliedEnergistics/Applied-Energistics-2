@@ -3,6 +3,7 @@ package appeng.me.storage;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import appeng.api.config.ModMode;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -507,6 +508,12 @@ public class CellInventory implements ICellInventory
 	public FuzzyMode getFuzzyMode()
 	{
 		return CellType.getFuzzyMode( this.i );
+	}
+
+	@Override
+	public ModMode getModMode()
+	{
+		return CellType.getModMode( this.i );
 	}
 
 	@Override

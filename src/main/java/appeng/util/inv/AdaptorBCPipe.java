@@ -47,6 +47,18 @@ public class AdaptorBCPipe extends InventoryAdaptor
 	}
 
 	@Override
+	public ItemStack removeModItems(int amount, ItemStack filter, IInventoryDestination destination)
+	{
+		return null;
+	}
+
+	@Override
+	public ItemStack simulateModRemove(int how_many, ItemStack filter, IInventoryDestination destination)
+	{
+		return null;
+	}
+
+	@Override
 	public ItemStack removeItems(int how_many, ItemStack filter, IInventoryDestination destination)
 	{
 		return null;

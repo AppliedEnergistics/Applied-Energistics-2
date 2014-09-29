@@ -2,6 +2,8 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import appeng.api.config.*;
+import appeng.core.sync.packets.PacketConfigButton;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
@@ -9,11 +11,6 @@ import net.minecraft.item.ItemStack;
 
 import org.lwjgl.input.Mouse;
 
-import appeng.api.config.ActionItems;
-import appeng.api.config.CopyMode;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiToggleButton;
@@ -120,6 +117,13 @@ public class GuiCellWorkbench extends GuiUpgradeable
 
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "CellWorkbench.Fuzzy", fz.name() ) );
 			}
+			else if ( btn == modMode )
+			{
+				ModMode mm = (ModMode) modMode.getCurrentValue();
+				mm = Platform.rotateEnum( mm, false, Settings.MOD_MODE.getPossibleValues() );
+
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "CellWorkbench.Mod", mm.name() ) );
+			}
 			else
 				super.actionPerformed( btn );
 		}
@@ -135,7 +139,9 @@ public class GuiCellWorkbench extends GuiUpgradeable
 		partition = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.ACTIONS, ActionItems.WRENCH );
 		copyMode = new GuiToggleButton( this.guiLeft - 18, guiTop + 48, 11 * 16 + 5, 12 * 16 + 5, GuiText.CopyMode.getLocal(), GuiText.CopyModeDesc.getLocal() );
 		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 68, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		modMode = new GuiImgButton( this.guiLeft - 18, guiTop + 88, Settings.MOD_MODE, ModMode.FILTER_BY_ITEM );
 
+		buttonList.add( modMode );
 		buttonList.add( fuzzyMode );
 		buttonList.add( partition );
 		buttonList.add( clear );
@@ -158,6 +164,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 			}
 		}
 		fuzzyMode.setVisibility( hasFuzzy );
+		modMode.setVisibility( hasFuzzy );
 	}
 
 	protected String getBackground()

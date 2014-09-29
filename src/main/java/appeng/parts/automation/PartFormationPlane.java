@@ -3,6 +3,9 @@ package appeng.parts.automation;
 import java.util.ArrayList;
 import java.util.List;
 
+import appeng.api.config.*;
+import appeng.util.prioitylist.ModPriorityList;
+import cpw.mods.fml.common.Mod;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -23,12 +26,6 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.IncludeExclude;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -72,6 +69,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	public PartFormationPlane(ItemStack is) {
 		super( PartFormationPlane.class, is );
 		settings.registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		settings.registerSetting( Settings.MOD_MODE, ModMode.FILTER_BY_ITEM );
 		updateHandler();
 	}
 
@@ -300,7 +298,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		}
 
 		if ( getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-			myHandler.myPartitionList = new FuzzyPriorityList( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) );
+			myHandler.myPartitionList = this.getConfigManager().getSetting( Settings.MOD_MODE ) == ModMode.FILTER_BY_MOD ? new ModPriorityList( priorityList ) : new FuzzyPriorityList( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) );
 		else
 			myHandler.myPartitionList = new PrecisePriorityList( priorityList );
 

@@ -8,7 +8,7 @@ public enum ButtonToolTips
 
 	MatchingMode, TransferDirection, SortOrder, SortBy, View,
 
-	PartitionStorage, Clear, FuzzyMode, OperationMode, TrashController,
+	PartitionStorage, Clear, FuzzyMode, ModMode, OperationMode, TrashController,
 
 	InterfaceBlockingMode, InterfaceCraftingMode, Trash, MatterBalls,
 
@@ -27,6 +27,8 @@ public enum ButtonToolTips
 	ClearSettings, StoredItems, StoredCraftable, Craftable,
 
 	FZPercent_25, FZPercent_50, FZPercent_75, FZPercent_99, FZIgnoreAll,
+
+	FilterByMod, FilterByItem,
 
 	MoveWhenEmpty, MoveWhenWorkIsDone, MoveWhenFull, Disabled, Enable,
 

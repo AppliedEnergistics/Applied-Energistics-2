@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import appeng.api.config.ModMode;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.entity.player.EntityPlayer;
@@ -461,6 +462,20 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	}
 
 	@Override
+	public ModMode getModMode(ItemStack is)
+	{
+		String mm = Platform.openNbtData( is ).getString( "ModMode" );
+		try
+		{
+			return ModMode.valueOf( mm );
+		}
+		catch (Throwable t)
+		{
+			return ModMode.FILTER_BY_ITEM;
+		}
+	}
+
+	@Override
 	public String getUnlocalizedGroupName(Set<ItemStack> others, ItemStack is)
 	{
 		return GuiText.StorageCells.getUnlocalized();
@@ -470,6 +485,12 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	public void setFuzzyMode(ItemStack is, FuzzyMode fzMode)
 	{
 		Platform.openNbtData( is ).setString( "FuzzyMode", fzMode.name() );
+	}
+
+	@Override
+	public void setModMode(ItemStack is, ModMode mmMode)
+	{
+		Platform.openNbtData( is ).setString( "ModMode", mmMode.name() );
 	}
 
 	@Override

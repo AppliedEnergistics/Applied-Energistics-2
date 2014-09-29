@@ -3,6 +3,8 @@ package appeng.parts.misc;
 import java.util.Arrays;
 import java.util.List;
 
+import appeng.api.config.*;
+import appeng.util.prioitylist.ModPriorityList;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -12,12 +14,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.IncludeExclude;
-import appeng.api.config.Settings;
-import appeng.api.config.StorageFilter;
-import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -80,6 +76,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		super( PartStorageBus.class, is );
 		getConfigManager().registerSetting( Settings.ACCESS, AccessRestriction.READ_WRITE );
 		getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		getConfigManager().registerSetting( Settings.MOD_MODE, ModMode.FILTER_BY_ITEM );
 		getConfigManager().registerSetting( Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY );
 		mySrc = new MachineSource( this );
 	}
@@ -308,7 +305,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 					}
 
 					if ( getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-						handler.myPartitionList = new FuzzyPriorityList( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) );
+						handler.myPartitionList = this.getConfigManager().getSetting( Settings.MOD_MODE ) == ModMode.FILTER_BY_MOD ? new ModPriorityList( priorityList ) : new FuzzyPriorityList( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) );
 					else
 						handler.myPartitionList = new PrecisePriorityList( priorityList );
 

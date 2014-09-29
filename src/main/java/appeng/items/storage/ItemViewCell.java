@@ -2,6 +2,8 @@ package appeng.items.storage;
 
 import java.util.EnumSet;
 
+import appeng.api.config.ModMode;
+import appeng.util.prioitylist.*;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
@@ -17,10 +19,6 @@ import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-import appeng.util.prioitylist.FuzzyPriorityList;
-import appeng.util.prioitylist.IPartitionList;
-import appeng.util.prioitylist.MergedPriorityList;
-import appeng.util.prioitylist.PrecisePriorityList;
 
 public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 {
@@ -70,6 +68,26 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 		Platform.openNbtData( is ).setString( "FuzzyMode", fzMode.name() );
 	}
 
+	@Override
+	public ModMode getModMode(ItemStack is)
+	{
+		String mm = Platform.openNbtData( is ).getString( "ModMode" );
+		try
+		{
+			return ModMode.valueOf( mm );
+		}
+		catch (Throwable t)
+		{
+			return ModMode.FILTER_BY_ITEM;
+		}
+	}
+
+	@Override
+	public void setModMode(ItemStack is, ModMode mmMode)
+	{
+		Platform.openNbtData( is ).setString( "ModMode", mmMode.name() );
+	}
+
 	public static IPartitionList<IAEItemStack> createFilter(ItemStack[] list)
 	{
 		IPartitionList<IAEItemStack> myPartitionList = null;
@@ -91,6 +109,7 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 				IInventory upgrades = vc.getUpgradesInventory( currentViewCell );
 				IInventory config = vc.getConfigInventory( currentViewCell );
 				FuzzyMode fzMode = vc.getFuzzyMode( currentViewCell );
+				ModMode mmMode = vc.getModMode(currentViewCell);
 
 				hasInverter = false;
 				hasFuzzy = false;
@@ -127,7 +146,7 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 				if ( !priorityList.isEmpty() )
 				{
 					if ( hasFuzzy )
-						myMergedList.addNewList( new FuzzyPriorityList<IAEItemStack>( priorityList, fzMode ), !hasInverter );
+						myMergedList.addNewList( mmMode == ModMode.FILTER_BY_MOD ? new ModPriorityList<IAEItemStack>( priorityList ) : new FuzzyPriorityList<IAEItemStack>( priorityList, fzMode ), !hasInverter );
 					else
 						myMergedList.addNewList( new PrecisePriorityList<IAEItemStack>( priorityList ), !hasInverter );
 

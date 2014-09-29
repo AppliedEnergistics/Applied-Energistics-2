@@ -76,6 +76,63 @@ public class AdaptorList extends InventoryAdaptor
 	}
 
 	@Override
+	public ItemStack removeModItems(int how_many, ItemStack filter, IInventoryDestination dest)
+	{
+		int s = i.size();
+		for (int x = 0; x < s; x++)
+		{
+			ItemStack is = i.get( x );
+			if ( is != null && (filter == null || compareMods( is.getItem(), filter.getItem()) ) )
+			{
+				if ( how_many > is.stackSize )
+					how_many = is.stackSize;
+				if ( dest != null && !dest.canInsert( is ) )
+					how_many = 0;
+
+				if ( how_many > 0 )
+				{
+					ItemStack rv = is.copy();
+					rv.stackSize = how_many;
+					is.stackSize -= how_many;
+
+					// remove it..
+					if ( is.stackSize <= 0 )
+						i.remove( x );
+
+					return rv;
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public ItemStack simulateModRemove(int how_many, ItemStack filter, IInventoryDestination dest)
+	{
+		int s = i.size();
+		for (int x = 0; x < s; x++)
+		{
+			ItemStack is = i.get( x );
+			if ( is != null && (filter == null || compareMods( is.getItem(), filter.getItem()) ) )
+			{
+				if ( how_many > is.stackSize )
+					how_many = is.stackSize;
+				if ( dest != null && !dest.canInsert( is ) )
+					how_many = 0;
+
+				if ( how_many > 0 )
+				{
+					ItemStack rv = is.copy();
+					rv.stackSize = how_many;
+					return rv;
+				}
+			}
+		}
+		return null;
+
+	}
+
+	@Override
 	public ItemStack removeItems(int how_many, ItemStack filter, IInventoryDestination dest)
 	{
 		int s = i.size();

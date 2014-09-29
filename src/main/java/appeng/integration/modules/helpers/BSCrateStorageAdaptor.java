@@ -154,6 +154,71 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	}
 
 	@Override
+	public ItemStack removeModItems(int amount, ItemStack filter, IInventoryDestination dest)
+	{
+		ItemStack target = null;
+
+		for (ItemStack is : cs.getContents())
+		{
+			if ( is != null )
+			{
+				if ( is.stackSize > 0 && (filter == null || compareMods( is.getItem(), filter.getItem()) ) )
+				{
+					if ( dest == null || dest.canInsert( is ) )
+					{
+						target = is;
+						break;
+					}
+				}
+			}
+		}
+
+		if ( target != null )
+		{
+			ItemStack f = Platform.cloneItemStack( target );
+			f.stackSize = amount;
+			return cs.extractItems( f, amount );
+		}
+
+		return null;
+	}
+
+	@Override
+	public ItemStack simulateModRemove(int how_many, ItemStack filter, IInventoryDestination dest)
+	{
+		ItemStack target = null;
+
+		for (ItemStack is : cs.getContents())
+		{
+			if ( is != null )
+			{
+				if ( is.stackSize > 0 && (filter == null || compareMods( is.getItem(), filter.getItem()) ) )
+				{
+					if ( dest == null || dest.canInsert( is ) )
+					{
+						target = is;
+						break;
+					}
+				}
+			}
+		}
+
+		if ( target != null )
+		{
+			int cnt = cs.getItemCount( target );
+			if ( cnt == 0 )
+				return null;
+			if ( cnt > how_many )
+				cnt = how_many;
+			ItemStack c = target.copy();
+			c.stackSize = cnt;
+			return c;
+		}
+
+		return null;
+	}
+
+	@Override
 	public ItemStack addItems(ItemStack A)
 	{
 		return cs.insertItems( A );

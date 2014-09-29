@@ -1,13 +1,17 @@
 package appeng.parts.automation;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
+import appeng.api.config.*;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -15,12 +19,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.LevelType;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.config.YesNo;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProvider;
@@ -290,10 +288,15 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		else if ( getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 		{
 			lastReportedValue = 0;
-			FuzzyMode fzMode = (FuzzyMode) getConfigManager().getSetting( Settings.FUZZY_MODE );
-			Collection<IAEItemStack> fuzzyList = monitor.getStorageList().findFuzzy( myStack, fzMode );
-			for (IAEItemStack st : fuzzyList)
-				lastReportedValue += st.getStackSize();
+			if ( this.getConfigManager().getSetting( Settings.MOD_MODE ) == ModMode.FILTER_BY_MOD ) {
+				for(IAEItemStack st : getItemsInMod( myStack.getItem(), monitor ) )
+					lastReportedValue += st.getStackSize();
+			} else {
+				FuzzyMode fzMode = (FuzzyMode) getConfigManager().getSetting(Settings.FUZZY_MODE);
+				Collection<IAEItemStack> fuzzyList = monitor.getStorageList().findFuzzy(myStack, fzMode);
+				for(IAEItemStack st : fuzzyList)
+					lastReportedValue += st.getStackSize();
+			}
 		}
 		else
 		{
@@ -305,6 +308,17 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		}
 
 		updateState();
+	}
+
+	private IAEItemStack[] getItemsInMod(Item parentItem, IMEMonitor<IAEItemStack> monitor) {
+		ArrayList<IAEItemStack> items = new ArrayList<IAEItemStack>();
+		String modId = GameRegistry.findUniqueIdentifierFor(parentItem).modId;
+
+		for( IAEItemStack item : monitor.getStorageList() )
+			if ( GameRegistry.findUniqueIdentifierFor(item.getItem()).modId.equals(modId) )
+				items.add(item);
+
+		return items.toArray(new IAEItemStack[items.size()]);
 	}
 
 	@Override
@@ -347,6 +361,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		super( PartLevelEmitter.class, is );
 		getConfigManager().registerSetting( Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL );
 		getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		getConfigManager().registerSetting( Settings.MOD_MODE, ModMode.FILTER_BY_ITEM );
 		getConfigManager().registerSetting( Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL );
 		getConfigManager().registerSetting( Settings.CRAFT_VIA_REDSTONE, YesNo.NO );
 	}

@@ -40,6 +40,18 @@ public class AdaptorISpecialInventory extends InventoryAdaptor
 	}
 
 	@Override
+	public ItemStack removeModItems(int how_many, ItemStack filter, IInventoryDestination destination)
+	{
+		return remover.removeModItems( how_many, filter, destination );
+	}
+
+	@Override
+	public ItemStack simulateModRemove(int how_many, ItemStack filter, IInventoryDestination destination)
+	{
+		return remover.simulateModRemove( how_many, filter, destination );
+	}
+
+	@Override
 	public ItemStack removeItems(int how_many, ItemStack filter, IInventoryDestination destination)
 	{
 		return remover.removeItems( how_many, filter, destination );

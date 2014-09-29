@@ -1,17 +1,14 @@
 package appeng.parts.automation;
 
+import appeng.api.config.*;
+import appeng.util.item.AEFluidStack;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
-import appeng.api.config.Actionable;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.config.YesNo;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingLink;
@@ -43,6 +40,8 @@ import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import java.util.ArrayList;
+
 public class PartExportBus extends PartSharedItemBus implements IGridTickable, ICraftingRequester
 {
 
@@ -53,6 +52,7 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable, I
 		super( PartExportBus.class, is );
 		settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		settings.registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		settings.registerSetting( Settings.MOD_MODE, ModMode.FILTER_BY_ITEM );
 		settings.registerSetting( Settings.CRAFT_ONLY, YesNo.NO );
 		mySrc = new MachineSource( this );
 	}
@@ -203,11 +203,21 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable, I
 
 					if ( getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 					{
-						for (IAEItemStack o : ImmutableList.copyOf( inv.getStorageList().findFuzzy( ais, fzMode ) ))
-						{
-							pushItemIntoTarget( d, energy, inv, o );
-							if ( itemToSend <= 0 )
-								break;
+						if ( this.getConfigManager().getSetting( Settings.MOD_MODE ) == ModMode.FILTER_BY_MOD ) {
+							for (IAEItemStack o : getItemsInMod(ais.getItem(), inv))
+							{
+								pushItemIntoTarget( d, energy, inv, o );
+								if ( itemToSend <= 0 )
+									break;
+							}
+						}
+						else {
+							for (IAEItemStack o : ImmutableList.copyOf( inv.getStorageList().findFuzzy( ais, fzMode ) ))
+							{
+								pushItemIntoTarget( d, energy, inv, o );
+								if ( itemToSend <= 0 )
+									break;
+							}
 						}
 					}
 					else
@@ -226,6 +236,17 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable, I
 		}
 
 		return didSomething ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
+	}
+
+	private IAEItemStack[] getItemsInMod(Item parentItem, IMEMonitor<IAEItemStack> inv) {
+		ArrayList<IAEItemStack> items = new ArrayList<IAEItemStack>();
+		String modId = GameRegistry.findUniqueIdentifierFor(parentItem).modId;
+
+		for( IAEItemStack item : inv.getStorageList() )
+			if ( GameRegistry.findUniqueIdentifierFor(item.getItem()).modId.equals(modId) )
+				items.add(item);
+
+		return items.toArray(new IAEItemStack[items.size()]);
 	}
 
 	private boolean craftOnly()

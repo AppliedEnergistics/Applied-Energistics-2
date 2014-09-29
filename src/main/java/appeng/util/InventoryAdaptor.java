@@ -2,9 +2,13 @@ package appeng.util;
 
 import java.util.ArrayList;
 
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.data.IAEItemStack;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -34,6 +38,11 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 
 	public abstract ItemStack simulateSimilarRemove(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination);
 
+	// return what was extracted.
+	public abstract ItemStack removeModItems(int amount, ItemStack filter, IInventoryDestination destination);
+
+	public abstract ItemStack simulateModRemove(int how_many, ItemStack filter, IInventoryDestination destination);
+
 	// return what isn't used...
 	public abstract ItemStack addItems(ItemStack A);
 
@@ -46,9 +55,9 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 	{
 		if ( te == null )
 			return null;
-		
+
 		IBetterStorage bs = (IBetterStorage) (AppEng.instance.isIntegrationEnabled( IntegrationType.BetterStorage ) ? AppEng.instance.getIntegration( IntegrationType.BetterStorage ) : null);
-		
+
 		if ( te instanceof EntityPlayer )
 		{
 			return new AdaptorIInventory( new AdaptorPlayerInventory( ((EntityPlayer) te).inventory, false ) );
@@ -102,5 +111,11 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 			}
 		}
 		return false;
+	}
+
+	public boolean compareMods(Item itemA, Item itemB) {
+		String modAId = GameRegistry.findUniqueIdentifierFor(itemA).modId;
+		String modBId = GameRegistry.findUniqueIdentifierFor(itemB).modId;
+		return modAId.equals(modBId);
 	}
 }

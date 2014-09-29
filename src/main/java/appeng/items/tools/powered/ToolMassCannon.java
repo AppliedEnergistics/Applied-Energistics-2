@@ -3,6 +3,7 @@ package appeng.items.tools.powered;
 import java.util.EnumSet;
 import java.util.List;
 
+import appeng.api.config.ModMode;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.entity.Entity;
@@ -465,6 +466,26 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 	public void setFuzzyMode(ItemStack is, FuzzyMode fzMode)
 	{
 		Platform.openNbtData( is ).setString( "FuzzyMode", fzMode.name() );
+	}
+
+	@Override
+	public ModMode getModMode(ItemStack is)
+	{
+		String mm = Platform.openNbtData( is ).getString( "ModMode" );
+		try
+		{
+			return ModMode.valueOf( mm );
+		}
+		catch (Throwable t)
+		{
+			return ModMode.FILTER_BY_ITEM;
+		}
+	}
+
+	@Override
+	public void setModMode(ItemStack is, ModMode mmMode)
+	{
+		Platform.openNbtData( is ).setString( "ModMode", mmMode.name() );
 	}
 
 	@Override

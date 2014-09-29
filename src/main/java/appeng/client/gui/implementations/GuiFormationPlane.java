@@ -2,6 +2,7 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import appeng.api.config.ModMode;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import appeng.api.config.FuzzyMode;
@@ -34,16 +35,21 @@ public class GuiFormationPlane extends GuiUpgradeable
 
 		if ( fuzzyMode != null )
 			fuzzyMode.set( cvb.fzMode );
+
+		if ( modMode != null )
+			modMode.set( cvb.mmMode );
 	}
 
 	@Override
 	protected void addButtons()
 	{
 		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		modMode = new GuiImgButton( this.guiLeft - 18, guiTop + 48, Settings.MOD_MODE, ModMode.FILTER_BY_ITEM );
 
 		buttonList.add( priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRender ) );
 
 		buttonList.add( fuzzyMode );
+		buttonList.add( modMode );
 	}
 
 	@Override
