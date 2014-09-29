@@ -24,7 +24,7 @@ What version of Forge
 What version of AE2 - If this is not the latest version of AE, does the problem
 happen on the latest version?
 
-If this is a crash, provide the crash log. You can use [PasteBin](http://pastebin.com)
+If this is a crash, provide the crash log. You can use http://pastebin.com
 to upload the log.
 
 If a specific setup is causing the crash or failure, post a screen shot. You can
