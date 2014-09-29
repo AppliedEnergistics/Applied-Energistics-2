@@ -209,12 +209,12 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 		if ( machine instanceof ICraftingRequester )
 		{
-			Iterator<CraftingLinkNexus> nex = links.values().iterator();
-			while (nex.hasNext())
+			for (CraftingLinkNexus n : links.values())
 			{
-				CraftingLinkNexus n = nex.next();
 				if ( n.isMachine( machine ) )
+				{
 					n.removeNode();
+				}
 			}
 		}
 

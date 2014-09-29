@@ -398,17 +398,19 @@ public class Platform
 				if ( cA.size() != cB.size() )
 					return false;
 
-				Iterator<String> i = cA.iterator();
-				while (i.hasNext())
+				for (String name : cA)
 				{
-					String name = i.next();
 					NBTBase tag = ctA.getTag( name );
 					NBTBase aTag = ctB.getTag( name );
 					if ( aTag == null )
+					{
 						return false;
+					}
 
 					if ( !NBTEqualityTest( tag, aTag ) )
+					{
 						return false;
+					}
 				}
 
 				return true;
@@ -520,10 +522,8 @@ public class Platform
 
 			Set<String> cA = ctA.func_150296_c();
 
-			Iterator<String> i = cA.iterator();
-			while (i.hasNext())
+			for (String name : cA)
 			{
-				String name = i.next();
 				hash += name.hashCode() ^ NBTOrderlessHash( ctA.getTag( name ) );
 			}
 

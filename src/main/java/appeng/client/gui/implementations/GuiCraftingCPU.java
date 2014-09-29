@@ -169,12 +169,12 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 	private IAEItemStack findVisualStack(IAEItemStack l)
 	{
-		Iterator<IAEItemStack> i = visual.iterator();
-		while (i.hasNext())
+		for (IAEItemStack o : visual)
 		{
-			IAEItemStack o = i.next();
 			if ( o.equals( l ) )
+			{
 				return o;
+			}
 		}
 
 		IAEItemStack stack = l.copy();

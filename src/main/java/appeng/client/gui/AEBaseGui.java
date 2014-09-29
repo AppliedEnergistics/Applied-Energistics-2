@@ -394,11 +394,10 @@ public abstract class AEBaseGui extends GuiContainer
 			else if ( dbl_whichItem != null )
 			{
 				// a replica of the weird broken vanilla feature.
-				Iterator iterator = this.inventorySlots.inventorySlots.iterator();
 
-				while (iterator.hasNext())
+				for (Object inventorySlot : this.inventorySlots.inventorySlots)
 				{
-					Slot targetSlot = (Slot) iterator.next();
+					Slot targetSlot = (Slot) inventorySlot;
 
 					if ( targetSlot != null && targetSlot.canTakeStack( this.mc.thePlayer ) && targetSlot.getHasStack()
 							&& targetSlot.inventory == slot.inventory && Container.func_94527_a( targetSlot, dbl_whichItem, true ) )
