@@ -7,6 +7,7 @@
 * [License](#license)
 * [Downloads](#downloads)
 * [Installation](#installation)
+* [Issues](#issues)
 * [Building](#building)
 * [Contribution](#contribution)
 * [Credits](#credits)
@@ -32,6 +33,24 @@ Downloads can be found on [CurseForge](http://www.curse.com/mc-mods/minecraft/22
 ## Installation
 
 You install this mod by putting it into the `minecraft/mods/` folder. It has no additional hard dependencies.
+
+## Issues
+
+Applied Energistics 2 crashing, have a suggestion, found a bug?  Create an issue now!
+
+1. Make sure your issue hasn't already been answered or fixed.  Also think about whether your issue is a valid one before submitting it.
+2. Go to [the issues page](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues)
+3. Click new issue
+4. Enter your Issue's title (something that summarizes your issue), and then create a detailed description of the issue.
+	* To help in resolving your issues please try to include the follow if applicable:
+		* The problem that is happening?
+		* What was expected?
+		* How to reproduce the problem?
+		* Server or Single Player?
+		* Mod Pack using and version?
+		* Crash log (Please make sure to use [pastebin](http://pastebin.com/) for the log file) 
+		* Screen shots or Pictures of the problem
+5. Click `Submit New Issue`, and wait for feedback!
 
 ## Building
 
