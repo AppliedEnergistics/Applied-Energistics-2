@@ -560,7 +560,7 @@ public abstract class AEBaseContainer extends Container
 		detectAndSendChanges();
 	}
 
-	final HashMap<Integer, SyncData> syncData = new HashMap<Integer, SyncDat>();
+	final HashMap<Integer, SyncData> syncData = new HashMap<Integer, SyncData>();
 
 	@Override
 	public void detectAndSendChanges()
