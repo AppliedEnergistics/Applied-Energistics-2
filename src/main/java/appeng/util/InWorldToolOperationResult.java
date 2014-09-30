@@ -10,8 +10,8 @@ import net.minecraft.item.ItemStack;
 public class InWorldToolOperationResult
 {
 
-	public ItemStack BlockItem;
-	public List<ItemStack> Drops;
+	public final ItemStack BlockItem;
+	public final List<ItemStack> Drops;
 
 	public static InWorldToolOperationResult getBlockOperationResult(ItemStack[] items)
 	{

@@ -36,8 +36,8 @@ public class GuiImgButton extends GuiButton implements ITooltip
 	class EnumPair
 	{
 
-		Enum setting;
-		Enum value;
+		final Enum setting;
+		final Enum value;
 
 		EnumPair(Enum a, Enum b) {
 			setting = a;

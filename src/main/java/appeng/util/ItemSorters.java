@@ -53,7 +53,7 @@ public class ItemSorters
 		return 1;
 	}
 
-	public static Comparator<IAEItemStack> ConfigBased_SortByName = new Comparator<IAEItemStack>() {
+	public static final Comparator<IAEItemStack> ConfigBased_SortByName = new Comparator<IAEItemStack>() {
 
 		@Override
 		public int compare(IAEItemStack o1, IAEItemStack o2)
@@ -64,7 +64,7 @@ public class ItemSorters
 		}
 	};
 
-	public static Comparator<IAEItemStack> ConfigBased_SortByMod = new Comparator<IAEItemStack>() {
+	public static final Comparator<IAEItemStack> ConfigBased_SortByMod = new Comparator<IAEItemStack>() {
 
 		@Override
 		public int compare(IAEItemStack o1, IAEItemStack o2)
@@ -86,7 +86,7 @@ public class ItemSorters
 		}
 	};
 
-	public static Comparator<IAEItemStack> ConfigBased_SortBySize = new Comparator<IAEItemStack>() {
+	public static final Comparator<IAEItemStack> ConfigBased_SortBySize = new Comparator<IAEItemStack>() {
 
 		@Override
 		public int compare(IAEItemStack o1, IAEItemStack o2)
@@ -97,7 +97,7 @@ public class ItemSorters
 		}
 	};
 
-	public static Comparator<IAEItemStack> ConfigBased_SortByInvTweaks = new Comparator<IAEItemStack>() {
+	public static final Comparator<IAEItemStack> ConfigBased_SortByInvTweaks = new Comparator<IAEItemStack>() {
 
 		@Override
 		public int compare(IAEItemStack o1, IAEItemStack o2)

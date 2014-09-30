@@ -6,12 +6,12 @@ import appeng.util.ItemSorters;
 public class CraftingCPURecord implements Comparable<CraftingCPURecord>
 {
 
-	ICraftingCPU cpu;
+	final ICraftingCPU cpu;
 
-	long size;
-	int processors;
+	final long size;
+	final int processors;
 
-	public String myName;
+	public final String myName;
 
 	public CraftingCPURecord(long size, int proc, ICraftingCPU server) {
 		this.size = size;

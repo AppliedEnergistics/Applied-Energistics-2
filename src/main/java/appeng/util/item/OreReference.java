@@ -12,9 +12,9 @@ import appeng.api.storage.data.IAEItemStack;
 public class OreReference
 {
 
-	private LinkedList<ItemStack> otherOptions = new LinkedList<ItemStack>();
+	private final LinkedList<ItemStack> otherOptions = new LinkedList<ItemStack>();
 	private ArrayList<IAEItemStack> aeOtherOptions = null;
-	private HashSet<Integer> ores = new HashSet<Integer>();
+	private final HashSet<Integer> ores = new HashSet<Integer>();
 
 	public Collection<ItemStack> getEquivalents()
 	{

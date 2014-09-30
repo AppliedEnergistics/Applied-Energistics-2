@@ -29,9 +29,9 @@ import codechicken.nei.recipe.IUsageHandler;
 public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 {
 
-	HashMap<AEItemDefinition, String> details = new HashMap<AEItemDefinition, String>();
-	List<AEItemDefinition> offsets = new LinkedList<AEItemDefinition>();
-	List<PositionedStack> outputs = new LinkedList<PositionedStack>();
+	final HashMap<AEItemDefinition, String> details = new HashMap<AEItemDefinition, String>();
+	final List<AEItemDefinition> offsets = new LinkedList<AEItemDefinition>();
+	final List<PositionedStack> outputs = new LinkedList<PositionedStack>();
 
 	ItemStack target;
 

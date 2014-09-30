@@ -57,7 +57,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 {
 
-	static private ICableBusContainer nullCB = new NullCableBusContainer();
+	static private final ICableBusContainer nullCB = new NullCableBusContainer();
 	static public Class<? extends TileEntity> noTesrTile;
 	static public Class<? extends TileEntity> tesrTile;
 

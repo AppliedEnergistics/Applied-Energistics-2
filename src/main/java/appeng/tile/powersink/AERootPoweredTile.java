@@ -20,7 +20,7 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	// values that determine general function, are set by inheriting classes if
 	// needed. These should generally remain static.
 	protected double internalMaxPower = 10000;
-	protected boolean internalCanAcceptPower = true;
+	protected final boolean internalCanAcceptPower = true;
 	protected boolean internalPublicPowerStorage = false;
 	private EnumSet<ForgeDirection> internalPowerSides = EnumSet.allOf( ForgeDirection.class );
 

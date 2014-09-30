@@ -6,11 +6,11 @@ import net.minecraft.client.gui.GuiTextField;
 public class MEGuiTextField extends GuiTextField
 {
 
-	int posX;
-	int posY;
+	final int posX;
+	final int posY;
 
-	int myWidth;
-	int myHeight;
+	final int myWidth;
+	final int myHeight;
 
 	public MEGuiTextField(FontRenderer par1FontRenderer, int xPos, int yPos, int width, int height) {
 		super( par1FontRenderer, xPos, yPos, width, height );

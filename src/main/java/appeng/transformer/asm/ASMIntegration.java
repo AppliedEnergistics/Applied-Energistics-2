@@ -21,7 +21,7 @@ import cpw.mods.fml.relauncher.FMLRelaunchLog;
 public class ASMIntegration implements IClassTransformer
 {
 
-	private IntegrationRegistry integrationModules = new IntegrationRegistry();
+	private final IntegrationRegistry integrationModules = new IntegrationRegistry();
 
 	public ASMIntegration() {
 

@@ -10,7 +10,7 @@ import appeng.tile.grindstone.TileGrinder;
 public class ContainerGrinder extends AEBaseContainer
 {
 
-	TileGrinder grinder;
+	final TileGrinder grinder;
 
 	public ContainerGrinder(InventoryPlayer ip, TileGrinder grinder) {
 		super( ip, grinder, null );

@@ -20,11 +20,11 @@ import appeng.util.Platform;
 public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngInventory, IInventory
 {
 
-	QuartzKnifeObj toolInv;
+	final QuartzKnifeObj toolInv;
 
-	AppEngInternalInventory inSlot = new AppEngInternalInventory( this, 1 );
-	SlotRestrictedInput metals;
-	QuartzKnifeOutput output;
+	final AppEngInternalInventory inSlot = new AppEngInternalInventory( this, 1 );
+	final SlotRestrictedInput metals;
+	final QuartzKnifeOutput output;
 	String myName = "";
 
 	public void setName(String value)

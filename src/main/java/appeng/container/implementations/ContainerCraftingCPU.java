@@ -35,7 +35,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	String cpuName = null;
 	protected IGrid network;
 
-	IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
+	final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
 
 	public ContainerCraftingCPU(InventoryPlayer ip, Object te) {
 		super( ip, te );

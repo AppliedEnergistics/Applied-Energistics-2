@@ -97,7 +97,7 @@ public class WrapperInvSlot
 		}
 	}
 
-	private IInventory inv;
+	private final IInventory inv;
 
 	public WrapperInvSlot(IInventory inv) {
 		this.inv = inv;

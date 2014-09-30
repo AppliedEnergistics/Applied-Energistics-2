@@ -8,7 +8,7 @@ import appeng.api.recipes.IRecipeLoader;
 public class JarLoader implements IRecipeLoader
 {
 
-	private String rootPath;
+	private final String rootPath;
 
 	public JarLoader(String s) {
 		rootPath = s;

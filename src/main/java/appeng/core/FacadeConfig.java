@@ -14,7 +14,7 @@ public class FacadeConfig extends Configuration
 {
 
 	public static FacadeConfig instance;
-	Pattern replacementPattern;
+	final Pattern replacementPattern;
 
 	public FacadeConfig(String path) {
 		super( new File( path + "Facades.cfg" ) );

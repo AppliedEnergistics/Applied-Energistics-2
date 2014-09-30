@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 public class WrapperInventoryRange implements IInventory
 {
 
-	private IInventory src;
+	private final IInventory src;
 	int[] slots;
 	protected boolean ignoreValidItems = false;
 

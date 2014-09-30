@@ -149,8 +149,8 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 	public class CachedShapedRecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 
-		public ArrayList<PositionedStack> ingredients;
-		public PositionedStack result;
+		public final ArrayList<PositionedStack> ingredients;
+		public final PositionedStack result;
 
 		public CachedShapedRecipe(ItemStack output) {
 			output.stackSize = 4;

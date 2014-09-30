@@ -17,7 +17,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderTinyTNTPrimed extends Render
 {
 
-	private RenderBlocks blockRenderer = new RenderBlocks();
+	private final RenderBlocks blockRenderer = new RenderBlocks();
 
 	public RenderTinyTNTPrimed() {
 		this.shadowSize = 0.5F;

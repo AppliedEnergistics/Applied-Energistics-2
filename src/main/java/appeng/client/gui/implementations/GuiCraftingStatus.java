@@ -29,7 +29,7 @@ import appeng.parts.reporting.PartTerminal;
 public class GuiCraftingStatus extends GuiCraftingCPU
 {
 
-	ContainerCraftingStatus ccc;
+	final ContainerCraftingStatus ccc;
 	GuiButton selectCPU;
 
 	GuiTabButton originalGuiBtn;

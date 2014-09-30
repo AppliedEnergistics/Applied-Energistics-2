@@ -27,8 +27,8 @@ import appeng.util.Platform;
 public class GuiCellWorkbench extends GuiUpgradeable
 {
 
-	ContainerCellWorkbench workbench;
-	TileCellWorkbench tcw;
+	final ContainerCellWorkbench workbench;
+	final TileCellWorkbench tcw;
 
 	GuiImgButton clear;
 	GuiImgButton partition;

@@ -14,8 +14,8 @@ import appeng.core.sync.network.INetworkInfo;
 public class PacketProgressBar extends AppEngPacket
 {
 
-	short id;
-	long value;
+	final short id;
+	final long value;
 
 	// automatic.
 	public PacketProgressBar(ByteBuf stream) throws IOException {

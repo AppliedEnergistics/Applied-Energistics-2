@@ -52,7 +52,7 @@ public enum GuiText
 	
 	Included, Excluded, Partitioned, Precise, Fuzzy;
 
-	String root;
+	final String root;
 
 	GuiText() {
 		root = "gui.appliedenergistics2";

@@ -8,8 +8,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class WrapperMCISidedInventory extends WrapperInventoryRange implements IInventory, IInventoryWrapper
 {
 
-	private ForgeDirection dir;
-	ISidedInventory side;
+	private final ForgeDirection dir;
+	final ISidedInventory side;
 
 	public WrapperMCISidedInventory(ISidedInventory a, ForgeDirection d) {
 		super( a, a.getAccessibleSlotsFromSide( d.ordinal() ), false );

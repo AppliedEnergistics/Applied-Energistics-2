@@ -11,7 +11,7 @@ import appeng.core.sync.packets.PacketCompassRequest;
 public class CompassManager
 {
 
-	public static CompassManager instance = new CompassManager();
+	public static final CompassManager instance = new CompassManager();
 
 	class CompassRequest
 	{
@@ -48,7 +48,7 @@ public class CompassManager
 
 	}
 
-	HashMap<CompassRequest, CompassResult> requests = new HashMap<CompassRequest, CompassResult>();
+	final HashMap<CompassRequest, CompassResult> requests = new HashMap<CompassRequest, CompassResult>();
 
 	public void postResult(long attunement, int x, int y, int z, CompassResult result)
 	{

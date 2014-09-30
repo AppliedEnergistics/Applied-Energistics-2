@@ -7,8 +7,8 @@ import appeng.util.Platform;
 public class SharedSearchObject
 {
 
-	int def;
-	int hash;
+	final int def;
+	final int hash;
 	NBTTagCompound compound;
 	public AESharedNBT shared;
 

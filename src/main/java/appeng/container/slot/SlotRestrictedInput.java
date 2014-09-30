@@ -68,10 +68,10 @@ public class SlotRestrictedInput extends AppEngSlot
 		return true;
 	}
 
-	public PlacableItemType which;
+	public final PlacableItemType which;
 	public boolean allowEdit = true;
 	public int stackLimit = -1;
-	private InventoryPlayer p;
+	private final InventoryPlayer p;
 
 	@Override
 	public boolean canTakeStack(EntityPlayer par1EntityPlayer)

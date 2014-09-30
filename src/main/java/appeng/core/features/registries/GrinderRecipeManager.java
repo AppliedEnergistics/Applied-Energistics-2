@@ -21,7 +21,7 @@ import appeng.util.Platform;
 public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 {
 
-	public List<IGrinderEntry> RecipeList;
+	public final List<IGrinderEntry> RecipeList;
 
 	private ItemStack copy(ItemStack is)
 	{
@@ -149,9 +149,9 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 		return 2;
 	}
 
-	public Map<ItemStack, String> Ores = new HashMap<ItemStack, String>();
-	public Map<ItemStack, String> Ingots = new HashMap<ItemStack, String>();
-	public Map<String, ItemStack> Dusts = new HashMap<String, ItemStack>();
+	public final Map<ItemStack, String> Ores = new HashMap<ItemStack, String>();
+	public final Map<ItemStack, String> Ingots = new HashMap<ItemStack, String>();
+	public final Map<String, ItemStack> Dusts = new HashMap<String, ItemStack>();
 
 	private void addOre(String name, ItemStack item)
 	{

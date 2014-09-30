@@ -14,7 +14,7 @@ import appeng.tile.misc.TileVibrationChamber;
 public class GuiVibrationChamber extends AEBaseGui
 {
 
-	ContainerVibrationChamber cvc;
+	final ContainerVibrationChamber cvc;
 	GuiProgressBar pb;
 
 	public GuiVibrationChamber(InventoryPlayer inventoryPlayer, TileVibrationChamber te)

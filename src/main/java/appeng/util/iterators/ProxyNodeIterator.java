@@ -9,7 +9,7 @@ import appeng.api.networking.IGridNode;
 public class ProxyNodeIterator implements Iterator<IGridNode>
 {
 
-	Iterator<IGridHost> hosts;
+	final Iterator<IGridHost> hosts;
 
 	public ProxyNodeIterator(Iterator<IGridHost> hosts) {
 		this.hosts = hosts;

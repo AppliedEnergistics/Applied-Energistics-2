@@ -16,7 +16,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ContainerPriority extends AEBaseContainer
 {
 
-	IPriorityHost priHost;
+	final IPriorityHost priHost;
 
 	@SideOnly(Side.CLIENT)
 	public GuiTextField textField;

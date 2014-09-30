@@ -8,8 +8,8 @@ import appeng.parts.p2p.PartP2PTunnel;
 public class TunnelIterator<T extends PartP2PTunnel> implements Iterator<T>
 {
 
-	Iterator<T> wrapped;
-	Class targetType;
+	final Iterator<T> wrapped;
+	final Class targetType;
 	T Next;
 
 	private void findNext()

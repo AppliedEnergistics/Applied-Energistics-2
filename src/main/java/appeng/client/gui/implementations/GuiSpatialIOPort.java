@@ -17,7 +17,7 @@ import appeng.util.Platform;
 public class GuiSpatialIOPort extends AEBaseGui
 {
 
-	ContainerSpatialIOPort container;
+	final ContainerSpatialIOPort container;
 	GuiImgButton units;
 
 	public GuiSpatialIOPort(InventoryPlayer inventoryPlayer, TileSpatialIOPort te) {

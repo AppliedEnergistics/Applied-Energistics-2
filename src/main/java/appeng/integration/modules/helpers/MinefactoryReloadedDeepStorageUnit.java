@@ -14,8 +14,8 @@ import appeng.util.item.AEItemStack;
 public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemStack>
 {
 
-	IDeepStorageUnit dsu;
-	TileEntity te;
+	final IDeepStorageUnit dsu;
+	final TileEntity te;
 
 	public MinefactoryReloadedDeepStorageUnit(TileEntity ta) {
 		te = ta;

@@ -17,11 +17,11 @@ import appeng.util.iterators.InvIterator;
 public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack>
 {
 
-	protected IAEAppEngInventory te;
-	int size;
+	protected final IAEAppEngInventory te;
+	final int size;
 	int maxStack;
 
-	protected IAEItemStack inv[];
+	protected final IAEItemStack[] inv;
 
 	public boolean isEmpty()
 	{

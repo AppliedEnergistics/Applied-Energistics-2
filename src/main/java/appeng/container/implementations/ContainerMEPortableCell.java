@@ -11,7 +11,7 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 {
 
 	double powerMultiplier = 0.5;
-	IPortableCell civ;
+	final IPortableCell civ;
 
 	public ContainerMEPortableCell(InventoryPlayer ip, IPortableCell monitorable) {
 		super( ip, monitorable, false );

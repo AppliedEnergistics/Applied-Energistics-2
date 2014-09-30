@@ -32,7 +32,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartToggleBus extends PartBasicState
 {
 
-	AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", null, true );
+	final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", null, true );
 	IGridConnection connection;
 
 	protected final int REDSTONE_FLAG = 4;

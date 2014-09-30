@@ -23,9 +23,9 @@ public class Grid implements IGrid
 
 	GridStorage myStorage;
 
-	NetworkEventBus bus = new NetworkEventBus();
-	HashMap<Class<? extends IGridHost>, Set> Machines = new HashMap<Class<? extends IGridHost>, Set>();
-	HashMap<Class<? extends IGridCache>, GridCacheWrapper> caches = new HashMap<Class<? extends IGridCache>, GridCacheWrapper>();
+	final NetworkEventBus bus = new NetworkEventBus();
+	final HashMap<Class<? extends IGridHost>, Set> Machines = new HashMap<Class<? extends IGridHost>, Set>();
+	final HashMap<Class<? extends IGridCache>, GridCacheWrapper> caches = new HashMap<Class<? extends IGridCache>, GridCacheWrapper>();
 
 	GridNode pivot;
 	int isImportant; // how import is this network?

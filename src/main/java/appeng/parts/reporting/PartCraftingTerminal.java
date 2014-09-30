@@ -15,7 +15,7 @@ import appeng.tile.inventory.InvOperation;
 public class PartCraftingTerminal extends PartTerminal implements IAEAppEngInventory
 {
 
-	AppEngInternalInventory craftingGrid = new AppEngInternalInventory( this, 9 );
+	final AppEngInternalInventory craftingGrid = new AppEngInternalInventory( this, 9 );
 
 	@Override
 	public void writeToNBT(NBTTagCompound data)

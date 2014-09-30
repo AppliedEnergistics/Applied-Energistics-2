@@ -29,8 +29,8 @@ import appeng.util.iterators.NullIterator;
 public class ContainerCellWorkbench extends ContainerUpgradeable
 {
 
-	TileCellWorkbench workBench;
-	AppEngNullInventory ni = new AppEngNullInventory();
+	final TileCellWorkbench workBench;
+	final AppEngNullInventory ni = new AppEngNullInventory();
 
 	public IInventory getCellUpgradeInventory()
 	{

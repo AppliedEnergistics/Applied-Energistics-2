@@ -14,7 +14,7 @@ import appeng.items.misc.ItemEncodedPattern;
 public class ItemEncodedPatternRenderer implements IItemRenderer
 {
 
-	RenderItem ri = new RenderItem();
+	final RenderItem ri = new RenderItem();
 	boolean recursive;
 
 	@Override

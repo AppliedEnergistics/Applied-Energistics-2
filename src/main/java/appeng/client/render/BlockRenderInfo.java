@@ -15,12 +15,12 @@ public class BlockRenderInfo
 	final public BaseBlockRender rendererInstance;
 
 	private boolean useTmp = false;
-	private TmpFlippableIcon tmpTopIcon = new TmpFlippableIcon();
-	private TmpFlippableIcon tmpBottomIcon = new TmpFlippableIcon();
-	private TmpFlippableIcon tmpSouthIcon = new TmpFlippableIcon();
-	private TmpFlippableIcon tmpNorthIcon = new TmpFlippableIcon();
-	private TmpFlippableIcon tmpEastIcon = new TmpFlippableIcon();
-	private TmpFlippableIcon tmpWestIcon = new TmpFlippableIcon();
+	private final TmpFlippableIcon tmpTopIcon = new TmpFlippableIcon();
+	private final TmpFlippableIcon tmpBottomIcon = new TmpFlippableIcon();
+	private final TmpFlippableIcon tmpSouthIcon = new TmpFlippableIcon();
+	private final TmpFlippableIcon tmpNorthIcon = new TmpFlippableIcon();
+	private final TmpFlippableIcon tmpEastIcon = new TmpFlippableIcon();
+	private final TmpFlippableIcon tmpWestIcon = new TmpFlippableIcon();
 
 	private FlippableIcon topIcon = null;
 	private FlippableIcon bottomIcon = null;

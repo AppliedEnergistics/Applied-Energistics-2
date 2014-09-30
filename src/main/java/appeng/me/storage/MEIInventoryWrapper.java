@@ -15,8 +15,8 @@ import appeng.util.item.AEItemStack;
 public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 {
 
-	protected IInventory target;
-	protected InventoryAdaptor adaptor;
+	protected final IInventory target;
+	protected final InventoryAdaptor adaptor;
 
 	public MEIInventoryWrapper(IInventory m, InventoryAdaptor ia) {
 		target = m;

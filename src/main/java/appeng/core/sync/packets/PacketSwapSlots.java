@@ -13,7 +13,8 @@ import appeng.core.sync.network.INetworkInfo;
 public class PacketSwapSlots extends AppEngPacket
 {
 
-	int slotA, slotB;
+	final int slotA;
+	final int slotB;
 
 	// automatic.
 	public PacketSwapSlots(ByteBuf stream) throws IOException {

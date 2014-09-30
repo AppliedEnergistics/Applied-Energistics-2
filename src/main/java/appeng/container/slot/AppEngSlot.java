@@ -33,7 +33,8 @@ public class AppEngSlot extends Slot
 
 	public int IIcon = -1;
 	public hasCalculatedValidness isValid;
-	public int defX, defY;
+	public final int defX;
+	public final int defY;
 
 	@Override
 	public boolean func_111238_b()

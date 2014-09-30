@@ -42,7 +42,7 @@ public class GridNode implements IGridNode, IPathItem
 	final List<IGridConnection> Connections = new LinkedList<IGridConnection>();
 	GridStorage myStorage = null;
 
-	IGridBlock gridProxy;
+	final IGridBlock gridProxy;
 	Grid myGrid;
 
 	Object visitorIterationNumber = null;

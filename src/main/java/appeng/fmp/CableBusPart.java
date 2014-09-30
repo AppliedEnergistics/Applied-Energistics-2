@@ -80,7 +80,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 			new Cuboid6( 10.0 / 16.0, 6.0 / 16.0, 6.0 / 16.0, 1.0, 10.0 / 16.0, 10.0 / 16.0 ),// EAST(1, 0, 0),
 	};
 
-	public static ThreadLocal<Boolean> disableFacadeOcclusion = new ThreadLocal<Boolean>();
+	public static final ThreadLocal<Boolean> disableFacadeOcclusion = new ThreadLocal<Boolean>();
 	public CableBusContainer cb = new CableBusContainer( this );
 
 	@Override

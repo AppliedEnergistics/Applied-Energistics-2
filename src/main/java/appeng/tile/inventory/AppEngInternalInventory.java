@@ -16,11 +16,11 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 {
 
 	protected IAEAppEngInventory te;
-	protected int size;
+	protected final int size;
 	protected int maxStack;
 
 	public boolean enableClientEvents = false;
-	protected ItemStack inv[];
+	protected final ItemStack[] inv;
 
 	public IMEInventory getMEInventory()
 	{

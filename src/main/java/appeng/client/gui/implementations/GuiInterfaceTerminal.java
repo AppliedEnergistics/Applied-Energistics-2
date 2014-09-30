@@ -25,9 +25,9 @@ import com.google.common.collect.HashMultimap;
 public class GuiInterfaceTerminal extends AEBaseGui
 {
 
-	HashMap<Long, ClientDCInternalInv> byId = new HashMap<Long, ClientDCInternalInv>();
-	HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();
-	ArrayList<String> names = new ArrayList<String>();
+	final HashMap<Long, ClientDCInternalInv> byId = new HashMap<Long, ClientDCInternalInv>();
+	final HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();
+	final ArrayList<String> names = new ArrayList<String>();
 
 	ArrayList<Object> lines = new ArrayList<Object>();
 

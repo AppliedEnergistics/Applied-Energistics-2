@@ -56,7 +56,7 @@ import cpw.mods.fml.common.ObfuscationReflectionHelper;
 public abstract class AEBaseGui extends GuiContainer
 {
 
-	protected List<InternalSlotME> meSlots = new LinkedList<InternalSlotME>();
+	protected final List<InternalSlotME> meSlots = new LinkedList<InternalSlotME>();
 	protected GuiScrollbar myScrollBar = null;
 	static public boolean switchingGuis;
 	private boolean subGui;
@@ -177,7 +177,7 @@ public abstract class AEBaseGui extends GuiContainer
 	Slot bl_clicked;
 
 	// drag y
-	Set<Slot> drag_click = new HashSet<Slot>();
+	final Set<Slot> drag_click = new HashSet<Slot>();
 
 	@Override
 	protected void handleMouseClick(Slot slot, int slotIdx, int ctrlDown, int key)
@@ -788,7 +788,7 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 	}
 
-	AppEngRenderItem aeRenderItem = new AppEngRenderItem();
+	final AppEngRenderItem aeRenderItem = new AppEngRenderItem();
 
 	protected boolean isPowered()
 	{

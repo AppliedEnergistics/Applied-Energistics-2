@@ -48,9 +48,9 @@ public class CraftingWatcher implements ICraftingWatcher
 
 	}
 
-	CraftingGridCache gsc;
-	ICraftingWatcherHost host;
-	HashSet<IAEStack> myInterests = new HashSet<IAEStack>();
+	final CraftingGridCache gsc;
+	final ICraftingWatcherHost host;
+	final HashSet<IAEStack> myInterests = new HashSet<IAEStack>();
 
 	public CraftingWatcher(CraftingGridCache cache, ICraftingWatcherHost host) {
 		gsc = cache;

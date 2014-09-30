@@ -11,7 +11,7 @@ import appeng.tile.storage.TileSkyChest;
 public class ContainerSkyChest extends AEBaseContainer
 {
 
-	TileSkyChest chest;
+	final TileSkyChest chest;
 
 	public ContainerSkyChest(InventoryPlayer ip, TileSkyChest chest) {
 		super( ip, chest, null );

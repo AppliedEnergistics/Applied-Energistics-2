@@ -7,7 +7,7 @@ import appeng.items.materials.MaterialType;
 public class MaterialStackSrc implements IStackSrc
 {
 
-	MaterialType src;
+	final MaterialType src;
 
 	public MaterialStackSrc(MaterialType src) {
 		this.src = src;

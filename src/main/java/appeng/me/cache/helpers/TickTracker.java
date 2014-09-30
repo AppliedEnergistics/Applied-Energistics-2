@@ -16,7 +16,7 @@ public class TickTracker implements Comparable<TickTracker>
 	public final IGridNode node;
 	public final TickManagerCache host;
 
-	public long LastFiveTicksTime = 0;
+	public final long LastFiveTicksTime = 0;
 
 	public long lastTick;
 	public int current_rate;

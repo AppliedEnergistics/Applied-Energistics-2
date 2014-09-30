@@ -12,7 +12,7 @@ import appeng.tile.misc.TileInscriber;
 public class GuiInscriber extends AEBaseGui
 {
 
-	ContainerInscriber cvc;
+	final ContainerInscriber cvc;
 	GuiProgressBar pb;
 
 	public GuiInscriber(InventoryPlayer inventoryPlayer, TileInscriber te)

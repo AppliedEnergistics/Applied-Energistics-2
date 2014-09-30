@@ -16,7 +16,7 @@ import appeng.util.Platform;
 public class ContainerSpatialIOPort extends AEBaseContainer
 {
 
-	TileSpatialIOPort spatialIOPort;
+	final TileSpatialIOPort spatialIOPort;
 
 	IGrid network;
 

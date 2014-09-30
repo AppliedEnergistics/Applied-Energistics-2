@@ -16,7 +16,7 @@ import appeng.util.Platform;
 public class ContainerIOPort extends ContainerUpgradeable
 {
 
-	TileIOPort ioPort;
+	final TileIOPort ioPort;
 
 	@GuiSync(2)
 	public FullnessMode fMode = FullnessMode.EMPTY;

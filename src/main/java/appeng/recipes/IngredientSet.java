@@ -13,7 +13,7 @@ import appeng.api.recipes.ResolverResultSet;
 public class IngredientSet implements IIngredient
 {
 
-	int qty = 0;
+	final int qty = 0;
 	final String name;
 	final List<ItemStack> items;
 	ItemStack[] baked;
@@ -23,7 +23,7 @@ public class IngredientSet implements IIngredient
 		items = rr.results;
 	}
 
-	boolean isInside = false;
+	final boolean isInside = false;
 
 	@Override
 	public int getDamageValue()

@@ -29,7 +29,7 @@ import appeng.util.Platform;
 public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSlotHost
 {
 
-	IUpgradeableHost upgradeable;
+	final IUpgradeableHost upgradeable;
 
 	int tbSlot;
 	NetworkToolViewer tbInventory;

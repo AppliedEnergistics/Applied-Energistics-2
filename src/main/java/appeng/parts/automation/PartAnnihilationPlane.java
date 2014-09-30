@@ -170,8 +170,8 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	}
 
 	boolean breaking = false;
-	LinkedList<IAEItemStack> Buffer = new LinkedList<IAEItemStack>();
-	BaseActionSource mySrc = new MachineSource( this );
+	final LinkedList<IAEItemStack> Buffer = new LinkedList<IAEItemStack>();
+	final BaseActionSource mySrc = new MachineSource( this );
 
 	@Override
 	public void writeToNBT(NBTTagCompound data)

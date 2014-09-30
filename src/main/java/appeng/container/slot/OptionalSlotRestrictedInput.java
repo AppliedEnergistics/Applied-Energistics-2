@@ -7,7 +7,7 @@ public class OptionalSlotRestrictedInput extends SlotRestrictedInput
 {
 
 	final int groupNum;
-	IOptionalSlotHost host;
+	final IOptionalSlotHost host;
 
 	public OptionalSlotRestrictedInput(PlacableItemType valid, IInventory i, IOptionalSlotHost host, int slotIndex, int x, int y, int grpNum,
 			InventoryPlayer invPlayer) {

@@ -13,8 +13,8 @@ import appeng.integration.modules.BC;
 public class BCPipeInventory implements IMEInventory<IAEItemStack>
 {
 
-	TileEntity te;
-	ForgeDirection dir;
+	final TileEntity te;
+	final ForgeDirection dir;
 
 	public BCPipeInventory(TileEntity _te, ForgeDirection _dir) {
 		te = _te;

@@ -56,7 +56,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 		ISidedInventory, IAEAppEngInventory, ITileStorageMonitorable, IPriorityHost
 {
 
-	DualityInterface duality = new DualityInterface( proxy, this );
+	final DualityInterface duality = new DualityInterface( proxy, this );
 
 	public PartInterface(ItemStack is) {
 		super( PartInterface.class, is );

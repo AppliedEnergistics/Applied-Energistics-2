@@ -66,7 +66,7 @@ public enum MaterialType
 	BlankPattern(52), CardCrafting(53);
 
 	private String oreName;
-	private EnumSet<AEFeature> features;
+	private final EnumSet<AEFeature> features;
 	private Class<? extends Entity> droppedEntity;
 
 	// IIcon for the material.

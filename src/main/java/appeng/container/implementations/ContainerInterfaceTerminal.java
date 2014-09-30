@@ -45,8 +45,8 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 	class InvTracker
 	{
 
-		long which = autoBase++;
-		String unlocalizedName;
+		final long which = autoBase++;
+		final String unlocalizedName;
 
 		public InvTracker(DualityInterface dual, IInventory patterns, String unlocalizedName) {
 			server = patterns;
@@ -55,14 +55,14 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 			this.sortBy = dual.getSortValue();
 		}
 
-		IInventory client;
-		IInventory server;
-		public long sortBy;
+		final IInventory client;
+		final IInventory server;
+		public final long sortBy;
 
 	}
 
-	Map<IInterfaceHost, InvTracker> diList = new HashMap<IInterfaceHost, InvTracker>();
-	Map<Long, InvTracker> byId = new HashMap<Long, InvTracker>();
+	final Map<IInterfaceHost, InvTracker> diList = new HashMap<IInterfaceHost, InvTracker>();
+	final Map<Long, InvTracker> byId = new HashMap<Long, InvTracker>();
 	IGrid g;
 
 	public ContainerInterfaceTerminal(InventoryPlayer ip, PartMonitor anchor) {

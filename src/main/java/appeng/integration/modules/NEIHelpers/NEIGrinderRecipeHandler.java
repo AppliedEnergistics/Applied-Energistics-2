@@ -167,8 +167,8 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 	public class CachedGrindStoneRecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 
-		public ArrayList<PositionedStack> ingredients;
-		public PositionedStack result;
+		public final ArrayList<PositionedStack> ingredients;
+		public final PositionedStack result;
 
 		boolean hasOptional = false;
 		public String Chance;

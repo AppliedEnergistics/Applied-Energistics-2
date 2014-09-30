@@ -36,8 +36,8 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 		return TunnelType.ME;
 	}
 
-	AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", null, true );
-	public Connections connection = new Connections( this );
+	final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", null, true );
+	public final Connections connection = new Connections( this );
 
 	public PartP2PTunnelME(ItemStack is) {
 		super( is );

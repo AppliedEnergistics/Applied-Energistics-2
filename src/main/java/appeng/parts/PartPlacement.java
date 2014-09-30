@@ -45,7 +45,7 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 public class PartPlacement
 {
 
-	private ThreadLocal<Object> placing = new ThreadLocal<Object>();
+	private final ThreadLocal<Object> placing = new ThreadLocal<Object>();
 	private boolean wasCanceled = false;
 
 	@SubscribeEvent

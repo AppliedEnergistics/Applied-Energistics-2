@@ -9,7 +9,7 @@ public class IntegrationRegistry
 {
 
 	public static IntegrationRegistry instance = null;
-	private LinkedList<IntegrationNode> modules = new LinkedList<IntegrationNode>();
+	private final LinkedList<IntegrationNode> modules = new LinkedList<IntegrationNode>();
 
 	public void add( IntegrationType type)
 	{

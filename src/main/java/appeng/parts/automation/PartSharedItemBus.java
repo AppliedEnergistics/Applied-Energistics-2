@@ -58,7 +58,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		config.readFromNBT( extra, "config" );
 	}
 
-	AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
+	final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
 
 	int adaptorHash = 0;
 	InventoryAdaptor adaptor;

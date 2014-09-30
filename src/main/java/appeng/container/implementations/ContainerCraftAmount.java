@@ -17,10 +17,10 @@ import appeng.tile.inventory.AppEngInternalInventory;
 public class ContainerCraftAmount extends AEBaseContainer
 {
 
-	ITerminalHost priHost;
+	final ITerminalHost priHost;
 
 	public IAEItemStack whatToMake;
-	public Slot craftingItem;
+	public final Slot craftingItem;
 
 	public ContainerCraftAmount(InventoryPlayer ip, ITerminalHost te) {
 		super( ip, te );

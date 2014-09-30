@@ -18,8 +18,13 @@ import appeng.items.tools.powered.ToolColorApplicator;
 public class PacketClick extends AppEngPacket
 {
 
-	int x, y, z, side;
-	float hitX, hitY, hitZ;
+	final int x;
+	final int y;
+	final int z;
+	final int side;
+	final float hitX;
+	final float hitY;
+	final float hitZ;
 
 	// automatic.
 	public PacketClick(ByteBuf stream) throws IOException {

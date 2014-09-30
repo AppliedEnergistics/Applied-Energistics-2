@@ -25,8 +25,8 @@ import appeng.parts.automation.PartImportBus;
 public class GuiUpgradeable extends AEBaseGui
 {
 
-	ContainerUpgradeable cvb;
-	IUpgradeableHost bc;
+	final ContainerUpgradeable cvb;
+	final IUpgradeableHost bc;
 
 	GuiImgButton redstoneMode;
 	GuiImgButton fuzzyMode;

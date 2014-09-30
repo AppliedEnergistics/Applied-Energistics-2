@@ -20,6 +20,6 @@ public class RecipeData
 	public boolean exceptions = true;
 	public boolean erroronmissing = true;
 	
-	public Set<String> knownItem = new HashSet<String>();
+	public final Set<String> knownItem = new HashSet<String>();
 
 }

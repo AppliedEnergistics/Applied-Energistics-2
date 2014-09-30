@@ -16,7 +16,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 {
 
 	private ItemStack output = null;
-	private ArrayList<Object> input = new ArrayList<Object>();
+	private final ArrayList<Object> input = new ArrayList<Object>();
 	private boolean disable = false;
 
 	public boolean isEnabled()

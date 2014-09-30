@@ -15,7 +15,7 @@ import appeng.util.Platform;
 public class ContainerFormationPlane extends ContainerUpgradeable
 {
 
-	PartFormationPlane storageBus;
+	final PartFormationPlane storageBus;
 
 	public ContainerFormationPlane(InventoryPlayer ip, PartFormationPlane te) {
 		super( ip, te );

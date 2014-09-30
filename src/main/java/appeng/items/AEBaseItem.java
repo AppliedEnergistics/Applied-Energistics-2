@@ -11,8 +11,8 @@ import appeng.core.features.IAEFeature;
 public class AEBaseItem extends Item implements IAEFeature
 {
 
-	String featureFullName;
-	String featureSubName;
+	final String featureFullName;
+	final String featureSubName;
 	AEFeatureHandler feature;
 
 	@Override

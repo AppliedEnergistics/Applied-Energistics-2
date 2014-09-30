@@ -11,7 +11,7 @@ public enum WailaText
 
 	Contains, Channels;
 
-	String root;
+	final String root;
 
 	WailaText() {
 		root = "waila.appliedenergistics2";

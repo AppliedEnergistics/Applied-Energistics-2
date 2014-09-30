@@ -11,7 +11,7 @@ import appeng.api.features.ISpecialComparisonRegistry;
 public class SpecialComparisonRegistry implements ISpecialComparisonRegistry
 {
 
-	private List<IItemComparisonProvider> CompRegistry;
+	private final List<IItemComparisonProvider> CompRegistry;
 
 	public SpecialComparisonRegistry() {
 		CompRegistry = new ArrayList<IItemComparisonProvider>();

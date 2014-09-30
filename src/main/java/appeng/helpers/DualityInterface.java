@@ -85,16 +85,16 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 	final MultiCraftingTracker craftingTracker;
 
 	boolean hasConfig = false;
-	AENetworkProxy gridProxy;
-	IInterfaceHost iHost;
-	BaseActionSource mySrc;
-	ConfigManager cm = new ConfigManager( this );
+	final AENetworkProxy gridProxy;
+	final IInterfaceHost iHost;
+	final BaseActionSource mySrc;
+	final ConfigManager cm = new ConfigManager( this );
 	int priority;
 
 	List<ICraftingPatternDetails> craftingList = null;
 	List<ItemStack> waitingToSend = null;
 
-	private UpgradeInventory upgrades;
+	private final UpgradeInventory upgrades;
 
 	@Override
 	public int getInstalledUpgrades(Upgrades u)
@@ -304,11 +304,11 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		updateCraftingList();
 	}
 
-	AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 8 );
-	AppEngInternalInventory storage = new AppEngInternalInventory( this, 8 );
-	AppEngInternalInventory patterns = new AppEngInternalInventory( this, 9 );
+	final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 8 );
+	final AppEngInternalInventory storage = new AppEngInternalInventory( this, 8 );
+	final AppEngInternalInventory patterns = new AppEngInternalInventory( this, 9 );
 
-	WrapperInvSlot slotInv = new WrapperInvSlot( storage );
+	final WrapperInvSlot slotInv = new WrapperInvSlot( storage );
 
 	private InventoryAdaptor getAdaptor(int slot)
 	{
@@ -513,8 +513,8 @@ public class DualityInterface implements IGridTickable, ISegmentedInventory, ISt
 		return patterns;
 	}
 
-	MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<IAEItemStack>( new NullInventory<IAEItemStack>(), StorageChannel.ITEMS );
-	MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<IAEFluidStack>( new NullInventory<IAEFluidStack>(), StorageChannel.FLUIDS );
+	final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<IAEItemStack>( new NullInventory<IAEItemStack>(), StorageChannel.ITEMS );
+	final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<IAEFluidStack>( new NullInventory<IAEFluidStack>(), StorageChannel.FLUIDS );
 
 	public void gridChanged()
 	{

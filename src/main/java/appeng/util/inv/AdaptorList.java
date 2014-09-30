@@ -12,7 +12,7 @@ import appeng.util.iterators.StackToSlotIterator;
 public class AdaptorList extends InventoryAdaptor
 {
 
-	private List<ItemStack> i;
+	private final List<ItemStack> i;
 
 	public AdaptorList(List<ItemStack> s) {
 		i = s;

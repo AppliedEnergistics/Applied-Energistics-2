@@ -32,7 +32,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 
 	public static AEConfig instance;
 
-	public static double TunnelPowerLoss = 0.05;
+	public static final double TunnelPowerLoss = 0.05;
 
 	public String latestVersion = VERSION;
 	public long latestTimeStamp = 0;
@@ -42,8 +42,8 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 
 	public final static String PACKET_CHANNEL = "AE";
 
-	public IConfigManager settings = new ConfigManager( this );
-	public EnumSet<AEFeature> featureFlags = EnumSet.noneOf( AEFeature.class );
+	public final IConfigManager settings = new ConfigManager( this );
+	public final EnumSet<AEFeature> featureFlags = EnumSet.noneOf( AEFeature.class );
 	PowerUnits selectedPowerUnit = PowerUnits.AE;
 
 	public int storageBiomeID = -1;
@@ -60,7 +60,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 
 	private double WirelessBaseCost = 8;
 	private double WirelessCostMultiplier = 1;
-	private double WirelessHighWirelessCount = 64;
+	private final double WirelessHighWirelessCount = 64;
 	private double WirelessTerminalDrainMultiplier = 1;
 
 	private double WirelessBaseRange = 16;
@@ -113,9 +113,9 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 
 	public boolean enableEffects = true;
 	public boolean useLargeFonts = false;
-	public int[] craftByStacks = new int[] { 1, 10, 100, 1000 };
-	public int[] priorityByStacks = new int[] { 1, 10, 100, 1000 };
-	public int[] levelByStacks = new int[] { 1, 10, 100, 1000 };
+	public final int[] craftByStacks = new int[] { 1, 10, 100, 1000 };
+	public final int[] priorityByStacks = new int[] { 1, 10, 100, 1000 };
+	public final int[] levelByStacks = new int[] { 1, 10, 100, 1000 };
 
 	public int wirelessTerminalBattery = 1600000;
 	public int entropyManipulatorBattery = 200000;

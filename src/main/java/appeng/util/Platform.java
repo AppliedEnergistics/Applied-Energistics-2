@@ -119,14 +119,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class Platform
 {
 
-	public static Block air = Blocks.air;
+	public static final Block air = Blocks.air;
 
 	public static final int DEF_OFFSET = 16;
 
 	/*
 	 * random source, use it for item drop locations...
 	 */
-	static private Random rdnSrc = new Random();
+	static private final Random rdnSrc = new Random();
 
 	public static Random getRandom()
 	{
@@ -907,7 +907,7 @@ public class Platform
 		return false;
 	}
 
-	private static WeakHashMap<World, EntityPlayer> fakePlayers = new WeakHashMap<World, EntityPlayer>();
+	private static final WeakHashMap<World, EntityPlayer> fakePlayers = new WeakHashMap<World, EntityPlayer>();
 
 	public static EntityPlayer getPlayer(WorldServer w)
 	{

@@ -15,7 +15,7 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 {
 
 	private final TileEntity te;
-	IFZ fProxy;
+	final IFZ fProxy;
 
 	public FactorizationBarrel(IFZ proxy, TileEntity tile) {
 		te = tile;

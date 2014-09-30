@@ -11,11 +11,11 @@ import appeng.client.texture.ExtraBlockTextures;
 public class GuiToggleButton extends GuiButton implements ITooltip
 {
 
-	int iconIdxOn;
-	int iconIdxOff;
+	final int iconIdxOn;
+	final int iconIdxOff;
 
-	String Name;
-	String Hint;
+	final String Name;
+	final String Hint;
 
 	boolean on;
 
