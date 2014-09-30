@@ -242,9 +242,9 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		ItemStack is = workBench.getInventoryByName( "cell" ).getStackInSlot( 0 );
 		if ( Platform.isServer() )
 		{
-			for (int i = 0; i < this.crafters.size(); ++i)
+			for (Object crafter : this.crafters)
 			{
-				ICrafting icrafting = (ICrafting) this.crafters.get( i );
+				ICrafting icrafting = (ICrafting) crafter;
 
 				if ( prevStack != is )
 				{

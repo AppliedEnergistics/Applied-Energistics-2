@@ -89,10 +89,13 @@ public class AdaptorISpecialInventory extends InventoryAdaptor
 			if ( slots == null )
 				return false;
 
-			int s = slots.length;
-			for (int x = 0; x < s; x++)
-				if ( i.getStackInSlot( slots[x] ) != null )
+			for (int slot : slots)
+			{
+				if ( i.getStackInSlot( slot ) != null )
+				{
 					return true;
+				}
+			}
 
 			return false;
 		}
