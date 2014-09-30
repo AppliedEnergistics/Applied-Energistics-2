@@ -124,14 +124,14 @@ public class CraftingJob implements Runnable, ICraftingJob
 		missing.add( what );
 	}
 
-	class twoIntegers
+	static class TwoIntegers
 	{
 
 		public final long perOp = 0;
 		public final long times = 0;
 	}
 
-	final HashMap<String, twoIntegers> opsAndMultiplier = new HashMap<String, twoIntegers>();
+	final HashMap<String, TwoIntegers> opsAndMultiplier = new HashMap<String, TwoIntegers>();
 
 	@Override
 	public void run()
@@ -154,7 +154,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 				for (String s : opsAndMultiplier.keySet())
 				{
-					twoIntegers ti = opsAndMultiplier.get( s );
+					TwoIntegers ti = opsAndMultiplier.get( s );
 					AELog.crafting( s + " * " + ti.times + " = " + (ti.perOp * ti.times) );
 				}
 
@@ -180,7 +180,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 					for (String s : opsAndMultiplier.keySet())
 					{
-						twoIntegers ti = opsAndMultiplier.get( s );
+						TwoIntegers ti = opsAndMultiplier.get( s );
 						AELog.crafting( s + " * " + ti.times + " = " + (ti.perOp * ti.times) );
 					}
 

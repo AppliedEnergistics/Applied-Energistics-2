@@ -64,21 +64,21 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 
 		for (int y = 0; y < rows; y++)
 		{
-			String row = "";
+			StringBuilder row = new StringBuilder();
 			for (int x = 0; x < cols; x++)
 			{
 				if ( inputs.get( y ).get( x ).isAir() )
-					row = row + " ";
+					row.append( " " );
 				else
 				{
-					row = row + first;
+					row.append( first );
 					args.add( first );
 					args.add( inputs.get( y ).get( x ) );
 
 					first++;
 				}
 			}
-			args.add( y, row );
+			args.add( y, row.toString() );
 		}
 
 		ItemStack outIS = output.getItemStack();

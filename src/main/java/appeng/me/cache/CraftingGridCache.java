@@ -86,7 +86,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	final private SetMultimap<IAEStack, CraftingWatcher> interests = HashMultimap.create();
 	final public GenericInterestManager<CraftingWatcher> interestManager = new GenericInterestManager<CraftingWatcher>( interests );
 
-	class ActiveCpuIterator implements Iterator<ICraftingCPU>
+	static class ActiveCpuIterator implements Iterator<ICraftingCPU>
 	{
 
 		final Iterator<CraftingCPUCluster> i;

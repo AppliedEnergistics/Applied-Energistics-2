@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import appeng.api.networking.IGridNode;
@@ -14,7 +15,7 @@ import appeng.core.AELog;
 public class NetworkEventBus
 {
 
-	class NetworkEventDone extends Throwable
+	static class NetworkEventDone extends Throwable
 	{
 
 		private static final long serialVersionUID = -3079021487019171205L;
@@ -129,17 +130,17 @@ public class NetworkEventBus
 		{
 			if ( subscribers != null )
 			{
-				for (Class o : subscribers.keySet())
+				for (Entry<Class, MENetworkEventInfo> subscriber : subscribers.entrySet())
 				{
-					MENetworkEventInfo target = subscribers.get( o );
-					GridCacheWrapper cache = g.caches.get( o );
+					MENetworkEventInfo target = subscriber.getValue();
+					GridCacheWrapper cache = g.caches.get( subscriber.getKey() );
 					if ( cache != null )
 					{
 						x++;
 						target.invoke( cache.myCache, e );
 					}
 
-					for (IGridNode obj : g.getMachines( o ))
+					for (IGridNode obj : g.getMachines( subscriber.getKey() ))
 					{
 						x++;
 						target.invoke( obj.getMachine(), e );

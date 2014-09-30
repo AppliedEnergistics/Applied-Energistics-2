@@ -60,7 +60,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 		instance = this;
 	}
 
-	class SlightlyBetterSort implements Comparator<String>
+	static class SlightlyBetterSort implements Comparator<String>
 	{
 
 		final Pattern p;

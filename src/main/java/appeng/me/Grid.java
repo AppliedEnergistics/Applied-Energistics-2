@@ -3,6 +3,7 @@ package appeng.me;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import appeng.api.AEApi;
@@ -34,10 +35,10 @@ public class Grid implements IGrid
 		this.pivot = center;
 
 		HashMap<Class<? extends IGridCache>, IGridCache> myCaches = AEApi.instance().registries().gridCache().createCacheInstance( this );
-		for (Class<? extends IGridCache> c : myCaches.keySet())
+		for (Entry<Class<? extends IGridCache>, IGridCache> c : myCaches.entrySet())
 		{
-			bus.readClass( c, myCaches.get( c ).getClass() );
-			caches.put( c, new GridCacheWrapper( myCaches.get( c ) ) );
+			bus.readClass( c.getKey(), c.getValue().getClass() );
+			caches.put( c.getKey(), new GridCacheWrapper( c.getValue() ) );
 		}
 
 		postEvent( new MENetworkPostCacheConstruction() );

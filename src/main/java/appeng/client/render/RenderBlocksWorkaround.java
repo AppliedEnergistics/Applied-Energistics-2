@@ -23,7 +23,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	public EnumSet<ForgeDirection> renderFaces = EnumSet.allOf( ForgeDirection.class );
 	public EnumSet<ForgeDirection> faces = EnumSet.allOf( ForgeDirection.class );
 
-	private class LightingCache implements ISimplifiedBundle
+	private static class LightingCache implements ISimplifiedBundle
 	{
 
 		public IIcon rXPos;
