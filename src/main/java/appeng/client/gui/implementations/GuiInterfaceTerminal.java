@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -31,22 +31,19 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	// TODO: copied from GuiMEMonitorable. It looks not changed, maybe unneeded?
 	int offsetX = 9;
 
-	final HashMap<Long, ClientDCInternalInv> byId = new HashMap<Long, ClientDCInternalInv>();
-	final HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();
-	final ArrayList<String> names = new ArrayList<String>();
+	private final HashMap<Long, ClientDCInternalInv> byId = new HashMap<Long, ClientDCInternalInv>();
+	private final HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();
+	private final ArrayList<String> names = new ArrayList<String>();
+	private final ArrayList<Object> lines = new ArrayList<Object>();
+	private final EntityPlayer player;
 
-	ArrayList<Object> lines = new ArrayList<Object>();
-	LinkedList<SlotDisconnected> dcSlots = new LinkedList<SlotDisconnected>();
+	private boolean refreshList = false;
 	private MEGuiTextField searchField;
-
-	private int getMaxRows()
-	{
-		return names.size() + byId.size();// unique names, and each inv row.
-	}
 
 	public GuiInterfaceTerminal(InventoryPlayer inventoryPlayer, PartMonitor te)
 	{
 		super( new ContainerInterfaceTerminal( inventoryPlayer, te ) );
+		this.player = inventoryPlayer.player;
 		myScrollBar = new GuiScrollbar();
 		xSize = 195;
 		ySize = 222;
@@ -56,6 +53,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	public void initGui()
 	{
 		super.initGui();
+
 		myScrollBar.setLeft( 175 );
 		myScrollBar.setHeight( 106 );
 		myScrollBar.setTop( 18 );
@@ -65,6 +63,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		searchField.setMaxStringLength( 25 );
 		searchField.setTextColor( 0xFFFFFF );
 		searchField.setVisible( true );
+		searchField.setFocused( true );
 	}
 
 	@Override
@@ -170,8 +169,6 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		}
 	}
 
-	boolean refreshList = false;
-
 	public void postUpdate(NBTTagCompound in)
 	{
 		if ( in.getBoolean( "clear" ) )
@@ -211,18 +208,42 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		}
 	}
 
+	/**
+	 * rebuilds the list of interfaces.
+	 *
+	 * Respects a search term if present (ignores case) and adding only matching patterns.
+	 */
 	private void refreshList()
 	{
 		byName.clear();
-		String searchFilterLowerCase = searchField.getText().toLowerCase();
-		String itemNameLowerCase;
+
+		final String searchFilterLowerCase = searchField.getText().toLowerCase();
 
 		for (ClientDCInternalInv entry : byId.values())
 		{
-			itemNameLowerCase = entry.getName().toLowerCase();
-			if ( !searchFilterLowerCase.equals( "" ) && !itemNameLowerCase.contains( searchFilterLowerCase ) )
-				continue;
-			byName.put( entry.getName(), entry );
+			// Shortcut to skip any filter if search term is ""/empty
+			boolean found = searchFilterLowerCase.isEmpty();
+
+			// Search if the current inventory holds a pattern containing the search term.
+			if ( !found && !searchFilterLowerCase.equals( "" ) )
+			{
+				for (ItemStack itemStack : entry.inv)
+				{
+					if ( itemStack != null )
+					{
+						String tooltipLowerCase = String.valueOf( itemStack.getTooltip( player, false ) ).toLowerCase();
+						if ( tooltipLowerCase.contains( searchFilterLowerCase ) )
+						{
+							found = true;
+							break;
+						}
+					}
+				}
+			}
+
+			// if found, filter skipped or machine name matching the search term, add it
+			if ( found || entry.getName().toLowerCase().contains( searchFilterLowerCase ) )
+				byName.put( entry.getName(), entry );
 		}
 
 		names.clear();
@@ -230,7 +251,9 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 		Collections.sort( names );
 
-		lines = new ArrayList<Object>( getMaxRows() );
+		lines.clear();
+		lines.ensureCapacity( getMaxRows() );
+
 		for (String n : names)
 		{
 			lines.add( n );
@@ -243,6 +266,16 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		}
 
 		myScrollBar.setRange( 0, lines.size() - LINES_ON_PAGE, 2 );
+	}
+
+	/**
+	 * The max amount of unique names and each inv row. Not affected by the filtering.
+	 *
+	 * @return
+	 */
+	private int getMaxRows()
+	{
+		return names.size() + byId.size();
 	}
 
 	private ClientDCInternalInv getById(long id, long sortBy, String string)
