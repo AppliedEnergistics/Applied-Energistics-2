@@ -311,8 +311,6 @@ public class FacadePart implements IFacadePart, IBoxProvider
 						instance.renderForPass( 0 );
 						instance.setTexture( null );
 						Tessellator.instance.setColorOpaque_F( 1, 1, 1 );
-
-						return;
 					}
 				}
 			}
@@ -321,8 +319,6 @@ public class FacadePart implements IFacadePart, IBoxProvider
 				AELog.error( t );
 
 			}
-
-			return;
 		}
 	}
 
@@ -485,8 +481,6 @@ public class FacadePart implements IFacadePart, IBoxProvider
 						instance.renderInventoryBox( renderer );
 
 						instance.setTexture( null );
-
-						return;
 					}
 				}
 			}
@@ -494,8 +488,6 @@ public class FacadePart implements IFacadePart, IBoxProvider
 			{
 
 			}
-
-			return;
 		}
 	}
 

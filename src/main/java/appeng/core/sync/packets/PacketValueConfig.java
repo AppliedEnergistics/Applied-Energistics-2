@@ -58,55 +58,46 @@ public class PacketValueConfig extends AppEngPacket
 			ItemStack is = player.getHeldItem();
 			IMouseWheelItem si = (IMouseWheelItem) is.getItem();
 			si.onWheel( is, Value.equals( "WheelUp" ) );
-			return;
 		}
 		else if ( Name.equals( "Terminal.Cpu" ) && c instanceof ContainerCraftingStatus )
 		{
 			ContainerCraftingStatus qk = (ContainerCraftingStatus) c;
 			qk.cycleCpu( Value.equals( "Next" ) );
-			return;
 		}
 		else if ( Name.equals( "Terminal.Cpu" ) && c instanceof ContainerCraftConfirm )
 		{
 			ContainerCraftConfirm qk = (ContainerCraftConfirm) c;
 			qk.cycleCpu( Value.equals( "Next" ) );
-			return;
 		}
 		else if ( Name.equals( "Terminal.Start" ) && c instanceof ContainerCraftConfirm )
 		{
 			ContainerCraftConfirm qk = (ContainerCraftConfirm) c;
 			qk.startJob();
-			return;
 		}
 		else if ( Name.equals( "TileCrafting.Cancel" ) && c instanceof ContainerCraftingCPU )
 		{
 			ContainerCraftingCPU qk = (ContainerCraftingCPU) c;
 			qk.cancelCrafting();
-			return;
 		}
 		else if ( Name.equals( "QuartzKnife.Name" ) && c instanceof ContainerQuartzKnife )
 		{
 			ContainerQuartzKnife qk = (ContainerQuartzKnife) c;
 			qk.setName( Value );
-			return;
 		}
 		else if ( Name.equals( "TileSecurity.ToggleOption" ) && c instanceof ContainerSecurity )
 		{
 			ContainerSecurity sc = (ContainerSecurity) c;
 			sc.toggleSetting( Value, player );
-			return;
 		}
 		else if ( Name.equals( "PriorityHost.Priority" ) && c instanceof ContainerPriority )
 		{
 			ContainerPriority pc = (ContainerPriority) c;
 			pc.setPriority( Integer.parseInt( Value ), player );
-			return;
 		}
 		else if ( Name.equals( "LevelEmitter.Value" ) && c instanceof ContainerLevelEmitter )
 		{
 			ContainerLevelEmitter lvc = (ContainerLevelEmitter) c;
 			lvc.setLevel( Long.parseLong( Value ), player );
-			return;
 		}
 		else if ( Name.startsWith( "PatternTerminal." ) && c instanceof ContainerPatternTerm )
 		{
@@ -213,7 +204,6 @@ public class PacketValueConfig extends AppEngPacket
 			GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 			if ( gs instanceof GuiCraftingCPU )
 				((GuiCraftingCPU) gs).clearItems();
-			return;
 		}
 		else if ( c instanceof IConfigurableObject )
 		{

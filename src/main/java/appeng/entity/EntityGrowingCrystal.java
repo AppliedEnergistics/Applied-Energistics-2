@@ -101,7 +101,6 @@ final public class EntityGrowingCrystal extends EntityItem
 					progress_1000 = 0;
 					CommonHelper.proxy.spawnEffect( EffectType.Vibrant, worldObj, posX, posY + 0.2, posZ, null );
 				}
-				return;
 			}
 			else
 			{
