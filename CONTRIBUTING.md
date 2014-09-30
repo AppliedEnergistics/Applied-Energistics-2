@@ -9,29 +9,21 @@ top of things.
 
 ### Reporting an Issue
 
-When reporting issues, it is critically important that you provide as much
-detail as possible. Without this detail, it is impossible for us to track
-down what the real issue is.
+Applied Energistics 2 crashing, have a suggestion, found a bug?  Create an issue now!
 
-When creating a new issue, please include the following items, at a minimum.
-Issues that do not contain the following will be closed. Sorry, but we don't
-have the time to chase down "My inscriber doesn't work" or "ae crashes"
-type of issues.
-
-````
-What version of Minecraft
-What version of Forge
-What version of AE2 - If this is not the latest version of AE, does the problem
-happen on the latest version?
-
-If this is a crash, provide the crash log. You can use http://pastebin.com
-to upload the log.
-
-If a specific setup is causing the crash or failure, post a screen shot. You can
-use http://imgur.com/ or http://puush.me/ to host the screen shot. In some cases a world download is required with a minimal setup of the bug to reproduce this.
-
-Describe in full detail exactly how to reproduce the failure.
-````
+1. Make sure your issue hasn't already been answered or fixed.  Also think about whether your issue is a valid one before submitting it.
+2. Go to [the issues page](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues)
+3. Click new issue
+4. Enter your Issue's title (something that summarizes your issue), and then create a detailed description of the issue.
+	* To help in resolving your issues please try to include the follow if applicable:
+		* The problem that is happening?
+		* What was expected?
+		* How to reproduce the problem?
+		* Server or Single Player?
+		* Mod Pack using and version?
+		* Crash log (Please make sure to use [pastebin](http://pastebin.com/) for the log file) 
+		* Screen shots or Pictures of the problem
+5. Click `Submit New Issue`, and wait for feedback!
 
 ### Submitting Changes
 
