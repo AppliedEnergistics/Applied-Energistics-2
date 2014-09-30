@@ -58,7 +58,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 {
 
-	class TaskProgress
+	static class TaskProgress
 	{
 
 		long value;

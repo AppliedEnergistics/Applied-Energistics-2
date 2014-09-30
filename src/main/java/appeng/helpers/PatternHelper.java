@@ -41,7 +41,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	final boolean isCrafting;
 	public int priority = 0;
 
-	class TestLookup
+	static class TestLookup
 	{
 
 		final int slot;

@@ -42,7 +42,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 
 	static private long autoBase = Long.MIN_VALUE;
 
-	class InvTracker
+	static class InvTracker
 	{
 
 		final long which = autoBase++;
@@ -76,7 +76,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 
 	NBTTagCompound data = new NBTTagCompound();
 
-	class PatternInvSlot extends WrapperInvSlot
+	static class PatternInvSlot extends WrapperInvSlot
 	{
 
 		public PatternInvSlot(IInventory inv) {

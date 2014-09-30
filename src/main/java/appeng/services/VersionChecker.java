@@ -60,17 +60,17 @@ public class VersionChecker implements Runnable
 				yc.setRequestProperty( "User-Agent", "AE2/" + AEConfig.VERSION + " (Channel:" + AEConfig.CHANNEL + "," + MCVersion.replace( " ", ":" ) + ")" );
 				BufferedReader in = new BufferedReader( new InputStreamReader( yc.getInputStream() ) );
 
-				String Version = "";
+				StringBuilder Version = new StringBuilder();
 				String inputLine;
 
 				while ((inputLine = in.readLine()) != null)
-					Version += inputLine;
+					Version.append( inputLine );
 
 				in.close();
 
 				if ( Version.length() > 2 )
 				{
-					JsonElement element = (new JsonParser()).parse( Version );
+					JsonElement element = (new JsonParser()).parse( Version.toString() );
 
 					int version = element.getAsJsonObject().get( "FormatVersion" ).getAsInt();
 					if ( version == 1 )

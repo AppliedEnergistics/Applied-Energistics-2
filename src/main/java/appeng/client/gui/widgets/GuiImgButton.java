@@ -33,7 +33,7 @@ import appeng.core.localization.ButtonToolTips;
 public class GuiImgButton extends GuiButton implements ITooltip
 {
 
-	class EnumPair
+	static class EnumPair
 	{
 
 		final Enum setting;
@@ -63,7 +63,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 
 	}
 
-	class BtnAppearance
+	static class BtnAppearance
 	{
 
 		public int index;

@@ -196,7 +196,7 @@ public class ApiPart implements IPartHelper
 		}
 	}
 
-	class DefaultPackageClassNameRemapper extends Remapper
+	static class DefaultPackageClassNameRemapper extends Remapper
 	{
 
 		public final HashMap<String, String> inputOutput = new HashMap<String, String>();

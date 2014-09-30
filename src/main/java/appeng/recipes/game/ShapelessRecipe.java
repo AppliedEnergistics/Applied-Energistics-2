@@ -24,7 +24,8 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 		return !disable;
 	}
 
-	public ShapelessRecipe(ItemStack result, Object... recipe) {
+	public ShapelessRecipe(ItemStack result, Object... recipe)
+	{
 		output = result.copy();
 		for (Object in : recipe)
 		{
@@ -34,13 +35,13 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 			}
 			else
 			{
-				String ret = "Invalid shapeless ore recipe: ";
+				StringBuilder ret = new StringBuilder( "Invalid shapeless ore recipe: " );
 				for (Object tmp : recipe)
 				{
-					ret += tmp + ", ";
+					ret.append( tmp + ", " );
 				}
-				ret += output;
-				throw new RuntimeException( ret );
+				ret.append( output );
+				throw new RuntimeException( ret.toString() );
 			}
 		}
 	}

@@ -33,7 +33,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 {
 
-	class PartTypeIst
+	static class PartTypeIst
 	{
 
 		PartType part;

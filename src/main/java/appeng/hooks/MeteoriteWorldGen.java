@@ -19,7 +19,7 @@ import cpw.mods.fml.common.IWorldGenerator;
 final public class MeteoriteWorldGen implements IWorldGenerator
 {
 
-	class myGen implements ICompassCallback
+	static class MyGen implements ICompassCallback
 	{
 
 		double distance = 0;

@@ -13,7 +13,7 @@ public class OreHelper
 
 	public static final OreHelper instance = new OreHelper();
 
-	class ItemRef
+	static class ItemRef
 	{
 
 		ItemRef(ItemStack stack)
@@ -51,7 +51,7 @@ public class OreHelper
 
 	}
 
-	class OreResult
+	static class OreResult
 	{
 
 		public OreReference oreValue = null;

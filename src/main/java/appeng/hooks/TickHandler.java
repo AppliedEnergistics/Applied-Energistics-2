@@ -40,7 +40,7 @@ import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
 public class TickHandler
 {
 
-	class HandlerRep
+	static class HandlerRep
 	{
 
 		public Queue<AEBaseTile> tiles = new LinkedList<AEBaseTile>();

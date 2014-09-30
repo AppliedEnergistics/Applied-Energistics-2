@@ -13,7 +13,7 @@ public class CompassManager
 
 	public static final CompassManager instance = new CompassManager();
 
-	class CompassRequest
+	static class CompassRequest
 	{
 
 		final int hash;

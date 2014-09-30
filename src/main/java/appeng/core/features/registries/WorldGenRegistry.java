@@ -9,7 +9,7 @@ import appeng.api.features.IWorldGen;
 public class WorldGenRegistry implements IWorldGen
 {
 
-	private class TypeSet
+	private static class TypeSet
 	{
 
 		final HashSet<Class<? extends WorldProvider>> badProviders = new HashSet<Class<? extends WorldProvider>>();
