@@ -224,7 +224,7 @@ public class WorldSettings extends Configuration
 		instance = null;
 	}
 
-	List<Integer> storageCellDims = new ArrayList();
+	List<Integer> storageCellDims = new ArrayList<Integer>();
 	HashMap<Integer, UUID> idToUUID;
 
 	public void addStorageCellDim(int newDim)
@@ -297,7 +297,7 @@ public class WorldSettings extends Configuration
 			{
 				try
 				{
-					manager.scheduleOutboundPacket( (new PacketNewStorageDimension( newDim )).getProxy(), new GenericFutureListener[0] );
+					manager.scheduleOutboundPacket( (new PacketNewStorageDimension( newDim )).getProxy() );
 				}
 				catch (IOException e)
 				{
@@ -317,7 +317,7 @@ public class WorldSettings extends Configuration
 		save();
 	}
 
-	private WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>> loadedStorage = new WeakHashMap();
+	private WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>> loadedStorage = new WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>>();
 
 	public WorldCoord getStoredSize(int dim)
 	{

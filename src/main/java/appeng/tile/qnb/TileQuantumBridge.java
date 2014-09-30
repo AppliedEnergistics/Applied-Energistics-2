@@ -43,9 +43,9 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	final byte powered = 64;
 
 	private QuantumCalculator calc = new QuantumCalculator( this );
-	byte xdex = -1;
+	byte constructed = -1;
 
-	QuantumCluster clust;
+	QuantumCluster cluster;
 	public boolean bridgePowered;
 
 	private boolean updateStatus = false;
@@ -56,8 +56,8 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		if ( updateStatus )
 		{
 			updateStatus = false;
-			if ( clust != null )
-				clust.updateStatus( true );
+			if ( cluster != null )
+				cluster.updateStatus( true );
 			markForUpdate();
 		}
 	}
@@ -65,12 +65,12 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	@TileEvent(TileEventType.NETWORK_WRITE)
 	public void writeToStream_TileQuantumBridge(ByteBuf data) throws IOException
 	{
-		int out = xdex;
+		int out = constructed;
 
-		if ( getStackInSlot( 0 ) != null && xdex != -1 )
+		if ( getStackInSlot( 0 ) != null && constructed != -1 )
 			out = out | hasSingularity;
 
-		if ( gridProxy.isActive() && xdex != -1 )
+		if ( gridProxy.isActive() && constructed != -1 )
 			out = out | powered;
 
 		data.writeByte( (byte) out );
@@ -79,10 +79,10 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	@TileEvent(TileEventType.NETWORK_READ)
 	public boolean readFromStream_TileQuantumBridge(ByteBuf data) throws IOException
 	{
-		int oldValue = xdex;
-		xdex = data.readByte();
-		bridgePowered = (xdex | powered) == powered;
-		return xdex != oldValue;
+		int oldValue = constructed;
+		constructed = data.readByte();
+		bridgePowered = (constructed | powered) == powered;
+		return constructed != oldValue;
 	}
 
 	public TileQuantumBridge() {
@@ -92,6 +92,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		inv.setMaxStackSize( 1 );
 	}
 
+	@Override
 	public IInventory getInternalInventory()
 	{
 		return inv;
@@ -106,8 +107,8 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	@Override
 	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added)
 	{
-		if ( clust != null )
-			clust.updateStatus( true );
+		if ( cluster != null )
+			cluster.updateStatus( true );
 	}
 
 	@Override
@@ -121,15 +122,15 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	@Override
 	public void disconnect(boolean affectWorld)
 	{
-		if ( clust != null )
+		if ( cluster != null )
 		{
 			if ( !affectWorld )
-				clust.updateStatus = false;
+				cluster.updateStatus = false;
 
-			clust.destroy();
+			cluster.destroy();
 		}
 
-		clust = null;
+		cluster = null;
 
 		if ( affectWorld )
 			gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
@@ -138,7 +139,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	@Override
 	public IAECluster getCluster()
 	{
-		return clust;
+		return cluster;
 	}
 
 	@Override
@@ -171,13 +172,13 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public void updateStatus(QuantumCluster c, byte flags, boolean affectWorld)
 	{
-		clust = c;
+		cluster = c;
 
 		if ( affectWorld )
 		{
-			if ( xdex != flags )
+			if ( constructed != flags )
 			{
-				xdex = flags;
+				constructed = flags;
 				markForUpdate();
 			}
 
@@ -209,13 +210,13 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public boolean isCorner()
 	{
-		return (xdex & corner) == corner && xdex != -1;
+		return (constructed & corner) == corner && constructed != -1;
 	}
 
 	public boolean isPowered()
 	{
 		if ( Platform.isClient() )
-			return (xdex & powered) == powered && xdex != -1;
+			return (constructed & powered) == powered && constructed != -1;
 
 		try
 		{
@@ -231,7 +232,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public boolean isFormed()
 	{
-		return xdex != -1;
+		return constructed != -1;
 	}
 
 	@Override
@@ -267,15 +268,15 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public boolean hasQES()
 	{
-		if ( xdex == -1 )
+		if ( constructed == -1 )
 			return false;
-		return (xdex & hasSingularity) == hasSingularity;
+		return (constructed & hasSingularity) == hasSingularity;
 	}
 
 	public void breakCluster()
 	{
-		if ( clust != null )
-			clust.destroy();
+		if ( cluster != null )
+			cluster.destroy();
 	}
 
 }

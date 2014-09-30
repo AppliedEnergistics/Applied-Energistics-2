@@ -15,7 +15,7 @@ import appeng.spatial.DefaultSpatialHandler;
 public class MovableTileRegistry implements IMovableRegistry
 {
 
-	private HashSet<Block> blacklisted = new HashSet();
+	private HashSet<Block> blacklisted = new HashSet<Block>();
 
 	private HashMap<Class<? extends TileEntity>, IMovableHandler> Valid = new HashMap<Class<? extends TileEntity>, IMovableHandler>();
 	private LinkedList<Class<? extends TileEntity>> test = new LinkedList<Class<? extends TileEntity>>();
@@ -137,6 +137,7 @@ public class MovableTileRegistry implements IMovableRegistry
 		blacklisted.add( blk );
 	}
 
+	@Override
 	public boolean isBlacklisted(Block blk)
 	{
 		return blacklisted.contains( blk );

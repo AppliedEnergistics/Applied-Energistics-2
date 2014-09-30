@@ -36,7 +36,7 @@ import appeng.util.Platform;
 public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IPowerChannelState
 {
 
-	CraftingCPUCluster clust;
+	CraftingCPUCluster cluster;
 	final CraftingCPUCalculator calc = new CraftingCPUCalculator( this );
 
 	public ISimplifiedBundle lightCache;
@@ -62,10 +62,10 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 
 	public void updateStatus(CraftingCPUCluster c)
 	{
-		if ( clust != null && clust != c )
-			clust.breakCluster();
+		if ( cluster != null && cluster != c )
+			cluster.breakCluster();
 
-		clust = c;
+		cluster = c;
 		updateMeta( true );
 	}
 
@@ -74,19 +74,20 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		calc.calculateMultiblock( worldObj, getLocation() );
 	}
 
+	@Override
 	public void setName(String name)
 	{
 		super.setName( name );
-		if ( clust != null )
-			clust.updateName();
+		if ( cluster != null )
+			cluster.updateName();
 	}
 
 	@TileEvent(TileEventType.WORLD_NBT_WRITE)
 	public void writeToNBT_TileCraftingTile(NBTTagCompound data)
 	{
 		data.setBoolean( "core", isCoreBlock );
-		if ( isCoreBlock && clust != null )
-			clust.writeToNBT( data );
+		if ( isCoreBlock && cluster != null )
+			cluster.writeToNBT( data );
 	}
 
 	@TileEvent(TileEventType.WORLD_NBT_READ)
@@ -95,8 +96,8 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		isCoreBlock = data.getBoolean( "core" );
 		if ( isCoreBlock )
 		{
-			if ( clust != null )
-				clust.readFromNBT( data );
+			if ( cluster != null )
+				cluster.readFromNBT( data );
 			else
 				previousState = (NBTTagCompound) data.copy();
 		}
@@ -125,9 +126,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	@Override
 	public void disconnect(boolean update)
 	{
-		if ( clust != null )
+		if ( cluster != null )
 		{
-			clust.destroy();
+			cluster.destroy();
 			if ( update )
 				updateMeta( true );
 		}
@@ -157,10 +158,10 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			power = gridProxy.isActive();
 
 		int current = worldObj.getBlockMetadata( xCoord, yCoord, zCoord );
-		int newmeta = (current & 3) | (formed ? 8 : 0) | (power ? 4 : 0);
+		int newMeta = (current & 3) | (formed ? 8 : 0) | (power ? 4 : 0);
 
-		if ( current != newmeta )
-			worldObj.setBlockMetadataWithNotify( xCoord, yCoord, zCoord, newmeta, 2 );
+		if ( current != newMeta )
+			worldObj.setBlockMetadataWithNotify( xCoord, yCoord, zCoord, newMeta, 2 );
 
 		if ( updateFormed )
 		{
@@ -174,7 +175,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	@Override
 	public IAECluster getCluster()
 	{
-		return clust;
+		return cluster;
 	}
 
 	@Override
@@ -195,7 +196,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	{
 		if ( Platform.isClient() )
 			return (worldObj.getBlockMetadata( xCoord, yCoord, zCoord ) & 8) == 8;
-		return clust != null;
+		return cluster != null;
 	}
 
 	public boolean isAccelerator()
@@ -230,14 +231,14 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 
 	public void breakCluster()
 	{
-		if ( clust != null )
+		if ( cluster != null )
 		{
-			clust.cancel();
-			IMEInventory<IAEItemStack> inv = clust.getInventory();
+			cluster.cancel();
+			IMEInventory<IAEItemStack> inv = cluster.getInventory();
 
 			LinkedList<WorldCoord> places = new LinkedList<WorldCoord>();
 
-			Iterator<IGridHost> i = clust.getTiles();
+			Iterator<IGridHost> i = cluster.getTiles();
 			while (i.hasNext())
 			{
 				IGridHost h = i.next();
@@ -269,7 +270,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 				ais.setStackSize( ais.getItemStack().getMaxStackSize() );
 				while (true)
 				{
-					IAEItemStack g = inv.extractItems( ais.copy(), Actionable.MODULATE, clust.getActionSource() );
+					IAEItemStack g = inv.extractItems( ais.copy(), Actionable.MODULATE, cluster.getActionSource() );
 					if ( g == null )
 						break;
 
@@ -281,7 +282,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 
 			}
 
-			clust.destroy();
+			cluster.destroy();
 		}
 	}
 }

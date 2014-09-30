@@ -27,6 +27,7 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 {
 
+	@Override
 	public void drawBackground(int recipe)
 	{
 		GL11.glColor4f( 1, 1, 1, 1 );
@@ -34,11 +35,13 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 		drawTexturedModalRect( 0, 0, 5, 11, 166, 75 );
 	}
 
+	@Override
 	public void loadTransferRects()
 	{
-		this.transferRects.add( new TemplateRecipeHandler.RecipeTransferRect( new Rectangle( 84, 23, 24, 18 ), "inscriber", new Object[0] ) );
+		this.transferRects.add( new TemplateRecipeHandler.RecipeTransferRect( new Rectangle( 84, 23, 24, 18 ), "inscriber" ) );
 	}
 
+	@Override
 	public Class<? extends GuiContainer> getGuiClass()
 	{
 		return GuiInscriber.class;
@@ -55,14 +58,11 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	{
 		if ( (outputId.equals( "inscriber" )) && (getClass() == NEIInscriberRecipeHandler.class) )
 		{
-			for (InscriberRecipe irecipe : Inscribe.recipes)
+			for (InscriberRecipe recipe : Inscribe.recipes)
 			{
-				CachedInscriberRecipe recipe = new CachedInscriberRecipe( irecipe );
-				if ( recipe != null )
-				{
-					recipe.computeVisuals();
-					this.arecipes.add( recipe );
-				}
+				CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
+				cachedRecipe.computeVisuals();
+				this.arecipes.add( cachedRecipe );
 			}
 		}
 		else
@@ -71,37 +71,40 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for (InscriberRecipe irecipe : Inscribe.recipes)
+		for (InscriberRecipe recipe : Inscribe.recipes)
 		{
-			if ( NEIServerUtils.areStacksSameTypeCrafting( irecipe.output, result ) )
+			if ( NEIServerUtils.areStacksSameTypeCrafting( recipe.output, result ) )
 			{
-				CachedInscriberRecipe recipe = new CachedInscriberRecipe( irecipe );
-				recipe.computeVisuals();
-				this.arecipes.add( recipe );
+				CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
+				cachedRecipe.computeVisuals();
+				this.arecipes.add( cachedRecipe );
 			}
 		}
 	}
 
+	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for (InscriberRecipe irecipe : Inscribe.recipes)
+		for (InscriberRecipe recipe : Inscribe.recipes)
 		{
-			CachedInscriberRecipe recipe = new CachedInscriberRecipe( irecipe );
+			CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
 
-			if ( (recipe != null) && (recipe.contains( recipe.ingredients, ingredient.getItem() )) )
+			if ( (cachedRecipe.contains( cachedRecipe.ingredients, ingredient.getItem() )) )
 			{
-				recipe.computeVisuals();
-				if ( recipe.contains( recipe.ingredients, ingredient ) )
+				cachedRecipe.computeVisuals();
+				if ( cachedRecipe.contains( cachedRecipe.ingredients, ingredient ) )
 				{
-					recipe.setIngredientPermutation( recipe.ingredients, ingredient );
-					this.arecipes.add( recipe );
+					cachedRecipe.setIngredientPermutation( cachedRecipe.ingredients, ingredient );
+					this.arecipes.add( cachedRecipe );
 				}
 			}
 		}
 	}
 
+	@Override
 	public String getGuiTexture()
 	{
 		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/guis/inscriber.png" );
@@ -109,6 +112,7 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 		return f;
 	}
 
+	@Override
 	public String getOverlayIdentifier()
 	{
 		return "inscriber";
@@ -138,18 +142,18 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 		public ArrayList<PositionedStack> ingredients;
 		public PositionedStack result;
 
-		public CachedInscriberRecipe(InscriberRecipe irecipe) {
-			result = new PositionedStack( irecipe.output, 108, 29 );
+		public CachedInscriberRecipe(InscriberRecipe recipe) {
+			result = new PositionedStack( recipe.output, 108, 29 );
 			ingredients = new ArrayList<PositionedStack>();
 
-			if ( irecipe.plateA != null )
-				ingredients.add( new PositionedStack( irecipe.plateA, 40, 5 ) );
+			if ( recipe.plateA != null )
+				ingredients.add( new PositionedStack( recipe.plateA, 40, 5 ) );
 
-			if ( irecipe.imprintable != null )
-				ingredients.add( new PositionedStack( irecipe.imprintable, 40 + 18, 28 ) );
+			if ( recipe.imprintable != null )
+				ingredients.add( new PositionedStack( recipe.imprintable, 40 + 18, 28 ) );
 
-			if ( irecipe.plateB != null )
-				ingredients.add( new PositionedStack( irecipe.plateB, 40, 51 ) );
+			if ( recipe.plateB != null )
+				ingredients.add( new PositionedStack( recipe.plateB, 40, 51 ) );
 		}
 
 		@Override

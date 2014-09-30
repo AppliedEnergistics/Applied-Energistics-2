@@ -303,6 +303,7 @@ public class PartExportBus extends PartSharedItemBus implements IGridTickable, I
 		return doBusWork();
 	}
 
+	@Override
 	public RedstoneMode getRSMode()
 	{
 		return (RedstoneMode) settings.getSetting( Settings.REDSTONE_CONTROLLED );

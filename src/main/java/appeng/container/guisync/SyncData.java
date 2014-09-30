@@ -12,7 +12,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketProgressBar;
 import appeng.core.sync.packets.PacketValueConfig;
 
-public class SyncDat
+public class SyncData
 {
 
 	private Object clientVersion;
@@ -22,11 +22,11 @@ public class SyncDat
 
 	private int channel;
 
-	public SyncDat(AEBaseContainer container, Field field, GuiSync anno) {
+	public SyncData(AEBaseContainer container, Field field, GuiSync annotation) {
 		clientVersion = null;
 		this.source = container;
 		this.field = field;
-		channel = anno.value();
+		channel = annotation.value();
 	}
 
 	public int getChannel()
@@ -39,9 +39,7 @@ public class SyncDat
 		try
 		{
 			Object val = field.get( source );
-			if ( val == clientVersion )
-				return;
-			else if ( val != null && clientVersion == null )
+			if ( val != null && clientVersion == null )
 				send( c, val );
 			else if ( !val.equals( clientVersion ) )
 				send( c, val );
@@ -118,15 +116,15 @@ public class SyncDat
 				if ( field.getType().equals( int.class ) )
 					field.set( source, (int) val );
 				else if ( field.getType().equals( long.class ) )
-					field.set( source, (long) val );
+					field.set( source, val );
 				else if ( field.getType().equals( boolean.class ) )
 					field.set( source, val == 1 );
 				else if ( field.getType().equals( Integer.class ) )
-					field.set( source, (Integer) (int) val );
+					field.set( source, (int) val );
 				else if ( field.getType().equals( Long.class ) )
-					field.set( source, (Long) val );
+					field.set( source, val );
 				else if ( field.getType().equals( Boolean.class ) )
-					field.set( source, (Boolean) (val == 1) );
+					field.set( source, val == 1 );
 			}
 
 			source.onUpdate( field.getName(), oldValue, field.get( source ) );

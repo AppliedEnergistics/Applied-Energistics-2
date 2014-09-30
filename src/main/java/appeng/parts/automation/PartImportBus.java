@@ -147,6 +147,7 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 	private int itemToSend; // used in tickingRequest
 	private boolean worked; // used in tickingRequest
 
+	@Override
 	TickRateModulation doBusWork()
 	{
 		if ( !proxy.isActive() )
@@ -265,6 +266,7 @@ public class PartImportBus extends PartSharedItemBus implements IGridTickable, I
 		return false;
 	}
 
+	@Override
 	public RedstoneMode getRSMode()
 	{
 		return (RedstoneMode) settings.getSetting( Settings.REDSTONE_CONTROLLED );

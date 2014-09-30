@@ -39,10 +39,10 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	{
 		// cache of inventory state.
 		int sideData[][] = null;
-		List<ISidedInventory> invs = null;
+		List<ISidedInventory> inventories = null;
 		List<InvSot> slots = null;
 
-		invs = new ArrayList();
+		inventories = new ArrayList<ISidedInventory>();
 		int slotCount = 0;
 
 		for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
@@ -52,15 +52,13 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 			{
 				ISidedInventory part = (ISidedInventory) bp;
 				slotCount += part.getSizeInventory();
-				invs.add( part );
+				inventories.add( part );
 			}
 		}
 
-		if ( invs.isEmpty() || slotCount == 0 )
+		if ( inventories.isEmpty() || slotCount == 0 )
 		{
-			invs = null;
-			sideData = null;
-			slots = null;
+			inventories = null;
 		}
 		else
 		{
@@ -69,7 +67,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 
 			int offsetForLayer = 0;
 			int offsetForPart = 0;
-			for (ISidedInventory sides : invs)
+			for (ISidedInventory sides : inventories)
 			{
 				offsetForPart = 0;
 				slotCount = sides.getSizeInventory();
@@ -94,7 +92,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 		if ( sideData == null || slots == null )
 			invLayer = null;
 		else
-			invLayer = new InvLayerData( sideData, invs, slots );
+			invLayer = new InvLayerData( sideData, inventories, slots );
 
 		// make sure inventory is updated before we call FMP.
 		super.notifyNeighbors();
@@ -106,7 +104,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 		if ( invLayer == null )
 			return null;
 
-		return invLayer.decrStackSize( slot, amount );
+		return invLayer.decreaseStackSize( slot, amount );
 	}
 
 	@Override

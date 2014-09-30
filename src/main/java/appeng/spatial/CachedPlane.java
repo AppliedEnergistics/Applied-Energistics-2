@@ -35,14 +35,14 @@ public class CachedPlane
 
 		private ExtendedBlockStorage[] storage;
 
-		public Column(Chunk _c, int _x, int _z, int cy, int y_clen) {
+		public Column(Chunk _c, int _x, int _z, int cy, int chunkHeight) {
 			x = _x;
 			z = _z;
 			c = _c;
 			storage = c.getBlockStorageArray();
 
 			// make sure storage exists before hand...
-			for (int ay = 0; ay < y_clen; ay++)
+			for (int ay = 0; ay < chunkHeight; ay++)
 			{
 				int by = (ay + cy);
 				ExtendedBlockStorage extendedblockstorage = storage[by];
@@ -56,11 +56,11 @@ public class CachedPlane
 			if ( blk[0] == matrixFrame )
 				blk[0] = Platform.air;
 
-			ExtendedBlockStorage extendedblockstorage = storage[y >> 4];
-			extendedblockstorage.func_150818_a( x, y & 15, z, (Block) blk[0] );
-			// extendedblockstorage.setExtBlockID( x, y & 15, z, blk[0] );
-			extendedblockstorage.setExtBlockMetadata( x, y & 15, z, (Integer) blk[1] );
-			extendedblockstorage.setExtBlocklightValue( x, y & 15, z, (Integer) blk[2] );
+			ExtendedBlockStorage extendedBlockStorage = storage[y >> 4];
+			extendedBlockStorage.func_150818_a( x, y & 15, z, (Block) blk[0] );
+			// extendedBlockStorage.setExtBlockID( x, y & 15, z, blk[0] );
+			extendedBlockStorage.setExtBlockMetadata( x, y & 15, z, (Integer) blk[1] );
+			extendedBlockStorage.setExtBlocklightValue( x, y & 15, z, (Integer) blk[2] );
 		}
 
 		public Object[] getDetails(int y)
@@ -72,7 +72,7 @@ public class CachedPlane
 			return ch;
 		}
 
-		public boolean dontSkip(int y)
+		public boolean doNotSkip(int y)
 		{
 			ExtendedBlockStorage extendedblockstorage = storage[y >> 4];
 			if ( reg.isBlacklisted( extendedblockstorage.getBlockByExtId( x, y & 15, z ) ) )
@@ -88,7 +88,7 @@ public class CachedPlane
 			skipThese.add( yCoord );
 		}
 
-	};
+	}
 
 	int verticalBits;
 
@@ -116,24 +116,24 @@ public class CachedPlane
 
 	LinkedList<WorldCoord> updates = new LinkedList<WorldCoord>();
 
-	public CachedPlane(World w, int minx, int miny, int minz, int maxx, int maxy, int maxz) {
+	public CachedPlane(World w, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
 
 		world = w;
 
-		x_size = maxx - minx + 1;
-		y_size = maxy - miny + 1;
-		z_size = maxz - minz + 1;
+		x_size = maxX - minX + 1;
+		y_size = maxY - minY + 1;
+		z_size = maxZ - minZ + 1;
 
-		x_offset = minx;
-		y_offset = miny;
-		z_offset = minz;
+		x_offset = minX;
+		y_offset = minY;
+		z_offset = minZ;
 
-		int minCX = minx >> 4;
-		int minCY = miny >> 4;
-		int minCZ = minz >> 4;
-		int maxCX = maxx >> 4;
-		int maxCY = maxy >> 4;
-		int maxCZ = maxz >> 4;
+		int minCX = minX >> 4;
+		int minCY = minY >> 4;
+		int minCZ = minZ >> 4;
+		int maxCX = maxX >> 4;
+		int maxCY = maxY >> 4;
+		int maxCZ = maxZ >> 4;
 
 		cx_size = maxCX - minCX + 1;
 		int cy_size = maxCY - minCY + 1;
@@ -151,7 +151,7 @@ public class CachedPlane
 		for (int x = 0; x < x_size; x++)
 			for (int z = 0; z < z_size; z++)
 			{
-				myColumns[x][z] = new Column( w.getChunkFromChunkCoords( (minx + x) >> 4, (minz + z) >> 4 ), (minx + x) & 0xF, (minz + z) & 0xF, minCY, cy_size );
+				myColumns[x][z] = new Column( w.getChunkFromChunkCoords( (minX + x) >> 4, (minZ + z) >> 4 ), (minX + x) & 0xF, (minZ + z) & 0xF, minCY, cy_size );
 			}
 
 		IMovableRegistry mr = AEApi.instance().registries().movable();
@@ -159,7 +159,7 @@ public class CachedPlane
 		for (int cx = 0; cx < cx_size; cx++)
 			for (int cz = 0; cz < cz_size; cz++)
 			{
-				LinkedList<Entry<ChunkPosition, TileEntity>> rwarTiles = new LinkedList();
+				LinkedList<Entry<ChunkPosition, TileEntity>> rwarTiles = new LinkedList<Entry<ChunkPosition, TileEntity>>();
 				LinkedList<ChunkPosition> deadTiles = new LinkedList<ChunkPosition>();
 
 				Chunk c = w.getChunkFromChunkCoords( minCX + cx, minCZ + cz );
@@ -170,7 +170,7 @@ public class CachedPlane
 				{
 					ChunkPosition cp = tx.getKey();
 					TileEntity te = tx.getValue();
-					if ( te.xCoord >= minx && te.xCoord <= maxx && te.yCoord >= miny && te.yCoord <= maxy && te.zCoord >= minz && te.zCoord <= maxz )
+					if ( te.xCoord >= minX && te.xCoord <= maxX && te.yCoord >= minY && te.yCoord <= maxY && te.zCoord >= minZ && te.zCoord <= maxZ )
 					{
 						if ( mr.askToMove( te ) )
 						{
@@ -179,10 +179,10 @@ public class CachedPlane
 						}
 						else
 						{
-							Object[] details = myColumns[te.xCoord - minx][te.zCoord - minz].getDetails( te.yCoord );
+							Object[] details = myColumns[te.xCoord - minX][te.zCoord - minZ].getDetails( te.yCoord );
 							Block blk = (Block) details[0];
 
-							// don't skip air, juset let the code replace it...
+							// don't skip air, just let the code replace it...
 							if ( blk != null && blk.isAir( c.worldObj, te.xCoord, te.yCoord, te.zCoord )
 									&& blk.isReplaceable( c.worldObj, te.xCoord, te.yCoord, te.zCoord ) )
 							{
@@ -190,7 +190,7 @@ public class CachedPlane
 								c.worldObj.notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, Platform.air );
 							}
 							else
-								myColumns[te.xCoord - minx][te.zCoord - minz].setSkip( te.yCoord );
+								myColumns[te.xCoord - minX][te.zCoord - minZ].setSkip( te.yCoord );
 						}
 					}
 				}
@@ -206,12 +206,12 @@ public class CachedPlane
 				{
 					for (Object o : list)
 					{
-						NextTickListEntry ntle = (NextTickListEntry) o;
-						if ( ntle.xCoord >= minx && ntle.xCoord <= maxx && ntle.yCoord >= miny && ntle.yCoord <= maxy && ntle.zCoord >= minz
-								&& ntle.zCoord <= maxz )
+						NextTickListEntry entry = (NextTickListEntry) o;
+						if ( entry.xCoord >= minX && entry.xCoord <= maxX && entry.yCoord >= minY && entry.yCoord <= maxY && entry.zCoord >= minZ
+								&& entry.zCoord <= maxZ )
 						{
-							NextTickListEntry newEntry = new NextTickListEntry( ntle.xCoord, ntle.yCoord, ntle.zCoord, ntle.func_151351_a() );
-							newEntry.scheduledTime = ntle.scheduledTime - k;
+							NextTickListEntry newEntry = new NextTickListEntry( entry.xCoord, entry.yCoord, entry.zCoord, entry.func_151351_a() );
+							newEntry.scheduledTime = entry.scheduledTime - k;
 							ticks.add( newEntry );
 						}
 					}
@@ -260,7 +260,7 @@ public class CachedPlane
 						int src_y = y + y_offset;
 						int dst_y = y + dst.y_offset;
 
-						if ( a.dontSkip( src_y ) && b.dontSkip( dst_y ) )
+						if ( a.doNotSkip( src_y ) && b.doNotSkip( dst_y ) )
 						{
 							Object[] aD = a.getDetails( src_y );
 							Object[] bD = b.getDetails( dst_y );
@@ -292,14 +292,14 @@ public class CachedPlane
 				addTile( te.xCoord - dst.x_offset, te.yCoord - dst.y_offset, te.zCoord - dst.z_offset, te, dst, mr );
 			}
 
-			for (NextTickListEntry ntle : ticks)
+			for (NextTickListEntry entry : ticks)
 			{
-				dst.addTick( ntle.xCoord - x_offset, ntle.yCoord - y_offset, ntle.zCoord - z_offset, ntle );
+				dst.addTick( entry.xCoord - x_offset, entry.yCoord - y_offset, entry.zCoord - z_offset, entry );
 			}
 
-			for (NextTickListEntry ntle : dst.ticks)
+			for (NextTickListEntry entry : dst.ticks)
 			{
-				addTick( ntle.xCoord - dst.x_offset, ntle.yCoord - dst.y_offset, ntle.zCoord - dst.z_offset, ntle );
+				addTick( entry.xCoord - dst.x_offset, entry.yCoord - dst.y_offset, entry.zCoord - dst.z_offset, entry );
 			}
 
 			startTime = System.nanoTime();
@@ -319,9 +319,9 @@ public class CachedPlane
 			updates.add( new WorldCoord( src_x + d.offsetX, src_y + d.offsetY, src_z + d.offsetZ ) );
 	}
 
-	private void addTick(int x, int y, int z, NextTickListEntry ntle)
+	private void addTick(int x, int y, int z, NextTickListEntry entry)
 	{
-		world.scheduleBlockUpdate( x + x_offset, y + y_offset, z + z_offset, ntle.func_151351_a(), (int) ntle.scheduledTime );
+		world.scheduleBlockUpdate( x + x_offset, y + y_offset, z + z_offset, entry.func_151351_a(), (int) entry.scheduledTime );
 	}
 
 	private void addTile(int x, int y, int z, TileEntity te, CachedPlane alternateDest, IMovableRegistry mr)
@@ -330,7 +330,7 @@ public class CachedPlane
 		{
 			Column c = myColumns[x][z];
 
-			if ( c.dontSkip( y + y_offset ) || alternateDest == null )
+			if ( c.doNotSkip( y + y_offset ) || alternateDest == null )
 			{
 				IMovableHandler handler = getHandler( te );
 

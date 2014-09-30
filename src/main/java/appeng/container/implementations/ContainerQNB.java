@@ -8,13 +8,13 @@ import appeng.tile.qnb.TileQuantumBridge;
 public class ContainerQNB extends AEBaseContainer
 {
 
-	TileQuantumBridge myte;
+	TileQuantumBridge quantumBridge;
 
-	public ContainerQNB(InventoryPlayer ip, TileQuantumBridge te) {
-		super( ip, te, null );
-		myte = te;
+	public ContainerQNB(InventoryPlayer ip, TileQuantumBridge quantumBridge) {
+		super( ip, quantumBridge, null );
+		this.quantumBridge = quantumBridge;
 
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.QE_SINGULARITY, te, 0, 80, 37, invPlayer )).setStackLimit( 1 ) );
+		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.QE_SINGULARITY, quantumBridge, 0, 80, 37, invPlayer )).setStackLimit( 1 ) );
 
 		bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
 	}

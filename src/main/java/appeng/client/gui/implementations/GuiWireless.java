@@ -64,13 +64,13 @@ public class GuiWireless extends AEBaseGui
 
 		if ( cw.range > 0 )
 		{
-			String msga = GuiText.Range.getLocal() + ": " + ((double) cw.range / 10.0) + " m";
-			String msgb = GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong( cw.drain, true );
+			String firstMessage = GuiText.Range.getLocal() + ": " + (cw.range / 10.0) + " m";
+			String secondMessage = GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong( cw.drain, true );
 
-			int strWidth = Math.max( fontRendererObj.getStringWidth( msga ), fontRendererObj.getStringWidth( msgb ) );
+			int strWidth = Math.max( fontRendererObj.getStringWidth( firstMessage ), fontRendererObj.getStringWidth( secondMessage ) );
 			int cOffset = (this.xSize / 2) - (strWidth / 2);
-			fontRendererObj.drawString( msga, cOffset, 20, 4210752 );
-			fontRendererObj.drawString( msgb, cOffset, 20 + 12, 4210752 );
+			fontRendererObj.drawString( firstMessage, cOffset, 20, 4210752 );
+			fontRendererObj.drawString( secondMessage, cOffset, 20 + 12, 4210752 );
 		}
 	}
 

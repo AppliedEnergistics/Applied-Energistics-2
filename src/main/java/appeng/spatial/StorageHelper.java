@@ -46,7 +46,7 @@ public class StorageHelper
 			Block blk = dst.getBlock( x, y, z );
 			blk.onNeighborBlockChange( dst, x, y, z, Platform.air );
 		}
-	};
+	}
 
 	class WrapInMatrixFrame implements ISpatialVisitor
 	{
@@ -66,7 +66,7 @@ public class StorageHelper
 		{
 			dst.setBlock( x, y, z, blkID, Meta, 3 );
 		}
-	};
+	}
 
 	class TelDestination
 	{
@@ -89,7 +89,7 @@ public class StorageHelper
 		final int xOff;
 		final int yOff;
 		final int zOff;
-	};
+	}
 
 	class METeleporter extends Teleporter
 	{
@@ -126,7 +126,7 @@ public class StorageHelper
 
 		}
 
-	};
+	}
 
 	Method onEntityRemoved;
 
@@ -241,27 +241,27 @@ public class StorageHelper
 		return entity;
 	}
 
-	public void transverseEdges(int minx, int miny, int minz, int maxx, int maxy, int maxz, ISpatialVisitor obj)
+	public void transverseEdges(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, ISpatialVisitor visitor)
 	{
-		for (int y = miny; y < maxy; y++)
-			for (int z = minz; z < maxz; z++)
+		for (int y = minY; y < maxY; y++)
+			for (int z = minZ; z < maxZ; z++)
 			{
-				obj.visit( minx, y, z );
-				obj.visit( maxx, y, z );
+				visitor.visit( minX, y, z );
+				visitor.visit( maxX, y, z );
 			}
 
-		for (int x = minx; x < maxx; x++)
-			for (int z = minz; z < maxz; z++)
+		for (int x = minX; x < maxX; x++)
+			for (int z = minZ; z < maxZ; z++)
 			{
-				obj.visit( x, miny, z );
-				obj.visit( x, maxy, z );
+				visitor.visit( x, minY, z );
+				visitor.visit( x, maxY, z );
 			}
 
-		for (int x = minx; x < maxx; x++)
-			for (int y = miny; y < maxy; y++)
+		for (int x = minX; x < maxX; x++)
+			for (int y = minY; y < maxY; y++)
 			{
-				obj.visit( x, y, minz );
-				obj.visit( x, y, maxz );
+				visitor.visit( x, y, minZ );
+				visitor.visit( x, y, maxZ );
 			}
 
 	}

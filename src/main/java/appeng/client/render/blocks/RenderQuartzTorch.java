@@ -32,9 +32,9 @@ public class RenderQuartzTorch extends BaseBlockRender
 		float Point13 = 10.0f / 16.0f;
 		float Point12 = 9.0f / 16.0f;
 
-		float Onepx = 1.0f / 16.0f;
-		float rbottom = 5.0f / 16.0f;
-		float rtop = 10.0f / 16.0f;
+		float singlePixel = 1.0f / 16.0f;
+		float renderBottom = 5.0f / 16.0f;
+		float renderTop = 10.0f / 16.0f;
 
 		float bottom = 7.0f / 16.0f;
 		float top = 8.0f / 16.0f;
@@ -43,13 +43,13 @@ public class RenderQuartzTorch extends BaseBlockRender
 		float yOff = 0.0f;
 		float zOff = 0.0f;
 
-		renderer.setRenderBounds( Point3 + xOff, rbottom + yOff, Point3 + zOff, Point12 + xOff, rtop + yOff, Point12 + zOff );
+		renderer.setRenderBounds( Point3 + xOff, renderBottom + yOff, Point3 + zOff, Point12 + xOff, renderTop + yOff, Point12 + zOff );
 		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
-		renderer.setRenderBounds( Point3 + xOff, rtop + yOff, Point3 + zOff, Point3 + Onepx + xOff, rtop + Onepx + yOff, Point3 + Onepx + zOff );
+		renderer.setRenderBounds( Point3 + xOff, renderTop + yOff, Point3 + zOff, Point3 + singlePixel + xOff, renderTop + singlePixel + yOff, Point3 + singlePixel + zOff );
 		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
-		renderer.setRenderBounds( Point12 - Onepx + xOff, rbottom - Onepx + yOff, Point12 - Onepx + zOff, Point12 + xOff, rbottom + yOff, Point12 + zOff );
+		renderer.setRenderBounds( Point12 - singlePixel + xOff, renderBottom - singlePixel + yOff, Point12 - singlePixel + zOff, Point12 + xOff, renderBottom + yOff, Point12 + zOff );
 
 		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
@@ -86,9 +86,9 @@ public class RenderQuartzTorch extends BaseBlockRender
 		float Point13 = 10.0f / 16.0f;
 		float Point12 = 9.0f / 16.0f;
 
-		float Onepx = 1.0f / 16.0f;
-		float rbottom = 5.0f / 16.0f;
-		float rtop = 10.0f / 16.0f;
+		float singlePixel = 1.0f / 16.0f;
+		float renderBottom = 5.0f / 16.0f;
+		float renderTop = 10.0f / 16.0f;
 
 		float bottom = 7.0f / 16.0f;
 		float top = 8.0f / 16.0f;
@@ -106,24 +106,24 @@ public class RenderQuartzTorch extends BaseBlockRender
 			zOff = forward.offsetZ * -(4.0f / 16.0f);
 		}
 
-		renderer.setRenderBounds( Point3 + xOff, rbottom + yOff, Point3 + zOff, Point12 + xOff, rtop + yOff, Point12 + zOff );
+		renderer.setRenderBounds( Point3 + xOff, renderBottom + yOff, Point3 + zOff, Point12 + xOff, renderTop + yOff, Point12 + zOff );
 		super.renderInWorld( block, world, x, y, z, renderer );
 
 		int r = (x + y + z) % 2;
 		if ( r == 0 )
 		{
-			renderer.setRenderBounds( Point3 + xOff, rtop + yOff, Point3 + zOff, Point3 + Onepx + xOff, rtop + Onepx + yOff, Point3 + Onepx + zOff );
+			renderer.setRenderBounds( Point3 + xOff, renderTop + yOff, Point3 + zOff, Point3 + singlePixel + xOff, renderTop + singlePixel + yOff, Point3 + singlePixel + zOff );
 			super.renderInWorld( block, world, x, y, z, renderer );
 
-			renderer.setRenderBounds( Point12 - Onepx + xOff, rbottom - Onepx + yOff, Point12 - Onepx + zOff, Point12 + xOff, rbottom + yOff, Point12 + zOff );
+			renderer.setRenderBounds( Point12 - singlePixel + xOff, renderBottom - singlePixel + yOff, Point12 - singlePixel + zOff, Point12 + xOff, renderBottom + yOff, Point12 + zOff );
 			super.renderInWorld( block, world, x, y, z, renderer );
 		}
 		else
 		{
-			renderer.setRenderBounds( Point3 + xOff, rbottom - Onepx + yOff, Point3 + zOff, Point3 + Onepx + xOff, rbottom + yOff, Point3 + Onepx + zOff );
+			renderer.setRenderBounds( Point3 + xOff, renderBottom - singlePixel + yOff, Point3 + zOff, Point3 + singlePixel + xOff, renderBottom + yOff, Point3 + singlePixel + zOff );
 			super.renderInWorld( block, world, x, y, z, renderer );
 
-			renderer.setRenderBounds( Point12 - Onepx + xOff, rtop + yOff, Point12 - Onepx + zOff, Point12 + xOff, rtop + Onepx + yOff, Point12 + zOff );
+			renderer.setRenderBounds( Point12 - singlePixel + xOff, renderTop + yOff, Point12 - singlePixel + zOff, Point12 + xOff, renderTop + singlePixel + yOff, Point12 + zOff );
 			super.renderInWorld( block, world, x, y, z, renderer );
 		}
 

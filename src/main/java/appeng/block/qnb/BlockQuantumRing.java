@@ -30,7 +30,7 @@ public class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void onNeighborBlockChange(World w, int x, int y, int z, Block pointlessnumber)
+	public void onNeighborBlockChange(World w, int x, int y, int z, Block pointlessNumber)
 	{
 		TileQuantumBridge bridge = getTileEntity( w, x, y, z );
 		if ( bridge != null )
@@ -66,7 +66,7 @@ public class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
 		{
 			OnePx = 1.0 / 16.0;
 		}
-		return Arrays.asList( new AxisAlignedBB[] { AxisAlignedBB.getBoundingBox( OnePx, OnePx, OnePx, 1.0 - OnePx, 1.0 - OnePx, 1.0 - OnePx ) } );
+		return Arrays.asList( AxisAlignedBB.getBoundingBox( OnePx, OnePx, OnePx, 1.0 - OnePx, 1.0 - OnePx, 1.0 - OnePx ) );
 	}
 
 	@Override

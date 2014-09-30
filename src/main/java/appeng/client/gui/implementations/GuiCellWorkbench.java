@@ -27,7 +27,7 @@ import appeng.util.Platform;
 public class GuiCellWorkbench extends GuiUpgradeable
 {
 
-	ContainerCellWorkbench ccwb;
+	ContainerCellWorkbench workbench;
 	TileCellWorkbench tcw;
 
 	GuiImgButton clear;
@@ -36,7 +36,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 
 	public GuiCellWorkbench(InventoryPlayer inventoryPlayer, TileCellWorkbench te) {
 		super( new ContainerCellWorkbench( inventoryPlayer, te ) );
-		ccwb = (ContainerCellWorkbench) inventorySlots;
+		workbench = (ContainerCellWorkbench) inventorySlots;
 		ySize = 251;
 		tcw = te;
 	}
@@ -44,13 +44,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 	@Override
 	protected boolean drawUpgrades()
 	{
-		return ccwb.availableUpgrades() > 0;
-	}
-
-	@Override
-	public void initGui()
-	{
-		super.initGui();
+		return workbench.availableUpgrades() > 0;
 	}
 
 	@Override
@@ -62,17 +56,17 @@ public class GuiCellWorkbench extends GuiUpgradeable
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, ySize );
 		if ( drawUpgrades() )
 		{
-			if ( ccwb.availableUpgrades() <= 8 )
+			if ( workbench.availableUpgrades() <= 8 )
 			{
-				this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + ccwb.availableUpgrades() * 18 );
-				this.drawTexturedModalRect( offsetX + 177, offsetY + (7 + (ccwb.availableUpgrades()) * 18), 177, 151, 35, 7 );
+				this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + workbench.availableUpgrades() * 18 );
+				this.drawTexturedModalRect( offsetX + 177, offsetY + (7 + (workbench.availableUpgrades()) * 18), 177, 151, 35, 7 );
 			}
-			else if ( ccwb.availableUpgrades() <= 16 )
+			else if ( workbench.availableUpgrades() <= 16 )
 			{
 				this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18 );
 				this.drawTexturedModalRect( offsetX + 177, offsetY + (7 + (8) * 18), 177, 151, 35, 7 );
 
-				int dx = ccwb.availableUpgrades() - 8;
+				int dx = workbench.availableUpgrades() - 8;
 				this.drawTexturedModalRect( offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + dx * 18 );
 				if ( dx == 8 )
 					this.drawTexturedModalRect( offsetX + 177 + 27, offsetY + (7 + (dx) * 18), 186, 151, 35 - 8, 7 );
@@ -88,7 +82,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 				this.drawTexturedModalRect( offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + 8 * 18 );
 				this.drawTexturedModalRect( offsetX + 177 + 27, offsetY + (7 + (8) * 18), 186, 151, 35 - 8, 7 );
 
-				int dx = ccwb.availableUpgrades() - 16;
+				int dx = workbench.availableUpgrades() - 16;
 				this.drawTexturedModalRect( offsetX + 177 + 27 + 18, offsetY, 186, 0, 35 - 8, 7 + dx * 18 );
 				if ( dx == 8 )
 					this.drawTexturedModalRect( offsetX + 177 + 27 + 18, offsetY + (7 + (dx) * 18), 186, 151, 35 - 8, 7 );
@@ -148,12 +142,13 @@ public class GuiCellWorkbench extends GuiUpgradeable
 		buttonList.add( copyMode );
 	}
 
+	@Override
 	protected void handleButtonVisibility()
 	{
-		copyMode.setState( ccwb.copyMode == CopyMode.CLEAR_ON_REMOVE );
+		copyMode.setState( workbench.copyMode == CopyMode.CLEAR_ON_REMOVE );
 
 		boolean hasFuzzy = false;
-		IInventory inv = ccwb.getCellUpgradeInventory();
+		IInventory inv = workbench.getCellUpgradeInventory();
 		for (int x = 0; x < inv.getSizeInventory(); x++)
 		{
 			ItemStack is = inv.getStackInSlot( x );
@@ -166,11 +161,13 @@ public class GuiCellWorkbench extends GuiUpgradeable
 		fuzzyMode.setVisibility( hasFuzzy );
 	}
 
+	@Override
 	protected String getBackground()
 	{
 		return "guis/cellworkbench.png";
 	}
 
+	@Override
 	protected GuiText getName()
 	{
 		return GuiText.CellWorkbench;

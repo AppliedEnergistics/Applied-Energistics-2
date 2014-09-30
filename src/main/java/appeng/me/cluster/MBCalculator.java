@@ -35,7 +35,7 @@ public abstract class MBCalculator
 	public abstract IAECluster createCluster(World w, WorldCoord min, WorldCoord max);
 
 	/**
-	 * configure the mutli-block tiles, most of the important stuff is in here.
+	 * configure the multi-block tiles, most of the important stuff is in here.
 	 * 
 	 * @param c updated cluster
 	 * @param w in world
@@ -110,15 +110,15 @@ public abstract class MBCalculator
 					}
 
 					boolean updateGrid = false;
-					IAECluster clust = target.getCluster();
-					if ( clust == null )
+					IAECluster cluster = target.getCluster();
+					if ( cluster == null )
 					{
 						updateTiles( c, w, min, max );
 
 						updateGrid = true;
 					}
 					else
-						c = clust;
+						c = cluster;
 
 					c.updateStatus( updateGrid );
 					return;
@@ -135,43 +135,43 @@ public abstract class MBCalculator
 
 	public abstract boolean verifyInternalStructure(World worldObj, WorldCoord min, WorldCoord max);
 
-	public boolean verifyUnownedRegionInner(World w, int minx, int miny, int minz, int maxx, int maxy, int maxz, ForgeDirection side)
+	public boolean verifyUnownedRegionInner(World w, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, ForgeDirection side)
 	{
 		switch (side)
 		{
 		case WEST:
-			minx -= 1;
-			maxx = minx;
+			minX -= 1;
+			maxX = minX;
 			break;
 		case EAST:
-			maxx += 1;
-			minx = maxx;
+			maxX += 1;
+			minX = maxX;
 			break;
 		case DOWN:
-			miny -= 1;
-			maxy = miny;
+			minY -= 1;
+			maxY = minY;
 			break;
 		case NORTH:
-			maxz += 1;
-			minz = maxz;
+			maxZ += 1;
+			minZ = maxZ;
 			break;
 		case SOUTH:
-			minz -= 1;
-			maxz = minz;
+			minZ -= 1;
+			maxZ = minZ;
 			break;
 		case UP:
-			maxy += 1;
-			miny = maxy;
+			maxY += 1;
+			minY = maxY;
 			break;
 		case UNKNOWN:
 			return false;
 		}
 
-		for (int x = minx; x <= maxx; x++)
+		for (int x = minX; x <= maxX; x++)
 		{
-			for (int y = miny; y <= maxy; y++)
+			for (int y = minY; y <= maxY; y++)
 			{
-				for (int z = minz; z <= maxz; z++)
+				for (int z = minZ; z <= maxZ; z++)
 				{
 					TileEntity te = w.getTileEntity( x, y, z );
 					if ( isValidTile( te ) )

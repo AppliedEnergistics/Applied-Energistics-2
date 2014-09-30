@@ -50,6 +50,7 @@ public class GuiSecurity extends GuiMEMonitorable
 				.getUnlocalizedName(), SecurityPermissions.SECURITY.getUnlocalizedTip() ) );
 	}
 
+	@Override
 	protected void actionPerformed(net.minecraft.client.gui.GuiButton btn)
 	{
 		super.actionPerformed( btn );
@@ -79,8 +80,9 @@ public class GuiSecurity extends GuiMEMonitorable
 			}
 		}
 
-	};
+	}
 
+	@Override
 	protected String getBackground()
 	{
 		ContainerSecurity cs = (ContainerSecurity) inventorySlots;

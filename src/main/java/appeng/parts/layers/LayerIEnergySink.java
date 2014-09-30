@@ -44,7 +44,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 		return !te.isInvalid() && te.getWorldObj().blockExists( te.xCoord, te.yCoord, te.zCoord );
 	}
 
-	final private void addToENet()
+	private void addToENet()
 	{
 		if ( getEnergySinkWorld() == null )
 			return;
@@ -59,7 +59,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 		}
 	}
 
-	final private void removeFromENet()
+	private void removeFromENet()
 	{
 		if ( getEnergySinkWorld() == null )
 			return;
@@ -71,7 +71,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 		}
 	}
 
-	final private boolean interestedInIC2()
+	private boolean interestedInIC2()
 	{
 		if ( !((IPartHost) this).isInWorld() )
 			return false;
@@ -85,7 +85,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 				interested++;
 			}
 		}
-		return interested == 1;// if more then one tile is interested we need to abandonship...
+		return interested == 1;// if more then one tile is interested we need to abandon...
 	}
 
 	@Override

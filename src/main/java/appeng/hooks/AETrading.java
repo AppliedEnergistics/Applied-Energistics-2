@@ -69,7 +69,6 @@ public class AETrading implements IVillageTradeHandler
 		ItemStack reverseFrom = To.copy();
 
 		reverseFrom.stackSize = (int) (reverseFrom.stackSize * (rand.nextFloat() * 3.0f + 1.0f));
-		reverseTo.stackSize = reverseTo.stackSize;
 
 		addToList( list, reverseFrom, reverseTo );
 	}

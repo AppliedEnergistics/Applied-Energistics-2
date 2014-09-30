@@ -69,16 +69,16 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		 */
 
 		/*
-		 * Super Hacky.
+		 * Super hackery.
 		 * 
 		 * is.itemID = appeng.api.Materials.matQuartz.itemID; damageValue = is.getItemDamage(); is.itemID = itemID;
 		 */
 
 		/*
-		 * Kinda Hacky
+		 * Kinda hackery
 		 */
 		def.damageValue = def.getDamageValueHack( is );
-		def.dspDamage = is.getItemDamageForDisplay();
+		def.displayDamage = is.getItemDamageForDisplay();
 		def.maxDamage = is.getMaxDamage();
 
 		NBTTagCompound tagCompound = is.getTagCompound();
@@ -121,7 +121,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 			if ( is.getItem() == def.item && is.getItemDamage() == this.def.damageValue )
 			{
-				NBTTagCompound ta = (NBTTagCompound) def.tagCompound;
+				NBTTagCompound ta = def.tagCompound;
 				NBTTagCompound tb = is.getTagCompound();
 				if ( ta == tb )
 					return true;
@@ -203,7 +203,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		i.setShort( "Damage", (short) this.def.damageValue );
 
 		if ( def.tagCompound != null )
-			i.setTag( "tag", (NBTTagCompound) def.tagCompound );
+			i.setTag( "tag", def.tagCompound );
 		else
 			i.removeTag( "tag" );
 
@@ -218,12 +218,12 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		if ( itemstack == null )
 			return null;
 
-		AEItemStack aeis = AEItemStack.create( itemstack );
-		// aeis.priority = i.getInteger( "Priority" );
-		aeis.stackSize = i.getLong( "Cnt" );
-		aeis.setCountRequestable( i.getLong( "Req" ) );
-		aeis.setCraftable( i.getBoolean( "Craft" ) );
-		return aeis;
+		AEItemStack item = AEItemStack.create( itemstack );
+		// item.priority = i.getInteger( "Priority" );
+		item.stackSize = i.getLong( "Cnt" );
+		item.setCountRequestable( i.getLong( "Req" ) );
+		item.setCraftable( i.getBoolean( "Craft" ) );
+		return item;
 	}
 
 	@Override
@@ -242,10 +242,10 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	public int compareTo(AEItemStack b)
 	{
 		int id = compare( def.item.hashCode(), b.def.item.hashCode() );
-		int dv = compare( def.damageValue, b.def.damageValue );
-		int dspv = compare( def.dspDamage, b.def.dspDamage );
+		int damageValue = compare( def.damageValue, b.def.damageValue );
+		int displayDamage = compare( def.displayDamage, b.def.displayDamage );
 		// AELog.info( "NBT: " + nbt );
-		return id == 0 ? (dv == 0 ? (dspv == 0 ? compareNBT( b.def ) : dspv) : dv) : id;
+		return id == 0 ? (damageValue == 0 ? (displayDamage == 0 ? compareNBT( b.def ) : displayDamage) : damageValue) : id;
 	}
 
 	private int compareNBT(AEItemDef b)
@@ -370,12 +370,12 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		if ( itemstack == null )
 			return null;
 
-		AEItemStack aeis = AEItemStack.create( itemstack );
-		// aeis.priority = (int) priority;
-		aeis.stackSize = stackSize;
-		aeis.setCountRequestable( countRequestable );
-		aeis.setCraftable( isCraftable );
-		return aeis;
+		AEItemStack item = AEItemStack.create( itemstack );
+		// item.priority = (int) priority;
+		item.stackSize = stackSize;
+		item.setCountRequestable( countRequestable );
+		item.setCraftable( isCraftable );
+		return item;
 	}
 
 	@Override
@@ -508,7 +508,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 		if ( ignoreMeta )
 		{
-			newDef.dspDamage = newDef.damageValue = 0;
+			newDef.displayDamage = newDef.damageValue = 0;
 			newDef.reHash();
 			return bottom;
 		}
@@ -517,23 +517,23 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		{
 			if ( fuzzy == FuzzyMode.IGNORE_ALL )
 			{
-				newDef.dspDamage = 0;
+				newDef.displayDamage = 0;
 			}
 			else if ( fuzzy == FuzzyMode.PERCENT_99 )
 			{
 				if ( def.damageValue == 0 )
-					newDef.dspDamage = 0;
+					newDef.displayDamage = 0;
 				else
-					newDef.dspDamage = 1;
+					newDef.displayDamage = 1;
 
 			}
 			else
 			{
 				int breakpoint = fuzzy.calculateBreakPoint( def.maxDamage );
-				newDef.dspDamage = breakpoint <= def.dspDamage ? breakpoint : 0;
+				newDef.displayDamage = breakpoint <= def.displayDamage ? breakpoint : 0;
 			}
 
-			newDef.damageValue = newDef.dspDamage;
+			newDef.damageValue = newDef.displayDamage;
 		}
 
 		newDef.tagCompound = AEItemDef.lowTag;
@@ -548,7 +548,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 		if ( ignoreMeta )
 		{
-			newDef.dspDamage = newDef.damageValue = Integer.MAX_VALUE;
+			newDef.displayDamage = newDef.damageValue = Integer.MAX_VALUE;
 			newDef.reHash();
 			return top;
 		}
@@ -557,22 +557,22 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		{
 			if ( fuzzy == FuzzyMode.IGNORE_ALL )
 			{
-				newDef.dspDamage = def.maxDamage + 1;
+				newDef.displayDamage = def.maxDamage + 1;
 			}
 			else if ( fuzzy == FuzzyMode.PERCENT_99 )
 			{
 				if ( def.damageValue == 0 )
-					newDef.dspDamage = 0;
+					newDef.displayDamage = 0;
 				else
-					newDef.dspDamage = def.maxDamage + 1;
+					newDef.displayDamage = def.maxDamage + 1;
 			}
 			else
 			{
 				int breakpoint = fuzzy.calculateBreakPoint( def.maxDamage );
-				newDef.dspDamage = def.dspDamage < breakpoint ? breakpoint - 1 : def.maxDamage + 1;
+				newDef.displayDamage = def.displayDamage < breakpoint ? breakpoint - 1 : def.maxDamage + 1;
 			}
 
-			newDef.damageValue = newDef.dspDamage;
+			newDef.damageValue = newDef.displayDamage;
 		}
 
 		newDef.tagCompound = AEItemDef.highTag;

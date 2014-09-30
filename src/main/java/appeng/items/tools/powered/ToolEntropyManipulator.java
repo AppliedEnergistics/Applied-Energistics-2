@@ -54,10 +54,15 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		@Override
 		public boolean equals(Object obj)
 		{
-			return blk == ((Combo) obj).blk && meta == ((Combo) obj).meta;
+			if ( obj == null )
+				return false;
+			if ( getClass() != obj.getClass() )
+				return false;
+			Combo other = (Combo) obj;
+			return blk == other.blk && meta == other.meta;
 		}
 
-	};
+	}
 
 	static private Hashtable<Combo, InWorldToolOperationResult> heatUp;
 	static private Hashtable<Combo, InWorldToolOperationResult> coolDown;
@@ -137,7 +142,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	public ToolEntropyManipulator() {
 		super( ToolEntropyManipulator.class, null );
 		setFeature( EnumSet.of( AEFeature.EntropyManipulator, AEFeature.PoweredTools ) );
-		maxStoredPower = AEConfig.instance.manipulator_battery;
+		maxStoredPower = AEConfig.instance.entropyManipulatorBattery;
 
 		coolDown = new Hashtable<Combo, InWorldToolOperationResult>();
 		coolDown.put( new Combo( Blocks.stone, 0 ), new InWorldToolOperationResult( new ItemStack( Blocks.cobblestone ) ) );
@@ -146,7 +151,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		coolDown.put( new Combo( Blocks.flowing_lava, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult( new ItemStack( Blocks.obsidian ) ) );
 		coolDown.put( new Combo( Blocks.grass, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult( new ItemStack( Blocks.dirt ) ) );
 
-		List<ItemStack> snowBalls = new ArrayList();
+		List<ItemStack> snowBalls = new ArrayList<ItemStack>();
 		snowBalls.add( new ItemStack( Items.snowball ) );
 		coolDown.put( new Combo( Blocks.flowing_water, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult( null, snowBalls ) );
 		coolDown.put( new Combo( Blocks.water, OreDictionary.WILDCARD_VALUE ), new InWorldToolOperationResult( new ItemStack( Blocks.ice ) ) );
@@ -261,7 +266,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 					{
 						if ( result.getItem() instanceof ItemBlock )
 						{
-							if ( Block.getBlockFromItem( (ItemBlock) result.getItem() ) == Blk && result.getItem().getDamage( result ) == Metadata )
+							if ( Block.getBlockFromItem( result.getItem() ) == Blk && result.getItem().getDamage( result ) == Metadata )
 							{
 								canFurnaceable = false;
 							}
@@ -280,7 +285,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 				{
 					extractAEPower( item, 1600 );
 					InWorldToolOperationResult or = InWorldToolOperationResult.getBlockOperationResult( out.toArray( new ItemStack[out.size()] ) );
-					w.playSoundEffect( (double) x + 0.5D, (double) y + 0.5D, (double) z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
+					w.playSoundEffect( x + 0.5D, y + 0.5D, z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
 
 					if ( or.BlockItem == null )
 					{
@@ -311,7 +316,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 					if ( w.isAirBlock( x, y, z ) )
 					{
 						extractAEPower( item, 1600 );
-						w.playSoundEffect( (double) x + 0.5D, (double) y + 0.5D, (double) z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
+						w.playSoundEffect( x + 0.5D, y + 0.5D, z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
 						w.setBlock( x, y, z, Blocks.fire );
 					}
 

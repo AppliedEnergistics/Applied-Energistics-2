@@ -64,7 +64,7 @@ public class PartPlacement
 			Minecraft mc = Minecraft.getMinecraft();
 
 			float f = 1.0F;
-			double d0 = (double) mc.playerController.getBlockReachDistance();
+			double d0 = mc.playerController.getBlockReachDistance();
 			Vec3 vec3 = mc.renderViewEntity.getPosition( f );
 
 			if ( mop != null && mop.hitVec.distanceTo( vec3 ) < d0 )
@@ -113,7 +113,7 @@ public class PartPlacement
 	public enum PlaceType
 	{
 		PLACE_ITEM, INTERACT_FIRST_PASS, INTERACT_SECOND_PASS
-	};
+	}
 
 	public static boolean place(ItemStack held, int x, int y, int z, int face, EntityPlayer player, World world, PlaceType pass, int depth)
 	{
@@ -142,7 +142,7 @@ public class PartPlacement
 					MovingObjectPosition mop = block.collisionRayTrace( world, x, y, z, dir.a, dir.b );
 					if ( mop != null )
 					{
-						List<ItemStack> is = new LinkedList();
+						List<ItemStack> is = new LinkedList<ItemStack>();
 						SelectedPart sp = selectPart( player, host, mop.hitVec.addVector( -mop.blockX, -mop.blockY, -mop.blockZ ) );
 
 						if ( sp.part != null )
@@ -162,7 +162,7 @@ public class PartPlacement
 						if ( host.isEmpty() )
 							host.cleanup();
 
-						if ( is != null && !is.isEmpty() )
+						if ( !is.isEmpty() )
 						{
 							Platform.spawnDrops( world, x, y, z, is );
 						}

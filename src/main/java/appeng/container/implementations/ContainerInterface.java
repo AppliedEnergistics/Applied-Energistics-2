@@ -51,12 +51,14 @@ public class ContainerInterface extends ContainerUpgradeable
 		setupUpgrades();
 	}
 
+	@Override
 	protected void loadSettingsFromHost(IConfigManager cm)
 	{
 		this.bMode = (YesNo) cm.getSetting( Settings.BLOCK );
 		this.iTermMode = (YesNo) cm.getSetting( Settings.INTERFACE_TERMINAL );
 	}
 
+	@Override
 	public int availableUpgrades()
 	{
 		return 1;

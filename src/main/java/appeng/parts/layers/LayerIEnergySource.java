@@ -43,7 +43,7 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 		return !te.isInvalid();
 	}
 
-	final private void addToENet()
+	private void addToENet()
 	{
 		if ( getEnergySourceWorld() == null )
 			return;
@@ -58,7 +58,7 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 		}
 	}
 
-	final private void removeFromENet()
+	private void removeFromENet()
 	{
 		if ( getEnergySourceWorld() == null )
 			return;
@@ -70,7 +70,7 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 		}
 	}
 
-	final private boolean interestedInIC2()
+	private boolean interestedInIC2()
 	{
 		if ( !((IPartHost) this).isInWorld() )
 			return false;
@@ -84,7 +84,7 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 				interested++;
 			}
 		}
-		return interested == 1;// if more then one tile is interested we need to abandonship...
+		return interested == 1;// if more then one tile is interested we need to abandon...
 	}
 
 	@Override

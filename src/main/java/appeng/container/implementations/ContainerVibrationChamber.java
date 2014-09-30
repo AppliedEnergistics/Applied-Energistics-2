@@ -3,22 +3,24 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.InventoryPlayer;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
+import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.util.Platform;
 
-public class ContainerVibrationChamber extends AEBaseContainer
+public class ContainerVibrationChamber extends AEBaseContainer implements IProgressProvider
 {
 
-	TileVibrationChamber myte;
+	TileVibrationChamber vibrationChamber;
+	private static final int MAX_BURN_TIME = 200;
 
-	public ContainerVibrationChamber(InventoryPlayer ip, TileVibrationChamber te) {
-		super( ip, te, null );
-		myte = te;
+	public ContainerVibrationChamber(InventoryPlayer ip, TileVibrationChamber vibrationChamber) {
+		super( ip, vibrationChamber, null );
+		this.vibrationChamber = vibrationChamber;
 
-		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.FUEL, te, 0, 80, 37, invPlayer ) );
+		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.FUEL, vibrationChamber, 0, 80, 37, invPlayer ) );
 
-		bindPlayerInventory( ip, 0, 166 - /* height of playerinventory */82 );
+		bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
 	}
 
 	public int aePerTick = 5;
@@ -34,11 +36,23 @@ public class ContainerVibrationChamber extends AEBaseContainer
 	{
 		if ( Platform.isServer() )
 		{
-			this.burnProgress = (int) (this.myte.maxBurnTime <= 0 ? 0 : 12 * this.myte.burnTime / this.myte.maxBurnTime);
-			this.burnSpeed = this.myte.burnSpeed;
+			this.burnProgress = (int) (this.vibrationChamber.maxBurnTime <= 0 ? 0 : 12 * this.vibrationChamber.burnTime / this.vibrationChamber.maxBurnTime);
+			this.burnSpeed = this.vibrationChamber.burnSpeed;
 		}
 
 		super.detectAndSendChanges();
+	}
+
+	@Override
+	public int getCurrentProgress()
+	{
+		return burnProgress > 0 ? burnSpeed : 0;
+	}
+
+	@Override
+	public int getMaxProgress()
+	{
+		return MAX_BURN_TIME;
 	}
 
 }

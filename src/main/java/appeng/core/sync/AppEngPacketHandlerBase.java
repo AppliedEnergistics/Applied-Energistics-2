@@ -51,13 +51,13 @@ public class AppEngPacketHandlerBase
 
 		PACKET_MULTIPART(PacketMultiPart.class),
 
-		PACKET_PARTPLACEMENT(PacketPartPlacement.class),
+		PACKET_PART_PLACEMENT(PacketPartPlacement.class),
 
 		PACKET_LIGHTNING(PacketLightning.class),
 
-		PACKET_MATTERCANNON(PacketMatterCannon.class),
+		PACKET_MATTER_CANNON(PacketMatterCannon.class),
 
-		PACKET_MOCKEXPLOSION(PacketMockExplosion.class),
+		PACKET_MOCK_EXPLOSION(PacketMockExplosion.class),
 
 		PACKET_VALUE_CONFIG(PacketValueConfig.class),
 
@@ -127,6 +127,6 @@ public class AppEngPacketHandlerBase
 			return AppEngPacketHandlerBase.reverseLookup.get( c );
 		}
 
-	};
+	}
 
 }

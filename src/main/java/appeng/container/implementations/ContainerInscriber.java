@@ -5,6 +5,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.container.guisync.GuiSync;
+import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.recipes.handlers.Inscribe;
@@ -12,7 +13,7 @@ import appeng.recipes.handlers.Inscribe.InscriberRecipe;
 import appeng.tile.misc.TileInscriber;
 import appeng.util.Platform;
 
-public class ContainerInscriber extends ContainerUpgradeable
+public class ContainerInscriber extends ContainerUpgradeable implements IProgressProvider
 {
 
 	TileInscriber ti;
@@ -38,7 +39,7 @@ public class ContainerInscriber extends ContainerUpgradeable
 
 		addSlotToContainer( new SlotOutput( ti, 3, 113, 40, -1 ) );
 
-		bindPlayerInventory( ip, 0, getHeight() - /* height of playerinventory */82 );
+		bindPlayerInventory( ip, 0, getHeight() - /* height of player inventory */82 );
 
 	}
 
@@ -69,6 +70,7 @@ public class ContainerInscriber extends ContainerUpgradeable
 		setupUpgrades();
 	}
 
+	@Override
 	public boolean isValidForSlot(Slot s, ItemStack is)
 	{
 		ItemStack PlateA = ti.getStackInSlot( 0 );
@@ -155,5 +157,17 @@ public class ContainerInscriber extends ContainerUpgradeable
 			this.maxProcessingTime = ti.maxProcessingTime;
 			this.processingTime = ti.processingTime;
 		}
+	}
+
+	@Override
+	public int getCurrentProgress()
+	{
+		return processingTime;
+	}
+
+	@Override
+	public int getMaxProgress()
+	{
+		return maxProcessingTime;
 	}
 }

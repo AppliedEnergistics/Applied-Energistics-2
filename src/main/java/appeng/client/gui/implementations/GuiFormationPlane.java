@@ -27,12 +27,6 @@ public class GuiFormationPlane extends GuiUpgradeable
 	}
 
 	@Override
-	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
-	{
-		super.drawBG( offsetX, offsetY, mouseX, mouseY );
-	}
-
-	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
 		fontRendererObj.drawString( getGuiDisplayName( GuiText.FormationPlane.getLocal() ), 8, 6, 4210752 );
@@ -70,6 +64,7 @@ public class GuiFormationPlane extends GuiUpgradeable
 		}
 	}
 
+	@Override
 	protected String getBackground()
 	{
 		return "guis/storagebus.png";

@@ -127,7 +127,7 @@ public abstract class AEBaseGui extends GuiContainer
 				try
 				{
 					((AEBaseContainer) inventorySlots).setTargetStack( item );
-					InventoryAction direction = wheel > 0 ? InventoryAction.ROLLDOWN : InventoryAction.ROLLUP;
+					InventoryAction direction = wheel > 0 ? InventoryAction.ROLL_DOWN : InventoryAction.ROLL_UP;
 					int times = Math.abs( wheel );
 					for (int h = 0; h < times; h++)
 					{
@@ -176,8 +176,8 @@ public abstract class AEBaseGui extends GuiContainer
 	ItemStack dbl_whichItem;
 	Slot bl_clicked;
 
-	// dragy
-	Set<Slot> drag_click = new HashSet();
+	// drag y
+	Set<Slot> drag_click = new HashSet<Slot>();
 
 	@Override
 	protected void handleMouseClick(Slot slot, int slotIdx, int ctrlDown, int key)
@@ -187,7 +187,7 @@ public abstract class AEBaseGui extends GuiContainer
 		if ( slot instanceof SlotFake )
 		{
 			InventoryAction action = null;
-			action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACESINGLE : InventoryAction.PICKUP_OR_SETDOWN;
+			action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 
 			if ( drag_click.size() > 1 )
 				return;
@@ -283,7 +283,7 @@ public abstract class AEBaseGui extends GuiContainer
 			switch (key)
 			{
 			case 0: // pickup / set-down.
-				action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACESINGLE : InventoryAction.PICKUP_OR_SETDOWN;
+				action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 				break;
 			case 1:
 				action = ctrlDown == 1 ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
@@ -327,11 +327,11 @@ public abstract class AEBaseGui extends GuiContainer
 			switch (key)
 			{
 			case 0: // pickup / set-down.
-				action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACESINGLE : InventoryAction.PICKUP_OR_SETDOWN;
+				action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 				stack = ((SlotME) slot).getAEStack();
 
-				if ( stack != null && action == InventoryAction.PICKUP_OR_SETDOWN && stack.getStackSize() == 0 && player.inventory.getItemStack() == null )
-					action = InventoryAction.AUTOCRAFT;
+				if ( stack != null && action == InventoryAction.PICKUP_OR_SET_DOWN && stack.getStackSize() == 0 && player.inventory.getItemStack() == null )
+					action = InventoryAction.AUTO_CRAFT;
 
 				break;
 			case 1:
@@ -343,7 +343,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 				stack = ((SlotME) slot).getAEStack();
 				if ( stack != null && stack.isCraftable() )
-					action = InventoryAction.AUTOCRAFT;
+					action = InventoryAction.AUTO_CRAFT;
 
 				else if ( player.capabilities.isCreativeMode )
 				{
@@ -394,11 +394,10 @@ public abstract class AEBaseGui extends GuiContainer
 			else if ( dbl_whichItem != null )
 			{
 				// a replica of the weird broken vanilla feature.
-				Iterator iterator = this.inventorySlots.inventorySlots.iterator();
 
-				while (iterator.hasNext())
+				for (Object inventorySlot : this.inventorySlots.inventorySlots)
 				{
-					Slot targetSlot = (Slot) iterator.next();
+					Slot targetSlot = (Slot) inventorySlot;
 
 					if ( targetSlot != null && targetSlot.canTakeStack( this.mc.thePlayer ) && targetSlot.getHasStack()
 							&& targetSlot.inventory == slot.inventory && Container.func_94527_a( targetSlot, dbl_whichItem, true ) )
@@ -414,6 +413,7 @@ public abstract class AEBaseGui extends GuiContainer
 		super.handleMouseClick( slot, slotIdx, ctrlDown, key );
 	}
 
+	@Override
 	protected void mouseClickMove(int x, int y, int c, long d)
 	{
 		Slot slot = this.getSlot( x, y );
@@ -428,7 +428,7 @@ public abstract class AEBaseGui extends GuiContainer
 				{
 					for (Slot dr : drag_click)
 					{
-						PacketInventoryAction p = new PacketInventoryAction( c == 0 ? InventoryAction.PICKUP_OR_SETDOWN : InventoryAction.PLACE_SINGLE,
+						PacketInventoryAction p = new PacketInventoryAction( c == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE,
 								dr.slotNumber, 0 );
 						NetworkHandler.instance.sendToServer( p );
 					}
@@ -559,7 +559,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 			for (var6 = 0; var6 < var4.length; ++var6)
 			{
-				var7 = fontRendererObj.getStringWidth( (String) var4[var6] );
+				var7 = fontRendererObj.getStringWidth( var4[var6] );
 
 				if ( var7 > var5 )
 				{
@@ -601,7 +601,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 			for (int var13 = 0; var13 < var4.length; ++var13)
 			{
-				String var14 = (String) var4[var13];
+				String var14 = var4[var13];
 
 				if ( var13 == 0 )
 				{
@@ -724,14 +724,14 @@ public abstract class AEBaseGui extends GuiContainer
 		return false;
 	}
 
-	protected Slot getSlot(int mousex, int mousey)
+	protected Slot getSlot(int mouseX, int mouseY)
 	{
 		for (int j1 = 0; j1 < this.inventorySlots.inventorySlots.size(); ++j1)
 		{
 			Slot slot = (Slot) this.inventorySlots.inventorySlots.get( j1 );
 
 			// isPointInRegion
-			if ( func_146978_c( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mousex, mousey ) )
+			if ( func_146978_c( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY ) )
 			{
 				return slot;
 			}
@@ -743,11 +743,11 @@ public abstract class AEBaseGui extends GuiContainer
 	protected static String join(Collection<?> s, String delimiter)
 	{
 		StringBuilder builder = new StringBuilder();
-		Iterator iter = s.iterator();
-		while (iter.hasNext())
+		Iterator iterator = s.iterator();
+		while (iterator.hasNext())
 		{
-			builder.append( iter.next() );
-			if ( !iter.hasNext() )
+			builder.append( iterator.next() );
+			if ( !iterator.hasNext() )
 			{
 				break;
 			}
@@ -758,16 +758,16 @@ public abstract class AEBaseGui extends GuiContainer
 
 	boolean useNEI = false;
 
-	private RenderItem setItemRender(RenderItem aeri2)
+	private RenderItem setItemRender(RenderItem item)
 	{
 		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.NEI ) )
 		{
-			return ((INEI) AppEng.instance.getIntegration( IntegrationType.NEI )).setItemRender( aeri2 );
+			return ((INEI) AppEng.instance.getIntegration( IntegrationType.NEI )).setItemRender( item );
 		}
 		else
 		{
 			RenderItem ri = itemRender;
-			itemRender = aeri2;
+			itemRender = item;
 			return ri;
 		}
 	}
@@ -788,7 +788,7 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 	}
 
-	AppEngRenderItem aeri = new AppEngRenderItem();
+	AppEngRenderItem aeRenderItem = new AppEngRenderItem();
 
 	protected boolean isPowered()
 	{
@@ -809,7 +809,7 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		if ( s instanceof SlotME )
 		{
-			RenderItem pIR = setItemRender( aeri );
+			RenderItem pIR = setItemRender( aeRenderItem );
 			try
 			{
 				this.zLevel = 100.0F;
@@ -826,9 +826,9 @@ public abstract class AEBaseGui extends GuiContainer
 				itemRender.zLevel = 0.0F;
 
 				if ( s instanceof SlotME )
-					aeri.aestack = ((SlotME) s).getAEStack();
+					aeRenderItem.aeStack = ((SlotME) s).getAEStack();
 				else
-					aeri.aestack = null;
+					aeRenderItem.aeStack = null;
 
 				safeDrawSlot( s );
 			}
@@ -876,14 +876,14 @@ public abstract class AEBaseGui extends GuiContainer
 							float f1 = 0.00390625F;
 							tessellator.startDrawingQuads();
 							tessellator.setColorRGBA_F( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() );
-							tessellator.addVertexWithUV( (double) (par1 + 0), (double) (par2 + par6), (double) this.zLevel, (double) ((float) (par3 + 0) * f),
-									(double) ((float) (par4 + par6) * f1) );
-							tessellator.addVertexWithUV( (double) (par1 + par5), (double) (par2 + par6), (double) this.zLevel,
-									(double) ((float) (par3 + par5) * f), (double) ((float) (par4 + par6) * f1) );
-							tessellator.addVertexWithUV( (double) (par1 + par5), (double) (par2 + 0), (double) this.zLevel,
-									(double) ((float) (par3 + par5) * f), (double) ((float) (par4 + 0) * f1) );
-							tessellator.addVertexWithUV( (double) (par1 + 0), (double) (par2 + 0), (double) this.zLevel, (double) ((float) (par3 + 0) * f),
-									(double) ((float) (par4 + 0) * f1) );
+							tessellator.addVertexWithUV( par1 + 0, par2 + par6, this.zLevel, (par3 + 0) * f,
+									(par4 + par6) * f1 );
+							tessellator.addVertexWithUV( par1 + par5, par2 + par6, this.zLevel,
+									(par3 + par5) * f, (par4 + par6) * f1 );
+							tessellator.addVertexWithUV( par1 + par5, par2 + 0, this.zLevel,
+									(par3 + par5) * f, (par4 + 0) * f1 );
+							tessellator.addVertexWithUV( par1 + 0, par2 + 0, this.zLevel, (par3 + 0) * f,
+									(par4 + 0) * f1 );
 							tessellator.setColorRGBA_F( 1.0f, 1.0f, 1.0f, 1.0f );
 							tessellator.draw();
 						}

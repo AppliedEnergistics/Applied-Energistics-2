@@ -127,19 +127,19 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	{
 		if ( !w.isRemote )
 		{
-			EntityTinyTNTPrimed entitytntprimed = new EntityTinyTNTPrimed( w, x + 0.5F, y + 0.5F, z + 0.5F, exp.getExplosivePlacedBy() );
-			entitytntprimed.fuse = w.rand.nextInt( entitytntprimed.fuse / 4 ) + entitytntprimed.fuse / 8;
-			w.spawnEntityInWorld( entitytntprimed );
+			EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, x + 0.5F, y + 0.5F, z + 0.5F, exp.getExplosivePlacedBy() );
+			primedTinyTNTEntity.fuse = w.rand.nextInt( primedTinyTNTEntity.fuse / 4 ) + primedTinyTNTEntity.fuse / 8;
+			w.spawnEntityInWorld( primedTinyTNTEntity );
 		}
 	}
 
-	public void startFuse(World w, int x, int y, int z, EntityLivingBase ignitor)
+	public void startFuse(World w, int x, int y, int z, EntityLivingBase igniter)
 	{
 		if ( !w.isRemote )
 		{
-			EntityTinyTNTPrimed entitytntprimed = new EntityTinyTNTPrimed( w, x + 0.5F, y + 0.5F, z + 0.5F, ignitor );
-			w.spawnEntityInWorld( entitytntprimed );
-			w.playSoundAtEntity( entitytntprimed, "game.tnt.primed", 1.0F, 1.0F );
+			EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, x + 0.5F, y + 0.5F, z + 0.5F, igniter );
+			w.spawnEntityInWorld( primedTinyTNTEntity );
+			w.playSoundAtEntity( primedTinyTNTEntity, "game.tnt.primed", 1.0F, 1.0F );
 		}
 	}
 
@@ -152,7 +152,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
 	{
-		return Arrays.asList( new AxisAlignedBB[] { AxisAlignedBB.getBoundingBox( 0.25, 0, 0.25, 0.75, 0.5, 0.75 ) } );
+		return Arrays.asList( AxisAlignedBB.getBoundingBox( 0.25, 0, 0.25, 0.75, 0.5, 0.75 ) );
 	}
 
 	@Override

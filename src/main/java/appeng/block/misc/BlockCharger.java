@@ -7,7 +7,6 @@ import java.util.Random;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
@@ -89,7 +88,7 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 					if ( CommonHelper.proxy.shouldAddParticles( r ) )
 					{
 						LightningFX fx = new LightningFX( w, xOff + 0.5 + x, yOff + 0.5 + y, zOff + 0.5 + z, 0.0D, 0.0D, 0.0D );
-						Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+						Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 					}
 				}
 
@@ -148,9 +147,9 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 				break;
 			}
 
-			return Arrays.asList( new AxisAlignedBB[] { bb } );
+			return Arrays.asList( bb );
 		}
-		return Arrays.asList( new AxisAlignedBB[] { AxisAlignedBB.getBoundingBox( 0.0, 0, 0.0, 1.0, 1.0, 1.0 ) } );
+		return Arrays.asList( AxisAlignedBB.getBoundingBox( 0.0, 0, 0.0, 1.0, 1.0, 1.0 ) );
 	}
 
 	@Override

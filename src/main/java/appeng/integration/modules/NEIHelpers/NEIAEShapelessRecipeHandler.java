@@ -29,11 +29,13 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 {
 
+	@Override
 	public void loadTransferRects()
 	{
-		this.transferRects.add( new TemplateRecipeHandler.RecipeTransferRect( new Rectangle( 84, 23, 24, 18 ), "crafting", new Object[0] ) );
+		this.transferRects.add( new TemplateRecipeHandler.RecipeTransferRect( new Rectangle( 84, 23, 24, 18 ), "crafting" ) );
 	}
 
+	@Override
 	public Class<? extends GuiContainer> getGuiClass()
 	{
 		return GuiCrafting.class;
@@ -42,7 +44,7 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return NEIClientUtils.translate( "recipe.shapeless", new Object[0] );
+		return NEIClientUtils.translate( "recipe.shapeless" );
 	}
 
 	@Override
@@ -50,16 +52,16 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 	{
 		if ( (outputId.equals( "crafting" )) && (getClass() == NEIAEShapelessRecipeHandler.class) )
 		{
-			List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
-			for (IRecipe irecipe : allrecipes)
+			List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
+			for (IRecipe recipe : recipes)
 			{
-				if ( (irecipe instanceof ShapelessRecipe) )
+				if ( (recipe instanceof ShapelessRecipe) )
 				{
-					if ( ((ShapelessRecipe) irecipe).isEnabled() )
+					if ( ((ShapelessRecipe) recipe).isEnabled() )
 					{
-						CachedShapelessRecipe recipe = new CachedShapelessRecipe( (ShapelessRecipe) irecipe );
-						recipe.computeVisuals();
-						this.arecipes.add( recipe );
+						CachedShapelessRecipe cachedRecipe = new CachedShapelessRecipe( (ShapelessRecipe) recipe );
+						cachedRecipe.computeVisuals();
+						this.arecipes.add( cachedRecipe );
 					}
 				}
 			}
@@ -70,50 +72,54 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
-		for (IRecipe irecipe : allrecipes)
+		List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
+		for (IRecipe recipe : recipes)
 		{
-			if ( (irecipe instanceof ShapelessRecipe) )
+			if ( (recipe instanceof ShapelessRecipe) )
 			{
-				if ( ((ShapelessRecipe) irecipe).isEnabled() && NEIServerUtils.areStacksSameTypeCrafting( irecipe.getRecipeOutput(), result ) )
+				if ( ((ShapelessRecipe) recipe).isEnabled() && NEIServerUtils.areStacksSameTypeCrafting( recipe.getRecipeOutput(), result ) )
 				{
-					CachedShapelessRecipe recipe = new CachedShapelessRecipe( (ShapelessRecipe) irecipe );
-					recipe.computeVisuals();
-					arecipes.add( recipe );
+					CachedShapelessRecipe cachedRecipe = new CachedShapelessRecipe( (ShapelessRecipe) recipe );
+					cachedRecipe.computeVisuals();
+					arecipes.add( cachedRecipe );
 				}
 			}
 		}
 	}
 
+	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
-		for (IRecipe irecipe : allrecipes)
+		List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
+		for (IRecipe recipe : recipes)
 		{
-			if ( (irecipe instanceof ShapelessRecipe) )
+			if ( (recipe instanceof ShapelessRecipe) )
 			{
-				CachedShapelessRecipe recipe = new CachedShapelessRecipe( (ShapelessRecipe) irecipe );
+				CachedShapelessRecipe cachedRecipe = new CachedShapelessRecipe( (ShapelessRecipe) recipe );
 
-				if ( ((ShapelessRecipe) irecipe).isEnabled() && recipe.contains( recipe.ingredients, ingredient.getItem() ) )
+				if ( ((ShapelessRecipe) recipe).isEnabled() && cachedRecipe.contains( cachedRecipe.ingredients, ingredient.getItem() ) )
 				{
-					recipe.computeVisuals();
-					if ( recipe.contains( recipe.ingredients, ingredient ) )
+					cachedRecipe.computeVisuals();
+					if ( cachedRecipe.contains( cachedRecipe.ingredients, ingredient ) )
 					{
-						recipe.setIngredientPermutation( recipe.ingredients, ingredient );
-						this.arecipes.add( recipe );
+						cachedRecipe.setIngredientPermutation( cachedRecipe.ingredients, ingredient );
+						this.arecipes.add( cachedRecipe );
 					}
 				}
 			}
 		}
 	}
 
+	@Override
 	public String getGuiTexture()
 	{
 		return "textures/gui/container/crafting_table.png";
 	}
 
+	@Override
 	public String getOverlayIdentifier()
 	{
 		return "crafting";
@@ -165,10 +171,10 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 		public ArrayList<PositionedStack> ingredients;
 		public PositionedStack result;
 
-		public CachedShapelessRecipe(ShapelessRecipe irecipe) {
-			result = new PositionedStack( irecipe.getRecipeOutput(), 119, 24 );
+		public CachedShapelessRecipe(ShapelessRecipe recipe) {
+			result = new PositionedStack( recipe.getRecipeOutput(), 119, 24 );
 			ingredients = new ArrayList<PositionedStack>();
-			setIngredients( irecipe.getInput().toArray() );
+			setIngredients( recipe.getInput().toArray() );
 		}
 
 		public void setIngredients(Object[] items)

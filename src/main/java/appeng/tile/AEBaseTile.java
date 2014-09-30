@@ -40,12 +40,12 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 {
 
 	static private final HashMap<Class, EnumMap<TileEventType, List<AETileEventHandler>>> handlers = new HashMap<Class, EnumMap<TileEventType, List<AETileEventHandler>>>();
-	static private final HashMap<Class, ItemStackSrc> myItem = new HashMap();
+	static private final HashMap<Class, ItemStackSrc> myItem = new HashMap<Class, ItemStackSrc>();
 
 	private ForgeDirection forward = ForgeDirection.UNKNOWN;
 	private ForgeDirection up = ForgeDirection.UNKNOWN;
 
-	public static ThreadLocal<WeakReference<AEBaseTile>> dropNoItems = new ThreadLocal();
+	public static ThreadLocal<WeakReference<AEBaseTile>> dropNoItems = new ThreadLocal<WeakReference<AEBaseTile>>();
 
 	public void disableDrops()
 	{
@@ -122,7 +122,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		List<AETileEventHandler> list = handlerSet.get( value );
 
 		if ( list == null )
-			handlerSet.put( value, list = new ArrayList() );
+			handlerSet.put( value, list = new ArrayList<AETileEventHandler>() );
 
 		list.add( new AETileEventHandler( m, value ) );
 	}

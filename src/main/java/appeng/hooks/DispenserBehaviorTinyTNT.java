@@ -20,9 +20,9 @@ final public class DispenserBehaviorTinyTNT extends BehaviorDefaultDispenseItem
 		int i = dispenser.getXInt() + enumfacing.getFrontOffsetX();
 		int j = dispenser.getYInt() + enumfacing.getFrontOffsetY();
 		int k = dispenser.getZInt() + enumfacing.getFrontOffsetZ();
-		EntityTinyTNTPrimed entitytntprimed = new EntityTinyTNTPrimed( world, (double) ((float) i + 0.5F), (double) ((float) j + 0.5F),
-				(double) ((float) k + 0.5F), (EntityLiving) null );
-		world.spawnEntityInWorld( entitytntprimed );
+		EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( world, i + 0.5F, j + 0.5F,
+				k + 0.5F, null );
+		world.spawnEntityInWorld( primedTinyTNTEntity );
 		--dispensedItem.stackSize;
 		return dispensedItem;
 	}

@@ -157,7 +157,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		 * if ( FluidName != null && FluidName instanceof NBTTagString ) ((NBTTagString) FluidName).data = (String)
 		 * this.fluid.getName(); else
 		 */
-		i.setString( "FluidName", (String) this.fluid.getName() );
+		i.setString( "FluidName", this.fluid.getName() );
 
 		/*
 		 * if ( Count != null && Count instanceof NBTTagByte ) ((NBTTagByte) Count).data = (byte) 0; else
@@ -191,12 +191,12 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		ItemStack itemstack = ItemStack.loadItemStackFromNBT( i );
 		if ( itemstack == null )
 			return null;
-		AEFluidStack aeis = AEFluidStack.create( itemstack );
-		// aeis.priority = i.getInteger( "Priority" );
-		aeis.stackSize = i.getLong( "Cnt" );
-		aeis.setCountRequestable( i.getLong( "Req" ) );
-		aeis.setCraftable( i.getBoolean( "Craft" ) );
-		return aeis;
+		AEFluidStack fluid = AEFluidStack.create( itemstack );
+		// fluid.priority = i.getInteger( "Priority" );
+		fluid.stackSize = i.getLong( "Cnt" );
+		fluid.setCountRequestable( i.getLong( "Req" ) );
+		fluid.setCraftable( i.getBoolean( "Craft" ) );
+		return fluid;
 	}
 
 	@Override
@@ -282,12 +282,12 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		if ( fluidStack == null )
 			return null;
 
-		AEFluidStack aeis = AEFluidStack.create( fluidStack );
-		// aeis.priority = (int) priority;
-		aeis.stackSize = stackSize;
-		aeis.setCountRequestable( countRequestable );
-		aeis.setCraftable( isCraftable );
-		return aeis;
+		AEFluidStack fluid = AEFluidStack.create( fluidStack );
+		// fluid.priority = (int) priority;
+		fluid.stackSize = stackSize;
+		fluid.setCountRequestable( countRequestable );
+		fluid.setCraftable( isCraftable );
+		return fluid;
 	}
 
 	@Override

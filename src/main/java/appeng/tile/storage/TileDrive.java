@@ -48,8 +48,8 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	boolean isCached = false;
 	ICellHandler handlersBySlot[] = new ICellHandler[10];
 	DriveWatcher<IAEItemStack> invBySlot[] = new DriveWatcher[10];
-	List<MEInventoryHandler> items = new LinkedList();
-	List<MEInventoryHandler> fluids = new LinkedList();
+	List<MEInventoryHandler> items = new LinkedList<MEInventoryHandler>();
+	List<MEInventoryHandler> fluids = new LinkedList<MEInventoryHandler>();
 
 	BaseActionSource mySrc;
 	long lastStateChange = 0;
@@ -61,8 +61,8 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	{
 		int oldState = 0;
 
-		boolean currentActive;
-		if ( currentActive = gridProxy.isActive() )
+		boolean currentActive = gridProxy.isActive();
+		if ( currentActive )
 			state |= 0x80000000;
 		else
 			state &= ~0x80000000;
@@ -357,6 +357,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 		}
 	}
 
+	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
 		return itemstack != null && AEApi.instance().registries().cell().isCellHandled( itemstack );

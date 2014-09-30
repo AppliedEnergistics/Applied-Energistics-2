@@ -72,13 +72,13 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	@MENetworkEventSubscribe
 	public void stateChange(MENetworkChannelsChanged c)
 	{
-		duality.notifyNeightbors();
+		duality.notifyNeighbors();
 	}
 
 	@MENetworkEventSubscribe
 	public void stateChange(MENetworkPowerStatusChange c)
 	{
-		duality.notifyNeightbors();
+		duality.notifyNeighbors();
 	}
 
 	@Override
@@ -173,7 +173,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISeg
 	@Override
 	public TileEntity getTileEntity()
 	{
-		return (TileEntity) super.getHost().getTile();
+		return super.getHost().getTile();
 	}
 
 	@Override

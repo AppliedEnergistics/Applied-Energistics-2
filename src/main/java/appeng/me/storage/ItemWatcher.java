@@ -46,11 +46,11 @@ public class ItemWatcher implements IStackWatcher
 			interestIterator.remove();
 		}
 
-	};
+	}
 
 	GridStorageCache gsc;
 	IStackWatcherHost myObject;
-	HashSet<IAEStack> myInterests = new HashSet();
+	HashSet<IAEStack> myInterests = new HashSet<IAEStack>();
 
 	public ItemWatcher(GridStorageCache cache, IStackWatcherHost host) {
 		gsc = cache;

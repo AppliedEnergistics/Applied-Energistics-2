@@ -30,24 +30,24 @@ final public class QuartzWorldGen implements IWorldGenerator
 		}
 		else
 			oreNormal = oreCharged = null;
-	};
+	}
 
 	@Override
 	public void generate(Random r, int chunkX, int chunkZ, World w, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
 	{
-		int sealevel = w.provider.getAverageGroundLevel() + 1;
+		int seaLevel = w.provider.getAverageGroundLevel() + 1;
 
-		if ( sealevel < 20 )
+		if ( seaLevel < 20 )
 		{
 			int x = (chunkX << 4) + 8;
 			int z = (chunkZ << 4) + 8;
-			sealevel = w.getHeightValue( x, z );
+			seaLevel = w.getHeightValue( x, z );
 		}
 
 		if ( oreNormal == null || oreCharged == null )
 			return;
 
-		double oreDepthMultiplier = AEConfig.instance.quartzOresClusterAmount * sealevel / 64;
+		double oreDepthMultiplier = AEConfig.instance.quartzOresClusterAmount * seaLevel / 64;
 		int scale = (int) Math.round( r.nextGaussian() * Math.sqrt( oreDepthMultiplier ) + oreDepthMultiplier );
 
 		for (int x = 0; x < (r.nextBoolean() ? scale * 2 : scale) / 2; ++x)
@@ -58,7 +58,7 @@ final public class QuartzWorldGen implements IWorldGenerator
 			if ( WorldGenRegistry.instance.isWorldGenEnabled( isCharged ? WorldGenType.ChargedCertusQuartz : WorldGenType.CertusQuartz, w ) )
 			{
 				int cx = chunkX * 16 + r.nextInt( 22 );
-				int cy = r.nextInt( 40 * sealevel / 64 ) + r.nextInt( 22 * sealevel / 64 ) + 12 * sealevel / 64;
+				int cy = r.nextInt( 40 * seaLevel / 64 ) + r.nextInt( 22 * seaLevel / 64 ) + 12 * seaLevel / 64;
 				int cz = chunkZ * 16 + r.nextInt( 22 );
 				whichOre.generate( w, r, cx, cy, cz );
 			}

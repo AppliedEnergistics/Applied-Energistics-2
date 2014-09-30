@@ -79,13 +79,12 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 			if ( slot != null )
 			{
 				boolean inRecipe = false;
-				Iterator<Object> req = required.iterator();
 
-				while (req.hasNext())
+				for (Object aRequired : required)
 				{
 					boolean match = false;
 
-					Object next = req.next();
+					Object next = aRequired;
 
 					if ( next instanceof IIngredient )
 					{

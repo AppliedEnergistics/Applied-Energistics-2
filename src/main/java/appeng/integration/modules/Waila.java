@@ -75,7 +75,7 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 	}
 
 	@Override
-	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config)
+	public List<String> getWailaBody(ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config)
 	{
 		TileEntity te = accessor.getTileEntity();
 		MovingObjectPosition mop = accessor.getPosition();
@@ -90,11 +90,11 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 		{
 		}
 
-		return getBody( itemStack, currenttip, accessor.getPlayer(), nbt, te, mop );
+		return getBody( itemStack, currentToolTip, accessor.getPlayer(), nbt, te, mop );
 	}
 
 	@Override
-	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaFMPAccessor accessor, IWailaConfigHandler config)
+	public List<String> getWailaBody(ItemStack itemStack, List<String> currentToolTip, IWailaFMPAccessor accessor, IWailaConfigHandler config)
 	{
 		TileEntity te = accessor.getTileEntity();
 		MovingObjectPosition mop = accessor.getPosition();
@@ -109,10 +109,10 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 		{
 		}
 
-		return getBody( itemStack, currenttip, accessor.getPlayer(), nbt, te, mop );
+		return getBody( itemStack, currentToolTip, accessor.getPlayer(), nbt, te, mop );
 	}
 
-	public List<String> getBody(ItemStack itemStack, List<String> currenttip, EntityPlayer player, NBTTagCompound nbt, TileEntity te, MovingObjectPosition mop)
+	public List<String> getBody(ItemStack itemStack, List<String> currentToolTip, EntityPlayer player, NBTTagCompound nbt, TileEntity te, MovingObjectPosition mop)
 	{
 
 		Object ThingOfInterest = te;
@@ -143,7 +143,7 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 					if ( ic != null && ic.hasKey( "usedChannels" ) )
 					{
 						int channels = ic.getByte( "usedChannels" );
-						currenttip.add( channels + " " + GuiText.Of.getLocal() + " " + (ThingOfInterest instanceof PartDenseCable ? 32 : 8) + " "
+						currentToolTip.add( channels + " " + GuiText.Of.getLocal() + " " + (ThingOfInterest instanceof PartDenseCable ? 32 : 8) + " "
 								+ WailaText.Channels.getLocal() );
 					}
 				}
@@ -156,7 +156,7 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 				{
 					TileEnergyCell tec = (TileEnergyCell) ThingOfInterest;
 					long power = (long) (100 * c.getDouble( "internalCurrentPower" ));
-					currenttip.add( WailaText.Contains + ": " + Platform.formatPowerLong( power, false ) + " / "
+					currentToolTip.add( WailaText.Contains + ": " + Platform.formatPowerLong( power, false ) + " / "
 							+ Platform.formatPowerLong( (long) (100 * tec.getAEMaxPower()), false ) );
 				}
 			}
@@ -175,19 +175,19 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 			if ( stack instanceof IAEItemStack )
 			{
 				IAEItemStack ais = (IAEItemStack) stack;
-				currenttip.add( WailaText.Showing.getLocal() + ": " + ais.getItemStack().getDisplayName() );
+				currentToolTip.add( WailaText.Showing.getLocal() + ": " + ais.getItemStack().getDisplayName() );
 			}
 
 			if ( stack instanceof IAEFluidStack )
 			{
 				IAEFluidStack ais = (IAEFluidStack) stack;
-				currenttip.add( WailaText.Showing.getLocal() + ": " + ais.getFluid().getLocalizedName( ais.getFluidStack() ) );
+				currentToolTip.add( WailaText.Showing.getLocal() + ": " + ais.getFluid().getLocalizedName( ais.getFluidStack() ) );
 			}
 
 			if ( isLocked )
-				currenttip.add( WailaText.Locked.getLocal() );
+				currentToolTip.add( WailaText.Locked.getLocal() );
 			else
-				currenttip.add( WailaText.Unlocked.getLocal() );
+				currentToolTip.add( WailaText.Unlocked.getLocal() );
 		}
 
 		if ( ThingOfInterest instanceof TileCharger )
@@ -197,8 +197,8 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 			ItemStack is = inv.getStackInSlot( 0 );
 			if ( is != null )
 			{
-				currenttip.add( WailaText.Contains + ": " + is.getDisplayName() );
-				is.getItem().addInformation( is, player, currenttip, true );
+				currentToolTip.add( WailaText.Contains + ": " + is.getDisplayName() );
+				is.getItem().addInformation( is, player, currentToolTip, true );
 			}
 		}
 
@@ -206,40 +206,38 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 		{
 			IPowerChannelState pbs = (IPowerChannelState) ThingOfInterest;
 			if ( pbs.isActive() && pbs.isPowered() )
-				currenttip.add( WailaText.DeviceOnline.getLocal() );
+				currentToolTip.add( WailaText.DeviceOnline.getLocal() );
 			else if ( pbs.isPowered() )
-				currenttip.add( WailaText.DeviceMissingChannel.getLocal() );
+				currentToolTip.add( WailaText.DeviceMissingChannel.getLocal() );
 			else
-				currenttip.add( WailaText.DeviceOffline.getLocal() );
+				currentToolTip.add( WailaText.DeviceOffline.getLocal() );
 		}
 
-		return currenttip;
+		return currentToolTip;
 	}
 
 	@Override
-	public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config)
+	public List<String> getWailaHead(ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config)
 	{
-
-		return currenttip;
+		return currentToolTip;
 	}
 
 	@Override
-	public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config)
+	public List<String> getWailaTail(ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config)
 	{
-
-		return currenttip;
+		return currentToolTip;
 	}
 
 	@Override
-	public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaFMPAccessor accessor, IWailaConfigHandler config)
+	public List<String> getWailaHead(ItemStack itemStack, List<String> currentToolTip, IWailaFMPAccessor accessor, IWailaConfigHandler config)
 	{
-		return currenttip;
+		return currentToolTip;
 	}
 
 	@Override
-	public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaFMPAccessor accessor, IWailaConfigHandler config)
+	public List<String> getWailaTail(ItemStack itemStack, List<String> currentToolTip, IWailaFMPAccessor accessor, IWailaConfigHandler config)
 	{
-		return currenttip;
+		return currentToolTip;
 	}
 
 }

@@ -3,6 +3,7 @@ package appeng.client.gui.widgets;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
+import appeng.container.interfaces.IProgressProvider;
 import appeng.core.localization.GuiText;
 
 public class GuiProgressBar extends GuiButton implements ITooltip
@@ -11,31 +12,35 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 	public enum Direction
 	{
 		HORIZONTAL, VERTICAL
-	};
+	}
 
+	private IProgressProvider source;
 	private ResourceLocation texture;
 	private int fill_u;
 	private int fill_v;
 	private Direction layout;
 
-	public String FullMsg;
+	private String fullMsg;
+	private final String titleName;
 
-	public String TitleName;
-	public int current;
-	public int max;
+	public GuiProgressBar(IProgressProvider source, String texture, int posX, int posY, int u, int y, int _width, int _height, Direction dir)
+	{
+		this( source, texture, posX, posY, u, y, _width, _height, dir, null );
+	}
 
-	public GuiProgressBar(String string, int posX, int posY, int u, int y, int _width, int _height, Direction dir) {
+	public GuiProgressBar(IProgressProvider source, String texture, int posX, int posY, int u, int y, int _width, int _height, Direction dir, String title)
+	{
 		super( posX, posY, _width, "" );
+		this.source = source;
 		this.xPosition = posX;
 		this.yPosition = posY;
-		texture = new ResourceLocation( "appliedenergistics2", "textures/" + string );
+		this.texture = new ResourceLocation( "appliedenergistics2", "textures/" + texture );
 		width = _width;
 		height = _height;
 		fill_u = u;
 		fill_v = y;
-		current = 0;
-		max = 100;
 		layout = dir;
+		titleName = title;
 	}
 
 	@Override
@@ -44,6 +49,8 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 		if ( this.visible )
 		{
 			par1Minecraft.getTextureManager().bindTexture( texture );
+			int max = source.getMaxProgress();
+			int current = source.getCurrentProgress();
 
 			if ( layout == Direction.VERTICAL )
 			{
@@ -60,13 +67,18 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 		}
 	}
 
+	public void setFullMsg(String msg)
+	{
+		this.fullMsg = msg;
+	}
+
 	@Override
 	public String getMsg()
 	{
-		if ( FullMsg != null )
-			return FullMsg;
+		if ( fullMsg != null )
+			return fullMsg;
 
-		return (TitleName != null ? TitleName : "") + "\n" + current + " " + GuiText.Of.getLocal() + " " + max;
+		return (titleName != null ? titleName : "") + "\n" + source.getCurrentProgress() + " " + GuiText.Of.getLocal() + " " + source.getMaxProgress();
 	}
 
 	@Override

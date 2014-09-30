@@ -9,11 +9,11 @@ import appeng.util.Platform;
 public class ContainerWirelessTerm extends ContainerMEPortableCell
 {
 
-	WirelessTerminalGuiObject wtgo;
+	WirelessTerminalGuiObject wirelessTerminalGUIObject;
 
-	public ContainerWirelessTerm(InventoryPlayer ip, WirelessTerminalGuiObject monitorable) {
-		super( ip, monitorable );
-		wtgo = monitorable;
+	public ContainerWirelessTerm(InventoryPlayer ip, WirelessTerminalGuiObject wirelessTerminalGUIObject) {
+		super( ip, wirelessTerminalGUIObject );
+		this.wirelessTerminalGUIObject = wirelessTerminalGUIObject;
 	}
 
 	@Override
@@ -21,7 +21,7 @@ public class ContainerWirelessTerm extends ContainerMEPortableCell
 	{
 		super.detectAndSendChanges();
 
-		if ( !wtgo.rangeCheck() )
+		if ( !wirelessTerminalGUIObject.rangeCheck() )
 		{
 			if ( Platform.isServer() && isContainerValid )
 				getPlayerInv().player.addChatMessage( PlayerMessages.OutOfRange.get() );
@@ -30,7 +30,7 @@ public class ContainerWirelessTerm extends ContainerMEPortableCell
 		}
 		else
 		{
-			powerMultiplier = AEConfig.instance.wireless_getDrainRate( wtgo.getRange() );
+			powerMultiplier = AEConfig.instance.wireless_getDrainRate( wirelessTerminalGUIObject.getRange() );
 		}
 	}
 }

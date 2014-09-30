@@ -21,12 +21,12 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 	private enum batteryOperation
 	{
 		STORAGE, INJECT, EXTRACT
-	};
+	}
 
 	public double maxStoredPower = 200000;
 
-	public AERootPoweredItem(Class c, String subname) {
-		super( c, subname );
+	public AERootPoweredItem(Class c, String subName) {
+		super( c, subName );
 		setMaxDamage( 32 );
 		hasSubtypes = false;
 	}

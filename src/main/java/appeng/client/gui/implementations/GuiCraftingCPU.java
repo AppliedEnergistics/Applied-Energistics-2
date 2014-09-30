@@ -39,14 +39,14 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	IItemList<IAEItemStack> active = AEApi.instance().storage().createItemList();
 	IItemList<IAEItemStack> pending = AEApi.instance().storage().createItemList();
 
-	List<IAEItemStack> visual = new ArrayList();
+	List<IAEItemStack> visual = new ArrayList<IAEItemStack>();
 
 	public void clearItems()
 	{
 		storage = AEApi.instance().storage().createItemList();
 		active = AEApi.instance().storage().createItemList();
 		pending = AEApi.instance().storage().createItemList();
-		visual = new ArrayList();
+		visual = new ArrayList<IAEItemStack>();
 	}
 
 	protected GuiCraftingCPU(ContainerCraftingCPU container) {
@@ -169,12 +169,12 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 	private IAEItemStack findVisualStack(IAEItemStack l)
 	{
-		Iterator<IAEItemStack> i = visual.iterator();
-		while (i.hasNext())
+		for (IAEItemStack o : visual)
 		{
-			IAEItemStack o = i.next();
 			if ( o.equals( l ) )
+			{
 				return o;
+			}
 		}
 
 		IAEItemStack stack = l.copy();
@@ -223,18 +223,18 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 		int gx = (width - xSize) / 2;
 		int gy = (height - ySize) / 2;
-		int yoff = 23;
+		int offY = 23;
 
 		tooltip = -1;
 
 		for (int z = 0; z <= 4 * 5; z++)
 		{
 			int minX = gx + 9 + x * 67;
-			int minY = gy + 22 + y * yoff;
+			int minY = gy + 22 + y * offY;
 
 			if ( minX < mouse_x && minX + 67 > mouse_x )
 			{
-				if ( minY < mouse_y && minY + yoff - 2 > mouse_y )
+				if ( minY < mouse_y && minY + offY - 2 > mouse_y )
 				{
 					tooltip = z;
 					break;
@@ -269,7 +269,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		int viewEnd = viewStart + 3 * 6;
 
 		String dspToolTip = "";
-		List<String> lineList = new LinkedList();
+		List<String> lineList = new LinkedList<String>();
 		int toolPosX = 0;
 		int toolPosY = 0;
 
@@ -309,8 +309,8 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 					str = GuiText.Stored.getLocal() + ": " + str;
 					int w = 4 + fontRendererObj.getStringWidth( str );
-					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - ((float) w * 0.5)) * 2), (int) ((y * offY + yo
-							+ 6 - negY + downY) * 2), 4210752 );
+					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
+							+ 6 - negY + downY) * 2, 4210752 );
 
 					if ( tooltip == z - viewStart )
 						lineList.add( GuiText.Stored.getLocal() + ": " + Long.toString( stored.getStackSize() ) );
@@ -328,8 +328,8 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 					str = GuiText.Crafting.getLocal() + ": " + str;
 					int w = 4 + fontRendererObj.getStringWidth( str );
-					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - ((float) w * 0.5)) * 2), (int) ((y * offY + yo
-							+ 6 - negY + downY) * 2), 4210752 );
+					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
+							+ 6 - negY + downY) * 2, 4210752 );
 
 					if ( tooltip == z - viewStart )
 						lineList.add( GuiText.Crafting.getLocal() + ": " + Long.toString( activeStack.getStackSize() ) );
@@ -347,8 +347,8 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 					str = GuiText.Scheduled.getLocal() + ": " + str;
 					int w = 4 + fontRendererObj.getStringWidth( str );
-					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - ((float) w * 0.5)) * 2), (int) ((y * offY + yo
-							+ 6 - negY + downY) * 2), 4210752 );
+					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
+							+ 6 - negY + downY) * 2, 4210752 );
 
 					if ( tooltip == z - viewStart )
 						lineList.add( GuiText.Scheduled.getLocal() + ": " + Long.toString( pendingStack.getStackSize() ) );

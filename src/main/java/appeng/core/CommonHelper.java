@@ -37,7 +37,7 @@ public abstract class CommonHelper
 
 	public abstract void doRenderItem(ItemStack itemstack, World w);
 
-	public abstract void postinit();
+	public abstract void postInit();
 
 	public abstract CableRenderMode getRenderMode();
 

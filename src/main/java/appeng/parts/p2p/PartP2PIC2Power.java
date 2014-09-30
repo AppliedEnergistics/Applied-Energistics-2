@@ -25,6 +25,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements ic2.api.energy.tile.IEnergySink, ic2.api.energy.tile.IEnergySource
 {
 
+	@Override
 	public TunnelType getTunnelType()
 	{
 		return TunnelType.IC2_POWER;
@@ -65,6 +66,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 		OutputVoltageB = tag.getDouble( "OutputVoltageB" );
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getTypeTexture()
 	{
@@ -126,7 +128,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	public float getPowerDrainPerTick()
 	{
 		return 0.5f;
-	};
+	}
 
 	@Override
 	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)
@@ -144,7 +146,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 		if ( outs.isEmpty() )
 			return amount;
 
-		LinkedList<PartP2PIC2Power> Options = new LinkedList();
+		LinkedList<PartP2PIC2Power> Options = new LinkedList<PartP2PIC2Power>();
 		for (PartP2PIC2Power o : outs)
 		{
 			if ( o.OutputEnergyA <= 0.01 )
@@ -167,7 +169,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 		if ( Options.isEmpty() )
 			return amount;
 
-		PartP2PIC2Power x = (PartP2PIC2Power) Platform.pickRandom( Options );
+		PartP2PIC2Power x = Platform.pickRandom( Options );
 
 		if ( x != null && x.OutputEnergyA <= 0.001 )
 		{

@@ -75,7 +75,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	{
 		NBTTagCompound c = Platform.openNbtData( is );
 		String name = c.getString( "Config" );
-		return name == null || name == "" ? GuiText.Blank.getUnlocalized() : name;
+		return name == null || name.equals( "" ) ? GuiText.Blank.getUnlocalized() : name;
 	}
 
 	@Override

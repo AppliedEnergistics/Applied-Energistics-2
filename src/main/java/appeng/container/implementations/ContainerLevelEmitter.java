@@ -63,7 +63,7 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 		int x = 80 + 44;
 		int y = 40;
 
-		IInventory upgrades = myte.getInventoryByName( "upgrades" );
+		IInventory upgrades = upgradeable.getInventoryByName( "upgrades" );
 		if ( availableUpgrades() > 0 )
 			addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0, invPlayer )).setNotDraggable() );
 		if ( availableUpgrades() > 1 )
@@ -73,7 +73,7 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 		if ( availableUpgrades() > 3 )
 			addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, invPlayer )).setNotDraggable() );
 
-		IInventory inv = myte.getInventoryByName( "config" );
+		IInventory inv = upgradeable.getInventoryByName( "config" );
 		addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
 	}
 
@@ -94,15 +94,16 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 		if ( Platform.isServer() )
 		{
 			this.EmitterValue = lvlEmitter.getReportingValue();
-			this.cmType = (YesNo) this.myte.getConfigManager().getSetting( Settings.CRAFT_VIA_REDSTONE );
-			this.lvType = (LevelType) this.myte.getConfigManager().getSetting( Settings.LEVEL_TYPE );
-			this.fzMode = (FuzzyMode) this.myte.getConfigManager().getSetting( Settings.FUZZY_MODE );
-			this.rsMode = (RedstoneMode) this.myte.getConfigManager().getSetting( Settings.REDSTONE_EMITTER );
+			this.cmType = (YesNo) this.upgradeable.getConfigManager().getSetting( Settings.CRAFT_VIA_REDSTONE );
+			this.lvType = (LevelType) this.upgradeable.getConfigManager().getSetting( Settings.LEVEL_TYPE );
+			this.fzMode = (FuzzyMode) this.upgradeable.getConfigManager().getSetting( Settings.FUZZY_MODE );
+			this.rsMode = (RedstoneMode) this.upgradeable.getConfigManager().getSetting( Settings.REDSTONE_EMITTER );
 		}
 
 		standardDetectAndSendChanges();
 	}
 
+	@Override
 	public void onUpdate(String field, Object oldValue, Object newValue)
 	{
 		if ( field.equals( "EmitterValue" ) )

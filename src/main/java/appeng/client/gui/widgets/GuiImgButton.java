@@ -53,11 +53,15 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		@Override
 		public boolean equals(Object obj)
 		{
-			EnumPair d = (EnumPair) obj;
-			return d.setting.equals( setting ) && d.value.equals( value );
+			if ( obj == null )
+				return false;
+			if ( getClass() != obj.getClass() )
+				return false;
+			EnumPair other = (EnumPair) obj;
+			return other.setting.equals( setting ) && other.value.equals( value );
 		}
 
-	};
+	}
 
 	class BtnAppearance
 	{
@@ -65,7 +69,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		public int index;
 		public String DisplayName;
 		public String DisplayValue;
-	};
+	}
 
 	public boolean halfSize = false;
 	public String FillVar;
@@ -101,7 +105,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 
 		if ( Appearances == null )
 		{
-			Appearances = new HashMap();
+			Appearances = new HashMap<EnumPair, BtnAppearance>();
 			registerApp( 16 * 7 + 0, Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH, ButtonToolTips.CondenserOutput, ButtonToolTips.Trash );
 			registerApp( 16 * 7 + 1, Settings.CONDENSER_OUTPUT, CondenserOutput.MATTER_BALLS, ButtonToolTips.CondenserOutput, ButtonToolTips.MatterBalls );
 			registerApp( 16 * 7 + 2, Settings.CONDENSER_OUTPUT, CondenserOutput.SINGULARITY, ButtonToolTips.CondenserOutput, ButtonToolTips.Singularity );

@@ -23,7 +23,7 @@ final public class EntityGrowingCrystal extends EntityItem
 
 	public float getProgress()
 	{
-		return (float) progress_1000 / 1000.0f;
+		return progress_1000 / 1000.0f;
 	}
 
 	public EntityGrowingCrystal(World w) {
@@ -101,7 +101,6 @@ final public class EntityGrowingCrystal extends EntityItem
 					progress_1000 = 0;
 					CommonHelper.proxy.spawnEffect( EffectType.Vibrant, worldObj, posX, posY + 0.2, posZ, null );
 				}
-				return;
 			}
 			else
 			{
@@ -121,28 +120,28 @@ final public class EntityGrowingCrystal extends EntityItem
 
 		int qty = 0;
 
-		if ( isAccel( x + 1, y, z ) )
+		if ( isAccelerated( x + 1, y, z ) )
 			qty += per + qty * mul;
 
-		if ( isAccel( x, y + 1, z ) )
+		if ( isAccelerated( x, y + 1, z ) )
 			qty += per + qty * mul;
 
-		if ( isAccel( x, y, z + 1 ) )
+		if ( isAccelerated( x, y, z + 1 ) )
 			qty += per + qty * mul;
 
-		if ( isAccel( x - 1, y, z ) )
+		if ( isAccelerated( x - 1, y, z ) )
 			qty += per + qty * mul;
 
-		if ( isAccel( x, y - 1, z ) )
+		if ( isAccelerated( x, y - 1, z ) )
 			qty += per + qty * mul;
 
-		if ( isAccel( x, y, z - 1 ) )
+		if ( isAccelerated( x, y, z - 1 ) )
 			qty += per + qty * mul;
 
 		return qty;
 	}
 
-	private boolean isAccel(int x, int y, int z)
+	private boolean isAccelerated(int x, int y, int z)
 	{
 		TileEntity te = worldObj.getTileEntity( x, y, z );
 		if ( te instanceof ICrystalGrowthAccelerator )

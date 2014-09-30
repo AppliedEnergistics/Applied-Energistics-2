@@ -16,9 +16,6 @@
 # include sourcecode
 !src/
 
-# include special libs like BC
-!libs/
-
 # include git important files
 !.gitmodules
 !.gitignore

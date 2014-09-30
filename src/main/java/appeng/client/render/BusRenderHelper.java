@@ -102,7 +102,7 @@ public class BusRenderHelper implements IPartRenderHelper
 			return false;
 		}
 
-	};
+	}
 
 	BoundBoxCalculator bbc = new BoundBoxCalculator();
 
@@ -209,14 +209,14 @@ public class BusRenderHelper implements IPartRenderHelper
 	}
 
 	@Override
-	public void setBounds(float minx, float miny, float minz, float maxx, float maxy, float maxz)
+	public void setBounds(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
 	{
-		minX = minx;
-		minY = miny;
-		minZ = minz;
-		maxX = maxx;
-		maxY = maxy;
-		maxZ = maxz;
+		this.minX = minX;
+		this.minY = minY;
+		this.minZ = minZ;
+		this.maxX = maxX;
+		this.maxY = maxY;
+		this.maxZ = maxZ;
 	}
 
 	public double getBound(ForgeDirection side)
@@ -370,6 +370,7 @@ public class BusRenderHelper implements IPartRenderHelper
 		BusRenderer.instance.renderer.renderFaces = faces;
 	}
 
+	@Override
 	public void renderBlockCurrentBounds(int x, int y, int z, RenderBlocks renderer)
 	{
 		if ( !renderThis() )

@@ -5,7 +5,7 @@ package appeng.items.tools.powered.powersink;
  public class UniversalElectricity extends ThermalExpansion implements IItemElectric
  {
  * 
- * public UniversalElectricity(Class c, String subname) { super( c, subname ); }
+ * public UniversalElectricity(Class c, String subName) { super( c, subName ); }
  * 
  * @Override public float recharge(ItemStack is, float energy, boolean
  * doRecharge) { return (float) (energy - injectExternalPower( PowerUnits.KJ,

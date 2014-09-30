@@ -83,13 +83,14 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 			if ( Platform.isClient() )
 				return true;
 
-			Platform.openGUI( player, getHost().getTile(), side, GuiBridge.GUI_FPLANE );
+			Platform.openGUI( player, getHost().getTile(), side, GuiBridge.GUI_FORMATION_PLANE );
 			return true;
 		}
 
 		return false;
 	}
 
+	@Override
 	protected int getUpgradeSlots()
 	{
 		return 5;
@@ -104,6 +105,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		return super.getInventoryByName( name );
 	}
 
+	@Override
 	@MENetworkEventSubscribe
 	public void powerRender(MENetworkPowerStatusChange c)
 	{
@@ -117,7 +119,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@MENetworkEventSubscribe
-	public void updateChannels(MENetworkChannelsChanged chann)
+	public void updateChannels(MENetworkChannelsChanged changedChannels)
 	{
 		boolean currentActive = proxy.isActive();
 		if ( wasActive != currentActive )
@@ -247,11 +249,11 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	{
 		if ( proxy.isActive() && channel == StorageChannel.ITEMS )
 		{
-			List<IMEInventoryHandler> Handler = new ArrayList( 1 );
+			List<IMEInventoryHandler> Handler = new ArrayList<IMEInventoryHandler>( 1 );
 			Handler.add( myHandler );
 			return Handler;
 		}
-		return new ArrayList();
+		return new ArrayList<IMEInventoryHandler>();
 	}
 
 	@Override
@@ -278,6 +280,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 			updateHandler();
 	}
 
+	@Override
 	public void upgradesChanged()
 	{
 		updateHandler();
@@ -322,6 +325,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		data.setInteger( "priority", priority );
 	}
 
+	@Override
 	public void readFromNBT(NBTTagCompound data)
 	{
 		super.readFromNBT( data );
@@ -459,9 +463,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 						is.stackSize = (int) maxStorage;
 						EntityItem ei = new EntityItem( w, // w
-								((side.offsetX != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetX * -0.3 + (double) x, // spawn
-								((side.offsetY != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetY * -0.3 + (double) y, // spawn
-								((side.offsetZ != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetZ * -0.3 + (double) z, // spawn
+								((side.offsetX != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetX * -0.3 + x, // spawn
+								((side.offsetY != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetY * -0.3 + y, // spawn
+								((side.offsetZ != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetZ * -0.3 + z, // spawn
 								is.copy() );
 
 						Entity result = ei;

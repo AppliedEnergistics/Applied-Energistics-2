@@ -7,6 +7,7 @@
 * [License](#license)
 * [Downloads](#downloads)
 * [Installation](#installation)
+* [Issues](#issues)
 * [Building](#building)
 * [Contribution](#contribution)
 * [Credits](#credits)
@@ -23,7 +24,7 @@ A Mod about Matter, Energy and using them to conquer the world..
 
 ## License
 
-Applied Energistics 2 is (c) 2013 - 2014 AlgorithmX2 and licensed under LGPL v3. See the LICENSE.txt for details or go to http://www.gnu.org/licenses/lgpl-3.0.txt for more information.
+Applied Energistics 2 is (c) 2013 - 2014 AlgorithmX2 and licensed under LGPL v3. See the LICENSE.txt for details or go to http://www.gnu.org/licenses/lgpl-3.0.txt for more information. Textures and Models are licensed under Creative Commons 3.
 
 ## Downloads
 
@@ -32,6 +33,24 @@ Downloads can be found on [CurseForge](http://www.curse.com/mc-mods/minecraft/22
 ## Installation
 
 You install this mod by putting it into the `minecraft/mods/` folder. It has no additional hard dependencies.
+
+## Issues
+
+Applied Energistics 2 crashing, have a suggestion, found a bug?  Create an issue now!
+
+1. Make sure your issue hasn't already been answered or fixed.  Also think about whether your issue is a valid one before submitting it.
+2. Go to [the issues page](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues)
+3. Click new issue
+4. Enter your Issue's title (something that summarizes your issue), and then create a detailed description of the issue.
+	* To help in resolving your issues please try to include the follow if applicable:
+		* The problem that is happening?
+		* What was expected?
+		* How to reproduce the problem?
+		* Server or Single Player?
+		* Mod Pack using and version?
+		* Crash log (Please make sure to use [pastebin](http://pastebin.com/) for the log file) 
+		* Screen shots or Pictures of the problem
+5. Click `Submit New Issue`, and wait for feedback!
 
 ## Building
 
@@ -54,6 +73,18 @@ You install this mod by putting it into the `minecraft/mods/` folder. It has no 
 Before you want to add major changes, you might want to discuss them with us first, before wasting your time.
 If you are still willing to contribute to this project, you can contribute via [Pull-Request](https://help.github.com/articles/creating-a-pull-request).
 
+Here are a few things to keep in mind that will help get your PR approved.
+
+* A PR should be focused on content. Any PRs where the changes are only syntax will be rejected.
+* Use the file you are editing as a style guide.
+* Consider your feature. [Suggestion Guidelines](http://ae-mod.info/Suggestion-Guidelines/)
+  - Is your suggestion already possible using Vanilla + AE2?
+  - Make sure your feature isn't already in the works, or hasn't been rejected previously.
+  - Does your feature simplify another feature of AE2? These changes will not be accepted.
+  - If your feature can be done by any popular mod, discuss with us first.
+
+Getting Started
+
 1. Fork this repository
 2. Clone the fork via
   * SSH `git clone git@github.com:<your username>/Applied-Energistics-2.git` or 
@@ -64,7 +95,7 @@ If you are still willing to contribute to this project, you can contribute via [
 6. Push to your fork `git push`
 7. Create a Pull-Request on GitHub
 
-If you are only doing single file pull requests, GitHub supports using a quick way without the need of cloning your fork.
+If you are only doing single file pull requests, GitHub supports using a quick way without the need of cloning your fork. Also read up about [synching](https://help.github.com/articles/syncing-a-fork) if you plan to contribute on regular basis.
 
 ## Credits
 

@@ -8,7 +8,6 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
@@ -97,7 +96,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 		double xOff = -0.3 * up.offsetX;
 		double yOff = -0.3 * up.offsetY;
 		double zOff = -0.3 * up.offsetZ;
-		return Arrays.asList( new AxisAlignedBB[] { AxisAlignedBB.getBoundingBox( xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7 ) } );
+		return Arrays.asList( AxisAlignedBB.getBoundingBox( xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7 ) );
 	}
 
 	@Override
@@ -129,7 +128,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 			{
 				LightningFX fx = new LightningFX( w, xOff + 0.5 + x, yOff + 0.5 + y, zOff + 0.5 + z, 0.0D, 0.0D, 0.0D );
 
-				Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 			}
 		}
 	}

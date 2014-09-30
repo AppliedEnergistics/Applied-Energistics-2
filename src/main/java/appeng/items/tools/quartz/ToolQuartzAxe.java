@@ -21,6 +21,7 @@ public class ToolQuartzAxe extends ItemAxe implements IAEFeature
 		return feature;
 	}
 
+	@Override
 	public boolean getIsRepairable(ItemStack a, ItemStack b)
 	{
 		return Platform.canRepair( type, a, b );

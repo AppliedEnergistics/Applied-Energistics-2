@@ -89,22 +89,26 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		String with = GuiText.With.getLocal() + ": ";
 
 		boolean first = true;
-		for (int x = 0; x < out.length; x++)
+		for (IAEItemStack anOut : out)
 		{
-			if ( out[x] == null )
+			if ( anOut == null )
+			{
 				continue;
+			}
 
-			l.add( (first ? label : and) + out[x].getStackSize() + " " + Platform.getItemDisplayName( out[x] ) );
+			l.add( (first ? label : and) + anOut.getStackSize() + " " + Platform.getItemDisplayName( anOut ) );
 			first = false;
 		}
 
 		first = true;
-		for (int x = 0; x < in.length; x++)
+		for (IAEItemStack anIn : in)
 		{
-			if ( in[x] == null )
+			if ( anIn == null )
+			{
 				continue;
+			}
 
-			l.add( (first ? with : and) + in[x].getStackSize() + " " + Platform.getItemDisplayName( in[x] ) );
+			l.add( (first ? with : and) + anIn.getStackSize() + " " + Platform.getItemDisplayName( anIn ) );
 			first = false;
 		}
 	}

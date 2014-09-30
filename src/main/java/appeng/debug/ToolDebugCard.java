@@ -39,10 +39,10 @@ public class ToolDebugCard extends AEBaseItem
 
 	public String timeMeasurement(long nanos)
 	{
-		long ms = (long) (nanos / 100000);
+		long ms = nanos / 100000;
 		if ( nanos <= 100000 )
 			return nanos + "ns";
-		return (((float) ms) / 10.0f) + "ms";
+		return (ms / 10.0f) + "ms";
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class ToolDebugCard extends AEBaseItem
 					{
 						int length = 0;
 						
-						HashSet<IGridNode> next = new HashSet();
+						HashSet<IGridNode> next = new HashSet<IGridNode>();
 						next.add( node );
 						
 						int maxLength = 10000;
@@ -92,7 +92,7 @@ public class ToolDebugCard extends AEBaseItem
 						outer: while ( ! next.isEmpty() )
 						{
 							HashSet<IGridNode> current = next;
-							next = new HashSet();
+							next = new HashSet<IGridNode>();
 							
 							for ( IGridNode n : current )
 							{
@@ -117,7 +117,7 @@ public class ToolDebugCard extends AEBaseItem
 						outputMsg( player, "Freq: " + ((PartP2PTunnel) center.getMachine()).freq );
 					}
 
-					TickManagerCache tmc = (TickManagerCache) g.getCache( ITickManager.class );
+					TickManagerCache tmc = g.getCache( ITickManager.class );
 					for (Class c : g.getMachineClasses())
 					{
 						int o = 0;
@@ -168,7 +168,7 @@ public class ToolDebugCard extends AEBaseItem
 
 				if ( te instanceof IGridHost )
 				{
-					IGridNode node = (IGridNode) ((IGridHost) te).getGridNode( ForgeDirection.getOrientation( side ) );
+					IGridNode node = ((IGridHost) te).getGridNode( ForgeDirection.getOrientation( side ) );
 					if ( node != null && node.getGrid() != null )
 					{
 						IEnergyGrid eg = node.getGrid().getCache( IEnergyGrid.class );

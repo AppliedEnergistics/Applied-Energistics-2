@@ -22,10 +22,11 @@ public class GridStorageSearch
 	{
 		if ( obj == null )
 			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
 
-		GridStorageSearch b = (GridStorageSearch) obj;
-
-		if ( id == b.id )
+		GridStorageSearch other = (GridStorageSearch) obj;
+		if ( id == other.id )
 			return true;
 
 		return false;

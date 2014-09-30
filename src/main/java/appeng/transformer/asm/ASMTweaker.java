@@ -33,7 +33,7 @@ public class ASMTweaker implements IClassTransformer
 
 		final String name, desc;
 
-	};
+	}
 
 	Multimap<String, publicLine> privateToPublicMethods = HashMultimap.create();
 
@@ -69,7 +69,7 @@ public class ASMTweaker implements IClassTransformer
 					makePublic( classNode, Set );
 				}
 
-				// CALL VIRUAL!
+				// CALL VIRTUAL!
 				if ( transformedName.equals( "net.minecraft.client.gui.inventory.GuiContainer" ) )
 				{
 					for (MethodNode mn : classNode.methods)
@@ -79,6 +79,8 @@ public class ASMTweaker implements IClassTransformer
 							MethodNode newNode = new MethodNode( Opcodes.ACC_PUBLIC, "func_146977_a_original", mn.desc, mn.signature, new String[0] );
 							newNode.instructions.add( new VarInsnNode( Opcodes.ALOAD, 0 ) );
 							newNode.instructions.add( new VarInsnNode( Opcodes.ALOAD, 1 ) );
+							//newNode.instructions.add( new MethodInsnNode( Opcodes.INVOKESPECIAL, classNode.name, mn.name, mn.desc, false ) );
+							// TODO: Update for newer forge
 							newNode.instructions.add( new MethodInsnNode( Opcodes.INVOKESPECIAL, classNode.name, mn.name, mn.desc ) );
 							newNode.instructions.add( new InsnNode( Opcodes.RETURN ) );
 							log( newNode.name + newNode.desc + " - New Method" );
@@ -101,6 +103,8 @@ public class ASMTweaker implements IClassTransformer
 									if ( n.name.equals( "func_146977_a" ) || (n.name.equals( "a" ) && n.desc.equals( "(Lzk;)V" )) )
 									{
 										log( n.name + n.desc + " - Invoke Virtual" );
+										//mn.instructions.insertBefore( n, new MethodInsnNode( Opcodes.INVOKEVIRTUAL, n.owner, n.name, n.desc, false ) );
+										// TODO: Update for newer forge
 										mn.instructions.insertBefore( n, new MethodInsnNode( Opcodes.INVOKEVIRTUAL, n.owner, n.name, n.desc ) );
 										mn.instructions.remove( in );
 										break;

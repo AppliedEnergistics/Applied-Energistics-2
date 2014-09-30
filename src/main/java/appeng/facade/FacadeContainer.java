@@ -29,6 +29,7 @@ public class FacadeContainer implements IFacadeContainer
 		storage = cbs;
 	}
 
+	@Override
 	public void writeToStream(ByteBuf out) throws IOException
 	{
 		int facadeSides = 0;
@@ -52,6 +53,7 @@ public class FacadeContainer implements IFacadeContainer
 		}
 	}
 
+	@Override
 	public boolean readFromStream(ByteBuf out) throws IOException
 	{
 		int facadeSides = out.readByte();
@@ -79,7 +81,7 @@ public class FacadeContainer implements IFacadeContainer
 				else if ( !isBC )
 				{
 					ItemFacade ifa = (ItemFacade) AEApi.instance().items().itemFacade.item();
-					ItemStack facade = ifa.createFromInts( ids );
+					ItemStack facade = ifa.createFromIDs( ids );
 					if ( facade != null )
 					{
 						changed = changed || storage.getFacade( x ) == null;
@@ -97,6 +99,7 @@ public class FacadeContainer implements IFacadeContainer
 		return changed;
 	}
 
+	@Override
 	public void readFromNBT(NBTTagCompound c)
 	{
 		for (int x = 0; x < facades; x++)
@@ -126,6 +129,7 @@ public class FacadeContainer implements IFacadeContainer
 		}
 	}
 
+	@Override
 	public void writeToNBT(NBTTagCompound c)
 	{
 		for (int x = 0; x < facades; x++)
@@ -170,6 +174,7 @@ public class FacadeContainer implements IFacadeContainer
 		return storage.getFacade( s.ordinal() );
 	}
 
+	@Override
 	public boolean isEmpty()
 	{
 		for (int x = 0; x < facades; x++)
@@ -178,20 +183,21 @@ public class FacadeContainer implements IFacadeContainer
 		return true;
 	}
 
+	@Override
 	public void rotateLeft()
 	{
-		IFacadePart newfacades[] = new FacadePart[6];
+		IFacadePart newFacades[] = new FacadePart[6];
 
-		newfacades[ForgeDirection.UP.ordinal()] = storage.getFacade( ForgeDirection.UP.ordinal() );
-		newfacades[ForgeDirection.DOWN.ordinal()] = storage.getFacade( ForgeDirection.DOWN.ordinal() );
+		newFacades[ForgeDirection.UP.ordinal()] = storage.getFacade( ForgeDirection.UP.ordinal() );
+		newFacades[ForgeDirection.DOWN.ordinal()] = storage.getFacade( ForgeDirection.DOWN.ordinal() );
 
-		newfacades[ForgeDirection.EAST.ordinal()] = storage.getFacade( ForgeDirection.NORTH.ordinal() );
-		newfacades[ForgeDirection.SOUTH.ordinal()] = storage.getFacade( ForgeDirection.EAST.ordinal() );
+		newFacades[ForgeDirection.EAST.ordinal()] = storage.getFacade( ForgeDirection.NORTH.ordinal() );
+		newFacades[ForgeDirection.SOUTH.ordinal()] = storage.getFacade( ForgeDirection.EAST.ordinal() );
 
-		newfacades[ForgeDirection.WEST.ordinal()] = storage.getFacade( ForgeDirection.SOUTH.ordinal() );
-		newfacades[ForgeDirection.NORTH.ordinal()] = storage.getFacade( ForgeDirection.WEST.ordinal() );
+		newFacades[ForgeDirection.WEST.ordinal()] = storage.getFacade( ForgeDirection.SOUTH.ordinal() );
+		newFacades[ForgeDirection.NORTH.ordinal()] = storage.getFacade( ForgeDirection.WEST.ordinal() );
 
 		for (int x = 0; x < facades; x++)
-			storage.setFacade( x, newfacades[x] );
+			storage.setFacade( x, newFacades[x] );
 	}
 }

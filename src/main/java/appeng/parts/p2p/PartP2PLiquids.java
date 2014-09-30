@@ -7,7 +7,6 @@ import java.util.Stack;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -26,6 +25,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	private final static FluidTankInfo[] activeTank = new FluidTankInfo[] { new FluidTankInfo( null, 10000 ) };
 	private final static FluidTankInfo[] inactiveTank = new FluidTankInfo[] { new FluidTankInfo( null, 0 ) };
 
+	@Override
 	public TunnelType getTunnelType()
 	{
 		return TunnelType.FLUID;
@@ -63,22 +63,11 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	public float getPowerDrainPerTick()
 	{
 		return 2.0f;
-	};
+	}
 
 	private int tmpUsed;
 
 	@Override
-	public void writeToNBT(NBTTagCompound tag)
-	{
-		super.writeToNBT( tag );
-	}
-
-	@Override
-	public void readFromNBT(NBTTagCompound tag)
-	{
-		super.readFromNBT( tag );
-	}
-
 	@SideOnly(Side.CLIENT)
 	public IIcon getTypeTexture()
 	{
@@ -93,10 +82,10 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		{
 			for (PartP2PLiquids l : getOutputs())
 			{
-				IFluidHandler targ = l.getTarget();
-				if ( targ != null )
+				IFluidHandler handler = l.getTarget();
+				if ( handler != null )
 				{
-					if ( targ.canFill( l.side.getOpposite(), input ) )
+					if ( handler.canFill( l.side.getOpposite(), input ) )
 						outs.add( l );
 				}
 			}
@@ -119,7 +108,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 			if ( in != null )
 				in.onTunnelNetworkChange();
 		}
-	};
+	}
 
 	@Override
 	public void onTunnelNetworkChange()

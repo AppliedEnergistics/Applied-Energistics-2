@@ -62,7 +62,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 	GuiText myName;
 
-	int xoffset = 9;
+	int offsetX = 9;
 	int perRow = 9;
 	int reservedSpace = 0;
 	int lowerTextureOffset = 0;
@@ -83,7 +83,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	boolean viewCell;
 
 	ItemStack myCurrentViewCells[] = new ItemStack[5];
-	ContainerMEMonitorable mecontainer;
+	ContainerMEMonitorable monitorableContainer;
 
 	public GuiMEMonitorable(InventoryPlayer inventoryPlayer, ITerminalHost te) {
 		this( inventoryPlayer, te, new ContainerMEMonitorable( inventoryPlayer, te ) );
@@ -104,7 +104,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		standardSize = xSize;
 
 		configSrc = ((IConfigurableObject) inventorySlots).getConfigManager();
-		(mecontainer = (ContainerMEMonitorable) inventorySlots).gui = this;
+		(monitorableContainer = (ContainerMEMonitorable) inventorySlots).gui = this;
 
 		viewCell = te instanceof IViewCellStorage;
 
@@ -180,7 +180,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		{
 			for (int x = 0; x < perRow; x++)
 			{
-				meSlots.add( new InternalSlotME( repo, x + y * perRow, xoffset + x * 18, 18 + y * 18 ) );
+				meSlots.add( new InternalSlotME( repo, x + y * perRow, offsetX + x * 18, 18 + y * 18 ) );
 			}
 		}
 
@@ -197,7 +197,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		this.ySize = magicNumber + rows * 18 + reservedSpace;
 		// this.guiTop = top;
 		int unusedSpace = height - ySize;
-		guiTop = (int) Math.floor( (float) unusedSpace / (unusedSpace < 0 ? 3.8f : 2.0f) );
+		guiTop = (int) Math.floor( unusedSpace / (unusedSpace < 0 ? 3.8f : 2.0f) );
 
 		int offset = guiTop + 8;
 
@@ -226,7 +226,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 					.getSetting( Settings.TERMINAL_STYLE ) ) );
 		}
 
-		searchField = new MEGuiTextField( fontRendererObj, this.guiLeft + Math.max( 82, xoffset ), this.guiTop + 6, 89, fontRendererObj.FONT_HEIGHT );
+		searchField = new MEGuiTextField( fontRendererObj, this.guiLeft + Math.max( 82, offsetX ), this.guiTop + 6, 89, fontRendererObj.FONT_HEIGHT );
 		searchField.setEnableBackgroundDrawing( false );
 		searchField.setMaxStringLength( 25 );
 		searchField.setTextColor( 0xFFFFFF );
@@ -373,7 +373,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	@Override
 	public void updateScreen()
 	{
-		repo.setPower( mecontainer.hasPower );
+		repo.setPower( monitorableContainer.hasPower );
 		super.updateScreen();
 	}
 
@@ -399,10 +399,10 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 			for (int i = 0; i < 5; i++)
 			{
-				if ( myCurrentViewCells[i] != mecontainer.cellView[i].getStack() )
+				if ( myCurrentViewCells[i] != monitorableContainer.cellView[i].getStack() )
 				{
 					update = true;
-					myCurrentViewCells[i] = mecontainer.cellView[i].getStack();
+					myCurrentViewCells[i] = monitorableContainer.cellView[i].getStack();
 				}
 			}
 
@@ -459,6 +459,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		repo.updateView();
 	}
 
+	@Override
 	protected boolean isPowered()
 	{
 		return repo.hasPower();

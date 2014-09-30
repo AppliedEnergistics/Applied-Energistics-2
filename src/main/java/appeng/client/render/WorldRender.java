@@ -23,7 +23,7 @@ public class WorldRender implements ISimpleBlockRenderingHandler
 	public static final WorldRender instance = new WorldRender();
 	boolean hasError = false;
 
-	public HashMap<AEBaseBlock, BaseBlockRender> blockRenders = new HashMap();
+	public HashMap<AEBaseBlock, BaseBlockRender> blockRenders = new HashMap<AEBaseBlock, BaseBlockRender>();
 
 	void setRender(AEBaseBlock in, BaseBlockRender r)
 	{

@@ -247,11 +247,11 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 							if ( sbp != null )
 							{
 								IGridNode sn = sbp.getGridNode();
-								if ( sn != null && cn != null )
+								if ( sn != null )
 								{
 									try
 									{
-										new GridConnection( (IGridNode) cn, (IGridNode) sn, ForgeDirection.UNKNOWN );
+										new GridConnection( cn, sn, ForgeDirection.UNKNOWN );
 									}
 									catch (FailedConnection e)
 									{
@@ -296,7 +296,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 						{
 							try
 							{
-								new GridConnection( (IGridNode) cn, (IGridNode) sn, ForgeDirection.UNKNOWN );
+								new GridConnection( cn, sn, ForgeDirection.UNKNOWN );
 							}
 							catch (FailedConnection e)
 							{
@@ -321,7 +321,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return null;
 	}
 
-	private static final ThreadLocal<Boolean> isLoading = new ThreadLocal();
+	private static final ThreadLocal<Boolean> isLoading = new ThreadLocal<Boolean>();
 
 	public static boolean isLoading()
 	{
@@ -403,6 +403,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		partChanged();
 	}
 
+	@Override
 	public boolean canConnectRedstone(EnumSet<ForgeDirection> enumSet)
 	{
 		for (ForgeDirection dir : enumSet)
@@ -431,7 +432,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return null;
 	}
 
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxsFromPool(boolean ignoreCableConnections, boolean includeFacades, Entity e, boolean visual)
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(boolean ignoreCableConnections, boolean includeFacades, Entity e, boolean visual)
 	{
 		List<AxisAlignedBB> boxes = new LinkedList<AxisAlignedBB>();
 
@@ -463,6 +464,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return boxes;
 	}
 
+	@Override
 	public void onEntityCollision(Entity entity)
 	{
 		for (ForgeDirection s : ForgeDirection.values())
@@ -473,6 +475,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		}
 	}
 
+	@Override
 	public boolean isEmpty()
 	{
 		IFacadeContainer fc = getFacadeContainer();
@@ -492,6 +495,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return true;
 	}
 
+	@Override
 	public void onNeighborChanged()
 	{
 		hasRedstone = YesNo.UNDECIDED;
@@ -510,6 +514,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		hasRedstone = te.getWorldObj().isBlockIndirectlyGettingPowered( te.xCoord, te.yCoord, te.zCoord ) ? YesNo.YES : YesNo.NO;
 	}
 
+	@Override
 	public boolean isSolidOnSide(ForgeDirection side)
 	{
 		if ( side == null || side == ForgeDirection.UNKNOWN )
@@ -525,12 +530,14 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return part != null && part.isSolid();
 	}
 
+	@Override
 	public int isProvidingWeakPower(ForgeDirection side)
 	{
 		IPart part = getPart( side );
 		return part != null ? part.isProvidingWeakPower() : 0;
 	}
 
+	@Override
 	public int isProvidingStrongPower(ForgeDirection side)
 	{
 		IPart part = getPart( side );
@@ -574,8 +581,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				data.writeShort( Item.getIdFromItem( is.getItem() ) );
 				data.writeShort( is.getItemDamage() );
 
-				if ( p != null )
-					p.writeToStream( data );
+				p.writeToStream( data );
 			}
 		}
 
@@ -814,6 +820,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return tcb.isBlocked( side );
 	}
 
+	@Override
 	public int getLightValue()
 	{
 		int light = 0;
@@ -843,6 +850,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return false;
 	}
 
+	@Override
 	public boolean activate(EntityPlayer player, Vec3 pos)
 	{
 		SelectedPart p = selectPart( pos );
@@ -908,7 +916,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	{
 		if ( getCenter() == null )
 		{
-			List<ItemStack> facades = new LinkedList();
+			List<ItemStack> facades = new LinkedList<ItemStack>();
 
 			IFacadeContainer fc = getFacadeContainer();
 			for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
@@ -921,7 +929,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				}
 			}
 
-			if ( facades != null && !facades.isEmpty() )
+			if ( !facades.isEmpty() )
 			{
 				TileEntity te = tcb.getTile();
 				Platform.spawnDrops( te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord, facades );
@@ -937,6 +945,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		tcb.markForSave();
 	}
 
+	@Override
 	public void randomDisplayTick(World world, int x, int y, int z, Random r)
 	{
 		for (ForgeDirection side : ForgeDirection.values())
@@ -958,6 +967,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return hasRedstone == YesNo.YES;
 	}
 
+	@Override
 	public boolean isLadder(EntityLivingBase entity)
 	{
 		for (ForgeDirection side : ForgeDirection.values())

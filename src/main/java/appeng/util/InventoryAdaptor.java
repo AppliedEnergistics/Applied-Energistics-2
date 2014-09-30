@@ -55,7 +55,7 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 		}
 		else if ( te instanceof ArrayList )
 		{
-			return new AdaptorList( (ArrayList) te );
+			return new AdaptorList( (ArrayList<ItemStack>) te );
 		}
 		else if ( bs != null && bs.isStorageCrate( te )  )
 		{
@@ -63,7 +63,7 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 		}
 		else if ( te instanceof TileEntityChest )
 		{
-			return new AdaptorIInventory( (IInventory) Platform.GetChestInv( te ) );
+			return new AdaptorIInventory( Platform.GetChestInv( te ) );
 		}
 		else if ( isSpecialInventory( te ) )
 		{

@@ -14,12 +14,12 @@ public class InvLayerData
 
 	// cache of inventory state.
 	final private int sides[][];
-	final private List<ISidedInventory> invs;
+	final private List<ISidedInventory> inventories;
 	final private List<InvSot> slots;
 
 	public InvLayerData(int a[][], List<ISidedInventory> b, List<InvSot> c) {
 		sides = a;
-		invs = b;
+		inventories = b;
 		slots = c;
 	}
 
@@ -34,10 +34,10 @@ public class InvLayerData
 		return slots != null && slot >= 0 && slot < slots.size();
 	}
 
-	public ItemStack decrStackSize(int slot, int amount)
+	public ItemStack decreaseStackSize(int slot, int amount)
 	{
 		if ( isSlotValid( slot ) )
-			return slots.get( slot ).decrStackSize( amount );
+			return slots.get( slot ).decreaseStackSize( amount );
 
 		return null;
 	}
@@ -90,9 +90,9 @@ public class InvLayerData
 
 	public void markDirty()
 	{
-		if ( invs != null )
+		if ( inventories != null )
 		{
-			for (IInventory inv : invs)
+			for (IInventory inv : inventories)
 				inv.markDirty();
 		}
 	}

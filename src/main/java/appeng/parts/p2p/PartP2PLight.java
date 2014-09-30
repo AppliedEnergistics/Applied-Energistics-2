@@ -29,6 +29,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 		super( is );
 	}
 
+	@Override
 	public TunnelType getTunnelType()
 	{
 		return TunnelType.LIGHT;
@@ -142,6 +143,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 		data.writeInt( output ? lastValue : 0 );
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getTypeTexture()
 	{

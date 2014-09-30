@@ -34,16 +34,16 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 		if ( notLoaded() )
 			return;
 
-		byte leel = (byte) (8.0 * (internalCurrentPower / internalMaxPower));
+		byte boundMetadata = (byte) (8.0 * (internalCurrentPower / internalMaxPower));
 
-		if ( leel > 7 )
-			leel = 7;
-		if ( leel < 0 )
-			leel = 0;
+		if ( boundMetadata > 7 )
+			boundMetadata = 7;
+		if ( boundMetadata < 0 )
+			boundMetadata = 0;
 
-		if ( currentMeta != leel )
+		if ( currentMeta != boundMetadata )
 		{
-			currentMeta = leel;
+			currentMeta = boundMetadata;
 			worldObj.setBlockMetadataWithNotify( xCoord, yCoord, zCoord, currentMeta, 2 );
 		}
 	}
@@ -102,7 +102,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 		return 0;
 	}
 
-	final private double extractAEPower(double amt, Actionable mode)
+	private double extractAEPower(double amt, Actionable mode)
 	{
 		if ( mode == Actionable.SIMULATE )
 		{

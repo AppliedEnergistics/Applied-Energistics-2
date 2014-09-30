@@ -84,7 +84,7 @@ public class AEBaseItemBlock extends ItemBlock
 			{
 				up = ForgeDirection.UP;
 
-				byte rotation = (byte) (MathHelper.floor_double( (double) ((player.rotationYaw * 4F) / 360F) + 2.5D ) & 3);
+				byte rotation = (byte) (MathHelper.floor_double( (player.rotationYaw * 4F) / 360F + 2.5D ) & 3);
 
 				switch (rotation)
 				{

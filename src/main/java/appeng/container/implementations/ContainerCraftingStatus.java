@@ -23,7 +23,7 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 	@GuiSync(7)
 	public String myName = "";
 
-	public ArrayList<CraftingCPURecord> cpus = new ArrayList();
+	public ArrayList<CraftingCPURecord> cpus = new ArrayList<CraftingCPURecord>();
 
 	private void sendCPUs()
 	{

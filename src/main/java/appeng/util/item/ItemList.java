@@ -1,12 +1,6 @@
 package appeng.util.item;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
 import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.config.FuzzyMode;
@@ -15,10 +9,12 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
+import com.google.common.collect.Lists;
+
 public final class ItemList<StackType extends IAEStack> implements IItemList<StackType>
 {
 
-	private final TreeMap<StackType, StackType> records = new TreeMap();
+	private final TreeMap<StackType, StackType> records = new TreeMap<StackType, StackType>();
 	private final Class<? extends IAEStack> clz;
 
 	// private int currentPriority = Integer.MIN_VALUE;
@@ -26,7 +22,8 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	int iteration = Integer.MIN_VALUE;
 	public Throwable stacktrace;
 
-	public ItemList(Class<? extends IAEStack> cla) {
+	public ItemList(Class<? extends IAEStack> cla)
+	{
 		clz = cla;
 	}
 
@@ -119,7 +116,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 		if ( st != null )
 		{
 			// st.setPriority( currentPriority );
-			((IAEItemStack) st).setCountRequestable( ((IAEItemStack) st).getCountRequestable() + ((IAEItemStack) option).getCountRequestable() );
+			((IAEItemStack) st).setCountRequestable( st.getCountRequestable() + option.getCountRequestable() );
 			return;
 		}
 
@@ -135,9 +132,10 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	@Override
 	synchronized public StackType getFirstItem()
 	{
-		Iterator<StackType> i = this.iterator();
-		while (i.hasNext())
-			return i.next();
+		for (StackType stackType : this)
+		{
+			return stackType;
+		}
 		return null;
 	}
 
@@ -154,9 +152,9 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	 */
 
 	@Override
-	synchronized public Iterator iterator()
+	synchronized public Iterator<StackType> iterator()
 	{
-		return new MeaningfulIterator( records.values().iterator() );
+		return new MeaningfulIterator<StackType>( records.values().iterator() );
 	}
 
 	@Override
@@ -197,11 +195,19 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	public Collection<StackType> findFuzzy(StackType filter, FuzzyMode fuzzy)
 	{
 		if ( checkStackType( filter ) )
-			return new ArrayList();
+			return new ArrayList<StackType>();
 
 		if ( filter instanceof IAEFluidStack )
-			return filter.equals( this ) ? (List<StackType>) Arrays.asList( new IAEFluidStack[] { (IAEFluidStack) filter } ) : (List<StackType>) Arrays
-					.asList( new IAEFluidStack[] {} );
+		{
+			List<StackType> result = Lists.newArrayList();
+
+			if ( filter.equals( this ) )
+			{
+				result.add( filter );
+			}
+
+			return result;
+		}
 
 		AEItemStack ais = (AEItemStack) filter;
 		if ( ais.isOre() )
@@ -214,7 +220,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 			}
 			else
 			{
-				Collection<StackType> output = new LinkedList();
+				Collection<StackType> output = new LinkedList<StackType>();
 
 				for (IAEItemStack is : or.getAEEquivalents())
 					output.addAll( findFuzzyDamage( (AEItemStack) is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE ) );

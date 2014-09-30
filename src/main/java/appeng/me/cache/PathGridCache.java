@@ -43,7 +43,7 @@ public class PathGridCache implements IPathingGrid
 	boolean updateNetwork = true;
 	boolean booting = false;
 
-	final LinkedList<PathSegment> active = new LinkedList();
+	final LinkedList<PathSegment> active = new LinkedList<PathSegment>();
 
 	ControllerState controllerState = ControllerState.NO_CONTROLLER;
 
@@ -53,13 +53,13 @@ public class PathGridCache implements IPathingGrid
 	public int channelsInUse = 0;
 	int lastChannels = 0;
 
-	final Set<TileController> controllers = new HashSet();
-	final Set<IGridNode> requireChannels = new HashSet();
-	final Set<IGridNode> blockDense = new HashSet();
+	final Set<TileController> controllers = new HashSet<TileController>();
+	final Set<IGridNode> requireChannels = new HashSet<IGridNode>();
+	final Set<IGridNode> blockDense = new HashSet<IGridNode>();
 
 	final IGrid myGrid;
-	private HashSet<IPathItem> semiOpen = new HashSet();
-	private HashSet<IPathItem> closedList = new HashSet();
+	private HashSet<IPathItem> semiOpen = new HashSet<IPathItem>();
+	private HashSet<IPathItem> closedList = new HashSet<IPathItem>();
 
 	public int channelsByBlocks = 0;
 	public double channelPowerUsage = 0.0;
@@ -94,7 +94,7 @@ public class PathGridCache implements IPathingGrid
 				int nodes = myGrid.getNodes().size();
 				ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
 				channelsByBlocks = nodes * used;
-				channelPowerUsage = (double) channelsByBlocks / 128.0;
+				channelPowerUsage = channelsByBlocks / 128.0;
 
 				myGrid.getPivot().beginVisit( new AdHocChannelUpdater( used ) );
 			}
@@ -110,7 +110,7 @@ public class PathGridCache implements IPathingGrid
 
 				ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
 				channelsByBlocks = nodes * used;
-				channelPowerUsage = (double) channelsByBlocks / 128.0;
+				channelPowerUsage = channelsByBlocks / 128.0;
 
 				myGrid.getPivot().beginVisit( new AdHocChannelUpdater( used ) );
 			}
@@ -177,7 +177,7 @@ public class PathGridCache implements IPathingGrid
 				achievementPost();
 
 				booting = false;
-				channelPowerUsage = (double) channelsByBlocks / 128.0;
+				channelPowerUsage = channelsByBlocks / 128.0;
 				myGrid.postEvent( new MENetworkBootingStatusChange() );
 			}
 		}

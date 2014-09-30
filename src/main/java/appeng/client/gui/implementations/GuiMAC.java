@@ -13,7 +13,7 @@ import appeng.tile.crafting.TileMolecularAssembler;
 public class GuiMAC extends GuiUpgradeable
 {
 
-	ContainerMAC cmac;
+	ContainerMAC container;
 	GuiProgressBar pb;
 
 	@Override
@@ -21,7 +21,7 @@ public class GuiMAC extends GuiUpgradeable
 	{
 		super.initGui();
 
-		pb = new GuiProgressBar( "guis/mac.png", 139, 36, 148, 201, 6, 18, Direction.VERTICAL );
+		pb = new GuiProgressBar( container, "guis/mac.png", 139, 36, 148, 201, 6, 18, Direction.VERTICAL );
 		this.buttonList.add( pb );
 	}
 
@@ -36,10 +36,7 @@ public class GuiMAC extends GuiUpgradeable
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		pb.max = 100;
-		pb.current = cmac.craftProgress;
-		pb.FullMsg = pb.current + "%";
-
+		pb.setFullMsg( container.getCurrentProgress() + "%" );
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
 	}
 
@@ -50,17 +47,20 @@ public class GuiMAC extends GuiUpgradeable
 		buttonList.add( redstoneMode );
 	}
 
+	@Override
 	protected String getBackground()
 	{
 		return "guis/mac.png";
 	}
 
-	public GuiMAC(InventoryPlayer inventoryPlayer, TileMolecularAssembler te) {
+	public GuiMAC(InventoryPlayer inventoryPlayer, TileMolecularAssembler te)
+	{
 		super( new ContainerMAC( inventoryPlayer, te ) );
 		this.ySize = 197;
-		this.cmac = (ContainerMAC) this.inventorySlots;
+		this.container = (ContainerMAC) this.inventorySlots;
 	}
 
+	@Override
 	protected GuiText getName()
 	{
 		return GuiText.MolecularAssembler;

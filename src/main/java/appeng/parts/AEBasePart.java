@@ -299,9 +299,9 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	 */
 	public void uploadSettings(SettingsFrom from, NBTTagCompound compound)
 	{
-		if ( compound != null && this instanceof IConfigurableObject )
+		if ( compound != null )
 		{
-			IConfigManager cm = ((IConfigurableObject) this).getConfigManager();
+			IConfigManager cm = this.getConfigManager();
 			if ( cm != null )
 				cm.readFromNBT( compound );
 		}
@@ -312,17 +312,14 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 			pHost.setPriority( compound.getInteger( "priority" ) );
 		}
 
-		if ( this instanceof ISegmentedInventory )
+		IInventory inv = this.getInventoryByName( "config" );
+		if ( inv != null && inv instanceof AppEngInternalAEInventory )
 		{
-			IInventory inv = ((ISegmentedInventory) this).getInventoryByName( "config" );
-			if ( inv != null && inv instanceof AppEngInternalAEInventory )
-			{
-				AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
-				AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSizeInventory() );
-				tmp.readFromNBT( compound, "config" );
-				for (int x = 0; x < tmp.getSizeInventory(); x++)
-					target.setInventorySlotContents( x, tmp.getStackInSlot( x ) );
-			}
+			AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
+			AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSizeInventory() );
+			tmp.readFromNBT( compound, "config" );
+			for (int x = 0; x < tmp.getSizeInventory(); x++)
+				target.setInventorySlotContents( x, tmp.getStackInSlot( x ) );
 		}
 	}
 
@@ -336,12 +333,9 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	{
 		NBTTagCompound output = new NBTTagCompound();
 
-		if ( this instanceof IConfigurableObject )
-		{
-			IConfigManager cm = this.getConfigManager();
-			if ( cm != null )
-				cm.writeToNBT( output );
-		}
+		IConfigManager cm = this.getConfigManager();
+		if ( cm != null )
+			cm.writeToNBT( output );
 
 		if ( this instanceof IPriorityHost )
 		{
@@ -349,13 +343,10 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 			output.setInteger( "priority", pHost.getPriority() );
 		}
 
-		if ( this instanceof ISegmentedInventory )
+		IInventory inv = this.getInventoryByName( "config" );
+		if ( inv != null && inv instanceof AppEngInternalAEInventory )
 		{
-			IInventory inv = ((ISegmentedInventory) this).getInventoryByName( "config" );
-			if ( inv != null && inv instanceof AppEngInternalAEInventory )
-			{
-				((AppEngInternalAEInventory) inv).writeToNBT( output, "config" );
-			}
+			((AppEngInternalAEInventory) inv).writeToNBT( output, "config" );
 		}
 
 		return output.hasNoTags() ? null : output;
@@ -372,7 +363,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 
 		if ( memCardIS != null && useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard )
 		{
-			IMemoryCard memc = (IMemoryCard) memCardIS.getItem();
+			IMemoryCard memoryCard = (IMemoryCard) memCardIS.getItem();
 
 			ItemStack is = getItemStack( PartItemStack.Network );
 
@@ -387,21 +378,21 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 				NBTTagCompound data = downloadSettings( SettingsFrom.MEMORY_CARD );
 				if ( data != null )
 				{
-					memc.setMemoryCardContents( memCardIS, name, data );
-					memc.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
+					memoryCard.setMemoryCardContents( memCardIS, name, data );
+					memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
 				}
 			}
 			else
 			{
-				String storedName = memc.getSettingsName( memCardIS );
-				NBTTagCompound data = memc.getData( memCardIS );
+				String storedName = memoryCard.getSettingsName( memCardIS );
+				NBTTagCompound data = memoryCard.getData( memCardIS );
 				if ( name.equals( storedName ) )
 				{
 					uploadSettings( SettingsFrom.MEMORY_CARD, data );
-					memc.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
+					memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
 				}
 				else
-					memc.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
+					memoryCard.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
 			}
 			return true;
 		}
@@ -453,7 +444,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	{
 		if ( is.stackSize > 0 )
 		{
-			List<ItemStack> items = new ArrayList();
+			List<ItemStack> items = new ArrayList<ItemStack>();
 			items.add( is.copy() );
 			host.removePart( side, false );
 			Platform.spawnDrops( tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord, items );

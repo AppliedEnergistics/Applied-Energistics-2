@@ -29,6 +29,7 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 {
 
+	@Override
 	public void drawBackground(int recipe)
 	{
 		GL11.glColor4f( 1, 1, 1, 1 );
@@ -45,12 +46,12 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 			CachedRecipe cr = this.arecipes.get( recipe );
 			if ( cr instanceof CachedGrindStoneRecipe )
 			{
-				CachedGrindStoneRecipe cgsr = (CachedGrindStoneRecipe) cr;
-				if ( cgsr.hasOptional )
+				CachedGrindStoneRecipe cachedRecipe = (CachedGrindStoneRecipe) cr;
+				if ( cachedRecipe.hasOptional )
 				{
 					FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
-					int width = fr.getStringWidth( cgsr.Chance );
-					fr.drawString( cgsr.Chance, (168 - width) / 2, 5, 0 );
+					int width = fr.getStringWidth( cachedRecipe.Chance );
+					fr.drawString( cachedRecipe.Chance, (168 - width) / 2, 5, 0 );
 				}
 				else
 				{
@@ -62,11 +63,13 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
 	public void loadTransferRects()
 	{
-		this.transferRects.add( new TemplateRecipeHandler.RecipeTransferRect( new Rectangle( 84, 23, 24, 18 ), "grindstone", new Object[0] ) );
+		this.transferRects.add( new TemplateRecipeHandler.RecipeTransferRect( new Rectangle( 84, 23, 24, 18 ), "grindstone" ) );
 	}
 
+	@Override
 	public Class<? extends GuiContainer> getGuiClass()
 	{
 		return GuiGrinder.class;
@@ -83,14 +86,11 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 	{
 		if ( (outputId.equals( "grindstone" )) && (getClass() == NEIGrinderRecipeHandler.class) )
 		{
-			for (IGrinderEntry irecipe : AEApi.instance().registries().grinder().getRecipes())
+			for (IGrinderEntry recipe : AEApi.instance().registries().grinder().getRecipes())
 			{
-				CachedGrindStoneRecipe recipe = new CachedGrindStoneRecipe( irecipe );
-				if ( recipe != null )
-				{
-					recipe.computeVisuals();
-					this.arecipes.add( recipe );
-				}
+				CachedGrindStoneRecipe cachedRecipe = new CachedGrindStoneRecipe( recipe );
+				cachedRecipe.computeVisuals();
+				this.arecipes.add( cachedRecipe );
 			}
 		}
 		else
@@ -99,37 +99,40 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for (IGrinderEntry irecipe : AEApi.instance().registries().grinder().getRecipes())
+		for (IGrinderEntry recipe : AEApi.instance().registries().grinder().getRecipes())
 		{
-			if ( NEIServerUtils.areStacksSameTypeCrafting( irecipe.getOutput(), result ) )
+			if ( NEIServerUtils.areStacksSameTypeCrafting( recipe.getOutput(), result ) )
 			{
-				CachedGrindStoneRecipe recipe = new CachedGrindStoneRecipe( irecipe );
-				recipe.computeVisuals();
-				this.arecipes.add( recipe );
+				CachedGrindStoneRecipe cachedRecipe = new CachedGrindStoneRecipe( recipe );
+				cachedRecipe.computeVisuals();
+				this.arecipes.add( cachedRecipe );
 			}
 		}
 	}
 
+	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for (IGrinderEntry irecipe : AEApi.instance().registries().grinder().getRecipes())
+		for (IGrinderEntry recipe : AEApi.instance().registries().grinder().getRecipes())
 		{
-			CachedGrindStoneRecipe recipe = new CachedGrindStoneRecipe( irecipe );
+			CachedGrindStoneRecipe cachedRecipe = new CachedGrindStoneRecipe( recipe );
 
-			if ( (recipe != null) && (recipe.contains( recipe.ingredients, ingredient.getItem() )) )
+			if ( (cachedRecipe.contains( cachedRecipe.ingredients, ingredient.getItem() )) )
 			{
-				recipe.computeVisuals();
-				if ( recipe.contains( recipe.ingredients, ingredient ) )
+				cachedRecipe.computeVisuals();
+				if ( cachedRecipe.contains( cachedRecipe.ingredients, ingredient ) )
 				{
-					recipe.setIngredientPermutation( recipe.ingredients, ingredient );
-					this.arecipes.add( recipe );
+					cachedRecipe.setIngredientPermutation( cachedRecipe.ingredients, ingredient );
+					this.arecipes.add( cachedRecipe );
 				}
 			}
 		}
 	}
 
+	@Override
 	public String getGuiTexture()
 	{
 		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/guis/grinder.png" );
@@ -137,6 +140,7 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 		return f;
 	}
 
+	@Override
 	public String getOverlayIdentifier()
 	{
 		return "grindstone";
@@ -169,19 +173,19 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 		boolean hasOptional = false;
 		public String Chance;
 
-		public CachedGrindStoneRecipe(IGrinderEntry irecipe) {
-			result = new PositionedStack( irecipe.getOutput(), -30 + 107, 47 );
+		public CachedGrindStoneRecipe(IGrinderEntry recipe) {
+			result = new PositionedStack( recipe.getOutput(), -30 + 107, 47 );
 			ingredients = new ArrayList<PositionedStack>();
 
-			if ( irecipe.getOptionalOutput() != null )
+			if ( recipe.getOptionalOutput() != null )
 			{
 				hasOptional = true;
-				Chance = ((int) (irecipe.getOptionalChance() * 100)) + GuiText.OfSecondOutput.getLocal();
-				ingredients.add( new PositionedStack( irecipe.getOptionalOutput(), -30 + 107 + 18, 47 ) );
+				Chance = ((int) (recipe.getOptionalChance() * 100)) + GuiText.OfSecondOutput.getLocal();
+				ingredients.add( new PositionedStack( recipe.getOptionalOutput(), -30 + 107 + 18, 47 ) );
 			}
 
-			if ( irecipe.getInput() != null )
-				ingredients.add( new PositionedStack( irecipe.getInput(), 45, 24 ) );
+			if ( recipe.getInput() != null )
+				ingredients.add( new PositionedStack( recipe.getInput(), 45, 24 ) );
 		}
 
 		@Override

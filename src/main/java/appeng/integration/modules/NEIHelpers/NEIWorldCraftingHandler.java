@@ -30,8 +30,8 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 {
 
 	HashMap<AEItemDefinition, String> details = new HashMap<AEItemDefinition, String>();
-	List<AEItemDefinition> offsets = new LinkedList();
-	List<PositionedStack> outputs = new LinkedList();
+	List<AEItemDefinition> offsets = new LinkedList<AEItemDefinition>();
+	List<PositionedStack> outputs = new LinkedList<PositionedStack>();
 
 	ItemStack target;
 
@@ -87,6 +87,7 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 		return offsets.size();
 	}
 
+	@Override
 	public void drawBackground(int recipe)
 	{
 		GL11.glColor4f( 1, 1, 1, 1 );// nothing.
@@ -106,13 +107,13 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 	}
 
 	@Override
-	public List<PositionedStack> getIngredientStacks(int recipe)
+	public List<PositionedStack> getIngredientStacks(int recipeIndex)
 	{
 		return new ArrayList<PositionedStack>();
 	}
 
 	@Override
-	public List<PositionedStack> getOtherStacks(int recipetype)
+	public List<PositionedStack> getOtherStacks(int recipeIndex)
 	{
 		return new ArrayList<PositionedStack>();
 	}
@@ -154,15 +155,15 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 	}
 
 	@Override
-	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe)
+	public List<String> handleTooltip(GuiRecipe gui, List<String> currentToolTip, int recipe)
 	{
-		return currenttip;
+		return currentToolTip;
 	}
 
 	@Override
-	public List<String> handleItemTooltip(GuiRecipe gui, ItemStack stack, List<String> currenttip, int recipe)
+	public List<String> handleItemTooltip(GuiRecipe gui, ItemStack stack, List<String> currentToolTip, int recipe)
 	{
-		return currenttip;
+		return currentToolTip;
 	}
 
 	@Override

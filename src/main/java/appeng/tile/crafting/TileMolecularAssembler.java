@@ -77,6 +77,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 	private boolean reboot = true;
 	public ISimplifiedBundle lightCache;
 
+	@Override
 	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table, ForgeDirection where)
 	{
 		if ( myPattern == null )
@@ -197,9 +198,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 			ItemStack pattern = myPlan.getPattern();
 			if ( pattern != null )
 			{
-				NBTTagCompound pdata = new NBTTagCompound();
-				pattern.writeToNBT( pdata );
-				data.setTag( "myPlan", pdata );
+				NBTTagCompound compound = new NBTTagCompound();
+				pattern.writeToNBT( compound );
+				data.setTag( "myPlan", compound );
 				data.setInteger( "pushDirection", pushDirection.ordinal() );
 			}
 		}

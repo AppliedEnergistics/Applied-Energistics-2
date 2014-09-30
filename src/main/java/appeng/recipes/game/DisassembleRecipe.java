@@ -18,7 +18,7 @@ public class DisassembleRecipe implements IRecipe
 
 	private Materials mats = AEApi.instance().materials();
 	private Items items = AEApi.instance().items();
-	private Blocks blks = AEApi.instance().blocks();
+	private Blocks blocks = AEApi.instance().blocks();
 
 	private ItemStack getOutput(InventoryCrafting inv, boolean createFacade)
 	{
@@ -59,16 +59,16 @@ public class DisassembleRecipe implements IRecipe
 				if ( items.itemEncodedPattern.sameAsStack( is ) )
 					hasCell = mats.materialBlankPattern.stack( 1 );
 
-				if ( blks.blockCraftingStorage1k.sameAsStack( is ) )
+				if ( blocks.blockCraftingStorage1k.sameAsStack( is ) )
 					hasCell = mats.materialCell1kPart.stack( 1 );
 
-				if ( blks.blockCraftingStorage4k.sameAsStack( is ) )
+				if ( blocks.blockCraftingStorage4k.sameAsStack( is ) )
 					hasCell = mats.materialCell4kPart.stack( 1 );
 
-				if ( blks.blockCraftingStorage16k.sameAsStack( is ) )
+				if ( blocks.blockCraftingStorage16k.sameAsStack( is ) )
 					hasCell = mats.materialCell16kPart.stack( 1 );
 
-				if ( blks.blockCraftingStorage64k.sameAsStack( is ) )
+				if ( blocks.blockCraftingStorage64k.sameAsStack( is ) )
 					hasCell = mats.materialCell64kPart.stack( 1 );
 
 				if ( hasCell == null )

@@ -111,9 +111,9 @@ public class LightningFX extends EntityFX
 			{
 				clear();
 
-				double x = (this.prevPosX + (this.posX - this.prevPosX) * (double) l - interpPosX) - offX;
-				double y = (this.prevPosY + (this.posY - this.prevPosY) * (double) l - interpPosY) - offY;
-				double z = (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) l - interpPosZ) - offZ;
+				double x = (this.prevPosX + (this.posX - this.prevPosX) * l - interpPosX) - offX;
+				double y = (this.prevPosY + (this.posY - this.prevPosY) * l - interpPosY) - offY;
+				double z = (this.prevPosZ + (this.posZ - this.prevPosZ) * l - interpPosZ) - offZ;
 
 				for (int s = 0; s < steps; s++)
 				{
@@ -144,7 +144,7 @@ public class LightningFX extends EntityFX
 						oz = (xD * 0) - (1 * yD);
 					}
 
-					double ss = Math.sqrt( ox * ox + oy * oy + oz * oz ) / ((((double) steps - (double) s) / (double) steps) * scale);
+					double ss = Math.sqrt( ox * ox + oy * oy + oz * oz ) / ((((double) steps - (double) s) / steps) * scale);
 					ox /= ss;
 					oy /= ss;
 					oz /= ss;

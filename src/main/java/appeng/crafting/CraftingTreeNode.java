@@ -30,7 +30,7 @@ public class CraftingTreeNode
 	private IAEItemStack what;
 
 	// what are the crafting patterns for this?
-	private ArrayList<CraftingTreeProcess> nodes = new ArrayList();
+	private ArrayList<CraftingTreeProcess> nodes = new ArrayList<CraftingTreeProcess>();
 
 	boolean canEmit = false;
 	boolean cannotUse = false;
@@ -93,9 +93,9 @@ public class CraftingTreeNode
 
 	public IAEItemStack request(MECraftingInventory inv, long l, BaseActionSource src) throws CraftBranchFailure, InterruptedException
 	{
-		job.handlepausing();
+		job.handlePausing();
 
-		List<IAEItemStack> thingsUsed = new LinkedList();
+		List<IAEItemStack> thingsUsed = new LinkedList<IAEItemStack>();
 
 		what.setStackSize( l );
 		if ( slot >= 0 && parent != null && parent.details.isCraftable() )

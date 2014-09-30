@@ -25,7 +25,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 {
 
 	final ItemStack patternItem;
-	private IAEItemStack aepattern;
+	private IAEItemStack pattern;
 
 	final InventoryCrafting crafting = new InventoryCrafting( new ContainerNull(), 3, 3 );
 	final InventoryCrafting testFrame = new InventoryCrafting( new ContainerNull(), 3, 3 );
@@ -48,11 +48,13 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		final int ref;
 		final int hash;
 
-		public TestLookup(int slot, ItemStack i) {
+		public TestLookup(int slot, ItemStack i)
+		{
 			this( slot, i.getItem(), i.getItemDamage() );
 		}
 
-		public TestLookup(int slot, Item item, int dmg) {
+		public TestLookup(int slot, Item item, int dmg)
+		{
 			this.slot = slot;
 			ref = (dmg << Platform.DEF_OFFSET) | (Item.getIdFromItem( item ) & 0xffff);
 			int offset = 3 * slot;
@@ -72,15 +74,15 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			return b.slot == slot && b.ref == ref;
 		}
 
-	};
+	}
 
 	enum TestStatus
 	{
 		ACCEPT, DECLINE, TEST
-	};
+	}
 
-	HashSet<TestLookup> failCache = new HashSet();
-	HashSet<TestLookup> passCache = new HashSet();
+	HashSet<TestLookup> failCache = new HashSet<TestLookup>();
+	HashSet<TestLookup> passCache = new HashSet<TestLookup>();
 
 	private void markItemAs(int slotIndex, ItemStack i, TestStatus b)
 	{
@@ -110,7 +112,8 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		return TestStatus.TEST;
 	}
 
-	public PatternHelper(ItemStack is, World w) {
+	public PatternHelper(ItemStack is, World w)
+	{
 		NBTTagCompound encodedValue = is.getTagCompound();
 
 		if ( encodedValue == null )
@@ -120,10 +123,10 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		NBTTagList outTag = encodedValue.getTagList( "out", 10 );
 		isCrafting = encodedValue.getBoolean( "crafting" );
 		patternItem = is;
-		aepattern = AEItemStack.create( is );
+		pattern = AEItemStack.create( is );
 
-		List<IAEItemStack> in = new ArrayList();
-		List<IAEItemStack> out = new ArrayList();
+		List<IAEItemStack> in = new ArrayList<IAEItemStack>();
+		List<IAEItemStack> out = new ArrayList<IAEItemStack>();
 
 		for (int x = 0; x < inTag.tagCount(); x++)
 		{
@@ -191,10 +194,10 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			else
 				g.add( io );
 		}
-		
+
 		if ( tmpOutputs.isEmpty() || tmpInputs.isEmpty() )
 			throw new RuntimeException( "No pattern here!" );
-		
+
 		int offset = 0;
 		condensedInputs = new IAEItemStack[tmpInputs.size()];
 		for (IAEItemStack io : tmpInputs.values())
@@ -206,6 +209,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			condensedOutputs[offset++] = io;
 	}
 
+	@Override
 	synchronized public boolean isValidItemForSlot(int slotIndex, ItemStack i, World w)
 	{
 		if ( isCrafting == false )
@@ -331,13 +335,20 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	@Override
 	public int hashCode()
 	{
-		return aepattern.hashCode();
+		return pattern.hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
-		return aepattern.equals( ((PatternHelper) obj).aepattern );
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		PatternHelper other = (PatternHelper) obj;
+		if ( pattern != null && other.pattern != null )
+			return pattern.equals( other.pattern );
+		return false;
 	}
 
 	@Override
@@ -347,7 +358,8 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	}
 
 	@Override
-	public int getPriority() {
+	public int getPriority()
+	{
 		return priority;
 	}
 }

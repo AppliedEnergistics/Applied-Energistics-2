@@ -8,7 +8,6 @@ import java.io.IOException;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.util.ResourceLocation;
@@ -61,7 +60,7 @@ public class PacketTransitionEffect extends AppEngPacket
 				fx.motionY = -0.1 * d.offsetY;
 				fx.motionZ = -0.1 * d.offsetZ;
 
-				Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 			}
 
 		if ( mode )

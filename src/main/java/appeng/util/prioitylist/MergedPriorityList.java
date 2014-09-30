@@ -8,8 +8,8 @@ import appeng.api.storage.data.IAEStack;
 public class MergedPriorityList<T extends IAEStack<T>> implements IPartitionList<T>
 {
 
-	final List<IPartitionList<T>> positive = new ArrayList();
-	final List<IPartitionList<T>> negative = new ArrayList();
+	final List<IPartitionList<T>> positive = new ArrayList<IPartitionList<T>>();
+	final List<IPartitionList<T>> negative = new ArrayList<IPartitionList<T>>();
 
 	public void addNewList(IPartitionList<T> list, boolean isWhitelist)
 	{
@@ -19,6 +19,7 @@ public class MergedPriorityList<T extends IAEStack<T>> implements IPartitionList
 			negative.add( list );
 	}
 
+	@Override
 	public boolean isListed(T input)
 	{
 		for (IPartitionList<T> l : negative)

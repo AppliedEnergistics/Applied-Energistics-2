@@ -22,7 +22,7 @@ public enum Stats
 	{
 		if ( stat == null )
 		{
-			stat = new StatBasic( "stat.ae2." + name(), new ChatComponentTranslation( "stat.ae2." + name(), new Object[0] ) );
+			stat = new StatBasic( "stat.ae2." + name(), new ChatComponentTranslation( "stat.ae2." + name() ) );
 			stat.registerStat();
 		}
 

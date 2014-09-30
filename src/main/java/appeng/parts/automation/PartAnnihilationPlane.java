@@ -170,7 +170,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	}
 
 	boolean breaking = false;
-	LinkedList<IAEItemStack> Buffer = new LinkedList();
+	LinkedList<IAEItemStack> Buffer = new LinkedList<IAEItemStack>();
 	BaseActionSource mySrc = new MachineSource( this );
 
 	@Override
@@ -216,6 +216,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 				drops.add( is.getItemStack() );
 	}
 
+	@Override
 	@MENetworkEventSubscribe
 	public void chanRender(MENetworkChannelsChanged c)
 	{
@@ -223,6 +224,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		getHost().markForUpdate();
 	}
 
+	@Override
 	@MENetworkEventSubscribe
 	public void powerRender(MENetworkPowerStatusChange c)
 	{
@@ -245,8 +247,8 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 				Block blk = w.getBlock( x, y, z );
 
-				IStorageGrid storage = (IStorageGrid) proxy.getStorage();
-				IEnergyGrid energy = (IEnergyGrid) proxy.getEnergy();
+				IStorageGrid storage = proxy.getStorage();
+				IEnergyGrid energy = proxy.getEnergy();
 
 				Material mat = blk.getMaterial();
 				boolean ignore = mat == Material.air || mat == Material.lava || mat == Material.water || mat.isLiquid() || blk == Blocks.bedrock
@@ -254,7 +256,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 				if ( !ignore )
 				{
-					if ( !w.isAirBlock( x, y, z ) && w.blockExists( x, y, z ) && blk != null && w.canMineBlock( Platform.getPlayer( w ), x, y, z ) )
+					if ( !w.isAirBlock( x, y, z ) && w.blockExists( x, y, z ) && w.canMineBlock( Platform.getPlayer( w ), x, y, z ) )
 					{
 						float hardness = blk.getBlockHardness( w, x, y, z );
 						if ( hardness >= 0.0 )
@@ -428,8 +430,8 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	{
 		try
 		{
-			IStorageGrid storage = (IStorageGrid) proxy.getStorage();
-			IEnergyGrid energy = (IEnergyGrid) proxy.getEnergy();
+			IStorageGrid storage = proxy.getStorage();
+			IEnergyGrid energy = proxy.getEnergy();
 
 			while (!Buffer.isEmpty())
 			{

@@ -5,7 +5,7 @@ import appeng.server.subcommands.Supporters;
 
 public enum Commands
 {
-	chunklogger(4, new ChunkLogger()), supporters(0, new Supporters());
+	Chunklogger(4, new ChunkLogger()), supporters(0, new Supporters());
 
 	public final int level;
 	public final ISubCommand command;

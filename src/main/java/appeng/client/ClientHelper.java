@@ -11,7 +11,6 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -115,9 +114,9 @@ public class ClientHelper extends ServerHelper
 		{
 			AEColor col = player.myColor;
 
-			float r = (float) (0xff & (col.mediumVariant >> 16));
-			float g = (float) (0xff & (col.mediumVariant >> 8));
-			float b = (float) (0xff & (col.mediumVariant));
+			float r = 0xff & (col.mediumVariant >> 16);
+			float g = 0xff & (col.mediumVariant >> 8);
+			float b = 0xff & (col.mediumVariant);
 			GL11.glColor3f( r / 255.0f, g / 255.0f, b / 255.0f );
 		}
 	}
@@ -192,7 +191,7 @@ public class ClientHelper extends ServerHelper
 
 				RenderItem.renderInFrame = false;
 				FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
-				if ( !ForgeHooksClient.renderInventoryItem( blockRenderer, Minecraft.getMinecraft().renderEngine, itemstack, true, 0, (float) 0, (float) 0 ) )
+				if ( !ForgeHooksClient.renderInventoryItem( blockRenderer, Minecraft.getMinecraft().renderEngine, itemstack, true, 0, 0, 0 ) )
 				{
 					itemRenderer.renderItemIntoGUI( fr, Minecraft.getMinecraft().renderEngine, itemstack, 0, 0, false );
 				}
@@ -209,7 +208,7 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public void postinit()
+	public void postInit()
 	{
 		RenderingRegistry.registerBlockHandler( WorldRender.instance );
 		RenderManager.instance.entityRenderMap.put( EntityTinyTNTPrimed.class, new RenderTinyTNTPrimed() );
@@ -281,7 +280,7 @@ public class ClientHelper extends ServerHelper
 	{
 		if ( Platform.isClient() )
 		{
-			List<EntityPlayer> o = new ArrayList();
+			List<EntityPlayer> o = new ArrayList<EntityPlayer>();
 			o.add( Minecraft.getMinecraft().thePlayer );
 			return o;
 		}
@@ -314,6 +313,7 @@ public class ClientHelper extends ServerHelper
 			case LightningArc:
 				spawnLightningArc( worldObj, posX, posY, posZ, (Vec3) o );
 				return;
+			default:
 			}
 		}
 	}
@@ -323,32 +323,32 @@ public class ClientHelper extends ServerHelper
 		PacketAssemblerAnimation paa = (PacketAssemblerAnimation) o;
 
 		AssemblerFX fx = new AssemblerFX( Minecraft.getMinecraft().theWorld, posX, posY, posZ, 0.0D, 0.0D, 0.0D, paa.rate, paa.is );
-		Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
 
 	private void spawnVibrant(World w, double x, double y, double z)
 	{
 		if ( CommonHelper.proxy.shouldAddParticles( Platform.getRandom() ) )
 		{
-			double d0 = (double) (Platform.getRandomFloat() - 0.5F) * 0.26D;
-			double d1 = (double) (Platform.getRandomFloat() - 0.5F) * 0.26D;
-			double d2 = (double) (Platform.getRandomFloat() - 0.5F) * 0.26D;
+			double d0 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
+			double d1 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
+			double d2 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
 
 			VibrantFX fx = new VibrantFX( w, x + d0, y + d1, z + d2, 0.0D, 0.0D, 0.0D );
-			Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+			Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 		}
 	}
 
 	private void spawnLightningArc(World worldObj, double posX, double posY, double posZ, Vec3 second)
 	{
 		LightningFX fx = new LightningArcFX( worldObj, posX, posY, posZ, second.xCoord, second.yCoord, second.zCoord, 0.0f, 0.0f, 0.0f );
-		Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
 
 	private void spawnLightning(World worldObj, double posX, double posY, double posZ)
 	{
 		LightningFX fx = new LightningFX( worldObj, posX, posY + 0.3f, posZ, 0.0f, 0.0f, 0.0f );
-		Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
 
 	private void spawnEnergy(World w, double posX, double posY, double posZ)
@@ -363,7 +363,7 @@ public class ClientHelper extends ServerHelper
 		fx.motionY = -y * 0.1;
 		fx.motionZ = -z * 0.1;
 
-		Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
 
 	private void spawnCrafting(World w, double posX, double posY, double posZ)
@@ -378,7 +378,7 @@ public class ClientHelper extends ServerHelper
 		fx.motionY = -y * 0.2;
 		fx.motionZ = -z * 0.2;
 
-		Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
 
 	@Override

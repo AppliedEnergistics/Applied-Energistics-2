@@ -95,7 +95,7 @@ public class WrapperInvSlot
 		{
 			return isItemValid( itemstack ) && inv.isItemValidForSlot( slot, itemstack );
 		}
-	};
+	}
 
 	private IInventory inv;
 

@@ -9,6 +9,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.container.guisync.GuiSync;
+import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.SlotMACPattern;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
@@ -16,16 +17,19 @@ import appeng.items.misc.ItemEncodedPattern;
 import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.util.Platform;
 
-public class ContainerMAC extends ContainerUpgradeable
+public class ContainerMAC extends ContainerUpgradeable implements IProgressProvider
 {
 
 	TileMolecularAssembler tma;
+	private static final int MAX_CRAFT_PROGRESS = 100;
 
-	public ContainerMAC(InventoryPlayer ip, TileMolecularAssembler te) {
+	public ContainerMAC(InventoryPlayer ip, TileMolecularAssembler te)
+	{
 		super( ip, te );
 		tma = te;
 	}
 
+	@Override
 	public int availableUpgrades()
 	{
 		return 5;
@@ -48,7 +52,7 @@ public class ContainerMAC extends ContainerUpgradeable
 
 	public boolean isValidItemForSlot(int slotIndex, ItemStack i)
 	{
-		IInventory mac = myte.getInventoryByName( "mac" );
+		IInventory mac = upgradeable.getInventoryByName( "mac" );
 
 		ItemStack is = mac.getStackInSlot( 10 );
 		if ( is == null )
@@ -69,33 +73,38 @@ public class ContainerMAC extends ContainerUpgradeable
 	@Override
 	protected void setupConfig()
 	{
-		int offx = 29;
-		int offy = 30;
+		int offX = 29;
+		int offY = 30;
 
-		IInventory mac = myte.getInventoryByName( "mac" );
+		IInventory mac = upgradeable.getInventoryByName( "mac" );
 
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 3; x++)
 			{
-				SlotMACPattern s = new SlotMACPattern( this, mac, x + y * 3, offx + x * 18, offy + y * 18 );
+				SlotMACPattern s = new SlotMACPattern( this, mac, x + y * 3, offX + x * 18, offY + y * 18 );
 				addSlotToContainer( s );
 			}
 
-		offx = 126;
-		offy = 16;
+		offX = 126;
+		offY = 16;
 
-		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODED_CRAFTING_PATTERN, mac, 10, offx, offy, invPlayer ) );
-		addSlotToContainer( new SlotOutput( mac, 9, offx, offy + 32, -1 ) );
+		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODED_CRAFTING_PATTERN, mac, 10, offX, offY, invPlayer ) );
+		addSlotToContainer( new SlotOutput( mac, 9, offX, offY + 32, -1 ) );
 
-		offx = 122;
-		offy = 17;
+		offX = 122;
+		offY = 17;
 
-		IInventory upgrades = myte.getInventoryByName( "upgrades" );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0, invPlayer )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18 * 1, invPlayer )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, invPlayer )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, invPlayer )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187, 8 + 18 * 4, invPlayer )).setNotDraggable() );
+		IInventory upgrades = upgradeable.getInventoryByName( "upgrades" );
+		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0, invPlayer ))
+				.setNotDraggable() );
+		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18 * 1, invPlayer ))
+				.setNotDraggable() );
+		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, invPlayer ))
+				.setNotDraggable() );
+		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, invPlayer ))
+				.setNotDraggable() );
+		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187, 8 + 18 * 4, invPlayer ))
+				.setNotDraggable() );
 	}
 
 	@Override
@@ -105,12 +114,24 @@ public class ContainerMAC extends ContainerUpgradeable
 
 		if ( Platform.isServer() )
 		{
-			this.rsMode = (RedstoneMode) this.myte.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
+			this.rsMode = (RedstoneMode) this.upgradeable.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
 		}
 
 		craftProgress = this.tma.getCraftingProgress();
 
 		standardDetectAndSendChanges();
+	}
+
+	@Override
+	public int getCurrentProgress()
+	{
+		return craftProgress;
+	}
+
+	@Override
+	public int getMaxProgress()
+	{
+		return MAX_CRAFT_PROGRESS;
 	}
 
 }

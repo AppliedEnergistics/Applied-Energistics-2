@@ -197,6 +197,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		}
 	}
 
+	@Override
 	public void readPermissions(HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms)
 	{
 		IPlayerRegistry pr = AEApi.instance().registries().players();
@@ -229,6 +230,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		markForUpdate();
 	}
 
+	@Override
 	public boolean isSecurityEnabled()
 	{
 		return isActive && gridProxy.isActive();
@@ -248,6 +250,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		cm.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 	}
 
+	@Override
 	public int getOwner()
 	{
 		return gridProxy.getNode().getPlayerID();
@@ -311,6 +314,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		return securityKey;
 	}
 
+	@Override
 	public AEColor getColor()
 	{
 		return paintedColor;

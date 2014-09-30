@@ -30,9 +30,9 @@ public class RenderBlockWireless extends BaseBlockRender
 	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
 	{
 		this.blk = blk;
-		cenx = 0;
-		ceny = 0;
-		cenz = 0;
+		centerX = 0;
+		centerY = 0;
+		centerZ = 0;
 		hasChan = false;
 		hasPower = false;
 		BlockRenderInfo ri = blk.getRendererInstance();
@@ -83,9 +83,9 @@ public class RenderBlockWireless extends BaseBlockRender
 		}
 	}
 
-	int cenx = 0;
-	int ceny = 0;
-	int cenz = 0;
+	int centerX = 0;
+	int centerY = 0;
+	int centerZ = 0;
 	AEBaseBlock blk;
 	boolean hasChan = false;
 	boolean hasPower = false;
@@ -118,9 +118,9 @@ public class RenderBlockWireless extends BaseBlockRender
 			renderBlockBounds( renderer, 5, 5, 1, 11, 11, 2, fdx, fdy, fdz );
 			super.renderInWorld( blk, world, x, y, z, renderer );
 
-			cenx = x;
-			ceny = y;
-			cenz = z;
+			centerX = x;
+			centerY = y;
+			centerZ = z;
 			ri.setTemporaryRenderIcon( null );
 
 			renderTorchAtAngle( renderer, fdx, fdy, fdz );
@@ -235,14 +235,14 @@ public class RenderBlockWireless extends BaseBlockRender
 
 		Tessellator.instance.setColorOpaque_I( 0xffffff );
 		renderBlockBounds( renderer, 0, 7, 1, 16, 9, 16, x, y, z );
-		renderFace( cenx, ceny, cenz, blk, sides, renderer, y );
-		renderFace( cenx, ceny, cenz, blk, sides, renderer, y.getOpposite() );
+		renderFace( centerX, centerY, centerZ, blk, sides, renderer, y );
+		renderFace( centerX, centerY, centerZ, blk, sides, renderer, y.getOpposite() );
 
 		renderBlockBounds( renderer, 7, 0, 1, 9, 16, 16, x, y, z );
-		renderFace( cenx, ceny, cenz, blk, sides, renderer, x );
-		renderFace( cenx, ceny, cenz, blk, sides, renderer, x.getOpposite() );
+		renderFace( centerX, centerY, centerZ, blk, sides, renderer, x );
+		renderFace( centerX, centerY, centerZ, blk, sides, renderer, x.getOpposite() );
 
 		renderBlockBounds( renderer, 7, 7, 1, 9, 9, 10.6, x, y, z );
-		renderFace( cenx, ceny, cenz, blk, r, renderer, z );
+		renderFace( centerX, centerY, centerZ, blk, r, renderer, z );
 	}
 }

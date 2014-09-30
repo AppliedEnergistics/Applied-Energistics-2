@@ -55,13 +55,13 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 	@MENetworkEventSubscribe
 	public void stateChange(MENetworkChannelsChanged c)
 	{
-		duality.notifyNeightbors();
+		duality.notifyNeighbors();
 	}
 
 	@MENetworkEventSubscribe
 	public void stateChange(MENetworkPowerStatusChange c)
 	{
-		duality.notifyNeightbors();
+		duality.notifyNeighbors();
 	}
 
 	public void setSide(ForgeDirection axis)

@@ -58,11 +58,9 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		AESharedNBT x = new AESharedNBT( itemID, damageValue );
 
 		// c.getTags()
-		Iterator var2 = c.func_150296_c().iterator();
-
-		while (var2.hasNext())
+		for (Object o : c.func_150296_c())
 		{
-			String name = (String) var2.next();
+			String name = (String) o;
 			x.setTag( name, c.getTag( name ).copy() );
 		}
 
@@ -83,9 +81,9 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		return super.equals( par1Obj );
 	}
 
-	public boolean matches(Item itemid2, int meta2, int orderlessHash)
+	public boolean matches(Item item, int meta, int orderlessHash)
 	{
-		return itemid2 == item && meta == meta2 && hash == orderlessHash;
+		return item == this.item && this.meta == meta && hash == orderlessHash;
 	}
 
 	public boolean comparePreciseWithRegistry(AESharedNBT tagCompound)
@@ -122,7 +120,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 	/*
 	 * Shared Tag Compound Cache.
 	 */
-	private static WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>> sharedTagCompounds = new WeakHashMap();
+	private static WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>> sharedTagCompounds = new WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>>();
 
 	/*
 	 * Debug purposes.
@@ -148,7 +146,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		if ( tagCompound.hasNoTags() )
 			return null;
 
-		Item itemid = s.getItem();
+		Item item = s.getItem();
 		int meta = -1;
 		if ( s.getItem() != null && s.isItemStackDamageable() && s.getHasSubtypes() )
 			meta = s.getItemDamage();
@@ -156,7 +154,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		if ( isShared( tagCompound ) )
 			return tagCompound;
 
-		SharedSearchObject sso = new SharedSearchObject( itemid, meta, tagCompound );
+		SharedSearchObject sso = new SharedSearchObject( item, meta, tagCompound );
 
 		WeakReference<SharedSearchObject> c = sharedTagCompounds.get( sso );
 		if ( c != null )
@@ -167,7 +165,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 									// as its already certain to exist..
 		}
 
-		AESharedNBT clone = AESharedNBT.createFromCompound( itemid, meta, tagCompound );
+		AESharedNBT clone = AESharedNBT.createFromCompound( item, meta, tagCompound );
 		sso.compound = (NBTTagCompound) sso.compound.copy(); // prevent
 																// modification
 																// of data based

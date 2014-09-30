@@ -23,10 +23,12 @@ public class SharedSearchObject
 	{
 		if ( obj == null )
 			return false;
-		SharedSearchObject b = (SharedSearchObject) obj;
-		if ( def == b.def && hash == b.hash )
+		if ( getClass() != obj.getClass() )
+			return false;
+		SharedSearchObject other = (SharedSearchObject) obj;
+		if ( def == other.def && hash == other.hash )
 		{
-			return Platform.NBTEqualityTest( compound, b.compound );
+			return Platform.NBTEqualityTest( compound, other.compound );
 		}
 		return false;
 	}

@@ -121,7 +121,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		{
 			for (int y = 0; y < 5; y++)
 			{
-				cellView[y] = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.VIEWCELL, ((IViewCellStorage) monitorable).getViewCellStorage(), y, 206, y * 18 + 8,
+				cellView[y] = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.VIEW_CELL, ((IViewCellStorage) monitorable).getViewCellStorage(), y, 206, y * 18 + 8,
 						invPlayer );
 				cellView[y].allowEdit = canAccessViewCells;
 				addSlotToContainer( cellView[y] );
@@ -152,11 +152,11 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				if ( sideLocal != sideRemote )
 				{
 					clientCM.putSetting( set, sideLocal );
-					for (int j = 0; j < this.crafters.size(); ++j)
+					for (Object crafter : this.crafters)
 					{
 						try
 						{
-							NetworkHandler.instance.sendTo( new PacketValueConfig( set.name(), sideLocal.name() ), (EntityPlayerMP) this.crafters.get( j ) );
+							NetworkHandler.instance.sendTo( new PacketValueConfig( set.name(), sideLocal.name() ), (EntityPlayerMP) crafter );
 						}
 						catch (IOException e)
 						{

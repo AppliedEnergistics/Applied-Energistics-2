@@ -20,6 +20,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 {
 
+	@Override
 	public TunnelType getTunnelType()
 	{
 		return TunnelType.REDSTONE;
@@ -79,7 +80,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		{
 			PartP2PRedstone in = getInput();
 			if ( in != null )
-				putInput( ((PartP2PRedstone) in).power );
+				putInput( in.power );
 		}
 	}
 
@@ -137,6 +138,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 		power = tag.getInteger( "power" );
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getTypeTexture()
 	{
@@ -146,7 +148,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	public float getPowerDrainPerTick()
 	{
 		return 0.5f;
-	};
+	}
 
 	@Override
 	public void onNeighborChanged()

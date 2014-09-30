@@ -148,6 +148,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		}
 	}
 
+	@Override
 	protected void handleButtonVisibility()
 	{
 		craftingMode.setVisibility( bc.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 );
@@ -226,11 +227,13 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		level.drawTextBox();
 	}
 
+	@Override
 	protected String getBackground()
 	{
 		return "guis/lvlemitter.png";
 	}
 
+	@Override
 	protected GuiText getName()
 	{
 		return GuiText.LevelEmitter;

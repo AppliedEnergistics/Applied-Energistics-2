@@ -53,7 +53,7 @@ public class AppEng
 	public final static String modid = "appliedenergistics2";
 	public final static String name = "Applied Energistics 2";
 
-	HashMap<String, IIMCHandler> IMCHandlers = new HashMap();
+	HashMap<String, IIMCHandler> IMCHandlers = new HashMap<String, IIMCHandler>();
 
 	public static AppEng instance;
 
@@ -156,10 +156,10 @@ public class AppEng
 		AELog.info( "PostInit" );
 
 		Registration.instance.PostInit( event );
-		IntegrationRegistry.instance.postinit();
+		IntegrationRegistry.instance.postInit();
 		FMLCommonHandler.instance().registerCrashCallable( new CrashEnhancement( CrashInfo.INTEGRATION ) );
 
-		CommonHelper.proxy.postinit();
+		CommonHelper.proxy.postInit();
 		AEConfig.instance.save();
 
 		NetworkRegistry.INSTANCE.registerGuiHandler( this, GuiBridge.GUI_Handler );

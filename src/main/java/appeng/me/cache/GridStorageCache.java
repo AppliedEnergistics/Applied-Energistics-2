@@ -39,10 +39,10 @@ public class GridStorageCache implements IStorageGrid
 {
 
 	final private SetMultimap<IAEStack, ItemWatcher> interests = HashMultimap.create();
-	final public GenericInterestManager interestManager = new GenericInterestManager( interests );
+	final public GenericInterestManager<ItemWatcher> interestManager = new GenericInterestManager<ItemWatcher>( interests );
 
-	final HashSet<ICellProvider> activeCellProviders = new HashSet();
-	final HashSet<ICellProvider> inactiveCellProviders = new HashSet();
+	final HashSet<ICellProvider> activeCellProviders = new HashSet<ICellProvider>();
+	final HashSet<ICellProvider> inactiveCellProviders = new HashSet<ICellProvider>();
 	final public IGrid myGrid;
 
 	private NetworkInventoryHandler<IAEItemStack> myItemNetwork;
@@ -90,12 +90,12 @@ public class GridStorageCache implements IStorageGrid
 			postChangesToNetwork( channel, up_or_down, list, src );
 		}
 
-	};
+	}
 
 	private class CellChangeTracker
 	{
 
-		List<CellChangeTrackerRecord> data = new LinkedList();
+		List<CellChangeTrackerRecord> data = new LinkedList<CellChangeTrackerRecord>();
 
 		public void postChanges(StorageChannel channel, int i, IMEInventoryHandler<? extends IAEStack> h, BaseActionSource actionSrc)
 		{
@@ -107,7 +107,7 @@ public class GridStorageCache implements IStorageGrid
 			for (CellChangeTrackerRecord rec : data)
 				rec.applyChanges();
 		}
-	};
+	}
 
 	@Override
 	public void registerCellProvider(ICellProvider provider)
@@ -249,7 +249,7 @@ public class GridStorageCache implements IStorageGrid
 		if ( machine instanceof IStackWatcherHost )
 		{
 			IStackWatcherHost swh = (IStackWatcherHost) machine;
-			ItemWatcher iw = new ItemWatcher( this, (IStackWatcherHost) swh );
+			ItemWatcher iw = new ItemWatcher( this, swh );
 			watchers.put( node, iw );
 			swh.updateWatcher( iw );
 		}
@@ -286,10 +286,10 @@ public class GridStorageCache implements IStorageGrid
 		switch (chan)
 		{
 		case FLUIDS:
-			fluidMonitor.postChange( up_or_down > 0, (IItemList<IAEFluidStack>) availableItems, src );
+			fluidMonitor.postChange( up_or_down > 0, availableItems, src );
 			break;
 		case ITEMS:
-			itemMonitor.postChange( up_or_down > 0, (IItemList<IAEItemStack>) availableItems, src );
+			itemMonitor.postChange( up_or_down > 0, availableItems, src );
 			break;
 		default:
 		}

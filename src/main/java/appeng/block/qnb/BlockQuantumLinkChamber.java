@@ -54,7 +54,7 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 	}
 
 	@Override
-	public void onNeighborBlockChange(World w, int x, int y, int z, Block pointlessnumber)
+	public void onNeighborBlockChange(World w, int x, int y, int z, Block pointlessNumber)
 	{
 		TileQuantumBridge bridge = getTileEntity( w, x, y, z );
 		if ( bridge != null )
@@ -97,7 +97,7 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
 	{
 		double OnePx = 2.0 / 16.0;
-		return Arrays.asList( new AxisAlignedBB[] { AxisAlignedBB.getBoundingBox( OnePx, OnePx, OnePx, 1.0 - OnePx, 1.0 - OnePx, 1.0 - OnePx ) } );
+		return Arrays.asList( AxisAlignedBB.getBoundingBox( OnePx, OnePx, OnePx, 1.0 - OnePx, 1.0 - OnePx, 1.0 - OnePx ) );
 	}
 
 	@Override

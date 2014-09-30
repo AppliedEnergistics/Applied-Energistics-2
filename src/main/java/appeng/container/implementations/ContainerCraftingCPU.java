@@ -80,7 +80,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 
 		if ( c instanceof CraftingCPUCluster )
 		{
-			cpuName = ((CraftingCPUCluster) c).getName();
+			cpuName = c.getName();
 
 			monitor = (CraftingCPUCluster) c;
 			if ( monitor != null )

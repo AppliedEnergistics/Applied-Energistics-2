@@ -3,6 +3,7 @@ package appeng.parts.reporting;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -23,10 +24,10 @@ public class PartConversionMonitor extends PartStorageMonitor
 
 	public PartConversionMonitor(ItemStack is) {
 		super( PartConversionMonitor.class, is );
-		frontBright = CableBusTextures.PartConvMonitor_Bright;
-		frontColored = CableBusTextures.PartConvMonitor_Colored;
-		frontDark = CableBusTextures.PartConvMonitor_Dark;
-		// frontSolid = CableBusTextures.PartConvMonitor_Solid;
+		frontBright = CableBusTextures.PartConversionMonitor_Bright;
+		frontColored = CableBusTextures.PartConversionMonitor_Colored;
+		frontDark = CableBusTextures.PartConversionMonitor_Dark;
+		// frontSolid = CableBusTextures.PartConversionMonitor_Solid;
 	}
 
 	@Override
@@ -89,6 +90,7 @@ public class PartConversionMonitor extends PartStorageMonitor
 		return true;
 	}
 
+	@Override
 	protected void extractItem(EntityPlayer player)
 	{
 		IAEItemStack input = (IAEItemStack) getDisplayed();
@@ -114,7 +116,7 @@ public class PartConversionMonitor extends PartStorageMonitor
 					if ( newItems != null )
 					{
 						TileEntity te = tile;
-						List<ItemStack> list = Arrays.asList( new ItemStack[] { newItems } );
+						List<ItemStack> list = Arrays.asList( newItems );
 						Platform.spawnDrops( player.worldObj, te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ, list );
 					}
 

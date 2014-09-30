@@ -56,33 +56,19 @@ public enum AEFeature
 
 	ChunkLoggerTrace("Commands", false), LogSecurityAudits("Misc", false), Achievements("Misc");
 
-	String Category;
-	boolean visible = true;
-	boolean defValue = true;
+	public final String category;
+	public final boolean isVisible;
+	public final boolean defaultValue;
 
 	private AEFeature(String cat) {
-		Category = cat;
-		visible = !this.name().equals( "Core" );
+		this.category = cat;
+		this.isVisible = !this.name().equals( "Core" );
+		this.defaultValue = true;
 	}
 
-	private AEFeature(String cat, boolean defv) {
-		this( cat );
-		defValue = defv;
+	private AEFeature(String cat, boolean defaultValue) {
+		this.category = cat;
+		this.isVisible = !this.name().equals( "Core" );
+		this.defaultValue = defaultValue;
 	}
-
-	public String getCategory()
-	{
-		return Category;
-	}
-
-	public Boolean defaultValue()
-	{
-		return defValue;
-	}
-
-	public Boolean isVisible()
-	{
-		return visible;
-	}
-
 }

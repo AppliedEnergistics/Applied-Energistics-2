@@ -38,6 +38,7 @@ public class GroupIngredient implements IIngredient
 		return gi;
 	}
 
+	@Override
 	public int getDamageValue()
 	{
 		return OreDictionary.WILDCARD_VALUE;
@@ -64,7 +65,7 @@ public class GroupIngredient implements IIngredient
 		if ( isInside )
 			return new ItemStack[0];
 
-		List<ItemStack> out = new LinkedList();
+		List<ItemStack> out = new LinkedList<ItemStack>();
 		isInside = true;
 		try
 		{
@@ -94,6 +95,7 @@ public class GroupIngredient implements IIngredient
 		return out.toArray( new ItemStack[out.size()] );
 	}
 
+	@Override
 	public String getNameSpace()
 	{
 		return "";

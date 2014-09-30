@@ -10,24 +10,24 @@ public class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T>
 {
 
 	final Class clz;
-	Collection<T> tunnelsource;
+	Collection<T> tunnelSources;
 
 	public TunnelCollection(Collection<T> src, Class c) {
-		tunnelsource = src;
+		tunnelSources = src;
 		clz = c;
 	}
 
 	@Override
 	public Iterator<T> iterator()
 	{
-		if ( tunnelsource == null )
-			return new NullIterator();
-		return new TunnelIterator( tunnelsource, clz );
+		if ( tunnelSources == null )
+			return new NullIterator<T>();
+		return new TunnelIterator<T>( tunnelSources, clz );
 	}
 
 	public void setSource(Collection<T> c)
 	{
-		tunnelsource = c;
+		tunnelSources = c;
 	}
 
 	public boolean isEmpty()

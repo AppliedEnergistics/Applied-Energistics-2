@@ -5,7 +5,6 @@ import java.util.Random;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -52,15 +51,15 @@ public class BlockQuartzGrowthAccelerator extends AEBaseBlock implements IOrient
 		if ( !AEConfig.instance.enableEffects )
 			return;
 
-		TileQuartzGrowthAccelerator tqga = getTileEntity( w, x, y, z );
+		TileQuartzGrowthAccelerator tileQuartzGrowthAccelerator = getTileEntity( w, x, y, z );
 
-		if ( tqga != null && tqga.hasPower && CommonHelper.proxy.shouldAddParticles( r ) )
+		if ( tileQuartzGrowthAccelerator != null && tileQuartzGrowthAccelerator.hasPower && CommonHelper.proxy.shouldAddParticles( r ) )
 		{
-			double d0 = (double) (r.nextFloat() - 0.5F);
-			double d1 = (double) (r.nextFloat() - 0.5F);
+			double d0 = r.nextFloat() - 0.5F;
+			double d1 = r.nextFloat() - 0.5F;
 
-			ForgeDirection up = tqga.getUp();
-			ForgeDirection forward = tqga.getForward();
+			ForgeDirection up = tileQuartzGrowthAccelerator.getUp();
+			ForgeDirection forward = tileQuartzGrowthAccelerator.getForward();
 			ForgeDirection west = Platform.crossProduct( forward, up );
 
 			double rx = 0.5 + x;
@@ -113,7 +112,7 @@ public class BlockQuartzGrowthAccelerator extends AEBaseBlock implements IOrient
 			rz += dz * forward.offsetZ;
 
 			LightningFX fx = new LightningFX( w, rx, ry, rz, 0.0D, 0.0D, 0.0D );
-			Minecraft.getMinecraft().effectRenderer.addEffect( (EntityFX) fx );
+			Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 		}
 	}
 

@@ -15,7 +15,8 @@ public class GuiInscriber extends AEBaseGui
 	ContainerInscriber cvc;
 	GuiProgressBar pb;
 
-	public GuiInscriber(InventoryPlayer inventoryPlayer, TileInscriber te) {
+	public GuiInscriber(InventoryPlayer inventoryPlayer, TileInscriber te)
+	{
 		super( new ContainerInscriber( inventoryPlayer, te ) );
 		cvc = (ContainerInscriber) inventorySlots;
 		this.ySize = 176;
@@ -27,7 +28,7 @@ public class GuiInscriber extends AEBaseGui
 	{
 		super.initGui();
 
-		pb = new GuiProgressBar( "guis/inscriber.png", 135, 39, 135, 177, 6, 18, Direction.VERTICAL );
+		pb = new GuiProgressBar(  cvc,  "guis/inscriber.png", 135, 39, 135, 177, 6, 18, Direction.VERTICAL );
 		this.buttonList.add( pb );
 	}
 
@@ -49,9 +50,7 @@ public class GuiInscriber extends AEBaseGui
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		pb.max = cvc.maxProcessingTime;
-		pb.current = cvc.processingTime;
-		pb.FullMsg = (pb.current * 100 / pb.max) + "%";
+		pb.setFullMsg( cvc.getCurrentProgress() * 100 / cvc.getMaxProgress() + "%" );
 
 		fontRendererObj.drawString( getGuiDisplayName( GuiText.Inscriber.getLocal() ), 8, 6, 4210752 );
 		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );

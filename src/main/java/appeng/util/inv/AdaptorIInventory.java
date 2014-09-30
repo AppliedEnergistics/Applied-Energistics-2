@@ -39,7 +39,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeSimilarItems(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
+	public ItemStack removeSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
 	{
 		int s = i.getSizeInventory();
 		for (int x = 0; x < s; x++)
@@ -47,17 +47,17 @@ public class AdaptorIInventory extends InventoryAdaptor
 			ItemStack is = i.getStackInSlot( x );
 			if ( is != null && canRemoveStackFromSlot( x, is ) && (filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode )) )
 			{
-				int lhow_many = how_many;
-				if ( lhow_many > is.stackSize )
-					lhow_many = is.stackSize;
+				int newAmount = amount;
+				if ( newAmount > is.stackSize )
+					newAmount = is.stackSize;
 				if ( destination != null && !destination.canInsert( is ) )
-					lhow_many = 0;
+					newAmount = 0;
 
 				ItemStack rv = null;
-				if ( lhow_many > 0 )
+				if ( newAmount > 0 )
 				{
 					rv = is.copy();
-					rv.stackSize = lhow_many;
+					rv.stackSize = newAmount;
 
 					if ( is.stackSize == rv.stackSize )
 					{
@@ -84,7 +84,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateSimilarRemove(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
+	public ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
 	{
 		int s = i.getSizeInventory();
 		for (int x = 0; x < s; x++)
@@ -93,16 +93,16 @@ public class AdaptorIInventory extends InventoryAdaptor
 
 			if ( is != null && canRemoveStackFromSlot( x, is ) && (filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode )) )
 			{
-				int lhow_many = how_many;
-				if ( lhow_many > is.stackSize )
-					lhow_many = is.stackSize;
+				int boundAmount = amount;
+				if ( boundAmount > is.stackSize )
+					boundAmount = is.stackSize;
 				if ( destination != null && !destination.canInsert( is ) )
-					lhow_many = 0;
+					boundAmount = 0;
 
-				if ( lhow_many > 0 )
+				if ( boundAmount > 0 )
 				{
 					ItemStack rv = is.copy();
-					rv.stackSize = lhow_many;
+					rv.stackSize = boundAmount;
 					return rv;
 				}
 			}
@@ -111,38 +111,38 @@ public class AdaptorIInventory extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeItems(int how_many, ItemStack filter, IInventoryDestination destination)
+	public ItemStack removeItems(int amount, ItemStack filter, IInventoryDestination destination)
 	{
 		int s = i.getSizeInventory();
 		ItemStack rv = null;
 
-		for (int x = 0; x < s && how_many > 0; x++)
+		for (int x = 0; x < s && amount > 0; x++)
 		{
 			ItemStack is = i.getStackInSlot( x );
 			if ( is != null && canRemoveStackFromSlot( x, is ) && (filter == null || Platform.isSameItemPrecise( is, filter )) )
 			{
-				int lhow_many = how_many;
-				if ( lhow_many > is.stackSize )
-					lhow_many = is.stackSize;
+				int boundAmounts = amount;
+				if ( boundAmounts > is.stackSize )
+					boundAmounts = is.stackSize;
 				if ( destination != null && !destination.canInsert( is ) )
-					lhow_many = 0;
+					boundAmounts = 0;
 
-				if ( lhow_many > 0 )
+				if ( boundAmounts > 0 )
 				{
 					if ( rv == null )
 					{
 						rv = is.copy();
 						filter = rv;
-						rv.stackSize = lhow_many;
-						how_many -= lhow_many;
+						rv.stackSize = boundAmounts;
+						amount -= boundAmounts;
 					}
 					else
 					{
-						rv.stackSize += lhow_many;
-						how_many -= lhow_many;
+						rv.stackSize += boundAmounts;
+						amount -= boundAmounts;
 					}
 
-					if ( is.stackSize == lhow_many )
+					if ( is.stackSize == boundAmounts )
 					{
 						i.setInventorySlotContents( x, null );
 						i.markDirty();
@@ -150,7 +150,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 					else
 					{
 						ItemStack po = is.copy();
-						po.stackSize -= lhow_many;
+						po.stackSize -= boundAmounts;
 						i.setInventorySlotContents( x, po );
 						i.markDirty();
 					}
@@ -165,34 +165,34 @@ public class AdaptorIInventory extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateRemove(int how_many, ItemStack filter, IInventoryDestination destination)
+	public ItemStack simulateRemove(int amount, ItemStack filter, IInventoryDestination destination)
 	{
 		int s = i.getSizeInventory();
 		ItemStack rv = null;
 
-		for (int x = 0; x < s && how_many > 0; x++)
+		for (int x = 0; x < s && amount > 0; x++)
 		{
 			ItemStack is = i.getStackInSlot( x );
 			if ( is != null && canRemoveStackFromSlot( x, is ) && (filter == null || Platform.isSameItemPrecise( is, filter )) )
 			{
-				int lhow_many = how_many;
-				if ( lhow_many > is.stackSize )
-					lhow_many = is.stackSize;
+				int boundAmount = amount;
+				if ( boundAmount > is.stackSize )
+					boundAmount = is.stackSize;
 				if ( destination != null && !destination.canInsert( is ) )
-					lhow_many = 0;
+					boundAmount = 0;
 
-				if ( lhow_many > 0 )
+				if ( boundAmount > 0 )
 				{
 					if ( rv == null )
 					{
 						rv = is.copy();
-						rv.stackSize = lhow_many;
-						how_many -= lhow_many;
+						rv.stackSize = boundAmount;
+						amount -= boundAmount;
 					}
 					else
 					{
-						rv.stackSize += lhow_many;
-						how_many -= lhow_many;
+						rv.stackSize += boundAmount;
+						amount -= boundAmount;
 					}
 				}
 			}
@@ -356,7 +356,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 			// nothing!
 		}
 
-	};
+	}
 
 	@Override
 	public Iterator<ItemSlot> iterator()
