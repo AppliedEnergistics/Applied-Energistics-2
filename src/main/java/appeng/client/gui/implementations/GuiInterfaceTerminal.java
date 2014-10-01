@@ -271,7 +271,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	/**
 	 * The max amount of unique names and each inv row. Not affected by the filtering.
 	 *
-	 * @return
+	 * @return max amount of unique names and each inv row
 	 */
 	private int getMaxRows()
 	{
