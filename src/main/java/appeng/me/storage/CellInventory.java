@@ -1,7 +1,6 @@
 package appeng.me.storage;
 
 import java.util.HashSet;
-import java.util.Iterator;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;

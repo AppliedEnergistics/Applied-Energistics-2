@@ -38,7 +38,6 @@ import appeng.client.me.SlotME;
 import appeng.client.render.AppEngRenderItem;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.AppEngSlot.hasCalculatedValidness;
-import appeng.container.slot.SlotInaccessible;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
