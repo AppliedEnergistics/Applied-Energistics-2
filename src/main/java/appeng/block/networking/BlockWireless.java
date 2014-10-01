@@ -39,12 +39,6 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public IIcon getIcon(int direction, int metadata)
-	{
-		return super.getIcon( direction, metadata );
-	}
-
-	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
 	{
 		TileWireless tile = getTileEntity( w, x, y, z );

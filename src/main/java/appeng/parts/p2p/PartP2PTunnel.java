@@ -368,12 +368,6 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 	}
 
 	@Override
-	public void setColors(boolean hasChan, boolean hasPower)
-	{
-		super.setColors( hasChan, hasPower );
-	}
-
-	@Override
 	public void getBoxes(IPartCollisionHelper bch)
 	{
 		bch.addBox( 5, 5, 12, 11, 11, 13 );

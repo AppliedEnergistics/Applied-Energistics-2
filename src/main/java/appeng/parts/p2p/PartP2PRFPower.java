@@ -44,18 +44,6 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound tag)
-	{
-		super.writeToNBT( tag );
-	}
-
-	@Override
-	public void readFromNBT(NBTTagCompound tag)
-	{
-		super.readFromNBT( tag );
-	}
-
-	@Override
 	public void onNeighborChanged()
 	{
 		super.onNeighborChanged();
