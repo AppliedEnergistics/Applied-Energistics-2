@@ -280,7 +280,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
-	final public TileEntity createNewTileEntity(World var1, int var2)
+	public TileEntity createNewTileEntity(World var1, int var2)
 	{
 		if ( hasBlockTileEntity() )
 		{
@@ -319,7 +319,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
-	final public boolean rotateBlock(World w, int x, int y, int z, ForgeDirection axis)
+	public boolean rotateBlock(World w, int x, int y, int z, ForgeDirection axis)
 	{
 		IOrientable rotatable = null;
 
@@ -425,7 +425,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
-	final public ForgeDirection[] getValidRotations(World w, int x, int y, int z)
+	public ForgeDirection[] getValidRotations(World w, int x, int y, int z)
 	{
 		if ( hasBlockTileEntity() )
 		{
@@ -517,7 +517,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	final public AxisAlignedBB getSelectedBoundingBoxFromPool(World w, int x, int y, int z)
+	public AxisAlignedBB getSelectedBoundingBoxFromPool(World w, int x, int y, int z)
 	{
 		ICustomCollision collisionHandler = null;
 		AxisAlignedBB b = null;
@@ -638,7 +638,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
-	final public boolean onBlockActivated(World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
 		if ( player != null )
 		{
