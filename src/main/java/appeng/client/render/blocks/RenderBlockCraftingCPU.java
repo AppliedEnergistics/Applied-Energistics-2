@@ -68,7 +68,7 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 			{
 				ct.lightCache = i.useSimplifiedRendering( x, y, z, null, ct.lightCache );
 			}
-			catch (Throwable t)
+			catch (Throwable ignored)
 			{
 
 			}

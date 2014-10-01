@@ -186,7 +186,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 			IStorageGrid gs = gridProxy.getStorage();
 			Platform.postChanges( gs, removed, added, mySrc );
 		}
-		catch (GridAccessException e)
+		catch (GridAccessException ignored)
 		{
 		}
 

@@ -195,7 +195,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 							current.inv.setInventorySlotContents( x, ItemStack.loadItemStackFromNBT( invData.getCompoundTag( which ) ) );
 					}
 				}
-				catch (NumberFormatException ex)
+				catch (NumberFormatException ignored)
 				{
 				}
 			}

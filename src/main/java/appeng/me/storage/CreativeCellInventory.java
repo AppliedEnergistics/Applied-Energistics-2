@@ -24,7 +24,7 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 		{
 			return new CellInventoryHandler( new CreativeCellInventory( o ) );
 		}
-		catch (AppEngException e)
+		catch (AppEngException ignored)
 		{
 		}
 

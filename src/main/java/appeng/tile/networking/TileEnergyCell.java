@@ -119,7 +119,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 			{
 				gridProxy.getGrid().postEvent( new MENetworkPowerStorage( this, PowerEventType.REQUEST_POWER ) );
 			}
-			catch (GridAccessException e)
+			catch (GridAccessException ignored)
 			{
 
 			}

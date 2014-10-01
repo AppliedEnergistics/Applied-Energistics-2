@@ -219,7 +219,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 				return super.getItemStackDisplayName( is ) + " - " + in.getDisplayName();
 			}
 		}
-		catch (Throwable t)
+		catch (Throwable ignored)
 		{
 
 		}

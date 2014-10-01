@@ -196,11 +196,11 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 							stack.setMaxSize( 1 );
 							this.ingredients.add( stack );
 						}
-						catch (RegistrationError e)
+						catch (RegistrationError ignored)
 						{
 
 						}
-						catch (MissingIngredientError e)
+						catch (MissingIngredientError ignored)
 						{
 
 						}

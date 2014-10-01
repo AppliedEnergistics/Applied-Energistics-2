@@ -98,10 +98,10 @@ public class AppEngPacketHandlerBase
 			{
 				x = pc.getConstructor( ByteBuf.class );
 			}
-			catch (NoSuchMethodException e)
+			catch (NoSuchMethodException ignored)
 			{
 			}
-			catch (SecurityException e)
+			catch (SecurityException ignored)
 			{
 			}
 

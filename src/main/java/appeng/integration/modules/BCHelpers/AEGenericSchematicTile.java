@@ -48,7 +48,7 @@ public class AEGenericSchematicTile extends SchematicTile
 					tileNBT.setString( "orientation_forward", fdForward.name() );
 					tileNBT.setString( "orientation_up", fdUp.name() );
 				}
-				catch (Throwable t)
+				catch (Throwable ignored)
 				{
 
 				}

@@ -199,7 +199,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 				up = ForgeDirection.valueOf( data.getString( "orientation_up" ) );
 			}
 		}
-		catch (IllegalArgumentException iae)
+		catch (IllegalArgumentException ignored)
 		{
 		}
 

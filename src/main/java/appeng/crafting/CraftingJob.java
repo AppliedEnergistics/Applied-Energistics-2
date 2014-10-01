@@ -290,7 +290,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 				{
 					monitor.wait();
 				}
-				catch (InterruptedException e)
+				catch (InterruptedException ignored)
 				{
 				}
 			}

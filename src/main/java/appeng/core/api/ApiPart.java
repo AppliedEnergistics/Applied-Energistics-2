@@ -340,7 +340,7 @@ public class ApiPart implements IPartHelper
 			else
 				AELog.info( "Layer " + layer + " not registered, " + layerInterface + " already has a layer." );
 		}
-		catch (Throwable t)
+		catch (Throwable ignored)
 		{
 		}
 

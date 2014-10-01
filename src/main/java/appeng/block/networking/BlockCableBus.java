@@ -232,7 +232,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 		{
 			return cb( world, x, y, z ).recolourBlock( side, AEColor.values()[colour], who );
 		}
-		catch (Throwable t)
+		catch (Throwable ignored)
 		{
 		}
 		return false;

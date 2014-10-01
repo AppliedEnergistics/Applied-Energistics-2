@@ -171,7 +171,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 
 				target.setTag( "#" + x, c );
 			}
-			catch (Exception err)
+			catch (Exception ignored)
 			{
 			}
 		}
