@@ -31,7 +31,7 @@ public class Grind implements ICraftHandler, IWebsiteSerializer
 				return;
 			}
 		}
-		new RecipeError( "Grind must have a single input, and single output." );
+		throw new RecipeError( "Grind must have a single input, and single output." );
 	}
 
 	@Override

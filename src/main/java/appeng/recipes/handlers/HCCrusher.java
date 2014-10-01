@@ -33,7 +33,7 @@ public class HCCrusher implements ICraftHandler, IWebsiteSerializer
 				return;
 			}
 		}
-		new RecipeError( "Crusher must have a single input, and single output." );
+		throw new RecipeError( "Crusher must have a single input, and single output." );
 	}
 
 	@Override
