@@ -11,6 +11,7 @@ import java.util.WeakHashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -125,8 +126,8 @@ public class GuiInterfaceTerminal extends AEBaseGui
 				ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
 
 				GL11.glColor4f( 1, 1, 1, 1 );
-				for (int z = 0; z < inv.inv.getSizeInventory(); z++)
-					this.drawTexturedModalRect( offsetX + z * 18 + 7, offsetY + offset, 7, 139, 18, 18 );
+				int width = inv.inv.getSizeInventory() * 18;
+				this.drawTexturedModalRect( offsetX + 7, offsetY + offset, 7, 139, width, 18 );
 			}
 			offset += 18;
 		}
