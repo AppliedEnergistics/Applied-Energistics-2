@@ -33,12 +33,6 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
-	{
-		super.renderInventory( blk, is, renderer, type, obj );
-	}
-
-	@Override
 	public boolean renderInWorld(AEBaseBlock blk, IBlockAccess w, int x, int y, int z, RenderBlocks renderer)
 	{
 		IIcon theIcon = null;
