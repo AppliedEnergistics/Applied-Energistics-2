@@ -160,9 +160,10 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 		return AccessRestriction.WRITE;
 	}
 
-	@Override public double getDurabilityForDisplay(ItemStack is)
+	@Override
+	public double getDurabilityForDisplay(ItemStack is)
 	{
-		return getAECurrentPower( is ) / getAEMaxPower( is );
+		return 1 - getAECurrentPower( is ) / getAEMaxPower( is );
 	}
 
 	@Override
