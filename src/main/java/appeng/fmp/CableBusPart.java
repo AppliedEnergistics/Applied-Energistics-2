@@ -387,7 +387,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	@Override
 	public DimensionalCoord getLocation()
 	{
-		return new DimensionalCoord( getTile() );
+		return new DimensionalCoord( this.tile() );
 	}
 
 	@Override
@@ -496,7 +496,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	public void markForSave()
 	{
 		// mark the chunk for save...
-		TileEntity te = getTile();
+		TileEntity te = this.tile();
 		if ( te != null && te.getWorldObj() != null )
 			te.getWorldObj().getChunkFromBlockCoords( x(), z() ).isModified = true;
 	}
