@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import appeng.container.slot.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
@@ -817,7 +818,7 @@ public abstract class AEBaseGui extends GuiContainer
 				if ( !isPowered() )
 				{
 					GL11.glDisable( GL11.GL_LIGHTING );
-					super.drawRect( s.xDisplayPosition, s.yDisplayPosition, 16 + s.xDisplayPosition, 16 + s.yDisplayPosition, 0x66111111 );
+					drawRect( s.xDisplayPosition, s.yDisplayPosition, 16 + s.xDisplayPosition, 16 + s.yDisplayPosition, 0x66111111 );
 					GL11.glEnable( GL11.GL_LIGHTING );
 				}
 
@@ -921,7 +922,7 @@ public abstract class AEBaseGui extends GuiContainer
 						itemRender.zLevel = 100.0F;
 
 						GL11.glDisable( GL11.GL_LIGHTING );
-						super.drawRect( s.xDisplayPosition, s.yDisplayPosition, 16 + s.xDisplayPosition, 16 + s.yDisplayPosition, 0x66ff6666 );
+						drawRect( s.xDisplayPosition, s.yDisplayPosition, 16 + s.xDisplayPosition, 16 + s.yDisplayPosition, 0x66ff6666 );
 						GL11.glEnable( GL11.GL_LIGHTING );
 
 						this.zLevel = 0.0F;
