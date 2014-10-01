@@ -1,7 +1,6 @@
 package appeng.recipes.game;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;

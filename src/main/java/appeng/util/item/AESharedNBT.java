@@ -1,7 +1,6 @@
 package appeng.util.item;
 
 import java.lang.ref.WeakReference;
-import java.util.Iterator;
 import java.util.WeakHashMap;
 
 import net.minecraft.item.Item;

@@ -1,7 +1,5 @@
 package appeng.core;
 
-import io.netty.util.concurrent.GenericFutureListener;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

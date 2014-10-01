@@ -42,7 +42,6 @@ import appeng.client.me.InternalSlotME;
 import appeng.client.me.SlotME;
 import appeng.container.guisync.GuiSync;
 import appeng.container.guisync.SyncData;
-import appeng.container.slot.SlotInaccessible;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
