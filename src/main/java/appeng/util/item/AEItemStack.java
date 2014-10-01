@@ -454,7 +454,6 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 				if ( def.item.isDamageable() )
 				{
 					ItemStack a = getItemStack();
-					ItemStack b = o;
 
 					try
 					{
@@ -464,12 +463,12 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 						}
 						else if ( Mode == FuzzyMode.PERCENT_99 )
 						{
-							return (a.getItemDamageForDisplay() > 1) == (b.getItemDamageForDisplay() > 1);
+							return (a.getItemDamageForDisplay() > 1) == (o.getItemDamageForDisplay() > 1);
 						}
 						else
 						{
 							float APercentDamaged = 1.0f - (float) a.getItemDamageForDisplay() / (float) a.getMaxDamage();
-							float BPercentDamaged = 1.0f - (float) b.getItemDamageForDisplay() / (float) b.getMaxDamage();
+							float BPercentDamaged = 1.0f - (float) o.getItemDamageForDisplay() / (float) o.getMaxDamage();
 
 							return (APercentDamaged > Mode.breakPoint) == (BPercentDamaged > Mode.breakPoint);
 						}
@@ -482,12 +481,12 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 						}
 						else if ( Mode == FuzzyMode.PERCENT_99 )
 						{
-							return (a.getItemDamage() > 1) == (b.getItemDamage() > 1);
+							return (a.getItemDamage() > 1) == (o.getItemDamage() > 1);
 						}
 						else
 						{
 							float APercentDamaged = (float) a.getItemDamage() / (float) a.getMaxDamage();
-							float BPercentDamaged = (float) b.getItemDamage() / (float) b.getMaxDamage();
+							float BPercentDamaged = (float) o.getItemDamage() / (float) o.getMaxDamage();
 
 							return (APercentDamaged > Mode.breakPoint) == (BPercentDamaged > Mode.breakPoint);
 						}

@@ -34,9 +34,8 @@ public class ContainerCondenser extends AEBaseContainer implements IProgressProv
 		{
 			double maxStorage = this.condenser.getStorage();
 			double requiredEnergy = this.condenser.getRequiredPower();
-			int maxDisplay = requiredEnergy == 0 ? (int) maxStorage : (int) Math.min( requiredEnergy, maxStorage );
 
-			this.requiredEnergy = maxDisplay;
+			this.requiredEnergy = requiredEnergy == 0 ? (int) maxStorage : (int) Math.min( requiredEnergy, maxStorage );
 			this.storedPower = (int) this.condenser.storedPower;
 			this.output = (CondenserOutput) this.condenser.getConfigManager().getSetting( Settings.CONDENSER_OUTPUT );
 		}

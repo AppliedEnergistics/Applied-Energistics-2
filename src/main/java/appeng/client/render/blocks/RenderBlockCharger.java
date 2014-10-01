@@ -131,8 +131,7 @@ public class RenderBlockCharger extends BaseBlockRender
 					GL11.glRotatef( 30.0f, 0.0f, 1.0f, 0.0f );
 				}
 
-				int light = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
-				int br = light;// << 20 | light << 4;
+				int br = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );// << 20 | light << 4;
 				int var11 = br % 65536;
 				int var12 = br / 65536;
 				OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11, var12 );

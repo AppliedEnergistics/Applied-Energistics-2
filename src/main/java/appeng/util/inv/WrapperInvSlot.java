@@ -105,8 +105,7 @@ public class WrapperInvSlot
 
 	public IInventory getWrapper(int slot)
 	{
-		InternalInterfaceWrapper wrapper = new InternalInterfaceWrapper( inv, slot );
-		return wrapper;
+		return new InternalInterfaceWrapper( inv, slot );
 	}
 
 	protected boolean isItemValid(ItemStack itemstack)

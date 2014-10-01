@@ -132,8 +132,7 @@ public class RenderBlockInscriber extends BaseBlockRender
 		Minecraft mc = Minecraft.getMinecraft();
 		mc.renderEngine.bindTexture( TextureMap.locationBlocksTexture );
 
-		int light = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
-		int br = light;// << 20 | light << 4;
+		int br = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );// << 20 | light << 4;
 		int var11 = br % 65536;
 		int var12 = br / 65536;
 		OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11, var12 );
@@ -244,8 +243,7 @@ public class RenderBlockInscriber extends BaseBlockRender
 
 				GL11.glRotatef( 90.0f, 1, 0, 0 );
 
-				int light = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );
-				int br = light;// << 20 | light << 4;
+				int br = tile.getWorldObj().getLightBrightnessForSkyBlocks( tile.xCoord, tile.yCoord, tile.zCoord, 0 );// << 20 | light << 4;
 				int var11 = br % 65536;
 				int var12 = br / 65536;
 				OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11, var12 );
