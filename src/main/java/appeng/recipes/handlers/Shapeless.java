@@ -84,15 +84,29 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 	{
 		StringBuilder o = new StringBuilder( "shapeless " + output.getQty() + "\n" );
 
-		o.append( h.getName( output ) + "\n" );
+		o.append( h.getName( output ) ).append( "\n" );
 
 		for (int y = 0; y < inputs.size(); y++)
 		{
 			IIngredient i = inputs.get( y );
+
 			if ( i.isAir() )
-				o.append( "air" + (y + 1 == inputs.size() ? "\n" : " ") );
+			{
+				o.append( "air" );
+			}
 			else
-				o.append( h.getName( i ) + (y + 1 == inputs.size() ? "\n" : " ") );
+			{
+				o.append( h.getName( i ) );
+			}
+
+			if ( y + 1 == this.inputs.size() )
+			{
+				o.append( "\n" );
+			}
+			else
+			{
+				o.append( " " );
+			}
 		}
 
 		return o.toString().trim();

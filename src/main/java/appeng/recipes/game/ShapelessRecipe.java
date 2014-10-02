@@ -37,7 +37,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 				StringBuilder ret = new StringBuilder( "Invalid shapeless ore recipe: " );
 				for (Object tmp : recipe)
 				{
-					ret.append( tmp + ", " );
+					ret.append( tmp ).append( ", " );
 				}
 				ret.append( output );
 				throw new RuntimeException( ret.toString() );
