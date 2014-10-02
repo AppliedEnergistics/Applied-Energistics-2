@@ -180,7 +180,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 						{
 							color = ib.getColorFromItemStack( randomItem, 0 );
 						}
-						catch (Throwable error)
+						catch (Throwable ignored)
 						{
 						}
 
@@ -484,7 +484,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 					}
 				}
 			}
-			catch (Throwable t)
+			catch (Throwable ignored)
 			{
 
 			}

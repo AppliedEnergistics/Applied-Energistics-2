@@ -19,7 +19,7 @@ public class MissingCoreMod extends CustomModLoadingErrorDisplayException
 			clz.getField( "mc" );
 			deobf = true;
 		}
-		catch (Throwable e)
+		catch (Throwable ignored)
 		{
 
 		}

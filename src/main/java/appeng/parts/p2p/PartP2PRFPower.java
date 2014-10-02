@@ -128,7 +128,7 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 
 				QueueTunnelDrain( PowerUnits.RF, total );
 			}
-			catch (GridAccessException e)
+			catch (GridAccessException ignored)
 			{
 			}
 

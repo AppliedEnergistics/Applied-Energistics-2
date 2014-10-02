@@ -757,7 +757,7 @@ public class Platform
 			// if this fails for some reason, try the other method.
 			return Loader.isModLoaded( modid );
 		}
-		catch (Throwable e)
+		catch (Throwable ignored)
 		{
 		}
 

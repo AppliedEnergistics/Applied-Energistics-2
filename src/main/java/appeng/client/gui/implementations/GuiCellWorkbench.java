@@ -123,7 +123,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 			else
 				super.actionPerformed( btn );
 		}
-		catch (IOException err)
+		catch (IOException ignored)
 		{
 		}
 	}

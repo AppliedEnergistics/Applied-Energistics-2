@@ -158,19 +158,19 @@ public class RecipeHandler implements IRecipeHandler
 						}
 
 					}
-					catch (RecipeError e1)
+					catch (RecipeError ignored)
 					{
 
 					}
-					catch (MissedIngredientSet e1)
+					catch (MissedIngredientSet ignored)
 					{
 
 					}
-					catch (RegistrationError e1)
+					catch (RegistrationError ignored)
 					{
 
 					}
-					catch (MissingIngredientError e1)
+					catch (MissingIngredientError ignored)
 					{
 
 					}

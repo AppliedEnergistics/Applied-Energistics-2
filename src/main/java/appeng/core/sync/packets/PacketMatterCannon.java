@@ -53,7 +53,7 @@ public class PacketMatterCannon extends AppEngPacket
 				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 			}
 		}
-		catch (Exception err)
+		catch (Exception ignored)
 		{
 		}
 	}

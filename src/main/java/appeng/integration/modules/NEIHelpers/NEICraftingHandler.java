@@ -39,10 +39,10 @@ public class NEICraftingHandler implements IOverlayHandler
 			List ingredients = recipe.getIngredientStacks( recipeIndex );
 			overlayRecipe( gui, ingredients, shift );
 		}
-		catch (Exception err)
+		catch (Exception ignored)
 		{
 		}
-		catch (Error err)
+		catch (Error ignored)
 		{
 		}
 	}
@@ -101,10 +101,10 @@ public class NEICraftingHandler implements IOverlayHandler
 				NetworkHandler.instance.sendToServer( new PacketNEIRecipe( recipe ) );
 			}
 		}
-		catch (Exception err)
+		catch (Exception ignored)
 		{
 		}
-		catch (Error err)
+		catch (Error ignored)
 		{
 		}
 	}

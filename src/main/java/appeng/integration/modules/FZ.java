@@ -43,10 +43,10 @@ public class FZ implements IFZ, IIntegrationModule
 
 			return i;
 		}
-		catch (IllegalArgumentException e)
+		catch (IllegalArgumentException ignored)
 		{
 		}
-		catch (IllegalAccessException e)
+		catch (IllegalAccessException ignored)
 		{
 		}
 		return null;
@@ -60,13 +60,13 @@ public class FZ implements IFZ, IIntegrationModule
 			if ( day_BarrelClass.isInstance( te ) )
 				return (Integer) day_getMaxSize.invoke( te );
 		}
-		catch (IllegalAccessException e)
+		catch (IllegalAccessException ignored)
 		{
 		}
-		catch (IllegalArgumentException e)
+		catch (IllegalArgumentException ignored)
 		{
 		}
-		catch (InvocationTargetException e)
+		catch (InvocationTargetException ignored)
 		{
 		}
 		return 0;
@@ -80,13 +80,13 @@ public class FZ implements IFZ, IIntegrationModule
 			if ( day_BarrelClass.isInstance( te ) )
 				return (Integer) day_getItemCount.invoke( te );
 		}
-		catch (IllegalAccessException e)
+		catch (IllegalAccessException ignored)
 		{
 		}
-		catch (IllegalArgumentException e)
+		catch (IllegalArgumentException ignored)
 		{
 		}
-		catch (InvocationTargetException e)
+		catch (InvocationTargetException ignored)
 		{
 		}
 		return 0;
@@ -100,10 +100,10 @@ public class FZ implements IFZ, IIntegrationModule
 			if ( day_BarrelClass.isInstance( te ) )
 				day_item.set( te, input == null ? null : input.copy() );
 		}
-		catch (IllegalArgumentException e)
+		catch (IllegalArgumentException ignored)
 		{
 		}
-		catch (IllegalAccessException e)
+		catch (IllegalAccessException ignored)
 		{
 		}
 	}
@@ -118,13 +118,13 @@ public class FZ implements IFZ, IIntegrationModule
 
 			te.markDirty();
 		}
-		catch (IllegalAccessException e)
+		catch (IllegalAccessException ignored)
 		{
 		}
-		catch (IllegalArgumentException e)
+		catch (IllegalArgumentException ignored)
 		{
 		}
-		catch (InvocationTargetException e)
+		catch (InvocationTargetException ignored)
 		{
 		}
 	}

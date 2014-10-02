@@ -86,7 +86,7 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 		{
 			nbt = accessor.getNBTData();
 		}
-		catch (NullPointerException npe)
+		catch (NullPointerException ignored)
 		{
 		}
 
@@ -105,7 +105,7 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 		{
 			nbt = accessor.getNBTData();
 		}
-		catch (NullPointerException npe)
+		catch (NullPointerException ignored)
 		{
 		}
 

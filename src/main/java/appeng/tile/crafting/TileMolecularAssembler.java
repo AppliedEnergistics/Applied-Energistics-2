@@ -561,7 +561,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		{
 			newState = gridProxy.isActive() && gridProxy.getEnergy().extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.0001;
 		}
-		catch (GridAccessException e)
+		catch (GridAccessException ignored)
 		{
 
 		}

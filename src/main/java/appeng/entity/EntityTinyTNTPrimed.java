@@ -152,7 +152,7 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 		{
 			CommonHelper.proxy.sendToAllNearExcept( null, posX, posY, posZ, 64, this.worldObj, new PacketMockExplosion( posX, posY, posZ ) );
 		}
-		catch (IOException e1)
+		catch (IOException ignored)
 		{
 		}
 	}

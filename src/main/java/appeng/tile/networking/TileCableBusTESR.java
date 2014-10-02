@@ -17,7 +17,7 @@ public class TileCableBusTESR extends TileCableBus
 				tcb.copyFrom( this );
 				getWorldObj().setTileEntity( xCoord, yCoord, zCoord, tcb );
 			}
-			catch (Throwable t)
+			catch (Throwable ignored)
 			{
 
 			}
