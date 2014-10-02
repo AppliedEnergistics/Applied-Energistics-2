@@ -41,61 +41,62 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 
 	public ItemBasicStorageCell(MaterialType whichCell, int Kilobytes) {
 		super( ItemBasicStorageCell.class, Kilobytes + "k" );
-		setFeature( EnumSet.of( AEFeature.StorageCells ) );
-		setMaxStackSize( 1 );
-		totalBytes = Kilobytes * 1024;
-		component = whichCell;
 
-		switch (component)
+		this.setFeature( EnumSet.of( AEFeature.StorageCells ) );
+		this.setMaxStackSize( 1 );
+		this.totalBytes = Kilobytes * 1024;
+		this.component = whichCell;
+
+		switch (this.component)
 		{
 		case Cell1kPart:
-			idleDrain = 0.5;
-			perType = 8;
+			this.idleDrain = 0.5;
+			this.perType = 8;
 			break;
 		case Cell4kPart:
-			idleDrain = 1.0;
-			perType = 32;
+			this.idleDrain = 1.0;
+			this.perType = 32;
 			break;
 		case Cell16kPart:
-			idleDrain = 1.5;
-			perType = 128;
+			this.idleDrain = 1.5;
+			this.perType = 128;
 			break;
 		case Cell64kPart:
-			idleDrain = 2.0;
-			perType = 512;
+			this.idleDrain = 2.0;
+			this.perType = 512;
 			break;
 		default:
-			idleDrain = 0.0;
-			perType = 8;
+			this.idleDrain = 0.0;
+			this.perType = 8;
 		}
 	}
 
 	@Override
 	public void addInformation(ItemStack i, EntityPlayer p, List l, boolean b)
 	{
-		IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( i, null, StorageChannel.ITEMS );
+		IMEInventory<IAEItemStack> inventory = AEApi.instance().registries().cell().getCellInventory( i, null, StorageChannel.ITEMS );
 
-		if ( cdi instanceof ICellInventoryHandler )
+		if ( inventory instanceof ICellInventoryHandler )
 		{
-			ICellInventoryHandler CI = (ICellInventoryHandler) cdi;
-			
-			ICellInventory cd = ((ICellInventoryHandler) cdi).getCellInv();
-			if (cd != null)
+			ICellInventoryHandler handler = (ICellInventoryHandler) inventory;
+			ICellInventory cellInventory = handler.getCellInv();
+
+			if (cellInventory != null)
 			{
-				l.add(cd.getUsedBytes() + " " + GuiText.Of.getLocal() + " "
-						+ cd.getTotalBytes() + " "
+				l.add(cellInventory.getUsedBytes() + " " + GuiText.Of.getLocal() + " "
+						+ cellInventory.getTotalBytes() + " "
 						+ GuiText.BytesUsed.getLocal());
 				
-				l.add(cd.getStoredItemTypes() + " " + GuiText.Of.getLocal()
-						+ " " + cd.getTotalItemTypes() + " "
+				l.add(cellInventory.getStoredItemTypes() + " " + GuiText.Of.getLocal()
+						+ " " + cellInventory.getTotalItemTypes() + " "
 						+ GuiText.Types.getLocal());
 				
-				if ( CI.isPreformatted() )
+				if ( handler.isPreformatted() )
 				{
-					String List = (CI.getIncludeExcludeMode() == IncludeExclude.WHITELIST ? GuiText.Included
+					String List = (handler.getIncludeExcludeMode() == IncludeExclude.WHITELIST ? GuiText.Included
 									: GuiText.Excluded ).getLocal();
 					
-					if ( CI.isFuzzy() )
+					if ( handler.isFuzzy() )
 						l.add( GuiText.Partitioned.getLocal() + " - " + List + " " + GuiText.Fuzzy.getLocal() );
 					else
 						l.add( GuiText.Partitioned.getLocal() + " - " + List + " " + GuiText.Precise.getLocal()  );
@@ -107,13 +108,13 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 
 	@Override
 	public int getBytes(ItemStack cellItem) {
-		return totalBytes;
+		return this.totalBytes;
 	}
 
 	@Override
 	public int BytePerType(ItemStack cell)
 	{
-		return 8;
+		return this.perType;
 	}
 
 	@Override
@@ -143,7 +144,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	@Override
 	public double getIdleDrain()
 	{
-		return idleDrain;
+		return this.idleDrain;
 	}
 
 	@Override
@@ -207,7 +208,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 				{
 					playerInventory.setInventorySlotContents( playerInventory.currentItem, null );
 
-					ItemStack extraB = ia.addItems( component.stack( 1 ) );
+					ItemStack extraB = ia.addItems( this.component.stack( 1 ) );
 					ItemStack extraA = ia.addItems( AEApi.instance().materials().materialEmptyStorageCell.stack( 1 ) );
 
 					if ( extraA != null )
