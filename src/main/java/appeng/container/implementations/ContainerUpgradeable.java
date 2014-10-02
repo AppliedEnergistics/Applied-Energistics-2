@@ -29,7 +29,7 @@ import appeng.util.Platform;
 public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSlotHost
 {
 
-	IUpgradeableHost upgradeable;
+	final IUpgradeableHost upgradeable;
 
 	int tbSlot;
 	NetworkToolViewer tbInventory;
@@ -52,8 +52,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 
 		if ( te instanceof IPart )
 		{
-			IUpgradeableHost myTile = te;
-			TileEntity mk = myTile.getTile();
+			TileEntity mk = te.getTile();
 			w = mk.getWorldObj();
 			xCoord = mk.xCoord;
 			yCoord = mk.yCoord;

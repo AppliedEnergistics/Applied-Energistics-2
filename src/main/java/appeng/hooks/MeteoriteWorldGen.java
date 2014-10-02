@@ -19,7 +19,7 @@ import cpw.mods.fml.common.IWorldGenerator;
 final public class MeteoriteWorldGen implements IWorldGenerator
 {
 
-	class myGen implements ICompassCallback
+	static class MyGen implements ICompassCallback
 	{
 
 		double distance = 0;
@@ -62,7 +62,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 		final int x;
 		final int z;
 		final World w;
-		int depth;
+		final int depth;
 
 		public MeteoriteSpawn(int x, int depth, int z, World w) {
 			this.x = x;

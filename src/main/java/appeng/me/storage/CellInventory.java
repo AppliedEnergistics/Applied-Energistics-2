@@ -1,7 +1,6 @@
 package appeng.me.storage;
 
 import java.util.HashSet;
-import java.util.Iterator;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -335,7 +334,7 @@ public class CellInventory implements ICellInventory
 		return 8 - div;
 	}
 
-	private static HashSet<Integer> blackList = new HashSet<Integer>();
+	private static final HashSet<Integer> blackList = new HashSet<Integer>();
 
 	public static void addBasicBlackList(int itemID, int Meta)
 	{

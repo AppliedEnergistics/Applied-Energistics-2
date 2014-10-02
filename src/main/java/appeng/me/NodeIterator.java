@@ -9,7 +9,7 @@ public class NodeIterator<IGridNode> implements Iterator<IGridNode>
 {
 
 	boolean hasMore;
-	Iterator lvl1;
+	final Iterator lvl1;
 	Iterator lvl2;
 
 	boolean pull()

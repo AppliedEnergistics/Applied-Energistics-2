@@ -48,9 +48,9 @@ public class ItemWatcher implements IStackWatcher
 
 	}
 
-	GridStorageCache gsc;
-	IStackWatcherHost myObject;
-	HashSet<IAEStack> myInterests = new HashSet<IAEStack>();
+	final GridStorageCache gsc;
+	final IStackWatcherHost myObject;
+	final HashSet<IAEStack> myInterests = new HashSet<IAEStack>();
 
 	public ItemWatcher(GridStorageCache cache, IStackWatcherHost host) {
 		gsc = cache;

@@ -22,8 +22,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 
 		if ( w.getChunkProvider().chunkExists( x >> 4, z >> 4 ) )
 		{
-			TileEntity te = w.getTileEntity( x, y, z );
-			return te;
+			return w.getTileEntity( x, y, z );
 		}
 
 		return null;
@@ -58,7 +57,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		config.readFromNBT( extra, "config" );
 	}
 
-	AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
+	final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
 
 	int adaptorHash = 0;
 	InventoryAdaptor adaptor;

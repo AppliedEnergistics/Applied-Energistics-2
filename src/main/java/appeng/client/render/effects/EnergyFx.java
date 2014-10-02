@@ -15,11 +15,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class EnergyFx extends EntityBreakingFX
 {
 
-	private IIcon particleTextureIndex;
+	private final IIcon particleTextureIndex;
 
-	private int startBlkX;
-	private int startBlkY;
-	private int startBlkZ;
+	private final int startBlkX;
+	private final int startBlkY;
+	private final int startBlkZ;
 
 	@Override
 	public int getFXLayer()

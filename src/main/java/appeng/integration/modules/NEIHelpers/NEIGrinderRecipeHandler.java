@@ -136,8 +136,7 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 	public String getGuiTexture()
 	{
 		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/guis/grinder.png" );
-		String f = loc.toString();
-		return f;
+		return loc.toString();
 	}
 
 	@Override
@@ -167,8 +166,8 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 	public class CachedGrindStoneRecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 
-		public ArrayList<PositionedStack> ingredients;
-		public PositionedStack result;
+		public final ArrayList<PositionedStack> ingredients;
+		public final PositionedStack result;
 
 		boolean hasOptional = false;
 		public String Chance;

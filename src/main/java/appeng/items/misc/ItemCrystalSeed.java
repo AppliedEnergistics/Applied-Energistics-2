@@ -39,9 +39,9 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	public static final int Fluix = SINGLE_OFFSET * 2;
 	public static final int END = SINGLE_OFFSET * 3;
 
-	IIcon certus[] = new IIcon[3];
-	IIcon fluix[] = new IIcon[3];
-	IIcon nether[] = new IIcon[3];
+	final IIcon[] certus = new IIcon[3];
+	final IIcon[] fluix = new IIcon[3];
+	final IIcon[] nether = new IIcon[3];
 
 	private int getProgress(ItemStack is)
 	{

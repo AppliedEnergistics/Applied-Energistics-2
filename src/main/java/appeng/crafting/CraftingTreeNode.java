@@ -19,18 +19,18 @@ public class CraftingTreeNode
 {
 
 	// parent node.
-	private CraftingTreeProcess parent;
-	private World world;
+	private final CraftingTreeProcess parent;
+	private final World world;
 
 	// what slot!
-	int slot;
+	final int slot;
 	int bytes = 0;
 
 	// what item is this?
-	private IAEItemStack what;
+	private final IAEItemStack what;
 
 	// what are the crafting patterns for this?
-	private ArrayList<CraftingTreeProcess> nodes = new ArrayList<CraftingTreeProcess>();
+	private final ArrayList<CraftingTreeProcess> nodes = new ArrayList<CraftingTreeProcess>();
 
 	boolean canEmit = false;
 	boolean cannotUse = false;
@@ -38,8 +38,8 @@ public class CraftingTreeNode
 	long missing = 0;
 	long howManyEmitted = 0;
 
-	CraftingJob job;
-	IItemList<IAEItemStack> used = AEApi.instance().storage().createItemList();
+	final CraftingJob job;
+	final IItemList<IAEItemStack> used = AEApi.instance().storage().createItemList();
 	boolean exhausted = false;
 
 	boolean sim;

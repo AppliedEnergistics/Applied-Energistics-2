@@ -11,7 +11,7 @@ import appeng.api.storage.data.IAEStack;
 public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 {
 
-	int oldStatus = 0;
+	final int oldStatus = 0;
 	final ItemStack is;
 	final ICellHandler handler;
 	final IChestOrDrive cord;

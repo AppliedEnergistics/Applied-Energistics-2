@@ -46,7 +46,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartCable extends AEBasePart implements IPartCable
 {
 
-	int channelsOnSide[] = new int[] { 0, 0, 0, 0, 0, 0 };
+	final int[] channelsOnSide = new int[] { 0, 0, 0, 0, 0, 0 };
 
 	EnumSet<ForgeDirection> connections = EnumSet.noneOf( ForgeDirection.class );
 	boolean powered = false;

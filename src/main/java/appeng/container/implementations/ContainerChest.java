@@ -8,7 +8,7 @@ import appeng.tile.storage.TileChest;
 public class ContainerChest extends AEBaseContainer
 {
 
-	TileChest chest;
+	final TileChest chest;
 
 	public ContainerChest(InventoryPlayer ip, TileChest chest) {
 		super( ip, chest, null );

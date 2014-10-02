@@ -14,10 +14,10 @@ public class IntegrationNode
 	IntegrationStage failedStage = IntegrationStage.PRE_INIT;
 	Throwable exception = null;
 
-	String displayName;
-	String modID;
+	final String displayName;
+	final String modID;
 
-	IntegrationType shortName;
+	final IntegrationType shortName;
 	String name = null;
 	Class classValue = null;
 	Object instance;

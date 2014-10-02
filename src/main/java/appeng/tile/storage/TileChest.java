@@ -77,9 +77,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	static final int front[] = new int[] { 1 };
 	static final int noSlots[] = new int[] {};
 
-	AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
-	BaseActionSource mySrc = new MachineSource( this );
-	IConfigManager config = new ConfigManager( this );
+	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
+	final BaseActionSource mySrc = new MachineSource( this );
+	final IConfigManager config = new ConfigManager( this );
 
 	ItemStack storageType;
 	long lastStateChange = 0;
@@ -475,7 +475,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 				IStorageGrid gs = gridProxy.getStorage();
 				Platform.postChanges( gs, removed, added, mySrc );
 			}
-			catch (GridAccessException e)
+			catch (GridAccessException ignored)
 			{
 
 			}
@@ -512,7 +512,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 					inv.setInventorySlotContents( 0, returns.getItemStack() );
 			}
 		}
-		catch (ChestNoHandler t)
+		catch (ChestNoHandler ignored)
 		{
 		}
 	}
@@ -541,7 +541,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 				IAEItemStack returns = cell.injectItems( AEApi.instance().storage().createItemStack( inv.getStackInSlot( 0 ) ), Actionable.SIMULATE, mySrc );
 				return returns == null || returns.getStackSize() != itemstack.stackSize;
 			}
-			catch (ChestNoHandler t)
+			catch (ChestNoHandler ignored)
 			{
 			}
 		}
@@ -638,7 +638,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 				if ( handler instanceof ChestMonitorHandler )
 					return ch.getStatusForCell( cell, ((ChestMonitorHandler) handler).getInternalHandler() );
 			}
-			catch (ChestNoHandler e)
+			catch (ChestNoHandler ignored)
 			{
 			}
 
@@ -648,7 +648,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 				if ( handler instanceof ChestMonitorHandler )
 					return ch.getStatusForCell( cell, ((ChestMonitorHandler) handler).getInternalHandler() );
 			}
-			catch (ChestNoHandler e)
+			catch (ChestNoHandler ignored)
 			{
 			}
 		}
@@ -675,7 +675,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 				return resource.amount - (int) results.getStackSize();
 			}
-			catch (ChestNoHandler e)
+			catch (ChestNoHandler ignored)
 			{
 			}
 		}
@@ -702,7 +702,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			IMEInventoryHandler h = getHandler( StorageChannel.FLUIDS );
 			return h.canAccept( AEFluidStack.create( new FluidStack( fluid, 1 ) ) );
 		}
-		catch (ChestNoHandler e)
+		catch (ChestNoHandler ignored)
 		{
 		}
 		return false;
@@ -723,7 +723,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			if ( h.getChannel() == StorageChannel.FLUIDS )
 				return new FluidTankInfo[] { new FluidTankInfo( null, 1 ) }; // eh?
 		}
-		catch (ChestNoHandler e)
+		catch (ChestNoHandler ignored)
 		{
 		}
 
@@ -766,7 +766,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			{
 				gridPowered = gridProxy.getEnergy().isNetworkPowered();
 			}
-			catch (GridAccessException e)
+			catch (GridAccessException ignored)
 			{
 			}
 		}
@@ -824,11 +824,10 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	{
 		try
 		{
-			IMEInventoryHandler ih = this.getHandler( StorageChannel.ITEMS );
-			if ( ch != null && ih != null )
+			IMEInventoryHandler invHandler = this.getHandler( StorageChannel.ITEMS );
+			if ( ch != null && invHandler != null )
 			{
-				IMEInventoryHandler mine = ih;
-				ch.openChestGui( p, this, ch, mine, cell, StorageChannel.ITEMS );
+				ch.openChestGui( p, this, ch, invHandler, cell, StorageChannel.ITEMS );
 				return true;
 			}
 
@@ -840,11 +839,10 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 		try
 		{
-			IMEInventoryHandler fh = this.getHandler( StorageChannel.FLUIDS );
-			if ( ch != null && fh != null )
+			IMEInventoryHandler invHandler = this.getHandler( StorageChannel.FLUIDS );
+			if ( ch != null && invHandler != null )
 			{
-				IMEInventoryHandler mine = fh;
-				ch.openChestGui( p, this, ch, mine, cell, StorageChannel.FLUIDS );
+				ch.openChestGui( p, this, ch, invHandler, cell, StorageChannel.FLUIDS );
 				return true;
 			}
 		}

@@ -40,7 +40,7 @@ public class ToolChargedStaff extends AEBasePoweredItem
 						ServerHelper.proxy.sendToAllNearExcept( null, dx, dy, dz, 32.0, target.worldObj, new PacketLightning( dx, dy, dz ) );
 					}
 				}
-				catch (IOException e)
+				catch (IOException ignored)
 				{
 
 				}

@@ -42,7 +42,6 @@ import appeng.client.me.InternalSlotME;
 import appeng.client.me.SlotME;
 import appeng.container.guisync.GuiSync;
 import appeng.container.guisync.SyncData;
-import appeng.container.slot.SlotInaccessible;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
@@ -72,7 +71,7 @@ public abstract class AEBaseContainer extends Container
 	int ticksSinceCheck = 900;
 
 	IAEItemStack clientRequestedTargetItem = null;
-	List<PacketPartialItem> dataChunks = new LinkedList<PacketPartialItem>();
+	final List<PacketPartialItem> dataChunks = new LinkedList<PacketPartialItem>();
 
 	public void postPartial(PacketPartialItem packetPartialItem)
 	{
@@ -216,7 +215,7 @@ public abstract class AEBaseContainer extends Container
 	public ContainerOpenContext openContext;
 
 	protected IMEInventoryHandler<IAEItemStack> cellInv;
-	protected HashSet<Integer> locked = new HashSet<Integer>();
+	protected final HashSet<Integer> locked = new HashSet<Integer>();
 	protected IEnergySource powerSrc;
 
 	public void lockPlayerInventorySlot(int idx)
@@ -560,7 +559,7 @@ public abstract class AEBaseContainer extends Container
 		detectAndSendChanges();
 	}
 
-	HashMap<Integer, SyncData> syncData = new HashMap<Integer, SyncData>();
+	final HashMap<Integer, SyncData> syncData = new HashMap<Integer, SyncData>();
 
 	@Override
 	public void detectAndSendChanges()

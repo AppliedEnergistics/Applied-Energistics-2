@@ -71,7 +71,7 @@ public class BC extends BaseModule implements IBC
 					if ( ((TileGenericPipe) te).hasPlug( dir.getOpposite() ) )
 						return false;
 			}
-			catch (Exception err)
+			catch (Exception ignored)
 			{
 			}
 
@@ -285,7 +285,7 @@ public class BC extends BaseModule implements IBC
 			ItemStack fs = ItemFacade.getFacade( blk, meta );
 			return new FacadePart( fs, side );
 		}
-		catch (Throwable t)
+		catch (Throwable ignored)
 		{
 
 		}
@@ -295,7 +295,7 @@ public class BC extends BaseModule implements IBC
 			ItemStack fs = ItemFacade.getStack( blk, meta );
 			return new FacadePart( fs, side );
 		}
-		catch (Throwable t)
+		catch (Throwable ignored)
 		{
 
 		}
@@ -322,7 +322,7 @@ public class BC extends BaseModule implements IBC
 			if ( blk[0] != null )
 				return new ItemStack( blk[0], 1, meta[0] );
 		}
-		catch (Throwable t)
+		catch (Throwable ignored)
 		{
 
 		}
@@ -333,7 +333,7 @@ public class BC extends BaseModule implements IBC
 			if ( blk != null )
 				return new ItemStack( blk, 1, ItemFacade.getMetaData( facade ) );
 		}
-		catch (Throwable t)
+		catch (Throwable ignored)
 		{
 
 		}
@@ -348,7 +348,7 @@ public class BC extends BaseModule implements IBC
 		{
 			return BuildCraftTransport.instance.pipeIconProvider.getIcon( PipeIconProvider.TYPE.PipeStructureCobblestone.ordinal() ); // Structure
 		}
-		catch (Throwable t)
+		catch (Throwable ignored)
 		{
 		}
 		return null;

@@ -9,7 +9,7 @@ import appeng.util.Platform;
 public class ContainerWirelessTerm extends ContainerMEPortableCell
 {
 
-	WirelessTerminalGuiObject wirelessTerminalGUIObject;
+	final WirelessTerminalGuiObject wirelessTerminalGUIObject;
 
 	public ContainerWirelessTerm(InventoryPlayer ip, WirelessTerminalGuiObject wirelessTerminalGUIObject) {
 		super( ip, wirelessTerminalGUIObject );

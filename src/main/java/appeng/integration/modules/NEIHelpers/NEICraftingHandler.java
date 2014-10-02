@@ -28,8 +28,8 @@ public class NEICraftingHandler implements IOverlayHandler
 		offsetY = y;
 	}
 
-	int offsetX;
-	int offsetY;
+	final int offsetX;
+	final int offsetY;
 
 	@Override
 	public void overlayRecipe(GuiContainer gui, IRecipeHandler recipe, int recipeIndex, boolean shift)
@@ -39,10 +39,10 @@ public class NEICraftingHandler implements IOverlayHandler
 			List ingredients = recipe.getIngredientStacks( recipeIndex );
 			overlayRecipe( gui, ingredients, shift );
 		}
-		catch (Exception err)
+		catch (Exception ignored)
 		{
 		}
-		catch (Error err)
+		catch (Error ignored)
 		{
 		}
 	}
@@ -65,8 +65,7 @@ public class NEICraftingHandler implements IOverlayHandler
 						{
 							if ( slot instanceof SlotCraftingMatrix || slot instanceof SlotFakeCraftingMatrix )
 							{
-								Slot ctSlot = slot;
-								if ( ctSlot.getSlotIndex() == col + row * 3 )
+								if ( slot.getSlotIndex() == col + row * 3 )
 								{
 									NBTTagList tags = new NBTTagList();
 									List<ItemStack> list = new LinkedList<ItemStack>();
@@ -91,7 +90,7 @@ public class NEICraftingHandler implements IOverlayHandler
 										tags.appendTag( tag );
 									}
 
-									recipe.setTag( "#" + ctSlot.getSlotIndex(), tags );
+									recipe.setTag( "#" + slot.getSlotIndex(), tags );
 									break;
 								}
 							}
@@ -102,10 +101,10 @@ public class NEICraftingHandler implements IOverlayHandler
 				NetworkHandler.instance.sendToServer( new PacketNEIRecipe( recipe ) );
 			}
 		}
-		catch (Exception err)
+		catch (Exception ignored)
 		{
 		}
-		catch (Error err)
+		catch (Error ignored)
 		{
 		}
 	}

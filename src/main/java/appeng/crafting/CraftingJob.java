@@ -27,9 +27,9 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 	IAEItemStack output;
 
-	IItemList<IAEItemStack> storage;
+	final IItemList<IAEItemStack> storage;
 
-	HashSet<IAEItemStack> prophecies;
+	final HashSet<IAEItemStack> prophecies;
 
 	boolean simulate = false;
 	final MECraftingInventory original;
@@ -40,7 +40,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 	private ICraftingCallback callback;
 
 	long bytes = 0;
-	World world;
+	final World world;
 
 	@Override
 	public IAEItemStack getOutput()
@@ -105,8 +105,8 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 	}
 
-	IItemList<IAEItemStack> crafting = AEApi.instance().storage().createItemList();
-	IItemList<IAEItemStack> missing = AEApi.instance().storage().createItemList();
+	final IItemList<IAEItemStack> crafting = AEApi.instance().storage().createItemList();
+	final IItemList<IAEItemStack> missing = AEApi.instance().storage().createItemList();
 
 	public void addTask(IAEItemStack what, long crafts, ICraftingPatternDetails details, int depth)
 	{
@@ -124,14 +124,14 @@ public class CraftingJob implements Runnable, ICraftingJob
 		missing.add( what );
 	}
 
-	class twoIntegers
+	static class TwoIntegers
 	{
 
-		public long perOp = 0;
-		public long times = 0;
+		public final long perOp = 0;
+		public final long times = 0;
 	}
 
-	HashMap<String, twoIntegers> opsAndMultiplier = new HashMap<String, twoIntegers>();
+	final HashMap<String, TwoIntegers> opsAndMultiplier = new HashMap<String, TwoIntegers>();
 
 	@Override
 	public void run()
@@ -154,7 +154,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 				for (String s : opsAndMultiplier.keySet())
 				{
-					twoIntegers ti = opsAndMultiplier.get( s );
+					TwoIntegers ti = opsAndMultiplier.get( s );
 					AELog.crafting( s + " * " + ti.times + " = " + (ti.perOp * ti.times) );
 				}
 
@@ -180,7 +180,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 					for (String s : opsAndMultiplier.keySet())
 					{
-						twoIntegers ti = opsAndMultiplier.get( s );
+						TwoIntegers ti = opsAndMultiplier.get( s );
 						AELog.crafting( s + " * " + ti.times + " = " + (ti.perOp * ti.times) );
 					}
 
@@ -257,8 +257,8 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 	private boolean running = false;
 	private boolean done = false;
-	private Object monitor = new Object();
-	private Stopwatch watch = Stopwatch.createUnstarted();
+	private final Object monitor = new Object();
+	private final Stopwatch watch = Stopwatch.createUnstarted();
 	private int time = 5;
 
 	/**
@@ -290,7 +290,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 				{
 					monitor.wait();
 				}
-				catch (InterruptedException e)
+				catch (InterruptedException ignored)
 				{
 				}
 			}

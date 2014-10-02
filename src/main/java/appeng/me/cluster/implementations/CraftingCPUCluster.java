@@ -58,7 +58,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 {
 
-	class TaskProgress
+	static class TaskProgress
 	{
 
 		long value;
@@ -73,9 +73,9 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	boolean waiting = false;
 	private boolean isComplete = true;
-	int usedOps[] = new int[3];
+	final int[] usedOps = new int[3];
 
-	Map<ICraftingPatternDetails, TaskProgress> tasks = new HashMap<ICraftingPatternDetails, TaskProgress>();
+	final Map<ICraftingPatternDetails, TaskProgress> tasks = new HashMap<ICraftingPatternDetails, TaskProgress>();
 	IItemList<IAEItemStack> waitingFor = AEApi.instance().storage().createItemList();
 
 	// instance sate
@@ -90,8 +90,8 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	public String myName = "";
 
 	int accelerator = 0;
-	public WorldCoord min;
-	public WorldCoord max;
+	public final WorldCoord min;
+	public final WorldCoord max;
 	public boolean isDestroyed = false;
 
 	private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object>();

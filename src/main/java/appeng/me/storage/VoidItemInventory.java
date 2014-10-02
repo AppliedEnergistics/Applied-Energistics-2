@@ -12,7 +12,7 @@ import appeng.tile.misc.TileCondenser;
 public class VoidItemInventory implements IMEInventoryHandler<IAEItemStack>
 {
 
-	TileCondenser target;
+	final TileCondenser target;
 
 	public VoidItemInventory(TileCondenser te) {
 		target = te;

@@ -161,9 +161,9 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 	}
 
 	@Override
-	public int getDisplayDamage(ItemStack is)
+	public double getDurabilityForDisplay(ItemStack is)
 	{
-		return 32 - (int) (32 * (getAECurrentPower( is ) / getAEMaxPower( is )));
+		return 1 - getAECurrentPower( is ) / getAEMaxPower( is );
 	}
 
 	@Override

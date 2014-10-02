@@ -18,7 +18,7 @@ import appeng.util.inv.ItemListIgnoreCrafting;
 public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T> implements IMEMonitor<T>, IMEMonitorHandlerReceiver<T>
 {
 
-	HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<T>, Object>();
+	final HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<T>, Object>();
 	IMEMonitor<T> monitor;
 
 	public BaseActionSource changeSource;

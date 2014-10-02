@@ -18,18 +18,18 @@ import appeng.api.storage.IExternalStorageRegistry;
 public class RegistryContainer implements IRegistryContainer
 {
 
-	private GrinderRecipeManager GrinderRecipes = new GrinderRecipeManager();
-	private ExternalStorageRegistry ExternalStorageHandlers = new ExternalStorageRegistry();
-	private CellRegistry CellRegistry = new CellRegistry();
-	private LocatableRegistry LocatableRegistry = new LocatableRegistry();
-	private SpecialComparisonRegistry SpecialComparisonRegistry = new SpecialComparisonRegistry();
-	private WirelessRegistry WirelessRegistry = new WirelessRegistry();
-	private GridCacheRegistry GridCacheRegistry = new GridCacheRegistry();
-	private P2PTunnelRegistry P2PRegistry = new P2PTunnelRegistry();
-	private MovableTileRegistry MovableReg = new MovableTileRegistry();
-	private MatterCannonAmmoRegistry matterCannonReg = new MatterCannonAmmoRegistry();
-	private PlayerRegistry playerRegistry = new PlayerRegistry();
-	private IRecipeHandlerRegistry recipeReg = new RecipeHandlerRegistry();
+	private final GrinderRecipeManager GrinderRecipes = new GrinderRecipeManager();
+	private final ExternalStorageRegistry ExternalStorageHandlers = new ExternalStorageRegistry();
+	private final CellRegistry CellRegistry = new CellRegistry();
+	private final LocatableRegistry LocatableRegistry = new LocatableRegistry();
+	private final SpecialComparisonRegistry SpecialComparisonRegistry = new SpecialComparisonRegistry();
+	private final WirelessRegistry WirelessRegistry = new WirelessRegistry();
+	private final GridCacheRegistry GridCacheRegistry = new GridCacheRegistry();
+	private final P2PTunnelRegistry P2PRegistry = new P2PTunnelRegistry();
+	private final MovableTileRegistry MovableReg = new MovableTileRegistry();
+	private final MatterCannonAmmoRegistry matterCannonReg = new MatterCannonAmmoRegistry();
+	private final PlayerRegistry playerRegistry = new PlayerRegistry();
+	private final IRecipeHandlerRegistry recipeReg = new RecipeHandlerRegistry();
 
 	@Override
 	public IWirelessTermRegistry wireless()

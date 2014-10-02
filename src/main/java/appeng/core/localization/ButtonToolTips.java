@@ -38,7 +38,7 @@ public enum ButtonToolTips
 
 	Craft, Mod, DoesntDespawn, EmitterMode, CraftViaRedstone, EmitWhenCrafting, ReportInaccessibleItems, ReportInaccessibleItemsYes, ReportInaccessibleItemsNo;
 
-	String root;
+	final String root;
 
 	ButtonToolTips() {
 		root = "gui.tooltips.appliedenergistics2";

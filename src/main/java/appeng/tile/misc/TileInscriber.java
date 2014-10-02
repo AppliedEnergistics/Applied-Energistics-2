@@ -3,11 +3,13 @@ package appeng.tile.misc;
 import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EnumSet;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -46,7 +48,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	final int bottom[] = new int[] { 1 };
 	final int sides[] = new int[] { 2, 3 };
 
-	AppEngInternalInventory inv = new AppEngInternalInventory( this, 4 );
+	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 4 );
 
 	public final int maxProcessingTime = 100;
 	public int processingTime = 0;
@@ -58,8 +60,8 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	public long clientStart;
 
 	static final ItemStack inscriberStack = AEApi.instance().blocks().blockInscriber.stack( 1 );
-	private IConfigManager settings = new ConfigManager( this );
-	private UpgradeInventory upgrades = new UpgradeInventory( inscriberStack, this, getUpgradeSlots() );
+	private final IConfigManager settings = new ConfigManager( this );
+	private final UpgradeInventory upgrades = new UpgradeInventory( inscriberStack, this, getUpgradeSlots() );
 
 	@Override
 	public AECableType getCableConnectionType(ForgeDirection dir)
@@ -445,6 +447,19 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	protected int getUpgradeSlots()
 	{
 		return 3;
+	}
+
+	@Override
+	public void getDrops(World w, int x, int y, int z, ArrayList<ItemStack> drops)
+	{
+		super.getDrops( w, x, y, z, drops );
+
+		for (int h = 0; h < upgrades.getSizeInventory(); h++)
+		{
+			ItemStack is = upgrades.getStackInSlot( h );
+			if ( is != null )
+				drops.add( is );
+		}
 	}
 
 	@Override

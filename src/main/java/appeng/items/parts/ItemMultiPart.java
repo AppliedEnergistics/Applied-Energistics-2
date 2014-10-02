@@ -33,7 +33,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 {
 
-	class PartTypeIst
+	static class PartTypeIst
 	{
 
 		PartType part;
@@ -43,7 +43,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		IIcon ico;
 	}
 
-	HashMap<Integer, PartTypeIst> dmgToPart = new HashMap<Integer, PartTypeIst>();
+	final HashMap<Integer, PartTypeIst> dmgToPart = new HashMap<Integer, PartTypeIst>();
 
 	public static ItemMultiPart instance;
 
@@ -135,8 +135,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 	@Override
 	public IIcon getIconFromDamage(int dmg)
 	{
-		IIcon ico = dmgToPart.get( dmg ).ico;
-		return ico;
+		return this.dmgToPart.get( dmg ).ico;
 	}
 
 	@Override

@@ -13,7 +13,7 @@ import appeng.api.storage.StorageChannel;
 public class CellRegistry implements ICellRegistry
 {
 
-	List<ICellHandler> handlers;
+	final List<ICellHandler> handlers;
 
 	public CellRegistry() {
 		handlers = new ArrayList<ICellHandler>();

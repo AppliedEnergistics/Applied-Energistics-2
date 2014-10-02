@@ -1,7 +1,6 @@
 package appeng.container.implementations;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
@@ -23,14 +22,14 @@ import appeng.tile.misc.TileSecurity;
 public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppEngInventory
 {
 
-	SlotRestrictedInput configSlot;
+	final SlotRestrictedInput configSlot;
 
-	AppEngInternalInventory wirelessEncoder = new AppEngInternalInventory( this, 2 );
+	final AppEngInternalInventory wirelessEncoder = new AppEngInternalInventory( this, 2 );
 
-	SlotRestrictedInput wirelessIn;
-	SlotOutput wirelessOut;
+	final SlotRestrictedInput wirelessIn;
+	final SlotOutput wirelessOut;
 
-	TileSecurity securityBox;
+	final TileSecurity securityBox;
 
 	public ContainerSecurity(InventoryPlayer ip, ITerminalHost monitorable) {
 		super( ip, monitorable, false );

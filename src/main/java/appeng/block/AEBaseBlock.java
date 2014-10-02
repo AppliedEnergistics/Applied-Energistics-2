@@ -59,8 +59,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class AEBaseBlock extends BlockContainer implements IAEFeature
 {
 
-	private String featureFullName;
-	private String featureSubName;
+	private final String featureFullName;
+	private final String featureSubName;
 	private AEFeatureHandler feature;
 
 	private Class<? extends TileEntity> tileEntityType = null;
@@ -630,12 +630,6 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		}
 		else
 			super.addCollisionBoxesToList( w, x, y, z, bb, out, e );
-	}
-
-	@Override
-	public void onBlockDestroyedByPlayer(World par1World, int par2, int par3, int par4, int par5)
-	{
-		super.onBlockDestroyedByPlayer( par1World, par2, par3, par4, par5 );
 	}
 
 	public boolean onActivated(World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)

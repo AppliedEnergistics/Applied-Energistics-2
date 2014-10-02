@@ -31,12 +31,12 @@ public class StorageHelper
 		return instance;
 	}
 
-	class triggerUpdates implements ISpatialVisitor
+	static class TriggerUpdates implements ISpatialVisitor
 	{
 
-		World dst;
+		final World dst;
 
-		public triggerUpdates(World dst2) {
+		public TriggerUpdates(World dst2) {
 			dst = dst2;
 		}
 
@@ -48,12 +48,12 @@ public class StorageHelper
 		}
 	}
 
-	class WrapInMatrixFrame implements ISpatialVisitor
+	static class WrapInMatrixFrame implements ISpatialVisitor
 	{
 
-		World dst;
-		Block blkID;
-		int Meta;
+		final World dst;
+		final Block blkID;
+		final int Meta;
 
 		public WrapInMatrixFrame(Block blockID, int metaData, World dst2) {
 			dst = dst2;
@@ -68,7 +68,7 @@ public class StorageHelper
 		}
 	}
 
-	class TelDestination
+	static class TelDestination
 	{
 
 		TelDestination(World _dim, AxisAlignedBB srcBox, double _x, double _y, double _z, int tileX, int tileY, int tileZ) {
@@ -91,10 +91,10 @@ public class StorageHelper
 		final int zOff;
 	}
 
-	class METeleporter extends Teleporter
+	static class METeleporter extends Teleporter
 	{
 
-		TelDestination dest;
+		final TelDestination dest;
 
 		public METeleporter(WorldServer par1WorldServer, TelDestination d) {
 			super( par1WorldServer );
@@ -303,11 +303,11 @@ public class StorageHelper
 		for (WorldCoord wc : cSrc.updates)
 			cSrc.world.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.air );
 
-		transverseEdges( x - 1, y - 1, z - 1, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1, new triggerUpdates( src ) );
-		transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new triggerUpdates( dst ) );
+		transverseEdges( x - 1, y - 1, z - 1, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1, new TriggerUpdates( src ) );
+		transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new TriggerUpdates( dst ) );
 
-		transverseEdges( x, y, z, x + scaleX, y + scaleY, z + scaleZ, new triggerUpdates( src ) );
-		transverseEdges( i, j, k, i + scaleX, j + scaleY, k + scaleZ, new triggerUpdates( dst ) );
+		transverseEdges( x, y, z, x + scaleX, y + scaleY, z + scaleZ, new TriggerUpdates( src ) );
+		transverseEdges( i, j, k, i + scaleX, j + scaleY, k + scaleZ, new TriggerUpdates( dst ) );
 
 		/*
 		 * IChunkProvider cp = dest.getChunkProvider(); if ( cp instanceof ChunkProviderServer ) { ChunkProviderServer

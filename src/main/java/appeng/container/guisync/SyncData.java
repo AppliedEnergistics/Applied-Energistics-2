@@ -17,10 +17,10 @@ public class SyncData
 
 	private Object clientVersion;
 
-	private AEBaseContainer source;
-	private Field field;
+	private final AEBaseContainer source;
+	private final Field field;
 
-	private int channel;
+	private final int channel;
 
 	public SyncData(AEBaseContainer container, Field field, GuiSync annotation) {
 		clientVersion = null;

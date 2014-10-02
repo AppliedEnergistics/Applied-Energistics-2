@@ -38,8 +38,10 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 
 	public ToolNetworkTool() {
 		super( ToolNetworkTool.class, null );
-		setFeature( EnumSet.of( AEFeature.NetworkTool ) );
-		setMaxStackSize( 1 );
+
+		this.setFeature( EnumSet.of( AEFeature.NetworkTool ) );
+		this.setMaxStackSize( 1 );
+		this.setHarvestLevel( "wrench", 0 );
 	}
 
 	@Override

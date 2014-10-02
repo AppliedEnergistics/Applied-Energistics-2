@@ -30,10 +30,10 @@ import appeng.util.Platform;
 public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 {
 
-	ItemRepo repo;
+	final ItemRepo repo;
 	GuiImgButton units;
 
-	int rows = 4;
+	final int rows = 4;
 
 	public GuiNetworkStatus(InventoryPlayer inventoryPlayer, INetworkTool te) {
 		super( new ContainerNetworkStatus( inventoryPlayer, te ) );

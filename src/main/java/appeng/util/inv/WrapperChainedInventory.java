@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 public class WrapperChainedInventory implements IInventory
 {
 
-	class InvOffset
+	static class InvOffset
 	{
 
 		int offset;

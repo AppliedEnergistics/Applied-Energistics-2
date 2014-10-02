@@ -35,7 +35,7 @@ public class ASMTweaker implements IClassTransformer
 
 	}
 
-	Multimap<String, publicLine> privateToPublicMethods = HashMultimap.create();
+	final Multimap<String, publicLine> privateToPublicMethods = HashMultimap.create();
 
 	public ASMTweaker() {
 		privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new publicLine( "func_146977_a", "(Lnet/minecraft/inventory/Slot;)V" ) );
@@ -54,7 +54,7 @@ public class ASMTweaker implements IClassTransformer
 	public byte[] transform(String name, String transformedName, byte[] basicClass)
 	{
 		if ( basicClass == null )
-			return basicClass;
+			return null;
 
 		try
 		{
@@ -79,9 +79,7 @@ public class ASMTweaker implements IClassTransformer
 							MethodNode newNode = new MethodNode( Opcodes.ACC_PUBLIC, "func_146977_a_original", mn.desc, mn.signature, new String[0] );
 							newNode.instructions.add( new VarInsnNode( Opcodes.ALOAD, 0 ) );
 							newNode.instructions.add( new VarInsnNode( Opcodes.ALOAD, 1 ) );
-							//newNode.instructions.add( new MethodInsnNode( Opcodes.INVOKESPECIAL, classNode.name, mn.name, mn.desc, false ) );
-							// TODO: Update for newer forge
-							newNode.instructions.add( new MethodInsnNode( Opcodes.INVOKESPECIAL, classNode.name, mn.name, mn.desc ) );
+							newNode.instructions.add( new MethodInsnNode( Opcodes.INVOKESPECIAL, classNode.name, mn.name, mn.desc, false ) );
 							newNode.instructions.add( new InsnNode( Opcodes.RETURN ) );
 							log( newNode.name + newNode.desc + " - New Method" );
 							classNode.methods.add( newNode );
@@ -103,9 +101,7 @@ public class ASMTweaker implements IClassTransformer
 									if ( n.name.equals( "func_146977_a" ) || (n.name.equals( "a" ) && n.desc.equals( "(Lzk;)V" )) )
 									{
 										log( n.name + n.desc + " - Invoke Virtual" );
-										//mn.instructions.insertBefore( n, new MethodInsnNode( Opcodes.INVOKEVIRTUAL, n.owner, n.name, n.desc, false ) );
-										// TODO: Update for newer forge
-										mn.instructions.insertBefore( n, new MethodInsnNode( Opcodes.INVOKEVIRTUAL, n.owner, n.name, n.desc ) );
+										mn.instructions.insertBefore( n, new MethodInsnNode( Opcodes.INVOKEVIRTUAL, n.owner, n.name, n.desc, false ) );
 										mn.instructions.remove( in );
 										break;
 									}
@@ -120,7 +116,7 @@ public class ASMTweaker implements IClassTransformer
 				return writer.toByteArray();
 			}
 		}
-		catch (Throwable t)
+		catch (Throwable ignored)
 		{
 		}
 

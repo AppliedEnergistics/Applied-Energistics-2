@@ -86,7 +86,7 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 		{
 			nbt = accessor.getNBTData();
 		}
-		catch (NullPointerException npe)
+		catch (NullPointerException ignored)
 		{
 		}
 
@@ -105,7 +105,7 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 		{
 			nbt = accessor.getNBTData();
 		}
-		catch (NullPointerException npe)
+		catch (NullPointerException ignored)
 		{
 		}
 
@@ -122,13 +122,11 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 			SelectedPart sp = ((IPartHost) te).selectPart( Pos );
 			if ( sp.facade != null )
 			{
-				IFacadePart fp = sp.facade;
-				ThingOfInterest = fp;
+				ThingOfInterest = sp.facade;
 			}
 			else if ( sp.part != null )
 			{
-				IPart part = sp.part;
-				ThingOfInterest = part;
+				ThingOfInterest = sp.part;
 			}
 		}
 
@@ -136,10 +134,9 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 		{
 			if ( ThingOfInterest instanceof PartCableSmart || ThingOfInterest instanceof PartDenseCable )
 			{
-				NBTTagCompound c = nbt;
-				if ( c != null && c.hasKey( "extra:6" ) )
+				if ( nbt != null && nbt.hasKey( "extra:6" ) )
 				{
-					NBTTagCompound ic = c.getCompoundTag( "extra:6" );
+					NBTTagCompound ic = nbt.getCompoundTag( "extra:6" );
 					if ( ic != null && ic.hasKey( "usedChannels" ) )
 					{
 						int channels = ic.getByte( "usedChannels" );
@@ -151,11 +148,10 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 
 			if ( ThingOfInterest instanceof TileEnergyCell )
 			{
-				NBTTagCompound c = nbt;
-				if ( c != null && c.hasKey( "internalCurrentPower" ) )
+				if ( nbt != null && nbt.hasKey( "internalCurrentPower" ) )
 				{
 					TileEnergyCell tec = (TileEnergyCell) ThingOfInterest;
-					long power = (long) (100 * c.getDouble( "internalCurrentPower" ));
+					long power = (long) (100 * nbt.getDouble( "internalCurrentPower" ));
 					currentToolTip.add( WailaText.Contains + ": " + Platform.formatPowerLong( power, false ) + " / "
 							+ Platform.formatPowerLong( (long) (100 * tec.getAEMaxPower()), false ) );
 				}

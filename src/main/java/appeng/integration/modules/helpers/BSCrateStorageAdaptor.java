@@ -15,8 +15,8 @@ import appeng.util.iterators.StackToSlotIterator;
 public class BSCrateStorageAdaptor extends InventoryAdaptor
 {
 
-	ICrateStorage cs;
-	ForgeDirection side;
+	final ICrateStorage cs;
+	final ForgeDirection side;
 
 	public BSCrateStorageAdaptor(Object te, ForgeDirection d) {
 		cs = (ICrateStorage) te;

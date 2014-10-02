@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import appeng.container.slot.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
@@ -38,7 +39,6 @@ import appeng.client.me.SlotME;
 import appeng.client.render.AppEngRenderItem;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.AppEngSlot.hasCalculatedValidness;
-import appeng.container.slot.SlotInaccessible;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
@@ -56,7 +56,7 @@ import cpw.mods.fml.common.ObfuscationReflectionHelper;
 public abstract class AEBaseGui extends GuiContainer
 {
 
-	protected List<InternalSlotME> meSlots = new LinkedList<InternalSlotME>();
+	protected final List<InternalSlotME> meSlots = new LinkedList<InternalSlotME>();
 	protected GuiScrollbar myScrollBar = null;
 	static public boolean switchingGuis;
 	private boolean subGui;
@@ -177,7 +177,7 @@ public abstract class AEBaseGui extends GuiContainer
 	Slot bl_clicked;
 
 	// drag y
-	Set<Slot> drag_click = new HashSet<Slot>();
+	final Set<Slot> drag_click = new HashSet<Slot>();
 
 	@Override
 	protected void handleMouseClick(Slot slot, int slotIdx, int ctrlDown, int key)
@@ -788,7 +788,7 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 	}
 
-	AppEngRenderItem aeRenderItem = new AppEngRenderItem();
+	final AppEngRenderItem aeRenderItem = new AppEngRenderItem();
 
 	protected boolean isPowered()
 	{
@@ -818,7 +818,7 @@ public abstract class AEBaseGui extends GuiContainer
 				if ( !isPowered() )
 				{
 					GL11.glDisable( GL11.GL_LIGHTING );
-					super.drawRect( s.xDisplayPosition, s.yDisplayPosition, 16 + s.xDisplayPosition, 16 + s.yDisplayPosition, 0x66111111 );
+					drawRect( s.xDisplayPosition, s.yDisplayPosition, 16 + s.xDisplayPosition, 16 + s.yDisplayPosition, 0x66111111 );
 					GL11.glEnable( GL11.GL_LIGHTING );
 				}
 
@@ -922,7 +922,7 @@ public abstract class AEBaseGui extends GuiContainer
 						itemRender.zLevel = 100.0F;
 
 						GL11.glDisable( GL11.GL_LIGHTING );
-						super.drawRect( s.xDisplayPosition, s.yDisplayPosition, 16 + s.xDisplayPosition, 16 + s.yDisplayPosition, 0x66ff6666 );
+						drawRect( s.xDisplayPosition, s.yDisplayPosition, 16 + s.xDisplayPosition, 16 + s.yDisplayPosition, 0x66ff6666 );
 						GL11.glEnable( GL11.GL_LIGHTING );
 
 						this.zLevel = 0.0F;

@@ -10,7 +10,7 @@ import appeng.api.util.AEColoredItemDefinition;
 public class ColoredItemDefinition implements AEColoredItemDefinition
 {
 
-	ItemStackSrc colors[] = new ItemStackSrc[17];
+	final ItemStackSrc[] colors = new ItemStackSrc[17];
 
 	@Override
 	public Item item(AEColor color)

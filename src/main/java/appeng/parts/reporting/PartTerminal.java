@@ -28,8 +28,8 @@ import appeng.util.Platform;
 public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigManagerHost, IViewCellStorage, IAEAppEngInventory
 {
 
-	IConfigManager cm = new ConfigManager( this );
-	AppEngInternalInventory viewCell = new AppEngInternalInventory( this, 5 );
+	final IConfigManager cm = new ConfigManager( this );
+	final AppEngInternalInventory viewCell = new AppEngInternalInventory( this, 5 );
 
 	public PartTerminal(Class clz, ItemStack is) {
 		super( clz, is, true );

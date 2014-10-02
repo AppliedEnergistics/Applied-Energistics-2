@@ -18,8 +18,8 @@ import com.google.common.collect.ImmutableList;
 public class IMEAdaptor extends InventoryAdaptor
 {
 
-	IMEInventory<IAEItemStack> target;
-	BaseActionSource src;
+	final IMEInventory<IAEItemStack> target;
+	final BaseActionSource src;
 	int maxSlots = 0;
 
 	public IMEAdaptor(IMEInventory<IAEItemStack> input, BaseActionSource src) {

@@ -33,12 +33,6 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
-	{
-		super.renderInventory( blk, is, renderer, type, obj );
-	}
-
-	@Override
 	public boolean renderInWorld(AEBaseBlock blk, IBlockAccess w, int x, int y, int z, RenderBlocks renderer)
 	{
 		IIcon theIcon = null;
@@ -74,7 +68,7 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 			{
 				ct.lightCache = i.useSimplifiedRendering( x, y, z, null, ct.lightCache );
 			}
-			catch (Throwable t)
+			catch (Throwable ignored)
 			{
 
 			}
@@ -121,9 +115,8 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 			double a = 0.0 / 16.0;
 			double o = 16.0 / 16.0;
 			renderer.setRenderBounds( a, a, a, o, o, o );
-			boolean out = renderer.renderStandardBlock( blk, x, y, z );
 
-			return out;
+			return renderer.renderStandardBlock( blk, x, y, z );
 		}
 	}
 

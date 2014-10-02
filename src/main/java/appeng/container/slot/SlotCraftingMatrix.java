@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 public class SlotCraftingMatrix extends AppEngSlot
 {
 
-	Container c;
+	final Container c;
 
 	public SlotCraftingMatrix(Container c, IInventory par1iInventory, int par2, int par3, int par4) {
 		super( par1iInventory, par2, par3, par4 );

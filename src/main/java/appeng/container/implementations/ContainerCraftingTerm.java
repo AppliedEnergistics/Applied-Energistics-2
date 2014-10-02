@@ -18,12 +18,12 @@ import appeng.tile.inventory.InvOperation;
 public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAEAppEngInventory, IContainerCraftingPacket
 {
 
-	AppEngInternalInventory output = new AppEngInternalInventory( this, 1 );
+	final AppEngInternalInventory output = new AppEngInternalInventory( this, 1 );
 
-	SlotCraftingMatrix craftingSlots[] = new SlotCraftingMatrix[9];
-	SlotCraftingTerm outputSlot;
+	final SlotCraftingMatrix[] craftingSlots = new SlotCraftingMatrix[9];
+	final SlotCraftingTerm outputSlot;
 
-	public PartCraftingTerminal ct;
+	public final PartCraftingTerminal ct;
 
 	/**
 	 * Callback for when the crafting matrix is changed.

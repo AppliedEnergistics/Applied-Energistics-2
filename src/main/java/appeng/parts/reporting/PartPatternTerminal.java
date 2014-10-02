@@ -18,9 +18,9 @@ import appeng.tile.inventory.InvOperation;
 public class PartPatternTerminal extends PartTerminal implements IAEAppEngInventory
 {
 
-	AppEngInternalInventory crafting = new AppEngInternalInventory( this, 9 );
-	AppEngInternalInventory output = new AppEngInternalInventory( this, 3 );
-	AppEngInternalInventory pattern = new AppEngInternalInventory( this, 2 );
+	final AppEngInternalInventory crafting = new AppEngInternalInventory( this, 9 );
+	final AppEngInternalInventory output = new AppEngInternalInventory( this, 3 );
+	final AppEngInternalInventory pattern = new AppEngInternalInventory( this, 2 );
 
 	private boolean craftingMode = true;
 

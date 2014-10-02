@@ -5,7 +5,9 @@ import net.minecraft.world.World;
 public class LightningArcFX extends LightningFX
 {
 
-	double rx, ry, rz;
+	final double rx;
+	final double ry;
+	final double rz;
 
 	public LightningArcFX(World w, double x, double y, double z, double ex, double ey, double ez, double r, double g, double b) {
 		super( w, x, y, z, r, g, b, 6 );

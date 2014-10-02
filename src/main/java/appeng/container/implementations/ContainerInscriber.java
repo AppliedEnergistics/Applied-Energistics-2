@@ -16,11 +16,11 @@ import appeng.util.Platform;
 public class ContainerInscriber extends ContainerUpgradeable implements IProgressProvider
 {
 
-	TileInscriber ti;
+	final TileInscriber ti;
 
-	Slot top;
-	Slot middle;
-	Slot bottom;
+	final Slot top;
+	final Slot middle;
+	final Slot bottom;
 
 	@GuiSync(2)
 	public int maxProcessingTime = -1;

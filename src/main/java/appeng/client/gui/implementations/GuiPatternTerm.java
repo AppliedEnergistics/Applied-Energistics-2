@@ -20,7 +20,7 @@ import appeng.core.sync.packets.PacketValueConfig;
 public class GuiPatternTerm extends GuiMEMonitorable
 {
 
-	ContainerPatternTerm container;
+	final ContainerPatternTerm container;
 
 	GuiTabButton tabCraftButton;
 	GuiTabButton tabProcessButton;

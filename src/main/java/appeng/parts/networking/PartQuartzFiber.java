@@ -31,7 +31,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 {
 
-	AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", proxy.getMachineRepresentation(), true );
+	final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", proxy.getMachineRepresentation(), true );
 
 	public PartQuartzFiber(ItemStack is) {
 		super( PartQuartzFiber.class, is );

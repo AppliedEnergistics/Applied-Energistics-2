@@ -11,7 +11,7 @@ import appeng.util.Platform;
 public class ContainerVibrationChamber extends AEBaseContainer implements IProgressProvider
 {
 
-	TileVibrationChamber vibrationChamber;
+	final TileVibrationChamber vibrationChamber;
 	private static final int MAX_BURN_TIME = 200;
 
 	public ContainerVibrationChamber(InventoryPlayer ip, TileVibrationChamber vibrationChamber) {
@@ -23,7 +23,7 @@ public class ContainerVibrationChamber extends AEBaseContainer implements IProgr
 		bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
 	}
 
-	public int aePerTick = 5;
+	public final int aePerTick = 5;
 
 	@GuiSync(0)
 	public int burnProgress = 0;

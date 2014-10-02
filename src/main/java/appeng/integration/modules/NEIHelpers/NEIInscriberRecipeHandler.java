@@ -108,8 +108,7 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	public String getGuiTexture()
 	{
 		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/guis/inscriber.png" );
-		String f = loc.toString();
-		return f;
+		return loc.toString();
 	}
 
 	@Override
@@ -139,8 +138,8 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	public class CachedInscriberRecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 
-		public ArrayList<PositionedStack> ingredients;
-		public PositionedStack result;
+		public final ArrayList<PositionedStack> ingredients;
+		public final PositionedStack result;
 
 		public CachedInscriberRecipe(InscriberRecipe recipe) {
 			result = new PositionedStack( recipe.output, 108, 29 );

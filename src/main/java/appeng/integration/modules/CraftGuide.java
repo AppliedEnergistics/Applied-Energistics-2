@@ -231,11 +231,11 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 				{
 					output[i] = toCG( ((IIngredient) output[i]).getItemStackSet() );
 				}
-				catch (RegistrationError e)
+				catch (RegistrationError ignored)
 				{
 
 				}
-				catch (MissingIngredientError e)
+				catch (MissingIngredientError ignored)
 				{
 
 				}
@@ -266,11 +266,11 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 					{
 						output[i] = toCG( ((IIngredient) output[i]).getItemStackSet() );
 					}
-					catch (RegistrationError e)
+					catch (RegistrationError ignored)
 					{
 
 					}
-					catch (MissingIngredientError e)
+					catch (MissingIngredientError ignored)
 					{
 
 					}
@@ -302,11 +302,11 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 					{
 						output[i] = toCG( ((IIngredient) output[i]).getItemStackSet() );
 					}
-					catch (RegistrationError e)
+					catch (RegistrationError ignored)
 					{
 
 					}
-					catch (MissingIngredientError e)
+					catch (MissingIngredientError ignored)
 					{
 
 					}

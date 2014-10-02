@@ -45,7 +45,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public boolean hasContainerItem()
+	public boolean hasContainerItem(ItemStack stack)
 	{
 		return true;
 	}

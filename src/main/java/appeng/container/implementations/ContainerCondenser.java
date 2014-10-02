@@ -14,7 +14,7 @@ import appeng.util.Platform;
 public class ContainerCondenser extends AEBaseContainer implements IProgressProvider
 {
 
-	TileCondenser condenser;
+	final TileCondenser condenser;
 
 	public ContainerCondenser(InventoryPlayer ip, TileCondenser condenser) {
 		super( ip, condenser, null );
@@ -34,9 +34,8 @@ public class ContainerCondenser extends AEBaseContainer implements IProgressProv
 		{
 			double maxStorage = this.condenser.getStorage();
 			double requiredEnergy = this.condenser.getRequiredPower();
-			int maxDisplay = requiredEnergy == 0 ? (int) maxStorage : (int) Math.min( requiredEnergy, maxStorage );
 
-			this.requiredEnergy = maxDisplay;
+			this.requiredEnergy = requiredEnergy == 0 ? (int) maxStorage : (int) Math.min( requiredEnergy, maxStorage );
 			this.storedPower = (int) this.condenser.storedPower;
 			this.output = (CondenserOutput) this.condenser.getConfigManager().getSetting( Settings.CONDENSER_OUTPUT );
 		}

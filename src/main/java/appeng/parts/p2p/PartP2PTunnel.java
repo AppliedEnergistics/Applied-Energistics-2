@@ -37,7 +37,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 
 	public boolean output;
 	public long freq;
-	TunnelCollection type = new TunnelCollection<T>( null, getClass() );
+	final TunnelCollection type = new TunnelCollection<T>( null, getClass() );
 
 	public PartP2PTunnel(ItemStack is) {
 		super( PartP2PTunnel.class, is );
@@ -365,12 +365,6 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 		{
 			// :P
 		}
-	}
-
-	@Override
-	public void setColors(boolean hasChan, boolean hasPower)
-	{
-		super.setColors( hasChan, hasPower );
 	}
 
 	@Override

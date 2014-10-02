@@ -62,10 +62,10 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 	static final int[] sides = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 	static final ItemStack assemblerStack = AEApi.instance().blocks().blockMolecularAssembler.stack( 1 );
 
-	private InventoryCrafting craftingInv = new InventoryCrafting( new ContainerNull(), 3, 3 );
-	private AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 + 2 );
-	private IConfigManager settings = new ConfigManager( this );
-	private UpgradeInventory upgrades = new UpgradeInventory( assemblerStack, this, getUpgradeSlots() );
+	private final InventoryCrafting craftingInv = new InventoryCrafting( new ContainerNull(), 3, 3 );
+	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 + 2 );
+	private final IConfigManager settings = new ConfigManager( this );
+	private final UpgradeInventory upgrades = new UpgradeInventory( assemblerStack, this, getUpgradeSlots() );
 
 	private ForgeDirection pushDirection = ForgeDirection.UNKNOWN;
 	private ItemStack myPattern = null;
@@ -561,7 +561,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 		{
 			newState = gridProxy.isActive() && gridProxy.getEnergy().extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.0001;
 		}
-		catch (GridAccessException e)
+		catch (GridAccessException ignored)
 		{
 
 		}

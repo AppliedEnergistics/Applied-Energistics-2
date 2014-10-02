@@ -10,7 +10,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class MissingIcon implements IIcon
 {
 
-	boolean isBlock;
+	final boolean isBlock;
 
 	public MissingIcon(Object forWhat) {
 		isBlock = forWhat instanceof Block;

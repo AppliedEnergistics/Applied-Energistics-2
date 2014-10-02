@@ -45,7 +45,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	private ForgeDirection forward = ForgeDirection.UNKNOWN;
 	private ForgeDirection up = ForgeDirection.UNKNOWN;
 
-	public static ThreadLocal<WeakReference<AEBaseTile>> dropNoItems = new ThreadLocal<WeakReference<AEBaseTile>>();
+	public static final ThreadLocal<WeakReference<AEBaseTile>> dropNoItems = new ThreadLocal<WeakReference<AEBaseTile>>();
 
 	public void disableDrops()
 	{
@@ -199,7 +199,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 				up = ForgeDirection.valueOf( data.getString( "orientation_up" ) );
 			}
 		}
-		catch (IllegalArgumentException iae)
+		catch (IllegalArgumentException ignored)
 		{
 		}
 

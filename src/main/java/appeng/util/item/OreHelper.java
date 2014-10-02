@@ -11,9 +11,9 @@ import appeng.api.storage.data.IAEItemStack;
 public class OreHelper
 {
 
-	public static OreHelper instance = new OreHelper();
+	public static final OreHelper instance = new OreHelper();
 
-	class ItemRef
+	static class ItemRef
 	{
 
 		ItemRef(ItemStack stack)
@@ -28,9 +28,9 @@ public class OreHelper
 			hash = ref.hashCode() ^ damage;
 		}
 
-		Item ref;
-		int damage;
-		int hash;
+		final Item ref;
+		final int damage;
+		final int hash;
 
 		@Override
 		public boolean equals(Object obj)
@@ -51,14 +51,14 @@ public class OreHelper
 
 	}
 
-	class OreResult
+	static class OreResult
 	{
 
 		public OreReference oreValue = null;
 
 	}
 
-	HashMap<ItemRef, OreResult> references = new HashMap<ItemRef, OreResult>();
+	final HashMap<ItemRef, OreResult> references = new HashMap<ItemRef, OreResult>();
 
 	public OreReference isOre(ItemStack ItemStack)
 	{

@@ -16,7 +16,7 @@ import appeng.util.item.AEItemStack;
 public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 {
 
-	IItemList<IAEItemStack> itemListCache = AEApi.instance().storage().createItemList();
+	final IItemList<IAEItemStack> itemListCache = AEApi.instance().storage().createItemList();
 
 	public static IMEInventoryHandler getCell(ItemStack o)
 	{
@@ -24,7 +24,7 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 		{
 			return new CellInventoryHandler( new CreativeCellInventory( o ) );
 		}
-		catch (AppEngException e)
+		catch (AppEngException ignored)
 		{
 		}
 

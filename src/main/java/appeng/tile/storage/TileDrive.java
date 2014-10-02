@@ -43,15 +43,15 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 {
 
 	final int sides[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-	AppEngInternalInventory inv = new AppEngInternalInventory( this, 10 );
+	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 10 );
 
 	boolean isCached = false;
-	ICellHandler handlersBySlot[] = new ICellHandler[10];
-	DriveWatcher<IAEItemStack> invBySlot[] = new DriveWatcher[10];
+	final ICellHandler[] handlersBySlot = new ICellHandler[10];
+	final DriveWatcher<IAEItemStack>[] invBySlot = new DriveWatcher[10];
 	List<MEInventoryHandler> items = new LinkedList<MEInventoryHandler>();
 	List<MEInventoryHandler> fluids = new LinkedList<MEInventoryHandler>();
 
-	BaseActionSource mySrc;
+	final BaseActionSource mySrc;
 	long lastStateChange = 0;
 	int state = 0;
 	int priority = 0;
@@ -186,7 +186,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 			IStorageGrid gs = gridProxy.getStorage();
 			Platform.postChanges( gs, removed, added, mySrc );
 		}
-		catch (GridAccessException e)
+		catch (GridAccessException ignored)
 		{
 		}
 

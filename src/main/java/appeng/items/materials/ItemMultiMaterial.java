@@ -49,7 +49,7 @@ import com.google.common.collect.ImmutableSet;
 public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule
 {
 
-	HashMap<Integer, MaterialType> dmgToMaterial = new HashMap<Integer, MaterialType>();
+	final HashMap<Integer, MaterialType> dmgToMaterial = new HashMap<Integer, MaterialType>();
 
 	public static ItemMultiMaterial instance;
 
@@ -60,10 +60,10 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 		instance = this;
 	}
 
-	class SlightlyBetterSort implements Comparator<String>
+	static class SlightlyBetterSort implements Comparator<String>
 	{
 
-		Pattern p;
+		final Pattern p;
 
 		public SlightlyBetterSort(Pattern p) {
 			this.p = p;

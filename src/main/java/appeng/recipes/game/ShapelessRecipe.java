@@ -1,7 +1,6 @@
 package appeng.recipes.game;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -16,7 +15,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 {
 
 	private ItemStack output = null;
-	private ArrayList<Object> input = new ArrayList<Object>();
+	private final ArrayList<Object> input = new ArrayList<Object>();
 	private boolean disable = false;
 
 	public boolean isEnabled()
@@ -24,7 +23,8 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 		return !disable;
 	}
 
-	public ShapelessRecipe(ItemStack result, Object... recipe) {
+	public ShapelessRecipe(ItemStack result, Object... recipe)
+	{
 		output = result.copy();
 		for (Object in : recipe)
 		{
@@ -34,13 +34,13 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 			}
 			else
 			{
-				String ret = "Invalid shapeless ore recipe: ";
+				StringBuilder ret = new StringBuilder( "Invalid shapeless ore recipe: " );
 				for (Object tmp : recipe)
 				{
-					ret += tmp + ", ";
+					ret.append( tmp ).append( ", " );
 				}
-				ret += output;
-				throw new RuntimeException( ret );
+				ret.append( output );
+				throw new RuntimeException( ret.toString() );
 			}
 		}
 	}
@@ -80,11 +80,9 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 			{
 				boolean inRecipe = false;
 
-				for (Object aRequired : required)
+				for (Object next : required)
 				{
 					boolean match = false;
-
-					Object next = aRequired;
 
 					if ( next instanceof IIngredient )
 					{

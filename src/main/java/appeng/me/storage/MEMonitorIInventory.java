@@ -27,7 +27,7 @@ import appeng.util.inv.ItemSlot;
 public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonitor<IAEItemStack>
 {
 
-	class CachedItemStack
+	static class CachedItemStack
 	{
 
 		public CachedItemStack(ItemStack is)

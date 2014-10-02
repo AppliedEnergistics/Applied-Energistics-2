@@ -71,9 +71,9 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 {
 
 	int priority = 0;
-	BaseActionSource mySrc;
+	final BaseActionSource mySrc;
 
-	AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
+	final AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
 
 	public PartStorageBus(ItemStack is)
 	{

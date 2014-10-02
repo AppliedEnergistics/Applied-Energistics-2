@@ -11,7 +11,7 @@ import appeng.client.texture.ExtraBlockTextures;
 public class MatterCannonFX extends EntityBreakingFX
 {
 
-	private IIcon particleTextureIndex;
+	private final IIcon particleTextureIndex;
 
 	public MatterCannonFX(World par1World, double par2, double par4, double par6, Item par8Item) {
 		super( par1World, par2, par4, par6, par8Item );

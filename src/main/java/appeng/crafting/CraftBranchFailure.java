@@ -7,7 +7,7 @@ public class CraftBranchFailure extends Exception
 
 	private static final long serialVersionUID = 654603652836724823L;
 
-	IAEItemStack missing;
+	final IAEItemStack missing;
 
 	public CraftBranchFailure(IAEItemStack what, long howMany) {
 		super( "Failed: " + what.getItem().getUnlocalizedName() + " x " + howMany );

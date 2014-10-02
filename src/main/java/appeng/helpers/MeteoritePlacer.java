@@ -70,8 +70,8 @@ public class MeteoritePlacer
 	private class FalloutCopy extends Fallout
 	{
 
-		Block blk;
-		int meta;
+		final Block blk;
+		final int meta;
 
 		public FalloutCopy(IMeteoriteWorld w, int x, int y, int z) {
 			blk = w.getBlock( x, y, z );
@@ -186,7 +186,7 @@ public class MeteoritePlacer
 	static public class StandardWorld implements IMeteoriteWorld
 	{
 
-		protected World w;
+		protected final World w;
 
 		public StandardWorld(World w) {
 			this.w = w;
@@ -290,7 +290,7 @@ public class MeteoritePlacer
 	static public class ChunkOnly extends StandardWorld
 	{
 
-		Chunk target;
+		final Chunk target;
 
 		int verticalBits = 0;
 
@@ -377,14 +377,14 @@ public class MeteoritePlacer
 		}
 	}
 
-	int minBLocks = 200;
-	HashSet<Block> validSpawn = new HashSet<Block>();
-	HashSet<Block> invalidSpawn = new HashSet<Block>();
+	final int minBLocks = 200;
+	final HashSet<Block> validSpawn = new HashSet<Block>();
+	final HashSet<Block> invalidSpawn = new HashSet<Block>();
 
 	Fallout type = new Fallout();
 
-	Block skystone = AEApi.instance().blocks().blockSkyStone.block();
-	Block skychest;
+	final Block skystone = AEApi.instance().blocks().blockSkyStone.block();
+	final Block skychest;
 
 	double real_sizeOfMeteorite = (Math.random() * 6.0) + 2;
 	double realCrater = real_sizeOfMeteorite * 2 + 5;

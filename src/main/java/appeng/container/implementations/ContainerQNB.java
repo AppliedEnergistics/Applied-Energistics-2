@@ -8,7 +8,7 @@ import appeng.tile.qnb.TileQuantumBridge;
 public class ContainerQNB extends AEBaseContainer
 {
 
-	TileQuantumBridge quantumBridge;
+	final TileQuantumBridge quantumBridge;
 
 	public ContainerQNB(InventoryPlayer ip, TileQuantumBridge quantumBridge) {
 		super( ip, quantumBridge, null );

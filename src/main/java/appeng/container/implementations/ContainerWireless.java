@@ -10,7 +10,7 @@ import appeng.tile.networking.TileWireless;
 public class ContainerWireless extends AEBaseContainer
 {
 
-	TileWireless wirelessTerminal;
+	final TileWireless wirelessTerminal;
 
 	@GuiSync(1)
 	public long range = 0;
@@ -18,7 +18,7 @@ public class ContainerWireless extends AEBaseContainer
 	@GuiSync(2)
 	public long drain = 0;
 
-	SlotRestrictedInput boosterSlot;
+	final SlotRestrictedInput boosterSlot;
 
 	public ContainerWireless(InventoryPlayer ip, TileWireless te) {
 		super( ip, te, null );

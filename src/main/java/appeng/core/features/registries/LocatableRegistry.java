@@ -13,7 +13,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class LocatableRegistry implements ILocatableRegistry
 {
 
-	private HashMap<Long, ILocatable> set;
+	private final HashMap<Long, ILocatable> set;
 
 	@SubscribeEvent
 	public void updateLocatable(LocatableEventAnnounce e)

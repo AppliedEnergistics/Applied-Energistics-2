@@ -23,7 +23,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	public EnumSet<ForgeDirection> renderFaces = EnumSet.allOf( ForgeDirection.class );
 	public EnumSet<ForgeDirection> faces = EnumSet.allOf( ForgeDirection.class );
 
-	private class LightingCache implements ISimplifiedBundle
+	private static class LightingCache implements ISimplifiedBundle
 	{
 
 		public IIcon rXPos;
@@ -42,19 +42,19 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		public int bZPos;
 		public int bZNeg;
 
-		public int aoXPos[];
-		public int aoXNeg[];
-		public int aoYPos[];
-		public int aoYNeg[];
-		public int aoZPos[];
-		public int aoZNeg[];
+		public final int[] aoXPos;
+		public final int[] aoXNeg;
+		public final int[] aoYPos;
+		public final int[] aoYNeg;
+		public final int[] aoZPos;
+		public final int[] aoZNeg;
 
-		public float foXPos[];
-		public float foXNeg[];
-		public float foYPos[];
-		public float foYNeg[];
-		public float foZPos[];
-		public float foZNeg[];
+		public final float[] foXPos;
+		public final float[] foXNeg;
+		public final float[] foYPos;
+		public final float[] foYNeg;
+		public final float[] foZPos;
+		public final float[] foZNeg;
 
 		public int lightHash;
 
@@ -656,7 +656,7 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		return ((LightingCache) sim).lightHash == lh;
 	}
 
-	int lightHashTmp[] = new int[27];
+	final int[] lightHashTmp = new int[27];
 	public float opacity = 1.0f;
 
 	private int getLightingHash(Block blk, IBlockAccess w, int x, int y, int z)

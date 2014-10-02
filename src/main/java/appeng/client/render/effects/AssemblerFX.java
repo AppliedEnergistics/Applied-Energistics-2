@@ -11,10 +11,10 @@ import appeng.entity.EntityFloatingItem;
 public class AssemblerFX extends EntityFX
 {
 
-	IAEItemStack item;
-	EntityFloatingItem fi;
+	final IAEItemStack item;
+	final EntityFloatingItem fi;
 	float time = 0;
-	float speed;
+	final float speed;
 
 	public AssemblerFX(World w, double x, double y, double z, double r, double g, double b, float speed, IAEItemStack is) {
 		super( w, x, y, z, r, g, b );

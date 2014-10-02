@@ -63,7 +63,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 
 	final int FLAG_ON = 4;
 
-	AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 1 );
+	final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 1 );
 
 	boolean prevState = false;
 

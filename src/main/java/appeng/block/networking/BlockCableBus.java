@@ -57,7 +57,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 {
 
-	static private ICableBusContainer nullCB = new NullCableBusContainer();
+	static private final ICableBusContainer nullCB = new NullCableBusContainer();
 	static public Class<? extends TileEntity> noTesrTile;
 	static public Class<? extends TileEntity> tesrTile;
 
@@ -232,7 +232,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 		{
 			return cb( world, x, y, z ).recolourBlock( side, AEColor.values()[colour], who );
 		}
-		catch (Throwable t)
+		catch (Throwable ignored)
 		{
 		}
 		return false;

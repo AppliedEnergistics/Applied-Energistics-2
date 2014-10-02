@@ -30,15 +30,15 @@ public class Api implements IAppEngApi
 	}
 
 	// private MovableTileRegistry MovableRegistry = new MovableTileRegistry();
-	private RegistryContainer rc = new RegistryContainer();
-	private ApiStorage storageHelper = new ApiStorage();
+	private final RegistryContainer rc = new RegistryContainer();
+	private final ApiStorage storageHelper = new ApiStorage();
 	
-	public ApiPart partHelper = new ApiPart();
+	public final ApiPart partHelper = new ApiPart();
 
-	private Materials materials = new Materials();
-	private Items items = new Items();
-	private Blocks blocks = new Blocks();
-	private Parts parts = new Parts();
+	private final Materials materials = new Materials();
+	private final Items items = new Items();
+	private final Blocks blocks = new Blocks();
+	private final Parts parts = new Parts();
 
 	@Override
 	public IRegistryContainer registries()

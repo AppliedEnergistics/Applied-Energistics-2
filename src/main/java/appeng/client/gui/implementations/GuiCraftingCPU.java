@@ -33,7 +33,7 @@ import com.google.common.base.Joiner;
 public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 {
 
-	int rows = 6;
+	final int rows = 6;
 
 	IItemList<IAEItemStack> storage = AEApi.instance().storage().createItemList();
 	IItemList<IAEItemStack> active = AEApi.instance().storage().createItemList();

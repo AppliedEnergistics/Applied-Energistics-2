@@ -57,9 +57,10 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 			throw new RegistrationError( "Error while adding shapeless recipe." );
 		}
 	}
-	
+
 	@Override
-	public boolean canCraft(ItemStack reqOutput) throws RegistrationError, MissingIngredientError {
+	public boolean canCraft(ItemStack reqOutput) throws RegistrationError, MissingIngredientError
+	{
 
 		for (IIngredient i : inputs)
 		{
@@ -74,26 +75,41 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 				}
 			}
 		}
-		
-		return Platform.isSameItemPrecise( output.getItemStack(),reqOutput );
+
+		return Platform.isSameItemPrecise( output.getItemStack(), reqOutput );
 	}
 
 	@Override
-	public String getPattern( RecipeHandler h) {
-		String o = "shapeless "+output.getQty()+"\n";
+	public String getPattern(RecipeHandler h)
+	{
+		StringBuilder o = new StringBuilder( "shapeless " + output.getQty() + "\n" );
 
-		o += h.getName(output)+"\n";
-		
-		for ( int y = 0; y < inputs.size(); y++ )
+		o.append( h.getName( output ) ).append( "\n" );
+
+		for (int y = 0; y < inputs.size(); y++)
 		{
-			IIngredient i = inputs.get(y);
+			IIngredient i = inputs.get( y );
+
 			if ( i.isAir() )
-				o += "air"+( y +1 == inputs.size() ? "\n" : " " );
+			{
+				o.append( "air" );
+			}
 			else
-				o += h.getName(i)+( y +1 == inputs.size() ? "\n" : " " );
+			{
+				o.append( h.getName( i ) );
+			}
+
+			if ( y + 1 == this.inputs.size() )
+			{
+				o.append( "\n" );
+			}
+			else
+			{
+				o.append( " " );
+			}
 		}
-		
-		return o.trim();
+
+		return o.toString().trim();
 	}
-	
+
 }

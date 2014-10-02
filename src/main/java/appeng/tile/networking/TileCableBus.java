@@ -95,7 +95,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 				tcb.copyFrom( this );
 				getWorldObj().setTileEntity( xCoord, yCoord, zCoord, tcb );
 			}
-			catch (Throwable t)
+			catch (Throwable ignored)
 			{
 
 			}

@@ -50,7 +50,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IS
 {
 
 	ForgeDirection pointAt = ForgeDirection.UNKNOWN;
-	DualityInterface duality = new DualityInterface( gridProxy, this );
+	final DualityInterface duality = new DualityInterface( gridProxy, this );
 
 	@MENetworkEventSubscribe
 	public void stateChange(MENetworkChannelsChanged c)

@@ -16,8 +16,8 @@ import appeng.helpers.IContainerCraftingPacket;
 public class SlotPatternTerm extends SlotCraftingTerm
 {
 
-	int groupNum;
-	IOptionalSlotHost host;
+	final int groupNum;
+	final IOptionalSlotHost host;
 
 	public SlotPatternTerm(EntityPlayer player, BaseActionSource mySrc, IEnergySource energySrc, IStorageMonitorable storage, IInventory cMatrix,
 			IInventory secondMatrix, IInventory output, int x, int y, IOptionalSlotHost h, int groupNumber, IContainerCraftingPacket c)

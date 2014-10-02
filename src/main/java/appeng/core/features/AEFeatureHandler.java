@@ -24,7 +24,7 @@ public class AEFeatureHandler implements AEItemDefinition
 	private final EnumSet<AEFeature> features;
 
 	private final String subName;
-	private IAEFeature feature;
+	private final IAEFeature feature;
 
 	private Item ItemData;
 	private Block BlockData;
