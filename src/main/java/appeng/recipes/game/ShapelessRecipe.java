@@ -80,11 +80,9 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 			{
 				boolean inRecipe = false;
 
-				for (Object aRequired : required)
+				for (Object next : required)
 				{
 					boolean match = false;
-
-					Object next = aRequired;
 
 					if ( next instanceof IIngredient )
 					{

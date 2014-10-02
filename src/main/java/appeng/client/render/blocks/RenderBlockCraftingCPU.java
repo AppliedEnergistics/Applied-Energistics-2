@@ -115,9 +115,8 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 			double a = 0.0 / 16.0;
 			double o = 16.0 / 16.0;
 			renderer.setRenderBounds( a, a, a, o, o, o );
-			boolean out = renderer.renderStandardBlock( blk, x, y, z );
 
-			return out;
+			return renderer.renderStandardBlock( blk, x, y, z );
 		}
 	}
 

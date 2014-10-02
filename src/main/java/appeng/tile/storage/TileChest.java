@@ -824,11 +824,10 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	{
 		try
 		{
-			IMEInventoryHandler ih = this.getHandler( StorageChannel.ITEMS );
-			if ( ch != null && ih != null )
+			IMEInventoryHandler invHandler = this.getHandler( StorageChannel.ITEMS );
+			if ( ch != null && invHandler != null )
 			{
-				IMEInventoryHandler mine = ih;
-				ch.openChestGui( p, this, ch, mine, cell, StorageChannel.ITEMS );
+				ch.openChestGui( p, this, ch, invHandler, cell, StorageChannel.ITEMS );
 				return true;
 			}
 
@@ -840,11 +839,10 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 		try
 		{
-			IMEInventoryHandler fh = this.getHandler( StorageChannel.FLUIDS );
-			if ( ch != null && fh != null )
+			IMEInventoryHandler invHandler = this.getHandler( StorageChannel.FLUIDS );
+			if ( ch != null && invHandler != null )
 			{
-				IMEInventoryHandler mine = fh;
-				ch.openChestGui( p, this, ch, mine, cell, StorageChannel.FLUIDS );
+				ch.openChestGui( p, this, ch, invHandler, cell, StorageChannel.FLUIDS );
 				return true;
 			}
 		}

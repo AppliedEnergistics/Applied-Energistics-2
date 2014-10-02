@@ -136,8 +136,7 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 	public String getGuiTexture()
 	{
 		ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/guis/grinder.png" );
-		String f = loc.toString();
-		return f;
+		return loc.toString();
 	}
 
 	@Override

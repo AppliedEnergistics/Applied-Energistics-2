@@ -98,15 +98,13 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 	@Override
 	public double getAEMaxPower(ItemStack is)
 	{
-		double internalMaxPower = getMax( is );
-		return internalMaxPower;
+		return getMax( is );
 	}
 
 	@Override
 	public double getAECurrentPower(ItemStack is)
 	{
-		double internalCurrentPower = getInternal( is );
-		return internalCurrentPower;
+		return getInternal( is );
 	}
 
 	@Override

@@ -79,44 +79,43 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 		}
 
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
-		ForgeDirection d = side;
-		GL11.glTranslated( d.offsetX * 0.69, d.offsetY * 0.69, d.offsetZ * 0.69 );
+		GL11.glTranslated( side.offsetX * 0.69, side.offsetY * 0.69, side.offsetZ * 0.69 );
 
 		float scale = 0.7f;
 		GL11.glScalef( scale, scale, scale );
 
-		if ( d == ForgeDirection.UP )
+		if ( side == ForgeDirection.UP )
 		{
 			GL11.glScalef( 1.0f, -1.0f, 1.0f );
 			GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
 			GL11.glRotatef( spin * 90.0F, 0, 0, 1 );
 		}
 
-		if ( d == ForgeDirection.DOWN )
+		if ( side == ForgeDirection.DOWN )
 		{
 			GL11.glScalef( 1.0f, -1.0f, 1.0f );
 			GL11.glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
 			GL11.glRotatef( spin * -90.0F, 0, 0, 1 );
 		}
 
-		if ( d == ForgeDirection.EAST )
+		if ( side == ForgeDirection.EAST )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 			GL11.glRotatef( -90.0f, 0.0f, 1.0f, 0.0f );
 		}
 
-		if ( d == ForgeDirection.WEST )
+		if ( side == ForgeDirection.WEST )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 			GL11.glRotatef( 90.0f, 0.0f, 1.0f, 0.0f );
 		}
 
-		if ( d == ForgeDirection.NORTH )
+		if ( side == ForgeDirection.NORTH )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 		}
 
-		if ( d == ForgeDirection.SOUTH )
+		if ( side == ForgeDirection.SOUTH )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 			GL11.glRotatef( 180.0f, 0.0f, 1.0f, 0.0f );

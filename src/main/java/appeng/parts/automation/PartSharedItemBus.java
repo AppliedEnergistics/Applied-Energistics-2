@@ -22,8 +22,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 
 		if ( w.getChunkProvider().chunkExists( x >> 4, z >> 4 ) )
 		{
-			TileEntity te = w.getTileEntity( x, y, z );
-			return te;
+			return w.getTileEntity( x, y, z );
 		}
 
 		return null;

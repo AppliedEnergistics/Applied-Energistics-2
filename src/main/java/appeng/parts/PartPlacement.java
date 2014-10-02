@@ -350,11 +350,9 @@ public class PartPlacement
 		{
 			if ( pass == PlaceType.INTERACT_FIRST_PASS || pass == PlaceType.PLACE_ITEM )
 			{
-				ForgeDirection offset = side;
-
-				te_x = x + offset.offsetX;
-				te_y = y + offset.offsetY;
-				te_z = z + offset.offsetZ;
+				te_x = x + side.offsetX;
+				te_y = y + side.offsetY;
+				te_z = z + side.offsetZ;
 
 				Block blkID = world.getBlock( te_x, te_y, te_z );
 				tile = world.getTileEntity( te_x, te_y, te_z );
@@ -362,7 +360,7 @@ public class PartPlacement
 				if ( tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
 					host = ((IFMP) AppEng.instance.getIntegration( IntegrationType.FMP )).getOrCreateHost( tile );
 
-				if ( (blkID == null || blkID.isReplaceable( world, te_x, te_y, te_z ) || host != null) && offset != ForgeDirection.UNKNOWN )
+				if ( (blkID == null || blkID.isReplaceable( world, te_x, te_y, te_z ) || host != null) && side != ForgeDirection.UNKNOWN )
 					return place( held, te_x, te_y, te_z, side.getOpposite().ordinal(), player, world,
 							pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS : PlaceType.PLACE_ITEM, depth + 1 );
 			}

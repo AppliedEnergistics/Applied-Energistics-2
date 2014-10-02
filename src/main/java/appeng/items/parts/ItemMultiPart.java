@@ -135,8 +135,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 	@Override
 	public IIcon getIconFromDamage(int dmg)
 	{
-		IIcon ico = dmgToPart.get( dmg ).ico;
-		return ico;
+		return this.dmgToPart.get( dmg ).ico;
 	}
 
 	@Override

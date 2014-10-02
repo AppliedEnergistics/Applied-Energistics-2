@@ -39,19 +39,18 @@ public class HCCrusher implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		for (ItemStack is : pro_input.getItemStackSet())
+		for (ItemStack beginStack : pro_input.getItemStackSet())
 		{
 			try
 			{
 				NBTTagCompound toRegister = new NBTTagCompound();
-				
-				ItemStack beginStack = is;
+
 				ItemStack endStack = pro_output[0].getItemStack();
 				
 				NBTTagCompound itemFrom = new NBTTagCompound();
 				NBTTagCompound itemTo = new NBTTagCompound();
 
-				beginStack.writeToNBT(itemFrom);  
+				beginStack.writeToNBT( itemFrom );
 				endStack.writeToNBT(itemTo);
 
 				toRegister.setTag("itemFrom", itemFrom);
