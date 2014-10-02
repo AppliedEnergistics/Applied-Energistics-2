@@ -3,15 +3,21 @@ package appeng.client.gui.implementations;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import org.lwjgl.opengl.GL11;
 
+import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.MEGuiTextField;
@@ -19,7 +25,9 @@ import appeng.client.me.ClientDCInternalInv;
 import appeng.client.me.SlotDisconnected;
 import appeng.container.implementations.ContainerInterfaceTerminal;
 import appeng.core.localization.GuiText;
+import appeng.helpers.PatternHelper;
 import appeng.parts.reporting.PartMonitor;
+import appeng.util.Platform;
 
 import com.google.common.collect.HashMultimap;
 
@@ -36,6 +44,8 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	private final ArrayList<String> names = new ArrayList<String>();
 	private final ArrayList<Object> lines = new ArrayList<Object>();
 	private final EntityPlayer player;
+
+	private final Map<String, Set<Object>> cachedSearches = new WeakHashMap<String, Set<Object>>();
 
 	private boolean refreshList = false;
 	private MEGuiTextField searchField;
@@ -116,8 +126,8 @@ public class GuiInterfaceTerminal extends AEBaseGui
 				ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
 
 				GL11.glColor4f( 1, 1, 1, 1 );
-				for (int z = 0; z < inv.inv.getSizeInventory(); z++)
-					this.drawTexturedModalRect( offsetX + z * 18 + 7, offsetY + offset, 7, 139, 18, 18 );
+				int width = inv.inv.getSizeInventory() * 18;
+				this.drawTexturedModalRect( offsetX + 7, offsetY + offset, 7, 139, width, 18 );
 			}
 			offset += 18;
 		}
@@ -204,12 +214,14 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		if ( refreshList )
 		{
 			refreshList = false;
+			// invalid caches on refresh
+			cachedSearches.clear();
 			refreshList();
 		}
 	}
 
 	/**
-	 * rebuilds the list of interfaces.
+	 * Rebuilds the list of interfaces.
 	 *
 	 * Respects a search term if present (ignores case) and adding only matching patterns.
 	 */
@@ -219,10 +231,18 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 		final String searchFilterLowerCase = searchField.getText().toLowerCase();
 
+		final Set<Object> cachedSearch = this.getCacheForSearchTerm( searchFilterLowerCase );
+		final boolean rebuild = cachedSearch.isEmpty();
+
 		for (ClientDCInternalInv entry : byId.values())
 		{
+			// ignore inventory if not doing a full rebuild or cache already marks it as miss.
+			if ( !rebuild && !cachedSearch.contains( entry ) )
+				continue;
+
 			// Shortcut to skip any filter if search term is ""/empty
 			boolean found = searchFilterLowerCase.isEmpty();
+
 
 			// Search if the current inventory holds a pattern containing the search term.
 			if ( !found && !searchFilterLowerCase.equals( "" ) )
@@ -231,11 +251,15 @@ public class GuiInterfaceTerminal extends AEBaseGui
 				{
 					if ( itemStack != null )
 					{
-						String tooltipLowerCase = String.valueOf( itemStack.getTooltip( player, false ) ).toLowerCase();
-						if ( tooltipLowerCase.contains( searchFilterLowerCase ) )
+						final PatternHelper ph = new PatternHelper( itemStack, player.worldObj );
+						final IAEItemStack[] output = ph.getCondensedOutputs();
+						for (IAEItemStack iaeItemStack : output)
 						{
-							found = true;
-							break;
+							if ( Platform.getItemDisplayName( iaeItemStack ).toLowerCase().contains( searchFilterLowerCase ) )
+							{
+								found = true;
+								break;
+							}
 						}
 					}
 				}
@@ -243,7 +267,14 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 			// if found, filter skipped or machine name matching the search term, add it
 			if ( found || entry.getName().toLowerCase().contains( searchFilterLowerCase ) )
+			{
 				byName.put( entry.getName(), entry );
+				cachedSearch.add( entry );
+			}
+			else
+			{
+				cachedSearch.remove( entry );
+			}
 		}
 
 		names.clear();
@@ -266,6 +297,40 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		}
 
 		myScrollBar.setRange( 0, lines.size() - LINES_ON_PAGE, 2 );
+	}
+
+	/**
+	 * Tries to retrieve a cache for a with search term as keyword.
+	 *
+	 * If this cache should be empty, it will populate it with an earlier cache if available or at least the cache for
+	 * the empty string.
+	 * 
+	 * @param searchTerm
+	 *            the corresponding search
+	 * @return a Set matching a superset of the search term
+	 */
+	private Set<Object> getCacheForSearchTerm(String searchTerm)
+	{
+		if ( !cachedSearches.containsKey( searchTerm ) )
+		{
+			cachedSearches.put( searchTerm, new HashSet<Object>() );
+		}
+
+		Set<Object> cache = cachedSearches.get( searchTerm );
+
+		if ( cache.isEmpty() )
+		{
+			if ( searchTerm.length() > 1 && cachedSearches.containsKey( searchTerm.substring( 0, searchTerm.length() - 1 ) ) )
+			{
+				cache.addAll( cachedSearches.get( searchTerm.substring( 0, searchTerm.length() - 1 ) ) );
+			}
+			else
+			{
+				cache.addAll( cachedSearches.get( "" ) );
+			}
+		}
+
+		return cache;
 	}
 
 	/**
