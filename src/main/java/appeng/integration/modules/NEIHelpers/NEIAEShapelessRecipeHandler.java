@@ -44,7 +44,7 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return NEIClientUtils.translate( "recipe.shapeless" );
+		return NEIClientUtils.translate( "recipe.appliedenergistics2.shapeless" );
 	}
 
 	@Override
