@@ -44,7 +44,7 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return NEIClientUtils.translate( "recipe.shaped" );
+		return NEIClientUtils.translate( "recipe.appliedenergistics2.shaped" );
 	}
 
 	@Override
