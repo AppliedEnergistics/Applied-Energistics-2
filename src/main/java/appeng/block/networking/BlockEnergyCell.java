@@ -5,6 +5,7 @@ import java.util.List;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import appeng.block.AEBaseItemBlock;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -85,7 +86,7 @@ public class BlockEnergyCell extends AEBaseBlock
 	}
 
 	@Override
-	public Class getItemBlockClass()
+	public Class<? extends AEBaseItemBlock> getItemBlockClass()
 	{
 		return AEBaseItemBlockChargeable.class;
 	}
