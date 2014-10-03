@@ -151,12 +151,13 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item i, CreativeTabs ct, List l)
+	public void getCheckedSubBlocks(Item item, CreativeTabs tabs, List<ItemStack> itemStacks)
 	{
-		super.getSubBlocks( i, ct, l );
-		l.add( new ItemStack( i, 1, 1 ) );
-		l.add( new ItemStack( i, 1, 2 ) );
-		l.add( new ItemStack( i, 1, 3 ) );
+		super.getCheckedSubBlocks( item, tabs, itemStacks );
+
+		itemStacks.add( new ItemStack( item, 1, 1 ) );
+		itemStacks.add( new ItemStack( item, 1, 2 ) );
+		itemStacks.add( new ItemStack( item, 1, 3 ) );
 	}
 
 	@Override
