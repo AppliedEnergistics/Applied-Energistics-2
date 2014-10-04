@@ -12,11 +12,13 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.resources.IResource;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -798,4 +800,17 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		}
 	}
 
+	@Override
+	@SideOnly(Side.CLIENT)
+	@SuppressWarnings("unchecked")
+	public final void getSubBlocks(Item item, CreativeTabs tabs, List itemStacks)
+	{
+		this.getCheckedSubBlocks( item, tabs, itemStacks );
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void getCheckedSubBlocks(Item item, CreativeTabs tabs, List<ItemStack> itemStacks)
+	{
+		super.getSubBlocks( item, tabs, itemStacks );
+	}
 }

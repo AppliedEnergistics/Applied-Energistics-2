@@ -395,9 +395,10 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 	}
 
 	@Override
-	public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List)
+	@SideOnly(Side.CLIENT)
+	public void getCheckedSubBlocks(Item item, CreativeTabs tabs, List<ItemStack> itemStacks)
 	{
-
+		// do nothing
 	}
 
 	public void setupTile()

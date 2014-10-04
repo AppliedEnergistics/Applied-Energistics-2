@@ -2,6 +2,8 @@ package appeng.block.crafting;
 
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -18,7 +20,8 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 
 	public BlockCraftingMonitor() {
 		super( BlockCraftingMonitor.class );
-		setTileEntity( TileCraftingMonitorTile.class );
+
+		this.setTileEntity( TileCraftingMonitorTile.class );
 	}
 
 	@Override
@@ -38,15 +41,15 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 		default:
 		case 0:
 			return super.getIcon( 0, 0 );
-		case 0 | FLAG_FORMED:
+		case FLAG_FORMED:
 			return ExtraBlockTextures.BlockCraftingMonitorFit_Light.getIcon();
 		}
 	}
 
 	@Override
-	public void getSubBlocks(Item i, CreativeTabs c, List l)
+	@SideOnly(Side.CLIENT)
+	public void getCheckedSubBlocks(Item item, CreativeTabs tabs, List<ItemStack> itemStacks)
 	{
-		l.add( new ItemStack( this, 1, 0 ) );
+		itemStacks.add( new ItemStack( this, 1, 0 ) );
 	}
-
 }

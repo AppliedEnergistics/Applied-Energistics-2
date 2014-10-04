@@ -75,10 +75,11 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item i, CreativeTabs ct, List l)
+	public void getCheckedSubBlocks(Item item, CreativeTabs tabs, List<ItemStack> itemStacks)
 	{
-		super.getSubBlocks( i, ct, l );
-		l.add( new ItemStack( i, 1, 1 ) );
+		super.getCheckedSubBlocks( item, tabs, itemStacks );
+
+		itemStacks.add( new ItemStack( item, 1, 1 ) );
 	}
 
 	@Override

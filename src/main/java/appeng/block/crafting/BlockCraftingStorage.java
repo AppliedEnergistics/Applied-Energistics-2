@@ -2,6 +2,8 @@ package appeng.block.crafting;
 
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -66,12 +68,12 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 	}
 
 	@Override
-	public void getSubBlocks(Item i, CreativeTabs c, List l)
+	@SideOnly(Side.CLIENT)
+	public void getCheckedSubBlocks(Item item, CreativeTabs tabs, List<ItemStack> itemStacks)
 	{
-		l.add( new ItemStack( this, 1, 0 ) );
-		l.add( new ItemStack( this, 1, 1 ) );
-		l.add( new ItemStack( this, 1, 2 ) );
-		l.add( new ItemStack( this, 1, 3 ) );
+		itemStacks.add( new ItemStack( this, 1, 0 ) );
+		itemStacks.add( new ItemStack( this, 1, 1 ) );
+		itemStacks.add( new ItemStack( this, 1, 2 ) );
+		itemStacks.add( new ItemStack( this, 1, 3 ) );
 	}
-
 }
