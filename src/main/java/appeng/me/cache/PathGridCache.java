@@ -59,7 +59,6 @@ public class PathGridCache implements IPathingGrid
 
 	final IGrid myGrid;
 	private HashSet<IPathItem> semiOpen = new HashSet<IPathItem>();
-	private HashSet<IPathItem> closedList = new HashSet<IPathItem>();
 
 	public int channelsByBlocks = 0;
 	public double channelPowerUsage = 0.0;
@@ -123,8 +122,8 @@ public class PathGridCache implements IPathingGrid
 			{
 				int nodes = myGrid.getNodes().size();
 				ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
-				closedList = new HashSet();
-				semiOpen = new HashSet();
+				HashSet<IPathItem> closedList = new HashSet<IPathItem>();
+				semiOpen = new HashSet<IPathItem>();
 
 				// myGrid.getPivot().beginVisit( new AdHocChannelUpdater( 0 )
 				// );
@@ -136,7 +135,7 @@ public class PathGridCache implements IPathingGrid
 						GridConnection gc = (GridConnection) gcc;
 						if ( !(gc.getOtherSide( node ).getMachine() instanceof TileController) )
 						{
-							List open = new LinkedList();
+							List<IPathItem> open = new LinkedList<IPathItem>();
 							closedList.add( gc );
 							open.add( gc );
 							gc.setControllerRoute( (GridNode) node, true );
@@ -166,10 +165,11 @@ public class PathGridCache implements IPathingGrid
 			{
 				if ( controllerState == ControllerState.CONTROLLER_ONLINE )
 				{
-					for (TileController tc : controllers)
+					final Iterator<TileController> controllerIterator = this.controllers.iterator();
+					if (controllerIterator.hasNext())
 					{
-						tc.getGridNode( ForgeDirection.UNKNOWN ).beginVisit( new ControllerChannelUpdater() );
-						break;
+						final TileController controller = controllerIterator.next();
+						controller.getGridNode( ForgeDirection.UNKNOWN ).beginVisit( new ControllerChannelUpdater() );
 					}
 				}
 
@@ -191,7 +191,7 @@ public class PathGridCache implements IPathingGrid
 			Achievements lastBracket = getAchievementBracket( lastChannels );
 			if ( currentBracket != lastBracket && currentBracket != null )
 			{
-				Set<Integer> players = new HashSet();
+				Set<Integer> players = new HashSet<Integer>();
 				for (IGridNode n : requireChannels)
 					players.add( n.getPlayerID() );
 
@@ -349,13 +349,13 @@ public class PathGridCache implements IPathingGrid
 	@Override
 	public ControllerState getControllerState()
 	{
-		return controllerState;
+		return this.controllerState;
 	}
 
 	@Override
 	public boolean isNetworkBooting()
 	{
-		return !active.isEmpty() && booting == false;
+		return !this.active.isEmpty() && !this.booting;
 	}
 
 	@Override
