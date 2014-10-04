@@ -2,8 +2,6 @@ package appeng.tile.storage;
 
 import io.netty.buffer.ByteBuf;
 
-import java.io.IOException;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -21,13 +19,13 @@ public class TileSkyChest extends AEBaseInvTile
 	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 * 4 );
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void writeToStream_TileSkyChest(ByteBuf data) throws IOException
+	public void writeToStream_TileSkyChest(ByteBuf data)
 	{
 		data.writeBoolean( playerOpen > 0 );
 	}
 
 	@TileEvent(TileEventType.NETWORK_READ)
-	public boolean readFromStream_TileSkyChest(ByteBuf data) throws IOException
+	public boolean readFromStream_TileSkyChest(ByteBuf data)
 	{
 		int wasOpen = playerOpen;
 		playerOpen = data.readBoolean() ? 1 : 0;

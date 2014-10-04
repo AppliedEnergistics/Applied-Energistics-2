@@ -118,8 +118,8 @@ public class PacketInventoryAction extends AppEngPacket
 	}
 
 	// api
-	public PacketInventoryAction(InventoryAction action, int slot, long id) throws IOException {
-
+	public PacketInventoryAction(InventoryAction action, int slot, long id)
+	{
 		this.action = action;
 		this.slot = slot;
 		this.id = id;

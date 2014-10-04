@@ -287,14 +287,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	{
 		if ( btn == craftingStatusBtn )
 		{
-			try
-			{
-				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_CRAFTING_STATUS ) );
-			}
-			catch (IOException e)
-			{
-				AELog.error( e );
-			}
+			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_CRAFTING_STATUS ) );
 		}
 
 		if ( btn instanceof GuiImgButton )

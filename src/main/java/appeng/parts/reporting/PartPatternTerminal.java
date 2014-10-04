@@ -12,10 +12,9 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 
-public class PartPatternTerminal extends PartTerminal implements IAEAppEngInventory
+public class PartPatternTerminal extends PartTerminal
 {
 
 	final AppEngInternalInventory crafting = new AppEngInternalInventory( this, 9 );

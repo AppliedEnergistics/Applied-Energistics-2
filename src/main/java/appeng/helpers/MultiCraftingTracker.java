@@ -13,7 +13,6 @@ import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.me.GridAccessException;
 import appeng.parts.automation.NonNullArrayIterator;
 import appeng.util.InventoryAdaptor;
 
@@ -58,7 +57,6 @@ public class MultiCraftingTracker
 	}
 
 	public boolean handleCrafting(int x, long itemToCraft, IAEItemStack ais, InventoryAdaptor d, World w, IGrid g, ICraftingGrid cg, BaseActionSource mySrc)
-			throws GridAccessException
 	{
 		if ( ais != null && d.simulateAdd( ais.getItemStack() ) == null )
 		{

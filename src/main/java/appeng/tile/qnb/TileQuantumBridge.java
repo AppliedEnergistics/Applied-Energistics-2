@@ -2,7 +2,6 @@ package appeng.tile.qnb;
 
 import io.netty.buffer.ByteBuf;
 
-import java.io.IOException;
 import java.util.EnumSet;
 
 import net.minecraft.inventory.IInventory;
@@ -63,7 +62,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void writeToStream_TileQuantumBridge(ByteBuf data) throws IOException
+	public void writeToStream_TileQuantumBridge(ByteBuf data)
 	{
 		int out = constructed;
 
@@ -77,7 +76,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@TileEvent(TileEventType.NETWORK_READ)
-	public boolean readFromStream_TileQuantumBridge(ByteBuf data) throws IOException
+	public boolean readFromStream_TileQuantumBridge(ByteBuf data)
 	{
 		int oldValue = constructed;
 		constructed = data.readByte();

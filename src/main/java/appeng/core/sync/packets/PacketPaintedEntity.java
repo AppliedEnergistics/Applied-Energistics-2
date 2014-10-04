@@ -3,8 +3,6 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import appeng.api.util.AEColor;
 import appeng.core.sync.AppEngPacket;
@@ -20,7 +18,8 @@ public class PacketPaintedEntity extends AppEngPacket
 	private int ticks;
 
 	// automatic.
-	public PacketPaintedEntity(ByteBuf stream) throws IOException {
+	public PacketPaintedEntity(ByteBuf stream)
+	{
 		entityId = stream.readInt();
 		myColor = AEColor.values()[stream.readByte()];
 		ticks = stream.readInt();

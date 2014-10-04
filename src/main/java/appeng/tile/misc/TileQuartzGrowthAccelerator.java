@@ -2,7 +2,6 @@ package appeng.tile.misc;
 
 import io.netty.buffer.ByteBuf;
 
-import java.io.IOException;
 import java.util.EnumSet;
 
 import net.minecraftforge.common.util.ForgeDirection;
@@ -35,7 +34,7 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 	}
 
 	@TileEvent(TileEventType.NETWORK_READ)
-	public boolean readFromStream_TileQuartzGrowthAccelerator(ByteBuf data) throws IOException
+	public boolean readFromStream_TileQuartzGrowthAccelerator(ByteBuf data)
 	{
 		boolean hadPower = hasPower;
 		hasPower = data.readBoolean();
@@ -43,7 +42,7 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void writeToStream_TileQuartzGrowthAccelerator(ByteBuf data) throws IOException
+	public void writeToStream_TileQuartzGrowthAccelerator(ByteBuf data)
 	{
 		try
 		{

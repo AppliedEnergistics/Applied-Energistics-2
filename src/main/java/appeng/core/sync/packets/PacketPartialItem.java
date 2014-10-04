@@ -3,8 +3,6 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
@@ -17,7 +15,8 @@ public class PacketPartialItem extends AppEngPacket
 	final byte[] data;
 
 	// automatic.
-	public PacketPartialItem(ByteBuf stream) throws IOException {
+	public PacketPartialItem(ByteBuf stream)
+	{
 		pageNum = stream.readShort();
 		stream.readBytes( data = new byte[stream.readableBytes()] );
 	}
@@ -32,7 +31,8 @@ public class PacketPartialItem extends AppEngPacket
 	}
 
 	// api
-	public PacketPartialItem(int page, int maxPages, byte[] buf) throws IOException {
+	public PacketPartialItem(int page, int maxPages, byte[] buf)
+	{
 
 		ByteBuf data = Unpooled.buffer();
 

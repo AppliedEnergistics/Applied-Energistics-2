@@ -3,8 +3,6 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import appeng.api.config.Settings;
@@ -22,7 +20,7 @@ public class PacketConfigButton extends AppEngPacket
 	final public boolean rotationDirection;
 
 	// automatic.
-	public PacketConfigButton(ByteBuf stream) throws IOException {
+	public PacketConfigButton(ByteBuf stream) {
 		option = Settings.values()[stream.readInt()];
 		rotationDirection = stream.readBoolean();
 	}
@@ -41,7 +39,7 @@ public class PacketConfigButton extends AppEngPacket
 	}
 
 	// api
-	public PacketConfigButton(Settings option, boolean rotationDirection) throws IOException {
+	public PacketConfigButton(Settings option, boolean rotationDirection) {
 		this.option = option;
 		this.rotationDirection = rotationDirection;
 

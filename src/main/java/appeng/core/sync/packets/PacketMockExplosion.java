@@ -3,8 +3,6 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import appeng.core.CommonHelper;
@@ -29,14 +27,16 @@ public class PacketMockExplosion extends AppEngPacket
 	}
 
 	// automatic.
-	public PacketMockExplosion(ByteBuf stream) throws IOException {
+	public PacketMockExplosion(ByteBuf stream)
+	{
 		x = stream.readDouble();
 		y = stream.readDouble();
 		z = stream.readDouble();
 	}
 
 	// api
-	public PacketMockExplosion(double x, double y, double z) throws IOException {
+	public PacketMockExplosion(double x, double y, double z)
+	{
 		this.x = x;
 		this.y = y;
 		this.z = z;

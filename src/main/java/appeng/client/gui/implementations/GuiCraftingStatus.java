@@ -88,14 +88,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 
 		if ( btn == originalGuiBtn )
 		{
-			try
-			{
-				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( OriginalGui ) );
-			}
-			catch (IOException e)
-			{
-				AELog.error( e );
-			}
+			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( OriginalGui ) );
 		}
 	}
 

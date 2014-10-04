@@ -49,14 +49,14 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 	}
 
 	@TileEvent(TileEventType.NETWORK_READ)
-	public boolean readFromStream_TileCrank(ByteBuf data) throws java.io.IOException
+	public boolean readFromStream_TileCrank(ByteBuf data)
 	{
 		rotation = data.readInt();
 		return false;
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void writeToStream_TileCrank(ByteBuf data) throws java.io.IOException
+	public void writeToStream_TileCrank(ByteBuf data)
 	{
 		data.writeInt( rotation );
 	}

@@ -1,7 +1,5 @@
 package appeng.client.gui.implementations;
 
-import java.io.IOException;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 
@@ -14,7 +12,6 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.container.implementations.ContainerIOPort;
-import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
@@ -74,18 +71,11 @@ public class GuiIOPort extends GuiUpgradeable
 
 		boolean backwards = Mouse.isButtonDown( 1 );
 
-		try
-		{
-			if ( btn == fullMode )
-				NetworkHandler.instance.sendToServer( new PacketConfigButton( fullMode.getSetting(), backwards ) );
+		if ( btn == fullMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( fullMode.getSetting(), backwards ) );
 
-			if ( btn == operationMode )
-				NetworkHandler.instance.sendToServer( new PacketConfigButton( operationMode.getSetting(), backwards ) );
-		}
-		catch (IOException e)
-		{
-			AELog.error( e );
-		}
+		if ( btn == operationMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( operationMode.getSetting(), backwards ) );
 	}
 
 	@Override

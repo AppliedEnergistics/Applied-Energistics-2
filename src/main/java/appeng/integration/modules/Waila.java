@@ -17,8 +17,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.parts.IPartStorageMonitor;
-import appeng.api.parts.IFacadePart;
-import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
 import appeng.api.storage.data.IAEFluidStack;

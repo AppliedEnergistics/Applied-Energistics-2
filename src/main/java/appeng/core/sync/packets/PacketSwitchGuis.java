@@ -3,8 +3,6 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
@@ -22,7 +20,8 @@ public class PacketSwitchGuis extends AppEngPacket
 	final GuiBridge newGui;
 
 	// automatic.
-	public PacketSwitchGuis(ByteBuf stream) throws IOException {
+	public PacketSwitchGuis(ByteBuf stream)
+	{
 		newGui = GuiBridge.values()[stream.readInt()];
 	}
 
@@ -49,8 +48,8 @@ public class PacketSwitchGuis extends AppEngPacket
 	}
 
 	// api
-	public PacketSwitchGuis(GuiBridge newGui) throws IOException {
-
+	public PacketSwitchGuis(GuiBridge newGui)
+	{
 		this.newGui = newGui;
 
 		if ( Platform.isClient() )

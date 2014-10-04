@@ -89,18 +89,11 @@ public class GuiLevelEmitter extends GuiUpgradeable
 
 		boolean backwards = Mouse.isButtonDown( 1 );
 
-		try
-		{
-			if ( btn == craftingMode )
-				NetworkHandler.instance.sendToServer( new PacketConfigButton( craftingMode.getSetting(), backwards ) );
+		if ( btn == craftingMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( craftingMode.getSetting(), backwards ) );
 
-			if ( btn == levelMode )
-				NetworkHandler.instance.sendToServer( new PacketConfigButton( levelMode.getSetting(), backwards ) );
-		}
-		catch (IOException e)
-		{
-			AELog.error( e );
-		}
+		if ( btn == levelMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( levelMode.getSetting(), backwards ) );
 
 		boolean isPlus = btn == plus1 || btn == plus10 || btn == plus100 || btn == plus1000;
 		boolean isMinus = btn == minus1 || btn == minus10 || btn == minus100 || btn == minus1000;

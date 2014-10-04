@@ -1,7 +1,5 @@
 package appeng.client.gui.implementations;
 
-import java.io.IOException;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -13,7 +11,6 @@ import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerCraftAmount;
 import appeng.core.AEConfig;
-import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
@@ -125,10 +122,6 @@ public class GuiCraftAmount extends AEBaseGui
 		{
 			// nope..
 			amountToCraft.setText( "1" );
-		}
-		catch (IOException e)
-		{
-			AELog.error( e );
 		}
 
 		boolean isPlus = btn == plus1 || btn == plus10 || btn == plus100 || btn == plus1000;

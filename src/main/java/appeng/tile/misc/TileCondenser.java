@@ -18,13 +18,12 @@ import appeng.tile.AEBaseInvTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
-public class TileCondenser extends AEBaseInvTile implements IAEAppEngInventory, IFluidHandler, IConfigManagerHost, IConfigurableObject
+public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConfigManagerHost, IConfigurableObject
 {
 
 	final int[] sides = new int[] { 0, 1 };

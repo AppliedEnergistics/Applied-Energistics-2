@@ -14,7 +14,6 @@ import appeng.api.config.Actionable;
 import appeng.api.config.StorageFilter;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.StorageChannel;
@@ -24,7 +23,7 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.ItemSlot;
 
-public class MEMonitorIInventory implements IMEInventory<IAEItemStack>, IMEMonitor<IAEItemStack>
+public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 {
 
 	static class CachedItemStack

@@ -8,7 +8,6 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridCache;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
@@ -19,7 +18,7 @@ import appeng.api.networking.security.ISecurityProvider;
 import appeng.core.WorldSettings;
 import appeng.me.GridNode;
 
-public class SecurityCache implements IGridCache, ISecurityGrid
+public class SecurityCache implements ISecurityGrid
 {
 
 	final private List<ISecurityProvider> securityProvider = new ArrayList<ISecurityProvider>();

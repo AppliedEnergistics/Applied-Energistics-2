@@ -3,7 +3,6 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
 import java.util.concurrent.Future;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,7 +29,8 @@ public class PacketCraftRequest extends AppEngPacket
 	final public boolean heldShift;
 
 	// automatic.
-	public PacketCraftRequest(ByteBuf stream) throws IOException {
+	public PacketCraftRequest(ByteBuf stream)
+	{
 		heldShift = stream.readBoolean();
 		amount = stream.readLong();
 	}
@@ -88,8 +88,8 @@ public class PacketCraftRequest extends AppEngPacket
 		}
 	}
 
-	public PacketCraftRequest(int craftAmt, boolean shift) throws IOException {
-
+	public PacketCraftRequest(int craftAmt, boolean shift)
+	{
 		this.amount = craftAmt;
 		this.heldShift = shift;
 

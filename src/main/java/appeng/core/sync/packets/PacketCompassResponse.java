@@ -3,8 +3,6 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -20,7 +18,7 @@ public class PacketCompassResponse extends AppEngPacket
 	public CompassResult cr;
 
 	// automatic.
-	public PacketCompassResponse(ByteBuf stream) throws IOException {
+	public PacketCompassResponse(ByteBuf stream) {
 		attunement = stream.readLong();
 		cx = stream.readInt();
 		cz = stream.readInt();

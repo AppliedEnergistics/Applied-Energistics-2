@@ -1,6 +1,5 @@
 package appeng.items.tools;
 
-import java.io.IOException;
 import java.util.EnumSet;
 
 import net.minecraft.block.Block;
@@ -21,7 +20,6 @@ import appeng.api.util.DimensionalCoord;
 import appeng.api.util.INetworkToolAgent;
 import appeng.client.ClientHelper;
 import appeng.container.AEBaseContainer;
-import appeng.core.AELog;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
@@ -97,14 +95,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 
 		if ( Platform.isClient() )
 		{
-			try
-			{
-				NetworkHandler.instance.sendToServer( new PacketClick( x, y, z, side, hitX, hitY, hitZ ) );
-			}
-			catch (IOException e)
-			{
-				AELog.error( e );
-			}
+			NetworkHandler.instance.sendToServer( new PacketClick( x, y, z, side, hitX, hitY, hitZ ) );
 		}
 		return true;
 	}

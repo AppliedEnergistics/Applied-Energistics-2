@@ -19,7 +19,6 @@ import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
-import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
@@ -43,13 +42,14 @@ import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PartExportBus extends PartSharedItemBus implements IGridTickable, ICraftingRequester
+public class PartExportBus extends PartSharedItemBus implements ICraftingRequester
 {
 
 	final MultiCraftingTracker cratingTracker = new MultiCraftingTracker( this, 9 );
 	final BaseActionSource mySrc;
 
-	public PartExportBus(ItemStack is) {
+	public PartExportBus(ItemStack is)
+	{
 		super( PartExportBus.class, is );
 		settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		settings.registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );

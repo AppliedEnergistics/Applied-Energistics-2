@@ -28,7 +28,6 @@ import appeng.api.config.YesNo;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.tiles.ICraftingMachine;
-import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -53,7 +52,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigurableObject;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
@@ -76,8 +74,8 @@ import appeng.util.item.AEItemStack;
 
 import com.google.common.collect.ImmutableSet;
 
-public class DualityInterface implements IGridTickable, ISegmentedInventory, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory,
-		IConfigurableObject, IConfigManagerHost, ICraftingProvider, IUpgradeableHost, IPriorityHost
+public class DualityInterface implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory,
+		IConfigManagerHost, ICraftingProvider, IUpgradeableHost, IPriorityHost
 {
 
 	final int sides[] = new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };

@@ -4,7 +4,6 @@ import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
-import appeng.api.exceptions.AppEngException;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
@@ -20,18 +19,11 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 
 	public static IMEInventoryHandler getCell(ItemStack o)
 	{
-		try
-		{
-			return new CellInventoryHandler( new CreativeCellInventory( o ) );
-		}
-		catch (AppEngException ignored)
-		{
-		}
-
-		return null;
+		return new CellInventoryHandler( new CreativeCellInventory( o ) );
 	}
 
-	protected CreativeCellInventory(ItemStack o) throws AppEngException {
+	protected CreativeCellInventory(ItemStack o)
+	{
 		CellConfig cc = new CellConfig( o );
 		for (ItemStack is : cc)
 			if ( is != null )

@@ -297,14 +297,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			autoStart = false;
 			if ( g != null && OriginalGui != null && openContext != null )
 			{
-				try
-				{
-					NetworkHandler.instance.sendTo( new PacketSwitchGuis( OriginalGui ), (EntityPlayerMP) invPlayer.player );
-				}
-				catch (IOException e)
-				{
-					// :(
-				}
+				NetworkHandler.instance.sendTo( new PacketSwitchGuis( OriginalGui ), (EntityPlayerMP) invPlayer.player );
 
 				TileEntity te = openContext.getTile();
 				Platform.openGUI( invPlayer.player, te, openContext.side, OriginalGui );

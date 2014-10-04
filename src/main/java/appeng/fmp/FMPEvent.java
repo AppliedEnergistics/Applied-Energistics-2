@@ -1,7 +1,5 @@
 package appeng.fmp;
 
-import java.io.IOException;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,7 +12,6 @@ import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import appeng.block.AEBaseItemBlock;
-import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMultiPart;
 import appeng.integration.modules.helpers.FMPPacketEvent;
@@ -116,14 +113,7 @@ public class FMPEvent
 		else
 		{
 			player.swingItem();
-			try
-			{
-				NetworkHandler.instance.sendToServer( new PacketMultiPart() );
-			}
-			catch (IOException e)
-			{
-				AELog.error( e );
-			}
+			NetworkHandler.instance.sendToServer( new PacketMultiPart() );
 		}
 		return true;
 	}

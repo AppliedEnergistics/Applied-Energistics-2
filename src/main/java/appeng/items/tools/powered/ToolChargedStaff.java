@@ -1,6 +1,5 @@
 package appeng.items.tools.powered;
 
-import java.io.IOException;
 import java.util.EnumSet;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -30,19 +29,12 @@ public class ToolChargedStaff extends AEBasePoweredItem
 			extractAEPower( item, 300 );
 			if ( Platform.isServer() )
 			{
-				try
+				for (int x = 0; x < 2; x++)
 				{
-					for (int x = 0; x < 2; x++)
-					{
-						float dx = (float) (Platform.getRandomFloat() * target.width + target.boundingBox.minX);
-						float dy = (float) (Platform.getRandomFloat() * target.height + target.boundingBox.minY);
-						float dz = (float) (Platform.getRandomFloat() * target.width + target.boundingBox.minZ);
-						ServerHelper.proxy.sendToAllNearExcept( null, dx, dy, dz, 32.0, target.worldObj, new PacketLightning( dx, dy, dz ) );
-					}
-				}
-				catch (IOException ignored)
-				{
-
+					float dx = (float) (Platform.getRandomFloat() * target.width + target.boundingBox.minX);
+					float dy = (float) (Platform.getRandomFloat() * target.height + target.boundingBox.minY);
+					float dz = (float) (Platform.getRandomFloat() * target.width + target.boundingBox.minZ);
+					ServerHelper.proxy.sendToAllNearExcept( null, dx, dy, dz, 32.0, target.worldObj, new PacketLightning( dx, dy, dz ) );
 				}
 			}
 			target.attackEntityFrom( DamageSource.magic, 6 );

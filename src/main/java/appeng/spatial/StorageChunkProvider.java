@@ -12,7 +12,7 @@ import net.minecraft.world.gen.ChunkProviderGenerate;
 import appeng.api.AEApi;
 import appeng.core.AEConfig;
 
-public class StorageChunkProvider extends ChunkProviderGenerate implements IChunkProvider
+public class StorageChunkProvider extends ChunkProviderGenerate
 {
 
 	final static Block[] blocks;

@@ -16,7 +16,6 @@ import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingLink;
@@ -52,7 +51,7 @@ import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PartInterface extends PartBasicState implements IGridTickable, ISegmentedInventory, IStorageMonitorable, IInventoryDestination, IInterfaceHost,
+public class PartInterface extends PartBasicState implements IGridTickable, IStorageMonitorable, IInventoryDestination, IInterfaceHost,
 		ISidedInventory, IAEAppEngInventory, ITileStorageMonitorable, IPriorityHost
 {
 

@@ -25,7 +25,6 @@ import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.LayerFlags;
 import appeng.api.parts.PartItemStack;
@@ -62,7 +61,7 @@ import codechicken.multipart.scalatraits.TIInventoryTile;
  * 
  * TSlottedPart,ISidedHollowConnect
  */
-public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IRedstonePart, IPartHost, AEMultiTile
+public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IRedstonePart, AEMultiTile
 {
 
 	final static Cuboid6 sideTests[] = new Cuboid6[] {

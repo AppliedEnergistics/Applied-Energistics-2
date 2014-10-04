@@ -9,10 +9,9 @@ import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.integration.BaseModule;
-import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IIC2;
 
-public class IC2 extends BaseModule implements IIntegrationModule, IIC2
+public class IC2 extends BaseModule implements IIC2
 {
 
 	public static IC2 instance;

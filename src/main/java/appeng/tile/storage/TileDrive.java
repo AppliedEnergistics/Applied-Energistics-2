@@ -2,7 +2,6 @@ package appeng.tile.storage;
 
 import io.netty.buffer.ByteBuf;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -88,7 +87,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void writeToStream_TileDrive(ByteBuf data) throws IOException
+	public void writeToStream_TileDrive(ByteBuf data)
 	{
 		if ( worldObj.getTotalWorldTime() - lastStateChange > 8 )
 			state = 0;
@@ -107,7 +106,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	}
 
 	@TileEvent(TileEventType.NETWORK_READ)
-	public boolean readFromStream_TileDrive(ByteBuf data) throws IOException
+	public boolean readFromStream_TileDrive(ByteBuf data)
 	{
 		int oldState = state;
 		state = data.readInt();

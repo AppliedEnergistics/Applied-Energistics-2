@@ -3,8 +3,6 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import appeng.api.util.DimensionalCoord;
@@ -23,7 +21,7 @@ public class PacketCompassRequest extends AppEngPacket implements ICompassCallba
 	EntityPlayer talkBackTo;
 
 	// automatic.
-	public PacketCompassRequest(ByteBuf stream) throws IOException {
+	public PacketCompassRequest(ByteBuf stream) {
 		attunement = stream.readLong();
 		cx = stream.readInt();
 		cz = stream.readInt();
@@ -46,7 +44,7 @@ public class PacketCompassRequest extends AppEngPacket implements ICompassCallba
 	}
 
 	// api
-	public PacketCompassRequest(long attunement, int cx, int cz, int cdy) throws IOException {
+	public PacketCompassRequest(long attunement, int cx, int cz, int cdy) {
 
 		ByteBuf data = Unpooled.buffer();
 
