@@ -186,17 +186,13 @@ public abstract class AEBaseGui extends GuiContainer
 
 		if ( slot instanceof SlotFake )
 		{
-			InventoryAction action = null;
-			action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
+			final InventoryAction action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 
 			if ( drag_click.size() > 1 )
 				return;
 
-			if ( action != null )
-			{
-				PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
-				NetworkHandler.instance.sendToServer( p );
-			}
+			PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
+			NetworkHandler.instance.sendToServer( p );
 
 			return;
 		}
@@ -226,11 +222,8 @@ public abstract class AEBaseGui extends GuiContainer
 			else
 				action = ctrlDown == 1 ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
 
-			if ( action != null )
-			{
-				PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
-				NetworkHandler.instance.sendToServer( p );
-			}
+			PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
+			NetworkHandler.instance.sendToServer( p );
 
 			return;
 		}
@@ -776,10 +769,7 @@ public abstract class AEBaseGui extends GuiContainer
 				this.zLevel = 0.0F;
 				itemRender.zLevel = 0.0F;
 
-				if ( s instanceof SlotME )
-					aeRenderItem.aeStack = ((SlotME) s).getAEStack();
-				else
-					aeRenderItem.aeStack = null;
+				aeRenderItem.aeStack = ((SlotME) s).getAEStack();
 
 				safeDrawSlot( s );
 			}
