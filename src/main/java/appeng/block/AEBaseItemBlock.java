@@ -19,13 +19,16 @@ import appeng.client.render.ItemRenderer;
 import appeng.me.helpers.IGridProxyable;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEBaseItemBlock extends ItemBlock
 {
 
 	final AEBaseBlock blockType;
 
-	public AEBaseItemBlock(Block id) {
+	public AEBaseItemBlock(Block id)
+	{
 		super( id );
 		blockType = (AEBaseBlock) id;
 		hasSubtypes = blockType.hasSubtypes;
@@ -49,9 +52,17 @@ public class AEBaseItemBlock extends ItemBlock
 	}
 
 	@Override
-	public void addInformation(ItemStack is, EntityPlayer player, List lines, boolean advancedItemTooltips)
+	@SideOnly(Side.CLIENT)
+	@SuppressWarnings("unchecked")
+	public final void addInformation(ItemStack itemStack, EntityPlayer player, List toolTip, boolean advancedTooltips)
 	{
-		blockType.addInformation( is, player, lines, advancedItemTooltips );
+		this.addCheckedInformation( itemStack, player, toolTip, advancedTooltips );
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void addCheckedInformation(ItemStack itemStack, EntityPlayer player, List<String> toolTip, boolean advancedToolTips)
+	{
+		this.blockType.addInformation( itemStack, player, toolTip, advancedToolTips );
 	}
 
 	@Override

@@ -736,7 +736,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 	}
 
-	public Class<AEBaseItemBlock> getItemBlockClass()
+	public Class<? extends AEBaseItemBlock> getItemBlockClass()
 	{
 		return AEBaseItemBlock.class;
 	}

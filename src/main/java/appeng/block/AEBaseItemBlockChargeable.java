@@ -3,6 +3,8 @@ package appeng.block;
 import java.text.MessageFormat;
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -22,11 +24,12 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 	}
 
 	@Override
-	public void addInformation(ItemStack is, EntityPlayer player, List lines, boolean advancedItemTooltips)
+	@SideOnly(Side.CLIENT)
+	public void addCheckedInformation(ItemStack itemStack, EntityPlayer player, List<String> toolTip, boolean advancedTooltips)
 	{
-		NBTTagCompound tag = is.getTagCompound();
+		NBTTagCompound tag = itemStack.getTagCompound();
 		double internalCurrentPower = 0;
-		double internalMaxPower = getMax( is );
+		double internalMaxPower = this.getMaxEnergyCapacity();
 
 		if ( tag != null )
 		{
@@ -35,12 +38,12 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 
 		double percent = internalCurrentPower / internalMaxPower;
 
-		lines.add( GuiText.StoredEnergy.getLocal() + ":" + MessageFormat.format( " {0,number,#} ", internalCurrentPower )
+		toolTip.add( GuiText.StoredEnergy.getLocal() + ":" + MessageFormat.format( " {0,number,#} ", internalCurrentPower )
 				+ Platform.gui_localize( PowerUnits.AE.unlocalizedName ) + " - " + MessageFormat.format( " {0,number,#.##%} ", percent ) );
 
 	}
 
-	private double getMax(ItemStack is)
+	private double getMaxEnergyCapacity()
 	{
 		Block blk = Block.getBlockFromItem( this );
 		if ( blk == AEApi.instance().blocks().blockEnergyCell.block() )
@@ -65,7 +68,7 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 	public double injectAEPower(ItemStack is, double amt)
 	{
 		double internalCurrentPower = getInternal( is );
-		double internalMaxPower = getMax( is );
+		double internalMaxPower = getMaxEnergyCapacity();
 		internalCurrentPower += amt;
 		if ( internalCurrentPower > internalMaxPower )
 		{
@@ -98,7 +101,7 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 	@Override
 	public double getAEMaxPower(ItemStack is)
 	{
-		return getMax( is );
+		return getMaxEnergyCapacity();
 	}
 
 	@Override
