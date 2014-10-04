@@ -139,10 +139,7 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 			}
 			catch (Exception e)
 			{
-				if ( errCount == -1 )
-				{
-				}
-				else if ( errCount++ >= 5 )
+				if ( errCount++ >= 5 )
 				{
 					CraftGuideLog
 							.log( "CraftGuide DefaultRecipeProvider: Stack trace limit reached, further stack traces from this invocation will not be logged to the console. They will still be logged to (.minecraft)/config/CraftGuide/CraftGuide.log",

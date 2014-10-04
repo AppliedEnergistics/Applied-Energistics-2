@@ -271,11 +271,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 					return;
 
 				Block whatsThere = w.getBlock( x, y, z );
-				if ( whatsThere == AEApi.instance().blocks().blockPaint.block() )
-				{
-
-				}
-				else if ( whatsThere.isReplaceable( w, x, y, z ) && w.isAirBlock( x, y, z ) )
+				if ( whatsThere.isReplaceable( w, x, y, z ) && w.isAirBlock( x, y, z ) )
 				{
 					w.setBlock( x, y, z, AEApi.instance().blocks().blockPaint.block(), 0, 3 );
 				}
