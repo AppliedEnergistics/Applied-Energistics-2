@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 
 import appeng.container.slot.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
@@ -124,20 +123,13 @@ public abstract class AEBaseGui extends GuiContainer
 			IAEItemStack item = ((SlotME) slot).getAEStack();
 			if ( item != null )
 			{
-				try
+				((AEBaseContainer) inventorySlots).setTargetStack( item );
+				InventoryAction direction = wheel > 0 ? InventoryAction.ROLL_DOWN : InventoryAction.ROLL_UP;
+				int times = Math.abs( wheel );
+				for (int h = 0; h < times; h++)
 				{
-					((AEBaseContainer) inventorySlots).setTargetStack( item );
-					InventoryAction direction = wheel > 0 ? InventoryAction.ROLL_DOWN : InventoryAction.ROLL_UP;
-					int times = Math.abs( wheel );
-					for (int h = 0; h < times; h++)
-					{
-						PacketInventoryAction p = new PacketInventoryAction( direction, inventorySlots.inventorySlots.size(), 0 );
-						NetworkHandler.instance.sendToServer( p );
-					}
-				}
-				catch (IOException e)
-				{
-					AELog.error( e );
+					PacketInventoryAction p = new PacketInventoryAction( direction, inventorySlots.inventorySlots.size(), 0 );
+					NetworkHandler.instance.sendToServer( p );
 				}
 			}
 		}
@@ -194,15 +186,8 @@ public abstract class AEBaseGui extends GuiContainer
 
 			if ( action != null )
 			{
-				try
-				{
-					PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
-					NetworkHandler.instance.sendToServer( p );
-				}
-				catch (IOException e)
-				{
-					AELog.error( e );
-				}
+				PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
+				NetworkHandler.instance.sendToServer( p );
 			}
 
 			return;
@@ -235,15 +220,8 @@ public abstract class AEBaseGui extends GuiContainer
 
 			if ( action != null )
 			{
-				try
-				{
-					PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
-					NetworkHandler.instance.sendToServer( p );
-				}
-				catch (IOException e)
-				{
-					AELog.error( e );
-				}
+				PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
+				NetworkHandler.instance.sendToServer( p );
 			}
 
 			return;
@@ -257,21 +235,14 @@ public abstract class AEBaseGui extends GuiContainer
 				if ( slot instanceof SlotME )
 					stack = ((SlotME) slot).getAEStack();
 
-				try
-				{
-					int slotNum = inventorySlots.inventorySlots.size();
+				int slotNum = inventorySlots.inventorySlots.size();
 
-					if ( !(slot instanceof SlotME) && slot != null )
-						slotNum = slot.slotNumber;
+				if ( !(slot instanceof SlotME) && slot != null )
+					slotNum = slot.slotNumber;
 
-					((AEBaseContainer) inventorySlots).setTargetStack( stack );
-					PacketInventoryAction p = new PacketInventoryAction( InventoryAction.MOVE_REGION, slotNum, 0 );
-					NetworkHandler.instance.sendToServer( p );
-				}
-				catch (IOException e)
-				{
-					AELog.error( e );
-				}
+				((AEBaseContainer) inventorySlots).setTargetStack( stack );
+				PacketInventoryAction p = new PacketInventoryAction( InventoryAction.MOVE_REGION, slotNum, 0 );
+				NetworkHandler.instance.sendToServer( p );
 				return;
 			}
 		}
@@ -305,15 +276,8 @@ public abstract class AEBaseGui extends GuiContainer
 
 			if ( action != null )
 			{
-				try
-				{
-					PacketInventoryAction p = new PacketInventoryAction( action, slot.getSlotIndex(), ((SlotDisconnected) slot).mySlot.id );
-					NetworkHandler.instance.sendToServer( p );
-				}
-				catch (IOException e)
-				{
-					AELog.error( e );
-				}
+				PacketInventoryAction p = new PacketInventoryAction( action, slot.getSlotIndex(), ((SlotDisconnected) slot).mySlot.id );
+				NetworkHandler.instance.sendToServer( p );
 			}
 
 			return;
@@ -362,16 +326,9 @@ public abstract class AEBaseGui extends GuiContainer
 
 			if ( action != null )
 			{
-				try
-				{
-					((AEBaseContainer) inventorySlots).setTargetStack( stack );
-					PacketInventoryAction p = new PacketInventoryAction( action, inventorySlots.inventorySlots.size(), 0 );
-					NetworkHandler.instance.sendToServer( p );
-				}
-				catch (IOException e)
-				{
-					AELog.error( e );
-				}
+				((AEBaseContainer) inventorySlots).setTargetStack( stack );
+				PacketInventoryAction p = new PacketInventoryAction( action, inventorySlots.inventorySlots.size(), 0 );
+				NetworkHandler.instance.sendToServer( p );
 			}
 
 			return;
@@ -424,18 +381,11 @@ public abstract class AEBaseGui extends GuiContainer
 			drag_click.add( slot );
 			if ( drag_click.size() > 1 )
 			{
-				try
+				for (Slot dr : drag_click)
 				{
-					for (Slot dr : drag_click)
-					{
-						PacketInventoryAction p = new PacketInventoryAction( c == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE,
-								dr.slotNumber, 0 );
-						NetworkHandler.instance.sendToServer( p );
-					}
-				}
-				catch (IOException e)
-				{
-					AELog.error( e );
+					PacketInventoryAction p = new PacketInventoryAction( c == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE,
+							dr.slotNumber, 0 );
+					NetworkHandler.instance.sendToServer( p );
 				}
 			}
 		}
@@ -486,20 +436,13 @@ public abstract class AEBaseGui extends GuiContainer
 					}
 					else
 					{
-						try
+						for (Slot s : (List<Slot>) inventorySlots.inventorySlots)
 						{
-							for (Slot s : (List<Slot>) inventorySlots.inventorySlots)
+							if ( s.getSlotIndex() == j && s.inventory == ((AEBaseContainer) inventorySlots).getPlayerInv() )
 							{
-								if ( s.getSlotIndex() == j && s.inventory == ((AEBaseContainer) inventorySlots).getPlayerInv() )
-								{
-									NetworkHandler.instance.sendToServer( new PacketSwapSlots( s.slotNumber, theSlot.slotNumber ) );
-									return true;
-								}
+								NetworkHandler.instance.sendToServer( new PacketSwapSlots( s.slotNumber, theSlot.slotNumber ) );
+								return true;
 							}
-						}
-						catch (IOException e)
-						{
-							AELog.error( e );
 						}
 					}
 				}

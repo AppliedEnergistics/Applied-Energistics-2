@@ -2,7 +2,6 @@ package appeng.tile.spatial;
 
 import io.netty.buffer.ByteBuf;
 
-import java.io.IOException;
 import java.util.EnumSet;
 
 import net.minecraftforge.common.util.ForgeDirection;
@@ -54,7 +53,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	}
 
 	@TileEvent(TileEventType.NETWORK_READ)
-	public boolean readFromStream_TileSpatialPylon(ByteBuf data) throws IOException
+	public boolean readFromStream_TileSpatialPylon(ByteBuf data)
 	{
 		int old = displayBits;
 		displayBits = data.readByte();
@@ -62,7 +61,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void writeToStream_TileSpatialPylon(ByteBuf data) throws IOException
+	public void writeToStream_TileSpatialPylon(ByteBuf data)
 	{
 		data.writeByte( displayBits );
 	}

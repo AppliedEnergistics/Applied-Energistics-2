@@ -147,14 +147,7 @@ public class GuiCraftConfirm extends AEBaseGui
 
 		if ( btn == cancel )
 		{
-			try
-			{
-				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( OriginalGui ) );
-			}
-			catch (IOException e)
-			{
-				AELog.error( e );
-			}
+			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( OriginalGui ) );
 		}
 
 		if ( btn == start )

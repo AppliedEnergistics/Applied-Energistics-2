@@ -17,7 +17,6 @@ import appeng.client.gui.implementations.GuiPatternTerm;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.integration.BaseModule;
-import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.INEI;
 import appeng.integration.modules.NEIHelpers.NEIAEShapedRecipeHandler;
 import appeng.integration.modules.NEIHelpers.NEIAEShapelessRecipeHandler;
@@ -31,7 +30,7 @@ import codechicken.nei.api.IStackPositioner;
 import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.guihook.IContainerTooltipHandler;
 
-public class NEI extends BaseModule implements IIntegrationModule, INEI, IContainerTooltipHandler
+public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 {
 
 	public static NEI instance;

@@ -1,6 +1,5 @@
 package appeng.core.api;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -98,7 +97,7 @@ public class ApiPart implements IPartHelper
 		return clazz;
 	}
 
-	public ClassNode getReader(String name) throws IOException
+	public ClassNode getReader(String name)
 	{
 		try
 		{
@@ -212,7 +211,7 @@ public class ApiPart implements IPartHelper
 
 	}
 
-	public Class getClassByDesc(String Addendum, String fullPath, String root, String next) throws IOException
+	public Class getClassByDesc(String Addendum, String fullPath, String root, String next)
 	{
 		if ( roots.get( fullPath ) != null )
 			return roots.get( fullPath );

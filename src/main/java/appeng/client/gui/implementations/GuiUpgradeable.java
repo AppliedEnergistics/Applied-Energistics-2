@@ -1,7 +1,5 @@
 package appeng.client.gui.implementations;
 
-import java.io.IOException;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 
@@ -16,7 +14,6 @@ import appeng.api.implementations.IUpgradeableHost;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.container.implementations.ContainerUpgradeable;
-import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
@@ -70,22 +67,14 @@ public class GuiUpgradeable extends AEBaseGui
 
 		boolean backwards = Mouse.isButtonDown( 1 );
 
-		try
-		{
-			if ( btn == redstoneMode )
-				NetworkHandler.instance.sendToServer( new PacketConfigButton( redstoneMode.getSetting(), backwards ) );
+		if ( btn == redstoneMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( redstoneMode.getSetting(), backwards ) );
 
-			if ( btn == craftMode )
-				NetworkHandler.instance.sendToServer( new PacketConfigButton( craftMode.getSetting(), backwards ) );
+		if ( btn == craftMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( craftMode.getSetting(), backwards ) );
 
-			if ( btn == fuzzyMode )
-				NetworkHandler.instance.sendToServer( new PacketConfigButton( fuzzyMode.getSetting(), backwards ) );
-
-		}
-		catch (IOException e)
-		{
-			AELog.error( e );
-		}
+		if ( btn == fuzzyMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( fuzzyMode.getSetting(), backwards ) );
 	}
 
 	protected boolean hasToolbox()

@@ -4,10 +4,9 @@ import mods.railcraft.api.crafting.IRockCrusherRecipe;
 import mods.railcraft.api.crafting.RailcraftCraftingManager;
 import net.minecraft.item.ItemStack;
 import appeng.integration.BaseModule;
-import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IRC;
 
-public class RC extends BaseModule implements IIntegrationModule, IRC
+public class RC extends BaseModule implements IRC
 {
 
 	public static RC instance;

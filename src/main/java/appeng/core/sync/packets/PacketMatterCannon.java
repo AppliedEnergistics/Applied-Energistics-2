@@ -3,8 +3,6 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -28,7 +26,8 @@ public class PacketMatterCannon extends AppEngPacket
 	final byte len;
 
 	// automatic.
-	public PacketMatterCannon(ByteBuf stream) throws IOException {
+	public PacketMatterCannon(ByteBuf stream)
+	{
 		x = stream.readFloat();
 		y = stream.readFloat();
 		z = stream.readFloat();
@@ -59,7 +58,8 @@ public class PacketMatterCannon extends AppEngPacket
 	}
 
 	// api
-	public PacketMatterCannon(double x, double y, double z, float dx, float dy, float dz, byte len) throws IOException {
+	public PacketMatterCannon(double x, double y, double z, float dx, float dy, float dz, byte len)
+	{
 		float dl = dx * dx + dy * dy + dz * dz;
 		float dlz = (float) Math.sqrt( dl );
 

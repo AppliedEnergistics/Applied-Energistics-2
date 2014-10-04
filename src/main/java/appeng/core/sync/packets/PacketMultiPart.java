@@ -3,8 +3,6 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
@@ -18,8 +16,8 @@ public class PacketMultiPart extends AppEngPacket
 {
 
 	// automatic.
-	public PacketMultiPart(ByteBuf stream) throws IOException {
-
+	public PacketMultiPart(ByteBuf stream)
+	{
 	}
 
 	@Override
@@ -29,13 +27,13 @@ public class PacketMultiPart extends AppEngPacket
 		if ( fmp != null )
 		{
 			EntityPlayerMP sender = (EntityPlayerMP) player;
-			MinecraftForge.EVENT_BUS.post( fmp.newFMPPacketEvent( sender ) ); // when received it just pots this event.
+			MinecraftForge.EVENT_BUS.post( fmp.newFMPPacketEvent( sender ) ); // when received it just posts this event.
 		}
 	}
 
 	// api
-	public PacketMultiPart() throws IOException {
-
+	public PacketMultiPart()
+	{
 		ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( getPacketID() );

@@ -40,7 +40,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @Interface(iface = "buildcraft.api.transport.IPipeConnection", iname = "BC")
-public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeConnection, IInventory, ISidedInventory, IGridTickable
+public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeConnection, ISidedInventory, IGridTickable
 {
 
 	@Override

@@ -3,8 +3,6 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import appeng.container.AEBaseContainer;
@@ -18,7 +16,8 @@ public class PacketProgressBar extends AppEngPacket
 	final long value;
 
 	// automatic.
-	public PacketProgressBar(ByteBuf stream) throws IOException {
+	public PacketProgressBar(ByteBuf stream)
+	{
 		id = stream.readShort();
 		value = stream.readLong();
 	}
@@ -40,8 +39,8 @@ public class PacketProgressBar extends AppEngPacket
 	}
 
 	// api
-	public PacketProgressBar(int short_id, long value) throws IOException {
-
+	public PacketProgressBar(int short_id, long value)
+	{
 		this.id = (short) short_id;
 		this.value = value;
 

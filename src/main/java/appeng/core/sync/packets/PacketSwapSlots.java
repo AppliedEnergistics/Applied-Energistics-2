@@ -3,8 +3,6 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
@@ -17,7 +15,8 @@ public class PacketSwapSlots extends AppEngPacket
 	final int slotB;
 
 	// automatic.
-	public PacketSwapSlots(ByteBuf stream) throws IOException {
+	public PacketSwapSlots(ByteBuf stream)
+	{
 		slotA = stream.readInt();
 		slotB = stream.readInt();
 	}
@@ -32,8 +31,8 @@ public class PacketSwapSlots extends AppEngPacket
 	}
 
 	// api
-	public PacketSwapSlots(int slotA, int slotB) throws IOException {
-
+	public PacketSwapSlots(int slotA, int slotB)
+	{
 		ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( getPacketID() );

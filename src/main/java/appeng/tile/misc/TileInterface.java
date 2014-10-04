@@ -12,7 +12,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingLink;
@@ -32,7 +31,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigurableObject;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
@@ -45,8 +43,8 @@ import appeng.util.inv.IInventoryDestination;
 
 import com.google.common.collect.ImmutableSet;
 
-public class TileInterface extends AENetworkInvTile implements IGridTickable, ISegmentedInventory, ITileStorageMonitorable, IStorageMonitorable,
-		IInventoryDestination, IInterfaceHost, IConfigurableObject, IPriorityHost
+public class TileInterface extends AENetworkInvTile implements IGridTickable, ITileStorageMonitorable, IStorageMonitorable,
+		IInventoryDestination, IInterfaceHost, IPriorityHost
 {
 
 	ForgeDirection pointAt = ForgeDirection.UNKNOWN;

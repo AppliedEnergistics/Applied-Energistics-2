@@ -5,10 +5,9 @@ import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.integration.BaseModule;
-import appeng.integration.IIntegrationModule;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class RF extends BaseModule implements IIntegrationModule
+public class RF extends BaseModule
 {
 
 	public static RF instance;

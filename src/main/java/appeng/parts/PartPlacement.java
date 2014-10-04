@@ -1,6 +1,5 @@
 package appeng.parts;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,7 +25,6 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.DimensionalCoord;
-import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.CommonHelper;
 import appeng.core.sync.network.NetworkHandler;
@@ -81,14 +79,7 @@ public class PartPlacement
 						|| AEApi.instance().items().itemColorApplicator.sameAsStack( held );
 				if ( event.entityPlayer.isSneaking() && held != null && supportedItem )
 				{
-					try
-					{
-						NetworkHandler.instance.sendToServer( new PacketClick( event.x, event.y, event.z, event.face, 0, 0, 0 ) );
-					}
-					catch (IOException e)
-					{
-						// :P
-					}
+					NetworkHandler.instance.sendToServer( new PacketClick( event.x, event.y, event.z, event.face, 0, 0, 0 ) );
 				}
 			}
 		}
@@ -171,14 +162,7 @@ public class PartPlacement
 				else
 				{
 					player.swingItem();
-					try
-					{
-						NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
-					}
-					catch (IOException e)
-					{
-						AELog.error( e );
-					}
+					NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
 				}
 				return true;
 			}
@@ -225,15 +209,8 @@ public class PartPlacement
 					else
 					{
 						player.swingItem();
-						try
-						{
-							NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
-							return true;
-						}
-						catch (IOException e)
-						{
-							AELog.error( e );
-						}
+						NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
+						return true;
 					}
 				}
 				return false;
@@ -262,14 +239,7 @@ public class PartPlacement
 						{
 							if ( world.isRemote )
 							{
-								try
-								{
-									NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
-								}
-								catch (IOException e)
-								{
-									AELog.error( e );
-								}
+								NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
 							}
 							return true;
 						}
@@ -328,14 +298,7 @@ public class PartPlacement
 				else
 				{
 					player.swingItem();
-					try
-					{
-						NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
-					}
-					catch (IOException e)
-					{
-						AELog.error( e );
-					}
+					NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
 					return true;
 				}
 			}
@@ -409,14 +372,7 @@ public class PartPlacement
 		else
 		{
 			player.swingItem();
-			try
-			{
-				NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
-			}
-			catch (IOException e)
-			{
-				AELog.error( e );
-			}
+			NetworkHandler.instance.sendToServer( new PacketPartPlacement( x, y, z, face, getEyeOffset( player ) ) );
 		}
 		return true;
 	}

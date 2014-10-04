@@ -3,8 +3,6 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.DimensionManager;
 import appeng.core.AEConfig;
@@ -19,7 +17,8 @@ public class PacketNewStorageDimension extends AppEngPacket
 	final int newDim;
 
 	// automatic.
-	public PacketNewStorageDimension(ByteBuf stream) throws IOException {
+	public PacketNewStorageDimension(ByteBuf stream)
+	{
 		newDim = stream.readInt();
 	}
 
@@ -38,8 +37,8 @@ public class PacketNewStorageDimension extends AppEngPacket
 	}
 
 	// api
-	public PacketNewStorageDimension(int newDim) throws IOException {
-
+	public PacketNewStorageDimension(int newDim)
+	{
 		this.newDim = newDim;
 
 		ByteBuf data = Unpooled.buffer();

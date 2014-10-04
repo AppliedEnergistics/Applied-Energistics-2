@@ -9,10 +9,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 
-public class PartCraftingTerminal extends PartTerminal implements IAEAppEngInventory
+public class PartCraftingTerminal extends PartTerminal
 {
 
 	final AppEngInternalInventory craftingGrid = new AppEngInternalInventory( this, 9 );

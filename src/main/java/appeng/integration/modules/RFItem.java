@@ -1,9 +1,8 @@
 package appeng.integration.modules;
 
 import appeng.integration.BaseModule;
-import appeng.integration.IIntegrationModule;
 
-public class RFItem extends BaseModule implements IIntegrationModule
+public class RFItem extends BaseModule
 {
 
 	public static RFItem instance;

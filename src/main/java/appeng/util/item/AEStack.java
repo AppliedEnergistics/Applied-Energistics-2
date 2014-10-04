@@ -92,7 +92,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 		countRequestable += i;
 	}
 
-	void putPacketValue(ByteBuf tag, long num) throws IOException
+	void putPacketValue(ByteBuf tag, long num)
 	{
 		if ( num <= 255 )
 			tag.writeByte( (byte) (num + Byte.MIN_VALUE) );
@@ -104,7 +104,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 			tag.writeLong( num );
 	}
 
-	static long getPacketValue(byte type, ByteBuf tag) throws IOException
+	static long getPacketValue(byte type, ByteBuf tag)
 	{
 		if ( type == 0 )
 		{

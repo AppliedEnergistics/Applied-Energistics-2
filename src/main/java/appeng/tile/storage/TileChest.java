@@ -6,7 +6,6 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.*;
 import io.netty.buffer.ByteBuf;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -168,7 +167,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void writeToStream_TileChest(ByteBuf data) throws IOException
+	public void writeToStream_TileChest(ByteBuf data)
 	{
 		if ( worldObj.getTotalWorldTime() - lastStateChange > 8 )
 			state = 0;
@@ -199,7 +198,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@TileEvent(TileEventType.NETWORK_READ)
-	public boolean readFromStream_TileChest(ByteBuf data) throws IOException
+	public boolean readFromStream_TileChest(ByteBuf data)
 	{
 		int oldState = state;
 		ItemStack oldType = storageType;

@@ -6,7 +6,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.util.IConfigManager;
 import appeng.parts.PartBasicState;
 import appeng.tile.inventory.IAEAppEngInventory;
@@ -14,7 +13,7 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 
-public class PartUpgradeable extends PartBasicState implements ISegmentedInventory, IAEAppEngInventory, IConfigManagerHost
+public class PartUpgradeable extends PartBasicState implements IAEAppEngInventory, IConfigManagerHost
 {
 
 	final IConfigManager settings = new ConfigManager( this );

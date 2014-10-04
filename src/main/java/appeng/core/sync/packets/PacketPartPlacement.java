@@ -3,8 +3,6 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import appeng.core.CommonHelper;
@@ -19,7 +17,8 @@ public class PacketPartPlacement extends AppEngPacket
 	float eyeHeight;
 
 	// automatic.
-	public PacketPartPlacement(ByteBuf stream) throws IOException {
+	public PacketPartPlacement(ByteBuf stream)
+	{
 		x = stream.readInt();
 		y = stream.readInt();
 		z = stream.readInt();
@@ -38,8 +37,8 @@ public class PacketPartPlacement extends AppEngPacket
 	}
 
 	// api
-	public PacketPartPlacement(int x, int y, int z, int face, float eyeHeight ) throws IOException {
-
+	public PacketPartPlacement(int x, int y, int z, int face, float eyeHeight )
+	{
 		ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( getPacketID() );

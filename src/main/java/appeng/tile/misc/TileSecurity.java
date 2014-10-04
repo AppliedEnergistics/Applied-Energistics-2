@@ -3,7 +3,6 @@ package appeng.tile.misc;
 import appeng.helpers.PlayerSecurityWrapper;
 import io.netty.buffer.ByteBuf;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -123,7 +122,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	}
 
 	@TileEvent(TileEventType.NETWORK_READ)
-	public boolean readFromStream_TileSecurity(ByteBuf data) throws IOException
+	public boolean readFromStream_TileSecurity(ByteBuf data)
 	{
 		boolean wasActive = isActive;
 		isActive = data.readBoolean();
@@ -135,7 +134,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void writeToStream_TileSecurity(ByteBuf data) throws IOException
+	public void writeToStream_TileSecurity(ByteBuf data)
 	{
 		data.writeBoolean( gridProxy.isActive() );
 		data.writeByte( paintedColor.ordinal() );

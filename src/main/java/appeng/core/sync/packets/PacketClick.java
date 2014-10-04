@@ -3,8 +3,6 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
@@ -27,7 +25,7 @@ public class PacketClick extends AppEngPacket
 	final float hitZ;
 
 	// automatic.
-	public PacketClick(ByteBuf stream) throws IOException {
+	public PacketClick(ByteBuf stream) {
 		x = stream.readInt();
 		y = stream.readInt();
 		z = stream.readInt();
@@ -60,7 +58,7 @@ public class PacketClick extends AppEngPacket
 	}
 
 	// api
-	public PacketClick(int x, int y, int z, int side, float hitX, float hitY, float hitZ) throws IOException {
+	public PacketClick(int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
 
 		ByteBuf data = Unpooled.buffer();
 

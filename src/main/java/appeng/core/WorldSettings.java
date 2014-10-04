@@ -3,7 +3,6 @@ package appeng.core;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -230,14 +229,7 @@ public class WorldSettings extends Configuration
 		storageCellDims.add( newDim );
 		DimensionManager.registerDimension( newDim, AEConfig.instance.storageProviderID );
 
-		try
-		{
-			NetworkHandler.instance.sendToAll( new PacketNewStorageDimension( newDim ) );
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		NetworkHandler.instance.sendToAll( new PacketNewStorageDimension( newDim ) );
 
 		String[] values = new String[storageCellDims.size()];
 
@@ -293,14 +285,7 @@ public class WorldSettings extends Configuration
 		{
 			for (int newDim : get( "DimensionManager", "StorageCells", new int[0] ).getIntList())
 			{
-				try
-				{
-					manager.scheduleOutboundPacket( (new PacketNewStorageDimension( newDim )).getProxy() );
-				}
-				catch (IOException e)
-				{
-					AELog.error( e );
-				}
+				manager.scheduleOutboundPacket( (new PacketNewStorageDimension( newDim )).getProxy() );
 			}
 		}
 		else

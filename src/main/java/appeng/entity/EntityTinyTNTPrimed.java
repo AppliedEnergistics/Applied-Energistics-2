@@ -2,8 +2,6 @@ package appeng.entity;
 
 import io.netty.buffer.ByteBuf;
 
-import java.io.IOException;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -148,13 +146,7 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 			}
 		}
 
-		try
-		{
-			CommonHelper.proxy.sendToAllNearExcept( null, posX, posY, posZ, 64, this.worldObj, new PacketMockExplosion( posX, posY, posZ ) );
-		}
-		catch (IOException ignored)
-		{
-		}
+		CommonHelper.proxy.sendToAllNearExcept( null, posX, posY, posZ, 64, this.worldObj, new PacketMockExplosion( posX, posY, posZ ) );
 	}
 
 	@Override

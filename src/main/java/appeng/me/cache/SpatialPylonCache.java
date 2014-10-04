@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridCache;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
@@ -19,7 +18,7 @@ import appeng.me.cluster.implementations.SpatialPylonCluster;
 import appeng.tile.spatial.TileSpatialIOPort;
 import appeng.tile.spatial.TileSpatialPylon;
 
-public class SpatialPylonCache implements IGridCache, ISpatialCache
+public class SpatialPylonCache implements ISpatialCache
 {
 
 	long powerRequired = 0;

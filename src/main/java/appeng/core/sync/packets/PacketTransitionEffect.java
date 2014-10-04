@@ -3,8 +3,6 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -32,7 +30,8 @@ public class PacketTransitionEffect extends AppEngPacket
 	final public boolean mode;
 
 	// automatic.
-	public PacketTransitionEffect(ByteBuf stream) throws IOException {
+	public PacketTransitionEffect(ByteBuf stream)
+	{
 		x = stream.readFloat();
 		y = stream.readFloat();
 		z = stream.readFloat();
@@ -77,8 +76,8 @@ public class PacketTransitionEffect extends AppEngPacket
 	}
 
 	// api
-	public PacketTransitionEffect(double x, double y, double z, ForgeDirection dir, boolean wasBlock) throws IOException {
-
+	public PacketTransitionEffect(double x, double y, double z, ForgeDirection dir, boolean wasBlock)
+	{
 		this.x = x;
 		this.y = y;
 		this.z = z;

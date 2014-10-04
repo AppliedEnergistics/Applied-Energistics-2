@@ -16,7 +16,6 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
-import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
@@ -34,7 +33,7 @@ import appeng.util.inv.IInventoryDestination;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PartImportBus extends PartSharedItemBus implements IGridTickable, IInventoryDestination
+public class PartImportBus extends PartSharedItemBus implements IInventoryDestination
 {
 
 	final BaseActionSource mySrc;

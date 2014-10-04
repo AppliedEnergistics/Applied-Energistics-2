@@ -2,7 +2,6 @@ package appeng.tile.networking;
 
 import io.netty.buffer.ByteBuf;
 
-import java.io.IOException;
 import java.util.EnumSet;
 
 import net.minecraft.inventory.IInventory;
@@ -62,7 +61,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	}
 
 	@TileEvent(TileEventType.NETWORK_READ)
-	public boolean readFromStream_TileWireless(ByteBuf data) throws IOException
+	public boolean readFromStream_TileWireless(ByteBuf data)
 	{
 		int old = clientFlags;
 		clientFlags = data.readByte();
@@ -71,7 +70,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void writeToStream_TileWireless(ByteBuf data) throws IOException
+	public void writeToStream_TileWireless(ByteBuf data)
 	{
 		clientFlags = 0;
 

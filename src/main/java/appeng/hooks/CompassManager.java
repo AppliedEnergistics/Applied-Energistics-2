@@ -1,10 +1,8 @@
 package appeng.hooks;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketCompassRequest;
 
@@ -92,15 +90,7 @@ public class CompassManager
 
 	private void requestUpdate(CompassRequest r)
 	{
-
-		try
-		{
-			NetworkHandler.instance.sendToServer( new PacketCompassRequest( r.attunement, r.cx, r.cz, r.cdy ) );
-		}
-		catch (IOException e)
-		{
-			AELog.error( e );
-		}
+		NetworkHandler.instance.sendToServer( new PacketCompassRequest( r.attunement, r.cx, r.cz, r.cdy ) );
 	}
 
 }

@@ -1,11 +1,10 @@
 package appeng.util.inv;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class WrapperMCISidedInventory extends WrapperInventoryRange implements IInventory, IInventoryWrapper
+public class WrapperMCISidedInventory extends WrapperInventoryRange implements IInventoryWrapper
 {
 
 	private final ForgeDirection dir;

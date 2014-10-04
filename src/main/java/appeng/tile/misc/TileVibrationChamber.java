@@ -2,8 +2,6 @@ package appeng.tile.misc;
 
 import io.netty.buffer.ByteBuf;
 
-import java.io.IOException;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -47,7 +45,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	}
 
 	@TileEvent(TileEventType.NETWORK_READ)
-	public boolean readFromStream_TileVibrationChamber(ByteBuf data) throws IOException
+	public boolean readFromStream_TileVibrationChamber(ByteBuf data)
 	{
 		boolean wasOn = isOn;
 		isOn = data.readBoolean();
@@ -55,7 +53,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void writeToStream_TileVibrationChamber(ByteBuf data) throws IOException
+	public void writeToStream_TileVibrationChamber(ByteBuf data)
 	{
 		data.writeBoolean( burnTime > 0 );
 	}

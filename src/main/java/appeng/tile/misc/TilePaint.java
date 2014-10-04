@@ -4,7 +4,6 @@ import appeng.helpers.Splotch;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -90,13 +89,13 @@ public class TilePaint extends AEBaseTile
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void writeToStream_TilePaint(ByteBuf data) throws IOException
+	public void writeToStream_TilePaint(ByteBuf data)
 	{
 		writeBuffer( data );
 	}
 
 	@TileEvent(TileEventType.NETWORK_READ)
-	public boolean readFromStream_TilePaint(ByteBuf data) throws IOException
+	public boolean readFromStream_TilePaint(ByteBuf data)
 	{
 		readBuffer( data );
 		return true;

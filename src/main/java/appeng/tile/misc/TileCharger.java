@@ -46,7 +46,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	}
 
 	@TileEvent(TileEventType.NETWORK_READ)
-	public boolean readFromStream_TileCharger(ByteBuf data) throws IOException
+	public boolean readFromStream_TileCharger(ByteBuf data)
 	{
 		try
 		{

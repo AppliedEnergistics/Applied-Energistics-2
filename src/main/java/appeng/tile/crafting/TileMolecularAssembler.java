@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -45,7 +44,6 @@ import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
@@ -55,7 +53,7 @@ import appeng.util.item.AEItemStack;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 
-public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEngInventory, ISidedInventory, IUpgradeableHost, IConfigManagerHost,
+public class TileMolecularAssembler extends AENetworkInvTile implements IUpgradeableHost, IConfigManagerHost,
 		IGridTickable, ICraftingMachine, IPowerChannelState
 {
 
@@ -177,7 +175,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 	}
 
 	@TileEvent(TileEventType.NETWORK_READ)
-	public boolean readFromStream_TileMolecularAssembler(ByteBuf data) throws IOException
+	public boolean readFromStream_TileMolecularAssembler(ByteBuf data)
 	{
 		boolean oldPower = isPowered;
 		isPowered = data.readBoolean();
@@ -185,7 +183,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IAEAppEn
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void writeToStream_TileMolecularAssembler(ByteBuf data) throws IOException
+	public void writeToStream_TileMolecularAssembler(ByteBuf data)
 	{
 		data.writeBoolean( isPowered );
 	}

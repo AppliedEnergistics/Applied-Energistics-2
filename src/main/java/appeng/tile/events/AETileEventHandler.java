@@ -15,11 +15,10 @@ public class AETileEventHandler
 {
 
 	private final Method method;
-	private final TileEventType type;
 
-	public AETileEventHandler(Method m, TileEventType which) {
+	public AETileEventHandler(Method m, TileEventType which)
+	{
 		method = m;
-		type = which;
 	}
 
 	// TICK
@@ -86,7 +85,7 @@ public class AETileEventHandler
 	}
 
 	// NETWORK
-	public void writeToStream(AEBaseTile tile, ByteBuf data) throws IOException
+	public void writeToStream(AEBaseTile tile, ByteBuf data)
 	{
 		try
 		{

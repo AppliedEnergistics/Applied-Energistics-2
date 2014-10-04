@@ -20,7 +20,6 @@ import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.hooks.TickHandler;
-import appeng.items.storage.ItemSpatialStorageCell;
 import appeng.me.cache.SpatialPylonCache;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;

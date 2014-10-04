@@ -1,7 +1,5 @@
 package appeng.client.gui.implementations;
 
-import java.io.IOException;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 
@@ -13,7 +11,6 @@ import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.client.gui.widgets.GuiToggleButton;
 import appeng.container.implementations.ContainerInterface;
-import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
@@ -42,29 +39,14 @@ public class GuiInterface extends GuiUpgradeable
 
 		if ( btn == priority )
 		{
-			try
-			{
-				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
-			}
-			catch (IOException e)
-			{
-				AELog.error( e );
-			}
+			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
 		}
 
-		try
-		{
-			if ( btn == interfaceMode )
-				NetworkHandler.instance.sendToServer( new PacketConfigButton( Settings.INTERFACE_TERMINAL, backwards ) );
+		if ( btn == interfaceMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( Settings.INTERFACE_TERMINAL, backwards ) );
 
-			if ( btn == BlockMode )
-				NetworkHandler.instance.sendToServer( new PacketConfigButton( BlockMode.getSetting(), backwards ) );
-
-		}
-		catch (IOException e)
-		{
-			AELog.error( e );
-		}
+		if ( btn == BlockMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( BlockMode.getSetting(), backwards ) );
 	}
 
 	@Override

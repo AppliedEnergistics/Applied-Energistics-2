@@ -1,6 +1,5 @@
 package appeng.parts.automation;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -36,7 +35,6 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.texture.CableBusTextures;
-import appeng.core.AELog;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.packets.PacketTransitionEffect;
 import appeng.hooks.TickHandler;
@@ -292,14 +290,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 										}
 									}
 
-									try
-									{
-										ServerHelper.proxy.sendToAllNearExcept( null, x, y, z, 64, w, new PacketTransitionEffect( x, y, z, side, true ) );
-									}
-									catch (IOException e)
-									{
-										AELog.error( e );
-									}
+									ServerHelper.proxy.sendToAllNearExcept( null, x, y, z, 64, w, new PacketTransitionEffect( x, y, z, side, true ) );
 
 									for (ItemStack snaggedItem : out)
 									{
@@ -393,15 +384,8 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 				IAEItemStack stack = AEItemStack.create( ((EntityItem) entity).getEntityItem() );
 				if ( stack != null )
 				{
-					try
-					{
-						ServerHelper.proxy.sendToAllNearExcept( null, tile.xCoord, tile.yCoord, tile.zCoord, 64, tile.getWorldObj(),
-								new PacketTransitionEffect( entity.posX, entity.posY, entity.posZ, side, false ) );
-					}
-					catch (IOException e)
-					{
-						AELog.error( e );
-					}
+					ServerHelper.proxy.sendToAllNearExcept( null, tile.xCoord, tile.yCoord, tile.zCoord, 64, tile.getWorldObj(),
+							new PacketTransitionEffect( entity.posX, entity.posY, entity.posZ, side, false ) );
 
 					Buffer.add( stack );
 					storeBuffer();

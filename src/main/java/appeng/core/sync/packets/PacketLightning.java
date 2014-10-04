@@ -3,8 +3,6 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import appeng.client.ClientHelper;
@@ -24,7 +22,7 @@ public class PacketLightning extends AppEngPacket
 	final double z;
 
 	// automatic.
-	public PacketLightning(ByteBuf stream) throws IOException {
+	public PacketLightning(ByteBuf stream) {
 		x = stream.readFloat();
 		y = stream.readFloat();
 		z = stream.readFloat();
@@ -48,8 +46,8 @@ public class PacketLightning extends AppEngPacket
 	}
 
 	// api
-	public PacketLightning(double x, double y, double z) throws IOException {
-
+	public PacketLightning(double x, double y, double z)
+	{
 		this.x = x;
 		this.y = y;
 		this.z = z;
