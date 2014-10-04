@@ -9,15 +9,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 
 import org.lwjgl.opengl.GL11;
 
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.AEApi;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.MEGuiTextField;
@@ -25,7 +24,6 @@ import appeng.client.me.ClientDCInternalInv;
 import appeng.client.me.SlotDisconnected;
 import appeng.container.implementations.ContainerInterfaceTerminal;
 import appeng.core.localization.GuiText;
-import appeng.helpers.PatternHelper;
 import appeng.parts.reporting.PartMonitor;
 import appeng.util.Platform;
 
@@ -43,7 +41,6 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	private final HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();
 	private final ArrayList<String> names = new ArrayList<String>();
 	private final ArrayList<Object> lines = new ArrayList<Object>();
-	private final EntityPlayer player;
 
 	private final Map<String, Set<Object>> cachedSearches = new WeakHashMap<String, Set<Object>>();
 
@@ -53,10 +50,9 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	public GuiInterfaceTerminal(InventoryPlayer inventoryPlayer, PartMonitor te)
 	{
 		super( new ContainerInterfaceTerminal( inventoryPlayer, te ) );
-		this.player = inventoryPlayer.player;
-		myScrollBar = new GuiScrollbar();
-		xSize = 195;
-		ySize = 222;
+		this.myScrollBar = new GuiScrollbar();
+		this.xSize = 195;
+		this.ySize = 222;
 	}
 
 	@Override
@@ -238,29 +234,22 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		{
 			// ignore inventory if not doing a full rebuild or cache already marks it as miss.
 			if ( !rebuild && !cachedSearch.contains( entry ) )
+			{
 				continue;
+			}
 
 			// Shortcut to skip any filter if search term is ""/empty
 			boolean found = searchFilterLowerCase.isEmpty();
-
 
 			// Search if the current inventory holds a pattern containing the search term.
 			if ( !found && !searchFilterLowerCase.equals( "" ) )
 			{
 				for (ItemStack itemStack : entry.inv)
 				{
-					if ( itemStack != null )
+					found = itemStackMatchesSearchTerm( itemStack, searchFilterLowerCase );
+					if ( found )
 					{
-						final PatternHelper ph = new PatternHelper( itemStack, player.worldObj );
-						final IAEItemStack[] output = ph.getCondensedOutputs();
-						for (IAEItemStack iaeItemStack : output)
-						{
-							if ( Platform.getItemDisplayName( iaeItemStack ).toLowerCase().contains( searchFilterLowerCase ) )
-							{
-								found = true;
-								break;
-							}
-						}
+						break;
 					}
 				}
 			}
@@ -299,6 +288,41 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		myScrollBar.setRange( 0, lines.size() - LINES_ON_PAGE, 2 );
 	}
 
+	private boolean itemStackMatchesSearchTerm(ItemStack itemStack, String searchTerm)
+	{
+		if ( itemStack == null )
+		{
+			return false;
+		}
+
+		NBTTagCompound encodedValue = itemStack.getTagCompound();
+
+		if ( encodedValue == null )
+		{
+			return false;
+		}
+
+		// Potential later use to filter by input
+		// NBTTagList inTag = encodedValue.getTagList( "in", 10 );
+		NBTTagList outTag = encodedValue.getTagList( "out", 10 );
+
+		for (int i = 0; i < outTag.tagCount(); i++)
+		{
+
+			ItemStack parsedItemStack = ItemStack.loadItemStackFromNBT( outTag.getCompoundTagAt( i ) );
+			if ( parsedItemStack != null )
+			{
+				String displayName = Platform.getItemDisplayName( AEApi.instance().storage().createItemStack( parsedItemStack ) ).toLowerCase();
+				if ( displayName.contains( searchTerm ) )
+				{
+					return true;
+				}
+			}
+
+		}
+		return false;
+	}
+
 	/**
 	 * Tries to retrieve a cache for a with search term as keyword.
 	 *
@@ -318,16 +342,10 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 		Set<Object> cache = cachedSearches.get( searchTerm );
 
-		if ( cache.isEmpty() )
+		if ( cache.isEmpty() && searchTerm.length() > 1 )
 		{
-			if ( searchTerm.length() > 1 && cachedSearches.containsKey( searchTerm.substring( 0, searchTerm.length() - 1 ) ) )
-			{
-				cache.addAll( cachedSearches.get( searchTerm.substring( 0, searchTerm.length() - 1 ) ) );
-			}
-			else
-			{
-				cache.addAll( cachedSearches.get( "" ) );
-			}
+			cache.addAll( getCacheForSearchTerm( searchTerm.substring( 0, searchTerm.length() - 1 ) ) );
+			return cache;
 		}
 
 		return cache;
