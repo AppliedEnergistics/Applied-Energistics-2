@@ -16,13 +16,6 @@ public class PathSegment
 
 	public boolean isDead;
 
-	static class RouteComplete extends Exception
-	{
-
-		private static final long serialVersionUID = 810456465120286110L;
-
-	}
-
 	final PathGridCache pgc;
 
 	public PathSegment(PathGridCache myPGC, List<IPathItem> open, Set<IPathItem> semiOpen, Set<IPathItem> closed)
@@ -58,7 +51,7 @@ public class PathSegment
 						// close the semi open.
 						if ( !semiOpen.contains( pi ) )
 						{
-							boolean worked = false;
+							boolean worked;
 
 							if ( flags.contains( GridFlags.COMPRESSED_CHANNEL ) )
 								worked = useDenseChannel( pi );
