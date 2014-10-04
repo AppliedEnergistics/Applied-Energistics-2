@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -20,12 +18,15 @@ import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderNull;
 import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 {
 
-	public BlockMatrixFrame() {
-		super( BlockMatrixFrame.class, Material.anvil);
+	public BlockMatrixFrame()
+	{
+		super( BlockMatrixFrame.class, Material.anvil );
 		setFeature( EnumSet.of( AEFeature.SpatialIO ) );
 		setResistance( 6000000.0F );
 		setBlockUnbreakable();
@@ -69,6 +70,12 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e)
 	{
 		out.add( AxisAlignedBB.getBoundingBox( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
+	}
+
+	@Override
+	public boolean canPlaceBlockAt(World world, int x, int y, int z)
+	{
+		return false;
 	}
 
 }
