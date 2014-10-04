@@ -90,13 +90,20 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		super.initGui();
 
-		Iterator<Slot> i = inventorySlots.inventorySlots.iterator();
+		final List<Slot> slots = this.getInventorySlots();
+		Iterator<Slot> i = slots.iterator();
 		while (i.hasNext())
 			if ( i.next() instanceof SlotME )
 				i.remove();
 
 		for (InternalSlotME me : meSlots)
-			inventorySlots.inventorySlots.add( new SlotME( me ) );
+			slots.add( new SlotME( me ) );
+	}
+
+	@SuppressWarnings( "unchecked" )
+	private List<Slot> getInventorySlots()
+	{
+		return this.inventorySlots.inventorySlots;
 	}
 
 	@Override
@@ -126,9 +133,10 @@ public abstract class AEBaseGui extends GuiContainer
 				((AEBaseContainer) inventorySlots).setTargetStack( item );
 				InventoryAction direction = wheel > 0 ? InventoryAction.ROLL_DOWN : InventoryAction.ROLL_UP;
 				int times = Math.abs( wheel );
+				final int inventorySize = this.getInventorySlots().size();
 				for (int h = 0; h < times; h++)
 				{
-					PacketInventoryAction p = new PacketInventoryAction( direction, inventorySlots.inventorySlots.size(), 0 );
+					PacketInventoryAction p = new PacketInventoryAction( direction, inventorySize, 0 );
 					NetworkHandler.instance.sendToServer( p );
 				}
 			}
@@ -235,7 +243,7 @@ public abstract class AEBaseGui extends GuiContainer
 				if ( slot instanceof SlotME )
 					stack = ((SlotME) slot).getAEStack();
 
-				int slotNum = inventorySlots.inventorySlots.size();
+				int slotNum = this.getInventorySlots().size();
 
 				if ( !(slot instanceof SlotME) && slot != null )
 					slotNum = slot.slotNumber;
@@ -327,7 +335,7 @@ public abstract class AEBaseGui extends GuiContainer
 			if ( action != null )
 			{
 				((AEBaseContainer) inventorySlots).setTargetStack( stack );
-				PacketInventoryAction p = new PacketInventoryAction( action, inventorySlots.inventorySlots.size(), 0 );
+				PacketInventoryAction p = new PacketInventoryAction( action, this.getInventorySlots().size(), 0 );
 				NetworkHandler.instance.sendToServer( p );
 			}
 
@@ -352,14 +360,13 @@ public abstract class AEBaseGui extends GuiContainer
 			{
 				// a replica of the weird broken vanilla feature.
 
-				for (Object inventorySlot : this.inventorySlots.inventorySlots)
+				final List<Slot> slots = this.getInventorySlots();
+				for (Slot inventorySlot : slots)
 				{
-					Slot targetSlot = (Slot) inventorySlot;
-
-					if ( targetSlot != null && targetSlot.canTakeStack( this.mc.thePlayer ) && targetSlot.getHasStack()
-							&& targetSlot.inventory == slot.inventory && Container.func_94527_a( targetSlot, dbl_whichItem, true ) )
+					if ( inventorySlot != null && inventorySlot.canTakeStack( this.mc.thePlayer ) && inventorySlot.getHasStack()
+							&& inventorySlot.inventory == slot.inventory && Container.func_94527_a( inventorySlot, dbl_whichItem, true ) )
 					{
-						this.handleMouseClick( targetSlot, targetSlot.slotNumber, ctrlDown, 1 );
+						this.handleMouseClick( inventorySlot, inventorySlot.slotNumber, ctrlDown, 1 );
 					}
 				}
 			}
@@ -418,7 +425,8 @@ public abstract class AEBaseGui extends GuiContainer
 			{
 				if ( p_146983_1_ == this.mc.gameSettings.keyBindsHotbar[j].getKeyCode() )
 				{
-					for (Slot s : (List<Slot>) inventorySlots.inventorySlots)
+					final List<Slot> slots = this.getInventorySlots();
+					for (Slot s : slots)
 					{
 						if ( s.getSlotIndex() == j && s.inventory == ((AEBaseContainer) inventorySlots).getPlayerInv() )
 						{
@@ -436,7 +444,7 @@ public abstract class AEBaseGui extends GuiContainer
 					}
 					else
 					{
-						for (Slot s : (List<Slot>) inventorySlots.inventorySlots)
+						for (Slot s : slots)
 						{
 							if ( s.getSlotIndex() == j && s.inventory == ((AEBaseContainer) inventorySlots).getPlayerInv() )
 							{
@@ -612,11 +620,12 @@ public abstract class AEBaseGui extends GuiContainer
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 		drawBG( ox, oy, x, y );
 
-		for (Object o : inventorySlots.inventorySlots)
+		final List<Slot> slots = this.getInventorySlots();
+		for (Slot slot : slots)
 		{
-			if ( o instanceof OptionalSlotFake )
+			if ( slot instanceof OptionalSlotFake )
 			{
-				OptionalSlotFake fs = (OptionalSlotFake) o;
+				OptionalSlotFake fs = (OptionalSlotFake) slot;
 				if ( fs.renderDisabled() )
 				{
 					if ( fs.isEnabled() )
@@ -669,10 +678,9 @@ public abstract class AEBaseGui extends GuiContainer
 
 	protected Slot getSlot(int mouseX, int mouseY)
 	{
-		for (int j1 = 0; j1 < this.inventorySlots.inventorySlots.size(); ++j1)
+		final List<Slot> slots = this.getInventorySlots();
+		for (Slot slot : slots)
 		{
-			Slot slot = (Slot) this.inventorySlots.inventorySlots.get( j1 );
-
 			// isPointInRegion
 			if ( func_146978_c( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY ) )
 			{
