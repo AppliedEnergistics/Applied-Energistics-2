@@ -40,7 +40,7 @@ public class ApiPart implements IPartHelper
 {
 
 	private final Map<String, Class> tileImplementations = new HashMap<String, Class>();
-	private final Map<Class, String> interfaces2Layer = new HashMap<Class, String>();
+	private final Map<Class<?>, String> interfaces2Layer = new HashMap<Class<?>, String>();
 	private final Map<String, Class> roots = new HashMap<String, Class>();
 	private final List<String> desc = new LinkedList<String>();
 
@@ -60,8 +60,8 @@ public class ApiPart implements IPartHelper
 		try
 		{
 			ClassLoader loader = getClass().getClassLoader();// ClassLoader.getSystemClassLoader();
-			Class root = ClassLoader.class;
-			Class cls = loader.getClass();
+			Class<ClassLoader> root = ClassLoader.class;
+			Class<? extends ClassLoader> cls = loader.getClass();
 			Method defineClassMethod = root.getDeclaredMethod( "defineClass", new Class[] { String.class, byte[].class, int.class, int.class } );
 			Method runTransformersMethod = cls.getDeclaredMethod( "runTransformers", new Class[] { String.class, String.class, byte[].class } );
 
