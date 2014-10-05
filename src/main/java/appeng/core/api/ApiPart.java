@@ -1,10 +1,8 @@
 package appeng.core.api;
 
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.lang.reflect.Method;
+import java.util.*;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -41,14 +39,10 @@ import com.google.common.base.Joiner;
 public class ApiPart implements IPartHelper
 {
 
-	int classNum = 1;
-
-	final HashMap<String, Class> TileImplementations = new HashMap<String, Class>();
-	HashMap<String, ClassNode> readerCache = new HashMap<String, ClassNode>();
-	final HashMap<Class, String> interfaces2Layer = new HashMap<Class, String>();
-	final HashMap<String, Class> roots = new HashMap<String, Class>();
-
-	final List<String> desc = new LinkedList<String>();
+	private final Map<String, Class> tileImplementations = new HashMap<String, Class>();
+	private final Map<Class<?>, String> interfaces2Layer = new HashMap<Class<?>, String>();
+	private final Map<String, Class> roots = new HashMap<String, Class>();
+	private final List<String> desc = new LinkedList<String>();
 
 	public void initFMPSupport()
 	{
@@ -66,12 +60,10 @@ public class ApiPart implements IPartHelper
 		try
 		{
 			ClassLoader loader = getClass().getClassLoader();// ClassLoader.getSystemClassLoader();
-			Class root = ClassLoader.class;
-			Class cls = loader.getClass();
-			java.lang.reflect.Method defineClassMethod = root.getDeclaredMethod( "defineClass",
-					new Class[] { String.class, byte[].class, int.class, int.class } );
-			java.lang.reflect.Method runTransformersMethod = cls
-					.getDeclaredMethod( "runTransformers", new Class[] { String.class, String.class, byte[].class } );
+			Class<ClassLoader> root = ClassLoader.class;
+			Class<? extends ClassLoader> cls = loader.getClass();
+			Method defineClassMethod = root.getDeclaredMethod( "defineClass", new Class[] { String.class, byte[].class, int.class, int.class } );
+			Method runTransformersMethod = cls.getDeclaredMethod( "runTransformers", new Class[] { String.class, String.class, byte[].class } );
 
 			runTransformersMethod.setAccessible( true );
 			defineClassMethod.setAccessible( true );
@@ -131,11 +123,11 @@ public class ApiPart implements IPartHelper
 
 		String description = base + ":" + Joiner.on( ";" ).skipNulls().join( desc.iterator() );
 
-		if ( TileImplementations.get( description ) != null )
+		if ( tileImplementations.get( description ) != null )
 		{
 			try
 			{
-				return TileImplementations.get( description );
+				return tileImplementations.get( description );
 			}
 			catch (Throwable t)
 			{
@@ -183,7 +175,7 @@ public class ApiPart implements IPartHelper
 			f = myCLass.getName();
 		}
 
-		TileImplementations.put( description, myCLass );
+		tileImplementations.put( description, myCLass );
 
 		try
 		{
@@ -330,9 +322,10 @@ public class ApiPart implements IPartHelper
 	{
 		try
 		{
-			if ( interfaces2Layer.get( layerInterface ) == null )
+			final Class<?> layerInterfaceClass = Class.forName( layerInterface );
+			if ( interfaces2Layer.get( layerInterfaceClass ) == null )
 			{
-				interfaces2Layer.put( Class.forName( layerInterface ), layer );
+				interfaces2Layer.put( layerInterfaceClass, layer );
 				desc.add( layerInterface );
 				return true;
 			}
