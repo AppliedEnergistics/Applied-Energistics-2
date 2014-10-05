@@ -1,6 +1,7 @@
 package appeng.core.api;
 
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -41,10 +42,7 @@ import com.google.common.base.Joiner;
 public class ApiPart implements IPartHelper
 {
 
-	int classNum = 1;
-
 	final HashMap<String, Class> TileImplementations = new HashMap<String, Class>();
-	HashMap<String, ClassNode> readerCache = new HashMap<String, ClassNode>();
 	final HashMap<Class, String> interfaces2Layer = new HashMap<Class, String>();
 	final HashMap<String, Class> roots = new HashMap<String, Class>();
 
@@ -68,10 +66,8 @@ public class ApiPart implements IPartHelper
 			ClassLoader loader = getClass().getClassLoader();// ClassLoader.getSystemClassLoader();
 			Class root = ClassLoader.class;
 			Class cls = loader.getClass();
-			java.lang.reflect.Method defineClassMethod = root.getDeclaredMethod( "defineClass",
-					new Class[] { String.class, byte[].class, int.class, int.class } );
-			java.lang.reflect.Method runTransformersMethod = cls
-					.getDeclaredMethod( "runTransformers", new Class[] { String.class, String.class, byte[].class } );
+			Method defineClassMethod = root.getDeclaredMethod( "defineClass", new Class[] { String.class, byte[].class, int.class, int.class } );
+			Method runTransformersMethod = cls.getDeclaredMethod( "runTransformers", new Class[] { String.class, String.class, byte[].class } );
 
 			runTransformersMethod.setAccessible( true );
 			defineClassMethod.setAccessible( true );
@@ -330,9 +326,10 @@ public class ApiPart implements IPartHelper
 	{
 		try
 		{
-			if ( interfaces2Layer.get( layerInterface ) == null )
+			final Class<?> layerInterfaceClass = Class.forName( layerInterface );
+			if ( interfaces2Layer.get( layerInterfaceClass ) == null )
 			{
-				interfaces2Layer.put( Class.forName( layerInterface ), layer );
+				interfaces2Layer.put( layerInterfaceClass, layer );
 				desc.add( layerInterface );
 				return true;
 			}
