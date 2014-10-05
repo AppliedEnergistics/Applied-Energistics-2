@@ -285,7 +285,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 		if ( sg.interestManager.containsKey( diff ) )
 		{
-			Set<CraftingWatcher> list = sg.interestManager.get( diff );
+			Collection<CraftingWatcher> list = sg.interestManager.get( diff );
 
 			if ( !list.isEmpty() )
 			{

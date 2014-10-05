@@ -1,10 +1,12 @@
 package appeng.me.helpers;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Set;
 
 import appeng.api.storage.data.IAEStack;
 
+import com.google.common.collect.Multimap;
 import com.google.common.collect.SetMultimap;
 
 public class GenericInterestManager<T>
@@ -24,11 +26,11 @@ public class GenericInterestManager<T>
 		}
 	}
 
-	private final SetMultimap<IAEStack, T> container;
+	private final Multimap<IAEStack, T> container;
 	private LinkedList<SavedTransactions> transactions = null;
 	private int transDepth = 0;
 
-	public GenericInterestManager(SetMultimap<IAEStack, T> interests) {
+	public GenericInterestManager(Multimap<IAEStack, T> interests) {
 		container = interests;
 	}
 
@@ -64,7 +66,7 @@ public class GenericInterestManager<T>
 		return container.containsKey( stack );
 	}
 
-	public Set<T> get(IAEStack stack)
+	public Collection<T> get(IAEStack stack)
 	{
 		return container.get( stack );
 	}

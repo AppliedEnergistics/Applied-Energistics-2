@@ -1,5 +1,6 @@
 package appeng.me.cache;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map.Entry;
@@ -75,7 +76,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 
 			if ( myGridCache.interestManager.containsKey( changedItem ) )
 			{
-				Set<ItemWatcher> list = myGridCache.interestManager.get( changedItem );
+				Collection<ItemWatcher> list = myGridCache.interestManager.get( changedItem );
 				if ( !list.isEmpty() )
 				{
 					IAEStack fullStack = myStorageList.findPrecise( changedItem );

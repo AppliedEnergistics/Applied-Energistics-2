@@ -1,21 +1,13 @@
 package appeng.me.cache;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
+import com.google.common.collect.*;
 import net.minecraft.world.World;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -58,31 +50,25 @@ import appeng.tile.crafting.TileCraftingStorageTile;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.ItemSorters;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableCollection;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.SetMultimap;
-
 public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler
 {
 
-	final HashSet<CraftingCPUCluster> cpuClusters = new HashSet<CraftingCPUCluster>();
-	final HashSet<ICraftingProvider> providers = new HashSet<ICraftingProvider>();
+	private final Set<CraftingCPUCluster> cpuClusters = new HashSet<CraftingCPUCluster>();
+	private final Set<ICraftingProvider> providers = new HashSet<ICraftingProvider>();
 
-	private final HashMap<IGridNode, ICraftingWatcher> watchers = new HashMap<IGridNode, ICraftingWatcher>();
+	private final Map<IGridNode, ICraftingWatcher> watchers = new HashMap<IGridNode, ICraftingWatcher>();
 
-	final IGrid grid;
+	private final IGrid grid;
 	IStorageGrid sg;
 	IEnergyGrid eg;
 
-	final HashMap<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap<ICraftingPatternDetails, List<ICraftingMedium>>();
-	HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>> craftableItems = new HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>>();
-	final HashSet<IAEItemStack> emitableItems = new HashSet<IAEItemStack>();
-	final HashMap<String, CraftingLinkNexus> links = new HashMap<String, CraftingLinkNexus>();
+	private final Map<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap<ICraftingPatternDetails, List<ICraftingMedium>>();
+	private final Map<IAEItemStack, ImmutableList<ICraftingPatternDetails>> craftableItems = new HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>>();
+	private final Set<IAEItemStack> emitableItems = new HashSet<IAEItemStack>();
+	private final Map<String, CraftingLinkNexus> links = new HashMap<String, CraftingLinkNexus>();
 
 	boolean updateList = false;
-	final private SetMultimap<IAEStack, CraftingWatcher> interests = HashMultimap.create();
+	private final Multimap<IAEStack, CraftingWatcher> interests = HashMultimap.create();
 	final public GenericInterestManager<CraftingWatcher> interestManager = new GenericInterestManager<CraftingWatcher>( interests );
 
 	static class ActiveCpuIterator implements Iterator<ICraftingCPU>
@@ -296,11 +282,11 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 	private void updatePatterns()
 	{
-		HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>> oldItems = craftableItems;
+		Map<IAEItemStack, ImmutableList<ICraftingPatternDetails>> oldItems = craftableItems;
 
 		// erase list.
 		craftingMethods.clear();
-		craftableItems = new HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>>();
+		craftableItems.clear();
 		emitableItems.clear();
 
 		// update the stuff that was in the list...
