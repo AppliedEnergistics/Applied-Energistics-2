@@ -4,35 +4,40 @@ import java.util.Iterator;
 
 import appeng.api.storage.data.IAEStack;
 
-public class MeaningfulIterator<StackType extends IAEStack> implements Iterator
+public class MeaningfulIterator<StackType extends IAEStack> implements Iterator<StackType>
 {
 
-	final Iterator<StackType> parent;
+	private final Iterator<StackType> parent;
 	private StackType next;
 
-	public MeaningfulIterator(Iterator<StackType> iterator) {
-		parent = iterator;
+	public MeaningfulIterator(Iterator<StackType> iterator)
+	{
+		this.parent = iterator;
 	}
 
 	@Override
 	public boolean hasNext()
 	{
-		while (parent.hasNext())
+		while (this.parent.hasNext())
 		{
-			next = parent.next();
-			if ( next.isMeaningful() )
+			this.next = this.parent.next();
+			if ( this.next.isMeaningful() )
+			{
 				return true;
+			}
 			else
-				parent.remove(); // self cleaning :3
+			{
+				this.parent.remove(); // self cleaning :3
+			}
 		}
 
 		return false;
 	}
 
 	@Override
-	public Object next()
+	public StackType next()
 	{
-		return next;
+		return this.next;
 	}
 
 	@Override
