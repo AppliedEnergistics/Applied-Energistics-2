@@ -39,7 +39,7 @@ import com.google.common.base.Joiner;
 public class ApiPart implements IPartHelper
 {
 
-	private final Map<String, Class> TileImplementations = new HashMap<String, Class>();
+	private final Map<String, Class> tileImplementations = new HashMap<String, Class>();
 	private final Map<Class, String> interfaces2Layer = new HashMap<Class, String>();
 	private final Map<String, Class> roots = new HashMap<String, Class>();
 	private final List<String> desc = new LinkedList<String>();
@@ -123,11 +123,11 @@ public class ApiPart implements IPartHelper
 
 		String description = base + ":" + Joiner.on( ";" ).skipNulls().join( desc.iterator() );
 
-		if ( TileImplementations.get( description ) != null )
+		if ( tileImplementations.get( description ) != null )
 		{
 			try
 			{
-				return TileImplementations.get( description );
+				return tileImplementations.get( description );
 			}
 			catch (Throwable t)
 			{
@@ -175,7 +175,7 @@ public class ApiPart implements IPartHelper
 			f = myCLass.getName();
 		}
 
-		TileImplementations.put( description, myCLass );
+		tileImplementations.put( description, myCLass );
 
 		try
 		{
