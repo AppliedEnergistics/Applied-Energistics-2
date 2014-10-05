@@ -1,21 +1,13 @@
 package appeng.me.cache;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
+import com.google.common.collect.*;
 import net.minecraft.world.World;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -58,66 +50,65 @@ import appeng.tile.crafting.TileCraftingStorageTile;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.ItemSorters;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableCollection;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.SetMultimap;
-
-public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler
+public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler<IAEStack>
 {
 
-	final HashSet<CraftingCPUCluster> cpuClusters = new HashSet<CraftingCPUCluster>();
-	final HashSet<ICraftingProvider> providers = new HashSet<ICraftingProvider>();
+	private final Set<CraftingCPUCluster> craftingCPUClusters = new HashSet<CraftingCPUCluster>();
+	private final Set<ICraftingProvider> craftingProviders = new HashSet<ICraftingProvider>();
 
-	private final HashMap<IGridNode, ICraftingWatcher> watchers = new HashMap<IGridNode, ICraftingWatcher>();
+	private final Map<IGridNode, ICraftingWatcher> craftingWatchers = new HashMap<IGridNode, ICraftingWatcher>();
 
-	final IGrid grid;
-	IStorageGrid sg;
-	IEnergyGrid eg;
+	private final IGrid grid;
+	private IStorageGrid storageGrid;
+	private IEnergyGrid energyGrid;
 
-	final HashMap<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap<ICraftingPatternDetails, List<ICraftingMedium>>();
-	HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>> craftableItems = new HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>>();
-	final HashSet<IAEItemStack> emitableItems = new HashSet<IAEItemStack>();
-	final HashMap<String, CraftingLinkNexus> links = new HashMap<String, CraftingLinkNexus>();
+	private final Map<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap<ICraftingPatternDetails, List<ICraftingMedium>>();
+	private final Map<IAEItemStack, ImmutableList<ICraftingPatternDetails>> craftableItems = new HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>>();
+	private final Set<IAEItemStack> emitableItems = new HashSet<IAEItemStack>();
+	private final Map<String, CraftingLinkNexus> craftingLinks = new HashMap<String, CraftingLinkNexus>();
 
-	boolean updateList = false;
-	final private SetMultimap<IAEStack, CraftingWatcher> interests = HashMultimap.create();
-	final public GenericInterestManager<CraftingWatcher> interestManager = new GenericInterestManager<CraftingWatcher>( interests );
+	private boolean updateList = false;
+	private final Multimap<IAEStack, CraftingWatcher> interests = HashMultimap.create();
+	public final GenericInterestManager<CraftingWatcher> interestManager = new GenericInterestManager<CraftingWatcher>( this.interests );
 
 	static class ActiveCpuIterator implements Iterator<ICraftingCPU>
 	{
 
-		final Iterator<CraftingCPUCluster> i;
-		CraftingCPUCluster c = null;
+		private final Iterator<CraftingCPUCluster> iterator;
+		private CraftingCPUCluster cpuCluster;
 
 		public ActiveCpuIterator(Collection<CraftingCPUCluster> o)
 		{
-			i = o.iterator();
+			this.iterator = o.iterator();
+			this.cpuCluster = null;
 		}
 
 		@Override
 		public boolean hasNext()
 		{
 			findNext();
-			return c != null;
+
+			return this.cpuCluster != null;
 		}
 
 		private void findNext()
 		{
-			while (i.hasNext() && c == null)
+			while (this.iterator.hasNext() && this.cpuCluster == null)
 			{
-				c = i.next();
-				if ( !c.isActive() || c.isDestroyed )
-					c = null;
+				this.cpuCluster = this.iterator.next();
+				if ( !this.cpuCluster.isActive() || this.cpuCluster.isDestroyed )
+				{
+					this.cpuCluster = null;
+				}
 			}
 		}
 
 		@Override
 		public ICraftingCPU next()
 		{
-			ICraftingCPU o = c;
-			c = null;
+			final ICraftingCPU o = this.cpuCluster;
+			this.cpuCluster = null;
+
 			return o;
 		}
 
@@ -132,59 +123,67 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	@Override
 	public ImmutableSet<ICraftingCPU> getCpus()
 	{
-		return ImmutableSet.copyOf( new ActiveCpuIterator( cpuClusters ) );
+		return ImmutableSet.copyOf( new ActiveCpuIterator( this.craftingCPUClusters ) );
 	}
 
-	public CraftingGridCache(IGrid g)
+	public CraftingGridCache(IGrid grid)
 	{
-		grid = g;
+		this.grid = grid;
 	}
 
 	@MENetworkEventSubscribe
-	public void afterCacheConstruction(MENetworkPostCacheConstruction cc)
+	public void afterCacheConstruction(MENetworkPostCacheConstruction cacheConstruction)
 	{
-		sg = grid.getCache( IStorageGrid.class );
-		eg = grid.getCache( IEnergyGrid.class );
+		this.storageGrid = this.grid.getCache( IStorageGrid.class );
+		this.energyGrid = this.grid.getCache( IEnergyGrid.class );
 
-		sg.registerCellProvider( this );
+		this.storageGrid.registerCellProvider( this );
 	}
 
-	public void addLink(CraftingLink l)
+	public void addLink(CraftingLink link)
 	{
-		if ( l.isStandalone() )
+		if ( link.isStandalone() )
+		{
 			return;
+		}
 
-		CraftingLinkNexus n = links.get( l.getCraftingID() );
-		if ( n == null )
-			links.put( l.getCraftingID(), n = new CraftingLinkNexus( l.getCraftingID() ) );
+		CraftingLinkNexus nexus = this.craftingLinks.get( link.getCraftingID() );
+		if ( nexus == null )
+		{
+			this.craftingLinks.put( link.getCraftingID(), nexus = new CraftingLinkNexus( link.getCraftingID() ) );
+		}
 
-		l.setNexus( n );
+		link.setNexus( nexus );
 	}
 
 	@Override
 	public void onUpdateTick()
 	{
-		if ( updateList )
+		if ( this.updateList )
 		{
-			updateList = false;
-			updateCPUClusters();
+			this.updateList = false;
+			this.updateCPUClusters();
 		}
 
-		Iterator<CraftingLinkNexus> i = links.values().iterator();
-		while (i.hasNext())
+		Iterator<CraftingLinkNexus> craftingLinkIterator = this.craftingLinks.values().iterator();
+		while (craftingLinkIterator.hasNext())
 		{
-			if ( i.next().isDead( grid, this ) )
-				i.remove();
+			if ( craftingLinkIterator.next().isDead( this.grid, this ) )
+			{
+				craftingLinkIterator.remove();
+			}
 		}
 
-		for (CraftingCPUCluster cpu : cpuClusters)
-			cpu.updateCraftingLogic( grid, eg, this );
+		for (CraftingCPUCluster cpu : this.craftingCPUClusters)
+		{
+			cpu.updateCraftingLogic( this.grid, this.energyGrid, this );
+		}
 	}
 
 	@MENetworkEventSubscribe
 	public void updateCPUClusters(MENetworkCraftingCpuChange c)
 	{
-		updateList = true;
+		this.updateList = true;
 	}
 
 	@MENetworkEventSubscribe
@@ -198,31 +197,34 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	{
 		if ( machine instanceof ICraftingWatcherHost )
 		{
-			ICraftingWatcher myWatcher = watchers.get( machine );
-			if ( myWatcher != null )
+			ICraftingWatcher craftingWatcher = this.craftingWatchers.get( machine );
+			if ( craftingWatcher != null )
 			{
-				myWatcher.clear();
-				watchers.remove( machine );
+				craftingWatcher.clear();
+				this.craftingWatchers.remove( machine );
 			}
 		}
 
 		if ( machine instanceof ICraftingRequester )
 		{
-			for (CraftingLinkNexus n : links.values())
+			for (CraftingLinkNexus link : this.craftingLinks.values())
 			{
-				if ( n.isMachine( machine ) )
+				if ( link.isMachine( machine ) )
 				{
-					n.removeNode();
+					link.removeNode();
 				}
 			}
 		}
 
 		if ( machine instanceof TileCraftingTile )
-			updateList = true;
+		{
+			this.updateList = true;
+		}
+
 		if ( machine instanceof ICraftingProvider )
 		{
-			providers.remove( machine );
-			updatePatterns();
+			this.craftingProviders.remove( machine );
+			this.updatePatterns();
 		}
 	}
 
@@ -231,43 +233,51 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	{
 		if ( machine instanceof ICraftingWatcherHost )
 		{
-			ICraftingWatcherHost swh = (ICraftingWatcherHost) machine;
-			CraftingWatcher iw = new CraftingWatcher( this, swh );
-			watchers.put( gridNode, iw );
-			swh.updateWatcher( iw );
+			ICraftingWatcherHost watcherHost = (ICraftingWatcherHost) machine;
+			CraftingWatcher watcher = new CraftingWatcher( this, watcherHost );
+			craftingWatchers.put( gridNode, watcher );
+			watcherHost.updateWatcher( watcher );
 		}
 
 		if ( machine instanceof ICraftingRequester )
 		{
-			for (ICraftingLink l : ((ICraftingRequester) machine).getRequestedJobs())
+			for (ICraftingLink link : ((ICraftingRequester) machine).getRequestedJobs())
 			{
-				if ( l instanceof CraftingLink )
-					addLink( (CraftingLink) l );
+				if ( link instanceof CraftingLink )
+				{
+					this.addLink( (CraftingLink) link );
+				}
 			}
 		}
 
 		if ( machine instanceof TileCraftingTile )
-			updateList = true;
+		{
+			this.updateList = true;
+		}
+
 		if ( machine instanceof ICraftingProvider )
 		{
-			providers.add( (ICraftingProvider) machine );
-			updatePatterns();
+			this.craftingProviders.add( (ICraftingProvider) machine );
+			this.updatePatterns();
 		}
 	}
 
 	private void updateCPUClusters()
 	{
-		cpuClusters.clear();
-		for (IGridNode cst : grid.getMachines( TileCraftingStorageTile.class ))
+		this.craftingCPUClusters.clear();
+
+		for (IGridNode cst : this.grid.getMachines( TileCraftingStorageTile.class ))
 		{
 			TileCraftingStorageTile tile = (TileCraftingStorageTile) cst.getMachine();
 			CraftingCPUCluster cluster = (CraftingCPUCluster) tile.getCluster();
 			if ( cluster != null )
 			{
-				cpuClusters.add( cluster );
+				this.craftingCPUClusters.add( cluster );
 
 				if ( cluster.myLastLink != null )
+				{
 					addLink( (CraftingLink) cluster.myLastLink );
+				}
 			}
 		}
 	}
@@ -275,45 +285,50 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	@Override
 	public void addCraftingOption(ICraftingMedium medium, ICraftingPatternDetails api)
 	{
-		List<ICraftingMedium> details = craftingMethods.get( api );
+		List<ICraftingMedium> details = this.craftingMethods.get( api );
 		if ( details == null )
 		{
 			details = new ArrayList<ICraftingMedium>();
 			details.add( medium );
-			craftingMethods.put( api, details );
+			this.craftingMethods.put( api, details );
 		}
 		else
+		{
 			details.add( medium );
+		}
 	}
 
-	static final Comparator<ICraftingPatternDetails> comp = new Comparator<ICraftingPatternDetails>(){
+	static final Comparator<ICraftingPatternDetails> comp = new Comparator<ICraftingPatternDetails>()
+	{
 		@Override
-		public int compare(ICraftingPatternDetails o1,
-				ICraftingPatternDetails o2) {
-			return o2.getPriority() - o1.getPriority();
+		public int compare(ICraftingPatternDetails firstDetail, ICraftingPatternDetails nextDetail)
+		{
+			return nextDetail.getPriority() - firstDetail.getPriority();
 		}
 	};
 
 	private void updatePatterns()
 	{
-		HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>> oldItems = craftableItems;
+		Map<IAEItemStack, ImmutableList<ICraftingPatternDetails>> oldItems = this.craftableItems;
 
 		// erase list.
-		craftingMethods.clear();
-		craftableItems = new HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>>();
-		emitableItems.clear();
+		this.craftingMethods.clear();
+		this.craftableItems.clear();
+		this.emitableItems.clear();
 
 		// update the stuff that was in the list...
-		sg.postAlterationOfStoredItems( StorageChannel.ITEMS, oldItems.keySet(), new BaseActionSource() );
+		this.storageGrid.postAlterationOfStoredItems( StorageChannel.ITEMS, oldItems.keySet(), new BaseActionSource() );
 
 		// re-create list..
-		for (ICraftingProvider cp : providers)
-			cp.provideCrafting( this );
+		for (ICraftingProvider provider : this.craftingProviders)
+		{
+			provider.provideCrafting( this );
+		}
 
-		HashMap<IAEItemStack, Set<ICraftingPatternDetails>> tmpCraft = new HashMap<IAEItemStack, Set<ICraftingPatternDetails>>();
+		Map<IAEItemStack, Set<ICraftingPatternDetails>> tmpCraft = new HashMap<IAEItemStack, Set<ICraftingPatternDetails>>();
 
 		// new craftables!
-		for (ICraftingPatternDetails details : craftingMethods.keySet())
+		for (ICraftingPatternDetails details : this.craftingMethods.keySet())
 		{
 			for (IAEItemStack out : details.getOutputs())
 			{
@@ -324,7 +339,9 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 				Set<ICraftingPatternDetails> methods = tmpCraft.get( out );
 
 				if ( methods == null )
-					tmpCraft.put( out, methods = new TreeSet<ICraftingPatternDetails>(comp) );
+				{
+					tmpCraft.put( out, methods = new TreeSet<ICraftingPatternDetails>( comp ) );
+				}
 
 				methods.add( details );
 			}
@@ -332,9 +349,11 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 		// make them immutable
 		for (Entry<IAEItemStack, Set<ICraftingPatternDetails>> e : tmpCraft.entrySet())
-			craftableItems.put( e.getKey(), ImmutableList.copyOf( e.getValue() ) );
+		{
+			this.craftableItems.put( e.getKey(), ImmutableList.copyOf( e.getValue() ) );
+		}
 
-		sg.postAlterationOfStoredItems( StorageChannel.ITEMS, craftableItems.keySet(), new BaseActionSource() );
+		this.storageGrid.postAlterationOfStoredItems( StorageChannel.ITEMS, this.craftableItems.keySet(), new BaseActionSource() );
 	}
 
 	@Override
@@ -357,9 +376,13 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	@Override
 	public List<IMEInventoryHandler> getCellArray(StorageChannel channel)
 	{
-		ArrayList<IMEInventoryHandler> list = new ArrayList<IMEInventoryHandler>( 1 );
+		List<IMEInventoryHandler> list = new ArrayList<IMEInventoryHandler>( 1 );
+
 		if ( channel == StorageChannel.ITEMS )
+		{
 			list.add( this );
+		}
+
 		return list;
 	}
 
@@ -376,14 +399,18 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	}
 
 	@Override
-	public IItemList getAvailableItems(IItemList out)
+	public IItemList<IAEStack> getAvailableItems(IItemList<IAEStack> out)
 	{
 		// add craftable items!
-		for (IAEItemStack st : craftableItems.keySet())
-			out.addCrafting( st );
+		for (IAEItemStack stack : this.craftableItems.keySet())
+		{
+			out.addCrafting( stack );
+		}
 
-		for (IAEItemStack st : emitableItems)
+		for (IAEItemStack st : this.emitableItems)
+		{
 			out.addCrafting( st );
+		}
 
 		return out;
 	}
@@ -409,8 +436,10 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	@Override
 	public IAEStack injectItems(IAEStack input, Actionable type, BaseActionSource src)
 	{
-		for (CraftingCPUCluster cpu : cpuClusters)
+		for (CraftingCPUCluster cpu : this.craftingCPUClusters)
+		{
 			input = cpu.injectItems( input, type, src );
+		}
 
 		return input;
 	}
@@ -418,29 +447,36 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	@Override
 	public boolean canAccept(IAEStack input)
 	{
-		for (CraftingCPUCluster cpu : cpuClusters)
+		for (CraftingCPUCluster cpu : this.craftingCPUClusters)
+		{
 			if ( cpu.canAccept( input ) )
+			{
 				return true;
+			}
+		}
 
 		return false;
 	}
 
 	@Override
-	public ICraftingLink submitJob(ICraftingJob job, ICraftingRequester requestingMachine, ICraftingCPU target, final boolean prioritizePower,
-			BaseActionSource src)
+	public ICraftingLink submitJob(ICraftingJob job, ICraftingRequester requestingMachine, ICraftingCPU target, final boolean prioritizePower, BaseActionSource src)
 	{
 		if ( job.isSimulation() )
+		{
 			return null;
+		}
 
 		CraftingCPUCluster cpuCluster = null;
 
 		if ( target instanceof CraftingCPUCluster )
+		{
 			cpuCluster = (CraftingCPUCluster) target;
+		}
 
 		if ( target == null )
 		{
 			List<CraftingCPUCluster> validCpusClusters = new ArrayList<CraftingCPUCluster>();
-			for (CraftingCPUCluster cpu : cpuClusters)
+			for (CraftingCPUCluster cpu : this.craftingCPUClusters)
 			{
 				if ( cpu.isActive() && !cpu.isBusy() && cpu.getAvailableStorage() >= job.getByteTotal() )
 				{
@@ -448,29 +484,31 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 				}
 			}
 
-			Collections.sort( validCpusClusters, new Comparator<CraftingCPUCluster>() {
-
+			Collections.sort( validCpusClusters, new Comparator<CraftingCPUCluster>()
+			{
 				@Override
-				public int compare(CraftingCPUCluster o1, CraftingCPUCluster o2)
+				public int compare(CraftingCPUCluster firstCluster, CraftingCPUCluster nextCluster)
 				{
 					if ( prioritizePower )
 					{
-						int a = ItemSorters.compareLong( o2.getCoProcessors(), o1.getCoProcessors() );
-						if ( a != 0 )
-							return a;
-						return ItemSorters.compareLong( o2.getAvailableStorage(), o1.getAvailableStorage() );
+						int comparison = ItemSorters.compareLong( nextCluster.getCoProcessors(), firstCluster.getCoProcessors() );
+						if ( comparison != 0 )
+							return comparison;
+						return ItemSorters.compareLong( nextCluster.getAvailableStorage(), firstCluster.getAvailableStorage() );
 					}
 
-					int a = ItemSorters.compareLong( o1.getCoProcessors(), o2.getCoProcessors() );
-					if ( a != 0 )
-						return a;
-					return ItemSorters.compareLong( o1.getAvailableStorage(), o2.getAvailableStorage() );
+					int comparison = ItemSorters.compareLong( firstCluster.getCoProcessors(), nextCluster.getCoProcessors() );
+					if ( comparison != 0 )
+						return comparison;
+					return ItemSorters.compareLong( firstCluster.getAvailableStorage(), nextCluster.getAvailableStorage() );
 				}
 
 			} );
 
 			if ( !validCpusClusters.isEmpty() )
+			{
 				cpuCluster = validCpusClusters.get( 0 );
+			}
 		}
 
 		if ( cpuCluster != null )
@@ -490,19 +528,19 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	@Override
 	public ImmutableCollection<ICraftingPatternDetails> getCraftingFor(IAEItemStack whatToCraft, ICraftingPatternDetails details, int slotIndex, World world)
 	{
-		ImmutableList<ICraftingPatternDetails> res = craftableItems.get( whatToCraft );
+		ImmutableList<ICraftingPatternDetails> res = this.craftableItems.get( whatToCraft );
 
 		if ( res == null )
 		{
 			if ( details != null && details.isCraftable() )
 			{
-				for (IAEItemStack ais : craftableItems.keySet())
+				for (IAEItemStack ais : this.craftableItems.keySet())
 				{
 					if ( ais.getItem() == whatToCraft.getItem() && (!ais.getItem().getHasSubtypes() || ais.getItemDamage() == whatToCraft.getItemDamage()) )
 					{
 						if ( details.isValidItemForSlot( slotIndex, ais.getItemStack(), world ) )
 						{
-							return craftableItems.get( ais );
+							return this.craftableItems.get( ais );
 						}
 					}
 				}
@@ -516,12 +554,14 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 	public List<ICraftingMedium> getMediums(ICraftingPatternDetails key)
 	{
-		List<ICraftingMedium> o = craftingMethods.get( key );
+		List<ICraftingMedium> mediums = craftingMethods.get( key );
 
-		if ( o == null )
-			o = ImmutableList.of();
+		if ( mediums == null )
+		{
+			mediums = ImmutableList.of();
+		}
 
-		return o;
+		return mediums;
 	}
 
 	@Override
@@ -551,36 +591,44 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	public Future<ICraftingJob> beginCraftingJob(World world, IGrid grid, BaseActionSource actionSrc, IAEItemStack slotItem, ICraftingCallback cb)
 	{
 		if ( world == null || grid == null || actionSrc == null || slotItem == null )
+		{
 			throw new RuntimeException( "Invalid Crafting Job Request" );
+		}
 
-		CraftingJob cj = new CraftingJob( world, grid, actionSrc, slotItem, cb );
-		return craftingPool.submit( cj, (ICraftingJob) cj );
+		CraftingJob job = new CraftingJob( world, grid, actionSrc, slotItem, cb );
+
+		return craftingPool.submit( job, (ICraftingJob) job );
 	}
 
 	public boolean hasCpu(ICraftingCPU cpu)
 	{
-		return cpuClusters.contains( cpu );
+		return this.craftingCPUClusters.contains( cpu );
 	}
 
 	@Override
 	public boolean isRequesting(IAEItemStack what)
 	{
-		for (CraftingCPUCluster c : cpuClusters)
-			if ( c.isMaking( what ) )
+		for (CraftingCPUCluster cluster : this.craftingCPUClusters)
+		{
+			if ( cluster.isMaking( what ) )
+			{
 				return true;
+			}
+		}
+
 		return false;
 	}
 
 	@Override
-	public boolean canEmitFor(IAEItemStack what)
+	public boolean canEmitFor(IAEItemStack someItem)
 	{
-		return emitableItems.contains( what );
+		return this.emitableItems.contains( someItem );
 	}
 
 	@Override
-	public void setEmitable(IAEItemStack what)
+	public void setEmitable(IAEItemStack someItem)
 	{
-		emitableItems.add( what.copy() );
+		this.emitableItems.add( someItem.copy() );
 	}
 
 }
