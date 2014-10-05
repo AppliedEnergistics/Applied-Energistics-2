@@ -2,10 +2,7 @@ package appeng.core.api;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -42,11 +39,10 @@ import com.google.common.base.Joiner;
 public class ApiPart implements IPartHelper
 {
 
-	final HashMap<String, Class> TileImplementations = new HashMap<String, Class>();
-	final HashMap<Class, String> interfaces2Layer = new HashMap<Class, String>();
-	final HashMap<String, Class> roots = new HashMap<String, Class>();
-
-	final List<String> desc = new LinkedList<String>();
+	private final Map<String, Class> TileImplementations = new HashMap<String, Class>();
+	private final Map<Class, String> interfaces2Layer = new HashMap<Class, String>();
+	private final Map<String, Class> roots = new HashMap<String, Class>();
+	private final List<String> desc = new LinkedList<String>();
 
 	public void initFMPSupport()
 	{
