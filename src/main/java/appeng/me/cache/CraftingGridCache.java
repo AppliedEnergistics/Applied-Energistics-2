@@ -50,7 +50,7 @@ import appeng.tile.crafting.TileCraftingStorageTile;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.ItemSorters;
 
-public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler
+public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler<IAEStack>
 {
 
 	private final Set<CraftingCPUCluster> cpuClusters = new HashSet<CraftingCPUCluster>();
@@ -69,7 +69,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 	boolean updateList = false;
 	private final Multimap<IAEStack, CraftingWatcher> interests = HashMultimap.create();
-	final public GenericInterestManager<CraftingWatcher> interestManager = new GenericInterestManager<CraftingWatcher>( interests );
+	public final GenericInterestManager<CraftingWatcher> interestManager = new GenericInterestManager<CraftingWatcher>( this.interests );
 
 	static class ActiveCpuIterator implements Iterator<ICraftingCPU>
 	{
@@ -362,7 +362,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	}
 
 	@Override
-	public IItemList getAvailableItems(IItemList out)
+	public IItemList<IAEStack> getAvailableItems(IItemList<IAEStack> out)
 	{
 		// add craftable items!
 		for (IAEItemStack st : craftableItems.keySet())
