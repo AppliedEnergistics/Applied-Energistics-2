@@ -3,6 +3,8 @@ package appeng.util;
 import java.util.HashMap;
 import java.util.Set;
 
+import appeng.api.config.LevelEmitterMode;
+import appeng.api.config.StorageFilter;
 import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.util.IConfigManager;
 import appeng.core.AELog;
@@ -33,7 +35,15 @@ public class ConfigManager implements IConfigManager
 				{
 					String value = tagCompound.getString( key.name() );
 
+					// Provides an upgrade path for the rename of this value in the API between rv1 and rv2
+					if( value.equals( "EXTACTABLE_ONLY" ) ){
+						value = StorageFilter.EXTRACTABLE_ONLY.toString();
+					} else if( value.equals( "STOREABLE_AMOUNT" ) ) {
+						value = LevelEmitterMode.STORABLE_AMOUNT.toString();
+					}
+
 					Enum oldValue = Settings.get( key );
+
 					Enum newValue = Enum.valueOf( oldValue.getClass(), value );
 
 					putSetting( key, newValue );
