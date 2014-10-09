@@ -291,10 +291,11 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	public boolean isSlotEnabled(int idx)
 	{
 		if ( idx == 1 )
-			return Platform.isServer() ? ct.isCraftingRecipe() == false : craftingMode == false;
-		if ( idx == 2 )
-			return Platform.isServer() ? ct.isCraftingRecipe() == true : craftingMode == true;
-		return false;
+			return Platform.isServer() ? !ct.isCraftingRecipe() : !craftingMode;
+		else if ( idx == 2 )
+			return Platform.isServer() ? ct.isCraftingRecipe() : craftingMode;
+		else
+			return false;
 	}
 
 	@Override

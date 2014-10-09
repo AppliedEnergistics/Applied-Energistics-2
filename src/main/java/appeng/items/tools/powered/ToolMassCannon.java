@@ -187,7 +187,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 		{
 			Entity entity1 = (Entity) list.get( l );
 
-			if ( entity1.isDead == false && entity1 != p && !(entity1 instanceof EntityItem) )
+			if ( !entity1.isDead && entity1 != p && !(entity1 instanceof EntityItem) )
 			{
 				if ( entity1.isEntityAlive() )
 				{
@@ -309,7 +309,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 			{
 				Entity entity1 = (Entity) list.get( l );
 
-				if ( entity1.isDead == false && entity1 != p && !(entity1 instanceof EntityItem) )
+				if ( !entity1.isDead && entity1 != p && !(entity1 instanceof EntityItem) )
 				{
 					if ( entity1.isEntityAlive() )
 					{

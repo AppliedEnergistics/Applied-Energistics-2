@@ -79,7 +79,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 
 		data.writeByte( spin );
 		data.writeBoolean( isLocked );
-		data.writeBoolean( configuredItem != null ? true : false );
+		data.writeBoolean( configuredItem != null );
 		if ( configuredItem != null )
 			configuredItem.writeToPacket( data );
 	}

@@ -57,7 +57,7 @@ public abstract class MinecraftJoules5 extends AERootPoweredTile implements IPow
 	@Method(iname = "MJ5")
 	final public PowerReceiver getPowerReceiver(ForgeDirection side)
 	{
-		if ( internalCanAcceptPower && getPowerSides().contains( side ) && bcPowerWrapper != null )
+		if ( getPowerSides().contains( side ) && bcPowerWrapper != null )
 			return bcPowerWrapper.getPowerReceiver();
 		return null;
 	}

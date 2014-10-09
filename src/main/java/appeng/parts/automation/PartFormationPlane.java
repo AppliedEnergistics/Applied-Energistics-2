@@ -423,19 +423,19 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 					{
 						boolean Worked = false;
 
-						if ( Worked == false && side.offsetX == 0 && side.offsetZ == 0 )
+						if ( side.offsetX == 0 && side.offsetZ == 0 )
 							Worked = i.onItemUse( is, player, w, x + side.offsetX, y + side.offsetY, z + side.offsetZ, side.getOpposite().ordinal(),
 									side.offsetX, side.offsetY, side.offsetZ );
 
-						if ( Worked == false && side.offsetX == 0 && side.offsetZ == 0 )
+						if ( !Worked && side.offsetX == 0 && side.offsetZ == 0 )
 							Worked = i.onItemUse( is, player, w, x - side.offsetX, y - side.offsetY, z - side.offsetZ, side.ordinal(), side.offsetX,
 									side.offsetY, side.offsetZ );
 
-						if ( Worked == false && side.offsetY == 0 )
+						if ( !Worked && side.offsetY == 0 )
 							Worked = i.onItemUse( is, player, w, x, y - 1, z, ForgeDirection.UP.ordinal(), side.offsetX, side.offsetY, side.offsetZ );
 
-						if ( Worked == false )
-							Worked = i.onItemUse( is, player, w, x, y, z, side.getOpposite().ordinal(), side.offsetX, side.offsetY, side.offsetZ );
+						if ( !Worked )
+							i.onItemUse( is, player, w, x, y, z, side.getOpposite().ordinal(), side.offsetX, side.offsetY, side.offsetZ );
 
 						maxStorage = maxStorage - is.stackSize;
 					}

@@ -48,7 +48,7 @@ public abstract class RedstoneFlux extends RotaryCraft implements IEnergyHandler
 	@Override
 	final public boolean canConnectEnergy(ForgeDirection from)
 	{
-		return internalCanAcceptPower && getPowerSides().contains( from );
+		return getPowerSides().contains( from );
 	}
 
 	@Override

@@ -22,7 +22,7 @@ public class ItemEncodedPatternRenderer implements IItemRenderer
 	{
 		boolean isShiftHeld = Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT );
 
-		if ( recursive == false && type == IItemRenderer.ItemRenderType.INVENTORY && isShiftHeld )
+		if ( !recursive && type == IItemRenderer.ItemRenderType.INVENTORY && isShiftHeld )
 		{
 			ItemEncodedPattern iep = (ItemEncodedPattern) item.getItem();
 			if ( iep.getOutput( item ) != null )

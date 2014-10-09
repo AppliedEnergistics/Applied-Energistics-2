@@ -119,7 +119,7 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 		else if ( y == yCoord + 1 )
 			side = ForgeDirection.UP;
 
-		return internalCanAcceptPower && getPowerSides().contains( side );
+		return getPowerSides().contains( side );
 	}
 
 	@Override
@@ -139,7 +139,7 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 	@Override
 	final public boolean canReadFrom(ForgeDirection side)
 	{
-		return internalCanAcceptPower && getPowerSides().contains( side );
+		return getPowerSides().contains( side );
 	}
 
 	@Override

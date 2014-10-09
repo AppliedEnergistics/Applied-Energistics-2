@@ -128,7 +128,7 @@ public class MultiCraftingTracker
 				hasStuff = true;
 		}
 
-		if ( hasStuff == false )
+		if ( !hasStuff )
 			links = null;
 	}
 
@@ -156,7 +156,7 @@ public class MultiCraftingTracker
 			}
 		}
 
-		if ( hasStuff == false )
+		if ( !hasStuff )
 			jobs = null;
 	}
 

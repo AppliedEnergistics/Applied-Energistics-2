@@ -78,7 +78,7 @@ public class CachedPlane
 			if ( reg.isBlacklisted( extendedblockstorage.getBlockByExtId( x, y & 15, z ) ) )
 				return false;
 
-			return skipThese == null ? true : !skipThese.contains( y );
+			return skipThese == null || !skipThese.contains( y );
 		}
 
 		public void setSkip(int yCoord)

@@ -140,7 +140,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 		for (int x = 0; x < accountedFor.length; x++)
 		{
-			if ( accountedFor[x] == false )
+			if ( !accountedFor[x] )
 				addToCraftingList( patterns.getStackInSlot( x ) );
 		}
 
