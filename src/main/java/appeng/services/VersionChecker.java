@@ -103,6 +103,9 @@ public class VersionChecker implements Runnable
 								versionInf.setString( "newFileName", "appliedenergistics2-" + AEConfig.instance.latestVersion + ".jar" );
 								FMLInterModComms.sendRuntimeMessage( AppEng.instance, "VersionChecker", "addUpdate", versionInf );
 								VersionChecker = false;
+
+								AELog.info( "Stopping VersionChecker" );
+								return;
 							}
 						}
 					}
