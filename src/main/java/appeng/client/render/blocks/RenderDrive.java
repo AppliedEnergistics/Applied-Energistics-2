@@ -186,7 +186,7 @@ public class RenderDrive extends BaseBlockRender
 				double v1 = ico.getInterpolatedV( ((spin + 1) % 4 < 2) ? m : mx );
 				double v2 = ico.getInterpolatedV( ((spin + 2) % 4 < 2) ? m : mx );
 				double v3 = ico.getInterpolatedV( ((spin + 3) % 4 < 2) ? m : mx );
-				double v4 = ico.getInterpolatedV( ((spin + 0) % 4 < 2) ? m : mx );
+				double v4 = ico.getInterpolatedV( ((spin) % 4 < 2) ? m : mx );
 
 				tess.setBrightness( b );
 				tess.setColorOpaque_I( 0xffffff );
@@ -246,7 +246,7 @@ public class RenderDrive extends BaseBlockRender
 					v1 = whiteIcon.getInterpolatedV( ((spin + 1) % 4 < 2) ? 1 : 3 );
 					v2 = whiteIcon.getInterpolatedV( ((spin + 2) % 4 < 2) ? 1 : 3 );
 					v3 = whiteIcon.getInterpolatedV( ((spin + 3) % 4 < 2) ? 1 : 3 );
-					v4 = whiteIcon.getInterpolatedV( ((spin + 0) % 4 < 2) ? 1 : 3 );
+					v4 = whiteIcon.getInterpolatedV( ((spin) % 4 < 2) ? 1 : 3 );
 
 					if ( sp.isPowered() )
 						tess.setBrightness( 15 << 20 | 15 << 4 );

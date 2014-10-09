@@ -34,10 +34,10 @@ public class GuiSecurity extends GuiMEMonitorable
 		super.initGui();
 
 		int top = this.guiTop + this.ySize - 116;
-		buttonList.add( inject = new GuiToggleButton( this.guiLeft + 56 + 18 * 0, top, 11 * 16 + 0, 12 * 16 + 0, SecurityPermissions.INJECT
+		buttonList.add( inject = new GuiToggleButton( this.guiLeft + 56 + 0, top, 11 * 16, 12 * 16, SecurityPermissions.INJECT
 				.getUnlocalizedName(), SecurityPermissions.INJECT.getUnlocalizedTip() ) );
 
-		buttonList.add( extract = new GuiToggleButton( this.guiLeft + 56 + 18 * 1, top, 11 * 16 + 1, 12 * 16 + 1, SecurityPermissions.EXTRACT
+		buttonList.add( extract = new GuiToggleButton( this.guiLeft + 56 + 18, top, 11 * 16 + 1, 12 * 16 + 1, SecurityPermissions.EXTRACT
 				.getUnlocalizedName(), SecurityPermissions.EXTRACT.getUnlocalizedTip() ) );
 
 		buttonList.add( craft = new GuiToggleButton( this.guiLeft + 56 + 18 * 2, top, 11 * 16 + 2, 12 * 16 + 2, SecurityPermissions.CRAFT.getUnlocalizedName(),

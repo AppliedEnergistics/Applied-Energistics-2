@@ -20,10 +20,10 @@ public class AppEngRenderItem extends RenderItem
 	{
 		par1Tessellator.startDrawingQuads();
 		par1Tessellator.setColorOpaque_I( par6 );
-		par1Tessellator.addVertex( par2 + 0, par3 + 0, 0.0D );
-		par1Tessellator.addVertex( par2 + 0, par3 + par5, 0.0D );
+		par1Tessellator.addVertex( par2, par3, 0.0D );
+		par1Tessellator.addVertex( par2, par3 + par5, 0.0D );
 		par1Tessellator.addVertex( par2 + par4, par3 + par5, 0.0D );
-		par1Tessellator.addVertex( par2 + par4, par3 + 0, 0.0D );
+		par1Tessellator.addVertex( par2 + par4, par3, 0.0D );
 		par1Tessellator.draw();
 	}
 

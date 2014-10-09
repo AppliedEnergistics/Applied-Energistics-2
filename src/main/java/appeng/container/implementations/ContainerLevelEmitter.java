@@ -65,9 +65,9 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 
 		IInventory upgrades = upgradeable.getInventoryByName( "upgrades" );
 		if ( availableUpgrades() > 0 )
-			addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8 + 18 * 0, invPlayer )).setNotDraggable() );
+			addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8 + 0, invPlayer )).setNotDraggable() );
 		if ( availableUpgrades() > 1 )
-			addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18 * 1, invPlayer )).setNotDraggable() );
+			addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, invPlayer )).setNotDraggable() );
 		if ( availableUpgrades() > 2 )
 			addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, invPlayer )).setNotDraggable() );
 		if ( availableUpgrades() > 3 )
