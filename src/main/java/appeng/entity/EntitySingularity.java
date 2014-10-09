@@ -73,7 +73,7 @@ final public class EntitySingularity extends EntityItem
 						}
 
 						// check... other name.
-						if ( matches == false )
+						if ( !matches )
 						{
 							for (ItemStack is : OreDictionary.getOres( "dustEnderPearl" ))
 							{

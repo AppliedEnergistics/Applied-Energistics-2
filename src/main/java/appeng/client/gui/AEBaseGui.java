@@ -335,7 +335,7 @@ public abstract class AEBaseGui extends GuiContainer
 			return;
 		}
 
-		if ( disableShiftClick == false && isShiftKeyDown() )
+		if ( !disableShiftClick && isShiftKeyDown() )
 		{
 			disableShiftClick = true;
 

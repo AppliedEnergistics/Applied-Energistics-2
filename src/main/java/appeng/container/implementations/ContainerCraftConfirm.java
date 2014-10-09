@@ -290,7 +290,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		if ( ah instanceof PartPatternTerminal )
 			OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
 
-		if ( result != null && simulation == false )
+		if ( result != null && !simulation )
 		{
 			ICraftingGrid cc = getGrid().getCache( ICraftingGrid.class );
 			ICraftingLink g = cc.submitJob( result, null, selectedCpu == -1 ? null : cpus.get( selectedCpu ).cpu, true, getActionSrc() );

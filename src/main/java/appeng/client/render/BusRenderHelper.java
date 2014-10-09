@@ -109,7 +109,7 @@ public class BusRenderHelper implements IPartRenderHelper
 	int renderingForPass = 0;
 	int currentPass = 0;
 	int itemsRendered = 0;
-	final boolean noAlphaPass = AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass ) == false;
+	final boolean noAlphaPass = !AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass );
 
 	public int getItemsRendered()
 	{

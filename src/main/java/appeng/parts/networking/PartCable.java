@@ -394,7 +394,6 @@ public class PartCable extends AEBasePart implements IPartCable
 						bch.addBox( dist, 6.0, 6.0, 6.0, 10.0, 10.0 );
 						break;
 					default:
-						continue;
 					}
 				}
 			}
@@ -423,7 +422,6 @@ public class PartCable extends AEBasePart implements IPartCable
 				bch.addBox( 0.0, 6.0, 6.0, 6.0, 10.0, 10.0 );
 				break;
 			default:
-				continue;
 			}
 		}
 	}
@@ -713,30 +711,27 @@ public class PartCable extends AEBasePart implements IPartCable
 			}
 			rh.renderBlock( x, y, z, renderer );
 
-			if ( true )
+			setSmartConnectionRotations( of, renderer );
+			IIcon firstIcon = new TaughtIcon( getChannelTex( channels, false ).getIcon(), -0.2f );
+			IIcon secondIcon = new TaughtIcon( getChannelTex( channels, true ).getIcon(), -0.2f );
+
+			if ( of == ForgeDirection.EAST || of == ForgeDirection.WEST )
 			{
-				setSmartConnectionRotations( of, renderer );
-				IIcon firstIcon = new TaughtIcon( getChannelTex( channels, false ).getIcon(), -0.2f );
-				IIcon secondIcon = new TaughtIcon( getChannelTex( channels, true ).getIcon(), -0.2f );
-
-				if ( of == ForgeDirection.EAST || of == ForgeDirection.WEST )
-				{
-					AEBaseBlock blk = (AEBaseBlock) rh.getBlock();
-					FlippableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST );
-					ico.setFlip( false, true );
-				}
-
-				Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
-				Tessellator.instance.setColorOpaque_I( myColor.blackVariant );
-				rh.setTexture( firstIcon, firstIcon, firstIcon, firstIcon, firstIcon, firstIcon );
-				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
-
-				Tessellator.instance.setColorOpaque_I( myColor.whiteVariant );
-				rh.setTexture( secondIcon, secondIcon, secondIcon, secondIcon, secondIcon, secondIcon );
-				renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
-
-				renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+				AEBaseBlock blk = (AEBaseBlock) rh.getBlock();
+				FlippableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST );
+				ico.setFlip( false, true );
 			}
+
+			Tessellator.instance.setBrightness( 15 << 20 | 15 << 4 );
+			Tessellator.instance.setColorOpaque_I( myColor.blackVariant );
+			rh.setTexture( firstIcon, firstIcon, firstIcon, firstIcon, firstIcon, firstIcon );
+			renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
+
+			Tessellator.instance.setColorOpaque_I( myColor.whiteVariant );
+			rh.setTexture( secondIcon, secondIcon, secondIcon, secondIcon, secondIcon, secondIcon );
+			renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, rh, renderer );
+
+			renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 
 			rh.setTexture( getTexture( getCableColor() ) );
 		}
@@ -965,7 +960,6 @@ public class PartCable extends AEBasePart implements IPartCable
 					renderer.setRenderBounds( 6 / 16.0, 6 / 16.0, 0, 10 / 16.0, 10 / 16.0, 16 / 16.0 );
 					break;
 				default:
-					continue;
 				}
 			}
 

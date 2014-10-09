@@ -22,7 +22,7 @@ public abstract class IC2 extends MinecraftJoules6 implements IEnergySink
 	@Override
 	final public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
-		return internalCanAcceptPower && getPowerSides().contains( direction );
+		return getPowerSides().contains( direction );
 	}
 
 	@Override

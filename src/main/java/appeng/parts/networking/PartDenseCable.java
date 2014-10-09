@@ -169,7 +169,6 @@ public class PartDenseCable extends PartCable
 					bch.addBox( 0.0, min, min, min, max, max );
 					break;
 				default:
-					continue;
 				}
 			}
 			else
@@ -195,7 +194,6 @@ public class PartDenseCable extends PartCable
 					bch.addBox( 0.0, 5.0, 5.0, 5.0, 11.0, 11.0 );
 					break;
 				default:
-					continue;
 				}
 			}
 		}

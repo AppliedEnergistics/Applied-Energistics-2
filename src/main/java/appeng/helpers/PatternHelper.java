@@ -212,7 +212,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	@Override
 	synchronized public boolean isValidItemForSlot(int slotIndex, ItemStack i, World w)
 	{
-		if ( isCrafting == false )
+		if ( !isCrafting )
 		{
 			throw new RuntimeException( "Only crafting recipes supported." );
 		}
@@ -268,7 +268,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	@Override
 	public ItemStack getOutput(InventoryCrafting craftingInv, World w)
 	{
-		if ( isCrafting == false )
+		if ( !isCrafting )
 			throw new RuntimeException( "Only crafting recipes supported." );
 
 		for (int x = 0; x < craftingInv.getSizeInventory(); x++)

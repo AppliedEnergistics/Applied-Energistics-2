@@ -107,7 +107,7 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 				}
 			}
 
-			if ( matches && found == false )
+			if ( matches && !found )
 				return false;
 		}
 

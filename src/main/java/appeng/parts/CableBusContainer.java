@@ -326,7 +326,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	public static boolean isLoading()
 	{
 		Boolean is = isLoading.get();
-		return is != null && is == true;
+		return is != null && is;
 	}
 
 	public void addToWorld()

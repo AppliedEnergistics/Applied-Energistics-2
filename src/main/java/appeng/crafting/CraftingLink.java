@@ -27,7 +27,7 @@ public class CraftingLink implements ICraftingLink
 		done = data.getBoolean( "done" );
 		standalone = data.getBoolean( "standalone" );
 
-		if ( !data.hasKey( "req" ) || data.getBoolean( "req" ) != true )
+		if ( !data.hasKey( "req" ) || !data.getBoolean( "req" ) )
 			throw new RuntimeException( "Invalid Crafting Link for Object" );
 
 		this.req = req;
@@ -40,7 +40,7 @@ public class CraftingLink implements ICraftingLink
 		done = data.getBoolean( "done" );
 		standalone = data.getBoolean( "standalone" );
 
-		if ( !data.hasKey( "req" ) || data.getBoolean( "req" ) == true )
+		if ( !data.hasKey( "req" ) || data.getBoolean( "req" ) )
 			throw new RuntimeException( "Invalid Crafting Link for Object" );
 
 		this.cpu = cpu;

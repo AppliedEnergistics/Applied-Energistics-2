@@ -97,7 +97,6 @@ public class PartCableCovered extends PartCable
 				bch.addBox( 0.0, 5.0, 5.0, 5.0, 11.0, 11.0 );
 				break;
 			default:
-				continue;
 			}
 		}
 	}
@@ -229,7 +228,6 @@ public class PartCableCovered extends PartCable
 					renderer.setRenderBounds( 5 / 16.0, 5 / 16.0, 0, 11 / 16.0, 11 / 16.0, 16 / 16.0 );
 					break;
 				default:
-					continue;
 				}
 			}
 

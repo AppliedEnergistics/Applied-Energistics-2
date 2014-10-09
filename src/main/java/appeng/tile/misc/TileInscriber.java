@@ -317,7 +317,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			return true;
 
 		processingTime = 0;
-		return false || smash;
+		return smash;
 	}
 
 	@Override

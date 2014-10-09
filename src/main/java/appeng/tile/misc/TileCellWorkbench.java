@@ -118,7 +118,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	@Override
 	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
 	{
-		if ( inv == cell && locked == false )
+		if ( inv == cell && !locked )
 		{
 			locked = true;
 
@@ -161,7 +161,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 
 			locked = false;
 		}
-		else if ( inv == config && locked == false )
+		else if ( inv == config && !locked )
 		{
 			IInventory c = getCellConfigInventory();
 			if ( c != null )

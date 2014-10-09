@@ -307,8 +307,8 @@ public class GuiCraftConfirm extends AEBaseGui
 	{
 		updateCPUButtonText();
 
-		start.enabled = ccc.noCPU || isSimulation() ? false : true;
-		selectCPU.enabled = isSimulation() ? false : true;
+		start.enabled = !(ccc.noCPU || isSimulation());
+		selectCPU.enabled = !isSimulation();
 
 		int x = 0;
 		int y = 0;

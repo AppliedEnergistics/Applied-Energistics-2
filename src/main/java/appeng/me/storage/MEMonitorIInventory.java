@@ -175,7 +175,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 			CachedItemStack old = memory.get( is.slot );
 			high = Math.max( high, is.slot );
 
-			ItemStack newIS = is.isExtractable == false && mode == StorageFilter.EXTRACTABLE_ONLY ? null : is.getItemStack();
+			ItemStack newIS = !is.isExtractable && mode == StorageFilter.EXTRACTABLE_ONLY ? null : is.getItemStack();
 			ItemStack oldIS = old == null ? null : old.itemStack;
 
 			if ( isDifferent( newIS, oldIS ) )

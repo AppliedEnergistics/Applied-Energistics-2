@@ -219,7 +219,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		for (TileCraftingTile r : tiles)
 		{
 			IGridNode n = r.getActionableNode();
-			if ( n != null && posted == false )
+			if ( n != null && !posted )
 			{
 				IGrid g = n.getGrid();
 				if ( g != null )
@@ -559,7 +559,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		usedOps[1] = usedOps[0];
 		usedOps[0] = started - remainingOperations;
 
-		if ( remainingOperations > 0 && somethingChanged == false )
+		if ( remainingOperations > 0 && !somethingChanged )
 			waiting = true;
 	}
 
