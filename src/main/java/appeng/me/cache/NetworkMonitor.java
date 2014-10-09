@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import appeng.api.networking.events.MENetworkStorageEvent;
 import appeng.api.networking.security.BaseActionSource;
