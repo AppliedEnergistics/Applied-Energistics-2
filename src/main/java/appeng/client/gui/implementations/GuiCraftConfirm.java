@@ -369,8 +369,8 @@ public class GuiCraftConfirm extends AEBaseGui
 
 		int x = 0;
 		int y = 0;
-		int xo = 0 + 9;
-		int yo = 0 + 22;
+		int xo = 9;
+		int yo = 22;
 		int viewStart = myScrollBar.getCurrentScroll() * 3;
 		int viewEnd = viewStart + 3 * rows;
 

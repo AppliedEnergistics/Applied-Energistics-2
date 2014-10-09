@@ -28,7 +28,7 @@ public class SlotRestrictedInput extends AppEngSlot
 
 	public enum PlacableItemType
 	{
-		STORAGE_CELLS(15), ORE(1 * 16 + 15), STORAGE_COMPONENT(3 * 16 + 15),
+		STORAGE_CELLS(15), ORE( 16 + 15), STORAGE_COMPONENT(3 * 16 + 15),
 
 		ENCODABLE_ITEM(4 * 16 + 15), TRASH(5 * 16 + 15), VALID_ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15), ENCODED_PATTERN_W_OUTPUT(7 * 16 + 15),
 

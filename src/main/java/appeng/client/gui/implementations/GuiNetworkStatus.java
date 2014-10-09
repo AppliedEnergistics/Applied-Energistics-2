@@ -149,8 +149,8 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 		int x = 0;
 		int y = 0;
-		int xo = 0 + 12;
-		int yo = 0 + 42;
+		int xo = 12;
+		int yo = 42;
 		int viewStart = 0;// myScrollBar.getCurrentScroll() * 5;
 		int viewEnd = viewStart + 5 * 4;
 

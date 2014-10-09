@@ -47,7 +47,7 @@ public class TileCraftingStorageTile extends TileCraftingTile
 		{
 		default:
 		case 0:
-			return 1 * 1024;
+			return 1024;
 		case 1:
 			return 4 * 1024;
 		case 2:
