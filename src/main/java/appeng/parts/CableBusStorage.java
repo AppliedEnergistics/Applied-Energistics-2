@@ -88,12 +88,12 @@ public class CableBusStorage
 
 	private <T> T[] shrink(T[] in, boolean parts)
 	{
-		int newSize = 0;
+		int newSize = -1;
 		for (int x = 0; x < in.length; x++)
 			if ( in[x] != null )
 				newSize = x;
 
-		if ( newSize == 0 )
+		if ( newSize == -1 )
 			return null;
 
 		newSize++;
