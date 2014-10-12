@@ -104,6 +104,8 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 						if ( !isBad )
 						{
 							super.onPickupFromSlot( p, is );
+				            // actually necessary to cleanup this case...
+				            p.openContainer.onCraftMatrixChanged( getCraftingMatrix() );
 							return request;
 						}
 					}
