@@ -64,7 +64,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		myScrollBar.setHeight( 106 );
 		myScrollBar.setTop( 18 );
 
-		searchField = new MEGuiTextField( fontRendererObj, this.guiLeft + Math.max( 107, offsetX ), this.guiTop + 6, 64, fontRendererObj.FONT_HEIGHT );
+		searchField = new MEGuiTextField( fontRendererObj, this.guiLeft + Math.max( 106, offsetX ), this.guiTop + 6, 59, fontRendererObj.FONT_HEIGHT );
 		searchField.setEnableBackgroundDrawing( false );
 		searchField.setMaxStringLength( 25 );
 		searchField.setTextColor( 0xFFFFFF );
