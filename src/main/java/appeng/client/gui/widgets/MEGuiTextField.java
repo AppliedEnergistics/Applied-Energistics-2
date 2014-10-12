@@ -22,7 +22,7 @@ public class MEGuiTextField extends GuiTextField
 
 	public boolean isMouseIn(int xCoord, int yCoord)
 	{
-		return xCoord >= posX && xCoord < posX + myWidth + 2 && yCoord >= posY -1 && yCoord < posY + myHeight;
+		return xCoord >= posX - 2 && xCoord < posX + myWidth + 6 && yCoord >= posY -1 && yCoord < posY + myHeight;
 	}
 	
 	@Override
