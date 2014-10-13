@@ -1,20 +1,30 @@
+
 package appeng.util.item;
 
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NavigableMap;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+import com.google.common.collect.Lists;
 
 import net.minecraftforge.oredict.OreDictionary;
+
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
-import com.google.common.collect.Lists;
 
 public final class ItemList<StackType extends IAEStack> implements IItemList<StackType>
 {
 
-	private final TreeMap<StackType, StackType> records = new TreeMap<StackType, StackType>();
+	private final NavigableMap<StackType, StackType> records = new ConcurrentSkipListMap<StackType, StackType>();
 	private final Class<? extends IAEStack> clz;
 
 	// private int currentPriority = Integer.MIN_VALUE;
@@ -22,12 +32,12 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	int iteration = Integer.MIN_VALUE;
 	public Throwable stacktrace;
 
-	public ItemList(Class<? extends IAEStack> cla)
+	public ItemList( Class<? extends IAEStack> cla )
 	{
 		clz = cla;
 	}
 
-	private boolean checkStackType(StackType st)
+	private boolean checkStackType( StackType st )
 	{
 		if ( st == null )
 			return true;
@@ -39,7 +49,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	}
 
 	@Override
-	synchronized public void add(StackType option)
+	synchronized public void add( StackType option )
 	{
 		if ( checkStackType( option ) )
 			return;
@@ -53,13 +63,13 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 			return;
 		}
 
-		StackType opt = (StackType) option.copy();
+		StackType opt = ( StackType ) option.copy();
 		// opt.setPriority( currentPriority );
 		records.put( opt, opt );
 	}
 
 	@Override
-	synchronized public void addStorage(StackType option) // adds a stack as
+	synchronized public void addStorage( StackType option ) // adds a stack as
 															// stored.
 	{
 		if ( checkStackType( option ) )
@@ -74,14 +84,14 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 			return;
 		}
 
-		StackType opt = (StackType) option.copy();
+		StackType opt = ( StackType ) option.copy();
 		// opt.setPriority( currentPriority );
 		records.put( opt, opt );
 	}
 
 	@Override
-	synchronized public void addCrafting(StackType option) // adds a stack as
-															// craftable.
+	synchronized public void addCrafting( StackType option ) // adds a stack as
+																// craftable.
 	{
 		if ( checkStackType( option ) )
 			return;
@@ -95,7 +105,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 			return;
 		}
 
-		StackType opt = (StackType) option.copy();
+		StackType opt = ( StackType ) option.copy();
 		// opt.setPriority( currentPriority );
 		opt.setStackSize( 0 );
 		opt.setCraftable( true );
@@ -104,7 +114,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	}
 
 	@Override
-	synchronized public void addRequestable(StackType option) // adds a stack
+	synchronized public void addRequestable( StackType option ) // adds a stack
 																// as
 																// requestable.
 	{
@@ -116,11 +126,11 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 		if ( st != null )
 		{
 			// st.setPriority( currentPriority );
-			((IAEItemStack) st).setCountRequestable( st.getCountRequestable() + option.getCountRequestable() );
+			( ( IAEItemStack ) st ).setCountRequestable( st.getCountRequestable() + option.getCountRequestable() );
 			return;
 		}
 
-		StackType opt = (StackType) option.copy();
+		StackType opt = ( StackType ) option.copy();
 		// opt.setPriority( currentPriority );
 		opt.setStackSize( 0 );
 		opt.setCraftable( false );
@@ -132,7 +142,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	@Override
 	synchronized public StackType getFirstItem()
 	{
-		for (StackType stackType : this)
+		for ( StackType stackType : this )
 		{
 			return stackType;
 		}
@@ -142,7 +152,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	@Override
 	synchronized public void resetStatus()
 	{
-		for (StackType i : this)
+		for ( StackType i : this )
 			i.reset();
 	}
 
@@ -158,7 +168,7 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 	}
 
 	@Override
-	synchronized public StackType findPrecise(StackType i)
+	synchronized public StackType findPrecise( StackType i )
 	{
 		if ( checkStackType( i ) )
 			return null;
@@ -184,15 +194,15 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 		return !iterator().hasNext();
 	}
 
-	public Collection<StackType> findFuzzyDamage(AEItemStack filter, FuzzyMode fuzzy, boolean ignoreMeta)
+	public Collection<StackType> findFuzzyDamage( AEItemStack filter, FuzzyMode fuzzy, boolean ignoreMeta )
 	{
-		StackType low = (StackType) filter.getLow( fuzzy, ignoreMeta );
-		StackType high = (StackType) filter.getHigh( fuzzy, ignoreMeta );
+		StackType low = ( StackType ) filter.getLow( fuzzy, ignoreMeta );
+		StackType high = ( StackType ) filter.getHigh( fuzzy, ignoreMeta );
 		return records.subMap( low, true, high, true ).descendingMap().values();
 	}
 
 	@Override
-	public Collection<StackType> findFuzzy(StackType filter, FuzzyMode fuzzy)
+	public Collection<StackType> findFuzzy( StackType filter, FuzzyMode fuzzy )
 	{
 		if ( checkStackType( filter ) )
 			return new ArrayList<StackType>();
@@ -209,21 +219,21 @@ public final class ItemList<StackType extends IAEStack> implements IItemList<Sta
 			return result;
 		}
 
-		AEItemStack ais = (AEItemStack) filter;
+		AEItemStack ais = ( AEItemStack ) filter;
 		if ( ais.isOre() )
 		{
 			OreReference or = ais.def.isOre;
 			if ( or.getAEEquivalents().size() == 1 )
 			{
 				IAEItemStack is = or.getAEEquivalents().get( 0 );
-				return findFuzzyDamage( (AEItemStack) is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE );
+				return findFuzzyDamage( ( AEItemStack ) is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE );
 			}
 			else
 			{
 				Collection<StackType> output = new LinkedList<StackType>();
 
-				for (IAEItemStack is : or.getAEEquivalents())
-					output.addAll( findFuzzyDamage( (AEItemStack) is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE ) );
+				for ( IAEItemStack is : or.getAEEquivalents() )
+					output.addAll( findFuzzyDamage( ( AEItemStack ) is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE ) );
 
 				return output;
 			}

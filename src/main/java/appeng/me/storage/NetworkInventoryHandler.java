@@ -5,7 +5,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.TreeMap;
+import java.util.NavigableMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -40,12 +41,12 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	final SecurityCache security;
 
 	// final TreeMultimap<Integer, IMEInventoryHandler<T>> priorityInventory;
-	final TreeMap<Integer, List<IMEInventoryHandler<T>>> priorityInventory;
+	private final NavigableMap<Integer, List<IMEInventoryHandler<T>>> priorityInventory;
 
 	public NetworkInventoryHandler(StorageChannel chan, SecurityCache security) {
 		myChannel = chan;
 		this.security = security;
-		priorityInventory = new TreeMap<Integer, List<IMEInventoryHandler<T>>>( prioritySorter ); // TreeMultimap.create( prioritySorter, hashSorter );
+		priorityInventory = new ConcurrentSkipListMap<Integer, List<IMEInventoryHandler<T>>>( prioritySorter ); // TreeMultimap.create( prioritySorter, hashSorter );
 	}
 
 	public void addNewStorage(IMEInventoryHandler<T> h)

@@ -5,9 +5,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import net.minecraft.item.ItemStack;
+
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -49,7 +50,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 
 	final InventoryAdaptor adaptor;
 
-	final TreeMap<Integer, CachedItemStack> memory;
+	private final NavigableMap<Integer, CachedItemStack> memory;
 	final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
 	final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object>();
 
@@ -71,7 +72,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 	public MEMonitorIInventory(InventoryAdaptor adaptor)
 	{
 		this.adaptor = adaptor;
-		memory = new TreeMap<Integer, CachedItemStack>();
+		memory = new ConcurrentSkipListMap<Integer, CachedItemStack>();
 	}
 
 	@Override
