@@ -1,4 +1,6 @@
+
 package appeng.util.inv;
+
 
 import java.util.Iterator;
 
@@ -9,6 +11,7 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.iterators.NullIterator;
 
+
 /*
  * Lets you do simply tests with the players cursor, without messing with the specifics.
  */
@@ -17,12 +20,13 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 
 	private final EntityPlayer p;
 
-	public AdaptorPlayerHand(EntityPlayer _p) {
+	public AdaptorPlayerHand( EntityPlayer _p )
+	{
 		p = _p;
 	}
 
 	@Override
-	public ItemStack removeSimilarItems(int how_many, ItemStack Filter, FuzzyMode fuzzyMode, IInventoryDestination dest)
+	public ItemStack removeSimilarItems( int how_many, ItemStack Filter, FuzzyMode fuzzyMode, IInventoryDestination dest )
 	{
 		ItemStack hand = p.inventory.getItemStack();
 		if ( hand == null )
@@ -42,7 +46,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateSimilarRemove(int how_many, ItemStack Filter, FuzzyMode fuzzyMode, IInventoryDestination dest)
+	public ItemStack simulateSimilarRemove( int how_many, ItemStack Filter, FuzzyMode fuzzyMode, IInventoryDestination dest )
 	{
 
 		ItemStack hand = p.inventory.getItemStack();
@@ -60,7 +64,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeItems(int how_many, ItemStack Filter, IInventoryDestination dest)
+	public ItemStack removeItems( int how_many, ItemStack Filter, IInventoryDestination dest )
 	{
 		ItemStack hand = p.inventory.getItemStack();
 		if ( hand == null )
@@ -80,7 +84,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateRemove(int how_many, ItemStack Filter, IInventoryDestination dest)
+	public ItemStack simulateRemove( int how_many, ItemStack Filter, IInventoryDestination dest )
 	{
 
 		ItemStack hand = p.inventory.getItemStack();
@@ -98,7 +102,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack addItems(ItemStack A)
+	public ItemStack addItems( ItemStack A )
 	{
 
 		if ( A == null )
@@ -112,7 +116,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 
 		ItemStack hand = p.inventory.getItemStack();
 
-		if ( hand != null && !Platform.isSameItem( A, hand ) )
+		if ( hand != null && !Platform.isSameItemPrecise( A, hand ) )
 			return A;
 
 		int original = 0;
@@ -140,7 +144,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateAdd(ItemStack A)
+	public ItemStack simulateAdd( ItemStack A )
 	{
 		ItemStack hand = p.inventory.getItemStack();
 		if ( A == null )
