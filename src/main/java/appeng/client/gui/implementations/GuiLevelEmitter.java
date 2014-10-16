@@ -44,7 +44,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	{
 		super.initGui();
 
-		level = new GuiNumberBox( fontRendererObj, this.guiLeft + 24, this.guiTop + 43, 79, fontRendererObj.FONT_HEIGHT, Long.class );
+		level = new GuiNumberBox( fontRendererObj, this.guiLeft + 25, this.guiTop + 44, 79, fontRendererObj.FONT_HEIGHT, Long.class );
 		level.setEnableBackgroundDrawing( false );
 		level.setMaxStringLength( 16 );
 		level.setTextColor( 0xFFFFFF );
