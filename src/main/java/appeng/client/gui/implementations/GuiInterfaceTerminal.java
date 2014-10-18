@@ -64,7 +64,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		myScrollBar.setHeight( 106 );
 		myScrollBar.setTop( 18 );
 
-		searchField = new MEGuiTextField( fontRendererObj, this.guiLeft + Math.max( 107, offsetX ), this.guiTop + 6, 64, fontRendererObj.FONT_HEIGHT );
+		searchField = new MEGuiTextField( fontRendererObj, this.guiLeft + Math.max( 104, offsetX ), this.guiTop + 4, 65, 12 );
 		searchField.setEnableBackgroundDrawing( false );
 		searchField.setMaxStringLength( 25 );
 		searchField.setTextColor( 0xFFFFFF );
@@ -79,8 +79,8 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 		if ( btn == 1 && searchField.isMouseIn( xCoord, yCoord ) )
 		{
-			searchField.setText( "" );
-			refreshList();
+			this.searchField.setText( "" );
+			this.refreshList();
 		}
 
 		super.mouseClicked( xCoord, yCoord, btn );
