@@ -724,10 +724,17 @@ public class Registration
 		{
 			AEApi.instance().registries().worldgen().disableWorldGenForProviderID( type, StorageWorldProvider.class );
 
-			for(int dimension : AEConfig.instance.meteoriteDimensionWhitelist)
-			{
-				AEApi.instance().registries().worldgen().enableWorldGenForDimension( type, dimension );
-			}
+			//nether
+			AEApi.instance().registries().worldgen().disableWorldGenForDimension( type, -1 );
+
+			//end
+			AEApi.instance().registries().worldgen().disableWorldGenForDimension( type, 1 );
+		}
+
+		//whitelist from config
+		for(int dimension : AEConfig.instance.meteoriteDimensionWhitelist)
+		{
+			AEApi.instance().registries().worldgen().enableWorldGenForDimension( WorldGenType.Meteorites, dimension );
 		}
 
 		/**
