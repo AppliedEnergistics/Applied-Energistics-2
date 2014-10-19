@@ -678,7 +678,9 @@ public class Registration
 			GameRegistry.registerWorldGenerator( new QuartzWorldGen(), 0 );
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.MeteoriteWorldGen ) )
+		{
 			GameRegistry.registerWorldGenerator( new MeteoriteWorldGen(), 0 );
+		}
 
 		IMovableRegistry mr = AEApi.instance().registries().movable();
 
@@ -722,11 +724,17 @@ public class Registration
 		{
 			AEApi.instance().registries().worldgen().disableWorldGenForProviderID( type, StorageWorldProvider.class );
 
-			// end
-			AEApi.instance().registries().worldgen().disableWorldGenForDimension( type, 1 );
-
-			// nether
+			//nether
 			AEApi.instance().registries().worldgen().disableWorldGenForDimension( type, -1 );
+
+			//end
+			AEApi.instance().registries().worldgen().disableWorldGenForDimension( type, 1 );
+		}
+
+		//whitelist from config
+		for(int dimension : AEConfig.instance.meteoriteDimensionWhitelist)
+		{
+			AEApi.instance().registries().worldgen().enableWorldGenForDimension( WorldGenType.Meteorites, dimension );
 		}
 
 		/**

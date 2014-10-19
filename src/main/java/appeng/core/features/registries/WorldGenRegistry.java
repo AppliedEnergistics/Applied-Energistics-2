@@ -14,6 +14,7 @@ public class WorldGenRegistry implements IWorldGen
 
 		final HashSet<Class<? extends WorldProvider>> badProviders = new HashSet<Class<? extends WorldProvider>>();
 		final HashSet<Integer> badDimensions = new HashSet<Integer>();
+		final HashSet<Integer> enabledDimensions = new HashSet<Integer>();
 
 	}
 
@@ -41,8 +42,19 @@ public class WorldGenRegistry implements IWorldGen
 		if ( w == null )
 			throw new IllegalArgumentException( "Bad Provider Passed" );
 
-		if ( types[type.ordinal()].badProviders.contains( w.provider.getClass() ) || types[type.ordinal()].badDimensions.contains( w.provider.dimensionId ) )
+		boolean	isBadProvider = types[type.ordinal()].badProviders.contains( w.provider.getClass() );
+		boolean isBadDimension = types[type.ordinal()].badDimensions.contains( w.provider.dimensionId );
+		boolean isGoodDimension = types[type.ordinal()].enabledDimensions.contains( w.provider.dimensionId );
+
+		if ( isBadProvider || isBadDimension )
+		{
 			return false;
+		}
+
+		if ( !isGoodDimension && type == WorldGenType.Meteorites)
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -63,9 +75,20 @@ public class WorldGenRegistry implements IWorldGen
 	public void disableWorldGenForDimension(WorldGenType type, int dimensionID)
 	{
 		if ( type == null )
+		{
 			throw new IllegalArgumentException( "Bad Type Passed" );
+		}
 
 		types[type.ordinal()].badDimensions.add( dimensionID );
+	}
+
+	@Override
+	public void enableWorldGenForDimension(WorldGenType type, int dimensionID)
+	{
+		if ( type == null )
+			throw new IllegalArgumentException( "Bad Type Passed" );
+
+		types[type.ordinal()].enabledDimensions.add( dimensionID );
 	}
 
 }
