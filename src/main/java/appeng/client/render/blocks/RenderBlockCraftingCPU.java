@@ -307,7 +307,7 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 		final int tileYPos = y + side.offsetY;
 		if ( 0 <= tileYPos && tileYPos <= 255)
 		{
-			final TileEntity tile = w.getTileEntity( x + side.offsetX, y + side.offsetY, z + side.offsetZ );
+			final TileEntity tile = w.getTileEntity( x + side.offsetX, tileYPos, z + side.offsetZ );
 
 			return tile instanceof TileCraftingTile;
 		}
