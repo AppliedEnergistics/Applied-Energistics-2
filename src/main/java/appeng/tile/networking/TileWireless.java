@@ -1,12 +1,16 @@
+
 package appeng.tile.networking;
 
-import io.netty.buffer.ByteBuf;
 
 import java.util.EnumSet;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import appeng.api.AEApi;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.networking.GridFlags;
@@ -25,6 +29,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 
+
 public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoint, IPowerChannelState
 {
 
@@ -36,32 +41,33 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 
 	public int clientFlags = 0;
 
-	public TileWireless() {
+	public TileWireless()
+	{
 		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 	}
 
 	@Override
-	public void setOrientation(ForgeDirection inForward, ForgeDirection inUp)
+	public void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
 	{
 		super.setOrientation( inForward, inUp );
 		gridProxy.setValidSides( EnumSet.of( getForward().getOpposite() ) );
 	}
 
 	@MENetworkEventSubscribe
-	public void chanRender(MENetworkChannelsChanged c)
+	public void chanRender( MENetworkChannelsChanged c )
 	{
 		markForUpdate();
 	}
 
 	@MENetworkEventSubscribe
-	public void powerRender(MENetworkPowerStatusChange c)
+	public void powerRender( MENetworkPowerStatusChange c )
 	{
 		markForUpdate();
 	}
 
-	@TileEvent(TileEventType.NETWORK_READ)
-	public boolean readFromStream_TileWireless(ByteBuf data)
+	@TileEvent( TileEventType.NETWORK_READ )
+	public boolean readFromStream_TileWireless( ByteBuf data )
 	{
 		int old = clientFlags;
 		clientFlags = data.readByte();
@@ -69,8 +75,8 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 		return old != clientFlags;
 	}
 
-	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void writeToStream_TileWireless(ByteBuf data)
+	@TileEvent( TileEventType.NETWORK_WRITE )
+	public void writeToStream_TileWireless( ByteBuf data )
 	{
 		clientFlags = 0;
 
@@ -82,16 +88,16 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 			if ( gridProxy.getNode().meetsChannelRequirements() )
 				clientFlags |= CHANNEL_FLAG;
 		}
-		catch (GridAccessException e)
+		catch ( GridAccessException e )
 		{
 			// meh
 		}
 
-		data.writeByte( (byte) clientFlags );
+		data.writeByte( ( byte ) clientFlags );
 	}
 
 	@Override
-	public AECableType getCableConnectionType(ForgeDirection dir)
+	public AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.SMART;
 	}
@@ -127,7 +133,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide(ForgeDirection side)
+	public int[] getAccessibleSlotsBySide( ForgeDirection side )
 	{
 		return sides;
 	}
@@ -142,7 +148,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	public boolean isActive()
 	{
 		if ( Platform.isClient() )
-			return isPowered() && (CHANNEL_FLAG == (clientFlags & CHANNEL_FLAG));
+			return isPowered() && ( CHANNEL_FLAG == ( clientFlags & CHANNEL_FLAG ) );
 
 		return gridProxy.isActive();
 	}
@@ -154,7 +160,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 		{
 			return gridProxy.getGrid();
 		}
-		catch (GridAccessException e)
+		catch ( GridAccessException e )
 		{
 			return null;
 		}
@@ -167,7 +173,13 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	}
 
 	@Override
-	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added)
+	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	{
+		return AEApi.instance().materials().materialWirelessBooster.sameAsStack( itemstack );
+	}
+
+	@Override
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
 	{
 		// :P
 	}
@@ -175,7 +187,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	@Override
 	public boolean isPowered()
 	{
-		return POWERED_FLAG == (clientFlags & POWERED_FLAG);
+		return POWERED_FLAG == ( clientFlags & POWERED_FLAG );
 	}
 
 }
