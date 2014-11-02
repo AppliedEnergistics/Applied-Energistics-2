@@ -105,8 +105,9 @@ public class Grid implements IGrid
 		if ( gridNode.getGridStorage() != null )
 		{
 			GridStorage gs = gridNode.getGridStorage();
+			IGrid grid = gs.getGrid();
 
-			if ( gs.getGrid() == null )
+			if ( grid == null )
 			{
 				myStorage = gs;
 				myStorage.setGrid( this );
@@ -114,7 +115,7 @@ public class Grid implements IGrid
 				for (IGridCache gc : caches.values())
 					gc.onJoin( myStorage );
 			}
-			else if ( gs.getGrid() != this )
+			else if ( grid != this )
 			{
 				if ( myStorage == null )
 				{
@@ -127,7 +128,7 @@ public class Grid implements IGrid
 				{
 					gs.addDivided( myStorage );
 
-					for (IGridCache gc : ((Grid) gs.getGrid()).caches.values())
+					for (IGridCache gc : ((Grid) grid).caches.values())
 						gc.onSplit( tmp );
 
 					for (IGridCache gc : caches.values())
