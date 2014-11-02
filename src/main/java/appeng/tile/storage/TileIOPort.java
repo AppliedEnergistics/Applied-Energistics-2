@@ -454,9 +454,9 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	{
 		super.getDrops( w, x, y, z, drops );
 
-		for (int upgradeInventoryIndex = 0; upgradeInventoryIndex < this.upgrades.getSizeInventory(); upgradeInventoryIndex++)
+		for (int upgradeIndex = 0; upgradeIndex < this.upgrades.getSizeInventory(); upgradeIndex++)
 		{
-			ItemStack stackInSlot = this.upgrades.getStackInSlot(upgradeInventoryIndex);
+			ItemStack stackInSlot = this.upgrades.getStackInSlot(upgradeIndex);
 
 			if ( stackInSlot != null )
 			{
