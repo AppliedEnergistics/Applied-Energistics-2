@@ -20,15 +20,16 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 
 public class VersionChecker implements Runnable
 {
+	private static final int FOUR_HOURS = 1000 * 3600 * 4;
+
 	private final long delay;
 
 	public VersionChecker()
 	{
-		final int fiveHours = 1000 * 3600 * 5;
 		final long now = new Date().getTime();
 		final long timeDiff = now - AEConfig.instance.latestTimeStamp;
 
-		this.delay = Math.max( 1, fiveHours - timeDiff);
+		this.delay = Math.max( 1, FOUR_HOURS - timeDiff);
 	}
 
 	@Override
@@ -107,13 +108,13 @@ public class VersionChecker implements Runnable
 					}
 				}
 
-				sleep( 1000 * 3600 * 4 );
+				sleep( FOUR_HOURS );
 			}
 			catch (Exception e)
 			{
 				try
 				{
-					sleep( 1000 * 3600 * 4 );
+					sleep( FOUR_HOURS );
 				}
 				catch (InterruptedException e1)
 				{
