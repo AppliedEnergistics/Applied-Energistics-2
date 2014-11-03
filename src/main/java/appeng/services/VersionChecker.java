@@ -21,7 +21,6 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 public class VersionChecker implements Runnable
 {
 	private long delay = 0;
-	private boolean VersionChecker = true;
 
 	public VersionChecker()
 	{
@@ -82,7 +81,7 @@ public class VersionChecker implements Runnable
 							AEConfig.instance.latestTimeStamp = (new Date()).getTime();
 							AEConfig.instance.save();
 
-							if ( VersionChecker && !AEConfig.VERSION.equals( AEConfig.instance.latestVersion ) )
+							if ( !AEConfig.VERSION.equals( AEConfig.instance.latestVersion ) )
 							{
 								NBTTagCompound versionInf = new NBTTagCompound();
 								versionInf.setString( "modDisplayName", "Applied Energistics 2" );
@@ -99,7 +98,6 @@ public class VersionChecker implements Runnable
 
 								versionInf.setString( "newFileName", "appliedenergistics2-" + AEConfig.instance.latestVersion + ".jar" );
 								FMLInterModComms.sendRuntimeMessage( AppEng.instance, "VersionChecker", "addUpdate", versionInf );
-								VersionChecker = false;
 
 								AELog.info( "Stopping VersionChecker" );
 								return;
