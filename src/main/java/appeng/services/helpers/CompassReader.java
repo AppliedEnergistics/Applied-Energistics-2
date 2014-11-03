@@ -7,10 +7,9 @@ import net.minecraft.world.World;
 
 public class CompassReader
 {
-
-	final HashMap<Long, CompassRegion> regions = new HashMap<Long, CompassRegion>();
-	final int id;
-	final File rootFolder;
+	private final HashMap<Long, CompassRegion> regions = new HashMap<Long, CompassRegion>();
+	private final int id;
+	private final File rootFolder;
 
 	public void close()
 	{
