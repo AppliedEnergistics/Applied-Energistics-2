@@ -20,14 +20,15 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 
 public class VersionChecker implements Runnable
 {
-	private long delay = 0;
+	private final long delay;
 
 	public VersionChecker()
 	{
-		long now = (new Date()).getTime();
-		delay = (1000 * 3600 * 5) - (now - AEConfig.instance.latestTimeStamp);
-		if ( delay < 1 )
-			delay = 1;
+		final int fiveHours = 1000 * 3600 * 5;
+		final long now = new Date().getTime();
+		final long timeDiff = now - AEConfig.instance.latestTimeStamp;
+
+		this.delay = Math.max( 1, fiveHours - timeDiff);
 	}
 
 	@Override
