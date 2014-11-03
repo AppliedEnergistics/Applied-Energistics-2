@@ -20,9 +20,6 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 
 public class VersionChecker implements Runnable
 {
-
-	public static VersionChecker instance = null;
-
 	private long delay = 0;
 	private boolean VersionChecker = true;
 

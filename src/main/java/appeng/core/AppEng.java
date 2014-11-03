@@ -131,7 +131,7 @@ public class AppEng
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.VersionChecker ) )
 		{
 			AELog.info( "Starting VersionChecker" );
-			startService( "AE2 VersionChecker", new Thread( VersionChecker.instance = new VersionChecker() ) );
+			startService( "AE2 VersionChecker", new Thread( new VersionChecker() ) );
 		}
 
 		AELog.info( "PreInit ( end " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
