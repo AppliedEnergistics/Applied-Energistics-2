@@ -138,9 +138,7 @@ public class FZ implements IFZ, IIntegrationModule
 	@Override
 	public boolean isBarrel(TileEntity te)
 	{
-		if ( day_BarrelClass.isAssignableFrom( te.getClass() ) )
-			return true;
-		return false;
+		return day_BarrelClass.isAssignableFrom( te.getClass() );
 	}
 
 	@Override
