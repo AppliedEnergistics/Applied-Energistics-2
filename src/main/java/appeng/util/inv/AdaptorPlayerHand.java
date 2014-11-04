@@ -26,7 +26,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeSimilarItems( int how_many, ItemStack Filter, FuzzyMode fuzzyMode, IInventoryDestination dest )
+	public ItemStack removeSimilarItems( int how_many, ItemStack Filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
 	{
 		ItemStack hand = p.inventory.getItemStack();
 		if ( hand == null )
@@ -46,7 +46,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateSimilarRemove( int how_many, ItemStack Filter, FuzzyMode fuzzyMode, IInventoryDestination dest )
+	public ItemStack simulateSimilarRemove( int how_many, ItemStack Filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
 	{
 
 		ItemStack hand = p.inventory.getItemStack();
@@ -64,7 +64,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeItems( int how_many, ItemStack Filter, IInventoryDestination dest )
+	public ItemStack removeItems( int how_many, ItemStack Filter, IInventoryDestination destination )
 	{
 		ItemStack hand = p.inventory.getItemStack();
 		if ( hand == null )
@@ -84,7 +84,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateRemove( int how_many, ItemStack Filter, IInventoryDestination dest )
+	public ItemStack simulateRemove( int how_many, ItemStack Filter, IInventoryDestination destination )
 	{
 
 		ItemStack hand = p.inventory.getItemStack();

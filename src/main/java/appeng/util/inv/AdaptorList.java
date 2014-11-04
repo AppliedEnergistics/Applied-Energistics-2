@@ -19,7 +19,7 @@ public class AdaptorList extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeSimilarItems(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination dest)
+	public ItemStack removeSimilarItems(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
 	{
 		int s = i.size();
 		for (int x = 0; x < s; x++)
@@ -29,7 +29,7 @@ public class AdaptorList extends InventoryAdaptor
 			{
 				if ( how_many > is.stackSize )
 					how_many = is.stackSize;
-				if ( dest != null && !dest.canInsert( is ) )
+				if ( destination != null && !destination.canInsert( is ) )
 					how_many = 0;
 
 				if ( how_many > 0 )
@@ -50,7 +50,7 @@ public class AdaptorList extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateSimilarRemove(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination dest)
+	public ItemStack simulateSimilarRemove(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
 	{
 		for (ItemStack is : i)
 		{
@@ -60,7 +60,7 @@ public class AdaptorList extends InventoryAdaptor
 				{
 					how_many = is.stackSize;
 				}
-				if ( dest != null && !dest.canInsert( is ) )
+				if ( destination != null && !destination.canInsert( is ) )
 				{
 					how_many = 0;
 				}
@@ -78,7 +78,7 @@ public class AdaptorList extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeItems(int how_many, ItemStack filter, IInventoryDestination dest)
+	public ItemStack removeItems(int how_many, ItemStack filter, IInventoryDestination destination)
 	{
 		int s = i.size();
 		for (int x = 0; x < s; x++)
@@ -88,7 +88,7 @@ public class AdaptorList extends InventoryAdaptor
 			{
 				if ( how_many > is.stackSize )
 					how_many = is.stackSize;
-				if ( dest != null && !dest.canInsert( is ) )
+				if ( destination != null && !destination.canInsert( is ) )
 					how_many = 0;
 
 				if ( how_many > 0 )
@@ -109,7 +109,7 @@ public class AdaptorList extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateRemove(int how_many, ItemStack filter, IInventoryDestination dest)
+	public ItemStack simulateRemove(int how_many, ItemStack filter, IInventoryDestination destination)
 	{
 		for (ItemStack is : i)
 		{
@@ -119,7 +119,7 @@ public class AdaptorList extends InventoryAdaptor
 				{
 					how_many = is.stackSize;
 				}
-				if ( dest != null && !dest.canInsert( is ) )
+				if ( destination != null && !destination.canInsert( is ) )
 				{
 					how_many = 0;
 				}

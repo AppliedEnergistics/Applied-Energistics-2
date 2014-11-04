@@ -400,15 +400,15 @@ public abstract class AEBaseContainer extends Container
 					for (Object inventorySlot : this.inventorySlots)
 					{
 						AppEngSlot cs = (AppEngSlot) inventorySlot;
-						ItemStack dest = cs.getStack();
+						ItemStack destination = cs.getStack();
 
 						if ( !(cs.isPlayerSide()) && cs instanceof SlotFake )
 						{
-							if ( Platform.isSameItemPrecise( dest, tis ) )
+							if ( Platform.isSameItemPrecise( destination, tis ) )
 							{
 								return null;
 							}
-							else if ( dest == null )
+							else if ( destination == null )
 							{
 								cs.putStack( tis.copy() );
 								cs.onSlotChanged();
