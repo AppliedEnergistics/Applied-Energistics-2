@@ -251,7 +251,7 @@ public class CompassService implements ThreadFactory
 
 		if ( cr == null )
 		{
-			cr = new CompassReader( w, rootFolder );
+			cr = new CompassReader( w.provider.dimensionId, rootFolder );
 			worldSet.put( w, cr );
 		}
 
