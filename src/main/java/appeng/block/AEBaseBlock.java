@@ -600,6 +600,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
+	@SuppressWarnings( "unchecked" )
 	// NOTE: WAS FINAL, changed for Immibis
 	public void addCollisionBoxesToList(World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e)
 	{
