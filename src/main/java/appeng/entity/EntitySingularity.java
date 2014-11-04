@@ -16,14 +16,10 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.util.Platform;
 
-final public class EntitySingularity extends EntityItem
+final public class EntitySingularity extends AEBaseEntityItem
 {
 
 	static private int randTickSeed = 0;
-
-	public EntitySingularity(World w) {
-		super( w );
-	}
 
 	public EntitySingularity(World w, double x, double y, double z, ItemStack is) {
 		super( w, x, y, z, is );
@@ -53,7 +49,7 @@ final public class EntitySingularity extends EntityItem
 		if ( AEApi.instance().materials().materialSingularity.sameAsStack( item ) )
 		{
 			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( posX - 4, posY - 4, posZ - 4, posX + 4, posY + 4, posZ + 4 );
-			List<Entity> l = worldObj.getEntitiesWithinAABBExcludingEntity( this, region );
+			List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
 
 			for (Entity e : l)
 			{

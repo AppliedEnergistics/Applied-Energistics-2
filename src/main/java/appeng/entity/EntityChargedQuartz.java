@@ -18,15 +18,11 @@ import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
 import appeng.util.Platform;
 
-final public class EntityChargedQuartz extends EntityItem
+final public class EntityChargedQuartz extends AEBaseEntityItem
 {
 
 	int delay = 0;
 	int transformTime = 0;
-
-	public EntityChargedQuartz(World w) {
-		super( w );
-	}
 
 	public EntityChargedQuartz(World w, double x, double y, double z, ItemStack is) {
 		super( w, x, y, z, is );
@@ -70,7 +66,7 @@ final public class EntityChargedQuartz extends EntityItem
 		if ( AEApi.instance().materials().materialCertusQuartzCrystalCharged.sameAsStack( item ) )
 		{
 			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( posX - 1, posY - 1, posZ - 1, posX + 1, posY + 1, posZ + 1 );
-			List<Entity> l = worldObj.getEntitiesWithinAABBExcludingEntity( this, region );
+			List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
 
 			EntityItem redstone = null;
 			EntityItem netherQuartz = null;
