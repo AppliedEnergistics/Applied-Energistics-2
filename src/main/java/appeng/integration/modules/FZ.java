@@ -22,7 +22,7 @@ public class FZ implements IFZ, IIntegrationModule
 
 	public static FZ instance;
 
-	private static Class day_BarrelClass;
+	private static Class<?> day_BarrelClass;
 	private static Method day_getItemCount;
 	private static Method day_setItemCount;
 	private static Method day_getMaxSize;
