@@ -78,7 +78,8 @@ public abstract class AEBaseMEGui extends AEBaseGui
 
 			if ( myStack != null )
 			{
-				List currentToolTip = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
+				@SuppressWarnings( "unchecked" )
+				List<String> currentToolTip = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
 
 				if ( myStack.getStackSize() > BigNumber || (myStack.getStackSize() > 1 && stack.isItemDamaged()) )
 					currentToolTip.add( "Items Stored: " + NumberFormat.getNumberInstance( Locale.US ).format( myStack.getStackSize() ) );
