@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.block.crafting;
 
 import java.util.EnumSet;
@@ -25,18 +43,20 @@ import appeng.util.Platform;
 
 public class BlockCraftingUnit extends AEBaseBlock
 {
-
 	public static final int FLAG_FORMED = 8;
-	public static final int FLAG_POWERED = 4;
 
-	public BlockCraftingUnit(Class<? extends BlockCraftingUnit> childClass) {
+	public BlockCraftingUnit(Class<? extends BlockCraftingUnit> childClass)
+	{
 		super( childClass, Material.iron );
+
 		hasSubtypes = true;
 		setFeature( EnumSet.of( AEFeature.CraftingCPU ) );
 	}
 
-	public BlockCraftingUnit() {
+	public BlockCraftingUnit()
+	{
 		this( BlockCraftingUnit.class );
+
 		setTileEntity( TileCraftingTile.class );
 	}
 
@@ -101,7 +121,7 @@ public class BlockCraftingUnit extends AEBaseBlock
 			return super.getIcon( 0, 0 );
 		case 1:
 			return ExtraBlockTextures.BlockCraftingAccelerator.getIcon();
-		case 0 | FLAG_FORMED:
+		case FLAG_FORMED:
 			return ExtraBlockTextures.BlockCraftingUnitFit.getIcon();
 		case 1 | FLAG_FORMED:
 			return ExtraBlockTextures.BlockCraftingAcceleratorFit.getIcon();
