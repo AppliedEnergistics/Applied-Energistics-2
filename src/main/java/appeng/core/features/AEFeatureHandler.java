@@ -109,7 +109,7 @@ public class AEFeatureHandler implements AEItemDefinition
 			CommonHelper.proxy.bindTileEntitySpecialRenderer( bb.getTileEntityClass(), bb );
 		}
 
-		Class itemBlock = AEBaseItemBlock.class;
+		Class<? extends AEBaseItemBlock> itemBlock = AEBaseItemBlock.class;
 		if ( b instanceof AEBaseBlock )
 			itemBlock = ((AEBaseBlock) b).getItemBlockClass();
 
