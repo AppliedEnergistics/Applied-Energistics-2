@@ -78,11 +78,11 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	}
 
 	@Override
-	public void addInformation(ItemStack is, EntityPlayer p, List l, boolean b)
+	public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
-		EnumSet<SecurityPermissions> perms = getPermissions( is );
+		EnumSet<SecurityPermissions> perms = getPermissions( stack );
 		if ( perms.isEmpty() )
-			l.add( GuiText.NoPermissions.getLocal() );
+			lines.add( GuiText.NoPermissions.getLocal() );
 		else
 		{
 			String msg = null;
@@ -94,7 +94,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 				else
 					msg = msg + ", " + Platform.gui_localize( sp.getUnlocalizedName() );
 			}
-			l.add( msg );
+			lines.add( msg );
 		}
 
 	}

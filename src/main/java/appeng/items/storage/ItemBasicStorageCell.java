@@ -72,9 +72,9 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	}
 
 	@Override
-	public void addInformation(ItemStack i, EntityPlayer p, List l, boolean b)
+	public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
-		IMEInventory<IAEItemStack> inventory = AEApi.instance().registries().cell().getCellInventory( i, null, StorageChannel.ITEMS );
+		IMEInventory<IAEItemStack> inventory = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
 
 		if ( inventory instanceof ICellInventoryHandler )
 		{
@@ -83,11 +83,11 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 
 			if (cellInventory != null)
 			{
-				l.add(cellInventory.getUsedBytes() + " " + GuiText.Of.getLocal() + " "
+				lines.add(cellInventory.getUsedBytes() + " " + GuiText.Of.getLocal() + " "
 						+ cellInventory.getTotalBytes() + " "
 						+ GuiText.BytesUsed.getLocal());
 				
-				l.add(cellInventory.getStoredItemTypes() + " " + GuiText.Of.getLocal()
+				lines.add(cellInventory.getStoredItemTypes() + " " + GuiText.Of.getLocal()
 						+ " " + cellInventory.getTotalItemTypes() + " "
 						+ GuiText.Types.getLocal());
 				
@@ -97,9 +97,9 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 									: GuiText.Excluded ).getLocal();
 					
 					if ( handler.isFuzzy() )
-						l.add( GuiText.Partitioned.getLocal() + " - " + List + " " + GuiText.Fuzzy.getLocal() );
+						lines.add( GuiText.Partitioned.getLocal() + " - " + List + " " + GuiText.Fuzzy.getLocal() );
 					else
-						l.add( GuiText.Partitioned.getLocal() + " - " + List + " " + GuiText.Precise.getLocal()  );
+						lines.add( GuiText.Partitioned.getLocal() + " - " + List + " " + GuiText.Precise.getLocal()  );
 					
 				}
 			}

@@ -367,11 +367,11 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	}
 
 	@Override
-	public void addInformation(ItemStack is, EntityPlayer player, List lines, boolean advancedItemTooltips)
+	public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
-		super.addInformation( is, player, lines, advancedItemTooltips );
+		super.addCheckedInformation( stack, player, lines, displayAdditionalInformation );
 
-		IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( is, null, StorageChannel.ITEMS );
+		IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
 
 		if ( cdi instanceof CellInventoryHandler )
 		{

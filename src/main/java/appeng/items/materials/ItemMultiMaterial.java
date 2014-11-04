@@ -92,21 +92,21 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	}
 
 	@Override
-	public void addInformation(ItemStack is, EntityPlayer player, List details, boolean displayAdditionalInformation)
+	public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
-		super.addInformation( is, player, details, displayAdditionalInformation );
+		super.addCheckedInformation( stack, player, lines, displayAdditionalInformation );
 
-		MaterialType mt = getTypeByStack( is );
+		MaterialType mt = getTypeByStack( stack );
 		if ( mt == null )
 			return;
 
 		if ( mt == MaterialType.NamePress )
 		{
-			NBTTagCompound c = Platform.openNbtData( is );
-			details.add( c.getString( "InscribeName" ) );
+			NBTTagCompound c = Platform.openNbtData( stack );
+			lines.add( c.getString( "InscribeName" ) );
 		}
 
-		Upgrades u = getType( is );
+		Upgrades u = getType( stack );
 		if ( u != null )
 		{
 			List<String> textList = new LinkedList<String>();
@@ -134,7 +134,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 			Pattern p = Pattern.compile( "(\\d+)[^\\d]" );
 			SlightlyBetterSort s = new SlightlyBetterSort( p );
 			Collections.sort( textList, s );
-			details.addAll( textList );
+			lines.addAll( textList );
 		}
 	}
 

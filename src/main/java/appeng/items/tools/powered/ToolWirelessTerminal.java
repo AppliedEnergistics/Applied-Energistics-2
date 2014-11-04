@@ -48,25 +48,25 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	}
 
 	@Override
-	public void addInformation(ItemStack i, EntityPlayer p, List l, boolean b)
+	public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
-		super.addInformation( i, p, l, b );
+		super.addCheckedInformation( stack, player, lines, displayAdditionalInformation );
 
-		if ( i.hasTagCompound() )
+		if ( stack.hasTagCompound() )
 		{
-			NBTTagCompound tag = Platform.openNbtData( i );
+			NBTTagCompound tag = Platform.openNbtData( stack );
 			if ( tag != null )
 			{
 				String encKey = tag.getString( "encryptionKey" );
 
 				if ( encKey == null || encKey.equals( "" ) )
-					l.add( GuiText.Unlinked.getLocal() );
+					lines.add( GuiText.Unlinked.getLocal() );
 				else
-					l.add( GuiText.Linked.getLocal() );
+					lines.add( GuiText.Linked.getLocal() );
 			}
 		}
 		else
-			l.add( StatCollector.translateToLocal( "AppEng.GuiITooltip.Unlinked" ) );
+			lines.add( StatCollector.translateToLocal( "AppEng.GuiITooltip.Unlinked" ) );
 	}
 
 	@Override

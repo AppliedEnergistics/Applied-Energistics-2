@@ -69,13 +69,13 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	@Override
-	public void addInformation(ItemStack is, EntityPlayer p, List l, boolean more)
+	public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
-		ICraftingPatternDetails details = getPatternForItem( is, p.worldObj );
+		ICraftingPatternDetails details = getPatternForItem( stack, player.worldObj );
 
 		if ( details == null )
 		{
-			l.add( EnumChatFormatting.RED + GuiText.InvalidPattern.getLocal() );
+			lines.add( EnumChatFormatting.RED + GuiText.InvalidPattern.getLocal() );
 			return;
 		}
 
@@ -96,7 +96,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 				continue;
 			}
 
-			l.add( (first ? label : and) + anOut.getStackSize() + " " + Platform.getItemDisplayName( anOut ) );
+			lines.add( (first ? label : and) + anOut.getStackSize() + " " + Platform.getItemDisplayName( anOut ) );
 			first = false;
 		}
 
@@ -108,7 +108,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 				continue;
 			}
 
-			l.add( (first ? with : and) + anIn.getStackSize() + " " + Platform.getItemDisplayName( anIn ) );
+			lines.add( (first ? with : and) + anIn.getStackSize() + " " + Platform.getItemDisplayName( anIn ) );
 			first = false;
 		}
 	}

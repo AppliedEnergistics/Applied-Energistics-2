@@ -47,13 +47,13 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public void addInformation(ItemStack i, EntityPlayer p, List l, boolean b)
+	public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
-		l.add( getLocalizedName( getSettingsName( i ) + ".name", getSettingsName( i ) ) );
+		lines.add( getLocalizedName( getSettingsName( stack ) + ".name", getSettingsName( stack ) ) );
 
-		NBTTagCompound data = getData( i );
+		NBTTagCompound data = getData( stack );
 		if ( data.hasKey( "tooltip" ) )
-			l.add( StatCollector.translateToLocal( getLocalizedName( data.getString( "tooltip" ) + ".name", data.getString( "tooltip" ) ) ) );
+			lines.add( StatCollector.translateToLocal( getLocalizedName( data.getString( "tooltip" ) + ".name", data.getString( "tooltip" ) ) ) );
 	}
 
 	@Override

@@ -32,11 +32,11 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 	}
 
 	@Override
-	public void addInformation(ItemStack is, EntityPlayer player, List lines, boolean advancedItemTooltips)
+	public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
-		NBTTagCompound tag = is.getTagCompound();
+		NBTTagCompound tag = stack.getTagCompound();
 		double internalCurrentPower = 0;
-		double internalMaxPower = getAEMaxPower( is );
+		double internalMaxPower = getAEMaxPower( stack );
 
 		if ( tag != null )
 		{

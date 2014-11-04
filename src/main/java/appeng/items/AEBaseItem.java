@@ -1,7 +1,10 @@
 package appeng.items;
 
 import java.util.EnumSet;
+import java.util.List;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import appeng.core.features.AEFeature;
@@ -52,5 +55,17 @@ public class AEBaseItem extends Item implements IAEFeature
 	public void postInit()
 	{
 		// override!
+	}
+
+	@Override
+	@SuppressWarnings( "unchecked" )
+	public final void addInformation( ItemStack stack, EntityPlayer player, List lines, boolean displayAdditionalInformation )
+	{
+		this.addCheckedInformation( stack, player, lines, displayAdditionalInformation );
+	}
+
+	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
+	{
+		super.addInformation( stack, player, lines, displayAdditionalInformation );
 	}
 }

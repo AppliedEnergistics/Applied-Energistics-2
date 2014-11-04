@@ -123,12 +123,13 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer p, List l, boolean b)
+	public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
-		l.add( ButtonToolTips.DoesntDespawn.getLocal() );
+		lines.add( ButtonToolTips.DoesntDespawn.getLocal() );
 		int progress = getProgress( stack ) % SINGLE_OFFSET;
-		l.add( Math.floor( (float) progress / (float) (SINGLE_OFFSET / 100) ) + "%" );
-		super.addInformation( stack, p, l, b );
+		lines.add( Math.floor( (float) progress / (float) (SINGLE_OFFSET / 100) ) + "%" );
+
+		super.addCheckedInformation( stack, player, lines, displayAdditionalInformation );
 	}
 
 	@Override
