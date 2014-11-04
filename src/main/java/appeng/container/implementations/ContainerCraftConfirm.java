@@ -151,7 +151,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			if ( matched )
 				matches++;
 
-			if ( !found != matched )
+			if ( found == !matched )
 				changed = true;
 		}
 

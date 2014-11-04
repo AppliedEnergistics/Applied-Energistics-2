@@ -71,7 +71,7 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 			if ( matched )
 				matches++;
 
-			if ( !found != matched )
+			if ( found == !matched )
 				changed = true;
 		}
 

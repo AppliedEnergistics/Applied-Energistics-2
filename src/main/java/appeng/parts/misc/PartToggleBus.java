@@ -110,7 +110,7 @@ public class PartToggleBus extends PartBasicState
 	private void updateInternalState()
 	{
 		boolean intention = getIntention();
-		if ( intention != (connection != null) )
+		if ( intention == ( connection == null ) )
 		{
 			if ( proxy.getNode() != null && outerProxy.getNode() != null )
 			{
