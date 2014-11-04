@@ -62,8 +62,8 @@ public class ApiPart implements IPartHelper
 			ClassLoader loader = getClass().getClassLoader();// ClassLoader.getSystemClassLoader();
 			Class<ClassLoader> root = ClassLoader.class;
 			Class<? extends ClassLoader> cls = loader.getClass();
-			Method defineClassMethod = root.getDeclaredMethod( "defineClass", new Class[] { String.class, byte[].class, int.class, int.class } );
-			Method runTransformersMethod = cls.getDeclaredMethod( "runTransformers", new Class[] { String.class, String.class, byte[].class } );
+			Method defineClassMethod = root.getDeclaredMethod( "defineClass", String.class, byte[].class, int.class, int.class );
+			Method runTransformersMethod = cls.getDeclaredMethod( "runTransformers", String.class, String.class, byte[].class );
 
 			runTransformersMethod.setAccessible( true );
 			defineClassMethod.setAccessible( true );

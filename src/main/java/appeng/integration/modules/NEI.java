@@ -57,8 +57,8 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 	@Override
 	public void Init() throws Throwable
 	{
-		registerRecipeHandler = API.getDeclaredMethod( "registerRecipeHandler", new Class[] { codechicken.nei.recipe.ICraftingHandler.class } );
-		registerUsageHandler = API.getDeclaredMethod( "registerUsageHandler", new Class[] { codechicken.nei.recipe.IUsageHandler.class } );
+		registerRecipeHandler = API.getDeclaredMethod( "registerRecipeHandler", codechicken.nei.recipe.ICraftingHandler.class );
+		registerUsageHandler = API.getDeclaredMethod( "registerUsageHandler", codechicken.nei.recipe.IUsageHandler.class );
 
 		registerRecipeHandler( new NEIAEShapedRecipeHandler() );
 		registerRecipeHandler( new NEIAEShapelessRecipeHandler() );
@@ -73,15 +73,15 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 		GuiContainerManager.addTooltipHandler( this );
 
 		// crafting terminal...
-		Method registerGuiOverlay = API.getDeclaredMethod( "registerGuiOverlay", new Class[] { Class.class, String.class, IStackPositioner.class } );
+		Method registerGuiOverlay = API.getDeclaredMethod( "registerGuiOverlay", Class.class, String.class, IStackPositioner.class );
 		Class IOverlayHandler = Class.forName( "codechicken.nei.api.IOverlayHandler" );
 		Class DefaultOverlayHandler = NEICraftingHandler.class;
 
-		Method registerGuiOverlayHandler = API.getDeclaredMethod( "registerGuiOverlayHandler", new Class[] { Class.class, IOverlayHandler, String.class } );
+		Method registerGuiOverlayHandler = API.getDeclaredMethod( "registerGuiOverlayHandler", Class.class, IOverlayHandler, String.class );
 		registerGuiOverlay.invoke( API, GuiCraftingTerm.class, "crafting", new TerminalCraftingSlotFinder() );
 		registerGuiOverlay.invoke( API, GuiPatternTerm.class, "crafting", new TerminalCraftingSlotFinder() );
 
-		Constructor DefaultOverlayHandlerConstructor = DefaultOverlayHandler.getConstructor( new Class[] { int.class, int.class } );
+		Constructor DefaultOverlayHandlerConstructor = DefaultOverlayHandler.getConstructor( int.class, int.class );
 		registerGuiOverlayHandler.invoke( API, GuiCraftingTerm.class, DefaultOverlayHandlerConstructor.newInstance( 6, 75 ), "crafting" );
 		registerGuiOverlayHandler.invoke( API, GuiPatternTerm.class, DefaultOverlayHandlerConstructor.newInstance( 6, 75 ), "crafting" );
 	}

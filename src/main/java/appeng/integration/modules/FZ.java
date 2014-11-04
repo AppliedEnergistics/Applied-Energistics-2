@@ -148,9 +148,9 @@ public class FZ implements IFZ, IIntegrationModule
 	{
 		day_BarrelClass = Class.forName( "factorization.weird.TileEntityDayBarrel" );
 
-		day_getItemCount = day_BarrelClass.getDeclaredMethod( "getItemCount", new Class[] {} );
-		day_setItemCount = day_BarrelClass.getDeclaredMethod( "setItemCount", new Class[] { int.class } );
-		day_getMaxSize = day_BarrelClass.getDeclaredMethod( "getMaxSize", new Class[] {} );
+		day_getItemCount = day_BarrelClass.getDeclaredMethod( "getItemCount" );
+		day_setItemCount = day_BarrelClass.getDeclaredMethod( "setItemCount", int.class );
+		day_getMaxSize = day_BarrelClass.getDeclaredMethod( "getMaxSize" );
 		day_item = day_BarrelClass.getDeclaredField( "item" );
 	}
 
