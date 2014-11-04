@@ -126,7 +126,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 	}
 
 	@Override
-	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e)
+	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e)
 	{
 		double xOff = -0.15 * getUp().offsetX;
 		double yOff = -0.15 * getUp().offsetY;

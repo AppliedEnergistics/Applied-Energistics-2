@@ -100,7 +100,7 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e)
+	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e)
 	{
 		TileWireless tile = getTileEntity( w, x, y, z );
 		if ( tile != null )

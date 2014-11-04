@@ -8,9 +8,7 @@ import net.minecraft.world.World;
 
 public interface ICustomCollision
 {
-
 	Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity thePlayer, boolean b);
 
-	void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e);
-
+	void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e);
 }
