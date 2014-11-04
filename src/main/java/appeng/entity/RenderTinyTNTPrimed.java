@@ -24,7 +24,7 @@ public class RenderTinyTNTPrimed extends Render
 		this.renderManager = RenderManager.instance;
 	}
 
-	public void renderPrimedTNT(EntityTinyTNTPrimed tnt, double x, double y, double z, float var1, float life)
+	public void renderPrimedTNT( EntityTinyTNTPrimed tnt, double x, double y, double z, float life )
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef( (float) x, (float) y - 0.25f, (float) z );
@@ -75,7 +75,7 @@ public class RenderTinyTNTPrimed extends Render
 	@Override
 	public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9)
 	{
-		this.renderPrimedTNT( (EntityTinyTNTPrimed) par1Entity, par2, par4, par6, par8, par9 );
+		this.renderPrimedTNT( (EntityTinyTNTPrimed) par1Entity, par2, par4, par6, par9 );
 	}
 
 	@Override
