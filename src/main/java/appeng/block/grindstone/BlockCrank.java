@@ -58,11 +58,8 @@ public class BlockCrank extends AEBaseBlock
 	private boolean isCrankable(World w, int x, int y, int z, ForgeDirection offset)
 	{
 		TileEntity te = w.getTileEntity( x + offset.offsetX, y + offset.offsetY, z + offset.offsetZ );
-		if ( te instanceof ICrankable )
-		{
-			return ((ICrankable) te).canCrankAttach( offset.getOpposite() );
-		}
-		return false;
+
+		return te instanceof ICrankable && ( ( ICrankable ) te ).canCrankAttach( offset.getOpposite() );
 	}
 
 	private ForgeDirection findCrankable(World w, int x, int y, int z)
