@@ -74,7 +74,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 		return out.getStackSize() != stack.stackSize;
 	}
 
-	private IInventoryDestination configDest(IMEMonitor<IAEItemStack> itemInventory)
+	private IInventoryDestination configDestination( IMEMonitor<IAEItemStack> itemInventory )
 	{
 		destination = itemInventory;
 		return this;
@@ -235,9 +235,9 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 		ItemStack newItems;
 		if ( getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-			newItems = myAdaptor.removeSimilarItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), fzMode, configDest( inv ) );
+			newItems = myAdaptor.removeSimilarItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), fzMode, configDestination( inv ) );
 		else
-			newItems = myAdaptor.removeItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), configDest( inv ) );
+			newItems = myAdaptor.removeItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), configDestination( inv ) );
 
 		if ( newItems != null )
 		{

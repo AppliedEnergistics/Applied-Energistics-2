@@ -95,7 +95,7 @@ public class CraftingTreeProcess
 			}
 			else
 			{
-				// this is minorly different then below, this slot uses the pattern, but kinda fudges it.
+				// this is minor different then below, this slot uses the pattern, but kinda fudges it.
 				for (IAEItemStack part : details.getCondensedInputs())
 				{
 					for (int x = 0; x < list.length; x++)

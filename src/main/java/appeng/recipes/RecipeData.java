@@ -18,7 +18,7 @@ public class RecipeData
 
 	public boolean crash = true;
 	public boolean exceptions = true;
-	public boolean erroronmissing = true;
+	public boolean errorOnMissing = true;
 	
 	public final Set<String> knownItem = new HashSet<String>();
 

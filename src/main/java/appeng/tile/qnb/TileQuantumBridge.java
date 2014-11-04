@@ -190,7 +190,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		}
 	}
 
-	public long getQEDest()
+	public long getQEFrequency()
 	{
 		ItemStack is = inv.getStackInSlot( 0 );
 		if ( is != null )

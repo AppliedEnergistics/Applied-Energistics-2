@@ -10,15 +10,15 @@ import appeng.tile.grid.AENetworkTile;
 public class TilePhantomNode extends AENetworkTile
 {
 
-	protected AENetworkProxy RWAR = null;
+	protected AENetworkProxy proxy = null;
 	boolean crashMode = false;
 
 	@Override
 	public void onReady()
 	{
 		super.onReady();
-		RWAR = createProxy();
-		RWAR.onReady();
+		proxy = createProxy();
+		proxy.onReady();
 		crashMode = true;
 	}
 
@@ -28,15 +28,15 @@ public class TilePhantomNode extends AENetworkTile
 		if ( !crashMode )
 			return super.getGridNode( dir );
 
-		return RWAR.getNode();
+		return proxy.getNode();
 	}
 
 	public void BOOM()
 	{
-		if ( RWAR != null )
+		if ( proxy != null )
 		{
 			crashMode = true;
-			RWAR.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
+			proxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
 		}
 	}
 }

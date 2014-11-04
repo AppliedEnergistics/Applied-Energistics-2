@@ -159,14 +159,14 @@ public class CachedPlane
 		for (int cx = 0; cx < cx_size; cx++)
 			for (int cz = 0; cz < cz_size; cz++)
 			{
-				LinkedList<Entry<ChunkPosition, TileEntity>> rwarTiles = new LinkedList<Entry<ChunkPosition, TileEntity>>();
+				LinkedList<Entry<ChunkPosition, TileEntity>> rawTiles = new LinkedList<Entry<ChunkPosition, TileEntity>>();
 				LinkedList<ChunkPosition> deadTiles = new LinkedList<ChunkPosition>();
 
 				Chunk c = w.getChunkFromChunkCoords( minCX + cx, minCZ + cz );
 				myChunks[cx][cz] = c;
 
-				rwarTiles.addAll( ((HashMap<ChunkPosition, TileEntity>) c.chunkTileEntityMap).entrySet() );
-				for (Entry<ChunkPosition, TileEntity> tx : rwarTiles)
+				rawTiles.addAll( ( ( HashMap<ChunkPosition, TileEntity> ) c.chunkTileEntityMap ).entrySet() );
+				for (Entry<ChunkPosition, TileEntity> tx : rawTiles)
 				{
 					ChunkPosition cp = tx.getKey();
 					TileEntity te = tx.getValue();
@@ -324,13 +324,13 @@ public class CachedPlane
 		world.scheduleBlockUpdate( x + x_offset, y + y_offset, z + z_offset, entry.func_151351_a(), (int) entry.scheduledTime );
 	}
 
-	private void addTile(int x, int y, int z, TileEntity te, CachedPlane alternateDest, IMovableRegistry mr)
+	private void addTile(int x, int y, int z, TileEntity te, CachedPlane alternateDestination, IMovableRegistry mr)
 	{
 		try
 		{
 			Column c = myColumns[x][z];
 
-			if ( c.doNotSkip( y + y_offset ) || alternateDest == null )
+			if ( c.doNotSkip( y + y_offset ) || alternateDestination == null )
 			{
 				IMovableHandler handler = getHandler( te );
 
@@ -362,7 +362,7 @@ public class CachedPlane
 			}
 			else
 			{
-				alternateDest.addTile( x, y, z, te, null, mr );
+				alternateDestination.addTile( x, y, z, te, null, mr );
 			}
 		}
 		catch (Throwable e)

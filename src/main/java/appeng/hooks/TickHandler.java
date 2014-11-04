@@ -205,7 +205,6 @@ public class TickHandler
 			}
 		}
 
-		// rwar!
 		if ( ev.type == Type.WORLD && ev.phase == Phase.END )
 		{
 			WorldTickEvent wte = (WorldTickEvent) ev;

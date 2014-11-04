@@ -24,7 +24,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeItems(int how_many, ItemStack Filter, IInventoryDestination dest)
+	public ItemStack removeItems(int how_many, ItemStack Filter, IInventoryDestination destination)
 	{
 		ItemStack target = null;
 
@@ -34,7 +34,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 			{
 				if ( is.stackSize > 0 && (Filter == null || Platform.isSameItem( Filter, is )) )
 				{
-					if ( dest == null || dest.canInsert( is ) )
+					if ( destination == null || destination.canInsert( is ) )
 					{
 						target = is;
 						break;
@@ -54,7 +54,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateRemove(int how_many, ItemStack Filter, IInventoryDestination dest)
+	public ItemStack simulateRemove(int how_many, ItemStack Filter, IInventoryDestination destination)
 	{
 		ItemStack target = null;
 
@@ -64,7 +64,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 			{
 				if ( is.stackSize > 0 && (Filter == null || Platform.isSameItem( Filter, is )) )
 				{
-					if ( dest == null || dest.canInsert( is ) )
+					if ( destination == null || destination.canInsert( is ) )
 					{
 						target = is;
 						break;
@@ -89,7 +89,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination dest)
+	public ItemStack removeSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
 	{
 		ItemStack target = null;
 
@@ -99,7 +99,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 			{
 				if ( is.stackSize > 0 && (filter == null || Platform.isSameItemFuzzy( filter, is, fuzzyMode )) )
 				{
-					if ( dest == null || dest.canInsert( is ) )
+					if ( destination == null || destination.canInsert( is ) )
 					{
 						target = is;
 						break;
@@ -119,7 +119,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateSimilarRemove(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination dest)
+	public ItemStack simulateSimilarRemove(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
 	{
 		ItemStack target = null;
 
@@ -129,7 +129,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 			{
 				if ( is.stackSize > 0 && (filter == null || Platform.isSameItemFuzzy( filter, is, fuzzyMode )) )
 				{
-					if ( dest == null || dest.canInsert( is ) )
+					if ( destination == null || destination.canInsert( is ) )
 					{
 						target = is;
 						break;

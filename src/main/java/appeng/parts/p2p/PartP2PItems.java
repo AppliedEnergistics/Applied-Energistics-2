@@ -145,7 +145,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 		return wasReq ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
 	}
 
-	IInventory getDest()
+	IInventory getDestination()
 	{
 		requested = true;
 
@@ -186,7 +186,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 		{
 			cachedInv = null;
 			int olderSize = oldSize;
-			oldSize = getDest().getSizeInventory();
+			oldSize = getDestination().getSizeInventory();
 			if ( olderSize != oldSize )
 			{
 				getHost().notifyNeighbors();
@@ -201,7 +201,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 		{
 			cachedInv = null;
 			int olderSize = oldSize;
-			oldSize = getDest().getSizeInventory();
+			oldSize = getDestination().getSizeInventory();
 			if ( olderSize != oldSize )
 			{
 				getHost().notifyNeighbors();
@@ -216,7 +216,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 		{
 			cachedInv = null;
 			int olderSize = oldSize;
-			oldSize = getDest().getSizeInventory();
+			oldSize = getDestination().getSizeInventory();
 			if ( olderSize != oldSize )
 			{
 				getHost().notifyNeighbors();
@@ -231,7 +231,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 		{
 			cachedInv = null;
 			int olderSize = oldSize;
-			oldSize = getDest().getSizeInventory();
+			oldSize = getDestination().getSizeInventory();
 			if ( olderSize != oldSize )
 			{
 				getHost().notifyNeighbors();
@@ -255,19 +255,19 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	@Override
 	public int getSizeInventory()
 	{
-		return getDest().getSizeInventory();
+		return getDestination().getSizeInventory();
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int i)
 	{
-		return getDest().getStackInSlot( i );
+		return getDestination().getStackInSlot( i );
 	}
 
 	@Override
 	public ItemStack decrStackSize(int i, int j)
 	{
-		return getDest().decrStackSize( i, j );
+		return getDestination().decrStackSize( i, j );
 	}
 
 	@Override
@@ -279,7 +279,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack)
 	{
-		getDest().setInventorySlotContents( i, itemstack );
+		getDestination().setInventorySlotContents( i, itemstack );
 	}
 
 	@Override
@@ -297,7 +297,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	@Override
 	public int getInventoryStackLimit()
 	{
-		return getDest().getInventoryStackLimit();
+		return getDestination().getInventoryStackLimit();
 	}
 
 	@Override
@@ -313,7 +313,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	@Override
 	public boolean isItemValidForSlot(int i, net.minecraft.item.ItemStack itemstack)
 	{
-		return getDest().isItemValidForSlot( i, itemstack );
+		return getDestination().isItemValidForSlot( i, itemstack );
 	}
 
 	@Override
@@ -333,7 +333,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	@Override
 	public boolean canInsertItem(int i, ItemStack itemstack, int j)
 	{
-		return getDest().isItemValidForSlot( i, itemstack );
+		return getDestination().isItemValidForSlot( i, itemstack );
 	}
 
 	@Override

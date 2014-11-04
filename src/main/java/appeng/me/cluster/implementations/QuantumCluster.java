@@ -96,7 +96,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 	{
 		long qe;
 
-		qe = center.getQEDest();
+		qe = center.getQEFrequency();
 
 		if ( thisSide != qe && thisSide != -qe )
 		{

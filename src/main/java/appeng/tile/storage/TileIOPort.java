@@ -344,7 +344,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		return cachedFluid;
 	}
 
-	private long transferContents(IEnergySource energy, IMEInventory src, IMEInventory dest, long itemsToMove, StorageChannel chan)
+	private long transferContents(IEnergySource energy, IMEInventory src, IMEInventory destination, long itemsToMove, StorageChannel chan)
 	{
 		IItemList<? extends IAEStack> myList;
 		if ( src instanceof IMEMonitor )
@@ -363,7 +363,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 				long totalStackSize = s.getStackSize();
 				if ( totalStackSize > 0 )
 				{
-					IAEStack stack = dest.injectItems( s, Actionable.SIMULATE, mySrc );
+					IAEStack stack = destination.injectItems( s, Actionable.SIMULATE, mySrc );
 
 					long possible = 0;
 					if ( stack == null )
@@ -380,7 +380,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 						if ( extracted != null )
 						{
 							possible = extracted.getStackSize();
-							IAEStack failed = Platform.poweredInsert( energy, dest, extracted, mySrc );
+							IAEStack failed = Platform.poweredInsert( energy, destination, extracted, mySrc );
 
 							if ( failed != null )
 							{

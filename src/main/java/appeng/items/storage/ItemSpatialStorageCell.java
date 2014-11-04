@@ -160,17 +160,17 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		int maxSize = getMaxStoredDim( is );
 
 		int floorBuffer = 64;
-		World dest = getWorld( is );
+		World destination = getWorld( is );
 
 		if ( (scale.x == 0 && scale.y == 0 && scale.z == 0) || (scale.x == targetX && scale.y == targetY && scale.z == targetZ) )
 		{
 			if ( targetX <= maxSize && targetY <= maxSize && targetZ <= maxSize )
 			{
-				if ( dest == null )
-					dest = createNewWorld( is );
+				if ( destination == null )
+					destination = createNewWorld( is );
 
 				StorageHelper.getInstance()
-						.swapRegions( w, dest, min.x + 1, min.y + 1, min.z + 1, 1, floorBuffer + 1, 1, targetX - 1, targetY - 1, targetZ - 1 );
+						.swapRegions( w, destination, min.x + 1, min.y + 1, min.z + 1, 1, floorBuffer + 1, 1, targetX - 1, targetY - 1, targetZ - 1 );
 				setStoredSize( is, targetX, targetY, targetZ );
 
 				return new TransitionResult( true, 0 );

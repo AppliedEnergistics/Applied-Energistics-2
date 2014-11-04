@@ -110,7 +110,7 @@ public class RecipeHandler implements IRecipeHandler
 				}
 				catch (MissingIngredientError e)
 				{
-					if ( data.erroronmissing )
+					if ( data.errorOnMissing )
 					{
 						AELog.warning( "Unable to register a recipe:" + e.getMessage() );
 						if ( data.exceptions )
@@ -532,7 +532,7 @@ public class RecipeHandler implements IRecipeHandler
 				{
 					if ( tokens.size() == 1 && (tokens.get( 0 ).equals( "true" ) || tokens.get( 0 ).equals( "false" )) )
 					{
-						data.erroronmissing = tokens.get( 0 ).equals( "true" );
+						data.errorOnMissing = tokens.get( 0 ).equals( "true" );
 					}
 					else
 						throw new RecipeError( "erroronmissing must be true or false explicitly." );
