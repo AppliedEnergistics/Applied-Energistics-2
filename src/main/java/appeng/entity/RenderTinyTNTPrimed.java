@@ -73,9 +73,9 @@ public class RenderTinyTNTPrimed extends Render
 	}
 
 	@Override
-	public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9)
+	public void doRender(Entity tnt, double x, double y, double z, float unused, float life)
 	{
-		this.renderPrimedTNT( (EntityTinyTNTPrimed) par1Entity, par2, par4, par6, par9 );
+		this.renderPrimedTNT( (EntityTinyTNTPrimed) tnt, x, y, z, life );
 	}
 
 	@Override
