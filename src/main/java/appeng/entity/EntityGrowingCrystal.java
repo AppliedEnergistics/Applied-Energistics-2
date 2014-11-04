@@ -21,11 +21,6 @@ final public class EntityGrowingCrystal extends EntityItem
 
 	private int progress_1000 = 0;
 
-	public float getProgress()
-	{
-		return progress_1000 / 1000.0f;
-	}
-
 	public EntityGrowingCrystal(World w) {
 		super( w );
 	}
