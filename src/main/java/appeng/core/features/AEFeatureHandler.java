@@ -162,7 +162,7 @@ public class AEFeatureHandler implements AEItemDefinition
 	{
 		if ( isFeatureAvailable() )
 		{
-			ItemStack rv = null;
+			ItemStack rv;
 
 			if ( ItemData != null )
 				rv = new ItemStack( ItemData );
@@ -178,17 +178,27 @@ public class AEFeatureHandler implements AEItemDefinition
 	@Override
 	public boolean sameAsStack(ItemStack is)
 	{
-		if ( isFeatureAvailable() )
-			return Platform.isSameItemType( is, stack( 1 ) );
-		return false;
+		return isFeatureAvailable() && Platform.isSameItemType( is, stack( 1 ) );
 	}
 
+	/**
+	 * block at xyz in world is same if:
+	 *
+	 * - the feature is available
+	 * - the stored block data is not null
+	 * - and the stored block data is equal
+	 *
+	 * @param world world of block
+	 * @param x x pos of block
+	 * @param y y pos of block
+	 * @param z z pos of block
+	 *
+	 * @return true if feature is available and the blocks are equal
+	 */
 	@Override
 	public boolean sameAsBlock(IBlockAccess world, int x, int y, int z)
 	{
-		if ( isFeatureAvailable() && BlockData != null )
-			return world.getBlock( x, y, z ) == block();
-		return false;
+		return isFeatureAvailable() && BlockData != null && world.getBlock( x, y, z ) == BlockData;
 	}
 
 }
