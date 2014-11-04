@@ -35,7 +35,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	private static final int LINES_ON_PAGE = 6;
 
 	// TODO: copied from GuiMEMonitorable. It looks not changed, maybe unneeded?
-	int offsetX = 9;
+	final int offsetX = 9;
 
 	private final HashMap<Long, ClientDCInternalInv> byId = new HashMap<Long, ClientDCInternalInv>();
 	private final HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();

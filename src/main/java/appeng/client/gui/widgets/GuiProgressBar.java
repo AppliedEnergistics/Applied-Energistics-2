@@ -15,10 +15,10 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 	}
 
 	private final IProgressProvider source;
-	private ResourceLocation texture;
-	private int fill_u;
-	private int fill_v;
-	private Direction layout;
+	private final ResourceLocation texture;
+	private final int fill_u;
+	private final int fill_v;
+	private final Direction layout;
 
 	private String fullMsg;
 	private final String titleName;
