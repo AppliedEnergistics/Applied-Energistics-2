@@ -114,7 +114,7 @@ public class AETileEventHandler
 	 * @throws IOException
 	 */
 	@SideOnly(Side.CLIENT)
-	public boolean readFromStream(AEBaseTile tile, ByteBuf data) throws IOException
+	public boolean readFromStream(AEBaseTile tile, ByteBuf data)
 	{
 		try
 		{

@@ -360,7 +360,7 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 	}
 
 	@Override
-	public void PostInit() throws Throwable
+	public void PostInit()
 	{
 
 	}

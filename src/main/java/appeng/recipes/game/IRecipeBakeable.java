@@ -7,6 +7,6 @@ import appeng.api.exceptions.RegistrationError;
 public interface IRecipeBakeable
 {
 
-	void bake() throws RegistrationError, MissingIngredientError;
+	void bake() throws RegistrationError;
 	
 }

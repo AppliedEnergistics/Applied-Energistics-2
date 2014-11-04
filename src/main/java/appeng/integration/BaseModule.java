@@ -11,6 +11,6 @@ public abstract class BaseModule implements IIntegrationModule {
 	public abstract void Init() throws Throwable;
 
 	@Override
-	public abstract  void PostInit() throws Throwable;
+	public abstract  void PostInit();
 	
 }

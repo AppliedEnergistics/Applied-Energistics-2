@@ -61,7 +61,7 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 	}
 
 	@Override
-	public void PostInit() throws Throwable
+	public void PostInit()
 	{
 		// :P
 	}

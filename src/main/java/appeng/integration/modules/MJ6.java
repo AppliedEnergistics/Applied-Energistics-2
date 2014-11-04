@@ -30,7 +30,7 @@ public class MJ6 extends BaseModule implements IMJ6
 	}
 
 	@Override
-	public void PostInit() throws Throwable
+	public void PostInit()
 	{
 	}
 

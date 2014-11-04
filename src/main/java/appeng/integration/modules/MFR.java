@@ -19,7 +19,7 @@ public class MFR extends BaseModule
 	}
 
 	@Override
-	public void PostInit() throws Throwable
+	public void PostInit()
 	{
 
 	}

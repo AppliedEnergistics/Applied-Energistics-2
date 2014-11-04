@@ -29,7 +29,7 @@ public class MJ5 extends BaseModule implements IMJ5
 	}
 
 	@Override
-	public void PostInit() throws Throwable
+	public void PostInit()
 	{
 
 	}

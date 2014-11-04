@@ -47,7 +47,7 @@ public class ImmibisMicroblocks extends BaseModule implements IImmibisMicroblock
 	}
 
 	@Override
-	public void PostInit() throws Throwable
+	public void PostInit()
 	{
 
 	}

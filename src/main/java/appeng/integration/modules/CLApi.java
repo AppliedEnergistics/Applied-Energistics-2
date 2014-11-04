@@ -16,7 +16,7 @@ public class CLApi extends BaseModule implements ICLApi
 	}
 
 	@Override
-	public void PostInit() throws Throwable
+	public void PostInit()
 	{
 		// :P
 	}

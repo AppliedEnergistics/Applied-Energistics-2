@@ -139,7 +139,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 	}
 
 	@Override
-	public void bake() throws RegistrationError, MissingIngredientError
+	public void bake() throws RegistrationError
 	{
 		try
 		{

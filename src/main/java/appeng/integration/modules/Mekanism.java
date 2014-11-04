@@ -17,7 +17,7 @@ public class Mekanism extends BaseModule implements IMekanism
 	}
 
 	@Override
-	public void PostInit() throws Throwable
+	public void PostInit()
 	{
 
 	}

@@ -53,7 +53,7 @@ public class RB extends BaseModule implements IRB
 	}
 
 	@Override
-	public void PostInit() throws Throwable
+	public void PostInit()
 	{
 
 	}

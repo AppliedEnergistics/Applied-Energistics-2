@@ -87,7 +87,7 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 	}
 
 	@Override
-	public void PostInit() throws Throwable
+	public void PostInit()
 	{
 
 	}

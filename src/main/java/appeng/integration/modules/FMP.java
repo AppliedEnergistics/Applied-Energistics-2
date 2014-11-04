@@ -92,7 +92,7 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	}
 
 	@Override
-	public void PostInit() throws Throwable
+	public void PostInit()
 	{
 		MinecraftForge.EVENT_BUS.register( new FMPEvent() );
 	}
