@@ -144,9 +144,8 @@ final public class EntityGrowingCrystal extends EntityItem
 	private boolean isAccelerated(int x, int y, int z)
 	{
 		TileEntity te = worldObj.getTileEntity( x, y, z );
-		if ( te instanceof ICrystalGrowthAccelerator )
-			return ((ICrystalGrowthAccelerator) te).isPowered();
-		return false;
+
+		return te instanceof ICrystalGrowthAccelerator && ( ( ICrystalGrowthAccelerator ) te ).isPowered();
 	}
 
 }
