@@ -165,7 +165,7 @@ public class FZ implements IFZ, IIntegrationModule
 	{
 		try
 		{
-			Class c = Class.forName( "factorization.oreprocessing.TileEntityGrinder" );
+			Class<?> c = Class.forName( "factorization.oreprocessing.TileEntityGrinder" );
 			Method m = c.getMethod( "addRecipe", Object.class, ItemStack.class, float.class );
 
 			float amt = out.stackSize;
