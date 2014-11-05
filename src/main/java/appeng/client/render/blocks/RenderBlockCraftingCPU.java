@@ -4,6 +4,7 @@ import java.util.EnumSet;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -22,8 +23,8 @@ import appeng.tile.crafting.TileCraftingTile;
 public class RenderBlockCraftingCPU extends BaseBlockRender
 {
 
-	protected RenderBlockCraftingCPU(boolean useTesr, int range) {
-		super( useTesr, range );
+	protected RenderBlockCraftingCPU(boolean useTESR, int range) {
+		super( useTESR, range );
 	}
 
 	public RenderBlockCraftingCPU() {
@@ -303,6 +304,16 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 
 	private boolean isConnected(IBlockAccess w, int x, int y, int z, ForgeDirection side)
 	{
-		return w.getTileEntity( x + side.offsetX, y + side.offsetY, z + side.offsetZ ) instanceof TileCraftingTile;
+		final int tileYPos = y + side.offsetY;
+		if ( 0 <= tileYPos && tileYPos <= 255)
+		{
+			final TileEntity tile = w.getTileEntity( x + side.offsetX, tileYPos, z + side.offsetZ );
+
+			return tile instanceof TileCraftingTile;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }
