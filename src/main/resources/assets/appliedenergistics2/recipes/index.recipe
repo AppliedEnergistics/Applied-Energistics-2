@@ -11,6 +11,7 @@ alias=ae2 -> appliedenergistics2
 # AE2 Ore Dictionary
 ore=ae2:ItemMaterial.CertusQuartzCrystal -> crystalCertusQuartz
 ore=ae2:ItemMaterial.FluixCrystal -> crystalFluix
+ore=ae2:ItemMaterial.PurifiedFluixCrystal -> crystalPureFluix
 ore=mc:quartz -> crystalNetherQuartz
 ore=mc:wool:* -> blockWool
 ore=mc:stained_hardened_clay:* -> blockStainedHardenedClay
