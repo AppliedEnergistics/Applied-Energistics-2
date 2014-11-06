@@ -30,9 +30,14 @@ import java.util.List;
 
 public abstract class AEBaseEntityItem extends EntityItem
 {
-	public AEBaseEntityItem( World p_i1710_1_, double p_i1710_2_, double p_i1710_4_, double p_i1710_6_, ItemStack p_i1710_8_ )
+	public AEBaseEntityItem( World world )
 	{
-		super( p_i1710_1_, p_i1710_2_, p_i1710_4_, p_i1710_6_, p_i1710_8_ );
+		super( world );
+	}
+
+	public AEBaseEntityItem( World world, double x, double y, double z, ItemStack stack )
+	{
+		super( world, x, y, z, stack );
 	}
 
 	@SuppressWarnings( "unchecked" )
