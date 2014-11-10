@@ -42,7 +42,7 @@ public class ASMTweaker implements IClassTransformer
 		privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new publicLine( "a", "(Lzk;)V" ) );
 
 		privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "writeToNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
-		privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "func_77955_b", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
+		privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "func_145841_b", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
 		privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "b", "(Ldh;)V" ) );
 
 		privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "readFromNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
