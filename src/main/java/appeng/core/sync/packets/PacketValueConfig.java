@@ -30,6 +30,7 @@ import appeng.container.implementations.ContainerPriority;
 import appeng.container.implementations.ContainerQuartzKnife;
 import appeng.container.implementations.ContainerSecurity;
 import appeng.container.implementations.ContainerStorageBus;
+import appeng.container.implementations.ContainerTeleporter;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.IMouseWheelItem;
@@ -93,6 +94,11 @@ public class PacketValueConfig extends AppEngPacket
 		{
 			ContainerPriority pc = (ContainerPriority) c;
 			pc.setPriority( Integer.parseInt( Value ), player );
+		}
+		else if ( Name.equals( "FrequencyHost.Frequency" ) && c instanceof ContainerTeleporter )
+		{
+				ContainerTeleporter pc = (ContainerTeleporter) c;
+				pc.setFrequency( Integer.parseInt( Value ), player );
 		}
 		else if ( Name.equals( "LevelEmitter.Value" ) && c instanceof ContainerLevelEmitter )
 		{

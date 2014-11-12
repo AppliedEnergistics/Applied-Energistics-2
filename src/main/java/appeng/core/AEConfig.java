@@ -62,6 +62,8 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 	private double WirelessCostMultiplier = 1;
 	private final double WirelessHighWirelessCount = 64;
 	private double WirelessTerminalDrainMultiplier = 1;
+	private double teleporterDrainMultiplier = 50;
+	private double teleporterDimensionTravelDrain = 75000;
 
 	private double WirelessBaseRange = 16;
 	private double WirelessBoosterRangeMultiplier = 1;
@@ -70,6 +72,19 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 	public double wireless_getDrainRate(double range)
 	{
 		return WirelessTerminalDrainMultiplier * range;
+	}
+
+	public double teleporter_getDrain(double distance, boolean dimTravel)
+	{
+		if (dimTravel) {
+			if (teleporterDimensionTravelDrain<0) {
+				return -1;
+			} else {
+				return teleporterDimensionTravelDrain;
+			}
+		} else {
+			return teleporterDrainMultiplier * distance;
+		}
 	}
 
 	public double wireless_getMaxRange(int boosters)
@@ -257,6 +272,10 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 		WirelessBoosterExp = get( "wireless", "WirelessBoosterExp", WirelessBoosterExp ).getDouble( WirelessBoosterExp );
 		WirelessTerminalDrainMultiplier = get( "wireless", "WirelessTerminalDrainMultiplier", WirelessTerminalDrainMultiplier ).getDouble(
 				WirelessTerminalDrainMultiplier );
+		teleporterDrainMultiplier = get( "teleporter", "teleporterTerminalDrainMultiplier", teleporterDrainMultiplier ).getDouble(
+				teleporterDrainMultiplier );
+		teleporterDimensionTravelDrain = get( "teleporter", "teleporterDimensionTravelDrain", teleporterDimensionTravelDrain ).getDouble(
+				teleporterDimensionTravelDrain );
 
 		formationPlaneEntityLimit = get( "automation", "formationPlaneEntityLimit", formationPlaneEntityLimit ).getInt( formationPlaneEntityLimit );
 
