@@ -111,7 +111,6 @@ public class AETileEventHandler
 	 * 
 	 * @param data data of stream
 	 * @return true of method could be invoked
-	 * @throws IOException
 	 */
 	@SideOnly(Side.CLIENT)
 	public boolean readFromStream(AEBaseTile tile, ByteBuf data)
