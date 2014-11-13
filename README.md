@@ -32,7 +32,7 @@ Downloads can be found on [CurseForge](http://www.curse.com/mc-mods/minecraft/22
 
 ## Installation
 
-You can install this mod by putting the .jar file into the `minecraft/mods/` folder. It has no additional hard dependencies. It's a Minecraft Forge mod, which means you have to install Minecraft Forge before you can install AE2, otherwise the mod won't work.
+You install this mod by putting the .jar file into the `minecraft/mods/` folder. It has no additional hard dependencies. It's a Minecraft Forge mod, which means you have to install Minecraft Forge before you can install AE2, otherwise the mod won't work.
 
 ## Issues
 
