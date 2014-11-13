@@ -104,4 +104,4 @@ Thanks to
 * Notch et al for Minecraft
 * Lex et al for MinecraftForge
 * AlgorithmX2 for Applied Energistics 2
-* All [contributors](https://github.com/AppliedEnergistics/Applied-Energistics-2/graphs/contributors) helping to make this mod.
+* All [contributors](https://github.com/AppliedEnergistics/Applied-Energistics-2/graphs/contributors) helping to make this mod the best that it can be.
