@@ -1,8 +1,28 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.core;
+
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +33,8 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
+import com.mojang.authlib.GameProfile;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -22,6 +44,7 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+
 import appeng.api.util.WorldCoord;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketNewStorageDimension;
@@ -31,28 +54,28 @@ import appeng.me.GridStorage;
 import appeng.me.GridStorageSearch;
 import appeng.services.CompassService;
 
-import com.mojang.authlib.GameProfile;
 
 public class WorldSettings extends Configuration
 {
 
+	private static final String SPAWNDATA_FOLDER = "spawndata";
+	private static final String COMPASS_Folder = "compass";
+
 	private static WorldSettings instance;
 
-	long lastGridStorage = 0;
-	int lastPlayer = 0;
-
+	private final File aeFolder;
 	private final CompassService compass;
 
-	final File AEFolder;
+	private long lastGridStorage = 0;
+	private int lastPlayer = 0;
 
-	public WorldSettings(File aeFolder)
+	public WorldSettings( File aeFolder )
 	{
 		super( new File( aeFolder.getPath() + File.separatorChar + "settings.cfg" ) );
-		AEFolder = aeFolder;
+		this.aeFolder = aeFolder;
+		this.compass = new CompassService( aeFolder );
 
-		compass = new CompassService( AEFolder );
-
-		for (int dimID : get( "DimensionManager", "StorageCells", new int[0] ).getIntList())
+		for ( int dimID : get( "DimensionManager", "StorageCells", new int[0] ).getIntList() )
 		{
 			storageCellDims.add( dimID );
 			DimensionManager.registerDimension( dimID, AEConfig.instance.storageProviderID );
@@ -63,95 +86,103 @@ public class WorldSettings extends Configuration
 			lastGridStorage = Long.parseLong( get( "Counters", "lastGridStorage", 0 ).getString() );
 			lastPlayer = get( "Counters", "lastPlayer", 0 ).getInt();
 		}
-		catch (NumberFormatException err)
+		catch ( NumberFormatException err )
 		{
 			lastGridStorage = 0;
 			lastPlayer = 0;
 		}
 	}
 
-	NBTTagCompound loadSpawnData(int dim, int chunkX, int chunkZ)
+	NBTTagCompound loadSpawnData( int dim, int chunkX, int chunkZ )
 	{
 		if ( !Thread.holdsLock( WorldSettings.class ) )
 			throw new RuntimeException( "Invalid Request" );
 
-		File f = new File( AEFolder, "spawndata" + File.separatorChar + dim + "_" + (chunkX >> 4) + "_" + (chunkZ >> 4) + ".dat" );
+		NBTTagCompound data = null;
+		File file = new File( aeFolder, SPAWNDATA_FOLDER + File.separatorChar + dim + "_" + ( chunkX >> 4 ) + "_" + ( chunkZ >> 4 ) + ".dat" );
 
-		if ( f.isFile() && f.exists() )
+		if ( file.isFile() )
 		{
-			// open
-			FileInputStream fis;
+			FileInputStream fileInputStream = null;
+
 			try
 			{
-				fis = new FileInputStream( f );
-
-				NBTTagCompound data = null;
-
-				try
-				{
-					data = CompressedStreamTools.readCompressed( fis );
-				}
-				catch (Throwable e)
-				{
-					data = new NBTTagCompound();
-					AELog.error( e );
-				}
-
-				fis.close();
-
-				return data;
+				fileInputStream = new FileInputStream( file );
+				data = CompressedStreamTools.readCompressed( fileInputStream );
 			}
-			catch (Throwable e)
+			catch ( Throwable e )
 			{
+				data = new NBTTagCompound();
 				AELog.error( e );
 			}
-
+			finally
+			{
+				if ( fileInputStream != null )
+				{
+					try
+					{
+						fileInputStream.close();
+					}
+					catch ( IOException e )
+					{
+						AELog.error( e );
+					}
+				}
+			}
+		}
+		else
+		{
+			data = new NBTTagCompound();
 		}
 
-		return new NBTTagCompound();
+		return data;
 	}
 
-	void writeSpawnData(int dim, int chunkX, int chunkZ, NBTTagCompound data)
+	void writeSpawnData( int dim, int chunkX, int chunkZ, NBTTagCompound data )
 	{
 		if ( !Thread.holdsLock( WorldSettings.class ) )
 			throw new RuntimeException( "Invalid Request" );
 
-		File f = new File( AEFolder, "spawndata" + File.separatorChar + dim + "_" + (chunkX >> 4) + "_" + (chunkZ >> 4) + ".dat" );
+		File file = new File( aeFolder, SPAWNDATA_FOLDER + File.separatorChar + dim + "_" + ( chunkX >> 4 ) + "_" + ( chunkZ >> 4 ) + ".dat" );
+		FileOutputStream fileOutputStream = null;
 
 		try
 		{
-			// save
-			FileOutputStream fos = new FileOutputStream( f );
-
-			try
-			{
-				CompressedStreamTools.writeCompressed( data, fos );
-			}
-			catch (Throwable e)
-			{
-				AELog.error( e );
-			}
-
-			fos.close();
+			fileOutputStream = new FileOutputStream( file );
+			CompressedStreamTools.writeCompressed( data, fileOutputStream );
 		}
-		catch (Throwable e)
+		catch ( Throwable e )
 		{
 			AELog.error( e );
 		}
+		finally
+		{
+			if ( fileOutputStream != null )
+			{
+				try
+				{
+					fileOutputStream.close();
+				}
+				catch ( IOException e )
+				{
+					AELog.error( e );
+				}
+			}
+		}
 	}
 
-	public Collection<NBTTagCompound> getNearByMeteorites(int dim, int chunkX, int chunkZ)
+	public Collection<NBTTagCompound> getNearByMeteorites( int dim, int chunkX, int chunkZ )
 	{
 		LinkedList<NBTTagCompound> ll = new LinkedList<NBTTagCompound>();
 
-		synchronized (WorldSettings.class)
+		synchronized ( WorldSettings.class )
 		{
-			for (int x = -1; x <= 1; x++)
+			for ( int x = -1; x <= 1; x++ )
 			{
-				for (int z = -1; z <= 1; z++)
+				for ( int z = -1; z <= 1; z++ )
 				{
-					int cx = x + (chunkX >> 4);
-					int cz = z + (chunkZ >> 4);
+					int cx = x + ( chunkX >> 4 );
+					int cz = z + ( chunkZ >> 4 );
 
 					NBTTagCompound data = loadSpawnData( dim, cx << 4, cz << 4 );
 
@@ -159,7 +190,7 @@ public class WorldSettings extends Configuration
 					{
 						// edit.
 						int size = data.getInteger( "num" );
-						for (int s = 0; s < size; s++)
+						for ( int s = 0; s < size; s++ )
 							ll.add( data.getCompoundTag( "" + s ) );
 					}
 				}
@@ -169,18 +200,18 @@ public class WorldSettings extends Configuration
 		return ll;
 	}
 
-	public boolean hasGenerated(int dim, int chunkX, int chunkZ)
+	public boolean hasGenerated( int dim, int chunkX, int chunkZ )
 	{
-		synchronized (WorldSettings.class)
+		synchronized ( WorldSettings.class )
 		{
 			NBTTagCompound data = loadSpawnData( dim, chunkX, chunkZ );
 			return data.getBoolean( chunkX + "," + chunkZ );
 		}
 	}
 
-	public void setGenerated(int dim, int chunkX, int chunkZ)
+	public void setGenerated( int dim, int chunkX, int chunkZ )
 	{
-		synchronized (WorldSettings.class)
+		synchronized ( WorldSettings.class )
 		{
 			NBTTagCompound data = loadSpawnData( dim, chunkX, chunkZ );
 
@@ -191,9 +222,9 @@ public class WorldSettings extends Configuration
 		}
 	}
 
-	public boolean addNearByMeteorites(int dim, int chunkX, int chunkZ, NBTTagCompound newData)
+	public boolean addNearByMeteorites( int dim, int chunkX, int chunkZ, NBTTagCompound newData )
 	{
-		synchronized (WorldSettings.class)
+		synchronized ( WorldSettings.class )
 		{
 			NBTTagCompound data = loadSpawnData( dim, chunkX, chunkZ );
 
@@ -212,7 +243,7 @@ public class WorldSettings extends Configuration
 	{
 		save();
 
-		for (Integer dimID : storageCellDims)
+		for ( Integer dimID : storageCellDims )
 			DimensionManager.unregisterDimension( dimID );
 
 		storageCellDims.clear();
@@ -224,7 +255,7 @@ public class WorldSettings extends Configuration
 	final List<Integer> storageCellDims = new ArrayList<Integer>();
 	HashMap<Integer, UUID> idToUUID;
 
-	public void addStorageCellDim(int newDim)
+	public void addStorageCellDim( int newDim )
 	{
 		storageCellDims.add( newDim );
 		DimensionManager.registerDimension( newDim, AEConfig.instance.storageProviderID );
@@ -233,7 +264,7 @@ public class WorldSettings extends Configuration
 
 		String[] values = new String[storageCellDims.size()];
 
-		for (int x = 0; x < values.length; x++)
+		for ( int x = 0; x < values.length; x++ )
 			values[x] = "" + storageCellDims.get( x );
 
 		get( "DimensionManager", "StorageCells", new int[0] ).set( values );
@@ -253,25 +284,22 @@ public class WorldSettings extends Configuration
 
 			File aeBaseFolder = new File( world.getPath() + File.separatorChar + "AE2" );
 
-			if ( !aeBaseFolder.exists() || !aeBaseFolder.isDirectory() )
-				if ( !aeBaseFolder.mkdir() || !aeBaseFolder.exists() )
-				{
-					throw new RuntimeException( "Failed to create " + aeBaseFolder.getAbsolutePath() );
-				}
+			if ( !aeBaseFolder.isDirectory() && !aeBaseFolder.mkdir() )
+			{
+				throw new RuntimeException( "Failed to create " + aeBaseFolder.getAbsolutePath() );
+			}
 
-			File compass = new File( aeBaseFolder, "compass" );
-			if ( !compass.exists() || !compass.isDirectory() )
-				if ( !compass.mkdir() || !compass.exists() )
-				{
-					throw new RuntimeException( "Failed to create " + compass.getAbsolutePath() );
-				}
+			File compass = new File( aeBaseFolder, COMPASS_Folder );
+			if ( !compass.isDirectory() && !compass.mkdir() )
+			{
+				throw new RuntimeException( "Failed to create " + compass.getAbsolutePath() );
+			}
 
-			File spawnData = new File( aeBaseFolder, "spawndata" );
-			if ( !spawnData.exists() || !spawnData.isDirectory() )
-				if ( !spawnData.mkdir() || !spawnData.exists() )
-				{
-					throw new RuntimeException( "Failed to create " + spawnData.getAbsolutePath() );
-				}
+			File spawnData = new File( aeBaseFolder, SPAWNDATA_FOLDER );
+			if ( !spawnData.isDirectory() && !spawnData.mkdir() )
+			{
+				throw new RuntimeException( "Failed to create " + spawnData.getAbsolutePath() );
+			}
 
 			instance = new WorldSettings( aeBaseFolder );
 		}
@@ -279,18 +307,18 @@ public class WorldSettings extends Configuration
 		return instance;
 	}
 
-	public void sendToPlayer(NetworkManager manager, EntityPlayerMP player)
+	public void sendToPlayer( NetworkManager manager, EntityPlayerMP player )
 	{
 		if ( manager != null )
 		{
-			for (int newDim : get( "DimensionManager", "StorageCells", new int[0] ).getIntList())
+			for ( int newDim : get( "DimensionManager", "StorageCells", new int[0] ).getIntList() )
 			{
-				manager.scheduleOutboundPacket( (new PacketNewStorageDimension( newDim )).getProxy() );
+				manager.scheduleOutboundPacket( ( new PacketNewStorageDimension( newDim ) ).getProxy() );
 			}
 		}
 		else
 		{
-			for (PlayerColor pc : TickHandler.instance.getPlayerColors().values())
+			for ( PlayerColor pc : TickHandler.instance.getPlayerColors().values() )
 				NetworkHandler.instance.sendToAll( pc.getPacket() );
 		}
 	}
@@ -302,7 +330,7 @@ public class WorldSettings extends Configuration
 
 	private final WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>> loadedStorage = new WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>>();
 
-	public WorldCoord getStoredSize(int dim)
+	public WorldCoord getStoredSize( int dim )
 	{
 		int x = get( "StorageCell" + dim, "scaleX", 0 ).getInt();
 		int y = get( "StorageCell" + dim, "scaleY", 0 ).getInt();
@@ -310,7 +338,7 @@ public class WorldSettings extends Configuration
 		return new WorldCoord( x, y, z );
 	}
 
-	public void setStoredSize(int dim, int targetX, int targetY, int targetZ)
+	public void setStoredSize( int dim, int targetX, int targetY, int targetZ )
 	{
 		get( "StorageCell" + dim, "scaleX", 0 ).set( targetX );
 		get( "StorageCell" + dim, "scaleY", 0 ).set( targetY );
@@ -324,7 +352,7 @@ public class WorldSettings extends Configuration
 	 * @param storageID ID of grid storage
 	 * @return corresponding grid storage
 	 */
-	public GridStorage getGridStorage(long storageID)
+	public GridStorage getGridStorage( long storageID )
 	{
 		GridStorageSearch gss = new GridStorageSearch( storageID );
 		WeakReference<GridStorageSearch> result = loadedStorage.get( gss );
@@ -353,7 +381,7 @@ public class WorldSettings extends Configuration
 		return newStorage;
 	}
 
-	public void destroyGridStorage(long id)
+	public void destroyGridStorage( long id )
 	{
 		this.getCategory( "gridstorage" ).remove( "" + id );
 	}
@@ -362,7 +390,7 @@ public class WorldSettings extends Configuration
 	public void save()
 	{
 		// populate new data
-		for (GridStorageSearch gs : loadedStorage.keySet())
+		for ( GridStorageSearch gs : loadedStorage.keySet() )
 		{
 			GridStorage thisStorage = gs.gridStorage.get();
 			if ( thisStorage != null && thisStorage.getGrid() != null && !thisStorage.getGrid().isEmpty() )
@@ -391,7 +419,7 @@ public class WorldSettings extends Configuration
 		return r;
 	}
 
-	public int getNextOrderedValue(String name)
+	public int getNextOrderedValue( String name )
 	{
 		Property p = this.get( "orderedValues", name, 0 );
 		int myValue = p.getInt();
@@ -399,7 +427,7 @@ public class WorldSettings extends Configuration
 		return myValue;
 	}
 
-	public int getPlayerID(GameProfile profile)
+	public int getPlayerID( GameProfile profile )
 	{
 		ConfigCategory playerList = this.getCategory( "players" );
 
@@ -428,20 +456,20 @@ public class WorldSettings extends Configuration
 
 			ConfigCategory playerList = this.getCategory( "players" );
 
-			for (Entry<String, Property> b : playerList.getValues().entrySet())
+			for ( Entry<String, Property> b : playerList.getValues().entrySet() )
 				idToUUID.put( b.getValue().getInt(), UUID.fromString( b.getKey() ) );
 		}
 
 		return idToUUID;
 	}
 
-	public EntityPlayer getPlayerFromID(int playerID)
+	public EntityPlayer getPlayerFromID( int playerID )
 	{
 		UUID id = getUUIDMap().get( playerID );
 
 		if ( id != null )
 		{
-			for (EntityPlayer player : CommonHelper.proxy.getPlayers())
+			for ( EntityPlayer player : CommonHelper.proxy.getPlayers() )
 			{
 				if ( player.getUniqueID().equals( id ) )
 					return player;
