@@ -1,8 +1,43 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.core;
+
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
+
+import com.google.common.base.Stopwatch;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 
 import appeng.api.config.TunnelType;
 import appeng.core.api.IIMCHandler;
@@ -23,23 +58,8 @@ import appeng.server.AECommand;
 import appeng.services.VersionChecker;
 import appeng.util.Platform;
 
-import com.google.common.base.Stopwatch;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-
-@Mod(modid = AppEng.modid, acceptedMinecraftVersions = "[1.7.10]", name = AppEng.name, version = AEConfig.VERSION, dependencies = AppEng.dependencies, guiFactory = "appeng.client.gui.config.AEConfigGuiFactory")
+@Mod( modid = AppEng.modid, acceptedMinecraftVersions = "[1.7.10]", name = AppEng.name, version = AEConfig.VERSION, dependencies = AppEng.dependencies, guiFactory = "appeng.client.gui.config.AEConfigGuiFactory" )
 public class AppEng
 {
 
@@ -59,18 +79,19 @@ public class AppEng
 
 	public final static String dependencies =
 
-	// a few mods, AE should load after, probably.
-	// required-after:AppliedEnergistics2API|all;
-	// "after:gregtech_addon;after:Mekanism;after:IC2;after:ThermalExpansion;after:BuildCraft|Core;" +
+			// a few mods, AE should load after, probably.
+			// required-after:AppliedEnergistics2API|all;
+			// "after:gregtech_addon;after:Mekanism;after:IC2;after:ThermalExpansion;after:BuildCraft|Core;" +
 
-	// depend on version of forge used for build.
-	"after:appliedenergistics2-core;" + "required-after:Forge@[" // require forge.
-			+ net.minecraftforge.common.ForgeVersion.majorVersion + "." // majorVersion
-			+ net.minecraftforge.common.ForgeVersion.minorVersion + "." // minorVersion
-			+ net.minecraftforge.common.ForgeVersion.revisionVersion + "." // revisionVersion
-			+ net.minecraftforge.common.ForgeVersion.buildVersion + ",)"; // buildVersion
+			// depend on version of forge used for build.
+			"after:appliedenergistics2-core;" + "required-after:Forge@[" // require forge.
+					+ net.minecraftforge.common.ForgeVersion.majorVersion + "." // majorVersion
+					+ net.minecraftforge.common.ForgeVersion.minorVersion + "." // minorVersion
+					+ net.minecraftforge.common.ForgeVersion.revisionVersion + "." // revisionVersion
+					+ net.minecraftforge.common.ForgeVersion.buildVersion + ",)"; // buildVersion
 
-	public AppEng() {
+	public AppEng()
+	{
 		instance = this;
 
 		IMCHandlers.put( "blacklist-block-spatial", new IMCBlackListSpatial() );
@@ -78,7 +99,7 @@ public class AppEng
 		IMCHandlers.put( "add-grindable", new IMCGrinder() );
 		IMCHandlers.put( "add-mattercannon-ammo", new IMCMatterCannon() );
 
-		for (TunnelType type : TunnelType.values())
+		for ( TunnelType type : TunnelType.values() )
 		{
 			IMCHandlers.put( "add-p2p-attunement-" + type.name().replace( '_', '-' ).toLowerCase(), new IMCP2PAttunement() );
 		}
@@ -86,17 +107,17 @@ public class AppEng
 		FMLCommonHandler.instance().registerCrashCallable( new CrashEnhancement( CrashInfo.MOD_VERSION ) );
 	}
 
-	public boolean isIntegrationEnabled(IntegrationType Name)
+	public boolean isIntegrationEnabled( IntegrationType Name )
 	{
-		return IntegrationRegistry.instance.isEnabled( Name );
+		return IntegrationRegistry.INSTANCE.isEnabled( Name );
 	}
 
-	public Object getIntegration(IntegrationType Name)
+	public Object getIntegration( IntegrationType Name )
 	{
-		return IntegrationRegistry.instance.getInstance( Name );
+		return IntegrationRegistry.INSTANCE.getInstance( Name );
 	}
 
-	private void startService(String serviceName, Thread thread)
+	private void startService( String serviceName, Thread thread )
 	{
 		thread.setName( serviceName );
 		thread.setPriority( Thread.MIN_PRIORITY );
@@ -104,7 +125,7 @@ public class AppEng
 	}
 
 	@EventHandler
-	void PreInit(FMLPreInitializationEvent event)
+	void PreInit( FMLPreInitializationEvent event )
 	{
 		if ( !Loader.isModLoaded( "appliedenergistics2-core" ) )
 		{
@@ -138,25 +159,25 @@ public class AppEng
 	}
 
 	@EventHandler
-	void Init(FMLInitializationEvent event)
+	void Init( FMLInitializationEvent event )
 	{
 		Stopwatch star = Stopwatch.createStarted();
 		AELog.info( "Init" );
 
 		Registration.instance.Init( event );
-		IntegrationRegistry.instance.init();
+		IntegrationRegistry.INSTANCE.init();
 
 		AELog.info( "Init ( end " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}
 
 	@EventHandler
-	void PostInit(FMLPostInitializationEvent event)
+	void PostInit( FMLPostInitializationEvent event )
 	{
 		Stopwatch star = Stopwatch.createStarted();
 		AELog.info( "PostInit" );
 
 		Registration.instance.PostInit( event );
-		IntegrationRegistry.instance.postInit();
+		IntegrationRegistry.INSTANCE.postInit();
 		FMLCommonHandler.instance().registerCrashCallable( new CrashEnhancement( CrashInfo.INTEGRATION ) );
 
 		CommonHelper.proxy.postInit();
@@ -169,9 +190,9 @@ public class AppEng
 	}
 
 	@EventHandler
-	public void processIMC(FMLInterModComms.IMCEvent event)
+	public void processIMC( FMLInterModComms.IMCEvent event )
 	{
-		for (IMCMessage m : event.getMessages())
+		for ( IMCMessage m : event.getMessages() )
 		{
 			try
 			{
@@ -181,7 +202,7 @@ public class AppEng
 				else
 					throw new RuntimeException( "Invalid IMC Called: " + m.key );
 			}
-			catch (Throwable t)
+			catch ( Throwable t )
 			{
 				AELog.warning( "Problem detected when processing IMC " + m.key + " from " + m.getSender() );
 				AELog.error( t );
@@ -190,20 +211,20 @@ public class AppEng
 	}
 
 	@EventHandler
-	public void serverStopping(FMLServerStoppingEvent event)
+	public void serverStopping( FMLServerStoppingEvent event )
 	{
 		WorldSettings.getInstance().shutdown();
 		TickHandler.instance.shutdown();
 	}
 
 	@EventHandler
-	public void serverStarting(FMLServerAboutToStartEvent evt)
+	public void serverStarting( FMLServerAboutToStartEvent evt )
 	{
 		WorldSettings.getInstance().init();
 	}
 
 	@EventHandler
-	public void serverStarting(FMLServerStartingEvent evt)
+	public void serverStarting( FMLServerStartingEvent evt )
 	{
 		evt.registerServerCommand( new AECommand( evt.getServer() ) );
 	}
