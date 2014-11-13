@@ -12,15 +12,18 @@ import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;
+import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageHelper;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.crafting.CraftingLink;
+import appeng.me.storage.MEMonitorIInventory;
 import appeng.util.Platform;
 import appeng.util.item.AEFluidStack;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.ItemList;
+import appeng.util.inv.IMEAdaptor;
 
 public class ApiStorage implements IStorageHelper
 {
@@ -78,4 +81,10 @@ public class ApiStorage implements IStorageHelper
 	{
 		return new CraftingLink( data, req );
 	}
+
+    @Override
+    public IMEMonitor<IAEItemStack> createStorageBusMonitor(IMEInventory<IAEItemStack> inventory, BaseActionSource src)
+    {
+        return new MEMonitorIInventory( new IMEAdaptor( inventory, src ) );
+    }
 }
