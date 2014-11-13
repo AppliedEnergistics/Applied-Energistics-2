@@ -32,7 +32,7 @@ Downloads can be found on [CurseForge](http://www.curse.com/mc-mods/minecraft/22
 
 ## Installation
 
-You can install this mod by putting it into the `minecraft/mods/` folder. It has no additional hard dependencies, but like most Minecraft mods, it does require Minecraft Forge.
+You can install this mod by putting the .jar file into the `minecraft/mods/` folder after you install Minecraft Forge. It has no additional hard dependencies.
 
 ## Issues
 
