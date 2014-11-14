@@ -30,9 +30,11 @@ Applied Energistics 2 is (c) 2013 - 2014 AlgorithmX2 and licensed under LGPL v3.
 
 Downloads can be found on [CurseForge](http://www.curse.com/mc-mods/minecraft/223794-applied-energistics-2) or on the [official website](http://ae-mod.info/Downloads/).
 
+Applied Energistics 2 requires Minecraft Forge. Download it at the [Forge website] (http://files.minecraftforge.net), or you can download [MultiMC] (http://multimc.org/), create a Minecraft 1.7.10 instance, and install Forge in that instance via the Instance Settings.
+
 ## Installation
 
-You install this mod by putting the .jar file into the `minecraft/mods/` folder. It has no additional hard dependencies. It's a Minecraft Forge mod, which means you have to install Minecraft Forge before you can install AE2, otherwise the mod won't work.
+You install this mod by putting the .jar file into the `minecraft/mods/` folder. It has no additional hard dependencies.
 
 ## Issues
 
