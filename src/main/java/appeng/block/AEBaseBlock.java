@@ -659,7 +659,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	}
 
 	@Override
-	final public boolean onBlockActivated(World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
 		if ( player != null )
 		{

@@ -67,6 +67,7 @@ import appeng.block.misc.BlockQuartzGrowthAccelerator;
 import appeng.block.misc.BlockQuartzTorch;
 import appeng.block.misc.BlockSecurity;
 import appeng.block.misc.BlockSkyCompass;
+import appeng.block.misc.BlockTeleporter;
 import appeng.block.misc.BlockTinyTNT;
 import appeng.block.misc.BlockVibrationChamber;
 import appeng.block.networking.BlockCableBus;
@@ -375,6 +376,7 @@ public class Registration
 
 		blocks.blockSecurity = addFeature( BlockSecurity.class );
 		blocks.blockPaint = addFeature( BlockPaint.class );
+		blocks.blockTeleporter = addFeature( BlockTeleporter.class );
 
 		items.itemCellCreative = addFeature( ItemCreativeStorageCell.class );
 		items.itemViewCell = addFeature( ItemViewCell.class );
