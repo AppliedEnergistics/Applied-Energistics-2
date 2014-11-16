@@ -97,8 +97,8 @@ public class PacketValueConfig extends AppEngPacket
 		}
 		else if ( Name.equals( "FrequencyHost.Frequency" ) && c instanceof ContainerTeleporter )
 		{
-				ContainerTeleporter pc = (ContainerTeleporter) c;
-				pc.setFrequency( Integer.parseInt( Value ), player );
+			ContainerTeleporter pc = (ContainerTeleporter) c;
+			pc.setFrequency( Integer.parseInt( Value ), player );
 		}
 		else if ( Name.equals( "LevelEmitter.Value" ) && c instanceof ContainerLevelEmitter )
 		{
