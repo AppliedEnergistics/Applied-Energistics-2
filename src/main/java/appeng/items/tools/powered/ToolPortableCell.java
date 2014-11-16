@@ -18,6 +18,7 @@
 
 package appeng.items.tools.powered;
 
+
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +28,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.guiobjects.IGuiItem;
@@ -49,32 +51,25 @@ import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.storage.CellInventoryHandler;
 import appeng.util.Platform;
 
+
 public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell, IGuiItem, IItemGroup
 {
-
-	public ToolPortableCell() {
+	public ToolPortableCell()
+	{
 		super( ToolPortableCell.class, null );
 		setFeature( EnumSet.of( AEFeature.PortableCell, AEFeature.StorageCells, AEFeature.PoweredTools ) );
 		maxStoredPower = AEConfig.instance.portableCellBattery;
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack item, World w, EntityPlayer player)
+	public ItemStack onItemRightClick( ItemStack item, World w, EntityPlayer player )
 	{
 		Platform.openGUI( player, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_PORTABLE_CELL );
 		return item;
 	}
-	
-	@Override
-	public boolean onItemUse(ItemStack item, EntityPlayer player, World w, int x, int y, int z, int side,
-			float hitX, float hitY, float hitZ)
-	{
-		onItemRightClick( item, w, player );
-		return true;
-	}
 
 	@Override
-	public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
+	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
 		super.addCheckedInformation( stack, player, lines, displayAdditionalInformation );
 
@@ -82,7 +77,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 
 		if ( cdi instanceof CellInventoryHandler )
 		{
-			ICellInventory cd = ((ICellInventoryHandler) cdi).getCellInv();
+			ICellInventory cd = ( ( ICellInventoryHandler ) cdi ).getCellInv();
 			if ( cd != null )
 			{
 				lines.add( cd.getUsedBytes() + " " + GuiText.Of.getLocal() + " " + cd.getTotalBytes() + " " + GuiText.BytesUsed.getLocal() );
@@ -92,25 +87,25 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
-	public int getBytes(ItemStack cellItem)
+	public int getBytes( ItemStack cellItem )
 	{
 		return 512;
 	}
 
 	@Override
-	public int BytePerType(ItemStack cell)
+	public int BytePerType( ItemStack cell )
 	{
 		return 8;
 	}
 
 	@Override
-	public int getTotalTypes(ItemStack cellItem)
+	public int getTotalTypes( ItemStack cellItem )
 	{
 		return 27;
 	}
 
 	@Override
-	public boolean isBlackListed(ItemStack cellItem, IAEItemStack requestedAddition)
+	public boolean isBlackListed( ItemStack cellItem, IAEItemStack requestedAddition )
 	{
 		return false;
 	}
@@ -122,7 +117,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
-	public boolean isStorageCell(ItemStack i)
+	public boolean isStorageCell( ItemStack i )
 	{
 		return true;
 	}
@@ -134,51 +129,51 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
-	public IInventory getUpgradesInventory(ItemStack is)
+	public IInventory getUpgradesInventory( ItemStack is )
 	{
 		return new CellUpgrades( is, 2 );
 	}
 
 	@Override
-	public IInventory getConfigInventory(ItemStack is)
+	public IInventory getConfigInventory( ItemStack is )
 	{
 		return new CellConfig( is );
 	}
 
 	@Override
-	public FuzzyMode getFuzzyMode(ItemStack is)
+	public FuzzyMode getFuzzyMode( ItemStack is )
 	{
 		String fz = Platform.openNbtData( is ).getString( "FuzzyMode" );
 		try
 		{
 			return FuzzyMode.valueOf( fz );
 		}
-		catch (Throwable t)
+		catch ( Throwable t )
 		{
 			return FuzzyMode.IGNORE_ALL;
 		}
 	}
 
 	@Override
-	public String getUnlocalizedGroupName(Set<ItemStack> others, ItemStack is)
+	public String getUnlocalizedGroupName( Set<ItemStack> others, ItemStack is )
 	{
 		return GuiText.StorageCells.getUnlocalized();
 	}
 
 	@Override
-	public void setFuzzyMode(ItemStack is, FuzzyMode fzMode)
+	public void setFuzzyMode( ItemStack is, FuzzyMode fzMode )
 	{
 		Platform.openNbtData( is ).setString( "FuzzyMode", fzMode.name() );
 	}
 
 	@Override
-	public boolean isEditable(ItemStack is)
+	public boolean isEditable( ItemStack is )
 	{
 		return true;
 	}
 
 	@Override
-	public IGuiItemObject getGuiObject(ItemStack is, World w, int x, int y, int z)
+	public IGuiItemObject getGuiObject( ItemStack is, World w, int x, int y, int z )
 	{
 		return new PortableCellViewer( is );
 	}
