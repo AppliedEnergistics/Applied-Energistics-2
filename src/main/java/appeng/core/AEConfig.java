@@ -76,13 +76,19 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 
 	public double teleporter_getDrain(double distance, boolean dimTravel)
 	{
-		if (dimTravel) {
-			if (teleporterDimensionTravelDrain<0) {
+		if ( dimTravel )
+		{
+			if ( teleporterDimensionTravelDrain < 0 )
+			{
 				return -1;
-			} else {
+			}
+			else
+			{
 				return teleporterDimensionTravelDrain;
 			}
-		} else {
+		}
+		else
+		{
 			return teleporterDrainMultiplier * distance;
 		}
 	}

@@ -64,7 +64,6 @@ import appeng.container.implementations.ContainerSecurity;
 import appeng.container.implementations.ContainerSkyChest;
 import appeng.container.implementations.ContainerSpatialIOPort;
 import appeng.container.implementations.ContainerStorageBus;
-import appeng.container.implementations.ContainerTeleporter;
 import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.container.implementations.ContainerWireless;
@@ -87,7 +86,6 @@ import appeng.tile.misc.TileCellWorkbench;
 import appeng.tile.misc.TileCondenser;
 import appeng.tile.misc.TileInscriber;
 import appeng.tile.misc.TileSecurity;
-import appeng.tile.misc.TileTeleporter;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.tile.networking.TileWireless;
 import appeng.tile.qnb.TileQuantumBridge;
@@ -169,9 +167,7 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_INTERFACE_TERMINAL(ContainerInterfaceTerminal.class, PartMonitor.class, WORLD, SecurityPermissions.BUILD),
 
-	GUI_CRAFTING_STATUS(ContainerCraftingStatus.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT), 
-
-	GUI_TELEPORTER(ContainerTeleporter.class, TileTeleporter.class, WORLD, SecurityPermissions.BUILD);
+	GUI_CRAFTING_STATUS(ContainerCraftingStatus.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT);
 
 	private final Class Tile;
 	private Class Gui;
