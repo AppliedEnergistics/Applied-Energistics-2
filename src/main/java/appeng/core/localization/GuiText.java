@@ -50,7 +50,7 @@ public enum GuiText
 
 	NoCraftingJobs, CPUs, FacadeCrafting, inWorldCraftingPresses, ChargedQuartzFind,
 	
-	Included, Excluded, Partitioned, Precise, Fuzzy, Teleporter;
+	Included, Excluded, Partitioned, Precise, Fuzzy;
 
 	final String root;
 
