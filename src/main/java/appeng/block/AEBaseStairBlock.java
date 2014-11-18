@@ -16,49 +16,45 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.items.tools.quartz;
+package appeng.block;
 
 
 import java.util.EnumSet;
 
 import com.google.common.base.Optional;
 
-import net.minecraft.item.ItemAxe;
-import net.minecraft.item.ItemStack;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockStairs;
 
 import appeng.core.features.AEFeature;
 import appeng.core.features.IAEFeature;
 import appeng.core.features.IFeatureHandler;
-import appeng.core.features.ItemFeatureHandler;
-import appeng.util.Platform;
+import appeng.core.features.StairBlockFeatureHandler;
 
 
-public class ToolQuartzAxe extends ItemAxe implements IAEFeature
+public abstract class AEBaseStairBlock extends BlockStairs implements IAEFeature
 {
-	private final AEFeature type;
-	private final IFeatureHandler feature;
+	private final IFeatureHandler features;
 
-	public ToolQuartzAxe( AEFeature Type )
+	protected AEBaseStairBlock( Block block, int meta, EnumSet<AEFeature> features )
 	{
-		super( ToolMaterial.IRON );
-		this.feature = new ItemFeatureHandler( EnumSet.of( type = Type, AEFeature.QuartzAxe ), this, this, Optional.of( Type.name() ) );
+		super( block, meta );
+
+		this.features = new StairBlockFeatureHandler( features, this, Optional.<String> absent() );
+		this.setBlockName( block.getUnlocalizedName() );
+
+		this.setLightOpacity( 0 );
 	}
 
 	@Override
 	public IFeatureHandler handler()
 	{
-		return this.feature;
+		return this.features;
 	}
 
 	@Override
 	public void postInit()
 	{
-		// override!
-	}
-
-	@Override
-	public boolean getIsRepairable( ItemStack a, ItemStack b )
-	{
-		return Platform.canRepair( type, a, b );
+		// Override to do stuff
 	}
 }

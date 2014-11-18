@@ -23,6 +23,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -56,7 +58,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 {
 	public ToolPortableCell()
 	{
-		super( ToolPortableCell.class, null );
+		super( ToolPortableCell.class, Optional.<String> absent() );
 		setFeature( EnumSet.of( AEFeature.PortableCell, AEFeature.StorageCells, AEFeature.PoweredTools ) );
 		maxStoredPower = AEConfig.instance.portableCellBattery;
 	}
@@ -129,6 +131,18 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
+	public String getUnlocalizedGroupName( Set<ItemStack> others, ItemStack is )
+	{
+		return GuiText.StorageCells.getUnlocalized();
+	}
+
+	@Override
+	public boolean isEditable( ItemStack is )
+	{
+		return true;
+	}
+
+	@Override
 	public IInventory getUpgradesInventory( ItemStack is )
 	{
 		return new CellUpgrades( is, 2 );
@@ -155,21 +169,9 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
-	public String getUnlocalizedGroupName( Set<ItemStack> others, ItemStack is )
-	{
-		return GuiText.StorageCells.getUnlocalized();
-	}
-
-	@Override
 	public void setFuzzyMode( ItemStack is, FuzzyMode fzMode )
 	{
 		Platform.openNbtData( is ).setString( "FuzzyMode", fzMode.name() );
-	}
-
-	@Override
-	public boolean isEditable( ItemStack is )
-	{
-		return true;
 	}
 
 	@Override

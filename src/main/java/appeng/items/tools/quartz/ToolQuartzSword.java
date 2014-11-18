@@ -18,41 +18,47 @@
 
 package appeng.items.tools.quartz;
 
+
 import java.util.EnumSet;
+
+import com.google.common.base.Optional;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+
 import appeng.core.features.AEFeature;
-import appeng.core.features.AEFeatureHandler;
 import appeng.core.features.IAEFeature;
+import appeng.core.features.IFeatureHandler;
+import appeng.core.features.ItemFeatureHandler;
 import appeng.util.Platform;
+
 
 public class ToolQuartzSword extends ItemSword implements IAEFeature
 {
+	private final AEFeature type;
+	private final IFeatureHandler feature;
 
-	final AEFeature type;
-	final AEFeatureHandler feature;
+	public ToolQuartzSword( AEFeature Type )
+	{
+		super( ToolMaterial.IRON );
+		feature = new ItemFeatureHandler( EnumSet.of( type = Type, AEFeature.QuartzSword ), this, this, Optional.of( Type.name() ) );
+	}
 
 	@Override
-	public AEFeatureHandler feature()
+	public IFeatureHandler handler()
 	{
 		return feature;
-	}
-
-	@Override
-	public boolean getIsRepairable(ItemStack a, ItemStack b)
-	{
-		return Platform.canRepair( type, a, b );
-	}
-
-	public ToolQuartzSword(AEFeature Type) {
-		super( ToolMaterial.IRON );
-		feature = new AEFeatureHandler( EnumSet.of( type = Type, AEFeature.QuartzSword ), this, Type.name() );
 	}
 
 	@Override
 	public void postInit()
 	{
 		// override!
+	}
+
+	@Override
+	public boolean getIsRepairable( ItemStack a, ItemStack b )
+	{
+		return Platform.canRepair( type, a, b );
 	}
 }

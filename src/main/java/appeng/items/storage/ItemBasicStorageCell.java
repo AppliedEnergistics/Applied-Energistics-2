@@ -23,6 +23,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
@@ -59,13 +61,13 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	final int perType;
 	final double idleDrain;
 
-	public ItemBasicStorageCell( MaterialType whichCell, int Kilobytes )
+	public ItemBasicStorageCell( MaterialType whichCell, int kilobytes )
 	{
-		super( ItemBasicStorageCell.class, Kilobytes + "k" );
+		super( ItemBasicStorageCell.class, Optional.of( kilobytes + "k" ) );
 
 		this.setFeature( EnumSet.of( AEFeature.StorageCells ) );
 		this.setMaxStackSize( 1 );
-		this.totalBytes = Kilobytes * 1024;
+		this.totalBytes = kilobytes * 1024;
 		this.component = whichCell;
 
 		switch ( this.component )
@@ -170,6 +172,18 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	}
 
 	@Override
+	public String getUnlocalizedGroupName( Set<ItemStack> others, ItemStack is )
+	{
+		return GuiText.StorageCells.getUnlocalized();
+	}
+
+	@Override
+	public boolean isEditable( ItemStack is )
+	{
+		return true;
+	}
+
+	@Override
 	public IInventory getUpgradesInventory( ItemStack is )
 	{
 		return new CellUpgrades( is, 2 );
@@ -202,15 +216,10 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	}
 
 	@Override
-	public String getUnlocalizedGroupName( Set<ItemStack> others, ItemStack is )
+	public ItemStack onItemRightClick( ItemStack stack, World world, EntityPlayer player )
 	{
-		return GuiText.StorageCells.getUnlocalized();
-	}
-
-	@Override
-	public boolean isEditable( ItemStack is )
-	{
-		return true;
+		disassembleDrive( stack, world, player );
+		return stack;
 	}
 
 	private boolean disassembleDrive( ItemStack stack, World world, EntityPlayer player )
@@ -249,27 +258,20 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	}
 
 	@Override
-	public ItemStack onItemRightClick( ItemStack stack, World world, EntityPlayer player )
-	{
-		disassembleDrive( stack, world, player );
-		return stack;
-	}
-
-	@Override
 	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
 		return disassembleDrive( stack, world, player );
 	}
 
 	@Override
-	public boolean hasContainerItem( ItemStack stack )
-	{
-		return AEConfig.instance.isFeatureEnabled( AEFeature.enableDisassemblyCrafting );
-	}
-
-	@Override
 	public ItemStack getContainerItem( ItemStack itemStack )
 	{
 		return AEApi.instance().materials().materialEmptyStorageCell.stack( 1 );
+	}
+
+	@Override
+	public boolean hasContainerItem( ItemStack stack )
+	{
+		return AEConfig.instance.isFeatureEnabled( AEFeature.enableDisassemblyCrafting );
 	}
 }
