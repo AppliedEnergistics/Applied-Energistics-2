@@ -5,7 +5,7 @@ shaped=
 	mc:iron_ingot mc:iron_ingot mc:iron_ingot
 	-> ae2:ItemMaterial.BlankPattern
 
-shaped=
+shapeless=
 	ae2:ItemMaterial.BasicCard mc:crafting_table
 	-> ae2:ItemMaterial.CardCrafting
 
