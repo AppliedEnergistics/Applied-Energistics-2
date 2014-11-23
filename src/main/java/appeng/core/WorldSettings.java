@@ -26,14 +26,10 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.WeakHashMap;
-
-import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -44,6 +40,9 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+
+import com.google.common.base.Optional;
+import com.mojang.authlib.GameProfile;
 
 import appeng.api.util.WorldCoord;
 import appeng.core.sync.network.NetworkHandler;
@@ -57,17 +56,17 @@ import appeng.services.CompassService;
 
 public class WorldSettings extends Configuration
 {
-
 	private static final String SPAWNDATA_FOLDER = "spawndata";
 	private static final String COMPASS_Folder = "compass";
 
 	private static WorldSettings instance;
-
+	private final List<Integer> storageCellDims = new ArrayList<Integer>();
 	private final File aeFolder;
 	private final CompassService compass;
-
-	private long lastGridStorage = 0;
-	private int lastPlayer = 0;
+	private final PlayerMappings mappings;
+	private final WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>> loadedStorage = new WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>>();
+	private long lastGridStorage;
+	private int lastPlayer;
 
 	public WorldSettings( File aeFolder )
 	{
@@ -91,6 +90,69 @@ public class WorldSettings extends Configuration
 			lastGridStorage = 0;
 			lastPlayer = 0;
 		}
+
+		final ConfigCategory playerList = this.getCategory( "players" );
+		this.mappings = new PlayerMappings( playerList, AELog.instance );
+	}
+
+	public static WorldSettings getInstance()
+	{
+		if ( instance == null )
+		{
+			File world = DimensionManager.getCurrentSaveRootDirectory();
+
+			File aeBaseFolder = new File( world.getPath() + File.separatorChar + "AE2" );
+
+			if ( !aeBaseFolder.isDirectory() && !aeBaseFolder.mkdir() )
+			{
+				throw new RuntimeException( "Failed to create " + aeBaseFolder.getAbsolutePath() );
+			}
+
+			File compass = new File( aeBaseFolder, COMPASS_Folder );
+			if ( !compass.isDirectory() && !compass.mkdir() )
+			{
+				throw new RuntimeException( "Failed to create " + compass.getAbsolutePath() );
+			}
+
+			File spawnData = new File( aeBaseFolder, SPAWNDATA_FOLDER );
+			if ( !spawnData.isDirectory() && !spawnData.mkdir() )
+			{
+				throw new RuntimeException( "Failed to create " + spawnData.getAbsolutePath() );
+			}
+
+			instance = new WorldSettings( aeBaseFolder );
+		}
+
+		return instance;
+	}
+
+	public Collection<NBTTagCompound> getNearByMeteorites( int dim, int chunkX, int chunkZ )
+	{
+		LinkedList<NBTTagCompound> ll = new LinkedList<NBTTagCompound>();
+
+		synchronized ( WorldSettings.class )
+		{
+			for ( int x = -1; x <= 1; x++ )
+			{
+				for ( int z = -1; z <= 1; z++ )
+				{
+					int cx = x + ( chunkX >> 4 );
+					int cz = z + ( chunkZ >> 4 );
+
+					NBTTagCompound data = loadSpawnData( dim, cx << 4, cz << 4 );
+
+					if ( data != null )
+					{
+						// edit.
+						int size = data.getInteger( "num" );
+						for ( int s = 0; s < size; s++ )
+							ll.add( data.getCompoundTag( "" + s ) );
+					}
+				}
+			}
+		}
+
+		return ll;
 	}
 
 	NBTTagCompound loadSpawnData( int dim, int chunkX, int chunkZ )
@@ -138,6 +200,28 @@ public class WorldSettings extends Configuration
 		return data;
 	}
 
+	public boolean hasGenerated( int dim, int chunkX, int chunkZ )
+	{
+		synchronized ( WorldSettings.class )
+		{
+			NBTTagCompound data = loadSpawnData( dim, chunkX, chunkZ );
+			return data.getBoolean( chunkX + "," + chunkZ );
+		}
+	}
+
+	public void setGenerated( int dim, int chunkX, int chunkZ )
+	{
+		synchronized ( WorldSettings.class )
+		{
+			NBTTagCompound data = loadSpawnData( dim, chunkX, chunkZ );
+
+			// edit.
+			data.setBoolean( chunkX + "," + chunkZ, true );
+
+			writeSpawnData( dim, chunkX, chunkZ, data );
+		}
+	}
+
 	void writeSpawnData( int dim, int chunkX, int chunkZ, NBTTagCompound data )
 	{
 		if ( !Thread.holdsLock( WorldSettings.class ) )
@@ -171,57 +255,6 @@ public class WorldSettings extends Configuration
 		}
 	}
 
-	public Collection<NBTTagCompound> getNearByMeteorites( int dim, int chunkX, int chunkZ )
-	{
-		LinkedList<NBTTagCompound> ll = new LinkedList<NBTTagCompound>();
-
-		synchronized ( WorldSettings.class )
-		{
-			for ( int x = -1; x <= 1; x++ )
-			{
-				for ( int z = -1; z <= 1; z++ )
-				{
-					int cx = x + ( chunkX >> 4 );
-					int cz = z + ( chunkZ >> 4 );
-
-					NBTTagCompound data = loadSpawnData( dim, cx << 4, cz << 4 );
-
-					if ( data != null )
-					{
-						// edit.
-						int size = data.getInteger( "num" );
-						for ( int s = 0; s < size; s++ )
-							ll.add( data.getCompoundTag( "" + s ) );
-					}
-				}
-			}
-		}
-
-		return ll;
-	}
-
-	public boolean hasGenerated( int dim, int chunkX, int chunkZ )
-	{
-		synchronized ( WorldSettings.class )
-		{
-			NBTTagCompound data = loadSpawnData( dim, chunkX, chunkZ );
-			return data.getBoolean( chunkX + "," + chunkZ );
-		}
-	}
-
-	public void setGenerated( int dim, int chunkX, int chunkZ )
-	{
-		synchronized ( WorldSettings.class )
-		{
-			NBTTagCompound data = loadSpawnData( dim, chunkX, chunkZ );
-
-			// edit.
-			data.setBoolean( chunkX + "," + chunkZ, true );
-
-			writeSpawnData( dim, chunkX, chunkZ, data );
-		}
-	}
-
 	public boolean addNearByMeteorites( int dim, int chunkX, int chunkZ, NBTTagCompound newData )
 	{
 		synchronized ( WorldSettings.class )
@@ -252,8 +285,24 @@ public class WorldSettings extends Configuration
 		instance = null;
 	}
 
-	final List<Integer> storageCellDims = new ArrayList<Integer>();
-	HashMap<Integer, UUID> idToUUID;
+	@Override
+	public void save()
+	{
+		// populate new data
+		for ( GridStorageSearch gs : loadedStorage.keySet() )
+		{
+			GridStorage thisStorage = gs.gridStorage.get();
+			if ( thisStorage != null && thisStorage.getGrid() != null && !thisStorage.getGrid().isEmpty() )
+			{
+				String value = thisStorage.getValue();
+				get( "gridstorage", "" + thisStorage.getID(), value ).set( value );
+			}
+		}
+
+		// save to files
+		if ( hasChanged() )
+			super.save();
+	}
 
 	public void addStorageCellDim( int newDim )
 	{
@@ -274,37 +323,6 @@ public class WorldSettings extends Configuration
 	public CompassService getCompass()
 	{
 		return compass;
-	}
-
-	public static WorldSettings getInstance()
-	{
-		if ( instance == null )
-		{
-			File world = DimensionManager.getCurrentSaveRootDirectory();
-
-			File aeBaseFolder = new File( world.getPath() + File.separatorChar + "AE2" );
-
-			if ( !aeBaseFolder.isDirectory() && !aeBaseFolder.mkdir() )
-			{
-				throw new RuntimeException( "Failed to create " + aeBaseFolder.getAbsolutePath() );
-			}
-
-			File compass = new File( aeBaseFolder, COMPASS_Folder );
-			if ( !compass.isDirectory() && !compass.mkdir() )
-			{
-				throw new RuntimeException( "Failed to create " + compass.getAbsolutePath() );
-			}
-
-			File spawnData = new File( aeBaseFolder, SPAWNDATA_FOLDER );
-			if ( !spawnData.isDirectory() && !spawnData.mkdir() )
-			{
-				throw new RuntimeException( "Failed to create " + spawnData.getAbsolutePath() );
-			}
-
-			instance = new WorldSettings( aeBaseFolder );
-		}
-
-		return instance;
 	}
 
 	public void sendToPlayer( NetworkManager manager, EntityPlayerMP player )
@@ -328,8 +346,6 @@ public class WorldSettings extends Configuration
 		save();
 	}
 
-	private final WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>> loadedStorage = new WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>>();
-
 	public WorldCoord getStoredSize( int dim )
 	{
 		int x = get( "StorageCell" + dim, "scaleX", 0 ).getInt();
@@ -348,8 +364,9 @@ public class WorldSettings extends Configuration
 
 	/**
 	 * lazy loading, can load any id, even ones that don't exist anymore.
-	 * 
+	 *
 	 * @param storageID ID of grid storage
+	 *
 	 * @return corresponding grid storage
 	 */
 	public GridStorage getGridStorage( long storageID )
@@ -381,30 +398,6 @@ public class WorldSettings extends Configuration
 		return newStorage;
 	}
 
-	public void destroyGridStorage( long id )
-	{
-		this.getCategory( "gridstorage" ).remove( "" + id );
-	}
-
-	@Override
-	public void save()
-	{
-		// populate new data
-		for ( GridStorageSearch gs : loadedStorage.keySet() )
-		{
-			GridStorage thisStorage = gs.gridStorage.get();
-			if ( thisStorage != null && thisStorage.getGrid() != null && !thisStorage.getGrid().isEmpty() )
-			{
-				String value = thisStorage.getValue();
-				get( "gridstorage", "" + thisStorage.getID(), value ).set( value );
-			}
-		}
-
-		// save to files
-		if ( hasChanged() )
-			super.save();
-	}
-
 	private long nextGridStorage()
 	{
 		long r = lastGridStorage++;
@@ -412,11 +405,9 @@ public class WorldSettings extends Configuration
 		return r;
 	}
 
-	private long nextPlayer()
+	public void destroyGridStorage( long id )
 	{
-		long r = lastPlayer++;
-		get( "Counters", "lastPlayer", lastPlayer ).set( lastPlayer );
-		return r;
+		this.getCategory( "gridstorage" ).remove( "" + id );
 	}
 
 	public int getNextOrderedValue( String name )
@@ -442,36 +433,29 @@ public class WorldSettings extends Configuration
 		else
 		{
 			playerList.put( uuid, prop = new Property( uuid, "" + nextPlayer(), Property.Type.INTEGER ) );
-			getUUIDMap().put( prop.getInt(), profile.getId() ); // add to reverse map
+			this.mappings.put( prop.getInt(), profile.getId() ); // add to reverse map
 			save();
 			return prop.getInt();
 		}
 	}
 
-	public HashMap<Integer, UUID> getUUIDMap()
+	private long nextPlayer()
 	{
-		if ( idToUUID == null )
-		{
-			idToUUID = new HashMap<Integer, UUID>();
-
-			ConfigCategory playerList = this.getCategory( "players" );
-
-			for ( Entry<String, Property> b : playerList.getValues().entrySet() )
-				idToUUID.put( b.getValue().getInt(), UUID.fromString( b.getKey() ) );
-		}
-
-		return idToUUID;
+		long r = lastPlayer++;
+		get( "Counters", "lastPlayer", lastPlayer ).set( lastPlayer );
+		return r;
 	}
 
 	public EntityPlayer getPlayerFromID( int playerID )
 	{
-		UUID id = getUUIDMap().get( playerID );
+		Optional<UUID> maybe = this.mappings.get( playerID );
 
-		if ( id != null )
+		if ( maybe.isPresent() )
 		{
+			final UUID uuid = maybe.get();
 			for ( EntityPlayer player : CommonHelper.proxy.getPlayers() )
 			{
-				if ( player.getUniqueID().equals( id ) )
+				if ( player.getUniqueID().equals( uuid ) )
 					return player;
 			}
 		}
