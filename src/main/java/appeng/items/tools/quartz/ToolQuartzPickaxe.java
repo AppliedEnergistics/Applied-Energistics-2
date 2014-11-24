@@ -18,41 +18,49 @@
 
 package appeng.items.tools.quartz;
 
+
 import java.util.EnumSet;
+
+import com.google.common.base.Optional;
 
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
+
 import appeng.core.features.AEFeature;
-import appeng.core.features.AEFeatureHandler;
 import appeng.core.features.IAEFeature;
+import appeng.core.features.IFeatureHandler;
+import appeng.core.features.ItemFeatureHandler;
 import appeng.util.Platform;
+
 
 public class ToolQuartzPickaxe extends ItemPickaxe implements IAEFeature
 {
+	private final AEFeature type;
+	private final IFeatureHandler feature;
 
-	final AEFeature type;
-	final AEFeatureHandler feature;
-
-	@Override
-	public AEFeatureHandler feature()
+	public ToolQuartzPickaxe( AEFeature Type )
 	{
-		return feature;
-	}
-
-	@Override
-	public boolean getIsRepairable(ItemStack a, ItemStack b)
-	{
-		return Platform.canRepair( type, a, b );
-	}
-
-	public ToolQuartzPickaxe(AEFeature Type) {
 		super( ToolMaterial.IRON );
-		feature = new AEFeatureHandler( EnumSet.of( type = Type, AEFeature.QuartzPickaxe ), this, Type.name() );
+
+		this.type = Type;
+		this.feature = new ItemFeatureHandler( EnumSet.of( Type, AEFeature.QuartzPickaxe ), this, this, Optional.of( Type.name() ) );
+	}
+
+	@Override
+	public IFeatureHandler handler()
+	{
+		return this.feature;
 	}
 
 	@Override
 	public void postInit()
 	{
 		// override!
+	}
+
+	@Override
+	public boolean getIsRepairable( ItemStack a, ItemStack b )
+	{
+		return Platform.canRepair( type, a, b );
 	}
 }

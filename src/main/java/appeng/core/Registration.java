@@ -18,8 +18,12 @@
 
 package appeng.core;
 
-import java.lang.reflect.Constructor;
+
 import java.lang.reflect.Field;
+
+import com.google.common.base.Optional;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.util.WeightedRandomChestContent;
@@ -29,6 +33,14 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.VillagerRegistry;
+
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.Blocks;
@@ -90,6 +102,14 @@ import appeng.block.solids.OreQuartzCharged;
 import appeng.block.spatial.BlockMatrixFrame;
 import appeng.block.spatial.BlockSpatialIOPort;
 import appeng.block.spatial.BlockSpatialPylon;
+import appeng.block.stair.ChiseledQuartzStairBlock;
+import appeng.block.stair.FluixStairBlock;
+import appeng.block.stair.QuartzPillarStairBlock;
+import appeng.block.stair.QuartzStairBlock;
+import appeng.block.stair.SkyStoneBlockStairBlock;
+import appeng.block.stair.SkyStoneBrickStairBlock;
+import appeng.block.stair.SkyStoneSmallBrickStairBlock;
+import appeng.block.stair.SkyStoneStairBlock;
 import appeng.block.storage.BlockChest;
 import appeng.block.storage.BlockDrive;
 import appeng.block.storage.BlockIOPort;
@@ -184,17 +204,9 @@ import appeng.recipes.ores.OreDictionaryHandler;
 import appeng.spatial.BiomeGenStorage;
 import appeng.spatial.StorageWorldProvider;
 import appeng.tile.AEBaseTile;
+import appeng.util.ClassInstantiation;
 import appeng.util.Platform;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.VillagerRegistry;
 
 public class Registration
 {
@@ -202,6 +214,7 @@ public class Registration
 	final public static Registration instance = new Registration();
 
 	public final RecipeHandler recipeHandler;
+	final private Multimap<AEFeature, Class> featuresToEntities = ArrayListMultimap.create();
 	public BiomeGenBase storageBiome;
 
 	private Registration()
@@ -209,9 +222,7 @@ public class Registration
 		recipeHandler = new RecipeHandler();
 	}
 
-	final private Multimap<AEFeature, Class> featuresToEntities = ArrayListMultimap.create();
-
-	public void PreInit(FMLPreInitializationEvent event)
+	public void PreInit( FMLPreInitializationEvent event )
 	{
 		registerSpatial( false );
 
@@ -248,23 +259,23 @@ public class Registration
 		AEItemDefinition materialItem = addFeature( ItemMultiMaterial.class );
 
 		Class materialClass = materials.getClass();
-		for (MaterialType mat : MaterialType.values())
+		for ( MaterialType mat : MaterialType.values() )
 		{
 			try
 			{
 				if ( mat == MaterialType.InvalidType )
-					((ItemMultiMaterial) materialItem.item()).createMaterial( mat );
+					( ( ItemMultiMaterial ) materialItem.item() ).createMaterial( mat );
 				else
 				{
 					Field f = materialClass.getField( "material" + mat.name() );
-					IStackSrc is = ((ItemMultiMaterial) materialItem.item()).createMaterial( mat );
+					IStackSrc is = ( ( ItemMultiMaterial ) materialItem.item() ).createMaterial( mat );
 					if ( is != null )
 						f.set( materials, new DamagedItemDefinition( is ) );
 					else
 						f.set( materials, new NullItemDefinition() );
 				}
 			}
-			catch (Throwable err)
+			catch ( Throwable err )
 			{
 				AELog.severe( "Error creating material: " + mat.name() );
 				throw new RuntimeException( err );
@@ -274,19 +285,19 @@ public class Registration
 		AEItemDefinition partItem = addFeature( ItemMultiPart.class );
 
 		Class partClass = parts.getClass();
-		for (PartType type : PartType.values())
+		for ( PartType type : PartType.values() )
 		{
 			try
 			{
 				if ( type == PartType.InvalidType )
-					((ItemMultiPart) partItem.item()).createPart( type, null );
+					( ( ItemMultiPart ) partItem.item() ).createPart( type, null );
 				else
 				{
 					Field f = partClass.getField( "part" + type.name() );
 					Enum variants[] = type.getVariants();
 					if ( variants == null )
 					{
-						ItemStackSrc is = ((ItemMultiPart) partItem.item()).createPart( type, null );
+						ItemStackSrc is = ( ( ItemMultiPart ) partItem.item() ).createPart( type, null );
 						if ( is != null )
 							f.set( parts, new DamagedItemDefinition( is ) );
 						else
@@ -298,11 +309,11 @@ public class Registration
 						{
 							ColoredItemDefinition def = new ColoredItemDefinition();
 
-							for (Enum v : variants)
+							for ( Enum v : variants )
 							{
-								ItemStackSrc is = ((ItemMultiPart) partItem.item()).createPart( type, v );
+								ItemStackSrc is = ( ( ItemMultiPart ) partItem.item() ).createPart( type, v );
 								if ( is != null )
-									def.add( (AEColor) v, is );
+									def.add( ( AEColor ) v, is );
 							}
 
 							f.set( parts, def );
@@ -310,7 +321,7 @@ public class Registration
 					}
 				}
 			}
-			catch (Throwable err)
+			catch ( Throwable err )
 			{
 				AELog.severe( "Error creating part: " + type.name() );
 				throw new RuntimeException( err );
@@ -424,7 +435,7 @@ public class Registration
 		items.itemLumenPaintBall = lumenPaintBall = new ColoredItemDefinition();
 		AEItemDefinition pb = addFeature( ItemPaintBall.class );
 
-		for (AEColor c : AEColor.values())
+		for ( AEColor c : AEColor.values() )
 		{
 			if ( c != AEColor.Transparent )
 			{
@@ -433,6 +444,17 @@ public class Registration
 			}
 		}
 
+		// stairs
+		this.addFeature( SkyStoneStairBlock.class, blocks.blockSkyStone.block(), 0 );
+		this.addFeature( SkyStoneBlockStairBlock.class, blocks.blockSkyStone.block(), 1 );
+		this.addFeature( SkyStoneBrickStairBlock.class, blocks.blockSkyStone.block(), 2 );
+		this.addFeature( SkyStoneSmallBrickStairBlock.class, blocks.blockSkyStone.block(), 3 );
+		this.addFeature( FluixStairBlock.class, blocks.blockFluix.block() );
+		this.addFeature( QuartzStairBlock.class, blocks.blockQuartz.block() );
+		this.addFeature( ChiseledQuartzStairBlock.class, blocks.blockQuartzChiseled.block() );
+		this.addFeature( QuartzPillarStairBlock.class, blocks.blockQuartzPillar.block() );
+
+		// unsupported developer tools
 		addFeature( ToolEraser.class );
 		addFeature( ToolMeteoritePlacer.class );
 		addFeature( ToolDebugCard.class );
@@ -443,96 +465,71 @@ public class Registration
 		addFeature( BlockCubeGenerator.class );
 	}
 
-	private AEItemDefinition addFeature(Class c, Object... Args)
+	private void registerSpatial( boolean force )
 	{
+		if ( !AEConfig.instance.isFeatureEnabled( AEFeature.SpatialIO ) )
+			return;
 
-		try
+		AEConfig config = AEConfig.instance;
+
+		if ( storageBiome == null )
 		{
-			java.lang.reflect.Constructor[] con = c.getConstructors();
-			Object obj = null;
-
-			for (Constructor conItem : con)
+			if ( force && config.storageBiomeID == -1 )
 			{
-				Class paramTypes[] = conItem.getParameterTypes();
-				if ( paramTypes.length == Args.length )
-				{
-					boolean valid = true;
+				config.storageBiomeID = Platform.findEmpty( BiomeGenBase.getBiomeGenArray() );
+				if ( config.storageBiomeID == -1 )
+					throw new RuntimeException( "Biome Array is full, please free up some Biome ID's or disable spatial." );
 
-					for (int idx = 0; idx < paramTypes.length; idx++)
-					{
-						Class cz = Args[idx].getClass();
-						if ( !isClassMatch( paramTypes[idx], cz, Args[idx] ) )
-							valid = false;
-					}
-
-					if ( valid )
-					{
-						obj = conItem.newInstance( Args );
-						break;
-					}
-				}
+				storageBiome = new BiomeGenStorage( config.storageBiomeID );
+				config.save();
 			}
 
-			if ( obj instanceof IAEFeature )
-			{
-				IAEFeature feature = (IAEFeature) obj;
-
-				for (AEFeature f : feature.feature().getFeatures())
-					featuresToEntities.put( f, c );
-
-				feature.feature().register();
-
-				feature.postInit();
-
-				return feature.feature();
-			}
-			else if ( obj == null )
-				throw new RuntimeException( "No valid constructor found." );
-			else
-				throw new RuntimeException( "Non AE Feature Registered" );
-
+			if ( !force && config.storageBiomeID != -1 )
+				storageBiome = new BiomeGenStorage( config.storageBiomeID );
 		}
-		catch (Throwable e)
+
+		if ( config.storageProviderID != -1 )
 		{
-			throw new RuntimeException( "Error with Feature: " + c.getName(), e );
+			DimensionManager.registerProviderType( config.storageProviderID, StorageWorldProvider.class, false );
+		}
+
+		if ( config.storageProviderID == -1 && force )
+		{
+			config.storageProviderID = -11;
+
+			while ( !DimensionManager.registerProviderType( config.storageProviderID, StorageWorldProvider.class, false ) )
+				config.storageProviderID--;
+
+			config.save();
 		}
 	}
 
-	private boolean isClassMatch(Class expected, Class got, Object value)
+	private AEItemDefinition addFeature( Class<? extends IAEFeature> featureClass, Object... args )
 	{
-		if ( value == null && !expected.isPrimitive() )
-			return true;
+		ClassInstantiation<IAEFeature> instantiation = new ClassInstantiation<IAEFeature>( featureClass, args );
+		Optional<IAEFeature> instance = instantiation.get();
 
-		expected = condense( expected, Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class );
-		got = condense( got, Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class );
-
-		if ( expected == got || expected.isAssignableFrom( got ) )
-			return true;
-
-		return false;
-	}
-
-	private Class condense(Class expected, Class... wrappers)
-	{
-		if ( expected.isPrimitive() )
+		if ( instance.isPresent() )
 		{
-			for (Class clz : wrappers)
+			IAEFeature feature = instance.get();
+
+			for ( AEFeature f : feature.handler().getFeatures() )
 			{
-				try
-				{
-					if ( expected == clz.getField( "TYPE" ).get( null ) )
-						return clz;
-				}
-				catch (Throwable t)
-				{
-					AELog.error( t );
-				}
+				this.featuresToEntities.put( f, featureClass );
 			}
+
+			feature.handler().register();
+			feature.postInit();
+
+			return feature.handler().getDefinition();
 		}
-		return expected;
+		else
+		{
+			throw new RuntimeException( "Error with Feature: " + featureClass.getName() );
+		}
 	}
 
-	public void Init(FMLInitializationEvent event)
+	public void Init( FMLInitializationEvent event )
 	{
 		// Perform ore camouflage!
 		ItemMultiMaterial.instance.makeUnique();
@@ -600,19 +597,19 @@ public class Registration
 			CraftingManager.getInstance().getRecipeList().add( new FacadeRecipe() );
 	}
 
-	public void PostInit(FMLPostInitializationEvent event)
+	public void PostInit( FMLPostInitializationEvent event )
 	{
 		registerSpatial( true );
 
 		// default settings..
-		((P2PTunnelRegistry) AEApi.instance().registries().p2pTunnel()).configure();
+		( ( P2PTunnelRegistry ) AEApi.instance().registries().p2pTunnel() ).configure();
 
 		// add to localization..
 		PlayerMessages.values();
 		GuiText.values();
 
 		Api.instance.partHelper.initFMPSupport();
-		((BlockCableBus) AEApi.instance().blocks().blockMultiPart.block()).setupTile();
+		( ( BlockCableBus ) AEApi.instance().blocks().blockMultiPart.block() ).setupTile();
 
 		// Interface
 		Upgrades.CRAFTING.registerItem( AEApi.instance().parts().partInterface.stack( 1 ), 1 );
@@ -679,7 +676,7 @@ public class Registration
 		// Inscriber
 		Upgrades.SPEED.registerItem( AEApi.instance().blocks().blockInscriber.stack( 1 ), 3 );
 
-		AEApi.instance().registries().wireless().registerWirelessHandler( (IWirelessTermHandler) AEApi.instance().items().itemWirelessTerminal.item() );
+		AEApi.instance().registries().wireless().registerWirelessHandler( ( IWirelessTermHandler ) AEApi.instance().items().itemWirelessTerminal.item() );
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.ChestLoot ) )
 		{
@@ -738,19 +735,19 @@ public class Registration
 		/**
 		 * world gen
 		 */
-		for (WorldGenType type : WorldGenType.values())
+		for ( WorldGenType type : WorldGenType.values() )
 		{
 			AEApi.instance().registries().worldgen().disableWorldGenForProviderID( type, StorageWorldProvider.class );
 
-			//nether
+			// nether
 			AEApi.instance().registries().worldgen().disableWorldGenForDimension( type, -1 );
 
-			//end
+			// end
 			AEApi.instance().registries().worldgen().disableWorldGenForDimension( type, 1 );
 		}
 
-		//whitelist from config
-		for(int dimension : AEConfig.instance.meteoriteDimensionWhitelist)
+		// whitelist from config
+		for ( int dimension : AEConfig.instance.meteoriteDimensionWhitelist )
 		{
 			AEApi.instance().registries().worldgen().enableWorldGenForDimension( WorldGenType.Meteorites, dimension );
 		}
@@ -759,45 +756,6 @@ public class Registration
 		 * initial recipe bake, if ore dictionary changes after this it re-bakes.
 		 */
 		OreDictionaryHandler.instance.bakeRecipes();
-	}
-
-	private void registerSpatial(boolean force)
-	{
-		if ( !AEConfig.instance.isFeatureEnabled( AEFeature.SpatialIO ) )
-			return;
-
-		AEConfig config = AEConfig.instance;
-
-		if ( storageBiome == null )
-		{
-			if ( force && config.storageBiomeID == -1 )
-			{
-				config.storageBiomeID = Platform.findEmpty( BiomeGenBase.getBiomeGenArray() );
-				if ( config.storageBiomeID == -1 )
-					throw new RuntimeException( "Biome Array is full, please free up some Biome ID's or disable spatial." );
-
-				storageBiome = new BiomeGenStorage( config.storageBiomeID );
-				config.save();
-			}
-
-			if ( !force && config.storageBiomeID != -1 )
-				storageBiome = new BiomeGenStorage( config.storageBiomeID );
-		}
-
-		if ( config.storageProviderID != -1 )
-		{
-			DimensionManager.registerProviderType( config.storageProviderID, StorageWorldProvider.class, false );
-		}
-
-		if ( config.storageProviderID == -1 && force )
-		{
-			config.storageProviderID = -11;
-
-			while (!DimensionManager.registerProviderType( config.storageProviderID, StorageWorldProvider.class, false ))
-				config.storageProviderID--;
-
-			config.save();
-		}
 	}
 
 }

@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.entity.player.EntityPlayer;
@@ -97,7 +99,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 	public ToolColorApplicator()
 	{
-		super( ToolColorApplicator.class, null );
+		super( ToolColorApplicator.class, Optional.<String> absent() );
 		setFeature( EnumSet.of( AEFeature.ColorApplicator, AEFeature.PoweredTools ) );
 		maxStoredPower = AEConfig.instance.colorApplicatorBattery;
 		if ( Platform.isClient() )
@@ -109,125 +111,6 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	{
 		super.postInit();
 		BlockDispenser.dispenseBehaviorRegistry.putObject( this, new DispenserBlockTool() );
-	}
-
-	public ItemStack getColor( ItemStack is )
-	{
-		NBTTagCompound c = is.getTagCompound();
-		if ( c != null && c.hasKey( "color" ) )
-		{
-			NBTTagCompound color = c.getCompoundTag( "color" );
-			ItemStack oldColor = ItemStack.loadItemStackFromNBT( color );
-			if ( oldColor != null )
-				return oldColor;
-		}
-
-		return findNextColor( is, null, 0 );
-	}
-
-	public AEColor getColorFromItem( ItemStack paintBall )
-	{
-		if ( paintBall == null )
-			return null;
-
-		if ( paintBall.getItem() instanceof ItemSnowball )
-			return AEColor.Transparent;
-
-		if ( paintBall.getItem() instanceof ItemPaintBall )
-		{
-			ItemPaintBall ipb = ( ItemPaintBall ) paintBall.getItem();
-			return ipb.getColor( paintBall );
-		}
-		else
-		{
-			int[] id = OreDictionary.getOreIDs( paintBall );
-
-			for ( int oreID : id )
-			{
-				if ( oreToColor.containsKey( oreID ) )
-					return oreToColor.get( oreID );
-			}
-		}
-
-		return null;
-	}
-
-	public AEColor getActiveColor( ItemStack tol )
-	{
-		return getColorFromItem( getColor( tol ) );
-	}
-
-	private ItemStack findNextColor( ItemStack is, ItemStack anchor, int scrollOffset )
-	{
-		ItemStack newColor = null;
-
-		IMEInventory<IAEItemStack> inv = AEApi.instance().registries().cell().getCellInventory( is, null, StorageChannel.ITEMS );
-		if ( inv != null )
-		{
-			IItemList<IAEItemStack> itemList = inv.getAvailableItems( AEApi.instance().storage().createItemList() );
-			if ( anchor == null )
-			{
-				IAEItemStack firstItem = itemList.getFirstItem();
-				if ( firstItem != null )
-					newColor = firstItem.getItemStack();
-			}
-			else
-			{
-				LinkedList<IAEItemStack> list = new LinkedList<IAEItemStack>();
-
-				for ( IAEItemStack i : itemList )
-					list.add( i );
-
-				Collections.sort( list, new Comparator<IAEItemStack>(){
-
-					@Override
-					public int compare( IAEItemStack a, IAEItemStack b )
-					{
-						return ItemSorters.compareInt( a.getItemDamage(), b.getItemDamage() );
-					}
-
-				} );
-
-				if ( list.size() <= 0 )
-					return null;
-
-				IAEItemStack where = list.getFirst();
-				int cycles = 1 + list.size();
-
-				while ( cycles > 0 && !where.equals( anchor ) )
-				{
-					list.addLast( list.removeFirst() );
-					cycles--;
-					where = list.getFirst();
-				}
-
-				if ( scrollOffset > 0 )
-					list.addLast( list.removeFirst() );
-
-				if ( scrollOffset < 0 )
-					list.addFirst( list.removeLast() );
-
-				return list.get( 0 ).getItemStack();
-			}
-		}
-
-		if ( newColor != null )
-			setColor( is, newColor );
-
-		return newColor;
-	}
-
-	public void setColor( ItemStack is, ItemStack newColor )
-	{
-		NBTTagCompound data = Platform.openNbtData( is );
-		if ( newColor == null )
-			data.removeTag( "color" );
-		else
-		{
-			NBTTagCompound color = new NBTTagCompound();
-			newColor.writeToNBT( color );
-			data.setTag( "color", color );
-		}
 	}
 
 	@Override
@@ -309,6 +192,138 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		return false;
 	}
 
+	@Override
+	public String getItemStackDisplayName( ItemStack par1ItemStack )
+	{
+		String extra = GuiText.Empty.getLocal();
+
+		AEColor selected = getActiveColor( par1ItemStack );
+
+		if ( selected != null && Platform.isClient() )
+			extra = Platform.gui_localize( selected.unlocalizedName );
+
+		return super.getItemStackDisplayName( par1ItemStack ) + " - " + extra;
+	}
+
+	public AEColor getActiveColor( ItemStack tol )
+	{
+		return getColorFromItem( getColor( tol ) );
+	}
+
+	public AEColor getColorFromItem( ItemStack paintBall )
+	{
+		if ( paintBall == null )
+			return null;
+
+		if ( paintBall.getItem() instanceof ItemSnowball )
+			return AEColor.Transparent;
+
+		if ( paintBall.getItem() instanceof ItemPaintBall )
+		{
+			ItemPaintBall ipb = ( ItemPaintBall ) paintBall.getItem();
+			return ipb.getColor( paintBall );
+		}
+		else
+		{
+			int[] id = OreDictionary.getOreIDs( paintBall );
+
+			for ( int oreID : id )
+			{
+				if ( oreToColor.containsKey( oreID ) )
+					return oreToColor.get( oreID );
+			}
+		}
+
+		return null;
+	}
+
+	public ItemStack getColor( ItemStack is )
+	{
+		NBTTagCompound c = is.getTagCompound();
+		if ( c != null && c.hasKey( "color" ) )
+		{
+			NBTTagCompound color = c.getCompoundTag( "color" );
+			ItemStack oldColor = ItemStack.loadItemStackFromNBT( color );
+			if ( oldColor != null )
+				return oldColor;
+		}
+
+		return findNextColor( is, null, 0 );
+	}
+
+	private ItemStack findNextColor( ItemStack is, ItemStack anchor, int scrollOffset )
+	{
+		ItemStack newColor = null;
+
+		IMEInventory<IAEItemStack> inv = AEApi.instance().registries().cell().getCellInventory( is, null, StorageChannel.ITEMS );
+		if ( inv != null )
+		{
+			IItemList<IAEItemStack> itemList = inv.getAvailableItems( AEApi.instance().storage().createItemList() );
+			if ( anchor == null )
+			{
+				IAEItemStack firstItem = itemList.getFirstItem();
+				if ( firstItem != null )
+					newColor = firstItem.getItemStack();
+			}
+			else
+			{
+				LinkedList<IAEItemStack> list = new LinkedList<IAEItemStack>();
+
+				for ( IAEItemStack i : itemList )
+					list.add( i );
+
+				Collections.sort( list, new Comparator<IAEItemStack>(){
+
+					@Override
+					public int compare( IAEItemStack a, IAEItemStack b )
+					{
+						return ItemSorters.compareInt( a.getItemDamage(), b.getItemDamage() );
+					}
+
+				} );
+
+				if ( list.size() <= 0 )
+					return null;
+
+				IAEItemStack where = list.getFirst();
+				int cycles = 1 + list.size();
+
+				while ( cycles > 0 && !where.equals( anchor ) )
+				{
+					list.addLast( list.removeFirst() );
+					cycles--;
+					where = list.getFirst();
+				}
+
+				if ( scrollOffset > 0 )
+					list.addLast( list.removeFirst() );
+
+				if ( scrollOffset < 0 )
+					list.addFirst( list.removeLast() );
+
+				return list.get( 0 ).getItemStack();
+			}
+		}
+
+		if ( newColor != null )
+			setColor( is, newColor );
+
+		return newColor;
+	}
+
+	public void setColor( ItemStack is, ItemStack newColor )
+	{
+		NBTTagCompound data = Platform.openNbtData( is );
+		if ( newColor == null )
+			data.removeTag( "color" );
+		else
+		{
+			NBTTagCompound color = new NBTTagCompound();
+			newColor.writeToNBT( color );
+			data.setTag( "color", color );
+		}
+	}
+
 	private boolean recolourBlock( Block blk, ForgeDirection side, World w, int x, int y, int z, ForgeDirection orientation, AEColor newColor, EntityPlayer p )
 	{
 		if ( blk == Blocks.carpet )
@@ -374,19 +389,6 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		{
 			setColor( is, findNextColor( is, paintBall, i ) );
 		}
-	}
-
-	@Override
-	public String getItemStackDisplayName( ItemStack par1ItemStack )
-	{
-		String extra = GuiText.Empty.getLocal();
-
-		AEColor selected = getActiveColor( par1ItemStack );
-
-		if ( selected != null && Platform.isClient() )
-			extra = Platform.gui_localize( selected.unlocalizedName );
-
-		return super.getItemStackDisplayName( par1ItemStack ) + " - " + extra;
 	}
 
 	@Override
@@ -459,6 +461,24 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	}
 
 	@Override
+	public double getIdleDrain()
+	{
+		return 0.5;
+	}
+
+	@Override
+	public String getUnlocalizedGroupName( Set<ItemStack> others, ItemStack is )
+	{
+		return GuiText.StorageCells.getUnlocalized();
+	}
+
+	@Override
+	public boolean isEditable( ItemStack is )
+	{
+		return true;
+	}
+
+	@Override
 	public IInventory getUpgradesInventory( ItemStack is )
 	{
 		return new CellUpgrades( is, 2 );
@@ -485,27 +505,9 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	}
 
 	@Override
-	public String getUnlocalizedGroupName( Set<ItemStack> others, ItemStack is )
-	{
-		return GuiText.StorageCells.getUnlocalized();
-	}
-
-	@Override
 	public void setFuzzyMode( ItemStack is, FuzzyMode fzMode )
 	{
 		Platform.openNbtData( is ).setString( "FuzzyMode", fzMode.name() );
-	}
-
-	@Override
-	public boolean isEditable( ItemStack is )
-	{
-		return true;
-	}
-
-	@Override
-	public double getIdleDrain()
-	{
-		return 0.5;
 	}
 
 	@Override

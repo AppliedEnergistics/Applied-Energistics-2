@@ -16,49 +16,21 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.items.tools.quartz;
+package appeng.block.stair;
 
 
 import java.util.EnumSet;
 
-import com.google.common.base.Optional;
+import net.minecraft.block.Block;
 
-import net.minecraft.item.ItemAxe;
-import net.minecraft.item.ItemStack;
-
+import appeng.block.AEBaseStairBlock;
 import appeng.core.features.AEFeature;
-import appeng.core.features.IAEFeature;
-import appeng.core.features.IFeatureHandler;
-import appeng.core.features.ItemFeatureHandler;
-import appeng.util.Platform;
 
 
-public class ToolQuartzAxe extends ItemAxe implements IAEFeature
+public class SkyStoneStairBlock extends AEBaseStairBlock
 {
-	private final AEFeature type;
-	private final IFeatureHandler feature;
-
-	public ToolQuartzAxe( AEFeature Type )
+	public SkyStoneStairBlock( Block block, Integer meta )
 	{
-		super( ToolMaterial.IRON );
-		this.feature = new ItemFeatureHandler( EnumSet.of( type = Type, AEFeature.QuartzAxe ), this, this, Optional.of( Type.name() ) );
-	}
-
-	@Override
-	public IFeatureHandler handler()
-	{
-		return this.feature;
-	}
-
-	@Override
-	public void postInit()
-	{
-		// override!
-	}
-
-	@Override
-	public boolean getIsRepairable( ItemStack a, ItemStack b )
-	{
-		return Platform.canRepair( type, a, b );
+		super( block, meta, EnumSet.of( AEFeature.Core ) );
 	}
 }

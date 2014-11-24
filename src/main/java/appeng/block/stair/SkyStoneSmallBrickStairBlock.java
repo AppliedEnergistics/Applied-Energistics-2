@@ -16,22 +16,21 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.block.solids;
+package appeng.block.stair;
 
 
 import java.util.EnumSet;
 
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Block;
 
-import appeng.block.AEDecorativeBlock;
+import appeng.block.AEBaseStairBlock;
 import appeng.core.features.AEFeature;
 
 
-public class BlockFluix extends AEDecorativeBlock
+public class SkyStoneSmallBrickStairBlock extends AEBaseStairBlock
 {
-	public BlockFluix()
+	public SkyStoneSmallBrickStairBlock( Block block, int meta )
 	{
-		super( BlockFluix.class, Material.rock );
-		setFeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
+		super( block, meta, EnumSet.of( AEFeature.Core ) );
 	}
 }

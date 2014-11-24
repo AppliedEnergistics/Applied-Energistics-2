@@ -16,22 +16,28 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.block.solids;
+package appeng.core.features;
 
 
-import java.util.EnumSet;
+import net.minecraft.tileentity.TileEntity;
 
-import net.minecraft.block.material.Material;
-
-import appeng.block.AEDecorativeBlock;
-import appeng.core.features.AEFeature;
+import appeng.block.AEBaseBlock;
 
 
-public class BlockFluix extends AEDecorativeBlock
+public class AEBlockDefinition extends BlockDefinition
 {
-	public BlockFluix()
+	private final AEBaseBlock block;
+
+	public AEBlockDefinition( AEBaseBlock block, boolean enabled )
 	{
-		super( BlockFluix.class, Material.rock );
-		setFeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
+		super( block, enabled );
+
+		this.block = block;
+	}
+
+	@Override
+	public Class<? extends TileEntity> entity()
+	{
+		return this.block.getTileEntityClass();
 	}
 }

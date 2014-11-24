@@ -18,14 +18,18 @@
 
 package appeng.items.tools.powered;
 
+
 import java.util.EnumSet;
 import java.util.List;
+
+import com.google.common.base.Optional;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
 import appeng.api.AEApi;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -41,24 +45,26 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
+
 public class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler
 {
 
-	public ToolWirelessTerminal() {
-		super( ToolWirelessTerminal.class, null );
+	public ToolWirelessTerminal()
+	{
+		super( ToolWirelessTerminal.class, Optional.<String> absent() );
 		setFeature( EnumSet.of( AEFeature.WirelessAccessTerminal, AEFeature.PoweredTools ) );
 		maxStoredPower = AEConfig.instance.wirelessTerminalBattery;
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack item, World w, EntityPlayer player)
+	public ItemStack onItemRightClick( ItemStack item, World w, EntityPlayer player )
 	{
 		AEApi.instance().registries().wireless().openWirelessTerminalGui( item, w, player );
 		return item;
 	}
 
 	@Override
-	public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
+	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
 		super.addCheckedInformation( stack, player, lines, displayAdditionalInformation );
 
@@ -80,45 +86,30 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	}
 
 	@Override
-	public boolean canHandle(ItemStack is)
+	public boolean canHandle( ItemStack is )
 	{
 		return AEApi.instance().items().itemWirelessTerminal.sameAsStack( is );
 	}
 
 	@Override
-	public boolean usePower(EntityPlayer player, double amount, ItemStack is)
+	public boolean usePower( EntityPlayer player, double amount, ItemStack is )
 	{
 		return this.extractAEPower( is, amount ) >= amount - 0.5;
 	}
 
 	@Override
-	public boolean hasPower(EntityPlayer player, double amt, ItemStack is)
+	public boolean hasPower( EntityPlayer player, double amt, ItemStack is )
 	{
 		return getAECurrentPower( is ) >= amt;
 	}
 
 	@Override
-	public String getEncryptionKey(ItemStack item)
+	public IConfigManager getConfigManager( final ItemStack target )
 	{
-		NBTTagCompound tag = Platform.openNbtData( item );
-		return tag.getString( "encryptionKey" );
-	}
-
-	@Override
-	public void setEncryptionKey(ItemStack item, String encKey, String name)
-	{
-		NBTTagCompound tag = Platform.openNbtData( item );
-		tag.setString( "encryptionKey", encKey );
-		tag.setString( "name", name );
-	}
-
-	@Override
-	public IConfigManager getConfigManager(final ItemStack target)
-	{
-		final ConfigManager out = new ConfigManager( new IConfigManagerHost() {
+		final ConfigManager out = new ConfigManager( new IConfigManagerHost(){
 
 			@Override
-			public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
+			public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
 			{
 				NBTTagCompound data = Platform.openNbtData( target );
 				manager.writeToNBT( data );
@@ -130,8 +121,23 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 		out.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
 		out.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 
-		out.readFromNBT( (NBTTagCompound) Platform.openNbtData( target ).copy() );
+		out.readFromNBT( ( NBTTagCompound ) Platform.openNbtData( target ).copy() );
 		return out;
+	}
+
+	@Override
+	public String getEncryptionKey( ItemStack item )
+	{
+		NBTTagCompound tag = Platform.openNbtData( item );
+		return tag.getString( "encryptionKey" );
+	}
+
+	@Override
+	public void setEncryptionKey( ItemStack item, String encKey, String name )
+	{
+		NBTTagCompound tag = Platform.openNbtData( item );
+		tag.setString( "encryptionKey", encKey );
+		tag.setString( "name", name );
 	}
 
 }

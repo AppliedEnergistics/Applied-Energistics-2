@@ -16,22 +16,21 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.block.solids;
+package appeng.core.features;
 
 
 import java.util.EnumSet;
 
-import net.minecraft.block.material.Material;
-
-import appeng.block.AEDecorativeBlock;
-import appeng.core.features.AEFeature;
+import appeng.api.util.AEItemDefinition;
 
 
-public class BlockFluix extends AEDecorativeBlock
+public interface IFeatureHandler
 {
-	public BlockFluix()
-	{
-		super( BlockFluix.class, Material.rock );
-		setFeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
-	}
+	boolean isFeatureAvailable();
+
+	EnumSet<AEFeature> getFeatures();
+
+	AEItemDefinition getDefinition();
+
+	void register();
 }
