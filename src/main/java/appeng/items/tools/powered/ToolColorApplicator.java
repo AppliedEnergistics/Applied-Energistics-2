@@ -102,6 +102,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		super( ToolColorApplicator.class, Optional.<String> absent() );
 		setFeature( EnumSet.of( AEFeature.ColorApplicator, AEFeature.PoweredTools ) );
 		maxStoredPower = AEConfig.instance.colorApplicatorBattery;
+		setFull3D();
 		if ( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, new ToolColorApplicatorRender() );
 	}
