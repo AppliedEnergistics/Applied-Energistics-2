@@ -24,12 +24,13 @@ import java.util.List;
 
 import com.google.common.base.Optional;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-
 import appeng.api.AEApi;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -56,6 +57,13 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 		maxStoredPower = AEConfig.instance.wirelessTerminalBattery;
 	}
 
+	@SideOnly(Side.CLIENT)
+	@Override
+	public boolean isFull3D()
+	{
+		return false;
+	}
+	
 	@Override
 	public ItemStack onItemRightClick( ItemStack item, World w, EntityPlayer player )
 	{

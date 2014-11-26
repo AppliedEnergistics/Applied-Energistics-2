@@ -25,12 +25,13 @@ import java.util.Set;
 
 import com.google.common.base.Optional;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.guiobjects.IGuiItem;
@@ -63,6 +64,13 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 		maxStoredPower = AEConfig.instance.portableCellBattery;
 	}
 
+	@SideOnly(Side.CLIENT)
+	@Override
+	public boolean isFull3D()
+	{
+		return false;
+	}
+	
 	@Override
 	public ItemStack onItemRightClick( ItemStack item, World w, EntityPlayer player )
 	{
