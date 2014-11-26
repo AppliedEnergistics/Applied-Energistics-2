@@ -1,6 +1,6 @@
 # Applied Energistics 2
 
-## Table of Content
+## Table of Contents
 
 * [About](#about)
 * [Contacts](#contacts)
@@ -14,7 +14,7 @@
 
 ## About
 
-A Mod about Matter, Energy and using them to conquer the world..
+A Mod about Matter, Energy and using them to conquer the world.
 
 ## Contacts
 
@@ -30,13 +30,15 @@ Applied Energistics 2 is (c) 2013 - 2014 AlgorithmX2 and licensed under LGPL v3.
 
 Downloads can be found on [CurseForge](http://www.curse.com/mc-mods/minecraft/223794-applied-energistics-2) or on the [official website](http://ae-mod.info/Downloads/).
 
+Applied Energistics 2 requires Minecraft Forge. Download it at the [Forge website] (http://files.minecraftforge.net).
+
 ## Installation
 
-You install this mod by putting it into the `minecraft/mods/` folder. It has no additional hard dependencies.
+You install this mod by putting the .jar file into the `minecraft/mods/` folder. It has no additional hard dependencies.
 
 ## Issues
 
-Applied Energistics 2 crashing, have a suggestion, found a bug?  Create an issue now!
+Applied Energistics 2 crashing, have a suggestion, or found a bug?  Create an issue now!
 
 1. Make sure your issue hasn't already been answered or fixed.  Also think about whether your issue is a valid one before submitting it.
 2. Go to [the issues page](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues)
@@ -70,7 +72,7 @@ Applied Energistics 2 crashing, have a suggestion, found a bug?  Create an issue
 
 ## Contribution
 
-Before you want to add major changes, you might want to discuss them with us first, before wasting your time.
+Before you want to add any major changes, you might want to discuss them with us first, before wasting your time.
 If you are still willing to contribute to this project, you can contribute via [Pull-Request](https://help.github.com/articles/creating-a-pull-request).
 
 Here are a few things to keep in mind that will help get your PR approved.
@@ -95,7 +97,7 @@ Getting Started
 6. Push to your fork `git push`
 7. Create a Pull-Request on GitHub
 
-If you are only doing single file pull requests, GitHub supports using a quick way without the need of cloning your fork. Also read up about [synching](https://help.github.com/articles/syncing-a-fork) if you plan to contribute on regular basis.
+If you are only doing single file pull requests, GitHub supports using a quick way without the need of cloning your fork. Also read up about [syncing](https://help.github.com/articles/syncing-a-fork) if you plan on contributing on a regular basis.
 
 ## Credits
 
@@ -103,5 +105,5 @@ Thanks to
  
 * Notch et al for Minecraft
 * Lex et al for MinecraftForge
-* AlgorithmX2 for AppliedEnergistics2
-* all [contributors](https://github.com/AppliedEnergistics/Applied-Energistics-2/graphs/contributors) helping making this mod.
+* AlgorithmX2 for Applied Energistics 2
+* All the [contributors](https://github.com/AppliedEnergistics/Applied-Energistics-2/graphs/contributors) who help make this mod possible.
