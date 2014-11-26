@@ -345,7 +345,10 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	@Override
 	protected void mouseClicked(int xCoord, int yCoord, int btn)
 	{
-		searchField.mouseClicked( xCoord, yCoord, btn );
+		Enum searchMode = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
+
+		if ( searchMode != SearchBoxMode.AUTOSEARCH && searchMode != SearchBoxMode.NEI_AUTOSEARCH )
+			searchField.mouseClicked( xCoord, yCoord, btn );
 
 		if ( btn == 1 && searchField.isMouseIn( xCoord, yCoord ) )
 		{
