@@ -49,6 +49,7 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 		super( c, subName );
 		setMaxDamage( 32 );
 		hasSubtypes = false;
+		setFull3D();
 	}
 
 	@Override
