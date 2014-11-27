@@ -31,14 +31,14 @@ package appeng.core.api.imc;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
-import appeng.core.api.IIMCHandler;
+import appeng.core.api.IIMCProcessor;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 
-public class IMCP2PAttunement implements IIMCHandler
+public class IMCP2PAttunement implements IIMCProcessor
 {
 
 	@Override
-	public void post(IMCMessage m)
+	public void process( IMCMessage m )
 	{
 		String key = m.key.substring( "add-p2p-attunement-".length() ).replace( '-', '_' ).toUpperCase();
 

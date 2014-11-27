@@ -33,14 +33,14 @@ package appeng.core.api.imc;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.AEApi;
-import appeng.core.api.IIMCHandler;
+import appeng.core.api.IIMCProcessor;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 
-public class IMCMatterCannon implements IIMCHandler
+public class IMCMatterCannon implements IIMCProcessor
 {
 
 	@Override
-	public void post(IMCMessage m)
+	public void process( IMCMessage m )
 	{
 		NBTTagCompound msg = m.getNBTValue();
 		NBTTagCompound item = (NBTTagCompound) msg.getTag( "item" );

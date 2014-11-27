@@ -25,14 +25,14 @@ package appeng.core.api.imc;
 
 import appeng.api.AEApi;
 import appeng.core.AELog;
-import appeng.core.api.IIMCHandler;
+import appeng.core.api.IIMCProcessor;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 
-public class IMCSpatial implements IIMCHandler
+public class IMCSpatial implements IIMCProcessor
 {
 
 	@Override
-	public void post(IMCMessage m)
+	public void process( IMCMessage m )
 	{
 
 		try

@@ -22,14 +22,14 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.core.AELog;
-import appeng.core.api.IIMCHandler;
+import appeng.core.api.IIMCProcessor;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 
-public class IMCBlackListSpatial implements IIMCHandler
+public class IMCBlackListSpatial implements IIMCProcessor
 {
 
 	@Override
-	public void post(IMCMessage m)
+	public void process( IMCMessage m )
 	{
 
 		ItemStack is = m.getItemStackValue();
