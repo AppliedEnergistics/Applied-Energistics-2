@@ -21,10 +21,6 @@ package appeng.core;
 
 import java.lang.reflect.Field;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -40,6 +36,10 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.VillagerRegistry;
+
+import com.google.common.base.Optional;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
@@ -210,16 +210,16 @@ import appeng.util.Platform;
 
 public class Registration
 {
-
 	final public static Registration instance = new Registration();
 
-	public final RecipeHandler recipeHandler;
-	final private Multimap<AEFeature, Class> featuresToEntities = ArrayListMultimap.create();
+	private final RecipeHandler recipeHandler;
+	private final Multimap<AEFeature, Class<? extends IAEFeature>> featuresToEntities;
 	public BiomeGenBase storageBiome;
 
 	private Registration()
 	{
 		recipeHandler = new RecipeHandler();
+		featuresToEntities = ArrayListMultimap.create();
 	}
 
 	public void PreInit( FMLPreInitializationEvent event )
@@ -251,14 +251,14 @@ public class Registration
 
 		MinecraftForge.EVENT_BUS.register( OreDictionaryHandler.instance );
 
-		Items items = appeng.core.Api.instance.items();
-		Materials materials = appeng.core.Api.instance.materials();
-		Parts parts = appeng.core.Api.instance.parts();
-		Blocks blocks = appeng.core.Api.instance.blocks();
+		Items items = Api.instance.items();
+		Materials materials = Api.instance.materials();
+		Parts parts = Api.instance.parts();
+		Blocks blocks = Api.instance.blocks();
 
 		AEItemDefinition materialItem = addFeature( ItemMultiMaterial.class );
 
-		Class materialClass = materials.getClass();
+		Class<?> materialClass = materials.getClass();
 		for ( MaterialType mat : MaterialType.values() )
 		{
 			try
@@ -284,7 +284,7 @@ public class Registration
 
 		AEItemDefinition partItem = addFeature( ItemMultiPart.class );
 
-		Class partClass = parts.getClass();
+		Class<?> partClass = parts.getClass();
 		for ( PartType type : PartType.values() )
 		{
 			try
@@ -294,7 +294,7 @@ public class Registration
 				else
 				{
 					Field f = partClass.getField( "part" + type.name() );
-					Enum variants[] = type.getVariants();
+					Enum<AEColor>[] variants = type.getVariants();
 					if ( variants == null )
 					{
 						ItemStackSrc is = ( ( ItemMultiPart ) partItem.item() ).createPart( type, null );
@@ -309,7 +309,7 @@ public class Registration
 						{
 							ColoredItemDefinition def = new ColoredItemDefinition();
 
-							for ( Enum v : variants )
+							for ( Enum<AEColor> v : variants )
 							{
 								ItemStackSrc is = ( ( ItemMultiPart ) partItem.item() ).createPart( type, v );
 								if ( is != null )
@@ -757,5 +757,4 @@ public class Registration
 		 */
 		OreDictionaryHandler.instance.bakeRecipes();
 	}
-
 }
