@@ -18,6 +18,7 @@
 
 apply plugin: 'forge'
 
+apply from: 'gradle/scripts/idea.gradle'
 apply from: 'gradle/scripts/propertyloader.gradle'
 apply from: 'gradle/scripts/dependencies.gradle'
 apply from: 'gradle/scripts/artifacts.gradle'
