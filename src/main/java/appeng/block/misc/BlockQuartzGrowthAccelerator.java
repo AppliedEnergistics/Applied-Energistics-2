@@ -21,6 +21,7 @@ package appeng.block.misc;
 import java.util.EnumSet;
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.IBlockAccess;
@@ -46,6 +47,7 @@ public class BlockQuartzGrowthAccelerator extends AEBaseBlock implements IOrient
 
 	public BlockQuartzGrowthAccelerator() {
 		super( BlockQuartzGrowthAccelerator.class, Material.rock );
+		setStepSound( Block.soundTypeMetal );
 		setFeature( EnumSet.of( AEFeature.Core ) );
 		setTileEntity( TileQuartzGrowthAccelerator.class );
 	}
