@@ -63,7 +63,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	{
 		return false;
 	}
-	
+
 	@Override
 	public ItemStack onItemRightClick( ItemStack item, World w, EntityPlayer player )
 	{
@@ -102,12 +102,20 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	@Override
 	public boolean usePower( EntityPlayer player, double amount, ItemStack is )
 	{
-		return this.extractAEPower( is, amount ) >= amount - 0.5;
+		if( !player.capabilities.isCreativeMode )
+		{
+			return this.extractAEPower( is, amount ) >= amount - 0.5;
+		}
+		return false;
 	}
 
 	@Override
 	public boolean hasPower( EntityPlayer player, double amt, ItemStack is )
 	{
+		if(player.capabilities.isCreativeMode )
+		{
+			return true;
+		}
 		return getAECurrentPower( is ) >= amt;
 	}
 

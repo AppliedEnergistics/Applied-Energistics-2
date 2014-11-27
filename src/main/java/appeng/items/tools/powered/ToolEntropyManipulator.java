@@ -198,12 +198,19 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	@Override
 	public boolean hitEntity( ItemStack item, EntityLivingBase target, EntityLivingBase hitter )
 	{
-		if ( this.getAECurrentPower( item ) > 1600 )
+		if( hitter instanceof EntityPlayer )
 		{
-			extractAEPower( item, 1600 );
-			target.setFire( 8 );
-		}
+			EntityPlayer playerHitter = ( EntityPlayer ) hitter;
+			if ( this.getAECurrentPower( item ) > 1600 || playerHitter.capabilities.isCreativeMode )
+			{
+				if( !playerHitter.capabilities.isCreativeMode )
+				{
+					extractAEPower( item, 1600 );
+				}
+				target.setFire( 8 );
+			}
 
+		}
 		return false;
 	}
 
@@ -238,7 +245,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	@Override
 	public boolean onItemUse( ItemStack item, EntityPlayer p, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
-		if ( this.getAECurrentPower( item ) > 1600 )
+		if ( this.getAECurrentPower( item ) > 1600 || p.capabilities.isCreativeMode )
 		{
 			if ( !p.canPlayerEdit( x, y, z, side, item ) )
 				return false;
@@ -250,7 +257,10 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			{
 				if ( canCool( Blk, Metadata ) )
 				{
-					extractAEPower( item, 1600 );
+					if( !p.capabilities.isCreativeMode )
+					{
+						extractAEPower( item, 1600 );
+					}
 					cool( Blk, Metadata, w, x, y, z );
 					return true;
 				}
@@ -273,7 +283,10 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 				if ( canHeat( Blk, Metadata ) )
 				{
-					extractAEPower( item, 1600 );
+					if( !p.capabilities.isCreativeMode )
+					{
+						extractAEPower( item, 1600 );
+					}
 					heat( Blk, Metadata, w, x, y, z );
 					return true;
 				}
@@ -308,7 +321,10 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 				if ( hasFurnaceable && canFurnaceable )
 				{
-					extractAEPower( item, 1600 );
+					if( !p.capabilities.isCreativeMode )
+					{
+						extractAEPower( item, 1600 );
+					}
 					InWorldToolOperationResult or = InWorldToolOperationResult.getBlockOperationResult( out.toArray( new ItemStack[out.size()] ) );
 					w.playSoundEffect( x + 0.5D, y + 0.5D, z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
 
@@ -340,7 +356,10 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 					if ( w.isAirBlock( x, y, z ) )
 					{
-						extractAEPower( item, 1600 );
+						if( !p.capabilities.isCreativeMode )
+						{
+							extractAEPower( item, 1600 );
+						}
 						w.playSoundEffect( x + 0.5D, y + 0.5D, z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
 						w.setBlock( x, y, z, Blocks.fire );
 					}
