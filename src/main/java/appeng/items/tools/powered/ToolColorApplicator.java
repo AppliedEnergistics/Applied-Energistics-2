@@ -144,12 +144,15 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				// clean cables.
 				if ( te instanceof IColorableTile )
 				{
-					if ( getAECurrentPower( is ) > powerPerUse && ( ( IColorableTile ) te ).getColor() != AEColor.Transparent )
+					if ( ( getAECurrentPower( is ) > powerPerUse || p.capabilities.isCreativeMode ) && ( ( IColorableTile ) te ).getColor() != AEColor.Transparent )
 					{
 						if ( ( ( IColorableTile ) te ).recolourBlock( orientation, AEColor.Transparent, p ) )
 						{
 							inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
-							extractAEPower( is, powerPerUse );
+							if( !p.capabilities.isCreativeMode )
+							{
+								extractAEPower( is, powerPerUse );
+							}
 							return true;
 						}
 					}
@@ -158,10 +161,13 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				// clean paint balls..
 				Block testBlk = w.getBlock( x + orientation.offsetX, y + orientation.offsetY, z + orientation.offsetZ );
 				TileEntity painted = w.getTileEntity( x + orientation.offsetX, y + orientation.offsetY, z + orientation.offsetZ );
-				if ( getAECurrentPower( is ) > powerPerUse && testBlk instanceof BlockPaint && painted instanceof TilePaint )
+				if ( ( getAECurrentPower( is ) > powerPerUse || p.capabilities.isCreativeMode ) && testBlk instanceof BlockPaint && painted instanceof TilePaint )
 				{
 					inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
-					extractAEPower( is, powerPerUse );
+					if( !p.capabilities.isCreativeMode )
+					{
+						extractAEPower( is, powerPerUse );
+					}
 					( ( TilePaint ) painted ).cleanSide( orientation.getOpposite() );
 					return true;
 				}
@@ -170,13 +176,16 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			{
 				AEColor color = getColorFromItem( paintBall );
 
-				if ( color != null && getAECurrentPower( is ) > powerPerUse )
+				if ( color != null && ( getAECurrentPower( is ) > powerPerUse || p.capabilities.isCreativeMode ))
 				{
 					if ( color != AEColor.Transparent
 							&& recolourBlock( blk, ForgeDirection.getOrientation( side ), w, x, y, z, ForgeDirection.getOrientation( side ), color, p ) )
 					{
 						inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
-						extractAEPower( is, powerPerUse );
+						if( !p.capabilities.isCreativeMode )
+						{
+							extractAEPower( is, powerPerUse );
+						}
 						return true;
 					}
 				}

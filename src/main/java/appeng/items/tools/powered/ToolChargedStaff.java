@@ -24,9 +24,9 @@ import java.util.EnumSet;
 import com.google.common.base.Optional;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.packets.PacketLightning;
@@ -48,23 +48,31 @@ public class ToolChargedStaff extends AEBasePoweredItem
 	@Override
 	public boolean hitEntity( ItemStack item, EntityLivingBase target, EntityLivingBase hitter )
 	{
-		if ( this.getAECurrentPower( item ) > 300 )
+		if( hitter instanceof EntityPlayer )
 		{
-			extractAEPower( item, 300 );
-			if ( Platform.isServer() )
-			{
-				for ( int x = 0; x < 2; x++ )
-				{
-					float dx = ( float ) ( Platform.getRandomFloat() * target.width + target.boundingBox.minX );
-					float dy = ( float ) ( Platform.getRandomFloat() * target.height + target.boundingBox.minY );
-					float dz = ( float ) ( Platform.getRandomFloat() * target.width + target.boundingBox.minZ );
-					ServerHelper.proxy.sendToAllNearExcept( null, dx, dy, dz, 32.0, target.worldObj, new PacketLightning( dx, dy, dz ) );
-				}
-			}
-			target.attackEntityFrom( DamageSource.magic, 6 );
-			return true;
-		}
+			EntityPlayer playerHitter = ( EntityPlayer ) hitter;
 
+			if ( this.getAECurrentPower( item ) > 300 || playerHitter.capabilities.isCreativeMode )
+			{
+				if( !playerHitter.capabilities.isCreativeMode )
+				{
+					extractAEPower( item, 300 );
+				}
+				if ( Platform.isServer() )
+				{
+					for ( int x = 0; x < 2; x++ )
+					{
+						float dx = ( float ) ( Platform.getRandomFloat() * target.width + target.boundingBox.minX );
+						float dy = ( float ) ( Platform.getRandomFloat() * target.height + target.boundingBox.minY );
+						float dz = ( float ) ( Platform.getRandomFloat() * target.width + target.boundingBox.minZ );
+						ServerHelper.proxy.sendToAllNearExcept( null, dx, dy, dz, 32.0, target.worldObj, new PacketLightning( dx, dy, dz ) );
+					}
+				}
+				target.attackEntityFrom( DamageSource.magic, 6 );
+				return true;
+			}
+
+		}
 		return false;
 	}
 }

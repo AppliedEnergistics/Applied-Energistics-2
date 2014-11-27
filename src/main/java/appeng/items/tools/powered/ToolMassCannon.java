@@ -116,7 +116,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 	@Override
 	public ItemStack onItemRightClick( ItemStack item, World w, EntityPlayer p )
 	{
-		if ( this.getAECurrentPower( item ) > 1600 )
+		if ( this.getAECurrentPower( item ) > 1600 || p.capabilities.isCreativeMode )
 		{
 			int shots = 1;
 
@@ -134,7 +134,10 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 					shots = Math.min( shots, ( int ) aeAmmo.getStackSize() );
 					for ( int sh = 0; sh < shots; sh++ )
 					{
-						extractAEPower( item, 1600 );
+						if( !p.capabilities.isCreativeMode )
+						{
+							extractAEPower( item, 1600 );
+						}
 
 						if ( Platform.isClient() )
 							return item;
