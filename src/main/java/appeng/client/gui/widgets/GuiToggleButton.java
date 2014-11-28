@@ -18,11 +18,12 @@
 
 package appeng.client.gui.widgets;
 
+
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.StatCollector;
-
-import org.lwjgl.opengl.GL11;
 
 import appeng.client.texture.ExtraBlockTextures;
 
@@ -102,9 +103,9 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 			String Name = StatCollector.translateToLocal( DisplayName );
 			String Value = StatCollector.translateToLocal( DisplayValue );
 
-			if ( Name == null || Name.equals( "" ) )
+			if ( Name == null || Name.isEmpty() )
 				Name = DisplayName;
-			if ( Value == null || Value.equals( "" ) )
+			if ( Value == null || Value.isEmpty() )
 				Value = DisplayValue;
 
 			Value = Value.replace( "\\n", "\n" );

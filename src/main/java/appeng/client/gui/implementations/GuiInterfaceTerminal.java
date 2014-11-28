@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,12 +28,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-import org.lwjgl.opengl.GL11;
+import com.google.common.collect.HashMultimap;
 
 import appeng.api.AEApi;
 import appeng.client.gui.AEBaseGui;
@@ -44,8 +47,6 @@ import appeng.container.implementations.ContainerInterfaceTerminal;
 import appeng.core.localization.GuiText;
 import appeng.parts.reporting.PartMonitor;
 import appeng.util.Platform;
-
-import com.google.common.collect.HashMultimap;
 
 public class GuiInterfaceTerminal extends AEBaseGui
 {
@@ -260,7 +261,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			boolean found = searchFilterLowerCase.isEmpty();
 
 			// Search if the current inventory holds a pattern containing the search term.
-			if ( !found && !searchFilterLowerCase.equals( "" ) )
+			if ( !found && !searchFilterLowerCase.isEmpty() )
 			{
 				for (ItemStack itemStack : entry.inv)
 				{

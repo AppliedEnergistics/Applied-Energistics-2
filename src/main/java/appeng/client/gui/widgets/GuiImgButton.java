@@ -18,14 +18,15 @@
 
 package appeng.client.gui.widgets;
 
+
 import java.util.HashMap;
 import java.util.Map;
+
+import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.StatCollector;
-
-import org.lwjgl.opengl.GL11;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
@@ -315,9 +316,9 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			String Name = StatCollector.translateToLocal( DisplayName );
 			String Value = StatCollector.translateToLocal( DisplayValue );
 
-			if ( Name == null || Name.equals( "" ) )
+			if ( Name == null || Name.isEmpty() )
 				Name = DisplayName;
-			if ( Value == null || Value.equals( "" ) )
+			if ( Value == null || Value.isEmpty() )
 				Value = DisplayValue;
 
 			if ( FillVar != null )
