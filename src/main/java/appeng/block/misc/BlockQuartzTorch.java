@@ -18,7 +18,8 @@
 
 package appeng.block.misc;
 
-import java.util.Arrays;
+
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
@@ -31,6 +32,10 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
@@ -42,8 +47,6 @@ import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 import appeng.helpers.MetaRotation;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, ICustomCollision
 {
@@ -114,7 +117,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 		double xOff = -0.3 * up.offsetX;
 		double yOff = -0.3 * up.offsetY;
 		double zOff = -0.3 * up.offsetZ;
-		return Arrays.asList( AxisAlignedBB.getBoundingBox( xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7 ) );
+		return Collections.singletonList( AxisAlignedBB.getBoundingBox( xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7 ) );
 	}
 
 	@Override
