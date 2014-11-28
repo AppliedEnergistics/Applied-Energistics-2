@@ -51,7 +51,7 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 	public void setTextField(GuiTextField level)
 	{
 		textField = level;
-		textField.setText( "" + EmitterValue );
+		textField.setText( String.valueOf( EmitterValue ) );
 	}
 
 	public ContainerLevelEmitter(InventoryPlayer ip, PartLevelEmitter te) {
@@ -130,7 +130,7 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 		if ( field.equals( "EmitterValue" ) )
 		{
 			if ( textField != null )
-				textField.setText( "" + EmitterValue );
+				textField.setText( String.valueOf( EmitterValue ) );
 		}
 	}
 

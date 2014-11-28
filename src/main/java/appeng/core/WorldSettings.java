@@ -263,7 +263,7 @@ public class WorldSettings extends Configuration
 
 			// edit.
 			int size = data.getInteger( "num" );
-			data.setTag( "" + size, newData );
+			data.setTag( String.valueOf( size ), newData );
 			data.setInteger( "num", size + 1 );
 
 			writeSpawnData( dim, chunkX, chunkZ, data );
@@ -314,7 +314,7 @@ public class WorldSettings extends Configuration
 		String[] values = new String[storageCellDims.size()];
 
 		for ( int x = 0; x < values.length; x++ )
-			values[x] = "" + storageCellDims.get( x );
+			values[x] = String.valueOf( storageCellDims.get( x ) );
 
 		get( "DimensionManager", "StorageCells", new int[0] ).set( values );
 		save();
@@ -376,7 +376,7 @@ public class WorldSettings extends Configuration
 
 		if ( result == null || result.get() == null )
 		{
-			String Data = get( "gridstorage", "" + storageID, "" ).getString();
+			String Data = get( "gridstorage", String.valueOf( storageID ), "" ).getString();
 			GridStorage thisStorage = new GridStorage( Data, storageID, gss );
 			gss.gridStorage = new WeakReference<GridStorage>( thisStorage );
 			loadedStorage.put( gss, new WeakReference<GridStorageSearch>( gss ) );

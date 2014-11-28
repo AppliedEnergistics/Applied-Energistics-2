@@ -108,13 +108,13 @@ public class AppEngRenderItem extends RenderItem
 
 			if ( amount != 0 )
 			{
-				String var6 = "" + Math.abs( amount );
+				String var6 = String.valueOf( Math.abs( amount ) );
 
 				if ( AEConfig.instance.useTerminalUseLargeFont() )
 				{
 					if ( amount > 999999999 )
 					{
-						var6 = "" + (int) Math.floor( amount / 1000000000.0 ) + 'B';
+						var6 = String.valueOf( ( int ) Math.floor( amount / 1000000000.0 ) ) + 'B';
 					}
 					else if ( amount > 99999999 )
 					{
@@ -122,7 +122,7 @@ public class AppEngRenderItem extends RenderItem
 					}
 					else if ( amount > 999999 )
 					{
-						var6 = "" + (int) Math.floor( amount / 1000000.0 ) + 'M';
+						var6 = String.valueOf( ( int ) Math.floor( amount / 1000000.0 ) ) + 'M';
 					}
 					else if ( amount > 99999 )
 					{
@@ -130,26 +130,26 @@ public class AppEngRenderItem extends RenderItem
 					}
 					else if ( amount > 999 )
 					{
-						var6 = "" + (int) Math.floor( amount / 1000.0 ) + 'K';
+						var6 = String.valueOf( ( int ) Math.floor( amount / 1000.0 ) ) + 'K';
 					}
 				}
 				else
 				{
 					if ( amount > 999999999 )
 					{
-						var6 = "" + (int) Math.floor( amount / 1000000000.0 ) + 'B';
+						var6 = String.valueOf( ( int ) Math.floor( amount / 1000000000.0 ) ) + 'B';
 					}
 					else if ( amount > 999999999 )
 					{
-						var6 = "" + (int) Math.floor( amount / 1000000000.0 ) + 'B';
+						var6 = String.valueOf( ( int ) Math.floor( amount / 1000000000.0 ) ) + 'B';
 					}
 					else if ( amount > 999999 )
 					{
-						var6 = "" + (int) Math.floor( amount / 1000000.0 ) + 'M';
+						var6 = String.valueOf( ( int ) Math.floor( amount / 1000000.0 ) ) + 'M';
 					}
 					else if ( amount > 9999 )
 					{
-						var6 = "" + (int) Math.floor( amount / 1000.0 ) + 'K';
+						var6 = String.valueOf( ( int ) Math.floor( amount / 1000.0 ) ) + 'K';
 					}
 				}
 

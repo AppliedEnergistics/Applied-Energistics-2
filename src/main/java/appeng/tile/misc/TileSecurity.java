@@ -18,12 +18,12 @@
 
 package appeng.tile.misc;
 
-import appeng.helpers.PlayerSecurityWrapper;
-import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -34,6 +34,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -62,6 +63,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
+import appeng.helpers.PlayerSecurityWrapper;
 import appeng.me.GridAccessException;
 import appeng.me.storage.SecurityInventory;
 import appeng.tile.TileEvent;
@@ -174,7 +176,7 @@ public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEApp
 		{
 			NBTTagCompound it = new NBTTagCompound();
 			ais.getItemStack().writeToNBT( it );
-			storedItems.setTag( "" + (offset++), it );
+			storedItems.setTag( String.valueOf( offset++ ), it );
 		}
 
 		data.setTag( "storedItems", storedItems );
