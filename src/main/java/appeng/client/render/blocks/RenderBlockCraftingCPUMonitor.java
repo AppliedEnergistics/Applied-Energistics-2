@@ -18,6 +18,10 @@
 
 package appeng.client.render.blocks;
 
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GLAllocation;
@@ -26,9 +30,6 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.block.AEBaseBlock;
@@ -176,11 +177,11 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 
 		String msg = Long.toString( qty );
 		if ( qty > 1000000000 )
-			msg = Long.toString( qty / 1000000000 ) + "B";
+			msg = Long.toString( qty / 1000000000 ) + 'B';
 		else if ( qty > 1000000 )
-			msg = Long.toString( qty / 1000000 ) + "M";
+			msg = Long.toString( qty / 1000000 ) + 'M';
 		else if ( qty > 9999 )
-			msg = Long.toString( qty / 1000 ) + "K";
+			msg = Long.toString( qty / 1000 ) + 'K';
 
 		FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
 		int width = fr.getStringWidth( msg );

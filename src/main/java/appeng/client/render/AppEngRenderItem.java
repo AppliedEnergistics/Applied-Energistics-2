@@ -18,13 +18,14 @@
 
 package appeng.client.render;
 
+
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
-
-import org.lwjgl.opengl.GL11;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
@@ -113,42 +114,42 @@ public class AppEngRenderItem extends RenderItem
 				{
 					if ( amount > 999999999 )
 					{
-						var6 = "" + (int) Math.floor( amount / 1000000000.0 ) + "B";
+						var6 = "" + (int) Math.floor( amount / 1000000000.0 ) + 'B';
 					}
 					else if ( amount > 99999999 )
 					{
-						var6 = "." + (int) Math.floor( amount / 100000000.0 ) + "B";
+						var6 = "." + (int) Math.floor( amount / 100000000.0 ) + 'B';
 					}
 					else if ( amount > 999999 )
 					{
-						var6 = "" + (int) Math.floor( amount / 1000000.0 ) + "M";
+						var6 = "" + (int) Math.floor( amount / 1000000.0 ) + 'M';
 					}
 					else if ( amount > 99999 )
 					{
-						var6 = "." + (int) Math.floor( amount / 100000.0 ) + "M";
+						var6 = "." + (int) Math.floor( amount / 100000.0 ) + 'M';
 					}
 					else if ( amount > 999 )
 					{
-						var6 = "" + (int) Math.floor( amount / 1000.0 ) + "K";
+						var6 = "" + (int) Math.floor( amount / 1000.0 ) + 'K';
 					}
 				}
 				else
 				{
 					if ( amount > 999999999 )
 					{
-						var6 = "" + (int) Math.floor( amount / 1000000000.0 ) + "B";
+						var6 = "" + (int) Math.floor( amount / 1000000000.0 ) + 'B';
 					}
 					else if ( amount > 999999999 )
 					{
-						var6 = "" + (int) Math.floor( amount / 1000000000.0 ) + "B";
+						var6 = "" + (int) Math.floor( amount / 1000000000.0 ) + 'B';
 					}
 					else if ( amount > 999999 )
 					{
-						var6 = "" + (int) Math.floor( amount / 1000000.0 ) + "M";
+						var6 = "" + (int) Math.floor( amount / 1000000.0 ) + 'M';
 					}
 					else if ( amount > 9999 )
 					{
-						var6 = "" + (int) Math.floor( amount / 1000.0 ) + "K";
+						var6 = "" + (int) Math.floor( amount / 1000.0 ) + 'K';
 					}
 				}
 

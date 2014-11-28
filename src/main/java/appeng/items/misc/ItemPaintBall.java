@@ -18,6 +18,7 @@
 
 package appeng.items.misc;
 
+
 import java.util.EnumSet;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.MinecraftForgeClient;
+
 import appeng.api.util.AEColor;
 import appeng.client.render.items.PaintBallRender;
 import appeng.core.features.AEFeature;
@@ -51,7 +53,7 @@ public class ItemPaintBall extends AEBaseItem
 
 	public String getExtraName(ItemStack is)
 	{
-		return (is.getItemDamage() >= 20 ? GuiText.Lumen.getLocal() + " " : "") + getColor( is );
+		return (is.getItemDamage() >= 20 ? GuiText.Lumen.getLocal() + ' ' : "") + getColor( is );
 	}
 
 	public AEColor getColor(ItemStack is)

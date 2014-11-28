@@ -161,7 +161,7 @@ public class WorldSettings extends Configuration
 			throw new RuntimeException( "Invalid Request" );
 
 		NBTTagCompound data = null;
-		File file = new File( aeFolder, SPAWNDATA_FOLDER + File.separatorChar + dim + "_" + ( chunkX >> 4 ) + "_" + ( chunkZ >> 4 ) + ".dat" );
+		File file = new File( aeFolder, SPAWNDATA_FOLDER + File.separatorChar + dim + '_' + ( chunkX >> 4 ) + '_' + ( chunkZ >> 4 ) + ".dat" );
 
 		if ( file.isFile() )
 		{
@@ -227,7 +227,7 @@ public class WorldSettings extends Configuration
 		if ( !Thread.holdsLock( WorldSettings.class ) )
 			throw new RuntimeException( "Invalid Request" );
 
-		File file = new File( aeFolder, SPAWNDATA_FOLDER + File.separatorChar + dim + "_" + ( chunkX >> 4 ) + "_" + ( chunkZ >> 4 ) + ".dat" );
+		File file = new File( aeFolder, SPAWNDATA_FOLDER + File.separatorChar + dim + '_' + ( chunkX >> 4 ) + '_' + ( chunkZ >> 4 ) + ".dat" );
 		FileOutputStream fileOutputStream = null;
 
 		try

@@ -198,7 +198,7 @@ public class Platform
 		}
 
 		DecimalFormat df = new DecimalFormat( "#.##" );
-		return df.format( p ) + " " + Lvl + unitName + (isRate ? "/t" : "");
+		return df.format( p ) + ' ' + Lvl + unitName + (isRate ? "/t" : "");
 	}
 
 	public static ForgeDirection crossProduct(ForgeDirection forward, ForgeDirection up)

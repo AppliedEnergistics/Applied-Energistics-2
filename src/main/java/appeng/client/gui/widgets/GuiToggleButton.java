@@ -119,7 +119,7 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 				sb.replace( i, i + 1, "\n" );
 			}
 
-			return Name + "\n" + sb.toString();
+			return Name + '\n' + sb.toString();
 		}
 		return null;
 	}

@@ -62,12 +62,14 @@ public class AppEng
 
 			// depend on version of forge used for build.
 			"after:appliedenergistics2-core;" + "required-after:Forge@[" // require forge.
-					+ net.minecraftforge.common.ForgeVersion.majorVersion + "." // majorVersion
-					+ net.minecraftforge.common.ForgeVersion.minorVersion + "." // minorVersion
-					+ net.minecraftforge.common.ForgeVersion.revisionVersion + "." // revisionVersion
+					+ net.minecraftforge.common.ForgeVersion.majorVersion + '.' // majorVersion
+					+ net.minecraftforge.common.ForgeVersion.minorVersion + '.' // minorVersion
+					+ net.minecraftforge.common.ForgeVersion.revisionVersion + '.' // revisionVersion
 					+ net.minecraftforge.common.ForgeVersion.buildVersion + ",)"; // buildVersion
 	public static AppEng instance;
+
 	private final IMCHandler imcHandler;
+
 	private String configPath;
 
 	public AppEng()

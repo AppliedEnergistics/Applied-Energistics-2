@@ -64,7 +64,7 @@ public class FeatureNameExtractor
 				return name.replace( "Quartz", "NetherQuartz" );
 			}
 
-			name += "." + subName;
+			name += '.' + subName;
 		}
 
 		return name;

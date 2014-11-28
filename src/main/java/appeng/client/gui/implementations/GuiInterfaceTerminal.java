@@ -183,7 +183,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 				String name = (String) lineObj;
 				int rows = byName.get( name ).size();
 				if ( rows > 1 )
-					name = name + " (" + rows + ")";
+					name = name + " (" + rows + ')';
 
 				while (name.length() > 2 && fontRendererObj.getStringWidth( name ) > 155)
 					name = name.substring( 0, name.length() - 1 );
