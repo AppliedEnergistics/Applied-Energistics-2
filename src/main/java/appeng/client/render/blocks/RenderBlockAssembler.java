@@ -42,6 +42,7 @@ import appeng.client.render.BusRenderer;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.TaughtIcon;
 import appeng.parts.networking.PartCable;
+import appeng.tile.crafting.TileCraftingTile;
 import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.util.Platform;
 
@@ -50,23 +51,27 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 
 	IIcon getConnectedCable(IBlockAccess world, int x, int y, int z, ForgeDirection d, boolean covered)
 	{
-		TileEntity ne = world.getTileEntity( x + d.offsetX, y + d.offsetY, z + d.offsetZ );
-		if ( ne instanceof IGridHost && ne instanceof IPartHost )
+		final int tileYPos = y + d.offsetY;
+		if ( 0 <= tileYPos && tileYPos <= 256)
 		{
-			IPartHost ph = (IPartHost) ne;
-			IPart pcx = ph.getPart( ForgeDirection.UNKNOWN );
-			if ( pcx instanceof PartCable )
+			final TileEntity ne = world.getTileEntity( x + d.offsetX, tileYPos, z + d.offsetZ );
+
+			if ( ne instanceof IGridHost && ne instanceof IPartHost )
 			{
-				PartCable pc = (PartCable) pcx;
-				if ( pc.isConnected( d.getOpposite() ) )
+				IPartHost ph = (IPartHost) ne;
+				IPart pcx = ph.getPart( ForgeDirection.UNKNOWN );
+				if ( pcx instanceof PartCable )
 				{
-					if ( covered )
-						return pc.getCoveredTexture( pc.getCableColor() );
-					return pc.getGlassTexture( pc.getCableColor() );
+					PartCable pc = (PartCable) pcx;
+					if ( pc.isConnected( d.getOpposite() ) )
+					{
+						if ( covered )
+							return pc.getCoveredTexture( pc.getCableColor() );
+						return pc.getGlassTexture( pc.getCableColor() );
+					}
 				}
 			}
 		}
-
 		return null;
 	}
 
@@ -267,7 +272,7 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 
 		return true;
 	}
- 
+
 	@Override
 	public void getBoxes(IPartCollisionHelper bch)
 	{
