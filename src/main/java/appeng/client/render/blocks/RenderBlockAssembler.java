@@ -18,6 +18,7 @@
 
 package appeng.client.render.blocks;
 
+
 import java.util.EnumSet;
 
 import net.minecraft.client.renderer.RenderBlocks;
@@ -28,6 +29,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.networking.IGridHost;
 import appeng.api.parts.IBoxProvider;
 import appeng.api.parts.IPart;
@@ -48,21 +50,25 @@ import appeng.util.Platform;
 public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvider
 {
 
-	IIcon getConnectedCable(IBlockAccess world, int x, int y, int z, ForgeDirection d, boolean covered)
+	IIcon getConnectedCable(IBlockAccess world, int x, int y, int z, ForgeDirection side, boolean covered)
 	{
-		TileEntity ne = world.getTileEntity( x + d.offsetX, y + d.offsetY, z + d.offsetZ );
-		if ( ne instanceof IGridHost && ne instanceof IPartHost )
+		final int tileYPos = y + side.offsetY;
+		if ( -1 < tileYPos && tileYPos < 256 )
 		{
-			IPartHost ph = (IPartHost) ne;
-			IPart pcx = ph.getPart( ForgeDirection.UNKNOWN );
-			if ( pcx instanceof PartCable )
+			TileEntity ne = world.getTileEntity( x + side.offsetX, tileYPos, z + side.offsetZ );
+			if ( ne instanceof IGridHost && ne instanceof IPartHost )
 			{
-				PartCable pc = (PartCable) pcx;
-				if ( pc.isConnected( d.getOpposite() ) )
+				IPartHost ph = (IPartHost) ne;
+				IPart pcx = ph.getPart( ForgeDirection.UNKNOWN );
+				if ( pcx instanceof PartCable )
 				{
-					if ( covered )
-						return pc.getCoveredTexture( pc.getCableColor() );
-					return pc.getGlassTexture( pc.getCableColor() );
+					PartCable pc = (PartCable) pcx;
+					if ( pc.isConnected( side.getOpposite() ) )
+					{
+						if ( covered )
+							return pc.getCoveredTexture( pc.getCableColor() );
+						return pc.getGlassTexture( pc.getCableColor() );
+					}
 				}
 			}
 		}
