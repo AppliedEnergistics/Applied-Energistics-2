@@ -18,8 +18,10 @@
 
 package appeng.container.implementations;
 
+
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
+
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -85,7 +87,7 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 		}
 
 		IInventory upgrades = upgradeable.getInventoryByName( "upgrades" );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8 + 0, invPlayer )).setNotDraggable() );
+		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, invPlayer )).setNotDraggable() );
 		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, invPlayer )).setNotDraggable() );
 		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, invPlayer )).setNotDraggable() );
 		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, invPlayer )).setNotDraggable() );

@@ -18,10 +18,15 @@
 
 package appeng.container.implementations;
 
+
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
 import appeng.api.config.RedstoneMode;
@@ -33,8 +38,6 @@ import appeng.container.slot.SlotFakeTypeOnly;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class ContainerLevelEmitter extends ContainerUpgradeable
 {
@@ -83,7 +86,7 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 
 		IInventory upgrades = upgradeable.getInventoryByName( "upgrades" );
 		if ( availableUpgrades() > 0 )
-			addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8 + 0, invPlayer )).setNotDraggable() );
+			addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, invPlayer )).setNotDraggable() );
 		if ( availableUpgrades() > 1 )
 			addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, invPlayer )).setNotDraggable() );
 		if ( availableUpgrades() > 2 )
