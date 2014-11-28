@@ -18,6 +18,7 @@
 
 package appeng.items.materials;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,6 +46,9 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
+
+import com.google.common.collect.ImmutableSet;
+
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.items.IItemGroup;
@@ -61,8 +65,6 @@ import appeng.core.features.MaterialStackSrc;
 import appeng.items.AEBaseItem;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-
-import com.google.common.collect.ImmutableSet;
 
 public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule
 {
@@ -139,11 +141,11 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 					IItemGroup ig = (IItemGroup) j.getKey().getItem();
 					String str = ig.getUnlocalizedGroupName( u.getSupported().keySet(), j.getKey() );
 					if ( str != null )
-						name = Platform.gui_localize( str ) + (limit > 1 ? " (" + limit + ")" : "");
+						name = Platform.gui_localize( str ) + (limit > 1 ? " (" + limit + ')' : "");
 				}
 
 				if ( name == null )
-					name = j.getKey().getDisplayName() + (limit > 1 ? " (" + limit + ")" : "");
+					name = j.getKey().getDisplayName() + (limit > 1 ? " (" + limit + ')' : "");
 
 				if ( !textList.contains( name ) )
 					textList.add( name );

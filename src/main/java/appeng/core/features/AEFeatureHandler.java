@@ -165,7 +165,7 @@ public class AEFeatureHandler implements AEItemDefinition
 			if ( subName.equals( "NetherQuartzTools" ) )
 				return name.replace( "Quartz", "NetherQuartz" );
 
-			name += "." + subName;
+			name += '.' + subName;
 		}
 
 		return name;

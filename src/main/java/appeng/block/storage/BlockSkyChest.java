@@ -18,7 +18,8 @@
 
 package appeng.block.storage;
 
-import java.util.Arrays;
+
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -34,6 +35,10 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.api.AEApi;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
@@ -43,8 +48,6 @@ import appeng.core.sync.GuiBridge;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 {
@@ -129,9 +132,7 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 		double Y = o.offsetY == 0 ? 0.06 : 0.0;
 		double Z = o.offsetZ == 0 ? 0.06 : 0.0;
 
-		return Arrays.asList( AxisAlignedBB.getBoundingBox( Math.max( 0.0, X - o.offsetX * sc ), Math.max( 0.0, Y - o.offsetY * sc ),
-				Math.max( 0.0, Z - o.offsetZ * sc ), Math.min( 1.0, (1.0 - X) - o.offsetX * sc ), Math.min( 1.0, (1.0 - Y) - o.offsetY * sc ),
-				Math.min( 1.0, (1.0 - Z) - o.offsetZ * sc ) ) );
+		return Collections.singletonList( AxisAlignedBB.getBoundingBox( Math.max( 0.0, X - o.offsetX * sc ), Math.max( 0.0, Y - o.offsetY * sc ), Math.max( 0.0, Z - o.offsetZ * sc ), Math.min( 1.0, ( 1.0 - X ) - o.offsetX * sc ), Math.min( 1.0, ( 1.0 - Y ) - o.offsetY * sc ), Math.min( 1.0, ( 1.0 - Z ) - o.offsetZ * sc ) ) );
 	}
 
 	@Override

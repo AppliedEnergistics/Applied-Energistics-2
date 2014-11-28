@@ -18,10 +18,11 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.input.Mouse;
+
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseGui;
@@ -89,7 +90,7 @@ public class GuiCondenser extends AEBaseGui
 		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
 
 		mode.set( cvc.output );
-		mode.FillVar = "" + cvc.output.requiredPower;
+		mode.fillVar = String.valueOf( cvc.output.requiredPower );
 
 	}
 

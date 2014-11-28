@@ -18,11 +18,13 @@
 
 package appeng.crafting;
 
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.world.World;
+
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -79,7 +81,7 @@ public class CraftingTreeNode
 																																// order.
 		{
 			if ( parent == null || parent.notRecursive( details ) )
-				nodes.add( new CraftingTreeProcess( cc, job, details, this, depth + 1, world ) );
+				nodes.add( new CraftingTreeProcess( cc, job, details, this, depth + 1 ) );
 		}
 
 	}

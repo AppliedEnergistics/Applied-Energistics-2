@@ -18,16 +18,14 @@
 
 package appeng.core.api;
 
+
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.*;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -37,6 +35,15 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import net.minecraftforge.client.MinecraftForgeClient;
+
+import com.google.common.base.Joiner;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.IPartHelper;
@@ -51,8 +58,6 @@ import appeng.integration.abstraction.IFMP;
 import appeng.parts.PartPlacement;
 import appeng.tile.networking.TileCableBus;
 import appeng.util.Platform;
-
-import com.google.common.base.Joiner;
 
 public class ApiPart implements IPartHelper
 {
@@ -112,7 +117,7 @@ public class ApiPart implements IPartHelper
 		try
 		{
 			ClassReader cr;
-			String path = "/" + name.replace( ".", "/" ) + ".class";
+			String path = '/' + name.replace( ".", "/" ) + ".class";
 			InputStream is = getClass().getResourceAsStream( path );
 			cr = new ClassReader( is );
 			ClassNode cn = new ClassNode();
@@ -139,7 +144,7 @@ public class ApiPart implements IPartHelper
 			}
 		}
 
-		String description = base + ":" + Joiner.on( ";" ).skipNulls().join( desc.iterator() );
+		String description = base + ':' + Joiner.on( ";" ).skipNulls().join( desc.iterator() );
 
 		if ( tileImplementations.get( description ) != null )
 		{
@@ -180,7 +185,7 @@ public class ApiPart implements IPartHelper
 		{
 			try
 			{
-				String newPath = path + ";" + name;
+				String newPath = path + ';' + name;
 				myCLass = getClassByDesc( Addendum, newPath, f, interfaces2Layer.get( Class.forName( name ) ) );
 				path = newPath;
 			}
@@ -232,7 +237,7 @@ public class ApiPart implements IPartHelper
 
 		try
 		{
-			n.name = n.name + "_" + Addendum;
+			n.name = n.name + '_' + Addendum;
 			n.superName = Class.forName( root ).getName().replace( ".", "/" );
 		}
 		catch (Throwable t)

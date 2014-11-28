@@ -18,7 +18,9 @@
 
 package appeng.recipes;
 
+
 import net.minecraft.item.ItemStack;
+
 import appeng.api.AEApi;
 import appeng.api.recipes.ISubItemResolver;
 import appeng.api.recipes.ResolverResult;
@@ -39,7 +41,7 @@ public class AEItemResolver implements ISubItemResolver
 	public Object resolveItemByName(String nameSpace, String itemName)
 	{
 
-		if ( nameSpace.equals( AppEng.modid ) )
+		if ( nameSpace.equals( AppEng.MOD_ID ) )
 		{
 			if ( itemName.startsWith( "PaintBall." ) )
 			{

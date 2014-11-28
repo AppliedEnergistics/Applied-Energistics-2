@@ -18,9 +18,11 @@
 
 package appeng.client.gui.implementations;
 
+
 import java.io.IOException;
 
 import net.minecraft.entity.player.InventoryPlayer;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
 import appeng.api.storage.ITerminalHost;
@@ -52,7 +54,7 @@ public class GuiSecurity extends GuiMEMonitorable
 		super.initGui();
 
 		int top = this.guiTop + this.ySize - 116;
-		buttonList.add( inject = new GuiToggleButton( this.guiLeft + 56 + 0, top, 11 * 16, 12 * 16, SecurityPermissions.INJECT
+		buttonList.add( inject = new GuiToggleButton( this.guiLeft + 56, top, 11 * 16, 12 * 16, SecurityPermissions.INJECT
 				.getUnlocalizedName(), SecurityPermissions.INJECT.getUnlocalizedTip() ) );
 
 		buttonList.add( extract = new GuiToggleButton( this.guiLeft + 56 + 18, top, 11 * 16 + 1, 12 * 16 + 1, SecurityPermissions.EXTRACT

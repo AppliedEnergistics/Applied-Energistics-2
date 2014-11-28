@@ -18,10 +18,14 @@
 
 package appeng.recipes.handlers;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
+
+import cpw.mods.fml.common.registry.GameRegistry;
+
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
@@ -31,7 +35,6 @@ import appeng.core.AELog;
 import appeng.recipes.RecipeHandler;
 import appeng.recipes.game.ShapedRecipe;
 import appeng.util.Platform;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Shaped implements ICraftHandler, IWebsiteSerializer
 {
@@ -86,7 +89,7 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 			for (int x = 0; x < cols; x++)
 			{
 				if ( inputs.get( y ).get( x ).isAir() )
-					row.append( " " );
+					row.append( ' ' );
 				else
 				{
 					row.append( first );
@@ -136,9 +139,9 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public String getPattern(RecipeHandler h)
 	{
-		String o = "shaped " + output.getQty() + " " + cols + "x" + rows + "\n";
+		String o = "shaped " + output.getQty() + ' ' + cols + 'x' + rows + '\n';
 
-		o += h.getName( output ) + "\n";
+		o += h.getName( output ) + '\n';
 
 		for (int y = 0; y < rows; y++)
 			for (int x = 0; x < cols; x++)

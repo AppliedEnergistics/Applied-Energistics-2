@@ -24,8 +24,8 @@ import com.google.common.base.Optional;
 
 public class FeatureNameExtractor
 {
-	private Class<?> clazz;
-	private Optional<String> subName;
+	private final Class<?> clazz;
+	private final Optional<String> subName;
 
 	public FeatureNameExtractor( Class<?> clazz, Optional<String> subName )
 	{
@@ -64,7 +64,7 @@ public class FeatureNameExtractor
 				return name.replace( "Quartz", "NetherQuartz" );
 			}
 
-			name += "." + subName;
+			name += '.' + subName;
 		}
 
 		return name;

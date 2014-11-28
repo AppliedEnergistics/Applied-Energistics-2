@@ -18,6 +18,7 @@
 
 package appeng.items.misc;
 
+
 import java.util.EnumSet;
 import java.util.List;
 import java.util.WeakHashMap;
@@ -28,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
+
 import appeng.api.AEApi;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -103,7 +105,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		IAEItemStack[] out = details.getCondensedOutputs();
 
 		String label = (isCrafting ? GuiText.Crafts.getLocal() : GuiText.Creates.getLocal()) + ": ";
-		String and = " " + GuiText.And.getLocal() + " ";
+		String and = ' ' + GuiText.And.getLocal() + ' ';
 		String with = GuiText.With.getLocal() + ": ";
 
 		boolean first = true;
@@ -114,7 +116,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 				continue;
 			}
 
-			lines.add( (first ? label : and) + anOut.getStackSize() + " " + Platform.getItemDisplayName( anOut ) );
+			lines.add( (first ? label : and) + anOut.getStackSize() + ' ' + Platform.getItemDisplayName( anOut ) );
 			first = false;
 		}
 
@@ -126,7 +128,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 				continue;
 			}
 
-			lines.add( (first ? with : and) + anIn.getStackSize() + " " + Platform.getItemDisplayName( anIn ) );
+			lines.add( (first ? with : and) + anIn.getStackSize() + ' ' + Platform.getItemDisplayName( anIn ) );
 			first = false;
 		}
 	}
