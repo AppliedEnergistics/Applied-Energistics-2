@@ -49,6 +49,7 @@ import net.minecraft.util.ResourceLocation;
 
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
 
 import appeng.api.storage.data.IAEItemStack;
@@ -712,20 +713,11 @@ public abstract class AEBaseGui extends GuiContainer
 		return null;
 	}
 
-	protected static String join(Collection<?> s, String delimiter)
+	protected static String join(Collection<String> toolTip, String delimiter)
 	{
-		StringBuilder builder = new StringBuilder();
-		Iterator iterator = s.iterator();
-		while (iterator.hasNext())
-		{
-			builder.append( iterator.next() );
-			if ( !iterator.hasNext() )
-			{
-				break;
-			}
-			builder.append( delimiter );
-		}
-		return builder.toString();
+		final Joiner joiner = Joiner.on( delimiter );
+
+		return joiner.join( toolTip );
 	}
 
 	boolean useNEI = false;
