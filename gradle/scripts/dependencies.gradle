@@ -23,7 +23,7 @@ dependencies {
     compile "codechicken:CodeChickenCore:${config.cb_minecraft_version}-${config.code_chicken_core_version}:dev"
     compile "codechicken:NotEnoughItems:${config.cb_minecraft_version}-${config.nei_version}:dev"
 
-    compile "mcp.mobius.waila:Waila:${config.waila_version}"
+    compile "mcp.mobius.waila:Waila:${config.waila_version}:dev"
 	
     compile(group: 'api', name: 'betterstorage', version: "${config.api_betterstorage_version}")
     compile(group: 'api', name: 'coloredlightscore', version: "${config.api_coloredlightscore_version}")
