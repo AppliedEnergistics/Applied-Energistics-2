@@ -51,17 +51,20 @@ public class BlockCrank extends AEBaseBlock
 	}
 
 	@Override
-	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
+	public boolean onActivated(World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		if ( p instanceof FakePlayer || p == null )
+		if ( player instanceof FakePlayer || player == null )
+		{
+			dropCrank(w, x, y, z);
 			return true;
+		}
 
 		AEBaseTile tile = getTileEntity( w, x, y, z );
 		if ( tile instanceof TileCrank )
 		{
 			if ( ((TileCrank) tile).power() )
 			{
-				Stats.TurnedCranks.addToPlayer( p, 1 );
+				Stats.TurnedCranks.addToPlayer( player, 1 );
 			}
 		}
 
@@ -74,67 +77,77 @@ public class BlockCrank extends AEBaseBlock
 		return RenderBlockCrank.class;
 	}
 
-	private boolean isCrankable(World w, int x, int y, int z, ForgeDirection offset)
+	private boolean isCrankable( World world, int x, int y, int z, ForgeDirection offset )
 	{
-		TileEntity te = w.getTileEntity( x + offset.offsetX, y + offset.offsetY, z + offset.offsetZ );
+		TileEntity te = world.getTileEntity( x + offset.offsetX, y + offset.offsetY, z + offset.offsetZ );
 
 		return te instanceof ICrankable && ( ( ICrankable ) te ).canCrankAttach( offset.getOpposite() );
 	}
 
-	private ForgeDirection findCrankable(World w, int x, int y, int z)
+	private ForgeDirection findCrankable( World world, int x, int y, int z )
 	{
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
-			if ( isCrankable( w, x, y, z, dir ) )
+		for ( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+			if ( isCrankable( world, x, y, z, dir ) )
+			{
 				return dir;
+			}
 		return ForgeDirection.UNKNOWN;
 	}
 
 	@Override
-	public boolean canPlaceBlockAt(World w, int x, int y, int z)
+	public boolean canPlaceBlockAt( World world, int x, int y, int z )
 	{
-		return findCrankable( w, x, y, z ) != ForgeDirection.UNKNOWN;
+		return findCrankable( world , x, y, z ) != ForgeDirection.UNKNOWN;
 	}
 
 	@Override
-	public boolean isValidOrientation(World w, int x, int y, int z, ForgeDirection forward, ForgeDirection up)
+	public boolean isValidOrientation( World world, int x, int y, int z, ForgeDirection forward, ForgeDirection up )
 	{
-		TileEntity te = w.getTileEntity( x, y, z );
-		return !(te instanceof TileCrank) || isCrankable( w, x, y, z, up.getOpposite() );
+		TileEntity te = world.getTileEntity( x, y, z );
+		return !(te instanceof TileCrank) || isCrankable( world, x, y, z, up.getOpposite() );
 	}
 
-	private void dropCrank(World w, int x, int y, int z)
+	private void dropCrank( World world, int x, int y, int z )
 	{
-		w.func_147480_a( x, y, z, true ); // w.destroyBlock( x, y, z, true );
-		w.markBlockForUpdate( x, y, z );
+		world.func_147480_a( x, y, z, true ); // w.destroyBlock( x, y, z, true );
+		world.markBlockForUpdate( x, y, z );
 	}
 
 	@Override
-	public void onBlockPlacedBy(World w, int x, int y, int z, EntityLivingBase p, ItemStack is)
+	public void onBlockPlacedBy( World world, int x, int y, int z, EntityLivingBase placer, ItemStack itemStack )
 	{
-		AEBaseTile tile = getTileEntity( w, x, y, z );
+		AEBaseTile tile = getTileEntity( world, x, y, z );
 		if ( tile != null )
 		{
-			ForgeDirection mnt = findCrankable( w, x, y, z );
+			ForgeDirection mnt = findCrankable( world, x, y, z );
 			ForgeDirection forward = ForgeDirection.UP;
 			if ( mnt == ForgeDirection.UP || mnt == ForgeDirection.DOWN )
+			{
 				forward = ForgeDirection.SOUTH;
+			}
 			tile.setOrientation( forward, mnt.getOpposite() );
 		}
 		else
-			dropCrank( w, x, y, z );
+		{
+			dropCrank( world, x, y, z );
+		}
 	}
 
 	@Override
-	public void onNeighborBlockChange(World w, int x, int y, int z, Block id)
+	public void onNeighborBlockChange (World world, int x, int y, int z, Block block )
 	{
-		AEBaseTile tile = getTileEntity( w, x, y, z );
+		AEBaseTile tile = getTileEntity( world, x, y, z );
 		if ( tile != null )
 		{
-			if ( !isCrankable( w, x, y, z, tile.getUp().getOpposite() ) )
-				dropCrank( w, x, y, z );
+			if ( !isCrankable( world, x, y, z, tile.getUp().getOpposite() ) )
+			{
+				dropCrank( world, x, y, z );
+			}
 		}
 		else
-			dropCrank( w, x, y, z );
+		{
+			dropCrank( world, x, y, z );
+		}
 	}
 
 }
