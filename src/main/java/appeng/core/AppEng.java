@@ -20,10 +20,7 @@ package appeng.core;
 
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
-
-import com.google.common.base.Stopwatch;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
@@ -31,7 +28,6 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
@@ -39,13 +35,8 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
-import appeng.api.config.TunnelType;
-import appeng.core.api.IIMCHandler;
-import appeng.core.api.imc.IMCBlackListSpatial;
-import appeng.core.api.imc.IMCGrinder;
-import appeng.core.api.imc.IMCMatterCannon;
-import appeng.core.api.imc.IMCP2PAttunement;
-import appeng.core.api.imc.IMCSpatial;
+import com.google.common.base.Stopwatch;
+
 import appeng.core.crash.CrashEnhancement;
 import appeng.core.crash.CrashInfo;
 import appeng.core.features.AEFeature;
@@ -62,23 +53,9 @@ import appeng.util.Platform;
 @Mod( modid = AppEng.modid, acceptedMinecraftVersions = "[1.7.10]", name = AppEng.name, version = AEConfig.VERSION, dependencies = AppEng.dependencies, guiFactory = "appeng.client.gui.config.AEConfigGuiFactory" )
 public class AppEng
 {
-
-	private String configPath;
-
-	public String getConfigPath()
-	{
-		return configPath;
-	}
-
 	public final static String modid = "appliedenergistics2";
 	public final static String name = "Applied Energistics 2";
-
-	final HashMap<String, IIMCHandler> IMCHandlers = new HashMap<String, IIMCHandler>();
-
-	public static AppEng instance;
-
 	public final static String dependencies =
-
 			// a few mods, AE should load after, probably.
 			// required-after:AppliedEnergistics2API|all;
 			// "after:gregtech_addon;after:Mekanism;after:IC2;after:ThermalExpansion;after:BuildCraft|Core;" +
@@ -89,22 +66,22 @@ public class AppEng
 					+ net.minecraftforge.common.ForgeVersion.minorVersion + "." // minorVersion
 					+ net.minecraftforge.common.ForgeVersion.revisionVersion + "." // revisionVersion
 					+ net.minecraftforge.common.ForgeVersion.buildVersion + ",)"; // buildVersion
+	public static AppEng instance;
+	private final IMCHandler imcHandler;
+	private String configPath;
 
 	public AppEng()
 	{
 		instance = this;
 
-		IMCHandlers.put( "blacklist-block-spatial", new IMCBlackListSpatial() );
-		IMCHandlers.put( "whitelist-spatial", new IMCSpatial() );
-		IMCHandlers.put( "add-grindable", new IMCGrinder() );
-		IMCHandlers.put( "add-mattercannon-ammo", new IMCMatterCannon() );
-
-		for ( TunnelType type : TunnelType.values() )
-		{
-			IMCHandlers.put( "add-p2p-attunement-" + type.name().replace( '_', '-' ).toLowerCase(), new IMCP2PAttunement() );
-		}
+		this.imcHandler = new IMCHandler();
 
 		FMLCommonHandler.instance().registerCrashCallable( new CrashEnhancement( CrashInfo.MOD_VERSION ) );
+	}
+
+	public String getConfigPath()
+	{
+		return configPath;
 	}
 
 	public boolean isIntegrationEnabled( IntegrationType Name )
@@ -115,13 +92,6 @@ public class AppEng
 	public Object getIntegration( IntegrationType Name )
 	{
 		return IntegrationRegistry.INSTANCE.getInstance( Name );
-	}
-
-	private void startService( String serviceName, Thread thread )
-	{
-		thread.setName( serviceName );
-		thread.setPriority( Thread.MIN_PRIORITY );
-		thread.start();
 	}
 
 	@EventHandler
@@ -158,6 +128,13 @@ public class AppEng
 		AELog.info( "PreInit ( end " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}
 
+	private void startService( String serviceName, Thread thread )
+	{
+		thread.setName( serviceName );
+		thread.setPriority( Thread.MIN_PRIORITY );
+		thread.start();
+	}
+
 	@EventHandler
 	void Init( FMLInitializationEvent event )
 	{
@@ -190,24 +167,9 @@ public class AppEng
 	}
 
 	@EventHandler
-	public void processIMC( FMLInterModComms.IMCEvent event )
+	public void handleIMCEvent( FMLInterModComms.IMCEvent event )
 	{
-		for ( IMCMessage m : event.getMessages() )
-		{
-			try
-			{
-				IIMCHandler handler = IMCHandlers.get( m.key );
-				if ( handler != null )
-					handler.post( m );
-				else
-					throw new RuntimeException( "Invalid IMC Called: " + m.key );
-			}
-			catch ( Throwable t )
-			{
-				AELog.warning( "Problem detected when processing IMC " + m.key + " from " + m.getSender() );
-				AELog.error( t );
-			}
-		}
+		this.imcHandler.handleIMCEvent( event );
 	}
 
 	@EventHandler
@@ -228,5 +190,4 @@ public class AppEng
 	{
 		evt.registerServerCommand( new AECommand( evt.getServer() ) );
 	}
-
 }

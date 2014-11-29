@@ -54,14 +54,13 @@ package appeng.core.api.imc;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.AEApi;
-import appeng.core.api.IIMCHandler;
+import appeng.core.api.IIMCProcessor;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 
-public class IMCGrinder implements IIMCHandler
+public class IMCGrinder implements IIMCProcessor
 {
-
 	@Override
-	public void post(IMCMessage m)
+	public void process( IMCMessage m )
 	{
 		NBTTagCompound msg = m.getNBTValue();
 		NBTTagCompound inTag = (NBTTagCompound) msg.getTag( "in" );
@@ -93,5 +92,4 @@ public class IMCGrinder implements IIMCHandler
 		else
 			AEApi.instance().registries().grinder().addRecipe( in, out, turns );
 	}
-
 }
