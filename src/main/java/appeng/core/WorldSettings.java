@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -129,7 +128,7 @@ public class WorldSettings extends Configuration
 
 	public Collection<NBTTagCompound> getNearByMeteorites( int dim, int chunkX, int chunkZ )
 	{
-		Deque<NBTTagCompound> ll = new LinkedList<NBTTagCompound>();
+		Collection<NBTTagCompound> ll = new LinkedList<NBTTagCompound>();
 
 		synchronized ( WorldSettings.class )
 		{
@@ -377,12 +376,14 @@ public class WorldSettings extends Configuration
 
 		if ( result == null || result.get() == null )
 		{
-			String Data = this.get( "gridstorage", String.valueOf( storageID ), "" ).getString();
+			String id = String.valueOf( storageID );
+			String Data = this.get( "gridstorage", id, "" ).getString();
 			GridStorage thisStorage = new GridStorage( Data, storageID, gss );
 			gss.gridStorage = new WeakReference<GridStorage>( thisStorage );
 			this.loadedStorage.put( gss, new WeakReference<GridStorageSearch>( gss ) );
 			return thisStorage;
 		}
+
 		return result.get().gridStorage.get();
 	}
 
@@ -408,7 +409,8 @@ public class WorldSettings extends Configuration
 
 	public void destroyGridStorage( long id )
 	{
-		this.getCategory( "gridstorage" ).remove( String.valueOf( id ) );
+		String stringID = String.valueOf( id );
+		this.getCategory( "gridstorage" ).remove( stringID );
 	}
 
 	public int getNextOrderedValue( String name )
