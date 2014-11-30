@@ -33,18 +33,18 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 	private final int iconIdxOn;
 	private final int iconIdxOff;
 
-	private final String name;
-	private final String hint;
+	private final String displayName;
+	private final String displayHint;
 
 	private boolean on;
 
-	public GuiToggleButton( int x, int y, int on, int off, String Name, String Hint )
+	public GuiToggleButton( int x, int y, int on, int off, String displayName, String displayHint )
 	{
 		super( 0, 0, 16, "" );
 		this.iconIdxOn = on;
 		this.iconIdxOff = off;
-		this.name = Name;
-		this.hint = Hint;
+		this.displayName = displayName;
+		this.displayHint = displayHint;
 		this.xPosition = x;
 		this.yPosition = y;
 		this.width = 16;
@@ -84,21 +84,18 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 	@Override
 	public String getMessage()
 	{
-		String DisplayName = this.name;
-		String DisplayValue = this.hint;
-
-		if ( DisplayName != null )
+		if ( this.displayName != null )
 		{
-			String Name = StatCollector.translateToLocal( DisplayName );
-			String Value = StatCollector.translateToLocal( DisplayValue );
+			String name = StatCollector.translateToLocal( this.displayName );
+			String value = StatCollector.translateToLocal( this.displayHint );
 
-			if ( Name == null || Name.isEmpty() )
-				Name = DisplayName;
-			if ( Value == null || Value.isEmpty() )
-				Value = DisplayValue;
+			if ( name == null || name.isEmpty() )
+				name = this.displayName;
+			if ( value == null || value.isEmpty() )
+				value = this.displayHint;
 
-			Value = Value.replace( "\\n", "\n" );
-			StringBuilder sb = new StringBuilder( Value );
+			value = value.replace( "\\n", "\n" );
+			StringBuilder sb = new StringBuilder( value );
 
 			int i = sb.lastIndexOf( "\n" );
 			if ( i <= 0 )
@@ -108,7 +105,7 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 				sb.replace( i, i + 1, "\n" );
 			}
 
-			return Name + '\n' + sb;
+			return name + '\n' + sb;
 		}
 		return null;
 	}
