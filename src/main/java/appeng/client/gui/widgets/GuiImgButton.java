@@ -356,7 +356,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			if ( this.getClass() != obj.getClass() )
 				return false;
 			EnumPair other = ( EnumPair ) obj;
-			return other.setting.equals( this.setting ) && other.value.equals( this.value );
+			return other.setting == this.setting && other.value == this.value;
 		}
 	}
 
