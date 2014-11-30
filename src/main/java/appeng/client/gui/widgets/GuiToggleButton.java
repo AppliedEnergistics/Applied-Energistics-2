@@ -27,58 +27,53 @@ import net.minecraft.util.StatCollector;
 
 import appeng.client.texture.ExtraBlockTextures;
 
+
 public class GuiToggleButton extends GuiButton implements ITooltip
 {
+	private final int iconIdxOn;
+	private final int iconIdxOff;
 
-	final int iconIdxOn;
-	final int iconIdxOff;
+	private final String name;
+	private final String hint;
 
-	final String Name;
-	final String Hint;
+	private boolean on;
 
-	boolean on;
-
-	public void setState(boolean isOn)
+	public GuiToggleButton( int x, int y, int on, int off, String Name, String Hint )
 	{
-		on = isOn;
-	}
-
-	public void setVisibility(boolean vis)
-	{
-		visible = vis;
-		enabled = vis;
-	}
-
-	public GuiToggleButton(int x, int y, int on, int off, String Name, String Hint) {
 		super( 0, 0, 16, "" );
-		iconIdxOn = on;
-		iconIdxOff = off;
-		this.Name = Name;
-		this.Hint = Hint;
-		xPosition = x;
-		yPosition = y;
-		width = 16;
-		height = 16;
+		this.iconIdxOn = on;
+		this.iconIdxOff = off;
+		this.name = Name;
+		this.hint = Hint;
+		this.xPosition = x;
+		this.yPosition = y;
+		this.width = 16;
+		this.height = 16;
 	}
 
-	@Override
-	public boolean isVisible()
+	public void setState( boolean isOn )
 	{
-		return visible;
+		this.on = isOn;
+	}
+
+	public void setVisibility( boolean vis )
+	{
+		this.visible = vis;
+		this.enabled = vis;
 	}
 
 	@Override
-	public void drawButton(Minecraft par1Minecraft, int par2, int par3)
+	public void drawButton( Minecraft par1Minecraft, int par2, int par3 )
 	{
 		if ( this.visible )
 		{
-			int iconIndex = getIconIndex();
+			int iconIndex = this.getIconIndex();
 
 			GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 			par1Minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
 			this.field_146123_n = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
 
-			int uv_y = (int) Math.floor( iconIndex / 16 );
+			int uv_y = ( int ) Math.floor( iconIndex / 16 );
 			int uv_x = iconIndex - uv_y * 16;
 
 			this.drawTexturedModalRect( this.xPosition, this.yPosition, 256 - 16, 256 - 16, 16, 16 );
@@ -89,14 +84,14 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 
 	private int getIconIndex()
 	{
-		return on ? iconIdxOn : iconIdxOff;
+		return this.on ? this.iconIdxOn : this.iconIdxOff;
 	}
 
 	@Override
 	public String getMsg()
 	{
-		String DisplayName = Name;
-		String DisplayValue = Hint;
+		String DisplayName = this.name;
+		String DisplayValue = this.hint;
 
 		if ( DisplayName != null )
 		{
@@ -114,7 +109,7 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 			int i = sb.lastIndexOf( "\n" );
 			if ( i <= 0 )
 				i = 0;
-			while (i + 30 < sb.length() && (i = sb.lastIndexOf( " ", i + 30 )) != -1)
+			while ( i + 30 < sb.length() && ( i = sb.lastIndexOf( " ", i + 30 ) ) != -1 )
 			{
 				sb.replace( i, i + 1, "\n" );
 			}
@@ -127,13 +122,13 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 	@Override
 	public int xPos()
 	{
-		return xPosition;
+		return this.xPosition;
 	}
 
 	@Override
 	public int yPos()
 	{
-		return yPosition;
+		return this.yPosition;
 	}
 
 	@Override
@@ -148,4 +143,9 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 		return 16;
 	}
 
+	@Override
+	public boolean isVisible()
+	{
+		return this.visible;
+	}
 }

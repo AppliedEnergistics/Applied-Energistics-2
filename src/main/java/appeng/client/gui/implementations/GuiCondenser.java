@@ -90,7 +90,7 @@ public class GuiCondenser extends AEBaseGui
 		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
 
 		mode.set( cvc.output );
-		mode.FillVar = String.valueOf( cvc.output.requiredPower );
+		mode.fillVar = String.valueOf( cvc.output.requiredPower );
 
 	}
 
