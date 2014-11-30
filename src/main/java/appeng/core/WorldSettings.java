@@ -57,7 +57,7 @@ import appeng.services.CompassService;
 public class WorldSettings extends Configuration
 {
 	private static final String SPAWNDATA_FOLDER = "spawndata";
-	private static final String COMPASS_Folder = "compass";
+	private static final String COMPASS_FOLDER = "compass";
 
 	private static WorldSettings instance;
 	private final List<Integer> storageCellDims = new ArrayList<Integer>();
@@ -108,7 +108,7 @@ public class WorldSettings extends Configuration
 				throw new RuntimeException( "Failed to create " + aeBaseFolder.getAbsolutePath() );
 			}
 
-			File compass = new File( aeBaseFolder, COMPASS_Folder );
+			File compass = new File( aeBaseFolder, COMPASS_FOLDER );
 			if ( !compass.isDirectory() && !compass.mkdir() )
 			{
 				throw new RuntimeException( "Failed to create " + compass.getAbsolutePath() );
