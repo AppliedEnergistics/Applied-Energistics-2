@@ -54,7 +54,7 @@ import appeng.core.localization.ButtonToolTips;
 public class GuiImgButton extends GuiButton implements ITooltip
 {
 	private static final Pattern COMPILE = Pattern.compile( "%s" );
-	private static Map<EnumPair, BtnAppearance> appearances;
+	private static Map<EnumPair, ButtonAppearance> appearances;
 	private final Enum buttonSetting;
 	public boolean halfSize = false;
 	public String fillVar;
@@ -73,7 +73,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 
 		if ( appearances == null )
 		{
-			appearances = new HashMap<EnumPair, BtnAppearance>();
+			appearances = new HashMap<EnumPair, ButtonAppearance>();
 			this.registerApp( 16 * 7, Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH, ButtonToolTips.CondenserOutput, ButtonToolTips.Trash );
 			this.registerApp( 16 * 7 + 1, Settings.CONDENSER_OUTPUT, CondenserOutput.MATTER_BALLS, ButtonToolTips.CondenserOutput, ButtonToolTips.MatterBalls );
 			this.registerApp( 16 * 7 + 2, Settings.CONDENSER_OUTPUT, CondenserOutput.SINGULARITY, ButtonToolTips.CondenserOutput, ButtonToolTips.Singularity );
@@ -160,9 +160,9 @@ public class GuiImgButton extends GuiButton implements ITooltip
 
 	private void registerApp( int IIcon, Settings setting, Enum val, ButtonToolTips title, Object hint )
 	{
-		BtnAppearance a = new BtnAppearance();
-		a.DisplayName = title.getUnlocalized();
-		a.DisplayValue = ( String ) ( hint instanceof String ? hint : ( ( ButtonToolTips ) hint ).getUnlocalized() );
+		ButtonAppearance a = new ButtonAppearance();
+		a.displayName = title.getUnlocalized();
+		a.displayValue = ( String ) ( hint instanceof String ? hint : ( ( ButtonToolTips ) hint ).getUnlocalized() );
 		a.index = IIcon;
 		appearances.put( new EnumPair( setting, val ), a );
 	}
@@ -231,7 +231,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 	{
 		if ( this.buttonSetting != null && this.currentValue != null )
 		{
-			BtnAppearance app = appearances.get( new EnumPair( this.buttonSetting, this.currentValue ) );
+			ButtonAppearance app = appearances.get( new EnumPair( this.buttonSetting, this.currentValue ) );
 			if ( app == null )
 				return 256 - 1;
 			return app.index;
@@ -252,34 +252,34 @@ public class GuiImgButton extends GuiButton implements ITooltip
 	@Override
 	public String getMsg()
 	{
-		String DisplayName = null;
-		String DisplayValue = null;
+		String displayName = null;
+		String displayValue = null;
 
 		if ( this.buttonSetting != null && this.currentValue != null )
 		{
-			BtnAppearance ba = appearances.get( new EnumPair( this.buttonSetting, this.currentValue ) );
-			if ( ba == null )
+			ButtonAppearance buttonAppearance = appearances.get( new EnumPair( this.buttonSetting, this.currentValue ) );
+			if ( buttonAppearance == null )
 				return "No Such Message";
 
-			DisplayName = ba.DisplayName;
-			DisplayValue = ba.DisplayValue;
+			displayName = buttonAppearance.displayName;
+			displayValue = buttonAppearance.displayValue;
 		}
 
-		if ( DisplayName != null )
+		if ( displayName != null )
 		{
-			String name = StatCollector.translateToLocal( DisplayName );
-			String Value = StatCollector.translateToLocal( DisplayValue );
+			String name = StatCollector.translateToLocal( displayName );
+			String value = StatCollector.translateToLocal( displayValue );
 
 			if ( name == null || name.isEmpty() )
-				name = DisplayName;
-			if ( Value == null || Value.isEmpty() )
-				Value = DisplayValue;
+				name = displayName;
+			if ( value == null || value.isEmpty() )
+				value = displayValue;
 
 			if ( this.fillVar != null )
-				Value = COMPILE.matcher( Value ).replaceFirst( this.fillVar );
+				value = COMPILE.matcher( value ).replaceFirst( this.fillVar );
 
-			Value = Value.replace( "\\n", "\n" );
-			StringBuilder sb = new StringBuilder( Value );
+			value = value.replace( "\\n", "\n" );
+			StringBuilder sb = new StringBuilder( value );
 
 			int i = sb.lastIndexOf( "\n" );
 			if ( i <= 0 )
@@ -363,11 +363,10 @@ public class GuiImgButton extends GuiButton implements ITooltip
 	}
 
 
-	static class BtnAppearance
+	private static class ButtonAppearance
 	{
-
 		public int index;
-		public String DisplayName;
-		public String DisplayValue;
+		public String displayName;
+		public String displayValue;
 	}
 }
