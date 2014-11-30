@@ -56,12 +56,6 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 		this.on = isOn;
 	}
 
-	public void setVisibility( boolean vis )
-	{
-		this.visible = vis;
-		this.enabled = vis;
-	}
-
 	@Override
 	public void drawButton( Minecraft par1Minecraft, int par2, int par3 )
 	{
