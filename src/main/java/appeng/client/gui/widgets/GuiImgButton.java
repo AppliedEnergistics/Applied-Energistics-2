@@ -158,12 +158,12 @@ public class GuiImgButton extends GuiButton implements ITooltip
 		}
 	}
 
-	private void registerApp( int IIcon, Settings setting, Enum val, ButtonToolTips title, Object hint )
+	private void registerApp( int iconIndex, Settings setting, Enum val, ButtonToolTips title, Object hint )
 	{
 		ButtonAppearance a = new ButtonAppearance();
 		a.displayName = title.getUnlocalized();
 		a.displayValue = ( String ) ( hint instanceof String ? hint : ( ( ButtonToolTips ) hint ).getUnlocalized() );
-		a.index = IIcon;
+		a.index = iconIndex;
 		appearances.put( new EnumPair( setting, val ), a );
 	}
 
