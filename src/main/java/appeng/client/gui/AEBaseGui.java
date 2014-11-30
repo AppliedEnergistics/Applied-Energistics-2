@@ -506,7 +506,7 @@ public abstract class AEBaseGui extends GuiContainer
 						if ( y < 15 )
 							y = 15;
 
-						String msg = tooltip.getMsg();
+						String msg = tooltip.getMessage();
 						if ( msg != null )
 							drawTooltip( x + 11, y + 4, 0, msg );
 					}

@@ -93,7 +93,7 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 	}
 
 	@Override
-	public String getMsg()
+	public String getMessage()
 	{
 		if ( fullMsg != null )
 			return fullMsg;

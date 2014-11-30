@@ -250,7 +250,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 	}
 
 	@Override
-	public String getMsg()
+	public String getMessage()
 	{
 		String displayName = null;
 		String displayValue = null;

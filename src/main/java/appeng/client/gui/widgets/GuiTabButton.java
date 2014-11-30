@@ -34,25 +34,35 @@ import appeng.client.texture.ExtraBlockTextures;
 
 public class GuiTabButton extends GuiButton implements ITooltip
 {
-	final RenderItem itemRenderer;
-	final String Msg;
+	private final RenderItem itemRenderer;
+	private final String message;
 	public int hideEdge = 0;
-	int myIcon = -1;
-	ItemStack myItem;
+	private int myIcon = -1;
+	private ItemStack myItem;
 
-	public GuiTabButton( int x, int y, int ico, String Msg, RenderItem ir )
+	public GuiTabButton( int x, int y, int ico, String message, RenderItem ir )
 	{
 		super( 0, 0, 16, "" );
+
 		this.xPosition = x;
 		this.yPosition = y;
 		this.width = 22;
 		this.height = 22;
 		this.myIcon = ico;
-		this.Msg = Msg;
+		this.message = message;
 		this.itemRenderer = ir;
 	}
 
-	public GuiTabButton( int x, int y, ItemStack ico, String Msg, RenderItem ir )
+	/**
+	 * Using itemstack as an icon
+	 *
+	 * @param x x pos of button
+	 * @param y y pos of button
+	 * @param ico used icon
+	 * @param message mouse over message
+	 * @param ir renderer
+	 */
+	public GuiTabButton( int x, int y, ItemStack ico, String message, RenderItem ir )
 	{
 		super( 0, 0, 16, "" );
 		this.xPosition = x;
@@ -60,18 +70,18 @@ public class GuiTabButton extends GuiButton implements ITooltip
 		this.width = 22;
 		this.height = 22;
 		this.myItem = ico;
-		this.Msg = Msg;
+		this.message = message;
 		this.itemRenderer = ir;
 	}
 
 	@Override
-	public void drawButton( Minecraft par1Minecraft, int par2, int par3 )
+	public void drawButton( Minecraft minecraft, int x, int y )
 	{
 		if ( this.visible )
 		{
 			GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-			par1Minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
-			this.field_146123_n = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
+			minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
+			this.field_146123_n = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
 
 			int uv_y = ( int ) Math.floor( 13 / 16 );
 			int uv_x = ( this.hideEdge > 0 ? 11 : 13 ) - uv_y * 16;
@@ -88,7 +98,7 @@ public class GuiTabButton extends GuiButton implements ITooltip
 				this.drawTexturedModalRect( offsetX + this.xPosition + 3, this.yPosition + 3, uv_x * 16, uv_y * 16, 16, 16 );
 			}
 
-			this.mouseDragged( par1Minecraft, par2, par3 );
+			this.mouseDragged( minecraft, x, y );
 
 			if ( this.myItem != null )
 			{
@@ -98,8 +108,8 @@ public class GuiTabButton extends GuiButton implements ITooltip
 				GL11.glEnable( GL11.GL_LIGHTING );
 				GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 				RenderHelper.enableGUIStandardItemLighting();
-				FontRenderer fontrenderer = par1Minecraft.fontRenderer;
-				this.itemRenderer.renderItemAndEffectIntoGUI( fontrenderer, par1Minecraft.renderEngine, this.myItem, offsetX + this.xPosition + 3, this.yPosition + 3 );
+				FontRenderer fontrenderer = minecraft.fontRenderer;
+				this.itemRenderer.renderItemAndEffectIntoGUI( fontrenderer, minecraft.renderEngine, this.myItem, offsetX + this.xPosition + 3, this.yPosition + 3 );
 				GL11.glDisable( GL11.GL_LIGHTING );
 
 				this.itemRenderer.zLevel = 0.0F;
@@ -109,9 +119,9 @@ public class GuiTabButton extends GuiButton implements ITooltip
 	}
 
 	@Override
-	public String getMsg()
+	public String getMessage()
 	{
-		return this.Msg;
+		return this.message;
 	}
 
 	@Override

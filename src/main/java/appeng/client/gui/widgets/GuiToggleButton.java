@@ -88,7 +88,7 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 	}
 
 	@Override
-	public String getMsg()
+	public String getMessage()
 	{
 		String DisplayName = this.name;
 		String DisplayValue = this.hint;
