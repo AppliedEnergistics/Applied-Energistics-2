@@ -18,26 +18,29 @@
 
 package appeng.me;
 
-import java.util.HashMap;
+
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
+import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.util.IReadOnlyCollection;
 
-public class NodeIterable<T> implements IReadOnlyCollection<T>
+
+public class GridNodeCollection implements IReadOnlyCollection<IGridNode>
 {
+	final private Map<Class<? extends IGridHost>, MachineSet> machines;
 
-	final private HashMap<Class, Set<IGridNode>> Machines;
-
-	public NodeIterable(HashMap<Class, Set<IGridNode>> Machines) {
-		this.Machines = Machines;
+	public GridNodeCollection( Map<Class<? extends IGridHost>, MachineSet> machines )
+	{
+		this.machines = machines;
 	}
 
 	@Override
-	public Iterator<T> iterator()
+	public Iterator<IGridNode> iterator()
 	{
-		return new NodeIterator( Machines );
+		return new GridNodeIterator( this.machines );
 	}
 
 	@Override
@@ -45,7 +48,7 @@ public class NodeIterable<T> implements IReadOnlyCollection<T>
 	{
 		int size = 0;
 
-		for (Set<IGridNode> o : Machines.values())
+		for ( Set<IGridNode> o : this.machines.values() )
 			size += o.size();
 
 		return size;
@@ -54,7 +57,7 @@ public class NodeIterable<T> implements IReadOnlyCollection<T>
 	@Override
 	public boolean isEmpty()
 	{
-		for (Set<IGridNode> o : Machines.values())
+		for ( Set<IGridNode> o : this.machines.values() )
 			if ( !o.isEmpty() )
 				return false;
 
@@ -62,14 +65,25 @@ public class NodeIterable<T> implements IReadOnlyCollection<T>
 	}
 
 	@Override
-	public boolean contains(Object node)
+	public boolean contains( Object maybeGridNode )
 	{
-		Class c = ((IGridNode) node).getMachine().getClass();
+		final boolean doesContainNode;
 
-		Set<IGridNode> p = Machines.get( c );
-		if ( p != null )
-			return p.contains( node );
+		if ( maybeGridNode instanceof IGridNode )
+		{
+			final IGridNode node = ( IGridNode ) maybeGridNode;
+			IGridHost machine = node.getMachine();
+			Class<? extends IGridHost> machineClass = machine.getClass();
 
-		return false;
+			MachineSet machineSet = this.machines.get( machineClass );
+
+			doesContainNode = machineSet != null && machineSet.contains( maybeGridNode );
+		}
+		else
+		{
+			doesContainNode = false;
+		}
+
+		return doesContainNode;
 	}
 }

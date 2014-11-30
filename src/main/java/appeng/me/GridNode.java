@@ -18,8 +18,10 @@
 
 package appeng.me;
 
+
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,14 +31,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridNotification;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridCache;
-import appeng.api.networking.IGridConnectionVisitor;
 import appeng.api.networking.IGridConnection;
+import appeng.api.networking.IGridConnectionVisitor;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridVisitor;
@@ -51,102 +54,277 @@ import appeng.hooks.TickHandler;
 import appeng.me.pathfinding.IPathItem;
 import appeng.util.ReadOnlyCollection;
 
+
 public class GridNode implements IGridNode, IPathItem
 {
+	private static final MENetworkChannelsChanged event = new MENetworkChannelsChanged();
+	private static final int[] channelCount = new int[] { 0, 8, 32 };
 
-	final static private MENetworkChannelsChanged event = new MENetworkChannelsChanged();
-	final static private int channelCount[] = new int[] { 0, 8, 32 };
-
-	final List<IGridConnection> Connections = new LinkedList<IGridConnection>();
-	GridStorage myStorage = null;
-
-	final IGridBlock gridProxy;
-	Grid myGrid;
-
-	Object visitorIterationNumber = null;
-
-	// connection criteria
-	private int compressedData = 0;
-
-	@Override
-	public void updateState()
-	{
-		EnumSet<GridFlags> set = gridProxy.getFlags();
-
-		compressedData = set.contains( GridFlags.CANNOT_CARRY ) ? 0 : (set.contains( GridFlags.DENSE_CAPACITY ) ? 2 : 1);
-
-		compressedData = compressedData | (gridProxy.getGridColor().ordinal() << 3);
-
-		for (ForgeDirection dir : gridProxy.getConnectableSides())
-			compressedData = compressedData | (1 << (dir.ordinal() + 8));
-
-		FindConnections();
-		getInternalGrid();
-	}
-
-	public int getMaxChannels()
-	{
-		return channelCount[compressedData & 0x03];
-	}
-
-	public AEColor getColor()
-	{
-		return AEColor.values()[(compressedData >> 3) & 0x1F];
-	}
-
-	private boolean isValidDirection(ForgeDirection dir)
-	{
-		return (compressedData & (1 << (8 + dir.ordinal()))) > 0;
-	}
-
+	private final List<IGridConnection> connections = new LinkedList<IGridConnection>();
+	private final IGridBlock gridProxy;
 	// old power draw, used to diff
 	public double previousDraw = 0.0;
-
-	private int channelData = 0;
-
 	public long lastSecurityKey = -1;
 	public int playerID = -1;
+	private GridStorage myStorage = null;
+	private Grid myGrid;
+	private Object visitorIterationNumber = null;
+	// connection criteria
+	private int compressedData = 0;
+	private int channelData = 0;
+
+	public GridNode( IGridBlock what )
+	{
+		this.gridProxy = what;
+	}
+
+	public IGridBlock getGridProxy()
+	{
+		return this.gridProxy;
+	}
+
+	public Grid getMyGrid()
+	{
+		return this.myGrid;
+	}
+
+	public int usedChannels()
+	{
+		return this.channelData >> 8;
+	}
+
+	public Class<? extends IGridHost> getMachineClass()
+	{
+		return this.getMachine().getClass();
+	}
+
+	public void addConnection( IGridConnection gridConnection )
+	{
+		this.connections.add( gridConnection );
+		if ( gridConnection.hasDirection() )
+			this.gridProxy.onGridNotification( GridNotification.ConnectionsChanged );
+
+		final IGridNode gn = this;
+
+		Collections.sort( this.connections, new ConnectionComparator( gn ) );
+	}
+
+	public void removeConnection( IGridConnection gridConnection )
+	{
+		this.connections.remove( gridConnection );
+		if ( gridConnection.hasDirection() )
+			this.gridProxy.onGridNotification( GridNotification.ConnectionsChanged );
+	}
+
+	public boolean hasConnection( IGridNode otherSide )
+	{
+		for ( IGridConnection gc : this.connections )
+		{
+			if ( gc.a() == otherSide || gc.b() == otherSide )
+				return true;
+		}
+		return false;
+	}
+
+	public void validateGrid()
+	{
+		GridSplitDetector gsd = new GridSplitDetector( this.getInternalGrid().getPivot() );
+		this.beginVisit( gsd );
+		if ( !gsd.pivotFound )
+		{
+			IGridVisitor gp = new GridPropagator( new Grid( this ) );
+			this.beginVisit( gp );
+		}
+	}
 
 	@Override
-	public void setPlayerID(int playerID)
+	public void setPlayerID( int playerID )
 	{
 		if ( playerID >= 0 )
 			this.playerID = playerID;
 	}
 
-	public int usedChannels()
+	public Grid getInternalGrid()
 	{
-		return channelData >> 8;
-	}
+		if ( this.myGrid == null )
+			this.myGrid = new Grid( this );
 
-	public GridNode(IGridBlock what) {
-		gridProxy = what;
+		return this.myGrid;
 	}
 
 	@Override
-	public void loadFromNBT(String name, NBTTagCompound nodeData)
+	public void beginVisit( IGridVisitor g )
 	{
-		if ( myGrid == null )
+		Object tracker = new Object();
+
+		LinkedList<GridNode> nextRun = new LinkedList<GridNode>();
+		nextRun.add( this );
+
+		this.visitorIterationNumber = tracker;
+
+		if ( g instanceof IGridConnectionVisitor )
+		{
+			LinkedList<IGridConnection> nextConn = new LinkedList<IGridConnection>();
+			IGridConnectionVisitor gcv = ( IGridConnectionVisitor ) g;
+
+			while ( !nextRun.isEmpty() )
+			{
+				while ( !nextConn.isEmpty() )
+					gcv.visitConnection( nextConn.poll() );
+
+				LinkedList<GridNode> thisRun = nextRun;
+				nextRun = new LinkedList<GridNode>();
+
+				for ( GridNode n : thisRun )
+					n.visitorConnection( tracker, g, nextRun, nextConn );
+			}
+		}
+		else
+		{
+			while ( !nextRun.isEmpty() )
+			{
+				LinkedList<GridNode> thisRun = nextRun;
+				nextRun = new LinkedList<GridNode>();
+
+				for ( GridNode n : thisRun )
+					n.visitorNode( tracker, g, nextRun );
+			}
+		}
+	}
+
+	@Override
+	public void updateState()
+	{
+		EnumSet<GridFlags> set = this.gridProxy.getFlags();
+
+		this.compressedData = set.contains( GridFlags.CANNOT_CARRY ) ? 0 : ( set.contains( GridFlags.DENSE_CAPACITY ) ? 2 : 1 );
+
+		this.compressedData |= ( this.gridProxy.getGridColor().ordinal() << 3 );
+
+		for ( ForgeDirection dir : this.gridProxy.getConnectableSides() )
+			this.compressedData |= ( 1 << ( dir.ordinal() + 8 ) );
+
+		this.FindConnections();
+		this.getInternalGrid();
+	}
+
+	@Override
+	public IGridHost getMachine()
+	{
+		return this.gridProxy.getMachine();
+	}
+
+	@Override
+	public IGrid getGrid()
+	{
+		return this.myGrid;
+	}
+
+	public void setGrid( Grid grid )
+	{
+		if ( this.myGrid == grid )
+			return;
+
+		if ( this.myGrid != null )
+		{
+			this.myGrid.remove( this );
+
+			if ( this.myGrid.isEmpty() )
+			{
+				this.myGrid.saveState();
+
+				for ( IGridCache c : grid.getCaches().values() )
+					c.onJoin( this.myGrid.getMyStorage() );
+			}
+		}
+
+		this.myGrid = grid;
+		this.myGrid.add( this );
+	}
+
+	@Override
+	public void destroy()
+	{
+		while ( !this.connections.isEmpty() )
+		{
+			// not part of this network for real anymore.
+			if ( this.connections.size() == 1 )
+				this.setGridStorage( null );
+
+			IGridConnection c = this.connections.listIterator().next();
+			GridNode otherSide = ( GridNode ) c.getOtherSide( this );
+			otherSide.getInternalGrid().setPivot( otherSide );
+			c.destroy();
+		}
+
+		if ( this.myGrid != null )
+			this.myGrid.remove( this );
+	}
+
+	@Override
+	public World getWorld()
+	{
+		return this.gridProxy.getLocation().getWorld();
+	}
+
+	@Override
+	public EnumSet<ForgeDirection> getConnectedSides()
+	{
+		EnumSet<ForgeDirection> set = EnumSet.noneOf( ForgeDirection.class );
+		for ( IGridConnection gc : this.connections )
+			set.add( gc.getDirection( this ) );
+		return set;
+	}
+
+	@Override
+	public IReadOnlyCollection<IGridConnection> getConnections()
+	{
+		return new ReadOnlyCollection<IGridConnection>( this.connections );
+	}
+
+	@Override
+	public IGridBlock getGridBlock()
+	{
+		return this.gridProxy;
+	}
+
+	@Override
+	public boolean isActive()
+	{
+		IGrid g = this.getGrid();
+		if ( g != null )
+		{
+			IPathingGrid pg = g.getCache( IPathingGrid.class );
+			IEnergyGrid eg = g.getCache( IEnergyGrid.class );
+			return this.meetsChannelRequirements() && eg.isNetworkPowered() && !pg.isNetworkBooting();
+		}
+		return false;
+	}
+
+	@Override
+	public void loadFromNBT( String name, NBTTagCompound nodeData )
+	{
+		if ( this.myGrid == null )
 		{
 			NBTTagCompound node = nodeData.getCompoundTag( name );
-			playerID = node.getInteger( "p" );
-			lastSecurityKey = node.getLong( "k" );
-			setGridStorage( WorldSettings.getInstance().getGridStorage( node.getLong( "g" ) ) );
+			this.playerID = node.getInteger( "p" );
+			this.lastSecurityKey = node.getLong( "k" );
+			this.setGridStorage( WorldSettings.getInstance().getGridStorage( node.getLong( "g" ) ) );
 		}
 		else
 			throw new RuntimeException( "Loading data after part of a grid, this is invalid." );
 	}
 
 	@Override
-	public void saveToNBT(String name, NBTTagCompound nodeData)
+	public void saveToNBT( String name, NBTTagCompound nodeData )
 	{
-		if ( myStorage != null )
+		if ( this.myStorage != null )
 		{
 			NBTTagCompound node = new NBTTagCompound();
 
-			node.setInteger( "p", playerID );
-			node.setLong( "k", lastSecurityKey );
-			node.setLong( "g", myStorage.getID() );
+			node.setInteger( "p", this.playerID );
+			node.setLong( "k", this.lastSecurityKey );
+			node.setLong( "g", this.myStorage.getID() );
 
 			nodeData.setTag( name, node );
 		}
@@ -155,136 +333,44 @@ public class GridNode implements IGridNode, IPathItem
 	}
 
 	@Override
-	public IGridBlock getGridBlock()
+	public boolean meetsChannelRequirements()
 	{
-		return gridProxy;
+		return ( !this.gridProxy.getFlags().contains( GridFlags.REQUIRE_CHANNEL ) || this.getUsedChannels() > 0 );
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getConnectedSides()
+	public boolean hasFlag( GridFlags flag )
 	{
-		EnumSet<ForgeDirection> set = EnumSet.noneOf( ForgeDirection.class );
-		for (IGridConnection gc : Connections)
-			set.add( gc.getDirection( this ) );
-		return set;
+		return this.gridProxy.getFlags().contains( flag );
 	}
 
-	public Class<? extends IGridHost> getMachineClass()
+	public int getUsedChannels()
 	{
-		return getMachine().getClass();
-	}
-
-	@Override
-	public IGridHost getMachine()
-	{
-		return gridProxy.getMachine();
-	}
-
-	@Override
-	public void beginVisit(IGridVisitor g)
-	{
-		Object tracker = new Object();
-
-		LinkedList<GridNode> nextRun = new LinkedList<GridNode>();
-		nextRun.add( this );
-
-		visitorIterationNumber = tracker;
-
-		if ( g instanceof IGridConnectionVisitor )
-		{
-			LinkedList<IGridConnection> nextConn = new LinkedList<IGridConnection>();
-			IGridConnectionVisitor gcv = (IGridConnectionVisitor) g;
-
-			while (!nextRun.isEmpty())
-			{
-				while (!nextConn.isEmpty())
-					gcv.visitConnection( nextConn.poll() );
-
-				LinkedList<GridNode> thisRun = nextRun;
-				nextRun = new LinkedList<GridNode>();
-
-				for (GridNode n : thisRun)
-					n.visitorConnection( tracker, g, nextRun, nextConn );
-			}
-		}
-		else
-		{
-			while (!nextRun.isEmpty())
-			{
-				LinkedList<GridNode> thisRun = nextRun;
-				nextRun = new LinkedList<GridNode>();
-
-				for (GridNode n : thisRun)
-					n.visitorNode( tracker, g, nextRun );
-			}
-		}
-	}
-
-	private void visitorConnection(Object tracker, IGridVisitor g, LinkedList<GridNode> nextRun, LinkedList<IGridConnection> nextConnections)
-	{
-		if ( g.visitNode( this ) )
-		{
-			for (IGridConnection gc : getConnections())
-			{
-				GridNode gn = (GridNode) gc.getOtherSide( this );
-				GridConnection gcc = (GridConnection) gc;
-
-				if ( gcc.visitorIterationNumber != tracker )
-				{
-					gcc.visitorIterationNumber = tracker;
-					nextConnections.add( gc );
-				}
-
-				if ( tracker == gn.visitorIterationNumber )
-					continue;
-
-				gn.visitorIterationNumber = tracker;
-
-				nextRun.add( gn );
-			}
-		}
-	}
-
-	private void visitorNode(Object tracker, IGridVisitor g, LinkedList<GridNode> nextRun)
-	{
-		if ( g.visitNode( this ) )
-		{
-			for (IGridConnection gc : getConnections())
-			{
-				GridNode gn = (GridNode) gc.getOtherSide( this );
-
-				if ( tracker == gn.visitorIterationNumber )
-					continue;
-
-				gn.visitorIterationNumber = tracker;
-
-				nextRun.add( gn );
-			}
-		}
+		return this.channelData & 0xff;
 	}
 
 	public void FindConnections()
 	{
-		if ( !gridProxy.isWorldAccessible() )
+		if ( !this.gridProxy.isWorldAccessible() )
 			return;
 
 		EnumSet<ForgeDirection> newSecurityConnections = EnumSet.noneOf( ForgeDirection.class );
 
-		DimensionalCoord dc = gridProxy.getLocation();
-		for (ForgeDirection f : ForgeDirection.VALID_DIRECTIONS)
+		DimensionalCoord dc = this.gridProxy.getLocation();
+		for ( ForgeDirection f : ForgeDirection.VALID_DIRECTIONS )
 		{
-			IGridHost te = findGridHost( dc.getWorld(), dc.x + f.offsetX, dc.y + f.offsetY, dc.z + f.offsetZ );
+			IGridHost te = this.findGridHost( dc.getWorld(), dc.x + f.offsetX, dc.y + f.offsetY, dc.z + f.offsetZ );
 			if ( te != null )
 			{
-				GridNode node = (GridNode) te.getGridNode( f.getOpposite() );
+				GridNode node = ( GridNode ) te.getGridNode( f.getOpposite() );
 				if ( node == null )
 					continue;
 
 				boolean isValidConnection = this.canConnect( node, f ) && node.canConnect( this, f.getOpposite() );
 
 				IGridConnection con = null; // find the connection for this
-											// direction..
-				for (IGridConnection c : getConnections())
+				// direction..
+				for ( IGridConnection c : this.getConnections() )
 				{
 					if ( c.getDirection( this ) == f )
 					{
@@ -319,33 +405,23 @@ public class GridNode implements IGridNode, IPathItem
 						{
 							new GridConnection( node, this, f.getOpposite() );
 						}
-						catch (FailedConnection e)
+						catch ( FailedConnection e )
 						{
-							TickHandler.instance.addCallable( node.getWorld(), new Callable() {
-
-								@Override
-								public Object call() throws Exception
-								{
-									getMachine().securityBreak();
-									return null;
-								}
-
-							} );
+							TickHandler.instance.addCallable( node.getWorld(), new MachineSecurityBreak( this ) );
 
 							return;
 						}
 					}
 				}
-
 			}
 		}
 
-		for (ForgeDirection f : newSecurityConnections)
+		for ( ForgeDirection f : newSecurityConnections )
 		{
-			IGridHost te = findGridHost( dc.getWorld(), dc.x + f.offsetX, dc.y + f.offsetY, dc.z + f.offsetZ );
+			IGridHost te = this.findGridHost( dc.getWorld(), dc.x + f.offsetX, dc.y + f.offsetY, dc.z + f.offsetZ );
 			if ( te != null )
 			{
-				GridNode node = (GridNode) te.getGridNode( f.getOpposite() );
+				GridNode node = ( GridNode ) te.getGridNode( f.getOpposite() );
 				if ( node == null )
 					continue;
 
@@ -354,18 +430,9 @@ public class GridNode implements IGridNode, IPathItem
 				{
 					new GridConnection( node, this, f.getOpposite() );
 				}
-				catch (FailedConnection e)
+				catch ( FailedConnection e )
 				{
-					TickHandler.instance.addCallable( node.getWorld(), new Callable() {
-
-						@Override
-						public Object call() throws Exception
-						{
-							getMachine().securityBreak();
-							return null;
-						}
-
-					} );
+					TickHandler.instance.addCallable( node.getWorld(), new MachineSecurityBreak( this ) );
 
 					return;
 				}
@@ -373,258 +440,206 @@ public class GridNode implements IGridNode, IPathItem
 		}
 	}
 
-	private IGridHost findGridHost(World world, int x, int y, int z)
+	private IGridHost findGridHost( World world, int x, int y, int z )
 	{
 		if ( world.blockExists( x, y, z ) )
 		{
 			TileEntity te = world.getTileEntity( x, y, z );
 			if ( te instanceof IGridHost )
-				return (IGridHost) te;
+				return ( IGridHost ) te;
 		}
 		return null;
 	}
 
-	public void addConnection(IGridConnection gridConnection)
+	public boolean canConnect( GridNode from, ForgeDirection dir )
 	{
-		Connections.add( gridConnection );
-		if ( gridConnection.hasDirection() )
-			gridProxy.onGridNotification( GridNotification.ConnectionsChanged );
-
-		final IGridNode gn = this;
-
-		Collections.sort( Connections, new Comparator<IGridConnection>() {
-
-			@Override
-			public int compare(IGridConnection o1, IGridConnection o2)
-			{
-				boolean preferredA = o1.getOtherSide( gn ).hasFlag( GridFlags.PREFERRED );
-				boolean preferredB = o2.getOtherSide( gn ).hasFlag( GridFlags.PREFERRED );
-
-				return preferredA == preferredB ? 0 : (preferredA ? -1 : 1);
-			}
-
-		} );
-	}
-
-	public void removeConnection(IGridConnection gridConnection)
-	{
-		Connections.remove( gridConnection );
-		if ( gridConnection.hasDirection() )
-			gridProxy.onGridNotification( GridNotification.ConnectionsChanged );
-	}
-
-	@Override
-	public IReadOnlyCollection<IGridConnection> getConnections()
-	{
-		return new ReadOnlyCollection<IGridConnection>( Connections );
-	}
-
-	public boolean hasConnection(IGridNode otherSide)
-	{
-		for (IGridConnection gc : Connections)
-		{
-			if ( gc.a() == otherSide || gc.b() == otherSide )
-				return true;
-		}
-		return false;
-	}
-
-	public boolean canConnect(GridNode from, ForgeDirection dir)
-	{
-		if ( !isValidDirection( dir ) )
+		if ( !this.isValidDirection( dir ) )
 			return false;
 
-		if ( !from.getColor().matches( getColor() ) )
+		if ( !from.getColor().matches( this.getColor() ) )
 			return false;
 
 		return true;
 	}
 
-	@Override
-	public IGrid getGrid()
+	private boolean isValidDirection( ForgeDirection dir )
 	{
-		return myGrid;
+		return ( this.compressedData & ( 1 << ( 8 + dir.ordinal() ) ) ) > 0;
 	}
 
-	public Grid getInternalGrid()
+	public AEColor getColor()
 	{
-		if ( myGrid == null )
-			myGrid = new Grid( this );
-
-		return myGrid;
+		return AEColor.values()[( this.compressedData >> 3 ) & 0x1F];
 	}
 
-	public void setGrid(Grid grid)
+	private void visitorConnection( Object tracker, IGridVisitor g, Deque<GridNode> nextRun, Deque<IGridConnection> nextConnections )
 	{
-		if ( myGrid == grid )
-			return;
-
-		if ( myGrid != null )
+		if ( g.visitNode( this ) )
 		{
-			myGrid.remove( this );
-
-			if ( myGrid.isEmpty() )
+			for ( IGridConnection gc : this.getConnections() )
 			{
-				myGrid.saveState();
+				GridNode gn = ( GridNode ) gc.getOtherSide( this );
+				GridConnection gcc = ( GridConnection ) gc;
 
-				for (IGridCache c : grid.caches.values())
-					c.onJoin( myGrid.myStorage );
+				if ( gcc.visitorIterationNumber != tracker )
+				{
+					gcc.visitorIterationNumber = tracker;
+					nextConnections.add( gc );
+				}
+
+				if ( tracker == gn.visitorIterationNumber )
+					continue;
+
+				gn.visitorIterationNumber = tracker;
+
+				nextRun.add( gn );
 			}
 		}
-
-		myGrid = grid;
-		myGrid.add( this );
 	}
 
-	public void validateGrid()
+	private void visitorNode( Object tracker, IGridVisitor g, Deque<GridNode> nextRun )
 	{
-		GridSplitDetector gsd = new GridSplitDetector( getInternalGrid().getPivot() );
-		beginVisit( gsd );
-		if ( !gsd.pivotFound )
+		if ( g.visitNode( this ) )
 		{
-			GridPropagator gp = new GridPropagator( new Grid( this ) );
-			beginVisit( gp );
+			for ( IGridConnection gc : this.getConnections() )
+			{
+				GridNode gn = ( GridNode ) gc.getOtherSide( this );
+
+				if ( tracker == gn.visitorIterationNumber )
+					continue;
+
+				gn.visitorIterationNumber = tracker;
+
+				nextRun.add( gn );
+			}
 		}
-	}
-
-	@Override
-	public void destroy()
-	{
-		while (!Connections.isEmpty())
-		{
-			// not part of this network for real anymore.
-			if ( Connections.size() == 1 )
-				setGridStorage( null );
-
-			IGridConnection c = Connections.listIterator().next();
-			GridNode otherSide = (GridNode) c.getOtherSide( this );
-			otherSide.getInternalGrid().pivot = otherSide;
-			c.destroy();
-		}
-
-		if ( myGrid != null )
-			myGrid.remove( this );
-	}
-
-	@Override
-	public World getWorld()
-	{
-		return gridProxy.getLocation().getWorld();
-	}
-
-	@Override
-	public boolean meetsChannelRequirements()
-	{
-		return (!getGridBlock().getFlags().contains( GridFlags.REQUIRE_CHANNEL ) || getUsedChannels() > 0);
-	}
-
-	@Override
-	public boolean isActive()
-	{
-		IGrid g = getGrid();
-		if ( g != null )
-		{
-			IPathingGrid pg = g.getCache( IPathingGrid.class );
-			IEnergyGrid eg = g.getCache( IEnergyGrid.class );
-			return meetsChannelRequirements() && eg.isNetworkPowered() && !pg.isNetworkBooting();
-		}
-		return false;
-	}
-
-	@Override
-	public boolean canSupportMoreChannels()
-	{
-		return getUsedChannels() < getMaxChannels();
-	}
-
-	@Override
-	public IReadOnlyCollection<IPathItem> getPossibleOptions()
-	{
-		return (ReadOnlyCollection) getConnections();
-	}
-
-	public int getLastUsedChannels()
-	{
-		return (channelData >> 8) & 0xff;
-	}
-
-	public int getUsedChannels()
-	{
-		return channelData & 0xff;
-	}
-
-	@Override
-	public void incrementChannelCount(int usedChannels)
-	{
-		channelData += usedChannels;
-	}
-
-	public void setGridStorage(GridStorage s)
-	{
-		myStorage = s;
-		channelData = 0;
 	}
 
 	public GridStorage getGridStorage()
 	{
-		return myStorage;
+		return this.myStorage;
 	}
 
-	@Override
-	public EnumSet<GridFlags> getFlags()
+	public void setGridStorage( GridStorage s )
 	{
-		return getGridBlock().getFlags();
-	}
-
-	@Override
-	public void finalizeChannels()
-	{
-		if ( getFlags().contains( GridFlags.CANNOT_CARRY ) )
-			return;
-
-		if ( getLastUsedChannels() != getUsedChannels() )
-		{
-			channelData = (channelData & 0xff);
-			channelData |= channelData << 8;
-
-			if ( getInternalGrid() != null )
-				getInternalGrid().postEventTo( this, event );
-		}
+		this.myStorage = s;
+		this.channelData = 0;
 	}
 
 	@Override
 	public IPathItem getControllerRoute()
 	{
-		if ( Connections.isEmpty() || getFlags().contains( GridFlags.CANNOT_CARRY ) )
+		if ( this.connections.isEmpty() || this.getFlags().contains( GridFlags.CANNOT_CARRY ) )
 			return null;
 
-		return (IPathItem) Connections.get( 0 );
+		return ( IPathItem ) this.connections.get( 0 );
 	}
 
 	@Override
-	public void setControllerRoute(IPathItem fast, boolean zeroOut)
+	public void setControllerRoute( IPathItem fast, boolean zeroOut )
 	{
 		if ( zeroOut )
-			channelData &= ~0xff;
+			this.channelData &= ~0xff;
 
-		int idx = Connections.indexOf( fast );
+		int idx = this.connections.indexOf( fast );
 		if ( idx > 0 )
 		{
-			Connections.remove( fast );
-			Connections.add( 0, (IGridConnection) fast );
+			this.connections.remove( fast );
+			this.connections.add( 0, ( IGridConnection ) fast );
 		}
 	}
 
 	@Override
-	public boolean hasFlag(GridFlags flag)
+	public boolean canSupportMoreChannels()
 	{
-		return getGridBlock().getFlags().contains( flag );
+		return this.getUsedChannels() < this.getMaxChannels();
+	}
+
+	public int getMaxChannels()
+	{
+		return channelCount[this.compressedData & 0x03];
+	}
+
+	@Override
+	public IReadOnlyCollection<IPathItem> getPossibleOptions()
+	{
+		return ( ReadOnlyCollection ) this.getConnections();
+	}
+
+	@Override
+	public void incrementChannelCount( int usedChannels )
+	{
+		this.channelData += usedChannels;
+	}
+
+	@Override
+	public EnumSet<GridFlags> getFlags()
+	{
+		return this.gridProxy.getFlags();
+	}
+
+	@Override
+	public void finalizeChannels()
+	{
+		if ( this.getFlags().contains( GridFlags.CANNOT_CARRY ) )
+			return;
+
+		if ( this.getLastUsedChannels() != this.getUsedChannels() )
+		{
+			this.channelData &= 0xff;
+			this.channelData |= this.channelData << 8;
+
+			if ( this.getInternalGrid() != null )
+				this.getInternalGrid().postEventTo( this, event );
+		}
+	}
+
+	public int getLastUsedChannels()
+	{
+		return ( this.channelData >> 8 ) & 0xff;
+	}
+
+	private static class MachineSecurityBreak implements Callable<Void>
+	{
+		private final GridNode node;
+
+		public MachineSecurityBreak( GridNode node )
+		{
+			this.node = node;
+		}
+
+		@Override
+		public Void call() throws Exception
+		{
+			this.node.getMachine().securityBreak();
+
+			return null;
+		}
+	}
+
+
+	private static class ConnectionComparator implements Comparator<IGridConnection>
+	{
+		private final IGridNode gn;
+
+		public ConnectionComparator( IGridNode gn )
+		{
+			this.gn = gn;
+		}
+
+		@Override
+		public int compare( IGridConnection o1, IGridConnection o2 )
+		{
+			boolean preferredA = o1.getOtherSide( this.gn ).hasFlag( GridFlags.PREFERRED );
+			boolean preferredB = o2.getOtherSide( this.gn ).hasFlag( GridFlags.PREFERRED );
+
+			return preferredA == preferredB ? 0 : ( preferredA ? -1 : 1 );
+		}
 	}
 
 	@Override
 	public int getPlayerID()
 	{
-		return playerID;
+		return this.playerID;
 	}
-
 }
