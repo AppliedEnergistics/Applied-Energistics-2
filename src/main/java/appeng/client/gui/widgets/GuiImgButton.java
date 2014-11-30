@@ -21,6 +21,7 @@ package appeng.client.gui.widgets;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.lwjgl.opengl.GL11;
 
@@ -52,6 +53,7 @@ import appeng.core.localization.ButtonToolTips;
 
 public class GuiImgButton extends GuiButton implements ITooltip
 {
+	private static final Pattern COMPILE = Pattern.compile( "%s" );
 	private static Map<EnumPair, BtnAppearance> appearances;
 	private final Enum buttonSetting;
 	public boolean halfSize = false;
@@ -274,7 +276,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 				Value = DisplayValue;
 
 			if ( this.fillVar != null )
-				Value = Value.replaceFirst( "%s", this.fillVar );
+				Value = COMPILE.matcher( Value ).replaceFirst( this.fillVar );
 
 			Value = Value.replace( "\\n", "\n" );
 			StringBuilder sb = new StringBuilder( Value );
