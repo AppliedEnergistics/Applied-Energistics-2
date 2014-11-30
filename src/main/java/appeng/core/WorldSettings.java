@@ -26,8 +26,10 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
@@ -64,7 +66,7 @@ public class WorldSettings extends Configuration
 	private final File aeFolder;
 	private final CompassService compass;
 	private final PlayerMappings mappings;
-	private final WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>> loadedStorage = new WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>>();
+	private final Map<GridStorageSearch, WeakReference<GridStorageSearch>> loadedStorage = new WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>>();
 	private long lastGridStorage;
 	private int lastPlayer;
 
@@ -128,7 +130,7 @@ public class WorldSettings extends Configuration
 
 	public Collection<NBTTagCompound> getNearByMeteorites( int dim, int chunkX, int chunkZ )
 	{
-		LinkedList<NBTTagCompound> ll = new LinkedList<NBTTagCompound>();
+		Deque<NBTTagCompound> ll = new LinkedList<NBTTagCompound>();
 
 		synchronized ( WorldSettings.class )
 		{
