@@ -36,7 +36,7 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 	private final String displayName;
 	private final String displayHint;
 
-	private boolean on;
+	private boolean isActive;
 
 	public GuiToggleButton( int x, int y, int on, int off, String displayName, String displayHint )
 	{
@@ -53,7 +53,7 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 
 	public void setState( boolean isOn )
 	{
-		this.on = isOn;
+		this.isActive = isOn;
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 
 	private int getIconIndex()
 	{
-		return this.on ? this.iconIdxOn : this.iconIdxOff;
+		return this.isActive ? this.iconIdxOn : this.iconIdxOff;
 	}
 
 	@Override
