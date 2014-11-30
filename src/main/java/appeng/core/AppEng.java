@@ -83,7 +83,7 @@ public class AppEng
 
 	public String getConfigPath()
 	{
-		return configPath;
+		return this.configPath;
 	}
 
 	public boolean isIntegrationEnabled( IntegrationType Name )
@@ -105,10 +105,10 @@ public class AppEng
 		}
 
 		Stopwatch star = Stopwatch.createStarted();
-		configPath = event.getModConfigurationDirectory().getPath() + File.separator + "AppliedEnergistics2" + File.separator;
+		this.configPath = event.getModConfigurationDirectory().getPath() + File.separator + "AppliedEnergistics2" + File.separator;
 
-		AEConfig.instance = new AEConfig( configPath );
-		FacadeConfig.instance = new FacadeConfig( configPath );
+		AEConfig.instance = new AEConfig( this.configPath );
+		FacadeConfig.instance = new FacadeConfig( this.configPath );
 
 		AELog.info( "Starting ( PreInit )" );
 
@@ -124,7 +124,7 @@ public class AppEng
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.VersionChecker ) )
 		{
 			AELog.info( "Starting VersionChecker" );
-			startService( "AE2 VersionChecker", new Thread( new VersionChecker() ) );
+			this.startService( "AE2 VersionChecker", new Thread( new VersionChecker() ) );
 		}
 
 		AELog.info( "PreInit ( end " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );

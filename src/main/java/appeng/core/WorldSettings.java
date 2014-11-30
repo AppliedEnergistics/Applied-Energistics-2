@@ -74,21 +74,21 @@ public class WorldSettings extends Configuration
 		this.aeFolder = aeFolder;
 		this.compass = new CompassService( aeFolder );
 
-		for ( int dimID : get( "DimensionManager", "StorageCells", new int[0] ).getIntList() )
+		for ( int dimID : this.get( "DimensionManager", "StorageCells", new int[0] ).getIntList() )
 		{
-			storageCellDims.add( dimID );
+			this.storageCellDims.add( dimID );
 			DimensionManager.registerDimension( dimID, AEConfig.instance.storageProviderID );
 		}
 
 		try
 		{
-			lastGridStorage = Long.parseLong( get( "Counters", "lastGridStorage", 0 ).getString() );
-			lastPlayer = get( "Counters", "lastPlayer", 0 ).getInt();
+			this.lastGridStorage = Long.parseLong( this.get( "Counters", "lastGridStorage", 0 ).getString() );
+			this.lastPlayer = this.get( "Counters", "lastPlayer", 0 ).getInt();
 		}
 		catch ( NumberFormatException err )
 		{
-			lastGridStorage = 0;
-			lastPlayer = 0;
+			this.lastGridStorage = 0;
+			this.lastPlayer = 0;
 		}
 
 		final ConfigCategory playerList = this.getCategory( "players" );
@@ -139,7 +139,7 @@ public class WorldSettings extends Configuration
 					int cx = x + ( chunkX >> 4 );
 					int cz = z + ( chunkZ >> 4 );
 
-					NBTTagCompound data = loadSpawnData( dim, cx << 4, cz << 4 );
+					NBTTagCompound data = this.loadSpawnData( dim, cx << 4, cz << 4 );
 
 					if ( data != null )
 					{
@@ -161,7 +161,7 @@ public class WorldSettings extends Configuration
 			throw new RuntimeException( "Invalid Request" );
 
 		NBTTagCompound data = null;
-		File file = new File( aeFolder, SPAWNDATA_FOLDER + File.separatorChar + dim + '_' + ( chunkX >> 4 ) + '_' + ( chunkZ >> 4 ) + ".dat" );
+		File file = new File( this.aeFolder, SPAWNDATA_FOLDER + File.separatorChar + dim + '_' + ( chunkX >> 4 ) + '_' + ( chunkZ >> 4 ) + ".dat" );
 
 		if ( file.isFile() )
 		{
@@ -204,7 +204,7 @@ public class WorldSettings extends Configuration
 	{
 		synchronized ( WorldSettings.class )
 		{
-			NBTTagCompound data = loadSpawnData( dim, chunkX, chunkZ );
+			NBTTagCompound data = this.loadSpawnData( dim, chunkX, chunkZ );
 			return data.getBoolean( chunkX + "," + chunkZ );
 		}
 	}
@@ -213,12 +213,12 @@ public class WorldSettings extends Configuration
 	{
 		synchronized ( WorldSettings.class )
 		{
-			NBTTagCompound data = loadSpawnData( dim, chunkX, chunkZ );
+			NBTTagCompound data = this.loadSpawnData( dim, chunkX, chunkZ );
 
 			// edit.
 			data.setBoolean( chunkX + "," + chunkZ, true );
 
-			writeSpawnData( dim, chunkX, chunkZ, data );
+			this.writeSpawnData( dim, chunkX, chunkZ, data );
 		}
 	}
 
@@ -227,7 +227,7 @@ public class WorldSettings extends Configuration
 		if ( !Thread.holdsLock( WorldSettings.class ) )
 			throw new RuntimeException( "Invalid Request" );
 
-		File file = new File( aeFolder, SPAWNDATA_FOLDER + File.separatorChar + dim + '_' + ( chunkX >> 4 ) + '_' + ( chunkZ >> 4 ) + ".dat" );
+		File file = new File( this.aeFolder, SPAWNDATA_FOLDER + File.separatorChar + dim + '_' + ( chunkX >> 4 ) + '_' + ( chunkZ >> 4 ) + ".dat" );
 		FileOutputStream fileOutputStream = null;
 
 		try
@@ -259,14 +259,14 @@ public class WorldSettings extends Configuration
 	{
 		synchronized ( WorldSettings.class )
 		{
-			NBTTagCompound data = loadSpawnData( dim, chunkX, chunkZ );
+			NBTTagCompound data = this.loadSpawnData( dim, chunkX, chunkZ );
 
 			// edit.
 			int size = data.getInteger( "num" );
 			data.setTag( String.valueOf( size ), newData );
 			data.setInteger( "num", size + 1 );
 
-			writeSpawnData( dim, chunkX, chunkZ, data );
+			this.writeSpawnData( dim, chunkX, chunkZ, data );
 
 			return true;
 		}
@@ -274,14 +274,14 @@ public class WorldSettings extends Configuration
 
 	public void shutdown()
 	{
-		save();
+		this.save();
 
-		for ( Integer dimID : storageCellDims )
+		for ( Integer dimID : this.storageCellDims )
 			DimensionManager.unregisterDimension( dimID );
 
-		storageCellDims.clear();
+		this.storageCellDims.clear();
 
-		compass.kill();
+		this.compass.kill();
 		instance = null;
 	}
 
@@ -289,47 +289,47 @@ public class WorldSettings extends Configuration
 	public void save()
 	{
 		// populate new data
-		for ( GridStorageSearch gs : loadedStorage.keySet() )
+		for ( GridStorageSearch gs : this.loadedStorage.keySet() )
 		{
 			GridStorage thisStorage = gs.gridStorage.get();
 			if ( thisStorage != null && thisStorage.getGrid() != null && !thisStorage.getGrid().isEmpty() )
 			{
 				String value = thisStorage.getValue();
-				get( "gridstorage", "" + thisStorage.getID(), value ).set( value );
+				this.get( "gridstorage", "" + thisStorage.getID(), value ).set( value );
 			}
 		}
 
 		// save to files
-		if ( hasChanged() )
+		if ( this.hasChanged() )
 			super.save();
 	}
 
 	public void addStorageCellDim( int newDim )
 	{
-		storageCellDims.add( newDim );
+		this.storageCellDims.add( newDim );
 		DimensionManager.registerDimension( newDim, AEConfig.instance.storageProviderID );
 
 		NetworkHandler.instance.sendToAll( new PacketNewStorageDimension( newDim ) );
 
-		String[] values = new String[storageCellDims.size()];
+		String[] values = new String[this.storageCellDims.size()];
 
 		for ( int x = 0; x < values.length; x++ )
-			values[x] = String.valueOf( storageCellDims.get( x ) );
+			values[x] = String.valueOf( this.storageCellDims.get( x ) );
 
-		get( "DimensionManager", "StorageCells", new int[0] ).set( values );
-		save();
+		this.get( "DimensionManager", "StorageCells", new int[0] ).set( values );
+		this.save();
 	}
 
 	public CompassService getCompass()
 	{
-		return compass;
+		return this.compass;
 	}
 
 	public void sendToPlayer( NetworkManager manager, EntityPlayerMP player )
 	{
 		if ( manager != null )
 		{
-			for ( int newDim : get( "DimensionManager", "StorageCells", new int[0] ).getIntList() )
+			for ( int newDim : this.get( "DimensionManager", "StorageCells", new int[0] ).getIntList() )
 			{
 				manager.scheduleOutboundPacket( ( new PacketNewStorageDimension( newDim ) ).getProxy() );
 			}
@@ -343,23 +343,23 @@ public class WorldSettings extends Configuration
 
 	public void init()
 	{
-		save();
+		this.save();
 	}
 
 	public WorldCoord getStoredSize( int dim )
 	{
-		int x = get( "StorageCell" + dim, "scaleX", 0 ).getInt();
-		int y = get( "StorageCell" + dim, "scaleY", 0 ).getInt();
-		int z = get( "StorageCell" + dim, "scaleZ", 0 ).getInt();
+		int x = this.get( "StorageCell" + dim, "scaleX", 0 ).getInt();
+		int y = this.get( "StorageCell" + dim, "scaleY", 0 ).getInt();
+		int z = this.get( "StorageCell" + dim, "scaleZ", 0 ).getInt();
 		return new WorldCoord( x, y, z );
 	}
 
 	public void setStoredSize( int dim, int targetX, int targetY, int targetZ )
 	{
-		get( "StorageCell" + dim, "scaleX", 0 ).set( targetX );
-		get( "StorageCell" + dim, "scaleY", 0 ).set( targetY );
-		get( "StorageCell" + dim, "scaleZ", 0 ).set( targetZ );
-		save();
+		this.get( "StorageCell" + dim, "scaleX", 0 ).set( targetX );
+		this.get( "StorageCell" + dim, "scaleY", 0 ).set( targetY );
+		this.get( "StorageCell" + dim, "scaleZ", 0 ).set( targetZ );
+		this.save();
 	}
 
 	/**
@@ -372,14 +372,14 @@ public class WorldSettings extends Configuration
 	public GridStorage getGridStorage( long storageID )
 	{
 		GridStorageSearch gss = new GridStorageSearch( storageID );
-		WeakReference<GridStorageSearch> result = loadedStorage.get( gss );
+		WeakReference<GridStorageSearch> result = this.loadedStorage.get( gss );
 
 		if ( result == null || result.get() == null )
 		{
-			String Data = get( "gridstorage", String.valueOf( storageID ), "" ).getString();
+			String Data = this.get( "gridstorage", String.valueOf( storageID ), "" ).getString();
 			GridStorage thisStorage = new GridStorage( Data, storageID, gss );
 			gss.gridStorage = new WeakReference<GridStorage>( thisStorage );
-			loadedStorage.put( gss, new WeakReference<GridStorageSearch>( gss ) );
+			this.loadedStorage.put( gss, new WeakReference<GridStorageSearch>( gss ) );
 			return thisStorage;
 		}
 		return result.get().gridStorage.get();
@@ -390,18 +390,18 @@ public class WorldSettings extends Configuration
 	 */
 	public GridStorage getNewGridStorage()
 	{
-		long storageID = nextGridStorage();
+		long storageID = this.nextGridStorage();
 		GridStorageSearch gss = new GridStorageSearch( storageID );
 		GridStorage newStorage = new GridStorage( storageID, gss );
 		gss.gridStorage = new WeakReference<GridStorage>( newStorage );
-		loadedStorage.put( gss, new WeakReference<GridStorageSearch>( gss ) );
+		this.loadedStorage.put( gss, new WeakReference<GridStorageSearch>( gss ) );
 		return newStorage;
 	}
 
 	private long nextGridStorage()
 	{
-		long r = lastGridStorage++;
-		get( "Counters", "lastGridStorage", lastGridStorage ).set( Long.toString( lastGridStorage ) );
+		long r = this.lastGridStorage++;
+		this.get( "Counters", "lastGridStorage", this.lastGridStorage ).set( Long.toString( this.lastGridStorage ) );
 		return r;
 	}
 
@@ -432,17 +432,17 @@ public class WorldSettings extends Configuration
 			return prop.getInt();
 		else
 		{
-			playerList.put( uuid, prop = new Property( uuid, "" + nextPlayer(), Property.Type.INTEGER ) );
+			playerList.put( uuid, prop = new Property( uuid, "" + this.nextPlayer(), Property.Type.INTEGER ) );
 			this.mappings.put( prop.getInt(), profile.getId() ); // add to reverse map
-			save();
+			this.save();
 			return prop.getInt();
 		}
 	}
 
 	private long nextPlayer()
 	{
-		long r = lastPlayer++;
-		get( "Counters", "lastPlayer", lastPlayer ).set( lastPlayer );
+		long r = this.lastPlayer++;
+		this.get( "Counters", "lastPlayer", this.lastPlayer ).set( this.lastPlayer );
 		return r;
 	}
 
