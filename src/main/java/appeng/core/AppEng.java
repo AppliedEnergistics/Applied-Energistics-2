@@ -50,12 +50,12 @@ import appeng.services.VersionChecker;
 import appeng.util.Platform;
 
 
-@Mod( modid = AppEng.modid, acceptedMinecraftVersions = "[1.7.10]", name = AppEng.name, version = AEConfig.VERSION, dependencies = AppEng.dependencies, guiFactory = "appeng.client.gui.config.AEConfigGuiFactory" )
+@Mod( modid = AppEng.MOD_ID, acceptedMinecraftVersions = "[1.7.10]", name = AppEng.MOD_NAME, version = AEConfig.VERSION, dependencies = AppEng.MOD_DEPENDENCIES, guiFactory = "appeng.client.gui.config.AEConfigGuiFactory" )
 public class AppEng
 {
-	public final static String modid = "appliedenergistics2";
-	public final static String name = "Applied Energistics 2";
-	public final static String dependencies =
+	public final static String MOD_ID = "appliedenergistics2";
+	public final static String MOD_NAME = "Applied Energistics 2";
+	public final static String MOD_DEPENDENCIES =
 			// a few mods, AE should load after, probably.
 			// required-after:AppliedEnergistics2API|all;
 			// "after:gregtech_addon;after:Mekanism;after:IC2;after:ThermalExpansion;after:BuildCraft|Core;" +
@@ -86,18 +86,18 @@ public class AppEng
 		return this.configPath;
 	}
 
-	public boolean isIntegrationEnabled( IntegrationType Name )
+	public boolean isIntegrationEnabled( IntegrationType integrationName )
 	{
-		return IntegrationRegistry.INSTANCE.isEnabled( Name );
+		return IntegrationRegistry.INSTANCE.isEnabled( integrationName );
 	}
 
-	public Object getIntegration( IntegrationType Name )
+	public Object getIntegration( IntegrationType integrationName )
 	{
-		return IntegrationRegistry.INSTANCE.getInstance( Name );
+		return IntegrationRegistry.INSTANCE.getInstance( integrationName );
 	}
 
 	@EventHandler
-	void PreInit( FMLPreInitializationEvent event )
+	void preInit( FMLPreInitializationEvent event )
 	{
 		if ( !Loader.isModLoaded( "appliedenergistics2-core" ) )
 		{
@@ -138,7 +138,7 @@ public class AppEng
 	}
 
 	@EventHandler
-	void Init( FMLInitializationEvent event )
+	void init( FMLInitializationEvent event )
 	{
 		Stopwatch star = Stopwatch.createStarted();
 		AELog.info( "Init" );
@@ -150,7 +150,7 @@ public class AppEng
 	}
 
 	@EventHandler
-	void PostInit( FMLPostInitializationEvent event )
+	void postInit( FMLPostInitializationEvent event )
 	{
 		Stopwatch star = Stopwatch.createStarted();
 		AELog.info( "PostInit" );

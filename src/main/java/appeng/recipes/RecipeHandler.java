@@ -255,7 +255,7 @@ public class RecipeHandler implements IRecipeHandler
 		UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor( is.getItem() );
 		String realName = id.modId + ':' + id.name;
 
-		if ( !id.modId.equals( AppEng.modid ) && !id.modId.equals( "minecraft" ) )
+		if ( !id.modId.equals( AppEng.MOD_ID ) && !id.modId.equals( "minecraft" ) )
 			throw new RecipeError( "Not applicable for website" );
 
 		if ( is.getItem() == AEApi.instance().items().itemCrystalSeed.item() )

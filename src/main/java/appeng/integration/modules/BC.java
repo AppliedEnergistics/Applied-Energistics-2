@@ -18,9 +18,9 @@
 
 package appeng.integration.modules;
 
+
 import java.lang.reflect.Field;
 
-import appeng.integration.modules.BCHelpers.AERotatableBlockSchematic;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -28,6 +28,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cpw.mods.fml.common.event.FMLInterModComms;
+
+import buildcraft.BuildCraftEnergy;
+import buildcraft.BuildCraftTransport;
+import buildcraft.api.blueprints.SchematicRegistry;
+import buildcraft.api.tools.IToolWrench;
+import buildcraft.api.transport.IPipeConnection;
+import buildcraft.api.transport.IPipeTile;
+import buildcraft.api.transport.IPipeTile.PipeType;
+import buildcraft.transport.ItemFacade;
+import buildcraft.transport.PipeIconProvider;
+import buildcraft.transport.TileGenericPipe;
+
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.api.definitions.Blocks;
@@ -41,18 +55,8 @@ import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IBC;
 import appeng.integration.modules.BCHelpers.AECableSchematicTile;
 import appeng.integration.modules.BCHelpers.AEGenericSchematicTile;
+import appeng.integration.modules.BCHelpers.AERotatableBlockSchematic;
 import appeng.integration.modules.BCHelpers.BCPipeHandler;
-import buildcraft.BuildCraftEnergy;
-import buildcraft.BuildCraftTransport;
-import buildcraft.api.blueprints.SchematicRegistry;
-import buildcraft.api.tools.IToolWrench;
-import buildcraft.api.transport.IPipeConnection;
-import buildcraft.api.transport.IPipeTile;
-import buildcraft.api.transport.IPipeTile.PipeType;
-import buildcraft.transport.ItemFacade;
-import buildcraft.transport.PipeIconProvider;
-import buildcraft.transport.TileGenericPipe;
-import cpw.mods.fml.common.event.FMLInterModComms;
 
 public class BC extends BaseModule implements IBC
 {
@@ -253,7 +257,7 @@ public class BC extends BaseModule implements IBC
 
 	private void initBuilderSupport()
 	{
-		SchematicRegistry.declareBlueprintSupport( AppEng.modid );
+		SchematicRegistry.declareBlueprintSupport( AppEng.MOD_ID );
 
 		Blocks blocks = AEApi.instance().blocks();
 		Block cable = blocks.blockMultiPart.block();

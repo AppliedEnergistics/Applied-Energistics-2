@@ -18,6 +18,7 @@
 
 package appeng.core;
 
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -25,6 +26,12 @@ import java.util.List;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+
+import cpw.mods.fml.client.event.ConfigChangedEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
@@ -40,10 +47,6 @@ import appeng.items.materials.MaterialType;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
-import cpw.mods.fml.client.event.ConfigChangedEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class AEConfig extends Configuration implements IConfigurableObject, IConfigManagerHost
 {
@@ -156,7 +159,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs)
 	{
-		if ( eventArgs.modID.equals( AppEng.modid ) )
+		if ( eventArgs.modID.equals( AppEng.MOD_ID ) )
 		{
 			clientSync();
 		}
