@@ -34,7 +34,6 @@ import java.util.UUID;
 import java.util.WeakHashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -327,7 +326,7 @@ public class WorldSettings extends Configuration
 		return this.compass;
 	}
 
-	public void sendToPlayer( NetworkManager manager, EntityPlayerMP player )
+	public void sendToPlayer( NetworkManager manager )
 	{
 		if ( manager != null )
 		{
