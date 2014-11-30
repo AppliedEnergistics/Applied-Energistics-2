@@ -31,25 +31,17 @@ import net.minecraft.item.ItemStack;
 
 import appeng.client.texture.ExtraBlockTextures;
 
+
 public class GuiTabButton extends GuiButton implements ITooltip
 {
-
 	final RenderItem itemRenderer;
-
-	int myIcon = -1;
+	final String Msg;
 	public int hideEdge = 0;
-
+	int myIcon = -1;
 	ItemStack myItem;
 
-	final String Msg;
-
-	public void setVisibility(boolean vis)
+	public GuiTabButton( int x, int y, int ico, String Msg, RenderItem ir )
 	{
-		this.visible = vis;
-		this.enabled = vis;
-	}
-
-	public GuiTabButton(int x, int y, int ico, String Msg, RenderItem ir) {
 		super( 0, 0, 16, "" );
 		this.xPosition = x;
 		this.yPosition = y;
@@ -60,7 +52,8 @@ public class GuiTabButton extends GuiButton implements ITooltip
 		this.itemRenderer = ir;
 	}
 
-	public GuiTabButton(int x, int y, ItemStack ico, String Msg, RenderItem ir) {
+	public GuiTabButton( int x, int y, ItemStack ico, String Msg, RenderItem ir )
+	{
 		super( 0, 0, 16, "" );
 		this.xPosition = x;
 		this.yPosition = y;
@@ -72,13 +65,7 @@ public class GuiTabButton extends GuiButton implements ITooltip
 	}
 
 	@Override
-	public boolean isVisible()
-	{
-		return this.visible;
-	}
-
-	@Override
-	public void drawButton(Minecraft par1Minecraft, int par2, int par3)
+	public void drawButton( Minecraft par1Minecraft, int par2, int par3 )
 	{
 		if ( this.visible )
 		{
@@ -86,8 +73,8 @@ public class GuiTabButton extends GuiButton implements ITooltip
 			par1Minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
 			this.field_146123_n = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
 
-			int uv_y = (int) Math.floor( 13 / 16 );
-			int uv_x = ( this.hideEdge > 0 ? 11 : 13) - uv_y * 16;
+			int uv_y = ( int ) Math.floor( 13 / 16 );
+			int uv_x = ( this.hideEdge > 0 ? 11 : 13 ) - uv_y * 16;
 
 			int offsetX = this.hideEdge > 0 ? 1 : 0;
 
@@ -95,7 +82,7 @@ public class GuiTabButton extends GuiButton implements ITooltip
 
 			if ( this.myIcon >= 0 )
 			{
-				uv_y = (int) Math.floor( this.myIcon / 16 );
+				uv_y = ( int ) Math.floor( this.myIcon / 16 );
 				uv_x = this.myIcon - uv_y * 16;
 
 				this.drawTexturedModalRect( offsetX + this.xPosition + 3, this.yPosition + 3, uv_x * 16, uv_y * 16, 16, 16 );
@@ -151,4 +138,9 @@ public class GuiTabButton extends GuiButton implements ITooltip
 		return 22;
 	}
 
+	@Override
+	public boolean isVisible()
+	{
+		return this.visible;
+	}
 }
