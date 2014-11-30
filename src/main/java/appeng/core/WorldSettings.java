@@ -147,7 +147,7 @@ public class WorldSettings extends Configuration
 						// edit.
 						int size = data.getInteger( "num" );
 						for ( int s = 0; s < size; s++ )
-							ll.add( data.getCompoundTag( "" + s ) );
+							ll.add( data.getCompoundTag( String.valueOf( s ) ) );
 					}
 				}
 			}
@@ -296,7 +296,7 @@ public class WorldSettings extends Configuration
 			if ( thisStorage != null && thisStorage.getGrid() != null && !thisStorage.getGrid().isEmpty() )
 			{
 				String value = thisStorage.getValue();
-				this.get( "gridstorage", "" + thisStorage.getID(), value ).set( value );
+				this.get( "gridstorage", String.valueOf( thisStorage.getID() ), value ).set( value );
 			}
 		}
 
@@ -408,7 +408,7 @@ public class WorldSettings extends Configuration
 
 	public void destroyGridStorage( long id )
 	{
-		this.getCategory( "gridstorage" ).remove( "" + id );
+		this.getCategory( "gridstorage" ).remove( String.valueOf( id ) );
 	}
 
 	public int getNextOrderedValue( String name )
@@ -433,7 +433,7 @@ public class WorldSettings extends Configuration
 			return prop.getInt();
 		else
 		{
-			playerList.put( uuid, prop = new Property( uuid, "" + this.nextPlayer(), Property.Type.INTEGER ) );
+			playerList.put( uuid, prop = new Property( uuid, String.valueOf( this.nextPlayer() ), Property.Type.INTEGER ) );
 			this.mappings.put( prop.getInt(), profile.getId() ); // add to reverse map
 			this.save();
 			return prop.getInt();
