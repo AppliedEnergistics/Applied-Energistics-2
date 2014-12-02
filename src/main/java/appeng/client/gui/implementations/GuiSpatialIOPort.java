@@ -18,10 +18,11 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.input.Mouse;
+
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseGui;
@@ -80,7 +81,7 @@ public class GuiSpatialIOPort extends AEBaseGui
 		fontRendererObj.drawString( GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong( container.currentPower, false ), 13, 21, 4210752 );
 		fontRendererObj.drawString( GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong( container.maxPower, false ), 13, 31, 4210752 );
 		fontRendererObj.drawString( GuiText.RequiredPower.getLocal() + ": " + Platform.formatPowerLong( container.reqPower, false ), 13, 78, 4210752 );
-		fontRendererObj.drawString( GuiText.Efficiency.getLocal() + ": " + (((float) container.eff) / 100) + "%", 13, 88, 4210752 );
+		fontRendererObj.drawString( GuiText.Efficiency.getLocal() + ": " + (((float) container.eff) / 100) + '%', 13, 88, 4210752 );
 
 		fontRendererObj.drawString( getGuiDisplayName( GuiText.SpatialIOPort.getLocal() ), 8, 6, 4210752 );
 		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96, 4210752 );

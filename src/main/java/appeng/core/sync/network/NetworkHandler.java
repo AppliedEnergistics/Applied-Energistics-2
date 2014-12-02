@@ -18,10 +18,10 @@
 
 package appeng.core.sync.network;
 
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
-import appeng.core.WorldSettings;
-import appeng.core.sync.AppEngPacket;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -30,6 +30,9 @@ import cpw.mods.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent.ServerConnectionFromClientEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+
+import appeng.core.WorldSettings;
+import appeng.core.sync.AppEngPacket;
 
 public class NetworkHandler
 {
@@ -78,14 +81,14 @@ public class NetworkHandler
 	@SubscribeEvent
 	public void newConnection(ServerConnectionFromClientEvent ev)
 	{
-		WorldSettings.getInstance().sendToPlayer( ev.manager, null );
+		WorldSettings.getInstance().sendToPlayer( ev.manager );
 	}
 
 	@SubscribeEvent
 	public void newConnection(PlayerLoggedInEvent loginEvent)
 	{
 		if ( loginEvent.player instanceof EntityPlayerMP )
-			WorldSettings.getInstance().sendToPlayer( null, (EntityPlayerMP) loginEvent.player );
+			WorldSettings.getInstance().sendToPlayer( null );
 	}
 
 	@SubscribeEvent

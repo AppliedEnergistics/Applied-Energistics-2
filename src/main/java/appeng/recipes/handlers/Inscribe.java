@@ -18,12 +18,14 @@
 
 package appeng.recipes.handlers;
 
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
+
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
@@ -117,17 +119,17 @@ public class Inscribe implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public String getPattern(RecipeHandler h)
 	{
-		String o = "inscriber " + output.getQty() + "\n";
+		String o = "inscriber " + output.getQty() + '\n';
 
-		o += h.getName( output ) + "\n";
+		o += h.getName( output ) + '\n';
 
 		if ( plateA != null )
-			o +=  h.getName( plateA )+"\n";
+			o +=  h.getName( plateA )+ '\n';
 
 		o += h.getName(imprintable);
 
 		if ( plateB != null )
-			o += "\n"+h.getName( plateB );
+			o += '\n' +h.getName( plateB );
 
 		return o;
 	}

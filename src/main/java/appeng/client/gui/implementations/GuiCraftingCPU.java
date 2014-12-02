@@ -18,17 +18,20 @@
 
 package appeng.client.gui.implementations;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
-import org.lwjgl.opengl.GL11;
+import com.google.common.base.Joiner;
 
 import appeng.api.AEApi;
 import appeng.api.config.SortDir;
@@ -45,8 +48,6 @@ import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.util.Platform;
-
-import com.google.common.base.Joiner;
 
 public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 {
@@ -321,9 +322,9 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 				{
 					String str = Long.toString( stored.getStackSize() );
 					if ( stored.getStackSize() >= 10000 )
-						str = Long.toString( stored.getStackSize() / 1000 ) + "k";
+						str = Long.toString( stored.getStackSize() / 1000 ) + 'k';
 					if ( stored.getStackSize() >= 10000000 )
-						str = Long.toString( stored.getStackSize() / 1000000 ) + "m";
+						str = Long.toString( stored.getStackSize() / 1000000 ) + 'm';
 
 					str = GuiText.Stored.getLocal() + ": " + str;
 					int w = 4 + fontRendererObj.getStringWidth( str );
@@ -340,9 +341,9 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 				{
 					String str = Long.toString( activeStack.getStackSize() );
 					if ( activeStack.getStackSize() >= 10000 )
-						str = Long.toString( activeStack.getStackSize() / 1000 ) + "k";
+						str = Long.toString( activeStack.getStackSize() / 1000 ) + 'k';
 					if ( activeStack.getStackSize() >= 10000000 )
-						str = Long.toString( activeStack.getStackSize() / 1000000 ) + "m";
+						str = Long.toString( activeStack.getStackSize() / 1000000 ) + 'm';
 
 					str = GuiText.Crafting.getLocal() + ": " + str;
 					int w = 4 + fontRendererObj.getStringWidth( str );
@@ -359,9 +360,9 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 				{
 					String str = Long.toString( pendingStack.getStackSize() );
 					if ( pendingStack.getStackSize() >= 10000 )
-						str = Long.toString( pendingStack.getStackSize() / 1000 ) + "k";
+						str = Long.toString( pendingStack.getStackSize() / 1000 ) + 'k';
 					if ( pendingStack.getStackSize() >= 10000000 )
-						str = Long.toString( pendingStack.getStackSize() / 1000000 ) + "m";
+						str = Long.toString( pendingStack.getStackSize() / 1000000 ) + 'm';
 
 					str = GuiText.Scheduled.getLocal() + ": " + str;
 					int w = 4 + fontRendererObj.getStringWidth( str );
@@ -384,7 +385,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 					dspToolTip = Platform.getItemDisplayName( is );
 
 					if ( lineList.size() > 0 )
-						dspToolTip = dspToolTip + "\n" + Joiner.on( "\n" ).join( lineList );
+						dspToolTip = dspToolTip + '\n' + Joiner.on( "\n" ).join( lineList );
 
 					toolPosX = x * (1 + sectionLength) + xo + sectionLength - 8;
 					toolPosY = y * offY + yo;

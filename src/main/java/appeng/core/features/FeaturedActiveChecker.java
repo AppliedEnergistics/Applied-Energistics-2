@@ -26,7 +26,7 @@ import appeng.core.AEConfig;
 
 public class FeaturedActiveChecker
 {
-	private EnumSet<AEFeature> features;
+	private final EnumSet<AEFeature> features;
 
 	public FeaturedActiveChecker( EnumSet<AEFeature> features )
 	{

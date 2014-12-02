@@ -18,12 +18,14 @@
 
 package appeng.integration;
 
+
 import java.lang.reflect.Field;
+
+import cpw.mods.fml.common.Loader;
 
 import appeng.api.exceptions.ModNotInstalled;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import cpw.mods.fml.common.Loader;
 
 public class IntegrationNode
 {
@@ -51,7 +53,7 @@ public class IntegrationNode
 	@Override
 	public String toString()
 	{
-		return shortName.name() + ":" + state.name();
+		return shortName.name() + ':' + state.name();
 	}
 
 	void Call(IntegrationStage stage)
