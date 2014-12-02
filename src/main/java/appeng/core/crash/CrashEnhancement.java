@@ -31,10 +31,10 @@ public class CrashEnhancement implements ICrashCallable
 	private final String name;
 	private final String value;
 
-	private final String ModVersion = AEConfig.CHANNEL + " " + AEConfig.VERSION + " for Forge " + // WHAT?
-	net.minecraftforge.common.ForgeVersion.majorVersion + "." // majorVersion
-			+ net.minecraftforge.common.ForgeVersion.minorVersion + "." // minorVersion
-			+ net.minecraftforge.common.ForgeVersion.revisionVersion + "." // revisionVersion
+	private final String ModVersion = AEConfig.CHANNEL + ' ' + AEConfig.VERSION + " for Forge " + // WHAT?
+	net.minecraftforge.common.ForgeVersion.majorVersion + '.' // majorVersion
+			+ net.minecraftforge.common.ForgeVersion.minorVersion + '.' // minorVersion
+			+ net.minecraftforge.common.ForgeVersion.revisionVersion + '.' // revisionVersion
 			+ net.minecraftforge.common.ForgeVersion.buildVersion;
 
 	public CrashEnhancement( CrashInfo Output )

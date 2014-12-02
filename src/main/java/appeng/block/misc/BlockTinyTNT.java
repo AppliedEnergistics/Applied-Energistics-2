@@ -18,7 +18,8 @@
 
 package appeng.block.misc;
 
-import java.util.Arrays;
+
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -37,6 +38,9 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+
+import cpw.mods.fml.common.registry.EntityRegistry;
+
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderTinyTNT;
@@ -47,7 +51,6 @@ import appeng.entity.EntityIds;
 import appeng.entity.EntityTinyTNTPrimed;
 import appeng.helpers.ICustomCollision;
 import appeng.hooks.DispenserBehaviorTinyTNT;
-import cpw.mods.fml.common.registry.EntityRegistry;
 
 public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 {
@@ -172,7 +175,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
 	{
-		return Arrays.asList( AxisAlignedBB.getBoundingBox( 0.25, 0, 0.25, 0.75, 0.5, 0.75 ) );
+		return Collections.singletonList( AxisAlignedBB.getBoundingBox( 0.25, 0, 0.25, 0.75, 0.5, 0.75 ) );
 	}
 
 	@Override

@@ -18,7 +18,8 @@
 
 package appeng.parts.reporting;
 
-import java.util.Arrays;
+
+import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.IMEMonitor;
@@ -133,7 +135,7 @@ public class PartConversionMonitor extends PartStorageMonitor
 					if ( newItems != null )
 					{
 						TileEntity te = tile;
-						List<ItemStack> list = Arrays.asList( newItems );
+						List<ItemStack> list = Collections.singletonList( newItems );
 						Platform.spawnDrops( player.worldObj, te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ, list );
 					}
 

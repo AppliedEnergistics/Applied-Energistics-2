@@ -18,7 +18,7 @@
 
 package appeng.tile.crafting;
 
-import java.util.Arrays;
+
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -28,6 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.IPowerChannelState;
@@ -295,7 +296,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 					WorldCoord wc = places.poll();
 					places.add( wc );
 
-					Platform.spawnDrops( worldObj, wc.x, wc.y, wc.z, Arrays.asList( g.getItemStack() ) );
+					Platform.spawnDrops( worldObj, wc.x, wc.y, wc.z, Collections.singletonList( g.getItemStack() ) );
 				}
 
 			}

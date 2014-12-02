@@ -18,7 +18,8 @@
 
 package appeng.block.misc;
 
-import java.util.Arrays;
+
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -31,14 +32,16 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockSkyCompass;
 import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.misc.TileSkyCompass;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
 {
@@ -160,9 +163,9 @@ public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
 				break;
 			}
 
-			return Arrays.asList( AxisAlignedBB.getBoundingBox( minX, minY, minZ, maxX, maxY, maxZ ) );
+			return Collections.singletonList( AxisAlignedBB.getBoundingBox( minX, minY, minZ, maxX, maxY, maxZ ) );
 		}
-		return Arrays.asList( AxisAlignedBB.getBoundingBox( 0.0, 0, 0.0, 1.0, 1.0, 1.0 ) );
+		return Collections.singletonList( AxisAlignedBB.getBoundingBox( 0.0, 0, 0.0, 1.0, 1.0, 1.0 ) );
 	}
 
 	@Override

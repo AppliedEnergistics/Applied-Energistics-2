@@ -18,9 +18,13 @@
 
 package appeng.parts.reporting;
 
-import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -36,8 +40,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.implementations.parts.IPartStorageMonitor;
 import appeng.api.networking.security.BaseActionSource;
@@ -56,8 +60,6 @@ import appeng.core.localization.PlayerMessages;
 import appeng.me.GridAccessException;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartStorageMonitor extends PartMonitor implements IPartStorageMonitor, IStackWatcherHost
 {
@@ -304,11 +306,11 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 
 		String msg = Long.toString( qty );
 		if ( qty > 1000000000 )
-			msg = Long.toString( qty / 1000000000 ) + "B";
+			msg = Long.toString( qty / 1000000000 ) + 'B';
 		else if ( qty > 1000000 )
-			msg = Long.toString( qty / 1000000 ) + "M";
+			msg = Long.toString( qty / 1000000 ) + 'M';
 		else if ( qty > 9999 )
-			msg = Long.toString( qty / 1000 ) + "K";
+			msg = Long.toString( qty / 1000 ) + 'K';
 
 		FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
 		int width = fr.getStringWidth( msg );

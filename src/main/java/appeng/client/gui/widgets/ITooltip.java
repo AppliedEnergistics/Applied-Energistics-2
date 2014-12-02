@@ -30,7 +30,7 @@ public interface ITooltip
 	 * 
 	 * @return tooltip message
 	 */
-	String getMsg();
+	String getMessage();
 
 	/**
 	 * x Location for the object that triggers the tooltip.

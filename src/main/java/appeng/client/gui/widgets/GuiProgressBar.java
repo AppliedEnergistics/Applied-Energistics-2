@@ -18,9 +18,11 @@
 
 package appeng.client.gui.widgets;
 
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
+
 import appeng.container.interfaces.IProgressProvider;
 import appeng.core.localization.GuiText;
 
@@ -91,12 +93,12 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 	}
 
 	@Override
-	public String getMsg()
+	public String getMessage()
 	{
 		if ( fullMsg != null )
 			return fullMsg;
 
-		return (titleName != null ? titleName : "") + "\n" + source.getCurrentProgress() + " " + GuiText.Of.getLocal() + " " + source.getMaxProgress();
+		return (titleName != null ? titleName : "") + '\n' + source.getCurrentProgress() + ' ' + GuiText.Of.getLocal() + ' ' + source.getMaxProgress();
 	}
 
 	@Override
