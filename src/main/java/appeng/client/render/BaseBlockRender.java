@@ -18,12 +18,8 @@
 
 package appeng.client.render;
 
-
 import java.nio.FloatBuffer;
 import java.util.EnumSet;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -41,8 +37,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
@@ -50,6 +46,8 @@ import appeng.block.AEBaseBlock;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class BaseBlockRender
@@ -67,7 +65,7 @@ public class BaseBlockRender
 	{
 		int r = 0xff & (v >> 16);
 		int g = 0xff & (v >> 8);
-		int b = 0xff & ( v );
+		int b = 0xff & (v >> 0);
 
 		r *= d;
 		g *= d;
@@ -126,8 +124,8 @@ public class BaseBlockRender
 		OrientationMap[5][4][1] = 0;
 
 		// upside down
-		OrientationMap[0][3][0] = FLIP_H_BIT;
-		OrientationMap[1][3][0] = FLIP_H_BIT;
+		OrientationMap[0][3][0] = 0 | FLIP_H_BIT;
+		OrientationMap[1][3][0] = 0 | FLIP_H_BIT;
 		OrientationMap[2][3][0] = 3;
 		OrientationMap[3][3][0] = 3;
 		OrientationMap[4][3][0] = 3;
@@ -179,34 +177,34 @@ public class BaseBlockRender
 		OrientationMap[0][0][5] = 1 | FLIP_H_BIT;
 		OrientationMap[1][0][5] = 1;
 		OrientationMap[2][0][5] = 0;
-		OrientationMap[3][0][5] = FLIP_V_BIT;
+		OrientationMap[3][0][5] = 0 | FLIP_V_BIT;
 		OrientationMap[4][0][5] = 1;
 		OrientationMap[5][0][5] = 1 | FLIP_V_BIT;
 
 		// side 2
-		OrientationMap[0][1][2] = FLIP_H_BIT;
+		OrientationMap[0][1][2] = 0 | FLIP_H_BIT;
 		OrientationMap[1][1][2] = 0;
 		OrientationMap[2][1][2] = 2 | FLIP_H_BIT;
 		OrientationMap[3][1][2] = 1;
 		OrientationMap[4][1][2] = 3;
 		OrientationMap[5][1][2] = 3 | FLIP_H_BIT;
 
-		OrientationMap[0][4][2] = FLIP_H_BIT;
-		OrientationMap[1][4][2] = FLIP_H_BIT;
+		OrientationMap[0][4][2] = 0 | FLIP_H_BIT;
+		OrientationMap[1][4][2] = 0 | FLIP_H_BIT;
 		OrientationMap[2][4][2] = 2 | FLIP_H_BIT;
 		OrientationMap[3][4][2] = 1;
 		OrientationMap[4][4][2] = 1 | FLIP_H_BIT;
 		OrientationMap[5][4][2] = 2;
 
-		OrientationMap[0][0][2] = FLIP_V_BIT;
+		OrientationMap[0][0][2] = 0 | FLIP_V_BIT;
 		OrientationMap[1][0][2] = 0;
 		OrientationMap[2][0][2] = 2;
 		OrientationMap[3][0][2] = 1 | FLIP_H_BIT;
 		OrientationMap[4][0][2] = 3 | FLIP_H_BIT;
 		OrientationMap[5][0][2] = 0;
 
-		OrientationMap[0][5][2] = FLIP_H_BIT;
-		OrientationMap[1][5][2] = FLIP_H_BIT;
+		OrientationMap[0][5][2] = 0 | FLIP_H_BIT;
+		OrientationMap[1][5][2] = 0 | FLIP_H_BIT;
 		OrientationMap[2][5][2] = 2;
 		OrientationMap[3][5][2] = 1 | FLIP_H_BIT;
 		OrientationMap[4][5][2] = 2;
@@ -218,7 +216,7 @@ public class BaseBlockRender
 		OrientationMap[2][0][3] = 1;
 		OrientationMap[3][0][3] = 2 | FLIP_H_BIT;
 		OrientationMap[4][0][3] = 0;
-		OrientationMap[5][0][3] = FLIP_H_BIT;
+		OrientationMap[5][0][3] = 0 | FLIP_H_BIT;
 
 		OrientationMap[0][4][3] = 3;
 		OrientationMap[1][4][3] = 3;
@@ -252,7 +250,7 @@ public class BaseBlockRender
 		OrientationMap[0][0][4] = 1 | FLIP_H_BIT;
 		OrientationMap[1][0][4] = 2;
 		OrientationMap[2][0][4] = 0;
-		OrientationMap[3][0][4] = FLIP_H_BIT;
+		OrientationMap[3][0][4] = 0 | FLIP_H_BIT;
 		OrientationMap[4][0][4] = 2 | FLIP_H_BIT;
 		OrientationMap[5][0][4] = 1;
 

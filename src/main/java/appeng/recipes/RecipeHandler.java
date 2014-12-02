@@ -18,7 +18,6 @@
 
 package appeng.recipes;
 
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -30,14 +29,8 @@ import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import appeng.recipes.handlers.IWebsiteSerializer;
 import net.minecraft.item.ItemStack;
-
-import cpw.mods.fml.common.LoaderState;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
-
-import com.google.common.collect.HashMultimap;
-
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
@@ -54,8 +47,13 @@ import appeng.core.features.AEFeature;
 import appeng.items.materials.ItemMultiMaterial;
 import appeng.items.misc.ItemCrystalSeed;
 import appeng.items.parts.ItemMultiPart;
-import appeng.recipes.handlers.IWebsiteSerializer;
 import appeng.recipes.handlers.OreRegistration;
+
+import com.google.common.collect.HashMultimap;
+
+import cpw.mods.fml.common.LoaderState;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 public class RecipeHandler implements IRecipeHandler
 {
@@ -205,7 +203,7 @@ public class RecipeHandler implements IRecipeHandler
 						String rew = ws.getPattern( this );
 						if ( rew != null && rew.length() > 0 )
 						{
-							out.putNextEntry( new ZipEntry( realName + '_' + offset + ".txt" ) );
+							out.putNextEntry( new ZipEntry( realName + "_" + offset + ".txt" ) );
 							offset++;
 							out.write( rew.getBytes() );
 						}
@@ -247,15 +245,15 @@ public class RecipeHandler implements IRecipeHandler
 			// :P
 		}
 
-		return i.getNameSpace() + ':' + i.getItemName();
+		return i.getNameSpace() + ":" + i.getItemName();
 	}
 
 	public String getName(ItemStack is) throws RecipeError
 	{
 		UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor( is.getItem() );
-		String realName = id.modId + ':' + id.name;
+		String realName = id.modId + ":" + id.name;
 
-		if ( !id.modId.equals( AppEng.MOD_ID ) && !id.modId.equals( "minecraft" ) )
+		if ( !id.modId.equals( AppEng.modid ) && !id.modId.equals( "minecraft" ) )
 			throw new RecipeError( "Not applicable for website" );
 
 		if ( is.getItem() == AEApi.instance().items().itemCrystalSeed.item() )
@@ -323,12 +321,12 @@ public class RecipeHandler implements IRecipeHandler
 		else if ( is.getItem() instanceof ItemMultiMaterial )
 		{
 			realName = realName.replace( "ItemMultiMaterial", "ItemMaterial" );
-			realName += '.' + ((ItemMultiMaterial) is.getItem()).getTypeByStack( is ).name();
+			realName += "." + ((ItemMultiMaterial) is.getItem()).getTypeByStack( is ).name();
 		}
 		else if ( is.getItem() instanceof ItemMultiPart )
 		{
 			realName = realName.replace( "ItemMultiPart", "ItemPart" );
-			realName += '.' + ((ItemMultiPart) is.getItem()).getTypeByStack( is ).name();
+			realName += "." + ((ItemMultiPart) is.getItem()).getTypeByStack( is ).name();
 		}
 		else if ( is.getItemDamage() > 0 )
 			realName += "." + is.getItemDamage();

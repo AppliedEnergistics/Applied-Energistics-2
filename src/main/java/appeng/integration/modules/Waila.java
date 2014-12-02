@@ -18,18 +18,7 @@
 
 package appeng.integration.modules;
 
-
 import java.util.List;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
-
-import cpw.mods.fml.common.event.FMLInterModComms;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -37,7 +26,13 @@ import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaFMPAccessor;
 import mcp.mobius.waila.api.IWailaFMPProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
-
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.parts.IPartStorageMonitor;
 import appeng.api.parts.IPartHost;
@@ -57,6 +52,7 @@ import appeng.tile.misc.TileCharger;
 import appeng.tile.networking.TileCableBus;
 import appeng.tile.networking.TileEnergyCell;
 import appeng.util.Platform;
+import cpw.mods.fml.common.event.FMLInterModComms;
 
 public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPProvider
 {
@@ -160,7 +156,7 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 					if ( ic != null && ic.hasKey( "usedChannels" ) )
 					{
 						int channels = ic.getByte( "usedChannels" );
-						currentToolTip.add( channels + " " + GuiText.Of.getLocal() + ' ' + (ThingOfInterest instanceof PartDenseCable ? 32 : 8) + ' '
+						currentToolTip.add( channels + " " + GuiText.Of.getLocal() + " " + (ThingOfInterest instanceof PartDenseCable ? 32 : 8) + " "
 								+ WailaText.Channels.getLocal() );
 					}
 				}

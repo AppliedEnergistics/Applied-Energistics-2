@@ -18,14 +18,10 @@
 
 package appeng.recipes.handlers;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
@@ -35,6 +31,7 @@ import appeng.core.AELog;
 import appeng.recipes.RecipeHandler;
 import appeng.recipes.game.ShapelessRecipe;
 import appeng.util.Platform;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Shapeless implements ICraftHandler, IWebsiteSerializer
 {
@@ -103,9 +100,9 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public String getPattern(RecipeHandler h)
 	{
-		StringBuilder o = new StringBuilder( "shapeless " + output.getQty() + '\n' );
+		StringBuilder o = new StringBuilder( "shapeless " + output.getQty() + "\n" );
 
-		o.append( h.getName( output ) ).append( '\n' );
+		o.append( h.getName( output ) ).append( "\n" );
 
 		for (int y = 0; y < inputs.size(); y++)
 		{
@@ -122,11 +119,11 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 
 			if ( y + 1 == this.inputs.size() )
 			{
-				o.append( '\n' );
+				o.append( "\n" );
 			}
 			else
 			{
-				o.append( ' ' );
+				o.append( " " );
 			}
 		}
 

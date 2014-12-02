@@ -18,18 +18,16 @@
 
 package appeng.tile.grindstone;
 
-
-import java.util.Collections;
-import java.util.List;
-
 import io.netty.buffer.ByteBuf;
+
+import java.util.Arrays;
+import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.AEBaseTile;
@@ -141,7 +139,8 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 		double xOff = -0.15 * getUp().offsetX;
 		double yOff = -0.15 * getUp().offsetY;
 		double zOff = -0.15 * getUp().offsetZ;
-		return Collections.singletonList( AxisAlignedBB.getBoundingBox( xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85 ) );
+		return Arrays
+				.asList( AxisAlignedBB.getBoundingBox( xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85 ) );
 	}
 
 	@Override

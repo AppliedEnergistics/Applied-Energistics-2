@@ -20,7 +20,6 @@ package appeng.parts.misc;
 
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.client.renderer.RenderBlocks;
@@ -486,7 +485,7 @@ public class PartStorageBus
 		{
 			IMEInventoryHandler out = proxy.isActive() ? getInternalHandler() : null;
 			if ( out != null )
-				return Collections.singletonList( out );
+				return Arrays.asList( out );
 		}
 		return Arrays.asList( new IMEInventoryHandler[] {} );
 	}

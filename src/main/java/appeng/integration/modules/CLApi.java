@@ -46,7 +46,7 @@ public class CLApi extends BaseModule implements ICLApi
 
 		float r = (mv >> 16) & 0xff;
 		float g = (mv >> 8) & 0xff;
-		float b = ( mv ) & 0xff;
+		float b = (mv >> 0) & 0xff;
 
 		return coloredlightscore.src.api.CLApi.makeRGBLightValue( r / 255.0f, g / 255.0f, b / 255.0f, light / 15.0f );
 	}

@@ -18,7 +18,6 @@
 
 package appeng.container.implementations;
 
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +29,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.networking.IGrid;
@@ -364,7 +362,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 
 	private void addItems(NBTTagCompound data, InvTracker inv, int offset, int length)
 	{
-		String name = '=' + Long.toString( inv.which, Character.MAX_RADIX );
+		String name = "=" + Long.toString( inv.which, Character.MAX_RADIX );
 		NBTTagCompound tag = data.getCompoundTag( name );
 
 		if ( tag.hasNoTags() )

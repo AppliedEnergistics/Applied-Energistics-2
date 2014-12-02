@@ -18,7 +18,6 @@
 
 package appeng.client.gui;
 
-
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -30,11 +29,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
+import appeng.container.slot.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -47,10 +42,10 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-
-import com.google.common.base.Joiner;
-import com.google.common.base.Stopwatch;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.widgets.GuiScrollbar;
@@ -60,17 +55,7 @@ import appeng.client.me.SlotDisconnected;
 import appeng.client.me.SlotME;
 import appeng.client.render.AppEngRenderItem;
 import appeng.container.AEBaseContainer;
-import appeng.container.slot.AppEngCraftingSlot;
-import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.AppEngSlot.hasCalculatedValidness;
-import appeng.container.slot.OptionalSlotFake;
-import appeng.container.slot.SlotCraftingTerm;
-import appeng.container.slot.SlotDisabled;
-import appeng.container.slot.SlotFake;
-import appeng.container.slot.SlotInaccessible;
-import appeng.container.slot.SlotOutput;
-import appeng.container.slot.SlotPatternTerm;
-import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
@@ -80,6 +65,10 @@ import appeng.helpers.InventoryAction;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.INEI;
 import appeng.util.Platform;
+
+import com.google.common.base.Stopwatch;
+
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
 public abstract class AEBaseGui extends GuiContainer
 {
@@ -506,7 +495,7 @@ public abstract class AEBaseGui extends GuiContainer
 						if ( y < 15 )
 							y = 15;
 
-						String msg = tooltip.getMessage();
+						String msg = tooltip.getMsg();
 						if ( msg != null )
 							drawTooltip( x + 11, y + 4, 0, msg );
 					}
@@ -578,7 +567,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 				if ( var13 == 0 )
 				{
-					var14 = '\u00a7' + Integer.toHexString( 15 ) + var14;
+					var14 = "\u00a7" + Integer.toHexString( 15 ) + var14;
 				}
 				else
 				{
@@ -713,11 +702,20 @@ public abstract class AEBaseGui extends GuiContainer
 		return null;
 	}
 
-	protected static String join(Collection<String> toolTip, String delimiter)
+	protected static String join(Collection<?> s, String delimiter)
 	{
-		final Joiner joiner = Joiner.on( delimiter );
-
-		return joiner.join( toolTip );
+		StringBuilder builder = new StringBuilder();
+		Iterator iterator = s.iterator();
+		while (iterator.hasNext())
+		{
+			builder.append( iterator.next() );
+			if ( !iterator.hasNext() )
+			{
+				break;
+			}
+			builder.append( delimiter );
+		}
+		return builder.toString();
 	}
 
 	boolean useNEI = false;

@@ -23,14 +23,14 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -106,12 +106,12 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 
 			if ( cellInventory != null )
 			{
-				lines.add( cellInventory.getUsedBytes() + " " + GuiText.Of.getLocal() + ' '
-						+ cellInventory.getTotalBytes() + ' '
+				lines.add( cellInventory.getUsedBytes() + " " + GuiText.Of.getLocal() + " "
+						+ cellInventory.getTotalBytes() + " "
 						+ GuiText.BytesUsed.getLocal() );
 
 				lines.add( cellInventory.getStoredItemTypes() + " " + GuiText.Of.getLocal()
-						+ ' ' + cellInventory.getTotalItemTypes() + ' '
+						+ " " + cellInventory.getTotalItemTypes() + " "
 						+ GuiText.Types.getLocal() );
 
 				if ( handler.isPreformatted() )
@@ -120,9 +120,9 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 							: GuiText.Excluded ).getLocal();
 
 					if ( handler.isFuzzy() )
-						lines.add( GuiText.Partitioned.getLocal() + " - " + List + ' ' + GuiText.Fuzzy.getLocal() );
+						lines.add( GuiText.Partitioned.getLocal() + " - " + List + " " + GuiText.Fuzzy.getLocal() );
 					else
-						lines.add( GuiText.Partitioned.getLocal() + " - " + List + ' ' + GuiText.Precise.getLocal() );
+						lines.add( GuiText.Partitioned.getLocal() + " - " + List + " " + GuiText.Precise.getLocal() );
 
 				}
 			}

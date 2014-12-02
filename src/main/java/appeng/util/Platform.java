@@ -18,7 +18,6 @@
 
 package appeng.util;
 
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
@@ -32,6 +31,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import appeng.util.item.OreReference;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
@@ -76,16 +76,6 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.relauncher.ReflectionHelper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import buildcraft.api.tools.IToolWrench;
-
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -135,8 +125,14 @@ import appeng.me.helpers.AENetworkProxy;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.AESharedNBT;
 import appeng.util.item.OreHelper;
-import appeng.util.item.OreReference;
 import appeng.util.prioitylist.IPartitionList;
+import buildcraft.api.tools.IToolWrench;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.relauncher.ReflectionHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class Platform
 {
@@ -198,7 +194,7 @@ public class Platform
 		}
 
 		DecimalFormat df = new DecimalFormat( "#.##" );
-		return df.format( p ) + ' ' + Lvl + unitName + (isRate ? "/t" : "");
+		return df.format( p ) + " " + Lvl + unitName + (isRate ? "/t" : "");
 	}
 
 	public static ForgeDirection crossProduct(ForgeDirection forward, ForgeDirection up)
@@ -853,7 +849,7 @@ public class Platform
 		try
 		{
 			String name = itemStack.getDisplayName();
-			if ( name == null || name.isEmpty() )
+			if ( name == null || name.equals( "" ) )
 				name = itemStack.getItem().getUnlocalizedName( itemStack );
 			return name == null ? "** Null" : name;
 		}

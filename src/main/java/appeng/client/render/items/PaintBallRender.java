@@ -18,14 +18,13 @@
 
 package appeng.client.render.items;
 
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
+
+import org.lwjgl.opengl.GL11;
 
 import appeng.api.util.AEColor;
 import appeng.client.texture.ExtraItemTextures;
@@ -70,7 +69,7 @@ public class PaintBallRender implements IItemRenderer
 		int colorValue = item.getItemDamage() >= 20 ? col.mediumVariant : col.mediumVariant;
 		int r = (colorValue >> 16) & 0xff;
 		int g = (colorValue >> 8) & 0xff;
-		int b = ( colorValue ) & 0xff;
+		int b = (colorValue >> 0) & 0xff;
 
 		int full = (int) (255 * 0.3);
 		float fail = 0.7f;

@@ -18,16 +18,15 @@
 
 package appeng.client.gui.implementations;
 
-
 import java.util.List;
-
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -187,7 +186,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 				String str = Long.toString( refStack.getStackSize() );
 				if ( refStack.getStackSize() >= 10000 )
-					str = Long.toString( refStack.getStackSize() / 1000 ) + 'k';
+					str = Long.toString( refStack.getStackSize() / 1000 ) + "k";
 
 				int w = fontRendererObj.getStringWidth( str );
 				fontRendererObj.drawString( str, (int) ((x * sectionLength + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * 18 + yo + 6) * 2,
@@ -201,9 +200,9 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 				{
 					ToolTip = Platform.getItemDisplayName( repo.getItem( z ) );
 
-					ToolTip = ToolTip + ( '\n' + GuiText.Installed.getLocal() + ": " + (refStack.getStackSize()));
+					ToolTip = ToolTip + ("\n" + GuiText.Installed.getLocal() + ": " + (refStack.getStackSize()));
 					if ( refStack.getCountRequestable() > 0 )
-						ToolTip = ToolTip + ( '\n' + GuiText.EnergyDrain.getLocal() + ": " + Platform.formatPowerLong( refStack.getCountRequestable(), true ));
+						ToolTip = ToolTip + ("\n" + GuiText.EnergyDrain.getLocal() + ": " + Platform.formatPowerLong( refStack.getCountRequestable(), true ));
 
 					toolPosX = x * sectionLength + xo + sectionLength - 8;
 					toolPosY = y * 18 + yo;

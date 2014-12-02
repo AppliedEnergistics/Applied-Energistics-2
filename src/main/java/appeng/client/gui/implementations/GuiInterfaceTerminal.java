@@ -18,7 +18,6 @@
 
 package appeng.client.gui.implementations;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,14 +27,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-import com.google.common.collect.HashMultimap;
+import org.lwjgl.opengl.GL11;
 
 import appeng.api.AEApi;
 import appeng.client.gui.AEBaseGui;
@@ -47,6 +44,8 @@ import appeng.container.implementations.ContainerInterfaceTerminal;
 import appeng.core.localization.GuiText;
 import appeng.parts.reporting.PartMonitor;
 import appeng.util.Platform;
+
+import com.google.common.collect.HashMultimap;
 
 public class GuiInterfaceTerminal extends AEBaseGui
 {
@@ -183,7 +182,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 				String name = (String) lineObj;
 				int rows = byName.get( name ).size();
 				if ( rows > 1 )
-					name = name + " (" + rows + ')';
+					name = name + " (" + rows + ")";
 
 				while (name.length() > 2 && fontRendererObj.getStringWidth( name ) > 155)
 					name = name.substring( 0, name.length() - 1 );
@@ -261,7 +260,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			boolean found = searchFilterLowerCase.isEmpty();
 
 			// Search if the current inventory holds a pattern containing the search term.
-			if ( !found && !searchFilterLowerCase.isEmpty() )
+			if ( !found && !searchFilterLowerCase.equals( "" ) )
 			{
 				for (ItemStack itemStack : entry.inv)
 				{

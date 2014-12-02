@@ -68,7 +68,7 @@ public enum ButtonToolTips
 
 	public String getUnlocalized()
 	{
-		return root + '.' + toString();
+		return root + "." + toString();
 	}
 
 	public String getLocal()

@@ -18,13 +18,11 @@
 
 package appeng.container.implementations;
 
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.INetworkEncodable;
@@ -147,7 +145,7 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 
 				if ( networkEncodable != null )
 				{
-					networkEncodable.setEncryptionKey( term, String.valueOf( securityBox.securityKey ), "" );
+					networkEncodable.setEncryptionKey( term, "" + securityBox.securityKey, "" );
 
 					wirelessIn.putStack( null );
 					wirelessOut.putStack( term );

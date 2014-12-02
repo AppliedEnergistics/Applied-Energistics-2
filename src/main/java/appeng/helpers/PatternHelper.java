@@ -18,7 +18,6 @@
 
 package appeng.helpers;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,7 +31,6 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
-
 import appeng.api.AEApi;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
@@ -90,19 +88,8 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		@Override
 		public boolean equals(Object obj)
 		{
-			final boolean equality;
-
-			if ( obj instanceof TestLookup )
-			{
-				TestLookup b = (TestLookup) obj;
-				equality = b.slot == slot && b.ref == ref;
-			}
-			else
-			{
-				equality = false;
-			}
-
-			return equality;
+			TestLookup b = (TestLookup) obj;
+			return b.slot == slot && b.ref == ref;
 		}
 
 	}
@@ -261,6 +248,9 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			break;
 		}
 
+		if ( !isCrafting )
+			return false;
+
 		for (int x = 0; x < crafting.getSizeInventory(); x++)
 			testFrame.setInventorySlotContents( x, crafting.getStackInSlot( x ) );
 
@@ -314,6 +304,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	@Override
 	public boolean canSubstitute()
 	{
+		// TODO Auto-generated method stub
 		return false;
 	}
 

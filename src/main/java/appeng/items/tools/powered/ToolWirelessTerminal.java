@@ -22,17 +22,15 @@ package appeng.items.tools.powered;
 import java.util.EnumSet;
 import java.util.List;
 
+import com.google.common.base.Optional;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import com.google.common.base.Optional;
-
 import appeng.api.AEApi;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -85,7 +83,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 			{
 				String encKey = tag.getString( "encryptionKey" );
 
-				if ( encKey == null || encKey.isEmpty() )
+				if ( encKey == null || encKey.equals( "" ) )
 					lines.add( GuiText.Unlinked.getLocal() );
 				else
 					lines.add( GuiText.Linked.getLocal() );

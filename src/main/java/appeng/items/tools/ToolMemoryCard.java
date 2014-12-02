@@ -18,7 +18,6 @@
 
 package appeng.items.tools;
 
-
 import java.util.EnumSet;
 import java.util.List;
 
@@ -27,7 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.core.features.AEFeature;
@@ -95,7 +93,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	{
 		NBTTagCompound c = Platform.openNbtData( is );
 		String name = c.getString( "Config" );
-		return name == null || name.isEmpty() ? GuiText.Blank.getUnlocalized() : name;
+		return name == null || name.equals( "" ) ? GuiText.Blank.getUnlocalized() : name;
 	}
 
 	@Override

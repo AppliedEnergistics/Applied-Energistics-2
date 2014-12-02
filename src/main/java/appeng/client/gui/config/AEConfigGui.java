@@ -18,19 +18,16 @@
 
 package appeng.client.gui.config;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.ConfigElement;
-
-import cpw.mods.fml.client.config.GuiConfig;
-import cpw.mods.fml.client.config.IConfigElement;
-
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
+import cpw.mods.fml.client.config.GuiConfig;
+import cpw.mods.fml.client.config.IConfigElement;
 
 public class AEConfigGui extends GuiConfig
 {
@@ -60,7 +57,7 @@ public class AEConfigGui extends GuiConfig
 	}
 
 	public AEConfigGui(GuiScreen parent) {
-		super( parent, getConfigElements(), AppEng.MOD_ID, false, false, GuiConfig.getAbridgedConfigPath( AEConfig.instance.getFilePath() ) );
+		super( parent, getConfigElements(), AppEng.modid, false, false, GuiConfig.getAbridgedConfigPath( AEConfig.instance.getFilePath() ) );
 	}
 
 }

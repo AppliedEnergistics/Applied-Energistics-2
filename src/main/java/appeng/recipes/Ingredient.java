@@ -18,7 +18,6 @@
 
 package appeng.recipes;
 
-
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -26,9 +25,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
@@ -36,6 +32,7 @@ import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.IIngredient;
 import appeng.api.recipes.ResolverResult;
 import appeng.api.recipes.ResolverResultSet;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Ingredient implements IIngredient
 {
@@ -186,7 +183,7 @@ public class Ingredient implements IIngredient
 	@Override
 	public String toString()
 	{
-		return nameSpace + ':' + itemName + ':' + meta;
+		return nameSpace + ":" + itemName + ":" + meta;
 	}
 
 	@Override

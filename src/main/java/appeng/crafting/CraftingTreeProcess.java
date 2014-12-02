@@ -18,7 +18,6 @@
 
 package appeng.crafting;
 
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,9 +26,6 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingGrid;
@@ -40,6 +36,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.util.Platform;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CraftingTreeProcess
 {
@@ -60,12 +57,12 @@ public class CraftingTreeProcess
 	final Map<CraftingTreeNode, Long> nodes = new HashMap<CraftingTreeNode, Long>();
 	public boolean possible = true;
 
-	public CraftingTreeProcess( ICraftingGrid cc, CraftingJob job, ICraftingPatternDetails details, CraftingTreeNode craftingTreeNode, int depth ) {
+	public CraftingTreeProcess(ICraftingGrid cc, CraftingJob job, ICraftingPatternDetails details, CraftingTreeNode craftingTreeNode, int depth, World world) {
 		parent = craftingTreeNode;
 		this.details = details;
 		this.job = job;
 		this.depth = depth;
-		World world = job.getWorld();
+		world = job.getWorld();
 
 		if ( details.isCraftable() )
 		{

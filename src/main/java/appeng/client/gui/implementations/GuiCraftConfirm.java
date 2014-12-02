@@ -18,7 +18,6 @@
 
 package appeng.client.gui.implementations;
 
-
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -26,14 +25,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
-import com.google.common.base.Joiner;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 import appeng.api.AEApi;
 import appeng.api.storage.ITerminalHost;
@@ -53,6 +50,8 @@ import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.parts.reporting.PartTerminal;
 import appeng.util.Platform;
+
+import com.google.common.base.Joiner;
 
 public class GuiCraftConfirm extends AEBaseGui
 {
@@ -370,7 +369,7 @@ public class GuiCraftConfirm extends AEBaseGui
 	{
 		long BytesUsed = ccc.bytesUsed;
 		String byteUsed = NumberFormat.getInstance().format( BytesUsed );
-		String Add = BytesUsed > 0 ? (byteUsed + ' ' + GuiText.BytesUsed.getLocal()) : GuiText.CalculatingWait.getLocal();
+		String Add = BytesUsed > 0 ? (byteUsed + " " + GuiText.BytesUsed.getLocal()) : GuiText.CalculatingWait.getLocal();
 		fontRendererObj.drawString( GuiText.CraftingPlan.getLocal() + " - " + Add, 8, 7, 4210752 );
 
 		String dsp = null;
@@ -429,9 +428,9 @@ public class GuiCraftConfirm extends AEBaseGui
 				{
 					String str = Long.toString( stored.getStackSize() );
 					if ( stored.getStackSize() >= 10000 )
-						str = Long.toString( stored.getStackSize() / 1000 ) + 'k';
+						str = Long.toString( stored.getStackSize() / 1000 ) + "k";
 					if ( stored.getStackSize() >= 10000000 )
-						str = Long.toString( stored.getStackSize() / 1000000 ) + 'm';
+						str = Long.toString( stored.getStackSize() / 1000000 ) + "m";
 
 					str = GuiText.FromStorage.getLocal() + ": " + str;
 					int w = 4 + fontRendererObj.getStringWidth( str );
@@ -448,9 +447,9 @@ public class GuiCraftConfirm extends AEBaseGui
 				{
 					String str = Long.toString( missingStack.getStackSize() );
 					if ( missingStack.getStackSize() >= 10000 )
-						str = Long.toString( missingStack.getStackSize() / 1000 ) + 'k';
+						str = Long.toString( missingStack.getStackSize() / 1000 ) + "k";
 					if ( missingStack.getStackSize() >= 10000000 )
-						str = Long.toString( missingStack.getStackSize() / 1000000 ) + 'm';
+						str = Long.toString( missingStack.getStackSize() / 1000000 ) + "m";
 
 					str = GuiText.Missing.getLocal() + ": " + str;
 					int w = 4 + fontRendererObj.getStringWidth( str );
@@ -468,9 +467,9 @@ public class GuiCraftConfirm extends AEBaseGui
 				{
 					String str = Long.toString( pendingStack.getStackSize() );
 					if ( pendingStack.getStackSize() >= 10000 )
-						str = Long.toString( pendingStack.getStackSize() / 1000 ) + 'k';
+						str = Long.toString( pendingStack.getStackSize() / 1000 ) + "k";
 					if ( pendingStack.getStackSize() >= 10000000 )
-						str = Long.toString( pendingStack.getStackSize() / 1000000 ) + 'm';
+						str = Long.toString( pendingStack.getStackSize() / 1000000 ) + "m";
 
 					str = GuiText.ToCraft.getLocal() + ": " + str;
 					int w = 4 + fontRendererObj.getStringWidth( str );
@@ -493,7 +492,7 @@ public class GuiCraftConfirm extends AEBaseGui
 					dspToolTip = Platform.getItemDisplayName( is );
 
 					if ( lineList.size() > 0 )
-						dspToolTip = dspToolTip + '\n' + Joiner.on( "\n" ).join( lineList );
+						dspToolTip = dspToolTip + "\n" + Joiner.on( "\n" ).join( lineList );
 
 					toolPosX = x * (1 + sectionLength) + xo + sectionLength - 8;
 					toolPosY = y * offY + yo;
