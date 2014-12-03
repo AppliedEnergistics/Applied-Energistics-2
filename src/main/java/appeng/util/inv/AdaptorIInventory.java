@@ -223,121 +223,79 @@ public class AdaptorIInventory extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack addItems( ItemStack A )
+	public ItemStack addItems( ItemStack itemsToAdd )
 	{
-		if ( A == null )
-			return null;
-		if ( A.stackSize == 0 )
-			return null;
-
-		ItemStack left = A.copy();
-
-		int stack_limit = A.getMaxStackSize();
-		if ( stack_limit > i.getInventoryStackLimit() )
-			stack_limit = i.getInventoryStackLimit();
-
-		int s = i.getSizeInventory();
-		for ( int pass = 0; pass < 2; pass++ )
-		{
-			for ( int x = 0; x < s; x++ )
-			{
-				if ( i.isItemValidForSlot( x, A ) )
-				{
-					ItemStack is = i.getStackInSlot( x );
-					if ( is == null && pass != 0 )
-					{
-						ItemStack thisSlot = left.copy();
-						if ( thisSlot.stackSize > stack_limit )
-							thisSlot.stackSize = stack_limit;
-						left.stackSize -= thisSlot.stackSize;
-
-						i.setInventorySlotContents( x, thisSlot );
-						i.markDirty();
-
-						if ( left.stackSize <= 0 )
-						{
-							return null;
-						}
-					}
-					else if ( is != null )
-					{
-						if ( Platform.isSameItemPrecise( is, left ) )
-						{
-							if ( is.stackSize < stack_limit )
-							{
-								int room = stack_limit - is.stackSize;
-								int used = left.stackSize;
-								if ( used > room )
-									used = room;
-
-								is.stackSize += used;
-								i.setInventorySlotContents( x, is );
-								i.markDirty();
-
-								left.stackSize -= used;
-								if ( left.stackSize <= 0 )
-								{
-									return null;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		// if ( left.stackSize != A.stackSize )
-		// i.markDirty();
-
-		return left;
+		return addItems( itemsToAdd, true );
 	}
 
 	@Override
-	public ItemStack simulateAdd( ItemStack A )
+	public ItemStack simulateAdd( ItemStack itemsToAdd )
 	{
-		if ( A == null )
-			return A;
-		ItemStack left = A.copy();
+		return addItems( itemsToAdd, false );
+	}
 
-		int stack_limit = A.getMaxStackSize();
-		if ( stack_limit > i.getInventoryStackLimit() )
-			stack_limit = i.getInventoryStackLimit();
-
-		int s = i.getSizeInventory();
-		for ( int x = 0; x < s; x++ )
+	/**
+	 * Adds an {@link ItemStack} to the adapted {@link IInventory}.
+	 * 
+	 * It respects the inventories stack limit, which can result in not all items added and some left ones are returned.
+	 * The ItemStack next is required for inventories, which will fail on isItemValidForSlot() for stacksizes larger
+	 * than the limit.
+	 * 
+	 * @param itemsToAdd itemStack to add to the inventory
+	 * @param modulate true to modulate, false for simulate
+	 * @return
+	 */
+	private ItemStack addItems( ItemStack itemsToAdd, boolean modulate )
+	{
+		if ( itemsToAdd == null || itemsToAdd.stackSize == 0 )
 		{
-			if ( i.isItemValidForSlot( x, A ) )
+			return null;
+		}
+
+		ItemStack left = itemsToAdd.copy();
+		int stackLimit = itemsToAdd.getMaxStackSize();
+		int perOperationLimit = Math.min( i.getInventoryStackLimit(), stackLimit );
+		int inventorySize = i.getSizeInventory();
+
+		for ( int slot = 0; slot < inventorySize; slot++ )
+		{
+			ItemStack next = left.copy();
+			next.stackSize = Math.min( perOperationLimit, next.stackSize );
+
+			if ( i.isItemValidForSlot( slot, next ) )
 			{
-				ItemStack is = i.getStackInSlot( x );
+				ItemStack is = i.getStackInSlot( slot );
 				if ( is == null )
 				{
-					ItemStack thisSlot = left.copy();
-					if ( thisSlot.stackSize > stack_limit )
-						thisSlot.stackSize = stack_limit;
-					left.stackSize -= thisSlot.stackSize;
+					left.stackSize -= next.stackSize;
+
+					if ( modulate )
+					{
+						i.setInventorySlotContents( slot, next );
+						i.markDirty();
+					}
 
 					if ( left.stackSize <= 0 )
 					{
 						return null;
 					}
 				}
-				else
+				else if ( Platform.isSameItemPrecise( is, left ) && is.stackSize < stackLimit )
 				{
-					if ( Platform.isSameItemPrecise( is, left ) )
-					{
-						if ( is.stackSize < stack_limit )
-						{
-							int room = stack_limit - is.stackSize;
-							int used = left.stackSize;
-							if ( used > room )
-								used = room;
+					int room = stackLimit - is.stackSize;
+					int used = Math.min( left.stackSize, room );
 
-							left.stackSize -= used;
-							if ( left.stackSize <= 0 )
-							{
-								return null;
-							}
-						}
+					if ( modulate )
+					{
+						is.stackSize += used;
+						i.setInventorySlotContents( slot, is );
+						i.markDirty();
+					}
+
+					left.stackSize -= used;
+					if ( left.stackSize <= 0 )
+					{
+						return null;
 					}
 				}
 			}
