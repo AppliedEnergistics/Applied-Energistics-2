@@ -139,12 +139,28 @@ public class CellInventory implements ICellInventory
 		 * if ( tagType instanceof NBTTagShort ) ((NBTTagShort) tagType).data = storedItems = (short) cellItems.size();
 		 * else
 		 */
-		tagCompound.setShort( ITEM_TYPE_TAG, storedItems = (short) cellItems.size() );
+		if ( this.cellItems.isEmpty() )
+		{
+			this.tagCompound.removeTag( ITEM_TYPE_TAG );
+		}
+		else
+		{
+			this.storedItems = ( short ) this.cellItems.size();
+			this.tagCompound.setShort( ITEM_TYPE_TAG, this.storedItems );
+		}
 
 		/*
 		 * if ( tagCount instanceof NBTTagInt ) ((NBTTagInt) tagCount).data = storedItemCount = itemCount; else
 		 */
-		tagCompound.setInteger( ITEM_COUNT_TAG, storedItemCount = itemCount );
+		if ( itemCount == 0 )
+		{
+			this.tagCompound.removeTag( ITEM_COUNT_TAG );
+		}
+		else
+		{
+			this.storedItemCount = itemCount;
+			this.tagCompound.setInteger( ITEM_COUNT_TAG, itemCount );
+		}
 
 		// clean any old crusty stuff...
 		for (; x < oldStoredItems && x < MAX_ITEM_TYPES; x++)
