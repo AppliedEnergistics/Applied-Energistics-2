@@ -26,20 +26,21 @@ import cofh.api.energy.IEnergyHandler;
 @Interface(iname = "RF", iface = "cofh.api.energy.IEnergyHandler")
 public abstract class RedstoneFlux extends RotaryCraft implements IEnergyHandler
 {
-
 	@Override
 	final public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
 		if ( simulate )
 		{
-			double demand = getExternalPowerDemand( PowerUnits.RF, maxReceive );
-			if ( demand > maxReceive )
-				return maxReceive;
-			return (int) Math.floor( maxReceive - demand );
+			final int networkEnergyDemand = (int) Math.floor( this.getExternalPowerDemand( PowerUnits.RF, maxReceive ) );
+			final int maxEnergyStorage = this.getMaxEnergyStored( from );
+			final int currentEnergyStorage = this.getEnergyStored( from );
+			final int energyStorageBalance = maxEnergyStorage - currentEnergyStorage + networkEnergyDemand - maxReceive;
+
+			return Math.max( 0, energyStorageBalance );
 		}
 		else
 		{
-			int demand = (int) Math.floor( getExternalPowerDemand( PowerUnits.RF, maxReceive ) );
+			int demand = (int) Math.floor( this.getExternalPowerDemand( PowerUnits.RF, maxReceive ) );
 
 			int ignored = 0;
 			int insertAmt = maxReceive;
@@ -50,9 +51,9 @@ public abstract class RedstoneFlux extends RotaryCraft implements IEnergyHandler
 				insertAmt = demand;
 			}
 
-			double overFlow = injectExternalPower( PowerUnits.RF, insertAmt );
+			double overFlow = this.injectExternalPower( PowerUnits.RF, insertAmt );
 			double ox = Math.floor( overFlow );
-			internalCurrentPower += PowerUnits.RF.convertTo( PowerUnits.AE, overFlow - ox );
+			this.internalCurrentPower += PowerUnits.RF.convertTo( PowerUnits.AE, overFlow - ox );
 			return maxReceive - ((int) ox + ignored);
 		}
 	}
@@ -66,19 +67,18 @@ public abstract class RedstoneFlux extends RotaryCraft implements IEnergyHandler
 	@Override
 	final public boolean canConnectEnergy(ForgeDirection from)
 	{
-		return getPowerSides().contains( from );
+		return this.getPowerSides().contains( from );
 	}
 
 	@Override
 	final public int getEnergyStored(ForgeDirection from)
 	{
-		return (int) Math.floor( PowerUnits.AE.convertTo( PowerUnits.RF, getAECurrentPower() ) );
+		return (int) Math.floor( PowerUnits.AE.convertTo( PowerUnits.RF, this.getAECurrentPower() ) );
 	}
 
 	@Override
 	final public int getMaxEnergyStored(ForgeDirection from)
 	{
-		return (int) Math.floor( PowerUnits.AE.convertTo( PowerUnits.RF, getAEMaxPower() ) );
+		return (int) Math.floor( PowerUnits.AE.convertTo( PowerUnits.RF, this.getAEMaxPower() ) );
 	}
-
 }
