@@ -18,82 +18,28 @@
 
 package appeng.me;
 
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkEvent;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.core.AELog;
 
+
 public class NetworkEventBus
 {
+	private static final Collection<Class> readClasses = new HashSet<Class>();
+	private static final Map<Class<? extends MENetworkEvent>, Map<Class, MENetworkEventInfo>> events = new HashMap<Class<? extends MENetworkEvent>, Map<Class, MENetworkEventInfo>>();
 
-	static class NetworkEventDone extends Throwable
-	{
-
-		private static final long serialVersionUID = -3079021487019171205L;
-
-	}
-
-	class EventMethod
-	{
-
-		public final Class objClass;
-		public final Method objMethod;
-		public final Class objEvent;
-
-		public EventMethod(Class Event, Class ObjClass, Method ObjMethod) {
-			this.objClass = ObjClass;
-			this.objMethod = ObjMethod;
-			this.objEvent = Event;
-		}
-
-		public void invoke(Object obj, MENetworkEvent e) throws NetworkEventDone
-		{
-			try
-			{
-				objMethod.invoke( obj, e );
-			}
-			catch (Throwable e1)
-			{
-				AELog.severe( "[AppEng] Network Event caused exception:" );
-				AELog.severe( "Offending Class: " + obj.getClass().getName() );
-				AELog.severe( "Offending Object: " + obj.toString() );
-				AELog.error( e1 );
-				throw new RuntimeException( e1 );
-			}
-
-			if ( e.isCanceled() )
-				throw new NetworkEventDone();
-		}
-	}
-
-	class MENetworkEventInfo
-	{
-
-		private final ArrayList<EventMethod> methods = new ArrayList<EventMethod>();
-
-		public void Add(Class Event, Class ObjClass, Method ObjMethod)
-		{
-			methods.add( new EventMethod( Event, ObjClass, ObjMethod ) );
-		}
-
-		public void invoke(Object obj, MENetworkEvent e) throws NetworkEventDone
-		{
-			for (EventMethod em : methods)
-				em.invoke( obj, e );
-		}
-	}
-
-	private static final Set<Class> readClasses = new HashSet<Class>();
-	private static final Hashtable<Class<? extends MENetworkEvent>, Hashtable<Class, MENetworkEventInfo>> events = new Hashtable<Class<? extends MENetworkEvent>, Hashtable<Class, MENetworkEventInfo>>();
-
-	public void readClass(Class listAs, Class c)
+	public void readClass( Class listAs, Class c )
 	{
 		if ( readClasses.contains( c ) )
 			return;
@@ -101,27 +47,27 @@ public class NetworkEventBus
 
 		try
 		{
-			for (Method m : c.getMethods())
+			for ( Method m : c.getMethods() )
 			{
 				MENetworkEventSubscribe s = m.getAnnotation( MENetworkEventSubscribe.class );
 				if ( s != null )
 				{
-					Class types[] = m.getParameterTypes();
+					Class[] types = m.getParameterTypes();
 					if ( types.length == 1 )
 					{
 						if ( MENetworkEvent.class.isAssignableFrom( types[0] ) )
 						{
-	
-							Hashtable<Class, MENetworkEventInfo> classEvents = events.get( types[0] );
+
+							Map<Class, MENetworkEventInfo> classEvents = events.get( types[0] );
 							if ( classEvents == null )
-								events.put( types[0], classEvents = new Hashtable<Class, MENetworkEventInfo>() );
-	
+								events.put( types[0], classEvents = new HashMap<Class, MENetworkEventInfo>() );
+
 							MENetworkEventInfo thisEvent = classEvents.get( listAs );
 							if ( thisEvent == null )
 								thisEvent = new MENetworkEventInfo();
-	
+
 							thisEvent.Add( types[0], c, m );
-	
+
 							classEvents.put( listAs, thisEvent );
 						}
 						else
@@ -132,33 +78,32 @@ public class NetworkEventBus
 				}
 			}
 		}
-		catch(Throwable t )
+		catch ( Throwable t )
 		{
-			throw new RuntimeException( "Error while adding "+c.getName()+" to event bus", t );
+			throw new RuntimeException( "Error while adding " + c.getName() + " to event bus", t );
 		}
-
 	}
 
-	public MENetworkEvent postEvent(Grid g, MENetworkEvent e)
+	public MENetworkEvent postEvent( Grid g, MENetworkEvent e )
 	{
-		Hashtable<Class, MENetworkEventInfo> subscribers = events.get( e.getClass() );
+		Map<Class, MENetworkEventInfo> subscribers = events.get( e.getClass() );
 		int x = 0;
 
 		try
 		{
 			if ( subscribers != null )
 			{
-				for (Entry<Class, MENetworkEventInfo> subscriber : subscribers.entrySet())
+				for ( Entry<Class, MENetworkEventInfo> subscriber : subscribers.entrySet() )
 				{
 					MENetworkEventInfo target = subscriber.getValue();
-					GridCacheWrapper cache = g.caches.get( subscriber.getKey() );
+					GridCacheWrapper cache = g.getCaches().get( subscriber.getKey() );
 					if ( cache != null )
 					{
 						x++;
 						target.invoke( cache.myCache, e );
 					}
 
-					for (IGridNode obj : g.getMachines( subscriber.getKey() ))
+					for ( IGridNode obj : g.getMachines( subscriber.getKey() ) )
 					{
 						x++;
 						target.invoke( obj.getMachine(), e );
@@ -166,7 +111,7 @@ public class NetworkEventBus
 				}
 			}
 		}
-		catch (NetworkEventDone done)
+		catch ( NetworkEventDone done )
 		{
 			// Early out.
 		}
@@ -175,9 +120,9 @@ public class NetworkEventBus
 		return e;
 	}
 
-	public MENetworkEvent postEventTo(Grid grid, GridNode node, MENetworkEvent e)
+	public MENetworkEvent postEventTo( Grid grid, GridNode node, MENetworkEvent e )
 	{
-		Hashtable<Class, MENetworkEventInfo> subscribers = events.get( e.getClass() );
+		Map<Class, MENetworkEventInfo> subscribers = events.get( e.getClass() );
 		int x = 0;
 
 		try
@@ -192,12 +137,71 @@ public class NetworkEventBus
 				}
 			}
 		}
-		catch (NetworkEventDone done)
+		catch ( NetworkEventDone done )
 		{
 			// Early out.
 		}
 
 		e.setVisitedObjects( x );
 		return e;
+	}
+
+	static class NetworkEventDone extends Throwable
+	{
+
+		private static final long serialVersionUID = -3079021487019171205L;
+	}
+
+
+	class EventMethod
+	{
+
+		public final Class objClass;
+		public final Method objMethod;
+		public final Class objEvent;
+
+		public EventMethod( Class Event, Class ObjClass, Method ObjMethod )
+		{
+			this.objClass = ObjClass;
+			this.objMethod = ObjMethod;
+			this.objEvent = Event;
+		}
+
+		public void invoke( Object obj, MENetworkEvent e ) throws NetworkEventDone
+		{
+			try
+			{
+				this.objMethod.invoke( obj, e );
+			}
+			catch ( Throwable e1 )
+			{
+				AELog.severe( "[AppEng] Network Event caused exception:" );
+				AELog.severe( "Offending Class: " + obj.getClass().getName() );
+				AELog.severe( "Offending Object: " + obj.toString() );
+				AELog.error( e1 );
+				throw new RuntimeException( e1 );
+			}
+
+			if ( e.isCanceled() )
+				throw new NetworkEventDone();
+		}
+	}
+
+
+	class MENetworkEventInfo
+	{
+
+		private final List<EventMethod> methods = new ArrayList<EventMethod>();
+
+		public void Add( Class Event, Class ObjClass, Method ObjMethod )
+		{
+			this.methods.add( new EventMethod( Event, ObjClass, ObjMethod ) );
+		}
+
+		public void invoke( Object obj, MENetworkEvent e ) throws NetworkEventDone
+		{
+			for ( EventMethod em : this.methods )
+				em.invoke( obj, e );
+		}
 	}
 }
