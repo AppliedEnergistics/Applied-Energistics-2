@@ -29,33 +29,15 @@ public abstract class RedstoneFlux extends RotaryCraft implements IEnergyHandler
 	@Override
 	final public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
-		if ( simulate )
+		final int networkRFDemand = (int) Math.floor( this.getExternalPowerDemand( PowerUnits.RF, maxReceive ) );
+		final int usedRF = Math.min( maxReceive, networkRFDemand );
+
+		if ( !simulate )
 		{
-			final int networkEnergyDemand = (int) Math.floor( this.getExternalPowerDemand( PowerUnits.RF, maxReceive ) );
-			final int maxEnergyStorage = this.getMaxEnergyStored( from );
-			final int currentEnergyStorage = this.getEnergyStored( from );
-			final int energyStorageBalance = maxEnergyStorage - currentEnergyStorage + networkEnergyDemand - maxReceive;
-
-			return Math.max( 0, energyStorageBalance );
+			this.internalCurrentPower += PowerUnits.RF.convertTo( PowerUnits.AE, usedRF );
 		}
-		else
-		{
-			int demand = (int) Math.floor( this.getExternalPowerDemand( PowerUnits.RF, maxReceive ) );
-
-			int ignored = 0;
-			int insertAmt = maxReceive;
-
-			if ( insertAmt > demand )
-			{
-				ignored = insertAmt - demand;
-				insertAmt = demand;
-			}
-
-			double overFlow = this.injectExternalPower( PowerUnits.RF, insertAmt );
-			double ox = Math.floor( overFlow );
-			this.internalCurrentPower += PowerUnits.RF.convertTo( PowerUnits.AE, overFlow - ox );
-			return maxReceive - ((int) ox + ignored);
-		}
+		
+		return usedRF;
 	}
 
 	@Override
