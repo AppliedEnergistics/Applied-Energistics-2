@@ -19,25 +19,33 @@
 package appeng.util;
 
 
+import java.util.regex.Pattern;
+
+
 /**
- * Regex wrapper for UUIDs to not rely on try catch
+ * Regex wrapper for {@link java.util.UUID}s to not rely on try catch
  */
 public final class UUIDMatcher
 {
 	/**
-	 * String which is the regular expression for UUIDs
+	 * String which is the regular expression for {@link java.util.UUID}s
 	 */
 	private static final String UUID_REGEX = "[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}";
 
 	/**
-	 * Checks if a potential UUID is an UUID by applying a regular expression on it.
-	 *
-	 * @param potential to be checked potential UUID
-	 *
-	 * @return true, if the potential UUID is indeed an UUID
+	 * Pattern which pre-compiles the {@link appeng.util.UUIDMatcher#UUID_REGEX}
 	 */
-	public boolean isUUID( String potential )
+	private static final Pattern PATTERN = Pattern.compile( UUID_REGEX );
+
+	/**
+	 * Checks if a potential {@link java.util.UUID} is an {@link java.util.UUID} by applying a regular expression on it.
+	 *
+	 * @param potential to be checked potential {@link java.util.UUID}
+	 *
+	 * @return true, if the potential {@link java.util.UUID} is indeed an {@link java.util.UUID}
+	 */
+	public boolean isUUID( CharSequence potential )
 	{
-		return potential.matches( UUID_REGEX );
+		return PATTERN.matcher( potential ).matches();
 	}
 }

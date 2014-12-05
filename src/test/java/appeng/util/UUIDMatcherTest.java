@@ -30,9 +30,9 @@ import static org.junit.Assert.assertTrue;
  */
 public class UUIDMatcherTest
 {
-	private static final String isUUID = "03ba29a1-d6bd-32ba-90b2-375e4d65abc9";
-	private static final String noUUID = "no";
-	private static final String invalidUUID = "g3ba29a1-d6bd-32ba-90b2-375e4d65abc9";
+	private static final String IS_UUID = "03ba29a1-d6bd-32ba-90b2-375e4d65abc9";
+	private static final String NO_UUID = "no";
+	private static final String INVALID_UUID = "g3ba29a1-d6bd-32ba-90b2-375e4d65abc9";
 
 	private final UUIDMatcher matcher;
 
@@ -44,18 +44,18 @@ public class UUIDMatcherTest
 	@Test
 	public void testUUID_shouldPass()
 	{
-		assertTrue( this.matcher.isUUID( isUUID ) );
+		assertTrue( this.matcher.isUUID( IS_UUID ) );
 	}
 
 	@Test
 	public void testNoUUD_shouldPass()
 	{
-		assertFalse( this.matcher.isUUID( noUUID ) );
+		assertFalse( this.matcher.isUUID( NO_UUID ) );
 	}
 
 	@Test
 	public void testInvalidUUID_shouldPass()
 	{
-		assertFalse( this.matcher.isUUID( invalidUUID ) );
+		assertFalse( this.matcher.isUUID( INVALID_UUID ) );
 	}
 }
