@@ -280,9 +280,9 @@ public class AdaptorIInventory extends InventoryAdaptor
 						return null;
 					}
 				}
-				else if ( Platform.isSameItemPrecise( is, left ) && is.stackSize < stackLimit )
+				else if ( Platform.isSameItemPrecise( is, left ) && is.stackSize < perOperationLimit )
 				{
-					int room = stackLimit - is.stackSize;
+					int room = perOperationLimit - is.stackSize;
 					int used = Math.min( left.stackSize, room );
 
 					if ( modulate )
