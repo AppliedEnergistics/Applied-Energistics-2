@@ -34,7 +34,7 @@ public abstract class RedstoneFlux extends RotaryCraft implements IEnergyHandler
 
 		if ( !simulate )
 		{
-			this.internalCurrentPower += PowerUnits.RF.convertTo( PowerUnits.AE, usedRF );
+			this.injectExternalPower( PowerUnits.RF, usedRF );
 		}
 		
 		return usedRF;
