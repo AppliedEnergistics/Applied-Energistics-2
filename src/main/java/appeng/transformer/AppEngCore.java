@@ -33,7 +33,7 @@ import cpw.mods.fml.relauncher.FMLRelaunchLog;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 
-@MCVersion()
+@MCVersion("1.7.10")
 public class AppEngCore extends DummyModContainer implements IFMLLoadingPlugin
 {
 
