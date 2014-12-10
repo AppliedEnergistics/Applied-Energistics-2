@@ -447,6 +447,10 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	@Override
 	public IInventory getInventoryByName(String name)
 	{
+		if (name.equals("player"))
+		{
+			return invPlayer;
+		}
 		return ct.getInventoryByName( name );
 	}
 
