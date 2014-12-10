@@ -23,6 +23,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.WeakHashMap;
 
+import appeng.helpers.InvalidPatternException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -91,9 +92,18 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	@Override
 	public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
-		ICraftingPatternDetails details = getPatternForItem( stack, player.worldObj );
-
-		if ( details == null )
+		ICraftingPatternDetails details;
+		try
+		{
+			details = unsafeGetPatternForItem( stack, player.worldObj );
+		}
+		catch ( InvalidPatternException ex )
+		{
+			lines.add( EnumChatFormatting.RED + GuiText.InvalidPattern.getLocal() );
+			lines.add( EnumChatFormatting.RED + ex.getLocalizedMessage() );
+			return;
+		}
+		catch ( Throwable other )
 		{
 			lines.add( EnumChatFormatting.RED + GuiText.InvalidPattern.getLocal() );
 			return;
@@ -162,10 +172,19 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		{
 			return new PatternHelper( is, w );
 		}
+		catch (InvalidPatternException ex)
+		{
+			return null;
+		}
 		catch (Throwable t)
 		{
 			return null;
 		}
+	}
+
+	public ICraftingPatternDetails unsafeGetPatternForItem(ItemStack is, World w) throws InvalidPatternException
+	{
+		return new PatternHelper( is, w );
 	}
 
 }
