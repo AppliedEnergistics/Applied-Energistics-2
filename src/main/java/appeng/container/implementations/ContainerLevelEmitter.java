@@ -62,7 +62,6 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 	@Override
 	public int availableUpgrades()
 	{
-
 		return 1;
 	}
 
