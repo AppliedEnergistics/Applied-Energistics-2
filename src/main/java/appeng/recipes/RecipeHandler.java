@@ -151,7 +151,7 @@ public class RecipeHandler implements IRecipeHandler
 
 		for (Entry<Class, Integer> e : processed.entrySet())
 		{
-			AELog.info( "Recipes Loading: " + e.getKey().getSimpleName() + ": " + e.getValue() + " loaded." );
+			AELog.debug( "Recipes Loading: " + e.getKey().getSimpleName() + ": " + e.getValue() + " loaded." );
 		}
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.WebsiteRecipes ) )
