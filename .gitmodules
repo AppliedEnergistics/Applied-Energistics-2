@@ -1,7 +1,0 @@
-
-[submodule "src/main/resources/assets/appliedenergistics2/lang"]
-	path = src/main/resources/assets/appliedenergistics2/lang
-	url = https://github.com/AppliedEnergistics/AppliedEnergistics-2-Localization.git
-[submodule "src/api/java/appeng/api"]
-	path = src/api/java/appeng/api
-	url = https://github.com/AppliedEnergistics/Applied-Energistics-2-API.git
