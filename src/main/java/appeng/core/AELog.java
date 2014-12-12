@@ -56,6 +56,11 @@ public class AELog
 		log( Level.INFO, format, data );
 	}
 
+	public static void debug(String format, Object... data)
+	{
+		log( Level.DEBUG, format, data );
+	}
+
 	public static void grinder(String o)
 	{
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.GrinderLogging ) )

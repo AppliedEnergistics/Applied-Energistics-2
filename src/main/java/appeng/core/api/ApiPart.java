@@ -301,7 +301,7 @@ public class ApiPart implements IPartHelper
 
 			if ( !hasError )
 			{
-				AELog.info( "Layer: " + n.name + " loaded successfully - " + size + " bytes" );
+				AELog.debug( "Layer: " + n.name + " loaded successfully - " + size + " bytes" );
 			}
 
 		}

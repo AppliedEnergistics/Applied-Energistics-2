@@ -117,20 +117,6 @@ public class IntegrationNode
 				state = IntegrationStage.FAILED;
 			}
 		}
-
-		if ( stage == IntegrationStage.POST_INIT )
-		{
-			if ( state == IntegrationStage.FAILED )
-			{
-				AELog.info( displayName + " - Integration Disabled" );
-				if ( !(exception instanceof ModNotInstalled) )
-					AELog.integration( exception );
-			}
-			else
-			{
-				AELog.info( displayName + " - Integration Enable" );
-			}
-		}
 	}
 
 	public boolean isActive()
