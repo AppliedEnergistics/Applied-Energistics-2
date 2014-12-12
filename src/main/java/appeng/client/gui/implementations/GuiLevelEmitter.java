@@ -149,7 +149,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 				result = 0;
 			}
 
-			if ( this.bc.getInstalledUpgrades( Upgrades.REDSTONE ) > 0 && result > 15 )
+			if ( bc.getInstalledUpgrades( Upgrades.SPEED ) > 0 && result > 15 )
 			{
 				result = 15;
 			}
@@ -217,8 +217,8 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	@Override
 	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
-		boolean notCraftingMode = this.bc.getInstalledUpgrades( Upgrades.CRAFTING ) == 0;
-		boolean notRateMode = this.bc.getInstalledUpgrades( Upgrades.REDSTONE ) == 0;
+		boolean notCraftingMode = bc.getInstalledUpgrades( Upgrades.CRAFTING ) == 0;
+		boolean notRateMode = bc.getInstalledUpgrades( Upgrades.SPEED ) == 0;
 
 		// configure enabled status...
 		this.level.setEnabled( notCraftingMode );

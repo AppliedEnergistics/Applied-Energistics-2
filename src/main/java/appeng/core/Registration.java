@@ -642,6 +642,7 @@ public final class Registration
 		Upgrades.FUZZY.registerItem( parts.partLevelEmitter, 1 );
 		Upgrades.CRAFTING.registerItem( parts.partLevelEmitter, 1 );
 		Upgrades.REDSTONE.registerItem( parts.partLevelEmitter, 1 );
+		Upgrades.SPEED.registerItem( parts.partLevelEmitter, 1 );
 
 		// Import Bus
 		Upgrades.FUZZY.registerItem( parts.partImportBus, 1 );

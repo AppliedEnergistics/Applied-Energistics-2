@@ -162,12 +162,12 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		if ( this.proxy.isActive() )
 		{
 			boolean isOn = isLevelEmitterOn();
-			if ( prevState != isOn || prevStrength != strength )
+			if ( prevState != isOn || prevStrength != outputStrength )
 			{
 				host.markForUpdate();
 				TileEntity te = host.getTile();
 				prevState = isOn;
-				prevStrength = strength;
+				prevStrength = outputStrength;
 				Platform.notifyBlocksOfNeighbors( te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord );
 				Platform.notifyBlocksOfNeighbors( te.getWorldObj(), te.xCoord + this.side.offsetX, te.yCoord + this.side.offsetY, te.zCoord + this.side.offsetZ );
 			}
@@ -235,6 +235,8 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		if ( this.myCraftingWatcher != null )
 			this.myCraftingWatcher.clear();
 
+		calculateLevelEmitterStrength( true );
+
 		try
 		{
 			this.proxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.proxy.getNode() ) );
@@ -244,7 +246,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 			// :/
 		}
 
-		if ( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
+		if ( getInstalledUpgrades( Upgrades.SPEED ) > 0 )
 		{
 			try
 			{
@@ -260,6 +262,8 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		{
 			if ( this.myCraftingWatcher != null && myStack != null )
 				this.myCraftingWatcher.add( myStack );
+
+			updateState();
 
 			return;
 		}
@@ -365,7 +369,8 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 				this.lastReportedValue = r.getStackSize();
 		}
 
-		this.updateState();
+		calculateLevelEmitterStrength( false );
+		updateState();
 	}
 
 	@Override
@@ -384,14 +389,16 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@Override
 	public void onRequestChange( ICraftingGrid craftingGrid, IAEItemStack what )
 	{
-		this.updateState();
+		calculateLevelEmitterStrength( false );
+		updateState();
 	}
 
 	@Override
 	public void onThresholdPass( IEnergyGrid energyGrid )
 	{
-		this.lastReportedValue = ( long ) energyGrid.getStoredPower();
-		this.updateState();
+		lastReportedValue = ( long ) energyGrid.getStoredPower();
+		calculateLevelEmitterStrength( false );
+		updateState();
 	}
 
 	@Override
@@ -399,9 +406,15 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	{
 		if ( chan == StorageChannel.ITEMS && fullStack.equals( this.config.getAEStackInSlot( 0 ) ) && this.getInstalledUpgrades( Upgrades.FUZZY ) == 0 )
 		{
-			this.lastReportedValue = fullStack.getStackSize();
-			this.lastReportedDiffValue = diffStack.getStackSize();
-			this.updateState();
+			lastReportedValue = fullStack.getStackSize();
+			lastReportedDiffValue += diffStack.getStackSize();
+
+			if ( getInstalledUpgrades( Upgrades.SPEED ) == 0 )
+			{
+				calculateLevelEmitterStrength( false );
+			}
+
+			updateState();
 		}
 	}
 
@@ -609,54 +622,69 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		if ( Platform.isClient() )
 			return ( this.clientFlags & this.FLAG_ON ) == this.FLAG_ON;
 
-		if ( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
+		return outputStrength > 0;
+	}
+
+	/**
+	 * Calculates the redstone level and sets the internal strength as well as the outputStrength based on the
+	 * RedstoneMode
+	 * The parameter can be used to reset periodic data, currently it is used to set the item throughput rate back to a
+	 * neutral setting.
+	 * 
+	 * @param reset true if a reset should be enforced
+	 */
+	private void calculateLevelEmitterStrength( boolean reset )
+	{
+		boolean flipState = getConfigManager().getSetting( Settings.REDSTONE_EMITTER ) == RedstoneMode.LOW_SIGNAL;
+		int value = this.strength;
+
+		if ( getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
 		{
+			flipState = false;
 			try
 			{
-				return this.proxy.getCrafting().isRequesting( this.config.getAEStackInSlot( 0 ) );
+				value = proxy.getCrafting().isRequesting( config.getAEStackInSlot( 0 ) ) ? 15 : 0;
 			}
 			catch ( GridAccessException e )
 			{
 				// :P
 			}
 
-			return this.prevState;
 		}
-
-		boolean flipState = this.getConfigManager().getSetting( Settings.REDSTONE_EMITTER ) == RedstoneMode.LOW_SIGNAL;
-
-		if ( getInstalledUpgrades( Upgrades.REDSTONE ) > 0 )
+		else if ( getInstalledUpgrades( Upgrades.SPEED ) > 0 )
 		{
-			return flipState ? strength < 15 : strength > 0;
-		}
-
-		return flipState ? reportingValue >= lastReportedValue + 1 : reportingValue < lastReportedValue + 1;
-	}
-
-	private int calculateLevelEmitterStrength()
-	{
-		if ( getInstalledUpgrades( Upgrades.REDSTONE ) > 0 )
-		{
-			int value = ( int ) reportingValue;
-
+			value = ( int ) reportingValue % 16;
 			if ( lastReportedDiffValue == 0 )
 			{
-				int sign = reportingValue - prevStrength < 0 ? -1 : 1;
-				value = prevStrength == reportingValue ? prevStrength : prevStrength + 1 * sign;
+				int sign = reportingValue - strength < 0 ? -1 : 1;
+				value = strength == reportingValue ? strength : strength + 1 * sign;
 			}
 			else if ( lastReportedDiffValue > 0 )
 			{
-				value = prevStrength < 15 ? prevStrength + 1 : prevStrength;
+				value = strength < 15 ? strength + 1 : strength;
 			}
 			else
 			{
-				value = prevStrength > 0 ? prevStrength - 1 : prevStrength;
+				value = strength > 0 ? strength - 1 : strength;
 			}
 
-			lastReportedDiffValue = 0;
-			return value % 16;
+			if ( reset )
+			{
+				lastReportedDiffValue = 0;
+			}
 		}
-		return 15;
+		else if ( getInstalledUpgrades( Upgrades.REDSTONE ) > 0 )
+		{
+			value = reportingValue <= lastReportedValue ? 15 : ( int ) ( ( double ) lastReportedValue / reportingValue * 15 );
+		}
+		else
+		{
+			value = reportingValue < lastReportedValue + 1 ? 15 : 0;
+
+		}
+
+		this.strength = value;
+		this.outputStrength = flipState ? 15 - value : value;
 	}
 
 	@Override
@@ -799,20 +827,19 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@Override
 	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
 	{
-		boolean isRateUpgraded = getInstalledUpgrades( Upgrades.REDSTONE ) > 0;
+		boolean isRateUpgraded = getInstalledUpgrades( Upgrades.SPEED ) > 0;
 		if ( isRateUpgraded )
 		{
 			if ( getConfigManager().getSetting( Settings.LEVEL_TYPE ) == LevelType.ENERGY_LEVEL )
 			{
-				this.calculateEnergyRate();
+				calculateEnergyRate();
 			}
 
-			boolean flipState = getConfigManager().getSetting( Settings.REDSTONE_EMITTER ) == RedstoneMode.LOW_SIGNAL;
-			this.strength = this.calculateLevelEmitterStrength();
-			this.outputStrength = flipState ? 15 - this.strength : this.strength;
+			calculateLevelEmitterStrength( true );
+			boolean speedDown = prevStrength == strength;
 
 			updateState();
-			return prevStrength == strength ? TickRateModulation.SLOWER : TickRateModulation.FASTER;
+			return speedDown ? TickRateModulation.SLOWER : TickRateModulation.FASTER;
 		}
 
 		return isRateUpgraded ? TickRateModulation.IDLE : TickRateModulation.SLEEP;
