@@ -10,6 +10,8 @@
 * [Issues](#issues)
 * [Building](#building)
 * [Contribution](#contribution)
+* [API](#applied-energistics-2-api)
+* [Localization](#applied-energistics-2-localization)
 * [Credits](#credits)
 
 ## About
@@ -24,7 +26,12 @@ A Mod about Matter, Energy and using them to conquer the world..
 
 ## License
 
-Applied Energistics 2 is (c) 2013 - 2014 AlgorithmX2 and licensed under LGPL v3. See the LICENSE.txt for details or go to http://www.gnu.org/licenses/lgpl-3.0.txt for more information. Textures and Models are licensed under Creative Commons 3.
+Applied Energistics 2 API is (c) 2013 - 2014 AlgorithmX2 and licensed under MIT.
+
+Applied Energistics 2 is (c) 2013 - 2014 AlgorithmX2 and licensed under LGPL v3.
+See the LICENSE.txt for details or go to http://www.gnu.org/licenses/lgpl-3.0.txt for more information.
+
+Textures and Models are licensed under Creative Commons 3.
 
 ## Downloads
 
@@ -96,6 +103,48 @@ Getting Started
 7. Create a Pull-Request on GitHub
 
 If you are only doing single file pull requests, GitHub supports using a quick way without the need of cloning your fork. Also read up about [synching](https://help.github.com/articles/syncing-a-fork) if you plan to contribute on regular basis.
+
+## Applied Energistics 2 API
+
+The API for Applied Energistics 2. It is open source to discuss changes, improve documentation, and provide better add-on support in general.
+
+Development and standard builds can be obtained [Here](http://ae2.ae-mod.info/Downloads/).
+
+### Maven
+
+When compiling against the AE2 API you can use gradle dependencies, just add
+
+dependencies {
+	compile "appeng:appliedenergistics2:rv_-_____-__:dev"
+}
+
+or add the compile line to your existing dependencies task to your build.gradle
+
+Where the __ are filled in with the correct version criteria; AE2 is available from the default forge maven so no additional repositories are necessary.
+
+## Applied Energistics 2 Localization
+
+### English Text
+
+en_US is included in this repository, fixes to typos are welcome, I AlgorithmX2 will mostly likely be one of the sole contributors to this file however.
+
+### Encoding
+
+Files must be encoded as UTF-8.
+
+### License
+
+All Text and Translations submitted here can be used for any purpose, and may be re-distributed or used without any limitations.
+
+### New Translations
+
+You can provide any additional languages by creating a new file with the appropriate language code.
+
+### Final Note
+
+If you have have issues localizing something feel free to contact me on IRC, at #AppliedEnergistics on Esper.net
+
+Thanks to everyone helping out to improve localization of AE2.
 
 ## Credits
 
