@@ -31,6 +31,8 @@ public class RF extends BaseModule
 	public static RF instance;
 
 	public RF() {
+		TestClass( cofh.api.energy.IEnergyReceiver.class );
+		TestClass( cofh.api.energy.IEnergyProvider.class );
 		TestClass( cofh.api.energy.IEnergyHandler.class );
 		TestClass( cofh.api.energy.IEnergyConnection.class );
 	}
