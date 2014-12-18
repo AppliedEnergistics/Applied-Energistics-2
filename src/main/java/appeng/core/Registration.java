@@ -560,7 +560,7 @@ public class Registration
 			ph.registerNewLayer( "appeng.parts.layers.LayerIBatteryProvider", "buildcraft.api.mj.IBatteryProvider" );
 
 		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.RF ) )
-			ph.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyHandler" );
+			ph.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyReceiver" );
 
 		FMLCommonHandler.instance().bus().register( TickHandler.instance );
 		MinecraftForge.EVENT_BUS.register( TickHandler.instance );

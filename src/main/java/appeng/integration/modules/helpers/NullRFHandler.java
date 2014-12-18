@@ -18,40 +18,36 @@
 
 package appeng.integration.modules.helpers;
 
-import net.minecraftforge.common.util.ForgeDirection;
-import cofh.api.energy.IEnergyHandler;
 
-public class NullRFHandler implements IEnergyHandler
+import net.minecraftforge.common.util.ForgeDirection;
+
+import cofh.api.energy.IEnergyReceiver;
+
+
+public class NullRFHandler implements IEnergyReceiver
 {
 
 	@Override
-	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
+	public int receiveEnergy( ForgeDirection from, int maxReceive, boolean simulate )
 	{
 		return 0;
 	}
 
 	@Override
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
+	public int getEnergyStored( ForgeDirection from )
 	{
 		return 0;
 	}
 
 	@Override
-	public int getEnergyStored(ForgeDirection from)
+	public int getMaxEnergyStored( ForgeDirection from )
 	{
 		return 0;
 	}
 
 	@Override
-	public int getMaxEnergyStored(ForgeDirection from)
-	{
-		return 0;
-	}
-
-	@Override
-	public boolean canConnectEnergy(ForgeDirection from)
+	public boolean canConnectEnergy( ForgeDirection from )
 	{
 		return true;
 	}
-
 }

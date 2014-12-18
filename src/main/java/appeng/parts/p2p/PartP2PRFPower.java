@@ -18,6 +18,7 @@
 
 package appeng.parts.p2p;
 
+
 import java.util.Stack;
 
 import net.minecraft.init.Blocks;
@@ -25,6 +26,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+import cofh.api.energy.IEnergyReceiver;
+
 import appeng.api.config.PowerUnits;
 import appeng.api.config.TunnelType;
 import appeng.core.AppEng;
@@ -34,18 +41,28 @@ import appeng.me.GridAccessException;
 import appeng.transformer.annotations.integration.Interface;
 import appeng.transformer.annotations.integration.InterfaceList;
 import appeng.util.Platform;
-import cofh.api.energy.IEnergyHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-@InterfaceList(value = { @Interface(iface = "cofh.api.energy.IEnergyHandler", iname = "RF") })
-public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cofh.api.energy.IEnergyHandler
+
+@InterfaceList( value = { @Interface( iface = "cofh.api.energy.IEnergyReceiver", iname = "RF" ) } )
+public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements IEnergyReceiver
 {
+	private static final ThreadLocal<Stack<PartP2PRFPower>> THREAD_STACK = new ThreadLocal<Stack<PartP2PRFPower>>();
+	/**
+	 * Default element based on the null element pattern
+	 */
+	private static final IEnergyReceiver NULL_HANDLER = new NullRFHandler();
+	private boolean cachedTarget = false;
+	private IEnergyReceiver outputTarget;
 
-	private static final IEnergyHandler myNullHandler = new NullRFHandler();
+	public PartP2PRFPower( ItemStack is )
+	{
+		super( is );
 
-	boolean cachedTarget = false;
-	IEnergyHandler outputTarget;
+		if ( !AppEng.instance.isIntegrationEnabled( IntegrationType.RF ) )
+		{
+			throw new RuntimeException( "RF Not installed!" );
+		}
+	}
 
 	@Override
 	public TunnelType getTunnelType()
@@ -53,61 +70,38 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 		return TunnelType.RF_POWER;
 	}
 
-	public PartP2PRFPower(ItemStack is) {
-		super( is );
-
-		if ( !AppEng.instance.isIntegrationEnabled( IntegrationType.RF ) )
-			throw new RuntimeException( "RF Not installed!" );
-	}
-
 	@Override
-	public void onNeighborChanged()
+	public void onTunnelNetworkChange()
 	{
-		super.onNeighborChanged();
-		cachedTarget = false;
+		this.getHost().notifyNeighbors();
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	public IIcon getTypeTexture()
 	{
 		return Blocks.iron_block.getBlockTextureFromSide( 0 );
 	}
 
 	@Override
-	public void onTunnelNetworkChange()
+	public void onNeighborChanged()
 	{
-		getHost().notifyNeighbors();
-	}
+		super.onNeighborChanged();
 
-	public float getPowerDrainPerTick()
-	{
-		return 0.5f;
-	}
-
-	static final ThreadLocal<Stack<PartP2PRFPower>> depth = new ThreadLocal<Stack<PartP2PRFPower>>();
-
-	private Stack<PartP2PRFPower> getDepth()
-	{
-		Stack<PartP2PRFPower> s = depth.get();
-
-		if ( s == null )
-			depth.set( s = new Stack<PartP2PRFPower>() );
-
-		return s;
+		this.cachedTarget = false;
 	}
 
 	@Override
-	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
+	public int receiveEnergy( ForgeDirection from, int maxReceive, boolean simulate )
 	{
-		if ( output )
+		if ( this.output )
 			return 0;
 
-		if ( isActive() )
+		if ( this.isActive() )
 		{
-			Stack<PartP2PRFPower> stack = getDepth();
+			Stack<PartP2PRFPower> stack = this.getDepth();
 
-			for (PartP2PRFPower t : stack)
+			for ( PartP2PRFPower t : stack )
 				if ( t == this )
 					return 0;
 
@@ -117,7 +111,7 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 
 			try
 			{
-				for (PartP2PRFPower t : getOutputs())
+				for ( PartP2PRFPower t : this.getOutputs() )
 				{
 					if ( Platform.getRandomInt() % 2 > 0 )
 					{
@@ -132,7 +126,7 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 
 				if ( maxReceive > 0 )
 				{
-					for (PartP2PRFPower t : getOutputs())
+					for ( PartP2PRFPower t : this.getOutputs() )
 					{
 						int receiver = t.getOutput().receiveEnergy( t.side.getOpposite(), maxReceive, simulate );
 						maxReceive -= receiver;
@@ -143,9 +137,9 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 					}
 				}
 
-				QueueTunnelDrain( PowerUnits.RF, total );
+				this.QueueTunnelDrain( PowerUnits.RF, total );
 			}
-			catch (GridAccessException ignored)
+			catch ( GridAccessException ignored )
 			{
 			}
 
@@ -158,23 +152,47 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 		return 0;
 	}
 
-	@Override
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
+	private Stack<PartP2PRFPower> getDepth()
 	{
-		return 0;
+		Stack<PartP2PRFPower> s = THREAD_STACK.get();
+
+		if ( s == null )
+			THREAD_STACK.set( s = new Stack<PartP2PRFPower>() );
+
+		return s;
+	}
+
+	private IEnergyReceiver getOutput()
+	{
+		if ( this.output )
+		{
+			if ( !this.cachedTarget )
+			{
+				TileEntity self = this.getTile();
+				TileEntity te = self.getWorldObj().getTileEntity( self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
+				this.outputTarget = te instanceof IEnergyReceiver ? ( IEnergyReceiver ) te : null;
+				this.cachedTarget = true;
+			}
+
+			if ( this.outputTarget == null || !this.outputTarget.canConnectEnergy( this.side.getOpposite() ) )
+				return NULL_HANDLER;
+
+			return this.outputTarget;
+		}
+		return NULL_HANDLER;
 	}
 
 	@Override
-	public int getEnergyStored(ForgeDirection from)
+	public int getEnergyStored( ForgeDirection from )
 	{
-		if ( output || !isActive() )
+		if ( this.output || !this.isActive() )
 			return 0;
 
 		int total = 0;
 
-		Stack<PartP2PRFPower> stack = getDepth();
+		Stack<PartP2PRFPower> stack = this.getDepth();
 
-		for (PartP2PRFPower t : stack)
+		for ( PartP2PRFPower t : stack )
 			if ( t == this )
 				return 0;
 
@@ -182,12 +200,12 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 
 		try
 		{
-			for (PartP2PRFPower t : getOutputs())
+			for ( PartP2PRFPower t : this.getOutputs() )
 			{
 				total += t.getOutput().getEnergyStored( t.side.getOpposite() );
 			}
 		}
-		catch (GridAccessException e)
+		catch ( GridAccessException e )
 		{
 			return 0;
 		}
@@ -199,16 +217,16 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 	}
 
 	@Override
-	public int getMaxEnergyStored(ForgeDirection from)
+	public int getMaxEnergyStored( ForgeDirection from )
 	{
-		if ( output || !isActive() )
+		if ( this.output || !this.isActive() )
 			return 0;
 
 		int total = 0;
 
-		Stack<PartP2PRFPower> stack = getDepth();
+		Stack<PartP2PRFPower> stack = this.getDepth();
 
-		for (PartP2PRFPower t : stack)
+		for ( PartP2PRFPower t : stack )
 			if ( t == this )
 				return 0;
 
@@ -216,12 +234,12 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 
 		try
 		{
-			for (PartP2PRFPower t : getOutputs())
+			for ( PartP2PRFPower t : this.getOutputs() )
 			{
 				total += t.getOutput().getMaxEnergyStored( t.side.getOpposite() );
 			}
 		}
-		catch (GridAccessException e)
+		catch ( GridAccessException e )
 		{
 			return 0;
 		}
@@ -232,28 +250,8 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements cof
 		return total;
 	}
 
-	private IEnergyHandler getOutput()
-	{
-		if ( output )
-		{
-			if ( !cachedTarget )
-			{
-				TileEntity self = getTile();
-				TileEntity te = self.getWorldObj().getTileEntity( self.xCoord + side.offsetX, self.yCoord + side.offsetY, self.zCoord + side.offsetZ );
-				outputTarget = te instanceof IEnergyHandler ? (IEnergyHandler) te : null;
-				cachedTarget = true;
-			}
-
-			if ( outputTarget == null || !outputTarget.canConnectEnergy( side.getOpposite() ) )
-				return myNullHandler;
-
-			return outputTarget;
-		}
-		return myNullHandler;
-	}
-
 	@Override
-	public boolean canConnectEnergy(ForgeDirection from)
+	public boolean canConnectEnergy( ForgeDirection from )
 	{
 		return true;
 	}
