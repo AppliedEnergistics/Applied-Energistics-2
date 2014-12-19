@@ -39,19 +39,19 @@ public class RC extends BaseModule implements IRC
 	}
 
 	public RC() {
-		this.TestClass( RailcraftCraftingManager.class );
-		this.TestClass( IRockCrusherRecipe.class );
+		this.testClassExistence( RailcraftCraftingManager.class );
+		this.testClassExistence( IRockCrusherRecipe.class );
 	}
 
 	@Override
-	public void Init()
+	public void init()
 	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void PostInit()
+	public void postInit()
 	{
 
 	}

@@ -28,13 +28,13 @@ public class CLApi extends BaseModule implements ICLApi
 	public static CLApi instance;
 
 	@Override
-	public void Init() throws Throwable
+	public void init() throws Throwable
 	{
-		this.TestClass( coloredlightscore.src.api.CLApi.class );
+		this.testClassExistence( coloredlightscore.src.api.CLApi.class );
 	}
 
 	@Override
-	public void PostInit()
+	public void postInit()
 	{
 		// :P
 	}

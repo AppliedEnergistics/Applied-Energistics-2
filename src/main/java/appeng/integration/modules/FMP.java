@@ -84,7 +84,7 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	}
 
 	@Override
-	public void Init() throws Throwable
+	public void init() throws Throwable
 	{
 		this.createAndRegister( AEApi.instance().blocks().blockQuartz.block(), 0 );
 		this.createAndRegister( AEApi.instance().blocks().blockQuartzPillar.block(), 0 );
@@ -113,7 +113,7 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	}
 
 	@Override
-	public void PostInit()
+	public void postInit()
 	{
 		MinecraftForge.EVENT_BUS.register( new FMPEvent() );
 	}

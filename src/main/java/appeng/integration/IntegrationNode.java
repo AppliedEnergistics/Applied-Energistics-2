@@ -96,12 +96,12 @@ public class IntegrationNode
 
 					break;
 				case INIT:
-					this.mod.Init();
+					this.mod.init();
 					this.state = IntegrationStage.POST_INIT;
 
 					break;
 				case POST_INIT:
-					this.mod.PostInit();
+					this.mod.postInit();
 					this.state = IntegrationStage.READY;
 
 					break;

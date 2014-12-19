@@ -31,13 +31,13 @@ public class Mekanism extends BaseModule implements IMekanism
 	public static Mekanism instance;
 
 	@Override
-	public void Init() throws Throwable
+	public void init() throws Throwable
 	{
-		this.TestClass( mekanism.api.energy.IStrictEnergyAcceptor.class );
+		this.testClassExistence( mekanism.api.energy.IStrictEnergyAcceptor.class );
 	}
 
 	@Override
-	public void PostInit()
+	public void postInit()
 	{
 
 	}

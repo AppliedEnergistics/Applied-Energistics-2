@@ -50,11 +50,11 @@ public class ImmibisMicroblocks extends BaseModule implements IImmibisMicroblock
 	private Method mergeIntoMicroblockContainer;
 
 	@Override
-	public void Init() throws Throwable
+	public void init() throws Throwable
 	{
-		this.TestClass( IMultipartTile.class );
-		this.TestClass( ICoverSystem.class );
-		this.TestClass( IPartContainer.class );
+		this.testClassExistence( IMultipartTile.class );
+		this.testClassExistence( ICoverSystem.class );
+		this.testClassExistence( IPartContainer.class );
 
 		try
 		{
@@ -70,7 +70,7 @@ public class ImmibisMicroblocks extends BaseModule implements IImmibisMicroblock
 	}
 
 	@Override
-	public void PostInit()
+	public void postInit()
 	{
 
 	}

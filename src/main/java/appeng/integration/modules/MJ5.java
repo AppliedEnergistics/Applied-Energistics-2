@@ -30,7 +30,7 @@ public class MJ5 extends BaseModule implements IMJ5
 	public static MJ5 instance;
 
 	public MJ5() {
-		this.TestClass( IPowerReceptor.class );
+		this.testClassExistence( IPowerReceptor.class );
 	}
 
 	@Override
@@ -42,13 +42,13 @@ public class MJ5 extends BaseModule implements IMJ5
 	}
 
 	@Override
-	public void Init() throws Throwable
+	public void init() throws Throwable
 	{
 
 	}
 
 	@Override
-	public void PostInit()
+	public void postInit()
 	{
 
 	}

@@ -48,13 +48,13 @@ public class DSU extends BaseModule implements IDSU
 	}
 
 	@Override
-	public void Init()
+	public void init()
 	{
-		this.TestClass( IDeepStorageUnit.class );
+		this.testClassExistence( IDeepStorageUnit.class );
 	}
 
 	@Override
-	public void PostInit()
+	public void postInit()
 	{
 		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new MFRDSUHandler() );
 	}

@@ -375,13 +375,13 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 	}
 
 	@Override
-	public void Init() throws Throwable
+	public void init() throws Throwable
 	{
 		StackInfo.addSource( this );
 	}
 
 	@Override
-	public void PostInit()
+	public void postInit()
 	{
 
 	}

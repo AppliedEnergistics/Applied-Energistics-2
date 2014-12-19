@@ -48,7 +48,7 @@ public enum IntegrationType
 
 	CLApi(IntegrationSide.BOTH, "Colored Lights Core", "coloredlightscore"),
 
-	Waila(IntegrationSide.CLIENT, "Waila", "Waila"),
+	Waila(IntegrationSide.BOTH, "Waila", "Waila"),
 
 	InvTweaks(IntegrationSide.CLIENT, "Inventory Tweaks", "inventorytweaks"),
 
