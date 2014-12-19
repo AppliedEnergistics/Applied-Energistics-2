@@ -42,8 +42,8 @@ public interface IStorageCell extends ICellWorkbenchItem
 {
 
 	/**
-	 * If this returns something where N % 8 != 0 Then you will be shot on
-	 * sight, or your car will explode, something like that least...
+	 * It wont work if the return is not a multiple of 8.
+	 * The limit is ({@link Integer#MAX_VALUE} + 1) / 8.
 	 * 
 	 * @param cellItem item
 	 * @return number of bytes
