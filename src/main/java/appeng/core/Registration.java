@@ -588,7 +588,9 @@ public class Registration
 
 		recipeHandler.injectRecipes();
 
-		PlayerStatsRegistration.instance.init();
+		final PlayerStatsRegistration registration = new PlayerStatsRegistration( FMLCommonHandler.instance().bus(), AEConfig.instance );
+		registration.registerAchievementHandlers();
+		registration.registerAchievements();
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.enableDisassemblyCrafting ) )
 			CraftingManager.getInstance().getRecipeList().add( new DisassembleRecipe() );
