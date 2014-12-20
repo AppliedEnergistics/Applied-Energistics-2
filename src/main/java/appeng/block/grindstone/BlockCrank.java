@@ -43,7 +43,6 @@ public class BlockCrank extends AEBaseBlock
 
 	public BlockCrank() {
 		super( BlockCrank.class, Material.wood );
-		setStepSound( Block.soundTypeWood );
 		setFeature( EnumSet.of( AEFeature.GrindStone ) );
 		setTileEntity( TileCrank.class );
 		setLightOpacity( 0 );
