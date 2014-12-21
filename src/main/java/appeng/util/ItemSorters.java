@@ -20,6 +20,8 @@ package appeng.util;
 
 import java.util.Comparator;
 
+import net.minecraft.item.Item;
+
 import appeng.api.config.SortDir;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;
