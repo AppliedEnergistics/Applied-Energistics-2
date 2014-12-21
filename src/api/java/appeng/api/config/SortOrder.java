@@ -25,5 +25,5 @@ package appeng.api.config;
 
 public enum SortOrder
 {
-	NAME, AMOUNT, MOD, INVTWEAKS
+	ID, NAME, AMOUNT, MOD, INVTWEAKS
 }
