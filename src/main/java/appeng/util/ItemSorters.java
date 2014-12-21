@@ -20,6 +20,8 @@ package appeng.util;
 
 import java.util.Comparator;
 
+import net.minecraft.item.Item;
+
 import appeng.api.config.SortDir;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;
@@ -70,6 +72,16 @@ public class ItemSorters
 			return -1;
 		return 1;
 	}
+	
+	public static final Comparator<IAEItemStack> ConfigBased_SortByID = new Comparator<IAEItemStack>() {
+
+		@Override
+		public int compare(IAEItemStack o1, IAEItemStack o2)
+		{
+			int idx = Item.getIdFromItem(o1.getItem())-Item.getIdFromItem(o2.getItem());
+			return Direction == SortDir.ASCENDING ? idx : -idx;
+		}
+	};
 
 	public static final Comparator<IAEItemStack> ConfigBased_SortByName = new Comparator<IAEItemStack>() {
 

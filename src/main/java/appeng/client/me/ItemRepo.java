@@ -226,7 +226,9 @@ public class ItemRepo
 		ItemSorters.Direction = (appeng.api.config.SortDir) SortDir;
 		ItemSorters.init();
 
-		if ( SortBy == SortOrder.MOD )
+		if ( SortBy == SortOrder.ID )
+			Collections.sort( view, ItemSorters.ConfigBased_SortByID );
+		else if ( SortBy == SortOrder.MOD )
 			Collections.sort( view, ItemSorters.ConfigBased_SortByMod );
 		else if ( SortBy == SortOrder.AMOUNT )
 			Collections.sort( view, ItemSorters.ConfigBased_SortBySize );

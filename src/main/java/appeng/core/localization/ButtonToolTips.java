@@ -40,7 +40,7 @@ public enum ButtonToolTips
 
 	SearchMode_Standard, SearchMode_NEIAuto, SearchMode_NEIStandard,
 
-	SearchMode, ItemName, NumberOfItems, PartitionStorageHint,
+	SearchMode, ItemID, ItemName, NumberOfItems, PartitionStorageHint,
 
 	ClearSettings, StoredItems, StoredCraftable, Craftable,
 
