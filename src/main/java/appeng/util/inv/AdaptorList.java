@@ -69,25 +69,25 @@ public class AdaptorList extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateSimilarRemove(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
+	public ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
 	{
 		for (ItemStack is : this.i)
 		{
 			if ( is != null && (filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode )) )
 			{
-				if ( how_many > is.stackSize )
+				if ( amount > is.stackSize )
 				{
-					how_many = is.stackSize;
+					amount = is.stackSize;
 				}
 				if ( destination != null && !destination.canInsert( is ) )
 				{
-					how_many = 0;
+					amount = 0;
 				}
 
-				if ( how_many > 0 )
+				if ( amount > 0 )
 				{
 					ItemStack rv = is.copy();
-					rv.stackSize = how_many;
+					rv.stackSize = amount;
 					return rv;
 				}
 			}
@@ -97,7 +97,7 @@ public class AdaptorList extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeItems(int how_many, ItemStack filter, IInventoryDestination destination)
+	public ItemStack removeItems(int amount, ItemStack filter, IInventoryDestination destination)
 	{
 		int s = this.i.size();
 		for (int x = 0; x < s; x++)
@@ -105,16 +105,16 @@ public class AdaptorList extends InventoryAdaptor
 			ItemStack is = this.i.get( x );
 			if ( is != null && (filter == null || Platform.isSameItemPrecise( is, filter )) )
 			{
-				if ( how_many > is.stackSize )
-					how_many = is.stackSize;
+				if ( amount > is.stackSize )
+					amount = is.stackSize;
 				if ( destination != null && !destination.canInsert( is ) )
-					how_many = 0;
+					amount = 0;
 
-				if ( how_many > 0 )
+				if ( amount > 0 )
 				{
 					ItemStack rv = is.copy();
-					rv.stackSize = how_many;
-					is.stackSize -= how_many;
+					rv.stackSize = amount;
+					is.stackSize -= amount;
 
 					// remove it..
 					if ( is.stackSize <= 0 )
@@ -128,25 +128,25 @@ public class AdaptorList extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateRemove(int how_many, ItemStack filter, IInventoryDestination destination)
+	public ItemStack simulateRemove(int amount, ItemStack filter, IInventoryDestination destination)
 	{
 		for (ItemStack is : this.i)
 		{
 			if ( is != null && (filter == null || Platform.isSameItemPrecise( is, filter )) )
 			{
-				if ( how_many > is.stackSize )
+				if ( amount > is.stackSize )
 				{
-					how_many = is.stackSize;
+					amount = is.stackSize;
 				}
 				if ( destination != null && !destination.canInsert( is ) )
 				{
-					how_many = 0;
+					amount = 0;
 				}
 
-				if ( how_many > 0 )
+				if ( amount > 0 )
 				{
 					ItemStack rv = is.copy();
-					rv.stackSize = how_many;
+					rv.stackSize = amount;
 					return rv;
 				}
 			}
@@ -156,14 +156,14 @@ public class AdaptorList extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack addItems(ItemStack A)
+	public ItemStack addItems(ItemStack toBeAdded )
 	{
-		if ( A == null )
+		if ( toBeAdded == null )
 			return null;
-		if ( A.stackSize == 0 )
+		if ( toBeAdded.stackSize == 0 )
 			return null;
 
-		ItemStack left = A.copy();
+		ItemStack left = toBeAdded.copy();
 
 		for (ItemStack is : this.i)
 		{
@@ -179,7 +179,7 @@ public class AdaptorList extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateAdd(ItemStack A)
+	public ItemStack simulateAdd(ItemStack toBeSimulated )
 	{
 		return null;
 	}

@@ -107,15 +107,15 @@ public class IMEAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeItems(int how_many, ItemStack Filter, IInventoryDestination destination)
+	public ItemStack removeItems(int amount, ItemStack filter, IInventoryDestination destination)
 	{
-		return this.doRemoveItems( how_many, Filter, destination, Actionable.MODULATE );
+		return this.doRemoveItems( amount, filter, destination, Actionable.MODULATE );
 	}
 
 	@Override
-	public ItemStack simulateRemove(int how_many, ItemStack Filter, IInventoryDestination destination)
+	public ItemStack simulateRemove(int amount, ItemStack filter, IInventoryDestination destination)
 	{
-		return this.doRemoveItems( how_many, Filter, destination, Actionable.SIMULATE );
+		return this.doRemoveItems( amount, filter, destination, Actionable.SIMULATE );
 	}
 
 	@Override
@@ -127,17 +127,17 @@ public class IMEAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateSimilarRemove(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
+	public ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
 	{
 		if ( filter == null )
-			return this.doRemoveItems( how_many, null, destination, Actionable.SIMULATE );
-		return this.doRemoveItemsFuzzy( how_many, filter, destination, Actionable.SIMULATE, fuzzyMode );
+			return this.doRemoveItems( amount, null, destination, Actionable.SIMULATE );
+		return this.doRemoveItemsFuzzy( amount, filter, destination, Actionable.SIMULATE, fuzzyMode );
 	}
 
 	@Override
-	public ItemStack addItems(ItemStack A)
+	public ItemStack addItems(ItemStack toBeAdded )
 	{
-		IAEItemStack in = AEItemStack.create( A );
+		IAEItemStack in = AEItemStack.create( toBeAdded );
 		if ( in != null )
 		{
 			IAEItemStack out = this.target.injectItems( in, Actionable.MODULATE, this.src );
@@ -148,9 +148,9 @@ public class IMEAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateAdd(ItemStack A)
+	public ItemStack simulateAdd(ItemStack toBeSimulated )
 	{
-		IAEItemStack in = AEItemStack.create( A );
+		IAEItemStack in = AEItemStack.create( toBeSimulated );
 		if ( in != null )
 		{
 			IAEItemStack out = this.target.injectItems( in, Actionable.SIMULATE, this.src );

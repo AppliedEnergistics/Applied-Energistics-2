@@ -65,7 +65,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateSimilarRemove( int how_many, ItemStack Filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
+	public ItemStack simulateSimilarRemove( int amount, ItemStack Filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
 	{
 
 		ItemStack hand = this.p.inventory.getItemStack();
@@ -75,7 +75,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 		if ( Filter == null || Platform.isSameItemFuzzy( Filter, hand, fuzzyMode ) )
 		{
 			ItemStack result = hand.copy();
-			result.stackSize = hand.stackSize > how_many ? how_many : hand.stackSize;
+			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
 			return result;
 		}
 
@@ -83,17 +83,17 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeItems( int how_many, ItemStack Filter, IInventoryDestination destination )
+	public ItemStack removeItems( int amount, ItemStack filter, IInventoryDestination destination )
 	{
 		ItemStack hand = this.p.inventory.getItemStack();
 		if ( hand == null )
 			return null;
 
-		if ( Filter == null || Platform.isSameItemPrecise( Filter, hand ) )
+		if ( filter == null || Platform.isSameItemPrecise( filter, hand ) )
 		{
 			ItemStack result = hand.copy();
-			result.stackSize = hand.stackSize > how_many ? how_many : hand.stackSize;
-			hand.stackSize -= how_many;
+			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
+			hand.stackSize -= amount;
 			if ( hand.stackSize <= 0 )
 				this.p.inventory.setItemStack( null );
 			return result;
@@ -103,17 +103,17 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateRemove( int how_many, ItemStack Filter, IInventoryDestination destination )
+	public ItemStack simulateRemove( int amount, ItemStack filter, IInventoryDestination destination )
 	{
 
 		ItemStack hand = this.p.inventory.getItemStack();
 		if ( hand == null )
 			return null;
 
-		if ( Filter == null || Platform.isSameItemPrecise( Filter, hand ) )
+		if ( filter == null || Platform.isSameItemPrecise( filter, hand ) )
 		{
 			ItemStack result = hand.copy();
-			result.stackSize = hand.stackSize > how_many ? how_many : hand.stackSize;
+			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
 			return result;
 		}
 
@@ -121,38 +121,38 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack addItems( ItemStack A )
+	public ItemStack addItems( ItemStack toBeAdded )
 	{
 
-		if ( A == null )
+		if ( toBeAdded == null )
 			return null;
-		if ( A.stackSize == 0 )
+		if ( toBeAdded.stackSize == 0 )
 			return null;
 		if ( this.p == null )
-			return A;
+			return toBeAdded;
 		if ( this.p.inventory == null )
-			return A;
+			return toBeAdded;
 
 		ItemStack hand = this.p.inventory.getItemStack();
 
-		if ( hand != null && !Platform.isSameItemPrecise( A, hand ) )
-			return A;
+		if ( hand != null && !Platform.isSameItemPrecise( toBeAdded, hand ) )
+			return toBeAdded;
 
 		int original = 0;
 		ItemStack newHand = null;
 		if ( hand == null )
-			newHand = A.copy();
+			newHand = toBeAdded.copy();
 		else
 		{
 			newHand = hand;
 			original = hand.stackSize;
-			newHand.stackSize += A.stackSize;
+			newHand.stackSize += toBeAdded.stackSize;
 		}
 
 		if ( newHand.stackSize > newHand.getMaxStackSize() )
 		{
 			newHand.stackSize = newHand.getMaxStackSize();
-			ItemStack B = A.copy();
+			ItemStack B = toBeAdded.copy();
 			B.stackSize -= newHand.stackSize - original;
 			this.p.inventory.setItemStack( newHand );
 			return B;
@@ -163,30 +163,30 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateAdd( ItemStack A )
+	public ItemStack simulateAdd( ItemStack toBeSimulated )
 	{
 		ItemStack hand = this.p.inventory.getItemStack();
-		if ( A == null )
+		if ( toBeSimulated == null )
 			return null;
 
-		if ( hand != null && !Platform.isSameItem( A, hand ) )
-			return A;
+		if ( hand != null && !Platform.isSameItem( toBeSimulated, hand ) )
+			return toBeSimulated;
 
 		int original = 0;
 		ItemStack newHand = null;
 		if ( hand == null )
-			newHand = A.copy();
+			newHand = toBeSimulated.copy();
 		else
 		{
 			newHand = hand.copy();
 			original = hand.stackSize;
-			newHand.stackSize += A.stackSize;
+			newHand.stackSize += toBeSimulated.stackSize;
 		}
 
 		if ( newHand.stackSize > newHand.getMaxStackSize() )
 		{
 			newHand.stackSize = newHand.getMaxStackSize();
-			ItemStack B = A.copy();
+			ItemStack B = toBeSimulated.copy();
 			B.stackSize -= newHand.stackSize - original;
 			return B;
 		}
