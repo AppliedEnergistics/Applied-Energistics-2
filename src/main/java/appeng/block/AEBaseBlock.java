@@ -113,12 +113,12 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	{
 		super( mat );
 
-		if ( mat == AEGlassMaterial.instance )
-			setStepSound( Block.soundTypeGlass );
-		else if ( mat == Material.glass )
+		if ( mat == AEGlassMaterial.instance || mat == Material.glass )
 			setStepSound( Block.soundTypeGlass );
 		else if ( mat == Material.rock )
 			setStepSound( Block.soundTypeStone );
+		else if ( mat == Material.wood )
+			setStepSound( Block.soundTypeWood );
 		else
 			setStepSound( Block.soundTypeMetal );
 
