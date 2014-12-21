@@ -70,6 +70,16 @@ public class ItemSorters
 			return -1;
 		return 1;
 	}
+	
+	public static final Comparator<IAEItemStack> ConfigBased_SortByID = new Comparator<IAEItemStack>() {
+
+		@Override
+		public int compare(IAEItemStack o1, IAEItemStack o2)
+		{
+			int idx = Item.getIdFromItem(o1.getItem())-Item.getIdFromItem(o2.getItem());
+			return Direction == SortDir.ASCENDING ? idx : -idx;
+		}
+	};
 
 	public static final Comparator<IAEItemStack> ConfigBased_SortByName = new Comparator<IAEItemStack>() {
 
