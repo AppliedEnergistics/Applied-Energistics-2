@@ -90,6 +90,10 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 	@Override
 	public IInventory getInventoryByName(String name)
 	{
+		if (name.equals("player"))
+		{
+			return invPlayer;
+		}
 		return ct.getInventoryByName( name );
 	}
 

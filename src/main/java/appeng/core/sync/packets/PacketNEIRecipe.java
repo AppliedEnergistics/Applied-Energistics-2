@@ -104,25 +104,26 @@ public class PacketNEIRecipe extends AppEngPacket
 				IEnergyGrid energy = grid.getCache( IEnergyGrid.class );
 				ISecurityGrid security = grid.getCache( ISecurityGrid.class );
 				IInventory craftMatrix = cct.getInventoryByName( "crafting" );
+				IInventory playerInventory = cct.getInventoryByName( "player" );
 
 				Actionable realForFake = cct.useRealItems() ? Actionable.MODULATE : Actionable.SIMULATE;
 
 				if ( inv != null && recipe != null && security != null )
 				{
-					InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
+					InventoryCrafting testInv = new InventoryCrafting( new ContainerNull(), 3, 3 );
 					for (int x = 0; x < 9; x++)
 					{
 						if ( recipe[x] != null && recipe[x].length > 0 )
 						{
-							ic.setInventorySlotContents( x, recipe[x][0] );
+							testInv.setInventorySlotContents(x, recipe[x][0]);
 						}
 					}
 
-					IRecipe r = Platform.findMatchingRecipe( ic, pmp.worldObj );
+					IRecipe r = Platform.findMatchingRecipe( testInv, pmp.worldObj );
 
 					if ( r != null && security.hasPermission( player, SecurityPermissions.EXTRACT ) )
 					{
-						ItemStack is = r.getCraftingResult( ic );
+						ItemStack is = r.getCraftingResult( testInv );
 
 						if ( is != null )
 						{
@@ -132,14 +133,14 @@ public class PacketNEIRecipe extends AppEngPacket
 
 							for (int x = 0; x < craftMatrix.getSizeInventory(); x++)
 							{
-								ItemStack PatternItem = ic.getStackInSlot( x );
+								ItemStack PatternItem = testInv.getStackInSlot( x );
 
 								ItemStack currentItem = craftMatrix.getStackInSlot( x );
 								if ( currentItem != null )
 								{
-									ic.setInventorySlotContents( x, currentItem );
-									ItemStack newItemStack = r.matches( ic, pmp.worldObj ) ? r.getCraftingResult( ic ) : null;
-									ic.setInventorySlotContents( x, PatternItem );
+									testInv.setInventorySlotContents(x, currentItem);
+									ItemStack newItemStack = r.matches( testInv, pmp.worldObj ) ? r.getCraftingResult( testInv ) : null;
+									testInv.setInventorySlotContents(x, PatternItem);
 
 									if ( newItemStack == null || !Platform.isSameItemPrecise( newItemStack, is ) )
 									{
@@ -158,11 +159,15 @@ public class PacketNEIRecipe extends AppEngPacket
 									}
 								}
 
+								// True if we need to fetch an item for the recipe
 								if ( PatternItem != null && currentItem == null )
 								{
-									ItemStack whichItem = Platform.extractItemsByRecipe( energy, cct.getSource(), storage, player.worldObj, r, is, ic,
+									// Grab from network by recipe
+									ItemStack whichItem = Platform.extractItemsByRecipe( energy, cct.getSource(), storage, player.worldObj, r, is, testInv,
 											PatternItem, x, all, realForFake, filter );
 
+									// If that doesn't get it, grab exact items from network (?)
+									// TODO see if this code is necessary
 									if ( whichItem == null )
 									{
 										for (int y = 0; y < recipe[x].length; y++)
@@ -180,6 +185,26 @@ public class PacketNEIRecipe extends AppEngPacket
 														break;
 													}
 												}
+											}
+										}
+									}
+
+									// If that doesn't work, grab from the player's inventory
+									if ( whichItem == null && playerInventory != null ) {
+										for ( int y = 0; y < playerInventory.getSizeInventory(); y++ )
+										{
+											// Put the item in the test inventory, and check if the recipe is satisfied
+											testInv.setInventorySlotContents(x, playerInventory.getStackInSlot(y));
+											if ( r.matches(testInv, pmp.worldObj) )
+											{
+												// Take the item out.
+												if ( realForFake == Actionable.SIMULATE ) {
+													whichItem = playerInventory.getStackInSlot(y).copy();
+													whichItem.stackSize = 1;
+												} else {
+													whichItem = playerInventory.decrStackSize(y, 1);
+												}
+												break;
 											}
 										}
 									}
