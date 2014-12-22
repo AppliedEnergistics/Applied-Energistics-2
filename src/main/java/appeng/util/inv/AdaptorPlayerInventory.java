@@ -33,76 +33,76 @@ public class AdaptorPlayerInventory implements IInventory
 	{
 		
 		if ( swap )
-			src = new WrapperChainedInventory( new WrapperInventoryRange( playerInv, 9, size-9, false ), new WrapperInventoryRange( playerInv, 0, 9, false )  );
+			this.src = new WrapperChainedInventory( new WrapperInventoryRange( playerInv, 9, this.size -9, false ), new WrapperInventoryRange( playerInv, 0, 9, false )  );
 		else
-			src = playerInv;
+			this.src = playerInv;
 		
 	}
 
 	@Override
 	public int getSizeInventory()
 	{
-		return size;
+		return this.size;
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int var1)
 	{
-		return src.getStackInSlot( var1 + min );
+		return this.src.getStackInSlot( var1 + this.min );
 	}
 
 	@Override
 	public ItemStack decrStackSize(int var1, int var2)
 	{
-		return src.decrStackSize( min + var1, var2 );
+		return this.src.decrStackSize( this.min + var1, var2 );
 	}
 
 	@Override
 	public ItemStack getStackInSlotOnClosing(int var1)
 	{
-		return src.getStackInSlotOnClosing( min + var1 );
+		return this.src.getStackInSlotOnClosing( this.min + var1 );
 	}
 
 	@Override
 	public void setInventorySlotContents(int var1, ItemStack var2)
 	{
-		src.setInventorySlotContents( var1 + min, var2 );
+		this.src.setInventorySlotContents( var1 + this.min, var2 );
 	}
 
 	@Override
 	public String getInventoryName()
 	{
-		return src.getInventoryName();
+		return this.src.getInventoryName();
 	}
 
 	@Override
 	public int getInventoryStackLimit()
 	{
-		return src.getInventoryStackLimit();
+		return this.src.getInventoryStackLimit();
 	}
 
 	@Override
 	public void markDirty()
 	{
-		src.markDirty();
+		this.src.markDirty();
 	}
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer var1)
 	{
-		return src.isUseableByPlayer( var1 );
+		return this.src.isUseableByPlayer( var1 );
 	}
 
 	@Override
 	public void openInventory()
 	{
-		src.openInventory();
+		this.src.openInventory();
 	}
 
 	@Override
 	public void closeInventory()
 	{
-		src.closeInventory();
+		this.src.closeInventory();
 	}
 
 	@Override
@@ -114,7 +114,7 @@ public class AdaptorPlayerInventory implements IInventory
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
-		return true;
+		return this.src.isItemValidForSlot( i, itemstack );
 	}
 
 }
