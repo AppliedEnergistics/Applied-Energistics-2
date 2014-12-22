@@ -18,125 +18,74 @@
 
 package appeng.core.stats;
 
+
 import java.util.ArrayList;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Achievement;
 import net.minecraftforge.common.AchievementPage;
-import net.minecraftforge.common.util.FakePlayer;
+
+import cpw.mods.fml.common.eventhandler.EventBus;
+
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
-import appeng.util.Platform;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 
+
+/**
+ * Registers any items a player is picking up or is crafting.
+ * Registered items are added to the player stats.
+ * This will only happen if the {@link AEFeature#Achievements} feature is enabled.
+ */
 public class PlayerStatsRegistration
 {
+	/**
+	 * {@link cpw.mods.fml.common.eventhandler.EventBus} to which the handlers might get posted to depending if the feature is enabled
+	 */
+	private final EventBus bus;
 
-	public final static PlayerStatsRegistration instance = new PlayerStatsRegistration();
+	/**
+	 * is true if the {@link appeng.core.features.AEFeature#Achievements} is enabled in the {@param config}
+	 */
+	private final boolean isAchievementFeatureEnabled;
 
-	AchievementPage ae2AchievementPage;
-
-	@SubscribeEvent
-	public void onCrafting(PlayerEvent.ItemCraftedEvent event)
+	/**
+	 * Constructs a {@link appeng.core.stats.PlayerStatsRegistration} with an {@link cpw.mods.fml.common.eventhandler.EventBus} and {@link appeng.core.AEConfig}.
+	 *
+	 * @param bus    {@see #bus}
+	 * @param config {@link appeng.core.AEConfig} which is used to determine if the {@link appeng.core.features.AEFeature#Achievements} is enabled
+	 */
+	public PlayerStatsRegistration( EventBus bus, AEConfig config )
 	{
-		if ( notPlayer( event.player ) || event.crafting == null )
-			return;
-
-		for (Achievements a : Achievements.values())
-		{
-			switch (a.type)
-			{
-			case Craft:
-				if ( Platform.isSameItemPrecise( a.stack, event.crafting ) )
-				{
-					a.addToPlayer( event.player );
-					return;
-				}
-				break;
-			case CraftItem:
-				if ( a.stack.getItem().getClass() == event.crafting.getItem().getClass() )
-				{
-					a.addToPlayer( event.player );
-					return;
-				}
-			default:
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public void onCrafting(PlayerEvent.ItemPickupEvent event)
-	{
-		if ( notPlayer( event.player ) || event.pickedUp == null || event.pickedUp.getEntityItem() == null )
-			return;
-
-		ItemStack is = event.pickedUp.getEntityItem();
-
-		for (Achievements a : Achievements.values())
-		{
-			switch (a.type)
-			{
-			case Pickup:
-				if ( Platform.isSameItemPrecise( a.stack, is ) )
-				{
-					a.addToPlayer( event.player );
-					return;
-				}
-			default:
-			}
-		}
-	}
-
-	private boolean notPlayer(EntityPlayer player)
-	{
-		if ( player == null || player.isDead || player instanceof FakePlayer )
-			return true;
-		return false;
+		this.bus = bus;
+		this.isAchievementFeatureEnabled = config.isFeatureEnabled( AEFeature.Achievements );
 	}
 
 	/**
-	 * Assign Parents and hierarchy.
+	 * Registers the {@link appeng.core.stats.AchievementCraftingHandler} and {@link appeng.core.stats.AchievementPickupHandler} to the {@link #bus} if {@link #isAchievementFeatureEnabled} is true.
 	 */
-	private void initHierarchy()
+	public void registerAchievementHandlers()
 	{
-		Achievements.Presses.setParent( Achievements.Compass );
+		if ( this.isAchievementFeatureEnabled )
+		{
+			final PlayerDifferentiator differentiator = new PlayerDifferentiator();
+			final AchievementCraftingHandler craftingHandler = new AchievementCraftingHandler( differentiator );
+			final AchievementPickupHandler pickupHandler = new AchievementPickupHandler( differentiator );
 
-		Achievements.Fluix.setParent( Achievements.ChargedQuartz );
-
-		Achievements.Charger.setParent( Achievements.Fluix );
-
-		Achievements.CrystalGrowthAccelerator.setParent( Achievements.Charger );
-
-		Achievements.GlassCable.setParent( Achievements.Charger );
-
-		Achievements.SpatialIOExplorer.setParent( Achievements.SpatialIO );
-
-		Achievements.IOPort.setParent( Achievements.StorageCell );
-
-		Achievements.PatternTerminal.setParent( Achievements.CraftingTerminal );
-
-		Achievements.Controller.setParent( Achievements.Networking1 );
-
-		Achievements.Networking2.setParent( Achievements.Controller );
-
-		Achievements.Networking3.setParent( Achievements.Networking2 );
-
-		Achievements.P2P.setParent( Achievements.Controller );
-
-		Achievements.Recursive.setParent( Achievements.Controller );
+			this.bus.register( craftingHandler );
+			this.bus.register( pickupHandler );
+		}
 	}
 
-	public void init()
+	/**
+	 * Registers the {@link appeng.core.stats.AchievementHierarchy} and adds all {@link appeng.core.stats.Achievements} to a new {@link net.minecraftforge.common.AchievementPage}.
+	 */
+	public void registerAchievements()
 	{
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.Achievements ) )
+		if ( this.isAchievementFeatureEnabled )
 		{
-			FMLCommonHandler.instance().bus().register( this );
-			initHierarchy();
+			final AchievementHierarchy hierarchy = new AchievementHierarchy();
+			hierarchy.registerAchievementHierarchy();
 
-			for (Stats s : Stats.values())
+			for ( Stats s : Stats.values() )
 				s.getStat();
 
 			/**
@@ -144,14 +93,14 @@ public class PlayerStatsRegistration
 			 */
 			ArrayList<Achievement> list = new ArrayList<Achievement>();
 
-			for (Achievements a : Achievements.values())
+			for ( Achievements a : Achievements.values() )
 			{
 				Achievement ach = a.getAchievement();
 				if ( ach != null )
 					list.add( ach );
 			}
 
-			ae2AchievementPage = new AchievementPage( "Applied Energistics 2", list.toArray( new Achievement[list.size()] ) );
+			AchievementPage ae2AchievementPage = new AchievementPage( "Applied Energistics 2", list.toArray( new Achievement[list.size()] ) );
 			AchievementPage.registerAchievementPage( ae2AchievementPage );
 		}
 	}
