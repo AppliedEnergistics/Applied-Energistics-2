@@ -34,11 +34,12 @@ import java.util.WeakHashMap;
 
 import com.google.common.base.Optional;
 import com.mojang.authlib.GameProfile;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
@@ -464,5 +465,27 @@ public class WorldSettings extends Configuration
 		}
 
 		return null;
+	}
+
+	public GameProfile getProfileFromID( int playerID )
+	{
+		Optional<UUID> maybe = getUUIDFromNumericalId( playerID );
+
+		if ( maybe.isPresent() )
+		{
+			final UUID uuid = maybe.get();
+			PlayerProfileCache cache = MinecraftServer.getServer().func_152358_ax();
+			GameProfile maybeGameProfile = cache.func_152652_a( uuid );
+			if (maybeGameProfile != null) {
+				return maybeGameProfile;
+			}
+		}
+
+		return null;
+	}
+
+	public Optional<UUID> getUUIDFromNumericalId( int playerID )
+	{
+		return this.mappings.get( playerID );
 	}
 }

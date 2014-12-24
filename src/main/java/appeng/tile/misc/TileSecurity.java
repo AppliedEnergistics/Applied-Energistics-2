@@ -22,7 +22,6 @@ package appeng.tile.misc;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
-
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayer;
