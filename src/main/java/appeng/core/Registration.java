@@ -118,6 +118,7 @@ import appeng.core.features.AEFeature;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.DamagedItemDefinition;
 import appeng.core.features.IAEFeature;
+import appeng.core.features.IFeatureHandler;
 import appeng.core.features.IStackSrc;
 import appeng.core.features.ItemStackSrc;
 import appeng.core.features.NullItemDefinition;
@@ -506,26 +507,33 @@ public class Registration
 
 	private AEItemDefinition addFeature( Class<? extends IAEFeature> featureClass, Object... args )
 	{
-		ClassInstantiation<IAEFeature> instantiation = new ClassInstantiation<IAEFeature>( featureClass, args );
-		Optional<IAEFeature> instance = instantiation.get();
+		final ClassInstantiation<IAEFeature> instantiation = new ClassInstantiation<IAEFeature>( featureClass, args );
+		final Optional<IAEFeature> instance = instantiation.get();
 
 		if ( instance.isPresent() )
 		{
-			IAEFeature feature = instance.get();
-
-			for ( AEFeature f : feature.handler().getFeatures() )
+			final IAEFeature feature = instance.get();
+			final IFeatureHandler handler = feature.handler();
+			if ( handler.isFeatureAvailable() )
 			{
-				this.featuresToEntities.put( f, featureClass );
+				for ( AEFeature f : handler.getFeatures() )
+				{
+					this.featuresToEntities.put( f, featureClass );
+				}
+
+				handler.register();
+				feature.postInit();
+
+				return handler.getDefinition();
 			}
-
-			feature.handler().register();
-			feature.postInit();
-
-			return feature.handler().getDefinition();
+			else
+			{
+				return null;
+			}
 		}
 		else
 		{
-			throw new RuntimeException( "Error with Feature: " + featureClass.getName() );
+			throw new RuntimeException( "Error upon Class Instantiation with Feature: " + featureClass.getName() );
 		}
 	}
 
