@@ -20,13 +20,16 @@ package appeng.client.render;
 
 import java.util.HashMap;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import org.lwjgl.opengl.GL11;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.parts.IAlphaPassItem;
 import appeng.api.parts.IFacadePart;
@@ -37,8 +40,6 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.facade.IFacadeItem;
 import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class BusRenderer implements IItemRenderer

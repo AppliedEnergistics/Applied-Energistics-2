@@ -18,9 +18,11 @@
 
 package appeng.integration.modules;
 
+import net.minecraft.item.ItemStack;
+
 import mods.railcraft.api.crafting.IRockCrusherRecipe;
 import mods.railcraft.api.crafting.RailcraftCraftingManager;
-import net.minecraft.item.ItemStack;
+
 import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IRC;
 

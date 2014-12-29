@@ -28,6 +28,10 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.misc.BlockLightDetector;
@@ -37,8 +41,6 @@ import appeng.client.render.ItemRenderer;
 import appeng.me.helpers.IGridProxyable;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class AEBaseItemBlock extends ItemBlock
 {

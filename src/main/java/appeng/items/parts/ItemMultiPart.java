@@ -34,6 +34,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.api.AEApi;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.parts.IPart;
@@ -45,8 +49,6 @@ import appeng.core.features.AEFeatureHandler;
 import appeng.core.features.ItemStackSrc;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 {

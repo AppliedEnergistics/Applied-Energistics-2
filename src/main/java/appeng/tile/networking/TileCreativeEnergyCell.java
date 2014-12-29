@@ -19,6 +19,7 @@
 package appeng.tile.networking;
 
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;

@@ -25,6 +25,9 @@ import java.util.concurrent.Callable;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
+
+import cpw.mods.fml.common.IWorldGenerator;
+
 import appeng.api.features.IWorldGen.WorldGenType;
 import appeng.core.AEConfig;
 import appeng.core.WorldSettings;
@@ -32,7 +35,6 @@ import appeng.core.features.registries.WorldGenRegistry;
 import appeng.helpers.MeteoritePlacer;
 import appeng.services.helpers.ICompassCallback;
 import appeng.util.Platform;
-import cpw.mods.fml.common.IWorldGenerator;
 
 final public class MeteoriteWorldGen implements IWorldGenerator
 {

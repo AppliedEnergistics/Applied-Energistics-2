@@ -18,14 +18,14 @@
 
 package appeng.parts;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -38,6 +38,10 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.api.AEApi;
 import appeng.api.config.YesNo;
 import appeng.api.exceptions.FailedConnection;
@@ -65,8 +69,6 @@ import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.ICLApi;
 import appeng.me.GridConnection;
 import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class CableBusContainer extends CableBusStorage implements AEMultiTile, ICableBusContainer
 {

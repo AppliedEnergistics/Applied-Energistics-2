@@ -18,11 +18,12 @@
 
 package appeng.parts.networking;
 
-import appeng.client.texture.FlippableIcon;
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
 import java.util.EnumSet;
+
+import org.lwjgl.opengl.GL11;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
@@ -33,7 +34,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import org.lwjgl.opengl.GL11;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
@@ -52,14 +54,13 @@ import appeng.api.util.AEColor;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.block.AEBaseBlock;
 import appeng.client.texture.CableBusTextures;
+import appeng.client.texture.FlippableIcon;
 import appeng.client.texture.TaughtIcon;
 import appeng.items.parts.ItemMultiPart;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.parts.AEBasePart;
 import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartCable extends AEBasePart implements IPartCable
 {

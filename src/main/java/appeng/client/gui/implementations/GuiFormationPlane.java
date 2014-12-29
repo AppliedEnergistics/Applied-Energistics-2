@@ -20,6 +20,7 @@ package appeng.client.gui.implementations;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
+
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.client.gui.widgets.GuiImgButton;

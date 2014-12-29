@@ -20,8 +20,6 @@ package appeng.transformer;
 
 import java.util.Map;
 
-import appeng.core.AEConfig;
-
 import com.google.common.eventbus.EventBus;
 
 import cpw.mods.fml.common.DummyModContainer;
@@ -32,6 +30,8 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
+
+import appeng.core.AEConfig;
 
 @MCVersion("1.7.10")
 public class AppEngCore extends DummyModContainer implements IFMLLoadingPlugin

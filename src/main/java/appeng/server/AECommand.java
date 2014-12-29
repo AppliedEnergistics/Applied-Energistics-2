@@ -18,12 +18,12 @@
 
 package appeng.server;
 
+import com.google.common.base.Joiner;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
-
-import com.google.common.base.Joiner;
 
 public class AECommand extends CommandBase
 {

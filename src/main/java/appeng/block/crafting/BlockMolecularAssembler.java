@@ -24,6 +24,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockAssembler;
@@ -31,8 +35,6 @@ import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockMolecularAssembler extends AEBaseBlock
 {

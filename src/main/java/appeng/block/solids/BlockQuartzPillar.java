@@ -22,6 +22,7 @@ import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.world.IBlockAccess;
+
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;

@@ -24,6 +24,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AELog;

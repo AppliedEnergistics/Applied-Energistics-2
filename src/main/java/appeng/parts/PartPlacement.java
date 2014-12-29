@@ -36,6 +36,10 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+
 import appeng.api.AEApi;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
@@ -55,8 +59,6 @@ import appeng.integration.abstraction.IFMP;
 import appeng.integration.abstraction.IImmibisMicroblocks;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class PartPlacement
 {

@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
+
 import appeng.client.gui.AEBaseGui;
 import appeng.container.implementations.ContainerQuartzKnife;
 import appeng.core.AELog;

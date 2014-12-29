@@ -18,11 +18,11 @@
 
 package appeng.parts.misc;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.Entity;
@@ -35,6 +35,10 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
@@ -43,8 +47,6 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.ISimplifiedBundle;
 import appeng.api.parts.PartItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartCableAnchor implements IPart
 {

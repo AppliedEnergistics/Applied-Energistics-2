@@ -23,9 +23,11 @@ import java.util.Iterator;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import buildcraft.api.inventory.ISpecialInventory;
+
 import appeng.api.config.FuzzyMode;
 import appeng.util.InventoryAdaptor;
-import buildcraft.api.inventory.ISpecialInventory;
 
 public class AdaptorISpecialInventory extends InventoryAdaptor
 {

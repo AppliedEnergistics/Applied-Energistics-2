@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
+
 import appeng.api.storage.data.IAEItemStack;
 
 public class OreReference

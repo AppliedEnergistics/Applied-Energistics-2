@@ -27,6 +27,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
 import appeng.api.util.WorldCoord;
 import appeng.client.texture.MissingIcon;
 import appeng.core.AELog;

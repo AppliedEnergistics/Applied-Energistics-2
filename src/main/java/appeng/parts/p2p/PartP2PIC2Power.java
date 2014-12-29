@@ -26,6 +26,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.api.config.PowerUnits;
 import appeng.api.config.TunnelType;
 import appeng.core.AppEng;
@@ -35,8 +39,6 @@ import appeng.me.cache.helpers.TunnelCollection;
 import appeng.transformer.annotations.integration.Interface;
 import appeng.transformer.annotations.integration.InterfaceList;
 import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @InterfaceList(value = { @Interface(iface = "ic2.api.energy.tile.IEnergySink", iname = "IC2"),
 		@Interface(iface = "ic2.api.energy.tile.IEnergySource", iname = "IC2") })

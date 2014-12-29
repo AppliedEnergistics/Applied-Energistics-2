@@ -18,15 +18,17 @@
 
 package appeng.core.sync.network;
 
-import io.netty.buffer.ByteBuf;
-
 import java.lang.reflect.InvocationTargetException;
 
+import io.netty.buffer.ByteBuf;
+
 import net.minecraft.entity.player.EntityPlayer;
+
+import cpw.mods.fml.common.network.internal.FMLProxyPacket;
+
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandlerBase;
-import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 
 public final class AppEngServerPacketHandler extends AppEngPacketHandlerBase implements IPacketHandler
 {

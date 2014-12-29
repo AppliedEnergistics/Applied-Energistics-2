@@ -20,6 +20,7 @@ package appeng.transformer;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiErrorScreen;
+
 import cpw.mods.fml.client.CustomModLoadingErrorDisplayException;
 
 public class MissingCoreMod extends CustomModLoadingErrorDisplayException

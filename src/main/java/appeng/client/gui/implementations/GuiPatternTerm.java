@@ -24,6 +24,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+
 import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
 import appeng.api.storage.ITerminalHost;

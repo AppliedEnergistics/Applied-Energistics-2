@@ -20,10 +20,11 @@ package appeng.core;
 
 import org.apache.logging.log4j.Level;
 
+import cpw.mods.fml.relauncher.FMLRelaunchLog;
+
 import appeng.core.features.AEFeature;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
-import cpw.mods.fml.relauncher.FMLRelaunchLog;
 
 public class AELog
 {

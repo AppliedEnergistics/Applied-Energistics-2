@@ -25,6 +25,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
+
 import appeng.client.texture.MissingIcon;
 import appeng.core.features.AEFeature;
 import appeng.helpers.MeteoritePlacer;

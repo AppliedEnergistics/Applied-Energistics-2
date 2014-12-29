@@ -29,17 +29,20 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
-import appeng.block.AEBaseItemBlock;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketMultiPart;
-import appeng.integration.modules.helpers.FMPPacketEvent;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
 import codechicken.lib.packet.PacketCustom;
 import codechicken.lib.raytracer.RayTracer;
 import codechicken.lib.vec.BlockCoord;
 import codechicken.lib.vec.Vector3;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
+import appeng.block.AEBaseItemBlock;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketMultiPart;
+import appeng.integration.modules.helpers.FMPPacketEvent;
 
 /**
  * Basically a total rip of of the FMP version for vanilla, seemed to work well enough...

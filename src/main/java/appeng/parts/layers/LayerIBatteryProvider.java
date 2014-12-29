@@ -19,10 +19,12 @@
 package appeng.parts.layers;
 
 import net.minecraftforge.common.util.ForgeDirection;
-import appeng.api.parts.IPart;
-import appeng.api.parts.LayerBase;
+
 import buildcraft.api.mj.IBatteryObject;
 import buildcraft.api.mj.ISidedBatteryProvider;
+
+import appeng.api.parts.IPart;
+import appeng.api.parts.LayerBase;
 
 public class LayerIBatteryProvider extends LayerBase implements ISidedBatteryProvider
 {

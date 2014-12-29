@@ -26,6 +26,9 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import buildcraft.api.inventory.ISpecialInventory;
+
 import appeng.api.config.FuzzyMode;
 import appeng.core.AppEng;
 import appeng.integration.IntegrationType;
@@ -37,7 +40,6 @@ import appeng.util.inv.AdaptorPlayerInventory;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.ItemSlot;
 import appeng.util.inv.WrapperMCISidedInventory;
-import buildcraft.api.inventory.ISpecialInventory;
 
 public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 {

@@ -22,8 +22,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Stopwatch;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
@@ -37,8 +40,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AELog;
 import appeng.hooks.TickHandler;
-
-import com.google.common.base.Stopwatch;
 
 public class CraftingJob implements Runnable, ICraftingJob
 {

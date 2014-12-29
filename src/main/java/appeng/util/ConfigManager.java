@@ -21,9 +21,10 @@ package appeng.util;
 import java.util.HashMap;
 import java.util.Set;
 
+import net.minecraft.nbt.NBTTagCompound;
+
 import appeng.api.config.LevelEmitterMode;
 import appeng.api.config.StorageFilter;
-import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.util.IConfigManager;
 import appeng.core.AELog;
 

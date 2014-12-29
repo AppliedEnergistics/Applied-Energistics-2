@@ -20,7 +20,10 @@ package appeng.util.inv;
 
 import java.util.Iterator;
 
+import com.google.common.collect.ImmutableList;
+
 import net.minecraft.item.ItemStack;
+
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -30,8 +33,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.InventoryAdaptor;
 import appeng.util.item.AEItemStack;
-
-import com.google.common.collect.ImmutableList;
 
 public class IMEAdaptor extends InventoryAdaptor
 {

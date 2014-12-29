@@ -22,6 +22,8 @@ package appeng.items.tools.powered;
 import java.util.EnumSet;
 import java.util.List;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.entity.Entity;
@@ -40,8 +42,6 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;

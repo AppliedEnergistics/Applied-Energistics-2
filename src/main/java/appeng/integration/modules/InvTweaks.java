@@ -18,11 +18,14 @@
 
 package appeng.integration.modules;
 
-import invtweaks.api.InvTweaksAPI;
 import net.minecraft.item.ItemStack;
+
+import cpw.mods.fml.common.Loader;
+
+import invtweaks.api.InvTweaksAPI;
+
 import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IInvTweaks;
-import cpw.mods.fml.common.Loader;
 
 public class InvTweaks extends BaseModule implements IInvTweaks
 {

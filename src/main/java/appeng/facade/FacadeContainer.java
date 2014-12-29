@@ -18,15 +18,16 @@
 
 package appeng.facade;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.AEApi;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;

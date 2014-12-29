@@ -23,6 +23,7 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;

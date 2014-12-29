@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -30,7 +32,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import org.lwjgl.opengl.GL11;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnection;
@@ -44,8 +47,6 @@ import appeng.client.texture.CableBusTextures;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.parts.PartBasicState;
 import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartToggleBus extends PartBasicState
 {

@@ -30,13 +30,15 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+
 import appeng.api.AEApi;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.packets.PacketMockExplosion;
 import appeng.util.Platform;
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
 final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntityAdditionalSpawnData
 {

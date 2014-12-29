@@ -27,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
+
 import appeng.api.AEApi;
 import appeng.api.IAppEngApi;
 import appeng.api.features.INetworkEncodable;

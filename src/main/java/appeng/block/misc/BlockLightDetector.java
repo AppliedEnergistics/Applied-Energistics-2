@@ -23,10 +23,12 @@ import java.util.Random;
 
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import appeng.core.features.AEFeature;
-import appeng.tile.misc.TileLightDetector;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import appeng.core.features.AEFeature;
+import appeng.tile.misc.TileLightDetector;
 
 public class BlockLightDetector extends BlockQuartzTorch
 {

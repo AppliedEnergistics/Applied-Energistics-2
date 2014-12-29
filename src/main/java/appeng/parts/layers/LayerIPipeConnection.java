@@ -19,10 +19,12 @@
 package appeng.parts.layers;
 
 import net.minecraftforge.common.util.ForgeDirection;
-import appeng.api.parts.IPart;
-import appeng.api.parts.LayerBase;
+
 import buildcraft.api.transport.IPipeConnection;
 import buildcraft.api.transport.IPipeTile.PipeType;
+
+import appeng.api.parts.IPart;
+import appeng.api.parts.LayerBase;
 
 public class LayerIPipeConnection extends LayerBase implements IPipeConnection
 {

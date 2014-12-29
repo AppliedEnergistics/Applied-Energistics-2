@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
 import net.minecraftforge.common.config.Configuration;
+
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 

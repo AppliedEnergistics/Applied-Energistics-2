@@ -29,10 +29,12 @@ FMLInterModComms.sendMessage( "appliedenergistics2", "add-p2p-attunement-item", 
 package appeng.core.api.imc;
 
 import net.minecraft.item.ItemStack;
+
+import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
+
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.core.api.IIMCProcessor;
-import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 
 public class IMCP2PAttunement implements IIMCProcessor
 {

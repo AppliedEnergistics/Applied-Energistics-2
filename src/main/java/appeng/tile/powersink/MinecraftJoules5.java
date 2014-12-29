@@ -18,21 +18,23 @@
 
 package appeng.tile.powersink;
 
-import appeng.integration.abstraction.helpers.BaseMJPerdition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import buildcraft.api.power.IPowerReceptor;
+import buildcraft.api.power.PowerHandler;
+import buildcraft.api.power.PowerHandler.PowerReceiver;
+
 import appeng.api.config.PowerUnits;
 import appeng.core.AppEng;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IMJ5;
+import appeng.integration.abstraction.helpers.BaseMJPerdition;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.transformer.annotations.integration.Interface;
 import appeng.transformer.annotations.integration.Method;
 import appeng.util.Platform;
-import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerHandler;
-import buildcraft.api.power.PowerHandler.PowerReceiver;
 
 @Interface(iname = "MJ5", iface = "buildcraft.api.power.IPowerReceptor")
 public abstract class MinecraftJoules5 extends AERootPoweredTile implements IPowerReceptor

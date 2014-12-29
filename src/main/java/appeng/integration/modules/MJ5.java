@@ -18,10 +18,11 @@
 
 package appeng.integration.modules;
 
+import buildcraft.api.power.IPowerReceptor;
+
 import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IMJ5;
 import appeng.integration.modules.helpers.MJPerdition;
-import buildcraft.api.power.IPowerReceptor;
 
 public class MJ5 extends BaseModule implements IMJ5
 {

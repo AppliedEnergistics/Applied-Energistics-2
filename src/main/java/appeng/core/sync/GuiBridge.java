@@ -31,6 +31,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cpw.mods.fml.common.network.IGuiHandler;
+import cpw.mods.fml.relauncher.ReflectionHelper;
+
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.definitions.Materials;
@@ -113,8 +117,6 @@ import appeng.tile.storage.TileDrive;
 import appeng.tile.storage.TileIOPort;
 import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
-import cpw.mods.fml.common.network.IGuiHandler;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public enum GuiBridge implements IGuiHandler
 {

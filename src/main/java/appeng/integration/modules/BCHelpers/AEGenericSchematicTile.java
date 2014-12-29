@@ -23,10 +23,12 @@ import java.util.ArrayList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import appeng.tile.AEBaseTile;
-import appeng.util.Platform;
+
 import buildcraft.api.blueprints.IBuilderContext;
 import buildcraft.api.blueprints.SchematicTile;
+
+import appeng.tile.AEBaseTile;
+import appeng.util.Platform;
 
 public class AEGenericSchematicTile extends SchematicTile
 {

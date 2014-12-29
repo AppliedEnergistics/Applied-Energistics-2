@@ -18,10 +18,11 @@
 
 package appeng.client.render;
 
-import appeng.client.texture.FlippableIcon;
-import appeng.client.texture.TmpFlippableIcon;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import appeng.client.texture.FlippableIcon;
+import appeng.client.texture.TmpFlippableIcon;
 
 public class BlockRenderInfo
 {

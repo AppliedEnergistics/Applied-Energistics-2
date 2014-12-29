@@ -18,19 +18,19 @@
 
 package appeng.client.render.items;
 
+import com.mojang.authlib.GameProfile;
+
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
 
-import org.lwjgl.opengl.GL11;
-
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.util.AEColor;
 import appeng.client.texture.ExtraItemTextures;
-
-import com.mojang.authlib.GameProfile;
 
 public class ToolBiometricCardRender implements IItemRenderer
 {

@@ -23,12 +23,14 @@ import java.util.Random;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.api.AEApi;
 import appeng.client.render.effects.ChargedOreFX;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class OreQuartzCharged extends OreQuartz
 {

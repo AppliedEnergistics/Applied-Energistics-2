@@ -23,12 +23,14 @@ import java.util.Random;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.client.render.effects.VibrantFX;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockQuartzLamp extends BlockQuartzGlass
 {

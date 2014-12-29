@@ -20,7 +20,9 @@ package appeng.integration.modules;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import rblocks.api.IOrientable;
+
 import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IRB;
 

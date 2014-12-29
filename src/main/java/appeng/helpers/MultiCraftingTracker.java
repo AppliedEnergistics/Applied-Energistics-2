@@ -21,8 +21,11 @@ package appeng.helpers;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+
 import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingGrid;
@@ -33,8 +36,6 @@ import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.parts.automation.NonNullArrayIterator;
 import appeng.util.InventoryAdaptor;
-
-import com.google.common.collect.ImmutableSet;
 
 public class MultiCraftingTracker
 {

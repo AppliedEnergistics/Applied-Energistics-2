@@ -27,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.api.exceptions.FailedConnection;

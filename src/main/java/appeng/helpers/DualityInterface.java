@@ -25,6 +25,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -38,6 +40,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
@@ -89,8 +92,6 @@ import appeng.util.inv.AdaptorIInventory;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.WrapperInvSlot;
 import appeng.util.item.AEItemStack;
-
-import com.google.common.collect.ImmutableSet;
 
 public class DualityInterface implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory,
 		IConfigManagerHost, ICraftingProvider, IUpgradeableHost, IPriorityHost

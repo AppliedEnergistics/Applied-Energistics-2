@@ -23,6 +23,7 @@ import java.util.Iterator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.config.FuzzyMode;
 import appeng.core.AppEng;
 import appeng.integration.IntegrationType;

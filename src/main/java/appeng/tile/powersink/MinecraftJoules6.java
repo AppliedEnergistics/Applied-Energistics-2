@@ -18,12 +18,13 @@
 
 package appeng.tile.powersink;
 
+import buildcraft.api.mj.IBatteryObject;
+import buildcraft.api.mj.IBatteryProvider;
+
 import appeng.api.config.PowerUnits;
 import appeng.transformer.annotations.integration.Interface;
 import appeng.transformer.annotations.integration.InterfaceList;
 import appeng.transformer.annotations.integration.Method;
-import buildcraft.api.mj.IBatteryObject;
-import buildcraft.api.mj.IBatteryProvider;
 
 @InterfaceList(value = { @Interface(iname = "MJ6", iface = "buildcraft.api.mj.IBatteryProvider"),
 		@Interface(iname = "MJ6", iface = "buildcraft.api.mj.IBatteryObject") })

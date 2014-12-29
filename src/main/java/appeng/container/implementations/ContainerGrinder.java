@@ -18,9 +18,10 @@
 
 package appeng.container.implementations;
 
-import appeng.container.slot.SlotInaccessible;
 import net.minecraft.entity.player.InventoryPlayer;
+
 import appeng.container.AEBaseContainer;
+import appeng.container.slot.SlotInaccessible;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.grindstone.TileGrinder;

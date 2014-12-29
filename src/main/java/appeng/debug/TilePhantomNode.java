@@ -21,6 +21,7 @@ package appeng.debug;
 import java.util.EnumSet;
 
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.networking.IGridNode;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.tile.grid.AENetworkTile;

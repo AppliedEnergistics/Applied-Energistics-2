@@ -23,19 +23,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 
-import org.lwjgl.opengl.GL11;
-
-import appeng.api.AEApi;
-import appeng.api.util.AEItemDefinition;
-import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
-import appeng.core.localization.GuiText;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.api.IOverlayHandler;
@@ -43,6 +38,12 @@ import codechicken.nei.api.IRecipeOverlayRenderer;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.ICraftingHandler;
 import codechicken.nei.recipe.IUsageHandler;
+
+import appeng.api.AEApi;
+import appeng.api.util.AEItemDefinition;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
+import appeng.core.localization.GuiText;
 
 public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 {

@@ -20,14 +20,16 @@ package appeng.integration.modules;
 
 import java.lang.reflect.Method;
 
-import mods.immibis.core.api.multipart.ICoverSystem;
-import mods.immibis.core.api.multipart.IMultipartTile;
-import mods.immibis.core.api.multipart.IPartContainer;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
+import mods.immibis.core.api.multipart.ICoverSystem;
+import mods.immibis.core.api.multipart.IMultipartTile;
+import mods.immibis.core.api.multipart.IPartContainer;
+
 import appeng.api.AEApi;
 import appeng.api.parts.IPartHost;
 import appeng.core.AELog;

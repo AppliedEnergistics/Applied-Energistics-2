@@ -18,20 +18,22 @@
 
 package appeng.core.sync.packets;
 
+import java.io.IOException;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.EffectType;
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketAssemblerAnimation extends AppEngPacket
 {

@@ -19,11 +19,13 @@
 package appeng.fmp;
 
 import net.minecraft.block.Block;
+
+import codechicken.multipart.TMultiPart;
+
 import appeng.block.AEBaseBlock;
 import appeng.block.misc.BlockQuartzTorch;
 import appeng.block.networking.BlockCableBus;
 import appeng.core.Api;
-import codechicken.multipart.TMultiPart;
 
 public enum PartRegistry
 {
