@@ -73,6 +73,4 @@ public class Parts
 	public AEItemDefinition partTerminal;
 	public AEItemDefinition partStorageMonitor;
 	public AEItemDefinition partConversionMonitor;
-
-	// entweder optional oder null pattern, wahrscheinlich besser mit optional für API
 }
