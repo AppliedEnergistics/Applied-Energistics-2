@@ -53,7 +53,7 @@ public class StorageWorldProvider extends WorldProvider
 	@Override
 	protected void registerWorldChunkManager()
 	{
-		super.worldChunkMgr = new WorldChunkManagerHell( Registration.instance.storageBiome, 0.0F );
+		super.worldChunkMgr = new WorldChunkManagerHell( Registration.INSTANCE.storageBiome, 0.0F );
 	}
 
 	@Override

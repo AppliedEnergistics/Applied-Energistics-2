@@ -18,20 +18,32 @@
 
 package appeng.core;
 
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
 import appeng.api.AEApi;
+import appeng.api.IAppEngApi;
+import appeng.api.definitions.Items;
+import appeng.api.definitions.Materials;
 import appeng.api.util.AEItemDefinition;
+
 
 public final class CreativeTab extends CreativeTabs
 {
 
 	public static CreativeTab instance = null;
 
-	public CreativeTab() {
+	public CreativeTab()
+	{
 		super( "appliedenergistics2" );
+	}
+
+	public static void init()
+	{
+		instance = new CreativeTab();
 	}
 
 	@Override
@@ -43,26 +55,28 @@ public final class CreativeTab extends CreativeTabs
 	@Override
 	public ItemStack getIconItemStack()
 	{
-		return this.findFirst( AEApi.instance().blocks().blockController, AEApi.instance().blocks().blockChest, AEApi.instance().blocks().blockCellWorkbench, AEApi
-				.instance().blocks().blockFluix, AEApi.instance().items().itemCell1k, AEApi.instance().items().itemNetworkTool,
-				AEApi.instance().materials().materialFluixCrystal, AEApi.instance().materials().materialCertusQuartzCrystal );
+		final IAppEngApi api = AEApi.instance();
+		final appeng.api.definitions.Blocks blocks = api.blocks();
+		final Items items = api.items();
+		final Materials materials = api.materials();
+
+		return this.findFirst( blocks.blockController, blocks.blockChest, blocks.blockCellWorkbench, blocks.blockFluix, items.itemCell1k, items.itemNetworkTool, materials.materialFluixCrystal, materials.materialCertusQuartzCrystal );
 	}
 
-	private ItemStack findFirst(AEItemDefinition... choices)
+	private ItemStack findFirst( AEItemDefinition... choices )
 	{
-		for (AEItemDefinition a : choices)
+		for ( AEItemDefinition a : choices )
 		{
-			ItemStack is = a.stack( 1 );
-			if ( is != null )
-				return is;
+			if ( a != null )
+			{
+				ItemStack is = a.stack( 1 );
+				if ( is != null )
+				{
+					return is;
+				}
+			}
 		}
 
 		return new ItemStack( Blocks.chest );
 	}
-
-	public static void init()
-	{
-		instance = new CreativeTab();
-	}
-
 }
