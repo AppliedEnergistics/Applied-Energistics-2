@@ -42,12 +42,14 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import appeng.api.AEApi;
+import appeng.api.IAppEngApi;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.Blocks;
 import appeng.api.definitions.Items;
 import appeng.api.definitions.Materials;
 import appeng.api.definitions.Parts;
 import appeng.api.features.IRecipeHandlerRegistry;
+import appeng.api.features.IRegistryContainer;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWorldGen.WorldGenType;
 import appeng.api.movable.IMovableRegistry;
@@ -209,9 +211,9 @@ import appeng.util.ClassInstantiation;
 import appeng.util.Platform;
 
 
-public class Registration
+public final class Registration
 {
-	final public static Registration instance = new Registration();
+	final public static Registration INSTANCE = new Registration();
 
 	private final RecipeHandler recipeHandler;
 	private final Multimap<AEFeature, Class<? extends IAEFeature>> featuresToEntities;
@@ -223,7 +225,7 @@ public class Registration
 		this.featuresToEntities = ArrayListMultimap.create();
 	}
 
-	public void PreInit( FMLPreInitializationEvent event )
+	public void preInitialize( FMLPreInitializationEvent event )
 	{
 		this.registerSpatial( false );
 
@@ -431,7 +433,8 @@ public class Registration
 		items.itemFacade = this.addFeature( ItemFacade.class );
 		items.itemCrystalSeed = this.addFeature( ItemCrystalSeed.class );
 
-		ColoredItemDefinition paintBall, lumenPaintBall;
+		ColoredItemDefinition paintBall;
+		ColoredItemDefinition lumenPaintBall;
 		items.itemPaintBall = paintBall = new ColoredItemDefinition();
 		items.itemLumenPaintBall = lumenPaintBall = new ColoredItemDefinition();
 		AEItemDefinition pb = this.addFeature( ItemPaintBall.class );
@@ -537,7 +540,7 @@ public class Registration
 		}
 	}
 
-	public void Init( FMLInitializationEvent event )
+	public void initialize( FMLInitializationEvent event )
 	{
 		// Perform ore camouflage!
 		ItemMultiMaterial.instance.makeUnique();
@@ -607,92 +610,101 @@ public class Registration
 			CraftingManager.getInstance().getRecipeList().add( new FacadeRecipe() );
 	}
 
-	public void PostInit( FMLPostInitializationEvent event )
+	public void postInit( FMLPostInitializationEvent event )
 	{
 		this.registerSpatial( true );
 
+		final IAppEngApi api = AEApi.instance();
+		final IRegistryContainer registries = api.registries();
+		final Parts parts = api.parts();
+		final Blocks blocks = api.blocks();
+		final Items items = api.items();
+
 		// default settings..
-		( ( P2PTunnelRegistry ) AEApi.instance().registries().p2pTunnel() ).configure();
+		( ( P2PTunnelRegistry ) registries.p2pTunnel() ).configure();
 
 		// add to localization..
 		PlayerMessages.values();
 		GuiText.values();
 
 		Api.instance.partHelper.initFMPSupport();
-		( ( BlockCableBus ) AEApi.instance().blocks().blockMultiPart.block() ).setupTile();
+		( ( BlockCableBus ) blocks.blockMultiPart.block() ).setupTile();
 
 		// Interface
-		Upgrades.CRAFTING.registerItem( AEApi.instance().parts().partInterface.stack( 1 ), 1 );
-		Upgrades.CRAFTING.registerItem( AEApi.instance().blocks().blockInterface.stack( 1 ), 1 );
+		Upgrades.CRAFTING.registerItem( parts.partInterface, 1 );
+		Upgrades.CRAFTING.registerItem( blocks.blockInterface, 1 );
 
 		// IO Port!
-		Upgrades.SPEED.registerItem( AEApi.instance().blocks().blockIOPort.stack( 1 ), 3 );
-		Upgrades.REDSTONE.registerItem( AEApi.instance().blocks().blockIOPort.stack( 1 ), 1 );
+		Upgrades.SPEED.registerItem( blocks.blockIOPort, 3 );
+		Upgrades.REDSTONE.registerItem( blocks.blockIOPort, 1 );
 
 		// Level Emitter!
-		Upgrades.FUZZY.registerItem( AEApi.instance().parts().partLevelEmitter.stack( 1 ), 1 );
-		Upgrades.CRAFTING.registerItem( AEApi.instance().parts().partLevelEmitter.stack( 1 ), 1 );
+		Upgrades.FUZZY.registerItem( parts.partLevelEmitter, 1 );
+		Upgrades.CRAFTING.registerItem( parts.partLevelEmitter, 1 );
 
 		// Import Bus
-		Upgrades.FUZZY.registerItem( AEApi.instance().parts().partImportBus.stack( 1 ), 1 );
-		Upgrades.REDSTONE.registerItem( AEApi.instance().parts().partImportBus.stack( 1 ), 1 );
-		Upgrades.CAPACITY.registerItem( AEApi.instance().parts().partImportBus.stack( 1 ), 2 );
-		Upgrades.SPEED.registerItem( AEApi.instance().parts().partImportBus.stack( 1 ), 4 );
+		Upgrades.FUZZY.registerItem( parts.partImportBus, 1 );
+		Upgrades.REDSTONE.registerItem( parts.partImportBus, 1 );
+		Upgrades.CAPACITY.registerItem( parts.partImportBus, 2 );
+		Upgrades.SPEED.registerItem( parts.partImportBus, 4 );
 
 		// Export Bus
-		Upgrades.FUZZY.registerItem( AEApi.instance().parts().partExportBus.stack( 1 ), 1 );
-		Upgrades.REDSTONE.registerItem( AEApi.instance().parts().partExportBus.stack( 1 ), 1 );
-		Upgrades.CAPACITY.registerItem( AEApi.instance().parts().partExportBus.stack( 1 ), 2 );
-		Upgrades.SPEED.registerItem( AEApi.instance().parts().partExportBus.stack( 1 ), 4 );
-		Upgrades.CRAFTING.registerItem( AEApi.instance().parts().partExportBus.stack( 1 ), 1 );
+		Upgrades.FUZZY.registerItem( parts.partExportBus, 1 );
+		Upgrades.REDSTONE.registerItem( parts.partExportBus, 1 );
+		Upgrades.CAPACITY.registerItem( parts.partExportBus, 2 );
+		Upgrades.SPEED.registerItem( parts.partExportBus, 4 );
+		Upgrades.CRAFTING.registerItem( parts.partExportBus, 1 );
 
 		// Storage Cells
-		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemCell1k.stack( 1 ), 1 );
-		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemCell1k.stack( 1 ), 1 );
+		Upgrades.FUZZY.registerItem( items.itemCell1k, 1 );
+		Upgrades.INVERTER.registerItem( items.itemCell1k, 1 );
 
-		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemCell4k.stack( 1 ), 1 );
-		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemCell4k.stack( 1 ), 1 );
+		Upgrades.FUZZY.registerItem( items.itemCell4k, 1 );
+		Upgrades.INVERTER.registerItem( items.itemCell4k, 1 );
 
-		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemCell16k.stack( 1 ), 1 );
-		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemCell16k.stack( 1 ), 1 );
+		Upgrades.FUZZY.registerItem( items.itemCell16k, 1 );
+		Upgrades.INVERTER.registerItem( items.itemCell16k, 1 );
 
-		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemCell64k.stack( 1 ), 1 );
-		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemCell64k.stack( 1 ), 1 );
+		Upgrades.FUZZY.registerItem( items.itemCell64k, 1 );
+		Upgrades.INVERTER.registerItem( items.itemCell64k, 1 );
 
-		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemPortableCell.stack( 1 ), 1 );
-		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemPortableCell.stack( 1 ), 1 );
+		Upgrades.FUZZY.registerItem( items.itemPortableCell, 1 );
+		Upgrades.INVERTER.registerItem( items.itemPortableCell, 1 );
 
-		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemViewCell.stack( 1 ), 1 );
-		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemViewCell.stack( 1 ), 1 );
+		Upgrades.FUZZY.registerItem( items.itemViewCell, 1 );
+		Upgrades.INVERTER.registerItem( items.itemViewCell, 1 );
 
 		// Storage Bus
-		Upgrades.FUZZY.registerItem( AEApi.instance().parts().partStorageBus.stack( 1 ), 1 );
-		Upgrades.INVERTER.registerItem( AEApi.instance().parts().partStorageBus.stack( 1 ), 1 );
-		Upgrades.CAPACITY.registerItem( AEApi.instance().parts().partStorageBus.stack( 1 ), 5 );
+		Upgrades.FUZZY.registerItem( parts.partStorageBus, 1 );
+		Upgrades.INVERTER.registerItem( parts.partStorageBus, 1 );
+		Upgrades.CAPACITY.registerItem( parts.partStorageBus, 5 );
 
 		// Formation Plane
-		Upgrades.FUZZY.registerItem( AEApi.instance().parts().partFormationPlane.stack( 1 ), 1 );
-		Upgrades.INVERTER.registerItem( AEApi.instance().parts().partFormationPlane.stack( 1 ), 1 );
-		Upgrades.CAPACITY.registerItem( AEApi.instance().parts().partFormationPlane.stack( 1 ), 5 );
+		Upgrades.FUZZY.registerItem( parts.partFormationPlane, 1 );
+		Upgrades.INVERTER.registerItem( parts.partFormationPlane, 1 );
+		Upgrades.CAPACITY.registerItem( parts.partFormationPlane, 5 );
 
 		// Matter Cannon
-		Upgrades.FUZZY.registerItem( AEApi.instance().items().itemMassCannon.stack( 1 ), 1 );
-		Upgrades.INVERTER.registerItem( AEApi.instance().items().itemMassCannon.stack( 1 ), 1 );
-		Upgrades.SPEED.registerItem( AEApi.instance().items().itemMassCannon.stack( 1 ), 4 );
+		Upgrades.FUZZY.registerItem( items.itemMassCannon, 1 );
+		Upgrades.INVERTER.registerItem( items.itemMassCannon, 1 );
+		Upgrades.SPEED.registerItem( items.itemMassCannon, 4 );
 
 		// Molecular Assembler
-		Upgrades.SPEED.registerItem( AEApi.instance().blocks().blockMolecularAssembler.stack( 1 ), 5 );
+		Upgrades.SPEED.registerItem( blocks.blockMolecularAssembler, 5 );
 
 		// Inscriber
-		Upgrades.SPEED.registerItem( AEApi.instance().blocks().blockInscriber.stack( 1 ), 3 );
+		Upgrades.SPEED.registerItem( blocks.blockInscriber, 3 );
 
-		AEApi.instance().registries().wireless().registerWirelessHandler( ( IWirelessTermHandler ) AEApi.instance().items().itemWirelessTerminal.item() );
+		if ( items.itemWirelessTerminal != null )
+		{
+			registries.wireless().registerWirelessHandler( ( IWirelessTermHandler ) items.itemWirelessTerminal.item() );
+		}
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.ChestLoot ) )
 		{
 			ChestGenHooks d = ChestGenHooks.getInfo( ChestGenHooks.MINESHAFT_CORRIDOR );
-			d.addItem( new WeightedRandomChestContent( AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 ), 1, 4, 2 ) );
-			d.addItem( new WeightedRandomChestContent( AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ), 1, 4, 2 ) );
+			d.addItem( new WeightedRandomChestContent( api.materials().materialCertusQuartzCrystal.stack( 1 ), 1, 4, 2 ) );
+			d.addItem( new WeightedRandomChestContent( api.materials().materialCertusQuartzDust.stack( 1 ), 1, 4, 2 ) );
 		}
 
 		// add villager trading to black smiths for a few basic materials
@@ -707,7 +719,7 @@ public class Registration
 			GameRegistry.registerWorldGenerator( new MeteoriteWorldGen(), 0 );
 		}
 
-		IMovableRegistry mr = AEApi.instance().registries().movable();
+		IMovableRegistry mr = registries.movable();
 
 		/**
 		 * You can't move bed rock.
@@ -747,19 +759,19 @@ public class Registration
 		 */
 		for ( WorldGenType type : WorldGenType.values() )
 		{
-			AEApi.instance().registries().worldgen().disableWorldGenForProviderID( type, StorageWorldProvider.class );
+			registries.worldgen().disableWorldGenForProviderID( type, StorageWorldProvider.class );
 
 			// nether
-			AEApi.instance().registries().worldgen().disableWorldGenForDimension( type, -1 );
+			registries.worldgen().disableWorldGenForDimension( type, -1 );
 
 			// end
-			AEApi.instance().registries().worldgen().disableWorldGenForDimension( type, 1 );
+			registries.worldgen().disableWorldGenForDimension( type, 1 );
 		}
 
 		// whitelist from config
 		for ( int dimension : AEConfig.instance.meteoriteDimensionWhitelist )
 		{
-			AEApi.instance().registries().worldgen().enableWorldGenForDimension( WorldGenType.Meteorites, dimension );
+			registries.worldgen().enableWorldGenForDimension( WorldGenType.Meteorites, dimension );
 		}
 
 		/**

@@ -119,7 +119,7 @@ public class AppEng
 		if ( Platform.isClient() )
 			CommonHelper.proxy.init();
 
-		Registration.instance.PreInit( event );
+		Registration.INSTANCE.preInitialize( event );
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.VersionChecker ) )
 		{
@@ -143,7 +143,7 @@ public class AppEng
 		Stopwatch star = Stopwatch.createStarted();
 		AELog.info( "Init" );
 
-		Registration.instance.Init( event );
+		Registration.INSTANCE.initialize( event );
 		IntegrationRegistry.INSTANCE.init();
 
 		AELog.info( "Init ( end " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
@@ -155,7 +155,7 @@ public class AppEng
 		Stopwatch star = Stopwatch.createStarted();
 		AELog.info( "PostInit" );
 
-		Registration.instance.PostInit( event );
+		Registration.INSTANCE.postInit( event );
 		IntegrationRegistry.INSTANCE.postInit();
 		FMLCommonHandler.instance().registerCrashCallable( new CrashEnhancement( CrashInfo.INTEGRATION ) );
 

@@ -23,27 +23,32 @@
 
 package appeng.api.config;
 
+
 import java.util.HashMap;
 
 import net.minecraft.item.ItemStack;
+
+import appeng.api.util.AEItemDefinition;
+
 
 public enum Upgrades
 {
 	/**
 	 * Gold Tier Upgrades.
 	 */
-	CAPACITY(0), REDSTONE(0), CRAFTING(0),
+	CAPACITY( 0 ), REDSTONE( 0 ), CRAFTING( 0 ),
 
 	/**
 	 * Diamond Tier Upgrades.
 	 */
-	FUZZY(1), SPEED(1), INVERTER(1);
+	FUZZY( 1 ), SPEED( 1 ), INVERTER( 1 );
 
 	public final int myTier;
 	public final HashMap<ItemStack, Integer> supportedMax = new HashMap<ItemStack, Integer>();
 
-	private Upgrades(int tier) {
-		myTier = tier;
+	private Upgrades( int tier )
+	{
+		this.myTier = tier;
 	}
 
 	/**
@@ -51,12 +56,26 @@ public enum Upgrades
 	 */
 	public HashMap<ItemStack, Integer> getSupported()
 	{
-		return supportedMax;
+		return this.supportedMax;
 	}
 
-	public void registerItem(ItemStack myItem, int maxSupported)
+
+
+	public void registerItem( AEItemDefinition myItem, int maxSupported )
 	{
 		if ( myItem != null )
-			supportedMax.put( myItem, maxSupported );
+		{
+			final ItemStack stack = myItem.stack( 1 );
+
+			this.registerItem( stack, maxSupported );
+		}
+	}
+
+	public void registerItem( ItemStack stack, int maxSupported )
+	{
+		if ( stack != null )
+		{
+			this.supportedMax.put( stack, maxSupported );
+		}
 	}
 }

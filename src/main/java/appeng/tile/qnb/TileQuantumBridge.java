@@ -48,12 +48,12 @@ import appeng.util.Platform;
 public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 {
 
-	final private static ItemStack ring = AEApi.instance().blocks().blockQuantumRing.stack( 1 );
+	final private static ItemStack RING_STACK = ( AEApi.instance().blocks().blockQuantumRing != null ) ? AEApi.instance().blocks().blockQuantumRing.stack( 1 ) : null;
 
-	final int sidesRing[] = new int[] {};
-	final int sidesLink[] = new int[] { 0 };
+	final int[] sidesRing = new int[] { };
+	final int[] sidesLink = new int[] { 0 };
 
-	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 1 );
+	final AppEngInternalInventory internalInventory = new AppEngInternalInventory( this, 1 );
 
 	public final byte corner = 16;
 	final byte hasSingularity = 32;
@@ -68,7 +68,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	private boolean updateStatus = false;
 
 	@TileEvent(TileEventType.TICK)
-	public void Tick_TileQuantumBridge()
+	public void onTickEvent()
 	{
 		if ( this.updateStatus )
 		{
@@ -80,25 +80,25 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void writeToStream_TileQuantumBridge(ByteBuf data)
+	public void onNetworkWriteEvent( ByteBuf data )
 	{
 		int out = this.constructed;
 
 		if ( this.getStackInSlot( 0 ) != null && this.constructed != -1 )
-			out = out | this.hasSingularity;
+			out |= this.hasSingularity;
 
 		if ( this.gridProxy.isActive() && this.constructed != -1 )
-			out = out | this.powered;
+			out |= this.powered;
 
 		data.writeByte( (byte) out );
 	}
 
 	@TileEvent(TileEventType.NETWORK_READ)
-	public boolean readFromStream_TileQuantumBridge(ByteBuf data)
+	public boolean onNetworkReadEvent( ByteBuf data )
 	{
 		int oldValue = this.constructed;
 		this.constructed = data.readByte();
-		this.bridgePowered = (this.constructed | this.powered) == this.powered;
+		this.bridgePowered = ( this.constructed | this.powered ) == this.powered;
 		return this.constructed != oldValue;
 	}
 
@@ -106,17 +106,17 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 		this.gridProxy.setFlags( GridFlags.DENSE_CAPACITY );
 		this.gridProxy.setIdlePowerUsage( 22 );
-		this.inv.setMaxStackSize( 1 );
+		this.internalInventory.setMaxStackSize( 1 );
 	}
 
 	@Override
 	public IInventory getInternalInventory()
 	{
-		return this.inv;
+		return this.internalInventory;
 	}
 
 	@MENetworkEventSubscribe
-	public void PowerSwitch(MENetworkPowerStatusChange c)
+	public void onPowerStatusChange( MENetworkPowerStatusChange c )
 	{
 		this.updateStatus = true;
 	}
@@ -170,7 +170,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	{
 		super.onReady();
 		if ( this.worldObj.getBlock( this.xCoord, this.yCoord, this.zCoord ) == AEApi.instance().blocks().blockQuantumRing.block() )
-			this.gridProxy.setVisualRepresentation( ring );
+			this.gridProxy.setVisualRepresentation( RING_STACK );
 	}
 
 	@Override
@@ -210,7 +210,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public long getQEFrequency()
 	{
-		ItemStack is = this.inv.getStackInSlot( 0 );
+		ItemStack is = this.internalInventory.getStackInSlot( 0 );
 		if ( is != null )
 		{
 			NBTTagCompound c = is.getTagCompound();
@@ -227,13 +227,13 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public boolean isCorner()
 	{
-		return (this.constructed & this.corner) == this.corner && this.constructed != -1;
+		return ( this.constructed & this.corner ) == this.corner && this.constructed != -1;
 	}
 
 	public boolean isPowered()
 	{
 		if ( Platform.isClient() )
-			return (this.constructed & this.powered) == this.powered && this.constructed != -1;
+			return ( this.constructed & this.powered ) == this.powered && this.constructed != -1;
 
 		try
 		{
@@ -287,7 +287,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	{
 		if ( this.constructed == -1 )
 			return false;
-		return (this.constructed & this.hasSingularity) == this.hasSingularity;
+		return ( this.constructed & this.hasSingularity ) == this.hasSingularity;
 	}
 
 	public void breakCluster()
