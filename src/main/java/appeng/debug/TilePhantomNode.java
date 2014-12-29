@@ -35,26 +35,26 @@ public class TilePhantomNode extends AENetworkTile
 	public void onReady()
 	{
 		super.onReady();
-		proxy = createProxy();
-		proxy.onReady();
-		crashMode = true;
+		this.proxy = this.createProxy();
+		this.proxy.onReady();
+		this.crashMode = true;
 	}
 
 	@Override
 	public IGridNode getGridNode(ForgeDirection dir)
 	{
-		if ( !crashMode )
+		if ( !this.crashMode )
 			return super.getGridNode( dir );
 
-		return proxy.getNode();
+		return this.proxy.getNode();
 	}
 
 	public void BOOM()
 	{
-		if ( proxy != null )
+		if ( this.proxy != null )
 		{
-			crashMode = true;
-			proxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
+			this.crashMode = true;
+			this.proxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
 		}
 	}
 }

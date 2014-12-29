@@ -36,9 +36,9 @@ public class ContainerVibrationChamber extends AEBaseContainer implements IProgr
 		super( ip, vibrationChamber, null );
 		this.vibrationChamber = vibrationChamber;
 
-		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.FUEL, vibrationChamber, 0, 80, 37, invPlayer ) );
+		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.FUEL, vibrationChamber, 0, 80, 37, this.invPlayer ) );
 
-		bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
+		this.bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
 	}
 
 	public final int aePerTick = 5;
@@ -64,7 +64,7 @@ public class ContainerVibrationChamber extends AEBaseContainer implements IProgr
 	@Override
 	public int getCurrentProgress()
 	{
-		return burnProgress > 0 ? burnSpeed : 0;
+		return this.burnProgress > 0 ? this.burnSpeed : 0;
 	}
 
 	@Override

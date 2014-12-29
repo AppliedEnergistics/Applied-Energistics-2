@@ -69,8 +69,8 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 		final String unlocalizedName;
 
 		public InvTracker(DualityInterface dual, IInventory patterns, String unlocalizedName) {
-			server = patterns;
-			client = new AppEngInternalInventory( null, server.getSizeInventory() );
+			this.server = patterns;
+			this.client = new AppEngInternalInventory( null, this.server.getSizeInventory() );
 			this.unlocalizedName = unlocalizedName;
 			this.sortBy = dual.getSortValue();
 		}
@@ -89,9 +89,9 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 		super( ip, anchor );
 
 		if ( Platform.isServer() )
-			g = anchor.getActionableNode().getGrid();
+			this.g = anchor.getActionableNode().getGrid();
 
-		bindPlayerInventory( ip, 0, 222 - /* height of player inventory */82 );
+		this.bindPlayerInventory( ip, 0, 222 - /* height of player inventory */82 );
 	}
 
 	NBTTagCompound data = new NBTTagCompound();
@@ -114,7 +114,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 	@Override
 	public void doAction(EntityPlayerMP player, InventoryAction action, int slot, long id)
 	{
-		InvTracker inv = byId.get( id );
+		InvTracker inv = this.byId.get( id );
 		if ( inv != null )
 		{
 			ItemStack is = inv.server.getStackInSlot( slot );
@@ -210,7 +210,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 				return;
 			}
 
-			updateHeld( player );
+			this.updateHeld( player );
 		}
 	}
 
@@ -222,19 +222,19 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 
 		super.detectAndSendChanges();
 
-		if ( g == null )
+		if ( this.g == null )
 			return;
 
 		int total = 0;
 		boolean missing = false;
 
-		IActionHost host = getActionHost();
+		IActionHost host = this.getActionHost();
 		if ( host != null )
 		{
 			IGridNode agn = host.getActionableNode();
 			if ( agn != null && agn.isActive() )
 			{
-				for (IGridNode gn : g.getMachines( TileInterface.class ))
+				for (IGridNode gn : this.g.getMachines( TileInterface.class ))
 				{
 					if ( gn.isActive() )
 					{
@@ -242,7 +242,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 						if ( ih.getInterfaceDuality().getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.NO )
 							continue;
 
-						InvTracker t = diList.get( ih );
+						InvTracker t = this.diList.get( ih );
 
 						if ( t == null )
 							missing = true;
@@ -257,7 +257,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 					}
 				}
 
-				for (IGridNode gn : g.getMachines( PartInterface.class ))
+				for (IGridNode gn : this.g.getMachines( PartInterface.class ))
 				{
 					if ( gn.isActive() )
 					{
@@ -265,7 +265,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 						if ( ih.getInterfaceDuality().getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.NO )
 							continue;
 
-						InvTracker t = diList.get( ih );
+						InvTracker t = this.diList.get( ih );
 
 						if ( t == null )
 							missing = true;
@@ -282,33 +282,33 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 			}
 		}
 
-		if ( total != diList.size() || missing )
-			regenList( data );
+		if ( total != this.diList.size() || missing )
+			this.regenList( this.data );
 		else
 		{
-			for (Entry<IInterfaceHost, InvTracker> en : diList.entrySet())
+			for (Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet())
 			{
 				InvTracker inv = en.getValue();
 				for (int x = 0; x < inv.server.getSizeInventory(); x++)
 				{
-					if ( isDifferent( inv.server.getStackInSlot( x ), inv.client.getStackInSlot( x ) ) )
-						addItems( data, inv, x, 1 );
+					if ( this.isDifferent( inv.server.getStackInSlot( x ), inv.client.getStackInSlot( x ) ) )
+						this.addItems( this.data, inv, x, 1 );
 				}
 			}
 		}
 
-		if ( !data.hasNoTags() )
+		if ( !this.data.hasNoTags() )
 		{
 			try
 			{
-				NetworkHandler.instance.sendTo( new PacketCompressedNBT( data ), (EntityPlayerMP) getPlayerInv().player );
+				NetworkHandler.instance.sendTo( new PacketCompressedNBT( this.data ), (EntityPlayerMP) this.getPlayerInv().player );
 			}
 			catch (IOException e)
 			{
 				// :P
 			}
 
-			data = new NBTTagCompound();
+			this.data = new NBTTagCompound();
 		}
 	}
 
@@ -325,40 +325,40 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 
 	private void regenList(NBTTagCompound data)
 	{
-		byId.clear();
-		diList.clear();
+		this.byId.clear();
+		this.diList.clear();
 
-		IActionHost host = getActionHost();
+		IActionHost host = this.getActionHost();
 		if ( host != null )
 		{
 			IGridNode agn = host.getActionableNode();
 			if ( agn != null && agn.isActive() )
 			{
-				for (IGridNode gn : g.getMachines( TileInterface.class ))
+				for (IGridNode gn : this.g.getMachines( TileInterface.class ))
 				{
 					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
 					DualityInterface dual = ih.getInterfaceDuality();
 					if ( gn.isActive() && dual.getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.YES )
-						diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName() ) );
+						this.diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName() ) );
 				}
 
-				for (IGridNode gn : g.getMachines( PartInterface.class ))
+				for (IGridNode gn : this.g.getMachines( PartInterface.class ))
 				{
 					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
 					DualityInterface dual = ih.getInterfaceDuality();
 					if ( gn.isActive() && dual.getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.YES )
-						diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName() ) );
+						this.diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName() ) );
 				}
 			}
 		}
 
 		data.setBoolean( "clear", true );
 
-		for (Entry<IInterfaceHost, InvTracker> en : diList.entrySet())
+		for (Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet())
 		{
 			InvTracker inv = en.getValue();
-			byId.put( inv.which, inv );
-			addItems( data, inv, 0, inv.server.getSizeInventory() );
+			this.byId.put( inv.which, inv );
+			this.addItems( data, inv, 0, inv.server.getSizeInventory() );
 		}
 	}
 

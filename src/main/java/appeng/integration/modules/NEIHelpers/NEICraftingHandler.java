@@ -42,8 +42,8 @@ public class NEICraftingHandler implements IOverlayHandler
 
 	public NEICraftingHandler(int x, int y)
 	{
-		offsetX = x;
-		offsetY = y;
+		this.offsetX = x;
+		this.offsetY = y;
 	}
 
 	final int offsetX;
@@ -55,7 +55,7 @@ public class NEICraftingHandler implements IOverlayHandler
 		try
 		{
 			List ingredients = recipe.getIngredientStacks( recipeIndex );
-			overlayRecipe( gui, ingredients, shift );
+			this.overlayRecipe( gui, ingredients, shift );
 		}
 		catch (Exception ignored)
 		{

@@ -56,17 +56,17 @@ public class InWorldToolOperationResult
 	}
 
 	public InWorldToolOperationResult() {
-		BlockItem = null;
-		Drops = null;
+		this.BlockItem = null;
+		this.Drops = null;
 	}
 
 	public InWorldToolOperationResult(ItemStack block, List<ItemStack> drops) {
-		BlockItem = block;
-		Drops = drops;
+		this.BlockItem = block;
+		this.Drops = drops;
 	}
 
 	public InWorldToolOperationResult(ItemStack block) {
-		BlockItem = block;
-		Drops = null;
+		this.BlockItem = block;
+		this.Drops = null;
 	}
 }

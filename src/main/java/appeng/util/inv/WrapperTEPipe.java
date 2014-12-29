@@ -31,8 +31,8 @@ public class WrapperTEPipe implements IInventory
 	final ForgeDirection dir;
 
 	public WrapperTEPipe(TileEntity te, ForgeDirection d) {
-		ad = te;
-		dir = d;
+		this.ad = te;
+		this.dir = d;
 	}
 
 	@Override

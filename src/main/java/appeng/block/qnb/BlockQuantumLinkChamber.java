@@ -51,19 +51,19 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 
 	public BlockQuantumLinkChamber() {
 		super( BlockQuantumLinkChamber.class, AEGlassMaterial.instance );
-		setFeature( EnumSet.of( AEFeature.QuantumNetworkBridge ) );
-		setTileEntity( TileQuantumBridge.class );
+		this.setFeature( EnumSet.of( AEFeature.QuantumNetworkBridge ) );
+		this.setTileEntity( TileQuantumBridge.class );
 		float shave = 2.0f / 16.0f;
-		setBlockBounds( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
-		setLightOpacity( 0 );
-		isFullSize = isOpaque = false;
+		this.setBlockBounds( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
+		this.setLightOpacity( 0 );
+		this.isFullSize = this.isOpaque = false;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(World w, int bx, int by, int bz, Random r)
 	{
-		TileQuantumBridge bridge = getTileEntity( w, bx, by, bz );
+		TileQuantumBridge bridge = this.getTileEntity( w, bx, by, bz );
 		if ( bridge != null )
 		{
 			if ( bridge.hasQES() )
@@ -77,7 +77,7 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 	@Override
 	public void onNeighborBlockChange(World w, int x, int y, int z, Block pointlessNumber)
 	{
-		TileQuantumBridge bridge = getTileEntity( w, x, y, z );
+		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
 		if ( bridge != null )
 			bridge.neighborUpdate();
 	}
@@ -85,7 +85,7 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 	@Override
 	public void breakBlock(World w, int x, int y, int z, Block a, int b)
 	{
-		TileQuantumBridge bridge = getTileEntity( w, x, y, z );
+		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
 		if ( bridge != null )
 			bridge.breakCluster();
 
@@ -104,7 +104,7 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 		if ( p.isSneaking() )
 			return false;
 
-		TileQuantumBridge tg = getTileEntity( w, x, y, z );
+		TileQuantumBridge tg = this.getTileEntity( w, x, y, z );
 		if ( tg != null )
 		{
 			if ( Platform.isServer() )

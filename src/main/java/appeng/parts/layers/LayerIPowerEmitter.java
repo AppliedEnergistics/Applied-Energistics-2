@@ -29,7 +29,7 @@ public class LayerIPowerEmitter extends LayerBase implements IPowerEmitter
 	@Override
 	public boolean canEmitPowerFrom(ForgeDirection side)
 	{
-		IPart part = getPart( side );
+		IPart part = this.getPart( side );
 		if ( part instanceof IPowerEmitter )
 			return ((IPowerEmitter) part).canEmitPowerFrom( side );
 		return false;

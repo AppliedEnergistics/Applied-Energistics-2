@@ -47,11 +47,11 @@ public class NetworkHandler
 
 	public NetworkHandler(String channelName) {
 		FMLCommonHandler.instance().bus().register( this );
-		ec = NetworkRegistry.INSTANCE.newEventDrivenChannel( myChannelName = channelName );
-		ec.register( this );
+		this.ec = NetworkRegistry.INSTANCE.newEventDrivenChannel( this.myChannelName = channelName );
+		this.ec.register( this );
 
-		clientHandler = createClientSide();
-		serveHandler = createServerSide();
+		this.clientHandler = this.createClientSide();
+		this.serveHandler = this.createServerSide();
 	}
 
 	private IPacketHandler createServerSide()
@@ -95,45 +95,45 @@ public class NetworkHandler
 	public void serverPacket(ServerCustomPacketEvent ev)
 	{
 		NetHandlerPlayServer srv = (NetHandlerPlayServer) ev.packet.handler();
-		if ( serveHandler != null )
-			serveHandler.onPacketData( null, ev.packet, srv.playerEntity );
+		if ( this.serveHandler != null )
+			this.serveHandler.onPacketData( null, ev.packet, srv.playerEntity );
 	}
 
 	@SubscribeEvent
 	public void clientPacket(ClientCustomPacketEvent ev)
 	{
-		if ( clientHandler != null )
-			clientHandler.onPacketData( null, ev.packet, null );
+		if ( this.clientHandler != null )
+			this.clientHandler.onPacketData( null, ev.packet, null );
 	}
 
 	public String getChannel()
 	{
-		return myChannelName;
+		return this.myChannelName;
 	}
 
 	public void sendToAll(AppEngPacket message)
 	{
-		ec.sendToAll( message.getProxy() );
+		this.ec.sendToAll( message.getProxy() );
 	}
 
 	public void sendTo(AppEngPacket message, EntityPlayerMP player)
 	{
-		ec.sendTo( message.getProxy(), player );
+		this.ec.sendTo( message.getProxy(), player );
 	}
 
 	public void sendToAllAround(AppEngPacket message, NetworkRegistry.TargetPoint point)
 	{
-		ec.sendToAllAround( message.getProxy(), point );
+		this.ec.sendToAllAround( message.getProxy(), point );
 	}
 
 	public void sendToDimension(AppEngPacket message, int dimensionId)
 	{
-		ec.sendToDimension( message.getProxy(), dimensionId );
+		this.ec.sendToDimension( message.getProxy(), dimensionId );
 	}
 
 	public void sendToServer(AppEngPacket message)
 	{
-		ec.sendToServer( message.getProxy() );
+		this.ec.sendToServer( message.getProxy() );
 	}
 
 }

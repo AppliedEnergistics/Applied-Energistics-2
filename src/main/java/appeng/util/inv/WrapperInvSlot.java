@@ -45,73 +45,73 @@ public class WrapperInvSlot
 		@Override
 		public ItemStack getStackInSlot(int i)
 		{
-			return inv.getStackInSlot( slot );
+			return this.inv.getStackInSlot( this.slot );
 		}
 
 		@Override
 		public ItemStack decrStackSize(int i, int num)
 		{
-			return inv.decrStackSize( slot, num );
+			return this.inv.decrStackSize( this.slot, num );
 		}
 
 		@Override
 		public ItemStack getStackInSlotOnClosing(int i)
 		{
-			return inv.getStackInSlotOnClosing( slot );
+			return this.inv.getStackInSlotOnClosing( this.slot );
 		}
 
 		@Override
 		public void setInventorySlotContents(int i, ItemStack itemstack)
 		{
-			inv.setInventorySlotContents( slot, itemstack );
+			this.inv.setInventorySlotContents( this.slot, itemstack );
 		}
 
 		@Override
 		public String getInventoryName()
 		{
-			return inv.getInventoryName();
+			return this.inv.getInventoryName();
 		}
 
 		@Override
 		public boolean hasCustomInventoryName()
 		{
-			return inv.hasCustomInventoryName();
+			return this.inv.hasCustomInventoryName();
 		}
 
 		@Override
 		public int getInventoryStackLimit()
 		{
-			return inv.getInventoryStackLimit();
+			return this.inv.getInventoryStackLimit();
 		}
 
 		@Override
 		public void markDirty()
 		{
-			inv.markDirty();
+			this.inv.markDirty();
 		}
 
 		@Override
 		public boolean isUseableByPlayer(EntityPlayer entityplayer)
 		{
-			return inv.isUseableByPlayer( entityplayer );
+			return this.inv.isUseableByPlayer( entityplayer );
 		}
 
 		@Override
 		public void openInventory()
 		{
-			inv.openInventory();
+			this.inv.openInventory();
 		}
 
 		@Override
 		public void closeInventory()
 		{
-			inv.closeInventory();
+			this.inv.closeInventory();
 		}
 
 		@Override
 		public boolean isItemValidForSlot(int i, ItemStack itemstack)
 		{
-			return isItemValid( itemstack ) && inv.isItemValidForSlot( slot, itemstack );
+			return WrapperInvSlot.this.isItemValid( itemstack ) && this.inv.isItemValidForSlot( this.slot, itemstack );
 		}
 	}
 
@@ -123,7 +123,7 @@ public class WrapperInvSlot
 
 	public IInventory getWrapper(int slot)
 	{
-		return new InternalInterfaceWrapper( inv, slot );
+		return new InternalInterfaceWrapper( this.inv, slot );
 	}
 
 	protected boolean isItemValid(ItemStack itemstack)

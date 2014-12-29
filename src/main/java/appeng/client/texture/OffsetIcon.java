@@ -35,80 +35,80 @@ public class OffsetIcon implements IIcon
 		if ( o == null )
 			throw new RuntimeException("Cannot create a wrapper icon with a null icon.");
 		
-		p = o;
-		offsetX = x;
-		offsetY = y;
+		this.p = o;
+		this.offsetX = x;
+		this.offsetY = y;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public float getMinU()
 	{
-		return u( 0 - offsetX );
+		return this.u( 0 - this.offsetX );
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public float getMaxU()
 	{
-		return u( 16 - offsetX );
+		return this.u( 16 - this.offsetX );
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public float getInterpolatedU(double d0)
 	{
-		return u( d0 - offsetX );
+		return this.u( d0 - this.offsetX );
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public float getMinV()
 	{
-		return v( 0 - offsetY );
+		return this.v( 0 - this.offsetY );
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public float getMaxV()
 	{
-		return v( 16 - offsetY );
+		return this.v( 16 - this.offsetY );
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public float getInterpolatedV(double d0)
 	{
-		return v( d0 - offsetY );
+		return this.v( d0 - this.offsetY );
 	}
 
 	private float v(double d)
 	{
-		return p.getInterpolatedV( Math.min( 16.0, Math.max( 0.0, d ) ) );
+		return this.p.getInterpolatedV( Math.min( 16.0, Math.max( 0.0, d ) ) );
 	}
 
 	private float u(double d)
 	{
-		return p.getInterpolatedU( Math.min( 16.0, Math.max( 0.0, d ) ) );
+		return this.p.getInterpolatedU( Math.min( 16.0, Math.max( 0.0, d ) ) );
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public String getIconName()
 	{
-		return p.getIconName();
+		return this.p.getIconName();
 	}
 
 	@Override
 	public int getIconWidth()
 	{
-		return p.getIconWidth();
+		return this.p.getIconWidth();
 	}
 
 	@Override
 	public int getIconHeight()
 	{
-		return p.getIconHeight();
+		return this.p.getIconHeight();
 	}
 
 }

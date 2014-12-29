@@ -61,6 +61,6 @@ public class ToolQuartzPickaxe extends ItemPickaxe implements IAEFeature
 	@Override
 	public boolean getIsRepairable( ItemStack a, ItemStack b )
 	{
-		return Platform.canRepair( type, a, b );
+		return Platform.canRepair( this.type, a, b );
 	}
 }

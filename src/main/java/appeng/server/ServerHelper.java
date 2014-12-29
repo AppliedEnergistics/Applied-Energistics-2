@@ -69,7 +69,7 @@ public class ServerHelper extends CommonHelper
 		if ( Platform.isClient() )
 			return;
 
-		for (EntityPlayer o : getPlayers())
+		for (EntityPlayer o : this.getPlayers())
 		{
 			EntityPlayerMP entityplayermp = (EntityPlayerMP) o;
 
@@ -132,10 +132,10 @@ public class ServerHelper extends CommonHelper
 	@Override
 	public CableRenderMode getRenderMode()
 	{
-		if ( renderModeBased == null )
+		if ( this.renderModeBased == null )
 			return CableRenderMode.Standard;
 
-		return renderModeForPlayer( renderModeBased );
+		return this.renderModeForPlayer( this.renderModeBased );
 	}
 
 	private EntityPlayer renderModeBased;
@@ -143,7 +143,7 @@ public class ServerHelper extends CommonHelper
 	@Override
 	public void updateRenderMode(EntityPlayer player)
 	{
-		renderModeBased = player;
+		this.renderModeBased = player;
 	}
 
 	protected CableRenderMode renderModeForPlayer(EntityPlayer player)

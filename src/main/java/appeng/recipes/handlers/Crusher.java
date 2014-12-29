@@ -47,8 +47,8 @@ public class Crusher implements ICraftHandler, IWebsiteSerializer
 			int outs = output.get( 0 ).size();
 			if ( input.get( 0 ).size() == 1 && outs == 1 )
 			{
-				pro_input = input.get( 0 ).get( 0 );
-				pro_output = output.get( 0 ).toArray( new IIngredient[outs] );
+				this.pro_input = input.get( 0 ).get( 0 );
+				this.pro_output = output.get( 0 ).toArray( new IIngredient[outs] );
 				return;
 			}
 		}
@@ -61,11 +61,11 @@ public class Crusher implements ICraftHandler, IWebsiteSerializer
 		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.RC ) )
 		{
 			IRC rc = (IRC) AppEng.instance.getIntegration( IntegrationType.RC );
-			for (ItemStack is : pro_input.getItemStackSet())
+			for (ItemStack is : this.pro_input.getItemStackSet())
 			{
 				try
 				{
-					rc.rockCrusher( is, pro_output[0].getItemStack() );
+					rc.rockCrusher( is, this.pro_output[0].getItemStack() );
 				}
 				catch (java.lang.RuntimeException err)
 				{
@@ -78,7 +78,7 @@ public class Crusher implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public boolean canCraft(ItemStack output) throws RegistrationError, MissingIngredientError
 	{
-		return Platform.isSameItemPrecise( pro_output[0].getItemStack(), output );
+		return Platform.isSameItemPrecise( this.pro_output[0].getItemStack(), output );
 	}
 
 	@Override

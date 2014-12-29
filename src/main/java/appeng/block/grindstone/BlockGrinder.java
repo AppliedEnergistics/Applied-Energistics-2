@@ -35,15 +35,15 @@ public class BlockGrinder extends AEBaseBlock
 
 	public BlockGrinder() {
 		super( BlockGrinder.class, Material.rock );
-		setFeature( EnumSet.of( AEFeature.GrindStone ) );
-		setTileEntity( TileGrinder.class );
-		setHardness( 3.2F );
+		this.setFeature( EnumSet.of( AEFeature.GrindStone ) );
+		this.setTileEntity( TileGrinder.class );
+		this.setHardness( 3.2F );
 	}
 
 	@Override
 	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
 	{
-		TileGrinder tg = getTileEntity( w, x, y, z );
+		TileGrinder tg = this.getTileEntity( w, x, y, z );
 		if ( tg != null && !p.isSneaking() )
 		{
 			Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_GRINDER );

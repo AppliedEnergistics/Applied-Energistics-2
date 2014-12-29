@@ -45,8 +45,8 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 
 	public ToolBiometricCard() {
 		super( ToolBiometricCard.class );
-		setFeature( EnumSet.of( AEFeature.Security ) );
-		setMaxStackSize( 1 );
+		this.setFeature( EnumSet.of( AEFeature.Security ) );
+		this.setMaxStackSize( 1 );
 		if ( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, new ToolBiometricCardRender() );
 	}
@@ -54,7 +54,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	@Override
 	public String getItemStackDisplayName(ItemStack is)
 	{
-		GameProfile username = getProfile( is );
+		GameProfile username = this.getProfile( is );
 		return username != null ? super.getItemStackDisplayName( is ) + " - " + username.getName() : super.getItemStackDisplayName( is );
 	}
 
@@ -65,7 +65,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 		{
 			if ( par2EntityPlayer.capabilities.isCreativeMode )
 				is = par2EntityPlayer.getCurrentEquippedItem();
-			encode( is, (EntityPlayer) target );
+			this.encode( is, (EntityPlayer) target );
 			par2EntityPlayer.swingItem();
 			return true;
 		}
@@ -77,7 +77,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	{
 		if ( p.isSneaking() )
 		{
-			encode( is, p );
+			this.encode( is, p );
 			p.swingItem();
 			return is;
 		}
@@ -87,18 +87,18 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 
 	private void encode(ItemStack is, EntityPlayer p)
 	{
-		GameProfile username = getProfile( is );
+		GameProfile username = this.getProfile( is );
 		
 		if (username != null && username.equals(p.getGameProfile())) 
-			setProfile( is, null );
+			this.setProfile( is, null );
 		else
-			setProfile( is, p.getGameProfile() );
+			this.setProfile( is, p.getGameProfile() );
 	}
 
 	@Override
 	public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
-		EnumSet<SecurityPermissions> perms = getPermissions( stack );
+		EnumSet<SecurityPermissions> perms = this.getPermissions( stack );
 		if ( perms.isEmpty() )
 			lines.add( GuiText.NoPermissions.getLocal() );
 		else
@@ -181,6 +181,6 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	@Override
 	public void registerPermissions(ISecurityRegistry register, IPlayerRegistry pr, ItemStack is)
 	{
-		register.addPlayer( pr.getID( getProfile( is ) ), getPermissions( is ) );
+		register.addPlayer( pr.getID( this.getProfile( is ) ), this.getPermissions( is ) );
 	}
 }

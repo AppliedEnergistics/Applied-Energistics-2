@@ -31,91 +31,91 @@ public class NetworkList implements Collection<Grid>
 	@Override
 	public boolean add(Grid e)
 	{
-		copy();
-		return networks.add( e );
+		this.copy();
+		return this.networks.add( e );
 	}
 
 	@Override
 	public boolean addAll(Collection<? extends Grid> c)
 	{
-		copy();
-		return networks.addAll( c );
+		this.copy();
+		return this.networks.addAll( c );
 	}
 
 	@Override
 	public void clear()
 	{
-		networks = new LinkedList<Grid>();
+		this.networks = new LinkedList<Grid>();
 	}
 
 	@Override
 	public boolean contains(Object o)
 	{
-		return networks.contains( o );
+		return this.networks.contains( o );
 	}
 
 	@Override
 	public boolean containsAll(Collection<?> c)
 	{
-		return networks.containsAll( c );
+		return this.networks.containsAll( c );
 	}
 
 	@Override
 	public boolean isEmpty()
 	{
-		return networks.isEmpty();
+		return this.networks.isEmpty();
 	}
 
 	@Override
 	public Iterator<Grid> iterator()
 	{
-		return networks.iterator();
+		return this.networks.iterator();
 	}
 
 	@Override
 	public boolean remove(Object o)
 	{
-		copy();
-		return networks.remove( o );
+		this.copy();
+		return this.networks.remove( o );
 	}
 
 	@Override
 	public boolean removeAll(Collection<?> c)
 	{
-		copy();
-		return networks.removeAll( c );
+		this.copy();
+		return this.networks.removeAll( c );
 	}
 
 	@Override
 	public boolean retainAll(Collection<?> c)
 	{
-		copy();
-		return networks.retainAll( c );
+		this.copy();
+		return this.networks.retainAll( c );
 	}
 
 	private void copy()
 	{
-		List<Grid> old = networks;
-		networks = new LinkedList<Grid>();
-		networks.addAll( old );
+		List<Grid> old = this.networks;
+		this.networks = new LinkedList<Grid>();
+		this.networks.addAll( old );
 	}
 
 	@Override
 	public int size()
 	{
-		return networks.size();
+		return this.networks.size();
 	}
 
 	@Override
 	public Object[] toArray()
 	{
-		return networks.toArray();
+		return this.networks.toArray();
 	}
 
 	@Override
 	public <T> T[] toArray(T[] a)
 	{
-		return networks.toArray( a );
+		return this.networks.toArray( a );
 	}
 
 }

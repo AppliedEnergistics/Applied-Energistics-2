@@ -83,69 +83,69 @@ public class PathGridCache implements IPathingGrid
 
 	public PathGridCache(IGrid g)
 	{
-		myGrid = g;
+		this.myGrid = g;
 	}
 
 	@Override
 	public void onUpdateTick()
 	{
-		if ( recalculateControllerNextTick )
+		if ( this.recalculateControllerNextTick )
 		{
-			recalcController();
+			this.recalcController();
 		}
 
-		if ( updateNetwork )
+		if ( this.updateNetwork )
 		{
-			if ( !booting )
-				myGrid.postEvent( new MENetworkBootingStatusChange() );
+			if ( !this.booting )
+				this.myGrid.postEvent( new MENetworkBootingStatusChange() );
 
-			booting = true;
-			updateNetwork = false;
-			instance++;
-			channelsInUse = 0;
+			this.booting = true;
+			this.updateNetwork = false;
+			this.instance++;
+			this.channelsInUse = 0;
 
 			if ( !AEConfig.instance.isFeatureEnabled( AEFeature.Channels ) )
 			{
-				int used = calculateRequiredChannels();
+				int used = this.calculateRequiredChannels();
 
-				int nodes = myGrid.getNodes().size();
-				ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
-				channelsByBlocks = nodes * used;
-				channelPowerUsage = channelsByBlocks / 128.0;
+				int nodes = this.myGrid.getNodes().size();
+				this.ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
+				this.channelsByBlocks = nodes * used;
+				this.channelPowerUsage = this.channelsByBlocks / 128.0;
 
-				myGrid.getPivot().beginVisit( new AdHocChannelUpdater( used ) );
+				this.myGrid.getPivot().beginVisit( new AdHocChannelUpdater( used ) );
 			}
-			else if ( controllerState == ControllerState.NO_CONTROLLER )
+			else if ( this.controllerState == ControllerState.NO_CONTROLLER )
 			{
-				int requiredChannels = calculateRequiredChannels();
+				int requiredChannels = this.calculateRequiredChannels();
 				int used = requiredChannels;
 				if ( requiredChannels > 8 )
 					used = 0;
 
-				int nodes = myGrid.getNodes().size();
-				channelsInUse = used;
+				int nodes = this.myGrid.getNodes().size();
+				this.channelsInUse = used;
 
-				ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
-				channelsByBlocks = nodes * used;
-				channelPowerUsage = channelsByBlocks / 128.0;
+				this.ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
+				this.channelsByBlocks = nodes * used;
+				this.channelPowerUsage = this.channelsByBlocks / 128.0;
 
-				myGrid.getPivot().beginVisit( new AdHocChannelUpdater( used ) );
+				this.myGrid.getPivot().beginVisit( new AdHocChannelUpdater( used ) );
 			}
-			else if ( controllerState == ControllerState.CONTROLLER_CONFLICT )
+			else if ( this.controllerState == ControllerState.CONTROLLER_CONFLICT )
 			{
-				ticksUntilReady = 20;
-				myGrid.getPivot().beginVisit( new AdHocChannelUpdater( 0 ) );
+				this.ticksUntilReady = 20;
+				this.myGrid.getPivot().beginVisit( new AdHocChannelUpdater( 0 ) );
 			}
 			else
 			{
-				int nodes = myGrid.getNodes().size();
-				ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
+				int nodes = this.myGrid.getNodes().size();
+				this.ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
 				HashSet<IPathItem> closedList = new HashSet<IPathItem>();
-				semiOpen = new HashSet<IPathItem>();
+				this.semiOpen = new HashSet<IPathItem>();
 
 				// myGrid.getPivot().beginVisit( new AdHocChannelUpdater( 0 )
 				// );
-				for (IGridNode node : myGrid.getMachines( TileController.class ))
+				for (IGridNode node : this.myGrid.getMachines( TileController.class ))
 				{
 					closedList.add( (IPathItem) node );
 					for (IGridConnection gcc : node.getConnections())
@@ -157,16 +157,16 @@ public class PathGridCache implements IPathingGrid
 							closedList.add( gc );
 							open.add( gc );
 							gc.setControllerRoute( (GridNode) node, true );
-							active.add( new PathSegment( this, open, semiOpen, closedList ) );
+							this.active.add( new PathSegment( this, open, this.semiOpen, closedList ) );
 						}
 					}
 				}
 			}
 		}
 
-		if ( !active.isEmpty() || ticksUntilReady > 0 )
+		if ( !this.active.isEmpty() || this.ticksUntilReady > 0 )
 		{
-			Iterator<PathSegment> i = active.iterator();
+			Iterator<PathSegment> i = this.active.iterator();
 			while (i.hasNext())
 			{
 				PathSegment pat = i.next();
@@ -177,11 +177,11 @@ public class PathGridCache implements IPathingGrid
 				}
 			}
 
-			ticksUntilReady--;
+			this.ticksUntilReady--;
 
-			if ( active.isEmpty() && ticksUntilReady <= 0 )
+			if ( this.active.isEmpty() && this.ticksUntilReady <= 0 )
 			{
-				if ( controllerState == ControllerState.CONTROLLER_ONLINE )
+				if ( this.controllerState == ControllerState.CONTROLLER_ONLINE )
 				{
 					final Iterator<TileController> controllerIterator = this.controllers.iterator();
 					if (controllerIterator.hasNext())
@@ -192,25 +192,25 @@ public class PathGridCache implements IPathingGrid
 				}
 
 				// check for achievements
-				achievementPost();
+				this.achievementPost();
 
-				booting = false;
-				channelPowerUsage = channelsByBlocks / 128.0;
-				myGrid.postEvent( new MENetworkBootingStatusChange() );
+				this.booting = false;
+				this.channelPowerUsage = this.channelsByBlocks / 128.0;
+				this.myGrid.postEvent( new MENetworkBootingStatusChange() );
 			}
 		}
 	}
 
 	private void achievementPost()
 	{
-		if ( lastChannels != channelsInUse && AEConfig.instance.isFeatureEnabled( AEFeature.Channels ) )
+		if ( this.lastChannels != this.channelsInUse && AEConfig.instance.isFeatureEnabled( AEFeature.Channels ) )
 		{
-			Achievements currentBracket = getAchievementBracket( channelsInUse );
-			Achievements lastBracket = getAchievementBracket( lastChannels );
+			Achievements currentBracket = this.getAchievementBracket( this.channelsInUse );
+			Achievements lastBracket = this.getAchievementBracket( this.lastChannels );
 			if ( currentBracket != lastBracket && currentBracket != null )
 			{
 				Set<Integer> players = new HashSet<Integer>();
-				for (IGridNode n : requireChannels)
+				for (IGridNode n : this.requireChannels)
 					players.add( n.getPlayerID() );
 
 				for (int id : players)
@@ -219,7 +219,7 @@ public class PathGridCache implements IPathingGrid
 				}
 			}
 		}
-		lastChannels = channelsInUse;
+		this.lastChannels = this.channelsInUse;
 	}
 
 	private Achievements getAchievementBracket(int ch)
@@ -239,16 +239,16 @@ public class PathGridCache implements IPathingGrid
 	private int calculateRequiredChannels()
 	{
 		int depth = 0;
-		semiOpen.clear();
+		this.semiOpen.clear();
 
-		for (IGridNode nodes : requireChannels)
+		for (IGridNode nodes : this.requireChannels)
 		{
-			if ( !semiOpen.contains( nodes ) )
+			if ( !this.semiOpen.contains( nodes ) )
 			{
 				IGridBlock gb = nodes.getGridBlock();
 				EnumSet<GridFlags> flags = gb.getFlags();
 
-				if ( flags.contains( GridFlags.COMPRESSED_CHANNEL ) && !blockDense.isEmpty() )
+				if ( flags.contains( GridFlags.COMPRESSED_CHANNEL ) && !this.blockDense.isEmpty() )
 					return 9;
 
 				depth++;
@@ -258,7 +258,7 @@ public class PathGridCache implements IPathingGrid
 					IGridMultiblock gmb = (IGridMultiblock) gb;
 					Iterator<IGridNode> i = gmb.getMultiblockNodes();
 					while (i.hasNext())
-						semiOpen.add( (IPathItem) i.next() );
+						this.semiOpen.add( (IPathItem) i.next() );
 				}
 			}
 		}
@@ -270,10 +270,10 @@ public class PathGridCache implements IPathingGrid
 	public void repath()
 	{
 		// clean up...
-		active.clear();
+		this.active.clear();
 
-		channelsByBlocks = 0;
-		updateNetwork = true;
+		this.channelsByBlocks = 0;
+		this.updateNetwork = true;
 	}
 
 	@Override
@@ -281,19 +281,19 @@ public class PathGridCache implements IPathingGrid
 	{
 		if ( machine instanceof TileController )
 		{
-			controllers.remove( machine );
-			recalculateControllerNextTick = true;
+			this.controllers.remove( machine );
+			this.recalculateControllerNextTick = true;
 		}
 
 		EnumSet<GridFlags> flags = gridNode.getGridBlock().getFlags();
 
 		if ( flags.contains( GridFlags.REQUIRE_CHANNEL ) )
-			requireChannels.remove( gridNode );
+			this.requireChannels.remove( gridNode );
 
 		if ( flags.contains( GridFlags.CANNOT_CARRY_COMPRESSED ) )
-			blockDense.remove( gridNode );
+			this.blockDense.remove( gridNode );
 
-		repath();
+		this.repath();
 	}
 
 	@Override
@@ -301,19 +301,19 @@ public class PathGridCache implements IPathingGrid
 	{
 		if ( machine instanceof TileController )
 		{
-			controllers.add( (TileController) machine );
-			recalculateControllerNextTick = true;
+			this.controllers.add( (TileController) machine );
+			this.recalculateControllerNextTick = true;
 		}
 
 		EnumSet<GridFlags> flags = gridNode.getGridBlock().getFlags();
 
 		if ( flags.contains( GridFlags.REQUIRE_CHANNEL ) )
-			requireChannels.add( gridNode );
+			this.requireChannels.add( gridNode );
 
 		if ( flags.contains( GridFlags.CANNOT_CARRY_COMPRESSED ) )
-			blockDense.add( gridNode );
+			this.blockDense.add( gridNode );
 
-		repath();
+		this.repath();
 	}
 
 	@MENetworkEventSubscribe
@@ -322,28 +322,28 @@ public class PathGridCache implements IPathingGrid
 		IGridNode gridNode = ev.node;
 
 		if ( gridNode.getGridBlock().getFlags().contains( GridFlags.REQUIRE_CHANNEL ) )
-			requireChannels.add( gridNode );
+			this.requireChannels.add( gridNode );
 		else
-			requireChannels.remove( gridNode );
+			this.requireChannels.remove( gridNode );
 
-		repath();
+		this.repath();
 	}
 
 	private void recalcController()
 	{
-		recalculateControllerNextTick = false;
-		ControllerState old = controllerState;
+		this.recalculateControllerNextTick = false;
+		ControllerState old = this.controllerState;
 
-		if ( controllers.isEmpty() )
+		if ( this.controllers.isEmpty() )
 		{
-			controllerState = ControllerState.NO_CONTROLLER;
+			this.controllerState = ControllerState.NO_CONTROLLER;
 		}
 		else
 		{
-			IGridNode startingNode = controllers.iterator().next().getGridNode( ForgeDirection.UNKNOWN );
+			IGridNode startingNode = this.controllers.iterator().next().getGridNode( ForgeDirection.UNKNOWN );
 			if ( startingNode == null )
 			{
-				controllerState = ControllerState.CONTROLLER_CONFLICT;
+				this.controllerState = ControllerState.CONTROLLER_CONFLICT;
 				return;
 			}
 
@@ -352,15 +352,15 @@ public class PathGridCache implements IPathingGrid
 
 			startingNode.beginVisit( cv );
 
-			if ( cv.isValid && cv.found == controllers.size() )
-				controllerState = ControllerState.CONTROLLER_ONLINE;
+			if ( cv.isValid && cv.found == this.controllers.size() )
+				this.controllerState = ControllerState.CONTROLLER_ONLINE;
 			else
-				controllerState = ControllerState.CONTROLLER_CONFLICT;
+				this.controllerState = ControllerState.CONTROLLER_CONFLICT;
 		}
 
-		if ( old != controllerState )
+		if ( old != this.controllerState )
 		{
-			myGrid.postEvent( new MENetworkControllerChange() );
+			this.myGrid.postEvent( new MENetworkControllerChange() );
 		}
 	}
 

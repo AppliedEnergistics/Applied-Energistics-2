@@ -63,48 +63,48 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 	Method registerUsageHandler;
 
 	public NEI() throws ClassNotFoundException {
-		TestClass( GuiContainerManager.class );
-		TestClass( codechicken.nei.recipe.ICraftingHandler.class );
-		TestClass( codechicken.nei.recipe.IUsageHandler.class );
-		API = Class.forName( "codechicken.nei.api.API" );
+		this.TestClass( GuiContainerManager.class );
+		this.TestClass( codechicken.nei.recipe.ICraftingHandler.class );
+		this.TestClass( codechicken.nei.recipe.IUsageHandler.class );
+		this.API = Class.forName( "codechicken.nei.api.API" );
 	}
 
 	public void registerRecipeHandler(Object o) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
 	{
-		registerRecipeHandler.invoke( API, o );
-		registerUsageHandler.invoke( API, o );
+		this.registerRecipeHandler.invoke( this.API, o );
+		this.registerUsageHandler.invoke( this.API, o );
 	}
 
 	@Override
 	public void Init() throws Throwable
 	{
-		registerRecipeHandler = API.getDeclaredMethod( "registerRecipeHandler", codechicken.nei.recipe.ICraftingHandler.class );
-		registerUsageHandler = API.getDeclaredMethod( "registerUsageHandler", codechicken.nei.recipe.IUsageHandler.class );
+		this.registerRecipeHandler = this.API.getDeclaredMethod( "registerRecipeHandler", codechicken.nei.recipe.ICraftingHandler.class );
+		this.registerUsageHandler = this.API.getDeclaredMethod( "registerUsageHandler", codechicken.nei.recipe.IUsageHandler.class );
 
-		registerRecipeHandler( new NEIAEShapedRecipeHandler() );
-		registerRecipeHandler( new NEIAEShapelessRecipeHandler() );
-		registerRecipeHandler( new NEIInscriberRecipeHandler() );
-		registerRecipeHandler( new NEIWorldCraftingHandler() );
-		registerRecipeHandler( new NEIGrinderRecipeHandler() );
+		this.registerRecipeHandler( new NEIAEShapedRecipeHandler() );
+		this.registerRecipeHandler( new NEIAEShapelessRecipeHandler() );
+		this.registerRecipeHandler( new NEIInscriberRecipeHandler() );
+		this.registerRecipeHandler( new NEIWorldCraftingHandler() );
+		this.registerRecipeHandler( new NEIGrinderRecipeHandler() );
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.Facades ) && AEConfig.instance.isFeatureEnabled( AEFeature.enableFacadeCrafting ) )
-			registerRecipeHandler( new NEIFacadeRecipeHandler() );
+			this.registerRecipeHandler( new NEIFacadeRecipeHandler() );
 
 		// large stack tooltips
 		GuiContainerManager.addTooltipHandler( this );
 
 		// crafting terminal...
-		Method registerGuiOverlay = API.getDeclaredMethod( "registerGuiOverlay", Class.class, String.class, IStackPositioner.class );
+		Method registerGuiOverlay = this.API.getDeclaredMethod( "registerGuiOverlay", Class.class, String.class, IStackPositioner.class );
 		Class IOverlayHandler = Class.forName( "codechicken.nei.api.IOverlayHandler" );
 		Class DefaultOverlayHandler = NEICraftingHandler.class;
 
-		Method registerGuiOverlayHandler = API.getDeclaredMethod( "registerGuiOverlayHandler", Class.class, IOverlayHandler, String.class );
-		registerGuiOverlay.invoke( API, GuiCraftingTerm.class, "crafting", new TerminalCraftingSlotFinder() );
-		registerGuiOverlay.invoke( API, GuiPatternTerm.class, "crafting", new TerminalCraftingSlotFinder() );
+		Method registerGuiOverlayHandler = this.API.getDeclaredMethod( "registerGuiOverlayHandler", Class.class, IOverlayHandler, String.class );
+		registerGuiOverlay.invoke( this.API, GuiCraftingTerm.class, "crafting", new TerminalCraftingSlotFinder() );
+		registerGuiOverlay.invoke( this.API, GuiPatternTerm.class, "crafting", new TerminalCraftingSlotFinder() );
 
 		Constructor DefaultOverlayHandlerConstructor = DefaultOverlayHandler.getConstructor( int.class, int.class );
-		registerGuiOverlayHandler.invoke( API, GuiCraftingTerm.class, DefaultOverlayHandlerConstructor.newInstance( 6, 75 ), "crafting" );
-		registerGuiOverlayHandler.invoke( API, GuiPatternTerm.class, DefaultOverlayHandlerConstructor.newInstance( 6, 75 ), "crafting" );
+		registerGuiOverlayHandler.invoke( this.API, GuiCraftingTerm.class, DefaultOverlayHandlerConstructor.newInstance( 6, 75 ), "crafting" );
+		registerGuiOverlayHandler.invoke( this.API, GuiPatternTerm.class, DefaultOverlayHandlerConstructor.newInstance( 6, 75 ), "crafting" );
 	}
 
 	@Override

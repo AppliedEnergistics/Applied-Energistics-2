@@ -53,14 +53,14 @@ public class IntegrationNode
 	@Override
 	public String toString()
 	{
-		return shortName.name() + ':' + state.name();
+		return this.shortName.name() + ':' + this.state.name();
 	}
 
 	void Call(IntegrationStage stage)
 	{
-		if ( state != IntegrationStage.FAILED )
+		if ( this.state != IntegrationStage.FAILED )
 		{
-			if ( state.ordinal() > stage.ordinal() )
+			if ( this.state.ordinal() > stage.ordinal() )
 				return;
 
 			try
@@ -69,13 +69,13 @@ public class IntegrationNode
 				{
 				case PRE_INIT:
 
-					boolean enabled = modID == null || Loader.isModLoaded( modID );
+					boolean enabled = this.modID == null || Loader.isModLoaded( this.modID );
 
 					AEConfig.instance
 							.addCustomCategoryComment(
 									"ModIntegration",
 									"Valid Values are 'AUTO', 'ON', or 'OFF' - defaults to 'AUTO' ; Suggested that you leave this alone unless your experiencing an issue, or wish to disable the integration for a reason." );
-					String Mode = AEConfig.instance.get( "ModIntegration", displayName.replace( " ", "" ), "AUTO" ).getString();
+					String Mode = AEConfig.instance.get( "ModIntegration", this.displayName.replace( " ", "" ), "AUTO" ).getString();
 
 					if ( Mode.toUpperCase().equals( "ON" ) )
 						enabled = true;
@@ -84,25 +84,25 @@ public class IntegrationNode
 
 					if ( enabled )
 					{
-						classValue = getClass().getClassLoader().loadClass( name );
-						mod = (IIntegrationModule) classValue.getConstructor().newInstance();
-						Field f = classValue.getField( "instance" );
-						f.set( classValue, instance = mod );
+						this.classValue = this.getClass().getClassLoader().loadClass( this.name );
+						this.mod = (IIntegrationModule) this.classValue.getConstructor().newInstance();
+						Field f = this.classValue.getField( "instance" );
+						f.set( this.classValue, this.instance = this.mod );
 					}
 					else
-						throw new ModNotInstalled( modID );
+						throw new ModNotInstalled( this.modID );
 
-					state = IntegrationStage.INIT;
+					this.state = IntegrationStage.INIT;
 
 					break;
 				case INIT:
-					mod.Init();
-					state = IntegrationStage.POST_INIT;
+					this.mod.Init();
+					this.state = IntegrationStage.POST_INIT;
 
 					break;
 				case POST_INIT:
-					mod.PostInit();
-					state = IntegrationStage.READY;
+					this.mod.PostInit();
+					this.state = IntegrationStage.READY;
 
 					break;
 				case FAILED:
@@ -112,33 +112,33 @@ public class IntegrationNode
 			}
 			catch (Throwable t)
 			{
-				failedStage = stage;
-				exception = t;
-				state = IntegrationStage.FAILED;
+				this.failedStage = stage;
+				this.exception = t;
+				this.state = IntegrationStage.FAILED;
 			}
 		}
 
 		if ( stage == IntegrationStage.POST_INIT )
 		{
-			if ( state == IntegrationStage.FAILED )
+			if ( this.state == IntegrationStage.FAILED )
 			{
-				AELog.info( displayName + " - Integration Disabled" );
-				if ( !(exception instanceof ModNotInstalled) )
-					AELog.integration( exception );
+				AELog.info( this.displayName + " - Integration Disabled" );
+				if ( !(this.exception instanceof ModNotInstalled) )
+					AELog.integration( this.exception );
 			}
 			else
 			{
-				AELog.info( displayName + " - Integration Enable" );
+				AELog.info( this.displayName + " - Integration Enable" );
 			}
 		}
 	}
 
 	public boolean isActive()
 	{
-		if ( state == IntegrationStage.PRE_INIT )
-			Call( IntegrationStage.PRE_INIT );
+		if ( this.state == IntegrationStage.PRE_INIT )
+			this.Call( IntegrationStage.PRE_INIT );
 
-		return state != IntegrationStage.FAILED;
+		return this.state != IntegrationStage.FAILED;
 	}
 
 }

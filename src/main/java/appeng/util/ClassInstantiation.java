@@ -46,14 +46,14 @@ public class ClassInstantiation<T>
 		for ( Constructor<T> constructor : constructors )
 		{
 			Class<?>[] paramTypes = constructor.getParameterTypes();
-			if ( paramTypes.length == args.length )
+			if ( paramTypes.length == this.args.length )
 			{
 				boolean valid = true;
 
 				for ( int idx = 0; idx < paramTypes.length; idx++ )
 				{
-					Class<?> cz = args[idx].getClass();
-					if ( !isClassMatch( paramTypes[idx], cz, args[idx] ) )
+					Class<?> cz = this.args[idx].getClass();
+					if ( !this.isClassMatch( paramTypes[idx], cz, this.args[idx] ) )
 						valid = false;
 				}
 
@@ -61,7 +61,7 @@ public class ClassInstantiation<T>
 				{
 					try
 					{
-						return Optional.of( constructor.newInstance( args ) );
+						return Optional.of( constructor.newInstance( this.args ) );
 					}
 					catch ( InstantiationException e )
 					{
@@ -88,8 +88,8 @@ public class ClassInstantiation<T>
 		if ( value == null && !expected.isPrimitive() )
 			return true;
 
-		expected = condense( expected, Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class );
-		got = condense( got, Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class );
+		expected = this.condense( expected, Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class );
+		got = this.condense( got, Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class );
 
 		return expected == got || expected.isAssignableFrom( got );
 	}

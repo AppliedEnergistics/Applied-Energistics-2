@@ -30,9 +30,9 @@ public class PartInterfaceTerminal extends PartMonitor
 
 	public PartInterfaceTerminal(ItemStack is) {
 		super( PartInterfaceTerminal.class, is, true );
-		frontBright = CableBusTextures.PartInterfaceTerm_Bright;
-		frontColored = CableBusTextures.PartInterfaceTerm_Colored;
-		frontDark = CableBusTextures.PartInterfaceTerm_Dark;
+		this.frontBright = CableBusTextures.PartInterfaceTerm_Bright;
+		this.frontColored = CableBusTextures.PartInterfaceTerm_Colored;
+		this.frontDark = CableBusTextures.PartInterfaceTerm_Dark;
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class PartInterfaceTerminal extends PartMonitor
 				if ( Platform.isClient() )
 					return true;
 
-				Platform.openGUI( player, getHost().getTile(), side, GuiBridge.GUI_INTERFACE_TERMINAL );
+				Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_INTERFACE_TERMINAL );
 
 				return true;
 			}

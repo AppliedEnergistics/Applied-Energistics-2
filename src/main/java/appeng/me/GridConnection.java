@@ -73,9 +73,9 @@ public class GridConnection implements IGridConnection, IPathItem
 		if ( a.hasConnection( b ) || b.hasConnection( a ) )
 			throw new GridException( "Connection already exists." );
 
-		sideA = a;
+		this.sideA = a;
 		this.fromAtoB = fromAtoB;
-		sideB = b;
+		this.sideB = b;
 
 		if ( b.getMyGrid() == null )
 		{
@@ -93,7 +93,7 @@ public class GridConnection implements IGridConnection, IPathItem
 				GridPropagator gp = new GridPropagator( a.getInternalGrid() );
 				b.beginVisit( gp );
 			}
-			else if ( isNetworkABetter( a, b ) )
+			else if ( this.isNetworkABetter( a, b ) )
 			{
 				GridPropagator gp = new GridPropagator( a.getInternalGrid() );
 				b.beginVisit( gp );
@@ -106,11 +106,11 @@ public class GridConnection implements IGridConnection, IPathItem
 		}
 
 		// a connection was destroyed RE-PATH!!
-		IPathingGrid p = sideA.getInternalGrid().getCache( IPathingGrid.class );
+		IPathingGrid p = this.sideA.getInternalGrid().getCache( IPathingGrid.class );
 		p.repath();
 
-		sideA.addConnection( this );
-		sideB.addConnection( this );
+		this.sideA.addConnection( this );
+		this.sideB.addConnection( this );
 	}
 
 	private boolean isNetworkABetter(GridNode a, GridNode b)
@@ -122,47 +122,47 @@ public class GridConnection implements IGridConnection, IPathItem
 	public void destroy()
 	{
 		// a connection was destroyed RE-PATH!!
-		IPathingGrid p = sideA.getInternalGrid().getCache( IPathingGrid.class );
+		IPathingGrid p = this.sideA.getInternalGrid().getCache( IPathingGrid.class );
 		p.repath();
 
-		sideA.removeConnection( this );
-		sideB.removeConnection( this );
+		this.sideA.removeConnection( this );
+		this.sideB.removeConnection( this );
 
-		sideA.validateGrid();
-		sideB.validateGrid();
+		this.sideA.validateGrid();
+		this.sideB.validateGrid();
 	}
 
 	@Override
 	public IGridNode a()
 	{
-		return sideA;
+		return this.sideA;
 	}
 
 	@Override
 	public ForgeDirection getDirection(IGridNode side)
 	{
-		if ( fromAtoB == ForgeDirection.UNKNOWN )
-			return fromAtoB;
+		if ( this.fromAtoB == ForgeDirection.UNKNOWN )
+			return this.fromAtoB;
 
-		if ( sideA == side )
-			return fromAtoB;
+		if ( this.sideA == side )
+			return this.fromAtoB;
 		else
-			return fromAtoB.getOpposite();
+			return this.fromAtoB.getOpposite();
 	}
 
 	@Override
 	public IGridNode b()
 	{
-		return sideB;
+		return this.sideB;
 	}
 
 	@Override
 	public IGridNode getOtherSide(IGridNode gridNode)
 	{
-		if ( gridNode == sideA )
-			return sideB;
-		if ( gridNode == sideB )
-			return sideA;
+		if ( gridNode == this.sideA )
+			return this.sideB;
+		if ( gridNode == this.sideB )
+			return this.sideA;
 
 		throw new GridException( "Invalid Side of Connection" );
 	}
@@ -170,74 +170,74 @@ public class GridConnection implements IGridConnection, IPathItem
 	@Override
 	public boolean hasDirection()
 	{
-		return fromAtoB != ForgeDirection.UNKNOWN;
+		return this.fromAtoB != ForgeDirection.UNKNOWN;
 	}
 
 	@Override
 	public IReadOnlyCollection<IPathItem> getPossibleOptions()
 	{
-		return new ReadOnlyCollection<IPathItem>( Arrays.asList( (IPathItem) a(), (IPathItem) b() ) );
+		return new ReadOnlyCollection<IPathItem>( Arrays.asList( (IPathItem) this.a(), (IPathItem) this.b() ) );
 	}
 
 	@Override
 	public void incrementChannelCount(int usedChannels)
 	{
-		channelData += usedChannels;
+		this.channelData += usedChannels;
 	}
 
 	@Override
 	public boolean canSupportMoreChannels()
 	{
-		return getLastUsedChannels() < 32; // max, PERIOD.
+		return this.getLastUsedChannels() < 32; // max, PERIOD.
 	}
 
 	@Override
 	public int getUsedChannels()
 	{
-		return (channelData >> 8) & 0xff;
+		return (this.channelData >> 8) & 0xff;
 	}
 
 	public int getLastUsedChannels()
 	{
-		return channelData & 0xff;
+		return this.channelData & 0xff;
 	}
 
 	@Override
 	public IPathItem getControllerRoute()
 	{
-		if ( sideA.getFlags().contains( GridFlags.CANNOT_CARRY ) )
+		if ( this.sideA.getFlags().contains( GridFlags.CANNOT_CARRY ) )
 			return null;
-		return sideA;
+		return this.sideA;
 	}
 
 	@Override
 	public void setControllerRoute(IPathItem fast, boolean zeroOut)
 	{
 		if ( zeroOut )
-			channelData &= ~0xff;
+			this.channelData &= ~0xff;
 
-		if ( sideB == fast )
+		if ( this.sideB == fast )
 		{
-			GridNode tmp = sideA;
-			sideA = sideB;
-			sideB = tmp;
-			fromAtoB = fromAtoB.getOpposite();
+			GridNode tmp = this.sideA;
+			this.sideA = this.sideB;
+			this.sideB = tmp;
+			this.fromAtoB = this.fromAtoB.getOpposite();
 		}
 	}
 
 	@Override
 	public void finalizeChannels()
 	{
-		if ( getUsedChannels() != getLastUsedChannels() )
+		if ( this.getUsedChannels() != this.getLastUsedChannels() )
 		{
-			channelData = (channelData & 0xff);
-			channelData |= channelData << 8;
+			this.channelData = (this.channelData & 0xff);
+			this.channelData |= this.channelData << 8;
 
-			if ( sideA.getInternalGrid() != null )
-				sideA.getInternalGrid().postEventTo( sideA, event );
+			if ( this.sideA.getInternalGrid() != null )
+				this.sideA.getInternalGrid().postEventTo( this.sideA, event );
 
-			if ( sideB.getInternalGrid() != null )
-				sideB.getInternalGrid().postEventTo( sideB, event );
+			if ( this.sideB.getInternalGrid() != null )
+				this.sideB.getInternalGrid().postEventTo( this.sideB, event );
 		}
 	}
 

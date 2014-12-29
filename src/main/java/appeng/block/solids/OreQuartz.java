@@ -43,12 +43,12 @@ public class OreQuartz extends AEBaseBlock
 
 	public OreQuartz(Class self) {
 		super( self, Material.rock );
-		setFeature( EnumSet.of( AEFeature.Core ) );
-		setHardness( 3.0F );
-		setResistance( 5.0F );
-		boostBrightnessLow = 0;
-		boostBrightnessHigh = 1;
-		enhanceBrightness = false;
+		this.setFeature( EnumSet.of( AEFeature.Core ) );
+		this.setHardness( 3.0F );
+		this.setResistance( 5.0F );
+		this.boostBrightnessLow = 0;
+		this.boostBrightnessHigh = 1;
+		this.enhanceBrightness = false;
 	}
 
 	@Override
@@ -67,14 +67,14 @@ public class OreQuartz extends AEBaseBlock
 	public int getMixedBrightnessForBlock(IBlockAccess par1iBlockAccess, int par2, int par3, int par4)
 	{
 		int j1 = super.getMixedBrightnessForBlock( par1iBlockAccess, par2, par3, par4 );
-		if ( enhanceBrightness )
+		if ( this.enhanceBrightness )
 		{
 			j1 = Math.max( j1 >> 20, j1 >> 4 );
 
 			if ( j1 > 4 )
-				j1 += boostBrightnessHigh;
+				j1 += this.boostBrightnessHigh;
 			else
-				j1 += boostBrightnessLow;
+				j1 += this.boostBrightnessLow;
 
 			if ( j1 > 15 )
 				j1 = 15;
@@ -95,13 +95,13 @@ public class OreQuartz extends AEBaseBlock
 	@Override
 	public Item getItemDropped(int id, Random rand, int meta)
 	{
-		return getItemDropped().getItem();
+		return this.getItemDropped().getItem();
 	}
 
 	@Override
 	public int damageDropped(int id)
 	{
-		return getItemDropped().getItemDamage();
+		return this.getItemDropped().getItemDamage();
 	}
 
 	@Override
@@ -113,7 +113,7 @@ public class OreQuartz extends AEBaseBlock
 	@Override
 	public int quantityDroppedWithBonus(int fortune, Random rand)
 	{
-		if ( fortune > 0 && Item.getItemFromBlock( this ) != getItemDropped( 0, rand, fortune ) )
+		if ( fortune > 0 && Item.getItemFromBlock( this ) != this.getItemDropped( 0, rand, fortune ) )
 		{
 			int j = rand.nextInt( fortune + 2 ) - 1;
 
@@ -135,7 +135,7 @@ public class OreQuartz extends AEBaseBlock
 	{
 		super.dropBlockAsItemWithChance( w, x, y, z, blockID, something, meta );
 
-		if ( getItemDropped( blockID, w.rand, meta ) != Item.getItemFromBlock( this ) )
+		if ( this.getItemDropped( blockID, w.rand, meta ) != Item.getItemFromBlock( this ) )
 		{
 			int xp = MathHelper.getRandomIntegerInRange( w.rand, 2, 5 );
 

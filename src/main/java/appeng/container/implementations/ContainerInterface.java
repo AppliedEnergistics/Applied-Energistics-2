@@ -44,16 +44,16 @@ public class ContainerInterface extends ContainerUpgradeable
 	public ContainerInterface(InventoryPlayer ip, IInterfaceHost te) {
 		super( ip, te.getInterfaceDuality().getHost() );
 
-		myDuality = te.getInterfaceDuality();
+		this.myDuality = te.getInterfaceDuality();
 
 		for (int x = 0; x < 9; x++)
-			addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODED_PATTERN, myDuality.getPatterns(), x, 8 + 18 * x, 90 + 7, invPlayer ) );
+			this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODED_PATTERN, this.myDuality.getPatterns(), x, 8 + 18 * x, 90 + 7, this.invPlayer ) );
 
 		for (int x = 0; x < 8; x++)
-			addSlotToContainer( new SlotFake( myDuality.getConfig(), x, 17 + 18 * x, 35 ) );
+			this.addSlotToContainer( new SlotFake( this.myDuality.getConfig(), x, 17 + 18 * x, 35 ) );
 
 		for (int x = 0; x < 8; x++)
-			addSlotToContainer( new SlotNormal( myDuality.getStorage(), x, 17 + 18 * x, 35 + 18 ) );
+			this.addSlotToContainer( new SlotNormal( this.myDuality.getStorage(), x, 17 + 18 * x, 35 + 18 ) );
 
 	}
 
@@ -66,7 +66,7 @@ public class ContainerInterface extends ContainerUpgradeable
 	@Override
 	protected void setupConfig()
 	{
-		setupUpgrades();
+		this.setupUpgrades();
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class ContainerInterface extends ContainerUpgradeable
 	@Override
 	public void detectAndSendChanges()
 	{
-		verifyPermissions( SecurityPermissions.BUILD, false );
+		this.verifyPermissions( SecurityPermissions.BUILD, false );
 		super.detectAndSendChanges();
 	}
 }

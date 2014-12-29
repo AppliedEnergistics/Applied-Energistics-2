@@ -32,20 +32,20 @@ public class AEInvIterator implements Iterator<IAEItemStack>
 	int x = 0;
 
 	public AEInvIterator(AppEngInternalAEInventory i) {
-		inv = i;
-		size = inv.getSizeInventory();
+		this.inv = i;
+		this.size = this.inv.getSizeInventory();
 	}
 
 	@Override
 	public boolean hasNext()
 	{
-		return x < size;
+		return this.x < this.size;
 	}
 
 	@Override
 	public IAEItemStack next()
 	{
-		return inv.getAEStackInSlot( x++ );
+		return this.inv.getAEStackInSlot( this.x++ );
 	}
 
 	@Override

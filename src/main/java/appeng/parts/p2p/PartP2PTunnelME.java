@@ -59,49 +59,49 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 
 	public PartP2PTunnelME(ItemStack is) {
 		super( is );
-		proxy.setFlags( GridFlags.REQUIRE_CHANNEL, GridFlags.COMPRESSED_CHANNEL );
-		outerProxy.setFlags( GridFlags.DENSE_CAPACITY, GridFlags.CANNOT_CARRY_COMPRESSED );
+		this.proxy.setFlags( GridFlags.REQUIRE_CHANNEL, GridFlags.COMPRESSED_CHANNEL );
+		this.outerProxy.setFlags( GridFlags.DENSE_CAPACITY, GridFlags.CANNOT_CARRY_COMPRESSED );
 	}
 
 	@Override
 	public void setPartHostInfo(ForgeDirection side, IPartHost host, TileEntity tile)
 	{
 		super.setPartHostInfo( side, host, tile );
-		outerProxy.setValidSides( EnumSet.of( side ) );
+		this.outerProxy.setValidSides( EnumSet.of( side ) );
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound extra)
 	{
 		super.readFromNBT( extra );
-		outerProxy.readFromNBT( extra );
+		this.outerProxy.readFromNBT( extra );
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound extra)
 	{
 		super.writeToNBT( extra );
-		outerProxy.writeToNBT( extra );
+		this.outerProxy.writeToNBT( extra );
 	}
 
 	@Override
 	public void addToWorld()
 	{
 		super.addToWorld();
-		outerProxy.onReady();
+		this.outerProxy.onReady();
 	}
 
 	@Override
 	public void removeFromWorld()
 	{
 		super.removeFromWorld();
-		outerProxy.invalidate();
+		this.outerProxy.invalidate();
 	}
 
 	@Override
 	public IGridNode getExternalFacingNode()
 	{
-		return outerProxy.getNode();
+		return this.outerProxy.getNode();
 	}
 
 	@Override
@@ -114,11 +114,11 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	public void onTunnelNetworkChange()
 	{
 		super.onTunnelNetworkChange();
-		if ( !output )
+		if ( !this.output )
 		{
 			try
 			{
-				proxy.getTick().wakeDevice( proxy.getNode() );
+				this.proxy.getTick().wakeDevice( this.proxy.getNode() );
 			}
 			catch (GridAccessException e)
 			{
@@ -139,24 +139,24 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 		// just move on...
 		try
 		{
-			if ( !proxy.getPath().isNetworkBooting() )
+			if ( !this.proxy.getPath().isNetworkBooting() )
 			{
-				if ( !proxy.getEnergy().isNetworkPowered() )
+				if ( !this.proxy.getEnergy().isNetworkPowered() )
 				{
-					connection.markDestroy();
-					TickHandler.instance.addCallable( tile.getWorldObj(), connection );
+					this.connection.markDestroy();
+					TickHandler.instance.addCallable( this.tile.getWorldObj(), this.connection );
 				}
 				else
 				{
-					if ( proxy.isActive() )
+					if ( this.proxy.isActive() )
 					{
-						connection.markCreate();
-						TickHandler.instance.addCallable( tile.getWorldObj(), connection );
+						this.connection.markCreate();
+						TickHandler.instance.addCallable( this.tile.getWorldObj(), this.connection );
 					}
 					else
 					{
-						connection.markDestroy();
-						TickHandler.instance.addCallable( tile.getWorldObj(), connection );
+						this.connection.markDestroy();
+						TickHandler.instance.addCallable( this.tile.getWorldObj(), this.connection );
 					}
 				}
 
@@ -175,28 +175,28 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	public void onPlacement(EntityPlayer player, ItemStack held, ForgeDirection side)
 	{
 		super.onPlacement( player, held, side );
-		outerProxy.setOwner( player );
+		this.outerProxy.setOwner( player );
 	}
 
 	public void updateConnections(Connections connections)
 	{
 		if ( connections.destroy )
 		{
-			for (TunnelConnection cw : connection.connections.values())
+			for (TunnelConnection cw : this.connection.connections.values())
 				cw.c.destroy();
 
-			connection.connections.clear();
+			this.connection.connections.clear();
 		}
 		else if ( connections.create )
 		{
 
-			Iterator<TunnelConnection> i = connection.connections.values().iterator();
+			Iterator<TunnelConnection> i = this.connection.connections.values().iterator();
 			while (i.hasNext())
 			{
 				TunnelConnection cw = i.next();
 				try
 				{
-					if ( cw.tunnel.proxy.getGrid() != proxy.getGrid() )
+					if ( cw.tunnel.proxy.getGrid() != this.proxy.getGrid() )
 					{
 						cw.c.destroy();
 						i.remove();
@@ -216,7 +216,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 			LinkedList<PartP2PTunnelME> newSides = new LinkedList<PartP2PTunnelME>();
 			try
 			{
-				for (PartP2PTunnelME me : getOutputs())
+				for (PartP2PTunnelME me : this.getOutputs())
 				{
 					if ( me.proxy.isActive() && connections.connections.get( me.getGridNode() ) == null )
 					{
@@ -229,7 +229,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 					try
 					{
 						connections.connections.put( me.getGridNode(),
-								new TunnelConnection( me, AEApi.instance().createGridConnection( outerProxy.getNode(), me.outerProxy.getNode() ) ) );
+								new TunnelConnection( me, AEApi.instance().createGridConnection( this.outerProxy.getNode(), me.outerProxy.getNode() ) ) );
 					}
 					catch (FailedConnection e)
 					{

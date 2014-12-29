@@ -31,9 +31,9 @@ public class SharedSearchObject
 	public AESharedNBT shared;
 
 	public SharedSearchObject(Item itemID, int damageValue, NBTTagCompound tagCompound) {
-		def = (damageValue << Platform.DEF_OFFSET) | Item.itemRegistry.getIDForObject( itemID );
-		hash = Platform.NBTOrderlessHash( tagCompound );
-		compound = tagCompound;
+		this.def = (damageValue << Platform.DEF_OFFSET) | Item.itemRegistry.getIDForObject( itemID );
+		this.hash = Platform.NBTOrderlessHash( tagCompound );
+		this.compound = tagCompound;
 	}
 
 	@Override
@@ -41,12 +41,12 @@ public class SharedSearchObject
 	{
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
+		if ( this.getClass() != obj.getClass() )
 			return false;
 		SharedSearchObject other = (SharedSearchObject) obj;
-		if ( def == other.def && hash == other.hash )
+		if ( this.def == other.def && this.hash == other.hash )
 		{
-			return Platform.NBTEqualityTest( compound, other.compound );
+			return Platform.NBTEqualityTest( this.compound, other.compound );
 		}
 		return false;
 	}
@@ -54,7 +54,7 @@ public class SharedSearchObject
 	@Override
 	public int hashCode()
 	{
-		return def ^ hash;
+		return this.def ^ this.hash;
 	}
 
 }

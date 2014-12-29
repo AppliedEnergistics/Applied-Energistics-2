@@ -128,13 +128,13 @@ public class BusRenderer implements IItemRenderer
 		BusRenderHelper.instance.setBounds( 0, 0, 0, 1, 1, 1 );
 		BusRenderHelper.instance.setTexture( null );
 		BusRenderHelper.instance.setInvColor( 0xffffff );
-		renderer.blockAccess = ClientHelper.proxy.getWorld();
+		this.renderer.blockAccess = ClientHelper.proxy.getWorld();
 
 		BusRenderHelper.instance.setOrientation( ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
 
-		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
-		renderer.useInventoryTint = false;
-		renderer.overrideBlockTexture = null;
+		this.renderer.uvRotateBottom = this.renderer.uvRotateEast = this.renderer.uvRotateNorth = this.renderer.uvRotateSouth = this.renderer.uvRotateTop = this.renderer.uvRotateWest = 0;
+		this.renderer.useInventoryTint = false;
+		this.renderer.overrideBlockTexture = null;
 
 		if ( item.getItem() instanceof IFacadeItem )
 		{
@@ -148,11 +148,11 @@ public class BusRenderer implements IItemRenderer
 			}
 
 			if ( fp != null )
-				fp.renderInventory( BusRenderHelper.instance, renderer );
+				fp.renderInventory( BusRenderHelper.instance, this.renderer );
 		}
 		else
 		{
-			IPart ip = getRenderer( item, (IPartItem) item.getItem() );
+			IPart ip = this.getRenderer( item, (IPartItem) item.getItem() );
 			if ( ip != null )
 			{
 				if ( type == ItemRenderType.ENTITY )
@@ -161,11 +161,11 @@ public class BusRenderer implements IItemRenderer
 					GL11.glTranslatef( 0.0f, 0.0f, -0.04f * (8 - depth) - 0.06f );
 				}
 
-				ip.renderInventory( BusRenderHelper.instance, renderer );
+				ip.renderInventory( BusRenderHelper.instance, this.renderer );
 			}
 		}
 
-		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+		this.renderer.uvRotateBottom = this.renderer.uvRotateEast = this.renderer.uvRotateNorth = this.renderer.uvRotateSouth = this.renderer.uvRotateTop = this.renderer.uvRotateWest = 0;
 
 		GL11.glPopAttrib();
 		GL11.glPopMatrix();

@@ -64,23 +64,23 @@ public class RecipeHandler implements IRecipeHandler
 	final RecipeData data;
 
 	public RecipeHandler() {
-		data = new RecipeData();
+		this.data = new RecipeData();
 	}
 
 	RecipeHandler(RecipeHandler parent) {
-		data = parent.data;
+		this.data = parent.data;
 	}
 
 	private void addCrafting(ICraftHandler ch)
 	{
-		data.Handlers.add( ch );
+		this.data.Handlers.add( ch );
 	}
 
 	public List<IWebsiteSerializer> findRecipe(ItemStack output)
 	{
 		List<IWebsiteSerializer> out = new LinkedList<IWebsiteSerializer>();
 
-		for (ICraftHandler ch : data.Handlers)
+		for (ICraftHandler ch : this.data.Handlers)
 		{
 			try
 			{
@@ -107,7 +107,7 @@ public class RecipeHandler implements IRecipeHandler
 		HashMap<Class, Integer> processed = new HashMap<Class, Integer>();
 		try
 		{
-			for (ICraftHandler ch : data.Handlers)
+			for (ICraftHandler ch : this.data.Handlers)
 			{
 				try
 				{
@@ -123,19 +123,19 @@ public class RecipeHandler implements IRecipeHandler
 				catch (RegistrationError e)
 				{
 					AELog.warning( "Unable to register a recipe: " + e.getMessage() );
-					if ( data.exceptions )
+					if ( this.data.exceptions )
 						AELog.error( e );
-					if ( data.crash )
+					if ( this.data.crash )
 						throw e;
 				}
 				catch (MissingIngredientError e)
 				{
-					if ( data.errorOnMissing )
+					if ( this.data.errorOnMissing )
 					{
 						AELog.warning( "Unable to register a recipe:" + e.getMessage() );
-						if ( data.exceptions )
+						if ( this.data.exceptions )
 							AELog.error( e );
-						if ( data.crash )
+						if ( this.data.crash )
 							throw e;
 					}
 				}
@@ -143,9 +143,9 @@ public class RecipeHandler implements IRecipeHandler
 		}
 		catch (Throwable e)
 		{
-			if ( data.exceptions )
+			if ( this.data.exceptions )
 				AELog.error( e );
-			if ( data.crash )
+			if ( this.data.crash )
 				throw new RuntimeException( e );
 		}
 
@@ -162,7 +162,7 @@ public class RecipeHandler implements IRecipeHandler
 
 				HashMultimap<String, IWebsiteSerializer> combined = HashMultimap.create();
 
-				for (String s : data.knownItem)
+				for (String s : this.data.knownItem)
 				{
 					try
 					{
@@ -171,8 +171,8 @@ public class RecipeHandler implements IRecipeHandler
 
 						for (ItemStack is : i.getItemStackSet())
 						{
-							String realName = getName( is );
-							List<IWebsiteSerializer> recipes = findRecipe( is );
+							String realName = this.getName( is );
+							List<IWebsiteSerializer> recipes = this.findRecipe( is );
 							if ( !recipes.isEmpty() )
 								combined.putAll( realName, recipes );
 						}
@@ -234,7 +234,7 @@ public class RecipeHandler implements IRecipeHandler
 			{
 				try
 				{
-					return getName( is );
+					return this.getName( is );
 				}
 				catch (RecipeError ignored)
 				{
@@ -339,7 +339,7 @@ public class RecipeHandler implements IRecipeHandler
 
 	public String alias(String in)
 	{
-		String out = data.aliases.get( in );
+		String out = this.data.aliases.get( in );
 
 		if ( out != null )
 			return out;
@@ -360,7 +360,7 @@ public class RecipeHandler implements IRecipeHandler
 			catch (Exception err)
 			{
 				AELog.warning( "Error Loading Recipe File:" + path );
-				if ( data.exceptions )
+				if ( this.data.exceptions )
 					AELog.error( err );
 				return;
 			}
@@ -406,18 +406,18 @@ public class RecipeHandler implements IRecipeHandler
 
 						if ( token.length() > 0 )
 						{
-							tokens.add( token );
-							tokens.add( "," );
+							this.tokens.add( token );
+							this.tokens.add( "," );
 						}
 						token = "";
 						break;
 
 					case '=':
 
-						processTokens( loader, path, line );
+						this.processTokens( loader, path, line );
 
 						if ( token.length() > 0 )
-							tokens.add( token );
+							this.tokens.add( token );
 						token = "";
 
 						break;
@@ -432,7 +432,7 @@ public class RecipeHandler implements IRecipeHandler
 					case ' ':
 
 						if ( token.length() > 0 )
-							tokens.add( token );
+							this.tokens.add( token );
 						token = "";
 
 						break;
@@ -444,15 +444,15 @@ public class RecipeHandler implements IRecipeHandler
 			}
 
 			if ( token.length() > 0 )
-				tokens.add( token );
+				this.tokens.add( token );
 
 			reader.close();
-			processTokens( loader, path, line );
+			this.processTokens( loader, path, line );
 		}
 		catch (Throwable e)
 		{
 			AELog.error( e );
-			if ( data.crash )
+			if ( this.data.crash )
 				throw new RuntimeException( e );
 		}
 	}
@@ -463,64 +463,64 @@ public class RecipeHandler implements IRecipeHandler
 		{
 			IRecipeHandlerRegistry cr = AEApi.instance().registries().recipes();
 
-			if ( tokens.isEmpty() )
+			if ( this.tokens.isEmpty() )
 				return;
 
-			int split = tokens.indexOf( "->" );
+			int split = this.tokens.indexOf( "->" );
 			if ( split != -1 )
 			{
-				String operation = tokens.remove( 0 ).toLowerCase();
+				String operation = this.tokens.remove( 0 ).toLowerCase();
 
 				if ( operation.equals( "alias" ) )
 				{
-					if ( tokens.size() == 3 && tokens.indexOf( "->" ) == 1 )
-						data.aliases.put( tokens.get( 0 ), tokens.get( 2 ) );
+					if ( this.tokens.size() == 3 && this.tokens.indexOf( "->" ) == 1 )
+						this.data.aliases.put( this.tokens.get( 0 ), this.tokens.get( 2 ) );
 					else
 						throw new RecipeError( "Alias must have exactly 1 input and 1 output." );
 				}
 				else if ( operation.equals( "group" ) )
 				{
-					List<String> pre = tokens.subList( 0, split - 1 );
-					List<String> post = tokens.subList( split, tokens.size() );
+					List<String> pre = this.tokens.subList( 0, split - 1 );
+					List<String> post = this.tokens.subList( split, this.tokens.size() );
 
-					List<List<IIngredient>> inputs = parseLines( pre );
+					List<List<IIngredient>> inputs = this.parseLines( pre );
 
 					if ( inputs.size() == 1 && inputs.get( 0 ).size() > 0 && post.size() == 1 )
 					{
-						data.groups.put( post.get( 0 ), new GroupIngredient( post.get( 0 ), inputs.get( 0 ) ) );
+						this.data.groups.put( post.get( 0 ), new GroupIngredient( post.get( 0 ), inputs.get( 0 ) ) );
 					}
 					else
 						throw new RecipeError( "Group must have exactly 1 output, and 1 or more inputs." );
 				}
 				else if ( operation.equals( "ore" ) )
 				{
-					List<String> pre = tokens.subList( 0, split - 1 );
-					List<String> post = tokens.subList( split, tokens.size() );
+					List<String> pre = this.tokens.subList( 0, split - 1 );
+					List<String> post = this.tokens.subList( split, this.tokens.size() );
 
-					List<List<IIngredient>> inputs = parseLines( pre );
+					List<List<IIngredient>> inputs = this.parseLines( pre );
 
 					if ( inputs.size() == 1 && inputs.get( 0 ).size() > 0 && post.size() == 1 )
 					{
 						ICraftHandler ch = new OreRegistration( inputs.get( 0 ), post.get( 0 ) );
-						addCrafting( ch );
+						this.addCrafting( ch );
 					}
 					else
 						throw new RecipeError( "Group must have exactly 1 output, and 1 or more inputs in a single row." );
 				}
 				else
 				{
-					List<String> pre = tokens.subList( 0, split - 1 );
-					List<String> post = tokens.subList( split, tokens.size() );
+					List<String> pre = this.tokens.subList( 0, split - 1 );
+					List<String> post = this.tokens.subList( split, this.tokens.size() );
 
-					List<List<IIngredient>> inputs = parseLines( pre );
-					List<List<IIngredient>> outputs = parseLines( post );
+					List<List<IIngredient>> inputs = this.parseLines( pre );
+					List<List<IIngredient>> outputs = this.parseLines( post );
 
 					ICraftHandler ch = cr.getCraftHandlerFor( operation );
 
 					if ( ch != null )
 					{
 						ch.setup( inputs, outputs );
-						addCrafting( ch );
+						this.addCrafting( ch );
 					}
 					else
 						throw new RecipeError( "Invalid crafting type: " + operation );
@@ -528,57 +528,57 @@ public class RecipeHandler implements IRecipeHandler
 			}
 			else
 			{
-				String operation = tokens.remove( 0 ).toLowerCase();
+				String operation = this.tokens.remove( 0 ).toLowerCase();
 
-				if ( operation.equals( "exceptions" ) && (tokens.get( 0 ).equals( "true" ) || tokens.get( 0 ).equals( "false" )) )
+				if ( operation.equals( "exceptions" ) && (this.tokens.get( 0 ).equals( "true" ) || this.tokens.get( 0 ).equals( "false" )) )
 				{
-					if ( tokens.size() == 1 )
+					if ( this.tokens.size() == 1 )
 					{
-						data.exceptions = tokens.get( 0 ).equals( "true" );
+						this.data.exceptions = this.tokens.get( 0 ).equals( "true" );
 					}
 					else
 						throw new RecipeError( "exceptions must be true or false explicitly." );
 				}
-				else if ( operation.equals( "crash" ) && (tokens.get( 0 ).equals( "true" ) || tokens.get( 0 ).equals( "false" )) )
+				else if ( operation.equals( "crash" ) && (this.tokens.get( 0 ).equals( "true" ) || this.tokens.get( 0 ).equals( "false" )) )
 				{
-					if ( tokens.size() == 1 )
+					if ( this.tokens.size() == 1 )
 					{
-						data.crash = tokens.get( 0 ).equals( "true" );
+						this.data.crash = this.tokens.get( 0 ).equals( "true" );
 					}
 					else
 						throw new RecipeError( "crash must be true or false explicitly." );
 				}
 				else if ( operation.equals( "erroronmissing" ) )
 				{
-					if ( tokens.size() == 1 && (tokens.get( 0 ).equals( "true" ) || tokens.get( 0 ).equals( "false" )) )
+					if ( this.tokens.size() == 1 && (this.tokens.get( 0 ).equals( "true" ) || this.tokens.get( 0 ).equals( "false" )) )
 					{
-						data.errorOnMissing = tokens.get( 0 ).equals( "true" );
+						this.data.errorOnMissing = this.tokens.get( 0 ).equals( "true" );
 					}
 					else
 						throw new RecipeError( "erroronmissing must be true or false explicitly." );
 				}
 				else if ( operation.equals( "import" ) )
 				{
-					if ( tokens.size() == 1 )
-						(new RecipeHandler( this )).parseRecipes( loader, tokens.get( 0 ) );
+					if ( this.tokens.size() == 1 )
+						(new RecipeHandler( this )).parseRecipes( loader, this.tokens.get( 0 ) );
 					else
 						throw new RecipeError( "Import must have exactly 1 input." );
 				}
 				else
-					throw new RecipeError( operation + ": " + tokens.toString() + "; recipe without an output." );
+					throw new RecipeError( operation + ": " + this.tokens.toString() + "; recipe without an output." );
 			}
 
 		}
 		catch (RecipeError e)
 		{
-			AELog.warning( "Recipe Error '" + e.getMessage() + "' near line:" + line + " in " + file + " with: " + tokens.toString() );
-			if ( data.exceptions )
+			AELog.warning( "Recipe Error '" + e.getMessage() + "' near line:" + line + " in " + file + " with: " + this.tokens.toString() );
+			if ( this.data.exceptions )
 				AELog.error( e );
-			if ( data.crash )
+			if ( this.data.crash )
 				throw e;
 		}
 
-		tokens.clear();
+		this.tokens.clear();
 	}
 
 	private List<List<IIngredient>> parseLines(List<String> subList) throws RecipeError
@@ -601,7 +601,7 @@ public class RecipeHandler implements IRecipeHandler
 			}
 			else
 			{
-				if ( isNumber( v ) )
+				if ( this.isNumber( v ) )
 				{
 					if ( hasQty )
 						throw new RecipeError( "Qty found with no item." );
@@ -612,11 +612,11 @@ public class RecipeHandler implements IRecipeHandler
 				{
 					if ( hasQty )
 					{
-						cList.add( findIngredient( v, qty ) );
+						cList.add( this.findIngredient( v, qty ) );
 						hasQty = false;
 					}
 					else
-						cList.add( findIngredient( v, 1 ) );
+						cList.add( this.findIngredient( v, 1 ) );
 				}
 			}
 		}
@@ -629,7 +629,7 @@ public class RecipeHandler implements IRecipeHandler
 
 	private IIngredient findIngredient(String v, int qty) throws RecipeError
 	{
-		GroupIngredient gi = data.groups.get( v );
+		GroupIngredient gi = this.data.groups.get( v );
 
 		if ( gi != null )
 			return gi.copy( qty );

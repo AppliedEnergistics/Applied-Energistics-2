@@ -48,10 +48,10 @@ public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
 
 	public BlockSkyCompass() {
 		super( BlockSkyCompass.class, Material.iron );
-		setFeature( EnumSet.of( AEFeature.MeteoriteCompass ) );
-		setTileEntity( TileSkyCompass.class );
-		isOpaque = isFullSize = false;
-		lightOpacity = 0;
+		this.setFeature( EnumSet.of( AEFeature.MeteoriteCompass ) );
+		this.setTileEntity( TileSkyCompass.class );
+		this.isOpaque = this.isFullSize = false;
+		this.lightOpacity = 0;
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
 	public boolean canPlaceBlockAt(World w, int x, int y, int z)
 	{
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
-			if ( canPlaceAt( w, x, y, z, dir ) )
+			if ( this.canPlaceAt( w, x, y, z, dir ) )
 				return true;
 		return false;
 	}
@@ -91,25 +91,25 @@ public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
 	@Override
 	public boolean isValidOrientation(World w, int x, int y, int z, ForgeDirection forward, ForgeDirection up)
 	{
-		TileSkyCompass sc = getTileEntity( w, x, y, z );
+		TileSkyCompass sc = this.getTileEntity( w, x, y, z );
 		if ( sc != null )
 			return false;
-		return canPlaceAt( w, x, y, z, forward.getOpposite() );
+		return this.canPlaceAt( w, x, y, z, forward.getOpposite() );
 	}
 
 	@Override
 	public void onNeighborBlockChange(World w, int x, int y, int z, Block id)
 	{
-		TileSkyCompass sc = getTileEntity( w, x, y, z );
+		TileSkyCompass sc = this.getTileEntity( w, x, y, z );
 		ForgeDirection up = sc.getForward();
-		if ( !canPlaceAt( w, x, y, z, up.getOpposite() ) )
-			dropTorch( w, x, y, z );
+		if ( !this.canPlaceAt( w, x, y, z, up.getOpposite() ) )
+			this.dropTorch( w, x, y, z );
 	}
 
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
 	{
-		TileSkyCompass tile = getTileEntity( w, x, y, z );
+		TileSkyCompass tile = this.getTileEntity( w, x, y, z );
 		if ( tile != null )
 		{
 			ForgeDirection forward = tile.getForward();

@@ -45,31 +45,31 @@ public class GuiQuartzKnife extends AEBaseGui
 	{
 		super.initGui();
 
-		name = new GuiTextField( fontRendererObj, this.guiLeft + 24, this.guiTop + 32, 79, fontRendererObj.FONT_HEIGHT );
-		name.setEnableBackgroundDrawing( false );
-		name.setMaxStringLength( 32 );
-		name.setTextColor( 0xFFFFFF );
-		name.setVisible( true );
-		name.setFocused( true );
+		this.name = new GuiTextField( this.fontRendererObj, this.guiLeft + 24, this.guiTop + 32, 79, this.fontRendererObj.FONT_HEIGHT );
+		this.name.setEnableBackgroundDrawing( false );
+		this.name.setMaxStringLength( 32 );
+		this.name.setTextColor( 0xFFFFFF );
+		this.name.setVisible( true );
+		this.name.setFocused( true );
 	}
 
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		bindTexture( "guis/quartzknife.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, xSize, ySize );
-		name.drawTextBox();
+		this.bindTexture( "guis/quartzknife.png" );
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		this.name.drawTextBox();
 	}
 
 	@Override
 	protected void keyTyped(char character, int key)
 	{
-		if ( name.textboxKeyTyped( character, key ) )
+		if ( this.name.textboxKeyTyped( character, key ) )
 		{
 			try
 			{
-				String Out = name.getText();
-				((ContainerQuartzKnife) inventorySlots).setName( Out );
+				String Out = this.name.getText();
+				((ContainerQuartzKnife) this.inventorySlots).setName( Out );
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "QuartzKnife.Name", Out ) );
 			}
 			catch (IOException e)
@@ -86,8 +86,8 @@ public class GuiQuartzKnife extends AEBaseGui
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString( getGuiDisplayName( GuiText.QuartzCuttingKnife.getLocal() ), 8, 6, 4210752 );
-		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.QuartzCuttingKnife.getLocal() ), 8, 6, 4210752 );
+		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 
 }

@@ -41,9 +41,9 @@ public class PacketLightning extends AppEngPacket
 
 	// automatic.
 	public PacketLightning(ByteBuf stream) {
-		x = stream.readFloat();
-		y = stream.readFloat();
-		z = stream.readFloat();
+		this.x = stream.readFloat();
+		this.y = stream.readFloat();
+		this.z = stream.readFloat();
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class PacketLightning extends AppEngPacket
 		{
 			if ( Platform.isClient() && AEConfig.instance.enableEffects )
 			{
-				LightningFX fx = new LightningFX( ClientHelper.proxy.getWorld(), x, y, z, 0.0f, 0.0f, 0.0f );
+				LightningFX fx = new LightningFX( ClientHelper.proxy.getWorld(), this.x, this.y, this.z, 0.0f, 0.0f, 0.0f );
 				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 			}
 		}
@@ -72,12 +72,12 @@ public class PacketLightning extends AppEngPacket
 
 		ByteBuf data = Unpooled.buffer();
 
-		data.writeInt( getPacketID() );
+		data.writeInt( this.getPacketID() );
 		data.writeFloat( (float) x );
 		data.writeFloat( (float) y );
 		data.writeFloat( (float) z );
 
-		configureWrite( data );
+		this.configureWrite( data );
 	}
 
 }

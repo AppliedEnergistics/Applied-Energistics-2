@@ -35,24 +35,24 @@ public class ItemSlot
 
 	public void setItemStack(ItemStack is)
 	{
-		aeItemStack = null;
-		itemStack = is;
+		this.aeItemStack = null;
+		this.itemStack = is;
 	}
 
 	public void setAEItemStack(IAEItemStack is)
 	{
-		aeItemStack = is;
-		itemStack = null;
+		this.aeItemStack = is;
+		this.itemStack = null;
 	}
 
 	public ItemStack getItemStack()
 	{
-		return itemStack == null ? (aeItemStack == null ? null : (itemStack = aeItemStack.getItemStack())) : itemStack;
+		return this.itemStack == null ? (this.aeItemStack == null ? null : (this.itemStack = this.aeItemStack.getItemStack())) : this.itemStack;
 	}
 
 	public IAEItemStack getAEItemStack()
 	{
-		return aeItemStack == null ? (itemStack == null ? null : (aeItemStack = AEItemStack.create( itemStack ))) : aeItemStack;
+		return this.aeItemStack == null ? (this.itemStack == null ? null : (this.aeItemStack = AEItemStack.create( this.itemStack ))) : this.aeItemStack;
 	}
 
 }

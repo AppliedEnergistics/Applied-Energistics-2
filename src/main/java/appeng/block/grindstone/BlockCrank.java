@@ -43,10 +43,10 @@ public class BlockCrank extends AEBaseBlock
 
 	public BlockCrank() {
 		super( BlockCrank.class, Material.wood );
-		setFeature( EnumSet.of( AEFeature.GrindStone ) );
-		setTileEntity( TileCrank.class );
-		setLightOpacity( 0 );
-		isFullSize = isOpaque = false;
+		this.setFeature( EnumSet.of( AEFeature.GrindStone ) );
+		this.setTileEntity( TileCrank.class );
+		this.setLightOpacity( 0 );
+		this.isFullSize = this.isOpaque = false;
 	}
 
 	@Override
@@ -54,11 +54,11 @@ public class BlockCrank extends AEBaseBlock
 	{
 		if ( player instanceof FakePlayer || player == null )
 		{
-			dropCrank(w, x, y, z);
+			this.dropCrank(w, x, y, z);
 			return true;
 		}
 
-		AEBaseTile tile = getTileEntity( w, x, y, z );
+		AEBaseTile tile = this.getTileEntity( w, x, y, z );
 		if ( tile instanceof TileCrank )
 		{
 			if ( ((TileCrank) tile).power() )
@@ -86,7 +86,7 @@ public class BlockCrank extends AEBaseBlock
 	private ForgeDirection findCrankable( World world, int x, int y, int z )
 	{
 		for ( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
-			if ( isCrankable( world, x, y, z, dir ) )
+			if ( this.isCrankable( world, x, y, z, dir ) )
 			{
 				return dir;
 			}
@@ -96,14 +96,14 @@ public class BlockCrank extends AEBaseBlock
 	@Override
 	public boolean canPlaceBlockAt( World world, int x, int y, int z )
 	{
-		return findCrankable( world , x, y, z ) != ForgeDirection.UNKNOWN;
+		return this.findCrankable( world , x, y, z ) != ForgeDirection.UNKNOWN;
 	}
 
 	@Override
 	public boolean isValidOrientation( World world, int x, int y, int z, ForgeDirection forward, ForgeDirection up )
 	{
 		TileEntity te = world.getTileEntity( x, y, z );
-		return !(te instanceof TileCrank) || isCrankable( world, x, y, z, up.getOpposite() );
+		return !(te instanceof TileCrank) || this.isCrankable( world, x, y, z, up.getOpposite() );
 	}
 
 	private void dropCrank( World world, int x, int y, int z )
@@ -115,10 +115,10 @@ public class BlockCrank extends AEBaseBlock
 	@Override
 	public void onBlockPlacedBy( World world, int x, int y, int z, EntityLivingBase placer, ItemStack itemStack )
 	{
-		AEBaseTile tile = getTileEntity( world, x, y, z );
+		AEBaseTile tile = this.getTileEntity( world, x, y, z );
 		if ( tile != null )
 		{
-			ForgeDirection mnt = findCrankable( world, x, y, z );
+			ForgeDirection mnt = this.findCrankable( world, x, y, z );
 			ForgeDirection forward = ForgeDirection.UP;
 			if ( mnt == ForgeDirection.UP || mnt == ForgeDirection.DOWN )
 			{
@@ -128,24 +128,24 @@ public class BlockCrank extends AEBaseBlock
 		}
 		else
 		{
-			dropCrank( world, x, y, z );
+			this.dropCrank( world, x, y, z );
 		}
 	}
 
 	@Override
 	public void onNeighborBlockChange (World world, int x, int y, int z, Block block )
 	{
-		AEBaseTile tile = getTileEntity( world, x, y, z );
+		AEBaseTile tile = this.getTileEntity( world, x, y, z );
 		if ( tile != null )
 		{
-			if ( !isCrankable( world, x, y, z, tile.getUp().getOpposite() ) )
+			if ( !this.isCrankable( world, x, y, z, tile.getUp().getOpposite() ) )
 			{
-				dropCrank( world, x, y, z );
+				this.dropCrank( world, x, y, z );
 			}
 		}
 		else
 		{
-			dropCrank( world, x, y, z );
+			this.dropCrank( world, x, y, z );
 		}
 	}
 

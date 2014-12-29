@@ -42,14 +42,14 @@ public class SlotCraftingMatrix extends AppEngSlot
 	public void clearStack()
 	{
 		super.clearStack();
-		c.onCraftMatrixChanged( inventory );
+		this.c.onCraftMatrixChanged( this.inventory );
 	}
 
 	@Override
 	public ItemStack decrStackSize(int par1)
 	{
 		ItemStack is = super.decrStackSize( par1 );
-		c.onCraftMatrixChanged( inventory );
+		this.c.onCraftMatrixChanged( this.inventory );
 		return is;
 	}
 
@@ -57,7 +57,7 @@ public class SlotCraftingMatrix extends AppEngSlot
 	public void putStack(ItemStack par1ItemStack)
 	{
 		super.putStack( par1ItemStack );
-		c.onCraftMatrixChanged( inventory );
+		this.c.onCraftMatrixChanged( this.inventory );
 	}
 
 }

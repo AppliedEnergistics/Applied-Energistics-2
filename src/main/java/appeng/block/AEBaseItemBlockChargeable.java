@@ -88,47 +88,47 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 	@Override
 	public double injectAEPower(ItemStack is, double amt)
 	{
-		double internalCurrentPower = getInternal( is );
-		double internalMaxPower = getMaxEnergyCapacity();
+		double internalCurrentPower = this.getInternal( is );
+		double internalMaxPower = this.getMaxEnergyCapacity();
 		internalCurrentPower += amt;
 		if ( internalCurrentPower > internalMaxPower )
 		{
 			amt = internalCurrentPower - internalMaxPower;
 			internalCurrentPower = internalMaxPower;
-			setInternal( is, internalCurrentPower );
+			this.setInternal( is, internalCurrentPower );
 			return amt;
 		}
 
-		setInternal( is, internalCurrentPower );
+		this.setInternal( is, internalCurrentPower );
 		return 0;
 	}
 
 	@Override
 	public double extractAEPower(ItemStack is, double amt)
 	{
-		double internalCurrentPower = getInternal( is );
+		double internalCurrentPower = this.getInternal( is );
 		if ( internalCurrentPower > amt )
 		{
 			internalCurrentPower -= amt;
-			setInternal( is, internalCurrentPower );
+			this.setInternal( is, internalCurrentPower );
 			return amt;
 		}
 
 		amt = internalCurrentPower;
-		setInternal( is, 0 );
+		this.setInternal( is, 0 );
 		return amt;
 	}
 
 	@Override
 	public double getAEMaxPower(ItemStack is)
 	{
-		return getMaxEnergyCapacity();
+		return this.getMaxEnergyCapacity();
 	}
 
 	@Override
 	public double getAECurrentPower(ItemStack is)
 	{
-		return getInternal( is );
+		return this.getInternal( is );
 	}
 
 	@Override

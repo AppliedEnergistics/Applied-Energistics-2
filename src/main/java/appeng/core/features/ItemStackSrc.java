@@ -30,25 +30,25 @@ public class ItemStackSrc implements IStackSrc
 	public final int damage;
 
 	public ItemStackSrc(Item i, int dmg) {
-		block = null;
-		item = i;
-		damage = dmg;
+		this.block = null;
+		this.item = i;
+		this.damage = dmg;
 	}
 
 	public ItemStackSrc(Block b, int dmg) {
-		item = null;
-		block = b;
-		damage = dmg;
+		this.item = null;
+		this.block = b;
+		this.damage = dmg;
 	}
 
 	@Override
 	public ItemStack stack(int i)
 	{
-		if ( block != null )
-			return new ItemStack( block, i, damage );
+		if ( this.block != null )
+			return new ItemStack( this.block, i, this.damage );
 
-		if ( item != null )
-			return new ItemStack( item, i, damage );
+		if ( this.item != null )
+			return new ItemStack( this.item, i, this.damage );
 
 		return null;
 	}
@@ -56,12 +56,12 @@ public class ItemStackSrc implements IStackSrc
 	@Override
 	public Item getItem()
 	{
-		return item;
+		return this.item;
 	}
 
 	@Override
 	public int getDamage()
 	{
-		return damage;
+		return this.damage;
 	}
 }

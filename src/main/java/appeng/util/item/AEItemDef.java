@@ -59,19 +59,19 @@ public class AEItemDef
 	static final AESharedNBT highTag = new AESharedNBT( Integer.MAX_VALUE );
 
 	public AEItemDef(Item it) {
-		item = it;
-		itemID = System.identityHashCode( item );
+		this.item = it;
+		this.itemID = System.identityHashCode( this.item );
 	}
 
 	public AEItemDef copy()
 	{
-		AEItemDef t = new AEItemDef( item );
-		t.def = def;
-		t.damageValue = damageValue;
-		t.displayDamage = displayDamage;
-		t.maxDamage = maxDamage;
-		t.tagCompound = tagCompound;
-		t.isOre = isOre;
+		AEItemDef t = new AEItemDef( this.item );
+		t.def = this.def;
+		t.damageValue = this.damageValue;
+		t.displayDamage = this.displayDamage;
+		t.maxDamage = this.maxDamage;
+		t.tagCompound = this.tagCompound;
+		t.isOre = this.isOre;
 		return t;
 	}
 
@@ -80,10 +80,10 @@ public class AEItemDef
 	{
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
+		if ( this.getClass() != obj.getClass() )
 			return false;
 		AEItemDef other = (AEItemDef) obj;
-		return other.damageValue == damageValue && other.item == item && tagCompound == other.tagCompound;
+		return other.damageValue == this.damageValue && other.item == this.item && this.tagCompound == other.tagCompound;
 	}
 
 	public int getDamageValueHack(ItemStack is)
@@ -94,15 +94,15 @@ public class AEItemDef
 	public boolean isItem(ItemStack otherStack)
 	{
 		// hackery!
-		int dmg = getDamageValueHack( otherStack );
+		int dmg = this.getDamageValueHack( otherStack );
 
-		if ( item == otherStack.getItem() && dmg == damageValue )
+		if ( this.item == otherStack.getItem() && dmg == this.damageValue )
 		{
-			if ( (tagCompound != null) == otherStack.hasTagCompound() )
+			if ( (this.tagCompound != null) == otherStack.hasTagCompound() )
 				return true;
 
-			if ( tagCompound != null && otherStack.hasTagCompound() )
-				return Platform.NBTEqualityTest( tagCompound, otherStack.getTagCompound() );
+			if ( this.tagCompound != null && otherStack.hasTagCompound() )
+				return Platform.NBTEqualityTest( this.tagCompound, otherStack.getTagCompound() );
 
 			return true;
 		}
@@ -111,7 +111,7 @@ public class AEItemDef
 
 	public void reHash()
 	{
-		def = itemID << Platform.DEF_OFFSET | damageValue;
-		myHash = def ^ (tagCompound == null ? 0 : System.identityHashCode( tagCompound ));
+		this.def = this.itemID << Platform.DEF_OFFSET | this.damageValue;
+		this.myHash = this.def ^ (this.tagCompound == null ? 0 : System.identityHashCode( this.tagCompound ));
 	}
 }

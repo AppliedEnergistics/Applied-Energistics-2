@@ -49,21 +49,21 @@ public class BlockCraftingUnit extends AEBaseBlock
 	{
 		super( childClass, Material.iron );
 
-		hasSubtypes = true;
-		setFeature( EnumSet.of( AEFeature.CraftingCPU ) );
+		this.hasSubtypes = true;
+		this.setFeature( EnumSet.of( AEFeature.CraftingCPU ) );
 	}
 
 	public BlockCraftingUnit()
 	{
 		this( BlockCraftingUnit.class );
 
-		setTileEntity( TileCraftingTile.class );
+		this.setTileEntity( TileCraftingTile.class );
 	}
 
 	@Override
 	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
 	{
-		TileCraftingTile tg = getTileEntity( w, x, y, z );
+		TileCraftingTile tg = this.getTileEntity( w, x, y, z );
 		if ( tg != null && !p.isSneaking() && tg.isFormed() && tg.isActive() )
 		{
 			if ( Platform.isClient() )
@@ -80,7 +80,7 @@ public class BlockCraftingUnit extends AEBaseBlock
 	public int getDamageValue(World w, int x, int y, int z)
 	{
 		int meta = w.getBlockMetadata( x, y, z );
-		return damageDropped( meta );
+		return this.damageDropped( meta );
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class BlockCraftingUnit extends AEBaseBlock
 		if ( is.getItemDamage() == 1 )
 			return "tile.appliedenergistics2.BlockCraftingAccelerator";
 
-		return getItemUnlocalizedName( is );
+		return this.getItemUnlocalizedName( is );
 	}
 
 	protected String getItemUnlocalizedName(ItemStack is)
@@ -106,9 +106,9 @@ public class BlockCraftingUnit extends AEBaseBlock
 	@Override
 	public void setRenderStateByMeta(int itemDamage)
 	{
-		IIcon front = getIcon( ForgeDirection.SOUTH.ordinal(), itemDamage );
-		IIcon other = getIcon( ForgeDirection.NORTH.ordinal(), itemDamage );
-		getRendererInstance().setTemporaryRenderIcons( other, other, front, other, other, other );
+		IIcon front = this.getIcon( ForgeDirection.SOUTH.ordinal(), itemDamage );
+		IIcon other = this.getIcon( ForgeDirection.NORTH.ordinal(), itemDamage );
+		this.getRendererInstance().setTemporaryRenderIcons( other, other, front, other, other, other );
 	}
 
 	@Override
@@ -137,7 +137,7 @@ public class BlockCraftingUnit extends AEBaseBlock
 	@Override
 	public void breakBlock(World w, int x, int y, int z, Block a, int b)
 	{
-		TileCraftingTile cp = getTileEntity( w, x, y, z );
+		TileCraftingTile cp = this.getTileEntity( w, x, y, z );
 		if ( cp != null )
 			cp.breakCluster();
 
@@ -147,7 +147,7 @@ public class BlockCraftingUnit extends AEBaseBlock
 	@Override
 	public void onNeighborBlockChange(World w, int x, int y, int z, Block junk)
 	{
-		TileCraftingTile cp = getTileEntity( w, x, y, z );
+		TileCraftingTile cp = this.getTileEntity( w, x, y, z );
 		if ( cp != null )
 			cp.updateMultiBlock();
 	}

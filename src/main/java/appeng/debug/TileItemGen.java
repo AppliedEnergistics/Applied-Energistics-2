@@ -67,7 +67,7 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	@Override
 	public ItemStack getStackInSlot(int i)
 	{
-		return getRandomItem();
+		return this.getRandomItem();
 	}
 
 	private ItemStack getRandomItem()

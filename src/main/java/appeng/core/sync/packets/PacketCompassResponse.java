@@ -37,18 +37,18 @@ public class PacketCompassResponse extends AppEngPacket
 
 	// automatic.
 	public PacketCompassResponse(ByteBuf stream) {
-		attunement = stream.readLong();
-		cx = stream.readInt();
-		cz = stream.readInt();
-		cdy = stream.readInt();
+		this.attunement = stream.readLong();
+		this.cx = stream.readInt();
+		this.cz = stream.readInt();
+		this.cdy = stream.readInt();
 
-		cr = new CompassResult( stream.readBoolean(), stream.readBoolean(), stream.readDouble() );
+		this.cr = new CompassResult( stream.readBoolean(), stream.readBoolean(), stream.readDouble() );
 	}
 
 	@Override
 	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
 	{
-		CompassManager.instance.postResult( attunement, cx << 4, cdy << 5, cz << 4, cr );
+		CompassManager.instance.postResult( this.attunement, this.cx << 4, this.cdy << 5, this.cz << 4, this.cr );
 	}
 
 	// api
@@ -56,7 +56,7 @@ public class PacketCompassResponse extends AppEngPacket
 
 		ByteBuf data = Unpooled.buffer();
 
-		data.writeInt( getPacketID() );
+		data.writeInt( this.getPacketID() );
 		data.writeLong( this.attunement = req.attunement );
 		data.writeInt( this.cx = req.cx );
 		data.writeInt( this.cz = req.cz );
@@ -66,7 +66,7 @@ public class PacketCompassResponse extends AppEngPacket
 		data.writeBoolean( spin );
 		data.writeDouble( radians );
 
-		configureWrite( data );
+		this.configureWrite( data );
 
 	}
 }

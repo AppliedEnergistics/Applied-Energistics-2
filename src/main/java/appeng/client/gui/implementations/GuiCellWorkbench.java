@@ -54,37 +54,37 @@ public class GuiCellWorkbench extends GuiUpgradeable
 
 	public GuiCellWorkbench(InventoryPlayer inventoryPlayer, TileCellWorkbench te) {
 		super( new ContainerCellWorkbench( inventoryPlayer, te ) );
-		workbench = (ContainerCellWorkbench) inventorySlots;
-		ySize = 251;
-		tcw = te;
+		this.workbench = (ContainerCellWorkbench) this.inventorySlots;
+		this.ySize = 251;
+		this.tcw = te;
 	}
 
 	@Override
 	protected boolean drawUpgrades()
 	{
-		return workbench.availableUpgrades() > 0;
+		return this.workbench.availableUpgrades() > 0;
 	}
 
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		handleButtonVisibility();
+		this.handleButtonVisibility();
 
-		bindTexture( getBackground() );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, ySize );
-		if ( drawUpgrades() )
+		this.bindTexture( this.getBackground() );
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, this.ySize );
+		if ( this.drawUpgrades() )
 		{
-			if ( workbench.availableUpgrades() <= 8 )
+			if ( this.workbench.availableUpgrades() <= 8 )
 			{
-				this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + workbench.availableUpgrades() * 18 );
-				this.drawTexturedModalRect( offsetX + 177, offsetY + (7 + (workbench.availableUpgrades()) * 18), 177, 151, 35, 7 );
+				this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + this.workbench.availableUpgrades() * 18 );
+				this.drawTexturedModalRect( offsetX + 177, offsetY + (7 + (this.workbench.availableUpgrades()) * 18), 177, 151, 35, 7 );
 			}
-			else if ( workbench.availableUpgrades() <= 16 )
+			else if ( this.workbench.availableUpgrades() <= 16 )
 			{
 				this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18 );
 				this.drawTexturedModalRect( offsetX + 177, offsetY + (7 + (8) * 18), 177, 151, 35, 7 );
 
-				int dx = workbench.availableUpgrades() - 8;
+				int dx = this.workbench.availableUpgrades() - 8;
 				this.drawTexturedModalRect( offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + dx * 18 );
 				if ( dx == 8 )
 					this.drawTexturedModalRect( offsetX + 177 + 27, offsetY + (7 + (dx) * 18), 186, 151, 35 - 8, 7 );
@@ -100,7 +100,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 				this.drawTexturedModalRect( offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + 8 * 18 );
 				this.drawTexturedModalRect( offsetX + 177 + 27, offsetY + (7 + (8) * 18), 186, 151, 35 - 8, 7 );
 
-				int dx = workbench.availableUpgrades() - 16;
+				int dx = this.workbench.availableUpgrades() - 16;
 				this.drawTexturedModalRect( offsetX + 177 + 27 + 18, offsetY, 186, 0, 35 - 8, 7 + dx * 18 );
 				if ( dx == 8 )
 					this.drawTexturedModalRect( offsetX + 177 + 27 + 18, offsetY + (7 + (dx) * 18), 186, 151, 35 - 8, 7 );
@@ -108,8 +108,8 @@ public class GuiCellWorkbench extends GuiUpgradeable
 					this.drawTexturedModalRect( offsetX + 177 + 27 + 18 + 4, offsetY + (7 + (dx) * 18), 186 + 4, 151, 35 - 8, 7 );
 			}
 		}
-		if ( hasToolbox() )
-			this.drawTexturedModalRect( offsetX + 178, offsetY + ySize - 90, 178, 161, 68, 68 );
+		if ( this.hasToolbox() )
+			this.drawTexturedModalRect( offsetX + 178, offsetY + this.ySize - 90, 178, 161, 68, 68 );
 	}
 
 	@Override
@@ -117,23 +117,23 @@ public class GuiCellWorkbench extends GuiUpgradeable
 	{
 		try
 		{
-			if ( btn == copyMode )
+			if ( btn == this.copyMode )
 			{
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "CellWorkbench.Action", "CopyMode" ) );
 			}
-			else if ( btn == partition )
+			else if ( btn == this.partition )
 			{
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "CellWorkbench.Action", "Partition" ) );
 			}
-			else if ( btn == clear )
+			else if ( btn == this.clear )
 			{
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "CellWorkbench.Action", "Clear" ) );
 			}
-			else if ( btn == fuzzyMode )
+			else if ( btn == this.fuzzyMode )
 			{
 				boolean backwards = Mouse.isButtonDown( 1 );
 
-				FuzzyMode fz = (FuzzyMode) fuzzyMode.getCurrentValue();
+				FuzzyMode fz = (FuzzyMode) this.fuzzyMode.getCurrentValue();
 				fz = Platform.rotateEnum( fz, backwards, Settings.FUZZY_MODE.getPossibleValues() );
 
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "CellWorkbench.Fuzzy", fz.name() ) );
@@ -149,24 +149,24 @@ public class GuiCellWorkbench extends GuiUpgradeable
 	@Override
 	protected void addButtons()
 	{
-		clear = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.ACTIONS, ActionItems.CLOSE );
-		partition = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.ACTIONS, ActionItems.WRENCH );
-		copyMode = new GuiToggleButton( this.guiLeft - 18, guiTop + 48, 11 * 16 + 5, 12 * 16 + 5, GuiText.CopyMode.getLocal(), GuiText.CopyModeDesc.getLocal() );
-		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 68, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		this.clear = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.ACTIONS, ActionItems.CLOSE );
+		this.partition = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.ACTIONS, ActionItems.WRENCH );
+		this.copyMode = new GuiToggleButton( this.guiLeft - 18, this.guiTop + 48, 11 * 16 + 5, 12 * 16 + 5, GuiText.CopyMode.getLocal(), GuiText.CopyModeDesc.getLocal() );
+		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 68, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 
-		buttonList.add( fuzzyMode );
-		buttonList.add( partition );
-		buttonList.add( clear );
-		buttonList.add( copyMode );
+		this.buttonList.add( this.fuzzyMode );
+		this.buttonList.add( this.partition );
+		this.buttonList.add( this.clear );
+		this.buttonList.add( this.copyMode );
 	}
 
 	@Override
 	protected void handleButtonVisibility()
 	{
-		copyMode.setState( workbench.copyMode == CopyMode.CLEAR_ON_REMOVE );
+		this.copyMode.setState( this.workbench.copyMode == CopyMode.CLEAR_ON_REMOVE );
 
 		boolean hasFuzzy = false;
-		IInventory inv = workbench.getCellUpgradeInventory();
+		IInventory inv = this.workbench.getCellUpgradeInventory();
 		for (int x = 0; x < inv.getSizeInventory(); x++)
 		{
 			ItemStack is = inv.getStackInSlot( x );
@@ -176,7 +176,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 					hasFuzzy = true;
 			}
 		}
-		fuzzyMode.setVisibility( hasFuzzy );
+		this.fuzzyMode.setVisibility( hasFuzzy );
 	}
 
 	@Override

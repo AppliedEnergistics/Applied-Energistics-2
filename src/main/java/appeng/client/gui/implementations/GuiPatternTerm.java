@@ -50,19 +50,19 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	public void initGui()
 	{
 		super.initGui();
-		buttonList.add( tabCraftButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 177, new ItemStack( Blocks.crafting_table ),
+		this.buttonList.add( this.tabCraftButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 177, new ItemStack( Blocks.crafting_table ),
 				GuiText.CraftingPattern.getLocal(), itemRender ) );
-		buttonList.add( tabProcessButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 177, new ItemStack( Blocks.furnace ),
+		this.buttonList.add( this.tabProcessButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 177, new ItemStack( Blocks.furnace ),
 				GuiText.ProcessingPattern.getLocal(), itemRender ) );
 
 		// buttonList.add( substitutionsBtn = new GuiImgButton( this.guiLeft + 84, this.guiTop + this.ySize - 163,
 		// Settings.ACTIONS, ActionItems.SUBSTITUTION ) );
 		// substitutionsBtn.halfSize = true;
 
-		buttonList.add( clearBtn = new GuiImgButton( this.guiLeft + 74, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.CLOSE ) );
-		clearBtn.halfSize = true;
+		this.buttonList.add( this.clearBtn = new GuiImgButton( this.guiLeft + 74, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.CLOSE ) );
+		this.clearBtn.halfSize = true;
 
-		buttonList.add( encodeBtn = new GuiImgButton( this.guiLeft + 147, this.guiTop + this.ySize - 142, Settings.ACTIONS, ActionItems.ENCODE ) );
+		this.buttonList.add( this.encodeBtn = new GuiImgButton( this.guiLeft + 147, this.guiTop + this.ySize - 142, Settings.ACTIONS, ActionItems.ENCODE ) );
 	}
 
 	@Override
@@ -73,17 +73,17 @@ public class GuiPatternTerm extends GuiMEMonitorable
 		try
 		{
 
-			if ( tabCraftButton == btn || tabProcessButton == btn )
+			if ( this.tabCraftButton == btn || this.tabProcessButton == btn )
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "PatternTerminal.CraftMode", tabProcessButton == btn ? "1" : "0" ) );
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "PatternTerminal.CraftMode", this.tabProcessButton == btn ? "1" : "0" ) );
 			}
 
-			if ( encodeBtn == btn )
+			if ( this.encodeBtn == btn )
 			{
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "PatternTerminal.Encode", "1" ) );
 			}
 
-			if ( clearBtn == btn )
+			if ( this.clearBtn == btn )
 			{
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "PatternTerminal.Clear", "1" ) );
 			}
@@ -105,21 +105,21 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	protected void repositionSlot(AppEngSlot s)
 	{
 		if ( s.isPlayerSide() )
-			s.yDisplayPosition = s.defY + ySize - 78 - 5;
+			s.yDisplayPosition = s.defY + this.ySize - 78 - 5;
 		else
-			s.yDisplayPosition = s.defY + ySize - 78 - 3;
+			s.yDisplayPosition = s.defY + this.ySize - 78 - 3;
 	}
 
 	public GuiPatternTerm(InventoryPlayer inventoryPlayer, ITerminalHost te) {
 		super( inventoryPlayer, te, new ContainerPatternTerm( inventoryPlayer, te ) );
-		container = (ContainerPatternTerm) this.inventorySlots;
-		reservedSpace = 81;
+		this.container = (ContainerPatternTerm) this.inventorySlots;
+		this.reservedSpace = 81;
 	}
 
 	@Override
 	protected String getBackground()
 	{
-		if ( container.craftingMode )
+		if ( this.container.craftingMode )
 			return "guis/pattern.png";
 		return "guis/pattern2.png";
 	}
@@ -127,19 +127,19 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		if ( !container.craftingMode )
+		if ( !this.container.craftingMode )
 		{
-			tabCraftButton.visible = false;
-			tabProcessButton.visible = true;
+			this.tabCraftButton.visible = false;
+			this.tabProcessButton.visible = true;
 		}
 		else
 		{
-			tabCraftButton.visible = true;
-			tabProcessButton.visible = false;
+			this.tabCraftButton.visible = true;
+			this.tabProcessButton.visible = false;
 		}
 
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
-		fontRendererObj.drawString( GuiText.PatternTerminal.getLocal(), 8, ySize - 96 + 2 - reservedSpace, 4210752 );
+		this.fontRendererObj.drawString( GuiText.PatternTerminal.getLocal(), 8, this.ySize - 96 + 2 - this.reservedSpace, 4210752 );
 	}
 
 }

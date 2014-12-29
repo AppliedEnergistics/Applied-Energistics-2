@@ -54,34 +54,34 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 		this.spatialIOPort = spatialIOPort;
 
 		if ( Platform.isServer() )
-			network = spatialIOPort.getGridNode( ForgeDirection.UNKNOWN ).getGrid();
+			this.network = spatialIOPort.getGridNode( ForgeDirection.UNKNOWN ).getGrid();
 
-		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS, spatialIOPort, 0, 52, 48, invPlayer ) );
-		addSlotToContainer( new SlotOutput( spatialIOPort, 1, 113, 48, SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS.IIcon ) );
+		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS, spatialIOPort, 0, 52, 48, this.invPlayer ) );
+		this.addSlotToContainer( new SlotOutput( spatialIOPort, 1, 113, 48, SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS.IIcon ) );
 
-		bindPlayerInventory( ip, 0, 197 - /* height of player inventory */82 );
+		this.bindPlayerInventory( ip, 0, 197 - /* height of player inventory */82 );
 	}
 
 	@Override
 	public void detectAndSendChanges()
 	{
-		verifyPermissions( SecurityPermissions.BUILD, false );
+		this.verifyPermissions( SecurityPermissions.BUILD, false );
 
 		if ( Platform.isServer() )
 		{
-			delay++;
-			if ( delay > 15 && network != null )
+			this.delay++;
+			if ( this.delay > 15 && this.network != null )
 			{
-				delay = 0;
+				this.delay = 0;
 
-				IEnergyGrid eg = network.getCache( IEnergyGrid.class );
-				ISpatialCache sc = network.getCache( ISpatialCache.class );
+				IEnergyGrid eg = this.network.getCache( IEnergyGrid.class );
+				ISpatialCache sc = this.network.getCache( ISpatialCache.class );
 				if ( eg != null )
 				{
-					currentPower = (long) (100.0 * eg.getStoredPower());
-					maxPower = (long) (100.0 * eg.getMaxStoredPower());
-					reqPower = (long) (100.0 * sc.requiredPower());
-					eff = (long) (100.0f * sc.currentEfficiency());
+					this.currentPower = (long) (100.0 * eg.getStoredPower());
+					this.maxPower = (long) (100.0 * eg.getMaxStoredPower());
+					this.reqPower = (long) (100.0 * sc.requiredPower());
+					this.eff = (long) (100.0f * sc.currentEfficiency());
 				}
 			}
 		}

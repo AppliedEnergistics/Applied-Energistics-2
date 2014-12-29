@@ -91,8 +91,8 @@ public class ItemSorters
 			AEItemStack op2 = (AEItemStack) o2;
 
 			if ( Direction == SortDir.ASCENDING )
-				return secondarySort( op2.getModID().compareToIgnoreCase( op1.getModID() ), o1, o2 );
-			return secondarySort( op1.getModID().compareToIgnoreCase( op2.getModID() ), o2, o1 );
+				return this.secondarySort( op2.getModID().compareToIgnoreCase( op1.getModID() ), o1, o2 );
+			return this.secondarySort( op1.getModID().compareToIgnoreCase( op2.getModID() ), o2, o1 );
 		}
 
 		private int secondarySort(int compareToIgnoreCase, IAEItemStack o1, IAEItemStack o2)

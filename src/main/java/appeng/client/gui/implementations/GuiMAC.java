@@ -39,30 +39,30 @@ public class GuiMAC extends GuiUpgradeable
 	{
 		super.initGui();
 
-		pb = new GuiProgressBar( container, "guis/mac.png", 139, 36, 148, 201, 6, 18, Direction.VERTICAL );
-		this.buttonList.add( pb );
+		this.pb = new GuiProgressBar( this.container, "guis/mac.png", 139, 36, 148, 201, 6, 18, Direction.VERTICAL );
+		this.buttonList.add( this.pb );
 	}
 
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		pb.xPosition = 148 + guiLeft;
-		pb.yPosition = 48 + guiTop;
+		this.pb.xPosition = 148 + this.guiLeft;
+		this.pb.yPosition = 48 + this.guiTop;
 		super.drawBG( offsetX, offsetY, mouseX, mouseY );
 	}
 
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		pb.setFullMsg( container.getCurrentProgress() + "%" );
+		this.pb.setFullMsg( this.container.getCurrentProgress() + "%" );
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
 	}
 
 	@Override
 	protected void addButtons()
 	{
-		redstoneMode = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
-		buttonList.add( redstoneMode );
+		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
+		this.buttonList.add( this.redstoneMode );
 	}
 
 	@Override

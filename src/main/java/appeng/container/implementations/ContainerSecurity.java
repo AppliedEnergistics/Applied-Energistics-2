@@ -54,14 +54,14 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 	public ContainerSecurity(InventoryPlayer ip, ITerminalHost monitorable) {
 		super( ip, monitorable, false );
 
-		securityBox = (TileSecurity) monitorable;
+		this.securityBox = (TileSecurity) monitorable;
 
-		addSlotToContainer( configSlot = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.BIOMETRIC_CARD, securityBox.configSlot, 0, 37, -33, ip ) );
+		this.addSlotToContainer( this.configSlot = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.BIOMETRIC_CARD, this.securityBox.configSlot, 0, 37, -33, ip ) );
 
-		addSlotToContainer( wirelessIn = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODABLE_ITEM, wirelessEncoder, 0, 212, 10, ip ) );
-		addSlotToContainer( wirelessOut = new SlotOutput( wirelessEncoder, 1, 212, 68, -1 ) );
+		this.addSlotToContainer( this.wirelessIn = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODABLE_ITEM, this.wirelessEncoder, 0, 212, 10, ip ) );
+		this.addSlotToContainer( this.wirelessOut = new SlotOutput( this.wirelessEncoder, 1, 212, 68, -1 ) );
 
-		bindPlayerInventory( ip, 0, 0 );
+		this.bindPlayerInventory( ip, 0, 0 );
 	}
 
 	@GuiSync(0)
@@ -72,11 +72,11 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 	{
 		super.onContainerClosed( player );
 
-		if ( wirelessIn.getHasStack() )
-			player.dropPlayerItemWithRandomChoice( wirelessIn.getStack(), false );
+		if ( this.wirelessIn.getHasStack() )
+			player.dropPlayerItemWithRandomChoice( this.wirelessIn.getStack(), false );
 
-		if ( wirelessOut.getHasStack() )
-			player.dropPlayerItemWithRandomChoice( wirelessOut.getStack(), false );
+		if ( this.wirelessOut.getHasStack() )
+			player.dropPlayerItemWithRandomChoice( this.wirelessOut.getStack(), false );
 	}
 
 	public void toggleSetting(String value, EntityPlayer player)
@@ -85,7 +85,7 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 		{
 			SecurityPermissions permission = SecurityPermissions.valueOf( value );
 
-			ItemStack a = configSlot.getStack();
+			ItemStack a = this.configSlot.getStack();
 			if ( a != null && a.getItem() instanceof IBiometricCard )
 			{
 				IBiometricCard bc = (IBiometricCard) a.getItem();
@@ -104,20 +104,20 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 	@Override
 	public void detectAndSendChanges()
 	{
-		verifyPermissions( SecurityPermissions.SECURITY, false );
+		this.verifyPermissions( SecurityPermissions.SECURITY, false );
 
-		security = 0;
+		this.security = 0;
 
-		ItemStack a = configSlot.getStack();
+		ItemStack a = this.configSlot.getStack();
 		if ( a != null && a.getItem() instanceof IBiometricCard )
 		{
 			IBiometricCard bc = (IBiometricCard) a.getItem();
 
 			for (SecurityPermissions sp : bc.getPermissions( a ))
-				security = security | (1 << sp.ordinal());
+				this.security = this.security | (1 << sp.ordinal());
 		}
 
-		updatePowerStatus();
+		this.updatePowerStatus();
 
 		super.detectAndSendChanges();
 	}
@@ -131,11 +131,11 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 	@Override
 	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
 	{
-		if ( !wirelessOut.getHasStack() )
+		if ( !this.wirelessOut.getHasStack() )
 		{
-			if ( wirelessIn.getHasStack() )
+			if ( this.wirelessIn.getHasStack() )
 			{
-				ItemStack term = wirelessIn.getStack().copy();
+				ItemStack term = this.wirelessIn.getStack().copy();
 				INetworkEncodable networkEncodable = null;
 
 				if ( term.getItem() instanceof INetworkEncodable )
@@ -147,17 +147,17 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 
 				if ( networkEncodable != null )
 				{
-					networkEncodable.setEncryptionKey( term, String.valueOf( securityBox.securityKey ), "" );
+					networkEncodable.setEncryptionKey( term, String.valueOf( this.securityBox.securityKey ), "" );
 
-					wirelessIn.putStack( null );
-					wirelessOut.putStack( term );
+					this.wirelessIn.putStack( null );
+					this.wirelessOut.putStack( term );
 
 					// update the two slots in question...
 					for (Object crafter : this.crafters)
 					{
 						ICrafting icrafting = (ICrafting) crafter;
-						icrafting.sendSlotContents( this, wirelessIn.slotNumber, wirelessIn.getStack() );
-						icrafting.sendSlotContents( this, wirelessOut.slotNumber, wirelessOut.getStack() );
+						icrafting.sendSlotContents( this, this.wirelessIn.slotNumber, this.wirelessIn.getStack() );
+						icrafting.sendSlotContents( this, this.wirelessOut.slotNumber, this.wirelessOut.getStack() );
 					}
 				}
 

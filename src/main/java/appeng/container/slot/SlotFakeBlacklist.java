@@ -42,9 +42,9 @@ public class SlotFakeBlacklist extends SlotFakeTypeOnly
 	@Override
 	public int getIcon()
 	{
-		if ( getHasStack() )
+		if ( this.getHasStack() )
 		{
-			return getStack().stackSize > 0 ? 16 + 14 : 14;
+			return this.getStack().stackSize > 0 ? 16 + 14 : 14;
 		}
 		return -1;
 	}

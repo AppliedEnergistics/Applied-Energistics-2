@@ -107,7 +107,7 @@ public enum ExtraBlockTextures
 
 	public String getName()
 	{
-		return name;
+		return this.name;
 	}
 
 	private ExtraBlockTextures(String name) {
@@ -116,12 +116,12 @@ public enum ExtraBlockTextures
 
 	public IIcon getIcon()
 	{
-		return IIcon;
+		return this.IIcon;
 	}
 
 	public void registerIcon(TextureMap map)
 	{
-		IIcon = map.registerIcon( "appliedenergistics2:" + name );
+		this.IIcon = map.registerIcon( "appliedenergistics2:" + this.name );
 	}
 
 	@SideOnly(Side.CLIENT)

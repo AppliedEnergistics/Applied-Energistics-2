@@ -38,8 +38,8 @@ public class BlockUpdate implements Callable
 	@Override
 	public Object call() throws Exception
 	{
-		if ( w.blockExists( x, y, z ) )
-			w.notifyBlocksOfNeighborChange( x, y, z, Platform.air );
+		if ( this.w.blockExists( this.x, this.y, this.z ) )
+			this.w.notifyBlocksOfNeighborChange( this.x, this.y, this.z, Platform.air );
 
 		return true;
 	}

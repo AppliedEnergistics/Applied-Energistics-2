@@ -40,54 +40,54 @@ public class TickTracker implements Comparable<TickTracker>
 	public int current_rate;
 
 	public TickTracker(TickingRequest req, IGridNode node, IGridTickable gt, long currentTick, TickManagerCache tickManagerCache) {
-		request = req;
+		this.request = req;
 		this.gt = gt;
 		this.node = node;
-		current_rate = (req.minTickRate + req.maxTickRate) / 2;
-		lastTick = currentTick;
-		host = tickManagerCache;
+		this.current_rate = (req.minTickRate + req.maxTickRate) / 2;
+		this.lastTick = currentTick;
+		this.host = tickManagerCache;
 	}
 
 	public long getAvgNanos()
 	{
-		return (LastFiveTicksTime / 5);
+		return (this.LastFiveTicksTime / 5);
 	}
 
 	public void setRate(int rate)
 	{
-		current_rate = rate;
+		this.current_rate = rate;
 
-		if ( current_rate < request.minTickRate )
-			current_rate = request.minTickRate;
+		if ( this.current_rate < this.request.minTickRate )
+			this.current_rate = this.request.minTickRate;
 
-		if ( current_rate > request.maxTickRate )
-			current_rate = request.maxTickRate;
+		if ( this.current_rate > this.request.maxTickRate )
+			this.current_rate = this.request.maxTickRate;
 	}
 
 	@Override
 	public int compareTo(TickTracker t)
 	{
-		int nextTick = (int) ((lastTick - host.getCurrentTick()) + current_rate);
-		int ts_nextTick = (int) ((t.lastTick - host.getCurrentTick()) + t.current_rate);
+		int nextTick = (int) ((this.lastTick - this.host.getCurrentTick()) + this.current_rate);
+		int ts_nextTick = (int) ((t.lastTick - this.host.getCurrentTick()) + t.current_rate);
 		return nextTick - ts_nextTick;
 	}
 
 	public void addEntityCrashInfo(CrashReportCategory crashreportcategory)
 	{
-		if ( gt instanceof AEBasePart )
+		if ( this.gt instanceof AEBasePart )
 		{
-			AEBasePart part = (AEBasePart)gt;
+			AEBasePart part = (AEBasePart)this.gt;
 			part.addEntityCrashInfo( crashreportcategory );
 		}
 		
-		crashreportcategory.addCrashSection( "CurrentTickRate", current_rate );
-		crashreportcategory.addCrashSection( "MinTickRate", request.minTickRate );
-		crashreportcategory.addCrashSection( "MaxTickRate", request.maxTickRate );
-		crashreportcategory.addCrashSection( "MachineType", gt.getClass().getName() );
-		crashreportcategory.addCrashSection( "GridBlockType", node.getGridBlock().getClass().getName() );
-		crashreportcategory.addCrashSection( "ConnectedSides", node.getConnectedSides() );
+		crashreportcategory.addCrashSection( "CurrentTickRate", this.current_rate );
+		crashreportcategory.addCrashSection( "MinTickRate", this.request.minTickRate );
+		crashreportcategory.addCrashSection( "MaxTickRate", this.request.maxTickRate );
+		crashreportcategory.addCrashSection( "MachineType", this.gt.getClass().getName() );
+		crashreportcategory.addCrashSection( "GridBlockType", this.node.getGridBlock().getClass().getName() );
+		crashreportcategory.addCrashSection( "ConnectedSides", this.node.getConnectedSides() );
 		
-		DimensionalCoord dc = node.getGridBlock().getLocation();
+		DimensionalCoord dc = this.node.getGridBlock().getLocation();
 		if ( dc != null )
 			crashreportcategory.addCrashSection( "Location", dc );
 	}

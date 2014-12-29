@@ -68,7 +68,7 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadCraftingRecipes(String outputId, Object... results)
 	{
-		if ( (outputId.equals( "crafting" )) && (getClass() == NEIAEShapedRecipeHandler.class) )
+		if ( (outputId.equals( "crafting" )) && (this.getClass() == NEIAEShapedRecipeHandler.class) )
 		{
 			List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
 			for (IRecipe recipe : recipes)
@@ -79,7 +79,7 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 					{
 						CachedShapedRecipe cachedRecipe = new CachedShapedRecipe( (ShapedRecipe) recipe );
 						cachedRecipe.computeVisuals();
-						arecipes.add( cachedRecipe );
+						this.arecipes.add( cachedRecipe );
 					}
 				}
 			}
@@ -102,7 +102,7 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 				{
 					CachedShapedRecipe cachedRecipe = new CachedShapedRecipe( (ShapedRecipe) recipe );
 					cachedRecipe.computeVisuals();
-					arecipes.add( cachedRecipe );
+					this.arecipes.add( cachedRecipe );
 				}
 			}
 		}
@@ -124,7 +124,7 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 					if ( cachedRecipe.contains( cachedRecipe.ingredients, ingredient ) )
 					{
 						cachedRecipe.setIngredientPermutation( cachedRecipe.ingredients, ingredient );
-						arecipes.add( cachedRecipe );
+						this.arecipes.add( cachedRecipe );
 					}
 				}
 			}
@@ -146,7 +146,7 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public boolean hasOverlay(GuiContainer gui, Container container, int recipe)
 	{
-		return (super.hasOverlay( gui, container, recipe )) || ((isRecipe2x2( recipe )) && (RecipeInfo.hasDefaultOverlay( gui, "crafting2x2" )));
+		return (super.hasOverlay( gui, container, recipe )) || ((this.isRecipe2x2( recipe )) && (RecipeInfo.hasDefaultOverlay( gui, "crafting2x2" )));
 	}
 
 	@Override
@@ -160,7 +160,7 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 		if ( positioner == null )
 			return null;
 
-		return new DefaultOverlayRenderer( getIngredientStacks( recipe ), positioner );
+		return new DefaultOverlayRenderer( this.getIngredientStacks( recipe ), positioner );
 	}
 
 	@Override
@@ -175,7 +175,7 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 
 	public boolean isRecipe2x2(int recipe)
 	{
-		for (PositionedStack stack : getIngredientStacks( recipe ))
+		for (PositionedStack stack : this.getIngredientStacks( recipe ))
 		{
 			if ( (stack.relx > 43) || (stack.rely > 24) )
 				return false;
@@ -190,9 +190,9 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 		public final PositionedStack result;
 
 		public CachedShapedRecipe(ShapedRecipe recipe) {
-			result = new PositionedStack( recipe.getRecipeOutput(), 119, 24 );
-			ingredients = new ArrayList<PositionedStack>();
-			setIngredients( recipe.getWidth(), recipe.getHeight(), recipe.getIngredients() );
+			this.result = new PositionedStack( recipe.getRecipeOutput(), 119, 24 );
+			this.ingredients = new ArrayList<PositionedStack>();
+			this.setIngredients( recipe.getWidth(), recipe.getHeight(), recipe.getIngredients() );
 		}
 
 		public void setIngredients(int width, int height, Object[] items)
@@ -230,7 +230,7 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 		@Override
 		public List<PositionedStack> getIngredients()
 		{
-			return getCycledIngredients( cycleticks / 20, this.ingredients );
+			return this.getCycledIngredients( NEIAEShapedRecipeHandler.this.cycleticks / 20, this.ingredients );
 		}
 
 		@Override

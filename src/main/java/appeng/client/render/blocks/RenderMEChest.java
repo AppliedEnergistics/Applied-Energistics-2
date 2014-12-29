@@ -53,7 +53,7 @@ public class RenderMEChest extends BaseBlockRender
 		this.renderInvBlock( EnumSet.of( ForgeDirection.SOUTH ), block, is, Tessellator.instance, 0x000000, renderer );
 
 		renderer.overrideBlockTexture = ExtraBlockTextures.MEChest.getIcon();
-		this.renderInvBlock( EnumSet.of( ForgeDirection.UP ), block, is, Tessellator.instance, adjustBrightness( AEColor.Transparent.whiteVariant, 0.7 ),
+		this.renderInvBlock( EnumSet.of( ForgeDirection.UP ), block, is, Tessellator.instance, this.adjustBrightness( AEColor.Transparent.whiteVariant, 0.7 ),
 				renderer );
 
 		renderer.overrideBlockTexture = null;
@@ -70,12 +70,12 @@ public class RenderMEChest extends BaseBlockRender
 		ForgeDirection forward = sp.getForward();
 		ForgeDirection west = Platform.crossProduct( forward, up );
 
-		preRenderInWorld( imb, world, x, y, z, renderer );
+		this.preRenderInWorld( imb, world, x, y, z, renderer );
 
 		int stat = sp.getCellStatus( 0 );
 		boolean result = renderer.renderStandardBlock( imb, x, y, z );
 
-		selectFace( renderer, west, up, forward, 5, 16 - 5, 9, 12 );
+		this.selectFace( renderer, west, up, forward, 5, 16 - 5, 9, 12 );
 
 		int offsetU = -4;
 		int offsetV = 8;
@@ -105,7 +105,7 @@ public class RenderMEChest extends BaseBlockRender
 		 * forward == ForgeDirection.NORTH && up == ForgeDirection.UP ) flippableIcon.setFlip( true, false );
 		 */
 
-		renderFace( x, y, z, imb, flippableIcon, renderer, forward );
+		this.renderFace( x, y, z, imb, flippableIcon, renderer, forward );
 
 		if ( stat != 0 )
 		{
@@ -122,8 +122,8 @@ public class RenderMEChest extends BaseBlockRender
 				Tessellator.instance.setColorOpaque_I( 0xffaa00 );
 			if ( stat == 3 )
 				Tessellator.instance.setColorOpaque_I( 0xff0000 );
-			selectFace( renderer, west, up, forward, 9, 10, 11, 12 );
-			renderFace( x, y, z, imb, ExtraBlockTextures.White.getIcon(), renderer, forward );
+			this.selectFace( renderer, west, up, forward, 9, 10, 11, 12 );
+			this.renderFace( x, y, z, imb, ExtraBlockTextures.White.getIcon(), renderer, forward );
 		}
 
 		b = world.getLightBrightnessForSkyBlocks( x + up.offsetX, y + up.offsetY, z + up.offsetZ, 0 );
@@ -140,21 +140,21 @@ public class RenderMEChest extends BaseBlockRender
 
 		Tessellator.instance.setColorOpaque_I( sp.getColor().whiteVariant );
 		IIcon ico = ch == null ? null : ch.getTopTexture_Light();
-		renderFace( x, y, z, imb, ico == null ? ExtraBlockTextures.MEChest.getIcon() : ico, renderer, up );
+		this.renderFace( x, y, z, imb, ico == null ? ExtraBlockTextures.MEChest.getIcon() : ico, renderer, up );
 
 		if ( ico != null )
 		{
 			Tessellator.instance.setColorOpaque_I( sp.getColor().mediumVariant );
 			ico = ch == null ? null : ch.getTopTexture_Medium();
-			renderFace( x, y, z, imb, ico == null ? ExtraBlockTextures.MEChest.getIcon() : ico, renderer, up );
+			this.renderFace( x, y, z, imb, ico == null ? ExtraBlockTextures.MEChest.getIcon() : ico, renderer, up );
 
 			Tessellator.instance.setColorOpaque_I( sp.getColor().blackVariant );
 			ico = ch == null ? null : ch.getTopTexture_Dark();
-			renderFace( x, y, z, imb, ico == null ? ExtraBlockTextures.MEChest.getIcon() : ico, renderer, up );
+			this.renderFace( x, y, z, imb, ico == null ? ExtraBlockTextures.MEChest.getIcon() : ico, renderer, up );
 		}
 
 		renderer.overrideBlockTexture = null;
-		postRenderInWorld( renderer );
+		this.postRenderInWorld( renderer );
 
 		return result;
 	}

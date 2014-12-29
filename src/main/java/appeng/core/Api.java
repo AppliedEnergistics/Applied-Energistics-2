@@ -61,43 +61,43 @@ public class Api implements IAppEngApi
 	@Override
 	public IRegistryContainer registries()
 	{
-		return rc;
+		return this.rc;
 	}
 
 	@Override
 	public Items items()
 	{
-		return items;
+		return this.items;
 	}
 
 	@Override
 	public Materials materials()
 	{
-		return materials;
+		return this.materials;
 	}
 
 	@Override
 	public Blocks blocks()
 	{
-		return blocks;
+		return this.blocks;
 	}
 
 	@Override
 	public Parts parts()
 	{
-		return parts;
+		return this.parts;
 	}
 
 	@Override
 	public IStorageHelper storage()
 	{
-		return storageHelper;
+		return this.storageHelper;
 	}
 
 	@Override
 	public IPartHelper partHelper()
 	{
-		return partHelper;
+		return this.partHelper;
 	}
 
 	@Override

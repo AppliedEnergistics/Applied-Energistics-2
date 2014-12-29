@@ -47,9 +47,9 @@ public class PacketMockExplosion extends AppEngPacket
 	// automatic.
 	public PacketMockExplosion(ByteBuf stream)
 	{
-		x = stream.readDouble();
-		y = stream.readDouble();
-		z = stream.readDouble();
+		this.x = stream.readDouble();
+		this.y = stream.readDouble();
+		this.z = stream.readDouble();
 	}
 
 	// api
@@ -61,12 +61,12 @@ public class PacketMockExplosion extends AppEngPacket
 
 		ByteBuf data = Unpooled.buffer();
 
-		data.writeInt( getPacketID() );
+		data.writeInt( this.getPacketID() );
 		data.writeDouble( x );
 		data.writeDouble( y );
 		data.writeDouble( z );
 
-		configureWrite( data );
+		this.configureWrite( data );
 	}
 
 }

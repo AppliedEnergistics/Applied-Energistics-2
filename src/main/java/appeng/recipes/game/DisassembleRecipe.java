@@ -50,17 +50,17 @@ public class DisassembleRecipe implements IRecipe
 				if ( hasCell != null )
 					return null;
 
-				if ( items.itemCell1k.sameAsStack( is ) )
-					hasCell = mats.materialCell1kPart.stack( 1 );
+				if ( this.items.itemCell1k.sameAsStack( is ) )
+					hasCell = this.mats.materialCell1kPart.stack( 1 );
 
-				if ( items.itemCell4k.sameAsStack( is ) )
-					hasCell = mats.materialCell4kPart.stack( 1 );
+				if ( this.items.itemCell4k.sameAsStack( is ) )
+					hasCell = this.mats.materialCell4kPart.stack( 1 );
 
-				if ( items.itemCell16k.sameAsStack( is ) )
-					hasCell = mats.materialCell16kPart.stack( 1 );
+				if ( this.items.itemCell16k.sameAsStack( is ) )
+					hasCell = this.mats.materialCell16kPart.stack( 1 );
 
-				if ( items.itemCell64k.sameAsStack( is ) )
-					hasCell = mats.materialCell64kPart.stack( 1 );
+				if ( this.items.itemCell64k.sameAsStack( is ) )
+					hasCell = this.mats.materialCell64kPart.stack( 1 );
 
 				// make sure the storage cell is empty...
 				if ( hasCell != null )
@@ -74,20 +74,20 @@ public class DisassembleRecipe implements IRecipe
 					}
 				}
 
-				if ( items.itemEncodedPattern.sameAsStack( is ) )
-					hasCell = mats.materialBlankPattern.stack( 1 );
+				if ( this.items.itemEncodedPattern.sameAsStack( is ) )
+					hasCell = this.mats.materialBlankPattern.stack( 1 );
 
-				if ( blocks.blockCraftingStorage1k.sameAsStack( is ) )
-					hasCell = mats.materialCell1kPart.stack( 1 );
+				if ( this.blocks.blockCraftingStorage1k.sameAsStack( is ) )
+					hasCell = this.mats.materialCell1kPart.stack( 1 );
 
-				if ( blocks.blockCraftingStorage4k.sameAsStack( is ) )
-					hasCell = mats.materialCell4kPart.stack( 1 );
+				if ( this.blocks.blockCraftingStorage4k.sameAsStack( is ) )
+					hasCell = this.mats.materialCell4kPart.stack( 1 );
 
-				if ( blocks.blockCraftingStorage16k.sameAsStack( is ) )
-					hasCell = mats.materialCell16kPart.stack( 1 );
+				if ( this.blocks.blockCraftingStorage16k.sameAsStack( is ) )
+					hasCell = this.mats.materialCell16kPart.stack( 1 );
 
-				if ( blocks.blockCraftingStorage64k.sameAsStack( is ) )
-					hasCell = mats.materialCell64kPart.stack( 1 );
+				if ( this.blocks.blockCraftingStorage64k.sameAsStack( is ) )
+					hasCell = this.mats.materialCell64kPart.stack( 1 );
 
 				if ( hasCell == null )
 					return null;
@@ -100,13 +100,13 @@ public class DisassembleRecipe implements IRecipe
 	@Override
 	public boolean matches(InventoryCrafting inv, World w)
 	{
-		return getOutput( inv, false ) != null;
+		return this.getOutput( inv, false ) != null;
 	}
 
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting inv)
 	{
-		return getOutput( inv, true );
+		return this.getOutput( inv, true );
 	}
 
 	@Override

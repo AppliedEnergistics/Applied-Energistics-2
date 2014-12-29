@@ -57,7 +57,7 @@ final public class EntitySingularity extends AEBaseEntityItem
 	{
 		if ( src.isExplosion() )
 		{
-			doExplosion();
+			this.doExplosion();
 			return false;
 		}
 
@@ -72,10 +72,10 @@ final public class EntitySingularity extends AEBaseEntityItem
 		if ( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldSingularity ) )
 			return;
 
-		ItemStack item = getEntityItem();
+		ItemStack item = this.getEntityItem();
 		if ( AEApi.instance().materials().materialSingularity.sameAsStack( item ) )
 		{
-			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( posX - 4, posY - 4, posZ - 4, posX + 4, posY + 4, posZ + 4 );
+			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( this.posX - 4, this.posY - 4, this.posZ - 4, this.posX + 4, this.posY + 4, this.posZ + 4 );
 			List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
 
 			for ( Entity e : l )
@@ -121,11 +121,11 @@ final public class EntitySingularity extends AEBaseEntityItem
 								cmp.setLong( "freq", ( new Date() ).getTime() * 100 + ( randTickSeed++ ) % 100 );
 								item.stackSize--;
 
-								worldObj.spawnEntityInWorld( new EntitySingularity( worldObj, posX, posY, posZ, Output ) );
+								this.worldObj.spawnEntityInWorld( new EntitySingularity( this.worldObj, this.posX, this.posY, this.posZ, Output ) );
 							}
 
 							if ( item.stackSize <= 0 )
-								setDead();
+								this.setDead();
 						}
 					}
 				}

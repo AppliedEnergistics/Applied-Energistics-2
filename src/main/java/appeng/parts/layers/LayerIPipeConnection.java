@@ -30,7 +30,7 @@ public class LayerIPipeConnection extends LayerBase implements IPipeConnection
 	@Override
 	public ConnectOverride overridePipeConnection(PipeType type, ForgeDirection with)
 	{
-		IPart part = getPart( with );
+		IPart part = this.getPart( with );
 		if ( part instanceof IPipeConnection )
 			return ((IPipeConnection) part).overridePipeConnection( type, with );
 		return ConnectOverride.DEFAULT;

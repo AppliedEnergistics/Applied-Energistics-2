@@ -61,57 +61,57 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 
 	public TileWireless()
 	{
-		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
-		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
+		this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 	}
 
 	@Override
 	public void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
 	{
 		super.setOrientation( inForward, inUp );
-		gridProxy.setValidSides( EnumSet.of( getForward().getOpposite() ) );
+		this.gridProxy.setValidSides( EnumSet.of( this.getForward().getOpposite() ) );
 	}
 
 	@MENetworkEventSubscribe
 	public void chanRender( MENetworkChannelsChanged c )
 	{
-		markForUpdate();
+		this.markForUpdate();
 	}
 
 	@MENetworkEventSubscribe
 	public void powerRender( MENetworkPowerStatusChange c )
 	{
-		markForUpdate();
+		this.markForUpdate();
 	}
 
 	@TileEvent( TileEventType.NETWORK_READ )
 	public boolean readFromStream_TileWireless( ByteBuf data )
 	{
-		int old = clientFlags;
-		clientFlags = data.readByte();
+		int old = this.clientFlags;
+		this.clientFlags = data.readByte();
 
-		return old != clientFlags;
+		return old != this.clientFlags;
 	}
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
 	public void writeToStream_TileWireless( ByteBuf data )
 	{
-		clientFlags = 0;
+		this.clientFlags = 0;
 
 		try
 		{
-			if ( gridProxy.getEnergy().isNetworkPowered() )
-				clientFlags |= POWERED_FLAG;
+			if ( this.gridProxy.getEnergy().isNetworkPowered() )
+				this.clientFlags |= POWERED_FLAG;
 
-			if ( gridProxy.getNode().meetsChannelRequirements() )
-				clientFlags |= CHANNEL_FLAG;
+			if ( this.gridProxy.getNode().meetsChannelRequirements() )
+				this.clientFlags |= CHANNEL_FLAG;
 		}
 		catch ( GridAccessException e )
 		{
 			// meh
 		}
 
-		data.writeByte( ( byte ) clientFlags );
+		data.writeByte( ( byte ) this.clientFlags );
 	}
 
 	@Override
@@ -129,46 +129,46 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	@Override
 	public IInventory getInternalInventory()
 	{
-		return inv;
+		return this.inv;
 	}
 
 	@Override
 	public void onReady()
 	{
-		updatePower();
+		this.updatePower();
 		super.onReady();
 	}
 
 	@Override
 	public void markDirty()
 	{
-		updatePower();
+		this.updatePower();
 	}
 
 	private void updatePower()
 	{
-		gridProxy.setIdlePowerUsage( AEConfig.instance.wireless_getPowerDrain( getBoosters() ) );
+		this.gridProxy.setIdlePowerUsage( AEConfig.instance.wireless_getPowerDrain( this.getBoosters() ) );
 	}
 
 	@Override
 	public int[] getAccessibleSlotsBySide( ForgeDirection side )
 	{
-		return sides;
+		return this.sides;
 	}
 
 	@Override
 	public double getRange()
 	{
-		return AEConfig.instance.wireless_getMaxRange( getBoosters() );
+		return AEConfig.instance.wireless_getMaxRange( this.getBoosters() );
 	}
 
 	@Override
 	public boolean isActive()
 	{
 		if ( Platform.isClient() )
-			return isPowered() && ( CHANNEL_FLAG == ( clientFlags & CHANNEL_FLAG ) );
+			return this.isPowered() && ( CHANNEL_FLAG == ( this.clientFlags & CHANNEL_FLAG ) );
 
-		return gridProxy.isActive();
+		return this.gridProxy.isActive();
 	}
 
 	@Override
@@ -176,7 +176,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	{
 		try
 		{
-			return gridProxy.getGrid();
+			return this.gridProxy.getGrid();
 		}
 		catch ( GridAccessException e )
 		{
@@ -186,7 +186,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 
 	private int getBoosters()
 	{
-		ItemStack boosters = inv.getStackInSlot( 0 );
+		ItemStack boosters = this.inv.getStackInSlot( 0 );
 		return boosters == null ? 0 : boosters.stackSize;
 	}
 
@@ -205,7 +205,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	@Override
 	public boolean isPowered()
 	{
-		return POWERED_FLAG == ( clientFlags & POWERED_FLAG );
+		return POWERED_FLAG == ( this.clientFlags & POWERED_FLAG );
 	}
 
 }

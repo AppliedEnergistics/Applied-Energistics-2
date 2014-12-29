@@ -72,7 +72,7 @@ public class RenderDrive extends BaseBlockRender
 			for (int xx = 0; xx < 2; xx++)
 			{
 				int stat = sp.getCellStatus( yy * 2 + (1 - xx) );
-				selectFace( renderer, west, up, forward, 2 + xx * 7, 7 + xx * 7, 1 + yy * 3, 3 + yy * 3 );
+				this.selectFace( renderer, west, up, forward, 2 + xx * 7, 7 + xx * 7, 1 + yy * 3, 3 + yy * 3 );
 
 				int spin = 0;
 
@@ -249,9 +249,9 @@ public class RenderDrive extends BaseBlockRender
 				}
 
 				if ( (forward == ForgeDirection.UP && up == ForgeDirection.SOUTH) || forward == ForgeDirection.DOWN )
-					selectFace( renderer, west, up, forward, 3 + xx * 7, 4 + xx * 7, 1 + yy * 3, 2 + yy * 3 );
+					this.selectFace( renderer, west, up, forward, 3 + xx * 7, 4 + xx * 7, 1 + yy * 3, 2 + yy * 3 );
 				else
-					selectFace( renderer, west, up, forward, 5 + xx * 7, 6 + xx * 7, 2 + yy * 3, 3 + yy * 3 );
+					this.selectFace( renderer, west, up, forward, 5 + xx * 7, 6 + xx * 7, 2 + yy * 3, 3 + yy * 3 );
 
 				if ( stat != 0 )
 				{

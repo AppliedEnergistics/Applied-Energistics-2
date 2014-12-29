@@ -69,24 +69,24 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	public PartExportBus(ItemStack is)
 	{
 		super( PartExportBus.class, is );
-		settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
-		settings.registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
-		settings.registerSetting( Settings.CRAFT_ONLY, YesNo.NO );
-		mySrc = new MachineSource( this );
+		this.settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
+		this.settings.registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		this.settings.registerSetting( Settings.CRAFT_ONLY, YesNo.NO );
+		this.mySrc = new MachineSource( this );
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound extra)
 	{
 		super.readFromNBT( extra );
-		cratingTracker.readFromNBT( extra );
+		this.cratingTracker.readFromNBT( extra );
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound extra)
 	{
 		super.writeToNBT( extra );
-		cratingTracker.writeToNBT( extra );
+		this.cratingTracker.writeToNBT( extra );
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 			if ( Platform.isClient() )
 				return true;
 
-			Platform.openGUI( player, getHost().getTile(), side, GuiBridge.GUI_BUS );
+			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_BUS );
 			return true;
 		}
 
@@ -110,7 +110,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	{
 
 		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
-				is.getIconIndex(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
+				this.is.getIconIndex(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
 
 		rh.setBounds( 4, 4, 12, 12, 12, 14 );
 		rh.renderInventoryBox( renderer );
@@ -126,9 +126,9 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		renderCache = rh.useSimplifiedRendering( x, y, z, this, renderCache );
+		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
 		rh.setTexture( CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
-				is.getIconIndex(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
+				this.is.getIconIndex(), CableBusTextures.PartExportSides.getIcon(), CableBusTextures.PartExportSides.getIcon() );
 
 		rh.setBounds( 4, 4, 12, 12, 12, 14 );
 		rh.renderBlock( x, y, z, renderer );
@@ -140,13 +140,13 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		rh.renderBlock( x, y, z, renderer );
 
 		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(),
-				CableBusTextures.PartMonitorBack.getIcon(), is.getIconIndex(), CableBusTextures.PartMonitorSidesStatus.getIcon(),
+				CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSidesStatus.getIcon(),
 				CableBusTextures.PartMonitorSidesStatus.getIcon() );
 
 		rh.setBounds( 6, 6, 11, 10, 10, 12 );
 		rh.renderBlock( x, y, z, renderer );
 
-		renderLights( x, y, z, rh, renderer );
+		this.renderLights( x, y, z, rh, renderer );
 	}
 
 	@Override
@@ -170,70 +170,70 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	@Override
 	TickRateModulation doBusWork()
 	{
-		if ( !proxy.isActive() )
+		if ( !this.proxy.isActive() )
 			return TickRateModulation.IDLE;
 
-		itemToSend = 1;
-		didSomething = false;
+		this.itemToSend = 1;
+		this.didSomething = false;
 
-		switch (getInstalledUpgrades( Upgrades.SPEED ))
+		switch (this.getInstalledUpgrades( Upgrades.SPEED ))
 		{
 		default:
 		case 0:
-			itemToSend = 1;
+			this.itemToSend = 1;
 			break;
 		case 1:
-			itemToSend = 8;
+			this.itemToSend = 8;
 			break;
 		case 2:
-			itemToSend = 32;
+			this.itemToSend = 32;
 			break;
 		case 3:
-			itemToSend = 64;
+			this.itemToSend = 64;
 			break;
 		case 4:
-			itemToSend = 96;
+			this.itemToSend = 96;
 			break;
 		}
 
 		try
 		{
-			InventoryAdaptor d = getHandler();
-			IMEMonitor<IAEItemStack> inv = proxy.getStorage().getItemInventory();
-			IEnergyGrid energy = proxy.getEnergy();
-			ICraftingGrid cg = proxy.getCrafting();
-			FuzzyMode fzMode = (FuzzyMode) getConfigManager().getSetting( Settings.FUZZY_MODE );
+			InventoryAdaptor d = this.getHandler();
+			IMEMonitor<IAEItemStack> inv = this.proxy.getStorage().getItemInventory();
+			IEnergyGrid energy = this.proxy.getEnergy();
+			ICraftingGrid cg = this.proxy.getCrafting();
+			FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
 
 			if ( d != null )
 			{
-				for (int x = 0; x < availableSlots() && itemToSend > 0; x++)
+				for (int x = 0; x < this.availableSlots() && this.itemToSend > 0; x++)
 				{
-					IAEItemStack ais = config.getAEStackInSlot( x );
-					if ( ais == null || itemToSend <= 0 || craftOnly() )
+					IAEItemStack ais = this.config.getAEStackInSlot( x );
+					if ( ais == null || this.itemToSend <= 0 || this.craftOnly() )
 					{
-						if ( isCraftingEnabled() )
-							didSomething = cratingTracker.handleCrafting( x, itemToSend, ais, d, getTile().getWorldObj(), proxy.getGrid(), cg, mySrc )
-									|| didSomething;
+						if ( this.isCraftingEnabled() )
+							this.didSomething = this.cratingTracker.handleCrafting( x, this.itemToSend, ais, d, this.getTile().getWorldObj(), this.proxy.getGrid(), cg, this.mySrc )
+									|| this.didSomething;
 						continue;
 					}
 
-					long before = itemToSend;
+					long before = this.itemToSend;
 
-					if ( getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
+					if ( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 					{
 						for (IAEItemStack o : ImmutableList.copyOf( inv.getStorageList().findFuzzy( ais, fzMode ) ))
 						{
-							pushItemIntoTarget( d, energy, inv, o );
-							if ( itemToSend <= 0 )
+							this.pushItemIntoTarget( d, energy, inv, o );
+							if ( this.itemToSend <= 0 )
 								break;
 						}
 					}
 					else
-						pushItemIntoTarget( d, energy, inv, ais );
+						this.pushItemIntoTarget( d, energy, inv, ais );
 
-					if ( itemToSend == before && isCraftingEnabled() )
-						didSomething = cratingTracker.handleCrafting( x, itemToSend, ais, d, getTile().getWorldObj(), proxy.getGrid(), cg, mySrc )
-								|| didSomething;
+					if ( this.itemToSend == before && this.isCraftingEnabled() )
+						this.didSomething = this.cratingTracker.handleCrafting( x, this.itemToSend, ais, d, this.getTile().getWorldObj(), this.proxy.getGrid(), cg, this.mySrc )
+								|| this.didSomething;
 				}
 			}
 
@@ -243,45 +243,45 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 			// :P
 		}
 
-		return didSomething ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
+		return this.didSomething ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
 	}
 
 	private boolean craftOnly()
 	{
-		return getConfigManager().getSetting( Settings.CRAFT_ONLY ) == YesNo.YES;
+		return this.getConfigManager().getSetting( Settings.CRAFT_ONLY ) == YesNo.YES;
 	}
 
 	private boolean isCraftingEnabled()
 	{
-		return getInstalledUpgrades( Upgrades.CRAFTING ) > 0;
+		return this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0;
 	}
 
 	private void pushItemIntoTarget(InventoryAdaptor d, IEnergyGrid energy, IMEInventory<IAEItemStack> inv, IAEItemStack ais)
 	{
 		ItemStack is = ais.getItemStack();
-		is.stackSize = (int) itemToSend;
+		is.stackSize = (int) this.itemToSend;
 
 		ItemStack o = d.simulateAdd( is );
-		long canFit = o == null ? itemToSend : itemToSend - o.stackSize;
+		long canFit = o == null ? this.itemToSend : this.itemToSend - o.stackSize;
 
 		if ( canFit > 0 )
 		{
 			ais = ais.copy();
 			ais.setStackSize( canFit );
-			IAEItemStack itemsToAdd = Platform.poweredExtraction( energy, inv, ais, mySrc );
+			IAEItemStack itemsToAdd = Platform.poweredExtraction( energy, inv, ais, this.mySrc );
 
 			if ( itemsToAdd != null )
 			{
-				itemToSend -= itemsToAdd.getStackSize();
+				this.itemToSend -= itemsToAdd.getStackSize();
 
 				ItemStack failed = d.addItems( itemsToAdd.getItemStack() );
 				if ( failed != null )
 				{
 					ais.setStackSize( failed.stackSize );
-					inv.injectItems( ais, Actionable.MODULATE, mySrc );
+					inv.injectItems( ais, Actionable.MODULATE, this.mySrc );
 				}
 				else
-					didSomething = true;
+					this.didSomething = true;
 			}
 
 		}
@@ -290,13 +290,13 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	@Override
 	public IAEItemStack injectCraftedItems(ICraftingLink link, IAEItemStack items, Actionable mode)
 	{
-		InventoryAdaptor d = getHandler();
+		InventoryAdaptor d = this.getHandler();
 
 		try
 		{
-			if ( d != null && proxy.isActive() )
+			if ( d != null && this.proxy.isActive() )
 			{
-				IEnergyGrid energy = proxy.getEnergy();
+				IEnergyGrid energy = this.proxy.getEnergy();
 
 				double power = items.getStackSize();
 				if ( energy.extractAEPower( power, mode, PowerMultiplier.CONFIG ) > power - 0.01 )
@@ -318,37 +318,37 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	@Override
 	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
 	{
-		return doBusWork();
+		return this.doBusWork();
 	}
 
 	@Override
 	public RedstoneMode getRSMode()
 	{
-		return (RedstoneMode) settings.getSetting( Settings.REDSTONE_CONTROLLED );
+		return (RedstoneMode) this.settings.getSetting( Settings.REDSTONE_CONTROLLED );
 	}
 
 	@Override
 	protected boolean isSleeping()
 	{
-		return getHandler() == null || super.isSleeping();
+		return this.getHandler() == null || super.isSleeping();
 	}
 
 	@Override
 	public TickingRequest getTickingRequest(IGridNode node)
 	{
-		return new TickingRequest( TickRates.ExportBus.min, TickRates.ExportBus.max, isSleeping(), false );
+		return new TickingRequest( TickRates.ExportBus.min, TickRates.ExportBus.max, this.isSleeping(), false );
 	}
 
 	@Override
 	public ImmutableSet<ICraftingLink> getRequestedJobs()
 	{
-		return cratingTracker.getRequestedJobs();
+		return this.cratingTracker.getRequestedJobs();
 	}
 
 	@Override
 	public void jobStateChange(ICraftingLink link)
 	{
-		cratingTracker.jobStateChange( link );
+		this.cratingTracker.jobStateChange( link );
 	}
 
 }

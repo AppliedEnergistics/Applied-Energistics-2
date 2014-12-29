@@ -41,8 +41,8 @@ public class PathSegment
 		this.open = open;
 		this.semiOpen = semiOpen;
 		this.closed = closed;
-		pgc = myPGC;
-		isDead = false;
+		this.pgc = myPGC;
+		this.isDead = false;
 	}
 
 	List<IPathItem> open;
@@ -51,8 +51,8 @@ public class PathSegment
 
 	public boolean step()
 	{
-		List<IPathItem> oldOpen = open;
-		open = new LinkedList<IPathItem>();
+		List<IPathItem> oldOpen = this.open;
+		this.open = new LinkedList<IPathItem>();
 
 		for (IPathItem i : oldOpen)
 		{
@@ -60,21 +60,21 @@ public class PathSegment
 			{
 				EnumSet<GridFlags> flags = pi.getFlags();
 
-				if ( !closed.contains( pi ) )
+				if ( !this.closed.contains( pi ) )
 				{
 					pi.setControllerRoute( i, true );
 
 					if ( flags.contains( GridFlags.REQUIRE_CHANNEL ) )
 					{
 						// close the semi open.
-						if ( !semiOpen.contains( pi ) )
+						if ( !this.semiOpen.contains( pi ) )
 						{
 							boolean worked;
 
 							if ( flags.contains( GridFlags.COMPRESSED_CHANNEL ) )
-								worked = useDenseChannel( pi );
+								worked = this.useDenseChannel( pi );
 							else
-								worked = useChannel( pi );
+								worked = this.useChannel( pi );
 
 							if ( worked && flags.contains( GridFlags.MULTIBLOCK ) )
 							{
@@ -83,24 +83,24 @@ public class PathSegment
 								{
 									IGridNode otherNodes = oni.next();
 									if ( otherNodes != pi )
-										semiOpen.add( (IPathItem) otherNodes );
+										this.semiOpen.add( (IPathItem) otherNodes );
 								}
 							}
 						}
 						else
 						{
 							pi.incrementChannelCount( 1 ); // give a channel.
-							semiOpen.remove( pi );
+							this.semiOpen.remove( pi );
 						}
 					}
 
-					closed.add( pi );
-					open.add( pi );
+					this.closed.add( pi );
+					this.open.add( pi );
 				}
 			}
 		}
 
-		return open.isEmpty();
+		return this.open.isEmpty();
 	}
 
 	private boolean useChannel(IPathItem start)
@@ -117,12 +117,12 @@ public class PathSegment
 		pi = start;
 		while (pi != null)
 		{
-			pgc.channelsByBlocks++;
+			this.pgc.channelsByBlocks++;
 			pi.incrementChannelCount( 1 );
 			pi = pi.getControllerRoute();
 		}
 
-		pgc.channelsInUse++;
+		this.pgc.channelsInUse++;
 		return true;
 	}
 
@@ -140,12 +140,12 @@ public class PathSegment
 		pi = start;
 		while (pi != null)
 		{
-			pgc.channelsByBlocks++;
+			this.pgc.channelsByBlocks++;
 			pi.incrementChannelCount( 1 );
 			pi = pi.getControllerRoute();
 		}
 
-		pgc.channelsInUse++;
+		this.pgc.channelsInUse++;
 		return true;
 	}
 

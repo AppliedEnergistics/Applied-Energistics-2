@@ -41,7 +41,7 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	final public IItemList<IAEItemStack> storedItems = AEApi.instance().storage().createItemList();
 
 	public SecurityInventory(TileSecurity ts) {
-		securityTile = ts;
+		this.securityTile = ts;
 	}
 
 	private boolean hasPermission(BaseActionSource src)
@@ -50,7 +50,7 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 		{
 			try
 			{
-				return securityTile.getProxy().getSecurity().hasPermission( ((PlayerSource) src).player, SecurityPermissions.SECURITY );
+				return this.securityTile.getProxy().getSecurity().hasPermission( ((PlayerSource) src).player, SecurityPermissions.SECURITY );
 			}
 			catch (GridAccessException e)
 			{
@@ -63,15 +63,15 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	@Override
 	public IAEItemStack injectItems(IAEItemStack input, Actionable type, BaseActionSource src)
 	{
-		if ( hasPermission( src ) && AEApi.instance().items().itemBiometricCard.sameAsStack( input.getItemStack() ) )
+		if ( this.hasPermission( src ) && AEApi.instance().items().itemBiometricCard.sameAsStack( input.getItemStack() ) )
 		{
-			if ( canAccept( input ) )
+			if ( this.canAccept( input ) )
 			{
 				if ( type == Actionable.SIMULATE )
 					return null;
 
-				storedItems.add( input );
-				securityTile.inventoryChanged();
+				this.storedItems.add( input );
+				this.securityTile.inventoryChanged();
 				return null;
 			}
 		}
@@ -81,9 +81,9 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	@Override
 	public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src)
 	{
-		if ( hasPermission( src ) )
+		if ( this.hasPermission( src ) )
 		{
-			IAEItemStack target = storedItems.findPrecise( request );
+			IAEItemStack target = this.storedItems.findPrecise( request );
 			if ( target != null )
 			{
 				IAEItemStack output = target.copy();
@@ -92,7 +92,7 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 					return output;
 
 				target.setStackSize( 0 );
-				securityTile.inventoryChanged();
+				this.securityTile.inventoryChanged();
 				return output;
 			}
 		}
@@ -102,7 +102,7 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	@Override
 	public IItemList<IAEItemStack> getAvailableItems(IItemList out)
 	{
-		for (IAEItemStack ais : storedItems)
+		for (IAEItemStack ais : this.storedItems)
 			out.add( ais );
 
 		return out;
@@ -135,10 +135,10 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 			GameProfile newUser = tbc.getProfile( input.getItemStack() );
 
 			int PlayerID = AEApi.instance().registries().players().getID( newUser );
-			if ( securityTile.getOwner() == PlayerID )
+			if ( this.securityTile.getOwner() == PlayerID )
 				return false;
 
-			for (IAEItemStack ais : storedItems)
+			for (IAEItemStack ais : this.storedItems)
 			{
 				if ( ais.isMeaningful() )
 				{

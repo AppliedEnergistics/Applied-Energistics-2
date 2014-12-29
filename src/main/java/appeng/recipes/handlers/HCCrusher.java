@@ -46,8 +46,8 @@ public class HCCrusher implements ICraftHandler, IWebsiteSerializer
 			int outs = output.get( 0 ).size();
 			if ( input.get( 0 ).size() == 1 && outs == 1 )
 			{
-				pro_input = input.get( 0 ).get( 0 );
-				pro_output = output.get( 0 ).toArray( new IIngredient[outs] );
+				this.pro_input = input.get( 0 ).get( 0 );
+				this.pro_output = output.get( 0 ).toArray( new IIngredient[outs] );
 				return;
 			}
 		}
@@ -57,13 +57,13 @@ public class HCCrusher implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		for (ItemStack beginStack : pro_input.getItemStackSet())
+		for (ItemStack beginStack : this.pro_input.getItemStackSet())
 		{
 			try
 			{
 				NBTTagCompound toRegister = new NBTTagCompound();
 
-				ItemStack endStack = pro_output[0].getItemStack();
+				ItemStack endStack = this.pro_output[0].getItemStack();
 				
 				NBTTagCompound itemFrom = new NBTTagCompound();
 				NBTTagCompound itemTo = new NBTTagCompound();
@@ -87,7 +87,7 @@ public class HCCrusher implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public boolean canCraft(ItemStack output) throws RegistrationError, MissingIngredientError
 	{
-		return Platform.isSameItemPrecise( pro_output[0].getItemStack(), output );
+		return Platform.isSameItemPrecise( this.pro_output[0].getItemStack(), output );
 	}
 
 	@Override

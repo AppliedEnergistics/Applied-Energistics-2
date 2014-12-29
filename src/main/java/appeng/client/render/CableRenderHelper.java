@@ -105,7 +105,7 @@ public class CableRenderHelper
 			IPart part = cableBusContainer.getPart( s );
 			if ( part != null )
 			{
-				setSide( s );
+				this.setSide( s );
 				renderer.renderAllFaces = true;
 
 				renderer.flipTexture = false;
@@ -130,7 +130,7 @@ public class CableRenderHelper
 				IPart part = cableBusContainer.getPart( s );
 				if ( part != null )
 				{
-					setSide( s );
+					this.setSide( s );
 					BusRenderHelper brh = BusRenderHelper.instance;
 					BusCollisionHelper bch = new BusCollisionHelper( boxes, brh.getWorldX(), brh.getWorldY(), brh.getWorldZ(), null, true );
 					part.getBoxes( bch );
@@ -184,7 +184,7 @@ public class CableRenderHelper
 					renderer.flipTexture = false;
 					renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 
-					setSide( s );
+					this.setSide( s );
 					fPart.renderStatic( te.xCoord, te.yCoord, te.zCoord, BusRenderHelper.instance, renderer, iFacadeContainer, b,
 							cableBusContainer.getPart( s ) == null );
 				}

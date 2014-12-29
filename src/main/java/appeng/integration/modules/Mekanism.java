@@ -31,7 +31,7 @@ public class Mekanism extends BaseModule implements IMekanism
 	@Override
 	public void Init() throws Throwable
 	{
-		TestClass( mekanism.api.energy.IStrictEnergyAcceptor.class );
+		this.TestClass( mekanism.api.energy.IStrictEnergyAcceptor.class );
 	}
 
 	@Override

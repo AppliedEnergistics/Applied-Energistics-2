@@ -34,7 +34,7 @@ public class SpatialPylonCalculator extends MBCalculator
 
 	public SpatialPylonCalculator(IAEMultiBlock t) {
 		super( t );
-		tqb = (TileSpatialPylon) t;
+		this.tqb = (TileSpatialPylon) t;
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class SpatialPylonCalculator extends MBCalculator
 	@Override
 	public void disconnect()
 	{
-		tqb.disconnect(true);
+		this.tqb.disconnect(true);
 	}
 
 	@Override

@@ -37,13 +37,13 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 	@Override
 	public void addNewCraftHandler(String name, Class<? extends ICraftHandler> handler)
 	{
-		handlers.put( name.toLowerCase(), handler );
+		this.handlers.put( name.toLowerCase(), handler );
 	}
 
 	@Override
 	public ICraftHandler getCraftHandlerFor(String name)
 	{
-		Class<? extends ICraftHandler> clz = handlers.get( name );
+		Class<? extends ICraftHandler> clz = this.handlers.get( name );
 		if ( clz == null )
 			return null;
 		try
@@ -54,7 +54,7 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 		{
 			AELog.severe( "Error Caused when trying to construct " + clz.getName() );
 			AELog.error( e );
-			handlers.put( name, null ); // clear it..
+			this.handlers.put( name, null ); // clear it..
 			return null;
 		}
 	}
@@ -68,13 +68,13 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 	@Override
 	public void addNewSubItemResolver(ISubItemResolver sir)
 	{
-		resolvers.add( sir );
+		this.resolvers.add( sir );
 	}
 
 	@Override
 	public Object resolveItem(String nameSpace, String itemName)
 	{
-		for (ISubItemResolver sir : resolvers)
+		for (ISubItemResolver sir : this.resolvers)
 		{
 			Object rr = null;
 

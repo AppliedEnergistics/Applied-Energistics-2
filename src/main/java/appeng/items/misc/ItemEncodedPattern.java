@@ -47,8 +47,8 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 	public ItemEncodedPattern() {
 		super( ItemEncodedPattern.class );
-		setFeature( EnumSet.of( AEFeature.Patterns ) );
-		setMaxStackSize( 1 );
+		this.setFeature( EnumSet.of( AEFeature.Patterns ) );
+		this.setMaxStackSize( 1 );
 		if ( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, new ItemEncodedPatternRenderer() );
 	}
@@ -78,20 +78,20 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
-		return clearPattern( stack, player );
+		return this.clearPattern( stack, player );
 	}
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World w, EntityPlayer player)
 	{
-		clearPattern( stack, player );
+		this.clearPattern( stack, player );
 		return stack;
 	}
 
 	@Override
 	public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
-		ICraftingPatternDetails details = getPatternForItem( stack, player.worldObj );
+		ICraftingPatternDetails details = this.getPatternForItem( stack, player.worldObj );
 
 		if ( details == null )
 		{
@@ -146,7 +146,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		if ( w == null )
 			return null;
 
-		ICraftingPatternDetails details = getPatternForItem( item, w );
+		ICraftingPatternDetails details = this.getPatternForItem( item, w );
 
 		if ( details == null )
 			return null;

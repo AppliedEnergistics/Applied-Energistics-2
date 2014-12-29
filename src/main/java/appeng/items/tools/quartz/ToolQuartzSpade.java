@@ -42,13 +42,13 @@ public class ToolQuartzSpade extends ItemSpade implements IAEFeature
 	{
 		super( ToolMaterial.IRON );
 
-		this.handler = new ItemFeatureHandler( EnumSet.of( type = Type, AEFeature.QuartzSpade ), this, this, Optional.of( Type.name() ) );
+		this.handler = new ItemFeatureHandler( EnumSet.of( this.type = Type, AEFeature.QuartzSpade ), this, this, Optional.of( Type.name() ) );
 	}
 
 	@Override
 	public IFeatureHandler handler()
 	{
-		return handler;
+		return this.handler;
 	}
 
 	@Override
@@ -60,6 +60,6 @@ public class ToolQuartzSpade extends ItemSpade implements IAEFeature
 	@Override
 	public boolean getIsRepairable( ItemStack a, ItemStack b )
 	{
-		return Platform.canRepair( type, a, b );
+		return Platform.canRepair( this.type, a, b );
 	}
 }

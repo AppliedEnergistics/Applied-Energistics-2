@@ -92,7 +92,7 @@ public abstract class AEBaseGui extends GuiContainer
 	public AEBaseGui(Container container)
 	{
 		super( container );
-		subGui = switchingGuis;
+		this.subGui = switchingGuis;
 		switchingGuis = false;
 	}
 
@@ -111,7 +111,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 	public boolean isSubGui()
 	{
-		return subGui;
+		return this.subGui;
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public abstract class AEBaseGui extends GuiContainer
 			if ( i.next() instanceof SlotME )
 				i.remove();
 
-		for (InternalSlotME me : meSlots)
+		for (InternalSlotME me : this.meSlots)
 			slots.add( new SlotME( me ) );
 	}
 
@@ -145,21 +145,21 @@ public abstract class AEBaseGui extends GuiContainer
 		{
 			int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
 			int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
-			mouseWheelEvent( x, y, i / Math.abs( i ) );
+			this.mouseWheelEvent( x, y, i / Math.abs( i ) );
 		}
-		else if ( i != 0 && myScrollBar != null )
-			myScrollBar.wheel( i );
+		else if ( i != 0 && this.myScrollBar != null )
+			this.myScrollBar.wheel( i );
 	}
 
 	protected void mouseWheelEvent(int x, int y, int wheel)
 	{
-		Slot slot = getSlot( x, y );
+		Slot slot = this.getSlot( x, y );
 		if ( slot instanceof SlotME )
 		{
 			IAEItemStack item = ((SlotME) slot).getAEStack();
 			if ( item != null )
 			{
-				((AEBaseContainer) inventorySlots).setTargetStack( item );
+				((AEBaseContainer) this.inventorySlots).setTargetStack( item );
 				InventoryAction direction = wheel > 0 ? InventoryAction.ROLL_DOWN : InventoryAction.ROLL_UP;
 				int times = Math.abs( wheel );
 				final int inventorySize = this.getInventorySlots().size();
@@ -176,13 +176,13 @@ public abstract class AEBaseGui extends GuiContainer
 	public void onGuiClosed()
 	{
 		super.onGuiClosed();
-		subGui = true; // in case the gui is reopened later ( i'm looking at you NEI )
+		this.subGui = true; // in case the gui is reopened later ( i'm looking at you NEI )
 	}
 
 	@Override
 	protected void mouseClicked(int xCoord, int yCoord, int btn)
 	{
-		drag_click.clear();
+		this.drag_click.clear();
 
 		if ( btn == 1 )
 		{
@@ -217,7 +217,7 @@ public abstract class AEBaseGui extends GuiContainer
 		{
 			final InventoryAction action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 
-			if ( drag_click.size() > 1 )
+			if ( this.drag_click.size() > 1 )
 				return;
 
 			PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
@@ -259,7 +259,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 		if ( Keyboard.isKeyDown( Keyboard.KEY_SPACE ) )
 		{
-			if ( enableSpaceClicking() )
+			if ( this.enableSpaceClicking() )
 			{
 				IAEItemStack stack = null;
 				if ( slot instanceof SlotME )
@@ -270,7 +270,7 @@ public abstract class AEBaseGui extends GuiContainer
 				if ( !(slot instanceof SlotME) && slot != null )
 					slotNum = slot.slotNumber;
 
-				((AEBaseContainer) inventorySlots).setTargetStack( stack );
+				((AEBaseContainer) this.inventorySlots).setTargetStack( stack );
 				PacketInventoryAction p = new PacketInventoryAction( InventoryAction.MOVE_REGION, slotNum, 0 );
 				NetworkHandler.instance.sendToServer( p );
 				return;
@@ -356,7 +356,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 			if ( action != null )
 			{
-				((AEBaseContainer) inventorySlots).setTargetStack( stack );
+				((AEBaseContainer) this.inventorySlots).setTargetStack( stack );
 				PacketInventoryAction p = new PacketInventoryAction( action, this.getInventorySlots().size(), 0 );
 				NetworkHandler.instance.sendToServer( p );
 			}
@@ -364,21 +364,21 @@ public abstract class AEBaseGui extends GuiContainer
 			return;
 		}
 
-		if ( !disableShiftClick && isShiftKeyDown() )
+		if ( !this.disableShiftClick && isShiftKeyDown() )
 		{
-			disableShiftClick = true;
+			this.disableShiftClick = true;
 
-			if ( dbl_whichItem == null || bl_clicked != slot || dbl_clickTimer.elapsed( TimeUnit.MILLISECONDS ) > 150 )
+			if ( this.dbl_whichItem == null || this.bl_clicked != slot || this.dbl_clickTimer.elapsed( TimeUnit.MILLISECONDS ) > 150 )
 			{
 				// some simple double click logic.
-				bl_clicked = slot;
-				dbl_clickTimer = Stopwatch.createStarted();
+				this.bl_clicked = slot;
+				this.dbl_clickTimer = Stopwatch.createStarted();
 				if ( slot != null )
-					dbl_whichItem = slot.getHasStack() ? slot.getStack().copy() : null;
+					this.dbl_whichItem = slot.getHasStack() ? slot.getStack().copy() : null;
 				else
-					dbl_whichItem = null;
+					this.dbl_whichItem = null;
 			}
-			else if ( dbl_whichItem != null )
+			else if ( this.dbl_whichItem != null )
 			{
 				// a replica of the weird broken vanilla feature.
 
@@ -386,14 +386,14 @@ public abstract class AEBaseGui extends GuiContainer
 				for (Slot inventorySlot : slots)
 				{
 					if ( inventorySlot != null && inventorySlot.canTakeStack( this.mc.thePlayer ) && inventorySlot.getHasStack()
-							&& inventorySlot.inventory == slot.inventory && Container.func_94527_a( inventorySlot, dbl_whichItem, true ) )
+							&& inventorySlot.inventory == slot.inventory && Container.func_94527_a( inventorySlot, this.dbl_whichItem, true ) )
 					{
 						this.handleMouseClick( inventorySlot, inventorySlot.slotNumber, ctrlDown, 1 );
 					}
 				}
 			}
 
-			disableShiftClick = false;
+			this.disableShiftClick = false;
 		}
 
 		super.handleMouseClick( slot, slotIdx, ctrlDown, key );
@@ -407,10 +407,10 @@ public abstract class AEBaseGui extends GuiContainer
 
 		if ( slot instanceof SlotFake && itemstack != null )
 		{
-			drag_click.add( slot );
-			if ( drag_click.size() > 1 )
+			this.drag_click.add( slot );
+			if ( this.drag_click.size() > 1 )
 			{
-				for (Slot dr : drag_click)
+				for (Slot dr : this.drag_click)
 				{
 					PacketInventoryAction p = new PacketInventoryAction( c == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE,
 							dr.slotNumber, 0 );
@@ -450,9 +450,9 @@ public abstract class AEBaseGui extends GuiContainer
 					final List<Slot> slots = this.getInventorySlots();
 					for (Slot s : slots)
 					{
-						if ( s.getSlotIndex() == j && s.inventory == ((AEBaseContainer) inventorySlots).getPlayerInv() )
+						if ( s.getSlotIndex() == j && s.inventory == ((AEBaseContainer) this.inventorySlots).getPlayerInv() )
 						{
-							if ( !s.canTakeStack( ((AEBaseContainer) inventorySlots).getPlayerInv().player ) )
+							if ( !s.canTakeStack( ((AEBaseContainer) this.inventorySlots).getPlayerInv().player ) )
 							{
 								return false;
 							}
@@ -468,7 +468,7 @@ public abstract class AEBaseGui extends GuiContainer
 					{
 						for (Slot s : slots)
 						{
-							if ( s.getSlotIndex() == j && s.inventory == ((AEBaseContainer) inventorySlots).getPlayerInv() )
+							if ( s.getSlotIndex() == j && s.inventory == ((AEBaseContainer) this.inventorySlots).getPlayerInv() )
 							{
 								NetworkHandler.instance.sendToServer( new PacketSwapSlots( s.slotNumber, theSlot.slotNumber ) );
 								return true;
@@ -488,10 +488,10 @@ public abstract class AEBaseGui extends GuiContainer
 		super.drawScreen( mouse_x, mouse_y, btn );
 
 		boolean hasClicked = Mouse.isButtonDown( 0 );
-		if ( hasClicked && myScrollBar != null )
-			myScrollBar.click( this, mouse_x - guiLeft, mouse_y - guiTop );
+		if ( hasClicked && this.myScrollBar != null )
+			this.myScrollBar.click( this, mouse_x - this.guiLeft, mouse_y - this.guiTop );
 
-		for (Object c : buttonList)
+		for (Object c : this.buttonList)
 		{
 			if ( c instanceof ITooltip )
 			{
@@ -508,7 +508,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 						String msg = tooltip.getMessage();
 						if ( msg != null )
-							drawTooltip( x + 11, y + 4, 0, msg );
+							this.drawTooltip( x + 11, y + 4, 0, msg );
 					}
 				}
 			}
@@ -532,7 +532,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 			for (var6 = 0; var6 < var4.length; ++var6)
 			{
-				var7 = fontRendererObj.getStringWidth( var4[var6] );
+				var7 = this.fontRendererObj.getStringWidth( var4[var6] );
 
 				if ( var7 > var5 )
 				{
@@ -637,10 +637,10 @@ public abstract class AEBaseGui extends GuiContainer
 	@Override
 	final protected void drawGuiContainerBackgroundLayer(float f, int x, int y)
 	{
-		int ox = guiLeft; // (width - xSize) / 2;
-		int oy = guiTop; // (height - ySize) / 2;
+		int ox = this.guiLeft; // (width - xSize) / 2;
+		int oy = this.guiTop; // (height - ySize) / 2;
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		drawBG( ox, oy, x, y );
+		this.drawBG( ox, oy, x, y );
 
 		final List<Slot> slots = this.getInventorySlots();
 		for (Slot slot : slots)
@@ -671,30 +671,30 @@ public abstract class AEBaseGui extends GuiContainer
 	@Override
 	final protected void drawGuiContainerForegroundLayer(int x, int y)
 	{
-		int ox = guiLeft; // (width - xSize) / 2;
-		int oy = guiTop; // (height - ySize) / 2;
+		int ox = this.guiLeft; // (width - xSize) / 2;
+		int oy = this.guiTop; // (height - ySize) / 2;
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
-		if ( myScrollBar != null )
-			myScrollBar.draw( this );
+		if ( this.myScrollBar != null )
+			this.myScrollBar.draw( this );
 
-		drawFG( ox, oy, x, y );
+		this.drawFG( ox, oy, x, y );
 	}
 
 	protected String getGuiDisplayName(String in)
 	{
-		return hasCustomInventoryName() ? getInventoryName() : in;
+		return this.hasCustomInventoryName() ? this.getInventoryName() : in;
 	}
 
 	private String getInventoryName()
 	{
-		return ((AEBaseContainer) inventorySlots).customName;
+		return ((AEBaseContainer) this.inventorySlots).customName;
 	}
 
 	private boolean hasCustomInventoryName()
 	{
-		if ( inventorySlots instanceof AEBaseContainer )
-			return ((AEBaseContainer) inventorySlots).customName != null;
+		if ( this.inventorySlots instanceof AEBaseContainer )
+			return ((AEBaseContainer) this.inventorySlots).customName != null;
 		return false;
 	}
 
@@ -704,7 +704,7 @@ public abstract class AEBaseGui extends GuiContainer
 		for (Slot slot : slots)
 		{
 			// isPointInRegion
-			if ( func_146978_c( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY ) )
+			if ( this.func_146978_c( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY ) )
 			{
 				return slot;
 			}
@@ -761,25 +761,25 @@ public abstract class AEBaseGui extends GuiContainer
 
 	public void a(Slot s)
 	{
-		drawSlot( s );
+		this.drawSlot( s );
 	}
 
 	public void func_146977_a(Slot s)
 	{
-		drawSlot( s );
+		this.drawSlot( s );
 	}
 
 	public void drawSlot(Slot s)
 	{
 		if ( s instanceof SlotME )
 		{
-			RenderItem pIR = setItemRender( aeRenderItem );
+			RenderItem pIR = this.setItemRender( this.aeRenderItem );
 			try
 			{
 				this.zLevel = 100.0F;
 				itemRender.zLevel = 100.0F;
 
-				if ( !isPowered() )
+				if ( !this.isPowered() )
 				{
 					GL11.glDisable( GL11.GL_LIGHTING );
 					drawRect( s.xDisplayPosition, s.yDisplayPosition, 16 + s.xDisplayPosition, 16 + s.yDisplayPosition, 0x66111111 );
@@ -789,9 +789,9 @@ public abstract class AEBaseGui extends GuiContainer
 				this.zLevel = 0.0F;
 				itemRender.zLevel = 0.0F;
 
-				aeRenderItem.aeStack = ((SlotME) s).getAEStack();
+				this.aeRenderItem.aeStack = ((SlotME) s).getAEStack();
 
-				safeDrawSlot( s );
+				this.safeDrawSlot( s );
 			}
 			catch (Exception err)
 			{
@@ -799,7 +799,7 @@ public abstract class AEBaseGui extends GuiContainer
 				if ( Platform.isDrawing( Tessellator.instance ) )
 					Tessellator.instance.draw();
 			}
-			setItemRender( pIR );
+			this.setItemRender( pIR );
 			return;
 		}
 		else
@@ -812,7 +812,7 @@ public abstract class AEBaseGui extends GuiContainer
 					AppEngSlot aes = (AppEngSlot) s;
 					if ( aes.getIcon() >= 0 )
 					{
-						bindTexture( "guis/states.png" );
+						this.bindTexture( "guis/states.png" );
 
 						GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 						Tessellator tessellator = Tessellator.instance;
@@ -894,10 +894,10 @@ public abstract class AEBaseGui extends GuiContainer
 				if ( s instanceof AppEngSlot )
 				{
 					((AppEngSlot) s).isDisplay = true;
-					safeDrawSlot( s );
+					this.safeDrawSlot( s );
 				}
 				else
-					safeDrawSlot( s );
+					this.safeDrawSlot( s );
 
 				return;
 			}
@@ -907,7 +907,7 @@ public abstract class AEBaseGui extends GuiContainer
 			}
 		}
 		// do the usual for non-ME Slots.
-		safeDrawSlot( s );
+		this.safeDrawSlot( s );
 	}
 
 }

@@ -49,15 +49,15 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 	public ContainerInscriber(InventoryPlayer ip, TileInscriber te)
 	{
 		super( ip, te );
-		ti = te;
+		this.ti = te;
 
-		addSlotToContainer( top = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, ti, 0, 45, 16, invPlayer ) );
-		addSlotToContainer( bottom = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, ti, 1, 45, 62, invPlayer ) );
-		addSlotToContainer( middle = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_INPUT, ti, 2, 63, 39, invPlayer ) );
+		this.addSlotToContainer( this.top = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, this.ti, 0, 45, 16, this.invPlayer ) );
+		this.addSlotToContainer( this.bottom = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, this.ti, 1, 45, 62, this.invPlayer ) );
+		this.addSlotToContainer( this.middle = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_INPUT, this.ti, 2, 63, 39, this.invPlayer ) );
 
-		addSlotToContainer( new SlotOutput( ti, 3, 113, 40, -1 ) );
+		this.addSlotToContainer( new SlotOutput( this.ti, 3, 113, 40, -1 ) );
 
-		bindPlayerInventory( ip, 0, getHeight() - /* height of player inventory */82 );
+		this.bindPlayerInventory( ip, 0, this.getHeight() - /* height of player inventory */82 );
 
 	}
 
@@ -85,16 +85,16 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 	 */
 	protected void setupConfig()
 	{
-		setupUpgrades();
+		this.setupUpgrades();
 	}
 
 	@Override
 	public boolean isValidForSlot(Slot s, ItemStack is)
 	{
-		ItemStack PlateA = ti.getStackInSlot( 0 );
-		ItemStack PlateB = ti.getStackInSlot( 1 );
+		ItemStack PlateA = this.ti.getStackInSlot( 0 );
+		ItemStack PlateB = this.ti.getStackInSlot( 1 );
 
-		if ( s == middle )
+		if ( s == this.middle )
 		{
 			for (ItemStack i : Inscribe.plates)
 			{
@@ -129,14 +129,14 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 				return false;
 		}
 
-		if ( (s == top && PlateB != null) || (s == bottom && PlateA != null) )
+		if ( (s == this.top && PlateB != null) || (s == this.bottom && PlateA != null) )
 		{
 			boolean isValid = false;
 			ItemStack otherSlot = null;
-			if ( s == top )
-				otherSlot = bottom.getStack();
+			if ( s == this.top )
+				otherSlot = this.bottom.getStack();
 			else
-				otherSlot = top.getStack();
+				otherSlot = this.top.getStack();
 
 			// name presses
 			if ( AEApi.instance().materials().materialNamePress.sameAsStack( otherSlot ) )
@@ -168,24 +168,24 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 	@Override
 	public void detectAndSendChanges()
 	{
-		standardDetectAndSendChanges();
+		this.standardDetectAndSendChanges();
 
 		if ( Platform.isServer() )
 		{
-			this.maxProcessingTime = ti.maxProcessingTime;
-			this.processingTime = ti.processingTime;
+			this.maxProcessingTime = this.ti.maxProcessingTime;
+			this.processingTime = this.ti.processingTime;
 		}
 	}
 
 	@Override
 	public int getCurrentProgress()
 	{
-		return processingTime;
+		return this.processingTime;
 	}
 
 	@Override
 	public int getMaxProgress()
 	{
-		return maxProcessingTime;
+		return this.maxProcessingTime;
 	}
 }

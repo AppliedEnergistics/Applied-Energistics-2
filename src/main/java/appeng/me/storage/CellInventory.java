@@ -69,29 +69,29 @@ public class CellInventory implements ICellInventory
 	final protected ISaveProvider container;
 
 	protected CellInventory(NBTTagCompound data, ISaveProvider container) {
-		tagCompound = data;
+		this.tagCompound = data;
 		this.container = container;
 	}
 
 	protected void loadCellItems()
 	{
-		if ( cellItems == null )
-			cellItems = AEApi.instance().storage().createItemList();
+		if ( this.cellItems == null )
+			this.cellItems = AEApi.instance().storage().createItemList();
 
-		cellItems.resetStatus(); // clears totals and stuff.
+		this.cellItems.resetStatus(); // clears totals and stuff.
 
-		int types = (int) getStoredItemTypes();
+		int types = (int) this.getStoredItemTypes();
 
 		for (int x = 0; x < types; x++)
 		{
-			ItemStack t = ItemStack.loadItemStackFromNBT( tagCompound.getCompoundTag( ITEM_SLOT_ARR[x] ) );
+			ItemStack t = ItemStack.loadItemStackFromNBT( this.tagCompound.getCompoundTag( ITEM_SLOT_ARR[x] ) );
 			if ( t != null )
 			{
-				t.stackSize = tagCompound.getInteger( ITEM_SLOT_COUNT_ARR[x] );
+				t.stackSize = this.tagCompound.getInteger( ITEM_SLOT_COUNT_ARR[x] );
 
 				if ( t.stackSize > 0 )
 				{
-					cellItems.add( AEItemStack.create( t ) );
+					this.cellItems.add( AEItemStack.create( t ) );
 				}
 			}
 		}
@@ -106,11 +106,11 @@ public class CellInventory implements ICellInventory
 
 		// add new pretty stuff...
 		int x = 0;
-		for (IAEItemStack v : cellItems)
+		for (IAEItemStack v : this.cellItems)
 		{
 			itemCount += v.getStackSize();
 
-			NBTBase c = tagCompound.getTag( ITEM_SLOT_ARR[x] );
+			NBTBase c = this.tagCompound.getTag( ITEM_SLOT_ARR[x] );
 			if ( c instanceof NBTTagCompound )
 			{
 				v.writeToNBT( (NBTTagCompound) c );
@@ -119,21 +119,21 @@ public class CellInventory implements ICellInventory
 			{
 				NBTTagCompound g = new NBTTagCompound();
 				v.writeToNBT( g );
-				tagCompound.setTag( ITEM_SLOT_ARR[x], g );
+				this.tagCompound.setTag( ITEM_SLOT_ARR[x], g );
 			}
 
 			/*
 			 * NBTBase tagSlotCount = tagCompound.getTag( ITEM_SLOT_COUNT_ARR[x] ); if ( tagSlotCount instanceof
 			 * NBTTagInt ) ((NBTTagInt) tagSlotCount).data = (int) v.getStackSize(); else
 			 */
-			tagCompound.setInteger( ITEM_SLOT_COUNT_ARR[x], (int) v.getStackSize() );
+			this.tagCompound.setInteger( ITEM_SLOT_COUNT_ARR[x], (int) v.getStackSize() );
 
 			x++;
 		}
 
 		// NBTBase tagType = tagCompound.getTag( ITEM_TYPE_TAG );
 		// NBTBase tagCount = tagCompound.getTag( ITEM_COUNT_TAG );
-		short oldStoredItems = storedItems;
+		short oldStoredItems = this.storedItems;
 
 		/*
 		 * if ( tagType instanceof NBTTagShort ) ((NBTTagShort) tagType).data = storedItems = (short) cellItems.size();
@@ -163,23 +163,23 @@ public class CellInventory implements ICellInventory
 		}
 
 		// clean any old crusty stuff...
-		for (; x < oldStoredItems && x < MAX_ITEM_TYPES; x++)
+		for (; x < oldStoredItems && x < this.MAX_ITEM_TYPES; x++)
 		{
-			tagCompound.removeTag( ITEM_SLOT_ARR[x] );
-			tagCompound.removeTag( ITEM_SLOT_COUNT_ARR[x] );
+			this.tagCompound.removeTag( ITEM_SLOT_ARR[x] );
+			this.tagCompound.removeTag( ITEM_SLOT_COUNT_ARR[x] );
 		}
 
-		if ( container != null )
-			container.saveChanges( this );
+		if ( this.container != null )
+			this.container.saveChanges( this );
 	}
 
 	protected CellInventory(ItemStack o, ISaveProvider container) throws AppEngException {
 		if ( ITEM_SLOT_ARR == null )
 		{
-			ITEM_SLOT_ARR = new String[MAX_ITEM_TYPES];
-			ITEM_SLOT_COUNT_ARR = new String[MAX_ITEM_TYPES];
+			ITEM_SLOT_ARR = new String[this.MAX_ITEM_TYPES];
+			ITEM_SLOT_COUNT_ARR = new String[this.MAX_ITEM_TYPES];
 
-			for (int x = 0; x < MAX_ITEM_TYPES; x++)
+			for (int x = 0; x < this.MAX_ITEM_TYPES; x++)
 			{
 				ITEM_SLOT_ARR[x] = ITEM_SLOT + x;
 				ITEM_SLOT_COUNT_ARR[x] = ITEM_SLOT_COUNT + x;
@@ -191,60 +191,60 @@ public class CellInventory implements ICellInventory
 			throw new AppEngException( "ItemStack was used as a cell, but was not a cell!" );
 		}
 
-		CellType = null;
-		i = o;
+		this.CellType = null;
+		this.i = o;
 
-		Item type = i.getItem();
+		Item type = this.i.getItem();
 		if ( type instanceof IStorageCell )
 		{
-			CellType = (IStorageCell) i.getItem();
-			MAX_ITEM_TYPES = CellType.getTotalTypes( i );
+			this.CellType = (IStorageCell) this.i.getItem();
+			this.MAX_ITEM_TYPES = this.CellType.getTotalTypes( this.i );
 		}
 
-		if ( CellType == null )
+		if ( this.CellType == null )
 		{
 			throw new AppEngException( "ItemStack was used as a cell, but was not a cell!" );
 		}
 
-		if ( !CellType.isStorageCell( i ) )
+		if ( !this.CellType.isStorageCell( this.i ) )
 		{
 			throw new AppEngException( "ItemStack was used as a cell, but was not a cell!" );
 		}
 
-		if ( MAX_ITEM_TYPES > 63 )
-			MAX_ITEM_TYPES = 63;
-		if ( MAX_ITEM_TYPES < 1 )
-			MAX_ITEM_TYPES = 1;
+		if ( this.MAX_ITEM_TYPES > 63 )
+			this.MAX_ITEM_TYPES = 63;
+		if ( this.MAX_ITEM_TYPES < 1 )
+			this.MAX_ITEM_TYPES = 1;
 
 		this.container = container;
-		tagCompound = Platform.openNbtData( o );
-		storedItems = tagCompound.getShort( ITEM_TYPE_TAG );
-		storedItemCount = tagCompound.getInteger( ITEM_COUNT_TAG );
-		cellItems = null;
+		this.tagCompound = Platform.openNbtData( o );
+		this.storedItems = this.tagCompound.getShort( ITEM_TYPE_TAG );
+		this.storedItemCount = this.tagCompound.getInteger( ITEM_COUNT_TAG );
+		this.cellItems = null;
 	}
 
 	IItemList<IAEItemStack> getCellItems()
 	{
-		if ( cellItems == null )
+		if ( this.cellItems == null )
 		{
-			cellItems = AEApi.instance().storage().createItemList();
-			loadCellItems();
+			this.cellItems = AEApi.instance().storage().createItemList();
+			this.loadCellItems();
 		}
 
-		return cellItems;
+		return this.cellItems;
 	}
 
 	@Override
 	public int getBytesPerType()
 	{
-		return CellType.BytePerType( i );
+		return this.CellType.BytePerType( this.i );
 	}
 
 	@Override
 	public boolean canHoldNewItem()
 	{
-		long bytesFree = getFreeBytes();
-		return (bytesFree > getBytesPerType() || (bytesFree == getBytesPerType() && getUnusedItemCount() > 0)) && getRemainingItemTypes() > 0;
+		long bytesFree = this.getFreeBytes();
+		return (bytesFree > this.getBytesPerType() || (bytesFree == this.getBytesPerType() && this.getUnusedItemCount() > 0)) && this.getRemainingItemTypes() > 0;
 	}
 
 	public static IMEInventoryHandler getCell(ItemStack o, ISaveProvider container2)
@@ -301,64 +301,64 @@ public class CellInventory implements ICellInventory
 	@Override
 	public long getTotalBytes()
 	{
-		return CellType.getBytes( i );
+		return this.CellType.getBytes( this.i );
 	}
 
 	@Override
 	public long getFreeBytes()
 	{
-		return getTotalBytes() - getUsedBytes();
+		return this.getTotalBytes() - this.getUsedBytes();
 	}
 
 	@Override
 	public long getUsedBytes()
 	{
-		long bytesForItemCount = (getStoredItemCount() + getUnusedItemCount()) / 8;
-		return getStoredItemTypes() * getBytesPerType() + bytesForItemCount;
+		long bytesForItemCount = (this.getStoredItemCount() + this.getUnusedItemCount()) / 8;
+		return this.getStoredItemTypes() * this.getBytesPerType() + bytesForItemCount;
 	}
 
 	@Override
 	public long getTotalItemTypes()
 	{
-		return MAX_ITEM_TYPES;
+		return this.MAX_ITEM_TYPES;
 	}
 
 	@Override
 	public long getStoredItemTypes()
 	{
-		return storedItems;
+		return this.storedItems;
 	}
 
 	@Override
 	public long getStoredItemCount()
 	{
-		return storedItemCount;
+		return this.storedItemCount;
 	}
 
 	private void updateItemCount(long delta)
 	{
-		tagCompound.setInteger( ITEM_COUNT_TAG, storedItemCount = (int) (storedItemCount + delta) );
+		this.tagCompound.setInteger( ITEM_COUNT_TAG, this.storedItemCount = (int) (this.storedItemCount + delta) );
 	}
 
 	@Override
 	public long getRemainingItemTypes()
 	{
-		long basedOnStorage = getFreeBytes() / getBytesPerType();
-		long baseOnTotal = getTotalItemTypes() - getStoredItemTypes();
+		long basedOnStorage = this.getFreeBytes() / this.getBytesPerType();
+		long baseOnTotal = this.getTotalItemTypes() - this.getStoredItemTypes();
 		return basedOnStorage > baseOnTotal ? baseOnTotal : basedOnStorage;
 	}
 
 	@Override
 	public long getRemainingItemCount()
 	{
-		long remaining = getFreeBytes() * 8 + getUnusedItemCount();
+		long remaining = this.getFreeBytes() * 8 + this.getUnusedItemCount();
 		return remaining > 0 ? remaining : 0;
 	}
 
 	@Override
 	public int getUnusedItemCount()
 	{
-		int div = (int) (getStoredItemCount() % 8);
+		int div = (int) (this.getStoredItemCount() % 8);
 
 		if ( div == 0 )
 		{
@@ -395,7 +395,7 @@ public class CellInventory implements ICellInventory
 		if ( input.getStackSize() == 0 )
 			return null;
 
-		if ( isBlackListed( input ) || CellType.isBlackListed( i, input ) )
+		if ( isBlackListed( input ) || this.CellType.isBlackListed( this.i, input ) )
 			return input;
 
 		ItemStack sharedItemStack = input.getItemStack();
@@ -403,14 +403,14 @@ public class CellInventory implements ICellInventory
 		if ( CellInventory.isStorageCell( sharedItemStack ) )
 		{
 			IMEInventory meInventory = getCell( sharedItemStack, null );
-			if ( meInventory != null && !isEmpty( meInventory ) )
+			if ( meInventory != null && !this.isEmpty( meInventory ) )
 				return input;
 		}
 
-		IAEItemStack l = getCellItems().findPrecise( input );
+		IAEItemStack l = this.getCellItems().findPrecise( input );
 		if ( l != null )
 		{
-			long remainingItemSlots = getRemainingItemCount();
+			long remainingItemSlots = this.getRemainingItemCount();
 			if ( remainingItemSlots < 0 )
 				return input;
 
@@ -421,8 +421,8 @@ public class CellInventory implements ICellInventory
 				if ( mode == Actionable.MODULATE )
 				{
 					l.setStackSize( l.getStackSize() + remainingItemSlots );
-					updateItemCount( remainingItemSlots );
-					saveChanges();
+					this.updateItemCount( remainingItemSlots );
+					this.saveChanges();
 				}
 				return r;
 			}
@@ -431,16 +431,16 @@ public class CellInventory implements ICellInventory
 				if ( mode == Actionable.MODULATE )
 				{
 					l.setStackSize( l.getStackSize() + input.getStackSize() );
-					updateItemCount( input.getStackSize() );
-					saveChanges();
+					this.updateItemCount( input.getStackSize() );
+					this.saveChanges();
 				}
 				return null;
 			}
 		}
 
-		if ( canHoldNewItem() ) // room for new type, and for at least one item!
+		if ( this.canHoldNewItem() ) // room for new type, and for at least one item!
 		{
-			int remainingItemCount = (int) getRemainingItemCount() - getBytesPerType() * 8;
+			int remainingItemCount = (int) this.getRemainingItemCount() - this.getBytesPerType() * 8;
 			if ( remainingItemCount > 0 )
 			{
 				if ( input.getStackSize() > remainingItemCount )
@@ -452,19 +452,19 @@ public class CellInventory implements ICellInventory
 						ItemStack toWrite = Platform.cloneItemStack( sharedItemStack );
 						toWrite.stackSize = remainingItemCount;
 
-						cellItems.add( AEItemStack.create( toWrite ) );
-						updateItemCount( toWrite.stackSize );
+						this.cellItems.add( AEItemStack.create( toWrite ) );
+						this.updateItemCount( toWrite.stackSize );
 
-						saveChanges();
+						this.saveChanges();
 					}
 					return AEItemStack.create( toReturn );
 				}
 
 				if ( mode == Actionable.MODULATE )
 				{
-					updateItemCount( input.getStackSize() );
-					cellItems.add( input );
-					saveChanges();
+					this.updateItemCount( input.getStackSize() );
+					this.cellItems.add( input );
+					this.saveChanges();
 				}
 
 				return null;
@@ -485,7 +485,7 @@ public class CellInventory implements ICellInventory
 
 		IAEItemStack Results = null;
 
-		IAEItemStack l = getCellItems().findPrecise( request );
+		IAEItemStack l = this.getCellItems().findPrecise( request );
 		if ( l != null )
 		{
 			Results = l.copy();
@@ -495,9 +495,9 @@ public class CellInventory implements ICellInventory
 				Results.setStackSize( l.getStackSize() );
 				if ( mode == Actionable.MODULATE )
 				{
-					updateItemCount( -l.getStackSize() );
+					this.updateItemCount( -l.getStackSize() );
 					l.setStackSize( 0 );
-					saveChanges();
+					this.saveChanges();
 				}
 			}
 			else
@@ -506,8 +506,8 @@ public class CellInventory implements ICellInventory
 				if ( mode == Actionable.MODULATE )
 				{
 					l.setStackSize( l.getStackSize() - size );
-					updateItemCount( -size );
-					saveChanges();
+					this.updateItemCount( -size );
+					this.saveChanges();
 				}
 			}
 		}
@@ -518,7 +518,7 @@ public class CellInventory implements ICellInventory
 	@Override
 	public IItemList getAvailableItems(IItemList out)
 	{
-		for (IAEItemStack i : getCellItems())
+		for (IAEItemStack i : this.getCellItems())
 			out.add( i );
 
 		return out;
@@ -533,33 +533,33 @@ public class CellInventory implements ICellInventory
 	@Override
 	public double getIdleDrain()
 	{
-		return CellType.getIdleDrain();
+		return this.CellType.getIdleDrain();
 	}
 
 	@Override
 	public FuzzyMode getFuzzyMode()
 	{
-		return CellType.getFuzzyMode( this.i );
+		return this.CellType.getFuzzyMode( this.i );
 	}
 
 	@Override
 	public IInventory getConfigInventory()
 	{
-		return CellType.getConfigInventory( this.i );
+		return this.CellType.getConfigInventory( this.i );
 	}
 
 	@Override
 	public IInventory getUpgradesInventory()
 	{
-		return CellType.getUpgradesInventory( this.i );
+		return this.CellType.getUpgradesInventory( this.i );
 	}
 
 	@Override
 	public int getStatusForCell()
 	{
-		if ( canHoldNewItem() )
+		if ( this.canHoldNewItem() )
 			return 1;
-		if ( getRemainingItemCount() > 0 )
+		if ( this.getRemainingItemCount() > 0 )
 			return 2;
 		return 3;
 	}
@@ -567,7 +567,7 @@ public class CellInventory implements ICellInventory
 	@Override
 	public ItemStack getItemStack()
 	{
-		return i;
+		return this.i;
 	}
 
 }

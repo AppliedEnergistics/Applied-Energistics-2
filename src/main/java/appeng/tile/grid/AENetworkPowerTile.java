@@ -36,21 +36,21 @@ public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IA
 	@TileEvent(TileEventType.WORLD_NBT_READ)
 	public void readFromNBT_AENetwork(NBTTagCompound data)
 	{
-		gridProxy.readFromNBT( data );
+		this.gridProxy.readFromNBT( data );
 	}
 
 	@TileEvent(TileEventType.WORLD_NBT_WRITE)
 	public void writeToNBT_AENetwork(NBTTagCompound data)
 	{
-		gridProxy.writeToNBT( data );
+		this.gridProxy.writeToNBT( data );
 	}
 
-	protected final AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", getItemFromTile( this ), true );
+	protected final AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", this.getItemFromTile( this ), true );
 
 	@Override
 	public AENetworkProxy getProxy()
 	{
-		return gridProxy;
+		return this.gridProxy;
 	}
 
 	@Override
@@ -68,35 +68,35 @@ public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IA
 	@Override
 	public IGridNode getGridNode(ForgeDirection dir)
 	{
-		return gridProxy.getNode();
+		return this.gridProxy.getNode();
 	}
 
 	@Override
 	public void onReady()
 	{
 		super.onReady();
-		gridProxy.onReady();
+		this.gridProxy.onReady();
 	}
 
 	@Override
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
-		gridProxy.onChunkUnload();
+		this.gridProxy.onChunkUnload();
 	}
 
 	@Override
 	public void validate()
 	{
 		super.validate();
-		gridProxy.validate();
+		this.gridProxy.validate();
 	}
 
 	@Override
 	public void invalidate()
 	{
 		super.invalidate();
-		gridProxy.invalidate();
+		this.gridProxy.invalidate();
 	}
 
 	@Override
@@ -108,6 +108,6 @@ public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IA
 	@Override
 	public IGridNode getActionableNode()
 	{
-		return gridProxy.getNode();
+		return this.gridProxy.getNode();
 	}
 }

@@ -39,17 +39,17 @@ public class TileSkyChest extends AEBaseInvTile
 	@TileEvent(TileEventType.NETWORK_WRITE)
 	public void writeToStream_TileSkyChest(ByteBuf data)
 	{
-		data.writeBoolean( playerOpen > 0 );
+		data.writeBoolean( this.playerOpen > 0 );
 	}
 
 	@TileEvent(TileEventType.NETWORK_READ)
 	public boolean readFromStream_TileSkyChest(ByteBuf data)
 	{
-		int wasOpen = playerOpen;
-		playerOpen = data.readBoolean() ? 1 : 0;
+		int wasOpen = this.playerOpen;
+		this.playerOpen = data.readBoolean() ? 1 : 0;
 
-		if ( wasOpen != playerOpen )
-			lastEvent = System.currentTimeMillis();
+		if ( wasOpen != this.playerOpen )
+			this.lastEvent = System.currentTimeMillis();
 
 		return false; // TESR yo!
 	}
@@ -76,13 +76,13 @@ public class TileSkyChest extends AEBaseInvTile
 	@Override
 	public IInventory getInternalInventory()
 	{
-		return inv;
+		return this.inv;
 	}
 
 	@Override
 	public int[] getAccessibleSlotsBySide(ForgeDirection side)
 	{
-		return sides;
+		return this.sides;
 	}
 
 	@Override
@@ -91,12 +91,12 @@ public class TileSkyChest extends AEBaseInvTile
 		if ( Platform.isClient() )
 			return;
 
-		playerOpen++;
+		this.playerOpen++;
 
-		if ( playerOpen == 1 )
+		if ( this.playerOpen == 1 )
 		{
-			getWorldObj().playSoundEffect( xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "random.chestopen", 0.5F, getWorldObj().rand.nextFloat() * 0.1F + 0.9F );
-			markForUpdate();
+			this.getWorldObj().playSoundEffect( this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D, "random.chestopen", 0.5F, this.getWorldObj().rand.nextFloat() * 0.1F + 0.9F );
+			this.markForUpdate();
 		}
 	}
 
@@ -106,16 +106,16 @@ public class TileSkyChest extends AEBaseInvTile
 		if ( Platform.isClient() )
 			return;
 
-		playerOpen--;
+		this.playerOpen--;
 
-		if ( playerOpen < 0 )
-			playerOpen = 0;
+		if ( this.playerOpen < 0 )
+			this.playerOpen = 0;
 
-		if ( playerOpen == 0 )
+		if ( this.playerOpen == 0 )
 		{
-			getWorldObj().playSoundEffect( xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "random.chestclosed", 0.5F,
-					getWorldObj().rand.nextFloat() * 0.1F + 0.9F );
-			markForUpdate();
+			this.getWorldObj().playSoundEffect( this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D, "random.chestclosed", 0.5F,
+					this.getWorldObj().rand.nextFloat() * 0.1F + 0.9F );
+			this.markForUpdate();
 		}
 	}
 

@@ -36,8 +36,8 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 	final IFZ fProxy;
 
 	public FactorizationBarrel(IFZ proxy, TileEntity tile) {
-		te = tile;
-		fProxy = proxy;
+		this.te = tile;
+		this.fProxy = proxy;
 	}
 
 	@Override
@@ -48,17 +48,17 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 
 	public long remainingItemTypes()
 	{
-		return fProxy.barrelGetItem( te ) == null ? 1 : 0;
+		return this.fProxy.barrelGetItem( this.te ) == null ? 1 : 0;
 	}
 
 	public long remainingItemCount()
 	{
-		return fProxy.barrelGetMaxItemCount( te ) - fProxy.barrelGetItemCount( te );
+		return this.fProxy.barrelGetMaxItemCount( this.te ) - this.fProxy.barrelGetItemCount( this.te );
 	}
 
 	public boolean containsItemType(IAEItemStack i, boolean acceptEmpty)
 	{
-		ItemStack currentItem = fProxy.barrelGetItem( te );
+		ItemStack currentItem = this.fProxy.barrelGetItem( this.te );
 
 		// empty barrels want your love too!
 		if ( acceptEmpty && currentItem == null )
@@ -69,7 +69,7 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 
 	public long storedItemCount()
 	{
-		return fProxy.barrelGetItemCount( te );
+		return this.fProxy.barrelGetItemCount( this.te );
 	}
 
 	@Override
@@ -84,20 +84,20 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 		if ( shared.isItemDamaged() )
 			return input;
 
-		if ( remainingItemTypes() > 0 )
+		if ( this.remainingItemTypes() > 0 )
 		{
 			if ( mode == Actionable.MODULATE )
-				fProxy.setItemType( te, input.getItemStack() );
+				this.fProxy.setItemType( this.te, input.getItemStack() );
 		}
 
-		if ( containsItemType( input, mode == Actionable.SIMULATE ) )
+		if ( this.containsItemType( input, mode == Actionable.SIMULATE ) )
 		{
-			int max = fProxy.barrelGetMaxItemCount( te );
-			int newTotal = (int) storedItemCount() + (int) input.getStackSize();
+			int max = this.fProxy.barrelGetMaxItemCount( this.te );
+			int newTotal = (int) this.storedItemCount() + (int) input.getStackSize();
 			if ( newTotal > max )
 			{
 				if ( mode == Actionable.MODULATE )
-					fProxy.barrelSetCount( te, max );
+					this.fProxy.barrelSetCount( this.te, max );
 				IAEItemStack result = input.copy();
 				result.setStackSize( newTotal - max );
 				return result;
@@ -105,7 +105,7 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 			else
 			{
 				if ( mode == Actionable.MODULATE )
-					fProxy.barrelSetCount( te, newTotal );
+					this.fProxy.barrelSetCount( this.te, newTotal );
 				return null;
 			}
 		}
@@ -116,15 +116,15 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 	@Override
 	public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src)
 	{
-		if ( containsItemType( request, false ) )
+		if ( this.containsItemType( request, false ) )
 		{
-			int howMany = (int) storedItemCount();
+			int howMany = (int) this.storedItemCount();
 			if ( request.getStackSize() >= howMany )
 			{
 				if ( mode == Actionable.MODULATE )
 				{
-					fProxy.setItemType( te, null );
-					fProxy.barrelSetCount( te, 0 );
+					this.fProxy.setItemType( this.te, null );
+					this.fProxy.barrelSetCount( this.te, 0 );
 				}
 
 				IAEItemStack r = request.copy();
@@ -134,7 +134,7 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 			else
 			{
 				if ( mode == Actionable.MODULATE )
-					fProxy.barrelSetCount( te, (int) (howMany - request.getStackSize()) );
+					this.fProxy.barrelSetCount( this.te, (int) (howMany - request.getStackSize()) );
 				return request.copy();
 			}
 		}
@@ -144,10 +144,10 @@ public class FactorizationBarrel implements IMEInventory<IAEItemStack>
 	@Override
 	public IItemList<IAEItemStack> getAvailableItems(IItemList out)
 	{
-		ItemStack i = fProxy.barrelGetItem( te );
+		ItemStack i = this.fProxy.barrelGetItem( this.te );
 		if ( i != null )
 		{
-			i.stackSize = fProxy.barrelGetItemCount( te );
+			i.stackSize = this.fProxy.barrelGetItemCount( this.te );
 			out.addStorage( AEItemStack.create( i ) );
 		}
 

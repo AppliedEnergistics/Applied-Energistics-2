@@ -41,16 +41,16 @@ public class LocatableRegistry implements ILocatableRegistry
 
 		if ( e.change == LocatableEvent.Register )
 		{
-			set.put( e.target.getLocatableSerial(), e.target );
+			this.set.put( e.target.getLocatableSerial(), e.target );
 		}
 		else if ( e.change == LocatableEvent.Unregister )
 		{
-			set.remove( e.target.getLocatableSerial() );
+			this.set.remove( e.target.getLocatableSerial() );
 		}
 	}
 
 	public LocatableRegistry() {
-		set = new HashMap<Long, ILocatable>();
+		this.set = new HashMap<Long, ILocatable>();
 		MinecraftForge.EVENT_BUS.register( this );
 	}
 
@@ -60,7 +60,7 @@ public class LocatableRegistry implements ILocatableRegistry
 	@Override
 	public Object findLocatableBySerial(long ser)
 	{
-		return set.get( ser );
+		return this.set.get( ser );
 	}
 
 }

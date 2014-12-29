@@ -68,20 +68,20 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	public void writeToNBT(NBTTagCompound tag)
 	{
 		super.writeToNBT( tag );
-		tag.setDouble( "OutputPacket", OutputEnergyA );
-		tag.setDouble( "OutputPacket2", OutputEnergyB );
-		tag.setDouble( "OutputVoltageA", OutputVoltageA );
-		tag.setDouble( "OutputVoltageB", OutputVoltageB );
+		tag.setDouble( "OutputPacket", this.OutputEnergyA );
+		tag.setDouble( "OutputPacket2", this.OutputEnergyB );
+		tag.setDouble( "OutputVoltageA", this.OutputVoltageA );
+		tag.setDouble( "OutputVoltageB", this.OutputVoltageB );
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag)
 	{
 		super.readFromNBT( tag );
-		OutputEnergyA = tag.getDouble( "OutputPacket" );
-		OutputEnergyB = tag.getDouble( "OutputPacket2" );
-		OutputVoltageA = tag.getDouble( "OutputVoltageA" );
-		OutputVoltageB = tag.getDouble( "OutputVoltageB" );
+		this.OutputEnergyA = tag.getDouble( "OutputPacket" );
+		this.OutputEnergyB = tag.getDouble( "OutputPacket2" );
+		this.OutputVoltageA = tag.getDouble( "OutputVoltageA" );
+		this.OutputVoltageB = tag.getDouble( "OutputVoltageB" );
 	}
 
 	@Override
@@ -94,28 +94,28 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	@Override
 	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
-		if ( !output )
-			return direction.equals( side );
+		if ( !this.output )
+			return direction.equals( this.side );
 		return false;
 	}
 
 	@Override
 	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction)
 	{
-		if ( output )
-			return direction.equals( side );
+		if ( this.output )
+			return direction.equals( this.side );
 		return false;
 	}
 
 	@Override
 	public double getDemandedEnergy()
 	{
-		if ( output )
+		if ( this.output )
 			return 0;
 
 		try
 		{
-			for (PartP2PIC2Power t : getOutputs())
+			for (PartP2PIC2Power t : this.getOutputs())
 			{
 				if ( t.OutputEnergyA <= 0.0001 || t.OutputEnergyB <= 0.0001 )
 				{
@@ -134,13 +134,13 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	@Override
 	public void onTunnelNetworkChange()
 	{
-		getHost().notifyNeighbors();
+		this.getHost().notifyNeighbors();
 	}
 
 	@Override
 	public void onTunnelConfigChange()
 	{
-		getHost().partChanged();
+		this.getHost().partChanged();
 	}
 
 	public float getPowerDrainPerTick()
@@ -154,7 +154,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 		TunnelCollection<PartP2PIC2Power> outs;
 		try
 		{
-			outs = getOutputs();
+			outs = this.getOutputs();
 		}
 		catch (GridAccessException e)
 		{
@@ -191,7 +191,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 
 		if ( x != null && x.OutputEnergyA <= 0.001 )
 		{
-			QueueTunnelDrain( PowerUnits.EU, amount );
+			this.QueueTunnelDrain( PowerUnits.EU, amount );
 			x.OutputEnergyA = amount;
 			x.OutputVoltageA = voltage;
 			return 0;
@@ -199,7 +199,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 
 		if ( x != null && x.OutputEnergyB <= 0.001 )
 		{
-			QueueTunnelDrain( PowerUnits.EU, amount );
+			this.QueueTunnelDrain( PowerUnits.EU, amount );
 			x.OutputEnergyB = amount;
 			x.OutputVoltageB = voltage;
 			return 0;
@@ -217,30 +217,30 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	@Override
 	public double getOfferedEnergy()
 	{
-		if ( output )
-			return OutputEnergyA;
+		if ( this.output )
+			return this.OutputEnergyA;
 		return 0;
 	}
 
 	@Override
 	public void drawEnergy(double amount)
 	{
-		OutputEnergyA -= amount;
-		if ( OutputEnergyA < 0.001 )
+		this.OutputEnergyA -= amount;
+		if ( this.OutputEnergyA < 0.001 )
 		{
-			OutputEnergyA = OutputEnergyB;
-			OutputEnergyB = 0;
+			this.OutputEnergyA = this.OutputEnergyB;
+			this.OutputEnergyB = 0;
 
-			OutputVoltageA = OutputVoltageB;
-			OutputVoltageB = 0;
+			this.OutputVoltageA = this.OutputVoltageB;
+			this.OutputVoltageB = 0;
 		}
 	}
 
 	@Override
 	public int getSourceTier()
 	{
-		if ( output )
-			return calculateTierFromVoltage( OutputVoltageA );
+		if ( this.output )
+			return this.calculateTierFromVoltage( this.OutputVoltageA );
 		return 4;
 	}
 

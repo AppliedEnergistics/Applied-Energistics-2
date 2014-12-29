@@ -81,11 +81,11 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 
 	public BlockSkyStone() {
 		super( BlockSkyStone.class, Material.rock );
-		setFeature( EnumSet.of( AEFeature.Core ) );
-		setHardness( 50 );
-		hasSubtypes = true;
-		blockResistance = 150.0f;
-		setHarvestLevel( "pickaxe", 3, 0 );
+		this.setFeature( EnumSet.of( AEFeature.Core ) );
+		this.setHardness( 50 );
+		this.hasSubtypes = true;
+		this.blockResistance = 150.0f;
+		this.setHarvestLevel( "pickaxe", 3, 0 );
 		MinecraftForge.EVENT_BUS.register( this );
 	}
 
@@ -99,15 +99,15 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	public String getUnlocalizedName(ItemStack is)
 	{
 		if ( is.getItemDamage() == 1 )
-			return getUnlocalizedName() + ".Block";
+			return this.getUnlocalizedName() + ".Block";
 
 		if ( is.getItemDamage() == 2 )
-			return getUnlocalizedName() + ".Brick";
+			return this.getUnlocalizedName() + ".Brick";
 
 		if ( is.getItemDamage() == 3 )
-			return getUnlocalizedName() + ".SmallBrick";
+			return this.getUnlocalizedName() + ".SmallBrick";
 
-		return getUnlocalizedName();
+		return this.getUnlocalizedName();
 	}
 
 	@Override
@@ -135,9 +135,9 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	public void registerBlockIcons(IIconRegister ir)
 	{
 		super.registerBlockIcons( ir );
-		Block = ir.registerIcon( getTextureName() + ".Block" );
-		Brick = ir.registerIcon( getTextureName() + ".Brick" );
-		SmallBrick = ir.registerIcon( getTextureName() + ".SmallBrick" );
+		this.Block = ir.registerIcon( this.getTextureName() + ".Block" );
+		this.Brick = ir.registerIcon( this.getTextureName() + ".Brick" );
+		this.SmallBrick = ir.registerIcon( this.getTextureName() + ".SmallBrick" );
 	}
 
 	@Override
@@ -145,18 +145,18 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	public IIcon getIcon(int direction, int metadata)
 	{
 		if ( metadata == 1 )
-			return Block;
+			return this.Block;
 		if ( metadata == 2 )
-			return Brick;
+			return this.Brick;
 		if ( metadata == 3 )
-			return SmallBrick;
+			return this.SmallBrick;
 		return super.getIcon( direction, metadata );
 	}
 
 	@Override
 	public void setRenderStateByMeta(int metadata)
 	{
-		getRendererInstance().setTemporaryRenderIcon( getIcon( 0, metadata ) );
+		this.getRendererInstance().setTemporaryRenderIcon( this.getIcon( 0, metadata ) );
 	}
 
 	@Override
@@ -197,7 +197,7 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 	// use AE2's renderer, no rotatable blocks.
 	int getRealRenderType()
 	{
-		return getRenderType();
+		return this.getRenderType();
 	}
 
 	@Override

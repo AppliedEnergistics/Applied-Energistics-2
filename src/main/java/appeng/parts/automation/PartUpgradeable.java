@@ -35,18 +35,18 @@ public class PartUpgradeable extends PartBasicState implements IAEAppEngInventor
 {
 
 	final IConfigManager settings = new ConfigManager( this );
-	private final UpgradeInventory upgrades = new UpgradeInventory( is, this, getUpgradeSlots() );
+	private final UpgradeInventory upgrades = new UpgradeInventory( this.is, this, this.getUpgradeSlots() );
 
 	@Override
 	public int getInstalledUpgrades(Upgrades u)
 	{
-		return upgrades.getInstalledUpgrades( u );
+		return this.upgrades.getInstalledUpgrades( u );
 	}
 
 	@Override
 	public boolean canConnectRedstone()
 	{
-		return upgrades.getMaxInstalled( Upgrades.REDSTONE ) > 0;
+		return this.upgrades.getMaxInstalled( Upgrades.REDSTONE ) > 0;
 	}
 
 	protected int getUpgradeSlots()
@@ -57,7 +57,7 @@ public class PartUpgradeable extends PartBasicState implements IAEAppEngInventor
 	@Override
 	public void getDrops(List<ItemStack> drops, boolean wrenched)
 	{
-		for (ItemStack is : upgrades)
+		for (ItemStack is : this.upgrades)
 			if ( is != null )
 				drops.add( is );
 	}
@@ -66,34 +66,34 @@ public class PartUpgradeable extends PartBasicState implements IAEAppEngInventor
 	public void writeToNBT(net.minecraft.nbt.NBTTagCompound extra)
 	{
 		super.writeToNBT( extra );
-		settings.writeToNBT( extra );
-		upgrades.writeToNBT( extra, "upgrades" );
+		this.settings.writeToNBT( extra );
+		this.upgrades.writeToNBT( extra, "upgrades" );
 	}
 
 	@Override
 	public void readFromNBT(net.minecraft.nbt.NBTTagCompound extra)
 	{
 		super.readFromNBT( extra );
-		settings.readFromNBT( extra );
-		upgrades.readFromNBT( extra, "upgrades" );
+		this.settings.readFromNBT( extra );
+		this.upgrades.readFromNBT( extra, "upgrades" );
 	}
 
 	public PartUpgradeable(Class c, ItemStack is) {
 		super( c, is );
-		upgrades.setMaxStackSize( 1 );
+		this.upgrades.setMaxStackSize( 1 );
 	}
 
 	@Override
 	public IConfigManager getConfigManager()
 	{
-		return settings;
+		return this.settings;
 	}
 
 	@Override
 	public IInventory getInventoryByName(String name)
 	{
 		if ( name.equals( "upgrades" ) )
-			return upgrades;
+			return this.upgrades;
 
 		return null;
 	}
@@ -112,9 +112,9 @@ public class PartUpgradeable extends PartBasicState implements IAEAppEngInventor
 	@Override
 	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
 	{
-		if ( inv == upgrades )
+		if ( inv == this.upgrades )
 		{
-			upgradesChanged();
+			this.upgradesChanged();
 		}
 	}
 
@@ -125,21 +125,21 @@ public class PartUpgradeable extends PartBasicState implements IAEAppEngInventor
 
 	protected boolean isSleeping()
 	{
-		if ( getInstalledUpgrades( Upgrades.REDSTONE ) > 0 )
+		if ( this.getInstalledUpgrades( Upgrades.REDSTONE ) > 0 )
 		{
-			switch (getRSMode())
+			switch (this.getRSMode())
 			{
 			case IGNORE:
 				return false;
 
 			case HIGH_SIGNAL:
-				if ( host.hasRedstone( side ) )
+				if ( this.host.hasRedstone( this.side ) )
 					return false;
 
 				break;
 
 			case LOW_SIGNAL:
-				if ( !host.hasRedstone( side ) )
+				if ( !this.host.hasRedstone( this.side ) )
 					return false;
 
 				break;

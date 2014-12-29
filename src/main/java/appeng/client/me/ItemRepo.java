@@ -64,30 +64,30 @@ public class ItemRepo
 
 	public IAEItemStack getReferenceItem(int idx)
 	{
-		idx += src.getCurrentScroll() * rowSize;
+		idx += this.src.getCurrentScroll() * this.rowSize;
 
-		if ( idx >= view.size() )
+		if ( idx >= this.view.size() )
 			return null;
-		return view.get( idx );
+		return this.view.get( idx );
 	}
 
 	public ItemStack getItem(int idx)
 	{
-		idx += src.getCurrentScroll() * rowSize;
+		idx += this.src.getCurrentScroll() * this.rowSize;
 
-		if ( idx >= dsp.size() )
+		if ( idx >= this.dsp.size() )
 			return null;
-		return dsp.get( idx );
+		return this.dsp.get( idx );
 	}
 
 	void setSearch(String search)
 	{
-		searchString = search == null ? "" : search;
+		this.searchString = search == null ? "" : search;
 	}
 
 	public void postUpdate(IAEItemStack is)
 	{
-		IAEItemStack st = list.findPrecise( is );
+		IAEItemStack st = this.list.findPrecise( is );
 
 		if ( st != null )
 		{
@@ -95,15 +95,15 @@ public class ItemRepo
 			st.add( is );
 		}
 		else
-			list.add( is );
+			this.list.add( is );
 	}
 
 	IPartitionList<IAEItemStack> myPartitionList;
 
 	public void setViewCell(ItemStack[] list)
 	{
-		myPartitionList = ItemViewCell.createFilter( list );
-		updateView();
+		this.myPartitionList = ItemViewCell.createFilter( list );
+		this.updateView();
 	}
 
 	private String NEIWord = null;
@@ -112,16 +112,16 @@ public class ItemRepo
 	{
 		try
 		{
-			if ( NEIWord == null || !NEIWord.equals( filter ) )
+			if ( this.NEIWord == null || !this.NEIWord.equals( filter ) )
 			{
-				Class c = ReflectionHelper.getClass( getClass().getClassLoader(), "codechicken.nei.LayoutManager" );
+				Class c = ReflectionHelper.getClass( this.getClass().getClassLoader(), "codechicken.nei.LayoutManager" );
 				Field fldSearchField = c.getField( "searchField" );
 				Object searchField = fldSearchField.get( c );
 
 				Method a = searchField.getClass().getMethod( "setText", String.class );
 				Method b = searchField.getClass().getMethod( "onTextChange", String.class );
 
-				NEIWord = filter;
+				this.NEIWord = filter;
 				a.invoke( searchField, filter );
 				b.invoke( searchField, "" );
 			}
@@ -134,38 +134,38 @@ public class ItemRepo
 
 	public void updateView()
 	{
-		view.clear();
-		dsp.clear();
+		this.view.clear();
+		this.dsp.clear();
 
-		view.ensureCapacity( list.size() );
-		dsp.ensureCapacity( list.size() );
+		this.view.ensureCapacity( this.list.size() );
+		this.dsp.ensureCapacity( this.list.size() );
 
-		Enum viewMode = sortSrc.getSortDisplay();
+		Enum viewMode = this.sortSrc.getSortDisplay();
 		Enum searchMode = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
 		if ( searchMode == SearchBoxMode.NEI_AUTOSEARCH || searchMode == SearchBoxMode.NEI_MANUAL_SEARCH )
-			updateNEI( searchString );
+			this.updateNEI( this.searchString );
 
-		innerSearch = searchString;
+		this.innerSearch = this.searchString;
 		boolean terminalSearchToolTips = AEConfig.instance.settings.getSetting( Settings.SEARCH_TOOLTIPS ) != YesNo.NO;
 		// boolean terminalSearchMods = Configuration.instance.settings.getSetting( Settings.SEARCH_MODS ) != YesNo.NO;
 
 		boolean searchMod = false;
-		if ( innerSearch.startsWith( "@" ) )
+		if ( this.innerSearch.startsWith( "@" ) )
 		{
 			searchMod = true;
-			innerSearch = innerSearch.substring( 1 );
+			this.innerSearch = this.innerSearch.substring( 1 );
 		}
 
 		Pattern m = null;
 		try
 		{
-			m = Pattern.compile( innerSearch.toLowerCase(), Pattern.CASE_INSENSITIVE );
+			m = Pattern.compile( this.innerSearch.toLowerCase(), Pattern.CASE_INSENSITIVE );
 		}
 		catch (Throwable ignore)
 		{
 			try
 			{
-				m = Pattern.compile( Pattern.quote( innerSearch.toLowerCase() ), Pattern.CASE_INSENSITIVE );
+				m = Pattern.compile( Pattern.quote( this.innerSearch.toLowerCase() ), Pattern.CASE_INSENSITIVE );
 			}
 			catch (Throwable __)
 			{
@@ -174,11 +174,11 @@ public class ItemRepo
 		}
 
 		boolean notDone = false;
-		for (IAEItemStack is : list)
+		for (IAEItemStack is : this.list)
 		{
-			if ( myPartitionList != null )
+			if ( this.myPartitionList != null )
 			{
-				if ( !myPartitionList.isListed( is ) )
+				if ( !this.myPartitionList.isListed( is ) )
 					continue;
 			}
 
@@ -199,7 +199,7 @@ public class ItemRepo
 
 			if ( m.matcher( dspName.toLowerCase() ).find() )
 			{
-				view.add( is );
+				this.view.add( is );
 				notDone = false;
 			}
 
@@ -208,7 +208,7 @@ public class ItemRepo
 				for (Object lp : Platform.getTooltip( is ))
 					if ( lp instanceof String && m.matcher( (String) lp ).find() )
 					{
-						view.add( is );
+						this.view.add( is );
 						notDone = false;
 						break;
 					}
@@ -220,40 +220,40 @@ public class ItemRepo
 			 */
 		}
 
-		Enum SortBy = sortSrc.getSortBy();
-		Enum SortDir = sortSrc.getSortDir();
+		Enum SortBy = this.sortSrc.getSortBy();
+		Enum SortDir = this.sortSrc.getSortDir();
 
 		ItemSorters.Direction = (appeng.api.config.SortDir) SortDir;
 		ItemSorters.init();
 
 		if ( SortBy == SortOrder.MOD )
-			Collections.sort( view, ItemSorters.ConfigBased_SortByMod );
+			Collections.sort( this.view, ItemSorters.ConfigBased_SortByMod );
 		else if ( SortBy == SortOrder.AMOUNT )
-			Collections.sort( view, ItemSorters.ConfigBased_SortBySize );
+			Collections.sort( this.view, ItemSorters.ConfigBased_SortBySize );
 		else if ( SortBy == SortOrder.INVTWEAKS )
-			Collections.sort( view, ItemSorters.ConfigBased_SortByInvTweaks );
+			Collections.sort( this.view, ItemSorters.ConfigBased_SortByInvTweaks );
 		else
-			Collections.sort( view, ItemSorters.ConfigBased_SortByName );
+			Collections.sort( this.view, ItemSorters.ConfigBased_SortByName );
 
-		for (IAEItemStack is : view)
-			dsp.add( is.getItemStack() );
+		for (IAEItemStack is : this.view)
+			this.dsp.add( is.getItemStack() );
 	}
 
 	public int size()
 	{
-		return view.size();
+		return this.view.size();
 	}
 
 	public void clear()
 	{
-		list.resetStatus();
+		this.list.resetStatus();
 	}
 
 	private boolean hasPower;
 
 	public boolean hasPower()
 	{
-		return hasPower;
+		return this.hasPower;
 	}
 
 	public void setPower(boolean hasPower)

@@ -46,13 +46,13 @@ public class PacketMatterCannon extends AppEngPacket
 	// automatic.
 	public PacketMatterCannon(ByteBuf stream)
 	{
-		x = stream.readFloat();
-		y = stream.readFloat();
-		z = stream.readFloat();
-		dx = stream.readFloat();
-		dy = stream.readFloat();
-		dz = stream.readFloat();
-		len = stream.readByte();
+		this.x = stream.readFloat();
+		this.y = stream.readFloat();
+		this.z = stream.readFloat();
+		this.dx = stream.readFloat();
+		this.dy = stream.readFloat();
+		this.dz = stream.readFloat();
+		this.len = stream.readByte();
 	}
 
 	@Override
@@ -63,9 +63,9 @@ public class PacketMatterCannon extends AppEngPacket
 		{
 
 			World world = FMLClientHandler.instance().getClient().theWorld;
-			for (int a = 1; a < len; a++)
+			for (int a = 1; a < this.len; a++)
 			{
-				MatterCannonFX fx = new MatterCannonFX( world, x + dx * a, y + dy * a, z + dz * a, Items.diamond );
+				MatterCannonFX fx = new MatterCannonFX( world, this.x + this.dx * a, this.y + this.dy * a, this.z + this.dz * a, Items.diamond );
 
 				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 			}
@@ -91,7 +91,7 @@ public class PacketMatterCannon extends AppEngPacket
 
 		ByteBuf data = Unpooled.buffer();
 
-		data.writeInt( getPacketID() );
+		data.writeInt( this.getPacketID() );
 		data.writeFloat( (float) x );
 		data.writeFloat( (float) y );
 		data.writeFloat( (float) z );
@@ -100,7 +100,7 @@ public class PacketMatterCannon extends AppEngPacket
 		data.writeFloat( (float) this.dz );
 		data.writeByte( len );
 
-		configureWrite( data );
+		this.configureWrite( data );
 	}
 
 }

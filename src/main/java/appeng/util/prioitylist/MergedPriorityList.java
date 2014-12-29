@@ -32,21 +32,21 @@ public class MergedPriorityList<T extends IAEStack<T>> implements IPartitionList
 	public void addNewList(IPartitionList<T> list, boolean isWhitelist)
 	{
 		if ( isWhitelist )
-			positive.add( list );
+			this.positive.add( list );
 		else
-			negative.add( list );
+			this.negative.add( list );
 	}
 
 	@Override
 	public boolean isListed(T input)
 	{
-		for (IPartitionList<T> l : negative)
+		for (IPartitionList<T> l : this.negative)
 			if ( l.isListed( input ) )
 				return false;
 
-		if ( !positive.isEmpty() )
+		if ( !this.positive.isEmpty() )
 		{
-			for (IPartitionList<T> l : positive)
+			for (IPartitionList<T> l : this.positive)
 				if ( l.isListed( input ) )
 					return true;
 
@@ -59,7 +59,7 @@ public class MergedPriorityList<T extends IAEStack<T>> implements IPartitionList
 	@Override
 	public boolean isEmpty()
 	{
-		return positive.isEmpty() && negative.isEmpty();
+		return this.positive.isEmpty() && this.negative.isEmpty();
 	}
 
 	@Override

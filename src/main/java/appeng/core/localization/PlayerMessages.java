@@ -29,12 +29,12 @@ public enum PlayerMessages
 
 	String getName()
 	{
-		return "chat.appliedenergistics2." + toString();
+		return "chat.appliedenergistics2." + this.toString();
 	}
 
 	public IChatComponent get()
 	{
-		return new ChatComponentTranslation( getName() );
+		return new ChatComponentTranslation( this.getName() );
 	}
 
 }

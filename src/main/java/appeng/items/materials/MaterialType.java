@@ -100,70 +100,70 @@ public enum MaterialType
 	public MaterialStackSrc stackSrc;
 
 	MaterialType(int metaValue) {
-		damageValue = metaValue;
-		features = EnumSet.of( AEFeature.Core );
+		this.damageValue = metaValue;
+		this.features = EnumSet.of( AEFeature.Core );
 	}
 
 	MaterialType(int metaValue, AEFeature part) {
-		damageValue = metaValue;
-		features = EnumSet.of( part );
+		this.damageValue = metaValue;
+		this.features = EnumSet.of( part );
 	}
 
 	MaterialType(int metaValue, AEFeature part, Class<? extends Entity> c) {
-		features = EnumSet.of( part );
-		damageValue = metaValue;
-		droppedEntity = c;
+		this.features = EnumSet.of( part );
+		this.damageValue = metaValue;
+		this.droppedEntity = c;
 
-		EntityRegistry.registerModEntity( droppedEntity, droppedEntity.getSimpleName(), EntityIds.get( droppedEntity ), AppEng.instance, 16, 4, true );
+		EntityRegistry.registerModEntity( this.droppedEntity, this.droppedEntity.getSimpleName(), EntityIds.get( this.droppedEntity ), AppEng.instance, 16, 4, true );
 	}
 
 	MaterialType(int metaValue, AEFeature part, String oreDictionary, Class<? extends Entity> c) {
-		features = EnumSet.of( part );
-		damageValue = metaValue;
-		oreName = oreDictionary;
-		droppedEntity = c;
-		EntityRegistry.registerModEntity( droppedEntity, droppedEntity.getSimpleName(), EntityIds.get( droppedEntity ), AppEng.instance, 16, 4, true );
+		this.features = EnumSet.of( part );
+		this.damageValue = metaValue;
+		this.oreName = oreDictionary;
+		this.droppedEntity = c;
+		EntityRegistry.registerModEntity( this.droppedEntity, this.droppedEntity.getSimpleName(), EntityIds.get( this.droppedEntity ), AppEng.instance, 16, 4, true );
 	}
 
 	MaterialType(int metaValue, AEFeature part, String oreDictionary) {
-		features = EnumSet.of( part );
-		damageValue = metaValue;
-		oreName = oreDictionary;
+		this.features = EnumSet.of( part );
+		this.damageValue = metaValue;
+		this.oreName = oreDictionary;
 	}
 
 	public ItemStack stack(int size)
 	{
-		return new ItemStack( itemInstance, size, damageValue );
+		return new ItemStack( this.itemInstance, size, this.damageValue );
 	}
 
 	public EnumSet<AEFeature> getFeature()
 	{
-		return features;
+		return this.features;
 	}
 
 	public String getOreName()
 	{
-		return oreName;
+		return this.oreName;
 	}
 
 	public boolean hasCustomEntity()
 	{
-		return droppedEntity != null;
+		return this.droppedEntity != null;
 	}
 
 	public Class<? extends Entity> getCustomEntityClass()
 	{
-		return droppedEntity;
+		return this.droppedEntity;
 	}
 
 	public boolean isRegistered()
 	{
-		return isRegistered;
+		return this.isRegistered;
 	}
 
 	public void markReady()
 	{
-		isRegistered = true;
+		this.isRegistered = true;
 	}
 
 }

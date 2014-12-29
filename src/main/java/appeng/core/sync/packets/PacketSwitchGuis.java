@@ -40,7 +40,7 @@ public class PacketSwitchGuis extends AppEngPacket
 	// automatic.
 	public PacketSwitchGuis(ByteBuf stream)
 	{
-		newGui = GuiBridge.values()[stream.readInt()];
+		this.newGui = GuiBridge.values()[stream.readInt()];
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class PacketSwitchGuis extends AppEngPacket
 			if ( context != null )
 			{
 				TileEntity te = context.getTile();
-				Platform.openGUI( player, te, context.side, newGui );
+				Platform.openGUI( player, te, context.side, this.newGui );
 			}
 		}
 	}
@@ -75,9 +75,9 @@ public class PacketSwitchGuis extends AppEngPacket
 
 		ByteBuf data = Unpooled.buffer();
 
-		data.writeInt( getPacketID() );
+		data.writeInt( this.getPacketID() );
 		data.writeInt( newGui.ordinal() );
 
-		configureWrite( data );
+		this.configureWrite( data );
 	}
 }

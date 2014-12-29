@@ -42,7 +42,7 @@ public class GuiSpatialIOPort extends AEBaseGui
 	public GuiSpatialIOPort(InventoryPlayer inventoryPlayer, TileSpatialIOPort te) {
 		super( new ContainerSpatialIOPort( inventoryPlayer, te ) );
 		this.ySize = 199;
-		container = (ContainerSpatialIOPort) inventorySlots;
+		this.container = (ContainerSpatialIOPort) this.inventorySlots;
 	}
 
 	@Override
@@ -52,10 +52,10 @@ public class GuiSpatialIOPort extends AEBaseGui
 
 		boolean backwards = Mouse.isButtonDown( 1 );
 
-		if ( btn == units )
+		if ( btn == this.units )
 		{
 			AEConfig.instance.nextPowerUnit( backwards );
-			units.set( AEConfig.instance.selectedPowerUnit() );
+			this.units.set( AEConfig.instance.selectedPowerUnit() );
 		}
 	}
 
@@ -64,27 +64,27 @@ public class GuiSpatialIOPort extends AEBaseGui
 	{
 		super.initGui();
 
-		units = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.POWER_UNITS, AEConfig.instance.selectedPowerUnit() );
-		buttonList.add( units );
+		this.units = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.POWER_UNITS, AEConfig.instance.selectedPowerUnit() );
+		this.buttonList.add( this.units );
 	}
 
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		bindTexture( "guis/spatialio.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, xSize, ySize );
+		this.bindTexture( "guis/spatialio.png" );
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 	}
 
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString( GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong( container.currentPower, false ), 13, 21, 4210752 );
-		fontRendererObj.drawString( GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong( container.maxPower, false ), 13, 31, 4210752 );
-		fontRendererObj.drawString( GuiText.RequiredPower.getLocal() + ": " + Platform.formatPowerLong( container.reqPower, false ), 13, 78, 4210752 );
-		fontRendererObj.drawString( GuiText.Efficiency.getLocal() + ": " + (((float) container.eff) / 100) + '%', 13, 88, 4210752 );
+		this.fontRendererObj.drawString( GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong( this.container.currentPower, false ), 13, 21, 4210752 );
+		this.fontRendererObj.drawString( GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong( this.container.maxPower, false ), 13, 31, 4210752 );
+		this.fontRendererObj.drawString( GuiText.RequiredPower.getLocal() + ": " + Platform.formatPowerLong( this.container.reqPower, false ), 13, 78, 4210752 );
+		this.fontRendererObj.drawString( GuiText.Efficiency.getLocal() + ": " + (((float) this.container.eff) / 100) + '%', 13, 88, 4210752 );
 
-		fontRendererObj.drawString( getGuiDisplayName( GuiText.SpatialIOPort.getLocal() ), 8, 6, 4210752 );
-		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96, 4210752 );
+		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.SpatialIOPort.getLocal() ), 8, 6, 4210752 );
+		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96, 4210752 );
 	}
 
 }

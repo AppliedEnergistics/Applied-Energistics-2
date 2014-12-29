@@ -37,8 +37,8 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 	public DriveWatcher(IMEInventory<T> i, ItemStack is, ICellHandler han, IChestOrDrive cod) {
 		super( i, i.getChannel() );
 		this.is = is;
-		handler = han;
-		cord = cod;
+		this.handler = han;
+		this.cord = cod;
 	}
 
 	@Override
@@ -50,11 +50,11 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 
 		if ( a == null || a.getStackSize() != size )
 		{
-			int newStatus = handler.getStatusForCell( is, getInternal() );
+			int newStatus = this.handler.getStatusForCell( this.is, this.getInternal() );
 
-			if ( newStatus != oldStatus )
+			if ( newStatus != this.oldStatus )
 			{
-				cord.blinkCell( getSlot() );
+				this.cord.blinkCell( this.getSlot() );
 			}
 		}
 
@@ -68,11 +68,11 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 
 		if ( a != null )
 		{
-			int newStatus = handler.getStatusForCell( is, getInternal() );
+			int newStatus = this.handler.getStatusForCell( this.is, this.getInternal() );
 
-			if ( newStatus != oldStatus )
+			if ( newStatus != this.oldStatus )
 			{
-				cord.blinkCell( getSlot() );
+				this.cord.blinkCell( this.getSlot() );
 			}
 		}
 

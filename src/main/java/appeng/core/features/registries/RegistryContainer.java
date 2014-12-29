@@ -52,73 +52,73 @@ public class RegistryContainer implements IRegistryContainer
 	@Override
 	public IWirelessTermRegistry wireless()
 	{
-		return WirelessRegistry;
+		return this.WirelessRegistry;
 	}
 
 	@Override
 	public ICellRegistry cell()
 	{
-		return CellRegistry;
+		return this.CellRegistry;
 	}
 
 	@Override
 	public IGrinderRegistry grinder()
 	{
-		return GrinderRecipes;
+		return this.GrinderRecipes;
 	}
 
 	@Override
 	public ISpecialComparisonRegistry specialComparison()
 	{
-		return SpecialComparisonRegistry;
+		return this.SpecialComparisonRegistry;
 	}
 
 	@Override
 	public IExternalStorageRegistry externalStorage()
 	{
-		return ExternalStorageHandlers;
+		return this.ExternalStorageHandlers;
 	}
 
 	@Override
 	public ILocatableRegistry locatable()
 	{
-		return LocatableRegistry;
+		return this.LocatableRegistry;
 	}
 
 	@Override
 	public IGridCacheRegistry gridCache()
 	{
-		return GridCacheRegistry;
+		return this.GridCacheRegistry;
 	}
 
 	@Override
 	public IMovableRegistry movable()
 	{
-		return MovableReg;
+		return this.MovableReg;
 	}
 
 	@Override
 	public IP2PTunnelRegistry p2pTunnel()
 	{
-		return P2PRegistry;
+		return this.P2PRegistry;
 	}
 
 	@Override
 	public IMatterCannonAmmoRegistry matterCannon()
 	{
-		return matterCannonReg;
+		return this.matterCannonReg;
 	}
 
 	@Override
 	public IPlayerRegistry players()
 	{
-		return playerRegistry;
+		return this.playerRegistry;
 	}
 
 	@Override
 	public IRecipeHandlerRegistry recipes()
 	{
-		return recipeReg;
+		return this.recipeReg;
 	}
 
 	@Override

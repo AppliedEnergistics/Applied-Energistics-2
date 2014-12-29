@@ -40,20 +40,20 @@ public class ContainerWireless extends AEBaseContainer
 
 	public ContainerWireless(InventoryPlayer ip, TileWireless te) {
 		super( ip, te, null );
-		wirelessTerminal = te;
+		this.wirelessTerminal = te;
 
-		addSlotToContainer( boosterSlot = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.RANGE_BOOSTER, wirelessTerminal, 0, 80, 47, invPlayer ) );
+		this.addSlotToContainer( this.boosterSlot = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.RANGE_BOOSTER, this.wirelessTerminal, 0, 80, 47, this.invPlayer ) );
 
-		bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
+		this.bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
 	}
 
 	@Override
 	public void detectAndSendChanges()
 	{
-		int boosters = boosterSlot.getStack() == null ? 0 : boosterSlot.getStack().stackSize;
+		int boosters = this.boosterSlot.getStack() == null ? 0 : this.boosterSlot.getStack().stackSize;
 
-		range = (long) (10 * AEConfig.instance.wireless_getMaxRange( boosters ));
-		drain = (long) (100 * AEConfig.instance.wireless_getPowerDrain( boosters ));
+		this.range = (long) (10 * AEConfig.instance.wireless_getMaxRange( boosters ));
+		this.drain = (long) (100 * AEConfig.instance.wireless_getPowerDrain( boosters ));
 
 		super.detectAndSendChanges();
 	}

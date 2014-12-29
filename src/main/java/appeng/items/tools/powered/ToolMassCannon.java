@@ -84,8 +84,8 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 	public ToolMassCannon()
 	{
 		super( ToolMassCannon.class, Optional.<String> absent() );
-		setFeature( EnumSet.of( AEFeature.MatterCannon, AEFeature.PoweredTools ) );
-		maxStoredPower = AEConfig.instance.matterCannonBattery;
+		this.setFeature( EnumSet.of( AEFeature.MatterCannon, AEFeature.PoweredTools ) );
+		this.maxStoredPower = AEConfig.instance.matterCannonBattery;
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 		{
 			int shots = 1;
 
-			CellUpgrades cu = ( CellUpgrades ) getUpgradesInventory( item );
+			CellUpgrades cu = ( CellUpgrades ) this.getUpgradesInventory( item );
 			if ( cu != null )
 				shots += cu.getInstalledUpgrades( Upgrades.SPEED );
 
@@ -134,7 +134,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 					shots = Math.min( shots, ( int ) aeAmmo.getStackSize() );
 					for ( int sh = 0; sh < shots; sh++ )
 					{
-						extractAEPower( item, 1600 );
+						this.extractAEPower( item, 1600 );
 
 						if ( Platform.isClient() )
 							return item;
@@ -174,13 +174,13 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 							ItemStack type = ( ( IAEItemStack ) aeAmmo ).getItemStack();
 							if ( type.getItem() instanceof ItemPaintBall )
 							{
-								shootPaintBalls( type, w, p, vec3, vec31, direction, d0, d1, d2 );
+								this.shootPaintBalls( type, w, p, vec3, vec31, direction, d0, d1, d2 );
 							}
 							return item;
 						}
 						else
 						{
-							standardAmmo( penetration, w, p, vec3, vec31, direction, d0, d1, d2 );
+							this.standardAmmo( penetration, w, p, vec3, vec31, direction, d0, d1, d2 );
 						}
 
 					}

@@ -66,20 +66,20 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 
 	public double getRange()
 	{
-		return myRange;
+		return this.myRange;
 	}
 
 	public WirelessTerminalGuiObject(IWirelessTermHandler wh, ItemStack is, EntityPlayer ep, World w, int x, int y, int z) {
-		encryptionKey = wh.getEncryptionKey( is );
-		effectiveItem = is;
-		myPlayer = ep;
-		wth = wh;
+		this.encryptionKey = wh.getEncryptionKey( is );
+		this.effectiveItem = is;
+		this.myPlayer = ep;
+		this.wth = wh;
 
 		Object obj = null;
 
 		try
 		{
-			long encKey = Long.parseLong( encryptionKey );
+			long encKey = Long.parseLong( this.encryptionKey );
 			obj = AEApi.instance().registries().locatable().findLocatableBySerial( encKey );
 		}
 		catch (NumberFormatException err)
@@ -92,12 +92,12 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 			IGridNode n = ((IGridHost) obj).getGridNode( ForgeDirection.UNKNOWN );
 			if ( n != null )
 			{
-				targetGrid = n.getGrid();
-				if ( targetGrid != null )
+				this.targetGrid = n.getGrid();
+				if ( this.targetGrid != null )
 				{
-					sg = targetGrid.getCache( IStorageGrid.class );
-					if ( sg != null )
-						itemStorage = sg.getItemInventory();
+					this.sg = this.targetGrid.getCache( IStorageGrid.class );
+					if ( this.sg != null )
+						this.itemStorage = this.sg.getItemInventory();
 				}
 			}
 		}
@@ -105,32 +105,32 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 
 	public boolean rangeCheck()
 	{
-		sqRange = myRange = Double.MAX_VALUE;
+		this.sqRange = this.myRange = Double.MAX_VALUE;
 
-		if ( targetGrid != null && itemStorage != null )
+		if ( this.targetGrid != null && this.itemStorage != null )
 		{
-			if ( myWap != null )
+			if ( this.myWap != null )
 			{
-				if ( myWap.getGrid() == targetGrid )
+				if ( this.myWap.getGrid() == this.targetGrid )
 				{
-					if ( testWap( myWap ) )
+					if ( this.testWap( this.myWap ) )
 						return true;
 				}
 				return false;
 			}
 
-			IMachineSet tw = targetGrid.getMachines( TileWireless.class );
+			IMachineSet tw = this.targetGrid.getMachines( TileWireless.class );
 
-			myWap = null;
+			this.myWap = null;
 
 			for (IGridNode n : tw)
 			{
 				IWirelessAccessPoint wap = (IWirelessAccessPoint) n.getMachine();
-				if ( testWap( wap ) )
-					myWap = wap;
+				if ( this.testWap( wap ) )
+					this.myWap = wap;
 			}
 
-			return myWap != null;
+			return this.myWap != null;
 		}
 		return false;
 	}
@@ -142,19 +142,19 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 
 		DimensionalCoord dc = wap.getLocation();
 
-		if ( dc.getWorld() == myPlayer.worldObj )
+		if ( dc.getWorld() == this.myPlayer.worldObj )
 		{
-			double offX = dc.x - myPlayer.posX;
-			double offY = dc.y - myPlayer.posY;
-			double offZ = dc.z - myPlayer.posZ;
+			double offX = dc.x - this.myPlayer.posX;
+			double offY = dc.y - this.myPlayer.posY;
+			double offZ = dc.z - this.myPlayer.posZ;
 
 			double r = offX * offX + offY * offY + offZ * offZ;
-			if ( r < rangeLimit && sqRange > r )
+			if ( r < rangeLimit && this.sqRange > r )
 			{
 				if ( wap.isActive() )
 				{
-					sqRange = r;
-					myRange = Math.sqrt( r );
+					this.sqRange = r;
+					this.myRange = Math.sqrt( r );
 					return true;
 				}
 			}
@@ -165,121 +165,121 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 	@Override
 	public IMEMonitor<IAEItemStack> getItemInventory()
 	{
-		if ( sg == null )
+		if ( this.sg == null )
 			return null;
-		return sg.getItemInventory();
+		return this.sg.getItemInventory();
 	}
 
 	@Override
 	public IMEMonitor<IAEFluidStack> getFluidInventory()
 	{
-		if ( sg == null )
+		if ( this.sg == null )
 			return null;
-		return sg.getFluidInventory();
+		return this.sg.getFluidInventory();
 	}
 
 	@Override
 	public void addListener(IMEMonitorHandlerReceiver<IAEItemStack> l, Object verificationToken)
 	{
-		if ( itemStorage != null )
-			itemStorage.addListener( l, verificationToken );
+		if ( this.itemStorage != null )
+			this.itemStorage.addListener( l, verificationToken );
 	}
 
 	@Override
 	public void removeListener(IMEMonitorHandlerReceiver<IAEItemStack> l)
 	{
-		if ( itemStorage != null )
-			itemStorage.removeListener( l );
+		if ( this.itemStorage != null )
+			this.itemStorage.removeListener( l );
 	}
 
 	@Override
 	public IItemList<IAEItemStack> getAvailableItems(IItemList out)
 	{
-		if ( itemStorage != null )
-			return itemStorage.getAvailableItems( out );
+		if ( this.itemStorage != null )
+			return this.itemStorage.getAvailableItems( out );
 		return out;
 	}
 
 	@Override
 	public IItemList<IAEItemStack> getStorageList()
 	{
-		if ( itemStorage != null )
-			return itemStorage.getStorageList();
+		if ( this.itemStorage != null )
+			return this.itemStorage.getStorageList();
 		return null;
 	}
 
 	@Override
 	public AccessRestriction getAccess()
 	{
-		if ( itemStorage != null )
-			return itemStorage.getAccess();
+		if ( this.itemStorage != null )
+			return this.itemStorage.getAccess();
 		return AccessRestriction.NO_ACCESS;
 	}
 
 	@Override
 	public boolean isPrioritized(IAEItemStack input)
 	{
-		if ( itemStorage != null )
-			return itemStorage.isPrioritized( input );
+		if ( this.itemStorage != null )
+			return this.itemStorage.isPrioritized( input );
 		return false;
 	}
 
 	@Override
 	public boolean canAccept(IAEItemStack input)
 	{
-		if ( itemStorage != null )
-			return itemStorage.canAccept( input );
+		if ( this.itemStorage != null )
+			return this.itemStorage.canAccept( input );
 		return false;
 	}
 
 	@Override
 	public int getPriority()
 	{
-		if ( itemStorage != null )
-			return itemStorage.getPriority();
+		if ( this.itemStorage != null )
+			return this.itemStorage.getPriority();
 		return 0;
 	}
 
 	@Override
 	public int getSlot()
 	{
-		if ( itemStorage != null )
-			return itemStorage.getSlot();
+		if ( this.itemStorage != null )
+			return this.itemStorage.getSlot();
 		return 0;
 	}
 
 	@Override
 	public IAEItemStack injectItems(IAEItemStack input, Actionable type, BaseActionSource src)
 	{
-		if ( itemStorage != null )
-			return itemStorage.injectItems( input, type, src );
+		if ( this.itemStorage != null )
+			return this.itemStorage.injectItems( input, type, src );
 		return input;
 	}
 
 	@Override
 	public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src)
 	{
-		if ( itemStorage != null )
-			return itemStorage.extractItems( request, mode, src );
+		if ( this.itemStorage != null )
+			return this.itemStorage.extractItems( request, mode, src );
 		return null;
 	}
 
 	@Override
 	public StorageChannel getChannel()
 	{
-		if ( itemStorage != null )
-			return itemStorage.getChannel();
+		if ( this.itemStorage != null )
+			return this.itemStorage.getChannel();
 		return StorageChannel.ITEMS;
 	}
 
 	@Override
 	public double extractAEPower(double amt, Actionable mode, PowerMultiplier usePowerMultiplier)
 	{
-		if ( wth != null && effectiveItem != null )
+		if ( this.wth != null && this.effectiveItem != null )
 		{
 			if ( mode == Actionable.SIMULATE )
-				return wth.hasPower( myPlayer, amt, getItemStack() ) ? amt : 0;
-			return wth.usePower( myPlayer, amt, getItemStack() ) ? amt : 0;
+				return this.wth.hasPower( this.myPlayer, amt, this.getItemStack() ) ? amt : 0;
+			return this.wth.usePower( this.myPlayer, amt, this.getItemStack() ) ? amt : 0;
 		}
 		return 0.0;
 	}
@@ -287,13 +287,13 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 	@Override
 	public ItemStack getItemStack()
 	{
-		return effectiveItem;
+		return this.effectiveItem;
 	}
 
 	@Override
 	public IConfigManager getConfigManager()
 	{
-		return wth.getConfigManager( effectiveItem );
+		return this.wth.getConfigManager( this.effectiveItem );
 	}
 
 	@Override
@@ -317,16 +317,16 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 	@Override
 	public IGridNode getActionableNode()
 	{
-		rangeCheck();
-		if ( myWap != null )
-			return myWap.getActionableNode();
+		this.rangeCheck();
+		if ( this.myWap != null )
+			return this.myWap.getActionableNode();
 		return null;
 	}
 
 	@Override
 	public boolean validForPass(int i)
 	{
-		return itemStorage.validForPass( i );
+		return this.itemStorage.validForPass( i );
 	}
 
 }

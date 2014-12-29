@@ -29,7 +29,7 @@ public class CraftingCalculationFailure extends RuntimeException
 
 	public CraftingCalculationFailure(IAEItemStack what, long howMany) {
 		super( "this should have been caught!" );
-		missing = what.copy();
-		missing.setStackSize( howMany );
+		this.missing = what.copy();
+		this.missing.setStackSize( howMany );
 	}
 }

@@ -30,7 +30,7 @@ public class TileCreativeEnergyCell extends AENetworkTile implements IAEPowerSto
 {
 
 	public TileCreativeEnergyCell() {
-		gridProxy.setIdlePowerUsage( 0 );
+		this.gridProxy.setIdlePowerUsage( 0 );
 	}
 
 	@Override

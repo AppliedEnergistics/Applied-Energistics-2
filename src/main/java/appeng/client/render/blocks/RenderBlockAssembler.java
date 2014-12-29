@@ -80,42 +80,42 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 	{
 		IIcon texture = null;
 
-		block.getRendererInstance().setTemporaryRenderIcon( texture = getConnectedCable( world, x, y, z, ForgeDirection.WEST, covered ) );
+		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.WEST, covered ) );
 		if ( texture != null )
 		{
 			renderer.setRenderBounds( 0.0D, 0.5D - Thickness, 0.5D - Thickness, 0.5D - Thickness - pull, 0.5D + Thickness, 0.5D + Thickness );
 			renderer.renderStandardBlock( block, x, y, z );
 		}
 
-		block.getRendererInstance().setTemporaryRenderIcon( texture = getConnectedCable( world, x, y, z, ForgeDirection.EAST, covered ) );
+		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.EAST, covered ) );
 		if ( texture != null )
 		{
 			renderer.setRenderBounds( 0.5D + Thickness + pull, 0.5D - Thickness, 0.5D - Thickness, 1.0D, 0.5D + Thickness, 0.5D + Thickness );
 			renderer.renderStandardBlock( block, x, y, z );
 		}
 
-		block.getRendererInstance().setTemporaryRenderIcon( texture = getConnectedCable( world, x, y, z, ForgeDirection.NORTH, covered ) );
+		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.NORTH, covered ) );
 		if ( texture != null )
 		{
 			renderer.setRenderBounds( 0.5D - Thickness, 0.5D - Thickness, 0.0D, 0.5D + Thickness, 0.5D + Thickness, 0.5D - Thickness - pull );
 			renderer.renderStandardBlock( block, x, y, z );
 		}
 
-		block.getRendererInstance().setTemporaryRenderIcon( texture = getConnectedCable( world, x, y, z, ForgeDirection.SOUTH, covered ) );
+		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.SOUTH, covered ) );
 		if ( texture != null )
 		{
 			renderer.setRenderBounds( 0.5D - Thickness, 0.5D - Thickness, 0.5D + Thickness + pull, 0.5D + Thickness, 0.5D + Thickness, 1.0D );
 			renderer.renderStandardBlock( block, x, y, z );
 		}
 
-		block.getRendererInstance().setTemporaryRenderIcon( texture = getConnectedCable( world, x, y, z, ForgeDirection.DOWN, covered ) );
+		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.DOWN, covered ) );
 		if ( texture != null )
 		{
 			renderer.setRenderBounds( 0.5D - Thickness, 0.0D, 0.5D - Thickness, 0.5D + Thickness, 0.5D - Thickness - pull, 0.5D + Thickness );
 			renderer.renderStandardBlock( block, x, y, z );
 		}
 
-		block.getRendererInstance().setTemporaryRenderIcon( texture = getConnectedCable( world, x, y, z, ForgeDirection.UP, covered ) );
+		block.getRendererInstance().setTemporaryRenderIcon( texture = this.getConnectedCable( world, x, y, z, ForgeDirection.UP, covered ) );
 		if ( texture != null )
 		{
 			renderer.setRenderBounds( 0.5D - Thickness, 0.5D + Thickness + pull, 0.5D - Thickness, 0.5D + Thickness, 1.0D, 0.5D + Thickness );
@@ -134,44 +134,44 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 	{
 		renderer.setOverrideBlockTexture( blk.getIcon( 0, 0 ) );
 
-		setInvRenderBounds( renderer, 2, 14, 0, 14, 16, 2 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 2, 14, 0, 14, 16, 2 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 0, 14, 2, 2, 16, 14 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 0, 14, 2, 2, 16, 14 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 2, 0, 14, 14, 2, 16 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 2, 0, 14, 14, 2, 16 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 14, 0, 2, 16, 2, 14 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 14, 0, 2, 16, 2, 14 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 0, 0, 0, 16, 2, 2 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 0, 0, 0, 16, 2, 2 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 0, 2, 0, 2, 16, 2 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 0, 2, 0, 2, 16, 2 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 0, 0, 2, 2, 2, 16 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 0, 0, 2, 2, 2, 16 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 0, 14, 14, 16, 16, 16 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 0, 14, 14, 16, 16, 16 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 14, 0, 14, 16, 14, 16 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 14, 0, 14, 16, 14, 16 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 14, 14, 0, 16, 16, 14 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 14, 14, 0, 16, 16, 14 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 14, 2, 0, 16, 14, 2 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 14, 2, 0, 16, 14, 2 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 0, 2, 14, 2, 14, 16 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 0, 2, 14, 2, 14, 16 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 1, 1, 1, 15, 15, 15 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 1, 1, 1, 15, 15, 15 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, Tessellator.instance, 0xffffff, renderer );
 
 		renderer.setOverrideBlockTexture( null );
 	}
@@ -186,7 +186,7 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 		{
 			if ( tma.isPowered() )
 			{
-				renderBlockBounds( renderer, 1, 1, 1, 15, 15, 15, ForgeDirection.WEST, ForgeDirection.UP, ForgeDirection.SOUTH );
+				this.renderBlockBounds( renderer, 1, 1, 1, 15, 15, 15, ForgeDirection.WEST, ForgeDirection.UP, ForgeDirection.SOUTH );
 				TaughtIcon lights = new TaughtIcon( ExtraBlockTextures.BlockMolecularAssemblerLights.getIcon(), -2.0f );
 				Tessellator.instance.setColorRGBA_F( 1, 1, 1, 0.3f );
 				Tessellator.instance.setBrightness( 14 << 20 | 14 << 4 );
@@ -204,12 +204,12 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 		BusRenderer.instance.renderer.blockAccess = renderer.blockAccess;
 		renderer = BusRenderer.instance.renderer;
 
-		preRenderInWorld( block, world, x, y, z, renderer );
+		this.preRenderInWorld( block, world, x, y, z, renderer );
 
 		tma.lightCache = BusRenderHelper.instance.useSimplifiedRendering( x, y, z, this, tma.lightCache );
 
 		BusRenderer.instance.renderer.isFacade = true;
-		IOrientable te = getOrientable( block, world, x, y, z );
+		IOrientable te = this.getOrientable( block, world, x, y, z );
 
 		ForgeDirection fdy = te.getUp();
 		ForgeDirection fdz = te.getForward();
@@ -217,49 +217,49 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 
 		renderer.renderAllFaces = true;
 
-		renderCableAt( 0.11D, world, x, y, z, block, renderer, 0.141D, false );
-		renderCableAt( 0.188D, world, x, y, z, block, renderer, 0.1875D, true );
+		this.renderCableAt( 0.11D, world, x, y, z, block, renderer, 0.141D, false );
+		this.renderCableAt( 0.188D, world, x, y, z, block, renderer, 0.1875D, true );
 
 		blk.getRendererInstance().setTemporaryRenderIcon( blk.getIcon( 0, 0 ) );
 
-		renderBlockBounds( renderer, 2, 14, 0, 14, 16, 2, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 2, 14, 0, 14, 16, 2, fdx, fdy, fdz );
 		renderer.renderStandardBlock( blk, x, y, z );
 
-		renderBlockBounds( renderer, 0, 14, 2, 2, 16, 14, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 0, 14, 2, 2, 16, 14, fdx, fdy, fdz );
 		renderer.renderStandardBlock( blk, x, y, z );
 
-		renderBlockBounds( renderer, 2, 0, 14, 14, 2, 16, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 2, 0, 14, 14, 2, 16, fdx, fdy, fdz );
 		renderer.renderStandardBlock( blk, x, y, z );
 
-		renderBlockBounds( renderer, 14, 0, 2, 16, 2, 14, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 14, 0, 2, 16, 2, 14, fdx, fdy, fdz );
 		renderer.renderStandardBlock( blk, x, y, z );
 
 		// sides...
-		renderBlockBounds( renderer, 0, 0, 0, 16, 2, 2, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 0, 0, 0, 16, 2, 2, fdx, fdy, fdz );
 		renderer.renderStandardBlock( blk, x, y, z );
 
-		renderBlockBounds( renderer, 0, 2, 0, 2, 16, 2, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 0, 2, 0, 2, 16, 2, fdx, fdy, fdz );
 		renderer.renderStandardBlock( blk, x, y, z );
 
-		renderBlockBounds( renderer, 0, 0, 2, 2, 2, 16, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 0, 0, 2, 2, 2, 16, fdx, fdy, fdz );
 		renderer.renderStandardBlock( blk, x, y, z );
 
-		renderBlockBounds( renderer, 0, 14, 14, 16, 16, 16, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 0, 14, 14, 16, 16, 16, fdx, fdy, fdz );
 		renderer.renderStandardBlock( blk, x, y, z );
 
-		renderBlockBounds( renderer, 14, 0, 14, 16, 14, 16, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 14, 0, 14, 16, 14, 16, fdx, fdy, fdz );
 		renderer.renderStandardBlock( blk, x, y, z );
 
-		renderBlockBounds( renderer, 14, 14, 0, 16, 16, 14, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 14, 14, 0, 16, 16, 14, fdx, fdy, fdz );
 		renderer.renderStandardBlock( blk, x, y, z );
 
-		renderBlockBounds( renderer, 14, 2, 0, 16, 14, 2, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 14, 2, 0, 16, 14, 2, fdx, fdy, fdz );
 		renderer.renderStandardBlock( blk, x, y, z );
 
-		renderBlockBounds( renderer, 0, 2, 14, 2, 14, 16, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 0, 2, 14, 2, 14, 16, fdx, fdy, fdz );
 		renderer.renderStandardBlock( blk, x, y, z );
 
-		renderBlockBounds( renderer, 1, 1, 1, 15, 15, 15, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 1, 1, 1, 15, 15, 15, fdx, fdy, fdz );
 		renderer.renderStandardBlock( blk, x, y, z );
 
 		BusRenderHelper.instance.normalRendering();
@@ -269,7 +269,7 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 		renderer.renderAllFaces = false;
 		BusRenderer.instance.renderer.isFacade = false;
 
-		postRenderInWorld( renderer );
+		this.postRenderInWorld( renderer );
 
 		return true;
 	}

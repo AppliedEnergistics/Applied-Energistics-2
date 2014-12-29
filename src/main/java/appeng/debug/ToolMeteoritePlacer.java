@@ -36,7 +36,7 @@ public class ToolMeteoritePlacer extends AEBaseItem
 
 	public ToolMeteoritePlacer() {
 		super( ToolMeteoritePlacer.class );
-		setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
+		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class ToolMeteoritePlacer extends AEBaseItem
 	@Override
 	public void registerIcons(IIconRegister par1IconRegister)
 	{
-		itemIcon = new MissingIcon( this );
+		this.itemIcon = new MissingIcon( this );
 	}
 
 }

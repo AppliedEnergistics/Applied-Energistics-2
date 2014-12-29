@@ -39,7 +39,7 @@ public class ToolEraser extends AEBaseItem
 
 	public ToolEraser() {
 		super( ToolEraser.class );
-		setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
+		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
 
 	@Override
@@ -71,12 +71,12 @@ public class ToolEraser extends AEBaseItem
 					blocks++;
 					world.setBlock( wc.x, wc.y, wc.z, Platform.air );
 
-					check( world, wc.x + 1, wc.y, wc.z, next );
-					check( world, wc.x - 1, wc.y, wc.z, next );
-					check( world, wc.x, wc.y + 1, wc.z, next );
-					check( world, wc.x, wc.y - 1, wc.z, next );
-					check( world, wc.x, wc.y, wc.z + 1, next );
-					check( world, wc.x, wc.y, wc.z - 1, next );
+					this.check( world, wc.x + 1, wc.y, wc.z, next );
+					this.check( world, wc.x - 1, wc.y, wc.z, next );
+					this.check( world, wc.x, wc.y + 1, wc.z, next );
+					this.check( world, wc.x, wc.y - 1, wc.z, next );
+					this.check( world, wc.x, wc.y, wc.z + 1, next );
+					this.check( world, wc.x, wc.y, wc.z - 1, next );
 				}
 			}
 
@@ -95,7 +95,7 @@ public class ToolEraser extends AEBaseItem
 	@Override
 	public void registerIcons(IIconRegister par1IconRegister)
 	{
-		itemIcon = new MissingIcon( this );
+		this.itemIcon = new MissingIcon( this );
 	}
 
 }

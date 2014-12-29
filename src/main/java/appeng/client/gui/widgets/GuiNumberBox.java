@@ -35,21 +35,21 @@ public class GuiNumberBox extends GuiTextField
 	@Override
 	public void writeText(String p_146191_1_)
 	{
-		String original = getText();
+		String original = this.getText();
 		super.writeText( p_146191_1_ );
 		
 		try
 		{
-			if ( type == int.class || type == Integer.class )
-				Integer.parseInt( getText() );
-			else if ( type == long.class || type == Long.class )
-				Long.parseLong( getText() );
-			else if ( type == double.class || type == Double.class )
-				Double.parseDouble( getText() );
+			if ( this.type == int.class || this.type == Integer.class )
+				Integer.parseInt( this.getText() );
+			else if ( this.type == long.class || this.type == Long.class )
+				Long.parseLong( this.getText() );
+			else if ( this.type == double.class || this.type == Double.class )
+				Double.parseDouble( this.getText() );
 		}
 		catch(NumberFormatException e )
 		{
-			setText( original );
+			this.setText( original );
 		}
 	}
 	

@@ -56,16 +56,16 @@ public class ASMTweaker implements IClassTransformer
 	final Multimap<String, publicLine> privateToPublicMethods = HashMultimap.create();
 
 	public ASMTweaker() {
-		privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new publicLine( "func_146977_a", "(Lnet/minecraft/inventory/Slot;)V" ) );
-		privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new publicLine( "a", "(Lzk;)V" ) );
+		this.privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new publicLine( "func_146977_a", "(Lnet/minecraft/inventory/Slot;)V" ) );
+		this.privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new publicLine( "a", "(Lzk;)V" ) );
 
-		privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "writeToNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
-		privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "func_145841_b", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
-		privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "b", "(Ldh;)V" ) );
+		this.privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "writeToNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
+		this.privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "func_145841_b", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
+		this.privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "b", "(Ldh;)V" ) );
 
-		privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "readFromNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
-		privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "func_145839_a", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
-		privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "a", "(Ldh;)V" ) );
+		this.privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "readFromNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
+		this.privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "func_145839_a", "(Lnet/minecraft/nbt/NBTTagCompound;)V" ) );
+		this.privateToPublicMethods.put( "appeng.tile.AEBaseTile", new publicLine( "a", "(Ldh;)V" ) );
 	}
 
 	@Override
@@ -76,15 +76,15 @@ public class ASMTweaker implements IClassTransformer
 
 		try
 		{
-			if ( transformedName != null && privateToPublicMethods.containsKey( transformedName ) )
+			if ( transformedName != null && this.privateToPublicMethods.containsKey( transformedName ) )
 			{
 				ClassNode classNode = new ClassNode();
 				ClassReader classReader = new ClassReader( basicClass );
 				classReader.accept( classNode, 0 );
 
-				for (publicLine Set : privateToPublicMethods.get( transformedName ))
+				for (publicLine Set : this.privateToPublicMethods.get( transformedName ))
 				{
-					makePublic( classNode, Set );
+					this.makePublic( classNode, Set );
 				}
 
 				// CALL VIRTUAL!
@@ -99,7 +99,7 @@ public class ASMTweaker implements IClassTransformer
 							newNode.instructions.add( new VarInsnNode( Opcodes.ALOAD, 1 ) );
 							newNode.instructions.add( new MethodInsnNode( Opcodes.INVOKESPECIAL, classNode.name, mn.name, mn.desc, false ) );
 							newNode.instructions.add( new InsnNode( Opcodes.RETURN ) );
-							log( newNode.name + newNode.desc + " - New Method" );
+							this.log( newNode.name + newNode.desc + " - New Method" );
 							classNode.methods.add( newNode );
 							break;
 						}
@@ -118,7 +118,7 @@ public class ASMTweaker implements IClassTransformer
 									MethodInsnNode n = (MethodInsnNode) in;
 									if ( n.name.equals( "func_146977_a" ) || (n.name.equals( "a" ) && n.desc.equals( "(Lzk;)V" )) )
 									{
-										log( n.name + n.desc + " - Invoke Virtual" );
+										this.log( n.name + n.desc + " - Invoke Virtual" );
 										mn.instructions.insertBefore( n, new MethodInsnNode( Opcodes.INVOKEVIRTUAL, n.owner, n.name, n.desc, false ) );
 										mn.instructions.remove( in );
 										break;
@@ -153,7 +153,7 @@ public class ASMTweaker implements IClassTransformer
 			if ( mn.name.equals( set.name ) && mn.desc.equals( set.desc ) )
 			{
 				mn.access = (mn.access & (~(Opcodes.ACC_FINAL | Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED))) | Opcodes.ACC_PUBLIC;
-				log( mn.name + mn.desc + " - Transformed" );
+				this.log( mn.name + mn.desc + " - Transformed" );
 			}
 		}
 	}

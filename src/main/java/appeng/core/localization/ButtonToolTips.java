@@ -59,21 +59,21 @@ public enum ButtonToolTips
 	final String root;
 
 	ButtonToolTips() {
-		root = "gui.tooltips.appliedenergistics2";
+		this.root = "gui.tooltips.appliedenergistics2";
 	}
 
 	ButtonToolTips(String r) {
-		root = r;
+		this.root = r;
 	}
 
 	public String getUnlocalized()
 	{
-		return root + '.' + toString();
+		return this.root + '.' + this.toString();
 	}
 
 	public String getLocal()
 	{
-		return StatCollector.translateToLocal( getUnlocalized() );
+		return StatCollector.translateToLocal( this.getUnlocalized() );
 	}
 
 }

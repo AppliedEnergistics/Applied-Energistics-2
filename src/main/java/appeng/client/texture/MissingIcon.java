@@ -31,68 +31,68 @@ public class MissingIcon implements IIcon
 	final boolean isBlock;
 
 	public MissingIcon(Object forWhat) {
-		isBlock = forWhat instanceof Block;
+		this.isBlock = forWhat instanceof Block;
 	}
 
 	@SideOnly(Side.CLIENT)
 	public IIcon getMissing()
 	{
 		return ((TextureMap) Minecraft.getMinecraft().getTextureManager()
-				.getTexture( isBlock ? TextureMap.locationBlocksTexture : TextureMap.locationItemsTexture )).getAtlasSprite( "missingno" );
+				.getTexture( this.isBlock ? TextureMap.locationBlocksTexture : TextureMap.locationItemsTexture )).getAtlasSprite( "missingno" );
 	}
 
 	@Override
 	public int getIconWidth()
 	{
-		return getMissing().getIconWidth();
+		return this.getMissing().getIconWidth();
 	}
 
 	@Override
 	public int getIconHeight()
 	{
-		return getMissing().getIconHeight();
+		return this.getMissing().getIconHeight();
 	}
 
 	@Override
 	public float getMinU()
 	{
-		return getMissing().getMinU();
+		return this.getMissing().getMinU();
 	}
 
 	@Override
 	public float getMaxU()
 	{
-		return getMissing().getMaxU();
+		return this.getMissing().getMaxU();
 	}
 
 	@Override
 	public float getInterpolatedU(double var1)
 	{
-		return getMissing().getInterpolatedU( var1 );
+		return this.getMissing().getInterpolatedU( var1 );
 	}
 
 	@Override
 	public float getMinV()
 	{
-		return getMissing().getMinV();
+		return this.getMissing().getMinV();
 	}
 
 	@Override
 	public float getMaxV()
 	{
-		return getMissing().getMaxV();
+		return this.getMissing().getMaxV();
 	}
 
 	@Override
 	public float getInterpolatedV(double var1)
 	{
-		return getMissing().getInterpolatedV( var1 );
+		return this.getMissing().getInterpolatedV( var1 );
 	}
 
 	@Override
 	public String getIconName()
 	{
-		return getMissing().getIconName();
+		return this.getMissing().getIconName();
 	}
 
 }

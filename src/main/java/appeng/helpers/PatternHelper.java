@@ -76,15 +76,15 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		public TestLookup(int slot, Item item, int dmg)
 		{
 			this.slot = slot;
-			ref = (dmg << Platform.DEF_OFFSET) | (Item.getIdFromItem( item ) & 0xffff);
+			this.ref = (dmg << Platform.DEF_OFFSET) | (Item.getIdFromItem( item ) & 0xffff);
 			int offset = 3 * slot;
-			hash = (ref << offset) | (ref >> (offset + 32));
+			this.hash = (this.ref << offset) | (this.ref >> (offset + 32));
 		}
 
 		@Override
 		public int hashCode()
 		{
-			return hash;
+			return this.hash;
 		}
 
 		@Override
@@ -95,7 +95,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			if ( obj instanceof TestLookup )
 			{
 				TestLookup b = (TestLookup) obj;
-				equality = b.slot == slot && b.ref == ref;
+				equality = b.slot == this.slot && b.ref == this.ref;
 			}
 			else
 			{
@@ -120,12 +120,12 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		if ( b == TestStatus.TEST || i.hasTagCompound() )
 			return;
 
-		(b == TestStatus.ACCEPT ? passCache : failCache).add( new TestLookup( slotIndex, i ) );
+		(b == TestStatus.ACCEPT ? this.passCache : this.failCache).add( new TestLookup( slotIndex, i ) );
 	}
 
 	private TestStatus getStatus(int slotIndex, ItemStack i)
 	{
-		if ( crafting.getStackInSlot( slotIndex ) == null )
+		if ( this.crafting.getStackInSlot( slotIndex ) == null )
 			return i == null ? TestStatus.ACCEPT : TestStatus.DECLINE;
 
 		if ( i == null )
@@ -134,10 +134,10 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		if ( i.hasTagCompound() )
 			return TestStatus.TEST;
 
-		if ( passCache.contains( new TestLookup( slotIndex, i ) ) )
+		if ( this.passCache.contains( new TestLookup( slotIndex, i ) ) )
 			return TestStatus.ACCEPT;
 
-		if ( failCache.contains( new TestLookup( slotIndex, i ) ) )
+		if ( this.failCache.contains( new TestLookup( slotIndex, i ) ) )
 			return TestStatus.DECLINE;
 
 		return TestStatus.TEST;
@@ -152,9 +152,9 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 		NBTTagList inTag = encodedValue.getTagList( "in", 10 );
 		NBTTagList outTag = encodedValue.getTagList( "out", 10 );
-		isCrafting = encodedValue.getBoolean( "crafting" );
-		patternItem = is;
-		pattern = AEItemStack.create( is );
+		this.isCrafting = encodedValue.getBoolean( "crafting" );
+		this.patternItem = is;
+		this.pattern = AEItemStack.create( is );
 
 		List<IAEItemStack> in = new ArrayList<IAEItemStack>();
 		List<IAEItemStack> out = new ArrayList<IAEItemStack>();
@@ -162,32 +162,32 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		for (int x = 0; x < inTag.tagCount(); x++)
 		{
 			ItemStack gs = ItemStack.loadItemStackFromNBT( inTag.getCompoundTagAt( x ) );
-			crafting.setInventorySlotContents( x, gs );
+			this.crafting.setInventorySlotContents( x, gs );
 
-			if ( gs != null && (!isCrafting || !gs.hasTagCompound()) )
+			if ( gs != null && (!this.isCrafting || !gs.hasTagCompound()) )
 			{
-				markItemAs( x, gs, TestStatus.ACCEPT );
+				this.markItemAs( x, gs, TestStatus.ACCEPT );
 			}
 
 			in.add( AEApi.instance().storage().createItemStack( gs ) );
-			testFrame.setInventorySlotContents( x, gs );
+			this.testFrame.setInventorySlotContents( x, gs );
 		}
 
-		if ( isCrafting )
+		if ( this.isCrafting )
 		{
-			standardRecipe = Platform.findMatchingRecipe( crafting, w );
-			if ( standardRecipe != null )
+			this.standardRecipe = Platform.findMatchingRecipe( this.crafting, w );
+			if ( this.standardRecipe != null )
 			{
-				correctOutput = standardRecipe.getCraftingResult( crafting );
-				out.add( AEApi.instance().storage().createItemStack( correctOutput ) );
+				this.correctOutput = this.standardRecipe.getCraftingResult( this.crafting );
+				out.add( AEApi.instance().storage().createItemStack( this.correctOutput ) );
 			}
 			else
 				throw new RuntimeException( "No pattern here!" );
 		}
 		else
 		{
-			standardRecipe = null;
-			correctOutput = null;
+			this.standardRecipe = null;
+			this.correctOutput = null;
 
 			for (int x = 0; x < outTag.tagCount(); x++)
 			{
@@ -197,11 +197,11 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			}
 		}
 
-		outputs = out.toArray( new IAEItemStack[out.size()] );
-		inputs = in.toArray( new IAEItemStack[in.size()] );
+		this.outputs = out.toArray( new IAEItemStack[out.size()] );
+		this.inputs = in.toArray( new IAEItemStack[in.size()] );
 
 		HashMap<IAEItemStack, IAEItemStack> tmpOutputs = new HashMap<IAEItemStack, IAEItemStack>();
-		for (IAEItemStack io : outputs)
+		for (IAEItemStack io : this.outputs)
 		{
 			if ( io == null )
 				continue;
@@ -214,7 +214,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		}
 
 		HashMap<IAEItemStack, IAEItemStack> tmpInputs = new HashMap<IAEItemStack, IAEItemStack>();
-		for (IAEItemStack io : inputs)
+		for (IAEItemStack io : this.inputs)
 		{
 			if ( io == null )
 				continue;
@@ -230,25 +230,25 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			throw new RuntimeException( "No pattern here!" );
 
 		int offset = 0;
-		condensedInputs = new IAEItemStack[tmpInputs.size()];
+		this.condensedInputs = new IAEItemStack[tmpInputs.size()];
 		for (IAEItemStack io : tmpInputs.values())
-			condensedInputs[offset++] = io;
+			this.condensedInputs[offset++] = io;
 
 		offset = 0;
-		condensedOutputs = new IAEItemStack[tmpOutputs.size()];
+		this.condensedOutputs = new IAEItemStack[tmpOutputs.size()];
 		for (IAEItemStack io : tmpOutputs.values())
-			condensedOutputs[offset++] = io;
+			this.condensedOutputs[offset++] = io;
 	}
 
 	@Override
 	synchronized public boolean isValidItemForSlot(int slotIndex, ItemStack i, World w)
 	{
-		if ( !isCrafting )
+		if ( !this.isCrafting )
 		{
 			throw new RuntimeException( "Only crafting recipes supported." );
 		}
 
-		TestStatus result = getStatus( slotIndex, i );
+		TestStatus result = this.getStatus( slotIndex, i );
 
 		switch (result)
 		{
@@ -261,52 +261,52 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			break;
 		}
 
-		for (int x = 0; x < crafting.getSizeInventory(); x++)
-			testFrame.setInventorySlotContents( x, crafting.getStackInSlot( x ) );
+		for (int x = 0; x < this.crafting.getSizeInventory(); x++)
+			this.testFrame.setInventorySlotContents( x, this.crafting.getStackInSlot( x ) );
 
-		testFrame.setInventorySlotContents( slotIndex, i );
+		this.testFrame.setInventorySlotContents( slotIndex, i );
 
-		if ( standardRecipe.matches( testFrame, w ) )
+		if ( this.standardRecipe.matches( this.testFrame, w ) )
 		{
-			ItemStack testOutput = standardRecipe.getCraftingResult( testFrame );
+			ItemStack testOutput = this.standardRecipe.getCraftingResult( this.testFrame );
 
-			if ( Platform.isSameItemPrecise( correctOutput, testOutput ) )
+			if ( Platform.isSameItemPrecise( this.correctOutput, testOutput ) )
 			{
-				testFrame.setInventorySlotContents( slotIndex, crafting.getStackInSlot( slotIndex ) );
-				markItemAs( slotIndex, i, TestStatus.ACCEPT );
+				this.testFrame.setInventorySlotContents( slotIndex, this.crafting.getStackInSlot( slotIndex ) );
+				this.markItemAs( slotIndex, i, TestStatus.ACCEPT );
 				return true;
 			}
 		}
 		else
 		{
-			ItemStack testOutput = CraftingManager.getInstance().findMatchingRecipe( testFrame, w );
+			ItemStack testOutput = CraftingManager.getInstance().findMatchingRecipe( this.testFrame, w );
 
-			if ( Platform.isSameItemPrecise( correctOutput, testOutput ) )
+			if ( Platform.isSameItemPrecise( this.correctOutput, testOutput ) )
 			{
-				testFrame.setInventorySlotContents( slotIndex, crafting.getStackInSlot( slotIndex ) );
-				markItemAs( slotIndex, i, TestStatus.ACCEPT );
+				this.testFrame.setInventorySlotContents( slotIndex, this.crafting.getStackInSlot( slotIndex ) );
+				this.markItemAs( slotIndex, i, TestStatus.ACCEPT );
 				return true;
 			}
 		}
 
-		markItemAs( slotIndex, i, TestStatus.DECLINE );
+		this.markItemAs( slotIndex, i, TestStatus.DECLINE );
 		return false;
 	}
 
 	@Override
 	public ItemStack getOutput(InventoryCrafting craftingInv, World w)
 	{
-		if ( !isCrafting )
+		if ( !this.isCrafting )
 			throw new RuntimeException( "Only crafting recipes supported." );
 
 		for (int x = 0; x < craftingInv.getSizeInventory(); x++)
 		{
-			if ( !isValidItemForSlot( x, craftingInv.getStackInSlot( x ), w ) )
+			if ( !this.isValidItemForSlot( x, craftingInv.getStackInSlot( x ), w ) )
 				return null;
 		}
 
-		if ( outputs != null && outputs.length > 0 )
-			return outputs[0].getItemStack();
+		if ( this.outputs != null && this.outputs.length > 0 )
+			return this.outputs[0].getItemStack();
 
 		return null;
 	}
@@ -320,49 +320,49 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	@Override
 	public boolean isCraftable()
 	{
-		return isCrafting;
+		return this.isCrafting;
 	}
 
 	@Override
 	public IAEItemStack[] getInputs()
 	{
-		return inputs;
+		return this.inputs;
 	}
 
 	@Override
 	public IAEItemStack[] getOutputs()
 	{
-		return outputs;
+		return this.outputs;
 	}
 
 	@Override
 	public ItemStack getPattern()
 	{
-		return patternItem;
+		return this.patternItem;
 	}
 
 	@Override
 	public IAEItemStack[] getCondensedInputs()
 	{
-		return condensedInputs;
+		return this.condensedInputs;
 	}
 
 	@Override
 	public IAEItemStack[] getCondensedOutputs()
 	{
-		return condensedOutputs;
+		return this.condensedOutputs;
 	}
 
 	@Override
 	public int compareTo(PatternHelper o)
 	{
-		return ItemSorters.compareInt( o.priority, priority );
+		return ItemSorters.compareInt( o.priority, this.priority );
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return pattern.hashCode();
+		return this.pattern.hashCode();
 	}
 
 	@Override
@@ -370,11 +370,11 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	{
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
+		if ( this.getClass() != obj.getClass() )
 			return false;
 		PatternHelper other = (PatternHelper) obj;
-		if ( pattern != null && other.pattern != null )
-			return pattern.equals( other.pattern );
+		if ( this.pattern != null && other.pattern != null )
+			return this.pattern.equals( other.pattern );
 		return false;
 	}
 
@@ -387,6 +387,6 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	@Override
 	public int getPriority()
 	{
-		return priority;
+		return this.priority;
 	}
 }

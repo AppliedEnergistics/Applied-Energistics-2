@@ -52,9 +52,9 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	public PartTerminal(Class clz, ItemStack is) {
 		super( clz, is, true );
 
-		cm.registerSetting( Settings.SORT_BY, SortOrder.NAME );
-		cm.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
-		cm.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
+		this.cm.registerSetting( Settings.SORT_BY, SortOrder.NAME );
+		this.cm.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
+		this.cm.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	{
 		super.getDrops( drops, wrenched );
 
-		for (ItemStack is : viewCell)
+		for (ItemStack is : this.viewCell)
 			if ( is != null )
 				drops.add( is );
 	}
@@ -71,28 +71,28 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	public void readFromNBT(NBTTagCompound data)
 	{
 		super.readFromNBT( data );
-		cm.readFromNBT( data );
-		viewCell.readFromNBT( data, "viewCell" );
+		this.cm.readFromNBT( data );
+		this.viewCell.readFromNBT( data, "viewCell" );
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound data)
 	{
 		super.writeToNBT( data );
-		cm.writeToNBT( data );
-		viewCell.writeToNBT( data, "viewCell" );
+		this.cm.writeToNBT( data );
+		this.viewCell.writeToNBT( data, "viewCell" );
 	}
 
 	public PartTerminal(ItemStack is) {
 		super( PartTerminal.class, is, true );
-		frontBright = CableBusTextures.PartTerminal_Bright;
-		frontColored = CableBusTextures.PartTerminal_Colored;
-		frontDark = CableBusTextures.PartTerminal_Dark;
+		this.frontBright = CableBusTextures.PartTerminal_Bright;
+		this.frontColored = CableBusTextures.PartTerminal_Colored;
+		this.frontDark = CableBusTextures.PartTerminal_Dark;
 		// frontSolid = CableBusTextures.PartTerminal_Solid;
 
-		cm.registerSetting( Settings.SORT_BY, SortOrder.NAME );
-		cm.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
-		cm.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
+		this.cm.registerSetting( Settings.SORT_BY, SortOrder.NAME );
+		this.cm.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
+		this.cm.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 	}
 
 	public GuiBridge getGui( EntityPlayer player )
@@ -110,7 +110,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 				if ( Platform.isClient() )
 					return true;
 
-				Platform.openGUI( player, getHost().getTile(), side, getGui( player ) );
+				Platform.openGUI( player, this.getHost().getTile(), this.side, this.getGui( player ) );
 
 				return true;
 			}
@@ -123,7 +123,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	{
 		try
 		{
-			return proxy.getStorage().getFluidInventory();
+			return this.proxy.getStorage().getFluidInventory();
 		}
 		catch (GridAccessException e)
 		{
@@ -137,7 +137,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	{
 		try
 		{
-			return proxy.getStorage().getItemInventory();
+			return this.proxy.getStorage().getItemInventory();
 		}
 		catch (GridAccessException e)
 		{
@@ -149,7 +149,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	@Override
 	public IConfigManager getConfigManager()
 	{
-		return cm;
+		return this.cm;
 	}
 
 	@Override
@@ -161,12 +161,12 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	@Override
 	public IInventory getViewCellStorage()
 	{
-		return viewCell;
+		return this.viewCell;
 	}
 
 	@Override
 	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
 	{
-		host.markForSave();
+		this.host.markForSave();
 	}
 }

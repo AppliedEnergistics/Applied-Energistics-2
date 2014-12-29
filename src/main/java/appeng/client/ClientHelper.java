@@ -100,7 +100,7 @@ public class ClientHelper extends ServerHelper
 		Minecraft mc = Minecraft.getMinecraft();
 		EntityPlayer player = mc.thePlayer;
 
-		return renderModeForPlayer( player );
+		return this.renderModeForPlayer( player );
 	}
 
 	@Override
@@ -314,22 +314,22 @@ public class ClientHelper extends ServerHelper
 			switch (effect)
 			{
 			case Assembler:
-				spawnAssembler( worldObj, posX, posY, posZ, o );
+				this.spawnAssembler( worldObj, posX, posY, posZ, o );
 				return;
 			case Vibrant:
-				spawnVibrant( worldObj, posX, posY, posZ );
+				this.spawnVibrant( worldObj, posX, posY, posZ );
 				return;
 			case Crafting:
-				spawnCrafting( worldObj, posX, posY, posZ );
+				this.spawnCrafting( worldObj, posX, posY, posZ );
 				return;
 			case Energy:
-				spawnEnergy( worldObj, posX, posY, posZ );
+				this.spawnEnergy( worldObj, posX, posY, posZ );
 				return;
 			case Lightning:
-				spawnLightning( worldObj, posX, posY, posZ );
+				this.spawnLightning( worldObj, posX, posY, posZ );
 				return;
 			case LightningArc:
-				spawnLightningArc( worldObj, posX, posY, posZ, (Vec3) o );
+				this.spawnLightningArc( worldObj, posX, posY, posZ, (Vec3) o );
 				return;
 			default:
 			}

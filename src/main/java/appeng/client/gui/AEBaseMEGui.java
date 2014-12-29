@@ -40,7 +40,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 	{
 		if ( stack != null )
 		{
-			Slot s = getSlot( mouseX, mouseY );
+			Slot s = this.getSlot( mouseX, mouseY );
 			if ( s instanceof SlotME )
 			{
 				int BigNumber = AEConfig.instance.useTerminalUseLargeFont() ? 999 : 9999;
@@ -78,7 +78,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 	@Override
 	protected void renderToolTip(ItemStack stack, int x, int y)
 	{
-		Slot s = getSlot( x, y );
+		Slot s = this.getSlot( x, y );
 		if ( s instanceof SlotME && stack != null )
 		{
 			int BigNumber = AEConfig.instance.useTerminalUseLargeFont() ? 999 : 9999;
@@ -105,13 +105,13 @@ public abstract class AEBaseMEGui extends AEBaseGui
 				if ( myStack.getCountRequestable() > 0 )
 					currentToolTip.add( "Items Requestable: " + NumberFormat.getNumberInstance( Locale.US ).format( myStack.getCountRequestable() ) );
 
-				drawTooltip( x, y, 0, join( currentToolTip, "\n" ) );
+				this.drawTooltip( x, y, 0, join( currentToolTip, "\n" ) );
 			}
 			else if ( stack.stackSize > BigNumber )
 			{
 				List var4 = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
 				var4.add( "Items Stored: " + NumberFormat.getNumberInstance( Locale.US ).format( stack.stackSize ) );
-				drawTooltip( x, y, 0, join( var4, "\n" ) );
+				this.drawTooltip( x, y, 0, join( var4, "\n" ) );
 				return;
 			}
 		}

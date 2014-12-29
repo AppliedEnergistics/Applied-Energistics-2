@@ -38,13 +38,13 @@ public enum Stats
 
 	public StatBasic getStat()
 	{
-		if ( stat == null )
+		if ( this.stat == null )
 		{
-			stat = new StatBasic( "stat.ae2." + name(), new ChatComponentTranslation( "stat.ae2." + name() ) );
-			stat.registerStat();
+			this.stat = new StatBasic( "stat.ae2." + this.name(), new ChatComponentTranslation( "stat.ae2." + this.name() ) );
+			this.stat.registerStat();
 		}
 
-		return stat;
+		return this.stat;
 	}
 
 	private Stats() {
@@ -52,7 +52,7 @@ public enum Stats
 
 	public void addToPlayer(EntityPlayer player, int howMany)
 	{
-		player.addStat( getStat(), howMany );
+		player.addStat( this.getStat(), howMany );
 	}
 
 }

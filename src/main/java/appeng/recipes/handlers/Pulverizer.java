@@ -45,8 +45,8 @@ public class Pulverizer implements ICraftHandler, IWebsiteSerializer
 			int outs = output.get( 0 ).size();
 			if ( input.get( 0 ).size() == 1 && outs == 1 )
 			{
-				pro_input = input.get( 0 ).get( 0 );
-				pro_output = output.get( 0 ).toArray( new IIngredient[outs] );
+				this.pro_input = input.get( 0 ).get( 0 );
+				this.pro_output = output.get( 0 ).toArray( new IIngredient[outs] );
 				return;
 			}
 		}
@@ -60,9 +60,9 @@ public class Pulverizer implements ICraftHandler, IWebsiteSerializer
 		toSend.setInteger( "energy", 800 );
 		toSend.setTag( "primaryOutput", new NBTTagCompound() );
 
-		pro_output[0].getItemStack().writeToNBT( toSend.getCompoundTag( "primaryOutput" ) );
+		this.pro_output[0].getItemStack().writeToNBT( toSend.getCompoundTag( "primaryOutput" ) );
 
-		for (ItemStack is : pro_input.getItemStackSet())
+		for (ItemStack is : this.pro_input.getItemStackSet())
 		{
 			toSend.setTag( "input", new NBTTagCompound() );
 			is.writeToNBT( toSend.getCompoundTag( "input" ) );
@@ -73,7 +73,7 @@ public class Pulverizer implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public boolean canCraft(ItemStack output) throws RegistrationError, MissingIngredientError
 	{
-		return Platform.isSameItemPrecise( pro_output[0].getItemStack(), output );
+		return Platform.isSameItemPrecise( this.pro_output[0].getItemStack(), output );
 	}
 
 	@Override

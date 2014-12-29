@@ -60,9 +60,9 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 	public PartImportBus(ItemStack is) {
 		super( PartImportBus.class, is );
-		settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
-		settings.registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
-		mySrc = new MachineSource( this );
+		this.settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
+		this.settings.registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		this.mySrc = new MachineSource( this );
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 			if ( Platform.isClient() )
 				return true;
 
-			Platform.openGUI( player, getHost().getTile(), side, GuiBridge.GUI_BUS );
+			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_BUS );
 			return true;
 		}
 
@@ -86,7 +86,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 		if ( stack == null || stack.getItem() == null )
 			return false;
 		
-		IAEItemStack out = destination.injectItems( lastItemChecked = AEApi.instance().storage().createItemStack( stack ), Actionable.SIMULATE, mySrc );
+		IAEItemStack out = this.destination.injectItems( this.lastItemChecked = AEApi.instance().storage().createItemStack( stack ), Actionable.SIMULATE, this.mySrc );
 		if ( out == null )
 			return true;
 		return out.getStackSize() != stack.stackSize;
@@ -94,7 +94,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 	private IInventoryDestination configDestination( IMEMonitor<IAEItemStack> itemInventory )
 	{
-		destination = itemInventory;
+		this.destination = itemInventory;
 		return this;
 	}
 
@@ -103,7 +103,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		rh.setTexture( CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
-				is.getIconIndex(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon() );
+				this.is.getIconIndex(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon() );
 
 		rh.setBounds( 3, 3, 15, 13, 13, 16 );
 		rh.renderInventoryBox( renderer );
@@ -119,9 +119,9 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		renderCache = rh.useSimplifiedRendering( x, y, z, this, renderCache );
+		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
 		rh.setTexture( CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
-				is.getIconIndex(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon() );
+				this.is.getIconIndex(), CableBusTextures.PartImportSides.getIcon(), CableBusTextures.PartImportSides.getIcon() );
 
 		rh.setBounds( 4, 4, 14, 12, 12, 16 );
 		rh.renderBlock( x, y, z, renderer );
@@ -132,13 +132,13 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 		rh.setBounds( 6, 6, 12, 10, 10, 13 );
 		rh.renderBlock( x, y, z, renderer );
 		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(),
-				CableBusTextures.PartMonitorBack.getIcon(), is.getIconIndex(), CableBusTextures.PartMonitorSidesStatus.getIcon(),
+				CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSidesStatus.getIcon(),
 				CableBusTextures.PartMonitorSidesStatus.getIcon() );
 
 		rh.setBounds( 6, 6, 11, 10, 10, 12 );
 		rh.renderBlock( x, y, z, renderer );
 
-		renderLights( x, y, z, rh, renderer );
+		this.renderLights( x, y, z, rh, renderer );
 	}
 
 	@Override
@@ -158,7 +158,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	@Override
 	public TickingRequest getTickingRequest(IGridNode node)
 	{
-		return new TickingRequest( TickRates.ImportBus.min, TickRates.ImportBus.max, getHandler() == null, false );
+		return new TickingRequest( TickRates.ImportBus.min, TickRates.ImportBus.max, this.getHandler() == null, false );
 	}
 
 	private int itemToSend; // used in tickingRequest
@@ -167,52 +167,52 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	@Override
 	TickRateModulation doBusWork()
 	{
-		if ( !proxy.isActive() )
+		if ( !this.proxy.isActive() )
 			return TickRateModulation.IDLE;
 
-		worked = false;
+		this.worked = false;
 
-		InventoryAdaptor myAdaptor = getHandler();
-		FuzzyMode fzMode = (FuzzyMode) getConfigManager().getSetting( Settings.FUZZY_MODE );
+		InventoryAdaptor myAdaptor = this.getHandler();
+		FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
 
 		if ( myAdaptor != null )
 		{
 			try
 			{
-				switch (getInstalledUpgrades( Upgrades.SPEED ))
+				switch (this.getInstalledUpgrades( Upgrades.SPEED ))
 				{
 				default:
 				case 0:
-					itemToSend = 1;
+					this.itemToSend = 1;
 					break;
 				case 1:
-					itemToSend = 8;
+					this.itemToSend = 8;
 					break;
 				case 2:
-					itemToSend = 32;
+					this.itemToSend = 32;
 					break;
 				case 3:
-					itemToSend = 64;
+					this.itemToSend = 64;
 					break;
 				case 4:
-					itemToSend = 96;
+					this.itemToSend = 96;
 					break;
 				}
 
-				itemToSend = Math.min( itemToSend, (int) (0.01 + proxy.getEnergy().extractAEPower( itemToSend, Actionable.SIMULATE, PowerMultiplier.CONFIG )) );
-				IMEMonitor<IAEItemStack> inv = proxy.getStorage().getItemInventory();
-				IEnergyGrid energy = proxy.getEnergy();
+				this.itemToSend = Math.min( this.itemToSend, (int) (0.01 + this.proxy.getEnergy().extractAEPower( this.itemToSend, Actionable.SIMULATE, PowerMultiplier.CONFIG )) );
+				IMEMonitor<IAEItemStack> inv = this.proxy.getStorage().getItemInventory();
+				IEnergyGrid energy = this.proxy.getEnergy();
 
 				boolean Configured = false;
-				for (int x = 0; x < availableSlots(); x++)
+				for (int x = 0; x < this.availableSlots(); x++)
 				{
-					IAEItemStack ais = config.getAEStackInSlot( x );
-					if ( ais != null && itemToSend > 0 )
+					IAEItemStack ais = this.config.getAEStackInSlot( x );
+					if ( ais != null && this.itemToSend > 0 )
 					{
 						Configured = true;
-						while (itemToSend > 0)
+						while (this.itemToSend > 0)
 						{
-							if ( importStuff( myAdaptor, ais, inv, energy, fzMode ) )
+							if ( this.importStuff( myAdaptor, ais, inv, energy, fzMode ) )
 								break;
 						}
 					}
@@ -220,9 +220,9 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 				if ( !Configured )
 				{
-					while (itemToSend > 0)
+					while (this.itemToSend > 0)
 					{
-						if ( importStuff( myAdaptor, null, inv, energy, fzMode ) )
+						if ( this.importStuff( myAdaptor, null, inv, energy, fzMode ) )
 							break;
 					}
 				}
@@ -235,13 +235,13 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 		else
 			return TickRateModulation.SLEEP;
 
-		return worked ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
+		return this.worked ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
 	}
 
 	@Override
 	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
 	{
-		return doBusWork();
+		return this.doBusWork();
 	}
 
 	private boolean importStuff(InventoryAdaptor myAdaptor, IAEItemStack whatToImport, IMEMonitor<IAEItemStack> inv, IEnergySource energy, FuzzyMode fzMode)
@@ -252,22 +252,22 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 			toSend = 64;
 
 		ItemStack newItems;
-		if ( getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-			newItems = myAdaptor.removeSimilarItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), fzMode, configDestination( inv ) );
+		if ( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
+			newItems = myAdaptor.removeSimilarItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), fzMode, this.configDestination( inv ) );
 		else
-			newItems = myAdaptor.removeItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), configDestination( inv ) );
+			newItems = myAdaptor.removeItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), this.configDestination( inv ) );
 
 		if ( newItems != null )
 		{
 			newItems.stackSize = (int) (Math.min( newItems.stackSize, energy.extractAEPower( newItems.stackSize, Actionable.SIMULATE, PowerMultiplier.CONFIG ) ) + 0.01);
-			itemToSend -= newItems.stackSize;
+			this.itemToSend -= newItems.stackSize;
 
-			if ( lastItemChecked == null || !lastItemChecked.isSameType( newItems ) )
-				lastItemChecked = AEApi.instance().storage().createItemStack( newItems );
+			if ( this.lastItemChecked == null || !this.lastItemChecked.isSameType( newItems ) )
+				this.lastItemChecked = AEApi.instance().storage().createItemStack( newItems );
 			else
-				lastItemChecked.setStackSize( newItems.stackSize );
+				this.lastItemChecked.setStackSize( newItems.stackSize );
 
-			IAEItemStack failed = Platform.poweredInsert( energy, destination, lastItemChecked, mySrc );
+			IAEItemStack failed = Platform.poweredInsert( energy, this.destination, this.lastItemChecked, this.mySrc );
 			// destination.injectItems( lastItemChecked, Actionable.MODULATE );
 			if ( failed != null )
 			{
@@ -275,7 +275,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 				return true;
 			}
 			else
-				worked = true;
+				this.worked = true;
 		}
 		else
 			return true;
@@ -286,13 +286,13 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	@Override
 	public RedstoneMode getRSMode()
 	{
-		return (RedstoneMode) settings.getSetting( Settings.REDSTONE_CONTROLLED );
+		return (RedstoneMode) this.settings.getSetting( Settings.REDSTONE_CONTROLLED );
 	}
 
 	@Override
 	protected boolean isSleeping()
 	{
-		return getHandler() == null || super.isSleeping();
+		return this.getHandler() == null || super.isSleeping();
 	}
 
 }

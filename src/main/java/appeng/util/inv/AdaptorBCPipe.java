@@ -38,18 +38,18 @@ public class AdaptorBCPipe extends InventoryAdaptor
 	final private ForgeDirection d;
 
 	public AdaptorBCPipe(TileEntity s, ForgeDirection dd) {
-		bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
-		if ( bc != null )
+		this.bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
+		if ( this.bc != null )
 		{
-			if ( bc.isPipe( s, dd ) )
+			if ( this.bc.isPipe( s, dd ) )
 			{
-				i = s;
-				d = dd;
+				this.i = s;
+				this.d = dd;
 				return;
 			}
 		}
-		i = null;
-		d = null;
+		this.i = null;
+		this.d = null;
 	}
 
 	@Override
@@ -79,14 +79,14 @@ public class AdaptorBCPipe extends InventoryAdaptor
 	@Override
 	public ItemStack addItems(ItemStack A)
 	{
-		if ( i == null )
+		if ( this.i == null )
 			return A;
 		if ( A == null )
 			return null;
 		if ( A.stackSize == 0 )
 			return null;
 
-		if ( bc.addItemsToPipe( i, A, d ) )
+		if ( this.bc.addItemsToPipe( this.i, A, this.d ) )
 			return null;
 		return A;
 	}
@@ -94,7 +94,7 @@ public class AdaptorBCPipe extends InventoryAdaptor
 	@Override
 	public ItemStack simulateAdd(ItemStack A)
 	{
-		if ( i == null )
+		if ( this.i == null )
 			return A;
 		return null;
 	}

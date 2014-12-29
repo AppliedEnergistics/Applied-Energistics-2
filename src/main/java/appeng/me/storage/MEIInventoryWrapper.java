@@ -37,8 +37,8 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 	protected final InventoryAdaptor adaptor;
 
 	public MEIInventoryWrapper(IInventory m, InventoryAdaptor ia) {
-		target = m;
-		adaptor = ia;
+		this.target = m;
+		this.adaptor = ia;
 	}
 
 	@Override
@@ -52,9 +52,9 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 	{
 		ItemStack input = iox.getItemStack();
 
-		if ( adaptor != null )
+		if ( this.adaptor != null )
 		{
-			ItemStack is = mode == Actionable.SIMULATE ? adaptor.simulateAdd( input ) : adaptor.addItems( input );
+			ItemStack is = mode == Actionable.SIMULATE ? this.adaptor.simulateAdd( input ) : this.adaptor.addItems( input );
 			if ( is == null )
 				return null;
 			return AEItemStack.create( is );
@@ -64,20 +64,20 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 
 		if ( mode == Actionable.MODULATE ) // absolutely no need for a first run in simulate mode.
 		{
-			for (int x = 0; x < target.getSizeInventory(); x++)
+			for (int x = 0; x < this.target.getSizeInventory(); x++)
 			{
-				ItemStack t = target.getStackInSlot( x );
+				ItemStack t = this.target.getStackInSlot( x );
 
 				if ( Platform.isSameItem( t, input ) )
 				{
 					int oriStack = t.stackSize;
 					t.stackSize += out.stackSize;
 
-					target.setInventorySlotContents( x, t );
+					this.target.setInventorySlotContents( x, t );
 
-					if ( t.stackSize > target.getInventoryStackLimit() )
+					if ( t.stackSize > this.target.getInventoryStackLimit() )
 					{
-						t.stackSize = target.getInventoryStackLimit();
+						t.stackSize = this.target.getInventoryStackLimit();
 					}
 
 					if ( t.stackSize > t.getMaxStackSize() )
@@ -95,23 +95,23 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 			}
 		}
 
-		for (int x = 0; x < target.getSizeInventory(); x++)
+		for (int x = 0; x < this.target.getSizeInventory(); x++)
 		{
-			ItemStack t = target.getStackInSlot( x );
+			ItemStack t = this.target.getStackInSlot( x );
 
 			if ( t == null )
 			{
 				t = Platform.cloneItemStack( input );
 				t.stackSize = out.stackSize;
 
-				if ( t.stackSize > target.getInventoryStackLimit() )
+				if ( t.stackSize > this.target.getInventoryStackLimit() )
 				{
-					t.stackSize = target.getInventoryStackLimit();
+					t.stackSize = this.target.getInventoryStackLimit();
 				}
 
 				out.stackSize -= t.stackSize;
 				if ( mode == Actionable.MODULATE )
-					target.setInventorySlotContents( x, t );
+					this.target.setInventorySlotContents( x, t );
 
 				if ( out.stackSize <= 0 )
 				{
@@ -138,9 +138,9 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 
 		Req.stackSize = request_stackSize;
 
-		if ( adaptor != null )
+		if ( this.adaptor != null )
 		{
-			Gathered = adaptor.removeItems( Req.stackSize, Req, null );
+			Gathered = this.adaptor.removeItems( Req.stackSize, Req, null );
 		}
 		else
 		{
@@ -148,9 +148,9 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 			Gathered.stackSize = 0;
 
 			// try to find matching inventories that already have it...
-			for (int x = 0; x < target.getSizeInventory(); x++)
+			for (int x = 0; x < this.target.getSizeInventory(); x++)
 			{
-				ItemStack sub = target.getStackInSlot( x );
+				ItemStack sub = this.target.getStackInSlot( x );
 
 				if ( Platform.isSameItem( sub, Req ) )
 				{
@@ -174,9 +174,9 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 					}
 
 					if ( sub.stackSize <= 0 )
-						target.setInventorySlotContents( x, null );
+						this.target.setInventorySlotContents( x, null );
 					else
-						target.setInventorySlotContents( x, sub );
+						this.target.setInventorySlotContents( x, sub );
 
 					if ( retrieved != null )
 					{
@@ -204,9 +204,9 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 	@Override
 	public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> out)
 	{
-		for (int x = 0; x < target.getSizeInventory(); x++)
+		for (int x = 0; x < this.target.getSizeInventory(); x++)
 		{
-			out.addStorage( AEItemStack.create( target.getStackInSlot( x ) ) );
+			out.addStorage( AEItemStack.create( this.target.getStackInSlot( x ) ) );
 		}
 
 		return out;

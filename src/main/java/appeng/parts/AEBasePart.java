@@ -82,8 +82,8 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 
 	public AEBasePart(Class c, ItemStack is) {
 		this.is = is;
-		proxy = new AENetworkProxy( this, "part", is, this instanceof PartCable );
-		proxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		this.proxy = new AENetworkProxy( this, "part", is, this instanceof PartCable );
+		this.proxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 	}
 
 	@Override
@@ -117,11 +117,11 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	{
 		if ( type == PartItemStack.Network )
 		{
-			ItemStack copy = is.copy();
+			ItemStack copy = this.is.copy();
 			copy.setTagCompound( null );
 			return copy;
 		}
-		return is;
+		return this.is;
 	}
 
 	@Override
@@ -145,13 +145,13 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	@Override
 	public void readFromNBT(NBTTagCompound data)
 	{
-		proxy.readFromNBT( data );
+		this.proxy.readFromNBT( data );
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound data)
 	{
-		proxy.writeToNBT( data );
+		this.proxy.writeToNBT( data );
 	}
 
 	@Override
@@ -181,7 +181,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	@Override
 	public IGridNode getGridNode()
 	{
-		return proxy.getNode();
+		return this.proxy.getNode();
 	}
 
 	@Override
@@ -193,13 +193,13 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	@Override
 	public void removeFromWorld()
 	{
-		proxy.invalidate();
+		this.proxy.invalidate();
 	}
 
 	@Override
 	public void addToWorld()
 	{
-		proxy.onReady();
+		this.proxy.onReady();
 	}
 
 	@Override
@@ -212,7 +212,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 
 	public IPartHost getHost()
 	{
-		return host;
+		return this.host;
 	}
 
 	@Override
@@ -224,20 +224,20 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	@Override
 	public IGridNode getGridNode(ForgeDirection dir)
 	{
-		return proxy.getNode();
+		return this.proxy.getNode();
 	}
 
 	protected AEColor getColor()
 	{
-		if ( getHost() == null )
+		if ( this.getHost() == null )
 			return AEColor.Transparent;
-		return getHost().getColor();
+		return this.getHost().getColor();
 	}
 
 	@Override
 	public DimensionalCoord getLocation()
 	{
-		return new DimensionalCoord( tile );
+		return new DimensionalCoord( this.tile );
 	}
 
 	@Override
@@ -377,11 +377,11 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	{
 		ItemStack memCardIS = player.inventory.getCurrentItem();
 
-		if ( memCardIS != null && useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard )
+		if ( memCardIS != null && this.useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard )
 		{
 			IMemoryCard memoryCard = (IMemoryCard) memCardIS.getItem();
 
-			ItemStack is = getItemStack( PartItemStack.Network );
+			ItemStack is = this.getItemStack( PartItemStack.Network );
 
 			// Blocks and parts share the same soul!
 			if ( AEApi.instance().parts().partInterface.sameAsStack( is ) )
@@ -391,7 +391,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 
 			if ( player.isSneaking() )
 			{
-				NBTTagCompound data = downloadSettings( SettingsFrom.MEMORY_CARD );
+				NBTTagCompound data = this.downloadSettings( SettingsFrom.MEMORY_CARD );
 				if ( data != null )
 				{
 					memoryCard.setMemoryCardContents( memCardIS, name, data );
@@ -404,7 +404,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 				NBTTagCompound data = memoryCard.getData( memCardIS );
 				if ( name.equals( storedName ) )
 				{
-					uploadSettings( SettingsFrom.MEMORY_CARD, data );
+					this.uploadSettings( SettingsFrom.MEMORY_CARD, data );
 					memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
 				}
 				else
@@ -418,19 +418,19 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	@Override
 	final public boolean onActivate(EntityPlayer player, Vec3 pos)
 	{
-		if ( useMemoryCard( player ) )
+		if ( this.useMemoryCard( player ) )
 			return true;
 
-		return onPartActivate( player, pos );
+		return this.onPartActivate( player, pos );
 	}
 
 	@Override
 	final public boolean onShiftActivate(EntityPlayer player, Vec3 pos)
 	{
-		if ( useMemoryCard( player ) )
+		if ( this.useMemoryCard( player ) )
 			return true;
 
-		return onPartShiftActivate( player, pos );
+		return this.onPartShiftActivate( player, pos );
 	}
 
 	public boolean onPartActivate(EntityPlayer player, Vec3 pos)
@@ -446,38 +446,38 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	@Override
 	public void onPlacement(EntityPlayer player, ItemStack held, ForgeDirection side)
 	{
-		proxy.setOwner( player );
+		this.proxy.setOwner( player );
 	}
 
 	@Override
 	public TileEntity getTile()
 	{
-		return tile;
+		return this.tile;
 	}
 
 	@Override
 	public void securityBreak()
 	{
-		if ( is.stackSize > 0 )
+		if ( this.is.stackSize > 0 )
 		{
 			List<ItemStack> items = new ArrayList<ItemStack>();
-			items.add( is.copy() );
-			host.removePart( side, false );
-			Platform.spawnDrops( tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord, items );
-			is.stackSize = 0;
+			items.add( this.is.copy() );
+			this.host.removePart( this.side, false );
+			Platform.spawnDrops( this.tile.getWorldObj(), this.tile.xCoord, this.tile.yCoord, this.tile.zCoord, items );
+			this.is.stackSize = 0;
 		}
 	}
 
 	@Override
 	public AENetworkProxy getProxy()
 	{
-		return proxy;
+		return this.proxy;
 	}
 
 	@Override
 	public IGridNode getActionableNode()
 	{
-		return proxy.getNode();
+		return this.proxy.getNode();
 	}
 
 	@Override
@@ -488,7 +488,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 
 	public void saveChanges()
 	{
-		host.markForSave();
+		this.host.markForSave();
 	}
 
 	@Override
@@ -500,13 +500,13 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	@Override
 	public String getCustomName()
 	{
-		return is.getDisplayName();
+		return this.is.getDisplayName();
 	}
 
 	@Override
 	public boolean hasCustomName()
 	{
-		return is.hasDisplayName();
+		return this.is.hasDisplayName();
 	}
 
 	@Override
@@ -518,6 +518,6 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 
 	public void addEntityCrashInfo(CrashReportCategory crashreportcategory)
 	{
-		crashreportcategory.addCrashSection( "Part Side", side );
+		crashreportcategory.addCrashSection( "Part Side", this.side );
 	}
 }

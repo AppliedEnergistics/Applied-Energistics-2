@@ -44,7 +44,7 @@ public class AEBaseItem extends Item implements IAEFeature
 	public AEBaseItem( Class c )
 	{
 		this( c, Optional.<String> absent() );
-		canRepair = false;
+		this.canRepair = false;
 	}
 
 	public AEBaseItem( Class<?> c, Optional<String> subName )

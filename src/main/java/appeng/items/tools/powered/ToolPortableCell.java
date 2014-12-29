@@ -62,8 +62,8 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	public ToolPortableCell()
 	{
 		super( ToolPortableCell.class, Optional.<String> absent() );
-		setFeature( EnumSet.of( AEFeature.PortableCell, AEFeature.StorageCells, AEFeature.PoweredTools ) );
-		maxStoredPower = AEConfig.instance.portableCellBattery;
+		this.setFeature( EnumSet.of( AEFeature.PortableCell, AEFeature.StorageCells, AEFeature.PoweredTools ) );
+		this.maxStoredPower = AEConfig.instance.portableCellBattery;
 	}
 
 	@SideOnly(Side.CLIENT)

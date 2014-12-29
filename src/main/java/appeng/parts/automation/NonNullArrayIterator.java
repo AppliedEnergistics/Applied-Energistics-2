@@ -29,22 +29,22 @@ public class NonNullArrayIterator<E> implements Iterator<E>
 	final E[] g;
 
 	public NonNullArrayIterator(E[] o) {
-		g = o;
+		this.g = o;
 	}
 
 	@Override
 	public boolean hasNext()
 	{
-		while (offset < g.length && g[offset] == null)
-			offset++;
+		while (this.offset < this.g.length && this.g[this.offset] == null)
+			this.offset++;
 
-		return offset != g.length;
+		return this.offset != this.g.length;
 	}
 
 	@Override
 	public E next()
 	{
-		return g[offset++];
+		return this.g[this.offset++];
 	}
 
 	@Override

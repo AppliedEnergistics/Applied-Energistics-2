@@ -47,9 +47,9 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 	public AERootPoweredItem( Class c, Optional<String> subName )
 	{
 		super( c, subName );
-		setMaxDamage( 32 );
-		hasSubtypes = false;
-		setFull3D();
+		this.setMaxDamage( 32 );
+		this.hasSubtypes = false;
+		this.setFull3D();
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 	{
 		NBTTagCompound tag = stack.getTagCompound();
 		double internalCurrentPower = 0;
-		double internalMaxPower = getAEMaxPower( stack );
+		double internalMaxPower = this.getAEMaxPower( stack );
 
 		if ( tag != null )
 		{
@@ -84,8 +84,8 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 
 		ItemStack charged = new ItemStack( this, 1 );
 		NBTTagCompound tag = Platform.openNbtData( charged );
-		tag.setDouble( "internalCurrentPower", getAEMaxPower( charged ) );
-		tag.setDouble( "internalMaxPower", getAEMaxPower( charged ) );
+		tag.setDouble( "internalCurrentPower", this.getAEMaxPower( charged ) );
+		tag.setDouble( "internalMaxPower", this.getAEMaxPower( charged ) );
 		list.add( charged );
 	}
 
@@ -98,7 +98,7 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 	@Override
 	public double getDurabilityForDisplay( ItemStack is )
 	{
-		return 1 - getAECurrentPower( is ) / getAEMaxPower( is );
+		return 1 - this.getAECurrentPower( is ) / this.getAEMaxPower( is );
 	}
 
 	@Override
@@ -120,14 +120,14 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 	{
 		if ( simulate )
 		{
-			int requiredEU = ( int ) PowerUnits.AE.convertTo( PowerUnits.EU, getAEMaxPower( is ) - getAECurrentPower( is ) );
+			int requiredEU = ( int ) PowerUnits.AE.convertTo( PowerUnits.EU, this.getAEMaxPower( is ) - this.getAECurrentPower( is ) );
 			if ( amount < requiredEU )
 				return 0;
 			return amount - requiredEU;
 		}
 		else
 		{
-			double powerRemainder = injectAEPower( is, PowerUnits.EU.convertTo( PowerUnits.AE, amount ) );
+			double powerRemainder = this.injectAEPower( is, PowerUnits.EU.convertTo( PowerUnits.AE, amount ) );
 			return PowerUnits.AE.convertTo( PowerUnits.EU, powerRemainder );
 		}
 	}
@@ -135,21 +135,21 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 	@Override
 	public double injectAEPower( ItemStack is, double amt )
 	{
-		return getInternalBattery( is, batteryOperation.INJECT, amt );
+		return this.getInternalBattery( is, batteryOperation.INJECT, amt );
 	}
 
 	@Override
 	public double extractAEPower( ItemStack is, double amt )
 	{
-		return getInternalBattery( is, batteryOperation.EXTRACT, amt );
+		return this.getInternalBattery( is, batteryOperation.EXTRACT, amt );
 	}
 
 	private double getInternalBattery( ItemStack is, batteryOperation op, double adjustment )
 	{
 		NBTTagCompound data = Platform.openNbtData( is );
 
-		double currentStorage = data.getDouble( EnergyVar );
-		double maxStorage = getAEMaxPower( is );
+		double currentStorage = data.getDouble( this.EnergyVar );
+		double maxStorage = this.getAEMaxPower( is );
 
 		switch ( op )
 		{
@@ -158,19 +158,19 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 				if ( currentStorage > maxStorage )
 				{
 					double diff = currentStorage - maxStorage;
-					data.setDouble( EnergyVar, maxStorage );
+					data.setDouble( this.EnergyVar, maxStorage );
 					return diff;
 				}
-				data.setDouble( EnergyVar, currentStorage );
+				data.setDouble( this.EnergyVar, currentStorage );
 				return 0;
 			case EXTRACT:
 				if ( currentStorage > adjustment )
 				{
 					currentStorage -= adjustment;
-					data.setDouble( EnergyVar, currentStorage );
+					data.setDouble( this.EnergyVar, currentStorage );
 					return adjustment;
 				}
-				data.setDouble( EnergyVar, 0 );
+				data.setDouble( this.EnergyVar, 0 );
 				return currentStorage;
 			default:
 				break;
@@ -182,13 +182,13 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 	@Override
 	public double getAEMaxPower( ItemStack is )
 	{
-		return maxStoredPower;
+		return this.maxStoredPower;
 	}
 
 	@Override
 	public double getAECurrentPower( ItemStack is )
 	{
-		return getInternalBattery( is, batteryOperation.STORAGE, 0 );
+		return this.getInternalBattery( is, batteryOperation.STORAGE, 0 );
 	}
 
 	@Override

@@ -53,10 +53,10 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 
 	public BlockCharger() {
 		super( BlockCharger.class, Material.iron );
-		setFeature( EnumSet.of( AEFeature.Core ) );
-		setTileEntity( TileCharger.class );
-		setLightOpacity( 2 );
-		isFullSize = isOpaque = false;
+		this.setFeature( EnumSet.of( AEFeature.Core ) );
+		this.setTileEntity( TileCharger.class );
+		this.setLightOpacity( 2 );
+		this.isFullSize = this.isOpaque = false;
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 
 		if ( Platform.isServer() )
 		{
-			TileCharger tc = getTileEntity( w, x, y, z );
+			TileCharger tc = this.getTileEntity( w, x, y, z );
 			if ( tc != null )
 			{
 				tc.activate( player );
@@ -93,7 +93,7 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 		if ( r.nextFloat() < 0.98 )
 			return;
 
-		AEBaseTile tile = getTileEntity( w, x, y, z );
+		AEBaseTile tile = this.getTileEntity( w, x, y, z );
 		if ( tile instanceof TileCharger )
 		{
 			TileCharger tc = (TileCharger) tile;
@@ -120,7 +120,7 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
 	{
-		TileCharger tile = getTileEntity( w, x, y, z );
+		TileCharger tile = this.getTileEntity( w, x, y, z );
 		if ( tile != null )
 		{
 			double twoPixels = 2.0 / 16.0;

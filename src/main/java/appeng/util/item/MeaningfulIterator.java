@@ -61,7 +61,7 @@ public class MeaningfulIterator<StackType extends IAEStack> implements Iterator<
 	@Override
 	public void remove()
 	{
-		parent.remove();
+		this.parent.remove();
 	}
 
 }

@@ -47,16 +47,16 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 	@TileEvent(TileEventType.TICK)
 	public void Tick_TileEnergyAcceptor()
 	{
-		if ( internalCurrentPower > 0 )
+		if ( this.internalCurrentPower > 0 )
 		{
 			try
 			{
-				IEnergyGrid eg = gridProxy.getEnergy();
-				double powerRequested = internalCurrentPower - eg.injectPower( internalCurrentPower, Actionable.SIMULATE );
+				IEnergyGrid eg = this.gridProxy.getEnergy();
+				double powerRequested = this.internalCurrentPower - eg.injectPower( this.internalCurrentPower, Actionable.SIMULATE );
 
 				if ( powerRequested > 0 )
 				{
-					eg.injectPower( extractAEPower( powerRequested, Actionable.MODULATE, PowerMultiplier.ONE ), Actionable.MODULATE );
+					eg.injectPower( this.extractAEPower( powerRequested, Actionable.MODULATE, PowerMultiplier.ONE ), Actionable.MODULATE );
 				}
 			}
 			catch (GridAccessException e)
@@ -72,7 +72,7 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 	{
 		try
 		{
-			IEnergyGrid grid = gridProxy.getEnergy();
+			IEnergyGrid grid = this.gridProxy.getEnergy();
 			return grid.getEnergyDemand( maxRequired );
 		}
 		catch (GridAccessException e)
@@ -86,7 +86,7 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 	{
 		try
 		{
-			IEnergyGrid grid = gridProxy.getEnergy();
+			IEnergyGrid grid = this.gridProxy.getEnergy();
 			double leftOver = grid.injectPower( newPower, mode );
 			if ( mode == Actionable.SIMULATE )
 				return leftOver;
@@ -99,8 +99,8 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 	}
 
 	public TileEnergyAcceptor() {
-		gridProxy.setIdlePowerUsage( 0.0 );
-		internalMaxPower = 100;
+		this.gridProxy.setIdlePowerUsage( 0.0 );
+		this.internalMaxPower = 100;
 	}
 
 	@Override
@@ -118,7 +118,7 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 	@Override
 	public int[] getAccessibleSlotsBySide(ForgeDirection side)
 	{
-		return sides;
+		return this.sides;
 	}
 
 }

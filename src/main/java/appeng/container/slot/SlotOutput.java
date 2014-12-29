@@ -26,7 +26,7 @@ public class SlotOutput extends AppEngSlot
 
 	public SlotOutput(IInventory a, int b, int c, int d, int i) {
 		super( a, b, c, d );
-		IIcon = i;
+		this.IIcon = i;
 	}
 
 	@Override

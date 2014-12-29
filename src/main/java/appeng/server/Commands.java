@@ -31,12 +31,12 @@ public enum Commands
 	@Override
 	public String toString()
 	{
-		return name();
+		return this.name();
 	}
 
 	private Commands(int level, ISubCommand w) {
 		this.level = level;
-		command = w;
+		this.command = w;
 	}
 
 }

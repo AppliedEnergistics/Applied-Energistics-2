@@ -36,9 +36,9 @@ public class GuiInscriber extends AEBaseGui
 	public GuiInscriber(InventoryPlayer inventoryPlayer, TileInscriber te)
 	{
 		super( new ContainerInscriber( inventoryPlayer, te ) );
-		cvc = (ContainerInscriber) inventorySlots;
+		this.cvc = (ContainerInscriber) this.inventorySlots;
 		this.ySize = 176;
-		this.xSize = hasToolbox() ? 246 : 211;
+		this.xSize = this.hasToolbox() ? 246 : 211;
 	}
 
 	@Override
@@ -46,32 +46,32 @@ public class GuiInscriber extends AEBaseGui
 	{
 		super.initGui();
 
-		pb = new GuiProgressBar(  cvc,  "guis/inscriber.png", 135, 39, 135, 177, 6, 18, Direction.VERTICAL );
-		this.buttonList.add( pb );
+		this.pb = new GuiProgressBar(  this.cvc,  "guis/inscriber.png", 135, 39, 135, 177, 6, 18, Direction.VERTICAL );
+		this.buttonList.add( this.pb );
 	}
 
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		bindTexture( "guis/inscriber.png" );
-		pb.xPosition = 135 + guiLeft;
-		pb.yPosition = 39 + guiTop;
+		this.bindTexture( "guis/inscriber.png" );
+		this.pb.xPosition = 135 + this.guiLeft;
+		this.pb.yPosition = 39 + this.guiTop;
 
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, ySize );
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, this.ySize );
 		
-		if ( drawUpgrades() )
-			this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 14 + cvc.availableUpgrades() * 18 );
-		if ( hasToolbox() )
-			this.drawTexturedModalRect( offsetX + 178, offsetY + ySize - 90, 178, ySize - 90, 68, 68 );
+		if ( this.drawUpgrades() )
+			this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 14 + this.cvc.availableUpgrades() * 18 );
+		if ( this.hasToolbox() )
+			this.drawTexturedModalRect( offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90, 68, 68 );
 	}
 
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		pb.setFullMsg( cvc.getCurrentProgress() * 100 / cvc.getMaxProgress() + "%" );
+		this.pb.setFullMsg( this.cvc.getCurrentProgress() * 100 / this.cvc.getMaxProgress() + "%" );
 
-		fontRendererObj.drawString( getGuiDisplayName( GuiText.Inscriber.getLocal() ), 8, 6, 4210752 );
-		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.Inscriber.getLocal() ), 8, 6, 4210752 );
+		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 
 	protected boolean drawUpgrades()
@@ -81,7 +81,7 @@ public class GuiInscriber extends AEBaseGui
 
 	protected boolean hasToolbox()
 	{
-		return ((ContainerUpgradeable) inventorySlots).hasToolbox();
+		return ((ContainerUpgradeable) this.inventorySlots).hasToolbox();
 	}
 
 }

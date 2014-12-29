@@ -41,7 +41,7 @@ public class RedstoneFlux extends IC2 implements IEnergyContainerItem
 	@Override
 	public int receiveEnergy( ItemStack is, int maxReceive, boolean simulate )
 	{
-		return maxReceive - ( int ) injectExternalPower( PowerUnits.RF, is, maxReceive, simulate );
+		return maxReceive - ( int ) this.injectExternalPower( PowerUnits.RF, is, maxReceive, simulate );
 	}
 
 	@Override
@@ -53,13 +53,13 @@ public class RedstoneFlux extends IC2 implements IEnergyContainerItem
 	@Override
 	public int getEnergyStored( ItemStack is )
 	{
-		return ( int ) PowerUnits.AE.convertTo( PowerUnits.RF, getAECurrentPower( is ) );
+		return ( int ) PowerUnits.AE.convertTo( PowerUnits.RF, this.getAECurrentPower( is ) );
 	}
 
 	@Override
 	public int getMaxEnergyStored( ItemStack is )
 	{
-		return ( int ) PowerUnits.AE.convertTo( PowerUnits.RF, getAEMaxPower( is ) );
+		return ( int ) PowerUnits.AE.convertTo( PowerUnits.RF, this.getAEMaxPower( is ) );
 	}
 
 }

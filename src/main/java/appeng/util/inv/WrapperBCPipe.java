@@ -35,9 +35,9 @@ public class WrapperBCPipe implements IInventory
 	final private ForgeDirection dir;
 
 	public WrapperBCPipe(TileEntity te, ForgeDirection d) {
-		bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
-		ad = te;
-		dir = d;
+		this.bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
+		this.ad = te;
+		this.dir = d;
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class WrapperBCPipe implements IInventory
 	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack)
 	{
-		bc.addItemsToPipe( ad, itemstack, dir );
+		this.bc.addItemsToPipe( this.ad, itemstack, this.dir );
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public class WrapperBCPipe implements IInventory
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
-		return bc.canAddItemsToPipe( ad, itemstack, dir );
+		return this.bc.canAddItemsToPipe( this.ad, itemstack, this.dir );
 	}
 
 }

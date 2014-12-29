@@ -36,7 +36,7 @@ public class FacadeConfig extends Configuration
 
 	public FacadeConfig(String path) {
 		super( new File( path + "Facades.cfg" ) );
-		replacementPattern = Pattern.compile( "[^a-zA-Z0-9]" );
+		this.replacementPattern = Pattern.compile( "[^a-zA-Z0-9]" );
 	}
 
 	public boolean checkEnabled(Block id, int metadata, boolean automatic)
@@ -52,7 +52,7 @@ public class FacadeConfig extends Configuration
 				try
 				{
 					if ( f.get( Block.class ) == id )
-						return get( "minecraft", f.getName() + (metadata == 0 ? "" : "." + metadata), automatic ).getBoolean( automatic );
+						return this.get( "minecraft", f.getName() + (metadata == 0 ? "" : "." + metadata), automatic ).getBoolean( automatic );
 				}
 				catch (Throwable e)
 				{
@@ -62,9 +62,9 @@ public class FacadeConfig extends Configuration
 		}
 		else
 		{
-			Matcher mod = replacementPattern.matcher( blk.modId );
-			Matcher name = replacementPattern.matcher( blk.name );
-			return get( mod.replaceAll( "" ), name.replaceAll( "" ) + (metadata == 0 ? "" : "." + metadata), automatic ).getBoolean( automatic );
+			Matcher mod = this.replacementPattern.matcher( blk.modId );
+			Matcher name = this.replacementPattern.matcher( blk.name );
+			return this.get( mod.replaceAll( "" ), name.replaceAll( "" ) + (metadata == 0 ? "" : "." + metadata), automatic ).getBoolean( automatic );
 		}
 
 		return false;

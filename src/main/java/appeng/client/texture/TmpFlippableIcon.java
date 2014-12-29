@@ -32,7 +32,7 @@ public class TmpFlippableIcon extends FlippableIcon
 
 	public void setOriginal(IIcon i)
 	{
-		setFlip( false, false );
+		this.setFlip( false, false );
 
 		while (i instanceof FlippableIcon)
 		{
@@ -47,9 +47,9 @@ public class TmpFlippableIcon extends FlippableIcon
 		}
 
 		if ( i == null )
-			original = nullIcon;
+			this.original = nullIcon;
 		else
-			original = i;
+			this.original = i;
 	}
 
 }

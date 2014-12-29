@@ -45,7 +45,7 @@ public class GuiCondenser extends AEBaseGui
 	public GuiCondenser(InventoryPlayer inventoryPlayer, TileCondenser te)
 	{
 		super( new ContainerCondenser( inventoryPlayer, te ) );
-		cvc = (ContainerCondenser) inventorySlots;
+		this.cvc = (ContainerCondenser) this.inventorySlots;
 		this.ySize = 197;
 	}
 
@@ -56,7 +56,7 @@ public class GuiCondenser extends AEBaseGui
 
 		boolean backwards = Mouse.isButtonDown( 1 );
 
-		if ( mode == btn )
+		if ( this.mode == btn )
 		{
 			NetworkHandler.instance.sendToServer( new PacketConfigButton( Settings.CONDENSER_OUTPUT, backwards ) );
 		}
@@ -67,30 +67,30 @@ public class GuiCondenser extends AEBaseGui
 	{
 		super.initGui();
 
-		pb = new GuiProgressBar( cvc, "guis/condenser.png", 120 + guiLeft, 25 + guiTop, 178, 25, 6, 18, Direction.VERTICAL, GuiText.StoredEnergy.getLocal() );
+		this.pb = new GuiProgressBar( this.cvc, "guis/condenser.png", 120 + this.guiLeft, 25 + this.guiTop, 178, 25, 6, 18, Direction.VERTICAL, GuiText.StoredEnergy.getLocal() );
 
-		mode = new GuiImgButton( 128 + guiLeft, 52 + guiTop, Settings.CONDENSER_OUTPUT, cvc.output );
+		this.mode = new GuiImgButton( 128 + this.guiLeft, 52 + this.guiTop, Settings.CONDENSER_OUTPUT, this.cvc.output );
 
-		this.buttonList.add( pb );
-		this.buttonList.add( mode );
+		this.buttonList.add( this.pb );
+		this.buttonList.add( this.mode );
 	}
 
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		bindTexture( "guis/condenser.png" );
+		this.bindTexture( "guis/condenser.png" );
 
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, xSize, ySize );
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 	}
 
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString( getGuiDisplayName( GuiText.Condenser.getLocal() ), 8, 6, 4210752 );
-		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.Condenser.getLocal() ), 8, 6, 4210752 );
+		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
-		mode.set( cvc.output );
-		mode.fillVar = String.valueOf( cvc.output.requiredPower );
+		this.mode.set( this.cvc.output );
+		this.mode.fillVar = String.valueOf( this.cvc.output.requiredPower );
 
 	}
 

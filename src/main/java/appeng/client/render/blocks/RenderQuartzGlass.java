@@ -50,7 +50,7 @@ public class RenderQuartzGlass extends BaseBlockRender
 
 	boolean isFlush(AEBaseBlock imb, IBlockAccess world, int x, int y, int z)
 	{
-		return isGlass( imb, world, x, y, z );
+		return this.isGlass( imb, world, x, y, z );
 	}
 
 	boolean isGlass(AEBaseBlock imb, IBlockAccess world, int x, int y, int z)
@@ -61,9 +61,9 @@ public class RenderQuartzGlass extends BaseBlockRender
 
 	void renderEdge(AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer, ForgeDirection side, ForgeDirection direction)
 	{
-		if ( !isFlush( imb, world, x + side.offsetX, y + side.offsetY, z + side.offsetZ ) )
+		if ( !this.isFlush( imb, world, x + side.offsetX, y + side.offsetY, z + side.offsetZ ) )
 		{
-			if ( !isFlush( imb, world, x + direction.offsetX, y + direction.offsetY, z + direction.offsetZ ) )
+			if ( !this.isFlush( imb, world, x + direction.offsetX, y + direction.offsetY, z + direction.offsetZ ) )
 			{
 				float minX = 0.5f + (side.offsetX + direction.offsetX) / 2.0f;
 				float minY = 0.5f + (side.offsetY + direction.offsetY) / 2.0f;
@@ -171,35 +171,35 @@ public class RenderQuartzGlass extends BaseBlockRender
 		boolean result = renderer.renderStandardBlock( imb, x, y, z );
 
 		renderer.overrideBlockTexture = null;
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.UP, ForgeDirection.EAST );
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.UP, ForgeDirection.WEST );
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.UP, ForgeDirection.NORTH );
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.UP, ForgeDirection.SOUTH );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.UP, ForgeDirection.EAST );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.UP, ForgeDirection.WEST );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.UP, ForgeDirection.NORTH );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.UP, ForgeDirection.SOUTH );
 
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.DOWN, ForgeDirection.EAST );
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.DOWN, ForgeDirection.WEST );
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.DOWN, ForgeDirection.NORTH );
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.DOWN, ForgeDirection.SOUTH );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.DOWN, ForgeDirection.EAST );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.DOWN, ForgeDirection.WEST );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.DOWN, ForgeDirection.NORTH );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.DOWN, ForgeDirection.SOUTH );
 
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.EAST, ForgeDirection.UP );
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.EAST, ForgeDirection.DOWN );
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.EAST, ForgeDirection.NORTH );
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.EAST, ForgeDirection.SOUTH );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.EAST, ForgeDirection.UP );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.EAST, ForgeDirection.DOWN );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.EAST, ForgeDirection.NORTH );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.EAST, ForgeDirection.SOUTH );
 
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.WEST, ForgeDirection.UP );
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.WEST, ForgeDirection.DOWN );
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.WEST, ForgeDirection.NORTH );
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.WEST, ForgeDirection.SOUTH );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.WEST, ForgeDirection.UP );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.WEST, ForgeDirection.DOWN );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.WEST, ForgeDirection.NORTH );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.WEST, ForgeDirection.SOUTH );
 
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.NORTH, ForgeDirection.EAST );
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.NORTH, ForgeDirection.WEST );
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.NORTH, ForgeDirection.UP );
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.NORTH, ForgeDirection.DOWN );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.NORTH, ForgeDirection.EAST );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.NORTH, ForgeDirection.WEST );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.NORTH, ForgeDirection.UP );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.NORTH, ForgeDirection.DOWN );
 
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.SOUTH, ForgeDirection.EAST );
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.SOUTH, ForgeDirection.WEST );
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.SOUTH, ForgeDirection.UP );
-		renderEdge( imb, world, x, y, z, renderer, ForgeDirection.SOUTH, ForgeDirection.DOWN );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.SOUTH, ForgeDirection.EAST );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.SOUTH, ForgeDirection.WEST );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.SOUTH, ForgeDirection.UP );
+		this.renderEdge( imb, world, x, y, z, renderer, ForgeDirection.SOUTH, ForgeDirection.DOWN );
 
 		return result;
 	}

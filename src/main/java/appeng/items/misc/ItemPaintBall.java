@@ -39,8 +39,8 @@ public class ItemPaintBall extends AEBaseItem
 
 	public ItemPaintBall() {
 		super( ItemPaintBall.class );
-		setFeature( EnumSet.of( AEFeature.PaintBalls ) );
-		hasSubtypes = true;
+		this.setFeature( EnumSet.of( AEFeature.PaintBalls ) );
+		this.hasSubtypes = true;
 		if ( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, new PaintBallRender() );
 	}
@@ -48,12 +48,12 @@ public class ItemPaintBall extends AEBaseItem
 	@Override
 	public String getItemStackDisplayName(ItemStack is)
 	{
-		return super.getItemStackDisplayName( is ) + " - " + getExtraName( is );
+		return super.getItemStackDisplayName( is ) + " - " + this.getExtraName( is );
 	}
 
 	public String getExtraName(ItemStack is)
 	{
-		return (is.getItemDamage() >= 20 ? GuiText.Lumen.getLocal() + ' ' : "") + getColor( is );
+		return (is.getItemDamage() >= 20 ? GuiText.Lumen.getLocal() + ' ' : "") + this.getColor( is );
 	}
 
 	public AEColor getColor(ItemStack is)

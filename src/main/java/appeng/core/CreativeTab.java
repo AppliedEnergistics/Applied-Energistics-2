@@ -37,13 +37,13 @@ public final class CreativeTab extends CreativeTabs
 	@Override
 	public Item getTabIconItem()
 	{
-		return getIconItemStack().getItem();
+		return this.getIconItemStack().getItem();
 	}
 
 	@Override
 	public ItemStack getIconItemStack()
 	{
-		return findFirst( AEApi.instance().blocks().blockController, AEApi.instance().blocks().blockChest, AEApi.instance().blocks().blockCellWorkbench, AEApi
+		return this.findFirst( AEApi.instance().blocks().blockController, AEApi.instance().blocks().blockChest, AEApi.instance().blocks().blockCellWorkbench, AEApi
 				.instance().blocks().blockFluix, AEApi.instance().items().itemCell1k, AEApi.instance().items().itemNetworkTool,
 				AEApi.instance().materials().materialFluixCrystal, AEApi.instance().materials().materialCertusQuartzCrystal );
 	}

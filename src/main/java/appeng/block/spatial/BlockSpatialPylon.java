@@ -35,14 +35,14 @@ public class BlockSpatialPylon extends AEBaseBlock
 
 	public BlockSpatialPylon() {
 		super( BlockSpatialPylon.class, AEGlassMaterial.instance );
-		setFeature( EnumSet.of( AEFeature.SpatialIO ) );
-		setTileEntity( TileSpatialPylon.class );
+		this.setFeature( EnumSet.of( AEFeature.SpatialIO ) );
+		this.setTileEntity( TileSpatialPylon.class );
 	}
 
 	@Override
 	public void onNeighborBlockChange(World w, int x, int y, int z, Block junk)
 	{
-		TileSpatialPylon tsp = getTileEntity( w, x, y, z );
+		TileSpatialPylon tsp = this.getTileEntity( w, x, y, z );
 		if ( tsp != null )
 			tsp.onNeighborBlockChange();
 	}
@@ -50,7 +50,7 @@ public class BlockSpatialPylon extends AEBaseBlock
 	@Override
 	public int getLightValue(IBlockAccess w, int x, int y, int z)
 	{
-		TileSpatialPylon tsp = getTileEntity( w, x, y, z );
+		TileSpatialPylon tsp = this.getTileEntity( w, x, y, z );
 		if ( tsp != null )
 			return tsp.getLightValue();
 		return super.getLightValue( w, x, y, z );

@@ -28,38 +28,38 @@ public class InvSot
 	final public int index;
 
 	public InvSot(ISidedInventory part, int slot) {
-		partInv = part;
-		index = slot;
+		this.partInv = part;
+		this.index = slot;
 	}
 
 	public ItemStack decreaseStackSize(int j)
 	{
-		return partInv.decrStackSize( index, j );
+		return this.partInv.decrStackSize( this.index, j );
 	}
 
 	public ItemStack getStackInSlot()
 	{
-		return partInv.getStackInSlot( index );
+		return this.partInv.getStackInSlot( this.index );
 	}
 
 	public boolean isItemValidForSlot(ItemStack itemstack)
 	{
-		return partInv.isItemValidForSlot( index, itemstack );
+		return this.partInv.isItemValidForSlot( this.index, itemstack );
 	}
 
 	public void setInventorySlotContents(ItemStack itemstack)
 	{
-		partInv.setInventorySlotContents( index, itemstack );
+		this.partInv.setInventorySlotContents( this.index, itemstack );
 	}
 
 	public boolean canExtractItem(ItemStack itemstack, int side)
 	{
-		return partInv.canExtractItem( index, itemstack, side );
+		return this.partInv.canExtractItem( this.index, itemstack, side );
 	}
 
 	public boolean canInsertItem(ItemStack itemstack, int side)
 	{
-		return partInv.canInsertItem( index, itemstack, side );
+		return this.partInv.canInsertItem( this.index, itemstack, side );
 	}
 
 }

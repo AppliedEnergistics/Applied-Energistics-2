@@ -40,11 +40,11 @@ public class GridStorageSearch
 	{
 		if ( obj == null )
 			return false;
-		if ( getClass() != obj.getClass() )
+		if ( this.getClass() != obj.getClass() )
 			return false;
 
 		GridStorageSearch other = (GridStorageSearch) obj;
-		if ( id == other.id )
+		if ( this.id == other.id )
 			return true;
 
 		return false;
@@ -53,7 +53,7 @@ public class GridStorageSearch
 	@Override
 	public int hashCode()
 	{
-		return ((Long) id).hashCode();
+		return ((Long) this.id).hashCode();
 	}
 
 }

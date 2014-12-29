@@ -49,7 +49,7 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 		{
 			if ( input.size() == 1 )
 			{
-				inputs = input.get( 0 );
+				this.inputs = input.get( 0 );
 				this.output = output.get( 0 ).get( 0 );
 			}
 			else
@@ -63,10 +63,10 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 	public void register() throws RegistrationError, MissingIngredientError
 	{
 		List<Object> args = new ArrayList<Object>();
-		for (IIngredient i : inputs)
+		for (IIngredient i : this.inputs)
 			args.add( i );
 
-		ItemStack outIS = output.getItemStack();
+		ItemStack outIS = this.output.getItemStack();
 
 		try
 		{
@@ -83,7 +83,7 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 	public boolean canCraft(ItemStack reqOutput) throws RegistrationError, MissingIngredientError
 	{
 
-		for (IIngredient i : inputs)
+		for (IIngredient i : this.inputs)
 		{
 			if ( !i.isAir() )
 			{
@@ -97,19 +97,19 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 			}
 		}
 
-		return Platform.isSameItemPrecise( output.getItemStack(), reqOutput );
+		return Platform.isSameItemPrecise( this.output.getItemStack(), reqOutput );
 	}
 
 	@Override
 	public String getPattern(RecipeHandler h)
 	{
-		StringBuilder o = new StringBuilder( "shapeless " + output.getQty() + '\n' );
+		StringBuilder o = new StringBuilder( "shapeless " + this.output.getQty() + '\n' );
 
-		o.append( h.getName( output ) ).append( '\n' );
+		o.append( h.getName( this.output ) ).append( '\n' );
 
-		for (int y = 0; y < inputs.size(); y++)
+		for (int y = 0; y < this.inputs.size(); y++)
 		{
-			IIngredient i = inputs.get( y );
+			IIngredient i = this.inputs.get( y );
 
 			if ( i.isAir() )
 			{

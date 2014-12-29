@@ -45,11 +45,11 @@ public class BlockPaint extends AEBaseBlock
 
 	public BlockPaint() {
 		super( BlockPaint.class, new MaterialLiquid( MapColor.airColor ) );
-		setFeature( EnumSet.of( AEFeature.PaintBalls ) );
-		setTileEntity( TilePaint.class );
-		setLightOpacity( 0 );
-		isFullSize = false;
-		isOpaque = false;
+		this.setFeature( EnumSet.of( AEFeature.PaintBalls ) );
+		this.setTileEntity( TilePaint.class );
+		this.setLightOpacity( 0 );
+		this.isFullSize = false;
+		this.isOpaque = false;
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class BlockPaint extends AEBaseBlock
 	@Override
 	public int getLightValue(IBlockAccess w, int x, int y, int z)
 	{
-		TilePaint tp = getTileEntity( w, x, y, z );
+		TilePaint tp = this.getTileEntity( w, x, y, z );
 
 		if ( tp != null )
 		{
@@ -88,7 +88,7 @@ public class BlockPaint extends AEBaseBlock
 	@Override
 	public void onNeighborBlockChange(World w, int x, int y, int z, Block junk)
 	{
-		TilePaint tp = getTileEntity( w, x, y, z );
+		TilePaint tp = this.getTileEntity( w, x, y, z );
 
 		if ( tp != null )
 			tp.onNeighborBlockChange();

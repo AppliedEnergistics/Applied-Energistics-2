@@ -68,7 +68,7 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadCraftingRecipes(String outputId, Object... results)
 	{
-		if ( (outputId.equals( "crafting" )) && (getClass() == NEIAEShapelessRecipeHandler.class) )
+		if ( (outputId.equals( "crafting" )) && (this.getClass() == NEIAEShapelessRecipeHandler.class) )
 		{
 			List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
 			for (IRecipe recipe : recipes)
@@ -102,7 +102,7 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 				{
 					CachedShapelessRecipe cachedRecipe = new CachedShapelessRecipe( (ShapelessRecipe) recipe );
 					cachedRecipe.computeVisuals();
-					arecipes.add( cachedRecipe );
+					this.arecipes.add( cachedRecipe );
 				}
 			}
 		}
@@ -146,7 +146,7 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public boolean hasOverlay(GuiContainer gui, Container container, int recipe)
 	{
-		return (super.hasOverlay( gui, container, recipe )) || ((isRecipe2x2( recipe )) && (RecipeInfo.hasDefaultOverlay( gui, "crafting2x2" )));
+		return (super.hasOverlay( gui, container, recipe )) || ((this.isRecipe2x2( recipe )) && (RecipeInfo.hasDefaultOverlay( gui, "crafting2x2" )));
 	}
 
 	@Override
@@ -160,7 +160,7 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 		if ( positioner == null )
 			return null;
 
-		return new DefaultOverlayRenderer( getIngredientStacks( recipe ), positioner );
+		return new DefaultOverlayRenderer( this.getIngredientStacks( recipe ), positioner );
 	}
 
 	@Override
@@ -175,7 +175,7 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 
 	public boolean isRecipe2x2(int recipe)
 	{
-		for (PositionedStack stack : getIngredientStacks( recipe ))
+		for (PositionedStack stack : this.getIngredientStacks( recipe ))
 		{
 			if ( (stack.relx > 43) || (stack.rely > 24) )
 				return false;
@@ -190,9 +190,9 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 		public final PositionedStack result;
 
 		public CachedShapelessRecipe(ShapelessRecipe recipe) {
-			result = new PositionedStack( recipe.getRecipeOutput(), 119, 24 );
-			ingredients = new ArrayList<PositionedStack>();
-			setIngredients( recipe.getInput().toArray() );
+			this.result = new PositionedStack( recipe.getRecipeOutput(), 119, 24 );
+			this.ingredients = new ArrayList<PositionedStack>();
+			this.setIngredients( recipe.getInput().toArray() );
 		}
 
 		public void setIngredients(Object[] items)
@@ -231,7 +231,7 @@ public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler
 		@Override
 		public List<PositionedStack> getIngredients()
 		{
-			return getCycledIngredients( cycleticks / 20, this.ingredients );
+			return this.getCycledIngredients( NEIAEShapelessRecipeHandler.this.cycleticks / 20, this.ingredients );
 		}
 
 		@Override

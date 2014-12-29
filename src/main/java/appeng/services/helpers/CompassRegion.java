@@ -44,31 +44,31 @@ public class CompassRegion
 	public CompassRegion( int cx, int cz, int worldID, File rootFolder )
 	{
 
-		world = worldID;
+		this.world = worldID;
 		this.rootFolder = rootFolder;
 
 		int region_x = cx >> 10;
 		int region_z = cz >> 10;
 
-		low_x = region_x << 10;
-		low_z = region_z << 10;
+		this.low_x = region_x << 10;
+		this.low_z = region_z << 10;
 
-		hi_x = low_x + 1024;
-		hi_z = low_z + 1024;
+		this.hi_x = this.low_x + 1024;
+		this.hi_z = this.low_z + 1024;
 
-		openFile( false );
+		this.openFile( false );
 	}
 
 	public void close()
 	{
 		try
 		{
-			if ( hasFile )
+			if ( this.hasFile )
 			{
-				buffer = null;
-				raf.close();
-				raf = null;
-				hasFile = false;
+				this.buffer = null;
+				this.raf.close();
+				this.raf = null;
+				this.hasFile = false;
 			}
 		}
 		catch ( Throwable t )
@@ -79,12 +79,12 @@ public class CompassRegion
 
 	public boolean hasBeacon( int cx, int cz )
 	{
-		if ( hasFile )
+		if ( this.hasFile )
 		{
 			cx = cx & 0x3FF;
 			cz = cz & 0x3FF;
 
-			int val = read( cx, cz );
+			int val = this.read( cx, cz );
 			if ( val != 0 )
 				return true;
 		}
@@ -97,11 +97,11 @@ public class CompassRegion
 		cx &= 0x3FF;
 		cz &= 0x3FF;
 
-		openFile( hasBeacon );
+		this.openFile( hasBeacon );
 
-		if ( hasFile )
+		if ( this.hasFile )
 		{
-			int val = read( cx, cz );
+			int val = this.read( cx, cz );
 			int originalVal = val;
 
 			if ( hasBeacon )
@@ -110,7 +110,7 @@ public class CompassRegion
 				val &= ~( 1 << cdy );
 
 			if ( originalVal != val )
-				write( cx, cz, val );
+				this.write( cx, cz, val );
 		}
 	}
 
@@ -118,7 +118,7 @@ public class CompassRegion
 	{
 		try
 		{
-			buffer.put( cx + cz * 0x400, ( byte ) val );
+			this.buffer.put( cx + cz * 0x400, ( byte ) val );
 			// raf.seek( cx + cz * 0x400 );
 			// raf.writeByte( val );
 		}
@@ -132,7 +132,7 @@ public class CompassRegion
 	{
 		try
 		{
-			return buffer.get( cx + cz * 0x400 );
+			return this.buffer.get( cx + cz * 0x400 );
 			// raf.seek( cx + cz * 0x400 );
 			// return raf.readByte();
 		}
@@ -148,18 +148,18 @@ public class CompassRegion
 
 	private void openFile( boolean create )
 	{
-		File fName = getFileName();
-		if ( hasFile )
+		File fName = this.getFileName();
+		if ( this.hasFile )
 			return;
 
-		if ( create || fileExists( fName ) )
+		if ( create || this.fileExists( fName ) )
 		{
 			try
 			{
-				raf = new RandomAccessFile( fName, "rw" );
-				FileChannel fc = raf.getChannel();
-				buffer = fc.map( FileChannel.MapMode.READ_WRITE, 0, 0x400 * 0x400 );// fc.size() );
-				hasFile = true;
+				this.raf = new RandomAccessFile( fName, "rw" );
+				FileChannel fc = this.raf.getChannel();
+				this.buffer = fc.map( FileChannel.MapMode.READ_WRITE, 0, 0x400 * 0x400 );// fc.size() );
+				this.hasFile = true;
 			}
 			catch ( Throwable t )
 			{
@@ -176,7 +176,7 @@ public class CompassRegion
 
 	private File getFileName()
 	{
-		String folder = rootFolder.getPath() + File.separatorChar + "compass";
+		String folder = this.rootFolder.getPath() + File.separatorChar + "compass";
 		File folderFile = new File( folder );
 
 		if ( !folderFile.exists() || !folderFile.isDirectory() )
@@ -185,6 +185,6 @@ public class CompassRegion
 				AELog.info( "Failed to create AE2/compass/" );
 		}
 
-		return new File( folder + File.separatorChar + world + '_' + low_x + '_' + low_z + ".dat" );
+		return new File( folder + File.separatorChar + this.world + '_' + this.low_x + '_' + this.low_z + ".dat" );
 	}
 }

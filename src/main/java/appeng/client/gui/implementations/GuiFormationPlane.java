@@ -44,21 +44,21 @@ public class GuiFormationPlane extends GuiUpgradeable
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString( getGuiDisplayName( GuiText.FormationPlane.getLocal() ), 8, 6, 4210752 );
-		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.FormationPlane.getLocal() ), 8, 6, 4210752 );
+		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
-		if ( fuzzyMode != null )
-			fuzzyMode.set( cvb.fzMode );
+		if ( this.fuzzyMode != null )
+			this.fuzzyMode.set( this.cvb.fzMode );
 	}
 
 	@Override
 	protected void addButtons()
 	{
-		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 
-		buttonList.add( priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRender ) );
+		this.buttonList.add( this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRender ) );
 
-		buttonList.add( fuzzyMode );
+		this.buttonList.add( this.fuzzyMode );
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class GuiFormationPlane extends GuiUpgradeable
 	{
 		super.actionPerformed( btn );
 
-		if ( btn == priority )
+		if ( btn == this.priority )
 		{
 			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
 		}

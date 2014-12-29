@@ -31,7 +31,7 @@ public class LayerITileStorageMonitorable extends LayerBase implements ITileStor
 	@Override
 	public IStorageMonitorable getMonitorable(ForgeDirection side, BaseActionSource src)
 	{
-		IPart part = getPart( side );
+		IPart part = this.getPart( side );
 		if ( part instanceof ITileStorageMonitorable )
 			return ((ITileStorageMonitorable) part).getMonitorable( side, src );
 		return null;

@@ -36,7 +36,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	@TileEvent(TileEventType.WORLD_NBT_READ)
 	public void readFromNBT_AEBaseInvTile(net.minecraft.nbt.NBTTagCompound data)
 	{
-		IInventory inv = getInternalInventory();
+		IInventory inv = this.getInternalInventory();
 		NBTTagCompound opt = data.getCompoundTag( "inv" );
 		for (int x = 0; x < inv.getSizeInventory(); x++)
 		{
@@ -48,12 +48,12 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	@TileEvent(TileEventType.WORLD_NBT_WRITE)
 	public void writeToNBT_AEBaseInvTile(net.minecraft.nbt.NBTTagCompound data)
 	{
-		IInventory inv = getInternalInventory();
+		IInventory inv = this.getInternalInventory();
 		NBTTagCompound opt = new NBTTagCompound();
 		for (int x = 0; x < inv.getSizeInventory(); x++)
 		{
 			NBTTagCompound item = new NBTTagCompound();
-			ItemStack is = getStackInSlot( x );
+			ItemStack is = this.getStackInSlot( x );
 			if ( is != null )
 				is.writeToNBT( item );
 			opt.setTag( "item" + x, item );
@@ -64,19 +64,19 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	@Override
 	public int getSizeInventory()
 	{
-		return getInternalInventory().getSizeInventory();
+		return this.getInternalInventory().getSizeInventory();
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int i)
 	{
-		return getInternalInventory().getStackInSlot( i );
+		return this.getInternalInventory().getStackInSlot( i );
 	}
 
 	@Override
 	public ItemStack decrStackSize(int i, int j)
 	{
-		return getInternalInventory().decrStackSize( i, j );
+		return this.getInternalInventory().decrStackSize( i, j );
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack)
 	{
-		getInternalInventory().setInventorySlotContents( i, itemstack );
+		this.getInternalInventory().setInventorySlotContents( i, itemstack );
 	}
 
 	@Override
@@ -123,7 +123,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	@Override
 	public boolean canInsertItem(int i, ItemStack itemstack, int j)
 	{
-		return isItemValidForSlot( i, itemstack );
+		return this.isItemValidForSlot( i, itemstack );
 	}
 
 	@Override
@@ -142,13 +142,13 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	@Override
 	final public int[] getAccessibleSlotsFromSide(int side)
 	{
-		Block blk = worldObj.getBlock( xCoord, yCoord, zCoord );
+		Block blk = this.worldObj.getBlock( this.xCoord, this.yCoord, this.zCoord );
 		if ( blk instanceof AEBaseBlock )
 		{
 			ForgeDirection mySide = ForgeDirection.getOrientation( side );
-			return getAccessibleSlotsBySide( ((AEBaseBlock) blk).mapRotation( this, mySide ) );
+			return this.getAccessibleSlotsBySide( ((AEBaseBlock) blk).mapRotation( this, mySide ) );
 		}
-		return getAccessibleSlotsBySide( ForgeDirection.getOrientation( side ) );
+		return this.getAccessibleSlotsBySide( ForgeDirection.getOrientation( side ) );
 	}
 
 	/**
@@ -157,7 +157,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	@Override
 	public String getInventoryName()
 	{
-		return getCustomName();
+		return this.getCustomName();
 	}
 
 	/**
@@ -166,7 +166,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	@Override
 	public boolean hasCustomInventoryName()
 	{
-		return hasCustomName();
+		return this.hasCustomName();
 	}
 
 }

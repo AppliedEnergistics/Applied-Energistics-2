@@ -55,8 +55,8 @@ final public class EntityGrowingCrystal extends EntityItem
 		if ( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldPurification ) )
 			return;
 
-		if ( age > 600 )
-			age = 100;
+		if ( this.age > 600 )
+			this.age = 100;
 
 		ItemStack is = this.getEntityItem();
 		Item gc = is.getItem();
@@ -67,25 +67,25 @@ final public class EntityGrowingCrystal extends EntityItem
 			int i = MathHelper.floor_double( this.posY );
 			int k = MathHelper.floor_double( this.posZ );
 
-			Block blk = worldObj.getBlock( j, i, k );
+			Block blk = this.worldObj.getBlock( j, i, k );
 			Material mat = blk.getMaterial();
 			IGrowableCrystal cry = (IGrowableCrystal) is.getItem();
 
 			float multiplier = cry.getMultiplier( blk, mat );
-			int speed = (int) Math.max( 1, getSpeed( j, i, k ) * multiplier );
+			int speed = (int) Math.max( 1, this.getSpeed( j, i, k ) * multiplier );
 
 			boolean isClient = Platform.isClient();
 
 			if ( mat.isLiquid() )
 			{
 				if ( isClient )
-					progress_1000++;
+					this.progress_1000++;
 				else
-					progress_1000 += speed;
+					this.progress_1000 += speed;
 
 			}
 			else
-				progress_1000 = 0;
+				this.progress_1000 = 0;
 
 			if ( isClient )
 			{
@@ -109,18 +109,18 @@ final public class EntityGrowingCrystal extends EntityItem
 				if ( speed > 500 )
 					len = 1;
 
-				if ( progress_1000 >= len )
+				if ( this.progress_1000 >= len )
 				{
-					progress_1000 = 0;
-					CommonHelper.proxy.spawnEffect( EffectType.Vibrant, worldObj, posX, posY + 0.2, posZ, null );
+					this.progress_1000 = 0;
+					CommonHelper.proxy.spawnEffect( EffectType.Vibrant, this.worldObj, this.posX, this.posY + 0.2, this.posZ, null );
 				}
 			}
 			else
 			{
-				if ( progress_1000 > 1000 )
+				if ( this.progress_1000 > 1000 )
 				{
-					progress_1000 -= 1000;
-					setEntityItemStack( cry.triggerGrowth( is ) );
+					this.progress_1000 -= 1000;
+					this.setEntityItemStack( cry.triggerGrowth( is ) );
 				}
 			}
 		}
@@ -133,22 +133,22 @@ final public class EntityGrowingCrystal extends EntityItem
 
 		int qty = 0;
 
-		if ( isAccelerated( x + 1, y, z ) )
+		if ( this.isAccelerated( x + 1, y, z ) )
 			qty += per + qty * mul;
 
-		if ( isAccelerated( x, y + 1, z ) )
+		if ( this.isAccelerated( x, y + 1, z ) )
 			qty += per + qty * mul;
 
-		if ( isAccelerated( x, y, z + 1 ) )
+		if ( this.isAccelerated( x, y, z + 1 ) )
 			qty += per + qty * mul;
 
-		if ( isAccelerated( x - 1, y, z ) )
+		if ( this.isAccelerated( x - 1, y, z ) )
 			qty += per + qty * mul;
 
-		if ( isAccelerated( x, y - 1, z ) )
+		if ( this.isAccelerated( x, y - 1, z ) )
 			qty += per + qty * mul;
 
-		if ( isAccelerated( x, y, z - 1 ) )
+		if ( this.isAccelerated( x, y, z - 1 ) )
 			qty += per + qty * mul;
 
 		return qty;
@@ -156,7 +156,7 @@ final public class EntityGrowingCrystal extends EntityItem
 
 	private boolean isAccelerated(int x, int y, int z)
 	{
-		TileEntity te = worldObj.getTileEntity( x, y, z );
+		TileEntity te = this.worldObj.getTileEntity( x, y, z );
 
 		return te instanceof ICrystalGrowthAccelerator && ( ( ICrystalGrowthAccelerator ) te ).isPowered();
 	}

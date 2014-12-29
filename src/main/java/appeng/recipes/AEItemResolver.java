@@ -45,12 +45,12 @@ public class AEItemResolver implements ISubItemResolver
 		{
 			if ( itemName.startsWith( "PaintBall." ) )
 			{
-				return paintBall( AEApi.instance().items().itemPaintBall, itemName.substring( itemName.indexOf( "." ) + 1 ), false );
+				return this.paintBall( AEApi.instance().items().itemPaintBall, itemName.substring( itemName.indexOf( "." ) + 1 ), false );
 			}
 
 			if ( itemName.startsWith( "LumenPaintBall." ) )
 			{
-				return paintBall( AEApi.instance().items().itemPaintBall, itemName.substring( itemName.indexOf( "." ) + 1 ), true );
+				return this.paintBall( AEApi.instance().items().itemPaintBall, itemName.substring( itemName.indexOf( "." ) + 1 ), true );
 			}
 
 			if ( itemName.equals( "CableGlass" ) )
@@ -60,7 +60,7 @@ public class AEItemResolver implements ISubItemResolver
 
 			if ( itemName.startsWith( "CableGlass." ) )
 			{
-				return cableItem( AEApi.instance().parts().partCableGlass, itemName.substring( itemName.indexOf( "." ) + 1 ) );
+				return this.cableItem( AEApi.instance().parts().partCableGlass, itemName.substring( itemName.indexOf( "." ) + 1 ) );
 			}
 
 			if ( itemName.equals( "CableCovered" ) )
@@ -70,7 +70,7 @@ public class AEItemResolver implements ISubItemResolver
 
 			if ( itemName.startsWith( "CableCovered." ) )
 			{
-				return cableItem( AEApi.instance().parts().partCableCovered, itemName.substring( itemName.indexOf( "." ) + 1 ) );
+				return this.cableItem( AEApi.instance().parts().partCableCovered, itemName.substring( itemName.indexOf( "." ) + 1 ) );
 			}
 
 			if ( itemName.equals( "CableSmart" ) )
@@ -80,7 +80,7 @@ public class AEItemResolver implements ISubItemResolver
 
 			if ( itemName.startsWith( "CableSmart." ) )
 			{
-				return cableItem( AEApi.instance().parts().partCableSmart, itemName.substring( itemName.indexOf( "." ) + 1 ) );
+				return this.cableItem( AEApi.instance().parts().partCableSmart, itemName.substring( itemName.indexOf( "." ) + 1 ) );
 			}
 
 			if ( itemName.equals( "CableDense" ) )
@@ -90,7 +90,7 @@ public class AEItemResolver implements ISubItemResolver
 
 			if ( itemName.startsWith( "CableDense." ) )
 			{
-				return cableItem( AEApi.instance().parts().partCableDense, itemName.substring( itemName.indexOf( "." ) + 1 ) );
+				return this.cableItem( AEApi.instance().parts().partCableDense, itemName.substring( itemName.indexOf( "." ) + 1 ) );
 			}
 
 			if ( itemName.startsWith( "ItemCrystalSeed." ) )

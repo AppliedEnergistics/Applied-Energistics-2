@@ -47,18 +47,18 @@ public class CraftingFx extends EntityBreakingFX
 
 	public CraftingFx(World par1World, double par2, double par4, double par6, Item par8Item) {
 		super( par1World, par2, par4, par6, par8Item );
-		particleGravity = 0;
+		this.particleGravity = 0;
 		this.particleBlue = 1;
 		this.particleGreen = 0.9f;
 		this.particleRed = 1;
 		this.particleAlpha = 1.3f;
 		this.particleScale = 1.5f;
 		this.particleTextureIndex = ExtraBlockTextures.BlockEnergyParticle.getIcon();
-		particleMaxAge /= 1.2;
+		this.particleMaxAge /= 1.2;
 
-		startBlkX = MathHelper.floor_double( posX );
-		startBlkY = MathHelper.floor_double( posY );
-		startBlkZ = MathHelper.floor_double( posZ );
+		this.startBlkX = MathHelper.floor_double( this.posX );
+		this.startBlkY = MathHelper.floor_double( this.posY );
+		this.startBlkZ = MathHelper.floor_double( this.posZ );
 	}
 
 	public void fromItem(ForgeDirection d)
@@ -97,7 +97,7 @@ public class CraftingFx extends EntityBreakingFX
 		int blkX = MathHelper.floor_double( offX );
 		int blkY = MathHelper.floor_double( offY );
 		int blkZ = MathHelper.floor_double( offZ );
-		if ( blkX == startBlkX && blkY == startBlkY && blkZ == startBlkZ )
+		if ( blkX == this.startBlkX && blkY == this.startBlkY && blkZ == this.startBlkZ )
 		{
 			offX -= interpPosX;
 			offY -= interpPosY;

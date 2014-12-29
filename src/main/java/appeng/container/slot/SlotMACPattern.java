@@ -35,7 +35,7 @@ public class SlotMACPattern extends AppEngSlot
 	@Override
 	public boolean isItemValid(ItemStack i)
 	{
-		return mac.isValidItemForSlot( this.getSlotIndex(), i );
+		return this.mac.isValidItemForSlot( this.getSlotIndex(), i );
 	}
 
 }

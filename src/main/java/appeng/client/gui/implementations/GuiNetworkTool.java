@@ -48,7 +48,7 @@ public class GuiNetworkTool extends AEBaseGui
 
 		try
 		{
-			if ( btn == tFacades )
+			if ( btn == this.tFacades )
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "NetworkTool", "Toggle" ) );
 		}
 		catch (IOException e)
@@ -62,26 +62,26 @@ public class GuiNetworkTool extends AEBaseGui
 	{
 		super.initGui();
 
-		tFacades = new GuiToggleButton( this.guiLeft - 18, guiTop + 8, 23, 22, GuiText.TransparentFacades.getLocal(), GuiText.TransparentFacadesHint.getLocal() );
+		this.tFacades = new GuiToggleButton( this.guiLeft - 18, this.guiTop + 8, 23, 22, GuiText.TransparentFacades.getLocal(), GuiText.TransparentFacadesHint.getLocal() );
 
-		buttonList.add( tFacades );
+		this.buttonList.add( this.tFacades );
 	}
 
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		bindTexture( "guis/toolbox.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, xSize, ySize );
+		this.bindTexture( "guis/toolbox.png" );
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 	}
 
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		if ( tFacades != null )
-			tFacades.setState( ((ContainerNetworkTool) inventorySlots).facadeMode );
+		if ( this.tFacades != null )
+			this.tFacades.setState( ((ContainerNetworkTool) this.inventorySlots).facadeMode );
 
-		fontRendererObj.drawString( getGuiDisplayName( GuiText.NetworkTool.getLocal() ), 8, 6, 4210752 );
-		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.NetworkTool.getLocal() ), 8, 6, 4210752 );
+		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 
 }

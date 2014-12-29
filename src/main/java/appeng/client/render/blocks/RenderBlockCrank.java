@@ -79,7 +79,7 @@ public class RenderBlockCrank extends BaseBlockRender
 
 		GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
-		applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
+		this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
 
 		GL11.glTranslated( 0.5, 0, 0.5 );
 		GL11.glRotatef( tc.visibleRotation, 0, 1, 0 );

@@ -50,21 +50,21 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 	{
 		if ( output.size() == 1 && output.get( 0 ).size() == 1 )
 		{
-			rows = input.size();
-			if ( rows > 0 && input.size() <= 3 )
+			this.rows = input.size();
+			if ( this.rows > 0 && input.size() <= 3 )
 			{
-				cols = input.get( 0 ).size();
-				if ( cols <= 3 && cols >= 1 )
+				this.cols = input.get( 0 ).size();
+				if ( this.cols <= 3 && this.cols >= 1 )
 				{
 					for (List<IIngredient> anInput : input)
 					{
-						if ( anInput.size() != cols )
+						if ( anInput.size() != this.cols )
 						{
 							throw new RecipeError( "all rows in a shaped crafting recipe must contain the same number of ingredients." );
 						}
 					}
 
-					inputs = input;
+					this.inputs = input;
 					this.output = output.get( 0 ).get( 0 );
 				}
 				else
@@ -83,18 +83,18 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 		char first = 'A';
 		List<Object> args = new ArrayList<Object>();
 
-		for (int y = 0; y < rows; y++)
+		for (int y = 0; y < this.rows; y++)
 		{
 			StringBuilder row = new StringBuilder();
-			for (int x = 0; x < cols; x++)
+			for (int x = 0; x < this.cols; x++)
 			{
-				if ( inputs.get( y ).get( x ).isAir() )
+				if ( this.inputs.get( y ).get( x ).isAir() )
 					row.append( ' ' );
 				else
 				{
 					row.append( first );
 					args.add( first );
-					args.add( inputs.get( y ).get( x ) );
+					args.add( this.inputs.get( y ).get( x ) );
 
 					first++;
 				}
@@ -102,7 +102,7 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 			args.add( y, row.toString() );
 		}
 
-		ItemStack outIS = output.getItemStack();
+		ItemStack outIS = this.output.getItemStack();
 
 		try
 		{
@@ -118,10 +118,10 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public boolean canCraft(ItemStack reqOutput) throws RegistrationError, MissingIngredientError
 	{
-		for (int y = 0; y < rows; y++)
-			for (int x = 0; x < cols; x++)
+		for (int y = 0; y < this.rows; y++)
+			for (int x = 0; x < this.cols; x++)
 			{
-				IIngredient i = inputs.get( y ).get( x );
+				IIngredient i = this.inputs.get( y ).get( x );
 
 				if ( !i.isAir() )
 				{
@@ -133,25 +133,25 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 				}
 			}
 		
-		return Platform.isSameItemPrecise( output.getItemStack(), reqOutput );
+		return Platform.isSameItemPrecise( this.output.getItemStack(), reqOutput );
 	}
 
 	@Override
 	public String getPattern(RecipeHandler h)
 	{
-		String o = "shaped " + output.getQty() + ' ' + cols + 'x' + rows + '\n';
+		String o = "shaped " + this.output.getQty() + ' ' + this.cols + 'x' + this.rows + '\n';
 
-		o += h.getName( output ) + '\n';
+		o += h.getName( this.output ) + '\n';
 
-		for (int y = 0; y < rows; y++)
-			for (int x = 0; x < cols; x++)
+		for (int y = 0; y < this.rows; y++)
+			for (int x = 0; x < this.cols; x++)
 			{
-				IIngredient i = inputs.get( y ).get( x );
+				IIngredient i = this.inputs.get( y ).get( x );
 
 				if ( i.isAir() )
-					o += "air" + (x + 1 == cols ? "\n" : " ");
+					o += "air" + (x + 1 == this.cols ? "\n" : " ");
 				else
-					o += h.getName( i ) + (x + 1 == cols ? "\n" : " ");
+					o += h.getName( i ) + (x + 1 == this.cols ? "\n" : " ");
 			}
 
 		return o.trim();

@@ -35,10 +35,10 @@ public class ContainerDrive extends AEBaseContainer
 		for (int y = 0; y < 5; y++)
 			for (int x = 0; x < 2; x++)
 			{
-				addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, drive, x + y * 2, 71 + x * 18, 14 + y * 18, invPlayer ) );
+				this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, drive, x + y * 2, 71 + x * 18, 14 + y * 18, this.invPlayer ) );
 			}
 
-		bindPlayerInventory( ip, 0, 199 - /* height of player inventory */82 );
+		this.bindPlayerInventory( ip, 0, 199 - /* height of player inventory */82 );
 	}
 
 }

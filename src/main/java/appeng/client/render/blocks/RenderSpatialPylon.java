@@ -121,12 +121,12 @@ public class RenderSpatialPylon extends BaseBlockRender
 
 			BlockRenderInfo bri = imb.getRendererInstance();
 			bri.setTemporaryRenderIcon( null );
-			bri.setTemporaryRenderIcons( getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.UP ),
-					getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.DOWN ),
-					getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.SOUTH ),
-					getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.NORTH ),
-					getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.EAST ),
-					getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.WEST ) );
+			bri.setTemporaryRenderIcons( this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.UP ),
+					this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.DOWN ),
+					this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.SOUTH ),
+					this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.NORTH ),
+					this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.EAST ),
+					this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.WEST ) );
 
 			boolean r = renderer.renderStandardBlock( imb, x, y, z );
 
@@ -137,17 +137,17 @@ public class RenderSpatialPylon extends BaseBlockRender
 				Tessellator.instance.setColorOpaque_I( 0xffffff );
 
 				for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
-					renderFace( x, y, z, imb, getBlockTextureFromSideInside( imb, sp, displayBits, ori, d ), renderer, d );
+					this.renderFace( x, y, z, imb, this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, d ), renderer, d );
 			}
 			else
 			{
 				bri.setTemporaryRenderIcon( null );
-				bri.setTemporaryRenderIcons( getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.UP ),
-						getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.DOWN ),
-						getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.SOUTH ),
-						getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.NORTH ),
-						getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.EAST ),
-						getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.WEST ) );
+				bri.setTemporaryRenderIcons( this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.UP ),
+						this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.DOWN ),
+						this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.SOUTH ),
+						this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.NORTH ),
+						this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.EAST ),
+						this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.WEST ) );
 
 				renderer.renderStandardBlock( imb, x, y, z );
 			}

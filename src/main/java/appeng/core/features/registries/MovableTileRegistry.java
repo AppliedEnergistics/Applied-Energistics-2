@@ -47,7 +47,7 @@ public class MovableTileRegistry implements IMovableRegistry
 		IMovableHandler handler = null;
 
 		// ask handlers...
-		for (IMovableHandler han : handlers)
+		for (IMovableHandler han : this.handlers)
 		{
 			if ( han.canHandle( myClass, te ) )
 			{
@@ -59,7 +59,7 @@ public class MovableTileRegistry implements IMovableRegistry
 		// if you have a handler your opted in
 		if ( handler != null )
 		{
-			Valid.put( myClass, handler );
+			this.Valid.put( myClass, handler );
 			return handler;
 
 		}
@@ -67,34 +67,34 @@ public class MovableTileRegistry implements IMovableRegistry
 		// if your movable our opted in
 		if ( te instanceof IMovableTile )
 		{
-			Valid.put( myClass, dsh );
-			return dsh;
+			this.Valid.put( myClass, this.dsh );
+			return this.dsh;
 		}
 
 		// if you are on the white list your opted in.
-		for (Class<? extends TileEntity> testClass : test)
+		for (Class<? extends TileEntity> testClass : this.test)
 		{
 			if ( testClass.isAssignableFrom( myClass ) )
 			{
-				Valid.put( myClass, dsh );
-				return dsh;
+				this.Valid.put( myClass, this.dsh );
+				return this.dsh;
 			}
 		}
 
-		Valid.put( myClass, nullHandler );
-		return nullHandler;
+		this.Valid.put( myClass, this.nullHandler );
+		return this.nullHandler;
 	}
 
 	@Override
 	public boolean askToMove(TileEntity te)
 	{
 		Class myClass = te.getClass();
-		IMovableHandler canMove = Valid.get( myClass );
+		IMovableHandler canMove = this.Valid.get( myClass );
 
 		if ( canMove == null )
-			canMove = testClass( myClass, te );
+			canMove = this.testClass( myClass, te );
 
-		if ( canMove != nullHandler )
+		if ( canMove != this.nullHandler )
 		{
 			if ( te instanceof IMovableTile )
 				((IMovableTile) te).prepareToMove();
@@ -126,39 +126,39 @@ public class MovableTileRegistry implements IMovableRegistry
 					"Someone tried to make all tiles movable, this is a clear violation of the purpose of the white list." ) );
 		}
 
-		test.add( c );
+		this.test.add( c );
 	}
 
 	@Override
 	public void addHandler(IMovableHandler han)
 	{
-		handlers.add( han );
+		this.handlers.add( han );
 	}
 
 	@Override
 	public IMovableHandler getHandler(TileEntity te)
 	{
 		Class myClass = te.getClass();
-		IMovableHandler h = Valid.get( myClass );
-		return h == null ? dsh : h;
+		IMovableHandler h = this.Valid.get( myClass );
+		return h == null ? this.dsh : h;
 	}
 
 	@Override
 	public IMovableHandler getDefaultHandler()
 	{
-		return dsh;
+		return this.dsh;
 	}
 
 	@Override
 	public void blacklistBlock(Block blk)
 	{
-		blacklisted.add( blk );
+		this.blacklisted.add( blk );
 	}
 
 	@Override
 	public boolean isBlacklisted(Block blk)
 	{
-		return blacklisted.contains( blk );
+		return this.blacklisted.contains( blk );
 	}
 
 }

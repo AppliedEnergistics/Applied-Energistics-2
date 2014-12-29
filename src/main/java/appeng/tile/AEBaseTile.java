@@ -81,7 +81,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	public boolean notLoaded()
 	{
-		return !worldObj.blockExists( xCoord, yCoord, zCoord );
+		return !this.worldObj.blockExists( this.xCoord, this.yCoord, this.zCoord );
 	}
 
 	public TileEntity getTile()
@@ -104,13 +104,13 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	protected boolean hasHandlerFor(TileEventType type)
 	{
-		List<AETileEventHandler> list = getHandlerListFor( type );
+		List<AETileEventHandler> list = this.getHandlerListFor( type );
 		return list != null && !list.isEmpty();
 	}
 
 	protected List<AETileEventHandler> getHandlerListFor(TileEventType type)
 	{
-		Class clz = getClass();
+		Class clz = this.getClass();
 		EnumMap<TileEventType, List<AETileEventHandler>> handlerSet = handlers.get( clz );
 
 		if ( handlerSet == null )
@@ -122,7 +122,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 				TileEvent te = m.getAnnotation( TileEvent.class );
 				if ( te != null )
 				{
-					addHandler( handlerSet, te.value(), m );
+					this.addHandler( handlerSet, te.value(), m );
 				}
 			}
 		}
@@ -148,7 +148,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	@Override
 	final public boolean canUpdate()
 	{
-		return hasHandlerFor( TileEventType.TICK );
+		return this.hasHandlerFor( TileEventType.TICK );
 	}
 
 	final public void Tick()
@@ -159,15 +159,15 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	@Override
 	final public void updateEntity()
 	{
-		for (AETileEventHandler h : getHandlerListFor( TileEventType.TICK ))
+		for (AETileEventHandler h : this.getHandlerListFor( TileEventType.TICK ))
 			h.Tick( this );
 	}
 
 	@Override
 	public void onChunkUnload()
 	{
-		if ( !isInvalid() )
-			invalidate();
+		if ( !this.isInvalid() )
+			this.invalidate();
 	}
 
 	/**
@@ -175,8 +175,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	 */
 	public void onChunkLoad()
 	{
-		if ( isInvalid() )
-			validate();
+		if ( this.isInvalid() )
+			this.validate();
 	}
 
 	@Override
@@ -185,16 +185,16 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	{
 		super.writeToNBT( data );
 
-		if ( canBeRotated() )
+		if ( this.canBeRotated() )
 		{
-			data.setString( "orientation_forward", forward.name() );
-			data.setString( "orientation_up", up.name() );
+			data.setString( "orientation_forward", this.forward.name() );
+			data.setString( "orientation_up", this.up.name() );
 		}
 
-		if ( customName != null )
-			data.setString( "customName", customName );
+		if ( this.customName != null )
+			data.setString( "customName", this.customName );
 
-		for (AETileEventHandler h : getHandlerListFor( TileEventType.WORLD_NBT_WRITE ))
+		for (AETileEventHandler h : this.getHandlerListFor( TileEventType.WORLD_NBT_WRITE ))
 			h.writeToNBT( this, data );
 	}
 
@@ -205,23 +205,23 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		super.readFromNBT( data );
 
 		if ( data.hasKey( "customName" ) )
-			customName = data.getString( "customName" );
+			this.customName = data.getString( "customName" );
 		else
-			customName = null;
+			this.customName = null;
 
 		try
 		{
-			if ( canBeRotated() )
+			if ( this.canBeRotated() )
 			{
-				forward = ForgeDirection.valueOf( data.getString( "orientation_forward" ) );
-				up = ForgeDirection.valueOf( data.getString( "orientation_up" ) );
+				this.forward = ForgeDirection.valueOf( data.getString( "orientation_forward" ) );
+				this.up = ForgeDirection.valueOf( data.getString( "orientation_up" ) );
 			}
 		}
 		catch (IllegalArgumentException ignored)
 		{
 		}
 
-		for (AETileEventHandler h : getHandlerListFor( TileEventType.WORLD_NBT_READ ))
+		for (AETileEventHandler h : this.getHandlerListFor( TileEventType.WORLD_NBT_READ ))
 		{
 			h.readFromNBT( this, data );
 		}
@@ -231,13 +231,13 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	{
 		try
 		{
-			if ( canBeRotated() )
+			if ( this.canBeRotated() )
 			{
-				byte orientation = (byte) ((up.ordinal() << 3) | forward.ordinal());
+				byte orientation = (byte) ((this.up.ordinal() << 3) | this.forward.ordinal());
 				data.writeByte( orientation );
 			}
 
-			for (AETileEventHandler h : getHandlerListFor( TileEventType.NETWORK_WRITE ))
+			for (AETileEventHandler h : this.getHandlerListFor( TileEventType.NETWORK_WRITE ))
 				h.writeToStream( this, data );
 		}
 		catch (Throwable t)
@@ -253,26 +253,26 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		try
 		{
 
-			if ( canBeRotated() )
+			if ( this.canBeRotated() )
 			{
-				ForgeDirection old_Forward = forward;
-				ForgeDirection old_Up = up;
+				ForgeDirection old_Forward = this.forward;
+				ForgeDirection old_Up = this.up;
 
 				byte orientation = data.readByte();
-				forward = ForgeDirection.getOrientation( orientation & 0x7 );
-				up = ForgeDirection.getOrientation( orientation >> 3 );
+				this.forward = ForgeDirection.getOrientation( orientation & 0x7 );
+				this.up = ForgeDirection.getOrientation( orientation >> 3 );
 
-				output = !forward.equals( old_Forward ) || !up.equals( old_Up );
+				output = !this.forward.equals( old_Forward ) || !this.up.equals( old_Up );
 			}
 
-			renderFragment = 100;
-			for (AETileEventHandler h : getHandlerListFor( TileEventType.NETWORK_READ ))
+			this.renderFragment = 100;
+			for (AETileEventHandler h : this.getHandlerListFor( TileEventType.NETWORK_READ ))
 				if ( h.readFromStream( this, data ) )
 					output = true;
 
-			if ( (renderFragment & 1) == 1 )
+			if ( (this.renderFragment & 1) == 1 )
 				output = true;
-			renderFragment = 0;
+			this.renderFragment = 0;
 		}
 		catch (Throwable t)
 		{
@@ -296,29 +296,29 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	@Override
 	public ForgeDirection getForward()
 	{
-		return forward;
+		return this.forward;
 	}
 
 	@Override
 	public ForgeDirection getUp()
 	{
-		return up;
+		return this.up;
 	}
 
 	@Override
 	public void setOrientation(ForgeDirection inForward, ForgeDirection inUp)
 	{
-		forward = inForward;
-		up = inUp;
-		markForUpdate();
-		Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord, zCoord );
+		this.forward = inForward;
+		this.up = inUp;
+		this.markForUpdate();
+		Platform.notifyBlocksOfNeighbors( this.worldObj, this.xCoord, this.yCoord, this.zCoord );
 	}
 
 	public void onPlacement(ItemStack stack, EntityPlayer player, int side)
 	{
 		if ( stack.hasTagCompound() )
 		{
-			uploadSettings( SettingsFrom.DISMANTLE_ITEM, stack.getTagCompound() );
+			this.uploadSettings( SettingsFrom.DISMANTLE_ITEM, stack.getTagCompound() );
 		}
 	}
 
@@ -331,7 +331,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 		try
 		{
-			writeToStream( stream );
+			this.writeToStream( stream );
 			if ( stream.readableBytes() == 0 )
 				return null;
 		}
@@ -342,7 +342,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 		stream.capacity( stream.readableBytes() );
 		data.setByteArray( "X", stream.array() );
-		return new S35PacketUpdateTileEntity( xCoord, yCoord, zCoord, 64, data );
+		return new S35PacketUpdateTileEntity( this.xCoord, this.yCoord, this.zCoord, 64, data );
 	}
 
 	@Override
@@ -352,22 +352,22 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		if ( pkt.func_148853_f() == 64 )
 		{
 			ByteBuf stream = Unpooled.copiedBuffer( pkt.func_148857_g().getByteArray( "X" ) );
-			if ( readFromStream( stream ) )
-				markForUpdate();
+			if ( this.readFromStream( stream ) )
+				this.markForUpdate();
 		}
 	}
 
 	public void markForUpdate()
 	{
-		if ( renderFragment > 0 )
-			renderFragment = renderFragment | 1;
+		if ( this.renderFragment > 0 )
+			this.renderFragment = this.renderFragment | 1;
 		else
 		{
 			// TODO: Optimize Network Load
-			if ( worldObj != null )
+			if ( this.worldObj != null )
 			{
-				AELog.blockUpdate( xCoord, yCoord, zCoord, this );
-				worldObj.markBlockForUpdate( xCoord, yCoord, zCoord );
+				AELog.blockUpdate( this.xCoord, this.yCoord, this.zCoord, this );
+				this.worldObj.markBlockForUpdate( this.xCoord, this.yCoord, this.zCoord );
 			}
 		}
 	}
@@ -453,10 +453,10 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	{
 		NBTTagCompound output = new NBTTagCompound();
 
-		if ( hasCustomName() )
+		if ( this.hasCustomName() )
 		{
 			NBTTagCompound dsp = new NBTTagCompound();
-			dsp.setString( "Name", getCustomName() );
+			dsp.setString( "Name", this.getCustomName() );
 			output.setTag( "display", dsp );
 		}
 
@@ -487,8 +487,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	public void securityBreak()
 	{
-		worldObj.func_147480_a( xCoord, yCoord, zCoord, true );
-		disableDrops();
+		this.worldObj.func_147480_a( this.xCoord, this.yCoord, this.zCoord, true );
+		this.disableDrops();
 	}
 
 	public void saveChanges()
@@ -509,13 +509,13 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	@Override
 	public String getCustomName()
 	{
-		return hasCustomName() ? customName : getClass().getSimpleName();
+		return this.hasCustomName() ? this.customName : this.getClass().getSimpleName();
 	}
 
 	@Override
 	public boolean hasCustomName()
 	{
-		return customName != null && customName.length() > 0;
+		return this.customName != null && this.customName.length() > 0;
 	}
 
 }

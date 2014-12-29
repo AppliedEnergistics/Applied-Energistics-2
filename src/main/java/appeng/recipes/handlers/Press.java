@@ -22,7 +22,7 @@ public class Press extends Inscribe
 {
 
 	public Press() {
-		usePlates = true;
+		this.usePlates = true;
 	}
 
 }

@@ -60,8 +60,8 @@ public enum TickRates
 		config.addCustomCategoryComment(
 				"TickRates",
 				" Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested." );
-		min = config.get( "TickRates", name() + ".min", min ).getInt( min );
-		max = config.get( "TickRates", name() + ".max", max ).getInt( max );
+		this.min = config.get( "TickRates", this.name() + ".min", this.min ).getInt( this.min );
+		this.max = config.get( "TickRates", this.name() + ".max", this.max ).getInt( this.max );
 	}
 
 }

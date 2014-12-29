@@ -26,7 +26,7 @@ public class RotaryCraft extends BaseModule
 	public static RotaryCraft instance;
 
 	public RotaryCraft() {
-		TestClass( Reika.RotaryCraft.API.ShaftPowerReceiver.class );
+		this.TestClass( Reika.RotaryCraft.API.ShaftPowerReceiver.class );
 	}
 
 	@Override

@@ -35,7 +35,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 
 	private boolean isInIC2()
 	{
-		return getLayerFlags().contains( LayerFlags.IC2_ENET );
+		return this.getLayerFlags().contains( LayerFlags.IC2_ENET );
 	}
 
 	private TileEntity getEnergySinkTile()
@@ -46,15 +46,15 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 
 	private World getEnergySinkWorld()
 	{
-		if ( getEnergySinkTile() == null )
+		if ( this.getEnergySinkTile() == null )
 			return null;
 
-		return getEnergySinkTile().getWorldObj();
+		return this.getEnergySinkTile().getWorldObj();
 	}
 
 	private boolean isTileValid()
 	{
-		TileEntity te = getEnergySinkTile();
+		TileEntity te = this.getEnergySinkTile();
 
 		if ( te == null )
 			return false;
@@ -64,28 +64,28 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 
 	private void addToENet()
 	{
-		if ( getEnergySinkWorld() == null )
+		if ( this.getEnergySinkWorld() == null )
 			return;
 
 		// re-add
-		removeFromENet();
+		this.removeFromENet();
 
-		if ( !isInIC2() && Platform.isServer() && isTileValid() )
+		if ( !this.isInIC2() && Platform.isServer() && this.isTileValid() )
 		{
-			getLayerFlags().add( LayerFlags.IC2_ENET );
-			MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileLoadEvent( (IEnergySink) getEnergySinkTile() ) );
+			this.getLayerFlags().add( LayerFlags.IC2_ENET );
+			MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileLoadEvent( (IEnergySink) this.getEnergySinkTile() ) );
 		}
 	}
 
 	private void removeFromENet()
 	{
-		if ( getEnergySinkWorld() == null )
+		if ( this.getEnergySinkWorld() == null )
 			return;
 
-		if ( isInIC2() && Platform.isServer() )
+		if ( this.isInIC2() && Platform.isServer() )
 		{
-			getLayerFlags().remove( LayerFlags.IC2_ENET );
-			MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileUnloadEvent( (IEnergySink) getEnergySinkTile() ) );
+			this.getLayerFlags().remove( LayerFlags.IC2_ENET );
+			MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileUnloadEvent( (IEnergySink) this.getEnergySinkTile() ) );
 		}
 	}
 
@@ -97,7 +97,7 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 		int interested = 0;
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 		{
-			IPart part = getPart( dir );
+			IPart part = this.getPart( dir );
 			if ( part instanceof IEnergyTile )
 			{
 				interested++;
@@ -111,19 +111,19 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 	{
 		super.partChanged();
 
-		if ( interestedInIC2() )
-			addToENet();
+		if ( this.interestedInIC2() )
+			this.addToENet();
 		else
-			removeFromENet();
+			this.removeFromENet();
 	}
 
 	@Override
 	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
-		if ( !isInIC2() )
+		if ( !this.isInIC2() )
 			return false;
 
-		IPart part = getPart( direction );
+		IPart part = this.getPart( direction );
 		if ( part instanceof IEnergySink )
 			return ((IEnergySink) part).acceptsEnergyFrom( emitter, direction );
 		return false;
@@ -132,14 +132,14 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 	@Override
 	public double getDemandedEnergy()
 	{
-		if ( !isInIC2() )
+		if ( !this.isInIC2() )
 			return 0;
 
 		// this is a flawed implementation, that requires a change to the IC2 API.
 
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 		{
-			IPart part = getPart( dir );
+			IPart part = this.getPart( dir );
 			if ( part instanceof IEnergySink )
 			{
 				// use lower number cause ic2 deletes power it sends that isn't received.
@@ -153,12 +153,12 @@ public class LayerIEnergySink extends LayerBase implements IEnergySink
 	@Override
 	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)
 	{
-		if ( !isInIC2() )
+		if ( !this.isInIC2() )
 			return amount;
 
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 		{
-			IPart part = getPart( dir );
+			IPart part = this.getPart( dir );
 			if ( part instanceof IEnergySink )
 			{
 				return ((IEnergySink) part).injectEnergy( directionFrom, amount, voltage );

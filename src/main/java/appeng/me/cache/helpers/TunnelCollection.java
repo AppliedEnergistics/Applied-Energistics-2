@@ -31,35 +31,35 @@ public class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T>
 	Collection<T> tunnelSources;
 
 	public TunnelCollection(Collection<T> src, Class c) {
-		tunnelSources = src;
-		clz = c;
+		this.tunnelSources = src;
+		this.clz = c;
 	}
 
 	@Override
 	public Iterator<T> iterator()
 	{
-		if ( tunnelSources == null )
+		if ( this.tunnelSources == null )
 			return new NullIterator<T>();
-		return new TunnelIterator<T>( tunnelSources, clz );
+		return new TunnelIterator<T>( this.tunnelSources, this.clz );
 	}
 
 	public void setSource(Collection<T> c)
 	{
-		tunnelSources = c;
+		this.tunnelSources = c;
 	}
 
 	public boolean isEmpty()
 	{
-		return !iterator().hasNext();
+		return !this.iterator().hasNext();
 	}
 
 	public boolean matches(Class<? extends PartP2PTunnel> c)
 	{
-		return clz == c;
+		return this.clz == c;
 	}
 
 	public Class<? extends PartP2PTunnel> getClz()
 	{
-		return clz;
+		return this.clz;
 	}
 }

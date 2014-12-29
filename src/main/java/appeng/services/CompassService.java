@@ -49,23 +49,23 @@ public class CompassService implements ThreadFactory
 		public final boolean value;
 
 		public CMUpdatePost(World w, int cx, int cz, int dcy, boolean val) {
-			world = w;
-			chunkX = cx;
-			doubleChunkY = dcy;
-			chunkZ = cz;
-			value = val;
+			this.world = w;
+			this.chunkX = cx;
+			this.doubleChunkY = dcy;
+			this.chunkZ = cz;
+			this.value = val;
 		}
 
 		@Override
 		public void run()
 		{
-			jobSize--;
+			CompassService.this.jobSize--;
 
-			CompassReader cr = getReader( world );
-			cr.setHasBeacon( chunkX, chunkZ, doubleChunkY, value );
+			CompassReader cr = CompassService.this.getReader( this.world );
+			cr.setHasBeacon( this.chunkX, this.chunkZ, this.doubleChunkY, this.value );
 
-			if ( jobSize() < 2 )
-				cleanUp();
+			if ( CompassService.this.jobSize() < 2 )
+				CompassService.this.cleanUp();
 		}
 
 	}
@@ -80,32 +80,32 @@ public class CompassService implements ThreadFactory
 		public CMDirectionRequest(DimensionalCoord coord, int getMaxRange, ICompassCallback cc) {
 			this.coord = coord;
 			this.maxRange = getMaxRange;
-			callback = cc;
+			this.callback = cc;
 		}
 
 		@Override
 		public void run()
 		{
-			jobSize--;
+			CompassService.this.jobSize--;
 
-			int cx = coord.x >> 4;
-			int cz = coord.z >> 4;
+			int cx = this.coord.x >> 4;
+			int cz = this.coord.z >> 4;
 
-			CompassReader cr = getReader( coord.getWorld() );
+			CompassReader cr = CompassService.this.getReader( this.coord.getWorld() );
 
 			// Am I standing on it?
 			if ( cr.hasBeacon( cx, cz ) )
 			{
-				callback.calculatedDirection( true, true, -999, 0 );
+				this.callback.calculatedDirection( true, true, -999, 0 );
 
-				if ( jobSize() < 2 )
-					cleanUp();
+				if ( CompassService.this.jobSize() < 2 )
+					CompassService.this.cleanUp();
 
 				return;
 			}
 
 			// spiral outward...
-			for (int offset = 1; offset < maxRange; offset++)
+			for (int offset = 1; offset < this.maxRange; offset++)
 			{
 				int minX = cx - offset;
 				int minZ = cz - offset;
@@ -120,7 +120,7 @@ public class CompassService implements ThreadFactory
 				{
 					if ( cr.hasBeacon( minX, z ) )
 					{
-						int closeness = dist( cx, cz, minX, z );
+						int closeness = CompassService.this.dist( cx, cz, minX, z );
 						if ( closeness < closest )
 						{
 							closest = closeness;
@@ -131,7 +131,7 @@ public class CompassService implements ThreadFactory
 
 					if ( cr.hasBeacon( maxX, z ) )
 					{
-						int closeness = dist( cx, cz, maxX, z );
+						int closeness = CompassService.this.dist( cx, cz, maxX, z );
 						if ( closeness < closest )
 						{
 							closest = closeness;
@@ -145,7 +145,7 @@ public class CompassService implements ThreadFactory
 				{
 					if ( cr.hasBeacon( x, minZ ) )
 					{
-						int closeness = dist( cx, cz, x, minZ );
+						int closeness = CompassService.this.dist( cx, cz, x, minZ );
 						if ( closeness < closest )
 						{
 							closest = closeness;
@@ -156,7 +156,7 @@ public class CompassService implements ThreadFactory
 
 					if ( cr.hasBeacon( x, maxZ ) )
 					{
-						int closeness = dist( cx, cz, x, maxZ );
+						int closeness = CompassService.this.dist( cx, cz, x, maxZ );
 						if ( closeness < closest )
 						{
 							closest = closeness;
@@ -168,37 +168,37 @@ public class CompassService implements ThreadFactory
 
 				if ( closest < Integer.MAX_VALUE )
 				{
-					callback.calculatedDirection( true, false, rad( cx, cz, chosen_x, chosen_z ), dist( cx, cz, chosen_x, chosen_z ) );
+					this.callback.calculatedDirection( true, false, CompassService.this.rad( cx, cz, chosen_x, chosen_z ), CompassService.this.dist( cx, cz, chosen_x, chosen_z ) );
 
-					if ( jobSize() < 2 )
-						cleanUp();
+					if ( CompassService.this.jobSize() < 2 )
+						CompassService.this.cleanUp();
 
 					return;
 				}
 			}
 
 			// didn't find shit...
-			callback.calculatedDirection( false, true, -999, 999 );
+			this.callback.calculatedDirection( false, true, -999, 999 );
 
-			if ( jobSize() < 2 )
-				cleanUp();
+			if ( CompassService.this.jobSize() < 2 )
+				CompassService.this.cleanUp();
 		}
 	}
 
 	public Future<?> getCompassDirection(DimensionalCoord coord, int maxRange, ICompassCallback cc)
 	{
-		jobSize++;
-		return executor.submit( new CMDirectionRequest( coord, maxRange, cc ) );
+		this.jobSize++;
+		return this.executor.submit( new CMDirectionRequest( coord, maxRange, cc ) );
 	}
 
 	public int jobSize()
 	{
-		return jobSize;
+		return this.jobSize;
 	}
 
 	public void cleanUp()
 	{
-		for (CompassReader cr : worldSet.values())
+		for (CompassReader cr : this.worldSet.values())
 			cr.close();
 	}
 
@@ -207,20 +207,20 @@ public class CompassService implements ThreadFactory
 		int x = chunkX << 4;
 		int z = chunkZ << 4;
 
-		updateArea( w, x, 16, z );
-		updateArea( w, x, 16 + 32, z );
-		updateArea( w, x, 16 + 64, z );
-		updateArea( w, x, 16 + 96, z );
+		this.updateArea( w, x, 16, z );
+		this.updateArea( w, x, 16 + 32, z );
+		this.updateArea( w, x, 16 + 64, z );
+		this.updateArea( w, x, 16 + 96, z );
 
-		updateArea( w, x, 16 + 128, z );
-		updateArea( w, x, 16 + 160, z );
-		updateArea( w, x, 16 + 192, z );
-		updateArea( w, x, 16 + 224, z );
+		this.updateArea( w, x, 16 + 128, z );
+		this.updateArea( w, x, 16 + 160, z );
+		this.updateArea( w, x, 16 + 192, z );
+		this.updateArea( w, x, 16 + 224, z );
 	}
 
 	public Future<?> updateArea(World w, int x, int y, int z)
 	{
-		jobSize++;
+		this.jobSize++;
 
 		int cx = x >> 4;
 		int cdy = y >> 5;
@@ -243,13 +243,13 @@ public class CompassService implements ThreadFactory
 					Block blk = c.getBlock( i, k, j );
 					if ( blk == skystone && c.getBlockMetadata( i, k, j ) == 0 )
 					{
-						return executor.submit( new CMUpdatePost( w, cx, cz, cdy, true ) );
+						return this.executor.submit( new CMUpdatePost( w, cx, cz, cdy, true ) );
 					}
 				}
 			}
 		}
 
-		return executor.submit( new CMUpdatePost( w, cx, cz, cdy, false ) );
+		return this.executor.submit( new CMUpdatePost( w, cx, cz, cdy, false ) );
 	}
 
 	final HashMap<World, CompassReader> worldSet = new HashMap<World, CompassReader>();
@@ -258,19 +258,19 @@ public class CompassService implements ThreadFactory
 	final File rootFolder;
 
 	public CompassService(File aEFolder) {
-		rootFolder = aEFolder;
-		executor = Executors.newSingleThreadExecutor( this );
-		jobSize = 0;
+		this.rootFolder = aEFolder;
+		this.executor = Executors.newSingleThreadExecutor( this );
+		this.jobSize = 0;
 	}
 
 	private CompassReader getReader(World w)
 	{
-		CompassReader cr = worldSet.get( w );
+		CompassReader cr = this.worldSet.get( w );
 
 		if ( cr == null )
 		{
-			cr = new CompassReader( w.provider.dimensionId, rootFolder );
-			worldSet.put( w, cr );
+			cr = new CompassReader( w.provider.dimensionId, this.rootFolder );
+			this.worldSet.put( w, cr );
 		}
 
 		return cr;
@@ -294,19 +294,19 @@ public class CompassService implements ThreadFactory
 
 	public void kill()
 	{
-		executor.shutdown();
+		this.executor.shutdown();
 
 		try
 		{
-			executor.awaitTermination( 6, TimeUnit.MINUTES );
-			jobSize = 0;
+			this.executor.awaitTermination( 6, TimeUnit.MINUTES );
+			this.jobSize = 0;
 
-			for (CompassReader cr : worldSet.values())
+			for (CompassReader cr : this.worldSet.values())
 			{
 				cr.close();
 			}
 
-			worldSet.clear();
+			this.worldSet.clear();
 		}
 		catch (InterruptedException e)
 		{

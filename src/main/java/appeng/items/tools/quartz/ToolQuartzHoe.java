@@ -49,7 +49,7 @@ public class ToolQuartzHoe extends ItemHoe implements IAEFeature
 	@Override
 	public IFeatureHandler handler()
 	{
-		return handler;
+		return this.handler;
 	}
 
 	@Override
@@ -61,6 +61,6 @@ public class ToolQuartzHoe extends ItemHoe implements IAEFeature
 	@Override
 	public boolean getIsRepairable( ItemStack a, ItemStack b )
 	{
-		return Platform.canRepair( feature, a, b );
+		return Platform.canRepair( this.feature, a, b );
 	}
 }

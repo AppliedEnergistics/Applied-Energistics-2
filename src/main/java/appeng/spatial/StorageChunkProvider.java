@@ -61,7 +61,7 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 	@Override
 	public Chunk provideChunk(int x, int z)
 	{
-		Chunk chunk = new Chunk( w, blocks, x, z );
+		Chunk chunk = new Chunk( this.w, blocks, x, z );
 
 		byte[] biomes = chunk.getBiomeArray();
 		AEConfig config = AEConfig.instance;

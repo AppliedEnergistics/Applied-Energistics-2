@@ -33,16 +33,16 @@ public class AdaptorList extends InventoryAdaptor
 	private final List<ItemStack> i;
 
 	public AdaptorList(List<ItemStack> s) {
-		i = s;
+		this.i = s;
 	}
 
 	@Override
 	public ItemStack removeSimilarItems(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
 	{
-		int s = i.size();
+		int s = this.i.size();
 		for (int x = 0; x < s; x++)
 		{
-			ItemStack is = i.get( x );
+			ItemStack is = this.i.get( x );
 			if ( is != null && (filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode )) )
 			{
 				if ( how_many > is.stackSize )
@@ -58,7 +58,7 @@ public class AdaptorList extends InventoryAdaptor
 
 					// remove it..
 					if ( is.stackSize <= 0 )
-						i.remove( x );
+						this.i.remove( x );
 
 					return rv;
 				}
@@ -70,7 +70,7 @@ public class AdaptorList extends InventoryAdaptor
 	@Override
 	public ItemStack simulateSimilarRemove(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
 	{
-		for (ItemStack is : i)
+		for (ItemStack is : this.i)
 		{
 			if ( is != null && (filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode )) )
 			{
@@ -98,10 +98,10 @@ public class AdaptorList extends InventoryAdaptor
 	@Override
 	public ItemStack removeItems(int how_many, ItemStack filter, IInventoryDestination destination)
 	{
-		int s = i.size();
+		int s = this.i.size();
 		for (int x = 0; x < s; x++)
 		{
-			ItemStack is = i.get( x );
+			ItemStack is = this.i.get( x );
 			if ( is != null && (filter == null || Platform.isSameItemPrecise( is, filter )) )
 			{
 				if ( how_many > is.stackSize )
@@ -117,7 +117,7 @@ public class AdaptorList extends InventoryAdaptor
 
 					// remove it..
 					if ( is.stackSize <= 0 )
-						i.remove( x );
+						this.i.remove( x );
 
 					return rv;
 				}
@@ -129,7 +129,7 @@ public class AdaptorList extends InventoryAdaptor
 	@Override
 	public ItemStack simulateRemove(int how_many, ItemStack filter, IInventoryDestination destination)
 	{
-		for (ItemStack is : i)
+		for (ItemStack is : this.i)
 		{
 			if ( is != null && (filter == null || Platform.isSameItemPrecise( is, filter )) )
 			{
@@ -164,7 +164,7 @@ public class AdaptorList extends InventoryAdaptor
 
 		ItemStack left = A.copy();
 
-		for (ItemStack is : i)
+		for (ItemStack is : this.i)
 		{
 			if ( Platform.isSameItem( is, left ) )
 			{
@@ -173,7 +173,7 @@ public class AdaptorList extends InventoryAdaptor
 			}
 		}
 
-		i.add( left );
+		this.i.add( left );
 		return null;
 	}
 
@@ -186,7 +186,7 @@ public class AdaptorList extends InventoryAdaptor
 	@Override
 	public boolean containsItems()
 	{
-		for (ItemStack is : i)
+		for (ItemStack is : this.i)
 		{
 			if ( is != null )
 			{
@@ -199,7 +199,7 @@ public class AdaptorList extends InventoryAdaptor
 	@Override
 	public Iterator<ItemSlot> iterator()
 	{
-		return new StackToSlotIterator( i.iterator() );
+		return new StackToSlotIterator( this.i.iterator() );
 	}
 
 }

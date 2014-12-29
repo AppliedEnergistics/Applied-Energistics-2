@@ -30,19 +30,19 @@ public class WrapperMCISidedInventory extends WrapperInventoryRange implements I
 
 	public WrapperMCISidedInventory(ISidedInventory a, ForgeDirection d) {
 		super( a, a.getAccessibleSlotsFromSide( d.ordinal() ), false );
-		side = a;
-		dir = d;
+		this.side = a;
+		this.dir = d;
 	}
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
 
-		if ( ignoreValidItems )
+		if ( this.ignoreValidItems )
 			return true;
 
-		if ( side.isItemValidForSlot( slots[i], itemstack ) )
-			return side.canInsertItem( slots[i], itemstack, dir.ordinal() );
+		if ( this.side.isItemValidForSlot( this.slots[i], itemstack ) )
+			return this.side.canInsertItem( this.slots[i], itemstack, this.dir.ordinal() );
 
 		return false;
 	}
@@ -53,13 +53,13 @@ public class WrapperMCISidedInventory extends WrapperInventoryRange implements I
 		if ( is == null )
 			return false;
 
-		return side.canExtractItem( slots[i], is, dir.ordinal() );
+		return this.side.canExtractItem( this.slots[i], is, this.dir.ordinal() );
 	}
 
 	@Override
 	public ItemStack decrStackSize(int var1, int var2)
 	{
-		if ( canRemoveItemFromSlot( var1, getStackInSlot( var1 ) ) )
+		if ( this.canRemoveItemFromSlot( var1, this.getStackInSlot( var1 ) ) )
 			return super.decrStackSize( var1, var2 );
 		return null;
 	}

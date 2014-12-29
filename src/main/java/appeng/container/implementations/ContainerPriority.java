@@ -45,13 +45,13 @@ public class ContainerPriority extends AEBaseContainer
 	@SideOnly(Side.CLIENT)
 	public void setTextField(GuiTextField level)
 	{
-		textField = level;
-		textField.setText( String.valueOf( PriorityValue ) );
+		this.textField = level;
+		this.textField.setText( String.valueOf( this.PriorityValue ) );
 	}
 
 	public ContainerPriority(InventoryPlayer ip, IPriorityHost te) {
 		super( ip, (TileEntity) (te instanceof TileEntity ? te : null), (IPart) (te instanceof IPart ? te : null) );
-		priHost = te;
+		this.priHost = te;
 	}
 
 	@GuiSync(2)
@@ -59,19 +59,19 @@ public class ContainerPriority extends AEBaseContainer
 
 	public void setPriority(int newValue, EntityPlayer player)
 	{
-		priHost.setPriority( newValue );
-		PriorityValue = newValue;
+		this.priHost.setPriority( newValue );
+		this.PriorityValue = newValue;
 	}
 
 	@Override
 	public void detectAndSendChanges()
 	{
 		super.detectAndSendChanges();
-		verifyPermissions( SecurityPermissions.BUILD, false );
+		this.verifyPermissions( SecurityPermissions.BUILD, false );
 
 		if ( Platform.isServer() )
 		{
-			this.PriorityValue = priHost.getPriority();
+			this.PriorityValue = this.priHost.getPriority();
 		}
 	}
 
@@ -80,8 +80,8 @@ public class ContainerPriority extends AEBaseContainer
 	{
 		if ( field.equals( "PriorityValue" ) )
 		{
-			if ( textField != null )
-				textField.setText( String.valueOf( PriorityValue ) );
+			if ( this.textField != null )
+				this.textField.setText( String.valueOf( this.PriorityValue ) );
 		}
 
 		super.onUpdate( field, oldValue, newValue );

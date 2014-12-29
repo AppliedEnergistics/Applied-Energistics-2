@@ -44,13 +44,13 @@ public class PacketClick extends AppEngPacket
 
 	// automatic.
 	public PacketClick(ByteBuf stream) {
-		x = stream.readInt();
-		y = stream.readInt();
-		z = stream.readInt();
-		side = stream.readInt();
-		hitX = stream.readFloat();
-		hitY = stream.readFloat();
-		hitZ = stream.readFloat();
+		this.x = stream.readInt();
+		this.y = stream.readInt();
+		this.z = stream.readInt();
+		this.side = stream.readInt();
+		this.hitX = stream.readFloat();
+		this.hitY = stream.readFloat();
+		this.hitZ = stream.readFloat();
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class PacketClick extends AppEngPacket
 		if ( is != null && is.getItem() instanceof ToolNetworkTool )
 		{
 			ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
-			tnt.serverSideToolLogic( is, player, player.worldObj, x, y, z, side, hitX, hitY, hitZ );
+			tnt.serverSideToolLogic( is, player, player.worldObj, this.x, this.y, this.z, this.side, this.hitX, this.hitY, this.hitZ );
 		}
 		else if ( is != null && AEApi.instance().items().itemMemoryCard.sameAsStack( is ) )
 		{
@@ -80,7 +80,7 @@ public class PacketClick extends AppEngPacket
 
 		ByteBuf data = Unpooled.buffer();
 
-		data.writeInt( getPacketID() );
+		data.writeInt( this.getPacketID() );
 		data.writeInt( this.x = x );
 		data.writeInt( this.y = y );
 		data.writeInt( this.z = z );
@@ -89,6 +89,6 @@ public class PacketClick extends AppEngPacket
 		data.writeFloat( this.hitY = hitY );
 		data.writeFloat( this.hitZ = hitZ );
 
-		configureWrite( data );
+		this.configureWrite( data );
 	}
 }

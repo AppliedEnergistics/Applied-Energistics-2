@@ -44,10 +44,10 @@ public class GuiWireless extends AEBaseGui
 
 		boolean backwards = Mouse.isButtonDown( 1 );
 
-		if ( btn == units )
+		if ( btn == this.units )
 		{
 			AEConfig.instance.nextPowerUnit( backwards );
-			units.set( AEConfig.instance.selectedPowerUnit() );
+			this.units.set( AEConfig.instance.selectedPowerUnit() );
 		}
 	}
 
@@ -56,8 +56,8 @@ public class GuiWireless extends AEBaseGui
 	{
 		super.initGui();
 
-		units = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.POWER_UNITS, AEConfig.instance.selectedPowerUnit() );
-		buttonList.add( units );
+		this.units = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.POWER_UNITS, AEConfig.instance.selectedPowerUnit() );
+		this.buttonList.add( this.units );
 	}
 
 	public GuiWireless(InventoryPlayer inventoryPlayer, TileWireless te) {
@@ -68,27 +68,27 @@ public class GuiWireless extends AEBaseGui
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		bindTexture( "guis/wireless.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, xSize, ySize );
+		this.bindTexture( "guis/wireless.png" );
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 	}
 
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString( getGuiDisplayName( GuiText.Wireless.getLocal() ), 8, 6, 4210752 );
-		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.Wireless.getLocal() ), 8, 6, 4210752 );
+		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
-		ContainerWireless cw = (ContainerWireless) inventorySlots;
+		ContainerWireless cw = (ContainerWireless) this.inventorySlots;
 
 		if ( cw.range > 0 )
 		{
 			String firstMessage = GuiText.Range.getLocal() + ": " + (cw.range / 10.0) + " m";
 			String secondMessage = GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong( cw.drain, true );
 
-			int strWidth = Math.max( fontRendererObj.getStringWidth( firstMessage ), fontRendererObj.getStringWidth( secondMessage ) );
+			int strWidth = Math.max( this.fontRendererObj.getStringWidth( firstMessage ), this.fontRendererObj.getStringWidth( secondMessage ) );
 			int cOffset = (this.xSize / 2) - (strWidth / 2);
-			fontRendererObj.drawString( firstMessage, cOffset, 20, 4210752 );
-			fontRendererObj.drawString( secondMessage, cOffset, 20 + 12, 4210752 );
+			this.fontRendererObj.drawString( firstMessage, cOffset, 20, 4210752 );
+			this.fontRendererObj.drawString( secondMessage, cOffset, 20 + 12, 4210752 );
 		}
 	}
 

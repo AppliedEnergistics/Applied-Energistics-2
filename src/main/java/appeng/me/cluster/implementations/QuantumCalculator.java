@@ -35,7 +35,7 @@ public class QuantumCalculator extends MBCalculator
 
 	public QuantumCalculator(IAEMultiBlock t) {
 		super( t );
-		tqb = (TileQuantumBridge) t;
+		this.tqb = (TileQuantumBridge) t;
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class QuantumCalculator extends MBCalculator
 					else
 					{
 						if ( num == 1 || num == 3 || num == 7 || num == 9 )
-							flags = (byte) (tqb.corner | num);
+							flags = (byte) (this.tqb.corner | num);
 						else
 							flags = num;
 						c.Ring[ringNum++] = te;
@@ -107,7 +107,7 @@ public class QuantumCalculator extends MBCalculator
 	@Override
 	public void disconnect()
 	{
-		tqb.disconnect(true);
+		this.tqb.disconnect(true);
 	}
 
 	@Override

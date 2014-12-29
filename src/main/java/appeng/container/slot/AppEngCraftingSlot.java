@@ -150,7 +150,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	@Override
 	public void onPickupFromSlot(EntityPlayer par1EntityPlayer, ItemStack par2ItemStack)
 	{
-		FMLCommonHandler.instance().firePlayerCraftingEvent( par1EntityPlayer, par2ItemStack, craftMatrix );
+		FMLCommonHandler.instance().firePlayerCraftingEvent( par1EntityPlayer, par2ItemStack, this.craftMatrix );
 		this.onCrafting( par2ItemStack );
 
 		for (int i = 0; i < this.craftMatrix.getSizeInventory(); ++i)
@@ -167,7 +167,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 
 					if ( itemstack2 != null && itemstack2.isItemStackDamageable() && itemstack2.getItemDamage() > itemstack2.getMaxDamage() )
 					{
-						MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( thePlayer, itemstack2 ) );
+						MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( this.thePlayer, itemstack2 ) );
 						continue;
 					}
 

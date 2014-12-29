@@ -39,19 +39,19 @@ public class ContainerSkyChest extends AEBaseContainer
 		{
 			for (int x = 0; x < 9; x++)
 			{
-				addSlotToContainer( new SlotNormal( this.chest, y * 9 + x, 8 + 18 * x, 24 + 18 * y ) );
+				this.addSlotToContainer( new SlotNormal( this.chest, y * 9 + x, 8 + 18 * x, 24 + 18 * y ) );
 			}
 		}
 
 		this.chest.openInventory();
 
-		bindPlayerInventory( ip, 0, 195 - /* height of player inventory */82 );
+		this.bindPlayerInventory( ip, 0, 195 - /* height of player inventory */82 );
 	}
 
 	@Override
 	public void onContainerClosed(EntityPlayer par1EntityPlayer)
 	{
 		super.onContainerClosed( par1EntityPlayer );
-		chest.closeInventory();
+		this.chest.closeInventory();
 	}
 }

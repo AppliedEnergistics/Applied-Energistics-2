@@ -69,67 +69,67 @@ public class FMPPlacementHelper implements IPartHost
 
 	private CableBusPart getPart()
 	{
-		scala.collection.Iterator<TMultiPart> i = myMP.partList().iterator();
+		scala.collection.Iterator<TMultiPart> i = this.myMP.partList().iterator();
 		while (i.hasNext())
 		{
 			TMultiPart p = i.next();
 			if ( p instanceof CableBusPart )
-				myPart = (CableBusPart) p;
+				this.myPart = (CableBusPart) p;
 		}
 
-		if ( myPart == null )
-			myPart = (CableBusPart) PartRegistry.CableBusPart.construct( 0 );
+		if ( this.myPart == null )
+			this.myPart = (CableBusPart) PartRegistry.CableBusPart.construct( 0 );
 
-		BlockCoord loc = new BlockCoord( myMP.xCoord, myMP.yCoord, myMP.zCoord );
+		BlockCoord loc = new BlockCoord( this.myMP.xCoord, this.myMP.yCoord, this.myMP.zCoord );
 
-		if ( myMP.canAddPart( myPart ) && Platform.isServer() )
+		if ( this.myMP.canAddPart( this.myPart ) && Platform.isServer() )
 		{
-			myMP = TileMultipart.addPart( myMP.getWorldObj(), loc, myPart );
-			hasPart = true;
+			this.myMP = TileMultipart.addPart( this.myMP.getWorldObj(), loc, this.myPart );
+			this.hasPart = true;
 		}
 
-		return myPart;
+		return this.myPart;
 	}
 
 	public void removePart()
 	{
-		if ( myPart.isEmpty() )
+		if ( this.myPart.isEmpty() )
 		{
-			scala.collection.Iterator<TMultiPart> i = myMP.partList().iterator();
+			scala.collection.Iterator<TMultiPart> i = this.myMP.partList().iterator();
 			while (i.hasNext())
 			{
 				TMultiPart p = i.next();
-				if ( p == myPart )
+				if ( p == this.myPart )
 				{
-					myMP = myMP.remPart( myPart );
+					this.myMP = this.myMP.remPart( this.myPart );
 					break;
 				}
 			}
-			hasPart = false;
-			myPart = null;
+			this.hasPart = false;
+			this.myPart = null;
 		}
 	}
 
 	public FMPPlacementHelper(TileMultipart mp) {
-		myMP = mp;
+		this.myMP = mp;
 	}
 
 	@Override
 	public IFacadeContainer getFacadeContainer()
 	{
-		if ( myPart == null )
+		if ( this.myPart == null )
 			return new FacadeContainer( nullStorage );
-		return myPart.getFacadeContainer();
+		return this.myPart.getFacadeContainer();
 	}
 
 	@Override
 	public boolean canAddPart(ItemStack part, ForgeDirection side)
 	{
-		CableBusPart myPart = getPart();
+		CableBusPart myPart = this.getPart();
 
-		boolean returnValue = hasPart && myPart.canAddPart( part, side );
+		boolean returnValue = this.hasPart && myPart.canAddPart( part, side );
 
-		removePart();
+		this.removePart();
 
 		return returnValue;
 	}
@@ -137,11 +137,11 @@ public class FMPPlacementHelper implements IPartHost
 	@Override
 	public ForgeDirection addPart(ItemStack is, ForgeDirection side, EntityPlayer owner)
 	{
-		CableBusPart myPart = getPart();
+		CableBusPart myPart = this.getPart();
 
-		ForgeDirection returnValue = hasPart ? myPart.addPart( is, side, owner ) : null;
+		ForgeDirection returnValue = this.hasPart ? myPart.addPart( is, side, owner ) : null;
 
-		removePart();
+		this.removePart();
 
 		return returnValue;
 	}
@@ -149,65 +149,65 @@ public class FMPPlacementHelper implements IPartHost
 	@Override
 	public IPart getPart(ForgeDirection side)
 	{
-		if ( myPart == null )
+		if ( this.myPart == null )
 			return null;
-		return myPart.getPart( side );
+		return this.myPart.getPart( side );
 	}
 
 	@Override
 	public void removePart(ForgeDirection side, boolean suppressUpdate)
 	{
-		if ( myPart == null )
+		if ( this.myPart == null )
 			return;
-		myPart.removePart( side, suppressUpdate );
+		this.myPart.removePart( side, suppressUpdate );
 	}
 
 	@Override
 	public void markForUpdate()
 	{
-		if ( myPart == null )
+		if ( this.myPart == null )
 			return;
-		myPart.markForUpdate();
+		this.myPart.markForUpdate();
 	}
 
 	@Override
 	public DimensionalCoord getLocation()
 	{
-		if ( myPart == null )
-			return new DimensionalCoord( myMP );
-		return myPart.getLocation();
+		if ( this.myPart == null )
+			return new DimensionalCoord( this.myMP );
+		return this.myPart.getLocation();
 	}
 
 	@Override
 	public TileEntity getTile()
 	{
-		return myMP;
+		return this.myMP;
 	}
 
 	@Override
 	public AEColor getColor()
 	{
-		if ( myPart == null )
+		if ( this.myPart == null )
 			return AEColor.Transparent;
-		return myPart.getColor();
+		return this.myPart.getColor();
 	}
 
 	@Override
 	public void clearContainer()
 	{
-		if ( myPart == null )
+		if ( this.myPart == null )
 			return;
-		myPart.clearContainer();
+		this.myPart.clearContainer();
 	}
 
 	@Override
 	public boolean isBlocked(ForgeDirection side)
 	{
-		getPart();
+		this.getPart();
 
-		boolean returnValue = myPart.isBlocked( side );
+		boolean returnValue = this.myPart.isBlocked( side );
 
-		removePart();
+		this.removePart();
 
 		return returnValue;
 	}
@@ -215,73 +215,73 @@ public class FMPPlacementHelper implements IPartHost
 	@Override
 	public SelectedPart selectPart(Vec3 pos)
 	{
-		if ( myPart == null )
+		if ( this.myPart == null )
 			return new SelectedPart();
-		return myPart.selectPart( pos );
+		return this.myPart.selectPart( pos );
 	}
 
 	@Override
 	public void markForSave()
 	{
-		if ( myPart == null )
+		if ( this.myPart == null )
 			return;
-		myPart.markForSave();
+		this.myPart.markForSave();
 	}
 
 	@Override
 	public void partChanged()
 	{
-		if ( myPart == null )
+		if ( this.myPart == null )
 			return;
-		myPart.partChanged();
+		this.myPart.partChanged();
 	}
 
 	@Override
 	public boolean hasRedstone(ForgeDirection side)
 	{
-		if ( myPart == null )
+		if ( this.myPart == null )
 			return false;
-		return myPart.hasRedstone( side );
+		return this.myPart.hasRedstone( side );
 	}
 
 	@Override
 	public boolean isEmpty()
 	{
-		if ( myPart == null )
+		if ( this.myPart == null )
 			return true;
-		return myPart.isEmpty();
+		return this.myPart.isEmpty();
 	}
 
 	@Override
 	public Set<LayerFlags> getLayerFlags()
 	{
-		if ( myPart == null )
+		if ( this.myPart == null )
 			return EnumSet.noneOf( LayerFlags.class );
-		return myPart.getLayerFlags();
+		return this.myPart.getLayerFlags();
 	}
 
 	@Override
 	public void cleanup()
 	{
-		if ( myPart == null )
+		if ( this.myPart == null )
 			return;
-		myPart.cleanup();
+		this.myPart.cleanup();
 	}
 
 	@Override
 	public void notifyNeighbors()
 	{
-		if ( myPart == null )
+		if ( this.myPart == null )
 			return;
-		myPart.notifyNeighbors();
+		this.myPart.notifyNeighbors();
 	}
 
 	@Override
 	public boolean isInWorld()
 	{
-		if ( myPart == null )
-			return myMP.getWorldObj() != null;
-		return myPart.isInWorld();
+		if ( this.myPart == null )
+			return this.myMP.getWorldObj() != null;
+		return this.myPart.isInWorld();
 	}
 
 }

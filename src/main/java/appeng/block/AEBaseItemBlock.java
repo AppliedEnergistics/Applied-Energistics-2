@@ -48,8 +48,8 @@ public class AEBaseItemBlock extends ItemBlock
 	public AEBaseItemBlock(Block id)
 	{
 		super( id );
-		blockType = (AEBaseBlock) id;
-		hasSubtypes = blockType.hasSubtypes;
+		this.blockType = (AEBaseBlock) id;
+		this.hasSubtypes = this.blockType.hasSubtypes;
 
 		if ( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, ItemRenderer.instance );
@@ -58,7 +58,7 @@ public class AEBaseItemBlock extends ItemBlock
 	@Override
 	public int getMetadata(int dmg)
 	{
-		if ( hasSubtypes )
+		if ( this.hasSubtypes )
 			return dmg;
 		return 0;
 	}
@@ -66,7 +66,7 @@ public class AEBaseItemBlock extends ItemBlock
 	@Override
 	public String getUnlocalizedName(ItemStack is)
 	{
-		return blockType.getUnlocalizedName( is );
+		return this.blockType.getUnlocalizedName( is );
 	}
 
 	@Override
@@ -91,9 +91,9 @@ public class AEBaseItemBlock extends ItemBlock
 
 		IOrientable ori = null;
 
-		if ( blockType.hasBlockTileEntity() )
+		if ( this.blockType.hasBlockTileEntity() )
 		{
-			if ( blockType instanceof BlockLightDetector )
+			if ( this.blockType instanceof BlockLightDetector )
 			{
 				up = ForgeDirection.getOrientation( side );
 				if ( up == ForgeDirection.UP || up == ForgeDirection.DOWN )
@@ -101,7 +101,7 @@ public class AEBaseItemBlock extends ItemBlock
 				else
 					forward = ForgeDirection.UP;
 			}
-			else if ( blockType instanceof BlockWireless || blockType instanceof BlockSkyCompass )
+			else if ( this.blockType instanceof BlockWireless || this.blockType instanceof BlockSkyCompass )
 			{
 				forward = ForgeDirection.getOrientation( side );
 				if ( forward == ForgeDirection.UP || forward == ForgeDirection.DOWN )
@@ -145,9 +145,9 @@ public class AEBaseItemBlock extends ItemBlock
 			}
 		}
 
-		if ( blockType instanceof IOrientableBlock )
+		if ( this.blockType instanceof IOrientableBlock )
 		{
-			ori = ((IOrientableBlock) blockType).getOrientable( w, x, y, z );
+			ori = ((IOrientableBlock) this.blockType).getOrientable( w, x, y, z );
 			up = ForgeDirection.getOrientation( side );
 			forward = ForgeDirection.SOUTH;
 			if ( up.offsetY == 0 )
@@ -156,20 +156,20 @@ public class AEBaseItemBlock extends ItemBlock
 			ori.setOrientation( forward, up );
 		}
 
-		if ( !blockType.isValidOrientation( w, x, y, z, forward, up ) )
+		if ( !this.blockType.isValidOrientation( w, x, y, z, forward, up ) )
 			return false;
 
 		if ( super.placeBlockAt( stack, player, w, x, y, z, side, hitX, hitY, hitZ, metadata ) )
 		{
-			if ( blockType.hasBlockTileEntity() && !(blockType instanceof BlockLightDetector) )
+			if ( this.blockType.hasBlockTileEntity() && !(this.blockType instanceof BlockLightDetector) )
 			{
-				AEBaseTile tile = blockType.getTileEntity( w, x, y, z );
+				AEBaseTile tile = this.blockType.getTileEntity( w, x, y, z );
 				ori = tile;
 
 				if ( tile == null )
 					return true;
 
-				if ( ori.canBeRotated() && !blockType.hasCustomRotation() )
+				if ( ori.canBeRotated() && !this.blockType.hasCustomRotation() )
 				{
 					if ( ori.getForward() == null || ori.getUp() == null || // null
 							tile.getForward() == ForgeDirection.UNKNOWN || ori.getUp() == ForgeDirection.UNKNOWN )
@@ -183,7 +183,7 @@ public class AEBaseItemBlock extends ItemBlock
 
 				tile.onPlacement( stack, player, side );
 			}
-			else if ( blockType instanceof IOrientableBlock )
+			else if ( this.blockType instanceof IOrientableBlock )
 			{
 				ori.setOrientation( forward, up );
 			}

@@ -43,57 +43,57 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 
 	public boolean isEmpty()
 	{
-		for (int x = 0; x < getSizeInventory(); x++)
-			if ( getStackInSlot( x ) != null )
+		for (int x = 0; x < this.getSizeInventory(); x++)
+			if ( this.getStackInSlot( x ) != null )
 				return false;
 		return true;
 	}
 
 	public AppEngInternalAEInventory(IAEAppEngInventory _te, int s) {
-		te = _te;
-		size = s;
-		maxStack = 64;
-		inv = new IAEItemStack[s];
+		this.te = _te;
+		this.size = s;
+		this.maxStack = 64;
+		this.inv = new IAEItemStack[s];
 	}
 
 	public void setMaxStackSize(int s)
 	{
-		maxStack = s;
+		this.maxStack = s;
 	}
 
 	public IAEItemStack getAEStackInSlot(int var1)
 	{
-		return inv[var1];
+		return this.inv[var1];
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int var1)
 	{
-		if ( inv[var1] == null )
+		if ( this.inv[var1] == null )
 			return null;
 
-		return inv[var1].getItemStack();
+		return this.inv[var1].getItemStack();
 	}
 
 	@Override
 	public ItemStack decrStackSize(int slot, int qty)
 	{
-		if ( inv[slot] != null )
+		if ( this.inv[slot] != null )
 		{
-			ItemStack split = getStackInSlot( slot );
+			ItemStack split = this.getStackInSlot( slot );
 			ItemStack ns = null;
 
 			if ( qty >= split.stackSize )
 			{
-				ns = getStackInSlot( slot );
-				inv[slot] = null;
+				ns = this.getStackInSlot( slot );
+				this.inv[slot] = null;
 			}
 			else
 				ns = split.splitStack( qty );
 
-			if ( te != null && Platform.isServer() )
+			if ( this.te != null && Platform.isServer() )
 			{
-				te.onChangeInventory( this, slot, InvOperation.decreaseStackSize, ns, null );
+				this.te.onChangeInventory( this, slot, InvOperation.decreaseStackSize, ns, null );
 			}
 
 			return ns;
@@ -111,10 +111,10 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack newItemStack)
 	{
-		ItemStack oldStack = getStackInSlot( slot );
-		inv[slot] = AEApi.instance().storage().createItemStack( newItemStack );
+		ItemStack oldStack = this.getStackInSlot( slot );
+		this.inv[slot] = AEApi.instance().storage().createItemStack( newItemStack );
 
-		if ( te != null && Platform.isServer() )
+		if ( this.te != null && Platform.isServer() )
 		{
 			ItemStack removed = oldStack;
 			ItemStack added = newItemStack;
@@ -139,23 +139,23 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 				}
 			}
 
-			te.onChangeInventory( this, slot, InvOperation.setInventorySlotContents, removed, added );
+			this.te.onChangeInventory( this, slot, InvOperation.setInventorySlotContents, removed, added );
 		}
 	}
 
 	@Override
 	public void markDirty()
 	{
-		if ( te != null && Platform.isServer() )
+		if ( this.te != null && Platform.isServer() )
 		{
-			te.onChangeInventory( this, -1, InvOperation.markDirty, null, null );
+			this.te.onChangeInventory( this, -1, InvOperation.markDirty, null, null );
 		}
 	}
 
 	@Override
 	public int getInventoryStackLimit()
 	{
-		return maxStack > 64 ? 64 : maxStack;
+		return this.maxStack > 64 ? 64 : this.maxStack;
 	}
 
 	@Override
@@ -176,15 +176,15 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 
 	public void writeToNBT(NBTTagCompound target)
 	{
-		for (int x = 0; x < size; x++)
+		for (int x = 0; x < this.size; x++)
 		{
 			try
 			{
 				NBTTagCompound c = new NBTTagCompound();
 
-				if ( inv[x] != null )
+				if ( this.inv[x] != null )
 				{
-					inv[x].writeToNBT( c );
+					this.inv[x].writeToNBT( c );
 				}
 
 				target.setTag( "#" + x, c );
@@ -197,14 +197,14 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 
 	public void readFromNBT(NBTTagCompound target)
 	{
-		for (int x = 0; x < size; x++)
+		for (int x = 0; x < this.size; x++)
 		{
 			try
 			{
 				NBTTagCompound c = target.getCompoundTag( "#" + x );
 
 				if ( c != null )
-					inv[x] = AEItemStack.loadItemStackFromNBT( c );
+					this.inv[x] = AEItemStack.loadItemStackFromNBT( c );
 
 			}
 			catch (Exception e)
@@ -217,7 +217,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	public void writeToNBT(NBTTagCompound data, String name)
 	{
 		NBTTagCompound c = new NBTTagCompound();
-		writeToNBT( c );
+		this.writeToNBT( c );
 		data.setTag( name, c );
 	}
 
@@ -225,13 +225,13 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	{
 		NBTTagCompound c = data.getCompoundTag( name );
 		if ( c != null )
-			readFromNBT( c );
+			this.readFromNBT( c );
 	}
 
 	@Override
 	public int getSizeInventory()
 	{
-		return size;
+		return this.size;
 	}
 
 	@Override

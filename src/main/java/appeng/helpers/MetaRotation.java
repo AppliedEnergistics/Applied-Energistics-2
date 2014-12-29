@@ -32,7 +32,7 @@ public class MetaRotation implements IOrientable
 	final int z;
 
 	public MetaRotation(IBlockAccess world, int x, int y, int z) {
-		w = world;
+		this.w = world;
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -41,22 +41,22 @@ public class MetaRotation implements IOrientable
 	@Override
 	public void setOrientation(ForgeDirection Forward, ForgeDirection Up)
 	{
-		if ( w instanceof World )
-			((World) w).setBlockMetadataWithNotify( x, y, z, Up.ordinal(), 1 + 2 );
+		if ( this.w instanceof World )
+			((World) this.w).setBlockMetadataWithNotify( this.x, this.y, this.z, Up.ordinal(), 1 + 2 );
 		else
-			throw new RuntimeException( w.getClass().getName() + " received, expected World" );
+			throw new RuntimeException( this.w.getClass().getName() + " received, expected World" );
 	}
 
 	@Override
 	public ForgeDirection getUp()
 	{
-		return ForgeDirection.getOrientation( w.getBlockMetadata( x, y, z ) );
+		return ForgeDirection.getOrientation( this.w.getBlockMetadata( this.x, this.y, this.z ) );
 	}
 
 	@Override
 	public ForgeDirection getForward()
 	{
-		if ( getUp().offsetY == 0 )
+		if ( this.getUp().offsetY == 0 )
 			return ForgeDirection.UP;
 		return ForgeDirection.SOUTH;
 	}

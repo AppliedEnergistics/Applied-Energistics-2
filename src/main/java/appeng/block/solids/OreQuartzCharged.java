@@ -35,8 +35,8 @@ public class OreQuartzCharged extends OreQuartz
 
 	public OreQuartzCharged() {
 		super( OreQuartzCharged.class );
-		boostBrightnessLow = 2;
-		boostBrightnessHigh = 5;
+		this.boostBrightnessLow = 2;
+		this.boostBrightnessHigh = 5;
 	}
 
 	@Override

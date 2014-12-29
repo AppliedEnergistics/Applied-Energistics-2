@@ -29,7 +29,7 @@ public class SlotFake extends AppEngSlot
 
 	public SlotFake(IInventory inv, int idx, int x, int y) {
 		super( inv, idx, x, y );
-		invSlot = idx;
+		this.invSlot = idx;
 	}
 
 	@Override

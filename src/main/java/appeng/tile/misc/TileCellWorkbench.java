@@ -52,9 +52,9 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 
 	public IInventory getCellUpgradeInventory()
 	{
-		if ( cacheUpgrades == null )
+		if ( this.cacheUpgrades == null )
 		{
-			ICellWorkbenchItem cell = getCell();
+			ICellWorkbenchItem cell = this.getCell();
 			if ( cell == null )
 				return null;
 
@@ -66,16 +66,16 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 			if ( inv == null )
 				return null;
 
-			return cacheUpgrades = inv;
+			return this.cacheUpgrades = inv;
 		}
-		return cacheUpgrades;
+		return this.cacheUpgrades;
 	}
 
 	public IInventory getCellConfigInventory()
 	{
-		if ( cacheConfig == null )
+		if ( this.cacheConfig == null )
 		{
-			ICellWorkbenchItem cell = getCell();
+			ICellWorkbenchItem cell = this.getCell();
 			if ( cell == null )
 				return null;
 
@@ -87,40 +87,40 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 			if ( inv == null )
 				return null;
 
-			return cacheConfig = inv;
+			return this.cacheConfig = inv;
 		}
-		return cacheConfig;
+		return this.cacheConfig;
 	}
 
 	@TileEvent(TileEventType.WORLD_NBT_WRITE)
 	public void writeToNBT_TileCellWorkbench(NBTTagCompound data)
 	{
-		cell.writeToNBT( data, "cell" );
-		config.writeToNBT( data, "config" );
-		cm.writeToNBT( data );
+		this.cell.writeToNBT( data, "cell" );
+		this.config.writeToNBT( data, "config" );
+		this.cm.writeToNBT( data );
 	}
 
 	@TileEvent(TileEventType.WORLD_NBT_READ)
 	public void readFromNBT_TileCellWorkbench(NBTTagCompound data)
 	{
-		cell.readFromNBT( data, "cell" );
-		config.readFromNBT( data, "config" );
-		cm.readFromNBT( data );
+		this.cell.readFromNBT( data, "cell" );
+		this.config.readFromNBT( data, "config" );
+		this.cm.readFromNBT( data );
 	}
 
 	public TileCellWorkbench() {
-		cm.registerSetting( Settings.COPY_MODE, CopyMode.CLEAR_ON_REMOVE );
-		cell.enableClientEvents = true;
+		this.cm.registerSetting( Settings.COPY_MODE, CopyMode.CLEAR_ON_REMOVE );
+		this.cell.enableClientEvents = true;
 	}
 
 	@Override
 	public IInventory getInventoryByName(String name)
 	{
 		if ( name.equals( "config" ) )
-			return config;
+			return this.config;
 
 		if ( name.equals( "cell" ) )
-			return cell;
+			return this.cell;
 
 		return null;
 	}
@@ -136,14 +136,14 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	@Override
 	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
 	{
-		if ( inv == cell && !locked )
+		if ( inv == this.cell && !this.locked )
 		{
-			locked = true;
+			this.locked = true;
 
-			cacheUpgrades = null;
-			cacheConfig = null;
+			this.cacheUpgrades = null;
+			this.cacheConfig = null;
 
-			IInventory c = getCellConfigInventory();
+			IInventory c = this.getCellConfigInventory();
 			if ( c != null )
 			{
 				boolean cellHasConfig = false;
@@ -158,34 +158,34 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 
 				if ( cellHasConfig )
 				{
-					for (int x = 0; x < config.getSizeInventory(); x++)
-						config.setInventorySlotContents( x, c.getStackInSlot( x ) );
+					for (int x = 0; x < this.config.getSizeInventory(); x++)
+						this.config.setInventorySlotContents( x, c.getStackInSlot( x ) );
 				}
 				else
 				{
-					for (int x = 0; x < config.getSizeInventory(); x++)
-						c.setInventorySlotContents( x, config.getStackInSlot( x ) );
+					for (int x = 0; x < this.config.getSizeInventory(); x++)
+						c.setInventorySlotContents( x, this.config.getStackInSlot( x ) );
 
 					c.markDirty();
 				}
 			}
-			else if ( cm.getSetting( Settings.COPY_MODE ) == CopyMode.CLEAR_ON_REMOVE )
+			else if ( this.cm.getSetting( Settings.COPY_MODE ) == CopyMode.CLEAR_ON_REMOVE )
 			{
-				for (int x = 0; x < config.getSizeInventory(); x++)
-					config.setInventorySlotContents( x, null );
+				for (int x = 0; x < this.config.getSizeInventory(); x++)
+					this.config.setInventorySlotContents( x, null );
 
 				this.markDirty();
 			}
 
-			locked = false;
+			this.locked = false;
 		}
-		else if ( inv == config && !locked )
+		else if ( inv == this.config && !this.locked )
 		{
-			IInventory c = getCellConfigInventory();
+			IInventory c = this.getCellConfigInventory();
 			if ( c != null )
 			{
-				for (int x = 0; x < config.getSizeInventory(); x++)
-					c.setInventorySlotContents( x, config.getStackInSlot( x ) );
+				for (int x = 0; x < this.config.getSizeInventory(); x++)
+					c.setInventorySlotContents( x, this.config.getStackInSlot( x ) );
 
 				c.markDirty();
 			}
@@ -197,17 +197,17 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	{
 		super.getDrops( w, x, y, z, drops );
 
-		if ( cell.getStackInSlot( 0 ) != null )
-			drops.add( cell.getStackInSlot( 0 ) );
+		if ( this.cell.getStackInSlot( 0 ) != null )
+			drops.add( this.cell.getStackInSlot( 0 ) );
 	}
 
 	public ICellWorkbenchItem getCell()
 	{
-		if ( cell.getStackInSlot( 0 ) == null )
+		if ( this.cell.getStackInSlot( 0 ) == null )
 			return null;
 
-		if ( cell.getStackInSlot( 0 ).getItem() instanceof ICellWorkbenchItem )
-			return ((ICellWorkbenchItem) cell.getStackInSlot( 0 ).getItem());
+		if ( this.cell.getStackInSlot( 0 ).getItem() instanceof ICellWorkbenchItem )
+			return ((ICellWorkbenchItem) this.cell.getStackInSlot( 0 ).getItem());
 
 		return null;
 	}
@@ -215,7 +215,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	@Override
 	public IConfigManager getConfigManager()
 	{
-		return cm;
+		return this.cm;
 	}
 
 	@Override

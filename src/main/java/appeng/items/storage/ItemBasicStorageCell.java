@@ -218,7 +218,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	@Override
 	public ItemStack onItemRightClick( ItemStack stack, World world, EntityPlayer player )
 	{
-		disassembleDrive( stack, world, player );
+		this.disassembleDrive( stack, world, player );
 		return stack;
 	}
 
@@ -260,7 +260,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	@Override
 	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
-		return disassembleDrive( stack, world, player );
+		return this.disassembleDrive( stack, world, player );
 	}
 
 	@Override

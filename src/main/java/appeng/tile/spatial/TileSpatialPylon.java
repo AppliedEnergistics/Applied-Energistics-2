@@ -61,7 +61,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	@Override
 	protected AENetworkProxy createProxy()
 	{
-		return new AENetworkProxyMultiblock( this, "proxy", getItemFromTile( this ), true );
+		return new AENetworkProxyMultiblock( this, "proxy", this.getItemFromTile( this ), true );
 	}
 
 	@Override
@@ -73,46 +73,46 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	@TileEvent(TileEventType.NETWORK_READ)
 	public boolean readFromStream_TileSpatialPylon(ByteBuf data)
 	{
-		int old = displayBits;
-		displayBits = data.readByte();
-		return old != displayBits;
+		int old = this.displayBits;
+		this.displayBits = data.readByte();
+		return old != this.displayBits;
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
 	public void writeToStream_TileSpatialPylon(ByteBuf data)
 	{
-		data.writeByte( displayBits );
+		data.writeByte( this.displayBits );
 	}
 
 	public TileSpatialPylon() {
-		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL, GridFlags.MULTIBLOCK );
-		gridProxy.setIdlePowerUsage( 0.5 );
-		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL, GridFlags.MULTIBLOCK );
+		this.gridProxy.setIdlePowerUsage( 0.5 );
+		this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 	}
 
 	@Override
 	public void onReady()
 	{
 		super.onReady();
-		onNeighborBlockChange();
+		this.onNeighborBlockChange();
 	}
 
 	@Override
 	public void markForUpdate()
 	{
 		super.markForUpdate();
-		boolean hasLight = getLightValue() > 0;
-		if ( hasLight != didHaveLight )
+		boolean hasLight = this.getLightValue() > 0;
+		if ( hasLight != this.didHaveLight )
 		{
-			didHaveLight = hasLight;
-			worldObj.func_147451_t( xCoord, yCoord, zCoord );
+			this.didHaveLight = hasLight;
+			this.worldObj.func_147451_t( this.xCoord, this.yCoord, this.zCoord );
 			// worldObj.updateAllLightTypes( xCoord, yCoord, zCoord );
 		}
 	}
 
 	public int getLightValue()
 	{
-		if ( (displayBits & DISPLAY_POWERED_ENABLED) == DISPLAY_POWERED_ENABLED )
+		if ( (this.displayBits & this.DISPLAY_POWERED_ENABLED) == this.DISPLAY_POWERED_ENABLED )
 		{
 			return 8;
 		}
@@ -122,78 +122,78 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	@MENetworkEventSubscribe
 	public void powerRender(MENetworkPowerStatusChange c)
 	{
-		recalculateDisplay();
+		this.recalculateDisplay();
 	}
 
 	@MENetworkEventSubscribe
 	public void activeRender(MENetworkChannelsChanged c)
 	{
-		recalculateDisplay();
+		this.recalculateDisplay();
 	}
 
 	@Override
 	public void invalidate()
 	{
-		disconnect( false );
+		this.disconnect( false );
 		super.invalidate();
 	}
 
 	@Override
 	public void onChunkUnload()
 	{
-		disconnect( false );
+		this.disconnect( false );
 		super.onChunkUnload();
 	}
 
 	public void onNeighborBlockChange()
 	{
-		calc.calculateMultiblock( worldObj, getLocation() );
+		this.calc.calculateMultiblock( this.worldObj, this.getLocation() );
 	}
 
 	@Override
 	public SpatialPylonCluster getCluster()
 	{
-		return cluster;
+		return this.cluster;
 	}
 
 	public void recalculateDisplay()
 	{
-		int oldBits = displayBits;
+		int oldBits = this.displayBits;
 
-		displayBits = 0;
+		this.displayBits = 0;
 
-		if ( cluster != null )
+		if ( this.cluster != null )
 		{
-			if ( cluster.min.equals( getLocation() ) )
-				displayBits = DISPLAY_END_MIN;
-			else if ( cluster.max.equals( getLocation() ) )
-				displayBits = DISPLAY_END_MAX;
+			if ( this.cluster.min.equals( this.getLocation() ) )
+				this.displayBits = this.DISPLAY_END_MIN;
+			else if ( this.cluster.max.equals( this.getLocation() ) )
+				this.displayBits = this.DISPLAY_END_MAX;
 			else
-				displayBits = DISPLAY_MIDDLE;
+				this.displayBits = this.DISPLAY_MIDDLE;
 
-			switch (cluster.currentAxis)
+			switch (this.cluster.currentAxis)
 			{
 			case X:
-				displayBits |= DISPLAY_X;
+				this.displayBits |= this.DISPLAY_X;
 				break;
 			case Y:
-				displayBits |= DISPLAY_Y;
+				this.displayBits |= this.DISPLAY_Y;
 				break;
 			case Z:
-				displayBits |= DISPLAY_Z;
+				this.displayBits |= this.DISPLAY_Z;
 				break;
 			default:
-				displayBits = 0;
+				this.displayBits = 0;
 				break;
 			}
 
 			try
 			{
-				if ( gridProxy.getEnergy().isNetworkPowered() )
-					displayBits |= DISPLAY_POWERED_ENABLED;
+				if ( this.gridProxy.getEnergy().isNetworkPowered() )
+					this.displayBits |= this.DISPLAY_POWERED_ENABLED;
 
-				if ( cluster.isValid && gridProxy.isActive() )
-					displayBits |= DISPLAY_ENABLED;
+				if ( this.cluster.isValid && this.gridProxy.isActive() )
+					this.displayBits |= this.DISPLAY_ENABLED;
 			}
 			catch (GridAccessException e)
 			{
@@ -202,24 +202,24 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 
 		}
 
-		if ( oldBits != displayBits )
-			markForUpdate();
+		if ( oldBits != this.displayBits )
+			this.markForUpdate();
 	}
 
 	public void updateStatus(SpatialPylonCluster c)
 	{
-		cluster = c;
-		gridProxy.setValidSides( c == null ? EnumSet.noneOf( ForgeDirection.class ) : EnumSet.allOf( ForgeDirection.class ) );
-		recalculateDisplay();
+		this.cluster = c;
+		this.gridProxy.setValidSides( c == null ? EnumSet.noneOf( ForgeDirection.class ) : EnumSet.allOf( ForgeDirection.class ) );
+		this.recalculateDisplay();
 	}
 
 	@Override
 	public void disconnect(boolean b)
 	{
-		if ( cluster != null )
+		if ( this.cluster != null )
 		{
-			cluster.destroy();
-			updateStatus( null );
+			this.cluster.destroy();
+			this.updateStatus( null );
 		}
 	}
 
@@ -231,7 +231,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 
 	public int getDisplayBits()
 	{
-		return displayBits;
+		return this.displayBits;
 	}
 
 }

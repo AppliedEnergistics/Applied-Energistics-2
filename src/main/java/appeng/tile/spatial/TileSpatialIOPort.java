@@ -56,45 +56,45 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 	@TileEvent(TileEventType.WORLD_NBT_WRITE)
 	public void writeToNBT_TileSpatialIOPort(NBTTagCompound data)
 	{
-		data.setInteger( "lastRedstoneState", lastRedstoneState.ordinal() );
+		data.setInteger( "lastRedstoneState", this.lastRedstoneState.ordinal() );
 	}
 
 	@TileEvent(TileEventType.WORLD_NBT_READ)
 	public void readFromNBT_TileSpatialIOPort(NBTTagCompound data)
 	{
 		if ( data.hasKey( "lastRedstoneState" ) )
-			lastRedstoneState = YesNo.values()[data.getInteger( "lastRedstoneState" )];
+			this.lastRedstoneState = YesNo.values()[data.getInteger( "lastRedstoneState" )];
 	}
 
 	public TileSpatialIOPort() {
-		gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
+		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 	}
 
 	public void updateRedstoneState()
 	{
-		YesNo currentState = worldObj.isBlockIndirectlyGettingPowered( xCoord, yCoord, zCoord ) ? YesNo.YES : YesNo.NO;
-		if ( lastRedstoneState != currentState )
+		YesNo currentState = this.worldObj.isBlockIndirectlyGettingPowered( this.xCoord, this.yCoord, this.zCoord ) ? YesNo.YES : YesNo.NO;
+		if ( this.lastRedstoneState != currentState )
 		{
-			lastRedstoneState = currentState;
-			if ( lastRedstoneState == YesNo.YES )
-				triggerTransition();
+			this.lastRedstoneState = currentState;
+			if ( this.lastRedstoneState == YesNo.YES )
+				this.triggerTransition();
 		}
 	}
 
 	public boolean getRedstoneState()
 	{
-		if ( lastRedstoneState == YesNo.UNDECIDED )
-			updateRedstoneState();
+		if ( this.lastRedstoneState == YesNo.UNDECIDED )
+			this.updateRedstoneState();
 
-		return lastRedstoneState == YesNo.YES;
+		return this.lastRedstoneState == YesNo.YES;
 	}
 
 	private void triggerTransition()
 	{
 		if ( Platform.isServer() )
 		{
-			ItemStack cell = getStackInSlot( 0 );
-			if ( isSpatialCell( cell ) )
+			ItemStack cell = this.getStackInSlot( 0 );
+			if ( this.isSpatialCell( cell ) )
 			{
 				TickHandler.instance.addCallable( null, this );// this needs to be cross world synced.
 			}
@@ -105,11 +105,11 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 	public Object call() throws Exception
 	{
 
-		ItemStack cell = getStackInSlot( 0 );
-		if ( isSpatialCell( cell ) && getStackInSlot( 1 ) == null )
+		ItemStack cell = this.getStackInSlot( 0 );
+		if ( this.isSpatialCell( cell ) && this.getStackInSlot( 1 ) == null )
 		{
-			IGrid gi = gridProxy.getGrid();
-			IEnergyGrid energy = gridProxy.getEnergy();
+			IGrid gi = this.gridProxy.getGrid();
+			IEnergyGrid energy = this.gridProxy.getEnergy();
 
 			ISpatialStorageCell sc = (ISpatialStorageCell) cell.getItem();
 
@@ -123,12 +123,12 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 					MENetworkEvent res = gi.postEvent( new MENetworkSpatialEvent( this, req ) );
 					if ( !res.isCanceled() )
 					{
-						TransitionResult tr = sc.doSpatialTransition( cell, worldObj, spc.getMin(), spc.getMax(), true );
+						TransitionResult tr = sc.doSpatialTransition( cell, this.worldObj, spc.getMin(), spc.getMax(), true );
 						if ( tr.success )
 						{
 							energy.extractAEPower( req, Actionable.MODULATE, PowerMultiplier.CONFIG );
-							setInventorySlotContents( 0, null );
-							setInventorySlotContents( 1, cell );
+							this.setInventorySlotContents( 0, null );
+							this.setInventorySlotContents( 1, cell );
 						}
 					}
 				}
@@ -153,13 +153,13 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 	@Override
 	public IInventory getInternalInventory()
 	{
-		return inv;
+		return this.inv;
 	}
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
-		return (i == 0 && isSpatialCell( itemstack ));
+		return (i == 0 && this.isSpatialCell( itemstack ));
 	}
 
 	private boolean isSpatialCell(ItemStack cell)
@@ -175,7 +175,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 	@Override
 	public boolean canInsertItem(int i, ItemStack itemstack, int j)
 	{
-		return isItemValidForSlot( i, itemstack );
+		return this.isItemValidForSlot( i, itemstack );
 	}
 
 	@Override
@@ -193,7 +193,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 	@Override
 	public int[] getAccessibleSlotsBySide(ForgeDirection side)
 	{
-		return sides;
+		return this.sides;
 	}
 
 }

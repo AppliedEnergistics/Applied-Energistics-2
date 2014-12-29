@@ -62,10 +62,10 @@ public class PartCableAnchor implements IPart
 	@SideOnly(Side.CLIENT)
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		renderCache = rh.useSimplifiedRendering( x, y, z, this, renderCache );
-		IIcon myIcon = is.getIconIndex();
+		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
+		IIcon myIcon = this.is.getIconIndex();
 		rh.setTexture( myIcon );
-		if ( host != null && host.getFacadeContainer().getFacade( mySide ) != null )
+		if ( this.host != null && this.host.getFacadeContainer().getFacade( this.mySide ) != null )
 			rh.setBounds( 7, 7, 10, 9, 9, 14 );
 		else
 			rh.setBounds( 7, 7, 10, 9, 9, 16 );
@@ -84,7 +84,7 @@ public class PartCableAnchor implements IPart
 	@SideOnly(Side.CLIENT)
 	public void renderInventory(IPartRenderHelper instance, RenderBlocks renderer)
 	{
-		instance.setTexture( is.getIconIndex() );
+		instance.setTexture( this.is.getIconIndex() );
 		instance.setBounds( 7, 7, 4, 9, 9, 14 );
 		instance.renderInventoryBox( renderer );
 		instance.setTexture( null );
@@ -93,7 +93,7 @@ public class PartCableAnchor implements IPart
 	@Override
 	public void getBoxes(IPartCollisionHelper bch)
 	{
-		if ( host != null && host.getFacadeContainer().getFacade( mySide ) != null )
+		if ( this.host != null && this.host.getFacadeContainer().getFacade( this.mySide ) != null )
 			bch.addBox( 7, 7, 10, 9, 9, 14 );
 		else
 			bch.addBox( 7, 7, 10, 9, 9, 16 );
@@ -102,7 +102,7 @@ public class PartCableAnchor implements IPart
 	@Override
 	public ItemStack getItemStack(PartItemStack wrenched)
 	{
-		return is;
+		return this.is;
 	}
 
 	@Override
@@ -212,7 +212,7 @@ public class PartCableAnchor implements IPart
 	public void setPartHostInfo(ForgeDirection side, IPartHost host, TileEntity tile)
 	{
 		this.host = host;
-		mySide = side;
+		this.mySide = side;
 	}
 
 	@Override
@@ -236,7 +236,7 @@ public class PartCableAnchor implements IPart
 	@Override
 	public boolean isLadder(EntityLivingBase entity)
 	{
-		return mySide.offsetY == 0 && ( entity.isCollidedHorizontally || ! entity.onGround );
+		return this.mySide.offsetY == 0 && ( entity.isCollidedHorizontally || ! entity.onGround );
 	}
 
 	@Override

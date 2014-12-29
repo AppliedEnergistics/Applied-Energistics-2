@@ -57,29 +57,29 @@ public class GuiIOPort extends GuiUpgradeable
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString( getGuiDisplayName( GuiText.IOPort.getLocal() ), 8, 6, 4210752 );
-		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.IOPort.getLocal() ), 8, 6, 4210752 );
+		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
-		if ( redstoneMode != null )
-			redstoneMode.set( cvb.rsMode );
+		if ( this.redstoneMode != null )
+			this.redstoneMode.set( this.cvb.rsMode );
 
-		if ( operationMode != null )
-			operationMode.set( ((ContainerIOPort) cvb).opMode );
+		if ( this.operationMode != null )
+			this.operationMode.set( ((ContainerIOPort) this.cvb).opMode );
 
-		if ( fullMode != null )
-			fullMode.set( ((ContainerIOPort) cvb).fMode );
+		if ( this.fullMode != null )
+			this.fullMode.set( ((ContainerIOPort) this.cvb).fMode );
 	}
 
 	@Override
 	protected void addButtons()
 	{
-		redstoneMode = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
-		fullMode = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.FULLNESS_MODE, FullnessMode.EMPTY );
-		operationMode = new GuiImgButton( this.guiLeft + 80, guiTop + 17, Settings.OPERATION_MODE, OperationMode.EMPTY );
+		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
+		this.fullMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.FULLNESS_MODE, FullnessMode.EMPTY );
+		this.operationMode = new GuiImgButton( this.guiLeft + 80, this.guiTop + 17, Settings.OPERATION_MODE, OperationMode.EMPTY );
 
-		buttonList.add( operationMode );
-		buttonList.add( redstoneMode );
-		buttonList.add( fullMode );
+		this.buttonList.add( this.operationMode );
+		this.buttonList.add( this.redstoneMode );
+		this.buttonList.add( this.fullMode );
 	}
 
 	@Override
@@ -89,11 +89,11 @@ public class GuiIOPort extends GuiUpgradeable
 
 		boolean backwards = Mouse.isButtonDown( 1 );
 
-		if ( btn == fullMode )
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( fullMode.getSetting(), backwards ) );
+		if ( btn == this.fullMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.fullMode.getSetting(), backwards ) );
 
-		if ( btn == operationMode )
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( operationMode.getSetting(), backwards ) );
+		if ( btn == this.operationMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.operationMode.getSetting(), backwards ) );
 	}
 
 	@Override

@@ -63,43 +63,43 @@ public class CraftingJob implements Runnable, ICraftingJob
 	@Override
 	public IAEItemStack getOutput()
 	{
-		return output;
+		return this.output;
 	}
 
 	public CraftingJob(World w, NBTTagCompound data)
 	{
-		world = wrapWorld( w );
-		storage = AEApi.instance().storage().createItemList();
-		prophecies = new HashSet<IAEItemStack>();
-		original = null;
-		availableCheck = null;
+		this.world = this.wrapWorld( w );
+		this.storage = AEApi.instance().storage().createItemList();
+		this.prophecies = new HashSet<IAEItemStack>();
+		this.original = null;
+		this.availableCheck = null;
 	}
 
 	public void refund(IAEItemStack o)
 	{
-		availableCheck.injectItems( o, Actionable.MODULATE, this.actionSrc );
+		this.availableCheck.injectItems( o, Actionable.MODULATE, this.actionSrc );
 	}
 
 	public IAEItemStack checkUse(IAEItemStack available)
 	{
-		return availableCheck.extractItems( available, Actionable.MODULATE, this.actionSrc );
+		return this.availableCheck.extractItems( available, Actionable.MODULATE, this.actionSrc );
 	}
 
 	public CraftingJob(World w, IGrid grid, BaseActionSource actionSrc, IAEItemStack what, ICraftingCallback callback)
 	{
-		world = wrapWorld( w );
-		output = what.copy();
-		storage = AEApi.instance().storage().createItemList();
-		prophecies = new HashSet<IAEItemStack>();
+		this.world = this.wrapWorld( w );
+		this.output = what.copy();
+		this.storage = AEApi.instance().storage().createItemList();
+		this.prophecies = new HashSet<IAEItemStack>();
 		this.actionSrc = actionSrc;
 
 		this.callback = callback;
 		ICraftingGrid cc = grid.getCache( ICraftingGrid.class );
 		IStorageGrid sg = grid.getCache( IStorageGrid.class );
-		original = new MECraftingInventory( sg.getItemInventory(), actionSrc, false, false, false );
+		this.original = new MECraftingInventory( sg.getItemInventory(), actionSrc, false, false, false );
 
-		tree = getCraftingTree( cc, what );
-		availableCheck = null;
+		this.tree = this.getCraftingTree( cc, what );
+		this.availableCheck = null;
 	}
 
 	private World wrapWorld(World w)
@@ -115,7 +115,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 	@Override
 	public long getByteTotal()
 	{
-		return bytes;
+		return this.bytes;
 	}
 
 	public void writeToNBT(NBTTagCompound out)
@@ -132,14 +132,14 @@ public class CraftingJob implements Runnable, ICraftingJob
 		{
 			what = what.copy();
 			what.setStackSize( what.getStackSize() * crafts );
-			crafting.add( what );
+			this.crafting.add( what );
 		}
 	}
 
 	public void addMissing(IAEItemStack what)
 	{
 		what = what.copy();
-		missing.add( what );
+		this.missing.add( what );
 	}
 
 	static class TwoIntegers
@@ -158,51 +158,51 @@ public class CraftingJob implements Runnable, ICraftingJob
 		{
 			try
 			{
-				TickHandler.instance.registerCraftingSimulation( world, this );
-				handlePausing();
+				TickHandler.instance.registerCraftingSimulation( this.world, this );
+				this.handlePausing();
 
 				Stopwatch timer = Stopwatch.createStarted();
 
-				MECraftingInventory craftingInventory = new MECraftingInventory( original, true, false, true );
-				craftingInventory.ignore( output );
+				MECraftingInventory craftingInventory = new MECraftingInventory( this.original, true, false, true );
+				craftingInventory.ignore( this.output );
 
-				availableCheck = new MECraftingInventory( original, false, false, false );
-				tree.request( craftingInventory, output.getStackSize(), actionSrc );
-				tree.dive( this );
+				this.availableCheck = new MECraftingInventory( this.original, false, false, false );
+				this.tree.request( craftingInventory, this.output.getStackSize(), this.actionSrc );
+				this.tree.dive( this );
 
-				for (String s : opsAndMultiplier.keySet())
+				for (String s : this.opsAndMultiplier.keySet())
 				{
-					TwoIntegers ti = opsAndMultiplier.get( s );
+					TwoIntegers ti = this.opsAndMultiplier.get( s );
 					AELog.crafting( s + " * " + ti.times + " = " + (ti.perOp * ti.times) );
 				}
 
-				AELog.crafting( "------------- " + getByteTotal() + "b real" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
+				AELog.crafting( "------------- " + this.getByteTotal() + "b real" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
 				// if ( mode == Actionable.MODULATE )
 				// craftingInventory.moveItemsToStorage( storage );
 			}
 			catch (CraftBranchFailure e)
 			{
-				simulate = true;
+				this.simulate = true;
 
 				try
 				{
 					Stopwatch timer = Stopwatch.createStarted();
-					MECraftingInventory craftingInventory = new MECraftingInventory( original, true, false, true );
-					craftingInventory.ignore( output );
+					MECraftingInventory craftingInventory = new MECraftingInventory( this.original, true, false, true );
+					craftingInventory.ignore( this.output );
 
-					availableCheck = new MECraftingInventory( original, false, false, false );
+					this.availableCheck = new MECraftingInventory( this.original, false, false, false );
 
-					tree.setSimulate();
-					tree.request( craftingInventory, output.getStackSize(), actionSrc );
-					tree.dive( this );
+					this.tree.setSimulate();
+					this.tree.request( craftingInventory, this.output.getStackSize(), this.actionSrc );
+					this.tree.dive( this );
 
-					for (String s : opsAndMultiplier.keySet())
+					for (String s : this.opsAndMultiplier.keySet())
 					{
-						TwoIntegers ti = opsAndMultiplier.get( s );
+						TwoIntegers ti = this.opsAndMultiplier.get( s );
 						AELog.crafting( s + " * " + ti.times + " = " + (ti.perOp * ti.times) );
 					}
 
-					AELog.crafting( "------------- " + getByteTotal() + "b simulate" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
+					AELog.crafting( "------------- " + this.getByteTotal() + "b simulate" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
 				}
 				catch (CraftBranchFailure e1)
 				{
@@ -215,7 +215,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 				catch (InterruptedException e1)
 				{
 					AELog.crafting( "Crafting calculation canceled." );
-					finish();
+					this.finish();
 					return;
 				}
 			}
@@ -226,51 +226,51 @@ public class CraftingJob implements Runnable, ICraftingJob
 			catch (InterruptedException e1)
 			{
 				AELog.crafting( "Crafting calculation canceled." );
-				finish();
+				this.finish();
 				return;
 			}
 
-			log( "crafting job now done" );
+			this.log( "crafting job now done" );
 		}
 		catch (Throwable t)
 		{
-			finish();
+			this.finish();
 			throw new RuntimeException( t );
 		}
 
-		finish();
+		this.finish();
 
 	}
 
 	public void finish()
 	{
-		if ( callback != null )
-			callback.calculationComplete( this );
+		if ( this.callback != null )
+			this.callback.calculationComplete( this );
 
-		availableCheck = null;
+		this.availableCheck = null;
 
-		synchronized (monitor)
+		synchronized (this.monitor)
 		{
-			running = false;
-			done = true;
-			monitor.notify();
+			this.running = false;
+			this.done = true;
+			this.monitor.notify();
 		}
 	}
 
 	@Override
 	public boolean isSimulation()
 	{
-		return simulate;
+		return this.simulate;
 	}
 
 	public boolean isDone()
 	{
-		return done;
+		return this.done;
 	}
 
 	public World getWorld()
 	{
-		return world;
+		return this.world;
 	}
 
 	private boolean running = false;
@@ -287,33 +287,33 @@ public class CraftingJob implements Runnable, ICraftingJob
 	 */
 	public boolean simulateFor(int milli)
 	{
-		time = milli;
+		this.time = milli;
 
-		synchronized (monitor)
+		synchronized (this.monitor)
 		{
-			if ( isDone() )
+			if ( this.isDone() )
 				return false;
 
-			watch.reset();
-			watch.start();
-			running = true;
+			this.watch.reset();
+			this.watch.start();
+			this.running = true;
 
-			log( "main thread is now going to sleep" );
+			this.log( "main thread is now going to sleep" );
 
-			monitor.notify();
+			this.monitor.notify();
 
-			while (running)
+			while (this.running)
 			{
 				try
 				{
-					monitor.wait();
+					this.monitor.wait();
 				}
 				catch (InterruptedException ignored)
 				{
 				}
 			}
 
-			log( "main thread is now active" );
+			this.log( "main thread is now active" );
 		}
 
 		return true;
@@ -323,29 +323,29 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 	public void handlePausing() throws InterruptedException
 	{
-		if ( incTime++ > 100 )
+		if ( this.incTime++ > 100 )
 		{
-			incTime = 0;
+			this.incTime = 0;
 
-			synchronized (monitor)
+			synchronized (this.monitor)
 			{
-				if ( watch.elapsed( TimeUnit.MICROSECONDS ) > time )
+				if ( this.watch.elapsed( TimeUnit.MICROSECONDS ) > this.time )
 				{
-					running = false;
-					watch.stop();
-					monitor.notify();
+					this.running = false;
+					this.watch.stop();
+					this.monitor.notify();
 				}
 
-				if ( !running )
+				if ( !this.running )
 				{
-					log( "crafting job will now sleep" );
+					this.log( "crafting job will now sleep" );
 
-					while (!running)
+					while (!this.running)
 					{
-						monitor.wait();
+						this.monitor.wait();
 					}
 
-					log( "crafting job now active" );
+					this.log( "crafting job now active" );
 				}
 			}
 
@@ -361,14 +361,14 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 	public void addBytes(long crafts)
 	{
-		bytes += crafts;
+		this.bytes += crafts;
 	}
 
 	@Override
 	public void populatePlan(IItemList<IAEItemStack> plan)
 	{
-		if ( tree != null )
-			tree.getPlan( plan );
+		if ( this.tree != null )
+			this.tree.getPlan( plan );
 	}
 
 }

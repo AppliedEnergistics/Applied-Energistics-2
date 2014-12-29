@@ -83,13 +83,13 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	@Override
 	public void Init() throws Throwable
 	{
-		createAndRegister( AEApi.instance().blocks().blockQuartz.block(), 0 );
-		createAndRegister( AEApi.instance().blocks().blockQuartzPillar.block(), 0 );
-		createAndRegister( AEApi.instance().blocks().blockQuartzChiseled.block(), 0 );
-		createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 0 );
-		createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 1 );
-		createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 2 );
-		createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 3 );
+		this.createAndRegister( AEApi.instance().blocks().blockQuartz.block(), 0 );
+		this.createAndRegister( AEApi.instance().blocks().blockQuartzPillar.block(), 0 );
+		this.createAndRegister( AEApi.instance().blocks().blockQuartzChiseled.block(), 0 );
+		this.createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 0 );
+		this.createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 1 );
+		this.createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 2 );
+		this.createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 3 );
 
 		PartRegistry reg[] = PartRegistry.values();
 

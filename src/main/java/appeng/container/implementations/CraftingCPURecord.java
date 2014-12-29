@@ -35,16 +35,16 @@ public class CraftingCPURecord implements Comparable<CraftingCPURecord>
 		this.size = size;
 		this.processors = coProcessors;
 		this.cpu = server;
-		myName = server.getName();
+		this.myName = server.getName();
 	}
 
 	@Override
 	public int compareTo(CraftingCPURecord o)
 	{
-		int a = ItemSorters.compareLong( o.processors, processors );
+		int a = ItemSorters.compareLong( o.processors, this.processors );
 		if ( a != 0 )
 			return a;
-		return ItemSorters.compareLong( o.size, size );
+		return ItemSorters.compareLong( o.size, this.size );
 	}
 
 }

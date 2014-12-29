@@ -53,14 +53,14 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 
 	protected BlockQuartzTorch(Class which) {
 		super( which, Material.circuits );
-		setLightOpacity( 0 );
-		isFullSize = isOpaque = false;
+		this.setLightOpacity( 0 );
+		this.isFullSize = this.isOpaque = false;
 	}
 
 	public BlockQuartzTorch() {
 		this( BlockQuartzTorch.class );
-		setFeature( EnumSet.of( AEFeature.DecorativeLights ) );
-		setLightLevel( 0.9375F );
+		this.setFeature( EnumSet.of( AEFeature.DecorativeLights ) );
+		this.setLightLevel( 0.9375F );
 	}
 
 	@Override
@@ -86,7 +86,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	public boolean canPlaceBlockAt(World w, int x, int y, int z)
 	{
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
-			if ( canPlaceAt( w, x, y, z, dir ) )
+			if ( this.canPlaceAt( w, x, y, z, dir ) )
 				return true;
 		return false;
 	}
@@ -99,21 +99,21 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	@Override
 	public boolean isValidOrientation(World w, int x, int y, int z, ForgeDirection forward, ForgeDirection up)
 	{
-		return canPlaceAt( w, x, y, z, up.getOpposite() );
+		return this.canPlaceAt( w, x, y, z, up.getOpposite() );
 	}
 
 	@Override
 	public void onNeighborBlockChange(World w, int x, int y, int z, Block id)
 	{
-		ForgeDirection up = getOrientable( w, x, y, z ).getUp();
-		if ( !canPlaceAt( w, x, y, z, up.getOpposite() ) )
-			dropTorch( w, x, y, z );
+		ForgeDirection up = this.getOrientable( w, x, y, z ).getUp();
+		if ( !this.canPlaceAt( w, x, y, z, up.getOpposite() ) )
+			this.dropTorch( w, x, y, z );
 	}
 
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
 	{
-		ForgeDirection up = getOrientable( w, x, y, z ).getUp();
+		ForgeDirection up = this.getOrientable( w, x, y, z ).getUp();
 		double xOff = -0.3 * up.offsetX;
 		double yOff = -0.3 * up.offsetY;
 		double zOff = -0.3 * up.offsetZ;
@@ -139,7 +139,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 		if ( r.nextFloat() < 0.98 )
 			return;
 
-		ForgeDirection up = getOrientable( w, x, y, z ).getUp();
+		ForgeDirection up = this.getOrientable( w, x, y, z ).getUp();
 		double xOff = -0.3 * up.offsetX;
 		double yOff = -0.3 * up.offsetY;
 		double zOff = -0.3 * up.offsetZ;

@@ -32,7 +32,7 @@ public class SlotDisconnected extends AppEngSlot
 
 	public SlotDisconnected(ClientDCInternalInv me, int which, int x, int y) {
 		super( me.inv, which, x, y );
-		mySlot = me;
+		this.mySlot = me;
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class SlotDisconnected extends AppEngSlot
 	@Override
 	public boolean getHasStack()
 	{
-		return getStack() != null;
+		return this.getStack() != null;
 	}
 
 	@Override

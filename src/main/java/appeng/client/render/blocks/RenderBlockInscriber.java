@@ -59,33 +59,33 @@ public class RenderBlockInscriber extends BaseBlockRender
 		Tessellator tess = Tessellator.instance;
 
 		renderer.renderAllFaces = true;
-		setInvRenderBounds( renderer, 6, 1, 0, 10, 15, 2 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 6, 1, 0, 10, 15, 2 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		// sides...
-		setInvRenderBounds( renderer, 3, 1, 0, 13, 15, 3 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 3, 1, 0, 13, 15, 3 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 0, 1, 0, 3, 15, 16 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 0, 1, 0, 3, 15, 16 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 13, 1, 0, 16, 15, 16 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 13, 1, 0, 16, 15, 16 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 1, 0, 1, 15, 2, 15 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 1, 0, 1, 15, 2, 15 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 1, 14, 1, 15, 16, 15 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 1, 14, 1, 15, 16, 15 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.BlockInscriberInside.getIcon() );
 
 		// press
-		setInvRenderBounds( renderer, 3, 2, 3, 13, 3, 13 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 3, 2, 3, 13, 3, 13 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 3, 13, 3, 13, 15, 13 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 3, 13, 3, 13, 15, 13 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 
@@ -97,11 +97,11 @@ public class RenderBlockInscriber extends BaseBlockRender
 	@Override
 	public boolean renderInWorld(AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
 	{
-		preRenderInWorld( block, world, x, y, z, renderer );
+		this.preRenderInWorld( block, world, x, y, z, renderer );
 
 		BlockInscriber blk = (BlockInscriber) block;
 
-		IOrientable te = getOrientable( block, world, x, y, z );
+		IOrientable te = this.getOrientable( block, world, x, y, z );
 
 		ForgeDirection fdy = te.getUp();
 		ForgeDirection fdz = te.getForward();
@@ -110,20 +110,20 @@ public class RenderBlockInscriber extends BaseBlockRender
 		renderer.renderAllFaces = true;
 
 		// sides...
-		renderBlockBounds( renderer, 3, 1, 0, 13, 15, 3, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 3, 1, 0, 13, 15, 3, fdx, fdy, fdz );
 		boolean out = renderer.renderStandardBlock( blk, x, y, z );
 
-		renderBlockBounds( renderer, 0, 1, 0, 3, 15, 16, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 0, 1, 0, 3, 15, 16, fdx, fdy, fdz );
 		out = renderer.renderStandardBlock( blk, x, y, z );
 
-		renderBlockBounds( renderer, 13, 1, 0, 16, 15, 16, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 13, 1, 0, 16, 15, 16, fdx, fdy, fdz );
 		out = renderer.renderStandardBlock( blk, x, y, z );
 
 		// top bottom..
-		renderBlockBounds( renderer, 1, 0, 1, 15, 4, 15, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 1, 0, 1, 15, 4, 15, fdx, fdy, fdz );
 		out = renderer.renderStandardBlock( blk, x, y, z );
 
-		renderBlockBounds( renderer, 1, 12, 1, 15, 16, 15, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 1, 12, 1, 15, 16, 15, fdx, fdy, fdz );
 		out = renderer.renderStandardBlock( blk, x, y, z );
 
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
@@ -131,7 +131,7 @@ public class RenderBlockInscriber extends BaseBlockRender
 		renderer.renderAllFaces = false;
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 
-		postRenderInWorld( renderer );
+		this.postRenderInWorld( renderer );
 		return out;
 	}
 
@@ -141,7 +141,7 @@ public class RenderBlockInscriber extends BaseBlockRender
 		TileInscriber inv = (TileInscriber) tile;
 
 		GL11.glPushMatrix();
-		applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
+		this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
 
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 		GL11.glDisable( GL11.GL_LIGHTING );
@@ -225,13 +225,13 @@ public class RenderBlockInscriber extends BaseBlockRender
 					is = ir.output.copy();
 			}
 
-			renderItem( is, 0.0f, block, tile, tess, x, y, z, f, renderer );
+			this.renderItem( is, 0.0f, block, tile, tess, x, y, z, f, renderer );
 		}
 		else
 		{
-			renderItem( inv.getStackInSlot( 0 ), press, block, tile, tess, x, y, z, f, renderer );
-			renderItem( inv.getStackInSlot( 1 ), -press, block, tile, tess, x, y, z, f, renderer );
-			renderItem( inv.getStackInSlot( 2 ), 0.0f, block, tile, tess, x, y, z, f, renderer );
+			this.renderItem( inv.getStackInSlot( 0 ), press, block, tile, tess, x, y, z, f, renderer );
+			this.renderItem( inv.getStackInSlot( 1 ), -press, block, tile, tess, x, y, z, f, renderer );
+			this.renderItem( inv.getStackInSlot( 2 ), 0.0f, block, tile, tess, x, y, z, f, renderer );
 		}
 
 	}
@@ -243,7 +243,7 @@ public class RenderBlockInscriber extends BaseBlockRender
 		{
 			sis = sis.copy();
 			GL11.glPushMatrix();
-			applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
+			this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
 
 			try
 			{
@@ -272,7 +272,7 @@ public class RenderBlockInscriber extends BaseBlockRender
 				GL11.glDisable( GL12.GL_RESCALE_NORMAL );
 				tess.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
 
-				doRenderItem( sis, tile );
+				this.doRenderItem( sis, tile );
 			}
 			catch (Exception err)
 			{

@@ -36,8 +36,8 @@ public class BSCrate implements IMEInventory<IAEItemStack>
 	final ForgeDirection side;
 
 	public BSCrate(Object object, ForgeDirection d) {
-		cs = (ICrateStorage) object;
-		side = d;
+		this.cs = (ICrateStorage) object;
+		this.side = d;
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class BSCrate implements IMEInventory<IAEItemStack>
 		if ( mode == Actionable.SIMULATE )
 			return null;
 
-		ItemStack failed = cs.insertItems( input.getItemStack() );
+		ItemStack failed = this.cs.insertItems( input.getItemStack() );
 		if ( failed == null )
 			return null;
 		input.setStackSize( failed.stackSize );
@@ -64,18 +64,18 @@ public class BSCrate implements IMEInventory<IAEItemStack>
 	{
 		if ( mode == Actionable.SIMULATE )
 		{
-			int howMany = cs.getItemCount( request.getItemStack() );
+			int howMany = this.cs.getItemCount( request.getItemStack() );
 			return howMany > request.getStackSize() ? request : request.copy().setStackSize( howMany );
 		}
 
-		ItemStack Obtained = cs.extractItems( request.getItemStack(), (int) request.getStackSize() );
+		ItemStack Obtained = this.cs.extractItems( request.getItemStack(), (int) request.getStackSize() );
 		return AEItemStack.create( Obtained );
 	}
 
 	@Override
 	public IItemList getAvailableItems(IItemList out)
 	{
-		for (ItemStack is : cs.getContents())
+		for (ItemStack is : this.cs.getContents())
 		{
 			out.add( AEItemStack.create( is ) );
 		}

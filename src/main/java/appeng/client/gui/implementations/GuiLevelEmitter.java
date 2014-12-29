@@ -62,42 +62,42 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	{
 		super.initGui();
 
-		level = new GuiNumberBox( fontRendererObj, this.guiLeft + 24, this.guiTop + 43, 79, fontRendererObj.FONT_HEIGHT, Long.class );
-		level.setEnableBackgroundDrawing( false );
-		level.setMaxStringLength( 16 );
-		level.setTextColor( 0xFFFFFF );
-		level.setVisible( true );
-		level.setFocused( true );
-		((ContainerLevelEmitter) inventorySlots).setTextField( level );
+		this.level = new GuiNumberBox( this.fontRendererObj, this.guiLeft + 24, this.guiTop + 43, 79, this.fontRendererObj.FONT_HEIGHT, Long.class );
+		this.level.setEnableBackgroundDrawing( false );
+		this.level.setMaxStringLength( 16 );
+		this.level.setTextColor( 0xFFFFFF );
+		this.level.setVisible( true );
+		this.level.setFocused( true );
+		((ContainerLevelEmitter) this.inventorySlots).setTextField( this.level );
 	}
 
 	@Override
 	protected void addButtons()
 	{
-		levelMode = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL );
-		redstoneMode = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL );
-		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 48, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
-		craftingMode = new GuiImgButton( this.guiLeft - 18, guiTop + 48, Settings.CRAFT_VIA_REDSTONE, YesNo.NO );
+		this.levelMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL );
+		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL );
+		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		this.craftingMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.CRAFT_VIA_REDSTONE, YesNo.NO );
 
 		int a = AEConfig.instance.levelByStackAmounts( 0 );
 		int b = AEConfig.instance.levelByStackAmounts( 1 );
 		int c = AEConfig.instance.levelByStackAmounts( 2 );
 		int d = AEConfig.instance.levelByStackAmounts( 3 );
 
-		buttonList.add( plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 17, 22, 20, "+" + a ) );
-		buttonList.add( plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 17, 28, 20, "+" + b ) );
-		buttonList.add( plus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 17, 32, 20, "+" + c ) );
-		buttonList.add( plus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 17, 38, 20, "+" + d ) );
+		this.buttonList.add( this.plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 17, 22, 20, "+" + a ) );
+		this.buttonList.add( this.plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 17, 28, 20, "+" + b ) );
+		this.buttonList.add( this.plus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 17, 32, 20, "+" + c ) );
+		this.buttonList.add( this.plus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 17, 38, 20, "+" + d ) );
 
-		buttonList.add( minus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 59, 22, 20, "-" + a ) );
-		buttonList.add( minus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 59, 28, 20, "-" + b ) );
-		buttonList.add( minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 59, 32, 20, "-" + c ) );
-		buttonList.add( minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 59, 38, 20, "-" + d ) );
+		this.buttonList.add( this.minus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 59, 22, 20, "-" + a ) );
+		this.buttonList.add( this.minus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 59, 28, 20, "-" + b ) );
+		this.buttonList.add( this.minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 59, 32, 20, "-" + c ) );
+		this.buttonList.add( this.minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 59, 38, 20, "-" + d ) );
 
-		buttonList.add( levelMode );
-		buttonList.add( redstoneMode );
-		buttonList.add( fuzzyMode );
-		buttonList.add( craftingMode );
+		this.buttonList.add( this.levelMode );
+		this.buttonList.add( this.redstoneMode );
+		this.buttonList.add( this.fuzzyMode );
+		this.buttonList.add( this.craftingMode );
 	}
 
 	@Override
@@ -107,24 +107,24 @@ public class GuiLevelEmitter extends GuiUpgradeable
 
 		boolean backwards = Mouse.isButtonDown( 1 );
 
-		if ( btn == craftingMode )
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( craftingMode.getSetting(), backwards ) );
+		if ( btn == this.craftingMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.craftingMode.getSetting(), backwards ) );
 
-		if ( btn == levelMode )
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( levelMode.getSetting(), backwards ) );
+		if ( btn == this.levelMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.levelMode.getSetting(), backwards ) );
 
-		boolean isPlus = btn == plus1 || btn == plus10 || btn == plus100 || btn == plus1000;
-		boolean isMinus = btn == minus1 || btn == minus10 || btn == minus100 || btn == minus1000;
+		boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
+		boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
 
 		if ( isPlus || isMinus )
-			addQty( getQty( btn ) );
+			this.addQty( this.getQty( btn ) );
 	}
 
 	private void addQty(long i)
 	{
 		try
 		{
-			String Out = level.getText();
+			String Out = this.level.getText();
 
 			boolean Fixed = false;
 			while (Out.startsWith( "0" ) && Out.length() > 1)
@@ -134,7 +134,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 			}
 
 			if ( Fixed )
-				level.setText( Out );
+				this.level.setText( Out );
 
 			if ( Out.length() == 0 )
 				Out = "0";
@@ -144,14 +144,14 @@ public class GuiLevelEmitter extends GuiUpgradeable
 			if ( result < 0 )
 				result = 0;
 
-			level.setText( Out = Long.toString( result ) );
+			this.level.setText( Out = Long.toString( result ) );
 
 			NetworkHandler.instance.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
 		}
 		catch (NumberFormatException e)
 		{
 			// nope..
-			level.setText( "0" );
+			this.level.setText( "0" );
 		}
 		catch (IOException e)
 		{
@@ -162,8 +162,8 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	@Override
 	protected void handleButtonVisibility()
 	{
-		craftingMode.setVisibility( bc.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 );
-		fuzzyMode.setVisibility( bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );
+		this.craftingMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 );
+		this.fuzzyMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );
 	}
 
 	@Override
@@ -171,11 +171,11 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	{
 		if ( !this.checkHotbarKeys( key ) )
 		{
-			if ( (key == 211 || key == 205 || key == 203 || key == 14 || Character.isDigit( character )) && level.textboxKeyTyped( character, key ) )
+			if ( (key == 211 || key == 205 || key == 203 || key == 14 || Character.isDigit( character )) && this.level.textboxKeyTyped( character, key ) )
 			{
 				try
 				{
-					String Out = level.getText();
+					String Out = this.level.getText();
 
 					boolean Fixed = false;
 					while (Out.startsWith( "0" ) && Out.length() > 1)
@@ -185,7 +185,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 					}
 
 					if ( Fixed )
-						level.setText( Out );
+						this.level.setText( Out );
 
 					if ( Out.length() == 0 )
 						Out = "0";
@@ -207,35 +207,35 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		boolean notCraftingMode = bc.getInstalledUpgrades( Upgrades.CRAFTING ) == 0;
+		boolean notCraftingMode = this.bc.getInstalledUpgrades( Upgrades.CRAFTING ) == 0;
 
 		// configure enabled status...
-		level.setEnabled( notCraftingMode );
-		plus1.enabled = notCraftingMode;
-		plus10.enabled = notCraftingMode;
-		plus100.enabled = notCraftingMode;
-		plus1000.enabled = notCraftingMode;
-		minus1.enabled = notCraftingMode;
-		minus10.enabled = notCraftingMode;
-		minus100.enabled = notCraftingMode;
-		minus1000.enabled = notCraftingMode;
-		levelMode.enabled = notCraftingMode;
-		redstoneMode.enabled = notCraftingMode;
+		this.level.setEnabled( notCraftingMode );
+		this.plus1.enabled = notCraftingMode;
+		this.plus10.enabled = notCraftingMode;
+		this.plus100.enabled = notCraftingMode;
+		this.plus1000.enabled = notCraftingMode;
+		this.minus1.enabled = notCraftingMode;
+		this.minus10.enabled = notCraftingMode;
+		this.minus100.enabled = notCraftingMode;
+		this.minus1000.enabled = notCraftingMode;
+		this.levelMode.enabled = notCraftingMode;
+		this.redstoneMode.enabled = notCraftingMode;
 
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
 
-		if ( craftingMode != null )
-			craftingMode.set( ((ContainerLevelEmitter) cvb).cmType );
+		if ( this.craftingMode != null )
+			this.craftingMode.set( ((ContainerLevelEmitter) this.cvb).cmType );
 
-		if ( levelMode != null )
-			levelMode.set( ((ContainerLevelEmitter) cvb).lvType );
+		if ( this.levelMode != null )
+			this.levelMode.set( ((ContainerLevelEmitter) this.cvb).lvType );
 	}
 
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
 		super.drawBG( offsetX, offsetY, mouseX, mouseY );
-		level.drawTextBox();
+		this.level.drawTextBox();
 	}
 
 	@Override

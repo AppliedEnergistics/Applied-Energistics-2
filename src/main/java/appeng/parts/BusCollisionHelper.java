@@ -42,52 +42,52 @@ public class BusCollisionHelper implements IPartCollisionHelper
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		entity = e;
-		isVisual = visual;
+		this.entity = e;
+		this.isVisual = visual;
 	}
 
 	public BusCollisionHelper(List<AxisAlignedBB> boxes, ForgeDirection s, Entity e, boolean visual) {
 		this.boxes = boxes;
-		entity = e;
-		isVisual = visual;
+		this.entity = e;
+		this.isVisual = visual;
 
 		switch (s)
 		{
 		case DOWN:
-			x = ForgeDirection.EAST;
-			y = ForgeDirection.NORTH;
-			z = ForgeDirection.DOWN;
+			this.x = ForgeDirection.EAST;
+			this.y = ForgeDirection.NORTH;
+			this.z = ForgeDirection.DOWN;
 			break;
 		case UP:
-			x = ForgeDirection.EAST;
-			y = ForgeDirection.SOUTH;
-			z = ForgeDirection.UP;
+			this.x = ForgeDirection.EAST;
+			this.y = ForgeDirection.SOUTH;
+			this.z = ForgeDirection.UP;
 			break;
 		case EAST:
-			x = ForgeDirection.SOUTH;
-			y = ForgeDirection.UP;
-			z = ForgeDirection.EAST;
+			this.x = ForgeDirection.SOUTH;
+			this.y = ForgeDirection.UP;
+			this.z = ForgeDirection.EAST;
 			break;
 		case WEST:
-			x = ForgeDirection.NORTH;
-			y = ForgeDirection.UP;
-			z = ForgeDirection.WEST;
+			this.x = ForgeDirection.NORTH;
+			this.y = ForgeDirection.UP;
+			this.z = ForgeDirection.WEST;
 			break;
 		case NORTH:
-			x = ForgeDirection.WEST;
-			y = ForgeDirection.UP;
-			z = ForgeDirection.NORTH;
+			this.x = ForgeDirection.WEST;
+			this.y = ForgeDirection.UP;
+			this.z = ForgeDirection.NORTH;
 			break;
 		case SOUTH:
-			x = ForgeDirection.EAST;
-			y = ForgeDirection.UP;
-			z = ForgeDirection.SOUTH;
+			this.x = ForgeDirection.EAST;
+			this.y = ForgeDirection.UP;
+			this.z = ForgeDirection.SOUTH;
 			break;
 		case UNKNOWN:
 		default:
-			x = ForgeDirection.EAST;
-			y = ForgeDirection.UP;
-			z = ForgeDirection.SOUTH;
+			this.x = ForgeDirection.EAST;
+			this.y = ForgeDirection.UP;
+			this.z = ForgeDirection.SOUTH;
 			break;
 		}
 	}
@@ -95,7 +95,7 @@ public class BusCollisionHelper implements IPartCollisionHelper
 	@Override
 	public boolean isBBCollision()
 	{
-		return !isVisual;
+		return !this.isVisual;
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class BusCollisionHelper implements IPartCollisionHelper
 	 */
 	public Entity getEntity()
 	{
-		return entity;
+		return this.entity;
 	}
 
 	@Override
@@ -116,27 +116,27 @@ public class BusCollisionHelper implements IPartCollisionHelper
 		maxY /= 16.0;
 		maxZ /= 16.0;
 
-		double aX = minX * x.offsetX + minY * y.offsetX + minZ * z.offsetX;
-		double aY = minX * x.offsetY + minY * y.offsetY + minZ * z.offsetY;
-		double aZ = minX * x.offsetZ + minY * y.offsetZ + minZ * z.offsetZ;
+		double aX = minX * this.x.offsetX + minY * this.y.offsetX + minZ * this.z.offsetX;
+		double aY = minX * this.x.offsetY + minY * this.y.offsetY + minZ * this.z.offsetY;
+		double aZ = minX * this.x.offsetZ + minY * this.y.offsetZ + minZ * this.z.offsetZ;
 
-		double bX = maxX * x.offsetX + maxY * y.offsetX + maxZ * z.offsetX;
-		double bY = maxX * x.offsetY + maxY * y.offsetY + maxZ * z.offsetY;
-		double bZ = maxX * x.offsetZ + maxY * y.offsetZ + maxZ * z.offsetZ;
+		double bX = maxX * this.x.offsetX + maxY * this.y.offsetX + maxZ * this.z.offsetX;
+		double bY = maxX * this.x.offsetY + maxY * this.y.offsetY + maxZ * this.z.offsetY;
+		double bZ = maxX * this.x.offsetZ + maxY * this.y.offsetZ + maxZ * this.z.offsetZ;
 
-		if ( x.offsetX + y.offsetX + z.offsetX < 0 )
+		if ( this.x.offsetX + this.y.offsetX + this.z.offsetX < 0 )
 		{
 			aX += 1;
 			bX += 1;
 		}
 
-		if ( x.offsetY + y.offsetY + z.offsetY < 0 )
+		if ( this.x.offsetY + this.y.offsetY + this.z.offsetY < 0 )
 		{
 			aY += 1;
 			bY += 1;
 		}
 
-		if ( x.offsetZ + y.offsetZ + z.offsetZ < 0 )
+		if ( this.x.offsetZ + this.y.offsetZ + this.z.offsetZ < 0 )
 		{
 			aZ += 1;
 			bZ += 1;
@@ -149,25 +149,25 @@ public class BusCollisionHelper implements IPartCollisionHelper
 		maxY = Math.max( aY, bY );
 		maxZ = Math.max( aZ, bZ );
 
-		boxes.add( AxisAlignedBB.getBoundingBox( minX, minY, minZ, maxX, maxY, maxZ ) );
+		this.boxes.add( AxisAlignedBB.getBoundingBox( minX, minY, minZ, maxX, maxY, maxZ ) );
 	}
 
 	@Override
 	public ForgeDirection getWorldX()
 	{
-		return x;
+		return this.x;
 	}
 
 	@Override
 	public ForgeDirection getWorldY()
 	{
-		return y;
+		return this.y;
 	}
 
 	@Override
 	public ForgeDirection getWorldZ()
 	{
-		return z;
+		return this.z;
 	}
 
 }

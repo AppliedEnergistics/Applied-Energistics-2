@@ -47,37 +47,37 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 
 	public void setName(String value)
 	{
-		myName = value;
+		this.myName = value;
 	}
 
 	public ContainerQuartzKnife(InventoryPlayer ip, QuartzKnifeObj te) {
 		super( ip, null, null );
-		toolInv = te;
+		this.toolInv = te;
 
-		addSlotToContainer( metals = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.METAL_INGOTS, inSlot, 0, 94, 44, ip ) );
-		addSlotToContainer( output = new QuartzKnifeOutput( this, 0, 134, 44, -1 ) );
+		this.addSlotToContainer( this.metals = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.METAL_INGOTS, this.inSlot, 0, 94, 44, ip ) );
+		this.addSlotToContainer( this.output = new QuartzKnifeOutput( this, 0, 134, 44, -1 ) );
 
-		lockPlayerInventorySlot( ip.currentItem );
+		this.lockPlayerInventorySlot( ip.currentItem );
 
-		bindPlayerInventory( ip, 0, 184 - /* height of player inventory */82 );
+		this.bindPlayerInventory( ip, 0, 184 - /* height of player inventory */82 );
 	}
 
 	@Override
 	public void detectAndSendChanges()
 	{
-		ItemStack currentItem = getPlayerInv().getCurrentItem();
+		ItemStack currentItem = this.getPlayerInv().getCurrentItem();
 
-		if ( currentItem != toolInv.getItemStack() )
+		if ( currentItem != this.toolInv.getItemStack() )
 		{
 			if ( currentItem != null )
 			{
-				if ( Platform.isSameItem( toolInv.getItemStack(), currentItem ) )
-					getPlayerInv().setInventorySlotContents( getPlayerInv().currentItem, toolInv.getItemStack() );
+				if ( Platform.isSameItem( this.toolInv.getItemStack(), currentItem ) )
+					this.getPlayerInv().setInventorySlotContents( this.getPlayerInv().currentItem, this.toolInv.getItemStack() );
 				else
-					isContainerValid = false;
+					this.isContainerValid = false;
 			}
 			else
-				isContainerValid = false;
+				this.isContainerValid = false;
 		}
 
 		super.detectAndSendChanges();
@@ -86,8 +86,8 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	@Override
 	public void onContainerClosed(EntityPlayer par1EntityPlayer)
 	{
-		if ( inSlot.getStackInSlot( 0 ) != null )
-			par1EntityPlayer.dropPlayerItemWithRandomChoice( inSlot.getStackInSlot( 0 ), false );
+		if ( this.inSlot.getStackInSlot( 0 ) != null )
+			par1EntityPlayer.dropPlayerItemWithRandomChoice( this.inSlot.getStackInSlot( 0 ), false );
 	}
 
 	@Override
@@ -111,17 +111,17 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	@Override
 	public ItemStack getStackInSlot(int var1)
 	{
-		ItemStack input = inSlot.getStackInSlot( 0 );
+		ItemStack input = this.inSlot.getStackInSlot( 0 );
 		if ( input == null )
 			return null;
 
 		if ( SlotRestrictedInput.isMetalIngot( input ) )
 		{
-			if ( myName.length() > 0 )
+			if ( this.myName.length() > 0 )
 			{
 				ItemStack name = AEApi.instance().materials().materialNamePress.stack( 1 );
 				NBTTagCompound c = Platform.openNbtData( name );
-				c.setString( "InscribeName", myName );
+				c.setString( "InscribeName", this.myName );
 				return name;
 			}
 		}
@@ -132,10 +132,10 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	@Override
 	public ItemStack decrStackSize(int var1, int var2)
 	{
-		ItemStack is = getStackInSlot( 0 );
+		ItemStack is = this.getStackInSlot( 0 );
 		if ( is != null )
 		{
-			if ( makePlate() )
+			if ( this.makePlate() )
 				return is;
 		}
 		return null;
@@ -143,15 +143,15 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 
 	private boolean makePlate()
 	{
-		if ( inSlot.decrStackSize( 0, 1 ) != null )
+		if ( this.inSlot.decrStackSize( 0, 1 ) != null )
 		{
-			ItemStack item = toolInv.getItemStack();
-			item.damageItem( 1, getPlayerInv().player );
+			ItemStack item = this.toolInv.getItemStack();
+			item.damageItem( 1, this.getPlayerInv().player );
 
 			if ( item.stackSize == 0 )
 			{
-				getPlayerInv().mainInventory[getPlayerInv().currentItem] = null;
-				MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( getPlayerInv().player, item ) );
+				this.getPlayerInv().mainInventory[this.getPlayerInv().currentItem] = null;
+				MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( this.getPlayerInv().player, item ) );
 			}
 
 			return true;
@@ -169,7 +169,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	public void setInventorySlotContents(int var1, ItemStack var2)
 	{
 		if ( var2 == null && Platform.isServer() )
-			makePlate();
+			this.makePlate();
 	}
 
 	@Override

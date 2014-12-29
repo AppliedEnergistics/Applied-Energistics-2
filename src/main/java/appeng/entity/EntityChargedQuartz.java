@@ -59,36 +59,36 @@ final public class EntityChargedQuartz extends AEBaseEntityItem
 		if ( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldFluix ) )
 			return;
 
-		if ( Platform.isClient() && delay++ > 30 && AEConfig.instance.enableEffects )
+		if ( Platform.isClient() && this.delay++ > 30 && AEConfig.instance.enableEffects )
 		{
-			CommonHelper.proxy.spawnEffect( EffectType.Lightning, worldObj, posX, posY, posZ, null );
-			delay = 0;
+			CommonHelper.proxy.spawnEffect( EffectType.Lightning, this.worldObj, this.posX, this.posY, this.posZ, null );
+			this.delay = 0;
 		}
 
 		int j = MathHelper.floor_double( this.posX );
 		int i = MathHelper.floor_double( this.posY );
 		int k = MathHelper.floor_double( this.posZ );
 
-		Material mat = worldObj.getBlock( j, i, k ).getMaterial();
+		Material mat = this.worldObj.getBlock( j, i, k ).getMaterial();
 		if ( Platform.isServer() && mat.isLiquid() )
 		{
-			transformTime++;
-			if ( transformTime > 60 )
+			this.transformTime++;
+			if ( this.transformTime > 60 )
 			{
-				if ( !transform() )
-					transformTime = 0;
+				if ( !this.transform() )
+					this.transformTime = 0;
 			}
 		}
 		else
-			transformTime = 0;
+			this.transformTime = 0;
 	}
 
 	public boolean transform()
 	{
-		ItemStack item = getEntityItem();
+		ItemStack item = this.getEntityItem();
 		if ( AEApi.instance().materials().materialCertusQuartzCrystalCharged.sameAsStack( item ) )
 		{
-			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( posX - 1, posY - 1, posZ - 1, posX + 1, posY + 1, posZ + 1 );
+			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( this.posX - 1, this.posY - 1, this.posZ - 1, this.posX + 1, this.posY + 1, this.posZ + 1 );
 			List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
 
 			EntityItem redstone = null;
@@ -112,12 +112,12 @@ final public class EntityChargedQuartz extends AEBaseEntityItem
 
 			if ( redstone != null && netherQuartz != null )
 			{
-				getEntityItem().stackSize--;
+				this.getEntityItem().stackSize--;
 				redstone.getEntityItem().stackSize--;
 				netherQuartz.getEntityItem().stackSize--;
 
-				if ( getEntityItem().stackSize <= 0 )
-					setDead();
+				if ( this.getEntityItem().stackSize <= 0 )
+					this.setDead();
 
 				if ( redstone.getEntityItem().stackSize <= 0 )
 					redstone.setDead();
@@ -126,7 +126,7 @@ final public class EntityChargedQuartz extends AEBaseEntityItem
 					netherQuartz.setDead();
 
 				ItemStack Output = AEApi.instance().materials().materialFluixCrystal.stack( 2 );
-				worldObj.spawnEntityInWorld( new EntityItem( worldObj, posX, posY, posZ, Output ) );
+				this.worldObj.spawnEntityInWorld( new EntityItem( this.worldObj, this.posX, this.posY, this.posZ, Output ) );
 
 				return true;
 			}

@@ -58,25 +58,25 @@ public class Ingredient implements IIngredient
 
 		if ( input.equals( "_" ) )
 		{
-			isAir = true;
-			nameSpace = "";
-			itemName = "";
-			meta = OreDictionary.WILDCARD_VALUE;
+			this.isAir = true;
+			this.nameSpace = "";
+			this.itemName = "";
+			this.meta = OreDictionary.WILDCARD_VALUE;
 			return;
 		}
 
-		isAir = false;
+		this.isAir = false;
 		String[] parts = input.split( ":" );
 		if ( parts.length >= 2 )
 		{
-			nameSpace = handler.alias( parts[0] );
+			this.nameSpace = handler.alias( parts[0] );
 			String tmpName = handler.alias( parts[1] );
 
 			if ( parts.length != 3 )
 			{
 				int sel = 0;
 
-				if ( nameSpace.equals( "oreDictionary" ) )
+				if ( this.nameSpace.equals( "oreDictionary" ) )
 				{
 					if ( parts.length == 3 )
 						throw new RecipeError( "Cannot specify meta when using ore dictionary." );
@@ -86,13 +86,13 @@ public class Ingredient implements IIngredient
 				{
 					try
 					{
-						Object ro = AEApi.instance().registries().recipes().resolveItem( nameSpace, tmpName );
+						Object ro = AEApi.instance().registries().recipes().resolveItem( this.nameSpace, tmpName );
 						if ( ro instanceof ResolverResult )
 						{
 							ResolverResult rr = (ResolverResult) ro;
 							tmpName = rr.itemName;
 							sel = rr.damageValue;
-							nbt = rr.compound;
+							this.nbt = rr.compound;
 						}
 						else if ( ro instanceof ResolverResultSet )
 						{
@@ -105,19 +105,19 @@ public class Ingredient implements IIngredient
 					}
 				}
 
-				meta = sel;
+				this.meta = sel;
 			}
 			else
 			{
 				if ( parts[2].equals( "*" ) )
 				{
-					meta = OreDictionary.WILDCARD_VALUE;
+					this.meta = OreDictionary.WILDCARD_VALUE;
 				}
 				else
 				{
 					try
 					{
-						meta = Integer.parseInt( parts[2] );
+						this.meta = Integer.parseInt( parts[2] );
 					}
 					catch (NumberFormatException e)
 					{
@@ -125,40 +125,40 @@ public class Ingredient implements IIngredient
 					}
 				}
 			}
-			itemName = tmpName;
+			this.itemName = tmpName;
 		}
 		else
 			throw new RecipeError( input + " : Needs at least Namespace and Name." );
 
-		handler.data.knownItem.add( toString() );
+		handler.data.knownItem.add( this.toString() );
 	}
 
 	@Override
 	public ItemStack getItemStack() throws RegistrationError, MissingIngredientError
 	{
-		if ( isAir )
+		if ( this.isAir )
 			throw new RegistrationError( "Found blank item and expected a real item." );
 
-		if ( nameSpace.equalsIgnoreCase( "oreDictionary" ) )
+		if ( this.nameSpace.equalsIgnoreCase( "oreDictionary" ) )
 			throw new RegistrationError( "Recipe format expected a single item, but got a set of items." );
 
-		Block blk = GameRegistry.findBlock( nameSpace, itemName );
+		Block blk = GameRegistry.findBlock( this.nameSpace, this.itemName );
 		if ( blk == null )
-			blk = GameRegistry.findBlock( nameSpace, "tile." + itemName );
+			blk = GameRegistry.findBlock( this.nameSpace, "tile." + this.itemName );
 
 		if ( blk != null )
 		{
 			Item it = Item.getItemFromBlock( blk );
 			if ( it != null )
-				return MakeItemStack( it, qty, meta, nbt );
+				return this.MakeItemStack( it, this.qty, this.meta, this.nbt );
 		}
 
-		Item it = GameRegistry.findItem( nameSpace, itemName );
+		Item it = GameRegistry.findItem( this.nameSpace, this.itemName );
 		if ( it == null )
-			it = GameRegistry.findItem( nameSpace, "item." + itemName );
+			it = GameRegistry.findItem( this.nameSpace, "item." + this.itemName );
 
 		if ( it != null )
-			return MakeItemStack( it, qty, meta, nbt );
+			return this.MakeItemStack( it, this.qty, this.meta, this.nbt );
 
 		/*
 		 * Object o = Item.itemRegistry.getObject( nameSpace + ":" + itemName ); if ( o instanceof Item ) return new
@@ -173,7 +173,7 @@ public class Ingredient implements IIngredient
 		 * instanceof BlockAir)) ) return new ItemStack( (Block) o, qty, meta );
 		 */
 
-		throw new MissingIngredientError( "Unable to find item: " + toString() );
+		throw new MissingIngredientError( "Unable to find item: " + this.toString() );
 	}
 
 	private ItemStack MakeItemStack(Item it, int quantity, int damageValue, NBTTagCompound compound)
@@ -186,72 +186,72 @@ public class Ingredient implements IIngredient
 	@Override
 	public String toString()
 	{
-		return nameSpace + ':' + itemName + ':' + meta;
+		return this.nameSpace + ':' + this.itemName + ':' + this.meta;
 	}
 
 	@Override
 	public ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
 	{
-		if ( baked != null )
-			return baked;
+		if ( this.baked != null )
+			return this.baked;
 
-		if ( nameSpace.equalsIgnoreCase( "oreDictionary" ) )
+		if ( this.nameSpace.equalsIgnoreCase( "oreDictionary" ) )
 		{
-			List<ItemStack> ores = OreDictionary.getOres( itemName );
+			List<ItemStack> ores = OreDictionary.getOres( this.itemName );
 			ItemStack[] set = ores.toArray( new ItemStack[ores.size()] );
 
 			// clone and set qty.
 			for (int x = 0; x < set.length; x++)
 			{
 				ItemStack is = set[x].copy();
-				is.stackSize = qty;
+				is.stackSize = this.qty;
 				set[x] = is;
 			}
 
 			if ( set.length == 0 )
-				throw new MissingIngredientError( getItemName() + " - ore dictionary could not be resolved to any items." );
+				throw new MissingIngredientError( this.getItemName() + " - ore dictionary could not be resolved to any items." );
 
 			return set;
 		}
 
-		return new ItemStack[] { getItemStack() };
+		return new ItemStack[] { this.getItemStack() };
 	}
 
 	@Override
 	public String getNameSpace()
 	{
-		return nameSpace;
+		return this.nameSpace;
 	}
 
 	@Override
 	public String getItemName()
 	{
-		return itemName;
+		return this.itemName;
 	}
 
 	@Override
 	public int getDamageValue()
 	{
-		return meta;
+		return this.meta;
 	}
 
 	@Override
 	public int getQty()
 	{
-		return qty;
+		return this.qty;
 	}
 
 	@Override
 	public boolean isAir()
 	{
-		return isAir;
+		return this.isAir;
 	}
 
 	@Override
 	public void bake() throws RegistrationError, MissingIngredientError
 	{
-		baked = null;
-		baked = getItemStackSet();
+		this.baked = null;
+		this.baked = this.getItemStackSet();
 	}
 
 }

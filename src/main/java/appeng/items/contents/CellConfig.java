@@ -30,13 +30,13 @@ public class CellConfig extends AppEngInternalInventory
 	public CellConfig(ItemStack is) {
 		super( null, 63 );
 		this.is = is;
-		readFromNBT( Platform.openNbtData( is ), "list" );
+		this.readFromNBT( Platform.openNbtData( is ), "list" );
 	}
 
 	@Override
 	public void markDirty()
 	{
-		writeToNBT( Platform.openNbtData( is ), "list" );
+		this.writeToNBT( Platform.openNbtData( this.is ), "list" );
 	}
 
 }

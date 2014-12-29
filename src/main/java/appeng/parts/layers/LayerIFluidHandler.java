@@ -33,7 +33,7 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		IPart part = getPart( from );
+		IPart part = this.getPart( from );
 		if ( part instanceof IFluidHandler )
 			return ((IFluidHandler) part).fill( from, resource, doFill );
 		return 0;
@@ -42,7 +42,7 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	@Override
 	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
-		IPart part = getPart( from );
+		IPart part = this.getPart( from );
 		if ( part instanceof IFluidHandler )
 			return ((IFluidHandler) part).drain( from, resource, doDrain );
 		return null;
@@ -51,7 +51,7 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	@Override
 	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
-		IPart part = getPart( from );
+		IPart part = this.getPart( from );
 		if ( part instanceof IFluidHandler )
 			return ((IFluidHandler) part).drain( from, maxDrain, doDrain );
 		return null;
@@ -60,7 +60,7 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	@Override
 	public boolean canFill(ForgeDirection from, net.minecraftforge.fluids.Fluid fluid)
 	{
-		IPart part = getPart( from );
+		IPart part = this.getPart( from );
 		if ( part instanceof IFluidHandler )
 			return ((IFluidHandler) part).canFill( from, fluid );
 		return false;
@@ -69,7 +69,7 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	@Override
 	public boolean canDrain(ForgeDirection from, net.minecraftforge.fluids.Fluid fluid)
 	{
-		IPart part = getPart( from );
+		IPart part = this.getPart( from );
 		if ( part instanceof IFluidHandler )
 			return ((IFluidHandler) part).canDrain( from, fluid );
 		return false;
@@ -78,7 +78,7 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		IPart part = getPart( from );
+		IPart part = this.getPart( from );
 		if ( part instanceof IFluidHandler )
 			return ((IFluidHandler) part).getTankInfo( from );
 		return emptyList;

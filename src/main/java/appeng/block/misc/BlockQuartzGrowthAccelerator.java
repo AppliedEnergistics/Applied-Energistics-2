@@ -47,9 +47,9 @@ public class BlockQuartzGrowthAccelerator extends AEBaseBlock implements IOrient
 
 	public BlockQuartzGrowthAccelerator() {
 		super( BlockQuartzGrowthAccelerator.class, Material.rock );
-		setStepSound( Block.soundTypeMetal );
-		setFeature( EnumSet.of( AEFeature.Core ) );
-		setTileEntity( TileQuartzGrowthAccelerator.class );
+		this.setStepSound( Block.soundTypeMetal );
+		this.setFeature( EnumSet.of( AEFeature.Core ) );
+		this.setTileEntity( TileQuartzGrowthAccelerator.class );
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class BlockQuartzGrowthAccelerator extends AEBaseBlock implements IOrient
 		if ( !AEConfig.instance.enableEffects )
 			return;
 
-		TileQuartzGrowthAccelerator tileQuartzGrowthAccelerator = getTileEntity( w, x, y, z );
+		TileQuartzGrowthAccelerator tileQuartzGrowthAccelerator = this.getTileEntity( w, x, y, z );
 
 		if ( tileQuartzGrowthAccelerator != null && tileQuartzGrowthAccelerator.hasPower && CommonHelper.proxy.shouldAddParticles( r ) )
 		{

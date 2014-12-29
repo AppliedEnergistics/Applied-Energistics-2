@@ -110,47 +110,47 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	public GuiMEMonitorable(InventoryPlayer inventoryPlayer, ITerminalHost te, ContainerMEMonitorable c) {
 
 		super( c );
-		myScrollBar = new GuiScrollbar();
-		repo = new ItemRepo( myScrollBar, this );
+		this.myScrollBar = new GuiScrollbar();
+		this.repo = new ItemRepo( this.myScrollBar, this );
 
-		xSize = 185;
-		ySize = 204;
+		this.xSize = 185;
+		this.ySize = 204;
 
 		if ( te instanceof IViewCellStorage )
-			xSize += 33;
+			this.xSize += 33;
 
-		standardSize = xSize;
+		this.standardSize = this.xSize;
 
-		configSrc = ((IConfigurableObject) inventorySlots).getConfigManager();
-		(monitorableContainer = (ContainerMEMonitorable) inventorySlots).gui = this;
+		this.configSrc = ((IConfigurableObject) this.inventorySlots).getConfigManager();
+		(this.monitorableContainer = (ContainerMEMonitorable) this.inventorySlots).gui = this;
 
-		viewCell = te instanceof IViewCellStorage;
+		this.viewCell = te instanceof IViewCellStorage;
 
 		if ( te instanceof TileSecurity )
-			myName = GuiText.Security;
+			this.myName = GuiText.Security;
 		else if ( te instanceof WirelessTerminalGuiObject )
-			myName = GuiText.WirelessTerminal;
+			this.myName = GuiText.WirelessTerminal;
 		else if ( te instanceof IPortableCell )
-			myName = GuiText.PortableCell;
+			this.myName = GuiText.PortableCell;
 		else if ( te instanceof IMEChest )
-			myName = GuiText.Chest;
+			this.myName = GuiText.Chest;
 		else if ( te instanceof PartTerminal )
-			myName = GuiText.Terminal;
+			this.myName = GuiText.Terminal;
 	}
 
 	public void postUpdate(List<IAEItemStack> list)
 	{
 		for (IAEItemStack is : list)
-			repo.postUpdate( is );
+			this.repo.postUpdate( is );
 
-		repo.updateView();
-		setScrollBar();
+		this.repo.updateView();
+		this.setScrollBar();
 	}
 
 	private void setScrollBar()
 	{
-		myScrollBar.setTop( 18 ).setLeft( 175 ).setHeight( rows * 18 - 2 );
-		myScrollBar.setRange( 0, (repo.size() + perRow - 1) / perRow - rows, Math.max( 1, rows / 6 ) );
+		this.myScrollBar.setTop( 18 ).setLeft( 175 ).setHeight( this.rows * 18 - 2 );
+		this.myScrollBar.setRange( 0, (this.repo.size() + this.perRow - 1) / this.perRow - this.rows, Math.max( 1, this.rows / 6 ) );
 	}
 
 	public void re_init()
@@ -163,14 +163,14 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	public void onGuiClosed()
 	{
 		super.onGuiClosed();
-		memoryText = searchField.getText();
+		memoryText = this.searchField.getText();
 	}
 
 	@Override
 	public void initGui()
 	{
-		maxRows = getMaxRows();
-		perRow = AEConfig.instance.getConfigManager().getSetting( Settings.TERMINAL_STYLE ) != TerminalStyle.FULL ? 9 : 9 + ((width - standardSize) / 18);
+		this.maxRows = this.getMaxRows();
+		this.perRow = AEConfig.instance.getConfigManager().getSetting( Settings.TERMINAL_STYLE ) != TerminalStyle.FULL ? 9 : 9 + ((this.width - this.standardSize) / 18);
 
 		boolean hasNEI = AppEng.instance.isIntegrationEnabled( IntegrationType.NEI );
 
@@ -178,106 +178,106 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		int top = hasNEI ? 22 : 0;
 
 		int magicNumber = 114 + 1;
-		int extraSpace = height - magicNumber - NEI - top - reservedSpace;
+		int extraSpace = this.height - magicNumber - NEI - top - this.reservedSpace;
 
-		rows = (int) Math.floor( extraSpace / 18 );
-		if ( rows > maxRows )
+		this.rows = (int) Math.floor( extraSpace / 18 );
+		if ( this.rows > this.maxRows )
 		{
-			top += (rows - maxRows) * 18 / 2;
-			rows = maxRows;
+			top += (this.rows - this.maxRows) * 18 / 2;
+			this.rows = this.maxRows;
 		}
 
 		if ( hasNEI )
-			rows--;
+			this.rows--;
 
-		if ( rows < 3 )
-			rows = 3;
+		if ( this.rows < 3 )
+			this.rows = 3;
 
-		meSlots.clear();
-		for (int y = 0; y < rows; y++)
+		this.meSlots.clear();
+		for (int y = 0; y < this.rows; y++)
 		{
-			for (int x = 0; x < perRow; x++)
+			for (int x = 0; x < this.perRow; x++)
 			{
-				meSlots.add( new InternalSlotME( repo, x + y * perRow, offsetX + x * 18, 18 + y * 18 ) );
+				this.meSlots.add( new InternalSlotME( this.repo, x + y * this.perRow, this.offsetX + x * 18, 18 + y * 18 ) );
 			}
 		}
 
 		if ( AEConfig.instance.getConfigManager().getSetting( Settings.TERMINAL_STYLE ) != TerminalStyle.FULL )
-			this.xSize = standardSize + ((perRow - 9) * 18);
+			this.xSize = this.standardSize + ((this.perRow - 9) * 18);
 		else
-			this.xSize = standardSize;
+			this.xSize = this.standardSize;
 
 		super.initGui();
 		// full size : 204
 		// extra slots : 72
 		// slot 18
 
-		this.ySize = magicNumber + rows * 18 + reservedSpace;
+		this.ySize = magicNumber + this.rows * 18 + this.reservedSpace;
 		// this.guiTop = top;
-		int unusedSpace = height - ySize;
-		guiTop = (int) Math.floor( unusedSpace / (unusedSpace < 0 ? 3.8f : 2.0f) );
+		int unusedSpace = this.height - this.ySize;
+		this.guiTop = (int) Math.floor( unusedSpace / (unusedSpace < 0 ? 3.8f : 2.0f) );
 
-		int offset = guiTop + 8;
+		int offset = this.guiTop + 8;
 
-		if ( customSortOrder )
+		if ( this.customSortOrder )
 		{
-			buttonList.add( SortByBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_BY, configSrc.getSetting( Settings.SORT_BY ) ) );
+			this.buttonList.add( this.SortByBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_BY, this.configSrc.getSetting( Settings.SORT_BY ) ) );
 			offset += 20;
 		}
 
-		if ( viewCell || this instanceof GuiWirelessTerm )
+		if ( this.viewCell || this instanceof GuiWirelessTerm )
 		{
-			buttonList.add( ViewBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.VIEW_MODE, configSrc.getSetting( Settings.VIEW_MODE ) ) );
+			this.buttonList.add( this.ViewBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.VIEW_MODE, this.configSrc.getSetting( Settings.VIEW_MODE ) ) );
 			offset += 20;
 		}
 
-		buttonList.add( SortDirBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, configSrc.getSetting( Settings.SORT_DIRECTION ) ) );
+		this.buttonList.add( this.SortDirBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, this.configSrc.getSetting( Settings.SORT_DIRECTION ) ) );
 		offset += 20;
 
-		buttonList.add( searchBoxSettings = new GuiImgButton( this.guiLeft - 18, offset, Settings.SEARCH_MODE, AEConfig.instance.settings
+		this.buttonList.add( this.searchBoxSettings = new GuiImgButton( this.guiLeft - 18, offset, Settings.SEARCH_MODE, AEConfig.instance.settings
 				.getSetting( Settings.SEARCH_MODE ) ) );
 		offset += 20;
 
 		if ( !(this instanceof GuiMEPortableCell) || this instanceof GuiWirelessTerm )
 		{
-			buttonList.add( terminalStyleBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, AEConfig.instance.settings
+			this.buttonList.add( this.terminalStyleBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, AEConfig.instance.settings
 					.getSetting( Settings.TERMINAL_STYLE ) ) );
 		}
 
-		searchField = new MEGuiTextField( fontRendererObj, this.guiLeft + Math.max( 80, offsetX ), this.guiTop + 4, 90, 12 );
-		searchField.setEnableBackgroundDrawing( false );
-		searchField.setMaxStringLength( 25 );
-		searchField.setTextColor( 0xFFFFFF );
-		searchField.setVisible( true );
+		this.searchField = new MEGuiTextField( this.fontRendererObj, this.guiLeft + Math.max( 80, this.offsetX ), this.guiTop + 4, 90, 12 );
+		this.searchField.setEnableBackgroundDrawing( false );
+		this.searchField.setMaxStringLength( 25 );
+		this.searchField.setTextColor( 0xFFFFFF );
+		this.searchField.setVisible( true );
 
-		if ( viewCell || this instanceof GuiWirelessTerm )
+		if ( this.viewCell || this instanceof GuiWirelessTerm )
 		{
-			buttonList.add( craftingStatusBtn = new GuiTabButton( this.guiLeft + 170, this.guiTop - 4, 2 + 11 * 16, GuiText.CraftingStatus.getLocal(),
+			this.buttonList.add( this.craftingStatusBtn = new GuiTabButton( this.guiLeft + 170, this.guiTop - 4, 2 + 11 * 16, GuiText.CraftingStatus.getLocal(),
 					itemRender ) );
-			craftingStatusBtn.hideEdge = 13;
+			this.craftingStatusBtn.hideEdge = 13;
 		}
 
 		// Enum setting = AEConfig.instance.getSetting( "Terminal", SearchBoxMode.class, SearchBoxMode.AUTOSEARCH );
 		Enum setting = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
-		searchField.setFocused( SearchBoxMode.AUTOSEARCH == setting || SearchBoxMode.NEI_AUTOSEARCH == setting );
+		this.searchField.setFocused( SearchBoxMode.AUTOSEARCH == setting || SearchBoxMode.NEI_AUTOSEARCH == setting );
 
-		if ( isSubGui() )
+		if ( this.isSubGui() )
 		{
-			searchField.setText( memoryText );
-			repo.searchString = memoryText;
-			repo.updateView();
-			setScrollBar();
+			this.searchField.setText( memoryText );
+			this.repo.searchString = memoryText;
+			this.repo.updateView();
+			this.setScrollBar();
 		}
 
 		CraftingGridOffsetX = Integer.MAX_VALUE;
 		CraftingGridOffsetY = Integer.MAX_VALUE;
 
-		for (Object s : inventorySlots.inventorySlots)
+		for (Object s : this.inventorySlots.inventorySlots)
 		{
 			if ( s instanceof AppEngSlot )
 			{
 				if ( ((AppEngSlot) s).xDisplayPosition < 197 )
-					repositionSlot( (AppEngSlot) s );
+					this.repositionSlot( (AppEngSlot) s );
 			}
 
 			if ( s instanceof SlotCraftingMatrix || s instanceof SlotFakeCraftingMatrix )
@@ -297,13 +297,13 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 	protected void repositionSlot(AppEngSlot s)
 	{
-		s.yDisplayPosition = s.defY + ySize - 78 - 5;
+		s.yDisplayPosition = s.defY + this.ySize - 78 - 5;
 	}
 
 	@Override
 	protected void actionPerformed(GuiButton btn)
 	{
-		if ( btn == craftingStatusBtn )
+		if ( btn == this.craftingStatusBtn )
 		{
 			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_CRAFTING_STATUS ) );
 		}
@@ -318,9 +318,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 				Enum cv = iBtn.getCurrentValue();
 				Enum next = Platform.rotateEnum( cv, backwards, iBtn.getSetting().getPossibleValues() );
 
-				if ( btn == terminalStyleBox )
+				if ( btn == this.terminalStyleBox )
 					AEConfig.instance.settings.putSetting( iBtn.getSetting(), next );
-				else if ( btn == searchBoxSettings )
+				else if ( btn == this.searchBoxSettings )
 					AEConfig.instance.settings.putSetting( iBtn.getSetting(), next );
 				else
 				{
@@ -337,7 +337,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 				iBtn.set( next );
 
 				if ( next.getClass() == SearchBoxMode.class || next.getClass() == TerminalStyle.class )
-					re_init();
+					this.re_init();
 			}
 		}
 	}
@@ -349,15 +349,15 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		if ( searchMode != SearchBoxMode.AUTOSEARCH && searchMode != SearchBoxMode.NEI_AUTOSEARCH )
 		{
-			searchField.mouseClicked( xCoord, yCoord, btn );
+			this.searchField.mouseClicked( xCoord, yCoord, btn );
 		}
 
-		if ( btn == 1 && searchField.isMouseIn( xCoord, yCoord ) )
+		if ( btn == 1 && this.searchField.isMouseIn( xCoord, yCoord ) )
 		{
-			searchField.setText( "" );
-			repo.searchString = "";
-			repo.updateView();
-			setScrollBar();
+			this.searchField.setText( "" );
+			this.repo.searchString = "";
+			this.repo.updateView();
+			this.setScrollBar();
 		}
 
 		super.mouseClicked( xCoord, yCoord, btn );
@@ -371,11 +371,11 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			if ( character == ' ' && this.searchField.getText().length() == 0 )
 				return;
 
-			if ( searchField.textboxKeyTyped( character, key ) )
+			if ( this.searchField.textboxKeyTyped( character, key ) )
 			{
-				repo.searchString = this.searchField.getText();
-				repo.updateView();
-				setScrollBar();
+				this.repo.searchString = this.searchField.getText();
+				this.repo.updateView();
+				this.setScrollBar();
 			}
 			else
 			{
@@ -387,7 +387,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	@Override
 	public void updateScreen()
 	{
-		repo.setPower( monitorableContainer.hasPower );
+		this.repo.setPower( this.monitorableContainer.hasPower );
 		super.updateScreen();
 	}
 
@@ -396,36 +396,36 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	{
 		int x_width = 197;
 
-		bindTexture( getBackground() );
+		this.bindTexture( this.getBackground() );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 18 );
 
-		if ( viewCell || (this instanceof GuiSecurity) )
+		if ( this.viewCell || (this instanceof GuiSecurity) )
 			this.drawTexturedModalRect( offsetX + x_width, offsetY, x_width, 0, 46, 128 );
 
-		for (int x = 0; x < rows; x++)
+		for (int x = 0; x < this.rows; x++)
 			this.drawTexturedModalRect( offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18 );
 
-		this.drawTexturedModalRect( offsetX, offsetY + 16 + rows * 18 + lowerTextureOffset, 0, 106 - 18 - 18, x_width, 99 + reservedSpace - lowerTextureOffset );
+		this.drawTexturedModalRect( offsetX, offsetY + 16 + this.rows * 18 + this.lowerTextureOffset, 0, 106 - 18 - 18, x_width, 99 + this.reservedSpace - this.lowerTextureOffset );
 
-		if ( viewCell )
+		if ( this.viewCell )
 		{
 			boolean update = false;
 
 			for (int i = 0; i < 5; i++)
 			{
-				if ( myCurrentViewCells[i] != monitorableContainer.cellView[i].getStack() )
+				if ( this.myCurrentViewCells[i] != this.monitorableContainer.cellView[i].getStack() )
 				{
 					update = true;
-					myCurrentViewCells[i] = monitorableContainer.cellView[i].getStack();
+					this.myCurrentViewCells[i] = this.monitorableContainer.cellView[i].getStack();
 				}
 			}
 
 			if ( update )
-				repo.setViewCell( myCurrentViewCells );
+				this.repo.setViewCell( this.myCurrentViewCells );
 		}
 
-		if ( searchField != null )
-			searchField.drawTextBox();
+		if ( this.searchField != null )
+			this.searchField.drawTextBox();
 	}
 
 	protected String getBackground()
@@ -436,47 +436,47 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString( getGuiDisplayName( myName.getLocal() ), 8, 6, 4210752 );
-		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		this.fontRendererObj.drawString( this.getGuiDisplayName( this.myName.getLocal() ), 8, 6, 4210752 );
+		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 
 	@Override
 	public Enum getSortBy()
 	{
-		return configSrc.getSetting( Settings.SORT_BY );
+		return this.configSrc.getSetting( Settings.SORT_BY );
 	}
 
 	@Override
 	public Enum getSortDir()
 	{
-		return configSrc.getSetting( Settings.SORT_DIRECTION );
+		return this.configSrc.getSetting( Settings.SORT_DIRECTION );
 	}
 
 	@Override
 	public Enum getSortDisplay()
 	{
-		return configSrc.getSetting( Settings.VIEW_MODE );
+		return this.configSrc.getSetting( Settings.VIEW_MODE );
 	}
 
 	@Override
 	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
 	{
-		if ( SortByBox != null )
-			SortByBox.set( configSrc.getSetting( Settings.SORT_BY ) );
+		if ( this.SortByBox != null )
+			this.SortByBox.set( this.configSrc.getSetting( Settings.SORT_BY ) );
 
-		if ( SortDirBox != null )
-			SortDirBox.set( configSrc.getSetting( Settings.SORT_DIRECTION ) );
+		if ( this.SortDirBox != null )
+			this.SortDirBox.set( this.configSrc.getSetting( Settings.SORT_DIRECTION ) );
 
-		if ( ViewBox != null )
-			ViewBox.set( configSrc.getSetting( Settings.VIEW_MODE ) );
+		if ( this.ViewBox != null )
+			this.ViewBox.set( this.configSrc.getSetting( Settings.VIEW_MODE ) );
 
-		repo.updateView();
+		this.repo.updateView();
 	}
 
 	@Override
 	protected boolean isPowered()
 	{
-		return repo.hasPower();
+		return this.repo.hasPower();
 	}
 
 	int getMaxRows()

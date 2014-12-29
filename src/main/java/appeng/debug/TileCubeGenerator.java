@@ -40,39 +40,39 @@ public class TileCubeGenerator extends AEBaseTile
 	@TileEvent(TileEventType.TICK)
 	public void TCG_Tick()
 	{
-		if ( is != null && Platform.isServer() )
+		if ( this.is != null && Platform.isServer() )
 		{
-			countdown--;
+			this.countdown--;
 
-			if ( countdown % 20 == 0 )
+			if ( this.countdown % 20 == 0 )
 			{
 				for (EntityPlayer e : CommonHelper.proxy.getPlayers())
 				{
-					e.addChatMessage( new ChatComponentText( "Spawning in... " + (countdown / 20) ) );
+					e.addChatMessage( new ChatComponentText( "Spawning in... " + (this.countdown / 20) ) );
 				}
 			}
 
-			if ( countdown <= 0 )
-				spawn();
+			if ( this.countdown <= 0 )
+				this.spawn();
 		}
 	}
 
 	void spawn()
 	{
-		worldObj.setBlock( xCoord, yCoord, zCoord, Platform.air, 0, 3 );
+		this.worldObj.setBlock( this.xCoord, this.yCoord, this.zCoord, Platform.air, 0, 3 );
 
-		Item i = is.getItem();
+		Item i = this.is.getItem();
 		int side = ForgeDirection.UP.ordinal();
 
-		int half = (int) Math.floor( size / 2 );
+		int half = (int) Math.floor( this.size / 2 );
 
-		for (int y = 0; y < size; y++)
+		for (int y = 0; y < this.size; y++)
 		{
 			for (int x = -half; x < half; x++)
 			{
 				for (int z = -half; z < half; z++)
 				{
-					i.onItemUse( is.copy(), who, worldObj, x + xCoord, y + yCoord - 1, z + zCoord, side, 0.5f, 0.0f, 0.5f );
+					i.onItemUse( this.is.copy(), this.who, this.worldObj, x + this.xCoord, y + this.yCoord - 1, z + this.zCoord, side, 0.5f, 0.0f, 0.5f );
 				}
 			}
 		}
@@ -83,28 +83,28 @@ public class TileCubeGenerator extends AEBaseTile
 		if ( Platform.isServer() )
 		{
 			ItemStack hand = player.inventory.getCurrentItem();
-			who = player;
+			this.who = player;
 
 			if ( hand == null )
 			{
-				is = null;
+				this.is = null;
 
 				if ( player.isSneaking() )
-					size--;
+					this.size--;
 				else
-					size++;
+					this.size++;
 
-				if ( size < 3 )
-					size = 3;
-				if ( size > 64 )
-					size = 64;
+				if ( this.size < 3 )
+					this.size = 3;
+				if ( this.size > 64 )
+					this.size = 64;
 
-				player.addChatMessage( new ChatComponentText( "Size: " + size ) );
+				player.addChatMessage( new ChatComponentText( "Size: " + this.size ) );
 			}
 			else
 			{
-				countdown = 20 * 10;
-				is = hand;
+				this.countdown = 20 * 10;
+				this.is = hand;
 			}
 		}
 	}

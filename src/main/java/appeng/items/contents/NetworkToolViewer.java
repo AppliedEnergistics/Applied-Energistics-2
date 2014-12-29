@@ -35,102 +35,102 @@ public class NetworkToolViewer implements INetworkTool
 
 	public NetworkToolViewer(ItemStack is, IGridHost gHost) {
 		this.is = is;
-		gh = gHost;
-		inv = new AppEngInternalInventory( null, 9 );
+		this.gh = gHost;
+		this.inv = new AppEngInternalInventory( null, 9 );
 		if ( is.hasTagCompound() ) // prevent crash when opening network status screen.
-			inv.readFromNBT( Platform.openNbtData( is ), "inv" );
+			this.inv.readFromNBT( Platform.openNbtData( is ), "inv" );
 	}
 
 	@Override
 	public int getSizeInventory()
 	{
-		return inv.getSizeInventory();
+		return this.inv.getSizeInventory();
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int i)
 	{
-		return inv.getStackInSlot( i );
+		return this.inv.getStackInSlot( i );
 	}
 
 	@Override
 	public ItemStack decrStackSize(int i, int j)
 	{
-		return inv.decrStackSize( i, j );
+		return this.inv.decrStackSize( i, j );
 	}
 
 	@Override
 	public ItemStack getStackInSlotOnClosing(int i)
 	{
-		return inv.getStackInSlotOnClosing( i );
+		return this.inv.getStackInSlotOnClosing( i );
 	}
 
 	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack)
 	{
-		inv.setInventorySlotContents( i, itemstack );
+		this.inv.setInventorySlotContents( i, itemstack );
 	}
 
 	@Override
 	public String getInventoryName()
 	{
-		return inv.getInventoryName();
+		return this.inv.getInventoryName();
 	}
 
 	@Override
 	public boolean hasCustomInventoryName()
 	{
-		return inv.hasCustomInventoryName();
+		return this.inv.hasCustomInventoryName();
 	}
 
 	@Override
 	public int getInventoryStackLimit()
 	{
-		return inv.getInventoryStackLimit();
+		return this.inv.getInventoryStackLimit();
 	}
 
 	@Override
 	public void markDirty()
 	{
-		inv.markDirty();
-		inv.writeToNBT( Platform.openNbtData( is ), "inv" );
+		this.inv.markDirty();
+		this.inv.writeToNBT( Platform.openNbtData( this.is ), "inv" );
 	}
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer entityplayer)
 	{
-		return inv.isUseableByPlayer( entityplayer );
+		return this.inv.isUseableByPlayer( entityplayer );
 	}
 
 	@Override
 	public void openInventory()
 	{
-		inv.openInventory();
+		this.inv.openInventory();
 	}
 
 	@Override
 	public void closeInventory()
 	{
-		inv.closeInventory();
+		this.inv.closeInventory();
 	}
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
-		return inv.isItemValidForSlot( i, itemstack ) && itemstack.getItem() instanceof IUpgradeModule
+		return this.inv.isItemValidForSlot( i, itemstack ) && itemstack.getItem() instanceof IUpgradeModule
 				&& ((IUpgradeModule) itemstack.getItem()).getType( itemstack ) != null;
 	}
 
 	@Override
 	public ItemStack getItemStack()
 	{
-		return is;
+		return this.is;
 	}
 
 	@Override
 	public IGridHost getGridHost()
 	{
-		return gh;
+		return this.gh;
 	}
 
 }

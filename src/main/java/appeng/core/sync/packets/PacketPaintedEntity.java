@@ -38,16 +38,16 @@ public class PacketPaintedEntity extends AppEngPacket
 	// automatic.
 	public PacketPaintedEntity(ByteBuf stream)
 	{
-		entityId = stream.readInt();
-		myColor = AEColor.values()[stream.readByte()];
-		ticks = stream.readInt();
+		this.entityId = stream.readInt();
+		this.myColor = AEColor.values()[stream.readByte()];
+		this.ticks = stream.readInt();
 	}
 
 	@Override
 	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
 	{
-		PlayerColor pc = new PlayerColor( entityId, myColor, ticks );
-		TickHandler.instance.getPlayerColors().put( entityId, pc );
+		PlayerColor pc = new PlayerColor( this.entityId, this.myColor, this.ticks );
+		TickHandler.instance.getPlayerColors().put( this.entityId, pc );
 	}
 
 	// api
@@ -55,11 +55,11 @@ public class PacketPaintedEntity extends AppEngPacket
 
 		ByteBuf data = Unpooled.buffer();
 
-		data.writeInt( getPacketID() );
+		data.writeInt( this.getPacketID() );
 		data.writeInt( this.entityId = myEntity );
 		data.writeByte( (this.myColor = myColor).ordinal() );
 		data.writeInt( ticksLeft );
 
-		configureWrite( data );
+		this.configureWrite( data );
 	}
 }

@@ -36,37 +36,37 @@ public class AdaptorISpecialInventory extends InventoryAdaptor
 	private final ForgeDirection d;
 
 	public AdaptorISpecialInventory(ISpecialInventory s, ForgeDirection dd) {
-		i = s;
-		d = dd;
+		this.i = s;
+		this.d = dd;
 
 		if ( s instanceof ISidedInventory )
-			remover = new AdaptorIInventory( new WrapperMCISidedInventory( (ISidedInventory) s, d ) );
+			this.remover = new AdaptorIInventory( new WrapperMCISidedInventory( (ISidedInventory) s, this.d ) );
 		else
-			remover = new AdaptorIInventory( s );
+			this.remover = new AdaptorIInventory( s );
 	}
 
 	@Override
 	public ItemStack removeSimilarItems(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
 	{
-		return remover.removeSimilarItems( how_many, filter, fuzzyMode, destination );
+		return this.remover.removeSimilarItems( how_many, filter, fuzzyMode, destination );
 	}
 
 	@Override
 	public ItemStack simulateSimilarRemove(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
 	{
-		return remover.simulateSimilarRemove( how_many, filter, fuzzyMode, destination );
+		return this.remover.simulateSimilarRemove( how_many, filter, fuzzyMode, destination );
 	}
 
 	@Override
 	public ItemStack removeItems(int how_many, ItemStack filter, IInventoryDestination destination)
 	{
-		return remover.removeItems( how_many, filter, destination );
+		return this.remover.removeItems( how_many, filter, destination );
 	}
 
 	@Override
 	public ItemStack simulateRemove(int how_many, ItemStack filter, IInventoryDestination destination)
 	{
-		return remover.simulateRemove( how_many, filter, destination );
+		return this.remover.simulateRemove( how_many, filter, destination );
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class AdaptorISpecialInventory extends InventoryAdaptor
 		if ( A.stackSize == 0 )
 			return null;
 
-		int used = i.addItem( A, true, d );
+		int used = this.i.addItem( A, true, this.d );
 		ItemStack out = A.copy();
 		out.stackSize -= used;
 		if ( out.stackSize > 0 )
@@ -88,7 +88,7 @@ public class AdaptorISpecialInventory extends InventoryAdaptor
 	@Override
 	public ItemStack simulateAdd(ItemStack A)
 	{
-		int used = i.addItem( A, false, d );
+		int used = this.i.addItem( A, false, this.d );
 		ItemStack out = A.copy();
 		out.stackSize -= used;
 		if ( out.stackSize > 0 )
@@ -99,17 +99,17 @@ public class AdaptorISpecialInventory extends InventoryAdaptor
 	@Override
 	public boolean containsItems()
 	{
-		if ( i instanceof ISidedInventory )
+		if ( this.i instanceof ISidedInventory )
 		{
-			ISidedInventory sided = (ISidedInventory) i;
-			int slots[] = sided.getAccessibleSlotsFromSide( d.ordinal() );
+			ISidedInventory sided = (ISidedInventory) this.i;
+			int slots[] = sided.getAccessibleSlotsFromSide( this.d.ordinal() );
 
 			if ( slots == null )
 				return false;
 
 			for (int slot : slots)
 			{
-				if ( i.getStackInSlot( slot ) != null )
+				if ( this.i.getStackInSlot( slot ) != null )
 				{
 					return true;
 				}
@@ -118,9 +118,9 @@ public class AdaptorISpecialInventory extends InventoryAdaptor
 			return false;
 		}
 
-		int s = i.getSizeInventory();
+		int s = this.i.getSizeInventory();
 		for (int x = 0; x < s; x++)
-			if ( i.getStackInSlot( x ) != null )
+			if ( this.i.getStackInSlot( x ) != null )
 				return true;
 		return false;
 	}
@@ -128,7 +128,7 @@ public class AdaptorISpecialInventory extends InventoryAdaptor
 	@Override
 	public Iterator<ItemSlot> iterator()
 	{
-		return remover.iterator();
+		return this.remover.iterator();
 	}
 
 }

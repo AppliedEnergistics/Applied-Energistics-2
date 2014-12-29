@@ -43,7 +43,7 @@ public class ChunkLogger implements ISubCommand
 		if ( !load.world.isRemote )
 		{
 			AELog.info( "Chunk Loaded:   " + load.getChunk().xPosition + ", " + load.getChunk().zPosition );
-			displayStack();
+			this.displayStack();
 		}
 	}
 
@@ -70,16 +70,16 @@ public class ChunkLogger implements ISubCommand
 		if ( !unload.world.isRemote )
 		{
 			AELog.info( "Chunk Unloaded: " + unload.getChunk().xPosition + ", " + unload.getChunk().zPosition );
-			displayStack();
+			this.displayStack();
 		}
 	}
 
 	@Override
 	public void call(MinecraftServer srv, String[] data, ICommandSender sender)
 	{
-		enabled = !enabled;
+		this.enabled = !this.enabled;
 
-		if ( enabled )
+		if ( this.enabled )
 		{
 			MinecraftForge.EVENT_BUS.register( this );
 			sender.addChatMessage( new ChatComponentTranslation( "commands.ae2.ChunkLoggerOn" ) );

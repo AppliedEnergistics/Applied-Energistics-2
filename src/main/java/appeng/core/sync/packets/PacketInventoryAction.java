@@ -48,14 +48,14 @@ public class PacketInventoryAction extends AppEngPacket
 
 	// automatic.
 	public PacketInventoryAction(ByteBuf stream) throws IOException {
-		action = InventoryAction.values()[stream.readInt()];
-		slot = stream.readInt();
-		id = stream.readLong();
+		this.action = InventoryAction.values()[stream.readInt()];
+		this.slot = stream.readInt();
+		this.id = stream.readLong();
 		boolean hasItem = stream.readBoolean();
 		if ( hasItem )
-			slotItem = AEItemStack.loadItemStackFromPacket( stream );
+			this.slotItem = AEItemStack.loadItemStackFromPacket( stream );
 		else
-			slotItem = null;
+			this.slotItem = null;
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class PacketInventoryAction extends AppEngPacket
 		if ( sender.openContainer instanceof AEBaseContainer )
 		{
 			AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
-			if ( action == InventoryAction.AUTO_CRAFT )
+			if ( this.action == InventoryAction.AUTO_CRAFT )
 			{
 				ContainerOpenContext context = baseContainer.openContext;
 				if ( context != null )
@@ -89,7 +89,7 @@ public class PacketInventoryAction extends AppEngPacket
 			}
 			else
 			{
-				baseContainer.doAction( sender, action, slot, id );
+				baseContainer.doAction( sender, this.action, this.slot, this.id );
 			}
 		}
 	}
@@ -97,12 +97,12 @@ public class PacketInventoryAction extends AppEngPacket
 	@Override
 	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
 	{
-		if ( action == InventoryAction.UPDATE_HAND )
+		if ( this.action == InventoryAction.UPDATE_HAND )
 		{
-			if ( slotItem == null )
+			if ( this.slotItem == null )
 				ClientHelper.proxy.getPlayers().get( 0 ).inventory.setItemStack( null );
 			else
-				ClientHelper.proxy.getPlayers().get( 0 ).inventory.setItemStack( slotItem.getItemStack() );
+				ClientHelper.proxy.getPlayers().get( 0 ).inventory.setItemStack( this.slotItem.getItemStack() );
 		}
 	}
 
@@ -119,10 +119,10 @@ public class PacketInventoryAction extends AppEngPacket
 
 		ByteBuf data = Unpooled.buffer();
 
-		data.writeInt( getPacketID() );
+		data.writeInt( this.getPacketID() );
 		data.writeInt( action.ordinal() );
 		data.writeInt( slot );
-		data.writeLong( id );
+		data.writeLong( this.id );
 
 		if ( slotItem == null )
 			data.writeBoolean( false );
@@ -132,7 +132,7 @@ public class PacketInventoryAction extends AppEngPacket
 			slotItem.writeToPacket( data );
 		}
 
-		configureWrite( data );
+		this.configureWrite( data );
 	}
 
 	// api
@@ -145,12 +145,12 @@ public class PacketInventoryAction extends AppEngPacket
 
 		ByteBuf data = Unpooled.buffer();
 
-		data.writeInt( getPacketID() );
+		data.writeInt( this.getPacketID() );
 		data.writeInt( action.ordinal() );
 		data.writeInt( slot );
 		data.writeLong( id );
 		data.writeBoolean( false );
 
-		configureWrite( data );
+		this.configureWrite( data );
 	}
 }

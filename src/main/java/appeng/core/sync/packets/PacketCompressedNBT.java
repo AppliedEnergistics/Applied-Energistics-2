@@ -56,8 +56,8 @@ public class PacketCompressedNBT extends AppEngPacket
 
 	// automatic.
 	public PacketCompressedNBT(final ByteBuf stream) throws IOException {
-		data = null;
-		compressFrame = null;
+		this.data = null;
+		this.compressFrame = null;
 
 		GZIPInputStream gzReader = new GZIPInputStream( new InputStream() {
 
@@ -73,7 +73,7 @@ public class PacketCompressedNBT extends AppEngPacket
 		} );
 
 		DataInputStream inStream = new DataInputStream( gzReader );
-		in = CompressedStreamTools.read( inStream );
+		this.in = CompressedStreamTools.read( inStream );
 		inStream.close();
 	}
 
@@ -84,32 +84,32 @@ public class PacketCompressedNBT extends AppEngPacket
 		GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 
 		if ( gs instanceof GuiInterfaceTerminal )
-			((GuiInterfaceTerminal) gs).postUpdate( in );
+			((GuiInterfaceTerminal) gs).postUpdate( this.in );
 
 	}
 
 	// api
 	public PacketCompressedNBT(NBTTagCompound din) throws IOException {
 
-		data = Unpooled.buffer( 2048 );
-		data.writeInt( getPacketID() );
+		this.data = Unpooled.buffer( 2048 );
+		this.data.writeInt( this.getPacketID() );
 
-		in = din;
+		this.in = din;
 
-		compressFrame = new GZIPOutputStream( new OutputStream() {
+		this.compressFrame = new GZIPOutputStream( new OutputStream() {
 
 			@Override
 			public void write(int value) throws IOException
 			{
-				data.writeByte( value );
+				PacketCompressedNBT.this.data.writeByte( value );
 			}
 
 		} );
 
-		CompressedStreamTools.write( din, new DataOutputStream( compressFrame ) );
-		compressFrame.close();
+		CompressedStreamTools.write( din, new DataOutputStream( this.compressFrame ) );
+		this.compressFrame.close();
 
-		configureWrite( data );
+		this.configureWrite( this.data );
 	}
 
 }

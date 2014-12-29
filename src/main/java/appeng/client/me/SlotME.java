@@ -31,21 +31,21 @@ public class SlotME extends Slot
 
 	public SlotME(InternalSlotME me) {
 		super( null, 0, me.xPos, me.yPos );
-		mySlot = me;
+		this.mySlot = me;
 	}
 
 	@Override
 	public ItemStack getStack()
 	{
-		if ( mySlot.hasPower() )
-			return mySlot.getStack();
+		if ( this.mySlot.hasPower() )
+			return this.mySlot.getStack();
 		return null;
 	}
 
 	public IAEItemStack getAEStack()
 	{
-		if ( mySlot.hasPower() )
-			return mySlot.getAEStack();
+		if ( this.mySlot.hasPower() )
+			return this.mySlot.getAEStack();
 		return null;
 	}
 
@@ -70,8 +70,8 @@ public class SlotME extends Slot
 	@Override
 	public boolean getHasStack()
 	{
-		if ( mySlot.hasPower() )
-			return getStack() != null;
+		if ( this.mySlot.hasPower() )
+			return this.getStack() != null;
 		return false;
 	}
 

@@ -41,8 +41,8 @@ public class BlockChest extends AEBaseBlock
 
 	public BlockChest() {
 		super( BlockChest.class, Material.iron );
-		setFeature( EnumSet.of( AEFeature.StorageCells, AEFeature.MEChest ) );
-		setTileEntity( TileChest.class );
+		this.setFeature( EnumSet.of( AEFeature.StorageCells, AEFeature.MEChest ) );
+		this.setTileEntity( TileChest.class );
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class BlockChest extends AEBaseBlock
 	@Override
 	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
 	{
-		TileChest tg = getTileEntity( w, x, y, z );
+		TileChest tg = this.getTileEntity( w, x, y, z );
 		if ( tg != null && !p.isSneaking() )
 		{
 			if ( Platform.isClient() )

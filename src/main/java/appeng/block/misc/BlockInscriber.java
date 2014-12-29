@@ -37,10 +37,10 @@ public class BlockInscriber extends AEBaseBlock
 
 	public BlockInscriber() {
 		super( BlockInscriber.class, Material.iron );
-		setFeature( EnumSet.of( AEFeature.Inscriber ) );
-		setTileEntity( TileInscriber.class );
-		setLightOpacity( 2 );
-		isFullSize = isOpaque = false;
+		this.setFeature( EnumSet.of( AEFeature.Inscriber ) );
+		this.setTileEntity( TileInscriber.class );
+		this.setLightOpacity( 2 );
+		this.isFullSize = this.isOpaque = false;
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class BlockInscriber extends AEBaseBlock
 		if ( p.isSneaking() )
 			return false;
 
-		TileInscriber tg = getTileEntity( w, x, y, z );
+		TileInscriber tg = this.getTileEntity( w, x, y, z );
 		if ( tg != null )
 		{
 			if ( Platform.isServer() )

@@ -59,35 +59,35 @@ public class GuiStorageBus extends GuiUpgradeable
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString( getGuiDisplayName( GuiText.StorageBus.getLocal() ), 8, 6, 4210752 );
-		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.StorageBus.getLocal() ), 8, 6, 4210752 );
+		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
-		if ( fuzzyMode != null )
-			fuzzyMode.set( cvb.fzMode );
+		if ( this.fuzzyMode != null )
+			this.fuzzyMode.set( this.cvb.fzMode );
 
-		if ( storageFilter != null )
-			storageFilter.set( ((ContainerStorageBus) cvb).storageFilter );
+		if ( this.storageFilter != null )
+			this.storageFilter.set( ((ContainerStorageBus) this.cvb).storageFilter );
 
-		if ( rwMode != null )
-			rwMode.set( ((ContainerStorageBus) cvb).rwMode );
+		if ( this.rwMode != null )
+			this.rwMode.set( ((ContainerStorageBus) this.cvb).rwMode );
 	}
 
 	@Override
 	protected void addButtons()
 	{
-		clear = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.ACTIONS, ActionItems.CLOSE );
-		partition = new GuiImgButton( this.guiLeft - 18, guiTop + 28, Settings.ACTIONS, ActionItems.WRENCH );
-		rwMode = new GuiImgButton( this.guiLeft - 18, guiTop + 48, Settings.ACCESS, AccessRestriction.READ_WRITE );
-		storageFilter = new GuiImgButton( this.guiLeft - 18, guiTop + 68, Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY );
-		fuzzyMode = new GuiImgButton( this.guiLeft - 18, guiTop + 88, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		this.clear = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.ACTIONS, ActionItems.CLOSE );
+		this.partition = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.ACTIONS, ActionItems.WRENCH );
+		this.rwMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.ACCESS, AccessRestriction.READ_WRITE );
+		this.storageFilter = new GuiImgButton( this.guiLeft - 18, this.guiTop + 68, Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY );
+		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 88, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 
-		buttonList.add( priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRender ) );
+		this.buttonList.add( this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRender ) );
 
-		buttonList.add( storageFilter );
-		buttonList.add( fuzzyMode );
-		buttonList.add( rwMode );
-		buttonList.add( partition );
-		buttonList.add( clear );
+		this.buttonList.add( this.storageFilter );
+		this.buttonList.add( this.fuzzyMode );
+		this.buttonList.add( this.rwMode );
+		this.buttonList.add( this.partition );
+		this.buttonList.add( this.clear );
 	}
 
 	@Override
@@ -99,20 +99,20 @@ public class GuiStorageBus extends GuiUpgradeable
 
 		try
 		{
-			if ( btn == partition )
+			if ( btn == this.partition )
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "StorageBus.Action", "Partition" ) );
 
-			else if ( btn == clear )
+			else if ( btn == this.clear )
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "StorageBus.Action", "Clear" ) );
 
-			else if ( btn == priority )
+			else if ( btn == this.priority )
 				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
 
-			else if ( btn == rwMode )
-				NetworkHandler.instance.sendToServer( new PacketConfigButton( rwMode.getSetting(), backwards ) );
+			else if ( btn == this.rwMode )
+				NetworkHandler.instance.sendToServer( new PacketConfigButton( this.rwMode.getSetting(), backwards ) );
 
-			else if ( btn == storageFilter )
-				NetworkHandler.instance.sendToServer( new PacketConfigButton( storageFilter.getSetting(), backwards ) );
+			else if ( btn == this.storageFilter )
+				NetworkHandler.instance.sendToServer( new PacketConfigButton( this.storageFilter.getSetting(), backwards ) );
 
 		}
 		catch (IOException e)

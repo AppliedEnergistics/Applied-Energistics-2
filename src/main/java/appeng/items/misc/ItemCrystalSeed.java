@@ -86,8 +86,8 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 
 	public ItemCrystalSeed() {
 		super( ItemCrystalSeed.class );
-		setHasSubtypes( true );
-		setFeature( EnumSet.of( AEFeature.Core ) );
+		this.setHasSubtypes( true );
+		this.setFeature( EnumSet.of( AEFeature.Core ) );
 
 		EntityRegistry.registerModEntity( EntityGrowingCrystal.class, EntityGrowingCrystal.class.getSimpleName(), EntityIds.get( EntityGrowingCrystal.class ),
 				AppEng.instance, 16, 4, true );
@@ -102,24 +102,24 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	@Override
 	public String getUnlocalizedName(ItemStack is)
 	{
-		int damage = getProgress( is );
+		int damage = this.getProgress( is );
 
 		if ( damage < Certus + SINGLE_OFFSET )
-			return getUnlocalizedName() + ".Certus";
+			return this.getUnlocalizedName() + ".Certus";
 
 		if ( damage < Nether + SINGLE_OFFSET )
-			return getUnlocalizedName() + ".Nether";
+			return this.getUnlocalizedName() + ".Nether";
 
 		if ( damage < Fluix + SINGLE_OFFSET )
-			return getUnlocalizedName() + ".Fluix";
+			return this.getUnlocalizedName() + ".Fluix";
 
-		return getUnlocalizedName();
+		return this.getUnlocalizedName();
 	}
 
 	@Override
 	public ItemStack triggerGrowth(ItemStack is)
 	{
-		int newDamage = getProgress( is ) + 1;
+		int newDamage = this.getProgress( is ) + 1;
 
 		if ( newDamage == Certus + SINGLE_OFFSET )
 			return AEApi.instance().materials().materialPurifiedCertusQuartzCrystal.stack( is.stackSize );
@@ -130,7 +130,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		if ( newDamage > END )
 			return null;
 
-		setProgress( is, newDamage );
+		this.setProgress( is, newDamage );
 		return is;
 	}
 
@@ -144,7 +144,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
 		lines.add( ButtonToolTips.DoesntDespawn.getLocal() );
-		int progress = getProgress( stack ) % SINGLE_OFFSET;
+		int progress = this.getProgress( stack ) % SINGLE_OFFSET;
 		lines.add( Math.floor( (float) progress / (float) (SINGLE_OFFSET / 100) ) + "%" );
 
 		super.addCheckedInformation( stack, player, lines, displayAdditionalInformation );
@@ -165,7 +165,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	@Override
 	public IIcon getIcon(ItemStack stack, int pass)
 	{
-		return getIconIndex( stack );
+		return this.getIconIndex( stack );
 	}
 
 	@Override
@@ -173,21 +173,21 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	{
 		IIcon list[] = null;
 
-		int damage = getProgress( stack );
+		int damage = this.getProgress( stack );
 
 		if ( damage < Certus + SINGLE_OFFSET )
-			list = certus;
+			list = this.certus;
 
 		else if ( damage < Nether + SINGLE_OFFSET )
 		{
 			damage -= Nether;
-			list = nether;
+			list = this.nether;
 		}
 
 		else if ( damage < Fluix + SINGLE_OFFSET )
 		{
 			damage -= Fluix;
-			list = fluix;
+			list = this.fluix;
 		}
 
 		if ( list == null )
@@ -212,17 +212,17 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	{
 		String preFix = "appliedenergistics2:ItemCrystalSeed.";
 
-		certus[0] = ir.registerIcon( preFix + "Certus" );
-		certus[1] = ir.registerIcon( preFix + "Certus2" );
-		certus[2] = ir.registerIcon( preFix + "Certus3" );
+		this.certus[0] = ir.registerIcon( preFix + "Certus" );
+		this.certus[1] = ir.registerIcon( preFix + "Certus2" );
+		this.certus[2] = ir.registerIcon( preFix + "Certus3" );
 
-		nether[0] = ir.registerIcon( preFix + "Nether" );
-		nether[1] = ir.registerIcon( preFix + "Nether2" );
-		nether[2] = ir.registerIcon( preFix + "Nether3" );
+		this.nether[0] = ir.registerIcon( preFix + "Nether" );
+		this.nether[1] = ir.registerIcon( preFix + "Nether2" );
+		this.nether[2] = ir.registerIcon( preFix + "Nether3" );
 
-		fluix[0] = ir.registerIcon( preFix + "Fluix" );
-		fluix[1] = ir.registerIcon( preFix + "Fluix2" );
-		fluix[2] = ir.registerIcon( preFix + "Fluix3" );
+		this.fluix[0] = ir.registerIcon( preFix + "Fluix" );
+		this.fluix[1] = ir.registerIcon( preFix + "Fluix2" );
+		this.fluix[2] = ir.registerIcon( preFix + "Fluix3" );
 	}
 
 	@Override

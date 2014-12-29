@@ -43,9 +43,9 @@ public class PartConversionMonitor extends PartStorageMonitor
 
 	public PartConversionMonitor(ItemStack is) {
 		super( PartConversionMonitor.class, is );
-		frontBright = CableBusTextures.PartConversionMonitor_Bright;
-		frontColored = CableBusTextures.PartConversionMonitor_Colored;
-		frontDark = CableBusTextures.PartConversionMonitor_Dark;
+		this.frontBright = CableBusTextures.PartConversionMonitor_Bright;
+		this.frontColored = CableBusTextures.PartConversionMonitor_Colored;
+		this.frontDark = CableBusTextures.PartConversionMonitor_Dark;
 		// frontSolid = CableBusTextures.PartConversionMonitor_Solid;
 	}
 
@@ -55,30 +55,30 @@ public class PartConversionMonitor extends PartStorageMonitor
 		if ( Platform.isClient() )
 			return true;
 
-		if ( !proxy.isActive() )
+		if ( !this.proxy.isActive() )
 			return false;
 
-		if ( !Platform.hasPermissions( getLocation(), player ) )
+		if ( !Platform.hasPermissions( this.getLocation(), player ) )
 			return false;
 
 		boolean ModeB = false;
 
 		ItemStack item = player.getCurrentEquippedItem();
-		if ( item == null && getDisplayed() != null )
+		if ( item == null && this.getDisplayed() != null )
 		{
 			ModeB = true;
-			item = ((IAEItemStack) getDisplayed()).getItemStack();
+			item = ((IAEItemStack) this.getDisplayed()).getItemStack();
 		}
 
 		if ( item != null )
 		{
 			try
 			{
-				if ( !proxy.isActive() )
+				if ( !this.proxy.isActive() )
 					return false;
 
-				IEnergySource energy = proxy.getEnergy();
-				IMEMonitor<IAEItemStack> cell = proxy.getStorage().getItemInventory();
+				IEnergySource energy = this.proxy.getEnergy();
+				IMEMonitor<IAEItemStack> cell = this.proxy.getStorage().getItemInventory();
 				IAEItemStack input = AEItemStack.create( item );
 
 				if ( ModeB )
@@ -112,16 +112,16 @@ public class PartConversionMonitor extends PartStorageMonitor
 	@Override
 	protected void extractItem(EntityPlayer player)
 	{
-		IAEItemStack input = (IAEItemStack) getDisplayed();
+		IAEItemStack input = (IAEItemStack) this.getDisplayed();
 		if ( input != null )
 		{
 			try
 			{
-				if ( !proxy.isActive() )
+				if ( !this.proxy.isActive() )
 					return;
 
-				IEnergySource energy = proxy.getEnergy();
-				IMEMonitor<IAEItemStack> cell = proxy.getStorage().getItemInventory();
+				IEnergySource energy = this.proxy.getEnergy();
+				IMEMonitor<IAEItemStack> cell = this.proxy.getStorage().getItemInventory();
 
 				ItemStack is = input.getItemStack();
 				input.setStackSize( is.getMaxStackSize() );
@@ -134,9 +134,9 @@ public class PartConversionMonitor extends PartStorageMonitor
 					newItems = adaptor.addItems( newItems );
 					if ( newItems != null )
 					{
-						TileEntity te = tile;
+						TileEntity te = this.tile;
 						List<ItemStack> list = Collections.singletonList( newItems );
-						Platform.spawnDrops( player.worldObj, te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ, list );
+						Platform.spawnDrops( player.worldObj, te.xCoord + this.side.offsetX, te.yCoord + this.side.offsetY, te.zCoord + this.side.offsetZ, list );
 					}
 
 					if ( player.openContainer != null )

@@ -64,7 +64,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadCraftingRecipes(String outputId, Object... results)
 	{
-		if ( (outputId.equals( "crafting" )) && (getClass() == NEIFacadeRecipeHandler.class) )
+		if ( (outputId.equals( "crafting" )) && (this.getClass() == NEIFacadeRecipeHandler.class) )
 		{
 			ItemFacade ifa = (ItemFacade) AEApi.instance().items().itemFacade.item();
 			List<ItemStack> facades = ifa.getFacades();
@@ -72,7 +72,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 			{
 				CachedShapedRecipe recipe = new CachedShapedRecipe( is );
 				recipe.computeVisuals();
-				arecipes.add( recipe );
+				this.arecipes.add( recipe );
 			}
 		}
 		else
@@ -84,18 +84,18 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		if ( result.getItem() == ifa )
+		if ( result.getItem() == this.ifa )
 		{
 			CachedShapedRecipe recipe = new CachedShapedRecipe( result );
 			recipe.computeVisuals();
-			arecipes.add( recipe );
+			this.arecipes.add( recipe );
 		}
 	}
 
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		List<ItemStack> facades = ifa.getFacades();
+		List<ItemStack> facades = this.ifa.getFacades();
 		for (ItemStack is : facades)
 		{
 			CachedShapedRecipe recipe = new CachedShapedRecipe( is );
@@ -106,7 +106,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 				if ( recipe.contains( recipe.ingredients, ingredient ) )
 				{
 					recipe.setIngredientPermutation( recipe.ingredients, ingredient );
-					arecipes.add( recipe );
+					this.arecipes.add( recipe );
 				}
 			}
 		}
@@ -127,7 +127,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public boolean hasOverlay(GuiContainer gui, Container container, int recipe)
 	{
-		return (super.hasOverlay( gui, container, recipe )) || ((isRecipe2x2( recipe )) && (RecipeInfo.hasDefaultOverlay( gui, "crafting2x2" )));
+		return (super.hasOverlay( gui, container, recipe )) || ((this.isRecipe2x2( recipe )) && (RecipeInfo.hasDefaultOverlay( gui, "crafting2x2" )));
 	}
 
 	@Override
@@ -141,7 +141,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 		if ( positioner == null )
 			return null;
 
-		return new DefaultOverlayRenderer( getIngredientStacks( recipe ), positioner );
+		return new DefaultOverlayRenderer( this.getIngredientStacks( recipe ), positioner );
 	}
 
 	@Override
@@ -156,7 +156,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 
 	public boolean isRecipe2x2(int recipe)
 	{
-		for (PositionedStack stack : getIngredientStacks( recipe ))
+		for (PositionedStack stack : this.getIngredientStacks( recipe ))
 		{
 			if ( (stack.relx > 43) || (stack.rely > 24) )
 				return false;
@@ -172,10 +172,10 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 
 		public CachedShapedRecipe(ItemStack output) {
 			output.stackSize = 4;
-			result = new PositionedStack( output, 119, 24 );
-			ingredients = new ArrayList<PositionedStack>();
-			ItemStack in = ifa.getTextureItem( output );
-			setIngredients( 3, 3, new Object[] { null, cable_anchor, null, cable_anchor, in, cable_anchor, null, cable_anchor, null } );
+			this.result = new PositionedStack( output, 119, 24 );
+			this.ingredients = new ArrayList<PositionedStack>();
+			ItemStack in = NEIFacadeRecipeHandler.this.ifa.getTextureItem( output );
+			this.setIngredients( 3, 3, new Object[] { null, NEIFacadeRecipeHandler.this.cable_anchor, null, NEIFacadeRecipeHandler.this.cable_anchor, in, NEIFacadeRecipeHandler.this.cable_anchor, null, NEIFacadeRecipeHandler.this.cable_anchor, null } );
 		}
 
 		public void setIngredients(int width, int height, Object[] items)
@@ -198,7 +198,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 		@Override
 		public List<PositionedStack> getIngredients()
 		{
-			return getCycledIngredients( cycleticks / 20, this.ingredients );
+			return this.getCycledIngredients( NEIFacadeRecipeHandler.this.cycleticks / 20, this.ingredients );
 		}
 
 		@Override

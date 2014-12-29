@@ -45,7 +45,7 @@ public class WorldRender implements ISimpleBlockRenderingHandler
 
 	void setRender(AEBaseBlock in, BaseBlockRender r)
 	{
-		blockRenders.put( in, r );
+		this.blockRenders.put( in, r );
 	}
 
 	private WorldRender() {
@@ -62,7 +62,7 @@ public class WorldRender implements ISimpleBlockRenderingHandler
 	{
 		AEBaseBlock blk = (AEBaseBlock) block;
 		renderer.setRenderBoundsFromBlock( block );
-		return getRender( blk ).renderInWorld( blk, world, x, y, z, renderer );
+		return this.getRender( blk ).renderInWorld( blk, world, x, y, z, renderer );
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class WorldRender implements ISimpleBlockRenderingHandler
 	@Override
 	public int getRenderId()
 	{
-		return renderID;
+		return this.renderID;
 	}
 
 	public void renderItemBlock(ItemStack item, ItemRenderType type, Object[] data)
@@ -83,17 +83,17 @@ public class WorldRender implements ISimpleBlockRenderingHandler
 		if ( blk instanceof AEBaseBlock )
 		{
 			AEBaseBlock block = (AEBaseBlock) blk;
-			renderer.setRenderBoundsFromBlock( block );
+			this.renderer.setRenderBoundsFromBlock( block );
 
-			renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
-			getRender( block ).renderInventory( block, item, renderer, type, data );
-			renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
+			this.renderer.uvRotateBottom = this.renderer.uvRotateEast = this.renderer.uvRotateNorth = this.renderer.uvRotateSouth = this.renderer.uvRotateTop = this.renderer.uvRotateWest = 0;
+			this.getRender( block ).renderInventory( block, item, this.renderer, type, data );
+			this.renderer.uvRotateBottom = this.renderer.uvRotateEast = this.renderer.uvRotateNorth = this.renderer.uvRotateSouth = this.renderer.uvRotateTop = this.renderer.uvRotateWest = 0;
 		}
 		else
 		{
-			if ( !hasError )
+			if ( !this.hasError )
 			{
-				hasError = true;
+				this.hasError = true;
 				AELog.severe( "Invalid render - item/block mismatch" );
 				AELog.severe( "		item: " + item.getUnlocalizedName() );
 				AELog.severe( "		block: " + blk.getUnlocalizedName() );

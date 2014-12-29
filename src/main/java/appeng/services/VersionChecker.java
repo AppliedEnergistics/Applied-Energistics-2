@@ -57,7 +57,7 @@ public class VersionChecker implements Runnable
 	{
 		try
 		{
-			sleep( delay );
+			this.sleep( this.delay );
 		}
 		catch (InterruptedException e)
 		{
@@ -128,13 +128,13 @@ public class VersionChecker implements Runnable
 					}
 				}
 
-				sleep( FOUR_HOURS );
+				this.sleep( FOUR_HOURS );
 			}
 			catch (Exception e)
 			{
 				try
 				{
-					sleep( FOUR_HOURS );
+					this.sleep( FOUR_HOURS );
 				}
 				catch (InterruptedException e1)
 				{

@@ -35,7 +35,7 @@ public enum PartRegistry
 
 	public String getName()
 	{
-		return name;
+		return this.name;
 	}
 
 	private PartRegistry(String name, Class<? extends AEBaseBlock> blk, Class<? extends TMultiPart> part) {
@@ -49,9 +49,9 @@ public enum PartRegistry
 		try
 		{
 			if ( this == CableBusPart )
-				return (TMultiPart) Api.instance.partHelper.getCombinedInstance( part.getName() ).newInstance();
+				return (TMultiPart) Api.instance.partHelper.getCombinedInstance( this.part.getName() ).newInstance();
 			else
-				return part.getConstructor( int.class ).newInstance( meta );
+				return this.part.getConstructor( int.class ).newInstance( meta );
 		}
 		catch (Throwable t)
 		{

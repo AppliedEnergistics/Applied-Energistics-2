@@ -31,10 +31,10 @@ public class RF extends BaseModule
 	public static RF instance;
 
 	public RF() {
-		TestClass( cofh.api.energy.IEnergyReceiver.class );
-		TestClass( cofh.api.energy.IEnergyProvider.class );
-		TestClass( cofh.api.energy.IEnergyHandler.class );
-		TestClass( cofh.api.energy.IEnergyConnection.class );
+		this.TestClass( cofh.api.energy.IEnergyReceiver.class );
+		this.TestClass( cofh.api.energy.IEnergyProvider.class );
+		this.TestClass( cofh.api.energy.IEnergyHandler.class );
+		this.TestClass( cofh.api.energy.IEnergyConnection.class );
 	}
 
 	@Override
@@ -55,17 +55,17 @@ public class RF extends BaseModule
 	@Override
 	public void PostInit()
 	{
-		RFStack( "ExtraUtilities", "extractor_base", 12 );
-		RFStack( "ExtraUtilities", "pipes", 11 );
-		RFStack( "ExtraUtilities", "pipes", 14 );
-		RFStack( "ExtraUtilities", "generator", OreDictionary.WILDCARD_VALUE );
+		this.RFStack( "ExtraUtilities", "extractor_base", 12 );
+		this.RFStack( "ExtraUtilities", "pipes", 11 );
+		this.RFStack( "ExtraUtilities", "pipes", 14 );
+		this.RFStack( "ExtraUtilities", "generator", OreDictionary.WILDCARD_VALUE );
 
-		RFStack( "ThermalExpansion", "Cell", OreDictionary.WILDCARD_VALUE );
-		RFStack( "ThermalExpansion", "Dynamo", OreDictionary.WILDCARD_VALUE );
+		this.RFStack( "ThermalExpansion", "Cell", OreDictionary.WILDCARD_VALUE );
+		this.RFStack( "ThermalExpansion", "Dynamo", OreDictionary.WILDCARD_VALUE );
 
-		RFStack( "EnderIO", "itemPowerConduit", OreDictionary.WILDCARD_VALUE );
-		RFStack( "EnderIO", "blockCapacitorBank", 0 );
-		RFStack( "EnderIO", "blockPowerMonitor", 0 );
+		this.RFStack( "EnderIO", "itemPowerConduit", OreDictionary.WILDCARD_VALUE );
+		this.RFStack( "EnderIO", "blockCapacitorBank", 0 );
+		this.RFStack( "EnderIO", "blockPowerMonitor", 0 );
 	}
 
 }

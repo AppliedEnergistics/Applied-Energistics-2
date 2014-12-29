@@ -47,11 +47,11 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 		this.channel = channel;
 
 		if ( i instanceof IMEInventoryHandler )
-			internal = (IMEInventoryHandler<T>) i;
+			this.internal = (IMEInventoryHandler<T>) i;
 		else
-			internal = new MEPassThrough<T>( i, channel );
+			this.internal = new MEPassThrough<T>( i, channel );
 
-		monitor = internal instanceof IMEMonitor ? (IMEMonitor<T>) internal : null;
+		this.monitor = this.internal instanceof IMEMonitor ? (IMEMonitor<T>) this.internal : null;
 	}
 
 	@Override
@@ -60,75 +60,75 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 		if ( !this.canAccept( input ) )
 			return input;
 
-		return internal.injectItems( input, type, src );
+		return this.internal.injectItems( input, type, src );
 	}
 
 	@Override
 	public T extractItems(T request, Actionable type, BaseActionSource src)
 	{
-		if ( !getAccess().hasPermission( AccessRestriction.READ ) )
+		if ( !this.getAccess().hasPermission( AccessRestriction.READ ) )
 			return null;
 
-		return internal.extractItems( request, type, src );
+		return this.internal.extractItems( request, type, src );
 	}
 
 	@Override
 	public IItemList<T> getAvailableItems(IItemList<T> out)
 	{
-		if ( !getAccess().hasPermission( AccessRestriction.READ ) )
+		if ( !this.getAccess().hasPermission( AccessRestriction.READ ) )
 			return out;
 
-		return internal.getAvailableItems( out );
+		return this.internal.getAvailableItems( out );
 	}
 
 	@Override
 	public StorageChannel getChannel()
 	{
-		return internal.getChannel();
+		return this.internal.getChannel();
 	}
 
 	@Override
 	public AccessRestriction getAccess()
 	{
-		return myAccess.restrictPermissions( internal.getAccess() );
+		return this.myAccess.restrictPermissions( this.internal.getAccess() );
 	}
 
 	@Override
 	public boolean isPrioritized(T input)
 	{
-		if ( myWhitelist == IncludeExclude.WHITELIST )
-			return myPartitionList.isListed( input ) || internal.isPrioritized( input );
+		if ( this.myWhitelist == IncludeExclude.WHITELIST )
+			return this.myPartitionList.isListed( input ) || this.internal.isPrioritized( input );
 		return false;
 	}
 
 	@Override
 	public boolean canAccept(T input)
 	{
-		if ( !getAccess().hasPermission( AccessRestriction.WRITE ) )
+		if ( !this.getAccess().hasPermission( AccessRestriction.WRITE ) )
 			return false;
 
-		if ( myWhitelist == IncludeExclude.BLACKLIST && myPartitionList.isListed( input ) )
+		if ( this.myWhitelist == IncludeExclude.BLACKLIST && this.myPartitionList.isListed( input ) )
 			return false;
-		if ( myPartitionList.isEmpty() || myWhitelist == IncludeExclude.BLACKLIST )
-			return internal.canAccept( input );
-		return myPartitionList.isListed( input ) && internal.canAccept( input );
+		if ( this.myPartitionList.isEmpty() || this.myWhitelist == IncludeExclude.BLACKLIST )
+			return this.internal.canAccept( input );
+		return this.myPartitionList.isListed( input ) && this.internal.canAccept( input );
 	}
 
 	@Override
 	public int getPriority()
 	{
-		return myPriority;
+		return this.myPriority;
 	}
 
 	@Override
 	public int getSlot()
 	{
-		return internal.getSlot();
+		return this.internal.getSlot();
 	}
 
 	public IMEInventory<T> getInternal()
 	{
-		return internal;
+		return this.internal;
 	}
 
 	@Override

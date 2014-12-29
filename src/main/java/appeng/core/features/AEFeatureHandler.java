@@ -62,19 +62,19 @@ public class AEFeatureHandler implements AEItemDefinition
 
 	public void register()
 	{
-		if ( isFeatureAvailable() )
+		if ( this.isFeatureAvailable() )
 		{
-			if ( feature instanceof Item )
+			if ( this.feature instanceof Item )
 			{
-				initItem( ( Item ) feature );
+				this.initItem( ( Item ) this.feature );
 			}
 			else if ( this.feature instanceof BlockStairs )
 			{
 				this.initStairBlock( ( BlockStairs ) this.feature );
 			}
-			else if ( feature instanceof Block )
+			else if ( this.feature instanceof Block )
 			{
-				initBlock( ( Block ) feature );
+				this.initBlock( ( Block ) this.feature );
 			}
 		}
 	}
@@ -83,7 +83,7 @@ public class AEFeatureHandler implements AEItemDefinition
 	{
 		boolean enabled = true;
 
-		for ( AEFeature f : features )
+		for ( AEFeature f : this.features )
 			enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
 
 		return enabled;
@@ -91,9 +91,9 @@ public class AEFeatureHandler implements AEItemDefinition
 
 	private void initItem( Item i )
 	{
-		ItemData = i;
+		this.ItemData = i;
 
-		String name = getName( i.getClass(), subName );
+		String name = getName( i.getClass(), this.subName );
 		i.setTextureName( "appliedenergistics2:" + name );
 		i.setUnlocalizedName( /* "item." */"appliedenergistics2." + name );
 
@@ -114,7 +114,7 @@ public class AEFeatureHandler implements AEItemDefinition
 	{
 		this.stairData = stair;
 
-		String name = getName( stair.getClass(), subName );
+		String name = getName( stair.getClass(), this.subName );
 		stair.setCreativeTab( CreativeTab.instance );
 		stair.setBlockName( /* "tile." */"appliedenergistics2." + name );
 		stair.setBlockTextureName( "appliedenergistics2:" + name );
@@ -124,14 +124,14 @@ public class AEFeatureHandler implements AEItemDefinition
 
 	private void initBlock( Block b )
 	{
-		BlockData = b;
+		this.BlockData = b;
 
-		String name = getName( b.getClass(), subName );
+		String name = getName( b.getClass(), this.subName );
 		b.setCreativeTab( CreativeTab.instance );
 		b.setBlockName( /* "tile." */"appliedenergistics2." + name );
 		b.setBlockTextureName( "appliedenergistics2:" + name );
 
-		if ( Platform.isClient() && BlockData instanceof AEBaseBlock )
+		if ( Platform.isClient() && this.BlockData instanceof AEBaseBlock )
 		{
 			AEBaseBlock bb = ( AEBaseBlock ) b;
 			CommonHelper.proxy.bindTileEntitySpecialRenderer( bb.getTileEntityClass(), bb );
@@ -173,13 +173,13 @@ public class AEFeatureHandler implements AEItemDefinition
 
 	public EnumSet<AEFeature> getFeatures()
 	{
-		return features.clone();
+		return this.features.clone();
 	}
 
 	@Override
 	public Block block()
 	{
-		return BlockData;
+		return this.BlockData;
 	}
 
 	@Override
@@ -204,9 +204,9 @@ public class AEFeatureHandler implements AEItemDefinition
 	@Override
 	public Class<? extends TileEntity> entity()
 	{
-		if ( BlockData instanceof AEBaseBlock )
+		if ( this.BlockData instanceof AEBaseBlock )
 		{
-			AEBaseBlock bb = ( AEBaseBlock ) BlockData;
+			AEBaseBlock bb = ( AEBaseBlock ) this.BlockData;
 			return bb.getTileEntityClass();
 		}
 
@@ -216,14 +216,14 @@ public class AEFeatureHandler implements AEItemDefinition
 	@Override
 	public ItemStack stack( int stackSize )
 	{
-		if ( isFeatureAvailable() )
+		if ( this.isFeatureAvailable() )
 		{
 			ItemStack rv;
 
-			if ( ItemData != null )
-				rv = new ItemStack( ItemData );
+			if ( this.ItemData != null )
+				rv = new ItemStack( this.ItemData );
 			else
-				rv = new ItemStack( BlockData );
+				rv = new ItemStack( this.BlockData );
 
 			rv.stackSize = stackSize;
 			return rv;
@@ -235,7 +235,7 @@ public class AEFeatureHandler implements AEItemDefinition
 	@Override
 	public boolean sameAsStack( ItemStack is )
 	{
-		return isFeatureAvailable() && Platform.isSameItemType( is, stack( 1 ) );
+		return this.isFeatureAvailable() && Platform.isSameItemType( is, this.stack( 1 ) );
 	}
 
 	/**
@@ -255,7 +255,7 @@ public class AEFeatureHandler implements AEItemDefinition
 	@Override
 	public boolean sameAsBlock( IBlockAccess world, int x, int y, int z )
 	{
-		return isFeatureAvailable() && BlockData != null && world.getBlock( x, y, z ) == BlockData;
+		return this.isFeatureAvailable() && this.BlockData != null && world.getBlock( x, y, z ) == this.BlockData;
 	}
 
 }

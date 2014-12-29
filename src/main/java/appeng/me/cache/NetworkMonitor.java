@@ -43,9 +43,9 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 
 	public void forceUpdate()
 	{
-		hasChanged = true;
+		this.hasChanged = true;
 
-		Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = getListeners();
+		Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.getListeners();
 		while (i.hasNext())
 		{
 			Entry<IMEMonitorHandlerReceiver<T>, Object> o = i.next();
@@ -60,8 +60,8 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 
 	public NetworkMonitor(GridStorageCache cache, StorageChannel chan) {
 		super( null, chan );
-		myGridCache = cache;
-		myChannel = chan;
+		this.myGridCache = cache;
+		this.myChannel = chan;
 	}
 
 	final static public LinkedList depth = new LinkedList();
@@ -69,7 +69,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 	@Override
 	protected void postChangesToListeners(Iterable<T> changes, BaseActionSource src)
 	{
-		postChange( true, changes, src );
+		this.postChange( true, changes, src );
 	}
 	
 	protected void postChange(boolean Add, Iterable<T> changes, BaseActionSource src)
@@ -79,10 +79,10 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 
 		depth.push( this );
 
-		sendEvent = true;
-		notifyListenersOfChange( changes, src );
+		this.sendEvent = true;
+		this.notifyListenersOfChange( changes, src );
 
-		IItemList<T> myStorageList = getStorageList();
+		IItemList<T> myStorageList = this.getStorageList();
 
 		for (T changedItem : changes)
 		{
@@ -91,9 +91,9 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 			if ( !Add && changedItem != null )
 				(difference = changedItem.copy()).setStackSize( -changedItem.getStackSize() );
 
-			if ( myGridCache.interestManager.containsKey( changedItem ) )
+			if ( this.myGridCache.interestManager.containsKey( changedItem ) )
 			{
-				Collection<ItemWatcher> list = myGridCache.interestManager.get( changedItem );
+				Collection<ItemWatcher> list = this.myGridCache.interestManager.get( changedItem );
 				if ( !list.isEmpty() )
 				{
 					IAEStack fullStack = myStorageList.findPrecise( changedItem );
@@ -103,12 +103,12 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 						fullStack.setStackSize( 0 );
 					}
 
-					myGridCache.interestManager.enableTransactions();
+					this.myGridCache.interestManager.enableTransactions();
 
 					for (ItemWatcher iw : list)
-						iw.getHost().onStackChange( myStorageList, fullStack, difference, src, getChannel() );
+						iw.getHost().onStackChange( myStorageList, fullStack, difference, src, this.getChannel() );
 
-					myGridCache.interestManager.disableTransactions();
+					this.myGridCache.interestManager.disableTransactions();
 				}
 			}
 		}
@@ -120,22 +120,22 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 
 	public void onTick()
 	{
-		if ( sendEvent )
+		if ( this.sendEvent )
 		{
-			sendEvent = false;
-			myGridCache.myGrid.postEvent( new MENetworkStorageEvent( this, myChannel ) );
+			this.sendEvent = false;
+			this.myGridCache.myGrid.postEvent( new MENetworkStorageEvent( this, this.myChannel ) );
 		}
 	}
 
 	@Override
 	protected IMEInventoryHandler getHandler()
 	{
-		switch (myChannel)
+		switch (this.myChannel)
 		{
 		case ITEMS:
-			return myGridCache.getItemInventoryHandler();
+			return this.myGridCache.getItemInventoryHandler();
 		case FLUIDS:
-			return myGridCache.getFluidInventoryHandler();
+			return this.myGridCache.getFluidInventoryHandler();
 		default:
 		}
 		return null;

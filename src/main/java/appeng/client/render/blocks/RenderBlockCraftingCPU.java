@@ -90,35 +90,35 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 
 			}
 
-			float highX = isConnected( w, x, y, z, ForgeDirection.EAST ) ? 16 : 13.01f;
-			float lowX = isConnected( w, x, y, z, ForgeDirection.WEST ) ? 0 : 2.99f;
+			float highX = this.isConnected( w, x, y, z, ForgeDirection.EAST ) ? 16 : 13.01f;
+			float lowX = this.isConnected( w, x, y, z, ForgeDirection.WEST ) ? 0 : 2.99f;
 
-			float highY = isConnected( w, x, y, z, ForgeDirection.UP ) ? 16 : 13.01f;
-			float lowY = isConnected( w, x, y, z, ForgeDirection.DOWN ) ? 0 : 2.99f;
+			float highY = this.isConnected( w, x, y, z, ForgeDirection.UP ) ? 16 : 13.01f;
+			float lowY = this.isConnected( w, x, y, z, ForgeDirection.DOWN ) ? 0 : 2.99f;
 
-			float highZ = isConnected( w, x, y, z, ForgeDirection.SOUTH ) ? 16 : 13.01f;
-			float lowZ = isConnected( w, x, y, z, ForgeDirection.NORTH ) ? 0 : 2.99f;
+			float highZ = this.isConnected( w, x, y, z, ForgeDirection.SOUTH ) ? 16 : 13.01f;
+			float lowZ = this.isConnected( w, x, y, z, ForgeDirection.NORTH ) ? 0 : 2.99f;
 
-			renderCorner( i, renderer, w, x, y, z, ForgeDirection.UP, ForgeDirection.EAST, ForgeDirection.NORTH );
-			renderCorner( i, renderer, w, x, y, z, ForgeDirection.UP, ForgeDirection.EAST, ForgeDirection.SOUTH );
-			renderCorner( i, renderer, w, x, y, z, ForgeDirection.UP, ForgeDirection.WEST, ForgeDirection.NORTH );
-			renderCorner( i, renderer, w, x, y, z, ForgeDirection.UP, ForgeDirection.WEST, ForgeDirection.SOUTH );
-			renderCorner( i, renderer, w, x, y, z, ForgeDirection.DOWN, ForgeDirection.EAST, ForgeDirection.NORTH );
-			renderCorner( i, renderer, w, x, y, z, ForgeDirection.DOWN, ForgeDirection.EAST, ForgeDirection.SOUTH );
-			renderCorner( i, renderer, w, x, y, z, ForgeDirection.DOWN, ForgeDirection.WEST, ForgeDirection.NORTH );
-			renderCorner( i, renderer, w, x, y, z, ForgeDirection.DOWN, ForgeDirection.WEST, ForgeDirection.SOUTH );
+			this.renderCorner( i, renderer, w, x, y, z, ForgeDirection.UP, ForgeDirection.EAST, ForgeDirection.NORTH );
+			this.renderCorner( i, renderer, w, x, y, z, ForgeDirection.UP, ForgeDirection.EAST, ForgeDirection.SOUTH );
+			this.renderCorner( i, renderer, w, x, y, z, ForgeDirection.UP, ForgeDirection.WEST, ForgeDirection.NORTH );
+			this.renderCorner( i, renderer, w, x, y, z, ForgeDirection.UP, ForgeDirection.WEST, ForgeDirection.SOUTH );
+			this.renderCorner( i, renderer, w, x, y, z, ForgeDirection.DOWN, ForgeDirection.EAST, ForgeDirection.NORTH );
+			this.renderCorner( i, renderer, w, x, y, z, ForgeDirection.DOWN, ForgeDirection.EAST, ForgeDirection.SOUTH );
+			this.renderCorner( i, renderer, w, x, y, z, ForgeDirection.DOWN, ForgeDirection.WEST, ForgeDirection.NORTH );
+			this.renderCorner( i, renderer, w, x, y, z, ForgeDirection.DOWN, ForgeDirection.WEST, ForgeDirection.SOUTH );
 
 			for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
-				i.setBounds( fso( side, lowX, ForgeDirection.WEST ), fso( side, lowY, ForgeDirection.DOWN ), fso( side, lowZ, ForgeDirection.NORTH ),
-						fso( side, highX, ForgeDirection.EAST ), fso( side, highY, ForgeDirection.UP ), fso( side, highZ, ForgeDirection.SOUTH ) );
+				i.setBounds( this.fso( side, lowX, ForgeDirection.WEST ), this.fso( side, lowY, ForgeDirection.DOWN ), this.fso( side, lowZ, ForgeDirection.NORTH ),
+						this.fso( side, highX, ForgeDirection.EAST ), this.fso( side, highY, ForgeDirection.UP ), this.fso( side, highZ, ForgeDirection.SOUTH ) );
 				i.prepareBounds( renderer );
 
 				boolean LocalEmit = emitsLight;
 				if ( blk instanceof BlockCraftingMonitor && !ct.getForward().equals( side ) )
 					LocalEmit = false;
 
-				handleSide( blk, meta, x, y, z, i, renderer, ct.getForward().equals( side ) ? theIcon : nonForward, LocalEmit, isMonitor, side, w );
+				this.handleSide( blk, meta, x, y, z, i, renderer, ct.getForward().equals( side ) ? theIcon : nonForward, LocalEmit, isMonitor, side, w );
 			}
 
 			BusRenderer.instance.renderer.isFacade = false;
@@ -140,15 +140,15 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 	private void renderCorner(BusRenderHelper i, RenderBlocks renderer, IBlockAccess w, int x, int y, int z, ForgeDirection up, ForgeDirection east,
 			ForgeDirection south)
 	{
-		if ( isConnected( w, x, y, z, up ) )
+		if ( this.isConnected( w, x, y, z, up ) )
 			return;
-		if ( isConnected( w, x, y, z, east ) )
+		if ( this.isConnected( w, x, y, z, east ) )
 			return;
-		if ( isConnected( w, x, y, z, south ) )
+		if ( this.isConnected( w, x, y, z, south ) )
 			return;
 
-		i.setBounds( gso( east, 3, ForgeDirection.WEST ), gso( up, 3, ForgeDirection.DOWN ), gso( south, 3, ForgeDirection.NORTH ),
-				gso( east, 13, ForgeDirection.EAST ), gso( up, 13, ForgeDirection.UP ), gso( south, 13, ForgeDirection.SOUTH ) );
+		i.setBounds( this.gso( east, 3, ForgeDirection.WEST ), this.gso( up, 3, ForgeDirection.DOWN ), this.gso( south, 3, ForgeDirection.NORTH ),
+				this.gso( east, 13, ForgeDirection.EAST ), this.gso( up, 13, ForgeDirection.UP ), this.gso( south, 13, ForgeDirection.SOUTH ) );
 		i.prepareBounds( renderer );
 		i.setTexture( ExtraBlockTextures.BlockCraftingUnitRing.getIcon() );
 		i.renderBlockCurrentBounds( x, y, z, renderer );
@@ -179,7 +179,7 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 	private void handleSide(AEBaseBlock blk, int meta, int x, int y, int z, BusRenderHelper i, RenderBlocks renderer, IIcon color, boolean emitsLight,
 			boolean isMonitor, ForgeDirection side, IBlockAccess w)
 	{
-		if ( isConnected( w, x, y, z, side ) )
+		if ( this.isConnected( w, x, y, z, side ) )
 			return;
 
 		i.setFacesToRender( EnumSet.of( side ) );

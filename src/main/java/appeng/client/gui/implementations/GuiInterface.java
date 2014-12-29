@@ -55,30 +55,30 @@ public class GuiInterface extends GuiUpgradeable
 
 		boolean backwards = Mouse.isButtonDown( 1 );
 
-		if ( btn == priority )
+		if ( btn == this.priority )
 		{
 			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
 		}
 
-		if ( btn == interfaceMode )
+		if ( btn == this.interfaceMode )
 			NetworkHandler.instance.sendToServer( new PacketConfigButton( Settings.INTERFACE_TERMINAL, backwards ) );
 
-		if ( btn == BlockMode )
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( BlockMode.getSetting(), backwards ) );
+		if ( btn == this.BlockMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.BlockMode.getSetting(), backwards ) );
 	}
 
 	@Override
 	protected void addButtons()
 	{
-		priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRender );
-		buttonList.add( priority );
+		this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRender );
+		this.buttonList.add( this.priority );
 
-		BlockMode = new GuiImgButton( this.guiLeft - 18, guiTop + 8, Settings.BLOCK, YesNo.NO );
-		buttonList.add( BlockMode );
+		this.BlockMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.BLOCK, YesNo.NO );
+		this.buttonList.add( this.BlockMode );
 
-		interfaceMode = new GuiToggleButton( this.guiLeft - 18, guiTop + 26, 84, 85, GuiText.InterfaceTerminal.getLocal(),
+		this.interfaceMode = new GuiToggleButton( this.guiLeft - 18, this.guiTop + 26, 84, 85, GuiText.InterfaceTerminal.getLocal(),
 				GuiText.InterfaceTerminalHint.getLocal() );
-		buttonList.add( interfaceMode );
+		this.buttonList.add( this.interfaceMode );
 	}
 
 	@Override
@@ -90,18 +90,18 @@ public class GuiInterface extends GuiUpgradeable
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		if ( BlockMode != null )
-			BlockMode.set( ((ContainerInterface) cvb).bMode );
+		if ( this.BlockMode != null )
+			this.BlockMode.set( ((ContainerInterface) this.cvb).bMode );
 
-		if ( interfaceMode != null )
-			interfaceMode.setState( ((ContainerInterface) cvb).iTermMode == YesNo.YES );
+		if ( this.interfaceMode != null )
+			this.interfaceMode.setState( ((ContainerInterface) this.cvb).iTermMode == YesNo.YES );
 
-		fontRendererObj.drawString( getGuiDisplayName( GuiText.Interface.getLocal() ), 8, 6, 4210752 );
+		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.Interface.getLocal() ), 8, 6, 4210752 );
 
-		fontRendererObj.drawString( GuiText.Config.getLocal(), 18, 6 + 11 + 7, 4210752 );
-		fontRendererObj.drawString( GuiText.StoredItems.getLocal(), 18, 6 + 60 + 7, 4210752 );
-		fontRendererObj.drawString( GuiText.Patterns.getLocal(), 8, 6 + 73 + 7, 4210752 );
+		this.fontRendererObj.drawString( GuiText.Config.getLocal(), 18, 6 + 11 + 7, 4210752 );
+		this.fontRendererObj.drawString( GuiText.StoredItems.getLocal(), 18, 6 + 60 + 7, 4210752 );
+		this.fontRendererObj.drawString( GuiText.Patterns.getLocal(), 8, 6 + 73 + 7, 4210752 );
 
-		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 }

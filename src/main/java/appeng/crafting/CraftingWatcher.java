@@ -41,27 +41,27 @@ public class CraftingWatcher implements ICraftingWatcher
 		IAEStack myLast;
 
 		public ItemWatcherIterator(CraftingWatcher parent, Iterator<IAEStack> i) {
-			watcher = parent;
-			interestIterator = i;
+			this.watcher = parent;
+			this.interestIterator = i;
 		}
 
 		@Override
 		public boolean hasNext()
 		{
-			return interestIterator.hasNext();
+			return this.interestIterator.hasNext();
 		}
 
 		@Override
 		public IAEStack next()
 		{
-			return myLast = interestIterator.next();
+			return this.myLast = this.interestIterator.next();
 		}
 
 		@Override
 		public void remove()
 		{
-			gsc.interestManager.remove( myLast, watcher );
-			interestIterator.remove();
+			CraftingWatcher.this.gsc.interestManager.remove( this.myLast, this.watcher );
+			this.interestIterator.remove();
 		}
 
 	}
@@ -71,22 +71,22 @@ public class CraftingWatcher implements ICraftingWatcher
 	final HashSet<IAEStack> myInterests = new HashSet<IAEStack>();
 
 	public CraftingWatcher(CraftingGridCache cache, ICraftingWatcherHost host) {
-		gsc = cache;
+		this.gsc = cache;
 		this.host = host;
 	}
 
 	public ICraftingWatcherHost getHost()
 	{
-		return host;
+		return this.host;
 	}
 
 	@Override
 	public boolean add(IAEStack e)
 	{
-		if ( myInterests.contains( e ) )
+		if ( this.myInterests.contains( e ) )
 			return false;
 
-		return myInterests.add( e.copy() ) && gsc.interestManager.put( e, this );
+		return this.myInterests.add( e.copy() ) && this.gsc.interestManager.put( e, this );
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class CraftingWatcher implements ICraftingWatcher
 		boolean didChange = false;
 
 		for (IAEStack o : c)
-			didChange = add( o ) || didChange;
+			didChange = this.add( o ) || didChange;
 
 		return didChange;
 	}
@@ -103,10 +103,10 @@ public class CraftingWatcher implements ICraftingWatcher
 	@Override
 	public void clear()
 	{
-		Iterator<IAEStack> i = myInterests.iterator();
+		Iterator<IAEStack> i = this.myInterests.iterator();
 		while (i.hasNext())
 		{
-			gsc.interestManager.remove( i.next(), this );
+			this.gsc.interestManager.remove( i.next(), this );
 			i.remove();
 		}
 	}
@@ -114,31 +114,31 @@ public class CraftingWatcher implements ICraftingWatcher
 	@Override
 	public boolean contains(Object o)
 	{
-		return myInterests.contains( o );
+		return this.myInterests.contains( o );
 	}
 
 	@Override
 	public boolean containsAll(Collection<?> c)
 	{
-		return myInterests.containsAll( c );
+		return this.myInterests.containsAll( c );
 	}
 
 	@Override
 	public boolean isEmpty()
 	{
-		return myInterests.isEmpty();
+		return this.myInterests.isEmpty();
 	}
 
 	@Override
 	public Iterator<IAEStack> iterator()
 	{
-		return new ItemWatcherIterator( this, myInterests.iterator() );
+		return new ItemWatcherIterator( this, this.myInterests.iterator() );
 	}
 
 	@Override
 	public boolean remove(Object o)
 	{
-		return myInterests.remove( o ) && gsc.interestManager.remove( (IAEStack) o, this );
+		return this.myInterests.remove( o ) && this.gsc.interestManager.remove( (IAEStack) o, this );
 	}
 
 	@Override
@@ -146,7 +146,7 @@ public class CraftingWatcher implements ICraftingWatcher
 	{
 		boolean didSomething = false;
 		for (Object o : c)
-			didSomething = remove( o ) || didSomething;
+			didSomething = this.remove( o ) || didSomething;
 		return didSomething;
 	}
 
@@ -154,7 +154,7 @@ public class CraftingWatcher implements ICraftingWatcher
 	public boolean retainAll(Collection<?> c)
 	{
 		boolean changed = false;
-		Iterator<IAEStack> i = iterator();
+		Iterator<IAEStack> i = this.iterator();
 
 		while (i.hasNext())
 		{
@@ -171,19 +171,19 @@ public class CraftingWatcher implements ICraftingWatcher
 	@Override
 	public int size()
 	{
-		return myInterests.size();
+		return this.myInterests.size();
 	}
 
 	@Override
 	public Object[] toArray()
 	{
-		return myInterests.toArray();
+		return this.myInterests.toArray();
 	}
 
 	@Override
 	public <T> T[] toArray(T[] a)
 	{
-		return myInterests.toArray( a );
+		return this.myInterests.toArray( a );
 	}
 
 }

@@ -42,11 +42,11 @@ public class PacketAssemblerAnimation extends AppEngPacket
 
 	// automatic.
 	public PacketAssemblerAnimation(ByteBuf stream) throws IOException {
-		x = stream.readInt();
-		y = stream.readInt();
-		z = stream.readInt();
-		rate = stream.readByte();
-		is = AEItemStack.loadItemStackFromPacket( stream );
+		this.x = stream.readInt();
+		this.y = stream.readInt();
+		this.z = stream.readInt();
+		this.rate = stream.readByte();
+		this.is = AEItemStack.loadItemStackFromPacket( stream );
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class PacketAssemblerAnimation extends AppEngPacket
 		double d1 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
 		double d2 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
 
-		CommonHelper.proxy.spawnEffect( EffectType.Assembler, player.getEntityWorld(), x + d0, y + d1, z + d2, this );
+		CommonHelper.proxy.spawnEffect( EffectType.Assembler, player.getEntityWorld(), this.x + d0, this.y + d1, this.z + d2, this );
 	}
 
 	// api
@@ -65,7 +65,7 @@ public class PacketAssemblerAnimation extends AppEngPacket
 
 		ByteBuf data = Unpooled.buffer();
 
-		data.writeInt( getPacketID() );
+		data.writeInt( this.getPacketID() );
 		data.writeInt( this.x = x );
 		data.writeInt( this.y = y );
 		data.writeInt( this.z = z );
@@ -73,6 +73,6 @@ public class PacketAssemblerAnimation extends AppEngPacket
 		is.writeToPacket( data );
 		this.is = is;
 
-		configureWrite( data );
+		this.configureWrite( data );
 	}
 }

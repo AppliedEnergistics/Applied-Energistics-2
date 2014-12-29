@@ -39,16 +39,16 @@ public class InternalSlotME
 
 	public ItemStack getStack()
 	{
-		return repo.getItem( offset );
+		return this.repo.getItem( this.offset );
 	}
 
 	public IAEItemStack getAEStack()
 	{
-		return repo.getReferenceItem( offset );
+		return this.repo.getReferenceItem( this.offset );
 	}
 
 	public boolean hasPower()
 	{
-		return repo.hasPower();
+		return this.repo.hasPower();
 	}
 }

@@ -30,14 +30,14 @@ public class BlockItemGen extends AEBaseBlock
 
 	public BlockItemGen() {
 		super( BlockItemGen.class, Material.iron );
-		setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
-		setTileEntity( TileItemGen.class );
+		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
+		this.setTileEntity( TileItemGen.class );
 	}
 
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegistry)
 	{
-		registerNoIcons();
+		this.registerNoIcons();
 	}
 
 }

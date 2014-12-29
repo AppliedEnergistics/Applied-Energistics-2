@@ -39,16 +39,16 @@ public class ContainerWirelessTerm extends ContainerMEPortableCell
 	{
 		super.detectAndSendChanges();
 
-		if ( !wirelessTerminalGUIObject.rangeCheck() )
+		if ( !this.wirelessTerminalGUIObject.rangeCheck() )
 		{
-			if ( Platform.isServer() && isContainerValid )
-				getPlayerInv().player.addChatMessage( PlayerMessages.OutOfRange.get() );
+			if ( Platform.isServer() && this.isContainerValid )
+				this.getPlayerInv().player.addChatMessage( PlayerMessages.OutOfRange.get() );
 
-			isContainerValid = false;
+			this.isContainerValid = false;
 		}
 		else
 		{
-			powerMultiplier = AEConfig.instance.wireless_getDrainRate( wirelessTerminalGUIObject.getRange() );
+			this.powerMultiplier = AEConfig.instance.wireless_getDrainRate( this.wirelessTerminalGUIObject.getRange() );
 		}
 	}
 }

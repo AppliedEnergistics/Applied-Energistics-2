@@ -27,7 +27,7 @@ public class BlockRenderInfo
 {
 
 	public BlockRenderInfo(BaseBlockRender inst) {
-		rendererInstance = inst;
+		this.rendererInstance = inst;
 	}
 
 	final public BaseBlockRender rendererInstance;
@@ -49,60 +49,60 @@ public class BlockRenderInfo
 
 	public void updateIcons(FlippableIcon Bottom, FlippableIcon Top, FlippableIcon North, FlippableIcon South, FlippableIcon East, FlippableIcon West)
 	{
-		topIcon = Top;
-		bottomIcon = Bottom;
-		southIcon = South;
-		northIcon = North;
-		eastIcon = East;
-		westIcon = West;
+		this.topIcon = Top;
+		this.bottomIcon = Bottom;
+		this.southIcon = South;
+		this.northIcon = North;
+		this.eastIcon = East;
+		this.westIcon = West;
 
 	}
 
 	public void setTemporaryRenderIcon(IIcon IIcon)
 	{
 		if ( IIcon == null )
-			useTmp = false;
+			this.useTmp = false;
 		else
 		{
-			useTmp = true;
-			tmpTopIcon.setOriginal( IIcon );
-			tmpBottomIcon.setOriginal( IIcon );
-			tmpSouthIcon.setOriginal( IIcon );
-			tmpNorthIcon.setOriginal( IIcon );
-			tmpEastIcon.setOriginal( IIcon );
-			tmpWestIcon.setOriginal( IIcon );
+			this.useTmp = true;
+			this.tmpTopIcon.setOriginal( IIcon );
+			this.tmpBottomIcon.setOriginal( IIcon );
+			this.tmpSouthIcon.setOriginal( IIcon );
+			this.tmpNorthIcon.setOriginal( IIcon );
+			this.tmpEastIcon.setOriginal( IIcon );
+			this.tmpWestIcon.setOriginal( IIcon );
 		}
 	}
 
 	public void setTemporaryRenderIcons(IIcon nTopIcon, IIcon nBottomIcon, IIcon nSouthIcon, IIcon nNorthIcon, IIcon nEastIcon, IIcon nWestIcon)
 	{
-		tmpTopIcon.setOriginal( nTopIcon == null ? getTexture( ForgeDirection.UP ) : nTopIcon );
-		tmpBottomIcon.setOriginal( nBottomIcon == null ? getTexture( ForgeDirection.DOWN ) : nBottomIcon );
-		tmpSouthIcon.setOriginal( nSouthIcon == null ? getTexture( ForgeDirection.SOUTH ) : nSouthIcon );
-		tmpNorthIcon.setOriginal( nNorthIcon == null ? getTexture( ForgeDirection.NORTH ) : nNorthIcon );
-		tmpEastIcon.setOriginal( nEastIcon == null ? getTexture( ForgeDirection.EAST ) : nEastIcon );
-		tmpWestIcon.setOriginal( nWestIcon == null ? getTexture( ForgeDirection.WEST ) : nWestIcon );
-		useTmp = true;
+		this.tmpTopIcon.setOriginal( nTopIcon == null ? this.getTexture( ForgeDirection.UP ) : nTopIcon );
+		this.tmpBottomIcon.setOriginal( nBottomIcon == null ? this.getTexture( ForgeDirection.DOWN ) : nBottomIcon );
+		this.tmpSouthIcon.setOriginal( nSouthIcon == null ? this.getTexture( ForgeDirection.SOUTH ) : nSouthIcon );
+		this.tmpNorthIcon.setOriginal( nNorthIcon == null ? this.getTexture( ForgeDirection.NORTH ) : nNorthIcon );
+		this.tmpEastIcon.setOriginal( nEastIcon == null ? this.getTexture( ForgeDirection.EAST ) : nEastIcon );
+		this.tmpWestIcon.setOriginal( nWestIcon == null ? this.getTexture( ForgeDirection.WEST ) : nWestIcon );
+		this.useTmp = true;
 	}
 
 	public FlippableIcon getTexture(ForgeDirection dir)
 	{
-		if ( useTmp )
+		if ( this.useTmp )
 		{
 			switch (dir)
 			{
 			case DOWN:
-				return tmpBottomIcon;
+				return this.tmpBottomIcon;
 			case UP:
-				return tmpTopIcon;
+				return this.tmpTopIcon;
 			case NORTH:
-				return tmpNorthIcon;
+				return this.tmpNorthIcon;
 			case SOUTH:
-				return tmpSouthIcon;
+				return this.tmpSouthIcon;
 			case EAST:
-				return tmpEastIcon;
+				return this.tmpEastIcon;
 			case WEST:
-				return tmpWestIcon;
+				return this.tmpWestIcon;
 			default:
 				break;
 			}
@@ -111,27 +111,27 @@ public class BlockRenderInfo
 		switch (dir)
 		{
 		case DOWN:
-			return bottomIcon;
+			return this.bottomIcon;
 		case UP:
-			return topIcon;
+			return this.topIcon;
 		case NORTH:
-			return northIcon;
+			return this.northIcon;
 		case SOUTH:
-			return southIcon;
+			return this.southIcon;
 		case EAST:
-			return eastIcon;
+			return this.eastIcon;
 		case WEST:
-			return westIcon;
+			return this.westIcon;
 		default:
 			break;
 		}
 
-		return topIcon;
+		return this.topIcon;
 	}
 
 	public boolean isValid()
 	{
-		return topIcon != null && bottomIcon != null && southIcon != null && northIcon != null && eastIcon != null && westIcon != null;
+		return this.topIcon != null && this.bottomIcon != null && this.southIcon != null && this.northIcon != null && this.eastIcon != null && this.westIcon != null;
 	}
 
 }

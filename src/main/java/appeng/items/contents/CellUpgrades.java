@@ -30,13 +30,13 @@ public class CellUpgrades extends UpgradeInventory
 	public CellUpgrades(ItemStack is, int upgrades) {
 		super( is.getItem(), null, upgrades );
 		this.is = is;
-		readFromNBT( Platform.openNbtData( is ), "upgrades" );
+		this.readFromNBT( Platform.openNbtData( is ), "upgrades" );
 	}
 
 	@Override
 	public void markDirty()
 	{
-		writeToNBT( Platform.openNbtData( is ), "upgrades" );
+		this.writeToNBT( Platform.openNbtData( this.is ), "upgrades" );
 	}
 
 }

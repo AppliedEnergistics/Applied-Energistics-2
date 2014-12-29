@@ -29,16 +29,16 @@ public class OptionalSlotNormal extends AppEngSlot
 	public OptionalSlotNormal(IInventory inv, IOptionalSlotHost containerBus, int slot, int xPos, int yPos, int groupNum) {
 		super( inv, slot, xPos, yPos );
 		this.groupNum = groupNum;
-		host = containerBus;
+		this.host = containerBus;
 	}
 
 	@Override
 	public boolean isEnabled()
 	{
-		if ( host == null )
+		if ( this.host == null )
 			return false;
 
-		return host.isSlotEnabled( groupNum );
+		return this.host.isSlotEnabled( this.groupNum );
 	}
 
 }

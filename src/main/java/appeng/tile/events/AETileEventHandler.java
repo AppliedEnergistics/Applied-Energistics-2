@@ -39,7 +39,7 @@ public class AETileEventHandler
 
 	public AETileEventHandler( Method m, TileEventType which )
 	{
-		method = m;
+		this.method = m;
 	}
 
 	// TICK
@@ -47,7 +47,7 @@ public class AETileEventHandler
 	{
 		try
 		{
-			method.invoke( tile );
+			this.method.invoke( tile );
 		}
 		catch ( IllegalAccessException e )
 		{
@@ -68,7 +68,7 @@ public class AETileEventHandler
 	{
 		try
 		{
-			method.invoke( tile, data );
+			this.method.invoke( tile, data );
 		}
 		catch ( IllegalAccessException e )
 		{
@@ -89,7 +89,7 @@ public class AETileEventHandler
 	{
 		try
 		{
-			method.invoke( tile, data );
+			this.method.invoke( tile, data );
 		}
 		catch ( IllegalAccessException e )
 		{
@@ -110,7 +110,7 @@ public class AETileEventHandler
 	{
 		try
 		{
-			method.invoke( tile, data );
+			this.method.invoke( tile, data );
 		}
 		catch ( IllegalAccessException e )
 		{
@@ -138,7 +138,7 @@ public class AETileEventHandler
 	{
 		try
 		{
-			return ( Boolean ) method.invoke( tile, data );
+			return ( Boolean ) this.method.invoke( tile, data );
 		}
 		catch ( IllegalAccessException e )
 		{

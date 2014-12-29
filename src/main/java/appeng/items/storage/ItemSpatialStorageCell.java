@@ -52,16 +52,16 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	public ItemSpatialStorageCell( MaterialType whichCell, int spatialScale )
 	{
 		super( ItemSpatialStorageCell.class, Optional.of( spatialScale + "Cubed" ) );
-		setFeature( EnumSet.of( AEFeature.SpatialIO ) );
-		setMaxStackSize( 1 );
-		maxRegion = spatialScale;
-		component = whichCell;
+		this.setFeature( EnumSet.of( AEFeature.SpatialIO ) );
+		this.setMaxStackSize( 1 );
+		this.maxRegion = spatialScale;
+		this.component = whichCell;
 	}
 
 	@Override
 	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
-		WorldCoord wc = getStoredSize( stack );
+		WorldCoord wc = this.getStoredSize( stack );
 		if ( wc.x > 0 )
 			lines.add( GuiText.StoredSize.getLocal() + ": " + wc.x + " x " + wc.y + " x " + wc.z );
 	}
@@ -75,7 +75,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	@Override
 	public int getMaxStoredDim( ItemStack is )
 	{
-		return maxRegion;
+		return this.maxRegion;
 	}
 
 	@Override
@@ -123,7 +123,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	@Override
 	public WorldCoord getMin( ItemStack is )
 	{
-		World w = getWorld( is );
+		World w = this.getWorld( is );
 		if ( w != null )
 		{
 			NBTTagCompound info = ( NBTTagCompound ) w.getWorldInfo().getAdditionalProperty( "storageCell" );
@@ -138,7 +138,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	@Override
 	public WorldCoord getMax( ItemStack is )
 	{
-		World w = getWorld( is );
+		World w = this.getWorld( is );
 		if ( w != null )
 		{
 			NBTTagCompound info = ( NBTTagCompound ) w.getWorldInfo().getAdditionalProperty( "storageCell" );
@@ -153,26 +153,26 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	@Override
 	public TransitionResult doSpatialTransition( ItemStack is, World w, WorldCoord min, WorldCoord max, boolean doTransition )
 	{
-		WorldCoord scale = getStoredSize( is );
+		WorldCoord scale = this.getStoredSize( is );
 
 		int targetX = max.x - min.x - 1;
 		int targetY = max.y - min.y - 1;
 		int targetZ = max.z - min.z - 1;
-		int maxSize = getMaxStoredDim( is );
+		int maxSize = this.getMaxStoredDim( is );
 
 		int floorBuffer = 64;
-		World destination = getWorld( is );
+		World destination = this.getWorld( is );
 
 		if ( ( scale.x == 0 && scale.y == 0 && scale.z == 0 ) || ( scale.x == targetX && scale.y == targetY && scale.z == targetZ ) )
 		{
 			if ( targetX <= maxSize && targetY <= maxSize && targetZ <= maxSize )
 			{
 				if ( destination == null )
-					destination = createNewWorld( is );
+					destination = this.createNewWorld( is );
 
 				StorageHelper.getInstance()
 						.swapRegions( w, destination, min.x + 1, min.y + 1, min.z + 1, 1, floorBuffer + 1, 1, targetX - 1, targetY - 1, targetZ - 1 );
-				setStoredSize( is, targetX, targetY, targetZ );
+				this.setStoredSize( is, targetX, targetY, targetZ );
 
 				return new TransitionResult( true, 0 );
 			}

@@ -42,17 +42,17 @@ public class ContainerCraftAmount extends AEBaseContainer
 
 	public ContainerCraftAmount(InventoryPlayer ip, ITerminalHost te) {
 		super( ip, te );
-		priHost = te;
+		this.priHost = te;
 
-		craftingItem = new SlotInaccessible( new AppEngInternalInventory( null, 1 ), 0, 34, 53 );
-		addSlotToContainer( craftingItem );
+		this.craftingItem = new SlotInaccessible( new AppEngInternalInventory( null, 1 ), 0, 34, 53 );
+		this.addSlotToContainer( this.craftingItem );
 	}
 
 	@Override
 	public void detectAndSendChanges()
 	{
 		super.detectAndSendChanges();
-		verifyPermissions( SecurityPermissions.CRAFT, false );
+		this.verifyPermissions( SecurityPermissions.CRAFT, false );
 	}
 
 	public IGrid getGrid()
@@ -63,12 +63,12 @@ public class ContainerCraftAmount extends AEBaseContainer
 
 	public World getWorld()
 	{
-		return getPlayerInv().player.worldObj;
+		return this.getPlayerInv().player.worldObj;
 	}
 
 	public BaseActionSource getActionSrc()
 	{
-		return new PlayerSource( getPlayerInv().player, (IActionHost) getTarget() );
+		return new PlayerSource( this.getPlayerInv().player, (IActionHost) this.getTarget() );
 	}
 
 }

@@ -36,13 +36,13 @@ public class ProxyNodeIterator implements Iterator<IGridNode>
 	@Override
 	public boolean hasNext()
 	{
-		return hosts.hasNext();
+		return this.hosts.hasNext();
 	}
 
 	@Override
 	public IGridNode next()
 	{
-		IGridHost host = hosts.next();
+		IGridHost host = this.hosts.next();
 		return host.getGridNode( ForgeDirection.UNKNOWN );
 	}
 

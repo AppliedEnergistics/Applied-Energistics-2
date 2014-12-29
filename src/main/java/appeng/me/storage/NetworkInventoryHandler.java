@@ -62,17 +62,17 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	private final NavigableMap<Integer, List<IMEInventoryHandler<T>>> priorityInventory;
 
 	public NetworkInventoryHandler(StorageChannel chan, SecurityCache security) {
-		myChannel = chan;
+		this.myChannel = chan;
 		this.security = security;
-		priorityInventory = new ConcurrentSkipListMap<Integer, List<IMEInventoryHandler<T>>>( prioritySorter ); // TreeMultimap.create( prioritySorter, hashSorter );
+		this.priorityInventory = new ConcurrentSkipListMap<Integer, List<IMEInventoryHandler<T>>>( prioritySorter ); // TreeMultimap.create( prioritySorter, hashSorter );
 	}
 
 	public void addNewStorage(IMEInventoryHandler<T> h)
 	{
 		int priority = h.getPriority();
-		List<IMEInventoryHandler<T>> list = priorityInventory.get( priority );
+		List<IMEInventoryHandler<T>> list = this.priorityInventory.get( priority );
 		if ( list == null )
-			priorityInventory.put( priority, list = new ArrayList<IMEInventoryHandler<T>>() );
+			this.priorityInventory.put( priority, list = new ArrayList<IMEInventoryHandler<T>>() );
 
 		list.add( h );
 	}
@@ -96,7 +96,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 
 	private boolean diveList(NetworkInventoryHandler<T> networkInventoryHandler, Actionable type)
 	{
-		LinkedList cDepth = getDepth( type );
+		LinkedList cDepth = this.getDepth( type );
 		if ( cDepth.contains( networkInventoryHandler ) )
 			return true;
 
@@ -106,18 +106,18 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 
 	private boolean diveIteration(NetworkInventoryHandler<T> networkInventoryHandler, Actionable type)
 	{
-		LinkedList cDepth = getDepth( type );
+		LinkedList cDepth = this.getDepth( type );
 		if ( cDepth.isEmpty() )
 		{
 			currentPass++;
-			myPass = currentPass;
+			this.myPass = currentPass;
 		}
 		else
 		{
-			if ( currentPass == myPass )
+			if ( currentPass == this.myPass )
 				return true;
 			else
-				myPass = currentPass;
+				this.myPass = currentPass;
 		}
 
 		cDepth.push( this );
@@ -126,7 +126,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 
 	private void surface(NetworkInventoryHandler<T> networkInventoryHandler, Actionable type)
 	{
-		if ( getDepth( type ).pop() != this )
+		if ( this.getDepth( type ).pop() != this )
 			throw new RuntimeException( "Invalid Access to Networked Storage API detected." );
 	}
 
@@ -134,26 +134,26 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	{
 		if ( src.isPlayer() )
 		{
-			if ( !security.hasPermission( ((PlayerSource) src).player, permission ) )
+			if ( !this.security.hasPermission( ((PlayerSource) src).player, permission ) )
 				return true;
 		}
 		else if ( src.isMachine() )
 		{
-			if ( security.isAvailable() )
+			if ( this.security.isAvailable() )
 			{
 				IGridNode n = ((MachineSource) src).via.getActionableNode();
 				if ( n == null )
 					return true;
 
 				IGrid gn = n.getGrid();
-				if ( gn != security.myGrid )
+				if ( gn != this.security.myGrid )
 				{
 					int playerID = -1;
 
 					ISecurityGrid sg = gn.getCache( ISecurityGrid.class );
 					playerID = sg.getOwner();
 
-					if ( !security.hasPermission( playerID, permission ) )
+					if ( !this.security.hasPermission( playerID, permission ) )
 						return true;
 				}
 			}
@@ -165,16 +165,16 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	@Override
 	public T injectItems(T input, Actionable type, BaseActionSource src)
 	{
-		if ( diveList( this, type ) )
+		if ( this.diveList( this, type ) )
 			return input;
 
-		if ( testPermission( src, SecurityPermissions.INJECT ) )
+		if ( this.testPermission( src, SecurityPermissions.INJECT ) )
 		{
-			surface( this, type );
+			this.surface( this, type );
 			return input;
 		}
 
-		for (List<IMEInventoryHandler<T>> invList : priorityInventory.values())
+		for (List<IMEInventoryHandler<T>> invList : this.priorityInventory.values())
 		{
 			Iterator<IMEInventoryHandler<T>> ii = invList.iterator();
 			while (ii.hasNext() && input != null)
@@ -199,7 +199,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 			}
 		}
 
-		surface( this, type );
+		this.surface( this, type );
 
 		return input;
 	}
@@ -207,16 +207,16 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	@Override
 	public T extractItems(T request, Actionable mode, BaseActionSource src)
 	{
-		if ( diveList( this, mode ) )
+		if ( this.diveList( this, mode ) )
 			return null;
 
-		if ( testPermission( src, SecurityPermissions.EXTRACT ) )
+		if ( this.testPermission( src, SecurityPermissions.EXTRACT ) )
 		{
-			surface( this, mode );
+			this.surface( this, mode );
 			return null;
 		}
 
-		Iterator<List<IMEInventoryHandler<T>>> i = priorityInventory.descendingMap().values().iterator();// priorityInventory.asMap().descendingMap().entrySet().iterator();
+		Iterator<List<IMEInventoryHandler<T>>> i = this.priorityInventory.descendingMap().values().iterator();// priorityInventory.asMap().descendingMap().entrySet().iterator();
 
 		T output = request.copy();
 		request = request.copy();
@@ -237,7 +237,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 			}
 		}
 
-		surface( this, mode );
+		this.surface( this, mode );
 
 		if ( output.getStackSize() <= 0 )
 			return null;
@@ -248,15 +248,15 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	@Override
 	public IItemList<T> getAvailableItems(IItemList out)
 	{
-		if ( diveIteration( this, Actionable.SIMULATE ) )
+		if ( this.diveIteration( this, Actionable.SIMULATE ) )
 			return out;
 
 		// for (Entry<Integer, IMEInventoryHandler<T>> h : priorityInventory.entries())
-		for (List<IMEInventoryHandler<T>> i : priorityInventory.values())
+		for (List<IMEInventoryHandler<T>> i : this.priorityInventory.values())
 			for (IMEInventoryHandler<T> j : i)
 				out = j.getAvailableItems( out );
 
-		surface( this, Actionable.SIMULATE );
+		this.surface( this, Actionable.SIMULATE );
 
 		return out;
 	}
@@ -264,7 +264,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	@Override
 	public StorageChannel getChannel()
 	{
-		return myChannel;
+		return this.myChannel;
 	}
 
 	@Override

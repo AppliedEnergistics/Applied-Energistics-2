@@ -32,7 +32,7 @@ public class PartSemiDarkMonitor extends PartMonitor
 
 	public PartSemiDarkMonitor(ItemStack is) {
 		super( PartSemiDarkMonitor.class, is,false );
-		notLightSource = false;
+		this.notLightSource = false;
 	}
 
 	@Override
@@ -42,14 +42,14 @@ public class PartSemiDarkMonitor extends PartMonitor
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 
 		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
-				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+				this.is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 		rh.renderInventoryBox( renderer );
 
-		int light = getColor().whiteVariant;
-		int dark = getColor().mediumVariant;
+		int light = this.getColor().whiteVariant;
+		int dark = this.getColor().mediumVariant;
 		rh.setInvColor( (((((light >> 16) & 0xff) + ((dark >> 16) & 0xff)) / 2) << 16) | (((((light >> 8) & 0xff) + ((dark >> 8) & 0xff)) / 2) << 8)
 				| ((((light) & 0xff) + ((dark) & 0xff)) / 2) );
-		rh.renderInventoryFace( frontBright.getIcon(), ForgeDirection.SOUTH, renderer );
+		rh.renderInventoryFace( this.frontBright.getIcon(), ForgeDirection.SOUTH, renderer );
 
 		rh.setBounds( 4, 4, 13, 12, 12, 14 );
 		rh.renderInventoryBox( renderer );
@@ -60,22 +60,22 @@ public class PartSemiDarkMonitor extends PartMonitor
 	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
-				is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+				this.is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderBlock( x, y, z, renderer );
 
-		if ( getLightLevel() > 0 )
+		if ( this.getLightLevel() > 0 )
 		{
 			int l = 13;
 			Tessellator.instance.setBrightness( l << 20 | l << 4 );
 		}
 
-		int light = getColor().whiteVariant;
-		int dark = getColor().mediumVariant;
+		int light = this.getColor().whiteVariant;
+		int dark = this.getColor().mediumVariant;
 		Tessellator.instance.setColorOpaque( (((light >> 16) & 0xff) + ((dark >> 16) & 0xff)) / 2, (((light >> 8) & 0xff) + ((dark >> 8) & 0xff)) / 2,
 				(((light) & 0xff) + ((dark) & 0xff)) / 2 );
-		rh.renderFace( x, y, z, frontBright.getIcon(), ForgeDirection.SOUTH, renderer );
+		rh.renderFace( x, y, z, this.frontBright.getIcon(), ForgeDirection.SOUTH, renderer );
 
 		rh.setBounds( 4, 4, 13, 12, 12, 14 );
 		rh.renderBlock( x, y, z, renderer );

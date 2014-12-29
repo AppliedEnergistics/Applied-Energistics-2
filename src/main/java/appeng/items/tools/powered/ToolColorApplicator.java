@@ -100,8 +100,8 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	public ToolColorApplicator()
 	{
 		super( ToolColorApplicator.class, Optional.<String> absent() );
-		setFeature( EnumSet.of( AEFeature.ColorApplicator, AEFeature.PoweredTools ) );
-		maxStoredPower = AEConfig.instance.colorApplicatorBattery;
+		this.setFeature( EnumSet.of( AEFeature.ColorApplicator, AEFeature.PoweredTools ) );
+		this.maxStoredPower = AEConfig.instance.colorApplicatorBattery;
 		if ( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, new ToolColorApplicatorRender() );
 	}
@@ -119,7 +119,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		Block blk = w.getBlock( x, y, z );
 		double powerPerUse = 100;
 
-		ItemStack paintBall = getColor( is );
+		ItemStack paintBall = this.getColor( is );
 
 		IMEInventory<IAEItemStack> inv = AEApi.instance().registries().cell().getCellInventory( is, null, StorageChannel.ITEMS );
 		if ( inv != null )
@@ -144,12 +144,12 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				// clean cables.
 				if ( te instanceof IColorableTile )
 				{
-					if ( getAECurrentPower( is ) > powerPerUse && ( ( IColorableTile ) te ).getColor() != AEColor.Transparent )
+					if ( this.getAECurrentPower( is ) > powerPerUse && ( ( IColorableTile ) te ).getColor() != AEColor.Transparent )
 					{
 						if ( ( ( IColorableTile ) te ).recolourBlock( orientation, AEColor.Transparent, p ) )
 						{
 							inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
-							extractAEPower( is, powerPerUse );
+							this.extractAEPower( is, powerPerUse );
 							return true;
 						}
 					}
@@ -158,25 +158,25 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				// clean paint balls..
 				Block testBlk = w.getBlock( x + orientation.offsetX, y + orientation.offsetY, z + orientation.offsetZ );
 				TileEntity painted = w.getTileEntity( x + orientation.offsetX, y + orientation.offsetY, z + orientation.offsetZ );
-				if ( getAECurrentPower( is ) > powerPerUse && testBlk instanceof BlockPaint && painted instanceof TilePaint )
+				if ( this.getAECurrentPower( is ) > powerPerUse && testBlk instanceof BlockPaint && painted instanceof TilePaint )
 				{
 					inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
-					extractAEPower( is, powerPerUse );
+					this.extractAEPower( is, powerPerUse );
 					( ( TilePaint ) painted ).cleanSide( orientation.getOpposite() );
 					return true;
 				}
 			}
 			else if ( paintBall != null )
 			{
-				AEColor color = getColorFromItem( paintBall );
+				AEColor color = this.getColorFromItem( paintBall );
 
-				if ( color != null && getAECurrentPower( is ) > powerPerUse )
+				if ( color != null && this.getAECurrentPower( is ) > powerPerUse )
 				{
 					if ( color != AEColor.Transparent
-							&& recolourBlock( blk, ForgeDirection.getOrientation( side ), w, x, y, z, ForgeDirection.getOrientation( side ), color, p ) )
+							&& this.recolourBlock( blk, ForgeDirection.getOrientation( side ), w, x, y, z, ForgeDirection.getOrientation( side ), color, p ) )
 					{
 						inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
-						extractAEPower( is, powerPerUse );
+						this.extractAEPower( is, powerPerUse );
 						return true;
 					}
 				}
@@ -186,7 +186,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 		if ( p.isSneaking() )
 		{
-			cycleColors( is, paintBall, 1 );
+			this.cycleColors( is, paintBall, 1 );
 		}
 
 		return false;
@@ -197,7 +197,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	{
 		String extra = GuiText.Empty.getLocal();
 
-		AEColor selected = getActiveColor( par1ItemStack );
+		AEColor selected = this.getActiveColor( par1ItemStack );
 
 		if ( selected != null && Platform.isClient() )
 			extra = Platform.gui_localize( selected.unlocalizedName );
@@ -207,7 +207,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 	public AEColor getActiveColor( ItemStack tol )
 	{
-		return getColorFromItem( getColor( tol ) );
+		return this.getColorFromItem( this.getColor( tol ) );
 	}
 
 	public AEColor getColorFromItem( ItemStack paintBall )
@@ -248,7 +248,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				return oldColor;
 		}
 
-		return findNextColor( is, null, 0 );
+		return this.findNextColor( is, null, 0 );
 	}
 
 	private ItemStack findNextColor( ItemStack is, ItemStack anchor, int scrollOffset )
@@ -306,7 +306,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		}
 
 		if ( newColor != null )
-			setColor( is, newColor );
+			this.setColor( is, newColor );
 
 		return newColor;
 	}
@@ -383,11 +383,11 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	{
 		if ( paintBall == null )
 		{
-			setColor( is, getColor( is ) );
+			this.setColor( is, this.getColor( is ) );
 		}
 		else
 		{
-			setColor( is, findNextColor( is, paintBall, i ) );
+			this.setColor( is, this.findNextColor( is, paintBall, i ) );
 		}
 	}
 
@@ -513,7 +513,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	@Override
 	public void onWheel( ItemStack is, boolean up )
 	{
-		cycleColors( is, getColor( is ), up ? 1 : -1 );
+		this.cycleColors( is, this.getColor( is ), up ? 1 : -1 );
 	}
 
 }

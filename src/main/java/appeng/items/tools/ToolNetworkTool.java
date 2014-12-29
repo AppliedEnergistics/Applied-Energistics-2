@@ -83,7 +83,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 
 			if ( mop == null )
 			{
-				onItemUseFirst( it, p, w, 0, 0, 0, -1, 0, 0, 0 );
+				this.onItemUseFirst( it, p, w, 0, 0, 0, -1, 0, 0, 0 );
 			}
 			else
 			{
@@ -92,7 +92,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 				int k = mop.blockZ;
 
 				if ( w.getBlock( i, j, k ).isAir( w, i, j, k ) )
-					onItemUseFirst( it, p, w, 0, 0, 0, -1, 0, 0, 0 );
+					this.onItemUseFirst( it, p, w, 0, 0, 0, -1, 0, 0, 0 );
 			}
 		}
 
