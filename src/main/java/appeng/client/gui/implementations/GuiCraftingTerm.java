@@ -42,8 +42,8 @@ public class GuiCraftingTerm extends GuiMEMonitorable
 	public void initGui()
 	{
 		super.initGui();
-		buttonList.add( clearBtn = new GuiImgButton( this.guiLeft + 92, this.guiTop + this.ySize - 156, Settings.ACTIONS, ActionItems.STASH ) );
-		clearBtn.halfSize = true;
+		this.buttonList.add( this.clearBtn = new GuiImgButton( this.guiLeft + 92, this.guiTop + this.ySize - 156, Settings.ACTIONS, ActionItems.STASH ) );
+		this.clearBtn.halfSize = true;
 	}
 
 	@Override
@@ -51,10 +51,10 @@ public class GuiCraftingTerm extends GuiMEMonitorable
 	{
 		super.actionPerformed( btn );
 
-		if ( clearBtn == btn )
+		if ( this.clearBtn == btn )
 		{
 			Slot s = null;
-			Container c = inventorySlots;
+			Container c = this.inventorySlots;
 			for (Object j : c.inventorySlots)
 			{
 				if ( j instanceof SlotCraftingMatrix )
@@ -72,7 +72,7 @@ public class GuiCraftingTerm extends GuiMEMonitorable
 
 	public GuiCraftingTerm(InventoryPlayer inventoryPlayer, ITerminalHost te) {
 		super( inventoryPlayer, te, new ContainerCraftingTerm( inventoryPlayer, te ) );
-		reservedSpace = 73;
+		this.reservedSpace = 73;
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class GuiCraftingTerm extends GuiMEMonitorable
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
-		fontRendererObj.drawString( GuiText.CraftingTerminal.getLocal(), 8, ySize - 96 + 1 - reservedSpace, 4210752 );
+		this.fontRendererObj.drawString( GuiText.CraftingTerminal.getLocal(), 8, this.ySize - 96 + 1 - this.reservedSpace, 4210752 );
 	}
 
 }

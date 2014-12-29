@@ -39,13 +39,13 @@ public class AppEngSlot extends Slot
 
 	public Slot setNotDraggable()
 	{
-		isDraggable = false;
+		this.isDraggable = false;
 		return this;
 	}
 
 	public Slot setPlayerSide()
 	{
-		isPlayerSide = true;
+		this.isPlayerSide = true;
 		return this;
 	}
 
@@ -57,7 +57,7 @@ public class AppEngSlot extends Slot
 	@Override
 	public boolean func_111238_b()
 	{
-		return isEnabled();
+		return this.isEnabled();
 	}
 
 	public boolean isEnabled()
@@ -73,19 +73,19 @@ public class AppEngSlot extends Slot
 	@Override
 	public void onSlotChanged()
 	{
-		if ( inventory instanceof AppEngInternalInventory )
-			((AppEngInternalInventory) inventory).markDirty( getSlotIndex() );
+		if ( this.inventory instanceof AppEngInternalInventory )
+			((AppEngInternalInventory) this.inventory).markDirty( this.getSlotIndex() );
 		else
 			super.onSlotChanged();
 
-		isValid = hasCalculatedValidness.NotAvailable;
+		this.isValid = hasCalculatedValidness.NotAvailable;
 	}
 
 	public AppEngSlot(IInventory inv, int idx, int x, int y) {
 		super( inv, idx, x, y );
-		defX = x;
-		defY = y;
-		isValid = hasCalculatedValidness.NotAvailable;
+		this.defX = x;
+		this.defY = y;
+		this.isValid = hasCalculatedValidness.NotAvailable;
 	}
 
 	public boolean isDisplay = false;
@@ -93,16 +93,16 @@ public class AppEngSlot extends Slot
 	@Override
 	public ItemStack getStack()
 	{
-		if ( !isEnabled() )
+		if ( !this.isEnabled() )
 			return null;
 
-		if ( inventory.getSizeInventory() <= getSlotIndex() )
+		if ( this.inventory.getSizeInventory() <= this.getSlotIndex() )
 			return null;
 
-		if ( isDisplay )
+		if ( this.isDisplay )
 		{
-			isDisplay = false;
-			return getDisplayStack();
+			this.isDisplay = false;
+			return this.getDisplayStack();
 		}
 		return super.getStack();
 	}
@@ -110,12 +110,12 @@ public class AppEngSlot extends Slot
 	@Override
 	public void putStack(ItemStack par1ItemStack)
 	{
-		if ( isEnabled() )
+		if ( this.isEnabled() )
 		{
 			super.putStack( par1ItemStack );
 
-			if ( myContainer != null )
-				myContainer.onSlotChange( this );
+			if ( this.myContainer != null )
+				this.myContainer.onSlotChange( this );
 		}
 	}
 
@@ -127,7 +127,7 @@ public class AppEngSlot extends Slot
 	@Override
 	public boolean canTakeStack(EntityPlayer par1EntityPlayer)
 	{
-		if ( isEnabled() )
+		if ( this.isEnabled() )
 			return super.canTakeStack( par1EntityPlayer );
 		return false;
 	}
@@ -135,7 +135,7 @@ public class AppEngSlot extends Slot
 	@Override
 	public boolean isItemValid(ItemStack par1ItemStack)
 	{
-		if ( isEnabled() )
+		if ( this.isEnabled() )
 			return super.isItemValid( par1ItemStack );
 		return false;
 	}
@@ -157,17 +157,17 @@ public class AppEngSlot extends Slot
 
 	public int getIcon()
 	{
-		return IIcon;
+		return this.IIcon;
 	}
 
 	public boolean isPlayerSide()
 	{
-		return isPlayerSide;
+		return this.isPlayerSide;
 	}
 
 	public boolean shouldDisplay()
 	{
-		return isEnabled();
+		return this.isEnabled();
 	}
 
 }

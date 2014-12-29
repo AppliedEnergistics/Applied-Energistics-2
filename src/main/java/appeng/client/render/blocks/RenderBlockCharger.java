@@ -55,26 +55,26 @@ public class RenderBlockCharger extends BaseBlockRender
 		Tessellator tess = Tessellator.instance;
 
 		renderer.renderAllFaces = true;
-		setInvRenderBounds( renderer, 6, 1, 0, 10, 15, 2 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 6, 1, 0, 10, 15, 2 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		blk.getRendererInstance().setTemporaryRenderIcons( ExtraBlockTextures.BlockChargerInside.getIcon(), null, null, null, null, null );
 
-		setInvRenderBounds( renderer, 2, 0, 2, 14, 3, 14 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 2, 0, 2, 14, 3, 14 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 3, 3, 3, 13, 4, 13 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 3, 3, 3, 13, 4, 13 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 
 		blk.getRendererInstance().setTemporaryRenderIcons( null, ExtraBlockTextures.BlockChargerInside.getIcon(), null, null, null, null );
 
-		setInvRenderBounds( renderer, 2, 13, 2, 14, 16, 14 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 2, 13, 2, 14, 16, 14 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
-		setInvRenderBounds( renderer, 3, 12, 3, 13, 13, 13 );
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
+		this.setInvRenderBounds( renderer, 3, 12, 3, 13, 13, 13 );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 
 		renderer.renderAllFaces = false;
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
@@ -84,42 +84,42 @@ public class RenderBlockCharger extends BaseBlockRender
 	@Override
 	public boolean renderInWorld(AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
 	{
-		preRenderInWorld( block, world, x, y, z, renderer );
+		this.preRenderInWorld( block, world, x, y, z, renderer );
 
 		BlockCharger blk = (BlockCharger) block;
 
-		IOrientable te = getOrientable( block, world, x, y, z );
+		IOrientable te = this.getOrientable( block, world, x, y, z );
 
 		ForgeDirection fdy = te.getUp();
 		ForgeDirection fdz = te.getForward();
 		ForgeDirection fdx = Platform.crossProduct( fdz, fdy ).getOpposite();
 
 		renderer.renderAllFaces = true;
-		renderBlockBounds( renderer, 6, 1, 0, 10, 15, 2, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 6, 1, 0, 10, 15, 2, fdx, fdy, fdz );
 		boolean out = renderer.renderStandardBlock( blk, x, y, z );
 
 		blk.getRendererInstance().setTemporaryRenderIcons( ExtraBlockTextures.BlockChargerInside.getIcon(), null, null, null, null, null );
 
-		renderBlockBounds( renderer, 2, 0, 2, 14, 3, 14, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 2, 0, 2, 14, 3, 14, fdx, fdy, fdz );
 		out = renderer.renderStandardBlock( blk, x, y, z );
 
-		renderBlockBounds( renderer, 3, 3, 3, 13, 4, 13, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 3, 3, 3, 13, 4, 13, fdx, fdy, fdz );
 		out = renderer.renderStandardBlock( blk, x, y, z );
 
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 
 		blk.getRendererInstance().setTemporaryRenderIcons( null, ExtraBlockTextures.BlockChargerInside.getIcon(), null, null, null, null );
 
-		renderBlockBounds( renderer, 2, 13, 2, 14, 16, 14, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 2, 13, 2, 14, 16, 14, fdx, fdy, fdz );
 		out = renderer.renderStandardBlock( blk, x, y, z );
 
-		renderBlockBounds( renderer, 3, 12, 3, 13, 13, 13, fdx, fdy, fdz );
+		this.renderBlockBounds( renderer, 3, 12, 3, 13, 13, 13, fdx, fdy, fdz );
 		out = renderer.renderStandardBlock( blk, x, y, z );
 
 		renderer.renderAllFaces = false;
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 
-		postRenderInWorld( renderer );
+		this.postRenderInWorld( renderer );
 		return out;
 	}
 
@@ -133,7 +133,7 @@ public class RenderBlockCharger extends BaseBlockRender
 		if ( sis != null )
 		{
 			GL11.glPushMatrix();
-			applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
+			this.applyTESRRotation( x, y, z, tile.getForward(), tile.getUp() );
 
 			try
 			{
@@ -160,7 +160,7 @@ public class RenderBlockCharger extends BaseBlockRender
 				GL11.glDisable( GL12.GL_RESCALE_NORMAL );
 				tess.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
 
-				doRenderItem( sis, tile );
+				this.doRenderItem( sis, tile );
 			}
 			catch (Exception err)
 			{

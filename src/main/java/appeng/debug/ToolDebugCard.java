@@ -52,7 +52,7 @@ public class ToolDebugCard extends AEBaseItem
 
 	public ToolDebugCard() {
 		super( ToolDebugCard.class );
-		setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
+		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
 
 	public String timeMeasurement(long nanos)
@@ -80,8 +80,8 @@ public class ToolDebugCard extends AEBaseItem
 				totalNodes += g.getNodes().size();
 			}
 
-			outputMsg( player, "Grids: " + grids );
-			outputMsg( player, "Total Nodes: " + totalNodes );
+			this.outputMsg( player, "Grids: " + grids );
+			this.outputMsg( player, "Total Nodes: " + totalNodes );
 		}
 		else
 		{
@@ -94,8 +94,8 @@ public class ToolDebugCard extends AEBaseItem
 				{
 					Grid g = node.getInternalGrid();
 					IGridNode center = g.getPivot();
-					outputMsg( player, "This Node: " + node.toString() );
-					outputMsg( player, "Center Node: " + center.toString() );
+					this.outputMsg( player, "This Node: " + node.toString() );
+					this.outputMsg( player, "Center Node: " + center.toString() );
 					
 					IPathingGrid pg = g.getCache( IPathingGrid.class );
 					if ( pg.getControllerState() == ControllerState.CONTROLLER_ONLINE )
@@ -127,12 +127,12 @@ public class ToolDebugCard extends AEBaseItem
 								break;
 						}
 						
-						outputMsg( player, "Cable Distance: " + length );
+						this.outputMsg( player, "Cable Distance: " + length );
 					}
 					
 					if ( center.getMachine() instanceof PartP2PTunnel )
 					{
-						outputMsg( player, "Freq: " + ((PartP2PTunnel) center.getMachine()).freq );
+						this.outputMsg( player, "Freq: " + ((PartP2PTunnel) center.getMachine()).freq );
 					}
 
 					TickManagerCache tmc = g.getCache( ITickManager.class );
@@ -148,19 +148,19 @@ public class ToolDebugCard extends AEBaseItem
 
 						if ( nanos < 0 )
 						{
-							outputMsg( player, c.getSimpleName() + " - " + o );
+							this.outputMsg( player, c.getSimpleName() + " - " + o );
 						}
 						else
 						{
-							outputMsg( player, c.getSimpleName() + " - " + o + "; " + timeMeasurement( nanos ) );
+							this.outputMsg( player, c.getSimpleName() + " - " + o + "; " + this.timeMeasurement( nanos ) );
 						}
 					}
 				}
 				else
-					outputMsg( player, "No Node Available." );
+					this.outputMsg( player, "No Node Available." );
 			}
 			else
-				outputMsg( player, "Not Networked Block" );
+				this.outputMsg( player, "Not Networked Block" );
 
 			if ( te instanceof IPartHost )
 			{
@@ -169,12 +169,12 @@ public class ToolDebugCard extends AEBaseItem
 				if ( center != null )
 				{
 					GridNode n = (GridNode) center.getGridNode();
-					outputMsg( player, "Node Channels: " + n.usedChannels() );
+					this.outputMsg( player, "Node Channels: " + n.usedChannels() );
 					for (IGridConnection gc : n.getConnections())
 					{
 						ForgeDirection fd = gc.getDirection( n );
 						if ( fd != ForgeDirection.UNKNOWN )
-							outputMsg( player, fd.toString() + ": " + gc.getUsedChannels() );
+							this.outputMsg( player, fd.toString() + ": " + gc.getUsedChannels() );
 					}
 				}
 			}
@@ -182,7 +182,7 @@ public class ToolDebugCard extends AEBaseItem
 			if ( te instanceof IAEPowerStorage )
 			{
 				IAEPowerStorage ps = (IAEPowerStorage) te;
-				outputMsg( player, "Energy: " + ps.getAECurrentPower() + " / " + ps.getAEMaxPower() );
+				this.outputMsg( player, "Energy: " + ps.getAECurrentPower() + " / " + ps.getAEMaxPower() );
 
 				if ( te instanceof IGridHost )
 				{
@@ -190,7 +190,7 @@ public class ToolDebugCard extends AEBaseItem
 					if ( node != null && node.getGrid() != null )
 					{
 						IEnergyGrid eg = node.getGrid().getCache( IEnergyGrid.class );
-						outputMsg( player, "GridEnergy: " + eg.getStoredPower() + " : " + eg.getEnergyDemand( Double.MAX_VALUE ) );
+						this.outputMsg( player, "GridEnergy: " + eg.getStoredPower() + " : " + eg.getEnergyDemand( Double.MAX_VALUE ) );
 					}
 				}
 			}

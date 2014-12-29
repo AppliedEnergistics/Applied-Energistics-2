@@ -36,54 +36,54 @@ public class AENetworkTile extends AEBaseTile implements IActionHost, IGridProxy
 	@TileEvent(TileEventType.WORLD_NBT_READ)
 	public void readFromNBT_AENetwork(NBTTagCompound data)
 	{
-		gridProxy.readFromNBT( data );
+		this.gridProxy.readFromNBT( data );
 	}
 
 	@TileEvent(TileEventType.WORLD_NBT_WRITE)
 	public void writeToNBT_AENetwork(NBTTagCompound data)
 	{
-		gridProxy.writeToNBT( data );
+		this.gridProxy.writeToNBT( data );
 	}
 
-	final protected AENetworkProxy gridProxy = createProxy();
+	final protected AENetworkProxy gridProxy = this.createProxy();
 
 	protected AENetworkProxy createProxy()
 	{
-		return new AENetworkProxy( this, "proxy", getItemFromTile( this ), true );
+		return new AENetworkProxy( this, "proxy", this.getItemFromTile( this ), true );
 	}
 
 	@Override
 	public IGridNode getGridNode(ForgeDirection dir)
 	{
-		return gridProxy.getNode();
+		return this.gridProxy.getNode();
 	}
 
 	@Override
 	public void onReady()
 	{
 		super.onReady();
-		gridProxy.onReady();
+		this.gridProxy.onReady();
 	}
 
 	@Override
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
-		gridProxy.onChunkUnload();
+		this.gridProxy.onChunkUnload();
 	}
 
 	@Override
 	public void validate()
 	{
 		super.validate();
-		gridProxy.validate();
+		this.gridProxy.validate();
 	}
 
 	@Override
 	public void invalidate()
 	{
 		super.invalidate();
-		gridProxy.invalidate();
+		this.gridProxy.invalidate();
 	}
 
 	@Override
@@ -107,12 +107,12 @@ public class AENetworkTile extends AEBaseTile implements IActionHost, IGridProxy
 	@Override
 	public AENetworkProxy getProxy()
 	{
-		return gridProxy;
+		return this.gridProxy;
 	}
 
 	@Override
 	public IGridNode getActionableNode()
 	{
-		return gridProxy.getNode();
+		return this.gridProxy.getNode();
 	}
 }

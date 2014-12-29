@@ -40,28 +40,28 @@ public class EnergyWatcher implements IEnergyWatcher
 		EnergyThreshold myLast;
 
 		public EnergyWatcherIterator(EnergyWatcher parent, Iterator<EnergyThreshold> i) {
-			watcher = parent;
-			interestIterator = i;
+			this.watcher = parent;
+			this.interestIterator = i;
 		}
 
 		@Override
 		public boolean hasNext()
 		{
-			return interestIterator.hasNext();
+			return this.interestIterator.hasNext();
 		}
 
 		@Override
 		public Double next()
 		{
-			myLast = interestIterator.next();
-			return myLast.Limit;
+			this.myLast = this.interestIterator.next();
+			return this.myLast.Limit;
 		}
 
 		@Override
 		public void remove()
 		{
-			gsc.interests.remove( myLast );
-			interestIterator.remove();
+			EnergyWatcher.this.gsc.interests.remove( this.myLast );
+			this.interestIterator.remove();
 		}
 
 	}
@@ -72,27 +72,27 @@ public class EnergyWatcher implements IEnergyWatcher
 
 	public void post(EnergyGridCache energyGridCache)
 	{
-		myObject.onThresholdPass( energyGridCache );
+		this.myObject.onThresholdPass( energyGridCache );
 	}
 
 	public EnergyWatcher(EnergyGridCache cache, IEnergyWatcherHost host) {
-		gsc = cache;
-		myObject = host;
+		this.gsc = cache;
+		this.myObject = host;
 	}
 
 	public IEnergyWatcherHost getHost()
 	{
-		return myObject;
+		return this.myObject;
 	}
 
 	@Override
 	public boolean add(Double e)
 	{
-		if ( myInterests.contains( e ) )
+		if ( this.myInterests.contains( e ) )
 			return false;
 
 		EnergyThreshold eh = new EnergyThreshold( e, this );
-		return gsc.interests.add( eh ) && myInterests.add( eh );
+		return this.gsc.interests.add( eh ) && this.myInterests.add( eh );
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class EnergyWatcher implements IEnergyWatcher
 		boolean didChange = false;
 
 		for (Double o : c)
-			didChange = add( o ) || didChange;
+			didChange = this.add( o ) || didChange;
 
 		return didChange;
 	}
@@ -109,10 +109,10 @@ public class EnergyWatcher implements IEnergyWatcher
 	@Override
 	public void clear()
 	{
-		Iterator<EnergyThreshold> i = myInterests.iterator();
+		Iterator<EnergyThreshold> i = this.myInterests.iterator();
 		while (i.hasNext())
 		{
-			gsc.interests.remove( i.next() );
+			this.gsc.interests.remove( i.next() );
 			i.remove();
 		}
 	}
@@ -120,32 +120,32 @@ public class EnergyWatcher implements IEnergyWatcher
 	@Override
 	public boolean contains(Object o)
 	{
-		return myInterests.contains( o );
+		return this.myInterests.contains( o );
 	}
 
 	@Override
 	public boolean containsAll(Collection<?> c)
 	{
-		return myInterests.containsAll( c );
+		return this.myInterests.containsAll( c );
 	}
 
 	@Override
 	public boolean isEmpty()
 	{
-		return myInterests.isEmpty();
+		return this.myInterests.isEmpty();
 	}
 
 	@Override
 	public Iterator<Double> iterator()
 	{
-		return new EnergyWatcherIterator( this, myInterests.iterator() );
+		return new EnergyWatcherIterator( this, this.myInterests.iterator() );
 	}
 
 	@Override
 	public boolean remove(Object o)
 	{
 		EnergyThreshold eh = new EnergyThreshold( (Double) o, this );
-		return myInterests.remove( eh ) && gsc.interests.remove( eh );
+		return this.myInterests.remove( eh ) && this.gsc.interests.remove( eh );
 	}
 
 	@Override
@@ -153,7 +153,7 @@ public class EnergyWatcher implements IEnergyWatcher
 	{
 		boolean didSomething = false;
 		for (Object o : c)
-			didSomething = remove( o ) || didSomething;
+			didSomething = this.remove( o ) || didSomething;
 		return didSomething;
 	}
 
@@ -161,7 +161,7 @@ public class EnergyWatcher implements IEnergyWatcher
 	public boolean retainAll(Collection<?> c)
 	{
 		boolean changed = false;
-		Iterator<Double> i = iterator();
+		Iterator<Double> i = this.iterator();
 
 		while (i.hasNext())
 		{
@@ -178,19 +178,19 @@ public class EnergyWatcher implements IEnergyWatcher
 	@Override
 	public int size()
 	{
-		return myInterests.size();
+		return this.myInterests.size();
 	}
 
 	@Override
 	public Object[] toArray()
 	{
-		return myInterests.toArray();
+		return this.myInterests.toArray();
 	}
 
 	@Override
 	public <T> T[] toArray(T[] a)
 	{
-		return myInterests.toArray( a );
+		return this.myInterests.toArray( a );
 	}
 
 }

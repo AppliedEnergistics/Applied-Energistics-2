@@ -32,32 +32,32 @@ public class TunnelIterator<T extends PartP2PTunnel> implements Iterator<T>
 
 	private void findNext()
 	{
-		while (Next == null && wrapped.hasNext())
+		while (this.Next == null && this.wrapped.hasNext())
 		{
-			Next = wrapped.next();
-			if ( !targetType.isInstance( Next ) )
-				Next = null;
+			this.Next = this.wrapped.next();
+			if ( !this.targetType.isInstance( this.Next ) )
+				this.Next = null;
 		}
 	}
 
 	public TunnelIterator(Collection<T> tunnelSources, Class clz) {
-		wrapped = tunnelSources.iterator();
-		targetType = clz;
-		findNext();
+		this.wrapped = tunnelSources.iterator();
+		this.targetType = clz;
+		this.findNext();
 	}
 
 	@Override
 	public boolean hasNext()
 	{
-		findNext();
-		return Next != null;
+		this.findNext();
+		return this.Next != null;
 	}
 
 	@Override
 	public T next()
 	{
-		T tmp = Next;
-		Next = null;
+		T tmp = this.Next;
+		this.Next = null;
 		return tmp;
 	}
 

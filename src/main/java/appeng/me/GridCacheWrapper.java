@@ -30,49 +30,49 @@ public class GridCacheWrapper implements IGridCache
 	final String name;
 
 	public GridCacheWrapper(final IGridCache gc) {
-		myCache = gc;
-		name = myCache.getClass().getName();
+		this.myCache = gc;
+		this.name = this.myCache.getClass().getName();
 	}
 
 	@Override
 	public void onUpdateTick()
 	{
-		myCache.onUpdateTick();
+		this.myCache.onUpdateTick();
 	}
 
 	@Override
 	public void removeNode(final IGridNode gridNode, final IGridHost machine)
 	{
-		myCache.removeNode( gridNode, machine );
+		this.myCache.removeNode( gridNode, machine );
 	}
 
 	@Override
 	public void addNode(final IGridNode gridNode, final IGridHost machine)
 	{
-		myCache.addNode( gridNode, machine );
+		this.myCache.addNode( gridNode, machine );
 	}
 
 	public String getName()
 	{
-		return name;
+		return this.name;
 	}
 
 	@Override
 	public void onSplit(final IGridStorage storageB)
 	{
-		myCache.onSplit( storageB );
+		this.myCache.onSplit( storageB );
 	}
 
 	@Override
 	public void onJoin(final IGridStorage storageB)
 	{
-		myCache.onJoin( storageB );
+		this.myCache.onJoin( storageB );
 	}
 
 	@Override
 	public void populateGridStorage(final IGridStorage storage)
 	{
-		myCache.populateGridStorage( storage );
+		this.myCache.populateGridStorage( storage );
 	}
 
 }

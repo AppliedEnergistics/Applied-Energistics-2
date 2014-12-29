@@ -77,71 +77,71 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		public int lightHash;
 
 		public LightingCache(LightingCache secondCSrc) {
-			rXPos = secondCSrc.rXPos;
-			rXNeg = secondCSrc.rXNeg;
-			rYPos = secondCSrc.rYPos;
-			rYNeg = secondCSrc.rYNeg;
-			rZPos = secondCSrc.rZPos;
-			rZNeg = secondCSrc.rZNeg;
+			this.rXPos = secondCSrc.rXPos;
+			this.rXNeg = secondCSrc.rXNeg;
+			this.rYPos = secondCSrc.rYPos;
+			this.rYNeg = secondCSrc.rYNeg;
+			this.rZPos = secondCSrc.rZPos;
+			this.rZNeg = secondCSrc.rZNeg;
 
-			isAO = secondCSrc.isAO;
+			this.isAO = secondCSrc.isAO;
 
-			bXPos = secondCSrc.bXPos;
-			bXNeg = secondCSrc.bXNeg;
-			bYPos = secondCSrc.bYPos;
-			bYNeg = secondCSrc.bYNeg;
-			bZPos = secondCSrc.bZPos;
-			bZNeg = secondCSrc.bZNeg;
+			this.bXPos = secondCSrc.bXPos;
+			this.bXNeg = secondCSrc.bXNeg;
+			this.bYPos = secondCSrc.bYPos;
+			this.bYNeg = secondCSrc.bYNeg;
+			this.bZPos = secondCSrc.bZPos;
+			this.bZNeg = secondCSrc.bZNeg;
 
-			aoXPos = secondCSrc.aoXPos.clone();
-			aoXNeg = secondCSrc.aoXNeg.clone();
-			aoYPos = secondCSrc.aoYPos.clone();
-			aoYNeg = secondCSrc.aoYNeg.clone();
-			aoZPos = secondCSrc.aoZPos.clone();
-			aoZNeg = secondCSrc.aoZNeg.clone();
+			this.aoXPos = secondCSrc.aoXPos.clone();
+			this.aoXNeg = secondCSrc.aoXNeg.clone();
+			this.aoYPos = secondCSrc.aoYPos.clone();
+			this.aoYNeg = secondCSrc.aoYNeg.clone();
+			this.aoZPos = secondCSrc.aoZPos.clone();
+			this.aoZNeg = secondCSrc.aoZNeg.clone();
 
-			foXPos = secondCSrc.foXPos.clone();
-			foXNeg = secondCSrc.foXNeg.clone();
-			foYPos = secondCSrc.foYPos.clone();
-			foYNeg = secondCSrc.foYNeg.clone();
-			foZPos = secondCSrc.foZPos.clone();
-			foZNeg = secondCSrc.foZNeg.clone();
+			this.foXPos = secondCSrc.foXPos.clone();
+			this.foXNeg = secondCSrc.foXNeg.clone();
+			this.foYPos = secondCSrc.foYPos.clone();
+			this.foYNeg = secondCSrc.foYNeg.clone();
+			this.foZPos = secondCSrc.foZPos.clone();
+			this.foZNeg = secondCSrc.foZNeg.clone();
 
-			lightHash = secondCSrc.lightHash;
+			this.lightHash = secondCSrc.lightHash;
 		}
 
 		public LightingCache() {
-			rXPos = null;
-			rXNeg = null;
-			rYPos = null;
-			rYNeg = null;
-			rZPos = null;
-			rZNeg = null;
+			this.rXPos = null;
+			this.rXNeg = null;
+			this.rYPos = null;
+			this.rYNeg = null;
+			this.rZPos = null;
+			this.rZNeg = null;
 
-			isAO = false;
+			this.isAO = false;
 
-			bXPos = 0;
-			bXNeg = 0;
-			bYPos = 0;
-			bYNeg = 0;
-			bZPos = 0;
-			bZNeg = 0;
+			this.bXPos = 0;
+			this.bXNeg = 0;
+			this.bYPos = 0;
+			this.bYNeg = 0;
+			this.bZPos = 0;
+			this.bZNeg = 0;
 
-			aoXPos = new int[5];
-			aoXNeg = new int[5];
-			aoYPos = new int[5];
-			aoYNeg = new int[5];
-			aoZPos = new int[5];
-			aoZNeg = new int[5];
+			this.aoXPos = new int[5];
+			this.aoXNeg = new int[5];
+			this.aoYPos = new int[5];
+			this.aoYNeg = new int[5];
+			this.aoZPos = new int[5];
+			this.aoZNeg = new int[5];
 
-			foXPos = new float[12];
-			foXNeg = new float[12];
-			foYPos = new float[12];
-			foYNeg = new float[12];
-			foZPos = new float[12];
-			foZNeg = new float[12];
+			this.foXPos = new float[12];
+			this.foXNeg = new float[12];
+			this.foYPos = new float[12];
+			this.foYNeg = new float[12];
+			this.foZPos = new float[12];
+			this.foZNeg = new float[12];
 
-			lightHash = 0;
+			this.lightHash = 0;
 		}
 
 	}
@@ -158,19 +158,19 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	{
 		try
 		{
-			if ( fColor == null )
+			if ( this.fColor == null )
 			{
 				try
 				{
-					fColor = Tessellator.class.getDeclaredField( "color" );
+					this.fColor = Tessellator.class.getDeclaredField( "color" );
 				}
 				catch (Throwable t)
 				{
-					fColor = Tessellator.class.getDeclaredField( "field_78402_m" );
+					this.fColor = Tessellator.class.getDeclaredField( "field_78402_m" );
 				}
-				fColor.setAccessible( true );
+				this.fColor.setAccessible( true );
 			}
-			return (Integer) fColor.get( Tessellator.instance );
+			return (Integer) this.fColor.get( Tessellator.instance );
 		}
 		catch (Throwable t)
 		{
@@ -182,19 +182,19 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	{
 		try
 		{
-			if ( fBrightness == null )
+			if ( this.fBrightness == null )
 			{
 				try
 				{
-					fBrightness = Tessellator.class.getDeclaredField( "brightness" );
+					this.fBrightness = Tessellator.class.getDeclaredField( "brightness" );
 				}
 				catch (Throwable t)
 				{
-					fBrightness = Tessellator.class.getDeclaredField( "field_78401_l" );
+					this.fBrightness = Tessellator.class.getDeclaredField( "field_78401_l" );
 				}
-				fBrightness.setAccessible( true );
+				this.fBrightness.setAccessible( true );
 			}
-			return (Integer) fBrightness.get( Tessellator.instance );
+			return (Integer) this.fBrightness.get( Tessellator.instance );
 		}
 		catch (Throwable t)
 		{
@@ -204,90 +204,90 @@ public class RenderBlocksWorkaround extends RenderBlocks
 
 	public void setTexture(IIcon ico)
 	{
-		lightState.rXPos = lightState.rXNeg = lightState.rYPos = lightState.rYNeg = lightState.rZPos = lightState.rZNeg = ico;
+		this.lightState.rXPos = this.lightState.rXNeg = this.lightState.rYPos = this.lightState.rYNeg = this.lightState.rZPos = this.lightState.rZNeg = ico;
 	}
 
 	public void setTexture(IIcon rYNeg, IIcon rYPos, IIcon rZNeg, IIcon rZPos, IIcon rXNeg, IIcon rXPos)
 	{
-		lightState.rXPos = rXPos;
-		lightState.rXNeg = rXNeg;
-		lightState.rYPos = rYPos;
-		lightState.rYNeg = rYNeg;
-		lightState.rZPos = rZPos;
-		lightState.rZNeg = rZNeg;
+		this.lightState.rXPos = rXPos;
+		this.lightState.rXNeg = rXNeg;
+		this.lightState.rYPos = rYPos;
+		this.lightState.rYNeg = rYNeg;
+		this.lightState.rZPos = rZPos;
+		this.lightState.rZNeg = rZNeg;
 	}
 
 	public boolean renderStandardBlockNoCalculations(Block b, int x, int y, int z)
 	{
-		Tessellator.instance.setBrightness( lightState.bXPos );
-		restoreAO( lightState.aoXPos, lightState.foXPos );
-		renderFaceXPos( b, x, y, z, useTextures ? lightState.rXPos : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.EAST.ordinal() ) );
+		Tessellator.instance.setBrightness( this.lightState.bXPos );
+		this.restoreAO( this.lightState.aoXPos, this.lightState.foXPos );
+		this.renderFaceXPos( b, x, y, z, this.useTextures ? this.lightState.rXPos : this.getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.EAST.ordinal() ) );
 
-		Tessellator.instance.setBrightness( lightState.bXNeg );
-		restoreAO( lightState.aoXNeg, lightState.foXNeg );
-		renderFaceXNeg( b, x, y, z, useTextures ? lightState.rXNeg : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.WEST.ordinal() ) );
+		Tessellator.instance.setBrightness( this.lightState.bXNeg );
+		this.restoreAO( this.lightState.aoXNeg, this.lightState.foXNeg );
+		this.renderFaceXNeg( b, x, y, z, this.useTextures ? this.lightState.rXNeg : this.getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.WEST.ordinal() ) );
 
-		Tessellator.instance.setBrightness( lightState.bYPos );
-		restoreAO( lightState.aoYPos, lightState.foYPos );
-		renderFaceYPos( b, x, y, z, useTextures ? lightState.rYPos : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.UP.ordinal() ) );
+		Tessellator.instance.setBrightness( this.lightState.bYPos );
+		this.restoreAO( this.lightState.aoYPos, this.lightState.foYPos );
+		this.renderFaceYPos( b, x, y, z, this.useTextures ? this.lightState.rYPos : this.getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.UP.ordinal() ) );
 
-		Tessellator.instance.setBrightness( lightState.bYNeg );
-		restoreAO( lightState.aoYNeg, lightState.foYNeg );
-		renderFaceYNeg( b, x, y, z, useTextures ? lightState.rYNeg : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.DOWN.ordinal() ) );
+		Tessellator.instance.setBrightness( this.lightState.bYNeg );
+		this.restoreAO( this.lightState.aoYNeg, this.lightState.foYNeg );
+		this.renderFaceYNeg( b, x, y, z, this.useTextures ? this.lightState.rYNeg : this.getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.DOWN.ordinal() ) );
 
-		Tessellator.instance.setBrightness( lightState.bZPos );
-		restoreAO( lightState.aoZPos, lightState.foZPos );
-		renderFaceZPos( b, x, y, z, useTextures ? lightState.rZPos : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.SOUTH.ordinal() ) );
+		Tessellator.instance.setBrightness( this.lightState.bZPos );
+		this.restoreAO( this.lightState.aoZPos, this.lightState.foZPos );
+		this.renderFaceZPos( b, x, y, z, this.useTextures ? this.lightState.rZPos : this.getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.SOUTH.ordinal() ) );
 
-		Tessellator.instance.setBrightness( lightState.bZNeg );
-		restoreAO( lightState.aoZNeg, lightState.foZNeg );
-		renderFaceZNeg( b, x, y, z, useTextures ? lightState.rZNeg : getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.NORTH.ordinal() ) );
+		Tessellator.instance.setBrightness( this.lightState.bZNeg );
+		this.restoreAO( this.lightState.aoZNeg, this.lightState.foZNeg );
+		this.renderFaceZNeg( b, x, y, z, this.useTextures ? this.lightState.rZNeg : this.getBlockIcon( b, this.blockAccess, x, y, z, ForgeDirection.NORTH.ordinal() ) );
 
 		return true;
 	}
 
 	private void restoreAO(int[] z, float[] c)
 	{
-		brightnessBottomLeft = z[0];
-		brightnessBottomRight = z[1];
-		brightnessTopLeft = z[2];
-		brightnessTopRight = z[3];
-		Tessellator.instance.setColorRGBA_I( z[4], (int) (opacity * 255) );
+		this.brightnessBottomLeft = z[0];
+		this.brightnessBottomRight = z[1];
+		this.brightnessTopLeft = z[2];
+		this.brightnessTopRight = z[3];
+		Tessellator.instance.setColorRGBA_I( z[4], (int) (this.opacity * 255) );
 
-		colorRedTopLeft = c[0];
-		colorGreenTopLeft = c[1];
-		colorBlueTopLeft = c[2];
-		colorRedBottomLeft = c[3];
-		colorGreenBottomLeft = c[4];
-		colorBlueBottomLeft = c[5];
-		colorRedBottomRight = c[6];
-		colorGreenBottomRight = c[7];
-		colorBlueBottomRight = c[8];
-		colorRedTopRight = c[9];
-		colorGreenTopRight = c[10];
-		colorBlueTopRight = c[11];
+		this.colorRedTopLeft = c[0];
+		this.colorGreenTopLeft = c[1];
+		this.colorBlueTopLeft = c[2];
+		this.colorRedBottomLeft = c[3];
+		this.colorGreenBottomLeft = c[4];
+		this.colorBlueBottomLeft = c[5];
+		this.colorRedBottomRight = c[6];
+		this.colorGreenBottomRight = c[7];
+		this.colorBlueBottomRight = c[8];
+		this.colorRedTopRight = c[9];
+		this.colorGreenTopRight = c[10];
+		this.colorBlueTopRight = c[11];
 	}
 
 	private void saveAO(int[] z, float[] c)
 	{
-		z[0] = brightnessBottomLeft;
-		z[1] = brightnessBottomRight;
-		z[2] = brightnessTopLeft;
-		z[3] = brightnessTopRight;
-		z[4] = getCurrentColor();
+		z[0] = this.brightnessBottomLeft;
+		z[1] = this.brightnessBottomRight;
+		z[2] = this.brightnessTopLeft;
+		z[3] = this.brightnessTopRight;
+		z[4] = this.getCurrentColor();
 
-		c[0] = colorRedTopLeft;
-		c[1] = colorGreenTopLeft;
-		c[2] = colorBlueTopLeft;
-		c[3] = colorRedBottomLeft;
-		c[4] = colorGreenBottomLeft;
-		c[5] = colorBlueBottomLeft;
-		c[6] = colorRedBottomRight;
-		c[7] = colorGreenBottomRight;
-		c[8] = colorBlueBottomRight;
-		c[9] = colorRedTopRight;
-		c[10] = colorGreenTopRight;
-		c[11] = colorBlueTopRight;
+		c[0] = this.colorRedTopLeft;
+		c[1] = this.colorGreenTopLeft;
+		c[2] = this.colorBlueTopLeft;
+		c[3] = this.colorRedBottomLeft;
+		c[4] = this.colorGreenBottomLeft;
+		c[5] = this.colorBlueBottomLeft;
+		c[6] = this.colorRedBottomRight;
+		c[7] = this.colorGreenBottomRight;
+		c[8] = this.colorBlueBottomRight;
+		c[9] = this.colorRedTopRight;
+		c[10] = this.colorGreenTopRight;
+		c[11] = this.colorBlueTopRight;
 	}
 
 	@Override
@@ -295,16 +295,16 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	{
 		try
 		{
-			if ( calculations )
+			if ( this.calculations )
 			{
-				lightState.lightHash = getLightingHash( blk, this.blockAccess, x, y, z );
+				this.lightState.lightHash = this.getLightingHash( blk, this.blockAccess, x, y, z );
 				return super.renderStandardBlock( blk, x, y, z );
 			}
 			else
 			{
-				enableAO = lightState.isAO;
-				boolean out = renderStandardBlockNoCalculations( blk, x, y, z );
-				enableAO = false;
+				this.enableAO = this.lightState.isAO;
+				boolean out = this.renderStandardBlockNoCalculations( blk, x, y, z );
+				this.enableAO = false;
 				return out;
 			}
 		}
@@ -319,12 +319,12 @@ public class RenderBlocksWorkaround extends RenderBlocks
 	@Override
 	public void renderFaceXNeg(Block par1Block, double par2, double par4, double par6, IIcon par8Icon)
 	{
-		if ( faces.contains( ForgeDirection.WEST ) )
+		if ( this.faces.contains( ForgeDirection.WEST ) )
 		{
-			if ( !renderFaces.contains( ForgeDirection.WEST ) )
+			if ( !this.renderFaces.contains( ForgeDirection.WEST ) )
 				return;
 
-			if ( isFacade )
+			if ( this.isFacade )
 			{
 				Tessellator tessellator = Tessellator.instance;
 
@@ -341,13 +341,13 @@ public class RenderBlocksWorkaround extends RenderBlocks
 
 				if ( this.enableAO )
 				{
-					partialLightingColoring( renderMaxY, renderMaxZ );
+					this.partialLightingColoring( this.renderMaxY, this.renderMaxZ );
 					tessellator.addVertexWithUV( d11, d13, d15, d4, d5 );
-					partialLightingColoring( renderMaxY, renderMinZ );
+					this.partialLightingColoring( this.renderMaxY, this.renderMinZ );
 					tessellator.addVertexWithUV( d11, d13, d14, d3, d5 );
-					partialLightingColoring( renderMinY, renderMinZ );
+					this.partialLightingColoring( this.renderMinY, this.renderMinZ );
 					tessellator.addVertexWithUV( d11, d12, d14, d3, d6 );
-					partialLightingColoring( renderMinY, renderMaxZ );
+					this.partialLightingColoring( this.renderMinY, this.renderMaxZ );
 					tessellator.addVertexWithUV( d11, d12, d15, d4, d6 );
 				}
 				else
@@ -363,22 +363,22 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 		else
 		{
-			lightState.isAO = enableAO;
-			lightState.rXNeg = par8Icon;
-			saveAO( lightState.aoXNeg, lightState.foXNeg );
-			lightState.bXNeg = getCurrentBrightness();
+			this.lightState.isAO = this.enableAO;
+			this.lightState.rXNeg = par8Icon;
+			this.saveAO( this.lightState.aoXNeg, this.lightState.foXNeg );
+			this.lightState.bXNeg = this.getCurrentBrightness();
 		}
 	}
 
 	@Override
 	public void renderFaceXPos(Block par1Block, double par2, double par4, double par6, IIcon par8Icon)
 	{
-		if ( faces.contains( ForgeDirection.EAST ) )
+		if ( this.faces.contains( ForgeDirection.EAST ) )
 		{
-			if ( !renderFaces.contains( ForgeDirection.EAST ) )
+			if ( !this.renderFaces.contains( ForgeDirection.EAST ) )
 				return;
 
-			if ( isFacade )
+			if ( this.isFacade )
 			{
 				Tessellator tessellator = Tessellator.instance;
 
@@ -395,13 +395,13 @@ public class RenderBlocksWorkaround extends RenderBlocks
 
 				if ( this.enableAO )
 				{
-					partialLightingColoring( 1.0 - renderMinY, renderMaxZ );
+					this.partialLightingColoring( 1.0 - this.renderMinY, this.renderMaxZ );
 					tessellator.addVertexWithUV( d11, d12, d15, d4, d6 );
-					partialLightingColoring( 1.0 - renderMinY, renderMinZ );
+					this.partialLightingColoring( 1.0 - this.renderMinY, this.renderMinZ );
 					tessellator.addVertexWithUV( d11, d12, d14, d3, d6 );
-					partialLightingColoring( 1.0 - renderMaxY, renderMinZ );
+					this.partialLightingColoring( 1.0 - this.renderMaxY, this.renderMinZ );
 					tessellator.addVertexWithUV( d11, d13, d14, d3, d5 );
-					partialLightingColoring( 1.0 - renderMaxY, renderMaxZ );
+					this.partialLightingColoring( 1.0 - this.renderMaxY, this.renderMaxZ );
 					tessellator.addVertexWithUV( d11, d13, d15, d4, d5 );
 				}
 				else
@@ -417,50 +417,50 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 		else
 		{
-			lightState.isAO = enableAO;
-			lightState.rXPos = par8Icon;
-			saveAO( lightState.aoXPos, lightState.foXPos );
-			lightState.bXPos = getCurrentBrightness();
+			this.lightState.isAO = this.enableAO;
+			this.lightState.rXPos = par8Icon;
+			this.saveAO( this.lightState.aoXPos, this.lightState.foXPos );
+			this.lightState.bXPos = this.getCurrentBrightness();
 		}
 	}
 
 	private void partialLightingColoring(double u, double v)
 	{
-		double rA = colorRedTopLeft * u + (1.0 - u) * colorRedTopRight;
-		double rB = colorRedBottomLeft * u + (1.0 - u) * colorRedBottomRight;
+		double rA = this.colorRedTopLeft * u + (1.0 - u) * this.colorRedTopRight;
+		double rB = this.colorRedBottomLeft * u + (1.0 - u) * this.colorRedBottomRight;
 		float r = (float) (rA * v + rB * (1.0 - v));
 
-		double gA = colorGreenTopLeft * u + (1.0 - u) * colorGreenTopRight;
-		double gB = colorGreenBottomLeft * u + (1.0 - u) * colorGreenBottomRight;
+		double gA = this.colorGreenTopLeft * u + (1.0 - u) * this.colorGreenTopRight;
+		double gB = this.colorGreenBottomLeft * u + (1.0 - u) * this.colorGreenBottomRight;
 		float g = (float) (gA * v + gB * (1.0 - v));
 
-		double bA = colorBlueTopLeft * u + (1.0 - u) * colorBlueTopRight;
-		double bB = colorBlueBottomLeft * u + (1.0 - u) * colorBlueBottomRight;
+		double bA = this.colorBlueTopLeft * u + (1.0 - u) * this.colorBlueTopRight;
+		double bB = this.colorBlueBottomLeft * u + (1.0 - u) * this.colorBlueBottomRight;
 		float b = (float) (bA * v + bB * (1.0 - v));
 
-		double highA = (brightnessTopLeft >> 16 & 255) * u + (1.0 - u) * (brightnessTopRight >> 16 & 255);
-		double highB = (brightnessBottomLeft >> 16 & 255) * u + (1.0 - u) * (brightnessBottomRight >> 16 & 255);
+		double highA = (this.brightnessTopLeft >> 16 & 255) * u + (1.0 - u) * (this.brightnessTopRight >> 16 & 255);
+		double highB = (this.brightnessBottomLeft >> 16 & 255) * u + (1.0 - u) * (this.brightnessBottomRight >> 16 & 255);
 		int high = ((int) (highA * v + highB * (1.0 - v))) & 255;
 
-		double lowA = ((brightnessTopLeft & 255)) * u + (1.0 - u) * ((brightnessTopRight & 255));
-		double lowB = ((brightnessBottomLeft & 255)) * u + (1.0 - u) * ((brightnessBottomRight & 255));
+		double lowA = ((this.brightnessTopLeft & 255)) * u + (1.0 - u) * ((this.brightnessTopRight & 255));
+		double lowB = ((this.brightnessBottomLeft & 255)) * u + (1.0 - u) * ((this.brightnessBottomRight & 255));
 		int low = ((int) (lowA * v + lowB * (1.0 - v))) & 255;
 
 		int out = (high << 16) | low;
 
-		Tessellator.instance.setColorRGBA_F( r, g, b, opacity );
+		Tessellator.instance.setColorRGBA_F( r, g, b, this.opacity );
 		Tessellator.instance.setBrightness( out );
 	}
 
 	@Override
 	public void renderFaceYNeg(Block par1Block, double par2, double par4, double par6, IIcon par8Icon)
 	{
-		if ( faces.contains( ForgeDirection.DOWN ) )
+		if ( this.faces.contains( ForgeDirection.DOWN ) )
 		{
-			if ( !renderFaces.contains( ForgeDirection.DOWN ) )
+			if ( !this.renderFaces.contains( ForgeDirection.DOWN ) )
 				return;
 
-			if ( isFacade )
+			if ( this.isFacade )
 			{
 				Tessellator tessellator = Tessellator.instance;
 
@@ -477,13 +477,13 @@ public class RenderBlocksWorkaround extends RenderBlocks
 
 				if ( this.enableAO )
 				{
-					partialLightingColoring( 1.0 - renderMinX, renderMaxZ );
+					this.partialLightingColoring( 1.0 - this.renderMinX, this.renderMaxZ );
 					tessellator.addVertexWithUV( d11, d13, d15, d3, d6 );
-					partialLightingColoring( 1.0 - renderMinX, renderMinZ );
+					this.partialLightingColoring( 1.0 - this.renderMinX, this.renderMinZ );
 					tessellator.addVertexWithUV( d11, d13, d14, d3, d5 );
-					partialLightingColoring( 1.0 - renderMaxX, renderMinZ );
+					this.partialLightingColoring( 1.0 - this.renderMaxX, this.renderMinZ );
 					tessellator.addVertexWithUV( d12, d13, d14, d4, d5 );
-					partialLightingColoring( 1.0 - renderMaxX, renderMaxZ );
+					this.partialLightingColoring( 1.0 - this.renderMaxX, this.renderMaxZ );
 					tessellator.addVertexWithUV( d12, d13, d15, d4, d6 );
 				}
 				else
@@ -499,22 +499,22 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 		else
 		{
-			lightState.isAO = enableAO;
-			lightState.rYNeg = par8Icon;
-			saveAO( lightState.aoYNeg, lightState.foYNeg );
-			lightState.bYNeg = getCurrentBrightness();
+			this.lightState.isAO = this.enableAO;
+			this.lightState.rYNeg = par8Icon;
+			this.saveAO( this.lightState.aoYNeg, this.lightState.foYNeg );
+			this.lightState.bYNeg = this.getCurrentBrightness();
 		}
 	}
 
 	@Override
 	public void renderFaceYPos(Block par1Block, double par2, double par4, double par6, IIcon par8Icon)
 	{
-		if ( faces.contains( ForgeDirection.UP ) )
+		if ( this.faces.contains( ForgeDirection.UP ) )
 		{
-			if ( !renderFaces.contains( ForgeDirection.UP ) )
+			if ( !this.renderFaces.contains( ForgeDirection.UP ) )
 				return;
 
-			if ( isFacade )
+			if ( this.isFacade )
 			{
 				Tessellator tessellator = Tessellator.instance;
 
@@ -531,13 +531,13 @@ public class RenderBlocksWorkaround extends RenderBlocks
 
 				if ( this.enableAO )
 				{
-					partialLightingColoring( this.renderMaxX, renderMaxZ );
+					this.partialLightingColoring( this.renderMaxX, this.renderMaxZ );
 					tessellator.addVertexWithUV( d12, d13, d15, d4, d6 );
-					partialLightingColoring( this.renderMaxX, renderMinZ );
+					this.partialLightingColoring( this.renderMaxX, this.renderMinZ );
 					tessellator.addVertexWithUV( d12, d13, d14, d4, d5 );
-					partialLightingColoring( this.renderMinX, renderMinZ );
+					this.partialLightingColoring( this.renderMinX, this.renderMinZ );
 					tessellator.addVertexWithUV( d11, d13, d14, d3, d5 );
-					partialLightingColoring( this.renderMinX, renderMaxZ );
+					this.partialLightingColoring( this.renderMinX, this.renderMaxZ );
 					tessellator.addVertexWithUV( d11, d13, d15, d3, d6 );
 				}
 				else
@@ -553,22 +553,22 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 		else
 		{
-			lightState.isAO = enableAO;
-			lightState.rYPos = par8Icon;
-			saveAO( lightState.aoYPos, lightState.foYPos );
-			lightState.bYPos = getCurrentBrightness();
+			this.lightState.isAO = this.enableAO;
+			this.lightState.rYPos = par8Icon;
+			this.saveAO( this.lightState.aoYPos, this.lightState.foYPos );
+			this.lightState.bYPos = this.getCurrentBrightness();
 		}
 	}
 
 	@Override
 	public void renderFaceZNeg(Block par1Block, double par2, double par4, double par6, IIcon par8Icon)
 	{
-		if ( faces.contains( ForgeDirection.NORTH ) )
+		if ( this.faces.contains( ForgeDirection.NORTH ) )
 		{
-			if ( !renderFaces.contains( ForgeDirection.NORTH ) )
+			if ( !this.renderFaces.contains( ForgeDirection.NORTH ) )
 				return;
 
-			if ( isFacade )
+			if ( this.isFacade )
 			{
 				Tessellator tessellator = Tessellator.instance;
 
@@ -585,13 +585,13 @@ public class RenderBlocksWorkaround extends RenderBlocks
 
 				if ( this.enableAO )
 				{
-					partialLightingColoring( renderMaxY, 1.0 - renderMinX );
+					this.partialLightingColoring( this.renderMaxY, 1.0 - this.renderMinX );
 					tessellator.addVertexWithUV( d11, d14, d15, d3, d5 );
-					partialLightingColoring( renderMaxY, 1.0 - renderMaxX );
+					this.partialLightingColoring( this.renderMaxY, 1.0 - this.renderMaxX );
 					tessellator.addVertexWithUV( d12, d14, d15, d4, d5 );
-					partialLightingColoring( renderMinY, 1.0 - renderMaxX );
+					this.partialLightingColoring( this.renderMinY, 1.0 - this.renderMaxX );
 					tessellator.addVertexWithUV( d12, d13, d15, d4, d6 );
-					partialLightingColoring( renderMinY, 1.0 - renderMinX );
+					this.partialLightingColoring( this.renderMinY, 1.0 - this.renderMinX );
 					tessellator.addVertexWithUV( d11, d13, d15, d3, d6 );
 				}
 				else
@@ -607,22 +607,22 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 		else
 		{
-			lightState.isAO = enableAO;
-			lightState.rZNeg = par8Icon;
-			saveAO( lightState.aoZNeg, lightState.foZNeg );
-			lightState.bZNeg = getCurrentBrightness();
+			this.lightState.isAO = this.enableAO;
+			this.lightState.rZNeg = par8Icon;
+			this.saveAO( this.lightState.aoZNeg, this.lightState.foZNeg );
+			this.lightState.bZNeg = this.getCurrentBrightness();
 		}
 	}
 
 	@Override
 	public void renderFaceZPos(Block par1Block, double par2, double par4, double par6, IIcon par8Icon)
 	{
-		if ( faces.contains( ForgeDirection.SOUTH ) )
+		if ( this.faces.contains( ForgeDirection.SOUTH ) )
 		{
-			if ( !renderFaces.contains( ForgeDirection.SOUTH ) )
+			if ( !this.renderFaces.contains( ForgeDirection.SOUTH ) )
 				return;
 
-			if ( isFacade )
+			if ( this.isFacade )
 			{
 				Tessellator tessellator = Tessellator.instance;
 
@@ -639,13 +639,13 @@ public class RenderBlocksWorkaround extends RenderBlocks
 
 				if ( this.enableAO )
 				{
-					partialLightingColoring( 1.0 - renderMinX, renderMaxY );
+					this.partialLightingColoring( 1.0 - this.renderMinX, this.renderMaxY );
 					tessellator.addVertexWithUV( d11, d14, d15, d3, d5 );
-					partialLightingColoring( 1.0 - renderMinX, renderMinY );
+					this.partialLightingColoring( 1.0 - this.renderMinX, this.renderMinY );
 					tessellator.addVertexWithUV( d11, d13, d15, d3, d6 );
-					partialLightingColoring( 1.0 - renderMaxX, renderMinY );
+					this.partialLightingColoring( 1.0 - this.renderMaxX, this.renderMinY );
 					tessellator.addVertexWithUV( d12, d13, d15, d4, d6 );
-					partialLightingColoring( 1.0 - renderMaxX, renderMaxY );
+					this.partialLightingColoring( 1.0 - this.renderMaxX, this.renderMaxY );
 					tessellator.addVertexWithUV( d12, d14, d15, d4, d5 );
 				}
 				else
@@ -661,16 +661,16 @@ public class RenderBlocksWorkaround extends RenderBlocks
 		}
 		else
 		{
-			lightState.isAO = enableAO;
-			lightState.rZPos = par8Icon;
-			saveAO( lightState.aoZPos, lightState.foZPos );
-			lightState.bZPos = getCurrentBrightness();
+			this.lightState.isAO = this.enableAO;
+			this.lightState.rZPos = par8Icon;
+			this.saveAO( this.lightState.aoZPos, this.lightState.foZPos );
+			this.lightState.bZPos = this.getCurrentBrightness();
 		}
 	}
 
 	public boolean similarLighting(Block blk, IBlockAccess w, int x, int y, int z, ISimplifiedBundle sim)
 	{
-		int lh = getLightingHash( blk, w, x, y, z );
+		int lh = this.getLightingHash( blk, w, x, y, z );
 		return ((LightingCache) sim).lightHash == lh;
 	}
 
@@ -686,19 +686,19 @@ public class RenderBlocksWorkaround extends RenderBlocks
 				for (int k = -1; k <= 1; k++)
 				{
 
-					lightHashTmp[o++] = blk.getMixedBrightnessForBlock( this.blockAccess, x + i, y + j, z + k );
+					this.lightHashTmp[o++] = blk.getMixedBrightnessForBlock( this.blockAccess, x + i, y + j, z + k );
 				}
 
-		return Arrays.hashCode( lightHashTmp );
+		return Arrays.hashCode( this.lightHashTmp );
 	}
 
 	public void populate(ISimplifiedBundle sim)
 	{
-		lightState = new LightingCache( (LightingCache) sim );
+		this.lightState = new LightingCache( (LightingCache) sim );
 	}
 
 	public ISimplifiedBundle getLightingCache()
 	{
-		return new LightingCache( lightState );
+		return new LightingCache( this.lightState );
 	}
 }

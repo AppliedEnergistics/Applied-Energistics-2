@@ -33,8 +33,8 @@ public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenc
 
 	public ItemCreativeStorageCell() {
 		super( ItemCreativeStorageCell.class );
-		setFeature( EnumSet.of( AEFeature.StorageCells, AEFeature.Creative ) );
-		setMaxStackSize( 1 );
+		this.setFeature( EnumSet.of( AEFeature.StorageCells, AEFeature.Creative ) );
+		this.setMaxStackSize( 1 );
 	}
 
 	@Override

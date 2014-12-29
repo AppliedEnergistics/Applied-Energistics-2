@@ -40,7 +40,7 @@ public class ItemEncodedPatternRenderer implements IItemRenderer
 	{
 		boolean isShiftHeld = Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT );
 
-		if ( !recursive && type == IItemRenderer.ItemRenderType.INVENTORY && isShiftHeld )
+		if ( !this.recursive && type == IItemRenderer.ItemRenderType.INVENTORY && isShiftHeld )
 		{
 			ItemEncodedPattern iep = (ItemEncodedPattern) item.getItem();
 			if ( iep.getOutput( item ) != null )
@@ -59,7 +59,7 @@ public class ItemEncodedPatternRenderer implements IItemRenderer
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
 	{
-		recursive = true;
+		this.recursive = true;
 
 		ItemEncodedPattern iep = (ItemEncodedPattern) item.getItem();
 
@@ -68,10 +68,10 @@ public class ItemEncodedPatternRenderer implements IItemRenderer
 
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 		RenderHelper.enableGUIStandardItemLighting();
-		ri.renderItemAndEffectIntoGUI( mc.fontRenderer, mc.getTextureManager(), is, 0, 0 );
+		this.ri.renderItemAndEffectIntoGUI( mc.fontRenderer, mc.getTextureManager(), is, 0, 0 );
 		RenderHelper.disableStandardItemLighting();
 		GL11.glPopAttrib();
 
-		recursive = false;
+		this.recursive = false;
 	}
 }

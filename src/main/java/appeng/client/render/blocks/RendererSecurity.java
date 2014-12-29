@@ -47,7 +47,7 @@ public class RendererSecurity extends BaseBlockRender
 		this.renderInvBlock( EnumSet.of( ForgeDirection.SOUTH ), block, is, Tessellator.instance, 0x000000, renderer );
 
 		renderer.overrideBlockTexture = ExtraBlockTextures.MEChest.getIcon();
-		this.renderInvBlock( EnumSet.of( ForgeDirection.UP ), block, is, Tessellator.instance, adjustBrightness( AEColor.Transparent.whiteVariant, 0.7 ),
+		this.renderInvBlock( EnumSet.of( ForgeDirection.UP ), block, is, Tessellator.instance, this.adjustBrightness( AEColor.Transparent.whiteVariant, 0.7 ),
 				renderer );
 
 		renderer.overrideBlockTexture = null;
@@ -62,7 +62,7 @@ public class RendererSecurity extends BaseBlockRender
 
 		ForgeDirection up = sp.getUp();
 
-		preRenderInWorld( imb, world, x, y, z, renderer );
+		this.preRenderInWorld( imb, world, x, y, z, renderer );
 
 		boolean result = renderer.renderStandardBlock( imb, x, y, z );
 
@@ -78,20 +78,20 @@ public class RendererSecurity extends BaseBlockRender
 
 		Tessellator.instance.setColorOpaque_I( sp.getColor().whiteVariant );
 		IIcon ico = sp.isActive() ? ExtraBlockTextures.BlockMESecurityOn_Light.getIcon() : ExtraBlockTextures.MEChest.getIcon();
-		renderFace( x, y, z, imb, ico, renderer, up );
+		this.renderFace( x, y, z, imb, ico, renderer, up );
 		if ( sp.isActive() )
 		{
 			Tessellator.instance.setColorOpaque_I( sp.getColor().mediumVariant );
 			ico = sp.isActive() ? ExtraBlockTextures.BlockMESecurityOn_Medium.getIcon() : ExtraBlockTextures.MEChest.getIcon();
-			renderFace( x, y, z, imb, ico, renderer, up );
+			this.renderFace( x, y, z, imb, ico, renderer, up );
 
 			Tessellator.instance.setColorOpaque_I( sp.getColor().blackVariant );
 			ico = sp.isActive() ? ExtraBlockTextures.BlockMESecurityOn_Dark.getIcon() : ExtraBlockTextures.MEChest.getIcon();
-			renderFace( x, y, z, imb, ico, renderer, up );
+			this.renderFace( x, y, z, imb, ico, renderer, up );
 		}
 
 		renderer.overrideBlockTexture = null;
-		postRenderInWorld( renderer );
+		this.postRenderInWorld( renderer );
 
 		return result;
 	}

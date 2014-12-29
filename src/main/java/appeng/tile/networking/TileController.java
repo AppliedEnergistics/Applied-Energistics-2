@@ -43,10 +43,10 @@ public class TileController extends AENetworkPowerTile
 	boolean isValid = false;
 
 	public TileController() {
-		internalMaxPower = 8000;
-		internalPublicPowerStorage = true;
-		gridProxy.setIdlePowerUsage( 3 );
-		gridProxy.setFlags( GridFlags.CANNOT_CARRY, GridFlags.DENSE_CAPACITY );
+		this.internalMaxPower = 8000;
+		this.internalPublicPowerStorage = true;
+		this.gridProxy.setIdlePowerUsage( 3 );
+		this.gridProxy.setFlags( GridFlags.CANNOT_CARRY, GridFlags.DENSE_CAPACITY );
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class TileController extends AENetworkPowerTile
 	{
 		try
 		{
-			return gridProxy.getEnergy().getEnergyDemand( 8000 );
+			return this.gridProxy.getEnergy().getEnergyDemand( 8000 );
 		}
 		catch (GridAccessException e)
 		{
@@ -74,7 +74,7 @@ public class TileController extends AENetworkPowerTile
 	{
 		try
 		{
-			double ret = gridProxy.getEnergy().injectPower( AEUnits, mode );
+			double ret = this.gridProxy.getEnergy().injectPower( AEUnits, mode );
 			if ( mode == Actionable.SIMULATE )
 				return ret;
 			return 0;
@@ -91,7 +91,7 @@ public class TileController extends AENetworkPowerTile
 	{
 		try
 		{
-			gridProxy.getGrid().postEvent( new MENetworkPowerStorage( this, x ) );
+			this.gridProxy.getGrid().postEvent( new MENetworkPowerStorage( this, x ) );
 		}
 		catch (GridAccessException e)
 		{
@@ -102,64 +102,64 @@ public class TileController extends AENetworkPowerTile
 	@MENetworkEventSubscribe
 	public void onControllerChange(MENetworkControllerChange status)
 	{
-		updateMeta();
+		this.updateMeta();
 	}
 
 	@MENetworkEventSubscribe
 	public void onPowerChange(MENetworkPowerStatusChange status)
 	{
-		updateMeta();
+		this.updateMeta();
 	}
 
 	@Override
 	public void onReady()
 	{
-		onNeighborChange( true );
+		this.onNeighborChange( true );
 		super.onReady();
 	}
 
 	public void onNeighborChange(boolean force)
 	{
-		boolean xx = worldObj.getTileEntity( xCoord - 1, yCoord, zCoord ) instanceof TileController
-				&& worldObj.getTileEntity( xCoord + 1, yCoord, zCoord ) instanceof TileController;
-		boolean yy = worldObj.getTileEntity( xCoord, yCoord - 1, zCoord ) instanceof TileController
-				&& worldObj.getTileEntity( xCoord, yCoord + 1, zCoord ) instanceof TileController;
-		boolean zz = worldObj.getTileEntity( xCoord, yCoord, zCoord - 1 ) instanceof TileController
-				&& worldObj.getTileEntity( xCoord, yCoord, zCoord + 1 ) instanceof TileController;
+		boolean xx = this.worldObj.getTileEntity( this.xCoord - 1, this.yCoord, this.zCoord ) instanceof TileController
+				&& this.worldObj.getTileEntity( this.xCoord + 1, this.yCoord, this.zCoord ) instanceof TileController;
+		boolean yy = this.worldObj.getTileEntity( this.xCoord, this.yCoord - 1, this.zCoord ) instanceof TileController
+				&& this.worldObj.getTileEntity( this.xCoord, this.yCoord + 1, this.zCoord ) instanceof TileController;
+		boolean zz = this.worldObj.getTileEntity( this.xCoord, this.yCoord, this.zCoord - 1 ) instanceof TileController
+				&& this.worldObj.getTileEntity( this.xCoord, this.yCoord, this.zCoord + 1 ) instanceof TileController;
 
 		// int meta = world.getBlockMetadata( xCoord, yCoord, zCoord );
 		// boolean hasPower = meta > 0;
 		// boolean isConflict = meta == 2;
 
-		boolean oldValid = isValid;
+		boolean oldValid = this.isValid;
 
-		isValid = (xx && !yy && !zz) || (!xx && yy && !zz) || (!xx && !yy && zz) || ((xx ? 1 : 0) + (yy ? 1 : 0) + (zz ? 1 : 0) <= 1);
+		this.isValid = (xx && !yy && !zz) || (!xx && yy && !zz) || (!xx && !yy && zz) || ((xx ? 1 : 0) + (yy ? 1 : 0) + (zz ? 1 : 0) <= 1);
 
-		if ( oldValid != isValid || force )
+		if ( oldValid != this.isValid || force )
 		{
-			if ( isValid )
-				gridProxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
+			if ( this.isValid )
+				this.gridProxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
 			else
-				gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+				this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 		}
 
-		updateMeta();
+		this.updateMeta();
 	}
 
 	private void updateMeta()
 	{
-		if ( !gridProxy.isReady() )
+		if ( !this.gridProxy.isReady() )
 			return;
 
 		int meta = 0;
 
 		try
 		{
-			if ( gridProxy.getEnergy().isNetworkPowered() )
+			if ( this.gridProxy.getEnergy().isNetworkPowered() )
 			{
 				meta = 1;
 
-				if ( gridProxy.getPath().getControllerState() == ControllerState.CONTROLLER_CONFLICT )
+				if ( this.gridProxy.getPath().getControllerState() == ControllerState.CONTROLLER_CONFLICT )
 					meta = 2;
 			}
 		}
@@ -168,7 +168,7 @@ public class TileController extends AENetworkPowerTile
 			meta = 0;
 		}
 
-		worldObj.setBlockMetadataWithNotify( xCoord, yCoord, zCoord, meta, 2 );
+		this.worldObj.setBlockMetadataWithNotify( this.xCoord, this.yCoord, this.zCoord, meta, 2 );
 	}
 
 	final int sides[] = new int[] {};
@@ -189,7 +189,7 @@ public class TileController extends AENetworkPowerTile
 	@Override
 	public int[] getAccessibleSlotsBySide(ForgeDirection side)
 	{
-		return sides;
+		return this.sides;
 	}
 
 }

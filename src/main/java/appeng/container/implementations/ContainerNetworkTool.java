@@ -37,20 +37,20 @@ public class ContainerNetworkTool extends AEBaseContainer
 
 	public ContainerNetworkTool(InventoryPlayer ip, INetworkTool te) {
 		super( ip, null, null );
-		toolInv = te;
+		this.toolInv = te;
 
-		lockPlayerInventorySlot( ip.currentItem );
+		this.lockPlayerInventorySlot( ip.currentItem );
 
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 3; x++)
-				addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, te, y * 3 + x, 80 - 18 + x * 18, 37 - 18 + y * 18, invPlayer )) );
+				this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, te, y * 3 + x, 80 - 18 + x * 18, 37 - 18 + y * 18, this.invPlayer )) );
 
-		bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
+		this.bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
 	}
 
 	public void toggleFacadeMode()
 	{
-		NBTTagCompound data = Platform.openNbtData( toolInv.getItemStack() );
+		NBTTagCompound data = Platform.openNbtData( this.toolInv.getItemStack() );
 		data.setBoolean( "hideFacades", !data.getBoolean( "hideFacades" ) );
 		this.detectAndSendChanges();
 	}
@@ -58,27 +58,27 @@ public class ContainerNetworkTool extends AEBaseContainer
 	@Override
 	public void detectAndSendChanges()
 	{
-		ItemStack currentItem = getPlayerInv().getCurrentItem();
+		ItemStack currentItem = this.getPlayerInv().getCurrentItem();
 
-		if ( currentItem != toolInv.getItemStack() )
+		if ( currentItem != this.toolInv.getItemStack() )
 		{
 			if ( currentItem != null )
 			{
-				if ( Platform.isSameItem( toolInv.getItemStack(), currentItem ) )
+				if ( Platform.isSameItem( this.toolInv.getItemStack(), currentItem ) )
 				{
-					getPlayerInv().setInventorySlotContents( getPlayerInv().currentItem, toolInv.getItemStack() );
+					this.getPlayerInv().setInventorySlotContents( this.getPlayerInv().currentItem, this.toolInv.getItemStack() );
 				}
 				else
-					isContainerValid = false;
+					this.isContainerValid = false;
 			}
 			else
-				isContainerValid = false;
+				this.isContainerValid = false;
 		}
 
-		if ( isContainerValid )
+		if ( this.isContainerValid )
 		{
 			NBTTagCompound data = Platform.openNbtData( currentItem );
-			facadeMode = data.getBoolean( "hideFacades" );
+			this.facadeMode = data.getBoolean( "hideFacades" );
 		}
 
 		super.detectAndSendChanges();

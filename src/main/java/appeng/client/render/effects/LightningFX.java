@@ -30,17 +30,17 @@ import net.minecraft.world.World;
 public class LightningFX extends EntityFX
 {
 
-	final int steps = getSteps();
+	final int steps = this.getSteps();
 	static final Random rng = new Random();
 	final double[][] Steps;
 
 	protected LightningFX(World w, double x, double y, double z, double r, double g, double b, int maxAge) {
 		super( w, x, y, z, r, g, b );
-		Steps = new double[steps][3];
-		motionX = 0;
-		motionY = 0;
-		motionZ = 0;
-		particleMaxAge = maxAge;
+		this.Steps = new double[this.steps][3];
+		this.motionX = 0;
+		this.motionY = 0;
+		this.motionZ = 0;
+		this.particleMaxAge = maxAge;
 	}
 
 	private int getSteps()
@@ -50,7 +50,7 @@ public class LightningFX extends EntityFX
 
 	public LightningFX(World w, double x, double y, double z, double r, double g, double b) {
 		this( w, x, y, z, r, g, b, 6 );
-		regen();
+		this.regen();
 	}
 
 	float currentPoint = 0;
@@ -67,11 +67,11 @@ public class LightningFX extends EntityFX
 		double lastDirectionX = (rng.nextDouble() - 0.5) * 0.9;
 		double lastDirectionY = (rng.nextDouble() - 0.5) * 0.9;
 		double lastDirectionZ = (rng.nextDouble() - 0.5) * 0.9;
-		for (int s = 0; s < steps; s++)
+		for (int s = 0; s < this.steps; s++)
 		{
-			Steps[s][0] = lastDirectionX = (lastDirectionX + (rng.nextDouble() - 0.5) * 0.9) / 2.0;
-			Steps[s][1] = lastDirectionY = (lastDirectionY + (rng.nextDouble() - 0.5) * 0.9) / 2.0;
-			Steps[s][2] = lastDirectionZ = (lastDirectionZ + (rng.nextDouble() - 0.5) * 0.9) / 2.0;
+			this.Steps[s][0] = lastDirectionX = (lastDirectionX + (rng.nextDouble() - 0.5) * 0.9) / 2.0;
+			this.Steps[s][1] = lastDirectionY = (lastDirectionY + (rng.nextDouble() - 0.5) * 0.9) / 2.0;
+			this.Steps[s][2] = lastDirectionZ = (lastDirectionZ + (rng.nextDouble() - 0.5) * 0.9) / 2.0;
 		}
 	}
 
@@ -80,9 +80,9 @@ public class LightningFX extends EntityFX
 	{
 		float j = 1.0f;
 		tess.setColorRGBA_F( this.particleRed * j * 0.9f, this.particleGreen * j * 0.95f, this.particleBlue * j, this.particleAlpha );
-		if ( particleAge == 3 )
+		if ( this.particleAge == 3 )
 		{
-			regen();
+			this.regen();
 		}
 		double f6 = this.particleTextureIndexX / 16.0;
 		double f7 = f6 + 0.0324375F;
@@ -127,17 +127,17 @@ public class LightningFX extends EntityFX
 
 			for (int cycle = 0; cycle < 3; cycle++)
 			{
-				clear();
+				this.clear();
 
 				double x = (this.prevPosX + (this.posX - this.prevPosX) * l - interpPosX) - offX;
 				double y = (this.prevPosY + (this.posY - this.prevPosY) * l - interpPosY) - offY;
 				double z = (this.prevPosZ + (this.posZ - this.prevPosZ) * l - interpPosZ) - offZ;
 
-				for (int s = 0; s < steps; s++)
+				for (int s = 0; s < this.steps; s++)
 				{
-					double xN = x + Steps[s][0];
-					double yN = y + Steps[s][1];
-					double zN = z + Steps[s][2];
+					double xN = x + this.Steps[s][0];
+					double yN = y + this.Steps[s][1];
+					double zN = z + this.Steps[s][2];
 
 					double xD = xN - x;
 					double yD = yN - y;
@@ -162,7 +162,7 @@ public class LightningFX extends EntityFX
 						oz = (xD * 0) - (1 * yD);
 					}
 
-					double ss = Math.sqrt( ox * ox + oy * oy + oz * oz ) / ((((double) steps - (double) s) / steps) * scale);
+					double ss = Math.sqrt( ox * ox + oy * oy + oz * oz ) / ((((double) this.steps - (double) s) / this.steps) * scale);
 					ox /= ss;
 					oy /= ss;
 					oz /= ss;
@@ -175,7 +175,7 @@ public class LightningFX extends EntityFX
 					b[1] = y;
 					b[2] = z;
 
-					draw( tess, a, b, f6, f8 );
+					this.draw( tess, a, b, f6, f8 );
 
 					x = xN;
 					y = yN;
@@ -195,23 +195,23 @@ public class LightningFX extends EntityFX
 
 	private void draw(Tessellator tess, double[] a, double[] b, double f6, double f8)
 	{
-		if ( hasData )
+		if ( this.hasData )
 		{
 			tess.addVertexWithUV( a[0], a[1], a[2], f6, f8 );
-			tess.addVertexWithUV( I[0], I[1], I[2], f6, f8 );
-			tess.addVertexWithUV( K[0], K[1], K[2], f6, f8 );
+			tess.addVertexWithUV( this.I[0], this.I[1], this.I[2], f6, f8 );
+			tess.addVertexWithUV( this.K[0], this.K[1], this.K[2], f6, f8 );
 			tess.addVertexWithUV( b[0], b[1], b[2], f6, f8 );
 		}
-		hasData = true;
+		this.hasData = true;
 		for (int x = 0; x < 3; x++)
 		{
-			I[x] = a[x];
-			K[x] = b[x];
+			this.I[x] = a[x];
+			this.K[x] = b[x];
 		}
 	}
 
 	private void clear()
 	{
-		hasData = false;
+		this.hasData = false;
 	}
 }

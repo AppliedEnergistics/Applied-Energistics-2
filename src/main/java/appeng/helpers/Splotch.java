@@ -27,8 +27,8 @@ public class Splotch
 {
 
 	public Splotch(AEColor col, boolean lit, ForgeDirection side, Vec3 Pos) {
-		color = col;
-		lumen = lit;
+		this.color = col;
+		this.lumen = lit;
 
 		double x, y;
 
@@ -59,18 +59,18 @@ public class Splotch
 
 	public Splotch(ByteBuf data) {
 
-		pos = data.readByte();
+		this.pos = data.readByte();
 		int val = data.readByte();
 
-		side = ForgeDirection.getOrientation( val & 0x07 );
-		color = AEColor.values()[(val >> 3) & 0x0F];
-		lumen = ((val >> 7) & 0x01) > 0;
+		this.side = ForgeDirection.getOrientation( val & 0x07 );
+		this.color = AEColor.values()[(val >> 3) & 0x0F];
+		this.lumen = ((val >> 7) & 0x01) > 0;
 	}
 
 	public void writeToStream(ByteBuf stream)
 	{
-		stream.writeByte( pos );
-		int val = side.ordinal() | (color.ordinal() << 3) | (lumen ? 0x80 : 0x00);
+		stream.writeByte( this.pos );
+		int val = this.side.ordinal() | (this.color.ordinal() << 3) | (this.lumen ? 0x80 : 0x00);
 		stream.writeByte( val );
 	}
 
@@ -81,17 +81,17 @@ public class Splotch
 
 	public float x()
 	{
-		return (pos & 0x0f) / 15.0f;
+		return (this.pos & 0x0f) / 15.0f;
 	}
 
 	public float y()
 	{
-		return ((pos >> 4) & 0x0f) / 15.0f;
+		return ((this.pos >> 4) & 0x0f) / 15.0f;
 	}
 
 	public int getSeed()
 	{
-		int val = side.ordinal() | (color.ordinal() << 3) | (lumen ? 0x80 : 0x00);
-		return Math.abs( pos + val );
+		int val = this.side.ordinal() | (this.color.ordinal() << 3) | (this.lumen ? 0x80 : 0x00);
+		return Math.abs( this.pos + val );
 	}
 }

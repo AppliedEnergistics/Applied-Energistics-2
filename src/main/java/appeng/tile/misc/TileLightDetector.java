@@ -31,28 +31,28 @@ public class TileLightDetector extends AEBaseTile
 
 	public boolean isReady()
 	{
-		return lastLight > 0;
+		return this.lastLight > 0;
 	}
 
 	@TileEvent(TileEventType.TICK)
 	public void Tick_TileLightDetector()
 	{
-		lastCheck++;
-		if ( lastCheck > 30 )
+		this.lastCheck++;
+		if ( this.lastCheck > 30 )
 		{
-			lastCheck = 0;
-			updateLight();
+			this.lastCheck = 0;
+			this.updateLight();
 		}
 	}
 
 	public void updateLight()
 	{
-		int val = worldObj.getBlockLightValue( xCoord, yCoord, zCoord );
+		int val = this.worldObj.getBlockLightValue( this.xCoord, this.yCoord, this.zCoord );
 
-		if ( lastLight != val )
+		if ( this.lastLight != val )
 		{
-			lastLight = val;
-			Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord, zCoord );
+			this.lastLight = val;
+			Platform.notifyBlocksOfNeighbors( this.worldObj, this.xCoord, this.yCoord, this.zCoord );
 		}
 	}
 

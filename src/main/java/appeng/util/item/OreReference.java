@@ -36,27 +36,27 @@ public class OreReference
 
 	public Collection<ItemStack> getEquivalents()
 	{
-		return otherOptions;
+		return this.otherOptions;
 	}
 
 	public List<IAEItemStack> getAEEquivalents()
 	{
-		if ( aeOtherOptions == null )
+		if ( this.aeOtherOptions == null )
 		{
-			aeOtherOptions = new ArrayList<IAEItemStack>( otherOptions.size() );
+			this.aeOtherOptions = new ArrayList<IAEItemStack>( this.otherOptions.size() );
 
 			// SUMMON AE STACKS!
-			for (ItemStack is : otherOptions)
+			for (ItemStack is : this.otherOptions)
 				if ( is.getItem() != null )
-					aeOtherOptions.add( AEItemStack.create( is ) );
+					this.aeOtherOptions.add( AEItemStack.create( is ) );
 		}
 
-		return aeOtherOptions;
+		return this.aeOtherOptions;
 	}
 
 	public Collection<Integer> getOres()
 	{
-		return ores;
+		return this.ores;
 	}
 
 }

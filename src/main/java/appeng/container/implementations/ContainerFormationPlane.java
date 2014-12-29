@@ -39,7 +39,7 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 
 	public ContainerFormationPlane(InventoryPlayer ip, PartFormationPlane te) {
 		super( ip, te );
-		storageBus = te;
+		this.storageBus = te;
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 	@Override
 	public boolean isSlotEnabled(int idx)
 	{
-		int upgrades = upgradeable.getInstalledUpgrades( Upgrades.CAPACITY );
+		int upgrades = this.upgradeable.getInstalledUpgrades( Upgrades.CAPACITY );
 
 		return upgrades > idx;
 	}
@@ -74,37 +74,37 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 		int xo = 8;
 		int yo = 23 + 6;
 
-		IInventory config = upgradeable.getInventoryByName( "config" );
+		IInventory config = this.upgradeable.getInventoryByName( "config" );
 		for (int y = 0; y < 7; y++)
 		{
 			for (int x = 0; x < 9; x++)
 			{
 				if ( y < 2 )
-					addSlotToContainer( new SlotFakeTypeOnly( config, y * 9 + x, xo + x * 18, yo + y * 18 ) );
+					this.addSlotToContainer( new SlotFakeTypeOnly( config, y * 9 + x, xo + x * 18, yo + y * 18 ) );
 				else
-					addSlotToContainer( new OptionalSlotFakeTypeOnly( config, this, y * 9 + x, xo, yo, x, y, y - 2 ) );
+					this.addSlotToContainer( new OptionalSlotFakeTypeOnly( config, this, y * 9 + x, xo, yo, x, y, y - 2 ) );
 			}
 		}
 
-		IInventory upgrades = upgradeable.getInventoryByName( "upgrades" );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, invPlayer )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, invPlayer )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, invPlayer )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, invPlayer )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187, 8 + 18 * 4, invPlayer )).setNotDraggable() );
+		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
+		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer )).setNotDraggable() );
+		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer )).setNotDraggable() );
+		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer )).setNotDraggable() );
+		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.invPlayer )).setNotDraggable() );
+		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187, 8 + 18 * 4, this.invPlayer )).setNotDraggable() );
 	}
 
 	@Override
 	public void detectAndSendChanges()
 	{
-		verifyPermissions( SecurityPermissions.BUILD, false );
+		this.verifyPermissions( SecurityPermissions.BUILD, false );
 
 		if ( Platform.isServer() )
 		{
 			this.fzMode = (FuzzyMode) this.upgradeable.getConfigManager().getSetting( Settings.FUZZY_MODE );
 		}
 
-		standardDetectAndSendChanges();
+		this.standardDetectAndSendChanges();
 	}
 
 }

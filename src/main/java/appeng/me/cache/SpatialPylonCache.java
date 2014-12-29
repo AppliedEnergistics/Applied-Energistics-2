@@ -54,37 +54,37 @@ public class SpatialPylonCache implements ISpatialCache
 	final IGrid myGrid;
 
 	public SpatialPylonCache(IGrid g) {
-		myGrid = g;
+		this.myGrid = g;
 	}
 
 	@Override
 	public long requiredPower()
 	{
-		return powerRequired;
+		return this.powerRequired;
 	}
 
 	@Override
 	public boolean hasRegion()
 	{
-		return captureMin != null;
+		return this.captureMin != null;
 	}
 
 	@Override
 	public boolean isValidRegion()
 	{
-		return hasRegion() && isValid;
+		return this.hasRegion() && this.isValid;
 	}
 
 	@Override
 	public DimensionalCoord getMin()
 	{
-		return captureMin;
+		return this.captureMin;
 	}
 
 	@Override
 	public DimensionalCoord getMax()
 	{
-		return captureMax;
+		return this.captureMax;
 	}
 
 	public void reset(IGrid grid)
@@ -97,12 +97,12 @@ public class SpatialPylonCache implements ISpatialCache
 		double minPower = 0;
 		double maxPower = 0;
 
-		clusters = new HashMap<SpatialPylonCluster, SpatialPylonCluster>();
-		ioPorts = new LinkedList<TileSpatialIOPort>();
+		this.clusters = new HashMap<SpatialPylonCluster, SpatialPylonCluster>();
+		this.ioPorts = new LinkedList<TileSpatialIOPort>();
 
 		for (IGridNode gm : grid.getMachines( TileSpatialIOPort.class ))
 		{
-			ioPorts.add( (TileSpatialIOPort) gm.getMachine() );
+			this.ioPorts.add( (TileSpatialIOPort) gm.getMachine() );
 		}
 
 		IReadOnlyCollection<IGridNode> set = grid.getMachines( TileSpatialPylon.class );
@@ -112,89 +112,89 @@ public class SpatialPylonCache implements ISpatialCache
 			{
 				SpatialPylonCluster c = ((TileSpatialPylon) gm.getMachine()).getCluster();
 				if ( c != null )
-					clusters.put( c, c );
+					this.clusters.put( c, c );
 			}
 		}
 
-		captureMax = null;
-		captureMin = null;
-		isValid = true;
+		this.captureMax = null;
+		this.captureMin = null;
+		this.isValid = true;
 
 		int pylonBlocks = 0;
-		for (SpatialPylonCluster cl : clusters.values())
+		for (SpatialPylonCluster cl : this.clusters.values())
 		{
-			if ( captureMax == null )
-				captureMax = cl.max.copy();
-			if ( captureMin == null )
-				captureMin = cl.min.copy();
+			if ( this.captureMax == null )
+				this.captureMax = cl.max.copy();
+			if ( this.captureMin == null )
+				this.captureMin = cl.min.copy();
 
 			pylonBlocks += cl.tileCount();
 
-			captureMin.x = Math.min( captureMin.x, cl.min.x );
-			captureMin.y = Math.min( captureMin.y, cl.min.y );
-			captureMin.z = Math.min( captureMin.z, cl.min.z );
+			this.captureMin.x = Math.min( this.captureMin.x, cl.min.x );
+			this.captureMin.y = Math.min( this.captureMin.y, cl.min.y );
+			this.captureMin.z = Math.min( this.captureMin.z, cl.min.z );
 
-			captureMax.x = Math.max( captureMax.x, cl.max.x );
-			captureMax.y = Math.max( captureMax.y, cl.max.y );
-			captureMax.z = Math.max( captureMax.z, cl.max.z );
+			this.captureMax.x = Math.max( this.captureMax.x, cl.max.x );
+			this.captureMax.y = Math.max( this.captureMax.y, cl.max.y );
+			this.captureMax.z = Math.max( this.captureMax.z, cl.max.z );
 		}
 
-		if ( hasRegion() )
+		if ( this.hasRegion() )
 		{
-			isValid = captureMax.x - captureMin.x > 1 && captureMax.y - captureMin.y > 1 && captureMax.z - captureMin.z > 1;
+			this.isValid = this.captureMax.x - this.captureMin.x > 1 && this.captureMax.y - this.captureMin.y > 1 && this.captureMax.z - this.captureMin.z > 1;
 
-			for (SpatialPylonCluster cl : clusters.values())
+			for (SpatialPylonCluster cl : this.clusters.values())
 			{
 				switch (cl.currentAxis)
 				{
 				case X:
 
-					isValid = isValid && ((captureMax.y == cl.min.y || captureMin.y == cl.max.y) || (captureMax.z == cl.min.z || captureMin.z == cl.max.z))
-							&& ((captureMax.y == cl.max.y || captureMin.y == cl.min.y) || (captureMax.z == cl.max.z || captureMin.z == cl.min.z));
+					this.isValid = this.isValid && ((this.captureMax.y == cl.min.y || this.captureMin.y == cl.max.y) || (this.captureMax.z == cl.min.z || this.captureMin.z == cl.max.z))
+							&& ((this.captureMax.y == cl.max.y || this.captureMin.y == cl.min.y) || (this.captureMax.z == cl.max.z || this.captureMin.z == cl.min.z));
 
 					break;
 				case Y:
 
-					isValid = isValid && ((captureMax.x == cl.min.x || captureMin.x == cl.max.x) || (captureMax.z == cl.min.z || captureMin.z == cl.max.z))
-							&& ((captureMax.x == cl.max.x || captureMin.x == cl.min.x) || (captureMax.z == cl.max.z || captureMin.z == cl.min.z));
+					this.isValid = this.isValid && ((this.captureMax.x == cl.min.x || this.captureMin.x == cl.max.x) || (this.captureMax.z == cl.min.z || this.captureMin.z == cl.max.z))
+							&& ((this.captureMax.x == cl.max.x || this.captureMin.x == cl.min.x) || (this.captureMax.z == cl.max.z || this.captureMin.z == cl.min.z));
 
 					break;
 				case Z:
 
-					isValid = isValid && ((captureMax.y == cl.min.y || captureMin.y == cl.max.y) || (captureMax.x == cl.min.x || captureMin.x == cl.max.x))
-							&& ((captureMax.y == cl.max.y || captureMin.y == cl.min.y) || (captureMax.x == cl.max.x || captureMin.x == cl.min.x));
+					this.isValid = this.isValid && ((this.captureMax.y == cl.min.y || this.captureMin.y == cl.max.y) || (this.captureMax.x == cl.min.x || this.captureMin.x == cl.max.x))
+							&& ((this.captureMax.y == cl.max.y || this.captureMin.y == cl.min.y) || (this.captureMax.x == cl.max.x || this.captureMin.x == cl.min.x));
 
 					break;
 				case UNFORMED:
-					isValid = false;
+					this.isValid = false;
 					break;
 				}
 			}
 
-			reqX = captureMax.x - captureMin.x;
-			reqY = captureMax.y - captureMin.y;
-			reqZ = captureMax.z - captureMin.z;
+			reqX = this.captureMax.x - this.captureMin.x;
+			reqY = this.captureMax.y - this.captureMin.y;
+			reqZ = this.captureMax.z - this.captureMin.z;
 			requirePylonBlocks = Math.max( 6, ((reqX * reqZ + reqX * reqY + reqY * reqZ) * 3) / 8 );
 			
-			efficiency = (double) pylonBlocks / (double) requirePylonBlocks;
+			this.efficiency = (double) pylonBlocks / (double) requirePylonBlocks;
 			
-			if ( efficiency > 1.0 )
-				efficiency = 1.0;
-			if ( efficiency < 0.0 )
-				efficiency = 0.0;
+			if ( this.efficiency > 1.0 )
+				this.efficiency = 1.0;
+			if ( this.efficiency < 0.0 )
+				this.efficiency = 0.0;
 			
 			minPower = (double) reqX * (double) reqY * reqZ * AEConfig.instance.spatialPowerMultiplier;
 			maxPower = Math.pow( minPower, AEConfig.instance.spatialPowerExponent );
 		}
 
-		double affective_efficiency = Math.pow( efficiency, 0.25 );
-		powerRequired = (long) (affective_efficiency * minPower + (1.0 - affective_efficiency) * maxPower);
+		double affective_efficiency = Math.pow( this.efficiency, 0.25 );
+		this.powerRequired = (long) (affective_efficiency * minPower + (1.0 - affective_efficiency) * maxPower);
 
-		for (SpatialPylonCluster cl : clusters.values())
+		for (SpatialPylonCluster cl : this.clusters.values())
 		{
 			boolean myWasValid = cl.isValid;
-			cl.isValid = isValid;
-			if ( myWasValid != isValid )
+			cl.isValid = this.isValid;
+			if ( myWasValid != this.isValid )
 				cl.updateStatus( false );
 		}
 	}
@@ -202,13 +202,13 @@ public class SpatialPylonCache implements ISpatialCache
 	@Override
 	public float currentEfficiency()
 	{
-		return (float) efficiency * 100;
+		return (float) this.efficiency * 100;
 	}
 
 	@MENetworkEventSubscribe
 	public void bootingRender(MENetworkBootingStatusChange c)
 	{
-		reset( myGrid );
+		this.reset( this.myGrid );
 	}
 
 	@Override

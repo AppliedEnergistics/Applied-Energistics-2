@@ -30,7 +30,7 @@ public class LayerIBatteryProvider extends LayerBase implements ISidedBatteryPro
 	@Override
 	public IBatteryObject getMjBattery(String kind, ForgeDirection direction)
 	{
-		IPart p = getPart( direction );
+		IPart p = this.getPart( direction );
 
 		if ( p instanceof ISidedBatteryProvider )
 			return ((ISidedBatteryProvider) p).getMjBattery( kind, direction );

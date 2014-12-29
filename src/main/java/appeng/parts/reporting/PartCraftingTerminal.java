@@ -38,14 +38,14 @@ public class PartCraftingTerminal extends PartTerminal
 	public void writeToNBT(NBTTagCompound data)
 	{
 		super.writeToNBT( data );
-		craftingGrid.writeToNBT( data, "craftingGrid" );
+		this.craftingGrid.writeToNBT( data, "craftingGrid" );
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound data)
 	{
 		super.readFromNBT( data );
-		craftingGrid.readFromNBT( data, "craftingGrid" );
+		this.craftingGrid.readFromNBT( data, "craftingGrid" );
 	}
 
 	@Override
@@ -53,16 +53,16 @@ public class PartCraftingTerminal extends PartTerminal
 	{
 		super.getDrops(drops, wrenched);
 		
-		for (ItemStack is : craftingGrid)
+		for (ItemStack is : this.craftingGrid)
 			if ( is != null )
 				drops.add( is );
 	}
 
 	public PartCraftingTerminal(ItemStack is) {
 		super( PartCraftingTerminal.class, is );
-		frontBright = CableBusTextures.PartCraftingTerm_Bright;
-		frontColored = CableBusTextures.PartCraftingTerm_Colored;
-		frontDark = CableBusTextures.PartCraftingTerm_Dark;
+		this.frontBright = CableBusTextures.PartCraftingTerm_Bright;
+		this.frontColored = CableBusTextures.PartCraftingTerm_Colored;
+		this.frontDark = CableBusTextures.PartCraftingTerm_Dark;
 		// frontSolid = CableBusTextures.PartCraftingTerm_Solid;
 	}
 
@@ -70,14 +70,14 @@ public class PartCraftingTerminal extends PartTerminal
 	public GuiBridge getGui( EntityPlayer p )
 	{
 		int x = (int) p.posX, y = (int) p.posY, z = (int) p.posZ;
-		if ( getHost().getTile() != null )
+		if ( this.getHost().getTile() != null )
 		{
-			x = tile.xCoord;
-			y = tile.yCoord;
-			z = tile.zCoord;
+			x = this.tile.xCoord;
+			y = this.tile.yCoord;
+			z = this.tile.zCoord;
 		}
 
-		if( GuiBridge.GUI_CRAFTING_TERMINAL.hasPermissions( getHost().getTile(), x, y, z, side, p ) )
+		if( GuiBridge.GUI_CRAFTING_TERMINAL.hasPermissions( this.getHost().getTile(), x, y, z, this.side, p ) )
 			return GuiBridge.GUI_CRAFTING_TERMINAL;
 		return GuiBridge.GUI_ME;
 	}
@@ -85,14 +85,14 @@ public class PartCraftingTerminal extends PartTerminal
 	@Override
 	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
 	{
-		host.markForSave();
+		this.host.markForSave();
 	}
 
 	@Override
 	public IInventory getInventoryByName(String name)
 	{
 		if ( name.equals( "crafting" ) )
-			return craftingGrid;
+			return this.craftingGrid;
 		return super.getInventoryByName( name );
 	}
 

@@ -43,8 +43,8 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 	final double MAX_DISTANCE;
 
 	public TESRWrapper(BaseBlockRender render) {
-		blkRender = render;
-		MAX_DISTANCE = blkRender.getTesrRenderDistance();
+		this.blkRender = render;
+		this.MAX_DISTANCE = this.blkRender.getTesrRenderDistance();
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 
 			if ( b instanceof AEBaseBlock && ((AEBaseTile) te).requiresTESR() )
 			{
-				if ( Math.abs( x ) > MAX_DISTANCE || Math.abs( y ) > MAX_DISTANCE || Math.abs( z ) > MAX_DISTANCE )
+				if ( Math.abs( x ) > this.MAX_DISTANCE || Math.abs( y ) > this.MAX_DISTANCE || Math.abs( z ) > this.MAX_DISTANCE )
 					return;
 
 				Tessellator tess = Tessellator.instance;
@@ -69,8 +69,8 @@ public class TESRWrapper extends TileEntitySpecialRenderer
 					GL11.glPushMatrix();
 					GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
-					renderBlocksInstance.blockAccess = te.getWorldObj();
-					blkRender.renderTile( (AEBaseBlock) b, (AEBaseTile) te, tess, x, y, z, f, renderBlocksInstance );
+					this.renderBlocksInstance.blockAccess = te.getWorldObj();
+					this.blkRender.renderTile( (AEBaseBlock) b, (AEBaseTile) te, tess, x, y, z, f, this.renderBlocksInstance );
 
 					if ( Platform.isDrawing( tess ) )
 						throw new RuntimeException( "Error during rendering." );

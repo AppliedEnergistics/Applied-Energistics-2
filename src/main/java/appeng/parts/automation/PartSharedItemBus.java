@@ -53,26 +53,26 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	@Override
 	public void upgradesChanged()
 	{
-		updateState();
+		this.updateState();
 	}
 
 	protected int availableSlots()
 	{
-		return Math.min( 1 + getInstalledUpgrades( Upgrades.CAPACITY ) * 4, config.getSizeInventory() );
+		return Math.min( 1 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 4, this.config.getSizeInventory() );
 	}
 
 	@Override
 	public void writeToNBT(net.minecraft.nbt.NBTTagCompound extra)
 	{
 		super.writeToNBT( extra );
-		config.writeToNBT( extra, "config" );
+		this.config.writeToNBT( extra, "config" );
 	}
 
 	@Override
 	public void readFromNBT(net.minecraft.nbt.NBTTagCompound extra)
 	{
 		super.readFromNBT( extra );
-		config.readFromNBT( extra, "config" );
+		this.config.readFromNBT( extra, "config" );
 	}
 
 	final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
@@ -82,18 +82,18 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 
 	InventoryAdaptor getHandler()
 	{
-		TileEntity self = getHost().getTile();
-		TileEntity target = getTileEntity( self, self.xCoord + side.offsetX, self.yCoord + side.offsetY, self.zCoord + side.offsetZ );
+		TileEntity self = this.getHost().getTile();
+		TileEntity target = this.getTileEntity( self, self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
 
 		int newAdaptorHash = Platform.generateTileHash( target );
 
-		if ( adaptorHash == newAdaptorHash && newAdaptorHash != 0 )
-			return adaptor;
+		if ( this.adaptorHash == newAdaptorHash && newAdaptorHash != 0 )
+			return this.adaptor;
 
-		adaptorHash = newAdaptorHash;
-		adaptor = InventoryAdaptor.getAdaptor( target, side.getOpposite() );
+		this.adaptorHash = newAdaptorHash;
+		this.adaptor = InventoryAdaptor.getAdaptor( target, this.side.getOpposite() );
 
-		return adaptor;
+		return this.adaptor;
 	}
 
 	boolean lastRedstone = false;
@@ -103,12 +103,12 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	@Override
 	public void onNeighborChanged()
 	{
-		updateState();
-		if ( lastRedstone != host.hasRedstone( side ) )
+		this.updateState();
+		if ( this.lastRedstone != this.host.hasRedstone( this.side ) )
 		{
-			lastRedstone = !lastRedstone;
-			if ( lastRedstone && getRSMode() == RedstoneMode.SIGNAL_PULSE )
-				doBusWork();
+			this.lastRedstone = !this.lastRedstone;
+			if ( this.lastRedstone && this.getRSMode() == RedstoneMode.SIGNAL_PULSE )
+				this.doBusWork();
 		}
 	}
 
@@ -116,10 +116,10 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	{
 		try
 		{
-			if ( !isSleeping() )
-				proxy.getTick().wakeDevice( proxy.getNode() );
+			if ( !this.isSleeping() )
+				this.proxy.getTick().wakeDevice( this.proxy.getNode() );
 			else
-				proxy.getTick().sleepDevice( proxy.getNode() );
+				this.proxy.getTick().sleepDevice( this.proxy.getNode() );
 		}
 		catch (GridAccessException e)
 		{
@@ -131,7 +131,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	public IInventory getInventoryByName(String name)
 	{
 		if ( name.equals( "config" ) )
-			return config;
+			return this.config;
 
 		return super.getInventoryByName( name );
 	}

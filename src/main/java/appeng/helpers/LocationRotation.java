@@ -31,7 +31,7 @@ public class LocationRotation implements IOrientable
 	final int z;
 
 	public LocationRotation(IBlockAccess world, int x, int y, int z) {
-		w = world;
+		this.w = world;
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -46,14 +46,14 @@ public class LocationRotation implements IOrientable
 	@Override
 	public ForgeDirection getUp()
 	{
-		int num = Math.abs( x + y + z ) % 6;
+		int num = Math.abs( this.x + this.y + this.z ) % 6;
 		return ForgeDirection.getOrientation( num );
 	}
 
 	@Override
 	public ForgeDirection getForward()
 	{
-		if ( getUp().offsetY == 0 )
+		if ( this.getUp().offsetY == 0 )
 			return ForgeDirection.UP;
 		return ForgeDirection.SOUTH;
 	}

@@ -44,10 +44,10 @@ public class TileChunkLoader extends AEBaseTile
 	@TileEvent(TileEventType.TICK)
 	public void Tick_TileChunkLoader()
 	{
-		if ( requestTicket )
+		if ( this.requestTicket )
 		{
-			requestTicket = false;
-			initTicket();
+			this.requestTicket = false;
+			this.initTicket();
 		}
 	}
 
@@ -56,9 +56,9 @@ public class TileChunkLoader extends AEBaseTile
 		if ( Platform.isClient() )
 			return;
 
-		ct = ForgeChunkManager.requestTicket( AppEng.instance, worldObj, Type.NORMAL );
+		this.ct = ForgeChunkManager.requestTicket( AppEng.instance, this.worldObj, Type.NORMAL );
 
-		if ( ct == null )
+		if ( this.ct == null )
 		{
 			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 			if ( server != null )
@@ -72,8 +72,8 @@ public class TileChunkLoader extends AEBaseTile
 			return;
 		}
 
-		AELog.info( "New Ticket " + ct.toString() );
-		ForgeChunkManager.forceChunk( ct, new ChunkCoordIntPair( xCoord >> 4, zCoord >> 4 ) );
+		AELog.info( "New Ticket " + this.ct.toString() );
+		ForgeChunkManager.forceChunk( this.ct, new ChunkCoordIntPair( this.xCoord >> 4, this.zCoord >> 4 ) );
 	}
 
 	@Override
@@ -82,7 +82,7 @@ public class TileChunkLoader extends AEBaseTile
 		if ( Platform.isClient() )
 			return;
 
-		AELog.info( "Released Ticket " + ct.toString() );
-		ForgeChunkManager.releaseTicket( ct );
+		AELog.info( "Released Ticket " + this.ct.toString() );
+		ForgeChunkManager.releaseTicket( this.ct );
 	}
 }

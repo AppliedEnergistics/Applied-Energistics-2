@@ -49,7 +49,7 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	public void drawBackground(int recipe)
 	{
 		GL11.glColor4f( 1, 1, 1, 1 );
-		changeTexture( getGuiTexture() );
+		changeTexture( this.getGuiTexture() );
 		drawTexturedModalRect( 0, 0, 5, 11, 166, 75 );
 	}
 
@@ -74,7 +74,7 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadCraftingRecipes(String outputId, Object... results)
 	{
-		if ( (outputId.equals( "inscriber" )) && (getClass() == NEIInscriberRecipeHandler.class) )
+		if ( (outputId.equals( "inscriber" )) && (this.getClass() == NEIInscriberRecipeHandler.class) )
 		{
 			for (InscriberRecipe recipe : Inscribe.recipes)
 			{
@@ -160,23 +160,23 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 		public final PositionedStack result;
 
 		public CachedInscriberRecipe(InscriberRecipe recipe) {
-			result = new PositionedStack( recipe.output, 108, 29 );
-			ingredients = new ArrayList<PositionedStack>();
+			this.result = new PositionedStack( recipe.output, 108, 29 );
+			this.ingredients = new ArrayList<PositionedStack>();
 
 			if ( recipe.plateA != null )
-				ingredients.add( new PositionedStack( recipe.plateA, 40, 5 ) );
+				this.ingredients.add( new PositionedStack( recipe.plateA, 40, 5 ) );
 
 			if ( recipe.imprintable != null )
-				ingredients.add( new PositionedStack( recipe.imprintable, 40 + 18, 28 ) );
+				this.ingredients.add( new PositionedStack( recipe.imprintable, 40 + 18, 28 ) );
 
 			if ( recipe.plateB != null )
-				ingredients.add( new PositionedStack( recipe.plateB, 40, 51 ) );
+				this.ingredients.add( new PositionedStack( recipe.plateB, 40, 51 ) );
 		}
 
 		@Override
 		public List<PositionedStack> getIngredients()
 		{
-			return getCycledIngredients( cycleticks / 20, this.ingredients );
+			return this.getCycledIngredients( NEIInscriberRecipeHandler.this.cycleticks / 20, this.ingredients );
 		}
 
 		@Override

@@ -42,18 +42,18 @@ public class SlotPatternTerm extends SlotCraftingTerm
 	{
 		super( player, mySrc, energySrc, storage, cMatrix, secondMatrix, output, x, y, c );
 
-		host = h;
-		groupNum = groupNumber;
+		this.host = h;
+		this.groupNum = groupNumber;
 
 	}
 
 	@Override
 	public ItemStack getStack()
 	{
-		if ( !isEnabled() )
+		if ( !this.isEnabled() )
 		{
-			if ( getDisplayStack() != null )
-				clearStack();
+			if ( this.getDisplayStack() != null )
+				this.clearStack();
 		}
 
 		return super.getStack();
@@ -62,15 +62,15 @@ public class SlotPatternTerm extends SlotCraftingTerm
 	@Override
 	public boolean isEnabled()
 	{
-		if ( host == null )
+		if ( this.host == null )
 			return false;
 
-		return host.isSlotEnabled( groupNum );
+		return this.host.isSlotEnabled( this.groupNum );
 	}
 
 	public AppEngPacket getRequest(boolean shift) throws IOException
 	{
-		return new PacketPatternSlot( this.pattern, AEApi.instance().storage().createItemStack( getStack() ), shift );
+		return new PacketPatternSlot( this.pattern, AEApi.instance().storage().createItemStack( this.getStack() ), shift );
 	}
 
 }

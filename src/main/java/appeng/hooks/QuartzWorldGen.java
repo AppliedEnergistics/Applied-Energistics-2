@@ -43,11 +43,11 @@ final public class QuartzWorldGen implements IWorldGenerator
 
 		if ( normal != null && charged != null )
 		{
-			oreNormal = new WorldGenMinable( normal, 0, AEConfig.instance.quartzOresPerCluster, Blocks.stone );
-			oreCharged = new WorldGenMinable( charged, 0, AEConfig.instance.quartzOresPerCluster, Blocks.stone );
+			this.oreNormal = new WorldGenMinable( normal, 0, AEConfig.instance.quartzOresPerCluster, Blocks.stone );
+			this.oreCharged = new WorldGenMinable( charged, 0, AEConfig.instance.quartzOresPerCluster, Blocks.stone );
 		}
 		else
-			oreNormal = oreCharged = null;
+			this.oreNormal = this.oreCharged = null;
 	}
 
 	@Override
@@ -62,7 +62,7 @@ final public class QuartzWorldGen implements IWorldGenerator
 			seaLevel = w.getHeightValue( x, z );
 		}
 
-		if ( oreNormal == null || oreCharged == null )
+		if ( this.oreNormal == null || this.oreCharged == null )
 			return;
 
 		double oreDepthMultiplier = AEConfig.instance.quartzOresClusterAmount * seaLevel / 64;
@@ -71,7 +71,7 @@ final public class QuartzWorldGen implements IWorldGenerator
 		for (int x = 0; x < (r.nextBoolean() ? scale * 2 : scale) / 2; ++x)
 		{
 			boolean isCharged = r.nextFloat() > AEConfig.instance.spawnChargedChance;
-			WorldGenMinable whichOre = isCharged ? oreCharged : oreNormal;
+			WorldGenMinable whichOre = isCharged ? this.oreCharged : this.oreNormal;
 
 			if ( WorldGenRegistry.instance.isWorldGenEnabled( isCharged ? WorldGenType.ChargedCertusQuartz : WorldGenType.CertusQuartz, w ) )
 			{

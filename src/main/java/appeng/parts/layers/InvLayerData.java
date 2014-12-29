@@ -36,9 +36,9 @@ public class InvLayerData
 	final private List<InvSot> slots;
 
 	public InvLayerData(int a[][], List<ISidedInventory> b, List<InvSot> c) {
-		sides = a;
-		inventories = b;
-		slots = c;
+		this.sides = a;
+		this.inventories = b;
+		this.slots = c;
 	}
 
 	/**
@@ -49,77 +49,77 @@ public class InvLayerData
 	 */
 	boolean isSlotValid(int slot)
 	{
-		return slots != null && slot >= 0 && slot < slots.size();
+		return this.slots != null && slot >= 0 && slot < this.slots.size();
 	}
 
 	public ItemStack decreaseStackSize(int slot, int amount)
 	{
-		if ( isSlotValid( slot ) )
-			return slots.get( slot ).decreaseStackSize( amount );
+		if ( this.isSlotValid( slot ) )
+			return this.slots.get( slot ).decreaseStackSize( amount );
 
 		return null;
 	}
 
 	public int getSizeInventory()
 	{
-		if ( slots == null )
+		if ( this.slots == null )
 			return 0;
 
-		return slots.size();
+		return this.slots.size();
 	}
 
 	public ItemStack getStackInSlot(int slot)
 	{
-		if ( isSlotValid( slot ) )
-			return slots.get( slot ).getStackInSlot();
+		if ( this.isSlotValid( slot ) )
+			return this.slots.get( slot ).getStackInSlot();
 
 		return null;
 	}
 
 	public boolean isItemValidForSlot(int slot, ItemStack itemstack)
 	{
-		if ( isSlotValid( slot ) )
-			return slots.get( slot ).isItemValidForSlot( itemstack );
+		if ( this.isSlotValid( slot ) )
+			return this.slots.get( slot ).isItemValidForSlot( itemstack );
 
 		return false;
 	}
 
 	public void setInventorySlotContents(int slot, ItemStack itemstack)
 	{
-		if ( isSlotValid( slot ) )
-			slots.get( slot ).setInventorySlotContents( itemstack );
+		if ( this.isSlotValid( slot ) )
+			this.slots.get( slot ).setInventorySlotContents( itemstack );
 	}
 
 	public boolean canExtractItem(int slot, ItemStack itemstack, int side)
 	{
-		if ( isSlotValid( slot ) )
-			return slots.get( slot ).canExtractItem( itemstack, side );
+		if ( this.isSlotValid( slot ) )
+			return this.slots.get( slot ).canExtractItem( itemstack, side );
 
 		return false;
 	}
 
 	public boolean canInsertItem(int slot, ItemStack itemstack, int side)
 	{
-		if ( isSlotValid( slot ) )
-			return slots.get( slot ).canInsertItem( itemstack, side );
+		if ( this.isSlotValid( slot ) )
+			return this.slots.get( slot ).canInsertItem( itemstack, side );
 
 		return false;
 	}
 
 	public void markDirty()
 	{
-		if ( inventories != null )
+		if ( this.inventories != null )
 		{
-			for (IInventory inv : inventories)
+			for (IInventory inv : this.inventories)
 				inv.markDirty();
 		}
 	}
 
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		if ( sides == null || side < 0 || side > 5 )
+		if ( this.sides == null || side < 0 || side > 5 )
 			return nullSides;
-		return sides[side];
+		return this.sides[side];
 	}
 
 }

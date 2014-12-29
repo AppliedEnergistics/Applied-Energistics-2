@@ -44,8 +44,8 @@ public abstract class MinecraftJoules5 extends AERootPoweredTile implements IPow
 	@TileEvent(TileEventType.TICK)
 	public void Tick_MinecraftJoules5()
 	{
-		if ( bcPowerWrapper != null )
-			bcPowerWrapper.Tick();
+		if ( this.bcPowerWrapper != null )
+			this.bcPowerWrapper.Tick();
 	}
 
 	public MinecraftJoules5() {
@@ -58,9 +58,9 @@ public abstract class MinecraftJoules5 extends AERootPoweredTile implements IPow
 					IMJ5 mjIntegration = (IMJ5) AppEng.instance.getIntegration( IntegrationType.MJ5 );
 					if ( mjIntegration != null )
 					{
-						bcPowerWrapper = (BaseMJPerdition) mjIntegration.createPerdition( this );
-						if ( bcPowerWrapper != null )
-							bcPowerWrapper.configure( 1, 380, 1.0f / 5.0f, 1000 );
+						this.bcPowerWrapper = (BaseMJPerdition) mjIntegration.createPerdition( this );
+						if ( this.bcPowerWrapper != null )
+							this.bcPowerWrapper.configure( 1, 380, 1.0f / 5.0f, 1000 );
 					}
 				}
 			}
@@ -75,8 +75,8 @@ public abstract class MinecraftJoules5 extends AERootPoweredTile implements IPow
 	@Method(iname = "MJ5")
 	final public PowerReceiver getPowerReceiver(ForgeDirection side)
 	{
-		if ( getPowerSides().contains( side ) && bcPowerWrapper != null )
-			return bcPowerWrapper.getPowerReceiver();
+		if ( this.getPowerSides().contains( side ) && this.bcPowerWrapper != null )
+			return this.bcPowerWrapper.getPowerReceiver();
 		return null;
 	}
 
@@ -84,17 +84,17 @@ public abstract class MinecraftJoules5 extends AERootPoweredTile implements IPow
 	@Method(iname = "MJ5")
 	final public void doWork(PowerHandler workProvider)
 	{
-		float required = (float) getExternalPowerDemand( PowerUnits.MJ, bcPowerWrapper.getPowerReceiver().getEnergyStored() );
-		double failed = injectExternalPower( PowerUnits.MJ, bcPowerWrapper.useEnergy( 0.0f, required, true ) );
+		float required = (float) this.getExternalPowerDemand( PowerUnits.MJ, this.bcPowerWrapper.getPowerReceiver().getEnergyStored() );
+		double failed = this.injectExternalPower( PowerUnits.MJ, this.bcPowerWrapper.useEnergy( 0.0f, required, true ) );
 		if ( failed > 0.01 )
-			bcPowerWrapper.addEnergy( (float) failed );
+			this.bcPowerWrapper.addEnergy( (float) failed );
 	}
 
 	@Override
 	@Method(iname = "MJ5")
 	final public World getWorld()
 	{
-		return worldObj;
+		return this.worldObj;
 	}
 
 }

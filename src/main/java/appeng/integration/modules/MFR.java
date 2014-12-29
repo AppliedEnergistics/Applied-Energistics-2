@@ -27,7 +27,7 @@ public class MFR extends BaseModule
 	public static MFR instance;
 
 	public MFR() {
-		TestClass( IRedNetConnection.class );
+		this.TestClass( IRedNetConnection.class );
 	}
 
 	@Override

@@ -39,16 +39,16 @@ public class CompassManager
 
 		public CompassRequest(long attunement, int x, int y, int z) {
 			this.attunement = attunement;
-			cx = x >> 4;
-			cdy = y >> 5;
-			cz = z >> 4;
-			hash = ((Integer) cx).hashCode() ^ ((Integer) cdy).hashCode() ^ ((Integer) cz).hashCode() ^ ((Long) attunement).hashCode();
+			this.cx = x >> 4;
+			this.cdy = y >> 5;
+			this.cz = z >> 4;
+			this.hash = ((Integer) this.cx).hashCode() ^ ((Integer) this.cdy).hashCode() ^ ((Integer) this.cz).hashCode() ^ ((Long) attunement).hashCode();
 		}
 
 		@Override
 		public int hashCode()
 		{
-			return hash;
+			return this.hash;
 		}
 
 		@Override
@@ -56,10 +56,10 @@ public class CompassManager
 		{
 			if ( obj == null )
 				return false;
-			if ( getClass() != obj.getClass() )
+			if ( this.getClass() != obj.getClass() )
 				return false;
 			CompassRequest other = (CompassRequest) obj;
-			return attunement == other.attunement && cx == other.cx && cdy == other.cdy && cz == other.cz;
+			return this.attunement == other.attunement && this.cx == other.cx && this.cdy == other.cdy && this.cz == other.cz;
 		}
 
 	}
@@ -69,14 +69,14 @@ public class CompassManager
 	public void postResult(long attunement, int x, int y, int z, CompassResult result)
 	{
 		CompassRequest r = new CompassRequest( attunement, x, y, z );
-		requests.put( r, result );
+		this.requests.put( r, result );
 	}
 
 	public CompassResult getCompassDirection(long attunement, int x, int y, int z)
 	{
 		long now = System.currentTimeMillis();
 
-		Iterator<CompassResult> i = requests.values().iterator();
+		Iterator<CompassResult> i = this.requests.values().iterator();
 		while (i.hasNext())
 		{
 			CompassResult res = i.next();
@@ -86,20 +86,20 @@ public class CompassManager
 		}
 
 		CompassRequest r = new CompassRequest( attunement, x, y, z );
-		CompassResult res = requests.get( r );
+		CompassResult res = this.requests.get( r );
 
 		if ( res == null )
 		{
 			res = new CompassResult( false, true, 0 );
-			requests.put( r, res );
-			requestUpdate( r );
+			this.requests.put( r, res );
+			this.requestUpdate( r );
 		}
 		else if ( now - res.time > 1000 * 3 )
 		{
 			if ( !res.requested )
 			{
 				res.requested = true;
-				requestUpdate( r );
+				this.requestUpdate( r );
 			}
 		}
 

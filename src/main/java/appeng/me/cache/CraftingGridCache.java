@@ -104,7 +104,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		@Override
 		public boolean hasNext()
 		{
-			findNext();
+			this.findNext();
 
 			return this.cpuCluster != null;
 		}
@@ -207,7 +207,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	@MENetworkEventSubscribe
 	public void updateCPUClusters(MENetworkCraftingPatternChange c)
 	{
-		updatePatterns();
+		this.updatePatterns();
 	}
 
 	@Override
@@ -253,7 +253,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		{
 			ICraftingWatcherHost watcherHost = (ICraftingWatcherHost) machine;
 			CraftingWatcher watcher = new CraftingWatcher( this, watcherHost );
-			craftingWatchers.put( gridNode, watcher );
+			this.craftingWatchers.put( gridNode, watcher );
 			watcherHost.updateWatcher( watcher );
 		}
 
@@ -294,7 +294,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 				if ( cluster.myLastLink != null )
 				{
-					addLink( (CraftingLink) cluster.myLastLink );
+					this.addLink( (CraftingLink) cluster.myLastLink );
 				}
 			}
 		}
@@ -531,7 +531,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 		if ( cpuCluster != null )
 		{
-			return cpuCluster.submitJob( grid, job, src, requestingMachine );
+			return cpuCluster.submitJob( this.grid, job, src, requestingMachine );
 		}
 
 		return null;
@@ -572,7 +572,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 	public List<ICraftingMedium> getMediums(ICraftingPatternDetails key)
 	{
-		List<ICraftingMedium> mediums = craftingMethods.get( key );
+		List<ICraftingMedium> mediums = this.craftingMethods.get( key );
 
 		if ( mediums == null )
 		{

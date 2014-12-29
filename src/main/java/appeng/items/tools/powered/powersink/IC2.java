@@ -48,12 +48,12 @@ public class IC2 extends AERootPoweredItem implements IElectricItemManager, ISpe
 	public double charge( ItemStack is, double amount, int tier, boolean ignoreTransferLimit, boolean simulate )
 	{
 		double addedAmt = amount;
-		double limit = getTransferLimit( is );
+		double limit = this.getTransferLimit( is );
 
 		if ( !ignoreTransferLimit && amount > limit )
 			addedAmt = limit;
 
-		return addedAmt - ( ( int ) injectExternalPower( PowerUnits.EU, is, addedAmt, simulate ) );
+		return addedAmt - ( ( int ) this.injectExternalPower( PowerUnits.EU, is, addedAmt, simulate ) );
 	}
 
 	@Override
@@ -65,22 +65,22 @@ public class IC2 extends AERootPoweredItem implements IElectricItemManager, ISpe
 	@Override
 	public double getCharge( ItemStack is )
 	{
-		return ( int ) PowerUnits.AE.convertTo( PowerUnits.EU, getAECurrentPower( is ) );
+		return ( int ) PowerUnits.AE.convertTo( PowerUnits.EU, this.getAECurrentPower( is ) );
 	}
 
 	@Override
 	public boolean canUse( ItemStack is, double amount )
 	{
-		return getCharge( is ) > amount;
+		return this.getCharge( is ) > amount;
 	}
 
 	@Override
 	public boolean use( ItemStack is, double amount, EntityLivingBase entity )
 	{
-		if ( canUse( is, amount ) )
+		if ( this.canUse( is, amount ) )
 		{
 			// use the power..
-			extractAEPower( is, PowerUnits.EU.convertTo( PowerUnits.AE, amount ) );
+			this.extractAEPower( is, PowerUnits.EU.convertTo( PowerUnits.AE, amount ) );
 			return true;
 		}
 		return false;
@@ -119,7 +119,7 @@ public class IC2 extends AERootPoweredItem implements IElectricItemManager, ISpe
 	@Override
 	public double getMaxCharge( ItemStack itemStack )
 	{
-		return PowerUnits.AE.convertTo( PowerUnits.EU, getAEMaxPower( itemStack ) );
+		return PowerUnits.AE.convertTo( PowerUnits.EU, this.getAEMaxPower( itemStack ) );
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class IC2 extends AERootPoweredItem implements IElectricItemManager, ISpe
 	@Override
 	public double getTransferLimit( ItemStack itemStack )
 	{
-		return Math.max( 32, getMaxCharge( itemStack ) / 200 );
+		return Math.max( 32, this.getMaxCharge( itemStack ) / 200 );
 	}
 
 	@Override

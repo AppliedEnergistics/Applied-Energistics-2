@@ -40,7 +40,7 @@ public class GroupIngredient implements IIngredient
 	boolean isInside = false;
 
 	public GroupIngredient(String myName, List<IIngredient> ingredients) throws RecipeError {
-		name = myName;
+		this.name = myName;
 
 		for (IIngredient I : ingredients)
 			if ( I.isAir() )
@@ -51,7 +51,7 @@ public class GroupIngredient implements IIngredient
 
 	public IIngredient copy(int qty) throws RecipeError
 	{
-		GroupIngredient gi = new GroupIngredient( name, ingredients );
+		GroupIngredient gi = new GroupIngredient( this.name, this.ingredients );
 		gi.qty = qty;
 		return gi;
 	}
@@ -65,7 +65,7 @@ public class GroupIngredient implements IIngredient
 	@Override
 	public String getItemName()
 	{
-		return name;
+		return this.name;
 	}
 
 	@Override
@@ -77,17 +77,17 @@ public class GroupIngredient implements IIngredient
 	@Override
 	public ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
 	{
-		if ( baked != null )
-			return baked;
+		if ( this.baked != null )
+			return this.baked;
 
-		if ( isInside )
+		if ( this.isInside )
 			return new ItemStack[0];
 
 		List<ItemStack> out = new LinkedList<ItemStack>();
-		isInside = true;
+		this.isInside = true;
 		try
 		{
-			for (IIngredient i : ingredients)
+			for (IIngredient i : this.ingredients)
 			{
 				try
 				{
@@ -101,14 +101,14 @@ public class GroupIngredient implements IIngredient
 		}
 		finally
 		{
-			isInside = false;
+			this.isInside = false;
 		}
 
 		if ( out.size() == 0 )
-			throw new MissingIngredientError( toString() + " - group could not be resolved to any items." );
+			throw new MissingIngredientError( this.toString() + " - group could not be resolved to any items." );
 
 		for (ItemStack is : out)
-			is.stackSize = qty;
+			is.stackSize = this.qty;
 
 		return out.toArray( new ItemStack[out.size()] );
 	}
@@ -134,8 +134,8 @@ public class GroupIngredient implements IIngredient
 	@Override
 	public void bake() throws RegistrationError, MissingIngredientError
 	{
-		baked = null;
-		baked = getItemStackSet();
+		this.baked = null;
+		this.baked = this.getItemStackSet();
 	}
 
 }

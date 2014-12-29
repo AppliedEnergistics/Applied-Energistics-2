@@ -55,8 +55,8 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 	public ItemFacade() {
 		super( ItemFacade.class );
-		setFeature( EnumSet.of( AEFeature.Facades ) );
-		setHasSubtypes( true );
+		this.setFeature( EnumSet.of( AEFeature.Facades ) );
+		this.setHasSubtypes( true );
 		if ( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, BusRenderer.instance );
 	}
@@ -77,7 +77,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	@Override
 	public FacadePart createPartFromItemStack(ItemStack is, ForgeDirection side)
 	{
-		ItemStack in = getTextureItem( is );
+		ItemStack in = this.getTextureItem( is );
 		if ( in != null )
 			return new FacadePart( is, side );
 		return null;
@@ -87,23 +87,23 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 	public List<ItemStack> getFacades()
 	{
-		calculateSubTypes();
-		return subTypes;
+		this.calculateSubTypes();
+		return this.subTypes;
 	}
 
 	public ItemStack getCreativeTabIcon()
 	{
-		calculateSubTypes();
-		if ( subTypes.isEmpty() )
+		this.calculateSubTypes();
+		if ( this.subTypes.isEmpty() )
 			return new ItemStack( Items.cake );
-		return subTypes.get( 0 );
+		return this.subTypes.get( 0 );
 	}
 
 	@Override
 	public void getSubItems(Item number, CreativeTabs tab, List list)
 	{
-		calculateSubTypes();
-		list.addAll( subTypes );
+		this.calculateSubTypes();
+		list.addAll( this.subTypes );
 	}
 
 	public ItemStack createFromIDs(int[] ids)
@@ -118,17 +118,17 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	@Override
 	public ItemStack getTextureItem(ItemStack is)
 	{
-		Block blk = getBlock( is );
+		Block blk = this.getBlock( is );
 		if ( blk != null )
-			return new ItemStack( blk, 1, getMeta( is ) );
+			return new ItemStack( blk, 1, this.getMeta( is ) );
 		return null;
 	}
 
 	private void calculateSubTypes()
 	{
-		if ( subTypes == null )
+		if ( this.subTypes == null )
 		{
-			subTypes = new ArrayList<ItemStack>();
+			this.subTypes = new ArrayList<ItemStack>();
 			for (Object blk : Block.blockRegistry)
 			{
 				Block b = (Block) blk;
@@ -140,9 +140,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 					b.getSubBlocks( item, b.getCreativeTabToDisplayOn(), tmpList );
 					for (ItemStack l : tmpList)
 					{
-						ItemStack facade = createFacadeForItem( l, false );
+						ItemStack facade = this.createFacadeForItem( l, false );
 						if ( facade != null )
-							subTypes.add( facade );
+							this.subTypes.add( facade );
 					}
 				}
 				catch (Throwable t)
@@ -231,7 +231,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	{
 		try
 		{
-			ItemStack in = getTextureItem( is );
+			ItemStack in = this.getTextureItem( is );
 			if ( in != null )
 			{
 				return super.getItemStackDisplayName( is ) + " - " + in.getDisplayName();
@@ -248,7 +248,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	@Override
 	public boolean useAlphaPass(ItemStack is)
 	{
-		ItemStack out = getTextureItem( is );
+		ItemStack out = this.getTextureItem( is );
 
 		if ( out == null || out.getItem() == null )
 			return false;

@@ -36,106 +36,106 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 	private int energy;
 
 	public AppEngGrinderRecipe(ItemStack a, ItemStack b, int cost) {
-		in = a;
-		out = b;
-		energy = cost;
+		this.in = a;
+		this.out = b;
+		this.energy = cost;
 	}
 
 	public AppEngGrinderRecipe(ItemStack a, ItemStack b, ItemStack c, float chance, int cost) {
-		in = a;
-		out = b;
+		this.in = a;
+		this.out = b;
 
-		optionalOutput = c;
-		optionalChance = chance;
+		this.optionalOutput = c;
+		this.optionalChance = chance;
 
-		energy = cost;
+		this.energy = cost;
 	}
 
 	public AppEngGrinderRecipe(ItemStack a, ItemStack b, ItemStack c, ItemStack d, float chance, float chance2, int cost) {
-		in = a;
-		out = b;
+		this.in = a;
+		this.out = b;
 
-		optionalOutput = c;
-		optionalChance = chance;
+		this.optionalOutput = c;
+		this.optionalChance = chance;
 
-		optionalOutput2 = d;
-		optionalChance2 = chance2;
+		this.optionalOutput2 = d;
+		this.optionalChance2 = chance2;
 
-		energy = cost;
+		this.energy = cost;
 	}
 
 	@Override
 	public ItemStack getInput()
 	{
-		return in;
+		return this.in;
 	}
 
 	@Override
 	public void setInput(ItemStack i)
 	{
-		in = i.copy();
+		this.in = i.copy();
 	}
 
 	@Override
 	public ItemStack getOutput()
 	{
-		return out;
+		return this.out;
 	}
 
 	@Override
 	public void setOutput(ItemStack o)
 	{
-		out = o.copy();
+		this.out = o.copy();
 	}
 
 	@Override
 	public int getEnergyCost()
 	{
-		return energy;
+		return this.energy;
 	}
 
 	@Override
 	public void setEnergyCost(int c)
 	{
-		energy = c;
+		this.energy = c;
 	}
 
 	@Override
 	public ItemStack getOptionalOutput()
 	{
-		return optionalOutput;
+		return this.optionalOutput;
 	}
 
 	@Override
 	public void setOptionalOutput(ItemStack output, float chance)
 	{
-		optionalOutput = output.copy();
-		optionalChance = chance;
+		this.optionalOutput = output.copy();
+		this.optionalChance = chance;
 	}
 
 	@Override
 	public float getOptionalChance()
 	{
-		return optionalChance;
+		return this.optionalChance;
 	}
 
 	@Override
 	public ItemStack getSecondOptionalOutput()
 	{
-		return optionalOutput2;
+		return this.optionalOutput2;
 	}
 
 	@Override
 	public void setSecondOptionalOutput(ItemStack output, float chance)
 	{
-		optionalChance2 = chance;
-		optionalOutput2 = output.copy();
+		this.optionalChance2 = chance;
+		this.optionalOutput2 = output.copy();
 	}
 
 	@Override
 	public float getSecondOptionalChance()
 	{
-		return optionalChance2;
+		return this.optionalChance2;
 	}
 
 }

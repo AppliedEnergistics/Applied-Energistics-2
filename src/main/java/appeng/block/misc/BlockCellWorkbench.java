@@ -35,8 +35,8 @@ public class BlockCellWorkbench extends AEBaseBlock
 
 	public BlockCellWorkbench() {
 		super( BlockCellWorkbench.class, Material.iron );
-		setFeature( EnumSet.of( AEFeature.StorageCells ) );
-		setTileEntity( TileCellWorkbench.class );
+		this.setFeature( EnumSet.of( AEFeature.StorageCells ) );
+		this.setTileEntity( TileCellWorkbench.class );
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class BlockCellWorkbench extends AEBaseBlock
 		if ( p.isSneaking() )
 			return false;
 
-		TileCellWorkbench tg = getTileEntity( w, x, y, z );
+		TileCellWorkbench tg = this.getTileEntity( w, x, y, z );
 		if ( tg != null )
 		{
 			if ( Platform.isServer() )

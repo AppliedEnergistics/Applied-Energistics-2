@@ -42,7 +42,7 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 	@MENetworkEventSubscribe
 	public void onPower(MENetworkPowerStatusChange ch)
 	{
-		markForUpdate();
+		this.markForUpdate();
 	}
 
 	@Override
@@ -54,9 +54,9 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 	@TileEvent(TileEventType.NETWORK_READ)
 	public boolean readFromStream_TileQuartzGrowthAccelerator(ByteBuf data)
 	{
-		boolean hadPower = hasPower;
-		hasPower = data.readBoolean();
-		return hasPower != hadPower;
+		boolean hadPower = this.hasPower;
+		this.hasPower = data.readBoolean();
+		return this.hasPower != hadPower;
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
@@ -64,7 +64,7 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 	{
 		try
 		{
-			data.writeBoolean( gridProxy.getEnergy().isNetworkPowered() );
+			data.writeBoolean( this.gridProxy.getEnergy().isNetworkPowered() );
 		}
 		catch (GridAccessException e)
 		{
@@ -73,16 +73,16 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 	}
 
 	public TileQuartzGrowthAccelerator() {
-		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
-		gridProxy.setFlags();
-		gridProxy.setIdlePowerUsage( 8 );
+		this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		this.gridProxy.setFlags();
+		this.gridProxy.setIdlePowerUsage( 8 );
 	}
 
 	@Override
 	public void setOrientation(ForgeDirection inForward, ForgeDirection inUp)
 	{
 		super.setOrientation( inForward, inUp );
-		gridProxy.setValidSides( EnumSet.of( getUp(), getUp().getOpposite() ) );
+		this.gridProxy.setValidSides( EnumSet.of( this.getUp(), this.getUp().getOpposite() ) );
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 		{
 			try
 			{
-				return gridProxy.getEnergy().isNetworkPowered();
+				return this.gridProxy.getEnergy().isNetworkPowered();
 			}
 			catch (GridAccessException e)
 			{
@@ -100,13 +100,13 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 			}
 		}
 
-		return hasPower;
+		return this.hasPower;
 	}
 
 	@Override
 	public boolean isActive()
 	{
-		return isPowered();
+		return this.isPowered();
 	}
 
 }

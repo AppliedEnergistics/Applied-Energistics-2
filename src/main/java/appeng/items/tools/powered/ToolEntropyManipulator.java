@@ -63,8 +63,8 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	public ToolEntropyManipulator()
 	{
 		super( ToolEntropyManipulator.class, Optional.<String> absent() );
-		setFeature( EnumSet.of( AEFeature.EntropyManipulator, AEFeature.PoweredTools ) );
-		maxStoredPower = AEConfig.instance.entropyManipulatorBattery;
+		this.setFeature( EnumSet.of( AEFeature.EntropyManipulator, AEFeature.PoweredTools ) );
+		this.maxStoredPower = AEConfig.instance.entropyManipulatorBattery;
 
 		coolDown = new Hashtable<Combo, InWorldToolOperationResult>();
 		coolDown.put( new Combo( Blocks.stone, 0 ), new InWorldToolOperationResult( new ItemStack( Blocks.cobblestone ) ) );
@@ -124,14 +124,14 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 		public Combo( Block b, int m )
 		{
-			blk = b;
-			meta = m;
+			this.blk = b;
+			this.meta = m;
 		}
 
 		@Override
 		public int hashCode()
 		{
-			return blk.hashCode() ^ meta;
+			return this.blk.hashCode() ^ this.meta;
 		}
 
 		@Override
@@ -139,10 +139,10 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		{
 			if ( obj == null )
 				return false;
-			if ( getClass() != obj.getClass() )
+			if ( this.getClass() != obj.getClass() )
 				return false;
 			Combo other = ( Combo ) obj;
-			return blk == other.blk && meta == other.meta;
+			return this.blk == other.blk && this.meta == other.meta;
 		}
 
 	}
@@ -200,7 +200,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	{
 		if ( this.getAECurrentPower( item ) > 1600 )
 		{
-			extractAEPower( item, 1600 );
+			this.extractAEPower( item, 1600 );
 			target.setFire( 8 );
 		}
 
@@ -226,7 +226,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 				{
 					if ( Platform.hasPermissions( new DimensionalCoord( w, x, y, z ), p ) )
 					{
-						onItemUse( item, p, w, x, y, z, 0, 0.0F, 0.0F, 0.0F );
+						this.onItemUse( item, p, w, x, y, z, 0, 0.0F, 0.0F, 0.0F );
 					}
 				}
 			}
@@ -250,7 +250,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			{
 				if ( canCool( Blk, Metadata ) )
 				{
-					extractAEPower( item, 1600 );
+					this.extractAEPower( item, 1600 );
 					cool( Blk, Metadata, w, x, y, z );
 					return true;
 				}
@@ -273,7 +273,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 				if ( canHeat( Blk, Metadata ) )
 				{
-					extractAEPower( item, 1600 );
+					this.extractAEPower( item, 1600 );
 					heat( Blk, Metadata, w, x, y, z );
 					return true;
 				}
@@ -308,7 +308,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 				if ( hasFurnaceable && canFurnaceable )
 				{
-					extractAEPower( item, 1600 );
+					this.extractAEPower( item, 1600 );
 					InWorldToolOperationResult or = InWorldToolOperationResult.getBlockOperationResult( out.toArray( new ItemStack[out.size()] ) );
 					w.playSoundEffect( x + 0.5D, y + 0.5D, z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
 
@@ -340,7 +340,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 					if ( w.isAirBlock( x, y, z ) )
 					{
-						extractAEPower( item, 1600 );
+						this.extractAEPower( item, 1600 );
 						w.playSoundEffect( x + 0.5D, y + 0.5D, z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
 						w.setBlock( x, y, z, Blocks.fire );
 					}

@@ -31,7 +31,7 @@ public class DamagedItemDefinition implements AEItemDefinition
 	final IStackSrc src;
 
 	public DamagedItemDefinition(IStackSrc is) {
-		src = is;
+		this.src = is;
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class DamagedItemDefinition implements AEItemDefinition
 	@Override
 	public Item item()
 	{
-		return src.getItem();
+		return this.src.getItem();
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class DamagedItemDefinition implements AEItemDefinition
 	@Override
 	public ItemStack stack(int stackSize)
 	{
-		return src.stack( stackSize );
+		return this.src.stack( stackSize );
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class DamagedItemDefinition implements AEItemDefinition
 		if ( comparableItem == null )
 			return false;
 
-		return comparableItem.getItem() == src.getItem() && comparableItem.getItemDamage() == src.getDamage();
+		return comparableItem.getItem() == this.src.getItem() && comparableItem.getItemDamage() == this.src.getDamage();
 	}
 
 	@Override

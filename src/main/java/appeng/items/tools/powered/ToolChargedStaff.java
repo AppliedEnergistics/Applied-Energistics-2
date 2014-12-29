@@ -41,8 +41,8 @@ public class ToolChargedStaff extends AEBasePoweredItem
 	public ToolChargedStaff()
 	{
 		super( ToolChargedStaff.class, Optional.<String> absent() );
-		setFeature( EnumSet.of( AEFeature.ChargedStaff, AEFeature.PoweredTools ) );
-		maxStoredPower = AEConfig.instance.chargedStaffBattery;
+		this.setFeature( EnumSet.of( AEFeature.ChargedStaff, AEFeature.PoweredTools ) );
+		this.maxStoredPower = AEConfig.instance.chargedStaffBattery;
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class ToolChargedStaff extends AEBasePoweredItem
 	{
 		if ( this.getAECurrentPower( item ) > 300 )
 		{
-			extractAEPower( item, 300 );
+			this.extractAEPower( item, 300 );
 			if ( Platform.isServer() )
 			{
 				for ( int x = 0; x < 2; x++ )

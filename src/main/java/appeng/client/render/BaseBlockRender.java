@@ -276,14 +276,14 @@ public class BaseBlockRender
 	}
 
 	public BaseBlockRender(boolean enableTESR, double tileEntitySpecialRendererRange) {
-		hasTESR = enableTESR;
-		MAX_DISTANCE = tileEntitySpecialRendererRange;
+		this.hasTESR = enableTESR;
+		this.MAX_DISTANCE = tileEntitySpecialRendererRange;
 		setOriMap();
 	}
 
 	public double getTesrRenderDistance()
 	{
-		return MAX_DISTANCE;
+		return this.MAX_DISTANCE;
 	}
 
 	public IIcon firstNotNull(IIcon... s)
@@ -313,7 +313,7 @@ public class BaseBlockRender
 					0.0D,
 					0.0D,
 					0.0D,
-					firstNotNull( renderer.overrideBlockTexture, block.getRendererInstance().getTexture( ForgeDirection.DOWN ),
+					this.firstNotNull( renderer.overrideBlockTexture, block.getRendererInstance().getTexture( ForgeDirection.DOWN ),
 							block.getIcon( ForgeDirection.DOWN.ordinal(), meta ) ) );
 			tess.draw();
 		}
@@ -328,7 +328,7 @@ public class BaseBlockRender
 					0.0D,
 					0.0D,
 					0.0D,
-					firstNotNull( renderer.overrideBlockTexture, block.getRendererInstance().getTexture( ForgeDirection.UP ),
+					this.firstNotNull( renderer.overrideBlockTexture, block.getRendererInstance().getTexture( ForgeDirection.UP ),
 							block.getIcon( ForgeDirection.UP.ordinal(), meta ) ) );
 			tess.draw();
 		}
@@ -343,7 +343,7 @@ public class BaseBlockRender
 					0.0D,
 					0.0D,
 					0.0D,
-					firstNotNull( renderer.overrideBlockTexture, block.getRendererInstance().getTexture( ForgeDirection.NORTH ),
+					this.firstNotNull( renderer.overrideBlockTexture, block.getRendererInstance().getTexture( ForgeDirection.NORTH ),
 							block.getIcon( ForgeDirection.NORTH.ordinal(), meta ) ) );
 			tess.draw();
 		}
@@ -358,7 +358,7 @@ public class BaseBlockRender
 					0.0D,
 					0.0D,
 					0.0D,
-					firstNotNull( renderer.overrideBlockTexture, block.getRendererInstance().getTexture( ForgeDirection.SOUTH ),
+					this.firstNotNull( renderer.overrideBlockTexture, block.getRendererInstance().getTexture( ForgeDirection.SOUTH ),
 							block.getIcon( ForgeDirection.SOUTH.ordinal(), meta ) ) );
 			tess.draw();
 		}
@@ -373,7 +373,7 @@ public class BaseBlockRender
 					0.0D,
 					0.0D,
 					0.0D,
-					firstNotNull( renderer.overrideBlockTexture, block.getRendererInstance().getTexture( ForgeDirection.WEST ),
+					this.firstNotNull( renderer.overrideBlockTexture, block.getRendererInstance().getTexture( ForgeDirection.WEST ),
 							block.getIcon( ForgeDirection.WEST.ordinal(), meta ) ) );
 			tess.draw();
 		}
@@ -388,7 +388,7 @@ public class BaseBlockRender
 					0.0D,
 					0.0D,
 					0.0D,
-					firstNotNull( renderer.overrideBlockTexture, block.getRendererInstance().getTexture( ForgeDirection.EAST ),
+					this.firstNotNull( renderer.overrideBlockTexture, block.getRendererInstance().getTexture( ForgeDirection.EAST ),
 							block.getIcon( ForgeDirection.EAST.ordinal(), meta ) ) );
 			tess.draw();
 		}
@@ -419,7 +419,7 @@ public class BaseBlockRender
 					getOrientation( ForgeDirection.SOUTH, ForgeDirection.SOUTH, ForgeDirection.UP ) );
 		}
 
-		renderInvBlock( EnumSet.allOf( ForgeDirection.class ), block, item, tess, 0xffffff, renderer );
+		this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), block, item, tess, 0xffffff, renderer );
 
 		if ( block.hasSubtypes() )
 			info.setTemporaryRenderIcon( null );
@@ -442,7 +442,7 @@ public class BaseBlockRender
 		ForgeDirection up = ForgeDirection.UP;
 
 		BlockRenderInfo info = block.getRendererInstance();
-		IOrientable te = getOrientable( block, world, x, y, z );
+		IOrientable te = this.getOrientable( block, world, x, y, z );
 		if ( te != null )
 		{
 			forward = te.getForward();
@@ -467,11 +467,11 @@ public class BaseBlockRender
 
 	public boolean renderInWorld(AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
 	{
-		preRenderInWorld( block, world, x, y, z, renderer );
+		this.preRenderInWorld( block, world, x, y, z, renderer );
 
 		boolean o = renderer.renderStandardBlock( block, x, y, z );
 
-		postRenderInWorld( renderer );
+		this.postRenderInWorld( renderer );
 		return o;
 	}
 
@@ -489,27 +489,27 @@ public class BaseBlockRender
 
 			ForgeDirection west = Platform.crossProduct( forward, up );
 
-			rotMat.put( 0, west.offsetX );
-			rotMat.put( 1, west.offsetY );
-			rotMat.put( 2, west.offsetZ );
-			rotMat.put( 3, 0 );
+			this.rotMat.put( 0, west.offsetX );
+			this.rotMat.put( 1, west.offsetY );
+			this.rotMat.put( 2, west.offsetZ );
+			this.rotMat.put( 3, 0 );
 
-			rotMat.put( 4, up.offsetX );
-			rotMat.put( 5, up.offsetY );
-			rotMat.put( 6, up.offsetZ );
-			rotMat.put( 7, 0 );
+			this.rotMat.put( 4, up.offsetX );
+			this.rotMat.put( 5, up.offsetY );
+			this.rotMat.put( 6, up.offsetZ );
+			this.rotMat.put( 7, 0 );
 
-			rotMat.put( 8, forward.offsetX );
-			rotMat.put( 9, forward.offsetY );
-			rotMat.put( 10, forward.offsetZ );
-			rotMat.put( 11, 0 );
+			this.rotMat.put( 8, forward.offsetX );
+			this.rotMat.put( 9, forward.offsetY );
+			this.rotMat.put( 10, forward.offsetZ );
+			this.rotMat.put( 11, 0 );
 
-			rotMat.put( 12, 0 );
-			rotMat.put( 13, 0 );
-			rotMat.put( 14, 0 );
-			rotMat.put( 15, 1 );
+			this.rotMat.put( 12, 0 );
+			this.rotMat.put( 13, 0 );
+			this.rotMat.put( 14, 0 );
+			this.rotMat.put( 15, 1 );
 			GL11.glTranslated( x + 0.5, y + 0.5, z + 0.5 );
-			GL11.glMultMatrix( rotMat );
+			GL11.glMultMatrix( this.rotMat );
 			GL11.glTranslated( -0.5, -0.5, -0.5 );
 			GL11.glCullFace( GL11.GL_FRONT );
 		}
@@ -663,25 +663,25 @@ public class BaseBlockRender
 		offsetY += y;
 		offsetZ += z;
 
-		renderFace( tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
+		this.renderFace( tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
 		// u -> u
 				0, 1.0,
 				// v -> v
 				0, edgeThickness, ico, flip );
 
-		renderFace( tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
+		this.renderFace( tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
 		// u -> u
 				0.0, edgeThickness,
 				// v -> v
 				edgeThickness, 1.0 - edgeThickness, ico, flip );
 
-		renderFace( tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
+		this.renderFace( tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
 		// u -> u
 				1.0 - edgeThickness, 1.0,
 				// v -> v
 				edgeThickness, 1.0 - edgeThickness, ico, flip );
 
-		renderFace( tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
+		this.renderFace( tess, offsetX, offsetY, offsetZ, layerAX, layerAY, layerAZ, layerBX, layerBY, layerBZ,
 		// u -> u
 				0, 1.0,
 				// v -> v
@@ -721,13 +721,13 @@ public class BaseBlockRender
 		v1 = 16 - v1;
 		v2 = 16 - v2;
 
-		double minX = (forward.offsetX > 0 ? 1 : 0) + mapFaceUV( west.offsetX, u1 ) + mapFaceUV( up.offsetX, v1 );
-		double minY = (forward.offsetY > 0 ? 1 : 0) + mapFaceUV( west.offsetY, u1 ) + mapFaceUV( up.offsetY, v1 );
-		double minZ = (forward.offsetZ > 0 ? 1 : 0) + mapFaceUV( west.offsetZ, u1 ) + mapFaceUV( up.offsetZ, v1 );
+		double minX = (forward.offsetX > 0 ? 1 : 0) + this.mapFaceUV( west.offsetX, u1 ) + this.mapFaceUV( up.offsetX, v1 );
+		double minY = (forward.offsetY > 0 ? 1 : 0) + this.mapFaceUV( west.offsetY, u1 ) + this.mapFaceUV( up.offsetY, v1 );
+		double minZ = (forward.offsetZ > 0 ? 1 : 0) + this.mapFaceUV( west.offsetZ, u1 ) + this.mapFaceUV( up.offsetZ, v1 );
 
-		double maxX = (forward.offsetX > 0 ? 1 : 0) + mapFaceUV( west.offsetX, u2 ) + mapFaceUV( up.offsetX, v2 );
-		double maxY = (forward.offsetY > 0 ? 1 : 0) + mapFaceUV( west.offsetY, u2 ) + mapFaceUV( up.offsetY, v2 );
-		double maxZ = (forward.offsetZ > 0 ? 1 : 0) + mapFaceUV( west.offsetZ, u2 ) + mapFaceUV( up.offsetZ, v2 );
+		double maxX = (forward.offsetX > 0 ? 1 : 0) + this.mapFaceUV( west.offsetX, u2 ) + this.mapFaceUV( up.offsetX, v2 );
+		double maxY = (forward.offsetY > 0 ? 1 : 0) + this.mapFaceUV( west.offsetY, u2 ) + this.mapFaceUV( up.offsetY, v2 );
+		double maxZ = (forward.offsetZ > 0 ? 1 : 0) + this.mapFaceUV( west.offsetZ, u2 ) + this.mapFaceUV( up.offsetZ, v2 );
 
 		renderer.renderMinX = Math.max( 0.0, Math.min( minX, maxX ) - (forward.offsetX != 0 ? 0 : 0.001) );
 		renderer.renderMaxX = Math.min( 1.0, Math.max( minX, maxX ) + (forward.offsetX != 0 ? 0 : 0.001) );
@@ -757,7 +757,7 @@ public class BaseBlockRender
 
 		renderer.uvRotateBottom = renderer.uvRotateTop = renderer.uvRotateEast = renderer.uvRotateWest = renderer.uvRotateNorth = renderer.uvRotateSouth = 0;
 
-		applyTESRRotation( x, y, z, forward, up );
+		this.applyTESRRotation( x, y, z, forward, up );
 
 		Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.locationBlocksTexture );
 		RenderHelper.disableStandardItemLighting();

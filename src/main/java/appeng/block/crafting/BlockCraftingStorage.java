@@ -35,7 +35,7 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 	{
 		super( BlockCraftingStorage.class );
 
-		setTileEntity( TileCraftingStorageTile.class );
+		this.setTileEntity( TileCraftingStorageTile.class );
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 		if ( is.getItemDamage() == 3 )
 			return "tile.appliedenergistics2.BlockCraftingStorage64k";
 
-		return getItemUnlocalizedName( is );
+		return this.getItemUnlocalizedName( is );
 	}
 
 	@Override

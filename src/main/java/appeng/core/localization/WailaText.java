@@ -32,21 +32,21 @@ public enum WailaText
 	final String root;
 
 	WailaText() {
-		root = "waila.appliedenergistics2";
+		this.root = "waila.appliedenergistics2";
 	}
 
 	WailaText(String r) {
-		root = r;
+		this.root = r;
 	}
 
 	public String getUnlocalized()
 	{
-		return root + '.' + toString();
+		return this.root + '.' + this.toString();
 	}
 
 	public String getLocal()
 	{
-		return StatCollector.translateToLocal( getUnlocalized() );
+		return StatCollector.translateToLocal( this.getUnlocalized() );
 	}
 
 }

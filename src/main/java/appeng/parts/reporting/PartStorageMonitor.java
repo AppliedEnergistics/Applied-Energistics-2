@@ -72,11 +72,11 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	{
 		super.writeToNBT( data );
 
-		data.setBoolean( "isLocked", isLocked );
+		data.setBoolean( "isLocked", this.isLocked );
 
 		NBTTagCompound myItem = new NBTTagCompound();
-		if ( configuredItem != null )
-			configuredItem.writeToNBT( myItem );
+		if ( this.configuredItem != null )
+			this.configuredItem.writeToNBT( myItem );
 
 		data.setTag( "configuredItem", myItem );
 	}
@@ -86,10 +86,10 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	{
 		super.readFromNBT( data );
 
-		isLocked = data.getBoolean( "isLocked" );
+		this.isLocked = data.getBoolean( "isLocked" );
 
 		NBTTagCompound myItem = data.getCompoundTag( "configuredItem" );
-		configuredItem = AEItemStack.loadItemStackFromNBT( myItem );
+		this.configuredItem = AEItemStack.loadItemStackFromNBT( myItem );
 	}
 
 	@Override
@@ -97,11 +97,11 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	{
 		super.writeToStream( data );
 
-		data.writeByte( spin );
-		data.writeBoolean( isLocked );
-		data.writeBoolean( configuredItem != null );
-		if ( configuredItem != null )
-			configuredItem.writeToPacket( data );
+		data.writeByte( this.spin );
+		data.writeBoolean( this.isLocked );
+		data.writeBoolean( this.configuredItem != null );
+		if ( this.configuredItem != null )
+			this.configuredItem.writeToPacket( data );
 	}
 
 	@Override
@@ -109,15 +109,15 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	{
 		boolean stuff = super.readFromStream( data );
 
-		spin = data.readByte();
-		isLocked = data.readBoolean();
+		this.spin = data.readByte();
+		this.isLocked = data.readBoolean();
 		boolean val = data.readBoolean();
 		if ( val )
-			configuredItem = AEItemStack.loadItemStackFromPacket( data );
+			this.configuredItem = AEItemStack.loadItemStackFromPacket( data );
 		else
-			configuredItem = null;
+			this.configuredItem = null;
 
-		updateList = true;
+		this.updateList = true;
 
 		return stuff;
 	}
@@ -128,28 +128,28 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		if ( Platform.isClient() )
 			return true;
 
-		if ( !proxy.isActive() )
+		if ( !this.proxy.isActive() )
 			return false;
 
-		if ( !Platform.hasPermissions( getLocation(), player ) )
+		if ( !Platform.hasPermissions( this.getLocation(), player ) )
 			return false;
 
 		TileEntity te = this.tile;
 		ItemStack eq = player.getCurrentEquippedItem();
 		if ( Platform.isWrench( player, eq, te.xCoord, te.yCoord, te.zCoord ) )
 		{
-			isLocked = !isLocked;
-			player.addChatMessage( (isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).get() );
+			this.isLocked = !this.isLocked;
+			player.addChatMessage( (this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).get() );
 			this.getHost().markForUpdate();
 		}
-		else if ( !isLocked )
+		else if ( !this.isLocked )
 		{
-			configuredItem = AEItemStack.create( eq );
-			configureWatchers();
+			this.configuredItem = AEItemStack.create( eq );
+			this.configureWatchers();
 			this.getHost().markForUpdate();
 		}
 		else
-			extractItem( player );
+			this.extractItem( player );
 
 		return true;
 	}
@@ -165,9 +165,9 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 
 	public PartStorageMonitor(ItemStack is) {
 		super( PartStorageMonitor.class, is, true );
-		frontBright = CableBusTextures.PartStorageMonitor_Bright;
-		frontColored = CableBusTextures.PartStorageMonitor_Colored;
-		frontDark = CableBusTextures.PartStorageMonitor_Dark;
+		this.frontBright = CableBusTextures.PartStorageMonitor_Bright;
+		this.frontColored = CableBusTextures.PartStorageMonitor_Colored;
+		this.frontDark = CableBusTextures.PartStorageMonitor_Dark;
 		// frontSolid = CableBusTextures.PartStorageMonitor_Solid;
 	}
 
@@ -188,39 +188,39 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	protected void finalize() throws Throwable
 	{
 		super.finalize();
-		if ( dspList != null )
-			GLAllocation.deleteDisplayLists( dspList );
+		if ( this.dspList != null )
+			GLAllocation.deleteDisplayLists( this.dspList );
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer)
 	{
-		if ( dspList == null )
-			dspList = GLAllocation.generateDisplayLists( 1 );
+		if ( this.dspList == null )
+			this.dspList = GLAllocation.generateDisplayLists( 1 );
 
 		Tessellator tess = Tessellator.instance;
 		if ( Platform.isDrawing( tess ) )
 			return;
 
-		if ( (clientFlags & (POWERED_FLAG | CHANNEL_FLAG)) != (POWERED_FLAG | CHANNEL_FLAG) )
+		if ( (this.clientFlags & (this.POWERED_FLAG | this.CHANNEL_FLAG)) != (this.POWERED_FLAG | this.CHANNEL_FLAG) )
 			return;
 
-		IAEItemStack ais = (IAEItemStack) getDisplayed();
+		IAEItemStack ais = (IAEItemStack) this.getDisplayed();
 		if ( ais != null )
 		{
 			GL11.glPushMatrix();
 			GL11.glTranslated( x + 0.5, y + 0.5, z + 0.5 );
 
-			if ( updateList )
+			if ( this.updateList )
 			{
-				updateList = false;
-				GL11.glNewList( dspList, GL11.GL_COMPILE_AND_EXECUTE );
-				tesrRenderScreen( tess, ais );
+				this.updateList = false;
+				GL11.glNewList( this.dspList, GL11.GL_COMPILE_AND_EXECUTE );
+				this.tesrRenderScreen( tess, ais );
 				GL11.glEndList();
 			}
 			else
-				GL11.glCallList( dspList );
+				GL11.glCallList( this.dspList );
 
 			GL11.glPopMatrix();
 		}
@@ -229,21 +229,21 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	private void tesrRenderScreen(Tessellator tess, IAEItemStack ais)
 	{
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
-		ForgeDirection d = side;
+		ForgeDirection d = this.side;
 		GL11.glTranslated( d.offsetX * 0.77, d.offsetY * 0.77, d.offsetZ * 0.77 );
 
 		if ( d == ForgeDirection.UP )
 		{
 			GL11.glScalef( 1.0f, -1.0f, 1.0f );
 			GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
-			GL11.glRotatef( spin * 90.0F, 0, 0, 1 );
+			GL11.glRotatef( this.spin * 90.0F, 0, 0, 1 );
 		}
 
 		if ( d == ForgeDirection.DOWN )
 		{
 			GL11.glScalef( 1.0f, -1.0f, 1.0f );
 			GL11.glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
-			GL11.glRotatef( spin * -90.0F, 0, 0, 1 );
+			GL11.glRotatef( this.spin * -90.0F, 0, 0, 1 );
 		}
 
 		if ( d == ForgeDirection.EAST )
@@ -323,13 +323,13 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	@Override
 	public IAEStack getDisplayed()
 	{
-		return configuredItem;
+		return this.configuredItem;
 	}
 
 	@Override
 	public boolean isLocked()
 	{
-		return isLocked;
+		return this.isLocked;
 	}
 
 	IStackWatcher myWatcher;
@@ -337,24 +337,24 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	@Override
 	public void updateWatcher(IStackWatcher newWatcher)
 	{
-		myWatcher = newWatcher;
-		configureWatchers();
+		this.myWatcher = newWatcher;
+		this.configureWatchers();
 	}
 
 	// update the system...
 	public void configureWatchers()
 	{
-		if ( myWatcher != null )
-			myWatcher.clear();
+		if ( this.myWatcher != null )
+			this.myWatcher.clear();
 
 		try
 		{
-			if ( configuredItem != null )
+			if ( this.configuredItem != null )
 			{
-				if ( myWatcher != null )
-					myWatcher.add( configuredItem );
+				if ( this.myWatcher != null )
+					this.myWatcher.add( this.configuredItem );
 
-				updateReportingValue( proxy.getStorage().getItemInventory() );
+				this.updateReportingValue( this.proxy.getStorage().getItemInventory() );
 			}
 		}
 		catch (GridAccessException e)
@@ -365,27 +365,27 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 
 	private void updateReportingValue(IMEMonitor<IAEItemStack> itemInventory)
 	{
-		if ( configuredItem != null )
+		if ( this.configuredItem != null )
 		{
-			IAEItemStack result = itemInventory.getStorageList().findPrecise( configuredItem );
+			IAEItemStack result = itemInventory.getStorageList().findPrecise( this.configuredItem );
 			if ( result == null )
-				configuredItem.setStackSize( 0 );
+				this.configuredItem.setStackSize( 0 );
 			else
-				configuredItem.setStackSize( result.getStackSize() );
+				this.configuredItem.setStackSize( result.getStackSize() );
 		}
 	}
 
 	@Override
 	public void onStackChange(IItemList o, IAEStack fullStack, IAEStack diffStack, BaseActionSource src, StorageChannel chan)
 	{
-		if ( configuredItem != null )
+		if ( this.configuredItem != null )
 		{
 			if ( fullStack == null )
-				configuredItem.setStackSize( 0 );
+				this.configuredItem.setStackSize( 0 );
 			else
-				configuredItem.setStackSize( fullStack.getStackSize() );
+				this.configuredItem.setStackSize( fullStack.getStackSize() );
 
-			getHost().markForUpdate();
+			this.getHost().markForUpdate();
 		}
 	}
 

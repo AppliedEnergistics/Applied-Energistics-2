@@ -39,10 +39,10 @@ public class BlockMolecularAssembler extends AEBaseBlock
 
 	public BlockMolecularAssembler() {
 		super( BlockMolecularAssembler.class, Material.iron );
-		setFeature( EnumSet.of( AEFeature.MolecularAssembler ) );
-		setTileEntity( TileMolecularAssembler.class );
-		isOpaque = false;
-		lightOpacity = 1;
+		this.setFeature( EnumSet.of( AEFeature.MolecularAssembler ) );
+		this.setTileEntity( TileMolecularAssembler.class );
+		this.isOpaque = false;
+		this.lightOpacity = 1;
 	}
 
 	public static boolean booleanAlphaPass = false;
@@ -70,7 +70,7 @@ public class BlockMolecularAssembler extends AEBaseBlock
 	@Override
 	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
 	{
-		TileMolecularAssembler tg = getTileEntity( w, x, y, z );
+		TileMolecularAssembler tg = this.getTileEntity( w, x, y, z );
 		if ( tg != null && !p.isSneaking() )
 		{
 			Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_MAC );

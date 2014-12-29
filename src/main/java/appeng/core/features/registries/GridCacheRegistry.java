@@ -35,7 +35,7 @@ public class GridCacheRegistry implements IGridCacheRegistry
 	public void registerGridCache(Class<? extends IGridCache> iface, Class<? extends IGridCache> implementation)
 	{
 		if ( iface.isAssignableFrom( implementation ) )
-			caches.put( iface, implementation );
+			this.caches.put( iface, implementation );
 		else
 			throw new RuntimeException( "Invalid setup, grid cache must either be the same class, or an interface that the implementation implements" );
 	}
@@ -45,11 +45,11 @@ public class GridCacheRegistry implements IGridCacheRegistry
 	{
 		HashMap<Class<? extends IGridCache>, IGridCache> map = new HashMap<Class<? extends IGridCache>, IGridCache>();
 
-		for (Class<? extends IGridCache> iface : caches.keySet())
+		for (Class<? extends IGridCache> iface : this.caches.keySet())
 		{
 			try
 			{
-				Constructor<? extends IGridCache> c = caches.get( iface ).getConstructor( IGrid.class );
+				Constructor<? extends IGridCache> c = this.caches.get( iface ).getConstructor( IGrid.class );
 				map.put( iface, c.newInstance( g ) );
 			}
 			catch (Throwable e)

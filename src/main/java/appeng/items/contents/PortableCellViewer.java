@@ -46,14 +46,14 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 
 	public PortableCellViewer(ItemStack is) {
 		super( CellInventory.getCell( is, null ) );
-		ips = (IAEItemPowerStorage) is.getItem();
-		target = is;
+		this.ips = (IAEItemPowerStorage) is.getItem();
+		this.target = is;
 	}
 
 	@Override
 	public ItemStack getItemStack()
 	{
-		return target;
+		return this.target;
 	}
 
 	@Override
@@ -62,9 +62,9 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 		amt = usePowerMultiplier.multiply( amt );
 
 		if ( mode == Actionable.SIMULATE )
-			return usePowerMultiplier.divide( Math.min( amt, ips.getAECurrentPower( getItemStack() ) ) );
+			return usePowerMultiplier.divide( Math.min( amt, this.ips.getAECurrentPower( this.getItemStack() ) ) );
 
-		return usePowerMultiplier.divide( ips.extractAEPower( getItemStack(), amt ) );
+		return usePowerMultiplier.divide( this.ips.extractAEPower( this.getItemStack(), amt ) );
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 			@Override
 			public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
 			{
-				NBTTagCompound data = Platform.openNbtData( target );
+				NBTTagCompound data = Platform.openNbtData( PortableCellViewer.this.target );
 				manager.writeToNBT( data );
 			}
 		} );
@@ -96,7 +96,7 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 		out.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
 		out.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 
-		out.readFromNBT( (NBTTagCompound) Platform.openNbtData( target ).copy() );
+		out.readFromNBT( (NBTTagCompound) Platform.openNbtData( this.target ).copy() );
 		return out;
 	}
 

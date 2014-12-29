@@ -55,12 +55,12 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 		this.xPosition = posX;
 		this.yPosition = posY;
 		this.texture = new ResourceLocation( "appliedenergistics2", "textures/" + texture );
-		width = _width;
-		height = _height;
-		fill_u = u;
-		fill_v = y;
-		layout = dir;
-		titleName = title;
+		this.width = _width;
+		this.height = _height;
+		this.fill_u = u;
+		this.fill_v = y;
+		this.layout = dir;
+		this.titleName = title;
 	}
 
 	@Override
@@ -68,19 +68,19 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 	{
 		if ( this.visible )
 		{
-			par1Minecraft.getTextureManager().bindTexture( texture );
-			int max = source.getMaxProgress();
-			int current = source.getCurrentProgress();
+			par1Minecraft.getTextureManager().bindTexture( this.texture );
+			int max = this.source.getMaxProgress();
+			int current = this.source.getCurrentProgress();
 
-			if ( layout == Direction.VERTICAL )
+			if ( this.layout == Direction.VERTICAL )
 			{
-				int diff = height - (max > 0 ? (height * current) / max : 0);
-				this.drawTexturedModalRect( this.xPosition, this.yPosition + diff, fill_u, fill_v + diff, width, height - diff );
+				int diff = this.height - (max > 0 ? (this.height * current) / max : 0);
+				this.drawTexturedModalRect( this.xPosition, this.yPosition + diff, this.fill_u, this.fill_v + diff, this.width, this.height - diff );
 			}
 			else
 			{
-				int diff = width - (max > 0 ? (width * current) / max : 0);
-				this.drawTexturedModalRect( this.xPosition, this.yPosition, fill_u + diff, fill_v, width - diff, height );
+				int diff = this.width - (max > 0 ? (this.width * current) / max : 0);
+				this.drawTexturedModalRect( this.xPosition, this.yPosition, this.fill_u + diff, this.fill_v, this.width - diff, this.height );
 			}
 
 			this.mouseDragged( par1Minecraft, par2, par3 );
@@ -95,34 +95,34 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 	@Override
 	public String getMessage()
 	{
-		if ( fullMsg != null )
-			return fullMsg;
+		if ( this.fullMsg != null )
+			return this.fullMsg;
 
-		return (titleName != null ? titleName : "") + '\n' + source.getCurrentProgress() + ' ' + GuiText.Of.getLocal() + ' ' + source.getMaxProgress();
+		return (this.titleName != null ? this.titleName : "") + '\n' + this.source.getCurrentProgress() + ' ' + GuiText.Of.getLocal() + ' ' + this.source.getMaxProgress();
 	}
 
 	@Override
 	public int xPos()
 	{
-		return xPosition - 2;
+		return this.xPosition - 2;
 	}
 
 	@Override
 	public int yPos()
 	{
-		return yPosition - 2;
+		return this.yPosition - 2;
 	}
 
 	@Override
 	public int getWidth()
 	{
-		return width + 4;
+		return this.width + 4;
 	}
 
 	@Override
 	public int getHeight()
 	{
-		return height + 4;
+		return this.height + 4;
 	}
 
 	@Override

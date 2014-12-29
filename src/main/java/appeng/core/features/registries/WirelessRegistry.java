@@ -37,20 +37,20 @@ public class WirelessRegistry implements IWirelessTermRegistry
 	final List<IWirelessTermHandler> handlers;
 
 	public WirelessRegistry() {
-		handlers = new ArrayList<IWirelessTermHandler>();
+		this.handlers = new ArrayList<IWirelessTermHandler>();
 	}
 
 	@Override
 	public void registerWirelessHandler(IWirelessTermHandler handler)
 	{
 		if ( handler != null )
-			handlers.add( handler );
+			this.handlers.add( handler );
 	}
 
 	@Override
 	public boolean isWirelessTerminal(ItemStack is)
 	{
-		for (IWirelessTermHandler h : handlers)
+		for (IWirelessTermHandler h : this.handlers)
 		{
 			if ( h.canHandle( is ) )
 				return true;
@@ -61,7 +61,7 @@ public class WirelessRegistry implements IWirelessTermRegistry
 	@Override
 	public IWirelessTermHandler getWirelessTerminalHandler(ItemStack is)
 	{
-		for (IWirelessTermHandler h : handlers)
+		for (IWirelessTermHandler h : this.handlers)
 		{
 			if ( h.canHandle( is ) )
 				return h;
@@ -75,7 +75,7 @@ public class WirelessRegistry implements IWirelessTermRegistry
 		if ( Platform.isClient() )
 			return;
 
-		IWirelessTermHandler handler = getWirelessTerminalHandler( item );
+		IWirelessTermHandler handler = this.getWirelessTerminalHandler( item );
 		if ( handler == null )
 		{
 			player.addChatMessage( new ChatComponentText( "Item is not a wireless terminal." ) );

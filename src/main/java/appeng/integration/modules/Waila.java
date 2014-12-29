@@ -77,8 +77,8 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 	@Override
 	public void Init() throws Throwable
 	{
-		TestClass( IWailaDataProvider.class );
-		TestClass( IWailaRegistrar.class );
+		this.TestClass( IWailaDataProvider.class );
+		this.TestClass( IWailaRegistrar.class );
 		FMLInterModComms.sendMessage( "Waila", "register", this.getClass().getName() + ".register" );
 	}
 
@@ -110,7 +110,7 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 		{
 		}
 
-		return getBody( itemStack, currentToolTip, accessor.getPlayer(), nbt, te, mop );
+		return this.getBody( itemStack, currentToolTip, accessor.getPlayer(), nbt, te, mop );
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class Waila extends BaseModule implements IWailaDataProvider, IWailaFMPPr
 		{
 		}
 
-		return getBody( itemStack, currentToolTip, accessor.getPlayer(), nbt, te, mop );
+		return this.getBody( itemStack, currentToolTip, accessor.getPlayer(), nbt, te, mop );
 	}
 
 	public List<String> getBody(ItemStack itemStack, List<String> currentToolTip, EntityPlayer player, NBTTagCompound nbt, TileEntity te, MovingObjectPosition mop)

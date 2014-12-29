@@ -48,8 +48,8 @@ public class Smelt implements ICraftHandler, IWebsiteSerializer
 			List<IIngredient> outputList = output.get( 0 );
 			if ( inputList.size() == 1 && outputList.size() == 1 )
 			{
-				in = inputList.get( 0 );
-				out = outputList.get( 0 );
+				this.in = inputList.get( 0 );
+				this.out = outputList.get( 0 );
 				return;
 			}
 		}
@@ -59,24 +59,24 @@ public class Smelt implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		if ( in.getItemStack().getItem() == null )
-			throw new RegistrationError( in.toString() + ": Smelting Input is not a valid item." );
+		if ( this.in.getItemStack().getItem() == null )
+			throw new RegistrationError( this.in.toString() + ": Smelting Input is not a valid item." );
 
-		if ( out.getItemStack().getItem() == null )
-			throw new RegistrationError( out.toString() + ": Smelting Output is not a valid item." );
+		if ( this.out.getItemStack().getItem() == null )
+			throw new RegistrationError( this.out.toString() + ": Smelting Output is not a valid item." );
 
-		GameRegistry.addSmelting( in.getItemStack(), out.getItemStack(), 0 );
+		GameRegistry.addSmelting( this.in.getItemStack(), this.out.getItemStack(), 0 );
 	}
 
 	@Override
 	public boolean canCraft(ItemStack reqOutput) throws RegistrationError, MissingIngredientError {
-		return Platform.isSameItemPrecise( out.getItemStack(),reqOutput );
+		return Platform.isSameItemPrecise( this.out.getItemStack(),reqOutput );
 	}
 
 	@Override
 	public String getPattern( RecipeHandler h ) {
-		return "smelt "+out.getQty()+ '\n' +
-				h.getName(out)+ '\n' +
-				h.getName(in);
+		return "smelt "+this.out.getQty()+ '\n' +
+				h.getName(this.out)+ '\n' +
+				h.getName(this.in);
 	}
 }

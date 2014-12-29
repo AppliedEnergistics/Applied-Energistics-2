@@ -31,49 +31,49 @@ public class MJPerdition extends BaseMJPerdition
 	final protected PowerHandler bcPowerHandler;
 
 	public MJPerdition(IPowerReceptor te) {
-		bcPowerHandler = new PowerHandler( te, Type.MACHINE );
+		this.bcPowerHandler = new PowerHandler( te, Type.MACHINE );
 	}
 
 	@Override
 	public void Tick()
 	{
-		bcPowerHandler.update();
+		this.bcPowerHandler.update();
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound data)
 	{
-		bcPowerHandler.writeToNBT( data, "bcPowerHandler" );
+		this.bcPowerHandler.writeToNBT( data, "bcPowerHandler" );
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound data)
 	{
-		bcPowerHandler.readFromNBT( data, "bcPowerHandler" );
+		this.bcPowerHandler.readFromNBT( data, "bcPowerHandler" );
 	}
 
 	@Override
 	public PowerReceiver getPowerReceiver()
 	{
-		return bcPowerHandler.getPowerReceiver();
+		return this.bcPowerHandler.getPowerReceiver();
 	}
 
 	@Override
 	public double useEnergy(double min, double max, boolean doUse)
 	{
-		return bcPowerHandler.useEnergy( min, max, doUse );
+		return this.bcPowerHandler.useEnergy( min, max, doUse );
 	}
 
 	@Override
 	public void addEnergy(float failed)
 	{
-		bcPowerHandler.addEnergy( failed );
+		this.bcPowerHandler.addEnergy( failed );
 	}
 
 	@Override
 	public void configure(int i, int j, float f, int k)
 	{
-		bcPowerHandler.configure( i, j, f, k );
+		this.bcPowerHandler.configure( i, j, f, k );
 	}
 
 }

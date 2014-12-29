@@ -40,22 +40,22 @@ public class SpatialSkyRender extends IRenderHandler
 	private final int dspList;
 
 	public SpatialSkyRender() {
-		dspList = GLAllocation.generateDisplayLists( 1 );
+		this.dspList = GLAllocation.generateDisplayLists( 1 );
 	}
 
 	@Override
 	public void render(float partialTicks, WorldClient world, Minecraft mc)
 	{
 		long now = System.currentTimeMillis();
-		if ( now - cycle > 2000 )
+		if ( now - this.cycle > 2000 )
 		{
-			cycle = now;
-			GL11.glNewList( dspList, GL11.GL_COMPILE );
-			renderTwinkles();
+			this.cycle = now;
+			GL11.glNewList( this.dspList, GL11.GL_COMPILE );
+			this.renderTwinkles();
 			GL11.glEndList();
 		}
 
-		float fade = now - cycle;
+		float fade = now - this.cycle;
 		fade /= 1000;
 		fade = 0.15f * (1.0f - Math.abs( (fade - 1.0f) * (fade - 1.0f) ));
 
@@ -124,7 +124,7 @@ public class SpatialSkyRender extends IRenderHandler
 			GL11.glDepthMask( false );
 
 			GL11.glColor4f( fade, fade, fade, 1.0f );
-			GL11.glCallList( dspList );
+			GL11.glCallList( this.dspList );
 		}
 
 		GL11.glPopAttrib();
@@ -139,10 +139,10 @@ public class SpatialSkyRender extends IRenderHandler
 
 		for (int i = 0; i < 50; ++i)
 		{
-			double iX = random.nextFloat() * 2.0F - 1.0F;
-			double iY = random.nextFloat() * 2.0F - 1.0F;
-			double iZ = random.nextFloat() * 2.0F - 1.0F;
-			double d3 = 0.05F + random.nextFloat() * 0.1F;
+			double iX = this.random.nextFloat() * 2.0F - 1.0F;
+			double iY = this.random.nextFloat() * 2.0F - 1.0F;
+			double iZ = this.random.nextFloat() * 2.0F - 1.0F;
+			double d3 = 0.05F + this.random.nextFloat() * 0.1F;
 			double dist = iX * iX + iY * iY + iZ * iZ;
 
 			if ( dist < 1.0D && dist > 0.01D )
@@ -160,7 +160,7 @@ public class SpatialSkyRender extends IRenderHandler
 				double d11 = Math.atan2( Math.sqrt( iX * iX + iZ * iZ ), iY );
 				double d12 = Math.sin( d11 );
 				double d13 = Math.cos( d11 );
-				double d14 = random.nextDouble() * Math.PI * 2.0D;
+				double d14 = this.random.nextDouble() * Math.PI * 2.0D;
 				double d15 = Math.sin( d14 );
 				double d16 = Math.cos( d14 );
 

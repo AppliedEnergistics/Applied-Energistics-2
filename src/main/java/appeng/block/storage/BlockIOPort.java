@@ -36,14 +36,14 @@ public class BlockIOPort extends AEBaseBlock
 
 	public BlockIOPort() {
 		super( BlockIOPort.class, Material.iron );
-		setFeature( EnumSet.of( AEFeature.StorageCells, AEFeature.IOPort ) );
-		setTileEntity( TileIOPort.class );
+		this.setFeature( EnumSet.of( AEFeature.StorageCells, AEFeature.IOPort ) );
+		this.setTileEntity( TileIOPort.class );
 	}
 
 	@Override
 	public final void onNeighborBlockChange(World w, int x, int y, int z, Block junk)
 	{
-		TileIOPort te = getTileEntity( w, x, y, z );
+		TileIOPort te = this.getTileEntity( w, x, y, z );
 		if ( te != null )
 			te.updateRedstoneState();
 	}
@@ -54,7 +54,7 @@ public class BlockIOPort extends AEBaseBlock
 		if ( p.isSneaking() )
 			return false;
 
-		TileIOPort tg = getTileEntity( w, x, y, z );
+		TileIOPort tg = this.getTileEntity( w, x, y, z );
 		if ( tg != null )
 		{
 			if ( Platform.isServer() )

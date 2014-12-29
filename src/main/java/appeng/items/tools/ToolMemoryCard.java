@@ -41,8 +41,8 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 
 	public ToolMemoryCard() {
 		super( ToolMemoryCard.class );
-		setFeature( EnumSet.of( AEFeature.Core ) );
-		setMaxStackSize( 1 );
+		this.setFeature( EnumSet.of( AEFeature.Core ) );
+		this.setMaxStackSize( 1 );
 	}
 
 	/**
@@ -69,11 +69,11 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	@Override
 	public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
-		lines.add( getLocalizedName( getSettingsName( stack ) + ".name", getSettingsName( stack ) ) );
+		lines.add( this.getLocalizedName( this.getSettingsName( stack ) + ".name", this.getSettingsName( stack ) ) );
 
-		NBTTagCompound data = getData( stack );
+		NBTTagCompound data = this.getData( stack );
 		if ( data.hasKey( "tooltip" ) )
-			lines.add( StatCollector.translateToLocal( getLocalizedName( data.getString( "tooltip" ) + ".name", data.getString( "tooltip" ) ) ) );
+			lines.add( StatCollector.translateToLocal( this.getLocalizedName( data.getString( "tooltip" ) + ".name", data.getString( "tooltip" ) ) ) );
 	}
 
 	@Override

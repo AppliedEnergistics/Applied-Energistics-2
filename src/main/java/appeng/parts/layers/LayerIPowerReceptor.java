@@ -33,7 +33,7 @@ public class LayerIPowerReceptor extends LayerBase implements IPowerReceptor
 	@Override
 	public PowerReceiver getPowerReceiver(ForgeDirection side)
 	{
-		IPart part = getPart( side );
+		IPart part = this.getPart( side );
 		if ( part instanceof IPowerReceptor )
 			return ((IPowerReceptor) part).getPowerReceiver( side );
 		return null;

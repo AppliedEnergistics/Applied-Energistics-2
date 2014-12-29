@@ -37,7 +37,7 @@ public class PacketNewStorageDimension extends AppEngPacket
 	// automatic.
 	public PacketNewStorageDimension(ByteBuf stream)
 	{
-		newDim = stream.readInt();
+		this.newDim = stream.readInt();
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class PacketNewStorageDimension extends AppEngPacket
 	{
 		try
 		{
-			DimensionManager.registerDimension( newDim, AEConfig.instance.storageProviderID );
+			DimensionManager.registerDimension( this.newDim, AEConfig.instance.storageProviderID );
 		}
 		catch (IllegalArgumentException iae)
 		{
@@ -61,10 +61,10 @@ public class PacketNewStorageDimension extends AppEngPacket
 
 		ByteBuf data = Unpooled.buffer();
 
-		data.writeInt( getPacketID() );
+		data.writeInt( this.getPacketID() );
 		data.writeInt( newDim );
 
-		configureWrite( data );
+		this.configureWrite( data );
 	}
 
 }

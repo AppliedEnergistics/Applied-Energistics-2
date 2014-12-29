@@ -31,7 +31,7 @@ public class ItemListIgnoreCrafting<T extends IAEStack> implements IItemList<T>
 	final IItemList<T> target;
 
 	public ItemListIgnoreCrafting(IItemList<T> cla) {
-		target = cla;
+		this.target = cla;
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class ItemListIgnoreCrafting<T extends IAEStack> implements IItemList<T>
 			option.setCraftable( false );
 		}
 
-		target.add( option );
+		this.target.add( option );
 	}
 
 	@Override
@@ -55,54 +55,54 @@ public class ItemListIgnoreCrafting<T extends IAEStack> implements IItemList<T>
 	@Override
 	public T findPrecise(T i)
 	{
-		return target.findPrecise( i );
+		return this.target.findPrecise( i );
 	}
 
 	@Override
 	public Collection<T> findFuzzy(T input, FuzzyMode fuzzy)
 	{
-		return target.findFuzzy( input, fuzzy );
+		return this.target.findFuzzy( input, fuzzy );
 	}
 
 	@Override
 	public boolean isEmpty()
 	{
-		return target.isEmpty();
+		return this.target.isEmpty();
 	}
 
 	@Override
 	public void addStorage(T option)
 	{
-		target.addStorage( option );
+		this.target.addStorage( option );
 	}
 
 	@Override
 	public void addRequestable(T option)
 	{
-		target.addRequestable( option );
+		this.target.addRequestable( option );
 	}
 
 	@Override
 	public T getFirstItem()
 	{
-		return target.getFirstItem();
+		return this.target.getFirstItem();
 	}
 
 	@Override
 	public int size()
 	{
-		return target.size();
+		return this.target.size();
 	}
 
 	@Override
 	public Iterator<T> iterator()
 	{
-		return target.iterator();
+		return this.target.iterator();
 	}
 
 	@Override
 	public void resetStatus()
 	{
-		target.resetStatus();
+		this.target.resetStatus();
 	}
 }

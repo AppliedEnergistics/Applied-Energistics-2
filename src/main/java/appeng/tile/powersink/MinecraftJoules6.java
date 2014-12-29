@@ -41,18 +41,18 @@ public abstract class MinecraftJoules6 extends MinecraftJoules5 implements IBatt
 	@Method(iname = "MJ6")
 	public double getEnergyRequested()
 	{
-		return getExternalPowerDemand( PowerUnits.MJ, Double.MAX_VALUE );
+		return this.getExternalPowerDemand( PowerUnits.MJ, Double.MAX_VALUE );
 	}
 
 	@Override
 	@Method(iname = "MJ6")
 	public double addEnergy(double amount)
 	{
-		double demand = getExternalPowerDemand( PowerUnits.MJ, Double.MAX_VALUE );
+		double demand = this.getExternalPowerDemand( PowerUnits.MJ, Double.MAX_VALUE );
 		if ( amount > demand )
 			amount = demand;
 
-		double overflow = injectExternalPower( PowerUnits.MJ, amount );
+		double overflow = this.injectExternalPower( PowerUnits.MJ, amount );
 		return amount - overflow;
 	}
 
@@ -60,7 +60,7 @@ public abstract class MinecraftJoules6 extends MinecraftJoules5 implements IBatt
 	@Method(iname = "MJ6")
 	public double addEnergy(double amount, boolean ignoreCycleLimit)
 	{
-		double overflow = injectExternalPower( PowerUnits.MJ, amount );
+		double overflow = this.injectExternalPower( PowerUnits.MJ, amount );
 		return amount - overflow;
 	}
 
@@ -68,21 +68,21 @@ public abstract class MinecraftJoules6 extends MinecraftJoules5 implements IBatt
 	@Method(iname = "MJ6")
 	public double getEnergyStored()
 	{
-		return PowerUnits.AE.convertTo( PowerUnits.MJ, internalCurrentPower );
+		return PowerUnits.AE.convertTo( PowerUnits.MJ, this.internalCurrentPower );
 	}
 
 	@Override
 	@Method(iname = "MJ6")
 	public void setEnergyStored(double mj)
 	{
-		internalCurrentPower = PowerUnits.MJ.convertTo( PowerUnits.AE, mj );
+		this.internalCurrentPower = PowerUnits.MJ.convertTo( PowerUnits.AE, mj );
 	}
 
 	@Override
 	@Method(iname = "MJ6")
 	public double maxCapacity()
 	{
-		return PowerUnits.AE.convertTo( PowerUnits.MJ, internalMaxPower );
+		return PowerUnits.AE.convertTo( PowerUnits.MJ, this.internalMaxPower );
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public abstract class MinecraftJoules6 extends MinecraftJoules5 implements IBatt
 	@Method(iname = "MJ6")
 	public IBatteryObject reconfigure(double maxCapacity, double maxReceivedPerCycle, double minimumConsumption)
 	{
-		return getMjBattery( "" );
+		return this.getMjBattery( "" );
 	}
 
 	@Override

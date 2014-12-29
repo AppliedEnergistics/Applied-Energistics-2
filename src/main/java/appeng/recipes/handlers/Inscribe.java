@@ -45,7 +45,7 @@ public class Inscribe implements ICraftHandler, IWebsiteSerializer
 			this.usePlates = usePlates;
 			this.plateA = plateA;
 			this.plateB = plateB;
-			output = out;
+			this.output = out;
 		}
 
 		final public boolean usePlates;
@@ -77,12 +77,12 @@ public class Inscribe implements ICraftHandler, IWebsiteSerializer
 		{
 			if ( input.size() == 1 && input.get( 0 ).size() > 1 )
 			{
-				imprintable = input.get( 0 ).get( 0 );
+				this.imprintable = input.get( 0 ).get( 0 );
 
-				plateA = input.get( 0 ).get( 1 );
+				this.plateA = input.get( 0 ).get( 1 );
 
 				if ( input.get( 0 ).size() > 2 )
-					plateB = input.get( 0 ).get( 2 );
+					this.plateB = input.get( 0 ).get( 2 );
 
 				this.output = output.get( 0 ).get( 0 );
 			}
@@ -96,40 +96,40 @@ public class Inscribe implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		if ( imprintable != null )
-			Collections.addAll( inputs, imprintable.getItemStackSet() );
+		if ( this.imprintable != null )
+			Collections.addAll( inputs, this.imprintable.getItemStackSet() );
 
-		if ( plateA != null )
-			Collections.addAll( plates, plateA.getItemStackSet() );
+		if ( this.plateA != null )
+			Collections.addAll( plates, this.plateA.getItemStackSet() );
 
-		if ( plateB != null )
-			Collections.addAll( plates, plateB.getItemStackSet() );
+		if ( this.plateB != null )
+			Collections.addAll( plates, this.plateB.getItemStackSet() );
 
-		InscriberRecipe ir = new InscriberRecipe( imprintable.getItemStackSet(), plateA == null ? null : plateA.getItemStack(), plateB == null ? null
-				: plateB.getItemStack(), output.getItemStack(), usePlates );
+		InscriberRecipe ir = new InscriberRecipe( this.imprintable.getItemStackSet(), this.plateA == null ? null : this.plateA.getItemStack(), this.plateB == null ? null
+				: this.plateB.getItemStack(), this.output.getItemStack(), this.usePlates );
 		recipes.add( ir );
 	}
 
 	@Override
 	public boolean canCraft(ItemStack reqOutput) throws RegistrationError, MissingIngredientError
 	{
-		return Platform.isSameItemPrecise( output.getItemStack(), reqOutput );
+		return Platform.isSameItemPrecise( this.output.getItemStack(), reqOutput );
 	}
 
 	@Override
 	public String getPattern(RecipeHandler h)
 	{
-		String o = "inscriber " + output.getQty() + '\n';
+		String o = "inscriber " + this.output.getQty() + '\n';
 
-		o += h.getName( output ) + '\n';
+		o += h.getName( this.output ) + '\n';
 
-		if ( plateA != null )
-			o +=  h.getName( plateA )+ '\n';
+		if ( this.plateA != null )
+			o +=  h.getName( this.plateA )+ '\n';
 
-		o += h.getName(imprintable);
+		o += h.getName(this.imprintable);
 
-		if ( plateB != null )
-			o += '\n' +h.getName( plateB );
+		if ( this.plateB != null )
+			o += '\n' +h.getName( this.plateB );
 
 		return o;
 	}

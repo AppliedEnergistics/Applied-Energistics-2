@@ -45,34 +45,34 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 
 	private void sendCPUs()
 	{
-		Collections.sort( cpus );
+		Collections.sort( this.cpus );
 
-		if ( selectedCpu >= cpus.size() )
+		if ( this.selectedCpu >= this.cpus.size() )
 		{
-			selectedCpu = -1;
-			myName = "";
+			this.selectedCpu = -1;
+			this.myName = "";
 		}
-		else if ( selectedCpu != -1 )
+		else if ( this.selectedCpu != -1 )
 		{
-			myName = cpus.get( selectedCpu ).myName;
+			this.myName = this.cpus.get( this.selectedCpu ).myName;
 		}
 
-		if ( selectedCpu == -1 && cpus.size() > 0 )
-			selectedCpu = 0;
+		if ( this.selectedCpu == -1 && this.cpus.size() > 0 )
+			this.selectedCpu = 0;
 
-		if ( selectedCpu != -1 )
+		if ( this.selectedCpu != -1 )
 		{
-			if ( cpus.get( selectedCpu ).cpu != monitor )
-				setCPU( cpus.get( selectedCpu ).cpu );
+			if ( this.cpus.get( this.selectedCpu ).cpu != this.monitor )
+				this.setCPU( this.cpus.get( this.selectedCpu ).cpu );
 		}
 		else
-			setCPU( null );
+			this.setCPU( null );
 	}
 
 	@Override
 	public void detectAndSendChanges()
 	{
-		ICraftingGrid cc = network.getCache( ICraftingGrid.class );
+		ICraftingGrid cc = this.network.getCache( ICraftingGrid.class );
 		ImmutableSet<ICraftingCPU> cpuSet = cc.getCpus();
 
 		int matches = 0;
@@ -80,11 +80,11 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 		for (ICraftingCPU c : cpuSet)
 		{
 			boolean found = false;
-			for (CraftingCPURecord ccr : cpus)
+			for (CraftingCPURecord ccr : this.cpus)
 				if ( ccr.cpu == c )
 					found = true;
 
-			boolean matched = cpuMatches( c );
+			boolean matched = this.cpuMatches( c );
 
 			if ( matched )
 				matches++;
@@ -93,19 +93,19 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 				changed = true;
 		}
 
-		if ( changed || cpus.size() != matches )
+		if ( changed || this.cpus.size() != matches )
 		{
-			cpus.clear();
+			this.cpus.clear();
 			for (ICraftingCPU c : cpuSet)
 			{
-				if ( cpuMatches( c ) )
-					cpus.add( new CraftingCPURecord( c.getAvailableStorage(), c.getCoProcessors(), c ) );
+				if ( this.cpuMatches( c ) )
+					this.cpus.add( new CraftingCPURecord( c.getAvailableStorage(), c.getCoProcessors(), c ) );
 			}
 
-			sendCPUs();
+			this.sendCPUs();
 		}
 
-		noCPU = cpus.size() == 0;
+		this.noCPU = this.cpus.size() == 0;
 
 		super.detectAndSendChanges();
 	}
@@ -122,27 +122,27 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 	public void cycleCpu(boolean next)
 	{
 		if ( next )
-			selectedCpu++;
+			this.selectedCpu++;
 		else
-			selectedCpu--;
+			this.selectedCpu--;
 
-		if ( selectedCpu < -1 )
-			selectedCpu = cpus.size() - 1;
-		else if ( selectedCpu >= cpus.size() )
-			selectedCpu = -1;
+		if ( this.selectedCpu < -1 )
+			this.selectedCpu = this.cpus.size() - 1;
+		else if ( this.selectedCpu >= this.cpus.size() )
+			this.selectedCpu = -1;
 
-		if ( selectedCpu == -1 && cpus.size() > 0 )
-			selectedCpu = 0;
+		if ( this.selectedCpu == -1 && this.cpus.size() > 0 )
+			this.selectedCpu = 0;
 
-		if ( selectedCpu == -1 )
+		if ( this.selectedCpu == -1 )
 		{
-			myName = "";
-			setCPU( null );
+			this.myName = "";
+			this.setCPU( null );
 		}
 		else
 		{
-			myName = cpus.get( selectedCpu ).myName;
-			setCPU( cpus.get( selectedCpu ).cpu );
+			this.myName = this.cpus.get( this.selectedCpu ).myName;
+			this.setCPU( this.cpus.get( this.selectedCpu ).cpu );
 		}
 	}
 

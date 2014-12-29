@@ -38,7 +38,7 @@ public class GuiVibrationChamber extends AEBaseGui
 	public GuiVibrationChamber(InventoryPlayer inventoryPlayer, TileVibrationChamber te)
 	{
 		super( new ContainerVibrationChamber( inventoryPlayer, te ) );
-		cvc = (ContainerVibrationChamber) inventorySlots;
+		this.cvc = (ContainerVibrationChamber) this.inventorySlots;
 		this.ySize = 166;
 	}
 
@@ -47,34 +47,34 @@ public class GuiVibrationChamber extends AEBaseGui
 	{
 		super.initGui();
 
-		pb = new GuiProgressBar( cvc, "guis/vibchamber.png", 99, 36, 176, 14, 6, 18, Direction.VERTICAL );
-		this.buttonList.add( pb );
+		this.pb = new GuiProgressBar( this.cvc, "guis/vibchamber.png", 99, 36, 176, 14, 6, 18, Direction.VERTICAL );
+		this.buttonList.add( this.pb );
 	}
 
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		bindTexture( "guis/vibchamber.png" );
-		pb.xPosition = 99 + guiLeft;
-		pb.yPosition = 36 + guiTop;
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, xSize, ySize );
+		this.bindTexture( "guis/vibchamber.png" );
+		this.pb.xPosition = 99 + this.guiLeft;
+		this.pb.yPosition = 36 + this.guiTop;
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 	}
 
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString( getGuiDisplayName( GuiText.VibrationChamber.getLocal() ), 8, 6, 4210752 );
-		fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, ySize - 96 + 3, 4210752 );
+		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.VibrationChamber.getLocal() ), 8, 6, 4210752 );
+		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
 		int k = 25;
 		int l = -15;
 
-		pb.setFullMsg( cvc.aePerTick * cvc.getCurrentProgress() / 100 + " ae/t" );
+		this.pb.setFullMsg( this.cvc.aePerTick * this.cvc.getCurrentProgress() / 100 + " ae/t" );
 
-		if ( cvc.getCurrentProgress() > 0 )
+		if ( this.cvc.getCurrentProgress() > 0 )
 		{
-			int i1 = cvc.getCurrentProgress();
-			bindTexture( "guis/vibchamber.png" );
+			int i1 = this.cvc.getCurrentProgress();
+			this.bindTexture( "guis/vibchamber.png" );
 			GL11.glColor3f( 1, 1, 1 );
 			this.drawTexturedModalRect( k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2 );
 		}

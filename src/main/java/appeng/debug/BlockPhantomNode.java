@@ -32,14 +32,14 @@ public class BlockPhantomNode extends AEBaseBlock
 
 	public BlockPhantomNode() {
 		super( BlockPhantomNode.class, Material.iron );
-		setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
-		setTileEntity( TilePhantomNode.class );
+		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
+		this.setTileEntity( TilePhantomNode.class );
 	}
 
 	@Override
 	public boolean onActivated(World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		TilePhantomNode tpn = getTileEntity( w, x, y, z );
+		TilePhantomNode tpn = this.getTileEntity( w, x, y, z );
 		tpn.BOOM();
 		return true;
 	}
@@ -47,7 +47,7 @@ public class BlockPhantomNode extends AEBaseBlock
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegistry)
 	{
-		registerNoIcons();
+		this.registerNoIcons();
 	}
 
 }

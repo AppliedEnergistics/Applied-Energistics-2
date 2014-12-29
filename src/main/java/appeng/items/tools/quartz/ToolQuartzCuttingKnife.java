@@ -46,9 +46,9 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	{
 		super( ToolQuartzCuttingKnife.class, Optional.of( Type.name() ) );
 
-		setFeature( EnumSet.of( type = Type, AEFeature.QuartzKnife ) );
-		setMaxDamage( 50 );
-		setMaxStackSize( 1 );
+		this.setFeature( EnumSet.of( this.type = Type, AEFeature.QuartzKnife ) );
+		this.setMaxDamage( 50 );
+		this.setMaxStackSize( 1 );
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	@Override
 	public boolean getIsRepairable( ItemStack a, ItemStack b )
 	{
-		return Platform.canRepair( type, a, b );
+		return Platform.canRepair( this.type, a, b );
 	}
 
 	@Override

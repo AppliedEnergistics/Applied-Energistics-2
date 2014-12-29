@@ -60,12 +60,12 @@ public class FMPEvent
 	{
 		if ( event.action == Action.RIGHT_CLICK_BLOCK && event.entityPlayer.worldObj.isRemote )
 		{
-			if ( placing.get() != null )
+			if ( this.placing.get() != null )
 				return;
-			placing.set( event );
+			this.placing.set( event );
 			if ( place( event.entityPlayer, event.entityPlayer.worldObj ) )
 				event.setCanceled( true );
-			placing.set( null );
+			this.placing.set( null );
 		}
 	}
 

@@ -64,9 +64,9 @@ public class BC extends BaseModule implements IBC
 	public static BC instance;
 
 	public BC() {
-		TestClass( IPipeConnection.class );
-		TestClass( ItemFacade.class );
-		TestClass( IToolWrench.class );
+		this.TestClass( IPipeConnection.class );
+		this.TestClass( ItemFacade.class );
+		this.TestClass( IToolWrench.class );
 	}
 
 	@Override
@@ -231,14 +231,14 @@ public class BC extends BaseModule implements IBC
 		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new BCPipeHandler() );
 
 		Blocks b = AEApi.instance().blocks();
-		addFacade( b.blockFluix.stack( 1 ) );
-		addFacade( b.blockQuartz.stack( 1 ) );
-		addFacade( b.blockQuartzChiseled.stack( 1 ) );
-		addFacade( b.blockQuartzPillar.stack( 1 ) );
+		this.addFacade( b.blockFluix.stack( 1 ) );
+		this.addFacade( b.blockQuartz.stack( 1 ) );
+		this.addFacade( b.blockQuartzChiseled.stack( 1 ) );
+		this.addFacade( b.blockQuartzPillar.stack( 1 ) );
 
 		try
 		{
-			initBuilderSupport();
+			this.initBuilderSupport();
 		}
 		catch (Throwable builderSupport)
 		{
@@ -248,10 +248,10 @@ public class BC extends BaseModule implements IBC
 		Block skyStone = b.blockSkyStone.block();
 		if ( skyStone != null )
 		{
-			addFacade( new ItemStack( skyStone, 1, 0 ) );
-			addFacade( new ItemStack( skyStone, 1, 1 ) );
-			addFacade( new ItemStack( skyStone, 1, 2 ) );
-			addFacade( new ItemStack( skyStone, 1, 3 ) );
+			this.addFacade( new ItemStack( skyStone, 1, 0 ) );
+			this.addFacade( new ItemStack( skyStone, 1, 1 ) );
+			this.addFacade( new ItemStack( skyStone, 1, 2 ) );
+			this.addFacade( new ItemStack( skyStone, 1, 3 ) );
 		}
 	}
 
@@ -294,9 +294,9 @@ public class BC extends BaseModule implements IBC
 	@Override
 	public void PostInit()
 	{
-		registerPowerP2P();
-		registerItemP2P();
-		registerLiquidsP2P();
+		this.registerPowerP2P();
+		this.registerItemP2P();
+		this.registerLiquidsP2P();
 	}
 
 	@Override

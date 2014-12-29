@@ -138,10 +138,10 @@ public enum PartType
 	}
 
 	PartType(int baseMetaValue, AEFeature part, Class<? extends IPart> c, GuiText en) {
-		features = EnumSet.of( part );
-		myPart = c;
-		extraName = en;
-		baseDamage = baseMetaValue;
+		this.features = EnumSet.of( part );
+		this.myPart = c;
+		this.extraName = en;
+		this.baseDamage = baseMetaValue;
 	}
 
 	public Enum<AEColor>[] getVariants()
@@ -154,17 +154,17 @@ public enum PartType
 
 	public EnumSet<AEFeature> getFeature()
 	{
-		return features;
+		return this.features;
 	}
 
 	public Class<? extends IPart> getPart()
 	{
-		return myPart;
+		return this.myPart;
 	}
 
 	public GuiText getExtraName()
 	{
-		return extraName;
+		return this.extraName;
 	}
 
 }

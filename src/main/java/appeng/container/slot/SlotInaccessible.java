@@ -34,20 +34,20 @@ public class SlotInaccessible extends AppEngSlot
 	@Override
 	public ItemStack getDisplayStack()
 	{
-		if ( dspStack == null )
+		if ( this.dspStack == null )
 		{
 			ItemStack dsp = super.getDisplayStack();
 			if ( dsp != null )
-				dspStack = dsp.copy();
+				this.dspStack = dsp.copy();
 		}
-		return dspStack;
+		return this.dspStack;
 	}
 
 	@Override
 	public void onSlotChanged()
 	{
 		super.onSlotChanged();
-		dspStack = null;
+		this.dspStack = null;
 	}
 
 	@Override

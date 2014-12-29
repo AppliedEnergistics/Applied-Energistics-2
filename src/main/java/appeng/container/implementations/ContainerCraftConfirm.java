@@ -98,51 +98,51 @@ public class ContainerCraftConfirm extends AEBaseContainer
 
 	public ContainerCraftConfirm(InventoryPlayer ip, ITerminalHost te) {
 		super( ip, te );
-		priHost = te;
+		this.priHost = te;
 	}
 
 	private void sendCPUs()
 	{
-		Collections.sort( cpus );
+		Collections.sort( this.cpus );
 
-		if ( selectedCpu >= cpus.size() )
+		if ( this.selectedCpu >= this.cpus.size() )
 		{
-			selectedCpu = -1;
-			cpuBytesAvail = 0;
-			cpuCoProcessors = 0;
-			myName = "";
+			this.selectedCpu = -1;
+			this.cpuBytesAvail = 0;
+			this.cpuCoProcessors = 0;
+			this.myName = "";
 		}
-		else if ( selectedCpu != -1 )
+		else if ( this.selectedCpu != -1 )
 		{
-			myName = cpus.get( selectedCpu ).myName;
-			cpuBytesAvail = cpus.get( selectedCpu ).size;
-			cpuCoProcessors = cpus.get( selectedCpu ).processors;
+			this.myName = this.cpus.get( this.selectedCpu ).myName;
+			this.cpuBytesAvail = this.cpus.get( this.selectedCpu ).size;
+			this.cpuCoProcessors = this.cpus.get( this.selectedCpu ).processors;
 		}
 	}
 
 	public void cycleCpu(boolean next)
 	{
 		if ( next )
-			selectedCpu++;
+			this.selectedCpu++;
 		else
-			selectedCpu--;
+			this.selectedCpu--;
 
-		if ( selectedCpu < -1 )
-			selectedCpu = cpus.size() - 1;
-		else if ( selectedCpu >= cpus.size() )
-			selectedCpu = -1;
+		if ( this.selectedCpu < -1 )
+			this.selectedCpu = this.cpus.size() - 1;
+		else if ( this.selectedCpu >= this.cpus.size() )
+			this.selectedCpu = -1;
 
-		if ( selectedCpu == -1 )
+		if ( this.selectedCpu == -1 )
 		{
-			cpuBytesAvail = 0;
-			cpuCoProcessors = 0;
-			myName = "";
+			this.cpuBytesAvail = 0;
+			this.cpuCoProcessors = 0;
+			this.myName = "";
 		}
 		else
 		{
-			myName = cpus.get( selectedCpu ).myName;
-			cpuBytesAvail = cpus.get( selectedCpu ).size;
-			cpuCoProcessors = cpus.get( selectedCpu ).processors;
+			this.myName = this.cpus.get( this.selectedCpu ).myName;
+			this.cpuBytesAvail = this.cpus.get( this.selectedCpu ).size;
+			this.cpuCoProcessors = this.cpus.get( this.selectedCpu ).processors;
 		}
 	}
 
@@ -152,7 +152,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		if ( Platform.isClient() )
 			return;
 
-		ICraftingGrid cc = getGrid().getCache( ICraftingGrid.class );
+		ICraftingGrid cc = this.getGrid().getCache( ICraftingGrid.class );
 		ImmutableSet<ICraftingCPU> cpuSet = cc.getCpus();
 
 		int matches = 0;
@@ -160,11 +160,11 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		for (ICraftingCPU c : cpuSet)
 		{
 			boolean found = false;
-			for (CraftingCPURecord ccr : cpus)
+			for (CraftingCPURecord ccr : this.cpus)
 				if ( ccr.cpu == c )
 					found = true;
 
-			boolean matched = cpuMatches( c );
+			boolean matched = this.cpuMatches( c );
 
 			if ( matched )
 				matches++;
@@ -173,50 +173,50 @@ public class ContainerCraftConfirm extends AEBaseContainer
 				changed = true;
 		}
 
-		if ( changed || cpus.size() != matches )
+		if ( changed || this.cpus.size() != matches )
 		{
-			cpus.clear();
+			this.cpus.clear();
 			for (ICraftingCPU c : cpuSet)
 			{
-				if ( cpuMatches( c ) )
-					cpus.add( new CraftingCPURecord( c.getAvailableStorage(), c.getCoProcessors(), c ) );
+				if ( this.cpuMatches( c ) )
+					this.cpus.add( new CraftingCPURecord( c.getAvailableStorage(), c.getCoProcessors(), c ) );
 			}
 
-			sendCPUs();
+			this.sendCPUs();
 		}
 
-		noCPU = cpus.size() == 0;
+		this.noCPU = this.cpus.size() == 0;
 
 		super.detectAndSendChanges();
 
-		if ( job != null && job.isDone() )
+		if ( this.job != null && this.job.isDone() )
 		{
 			try
 			{
-				result = job.get();
+				this.result = this.job.get();
 
-				if ( !result.isSimulation() )
+				if ( !this.result.isSimulation() )
 				{
-					simulation = false;
-					if ( autoStart )
+					this.simulation = false;
+					if ( this.autoStart )
 					{
-						startJob();
+						this.startJob();
 						return;
 					}
 				}
 				else
-					simulation = true;
+					this.simulation = true;
 
 				try
 				{
 					PacketMEInventoryUpdate a = new PacketMEInventoryUpdate( (byte) 0 );
 					PacketMEInventoryUpdate b = new PacketMEInventoryUpdate( (byte) 1 );
-					PacketMEInventoryUpdate c = result.isSimulation() ? new PacketMEInventoryUpdate( (byte) 2 ) : null;
+					PacketMEInventoryUpdate c = this.result.isSimulation() ? new PacketMEInventoryUpdate( (byte) 2 ) : null;
 
 					IItemList<IAEItemStack> plan = AEApi.instance().storage().createItemList();
-					result.populatePlan( plan );
+					this.result.populatePlan( plan );
 
-					bytesUsed = result.getByteTotal();
+					this.bytesUsed = this.result.getByteTotal();
 
 					for (IAEItemStack out : plan)
 					{
@@ -230,13 +230,13 @@ public class ContainerCraftConfirm extends AEBaseContainer
 						p.reset();
 						p.setStackSize( out.getCountRequestable() );
 
-						IStorageGrid sg = getGrid().getCache( IStorageGrid.class );
+						IStorageGrid sg = this.getGrid().getCache( IStorageGrid.class );
 						IMEInventory<IAEItemStack> items = sg.getItemInventory();
 
-						if ( c != null && result.isSimulation() )
+						if ( c != null && this.result.isSimulation() )
 						{
 							m = o.copy();
-							o = items.extractItems( o, Actionable.SIMULATE, mySrc );
+							o = items.extractItems( o, Actionable.SIMULATE, this.mySrc );
 
 							if ( o == null )
 							{
@@ -275,27 +275,27 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			}
 			catch (Throwable e)
 			{
-				getPlayerInv().player.addChatMessage( new ChatComponentText( "Error: " + e.toString() ) );
+				this.getPlayerInv().player.addChatMessage( new ChatComponentText( "Error: " + e.toString() ) );
 				AELog.error( e );
 				this.isContainerValid = false;
-				result = null;
+				this.result = null;
 			}
 
-			job = null;
+			this.job = null;
 		}
-		verifyPermissions( SecurityPermissions.CRAFT, false );
+		this.verifyPermissions( SecurityPermissions.CRAFT, false );
 	}
 
 	private boolean cpuMatches(ICraftingCPU c)
 	{
-		return c.getAvailableStorage() >= bytesUsed && !c.isBusy();
+		return c.getAvailableStorage() >= this.bytesUsed && !c.isBusy();
 	}
 
 	public void startJob()
 	{
 		GuiBridge OriginalGui = null;
 
-		IActionHost ah = getActionHost();
+		IActionHost ah = this.getActionHost();
 		if ( ah instanceof WirelessTerminalGuiObject )
 			OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
 
@@ -308,17 +308,17 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		if ( ah instanceof PartPatternTerminal )
 			OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
 
-		if ( result != null && !simulation )
+		if ( this.result != null && !this.simulation )
 		{
-			ICraftingGrid cc = getGrid().getCache( ICraftingGrid.class );
-			ICraftingLink g = cc.submitJob( result, null, selectedCpu == -1 ? null : cpus.get( selectedCpu ).cpu, true, getActionSrc() );
-			autoStart = false;
-			if ( g != null && OriginalGui != null && openContext != null )
+			ICraftingGrid cc = this.getGrid().getCache( ICraftingGrid.class );
+			ICraftingLink g = cc.submitJob( this.result, null, this.selectedCpu == -1 ? null : this.cpus.get( this.selectedCpu ).cpu, true, this.getActionSrc() );
+			this.autoStart = false;
+			if ( g != null && OriginalGui != null && this.openContext != null )
 			{
-				NetworkHandler.instance.sendTo( new PacketSwitchGuis( OriginalGui ), (EntityPlayerMP) invPlayer.player );
+				NetworkHandler.instance.sendTo( new PacketSwitchGuis( OriginalGui ), (EntityPlayerMP) this.invPlayer.player );
 
-				TileEntity te = openContext.getTile();
-				Platform.openGUI( invPlayer.player, te, openContext.side, OriginalGui );
+				TileEntity te = this.openContext.getTile();
+				Platform.openGUI( this.invPlayer.player, te, this.openContext.side, OriginalGui );
 			}
 		}
 	}
@@ -327,10 +327,10 @@ public class ContainerCraftConfirm extends AEBaseContainer
 	public void onContainerClosed(EntityPlayer par1EntityPlayer)
 	{
 		super.onContainerClosed( par1EntityPlayer );
-		if ( job != null )
+		if ( this.job != null )
 		{
-			job.cancel( true );
-			job = null;
+			this.job.cancel( true );
+			this.job = null;
 		}
 	}
 
@@ -338,10 +338,10 @@ public class ContainerCraftConfirm extends AEBaseContainer
 	public void removeCraftingFromCrafters(ICrafting c)
 	{
 		super.removeCraftingFromCrafters( c );
-		if ( job != null )
+		if ( this.job != null )
 		{
-			job.cancel( true );
-			job = null;
+			this.job.cancel( true );
+			this.job = null;
 		}
 	}
 
@@ -353,11 +353,11 @@ public class ContainerCraftConfirm extends AEBaseContainer
 
 	public World getWorld()
 	{
-		return getPlayerInv().player.worldObj;
+		return this.getPlayerInv().player.worldObj;
 	}
 
 	public BaseActionSource getActionSrc()
 	{
-		return new PlayerSource( getPlayerInv().player, (IActionHost) getTarget() );
+		return new PlayerSource( this.getPlayerInv().player, (IActionHost) this.getTarget() );
 	}
 }

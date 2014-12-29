@@ -51,9 +51,9 @@ public class GridStorage implements IGridStorage
 	 * @param gss grid storage search
 	 */
 	public GridStorage(long id, GridStorageSearch gss) {
-		myID = id;
-		mySearchEntry = gss;
-		data = new NBTTagCompound();
+		this.myID = id;
+		this.mySearchEntry = gss;
+		this.data = new NBTTagCompound();
 	}
 
 	/**
@@ -64,8 +64,8 @@ public class GridStorage implements IGridStorage
 	 * @param gss grid storage search
 	 */
 	public GridStorage(String input, long id, GridStorageSearch gss) {
-		myID = id;
-		mySearchEntry = gss;
+		this.myID = id;
+		this.mySearchEntry = gss;
 		NBTTagCompound myTag = null;
 
 		try
@@ -78,23 +78,23 @@ public class GridStorage implements IGridStorage
 			myTag = new NBTTagCompound();
 		}
 
-		data = myTag;
+		this.data = myTag;
 	}
 
 	/**
 	 * fake storage.
 	 */
 	public GridStorage() {
-		myID = 0;
-		mySearchEntry = null;
-		data = new NBTTagCompound();
+		this.myID = 0;
+		this.mySearchEntry = null;
+		this.data = new NBTTagCompound();
 	}
 
 	public String getValue()
 	{
-		isDirty = false;
+		this.isDirty = false;
 
-		Grid currentGrid = (Grid) getGrid();
+		Grid currentGrid = (Grid) this.getGrid();
 		if ( currentGrid != null )
 		{
 			currentGrid.saveState();
@@ -103,7 +103,7 @@ public class GridStorage implements IGridStorage
 		try
 		{
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			CompressedStreamTools.writeCompressed( data, out );
+			CompressedStreamTools.writeCompressed( this.data, out );
 			return javax.xml.bind.DatatypeConverter.printBase64Binary( out.toByteArray() );
 		}
 		catch (IOException e)
@@ -117,43 +117,43 @@ public class GridStorage implements IGridStorage
 	@Override
 	public NBTTagCompound dataObject()
 	{
-		return data;
+		return this.data;
 	}
 
 	@Override
 	public long getID()
 	{
-		return myID;
+		return this.myID;
 	}
 
 	public void markDirty()
 	{
-		isDirty = true;
+		this.isDirty = true;
 	}
 
 	public IGrid getGrid()
 	{
-		return internalGrid == null ? null : internalGrid.get();
+		return this.internalGrid == null ? null : this.internalGrid.get();
 	}
 
 	public void setGrid(Grid grid)
 	{
-		internalGrid = new WeakReference<IGrid>( grid );
+		this.internalGrid = new WeakReference<IGrid>( grid );
 	}
 
 	public void addDivided(GridStorage gs)
 	{
-		divided.put( gs, true );
+		this.divided.put( gs, true );
 	}
 
 	public boolean hasDivided(GridStorage myStorage)
 	{
-		return divided.containsKey( myStorage );
+		return this.divided.containsKey( myStorage );
 	}
 
 	public void remove()
 	{
-		WorldSettings.getInstance().destroyGridStorage( getID() );
+		WorldSettings.getInstance().destroyGridStorage( this.getID() );
 	}
 
 }

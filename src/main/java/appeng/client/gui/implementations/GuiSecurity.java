@@ -38,12 +38,12 @@ public class GuiSecurity extends GuiMEMonitorable
 
 	public GuiSecurity(InventoryPlayer inventoryPlayer, ITerminalHost te) {
 		super( inventoryPlayer, te, new ContainerSecurity( inventoryPlayer, te ) );
-		customSortOrder = false;
-		reservedSpace = 33;
+		this.customSortOrder = false;
+		this.reservedSpace = 33;
 		
 		// increase size so that the slot is over the gui.
-		xSize += 56;
-		standardSize = xSize;
+		this.xSize += 56;
+		this.standardSize = this.xSize;
 	}
 
 	GuiToggleButton inject, extract, craft, build, security;
@@ -54,19 +54,19 @@ public class GuiSecurity extends GuiMEMonitorable
 		super.initGui();
 
 		int top = this.guiTop + this.ySize - 116;
-		buttonList.add( inject = new GuiToggleButton( this.guiLeft + 56, top, 11 * 16, 12 * 16, SecurityPermissions.INJECT
+		this.buttonList.add( this.inject = new GuiToggleButton( this.guiLeft + 56, top, 11 * 16, 12 * 16, SecurityPermissions.INJECT
 				.getUnlocalizedName(), SecurityPermissions.INJECT.getUnlocalizedTip() ) );
 
-		buttonList.add( extract = new GuiToggleButton( this.guiLeft + 56 + 18, top, 11 * 16 + 1, 12 * 16 + 1, SecurityPermissions.EXTRACT
+		this.buttonList.add( this.extract = new GuiToggleButton( this.guiLeft + 56 + 18, top, 11 * 16 + 1, 12 * 16 + 1, SecurityPermissions.EXTRACT
 				.getUnlocalizedName(), SecurityPermissions.EXTRACT.getUnlocalizedTip() ) );
 
-		buttonList.add( craft = new GuiToggleButton( this.guiLeft + 56 + 18 * 2, top, 11 * 16 + 2, 12 * 16 + 2, SecurityPermissions.CRAFT.getUnlocalizedName(),
+		this.buttonList.add( this.craft = new GuiToggleButton( this.guiLeft + 56 + 18 * 2, top, 11 * 16 + 2, 12 * 16 + 2, SecurityPermissions.CRAFT.getUnlocalizedName(),
 				SecurityPermissions.CRAFT.getUnlocalizedTip() ) );
 
-		buttonList.add( build = new GuiToggleButton( this.guiLeft + 56 + 18 * 3, top, 11 * 16 + 3, 12 * 16 + 3, SecurityPermissions.BUILD.getUnlocalizedName(),
+		this.buttonList.add( this.build = new GuiToggleButton( this.guiLeft + 56 + 18 * 3, top, 11 * 16 + 3, 12 * 16 + 3, SecurityPermissions.BUILD.getUnlocalizedName(),
 				SecurityPermissions.BUILD.getUnlocalizedTip() ) );
 
-		buttonList.add( security = new GuiToggleButton( this.guiLeft + 56 + 18 * 4, top, 11 * 16 + 4, 12 * 16 + 4, SecurityPermissions.SECURITY
+		this.buttonList.add( this.security = new GuiToggleButton( this.guiLeft + 56 + 18 * 4, top, 11 * 16 + 4, 12 * 16 + 4, SecurityPermissions.SECURITY
 				.getUnlocalizedName(), SecurityPermissions.SECURITY.getUnlocalizedTip() ) );
 	}
 
@@ -77,15 +77,15 @@ public class GuiSecurity extends GuiMEMonitorable
 
 		SecurityPermissions toggleSetting = null;
 
-		if ( btn == inject )
+		if ( btn == this.inject )
 			toggleSetting = SecurityPermissions.INJECT;
-		if ( btn == extract )
+		if ( btn == this.extract )
 			toggleSetting = SecurityPermissions.EXTRACT;
-		if ( btn == craft )
+		if ( btn == this.craft )
 			toggleSetting = SecurityPermissions.CRAFT;
-		if ( btn == build )
+		if ( btn == this.build )
 			toggleSetting = SecurityPermissions.BUILD;
-		if ( btn == security )
+		if ( btn == this.security )
 			toggleSetting = SecurityPermissions.SECURITY;
 
 		if ( toggleSetting != null )
@@ -105,13 +105,13 @@ public class GuiSecurity extends GuiMEMonitorable
 	@Override
 	protected String getBackground()
 	{
-		ContainerSecurity cs = (ContainerSecurity) inventorySlots;
+		ContainerSecurity cs = (ContainerSecurity) this.inventorySlots;
 
-		inject.setState( (cs.security & (1 << SecurityPermissions.INJECT.ordinal())) > 0 );
-		extract.setState( (cs.security & (1 << SecurityPermissions.EXTRACT.ordinal())) > 0 );
-		craft.setState( (cs.security & (1 << SecurityPermissions.CRAFT.ordinal())) > 0 );
-		build.setState( (cs.security & (1 << SecurityPermissions.BUILD.ordinal())) > 0 );
-		security.setState( (cs.security & (1 << SecurityPermissions.SECURITY.ordinal())) > 0 );
+		this.inject.setState( (cs.security & (1 << SecurityPermissions.INJECT.ordinal())) > 0 );
+		this.extract.setState( (cs.security & (1 << SecurityPermissions.EXTRACT.ordinal())) > 0 );
+		this.craft.setState( (cs.security & (1 << SecurityPermissions.CRAFT.ordinal())) > 0 );
+		this.build.setState( (cs.security & (1 << SecurityPermissions.BUILD.ordinal())) > 0 );
+		this.security.setState( (cs.security & (1 << SecurityPermissions.SECURITY.ordinal())) > 0 );
 
 		return "guis/security.png";
 	}
@@ -120,7 +120,7 @@ public class GuiSecurity extends GuiMEMonitorable
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
-		fontRendererObj.drawString( GuiText.SecurityCardEditor.getLocal(), 8, ySize - 96 + 1 - reservedSpace, 4210752 );
+		this.fontRendererObj.drawString( GuiText.SecurityCardEditor.getLocal(), 8, this.ySize - 96 + 1 - this.reservedSpace, 4210752 );
 	}
 
 	@Override

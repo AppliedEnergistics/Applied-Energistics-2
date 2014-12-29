@@ -27,7 +27,7 @@ public class MissedIngredientSet extends Throwable
 	final ResolverResultSet rrs;
 
 	public MissedIngredientSet(ResolverResultSet ro) {
-		rrs = ro;
+		this.rrs = ro;
 	}
 
 }

@@ -47,23 +47,23 @@ public class SpatialPylonCluster implements IAECluster
 	public boolean hasChannel;
 
 	public SpatialPylonCluster(DimensionalCoord _min, DimensionalCoord _max) {
-		min = _min.copy();
-		max = _max.copy();
+		this.min = _min.copy();
+		this.max = _max.copy();
 
-		if ( min.x != max.x )
-			currentAxis = Axis.X;
-		else if ( min.y != max.y )
-			currentAxis = Axis.Y;
-		else if ( min.z != max.z )
-			currentAxis = Axis.Z;
+		if ( this.min.x != this.max.x )
+			this.currentAxis = Axis.X;
+		else if ( this.min.y != this.max.y )
+			this.currentAxis = Axis.Y;
+		else if ( this.min.z != this.max.z )
+			this.currentAxis = Axis.Z;
 		else
-			currentAxis = Axis.UNFORMED;
+			this.currentAxis = Axis.UNFORMED;
 	}
 
 	@Override
 	public void updateStatus(boolean updateGrid)
 	{
-		for (TileSpatialPylon r : line)
+		for (TileSpatialPylon r : this.line)
 		{
 			r.recalculateDisplay();
 		}
@@ -73,11 +73,11 @@ public class SpatialPylonCluster implements IAECluster
 	public void destroy()
 	{
 
-		if ( isDestroyed )
+		if ( this.isDestroyed )
 			return;
-		isDestroyed = true;
+		this.isDestroyed = true;
 
-		for (TileSpatialPylon r : line)
+		for (TileSpatialPylon r : this.line)
 		{
 			r.updateStatus( null );
 		}
@@ -86,13 +86,13 @@ public class SpatialPylonCluster implements IAECluster
 
 	public int tileCount()
 	{
-		return line.size();
+		return this.line.size();
 	}
 
 	@Override
 	public Iterator<IGridHost> getTiles()
 	{
-		return (Iterator) line.iterator();
+		return (Iterator) this.line.iterator();
 	}
 
 }

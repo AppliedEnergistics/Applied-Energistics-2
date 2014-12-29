@@ -70,25 +70,25 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	@TileEvent(TileEventType.TICK)
 	public void Tick_TileQuantumBridge()
 	{
-		if ( updateStatus )
+		if ( this.updateStatus )
 		{
-			updateStatus = false;
-			if ( cluster != null )
-				cluster.updateStatus( true );
-			markForUpdate();
+			this.updateStatus = false;
+			if ( this.cluster != null )
+				this.cluster.updateStatus( true );
+			this.markForUpdate();
 		}
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
 	public void writeToStream_TileQuantumBridge(ByteBuf data)
 	{
-		int out = constructed;
+		int out = this.constructed;
 
-		if ( getStackInSlot( 0 ) != null && constructed != -1 )
-			out = out | hasSingularity;
+		if ( this.getStackInSlot( 0 ) != null && this.constructed != -1 )
+			out = out | this.hasSingularity;
 
-		if ( gridProxy.isActive() && constructed != -1 )
-			out = out | powered;
+		if ( this.gridProxy.isActive() && this.constructed != -1 )
+			out = out | this.powered;
 
 		data.writeByte( (byte) out );
 	}
@@ -96,121 +96,121 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	@TileEvent(TileEventType.NETWORK_READ)
 	public boolean readFromStream_TileQuantumBridge(ByteBuf data)
 	{
-		int oldValue = constructed;
-		constructed = data.readByte();
-		bridgePowered = (constructed | powered) == powered;
-		return constructed != oldValue;
+		int oldValue = this.constructed;
+		this.constructed = data.readByte();
+		this.bridgePowered = (this.constructed | this.powered) == this.powered;
+		return this.constructed != oldValue;
 	}
 
 	public TileQuantumBridge() {
-		gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
-		gridProxy.setFlags( GridFlags.DENSE_CAPACITY );
-		gridProxy.setIdlePowerUsage( 22 );
-		inv.setMaxStackSize( 1 );
+		this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		this.gridProxy.setFlags( GridFlags.DENSE_CAPACITY );
+		this.gridProxy.setIdlePowerUsage( 22 );
+		this.inv.setMaxStackSize( 1 );
 	}
 
 	@Override
 	public IInventory getInternalInventory()
 	{
-		return inv;
+		return this.inv;
 	}
 
 	@MENetworkEventSubscribe
 	public void PowerSwitch(MENetworkPowerStatusChange c)
 	{
-		updateStatus = true;
+		this.updateStatus = true;
 	}
 
 	@Override
 	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added)
 	{
-		if ( cluster != null )
-			cluster.updateStatus( true );
+		if ( this.cluster != null )
+			this.cluster.updateStatus( true );
 	}
 
 	@Override
 	public int[] getAccessibleSlotsBySide(ForgeDirection side)
 	{
-		if ( isCenter() )
-			return sidesLink;
-		return sidesRing;
+		if ( this.isCenter() )
+			return this.sidesLink;
+		return this.sidesRing;
 	}
 
 	@Override
 	public void disconnect(boolean affectWorld)
 	{
-		if ( cluster != null )
+		if ( this.cluster != null )
 		{
 			if ( !affectWorld )
-				cluster.updateStatus = false;
+				this.cluster.updateStatus = false;
 
-			cluster.destroy();
+			this.cluster.destroy();
 		}
 
-		cluster = null;
+		this.cluster = null;
 
 		if ( affectWorld )
-			gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+			this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 	}
 
 	@Override
 	public IAECluster getCluster()
 	{
-		return cluster;
+		return this.cluster;
 	}
 
 	@Override
 	public boolean isValid()
 	{
-		return !isInvalid();
+		return !this.isInvalid();
 	}
 
 	@Override
 	public void onReady()
 	{
 		super.onReady();
-		if ( worldObj.getBlock( xCoord, yCoord, zCoord ) == AEApi.instance().blocks().blockQuantumRing.block() )
-			gridProxy.setVisualRepresentation( ring );
+		if ( this.worldObj.getBlock( this.xCoord, this.yCoord, this.zCoord ) == AEApi.instance().blocks().blockQuantumRing.block() )
+			this.gridProxy.setVisualRepresentation( ring );
 	}
 
 	@Override
 	public void invalidate()
 	{
-		disconnect( false );
+		this.disconnect( false );
 		super.invalidate();
 	}
 
 	@Override
 	public void onChunkUnload()
 	{
-		disconnect( false );
+		this.disconnect( false );
 		super.onChunkUnload();
 	}
 
 	public void updateStatus(QuantumCluster c, byte flags, boolean affectWorld)
 	{
-		cluster = c;
+		this.cluster = c;
 
 		if ( affectWorld )
 		{
-			if ( constructed != flags )
+			if ( this.constructed != flags )
 			{
-				constructed = flags;
-				markForUpdate();
+				this.constructed = flags;
+				this.markForUpdate();
 			}
 
-			if ( isCorner() || isCenter() )
+			if ( this.isCorner() || this.isCenter() )
 			{
-				gridProxy.setValidSides( getConnections() );
+				this.gridProxy.setValidSides( this.getConnections() );
 			}
 			else
-				gridProxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
+				this.gridProxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
 		}
 	}
 
 	public long getQEFrequency()
 	{
-		ItemStack is = inv.getStackInSlot( 0 );
+		ItemStack is = this.inv.getStackInSlot( 0 );
 		if ( is != null )
 		{
 			NBTTagCompound c = is.getTagCompound();
@@ -222,22 +222,22 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public boolean isCenter()
 	{
-		return getBlockType() == AEApi.instance().blocks().blockQuantumLink.block();
+		return this.getBlockType() == AEApi.instance().blocks().blockQuantumLink.block();
 	}
 
 	public boolean isCorner()
 	{
-		return (constructed & corner) == corner && constructed != -1;
+		return (this.constructed & this.corner) == this.corner && this.constructed != -1;
 	}
 
 	public boolean isPowered()
 	{
 		if ( Platform.isClient() )
-			return (constructed & powered) == powered && constructed != -1;
+			return (this.constructed & this.powered) == this.powered && this.constructed != -1;
 
 		try
 		{
-			return gridProxy.getEnergy().isNetworkPowered();
+			return this.gridProxy.getEnergy().isNetworkPowered();
 		}
 		catch (GridAccessException e)
 		{
@@ -249,7 +249,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public boolean isFormed()
 	{
-		return constructed != -1;
+		return this.constructed != -1;
 	}
 
 	@Override
@@ -266,7 +266,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public void neighborUpdate()
 	{
-		calc.calculateMultiblock( worldObj, getLocation() );
+		this.calc.calculateMultiblock( this.worldObj, this.getLocation() );
 	}
 
 	public EnumSet<ForgeDirection> getConnections()
@@ -275,7 +275,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 		for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity te = worldObj.getTileEntity( xCoord + d.offsetX, yCoord + d.offsetY, zCoord + d.offsetZ );
+			TileEntity te = this.worldObj.getTileEntity( this.xCoord + d.offsetX, this.yCoord + d.offsetY, this.zCoord + d.offsetZ );
 			if ( te instanceof TileQuantumBridge )
 				set.add( d );
 		}
@@ -285,15 +285,15 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public boolean hasQES()
 	{
-		if ( constructed == -1 )
+		if ( this.constructed == -1 )
 			return false;
-		return (constructed & hasSingularity) == hasSingularity;
+		return (this.constructed & this.hasSingularity) == this.hasSingularity;
 	}
 
 	public void breakCluster()
 	{
-		if ( cluster != null )
-			cluster.destroy();
+		if ( this.cluster != null )
+			this.cluster.destroy();
 	}
 
 }

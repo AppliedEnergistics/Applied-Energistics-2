@@ -58,82 +58,82 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 
 	public void setLightLevel(int out)
 	{
-		lastValue = out;
-		getHost().markForUpdate();
+		this.lastValue = out;
+		this.getHost().markForUpdate();
 	}
 
 	@Override
 	public int getLightLevel()
 	{
-		if ( output && isPowered() )
-			return blockLight( lastValue );
+		if ( this.output && this.isPowered() )
+			return this.blockLight( this.lastValue );
 
 		return 0;
 	}
 
 	private int blockLight(int emit)
 	{
-		if ( opacity < 0 )
+		if ( this.opacity < 0 )
 		{
 			TileEntity te = this.getTile();
-			opacity = 255 - te.getWorldObj().getBlockLightOpacity( te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ );
+			this.opacity = 255 - te.getWorldObj().getBlockLightOpacity( te.xCoord + this.side.offsetX, te.yCoord + this.side.offsetY, te.zCoord + this.side.offsetZ );
 		}
 
-		return (int) (emit * (opacity / 255.0f));
+		return (int) (emit * (this.opacity / 255.0f));
 	}
 
 	@Override
 	public void chanRender(MENetworkChannelsChanged c)
 	{
-		onTunnelNetworkChange();
+		this.onTunnelNetworkChange();
 		super.chanRender( c );
 	}
 
 	@Override
 	public void powerRender(MENetworkPowerStatusChange c)
 	{
-		onTunnelNetworkChange();
+		this.onTunnelNetworkChange();
 		super.powerRender( c );
 	}
 
 	@Override
 	public void onTunnelNetworkChange()
 	{
-		if ( output )
+		if ( this.output )
 		{
-			PartP2PLight src = getInput();
+			PartP2PLight src = this.getInput();
 			if ( src != null && src.proxy.isActive() )
-				setLightLevel( src.lastValue );
+				this.setLightLevel( src.lastValue );
 			else
-				getHost().markForUpdate();
+				this.getHost().markForUpdate();
 		}
 		else
-			doWork();
+			this.doWork();
 	}
 
 	@Override
 	public void onTunnelConfigChange()
 	{
-		onTunnelNetworkChange();
+		this.onTunnelNetworkChange();
 	}
 
 	@Override
 	public void onNeighborChanged()
 	{
-		opacity = -1;
+		this.opacity = -1;
 
-		doWork();
+		this.doWork();
 
-		if ( output )
-			getHost().markForUpdate();
+		if ( this.output )
+			this.getHost().markForUpdate();
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound tag)
 	{
 		super.writeToNBT( tag );
-		tag.setFloat( "opacity", opacity );
-		tag.setInteger( "lastValue", lastValue );
+		tag.setFloat( "opacity", this.opacity );
+		tag.setInteger( "lastValue", this.lastValue );
 	}
 
 	@Override
@@ -141,16 +141,16 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	{
 		super.readFromNBT( tag );
 		if ( tag.hasKey( "opacity" ) )
-			opacity = tag.getFloat( "opacity" );
-		lastValue = tag.getInteger( "lastValue" );
+			this.opacity = tag.getFloat( "opacity" );
+		this.lastValue = tag.getInteger( "lastValue" );
 	}
 
 	@Override
 	public boolean readFromStream(ByteBuf data) throws IOException
 	{
 		super.readFromStream( data );
-		lastValue = data.readInt();
-		output = lastValue > 0;
+		this.lastValue = data.readInt();
+		this.output = this.lastValue > 0;
 		return false;
 	}
 
@@ -158,7 +158,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	public void writeToStream(ByteBuf data) throws IOException
 	{
 		super.writeToStream( data );
-		data.writeInt( output ? lastValue : 0 );
+		data.writeInt( this.output ? this.lastValue : 0 );
 	}
 
 	@Override
@@ -176,21 +176,21 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 
 	private boolean doWork()
 	{
-		if ( output )
+		if ( this.output )
 			return false;
 
-		TileEntity te = getTile();
+		TileEntity te = this.getTile();
 		World w = te.getWorldObj();
 
-		int newLevel = w.getBlockLightValue( te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ );
+		int newLevel = w.getBlockLightValue( te.xCoord + this.side.offsetX, te.yCoord + this.side.offsetY, te.zCoord + this.side.offsetZ );
 
-		if ( lastValue != newLevel && proxy.isActive() )
+		if ( this.lastValue != newLevel && this.proxy.isActive() )
 		{
-			lastValue = newLevel;
+			this.lastValue = newLevel;
 			try
 			{
-				for (PartP2PLight out : getOutputs())
-					out.setLightLevel( lastValue );
+				for (PartP2PLight out : this.getOutputs())
+					out.setLightLevel( this.lastValue );
 			}
 			catch (GridAccessException e)
 			{
@@ -209,6 +209,6 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	@Override
 	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
 	{
-		return doWork() ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
+		return this.doWork() ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
 	}
 }

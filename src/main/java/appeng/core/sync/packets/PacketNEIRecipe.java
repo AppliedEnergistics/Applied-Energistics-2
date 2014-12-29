@@ -68,16 +68,16 @@ public class PacketNEIRecipe extends AppEngPacket
 		NBTTagCompound comp = CompressedStreamTools.readCompressed( bytes );
 		if ( comp != null )
 		{
-			recipe = new ItemStack[9][];
-			for (int x = 0; x < recipe.length; x++)
+			this.recipe = new ItemStack[9][];
+			for (int x = 0; x < this.recipe.length; x++)
 			{
 				NBTTagList list = comp.getTagList( "#" + x, 10 );
 				if ( list.tagCount() > 0 )
 				{
-					recipe[x] = new ItemStack[list.tagCount()];
+					this.recipe[x] = new ItemStack[list.tagCount()];
 					for (int y = 0; y < list.tagCount(); y++)
 					{
-						recipe[x][y] = ItemStack.loadItemStackFromNBT( list.getCompoundTagAt( y ) );
+						this.recipe[x][y] = ItemStack.loadItemStackFromNBT( list.getCompoundTagAt( y ) );
 					}
 				}
 			}
@@ -108,14 +108,14 @@ public class PacketNEIRecipe extends AppEngPacket
 
 				Actionable realForFake = cct.useRealItems() ? Actionable.MODULATE : Actionable.SIMULATE;
 
-				if ( inv != null && recipe != null && security != null )
+				if ( inv != null && this.recipe != null && security != null )
 				{
 					InventoryCrafting testInv = new InventoryCrafting( new ContainerNull(), 3, 3 );
 					for (int x = 0; x < 9; x++)
 					{
-						if ( recipe[x] != null && recipe[x].length > 0 )
+						if ( this.recipe[x] != null && this.recipe[x].length > 0 )
 						{
-							testInv.setInventorySlotContents(x, recipe[x][0]);
+							testInv.setInventorySlotContents(x, this.recipe[x][0]);
 						}
 					}
 
@@ -170,9 +170,9 @@ public class PacketNEIRecipe extends AppEngPacket
 									// TODO see if this code is necessary
 									if ( whichItem == null )
 									{
-										for (int y = 0; y < recipe[x].length; y++)
+										for (int y = 0; y < this.recipe[x].length; y++)
 										{
-											IAEItemStack request = AEItemStack.create( recipe[x][y] );
+											IAEItemStack request = AEItemStack.create( this.recipe[x][y] );
 											if ( request != null )
 											{
 												if ( filter == null || filter.isListed( request ) )
@@ -228,11 +228,11 @@ public class PacketNEIRecipe extends AppEngPacket
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 		DataOutputStream outputStream = new DataOutputStream( bytes );
 
-		data.writeInt( getPacketID() );
+		data.writeInt( this.getPacketID() );
 
 		CompressedStreamTools.writeCompressed( recipe, outputStream );
 		data.writeBytes( bytes.toByteArray() );
 
-		configureWrite( data );
+		this.configureWrite( data );
 	}
 }

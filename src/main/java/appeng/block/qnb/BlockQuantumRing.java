@@ -41,18 +41,18 @@ public class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
 
 	public BlockQuantumRing() {
 		super( BlockQuantumRing.class, Material.iron );
-		setFeature( EnumSet.of( AEFeature.QuantumNetworkBridge ) );
-		setTileEntity( TileQuantumBridge.class );
+		this.setFeature( EnumSet.of( AEFeature.QuantumNetworkBridge ) );
+		this.setTileEntity( TileQuantumBridge.class );
 		float shave = 2.0f / 16.0f;
-		setBlockBounds( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
-		setLightOpacity( 1 );
-		isFullSize = isOpaque = false;
+		this.setBlockBounds( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
+		this.setLightOpacity( 1 );
+		this.isFullSize = this.isOpaque = false;
 	}
 
 	@Override
 	public void onNeighborBlockChange(World w, int x, int y, int z, Block pointlessNumber)
 	{
-		TileQuantumBridge bridge = getTileEntity( w, x, y, z );
+		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
 		if ( bridge != null )
 			bridge.neighborUpdate();
 	}
@@ -60,7 +60,7 @@ public class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
 	@Override
 	public void breakBlock(World w, int x, int y, int z, Block a, int b)
 	{
-		TileQuantumBridge bridge = getTileEntity( w, x, y, z );
+		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
 		if ( bridge != null )
 			bridge.breakCluster();
 
@@ -77,7 +77,7 @@ public class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
 	{
 		double OnePx = 2.0 / 16.0;
-		TileQuantumBridge bridge = getTileEntity( w, x, y, z );
+		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
 		if ( bridge != null && bridge.isCorner() )
 		{
 			OnePx = 4.0 / 16.0;
@@ -93,7 +93,7 @@ public class BlockQuantumRing extends AEBaseBlock implements ICustomCollision
 	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e)
 	{
 		double OnePx = 2.0 / 16.0;
-		TileQuantumBridge bridge = getTileEntity( w, x, y, z );
+		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
 		if ( bridge != null && bridge.isCorner() )
 		{
 			OnePx = 4.0 / 16.0;

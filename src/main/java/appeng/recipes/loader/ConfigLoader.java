@@ -31,13 +31,13 @@ public class ConfigLoader implements IRecipeLoader
 	private final String rootPath;
 
 	public ConfigLoader(String s) {
-		rootPath = s;
+		this.rootPath = s;
 	}
 
 	@Override
 	public BufferedReader getFile(String s) throws Exception
 	{
-		File f = new File( rootPath + s );
+		File f = new File( this.rootPath + s );
 		return new BufferedReader( new InputStreamReader( new FileInputStream( f ), "UTF-8" ) );
 	}
 }

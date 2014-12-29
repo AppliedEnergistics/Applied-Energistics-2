@@ -43,12 +43,12 @@ public class AECableSchematicTile extends AEGenericSchematicTile implements IPar
 	public void rotateLeft(IBuilderContext context)
 	{
 		CableBusContainer cbc = new CableBusContainer( this );
-		cbc.readFromNBT( tileNBT );
+		cbc.readFromNBT( this.tileNBT );
 
 		cbc.rotateLeft();
 
-		tileNBT = new NBTTagCompound();
-		cbc.writeToNBT( tileNBT );
+		this.tileNBT = new NBTTagCompound();
+		cbc.writeToNBT( this.tileNBT );
 	}
 
 	@Override

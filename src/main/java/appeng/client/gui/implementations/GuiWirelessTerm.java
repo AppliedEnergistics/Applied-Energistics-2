@@ -26,12 +26,12 @@ public class GuiWirelessTerm extends GuiMEPortableCell
 
 	public GuiWirelessTerm(InventoryPlayer inventoryPlayer, IPortableCell te) {
 		super( inventoryPlayer, te );
-		maxRows = Integer.MAX_VALUE;
+		this.maxRows = Integer.MAX_VALUE;
 	}
 
 	@Override
 	int getMaxRows()
 	{
-		return defaultGetMaxRows();
+		return this.defaultGetMaxRows();
 	}
 }

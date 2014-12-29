@@ -54,9 +54,9 @@ public class PacketMultiPart extends AppEngPacket
 	{
 		ByteBuf data = Unpooled.buffer();
 
-		data.writeInt( getPacketID() );
+		data.writeInt( this.getPacketID() );
 
-		configureWrite( data );
+		this.configureWrite( data );
 	}
 
 }

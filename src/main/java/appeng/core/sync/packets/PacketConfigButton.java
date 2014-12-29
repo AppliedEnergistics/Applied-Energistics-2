@@ -39,8 +39,8 @@ public class PacketConfigButton extends AppEngPacket
 
 	// automatic.
 	public PacketConfigButton(ByteBuf stream) {
-		option = Settings.values()[stream.readInt()];
-		rotationDirection = stream.readBoolean();
+		this.option = Settings.values()[stream.readInt()];
+		this.rotationDirection = stream.readBoolean();
 	}
 
 	@Override
@@ -51,8 +51,8 @@ public class PacketConfigButton extends AppEngPacket
 		if ( baseContainer.getTarget() instanceof IConfigurableObject )
 		{
 			IConfigManager cm = ((IConfigurableObject) baseContainer.getTarget()).getConfigManager();
-			Enum newState = Platform.rotateEnum( cm.getSetting( option ), rotationDirection, option.getPossibleValues() );
-			cm.putSetting( option, newState );
+			Enum newState = Platform.rotateEnum( cm.getSetting( this.option ), this.rotationDirection, this.option.getPossibleValues() );
+			cm.putSetting( this.option, newState );
 		}
 	}
 
@@ -63,10 +63,10 @@ public class PacketConfigButton extends AppEngPacket
 
 		ByteBuf data = Unpooled.buffer();
 
-		data.writeInt( getPacketID() );
+		data.writeInt( this.getPacketID() );
 		data.writeInt( option.ordinal() );
 		data.writeBoolean( rotationDirection );
 
-		configureWrite( data );
+		this.configureWrite( data );
 	}
 }

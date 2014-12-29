@@ -62,9 +62,9 @@ public class RenderBlockSkyChest extends BaseBlockRender
 		GL11.glScalef( 1.0F, -1F, -1F );
 		GL11.glTranslatef( -0.0F, -1.0F, -1.0F );
 
-		model.chestLid.offsetY = -(0.9f / 16.0f);
-		model.chestLid.rotateAngleX = -((lidAngle * 3.141593F) / 2.0F);
-		model.renderAll();
+		this.model.chestLid.offsetY = -(0.9f / 16.0f);
+		this.model.chestLid.rotateAngleX = -((lidAngle * 3.141593F) / 2.0F);
+		this.model.renderAll();
 
 		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
@@ -122,9 +122,9 @@ public class RenderBlockSkyChest extends BaseBlockRender
 		lidAngle = 1.0F - lidAngle;
 		lidAngle = 1.0F - lidAngle * lidAngle * lidAngle;
 
-		model.chestLid.offsetY = -(1.01f / 16.0f);
-		model.chestLid.rotateAngleX = -((lidAngle * 3.141593F) / 2.0F);
-		model.renderAll();
+		this.model.chestLid.offsetY = -(1.01f / 16.0f);
+		this.model.chestLid.rotateAngleX = -((lidAngle * 3.141593F) / 2.0F);
+		this.model.renderAll();
 
 		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );

@@ -40,7 +40,7 @@ public class CraftingCPUCalculator extends MBCalculator
 
 	public CraftingCPUCalculator(IAEMultiBlock t) {
 		super( t );
-		tqb = (TileCraftingTile) t;
+		this.tqb = (TileCraftingTile) t;
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class CraftingCPUCalculator extends MBCalculator
 	@Override
 	public void disconnect()
 	{
-		tqb.disconnect( true );
+		this.tqb.disconnect( true );
 	}
 
 	@Override

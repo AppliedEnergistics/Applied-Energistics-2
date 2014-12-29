@@ -61,21 +61,21 @@ public class SlotRestrictedInput extends AppEngSlot
 		public final int IIcon;
 
 		private PlacableItemType(int o) {
-			IIcon = o;
+			this.IIcon = o;
 		}
 	}
 
 	@Override
 	public int getSlotStackLimit()
 	{
-		if ( stackLimit != -1 )
-			return stackLimit;
+		if ( this.stackLimit != -1 )
+			return this.stackLimit;
 		return super.getSlotStackLimit();
 	}
 
 	public boolean isValid(ItemStack is, World theWorld)
 	{
-		if ( which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT )
+		if ( this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT )
 		{
 			ICraftingPatternDetails ap = is.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem) is.getItem()).getPatternForItem( is, theWorld )
 					: null;
@@ -94,26 +94,26 @@ public class SlotRestrictedInput extends AppEngSlot
 	@Override
 	public boolean canTakeStack(EntityPlayer par1EntityPlayer)
 	{
-		return allowEdit;
+		return this.allowEdit;
 	}
 
 	public Slot setStackLimit(int i)
 	{
-		stackLimit = i;
+		this.stackLimit = i;
 		return this;
 	}
 
 	public SlotRestrictedInput(PlacableItemType valid, IInventory i, int slotIndex, int x, int y, InventoryPlayer p) {
 		super( i, slotIndex, x, y );
-		which = valid;
-		IIcon = valid.IIcon;
+		this.which = valid;
+		this.IIcon = valid.IIcon;
 		this.p = p;
 	}
 
 	@Override
 	public ItemStack getDisplayStack()
 	{
-		if ( Platform.isClient() && (which == PlacableItemType.ENCODED_PATTERN) )
+		if ( Platform.isClient() && (this.which == PlacableItemType.ENCODED_PATTERN) )
 		{
 			ItemStack is = super.getStack();
 			if ( is != null && is.getItem() instanceof ItemEncodedPattern )
@@ -130,7 +130,7 @@ public class SlotRestrictedInput extends AppEngSlot
 	@Override
 	public boolean isItemValid(ItemStack i)
 	{
-		if ( !myContainer.isValidForSlot( this, i ) )
+		if ( !this.myContainer.isValidForSlot( this, i ) )
 			return false;
 
 		if ( i == null )
@@ -138,21 +138,21 @@ public class SlotRestrictedInput extends AppEngSlot
 		if ( i.getItem() == null )
 			return false;
 
-		if ( !inventory.isItemValidForSlot( this.getSlotIndex(), i ) )
+		if ( !this.inventory.isItemValidForSlot( this.getSlotIndex(), i ) )
 			return false;
 
 		IAppEngApi api = AEApi.instance();
 
-		if ( !allowEdit )
+		if ( !this.allowEdit )
 			return false;
 
-		switch (which)
+		switch (this.which)
 		{
 		case ENCODED_CRAFTING_PATTERN:
 			if ( i.getItem() instanceof ICraftingPatternItem )
 			{
 				ICraftingPatternItem b = (ICraftingPatternItem) i.getItem();
-				ICraftingPatternDetails de = b.getPatternForItem( i, p.player.worldObj );
+				ICraftingPatternDetails de = b.getPatternForItem( i, this.p.player.worldObj );
 				if ( de != null )
 					return de.isCraftable();
 			}

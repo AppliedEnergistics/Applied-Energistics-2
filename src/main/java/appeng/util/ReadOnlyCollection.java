@@ -29,31 +29,31 @@ public class ReadOnlyCollection<T> implements IReadOnlyCollection<T>
 	private final Collection<T> c;
 
 	public ReadOnlyCollection(Collection<T> in) {
-		c = in;
+		this.c = in;
 	}
 
 	@Override
 	public Iterator<T> iterator()
 	{
-		return c.iterator();
+		return this.c.iterator();
 	}
 
 	@Override
 	public int size()
 	{
-		return c.size();
+		return this.c.size();
 	}
 
 	@Override
 	public boolean isEmpty()
 	{
-		return c.isEmpty();
+		return this.c.isEmpty();
 	}
 
 	@Override
 	public boolean contains(Object node)
 	{
-		return c.contains( node );
+		return this.c.contains( node );
 	}
 
 }

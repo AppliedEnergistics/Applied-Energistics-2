@@ -22,7 +22,7 @@ public class TileDenseEnergyCell extends TileEnergyCell
 {
 
 	public TileDenseEnergyCell() {
-		internalMaxPower = 200000 * 8;
+		this.internalMaxPower = 200000 * 8;
 	}
 
 }

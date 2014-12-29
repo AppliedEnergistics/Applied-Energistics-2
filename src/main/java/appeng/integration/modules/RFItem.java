@@ -26,7 +26,7 @@ public class RFItem extends BaseModule
 	public static RFItem instance;
 
 	public RFItem() {
-		TestClass( cofh.api.energy.IEnergyContainerItem.class );
+		this.TestClass( cofh.api.energy.IEnergyContainerItem.class );
 	}
 
 	@Override

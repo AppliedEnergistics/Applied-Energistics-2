@@ -52,33 +52,33 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 	@TileEvent(TileEventType.TICK)
 	public void Tick_TileCrank()
 	{
-		if ( rotation > 0 )
+		if ( this.rotation > 0 )
 		{
-			visibleRotation -= 360 / (ticksPerRotation);
-			charge++;
-			if ( charge >= ticksPerRotation )
+			this.visibleRotation -= 360 / (this.ticksPerRotation);
+			this.charge++;
+			if ( this.charge >= this.ticksPerRotation )
 			{
-				charge -= ticksPerRotation;
-				ICrankable g = getGrinder();
+				this.charge -= this.ticksPerRotation;
+				ICrankable g = this.getGrinder();
 				if ( g != null )
 					g.applyTurn();
 			}
 
-			rotation--;
+			this.rotation--;
 		}
 	}
 
 	@TileEvent(TileEventType.NETWORK_READ)
 	public boolean readFromStream_TileCrank(ByteBuf data)
 	{
-		rotation = data.readInt();
+		this.rotation = data.readInt();
 		return false;
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
 	public void writeToStream_TileCrank(ByteBuf data)
 	{
-		data.writeInt( rotation );
+		data.writeInt( this.rotation );
 	}
 
 	public ICrankable getGrinder()
@@ -86,8 +86,8 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 		if ( Platform.isClient() )
 			return null;
 
-		ForgeDirection grinder = getUp().getOpposite();
-		TileEntity te = worldObj.getTileEntity( xCoord + grinder.offsetX, yCoord + grinder.offsetY, zCoord + grinder.offsetZ );
+		ForgeDirection grinder = this.getUp().getOpposite();
+		TileEntity te = this.worldObj.getTileEntity( this.xCoord + grinder.offsetX, this.yCoord + grinder.offsetY, this.zCoord + grinder.offsetZ );
 		if ( te instanceof ICrankable )
 			return (ICrankable) te;
 		return null;
@@ -97,7 +97,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 	public void setOrientation(ForgeDirection inForward, ForgeDirection inUp)
 	{
 		super.setOrientation( inForward, inUp );
-		getBlockType().onNeighborBlockChange( worldObj, xCoord, yCoord, zCoord, Platform.air );
+		this.getBlockType().onNeighborBlockChange( this.worldObj, this.xCoord, this.yCoord, this.zCoord, Platform.air );
 	}
 
 	/**
@@ -108,24 +108,24 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 		if ( Platform.isClient() )
 			return false;
 
-		if ( rotation < 3 )
+		if ( this.rotation < 3 )
 		{
-			ICrankable g = getGrinder();
+			ICrankable g = this.getGrinder();
 			if ( g != null )
 			{
 				if ( g.canTurn() )
 				{
-					hits = 0;
-					rotation += ticksPerRotation;
+					this.hits = 0;
+					this.rotation += this.ticksPerRotation;
 					this.markForUpdate();
 					return true;
 				}
 				else
 				{
-					hits++;
-					if ( hits > 10 )
+					this.hits++;
+					if ( this.hits > 10 )
 					{
-						worldObj.func_147480_a( xCoord, yCoord, zCoord, false );
+						this.worldObj.func_147480_a( this.xCoord, this.yCoord, this.zCoord, false );
 						// worldObj.destroyBlock( xCoord, yCoord, zCoord, false );
 					}
 				}
@@ -138,18 +138,18 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
 	{
-		double xOff = -0.15 * getUp().offsetX;
-		double yOff = -0.15 * getUp().offsetY;
-		double zOff = -0.15 * getUp().offsetZ;
+		double xOff = -0.15 * this.getUp().offsetX;
+		double yOff = -0.15 * this.getUp().offsetY;
+		double zOff = -0.15 * this.getUp().offsetZ;
 		return Collections.singletonList( AxisAlignedBB.getBoundingBox( xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85 ) );
 	}
 
 	@Override
 	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e)
 	{
-		double xOff = -0.15 * getUp().offsetX;
-		double yOff = -0.15 * getUp().offsetY;
-		double zOff = -0.15 * getUp().offsetZ;
+		double xOff = -0.15 * this.getUp().offsetX;
+		double yOff = -0.15 * this.getUp().offsetY;
+		double zOff = -0.15 * this.getUp().offsetZ;
 		out.add( AxisAlignedBB.getBoundingBox( xOff + 0.15, yOff + 0.15, zOff + 0.15,// ahh
 				xOff + 0.85, yOff + 0.85, zOff + 0.85 ) );
 	}

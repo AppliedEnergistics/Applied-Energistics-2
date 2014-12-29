@@ -63,10 +63,10 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 
 	// automatic.
 	public PacketMEInventoryUpdate(final ByteBuf stream) throws IOException {
-		data = null;
-		compressFrame = null;
-		list = new LinkedList<IAEItemStack>();
-		ref = stream.readByte();
+		this.data = null;
+		this.compressFrame = null;
+		this.list = new LinkedList<IAEItemStack>();
+		this.ref = stream.readByte();
 
 		// int originalBytes = stream.readableBytes();
 
@@ -97,9 +97,9 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		// AELog.info( "Receiver: " + originalBytes + " -> " + uncompressedBytes );
 
 		while (uncompressed.readableBytes() > 0)
-			list.add( AEItemStack.loadItemStackFromPacket( uncompressed ) );
+			this.list.add( AEItemStack.loadItemStackFromPacket( uncompressed ) );
 
-		empty = list.isEmpty();
+		this.empty = this.list.isEmpty();
 	}
 
 	@Override
@@ -109,16 +109,16 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 
 		if ( gs instanceof GuiCraftConfirm )
-			((GuiCraftConfirm) gs).postUpdate( list, ref );
+			((GuiCraftConfirm) gs).postUpdate( this.list, this.ref );
 
 		if ( gs instanceof GuiCraftingCPU )
-			((GuiCraftingCPU) gs).postUpdate( list, ref );
+			((GuiCraftingCPU) gs).postUpdate( this.list, this.ref );
 
 		if ( gs instanceof GuiMEMonitorable )
-			((GuiMEMonitorable) gs).postUpdate( list );
+			((GuiMEMonitorable) gs).postUpdate( this.list );
 
 		if ( gs instanceof GuiNetworkStatus )
-			((GuiNetworkStatus) gs).postUpdate( list );
+			((GuiNetworkStatus) gs).postUpdate( this.list );
 
 	}
 
@@ -127,9 +127,9 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	{
 		try
 		{
-			compressFrame.close();
+			this.compressFrame.close();
 
-			configureWrite( data );
+			this.configureWrite( this.data );
 			return super.getProxy();
 		}
 		catch (IOException e)
@@ -147,21 +147,21 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	// api
 	public PacketMEInventoryUpdate(byte ref) throws IOException {
 
-		data = Unpooled.buffer( 2048 );
-		data.writeInt( getPacketID() );
-		data.writeByte( this.ref = ref );
+		this.data = Unpooled.buffer( 2048 );
+		this.data.writeInt( this.getPacketID() );
+		this.data.writeByte( this.ref = ref );
 
-		compressFrame = new GZIPOutputStream( new OutputStream() {
+		this.compressFrame = new GZIPOutputStream( new OutputStream() {
 
 			@Override
 			public void write(int value) throws IOException
 			{
-				data.writeByte( value );
+				PacketMEInventoryUpdate.this.data.writeByte( value );
 			}
 
 		} );
 
-		list = null;
+		this.list = null;
 	}
 
 	public void appendItem(IAEItemStack is) throws IOException, BufferOverflowException
@@ -169,25 +169,25 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		ByteBuf tmp = Unpooled.buffer( 2048 );
 		is.writeToPacket( tmp );
 
-		compressFrame.flush();
-		if ( writtenBytes + tmp.readableBytes() > 2 * 1024 * 1024 ) // 2mb!
+		this.compressFrame.flush();
+		if ( this.writtenBytes + tmp.readableBytes() > 2 * 1024 * 1024 ) // 2mb!
 			throw new BufferOverflowException();
 		else
 		{
-			writtenBytes += tmp.readableBytes();
-			compressFrame.write( tmp.array(), 0, tmp.readableBytes() );
-			empty = false;
+			this.writtenBytes += tmp.readableBytes();
+			this.compressFrame.write( tmp.array(), 0, tmp.readableBytes() );
+			this.empty = false;
 		}
 	}
 
 	public int getLength()
 	{
-		return data.readableBytes();
+		return this.data.readableBytes();
 	}
 
 	public boolean isEmpty()
 	{
-		return empty;
+		return this.empty;
 	}
 
 }

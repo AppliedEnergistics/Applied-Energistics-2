@@ -41,13 +41,13 @@ public class ToolQuartzSword extends ItemSword implements IAEFeature
 	public ToolQuartzSword( AEFeature Type )
 	{
 		super( ToolMaterial.IRON );
-		feature = new ItemFeatureHandler( EnumSet.of( type = Type, AEFeature.QuartzSword ), this, this, Optional.of( Type.name() ) );
+		this.feature = new ItemFeatureHandler( EnumSet.of( this.type = Type, AEFeature.QuartzSword ), this, this, Optional.of( Type.name() ) );
 	}
 
 	@Override
 	public IFeatureHandler handler()
 	{
-		return feature;
+		return this.feature;
 	}
 
 	@Override
@@ -59,6 +59,6 @@ public class ToolQuartzSword extends ItemSword implements IAEFeature
 	@Override
 	public boolean getIsRepairable( ItemStack a, ItemStack b )
 	{
-		return Platform.canRepair( type, a, b );
+		return Platform.canRepair( this.type, a, b );
 	}
 }

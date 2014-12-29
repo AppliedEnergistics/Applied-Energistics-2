@@ -56,7 +56,7 @@ public class ContainerStorageBus extends ContainerUpgradeable
 
 	public ContainerStorageBus(InventoryPlayer ip, PartStorageBus te) {
 		super( ip, te );
-		storageBus = te;
+		this.storageBus = te;
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class ContainerStorageBus extends ContainerUpgradeable
 	@Override
 	public boolean isSlotEnabled(int idx)
 	{
-		int upgrades = upgradeable.getInstalledUpgrades( Upgrades.CAPACITY );
+		int upgrades = this.upgradeable.getInstalledUpgrades( Upgrades.CAPACITY );
 
 		return upgrades > idx;
 	}
@@ -91,30 +91,30 @@ public class ContainerStorageBus extends ContainerUpgradeable
 		int xo = 8;
 		int yo = 23 + 6;
 
-		IInventory config = upgradeable.getInventoryByName( "config" );
+		IInventory config = this.upgradeable.getInventoryByName( "config" );
 		for (int y = 0; y < 7; y++)
 		{
 			for (int x = 0; x < 9; x++)
 			{
 				if ( y < 2 )
-					addSlotToContainer( new SlotFakeTypeOnly( config, y * 9 + x, xo + x * 18, yo + y * 18 ) );
+					this.addSlotToContainer( new SlotFakeTypeOnly( config, y * 9 + x, xo + x * 18, yo + y * 18 ) );
 				else
-					addSlotToContainer( new OptionalSlotFakeTypeOnly( config, this, y * 9 + x, xo, yo, x, y, y - 2 ) );
+					this.addSlotToContainer( new OptionalSlotFakeTypeOnly( config, this, y * 9 + x, xo, yo, x, y, y - 2 ) );
 			}
 		}
 
-		IInventory upgrades = upgradeable.getInventoryByName( "upgrades" );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, invPlayer )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, invPlayer )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, invPlayer )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, invPlayer )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187, 8 + 18 * 4, invPlayer )).setNotDraggable() );
+		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
+		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer )).setNotDraggable() );
+		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer )).setNotDraggable() );
+		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer )).setNotDraggable() );
+		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.invPlayer )).setNotDraggable() );
+		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187, 8 + 18 * 4, this.invPlayer )).setNotDraggable() );
 	}
 
 	@Override
 	public void detectAndSendChanges()
 	{
-		verifyPermissions( SecurityPermissions.BUILD, false );
+		this.verifyPermissions( SecurityPermissions.BUILD, false );
 
 		if ( Platform.isServer() )
 		{
@@ -123,22 +123,22 @@ public class ContainerStorageBus extends ContainerUpgradeable
 			this.storageFilter = (StorageFilter) this.upgradeable.getConfigManager().getSetting( Settings.STORAGE_FILTER );
 		}
 
-		standardDetectAndSendChanges();
+		this.standardDetectAndSendChanges();
 	}
 
 	public void clear()
 	{
-		IInventory inv = upgradeable.getInventoryByName( "config" );
+		IInventory inv = this.upgradeable.getInventoryByName( "config" );
 		for (int x = 0; x < inv.getSizeInventory(); x++)
 			inv.setInventorySlotContents( x, null );
-		detectAndSendChanges();
+		this.detectAndSendChanges();
 	}
 
 	public void partition()
 	{
-		IInventory inv = upgradeable.getInventoryByName( "config" );
+		IInventory inv = this.upgradeable.getInventoryByName( "config" );
 
-		IMEInventory<IAEItemStack> cellInv = storageBus.getInternalHandler();
+		IMEInventory<IAEItemStack> cellInv = this.storageBus.getInternalHandler();
 
 		Iterator<IAEItemStack> i = new NullIterator<IAEItemStack>();
 		if ( cellInv != null )
@@ -149,7 +149,7 @@ public class ContainerStorageBus extends ContainerUpgradeable
 
 		for (int x = 0; x < inv.getSizeInventory(); x++)
 		{
-			if ( i.hasNext() && isSlotEnabled( (x / 9) - 2 ) )
+			if ( i.hasNext() && this.isSlotEnabled( (x / 9) - 2 ) )
 			{
 				ItemStack g = i.next().getItemStack();
 				g.stackSize = 1;
@@ -159,7 +159,7 @@ public class ContainerStorageBus extends ContainerUpgradeable
 				inv.setInventorySlotContents( x, null );
 		}
 
-		detectAndSendChanges();
+		this.detectAndSendChanges();
 	}
 
 }

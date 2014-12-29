@@ -48,7 +48,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	public void setOrientation(ForgeDirection inForward, ForgeDirection inUp)
 	{
 		super.setOrientation( inForward, inUp );
-		getBlockType().onNeighborBlockChange( worldObj, xCoord, yCoord, zCoord, Platform.air );
+		this.getBlockType().onNeighborBlockChange( this.worldObj, this.xCoord, this.yCoord, this.zCoord, Platform.air );
 	}
 
 	private void addItem(InventoryAdaptor sia, ItemStack output)
@@ -59,14 +59,14 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 		ItemStack notAdded = sia.addItems( output );
 		if ( notAdded != null )
 		{
-			WorldCoord wc = new WorldCoord( xCoord, yCoord, zCoord );
+			WorldCoord wc = new WorldCoord( this.xCoord, this.yCoord, this.zCoord );
 
-			wc.add( getForward(), 1 );
+			wc.add( this.getForward(), 1 );
 
 			List<ItemStack> out = new ArrayList<ItemStack>();
 			out.add( notAdded );
 
-			Platform.spawnDrops( worldObj, wc.x, wc.y, wc.z, out );
+			Platform.spawnDrops( this.worldObj, wc.x, wc.y, wc.z, out );
 		}
 	}
 
@@ -88,13 +88,13 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	@Override
 	public IInventory getInternalInventory()
 	{
-		return inv;
+		return this.inv;
 	}
 
 	@Override
 	public int[] getAccessibleSlotsBySide(ForgeDirection side)
 	{
-		return sides;
+		return this.sides;
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 
 		if ( null == this.getStackInSlot( 6 ) ) // Add if there isn't one...
 		{
-			IInventory src = new WrapperInventoryRange( this, inputs, true );
+			IInventory src = new WrapperInventoryRange( this, this.inputs, true );
 			for (int x = 0; x < src.getSizeInventory(); x++)
 			{
 				ItemStack item = src.getStackInSlot( x );
@@ -147,27 +147,27 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 		if ( Platform.isClient() )
 			return;
 
-		points++;
+		this.points++;
 
 		ItemStack processing = this.getStackInSlot( 6 );
 		IGrinderEntry r = AEApi.instance().registries().grinder().getRecipeForInput( processing );
 		if ( r != null )
 		{
-			if ( r.getEnergyCost() > points )
+			if ( r.getEnergyCost() > this.points )
 				return;
 
-			points = 0;
+			this.points = 0;
 			InventoryAdaptor sia = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this, 3, 3, true ), ForgeDirection.EAST );
 
-			addItem( sia, r.getOutput() );
+			this.addItem( sia, r.getOutput() );
 
 			float chance = (Platform.getRandomInt() % 2000) / 2000.0f;
 			if ( chance <= r.getOptionalChance() )
-				addItem( sia, r.getOptionalOutput() );
+				this.addItem( sia, r.getOptionalOutput() );
 
 			chance = (Platform.getRandomInt() % 2000) / 2000.0f;
 			if ( chance <= r.getSecondOptionalChance() )
-				addItem( sia, r.getSecondOptionalOutput() );
+				this.addItem( sia, r.getSecondOptionalOutput() );
 
 			this.setInventorySlotContents( 6, null );
 		}
@@ -176,7 +176,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	@Override
 	public boolean canCrankAttach(ForgeDirection directionToCrank)
 	{
-		return getUp().equals( directionToCrank );
+		return this.getUp().equals( directionToCrank );
 	}
 
 }

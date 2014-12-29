@@ -42,31 +42,31 @@ public class CrashEnhancement implements ICrashCallable
 
 		if ( Output == CrashInfo.MOD_VERSION )
 		{
-			name = "AE2 Version";
-			value = ModVersion;
+			this.name = "AE2 Version";
+			this.value = this.ModVersion;
 		}
 		else if ( Output == CrashInfo.INTEGRATION )
 		{
-			name = "AE2 Integration";
-			value = IntegrationRegistry.INSTANCE.getStatus();
+			this.name = "AE2 Integration";
+			this.value = IntegrationRegistry.INSTANCE.getStatus();
 		}
 		else
 		{
-			name = "AE2_UNKNOWN";
-			value = "UNKNOWN_VALUE";
+			this.name = "AE2_UNKNOWN";
+			this.value = "UNKNOWN_VALUE";
 		}
 	}
 
 	@Override
 	public String call() throws Exception
 	{
-		return value;
+		return this.value;
 	}
 
 	@Override
 	public String getLabel()
 	{
-		return name;
+		return this.name;
 	}
 
 }

@@ -76,7 +76,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
 	{
 		rh.setTexture( CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon(),
-				CableBusTextures.PartTransitionPlaneBack.getIcon(), is.getIconIndex(), CableBusTextures.PartPlaneSides.getIcon(),
+				CableBusTextures.PartTransitionPlaneBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartPlaneSides.getIcon(),
 				CableBusTextures.PartPlaneSides.getIcon() );
 
 		rh.setBounds( 1, 1, 15, 15, 15, 16 );
@@ -98,38 +98,38 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		ForgeDirection e = rh.getWorldX();
 		ForgeDirection u = rh.getWorldY();
 
-		TileEntity te = getHost().getTile();
+		TileEntity te = this.getHost().getTile();
 
-		if ( isTransitionPlane( te.getWorldObj().getTileEntity( x - e.offsetX, y - e.offsetY, z - e.offsetZ ), side ) )
+		if ( this.isTransitionPlane( te.getWorldObj().getTileEntity( x - e.offsetX, y - e.offsetY, z - e.offsetZ ), this.side ) )
 			minX = 0;
 
-		if ( isTransitionPlane( te.getWorldObj().getTileEntity( x + e.offsetX, y + e.offsetY, z + e.offsetZ ), side ) )
+		if ( this.isTransitionPlane( te.getWorldObj().getTileEntity( x + e.offsetX, y + e.offsetY, z + e.offsetZ ), this.side ) )
 			maxX = 16;
 
-		if ( isTransitionPlane( te.getWorldObj().getTileEntity( x - u.offsetX, y - u.offsetY, z - u.offsetZ ), side ) )
+		if ( this.isTransitionPlane( te.getWorldObj().getTileEntity( x - u.offsetX, y - u.offsetY, z - u.offsetZ ), this.side ) )
 			minY = 0;
 
-		if ( isTransitionPlane( te.getWorldObj().getTileEntity( x + u.offsetX, y + u.offsetY, z + u.offsetZ ), side ) )
+		if ( this.isTransitionPlane( te.getWorldObj().getTileEntity( x + u.offsetX, y + u.offsetY, z + u.offsetZ ), this.side ) )
 			maxY = 16;
 
-		boolean isActive = (clientFlags & (POWERED_FLAG | CHANNEL_FLAG)) == (POWERED_FLAG | CHANNEL_FLAG);
+		boolean isActive = (this.clientFlags & (this.POWERED_FLAG | this.CHANNEL_FLAG)) == (this.POWERED_FLAG | this.CHANNEL_FLAG);
 
-		renderCache = rh.useSimplifiedRendering( x, y, z, this, renderCache );
+		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
 		rh.setTexture( CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon(),
-				CableBusTextures.PartTransitionPlaneBack.getIcon(), isActive ? CableBusTextures.BlockAnnihilationPlaneOn.getIcon() : is.getIconIndex(),
+				CableBusTextures.PartTransitionPlaneBack.getIcon(), isActive ? CableBusTextures.BlockAnnihilationPlaneOn.getIcon() : this.is.getIconIndex(),
 				CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon() );
 
 		rh.setBounds( minX, minY, 15, maxX, maxY, 16 );
 		rh.renderBlock( x, y, z, renderer );
 
 		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(),
-				CableBusTextures.PartTransitionPlaneBack.getIcon(), isActive ? CableBusTextures.BlockAnnihilationPlaneOn.getIcon() : is.getIconIndex(),
+				CableBusTextures.PartTransitionPlaneBack.getIcon(), isActive ? CableBusTextures.BlockAnnihilationPlaneOn.getIcon() : this.is.getIconIndex(),
 				CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
 
 		rh.setBounds( 5, 5, 14, 11, 11, 15 );
 		rh.renderBlock( x, y, z, renderer );
 
-		renderLights( x, y, z, rh, renderer );
+		this.renderLights( x, y, z, rh, renderer );
 	}
 
 	private boolean isTransitionPlane(TileEntity blockTileEntity, ForgeDirection side)
@@ -150,7 +150,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		int maxX = 15;
 		int maxY = 15;
 
-		IPartHost host = getHost();
+		IPartHost host = this.getHost();
 		if ( host != null )
 		{
 			TileEntity te = host.getTile();
@@ -162,16 +162,16 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 			ForgeDirection e = bch.getWorldX();
 			ForgeDirection u = bch.getWorldY();
 
-			if ( isTransitionPlane( te.getWorldObj().getTileEntity( x - e.offsetX, y - e.offsetY, z - e.offsetZ ), side ) )
+			if ( this.isTransitionPlane( te.getWorldObj().getTileEntity( x - e.offsetX, y - e.offsetY, z - e.offsetZ ), this.side ) )
 				minX = 0;
 
-			if ( isTransitionPlane( te.getWorldObj().getTileEntity( x + e.offsetX, y + e.offsetY, z + e.offsetZ ), side ) )
+			if ( this.isTransitionPlane( te.getWorldObj().getTileEntity( x + e.offsetX, y + e.offsetY, z + e.offsetZ ), this.side ) )
 				maxX = 16;
 
-			if ( isTransitionPlane( te.getWorldObj().getTileEntity( x - u.offsetX, y - u.offsetY, z - u.offsetZ ), side ) )
+			if ( this.isTransitionPlane( te.getWorldObj().getTileEntity( x - u.offsetX, y - u.offsetY, z - u.offsetZ ), this.side ) )
 				minY = 0;
 
-			if ( isTransitionPlane( te.getWorldObj().getTileEntity( x + u.offsetX, y + u.offsetY, z + u.offsetZ ), side ) )
+			if ( this.isTransitionPlane( te.getWorldObj().getTileEntity( x + u.offsetX, y + u.offsetY, z + u.offsetZ ), this.side ) )
 				maxY = 16;
 		}
 
@@ -194,11 +194,11 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	{
 		super.writeToNBT( data );
 
-		data.setInteger( "bufferSize", Buffer.size() );
-		for (int x = 0; x < Buffer.size(); x++)
+		data.setInteger( "bufferSize", this.Buffer.size() );
+		for (int x = 0; x < this.Buffer.size(); x++)
 		{
 			NBTTagCompound pack = new NBTTagCompound();
-			Buffer.get( x ).writeToNBT( pack );
+			this.Buffer.get( x ).writeToNBT( pack );
 			data.setTag( "buffer" + x, pack );
 		}
 	}
@@ -209,25 +209,25 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		super.readFromNBT( data );
 
 		int size = data.getInteger( "bufferSize" );
-		Buffer.clear();
+		this.Buffer.clear();
 		for (int x = 0; x < size; x++)
 		{
 			NBTTagCompound pack = (NBTTagCompound) data.getTag( "buffer" + x );
 			IAEItemStack ais = AEItemStack.loadItemStackFromNBT( pack );
 			if ( ais != null )
-				Buffer.add( ais );
+				this.Buffer.add( ais );
 		}
 	}
 
 	private boolean isAccepting()
 	{
-		return Buffer.isEmpty();
+		return this.Buffer.isEmpty();
 	}
 
 	@Override
 	public void getDrops(List<ItemStack> drops, boolean wrenched)
 	{
-		for (IAEItemStack is : Buffer)
+		for (IAEItemStack is : this.Buffer)
 			if ( is != null )
 				drops.add( is.getItemStack() );
 	}
@@ -236,35 +236,35 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	@MENetworkEventSubscribe
 	public void chanRender(MENetworkChannelsChanged c)
 	{
-		onNeighborChanged();
-		getHost().markForUpdate();
+		this.onNeighborChanged();
+		this.getHost().markForUpdate();
 	}
 
 	@Override
 	@MENetworkEventSubscribe
 	public void powerRender(MENetworkPowerStatusChange c)
 	{
-		onNeighborChanged();
-		getHost().markForUpdate();
+		this.onNeighborChanged();
+		this.getHost().markForUpdate();
 	}
 
 	public TickRateModulation EatBlock(boolean eatForReal)
 	{
-		if ( isAccepting() && proxy.isActive() )
+		if ( this.isAccepting() && this.proxy.isActive() )
 		{
 			try
 			{
-				TileEntity te = getTile();
+				TileEntity te = this.getTile();
 				WorldServer w = (WorldServer) te.getWorldObj();
 
-				int x = te.xCoord + side.offsetX;
-				int y = te.yCoord + side.offsetY;
-				int z = te.zCoord + side.offsetZ;
+				int x = te.xCoord + this.side.offsetX;
+				int y = te.yCoord + this.side.offsetY;
+				int z = te.zCoord + this.side.offsetZ;
 
 				Block blk = w.getBlock( x, y, z );
 
-				IStorageGrid storage = proxy.getStorage();
-				IEnergyGrid energy = proxy.getEnergy();
+				IStorageGrid storage = this.proxy.getStorage();
+				IEnergyGrid energy = this.proxy.getEnergy();
 
 				Material mat = blk.getMaterial();
 				boolean ignore = mat == Material.air || mat == Material.lava || mat == Material.water || mat.isLiquid() || blk == Blocks.bedrock
@@ -299,30 +299,30 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 											if ( !item.isDead )
 											{
 												IAEItemStack storedItem = AEItemStack.create( item.getEntityItem() );
-												storedItem = Platform.poweredInsert( energy, storage.getItemInventory(), storedItem, mySrc );
+												storedItem = Platform.poweredInsert( energy, storage.getItemInventory(), storedItem, this.mySrc );
 												if ( storedItem != null )
-													Buffer.add( storedItem );
+													this.Buffer.add( storedItem );
 
 												item.setDead();
 											}
 										}
 									}
 
-									ServerHelper.proxy.sendToAllNearExcept( null, x, y, z, 64, w, new PacketTransitionEffect( x, y, z, side, true ) );
+									ServerHelper.proxy.sendToAllNearExcept( null, x, y, z, 64, w, new PacketTransitionEffect( x, y, z, this.side, true ) );
 
 									for (ItemStack snaggedItem : out)
 									{
 										IAEItemStack storedItem = AEItemStack.create( snaggedItem );
-										storedItem = Platform.poweredInsert( energy, storage.getItemInventory(), storedItem, mySrc );
+										storedItem = Platform.poweredInsert( energy, storage.getItemInventory(), storedItem, this.mySrc );
 										if ( storedItem != null )
-											Buffer.add( storedItem );
+											this.Buffer.add( storedItem );
 									}
 
 									return TickRateModulation.URGENT;
 								}
 								else
 								{
-									breaking = true;
+									this.breaking = true;
 									TickHandler.instance.addCallable( this.tile.getWorldObj(), this );
 									return TickRateModulation.URGENT;
 								}
@@ -352,7 +352,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	{
 		try
 		{
-			proxy.getTick().alertDevice( proxy.getNode() );
+			this.proxy.getTick().alertDevice( this.proxy.getNode() );
 		}
 		catch (GridAccessException e)
 		{
@@ -363,33 +363,33 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	@Override
 	public void onEntityCollision(Entity entity)
 	{
-		if ( entity instanceof EntityItem && !entity.isDead && isAccepting() )
+		if ( entity instanceof EntityItem && !entity.isDead && this.isAccepting() )
 		{
 			boolean capture = false;
 
-			switch (side)
+			switch (this.side)
 			{
 			case DOWN:
 			case UP:
-				if ( entity.posX > tile.xCoord && entity.posX < tile.xCoord + 1 )
-					if ( entity.posZ > tile.zCoord && entity.posZ < tile.zCoord + 1 )
-						if ( (entity.posY > tile.yCoord + 0.9 && side == ForgeDirection.UP) || (entity.posY < tile.yCoord + 0.1 && side == ForgeDirection.DOWN) )
+				if ( entity.posX > this.tile.xCoord && entity.posX < this.tile.xCoord + 1 )
+					if ( entity.posZ > this.tile.zCoord && entity.posZ < this.tile.zCoord + 1 )
+						if ( (entity.posY > this.tile.yCoord + 0.9 && this.side == ForgeDirection.UP) || (entity.posY < this.tile.yCoord + 0.1 && this.side == ForgeDirection.DOWN) )
 							capture = true;
 				break;
 			case SOUTH:
 			case NORTH:
-				if ( entity.posX > tile.xCoord && entity.posX < tile.xCoord + 1 )
-					if ( entity.posY > tile.yCoord && entity.posY < tile.yCoord + 1 )
-						if ( (entity.posZ > tile.zCoord + 0.9 && side == ForgeDirection.SOUTH)
-								|| (entity.posZ < tile.zCoord + 0.1 && side == ForgeDirection.NORTH) )
+				if ( entity.posX > this.tile.xCoord && entity.posX < this.tile.xCoord + 1 )
+					if ( entity.posY > this.tile.yCoord && entity.posY < this.tile.yCoord + 1 )
+						if ( (entity.posZ > this.tile.zCoord + 0.9 && this.side == ForgeDirection.SOUTH)
+								|| (entity.posZ < this.tile.zCoord + 0.1 && this.side == ForgeDirection.NORTH) )
 							capture = true;
 				break;
 			case EAST:
 			case WEST:
-				if ( entity.posZ > tile.zCoord && entity.posZ < tile.zCoord + 1 )
-					if ( entity.posY > tile.yCoord && entity.posY < tile.yCoord + 1 )
-						if ( (entity.posX > tile.xCoord + 0.9 && side == ForgeDirection.EAST)
-								|| (entity.posX < tile.xCoord + 0.1 && side == ForgeDirection.WEST) )
+				if ( entity.posZ > this.tile.zCoord && entity.posZ < this.tile.zCoord + 1 )
+					if ( entity.posY > this.tile.yCoord && entity.posY < this.tile.yCoord + 1 )
+						if ( (entity.posX > this.tile.xCoord + 0.9 && this.side == ForgeDirection.EAST)
+								|| (entity.posX < this.tile.xCoord + 0.1 && this.side == ForgeDirection.WEST) )
 							capture = true;
 				break;
 			default:
@@ -397,16 +397,16 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 				break;
 			}
 
-			if ( capture && Platform.isServer() && proxy.isActive() )
+			if ( capture && Platform.isServer() && this.proxy.isActive() )
 			{
 				IAEItemStack stack = AEItemStack.create( ((EntityItem) entity).getEntityItem() );
 				if ( stack != null )
 				{
-					ServerHelper.proxy.sendToAllNearExcept( null, tile.xCoord, tile.yCoord, tile.zCoord, 64, tile.getWorldObj(),
-							new PacketTransitionEffect( entity.posX, entity.posY, entity.posZ, side, false ) );
+					ServerHelper.proxy.sendToAllNearExcept( null, this.tile.xCoord, this.tile.yCoord, this.tile.zCoord, 64, this.tile.getWorldObj(),
+							new PacketTransitionEffect( entity.posX, entity.posY, entity.posZ, this.side, false ) );
 
-					Buffer.add( stack );
-					storeBuffer();
+					this.Buffer.add( stack );
+					this.storeBuffer();
 					entity.setDead();
 				}
 			}
@@ -416,14 +416,14 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	@Override
 	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
 	{
-		if ( breaking )
+		if ( this.breaking )
 			return TickRateModulation.URGENT;
 
-		if ( isAccepting() )
-			return EatBlock( false );
+		if ( this.isAccepting() )
+			return this.EatBlock( false );
 		else
 		{
-			storeBuffer();
+			this.storeBuffer();
 			return TickRateModulation.IDLE;
 		}
 	}
@@ -432,16 +432,16 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	{
 		try
 		{
-			IStorageGrid storage = proxy.getStorage();
-			IEnergyGrid energy = proxy.getEnergy();
+			IStorageGrid storage = this.proxy.getStorage();
+			IEnergyGrid energy = this.proxy.getEnergy();
 
-			while (!Buffer.isEmpty())
+			while (!this.Buffer.isEmpty())
 			{
-				IAEItemStack storedItem = Buffer.pop();
-				storedItem = Platform.poweredInsert( energy, storage.getItemInventory(), storedItem, mySrc );
+				IAEItemStack storedItem = this.Buffer.pop();
+				storedItem = Platform.poweredInsert( energy, storage.getItemInventory(), storedItem, this.mySrc );
 				if ( storedItem != null )
 				{
-					Buffer.add( storedItem );
+					this.Buffer.add( storedItem );
 					break;
 				}
 			}
@@ -455,8 +455,8 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	@Override
 	public Object call() throws Exception
 	{
-		breaking = false;
-		return EatBlock( true );
+		this.breaking = false;
+		return this.EatBlock( true );
 	}
 
 }

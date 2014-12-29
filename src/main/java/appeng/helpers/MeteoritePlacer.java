@@ -57,30 +57,30 @@ public class MeteoritePlacer
 		{
 			double a = Math.random();
 			if ( a > 0.9 )
-				put( w, x, y, z, Blocks.stone );
+				MeteoritePlacer.this.put( w, x, y, z, Blocks.stone );
 			else if ( a > 0.8 )
-				put( w, x, y, z, Blocks.cobblestone );
+				MeteoritePlacer.this.put( w, x, y, z, Blocks.cobblestone );
 			else if ( a > 0.7 )
-				put( w, x, y, z, Blocks.dirt );
+				MeteoritePlacer.this.put( w, x, y, z, Blocks.dirt );
 			else if ( a > 0.7 )
-				put( w, x, y, z, Blocks.gravel );
+				MeteoritePlacer.this.put( w, x, y, z, Blocks.gravel );
 		}
 
 		public void getRandomInset(IMeteoriteWorld w, int x, int y, int z)
 		{
 			double a = Math.random();
 			if ( a > 0.9 )
-				put( w, x, y, z, Blocks.cobblestone );
+				MeteoritePlacer.this.put( w, x, y, z, Blocks.cobblestone );
 			else if ( a > 0.8 )
-				put( w, x, y, z, Blocks.stone );
+				MeteoritePlacer.this.put( w, x, y, z, Blocks.stone );
 			else if ( a > 0.7 )
-				put( w, x, y, z, Blocks.grass );
+				MeteoritePlacer.this.put( w, x, y, z, Blocks.grass );
 			else if ( a > 0.6 )
-				put( w, x, y, z, skystone );
+				MeteoritePlacer.this.put( w, x, y, z, MeteoritePlacer.this.skystone );
 			else if ( a > 0.5 )
-				put( w, x, y, z, Blocks.gravel );
+				MeteoritePlacer.this.put( w, x, y, z, Blocks.gravel );
 			else if ( a > 0.5 )
-				put( w, x, y, z, Platform.air );
+				MeteoritePlacer.this.put( w, x, y, z, Platform.air );
 		}
 
 	}
@@ -92,8 +92,8 @@ public class MeteoritePlacer
 		final int meta;
 
 		public FalloutCopy(IMeteoriteWorld w, int x, int y, int z) {
-			blk = w.getBlock( x, y, z );
-			meta = w.getBlockMetadata( x, y, z );
+			this.blk = w.getBlock( x, y, z );
+			this.meta = w.getBlockMetadata( x, y, z );
 		}
 
 		public void getOther(IMeteoriteWorld w, int x, int y, int z, double a)
@@ -106,9 +106,9 @@ public class MeteoritePlacer
 		{
 			double a = Math.random();
 			if ( a > 0.9 )
-				put( w, x, y, z, blk, meta );
+				MeteoritePlacer.this.put( w, x, y, z, this.blk, this.meta );
 			else
-				getOther( w, x, y, z, a );
+				this.getOther( w, x, y, z, a );
 		}
 
 		@Override
@@ -116,11 +116,11 @@ public class MeteoritePlacer
 		{
 			double a = Math.random();
 			if ( a > 0.9 )
-				put( w, x, y, z, blk, meta );
+				MeteoritePlacer.this.put( w, x, y, z, this.blk, this.meta );
 			else if ( a > 0.8 )
-				put( w, x, y, z, Platform.air );
+				MeteoritePlacer.this.put( w, x, y, z, Platform.air );
 			else
-				getOther( w, x, y, z, a - 0.1 );
+				this.getOther( w, x, y, z, a - 0.1 );
 		}
 	}
 
@@ -141,7 +141,7 @@ public class MeteoritePlacer
 		public void getOther(IMeteoriteWorld w, int x, int y, int z, double a)
 		{
 			if ( a > 0.66 )
-				put( w, x, y, z, Blocks.glass );
+				MeteoritePlacer.this.put( w, x, y, z, Blocks.glass );
 		}
 
 	}
@@ -163,9 +163,9 @@ public class MeteoritePlacer
 		public void getOther(IMeteoriteWorld w, int x, int y, int z, double a)
 		{
 			if ( a > 0.7 )
-				put( w, x, y, z, Blocks.snow );
+				MeteoritePlacer.this.put( w, x, y, z, Blocks.snow );
 			else if ( a > 0.5 )
-				put( w, x, y, z, Blocks.ice );
+				MeteoritePlacer.this.put( w, x, y, z, Blocks.ice );
 		}
 
 	}
@@ -213,59 +213,59 @@ public class MeteoritePlacer
 		@Override
 		public boolean hasNoSky()
 		{
-			return !w.provider.hasNoSky;
+			return !this.w.provider.hasNoSky;
 		}
 
 		@Override
 		public int getBlockMetadata(int x, int y, int z)
 		{
-			if ( range( x, y, z ) )
-				return w.getBlockMetadata( x, y, z );
+			if ( this.range( x, y, z ) )
+				return this.w.getBlockMetadata( x, y, z );
 			return 0;
 		}
 
 		@Override
 		public Block getBlock(int x, int y, int z)
 		{
-			if ( range( x, y, z ) )
-				return w.getBlock( x, y, z );
+			if ( this.range( x, y, z ) )
+				return this.w.getBlock( x, y, z );
 			return Platform.air;
 		}
 
 		@Override
 		public boolean canBlockSeeTheSky(int x, int y, int z)
 		{
-			if ( range( x, y, z ) )
-				return w.canBlockSeeTheSky( x, y, z );
+			if ( this.range( x, y, z ) )
+				return this.w.canBlockSeeTheSky( x, y, z );
 			return false;
 		}
 
 		@Override
 		public TileEntity getTileEntity(int x, int y, int z)
 		{
-			if ( range( x, y, z ) )
-				return w.getTileEntity( x, y, z );
+			if ( this.range( x, y, z ) )
+				return this.w.getTileEntity( x, y, z );
 			return null;
 		}
 
 		@Override
 		public World getWorld()
 		{
-			return w;
+			return this.w;
 		}
 
 		@Override
 		public void setBlock(int x, int y, int z, Block blk)
 		{
-			if ( range( x, y, z ) )
-				w.setBlock( x, y, z, blk );
+			if ( this.range( x, y, z ) )
+				this.w.setBlock( x, y, z, blk );
 		}
 
 		@Override
 		public void setBlock(int x, int y, int z, Block blk, int metadata, int flags)
 		{
-			if ( range( x, y, z ) )
-				w.setBlock( x, y, z, blk, metadata, flags );
+			if ( this.range( x, y, z ) )
+				this.w.setBlock( x, y, z, blk, metadata, flags );
 		}
 
 		public boolean range(int x, int y, int z)
@@ -316,7 +316,7 @@ public class MeteoritePlacer
 
 		public ChunkOnly(World w, int cx, int cz) {
 			super( w );
-			target = w.getChunkFromChunkCoords( cx, cz );
+			this.target = w.getChunkFromChunkCoords( cx, cz );
 			this.cx = cx;
 			this.cz = cz;
 		}
@@ -324,74 +324,74 @@ public class MeteoritePlacer
 		@Override
 		public void done()
 		{
-			if ( verticalBits != 0 )
-				Platform.sendChunk( target, verticalBits );
+			if ( this.verticalBits != 0 )
+				Platform.sendChunk( this.target, this.verticalBits );
 		}
 
 		@Override
 		public void setBlock(int x, int y, int z, Block blk)
 		{
-			if ( range( x, y, z ) )
+			if ( this.range( x, y, z ) )
 			{
-				verticalBits |= 1 << (y >> 4);
-				w.setBlock( x, y, z, blk, 0, 1 );
+				this.verticalBits |= 1 << (y >> 4);
+				this.w.setBlock( x, y, z, blk, 0, 1 );
 			}
 		}
 
 		@Override
 		public void setBlock(int x, int y, int z, Block blk, int metadata, int flags)
 		{
-			if ( range( x, y, z ) )
+			if ( this.range( x, y, z ) )
 			{
-				verticalBits |= 1 << (y >> 4);
-				w.setBlock( x, y, z, blk, metadata, flags & (~2) );
+				this.verticalBits |= 1 << (y >> 4);
+				this.w.setBlock( x, y, z, blk, metadata, flags & (~2) );
 			}
 		}
 
 		@Override
 		public Block getBlock(int x, int y, int z)
 		{
-			if ( range( x, y, z ) )
-				return target.getBlock( x & 0xF, y, z & 0xF );
+			if ( this.range( x, y, z ) )
+				return this.target.getBlock( x & 0xF, y, z & 0xF );
 			return Platform.air;
 		}
 
 		@Override
 		public int getBlockMetadata(int x, int y, int z)
 		{
-			if ( range( x, y, z ) )
-				return target.getBlockMetadata( x & 0xF, y, z & 0xF );
+			if ( this.range( x, y, z ) )
+				return this.target.getBlockMetadata( x & 0xF, y, z & 0xF );
 			return 0;
 		}
 
 		@Override
 		public boolean range(int x, int y, int z)
 		{
-			return cx == (x >> 4) && cz == (z >> 4);
+			return this.cx == (x >> 4) && this.cz == (z >> 4);
 		}
 
 		@Override
 		public int minX(int in)
 		{
-			return Math.max( in, cx << 4 );
+			return Math.max( in, this.cx << 4 );
 		}
 
 		@Override
 		public int minZ(int in)
 		{
-			return Math.max( in, cz << 4 );
+			return Math.max( in, this.cz << 4 );
 		}
 
 		@Override
 		public int maxX(int in)
 		{
-			return Math.min( in, (cx + 1) << 4 );
+			return Math.min( in, (this.cx + 1) << 4 );
 		}
 
 		@Override
 		public int maxZ(int in)
 		{
-			return Math.min( in, (cz + 1) << 4 );
+			return Math.min( in, (this.cz + 1) << 4 );
 		}
 	}
 
@@ -405,80 +405,80 @@ public class MeteoritePlacer
 	final Block skychest;
 
 	double real_sizeOfMeteorite = (Math.random() * 6.0) + 2;
-	double realCrater = real_sizeOfMeteorite * 2 + 5;
+	double realCrater = this.real_sizeOfMeteorite * 2 + 5;
 
-	double sizeOfMeteorite = real_sizeOfMeteorite * real_sizeOfMeteorite;
-	double crater = realCrater * realCrater;
+	double sizeOfMeteorite = this.real_sizeOfMeteorite * this.real_sizeOfMeteorite;
+	double crater = this.realCrater * this.realCrater;
 
 	public MeteoritePlacer() {
 
 		if ( AEApi.instance().blocks().blockSkyChest.block() == null )
-			skychest = Blocks.chest;
+			this.skychest = Blocks.chest;
 		else
-			skychest = AEApi.instance().blocks().blockSkyChest.block();
+			this.skychest = AEApi.instance().blocks().blockSkyChest.block();
 
-		validSpawn.add( Blocks.stone );
-		validSpawn.add( Blocks.cobblestone );
-		validSpawn.add( Blocks.grass );
-		validSpawn.add( Blocks.sand );
-		validSpawn.add( Blocks.dirt );
-		validSpawn.add( Blocks.gravel );
-		validSpawn.add( Blocks.netherrack );
-		validSpawn.add( Blocks.iron_ore );
-		validSpawn.add( Blocks.gold_ore );
-		validSpawn.add( Blocks.diamond_ore );
-		validSpawn.add( Blocks.redstone_ore );
-		validSpawn.add( Blocks.hardened_clay );
-		validSpawn.add( Blocks.ice );
-		validSpawn.add( Blocks.snow );
+		this.validSpawn.add( Blocks.stone );
+		this.validSpawn.add( Blocks.cobblestone );
+		this.validSpawn.add( Blocks.grass );
+		this.validSpawn.add( Blocks.sand );
+		this.validSpawn.add( Blocks.dirt );
+		this.validSpawn.add( Blocks.gravel );
+		this.validSpawn.add( Blocks.netherrack );
+		this.validSpawn.add( Blocks.iron_ore );
+		this.validSpawn.add( Blocks.gold_ore );
+		this.validSpawn.add( Blocks.diamond_ore );
+		this.validSpawn.add( Blocks.redstone_ore );
+		this.validSpawn.add( Blocks.hardened_clay );
+		this.validSpawn.add( Blocks.ice );
+		this.validSpawn.add( Blocks.snow );
 
-		invalidSpawn.add( skystone );
-		invalidSpawn.add( Blocks.planks );
-		invalidSpawn.add( Blocks.iron_door );
-		invalidSpawn.add( Blocks.iron_bars );
-		invalidSpawn.add( Blocks.wooden_door );
-		invalidSpawn.add( Blocks.brick_block );
-		invalidSpawn.add( Blocks.clay );
-		invalidSpawn.add( Blocks.water );
-		invalidSpawn.add( Blocks.log );
-		invalidSpawn.add( Blocks.log2 );
+		this.invalidSpawn.add( this.skystone );
+		this.invalidSpawn.add( Blocks.planks );
+		this.invalidSpawn.add( Blocks.iron_door );
+		this.invalidSpawn.add( Blocks.iron_bars );
+		this.invalidSpawn.add( Blocks.wooden_door );
+		this.invalidSpawn.add( Blocks.brick_block );
+		this.invalidSpawn.add( Blocks.clay );
+		this.invalidSpawn.add( Blocks.water );
+		this.invalidSpawn.add( Blocks.log );
+		this.invalidSpawn.add( Blocks.log2 );
 	}
 
 	NBTTagCompound settings;
 
 	public boolean spawnMeteorite(IMeteoriteWorld w, NBTTagCompound meteoriteBlob)
 	{
-		settings = meteoriteBlob;
+		this.settings = meteoriteBlob;
 
-		int x = settings.getInteger( "x" );
-		int y = settings.getInteger( "y" );
-		int z = settings.getInteger( "z" );
+		int x = this.settings.getInteger( "x" );
+		int y = this.settings.getInteger( "y" );
+		int z = this.settings.getInteger( "z" );
 
-		real_sizeOfMeteorite = settings.getDouble( "real_sizeOfMeteorite" );
-		realCrater = settings.getDouble( "realCrater" );
-		sizeOfMeteorite = settings.getDouble( "sizeOfMeteorite" );
-		crater = settings.getDouble( "crater" );
+		this.real_sizeOfMeteorite = this.settings.getDouble( "real_sizeOfMeteorite" );
+		this.realCrater = this.settings.getDouble( "realCrater" );
+		this.sizeOfMeteorite = this.settings.getDouble( "sizeOfMeteorite" );
+		this.crater = this.settings.getDouble( "crater" );
 
-		Block blk = Block.getBlockById( settings.getInteger( "blk" ) );
+		Block blk = Block.getBlockById( this.settings.getInteger( "blk" ) );
 
 		if ( blk == Blocks.sand )
-			type = new FalloutSand( w, x, y, z );
+			this.type = new FalloutSand( w, x, y, z );
 		else if ( blk == Blocks.hardened_clay )
-			type = new FalloutCopy( w, x, y, z );
+			this.type = new FalloutCopy( w, x, y, z );
 		else if ( blk == Blocks.ice || blk == Blocks.snow )
-			type = new FalloutSnow( w, x, y, z );
+			this.type = new FalloutSnow( w, x, y, z );
 
-		int skyMode = settings.getInteger( "skyMode" );
+		int skyMode = this.settings.getInteger( "skyMode" );
 
 		// creator
 		if ( skyMode > 10 )
-			placeCrater( w, x, y, z );
+			this.placeCrater( w, x, y, z );
 
-		placeMeteorite( w, x, y, z );
+		this.placeMeteorite( w, x, y, z );
 
 		// collapse blocks...
 		if ( skyMode > 3 )
-			Decay( w, x, y, z );
+			this.Decay( w, x, y, z );
 
 		w.done();
 		return true;
@@ -486,8 +486,8 @@ public class MeteoritePlacer
 
 	public double getSqDistance(int x, int z)
 	{
-		int Cx = settings.getInteger( "x" ) - x;
-		int Cz = settings.getInteger( "z" ) - z;
+		int Cx = this.settings.getInteger( "x" ) - x;
+		int Cz = this.settings.getInteger( "z" ) - z;
 
 		return Cx * Cx + Cz * Cz;
 	}
@@ -500,28 +500,28 @@ public class MeteoritePlacer
 			return false;
 
 		Block blk = w.getBlock( x, y, z );
-		if ( !validSpawn.contains( blk ) )
+		if ( !this.validSpawn.contains( blk ) )
 			return false; // must spawn on a valid block..
 
-		settings = new NBTTagCompound();
-		settings.setInteger( "x", x );
-		settings.setInteger( "y", y );
-		settings.setInteger( "z", z );
-		settings.setInteger( "blk", Block.getIdFromBlock( blk ) );
+		this.settings = new NBTTagCompound();
+		this.settings.setInteger( "x", x );
+		this.settings.setInteger( "y", y );
+		this.settings.setInteger( "z", z );
+		this.settings.setInteger( "blk", Block.getIdFromBlock( blk ) );
 
-		settings.setDouble( "real_sizeOfMeteorite", real_sizeOfMeteorite );
-		settings.setDouble( "realCrater", realCrater );
-		settings.setDouble( "sizeOfMeteorite", sizeOfMeteorite );
-		settings.setDouble( "crater", crater );
+		this.settings.setDouble( "real_sizeOfMeteorite", this.real_sizeOfMeteorite );
+		this.settings.setDouble( "realCrater", this.realCrater );
+		this.settings.setDouble( "sizeOfMeteorite", this.sizeOfMeteorite );
+		this.settings.setDouble( "crater", this.crater );
 
-		settings.setBoolean( "lava", Math.random() > 0.9 );
+		this.settings.setBoolean( "lava", Math.random() > 0.9 );
 
 		if ( blk == Blocks.sand )
-			type = new FalloutSand( w, x, y, z );
+			this.type = new FalloutSand( w, x, y, z );
 		else if ( blk == Blocks.hardened_clay )
-			type = new FalloutCopy( w, x, y, z );
+			this.type = new FalloutCopy( w, x, y, z );
 		else if ( blk == Blocks.ice || blk == Blocks.snow )
-			type = new FalloutSnow( w, x, y, z );
+			this.type = new FalloutSnow( w, x, y, z );
 
 		int realValidBlocks = 0;
 
@@ -530,7 +530,7 @@ public class MeteoritePlacer
 				for (int k = z - 6; k < z + 6; k++)
 				{
 					blk = w.getBlock( i, j, k );
-					if ( validSpawn.contains( blk ) )
+					if ( this.validSpawn.contains( blk ) )
 						realValidBlocks++;
 				}
 
@@ -539,13 +539,13 @@ public class MeteoritePlacer
 				for (int k = z - 15; k < z + 15; k++)
 				{
 					blk = w.getBlock( i, j, k );
-					if ( invalidSpawn.contains( blk ) )
+					if ( this.invalidSpawn.contains( blk ) )
 						return false;
-					if ( validSpawn.contains( blk ) )
+					if ( this.validSpawn.contains( blk ) )
 						validBlocks++;
 				}
 
-		if ( validBlocks > minBLocks && realValidBlocks > 80 )
+		if ( validBlocks > this.minBLocks && realValidBlocks > 80 )
 		{
 			// we can spawn here!
 
@@ -571,18 +571,18 @@ public class MeteoritePlacer
 
 			// creator
 			if ( skyMode > 10 )
-				placeCrater( w, x, y, z );
+				this.placeCrater( w, x, y, z );
 
-			placeMeteorite( w, x, y, z );
+			this.placeMeteorite( w, x, y, z );
 
 			// collapse blocks...
 			if ( skyMode > 3 )
-				Decay( w, x, y, z );
+				this.Decay( w, x, y, z );
 
-			settings.setInteger( "skyMode", skyMode );
+			this.settings.setInteger( "skyMode", skyMode );
 			w.done();
 
-			WorldSettings.getInstance().addNearByMeteorites( w.getWorld().provider.dimensionId, x >> 4, z >> 4, settings );
+			WorldSettings.getInstance().addNearByMeteorites( w.getWorld().provider.dimensionId, x >> 4, z >> 4, this.settings );
 			return true;
 		}
 		return false;
@@ -590,7 +590,7 @@ public class MeteoritePlacer
 
 	private void placeCrater(IMeteoriteWorld w, int x, int y, int z)
 	{
-		boolean lava = settings.getBoolean( "lava" );
+		boolean lava = this.settings.getBoolean( "lava" );
 
 		int maxY = 255;
 		int minX = w.minX( x - 200 );
@@ -607,7 +607,7 @@ public class MeteoritePlacer
 				{
 					double dx = i - x;
 					double dz = k - z;
-					double h = y - real_sizeOfMeteorite + 1 + type.adjustCrater();
+					double h = y - this.real_sizeOfMeteorite + 1 + this.type.adjustCrater();
 
 					double distanceFrom = dx * dx + dz * dz;
 
@@ -616,10 +616,10 @@ public class MeteoritePlacer
 						if ( lava && j < y && w.getBlock( x, y - 1, z ).isBlockSolid( w.getWorld(), i, j, k, 0 ) )
 						{
 							if ( j > h + distanceFrom * 0.02 )
-								put( w, i, j, k, Blocks.lava );
+								this.put( w, i, j, k, Blocks.lava );
 						}
 						else
-							changed = put( w, i, j, k, Platform.air ) || changed;
+							changed = this.put( w, i, j, k, Platform.air ) || changed;
 					}
 				}
 		}
@@ -648,13 +648,13 @@ public class MeteoritePlacer
 					double dy = j - y;
 					double dz = k - z;
 
-					if ( dx * dx * 0.7 + dy * dy * (j > y ? 1.4 : 0.8) + dz * dz * 0.7 < sizeOfMeteorite )
-						put( w, i, j, k, skystone );
+					if ( dx * dx * 0.7 + dy * dy * (j > y ? 1.4 : 0.8) + dz * dz * 0.7 < this.sizeOfMeteorite )
+						this.put( w, i, j, k, this.skystone );
 				}
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.SpawnPressesInMeteorites ) )
 		{
-			put( w, x, y, z, skychest );
+			this.put( w, x, y, z, this.skychest );
 			TileEntity te = w.getTileEntity( x, y, z );
 			if ( te != null && te instanceof IInventory )
 			{
@@ -773,7 +773,7 @@ public class MeteoritePlacer
 							w.setBlock( i, j, k, blk_b, meta_b, 3 );
 							w.setBlock( i, j + 1, k, blk );
 						}
-						else if ( randomShit < 100 * crater )
+						else if ( randomShit < 100 * this.crater )
 						{
 							double dx = i - x;
 							double dy = j - y;
@@ -784,12 +784,12 @@ public class MeteoritePlacer
 							if ( !xf.isReplaceable( w.getWorld(), i, j - 1, k ) )
 							{
 								double extraRange = Math.random() * 0.6;
-								double height = crater * (extraRange + 0.2) - Math.abs( dist - crater * 1.7 );
+								double height = this.crater * (extraRange + 0.2) - Math.abs( dist - this.crater * 1.7 );
 
 								if ( xf != blk && height > 0 && Math.random() > 0.6 )
 								{
 									randomShit++;
-									type.getRandomFall( w, i, j, k );
+									this.type.getRandomFall( w, i, j, k );
 								}
 							}
 						}
@@ -806,9 +806,9 @@ public class MeteoritePlacer
 								double dy = j - y;
 								double dz = k - z;
 
-								if ( dx * dx + dy * dy + dz * dz < crater * 1.6 )
+								if ( dx * dx + dy * dy + dz * dz < this.crater * 1.6 )
 								{
-									type.getRandomInset( w, i, j, k );
+									this.type.getRandomInset( w, i, j, k );
 								}
 
 							}
@@ -839,6 +839,6 @@ public class MeteoritePlacer
 
 	public NBTTagCompound getSettings()
 	{
-		return settings;
+		return this.settings;
 	}
 }

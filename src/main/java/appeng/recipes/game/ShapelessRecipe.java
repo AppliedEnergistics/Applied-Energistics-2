@@ -38,17 +38,17 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 
 	public boolean isEnabled()
 	{
-		return !disable;
+		return !this.disable;
 	}
 
 	public ShapelessRecipe(ItemStack result, Object... recipe)
 	{
-		output = result.copy();
+		this.output = result.copy();
 		for (Object in : recipe)
 		{
 			if ( in instanceof IIngredient )
 			{
-				input.add( in );
+				this.input.add( in );
 			}
 			else
 			{
@@ -57,7 +57,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 				{
 					ret.append( tmp ).append( ", " );
 				}
-				ret.append( output );
+				ret.append( this.output );
 				throw new RuntimeException( ret.toString() );
 			}
 		}
@@ -66,29 +66,29 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 	@Override
 	public int getRecipeSize()
 	{
-		return input.size();
+		return this.input.size();
 	}
 
 	@Override
 	public ItemStack getRecipeOutput()
 	{
-		return output;
+		return this.output;
 	}
 
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting var1)
 	{
-		return output.copy();
+		return this.output.copy();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean matches(InventoryCrafting var1, World world)
 	{
-		if ( disable )
+		if ( this.disable )
 			return false;
 
-		ArrayList<Object> required = new ArrayList<Object>( input );
+		ArrayList<Object> required = new ArrayList<Object>( this.input );
 
 		for (int x = 0; x < var1.getSizeInventory(); x++)
 		{
@@ -108,7 +108,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 						{
 							for (ItemStack item : ((IIngredient) next).getItemStackSet())
 							{
-								match = match || checkItemEquals( item, slot );
+								match = match || this.checkItemEquals( item, slot );
 							}
 						}
 						catch (RegistrationError e)
@@ -161,8 +161,8 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 	{
 		try
 		{
-			disable = false;
-			for (Object o : getInput())
+			this.disable = false;
+			for (Object o : this.getInput())
 			{
 				if ( o instanceof IIngredient )
 					((IIngredient) o).bake();
@@ -170,7 +170,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 		}
 		catch (MissingIngredientError e)
 		{
-			disable = true;
+			this.disable = true;
 		}
 	}
 }

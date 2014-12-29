@@ -37,11 +37,11 @@ public class PacketPartPlacement extends AppEngPacket
 	// automatic.
 	public PacketPartPlacement(ByteBuf stream)
 	{
-		x = stream.readInt();
-		y = stream.readInt();
-		z = stream.readInt();
-		face = stream.readByte();
-		eyeHeight = stream.readFloat();
+		this.x = stream.readInt();
+		this.y = stream.readInt();
+		this.z = stream.readInt();
+		this.face = stream.readByte();
+		this.eyeHeight = stream.readFloat();
 	}
 
 	@Override
@@ -49,8 +49,8 @@ public class PacketPartPlacement extends AppEngPacket
 	{
 		EntityPlayerMP sender = (EntityPlayerMP) player;
 		CommonHelper.proxy.updateRenderMode( sender );
-		PartPlacement.eyeHeight = eyeHeight;
-		PartPlacement.place( sender.getHeldItem(), x, y, z, face, sender, sender.worldObj, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
+		PartPlacement.eyeHeight = this.eyeHeight;
+		PartPlacement.place( sender.getHeldItem(), this.x, this.y, this.z, this.face, sender, sender.worldObj, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
 		CommonHelper.proxy.updateRenderMode( null );
 	}
 
@@ -59,14 +59,14 @@ public class PacketPartPlacement extends AppEngPacket
 	{
 		ByteBuf data = Unpooled.buffer();
 
-		data.writeInt( getPacketID() );
+		data.writeInt( this.getPacketID() );
 		data.writeInt( x );
 		data.writeInt( y );
 		data.writeInt( z );
 		data.writeByte( face );
 		data.writeFloat( eyeHeight );
 		
-		configureWrite( data );
+		this.configureWrite( data );
 	}
 
 }

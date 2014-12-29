@@ -67,7 +67,7 @@ public class PartPlacement
 	@SubscribeEvent
 	public void playerInteract(TickEvent.ClientTickEvent event)
 	{
-		wasCanceled = false;
+		this.wasCanceled = false;
 	}
 
 	@SubscribeEvent
@@ -87,7 +87,7 @@ public class PartPlacement
 			{
 				World w = event.entity.worldObj;
 				TileEntity te = w.getTileEntity( mop.blockX, mop.blockY, mop.blockZ );
-				if ( te instanceof IPartHost && wasCanceled )
+				if ( te instanceof IPartHost && this.wasCanceled )
 					event.setCanceled( true );
 			}
 			else if ( event.entityPlayer != null )
@@ -103,19 +103,19 @@ public class PartPlacement
 		}
 		else if ( event.action == Action.RIGHT_CLICK_BLOCK && event.entityPlayer.worldObj.isRemote )
 		{
-			if ( placing.get() != null )
+			if ( this.placing.get() != null )
 				return;
 
-			placing.set( event );
+			this.placing.set( event );
 
 			ItemStack held = event.entityPlayer.getHeldItem();
 			if ( place( held, event.x, event.y, event.z, event.face, event.entityPlayer, event.entityPlayer.worldObj, PlaceType.INTERACT_FIRST_PASS, 0 ) )
 			{
 				event.setCanceled( true );
-				wasCanceled = true;
+				this.wasCanceled = true;
 			}
 
-			placing.set( null );
+			this.placing.set( null );
 		}
 	}
 

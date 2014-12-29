@@ -72,7 +72,7 @@ public class RenderBlockCraftingCPUMonitor extends RenderBlockCraftingCPU
 				{
 					cmt.updateList = false;
 					GL11.glNewList( cmt.dspList, GL11.GL_COMPILE_AND_EXECUTE );
-					tesrRenderScreen( tess, cmt, ais );
+					this.tesrRenderScreen( tess, cmt, ais );
 					GL11.glEndList();
 				}
 				else

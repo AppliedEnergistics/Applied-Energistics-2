@@ -50,7 +50,7 @@ public class DSU extends BaseModule implements IDSU
 	@Override
 	public void Init()
 	{
-		TestClass( IDeepStorageUnit.class );
+		this.TestClass( IDeepStorageUnit.class );
 	}
 
 	@Override

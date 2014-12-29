@@ -194,9 +194,9 @@ public enum GuiBridge implements IGuiHandler
 	private SecurityPermissions requiredPermission;
 
 	private GuiBridge() {
-		Tile = null;
-		Gui = null;
-		Container = null;
+		this.Tile = null;
+		this.Gui = null;
+		this.Container = null;
 	}
 
 	/**
@@ -207,52 +207,52 @@ public enum GuiBridge implements IGuiHandler
 	{
 		if ( Platform.isClient() )
 		{
-			String start = Container.getName();
+			String start = this.Container.getName();
 			String GuiClass = start.replaceFirst( "container.", "client.gui." ).replace( ".Container", ".Gui" );
 			if ( start.equals( GuiClass ) )
 				throw new RuntimeException( "Unable to find gui class" );
-			Gui = ReflectionHelper.getClass( this.getClass().getClassLoader(), GuiClass );
-			if ( Gui == null )
+			this.Gui = ReflectionHelper.getClass( this.getClass().getClassLoader(), GuiClass );
+			if ( this.Gui == null )
 				throw new RuntimeException( "Cannot Load class: " + GuiClass );
 		}
 	}
 
 	private GuiBridge(Class _Container, SecurityPermissions requiredPermission) {
 		this.requiredPermission = requiredPermission;
-		Container = _Container;
-		Tile = null;
-		getGui();
+		this.Container = _Container;
+		this.Tile = null;
+		this.getGui();
 	}
 
 	private GuiBridge(Class _Container, Class _Tile, GuiHostType type, SecurityPermissions requiredPermission) {
 		this.requiredPermission = requiredPermission;
-		Container = _Container;
+		this.Container = _Container;
 		this.type = type;
-		Tile = _Tile;
-		getGui();
+		this.Tile = _Tile;
+		this.getGui();
 	}
 
 	public boolean CorrectTileOrPart(Object tE)
 	{
-		if ( Tile == null )
+		if ( this.Tile == null )
 			throw new RuntimeException( "This Gui Cannot use the standard Handler." );
 
-		return Tile.isInstance( tE );
+		return this.Tile.isInstance( tE );
 	}
 
 	public Object ConstructContainer(InventoryPlayer inventory, ForgeDirection side, Object tE)
 	{
 		try
 		{
-			Constructor[] c = Container.getConstructors();
+			Constructor[] c = this.Container.getConstructors();
 			if ( c.length == 0 )
 				throw new AppEngException( "Invalid Gui Class" );
 
-			Constructor target = findConstructor( c, inventory, tE );
+			Constructor target = this.findConstructor( c, inventory, tE );
 
 			if ( target == null )
 			{
-				throw new RuntimeException( "Cannot find " + Container.getName() + "( " + typeName( inventory ) + ", " + typeName( tE ) + " )" );
+				throw new RuntimeException( "Cannot find " + this.Container.getName() + "( " + this.typeName( inventory ) + ", " + this.typeName( tE ) + " )" );
 			}
 
 			Object o = target.newInstance( inventory, tE );
@@ -291,15 +291,15 @@ public enum GuiBridge implements IGuiHandler
 	{
 		try
 		{
-			Constructor[] c = Gui.getConstructors();
+			Constructor[] c = this.Gui.getConstructors();
 			if ( c.length == 0 )
 				throw new AppEngException( "Invalid Gui Class" );
 
-			Constructor target = findConstructor( c, inventory, tE );
+			Constructor target = this.findConstructor( c, inventory, tE );
 
 			if ( target == null )
 			{
-				throw new RuntimeException( "Cannot find " + Container.getName() + "( " + typeName( inventory ) + ", " + typeName( tE ) + " )" );
+				throw new RuntimeException( "Cannot find " + this.Container.getName() + "( " + this.typeName( inventory ) + ", " + this.typeName( tE ) + " )" );
 			}
 
 			return target.newInstance( inventory, tE );
@@ -358,9 +358,9 @@ public enum GuiBridge implements IGuiHandler
 		if ( ID.type.isItem() && stem )
 		{
 			ItemStack it = player.inventory.getCurrentItem();
-			Object myItem = getGuiObject( it, player, w, x, y, z );
+			Object myItem = this.getGuiObject( it, player, w, x, y, z );
 			if ( myItem != null && ID.CorrectTileOrPart( myItem ) )
-				return updateGui( ID.ConstructContainer( player.inventory, side, myItem ), w, x, y, z, side, myItem );
+				return this.updateGui( ID.ConstructContainer( player.inventory, side, myItem ), w, x, y, z, side, myItem );
 		}
 
 		if ( ID.type.isTile() )
@@ -371,12 +371,12 @@ public enum GuiBridge implements IGuiHandler
 				((IPartHost) TE).getPart( side );
 				IPart part = ((IPartHost) TE).getPart( side );
 				if ( ID.CorrectTileOrPart( part ) )
-					return updateGui( ID.ConstructContainer( player.inventory, side, part ), w, x, y, z, side, part );
+					return this.updateGui( ID.ConstructContainer( player.inventory, side, part ), w, x, y, z, side, part );
 			}
 			else
 			{
 				if ( ID.CorrectTileOrPart( TE ) )
-					return updateGui( ID.ConstructContainer( player.inventory, side, TE ), w, x, y, z, side, TE );
+					return this.updateGui( ID.ConstructContainer( player.inventory, side, TE ), w, x, y, z, side, TE );
 			}
 		}
 
@@ -410,7 +410,7 @@ public enum GuiBridge implements IGuiHandler
 		if ( ID.type.isItem() && stem )
 		{
 			ItemStack it = player.inventory.getCurrentItem();
-			Object myItem = getGuiObject( it, player, w, x, y, z );
+			Object myItem = this.getGuiObject( it, player, w, x, y, z );
 			if ( ID.CorrectTileOrPart( myItem ) )
 				return ID.ConstructGui( player.inventory, side, myItem );
 		}
@@ -442,33 +442,33 @@ public enum GuiBridge implements IGuiHandler
 
 		if ( Platform.hasPermissions( te != null ? new DimensionalCoord( te ) : new DimensionalCoord( player.worldObj, x, y, z ), player ) )
 		{
-			if ( type.isItem() )
+			if ( this.type.isItem() )
 			{
 				ItemStack it = player.inventory.getCurrentItem();
 				if ( it != null && it.getItem() instanceof IGuiItem )
 				{
 					Object myItem = ((IGuiItem) it.getItem()).getGuiObject( it, w, x, y, z );
-					if ( CorrectTileOrPart( myItem ) )
+					if ( this.CorrectTileOrPart( myItem ) )
 					{
 						return true;
 					}
 				}
 			}
 
-			if ( type.isTile() )
+			if ( this.type.isTile() )
 			{
 				TileEntity TE = w.getTileEntity( x, y, z );
 				if ( TE instanceof IPartHost )
 				{
 					((IPartHost) TE).getPart( side );
 					IPart part = ((IPartHost) TE).getPart( side );
-					if ( CorrectTileOrPart( part ) )
-						return securityCheck( part, player );
+					if ( this.CorrectTileOrPart( part ) )
+						return this.securityCheck( part, player );
 				}
 				else
 				{
-					if ( CorrectTileOrPart( TE ) )
-						return securityCheck( TE, player );
+					if ( this.CorrectTileOrPart( TE ) )
+						return this.securityCheck( TE, player );
 				}
 			}
 		}
@@ -477,7 +477,7 @@ public enum GuiBridge implements IGuiHandler
 
 	private boolean securityCheck(Object te, EntityPlayer player)
 	{
-		if ( te instanceof IActionHost && requiredPermission != null )
+		if ( te instanceof IActionHost && this.requiredPermission != null )
 		{
 			boolean requirePower = false;
 
@@ -497,7 +497,7 @@ public enum GuiBridge implements IGuiHandler
 					}
 
 					ISecurityGrid sg = g.getCache( ISecurityGrid.class );
-					if ( sg.hasPermission( player, requiredPermission ) )
+					if ( sg.hasPermission( player, this.requiredPermission ) )
 						return true;
 				}
 			}
@@ -509,7 +509,7 @@ public enum GuiBridge implements IGuiHandler
 
 	public GuiHostType getType()
 	{
-		return type;
+		return this.type;
 	}
 
 }

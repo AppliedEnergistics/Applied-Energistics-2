@@ -219,13 +219,13 @@ public class Registration
 
 	private Registration()
 	{
-		recipeHandler = new RecipeHandler();
-		featuresToEntities = ArrayListMultimap.create();
+		this.recipeHandler = new RecipeHandler();
+		this.featuresToEntities = ArrayListMultimap.create();
 	}
 
 	public void PreInit( FMLPreInitializationEvent event )
 	{
-		registerSpatial( false );
+		this.registerSpatial( false );
 
 		IRecipeHandlerRegistry recipeRegistry = AEApi.instance().registries().recipes();
 		recipeRegistry.addNewSubItemResolver( new AEItemResolver() );
@@ -257,7 +257,7 @@ public class Registration
 		Parts parts = Api.instance.parts();
 		Blocks blocks = Api.instance.blocks();
 
-		AEItemDefinition materialItem = addFeature( ItemMultiMaterial.class );
+		AEItemDefinition materialItem = this.addFeature( ItemMultiMaterial.class );
 
 		Class<?> materialClass = materials.getClass();
 		for ( MaterialType mat : MaterialType.values() )
@@ -283,7 +283,7 @@ public class Registration
 			}
 		}
 
-		AEItemDefinition partItem = addFeature( ItemMultiPart.class );
+		AEItemDefinition partItem = this.addFeature( ItemMultiPart.class );
 
 		Class<?> partClass = parts.getClass();
 		for ( PartType type : PartType.values() )
@@ -330,111 +330,111 @@ public class Registration
 		}
 
 		// very important block!
-		blocks.blockMultiPart = addFeature( BlockCableBus.class );
+		blocks.blockMultiPart = this.addFeature( BlockCableBus.class );
 
-		blocks.blockCraftingUnit = addFeature( BlockCraftingUnit.class );
+		blocks.blockCraftingUnit = this.addFeature( BlockCraftingUnit.class );
 		blocks.blockCraftingAccelerator = new WrappedDamageItemDefinition( blocks.blockCraftingUnit, 1 );
-		blocks.blockCraftingMonitor = addFeature( BlockCraftingMonitor.class );
-		blocks.blockCraftingStorage1k = addFeature( BlockCraftingStorage.class );
+		blocks.blockCraftingMonitor = this.addFeature( BlockCraftingMonitor.class );
+		blocks.blockCraftingStorage1k = this.addFeature( BlockCraftingStorage.class );
 		blocks.blockCraftingStorage4k = new WrappedDamageItemDefinition( blocks.blockCraftingStorage1k, 1 );
 		blocks.blockCraftingStorage16k = new WrappedDamageItemDefinition( blocks.blockCraftingStorage1k, 2 );
 		blocks.blockCraftingStorage64k = new WrappedDamageItemDefinition( blocks.blockCraftingStorage1k, 3 );
-		blocks.blockMolecularAssembler = addFeature( BlockMolecularAssembler.class );
+		blocks.blockMolecularAssembler = this.addFeature( BlockMolecularAssembler.class );
 
-		blocks.blockQuartzOre = addFeature( OreQuartz.class );
-		blocks.blockQuartzOreCharged = addFeature( OreQuartzCharged.class );
-		blocks.blockMatrixFrame = addFeature( BlockMatrixFrame.class );
-		blocks.blockQuartz = addFeature( BlockQuartz.class );
-		blocks.blockFluix = addFeature( BlockFluix.class );
-		blocks.blockSkyStone = addFeature( BlockSkyStone.class );
-		blocks.blockSkyChest = addFeature( BlockSkyChest.class );
-		blocks.blockSkyCompass = addFeature( BlockSkyCompass.class );
+		blocks.blockQuartzOre = this.addFeature( OreQuartz.class );
+		blocks.blockQuartzOreCharged = this.addFeature( OreQuartzCharged.class );
+		blocks.blockMatrixFrame = this.addFeature( BlockMatrixFrame.class );
+		blocks.blockQuartz = this.addFeature( BlockQuartz.class );
+		blocks.blockFluix = this.addFeature( BlockFluix.class );
+		blocks.blockSkyStone = this.addFeature( BlockSkyStone.class );
+		blocks.blockSkyChest = this.addFeature( BlockSkyChest.class );
+		blocks.blockSkyCompass = this.addFeature( BlockSkyCompass.class );
 
-		blocks.blockQuartzGlass = addFeature( BlockQuartzGlass.class );
-		blocks.blockQuartzVibrantGlass = addFeature( BlockQuartzLamp.class );
-		blocks.blockQuartzPillar = addFeature( BlockQuartzPillar.class );
-		blocks.blockQuartzChiseled = addFeature( BlockQuartzChiseled.class );
-		blocks.blockQuartzTorch = addFeature( BlockQuartzTorch.class );
-		blocks.blockLightDetector = addFeature( BlockLightDetector.class );
-		blocks.blockCharger = addFeature( BlockCharger.class );
-		blocks.blockQuartzGrowthAccelerator = addFeature( BlockQuartzGrowthAccelerator.class );
+		blocks.blockQuartzGlass = this.addFeature( BlockQuartzGlass.class );
+		blocks.blockQuartzVibrantGlass = this.addFeature( BlockQuartzLamp.class );
+		blocks.blockQuartzPillar = this.addFeature( BlockQuartzPillar.class );
+		blocks.blockQuartzChiseled = this.addFeature( BlockQuartzChiseled.class );
+		blocks.blockQuartzTorch = this.addFeature( BlockQuartzTorch.class );
+		blocks.blockLightDetector = this.addFeature( BlockLightDetector.class );
+		blocks.blockCharger = this.addFeature( BlockCharger.class );
+		blocks.blockQuartzGrowthAccelerator = this.addFeature( BlockQuartzGrowthAccelerator.class );
 
-		blocks.blockGrindStone = addFeature( BlockGrinder.class );
-		blocks.blockCrankHandle = addFeature( BlockCrank.class );
-		blocks.blockInscriber = addFeature( BlockInscriber.class );
-		blocks.blockWireless = addFeature( BlockWireless.class );
-		blocks.blockTinyTNT = addFeature( BlockTinyTNT.class );
+		blocks.blockGrindStone = this.addFeature( BlockGrinder.class );
+		blocks.blockCrankHandle = this.addFeature( BlockCrank.class );
+		blocks.blockInscriber = this.addFeature( BlockInscriber.class );
+		blocks.blockWireless = this.addFeature( BlockWireless.class );
+		blocks.blockTinyTNT = this.addFeature( BlockTinyTNT.class );
 
-		blocks.blockQuantumRing = addFeature( BlockQuantumRing.class );
-		blocks.blockQuantumLink = addFeature( BlockQuantumLinkChamber.class );
+		blocks.blockQuantumRing = this.addFeature( BlockQuantumRing.class );
+		blocks.blockQuantumLink = this.addFeature( BlockQuantumLinkChamber.class );
 
-		blocks.blockSpatialPylon = addFeature( BlockSpatialPylon.class );
-		blocks.blockSpatialIOPort = addFeature( BlockSpatialIOPort.class );
+		blocks.blockSpatialPylon = this.addFeature( BlockSpatialPylon.class );
+		blocks.blockSpatialIOPort = this.addFeature( BlockSpatialIOPort.class );
 
-		blocks.blockController = addFeature( BlockController.class );
-		blocks.blockDrive = addFeature( BlockDrive.class );
-		blocks.blockChest = addFeature( BlockChest.class );
-		blocks.blockInterface = addFeature( BlockInterface.class );
-		blocks.blockCellWorkbench = addFeature( BlockCellWorkbench.class );
-		blocks.blockIOPort = addFeature( BlockIOPort.class );
-		blocks.blockCondenser = addFeature( BlockCondenser.class );
-		blocks.blockEnergyAcceptor = addFeature( BlockEnergyAcceptor.class );
-		blocks.blockVibrationChamber = addFeature( BlockVibrationChamber.class );
+		blocks.blockController = this.addFeature( BlockController.class );
+		blocks.blockDrive = this.addFeature( BlockDrive.class );
+		blocks.blockChest = this.addFeature( BlockChest.class );
+		blocks.blockInterface = this.addFeature( BlockInterface.class );
+		blocks.blockCellWorkbench = this.addFeature( BlockCellWorkbench.class );
+		blocks.blockIOPort = this.addFeature( BlockIOPort.class );
+		blocks.blockCondenser = this.addFeature( BlockCondenser.class );
+		blocks.blockEnergyAcceptor = this.addFeature( BlockEnergyAcceptor.class );
+		blocks.blockVibrationChamber = this.addFeature( BlockVibrationChamber.class );
 
-		blocks.blockEnergyCell = addFeature( BlockEnergyCell.class );
-		blocks.blockEnergyCellDense = addFeature( BlockDenseEnergyCell.class );
-		blocks.blockEnergyCellCreative = addFeature( BlockCreativeEnergyCell.class );
+		blocks.blockEnergyCell = this.addFeature( BlockEnergyCell.class );
+		blocks.blockEnergyCellDense = this.addFeature( BlockDenseEnergyCell.class );
+		blocks.blockEnergyCellCreative = this.addFeature( BlockCreativeEnergyCell.class );
 
-		blocks.blockSecurity = addFeature( BlockSecurity.class );
-		blocks.blockPaint = addFeature( BlockPaint.class );
+		blocks.blockSecurity = this.addFeature( BlockSecurity.class );
+		blocks.blockPaint = this.addFeature( BlockPaint.class );
 
-		items.itemCellCreative = addFeature( ItemCreativeStorageCell.class );
-		items.itemViewCell = addFeature( ItemViewCell.class );
-		items.itemEncodedPattern = addFeature( ItemEncodedPattern.class );
+		items.itemCellCreative = this.addFeature( ItemCreativeStorageCell.class );
+		items.itemViewCell = this.addFeature( ItemViewCell.class );
+		items.itemEncodedPattern = this.addFeature( ItemEncodedPattern.class );
 
-		items.itemCell1k = addFeature( ItemBasicStorageCell.class, MaterialType.Cell1kPart, 1 );
-		items.itemCell4k = addFeature( ItemBasicStorageCell.class, MaterialType.Cell4kPart, 4 );
-		items.itemCell16k = addFeature( ItemBasicStorageCell.class, MaterialType.Cell16kPart, 16 );
-		items.itemCell64k = addFeature( ItemBasicStorageCell.class, MaterialType.Cell64kPart, 64 );
+		items.itemCell1k = this.addFeature( ItemBasicStorageCell.class, MaterialType.Cell1kPart, 1 );
+		items.itemCell4k = this.addFeature( ItemBasicStorageCell.class, MaterialType.Cell4kPart, 4 );
+		items.itemCell16k = this.addFeature( ItemBasicStorageCell.class, MaterialType.Cell16kPart, 16 );
+		items.itemCell64k = this.addFeature( ItemBasicStorageCell.class, MaterialType.Cell64kPart, 64 );
 
-		items.itemSpatialCell2 = addFeature( ItemSpatialStorageCell.class, MaterialType.Cell2SpatialPart, 2 );
-		items.itemSpatialCell16 = addFeature( ItemSpatialStorageCell.class, MaterialType.Cell16SpatialPart, 16 );
-		items.itemSpatialCell128 = addFeature( ItemSpatialStorageCell.class, MaterialType.Cell128SpatialPart, 128 );
+		items.itemSpatialCell2 = this.addFeature( ItemSpatialStorageCell.class, MaterialType.Cell2SpatialPart, 2 );
+		items.itemSpatialCell16 = this.addFeature( ItemSpatialStorageCell.class, MaterialType.Cell16SpatialPart, 16 );
+		items.itemSpatialCell128 = this.addFeature( ItemSpatialStorageCell.class, MaterialType.Cell128SpatialPart, 128 );
 
-		items.itemCertusQuartzKnife = addFeature( ToolQuartzCuttingKnife.class, AEFeature.CertusQuartzTools );
-		items.itemCertusQuartzWrench = addFeature( ToolQuartzWrench.class, AEFeature.CertusQuartzTools );
-		items.itemCertusQuartzAxe = addFeature( ToolQuartzAxe.class, AEFeature.CertusQuartzTools );
-		items.itemCertusQuartzHoe = addFeature( ToolQuartzHoe.class, AEFeature.CertusQuartzTools );
-		items.itemCertusQuartzPick = addFeature( ToolQuartzPickaxe.class, AEFeature.CertusQuartzTools );
-		items.itemCertusQuartzShovel = addFeature( ToolQuartzSpade.class, AEFeature.CertusQuartzTools );
-		items.itemCertusQuartzSword = addFeature( ToolQuartzSword.class, AEFeature.CertusQuartzTools );
+		items.itemCertusQuartzKnife = this.addFeature( ToolQuartzCuttingKnife.class, AEFeature.CertusQuartzTools );
+		items.itemCertusQuartzWrench = this.addFeature( ToolQuartzWrench.class, AEFeature.CertusQuartzTools );
+		items.itemCertusQuartzAxe = this.addFeature( ToolQuartzAxe.class, AEFeature.CertusQuartzTools );
+		items.itemCertusQuartzHoe = this.addFeature( ToolQuartzHoe.class, AEFeature.CertusQuartzTools );
+		items.itemCertusQuartzPick = this.addFeature( ToolQuartzPickaxe.class, AEFeature.CertusQuartzTools );
+		items.itemCertusQuartzShovel = this.addFeature( ToolQuartzSpade.class, AEFeature.CertusQuartzTools );
+		items.itemCertusQuartzSword = this.addFeature( ToolQuartzSword.class, AEFeature.CertusQuartzTools );
 
-		items.itemNetherQuartzKnife = addFeature( ToolQuartzCuttingKnife.class, AEFeature.NetherQuartzTools );
-		items.itemNetherQuartzWrench = addFeature( ToolQuartzWrench.class, AEFeature.NetherQuartzTools );
-		items.itemNetherQuartzAxe = addFeature( ToolQuartzAxe.class, AEFeature.NetherQuartzTools );
-		items.itemNetherQuartzHoe = addFeature( ToolQuartzHoe.class, AEFeature.NetherQuartzTools );
-		items.itemNetherQuartzPick = addFeature( ToolQuartzPickaxe.class, AEFeature.NetherQuartzTools );
-		items.itemNetherQuartzShovel = addFeature( ToolQuartzSpade.class, AEFeature.NetherQuartzTools );
-		items.itemNetherQuartzSword = addFeature( ToolQuartzSword.class, AEFeature.NetherQuartzTools );
+		items.itemNetherQuartzKnife = this.addFeature( ToolQuartzCuttingKnife.class, AEFeature.NetherQuartzTools );
+		items.itemNetherQuartzWrench = this.addFeature( ToolQuartzWrench.class, AEFeature.NetherQuartzTools );
+		items.itemNetherQuartzAxe = this.addFeature( ToolQuartzAxe.class, AEFeature.NetherQuartzTools );
+		items.itemNetherQuartzHoe = this.addFeature( ToolQuartzHoe.class, AEFeature.NetherQuartzTools );
+		items.itemNetherQuartzPick = this.addFeature( ToolQuartzPickaxe.class, AEFeature.NetherQuartzTools );
+		items.itemNetherQuartzShovel = this.addFeature( ToolQuartzSpade.class, AEFeature.NetherQuartzTools );
+		items.itemNetherQuartzSword = this.addFeature( ToolQuartzSword.class, AEFeature.NetherQuartzTools );
 
-		items.itemMassCannon = addFeature( ToolMassCannon.class );
-		items.itemMemoryCard = addFeature( ToolMemoryCard.class );
-		items.itemChargedStaff = addFeature( ToolChargedStaff.class );
-		items.itemEntropyManipulator = addFeature( ToolEntropyManipulator.class );
-		items.itemColorApplicator = addFeature( ToolColorApplicator.class );
+		items.itemMassCannon = this.addFeature( ToolMassCannon.class );
+		items.itemMemoryCard = this.addFeature( ToolMemoryCard.class );
+		items.itemChargedStaff = this.addFeature( ToolChargedStaff.class );
+		items.itemEntropyManipulator = this.addFeature( ToolEntropyManipulator.class );
+		items.itemColorApplicator = this.addFeature( ToolColorApplicator.class );
 
-		items.itemWirelessTerminal = addFeature( ToolWirelessTerminal.class );
-		items.itemNetworkTool = addFeature( ToolNetworkTool.class );
-		items.itemPortableCell = addFeature( ToolPortableCell.class );
-		items.itemBiometricCard = addFeature( ToolBiometricCard.class );
+		items.itemWirelessTerminal = this.addFeature( ToolWirelessTerminal.class );
+		items.itemNetworkTool = this.addFeature( ToolNetworkTool.class );
+		items.itemPortableCell = this.addFeature( ToolPortableCell.class );
+		items.itemBiometricCard = this.addFeature( ToolBiometricCard.class );
 
-		items.itemFacade = addFeature( ItemFacade.class );
-		items.itemCrystalSeed = addFeature( ItemCrystalSeed.class );
+		items.itemFacade = this.addFeature( ItemFacade.class );
+		items.itemCrystalSeed = this.addFeature( ItemCrystalSeed.class );
 
 		ColoredItemDefinition paintBall, lumenPaintBall;
 		items.itemPaintBall = paintBall = new ColoredItemDefinition();
 		items.itemLumenPaintBall = lumenPaintBall = new ColoredItemDefinition();
-		AEItemDefinition pb = addFeature( ItemPaintBall.class );
+		AEItemDefinition pb = this.addFeature( ItemPaintBall.class );
 
 		for ( AEColor c : AEColor.values() )
 		{
@@ -456,14 +456,14 @@ public class Registration
 		this.addFeature( QuartzPillarStairBlock.class, blocks.blockQuartzPillar.block() );
 
 		// unsupported developer tools
-		addFeature( ToolEraser.class );
-		addFeature( ToolMeteoritePlacer.class );
-		addFeature( ToolDebugCard.class );
-		addFeature( ToolReplicatorCard.class );
-		addFeature( BlockItemGen.class );
-		addFeature( BlockChunkloader.class );
-		addFeature( BlockPhantomNode.class );
-		addFeature( BlockCubeGenerator.class );
+		this.addFeature( ToolEraser.class );
+		this.addFeature( ToolMeteoritePlacer.class );
+		this.addFeature( ToolDebugCard.class );
+		this.addFeature( ToolReplicatorCard.class );
+		this.addFeature( BlockItemGen.class );
+		this.addFeature( BlockChunkloader.class );
+		this.addFeature( BlockPhantomNode.class );
+		this.addFeature( BlockCubeGenerator.class );
 	}
 
 	private void registerSpatial( boolean force )
@@ -473,7 +473,7 @@ public class Registration
 
 		AEConfig config = AEConfig.instance;
 
-		if ( storageBiome == null )
+		if ( this.storageBiome == null )
 		{
 			if ( force && config.storageBiomeID == -1 )
 			{
@@ -481,12 +481,12 @@ public class Registration
 				if ( config.storageBiomeID == -1 )
 					throw new RuntimeException( "Biome Array is full, please free up some Biome ID's or disable spatial." );
 
-				storageBiome = new BiomeGenStorage( config.storageBiomeID );
+				this.storageBiome = new BiomeGenStorage( config.storageBiomeID );
 				config.save();
 			}
 
 			if ( !force && config.storageBiomeID != -1 )
-				storageBiome = new BiomeGenStorage( config.storageBiomeID );
+				this.storageBiome = new BiomeGenStorage( config.storageBiomeID );
 		}
 
 		if ( config.storageProviderID != -1 )
@@ -543,9 +543,9 @@ public class Registration
 		ItemMultiMaterial.instance.makeUnique();
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.CustomRecipes ) )
-			recipeHandler.parseRecipes( new ConfigLoader( AppEng.instance.getConfigPath() ), "index.recipe" );
+			this.recipeHandler.parseRecipes( new ConfigLoader( AppEng.instance.getConfigPath() ), "index.recipe" );
 		else
-			recipeHandler.parseRecipes( new JarLoader( "/assets/appliedenergistics2/recipes/" ), "index.recipe" );
+			this.recipeHandler.parseRecipes( new JarLoader( "/assets/appliedenergistics2/recipes/" ), "index.recipe" );
 
 		IPartHelper ph = AEApi.instance().partHelper();
 		ph.registerNewLayer( "appeng.parts.layers.LayerISidedInventory", "net.minecraft.inventory.ISidedInventory" );
@@ -594,7 +594,7 @@ public class Registration
 
 		AEApi.instance().registries().matterCannon().registerAmmo( AEApi.instance().materials().materialMatterBall.stack( 1 ), 32.0 );
 
-		recipeHandler.injectRecipes();
+		this.recipeHandler.injectRecipes();
 
 		final PlayerStatsRegistration registration = new PlayerStatsRegistration( FMLCommonHandler.instance().bus(), AEConfig.instance );
 		registration.registerAchievementHandlers();
@@ -609,7 +609,7 @@ public class Registration
 
 	public void PostInit( FMLPostInitializationEvent event )
 	{
-		registerSpatial( true );
+		this.registerSpatial( true );
 
 		// default settings..
 		( ( P2PTunnelRegistry ) AEApi.instance().registries().p2pTunnel() ).configure();

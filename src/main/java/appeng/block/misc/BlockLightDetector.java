@@ -33,8 +33,8 @@ public class BlockLightDetector extends BlockQuartzTorch
 
 	public BlockLightDetector() {
 		super( BlockLightDetector.class );
-		setFeature( EnumSet.of( AEFeature.LightDetector ) );
-		setTileEntity( TileLightDetector.class );
+		this.setFeature( EnumSet.of( AEFeature.LightDetector ) );
+		this.setTileEntity( TileLightDetector.class );
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class BlockLightDetector extends BlockQuartzTorch
 	{
 		super.onNeighborChange( world, x, y, z, tileX, tileY, tileZ );
 
-		TileLightDetector tld = getTileEntity( world, x, y, z );
+		TileLightDetector tld = this.getTileEntity( world, x, y, z );
 		if ( tld != null )
 			tld.updateLight();
 	}
@@ -50,7 +50,7 @@ public class BlockLightDetector extends BlockQuartzTorch
 	@Override
 	public int isProvidingWeakPower(IBlockAccess w, int x, int y, int z, int side)
 	{
-		if ( w instanceof World && ((TileLightDetector) getTileEntity( w, x, y, z )).isReady() )
+		if ( w instanceof World && ((TileLightDetector) this.getTileEntity( w, x, y, z )).isReady() )
 			return ((World) w).getBlockLightValue( x, y, z ) - 6;
 
 		return 0;

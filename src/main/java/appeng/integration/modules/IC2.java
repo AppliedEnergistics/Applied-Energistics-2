@@ -35,7 +35,7 @@ public class IC2 extends BaseModule implements IIC2
 	public static IC2 instance;
 
 	public IC2() {
-		TestClass( IEnergyTile.class );
+		this.TestClass( IEnergyTile.class );
 	}
 
 	@Override
@@ -47,17 +47,17 @@ public class IC2 extends BaseModule implements IIC2
 	public void PostInit()
 	{
 		IP2PTunnelRegistry reg = AEApi.instance().registries().p2pTunnel();
-		reg.addNewAttunement( getItem( "copperCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( getItem( "insulatedCopperCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( getItem( "goldCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( getItem( "insulatedGoldCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( getItem( "ironCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( getItem( "insulatedIronCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( getItem( "insulatedTinCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( getItem( "glassFiberCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( getItem( "tinCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( getItem( "detectorCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( getItem( "splitterCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "copperCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "insulatedCopperCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "goldCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "insulatedGoldCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "ironCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "insulatedIronCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "insulatedTinCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "glassFiberCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "tinCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "detectorCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "splitterCableItem" ), TunnelType.IC2_POWER );
 
 		// this is gone?
 		// AEApi.instance().registries().matterCannon().registerAmmo( getItem( "uraniumDrop" ), 238.0289 );

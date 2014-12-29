@@ -90,38 +90,38 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 	@Override
 	public void generateRecipes(RecipeGenerator generator)
 	{
-		parent = generator;
+		this.parent = generator;
 
 		RecipeTemplate craftingTemplate;
 		RecipeTemplate smallCraftingTemplate;
 
 		if ( uristqwerty.CraftGuide.CraftGuide.newerBackgroundStyle )
 		{
-			craftingTemplate = generator.createRecipeTemplate( craftingSlotsOwnBackground, null );
-			smallCraftingTemplate = generator.createRecipeTemplate( smallCraftingSlotsOwnBackground, null );
+			craftingTemplate = generator.createRecipeTemplate( this.craftingSlotsOwnBackground, null );
+			smallCraftingTemplate = generator.createRecipeTemplate( this.smallCraftingSlotsOwnBackground, null );
 		}
 		else
 		{
-			craftingTemplate = new DefaultRecipeTemplate( craftingSlots, RecipeGeneratorImplementation.workbench, new TextureClip(
+			craftingTemplate = new DefaultRecipeTemplate( this.craftingSlots, RecipeGeneratorImplementation.workbench, new TextureClip(
 					DynamicTexture.instance( "recipe_backgrounds" ), 1, 1, 79, 58 ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 82, 1,
 					79, 58 ) );
 
-			smallCraftingTemplate = new DefaultRecipeTemplate( smallCraftingSlots, RecipeGeneratorImplementation.workbench, new TextureClip(
+			smallCraftingTemplate = new DefaultRecipeTemplate( this.smallCraftingSlots, RecipeGeneratorImplementation.workbench, new TextureClip(
 					DynamicTexture.instance( "recipe_backgrounds" ), 1, 61, 79, 58 ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 82, 61,
 					79, 58 ) );
 		}
 
-		RecipeTemplate shapelessTemplate = new DefaultRecipeTemplate( shapelessCraftingSlots, RecipeGeneratorImplementation.workbench, new TextureClip(
+		RecipeTemplate shapelessTemplate = new DefaultRecipeTemplate( this.shapelessCraftingSlots, RecipeGeneratorImplementation.workbench, new TextureClip(
 				DynamicTexture.instance( "recipe_backgrounds" ), 1, 121, 79, 58 ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 82, 121,
 				79, 58 ) );
 
-		RecipeTemplate furnaceTemplate = new DefaultRecipeTemplate( furnaceSlots, new ItemStack( Blocks.furnace ), new TextureClip(
+		RecipeTemplate furnaceTemplate = new DefaultRecipeTemplate( this.furnaceSlots, new ItemStack( Blocks.furnace ), new TextureClip(
 				DynamicTexture.instance( "recipe_backgrounds" ), 1, 181, 79, 58 ), new TextureClip( DynamicTexture.instance( "recipe_backgrounds" ), 82, 181,
 				79, 58 ) );
 
-		addCraftingRecipes( craftingTemplate, smallCraftingTemplate, shapelessTemplate, this );
-		addGrinderRecipes( furnaceTemplate, this );
-		addInscriberRecipes( furnaceTemplate, this );
+		this.addCraftingRecipes( craftingTemplate, smallCraftingTemplate, shapelessTemplate, this );
+		this.addGrinderRecipes( furnaceTemplate, this );
+		this.addInscriberRecipes( furnaceTemplate, this );
 	}
 
 	private void addCraftingRecipes(RecipeTemplate template, RecipeTemplate templateSmall, RecipeTemplate templateShapeless, RecipeGenerator generator)
@@ -183,46 +183,46 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 	@Override
 	public RecipeTemplate createRecipeTemplate(Slot[] slots, ItemStack craftingType)
 	{
-		return parent.createRecipeTemplate( slots, craftingType );
+		return this.parent.createRecipeTemplate( slots, craftingType );
 	}
 
 	@Override
 	public RecipeTemplate createRecipeTemplate(Slot[] slots, ItemStack craftingType, String backgroundTexture, int backgroundX, int backgroundY,
 			int backgroundSelectedX, int backgroundSelectedY)
 	{
-		return parent.createRecipeTemplate( slots, craftingType, backgroundTexture, backgroundX, backgroundY, backgroundSelectedX, backgroundSelectedY );
+		return this.parent.createRecipeTemplate( slots, craftingType, backgroundTexture, backgroundX, backgroundY, backgroundSelectedX, backgroundSelectedY );
 	}
 
 	@Override
 	public RecipeTemplate createRecipeTemplate(Slot[] slots, ItemStack craftingType, String backgroundTexture, int backgroundX, int backgroundY,
 			String backgroundSelectedTexture, int backgroundSelectedX, int backgroundSelectedY)
 	{
-		return parent.createRecipeTemplate( slots, craftingType, backgroundTexture, backgroundX, backgroundY, backgroundSelectedTexture, backgroundSelectedX,
+		return this.parent.createRecipeTemplate( slots, craftingType, backgroundTexture, backgroundX, backgroundY, backgroundSelectedTexture, backgroundSelectedX,
 				backgroundSelectedY );
 	}
 
 	@Override
 	public void addRecipe(RecipeTemplate template, Object[] crafting)
 	{
-		parent.addRecipe( template, crafting );
+		this.parent.addRecipe( template, crafting );
 	}
 
 	@Override
 	public void addRecipe(CraftGuideRecipe recipe, ItemStack craftingType)
 	{
-		parent.addRecipe( recipe, craftingType );
+		this.parent.addRecipe( recipe, craftingType );
 	}
 
 	@Override
 	public void setDefaultTypeVisibility(ItemStack type, boolean visible)
 	{
-		parent.setDefaultTypeVisibility( type, visible );
+		this.parent.setDefaultTypeVisibility( type, visible );
 	}
 
 	@Override
 	public Object[] getCraftingRecipe(IRecipe recipe)
 	{
-		return getCraftingRecipe( recipe, true );
+		return this.getCraftingRecipe( recipe, true );
 	}
 
 	Object[] getCraftingShapelessRecipe(List items, ItemStack recipeOutput)
@@ -240,7 +240,7 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 			{
 				try
 				{
-					output[i] = toCG( ((IIngredient) output[i]).getItemStackSet() );
+					output[i] = this.toCG( ((IIngredient) output[i]).getItemStackSet() );
 				}
 				catch (RegistrationError ignored)
 				{
@@ -275,7 +275,7 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 				{
 					try
 					{
-						output[i] = toCG( ((IIngredient) output[i]).getItemStackSet() );
+						output[i] = this.toCG( ((IIngredient) output[i]).getItemStackSet() );
 					}
 					catch (RegistrationError ignored)
 					{
@@ -311,7 +311,7 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 				{
 					try
 					{
-						output[i] = toCG( ((IIngredient) output[i]).getItemStackSet() );
+						output[i] = this.toCG( ((IIngredient) output[i]).getItemStackSet() );
 					}
 					catch (RegistrationError ignored)
 					{
@@ -349,7 +349,7 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 		if ( recipe instanceof ShapelessRecipe )
 		{
 			List items = ReflectionHelper.getPrivateValue( ShapelessRecipe.class, (ShapelessRecipe) recipe, "input" );
-			return getCraftingShapelessRecipe( items, recipe.getRecipeOutput() );
+			return this.getCraftingShapelessRecipe( items, recipe.getRecipeOutput() );
 		}
 		else if ( recipe instanceof ShapedRecipe )
 		{
@@ -359,11 +359,11 @@ public class CraftGuide extends CraftGuideAPIObject implements IIntegrationModul
 
 			if ( allowSmallGrid && width < 3 && height < 3 )
 			{
-				return getSmallShapedRecipe( width, height, items, recipe.getRecipeOutput() );
+				return this.getSmallShapedRecipe( width, height, items, recipe.getRecipeOutput() );
 			}
 			else
 			{
-				return getCraftingShapedRecipe( width, height, items, recipe.getRecipeOutput() );
+				return this.getCraftingShapedRecipe( width, height, items, recipe.getRecipeOutput() );
 			}
 
 		}

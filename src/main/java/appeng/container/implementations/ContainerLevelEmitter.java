@@ -50,13 +50,13 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 	@SideOnly(Side.CLIENT)
 	public void setTextField(GuiTextField level)
 	{
-		textField = level;
-		textField.setText( String.valueOf( EmitterValue ) );
+		this.textField = level;
+		this.textField.setText( String.valueOf( this.EmitterValue ) );
 	}
 
 	public ContainerLevelEmitter(InventoryPlayer ip, PartLevelEmitter te) {
 		super( ip, te );
-		lvlEmitter = te;
+		this.lvlEmitter = te;
 	}
 
 	@Override
@@ -74,8 +74,8 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 
 	public void setLevel(long l, EntityPlayer player)
 	{
-		lvlEmitter.setReportingValue( l );
-		EmitterValue = l;
+		this.lvlEmitter.setReportingValue( l );
+		this.EmitterValue = l;
 	}
 
 	@Override
@@ -84,18 +84,18 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 		int x = 80 + 44;
 		int y = 40;
 
-		IInventory upgrades = upgradeable.getInventoryByName( "upgrades" );
-		if ( availableUpgrades() > 0 )
-			addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, invPlayer )).setNotDraggable() );
-		if ( availableUpgrades() > 1 )
-			addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, invPlayer )).setNotDraggable() );
-		if ( availableUpgrades() > 2 )
-			addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, invPlayer )).setNotDraggable() );
-		if ( availableUpgrades() > 3 )
-			addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, invPlayer )).setNotDraggable() );
+		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
+		if ( this.availableUpgrades() > 0 )
+			this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer )).setNotDraggable() );
+		if ( this.availableUpgrades() > 1 )
+			this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer )).setNotDraggable() );
+		if ( this.availableUpgrades() > 2 )
+			this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer )).setNotDraggable() );
+		if ( this.availableUpgrades() > 3 )
+			this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.invPlayer )).setNotDraggable() );
 
-		IInventory inv = upgradeable.getInventoryByName( "config" );
-		addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
+		IInventory inv = this.upgradeable.getInventoryByName( "config" );
+		this.addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
 	}
 
 	@GuiSync(2)
@@ -110,18 +110,18 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 	@Override
 	public void detectAndSendChanges()
 	{
-		verifyPermissions( SecurityPermissions.BUILD, false );
+		this.verifyPermissions( SecurityPermissions.BUILD, false );
 
 		if ( Platform.isServer() )
 		{
-			this.EmitterValue = lvlEmitter.getReportingValue();
+			this.EmitterValue = this.lvlEmitter.getReportingValue();
 			this.cmType = (YesNo) this.upgradeable.getConfigManager().getSetting( Settings.CRAFT_VIA_REDSTONE );
 			this.lvType = (LevelType) this.upgradeable.getConfigManager().getSetting( Settings.LEVEL_TYPE );
 			this.fzMode = (FuzzyMode) this.upgradeable.getConfigManager().getSetting( Settings.FUZZY_MODE );
 			this.rsMode = (RedstoneMode) this.upgradeable.getConfigManager().getSetting( Settings.REDSTONE_EMITTER );
 		}
 
-		standardDetectAndSendChanges();
+		this.standardDetectAndSendChanges();
 	}
 
 	@Override
@@ -129,8 +129,8 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 	{
 		if ( field.equals( "EmitterValue" ) )
 		{
-			if ( textField != null )
-				textField.setText( String.valueOf( EmitterValue ) );
+			if ( this.textField != null )
+				this.textField.setText( String.valueOf( this.EmitterValue ) );
 		}
 	}
 

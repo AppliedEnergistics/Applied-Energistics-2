@@ -59,46 +59,46 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	@Override
 	public int isProvidingStrongPower()
 	{
-		return output ? power : 0;
+		return this.output ? this.power : 0;
 	}
 
 	@Override
 	public int isProvidingWeakPower()
 	{
-		return output ? power : 0;
+		return this.output ? this.power : 0;
 	}
 
 	@Override
 	public void onTunnelNetworkChange()
 	{
-		setNetworkReady();
+		this.setNetworkReady();
 	}
 
 	@MENetworkEventSubscribe
 	public void changeStateA(MENetworkBootingStatusChange bs)
 	{
-		setNetworkReady();
+		this.setNetworkReady();
 	}
 
 	@MENetworkEventSubscribe
 	public void changeStateB(MENetworkChannelsChanged bs)
 	{
-		setNetworkReady();
+		this.setNetworkReady();
 	}
 
 	@MENetworkEventSubscribe
 	public void changeStateC(MENetworkPowerStatusChange bs)
 	{
-		setNetworkReady();
+		this.setNetworkReady();
 	}
 
 	public void setNetworkReady()
 	{
-		if ( output )
+		if ( this.output )
 		{
-			PartP2PRedstone in = getInput();
+			PartP2PRedstone in = this.getInput();
 			if ( in != null )
-				putInput( in.power );
+				this.putInput( in.power );
 		}
 	}
 
@@ -106,30 +106,30 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 
 	protected void putInput(Object o)
 	{
-		if ( recursive )
+		if ( this.recursive )
 			return;
 
-		recursive = true;
-		if ( output && proxy.isActive() )
+		this.recursive = true;
+		if ( this.output && this.proxy.isActive() )
 		{
 			int newPower = (Integer) o;
-			if ( power != newPower )
+			if ( this.power != newPower )
 			{
-				power = newPower;
-				notifyNeighbors();
+				this.power = newPower;
+				this.notifyNeighbors();
 			}
 		}
-		recursive = false;
+		this.recursive = false;
 
 	}
 
 	public void notifyNeighbors()
 	{
-		World worldObj = tile.getWorldObj();
+		World worldObj = this.tile.getWorldObj();
 
-		int xCoord = tile.xCoord;
-		int yCoord = tile.yCoord;
-		int zCoord = tile.zCoord;
+		int xCoord = this.tile.xCoord;
+		int yCoord = this.tile.yCoord;
+		int zCoord = this.tile.zCoord;
 
 		Platform.notifyBlocksOfNeighbors( worldObj, xCoord, yCoord, zCoord );
 
@@ -146,14 +146,14 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	public void writeToNBT(NBTTagCompound tag)
 	{
 		super.writeToNBT( tag );
-		tag.setInteger( "power", power );
+		tag.setInteger( "power", this.power );
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag)
 	{
 		super.readFromNBT( tag );
-		power = tag.getInteger( "power" );
+		this.power = tag.getInteger( "power" );
 	}
 
 	@Override
@@ -171,24 +171,24 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	@Override
 	public void onNeighborChanged()
 	{
-		if ( !output )
+		if ( !this.output )
 		{
-			int x = tile.xCoord + side.offsetX;
-			int y = tile.yCoord + side.offsetY;
-			int z = tile.zCoord + side.offsetZ;
+			int x = this.tile.xCoord + this.side.offsetX;
+			int y = this.tile.yCoord + this.side.offsetY;
+			int z = this.tile.zCoord + this.side.offsetZ;
 
-			Block b = tile.getWorldObj().getBlock( x, y, z );
-			if ( b != null && !output )
+			Block b = this.tile.getWorldObj().getBlock( x, y, z );
+			if ( b != null && !this.output )
 			{
-				int srcSide = side.ordinal();
+				int srcSide = this.side.ordinal();
 				if ( b instanceof BlockRedstoneWire )
 					srcSide = 1;
-				power = b.isProvidingStrongPower( tile.getWorldObj(), x, y, z, srcSide );
-				power = Math.max( power, b.isProvidingWeakPower( tile.getWorldObj(), x, y, z, srcSide ) );
-				sendToOutput( power );
+				this.power = b.isProvidingStrongPower( this.tile.getWorldObj(), x, y, z, srcSide );
+				this.power = Math.max( this.power, b.isProvidingWeakPower( this.tile.getWorldObj(), x, y, z, srcSide ) );
+				this.sendToOutput( this.power );
 			}
 			else
-				sendToOutput( 0 );
+				this.sendToOutput( 0 );
 		}
 	}
 
@@ -196,7 +196,7 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 	{
 		try
 		{
-			for (PartP2PRedstone rs : getOutputs())
+			for (PartP2PRedstone rs : this.getOutputs())
 			{
 				rs.putInput( power );
 			}

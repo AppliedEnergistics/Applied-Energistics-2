@@ -61,20 +61,20 @@ public class QuantumCluster implements ILocatable, IAECluster
 	@Override
 	public Iterator<IGridHost> getTiles()
 	{
-		return new ChainedIterator<IGridHost>( Ring[0], Ring[1], Ring[2], Ring[3], Ring[4], Ring[5], Ring[6], Ring[7], center );
+		return new ChainedIterator<IGridHost>( this.Ring[0], this.Ring[1], this.Ring[2], this.Ring[3], this.Ring[4], this.Ring[5], this.Ring[6], this.Ring[7], this.center );
 	}
 
 	public void setCenter(TileQuantumBridge c)
 	{
-		registered = true;
+		this.registered = true;
 		MinecraftForge.EVENT_BUS.register( this );
-		center = c;
+		this.center = c;
 	}
 
 	public QuantumCluster(WorldCoord _min, WorldCoord _max) {
-		min = _min;
-		max = _max;
-		Ring = new TileQuantumBridge[8];
+		this.min = _min;
+		this.max = _max;
+		this.Ring = new TileQuantumBridge[8];
 	}
 
 	public boolean canUseNode(long qe)
@@ -102,10 +102,10 @@ public class QuantumCluster implements ILocatable, IAECluster
 	@SubscribeEvent
 	public void onUnload(WorldEvent.Unload e)
 	{
-		if ( center.getWorldObj() == e.world )
+		if ( this.center.getWorldObj() == e.world )
 		{
-			updateStatus = false;
-			destroy();
+			this.updateStatus = false;
+			this.destroy();
 		}
 	}
 
@@ -114,24 +114,24 @@ public class QuantumCluster implements ILocatable, IAECluster
 	{
 		long qe;
 
-		qe = center.getQEFrequency();
+		qe = this.center.getQEFrequency();
 
-		if ( thisSide != qe && thisSide != -qe )
+		if ( this.thisSide != qe && this.thisSide != -qe )
 		{
 			if ( qe != 0 )
 			{
-				if ( thisSide != 0 )
+				if ( this.thisSide != 0 )
 					MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Unregister ) );
 
-				if ( canUseNode( -qe ) )
+				if ( this.canUseNode( -qe ) )
 				{
-					otherSide = qe;
-					thisSide = -qe;
+					this.otherSide = qe;
+					this.thisSide = -qe;
 				}
-				else if ( canUseNode( qe ) )
+				else if ( this.canUseNode( qe ) )
 				{
-					thisSide = qe;
-					otherSide = -qe;
+					this.thisSide = qe;
+					this.otherSide = -qe;
 				}
 
 				MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Register ) );
@@ -140,12 +140,12 @@ public class QuantumCluster implements ILocatable, IAECluster
 			{
 				MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Unregister ) );
 
-				otherSide = 0;
-				thisSide = 0;
+				this.otherSide = 0;
+				this.thisSide = 0;
 			}
 		}
 
-		Object myOtherSide = otherSide == 0 ? null : AEApi.instance().registries().locatable().findLocatableBySerial( otherSide );
+		Object myOtherSide = this.otherSide == 0 ? null : AEApi.instance().registries().locatable().findLocatableBySerial( this.otherSide );
 
 		boolean shutdown = false;
 
@@ -156,10 +156,10 @@ public class QuantumCluster implements ILocatable, IAECluster
 
 			if ( sideA.isActive() && sideB.isActive() )
 			{
-				if ( connection != null && connection.connection != null )
+				if ( this.connection != null && this.connection.connection != null )
 				{
-					IGridNode a = connection.connection.a();
-					IGridNode b = connection.connection.b();
+					IGridNode a = this.connection.connection.a();
+					IGridNode b = this.connection.connection.b();
 					IGridNode sa = sideA.getNode();
 					IGridNode sb = sideB.getNode();
 					if ( (a == sa || b == sa) && (a == sb || b == sb) )
@@ -199,13 +199,13 @@ public class QuantumCluster implements ILocatable, IAECluster
 		else
 			shutdown = true;
 
-		if ( shutdown && connection != null )
+		if ( shutdown && this.connection != null )
 		{
-			if ( connection.connection != null )
+			if ( this.connection.connection != null )
 			{
-				connection.connection.destroy();
-				connection.connection = null;
-				connection = new ConnectionWrapper( null );
+				this.connection.connection.destroy();
+				this.connection.connection = null;
+				this.connection = new ConnectionWrapper( null );
 			}
 		}
 	}
@@ -213,65 +213,65 @@ public class QuantumCluster implements ILocatable, IAECluster
 	@Override
 	public void destroy()
 	{
-		if ( isDestroyed )
+		if ( this.isDestroyed )
 			return;
-		isDestroyed = true;
+		this.isDestroyed = true;
 
-		if ( registered )
+		if ( this.registered )
 		{
 			MinecraftForge.EVENT_BUS.unregister( this );
-			registered = false;
+			this.registered = false;
 		}
 
-		if ( getLocatableSerial() != 0 )
+		if ( this.getLocatableSerial() != 0 )
 		{
-			updateStatus( true );
+			this.updateStatus( true );
 			MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Unregister ) );
 		}
 
-		center.updateStatus( null, (byte) -1, updateStatus );
+		this.center.updateStatus( null, (byte) -1, this.updateStatus );
 
-		for (TileQuantumBridge r : Ring)
+		for (TileQuantumBridge r : this.Ring)
 		{
-			r.updateStatus( null, (byte) -1, updateStatus );
+			r.updateStatus( null, (byte) -1, this.updateStatus );
 		}
 
-		center = null;
-		Ring = new TileQuantumBridge[8];
+		this.center = null;
+		this.Ring = new TileQuantumBridge[8];
 	}
 
 	public boolean isCorner(TileQuantumBridge tileQuantumBridge)
 	{
-		return Ring[0] == tileQuantumBridge || Ring[2] == tileQuantumBridge || Ring[4] == tileQuantumBridge || Ring[6] == tileQuantumBridge;
+		return this.Ring[0] == tileQuantumBridge || this.Ring[2] == tileQuantumBridge || this.Ring[4] == tileQuantumBridge || this.Ring[6] == tileQuantumBridge;
 	}
 
 	@Override
 	public long getLocatableSerial()
 	{
-		return thisSide;
+		return this.thisSide;
 	}
 
 	public TileQuantumBridge getCenter()
 	{
-		return center;
+		return this.center;
 	}
 
 	public boolean hasQES()
 	{
-		return getLocatableSerial() != 0;
+		return this.getLocatableSerial() != 0;
 	}
 
 	private IGridNode getNode()
 	{
-		return center.getGridNode( ForgeDirection.UNKNOWN );
+		return this.center.getGridNode( ForgeDirection.UNKNOWN );
 	}
 
 	private boolean isActive()
 	{
-		if ( isDestroyed || !registered )
+		if ( this.isDestroyed || !this.registered )
 			return false;
 
-		return center.isPowered() && hasQES();
+		return this.center.isPowered() && this.hasQES();
 	}
 
 }

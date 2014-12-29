@@ -37,8 +37,8 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	final ForgeDirection side;
 
 	public BSCrateStorageAdaptor(Object te, ForgeDirection d) {
-		cs = (ICrateStorage) te;
-		side = d;
+		this.cs = (ICrateStorage) te;
+		this.side = d;
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	{
 		ItemStack target = null;
 
-		for (ItemStack is : cs.getContents())
+		for (ItemStack is : this.cs.getContents())
 		{
 			if ( is != null )
 			{
@@ -65,7 +65,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 		{
 			ItemStack f = Platform.cloneItemStack( target );
 			f.stackSize = how_many;
-			return cs.extractItems( f, how_many );
+			return this.cs.extractItems( f, how_many );
 		}
 
 		return null;
@@ -76,7 +76,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	{
 		ItemStack target = null;
 
-		for (ItemStack is : cs.getContents())
+		for (ItemStack is : this.cs.getContents())
 		{
 			if ( is != null )
 			{
@@ -93,7 +93,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 
 		if ( target != null )
 		{
-			int cnt = cs.getItemCount( target );
+			int cnt = this.cs.getItemCount( target );
 			if ( cnt == 0 )
 				return null;
 			if ( cnt > how_many )
@@ -111,7 +111,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	{
 		ItemStack target = null;
 
-		for (ItemStack is : cs.getContents())
+		for (ItemStack is : this.cs.getContents())
 		{
 			if ( is != null )
 			{
@@ -130,7 +130,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 		{
 			ItemStack f = Platform.cloneItemStack( target );
 			f.stackSize = amount;
-			return cs.extractItems( f, amount );
+			return this.cs.extractItems( f, amount );
 		}
 
 		return null;
@@ -141,7 +141,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	{
 		ItemStack target = null;
 
-		for (ItemStack is : cs.getContents())
+		for (ItemStack is : this.cs.getContents())
 		{
 			if ( is != null )
 			{
@@ -158,7 +158,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 
 		if ( target != null )
 		{
-			int cnt = cs.getItemCount( target );
+			int cnt = this.cs.getItemCount( target );
 			if ( cnt == 0 )
 				return null;
 			if ( cnt > how_many )
@@ -174,13 +174,13 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	@Override
 	public ItemStack addItems(ItemStack A)
 	{
-		return cs.insertItems( A );
+		return this.cs.insertItems( A );
 	}
 
 	@Override
 	public ItemStack simulateAdd(ItemStack A)
 	{
-		int items = cs.getSpaceForItem( A );
+		int items = this.cs.getSpaceForItem( A );
 		ItemStack B = Platform.cloneItemStack( A );
 		if ( A.stackSize <= items )
 			return null;
@@ -191,13 +191,13 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	@Override
 	public boolean containsItems()
 	{
-		return cs.getUniqueItems() > 0;
+		return this.cs.getUniqueItems() > 0;
 	}
 
 	@Override
 	public Iterator<ItemSlot> iterator()
 	{
-		return new StackToSlotIterator( cs.getContents().iterator() );
+		return new StackToSlotIterator( this.cs.getContents().iterator() );
 	}
 
 }

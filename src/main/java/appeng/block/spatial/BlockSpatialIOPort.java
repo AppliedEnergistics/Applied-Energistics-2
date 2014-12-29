@@ -36,14 +36,14 @@ public class BlockSpatialIOPort extends AEBaseBlock
 
 	public BlockSpatialIOPort() {
 		super( BlockSpatialIOPort.class, Material.iron );
-		setFeature( EnumSet.of( AEFeature.SpatialIO ) );
-		setTileEntity( TileSpatialIOPort.class );
+		this.setFeature( EnumSet.of( AEFeature.SpatialIO ) );
+		this.setTileEntity( TileSpatialIOPort.class );
 	}
 
 	@Override
 	public final void onNeighborBlockChange(World w, int x, int y, int z, Block junk)
 	{
-		TileSpatialIOPort te = getTileEntity( w, x, y, z );
+		TileSpatialIOPort te = this.getTileEntity( w, x, y, z );
 		if ( te != null )
 			te.updateRedstoneState();
 	}
@@ -54,7 +54,7 @@ public class BlockSpatialIOPort extends AEBaseBlock
 		if ( p.isSneaking() )
 			return false;
 
-		TileSpatialIOPort tg = getTileEntity( w, x, y, z );
+		TileSpatialIOPort tg = this.getTileEntity( w, x, y, z );
 		if ( tg != null )
 		{
 			if ( Platform.isServer() )

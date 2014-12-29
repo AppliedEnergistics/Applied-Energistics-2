@@ -55,12 +55,12 @@ public class PacketPatternSlot extends AppEngPacket
 	// automatic.
 	public PacketPatternSlot(ByteBuf stream) throws IOException {
 
-		shift = stream.readBoolean();
+		this.shift = stream.readBoolean();
 
-		slotItem = readItem( stream );
+		this.slotItem = this.readItem( stream );
 
 		for (int x = 0; x < 9; x++)
-			pattern[x] = readItem( stream );
+			this.pattern[x] = this.readItem( stream );
 	}
 
 	@Override
@@ -93,18 +93,18 @@ public class PacketPatternSlot extends AppEngPacket
 
 		ByteBuf data = Unpooled.buffer();
 
-		data.writeInt( getPacketID() );
+		data.writeInt( this.getPacketID() );
 
 		data.writeBoolean( shift );
 
-		writeItem( slotItem, data );
+		this.writeItem( slotItem, data );
 		for (int x = 0; x < 9; x++)
 		{
-			pattern[x] = AEApi.instance().storage().createItemStack( pat.getStackInSlot( x ) );
-			writeItem( pattern[x], data );
+			this.pattern[x] = AEApi.instance().storage().createItemStack( pat.getStackInSlot( x ) );
+			this.writeItem( this.pattern[x], data );
 		}
 
-		configureWrite( data );
+		this.configureWrite( data );
 	}
 
 }

@@ -32,9 +32,9 @@ public class ContainerChest extends AEBaseContainer
 		super( ip, chest, null );
 		this.chest = chest;
 
-		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, this.chest, 1, 80, 37, invPlayer ) );
+		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, this.chest, 1, 80, 37, this.invPlayer ) );
 
-		bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
+		this.bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
 	}
 
 }

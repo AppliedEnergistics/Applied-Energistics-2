@@ -37,8 +37,8 @@ public class IngredientSet implements IIngredient
 	ItemStack[] baked;
 
 	public IngredientSet(ResolverResultSet rr) {
-		name = rr.name;
-		items = rr.results;
+		this.name = rr.name;
+		this.items = rr.results;
 	}
 
 	final boolean isInside = false;
@@ -52,7 +52,7 @@ public class IngredientSet implements IIngredient
 	@Override
 	public String getItemName()
 	{
-		return name;
+		return this.name;
 	}
 
 	@Override
@@ -64,20 +64,20 @@ public class IngredientSet implements IIngredient
 	@Override
 	public ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
 	{
-		if ( baked != null )
-			return baked;
+		if ( this.baked != null )
+			return this.baked;
 
-		if ( isInside )
+		if ( this.isInside )
 			return new ItemStack[0];
 
 		List<ItemStack> out = new LinkedList<ItemStack>();
-		out.addAll( items );
+		out.addAll( this.items );
 
 		if ( out.size() == 0 )
-			throw new MissingIngredientError( toString() + " - group could not be resolved to any items." );
+			throw new MissingIngredientError( this.toString() + " - group could not be resolved to any items." );
 
 		for (ItemStack is : out)
-			is.stackSize = qty;
+			is.stackSize = this.qty;
 
 		return out.toArray( new ItemStack[out.size()] );
 	}
@@ -103,8 +103,8 @@ public class IngredientSet implements IIngredient
 	@Override
 	public void bake() throws RegistrationError, MissingIngredientError
 	{
-		baked = null;
-		baked = getItemStackSet();
+		this.baked = null;
+		this.baked = this.getItemStackSet();
 	}
 
 }

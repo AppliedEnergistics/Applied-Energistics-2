@@ -53,8 +53,8 @@ public class BlockEnergyCell extends AEBaseBlock
 
 	public BlockEnergyCell() {
 		this( BlockEnergyCell.class );
-		setFeature( EnumSet.of( AEFeature.Core ) );
-		setTileEntity( TileEnergyCell.class );
+		this.setFeature( EnumSet.of( AEFeature.Core ) );
+		this.setTileEntity( TileEnergyCell.class );
 	}
 
 	@Override
@@ -65,8 +65,8 @@ public class BlockEnergyCell extends AEBaseBlock
 
 		ItemStack charged = new ItemStack( this, 1 );
 		NBTTagCompound tag = Platform.openNbtData( charged );
-		tag.setDouble( "internalCurrentPower", getMaxPower() );
-		tag.setDouble( "internalMaxPower", getMaxPower() );
+		tag.setDouble( "internalCurrentPower", this.getMaxPower() );
+		tag.setDouble( "internalMaxPower", this.getMaxPower() );
 
 		itemStacks.add( charged );
 	}

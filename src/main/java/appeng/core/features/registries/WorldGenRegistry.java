@@ -42,11 +42,11 @@ public class WorldGenRegistry implements IWorldGen
 
 	private WorldGenRegistry() {
 
-		types = new TypeSet[WorldGenType.values().length];
+		this.types = new TypeSet[WorldGenType.values().length];
 
 		for (WorldGenType type : WorldGenType.values())
 		{
-			types[type.ordinal()] = new TypeSet();
+			this.types[type.ordinal()] = new TypeSet();
 		}
 
 	}
@@ -60,9 +60,9 @@ public class WorldGenRegistry implements IWorldGen
 		if ( w == null )
 			throw new IllegalArgumentException( "Bad Provider Passed" );
 
-		boolean	isBadProvider = types[type.ordinal()].badProviders.contains( w.provider.getClass() );
-		boolean isBadDimension = types[type.ordinal()].badDimensions.contains( w.provider.dimensionId );
-		boolean isGoodDimension = types[type.ordinal()].enabledDimensions.contains( w.provider.dimensionId );
+		boolean	isBadProvider = this.types[type.ordinal()].badProviders.contains( w.provider.getClass() );
+		boolean isBadDimension = this.types[type.ordinal()].badDimensions.contains( w.provider.dimensionId );
+		boolean isGoodDimension = this.types[type.ordinal()].enabledDimensions.contains( w.provider.dimensionId );
 
 		if ( isBadProvider || isBadDimension )
 		{
@@ -86,7 +86,7 @@ public class WorldGenRegistry implements IWorldGen
 		if ( provider == null )
 			throw new IllegalArgumentException( "Bad Provider Passed" );
 
-		types[type.ordinal()].badProviders.add( provider );
+		this.types[type.ordinal()].badProviders.add( provider );
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class WorldGenRegistry implements IWorldGen
 			throw new IllegalArgumentException( "Bad Type Passed" );
 		}
 
-		types[type.ordinal()].badDimensions.add( dimensionID );
+		this.types[type.ordinal()].badDimensions.add( dimensionID );
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class WorldGenRegistry implements IWorldGen
 		if ( type == null )
 			throw new IllegalArgumentException( "Bad Type Passed" );
 
-		types[type.ordinal()].enabledDimensions.add( dimensionID );
+		this.types[type.ordinal()].enabledDimensions.add( dimensionID );
 	}
 
 }

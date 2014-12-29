@@ -71,33 +71,33 @@ public class GuiCraftConfirm extends AEBaseGui
 
 	boolean isAutoStart()
 	{
-		return ((ContainerCraftConfirm) inventorySlots).autoStart;
+		return ((ContainerCraftConfirm) this.inventorySlots).autoStart;
 	}
 
 	boolean isSimulation()
 	{
-		return ((ContainerCraftConfirm) inventorySlots).simulation;
+		return ((ContainerCraftConfirm) this.inventorySlots).simulation;
 	}
 
 	public GuiCraftConfirm(InventoryPlayer inventoryPlayer, ITerminalHost te) {
 		super( new ContainerCraftConfirm( inventoryPlayer, te ) );
-		xSize = 238;
-		ySize = 206;
-		myScrollBar = new GuiScrollbar();
+		this.xSize = 238;
+		this.ySize = 206;
+		this.myScrollBar = new GuiScrollbar();
 
-		ccc = (ContainerCraftConfirm) this.inventorySlots;
+		this.ccc = (ContainerCraftConfirm) this.inventorySlots;
 
 		if ( te instanceof WirelessTerminalGuiObject )
-			OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
+			this.OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
 
 		if ( te instanceof PartTerminal )
-			OriginalGui = GuiBridge.GUI_ME;
+			this.OriginalGui = GuiBridge.GUI_ME;
 
 		if ( te instanceof PartCraftingTerminal )
-			OriginalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
+			this.OriginalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
 
 		if ( te instanceof PartPatternTerminal )
-			OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
+			this.OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
 
 	}
 
@@ -110,39 +110,39 @@ public class GuiCraftConfirm extends AEBaseGui
 	{
 		super.initGui();
 
-		start = new GuiButton( 0, this.guiLeft + 162, this.guiTop + ySize - 25, 50, 20, GuiText.Start.getLocal() );
-		start.enabled = false;
-		buttonList.add( start );
+		this.start = new GuiButton( 0, this.guiLeft + 162, this.guiTop + this.ySize - 25, 50, 20, GuiText.Start.getLocal() );
+		this.start.enabled = false;
+		this.buttonList.add( this.start );
 
-		selectCPU = new GuiButton( 0, this.guiLeft + (219 - 180) / 2, this.guiTop + ySize - 68, 180, 20, GuiText.CraftingCPU.getLocal() + ": "
+		this.selectCPU = new GuiButton( 0, this.guiLeft + (219 - 180) / 2, this.guiTop + this.ySize - 68, 180, 20, GuiText.CraftingCPU.getLocal() + ": "
 				+ GuiText.Automatic );
-		selectCPU.enabled = false;
-		buttonList.add( selectCPU );
+		this.selectCPU.enabled = false;
+		this.buttonList.add( this.selectCPU );
 
-		if ( OriginalGui != null )
-			cancel = new GuiButton( 0, this.guiLeft + 6, this.guiTop + ySize - 25, 50, 20, GuiText.Cancel.getLocal() );
+		if ( this.OriginalGui != null )
+			this.cancel = new GuiButton( 0, this.guiLeft + 6, this.guiTop + this.ySize - 25, 50, 20, GuiText.Cancel.getLocal() );
 
-		buttonList.add( cancel );
+		this.buttonList.add( this.cancel );
 	}
 
 	private void updateCPUButtonText()
 	{
 		String btnTextText = GuiText.CraftingCPU.getLocal() + ": " + GuiText.Automatic.getLocal();
-		if ( ccc.selectedCpu >= 0 )// && ccc.selectedCpu < ccc.cpus.size() )
+		if ( this.ccc.selectedCpu >= 0 )// && ccc.selectedCpu < ccc.cpus.size() )
 		{
-			if ( ccc.myName.length() > 0 )
+			if ( this.ccc.myName.length() > 0 )
 			{
-				String name = ccc.myName.substring( 0, Math.min( 20, ccc.myName.length() ) );
+				String name = this.ccc.myName.substring( 0, Math.min( 20, this.ccc.myName.length() ) );
 				btnTextText = GuiText.CraftingCPU.getLocal() + ": " + name;
 			}
 			else
-				btnTextText = GuiText.CraftingCPU.getLocal() + ": #" + ccc.selectedCpu;
+				btnTextText = GuiText.CraftingCPU.getLocal() + ": #" + this.ccc.selectedCpu;
 		}
 
-		if ( ccc.noCPU )
+		if ( this.ccc.noCPU )
 			btnTextText = GuiText.NoCraftingCPUs.getLocal();
 
-		selectCPU.displayString = btnTextText;
+		this.selectCPU.displayString = btnTextText;
 	}
 
 	@Override
@@ -152,7 +152,7 @@ public class GuiCraftConfirm extends AEBaseGui
 
 		boolean backwards = Mouse.isButtonDown( 1 );
 
-		if ( btn == selectCPU )
+		if ( btn == this.selectCPU )
 		{
 			try
 			{
@@ -164,12 +164,12 @@ public class GuiCraftConfirm extends AEBaseGui
 			}
 		}
 
-		if ( btn == cancel )
+		if ( btn == this.cancel )
 		{
-			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( OriginalGui ) );
+			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( this.OriginalGui ) );
 		}
 
-		if ( btn == start )
+		if ( btn == this.start )
 		{
 			try
 			{
@@ -185,9 +185,9 @@ public class GuiCraftConfirm extends AEBaseGui
 
 	private long getTotal(IAEItemStack is)
 	{
-		IAEItemStack a = storage.findPrecise( is );
-		IAEItemStack c = pending.findPrecise( is );
-		IAEItemStack m = missing.findPrecise( is );
+		IAEItemStack a = this.storage.findPrecise( is );
+		IAEItemStack c = this.pending.findPrecise( is );
+		IAEItemStack m = this.missing.findPrecise( is );
 
 		long total = 0;
 
@@ -209,34 +209,34 @@ public class GuiCraftConfirm extends AEBaseGui
 		{
 		case 0:
 			for (IAEItemStack l : list)
-				handleInput( storage, l );
+				this.handleInput( this.storage, l );
 			break;
 
 		case 1:
 			for (IAEItemStack l : list)
-				handleInput( pending, l );
+				this.handleInput( this.pending, l );
 			break;
 
 		case 2:
 			for (IAEItemStack l : list)
-				handleInput( missing, l );
+				this.handleInput( this.missing, l );
 			break;
 		}
 
 		for (IAEItemStack l : list)
 		{
-			long amt = getTotal( l );
+			long amt = this.getTotal( l );
 
 			if ( amt <= 0 )
-				deleteVisualStack( l );
+				this.deleteVisualStack( l );
 			else
 			{
-				IAEItemStack is = findVisualStack( l );
+				IAEItemStack is = this.findVisualStack( l );
 				is.setStackSize( amt );
 			}
 		}
 
-		setScrollBar();
+		this.setScrollBar();
 	}
 
 	private void handleInput(IItemList<IAEItemStack> s, IAEItemStack l)
@@ -263,7 +263,7 @@ public class GuiCraftConfirm extends AEBaseGui
 
 	private IAEItemStack findVisualStack(IAEItemStack l)
 	{
-		for (IAEItemStack o : visual)
+		for (IAEItemStack o : this.visual)
 		{
 			if ( o.equals( l ) )
 			{
@@ -272,13 +272,13 @@ public class GuiCraftConfirm extends AEBaseGui
 		}
 
 		IAEItemStack stack = l.copy();
-		visual.add( stack );
+		this.visual.add( stack );
 		return stack;
 	}
 
 	private void deleteVisualStack(IAEItemStack l)
 	{
-		Iterator<IAEItemStack> i = visual.iterator();
+		Iterator<IAEItemStack> i = this.visual.iterator();
 		while (i.hasNext())
 		{
 			IAEItemStack o = i.next();
@@ -292,10 +292,10 @@ public class GuiCraftConfirm extends AEBaseGui
 
 	private void setScrollBar()
 	{
-		int size = visual.size();
+		int size = this.visual.size();
 
-		myScrollBar.setTop( 19 ).setLeft( 218 ).setHeight( 114 );
-		myScrollBar.setRange( 0, (size + 2) / 3 - rows, 1 );
+		this.myScrollBar.setTop( 19 ).setLeft( 218 ).setHeight( 114 );
+		this.myScrollBar.setRange( 0, (size + 2) / 3 - this.rows, 1 );
 	}
 
 	@Override
@@ -305,7 +305,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		{
 			if ( key == 28 )
 			{
-				actionPerformed( start );
+				this.actionPerformed( this.start );
 			}
 			super.keyTyped( character, key );
 		}
@@ -314,9 +314,9 @@ public class GuiCraftConfirm extends AEBaseGui
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		setScrollBar();
-		bindTexture( "guis/craftingreport.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, xSize, ySize );
+		this.setScrollBar();
+		this.bindTexture( "guis/craftingreport.png" );
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 	}
 
 	int tooltip = -1;
@@ -324,19 +324,19 @@ public class GuiCraftConfirm extends AEBaseGui
 	@Override
 	public void drawScreen(int mouse_x, int mouse_y, float btn)
 	{
-		updateCPUButtonText();
+		this.updateCPUButtonText();
 
-		start.enabled = !(ccc.noCPU || isSimulation());
-		selectCPU.enabled = !isSimulation();
+		this.start.enabled = !(this.ccc.noCPU || this.isSimulation());
+		this.selectCPU.enabled = !this.isSimulation();
 
 		int x = 0;
 		int y = 0;
 
-		int gx = (width - xSize) / 2;
-		int gy = (height - ySize) / 2;
+		int gx = (this.width - this.xSize) / 2;
+		int gy = (this.height - this.ySize) / 2;
 		int offY = 23;
 
-		tooltip = -1;
+		this.tooltip = -1;
 
 		for (int z = 0; z <= 4 * 5; z++)
 		{
@@ -347,7 +347,7 @@ public class GuiCraftConfirm extends AEBaseGui
 			{
 				if ( minY < mouse_y && minY + offY - 2 > mouse_y )
 				{
-					tooltip = z;
+					this.tooltip = z;
 					break;
 				}
 
@@ -368,21 +368,21 @@ public class GuiCraftConfirm extends AEBaseGui
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		long BytesUsed = ccc.bytesUsed;
+		long BytesUsed = this.ccc.bytesUsed;
 		String byteUsed = NumberFormat.getInstance().format( BytesUsed );
 		String Add = BytesUsed > 0 ? (byteUsed + ' ' + GuiText.BytesUsed.getLocal()) : GuiText.CalculatingWait.getLocal();
-		fontRendererObj.drawString( GuiText.CraftingPlan.getLocal() + " - " + Add, 8, 7, 4210752 );
+		this.fontRendererObj.drawString( GuiText.CraftingPlan.getLocal() + " - " + Add, 8, 7, 4210752 );
 
 		String dsp = null;
 
-		if ( isSimulation() )
+		if ( this.isSimulation() )
 			dsp = GuiText.Simulation.getLocal();
 		else
-			dsp = ccc.cpuBytesAvail > 0 ? (GuiText.Bytes.getLocal() + ": " + ccc.cpuBytesAvail + " : " + GuiText.CoProcessors.getLocal() + ": " + ccc.cpuCoProcessors)
+			dsp = this.ccc.cpuBytesAvail > 0 ? (GuiText.Bytes.getLocal() + ": " + this.ccc.cpuBytesAvail + " : " + GuiText.CoProcessors.getLocal() + ": " + this.ccc.cpuCoProcessors)
 					: GuiText.Bytes.getLocal() + ": N/A : " + GuiText.CoProcessors.getLocal() + ": N/A";
 
-		int offset = (219 - fontRendererObj.getStringWidth( dsp )) / 2;
-		fontRendererObj.drawString( dsp, offset, 165, 4210752 );
+		int offset = (219 - this.fontRendererObj.getStringWidth( dsp )) / 2;
+		this.fontRendererObj.drawString( dsp, offset, 165, 4210752 );
 
 		int sectionLength = 67;
 
@@ -390,8 +390,8 @@ public class GuiCraftConfirm extends AEBaseGui
 		int y = 0;
 		int xo = 9;
 		int yo = 22;
-		int viewStart = myScrollBar.getCurrentScroll() * 3;
-		int viewEnd = viewStart + 3 * rows;
+		int viewStart = this.myScrollBar.getCurrentScroll() * 3;
+		int viewEnd = viewStart + 3 * this.rows;
 
 		String dspToolTip = "";
 		List<String> lineList = new LinkedList<String>();
@@ -400,17 +400,17 @@ public class GuiCraftConfirm extends AEBaseGui
 
 		int offY = 23;
 
-		for (int z = viewStart; z < Math.min( viewEnd, visual.size() ); z++)
+		for (int z = viewStart; z < Math.min( viewEnd, this.visual.size() ); z++)
 		{
-			IAEItemStack refStack = visual.get( z );// repo.getReferenceItem( z );
+			IAEItemStack refStack = this.visual.get( z );// repo.getReferenceItem( z );
 			if ( refStack != null )
 			{
 				GL11.glPushMatrix();
 				GL11.glScaled( 0.5, 0.5, 0.5 );
 
-				IAEItemStack stored = storage.findPrecise( refStack );
-				IAEItemStack pendingStack = pending.findPrecise( refStack );
-				IAEItemStack missingStack = missing.findPrecise( refStack );
+				IAEItemStack stored = this.storage.findPrecise( refStack );
+				IAEItemStack pendingStack = this.pending.findPrecise( refStack );
+				IAEItemStack missingStack = this.missing.findPrecise( refStack );
 
 				int lines = 0;
 
@@ -434,11 +434,11 @@ public class GuiCraftConfirm extends AEBaseGui
 						str = Long.toString( stored.getStackSize() / 1000000 ) + 'm';
 
 					str = GuiText.FromStorage.getLocal() + ": " + str;
-					int w = 4 + fontRendererObj.getStringWidth( str );
-					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
+					int w = 4 + this.fontRendererObj.getStringWidth( str );
+					this.fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
 							+ 6 - negY + downY) * 2, 4210752 );
 
-					if ( tooltip == z - viewStart )
+					if ( this.tooltip == z - viewStart )
 						lineList.add( GuiText.FromStorage.getLocal() + ": " + Long.toString( stored.getStackSize() ) );
 
 					downY += 5;
@@ -453,11 +453,11 @@ public class GuiCraftConfirm extends AEBaseGui
 						str = Long.toString( missingStack.getStackSize() / 1000000 ) + 'm';
 
 					str = GuiText.Missing.getLocal() + ": " + str;
-					int w = 4 + fontRendererObj.getStringWidth( str );
-					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
+					int w = 4 + this.fontRendererObj.getStringWidth( str );
+					this.fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
 							+ 6 - negY + downY) * 2, 4210752 );
 
-					if ( tooltip == z - viewStart )
+					if ( this.tooltip == z - viewStart )
 						lineList.add( GuiText.Missing.getLocal() + ": " + Long.toString( missingStack.getStackSize() ) );
 
 					red = true;
@@ -473,11 +473,11 @@ public class GuiCraftConfirm extends AEBaseGui
 						str = Long.toString( pendingStack.getStackSize() / 1000000 ) + 'm';
 
 					str = GuiText.ToCraft.getLocal() + ": " + str;
-					int w = 4 + fontRendererObj.getStringWidth( str );
-					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
+					int w = 4 + this.fontRendererObj.getStringWidth( str );
+					this.fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
 							+ 6 - negY + downY) * 2, 4210752 );
 
-					if ( tooltip == z - viewStart )
+					if ( this.tooltip == z - viewStart )
 						lineList.add( GuiText.ToCraft.getLocal() + ": " + Long.toString( pendingStack.getStackSize() ) );
 
 				}
@@ -488,7 +488,7 @@ public class GuiCraftConfirm extends AEBaseGui
 
 				ItemStack is = refStack.copy().getItemStack();
 
-				if ( tooltip == z - viewStart )
+				if ( this.tooltip == z - viewStart )
 				{
 					dspToolTip = Platform.getItemDisplayName( is );
 
@@ -499,7 +499,7 @@ public class GuiCraftConfirm extends AEBaseGui
 					toolPosY = y * offY + yo;
 				}
 
-				drawItem( posX, posY, is );
+				this.drawItem( posX, posY, is );
 
 				if ( red )
 				{
@@ -519,10 +519,10 @@ public class GuiCraftConfirm extends AEBaseGui
 
 		}
 
-		if ( tooltip >= 0 && dspToolTip.length() > 0 )
+		if ( this.tooltip >= 0 && dspToolTip.length() > 0 )
 		{
 			GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
-			drawTooltip( toolPosX, toolPosY + 10, 0, dspToolTip );
+			this.drawTooltip( toolPosX, toolPosY + 10, 0, dspToolTip );
 			GL11.glPopAttrib();
 		}
 

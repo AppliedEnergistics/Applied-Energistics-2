@@ -36,7 +36,7 @@ public final class CreativeTabFacade extends CreativeTabs
 	@Override
 	public Item getTabIconItem()
 	{
-		return getIconItemStack().getItem();
+		return this.getIconItemStack().getItem();
 	}
 
 	@Override

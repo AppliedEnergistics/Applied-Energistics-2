@@ -88,66 +88,66 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 
 	public IGridNode getNetworkNode()
 	{
-		return networkNode;
+		return this.networkNode;
 	}
 
 	protected ContainerMEMonitorable(InventoryPlayer ip, ITerminalHost monitorable, boolean bindInventory) {
 		super( ip, monitorable instanceof TileEntity ? (TileEntity) monitorable : null, monitorable instanceof IPart ? (IPart) monitorable : null );
 
-		host = monitorable;
-		clientCM = new ConfigManager( this );
+		this.host = monitorable;
+		this.clientCM = new ConfigManager( this );
 
-		clientCM.registerSetting( Settings.SORT_BY, SortOrder.NAME );
-		clientCM.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
-		clientCM.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
+		this.clientCM.registerSetting( Settings.SORT_BY, SortOrder.NAME );
+		this.clientCM.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
+		this.clientCM.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 
 		if ( Platform.isServer() )
 		{
-			serverCM = monitorable.getConfigManager();
+			this.serverCM = monitorable.getConfigManager();
 
-			monitor = monitorable.getItemInventory();
-			if ( monitor != null )
+			this.monitor = monitorable.getItemInventory();
+			if ( this.monitor != null )
 			{
-				monitor.addListener( this, null );
+				this.monitor.addListener( this, null );
 
-				cellInv = monitor;
+				this.cellInv = this.monitor;
 
 				if ( monitorable instanceof IPortableCell )
-					powerSrc = (IPortableCell) monitorable;
+					this.powerSrc = (IPortableCell) monitorable;
 				else if ( monitorable instanceof IMEChest )
-					powerSrc = (IMEChest) monitorable;
+					this.powerSrc = (IMEChest) monitorable;
 				else if ( monitorable instanceof IGridHost )
 				{
 					IGridNode node = ((IGridHost) monitorable).getGridNode( ForgeDirection.UNKNOWN );
 					if ( node != null )
 					{
-						networkNode = node;
+						this.networkNode = node;
 						IGrid g = node.getGrid();
 						if ( g != null )
-							powerSrc = new ChannelPowerSrc( networkNode, (IEnergyGrid) g.getCache( IEnergyGrid.class ) );
+							this.powerSrc = new ChannelPowerSrc( this.networkNode, (IEnergyGrid) g.getCache( IEnergyGrid.class ) );
 					}
 				}
 			}
 			else
-				isContainerValid = false;
+				this.isContainerValid = false;
 		}
 		else
-			monitor = null;
+			this.monitor = null;
 
-		canAccessViewCells = false;
+		this.canAccessViewCells = false;
 		if ( monitorable instanceof IViewCellStorage )
 		{
 			for (int y = 0; y < 5; y++)
 			{
-				cellView[y] = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.VIEW_CELL, ((IViewCellStorage) monitorable).getViewCellStorage(), y, 206, y * 18 + 8,
-						invPlayer );
-				cellView[y].allowEdit = canAccessViewCells;
-				addSlotToContainer( cellView[y] );
+				this.cellView[y] = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.VIEW_CELL, ((IViewCellStorage) monitorable).getViewCellStorage(), y, 206, y * 18 + 8,
+						this.invPlayer );
+				this.cellView[y].allowEdit = this.canAccessViewCells;
+				this.addSlotToContainer( this.cellView[y] );
 			}
 		}
 
 		if ( bindInventory )
-			bindPlayerInventory( ip, 0, 0 );
+			this.bindPlayerInventory( ip, 0, 0 );
 	}
 
 	public ContainerMEMonitorable(InventoryPlayer ip, ITerminalHost monitorable) {
@@ -159,17 +159,17 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	{
 		if ( Platform.isServer() )
 		{
-			if ( monitor != host.getItemInventory() )
-				isContainerValid = false;
+			if ( this.monitor != this.host.getItemInventory() )
+				this.isContainerValid = false;
 			
-			for (Enum set : serverCM.getSettings())
+			for (Enum set : this.serverCM.getSettings())
 			{
-				Enum sideLocal = serverCM.getSetting( set );
-				Enum sideRemote = clientCM.getSetting( set );
+				Enum sideLocal = this.serverCM.getSetting( set );
+				Enum sideRemote = this.clientCM.getSetting( set );
 
 				if ( sideLocal != sideRemote )
 				{
-					clientCM.putSetting( set, sideLocal );
+					this.clientCM.putSetting( set, sideLocal );
 					for (Object crafter : this.crafters)
 					{
 						try
@@ -184,15 +184,15 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				}
 			}
 
-			if ( !items.isEmpty() )
+			if ( !this.items.isEmpty() )
 			{
 				try
 				{
-					IItemList<IAEItemStack> monitorCache = monitor.getStorageList();
+					IItemList<IAEItemStack> monitorCache = this.monitor.getStorageList();
 
 					PacketMEInventoryUpdate piu = new PacketMEInventoryUpdate();
 
-					for (IAEItemStack is : items)
+					for (IAEItemStack is : this.items)
 					{
 						IAEItemStack send = monitorCache.findPrecise( is );
 						if ( send == null )
@@ -206,7 +206,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 
 					if ( !piu.isEmpty() )
 					{
-						items.resetStatus();
+						this.items.resetStatus();
 
 						for (Object c : this.crafters)
 						{
@@ -221,16 +221,16 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				}
 			}
 
-			updatePowerStatus();
+			this.updatePowerStatus();
 
-			boolean oldCanAccessViewCells = canAccessViewCells;
-			canAccessViewCells = hasAccess( SecurityPermissions.BUILD, false );
-			if ( canAccessViewCells != oldCanAccessViewCells )
+			boolean oldCanAccessViewCells = this.canAccessViewCells;
+			this.canAccessViewCells = this.hasAccess( SecurityPermissions.BUILD, false );
+			if ( this.canAccessViewCells != oldCanAccessViewCells )
 			{
 				for (int y = 0; y < 5; y++)
 				{
-					if ( cellView[y] != null )
-						cellView[y].allowEdit = canAccessViewCells;
+					if ( this.cellView[y] != null )
+						this.cellView[y].allowEdit = this.canAccessViewCells;
 				}
 			}
 
@@ -242,12 +242,12 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	{
 		try
 		{
-			if ( networkNode != null )
-				hasPower = networkNode.isActive();
-			else if ( powerSrc instanceof IEnergyGrid )
-				hasPower = ((IEnergyGrid) powerSrc).isNetworkPowered();
+			if ( this.networkNode != null )
+				this.hasPower = this.networkNode.isActive();
+			else if ( this.powerSrc instanceof IEnergyGrid )
+				this.hasPower = ((IEnergyGrid) this.powerSrc).isNetworkPowered();
 			else
-				hasPower = powerSrc.extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.8;
+				this.hasPower = this.powerSrc.extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.8;
 		}
 		catch (Throwable t)
 		{
@@ -259,17 +259,17 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	public void addCraftingToCrafters(ICrafting c)
 	{
 		super.addCraftingToCrafters( c );
-		queueInventory( c );
+		this.queueInventory( c );
 	}
 
 	public void queueInventory(ICrafting c)
 	{
-		if ( Platform.isServer() && c instanceof EntityPlayer && monitor != null )
+		if ( Platform.isServer() && c instanceof EntityPlayer && this.monitor != null )
 		{
 			try
 			{
 				PacketMEInventoryUpdate piu = new PacketMEInventoryUpdate();
-				IItemList<IAEItemStack> monitorCache = monitor.getStorageList();
+				IItemList<IAEItemStack> monitorCache = this.monitor.getStorageList();
 
 				for (IAEItemStack send : monitorCache)
 				{
@@ -304,7 +304,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 			if ( c instanceof ICrafting )
 			{
 				ICrafting cr = (ICrafting) c;
-				queueInventory( cr );
+				this.queueInventory( cr );
 			}
 		}
 	}
@@ -315,8 +315,8 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		if ( field.equals( "canAccessViewCells" ) )
 		{
 			for (int y = 0; y < 5; y++)
-				if ( cellView[y] != null )
-					cellView[y].allowEdit = canAccessViewCells;
+				if ( this.cellView[y] != null )
+					this.cellView[y].allowEdit = this.canAccessViewCells;
 		}
 
 		super.onUpdate( field, oldValue, newValue );
@@ -326,8 +326,8 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	public void onContainerClosed(EntityPlayer player)
 	{
 		super.onContainerClosed( player );
-		if ( monitor != null )
-			monitor.removeListener( this );
+		if ( this.monitor != null )
+			this.monitor.removeListener( this );
 	}
 
 	@Override
@@ -335,15 +335,15 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	{
 		super.removeCraftingFromCrafters( c );
 
-		if ( this.crafters.isEmpty() && monitor != null )
-			monitor.removeListener( this );
+		if ( this.crafters.isEmpty() && this.monitor != null )
+			this.monitor.removeListener( this );
 	}
 
 	@Override
 	public void postChange(IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource source)
 	{
 		for (IAEItemStack is : change)
-			items.add( is );
+			this.items.add( is );
 	}
 
 	@Override
@@ -355,24 +355,24 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	@Override
 	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
 	{
-		if ( gui != null )
-			gui.updateSetting( manager, settingName, newValue );
+		if ( this.gui != null )
+			this.gui.updateSetting( manager, settingName, newValue );
 	}
 
 	@Override
 	public IConfigManager getConfigManager()
 	{
 		if ( Platform.isServer() )
-			return serverCM;
-		return clientCM;
+			return this.serverCM;
+		return this.clientCM;
 	}
 
 	public ItemStack[] getViewCells()
 	{
-		ItemStack[] list = new ItemStack[cellView.length];
+		ItemStack[] list = new ItemStack[this.cellView.length];
 
-		for (int x = 0; x < cellView.length; x++)
-			list[x] = cellView[x].getStack();
+		for (int x = 0; x < this.cellView.length; x++)
+			list[x] = this.cellView[x].getStack();
 
 		return list;
 	}

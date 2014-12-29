@@ -35,8 +35,8 @@ public class PacketPartialItem extends AppEngPacket
 	// automatic.
 	public PacketPartialItem(ByteBuf stream)
 	{
-		pageNum = stream.readShort();
-		stream.readBytes( data = new byte[stream.readableBytes()] );
+		this.pageNum = stream.readShort();
+		stream.readBytes( this.data = new byte[stream.readableBytes()] );
 	}
 
 	@Override
@@ -54,28 +54,28 @@ public class PacketPartialItem extends AppEngPacket
 
 		ByteBuf data = Unpooled.buffer();
 
-		pageNum = (short) (page | (maxPages << 8));
+		this.pageNum = (short) (page | (maxPages << 8));
 		this.data = buf;
-		data.writeInt( getPacketID() );
-		data.writeShort( pageNum );
+		data.writeInt( this.getPacketID() );
+		data.writeShort( this.pageNum );
 		data.writeBytes( buf );
 
-		configureWrite( data );
+		this.configureWrite( data );
 	}
 
 	public int getPageCount()
 	{
-		return pageNum >> 8;
+		return this.pageNum >> 8;
 	}
 
 	public int getSize()
 	{
-		return data.length;
+		return this.data.length;
 	}
 
 	public int write(byte[] buffer, int cursor)
 	{
-		System.arraycopy( data, 0, buffer, cursor, data.length );
-		return cursor + data.length;
+		System.arraycopy( this.data, 0, buffer, cursor, this.data.length );
+		return cursor + this.data.length;
 	}
 }

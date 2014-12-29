@@ -36,24 +36,24 @@ public class AdaptorIInventory extends InventoryAdaptor
 
 	public AdaptorIInventory( IInventory s )
 	{
-		i = s;
-		wrapperEnabled = s instanceof IInventoryWrapper;
+		this.i = s;
+		this.wrapperEnabled = s instanceof IInventoryWrapper;
 	}
 
 	boolean canRemoveStackFromSlot( int x, ItemStack is )
 	{
-		if ( wrapperEnabled )
-			return ( ( IInventoryWrapper ) i ).canRemoveItemFromSlot( x, is );
+		if ( this.wrapperEnabled )
+			return ( ( IInventoryWrapper ) this.i ).canRemoveItemFromSlot( x, is );
 		return true;
 	}
 
 	@Override
 	public boolean containsItems()
 	{
-		int s = i.getSizeInventory();
+		int s = this.i.getSizeInventory();
 		for ( int x = 0; x < s; x++ )
 		{
-			if ( i.getStackInSlot( x ) != null )
+			if ( this.i.getStackInSlot( x ) != null )
 				return true;
 		}
 		return false;
@@ -62,11 +62,11 @@ public class AdaptorIInventory extends InventoryAdaptor
 	@Override
 	public ItemStack removeSimilarItems( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
 	{
-		int s = i.getSizeInventory();
+		int s = this.i.getSizeInventory();
 		for ( int x = 0; x < s; x++ )
 		{
-			ItemStack is = i.getStackInSlot( x );
-			if ( is != null && canRemoveStackFromSlot( x, is ) && ( filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode ) ) )
+			ItemStack is = this.i.getStackInSlot( x );
+			if ( is != null && this.canRemoveStackFromSlot( x, is ) && ( filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode ) ) )
 			{
 				int newAmount = amount;
 				if ( newAmount > is.stackSize )
@@ -82,15 +82,15 @@ public class AdaptorIInventory extends InventoryAdaptor
 
 					if ( is.stackSize == rv.stackSize )
 					{
-						i.setInventorySlotContents( x, null );
-						i.markDirty();
+						this.i.setInventorySlotContents( x, null );
+						this.i.markDirty();
 					}
 					else
 					{
 						ItemStack po = is.copy();
 						po.stackSize -= rv.stackSize;
-						i.setInventorySlotContents( x, po );
-						i.markDirty();
+						this.i.setInventorySlotContents( x, po );
+						this.i.markDirty();
 					}
 				}
 
@@ -107,12 +107,12 @@ public class AdaptorIInventory extends InventoryAdaptor
 	@Override
 	public ItemStack simulateSimilarRemove( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
 	{
-		int s = i.getSizeInventory();
+		int s = this.i.getSizeInventory();
 		for ( int x = 0; x < s; x++ )
 		{
-			ItemStack is = i.getStackInSlot( x );
+			ItemStack is = this.i.getStackInSlot( x );
 
-			if ( is != null && canRemoveStackFromSlot( x, is ) && ( filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode ) ) )
+			if ( is != null && this.canRemoveStackFromSlot( x, is ) && ( filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode ) ) )
 			{
 				int boundAmount = amount;
 				if ( boundAmount > is.stackSize )
@@ -134,13 +134,13 @@ public class AdaptorIInventory extends InventoryAdaptor
 	@Override
 	public ItemStack removeItems( int amount, ItemStack filter, IInventoryDestination destination )
 	{
-		int s = i.getSizeInventory();
+		int s = this.i.getSizeInventory();
 		ItemStack rv = null;
 
 		for ( int x = 0; x < s && amount > 0; x++ )
 		{
-			ItemStack is = i.getStackInSlot( x );
-			if ( is != null && canRemoveStackFromSlot( x, is ) && ( filter == null || Platform.isSameItemPrecise( is, filter ) ) )
+			ItemStack is = this.i.getStackInSlot( x );
+			if ( is != null && this.canRemoveStackFromSlot( x, is ) && ( filter == null || Platform.isSameItemPrecise( is, filter ) ) )
 			{
 				int boundAmounts = amount;
 				if ( boundAmounts > is.stackSize )
@@ -165,15 +165,15 @@ public class AdaptorIInventory extends InventoryAdaptor
 
 					if ( is.stackSize == boundAmounts )
 					{
-						i.setInventorySlotContents( x, null );
-						i.markDirty();
+						this.i.setInventorySlotContents( x, null );
+						this.i.markDirty();
 					}
 					else
 					{
 						ItemStack po = is.copy();
 						po.stackSize -= boundAmounts;
-						i.setInventorySlotContents( x, po );
-						i.markDirty();
+						this.i.setInventorySlotContents( x, po );
+						this.i.markDirty();
 					}
 				}
 			}
@@ -188,13 +188,13 @@ public class AdaptorIInventory extends InventoryAdaptor
 	@Override
 	public ItemStack simulateRemove( int amount, ItemStack filter, IInventoryDestination destination )
 	{
-		int s = i.getSizeInventory();
+		int s = this.i.getSizeInventory();
 		ItemStack rv = null;
 
 		for ( int x = 0; x < s && amount > 0; x++ )
 		{
-			ItemStack is = i.getStackInSlot( x );
-			if ( is != null && canRemoveStackFromSlot( x, is ) && ( filter == null || Platform.isSameItemPrecise( is, filter ) ) )
+			ItemStack is = this.i.getStackInSlot( x );
+			if ( is != null && this.canRemoveStackFromSlot( x, is ) && ( filter == null || Platform.isSameItemPrecise( is, filter ) ) )
 			{
 				int boundAmount = amount;
 				if ( boundAmount > is.stackSize )
@@ -225,13 +225,13 @@ public class AdaptorIInventory extends InventoryAdaptor
 	@Override
 	public ItemStack addItems( ItemStack itemsToAdd )
 	{
-		return addItems( itemsToAdd, true );
+		return this.addItems( itemsToAdd, true );
 	}
 
 	@Override
 	public ItemStack simulateAdd( ItemStack itemsToAdd )
 	{
-		return addItems( itemsToAdd, false );
+		return this.addItems( itemsToAdd, false );
 	}
 
 	/**
@@ -254,25 +254,25 @@ public class AdaptorIInventory extends InventoryAdaptor
 
 		ItemStack left = itemsToAdd.copy();
 		int stackLimit = itemsToAdd.getMaxStackSize();
-		int perOperationLimit = Math.min( i.getInventoryStackLimit(), stackLimit );
-		int inventorySize = i.getSizeInventory();
+		int perOperationLimit = Math.min( this.i.getInventoryStackLimit(), stackLimit );
+		int inventorySize = this.i.getSizeInventory();
 
 		for ( int slot = 0; slot < inventorySize; slot++ )
 		{
 			ItemStack next = left.copy();
 			next.stackSize = Math.min( perOperationLimit, next.stackSize );
 
-			if ( i.isItemValidForSlot( slot, next ) )
+			if ( this.i.isItemValidForSlot( slot, next ) )
 			{
-				ItemStack is = i.getStackInSlot( slot );
+				ItemStack is = this.i.getStackInSlot( slot );
 				if ( is == null )
 				{
 					left.stackSize -= next.stackSize;
 
 					if ( modulate )
 					{
-						i.setInventorySlotContents( slot, next );
-						i.markDirty();
+						this.i.setInventorySlotContents( slot, next );
+						this.i.markDirty();
 					}
 
 					if ( left.stackSize <= 0 )
@@ -288,8 +288,8 @@ public class AdaptorIInventory extends InventoryAdaptor
 					if ( modulate )
 					{
 						is.stackSize += used;
-						i.setInventorySlotContents( slot, is );
-						i.markDirty();
+						this.i.setInventorySlotContents( slot, is );
+						this.i.markDirty();
 					}
 
 					left.stackSize -= used;
@@ -313,19 +313,19 @@ public class AdaptorIInventory extends InventoryAdaptor
 		@Override
 		public boolean hasNext()
 		{
-			return x < i.getSizeInventory();
+			return this.x < AdaptorIInventory.this.i.getSizeInventory();
 		}
 
 		@Override
 		public ItemSlot next()
 		{
-			ItemStack iss = i.getStackInSlot( x );
+			ItemStack iss = AdaptorIInventory.this.i.getStackInSlot( this.x );
 
-			is.isExtractable = canRemoveStackFromSlot( x, iss );
-			is.setItemStack( iss );
+			this.is.isExtractable = AdaptorIInventory.this.canRemoveStackFromSlot( this.x, iss );
+			this.is.setItemStack( iss );
 
-			is.slot = x++;
-			return is;
+			this.is.slot = this.x++;
+			return this.is;
 		}
 
 		@Override

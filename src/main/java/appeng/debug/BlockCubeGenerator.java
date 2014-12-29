@@ -32,15 +32,15 @@ public class BlockCubeGenerator extends AEBaseBlock
 
 	public BlockCubeGenerator() {
 		super( BlockCubeGenerator.class, Material.iron );
-		setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
-		setTileEntity( TileCubeGenerator.class );
+		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
+		this.setTileEntity( TileCubeGenerator.class );
 	}
 
 	@Override
 	public boolean onActivated(World w, int x, int y, int z,
 			EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		
-		TileCubeGenerator tcg = getTileEntity(w, x, y, z);
+		TileCubeGenerator tcg = this.getTileEntity(w, x, y, z);
 		if ( tcg != null )
 			tcg.click( player );
 		
@@ -50,7 +50,7 @@ public class BlockCubeGenerator extends AEBaseBlock
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegistry)
 	{
-		registerNoIcons();
+		this.registerNoIcons();
 	}
 
 }

@@ -34,7 +34,7 @@ public class ConfigManager implements IConfigManager
 	final IConfigManagerHost target;
 
 	public ConfigManager(IConfigManagerHost tile) {
-		target = tile;
+		this.target = tile;
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class ConfigManager implements IConfigManager
 	@Override
 	public void readFromNBT(NBTTagCompound tagCompound)
 	{
-		for (Enum key : Settings.keySet())
+		for (Enum key : this.Settings.keySet())
 		{
 			try
 			{
@@ -60,11 +60,11 @@ public class ConfigManager implements IConfigManager
 						value = LevelEmitterMode.STORABLE_AMOUNT.toString();
 					}
 
-					Enum oldValue = Settings.get( key );
+					Enum oldValue = this.Settings.get( key );
 
 					Enum newValue = Enum.valueOf( oldValue.getClass(), value );
 
-					putSetting( key, newValue );
+					this.putSetting( key, newValue );
 				}
 			}
 			catch (IllegalArgumentException e)
@@ -83,9 +83,9 @@ public class ConfigManager implements IConfigManager
 	public void writeToNBT(NBTTagCompound tagCompound)
 	{
 
-		for (Enum e : Settings.keySet())
+		for (Enum e : this.Settings.keySet())
 		{
-			tagCompound.setString( e.name(), Settings.get( e ).toString() );
+			tagCompound.setString( e.name(), this.Settings.get( e ).toString() );
 		}
 
 	}
@@ -93,19 +93,19 @@ public class ConfigManager implements IConfigManager
 	@Override
 	public Set<Enum> getSettings()
 	{
-		return Settings.keySet();
+		return this.Settings.keySet();
 	}
 
 	@Override
 	public void registerSetting(Enum settingName, Enum defaultValue)
 	{
-		Settings.put( settingName, defaultValue );
+		this.Settings.put( settingName, defaultValue );
 	}
 
 	@Override
 	public Enum getSetting(Enum settingName)
 	{
-		Enum oldValue = Settings.get( settingName );
+		Enum oldValue = this.Settings.get( settingName );
 
 		if ( oldValue != null )
 			return oldValue;
@@ -116,9 +116,9 @@ public class ConfigManager implements IConfigManager
 	@Override
 	public Enum putSetting(Enum settingName, Enum newValue)
 	{
-		Enum oldValue = getSetting( settingName );
-		Settings.put( settingName, newValue );
-		target.updateSetting( this, settingName, newValue );
+		Enum oldValue = this.getSetting( settingName );
+		this.Settings.put( settingName, newValue );
+		this.target.updateSetting( this, settingName, newValue );
 		return oldValue;
 	}
 

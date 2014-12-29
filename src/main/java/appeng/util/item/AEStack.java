@@ -34,36 +34,36 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	@Override
 	public boolean isMeaningful()
 	{
-		return stackSize != 0 || getCountRequestable() > 0 || isCraftable();
+		return this.stackSize != 0 || this.getCountRequestable() > 0 || this.isCraftable();
 	}
 
 	@Override
 	public StackType reset()
 	{
-		stackSize = 0;
+		this.stackSize = 0;
 		// priority = Integer.MIN_VALUE;
-		setCountRequestable( 0 );
-		setCraftable( false );
+		this.setCountRequestable( 0 );
+		this.setCraftable( false );
 		return (StackType) this;
 	}
 
 	@Override
 	public long getStackSize()
 	{
-		return stackSize;
+		return this.stackSize;
 	}
 
 	@Override
 	public StackType setStackSize(long ss)
 	{
-		stackSize = ss;
+		this.stackSize = ss;
 		return (StackType) this;
 	}
 
 	@Override
 	public long getCountRequestable()
 	{
-		return countRequestable;
+		return this.countRequestable;
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	@Override
 	public boolean isCraftable()
 	{
-		return isCraftable;
+		return this.isCraftable;
 	}
 
 	@Override
@@ -89,25 +89,25 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	@Override
 	public void decStackSize(long i)
 	{
-		stackSize -= i;
+		this.stackSize -= i;
 	}
 
 	@Override
 	public void incStackSize(long i)
 	{
-		stackSize += i;
+		this.stackSize += i;
 	}
 
 	@Override
 	public void decCountRequestable(long i)
 	{
-		countRequestable -= i;
+		this.countRequestable -= i;
 	}
 
 	@Override
 	public void incCountRequestable(long i)
 	{
-		countRequestable += i;
+		this.countRequestable += i;
 	}
 
 	void putPacketValue(ByteBuf tag, long num)
@@ -167,17 +167,17 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	@Override
 	public void writeToPacket(ByteBuf i) throws IOException
 	{
-		byte mask = (byte) (getType( 0 ) | (getType( stackSize ) << 2) | (getType( getCountRequestable() ) << 4) | ((byte) (isCraftable ? 1 : 0) << 6) | (hasTagCompound() ? 1
+		byte mask = (byte) (this.getType( 0 ) | (this.getType( this.stackSize ) << 2) | (this.getType( this.getCountRequestable() ) << 4) | ((byte) (this.isCraftable ? 1 : 0) << 6) | (this.hasTagCompound() ? 1
 				: 0) << 7);
 
 		i.writeByte( mask );
-		writeIdentity( i );
+		this.writeIdentity( i );
 
-		readNBT( i );
+		this.readNBT( i );
 
 		// putPacketValue( i, priority );
-		putPacketValue( i, stackSize );
-		putPacketValue( i, getCountRequestable() );
+		this.putPacketValue( i, this.stackSize );
+		this.putPacketValue( i, this.getCountRequestable() );
 	}
 
 }

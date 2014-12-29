@@ -33,7 +33,7 @@ public class MatterCannonFX extends EntityBreakingFX
 
 	public MatterCannonFX(World par1World, double par2, double par4, double par6, Item par8Item) {
 		super( par1World, par2, par4, par6, par8Item );
-		particleGravity = 0;
+		this.particleGravity = 0;
 		this.particleBlue = 255;
 		this.particleGreen = 255;
 		this.particleRed = 255;

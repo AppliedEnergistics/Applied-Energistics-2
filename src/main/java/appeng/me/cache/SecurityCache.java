@@ -43,7 +43,7 @@ public class SecurityCache implements ISecurityGrid
 	final private HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms = new HashMap<Integer, EnumSet<SecurityPermissions>>();
 
 	public SecurityCache(IGrid g) {
-		myGrid = g;
+		this.myGrid = g;
 	}
 
 	private long securityKey = -1;
@@ -52,43 +52,43 @@ public class SecurityCache implements ISecurityGrid
 	@MENetworkEventSubscribe
 	public void updatePermissions(MENetworkSecurityChange ev)
 	{
-		playerPerms.clear();
-		if ( securityProvider.isEmpty() )
+		this.playerPerms.clear();
+		if ( this.securityProvider.isEmpty() )
 			return;
 
-		securityProvider.get( 0 ).readPermissions( playerPerms );
+		this.securityProvider.get( 0 ).readPermissions( this.playerPerms );
 	}
 
 	public long getSecurityKey()
 	{
-		return securityKey;
+		return this.securityKey;
 	}
 
 	@Override
 	public boolean isAvailable()
 	{
-		return securityProvider.size() == 1 && securityProvider.get( 0 ).isSecurityEnabled();
+		return this.securityProvider.size() == 1 && this.securityProvider.get( 0 ).isSecurityEnabled();
 	}
 
 	@Override
 	public boolean hasPermission(EntityPlayer player, SecurityPermissions perm)
 	{
-		return hasPermission( player == null ? -1 : WorldSettings.getInstance().getPlayerID( player.getGameProfile() ), perm );
+		return this.hasPermission( player == null ? -1 : WorldSettings.getInstance().getPlayerID( player.getGameProfile() ), perm );
 	}
 
 	@Override
 	public boolean hasPermission(int playerID, SecurityPermissions perm)
 	{
-		if ( isAvailable() )
+		if ( this.isAvailable() )
 		{
-			EnumSet<SecurityPermissions> perms = playerPerms.get( playerID );
+			EnumSet<SecurityPermissions> perms = this.playerPerms.get( playerID );
 
 			if ( perms == null )
 			{
 				if ( playerID == -1 ) // no default?
 					return false;
 				else
-					return hasPermission( -1, perm );
+					return this.hasPermission( -1, perm );
 			}
 
 			return perms.contains( perm );
@@ -98,18 +98,18 @@ public class SecurityCache implements ISecurityGrid
 
 	private void updateSecurityKey()
 	{
-		long lastCode = securityKey;
+		long lastCode = this.securityKey;
 
-		if ( securityProvider.size() == 1 )
-			securityKey = securityProvider.get( 0 ).getSecurityKey();
+		if ( this.securityProvider.size() == 1 )
+			this.securityKey = this.securityProvider.get( 0 ).getSecurityKey();
 		else
-			securityKey = -1;
+			this.securityKey = -1;
 
-		if ( lastCode != securityKey )
+		if ( lastCode != this.securityKey )
 		{
-			myGrid.postEvent( new MENetworkSecurityChange() );
-			for (IGridNode n : myGrid.getNodes())
-				((GridNode) n).lastSecurityKey = securityKey;
+			this.myGrid.postEvent( new MENetworkSecurityChange() );
+			for (IGridNode n : this.myGrid.getNodes())
+				((GridNode) n).lastSecurityKey = this.securityKey;
 		}
 	}
 
@@ -118,8 +118,8 @@ public class SecurityCache implements ISecurityGrid
 	{
 		if ( machine instanceof ISecurityProvider )
 		{
-			securityProvider.remove( machine );
-			updateSecurityKey();
+			this.securityProvider.remove( machine );
+			this.updateSecurityKey();
 		}
 	}
 
@@ -128,11 +128,11 @@ public class SecurityCache implements ISecurityGrid
 	{
 		if ( machine instanceof ISecurityProvider )
 		{
-			securityProvider.add( (ISecurityProvider) machine );
-			updateSecurityKey();
+			this.securityProvider.add( (ISecurityProvider) machine );
+			this.updateSecurityKey();
 		}
 		else
-			((GridNode) gridNode).lastSecurityKey = securityKey;
+			((GridNode) gridNode).lastSecurityKey = this.securityKey;
 	}
 
 	@Override
@@ -162,8 +162,8 @@ public class SecurityCache implements ISecurityGrid
 	@Override
 	public int getOwner()
 	{
-		if ( isAvailable() )
-			return securityProvider.get( 0 ).getOwner();
+		if ( this.isAvailable() )
+			return this.securityProvider.get( 0 ).getOwner();
 		return -1;
 	}
 

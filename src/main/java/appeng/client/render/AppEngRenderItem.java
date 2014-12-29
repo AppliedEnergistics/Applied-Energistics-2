@@ -102,7 +102,7 @@ public class AppEngRenderItem extends RenderItem
 				GL11.glEnable( GL11.GL_DEPTH_TEST );
 			}
 
-			long amount = aeStack != null ? aeStack.getStackSize() : is.stackSize;
+			long amount = this.aeStack != null ? this.aeStack.getStackSize() : is.stackSize;
 			if ( amount > 999999999999L )
 				amount = 999999999999L;
 

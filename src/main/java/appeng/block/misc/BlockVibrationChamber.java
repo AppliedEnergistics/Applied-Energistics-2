@@ -41,9 +41,9 @@ public class BlockVibrationChamber extends AEBaseBlock
 
 	public BlockVibrationChamber() {
 		super( BlockVibrationChamber.class, Material.iron );
-		setFeature( EnumSet.of( AEFeature.PowerGen ) );
-		setTileEntity( TileVibrationChamber.class );
-		setHardness( 4.2F );
+		this.setFeature( EnumSet.of( AEFeature.PowerGen ) );
+		this.setTileEntity( TileVibrationChamber.class );
+		this.setHardness( 4.2F );
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class BlockVibrationChamber extends AEBaseBlock
 
 		if ( Platform.isServer() )
 		{
-			TileVibrationChamber tc = getTileEntity( w, x, y, z );
+			TileVibrationChamber tc = this.getTileEntity( w, x, y, z );
 			if ( tc != null && !player.isSneaking() )
 			{
 				Platform.openGUI( player, tc, ForgeDirection.getOrientation( side ), GuiBridge.GUI_VIBRATION_CHAMBER );
@@ -69,9 +69,9 @@ public class BlockVibrationChamber extends AEBaseBlock
 	public IIcon getIcon(IBlockAccess w, int x, int y, int z, int s)
 	{
 		IIcon ico = super.getIcon( w, x, y, z, s );
-		TileVibrationChamber tvc = getTileEntity( w, x, y, z );
+		TileVibrationChamber tvc = this.getTileEntity( w, x, y, z );
 
-		if ( tvc != null && tvc.isOn && ico == getRendererInstance().getTexture( ForgeDirection.SOUTH ) )
+		if ( tvc != null && tvc.isOn && ico == this.getRendererInstance().getTexture( ForgeDirection.SOUTH ) )
 		{
 			return ExtraBlockTextures.BlockVibrationChamberFrontOn.getIcon();
 		}
@@ -85,7 +85,7 @@ public class BlockVibrationChamber extends AEBaseBlock
 		if ( !AEConfig.instance.enableEffects )
 			return;
 
-		AEBaseTile tile = getTileEntity( w, x, y, z );
+		AEBaseTile tile = this.getTileEntity( w, x, y, z );
 		if ( tile instanceof TileVibrationChamber )
 		{
 			TileVibrationChamber tc = (TileVibrationChamber) tile;

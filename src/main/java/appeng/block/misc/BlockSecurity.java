@@ -37,8 +37,8 @@ public class BlockSecurity extends AEBaseBlock
 
 	public BlockSecurity() {
 		super( BlockSecurity.class, Material.iron );
-		setFeature( EnumSet.of( AEFeature.Security ) );
-		setTileEntity( TileSecurity.class );
+		this.setFeature( EnumSet.of( AEFeature.Security ) );
+		this.setTileEntity( TileSecurity.class );
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class BlockSecurity extends AEBaseBlock
 		if ( p.isSneaking() )
 			return false;
 
-		TileSecurity tg = getTileEntity( w, x, y, z );
+		TileSecurity tg = this.getTileEntity( w, x, y, z );
 		if ( tg != null )
 		{
 			if ( Platform.isClient() )

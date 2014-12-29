@@ -43,32 +43,32 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 
 	public int getHash()
 	{
-		return hash;
+		return this.hash;
 	}
 
 	@Override
 	public IItemComparison getSpecialComparison()
 	{
-		return comp;
+		return this.comp;
 	}
 
 	private AESharedNBT(Item itemID, int damageValue) {
 		super();
-		item = itemID;
-		meta = damageValue;
+		this.item = itemID;
+		this.meta = damageValue;
 	}
 
 	public AESharedNBT(int fakeValue) {
 		super();
-		item = null;
-		meta = 0;
-		hash = fakeValue;
+		this.item = null;
+		this.meta = 0;
+		this.hash = fakeValue;
 	}
 
 	@Override
 	public NBTTagCompound getNBTTagCompoundCopy()
 	{
-		return (NBTTagCompound) copy();
+		return (NBTTagCompound) this.copy();
 	}
 
 	public static AESharedNBT createFromCompound(Item itemID, int damageValue, NBTTagCompound c)
@@ -101,7 +101,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 
 	public boolean matches(Item item, int meta, int orderlessHash)
 	{
-		return item == this.item && this.meta == meta && hash == orderlessHash;
+		return item == this.item && this.meta == meta && this.hash == orderlessHash;
 	}
 
 	public boolean comparePreciseWithRegistry(AESharedNBT tagCompound)
@@ -109,9 +109,9 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		if ( this == tagCompound )
 			return true;
 
-		if ( comp != null && tagCompound.comp != null )
+		if ( this.comp != null && tagCompound.comp != null )
 		{
-			return comp.sameAsPrecise( tagCompound.comp );
+			return this.comp.sameAsPrecise( tagCompound.comp );
 		}
 
 		return false;
@@ -124,12 +124,12 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		if ( tagCompound == null )
 			return false;
 
-		if ( comp == tagCompound.comp )
+		if ( this.comp == tagCompound.comp )
 			return true;
 
-		if ( comp != null )
+		if ( this.comp != null )
 		{
-			return comp.sameAsFuzzy( tagCompound.comp );
+			return this.comp.sameAsFuzzy( tagCompound.comp );
 		}
 
 		return false;

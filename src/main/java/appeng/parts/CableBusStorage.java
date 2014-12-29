@@ -35,7 +35,7 @@ public class CableBusStorage
 
 	protected IPartCable getCenter()
 	{
-		return center;
+		return this.center;
 	}
 
 	protected void setCenter(IPartCable center)
@@ -46,8 +46,8 @@ public class CableBusStorage
 	protected IPart getSide(ForgeDirection side)
 	{
 		int x = side.ordinal();
-		if ( sides != null && sides.length > x )
-			return sides[x];
+		if ( this.sides != null && this.sides.length > x )
+			return this.sides[x];
 
 		return null;
 	}
@@ -56,37 +56,37 @@ public class CableBusStorage
 	{
 		int x = side.ordinal();
 
-		if ( sides != null && sides.length > x && part == null )
+		if ( this.sides != null && this.sides.length > x && part == null )
 		{
-			sides[x] = null;
-			sides = shrink( sides, true );
+			this.sides[x] = null;
+			this.sides = this.shrink( this.sides, true );
 		}
 		else if ( part != null )
 		{
-			sides = grow( sides, x, true );
-			sides[x] = part;
+			this.sides = this.grow( this.sides, x, true );
+			this.sides[x] = part;
 		}
 	}
 
 	public IFacadePart getFacade(int x)
 	{
-		if ( facades != null && facades.length > x )
-			return facades[x];
+		if ( this.facades != null && this.facades.length > x )
+			return this.facades[x];
 
 		return null;
 	}
 
 	public void setFacade(int x, IFacadePart facade)
 	{
-		if ( facades != null && facades.length > x && facade == null )
+		if ( this.facades != null && this.facades.length > x && facade == null )
 		{
-			facades[x] = null;
-			facades = shrink( facades, false );
+			this.facades[x] = null;
+			this.facades = this.shrink( this.facades, false );
 		}
 		else
 		{
-			facades = grow( facades, x, false );
-			facades[x] = facade;
+			this.facades = this.grow( this.facades, x, false );
+			this.facades[x] = facade;
 		}
 	}
 

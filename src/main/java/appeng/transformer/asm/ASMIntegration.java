@@ -80,7 +80,7 @@ public class ASMIntegration implements IClassTransformer
 
 			try
 			{
-				boolean reWrite = removeOptionals( classNode );
+				boolean reWrite = this.removeOptionals( classNode );
 
 				if ( reWrite )
 				{
@@ -105,16 +105,16 @@ public class ASMIntegration implements IClassTransformer
 		{
 			for ( AnnotationNode an : classNode.visibleAnnotations )
 			{
-				if ( hasAnnotation( an, integration.Interface.class ) )
+				if ( this.hasAnnotation( an, integration.Interface.class ) )
 				{
-					if ( stripInterface( classNode, integration.Interface.class, an ) )
+					if ( this.stripInterface( classNode, integration.Interface.class, an ) )
 						changed = true;
 				}
-				else if ( hasAnnotation( an, integration.InterfaceList.class ) )
+				else if ( this.hasAnnotation( an, integration.InterfaceList.class ) )
 				{
 					for ( Object o : ( ( List ) an.values.get( 1 ) ) )
 					{
-						if ( stripInterface( classNode, integration.InterfaceList.class, ( AnnotationNode ) o ) )
+						if ( this.stripInterface( classNode, integration.InterfaceList.class, ( AnnotationNode ) o ) )
 							changed = true;
 					}
 				}
@@ -130,9 +130,9 @@ public class ASMIntegration implements IClassTransformer
 			{
 				for ( AnnotationNode an : mn.visibleAnnotations )
 				{
-					if ( hasAnnotation( an, integration.Method.class ) )
+					if ( this.hasAnnotation( an, integration.Method.class ) )
 					{
-						if ( stripMethod( classNode, mn, i, integration.Method.class, an ) )
+						if ( this.stripMethod( classNode, mn, i, integration.Method.class, an ) )
 							changed = true;
 					}
 				}
@@ -141,7 +141,7 @@ public class ASMIntegration implements IClassTransformer
 		}
 
 		if ( changed )
-			log( "Updated " + classNode.name );
+			this.log( "Updated " + classNode.name );
 
 		return changed;
 	}
@@ -166,12 +166,12 @@ public class ASMIntegration implements IClassTransformer
 			IntegrationType type = IntegrationType.valueOf( iName );
 			if ( !IntegrationRegistry.INSTANCE.isEnabled( type ) )
 			{
-				log( "Removing Method " + mn.name + " from " + classNode.name + " because " + iName + " integration is disabled." );
+				this.log( "Removing Method " + mn.name + " from " + classNode.name + " because " + iName + " integration is disabled." );
 				i.remove();
 				return true;
 			}
 			else
-				log( "Allowing Method " + mn.name + " from " + classNode.name + " because " + iName + " integration is enabled." );
+				this.log( "Allowing Method " + mn.name + " from " + classNode.name + " because " + iName + " integration is enabled." );
 		}
 		else
 			throw new RuntimeException( "Unable to handle Method annotation on " + classNode.name );
@@ -203,12 +203,12 @@ public class ASMIntegration implements IClassTransformer
 		{
 			if ( !IntegrationRegistry.INSTANCE.isEnabled( type ) )
 			{
-				log( "Removing Interface " + iFace + " from " + classNode.name + " because " + iName + " integration is disabled." );
+				this.log( "Removing Interface " + iFace + " from " + classNode.name + " because " + iName + " integration is disabled." );
 				classNode.interfaces.remove( iFace.replace( '.', '/' ) );
 				return true;
 			}
 			else
-				log( "Allowing Interface " + iFace + " from " + classNode.name + " because " + iName + " integration is enabled." );
+				this.log( "Allowing Interface " + iFace + " from " + classNode.name + " because " + iName + " integration is enabled." );
 		}
 		else
 			throw new RuntimeException( "Unable to handle Method annotation on " + classNode.name );

@@ -33,31 +33,31 @@ public class RB extends BaseModule implements IRB
 		final private IOrientable internal;
 
 		public RBWrapper(IOrientable ww) {
-			internal = ww;
+			this.internal = ww;
 		}
 
 		@Override
 		public boolean canBeRotated()
 		{
-			return internal.canBeRotated();
+			return this.internal.canBeRotated();
 		}
 
 		@Override
 		public ForgeDirection getForward()
 		{
-			return internal.getForward();
+			return this.internal.getForward();
 		}
 
 		@Override
 		public ForgeDirection getUp()
 		{
-			return internal.getUp();
+			return this.internal.getUp();
 		}
 
 		@Override
 		public void setOrientation(ForgeDirection Forward, ForgeDirection Up)
 		{
-			internal.setOrientation( Forward, Up );
+			this.internal.setOrientation( Forward, Up );
 		}
 
 	}
@@ -67,7 +67,7 @@ public class RB extends BaseModule implements IRB
 	@Override
 	public void Init() throws Throwable
 	{
-		TestClass( IOrientable.class );
+		this.TestClass( IOrientable.class );
 	}
 
 	@Override

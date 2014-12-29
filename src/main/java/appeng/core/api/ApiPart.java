@@ -69,7 +69,7 @@ public class ApiPart implements IPartHelper
 
 	public void initFMPSupport()
 	{
-		for (Class layerInterface : interfaces2Layer.keySet())
+		for (Class layerInterface : this.interfaces2Layer.keySet())
 		{
 			if ( AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
 				((IFMP) AppEng.instance.getIntegration( IntegrationType.FMP )).registerPassThrough( layerInterface );
@@ -82,7 +82,7 @@ public class ApiPart implements IPartHelper
 		Class clazz = null;
 		try
 		{
-			ClassLoader loader = getClass().getClassLoader();// ClassLoader.getSystemClassLoader();
+			ClassLoader loader = this.getClass().getClassLoader();// ClassLoader.getSystemClassLoader();
 			Class<ClassLoader> root = ClassLoader.class;
 			Class<? extends ClassLoader> cls = loader.getClass();
 			Method defineClassMethod = root.getDeclaredMethod( "defineClass", String.class, byte[].class, int.class, int.class );
@@ -118,7 +118,7 @@ public class ApiPart implements IPartHelper
 		{
 			ClassReader cr;
 			String path = '/' + name.replace( ".", "/" ) + ".class";
-			InputStream is = getClass().getResourceAsStream( path );
+			InputStream is = this.getClass().getResourceAsStream( path );
 			cr = new ClassReader( is );
 			ClassNode cn = new ClassNode();
 			cr.accept( cn, ClassReader.EXPAND_FRAMES );
@@ -132,7 +132,7 @@ public class ApiPart implements IPartHelper
 
 	public Class getCombinedInstance(String base)
 	{
-		if ( desc.size() == 0 )
+		if ( this.desc.size() == 0 )
 		{
 			try
 			{
@@ -144,13 +144,13 @@ public class ApiPart implements IPartHelper
 			}
 		}
 
-		String description = base + ':' + Joiner.on( ";" ).skipNulls().join( desc.iterator() );
+		String description = base + ':' + Joiner.on( ";" ).skipNulls().join( this.desc.iterator() );
 
-		if ( tileImplementations.get( description ) != null )
+		if ( this.tileImplementations.get( description ) != null )
 		{
 			try
 			{
-				return tileImplementations.get( description );
+				return this.tileImplementations.get( description );
 			}
 			catch (Throwable t)
 			{
@@ -181,12 +181,12 @@ public class ApiPart implements IPartHelper
 
 		String path = f;
 
-		for (String name : desc)
+		for (String name : this.desc)
 		{
 			try
 			{
 				String newPath = path + ';' + name;
-				myCLass = getClassByDesc( Addendum, newPath, f, interfaces2Layer.get( Class.forName( name ) ) );
+				myCLass = this.getClassByDesc( Addendum, newPath, f, this.interfaces2Layer.get( Class.forName( name ) ) );
 				path = newPath;
 			}
 			catch (Throwable t)
@@ -198,7 +198,7 @@ public class ApiPart implements IPartHelper
 			f = myCLass.getName();
 		}
 
-		tileImplementations.put( description, myCLass );
+		this.tileImplementations.put( description, myCLass );
 
 		try
 		{
@@ -218,7 +218,7 @@ public class ApiPart implements IPartHelper
 		@Override
 		public String map(String typeName)
 		{
-			String o = inputOutput.get( typeName );
+			String o = this.inputOutput.get( typeName );
 			if ( o == null )
 				return typeName;
 			return o;
@@ -228,11 +228,11 @@ public class ApiPart implements IPartHelper
 
 	public Class getClassByDesc(String Addendum, String fullPath, String root, String next)
 	{
-		if ( roots.get( fullPath ) != null )
-			return roots.get( fullPath );
+		if ( this.roots.get( fullPath ) != null )
+			return this.roots.get( fullPath );
 
 		ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
-		ClassNode n = getReader( next );
+		ClassNode n = this.getReader( next );
 		String originalName = n.name;
 
 		try
@@ -250,7 +250,7 @@ public class ApiPart implements IPartHelper
 			Iterator<AbstractInsnNode> i = mn.instructions.iterator();
 			while (i.hasNext())
 			{
-				processNode( i.next(), n.superName );
+				this.processNode( i.next(), n.superName );
 			}
 		}
 
@@ -263,7 +263,7 @@ public class ApiPart implements IPartHelper
 		// n.accept( new TraceClassVisitor( new PrintWriter( System.out ) ) );
 		byte[] byteArray = cw.toByteArray();
 		int size = byteArray.length;
-		Class clazz = loadClass( n.name.replace( "/", "." ), byteArray );
+		Class clazz = this.loadClass( n.name.replace( "/", "." ), byteArray );
 
 		try
 		{
@@ -311,7 +311,7 @@ public class ApiPart implements IPartHelper
 			AELog.error( t );
 		}
 
-		roots.put( fullPath, clazz );
+		this.roots.put( fullPath, clazz );
 		return clazz;
 	}
 
@@ -346,10 +346,10 @@ public class ApiPart implements IPartHelper
 		try
 		{
 			final Class<?> layerInterfaceClass = Class.forName( layerInterface );
-			if ( interfaces2Layer.get( layerInterfaceClass ) == null )
+			if ( this.interfaces2Layer.get( layerInterfaceClass ) == null )
 			{
-				interfaces2Layer.put( layerInterfaceClass, layer );
-				desc.add( layerInterface );
+				this.interfaces2Layer.put( layerInterfaceClass, layer );
+				this.desc.add( layerInterface );
 				return true;
 			}
 			else

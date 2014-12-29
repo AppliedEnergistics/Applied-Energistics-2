@@ -38,9 +38,9 @@ public class RenderBlockController extends BaseBlockRender
 	public boolean renderInWorld(AEBaseBlock blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
 	{
 
-		boolean xx = getTileEntity( world, x - 1, y, z ) instanceof TileController && getTileEntity( world, x + 1, y, z ) instanceof TileController;
-		boolean yy = getTileEntity( world, x, y - 1, z ) instanceof TileController && getTileEntity( world, x, y + 1, z ) instanceof TileController;
-		boolean zz = getTileEntity( world, x, y, z - 1 ) instanceof TileController && getTileEntity( world, x, y, z + 1 ) instanceof TileController;
+		boolean xx = this.getTileEntity( world, x - 1, y, z ) instanceof TileController && this.getTileEntity( world, x + 1, y, z ) instanceof TileController;
+		boolean yy = this.getTileEntity( world, x, y - 1, z ) instanceof TileController && this.getTileEntity( world, x, y + 1, z ) instanceof TileController;
+		boolean zz = this.getTileEntity( world, x, y, z - 1 ) instanceof TileController && this.getTileEntity( world, x, y, z + 1 ) instanceof TileController;
 
 		int meta = world.getBlockMetadata( x, y, z );
 		boolean hasPower = meta > 0;

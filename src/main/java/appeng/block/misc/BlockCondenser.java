@@ -35,8 +35,8 @@ public class BlockCondenser extends AEBaseBlock
 
 	public BlockCondenser() {
 		super( BlockCondenser.class, Material.iron );
-		setFeature( EnumSet.of( AEFeature.Core ) );
-		setTileEntity( TileCondenser.class );
+		this.setFeature( EnumSet.of( AEFeature.Core ) );
+		this.setTileEntity( TileCondenser.class );
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class BlockCondenser extends AEBaseBlock
 
 		if ( Platform.isServer() )
 		{
-			TileCondenser tc = getTileEntity( w, x, y, z );
+			TileCondenser tc = this.getTileEntity( w, x, y, z );
 			if ( tc != null && !player.isSneaking() )
 			{
 				Platform.openGUI( player, tc, ForgeDirection.getOrientation(side), GuiBridge.GUI_CONDENSER );

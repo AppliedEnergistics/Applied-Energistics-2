@@ -36,7 +36,7 @@ public class VoidFluidInventory implements IMEInventoryHandler<IAEFluidStack>
 
 	public VoidFluidInventory( TileCondenser te )
 	{
-		target = te;
+		this.target = te;
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class VoidFluidInventory implements IMEInventoryHandler<IAEFluidStack>
 			return null;
 
 		if ( input != null )
-			target.addPower( input.getStackSize() / 1000.0 );
+			this.target.addPower( input.getStackSize() / 1000.0 );
 		return null;
 	}
 

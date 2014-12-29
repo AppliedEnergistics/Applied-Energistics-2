@@ -36,7 +36,7 @@ public class VoidItemInventory implements IMEInventoryHandler<IAEItemStack>
 
 	public VoidItemInventory( TileCondenser te )
 	{
-		target = te;
+		this.target = te;
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class VoidItemInventory implements IMEInventoryHandler<IAEItemStack>
 			return null;
 
 		if ( input != null )
-			target.addPower( input.getStackSize() );
+			this.target.addPower( input.getStackSize() );
 		return null;
 	}
 

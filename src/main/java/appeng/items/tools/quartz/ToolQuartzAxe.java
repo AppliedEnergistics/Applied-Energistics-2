@@ -41,7 +41,7 @@ public class ToolQuartzAxe extends ItemAxe implements IAEFeature
 	public ToolQuartzAxe( AEFeature Type )
 	{
 		super( ToolMaterial.IRON );
-		this.feature = new ItemFeatureHandler( EnumSet.of( type = Type, AEFeature.QuartzAxe ), this, this, Optional.of( Type.name() ) );
+		this.feature = new ItemFeatureHandler( EnumSet.of( this.type = Type, AEFeature.QuartzAxe ), this, this, Optional.of( Type.name() ) );
 	}
 
 	@Override
@@ -59,6 +59,6 @@ public class ToolQuartzAxe extends ItemAxe implements IAEFeature
 	@Override
 	public boolean getIsRepairable( ItemStack a, ItemStack b )
 	{
-		return Platform.canRepair( type, a, b );
+		return Platform.canRepair( this.type, a, b );
 	}
 }

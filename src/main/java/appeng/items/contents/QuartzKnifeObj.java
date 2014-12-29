@@ -27,13 +27,13 @@ public class QuartzKnifeObj implements IGuiItemObject
 	final ItemStack is;
 
 	public QuartzKnifeObj(ItemStack o) {
-		is = o;
+		this.is = o;
 	}
 
 	@Override
 	public ItemStack getItemStack()
 	{
-		return is;
+		return this.is;
 	}
 
 }

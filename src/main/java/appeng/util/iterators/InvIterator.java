@@ -32,20 +32,20 @@ public class InvIterator implements Iterator<ItemStack>
 	int x = 0;
 
 	public InvIterator(IInventory i) {
-		inv = i;
-		size = inv.getSizeInventory();
+		this.inv = i;
+		this.size = this.inv.getSizeInventory();
 	}
 
 	@Override
 	public boolean hasNext()
 	{
-		return x < size;
+		return this.x < this.size;
 	}
 
 	@Override
 	public ItemStack next()
 	{
-		return inv.getStackInSlot( x++ );
+		return this.inv.getStackInSlot( this.x++ );
 	}
 
 	@Override

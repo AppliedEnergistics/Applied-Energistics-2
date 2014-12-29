@@ -33,7 +33,7 @@ public class AENetworkProxyMultiblock extends AENetworkProxy implements IGridMul
 
 	IAECluster getCluster()
 	{
-		return ((IAEMultiBlock) getMachine()).getCluster();
+		return ((IAEMultiBlock) this.getMachine()).getCluster();
 	}
 
 	public AENetworkProxyMultiblock(IGridProxyable te, String nbtName, ItemStack itemStack, boolean inWorld) {
@@ -43,9 +43,9 @@ public class AENetworkProxyMultiblock extends AENetworkProxy implements IGridMul
 	@Override
 	public Iterator<IGridNode> getMultiblockNodes()
 	{
-		if ( getCluster() == null )
+		if ( this.getCluster() == null )
 			return new ChainedIterator<IGridNode>();
 
-		return new ProxyNodeIterator( getCluster().getTiles() );
+		return new ProxyNodeIterator( this.getCluster().getTiles() );
 	}
 }

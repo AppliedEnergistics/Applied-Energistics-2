@@ -41,26 +41,26 @@ public class SyncData
 	private final int channel;
 
 	public SyncData(AEBaseContainer container, Field field, GuiSync annotation) {
-		clientVersion = null;
+		this.clientVersion = null;
 		this.source = container;
 		this.field = field;
-		channel = annotation.value();
+		this.channel = annotation.value();
 	}
 
 	public int getChannel()
 	{
-		return channel;
+		return this.channel;
 	}
 
 	public void tick(ICrafting c)
 	{
 		try
 		{
-			Object val = field.get( source );
-			if ( val != null && clientVersion == null )
-				send( c, val );
-			else if ( !val.equals( clientVersion ) )
-				send( c, val );
+			Object val = this.field.get( this.source );
+			if ( val != null && this.clientVersion == null )
+				this.send( c, val );
+			else if ( !val.equals( this.clientVersion ) )
+				this.send( c, val );
 		}
 		catch (IllegalArgumentException e)
 		{
@@ -80,11 +80,11 @@ public class SyncData
 	{
 		try
 		{
-			Object oldValue = field.get( source );
+			Object oldValue = this.field.get( this.source );
 			if ( val instanceof String )
-				updateString( oldValue, (String) val );
+				this.updateString( oldValue, (String) val );
 			else
-				updateValue( oldValue, (Long) val );
+				this.updateValue( oldValue, (Long) val );
 		}
 		catch (IllegalArgumentException e)
 		{
@@ -101,7 +101,7 @@ public class SyncData
 	{
 		try
 		{
-			field.set( source, val );
+			this.field.set( this.source, val );
 		}
 		catch (IllegalArgumentException e)
 		{
@@ -117,35 +117,35 @@ public class SyncData
 	{
 		try
 		{
-			if ( field.getType().isEnum() )
+			if ( this.field.getType().isEnum() )
 			{
-				EnumSet<? extends Enum> valList = EnumSet.allOf( (Class<? extends Enum>) field.getType() );
+				EnumSet<? extends Enum> valList = EnumSet.allOf( (Class<? extends Enum>) this.field.getType() );
 				for (Enum e : valList)
 				{
 					if ( e.ordinal() == val )
 					{
-						field.set( source, e );
+						this.field.set( this.source, e );
 						break;
 					}
 				}
 			}
 			else
 			{
-				if ( field.getType().equals( int.class ) )
-					field.set( source, (int) val );
-				else if ( field.getType().equals( long.class ) )
-					field.set( source, val );
-				else if ( field.getType().equals( boolean.class ) )
-					field.set( source, val == 1 );
-				else if ( field.getType().equals( Integer.class ) )
-					field.set( source, (int) val );
-				else if ( field.getType().equals( Long.class ) )
-					field.set( source, val );
-				else if ( field.getType().equals( Boolean.class ) )
-					field.set( source, val == 1 );
+				if ( this.field.getType().equals( int.class ) )
+					this.field.set( this.source, (int) val );
+				else if ( this.field.getType().equals( long.class ) )
+					this.field.set( this.source, val );
+				else if ( this.field.getType().equals( boolean.class ) )
+					this.field.set( this.source, val == 1 );
+				else if ( this.field.getType().equals( Integer.class ) )
+					this.field.set( this.source, (int) val );
+				else if ( this.field.getType().equals( Long.class ) )
+					this.field.set( this.source, val );
+				else if ( this.field.getType().equals( Boolean.class ) )
+					this.field.set( this.source, val == 1 );
 			}
 
-			source.onUpdate( field.getName(), oldValue, field.get( source ) );
+			this.source.onUpdate( this.field.getName(), oldValue, this.field.get( this.source ) );
 		}
 		catch (IllegalArgumentException e)
 		{
@@ -162,25 +162,25 @@ public class SyncData
 		if ( val instanceof String )
 		{
 			if ( o instanceof EntityPlayerMP )
-				NetworkHandler.instance.sendTo( new PacketValueConfig( "SyncDat." + channel, (String) val ), (EntityPlayerMP) o );
+				NetworkHandler.instance.sendTo( new PacketValueConfig( "SyncDat." + this.channel, (String) val ), (EntityPlayerMP) o );
 		}
-		else if ( field.getType().isEnum() )
+		else if ( this.field.getType().isEnum() )
 		{
-			o.sendProgressBarUpdate( source, channel, ((Enum) val).ordinal() );
+			o.sendProgressBarUpdate( this.source, this.channel, ((Enum) val).ordinal() );
 		}
 		else if ( val instanceof Long || val.getClass() == long.class )
 		{
-			NetworkHandler.instance.sendTo( new PacketProgressBar( channel, (Long) val ), (EntityPlayerMP) o );
+			NetworkHandler.instance.sendTo( new PacketProgressBar( this.channel, (Long) val ), (EntityPlayerMP) o );
 		}
 		else if ( val instanceof Boolean || val.getClass() == boolean.class )
 		{
-			o.sendProgressBarUpdate( source, channel, ((Boolean) val) ? 1 : 0 );
+			o.sendProgressBarUpdate( this.source, this.channel, ((Boolean) val) ? 1 : 0 );
 		}
 		else
 		{
-			o.sendProgressBarUpdate( source, channel, (Integer) val );
+			o.sendProgressBarUpdate( this.source, this.channel, (Integer) val );
 		}
 
-		clientVersion = val;
+		this.clientVersion = val;
 	}
 }

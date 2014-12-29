@@ -35,20 +35,20 @@ public class OptionalSlotFake extends SlotFake
 
 	public OptionalSlotFake(IInventory inv, IOptionalSlotHost containerBus, int idx, int x, int y, int offX, int offY, int groupNum) {
 		super( inv, idx, x + offX * 18, y + offY * 18 );
-		srcX = x;
-		srcY = y;
-		invSlot = idx;
+		this.srcX = x;
+		this.srcY = y;
+		this.invSlot = idx;
 		this.groupNum = groupNum;
-		host = containerBus;
+		this.host = containerBus;
 	}
 
 	@Override
 	public ItemStack getStack()
 	{
-		if ( !isEnabled() )
+		if ( !this.isEnabled() )
 		{
-			if ( getDisplayStack() != null )
-				clearStack();
+			if ( this.getDisplayStack() != null )
+				this.clearStack();
 		}
 
 		return super.getStack();
@@ -57,15 +57,15 @@ public class OptionalSlotFake extends SlotFake
 	@Override
 	public boolean isEnabled()
 	{
-		if ( host == null )
+		if ( this.host == null )
 			return false;
 
-		return host.isSlotEnabled( groupNum );
+		return this.host.isSlotEnabled( this.groupNum );
 	}
 
 	public boolean renderDisabled()
 	{
-		return renderDisabled;
+		return this.renderDisabled;
 	}
 
 }

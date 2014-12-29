@@ -45,7 +45,7 @@ public class ContainerIOPort extends ContainerUpgradeable
 
 	public ContainerIOPort(InventoryPlayer ip, TileIOPort te) {
 		super( ip, te );
-		ioPort = te;
+		this.ioPort = te;
 	}
 
 	@Override
@@ -72,37 +72,37 @@ public class ContainerIOPort extends ContainerUpgradeable
 		int offX = 19;
 		int offY = 17;
 
-		IInventory cells = upgradeable.getInventoryByName( "cells" );
+		IInventory cells = this.upgradeable.getInventoryByName( "cells" );
 
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 2; x++)
-				addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, cells, x + y * 2, offX + x * 18, offY + y * 18, invPlayer ) );
+				this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, cells, x + y * 2, offX + x * 18, offY + y * 18, this.invPlayer ) );
 
 		offX = 122;
 		offY = 17;
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 2; x++)
-				addSlotToContainer( new SlotOutput( cells, 6 + x + y * 2, offX + x * 18, offY + y * 18, SlotRestrictedInput.PlacableItemType.STORAGE_CELLS.IIcon ) );
+				this.addSlotToContainer( new SlotOutput( cells, 6 + x + y * 2, offX + x * 18, offY + y * 18, SlotRestrictedInput.PlacableItemType.STORAGE_CELLS.IIcon ) );
 
-		IInventory upgrades = upgradeable.getInventoryByName( "upgrades" );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, invPlayer )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, invPlayer )).setNotDraggable() );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, invPlayer )).setNotDraggable() );
+		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
+		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer )).setNotDraggable() );
+		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer )).setNotDraggable() );
+		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer )).setNotDraggable() );
 	}
 
 	@Override
 	public void detectAndSendChanges()
 	{
-		verifyPermissions( SecurityPermissions.BUILD, false );
+		this.verifyPermissions( SecurityPermissions.BUILD, false );
 
 		if ( Platform.isServer() )
 		{
-			this.opMode = (OperationMode) upgradeable.getConfigManager().getSetting( Settings.OPERATION_MODE );
+			this.opMode = (OperationMode) this.upgradeable.getConfigManager().getSetting( Settings.OPERATION_MODE );
 			this.fMode = (FullnessMode) this.upgradeable.getConfigManager().getSetting( Settings.FULLNESS_MODE );
 			this.rsMode = (RedstoneMode) this.upgradeable.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
 		}
 
-		standardDetectAndSendChanges();
+		this.standardDetectAndSendChanges();
 	}
 
 }

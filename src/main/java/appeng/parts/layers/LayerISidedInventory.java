@@ -65,7 +65,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 
 		for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			IPart bp = getPart( side );
+			IPart bp = this.getPart( side );
 			if ( bp instanceof ISidedInventory )
 			{
 				ISidedInventory part = (ISidedInventory) bp;
@@ -92,7 +92,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 
 				ForgeDirection currentSide = ForgeDirection.UNKNOWN;
 				for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-					if ( getPart( side ) == sides )
+					if ( this.getPart( side ) == sides )
 					{
 						currentSide = side;
 						break;
@@ -108,9 +108,9 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 		}
 
 		if ( sideData == null || slots == null )
-			invLayer = null;
+			this.invLayer = null;
 		else
-			invLayer = new InvLayerData( sideData, inventories, slots );
+			this.invLayer = new InvLayerData( sideData, inventories, slots );
 
 		// make sure inventory is updated before we call FMP.
 		super.notifyNeighbors();
@@ -119,71 +119,71 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	@Override
 	public ItemStack decrStackSize(int slot, int amount)
 	{
-		if ( invLayer == null )
+		if ( this.invLayer == null )
 			return null;
 
-		return invLayer.decreaseStackSize( slot, amount );
+		return this.invLayer.decreaseStackSize( slot, amount );
 	}
 
 	@Override
 	public int getSizeInventory()
 	{
-		if ( invLayer == null )
+		if ( this.invLayer == null )
 			return 0;
 
-		return invLayer.getSizeInventory();
+		return this.invLayer.getSizeInventory();
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int slot)
 	{
-		if ( invLayer == null )
+		if ( this.invLayer == null )
 			return null;
 
-		return invLayer.getStackInSlot( slot );
+		return this.invLayer.getStackInSlot( slot );
 	}
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack itemstack)
 	{
-		if ( invLayer == null )
+		if ( this.invLayer == null )
 			return false;
 
-		return invLayer.isItemValidForSlot( slot, itemstack );
+		return this.invLayer.isItemValidForSlot( slot, itemstack );
 	}
 
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack itemstack)
 	{
-		if ( invLayer == null )
+		if ( this.invLayer == null )
 			return;
 
-		invLayer.setInventorySlotContents( slot, itemstack );
+		this.invLayer.setInventorySlotContents( slot, itemstack );
 	}
 
 	@Override
 	public boolean canExtractItem(int slot, ItemStack itemstack, int side)
 	{
-		if ( invLayer == null )
+		if ( this.invLayer == null )
 			return false;
 
-		return invLayer.canExtractItem( slot, itemstack, side );
+		return this.invLayer.canExtractItem( slot, itemstack, side );
 	}
 
 	@Override
 	public boolean canInsertItem(int slot, ItemStack itemstack, int side)
 	{
-		if ( invLayer == null )
+		if ( this.invLayer == null )
 			return false;
 
-		return invLayer.canInsertItem( slot, itemstack, side );
+		return this.invLayer.canInsertItem( slot, itemstack, side );
 	}
 
 	@Override
 	public void markDirty()
 	{
-		if ( invLayer != null )
-			invLayer.markDirty();
+		if ( this.invLayer != null )
+			this.invLayer.markDirty();
 
 		super.markForSave();
 	}
@@ -191,8 +191,8 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		if ( invLayer != null )
-			return invLayer.getAccessibleSlotsFromSide( side );
+		if ( this.invLayer != null )
+			return this.invLayer.getAccessibleSlotsFromSide( side );
 
 		return nullSides;
 	}

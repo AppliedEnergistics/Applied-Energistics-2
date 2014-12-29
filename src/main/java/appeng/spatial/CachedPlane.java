@@ -54,56 +54,56 @@ public class CachedPlane
 		private final ExtendedBlockStorage[] storage;
 
 		public Column(Chunk _c, int _x, int _z, int cy, int chunkHeight) {
-			x = _x;
-			z = _z;
-			c = _c;
-			storage = c.getBlockStorageArray();
+			this.x = _x;
+			this.z = _z;
+			this.c = _c;
+			this.storage = this.c.getBlockStorageArray();
 
 			// make sure storage exists before hand...
 			for (int ay = 0; ay < chunkHeight; ay++)
 			{
 				int by = (ay + cy);
-				ExtendedBlockStorage extendedblockstorage = storage[by];
+				ExtendedBlockStorage extendedblockstorage = this.storage[by];
 				if ( extendedblockstorage == null )
-					extendedblockstorage = storage[by] = new ExtendedBlockStorage( by << 4, !c.worldObj.provider.hasNoSky );
+					extendedblockstorage = this.storage[by] = new ExtendedBlockStorage( by << 4, !this.c.worldObj.provider.hasNoSky );
 			}
 		}
 
 		public void setBlockIDWithMetadata(int y, Object[] blk)
 		{
-			if ( blk[0] == matrixFrame )
+			if ( blk[0] == CachedPlane.this.matrixFrame )
 				blk[0] = Platform.air;
 
-			ExtendedBlockStorage extendedBlockStorage = storage[y >> 4];
-			extendedBlockStorage.func_150818_a( x, y & 15, z, (Block) blk[0] );
+			ExtendedBlockStorage extendedBlockStorage = this.storage[y >> 4];
+			extendedBlockStorage.func_150818_a( this.x, y & 15, this.z, (Block) blk[0] );
 			// extendedBlockStorage.setExtBlockID( x, y & 15, z, blk[0] );
-			extendedBlockStorage.setExtBlockMetadata( x, y & 15, z, (Integer) blk[1] );
-			extendedBlockStorage.setExtBlocklightValue( x, y & 15, z, (Integer) blk[2] );
+			extendedBlockStorage.setExtBlockMetadata( this.x, y & 15, this.z, (Integer) blk[1] );
+			extendedBlockStorage.setExtBlocklightValue( this.x, y & 15, this.z, (Integer) blk[2] );
 		}
 
 		public Object[] getDetails(int y)
 		{
-			ExtendedBlockStorage extendedblockstorage = storage[y >> 4];
-			ch[0] = extendedblockstorage.getBlockByExtId( x, y & 15, z );
-			ch[1] = extendedblockstorage.getExtBlockMetadata( x, y & 15, z );
-			ch[2] = extendedblockstorage.getExtBlocklightValue( x, y & 15, z );
-			return ch;
+			ExtendedBlockStorage extendedblockstorage = this.storage[y >> 4];
+			this.ch[0] = extendedblockstorage.getBlockByExtId( this.x, y & 15, this.z );
+			this.ch[1] = extendedblockstorage.getExtBlockMetadata( this.x, y & 15, this.z );
+			this.ch[2] = extendedblockstorage.getExtBlocklightValue( this.x, y & 15, this.z );
+			return this.ch;
 		}
 
 		public boolean doNotSkip(int y)
 		{
-			ExtendedBlockStorage extendedblockstorage = storage[y >> 4];
-			if ( reg.isBlacklisted( extendedblockstorage.getBlockByExtId( x, y & 15, z ) ) )
+			ExtendedBlockStorage extendedblockstorage = this.storage[y >> 4];
+			if ( CachedPlane.this.reg.isBlacklisted( extendedblockstorage.getBlockByExtId( this.x, y & 15, this.z ) ) )
 				return false;
 
-			return skipThese == null || !skipThese.contains( y );
+			return this.skipThese == null || !this.skipThese.contains( y );
 		}
 
 		public void setSkip(int yCoord)
 		{
-			if ( skipThese == null )
-				skipThese = new LinkedList<Integer>();
-			skipThese.add( yCoord );
+			if ( this.skipThese == null )
+				this.skipThese = new LinkedList<Integer>();
+			this.skipThese.add( yCoord );
 		}
 
 	}
@@ -136,15 +136,15 @@ public class CachedPlane
 
 	public CachedPlane(World w, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
 
-		world = w;
+		this.world = w;
 
-		x_size = maxX - minX + 1;
-		y_size = maxY - minY + 1;
-		z_size = maxZ - minZ + 1;
+		this.x_size = maxX - minX + 1;
+		this.y_size = maxY - minY + 1;
+		this.z_size = maxZ - minZ + 1;
 
-		x_offset = minX;
-		y_offset = minY;
-		z_offset = minZ;
+		this.x_offset = minX;
+		this.y_offset = minY;
+		this.z_offset = minZ;
 
 		int minCX = minX >> 4;
 		int minCY = minY >> 4;
@@ -153,35 +153,35 @@ public class CachedPlane
 		int maxCY = maxY >> 4;
 		int maxCZ = maxZ >> 4;
 
-		cx_size = maxCX - minCX + 1;
+		this.cx_size = maxCX - minCX + 1;
 		int cy_size = maxCY - minCY + 1;
-		cz_size = maxCZ - minCZ + 1;
+		this.cz_size = maxCZ - minCZ + 1;
 
-		myChunks = new Chunk[cx_size][cz_size];
-		myColumns = new Column[x_size][z_size];
+		this.myChunks = new Chunk[this.cx_size][this.cz_size];
+		this.myColumns = new Column[this.x_size][this.z_size];
 
-		verticalBits = 0;
+		this.verticalBits = 0;
 		for (int cy = 0; cy < cy_size; cy++)
 		{
-			verticalBits |= 1 << (minCY + cy);
+			this.verticalBits |= 1 << (minCY + cy);
 		}
 
-		for (int x = 0; x < x_size; x++)
-			for (int z = 0; z < z_size; z++)
+		for (int x = 0; x < this.x_size; x++)
+			for (int z = 0; z < this.z_size; z++)
 			{
-				myColumns[x][z] = new Column( w.getChunkFromChunkCoords( (minX + x) >> 4, (minZ + z) >> 4 ), (minX + x) & 0xF, (minZ + z) & 0xF, minCY, cy_size );
+				this.myColumns[x][z] = new Column( w.getChunkFromChunkCoords( (minX + x) >> 4, (minZ + z) >> 4 ), (minX + x) & 0xF, (minZ + z) & 0xF, minCY, cy_size );
 			}
 
 		IMovableRegistry mr = AEApi.instance().registries().movable();
 
-		for (int cx = 0; cx < cx_size; cx++)
-			for (int cz = 0; cz < cz_size; cz++)
+		for (int cx = 0; cx < this.cx_size; cx++)
+			for (int cz = 0; cz < this.cz_size; cz++)
 			{
 				LinkedList<Entry<ChunkPosition, TileEntity>> rawTiles = new LinkedList<Entry<ChunkPosition, TileEntity>>();
 				LinkedList<ChunkPosition> deadTiles = new LinkedList<ChunkPosition>();
 
 				Chunk c = w.getChunkFromChunkCoords( minCX + cx, minCZ + cz );
-				myChunks[cx][cz] = c;
+				this.myChunks[cx][cz] = c;
 
 				rawTiles.addAll( ( ( HashMap<ChunkPosition, TileEntity> ) c.chunkTileEntityMap ).entrySet() );
 				for (Entry<ChunkPosition, TileEntity> tx : rawTiles)
@@ -192,12 +192,12 @@ public class CachedPlane
 					{
 						if ( mr.askToMove( te ) )
 						{
-							tiles.add( te );
+							this.tiles.add( te );
 							deadTiles.add( cp );
 						}
 						else
 						{
-							Object[] details = myColumns[te.xCoord - minX][te.zCoord - minZ].getDetails( te.yCoord );
+							Object[] details = this.myColumns[te.xCoord - minX][te.zCoord - minZ].getDetails( te.yCoord );
 							Block blk = (Block) details[0];
 
 							// don't skip air, just let the code replace it...
@@ -208,7 +208,7 @@ public class CachedPlane
 								c.worldObj.notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, Platform.air );
 							}
 							else
-								myColumns[te.xCoord - minX][te.zCoord - minZ].setSkip( te.yCoord );
+								this.myColumns[te.xCoord - minX][te.zCoord - minZ].setSkip( te.yCoord );
 						}
 					}
 				}
@@ -218,8 +218,8 @@ public class CachedPlane
 					c.chunkTileEntityMap.remove( cp );
 				}
 
-				long k = world.getTotalWorldTime();
-				List list = world.getPendingBlockUpdates( c, false );
+				long k = this.world.getTotalWorldTime();
+				List list = this.world.getPendingBlockUpdates( c, false );
 				if ( list != null )
 				{
 					for (Object o : list)
@@ -230,18 +230,18 @@ public class CachedPlane
 						{
 							NextTickListEntry newEntry = new NextTickListEntry( entry.xCoord, entry.yCoord, entry.zCoord, entry.func_151351_a() );
 							newEntry.scheduledTime = entry.scheduledTime - k;
-							ticks.add( newEntry );
+							this.ticks.add( newEntry );
 						}
 					}
 				}
 
 			}
 
-		for (TileEntity te : tiles)
+		for (TileEntity te : this.tiles)
 		{
 			try
 			{
-				world.loadedTileEntityList.remove( te );
+				this.world.loadedTileEntityList.remove( te );
 			}
 			catch (Exception e)
 			{
@@ -260,22 +260,22 @@ public class CachedPlane
 	{
 		IMovableRegistry mr = AEApi.instance().registries().movable();
 
-		if ( dst.x_size == x_size && dst.y_size == y_size && dst.z_size == z_size )
+		if ( dst.x_size == this.x_size && dst.y_size == this.y_size && dst.z_size == this.z_size )
 		{
-			AELog.info( "Block Copy Scale: " + x_size + ", " + y_size + ", " + z_size );
+			AELog.info( "Block Copy Scale: " + this.x_size + ", " + this.y_size + ", " + this.z_size );
 
 			long startTime = System.nanoTime();
 
-			for (int x = 0; x < x_size; x++)
+			for (int x = 0; x < this.x_size; x++)
 			{
-				for (int z = 0; z < z_size; z++)
+				for (int z = 0; z < this.z_size; z++)
 				{
-					Column a = myColumns[x][z];
+					Column a = this.myColumns[x][z];
 					Column b = dst.myColumns[x][z];
 
-					for (int y = 0; y < y_size; y++)
+					for (int y = 0; y < this.y_size; y++)
 					{
-						int src_y = y + y_offset;
+						int src_y = y + this.y_offset;
 						int dst_y = y + dst.y_offset;
 
 						if ( a.doNotSkip( src_y ) && b.doNotSkip( dst_y ) )
@@ -288,7 +288,7 @@ public class CachedPlane
 						}
 						else
 						{
-							markForUpdate( x + x_offset, src_y, z + z_offset );
+							this.markForUpdate( x + this.x_offset, src_y, z + this.z_offset );
 							dst.markForUpdate( x + dst.x_offset, dst_y, z + dst.z_offset );
 						}
 					}
@@ -300,28 +300,28 @@ public class CachedPlane
 			long duration = endTime - startTime;
 			AELog.info( "Block Copy Time: " + duration );
 
-			for (TileEntity te : tiles)
+			for (TileEntity te : this.tiles)
 			{
-				dst.addTile( te.xCoord - x_offset, te.yCoord - y_offset, te.zCoord - z_offset, te, this, mr );
+				dst.addTile( te.xCoord - this.x_offset, te.yCoord - this.y_offset, te.zCoord - this.z_offset, te, this, mr );
 			}
 
 			for (TileEntity te : dst.tiles)
 			{
-				addTile( te.xCoord - dst.x_offset, te.yCoord - dst.y_offset, te.zCoord - dst.z_offset, te, dst, mr );
+				this.addTile( te.xCoord - dst.x_offset, te.yCoord - dst.y_offset, te.zCoord - dst.z_offset, te, dst, mr );
 			}
 
-			for (NextTickListEntry entry : ticks)
+			for (NextTickListEntry entry : this.ticks)
 			{
-				dst.addTick( entry.xCoord - x_offset, entry.yCoord - y_offset, entry.zCoord - z_offset, entry );
+				dst.addTick( entry.xCoord - this.x_offset, entry.yCoord - this.y_offset, entry.zCoord - this.z_offset, entry );
 			}
 
 			for (NextTickListEntry entry : dst.ticks)
 			{
-				addTick( entry.xCoord - dst.x_offset, entry.yCoord - dst.y_offset, entry.zCoord - dst.z_offset, entry );
+				this.addTick( entry.xCoord - dst.x_offset, entry.yCoord - dst.y_offset, entry.zCoord - dst.z_offset, entry );
 			}
 
 			startTime = System.nanoTime();
-			updateChunks();
+			this.updateChunks();
 			dst.updateChunks();
 			endTime = System.nanoTime();
 
@@ -332,36 +332,36 @@ public class CachedPlane
 
 	private void markForUpdate(int src_x, int src_y, int src_z)
 	{
-		updates.add( new WorldCoord( src_x, src_y, src_z ) );
+		this.updates.add( new WorldCoord( src_x, src_y, src_z ) );
 		for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
-			updates.add( new WorldCoord( src_x + d.offsetX, src_y + d.offsetY, src_z + d.offsetZ ) );
+			this.updates.add( new WorldCoord( src_x + d.offsetX, src_y + d.offsetY, src_z + d.offsetZ ) );
 	}
 
 	private void addTick(int x, int y, int z, NextTickListEntry entry)
 	{
-		world.scheduleBlockUpdate( x + x_offset, y + y_offset, z + z_offset, entry.func_151351_a(), (int) entry.scheduledTime );
+		this.world.scheduleBlockUpdate( x + this.x_offset, y + this.y_offset, z + this.z_offset, entry.func_151351_a(), (int) entry.scheduledTime );
 	}
 
 	private void addTile(int x, int y, int z, TileEntity te, CachedPlane alternateDestination, IMovableRegistry mr)
 	{
 		try
 		{
-			Column c = myColumns[x][z];
+			Column c = this.myColumns[x][z];
 
-			if ( c.doNotSkip( y + y_offset ) || alternateDestination == null )
+			if ( c.doNotSkip( y + this.y_offset ) || alternateDestination == null )
 			{
-				IMovableHandler handler = getHandler( te );
+				IMovableHandler handler = this.getHandler( te );
 
 				try
 				{
-					handler.moveTile( te, world, x + x_offset, y + y_offset, z + z_offset );
+					handler.moveTile( te, this.world, x + this.x_offset, y + this.y_offset, z + this.z_offset );
 				}
 				catch (Throwable e)
 				{
 					AELog.error( e );
 
 					// attempt recovery...
-					te.setWorldObj( world );
+					te.setWorldObj( this.world );
 					te.xCoord = x;
 					te.yCoord = y;
 					te.zCoord = z;
@@ -371,8 +371,8 @@ public class CachedPlane
 
 					if ( c.c.isChunkLoaded )
 					{
-						world.addTileEntity( te );
-						world.markBlockForUpdate( x, y, z );
+						this.world.addTileEntity( te );
+						this.world.markBlockForUpdate( x, y, z );
 					}
 				}
 
@@ -393,26 +393,26 @@ public class CachedPlane
 	{
 
 		// update shit..
-		for (int x = 0; x < cx_size; x++)
-			for (int z = 0; z < cz_size; z++)
+		for (int x = 0; x < this.cx_size; x++)
+			for (int z = 0; z < this.cz_size; z++)
 			{
-				Chunk c = myChunks[x][z];
+				Chunk c = this.myChunks[x][z];
 				c.resetRelightChecks();
 				c.generateSkylightMap();
 				c.isModified = true;
 			}
 
 		// send shit...
-		for (int x = 0; x < cx_size; x++)
-			for (int z = 0; z < cz_size; z++)
+		for (int x = 0; x < this.cx_size; x++)
+			for (int z = 0; z < this.cz_size; z++)
 			{
 
-				Chunk c = myChunks[x][z];
+				Chunk c = this.myChunks[x][z];
 
 				for (int y = 1; y < 255; y += 32)
-					WorldSettings.getInstance().getCompass().updateArea( world, c.xPosition << 4, y, c.zPosition << 4 );
+					WorldSettings.getInstance().getCompass().updateArea( this.world, c.xPosition << 4, y, c.zPosition << 4 );
 
-				Platform.sendChunk( c, verticalBits );
+				Platform.sendChunk( c, this.verticalBits );
 
 			}
 

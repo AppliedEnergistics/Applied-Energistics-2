@@ -52,22 +52,22 @@ public class ContainerNetworkStatus extends AEBaseContainer
 
 		if ( host != null )
 		{
-			findNode( host, ForgeDirection.UNKNOWN );
+			this.findNode( host, ForgeDirection.UNKNOWN );
 			for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
-				findNode( host, d );
+				this.findNode( host, d );
 		}
 
-		if ( network == null && Platform.isServer() )
-			isContainerValid = false;
+		if ( this.network == null && Platform.isServer() )
+			this.isContainerValid = false;
 	}
 
 	private void findNode(IGridHost host, ForgeDirection d)
 	{
-		if ( network == null )
+		if ( this.network == null )
 		{
 			IGridNode node = host.getGridNode( d );
 			if ( node != null )
-				network = node.getGrid();
+				this.network = node.getGrid();
 		}
 	}
 
@@ -85,18 +85,18 @@ public class ContainerNetworkStatus extends AEBaseContainer
 	@Override
 	public void detectAndSendChanges()
 	{
-		delay++;
-		if ( Platform.isServer() && delay > 15 && network != null )
+		this.delay++;
+		if ( Platform.isServer() && this.delay > 15 && this.network != null )
 		{
-			delay = 0;
+			this.delay = 0;
 
-			IEnergyGrid eg = network.getCache( IEnergyGrid.class );
+			IEnergyGrid eg = this.network.getCache( IEnergyGrid.class );
 			if ( eg != null )
 			{
-				avgAddition = (long) (100.0 * eg.getAvgPowerInjection());
-				powerUsage = (long) (100.0 * eg.getAvgPowerUsage());
-				currentPower = (long) (100.0 * eg.getStoredPower());
-				maxPower = (long) (100.0 * eg.getMaxStoredPower());
+				this.avgAddition = (long) (100.0 * eg.getAvgPowerInjection());
+				this.powerUsage = (long) (100.0 * eg.getAvgPowerUsage());
+				this.currentPower = (long) (100.0 * eg.getStoredPower());
+				this.maxPower = (long) (100.0 * eg.getMaxStoredPower());
 			}
 
 			PacketMEInventoryUpdate piu;
@@ -104,10 +104,10 @@ public class ContainerNetworkStatus extends AEBaseContainer
 			{
 				piu = new PacketMEInventoryUpdate();
 
-				for (Class<? extends IGridHost> machineClass : network.getMachinesClasses())
+				for (Class<? extends IGridHost> machineClass : this.network.getMachinesClasses())
 				{
 					IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
-					for (IGridNode machine : network.getMachines( machineClass ))
+					for (IGridNode machine : this.network.getMachines( machineClass ))
 					{
 						IGridBlock blk = machine.getGridBlock();
 						ItemStack is = blk.getMachineRepresentation();

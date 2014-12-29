@@ -38,40 +38,40 @@ public class ControllerValidator implements IGridVisitor
 	public int found = 0;
 
 	public ControllerValidator(int x, int y, int z) {
-		minX = x;
-		minY = y;
-		minZ = z;
-		maxX = x;
-		maxY = y;
-		maxZ = z;
+		this.minX = x;
+		this.minY = y;
+		this.minZ = z;
+		this.maxX = x;
+		this.maxY = y;
+		this.maxZ = z;
 	}
 
 	@Override
 	public boolean visitNode(IGridNode n)
 	{
 		IGridHost host = n.getMachine();
-		if ( isValid && host instanceof TileController )
+		if ( this.isValid && host instanceof TileController )
 		{
 			TileController c = (TileController) host;
 
-			minX = Math.min( c.xCoord, minX );
-			maxX = Math.max( c.xCoord, maxX );
-			minY = Math.min( c.yCoord, minY );
-			maxY = Math.max( c.yCoord, maxY );
-			minZ = Math.min( c.zCoord, minZ );
-			maxZ = Math.max( c.zCoord, maxZ );
+			this.minX = Math.min( c.xCoord, this.minX );
+			this.maxX = Math.max( c.xCoord, this.maxX );
+			this.minY = Math.min( c.yCoord, this.minY );
+			this.maxY = Math.max( c.yCoord, this.maxY );
+			this.minZ = Math.min( c.zCoord, this.minZ );
+			this.maxZ = Math.max( c.zCoord, this.maxZ );
 
-			if ( maxX - minX < 7 && maxY - minY < 7 && maxZ - minZ < 7 )
+			if ( this.maxX - this.minX < 7 && this.maxY - this.minY < 7 && this.maxZ - this.minZ < 7 )
 			{
-				found++;
+				this.found++;
 				return true;
 			}
 
-			isValid = false;
+			this.isValid = false;
 		}
 		else
 			return false;
 
-		return isValid;
+		return this.isValid;
 	}
 }

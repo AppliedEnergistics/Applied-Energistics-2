@@ -37,9 +37,9 @@ public class MJ6 extends BaseModule implements IMJ6
 	public static MJ6 instance;
 
 	public MJ6() {
-		TestClass( IBatteryObject.class );
-		TestClass( IBatteryProvider.class );
-		TestClass( ISidedBatteryProvider.class );
+		this.TestClass( IBatteryObject.class );
+		this.TestClass( IBatteryProvider.class );
+		this.TestClass( ISidedBatteryProvider.class );
 	}
 
 	@Override

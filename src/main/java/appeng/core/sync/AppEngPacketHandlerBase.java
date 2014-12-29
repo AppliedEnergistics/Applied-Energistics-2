@@ -109,12 +109,12 @@ public class AppEngPacketHandlerBase
 		final public Constructor con;
 
 		private PacketTypes(Class c) {
-			pc = c;
+			this.pc = c;
 
 			Constructor x = null;
 			try
 			{
-				x = pc.getConstructor( ByteBuf.class );
+				x = this.pc.getConstructor( ByteBuf.class );
 			}
 			catch (NoSuchMethodException ignored)
 			{
@@ -123,16 +123,16 @@ public class AppEngPacketHandlerBase
 			{
 			}
 
-			con = x;
-			AppEngPacketHandlerBase.reverseLookup.put( pc, this );
+			this.con = x;
+			AppEngPacketHandlerBase.reverseLookup.put( this.pc, this );
 
-			if ( con == null )
+			if ( this.con == null )
 				throw new RuntimeException( "Invalid Packet Class, must be constructable on DataInputStream" );
 		}
 
 		public AppEngPacket parsePacket(ByteBuf in) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
 		{
-			return (AppEngPacket) con.newInstance( in );
+			return (AppEngPacket) this.con.newInstance( in );
 		}
 
 		public static PacketTypes getPacket(int id)

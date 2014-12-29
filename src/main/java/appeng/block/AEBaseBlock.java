@@ -102,11 +102,11 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	protected AEBaseBlock( Class<? extends AEBaseBlock> c, Material mat )
 	{
 		this( c, mat, Optional.<String> absent() );
-		setLightOpacity( 255 );
-		setLightLevel( 0 );
-		setHardness( 2.2F );
-		setTileProvider( false );
-		setHarvestLevel( "pickaxe", 0 );
+		this.setLightOpacity( 255 );
+		this.setLightLevel( 0 );
+		this.setHardness( 2.2F );
+		this.setTileProvider( false );
+		this.setHarvestLevel( "pickaxe", 0 );
 	}
 
 	protected AEBaseBlock( Class<?> c, Material mat, Optional<String> subName )
@@ -114,27 +114,27 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		super( mat );
 
 		if ( mat == AEGlassMaterial.instance || mat == Material.glass )
-			setStepSound( Block.soundTypeGlass );
+			this.setStepSound( Block.soundTypeGlass );
 		else if ( mat == Material.rock )
-			setStepSound( Block.soundTypeStone );
+			this.setStepSound( Block.soundTypeStone );
 		else if ( mat == Material.wood )
-			setStepSound( Block.soundTypeWood );
+			this.setStepSound( Block.soundTypeWood );
 		else
-			setStepSound( Block.soundTypeMetal );
+			this.setStepSound( Block.soundTypeMetal );
 
-		featureFullName = new FeatureNameExtractor( c, subName ).get();
-		featureSubName = subName;
+		this.featureFullName = new FeatureNameExtractor( c, subName ).get();
+		this.featureSubName = subName;
 	}
 
 	@Override
 	public String toString()
 	{
-		return featureFullName;
+		return this.featureFullName;
 	}
 
 	public void registerNoIcons()
 	{
-		BlockRenderInfo info = getRendererInstance();
+		BlockRenderInfo info = this.getRendererInstance();
 		FlippableIcon i = new FlippableIcon( new MissingIcon( this ) );
 		info.updateIcons( i, i, i, i, i, i );
 	}
@@ -147,9 +147,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	protected void setTileEntity( Class<? extends TileEntity> c )
 	{
 		AEBaseTile.registerTileItem( c, new ItemStackSrc( this, 0 ) );
-		GameRegistry.registerTileEntity( tileEntityType = c, featureFullName );
-		isInventory = IInventory.class.isAssignableFrom( c );
-		setTileProvider( hasBlockTileEntity() );
+		GameRegistry.registerTileEntity( this.tileEntityType = c, this.featureFullName );
+		this.isInventory = IInventory.class.isAssignableFrom( c );
+		this.setTileProvider( this.hasBlockTileEntity() );
 	}
 
 	// update Block value.
@@ -166,7 +166,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@Override
 	final public IFeatureHandler handler()
 	{
-		return handler;
+		return this.handler;
 	}
 
 	@Override
@@ -177,13 +177,13 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 	public boolean isOpaque()
 	{
-		return isOpaque;
+		return this.isOpaque;
 	}
 
 	@Override
 	public boolean renderAsNormalBlock()
 	{
-		return isFullSize && isOpaque;
+		return this.isFullSize && this.isOpaque;
 	}
 
 	@Override
@@ -196,17 +196,17 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@Override
 	public IIcon getIcon( IBlockAccess w, int x, int y, int z, int s )
 	{
-		return getIcon( mapRotation( w, x, y, z, s ), w.getBlockMetadata( x, y, z ) );
+		return this.getIcon( this.mapRotation( w, x, y, z, s ), w.getBlockMetadata( x, y, z ) );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
 	public IIcon getIcon( int direction, int metadata )
 	{
-		if ( renderIcon != null )
-			return renderIcon;
+		if ( this.renderIcon != null )
+			return this.renderIcon;
 
-		return getRendererInstance().getTexture( ForgeDirection.getOrientation( direction ) );
+		return this.getRendererInstance().getTexture( ForgeDirection.getOrientation( direction ) );
 	}
 
 	@Override
@@ -220,7 +220,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 			collisionHandler = ( ICustomCollision ) this;
 		else
 		{
-			AEBaseTile te = getTileEntity( w, x, y, z );
+			AEBaseTile te = this.getTileEntity( w, x, y, z );
 			if ( te instanceof ICustomCollision )
 				collisionHandler = ( ICustomCollision ) te;
 		}
@@ -256,7 +256,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 			collisionHandler = ( ICustomCollision ) this;
 		else
 		{
-			AEBaseTile te = getTileEntity( w, x, y, z );
+			AEBaseTile te = this.getTileEntity( w, x, y, z );
 			if ( te instanceof ICustomCollision )
 				collisionHandler = ( ICustomCollision ) te;
 		}
@@ -275,11 +275,11 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 				for ( AxisAlignedBB bb : bbs )
 				{
-					setBlockBounds( ( float ) bb.minX, ( float ) bb.minY, ( float ) bb.minZ, ( float ) bb.maxX, ( float ) bb.maxY, ( float ) bb.maxZ );
+					this.setBlockBounds( ( float ) bb.minX, ( float ) bb.minY, ( float ) bb.minZ, ( float ) bb.maxX, ( float ) bb.maxY, ( float ) bb.maxZ );
 
 					MovingObjectPosition r = super.collisionRayTrace( w, x, y, z, ld.a, ld.b );
 
-					setBlockBounds( 0, 0, 0, 1, 1, 1 );
+					this.setBlockBounds( 0, 0, 0, 1, 1, 1 );
 
 					if ( r != null )
 					{
@@ -330,7 +330,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@Override
 	final public boolean isOpaqueCube()
 	{
-		return isOpaque;
+		return this.isOpaque;
 	}
 
 	@Override
@@ -342,7 +342,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 			collisionHandler = ( ICustomCollision ) this;
 		else
 		{
-			AEBaseTile te = getTileEntity( w, x, y, z );
+			AEBaseTile te = this.getTileEntity( w, x, y, z );
 			if ( te instanceof ICustomCollision )
 				collisionHandler = ( ICustomCollision ) te;
 		}
@@ -356,11 +356,11 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 			for ( AxisAlignedBB bb : bbs )
 			{
-				setBlockBounds( ( float ) bb.minX, ( float ) bb.minY, ( float ) bb.minZ, ( float ) bb.maxX, ( float ) bb.maxY, ( float ) bb.maxZ );
+				this.setBlockBounds( ( float ) bb.minX, ( float ) bb.minY, ( float ) bb.minZ, ( float ) bb.maxX, ( float ) bb.maxY, ( float ) bb.maxZ );
 
 				MovingObjectPosition r = super.collisionRayTrace( w, x, y, z, a, b );
 
-				setBlockBounds( 0, 0, 0, 1, 1, 1 );
+				this.setBlockBounds( 0, 0, 0, 1, 1, 1 );
 
 				if ( r != null )
 				{
@@ -384,7 +384,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 			return null;
 		}
 
-		setBlockBounds( 0, 0, 0, 1, 1, 1 );
+		this.setBlockBounds( 0, 0, 0, 1, 1, 1 );
 		return super.collisionRayTrace( w, x, y, z, a, b );
 	}
 
@@ -401,7 +401,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 					Block id = w.getBlock( x, y, z );
 					if ( id != null )
 					{
-						AEBaseTile tile = getTileEntity( w, x, y, z );
+						AEBaseTile tile = this.getTileEntity( w, x, y, z );
 						ItemStack[] drops = Platform.getBlockDrops( w, x, y, z );
 
 						if ( tile == null )
@@ -436,10 +436,10 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 					IMemoryCard memoryCard = ( IMemoryCard ) is.getItem();
 					if ( player.isSneaking() )
 					{
-						AEBaseTile t = getTileEntity( w, x, y, z );
+						AEBaseTile t = this.getTileEntity( w, x, y, z );
 						if ( t != null )
 						{
-							String name = getUnlocalizedName();
+							String name = this.getUnlocalizedName();
 							NBTTagCompound data = t.downloadSettings( SettingsFrom.MEMORY_CARD );
 							if ( data != null )
 							{
@@ -453,9 +453,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 					{
 						String name = memoryCard.getSettingsName( is );
 						NBTTagCompound data = memoryCard.getData( is );
-						if ( getUnlocalizedName().equals( name ) )
+						if ( this.getUnlocalizedName().equals( name ) )
 						{
-							AEBaseTile t = getTileEntity( w, x, y, z );
+							AEBaseTile t = this.getTileEntity( w, x, y, z );
 							t.uploadSettings( SettingsFrom.MEMORY_CARD, data );
 							memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
 						}
@@ -467,7 +467,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 			}
 		}
 
-		return onActivated( w, x, y, z, player, side, hitX, hitY, hitZ );
+		return this.onActivated( w, x, y, z, player, side, hitX, hitY, hitZ );
 	}
 
 	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
@@ -480,7 +480,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	{
 		if ( is.hasDisplayName() )
 		{
-			TileEntity te = getTileEntity( w, x, y, z );
+			TileEntity te = this.getTileEntity( w, x, y, z );
 			if ( te instanceof AEBaseTile )
 				( ( AEBaseTile ) w.getTileEntity( x, y, z ) ).setName( is.getDisplayName() );
 		}
@@ -497,13 +497,13 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@Override
 	public boolean hasComparatorInputOverride()
 	{
-		return isInventory;
+		return this.isInventory;
 	}
 
 	@Override
 	public int getComparatorInputOverride( World w, int x, int y, int z, int s )
 	{
-		TileEntity te = getTileEntity( w, x, y, z );
+		TileEntity te = this.getTileEntity( w, x, y, z );
 		if ( te instanceof IInventory )
 			return Container.calcRedstoneFromInventory( ( IInventory ) te );
 		return 0;
@@ -513,7 +513,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@SideOnly( Side.CLIENT )
 	public void registerBlockIcons( IIconRegister iconRegistry )
 	{
-		BlockRenderInfo info = getRendererInstance();
+		BlockRenderInfo info = this.getRendererInstance();
 		FlippableIcon topIcon;
 		FlippableIcon bottomIcon;
 		FlippableIcon sideIcon;
@@ -522,13 +522,13 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		FlippableIcon southIcon;
 		FlippableIcon northIcon;
 
-		this.blockIcon = topIcon = optionalIcon( iconRegistry, this.getTextureName(), null );
-		bottomIcon = optionalIcon( iconRegistry, this.getTextureName() + "Bottom", topIcon );
-		sideIcon = optionalIcon( iconRegistry, this.getTextureName() + "Side", topIcon );
-		eastIcon = optionalIcon( iconRegistry, this.getTextureName() + "East", sideIcon );
-		westIcon = optionalIcon( iconRegistry, this.getTextureName() + "West", sideIcon );
-		southIcon = optionalIcon( iconRegistry, this.getTextureName() + "Front", sideIcon );
-		northIcon = optionalIcon( iconRegistry, this.getTextureName() + "Back", sideIcon );
+		this.blockIcon = topIcon = this.optionalIcon( iconRegistry, this.getTextureName(), null );
+		bottomIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "Bottom", topIcon );
+		sideIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "Side", topIcon );
+		eastIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "East", sideIcon );
+		westIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "West", sideIcon );
+		southIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "Front", sideIcon );
+		northIcon = this.optionalIcon( iconRegistry, this.getTextureName() + "Back", sideIcon );
 
 		info.updateIcons( bottomIcon, topIcon, northIcon, southIcon, eastIcon, westIcon );
 	}
@@ -536,7 +536,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@Override
 	final public boolean isNormalCube( IBlockAccess world, int x, int y, int z )
 	{
-		return isFullSize;
+		return this.isFullSize;
 	}
 
 	@Override
@@ -544,9 +544,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	{
 		IOrientable rotatable = null;
 
-		if ( hasBlockTileEntity() )
+		if ( this.hasBlockTileEntity() )
 		{
-			rotatable = ( AEBaseTile ) getTileEntity( w, x, y, z );
+			rotatable = ( AEBaseTile ) this.getTileEntity( w, x, y, z );
 		}
 		else if ( this instanceof IOrientableBlock )
 		{
@@ -555,9 +555,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 		if ( rotatable != null && rotatable.canBeRotated() )
 		{
-			if ( hasCustomRotation() )
+			if ( this.hasCustomRotation() )
 			{
-				customRotateBlock( rotatable, axis );
+				this.customRotateBlock( rotatable, axis );
 				return true;
 			}
 			else
@@ -600,9 +600,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@Override
 	final public ForgeDirection[] getValidRotations( World w, int x, int y, int z )
 	{
-		if ( hasBlockTileEntity() )
+		if ( this.hasBlockTileEntity() )
 		{
-			AEBaseTile obj = getTileEntity( w, x, y, z );
+			AEBaseTile obj = this.getTileEntity( w, x, y, z );
 			if ( obj != null && obj.canBeRotated() )
 			{
 				return ForgeDirection.VALID_DIRECTIONS;
@@ -615,7 +615,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@Override
 	public boolean recolourBlock( World world, int x, int y, int z, ForgeDirection side, int colour )
 	{
-		TileEntity te = getTileEntity( world, x, y, z );
+		TileEntity te = this.getTileEntity( world, x, y, z );
 
 		if ( te instanceof IColorableTile )
 		{
@@ -637,12 +637,12 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@SideOnly( Side.CLIENT )
 	public BlockRenderInfo getRendererInstance()
 	{
-		if ( renderInfo != null )
-			return renderInfo;
+		if ( this.renderInfo != null )
+			return this.renderInfo;
 
 		try
 		{
-			return renderInfo = new BlockRenderInfo( getRenderer().newInstance() );
+			return this.renderInfo = new BlockRenderInfo( this.getRenderer().newInstance() );
 		}
 		catch ( Throwable t )
 		{
@@ -694,9 +694,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	{
 		IOrientable ori = null;
 
-		if ( hasBlockTileEntity() )
+		if ( this.hasBlockTileEntity() )
 		{
-			ori = ( AEBaseTile ) getTileEntity( w, x, y, z );
+			ori = ( AEBaseTile ) this.getTileEntity( w, x, y, z );
 		}
 		else if ( this instanceof IOrientableBlock )
 		{
@@ -705,7 +705,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 		if ( ori != null && ori.canBeRotated() )
 		{
-			return mapRotation( ori, ForgeDirection.getOrientation( s ) ).ordinal();
+			return this.mapRotation( ori, ForgeDirection.getOrientation( s ) ).ordinal();
 		}
 
 		return s;
@@ -713,16 +713,16 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 	public boolean hasBlockTileEntity()
 	{
-		return tileEntityType != null;
+		return this.tileEntityType != null;
 	}
 
 	public <T extends TileEntity> T getTileEntity( IBlockAccess w, int x, int y, int z )
 	{
-		if ( !hasBlockTileEntity() )
+		if ( !this.hasBlockTileEntity() )
 			return null;
 
 		TileEntity te = w.getTileEntity( x, y, z );
-		if ( tileEntityType.isInstance( te ) )
+		if ( this.tileEntityType.isInstance( te ) )
 			return ( T ) te;
 
 		return null;
@@ -772,7 +772,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 	public Class<? extends TileEntity> getTileEntityClass()
 	{
-		return tileEntityType;
+		return this.tileEntityType;
 	}
 
 	@SideOnly( Side.CLIENT )
@@ -784,11 +784,11 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@Override
 	final public TileEntity createNewTileEntity( World var1, int var2 )
 	{
-		if ( hasBlockTileEntity() )
+		if ( this.hasBlockTileEntity() )
 		{
 			try
 			{
-				return tileEntityType.newInstance();
+				return this.tileEntityType.newInstance();
 			}
 			catch ( Throwable e )
 			{
@@ -801,7 +801,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@Override
 	public void breakBlock( World w, int x, int y, int z, Block a, int b )
 	{
-		AEBaseTile te = getTileEntity( w, x, y, z );
+		AEBaseTile te = this.getTileEntity( w, x, y, z );
 		if ( te != null )
 		{
 			ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
@@ -821,7 +821,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 	public String getUnlocalizedName( ItemStack is )
 	{
-		return getUnlocalizedName();
+		return this.getUnlocalizedName();
 	}
 
 	public void addInformation( ItemStack is, EntityPlayer player, List<String> lines, boolean advancedItemTooltips )
@@ -836,6 +836,6 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 
 	public boolean hasSubtypes()
 	{
-		return hasSubtypes;
+		return this.hasSubtypes;
 	}
 }

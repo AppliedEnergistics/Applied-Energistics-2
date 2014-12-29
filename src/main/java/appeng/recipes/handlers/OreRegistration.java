@@ -35,18 +35,18 @@ public class OreRegistration implements ICraftHandler
 	final String name;
 
 	public OreRegistration(List<IIngredient> in, String out) {
-		inputs = in;
-		name = out;
+		this.inputs = in;
+		this.name = out;
 	}
 
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		for (IIngredient i : inputs)
+		for (IIngredient i : this.inputs)
 		{
 			for (ItemStack is : i.getItemStackSet())
 			{
-				OreDictionary.registerOre( name, is );
+				OreDictionary.registerOre( this.name, is );
 			}
 		}
 	}

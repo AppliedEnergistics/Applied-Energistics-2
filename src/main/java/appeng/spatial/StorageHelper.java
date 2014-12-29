@@ -55,14 +55,14 @@ public class StorageHelper
 		final World dst;
 
 		public TriggerUpdates(World dst2) {
-			dst = dst2;
+			this.dst = dst2;
 		}
 
 		@Override
 		public void visit(int x, int y, int z)
 		{
-			Block blk = dst.getBlock( x, y, z );
-			blk.onNeighborBlockChange( dst, x, y, z, Platform.air );
+			Block blk = this.dst.getBlock( x, y, z );
+			blk.onNeighborBlockChange( this.dst, x, y, z, Platform.air );
 		}
 	}
 
@@ -74,15 +74,15 @@ public class StorageHelper
 		final int Meta;
 
 		public WrapInMatrixFrame(Block blockID, int metaData, World dst2) {
-			dst = dst2;
-			blkID = blockID;
-			Meta = metaData;
+			this.dst = dst2;
+			this.blkID = blockID;
+			this.Meta = metaData;
 		}
 
 		@Override
 		public void visit(int x, int y, int z)
 		{
-			dst.setBlock( x, y, z, blkID, Meta, 3 );
+			this.dst.setBlock( x, y, z, this.blkID, this.Meta, 3 );
 		}
 	}
 
@@ -90,13 +90,13 @@ public class StorageHelper
 	{
 
 		TelDestination(World _dim, AxisAlignedBB srcBox, double _x, double _y, double _z, int tileX, int tileY, int tileZ) {
-			dim = _dim;
-			x = Math.min( srcBox.maxX - 0.5, Math.max( srcBox.minX + 0.5, _x + tileX ) );
-			y = Math.min( srcBox.maxY - 0.5, Math.max( srcBox.minY + 0.5, _y + tileY ) );
-			z = Math.min( srcBox.maxZ - 0.5, Math.max( srcBox.minZ + 0.5, _z + tileZ ) );
-			xOff = tileX;
-			yOff = tileY;
-			zOff = tileZ;
+			this.dim = _dim;
+			this.x = Math.min( srcBox.maxX - 0.5, Math.max( srcBox.minX + 0.5, _x + tileX ) );
+			this.y = Math.min( srcBox.maxY - 0.5, Math.max( srcBox.minY + 0.5, _y + tileY ) );
+			this.z = Math.min( srcBox.maxZ - 0.5, Math.max( srcBox.minZ + 0.5, _z + tileZ ) );
+			this.xOff = tileX;
+			this.yOff = tileY;
+			this.zOff = tileZ;
 		}
 
 		final World dim;
@@ -116,13 +116,13 @@ public class StorageHelper
 
 		public METeleporter(WorldServer par1WorldServer, TelDestination d) {
 			super( par1WorldServer );
-			destination = d;
+			this.destination = d;
 		}
 
 		@Override
 		public void placeInPortal(Entity par1Entity, double par2, double par4, double par6, float par8)
 		{
-			par1Entity.setLocationAndAngles( destination.x, destination.y, destination.z, par1Entity.rotationYaw, 0.0F );
+			par1Entity.setLocationAndAngles( this.destination.x, this.destination.y, this.destination.z, par1Entity.rotationYaw, 0.0F );
 			par1Entity.motionX = par1Entity.motionY = par1Entity.motionZ = 0.0D;
 		}
 
@@ -179,14 +179,14 @@ public class StorageHelper
 		// Is something riding? Handle it first.
 		if ( entity.riddenByEntity != null )
 		{
-			return teleportEntity( entity.riddenByEntity, link );
+			return this.teleportEntity( entity.riddenByEntity, link );
 		}
 		// Are we riding something? Dismount and tell the mount to go first.
 		Entity cart = entity.ridingEntity;
 		if ( cart != null )
 		{
 			entity.mountEntity( null );
-			cart = teleportEntity( cart, link );
+			cart = this.teleportEntity( cart, link );
 			// We keep track of both so we can remount them on the other side.
 		}
 
@@ -290,7 +290,7 @@ public class StorageHelper
 	{
 		BlockMatrixFrame blkMF = (BlockMatrixFrame) AEApi.instance().blocks().blockMatrixFrame.block();
 
-		transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new WrapInMatrixFrame( blkMF, 0, dst ) );
+		this.transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new WrapInMatrixFrame( blkMF, 0, dst ) );
 
 		AxisAlignedBB srcBox = AxisAlignedBB.getBoundingBox( x, y, z, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1 );
 
@@ -307,12 +307,12 @@ public class StorageHelper
 
 		for (Entity e : dstE)
 		{
-			teleportEntity( e, new TelDestination( src, srcBox, e.posX, e.posY, e.posZ, -i + x, -j + y, -k + z ) );
+			this.teleportEntity( e, new TelDestination( src, srcBox, e.posX, e.posY, e.posZ, -i + x, -j + y, -k + z ) );
 		}
 
 		for (Entity e : srcE)
 		{
-			teleportEntity( e, new TelDestination( dst, dstBox, e.posX, e.posY, e.posZ, -x + i, -y + j, -z + k ) );
+			this.teleportEntity( e, new TelDestination( dst, dstBox, e.posX, e.posY, e.posZ, -x + i, -y + j, -z + k ) );
 		}
 
 		for (WorldCoord wc : cDst.updates)
@@ -321,11 +321,11 @@ public class StorageHelper
 		for (WorldCoord wc : cSrc.updates)
 			cSrc.world.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.air );
 
-		transverseEdges( x - 1, y - 1, z - 1, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1, new TriggerUpdates( src ) );
-		transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new TriggerUpdates( dst ) );
+		this.transverseEdges( x - 1, y - 1, z - 1, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1, new TriggerUpdates( src ) );
+		this.transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new TriggerUpdates( dst ) );
 
-		transverseEdges( x, y, z, x + scaleX, y + scaleY, z + scaleZ, new TriggerUpdates( src ) );
-		transverseEdges( i, j, k, i + scaleX, j + scaleY, k + scaleZ, new TriggerUpdates( dst ) );
+		this.transverseEdges( x, y, z, x + scaleX, y + scaleY, z + scaleZ, new TriggerUpdates( src ) );
+		this.transverseEdges( i, j, k, i + scaleX, j + scaleY, k + scaleZ, new TriggerUpdates( dst ) );
 
 		/*
 		 * IChunkProvider cp = destination.getChunkProvider(); if ( cp instanceof ChunkProviderServer ) { ChunkProviderServer

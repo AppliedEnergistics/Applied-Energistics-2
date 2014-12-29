@@ -55,7 +55,7 @@ public class AETrading implements IVillageTradeHandler
 		From.stackSize = 1 + (Math.abs( rand.nextInt() ) % (1 + conversion_Variance));
 		To.stackSize = 1;
 
-		addToList( list, From, To );
+		this.addToList( list, From, To );
 	}
 
 	private void addMerchant(MerchantRecipeList list, ItemStack item, int emera, Random rand, int greed)
@@ -80,7 +80,7 @@ public class AETrading implements IVillageTradeHandler
 			To.stackSize -= To.stackSize;
 		}
 
-		addToList( list, From, To );
+		this.addToList( list, From, To );
 
 		// Buy
 		ItemStack reverseTo = From.copy();
@@ -88,17 +88,17 @@ public class AETrading implements IVillageTradeHandler
 
 		reverseFrom.stackSize = (int) (reverseFrom.stackSize * (rand.nextFloat() * 3.0f + 1.0f));
 
-		addToList( list, reverseFrom, reverseTo );
+		this.addToList( list, reverseFrom, reverseTo );
 	}
 
 	@Override
 	public void manipulateTradesForVillager(EntityVillager villager, MerchantRecipeList recipeList, Random random)
 	{
-		addMerchant( recipeList, AEApi.instance().materials().materialSilicon.stack( 1 ), 1, random, 2 );
-		addMerchant( recipeList, AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 ), 2, random, 4 );
-		addMerchant( recipeList, AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ), 1, random, 3 );
+		this.addMerchant( recipeList, AEApi.instance().materials().materialSilicon.stack( 1 ), 1, random, 2 );
+		this.addMerchant( recipeList, AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 ), 2, random, 4 );
+		this.addMerchant( recipeList, AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ), 1, random, 3 );
 
-		addTrade( recipeList, AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ),
+		this.addTrade( recipeList, AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ),
 				AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 ), random, 2 );
 	}
 

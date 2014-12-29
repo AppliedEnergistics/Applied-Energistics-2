@@ -29,13 +29,13 @@ public class JarLoader implements IRecipeLoader
 	private final String rootPath;
 
 	public JarLoader(String s) {
-		rootPath = s;
+		this.rootPath = s;
 	}
 
 	@Override
 	public BufferedReader getFile(String s) throws Exception
 	{
-		return new BufferedReader( new InputStreamReader( getClass().getResourceAsStream( rootPath + s ), "UTF-8" ) );
+		return new BufferedReader( new InputStreamReader( this.getClass().getResourceAsStream( this.rootPath + s ), "UTF-8" ) );
 	}
 
 }

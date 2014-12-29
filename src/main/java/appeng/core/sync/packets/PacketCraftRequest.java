@@ -49,8 +49,8 @@ public class PacketCraftRequest extends AppEngPacket
 	// automatic.
 	public PacketCraftRequest(ByteBuf stream)
 	{
-		heldShift = stream.readBoolean();
-		amount = stream.readLong();
+		this.heldShift = stream.readBoolean();
+		this.amount = stream.readLong();
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class PacketCraftRequest extends AppEngPacket
 
 				Future<ICraftingJob> futureJob = null;
 
-				cca.whatToMake.setStackSize( amount );
+				cca.whatToMake.setStackSize( this.amount );
 
 				try
 				{
@@ -89,7 +89,7 @@ public class PacketCraftRequest extends AppEngPacket
 						if ( player.openContainer instanceof ContainerCraftConfirm )
 						{
 							ContainerCraftConfirm ccc = (ContainerCraftConfirm) player.openContainer;
-							ccc.autoStart = heldShift;
+							ccc.autoStart = this.heldShift;
 							ccc.job = futureJob;
 							cca.detectAndSendChanges();
 						}
@@ -113,11 +113,11 @@ public class PacketCraftRequest extends AppEngPacket
 
 		ByteBuf data = Unpooled.buffer();
 
-		data.writeInt( getPacketID() );
+		data.writeInt( this.getPacketID() );
 		data.writeBoolean( shift );
-		data.writeLong( amount );
+		data.writeLong( this.amount );
 
-		configureWrite( data );
+		this.configureWrite( data );
 	}
 
 }

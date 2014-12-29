@@ -32,47 +32,47 @@ public class ItemModList implements IItemContainer<IAEItemStack>
 	final IItemContainer<IAEItemStack> overrides = AEApi.instance().storage().createItemList();
 
 	public ItemModList(IItemContainer<IAEItemStack> backend) {
-		backingStore = backend;
+		this.backingStore = backend;
 	}
 
 	@Override
 	public void add(IAEItemStack option)
 	{
-		IAEItemStack over = overrides.findPrecise( option );
+		IAEItemStack over = this.overrides.findPrecise( option );
 		if ( over == null )
 		{
-			over = backingStore.findPrecise( option );
+			over = this.backingStore.findPrecise( option );
 			if ( over == null )
-				overrides.add( option );
+				this.overrides.add( option );
 			else
 			{
 				option.add( over );
-				overrides.add( option );
+				this.overrides.add( option );
 			}
 		}
 		else
-			overrides.add( option );
+			this.overrides.add( option );
 	}
 
 	@Override
 	public IAEItemStack findPrecise(IAEItemStack i)
 	{
-		IAEItemStack over = overrides.findPrecise( i );
+		IAEItemStack over = this.overrides.findPrecise( i );
 		if ( over == null )
-			return backingStore.findPrecise( i );
+			return this.backingStore.findPrecise( i );
 		return over;
 	}
 
 	@Override
 	public Collection<IAEItemStack> findFuzzy(IAEItemStack input, FuzzyMode fuzzy)
 	{
-		return overrides.findFuzzy( input, fuzzy );
+		return this.overrides.findFuzzy( input, fuzzy );
 	}
 
 	@Override
 	public boolean isEmpty()
 	{
-		return overrides.isEmpty() && backingStore.isEmpty();
+		return this.overrides.isEmpty() && this.backingStore.isEmpty();
 	}
 
 }

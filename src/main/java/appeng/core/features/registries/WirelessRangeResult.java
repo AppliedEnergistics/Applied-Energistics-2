@@ -24,8 +24,8 @@ public class WirelessRangeResult
 {
 
 	public WirelessRangeResult(TileEntity t, float d) {
-		dist = d;
-		te = t;
+		this.dist = d;
+		this.te = t;
 	}
 
 	final public float dist;

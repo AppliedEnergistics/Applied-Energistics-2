@@ -40,13 +40,13 @@ public abstract class IC2 extends MinecraftJoules6 implements IEnergySink
 	@Override
 	final public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
-		return getPowerSides().contains( direction );
+		return this.getPowerSides().contains( direction );
 	}
 
 	@Override
 	final public double getDemandedEnergy()
 	{
-		return getExternalPowerDemand( PowerUnits.EU, Double.MAX_VALUE );
+		return this.getExternalPowerDemand( PowerUnits.EU, Double.MAX_VALUE );
 	}
 
 	@Override
@@ -54,8 +54,8 @@ public abstract class IC2 extends MinecraftJoules6 implements IEnergySink
 	{
 		// just store the excess in the current block, if I return the waste,
 		// IC2 will just disintegrate it - Oct 20th 2013
-		double overflow = PowerUnits.EU.convertTo( PowerUnits.AE, injectExternalPower( PowerUnits.EU, amount ) );
-		internalCurrentPower += overflow;
+		double overflow = PowerUnits.EU.convertTo( PowerUnits.AE, this.injectExternalPower( PowerUnits.EU, amount ) );
+		this.internalCurrentPower += overflow;
 		return 0; // see above comment.
 	}
 
@@ -69,29 +69,29 @@ public abstract class IC2 extends MinecraftJoules6 implements IEnergySink
 	public void invalidate()
 	{
 		super.invalidate();
-		removeFromENet();
+		this.removeFromENet();
 	}
 
 	@Override
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
-		removeFromENet();
+		this.removeFromENet();
 	}
 
 	@Override
 	public void onReady()
 	{
 		super.onReady();
-		addToENet();
+		this.addToENet();
 	}
 
 	@Override
 	protected void setPowerSides(EnumSet<ForgeDirection> sides)
 	{
 		super.setPowerSides( sides );
-		removeFromENet();
-		addToENet();
+		this.removeFromENet();
+		this.addToENet();
 	}
 
 	private void addToENet()
@@ -99,10 +99,10 @@ public abstract class IC2 extends MinecraftJoules6 implements IEnergySink
 		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.IC2 ) )
 		{
 			IIC2 ic2Integration = (IIC2) AppEng.instance.getIntegration( IntegrationType.IC2 );
-			if ( !isInIC2 && Platform.isServer() && ic2Integration != null )
+			if ( !this.isInIC2 && Platform.isServer() && ic2Integration != null )
 			{
 				ic2Integration.addToEnergyNet( this );
-				isInIC2 = true;
+				this.isInIC2 = true;
 			}
 		}
 	}
@@ -112,10 +112,10 @@ public abstract class IC2 extends MinecraftJoules6 implements IEnergySink
 		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.IC2 ) )
 		{
 			IIC2 ic2Integration = (IIC2) AppEng.instance.getIntegration( IntegrationType.IC2 );
-			if ( isInIC2 && Platform.isServer() && ic2Integration != null )
+			if ( this.isInIC2 && Platform.isServer() && ic2Integration != null )
 			{
 				ic2Integration.removeFromEnergyNet( this );
-				isInIC2 = false;
+				this.isInIC2 = false;
 			}
 		}
 	}

@@ -48,87 +48,87 @@ public class WrapperInventoryRange implements IInventory
 	}
 
 	public WrapperInventoryRange(IInventory a, int[] s, boolean ignoreValid) {
-		src = a;
-		slots = s;
+		this.src = a;
+		this.slots = s;
 
-		if ( slots == null )
-			slots = new int[0];
+		if ( this.slots == null )
+			this.slots = new int[0];
 
-		ignoreValidItems = ignoreValid;
+		this.ignoreValidItems = ignoreValid;
 	}
 
 	public WrapperInventoryRange(IInventory a, int _min, int _size, boolean ignoreValid) {
-		src = a;
-		slots = new int[_size];
+		this.src = a;
+		this.slots = new int[_size];
 		for (int x = 0; x < _size; x++)
-			slots[x] = _min + x;
-		ignoreValidItems = ignoreValid;
+			this.slots[x] = _min + x;
+		this.ignoreValidItems = ignoreValid;
 	}
 
 	@Override
 	public int getSizeInventory()
 	{
-		return slots.length;
+		return this.slots.length;
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int var1)
 	{
-		return src.getStackInSlot( slots[var1] );
+		return this.src.getStackInSlot( this.slots[var1] );
 	}
 
 	@Override
 	public ItemStack decrStackSize(int var1, int var2)
 	{
-		return src.decrStackSize( slots[var1], var2 );
+		return this.src.decrStackSize( this.slots[var1], var2 );
 	}
 
 	@Override
 	public ItemStack getStackInSlotOnClosing(int var1)
 	{
-		return src.getStackInSlotOnClosing( slots[var1] );
+		return this.src.getStackInSlotOnClosing( this.slots[var1] );
 	}
 
 	@Override
 	public void setInventorySlotContents(int var1, ItemStack var2)
 	{
-		src.setInventorySlotContents( slots[var1], var2 );
+		this.src.setInventorySlotContents( this.slots[var1], var2 );
 	}
 
 	@Override
 	public String getInventoryName()
 	{
-		return src.getInventoryName();
+		return this.src.getInventoryName();
 	}
 
 	@Override
 	public int getInventoryStackLimit()
 	{
-		return src.getInventoryStackLimit();
+		return this.src.getInventoryStackLimit();
 	}
 
 	@Override
 	public void markDirty()
 	{
-		src.markDirty();
+		this.src.markDirty();
 	}
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer var1)
 	{
-		return src.isUseableByPlayer( var1 );
+		return this.src.isUseableByPlayer( var1 );
 	}
 
 	@Override
 	public void openInventory()
 	{
-		src.openInventory();
+		this.src.openInventory();
 	}
 
 	@Override
 	public void closeInventory()
 	{
-		src.closeInventory();
+		this.src.closeInventory();
 	}
 
 	@Override
@@ -140,10 +140,10 @@ public class WrapperInventoryRange implements IInventory
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
-		if ( ignoreValidItems )
+		if ( this.ignoreValidItems )
 			return true;
 
-		return src.isItemValidForSlot( slots[i], itemstack );
+		return this.src.isItemValidForSlot( this.slots[i], itemstack );
 	}
 
 }

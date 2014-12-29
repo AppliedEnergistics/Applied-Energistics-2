@@ -36,9 +36,9 @@ public class GenericInterestManager<T>
 		public final T iw;
 
 		public SavedTransactions(boolean putOperation, IAEStack myStack, T watcher) {
-			put = putOperation;
-			stack = myStack;
-			iw = watcher;
+			this.put = putOperation;
+			this.stack = myStack;
+			this.iw = watcher;
 		}
 	}
 
@@ -47,66 +47,66 @@ public class GenericInterestManager<T>
 	private int transDepth = 0;
 
 	public GenericInterestManager(Multimap<IAEStack, T> interests) {
-		container = interests;
+		this.container = interests;
 	}
 
 	public void enableTransactions()
 	{
-		if ( transDepth == 0 )
-			transactions = new LinkedList<SavedTransactions>();
+		if ( this.transDepth == 0 )
+			this.transactions = new LinkedList<SavedTransactions>();
 
-		transDepth++;
+		this.transDepth++;
 	}
 
 	public void disableTransactions()
 	{
-		transDepth--;
+		this.transDepth--;
 
-		if ( transDepth == 0 )
+		if ( this.transDepth == 0 )
 		{
-			LinkedList<SavedTransactions> myActions = transactions;
-			transactions = null;
+			LinkedList<SavedTransactions> myActions = this.transactions;
+			this.transactions = null;
 
 			for (SavedTransactions t : myActions)
 			{
 				if ( t.put )
-					put( t.stack, t.iw );
+					this.put( t.stack, t.iw );
 				else
-					remove( t.stack, t.iw );
+					this.remove( t.stack, t.iw );
 			}
 		}
 	}
 
 	public boolean containsKey(IAEStack stack)
 	{
-		return container.containsKey( stack );
+		return this.container.containsKey( stack );
 	}
 
 	public Collection<T> get(IAEStack stack)
 	{
-		return container.get( stack );
+		return this.container.get( stack );
 	}
 
 	public boolean put(IAEStack stack, T iw)
 	{
-		if ( transactions != null )
+		if ( this.transactions != null )
 		{
-			transactions.add( new SavedTransactions( true, stack, iw ) );
+			this.transactions.add( new SavedTransactions( true, stack, iw ) );
 			return true;
 		}
 		else
-			return container.put( stack, iw );
+			return this.container.put( stack, iw );
 	}
 
 	public boolean remove(IAEStack stack, T iw)
 	{
-		if ( transactions != null )
+		if ( this.transactions != null )
 		{
-			transactions.add( new SavedTransactions( true, stack, iw ) );
+			this.transactions.add( new SavedTransactions( true, stack, iw ) );
 			return true;
 		}
 		else
-			return container.remove( stack, iw );
+			return this.container.remove( stack, iw );
 	}
 
 }

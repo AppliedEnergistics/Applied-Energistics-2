@@ -62,17 +62,17 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 	public void clearItems()
 	{
-		storage = AEApi.instance().storage().createItemList();
-		active = AEApi.instance().storage().createItemList();
-		pending = AEApi.instance().storage().createItemList();
-		visual = new ArrayList<IAEItemStack>();
+		this.storage = AEApi.instance().storage().createItemList();
+		this.active = AEApi.instance().storage().createItemList();
+		this.pending = AEApi.instance().storage().createItemList();
+		this.visual = new ArrayList<IAEItemStack>();
 	}
 
 	protected GuiCraftingCPU(ContainerCraftingCPU container) {
 		super( container );
 		this.ySize = 184;
 		this.xSize = 238;
-		myScrollBar = new GuiScrollbar();
+		this.myScrollBar = new GuiScrollbar();
 	}
 
 	public GuiCraftingCPU(InventoryPlayer inventoryPlayer, Object te) {
@@ -86,7 +86,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	{
 		super.actionPerformed( btn );
 
-		if ( cancel == btn )
+		if ( this.cancel == btn )
 		{
 			try
 			{
@@ -103,16 +103,16 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	public void initGui()
 	{
 		super.initGui();
-		setScrollBar();
-		cancel = new GuiButton( 0, this.guiLeft + 163, this.guiTop + ySize - 25, 50, 20, GuiText.Cancel.getLocal() );
-		buttonList.add( cancel );
+		this.setScrollBar();
+		this.cancel = new GuiButton( 0, this.guiLeft + 163, this.guiTop + this.ySize - 25, 50, 20, GuiText.Cancel.getLocal() );
+		this.buttonList.add( this.cancel );
 	}
 
 	private long getTotal(IAEItemStack is)
 	{
-		IAEItemStack a = storage.findPrecise( is );
-		IAEItemStack b = active.findPrecise( is );
-		IAEItemStack c = pending.findPrecise( is );
+		IAEItemStack a = this.storage.findPrecise( is );
+		IAEItemStack b = this.active.findPrecise( is );
+		IAEItemStack c = this.pending.findPrecise( is );
 
 		long total = 0;
 
@@ -134,34 +134,34 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		{
 		case 0:
 			for (IAEItemStack l : list)
-				handleInput( storage, l );
+				this.handleInput( this.storage, l );
 			break;
 
 		case 1:
 			for (IAEItemStack l : list)
-				handleInput( active, l );
+				this.handleInput( this.active, l );
 			break;
 
 		case 2:
 			for (IAEItemStack l : list)
-				handleInput( pending, l );
+				this.handleInput( this.pending, l );
 			break;
 		}
 
 		for (IAEItemStack l : list)
 		{
-			long amt = getTotal( l );
+			long amt = this.getTotal( l );
 
 			if ( amt <= 0 )
-				deleteVisualStack( l );
+				this.deleteVisualStack( l );
 			else
 			{
-				IAEItemStack is = findVisualStack( l );
+				IAEItemStack is = this.findVisualStack( l );
 				is.setStackSize( amt );
 			}
 		}
 
-		setScrollBar();
+		this.setScrollBar();
 	}
 
 	private void handleInput(IItemList<IAEItemStack> s, IAEItemStack l)
@@ -188,7 +188,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 	private IAEItemStack findVisualStack(IAEItemStack l)
 	{
-		for (IAEItemStack o : visual)
+		for (IAEItemStack o : this.visual)
 		{
 			if ( o.equals( l ) )
 			{
@@ -197,13 +197,13 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		}
 
 		IAEItemStack stack = l.copy();
-		visual.add( stack );
+		this.visual.add( stack );
 		return stack;
 	}
 
 	private void deleteVisualStack(IAEItemStack l)
 	{
-		Iterator<IAEItemStack> i = visual.iterator();
+		Iterator<IAEItemStack> i = this.visual.iterator();
 		while (i.hasNext())
 		{
 			IAEItemStack o = i.next();
@@ -217,17 +217,17 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 	private void setScrollBar()
 	{
-		int size = visual.size();
+		int size = this.visual.size();
 
-		myScrollBar.setTop( 19 ).setLeft( 218 ).setHeight( 137 );
-		myScrollBar.setRange( 0, (size + 2) / 3 - rows, 1 );
+		this.myScrollBar.setTop( 19 ).setLeft( 218 ).setHeight( 137 );
+		this.myScrollBar.setRange( 0, (size + 2) / 3 - this.rows, 1 );
 	}
 
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		bindTexture( "guis/craftingcpu.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, xSize, ySize );
+		this.bindTexture( "guis/craftingcpu.png" );
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 	}
 
 	int tooltip = -1;
@@ -235,16 +235,16 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	@Override
 	public void drawScreen(int mouse_x, int mouse_y, float btn)
 	{
-		cancel.enabled = !visual.isEmpty();
+		this.cancel.enabled = !this.visual.isEmpty();
 
 		int x = 0;
 		int y = 0;
 
-		int gx = (width - xSize) / 2;
-		int gy = (height - ySize) / 2;
+		int gx = (this.width - this.xSize) / 2;
+		int gy = (this.height - this.ySize) / 2;
 		int offY = 23;
 
-		tooltip = -1;
+		this.tooltip = -1;
 
 		for (int z = 0; z <= 4 * 5; z++)
 		{
@@ -255,7 +255,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 			{
 				if ( minY < mouse_y && minY + offY - 2 > mouse_y )
 				{
-					tooltip = z;
+					this.tooltip = z;
 					break;
 				}
 
@@ -276,7 +276,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString( getGuiDisplayName( GuiText.CraftingStatus.getLocal() ), 8, 7, 4210752 );
+		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.CraftingStatus.getLocal() ), 8, 7, 4210752 );
 
 		int sectionLength = 67;
 
@@ -284,7 +284,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		int y = 0;
 		int xo = 9;
 		int yo = 22;
-		int viewStart = myScrollBar.getCurrentScroll() * 3;
+		int viewStart = this.myScrollBar.getCurrentScroll() * 3;
 		int viewEnd = viewStart + 3 * 6;
 
 		String dspToolTip = "";
@@ -294,17 +294,17 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 		int offY = 23;
 
-		for (int z = viewStart; z < Math.min( viewEnd, visual.size() ); z++)
+		for (int z = viewStart; z < Math.min( viewEnd, this.visual.size() ); z++)
 		{
-			IAEItemStack refStack = visual.get( z );// repo.getReferenceItem( z );
+			IAEItemStack refStack = this.visual.get( z );// repo.getReferenceItem( z );
 			if ( refStack != null )
 			{
 				GL11.glPushMatrix();
 				GL11.glScaled( 0.5, 0.5, 0.5 );
 
-				IAEItemStack stored = storage.findPrecise( refStack );
-				IAEItemStack activeStack = active.findPrecise( refStack );
-				IAEItemStack pendingStack = pending.findPrecise( refStack );
+				IAEItemStack stored = this.storage.findPrecise( refStack );
+				IAEItemStack activeStack = this.active.findPrecise( refStack );
+				IAEItemStack pendingStack = this.pending.findPrecise( refStack );
 
 				int lines = 0;
 
@@ -327,11 +327,11 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 						str = Long.toString( stored.getStackSize() / 1000000 ) + 'm';
 
 					str = GuiText.Stored.getLocal() + ": " + str;
-					int w = 4 + fontRendererObj.getStringWidth( str );
-					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
+					int w = 4 + this.fontRendererObj.getStringWidth( str );
+					this.fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
 							+ 6 - negY + downY) * 2, 4210752 );
 
-					if ( tooltip == z - viewStart )
+					if ( this.tooltip == z - viewStart )
 						lineList.add( GuiText.Stored.getLocal() + ": " + Long.toString( stored.getStackSize() ) );
 
 					downY += 5;
@@ -346,11 +346,11 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 						str = Long.toString( activeStack.getStackSize() / 1000000 ) + 'm';
 
 					str = GuiText.Crafting.getLocal() + ": " + str;
-					int w = 4 + fontRendererObj.getStringWidth( str );
-					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
+					int w = 4 + this.fontRendererObj.getStringWidth( str );
+					this.fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
 							+ 6 - negY + downY) * 2, 4210752 );
 
-					if ( tooltip == z - viewStart )
+					if ( this.tooltip == z - viewStart )
 						lineList.add( GuiText.Crafting.getLocal() + ": " + Long.toString( activeStack.getStackSize() ) );
 
 					downY += 5;
@@ -365,11 +365,11 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 						str = Long.toString( pendingStack.getStackSize() / 1000000 ) + 'm';
 
 					str = GuiText.Scheduled.getLocal() + ": " + str;
-					int w = 4 + fontRendererObj.getStringWidth( str );
-					fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
+					int w = 4 + this.fontRendererObj.getStringWidth( str );
+					this.fontRendererObj.drawString( str, (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * offY + yo
 							+ 6 - negY + downY) * 2, 4210752 );
 
-					if ( tooltip == z - viewStart )
+					if ( this.tooltip == z - viewStart )
 						lineList.add( GuiText.Scheduled.getLocal() + ": " + Long.toString( pendingStack.getStackSize() ) );
 
 				}
@@ -380,7 +380,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 				ItemStack is = refStack.copy().getItemStack();
 
-				if ( tooltip == z - viewStart )
+				if ( this.tooltip == z - viewStart )
 				{
 					dspToolTip = Platform.getItemDisplayName( is );
 
@@ -391,7 +391,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 					toolPosY = y * offY + yo;
 				}
 
-				drawItem( posX, posY, is );
+				this.drawItem( posX, posY, is );
 
 				x++;
 
@@ -404,10 +404,10 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 		}
 
-		if ( tooltip >= 0 && dspToolTip.length() > 0 )
+		if ( this.tooltip >= 0 && dspToolTip.length() > 0 )
 		{
 			GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
-			drawTooltip( toolPosX, toolPosY + 10, 0, dspToolTip );
+			this.drawTooltip( toolPosX, toolPosY + 10, 0, dspToolTip );
 			GL11.glPopAttrib();
 		}
 

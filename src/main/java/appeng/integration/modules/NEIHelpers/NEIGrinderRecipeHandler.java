@@ -51,7 +51,7 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 	public void drawBackground(int recipe)
 	{
 		GL11.glColor4f( 1, 1, 1, 1 );
-		changeTexture( getGuiTexture() );
+		changeTexture( this.getGuiTexture() );
 		drawTexturedModalRect( 40, 10, 75, 16 + 10, 90, 66 );
 	}
 
@@ -102,7 +102,7 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadCraftingRecipes(String outputId, Object... results)
 	{
-		if ( (outputId.equals( "grindstone" )) && (getClass() == NEIGrinderRecipeHandler.class) )
+		if ( (outputId.equals( "grindstone" )) && (this.getClass() == NEIGrinderRecipeHandler.class) )
 		{
 			for (IGrinderEntry recipe : AEApi.instance().registries().grinder().getRecipes())
 			{
@@ -191,24 +191,24 @@ public class NEIGrinderRecipeHandler extends TemplateRecipeHandler
 		public String Chance;
 
 		public CachedGrindStoneRecipe(IGrinderEntry recipe) {
-			result = new PositionedStack( recipe.getOutput(), -30 + 107, 47 );
-			ingredients = new ArrayList<PositionedStack>();
+			this.result = new PositionedStack( recipe.getOutput(), -30 + 107, 47 );
+			this.ingredients = new ArrayList<PositionedStack>();
 
 			if ( recipe.getOptionalOutput() != null )
 			{
-				hasOptional = true;
-				Chance = ((int) (recipe.getOptionalChance() * 100)) + GuiText.OfSecondOutput.getLocal();
-				ingredients.add( new PositionedStack( recipe.getOptionalOutput(), -30 + 107 + 18, 47 ) );
+				this.hasOptional = true;
+				this.Chance = ((int) (recipe.getOptionalChance() * 100)) + GuiText.OfSecondOutput.getLocal();
+				this.ingredients.add( new PositionedStack( recipe.getOptionalOutput(), -30 + 107 + 18, 47 ) );
 			}
 
 			if ( recipe.getInput() != null )
-				ingredients.add( new PositionedStack( recipe.getInput(), 45, 24 ) );
+				this.ingredients.add( new PositionedStack( recipe.getInput(), 45, 24 ) );
 		}
 
 		@Override
 		public List<PositionedStack> getIngredients()
 		{
-			return getCycledIngredients( cycleticks / 20, this.ingredients );
+			return this.getCycledIngredients( NEIGrinderRecipeHandler.this.cycleticks / 20, this.ingredients );
 		}
 
 		@Override

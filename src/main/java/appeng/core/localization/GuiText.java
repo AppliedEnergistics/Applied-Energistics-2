@@ -73,21 +73,21 @@ public enum GuiText
 	final String root;
 
 	GuiText() {
-		root = "gui.appliedenergistics2";
+		this.root = "gui.appliedenergistics2";
 	}
 
 	GuiText(String r) {
-		root = r;
+		this.root = r;
 	}
 
 	public String getUnlocalized()
 	{
-		return root + '.' + toString();
+		return this.root + '.' + this.toString();
 	}
 
 	public String getLocal()
 	{
-		return StatCollector.translateToLocal( getUnlocalized() );
+		return StatCollector.translateToLocal( this.getUnlocalized() );
 	}
 
 }

@@ -78,9 +78,9 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 
 		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.MJ5 ) )
 		{
-			pp = (BaseMJPerdition) ((IMJ5) AppEng.instance.getIntegration( IntegrationType.MJ5 )).createPerdition( this );
-			if ( pp != null )
-				pp.configure( 1, 380, 1.0f / 5.0f, 1000 );
+			this.pp = (BaseMJPerdition) ((IMJ5) AppEng.instance.getIntegration( IntegrationType.MJ5 )).createPerdition( this );
+			if ( this.pp != null )
+				this.pp.configure( 1, 380, 1.0f / 5.0f, 1000 );
 		}
 	}
 
@@ -95,14 +95,14 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 	@Method(iname = "MJ5")
 	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
 	{
-		if ( !output && proxy.isActive() )
+		if ( !this.output && this.proxy.isActive() )
 		{
 			float totalRequiredPower = 0.0f;
 			TunnelCollection<PartP2PBCPower> tunnels;
 
 			try
 			{
-				tunnels = getOutputs();
+				tunnels = this.getOutputs();
 			}
 			catch (GridAccessException e)
 			{
@@ -114,7 +114,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 				IPowerReceptor target = o.getPowerTarget();
 				if ( target != null )
 				{
-					PowerReceiver tp = target.getPowerReceiver( side.getOpposite() );
+					PowerReceiver tp = target.getPowerReceiver( this.side.getOpposite() );
 					if ( tp != null )
 					{
 						double request = tp.powerRequest();
@@ -133,7 +133,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 			if ( totalRequiredPower < 0.1 )
 				return TickRateModulation.SLOWER;
 
-			double currentTotal = pp.getPowerReceiver().getEnergyStored();
+			double currentTotal = this.pp.getPowerReceiver().getEnergyStored();
 			if ( currentTotal < 0.01 )
 				return TickRateModulation.SLOWER;
 
@@ -142,7 +142,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 				IPowerReceptor target = o.getPowerTarget();
 				if ( target != null )
 				{
-					PowerReceiver tp = target.getPowerReceiver( side.getOpposite() );
+					PowerReceiver tp = target.getPowerReceiver( this.side.getOpposite() );
 					if ( tp != null )
 					{
 						double request = tp.powerRequest();
@@ -153,8 +153,8 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 						if ( request > 0.01 && request > tp.getMinEnergyReceived() )
 						{
 							double toPull = currentTotal * (request / totalRequiredPower);
-							double pulled = pp.useEnergy( 0, toPull, true );
-							QueueTunnelDrain( PowerUnits.MJ, pulled );
+							double pulled = this.pp.useEnergy( 0, toPull, true );
+							this.QueueTunnelDrain( PowerUnits.MJ, pulled );
 
 							tp.receiveEnergy( Type.PIPE, pulled, o.side.getOpposite() );
 						}
@@ -176,14 +176,14 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 	@Method(iname = "MJ6")
 	private IBatteryObject getTargetBattery()
 	{
-		TileEntity te = getWorld().getTileEntity( tile.xCoord + side.offsetX, tile.yCoord + side.offsetY, tile.zCoord + side.offsetZ );
+		TileEntity te = this.getWorld().getTileEntity( this.tile.xCoord + this.side.offsetX, this.tile.yCoord + this.side.offsetY, this.tile.zCoord + this.side.offsetZ );
 		if ( te != null )
 		{
-			IBatteryObject bo = MjAPI.getMjBattery( te, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite() );
+			IBatteryObject bo = MjAPI.getMjBattery( te, MjAPI.DEFAULT_POWER_FRAMEWORK, this.side.getOpposite() );
 			if ( bo != null )
 				return bo;
 			
-			return ((IMJ6) AppEng.instance.getIntegration( IntegrationType.MJ6 )).provider( te, side.getOpposite() );
+			return ((IMJ6) AppEng.instance.getIntegration( IntegrationType.MJ6 )).provider( te, this.side.getOpposite() );
 		}
 		return null;
 	}
@@ -191,7 +191,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 	@Method(iname = "MJ5")
 	private IPowerReceptor getPowerTarget()
 	{
-		TileEntity te = getWorld().getTileEntity( tile.xCoord + side.offsetX, tile.yCoord + side.offsetY, tile.zCoord + side.offsetZ );
+		TileEntity te = this.getWorld().getTileEntity( this.tile.xCoord + this.side.offsetX, this.tile.yCoord + this.side.offsetY, this.tile.zCoord + this.side.offsetZ );
 		if ( te != null )
 		{
 			if ( te instanceof IPowerReceptor )
@@ -204,16 +204,16 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 	public void writeToNBT(NBTTagCompound tag)
 	{
 		super.writeToNBT( tag );
-		if ( pp != null )
-			pp.writeToNBT( tag );
+		if ( this.pp != null )
+			this.pp.writeToNBT( tag );
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag)
 	{
 		super.readFromNBT( tag );
-		if ( pp != null )
-			pp.readFromNBT( tag );
+		if ( this.pp != null )
+			this.pp.readFromNBT( tag );
 	}
 
 	@Override
@@ -227,7 +227,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 	@Method(iname = "MJ5")
 	public PowerReceiver getPowerReceiver(ForgeDirection side)
 	{
-		return pp.getPowerReceiver();
+		return this.pp.getPowerReceiver();
 	}
 
 	@Override
@@ -240,7 +240,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 	@Override
 	public World getWorld()
 	{
-		return tile.getWorldObj();
+		return this.tile.getWorldObj();
 	}
 
 	@Override
@@ -258,7 +258,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 		{
 			double totalRequiredPower = 0.0f;
 
-			for (PartP2PBCPower g : getOutputs())
+			for (PartP2PBCPower g : this.getOutputs())
 			{
 				IBatteryObject o = g.getTargetBattery();
 				if ( o != null )
@@ -277,27 +277,27 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 	@Method(iname = "MJ6")
 	public double addEnergy(double mj)
 	{
-		return addEnergyInternal( mj, false, false );
+		return this.addEnergyInternal( mj, false, false );
 	}
 
 	@Override
 	@Method(iname = "MJ6")
 	public double addEnergy(double mj, boolean ignoreCycleLimit)
 	{
-		return addEnergyInternal( mj, true, ignoreCycleLimit );
+		return this.addEnergyInternal( mj, true, ignoreCycleLimit );
 	}
 
 	@Method(iname = "MJ6")
 	private double addEnergyInternal(double mj, boolean cycleLimitMode, boolean ignoreCycleLimit)
 	{
-		if ( output || !proxy.isActive() )
+		if ( this.output || !this.proxy.isActive() )
 			return 0;
 
 		double originalInput = mj;
 
 		try
 		{
-			TunnelCollection<PartP2PBCPower> outs = getOutputs();
+			TunnelCollection<PartP2PBCPower> outs = this.getOutputs();
 
 			double outputs = 0;
 			for (PartP2PBCPower g : outs)
@@ -357,7 +357,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 		{
 			double totalRequiredPower = 0.0f;
 
-			for (PartP2PBCPower g : getOutputs())
+			for (PartP2PBCPower g : this.getOutputs())
 			{
 				IBatteryObject o = g.getTargetBattery();
 				if ( o != null )
@@ -386,7 +386,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 		{
 			double totalRequiredPower = 0.0f;
 
-			for (PartP2PBCPower g : getOutputs())
+			for (PartP2PBCPower g : this.getOutputs())
 			{
 				IBatteryObject o = g.getTargetBattery();
 				if ( o != null )
@@ -409,7 +409,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 		{
 			double totalRequiredPower = 1000000000000.0;
 
-			for (PartP2PBCPower g : getOutputs())
+			for (PartP2PBCPower g : this.getOutputs())
 			{
 				IBatteryObject o = g.getTargetBattery();
 				if ( o != null )
@@ -432,7 +432,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 		{
 			double totalRequiredPower = 1000000.0;
 
-			for (PartP2PBCPower g : getOutputs())
+			for (PartP2PBCPower g : this.getOutputs())
 			{
 				IBatteryObject o = g.getTargetBattery();
 				if ( o != null )

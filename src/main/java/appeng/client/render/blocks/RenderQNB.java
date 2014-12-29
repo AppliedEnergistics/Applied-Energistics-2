@@ -119,8 +119,8 @@ public class RenderQNB extends BaseBlockRender
 				Item transparentCoveredCable = coveredCableDefinition.item( AEColor.Transparent );
 
 				EnumSet<ForgeDirection> sides = tqb.getConnections();
-				renderCableAt( 0.11D, world, x, y, z, block, renderer, transparentGlassCable.getIconIndex( glassCableDefinition.stack( AEColor.Transparent, 1 ) ), 0.141D, sides );
-				renderCableAt( 0.188D, world, x, y, z, block, renderer, transparentCoveredCable.getIconIndex( coveredCableDefinition.stack( AEColor.Transparent, 1 ) ), 0.1875D, sides );
+				this.renderCableAt( 0.11D, world, x, y, z, block, renderer, transparentGlassCable.getIconIndex( glassCableDefinition.stack( AEColor.Transparent, 1 ) ), 0.141D, sides );
+				this.renderCableAt( 0.188D, world, x, y, z, block, renderer, transparentCoveredCable.getIconIndex( coveredCableDefinition.stack( AEColor.Transparent, 1 ) ), 0.1875D, sides );
 			}
 
 			float renderMin = 2.0f / 16.0f;
@@ -146,7 +146,7 @@ public class RenderQNB extends BaseBlockRender
 				AEColoredItemDefinition coveredCableDefinition = AEApi.instance().parts().partCableCovered;
 				Item transparentCoveredCable = coveredCableDefinition.item( AEColor.Transparent );
 
-				renderCableAt( 0.188D, world, x, y, z, block, renderer, transparentCoveredCable.getIconIndex( coveredCableDefinition.stack( AEColor.Transparent, 1 ) ), 0.05D,
+				this.renderCableAt( 0.188D, world, x, y, z, block, renderer, transparentCoveredCable.getIconIndex( coveredCableDefinition.stack( AEColor.Transparent, 1 ) ), 0.05D,
 						tqb.getConnections() );
 
 				float renderMin = 4.0f / 16.0f;
@@ -166,7 +166,7 @@ public class RenderQNB extends BaseBlockRender
 					Tessellator.instance.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
 					Tessellator.instance.setBrightness( bn << 20 | bn << 4 );
 					for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-						renderFace( x, y, z, block, ExtraBlockTextures.BlockQRingCornerLight.getIcon(), renderer, side );
+						this.renderFace( x, y, z, block, ExtraBlockTextures.BlockQRingCornerLight.getIcon(), renderer, side );
 
 				}
 			}
@@ -193,7 +193,7 @@ public class RenderQNB extends BaseBlockRender
 					Tessellator.instance.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
 					Tessellator.instance.setBrightness( bn << 20 | bn << 4 );
 					for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-						renderFace( x, y, z, block, ExtraBlockTextures.BlockQRingEdgeLight.getIcon(), renderer, side );
+						this.renderFace( x, y, z, block, ExtraBlockTextures.BlockQRingEdgeLight.getIcon(), renderer, side );
 				}
 			}
 		}

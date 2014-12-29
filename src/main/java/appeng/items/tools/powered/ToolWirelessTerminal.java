@@ -55,8 +55,8 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	public ToolWirelessTerminal()
 	{
 		super( ToolWirelessTerminal.class, Optional.<String> absent() );
-		setFeature( EnumSet.of( AEFeature.WirelessAccessTerminal, AEFeature.PoweredTools ) );
-		maxStoredPower = AEConfig.instance.wirelessTerminalBattery;
+		this.setFeature( EnumSet.of( AEFeature.WirelessAccessTerminal, AEFeature.PoweredTools ) );
+		this.maxStoredPower = AEConfig.instance.wirelessTerminalBattery;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -110,7 +110,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	@Override
 	public boolean hasPower( EntityPlayer player, double amt, ItemStack is )
 	{
-		return getAECurrentPower( is ) >= amt;
+		return this.getAECurrentPower( is ) >= amt;
 	}
 
 	@Override

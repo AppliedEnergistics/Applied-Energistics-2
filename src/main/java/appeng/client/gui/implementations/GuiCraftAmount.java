@@ -66,55 +66,55 @@ public class GuiCraftAmount extends AEBaseGui
 		int c = AEConfig.instance.craftItemsByStackAmounts( 2 );
 		int d = AEConfig.instance.craftItemsByStackAmounts( 3 );
 
-		buttonList.add( plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 26, 22, 20, "+" + a ) );
-		buttonList.add( plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 26, 28, 20, "+" + b ) );
-		buttonList.add( plus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 26, 32, 20, "+" + c ) );
-		buttonList.add( plus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 26, 38, 20, "+" + d ) );
+		this.buttonList.add( this.plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 26, 22, 20, "+" + a ) );
+		this.buttonList.add( this.plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 26, 28, 20, "+" + b ) );
+		this.buttonList.add( this.plus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 26, 32, 20, "+" + c ) );
+		this.buttonList.add( this.plus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 26, 38, 20, "+" + d ) );
 
-		buttonList.add( minus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 75, 22, 20, "-" + a ) );
-		buttonList.add( minus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 75, 28, 20, "-" + b ) );
-		buttonList.add( minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 75, 32, 20, "-" + c ) );
-		buttonList.add( minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 75, 38, 20, "-" + d ) );
+		this.buttonList.add( this.minus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 75, 22, 20, "-" + a ) );
+		this.buttonList.add( this.minus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 75, 28, 20, "-" + b ) );
+		this.buttonList.add( this.minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 75, 32, 20, "-" + c ) );
+		this.buttonList.add( this.minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 75, 38, 20, "-" + d ) );
 
-		buttonList.add( next = new GuiButton( 0, this.guiLeft + 128, this.guiTop + 51, 38, 20, GuiText.Next.getLocal() ) );
+		this.buttonList.add( this.next = new GuiButton( 0, this.guiLeft + 128, this.guiTop + 51, 38, 20, GuiText.Next.getLocal() ) );
 
 		ItemStack myIcon = null;
-		Object target = ((AEBaseContainer) inventorySlots).getTarget();
+		Object target = ((AEBaseContainer) this.inventorySlots).getTarget();
 
 		if ( target instanceof WirelessTerminalGuiObject )
 		{
 			myIcon = AEApi.instance().items().itemWirelessTerminal.stack( 1 );
-			OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
+			this.OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
 		}
 
 		if ( target instanceof PartTerminal )
 		{
 			myIcon = AEApi.instance().parts().partTerminal.stack( 1 );
-			OriginalGui = GuiBridge.GUI_ME;
+			this.OriginalGui = GuiBridge.GUI_ME;
 		}
 
 		if ( target instanceof PartCraftingTerminal )
 		{
 			myIcon = AEApi.instance().parts().partCraftingTerminal.stack( 1 );
-			OriginalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
+			this.OriginalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
 		}
 
 		if ( target instanceof PartPatternTerminal )
 		{
 			myIcon = AEApi.instance().parts().partPatternTerminal.stack( 1 );
-			OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
+			this.OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
 		}
 
-		if ( OriginalGui != null )
-			buttonList.add( originalGuiBtn = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), itemRender ) );
+		if ( this.OriginalGui != null )
+			this.buttonList.add( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), itemRender ) );
 
-		amountToCraft = new GuiNumberBox( fontRendererObj, this.guiLeft + 62, this.guiTop + 57, 59, fontRendererObj.FONT_HEIGHT, Integer.class );
-		amountToCraft.setEnableBackgroundDrawing( false );
-		amountToCraft.setMaxStringLength( 16 );
-		amountToCraft.setTextColor( 0xFFFFFF );
-		amountToCraft.setVisible( true );
-		amountToCraft.setFocused( true );
-		amountToCraft.setText( "1" );
+		this.amountToCraft = new GuiNumberBox( this.fontRendererObj, this.guiLeft + 62, this.guiTop + 57, 59, this.fontRendererObj.FONT_HEIGHT, Integer.class );
+		this.amountToCraft.setEnableBackgroundDrawing( false );
+		this.amountToCraft.setMaxStringLength( 16 );
+		this.amountToCraft.setTextColor( 0xFFFFFF );
+		this.amountToCraft.setVisible( true );
+		this.amountToCraft.setFocused( true );
+		this.amountToCraft.setText( "1" );
 	}
 
 	@Override
@@ -125,12 +125,12 @@ public class GuiCraftAmount extends AEBaseGui
 		try
 		{
 
-			if ( btn == originalGuiBtn )
+			if ( btn == this.originalGuiBtn )
 			{
-				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( OriginalGui ) );
+				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( this.OriginalGui ) );
 			}
 
-			if ( btn == next )
+			if ( btn == this.next )
 			{
 				NetworkHandler.instance.sendToServer( new PacketCraftRequest( Integer.parseInt( this.amountToCraft.getText() ), isShiftKeyDown() ) );
 			}
@@ -139,21 +139,21 @@ public class GuiCraftAmount extends AEBaseGui
 		catch (NumberFormatException e)
 		{
 			// nope..
-			amountToCraft.setText( "1" );
+			this.amountToCraft.setText( "1" );
 		}
 
-		boolean isPlus = btn == plus1 || btn == plus10 || btn == plus100 || btn == plus1000;
-		boolean isMinus = btn == minus1 || btn == minus10 || btn == minus100 || btn == minus1000;
+		boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
+		boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
 
 		if ( isPlus || isMinus )
-			addQty( getQty( btn ) );
+			this.addQty( this.getQty( btn ) );
 	}
 
 	private void addQty(int i)
 	{
 		try
 		{
-			String Out = amountToCraft.getText();
+			String Out = this.amountToCraft.getText();
 
 			boolean Fixed = false;
 			while (Out.startsWith( "0" ) && Out.length() > 1)
@@ -163,7 +163,7 @@ public class GuiCraftAmount extends AEBaseGui
 			}
 
 			if ( Fixed )
-				amountToCraft.setText( Out );
+				this.amountToCraft.setText( Out );
 
 			if ( Out.length() == 0 )
 				Out = "0";
@@ -179,7 +179,7 @@ public class GuiCraftAmount extends AEBaseGui
 
 			Out = Long.toString( result );
 			Integer.parseInt( Out );
-			amountToCraft.setText( Out );
+			this.amountToCraft.setText( Out );
 		}
 		catch (NumberFormatException e)
 		{
@@ -194,14 +194,14 @@ public class GuiCraftAmount extends AEBaseGui
 		{
 			if ( key == 28 )
 			{
-				actionPerformed( next );
+				this.actionPerformed( this.next );
 			}
 			if ( (key == 211 || key == 205 || key == 203 || key == 14 || character == '-' || Character.isDigit( character ))
-					&& amountToCraft.textboxKeyTyped( character, key ) )
+					&& this.amountToCraft.textboxKeyTyped( character, key ) )
 			{
 				try
 				{
-					String Out = amountToCraft.getText();
+					String Out = this.amountToCraft.getText();
 
 					boolean Fixed = false;
 					while (Out.startsWith( "0" ) && Out.length() > 1)
@@ -211,7 +211,7 @@ public class GuiCraftAmount extends AEBaseGui
 					}
 
 					if ( Fixed )
-						amountToCraft.setText( Out );
+						this.amountToCraft.setText( Out );
 
 					if ( Out.length() == 0 )
 						Out = "0";
@@ -219,7 +219,7 @@ public class GuiCraftAmount extends AEBaseGui
 					long result = Long.parseLong( Out );
 					if ( result < 0 )
 					{
-						amountToCraft.setText( "1" );
+						this.amountToCraft.setText( "1" );
 					}
 				}
 				catch (NumberFormatException e)
@@ -237,22 +237,22 @@ public class GuiCraftAmount extends AEBaseGui
 	@Override
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		next.displayString = isShiftKeyDown() ? GuiText.Start.getLocal() : GuiText.Next.getLocal();
+		this.next.displayString = isShiftKeyDown() ? GuiText.Start.getLocal() : GuiText.Next.getLocal();
 
-		bindTexture( "guis/craftAmt.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, xSize, ySize );
+		this.bindTexture( "guis/craftAmt.png" );
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 
 		try
 		{
-			Long.parseLong( amountToCraft.getText() );
-			next.enabled = amountToCraft.getText().length() > 0;
+			Long.parseLong( this.amountToCraft.getText() );
+			this.next.enabled = this.amountToCraft.getText().length() > 0;
 		}
 		catch (NumberFormatException e)
 		{
-			next.enabled = false;
+			this.next.enabled = false;
 		}
 
-		amountToCraft.drawTextBox();
+		this.amountToCraft.drawTextBox();
 	}
 
 	protected String getBackground()
@@ -263,6 +263,6 @@ public class GuiCraftAmount extends AEBaseGui
 	@Override
 	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString( GuiText.SelectAmount.getLocal(), 8, 6, 4210752 );
+		this.fontRendererObj.drawString( GuiText.SelectAmount.getLocal(), 8, 6, 4210752 );
 	}
 }

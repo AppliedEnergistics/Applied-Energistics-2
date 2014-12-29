@@ -31,7 +31,7 @@ public class AECommand extends CommandBase
 	final MinecraftServer srv;
 
 	public AECommand(MinecraftServer server) {
-		srv = server;
+		this.srv = server;
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class AECommand extends CommandBase
 				if ( args.length > 1 )
 				{
 					Commands c = Commands.valueOf( args[1] );
-					throw new WrongUsageException( c.command.getHelp( srv ) );
+					throw new WrongUsageException( c.command.getHelp( this.srv ) );
 				}
 			}
 			catch (Throwable er)
@@ -85,8 +85,8 @@ public class AECommand extends CommandBase
 			try
 			{
 				Commands c = Commands.valueOf( args[0] );
-				if ( sender.canCommandSenderUseCommand( c.level, getCommandName() ) )
-					c.command.call( srv, args, sender );
+				if ( sender.canCommandSenderUseCommand( c.level, this.getCommandName() ) )
+					c.command.call( this.srv, args, sender );
 				else
 					throw new WrongUsageException( "commands.ae2.permissions" );
 			}

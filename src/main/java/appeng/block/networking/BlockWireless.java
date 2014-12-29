@@ -44,11 +44,11 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 
 	public BlockWireless() {
 		super( BlockWireless.class, AEGlassMaterial.instance );
-		setFeature( EnumSet.of( AEFeature.Core, AEFeature.WirelessAccessTerminal ) );
-		setTileEntity( TileWireless.class );
-		setLightOpacity( 0 );
-		isFullSize = false;
-		isOpaque = false;
+		this.setFeature( EnumSet.of( AEFeature.Core, AEFeature.WirelessAccessTerminal ) );
+		this.setTileEntity( TileWireless.class );
+		this.setLightOpacity( 0 );
+		this.isFullSize = false;
+		this.isOpaque = false;
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
 	{
-		TileWireless tile = getTileEntity( w, x, y, z );
+		TileWireless tile = this.getTileEntity( w, x, y, z );
 		if ( tile != null )
 		{
 			ForgeDirection forward = tile.getForward();
@@ -122,7 +122,7 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 	@Override
 	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e)
 	{
-		TileWireless tile = getTileEntity( w, x, y, z );
+		TileWireless tile = this.getTileEntity( w, x, y, z );
 		if ( tile != null )
 		{
 			ForgeDirection forward = tile.getForward();
@@ -188,7 +188,7 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 		if ( p.isSneaking() )
 			return false;
 
-		TileWireless tg = getTileEntity( w, x, y, z );
+		TileWireless tg = this.getTileEntity( w, x, y, z );
 		if ( tg != null )
 		{
 			if ( Platform.isServer() )

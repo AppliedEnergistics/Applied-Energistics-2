@@ -62,7 +62,7 @@ public class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTi
 	@Override
 	public Cuboid6 getBounds()
 	{
-		return getBounds( meta );
+		return this.getBounds( this.meta );
 	}
 
 	public Cuboid6 getBounds(int meta)
@@ -94,6 +94,6 @@ public class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTi
 	@Override
 	public void randomDisplayTick(Random r)
 	{
-		getBlock().randomDisplayTick( world(), x(), y(), z(), r );
+		this.getBlock().randomDisplayTick( this.world(), this.x(), this.y(), this.z(), r );
 	}
 }

@@ -122,12 +122,12 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	protected Iterator<Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object>> getListeners()
 	{
-		return listeners.entrySet().iterator();
+		return this.listeners.entrySet().iterator();
 	}
 
 	protected void postChange(IAEItemStack diff, BaseActionSource src)
 	{
-		Iterator<Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object>> i = getListeners();
+		Iterator<Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object>> i = this.getListeners();
 
 		ImmutableList<IAEItemStack> single = null;
 
@@ -152,7 +152,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	@Override
 	public void addListener(IMEMonitorHandlerReceiver<IAEItemStack> l, Object verificationToken)
 	{
-		listeners.put( l, verificationToken );
+		this.listeners.put( l, verificationToken );
 	}
 
 	/**
@@ -161,7 +161,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	@Override
 	public void removeListener(IMEMonitorHandlerReceiver<IAEItemStack> l)
 	{
-		listeners.remove( l );
+		this.listeners.remove( l );
 	}
 
 	public void getListOfItem(IItemList<IAEItemStack> list, CraftingItemList whichList)
@@ -169,11 +169,11 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		switch (whichList)
 		{
 		case ACTIVE:
-			for (IAEItemStack ais : waitingFor)
+			for (IAEItemStack ais : this.waitingFor)
 				list.add( ais );
 			break;
 		case PENDING:
-			for (Entry<ICraftingPatternDetails, TaskProgress> t : tasks.entrySet())
+			for (Entry<ICraftingPatternDetails, TaskProgress> t : this.tasks.entrySet())
 			{
 				for (IAEItemStack ais : t.getKey().getCondensedOutputs())
 				{
@@ -184,16 +184,16 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			}
 			break;
 		case STORAGE:
-			inventory.getAvailableItems( list );
+			this.inventory.getAvailableItems( list );
 			break;
 		default:
 		case ALL:
-			inventory.getAvailableItems( list );
+			this.inventory.getAvailableItems( list );
 
-			for (IAEItemStack ais : waitingFor)
+			for (IAEItemStack ais : this.waitingFor)
 				list.add( ais );
 
-			for (Entry<ICraftingPatternDetails, TaskProgress> t : tasks.entrySet())
+			for (Entry<ICraftingPatternDetails, TaskProgress> t : this.tasks.entrySet())
 			{
 				for (IAEItemStack ais : t.getKey().getCondensedOutputs())
 				{
@@ -210,37 +210,37 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	@Override
 	public Iterator<IGridHost> getTiles()
 	{
-		return (Iterator) tiles.iterator();
+		return (Iterator) this.tiles.iterator();
 	}
 
 	public IMEInventory<IAEItemStack> getInventory()
 	{
-		return inventory;
+		return this.inventory;
 	}
 
 	public CraftingCPUCluster(WorldCoord _min, WorldCoord _max)
 	{
-		min = _min;
-		max = _max;
+		this.min = _min;
+		this.max = _max;
 	}
 
 	@Override
 	public void updateStatus(boolean updateGrid)
 	{
-		for (TileCraftingTile r : tiles)
+		for (TileCraftingTile r : this.tiles)
 			r.updateMeta( true );
 	}
 
 	@Override
 	public void destroy()
 	{
-		if ( isDestroyed )
+		if ( this.isDestroyed )
 			return;
-		isDestroyed = true;
+		this.isDestroyed = true;
 
 		boolean posted = false;
 
-		for (TileCraftingTile r : tiles)
+		for (TileCraftingTile r : this.tiles)
 		{
 			IGridNode n = r.getActionableNode();
 			if ( n != null && !posted )
@@ -260,40 +260,40 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	@Override
 	public long getAvailableStorage()
 	{
-		return availableStorage;
+		return this.availableStorage;
 	}
 
 	@Override
 	public int getCoProcessors()
 	{
-		return accelerator;
+		return this.accelerator;
 	}
 
 	public void addTile(TileCraftingTile te)
 	{
-		if ( machineSrc == null || te.isCoreBlock )
-			machineSrc = new MachineSource( te );
+		if ( this.machineSrc == null || te.isCoreBlock )
+			this.machineSrc = new MachineSource( te );
 
 		te.isCoreBlock = false;
 		te.markDirty();
-		tiles.push( te );
+		this.tiles.push( te );
 
 		if ( te.isStorage() )
 		{
-			availableStorage += te.getStorageBytes();
-			storage.add( te );
+			this.availableStorage += te.getStorageBytes();
+			this.storage.add( te );
 		}
 		else if ( te.isStatus() )
-			status.add( (TileCraftingMonitorTile) te );
+			this.status.add( (TileCraftingMonitorTile) te );
 		else if ( te.isAccelerator() )
-			accelerator++;
+			this.accelerator++;
 	}
 
 	public boolean canAccept(IAEStack input)
 	{
 		if ( input instanceof IAEItemStack )
 		{
-			IAEItemStack is = waitingFor.findPrecise( (IAEItemStack) input );
+			IAEItemStack is = this.waitingFor.findPrecise( (IAEItemStack) input );
 			if ( is != null && is.getStackSize() > 0 )
 				return true;
 		}
@@ -302,10 +302,10 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	public void postCraftingStatusChange(IAEItemStack diff)
 	{
-		if ( getGrid() == null )
+		if ( this.getGrid() == null )
 			return;
 
-		CraftingGridCache sg = getGrid().getCache( ICraftingGrid.class );
+		CraftingGridCache sg = this.getGrid().getCache( ICraftingGrid.class );
 
 		if ( sg.interestManager.containsKey( diff ) )
 		{
@@ -326,16 +326,16 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		if ( input instanceof IAEItemStack && type == Actionable.SIMULATE )// causes crafting to lock up?
 		{
 			IAEItemStack what = (IAEItemStack) input.copy();
-			IAEItemStack is = waitingFor.findPrecise( what );
+			IAEItemStack is = this.waitingFor.findPrecise( what );
 
 			if ( is != null && is.getStackSize() > 0 )
 			{
 				if ( is.getStackSize() >= what.getStackSize() )
 				{
-					if ( finalOutput.equals( what ) )
+					if ( this.finalOutput.equals( what ) )
 					{
-						if ( myLastLink != null )
-							return ((CraftingLink) myLastLink).injectItems( what.copy(), type );
+						if ( this.myLastLink != null )
+							return ((CraftingLink) this.myLastLink).injectItems( what.copy(), type );
 
 						return what; // ignore it.
 					}
@@ -349,11 +349,11 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 				IAEItemStack used = what.copy();
 				used.setStackSize( is.getStackSize() );
 
-				if ( finalOutput.equals( what ) )
+				if ( this.finalOutput.equals( what ) )
 				{
-					if ( myLastLink != null )
+					if ( this.myLastLink != null )
 					{
-						leftOver.add( ((CraftingLink) myLastLink).injectItems( used.copy(), type ) );
+						leftOver.add( ((CraftingLink) this.myLastLink).injectItems( used.copy(), type ) );
 						return leftOver;
 					}
 
@@ -366,35 +366,35 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		else if ( input instanceof IAEItemStack && type == Actionable.MODULATE )
 		{
 			IAEItemStack what = (IAEItemStack) input;
-			IAEItemStack is = waitingFor.findPrecise( what );
+			IAEItemStack is = this.waitingFor.findPrecise( what );
 
 			if ( is != null && is.getStackSize() > 0 )
 			{
-				waiting = false;
-				postChange( (IAEItemStack) input, src );
+				this.waiting = false;
+				this.postChange( (IAEItemStack) input, src );
 
 				if ( is.getStackSize() >= input.getStackSize() )
 				{
 					is.decStackSize( input.getStackSize() );
-					markDirty();
-					postCraftingStatusChange( is );
+					this.markDirty();
+					this.postCraftingStatusChange( is );
 
-					if ( finalOutput.equals( input ) )
+					if ( this.finalOutput.equals( input ) )
 					{
-						finalOutput.decStackSize( input.getStackSize() );
-						if ( finalOutput.getStackSize() <= 0 )
-							completeJob();
+						this.finalOutput.decStackSize( input.getStackSize() );
+						if ( this.finalOutput.getStackSize() <= 0 )
+							this.completeJob();
 
-						updateCPU();
+						this.updateCPU();
 
-						if ( myLastLink != null )
-							return ((CraftingLink) myLastLink).injectItems( (IAEItemStack) input, type );
+						if ( this.myLastLink != null )
+							return ((CraftingLink) this.myLastLink).injectItems( (IAEItemStack) input, type );
 
 						return input; // ignore it.
 					}
 
 					// 2000
-					return inventory.injectItems( what, type, src );
+					return this.inventory.injectItems( what, type, src );
 				}
 
 				IAEItemStack insert = what.copy();
@@ -403,28 +403,28 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 				is.setStackSize( 0 );
 
-				if ( finalOutput.equals( insert ) )
+				if ( this.finalOutput.equals( insert ) )
 				{
-					finalOutput.decStackSize( insert.getStackSize() );
-					if ( finalOutput.getStackSize() <= 0 )
-						completeJob();
+					this.finalOutput.decStackSize( insert.getStackSize() );
+					if ( this.finalOutput.getStackSize() <= 0 )
+						this.completeJob();
 
-					updateCPU();
+					this.updateCPU();
 
-					if ( myLastLink != null )
+					if ( this.myLastLink != null )
 					{
-						what.add( ((CraftingLink) myLastLink).injectItems( insert.copy(), type ) );
+						what.add( ((CraftingLink) this.myLastLink).injectItems( insert.copy(), type ) );
 						return what;
 					}
 
-					if ( myLastLink != null )
-						return ((CraftingLink) myLastLink).injectItems( (IAEItemStack) input, type );
+					if ( this.myLastLink != null )
+						return ((CraftingLink) this.myLastLink).injectItems( (IAEItemStack) input, type );
 
 					return input; // ignore it.
 				}
 
-				inventory.injectItems( insert, type, src );
-				markDirty();
+				this.inventory.injectItems( insert, type, src );
+				this.markDirty();
 
 				return what;
 			}
@@ -435,18 +435,18 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	private void updateCPU()
 	{
-		IAEItemStack send = finalOutput;
+		IAEItemStack send = this.finalOutput;
 
-		if ( finalOutput != null && finalOutput.getStackSize() <= 0 )
+		if ( this.finalOutput != null && this.finalOutput.getStackSize() <= 0 )
 			send = null;
 
-		for (TileCraftingMonitorTile t : status)
+		for (TileCraftingMonitorTile t : this.status)
 			t.setJob( send );
 	}
 
 	public IGrid getGrid()
 	{
-		for (TileCraftingTile r : tiles)
+		for (TileCraftingTile r : this.tiles)
 		{
 			IGridNode gn = r.getActionableNode();
 			if ( gn != null )
@@ -462,11 +462,11 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	private void completeJob()
 	{
-		if ( myLastLink != null )
-			((CraftingLink) myLastLink).markDone();
+		if ( this.myLastLink != null )
+			((CraftingLink) this.myLastLink).markDone();
 
 		AELog.crafting( "marking job as complete" );
-		isComplete = true;
+		this.isComplete = true;
 	}
 
 	private boolean canCraft(ICraftingPatternDetails details, IAEItemStack[] condensedInputs)
@@ -478,11 +478,11 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			{
 				boolean found = false;
 
-				for (IAEItemStack fuzz : inventory.getItemList().findFuzzy( g, FuzzyMode.IGNORE_ALL ))
+				for (IAEItemStack fuzz : this.inventory.getItemList().findFuzzy( g, FuzzyMode.IGNORE_ALL ))
 				{
 					fuzz = fuzz.copy();
 					fuzz.setStackSize( g.getStackSize() );
-					IAEItemStack ais = inventory.extractItems( fuzz, Actionable.SIMULATE, machineSrc );
+					IAEItemStack ais = this.inventory.extractItems( fuzz, Actionable.SIMULATE, this.machineSrc );
 					ItemStack is = ais == null ? null : ais.getItemStack();
 
 					if ( is != null && is.stackSize == g.getStackSize() )
@@ -502,7 +502,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			}
 			else
 			{
-				IAEItemStack ais = inventory.extractItems( g.copy(), Actionable.SIMULATE, machineSrc );
+				IAEItemStack ais = this.inventory.extractItems( g.copy(), Actionable.SIMULATE, this.machineSrc );
 				ItemStack is = ais == null ? null : ais.getItemStack();
 
 				if ( is == null || is.stackSize < g.getStackSize() )
@@ -515,76 +515,76 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	public void cancel()
 	{
-		if ( myLastLink != null )
-			myLastLink.cancel();
+		if ( this.myLastLink != null )
+			this.myLastLink.cancel();
 
 		IItemList<IAEItemStack> list;
-		getListOfItem( list = AEApi.instance().storage().createItemList(), CraftingItemList.ALL );
+		this.getListOfItem( list = AEApi.instance().storage().createItemList(), CraftingItemList.ALL );
 		for (IAEItemStack is : list)
-			postChange( is, machineSrc );
+			this.postChange( is, this.machineSrc );
 
-		isComplete = true;
-		myLastLink = null;
-		tasks.clear();
+		this.isComplete = true;
+		this.myLastLink = null;
+		this.tasks.clear();
 
-		ImmutableSet<IAEItemStack> items = ImmutableSet.copyOf( waitingFor );
+		ImmutableSet<IAEItemStack> items = ImmutableSet.copyOf( this.waitingFor );
 
-		waitingFor.resetStatus();
+		this.waitingFor.resetStatus();
 
 		for (IAEItemStack is : items)
-			postCraftingStatusChange( is );
+			this.postCraftingStatusChange( is );
 
-		finalOutput = null;
-		updateCPU();
+		this.finalOutput = null;
+		this.updateCPU();
 
-		storeItems(); // marks dirty
+		this.storeItems(); // marks dirty
 	}
 
 	public void updateCraftingLogic(IGrid grid, IEnergyGrid eg, CraftingGridCache cc)
 	{
-		if ( !getCore().isActive() )
+		if ( !this.getCore().isActive() )
 			return;
 
-		if ( myLastLink != null )
+		if ( this.myLastLink != null )
 		{
-			if ( myLastLink.isCanceled() )
+			if ( this.myLastLink.isCanceled() )
 			{
-				myLastLink = null;
-				cancel();
+				this.myLastLink = null;
+				this.cancel();
 			}
 		}
 
-		if ( isComplete )
+		if ( this.isComplete )
 		{
-			if ( inventory.getItemList().isEmpty() )
+			if ( this.inventory.getItemList().isEmpty() )
 				return;
 
-			storeItems();
+			this.storeItems();
 			return;
 		}
 
-		waiting = false;
-		if ( waiting || tasks.isEmpty() ) // nothing to do here...
+		this.waiting = false;
+		if ( this.waiting || this.tasks.isEmpty() ) // nothing to do here...
 			return;
 
-		remainingOperations = accelerator + 1 - (usedOps[0] + usedOps[1] + usedOps[2]);
-		int started = remainingOperations;
+		this.remainingOperations = this.accelerator + 1 - (this.usedOps[0] + this.usedOps[1] + this.usedOps[2]);
+		int started = this.remainingOperations;
 
-		if ( remainingOperations > 0 )
+		if ( this.remainingOperations > 0 )
 		{
 			do
 			{
-				somethingChanged = false;
-				executeCrafting( eg, cc );
+				this.somethingChanged = false;
+				this.executeCrafting( eg, cc );
 			}
-			while (somethingChanged && remainingOperations > 0);
+			while (this.somethingChanged && this.remainingOperations > 0);
 		}
-		usedOps[2] = usedOps[1];
-		usedOps[1] = usedOps[0];
-		usedOps[0] = started - remainingOperations;
+		this.usedOps[2] = this.usedOps[1];
+		this.usedOps[1] = this.usedOps[0];
+		this.usedOps[0] = started - this.remainingOperations;
 
-		if ( remainingOperations > 0 && !somethingChanged )
-			waiting = true;
+		if ( this.remainingOperations > 0 && !this.somethingChanged )
+			this.waiting = true;
 	}
 
 	private int remainingOperations;
@@ -592,7 +592,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	private void executeCrafting(IEnergyGrid eg, CraftingGridCache cc)
 	{
-		Iterator<Entry<ICraftingPatternDetails, TaskProgress>> i = tasks.entrySet().iterator();
+		Iterator<Entry<ICraftingPatternDetails, TaskProgress>> i = this.tasks.entrySet().iterator();
 		while (i.hasNext())
 		{
 			Entry<ICraftingPatternDetails, TaskProgress> e = i.next();
@@ -603,7 +603,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			}
 
 			ICraftingPatternDetails details = e.getKey();
-			if ( canCraft( details, details.getCondensedInputs() ) )
+			if ( this.canCraft( details, details.getCondensedInputs() ) )
 			{
 				InventoryCrafting ic = null;
 
@@ -642,19 +642,19 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 									found = false;
 									if ( details.isCraftable() )
 									{
-										for (IAEItemStack fuzz : inventory.getItemList().findFuzzy( input[x], FuzzyMode.IGNORE_ALL ))
+										for (IAEItemStack fuzz : this.inventory.getItemList().findFuzzy( input[x], FuzzyMode.IGNORE_ALL ))
 										{
 											fuzz = fuzz.copy();
 											fuzz.setStackSize( input[x].getStackSize() );
 
-											if ( details.isValidItemForSlot( x, fuzz.getItemStack(), getWorld() ) )
+											if ( details.isValidItemForSlot( x, fuzz.getItemStack(), this.getWorld() ) )
 											{
-												IAEItemStack ais = inventory.extractItems( fuzz, Actionable.MODULATE, machineSrc );
+												IAEItemStack ais = this.inventory.extractItems( fuzz, Actionable.MODULATE, this.machineSrc );
 												ItemStack is = ais == null ? null : ais.getItemStack();
 
 												if ( is != null )
 												{
-													postChange( AEItemStack.create( is ), machineSrc );
+													this.postChange( AEItemStack.create( is ), this.machineSrc );
 													ic.setInventorySlotContents( x, is );
 													found = true;
 													break;
@@ -664,12 +664,12 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 									}
 									else
 									{
-										IAEItemStack ais = inventory.extractItems( input[x].copy(), Actionable.MODULATE, machineSrc );
+										IAEItemStack ais = this.inventory.extractItems( input[x].copy(), Actionable.MODULATE, this.machineSrc );
 										ItemStack is = ais == null ? null : ais.getItemStack();
 
 										if ( is != null )
 										{
-											postChange( input[x], machineSrc );
+											this.postChange( input[x], this.machineSrc );
 											ic.setInventorySlotContents( x, is );
 											if ( is.stackSize == input[x].getStackSize() )
 											{
@@ -692,7 +692,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 								{
 									ItemStack is = ic.getStackInSlot( x );
 									if ( is != null )
-										inventory.injectItems( AEItemStack.create( is ), Actionable.MODULATE, machineSrc );
+										this.inventory.injectItems( AEItemStack.create( is ), Actionable.MODULATE, this.machineSrc );
 								}
 								ic = null;
 								break;
@@ -701,20 +701,20 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 						if ( m.pushPattern( details, ic ) )
 						{
-							somethingChanged = true;
-							remainingOperations--;
+							this.somethingChanged = true;
+							this.remainingOperations--;
 
 							for (IAEItemStack out : details.getCondensedOutputs())
 							{
-								postChange( out, machineSrc );
-								waitingFor.add( out.copy() );
-								postCraftingStatusChange( out.copy() );
+								this.postChange( out, this.machineSrc );
+								this.waitingFor.add( out.copy() );
+								this.postCraftingStatusChange( out.copy() );
 							}
 
 							if ( details.isCraftable() )
 							{
-								FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) getWorld() ),
-										details.getOutput( ic, getWorld() ), ic );
+								FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) this.getWorld() ),
+										details.getOutput( ic, this.getWorld() ), ic );
 
 								for (int x = 0; x < ic.getSizeInventory(); x++)
 								{
@@ -722,21 +722,21 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 									if ( output != null )
 									{
 										IAEItemStack cItem = AEItemStack.create( output );
-										postChange( cItem, machineSrc );
-										waitingFor.add( cItem );
-										postCraftingStatusChange( cItem );
+										this.postChange( cItem, this.machineSrc );
+										this.waitingFor.add( cItem );
+										this.postCraftingStatusChange( cItem );
 									}
 								}
 							}
 
 							ic = null; // hand off complete!
-							markDirty();
+							this.markDirty();
 
 							e.getValue().value--;
 							if ( e.getValue().value <= 0 )
 								continue;
 
-							if ( remainingOperations == 0 )
+							if ( this.remainingOperations == 0 )
 								return;
 						}
 					}
@@ -750,7 +750,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 						ItemStack is = ic.getStackInSlot( x );
 						if ( is != null )
 						{
-							inventory.injectItems( AEItemStack.create( is ), Actionable.MODULATE, machineSrc );
+							this.inventory.injectItems( AEItemStack.create( is ), Actionable.MODULATE, this.machineSrc );
 						}
 					}
 				}
@@ -760,47 +760,47 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	private void storeItems()
 	{
-		IGrid g = getGrid();
+		IGrid g = this.getGrid();
 		if ( g == null )
 			return;
 
 		IStorageGrid sg = g.getCache( IStorageGrid.class );
 		IMEInventory<IAEItemStack> ii = sg.getItemInventory();
 
-		for (IAEItemStack is : inventory.getItemList())
+		for (IAEItemStack is : this.inventory.getItemList())
 		{
-			is = inventory.extractItems( is.copy(), Actionable.MODULATE, machineSrc );
+			is = this.inventory.extractItems( is.copy(), Actionable.MODULATE, this.machineSrc );
 
 			if ( is != null )
 			{
-				postChange( is, machineSrc );
-				is = ii.injectItems( is, Actionable.MODULATE, machineSrc );
+				this.postChange( is, this.machineSrc );
+				is = ii.injectItems( is, Actionable.MODULATE, this.machineSrc );
 			}
 
 			if ( is != null )
-				inventory.injectItems( is, Actionable.MODULATE, machineSrc );
+				this.inventory.injectItems( is, Actionable.MODULATE, this.machineSrc );
 		}
 
-		if ( inventory.getItemList().isEmpty() )
-			inventory = new MECraftingInventory();
+		if ( this.inventory.getItemList().isEmpty() )
+			this.inventory = new MECraftingInventory();
 
-		markDirty();
+		this.markDirty();
 	}
 
 	private World getWorld()
 	{
-		return getCore().getWorldObj();
+		return this.getCore().getWorldObj();
 	}
 
 	public ICraftingLink submitJob(IGrid g, ICraftingJob job, BaseActionSource src, ICraftingRequester requestingMachine)
 	{
-		if ( !tasks.isEmpty() || !waitingFor.isEmpty() )
+		if ( !this.tasks.isEmpty() || !this.waitingFor.isEmpty() )
 			return null;
 
 		if ( !(job instanceof CraftingJob) )
 			return null;
 
-		if ( isBusy() || !isActive() || getAvailableStorage() < job.getByteTotal() )
+		if ( this.isBusy() || !this.isActive() || this.getAvailableStorage() < job.getByteTotal() )
 			return null;
 
 		IStorageGrid sg = g.getCache( IStorageGrid.class );
@@ -809,46 +809,46 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 		try
 		{
-			waitingFor.resetStatus();
+			this.waitingFor.resetStatus();
 			((CraftingJob) job).tree.setJob( ci, this, src );
 			if ( ci.commit( src ) )
 			{
-				finalOutput = job.getOutput();
-				waiting = false;
-				isComplete = false;
-				markDirty();
+				this.finalOutput = job.getOutput();
+				this.waiting = false;
+				this.isComplete = false;
+				this.markDirty();
 
-				updateCPU();
-				String craftID = generateCraftingID();
+				this.updateCPU();
+				String craftID = this.generateCraftingID();
 
-				myLastLink = new CraftingLink( generateLinkData( craftID, requestingMachine == null, false ), this );
+				this.myLastLink = new CraftingLink( this.generateLinkData( craftID, requestingMachine == null, false ), this );
 
 				if ( requestingMachine == null )
-					return myLastLink;
+					return this.myLastLink;
 
-				ICraftingLink whatLink = new CraftingLink( generateLinkData( craftID, false, true ), requestingMachine );
+				ICraftingLink whatLink = new CraftingLink( this.generateLinkData( craftID, false, true ), requestingMachine );
 
-				submitLink( myLastLink );
-				submitLink( whatLink );
+				this.submitLink( this.myLastLink );
+				this.submitLink( whatLink );
 
 				IItemList<IAEItemStack> list;
-				getListOfItem( list = AEApi.instance().storage().createItemList(), CraftingItemList.ALL );
+				this.getListOfItem( list = AEApi.instance().storage().createItemList(), CraftingItemList.ALL );
 
 				for (IAEItemStack ge : list)
-					postChange( ge, machineSrc );
+					this.postChange( ge, this.machineSrc );
 
 				return whatLink;
 			}
 			else
 			{
-				tasks.clear();
-				inventory.getItemList().resetStatus();
+				this.tasks.clear();
+				this.inventory.getItemList().resetStatus();
 			}
 		}
 		catch (CraftBranchFailure e)
 		{
-			tasks.clear();
-			inventory.getItemList().resetStatus();
+			this.tasks.clear();
+			this.inventory.getItemList().resetStatus();
 			// AELog.error( e );
 		}
 
@@ -857,9 +857,9 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	private void submitLink(ICraftingLink myLastLink2)
 	{
-		if ( getGrid() != null )
+		if ( this.getGrid() != null )
 		{
-			CraftingGridCache cc = getGrid().getCache( ICraftingGrid.class );
+			CraftingGridCache cc = this.getGrid().getCache( ICraftingGrid.class );
 			cc.addLink( (CraftingLink) myLastLink2 );
 		}
 	}
@@ -868,7 +868,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	{
 		long now = System.currentTimeMillis();
 		int hash = System.identityHashCode( this );
-		int hmm = finalOutput == null ? 0 : finalOutput.hashCode();
+		int hmm = this.finalOutput == null ? 0 : this.finalOutput.hashCode();
 
 		return Long.toString( now, Character.MAX_RADIX ) + '-' + Integer.toString( hash, Character.MAX_RADIX ) + '-'
 				+ Integer.toString( hmm, Character.MAX_RADIX );
@@ -889,31 +889,31 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	private void markDirty()
 	{
-		getCore().markDirty();
+		this.getCore().markDirty();
 	}
 
 	private TileCraftingTile getCore()
 	{
-		return (TileCraftingTile) machineSrc.via;
+		return (TileCraftingTile) this.machineSrc.via;
 	}
 
 	public void addStorage(IAEItemStack extractItems)
 	{
-		inventory.injectItems( extractItems, Actionable.MODULATE, null );
+		this.inventory.injectItems( extractItems, Actionable.MODULATE, null );
 	}
 
 	public void addEmitable(IAEItemStack i)
 	{
-		waitingFor.add( i );
-		postCraftingStatusChange( i );
+		this.waitingFor.add( i );
+		this.postCraftingStatusChange( i );
 	}
 
 	public void addCrafting(ICraftingPatternDetails details, long crafts)
 	{
-		TaskProgress i = tasks.get( details );
+		TaskProgress i = this.tasks.get( details );
 
 		if ( i == null )
-			tasks.put( details, i = new TaskProgress() );
+			this.tasks.put( details, i = new TaskProgress() );
 
 		i.value += crafts;
 	}
@@ -921,14 +921,14 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	@Override
 	public boolean isBusy()
 	{
-		Iterator<Entry<ICraftingPatternDetails, TaskProgress>> i = tasks.entrySet().iterator();
+		Iterator<Entry<ICraftingPatternDetails, TaskProgress>> i = this.tasks.entrySet().iterator();
 		while (i.hasNext())
 		{
 			if ( i.next().getValue().value <= 0 )
 				i.remove();
 		}
 
-		return !tasks.isEmpty() || !waitingFor.isEmpty();
+		return !this.tasks.isEmpty() || !this.waitingFor.isEmpty();
 	}
 
 	public IAEItemStack getItemStack(IAEItemStack what, CraftingItemList storage2)
@@ -937,17 +937,17 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		switch (storage2)
 		{
 		case STORAGE:
-			is = inventory.getItemList().findPrecise( what );
+			is = this.inventory.getItemList().findPrecise( what );
 			break;
 		case ACTIVE:
-			is = waitingFor.findPrecise( what );
+			is = this.waitingFor.findPrecise( what );
 			break;
 		case PENDING:
 
 			is = what.copy();
 			is.setStackSize( 0 );
 
-			for (Entry<ICraftingPatternDetails, TaskProgress> t : tasks.entrySet())
+			for (Entry<ICraftingPatternDetails, TaskProgress> t : this.tasks.entrySet())
 			{
 				for (IAEItemStack ais : t.getKey().getCondensedOutputs())
 				{
@@ -972,18 +972,18 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	public void readFromNBT(NBTTagCompound data)
 	{
-		finalOutput = AEItemStack.loadItemStackFromNBT( (NBTTagCompound) data.getTag( "finalOutput" ) );
-		for (IAEItemStack ais : readList( (NBTTagList) data.getTag( "inventory" ) ))
-			inventory.injectItems( ais, Actionable.MODULATE, machineSrc );
+		this.finalOutput = AEItemStack.loadItemStackFromNBT( (NBTTagCompound) data.getTag( "finalOutput" ) );
+		for (IAEItemStack ais : this.readList( (NBTTagList) data.getTag( "inventory" ) ))
+			this.inventory.injectItems( ais, Actionable.MODULATE, this.machineSrc );
 
-		waiting = data.getBoolean( "waiting" );
-		isComplete = data.getBoolean( "isComplete" );
+		this.waiting = data.getBoolean( "waiting" );
+		this.isComplete = data.getBoolean( "isComplete" );
 
 		if ( data.hasKey( "link" ) )
 		{
 			NBTTagCompound link = data.getCompoundTag( "link" );
-			myLastLink = new CraftingLink( link, this );
-			submitLink( myLastLink );
+			this.myLastLink = new CraftingLink( link, this );
+			this.submitLink( this.myLastLink );
 		}
 
 		NBTTagList list = data.getTagList( "tasks", 10 );
@@ -994,45 +994,45 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			if ( pattern != null && pattern.getItem() instanceof ICraftingPatternItem )
 			{
 				ICraftingPatternItem cpi = (ICraftingPatternItem) pattern.getItem();
-				ICraftingPatternDetails details = cpi.getPatternForItem( pattern.getItemStack(), getWorld() );
+				ICraftingPatternDetails details = cpi.getPatternForItem( pattern.getItemStack(), this.getWorld() );
 				if ( details != null )
 				{
 					TaskProgress tp = new TaskProgress();
 					tp.value = item.getLong( "craftingProgress" );
-					tasks.put( details, tp );
+					this.tasks.put( details, tp );
 				}
 			}
 		}
 
-		waitingFor = readList( (NBTTagList) data.getTag( "waitingFor" ) );
-		for (IAEItemStack is : waitingFor)
-			postCraftingStatusChange( is.copy() );
+		this.waitingFor = this.readList( (NBTTagList) data.getTag( "waitingFor" ) );
+		for (IAEItemStack is : this.waitingFor)
+			this.postCraftingStatusChange( is.copy() );
 	}
 
 	public void writeToNBT(NBTTagCompound data)
 	{
-		data.setTag( "finalOutput", writeItem( finalOutput ) );
-		data.setTag( "inventory", writeList( inventory.getItemList() ) );
-		data.setBoolean( "waiting", waiting );
-		data.setBoolean( "isComplete", isComplete );
+		data.setTag( "finalOutput", this.writeItem( this.finalOutput ) );
+		data.setTag( "inventory", this.writeList( this.inventory.getItemList() ) );
+		data.setBoolean( "waiting", this.waiting );
+		data.setBoolean( "isComplete", this.isComplete );
 
-		if ( myLastLink != null )
+		if ( this.myLastLink != null )
 		{
 			NBTTagCompound link = new NBTTagCompound();
-			myLastLink.writeToNBT( link );
+			this.myLastLink.writeToNBT( link );
 			data.setTag( "link", link );
 		}
 
 		NBTTagList list = new NBTTagList();
-		for (Entry<ICraftingPatternDetails, TaskProgress> e : tasks.entrySet())
+		for (Entry<ICraftingPatternDetails, TaskProgress> e : this.tasks.entrySet())
 		{
-			NBTTagCompound item = writeItem( AEItemStack.create( e.getKey().getPattern() ) );
+			NBTTagCompound item = this.writeItem( AEItemStack.create( e.getKey().getPattern() ) );
 			item.setLong( "craftingProgress", e.getValue().value );
 			list.appendTag( item );
 		}
 		data.setTag( "tasks", list );
 
-		data.setTag( "waitingFor", writeList( waitingFor ) );
+		data.setTag( "waitingFor", this.writeList( this.waitingFor ) );
 	}
 
 	private IItemList<IAEItemStack> readList(NBTTagList tag)
@@ -1056,7 +1056,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		NBTTagList out = new NBTTagList();
 
 		for (IAEItemStack ais : myList)
-			out.appendTag( writeItem( ais ) );
+			out.appendTag( this.writeItem( ais ) );
 
 		return out;
 	}
@@ -1073,44 +1073,44 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	public void done()
 	{
-		TileCraftingTile core = getCore();
+		TileCraftingTile core = this.getCore();
 
 		core.isCoreBlock = true;
 
 		if ( core.previousState != null )
 		{
-			readFromNBT( core.previousState );
+			this.readFromNBT( core.previousState );
 			core.previousState = null;
 		}
 
-		updateCPU();
-		updateName();
+		this.updateCPU();
+		this.updateName();
 	}
 
 	@Override
 	public BaseActionSource getActionSource()
 	{
-		return machineSrc;
+		return this.machineSrc;
 	}
 
 	@Override
 	public String getName()
 	{
-		return myName;
+		return this.myName;
 	}
 
 	public void updateName()
 	{
-		myName = "";
-		for (TileCraftingTile te : tiles)
+		this.myName = "";
+		for (TileCraftingTile te : this.tiles)
 		{
 
 			if ( te.hasCustomName() )
 			{
-				if ( myName.length() > 0 )
-					myName += ' ' + te.getCustomName();
+				if ( this.myName.length() > 0 )
+					this.myName += ' ' + te.getCustomName();
 				else
-					myName = te.getCustomName();
+					this.myName = te.getCustomName();
 			}
 
 		}
@@ -1118,7 +1118,7 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	public boolean isActive()
 	{
-		TileCraftingTile core = getCore();
+		TileCraftingTile core = this.getCore();
 		if ( core == null )
 			return false;
 
@@ -1131,13 +1131,13 @@ public class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	public boolean isMaking(IAEItemStack what)
 	{
-		IAEItemStack wat = waitingFor.findPrecise( what );
+		IAEItemStack wat = this.waitingFor.findPrecise( what );
 		return wat != null && wat.getStackSize() > 0;
 	}
 
 	public void breakCluster()
 	{
-		TileCraftingTile t = getCore();
+		TileCraftingTile t = this.getCore();
 		if ( t != null )
 			t.breakCluster();
 	}

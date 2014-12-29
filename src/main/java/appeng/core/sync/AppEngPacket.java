@@ -41,29 +41,29 @@ public abstract class AppEngPacket
 
 	public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player)
 	{
-		throw new RuntimeException( "This packet ( " + getPacketID() + " does not implement a server side handler." );
+		throw new RuntimeException( "This packet ( " + this.getPacketID() + " does not implement a server side handler." );
 	}
 
 	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
 	{
-		throw new RuntimeException( "This packet ( " + getPacketID() + " does not implement a client side handler." );
+		throw new RuntimeException( "This packet ( " + this.getPacketID() + " does not implement a client side handler." );
 	}
 
 	protected void configureWrite(ByteBuf data)
 	{
 		data.capacity( data.readableBytes() );
-		p = data;
+		this.p = data;
 	}
 
 	public FMLProxyPacket getProxy()
 	{
-		if ( p.array().length > 2 * 1024 * 1024 ) // 2k walking room :)
-			throw new IllegalArgumentException( "Sorry AE2 made a " + p.array().length + " byte packet by accident!" );
+		if ( this.p.array().length > 2 * 1024 * 1024 ) // 2k walking room :)
+			throw new IllegalArgumentException( "Sorry AE2 made a " + this.p.array().length + " byte packet by accident!" );
 
-		FMLProxyPacket pp = new FMLProxyPacket( p, NetworkHandler.instance.getChannel() );
+		FMLProxyPacket pp = new FMLProxyPacket( this.p, NetworkHandler.instance.getChannel() );
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.PacketLogging ) )
-			AELog.info( getClass().getName() + " : " + pp.payload().readableBytes() );
+			AELog.info( this.getClass().getName() + " : " + pp.payload().readableBytes() );
 
 		return pp;
 	}

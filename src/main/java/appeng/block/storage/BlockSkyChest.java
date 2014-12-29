@@ -54,22 +54,22 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 
 	public BlockSkyChest() {
 		super( BlockSkyChest.class, Material.rock );
-		setFeature( EnumSet.of( AEFeature.Core, AEFeature.SkyStoneChests ) );
-		setTileEntity( TileSkyChest.class );
-		isOpaque = isFullSize = false;
-		lightOpacity = 0;
-		hasSubtypes = true;
-		setHardness( 50 );
-		blockResistance = 150.0f;
+		this.setFeature( EnumSet.of( AEFeature.Core, AEFeature.SkyStoneChests ) );
+		this.setTileEntity( TileSkyChest.class );
+		this.isOpaque = this.isFullSize = false;
+		this.lightOpacity = 0;
+		this.hasSubtypes = true;
+		this.setHardness( 50 );
+		this.blockResistance = 150.0f;
 	}
 
 	@Override
 	public String getUnlocalizedName(ItemStack is)
 	{
 		if ( is.getItemDamage() == 1 )
-			return getUnlocalizedName() + ".Block";
+			return this.getUnlocalizedName() + ".Block";
 
-		return getUnlocalizedName();
+		return this.getUnlocalizedName();
 	}
 
 	@Override
@@ -107,7 +107,7 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 	public boolean onActivated(World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
 		if ( Platform.isServer() )
-			Platform.openGUI( player, getTileEntity( w, x, y, z ), ForgeDirection.getOrientation( side ), GuiBridge.GUI_SKYCHEST );
+			Platform.openGUI( player, this.getTileEntity( w, x, y, z ), ForgeDirection.getOrientation( side ), GuiBridge.GUI_SKYCHEST );
 
 		return true;
 	}
@@ -121,7 +121,7 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
 	{
-		TileSkyChest sk = getTileEntity( w, x, y, z );
+		TileSkyChest sk = this.getTileEntity( w, x, y, z );
 		double sc = 0.06;
 		ForgeDirection o = ForgeDirection.UNKNOWN;
 

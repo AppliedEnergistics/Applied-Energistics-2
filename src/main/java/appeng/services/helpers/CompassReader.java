@@ -46,13 +46,13 @@ public class CompassReader
 
 	public void setHasBeacon(int cx, int cz, int cdy, boolean hasBeacon)
 	{
-		CompassRegion r = getRegion( cx, cz );
+		CompassRegion r = this.getRegion( cx, cz );
 		r.setHasBeacon( cx, cz, cdy, hasBeacon );
 	}
 
 	public boolean hasBeacon(int cx, int cz)
 	{
-		CompassRegion r = getRegion( cx, cz );
+		CompassRegion r = this.getRegion( cx, cz );
 		return r.hasBeacon( cx, cz );
 	}
 

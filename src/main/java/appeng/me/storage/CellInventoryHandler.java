@@ -42,7 +42,7 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 
 	NBTTagCompound openNbtData()
 	{
-		return Platform.openNbtData( getCellInv().getItemStack() );
+		return Platform.openNbtData( this.getCellInv().getItemStack() );
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 	CellInventoryHandler(IMEInventory c) {
 		super( c, StorageChannel.ITEMS );
 
-		ICellInventory ci = getCellInv();
+		ICellInventory ci = this.getCellInv();
 		if ( ci != null )
 		{
 			IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
@@ -100,14 +100,14 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 					priorityList.add( AEItemStack.create( is ) );
 			}
 
-			myWhitelist = hasInverter ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST;
+			this.myWhitelist = hasInverter ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST;
 
 			if ( !priorityList.isEmpty() )
 			{
 				if ( hasFuzzy )
-					myPartitionList = new FuzzyPriorityList<IAEItemStack>( priorityList, fzMode );
+					this.myPartitionList = new FuzzyPriorityList<IAEItemStack>( priorityList, fzMode );
 				else
-					myPartitionList = new PrecisePriorityList<IAEItemStack>( priorityList );
+					this.myPartitionList = new PrecisePriorityList<IAEItemStack>( priorityList );
 			}
 		}
 	}
@@ -115,26 +115,26 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 	@Override
 	public boolean isPreformatted() 
 	{
-		return ! myPartitionList.isEmpty();
+		return ! this.myPartitionList.isEmpty();
 	}
 
 	@Override
 	public boolean isFuzzy()
 	{
-		return myPartitionList instanceof FuzzyPriorityList;
+		return this.myPartitionList instanceof FuzzyPriorityList;
 	}
 
 	@Override
 	public IncludeExclude getIncludeExcludeMode()
 	{
-		return myWhitelist;
+		return this.myWhitelist;
 	}
 
 	public int getStatusForCell()
 	{
-			int val = getCellInv().getStatusForCell();
+			int val = this.getCellInv().getStatusForCell();
 			
-			if ( val == 1 && isPreformatted() )
+			if ( val == 1 && this.isPreformatted() )
 				val = 2;
 			
 			return val;

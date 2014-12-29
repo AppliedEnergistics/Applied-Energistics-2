@@ -32,35 +32,35 @@ public class WrappedDamageItemDefinition implements AEItemDefinition
 	final int damage;
 
 	public WrappedDamageItemDefinition(AEItemDefinition def, int dmg) {
-		baseItem = def;
-		damage = dmg;
+		this.baseItem = def;
+		this.damage = dmg;
 	}
 
 	@Override
 	public Block block()
 	{
-		return baseItem.block();
+		return this.baseItem.block();
 	}
 
 	@Override
 	public Item item()
 	{
-		return baseItem.item();
+		return this.baseItem.item();
 	}
 
 	@Override
 	public Class<? extends TileEntity> entity()
 	{
-		return baseItem.entity();
+		return this.baseItem.entity();
 	}
 
 	@Override
 	public ItemStack stack(int stackSize)
 	{
-		if ( baseItem == null )
+		if ( this.baseItem == null )
 			return null;
 
-		return new ItemStack( baseItem.block(), stackSize, damage );
+		return new ItemStack( this.baseItem.block(), stackSize, this.damage );
 	}
 
 	@Override
@@ -69,14 +69,14 @@ public class WrappedDamageItemDefinition implements AEItemDefinition
 		if ( comparableItem == null )
 			return false;
 
-		return comparableItem.getItem() == baseItem.item() && comparableItem.getItemDamage() == damage;
+		return comparableItem.getItem() == this.baseItem.item() && comparableItem.getItemDamage() == this.damage;
 	}
 
 	@Override
 	public boolean sameAsBlock(IBlockAccess world, int x, int y, int z)
 	{
-		if ( block() != null )
-			return world.getBlock( x, y, z ) == block() && world.getBlockMetadata( x, y, z ) == damage;
+		if ( this.block() != null )
+			return world.getBlock( x, y, z ) == this.block() && world.getBlockMetadata( x, y, z ) == this.damage;
 		return false;
 	}
 

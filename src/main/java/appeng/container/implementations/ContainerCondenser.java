@@ -38,11 +38,11 @@ public class ContainerCondenser extends AEBaseContainer implements IProgressProv
 		super( ip, condenser, null );
 		this.condenser = condenser;
 
-		addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.TRASH, condenser, 0, 51, 52, ip ) );
-		addSlotToContainer( new SlotOutput( condenser, 1, 105, 52, -1 ) );
-		addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_COMPONENT, condenser.getInternalInventory(), 2, 101, 26, ip )).setStackLimit( 1 ) );
+		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.TRASH, condenser, 0, 51, 52, ip ) );
+		this.addSlotToContainer( new SlotOutput( condenser, 1, 105, 52, -1 ) );
+		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_COMPONENT, condenser.getInternalInventory(), 2, 101, 26, ip )).setStackLimit( 1 ) );
 
-		bindPlayerInventory( ip, 0, 197 - /* height of player inventory */82 );
+		this.bindPlayerInventory( ip, 0, 197 - /* height of player inventory */82 );
 	}
 
 	@Override
@@ -73,13 +73,13 @@ public class ContainerCondenser extends AEBaseContainer implements IProgressProv
 	@Override
 	public int getCurrentProgress()
 	{
-		return (int) storedPower;
+		return (int) this.storedPower;
 	}
 
 	@Override
 	public int getMaxProgress()
 	{
-		return (int) requiredEnergy;
+		return (int) this.requiredEnergy;
 	}
 
 }

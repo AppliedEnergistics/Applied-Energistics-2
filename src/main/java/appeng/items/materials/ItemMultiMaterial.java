@@ -75,8 +75,8 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 
 	public ItemMultiMaterial() {
 		super( ItemMultiMaterial.class );
-		setFeature( EnumSet.of( AEFeature.Core ) );
-		setHasSubtypes( true );
+		this.setFeature( EnumSet.of( AEFeature.Core ) );
+		this.setHasSubtypes( true );
 		instance = this;
 	}
 
@@ -94,8 +94,8 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 		{
 			try
 			{
-				Matcher a = p.matcher( o1 );
-				Matcher b = p.matcher( o2 );
+				Matcher a = this.p.matcher( o1 );
+				Matcher b = this.p.matcher( o2 );
 				if ( a.find() && b.find() )
 				{
 					int ia = Integer.parseInt( a.group( 1 ) );
@@ -116,7 +116,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	{
 		super.addCheckedInformation( stack, player, lines, displayAdditionalInformation );
 
-		MaterialType mt = getTypeByStack( stack );
+		MaterialType mt = this.getTypeByStack( stack );
 		if ( mt == null )
 			return;
 
@@ -126,7 +126,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 			lines.add( c.getString( "InscribeName" ) );
 		}
 
-		Upgrades u = getType( stack );
+		Upgrades u = this.getType( stack );
 		if ( u != null )
 		{
 			List<String> textList = new LinkedList<String>();
@@ -174,8 +174,8 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 
 				IStackSrc output = mat.stackSrc = new MaterialStackSrc( mat );
 
-				if ( dmgToMaterial.get( newMaterialNum ) == null )
-					dmgToMaterial.put( newMaterialNum, mat );
+				if ( this.dmgToMaterial.get( newMaterialNum ) == null )
+					this.dmgToMaterial.put( newMaterialNum, mat );
 				else
 					throw new RuntimeException( "Meta Overlap detected." );
 
@@ -190,7 +190,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 
 	public void makeUnique()
 	{
-		for (MaterialType mt : ImmutableSet.copyOf( dmgToMaterial.values() ))
+		for (MaterialType mt : ImmutableSet.copyOf( this.dmgToMaterial.values() ))
 		{
 			if ( mt.getOreName() != null )
 			{
@@ -226,7 +226,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 				else
 				{
 					if ( mt.itemInstance == this )
-						dmgToMaterial.remove( mt.damageValue );
+						this.dmgToMaterial.remove( mt.damageValue );
 
 					mt.itemInstance = replacement.getItem();
 					mt.damageValue = replacement.getItemDamage();
@@ -238,16 +238,16 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 
 	public MaterialType getTypeByStack(ItemStack is)
 	{
-		if ( dmgToMaterial.containsKey( is.getItemDamage() ) )
-			return dmgToMaterial.get( is.getItemDamage() );
+		if ( this.dmgToMaterial.containsKey( is.getItemDamage() ) )
+			return this.dmgToMaterial.get( is.getItemDamage() );
 		return MaterialType.InvalidType;
 	}
 
 	@Override
 	public IIcon getIconFromDamage(int dmg)
 	{
-		if ( dmgToMaterial.containsKey( dmg ) )
-			return dmgToMaterial.get( dmg ).IIcon;
+		if ( this.dmgToMaterial.containsKey( dmg ) )
+			return this.dmgToMaterial.get( dmg ).IIcon;
 		return new MissingIcon( this );
 	}
 
@@ -256,7 +256,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 		if ( is == null )
 			return "null";
 
-		MaterialType mt = getTypeByStack( is );
+		MaterialType mt = this.getTypeByStack( is );
 		if ( mt == null )
 			return "null";
 
@@ -266,7 +266,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	@Override
 	public String getUnlocalizedName(ItemStack is)
 	{
-		return "item.appliedenergistics2." + nameOf( is );
+		return "item.appliedenergistics2." + this.nameOf( is );
 	}
 
 	@Override
@@ -277,9 +277,9 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 			if ( mat.damageValue != -1 )
 			{
 				ItemStack what = new ItemStack( this, 1, mat.damageValue );
-				if ( getTypeByStack( what ) != MaterialType.InvalidType )
+				if ( this.getTypeByStack( what ) != MaterialType.InvalidType )
 				{
-					String tex = "appliedenergistics2:" + nameOf( what );
+					String tex = "appliedenergistics2:" + this.nameOf( what );
 					mat.IIcon = icoRegister.registerIcon( tex );
 				}
 			}
@@ -289,13 +289,13 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	@Override
 	public boolean hasCustomEntity(ItemStack is)
 	{
-		return getTypeByStack( is ).hasCustomEntity();
+		return this.getTypeByStack( is ).hasCustomEntity();
 	}
 
 	@Override
 	public Entity createEntity(World w, Entity location, ItemStack itemstack)
 	{
-		Class<? extends Entity> droppedEntity = getTypeByStack( itemstack ).getCustomEntityClass();
+		Class<? extends Entity> droppedEntity = this.getTypeByStack( itemstack ).getCustomEntityClass();
 		Entity eqi;
 
 		try
@@ -321,7 +321,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	@Override
 	public int getBytes(ItemStack is)
 	{
-		switch (getTypeByStack( is ))
+		switch (this.getTypeByStack( is ))
 		{
 		case Cell1kPart:
 			return 1024;
@@ -339,7 +339,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	@Override
 	public boolean isStorageComponent(ItemStack is)
 	{
-		switch (getTypeByStack( is ))
+		switch (this.getTypeByStack( is ))
 		{
 		case Cell1kPart:
 		case Cell4kPart:
@@ -354,7 +354,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	@Override
 	public Upgrades getType(ItemStack itemstack)
 	{
-		switch (getTypeByStack( itemstack ))
+		switch (this.getTypeByStack( itemstack ))
 		{
 		case CardCapacity:
 			return Upgrades.CAPACITY;

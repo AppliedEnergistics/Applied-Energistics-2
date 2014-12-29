@@ -33,13 +33,13 @@ public class ChainedIterator<T> implements Iterator<T>
 	@Override
 	public boolean hasNext()
 	{
-		return offset < list.length;
+		return this.offset < this.list.length;
 	}
 
 	@Override
 	public T next()
 	{
-		return list[offset++];
+		return this.list[this.offset++];
 	}
 
 	@Override

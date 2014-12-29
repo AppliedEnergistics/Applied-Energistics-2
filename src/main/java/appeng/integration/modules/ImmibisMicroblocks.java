@@ -47,16 +47,16 @@ public class ImmibisMicroblocks extends BaseModule implements IImmibisMicroblock
 	@Override
 	public void Init() throws Throwable
 	{
-		TestClass( IMultipartTile.class );
-		TestClass( ICoverSystem.class );
-		TestClass( IPartContainer.class );
+		this.TestClass( IMultipartTile.class );
+		this.TestClass( ICoverSystem.class );
+		this.TestClass( IPartContainer.class );
 
 		try
 		{
-			MicroblockAPIUtils = Class.forName( "mods.immibis.microblocks.api.MicroblockAPIUtils" );
-			mergeIntoMicroblockContainer = MicroblockAPIUtils.getMethod( "mergeIntoMicroblockContainer", ItemStack.class, EntityPlayer.class, World.class,
+			this.MicroblockAPIUtils = Class.forName( "mods.immibis.microblocks.api.MicroblockAPIUtils" );
+			this.mergeIntoMicroblockContainer = this.MicroblockAPIUtils.getMethod( "mergeIntoMicroblockContainer", ItemStack.class, EntityPlayer.class, World.class,
 					int.class, int.class, int.class, int.class, Block.class, int.class );
-			canConvertTiles = true;
+			this.canConvertTiles = true;
 		}
 		catch (Throwable t)
 		{
@@ -87,7 +87,7 @@ public class ImmibisMicroblocks extends BaseModule implements IImmibisMicroblock
 	@Override
 	public IPartHost getOrCreateHost(EntityPlayer player, int side, TileEntity te)
 	{
-		if ( te instanceof IMultipartTile && canConvertTiles )
+		if ( te instanceof IMultipartTile && this.canConvertTiles )
 		{
 			Block blk = AEApi.instance().blocks().blockMultiPart.block();
 			ItemStack what = AEApi.instance().blocks().blockMultiPart.stack( 1 );
@@ -101,11 +101,11 @@ public class ImmibisMicroblocks extends BaseModule implements IImmibisMicroblock
 			{
 				// ItemStack.class, EntityPlayer.class, World.class,
 				// int.class, int.class, int.class, int.class, Block.class, int.class );
-				mergeIntoMicroblockContainer.invoke( null, what, player, w, x, y, z, side, blk, 0 );
+				this.mergeIntoMicroblockContainer.invoke( null, what, player, w, x, y, z, side, blk, 0 );
 			}
 			catch (Throwable e)
 			{
-				canConvertTiles = false;
+				this.canConvertTiles = false;
 				return null;
 			}
 

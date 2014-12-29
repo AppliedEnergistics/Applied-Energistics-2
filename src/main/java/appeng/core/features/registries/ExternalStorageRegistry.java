@@ -36,20 +36,20 @@ public class ExternalStorageRegistry implements IExternalStorageRegistry
 	final ExternalIInv lastHandler = new ExternalIInv();
 
 	public ExternalStorageRegistry() {
-		Handlers = new ArrayList<IExternalStorageHandler>();
+		this.Handlers = new ArrayList<IExternalStorageHandler>();
 	}
 
 	@Override
 	public IExternalStorageHandler getHandler(TileEntity te, ForgeDirection d, StorageChannel chan, BaseActionSource mySrc)
 	{
-		for (IExternalStorageHandler x : Handlers)
+		for (IExternalStorageHandler x : this.Handlers)
 		{
 			if ( x.canHandle( te, d, chan, mySrc ) )
 				return x;
 		}
 
-		if ( lastHandler.canHandle( te, d, chan, mySrc ) )
-			return lastHandler;
+		if ( this.lastHandler.canHandle( te, d, chan, mySrc ) )
+			return this.lastHandler;
 
 		return null;
 	}
@@ -57,7 +57,7 @@ public class ExternalStorageRegistry implements IExternalStorageRegistry
 	@Override
 	public void addExternalStorageInterface(IExternalStorageHandler ei)
 	{
-		Handlers.add( ei );
+		this.Handlers.add( ei );
 	}
 
 }

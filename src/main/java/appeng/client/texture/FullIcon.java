@@ -32,21 +32,21 @@ public class FullIcon implements IIcon
 		if ( o == null )
 			throw new RuntimeException("Cannot create a wrapper icon with a null icon.");
 		
-		p = o;
+		this.p = o;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public float getMinU()
 	{
-		return p.getMinU();
+		return this.p.getMinU();
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public float getMaxU()
 	{
-		return p.getMaxU();
+		return this.p.getMaxU();
 	}
 
 	@Override
@@ -54,22 +54,22 @@ public class FullIcon implements IIcon
 	public float getInterpolatedU(double d0)
 	{
 		if ( d0 > 8.0 )
-			return p.getMaxU();
-		return p.getMinU();
+			return this.p.getMaxU();
+		return this.p.getMinU();
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public float getMinV()
 	{
-		return p.getMinV();
+		return this.p.getMinV();
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public float getMaxV()
 	{
-		return p.getMaxV();
+		return this.p.getMaxV();
 	}
 
 	@Override
@@ -77,27 +77,27 @@ public class FullIcon implements IIcon
 	public float getInterpolatedV(double d0)
 	{
 		if ( d0 > 8.0 )
-			return p.getMaxV();
-		return p.getMinV();
+			return this.p.getMaxV();
+		return this.p.getMinV();
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public String getIconName()
 	{
-		return p.getIconName();
+		return this.p.getIconName();
 	}
 
 	@Override
 	public int getIconWidth()
 	{
-		return p.getIconWidth();
+		return this.p.getIconWidth();
 	}
 
 	@Override
 	public int getIconHeight()
 	{
-		return p.getIconHeight();
+		return this.p.getIconHeight();
 	}
 
 }

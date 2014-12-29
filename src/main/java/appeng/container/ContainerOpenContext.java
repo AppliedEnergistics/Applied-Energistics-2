@@ -33,14 +33,14 @@ public class ContainerOpenContext
 
 	public ContainerOpenContext(Object myItem) {
 		boolean isWorld = myItem instanceof IPart || myItem instanceof TileEntity;
-		isItem = !isWorld;
+		this.isItem = !isWorld;
 	}
 
 	public TileEntity getTile()
 	{
-		if ( isItem )
+		if ( this.isItem )
 			return null;
-		return w.getTileEntity( x, y, z );
+		return this.w.getTileEntity( this.x, this.y, this.z );
 	}
 
 }

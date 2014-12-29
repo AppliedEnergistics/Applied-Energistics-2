@@ -34,27 +34,27 @@ public class Connections implements Callable
 	public boolean destroy = false;
 
 	public Connections(PartP2PTunnelME o) {
-		me = o;
+		this.me = o;
 	}
 
 	@Override
 	public Object call() throws Exception
 	{
-		me.updateConnections( this );
+		this.me.updateConnections( this );
 
 		return null;
 	}
 
 	public void markDestroy()
 	{
-		create = false;
-		destroy = true;
+		this.create = false;
+		this.destroy = true;
 	}
 
 	public void markCreate()
 	{
-		create = true;
-		destroy = false;
+		this.create = true;
+		this.destroy = false;
 	}
 
 }

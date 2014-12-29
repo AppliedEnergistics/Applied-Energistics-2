@@ -81,7 +81,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	private final InventoryCrafting craftingInv = new InventoryCrafting( new ContainerNull(), 3, 3 );
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 + 2 );
 	private final IConfigManager settings = new ConfigManager( this );
-	private final UpgradeInventory upgrades = new UpgradeInventory( assemblerStack, this, getUpgradeSlots() );
+	private final UpgradeInventory upgrades = new UpgradeInventory( assemblerStack, this, this.getUpgradeSlots() );
 
 	private ForgeDirection pushDirection = ForgeDirection.UNKNOWN;
 	private ItemStack myPattern = null;
@@ -96,23 +96,23 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	@Override
 	public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table, ForgeDirection where)
 	{
-		if ( myPattern == null )
+		if ( this.myPattern == null )
 		{
 			boolean isEmpty = true;
-			for (int x = 0; x < inv.getSizeInventory(); x++)
-				isEmpty = inv.getStackInSlot( x ) == null && isEmpty;
+			for (int x = 0; x < this.inv.getSizeInventory(); x++)
+				isEmpty = this.inv.getStackInSlot( x ) == null && isEmpty;
 
 			if ( isEmpty && patternDetails.isCraftable() )
 			{
-				forcePlan = true;
-				myPlan = patternDetails;
-				pushDirection = where;
+				this.forcePlan = true;
+				this.myPlan = patternDetails;
+				this.pushDirection = where;
 
 				for (int x = 0; x < table.getSizeInventory(); x++)
-					inv.setInventorySlotContents( x, table.getStackInSlot( x ) );
+					this.inv.setInventorySlotContents( x, table.getStackInSlot( x ) );
 
-				updateSleepiness();
-				markDirty();
+				this.updateSleepiness();
+				this.markDirty();
 				return true;
 			}
 		}
@@ -121,53 +121,53 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 	private void recalculatePlan()
 	{
-		reboot = true;
+		this.reboot = true;
 
-		if ( forcePlan )
+		if ( this.forcePlan )
 			return;
 
-		ItemStack is = inv.getStackInSlot( 10 );
+		ItemStack is = this.inv.getStackInSlot( 10 );
 
 		if ( is != null && is.getItem() instanceof ItemEncodedPattern )
 		{
-			if ( !Platform.isSameItem( is, myPattern ) )
+			if ( !Platform.isSameItem( is, this.myPattern ) )
 			{
-				World w = getWorldObj();
+				World w = this.getWorldObj();
 				ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
 				ICraftingPatternDetails ph = iep.getPatternForItem( is, w );
 
 				if ( ph != null && ph.isCraftable() )
 				{
-					progress = 0;
-					myPattern = is;
-					myPlan = ph;
+					this.progress = 0;
+					this.myPattern = is;
+					this.myPlan = ph;
 				}
 			}
 		}
 		else
 		{
-			progress = 0;
-			forcePlan = false;
-			myPlan = null;
-			myPattern = null;
-			pushDirection = ForgeDirection.UNKNOWN;
+			this.progress = 0;
+			this.forcePlan = false;
+			this.myPlan = null;
+			this.myPattern = null;
+			this.pushDirection = ForgeDirection.UNKNOWN;
 		}
 
-		updateSleepiness();
+		this.updateSleepiness();
 	}
 
 	private void updateSleepiness()
 	{
-		boolean wasEnabled = isAwake;
-		isAwake = myPlan != null && hasMats() || canPush();
-		if ( wasEnabled != isAwake )
+		boolean wasEnabled = this.isAwake;
+		this.isAwake = this.myPlan != null && this.hasMats() || this.canPush();
+		if ( wasEnabled != this.isAwake )
 		{
 			try
 			{
-				if ( isAwake )
-					gridProxy.getTick().wakeDevice( gridProxy.getNode() );
+				if ( this.isAwake )
+					this.gridProxy.getTick().wakeDevice( this.gridProxy.getNode() );
 				else
-					gridProxy.getTick().sleepDevice( gridProxy.getNode() );
+					this.gridProxy.getTick().sleepDevice( this.gridProxy.getNode() );
 			}
 			catch (GridAccessException e)
 			{
@@ -178,13 +178,13 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 	private boolean canPush()
 	{
-		return inv.getStackInSlot( 9 ) != null;
+		return this.inv.getStackInSlot( 9 ) != null;
 	}
 
 	@Override
 	public int getInstalledUpgrades(Upgrades u)
 	{
-		return upgrades.getInstalledUpgrades( u );
+		return this.upgrades.getInstalledUpgrades( u );
 	}
 
 	protected int getUpgradeSlots()
@@ -195,35 +195,35 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	@TileEvent(TileEventType.NETWORK_READ)
 	public boolean readFromStream_TileMolecularAssembler(ByteBuf data)
 	{
-		boolean oldPower = isPowered;
-		isPowered = data.readBoolean();
-		return isPowered != oldPower;
+		boolean oldPower = this.isPowered;
+		this.isPowered = data.readBoolean();
+		return this.isPowered != oldPower;
 	}
 
 	@TileEvent(TileEventType.NETWORK_WRITE)
 	public void writeToStream_TileMolecularAssembler(ByteBuf data)
 	{
-		data.writeBoolean( isPowered );
+		data.writeBoolean( this.isPowered );
 	}
 
 	@TileEvent(TileEventType.WORLD_NBT_WRITE)
 	public void writeToNBT_TileMolecularAssembler(NBTTagCompound data)
 	{
-		if ( forcePlan && myPlan != null )
+		if ( this.forcePlan && this.myPlan != null )
 		{
-			ItemStack pattern = myPlan.getPattern();
+			ItemStack pattern = this.myPlan.getPattern();
 			if ( pattern != null )
 			{
 				NBTTagCompound compound = new NBTTagCompound();
 				pattern.writeToNBT( compound );
 				data.setTag( "myPlan", compound );
-				data.setInteger( "pushDirection", pushDirection.ordinal() );
+				data.setInteger( "pushDirection", this.pushDirection.ordinal() );
 			}
 		}
 
-		upgrades.writeToNBT( data, "upgrades" );
-		inv.writeToNBT( data, "inv" );
-		settings.writeToNBT( data );
+		this.upgrades.writeToNBT( data, "upgrades" );
+		this.inv.writeToNBT( data, "inv" );
+		this.settings.writeToNBT( data );
 	}
 
 	@TileEvent(TileEventType.WORLD_NBT_READ)
@@ -235,28 +235,28 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 			if ( myPat != null && myPat.getItem() instanceof ItemEncodedPattern )
 			{
-				World w = getWorldObj();
+				World w = this.getWorldObj();
 				ItemEncodedPattern iep = (ItemEncodedPattern) myPat.getItem();
 				ICraftingPatternDetails ph = iep.getPatternForItem( myPat, w );
 				if ( ph != null && ph.isCraftable() )
 				{
-					forcePlan = true;
-					myPlan = ph;
-					pushDirection = ForgeDirection.getOrientation( data.getInteger( "pushDirection" ) );
+					this.forcePlan = true;
+					this.myPlan = ph;
+					this.pushDirection = ForgeDirection.getOrientation( data.getInteger( "pushDirection" ) );
 				}
 			}
 		}
 
-		upgrades.readFromNBT( data, "upgrades" );
-		inv.readFromNBT( data, "inv" );
-		settings.readFromNBT( data );
-		recalculatePlan();
+		this.upgrades.readFromNBT( data, "upgrades" );
+		this.inv.readFromNBT( data, "inv" );
+		this.settings.readFromNBT( data );
+		this.recalculatePlan();
 	}
 
 	public TileMolecularAssembler() {
-		settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
-		inv.setMaxStackSize( 1 );
-		gridProxy.setIdlePowerUsage( 0.0 );
+		this.settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
+		this.inv.setMaxStackSize( 1 );
+		this.gridProxy.setIdlePowerUsage( 0.0 );
 	}
 
 	@Override
@@ -265,8 +265,8 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		if ( i >= 9 )
 			return false;
 
-		if ( hasPattern() )
-			return myPlan.isValidItemForSlot( i, itemstack, getWorldObj() );
+		if ( this.hasPattern() )
+			return this.myPlan.isValidItemForSlot( i, itemstack, this.getWorldObj() );
 
 		return false;
 	}
@@ -274,12 +274,12 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	@Override
 	public boolean acceptsPlans()
 	{
-		return inv.getStackInSlot( 10 ) == null;
+		return this.inv.getStackInSlot( 10 ) == null;
 	}
 
 	private boolean hasPattern()
 	{
-		return myPlan != null && inv.getStackInSlot( 10 ) != null;
+		return this.myPlan != null && this.inv.getStackInSlot( 10 ) != null;
 	}
 
 	@Override
@@ -291,14 +291,14 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	@Override
 	public IInventory getInternalInventory()
 	{
-		return inv;
+		return this.inv;
 	}
 
 	@Override
 	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added)
 	{
 		if ( inv == this.inv )
-			recalculatePlan();
+			this.recalculatePlan();
 	}
 
 	@Override
@@ -322,17 +322,17 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	@Override
 	public IConfigManager getConfigManager()
 	{
-		return settings;
+		return this.settings;
 	}
 
 	@Override
 	public IInventory getInventoryByName(String name)
 	{
 		if ( name.equals( "upgrades" ) )
-			return upgrades;
+			return this.upgrades;
 
 		if ( name.equals( "mac" ) )
-			return inv;
+			return this.inv;
 
 		return null;
 	}
@@ -351,7 +351,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 	public int getCraftingProgress()
 	{
-		return (int) progress;
+		return (int) this.progress;
 	}
 
 	@Override
@@ -359,9 +359,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	{
 		super.getDrops( w, x, y, z, drops );
 
-		for (int h = 0; h < upgrades.getSizeInventory(); h++)
+		for (int h = 0; h < this.upgrades.getSizeInventory(); h++)
 		{
-			ItemStack is = upgrades.getStackInSlot( h );
+			ItemStack is = this.upgrades.getStackInSlot( h );
 			if ( is != null )
 				drops.add( is );
 		}
@@ -370,114 +370,114 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	@Override
 	public TickingRequest getTickingRequest(IGridNode node)
 	{
-		recalculatePlan();
-		updateSleepiness();
-		return new TickingRequest( 1, 1, !isAwake, false );
+		this.recalculatePlan();
+		this.updateSleepiness();
+		return new TickingRequest( 1, 1, !this.isAwake, false );
 	}
 
 	private boolean hasMats()
 	{
-		if ( myPlan == null )
+		if ( this.myPlan == null )
 			return false;
 
-		for (int x = 0; x < craftingInv.getSizeInventory(); x++)
-			craftingInv.setInventorySlotContents( x, inv.getStackInSlot( x ) );
+		for (int x = 0; x < this.craftingInv.getSizeInventory(); x++)
+			this.craftingInv.setInventorySlotContents( x, this.inv.getStackInSlot( x ) );
 
-		return myPlan.getOutput( craftingInv, getWorldObj() ) != null;
+		return this.myPlan.getOutput( this.craftingInv, this.getWorldObj() ) != null;
 	}
 
 	@Override
 	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
 	{
-		if ( inv.getStackInSlot( 9 ) != null )
+		if ( this.inv.getStackInSlot( 9 ) != null )
 		{
-			pushOut( inv.getStackInSlot( 9 ) );
+			this.pushOut( this.inv.getStackInSlot( 9 ) );
 
 			// did it eject?
-			if ( inv.getStackInSlot( 9 ) == null )
-				markDirty();
+			if ( this.inv.getStackInSlot( 9 ) == null )
+				this.markDirty();
 
-			ejectHeldItems();
-			updateSleepiness();
-			progress = 0;
-			return isAwake ? TickRateModulation.IDLE : TickRateModulation.SLEEP;
+			this.ejectHeldItems();
+			this.updateSleepiness();
+			this.progress = 0;
+			return this.isAwake ? TickRateModulation.IDLE : TickRateModulation.SLEEP;
 		}
 
-		if ( myPlan == null )
+		if ( this.myPlan == null )
 		{
-			updateSleepiness();
+			this.updateSleepiness();
 			return TickRateModulation.SLEEP;
 		}
 
-		if ( reboot )
+		if ( this.reboot )
 			TicksSinceLastCall = 1;
 
-		if ( !isAwake )
+		if ( !this.isAwake )
 			return TickRateModulation.SLEEP;
 
-		reboot = false;
+		this.reboot = false;
 		int speed = 10;
-		switch (upgrades.getInstalledUpgrades( Upgrades.SPEED ))
+		switch (this.upgrades.getInstalledUpgrades( Upgrades.SPEED ))
 		{
 		case 0:
-			progress += userPower( TicksSinceLastCall, speed = 10, 1.0 );
+			this.progress += this.userPower( TicksSinceLastCall, speed = 10, 1.0 );
 			break;
 		case 1:
-			progress += userPower( TicksSinceLastCall, speed = 13, 1.3 );
+			this.progress += this.userPower( TicksSinceLastCall, speed = 13, 1.3 );
 			break;
 		case 2:
-			progress += userPower( TicksSinceLastCall, speed = 17, 1.7 );
+			this.progress += this.userPower( TicksSinceLastCall, speed = 17, 1.7 );
 			break;
 		case 3:
-			progress += userPower( TicksSinceLastCall, speed = 20, 2.0 );
+			this.progress += this.userPower( TicksSinceLastCall, speed = 20, 2.0 );
 			break;
 		case 4:
-			progress += userPower( TicksSinceLastCall, speed = 25, 2.5 );
+			this.progress += this.userPower( TicksSinceLastCall, speed = 25, 2.5 );
 			break;
 		case 5:
-			progress += userPower( TicksSinceLastCall, speed = 50, 5.0 );
+			this.progress += this.userPower( TicksSinceLastCall, speed = 50, 5.0 );
 			break;
 		}
 
-		if ( progress >= 100 )
+		if ( this.progress >= 100 )
 		{
-			for (int x = 0; x < craftingInv.getSizeInventory(); x++)
-				craftingInv.setInventorySlotContents( x, inv.getStackInSlot( x ) );
+			for (int x = 0; x < this.craftingInv.getSizeInventory(); x++)
+				this.craftingInv.setInventorySlotContents( x, this.inv.getStackInSlot( x ) );
 
-			progress = 0;
-			ItemStack output = myPlan.getOutput( craftingInv, getWorldObj() );
+			this.progress = 0;
+			ItemStack output = this.myPlan.getOutput( this.craftingInv, this.getWorldObj() );
 			if ( output != null )
 			{
-				FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) getWorldObj() ), output, craftingInv );
+				FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) this.getWorldObj() ), output, this.craftingInv );
 
-				pushOut( output.copy() );
+				this.pushOut( output.copy() );
 
-				for (int x = 0; x < craftingInv.getSizeInventory(); x++)
-					inv.setInventorySlotContents( x, Platform.getContainerItem( craftingInv.getStackInSlot( x ) ) );
+				for (int x = 0; x < this.craftingInv.getSizeInventory(); x++)
+					this.inv.setInventorySlotContents( x, Platform.getContainerItem( this.craftingInv.getStackInSlot( x ) ) );
 
-				if ( inv.getStackInSlot( 10 ) == null )
+				if ( this.inv.getStackInSlot( 10 ) == null )
 				{
-					forcePlan = false;
-					myPlan = null;
-					pushDirection = ForgeDirection.UNKNOWN;
+					this.forcePlan = false;
+					this.myPlan = null;
+					this.pushDirection = ForgeDirection.UNKNOWN;
 				}
 
-				ejectHeldItems();
+				this.ejectHeldItems();
 
 				try
 				{
-					TargetPoint where = new TargetPoint( worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 32 );
+					TargetPoint where = new TargetPoint( this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 32 );
 					IAEItemStack item = AEItemStack.create( output );
-					NetworkHandler.instance.sendToAllAround( new PacketAssemblerAnimation( xCoord, yCoord, zCoord, (byte) speed, item ), where );
+					NetworkHandler.instance.sendToAllAround( new PacketAssemblerAnimation( this.xCoord, this.yCoord, this.zCoord, (byte) speed, item ), where );
 				}
 				catch (IOException e)
 				{
 					// ;P
 				}
 
-				markDirty();
-				updateSleepiness();
-				return isAwake ? TickRateModulation.IDLE : TickRateModulation.SLEEP;
+				this.markDirty();
+				this.updateSleepiness();
+				return this.isAwake ? TickRateModulation.IDLE : TickRateModulation.SLEEP;
 			}
 		}
 
@@ -486,18 +486,18 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 	private void ejectHeldItems()
 	{
-		if ( inv.getStackInSlot( 9 ) == null )
+		if ( this.inv.getStackInSlot( 9 ) == null )
 		{
 			for (int x = 0; x < 9; x++)
 			{
-				ItemStack is = inv.getStackInSlot( x );
+				ItemStack is = this.inv.getStackInSlot( x );
 				if ( is != null )
 				{
-					if ( myPlan == null || !myPlan.isValidItemForSlot( x, is, worldObj ) )
+					if ( this.myPlan == null || !this.myPlan.isValidItemForSlot( x, is, this.worldObj ) )
 					{
-						inv.setInventorySlotContents( 9, is );
-						inv.setInventorySlotContents( x, null );
-						markDirty();
+						this.inv.setInventorySlotContents( 9, is );
+						this.inv.setInventorySlotContents( x, null );
+						this.markDirty();
 						return;
 					}
 				}
@@ -509,7 +509,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	{
 		try
 		{
-			return (int) (gridProxy.getEnergy().extractAEPower( ticksPassed * bonusValue * acceleratorTax, Actionable.MODULATE, PowerMultiplier.CONFIG ) / acceleratorTax);
+			return (int) (this.gridProxy.getEnergy().extractAEPower( ticksPassed * bonusValue * acceleratorTax, Actionable.MODULATE, PowerMultiplier.CONFIG ) / acceleratorTax);
 		}
 		catch (GridAccessException e)
 		{
@@ -519,21 +519,21 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 	private void pushOut(ItemStack output)
 	{
-		if ( pushDirection == ForgeDirection.UNKNOWN )
+		if ( this.pushDirection == ForgeDirection.UNKNOWN )
 		{
 			for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
-				output = pushTo( output, d );
+				output = this.pushTo( output, d );
 		}
 		else
-			output = pushTo( output, pushDirection );
+			output = this.pushTo( output, this.pushDirection );
 
-		if ( output == null && forcePlan )
+		if ( output == null && this.forcePlan )
 		{
-			forcePlan = false;
-			recalculatePlan();
+			this.forcePlan = false;
+			this.recalculatePlan();
 		}
 
-		inv.setInventorySlotContents( 9, output );
+		this.inv.setInventorySlotContents( 9, output );
 	}
 
 	private ItemStack pushTo(ItemStack output, ForgeDirection d)
@@ -541,7 +541,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		if ( output == null )
 			return output;
 
-		TileEntity te = getWorldObj().getTileEntity( xCoord + d.offsetX, yCoord + d.offsetY, zCoord + d.offsetZ );
+		TileEntity te = this.getWorldObj().getTileEntity( this.xCoord + d.offsetX, this.yCoord + d.offsetY, this.zCoord + d.offsetZ );
 
 		if ( te == null )
 			return output;
@@ -556,7 +556,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		int newSize = output == null ? 0 : output.stackSize;
 
 		if ( size != newSize )
-			markDirty();
+			this.markDirty();
 
 		return output;
 	}
@@ -566,7 +566,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	@MENetworkEventSubscribe
 	public void onPowerEvent(MENetworkPowerStatusChange p)
 	{
-		updatePowerState();
+		this.updatePowerState();
 	}
 
 	private void updatePowerState()
@@ -575,30 +575,30 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 		try
 		{
-			newState = gridProxy.isActive() && gridProxy.getEnergy().extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.0001;
+			newState = this.gridProxy.isActive() && this.gridProxy.getEnergy().extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.0001;
 		}
 		catch (GridAccessException ignored)
 		{
 
 		}
 
-		if ( newState != isPowered )
+		if ( newState != this.isPowered )
 		{
-			isPowered = newState;
-			markForUpdate();
+			this.isPowered = newState;
+			this.markForUpdate();
 		}
 	}
 
 	@Override
 	public boolean isPowered()
 	{
-		return isPowered;
+		return this.isPowered;
 	}
 
 	@Override
 	public boolean isActive()
 	{
-		return isPowered;
+		return this.isPowered;
 	}
 
 }

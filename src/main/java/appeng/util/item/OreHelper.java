@@ -36,14 +36,14 @@ public class OreHelper
 
 		ItemRef(ItemStack stack)
 		{
-			ref = stack.getItem();
+			this.ref = stack.getItem();
 
 			if ( stack.getItem().isDamageable() )
-				damage = 0; // IGNORED
+				this.damage = 0; // IGNORED
 			else
-				damage = stack.getItemDamage(); // might be important...
+				this.damage = stack.getItemDamage(); // might be important...
 
-			hash = ref.hashCode() ^ damage;
+			this.hash = this.ref.hashCode() ^ this.damage;
 		}
 
 		final Item ref;
@@ -55,16 +55,16 @@ public class OreHelper
 		{
 			if ( obj == null )
 				return false;
-			if ( getClass() != obj.getClass() )
+			if ( this.getClass() != obj.getClass() )
 				return false;
 			ItemRef other = (ItemRef) obj;
-			return damage == other.damage && ref == other.ref;
+			return this.damage == other.damage && this.ref == other.ref;
 		}
 
 		@Override
 		public int hashCode()
 		{
-			return hash;
+			return this.hash;
 		}
 
 	}
@@ -81,12 +81,12 @@ public class OreHelper
 	public OreReference isOre(ItemStack ItemStack)
 	{
 		ItemRef ir = new ItemRef( ItemStack );
-		OreResult or = references.get( ir );
+		OreResult or = this.references.get( ir );
 
 		if ( or == null )
 		{
 			or = new OreResult();
-			references.put( ir, or );
+			this.references.put( ir, or );
 
 			OreReference ref = new OreReference();
 			Collection<Integer> ores = ref.getOres();

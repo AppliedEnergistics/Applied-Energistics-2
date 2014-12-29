@@ -37,8 +37,8 @@ public class RC extends BaseModule implements IRC
 	}
 
 	public RC() {
-		TestClass( RailcraftCraftingManager.class );
-		TestClass( IRockCrusherRecipe.class );
+		this.TestClass( RailcraftCraftingManager.class );
+		this.TestClass( IRockCrusherRecipe.class );
 	}
 
 	@Override

@@ -41,25 +41,25 @@ public class CraftingLinkNexus
 
 	public boolean isDead(IGrid g, CraftingGridCache craftingGridCache)
 	{
-		if ( isCanceled() || isDone() )
+		if ( this.isCanceled() || this.isDone() )
 			return true;
 
-		if ( req == null || cpu == null )
-			tickOfDeath++;
+		if ( this.req == null || this.cpu == null )
+			this.tickOfDeath++;
 		else
 		{
-			boolean hasCpu = craftingGridCache.hasCpu( cpu.cpu );
-			boolean hasMachine = req.req.getActionableNode().getGrid() == g;
+			boolean hasCpu = craftingGridCache.hasCpu( this.cpu.cpu );
+			boolean hasMachine = this.req.req.getActionableNode().getGrid() == g;
 
 			if ( hasCpu && hasMachine )
-				tickOfDeath = 0;
+				this.tickOfDeath = 0;
 			else
-				tickOfDeath += 60;
+				this.tickOfDeath += 60;
 		}
 
-		if ( tickOfDeath > 60 )
+		if ( this.tickOfDeath > 60 )
 		{
-			cancel();
+			this.cancel();
 			return true;
 		}
 
@@ -68,72 +68,72 @@ public class CraftingLinkNexus
 
 	public void remove(CraftingLink craftingLink)
 	{
-		if ( req == craftingLink )
-			req = null;
-		else if ( cpu == craftingLink )
-			cpu = null;
+		if ( this.req == craftingLink )
+			this.req = null;
+		else if ( this.cpu == craftingLink )
+			this.cpu = null;
 	}
 
 	public void add(CraftingLink craftingLink)
 	{
 		if ( craftingLink.cpu != null )
-			cpu = craftingLink;
+			this.cpu = craftingLink;
 		else if ( craftingLink.req != null )
-			req = craftingLink;
+			this.req = craftingLink;
 	}
 
 	public boolean isCanceled()
 	{
-		return canceled;
+		return this.canceled;
 	}
 
 	public boolean isDone()
 	{
-		return done;
+		return this.done;
 	}
 
 	public void markDone()
 	{
-		done = true;
+		this.done = true;
 
-		if ( req != null )
+		if ( this.req != null )
 		{
-			req.done = true;
-			if ( req.req != null )
-				req.req.jobStateChange( req );
+			this.req.done = true;
+			if ( this.req.req != null )
+				this.req.req.jobStateChange( this.req );
 		}
 
-		if ( cpu != null )
-			cpu.done = true;
+		if ( this.cpu != null )
+			this.cpu.done = true;
 	}
 
 	public void cancel()
 	{
-		canceled = true;
+		this.canceled = true;
 
-		if ( req != null )
+		if ( this.req != null )
 		{
-			req.canceled = true;
-			if ( req.req != null )
-				req.req.jobStateChange( req );
+			this.req.canceled = true;
+			if ( this.req.req != null )
+				this.req.req.jobStateChange( this.req );
 		}
 
-		if ( cpu != null )
-			cpu.canceled = true;
+		if ( this.cpu != null )
+			this.cpu.canceled = true;
 	}
 
 	public boolean isMachine(IGridHost machine)
 	{
-		return req == machine;
+		return this.req == machine;
 	}
 
 	public void removeNode()
 	{
-		if ( req != null )
-			req.setNexus( null );
+		if ( this.req != null )
+			this.req.setNexus( null );
 
-		req = null;
-		tickOfDeath = 0;
+		this.req = null;
+		this.tickOfDeath = 0;
 	}
 
 }

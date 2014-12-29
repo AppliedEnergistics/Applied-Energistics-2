@@ -45,31 +45,31 @@ public class WrapperChainedInventory implements IInventory
 	private HashMap<Integer, InvOffset> offsets;
 
 	public WrapperChainedInventory(IInventory... inventories) {
-		setInventory( inventories );
+		this.setInventory( inventories );
 	}
 
 	public WrapperChainedInventory(List<IInventory> inventories) {
-		setInventory( inventories );
+		this.setInventory( inventories );
 	}
 
 	public void cycleOrder()
 	{
-		if ( l.size() > 1 )
+		if ( this.l.size() > 1 )
 		{
-			List<IInventory> newOrder = new ArrayList<IInventory>( l.size() );
-			newOrder.add( l.get( l.size() - 1 ) );
-			for (int x = 0; x < l.size() - 1; x++)
-				newOrder.add( l.get( x ) );
-			setInventory( newOrder );
+			List<IInventory> newOrder = new ArrayList<IInventory>( this.l.size() );
+			newOrder.add( this.l.get( this.l.size() - 1 ) );
+			for (int x = 0; x < this.l.size() - 1; x++)
+				newOrder.add( this.l.get( x ) );
+			this.setInventory( newOrder );
 		}
 	}
 
 	public void calculateSizes()
 	{
-		offsets = new HashMap<Integer, WrapperChainedInventory.InvOffset>();
+		this.offsets = new HashMap<Integer, WrapperChainedInventory.InvOffset>();
 
 		int offset = 0;
-		for (IInventory in : l)
+		for (IInventory in : this.l)
 		{
 			InvOffset io = new InvOffset();
 			io.offset = offset;
@@ -78,30 +78,30 @@ public class WrapperChainedInventory implements IInventory
 
 			for (int y = 0; y < io.size; y++)
 			{
-				offsets.put( y + io.offset, io );
+				this.offsets.put( y + io.offset, io );
 			}
 
 			offset += io.size;
 		}
 
-		fullSize = offset;
+		this.fullSize = offset;
 	}
 
 	public void setInventory(IInventory... a)
 	{
-		l = ImmutableList.copyOf( a );
-		calculateSizes();
+		this.l = ImmutableList.copyOf( a );
+		this.calculateSizes();
 	}
 
 	public void setInventory(List<IInventory> a)
 	{
-		l = a;
-		calculateSizes();
+		this.l = a;
+		this.calculateSizes();
 	}
 
 	public IInventory getInv(int idx)
 	{
-		InvOffset io = offsets.get( idx );
+		InvOffset io = this.offsets.get( idx );
 		if ( io != null )
 		{
 			return io.i;
@@ -111,7 +111,7 @@ public class WrapperChainedInventory implements IInventory
 
 	public int getInvSlot(int idx)
 	{
-		InvOffset io = offsets.get( idx );
+		InvOffset io = this.offsets.get( idx );
 		if ( io != null )
 		{
 			return idx - io.offset;
@@ -122,13 +122,13 @@ public class WrapperChainedInventory implements IInventory
 	@Override
 	public int getSizeInventory()
 	{
-		return fullSize;
+		return this.fullSize;
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int idx)
 	{
-		InvOffset io = offsets.get( idx );
+		InvOffset io = this.offsets.get( idx );
 		if ( io != null )
 		{
 			return io.i.getStackInSlot( idx - io.offset );
@@ -139,7 +139,7 @@ public class WrapperChainedInventory implements IInventory
 	@Override
 	public ItemStack decrStackSize(int idx, int var2)
 	{
-		InvOffset io = offsets.get( idx );
+		InvOffset io = this.offsets.get( idx );
 		if ( io != null )
 		{
 			return io.i.decrStackSize( idx - io.offset, var2 );
@@ -150,7 +150,7 @@ public class WrapperChainedInventory implements IInventory
 	@Override
 	public ItemStack getStackInSlotOnClosing(int idx)
 	{
-		InvOffset io = offsets.get( idx );
+		InvOffset io = this.offsets.get( idx );
 		if ( io != null )
 		{
 			return io.i.getStackInSlotOnClosing( idx - io.offset );
@@ -161,7 +161,7 @@ public class WrapperChainedInventory implements IInventory
 	@Override
 	public void setInventorySlotContents(int idx, ItemStack var2)
 	{
-		InvOffset io = offsets.get( idx );
+		InvOffset io = this.offsets.get( idx );
 		if ( io != null )
 		{
 			io.i.setInventorySlotContents( idx - io.offset, var2 );
@@ -179,7 +179,7 @@ public class WrapperChainedInventory implements IInventory
 	{
 		int smallest = 64;
 
-		for (IInventory i : l)
+		for (IInventory i : this.l)
 			smallest = Math.min( smallest, i.getInventoryStackLimit() );
 
 		return smallest;
@@ -188,7 +188,7 @@ public class WrapperChainedInventory implements IInventory
 	@Override
 	public void markDirty()
 	{
-		for (IInventory i : l)
+		for (IInventory i : this.l)
 		{
 			i.markDirty();
 		}
@@ -219,7 +219,7 @@ public class WrapperChainedInventory implements IInventory
 	@Override
 	public boolean isItemValidForSlot(int idx, ItemStack itemstack)
 	{
-		InvOffset io = offsets.get( idx );
+		InvOffset io = this.offsets.get( idx );
 		if ( io != null )
 		{
 			return io.i.isItemValidForSlot( idx - io.offset, itemstack );

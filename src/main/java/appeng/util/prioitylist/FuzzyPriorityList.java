@@ -31,27 +31,27 @@ public class FuzzyPriorityList<T extends IAEStack<T>> implements IPartitionList<
 	final FuzzyMode mode;
 
 	public FuzzyPriorityList(IItemList<T> in, FuzzyMode mode) {
-		list = in;
+		this.list = in;
 		this.mode = mode;
 	}
 
 	@Override
 	public boolean isListed(T input)
 	{
-		Collection<T> out = list.findFuzzy( input, mode );
+		Collection<T> out = this.list.findFuzzy( input, this.mode );
 		return out != null && !out.isEmpty();
 	}
 
 	@Override
 	public boolean isEmpty()
 	{
-		return list.isEmpty();
+		return this.list.isEmpty();
 	}
 
 	@Override
 	public Iterable<T> getItems()
 	{
-		return list;
+		return this.list;
 	}
 
 }

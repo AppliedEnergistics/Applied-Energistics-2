@@ -37,10 +37,10 @@ public class OptionalSlotRestrictedInput extends SlotRestrictedInput
 	@Override
 	public boolean isEnabled()
 	{
-		if ( host == null )
+		if ( this.host == null )
 			return false;
 
-		return host.isSlotEnabled( groupNum );
+		return this.host.isSlotEnabled( this.groupNum );
 	}
 
 }

@@ -34,14 +34,14 @@ public class CellRegistry implements ICellRegistry
 	final List<ICellHandler> handlers;
 
 	public CellRegistry() {
-		handlers = new ArrayList<ICellHandler>();
+		this.handlers = new ArrayList<ICellHandler>();
 	}
 
 	@Override
 	public void addCellHandler(ICellHandler h)
 	{
 		if ( h != null )
-			handlers.add( h );
+			this.handlers.add( h );
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class CellRegistry implements ICellRegistry
 	{
 		if ( is == null )
 			return false;
-		for (ICellHandler ch : handlers)
+		for (ICellHandler ch : this.handlers)
 			if ( ch.isCell( is ) )
 				return true;
 		return false;
@@ -60,7 +60,7 @@ public class CellRegistry implements ICellRegistry
 	{
 		if ( is == null )
 			return null;
-		for (ICellHandler ch : handlers)
+		for (ICellHandler ch : this.handlers)
 		{
 			if ( ch.isCell( is ) )
 			{
@@ -75,7 +75,7 @@ public class CellRegistry implements ICellRegistry
 	{
 		if ( is == null )
 			return null;
-		for (ICellHandler ch : handlers)
+		for (ICellHandler ch : this.handlers)
 		{
 			if ( ch.isCell( is ) )
 			{

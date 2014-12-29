@@ -43,7 +43,7 @@ public class ToolReplicatorCard extends AEBaseItem
 
 	public ToolReplicatorCard() {
 		super( ToolReplicatorCard.class );
-		setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
+		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class ToolReplicatorCard extends AEBaseItem
 				stack.setTagCompound( tag );
 			}
 			else
-				outputMsg( player, "This is not a Grid Tile." );
+				this.outputMsg( player, "This is not a Grid Tile." );
 		}
 		else
 		{
@@ -135,19 +135,19 @@ public class ToolReplicatorCard extends AEBaseItem
 
 							}
 							else
-								outputMsg( player, "requires valid spatial pylon setup." );
+								this.outputMsg( player, "requires valid spatial pylon setup." );
 						}
 						else
-							outputMsg( player, "no grid?" );
+							this.outputMsg( player, "no grid?" );
 					}
 					else
-						outputMsg( player, "No grid node?" );
+						this.outputMsg( player, "No grid node?" );
 				}
 				else
-					outputMsg( player, "Src is no longer a grid block?" );
+					this.outputMsg( player, "Src is no longer a grid block?" );
 			}
 			else
-				outputMsg( player, "No Source Defined" );
+				this.outputMsg( player, "No Source Defined" );
 		}
 		return true;
 	}

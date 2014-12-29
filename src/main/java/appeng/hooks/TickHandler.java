@@ -67,8 +67,8 @@ public class TickHandler
 
 		public void clear()
 		{
-			tiles = new LinkedList<AEBaseTile>();
-			networks = new NetworkList();
+			this.tiles = new LinkedList<AEBaseTile>();
+			this.networks = new NetworkList();
 		}
 
 	}
@@ -90,13 +90,13 @@ public class TickHandler
 
 		public PacketPaintedEntity getPacket()
 		{
-			return new PacketPaintedEntity( myEntity, myColor, ticksLeft );
+			return new PacketPaintedEntity( this.myEntity, this.myColor, this.ticksLeft );
 		}
 
 		public PlayerColor(int id, AEColor col, int ticks) {
-			myEntity = id;
-			myColor = col;
-			ticksLeft = ticks;
+			this.myEntity = id;
+			this.myColor = col;
+			this.ticksLeft = ticks;
 		}
 
 	}
@@ -107,8 +107,8 @@ public class TickHandler
 	public HashMap<Integer, PlayerColor> getPlayerColors()
 	{
 		if ( Platform.isServer() )
-			return srvPlayerColors;
-		return cliPlayerColors;
+			return this.srvPlayerColors;
+		return this.cliPlayerColors;
 	}
 
 	private void tickColors(HashMap<Integer, PlayerColor> playerSet)
@@ -125,20 +125,20 @@ public class TickHandler
 	HandlerRep getRepo()
 	{
 		if ( Platform.isServer() )
-			return server;
-		return client;
+			return this.server;
+		return this.client;
 	}
 
 	public void addCallable(World w, Callable c)
 	{
 		if ( w == null )
-			serverQueue.add( c );
+			this.serverQueue.add( c );
 		else
 		{
-			Queue<Callable> queue = callQueue.get( w );
+			Queue<Callable> queue = this.callQueue.get( w );
 
 			if ( queue == null )
-				callQueue.put( w, queue = new LinkedList<Callable>() );
+				this.callQueue.put( w, queue = new LinkedList<Callable>() );
 
 			queue.add( c );
 		}
@@ -147,29 +147,29 @@ public class TickHandler
 	public void addInit(AEBaseTile tile)
 	{
 		if ( Platform.isServer() ) // for no there is no reason to care about this on the client...
-			getRepo().tiles.add( tile );
+			this.getRepo().tiles.add( tile );
 	}
 
 	public void addNetwork(Grid grid)
 	{
 		if ( Platform.isServer() ) // for no there is no reason to care about this on the client...
-			getRepo().networks.add( grid );
+			this.getRepo().networks.add( grid );
 	}
 
 	public void removeNetwork(Grid grid)
 	{
 		if ( Platform.isServer() ) // for no there is no reason to care about this on the client...
-			getRepo().networks.remove( grid );
+			this.getRepo().networks.remove( grid );
 	}
 
 	public Iterable<Grid> getGridList()
 	{
-		return getRepo().networks;
+		return this.getRepo().networks;
 	}
 
 	public void shutdown()
 	{
-		getRepo().clear();
+		this.getRepo().clear();
 	}
 
 	@SubscribeEvent
@@ -179,7 +179,7 @@ public class TickHandler
 		{
 			LinkedList<IGridNode> toDestroy = new LinkedList<IGridNode>();
 
-			for (Grid g : getRepo().networks)
+			for (Grid g : this.getRepo().networks)
 			{
 				for (IGridNode n : g.getNodes())
 				{
@@ -213,12 +213,12 @@ public class TickHandler
 
 		if ( ev.type == Type.CLIENT && ev.phase == Phase.START )
 		{
-			tickColors( cliPlayerColors );
+			this.tickColors( this.cliPlayerColors );
 			EntityFloatingItem.ageStatic = (EntityFloatingItem.ageStatic + 1) % 60000;
 			CableRenderMode currentMode = AEApi.instance().partHelper().getCableRenderMode();
-			if ( currentMode != crm )
+			if ( currentMode != this.crm )
 			{
-				crm = currentMode;
+				this.crm = currentMode;
 				CommonHelper.proxy.triggerUpdates();
 			}
 		}
@@ -226,9 +226,9 @@ public class TickHandler
 		if ( ev.type == Type.WORLD && ev.phase == Phase.END )
 		{
 			WorldTickEvent wte = (WorldTickEvent) ev;
-			synchronized (craftingJobs)
+			synchronized (this.craftingJobs)
 			{
-				Collection<CraftingJob> jobSet = craftingJobs.get( wte.world );
+				Collection<CraftingJob> jobSet = this.craftingJobs.get( wte.world );
 				if ( !jobSet.isEmpty() )
 				{
 					int simTime = Math.max( 1, AEConfig.instance.craftingCalculationTimePerTick / jobSet.size() );
@@ -246,9 +246,9 @@ public class TickHandler
 		// for no there is no reason to care about this on the client...
 		else if ( ev.type == Type.SERVER && ev.phase == Phase.END )
 		{
-			tickColors( srvPlayerColors );
+			this.tickColors( this.srvPlayerColors );
 			// ready tiles.
-			HandlerRep repo = getRepo();
+			HandlerRep repo = this.getRepo();
 			while (!repo.tiles.isEmpty())
 			{
 				AEBaseTile bt = repo.tiles.poll();
@@ -257,17 +257,17 @@ public class TickHandler
 			}
 
 			// tick networks.
-			for (Grid g : getRepo().networks)
+			for (Grid g : this.getRepo().networks)
 				g.update();
 
 			// cross world queue.
-			processQueue( serverQueue );
+			this.processQueue( this.serverQueue );
 		}
 
 		// world synced queue(s)
 		if ( ev.type == Type.WORLD && ev.phase == Phase.START )
 		{
-			processQueue( callQueue.get( ((WorldTickEvent) ev).world ) );
+			this.processQueue( this.callQueue.get( ((WorldTickEvent) ev).world ) );
 		}
 	}
 
@@ -303,9 +303,9 @@ public class TickHandler
 
 	public void registerCraftingSimulation(World world, CraftingJob craftingJob)
 	{
-		synchronized (craftingJobs)
+		synchronized (this.craftingJobs)
 		{
-			craftingJobs.put( world, craftingJob );
+			this.craftingJobs.put( world, craftingJob );
 		}
 	}
 

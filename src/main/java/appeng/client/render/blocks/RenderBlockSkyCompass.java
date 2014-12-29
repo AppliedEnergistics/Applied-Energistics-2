@@ -119,7 +119,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 				if ( cr.spin )
 				{
 					now = now % 100000;
-					model.renderAll( (now / 50000.0f) * (float) Math.PI * 500.0f );
+					this.model.renderAll( (now / 50000.0f) * (float) Math.PI * 500.0f );
 				}
 				else
 				{
@@ -127,27 +127,27 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 					{
 						float offRads = rYaw / 180.0f * (float) Math.PI;
 						float adjustment = (float) Math.PI * 0.74f;
-						model.renderAll( (float) flipidiy( cr.rad + offRads + adjustment ) );
+						this.model.renderAll( (float) this.flipidiy( cr.rad + offRads + adjustment ) );
 					}
 					else
 					{
 						float offRads = rYaw / 180.0f * (float) Math.PI;
 						float adjustment = (float) Math.PI * -0.74f;
-						model.renderAll( (float) flipidiy( cr.rad + offRads + adjustment ) );
+						this.model.renderAll( (float) this.flipidiy( cr.rad + offRads + adjustment ) );
 					}
 				}
 			}
 			else
 			{
 				now = now % 1000000;
-				model.renderAll( (now / 500000.0f) * (float) Math.PI * 500.0f );
+				this.model.renderAll( (now / 500000.0f) * (float) Math.PI * 500.0f );
 			}
 
 		}
 		else
 		{
 			now = now % 100000;
-			model.renderAll( (now / 50000.0f) * (float) Math.PI * 500.0f );
+			this.model.renderAll( (now / 50000.0f) * (float) Math.PI * 500.0f );
 		}
 
 		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);
@@ -196,16 +196,16 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 			if ( cr.spin )
 			{
 				now = now % 100000;
-				model.renderAll( (now / 50000.0f) * (float) Math.PI * 500.0f );
+				this.model.renderAll( (now / 50000.0f) * (float) Math.PI * 500.0f );
 			}
 			else
-				model.renderAll( (float) (skyCompass.getForward() == ForgeDirection.DOWN ? flipidiy( cr.rad ) : cr.rad) );
+				this.model.renderAll( (float) (skyCompass.getForward() == ForgeDirection.DOWN ? this.flipidiy( cr.rad ) : cr.rad) );
 
 		}
 		else
 		{
 			now = now % 1000000;
-			model.renderAll( (now / 500000.0f) * (float) Math.PI * 500.0f );
+			this.model.renderAll( (now / 500000.0f) * (float) Math.PI * 500.0f );
 		}
 
 		GL11.glDisable( 32826 /* GL_RESCALE_NORMAL_EXT */);

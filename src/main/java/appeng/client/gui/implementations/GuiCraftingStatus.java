@@ -57,31 +57,31 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	public GuiCraftingStatus(InventoryPlayer inventoryPlayer, ITerminalHost te) {
 		super( new ContainerCraftingStatus( inventoryPlayer, te ) );
 
-		ccc = (ContainerCraftingStatus) inventorySlots;
-		Object target = ccc.getTarget();
+		this.ccc = (ContainerCraftingStatus) this.inventorySlots;
+		Object target = this.ccc.getTarget();
 
 		if ( target instanceof WirelessTerminalGuiObject )
 		{
-			myIcon = AEApi.instance().items().itemWirelessTerminal.stack( 1 );
-			OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
+			this.myIcon = AEApi.instance().items().itemWirelessTerminal.stack( 1 );
+			this.OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
 		}
 
 		if ( target instanceof PartTerminal )
 		{
-			myIcon = AEApi.instance().parts().partTerminal.stack( 1 );
-			OriginalGui = GuiBridge.GUI_ME;
+			this.myIcon = AEApi.instance().parts().partTerminal.stack( 1 );
+			this.OriginalGui = GuiBridge.GUI_ME;
 		}
 
 		if ( target instanceof PartCraftingTerminal )
 		{
-			myIcon = AEApi.instance().parts().partCraftingTerminal.stack( 1 );
-			OriginalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
+			this.myIcon = AEApi.instance().parts().partCraftingTerminal.stack( 1 );
+			this.OriginalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
 		}
 
 		if ( target instanceof PartPatternTerminal )
 		{
-			myIcon = AEApi.instance().parts().partPatternTerminal.stack( 1 );
-			OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
+			this.myIcon = AEApi.instance().parts().partPatternTerminal.stack( 1 );
+			this.OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
 		}
 	}
 
@@ -92,7 +92,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 
 		boolean backwards = Mouse.isButtonDown( 1 );
 
-		if ( btn == selectCPU )
+		if ( btn == this.selectCPU )
 		{
 			try
 			{
@@ -104,9 +104,9 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 			}
 		}
 
-		if ( btn == originalGuiBtn )
+		if ( btn == this.originalGuiBtn )
 		{
-			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( OriginalGui ) );
+			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( this.OriginalGui ) );
 		}
 	}
 
@@ -121,14 +121,14 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	{
 		super.initGui();
 
-		selectCPU = new GuiButton( 0, this.guiLeft + 8, this.guiTop + ySize - 25, 150, 20, GuiText.CraftingCPU.getLocal() + ": " + GuiText.NoCraftingCPUs );
+		this.selectCPU = new GuiButton( 0, this.guiLeft + 8, this.guiTop + this.ySize - 25, 150, 20, GuiText.CraftingCPU.getLocal() + ": " + GuiText.NoCraftingCPUs );
 		// selectCPU.enabled = false;
-		buttonList.add( selectCPU );
+		this.buttonList.add( this.selectCPU );
 
-		if ( myIcon != null )
+		if ( this.myIcon != null )
 		{
-			buttonList.add( originalGuiBtn = new GuiTabButton( this.guiLeft + 213, this.guiTop - 4, myIcon, myIcon.getDisplayName(), itemRender ) );
-			originalGuiBtn.hideEdge = 13;
+			this.buttonList.add( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 213, this.guiTop - 4, this.myIcon, this.myIcon.getDisplayName(), itemRender ) );
+			this.originalGuiBtn.hideEdge = 13;
 		}
 	}
 
@@ -136,27 +136,27 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	{
 		String btnTextText = GuiText.NoCraftingJobs.getLocal();
 
-		if ( ccc.selectedCpu >= 0 )// && ccc.selectedCpu < ccc.cpus.size() )
+		if ( this.ccc.selectedCpu >= 0 )// && ccc.selectedCpu < ccc.cpus.size() )
 		{
-			if ( ccc.myName.length() > 0 )
+			if ( this.ccc.myName.length() > 0 )
 			{
-				String name = ccc.myName.substring( 0, Math.min( 20, ccc.myName.length() ) );
+				String name = this.ccc.myName.substring( 0, Math.min( 20, this.ccc.myName.length() ) );
 				btnTextText = GuiText.CPUs.getLocal() + ": " + name;
 			}
 			else
-				btnTextText = GuiText.CPUs.getLocal() + ": #" + ccc.selectedCpu;
+				btnTextText = GuiText.CPUs.getLocal() + ": #" + this.ccc.selectedCpu;
 		}
 
-		if ( ccc.noCPU )
+		if ( this.ccc.noCPU )
 			btnTextText = GuiText.NoCraftingJobs.getLocal();
 
-		selectCPU.displayString = btnTextText;
+		this.selectCPU.displayString = btnTextText;
 	}
 
 	@Override
 	public void drawScreen(int mouse_x, int mouse_y, float btn)
 	{
-		updateCPUButtonText();
+		this.updateCPUButtonText();
 		super.drawScreen( mouse_x, mouse_y, btn );
 	}
 }

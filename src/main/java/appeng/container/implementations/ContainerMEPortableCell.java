@@ -33,9 +33,9 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 
 	public ContainerMEPortableCell(InventoryPlayer ip, IPortableCell monitorable) {
 		super( ip, monitorable, false );
-		lockPlayerInventorySlot( ip.currentItem );
-		civ = monitorable;
-		bindPlayerInventory( ip, 0, 0 );
+		this.lockPlayerInventorySlot( ip.currentItem );
+		this.civ = monitorable;
+		this.bindPlayerInventory( ip, 0, 0 );
 	}
 
 	int ticks = 0;
@@ -43,32 +43,32 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 	@Override
 	public void detectAndSendChanges()
 	{
-		ItemStack currentItem = getPlayerInv().getCurrentItem();
+		ItemStack currentItem = this.getPlayerInv().getCurrentItem();
 
-		if ( civ != null )
+		if ( this.civ != null )
 		{
-			if ( currentItem != civ.getItemStack() )
+			if ( currentItem != this.civ.getItemStack() )
 			{
 				if ( currentItem != null )
 				{
-					if ( Platform.isSameItem( civ.getItemStack(), currentItem ) )
-						getPlayerInv().setInventorySlotContents( getPlayerInv().currentItem, civ.getItemStack() );
+					if ( Platform.isSameItem( this.civ.getItemStack(), currentItem ) )
+						this.getPlayerInv().setInventorySlotContents( this.getPlayerInv().currentItem, this.civ.getItemStack() );
 					else
-						isContainerValid = false;
+						this.isContainerValid = false;
 				}
 				else
-					isContainerValid = false;
+					this.isContainerValid = false;
 			}
 		}
 		else
-			isContainerValid = false;
+			this.isContainerValid = false;
 
 		// drain 1 ae t
-		ticks++;
-		if ( ticks > 10 )
+		this.ticks++;
+		if ( this.ticks > 10 )
 		{
-			civ.extractAEPower( powerMultiplier * ticks, Actionable.MODULATE, PowerMultiplier.CONFIG );
-			ticks = 0;
+			this.civ.extractAEPower( this.powerMultiplier * this.ticks, Actionable.MODULATE, PowerMultiplier.CONFIG );
+			this.ticks = 0;
 		}
 		super.detectAndSendChanges();
 	}

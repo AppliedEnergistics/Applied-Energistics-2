@@ -53,26 +53,26 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 		InventoryCrafting ic = new InventoryCrafting( cn, 3, 3 );
 
 		for (int x = 0; x < 9; x++)
-			ic.setInventorySlotContents( x, craftingSlots[x].getStack() );
+			ic.setInventorySlotContents( x, this.craftingSlots[x].getStack() );
 
-		outputSlot.putStack( CraftingManager.getInstance().findMatchingRecipe( ic, getPlayerInv().player.worldObj ) );
+		this.outputSlot.putStack( CraftingManager.getInstance().findMatchingRecipe( ic, this.getPlayerInv().player.worldObj ) );
 	}
 
 	public ContainerCraftingTerm(InventoryPlayer ip, ITerminalHost monitorable) {
 		super( ip, monitorable, false );
-		ct = (PartCraftingTerminal) monitorable;
+		this.ct = (PartCraftingTerminal) monitorable;
 
-		IInventory crafting = ct.getInventoryByName( "crafting" );
+		IInventory crafting = this.ct.getInventoryByName( "crafting" );
 
 		for (int y = 0; y < 3; y++)
 			for (int x = 0; x < 3; x++)
-				addSlotToContainer( craftingSlots[x + y * 3] = new SlotCraftingMatrix( this, crafting, x + y * 3, 37 + x * 18, -72 + y * 18 ) );
+				this.addSlotToContainer( this.craftingSlots[x + y * 3] = new SlotCraftingMatrix( this, crafting, x + y * 3, 37 + x * 18, -72 + y * 18 ) );
 
-		addSlotToContainer( outputSlot = new SlotCraftingTerm( getPlayerInv().player, mySrc, powerSrc, monitorable, crafting, crafting, output, 131, -72 + 18, this ) );
+		this.addSlotToContainer( this.outputSlot = new SlotCraftingTerm( this.getPlayerInv().player, this.mySrc, this.powerSrc, monitorable, crafting, crafting, this.output, 131, -72 + 18, this ) );
 
-		bindPlayerInventory( ip, 0, 0 );
+		this.bindPlayerInventory( ip, 0, 0 );
 
-		onCraftMatrixChanged( crafting );
+		this.onCraftMatrixChanged( crafting );
 	}
 
 	@Override
@@ -92,9 +92,9 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 	{
 		if (name.equals("player"))
 		{
-			return invPlayer;
+			return this.invPlayer;
 		}
-		return ct.getInventoryByName( name );
+		return this.ct.getInventoryByName( name );
 	}
 
 	@Override

@@ -45,7 +45,7 @@ public enum ExtraItemTextures
 
 	public String getName()
 	{
-		return name;
+		return this.name;
 	}
 
 	private ExtraItemTextures(String name) {
@@ -54,12 +54,12 @@ public enum ExtraItemTextures
 
 	public IIcon getIcon()
 	{
-		return IIcon;
+		return this.IIcon;
 	}
 
 	public void registerIcon(TextureMap map)
 	{
-		IIcon = map.registerIcon( "appliedenergistics2:" + name );
+		this.IIcon = map.registerIcon( "appliedenergistics2:" + this.name );
 	}
 
 	@SideOnly(Side.CLIENT)
