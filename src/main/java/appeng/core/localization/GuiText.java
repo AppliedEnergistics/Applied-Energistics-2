@@ -64,6 +64,10 @@ public enum GuiText
 
 	InterfaceTerminal, NoCraftingCPUs, LightTunnel, Clean, InvalidPattern,
 
+	InvalidPatternEmpty, InvalidPatternUncraftable, InvalidPatternNoInput,
+
+	InvalidPatternNoOutput, InvalidPatternBadItem,
+
 	InterfaceTerminalHint, Range, TransparentFacades, TransparentFacadesHint,
 
 	NoCraftingJobs, CPUs, FacadeCrafting, inWorldCraftingPresses, ChargedQuartzFind,

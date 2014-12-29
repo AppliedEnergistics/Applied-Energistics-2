@@ -143,12 +143,24 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		return TestStatus.TEST;
 	}
 
-	public PatternHelper(ItemStack is, World w)
+	private static ItemStack loadStackFromNBT(NBTTagCompound tag) throws InvalidPatternException
+	{
+		try
+		{
+			return ItemStack.loadItemStackFromNBT( tag );
+		}
+		catch (Throwable ex)
+		{
+			throw new InvalidPatternException( tag );
+		}
+	}
+
+	public PatternHelper(ItemStack is, World w) throws InvalidPatternException
 	{
 		NBTTagCompound encodedValue = is.getTagCompound();
 
 		if ( encodedValue == null )
-			throw new RuntimeException( "No pattern here!" );
+			throw new InvalidPatternException( InvalidPatternException.REASON_EMPTY );
 
 		NBTTagList inTag = encodedValue.getTagList( "in", 10 );
 		NBTTagList outTag = encodedValue.getTagList( "out", 10 );
@@ -161,7 +173,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 		for (int x = 0; x < inTag.tagCount(); x++)
 		{
-			ItemStack gs = ItemStack.loadItemStackFromNBT( inTag.getCompoundTagAt( x ) );
+			ItemStack gs = loadStackFromNBT( inTag.getCompoundTagAt(x) );
 			crafting.setInventorySlotContents( x, gs );
 
 			if ( gs != null && (!isCrafting || !gs.hasTagCompound()) )
@@ -182,7 +194,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 				out.add( AEApi.instance().storage().createItemStack( correctOutput ) );
 			}
 			else
-				throw new RuntimeException( "No pattern here!" );
+				throw new InvalidPatternException( InvalidPatternException.REASON_UNCRAFTABLE );
 		}
 		else
 		{
@@ -191,7 +203,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 			for (int x = 0; x < outTag.tagCount(); x++)
 			{
-				ItemStack gs = ItemStack.loadItemStackFromNBT( outTag.getCompoundTagAt( x ) );
+				ItemStack gs = loadStackFromNBT( outTag.getCompoundTagAt(x) );
 				if ( gs != null )
 					out.add( AEApi.instance().storage().createItemStack( gs ) );
 			}
@@ -226,8 +238,10 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 				g.add( io );
 		}
 
-		if ( tmpOutputs.isEmpty() || tmpInputs.isEmpty() )
-			throw new RuntimeException( "No pattern here!" );
+		if ( tmpInputs.isEmpty() )
+			throw new InvalidPatternException( InvalidPatternException.REASON_NO_INPUT );
+		if ( tmpOutputs.isEmpty() )
+			throw new InvalidPatternException( InvalidPatternException.REASON_NO_OUTPUT );
 
 		int offset = 0;
 		condensedInputs = new IAEItemStack[tmpInputs.size()];
