@@ -110,7 +110,7 @@ public class AppEng
 		AEConfig.instance = new AEConfig( this.configPath );
 		FacadeConfig.instance = new FacadeConfig( this.configPath );
 
-		AELog.info( "Starting ( PreInit )" );
+		AELog.info( "Pre Initialization ( started )" );
 
 		CreativeTab.init();
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.Facades ) )
@@ -127,7 +127,7 @@ public class AppEng
 			this.startService( "AE2 VersionChecker", new Thread( new VersionChecker() ) );
 		}
 
-		AELog.info( "PreInit ( end " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
+		AELog.info( "Pre Initialization ( ended after " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}
 
 	private void startService( String serviceName, Thread thread )
@@ -141,19 +141,19 @@ public class AppEng
 	void init( FMLInitializationEvent event )
 	{
 		Stopwatch star = Stopwatch.createStarted();
-		AELog.info( "Init" );
+		AELog.info( "Initialization ( started )" );
 
 		Registration.INSTANCE.initialize( event );
 		IntegrationRegistry.INSTANCE.init();
 
-		AELog.info( "Init ( end " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
+		AELog.info( "Initialization ( ended after " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}
 
 	@EventHandler
 	void postInit( FMLPostInitializationEvent event )
 	{
 		Stopwatch star = Stopwatch.createStarted();
-		AELog.info( "PostInit" );
+		AELog.info( "Post Initialization ( started )" );
 
 		Registration.INSTANCE.postInit( event );
 		IntegrationRegistry.INSTANCE.postInit();
@@ -165,7 +165,7 @@ public class AppEng
 		NetworkRegistry.INSTANCE.registerGuiHandler( this, GuiBridge.GUI_Handler );
 		NetworkHandler.instance = new NetworkHandler( "AE2" );
 
-		AELog.info( "PostInit ( end " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
+		AELog.info( "Post Initialization ( ended after " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}
 
 	@EventHandler
