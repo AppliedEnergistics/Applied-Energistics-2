@@ -18,10 +18,10 @@
 
 package appeng.client.gui.implementations;
 
+import org.lwjgl.input.Mouse;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
-
-import org.lwjgl.input.Mouse;
 
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;

@@ -20,6 +20,7 @@ package appeng.block.crafting;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+
 import appeng.api.AEApi;
 import appeng.block.AEBaseItemBlock;
 import appeng.core.AEConfig;

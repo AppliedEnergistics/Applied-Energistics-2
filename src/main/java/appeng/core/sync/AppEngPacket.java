@@ -19,13 +19,16 @@
 package appeng.core.sync;
 
 import io.netty.buffer.ByteBuf;
+
 import net.minecraft.entity.player.EntityPlayer;
+
+import cpw.mods.fml.common.network.internal.FMLProxyPacket;
+
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.core.sync.network.NetworkHandler;
-import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 
 public abstract class AppEngPacket
 {

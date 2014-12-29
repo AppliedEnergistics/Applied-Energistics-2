@@ -18,12 +18,8 @@
 
 package appeng.entity;
 
-import appeng.api.AEApi;
-import appeng.client.EffectType;
-import appeng.core.AEConfig;
-import appeng.core.CommonHelper;
-import appeng.core.features.AEFeature;
-import appeng.util.Platform;
+import java.util.List;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -33,7 +29,12 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import java.util.List;
+import appeng.api.AEApi;
+import appeng.client.EffectType;
+import appeng.core.AEConfig;
+import appeng.core.CommonHelper;
+import appeng.core.features.AEFeature;
+import appeng.util.Platform;
 
 final public class EntityChargedQuartz extends AEBaseEntityItem
 {

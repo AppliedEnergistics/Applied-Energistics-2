@@ -26,9 +26,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiCrafting;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import appeng.api.AEApi;
-import appeng.core.localization.GuiText;
-import appeng.items.parts.ItemFacade;
+
 import codechicken.nei.PositionedStack;
 import codechicken.nei.api.DefaultOverlayRenderer;
 import codechicken.nei.api.IOverlayHandler;
@@ -36,6 +34,10 @@ import codechicken.nei.api.IRecipeOverlayRenderer;
 import codechicken.nei.api.IStackPositioner;
 import codechicken.nei.recipe.RecipeInfo;
 import codechicken.nei.recipe.TemplateRecipeHandler;
+
+import appeng.api.AEApi;
+import appeng.core.localization.GuiText;
+import appeng.items.parts.ItemFacade;
 
 public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 {

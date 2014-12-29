@@ -20,9 +20,10 @@ package appeng.integration.modules.NEIHelpers;
 
 import java.util.ArrayList;
 
-import appeng.client.gui.implementations.GuiMEMonitorable;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.api.IStackPositioner;
+
+import appeng.client.gui.implementations.GuiMEMonitorable;
 
 public class TerminalCraftingSlotFinder implements IStackPositioner
 {

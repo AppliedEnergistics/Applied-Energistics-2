@@ -20,10 +20,12 @@ package appeng.integration.modules;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+
+import cpw.mods.fml.common.registry.GameRegistry;
+
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.integration.BaseModule;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 public class RF extends BaseModule
 {

@@ -22,6 +22,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 

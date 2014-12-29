@@ -19,6 +19,7 @@
 package appeng.client.me;
 
 import net.minecraft.util.StatCollector;
+
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ItemSorters;
 

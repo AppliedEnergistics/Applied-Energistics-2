@@ -20,7 +20,6 @@ package appeng.client.render.blocks;
 
 import java.util.EnumSet;
 
-import appeng.helpers.Splotch;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
@@ -28,9 +27,11 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
+import appeng.helpers.Splotch;
 import appeng.tile.misc.TilePaint;
 
 public class RenderBlockPaint extends BaseBlockRender

@@ -27,10 +27,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import appeng.api.parts.SelectedPart;
-import appeng.api.util.AEColor;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import appeng.api.parts.SelectedPart;
+import appeng.api.util.AEColor;
 
 public interface ICableBusContainer
 {

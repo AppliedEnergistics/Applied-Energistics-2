@@ -22,13 +22,15 @@ import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.world.IBlockAccess;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderQuartzGlass;
 import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockQuartzGlass extends AEBaseBlock
 {

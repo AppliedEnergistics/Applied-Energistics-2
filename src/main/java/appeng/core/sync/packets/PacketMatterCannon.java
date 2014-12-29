@@ -25,12 +25,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.world.World;
-import appeng.client.render.effects.MatterCannonFX;
-import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
+
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import appeng.client.render.effects.MatterCannonFX;
+import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.network.INetworkInfo;
 
 public class PacketMatterCannon extends AppEngPacket
 {

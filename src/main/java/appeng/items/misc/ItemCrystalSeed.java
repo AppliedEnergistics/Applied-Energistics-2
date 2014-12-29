@@ -34,6 +34,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+
+import cpw.mods.fml.common.registry.EntityRegistry;
+
 import appeng.api.AEApi;
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.api.recipes.ResolverResult;
@@ -44,7 +47,6 @@ import appeng.entity.EntityGrowingCrystal;
 import appeng.entity.EntityIds;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
-import cpw.mods.fml.common.registry.EntityRegistry;
 
 public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 {

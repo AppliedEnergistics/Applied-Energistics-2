@@ -22,6 +22,7 @@ import java.util.HashSet;
 
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
+
 import appeng.api.features.IWorldGen;
 
 public class WorldGenRegistry implements IWorldGen

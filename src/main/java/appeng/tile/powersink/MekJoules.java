@@ -18,8 +18,10 @@
 
 package appeng.tile.powersink;
 
-import mekanism.api.energy.IStrictEnergyAcceptor;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import mekanism.api.energy.IStrictEnergyAcceptor;
+
 import appeng.api.config.PowerUnits;
 import appeng.transformer.annotations.integration.Interface;
 

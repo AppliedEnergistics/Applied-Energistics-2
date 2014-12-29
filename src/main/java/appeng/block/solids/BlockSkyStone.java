@@ -34,7 +34,13 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import rblocks.api.RotatableBlockEnable;
+
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
@@ -46,9 +52,6 @@ import appeng.helpers.NullRotation;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IRB;
 import appeng.util.Platform;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @RotatableBlockEnable
 public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock

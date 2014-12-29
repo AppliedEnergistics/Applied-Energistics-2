@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+
 import appeng.api.AEApi;
 import appeng.api.storage.IMEInventory;
 import appeng.integration.IIntegrationModule;

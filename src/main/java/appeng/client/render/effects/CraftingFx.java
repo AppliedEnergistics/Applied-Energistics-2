@@ -25,9 +25,11 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import appeng.client.texture.ExtraBlockTextures;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import appeng.client.texture.ExtraBlockTextures;
 
 @SideOnly(Side.CLIENT)
 public class CraftingFx extends EntityBreakingFX

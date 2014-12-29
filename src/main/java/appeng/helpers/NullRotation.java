@@ -19,6 +19,7 @@
 package appeng.helpers;
 
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.util.IOrientable;
 
 public class NullRotation implements IOrientable

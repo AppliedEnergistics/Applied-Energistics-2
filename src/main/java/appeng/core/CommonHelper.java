@@ -25,11 +25,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+
+import cpw.mods.fml.common.SidedProxy;
+
 import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
 import appeng.client.EffectType;
 import appeng.core.sync.AppEngPacket;
-import cpw.mods.fml.common.SidedProxy;
 
 public abstract class CommonHelper
 {

@@ -22,6 +22,7 @@ import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+
 import appeng.block.AEBaseBlock;
 import appeng.core.features.AEFeature;
 

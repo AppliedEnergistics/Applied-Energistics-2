@@ -21,6 +21,7 @@ package appeng.me.cluster;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.util.Platform;

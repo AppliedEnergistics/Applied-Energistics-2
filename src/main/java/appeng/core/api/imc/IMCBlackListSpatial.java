@@ -20,10 +20,12 @@ package appeng.core.api.imc;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+
+import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
+
 import appeng.api.AEApi;
 import appeng.core.AELog;
 import appeng.core.api.IIMCProcessor;
-import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 
 public class IMCBlackListSpatial implements IIMCProcessor
 {

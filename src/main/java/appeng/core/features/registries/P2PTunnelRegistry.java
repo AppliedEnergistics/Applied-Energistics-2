@@ -25,13 +25,15 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.oredict.OreDictionary;
+
+import cpw.mods.fml.common.registry.GameRegistry;
+
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.api.definitions.Parts;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.util.AEColor;
 import appeng.util.Platform;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 public class P2PTunnelRegistry implements IP2PTunnelRegistry
 {

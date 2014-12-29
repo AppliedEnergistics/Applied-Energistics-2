@@ -18,11 +18,13 @@
 
 package appeng.integration.modules;
 
-import ic2.api.energy.tile.IEnergyTile;
-import ic2.api.recipe.RecipeInputItemStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
+
+import ic2.api.energy.tile.IEnergyTile;
+import ic2.api.recipe.RecipeInputItemStack;
+
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.api.features.IP2PTunnelRegistry;

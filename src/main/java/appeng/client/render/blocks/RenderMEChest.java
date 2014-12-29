@@ -20,7 +20,6 @@ package appeng.client.render.blocks;
 
 import java.util.EnumSet;
 
-import appeng.client.texture.FlippableIcon;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
@@ -28,12 +27,14 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.AEApi;
 import appeng.api.storage.ICellHandler;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
+import appeng.client.texture.FlippableIcon;
 import appeng.client.texture.OffsetIcon;
 import appeng.tile.storage.TileChest;
 import appeng.util.Platform;

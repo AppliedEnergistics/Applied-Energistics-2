@@ -21,9 +21,9 @@ package appeng.me.helpers;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import appeng.api.storage.data.IAEStack;
-
 import com.google.common.collect.Multimap;
+
+import appeng.api.storage.data.IAEStack;
 
 public class GenericInterestManager<T>
 {

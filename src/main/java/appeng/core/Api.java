@@ -19,6 +19,7 @@
 package appeng.core;
 
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.IAppEngApi;
 import appeng.api.definitions.Blocks;
 import appeng.api.definitions.Items;

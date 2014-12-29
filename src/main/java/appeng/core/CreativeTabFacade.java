@@ -21,6 +21,7 @@ package appeng.core;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
 import appeng.api.AEApi;
 import appeng.items.parts.ItemFacade;
 

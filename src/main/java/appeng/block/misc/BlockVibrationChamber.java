@@ -27,6 +27,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.block.AEBaseBlock;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.AEConfig;

@@ -23,6 +23,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
+
 import appeng.api.util.AEItemDefinition;
 
 public class DamagedItemDefinition implements AEItemDefinition

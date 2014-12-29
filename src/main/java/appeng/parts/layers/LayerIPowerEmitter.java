@@ -19,9 +19,11 @@
 package appeng.parts.layers;
 
 import net.minecraftforge.common.util.ForgeDirection;
+
+import buildcraft.api.power.IPowerEmitter;
+
 import appeng.api.parts.IPart;
 import appeng.api.parts.LayerBase;
-import buildcraft.api.power.IPowerEmitter;
 
 public class LayerIPowerEmitter extends LayerBase implements IPowerEmitter
 {

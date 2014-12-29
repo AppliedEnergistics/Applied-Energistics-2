@@ -30,13 +30,13 @@ import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import com.google.common.collect.HashMultimap;
+
 import net.minecraft.item.ItemStack;
 
 import cpw.mods.fml.common.LoaderState;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
-
-import com.google.common.collect.HashMultimap;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingIngredientError;

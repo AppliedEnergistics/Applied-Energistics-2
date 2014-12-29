@@ -22,6 +22,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+
 import appeng.api.AEApi;
 import appeng.api.util.AEItemDefinition;
 import appeng.items.parts.ItemFacade;

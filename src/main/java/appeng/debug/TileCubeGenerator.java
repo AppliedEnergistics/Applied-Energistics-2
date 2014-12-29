@@ -23,6 +23,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.core.CommonHelper;
 import appeng.tile.AEBaseTile;
 import appeng.tile.TileEvent;

@@ -18,12 +18,13 @@
 
 package appeng.server.subcommands;
 
+import com.google.common.base.Joiner;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
-import appeng.server.ISubCommand;
 
-import com.google.common.base.Joiner;
+import appeng.server.ISubCommand;
 
 public class Supporters implements ISubCommand
 {

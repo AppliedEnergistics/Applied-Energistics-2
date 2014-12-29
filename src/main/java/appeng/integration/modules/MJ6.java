@@ -20,9 +20,7 @@ package appeng.integration.modules;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import appeng.integration.BaseModule;
-import appeng.integration.abstraction.IMJ6;
-import appeng.transformer.annotations.integration.Method;
+
 import buildcraft.api.mj.IBatteryObject;
 import buildcraft.api.mj.IBatteryProvider;
 import buildcraft.api.mj.ISidedBatteryProvider;
@@ -30,6 +28,10 @@ import buildcraft.api.mj.MjAPI;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
+
+import appeng.integration.BaseModule;
+import appeng.integration.abstraction.IMJ6;
+import appeng.transformer.annotations.integration.Method;
 
 public class MJ6 extends BaseModule implements IMJ6
 {

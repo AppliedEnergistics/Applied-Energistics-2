@@ -25,11 +25,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
+
+import cpw.mods.fml.common.IWorldGenerator;
+
 import appeng.api.AEApi;
 import appeng.api.features.IWorldGen.WorldGenType;
 import appeng.core.AEConfig;
 import appeng.core.features.registries.WorldGenRegistry;
-import cpw.mods.fml.common.IWorldGenerator;
 
 final public class QuartzWorldGen implements IWorldGenerator
 {

@@ -25,14 +25,14 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
 
-import net.minecraft.nbt.NBTTagCompound;
-
-import cpw.mods.fml.common.event.FMLInterModComms;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import net.minecraft.nbt.NBTTagCompound;
+
+import cpw.mods.fml.common.event.FMLInterModComms;
 
 import appeng.core.AEConfig;
 import appeng.core.AELog;

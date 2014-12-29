@@ -18,8 +18,10 @@
 
 package appeng.integration.modules;
 
-import mekanism.api.RecipeHelper;
 import net.minecraft.item.ItemStack;
+
+import mekanism.api.RecipeHelper;
+
 import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IMekanism;
 

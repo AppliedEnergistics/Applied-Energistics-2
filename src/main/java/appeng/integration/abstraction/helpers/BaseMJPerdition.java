@@ -19,8 +19,10 @@
 package appeng.integration.abstraction.helpers;
 
 import net.minecraft.nbt.NBTTagCompound;
-import appeng.transformer.annotations.integration.Method;
+
 import buildcraft.api.power.PowerHandler.PowerReceiver;
+
+import appeng.transformer.annotations.integration.Method;
 
 public abstract class BaseMJPerdition
 {

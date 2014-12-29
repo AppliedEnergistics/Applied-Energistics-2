@@ -25,6 +25,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.block.AEBaseBlock;
 import appeng.tile.events.TileEventType;
 import appeng.tile.inventory.IAEAppEngInventory;

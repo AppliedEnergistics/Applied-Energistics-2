@@ -21,6 +21,7 @@ package appeng.me.helpers;
 import java.util.Iterator;
 
 import net.minecraft.item.ItemStack;
+
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.me.cluster.IAECluster;

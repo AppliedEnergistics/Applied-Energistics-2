@@ -18,11 +18,12 @@
 
 package appeng.tile.spatial;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.EnumSet;
 
+import io.netty.buffer.ByteBuf;
+
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;

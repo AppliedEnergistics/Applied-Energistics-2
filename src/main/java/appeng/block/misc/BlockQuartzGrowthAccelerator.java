@@ -27,6 +27,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
@@ -39,8 +43,6 @@ import appeng.core.features.AEFeature;
 import appeng.helpers.MetaRotation;
 import appeng.tile.misc.TileQuartzGrowthAccelerator;
 import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockQuartzGrowthAccelerator extends AEBaseBlock implements IOrientableBlock
 {

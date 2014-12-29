@@ -25,12 +25,14 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-import appeng.block.AEBaseBlock;
-import appeng.core.AELog;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import appeng.block.AEBaseBlock;
+import appeng.core.AELog;
 
 @SideOnly(Side.CLIENT)
 public class WorldRender implements ISimpleBlockRenderingHandler

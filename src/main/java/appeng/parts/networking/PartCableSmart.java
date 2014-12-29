@@ -20,14 +20,16 @@ package appeng.parts.networking;
 
 import java.util.EnumSet;
 
-import appeng.client.texture.FlippableIcon;
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import org.lwjgl.opengl.GL11;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -41,11 +43,10 @@ import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlock;
+import appeng.client.texture.FlippableIcon;
 import appeng.client.texture.OffsetIcon;
 import appeng.client.texture.TaughtIcon;
 import appeng.util.Platform;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartCableSmart extends PartCable
 {

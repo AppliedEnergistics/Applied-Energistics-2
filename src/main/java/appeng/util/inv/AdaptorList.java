@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
+
 import appeng.api.config.FuzzyMode;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;

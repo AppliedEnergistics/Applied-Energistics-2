@@ -21,6 +21,8 @@ package appeng.items.tools;
 import java.util.EnumSet;
 import java.util.List;
 
+import com.mojang.authlib.GameProfile;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -28,6 +30,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.implementations.items.IBiometricCard;
@@ -37,8 +40,6 @@ import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
-
-import com.mojang.authlib.GameProfile;
 
 public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 {

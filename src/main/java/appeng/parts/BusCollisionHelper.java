@@ -23,6 +23,7 @@ import java.util.List;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.parts.IPartCollisionHelper;
 
 public class BusCollisionHelper implements IPartCollisionHelper

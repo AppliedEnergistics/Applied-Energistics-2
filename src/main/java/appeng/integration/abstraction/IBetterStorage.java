@@ -19,6 +19,7 @@
 package appeng.integration.abstraction;
 
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.util.InventoryAdaptor;
 
 public interface IBetterStorage

@@ -19,13 +19,14 @@
 package appeng.parts.layers;
 
 import net.minecraftforge.common.util.ForgeDirection;
-import appeng.api.parts.IPart;
-import appeng.api.parts.LayerBase;
 
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
+
+import appeng.api.parts.IPart;
+import appeng.api.parts.LayerBase;
 
 
 public class LayerIEnergyHandler extends LayerBase implements IEnergyHandler

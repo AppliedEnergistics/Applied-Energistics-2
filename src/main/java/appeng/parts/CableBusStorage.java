@@ -19,6 +19,7 @@
 package appeng.parts;
 
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.implementations.parts.IPartCable;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;

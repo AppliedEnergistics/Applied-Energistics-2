@@ -18,12 +18,13 @@
 
 package appeng.tile.powersink;
 
-import ic2.api.energy.tile.IEnergySink;
-
 import java.util.EnumSet;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import ic2.api.energy.tile.IEnergySink;
+
 import appeng.api.config.PowerUnits;
 import appeng.core.AppEng;
 import appeng.integration.IntegrationType;

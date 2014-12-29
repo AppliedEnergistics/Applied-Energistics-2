@@ -19,7 +19,9 @@
 package appeng.tile.powersink;
 
 import net.minecraftforge.common.util.ForgeDirection;
+
 import Reika.RotaryCraft.API.ShaftPowerReceiver;
+
 import appeng.api.config.PowerUnits;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;

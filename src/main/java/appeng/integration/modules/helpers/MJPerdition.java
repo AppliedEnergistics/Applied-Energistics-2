@@ -18,12 +18,14 @@
 
 package appeng.integration.modules.helpers;
 
-import appeng.integration.abstraction.helpers.BaseMJPerdition;
 import net.minecraft.nbt.NBTTagCompound;
+
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
+
+import appeng.integration.abstraction.helpers.BaseMJPerdition;
 
 public class MJPerdition extends BaseMJPerdition
 {

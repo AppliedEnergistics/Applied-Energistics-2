@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;

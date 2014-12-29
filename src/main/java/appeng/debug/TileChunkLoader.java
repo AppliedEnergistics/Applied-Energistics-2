@@ -27,13 +27,15 @@ import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.tile.AEBaseTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class TileChunkLoader extends AEBaseTile
 {

@@ -20,7 +20,9 @@ package appeng.integration.modules.helpers;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;

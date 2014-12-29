@@ -26,6 +26,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import codechicken.lib.vec.BlockCoord;
+import codechicken.multipart.TMultiPart;
+import codechicken.multipart.TileMultipart;
+
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
@@ -37,9 +42,6 @@ import appeng.api.util.DimensionalCoord;
 import appeng.facade.FacadeContainer;
 import appeng.parts.CableBusStorage;
 import appeng.util.Platform;
-import codechicken.lib.vec.BlockCoord;
-import codechicken.multipart.TMultiPart;
-import codechicken.multipart.TileMultipart;
 
 public class FMPPlacementHelper implements IPartHost
 {
