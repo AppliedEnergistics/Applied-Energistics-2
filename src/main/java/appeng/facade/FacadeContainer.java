@@ -55,7 +55,7 @@ public class FacadeContainer implements IFacadeContainer
 		for (int x = 0; x < this.facades; x++)
 		{
 			if ( this.getFacade( ForgeDirection.getOrientation( x ) ) != null )
-				facadeSides = facadeSides | (1 << x);
+				facadeSides |= ( 1 << x );
 		}
 		out.writeByte( (byte) facadeSides );
 
@@ -79,7 +79,7 @@ public class FacadeContainer implements IFacadeContainer
 
 		boolean changed = false;
 
-		int ids[] = new int[2];
+		int[] ids = new int[2];
 		for (int x = 0; x < this.facades; x++)
 		{
 			ForgeDirection side = ForgeDirection.getOrientation( x );
@@ -205,7 +205,7 @@ public class FacadeContainer implements IFacadeContainer
 	@Override
 	public void rotateLeft()
 	{
-		IFacadePart newFacades[] = new FacadePart[6];
+		IFacadePart[] newFacades = new FacadePart[6];
 
 		newFacades[ForgeDirection.UP.ordinal()] = this.storage.getFacade( ForgeDirection.UP.ordinal() );
 		newFacades[ForgeDirection.DOWN.ordinal()] = this.storage.getFacade( ForgeDirection.DOWN.ordinal() );
