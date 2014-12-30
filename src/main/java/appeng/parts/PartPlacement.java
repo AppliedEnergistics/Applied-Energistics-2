@@ -41,6 +41,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.Items;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
@@ -92,11 +93,16 @@ public class PartPlacement
 				if ( te instanceof IPartHost && this.wasCanceled )
 					event.setCanceled( true );
 			}
-			else if ( event.entityPlayer != null )
+			else
 			{
 				ItemStack held = event.entityPlayer.getHeldItem();
-				boolean supportedItem = AEApi.instance().items().itemMemoryCard.sameAsStack( held )
-						|| AEApi.instance().items().itemColorApplicator.sameAsStack( held );
+				final Items items = AEApi.instance().items();
+
+				final boolean sameAsMemoryCard = items.itemMemoryCard != null && items.itemMemoryCard.sameAsStack( held );
+				final boolean sameAsColorApp = items.itemColorApplicator != null && items.itemColorApplicator.sameAsStack( held );
+
+				final boolean supportedItem = sameAsMemoryCard || sameAsColorApp;
+
 				if ( event.entityPlayer.isSneaking() && held != null && supportedItem )
 				{
 					NetworkHandler.instance.sendToServer( new PacketClick( event.x, event.y, event.z, event.face, 0, 0, 0 ) );
