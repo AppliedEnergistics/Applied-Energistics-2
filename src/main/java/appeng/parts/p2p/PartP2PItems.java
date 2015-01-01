@@ -373,7 +373,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 	@Method(iname = "BC")
 	public ConnectOverride overridePipeConnection(PipeType type, ForgeDirection with)
 	{
-		return this.side.equals( with ) && type == PipeType.ITEM ? ConnectOverride.CONNECT : ConnectOverride.DEFAULT;
+		return this.side == with && type == PipeType.ITEM ? ConnectOverride.CONNECT : ConnectOverride.DEFAULT;
 	}
 
 	@Override

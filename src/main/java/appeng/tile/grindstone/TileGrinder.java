@@ -177,7 +177,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	@Override
 	public boolean canCrankAttach(ForgeDirection directionToCrank)
 	{
-		return this.getUp().equals( directionToCrank );
+		return this.getUp() == directionToCrank;
 	}
 
 }

@@ -752,19 +752,19 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 			if ( dx.offsetX == west_x && dx.offsetY == west_y && dx.offsetZ == west_z )
 				west = dx;
 
-		if ( dir.equals( forward ) )
+		if ( dir == forward )
 			return ForgeDirection.SOUTH;
-		if ( dir.equals( forward.getOpposite() ) )
+		if ( dir == forward.getOpposite() )
 			return ForgeDirection.NORTH;
 
-		if ( dir.equals( up ) )
+		if ( dir == up )
 			return ForgeDirection.UP;
-		if ( dir.equals( up.getOpposite() ) )
+		if ( dir == up.getOpposite() )
 			return ForgeDirection.DOWN;
 
-		if ( dir.equals( west ) )
+		if ( dir == west )
 			return ForgeDirection.WEST;
-		if ( dir.equals( west.getOpposite() ) )
+		if ( dir == west.getOpposite() )
 			return ForgeDirection.EAST;
 
 		return ForgeDirection.UNKNOWN;

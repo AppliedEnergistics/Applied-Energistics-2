@@ -172,7 +172,7 @@ public class RenderSpatialPylon extends BaseBlockRender
 	private IIcon getBlockTextureFromSideOutside(AEBaseBlock blk, TileSpatialPylon sp, int displayBits, ForgeDirection ori, ForgeDirection dir)
 	{
 
-		if ( ori.equals( dir ) || ori.getOpposite().equals( dir ) )
+		if ( ori == dir || ori.getOpposite() == dir )
 			return blk.getRendererInstance().getTexture( dir );
 
 		if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_MIDDLE )
@@ -191,7 +191,7 @@ public class RenderSpatialPylon extends BaseBlockRender
 	{
 		boolean good = (displayBits & sp.DISPLAY_ENABLED) == sp.DISPLAY_ENABLED;
 
-		if ( ori.equals( dir ) || ori.getOpposite().equals( dir ) )
+		if ( ori == dir || ori.getOpposite() == dir )
 			return good ? ExtraBlockTextures.BlockSpatialPylon_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylon_red.getIcon();
 
 		if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_MIDDLE )

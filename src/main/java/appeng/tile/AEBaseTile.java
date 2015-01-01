@@ -263,7 +263,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 				this.forward = ForgeDirection.getOrientation( orientation & 0x7 );
 				this.up = ForgeDirection.getOrientation( orientation >> 3 );
 
-				output = !this.forward.equals( old_Forward ) || !this.up.equals( old_Up );
+				output = this.forward != old_Forward || this.up != old_Up;
 			}
 
 			this.renderFragment = 100;

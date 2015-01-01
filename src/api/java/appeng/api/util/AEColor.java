@@ -99,7 +99,7 @@ public enum AEColor
 	 */
 	public boolean matches(AEColor color)
 	{
-		return equals(Transparent) || color.equals(Transparent) || equals(color);
+		return equals(Transparent) || color == Transparent || equals(color);
 	}
 
 	@Override

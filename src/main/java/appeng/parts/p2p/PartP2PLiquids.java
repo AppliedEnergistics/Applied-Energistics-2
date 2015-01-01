@@ -241,7 +241,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return !this.output && from.equals( this.side ) && !this.getOutputs( fluid ).isEmpty();
+		return !this.output && from == this.side && !this.getOutputs( fluid ).isEmpty();
 	}
 
 	@Override
@@ -265,7 +265,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		if ( from.equals( this.side ) )
+		if ( from == this.side )
 			return this.getTank();
 		return new FluidTankInfo[0];
 	}

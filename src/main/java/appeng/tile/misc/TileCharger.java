@@ -185,7 +185,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	@Override
 	public boolean canCrankAttach(ForgeDirection directionToCrank)
 	{
-		return this.getUp().equals( directionToCrank ) || this.getUp().getOpposite().equals( directionToCrank );
+		return this.getUp() == directionToCrank || this.getUp().getOpposite() == directionToCrank;
 	}
 
 	@Override

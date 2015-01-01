@@ -97,7 +97,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
 		if ( !this.output )
-			return direction.equals( this.side );
+			return direction == this.side;
 		return false;
 	}
 
@@ -105,7 +105,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements i
 	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction)
 	{
 		if ( this.output )
-			return direction.equals( this.side );
+			return direction == this.side;
 		return false;
 	}
 

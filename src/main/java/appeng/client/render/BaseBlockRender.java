@@ -82,9 +82,9 @@ public class BaseBlockRender
 
 	static public int getOrientation(ForgeDirection in, ForgeDirection forward, ForgeDirection up)
 	{
-		if ( in == null || in.equals( ForgeDirection.UNKNOWN ) // 1
-				|| forward == null || forward.equals( ForgeDirection.UNKNOWN ) // 2
-				|| up == null || up.equals( ForgeDirection.UNKNOWN ) )
+		if ( in == null || in == ForgeDirection.UNKNOWN // 1
+				|| forward == null || forward == ForgeDirection.UNKNOWN // 2
+				|| up == null || up == ForgeDirection.UNKNOWN )
 			return 0;
 
 		int a = in.ordinal();

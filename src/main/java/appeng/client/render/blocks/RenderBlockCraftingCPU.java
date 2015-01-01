@@ -116,10 +116,10 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 				i.prepareBounds( renderer );
 
 				boolean LocalEmit = emitsLight;
-				if ( blk instanceof BlockCraftingMonitor && !ct.getForward().equals( side ) )
+				if ( blk instanceof BlockCraftingMonitor && ct.getForward() != side )
 					LocalEmit = false;
 
-				this.handleSide( blk, meta, x, y, z, i, renderer, ct.getForward().equals( side ) ? theIcon : nonForward, LocalEmit, isMonitor, side, w );
+				this.handleSide( blk, meta, x, y, z, i, renderer, ct.getForward() == side ? theIcon : nonForward, LocalEmit, isMonitor, side, w );
 			}
 
 			BusRenderer.instance.renderer.isFacade = false;

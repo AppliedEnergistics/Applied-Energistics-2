@@ -88,7 +88,7 @@ public enum IntegrationRegistry
 	{
 		for ( IntegrationNode node : this.modules )
 		{
-			if ( node.shortName.equals( name ) && node.isActive() )
+			if ( node.shortName == name && node.isActive() )
 			{
 				return node.instance;
 			}
