@@ -122,11 +122,6 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			InWorldToolOperationIngredient other = (InWorldToolOperationIngredient) obj;
 			return this.blockID == other.blockID && this.metadata == other.metadata;
 		}
-
-		public int getMetadata()
-		{
-			return this.metadata;
-		}
 	}
 
 	private void heat( Block blockID, int metadata, World w, int x, int y, int z )
