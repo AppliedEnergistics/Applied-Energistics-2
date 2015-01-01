@@ -244,7 +244,8 @@ public class AdaptorIInventory extends InventoryAdaptor
 	 * 
 	 * @param itemsToAdd itemStack to add to the inventory
 	 * @param modulate true to modulate, false for simulate
-	 * @return
+	 *
+	 * @return the left itemstack, which could not be added
 	 */
 	private ItemStack addItems( ItemStack itemsToAdd, boolean modulate )
 	{
