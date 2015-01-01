@@ -45,7 +45,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 {
 
 	final ItemStack patternItem;
-	private IAEItemStack pattern;
+	private final IAEItemStack pattern;
 
 	final InventoryCrafting crafting = new InventoryCrafting( new ContainerNull(), 3, 3 );
 	final InventoryCrafting testFrame = new InventoryCrafting( new ContainerNull(), 3, 3 );

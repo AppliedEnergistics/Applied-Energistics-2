@@ -29,7 +29,7 @@ public class OffsetIcon implements IIcon
 	final float offsetX;
 	final float offsetY;
 
-	private IIcon p;
+	private final IIcon p;
 
 	public OffsetIcon(IIcon o, float x, float y) {
 		

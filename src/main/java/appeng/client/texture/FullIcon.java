@@ -26,7 +26,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class FullIcon implements IIcon
 {
 
-	private IIcon p;
+	private final IIcon p;
 
 	public FullIcon(IIcon o) {
 		

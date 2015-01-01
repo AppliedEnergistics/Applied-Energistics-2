@@ -28,7 +28,7 @@ public class TaughtIcon implements IIcon
 
 	final float tightness;
 
-	private IIcon p;
+	private final IIcon p;
 
 	public TaughtIcon(IIcon o, float tightness) {
 		

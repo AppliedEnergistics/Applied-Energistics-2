@@ -53,7 +53,7 @@ public enum Settings
 
 	STORAGE_FILTER(EnumSet.allOf( StorageFilter.class ));
 
-	private EnumSet values;
+	private final EnumSet values;
 
 	public EnumSet getPossibleValues()
 	{
