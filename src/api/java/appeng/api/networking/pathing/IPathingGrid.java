@@ -40,7 +40,7 @@ public interface IPathingGrid extends IGridCache
 	ControllerState getControllerState();
 
 	/**
-	 * trigger a network reset, booting, pathfinding and all.
+	 * trigger a network reset, booting, path-finding and all.
 	 */
 	void repath();
 

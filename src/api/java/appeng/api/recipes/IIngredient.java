@@ -78,7 +78,7 @@ public interface IIngredient {
 	public int getQty();
 
 	/**
-	 * Bakes the lists in for faster runtime lookups.
+	 * Bakes the lists in for faster runtime look-ups.
 	 * @throws MissingIngredientError 
 	 * @throws RegistrationError 
 	 */
