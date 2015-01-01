@@ -77,7 +77,7 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	{
 		if ( (outputId.equals( "inscriber" )) && (this.getClass() == NEIInscriberRecipeHandler.class) )
 		{
-			for (InscriberRecipe recipe : Inscribe.recipes)
+			for (InscriberRecipe recipe : Inscribe.RECIPES )
 			{
 				CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
 				cachedRecipe.computeVisuals();
@@ -93,7 +93,7 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for (InscriberRecipe recipe : Inscribe.recipes)
+		for (InscriberRecipe recipe : Inscribe.RECIPES )
 		{
 			if ( NEIServerUtils.areStacksSameTypeCrafting( recipe.output, result ) )
 			{
@@ -107,7 +107,7 @@ public class NEIInscriberRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for (InscriberRecipe recipe : Inscribe.recipes)
+		for (InscriberRecipe recipe : Inscribe.RECIPES )
 		{
 			CachedInscriberRecipe cachedRecipe = new CachedInscriberRecipe( recipe );
 

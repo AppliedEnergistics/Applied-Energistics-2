@@ -252,12 +252,12 @@ public final class Registration
 		RecipeSorter.register( "AE2-Shaped", ShapedRecipe.class, Category.SHAPED, "" );
 		RecipeSorter.register( "AE2-Shapeless", ShapelessRecipe.class, Category.SHAPELESS, "" );
 
-		MinecraftForge.EVENT_BUS.register( OreDictionaryHandler.instance );
+		MinecraftForge.EVENT_BUS.register( OreDictionaryHandler.INSTANCE );
 
-		Items items = Api.instance.items();
-		Materials materials = Api.instance.materials();
-		Parts parts = Api.instance.parts();
-		Blocks blocks = Api.instance.blocks();
+		Items items = Api.INSTANCE.items();
+		Materials materials = Api.INSTANCE.materials();
+		Parts parts = Api.INSTANCE.parts();
+		Blocks blocks = Api.INSTANCE.blocks();
 
 		AEItemDefinition materialItem = this.addFeature( ItemMultiMaterial.class );
 
@@ -573,8 +573,8 @@ public final class Registration
 		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.RF ) )
 			ph.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyReceiver" );
 
-		FMLCommonHandler.instance().bus().register( TickHandler.instance );
-		MinecraftForge.EVENT_BUS.register( TickHandler.instance );
+		FMLCommonHandler.instance().bus().register( TickHandler.INSTANCE );
+		MinecraftForge.EVENT_BUS.register( TickHandler.INSTANCE );
 
 		PartPlacement pp = new PartPlacement();
 		MinecraftForge.EVENT_BUS.register( pp );
@@ -627,7 +627,7 @@ public final class Registration
 		PlayerMessages.values();
 		GuiText.values();
 
-		Api.instance.partHelper.initFMPSupport();
+		Api.INSTANCE.partHelper.initFMPSupport();
 		( ( BlockCableBus ) blocks.blockMultiPart.block() ).setupTile();
 
 		// Interface
@@ -777,6 +777,6 @@ public final class Registration
 		/**
 		 * initial recipe bake, if ore dictionary changes after this it re-bakes.
 		 */
-		OreDictionaryHandler.instance.bakeRecipes();
+		OreDictionaryHandler.INSTANCE.bakeRecipes();
 	}
 }

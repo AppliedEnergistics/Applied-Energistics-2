@@ -181,7 +181,7 @@ public class SlotRestrictedInput extends AppEngSlot
 			if ( AEApi.instance().materials().materialNamePress.sameAsStack( i ) )
 				return true;
 
-			for (ItemStack is : Inscribe.plates)
+			for (ItemStack is : Inscribe.PLATES )
 				if ( Platform.isSameItemPrecise( is, i ) )
 					return true;
 

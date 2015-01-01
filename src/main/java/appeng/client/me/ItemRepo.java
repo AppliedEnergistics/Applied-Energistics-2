@@ -149,7 +149,7 @@ public class ItemRepo
 
 		this.innerSearch = this.searchString;
 		boolean terminalSearchToolTips = AEConfig.instance.settings.getSetting( Settings.SEARCH_TOOLTIPS ) != YesNo.NO;
-		// boolean terminalSearchMods = Configuration.instance.settings.getSetting( Settings.SEARCH_MODS ) != YesNo.NO;
+		// boolean terminalSearchMods = Configuration.INSTANCE.settings.getSetting( Settings.SEARCH_MODS ) != YesNo.NO;
 
 		boolean searchMod = false;
 		if ( this.innerSearch.startsWith( "@" ) )
@@ -229,13 +229,13 @@ public class ItemRepo
 		ItemSorters.init();
 
 		if ( SortBy == SortOrder.MOD )
-			Collections.sort( this.view, ItemSorters.ConfigBased_SortByMod );
+			Collections.sort( this.view, ItemSorters.CONFIG_BASED_SORT_BY_MOD );
 		else if ( SortBy == SortOrder.AMOUNT )
-			Collections.sort( this.view, ItemSorters.ConfigBased_SortBySize );
+			Collections.sort( this.view, ItemSorters.CONFIG_BASED_SORT_BY_SIZE );
 		else if ( SortBy == SortOrder.INVTWEAKS )
-			Collections.sort( this.view, ItemSorters.ConfigBased_SortByInvTweaks );
+			Collections.sort( this.view, ItemSorters.CONFIG_BASED_SORT_BY_INV_TWEAKS );
 		else
-			Collections.sort( this.view, ItemSorters.ConfigBased_SortByName );
+			Collections.sort( this.view, ItemSorters.CONFIG_BASED_SORT_BY_NAME );
 
 		for (IAEItemStack is : this.view)
 			this.dsp.add( is.getItemStack() );

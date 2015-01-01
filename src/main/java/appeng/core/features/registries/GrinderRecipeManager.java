@@ -71,7 +71,7 @@ public class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 
 		this.addIngot( "Wheat", new ItemStack( Items.wheat ) );
 
-		OreDictionaryHandler.instance.observe( this );
+		OreDictionaryHandler.INSTANCE.observe( this );
 	}
 
 	@Override

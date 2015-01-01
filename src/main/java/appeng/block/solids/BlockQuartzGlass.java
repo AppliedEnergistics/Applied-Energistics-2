@@ -50,7 +50,7 @@ public class BlockQuartzGlass extends AEBaseBlock
 	public boolean shouldSideBeRendered(IBlockAccess w, int x, int y, int z, int side)
 	{
 		Material mat = w.getBlock( x, y, z ).getMaterial();
-		if ( mat == Material.glass || mat == AEGlassMaterial.instance )
+		if ( mat == Material.glass || mat == AEGlassMaterial.INSTANCE )
 		{
 			if ( w.getBlock( x, y, z ).getRenderType() == this.getRenderType() )
 				return false;

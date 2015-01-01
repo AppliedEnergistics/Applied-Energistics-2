@@ -31,7 +31,7 @@ public class LightningFX extends EntityFX
 {
 
 	final int steps = this.getSteps();
-	static final Random rng = new Random();
+	private static final Random RANDOM_GENERATOR = new Random();
 	final double[][] Steps;
 
 	protected LightningFX(World w, double x, double y, double z, double r, double g, double b, int maxAge) {
@@ -64,14 +64,14 @@ public class LightningFX extends EntityFX
 
 	protected void regen()
 	{
-		double lastDirectionX = (rng.nextDouble() - 0.5) * 0.9;
-		double lastDirectionY = (rng.nextDouble() - 0.5) * 0.9;
-		double lastDirectionZ = (rng.nextDouble() - 0.5) * 0.9;
+		double lastDirectionX = ( RANDOM_GENERATOR.nextDouble() - 0.5) * 0.9;
+		double lastDirectionY = ( RANDOM_GENERATOR.nextDouble() - 0.5) * 0.9;
+		double lastDirectionZ = ( RANDOM_GENERATOR.nextDouble() - 0.5) * 0.9;
 		for (int s = 0; s < this.steps; s++)
 		{
-			this.Steps[s][0] = lastDirectionX = (lastDirectionX + (rng.nextDouble() - 0.5) * 0.9) / 2.0;
-			this.Steps[s][1] = lastDirectionY = (lastDirectionY + (rng.nextDouble() - 0.5) * 0.9) / 2.0;
-			this.Steps[s][2] = lastDirectionZ = (lastDirectionZ + (rng.nextDouble() - 0.5) * 0.9) / 2.0;
+			this.Steps[s][0] = lastDirectionX = (lastDirectionX + ( RANDOM_GENERATOR.nextDouble() - 0.5) * 0.9) / 2.0;
+			this.Steps[s][1] = lastDirectionY = (lastDirectionY + ( RANDOM_GENERATOR.nextDouble() - 0.5) * 0.9) / 2.0;
+			this.Steps[s][2] = lastDirectionZ = (lastDirectionZ + ( RANDOM_GENERATOR.nextDouble() - 0.5) * 0.9) / 2.0;
 		}
 	}
 

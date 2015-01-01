@@ -32,7 +32,7 @@ import appeng.api.storage.data.IAEItemStack;
 /**
  * do not implement provided by {@link ICraftingPatternItem}
  * 
- * caching this instance will increase performance of validation and checks.
+ * caching this INSTANCE will increase performance of validation and checks.
  */
 public interface ICraftingPatternDetails
 {
@@ -82,7 +82,7 @@ public interface ICraftingPatternDetails
 	boolean canSubstitute();
 
 	/**
-	 * Allow using this instance of the pattern details to preform the crafting action with performance enhancements.
+	 * Allow using this INSTANCE of the pattern details to preform the crafting action with performance enhancements.
 	 * 
 	 * @param craftingInv inventory
 	 * @param world crafting world

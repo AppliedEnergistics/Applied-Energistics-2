@@ -375,7 +375,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 
 	protected void QueueTunnelDrain(PowerUnits unit, double f)
 	{
-		double ae_to_tax = unit.convertTo( PowerUnits.AE, f * AEConfig.TunnelPowerLoss );
+		double ae_to_tax = unit.convertTo( PowerUnits.AE, f * AEConfig.TUNNEL_POWER_LOSS );
 
 		try
 		{

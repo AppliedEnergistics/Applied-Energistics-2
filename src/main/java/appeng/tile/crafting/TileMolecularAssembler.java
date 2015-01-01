@@ -77,13 +77,13 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		IGridTickable, ICraftingMachine, IPowerChannelState
 {
 
-	private static final int[] sides = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-	private static final ItemStack assemblerStack = AEApi.instance().blocks().blockMolecularAssembler.stack( 1 );
+	private static final int[] SIDES = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	private static final ItemStack STACK_ASSEMBLER = AEApi.instance().blocks().blockMolecularAssembler.stack( 1 );
 
 	private final InventoryCrafting craftingInv = new InventoryCrafting( new ContainerNull(), 3, 3 );
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 + 2 );
 	private final IConfigManager settings = new ConfigManager( this );
-	private final UpgradeInventory upgrades = new UpgradeInventory( assemblerStack, this, this.getUpgradeSlots() );
+	private final UpgradeInventory upgrades = new UpgradeInventory( STACK_ASSEMBLER, this, this.getUpgradeSlots() );
 
 	private ForgeDirection pushDirection = ForgeDirection.UNKNOWN;
 	private ItemStack myPattern = null;
@@ -306,7 +306,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	@Override
 	public int[] getAccessibleSlotsBySide(ForgeDirection whichSide)
 	{
-		return sides;
+		return SIDES;
 	}
 
 	@Override

@@ -39,7 +39,7 @@ public interface IGridCacheRegistry
 	void registerGridCache(Class<? extends IGridCache> iface, Class<? extends IGridCache> implementation);
 
 	/**
-	 * requests a new instance of a grid cache for use, used internally
+	 * requests a new INSTANCE of a grid cache for use, used internally
 	 * 
 	 * @param grid grid
 	 * 

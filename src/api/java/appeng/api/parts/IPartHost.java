@@ -83,7 +83,7 @@ public interface IPartHost
 	 * 
 	 * @param side side of part
 	 * @param suppressUpdate
-	 *            - used if you need to replace a part's instance, without really removing it first.
+	 *            - used if you need to replace a part's INSTANCE, without really removing it first.
 	 */
 	void removePart(ForgeDirection side, boolean suppressUpdate);
 

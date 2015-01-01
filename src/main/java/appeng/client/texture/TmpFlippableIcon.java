@@ -24,10 +24,10 @@ import net.minecraft.util.IIcon;
 public class TmpFlippableIcon extends FlippableIcon
 {
 
-	private static final IIcon nullIcon = new MissingIcon( Blocks.diamond_block );
+	private static final IIcon NULL_ICON = new MissingIcon( Blocks.diamond_block );
 
 	public TmpFlippableIcon() {
-		super( nullIcon );
+		super( NULL_ICON );
 	}
 
 	public void setOriginal(IIcon i)
@@ -47,7 +47,7 @@ public class TmpFlippableIcon extends FlippableIcon
 		}
 
 		if ( i == null )
-			this.original = nullIcon;
+			this.original = NULL_ICON;
 		else
 			this.original = i;
 	}

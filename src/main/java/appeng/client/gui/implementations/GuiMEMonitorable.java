@@ -257,7 +257,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			this.craftingStatusBtn.hideEdge = 13;
 		}
 
-		// Enum setting = AEConfig.instance.getSetting( "Terminal", SearchBoxMode.class, SearchBoxMode.AUTOSEARCH );
+		// Enum setting = AEConfig.INSTANCE.getSetting( "Terminal", SearchBoxMode.class, SearchBoxMode.AUTOSEARCH );
 		Enum setting = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
 		this.searchField.setFocused( SearchBoxMode.AUTOSEARCH == setting || SearchBoxMode.NEI_AUTOSEARCH == setting );
 

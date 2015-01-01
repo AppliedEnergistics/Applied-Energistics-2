@@ -146,7 +146,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 				{
 					if ( b.rotateBlock( w, x, y, z, ForgeDirection.getOrientation( side ) ) )
 					{
-						b.onNeighborBlockChange( w, x, y, z, Platform.air );
+						b.onNeighborBlockChange( w, x, y, z, Platform.AIR );
 						p.swingItem();
 						return !w.isRemote;
 					}

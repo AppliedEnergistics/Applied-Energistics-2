@@ -39,7 +39,7 @@ public class BlockUpdate implements Callable
 	public Object call() throws Exception
 	{
 		if ( this.w.blockExists( this.x, this.y, this.z ) )
-			this.w.notifyBlocksOfNeighborChange( this.x, this.y, this.z, Platform.air );
+			this.w.notifyBlocksOfNeighborChange( this.x, this.y, this.z, Platform.AIR );
 
 		return true;
 	}

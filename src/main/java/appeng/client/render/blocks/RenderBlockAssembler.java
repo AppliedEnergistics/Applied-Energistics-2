@@ -201,14 +201,14 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 			return false;
 		}
 
-		BusRenderer.instance.renderer.blockAccess = renderer.blockAccess;
-		renderer = BusRenderer.instance.renderer;
+		BusRenderer.INSTANCE.renderer.blockAccess = renderer.blockAccess;
+		renderer = BusRenderer.INSTANCE.renderer;
 
 		this.preRenderInWorld( block, world, x, y, z, renderer );
 
-		tma.lightCache = BusRenderHelper.instance.useSimplifiedRendering( x, y, z, this, tma.lightCache );
+		tma.lightCache = BusRenderHelper.INSTANCE.useSimplifiedRendering( x, y, z, this, tma.lightCache );
 
-		BusRenderer.instance.renderer.isFacade = true;
+		BusRenderer.INSTANCE.renderer.isFacade = true;
 		IOrientable te = this.getOrientable( block, world, x, y, z );
 
 		ForgeDirection fdy = te.getUp();
@@ -262,12 +262,12 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 		this.renderBlockBounds( renderer, 1, 1, 1, 15, 15, 15, fdx, fdy, fdz );
 		renderer.renderStandardBlock( blk, x, y, z );
 
-		BusRenderHelper.instance.normalRendering();
+		BusRenderHelper.INSTANCE.normalRendering();
 
 		blk.getRendererInstance().setTemporaryRenderIcon( null );
 
 		renderer.renderAllFaces = false;
-		BusRenderer.instance.renderer.isFacade = false;
+		BusRenderer.INSTANCE.renderer.isFacade = false;
 
 		this.postRenderInWorld( renderer );
 

@@ -45,21 +45,21 @@ import appeng.util.Platform;
 public class BusRenderer implements IItemRenderer
 {
 
-	public static final BusRenderer instance = new BusRenderer();
+	public static final BusRenderer INSTANCE = new BusRenderer();
 
 	public final RenderBlocksWorkaround renderer = new RenderBlocksWorkaround();
-	public static final HashMap<Integer, IPart> renderPart = new HashMap<Integer, IPart>();
+	public static final HashMap<Integer, IPart> RENDER_PART = new HashMap<Integer, IPart>();
 
 	public IPart getRenderer(ItemStack is, IPartItem c)
 	{
 		int id = (Item.getIdFromItem( is.getItem() ) << Platform.DEF_OFFSET) | is.getItemDamage();
 
-		IPart part = renderPart.get( id );
+		IPart part = RENDER_PART.get( id );
 		if ( part == null )
 		{
 			part = c.createPartFromItemStack( is );
 			if ( part != null )
-				renderPart.put( id, part );
+				RENDER_PART.put( id, part );
 		}
 
 		return part;
@@ -126,12 +126,12 @@ public class BusRenderer implements IItemRenderer
 		Tessellator.instance.setColorOpaque_F( 1, 1, 1 );
 		Tessellator.instance.setBrightness( 14 << 20 | 14 << 4 );
 
-		BusRenderHelper.instance.setBounds( 0, 0, 0, 1, 1, 1 );
-		BusRenderHelper.instance.setTexture( null );
-		BusRenderHelper.instance.setInvColor( 0xffffff );
+		BusRenderHelper.INSTANCE.setBounds( 0, 0, 0, 1, 1, 1 );
+		BusRenderHelper.INSTANCE.setTexture( null );
+		BusRenderHelper.INSTANCE.setInvColor( 0xffffff );
 		this.renderer.blockAccess = ClientHelper.proxy.getWorld();
 
-		BusRenderHelper.instance.setOrientation( ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
+		BusRenderHelper.INSTANCE.setOrientation( ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
 
 		this.renderer.uvRotateBottom = this.renderer.uvRotateEast = this.renderer.uvRotateNorth = this.renderer.uvRotateSouth = this.renderer.uvRotateTop = this.renderer.uvRotateWest = 0;
 		this.renderer.useInventoryTint = false;
@@ -149,7 +149,7 @@ public class BusRenderer implements IItemRenderer
 			}
 
 			if ( fp != null )
-				fp.renderInventory( BusRenderHelper.instance, this.renderer );
+				fp.renderInventory( BusRenderHelper.INSTANCE, this.renderer );
 		}
 		else
 		{
@@ -162,7 +162,7 @@ public class BusRenderer implements IItemRenderer
 					GL11.glTranslatef( 0.0f, 0.0f, -0.04f * (8 - depth) - 0.06f );
 				}
 
-				ip.renderInventory( BusRenderHelper.instance, this.renderer );
+				ip.renderInventory( BusRenderHelper.INSTANCE, this.renderer );
 			}
 		}
 

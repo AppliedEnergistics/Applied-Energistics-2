@@ -49,7 +49,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	public void setOrientation(ForgeDirection inForward, ForgeDirection inUp)
 	{
 		super.setOrientation( inForward, inUp );
-		this.getBlockType().onNeighborBlockChange( this.worldObj, this.xCoord, this.yCoord, this.zCoord, Platform.air );
+		this.getBlockType().onNeighborBlockChange( this.worldObj, this.xCoord, this.yCoord, this.zCoord, Platform.AIR );
 	}
 
 	private void addItem(InventoryAdaptor sia, ItemStack output)

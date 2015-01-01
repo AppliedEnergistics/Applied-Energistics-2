@@ -33,7 +33,7 @@ import net.minecraftforge.client.IRenderHandler;
 public class SpatialSkyRender extends IRenderHandler
 {
 
-	private static final SpatialSkyRender instance = new SpatialSkyRender();
+	private static final SpatialSkyRender INSTANCE = new SpatialSkyRender();
 
 	private final Random random = new Random();
 	private long cycle = 0;
@@ -185,7 +185,7 @@ public class SpatialSkyRender extends IRenderHandler
 
 	public static IRenderHandler getInstance()
 	{
-		return instance;
+		return INSTANCE;
 	}
 
 }

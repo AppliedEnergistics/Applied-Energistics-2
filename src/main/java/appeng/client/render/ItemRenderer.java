@@ -26,7 +26,7 @@ import net.minecraftforge.client.IItemRenderer;
 public class ItemRenderer implements IItemRenderer
 {
 
-	public static final ItemRenderer instance = new ItemRenderer();
+	public static final ItemRenderer INSTANCE = new ItemRenderer();
 
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
@@ -56,7 +56,7 @@ public class ItemRenderer implements IItemRenderer
 		if ( type == ItemRenderType.INVENTORY )
 			GL11.glTranslatef( 0.0f, -0.1f, 0.0f );
 
-		WorldRender.instance.renderItemBlock( item, type, data );
+		WorldRender.INSTANCE.renderItemBlock( item, type, data );
 
 		GL11.glPopAttrib();
 		GL11.glPopMatrix();

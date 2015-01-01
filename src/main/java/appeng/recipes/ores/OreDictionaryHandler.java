@@ -33,7 +33,7 @@ import appeng.recipes.game.IRecipeBakeable;
 public class OreDictionaryHandler
 {
 
-	public static final OreDictionaryHandler instance = new OreDictionaryHandler();
+	public static final OreDictionaryHandler INSTANCE = new OreDictionaryHandler();
 
 	private final List<IOreListener> ol = new ArrayList<IOreListener>();
 

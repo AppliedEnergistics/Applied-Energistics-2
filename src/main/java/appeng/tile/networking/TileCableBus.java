@@ -153,7 +153,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	public void validate()
 	{
 		super.validate();
-		TickHandler.instance.addInit( this );
+		TickHandler.INSTANCE.addInit( this );
 	}
 
 	@Override
@@ -348,7 +348,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 				return;
 		}
 
-		this.getWorldObj().setBlock( this.xCoord, this.yCoord, this.zCoord, Platform.air );
+		this.getWorldObj().setBlock( this.xCoord, this.yCoord, this.zCoord, Platform.AIR );
 	}
 
 	/**

@@ -124,7 +124,7 @@ public class RegistryContainer implements IRegistryContainer
 	@Override
 	public IWorldGen worldgen()
 	{
-		return WorldGenRegistry.instance;
+		return WorldGenRegistry.INSTANCE;
 	}
 
 }

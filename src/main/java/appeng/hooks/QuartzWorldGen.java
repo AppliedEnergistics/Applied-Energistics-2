@@ -75,7 +75,7 @@ final public class QuartzWorldGen implements IWorldGenerator
 			boolean isCharged = r.nextFloat() > AEConfig.instance.spawnChargedChance;
 			WorldGenMinable whichOre = isCharged ? this.oreCharged : this.oreNormal;
 
-			if ( WorldGenRegistry.instance.isWorldGenEnabled( isCharged ? WorldGenType.ChargedCertusQuartz : WorldGenType.CertusQuartz, w ) )
+			if ( WorldGenRegistry.INSTANCE.isWorldGenEnabled( isCharged ? WorldGenType.ChargedCertusQuartz : WorldGenType.CertusQuartz, w ) )
 			{
 				int cx = chunkX * 16 + r.nextInt( 22 );
 				int cy = r.nextInt( 40 * seaLevel / 64 ) + r.nextInt( 22 * seaLevel / 64 ) + 12 * seaLevel / 64;

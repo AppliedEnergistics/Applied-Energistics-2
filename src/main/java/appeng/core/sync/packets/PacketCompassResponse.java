@@ -49,7 +49,7 @@ public class PacketCompassResponse extends AppEngPacket
 	@Override
 	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
 	{
-		CompassManager.instance.postResult( this.attunement, this.cx << 4, this.cdy << 5, this.cz << 4, this.cr );
+		CompassManager.INSTANCE.postResult( this.attunement, this.cx << 4, this.cdy << 5, this.cz << 4, this.cr );
 	}
 
 	// api

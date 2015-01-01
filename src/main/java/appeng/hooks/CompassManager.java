@@ -27,7 +27,7 @@ import appeng.core.sync.packets.PacketCompassRequest;
 public class CompassManager
 {
 
-	public static final CompassManager instance = new CompassManager();
+	public static final CompassManager INSTANCE = new CompassManager();
 
 	static class CompassRequest
 	{

@@ -53,7 +53,7 @@ import appeng.core.sync.packets.PacketValueConfig;
 public class AppEngPacketHandlerBase
 {
 
-	public static final Map<Class, PacketTypes> reverseLookup = new HashMap<Class, AppEngPacketHandlerBase.PacketTypes>();
+	public static final Map<Class, PacketTypes> REVERSE_LOOKUP = new HashMap<Class, AppEngPacketHandlerBase.PacketTypes>();
 
 	public enum PacketTypes
 	{
@@ -124,7 +124,7 @@ public class AppEngPacketHandlerBase
 			}
 
 			this.con = x;
-			AppEngPacketHandlerBase.reverseLookup.put( this.pc, this );
+			AppEngPacketHandlerBase.REVERSE_LOOKUP.put( this.pc, this );
 
 			if ( this.con == null )
 				throw new RuntimeException( "Invalid Packet Class, must be constructable on DataInputStream" );
@@ -142,7 +142,7 @@ public class AppEngPacketHandlerBase
 
 		public static PacketTypes getID(Class<? extends AppEngPacket> c)
 		{
-			return AppEngPacketHandlerBase.reverseLookup.get( c );
+			return AppEngPacketHandlerBase.REVERSE_LOOKUP.get( c );
 		}
 
 	}

@@ -369,18 +369,18 @@ public class CellInventory implements ICellInventory
 		return 8 - div;
 	}
 
-	private static final HashSet<Integer> blackList = new HashSet<Integer>();
+	private static final HashSet<Integer> BLACK_LIST = new HashSet<Integer>();
 
 	public static void addBasicBlackList(int itemID, int Meta)
 	{
-		blackList.add( (Meta << Platform.DEF_OFFSET) | itemID );
+		BLACK_LIST.add( ( Meta << Platform.DEF_OFFSET ) | itemID );
 	}
 
 	public static boolean isBlackListed(IAEItemStack input)
 	{
-		if ( blackList.contains( (OreDictionary.WILDCARD_VALUE << Platform.DEF_OFFSET) | Item.getIdFromItem( input.getItem() ) ) )
+		if ( BLACK_LIST.contains( (OreDictionary.WILDCARD_VALUE << Platform.DEF_OFFSET) | Item.getIdFromItem( input.getItem() ) ) )
 			return true;
-		return blackList.contains( (input.getItemDamage() << Platform.DEF_OFFSET) | Item.getIdFromItem( input.getItem() ) );
+		return BLACK_LIST.contains( (input.getItemDamage() << Platform.DEF_OFFSET) | Item.getIdFromItem( input.getItem() ) );
 	}
 
 	private boolean isEmpty(IMEInventory meInventory)

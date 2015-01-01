@@ -63,7 +63,7 @@ public class StorageHelper
 		public void visit(int x, int y, int z)
 		{
 			Block blk = this.dst.getBlock( x, y, z );
-			blk.onNeighborBlockChange( this.dst, x, y, z, Platform.air );
+			blk.onNeighborBlockChange( this.dst, x, y, z, Platform.AIR );
 		}
 	}
 
@@ -317,10 +317,10 @@ public class StorageHelper
 		}
 
 		for (WorldCoord wc : cDst.updates)
-			cDst.world.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.air );
+			cDst.world.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.AIR );
 
 		for (WorldCoord wc : cSrc.updates)
-			cSrc.world.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.air );
+			cSrc.world.notifyBlockOfNeighborChange( wc.x, wc.y, wc.z, Platform.AIR );
 
 		this.transverseEdges( x - 1, y - 1, z - 1, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1, new TriggerUpdates( src ) );
 		this.transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new TriggerUpdates( dst ) );

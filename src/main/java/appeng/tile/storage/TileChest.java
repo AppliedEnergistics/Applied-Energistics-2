@@ -101,11 +101,11 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 	}
 
-	static final ChestNoHandler noHandler = new ChestNoHandler();
+	static final ChestNoHandler NO_HANDLER = new ChestNoHandler();
 
-	static final int[] sides = new int[] { 0 };
-	static final int[] front = new int[] { 1 };
-	static final int[] noSlots = new int[] { };
+	static final int[] SIDES = new int[] { 0 };
+	static final int[] FRONT = new int[] { 1 };
+	static final int[] NO_SLOTS = new int[] { };
 
 	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
 	final BaseActionSource mySrc = new MachineSource( this );
@@ -471,11 +471,11 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		{
 		case FLUIDS:
 			if ( this.fluidCell == null )
-				throw noHandler;
+				throw NO_HANDLER;
 			return this.fluidCell;
 		case ITEMS:
 			if ( this.itemCell == null )
-				throw noHandler;
+				throw NO_HANDLER;
 			return this.itemCell;
 		default:
 		}
@@ -582,21 +582,21 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	public int[] getAccessibleSlotsBySide(ForgeDirection side)
 	{
 		if ( ForgeDirection.SOUTH == side )
-			return front;
+			return FRONT;
 
 		if ( this.isPowered() )
 		{
 			try
 			{
 				if ( this.getHandler( StorageChannel.ITEMS ) != null )
-					return sides;
+					return SIDES;
 			}
 			catch (ChestNoHandler e)
 			{
 				// nope!
 			}
 		}
-		return noSlots;
+		return NO_SLOTS;
 	}
 
 	@Override

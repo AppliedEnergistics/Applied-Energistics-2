@@ -145,19 +145,19 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 				if ( !this.proxy.getEnergy().isNetworkPowered() )
 				{
 					this.connection.markDestroy();
-					TickHandler.instance.addCallable( this.tile.getWorldObj(), this.connection );
+					TickHandler.INSTANCE.addCallable( this.tile.getWorldObj(), this.connection );
 				}
 				else
 				{
 					if ( this.proxy.isActive() )
 					{
 						this.connection.markCreate();
-						TickHandler.instance.addCallable( this.tile.getWorldObj(), this.connection );
+						TickHandler.INSTANCE.addCallable( this.tile.getWorldObj(), this.connection );
 					}
 					else
 					{
 						this.connection.markDestroy();
-						TickHandler.instance.addCallable( this.tile.getWorldObj(), this.connection );
+						TickHandler.INSTANCE.addCallable( this.tile.getWorldObj(), this.connection );
 					}
 				}
 

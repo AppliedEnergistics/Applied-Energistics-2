@@ -134,11 +134,11 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	// rather simple client side caching.
-	static final WeakHashMap<ItemStack, ItemStack> simpleCache = new WeakHashMap<ItemStack, ItemStack>();
+	static final WeakHashMap<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<ItemStack, ItemStack>();
 
 	public ItemStack getOutput(ItemStack item)
 	{
-		ItemStack out = simpleCache.get( item );
+		ItemStack out = SIMPLE_CACHE.get( item );
 		if ( out != null )
 			return out;
 
@@ -151,7 +151,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		if ( details == null )
 			return null;
 
-		simpleCache.put( item, out = details.getCondensedOutputs()[0].getItemStack() );
+		SIMPLE_CACHE.put( item, out = details.getCondensedOutputs()[0].getItemStack() );
 		return out;
 	}
 

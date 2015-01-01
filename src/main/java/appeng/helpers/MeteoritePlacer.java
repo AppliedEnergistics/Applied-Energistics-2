@@ -81,7 +81,7 @@ public class MeteoritePlacer
 			else if ( a > 0.5 )
 				MeteoritePlacer.this.put( w, x, y, z, Blocks.gravel );
 			else if ( a > 0.5 )
-				MeteoritePlacer.this.put( w, x, y, z, Platform.air );
+				MeteoritePlacer.this.put( w, x, y, z, Platform.AIR );
 		}
 
 	}
@@ -119,7 +119,7 @@ public class MeteoritePlacer
 			if ( a > 0.9 )
 				MeteoritePlacer.this.put( w, x, y, z, this.blk, this.meta );
 			else if ( a > 0.8 )
-				MeteoritePlacer.this.put( w, x, y, z, Platform.air );
+				MeteoritePlacer.this.put( w, x, y, z, Platform.AIR );
 			else
 				this.getOther( w, x, y, z, a - 0.1 );
 		}
@@ -230,7 +230,7 @@ public class MeteoritePlacer
 		{
 			if ( this.range( x, y, z ) )
 				return this.w.getBlock( x, y, z );
-			return Platform.air;
+			return Platform.AIR;
 		}
 
 		@Override
@@ -354,7 +354,7 @@ public class MeteoritePlacer
 		{
 			if ( this.range( x, y, z ) )
 				return this.target.getBlock( x & 0xF, y, z & 0xF );
-			return Platform.air;
+			return Platform.AIR;
 		}
 
 		@Override
@@ -563,7 +563,7 @@ public class MeteoritePlacer
 			boolean solid = true;
 			for (int j = y - 15; j < y - 1; j++)
 			{
-				if ( w.getBlock( x, j, z ) == Platform.air )
+				if ( w.getBlock( x, j, z ) == Platform.AIR )
 					solid = false;
 			}
 
@@ -620,7 +620,7 @@ public class MeteoritePlacer
 								this.put( w, i, j, k, Blocks.lava );
 						}
 						else
-							changed = this.put( w, i, j, k, Platform.air ) || changed;
+							changed = this.put( w, i, j, k, Platform.AIR ) || changed;
 					}
 				}
 		}
@@ -764,7 +764,7 @@ public class MeteoritePlacer
 
 					if ( blk.isReplaceable( w.getWorld(), i, j, k ) )
 					{
-						blk = Platform.air;
+						blk = Platform.AIR;
 						Block blk_b = w.getBlock( i, j + 1, k );
 
 						if ( blk_b != blk )
@@ -799,7 +799,7 @@ public class MeteoritePlacer
 					{
 						// decay.
 						Block blk_b = w.getBlock( i, j + 1, k );
-						if ( blk_b == Platform.air )
+						if ( blk_b == Platform.AIR )
 						{
 							if ( Math.random() > 0.4 )
 							{

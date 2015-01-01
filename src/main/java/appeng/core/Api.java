@@ -42,7 +42,7 @@ import appeng.util.Platform;
 public class Api implements IAppEngApi
 {
 
-	public static final Api instance = new Api();
+	public static final Api INSTANCE = new Api();
 
 	private Api() {
 

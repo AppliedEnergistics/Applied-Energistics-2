@@ -57,8 +57,8 @@ public class AEItemDef
 
 	public OreReference isOre;
 
-	static final AESharedNBT lowTag = new AESharedNBT( Integer.MIN_VALUE );
-	static final AESharedNBT highTag = new AESharedNBT( Integer.MAX_VALUE );
+	static final AESharedNBT LOW_TAG = new AESharedNBT( Integer.MIN_VALUE );
+	static final AESharedNBT HIGH_TAG = new AESharedNBT( Integer.MAX_VALUE );
 
 	public AEItemDef(Item it) {
 		this.item = it;

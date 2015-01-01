@@ -46,7 +46,7 @@ public interface IGridHost
 	 *            feel free to ignore this, most blocks will use the same node
 	 *            for every side.
 	 * @return a new IGridNode, create these with
-	 *         AEApi.instance().createGridNode( MyIGridBlock )
+	 *         AEApi.INSTANCE().createGridNode( MyIGridBlock )
 	 */
 	public IGridNode getGridNode(ForgeDirection dir);
 

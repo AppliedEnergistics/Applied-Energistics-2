@@ -54,7 +54,7 @@ public class AEBaseItemBlock extends ItemBlock
 		this.hasSubtypes = this.blockType.hasSubtypes;
 
 		if ( Platform.isClient() )
-			MinecraftForgeClient.registerItemRenderer( this, ItemRenderer.instance );
+			MinecraftForgeClient.registerItemRenderer( this, ItemRenderer.INSTANCE );
 	}
 
 	@Override

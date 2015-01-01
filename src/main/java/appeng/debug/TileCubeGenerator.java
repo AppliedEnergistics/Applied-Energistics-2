@@ -60,7 +60,7 @@ public class TileCubeGenerator extends AEBaseTile
 
 	void spawn()
 	{
-		this.worldObj.setBlock( this.xCoord, this.yCoord, this.zCoord, Platform.air, 0, 3 );
+		this.worldObj.setBlock( this.xCoord, this.yCoord, this.zCoord, Platform.AIR, 0, 3 );
 
 		Item i = this.is.getItem();
 		int side = ForgeDirection.UP.ordinal();

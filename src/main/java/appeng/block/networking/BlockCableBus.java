@@ -78,7 +78,7 @@ import appeng.util.Platform;
 public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 {
 
-	static private final ICableBusContainer nullCB = new NullCableBusContainer();
+	private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 	static public Class<? extends TileEntity> noTesrTile;
 	static public Class<? extends TileEntity> tesrTile;
 
@@ -97,7 +97,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 	}
 
 	public BlockCableBus() {
-		super( BlockCableBus.class, AEGlassMaterial.instance );
+		super( BlockCableBus.class, AEGlassMaterial.INSTANCE );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setLightOpacity( 0 );
 		this.isFullSize = this.isOpaque = false;
@@ -227,7 +227,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 	@Override
 	public boolean canRenderInPass(int pass)
 	{
-		BusRenderHelper.instance.setPass( pass );
+		BusRenderHelper.INSTANCE.setPass( pass );
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass ) )
 			return true;
@@ -424,10 +424,10 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 
 	public void setupTile()
 	{
-		this.setTileEntity( noTesrTile = Api.instance.partHelper.getCombinedInstance( TileCableBus.class.getName() ) );
+		this.setTileEntity( noTesrTile = Api.INSTANCE.partHelper.getCombinedInstance( TileCableBus.class.getName() ) );
 		if ( Platform.isClient() )
 		{
-			tesrTile = Api.instance.partHelper.getCombinedInstance( TileCableBusTESR.class.getName() );
+			tesrTile = Api.INSTANCE.partHelper.getCombinedInstance( TileCableBusTESR.class.getName() );
 			GameRegistry.registerTileEntity( tesrTile, "ClientOnly_TESR_CableBus" );
 			CommonHelper.proxy.bindTileEntitySpecialRenderer( tesrTile, this );
 		}
@@ -444,7 +444,7 @@ public class BlockCableBus extends AEBaseBlock implements IRedNetConnection
 		else if ( AppEng.instance.isIntegrationEnabled( IntegrationType.FMP ) )
 			out = ((IFMP) AppEng.instance.getIntegration( IntegrationType.FMP )).getCableContainer( te );
 
-		return out == null ? nullCB : out;
+		return out == null ? NULL_CABLE_BUS : out;
 	}
 
 	/**

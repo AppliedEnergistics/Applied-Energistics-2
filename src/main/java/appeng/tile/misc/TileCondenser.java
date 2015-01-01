@@ -46,7 +46,7 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 {
 
 	final int[] sides = new int[] { 0, 1 };
-	static private final FluidTankInfo[] empty = new FluidTankInfo[] { new FluidTankInfo( null, 10 ) };
+	static private final FluidTankInfo[] EMPTY = new FluidTankInfo[] { new FluidTankInfo( null, 10 ) };
 	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 3 );
 	final ConfigManager cm = new ConfigManager( this );
 
@@ -241,7 +241,7 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		return empty;
+		return EMPTY;
 	}
 
 	@Override

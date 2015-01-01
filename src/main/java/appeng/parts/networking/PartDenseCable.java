@@ -266,11 +266,11 @@ public class PartDenseCable extends PartCable
 		 * rh.getBlock(); FlippableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST ); ico.setFlip(
 		 * false, true ); }
 		 * 
-		 * Tessellator.instance.setBrightness( 15 << 20 | 15 << 5 ); Tessellator.instance.setColorOpaque_I(
+		 * Tessellator.INSTANCE.setBrightness( 15 << 20 | 15 << 5 ); Tessellator.INSTANCE.setColorOpaque_I(
 		 * myColor.mediumVariant ); rh.setTexture( firstIcon, firstIcon, firstIcon, firstIcon, firstIcon, firstIcon ); renderAllFaces( (AEBaseBlock)
 		 * rh.getBlock(), x, y, z, renderer );
 		 * 
-		 * Tessellator.instance.setColorOpaque_I( myColor.whiteVariant ); rh.setTexture( secondIcon, secondIcon, secondIcon, secondIcon, secondIcon,
+		 * Tessellator.INSTANCE.setColorOpaque_I( myColor.whiteVariant ); rh.setTexture( secondIcon, secondIcon, secondIcon, secondIcon, secondIcon,
 		 * secondIcon ); renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, renderer );
 		 * 
 		 * renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth =

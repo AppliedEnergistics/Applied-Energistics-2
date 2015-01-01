@@ -62,7 +62,7 @@ public class IC2 extends BaseModule implements IIC2
 		reg.addNewAttunement( this.getItem( "splitterCableItem" ), TunnelType.IC2_POWER );
 
 		// this is gone?
-		// AEApi.instance().registries().matterCannon().registerAmmo( getItem( "uraniumDrop" ), 238.0289 );
+		// AEApi.INSTANCE().registries().matterCannon().registerAmmo( getItem( "uraniumDrop" ), 238.0289 );
 	}
 
 	@Override

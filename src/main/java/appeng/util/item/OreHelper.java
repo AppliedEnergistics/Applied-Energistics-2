@@ -30,7 +30,7 @@ import appeng.api.storage.data.IAEItemStack;
 public class OreHelper
 {
 
-	public static final OreHelper instance = new OreHelper();
+	public static final OreHelper INSTANCE = new OreHelper();
 
 	static class ItemRef
 	{

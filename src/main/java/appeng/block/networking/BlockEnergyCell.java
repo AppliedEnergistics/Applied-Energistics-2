@@ -50,7 +50,7 @@ public class BlockEnergyCell extends AEBaseBlock
 	}
 
 	public BlockEnergyCell(Class c) {
-		super( c, AEGlassMaterial.instance );
+		super( c, AEGlassMaterial.INSTANCE );
 	}
 
 	public BlockEnergyCell() {

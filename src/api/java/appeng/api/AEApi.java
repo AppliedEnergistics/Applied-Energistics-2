@@ -38,7 +38,7 @@ public class AEApi
 	/**
 	 * API Entry Point.
 	 * 
-	 * @return the {@link IAppEngApi} or null if the instance could not be retrieved
+	 * @return the {@link IAppEngApi} or null if the INSTANCE could not be retrieved
 	 */
 	public static IAppEngApi instance()
 	{
@@ -47,7 +47,7 @@ public class AEApi
 			try
 			{
 				Class c = Class.forName( "appeng.core.Api" );
-				api = (IAppEngApi) c.getField( "instance" ).get( c );
+				api = (IAppEngApi) c.getField( "INSTANCE" ).get( c );
 			}
 			catch (Throwable e)
 			{

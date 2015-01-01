@@ -71,7 +71,7 @@ public class ItemSorters
 		return 1;
 	}
 
-	public static final Comparator<IAEItemStack> ConfigBased_SortByName = new Comparator<IAEItemStack>() {
+	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_NAME = new Comparator<IAEItemStack>() {
 
 		@Override
 		public int compare(IAEItemStack o1, IAEItemStack o2)
@@ -82,7 +82,7 @@ public class ItemSorters
 		}
 	};
 
-	public static final Comparator<IAEItemStack> ConfigBased_SortByMod = new Comparator<IAEItemStack>() {
+	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_MOD = new Comparator<IAEItemStack>() {
 
 		@Override
 		public int compare(IAEItemStack o1, IAEItemStack o2)
@@ -104,7 +104,7 @@ public class ItemSorters
 		}
 	};
 
-	public static final Comparator<IAEItemStack> ConfigBased_SortBySize = new Comparator<IAEItemStack>() {
+	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_SIZE = new Comparator<IAEItemStack>() {
 
 		@Override
 		public int compare(IAEItemStack o1, IAEItemStack o2)
@@ -115,13 +115,13 @@ public class ItemSorters
 		}
 	};
 
-	public static final Comparator<IAEItemStack> ConfigBased_SortByInvTweaks = new Comparator<IAEItemStack>() {
+	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_INV_TWEAKS = new Comparator<IAEItemStack>() {
 
 		@Override
 		public int compare(IAEItemStack o1, IAEItemStack o2)
 		{
 			if ( api == null )
-				return ConfigBased_SortByName.compare( o1, o2 );
+				return CONFIG_BASED_SORT_BY_NAME.compare( o1, o2 );
 
 			int cmp = api.compareItems( o1.getItemStack(), o2.getItemStack() );
 

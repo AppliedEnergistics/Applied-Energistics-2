@@ -34,15 +34,15 @@ import appeng.core.AEConfig;
 public class StorageChunkProvider extends ChunkProviderGenerate
 {
 
-	final static Block[] blocks;
+	final static Block[] BLOCKS;
 	
 	static {
 		
-		blocks = new Block[255 * 256];
+		BLOCKS = new Block[255 * 256];
 		
 		Block matrixFrame = AEApi.instance().blocks().blockMatrixFrame.block();
-		for (int x = 0; x < blocks.length; x++)
-			blocks[x] = matrixFrame;
+		for (int x = 0; x < BLOCKS.length; x++)
+			BLOCKS[x] = matrixFrame;
 		
 	}
 	
@@ -62,7 +62,7 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 	@Override
 	public Chunk provideChunk(int x, int z)
 	{
-		Chunk chunk = new Chunk( this.w, blocks, x, z );
+		Chunk chunk = new Chunk( this.w, BLOCKS, x, z );
 
 		byte[] biomes = chunk.getBiomeArray();
 		AEConfig config = AEConfig.instance;

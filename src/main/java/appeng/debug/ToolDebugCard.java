@@ -75,7 +75,7 @@ public class ToolDebugCard extends AEBaseItem
 			int grids = 0;
 			int totalNodes = 0;
 
-			for (Grid g : TickHandler.instance.getGridList())
+			for (Grid g : TickHandler.INSTANCE.getGridList())
 			{
 				grids++;
 				totalNodes += g.getNodes().size();

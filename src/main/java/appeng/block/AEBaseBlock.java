@@ -113,7 +113,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	{
 		super( mat );
 
-		if ( mat == AEGlassMaterial.instance || mat == Material.glass )
+		if ( mat == AEGlassMaterial.INSTANCE || mat == Material.glass )
 			this.setStepSound( Block.soundTypeGlass );
 		else if ( mat == Material.rock )
 			this.setStepSound( Block.soundTypeStone );
@@ -190,7 +190,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@SideOnly( Side.CLIENT )
 	public int getRenderType()
 	{
-		return WorldRender.instance.getRenderId();
+		return WorldRender.INSTANCE.getRenderId();
 	}
 
 	@Override

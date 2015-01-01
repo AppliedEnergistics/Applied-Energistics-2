@@ -84,7 +84,7 @@ import appeng.util.Platform;
 public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IRedstonePart, AEMultiTile
 {
 
-	final static Cuboid6[] sideTests = new Cuboid6[] {
+	private final static Cuboid6[] SIDE_TESTS = new Cuboid6[] {
 
 			new Cuboid6( 6.0 / 16.0, 0, 6.0 / 16.0, 10.0 / 16.0, 6.0 / 16.0, 10.0 / 16.0 ), // DOWN(0, -1, 0),
 
@@ -99,7 +99,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 			new Cuboid6( 10.0 / 16.0, 6.0 / 16.0, 6.0 / 16.0, 1.0, 10.0 / 16.0, 10.0 / 16.0 ),// EAST(1, 0, 0),
 	};
 
-	public static final ThreadLocal<Boolean> disableFacadeOcclusion = new ThreadLocal<Boolean>();
+	public static final ThreadLocal<Boolean> DISABLE_FACADE_OCCLUSION = new ThreadLocal<Boolean>();
 	public CableBusContainer cb = new CableBusContainer( this );
 
 	@Override
@@ -299,7 +299,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	{
 		if ( pass == 0 || (pass == 1 && AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass )) )
 		{
-			BusRenderHelper.instance.setPass( pass );
+			BusRenderHelper.INSTANCE.setPass( pass );
 			this.cb.renderDynamic( pos.x, pos.y, pos.z );
 		}
 	}
@@ -309,12 +309,12 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	{
 		if ( pass == 0 || (pass == 1 && AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass )) )
 		{
-			BusRenderHelper.instance.setPass( pass );
-			BusRenderer.instance.renderer.renderAllFaces = true;
-			BusRenderer.instance.renderer.blockAccess = this.world();
-			BusRenderer.instance.renderer.overrideBlockTexture = null;
+			BusRenderHelper.INSTANCE.setPass( pass );
+			BusRenderer.INSTANCE.renderer.renderAllFaces = true;
+			BusRenderer.INSTANCE.renderer.blockAccess = this.world();
+			BusRenderer.INSTANCE.renderer.overrideBlockTexture = null;
 			this.cb.renderStatic( pos.x, pos.y, pos.z );
-			return BusRenderHelper.instance.getItemsRendered() > 0;
+			return BusRenderHelper.INSTANCE.getItemsRendered() > 0;
 		}
 		return false;
 	}
@@ -338,9 +338,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 				fp.getBoxes( bch, null );
 				for (AxisAlignedBB bb : boxes)
 				{
-					disableFacadeOcclusion.set( true );
+					DISABLE_FACADE_OCCLUSION.set( true );
 					boolean canAdd = this.tile().canAddPart( new NormallyOccludedPart( new Cuboid6( bb ) ) );
-					disableFacadeOcclusion.remove();
+					DISABLE_FACADE_OCCLUSION.remove();
 					if ( !canAdd )
 					{
 						return false;
@@ -454,7 +454,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	public Iterable<Cuboid6> getOcclusionBoxes()
 	{
 		LinkedList<Cuboid6> l = new LinkedList<Cuboid6>();
-		for (AxisAlignedBB b : this.cb.getSelectedBoundingBoxesFromPool( true, disableFacadeOcclusion.get() == null, null, true ))
+		for (AxisAlignedBB b : this.cb.getSelectedBoundingBoxesFromPool( true, DISABLE_FACADE_OCCLUSION.get() == null, null, true ))
 		{
 			l.add( new Cuboid6( b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ ) );
 		}
@@ -485,9 +485,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		if ( side == null || side == ForgeDirection.UNKNOWN || this.tile() == null )
 			return false;
 
-		disableFacadeOcclusion.set( true );
-		boolean blocked = !this.tile().canAddPart( new NormallyOccludedPart( sideTests[side.ordinal()] ) );
-		disableFacadeOcclusion.remove();
+		DISABLE_FACADE_OCCLUSION.set( true );
+		boolean blocked = !this.tile().canAddPart( new NormallyOccludedPart( SIDE_TESTS[side.ordinal()] ) );
+		DISABLE_FACADE_OCCLUSION.remove();
 
 		return blocked;
 	}

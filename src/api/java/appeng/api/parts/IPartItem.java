@@ -29,7 +29,7 @@ import net.minecraft.item.ItemStack;
 /**
  * This is a pretty basic requirement, once you implement the interface, and createPartFromItemStack
  * 
- * you must register your bus with the Bus renderer, using AEApi.instance().partHelper().setItemBusRenderer( this );
+ * you must register your bus with the Bus renderer, using AEApi.INSTANCE().partHelper().setItemBusRenderer( this );
  * 
  * then simply add these two methods, which tell MC to use the Block Textures, and call AE's Bus Placement Code.
  *
@@ -45,7 +45,7 @@ import net.minecraft.item.ItemStack;
  * {@literal @}Override
  * public boolean onItemUse(ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
  * {
- *     return AEApi.instance().partHelper().placeBus( is, x, y, z, side, player, world );
+ *     return AEApi.INSTANCE().partHelper().placeBus( is, x, y, z, side, player, world );
  * }
  * </code>
  * </pre>
@@ -55,7 +55,7 @@ public interface IPartItem
 {
 
 	/**
-	 * create a new part instance, from the item stack.
+	 * create a new part INSTANCE, from the item stack.
 	 * 
 	 * @param is item
 	 * @return part from item

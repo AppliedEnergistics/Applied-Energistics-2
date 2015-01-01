@@ -341,11 +341,11 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return null;
 	}
 
-	private static final ThreadLocal<Boolean> isLoading = new ThreadLocal<Boolean>();
+	private static final ThreadLocal<Boolean> IS_LOADING = new ThreadLocal<Boolean>();
 
 	public static boolean isLoading()
 	{
-		Boolean is = isLoading.get();
+		Boolean is = IS_LOADING.get();
 		return is != null && is;
 	}
 
@@ -355,7 +355,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			return;
 
 		this.inWorld = true;
-		isLoading.set( true );
+		IS_LOADING.set( true );
 
 		TileEntity te = this.getTile();
 
@@ -403,7 +403,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 		this.partChanged();
 
-		isLoading.set( false );
+		IS_LOADING.set( false );
 	}
 
 	public void removeFromWorld()

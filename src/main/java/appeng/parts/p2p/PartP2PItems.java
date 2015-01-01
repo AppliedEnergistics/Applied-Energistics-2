@@ -112,7 +112,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IPipeCo
 			}
 
 			/*
-			 * if ( AppEng.instance.isIntegrationEnabled( "TE" ) ) { ITE thermal = (ITE) AppEng.instance.getIntegration(
+			 * if ( AppEng.INSTANCE.isIntegrationEnabled( "TE" ) ) { ITE thermal = (ITE) AppEng.INSTANCE.getIntegration(
 			 * "TE" ); if ( thermal != null ) { if ( thermal.isPipe( te, side.getOpposite() ) ) { try { output = new
 			 * WrapperTEPipe( te, side.getOpposite() ); } catch (Throwable ignore) { } } } }
 			 */

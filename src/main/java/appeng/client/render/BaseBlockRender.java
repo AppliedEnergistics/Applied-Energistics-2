@@ -61,7 +61,7 @@ public class BaseBlockRender
 
 	final double MAX_DISTANCE;
 	final public boolean hasTESR;
-	final static private byte[][][] OrientationMap = new byte[6][6][6];
+	private static final byte[][][] ORIENTATION_MAP = new byte[6][6][6];
 
 	protected int adjustBrightness(int v, double d)
 	{
@@ -91,184 +91,184 @@ public class BaseBlockRender
 		int b = forward.ordinal();
 		int c = up.ordinal();
 
-		return OrientationMap[a][b][c];
+		return ORIENTATION_MAP[a][b][c];
 	}
 
 	static public void setOriMap()
 	{
 		// pointed up...
-		OrientationMap[0][3][1] = 0;
-		OrientationMap[1][3][1] = 0;
-		OrientationMap[2][3][1] = 0;
-		OrientationMap[3][3][1] = 0;
-		OrientationMap[4][3][1] = 0;
-		OrientationMap[5][3][1] = 0;
+		ORIENTATION_MAP[0][3][1] = 0;
+		ORIENTATION_MAP[1][3][1] = 0;
+		ORIENTATION_MAP[2][3][1] = 0;
+		ORIENTATION_MAP[3][3][1] = 0;
+		ORIENTATION_MAP[4][3][1] = 0;
+		ORIENTATION_MAP[5][3][1] = 0;
 
-		OrientationMap[0][5][1] = 1;
-		OrientationMap[1][5][1] = 2;
-		OrientationMap[2][5][1] = 0;
-		OrientationMap[3][5][1] = 0;
-		OrientationMap[4][5][1] = 0;
-		OrientationMap[5][5][1] = 0;
+		ORIENTATION_MAP[0][5][1] = 1;
+		ORIENTATION_MAP[1][5][1] = 2;
+		ORIENTATION_MAP[2][5][1] = 0;
+		ORIENTATION_MAP[3][5][1] = 0;
+		ORIENTATION_MAP[4][5][1] = 0;
+		ORIENTATION_MAP[5][5][1] = 0;
 
-		OrientationMap[0][2][1] = 3;
-		OrientationMap[1][2][1] = 3;
-		OrientationMap[2][2][1] = 0;
-		OrientationMap[3][2][1] = 0;
-		OrientationMap[4][2][1] = 0;
-		OrientationMap[5][2][1] = 0;
+		ORIENTATION_MAP[0][2][1] = 3;
+		ORIENTATION_MAP[1][2][1] = 3;
+		ORIENTATION_MAP[2][2][1] = 0;
+		ORIENTATION_MAP[3][2][1] = 0;
+		ORIENTATION_MAP[4][2][1] = 0;
+		ORIENTATION_MAP[5][2][1] = 0;
 
-		OrientationMap[0][4][1] = 2;
-		OrientationMap[1][4][1] = 1;
-		OrientationMap[2][4][1] = 0;
-		OrientationMap[3][4][1] = 0;
-		OrientationMap[4][4][1] = 0;
-		OrientationMap[5][4][1] = 0;
+		ORIENTATION_MAP[0][4][1] = 2;
+		ORIENTATION_MAP[1][4][1] = 1;
+		ORIENTATION_MAP[2][4][1] = 0;
+		ORIENTATION_MAP[3][4][1] = 0;
+		ORIENTATION_MAP[4][4][1] = 0;
+		ORIENTATION_MAP[5][4][1] = 0;
 
 		// upside down
-		OrientationMap[0][3][0] = FLIP_H_BIT;
-		OrientationMap[1][3][0] = FLIP_H_BIT;
-		OrientationMap[2][3][0] = 3;
-		OrientationMap[3][3][0] = 3;
-		OrientationMap[4][3][0] = 3;
-		OrientationMap[5][3][0] = 3;
+		ORIENTATION_MAP[0][3][0] = FLIP_H_BIT;
+		ORIENTATION_MAP[1][3][0] = FLIP_H_BIT;
+		ORIENTATION_MAP[2][3][0] = 3;
+		ORIENTATION_MAP[3][3][0] = 3;
+		ORIENTATION_MAP[4][3][0] = 3;
+		ORIENTATION_MAP[5][3][0] = 3;
 
-		OrientationMap[0][4][0] = 2 | FLIP_H_BIT;
-		OrientationMap[1][4][0] = 1 | FLIP_H_BIT;
-		OrientationMap[2][4][0] = 3;
-		OrientationMap[3][4][0] = 3;
-		OrientationMap[4][4][0] = 3;
-		OrientationMap[5][4][0] = 3;
+		ORIENTATION_MAP[0][4][0] = 2 | FLIP_H_BIT;
+		ORIENTATION_MAP[1][4][0] = 1 | FLIP_H_BIT;
+		ORIENTATION_MAP[2][4][0] = 3;
+		ORIENTATION_MAP[3][4][0] = 3;
+		ORIENTATION_MAP[4][4][0] = 3;
+		ORIENTATION_MAP[5][4][0] = 3;
 
-		OrientationMap[0][5][0] = 1 | FLIP_H_BIT;
-		OrientationMap[1][5][0] = 2 | FLIP_H_BIT;
-		OrientationMap[2][5][0] = 3;
-		OrientationMap[3][5][0] = 3;
-		OrientationMap[4][5][0] = 3;
-		OrientationMap[5][5][0] = 3;
+		ORIENTATION_MAP[0][5][0] = 1 | FLIP_H_BIT;
+		ORIENTATION_MAP[1][5][0] = 2 | FLIP_H_BIT;
+		ORIENTATION_MAP[2][5][0] = 3;
+		ORIENTATION_MAP[3][5][0] = 3;
+		ORIENTATION_MAP[4][5][0] = 3;
+		ORIENTATION_MAP[5][5][0] = 3;
 
-		OrientationMap[0][2][0] = 3 | FLIP_H_BIT;
-		OrientationMap[1][2][0] = 3 | FLIP_H_BIT;
-		OrientationMap[2][2][0] = 3;
-		OrientationMap[3][2][0] = 3;
-		OrientationMap[4][2][0] = 3;
-		OrientationMap[5][2][0] = 3;
+		ORIENTATION_MAP[0][2][0] = 3 | FLIP_H_BIT;
+		ORIENTATION_MAP[1][2][0] = 3 | FLIP_H_BIT;
+		ORIENTATION_MAP[2][2][0] = 3;
+		ORIENTATION_MAP[3][2][0] = 3;
+		ORIENTATION_MAP[4][2][0] = 3;
+		ORIENTATION_MAP[5][2][0] = 3;
 
 		// side 1
-		OrientationMap[0][3][5] = 1 | FLIP_V_BIT;
-		OrientationMap[1][3][5] = 1 | FLIP_H_BIT;
-		OrientationMap[2][3][5] = 1;
-		OrientationMap[3][3][5] = 1;
-		OrientationMap[4][3][5] = 1;
-		OrientationMap[5][3][5] = 1 | FLIP_V_BIT;
+		ORIENTATION_MAP[0][3][5] = 1 | FLIP_V_BIT;
+		ORIENTATION_MAP[1][3][5] = 1 | FLIP_H_BIT;
+		ORIENTATION_MAP[2][3][5] = 1;
+		ORIENTATION_MAP[3][3][5] = 1;
+		ORIENTATION_MAP[4][3][5] = 1;
+		ORIENTATION_MAP[5][3][5] = 1 | FLIP_V_BIT;
 
-		OrientationMap[0][1][5] = 1 | FLIP_H_BIT;
-		OrientationMap[1][1][5] = 1;
-		OrientationMap[2][1][5] = 3 | FLIP_V_BIT;
-		OrientationMap[3][1][5] = 3;
-		OrientationMap[4][1][5] = 1 | FLIP_V_BIT;
-		OrientationMap[5][1][5] = 1;
+		ORIENTATION_MAP[0][1][5] = 1 | FLIP_H_BIT;
+		ORIENTATION_MAP[1][1][5] = 1;
+		ORIENTATION_MAP[2][1][5] = 3 | FLIP_V_BIT;
+		ORIENTATION_MAP[3][1][5] = 3;
+		ORIENTATION_MAP[4][1][5] = 1 | FLIP_V_BIT;
+		ORIENTATION_MAP[5][1][5] = 1;
 
-		OrientationMap[0][2][5] = 1 | FLIP_H_BIT;
-		OrientationMap[1][2][5] = 1 | FLIP_H_BIT;
-		OrientationMap[2][2][5] = 1;
-		OrientationMap[3][2][5] = 2 | FLIP_V_BIT;
-		OrientationMap[4][2][5] = 1 | FLIP_V_BIT;
-		OrientationMap[5][2][5] = 1;
+		ORIENTATION_MAP[0][2][5] = 1 | FLIP_H_BIT;
+		ORIENTATION_MAP[1][2][5] = 1 | FLIP_H_BIT;
+		ORIENTATION_MAP[2][2][5] = 1;
+		ORIENTATION_MAP[3][2][5] = 2 | FLIP_V_BIT;
+		ORIENTATION_MAP[4][2][5] = 1 | FLIP_V_BIT;
+		ORIENTATION_MAP[5][2][5] = 1;
 
-		OrientationMap[0][0][5] = 1 | FLIP_H_BIT;
-		OrientationMap[1][0][5] = 1;
-		OrientationMap[2][0][5] = 0;
-		OrientationMap[3][0][5] = FLIP_V_BIT;
-		OrientationMap[4][0][5] = 1;
-		OrientationMap[5][0][5] = 1 | FLIP_V_BIT;
+		ORIENTATION_MAP[0][0][5] = 1 | FLIP_H_BIT;
+		ORIENTATION_MAP[1][0][5] = 1;
+		ORIENTATION_MAP[2][0][5] = 0;
+		ORIENTATION_MAP[3][0][5] = FLIP_V_BIT;
+		ORIENTATION_MAP[4][0][5] = 1;
+		ORIENTATION_MAP[5][0][5] = 1 | FLIP_V_BIT;
 
 		// side 2
-		OrientationMap[0][1][2] = FLIP_H_BIT;
-		OrientationMap[1][1][2] = 0;
-		OrientationMap[2][1][2] = 2 | FLIP_H_BIT;
-		OrientationMap[3][1][2] = 1;
-		OrientationMap[4][1][2] = 3;
-		OrientationMap[5][1][2] = 3 | FLIP_H_BIT;
+		ORIENTATION_MAP[0][1][2] = FLIP_H_BIT;
+		ORIENTATION_MAP[1][1][2] = 0;
+		ORIENTATION_MAP[2][1][2] = 2 | FLIP_H_BIT;
+		ORIENTATION_MAP[3][1][2] = 1;
+		ORIENTATION_MAP[4][1][2] = 3;
+		ORIENTATION_MAP[5][1][2] = 3 | FLIP_H_BIT;
 
-		OrientationMap[0][4][2] = FLIP_H_BIT;
-		OrientationMap[1][4][2] = FLIP_H_BIT;
-		OrientationMap[2][4][2] = 2 | FLIP_H_BIT;
-		OrientationMap[3][4][2] = 1;
-		OrientationMap[4][4][2] = 1 | FLIP_H_BIT;
-		OrientationMap[5][4][2] = 2;
+		ORIENTATION_MAP[0][4][2] = FLIP_H_BIT;
+		ORIENTATION_MAP[1][4][2] = FLIP_H_BIT;
+		ORIENTATION_MAP[2][4][2] = 2 | FLIP_H_BIT;
+		ORIENTATION_MAP[3][4][2] = 1;
+		ORIENTATION_MAP[4][4][2] = 1 | FLIP_H_BIT;
+		ORIENTATION_MAP[5][4][2] = 2;
 
-		OrientationMap[0][0][2] = FLIP_V_BIT;
-		OrientationMap[1][0][2] = 0;
-		OrientationMap[2][0][2] = 2;
-		OrientationMap[3][0][2] = 1 | FLIP_H_BIT;
-		OrientationMap[4][0][2] = 3 | FLIP_H_BIT;
-		OrientationMap[5][0][2] = 0;
+		ORIENTATION_MAP[0][0][2] = FLIP_V_BIT;
+		ORIENTATION_MAP[1][0][2] = 0;
+		ORIENTATION_MAP[2][0][2] = 2;
+		ORIENTATION_MAP[3][0][2] = 1 | FLIP_H_BIT;
+		ORIENTATION_MAP[4][0][2] = 3 | FLIP_H_BIT;
+		ORIENTATION_MAP[5][0][2] = 0;
 
-		OrientationMap[0][5][2] = FLIP_H_BIT;
-		OrientationMap[1][5][2] = FLIP_H_BIT;
-		OrientationMap[2][5][2] = 2;
-		OrientationMap[3][5][2] = 1 | FLIP_H_BIT;
-		OrientationMap[4][5][2] = 2;
-		OrientationMap[5][5][2] = 1 | FLIP_H_BIT;
+		ORIENTATION_MAP[0][5][2] = FLIP_H_BIT;
+		ORIENTATION_MAP[1][5][2] = FLIP_H_BIT;
+		ORIENTATION_MAP[2][5][2] = 2;
+		ORIENTATION_MAP[3][5][2] = 1 | FLIP_H_BIT;
+		ORIENTATION_MAP[4][5][2] = 2;
+		ORIENTATION_MAP[5][5][2] = 1 | FLIP_H_BIT;
 
 		// side 3
-		OrientationMap[0][0][3] = 3 | FLIP_H_BIT;
-		OrientationMap[1][0][3] = 3;
-		OrientationMap[2][0][3] = 1;
-		OrientationMap[3][0][3] = 2 | FLIP_H_BIT;
-		OrientationMap[4][0][3] = 0;
-		OrientationMap[5][0][3] = FLIP_H_BIT;
+		ORIENTATION_MAP[0][0][3] = 3 | FLIP_H_BIT;
+		ORIENTATION_MAP[1][0][3] = 3;
+		ORIENTATION_MAP[2][0][3] = 1;
+		ORIENTATION_MAP[3][0][3] = 2 | FLIP_H_BIT;
+		ORIENTATION_MAP[4][0][3] = 0;
+		ORIENTATION_MAP[5][0][3] = FLIP_H_BIT;
 
-		OrientationMap[0][4][3] = 3;
-		OrientationMap[1][4][3] = 3;
-		OrientationMap[2][4][3] = 1 | FLIP_H_BIT;
-		OrientationMap[3][4][3] = 2;
-		OrientationMap[4][4][3] = 1;
-		OrientationMap[5][4][3] = 2 | FLIP_H_BIT;
+		ORIENTATION_MAP[0][4][3] = 3;
+		ORIENTATION_MAP[1][4][3] = 3;
+		ORIENTATION_MAP[2][4][3] = 1 | FLIP_H_BIT;
+		ORIENTATION_MAP[3][4][3] = 2;
+		ORIENTATION_MAP[4][4][3] = 1;
+		ORIENTATION_MAP[5][4][3] = 2 | FLIP_H_BIT;
 
-		OrientationMap[0][1][3] = 3 | FLIP_V_BIT;
-		OrientationMap[1][1][3] = 3;
-		OrientationMap[2][1][3] = 1 | FLIP_H_BIT;
-		OrientationMap[3][1][3] = 2;
-		OrientationMap[4][1][3] = 3 | FLIP_H_BIT;
-		OrientationMap[5][1][3] = 0;
+		ORIENTATION_MAP[0][1][3] = 3 | FLIP_V_BIT;
+		ORIENTATION_MAP[1][1][3] = 3;
+		ORIENTATION_MAP[2][1][3] = 1 | FLIP_H_BIT;
+		ORIENTATION_MAP[3][1][3] = 2;
+		ORIENTATION_MAP[4][1][3] = 3 | FLIP_H_BIT;
+		ORIENTATION_MAP[5][1][3] = 0;
 
-		OrientationMap[0][5][3] = 3;
-		OrientationMap[1][5][3] = 3;
-		OrientationMap[2][5][3] = 1;
-		OrientationMap[3][5][3] = 2 | FLIP_H_BIT;
-		OrientationMap[4][5][3] = 2 | FLIP_H_BIT;
-		OrientationMap[5][5][3] = 1;
+		ORIENTATION_MAP[0][5][3] = 3;
+		ORIENTATION_MAP[1][5][3] = 3;
+		ORIENTATION_MAP[2][5][3] = 1;
+		ORIENTATION_MAP[3][5][3] = 2 | FLIP_H_BIT;
+		ORIENTATION_MAP[4][5][3] = 2 | FLIP_H_BIT;
+		ORIENTATION_MAP[5][5][3] = 1;
 
 		// side 4
-		OrientationMap[0][3][4] = 1;
-		OrientationMap[1][3][4] = 2;
-		OrientationMap[2][3][4] = 2 | FLIP_H_BIT;
-		OrientationMap[3][3][4] = 1;
-		OrientationMap[4][3][4] = 2 | FLIP_H_BIT;
-		OrientationMap[5][3][4] = 1;
+		ORIENTATION_MAP[0][3][4] = 1;
+		ORIENTATION_MAP[1][3][4] = 2;
+		ORIENTATION_MAP[2][3][4] = 2 | FLIP_H_BIT;
+		ORIENTATION_MAP[3][3][4] = 1;
+		ORIENTATION_MAP[4][3][4] = 2 | FLIP_H_BIT;
+		ORIENTATION_MAP[5][3][4] = 1;
 
-		OrientationMap[0][0][4] = 1 | FLIP_H_BIT;
-		OrientationMap[1][0][4] = 2;
-		OrientationMap[2][0][4] = 0;
-		OrientationMap[3][0][4] = FLIP_H_BIT;
-		OrientationMap[4][0][4] = 2 | FLIP_H_BIT;
-		OrientationMap[5][0][4] = 1;
+		ORIENTATION_MAP[0][0][4] = 1 | FLIP_H_BIT;
+		ORIENTATION_MAP[1][0][4] = 2;
+		ORIENTATION_MAP[2][0][4] = 0;
+		ORIENTATION_MAP[3][0][4] = FLIP_H_BIT;
+		ORIENTATION_MAP[4][0][4] = 2 | FLIP_H_BIT;
+		ORIENTATION_MAP[5][0][4] = 1;
 
-		OrientationMap[0][1][4] = 1 | FLIP_H_BIT;
-		OrientationMap[1][1][4] = 2;
-		OrientationMap[2][1][4] = 3 | FLIP_H_BIT;
-		OrientationMap[3][1][4] = 3;
-		OrientationMap[4][1][4] = 2;
-		OrientationMap[5][1][4] = 1 | FLIP_H_BIT;
+		ORIENTATION_MAP[0][1][4] = 1 | FLIP_H_BIT;
+		ORIENTATION_MAP[1][1][4] = 2;
+		ORIENTATION_MAP[2][1][4] = 3 | FLIP_H_BIT;
+		ORIENTATION_MAP[3][1][4] = 3;
+		ORIENTATION_MAP[4][1][4] = 2;
+		ORIENTATION_MAP[5][1][4] = 1 | FLIP_H_BIT;
 
-		OrientationMap[0][2][4] = 1;
-		OrientationMap[1][2][4] = 2;
-		OrientationMap[2][2][4] = 1;
-		OrientationMap[3][2][4] = 2 | FLIP_H_BIT;
-		OrientationMap[4][2][4] = 2;
-		OrientationMap[5][2][4] = 1 | FLIP_H_BIT;
+		ORIENTATION_MAP[0][2][4] = 1;
+		ORIENTATION_MAP[1][2][4] = 2;
+		ORIENTATION_MAP[2][2][4] = 1;
+		ORIENTATION_MAP[3][2][4] = 2 | FLIP_H_BIT;
+		ORIENTATION_MAP[4][2][4] = 2;
+		ORIENTATION_MAP[5][2][4] = 1 | FLIP_H_BIT;
 	}
 
 	public BaseBlockRender() {

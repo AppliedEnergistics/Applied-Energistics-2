@@ -178,7 +178,7 @@ public class AppEng
 	public void serverStopping( FMLServerStoppingEvent event )
 	{
 		WorldSettings.getInstance().shutdown();
-		TickHandler.instance.shutdown();
+		TickHandler.INSTANCE.shutdown();
 	}
 
 	@EventHandler

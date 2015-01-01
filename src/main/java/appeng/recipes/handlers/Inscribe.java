@@ -59,9 +59,9 @@ public class Inscribe implements ICraftHandler, IWebsiteSerializer
 
 	public boolean usePlates = false;
 
-	public static final HashSet<ItemStack> plates = new HashSet<ItemStack>();
-	public static final HashSet<ItemStack> inputs = new HashSet<ItemStack>();
-	public static final LinkedList<InscriberRecipe> recipes = new LinkedList<InscriberRecipe>();
+	public static final HashSet<ItemStack> PLATES = new HashSet<ItemStack>();
+	public static final HashSet<ItemStack> INPUTS = new HashSet<ItemStack>();
+	public static final LinkedList<InscriberRecipe> RECIPES = new LinkedList<InscriberRecipe>();
 
 	IIngredient imprintable;
 
@@ -97,17 +97,17 @@ public class Inscribe implements ICraftHandler, IWebsiteSerializer
 	public void register() throws RegistrationError, MissingIngredientError
 	{
 		if ( this.imprintable != null )
-			Collections.addAll( inputs, this.imprintable.getItemStackSet() );
+			Collections.addAll( INPUTS, this.imprintable.getItemStackSet() );
 
 		if ( this.plateA != null )
-			Collections.addAll( plates, this.plateA.getItemStackSet() );
+			Collections.addAll( PLATES, this.plateA.getItemStackSet() );
 
 		if ( this.plateB != null )
-			Collections.addAll( plates, this.plateB.getItemStackSet() );
+			Collections.addAll( PLATES, this.plateB.getItemStackSet() );
 
 		InscriberRecipe ir = new InscriberRecipe( this.imprintable.getItemStackSet(), this.plateA == null ? null : this.plateA.getItemStack(), this.plateB == null ? null
 				: this.plateB.getItemStack(), this.output.getItemStack(), this.usePlates );
-		recipes.add( ir );
+		RECIPES.add( ir );
 	}
 
 	@Override

@@ -74,9 +74,9 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 
 		if ( formed && renderer.overrideBlockTexture == null )
 		{
-			renderer = BusRenderer.instance.renderer;
-			BusRenderHelper i = BusRenderHelper.instance;
-			BusRenderer.instance.renderer.isFacade = true;
+			renderer = BusRenderer.INSTANCE.renderer;
+			BusRenderHelper i = BusRenderHelper.INSTANCE;
+			BusRenderer.INSTANCE.renderer.isFacade = true;
 
 			renderer.blockAccess = w;
 			i.setPass( 0 );
@@ -122,7 +122,7 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 				this.handleSide( blk, meta, x, y, z, i, renderer, ct.getForward() == side ? theIcon : nonForward, LocalEmit, isMonitor, side, w );
 			}
 
-			BusRenderer.instance.renderer.isFacade = false;
+			BusRenderer.INSTANCE.renderer.isFacade = false;
 			i.setFacesToRender( EnumSet.allOf( ForgeDirection.class ) );
 			i.normalRendering();
 

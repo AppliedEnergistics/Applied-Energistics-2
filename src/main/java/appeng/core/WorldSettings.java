@@ -336,7 +336,7 @@ public class WorldSettings extends Configuration
 		}
 		else
 		{
-			for ( PlayerColor pc : TickHandler.instance.getPlayerColors().values() )
+			for ( PlayerColor pc : TickHandler.INSTANCE.getPlayerColors().values() )
 				NetworkHandler.instance.sendToAll( pc.getPacket() );
 		}
 	}

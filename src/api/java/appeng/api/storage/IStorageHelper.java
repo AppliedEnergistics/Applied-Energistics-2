@@ -52,7 +52,7 @@ public interface IStorageHelper
 	 * @param is
 	 *            An ItemStack
 	 * 
-	 * @return a new instance of {@link IAEItemStack} from a MC {@link ItemStack}
+	 * @return a new INSTANCE of {@link IAEItemStack} from a MC {@link ItemStack}
 	 */
 	IAEItemStack createItemStack(ItemStack is);
 
@@ -60,17 +60,17 @@ public interface IStorageHelper
 	 * @param is
 	 *            A FluidStack
 	 * 
-	 * @return a new instance of {@link IAEFluidStack} from a Forge {@link FluidStack}
+	 * @return a new INSTANCE of {@link IAEFluidStack} from a Forge {@link FluidStack}
 	 */
 	IAEFluidStack createFluidStack(FluidStack is);
 
 	/**
-	 * @return a new instance of {@link IItemList} for items
+	 * @return a new INSTANCE of {@link IItemList} for items
 	 */
 	IItemList<IAEItemStack> createItemList();
 
 	/**
-	 * @return a new instance of {@link IItemList} for fluids
+	 * @return a new INSTANCE of {@link IItemList} for fluids
 	 */
 	IItemList<IAEFluidStack> createFluidList();
 

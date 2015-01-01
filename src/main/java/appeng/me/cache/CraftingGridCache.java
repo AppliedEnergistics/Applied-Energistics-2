@@ -332,7 +332,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		}
 	}
 
-	static final Comparator<ICraftingPatternDetails> comp = new Comparator<ICraftingPatternDetails>()
+	static final Comparator<ICraftingPatternDetails> COMPARATOR = new Comparator<ICraftingPatternDetails>()
 	{
 		@Override
 		public int compare(ICraftingPatternDetails firstDetail, ICraftingPatternDetails nextDetail)
@@ -374,7 +374,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 				if ( methods == null )
 				{
-					tmpCraft.put( out, methods = new TreeSet<ICraftingPatternDetails>( comp ) );
+					tmpCraft.put( out, methods = new TreeSet<ICraftingPatternDetails>( COMPARATOR ) );
 				}
 
 				methods.add( details );
@@ -604,7 +604,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		return i == 1;
 	}
 
-	final public static ExecutorService craftingPool;
+	final public static ExecutorService CRAFTING_POOL;
 
 	static
 	{
@@ -618,7 +618,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 		};
 
-		craftingPool = Executors.newCachedThreadPool( factory );
+		CRAFTING_POOL = Executors.newCachedThreadPool( factory );
 	}
 
 	@Override
@@ -631,7 +631,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 		CraftingJob job = new CraftingJob( world, grid, actionSrc, slotItem, cb );
 
-		return craftingPool.submit( job, (ICraftingJob) job );
+		return CRAFTING_POOL.submit( job, (ICraftingJob) job );
 	}
 
 	public boolean hasCpu(ICraftingCPU cpu)

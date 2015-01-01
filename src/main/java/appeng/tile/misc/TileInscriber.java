@@ -78,9 +78,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 	public long clientStart;
 
-	static final ItemStack inscriberStack = AEApi.instance().blocks().blockInscriber.stack( 1 );
+	static final ItemStack STACK_INSCRIBER = AEApi.instance().blocks().blockInscriber.stack( 1 );
 	private final IConfigManager settings = new ConfigManager( this );
-	private final UpgradeInventory upgrades = new UpgradeInventory( inscriberStack, this, this.getUpgradeSlots() );
+	private final UpgradeInventory upgrades = new UpgradeInventory( STACK_INSCRIBER, this, this.getUpgradeSlots() );
 
 	@Override
 	public AECableType getCableConnectionType(ForgeDirection dir)
@@ -207,7 +207,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			if ( AEApi.instance().materials().materialNamePress.sameAsStack( itemstack ) )
 				return true;
 
-			for (ItemStack s : Inscribe.plates)
+			for (ItemStack s : Inscribe.PLATES )
 				if ( Platform.isSameItemPrecise( s, itemstack ) )
 					return true;
 		}
@@ -308,7 +308,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			}
 		}
 
-		for (InscriberRecipe i : Inscribe.recipes)
+		for (InscriberRecipe i : Inscribe.RECIPES )
 		{
 
 			boolean matchA = (PlateA == null && i.plateA == null) || (Platform.isSameItemPrecise( PlateA, i.plateA )) && // and...

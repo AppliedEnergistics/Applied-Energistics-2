@@ -331,7 +331,7 @@ public class ApiPart implements IPartHelper
 	public void setItemBusRenderer(IPartItem i)
 	{
 		if ( Platform.isClient() && i instanceof Item )
-			MinecraftForgeClient.registerItemRenderer( (Item) i, BusRenderer.instance );
+			MinecraftForgeClient.registerItemRenderer( (Item) i, BusRenderer.INSTANCE );
 	}
 
 	@Override

@@ -28,7 +28,7 @@ public class InvLayerData
 {
 
 	// a simple empty array for empty stuff..
-	private final static int[] nullSides = new int[] {};
+	private final static int[] NULL_SIDES = new int[] {};
 
 	// cache of inventory state.
 	final private int[][] sides;
@@ -118,7 +118,7 @@ public class InvLayerData
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		if ( this.sides == null || side < 0 || side > 5 )
-			return nullSides;
+			return NULL_SIDES;
 		return this.sides[side];
 	}
 

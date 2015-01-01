@@ -159,7 +159,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		{
 			try
 			{
-				TickHandler.instance.registerCraftingSimulation( this.world, this );
+				TickHandler.INSTANCE.registerCraftingSimulation( this.world, this );
 				this.handlePausing();
 
 				Stopwatch timer = Stopwatch.createStarted();

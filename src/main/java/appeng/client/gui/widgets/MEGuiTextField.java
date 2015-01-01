@@ -32,7 +32,7 @@ import net.minecraft.client.gui.GuiTextField;
  */
 public class MEGuiTextField extends GuiTextField
 {
-	private static final int padding = 2;
+	private static final int PADDING = 2;
 
 	private final int _xPos;
 	private final int _yPos;
@@ -51,7 +51,7 @@ public class MEGuiTextField extends GuiTextField
 	 */
 	public MEGuiTextField( FontRenderer fontRenderer, int xPos, int yPos, int width, int height )
 	{
-		super( fontRenderer, xPos + padding, yPos + padding, width - 2 * padding - fontRenderer.getCharWidth( '_' ), height - 2 * padding );
+		super( fontRenderer, xPos + PADDING, yPos + PADDING, width - 2 * PADDING - fontRenderer.getCharWidth( '_' ), height - 2 * PADDING );
 
 		this._xPos = xPos;
 		this._yPos = yPos;

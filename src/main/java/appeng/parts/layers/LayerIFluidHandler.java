@@ -29,7 +29,7 @@ import appeng.api.parts.LayerBase;
 public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 {
 
-	static final FluidTankInfo[] emptyList = new FluidTankInfo[0];
+	static final FluidTankInfo[] EMPTY_LIST = new FluidTankInfo[0];
 
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
@@ -82,7 +82,7 @@ public class LayerIFluidHandler extends LayerBase implements IFluidHandler
 		IPart part = this.getPart( from );
 		if ( part instanceof IFluidHandler )
 			return ((IFluidHandler) part).getTankInfo( from );
-		return emptyList;
+		return EMPTY_LIST;
 	}
 
 }

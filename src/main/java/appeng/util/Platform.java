@@ -141,28 +141,28 @@ import appeng.util.prioitylist.IPartitionList;
 public class Platform
 {
 
-	public static final Block air = Blocks.air;
+	public static final Block AIR = Blocks.air;
 
 	public static final int DEF_OFFSET = 16;
 
 	/*
 	 * random source, use it for item drop locations...
 	 */
-	static private final Random rdnSrc = new Random();
+	static private final Random RANDOM_GENERATOR = new Random();
 
 	public static Random getRandom()
 	{
-		return rdnSrc;
+		return RANDOM_GENERATOR;
 	}
 
 	public static int getRandomInt()
 	{
-		return Math.abs( rdnSrc.nextInt() );
+		return Math.abs( RANDOM_GENERATOR.nextInt() );
 	}
 
 	public static float getRandomFloat()
 	{
-		return rdnSrc.nextFloat();
+		return RANDOM_GENERATOR.nextFloat();
 	}
 
 	/**
@@ -929,19 +929,19 @@ public class Platform
 		return false;
 	}
 
-	private static final WeakHashMap<World, EntityPlayer> fakePlayers = new WeakHashMap<World, EntityPlayer>();
+	private static final WeakHashMap<World, EntityPlayer> FAKE_PLAYERS = new WeakHashMap<World, EntityPlayer>();
 
 	public static EntityPlayer getPlayer(WorldServer w)
 	{
 		if ( w == null )
 			throw new NullPointerException();
 
-		EntityPlayer wrp = fakePlayers.get( w );
+		EntityPlayer wrp = FAKE_PLAYERS.get( w );
 		if ( wrp != null )
 			return wrp;
 
 		EntityPlayer p = FakePlayerFactory.getMinecraft( w );
-		fakePlayers.put( w, p );
+		FAKE_PLAYERS.put( w, p );
 		return p;
 	}
 
@@ -990,7 +990,7 @@ public class Platform
 
 	public static <T> T pickRandom(Collection<T> outs)
 	{
-		int index = rdnSrc.nextInt( outs.size() );
+		int index = RANDOM_GENERATOR.nextInt( outs.size() );
 		Iterator<T> i = outs.iterator();
 		while (i.hasNext() && index-- > 0)
 			i.next();
@@ -1204,10 +1204,10 @@ public class Platform
 			}
 		}
 
-		OreReference aOR = OreHelper.instance.isOre( a );
-		OreReference bOR = OreHelper.instance.isOre( b );
+		OreReference aOR = OreHelper.INSTANCE.isOre( a );
+		OreReference bOR = OreHelper.INSTANCE.isOre( b );
 
-		if ( OreHelper.instance.sameOre( aOR, bOR ) )
+		if ( OreHelper.INSTANCE.sameOre( aOR, bOR ) )
 			return true;
 
 		/*
@@ -1339,7 +1339,7 @@ public class Platform
 
 	public static long nanoTime()
 	{
-		// if ( Configuration.instance.enableNetworkProfiler )
+		// if ( Configuration.INSTANCE.enableNetworkProfiler )
 		// return System.nanoTime();
 		return 0;
 	}
@@ -1746,7 +1746,7 @@ public class Platform
 	public static void notifyBlocksOfNeighbors(World worldObj, int xCoord, int yCoord, int zCoord)
 	{
 		if ( !worldObj.isRemote )
-			TickHandler.instance.addCallable( worldObj, new BlockUpdate( worldObj, xCoord, yCoord, zCoord ) );
+			TickHandler.INSTANCE.addCallable( worldObj, new BlockUpdate( worldObj, xCoord, yCoord, zCoord ) );
 	}
 
 	public static boolean canRepair(AEFeature type, ItemStack a, ItemStack b)

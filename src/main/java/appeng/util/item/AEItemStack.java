@@ -110,7 +110,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		this.setCountRequestable( 0 );
 
 		this.def.reHash();
-		this.def.isOre = OreHelper.instance.isOre( is );
+		this.def.isOre = OreHelper.INSTANCE.isOre( is );
 	}
 
 	public static AEItemStack create(Object a)
@@ -401,7 +401,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@Override
 	public boolean sameOre(IAEItemStack is)
 	{
-		return OreHelper.instance.sameOre( this, is );
+		return OreHelper.INSTANCE.sameOre( this, is );
 	}
 
 	@Override
@@ -467,7 +467,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		{
 			ItemStack o = (ItemStack) st;
 
-			OreHelper.instance.sameOre( this, o );
+			OreHelper.INSTANCE.sameOre( this, o );
 
 			if ( o.getItem() == this.getItem() )
 			{
@@ -555,7 +555,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			newDef.damageValue = newDef.displayDamage;
 		}
 
-		newDef.tagCompound = AEItemDef.lowTag;
+		newDef.tagCompound = AEItemDef.LOW_TAG;
 		newDef.reHash();
 		return bottom;
 	}
@@ -594,7 +594,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			newDef.damageValue = newDef.displayDamage;
 		}
 
-		newDef.tagCompound = AEItemDef.highTag;
+		newDef.tagCompound = AEItemDef.HIGH_TAG;
 		newDef.reHash();
 		return top;
 	}

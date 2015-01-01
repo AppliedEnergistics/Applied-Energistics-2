@@ -108,11 +108,11 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 			int x = (int) p.posX;
 			int y = (int) p.posY;
 			int z = (int) p.posZ;
-			CompassResult cr = CompassManager.instance.getCompassDirection( 0, x, y, z );
+			CompassResult cr = CompassManager.INSTANCE.getCompassDirection( 0, x, y, z );
 
 			for (int i = 0; i < 3; i++)
 				for (int j = 0; j < 3; j++)
-					CompassManager.instance.getCompassDirection( 0, x + i - 1, y, z + j - 1 );
+					CompassManager.INSTANCE.getCompassDirection( 0, x + i - 1, y, z + j - 1 );
 
 			if ( cr.hasResult )
 			{
@@ -187,7 +187,7 @@ public class RenderBlockSkyCompass extends BaseBlockRender
 
 		CompassResult cr = null;
 		if ( skyCompass.getForward() == ForgeDirection.UP || skyCompass.getForward() == ForgeDirection.DOWN )
-			cr = CompassManager.instance.getCompassDirection( 0, tile.xCoord, tile.yCoord, tile.zCoord );
+			cr = CompassManager.INSTANCE.getCompassDirection( 0, tile.xCoord, tile.yCoord, tile.zCoord );
 		else
 			cr = new CompassResult( false, true, 0 );
 

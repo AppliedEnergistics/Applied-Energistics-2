@@ -45,7 +45,7 @@ import appeng.util.ItemSorters;
 public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
 
-	private final static Comparator<Integer> prioritySorter = new Comparator<Integer>() {
+	private final static Comparator<Integer> PRIORITY_SORTER = new Comparator<Integer>() {
 
 		@Override
 		public int compare(Integer o1, Integer o2)
@@ -64,7 +64,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	public NetworkInventoryHandler(StorageChannel chan, SecurityCache security) {
 		this.myChannel = chan;
 		this.security = security;
-		this.priorityInventory = new ConcurrentSkipListMap<Integer, List<IMEInventoryHandler<T>>>( prioritySorter ); // TreeMultimap.create( prioritySorter, hashSorter );
+		this.priorityInventory = new ConcurrentSkipListMap<Integer, List<IMEInventoryHandler<T>>>( PRIORITY_SORTER ); // TreeMultimap.create( prioritySorter, hashSorter );
 	}
 
 	public void addNewStorage(IMEInventoryHandler<T> h)
@@ -79,12 +79,12 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 
 	static int currentPass = 0;
 	int myPass = 0;
-	static final ThreadLocal<LinkedList> depthMod = new ThreadLocal<LinkedList>();
-	static final ThreadLocal<LinkedList> depthSim = new ThreadLocal<LinkedList>();
+	static final ThreadLocal<LinkedList> DEPTH_MOD = new ThreadLocal<LinkedList>();
+	static final ThreadLocal<LinkedList> DEPTH_SIM = new ThreadLocal<LinkedList>();
 
 	private LinkedList getDepth(Actionable type)
 	{
-		ThreadLocal<LinkedList> depth = type == Actionable.MODULATE ? depthMod : depthSim;
+		ThreadLocal<LinkedList> depth = type == Actionable.MODULATE ? DEPTH_MOD : DEPTH_SIM;
 
 		LinkedList s = depth.get();
 

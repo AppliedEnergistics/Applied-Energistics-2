@@ -48,7 +48,7 @@ public class PacketPaintedEntity extends AppEngPacket
 	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
 	{
 		PlayerColor pc = new PlayerColor( this.entityId, this.myColor, this.ticks );
-		TickHandler.instance.getPlayerColors().put( this.entityId, pc );
+		TickHandler.INSTANCE.getPlayerColors().put( this.entityId, pc );
 	}
 
 	// api

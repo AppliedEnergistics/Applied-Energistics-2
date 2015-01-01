@@ -34,7 +34,7 @@ public class MENetworkSpatialEvent extends MENetworkEvent
 	public final double spatialEnergyUsage;
 
 	/**
-	 * @param SpatialIO   ( instance of the SpatialIO block )
+	 * @param SpatialIO   ( INSTANCE of the SpatialIO block )
 	 * @param EnergyUsage ( the amount of energy that the SpatialIO uses)
 	 */
 	public MENetworkSpatialEvent(IGridHost SpatialIO, double EnergyUsage)

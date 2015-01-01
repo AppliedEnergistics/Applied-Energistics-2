@@ -97,7 +97,7 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 
 		if ( s == this.middle )
 		{
-			for (ItemStack i : Inscribe.plates)
+			for (ItemStack i : Inscribe.PLATES )
 			{
 				if ( Platform.isSameItemPrecise( i, is ) )
 					return false;
@@ -106,7 +106,7 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 			boolean matches = false;
 			boolean found = false;
 
-			for (InscriberRecipe i : Inscribe.recipes)
+			for (InscriberRecipe i : Inscribe.RECIPES )
 			{
 				boolean matchA = (PlateA == null && i.plateA == null) || (Platform.isSameItemPrecise( PlateA, i.plateA )) && // and...
 						(PlateB == null && i.plateB == null) | (Platform.isSameItemPrecise( PlateB, i.plateB ));
@@ -144,7 +144,7 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 				return AEApi.instance().materials().materialNamePress.sameAsStack( is );
 
 			// everything else
-			for (InscriberRecipe i : Inscribe.recipes)
+			for (InscriberRecipe i : Inscribe.RECIPES )
 			{
 				if ( Platform.isSameItemPrecise( i.plateA, otherSlot ) )
 				{

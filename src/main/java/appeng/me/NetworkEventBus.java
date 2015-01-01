@@ -36,14 +36,14 @@ import appeng.core.AELog;
 
 public class NetworkEventBus
 {
-	private static final Collection<Class> readClasses = new HashSet<Class>();
-	private static final Map<Class<? extends MENetworkEvent>, Map<Class, MENetworkEventInfo>> events = new HashMap<Class<? extends MENetworkEvent>, Map<Class, MENetworkEventInfo>>();
+	private static final Collection<Class> READ_CLASSES = new HashSet<Class>();
+	private static final Map<Class<? extends MENetworkEvent>, Map<Class, MENetworkEventInfo>> EVENTS = new HashMap<Class<? extends MENetworkEvent>, Map<Class, MENetworkEventInfo>>();
 
 	public void readClass( Class listAs, Class c )
 	{
-		if ( readClasses.contains( c ) )
+		if ( READ_CLASSES.contains( c ) )
 			return;
-		readClasses.add( c );
+		READ_CLASSES.add( c );
 
 		try
 		{
@@ -58,9 +58,9 @@ public class NetworkEventBus
 						if ( MENetworkEvent.class.isAssignableFrom( types[0] ) )
 						{
 
-							Map<Class, MENetworkEventInfo> classEvents = events.get( types[0] );
+							Map<Class, MENetworkEventInfo> classEvents = EVENTS.get( types[0] );
 							if ( classEvents == null )
-								events.put( types[0], classEvents = new HashMap<Class, MENetworkEventInfo>() );
+								EVENTS.put( types[0], classEvents = new HashMap<Class, MENetworkEventInfo>() );
 
 							MENetworkEventInfo thisEvent = classEvents.get( listAs );
 							if ( thisEvent == null )
@@ -86,7 +86,7 @@ public class NetworkEventBus
 
 	public MENetworkEvent postEvent( Grid g, MENetworkEvent e )
 	{
-		Map<Class, MENetworkEventInfo> subscribers = events.get( e.getClass() );
+		Map<Class, MENetworkEventInfo> subscribers = EVENTS.get( e.getClass() );
 		int x = 0;
 
 		try
@@ -122,7 +122,7 @@ public class NetworkEventBus
 
 	public MENetworkEvent postEventTo( Grid grid, GridNode node, MENetworkEvent e )
 	{
-		Map<Class, MENetworkEventInfo> subscribers = events.get( e.getClass() );
+		Map<Class, MENetworkEventInfo> subscribers = EVENTS.get( e.getClass() );
 		int x = 0;
 
 		try

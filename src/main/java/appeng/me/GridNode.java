@@ -57,8 +57,8 @@ import appeng.util.ReadOnlyCollection;
 
 public class GridNode implements IGridNode, IPathItem
 {
-	private static final MENetworkChannelsChanged event = new MENetworkChannelsChanged();
-	private static final int[] channelCount = new int[] { 0, 8, 32 };
+	private static final MENetworkChannelsChanged EVENT = new MENetworkChannelsChanged();
+	private static final int[] CHANNEL_COUNT = new int[] { 0, 8, 32 };
 
 	private final List<IGridConnection> connections = new LinkedList<IGridConnection>();
 	private final IGridBlock gridProxy;
@@ -407,7 +407,7 @@ public class GridNode implements IGridNode, IPathItem
 						}
 						catch ( FailedConnection e )
 						{
-							TickHandler.instance.addCallable( node.getWorld(), new MachineSecurityBreak( this ) );
+							TickHandler.INSTANCE.addCallable( node.getWorld(), new MachineSecurityBreak( this ) );
 
 							return;
 						}
@@ -432,7 +432,7 @@ public class GridNode implements IGridNode, IPathItem
 				}
 				catch ( FailedConnection e )
 				{
-					TickHandler.instance.addCallable( node.getWorld(), new MachineSecurityBreak( this ) );
+					TickHandler.INSTANCE.addCallable( node.getWorld(), new MachineSecurityBreak( this ) );
 
 					return;
 				}
@@ -557,7 +557,7 @@ public class GridNode implements IGridNode, IPathItem
 
 	public int getMaxChannels()
 	{
-		return channelCount[this.compressedData & 0x03];
+		return CHANNEL_COUNT[this.compressedData & 0x03];
 	}
 
 	@Override
@@ -590,7 +590,7 @@ public class GridNode implements IGridNode, IPathItem
 			this.channelData |= this.channelData << 8;
 
 			if ( this.getInternalGrid() != null )
-				this.getInternalGrid().postEventTo( this, event );
+				this.getInternalGrid().postEventTo( this, EVENT );
 		}
 	}
 

@@ -63,7 +63,7 @@ public class FMPPlacementHelper implements IPartHost
 
 	}
 
-	final private static CableBusStorage nullStorage = new NullStorage();
+	final private static CableBusStorage NULL_STORAGE = new NullStorage();
 
 	private boolean hasPart = false;
 	private TileMultipart myMP;
@@ -120,7 +120,7 @@ public class FMPPlacementHelper implements IPartHost
 	public IFacadeContainer getFacadeContainer()
 	{
 		if ( this.myPart == null )
-			return new FacadeContainer( nullStorage );
+			return new FacadeContainer( NULL_STORAGE );
 		return this.myPart.getFacadeContainer();
 	}
 

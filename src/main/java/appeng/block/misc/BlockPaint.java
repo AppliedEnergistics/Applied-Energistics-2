@@ -84,7 +84,7 @@ public class BlockPaint extends AEBaseBlock
 	public void fillWithRain(World w, int x, int y, int z)
 	{
 		if ( Platform.isServer() )
-			w.setBlock( x, y, z, Platform.air, 0, 3 );
+			w.setBlock( x, y, z, Platform.AIR, 0, 3 );
 	}
 
 	@Override

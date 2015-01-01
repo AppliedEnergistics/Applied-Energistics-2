@@ -43,7 +43,7 @@ import appeng.core.features.AEFeature;
 public class BusRenderHelper implements IPartRenderHelper
 {
 
-	final public static BusRenderHelper instance = new BusRenderHelper();
+	final public static BusRenderHelper INSTANCE = new BusRenderHelper();
 
 	double minX = 0;
 	double minY = 0;
@@ -162,7 +162,7 @@ public class BusRenderHelper implements IPartRenderHelper
 	@Override
 	public void normalRendering()
 	{
-		RenderBlocksWorkaround rbw = BusRenderer.instance.renderer;
+		RenderBlocksWorkaround rbw = BusRenderer.INSTANCE.renderer;
 		rbw.calculations = true;
 		rbw.useTextures = true;
 		rbw.enableAO = false;
@@ -171,7 +171,7 @@ public class BusRenderHelper implements IPartRenderHelper
 	@Override
 	public ISimplifiedBundle useSimplifiedRendering(int x, int y, int z, IBoxProvider p, ISimplifiedBundle sim)
 	{
-		RenderBlocksWorkaround rbw = BusRenderer.instance.renderer;
+		RenderBlocksWorkaround rbw = BusRenderer.INSTANCE.renderer;
 
 		if ( sim != null && rbw.similarLighting( this.blk, rbw.blockAccess, x, y, z, sim ) )
 		{
@@ -350,8 +350,8 @@ public class BusRenderHelper implements IPartRenderHelper
 
 		AEBaseBlock blk = (AEBaseBlock) AEApi.instance().blocks().blockMultiPart.block();
 		BlockRenderInfo info = blk.getRendererInstance();
-		ForgeDirection forward = BusRenderHelper.instance.az;
-		ForgeDirection up = BusRenderHelper.instance.ay;
+		ForgeDirection forward = BusRenderHelper.INSTANCE.az;
+		ForgeDirection up = BusRenderHelper.INSTANCE.ay;
 
 		renderer.uvRotateBottom = info.getTexture( ForgeDirection.DOWN ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.DOWN, forward, up ) );
 		renderer.uvRotateTop = info.getTexture( ForgeDirection.UP ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.UP, forward, up ) );
@@ -387,7 +387,7 @@ public class BusRenderHelper implements IPartRenderHelper
 	@Override
 	public void setFacesToRender(EnumSet<ForgeDirection> faces)
 	{
-		BusRenderer.instance.renderer.renderFaces = faces;
+		BusRenderer.INSTANCE.renderer.renderFaces = faces;
 	}
 
 	@Override

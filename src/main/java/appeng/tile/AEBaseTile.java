@@ -58,22 +58,22 @@ import appeng.util.SettingsFrom;
 public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, ICustomNameObject
 {
 
-	static private final HashMap<Class, EnumMap<TileEventType, List<AETileEventHandler>>> handlers = new HashMap<Class, EnumMap<TileEventType, List<AETileEventHandler>>>();
-	static private final HashMap<Class, ItemStackSrc> myItem = new HashMap<Class, ItemStackSrc>();
+	static private final HashMap<Class, EnumMap<TileEventType, List<AETileEventHandler>>> HANDLERS = new HashMap<Class, EnumMap<TileEventType, List<AETileEventHandler>>>();
+	static private final HashMap<Class, ItemStackSrc> ITEM_STACKS = new HashMap<Class, ItemStackSrc>();
 
 	private ForgeDirection forward = ForgeDirection.UNKNOWN;
 	private ForgeDirection up = ForgeDirection.UNKNOWN;
 
-	public static final ThreadLocal<WeakReference<AEBaseTile>> dropNoItems = new ThreadLocal<WeakReference<AEBaseTile>>();
+	public static final ThreadLocal<WeakReference<AEBaseTile>> DROP_NO_ITEMS = new ThreadLocal<WeakReference<AEBaseTile>>();
 
 	public void disableDrops()
 	{
-		dropNoItems.set( new WeakReference<AEBaseTile>( this ) );
+		DROP_NO_ITEMS.set( new WeakReference<AEBaseTile>( this ) );
 	}
 
 	public boolean dropItems()
 	{
-		WeakReference<AEBaseTile> what = dropNoItems.get();
+		WeakReference<AEBaseTile> what = DROP_NO_ITEMS.get();
 		return what == null || what.get() != this;
 	}
 
@@ -92,12 +92,12 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	static public void registerTileItem(Class c, ItemStackSrc wat)
 	{
-		myItem.put( c, wat );
+		ITEM_STACKS.put( c, wat );
 	}
 
 	protected ItemStack getItemFromTile(Object obj)
 	{
-		ItemStackSrc src = myItem.get( obj.getClass() );
+		ItemStackSrc src = ITEM_STACKS.get( obj.getClass() );
 		if ( src == null )
 			return null;
 		return src.stack( 1 );
@@ -112,11 +112,11 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	protected List<AETileEventHandler> getHandlerListFor(TileEventType type)
 	{
 		Class clz = this.getClass();
-		EnumMap<TileEventType, List<AETileEventHandler>> handlerSet = handlers.get( clz );
+		EnumMap<TileEventType, List<AETileEventHandler>> handlerSet = HANDLERS.get( clz );
 
 		if ( handlerSet == null )
 		{
-			handlers.put( clz, handlerSet = new EnumMap<TileEventType, List<AETileEventHandler>>( TileEventType.class ) );
+			HANDLERS.put( clz, handlerSet = new EnumMap<TileEventType, List<AETileEventHandler>>( TileEventType.class ) );
 
 			for (Method m : clz.getMethods())
 			{

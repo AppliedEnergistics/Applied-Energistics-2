@@ -272,7 +272,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 			{
 				int id = pos.entityHit.getEntityId();
 				PlayerColor marker = new PlayerColor( id, col, 20 * 30 );
-				TickHandler.instance.getPlayerColors().put( id, marker );
+				TickHandler.INSTANCE.getPlayerColors().put( id, marker );
 
 				if ( pos.entityHit instanceof EntitySheep )
 				{

@@ -46,7 +46,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 {
 
 	// a simple empty array for empty stuff..
-	private final static int[] nullSides = new int[] {};
+	private final static int[] NULL_SIDES = new int[] {};
 
 	InvLayerData invLayer = null;
 
@@ -81,7 +81,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 		}
 		else
 		{
-			sideData = new int[][] { nullSides, nullSides, nullSides, nullSides, nullSides, nullSides };
+			sideData = new int[][] { NULL_SIDES, NULL_SIDES, NULL_SIDES, NULL_SIDES, NULL_SIDES, NULL_SIDES };
 			slots = new ArrayList<InvSot>( Collections.nCopies( slotCount, (InvSot) null ) );
 
 			int offsetForLayer = 0;
@@ -195,7 +195,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 		if ( this.invLayer != null )
 			return this.invLayer.getAccessibleSlotsFromSide( side );
 
-		return nullSides;
+		return NULL_SIDES;
 	}
 
 	@Override

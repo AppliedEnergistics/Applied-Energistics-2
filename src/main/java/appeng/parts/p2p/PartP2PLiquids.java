@@ -42,8 +42,8 @@ import appeng.me.GridAccessException;
 public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFluidHandler
 {
 
-	private final static FluidTankInfo[] activeTank = new FluidTankInfo[] { new FluidTankInfo( null, 10000 ) };
-	private final static FluidTankInfo[] inactiveTank = new FluidTankInfo[] { new FluidTankInfo( null, 0 ) };
+	private final static FluidTankInfo[] ACTIVE_TANK = new FluidTankInfo[] { new FluidTankInfo( null, 10000 ) };
+	private final static FluidTankInfo[] INACTIVE_TANK = new FluidTankInfo[] { new FluidTankInfo( null, 0 ) };
 
 	@Override
 	public TunnelType getTunnelType()
@@ -61,21 +61,21 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		{
 			PartP2PLiquids tun = this.getInput();
 			if ( tun != null )
-				return activeTank;
+				return ACTIVE_TANK;
 		}
 		else
 		{
 			try
 			{
 				if ( !this.getOutputs().isEmpty() )
-					return activeTank;
+					return ACTIVE_TANK;
 			}
 			catch (GridAccessException e)
 			{
 				// :(
 			}
 		}
-		return inactiveTank;
+		return INACTIVE_TANK;
 	}
 
 	IFluidHandler cachedTank;
@@ -151,14 +151,14 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		return null;
 	}
 
-	static final ThreadLocal<Stack<PartP2PLiquids>> depth = new ThreadLocal<Stack<PartP2PLiquids>>();
+	static final ThreadLocal<Stack<PartP2PLiquids>> DEPTH = new ThreadLocal<Stack<PartP2PLiquids>>();
 
 	private Stack<PartP2PLiquids> getDepth()
 	{
-		Stack<PartP2PLiquids> s = depth.get();
+		Stack<PartP2PLiquids> s = DEPTH.get();
 
 		if ( s == null )
-			depth.set( s = new Stack<PartP2PLiquids>() );
+			DEPTH.set( s = new Stack<PartP2PLiquids>() );
 
 		return s;
 	}

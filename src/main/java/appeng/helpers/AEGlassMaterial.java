@@ -34,6 +34,6 @@ public class AEGlassMaterial extends Material
 		return false;
 	}
 
-	public static final AEGlassMaterial instance = (new AEGlassMaterial( MapColor.airColor ));
+	public static final AEGlassMaterial INSTANCE = (new AEGlassMaterial( MapColor.airColor ));
 
 }

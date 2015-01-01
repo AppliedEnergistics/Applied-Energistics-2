@@ -290,7 +290,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 								if ( eatForReal )
 								{
 									energy.extractAEPower( total, Actionable.MODULATE, PowerMultiplier.CONFIG );
-									w.setBlock( x, y, z, Platform.air, 0, 3 );
+									w.setBlock( x, y, z, Platform.AIR, 0, 3 );
 
 									AxisAlignedBB box = AxisAlignedBB.getBoundingBox( x - 0.2, y - 0.2, z - 0.2, x + 1.2, y + 1.2, z + 1.2 );
 									for (Object ei : w.getEntitiesWithinAABB( EntityItem.class, box ))
@@ -325,7 +325,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 								else
 								{
 									this.breaking = true;
-									TickHandler.instance.addCallable( this.tile.getWorldObj(), this );
+									TickHandler.INSTANCE.addCallable( this.tile.getWorldObj(), this );
 									return TickRateModulation.URGENT;
 								}
 							}

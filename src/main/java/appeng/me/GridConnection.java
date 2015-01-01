@@ -41,7 +41,7 @@ import appeng.util.ReadOnlyCollection;
 public class GridConnection implements IGridConnection, IPathItem
 {
 
-	final static private MENetworkChannelsChanged event = new MENetworkChannelsChanged();
+	private static final MENetworkChannelsChanged EVENT = new MENetworkChannelsChanged();
 
 	private GridNode sideA;
 	private ForgeDirection fromAtoB;
@@ -234,10 +234,10 @@ public class GridConnection implements IGridConnection, IPathItem
 			this.channelData |= this.channelData << 8;
 
 			if ( this.sideA.getInternalGrid() != null )
-				this.sideA.getInternalGrid().postEventTo( this.sideA, event );
+				this.sideA.getInternalGrid().postEventTo( this.sideA, EVENT );
 
 			if ( this.sideB.getInternalGrid() != null )
-				this.sideB.getInternalGrid().postEventTo( this.sideB, event );
+				this.sideB.getInternalGrid().postEventTo( this.sideB, EVENT );
 		}
 	}
 

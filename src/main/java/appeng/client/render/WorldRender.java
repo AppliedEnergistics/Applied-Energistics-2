@@ -40,7 +40,7 @@ public class WorldRender implements ISimpleBlockRenderingHandler
 
 	private final RenderBlocks renderer = new RenderBlocks();
 	final int renderID = RenderingRegistry.getNextAvailableRenderId();
-	public static final WorldRender instance = new WorldRender();
+	public static final WorldRender INSTANCE = new WorldRender();
 	boolean hasError = false;
 
 	public final HashMap<AEBaseBlock, BaseBlockRender> blockRenders = new HashMap<AEBaseBlock, BaseBlockRender>();

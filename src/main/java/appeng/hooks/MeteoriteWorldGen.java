@@ -58,7 +58,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 	@Override
 	public void generate(Random r, int chunkX, int chunkZ, World w, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
 	{
-		if ( WorldGenRegistry.instance.isWorldGenEnabled( WorldGenType.Meteorites, w ) )
+		if ( WorldGenRegistry.INSTANCE.isWorldGenEnabled( WorldGenType.Meteorites, w ) )
 		{
 			// add new meteorites?
 			if ( r.nextFloat() < AEConfig.instance.meteoriteSpawnChance )
@@ -67,10 +67,10 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 				int z = r.nextInt( 16 ) + (chunkZ << 4);
 
 				int depth = 180 + r.nextInt( 20 );
-				TickHandler.instance.addCallable( w, new MeteoriteSpawn( x, depth, z, w ) );
+				TickHandler.INSTANCE.addCallable( w, new MeteoriteSpawn( x, depth, z, w ) );
 			}
 			else
-				TickHandler.instance.addCallable( w, new MeteoriteSpawn( chunkX << 4, 128, chunkZ << 4, w ) );
+				TickHandler.INSTANCE.addCallable( w, new MeteoriteSpawn( chunkX << 4, 128, chunkZ << 4, w ) );
 		}
 		else
 			WorldSettings.getInstance().getCompass().updateArea( w, chunkX, chunkZ );

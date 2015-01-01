@@ -97,7 +97,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 			ItemStack cell = this.getStackInSlot( 0 );
 			if ( this.isSpatialCell( cell ) )
 			{
-				TickHandler.instance.addCallable( null, this );// this needs to be cross world synced.
+				TickHandler.INSTANCE.addCallable( null, this );// this needs to be cross world synced.
 			}
 		}
 	}

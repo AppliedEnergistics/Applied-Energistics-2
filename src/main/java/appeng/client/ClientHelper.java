@@ -89,8 +89,8 @@ import appeng.util.Platform;
 public class ClientHelper extends ServerHelper
 {
 
-	private static final RenderItem itemRenderer = new RenderItem();
-	private static final RenderBlocks blockRenderer = new RenderBlocks();
+	private static final RenderItem ITEM_RENDERER = new RenderItem();
+	private static final RenderBlocks BLOCK_RENDERER = new RenderBlocks();
 
 	@Override
 	public CableRenderMode getRenderMode()
@@ -128,7 +128,7 @@ public class ClientHelper extends ServerHelper
 	@SubscribeEvent
 	public void postPlayerRender(RenderLivingEvent.Pre p)
 	{
-		PlayerColor player = TickHandler.instance.getPlayerColors().get( p.entity.getEntityId() );
+		PlayerColor player = TickHandler.INSTANCE.getPlayerColors().get( p.entity.getEntityId() );
 		if ( player != null )
 		{
 			AEColor col = player.myColor;
@@ -210,9 +210,9 @@ public class ClientHelper extends ServerHelper
 
 				RenderItem.renderInFrame = false;
 				FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
-				if ( !ForgeHooksClient.renderInventoryItem( blockRenderer, Minecraft.getMinecraft().renderEngine, itemstack, true, 0, 0, 0 ) )
+				if ( !ForgeHooksClient.renderInventoryItem( BLOCK_RENDERER, Minecraft.getMinecraft().renderEngine, itemstack, true, 0, 0, 0 ) )
 				{
-					itemRenderer.renderItemIntoGUI( fr, Minecraft.getMinecraft().renderEngine, itemstack, 0, 0, false );
+					ITEM_RENDERER.renderItemIntoGUI( fr, Minecraft.getMinecraft().renderEngine, itemstack, 0, 0, false );
 				}
 			}
 
@@ -229,7 +229,7 @@ public class ClientHelper extends ServerHelper
 	@Override
 	public void postInit()
 	{
-		RenderingRegistry.registerBlockHandler( WorldRender.instance );
+		RenderingRegistry.registerBlockHandler( WorldRender.INSTANCE );
 		RenderManager.instance.entityRenderMap.put( EntityTinyTNTPrimed.class, new RenderTinyTNTPrimed() );
 		RenderManager.instance.entityRenderMap.put( EntityFloatingItem.class, new RenderFloatingItem() );
 	}

@@ -60,7 +60,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		this.setFeature( EnumSet.of( AEFeature.Facades ) );
 		this.setHasSubtypes( true );
 		if ( Platform.isClient() )
-			MinecraftForgeClient.registerItemRenderer( this, BusRenderer.instance );
+			MinecraftForgeClient.registerItemRenderer( this, BusRenderer.INSTANCE );
 	}
 
 	@Override

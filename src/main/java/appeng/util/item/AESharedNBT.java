@@ -139,14 +139,14 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 	/*
 	 * Shared Tag Compound Cache.
 	 */
-	private static final WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>> sharedTagCompounds = new WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>>();
+	private static final WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>> SHARED_TAG_COMPOUND = new WeakHashMap<SharedSearchObject, WeakReference<SharedSearchObject>>();
 
 	/*
 	 * Debug purposes.
 	 */
 	public static int sharedTagLoad()
 	{
-		return sharedTagCompounds.size();
+		return SHARED_TAG_COMPOUND.size();
 	}
 
 	/*
@@ -175,7 +175,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 
 		SharedSearchObject sso = new SharedSearchObject( item, meta, tagCompound );
 
-		WeakReference<SharedSearchObject> c = sharedTagCompounds.get( sso );
+		WeakReference<SharedSearchObject> c = SHARED_TAG_COMPOUND.get( sso );
 		if ( c != null )
 		{
 			SharedSearchObject cg = c.get();
@@ -193,7 +193,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 		sso.shared = clone;
 		clone.sso = sso;
 
-		sharedTagCompounds.put( sso, new WeakReference<SharedSearchObject>( sso ) );
+		SHARED_TAG_COMPOUND.put( sso, new WeakReference<SharedSearchObject>( sso ) );
 		return clone;
 	}
 

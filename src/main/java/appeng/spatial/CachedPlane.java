@@ -73,7 +73,7 @@ public class CachedPlane
 		public void setBlockIDWithMetadata(int y, Object[] blk)
 		{
 			if ( blk[0] == CachedPlane.this.matrixFrame )
-				blk[0] = Platform.air;
+				blk[0] = Platform.AIR;
 
 			ExtendedBlockStorage extendedBlockStorage = this.storage[y >> 4];
 			extendedBlockStorage.func_150818_a( this.x, y & 15, this.z, (Block) blk[0] );
@@ -205,8 +205,8 @@ public class CachedPlane
 							if ( blk != null && blk.isAir( c.worldObj, te.xCoord, te.yCoord, te.zCoord )
 									&& blk.isReplaceable( c.worldObj, te.xCoord, te.yCoord, te.zCoord ) )
 							{
-								c.worldObj.setBlock( te.xCoord, te.yCoord, te.zCoord, Platform.air );
-								c.worldObj.notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, Platform.air );
+								c.worldObj.setBlock( te.xCoord, te.yCoord, te.zCoord, Platform.AIR );
+								c.worldObj.notifyBlocksOfNeighborChange( te.xCoord, te.yCoord, te.zCoord, Platform.AIR );
 							}
 							else
 								this.myColumns[te.xCoord - minX][te.zCoord - minZ].setSkip( te.yCoord );

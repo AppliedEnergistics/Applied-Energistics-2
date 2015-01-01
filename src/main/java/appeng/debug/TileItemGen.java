@@ -33,10 +33,10 @@ import appeng.tile.AEBaseTile;
 public class TileItemGen extends AEBaseTile implements IInventory
 {
 
-	public static final Queue<ItemStack> possibleItems = new LinkedList<ItemStack>();
+	public static final Queue<ItemStack> POSSIBLE_ITEMS = new LinkedList<ItemStack>();
 
 	public TileItemGen() {
-		if ( possibleItems.isEmpty() )
+		if ( POSSIBLE_ITEMS.isEmpty() )
 		{
 			for (Object obj : Item.itemRegistry)
 			{
@@ -46,13 +46,13 @@ public class TileItemGen extends AEBaseTile implements IInventory
 					if ( mi.isDamageable() )
 					{
 						for (int dmg = 0; dmg < mi.getMaxDamage(); dmg++)
-							possibleItems.add( new ItemStack( mi, 1, dmg ) );
+							POSSIBLE_ITEMS.add( new ItemStack( mi, 1, dmg ) );
 					}
 					else
 					{
 						List<ItemStack> list = new ArrayList<ItemStack>();
 						mi.getSubItems( mi, mi.getCreativeTab(), list );
-						possibleItems.addAll( list );
+						POSSIBLE_ITEMS.addAll( list );
 					}
 				}
 			}
@@ -73,15 +73,15 @@ public class TileItemGen extends AEBaseTile implements IInventory
 
 	private ItemStack getRandomItem()
 	{
-		return possibleItems.peek();
+		return POSSIBLE_ITEMS.peek();
 	}
 
 	@Override
 	public ItemStack decrStackSize(int i, int j)
 	{
-		ItemStack a = possibleItems.poll();
+		ItemStack a = POSSIBLE_ITEMS.poll();
 		ItemStack out = a.copy();
-		possibleItems.add( a );
+		POSSIBLE_ITEMS.add( a );
 		return out;
 	}
 
@@ -94,8 +94,8 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack)
 	{
-		ItemStack a = possibleItems.poll();
-		possibleItems.add( a );
+		ItemStack a = POSSIBLE_ITEMS.poll();
+		POSSIBLE_ITEMS.add( a );
 	}
 
 	@Override

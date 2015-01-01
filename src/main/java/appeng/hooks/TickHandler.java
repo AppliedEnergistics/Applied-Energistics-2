@@ -74,7 +74,7 @@ public class TickHandler
 
 	}
 
-	final public static TickHandler instance = new TickHandler();
+	public static final TickHandler INSTANCE = new TickHandler();
 
 	final private WeakHashMap<World, Queue<Callable>> callQueue = new WeakHashMap<World, Queue<Callable>>();
 	final Queue<Callable> serverQueue = new LinkedList<Callable>();

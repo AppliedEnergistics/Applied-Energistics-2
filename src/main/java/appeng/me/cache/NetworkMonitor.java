@@ -64,7 +64,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 		this.myChannel = chan;
 	}
 
-	final static public LinkedList depth = new LinkedList();
+	final static public LinkedList DEPTH = new LinkedList();
 	
 	@Override
 	protected void postChangesToListeners(Iterable<T> changes, BaseActionSource src)
@@ -74,10 +74,10 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 	
 	protected void postChange(boolean Add, Iterable<T> changes, BaseActionSource src)
 	{
-		if ( depth.contains( this ) )
+		if ( DEPTH.contains( this ) )
 			return;
 
-		depth.push( this );
+		DEPTH.push( this );
 
 		this.sendEvent = true;
 		this.notifyListenersOfChange( changes, src );
@@ -113,7 +113,7 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 			}
 		}
 
-		Object last = depth.pop();
+		Object last = DEPTH.pop();
 		if ( last != this )
 			throw new RuntimeException( "Invalid Access to Networked Storage API detected." );
 	}

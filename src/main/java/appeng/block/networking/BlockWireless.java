@@ -43,7 +43,7 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 {
 
 	public BlockWireless() {
-		super( BlockWireless.class, AEGlassMaterial.instance );
+		super( BlockWireless.class, AEGlassMaterial.INSTANCE );
 		this.setFeature( EnumSet.of( AEFeature.Core, AEFeature.WirelessAccessTerminal ) );
 		this.setTileEntity( TileWireless.class );
 		this.setLightOpacity( 0 );

@@ -53,7 +53,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 
 	public static AEConfig instance;
 
-	public static final double TunnelPowerLoss = 0.05;
+	public static final double TUNNEL_POWER_LOSS = 0.05;
 
 	public String latestVersion = VERSION;
 	public long latestTimeStamp = 0;

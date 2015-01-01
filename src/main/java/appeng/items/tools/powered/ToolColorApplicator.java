@@ -82,7 +82,7 @@ import appeng.util.item.AEItemStack;
 public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCell, IItemGroup, IBlockTool, IMouseWheelItem
 {
 
-	final static Map<Integer, AEColor> oreToColor = new HashMap<Integer, AEColor>();
+	final static Map<Integer, AEColor> ORE_TO_COLOR = new HashMap<Integer, AEColor>();
 
 	static
 	{
@@ -92,7 +92,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			if ( col == AEColor.Transparent )
 				continue;
 
-			oreToColor.put( OreDictionary.getOreID( "dye" + col.name() ), col );
+			ORE_TO_COLOR.put( OreDictionary.getOreID( "dye" + col.name() ), col );
 		}
 
 	}
@@ -229,8 +229,8 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 			for ( int oreID : id )
 			{
-				if ( oreToColor.containsKey( oreID ) )
-					return oreToColor.get( oreID );
+				if ( ORE_TO_COLOR.containsKey( oreID ) )
+					return ORE_TO_COLOR.get( oreID );
 			}
 		}
 
@@ -436,7 +436,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 			for ( int x : id )
 			{
-				if ( oreToColor.containsKey( x ) )
+				if ( ORE_TO_COLOR.containsKey( x ) )
 					return false;
 			}
 
