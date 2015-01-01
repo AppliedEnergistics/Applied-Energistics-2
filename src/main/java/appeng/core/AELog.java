@@ -29,7 +29,7 @@ import appeng.util.Platform;
 public class AELog
 {
 
-	public static cpw.mods.fml.relauncher.FMLRelaunchLog instance = cpw.mods.fml.relauncher.FMLRelaunchLog.log;
+	public static final FMLRelaunchLog instance = FMLRelaunchLog.log;
 
 	private AELog() {
 	}
