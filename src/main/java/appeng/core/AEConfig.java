@@ -120,7 +120,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 	public double spatialPowerExponent = 1.35;
 	public double spatialPowerMultiplier = 1250.0;
 
-	public String grinderOres[] = {
+	public String[] grinderOres = {
 			// Vanilla Items
 			"Obsidian", "Ender", "EnderPearl", "Coal", "Iron", "Gold", "Charcoal", "NetherQuartz",
 			// Common Mod Ores

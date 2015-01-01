@@ -69,7 +69,7 @@ public class CraftingTreeProcess
 
 		if ( details.isCraftable() )
 		{
-			IAEItemStack list[] = details.getInputs();
+			IAEItemStack[] list = details.getInputs();
 
 			InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
 			IAEItemStack[] is = details.getInputs();

@@ -53,10 +53,10 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	final ItemStack correctOutput;
 	final IRecipe standardRecipe;
 
-	final IAEItemStack condensedInputs[];
-	final IAEItemStack condensedOutputs[];
-	final IAEItemStack inputs[];
-	final IAEItemStack outputs[];
+	final IAEItemStack[] condensedInputs;
+	final IAEItemStack[] condensedOutputs;
+	final IAEItemStack[] inputs;
+	final IAEItemStack[] outputs;
 
 	final boolean isCrafting;
 	public int priority = 0;

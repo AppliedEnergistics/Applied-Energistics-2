@@ -336,8 +336,8 @@ public class BC extends BaseModule implements IBC
 	{
 		try
 		{
-			Block blk[] = ItemFacade.getBlocks( facade );
-			int meta[] = ItemFacade.getMetaValues( facade );
+			Block[] blk = ItemFacade.getBlocks( facade );
+			int[] meta = ItemFacade.getMetaValues( facade );
 			if ( blk == null || blk.length < 1 )
 				return null;
 

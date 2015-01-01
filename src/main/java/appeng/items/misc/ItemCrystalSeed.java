@@ -173,7 +173,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	@Override
 	public IIcon getIconIndex(ItemStack stack)
 	{
-		IIcon list[] = null;
+		IIcon[] list = null;
 
 		int damage = this.getProgress( stack );
 

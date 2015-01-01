@@ -170,7 +170,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 		return true;
 	}
 
-	public void postCraft( EntityPlayer p, IMEMonitor<IAEItemStack> inv, ItemStack set[], ItemStack result )
+	public void postCraft( EntityPlayer p, IMEMonitor<IAEItemStack> inv, ItemStack[] set, ItemStack result )
 	{
 		List<ItemStack> drops = new ArrayList<ItemStack>();
 

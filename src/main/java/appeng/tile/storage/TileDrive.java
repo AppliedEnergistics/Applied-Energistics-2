@@ -60,7 +60,7 @@ import appeng.util.Platform;
 public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPriorityHost
 {
 
-	final int sides[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	final int[] sides = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 10 );
 
 	boolean isCached = false;

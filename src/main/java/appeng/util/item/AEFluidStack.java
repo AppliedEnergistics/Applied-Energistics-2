@@ -276,7 +276,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		NBTTagCompound d = new NBTTagCompound();
 
 		byte len2 = data.readByte();
-		byte name[] = new byte[len2];
+		byte[] name = new byte[len2];
 		data.readBytes( name, 0, len2 );
 
 		d.setString( "FluidName", new String( name, "UTF-8" ) );

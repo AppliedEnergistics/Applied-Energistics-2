@@ -104,7 +104,7 @@ public class AdaptorISpecialInventory extends InventoryAdaptor
 		if ( this.i instanceof ISidedInventory )
 		{
 			ISidedInventory sided = (ISidedInventory) this.i;
-			int slots[] = sided.getAccessibleSlotsFromSide( this.d.ordinal() );
+			int[] slots = sided.getAccessibleSlotsFromSide( this.d.ordinal() );
 
 			if ( slots == null )
 				return false;

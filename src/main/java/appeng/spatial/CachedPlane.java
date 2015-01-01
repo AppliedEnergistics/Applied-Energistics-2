@@ -49,7 +49,7 @@ public class CachedPlane
 		private final int x;
 		private final int z;
 		private final Chunk c;
-		private final Object ch[] = { 0, 0, 0 };
+		private final Object[] ch = { 0, 0, 0 };
 		private List<Integer> skipThese = null;
 
 		private final ExtendedBlockStorage[] storage;

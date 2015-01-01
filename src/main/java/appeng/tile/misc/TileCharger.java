@@ -51,7 +51,7 @@ import appeng.util.item.AEItemStack;
 public class TileCharger extends AENetworkPowerTile implements ICrankable
 {
 
-	final int sides[] = new int[] { 0 };
+	final int[] sides = new int[] { 0 };
 	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 1 );
 	int tickTickTimer = 0;
 

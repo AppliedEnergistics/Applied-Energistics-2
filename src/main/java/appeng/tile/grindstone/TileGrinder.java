@@ -41,8 +41,8 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 
 	int points;
 
-	final int inputs[] = new int[] { 0, 1, 2 };
-	final int sides[] = new int[] { 0, 1, 2, 3, 4, 5 };
+	final int[] inputs = new int[] { 0, 1, 2 };
+	final int[] sides = new int[] { 0, 1, 2, 3, 4, 5 };
 	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 7 );
 
 	@Override

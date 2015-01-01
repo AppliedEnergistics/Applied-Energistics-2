@@ -63,9 +63,9 @@ import appeng.util.item.AEItemStack;
 public class TileInscriber extends AENetworkPowerTile implements IGridTickable, IUpgradeableHost, IConfigManagerHost
 {
 
-	final int top[] = new int[] { 0 };
-	final int bottom[] = new int[] { 1 };
-	final int sides[] = new int[] { 2, 3 };
+	final int[] top = new int[] { 0 };
+	final int[] bottom = new int[] { 1 };
+	final int[] sides = new int[] { 2, 3 };
 
 	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 4 );
 

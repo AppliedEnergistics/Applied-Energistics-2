@@ -107,7 +107,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 	public void rotateLeft()
 	{
-		IPart newSides[] = new IPart[6];
+		IPart[] newSides = new IPart[6];
 
 		newSides[ForgeDirection.UP.ordinal()] = this.getSide( ForgeDirection.UP );
 		newSides[ForgeDirection.DOWN.ordinal()] = this.getSide( ForgeDirection.DOWN );

@@ -36,7 +36,7 @@ import appeng.tile.inventory.InvOperation;
 public class TileEnergyAcceptor extends AENetworkPowerTile
 {
 
-	final int sides[] = new int[] {};
+	final int[] sides = new int[] { };
 	final static AppEngInternalInventory inv = new AppEngInternalInventory( null, 0 );
 
 	@Override

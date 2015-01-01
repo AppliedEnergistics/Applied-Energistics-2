@@ -31,8 +31,8 @@ public class CableBusStorage
 {
 
 	private IPartCable center;
-	private IPart sides[];
-	private IFacadePart facades[];
+	private IPart[] sides;
+	private IFacadePart[] facades;
 
 	protected IPartCable getCenter()
 	{

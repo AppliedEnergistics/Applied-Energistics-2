@@ -84,9 +84,9 @@ import appeng.util.Platform;
 public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IRedstonePart, AEMultiTile
 {
 
-	final static Cuboid6 sideTests[] = new Cuboid6[] {
+	final static Cuboid6[] sideTests = new Cuboid6[] {
 
-	new Cuboid6( 6.0 / 16.0, 0, 6.0 / 16.0, 10.0 / 16.0, 6.0 / 16.0, 10.0 / 16.0 ), // DOWN(0, -1, 0),
+			new Cuboid6( 6.0 / 16.0, 0, 6.0 / 16.0, 10.0 / 16.0, 6.0 / 16.0, 10.0 / 16.0 ), // DOWN(0, -1, 0),
 
 			new Cuboid6( 6.0 / 16.0, 10.0 / 16.0, 6.0 / 16.0, 10.0 / 16.0, 1.0, 10.0 / 16.0 ), // UP(0, 1, 0),
 
@@ -167,7 +167,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	public void readDesc(MCDataInput packet)
 	{
 		int len = packet.readInt();
-		byte data[] = packet.readByteArray( len );
+		byte[] data = packet.readByteArray( len );
 
 		try
 		{

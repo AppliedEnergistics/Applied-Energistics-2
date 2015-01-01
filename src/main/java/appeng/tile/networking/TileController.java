@@ -172,7 +172,7 @@ public class TileController extends AENetworkPowerTile
 		this.worldObj.setBlockMetadataWithNotify( this.xCoord, this.yCoord, this.zCoord, meta, 2 );
 	}
 
-	final int sides[] = new int[] {};
+	final int[] sides = new int[] { };
 	static final AppEngInternalInventory inv = new AppEngInternalInventory( null, 0 );
 
 	@Override

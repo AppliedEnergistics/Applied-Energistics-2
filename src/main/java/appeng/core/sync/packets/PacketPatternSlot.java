@@ -39,7 +39,7 @@ public class PacketPatternSlot extends AppEngPacket
 
 	final public IAEItemStack slotItem;
 
-	final public IAEItemStack pattern[] = new IAEItemStack[9];
+	final public IAEItemStack[] pattern = new IAEItemStack[9];
 
 	final public boolean shift;
 

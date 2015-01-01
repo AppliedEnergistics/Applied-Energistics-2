@@ -57,7 +57,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 
 	ConnectionWrapper connection;
 
-	public TileQuantumBridge Ring[];
+	public TileQuantumBridge[] Ring;
 	private TileQuantumBridge center;
 
 	@Override

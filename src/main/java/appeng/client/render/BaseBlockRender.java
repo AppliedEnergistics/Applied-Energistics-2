@@ -61,7 +61,7 @@ public class BaseBlockRender
 
 	final double MAX_DISTANCE;
 	final public boolean hasTESR;
-	final static private byte OrientationMap[][][] = new byte[6][6][6];
+	final static private byte[][][] OrientationMap = new byte[6][6][6];
 
 	protected int adjustBrightness(int v, double d)
 	{

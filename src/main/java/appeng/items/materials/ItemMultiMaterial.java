@@ -196,7 +196,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 			{
 				ItemStack replacement = null;
 
-				String names[] = mt.getOreName().split( "," );
+				String[] names = mt.getOreName().split( "," );
 
 				for (String name : names)
 				{

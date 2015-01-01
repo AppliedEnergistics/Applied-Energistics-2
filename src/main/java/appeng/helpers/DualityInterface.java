@@ -97,8 +97,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		IConfigManagerHost, ICraftingProvider, IUpgradeableHost, IPriorityHost
 {
 
-	final int sides[] = new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
-	final IAEItemStack requireWork[] = new IAEItemStack[] { null, null, null, null, null, null, null, null };
+	final int[] sides = new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
+	final IAEItemStack[] requireWork = new IAEItemStack[] { null, null, null, null, null, null, null, null };
 	final MultiCraftingTracker craftingTracker;
 
 	boolean hasConfig = false;
@@ -128,7 +128,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	public void updateCraftingList()
 	{
-		Boolean accountedFor[] = new Boolean[] { false, false, false, false, false, false, false, false, false }; // 9...
+		Boolean[] accountedFor = new Boolean[] { false, false, false, false, false, false, false, false, false }; // 9...
 
 		assert (accountedFor.length == this.patterns.getSizeInventory());
 

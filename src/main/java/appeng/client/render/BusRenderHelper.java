@@ -277,7 +277,7 @@ public class BusRenderHelper implements IPartRenderHelper
 	@Override
 	public void setTexture(IIcon Down, IIcon Up, IIcon North, IIcon South, IIcon West, IIcon East)
 	{
-		IIcon list[] = new IIcon[6];
+		IIcon[] list = new IIcon[6];
 
 		list[0] = Down;
 		list[1] = Up;

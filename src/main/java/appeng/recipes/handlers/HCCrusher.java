@@ -38,7 +38,7 @@ public class HCCrusher implements ICraftHandler, IWebsiteSerializer
 {
 
 	IIngredient pro_input;
-	IIngredient pro_output[];
+	IIngredient[] pro_output;
 
 	@Override
 	public void setup(List<List<IIngredient>> input, List<List<IIngredient>> output) throws RecipeError

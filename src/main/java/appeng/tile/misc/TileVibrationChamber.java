@@ -47,7 +47,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 
 	final double powerPerTick = 5;
 
-	final int sides[] = new int[] { 0 };
+	final int[] sides = new int[] { 0 };
 	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 1 );
 
 	public int burnSpeed = 100;

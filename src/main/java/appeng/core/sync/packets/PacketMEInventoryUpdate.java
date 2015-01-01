@@ -86,7 +86,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		} );
 
 		ByteBuf uncompressed = Unpooled.buffer( stream.readableBytes() );
-		byte tmp[] = new byte[1024];
+		byte[] tmp = new byte[1024];
 		while (gzReader.available() != 0)
 		{
 			int bytes = gzReader.read( tmp );

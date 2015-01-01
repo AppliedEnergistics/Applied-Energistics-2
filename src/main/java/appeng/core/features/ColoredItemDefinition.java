@@ -84,7 +84,7 @@ public class ColoredItemDefinition implements AEColoredItemDefinition
 	@Override
 	public ItemStack[] allStacks(int stackSize)
 	{
-		ItemStack is[] = new ItemStack[this.colors.length];
+		ItemStack[] is = new ItemStack[this.colors.length];
 		for (int x = 0; x < is.length; x++)
 			is[x] = this.colors[x].stack( 1 );
 		return is;

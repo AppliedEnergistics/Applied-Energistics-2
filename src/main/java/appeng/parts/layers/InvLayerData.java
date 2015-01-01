@@ -31,11 +31,11 @@ public class InvLayerData
 	private final static int[] nullSides = new int[] {};
 
 	// cache of inventory state.
-	final private int sides[][];
+	final private int[][] sides;
 	final private List<ISidedInventory> inventories;
 	final private List<InvSot> slots;
 
-	public InvLayerData(int a[][], List<ISidedInventory> b, List<InvSot> c) {
+	public InvLayerData( int[][] a, List<ISidedInventory> b, List<InvSot> c) {
 		this.sides = a;
 		this.inventories = b;
 		this.slots = c;

@@ -35,7 +35,7 @@ import appeng.client.texture.OffsetIcon;
 public class RenderQuartzGlass extends BaseBlockRender
 {
 
-	static byte offsets[][][];
+	static byte[][][] offsets;
 
 	public RenderQuartzGlass() {
 		super( false, 0 );

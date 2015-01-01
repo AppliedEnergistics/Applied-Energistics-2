@@ -50,7 +50,7 @@ import appeng.util.Platform;
 public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 {
 
-	final int sides[] = { 0, 1 };
+	final int[] sides = { 0, 1 };
 	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
 	YesNo lastRedstoneState = YesNo.UNDECIDED;
 

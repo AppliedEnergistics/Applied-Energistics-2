@@ -94,9 +94,9 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 		this.createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 2 );
 		this.createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 3 );
 
-		PartRegistry reg[] = PartRegistry.values();
+		PartRegistry[] reg = PartRegistry.values();
 
-		String data[] = new String[reg.length];
+		String[] data = new String[reg.length];
 		for (int x = 0; x < data.length; x++)
 			data[x] = reg[x].getName();
 

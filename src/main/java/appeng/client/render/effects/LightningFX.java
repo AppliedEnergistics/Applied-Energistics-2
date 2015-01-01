@@ -94,8 +94,8 @@ public class LightningFX extends EntityFX
 
 		double scale = 0.02;// 0.02F * this.particleScale;
 
-		double a[] = new double[3];
-		double b[] = new double[3];
+		double[] a = new double[3];
+		double[] b = new double[3];
 
 		double ox = 0;
 		double oy = 0;

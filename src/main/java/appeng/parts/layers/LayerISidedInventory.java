@@ -57,7 +57,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	public void notifyNeighbors()
 	{
 		// cache of inventory state.
-		int sideData[][] = null;
+		int[][] sideData = null;
 		List<ISidedInventory> inventories = null;
 		List<InvSot> slots = null;
 
@@ -99,7 +99,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 						break;
 					}
 
-				int cSidesList[] = sideData[currentSide.ordinal()] = new int[slotCount];
+				int[] cSidesList = sideData[currentSide.ordinal()] = new int[slotCount];
 				for (int cSlot = 0; cSlot < slotCount; cSlot++)
 				{
 					cSidesList[cSlot] = offsetForLayer;
