@@ -51,23 +51,23 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 
 	protected IMEInventoryHandler<StackType> getHandler()
 	{
-		return internalHandler;
+		return this.internalHandler;
 	}
 
 	protected Iterator<Entry<IMEMonitorHandlerReceiver<StackType>, Object>> getListeners()
 	{
-		return listeners.entrySet().iterator();
+		return this.listeners.entrySet().iterator();
 	}
 
 	protected void postChangesToListeners( Iterable<StackType> changes, BaseActionSource src)
 	{
-		notifyListenersOfChange( changes, src );
+		this.notifyListenersOfChange( changes, src );
 	}
 	
 	protected void notifyListenersOfChange(Iterable<StackType> diff, BaseActionSource src)
 	{
-		hasChanged = true;// need to update the cache.
-		Iterator<Entry<IMEMonitorHandlerReceiver<StackType>, Object>> i = getListeners();
+		this.hasChanged = true;// need to update the cache.
+		Iterator<Entry<IMEMonitorHandlerReceiver<StackType>, Object>> i = this.getListeners();
 		while (i.hasNext())
 		{
 			Entry<IMEMonitorHandlerReceiver<StackType>, Object> o = i.next();
@@ -89,108 +89,108 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 			diff.decStackSize( leftOvers.getStackSize() );
 
 		if ( diff.getStackSize() != 0 )
-			postChangesToListeners( ImmutableList.of( diff ), src );
+			this.postChangesToListeners( ImmutableList.of( diff ), src );
 
 		return leftOvers;
 	}
 
 	public MEMonitorHandler(IMEInventoryHandler<StackType> t) {
-		internalHandler = t;
-		cachedList = (IItemList<StackType>) t.getChannel().createList();
+		this.internalHandler = t;
+		this.cachedList = (IItemList<StackType>) t.getChannel().createList();
 	}
 
 	public MEMonitorHandler(IMEInventoryHandler<StackType> t, StorageChannel chan) {
-		internalHandler = t;
-		cachedList = (IItemList<StackType>) chan.createList();
+		this.internalHandler = t;
+		this.cachedList = (IItemList<StackType>) chan.createList();
 	}
 
 	@Override
 	public void addListener(IMEMonitorHandlerReceiver<StackType> l, Object verificationToken)
 	{
-		listeners.put( l, verificationToken );
+		this.listeners.put( l, verificationToken );
 	}
 
 	@Override
 	public void removeListener(IMEMonitorHandlerReceiver<StackType> l)
 	{
-		listeners.remove( l );
+		this.listeners.remove( l );
 	}
 
 	@Override
 	public StackType injectItems(StackType input, Actionable mode, BaseActionSource src)
 	{
 		if ( mode == Actionable.SIMULATE )
-			return getHandler().injectItems( input, mode, src );
-		return monitorDifference(input.copy(), getHandler().injectItems(input, mode, src), false, src);
+			return this.getHandler().injectItems( input, mode, src );
+		return this.monitorDifference(input.copy(), this.getHandler().injectItems(input, mode, src), false, src);
 	}
 
 	@Override
 	public StackType extractItems(StackType request, Actionable mode, BaseActionSource src)
 	{
 		if ( mode == Actionable.SIMULATE )
-			return getHandler().extractItems( request, mode, src );
-		return monitorDifference(request.copy(), getHandler().extractItems(request, mode, src), true, src);
+			return this.getHandler().extractItems( request, mode, src );
+		return this.monitorDifference(request.copy(), this.getHandler().extractItems(request, mode, src), true, src);
 	}
 
 	@Override
 	public IItemList<StackType> getStorageList()
 	{
-		if ( hasChanged )
+		if ( this.hasChanged )
 		{
-			hasChanged = false;
-			cachedList.resetStatus();
-			return getAvailableItems( cachedList );
+			this.hasChanged = false;
+			this.cachedList.resetStatus();
+			return this.getAvailableItems( this.cachedList );
 		}
 
-		return cachedList;
+		return this.cachedList;
 	}
 
 	@Override
 	public IItemList<StackType> getAvailableItems(IItemList out)
 	{
-		return getHandler().getAvailableItems( out );
+		return this.getHandler().getAvailableItems( out );
 	}
 
 	@Override
 	public StorageChannel getChannel()
 	{
-		return getHandler().getChannel();
+		return this.getHandler().getChannel();
 	}
 
 	@Override
 	public AccessRestriction getAccess()
 	{
-		return getHandler().getAccess();
+		return this.getHandler().getAccess();
 	}
 
 	@Override
 	public boolean isPrioritized(StackType input)
 	{
-		return getHandler().isPrioritized( input );
+		return this.getHandler().isPrioritized( input );
 	}
 
 	@Override
 	public boolean canAccept(StackType input)
 	{
-		return getHandler().canAccept( input );
+		return this.getHandler().canAccept( input );
 	}
 
 	@Override
 	public int getPriority()
 	{
-		return getHandler().getPriority();
+		return this.getHandler().getPriority();
 	}
 
 	@Override
 	public int getSlot()
 	{
-		return getHandler().getSlot();
+		return this.getHandler().getSlot();
 	}
 
 	@Override
 	public boolean validForPass(int i)
 	{
-		return getHandler().validForPass( i );
+		return this.getHandler().validForPass( i );
 	}
 
 }

@@ -47,19 +47,19 @@ public class SelectedPart
 	public final ForgeDirection side;
 
 	public SelectedPart() {
-		part = null;
-		facade = null;
-		side = ForgeDirection.UNKNOWN;
+		this.part = null;
+		this.facade = null;
+		this.side = ForgeDirection.UNKNOWN;
 	}
 
 	public SelectedPart(IPart part, ForgeDirection side) {
 		this.part = part;
-		facade = null;
+		this.facade = null;
 		this.side = side;
 	}
 
 	public SelectedPart(IFacadePart facade, ForgeDirection side) {
-		part = null;
+		this.part = null;
 		this.facade = facade;
 		this.side = side;
 	}

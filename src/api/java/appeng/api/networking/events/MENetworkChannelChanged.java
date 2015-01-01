@@ -35,7 +35,7 @@ public class MENetworkChannelChanged extends MENetworkEvent
 	public final IGridNode node;
 
 	public MENetworkChannelChanged(IGridNode n) {
-		node = n;
+		this.node = n;
 	}
 
 }

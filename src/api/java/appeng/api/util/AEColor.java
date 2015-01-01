@@ -89,9 +89,9 @@ public enum AEColor
 
 	AEColor(String unlocalizedName, int blackHex, int medHex, int whiteHex) {
 		this.unlocalizedName = unlocalizedName;
-		blackVariant = blackHex;
-		mediumVariant = medHex;
-		whiteVariant = whiteHex;
+		this.blackVariant = blackHex;
+		this.mediumVariant = medHex;
+		this.whiteVariant = whiteHex;
 	}
 
 	/**
@@ -99,13 +99,13 @@ public enum AEColor
 	 */
 	public boolean matches(AEColor color)
 	{
-		return equals(Transparent) || color == Transparent || equals(color);
+		return this.equals(Transparent) || color == Transparent || this.equals(color);
 	}
 
 	@Override
 	public String toString()
 	{
-		return StatCollector.translateToLocal( unlocalizedName );
+		return StatCollector.translateToLocal( this.unlocalizedName );
 	}
 
 }

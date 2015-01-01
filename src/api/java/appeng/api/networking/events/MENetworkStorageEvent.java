@@ -41,8 +41,8 @@ public class MENetworkStorageEvent extends MENetworkEvent
 	public final StorageChannel channel;
 
 	public MENetworkStorageEvent(IMEMonitor o, StorageChannel chan) {
-		monitor = o;
-		channel = chan;
+		this.monitor = o;
+		this.channel = chan;
 	}
 
 }

@@ -39,56 +39,56 @@ public class WorldCoord
 
 	public WorldCoord add(ForgeDirection direction, int length)
 	{
-		x += direction.offsetX * length;
-		y += direction.offsetY * length;
-		z += direction.offsetZ * length;
+		this.x += direction.offsetX * length;
+		this.y += direction.offsetY * length;
+		this.z += direction.offsetZ * length;
 		return this;
 	}
 
 	public WorldCoord subtract(ForgeDirection direction, int length)
 	{
-		x -= direction.offsetX * length;
-		y -= direction.offsetY * length;
-		z -= direction.offsetZ * length;
+		this.x -= direction.offsetX * length;
+		this.y -= direction.offsetY * length;
+		this.z -= direction.offsetZ * length;
 		return this;
 	}
 
 	public WorldCoord add(int _x, int _y, int _z)
 	{
-		x += _x;
-		y += _y;
-		z += _z;
+		this.x += _x;
+		this.y += _y;
+		this.z += _z;
 		return this;
 	}
 
 	public WorldCoord subtract(int _x, int _y, int _z)
 	{
-		x -= _x;
-		y -= _y;
-		z -= _z;
+		this.x -= _x;
+		this.y -= _y;
+		this.z -= _z;
 		return this;
 	}
 
 	public WorldCoord multiple(int _x, int _y, int _z)
 	{
-		x *= _x;
-		y *= _y;
-		z *= _z;
+		this.x *= _x;
+		this.y *= _y;
+		this.z *= _z;
 		return this;
 	}
 
 	public WorldCoord divide(int _x, int _y, int _z)
 	{
-		x /= _x;
-		y /= _y;
-		z /= _z;
+		this.x /= _x;
+		this.y /= _y;
+		this.z /= _z;
 		return this;
 	}
 
 	public WorldCoord(int _x, int _y, int _z) {
-		x = _x;
-		y = _y;
-		z = _z;
+		this.x = _x;
+		this.y = _y;
+		this.z = _z;
 	}
 
 	public WorldCoord(TileEntity s) {
@@ -100,9 +100,9 @@ public class WorldCoord
 	 */
 	public ForgeDirection directionTo(WorldCoord loc)
 	{
-		int ox = x - loc.x;
-		int oy = y - loc.y;
-		int oz = z - loc.z;
+		int ox = this.x - loc.x;
+		int oy = this.y - loc.y;
+		int oz = this.z - loc.z;
 
 		int xlen = Math.abs( ox );
 		int ylen = Math.abs( oy );
@@ -131,29 +131,29 @@ public class WorldCoord
 
 	public boolean isEqual(WorldCoord c)
 	{
-		return x == c.x && y == c.y && z == c.z;
+		return this.x == c.x && this.y == c.y && this.z == c.z;
 	}
 
 	public WorldCoord copy()
 	{
-		return new WorldCoord( x, y, z );
+		return new WorldCoord( this.x, this.y, this.z );
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof WorldCoord && isEqual((WorldCoord) obj);
+		return obj instanceof WorldCoord && this.isEqual((WorldCoord) obj);
 	}
 
 	@Override
 	public String toString()
 	{
-		return "" + x + "," + y + "," + z;
+		return "" + this.x + "," + this.y + "," + this.z;
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return (y << 24) ^ x ^ z;
+		return ( this.y << 24) ^ this.x ^ this.z;
 	}
 }

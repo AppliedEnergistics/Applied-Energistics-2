@@ -33,7 +33,7 @@ public enum PowerUnits
 	MK("gui.appliedenergistics2.units.mekanism"); // Mekanism - Joules
 
 	private PowerUnits(String un) {
-		unlocalizedName = un;
+		this.unlocalizedName = un;
 	}
 
 	/**
@@ -59,7 +59,7 @@ public enum PowerUnits
 	 */
 	public double convertTo(PowerUnits target, double value)
 	{
-		return (value * conversionRatio) / target.conversionRatio;
+		return (value * this.conversionRatio ) / target.conversionRatio;
 	}
 
 }

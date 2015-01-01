@@ -39,7 +39,7 @@ public class MENetworkSpatialEvent extends MENetworkEvent
 	 */
 	public MENetworkSpatialEvent(IGridHost SpatialIO, double EnergyUsage)
 	{
-		host = SpatialIO;
-		spatialEnergyUsage = EnergyUsage;
+		this.host = SpatialIO;
+		this.spatialEnergyUsage = EnergyUsage;
 	}
 }

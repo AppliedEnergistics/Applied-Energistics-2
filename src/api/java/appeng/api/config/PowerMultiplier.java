@@ -34,11 +34,11 @@ public enum PowerMultiplier
 
 	public double multiply(double in)
 	{
-		return in * multiplier;
+		return in * this.multiplier;
 	}
 
 	public double divide(double in)
 	{
-		return in / multiplier;
+		return in / this.multiplier;
 	}
 }

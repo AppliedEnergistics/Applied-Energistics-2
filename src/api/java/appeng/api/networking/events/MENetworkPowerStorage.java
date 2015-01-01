@@ -54,8 +54,8 @@ public class MENetworkPowerStorage extends MENetworkEvent
 	public final PowerEventType type;
 
 	public MENetworkPowerStorage(IAEPowerStorage t, PowerEventType y) {
-		storage = t;
-		type = y;
+		this.storage = t;
+		this.type = y;
 	}
 
 }

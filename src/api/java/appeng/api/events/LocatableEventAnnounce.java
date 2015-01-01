@@ -44,8 +44,8 @@ public class LocatableEventAnnounce extends Event
 	final public LocatableEvent change;
 
 	public LocatableEventAnnounce(ILocatable o, LocatableEvent ev) {
-		target = o;
-		change = ev;
+		this.target = o;
+		this.change = ev;
 	}
 
 }

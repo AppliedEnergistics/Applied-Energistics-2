@@ -31,7 +31,7 @@ public class MENetworkCraftingCpuChange extends MENetworkEvent
 	public final IGridNode node;
 
 	public MENetworkCraftingCpuChange(IGridNode n) {
-		node = n;
+		this.node = n;
 	}
 
 }

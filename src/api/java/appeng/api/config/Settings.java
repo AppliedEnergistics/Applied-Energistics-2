@@ -57,13 +57,13 @@ public enum Settings
 
 	public EnumSet getPossibleValues()
 	{
-		return values;
+		return this.values;
 	}
 
 	private Settings(EnumSet set) {
 		if ( set == null || set.isEmpty() )
 			throw new RuntimeException( "Invalid configuration." );
-		values = set;
+		this.values = set;
 	}
 
 }

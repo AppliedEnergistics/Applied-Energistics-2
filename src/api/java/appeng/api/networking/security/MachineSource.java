@@ -35,7 +35,7 @@ public class MachineSource extends BaseActionSource
 	}
 
 	public MachineSource(IActionHost v) {
-		via = v;
+		this.via = v;
 	}
 
 }

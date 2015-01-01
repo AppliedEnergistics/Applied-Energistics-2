@@ -41,7 +41,7 @@ public class MENetworkEvent
 	 */
 	public void cancel()
 	{
-		canceled = true;
+		this.canceled = true;
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class MENetworkEvent
 	 */
 	public boolean isCanceled()
 	{
-		return canceled;
+		return this.canceled;
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class MENetworkEvent
 	 */
 	public int getVisitedObjects()
 	{
-		return visited;
+		return this.visited;
 	}
 
 	/**
@@ -71,6 +71,6 @@ public class MENetworkEvent
 	 */
 	public void setVisitedObjects(int v)
 	{
-		visited = v;
+		this.visited = v;
 	}
 }

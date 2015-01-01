@@ -33,7 +33,7 @@ public class TransitionResult
 	public final double energyUsage;
 
 	public TransitionResult(boolean _success, double power) {
-		success = _success;
-		energyUsage = power;
+		this.success = _success;
+		this.energyUsage = power;
 	}
 }

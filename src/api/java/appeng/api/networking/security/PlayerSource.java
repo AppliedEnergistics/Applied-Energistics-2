@@ -38,8 +38,8 @@ public class PlayerSource extends BaseActionSource
 	}
 
 	public PlayerSource(EntityPlayer p, IActionHost v) {
-		player = p;
-		via = v;
+		this.player = p;
+		this.via = v;
 	}
 
 }

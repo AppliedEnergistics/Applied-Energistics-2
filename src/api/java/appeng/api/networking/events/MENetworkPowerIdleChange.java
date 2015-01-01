@@ -38,7 +38,7 @@ public class MENetworkPowerIdleChange extends MENetworkEvent
 	public final IGridNode node;
 
 	public MENetworkPowerIdleChange(IGridNode nodeThatChanged) {
-		node = nodeThatChanged;
+		this.node = nodeThatChanged;
 	}
 
 }

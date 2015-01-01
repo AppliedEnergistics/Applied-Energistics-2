@@ -37,20 +37,20 @@ public class DimensionalCoord extends WorldCoord
 
 	public DimensionalCoord(DimensionalCoord s) {
 		super( s.x, s.y, s.z );
-		w = s.w;
-		dimId = s.dimId;
+		this.w = s.w;
+		this.dimId = s.dimId;
 	}
 
 	public DimensionalCoord(TileEntity s) {
 		super( s );
-		w = s.getWorldObj();
-		dimId = w.provider.dimensionId;
+		this.w = s.getWorldObj();
+		this.dimId = this.w.provider.dimensionId;
 	}
 
 	public DimensionalCoord(World _w, int _x, int _y, int _z) {
 		super( _x, _y, _z );
-		w = _w;
-		dimId = _w.provider.dimensionId;
+		this.w = _w;
+		this.dimId = _w.provider.dimensionId;
 	}
 
 	@Override
@@ -61,34 +61,34 @@ public class DimensionalCoord extends WorldCoord
 
 	public boolean isEqual(DimensionalCoord c)
 	{
-		return x == c.x && y == c.y && z == c.z && c.w == this.w;
+		return this.x == c.x && this.y == c.y && this.z == c.z && c.w == this.w;
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof DimensionalCoord && isEqual((DimensionalCoord) obj);
+		return obj instanceof DimensionalCoord && this.isEqual((DimensionalCoord) obj);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return super.hashCode() ^ dimId;
+		return super.hashCode() ^ this.dimId;
 	}
 
 	public boolean isInWorld(World world)
 	{
-		return w == world;
+		return this.w == world;
 	}
 
 	@Override
 	public String toString()
 	{
-		return dimId + "," + super.toString();
+		return this.dimId + "," + super.toString();
 	}
 
 	public World getWorld()
 	{
-		return w;
+		return this.w;
 	}
 }

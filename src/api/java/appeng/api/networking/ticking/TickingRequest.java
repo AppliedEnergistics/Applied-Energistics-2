@@ -68,10 +68,10 @@ public class TickingRequest
 	public final boolean canBeAlerted;
 
 	public TickingRequest(int min, int max, boolean sleep, boolean alertable) {
-		minTickRate = min;
-		maxTickRate = max;
-		isSleeping = sleep;
-		canBeAlerted = alertable;
+		this.minTickRate = min;
+		this.maxTickRate = max;
+		this.isSleeping = sleep;
+		this.canBeAlerted = alertable;
 	}
 
 }
