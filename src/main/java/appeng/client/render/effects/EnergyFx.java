@@ -18,6 +18,7 @@
 
 package appeng.client.render.effects;
 
+
 import net.minecraft.client.particle.EntityBreakingFX;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.Item;
@@ -31,7 +32,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.client.texture.ExtraBlockTextures;
 
-@SideOnly(Side.CLIENT)
+
+@SideOnly( Side.CLIENT )
 public class EnergyFx extends EntityBreakingFX
 {
 
@@ -47,7 +49,8 @@ public class EnergyFx extends EntityBreakingFX
 		return 1;
 	}
 
-	public EnergyFx(World par1World, double par2, double par4, double par6, Item par8Item) {
+	public EnergyFx( World par1World, double par2, double par4, double par6, Item par8Item )
+	{
 		super( par1World, par2, par4, par6, par8Item );
 		this.particleGravity = 0;
 		this.particleBlue = 255;
@@ -60,9 +63,11 @@ public class EnergyFx extends EntityBreakingFX
 		this.startBlkX = MathHelper.floor_double( this.posX );
 		this.startBlkY = MathHelper.floor_double( this.posY );
 		this.startBlkZ = MathHelper.floor_double( this.posZ );
+
+		this.noClip = true;
 	}
 
-	public void fromItem(ForgeDirection d)
+	public void fromItem( ForgeDirection d )
 	{
 		this.posX += 0.2 * d.offsetX;
 		this.posY += 0.2 * d.offsetY;
@@ -79,7 +84,7 @@ public class EnergyFx extends EntityBreakingFX
 	}
 
 	@Override
-	public void renderParticle(Tessellator par1Tessellator, float par2, float par3, float par4, float par5, float par6, float par7)
+	public void renderParticle( Tessellator par1Tessellator, float par2, float par3, float par4, float par5, float par6, float par7 )
 	{
 		float f6 = this.particleTextureIndex.getMinU();
 		float f7 = this.particleTextureIndex.getMaxU();
@@ -87,9 +92,9 @@ public class EnergyFx extends EntityBreakingFX
 		float f9 = this.particleTextureIndex.getMaxV();
 		float f10 = 0.1F * this.particleScale;
 
-		float f11 = (float) (this.prevPosX + (this.posX - this.prevPosX) * par2 - interpPosX);
-		float f12 = (float) (this.prevPosY + (this.posY - this.prevPosY) * par2 - interpPosY);
-		float f13 = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * par2 - interpPosZ);
+		float f11 = ( float ) ( this.prevPosX + ( this.posX - this.prevPosX ) * par2 - interpPosX );
+		float f12 = ( float ) ( this.prevPosY + ( this.posY - this.prevPosY ) * par2 - interpPosY );
+		float f13 = ( float ) ( this.prevPosZ + ( this.posZ - this.prevPosZ ) * par2 - interpPosZ );
 		float f14 = 1.0F;
 
 		int blkX = MathHelper.floor_double( this.posX );

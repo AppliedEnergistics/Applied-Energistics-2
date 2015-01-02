@@ -18,17 +18,20 @@
 
 package appeng.client.render.effects;
 
+
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+
+@SideOnly( Side.CLIENT )
 public class VibrantFX extends EntityFX
 {
 
-	public VibrantFX(World par1World, double x, double y, double z, double par8, double par10, double par12) {
+	public VibrantFX( World par1World, double x, double y, double z, double par8, double par10, double par12 )
+	{
 		super( par1World, x, y, z, par8, par10, par12 );
 		float f = this.rand.nextFloat() * 0.1F + 0.8F;
 		this.particleRed = f * 0.7f;
@@ -43,12 +46,12 @@ public class VibrantFX extends EntityFX
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
-		this.particleMaxAge = (int) (20.0D / (Math.random() * 0.8D + 0.1D));
+		this.particleMaxAge = ( int ) ( 20.0D / ( Math.random() * 0.8D + 0.1D ) );
 		this.noClip = true;
 	}
 
 	@Override
-	public float getBrightness(float par1)
+	public float getBrightness( float par1 )
 	{
 		return 1.0f;
 	}

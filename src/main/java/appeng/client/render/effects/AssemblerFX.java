@@ -18,6 +18,7 @@
 
 package appeng.client.render.effects;
 
+
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.World;
@@ -27,6 +28,7 @@ import appeng.client.EffectType;
 import appeng.core.CommonHelper;
 import appeng.entity.EntityFloatingItem;
 
+
 public class AssemblerFX extends EntityFX
 {
 
@@ -35,7 +37,8 @@ public class AssemblerFX extends EntityFX
 	float time = 0;
 	final float speed;
 
-	public AssemblerFX(World w, double x, double y, double z, double r, double g, double b, float speed, IAEItemStack is) {
+	public AssemblerFX( World w, double x, double y, double z, double r, double g, double b, float speed, IAEItemStack is )
+	{
 		super( w, x, y, z, r, g, b );
 		this.motionX = 0;
 		this.motionY = 0;
@@ -44,11 +47,12 @@ public class AssemblerFX extends EntityFX
 		this.speed = speed;
 		this.fi = new EntityFloatingItem( this, w, x, y, z, is.getItemStack() );
 		w.spawnEntityInWorld( this.fi );
-		this.particleMaxAge = (int) Math.ceil( Math.max( 1, 100.0f / speed ) ) + 2;
+		this.particleMaxAge = ( int ) Math.ceil( Math.max( 1, 100.0f / speed ) ) + 2;
+		this.noClip = true;
 	}
 
 	@Override
-	public int getBrightnessForRender(float par1)
+	public int getBrightnessForRender( float par1 )
 	{
 		int j1 = 13;
 		return j1 << 20 | j1 << 4;
@@ -63,20 +67,20 @@ public class AssemblerFX extends EntityFX
 			this.fi.setDead();
 		else
 		{
-			float lifeSpan = (float) this.particleAge / (float) this.particleMaxAge;
+			float lifeSpan = ( float ) this.particleAge / ( float ) this.particleMaxAge;
 			this.fi.setProgress( lifeSpan );
 		}
 	}
 
 	@Override
-	public void renderParticle(Tessellator tess, float l, float rX, float rY, float rZ, float rYZ, float rXY)
+	public void renderParticle( Tessellator tess, float l, float rX, float rY, float rZ, float rYZ, float rXY )
 	{
 		this.time += l;
 		if ( this.time > 4.0 )
 		{
 			this.time -= 4.0;
 			// if ( CommonHelper.proxy.shouldAddParticles( r ) )
-			for (int x = 0; x < (int) Math.ceil( this.speed / 5 ); x++)
+			for ( int x = 0; x < ( int ) Math.ceil( this.speed / 5 ); x++ )
 				CommonHelper.proxy.spawnEffect( EffectType.Crafting, this.worldObj, this.posX, this.posY, this.posZ, null );
 		}
 	}
