@@ -18,6 +18,7 @@
 
 package appeng.client.render.effects;
 
+
 import net.minecraft.client.particle.EntityBreakingFX;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.Item;
@@ -31,7 +32,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.client.texture.ExtraBlockTextures;
 
-@SideOnly(Side.CLIENT)
+
+@SideOnly( Side.CLIENT )
 public class CraftingFx extends EntityBreakingFX
 {
 
@@ -47,7 +49,8 @@ public class CraftingFx extends EntityBreakingFX
 		return 1;
 	}
 
-	public CraftingFx(World par1World, double par2, double par4, double par6, Item par8Item) {
+	public CraftingFx( World par1World, double par2, double par4, double par6, Item par8Item )
+	{
 		super( par1World, par2, par4, par6, par8Item );
 		this.particleGravity = 0;
 		this.particleBlue = 1;
@@ -61,9 +64,11 @@ public class CraftingFx extends EntityBreakingFX
 		this.startBlkX = MathHelper.floor_double( this.posX );
 		this.startBlkY = MathHelper.floor_double( this.posY );
 		this.startBlkZ = MathHelper.floor_double( this.posZ );
+
+		this.noClip = true;
 	}
 
-	public void fromItem(ForgeDirection d)
+	public void fromItem( ForgeDirection d )
 	{
 		this.posX += 0.2 * d.offsetX;
 		this.posY += 0.2 * d.offsetY;
@@ -80,7 +85,7 @@ public class CraftingFx extends EntityBreakingFX
 	}
 
 	@Override
-	public void renderParticle(Tessellator par1Tessellator, float partialTick, float x, float y, float z, float rx, float rz)
+	public void renderParticle( Tessellator par1Tessellator, float partialTick, float x, float y, float z, float rx, float rz )
 	{
 		if ( partialTick < 0 || partialTick > 1 )
 			return;
@@ -91,9 +96,9 @@ public class CraftingFx extends EntityBreakingFX
 		float f9 = this.particleTextureIndex.getMaxV();
 		float scale = 0.1F * this.particleScale;
 
-		float offX = (float) (this.prevPosX + (this.posX - this.prevPosX) * partialTick);
-		float offY = (float) (this.prevPosY + (this.posY - this.prevPosY) * partialTick);
-		float offZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * partialTick);
+		float offX = ( float ) ( this.prevPosX + ( this.posX - this.prevPosX ) * partialTick );
+		float offY = ( float ) ( this.prevPosY + ( this.posY - this.prevPosY ) * partialTick );
+		float offZ = ( float ) ( this.prevPosZ + ( this.posZ - this.prevPosZ ) * partialTick );
 		float f14 = 1.0F;
 
 		int blkX = MathHelper.floor_double( offX );

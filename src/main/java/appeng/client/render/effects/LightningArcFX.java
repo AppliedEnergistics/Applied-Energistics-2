@@ -18,9 +18,11 @@
 
 package appeng.client.render.effects;
 
+
 import java.util.Random;
 
 import net.minecraft.world.World;
+
 
 public class LightningArcFX extends LightningFX
 {
@@ -30,8 +32,10 @@ public class LightningArcFX extends LightningFX
 	final double ry;
 	final double rz;
 
-	public LightningArcFX(World w, double x, double y, double z, double ex, double ey, double ez, double r, double g, double b) {
+	public LightningArcFX( World w, double x, double y, double z, double ex, double ey, double ez, double r, double g, double b )
+	{
 		super( w, x, y, z, r, g, b, 6 );
+		this.noClip = true;
 
 		this.rx = ex - x;
 		this.ry = ey - y;
@@ -43,17 +47,17 @@ public class LightningArcFX extends LightningFX
 	@Override
 	protected void regen()
 	{
-		double i = 1.0 / (this.steps - 1);
+		double i = 1.0 / ( this.steps - 1 );
 		double lastDirectionX = this.rx * i;
 		double lastDirectionY = this.ry * i;
 		double lastDirectionZ = this.rz * i;
 
 		double len = Math.sqrt( lastDirectionX * lastDirectionX + lastDirectionY * lastDirectionY + lastDirectionZ * lastDirectionZ );
-		for (int s = 0; s < this.steps; s++)
+		for ( int s = 0; s < this.steps; s++ )
 		{
-			this.Steps[s][0] = (lastDirectionX + ( RANDOM_GENERATOR.nextDouble() - 0.5) * len * 1.2) / 2.0;
-			this.Steps[s][1] = (lastDirectionY + ( RANDOM_GENERATOR.nextDouble() - 0.5) * len * 1.2) / 2.0;
-			this.Steps[s][2] = (lastDirectionZ + ( RANDOM_GENERATOR.nextDouble() - 0.5) * len * 1.2) / 2.0;
+			this.Steps[s][0] = ( lastDirectionX + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * len * 1.2 ) / 2.0;
+			this.Steps[s][1] = ( lastDirectionY + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * len * 1.2 ) / 2.0;
+			this.Steps[s][2] = ( lastDirectionZ + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * len * 1.2 ) / 2.0;
 		}
 
 	}

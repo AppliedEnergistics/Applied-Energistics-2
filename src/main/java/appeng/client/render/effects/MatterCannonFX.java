@@ -18,6 +18,7 @@
 
 package appeng.client.render.effects;
 
+
 import net.minecraft.client.particle.EntityBreakingFX;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.Item;
@@ -27,12 +28,14 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.client.texture.ExtraBlockTextures;
 
+
 public class MatterCannonFX extends EntityBreakingFX
 {
 
 	private final IIcon particleTextureIndex;
 
-	public MatterCannonFX(World par1World, double par2, double par4, double par6, Item par8Item) {
+	public MatterCannonFX( World par1World, double par2, double par4, double par6, Item par8Item )
+	{
 		super( par1World, par2, par4, par6, par8Item );
 		this.particleGravity = 0;
 		this.particleBlue = 255;
@@ -44,9 +47,10 @@ public class MatterCannonFX extends EntityBreakingFX
 		this.motionY = 0.0f;
 		this.motionZ = 0.0f;
 		this.particleTextureIndex = ExtraBlockTextures.BlockMatterCannonParticle.getIcon();
+		this.noClip = true;
 	}
 
-	public void fromItem(ForgeDirection d)
+	public void fromItem( ForgeDirection d )
 	{
 		this.particleScale *= 1.2f;
 	}
@@ -66,7 +70,7 @@ public class MatterCannonFX extends EntityBreakingFX
 	}
 
 	@Override
-	public void renderParticle(Tessellator par1Tessellator, float par2, float par3, float par4, float par5, float par6, float par7)
+	public void renderParticle( Tessellator par1Tessellator, float par2, float par3, float par4, float par5, float par6, float par7 )
 	{
 		float f6 = this.particleTextureIndex.getMinU();
 		float f7 = this.particleTextureIndex.getMaxU();
@@ -74,9 +78,9 @@ public class MatterCannonFX extends EntityBreakingFX
 		float f9 = this.particleTextureIndex.getMaxV();
 		float f10 = 0.05F * this.particleScale;
 
-		float f11 = (float) (this.prevPosX + (this.posX - this.prevPosX) * par2 - interpPosX);
-		float f12 = (float) (this.prevPosY + (this.posY - this.prevPosY) * par2 - interpPosY);
-		float f13 = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * par2 - interpPosZ);
+		float f11 = ( float ) ( this.prevPosX + ( this.posX - this.prevPosX ) * par2 - interpPosX );
+		float f12 = ( float ) ( this.prevPosY + ( this.posY - this.prevPosY ) * par2 - interpPosY );
+		float f13 = ( float ) ( this.prevPosZ + ( this.posZ - this.prevPosZ ) * par2 - interpPosZ );
 		float f14 = 1.0F;
 
 		par1Tessellator.setColorRGBA_F( this.particleRed * f14, this.particleGreen * f14, this.particleBlue * f14, this.particleAlpha );
