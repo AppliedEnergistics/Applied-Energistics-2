@@ -23,6 +23,7 @@
 
 package appeng.api.networking.crafting;
 
+
 public interface ICraftingCallback
 {
 
@@ -32,6 +33,5 @@ public interface ICraftingCallback
 	 * @param job
 	 *            - final job
 	 */
-	public void calculationComplete(ICraftingJob job);
-
+	public void calculationComplete( ICraftingJob job );
 }

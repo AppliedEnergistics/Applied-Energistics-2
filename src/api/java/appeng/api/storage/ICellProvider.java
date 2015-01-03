@@ -23,7 +23,9 @@
 
 package appeng.api.storage;
 
+
 import java.util.List;
+
 
 /**
  * Allows you to provide cells via non IGridHosts directly to the storage system, drives, and similar features should go
@@ -40,7 +42,7 @@ public interface ICellProvider
 	 *
 	 * @return a valid list of handlers, NEVER NULL
 	 */
-	List<IMEInventoryHandler> getCellArray(StorageChannel channel);
+	List<IMEInventoryHandler> getCellArray( StorageChannel channel );
 
 	/**
 	 * the storage's priority.
@@ -48,5 +50,4 @@ public interface ICellProvider
 	 * Positive and negative are supported
 	 */
 	int getPriority();
-
 }

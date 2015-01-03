@@ -23,8 +23,10 @@
 
 package appeng.api.networking.security;
 
+
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+
 
 public interface IActionHost extends IGridHost
 {
@@ -35,8 +37,7 @@ public interface IActionHost extends IGridHost
 	 * machine, unless the action is preformed by a non primary node.
 	 *
 	 * @return the the gridnode that actions from this IGridHost are preformed
-	 *         by.
+	 * by.
 	 */
 	IGridNode getActionableNode();
-
 }

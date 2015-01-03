@@ -23,9 +23,11 @@
 
 package appeng.api.implementations.tiles;
 
+
 import appeng.api.networking.IGridHost;
 import appeng.api.storage.ICellContainer;
 import appeng.api.util.IOrientable;
+
 
 public interface IChestOrDrive extends ICellContainer, IGridHost, IOrientable
 {
@@ -45,9 +47,10 @@ public interface IChestOrDrive extends ICellContainer, IGridHost, IOrientable
 	 * 3 - red
 	 *
 	 * @param slot slot index
+	 *
 	 * @return status of the slot, one of the above indices.
 	 */
-	int getCellStatus(int slot);
+	int getCellStatus( int slot );
 
 	/**
 	 * @return if the device is online you should check this before providing any other information.
@@ -56,8 +59,8 @@ public interface IChestOrDrive extends ICellContainer, IGridHost, IOrientable
 
 	/**
 	 * @param slot slot index
+	 *
 	 * @return is the cell currently blinking to show activity.
 	 */
-	boolean isCellBlinking(int slot);
-
+	boolean isCellBlinking( int slot );
 }

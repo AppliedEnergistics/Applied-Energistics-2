@@ -23,6 +23,7 @@
 
 package appeng.api.integration;
 
+
 /**
  * An interface to get access to the individual settings for AE's Internal Bee
  * Comparison handler.
@@ -39,5 +40,4 @@ public interface IBeeComparison
 	 * @return the Forestry IIndividual for this comparison object - cast this to a IIndividual if you want to use it.
 	 */
 	Object getIndividual();
-
 }

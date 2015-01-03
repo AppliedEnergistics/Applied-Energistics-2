@@ -23,16 +23,19 @@
 
 package appeng.api.storage;
 
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
+
+import com.google.common.collect.ImmutableList;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import com.google.common.collect.ImmutableList;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
 
 /**
  * Common implementation of a simple class that monitors injection/extraction of a inventory to send events to a list of
@@ -59,16 +62,16 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 		return this.listeners.entrySet().iterator();
 	}
 
-	protected void postChangesToListeners( Iterable<StackType> changes, BaseActionSource src)
+	protected void postChangesToListeners( Iterable<StackType> changes, BaseActionSource src )
 	{
 		this.notifyListenersOfChange( changes, src );
 	}
 
-	protected void notifyListenersOfChange(Iterable<StackType> diff, BaseActionSource src)
+	protected void notifyListenersOfChange( Iterable<StackType> diff, BaseActionSource src )
 	{
 		this.hasChanged = true;// need to update the cache.
 		Iterator<Entry<IMEMonitorHandlerReceiver<StackType>, Object>> i = this.getListeners();
-		while (i.hasNext())
+		while ( i.hasNext() )
 		{
 			Entry<IMEMonitorHandlerReceiver<StackType>, Object> o = i.next();
 			IMEMonitorHandlerReceiver<StackType> receiver = o.getKey();
@@ -79,7 +82,7 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 		}
 	}
 
-	private StackType monitorDifference(IAEStack original, StackType leftOvers, boolean extraction, BaseActionSource src)
+	private StackType monitorDifference( IAEStack original, StackType leftOvers, boolean extraction, BaseActionSource src )
 	{
 		StackType diff = (StackType) original.copy();
 
@@ -94,42 +97,44 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 		return leftOvers;
 	}
 
-	public MEMonitorHandler(IMEInventoryHandler<StackType> t) {
+	public MEMonitorHandler( IMEInventoryHandler<StackType> t )
+	{
 		this.internalHandler = t;
 		this.cachedList = (IItemList<StackType>) t.getChannel().createList();
 	}
 
-	public MEMonitorHandler(IMEInventoryHandler<StackType> t, StorageChannel chan) {
+	public MEMonitorHandler( IMEInventoryHandler<StackType> t, StorageChannel chan )
+	{
 		this.internalHandler = t;
 		this.cachedList = (IItemList<StackType>) chan.createList();
 	}
 
 	@Override
-	public void addListener(IMEMonitorHandlerReceiver<StackType> l, Object verificationToken)
+	public void addListener( IMEMonitorHandlerReceiver<StackType> l, Object verificationToken )
 	{
 		this.listeners.put( l, verificationToken );
 	}
 
 	@Override
-	public void removeListener(IMEMonitorHandlerReceiver<StackType> l)
+	public void removeListener( IMEMonitorHandlerReceiver<StackType> l )
 	{
 		this.listeners.remove( l );
 	}
 
 	@Override
-	public StackType injectItems(StackType input, Actionable mode, BaseActionSource src)
+	public StackType injectItems( StackType input, Actionable mode, BaseActionSource src )
 	{
 		if ( mode == Actionable.SIMULATE )
 			return this.getHandler().injectItems( input, mode, src );
-		return this.monitorDifference(input.copy(), this.getHandler().injectItems(input, mode, src), false, src);
+		return this.monitorDifference( input.copy(), this.getHandler().injectItems( input, mode, src ), false, src );
 	}
 
 	@Override
-	public StackType extractItems(StackType request, Actionable mode, BaseActionSource src)
+	public StackType extractItems( StackType request, Actionable mode, BaseActionSource src )
 	{
 		if ( mode == Actionable.SIMULATE )
 			return this.getHandler().extractItems( request, mode, src );
-		return this.monitorDifference(request.copy(), this.getHandler().extractItems(request, mode, src), true, src);
+		return this.monitorDifference( request.copy(), this.getHandler().extractItems( request, mode, src ), true, src );
 	}
 
 	@Override
@@ -146,7 +151,7 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 	}
 
 	@Override
-	public IItemList<StackType> getAvailableItems(IItemList out)
+	public IItemList<StackType> getAvailableItems( IItemList out )
 	{
 		return this.getHandler().getAvailableItems( out );
 	}
@@ -164,13 +169,13 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 	}
 
 	@Override
-	public boolean isPrioritized(StackType input)
+	public boolean isPrioritized( StackType input )
 	{
 		return this.getHandler().isPrioritized( input );
 	}
 
 	@Override
-	public boolean canAccept(StackType input)
+	public boolean canAccept( StackType input )
 	{
 		return this.getHandler().canAccept( input );
 	}
@@ -188,9 +193,8 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 	}
 
 	@Override
-	public boolean validForPass(int i)
+	public boolean validForPass( int i )
 	{
 		return this.getHandler().validForPass( i );
 	}
-
 }

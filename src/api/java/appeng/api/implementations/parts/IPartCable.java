@@ -23,16 +23,19 @@
 
 package appeng.api.implementations.parts;
 
+
+import java.util.EnumSet;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.networking.IGridHost;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.EnumSet;
 
 /**
  * Implemented on the {@link IPart}s cable objects that can be placed at {@link ForgeDirection}.UNKNOWN in
@@ -60,9 +63,10 @@ public interface IPartCable extends IPart, IGridHost
 	 * Change the color of the cable, this should cost a small amount of dye, or something.
 	 *
 	 * @param newColor new color
+	 *
 	 * @return if the color change was successful.
 	 */
-	boolean changeColor(AEColor newColor, EntityPlayer who);
+	boolean changeColor( AEColor newColor, EntityPlayer who );
 
 	/**
 	 * Change sides on the cables node.
@@ -71,14 +75,14 @@ public interface IPartCable extends IPart, IGridHost
 	 *
 	 * @param sides sides of cable
 	 */
-	void setValidSides(EnumSet<ForgeDirection> sides);
+	void setValidSides( EnumSet<ForgeDirection> sides );
 
 	/**
 	 * used to tests if a cable connects to neighbors visually.
 	 *
 	 * @param side neighbor side
+	 *
 	 * @return true if this side is currently connects to an external block.
 	 */
-	boolean isConnected(ForgeDirection side);
-
+	boolean isConnected( ForgeDirection side );
 }

@@ -23,13 +23,16 @@
 
 package appeng.api.networking;
 
-import appeng.api.IAppEngApi;
-import appeng.api.util.IReadOnlyCollection;
+
+import java.util.EnumSet;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.EnumSet;
+import appeng.api.IAppEngApi;
+import appeng.api.util.IReadOnlyCollection;
+
 
 /**
  *
@@ -49,7 +52,7 @@ public interface IGridNode
 	 *
 	 * @param visitor visitor
 	 */
-	void beginVisit(IGridVisitor visitor);
+	void beginVisit( IGridVisitor visitor );
 
 	/**
 	 * inform the node that your IGridBlock has changed its internal state, and force the node to update.
@@ -123,7 +126,7 @@ public interface IGridNode
 	 * @param name nbt name
 	 * @param nodeData to be loaded data
 	 */
-	void loadFromNBT(String name, NBTTagCompound nodeData);
+	void loadFromNBT( String name, NBTTagCompound nodeData );
 
 	/**
 	 * this should be called for each node you maintain, you can save all your nodes to the same tag with different
@@ -132,11 +135,11 @@ public interface IGridNode
 	 * @param name nbt name
 	 * @param nodeData to be saved data
 	 */
-	void saveToNBT(String name, NBTTagCompound nodeData);
+	void saveToNBT( String name, NBTTagCompound nodeData );
 
 	/**
 	 * @return if the node's channel requirements are currently met, use this for display purposes, use isActive for
-	 *         status.
+	 * status.
 	 */
 	boolean meetsChannelRequirements();
 
@@ -144,9 +147,10 @@ public interface IGridNode
 	 * see if this node has a certain flag
 	 *
 	 * @param flag flags
+	 *
 	 * @return true if has flag
 	 */
-	boolean hasFlag(GridFlags flag);
+	boolean hasFlag( GridFlags flag );
 
 	/**
 	 * tell the node who was responsible for placing it, failure to do this may result in in-compatibility with the
@@ -154,11 +158,10 @@ public interface IGridNode
 	 *
 	 * @param playerID new player id
 	 */
-	void setPlayerID(int playerID);
+	void setPlayerID( int playerID );
 
 	/**
 	 * @return the ownerID this represents the person who placed the node.
 	 */
 	int getPlayerID();
-
 }

@@ -26,10 +26,10 @@ import appeng.core.features.AEFeature;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 
-public class AELog
+public final class AELog
 {
 
-	public static final FMLRelaunchLog instance = FMLRelaunchLog.log;
+	public static final FMLRelaunchLog INSTANCE = FMLRelaunchLog.log;
 
 	private AELog() {
 	}

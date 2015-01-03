@@ -23,6 +23,7 @@
 
 package appeng.api.networking.ticking;
 
+
 /**
  *
  * Describes how your tiles ticking is executed.
@@ -67,11 +68,11 @@ public class TickingRequest
 	 */
 	public final boolean canBeAlerted;
 
-	public TickingRequest(int min, int max, boolean sleep, boolean alertable) {
+	public TickingRequest( int min, int max, boolean sleep, boolean alertable )
+	{
 		this.minTickRate = min;
 		this.maxTickRate = max;
 		this.isSleeping = sleep;
 		this.canBeAlerted = alertable;
 	}
-
 }

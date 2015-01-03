@@ -44,7 +44,7 @@ public class StairBlockFeatureHandler implements IFeatureHandler
 		this.features = features;
 		this.stairs = stairs;
 		this.extractor = new FeatureNameExtractor( stairs.getClass(), subName );
-		this.enabled = new FeaturedActiveChecker( features ).get();
+		this.enabled = new FeaturedActiveChecker( features ).isFeatureActive();
 		this.definition = new BlockDefinition( stairs, this.enabled );
 	}
 

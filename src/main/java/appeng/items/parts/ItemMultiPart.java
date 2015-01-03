@@ -41,7 +41,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 import appeng.api.AEApi;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHelper;
 import appeng.api.parts.IPartItem;
+import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.features.AEFeature;
@@ -67,10 +69,10 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 
 	public static ItemMultiPart instance;
 
-	public ItemMultiPart() {
+	public ItemMultiPart( IPartHelper partHelper ) {
 		super( ItemMultiPart.class );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
-		AEApi.instance().partHelper().setItemBusRenderer( this );
+		partHelper.setItemBusRenderer( this );
 		this.setHasSubtypes( true );
 		instance = this;
 	}
@@ -176,7 +178,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		if ( pt == null )
 			return "Unnamed";
 
-		Enum[] variants = pt.getVariants();
+		AEColor[] variants = pt.getVariants();
 
 		if ( variants != null )
 			return super.getItemStackDisplayName( is ) + " - " + variants[this.dmgToPart.get( is.getItemDamage() ).variant].toString();

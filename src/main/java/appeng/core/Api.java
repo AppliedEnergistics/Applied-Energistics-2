@@ -18,6 +18,7 @@
 
 package appeng.core;
 
+
 import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.IAppEngApi;
@@ -39,13 +40,32 @@ import appeng.me.GridConnection;
 import appeng.me.GridNode;
 import appeng.util.Platform;
 
-public class Api implements IAppEngApi
-{
 
+public final class Api implements IAppEngApi
+{
 	public static final Api INSTANCE = new Api();
 
-	private Api() {
+	private final ApiPart partHelper;
 
+	// private MovableTileRegistry MovableRegistry = new MovableTileRegistry();
+	private final IRegistryContainer registryContainer;
+	private final IStorageHelper storageHelper;
+	private final Materials materials;
+	private final Items items;
+	private final Blocks blocks;
+	private final Parts parts;
+	private final ApiDefinitions definitions;
+
+	private Api()
+	{
+		this.parts = new Parts();
+		this.blocks = new Blocks();
+		this.items = new Items();
+		this.materials = new Materials();
+		this.storageHelper = new ApiStorage();
+		this.registryContainer = new RegistryContainer();
+		this.partHelper = new ApiPart();
+		this.definitions = new ApiDefinitions( this.partHelper );
 	}
 
 	// private MovableTileRegistry MovableRegistry = new MovableTileRegistry();
@@ -54,15 +74,16 @@ public class Api implements IAppEngApi
 
 	public final ApiPart partHelper = new ApiPart();
 
-	private final Materials materials = new Materials();
-	private final Items items = new Items();
-	private final Blocks blocks = new Blocks();
-	private final Parts parts = new Parts();
+	@Override
+	public IStorageHelper storage()
+	{
+		return this.storageHelper;
+	}
 
 	@Override
-	public IRegistryContainer registries()
+	public IPartHelper partHelper()
 	{
-		return this.rc;
+		return this.partHelper;
 	}
 
 	@Override
@@ -90,19 +111,13 @@ public class Api implements IAppEngApi
 	}
 
 	@Override
-	public IStorageHelper storage()
+	public ApiDefinitions definitions()
 	{
-		return this.storageHelper;
+		return this.definitions;
 	}
 
 	@Override
-	public IPartHelper partHelper()
-	{
-		return this.partHelper;
-	}
-
-	@Override
-	public IGridNode createGridNode(IGridBlock blk)
+	public IGridNode createGridNode( IGridBlock blk )
 	{
 		if ( Platform.isClient() )
 			throw new RuntimeException( "Grid Features are Server Side Only." );
@@ -110,9 +125,13 @@ public class Api implements IAppEngApi
 	}
 
 	@Override
-	public IGridConnection createGridConnection(IGridNode a, IGridNode b) throws FailedConnection
+	public IGridConnection createGridConnection( IGridNode a, IGridNode b ) throws FailedConnection
 	{
 		return new GridConnection( a, b, ForgeDirection.UNKNOWN );
 	}
 
+	public ApiPart getPartHelper()
+	{
+		return this.partHelper;
+	}
 }

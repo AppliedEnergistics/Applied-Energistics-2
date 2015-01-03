@@ -23,6 +23,7 @@
 
 package appeng.api;
 
+
 /**
  *
  * Entry point for api.
@@ -49,7 +50,7 @@ public class AEApi
 				Class c = Class.forName( "appeng.core.Api" );
 				api = (IAppEngApi) c.getField( "INSTANCE" ).get( c );
 			}
-			catch (Throwable e)
+			catch ( Throwable e )
 			{
 				return null;
 			}
@@ -57,5 +58,4 @@ public class AEApi
 
 		return api;
 	}
-
 }

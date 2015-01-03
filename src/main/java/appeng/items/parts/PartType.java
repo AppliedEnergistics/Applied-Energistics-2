@@ -144,7 +144,7 @@ public enum PartType
 		this.baseDamage = baseMetaValue;
 	}
 
-	public Enum<AEColor>[] getVariants()
+	public AEColor[] getVariants()
 	{
 		if ( this == CableSmart || this == CableCovered || this == CableGlass || this == CableDense )
 			return AEColor.values();

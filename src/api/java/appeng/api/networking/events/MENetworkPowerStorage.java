@@ -23,7 +23,9 @@
 
 package appeng.api.networking.events;
 
+
 import appeng.api.networking.energy.IAEPowerStorage;
+
 
 /**
  * informs the network, that a {@link IAEPowerStorage} block that had either run,
@@ -50,12 +52,13 @@ public class MENetworkPowerStorage extends MENetworkEvent
 		PROVIDE_POWER
 	}
 
+
 	public final IAEPowerStorage storage;
 	public final PowerEventType type;
 
-	public MENetworkPowerStorage(IAEPowerStorage t, PowerEventType y) {
+	public MENetworkPowerStorage( IAEPowerStorage t, PowerEventType y )
+	{
 		this.storage = t;
 		this.type = y;
 	}
-
 }

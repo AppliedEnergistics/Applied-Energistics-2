@@ -19,12 +19,6 @@
 package appeng.core;
 
 
-import java.lang.reflect.Field;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -45,6 +39,10 @@ import appeng.api.AEApi;
 import appeng.api.IAppEngApi;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.Blocks;
+import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IItems;
+import appeng.api.definitions.IMaterials;
+import appeng.api.definitions.IParts;
 import appeng.api.definitions.Items;
 import appeng.api.definitions.Materials;
 import appeng.api.definitions.Parts;
@@ -62,116 +60,22 @@ import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPartHelper;
-import appeng.api.util.AEColor;
-import appeng.api.util.AEItemDefinition;
-import appeng.block.crafting.BlockCraftingMonitor;
-import appeng.block.crafting.BlockCraftingStorage;
-import appeng.block.crafting.BlockCraftingUnit;
-import appeng.block.crafting.BlockMolecularAssembler;
-import appeng.block.grindstone.BlockCrank;
-import appeng.block.grindstone.BlockGrinder;
-import appeng.block.misc.BlockCellWorkbench;
-import appeng.block.misc.BlockCharger;
-import appeng.block.misc.BlockCondenser;
-import appeng.block.misc.BlockInscriber;
-import appeng.block.misc.BlockInterface;
-import appeng.block.misc.BlockLightDetector;
-import appeng.block.misc.BlockPaint;
-import appeng.block.misc.BlockQuartzGrowthAccelerator;
-import appeng.block.misc.BlockQuartzTorch;
-import appeng.block.misc.BlockSecurity;
-import appeng.block.misc.BlockSkyCompass;
-import appeng.block.misc.BlockTinyTNT;
-import appeng.block.misc.BlockVibrationChamber;
 import appeng.block.networking.BlockCableBus;
-import appeng.block.networking.BlockController;
-import appeng.block.networking.BlockCreativeEnergyCell;
-import appeng.block.networking.BlockDenseEnergyCell;
-import appeng.block.networking.BlockEnergyAcceptor;
-import appeng.block.networking.BlockEnergyCell;
-import appeng.block.networking.BlockWireless;
-import appeng.block.qnb.BlockQuantumLinkChamber;
-import appeng.block.qnb.BlockQuantumRing;
-import appeng.block.solids.BlockFluix;
-import appeng.block.solids.BlockQuartz;
-import appeng.block.solids.BlockQuartzChiseled;
-import appeng.block.solids.BlockQuartzGlass;
-import appeng.block.solids.BlockQuartzLamp;
-import appeng.block.solids.BlockQuartzPillar;
-import appeng.block.solids.BlockSkyStone;
-import appeng.block.solids.OreQuartz;
-import appeng.block.solids.OreQuartzCharged;
-import appeng.block.spatial.BlockMatrixFrame;
-import appeng.block.spatial.BlockSpatialIOPort;
-import appeng.block.spatial.BlockSpatialPylon;
-import appeng.block.stair.ChiseledQuartzStairBlock;
-import appeng.block.stair.FluixStairBlock;
-import appeng.block.stair.QuartzPillarStairBlock;
-import appeng.block.stair.QuartzStairBlock;
-import appeng.block.stair.SkyStoneBlockStairBlock;
-import appeng.block.stair.SkyStoneBrickStairBlock;
-import appeng.block.stair.SkyStoneSmallBrickStairBlock;
-import appeng.block.stair.SkyStoneStairBlock;
-import appeng.block.storage.BlockChest;
-import appeng.block.storage.BlockDrive;
-import appeng.block.storage.BlockIOPort;
-import appeng.block.storage.BlockSkyChest;
 import appeng.core.features.AEFeature;
-import appeng.core.features.ColoredItemDefinition;
-import appeng.core.features.DamagedItemDefinition;
 import appeng.core.features.IAEFeature;
 import appeng.core.features.IFeatureHandler;
-import appeng.core.features.IStackSrc;
-import appeng.core.features.ItemStackSrc;
-import appeng.core.features.NullItemDefinition;
-import appeng.core.features.WrappedDamageItemDefinition;
 import appeng.core.features.registries.P2PTunnelRegistry;
 import appeng.core.features.registries.entries.BasicCellHandler;
 import appeng.core.features.registries.entries.CreativeCellHandler;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.stats.PlayerStatsRegistration;
-import appeng.debug.BlockChunkloader;
-import appeng.debug.BlockCubeGenerator;
-import appeng.debug.BlockItemGen;
-import appeng.debug.BlockPhantomNode;
-import appeng.debug.ToolDebugCard;
-import appeng.debug.ToolEraser;
-import appeng.debug.ToolMeteoritePlacer;
-import appeng.debug.ToolReplicatorCard;
 import appeng.hooks.AETrading;
 import appeng.hooks.MeteoriteWorldGen;
 import appeng.hooks.QuartzWorldGen;
 import appeng.hooks.TickHandler;
 import appeng.integration.IntegrationType;
 import appeng.items.materials.ItemMultiMaterial;
-import appeng.items.materials.MaterialType;
-import appeng.items.misc.ItemCrystalSeed;
-import appeng.items.misc.ItemEncodedPattern;
-import appeng.items.misc.ItemPaintBall;
-import appeng.items.parts.ItemFacade;
-import appeng.items.parts.ItemMultiPart;
-import appeng.items.parts.PartType;
-import appeng.items.storage.ItemBasicStorageCell;
-import appeng.items.storage.ItemCreativeStorageCell;
-import appeng.items.storage.ItemSpatialStorageCell;
-import appeng.items.storage.ItemViewCell;
-import appeng.items.tools.ToolBiometricCard;
-import appeng.items.tools.ToolMemoryCard;
-import appeng.items.tools.ToolNetworkTool;
-import appeng.items.tools.powered.ToolChargedStaff;
-import appeng.items.tools.powered.ToolColorApplicator;
-import appeng.items.tools.powered.ToolEntropyManipulator;
-import appeng.items.tools.powered.ToolMassCannon;
-import appeng.items.tools.powered.ToolPortableCell;
-import appeng.items.tools.powered.ToolWirelessTerminal;
-import appeng.items.tools.quartz.ToolQuartzAxe;
-import appeng.items.tools.quartz.ToolQuartzCuttingKnife;
-import appeng.items.tools.quartz.ToolQuartzHoe;
-import appeng.items.tools.quartz.ToolQuartzPickaxe;
-import appeng.items.tools.quartz.ToolQuartzSpade;
-import appeng.items.tools.quartz.ToolQuartzSword;
-import appeng.items.tools.quartz.ToolQuartzWrench;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cache.EnergyGridCache;
 import appeng.me.cache.GridStorageCache;
@@ -207,7 +111,6 @@ import appeng.recipes.ores.OreDictionaryHandler;
 import appeng.spatial.BiomeGenStorage;
 import appeng.spatial.StorageWorldProvider;
 import appeng.tile.AEBaseTile;
-import appeng.util.ClassInstantiation;
 import appeng.util.Platform;
 
 
@@ -216,37 +119,20 @@ public final class Registration
 	final public static Registration INSTANCE = new Registration();
 
 	private final RecipeHandler recipeHandler;
-	private final Multimap<AEFeature, Class<? extends IAEFeature>> featuresToEntities;
 	public BiomeGenBase storageBiome;
 
 	private Registration()
 	{
 		this.recipeHandler = new RecipeHandler();
-		this.featuresToEntities = ArrayListMultimap.create();
 	}
 
 	public void preInitialize( FMLPreInitializationEvent event )
 	{
 		this.registerSpatial( false );
 
-		IRecipeHandlerRegistry recipeRegistry = AEApi.instance().registries().recipes();
-		recipeRegistry.addNewSubItemResolver( new AEItemResolver() );
-
-		recipeRegistry.addNewCraftHandler( "hccrusher", HCCrusher.class );
-		recipeRegistry.addNewCraftHandler( "mekcrusher", MekCrusher.class );
-		recipeRegistry.addNewCraftHandler( "mekechamber", MekEnrichment.class );
-		recipeRegistry.addNewCraftHandler( "grind", Grind.class );
-		recipeRegistry.addNewCraftHandler( "crusher", Crusher.class );
-		recipeRegistry.addNewCraftHandler( "grindfz", GrindFZ.class );
-		recipeRegistry.addNewCraftHandler( "pulverizer", Pulverizer.class );
-		recipeRegistry.addNewCraftHandler( "macerator", Macerator.class );
-
-		recipeRegistry.addNewCraftHandler( "smelt", Smelt.class );
-		recipeRegistry.addNewCraftHandler( "inscribe", Inscribe.class );
-		recipeRegistry.addNewCraftHandler( "press", Press.class );
-
-		recipeRegistry.addNewCraftHandler( "shaped", Shaped.class );
-		recipeRegistry.addNewCraftHandler( "shapeless", Shapeless.class );
+		final Api api = Api.INSTANCE;
+		IRecipeHandlerRegistry recipeRegistry = api.registries().recipes();
+		this.registerCraftHandlers( recipeRegistry );
 
 		RecipeSorter.register( "AE2-Facade", FacadeRecipe.class, Category.SHAPED, "" );
 		RecipeSorter.register( "AE2-Shaped", ShapedRecipe.class, Category.SHAPED, "" );
@@ -254,219 +140,33 @@ public final class Registration
 
 		MinecraftForge.EVENT_BUS.register( OreDictionaryHandler.INSTANCE );
 
-		Items items = Api.INSTANCE.items();
-		Materials materials = Api.INSTANCE.materials();
-		Parts parts = Api.INSTANCE.parts();
-		Blocks blocks = Api.INSTANCE.blocks();
+		final ApiDefinitions definitions = api.definitions();
 
-		AEItemDefinition materialItem = this.addFeature( ItemMultiMaterial.class );
+		final IBlocks apiBlocks = definitions.blocks();
+		final IItems apiItems = definitions.items();
+		final IMaterials apiMaterials = definitions.materials();
+		final IParts apiParts = definitions.parts();
 
-		Class<?> materialClass = materials.getClass();
-		for ( MaterialType mat : MaterialType.values() )
+		final Items items = api.items();
+		final Materials materials = api.materials();
+		final Parts parts = api.parts();
+		final Blocks blocks = api.blocks();
+
+		this.assignMaterials( materials, apiMaterials );
+		this.assignParts( parts, apiParts );
+		this.assignBlocks( blocks, apiBlocks );
+		this.assignItems( items, apiItems );
+
+		// Register all detected handlers and features (items, blocks) in pre-init
+		for ( IFeatureHandler handler : definitions.getFeatureHandlerRegistry().getRegisteredFeatureHandlers() )
 		{
-			try
-			{
-				if ( mat == MaterialType.InvalidType )
-					( ( ItemMultiMaterial ) materialItem.item() ).createMaterial( mat );
-				else
-				{
-					Field f = materialClass.getField( "material" + mat.name() );
-					IStackSrc is = ( ( ItemMultiMaterial ) materialItem.item() ).createMaterial( mat );
-					if ( is != null )
-						f.set( materials, new DamagedItemDefinition( is ) );
-					else
-						f.set( materials, new NullItemDefinition() );
-				}
-			}
-			catch ( Throwable err )
-			{
-				AELog.severe( "Error creating material: " + mat.name() );
-				throw new RuntimeException( err );
-			}
+			handler.register();
 		}
 
-		AEItemDefinition partItem = this.addFeature( ItemMultiPart.class );
-
-		Class<?> partClass = parts.getClass();
-		for ( PartType type : PartType.values() )
+		for ( IAEFeature feature : definitions.getFeatureRegistry().getRegisteredFeatures() )
 		{
-			try
-			{
-				if ( type == PartType.InvalidType )
-					( ( ItemMultiPart ) partItem.item() ).createPart( type, null );
-				else
-				{
-					Field f = partClass.getField( "part" + type.name() );
-					Enum<AEColor>[] variants = type.getVariants();
-					if ( variants == null )
-					{
-						ItemStackSrc is = ( ( ItemMultiPart ) partItem.item() ).createPart( type, null );
-						if ( is != null )
-							f.set( parts, new DamagedItemDefinition( is ) );
-						else
-							f.set( parts, new NullItemDefinition() );
-					}
-					else
-					{
-						if ( variants[0] instanceof AEColor )
-						{
-							ColoredItemDefinition def = new ColoredItemDefinition();
-
-							for ( Enum<AEColor> v : variants )
-							{
-								ItemStackSrc is = ( ( ItemMultiPart ) partItem.item() ).createPart( type, v );
-								if ( is != null )
-									def.add( ( AEColor ) v, is );
-							}
-
-							f.set( parts, def );
-						}
-					}
-				}
-			}
-			catch ( Throwable err )
-			{
-				AELog.severe( "Error creating part: " + type.name() );
-				throw new RuntimeException( err );
-			}
+			feature.postInit();
 		}
-
-		// very important block!
-		blocks.blockMultiPart = this.addFeature( BlockCableBus.class );
-
-		blocks.blockCraftingUnit = this.addFeature( BlockCraftingUnit.class );
-		blocks.blockCraftingAccelerator = new WrappedDamageItemDefinition( blocks.blockCraftingUnit, 1 );
-		blocks.blockCraftingMonitor = this.addFeature( BlockCraftingMonitor.class );
-		blocks.blockCraftingStorage1k = this.addFeature( BlockCraftingStorage.class );
-		blocks.blockCraftingStorage4k = new WrappedDamageItemDefinition( blocks.blockCraftingStorage1k, 1 );
-		blocks.blockCraftingStorage16k = new WrappedDamageItemDefinition( blocks.blockCraftingStorage1k, 2 );
-		blocks.blockCraftingStorage64k = new WrappedDamageItemDefinition( blocks.blockCraftingStorage1k, 3 );
-		blocks.blockMolecularAssembler = this.addFeature( BlockMolecularAssembler.class );
-
-		blocks.blockQuartzOre = this.addFeature( OreQuartz.class );
-		blocks.blockQuartzOreCharged = this.addFeature( OreQuartzCharged.class );
-		blocks.blockMatrixFrame = this.addFeature( BlockMatrixFrame.class );
-		blocks.blockQuartz = this.addFeature( BlockQuartz.class );
-		blocks.blockFluix = this.addFeature( BlockFluix.class );
-		blocks.blockSkyStone = this.addFeature( BlockSkyStone.class );
-		blocks.blockSkyChest = this.addFeature( BlockSkyChest.class );
-		blocks.blockSkyCompass = this.addFeature( BlockSkyCompass.class );
-
-		blocks.blockQuartzGlass = this.addFeature( BlockQuartzGlass.class );
-		blocks.blockQuartzVibrantGlass = this.addFeature( BlockQuartzLamp.class );
-		blocks.blockQuartzPillar = this.addFeature( BlockQuartzPillar.class );
-		blocks.blockQuartzChiseled = this.addFeature( BlockQuartzChiseled.class );
-		blocks.blockQuartzTorch = this.addFeature( BlockQuartzTorch.class );
-		blocks.blockLightDetector = this.addFeature( BlockLightDetector.class );
-		blocks.blockCharger = this.addFeature( BlockCharger.class );
-		blocks.blockQuartzGrowthAccelerator = this.addFeature( BlockQuartzGrowthAccelerator.class );
-
-		blocks.blockGrindStone = this.addFeature( BlockGrinder.class );
-		blocks.blockCrankHandle = this.addFeature( BlockCrank.class );
-		blocks.blockInscriber = this.addFeature( BlockInscriber.class );
-		blocks.blockWireless = this.addFeature( BlockWireless.class );
-		blocks.blockTinyTNT = this.addFeature( BlockTinyTNT.class );
-
-		blocks.blockQuantumRing = this.addFeature( BlockQuantumRing.class );
-		blocks.blockQuantumLink = this.addFeature( BlockQuantumLinkChamber.class );
-
-		blocks.blockSpatialPylon = this.addFeature( BlockSpatialPylon.class );
-		blocks.blockSpatialIOPort = this.addFeature( BlockSpatialIOPort.class );
-
-		blocks.blockController = this.addFeature( BlockController.class );
-		blocks.blockDrive = this.addFeature( BlockDrive.class );
-		blocks.blockChest = this.addFeature( BlockChest.class );
-		blocks.blockInterface = this.addFeature( BlockInterface.class );
-		blocks.blockCellWorkbench = this.addFeature( BlockCellWorkbench.class );
-		blocks.blockIOPort = this.addFeature( BlockIOPort.class );
-		blocks.blockCondenser = this.addFeature( BlockCondenser.class );
-		blocks.blockEnergyAcceptor = this.addFeature( BlockEnergyAcceptor.class );
-		blocks.blockVibrationChamber = this.addFeature( BlockVibrationChamber.class );
-
-		blocks.blockEnergyCell = this.addFeature( BlockEnergyCell.class );
-		blocks.blockEnergyCellDense = this.addFeature( BlockDenseEnergyCell.class );
-		blocks.blockEnergyCellCreative = this.addFeature( BlockCreativeEnergyCell.class );
-
-		blocks.blockSecurity = this.addFeature( BlockSecurity.class );
-		blocks.blockPaint = this.addFeature( BlockPaint.class );
-
-		items.itemCellCreative = this.addFeature( ItemCreativeStorageCell.class );
-		items.itemViewCell = this.addFeature( ItemViewCell.class );
-		items.itemEncodedPattern = this.addFeature( ItemEncodedPattern.class );
-
-		items.itemCell1k = this.addFeature( ItemBasicStorageCell.class, MaterialType.Cell1kPart, 1 );
-		items.itemCell4k = this.addFeature( ItemBasicStorageCell.class, MaterialType.Cell4kPart, 4 );
-		items.itemCell16k = this.addFeature( ItemBasicStorageCell.class, MaterialType.Cell16kPart, 16 );
-		items.itemCell64k = this.addFeature( ItemBasicStorageCell.class, MaterialType.Cell64kPart, 64 );
-
-		items.itemSpatialCell2 = this.addFeature( ItemSpatialStorageCell.class, MaterialType.Cell2SpatialPart, 2 );
-		items.itemSpatialCell16 = this.addFeature( ItemSpatialStorageCell.class, MaterialType.Cell16SpatialPart, 16 );
-		items.itemSpatialCell128 = this.addFeature( ItemSpatialStorageCell.class, MaterialType.Cell128SpatialPart, 128 );
-
-		items.itemCertusQuartzKnife = this.addFeature( ToolQuartzCuttingKnife.class, AEFeature.CertusQuartzTools );
-		items.itemCertusQuartzWrench = this.addFeature( ToolQuartzWrench.class, AEFeature.CertusQuartzTools );
-		items.itemCertusQuartzAxe = this.addFeature( ToolQuartzAxe.class, AEFeature.CertusQuartzTools );
-		items.itemCertusQuartzHoe = this.addFeature( ToolQuartzHoe.class, AEFeature.CertusQuartzTools );
-		items.itemCertusQuartzPick = this.addFeature( ToolQuartzPickaxe.class, AEFeature.CertusQuartzTools );
-		items.itemCertusQuartzShovel = this.addFeature( ToolQuartzSpade.class, AEFeature.CertusQuartzTools );
-		items.itemCertusQuartzSword = this.addFeature( ToolQuartzSword.class, AEFeature.CertusQuartzTools );
-
-		items.itemNetherQuartzKnife = this.addFeature( ToolQuartzCuttingKnife.class, AEFeature.NetherQuartzTools );
-		items.itemNetherQuartzWrench = this.addFeature( ToolQuartzWrench.class, AEFeature.NetherQuartzTools );
-		items.itemNetherQuartzAxe = this.addFeature( ToolQuartzAxe.class, AEFeature.NetherQuartzTools );
-		items.itemNetherQuartzHoe = this.addFeature( ToolQuartzHoe.class, AEFeature.NetherQuartzTools );
-		items.itemNetherQuartzPick = this.addFeature( ToolQuartzPickaxe.class, AEFeature.NetherQuartzTools );
-		items.itemNetherQuartzShovel = this.addFeature( ToolQuartzSpade.class, AEFeature.NetherQuartzTools );
-		items.itemNetherQuartzSword = this.addFeature( ToolQuartzSword.class, AEFeature.NetherQuartzTools );
-
-		items.itemMassCannon = this.addFeature( ToolMassCannon.class );
-		items.itemMemoryCard = this.addFeature( ToolMemoryCard.class );
-		items.itemChargedStaff = this.addFeature( ToolChargedStaff.class );
-		items.itemEntropyManipulator = this.addFeature( ToolEntropyManipulator.class );
-		items.itemColorApplicator = this.addFeature( ToolColorApplicator.class );
-
-		items.itemWirelessTerminal = this.addFeature( ToolWirelessTerminal.class );
-		items.itemNetworkTool = this.addFeature( ToolNetworkTool.class );
-		items.itemPortableCell = this.addFeature( ToolPortableCell.class );
-		items.itemBiometricCard = this.addFeature( ToolBiometricCard.class );
-
-		items.itemFacade = this.addFeature( ItemFacade.class );
-		items.itemCrystalSeed = this.addFeature( ItemCrystalSeed.class );
-
-		ColoredItemDefinition paintBall;
-		ColoredItemDefinition lumenPaintBall;
-		items.itemPaintBall = paintBall = new ColoredItemDefinition();
-		items.itemLumenPaintBall = lumenPaintBall = new ColoredItemDefinition();
-		AEItemDefinition pb = this.addFeature( ItemPaintBall.class );
-
-		for ( AEColor c : AEColor.values() )
-		{
-			if ( c != AEColor.Transparent )
-			{
-				paintBall.add( c, new ItemStackSrc( pb.item(), c.ordinal() ) );
-				lumenPaintBall.add( c, new ItemStackSrc( pb.item(), 20 + c.ordinal() ) );
-			}
-		}
-
-		// stairs
-		this.addFeature( SkyStoneStairBlock.class, blocks.blockSkyStone.block(), 0 );
-		this.addFeature( SkyStoneBlockStairBlock.class, blocks.blockSkyStone.block(), 1 );
-		this.addFeature( SkyStoneBrickStairBlock.class, blocks.blockSkyStone.block(), 2 );
-		this.addFeature( SkyStoneSmallBrickStairBlock.class, blocks.blockSkyStone.block(), 3 );
-		this.addFeature( FluixStairBlock.class, blocks.blockFluix.block() );
-		this.addFeature( QuartzStairBlock.class, blocks.blockQuartz.block() );
-		this.addFeature( ChiseledQuartzStairBlock.class, blocks.blockQuartzChiseled.block() );
-		this.addFeature( QuartzPillarStairBlock.class, blocks.blockQuartzPillar.block() );
-
-		// unsupported developer tools
-		this.addFeature( ToolEraser.class );
-		this.addFeature( ToolMeteoritePlacer.class );
-		this.addFeature( ToolDebugCard.class );
-		this.addFeature( ToolReplicatorCard.class );
-		this.addFeature( BlockItemGen.class );
-		this.addFeature( BlockChunkloader.class );
-		this.addFeature( BlockPhantomNode.class );
-		this.addFeature( BlockCubeGenerator.class );
 	}
 
 	private void registerSpatial( boolean force )
@@ -508,36 +208,278 @@ public final class Registration
 		}
 	}
 
-	private AEItemDefinition addFeature( Class<? extends IAEFeature> featureClass, Object... args )
+	private void registerCraftHandlers( IRecipeHandlerRegistry registry )
 	{
-		final ClassInstantiation<IAEFeature> instantiation = new ClassInstantiation<IAEFeature>( featureClass, args );
-		final Optional<IAEFeature> instance = instantiation.get();
+		registry.addNewSubItemResolver( new AEItemResolver() );
 
-		if ( instance.isPresent() )
-		{
-			final IAEFeature feature = instance.get();
-			final IFeatureHandler handler = feature.handler();
-			if ( handler.isFeatureAvailable() )
-			{
-				for ( AEFeature f : handler.getFeatures() )
-				{
-					this.featuresToEntities.put( f, featureClass );
-				}
+		registry.addNewCraftHandler( "hccrusher", HCCrusher.class );
+		registry.addNewCraftHandler( "mekcrusher", MekCrusher.class );
+		registry.addNewCraftHandler( "mekechamber", MekEnrichment.class );
+		registry.addNewCraftHandler( "grind", Grind.class );
+		registry.addNewCraftHandler( "crusher", Crusher.class );
+		registry.addNewCraftHandler( "grindfz", GrindFZ.class );
+		registry.addNewCraftHandler( "pulverizer", Pulverizer.class );
+		registry.addNewCraftHandler( "macerator", Macerator.class );
 
-				handler.register();
-				feature.postInit();
+		registry.addNewCraftHandler( "smelt", Smelt.class );
+		registry.addNewCraftHandler( "inscribe", Inscribe.class );
+		registry.addNewCraftHandler( "press", Press.class );
 
-				return handler.getDefinition();
-			}
-			else
-			{
-				return null;
-			}
-		}
-		else
-		{
-			throw new RuntimeException( "Error upon Class Instantiation with Feature: " + featureClass.getName() );
-		}
+		registry.addNewCraftHandler( "shaped", Shaped.class );
+		registry.addNewCraftHandler( "shapeless", Shapeless.class );
+	}
+
+	/**
+	 * Assigns materials from the new API to the old API
+	 *
+	 * @param target old API
+	 * @param source new API
+	 *
+	 * @deprecated to be removed when the public definition API is removed
+	 */
+	@Deprecated
+	private void assignMaterials( Materials target, IMaterials source )
+	{
+		target.materialCell2SpatialPart = source.cell2SpatialPart().orNull();
+		target.materialCell16SpatialPart = source.cell16SpatialPart().orNull();
+		target.materialCell128SpatialPart = source.cell128SpatialPart().orNull();
+
+		target.materialSilicon = source.silicon().orNull();
+		target.materialSkyDust = source.skyDust().orNull();
+
+		target.materialCalcProcessorPress = source.calcProcessorPress().orNull();
+		target.materialEngProcessorPress = source.engProcessorPress().orNull();
+		target.materialLogicProcessorPress = source.logicProcessorPress().orNull();
+
+		target.materialCalcProcessorPrint = source.calcProcessorPrint().orNull();
+		target.materialEngProcessorPrint = source.engProcessorPrint().orNull();
+		target.materialLogicProcessorPrint = source.logicProcessorPrint().orNull();
+
+		target.materialSiliconPress = source.siliconPress().orNull();
+		target.materialSiliconPrint = source.siliconPrint().orNull();
+
+		target.materialNamePress = source.namePress().orNull();
+
+		target.materialLogicProcessor = source.logicProcessor().orNull();
+		target.materialCalcProcessor = source.calcProcessor().orNull();
+		target.materialEngProcessor = source.engProcessor().orNull();
+
+		target.materialBasicCard = source.basicCard().orNull();
+		target.materialAdvCard = source.advCard().orNull();
+
+		target.materialPurifiedCertusQuartzCrystal = source.purifiedCertusQuartzCrystal().orNull();
+		target.materialPurifiedNetherQuartzCrystal = source.purifiedNetherQuartzCrystal().orNull();
+		target.materialPurifiedFluixCrystal = source.purifiedFluixCrystal().orNull();
+
+		target.materialCell1kPart = source.cell1kPart().orNull();
+		target.materialCell4kPart = source.cell4kPart().orNull();
+		target.materialCell16kPart = source.cell16kPart().orNull();
+		target.materialCell64kPart = source.cell64kPart().orNull();
+		target.materialEmptyStorageCell = source.emptyStorageCell().orNull();
+
+		target.materialCardRedstone = source.cardRedstone().orNull();
+		target.materialCardSpeed = source.cardSpeed().orNull();
+		target.materialCardCapacity = source.cardCapacity().orNull();
+		target.materialCardFuzzy = source.cardFuzzy().orNull();
+		target.materialCardInverter = source.cardInverter().orNull();
+		target.materialCardCrafting = source.cardCrafting().orNull();
+
+		target.materialEnderDust = source.enderDust().orNull();
+		target.materialFlour = source.flour().orNull();
+		target.materialGoldDust = source.goldDust().orNull();
+		target.materialIronDust = source.ironDust().orNull();
+		target.materialFluixDust = source.fluixDust().orNull();
+		target.materialCertusQuartzDust = source.certusQuartzDust().orNull();
+		target.materialNetherQuartzDust = source.netherQuartzDust().orNull();
+
+		target.materialMatterBall = source.matterBall().orNull();
+		target.materialIronNugget = source.ironNugget().orNull();
+
+		target.materialCertusQuartzCrystal = source.certusQuartzCrystal().orNull();
+		target.materialCertusQuartzCrystalCharged = source.certusQuartzCrystalCharged().orNull();
+		target.materialFluixCrystal = source.fluixCrystal().orNull();
+		target.materialFluixPearl = source.fluixPearl().orNull();
+
+		target.materialWoodenGear = source.woodenGear().orNull();
+
+		target.materialWireless = source.wireless().orNull();
+		target.materialWirelessBooster = source.wirelessBooster().orNull();
+
+		target.materialAnnihilationCore = source.annihilationCore().orNull();
+		target.materialFormationCore = source.formationCore().orNull();
+
+		target.materialSingularity = source.singularity().orNull();
+		target.materialQESingularity = source.qESingularity().orNull();
+		target.materialBlankPattern = source.blankPattern().orNull();
+	}
+
+	/**
+	 * Assigns parts from the new API to the old API
+	 *
+	 * @param target old API
+	 * @param source new API
+	 *
+	 * @deprecated to be removed when the public definition API is removed
+	 */
+	@Deprecated
+	private void assignParts( Parts target, IParts source )
+	{
+		target.partCableSmart = source.cableSmart().orNull();
+		target.partCableCovered = source.cableCovered().orNull();
+		target.partCableGlass = source.cableGlass().orNull();
+		target.partCableDense = source.cableDense().orNull();
+		target.partLumenCableSmart = source.lumenCableSmart().orNull();
+		target.partLumenCableCovered = source.lumenCableCovered().orNull();
+		target.partLumenCableGlass = source.lumenCableGlass().orNull();
+		target.partLumenCableDense = source.lumenCableDense().orNull();
+		target.partQuartzFiber = source.quartzFiber().orNull();
+		target.partToggleBus = source.toggleBus().orNull();
+		target.partInvertedToggleBus = source.invertedToggleBus().orNull();
+		target.partStorageBus = source.storageBus().orNull();
+		target.partImportBus = source.importBus().orNull();
+		target.partExportBus = source.exportBus().orNull();
+		target.partInterface = source.iface().orNull();
+		target.partLevelEmitter = source.levelEmitter().orNull();
+		target.partAnnihilationPlane = source.annihilationPlane().orNull();
+		target.partFormationPlane = source.formationPlane().orNull();
+		target.partP2PTunnelME = target.partP2PTunnelRedstone = target.partP2PTunnelItems = target.partP2PTunnelLiquids = target.partP2PTunnelMJ = target.partP2PTunnelEU = target.partP2PTunnelRF = target.partP2PTunnelLight = target.partCableAnchor = source.cableAnchor().orNull();
+		target.partMonitor = source.monitor().orNull();
+		target.partSemiDarkMonitor = source.semiDarkMonitor().orNull();
+		target.partDarkMonitor = source.darkMonitor().orNull();
+		target.partInterfaceTerminal = source.interfaceTerminal().orNull();
+		target.partPatternTerminal = source.patternTerminal().orNull();
+		target.partCraftingTerminal = source.craftingTerminal().orNull();
+		target.partTerminal = source.terminal().orNull();
+		target.partStorageMonitor = source.storageMonitor().orNull();
+		target.partConversionMonitor = source.conversionMonitor().orNull();
+	}
+
+	/**
+	 * Assigns blocks from the new API to the old API
+	 *
+	 * @param target old API
+	 * @param source new API
+	 *
+	 * @deprecated to be removed when the public definition API is removed
+	 */
+	@Deprecated
+	private void assignBlocks( Blocks target, IBlocks source )
+	{
+		target.blockMultiPart = source.multiPart().orNull();
+
+		target.blockCraftingUnit = source.craftingUnit().orNull();
+		target.blockCraftingAccelerator = source.craftingAccelerator().orNull();
+		target.blockCraftingMonitor = source.craftingMonitor().orNull();
+		target.blockCraftingStorage1k = source.craftingStorage1k().orNull();
+		target.blockCraftingStorage4k = source.craftingStorage4k().orNull();
+		target.blockCraftingStorage16k = source.craftingStorage16k().orNull();
+		target.blockCraftingStorage64k = source.craftingStorage64k().orNull();
+		target.blockMolecularAssembler = source.molecularAssembler().orNull();
+
+		target.blockQuartzOre = source.quartzOre().orNull();
+		target.blockQuartzOreCharged = source.quartzOreCharged().orNull();
+		target.blockMatrixFrame = source.matrixFrame().orNull();
+		target.blockQuartz = source.quartz().orNull();
+		target.blockFluix = source.fluix().orNull();
+		target.blockSkyStone = source.skyStone().orNull();
+		target.blockSkyChest = source.skyChest().orNull();
+		target.blockSkyCompass = source.skyCompass().orNull();
+
+		target.blockQuartzGlass = source.quartzGlass().orNull();
+		target.blockQuartzVibrantGlass = source.quartzVibrantGlass().orNull();
+		target.blockQuartzPillar = source.quartzPillar().orNull();
+		target.blockQuartzChiseled = source.quartzChiseled().orNull();
+		target.blockQuartzTorch = source.quartzTorch().orNull();
+		target.blockLightDetector = source.lightDetector().orNull();
+		target.blockCharger = source.charger().orNull();
+		target.blockQuartzGrowthAccelerator = source.quartzGrowthAccelerator().orNull();
+
+		target.blockGrindStone = source.grindStone().orNull();
+		target.blockCrankHandle = source.crankHandle().orNull();
+		target.blockInscriber = source.inscriber().orNull();
+		target.blockWireless = source.wireless().orNull();
+		target.blockTinyTNT = source.tinyTNT().orNull();
+
+		target.blockQuantumRing = source.quantumRing().orNull();
+		target.blockQuantumLink = source.quantumLink().orNull();
+
+		target.blockSpatialPylon = source.spatialPylon().orNull();
+		target.blockSpatialIOPort = source.spatialIOPort().orNull();
+
+		target.blockController = source.controller().orNull();
+		target.blockDrive = source.drive().orNull();
+		target.blockChest = source.chest().orNull();
+		target.blockInterface = source.iface().orNull();
+		target.blockCellWorkbench = source.cellWorkbench().orNull();
+		target.blockIOPort = source.iOPort().orNull();
+		target.blockCondenser = source.condenser().orNull();
+		target.blockEnergyAcceptor = source.energyAcceptor().orNull();
+		target.blockVibrationChamber = source.vibrationChamber().orNull();
+
+		target.blockEnergyCell = source.energyCell().orNull();
+		target.blockEnergyCellDense = source.energyCellDense().orNull();
+		target.blockEnergyCellCreative = source.energyCellCreative().orNull();
+
+		target.blockSecurity = source.security().orNull();
+		target.blockPaint = source.paint().orNull();
+	}
+
+	/**
+	 * Assigns materials from the new API to the old API
+	 *
+	 * @param target old API
+	 * @param source new API
+	 *
+	 * @deprecated to be removed when the public definition API is removed
+	 */
+	@Deprecated
+	private void assignItems( Items target, IItems source )
+	{
+		target.itemCellCreative = source.cellCreative().orNull();
+		target.itemViewCell = source.viewCell().orNull();
+		target.itemEncodedPattern = source.encodedPattern().orNull();
+
+		target.itemCell1k = source.cell1k().orNull();
+		target.itemCell4k = source.cell4k().orNull();
+		target.itemCell16k = source.cell16k().orNull();
+		target.itemCell64k = source.cell64k().orNull();
+
+		target.itemSpatialCell2 = source.spatialCell2().orNull();
+		target.itemSpatialCell16 = source.spatialCell16().orNull();
+		target.itemSpatialCell128 = source.spatialCell128().orNull();
+
+		target.itemCertusQuartzKnife = source.certusQuartzKnife().orNull();
+		target.itemCertusQuartzWrench = source.certusQuartzWrench().orNull();
+		target.itemCertusQuartzAxe = source.certusQuartzAxe().orNull();
+		target.itemCertusQuartzHoe = source.certusQuartzHoe().orNull();
+		target.itemCertusQuartzPick = source.certusQuartzPick().orNull();
+		target.itemCertusQuartzShovel = source.certusQuartzShovel().orNull();
+		target.itemCertusQuartzSword = source.certusQuartzSword().orNull();
+
+		target.itemNetherQuartzKnife = source.netherQuartzKnife().orNull();
+		target.itemNetherQuartzWrench = source.netherQuartzWrench().orNull();
+		target.itemNetherQuartzAxe = source.netherQuartzAxe().orNull();
+		target.itemNetherQuartzHoe = source.netherQuartzHoe().orNull();
+		target.itemNetherQuartzPick = source.netherQuartzPick().orNull();
+		target.itemNetherQuartzShovel = source.netherQuartzShovel().orNull();
+		target.itemNetherQuartzSword = source.netherQuartzSword().orNull();
+
+		target.itemMassCannon = source.massCannon().orNull();
+		target.itemMemoryCard = source.memoryCard().orNull();
+		target.itemChargedStaff = source.chargedStaff().orNull();
+		target.itemEntropyManipulator = source.entropyManipulator().orNull();
+		target.itemColorApplicator = source.colorApplicator().orNull();
+
+		target.itemWirelessTerminal = source.wirelessTerminal().orNull();
+		target.itemNetworkTool = source.networkTool().orNull();
+		target.itemPortableCell = source.portableCell().orNull();
+		target.itemBiometricCard = source.biometricCard().orNull();
+
+		target.itemFacade = source.facade().orNull();
+		target.itemCrystalSeed = source.crystalSeed().orNull();
+
+		target.itemPaintBall = source.coloredPaintBall().orNull();
+		target.itemLumenPaintBall = source.coloredLumenPaintBall().orNull();
 	}
 
 	public void initialize( FMLInitializationEvent event )
@@ -621,14 +563,14 @@ public final class Registration
 		final Items items = api.items();
 
 		// default settings..
-		( ( P2PTunnelRegistry ) registries.p2pTunnel() ).configure();
+		( (P2PTunnelRegistry) registries.p2pTunnel() ).configure();
 
 		// add to localization..
 		PlayerMessages.values();
 		GuiText.values();
 
-		Api.INSTANCE.partHelper.initFMPSupport();
-		( ( BlockCableBus ) blocks.blockMultiPart.block() ).setupTile();
+		Api.INSTANCE.getPartHelper().initFMPSupport();
+		( (BlockCableBus) blocks.blockMultiPart.block() ).setupTile();
 
 		// Interface
 		Upgrades.CRAFTING.registerItem( parts.partInterface, 1 );
@@ -697,7 +639,7 @@ public final class Registration
 
 		if ( items.itemWirelessTerminal != null )
 		{
-			registries.wireless().registerWirelessHandler( ( IWirelessTermHandler ) items.itemWirelessTerminal.item() );
+			registries.wireless().registerWirelessHandler( (IWirelessTermHandler) items.itemWirelessTerminal.item() );
 		}
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.ChestLoot ) )

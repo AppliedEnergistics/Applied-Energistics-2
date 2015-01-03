@@ -23,11 +23,13 @@
 
 package appeng.api.recipes;
 
+
+import java.util.List;
+
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
 
-import java.util.List;
 
 public interface ICraftHandler
 {
@@ -37,9 +39,10 @@ public interface ICraftHandler
 	 *
 	 * @param input parsed inputs
 	 * @param output parsed outputs
+	 *
 	 * @throws RecipeError
 	 */
-	public void setup(List<List<IIngredient>> input, List<List<IIngredient>> output) throws RecipeError;
+	public void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeError;
 
 	/**
 	 * called when all recipes are parsed, and your required to register your recipe.
@@ -48,5 +51,4 @@ public interface ICraftHandler
 	 * @throws MissingIngredientError
 	 */
 	public void register() throws RegistrationError, MissingIngredientError;
-
 }

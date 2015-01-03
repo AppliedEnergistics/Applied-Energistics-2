@@ -23,7 +23,9 @@
 
 package appeng.api;
 
+
 import appeng.api.definitions.Blocks;
+import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.Items;
 import appeng.api.definitions.Materials;
 import appeng.api.definitions.Parts;
@@ -31,10 +33,10 @@ import appeng.api.exceptions.FailedConnection;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridConnection;
-import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPartHelper;
 import appeng.api.storage.IStorageHelper;
+
 
 public interface IAppEngApi
 {
@@ -56,39 +58,52 @@ public interface IAppEngApi
 
 	/**
 	 * @return an accessible list of all of AE's Items
+	 *
+	 * @deprecated use {@link appeng.api.definitions.IDefinitions#items()}
 	 */
+	@Deprecated
 	Items items();
 
 	/**
 	 * @return an accessible list of all of AE's materials; materials are items
+	 *
+	 * @deprecated use {@link appeng.api.definitions.IDefinitions#materials()}
 	 */
+	@Deprecated
 	Materials materials();
 
 	/**
 	 * @return an accessible list of all of AE's blocks
+	 *
+	 * @deprecated use {@link appeng.api.definitions.IDefinitions#blocks()}
 	 */
+	@Deprecated
 	Blocks blocks();
 
 	/**
 	 * @return an accessible list of all of AE's parts, parts are items
+	 *
+	 * @deprecated use {@link appeng.api.definitions.IDefinitions#parts()}
 	 */
+	@Deprecated
 	Parts parts();
 
 	/**
 	 * create a grid node for your {@link IGridHost}
 	 *
 	 * @param block grid block
+	 *
 	 * @return grid node of block
 	 */
-	IGridNode createGridNode(IGridBlock block);
+	IGridNode createGridNode( IGridBlock block );
 
 	/**
-	 * create a connection between two {@link IGridNode}
+	 * create a connection between two {@link appeng.api.networking.IGridNode}
 	 *
 	 * @param a to be connected gridnode
 	 * @param b to be connected gridnode
-	 * @throws FailedConnection
+	 *
+	 * @throws appeng.api.exceptions.FailedConnection
 	 */
-	IGridConnection createGridConnection(IGridNode a, IGridNode b) throws FailedConnection;
-
+	IGridConnection createGridConnection( IGridNode a, IGridNode b ) throws FailedConnection;
 }

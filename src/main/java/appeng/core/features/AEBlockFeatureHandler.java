@@ -46,7 +46,7 @@ public class AEBlockFeatureHandler implements IFeatureHandler
 		this.features = features;
 		this.featured = featured;
 		this.extractor = new FeatureNameExtractor( featured.getClass(), subName );
-		this.enabled = new FeaturedActiveChecker( features ).get();
+		this.enabled = new FeaturedActiveChecker( features ).isFeatureActive();
 		this.definition = new AEBlockDefinition( featured, this.enabled );
 	}
 
