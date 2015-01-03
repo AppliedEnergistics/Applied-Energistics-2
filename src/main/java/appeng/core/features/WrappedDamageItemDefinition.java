@@ -18,67 +18,92 @@
 
 package appeng.core.features;
 
+
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 
-import appeng.api.util.AEItemDefinition;
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
 
-public class WrappedDamageItemDefinition implements AEItemDefinition
+import appeng.api.definitions.ITileDefinition;
+
+
+public final class WrappedDamageItemDefinition implements ITileDefinition
 {
+	private final ITileDefinition definition;
+	private final int damage;
 
-	final AEItemDefinition baseItem;
-	final int damage;
-
-	public WrappedDamageItemDefinition(AEItemDefinition def, int dmg) {
-		this.baseItem = def;
-		this.damage = dmg;
+	public WrappedDamageItemDefinition( ITileDefinition definition, int damage )
+	{
+		this.definition = definition;
+		this.damage = damage;
 	}
 
 	@Override
-	public Block block()
+	public Optional<? extends Class<? extends TileEntity>> maybeEntity()
 	{
-		return this.baseItem.block();
+		return this.definition.maybeEntity();
 	}
 
 	@Override
-	public Item item()
+	public Optional<Block> maybeBlock()
 	{
-		return this.baseItem.item();
+		return this.definition.maybeBlock();
 	}
 
 	@Override
-	public Class<? extends TileEntity> entity()
+	public Optional<ItemBlock> maybeItemBlock()
 	{
-		return this.baseItem.entity();
+		return this.definition.maybeItemBlock();
 	}
 
 	@Override
-	public ItemStack stack(int stackSize)
+	public Optional<Item> maybeItem()
 	{
-		if ( this.baseItem == null )
-			return null;
-
-		return new ItemStack( this.baseItem.block(), stackSize, this.damage );
+		return this.definition.maybeItem();
 	}
 
 	@Override
-	public boolean sameAsStack(ItemStack comparableItem)
+	public Optional<ItemStack> maybeStack( final int stackSize )
 	{
-		if ( comparableItem == null )
+		return this.definition.maybeBlock().transform( new BlockTransformFunction( stackSize ) );
+	}
+
+	@Override
+	public boolean isSameAs( ItemStack comparableStack )
+	{
+		if ( comparableStack == null )
 			return false;
 
-		return comparableItem.getItem() == this.baseItem.item() && comparableItem.getItemDamage() == this.damage;
+		return this.definition.isSameAs( comparableStack ) && comparableStack.getItemDamage() == this.damage;
 	}
 
 	@Override
-	public boolean sameAsBlock(IBlockAccess world, int x, int y, int z)
+	public boolean isSameAs( IBlockAccess world, int x, int y, int z )
 	{
-		if ( this.block() != null )
-			return world.getBlock( x, y, z ) == this.block() && world.getBlockMetadata( x, y, z ) == this.damage;
-		return false;
+		return this.definition.isSameAs( world, x, y, z ) && world.getBlockMetadata( x, y, z ) == this.damage;
 	}
 
+	private class BlockTransformFunction implements Function<Block, ItemStack>
+	{
+		private final int stackSize;
+
+		public BlockTransformFunction( int stackSize )
+		{
+			this.stackSize = stackSize;
+		}
+
+		@Nullable
+		@Override
+		public ItemStack apply( Block input )
+		{
+			return new ItemStack( input, this.stackSize, WrappedDamageItemDefinition.this.damage );
+		}
+	}
 }

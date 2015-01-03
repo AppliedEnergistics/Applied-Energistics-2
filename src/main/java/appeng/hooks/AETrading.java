@@ -28,7 +28,12 @@ import net.minecraft.village.MerchantRecipeList;
 
 import cpw.mods.fml.common.registry.VillagerRegistry.IVillageTradeHandler;
 
+import com.google.common.base.Optional;
+
 import appeng.api.AEApi;
+import appeng.api.definitions.IItemDefinition;
+import appeng.api.definitions.IMaterials;
+
 
 public class AETrading implements IVillageTradeHandler
 {
@@ -48,60 +53,67 @@ public class AETrading implements IVillageTradeHandler
 		l.add( new MerchantRecipe( a, b ) );
 	}
 
-	private void addTrade(MerchantRecipeList list, ItemStack a, ItemStack b, Random rand, int conversion_Variance)
+	private void addTrade(MerchantRecipeList list, IItemDefinition inputDefinition, IItemDefinition outputDefinition, Random rand, int conversionVariance)
 	{
-		// Sell
-		ItemStack From = a.copy();
-		ItemStack To = b.copy();
+		final Optional<ItemStack> maybeInputStack = inputDefinition.maybeStack( 1 );
+		final Optional<ItemStack> maybeOutputStack = outputDefinition.maybeStack( 1 );
 
-		From.stackSize = 1 + (Math.abs( rand.nextInt() ) % (1 + conversion_Variance));
-		To.stackSize = 1;
+		if ( maybeInputStack.isPresent() && maybeOutputStack.isPresent() )
+		{
+			// Sell
+			ItemStack inputStack = maybeInputStack.get().copy();
+			ItemStack outputStack = maybeOutputStack.get().copy();
 
-		this.addToList( list, From, To );
+			inputStack.stackSize = 1 + (Math.abs( rand.nextInt() ) % (1 + conversionVariance));
+			outputStack.stackSize = 1;
+
+			this.addToList( list, inputStack, outputStack );
+		}
 	}
 
-	private void addMerchant(MerchantRecipeList list, ItemStack item, int emera, Random rand, int greed)
+	private void addMerchant(MerchantRecipeList list, IItemDefinition item, int emera, Random rand, int greed)
 	{
-		if ( item == null )
-			return;
-
-		// Sell
-		ItemStack From = item.copy();
-		ItemStack To = new ItemStack( Items.emerald );
-
-		int multiplier = (Math.abs( rand.nextInt() ) % 6);
-		emera += (Math.abs( rand.nextInt() ) % greed) - multiplier;
-		int mood = rand.nextInt() % 2;
-
-		From.stackSize = multiplier + mood;
-		To.stackSize = multiplier * emera - mood;
-
-		if ( To.stackSize < 0 )
+		for ( ItemStack itemStack : item.maybeStack( 1 ).asSet() )
 		{
-			From.stackSize -= To.stackSize;
-			To.stackSize -= To.stackSize;
+			// Sell
+			ItemStack from = itemStack.copy();
+			ItemStack to = new ItemStack( Items.emerald );
+
+			int multiplier = (Math.abs( rand.nextInt() ) % 6);
+			final int emeraldCost = emera + (Math.abs( rand.nextInt() ) % greed) - multiplier;
+			int mood = rand.nextInt() % 2;
+
+			from.stackSize = multiplier + mood;
+			to.stackSize = multiplier * emeraldCost - mood;
+
+			if ( to.stackSize < 0 )
+			{
+				from.stackSize -= to.stackSize;
+				to.stackSize -= to.stackSize;
+			}
+
+			this.addToList( list, from, to );
+
+			// Buy
+			ItemStack reverseTo = from.copy();
+			ItemStack reverseFrom = to.copy();
+
+			reverseFrom.stackSize *= rand.nextFloat() * 3.0f + 1.0f;
+
+			this.addToList( list, reverseFrom, reverseTo );
 		}
-
-		this.addToList( list, From, To );
-
-		// Buy
-		ItemStack reverseTo = From.copy();
-		ItemStack reverseFrom = To.copy();
-
-		reverseFrom.stackSize *= rand.nextFloat() * 3.0f + 1.0f;
-
-		this.addToList( list, reverseFrom, reverseTo );
 	}
 
 	@Override
 	public void manipulateTradesForVillager(EntityVillager villager, MerchantRecipeList recipeList, Random random)
 	{
-		this.addMerchant( recipeList, AEApi.instance().materials().materialSilicon.stack( 1 ), 1, random, 2 );
-		this.addMerchant( recipeList, AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 ), 2, random, 4 );
-		this.addMerchant( recipeList, AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ), 1, random, 3 );
+		final IMaterials materials = AEApi.instance().definitions().materials();
 
-		this.addTrade( recipeList, AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ),
-				AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 ), random, 2 );
+		this.addMerchant( recipeList, materials.silicon(), 1, random, 2 );
+		this.addMerchant( recipeList, materials.certusQuartzCrystal(), 2, random, 4 );
+		this.addMerchant( recipeList, materials.certusQuartzDust(), 1, random, 3 );
+
+		this.addTrade( recipeList, materials.certusQuartzDust(), materials.certusQuartzCrystal(), random, 2 );
 	}
 
 }

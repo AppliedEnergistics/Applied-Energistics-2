@@ -30,6 +30,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IDefinitions;
+import appeng.api.definitions.IParts;
 import appeng.api.storage.ITerminalHost;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerCraftingStatus;
@@ -47,41 +49,56 @@ import appeng.parts.reporting.PartTerminal;
 public class GuiCraftingStatus extends GuiCraftingCPU
 {
 
-	final ContainerCraftingStatus ccc;
+	final ContainerCraftingStatus status;
 	GuiButton selectCPU;
 
 	GuiTabButton originalGuiBtn;
-	GuiBridge OriginalGui;
+	GuiBridge originalGui;
 	ItemStack myIcon = null;
 
 	public GuiCraftingStatus(InventoryPlayer inventoryPlayer, ITerminalHost te) {
 		super( new ContainerCraftingStatus( inventoryPlayer, te ) );
 
-		this.ccc = (ContainerCraftingStatus) this.inventorySlots;
-		Object target = this.ccc.getTarget();
+		this.status = (ContainerCraftingStatus) this.inventorySlots;
+		Object target = this.status.getTarget();
+		final IDefinitions definitions = AEApi.instance().definitions();
+		final IParts parts = definitions.parts();
 
 		if ( target instanceof WirelessTerminalGuiObject )
 		{
-			this.myIcon = AEApi.instance().items().itemWirelessTerminal.stack( 1 );
-			this.OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
+			for ( ItemStack wirelessTerminalStack : definitions.items().wirelessTerminal().maybeStack( 1 ).asSet() )
+			{
+				this.myIcon = wirelessTerminalStack;
+			}
+
+			this.originalGui = GuiBridge.GUI_WIRELESS_TERM;
 		}
 
 		if ( target instanceof PartTerminal )
 		{
-			this.myIcon = AEApi.instance().parts().partTerminal.stack( 1 );
-			this.OriginalGui = GuiBridge.GUI_ME;
+			for ( ItemStack stack : parts.terminal().maybeStack( 1 ).asSet() )
+			{
+				this.myIcon = stack;
+			}
+			this.originalGui = GuiBridge.GUI_ME;
 		}
 
 		if ( target instanceof PartCraftingTerminal )
 		{
-			this.myIcon = AEApi.instance().parts().partCraftingTerminal.stack( 1 );
-			this.OriginalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
+			for ( ItemStack stack : parts.craftingTerminal().maybeStack( 1 ).asSet() )
+			{
+				this.myIcon = stack;
+			}
+			this.originalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
 		}
 
 		if ( target instanceof PartPatternTerminal )
 		{
-			this.myIcon = AEApi.instance().parts().partPatternTerminal.stack( 1 );
-			this.OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
+			for ( ItemStack stack : parts.patternTerminal().maybeStack( 1 ).asSet() )
+			{
+				this.myIcon = stack;
+			}
+			this.originalGui = GuiBridge.GUI_PATTERN_TERMINAL;
 		}
 	}
 
@@ -106,7 +123,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 
 		if ( btn == this.originalGuiBtn )
 		{
-			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( this.OriginalGui ) );
+			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( this.originalGui ) );
 		}
 	}
 
@@ -136,27 +153,27 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	{
 		String btnTextText = GuiText.NoCraftingJobs.getLocal();
 
-		if ( this.ccc.selectedCpu >= 0 )// && ccc.selectedCpu < ccc.cpus.size() )
+		if ( this.status.selectedCpu >= 0 )// && status.selectedCpu < status.cpus.size() )
 		{
-			if ( this.ccc.myName.length() > 0 )
+			if ( this.status.myName.length() > 0 )
 			{
-				String name = this.ccc.myName.substring( 0, Math.min( 20, this.ccc.myName.length() ) );
+				String name = this.status.myName.substring( 0, Math.min( 20, this.status.myName.length() ) );
 				btnTextText = GuiText.CPUs.getLocal() + ": " + name;
 			}
 			else
-				btnTextText = GuiText.CPUs.getLocal() + ": #" + this.ccc.selectedCpu;
+				btnTextText = GuiText.CPUs.getLocal() + ": #" + this.status.selectedCpu;
 		}
 
-		if ( this.ccc.noCPU )
+		if ( this.status.noCPU )
 			btnTextText = GuiText.NoCraftingJobs.getLocal();
 
 		this.selectCPU.displayString = btnTextText;
 	}
 
 	@Override
-	public void drawScreen(int mouse_x, int mouse_y, float btn)
+	public void drawScreen(int mouseX, int mouseY, float btn)
 	{
 		this.updateCPUButtonText();
-		super.drawScreen( mouse_x, mouse_y, btn );
+		super.drawScreen( mouseX, mouseY, btn );
 	}
 }

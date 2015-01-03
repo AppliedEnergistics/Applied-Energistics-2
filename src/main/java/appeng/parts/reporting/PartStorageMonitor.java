@@ -57,18 +57,36 @@ import appeng.client.ClientHelper;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.AELog;
 import appeng.core.localization.PlayerMessages;
+import appeng.helpers.Reflected;
 import appeng.me.GridAccessException;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+
 
 public class PartStorageMonitor extends PartMonitor implements IPartStorageMonitor, IStackWatcherHost
 {
 
 	IAEItemStack configuredItem;
 	boolean isLocked;
+	IStackWatcher myWatcher;
+	@SideOnly( Side.CLIENT )
+	private boolean updateList;
+	@SideOnly( Side.CLIENT )
+	private Integer dspList;
+
+	@Reflected
+	public PartStorageMonitor( ItemStack is )
+	{
+		super( is, true );
+
+		this.frontBright = CableBusTextures.PartStorageMonitor_Bright;
+		this.frontColored = CableBusTextures.PartStorageMonitor_Colored;
+		this.frontDark = CableBusTextures.PartStorageMonitor_Dark;
+		// frontSolid = CableBusTextures.PartStorageMonitor_Solid;
+	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound data)
+	public void writeToNBT( NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 
@@ -82,7 +100,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound data)
+	public void readFromNBT( NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 
@@ -93,7 +111,39 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	public void writeToStream(ByteBuf data) throws IOException
+	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
+	{
+		if ( Platform.isClient() )
+			return true;
+
+		if ( !this.proxy.isActive() )
+			return false;
+
+		if ( !Platform.hasPermissions( this.getLocation(), player ) )
+			return false;
+
+		TileEntity te = this.tile;
+		ItemStack eq = player.getCurrentEquippedItem();
+		if ( Platform.isWrench( player, eq, te.xCoord, te.yCoord, te.zCoord ) )
+		{
+			this.isLocked = !this.isLocked;
+			player.addChatMessage( ( this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked ).get() );
+			this.getHost().markForUpdate();
+		}
+		else if ( !this.isLocked )
+		{
+			this.configuredItem = AEItemStack.create( eq );
+			this.configureWatchers();
+			this.getHost().markForUpdate();
+		}
+		else
+			this.extractItem( player );
+
+		return true;
+	}
+
+	@Override
+	public void writeToStream( ByteBuf data ) throws IOException
 	{
 		super.writeToStream( data );
 
@@ -105,7 +155,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	public boolean readFromStream(ByteBuf data) throws IOException
+	public boolean readFromStream( ByteBuf data ) throws IOException
 	{
 		boolean stuff = super.readFromStream( data );
 
@@ -122,69 +172,47 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		return stuff;
 	}
 
-	@Override
-	public boolean onPartActivate(EntityPlayer player, Vec3 pos)
+	// update the system...
+	public void configureWatchers()
 	{
-		if ( Platform.isClient() )
-			return true;
+		if ( this.myWatcher != null )
+			this.myWatcher.clear();
 
-		if ( !this.proxy.isActive() )
-			return false;
-
-		if ( !Platform.hasPermissions( this.getLocation(), player ) )
-			return false;
-
-		TileEntity te = this.tile;
-		ItemStack eq = player.getCurrentEquippedItem();
-		if ( Platform.isWrench( player, eq, te.xCoord, te.yCoord, te.zCoord ) )
+		try
 		{
-			this.isLocked = !this.isLocked;
-			player.addChatMessage( (this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).get() );
-			this.getHost().markForUpdate();
+			if ( this.configuredItem != null )
+			{
+				if ( this.myWatcher != null )
+					this.myWatcher.add( this.configuredItem );
+
+				this.updateReportingValue( this.proxy.getStorage().getItemInventory() );
+			}
 		}
-		else if ( !this.isLocked )
+		catch ( GridAccessException e )
 		{
-			this.configuredItem = AEItemStack.create( eq );
-			this.configureWatchers();
-			this.getHost().markForUpdate();
+			// >.>
 		}
-		else
-			this.extractItem( player );
-
-		return true;
 	}
 
-	protected void extractItem(EntityPlayer player)
+	protected void extractItem( EntityPlayer player )
 	{
 
 	}
 
-	protected PartStorageMonitor(Class myClass, ItemStack is) {
-		super( myClass, is, true );
-	}
-
-	public PartStorageMonitor(ItemStack is) {
-		super( PartStorageMonitor.class, is, true );
-		this.frontBright = CableBusTextures.PartStorageMonitor_Bright;
-		this.frontColored = CableBusTextures.PartStorageMonitor_Colored;
-		this.frontDark = CableBusTextures.PartStorageMonitor_Dark;
-		// frontSolid = CableBusTextures.PartStorageMonitor_Solid;
-	}
-
-	@Override
-	public boolean requireDynamicRender()
+	private void updateReportingValue( IMEMonitor<IAEItemStack> itemInventory )
 	{
-		return true;
+		if ( this.configuredItem != null )
+		{
+			IAEItemStack result = itemInventory.getStorageList().findPrecise( this.configuredItem );
+			if ( result == null )
+				this.configuredItem.setStackSize( 0 );
+			else
+				this.configuredItem.setStackSize( result.getStackSize() );
+		}
 	}
 
-	@SideOnly(Side.CLIENT)
-	private boolean updateList;
-
-	@SideOnly(Side.CLIENT)
-	private Integer dspList;
-
 	@Override
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	protected void finalize() throws Throwable
 	{
 		super.finalize();
@@ -193,8 +221,8 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderDynamic(double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer)
+	@SideOnly( Side.CLIENT )
+	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		if ( this.dspList == null )
 			this.dspList = GLAllocation.generateDisplayLists( 1 );
@@ -203,7 +231,7 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		if ( Platform.isDrawing( tess ) )
 			return;
 
-		if ( (this.clientFlags & (this.POWERED_FLAG | this.CHANNEL_FLAG)) != (this.POWERED_FLAG | this.CHANNEL_FLAG) )
+		if ( ( this.clientFlags & ( this.POWERED_FLAG | this.CHANNEL_FLAG ) ) != ( this.POWERED_FLAG | this.CHANNEL_FLAG ) )
 			return;
 
 		IAEItemStack ais = (IAEItemStack) this.getDisplayed();
@@ -226,7 +254,19 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		}
 	}
 
-	private void tesrRenderScreen(Tessellator tess, IAEItemStack ais)
+	@Override
+	public boolean requireDynamicRender()
+	{
+		return true;
+	}
+
+	@Override
+	public IAEStack getDisplayed()
+	{
+		return this.configuredItem;
+	}
+
+	private void tesrRenderScreen( Tessellator tess, IAEItemStack ais )
 	{
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 		ForgeDirection d = this.side;
@@ -288,9 +328,8 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 			tess.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
 
 			ClientHelper.proxy.doRenderItem( sis, this.tile.getWorldObj() );
-
 		}
-		catch (Exception e)
+		catch ( Exception e )
 		{
 			AELog.error( e );
 		}
@@ -321,62 +360,20 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	public IAEStack getDisplayed()
-	{
-		return this.configuredItem;
-	}
-
-	@Override
 	public boolean isLocked()
 	{
 		return this.isLocked;
 	}
 
-	IStackWatcher myWatcher;
-
 	@Override
-	public void updateWatcher(IStackWatcher newWatcher)
+	public void updateWatcher( IStackWatcher newWatcher )
 	{
 		this.myWatcher = newWatcher;
 		this.configureWatchers();
 	}
 
-	// update the system...
-	public void configureWatchers()
-	{
-		if ( this.myWatcher != null )
-			this.myWatcher.clear();
-
-		try
-		{
-			if ( this.configuredItem != null )
-			{
-				if ( this.myWatcher != null )
-					this.myWatcher.add( this.configuredItem );
-
-				this.updateReportingValue( this.proxy.getStorage().getItemInventory() );
-			}
-		}
-		catch (GridAccessException e)
-		{
-			// >.>
-		}
-	}
-
-	private void updateReportingValue(IMEMonitor<IAEItemStack> itemInventory)
-	{
-		if ( this.configuredItem != null )
-		{
-			IAEItemStack result = itemInventory.getStorageList().findPrecise( this.configuredItem );
-			if ( result == null )
-				this.configuredItem.setStackSize( 0 );
-			else
-				this.configuredItem.setStackSize( result.getStackSize() );
-		}
-	}
-
 	@Override
-	public void onStackChange(IItemList o, IAEStack fullStack, IAEStack diffStack, BaseActionSource src, StorageChannel chan)
+	public void onStackChange( IItemList o, IAEStack fullStack, IAEStack diffStack, BaseActionSource src, StorageChannel chan )
 	{
 		if ( this.configuredItem != null )
 		{
@@ -390,9 +387,8 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	public boolean showNetworkInfo(MovingObjectPosition where)
+	public boolean showNetworkInfo( MovingObjectPosition where )
 	{
 		return false;
 	}
-
 }

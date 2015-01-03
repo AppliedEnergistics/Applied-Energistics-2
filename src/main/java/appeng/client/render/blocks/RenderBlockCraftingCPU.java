@@ -20,6 +20,7 @@ package appeng.client.render.blocks;
 
 import java.util.EnumSet;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.tileentity.TileEntity;
@@ -70,7 +71,12 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 
 		IIcon nonForward = theIcon;
 		if ( isMonitor )
-			nonForward = AEApi.instance().blocks().blockCraftingUnit.block().getIcon( 0, meta | (formed ? 8 : 0) );
+		{
+			for ( Block craftingBlock : AEApi.instance().definitions().blocks().craftingUnit().maybeBlock().asSet() )
+			{
+				nonForward = craftingBlock.getIcon( 0, meta | ( formed ? 8 : 0 ) );
+			}
+		}
 
 		if ( formed && renderer.overrideBlockTexture == null )
 		{

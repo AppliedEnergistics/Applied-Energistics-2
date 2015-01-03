@@ -18,10 +18,9 @@
 
 package appeng.parts.automation;
 
-import net.minecraft.block.Block;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -32,25 +31,24 @@ import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 
-public class UpgradeInventory extends AppEngInternalInventory implements IAEAppEngInventory
-{
 
-	private final Object itemOrBlock;
+public abstract class UpgradeInventory extends AppEngInternalInventory implements IAEAppEngInventory
+{
 	private final IAEAppEngInventory parent;
 
 	private boolean cached = false;
-	private int FuzzyUpgrades = 0;
-	private int SpeedUpgrades = 0;
-	private int RedstoneUpgrades = 0;
-	private int CapacityUpgrades = 0;
-	private int InverterUpgrades = 0;
-	private int CraftingUpgrades = 0;
+	private int fuzzyUpgrades = 0;
+	private int speedUpgrades = 0;
+	private int redstoneUpgrades = 0;
+	private int capacityUpgrades = 0;
+	private int inverterUpgrades = 0;
+	private int craftingUpgrades = 0;
 
-	public UpgradeInventory(Object itemOrBlock, IAEAppEngInventory _te, int s) {
+	public UpgradeInventory( IAEAppEngInventory parent, int s )
+	{
 		super( null, s );
 		this.te = this;
-		this.parent = _te;
-		this.itemOrBlock = itemOrBlock;
+		this.parent = parent;
 	}
 
 	@Override
@@ -60,14 +58,20 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack)
+	public int getInventoryStackLimit()
+	{
+		return 1;
+	}
+
+	@Override
+	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		if ( itemstack == null )
 			return false;
 		Item it = itemstack.getItem();
 		if ( it instanceof IUpgradeModule )
 		{
-			Upgrades u = ((IUpgradeModule) it).getType( itemstack );
+			Upgrades u = ( (IUpgradeModule) it ).getType( itemstack );
 			if ( u != null )
 			{
 				return this.getInstalledUpgrades( u ) < this.getMaxInstalled( u );
@@ -76,120 +80,81 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 		return false;
 	}
 
-	public int getMaxInstalled(Upgrades u)
-	{
-		Integer max = null;
-		for (ItemStack is : u.getSupported().keySet())
-		{
-			if ( is.getItem() == this.itemOrBlock )
-			{
-				max = u.getSupported().get( is );
-				break;
-			}
-			else if ( is.getItem() instanceof ItemBlock && Block.getBlockFromItem( is.getItem() ) == this.itemOrBlock )
-			{
-				max = u.getSupported().get( is );
-				break;
-			}
-			else if ( this.itemOrBlock instanceof ItemStack && Platform.isSameItem( (ItemStack) this.itemOrBlock, is ) )
-			{
-				max = u.getSupported().get( is );
-				break;
-			}
-		}
-
-		if ( max == null )
-			return 0;
-		return max;
-	}
-
-	@Override
-	public int getInventoryStackLimit()
-	{
-		return 1;
-	}
-
-	private void updateUpgradeInfo()
-	{
-		this.cached = true;
-		this.InverterUpgrades = this.CapacityUpgrades = this.RedstoneUpgrades = this.SpeedUpgrades = this.FuzzyUpgrades = this.CraftingUpgrades = 0;
-
-		for (ItemStack is : this)
-		{
-			if ( is == null || is.getItem() == null || !(is.getItem() instanceof IUpgradeModule) )
-				continue;
-
-			Upgrades myUpgrade = ((IUpgradeModule) is.getItem()).getType( is );
-			switch (myUpgrade)
-			{
-			case CAPACITY:
-				this.CapacityUpgrades++;
-				break;
-			case FUZZY:
-				this.FuzzyUpgrades++;
-				break;
-			case REDSTONE:
-				this.RedstoneUpgrades++;
-				break;
-			case SPEED:
-				this.SpeedUpgrades++;
-				break;
-			case INVERTER:
-				this.InverterUpgrades++;
-				break;
-			case CRAFTING:
-				this.CraftingUpgrades++;
-				break;
-			default:
-				break;
-			}
-		}
-
-		this.CapacityUpgrades = Math.min( this.CapacityUpgrades, this.getMaxInstalled( Upgrades.CAPACITY ) );
-		this.FuzzyUpgrades = Math.min( this.FuzzyUpgrades, this.getMaxInstalled( Upgrades.FUZZY ) );
-		this.RedstoneUpgrades = Math.min( this.RedstoneUpgrades, this.getMaxInstalled( Upgrades.REDSTONE ) );
-		this.SpeedUpgrades = Math.min( this.SpeedUpgrades, this.getMaxInstalled( Upgrades.SPEED ) );
-		this.InverterUpgrades = Math.min( this.InverterUpgrades, this.getMaxInstalled( Upgrades.INVERTER ) );
-		this.CraftingUpgrades = Math.min( this.CraftingUpgrades, this.getMaxInstalled( Upgrades.CRAFTING ) );
-	}
-
-	public int getInstalledUpgrades(Upgrades u)
+	public int getInstalledUpgrades( Upgrades u )
 	{
 		if ( !this.cached )
 			this.updateUpgradeInfo();
 
-		switch (u)
+		switch ( u )
 		{
-		case CAPACITY:
-			return this.CapacityUpgrades;
-		case FUZZY:
-			return this.FuzzyUpgrades;
-		case REDSTONE:
-			return this.RedstoneUpgrades;
-		case SPEED:
-			return this.SpeedUpgrades;
-		case INVERTER:
-			return this.InverterUpgrades;
-		case CRAFTING:
-			return this.CraftingUpgrades;
-		default:
-			return 0;
+			case CAPACITY:
+				return this.capacityUpgrades;
+			case FUZZY:
+				return this.fuzzyUpgrades;
+			case REDSTONE:
+				return this.redstoneUpgrades;
+			case SPEED:
+				return this.speedUpgrades;
+			case INVERTER:
+				return this.inverterUpgrades;
+			case CRAFTING:
+				return this.craftingUpgrades;
+			default:
+				return 0;
 		}
 	}
 
-	@Override
-	public void readFromNBT(NBTTagCompound target)
+	public abstract int getMaxInstalled( Upgrades upgrades );
+
+	private void updateUpgradeInfo()
 	{
-		super.readFromNBT( target );
-		this.updateUpgradeInfo();
+		this.cached = true;
+		this.inverterUpgrades = this.capacityUpgrades = this.redstoneUpgrades = this.speedUpgrades = this.fuzzyUpgrades = this.craftingUpgrades = 0;
+
+		for ( ItemStack is : this )
+		{
+			if ( is == null || is.getItem() == null || !( is.getItem() instanceof IUpgradeModule ) )
+				continue;
+
+			Upgrades myUpgrade = ( (IUpgradeModule) is.getItem() ).getType( is );
+			switch ( myUpgrade )
+			{
+				case CAPACITY:
+					this.capacityUpgrades++;
+					break;
+				case FUZZY:
+					this.fuzzyUpgrades++;
+					break;
+				case REDSTONE:
+					this.redstoneUpgrades++;
+					break;
+				case SPEED:
+					this.speedUpgrades++;
+					break;
+				case INVERTER:
+					this.inverterUpgrades++;
+					break;
+				case CRAFTING:
+					this.craftingUpgrades++;
+					break;
+				default:
+					break;
+			}
+		}
+
+		this.capacityUpgrades = Math.min( this.capacityUpgrades, this.getMaxInstalled( Upgrades.CAPACITY ) );
+		this.fuzzyUpgrades = Math.min( this.fuzzyUpgrades, this.getMaxInstalled( Upgrades.FUZZY ) );
+		this.redstoneUpgrades = Math.min( this.redstoneUpgrades, this.getMaxInstalled( Upgrades.REDSTONE ) );
+		this.speedUpgrades = Math.min( this.speedUpgrades, this.getMaxInstalled( Upgrades.SPEED ) );
+		this.inverterUpgrades = Math.min( this.inverterUpgrades, this.getMaxInstalled( Upgrades.INVERTER ) );
+		this.craftingUpgrades = Math.min( this.craftingUpgrades, this.getMaxInstalled( Upgrades.CRAFTING ) );
 	}
 
 	@Override
-	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
+	public void readFromNBT( NBTTagCompound target )
 	{
-		this.cached = false;
-		if ( this.parent != null && Platform.isServer() )
-			this.parent.onChangeInventory( inv, slot, mc, removedStack, newStack );
+		super.readFromNBT( target );
+		this.updateUpgradeInfo();
 	}
 
 	@Override
@@ -198,4 +163,11 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 		this.parent.saveChanges();
 	}
 
+	@Override
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	{
+		this.cached = false;
+		if ( this.parent != null && Platform.isServer() )
+			this.parent.onChangeInventory( inv, slot, mc, removedStack, newStack );
+	}
 }

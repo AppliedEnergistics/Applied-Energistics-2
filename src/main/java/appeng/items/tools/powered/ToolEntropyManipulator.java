@@ -62,14 +62,12 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 	public ToolEntropyManipulator()
 	{
-		super( ToolEntropyManipulator.class, Optional.<String>absent() );
+		super( AEConfig.instance.entropyManipulatorBattery, Optional.<String>absent() );
 
 		this.setFeature( EnumSet.of( AEFeature.EntropyManipulator, AEFeature.PoweredTools ) );
 
 		this.heatUp = new HashMap<InWorldToolOperationIngredient, InWorldToolOperationResult>();
 		this.coolDown = new HashMap<InWorldToolOperationIngredient, InWorldToolOperationResult>();
-
-		this.maxStoredPower = AEConfig.instance.entropyManipulatorBattery;
 
 		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.stone, 0 ), new InWorldToolOperationResult( new ItemStack( Blocks.cobblestone ) ) );
 		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.stonebrick, 0 ), new InWorldToolOperationResult( new ItemStack( Blocks.stonebrick, 1, 2 ) ) );

@@ -36,38 +36,17 @@ import appeng.core.localization.PlayerMessages;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
+
 public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 {
-
-	public ToolMemoryCard() {
-		super( ToolMemoryCard.class );
+	public ToolMemoryCard()
+	{
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setMaxStackSize( 1 );
 	}
 
-	/**
-	 * Find the localized string...
-	 *
-	 * @param name possible names for the localized string
-	 * @return localized name
-	 */
-	private String getLocalizedName(String... name)
-	{
-		for (String n : name)
-		{
-			String l = StatCollector.translateToLocal( n );
-			if ( !l.equals( n ) )
-				return l;
-		}
-
-		for (String n : name)
-			return n;
-
-		return "";
-	}
-
 	@Override
-	public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
+	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
 		lines.add( this.getLocalizedName( this.getSettingsName( stack ) + ".name", this.getSettingsName( stack ) ) );
 
@@ -76,22 +55,38 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 			lines.add( StatCollector.translateToLocal( this.getLocalizedName( data.getString( "tooltip" ) + ".name", data.getString( "tooltip" ) ) ) );
 	}
 
-	@Override
-	public boolean doesSneakBypassUse(World world, int x, int y, int z, EntityPlayer player)
+	/**
+	 * Find the localized string...
+	 *
+	 * @param name possible names for the localized string
+	 *
+	 * @return localized name
+	 */
+	private String getLocalizedName( String... name )
 	{
-		return true;
+		for ( String n : name )
+		{
+			String l = StatCollector.translateToLocal( n );
+			if ( !l.equals( n ) )
+				return l;
+		}
+
+		for ( String n : name )
+			return n;
+
+		return "";
 	}
 
 	@Override
-	public void setMemoryCardContents(ItemStack is, String SettingsName, NBTTagCompound data)
+	public void setMemoryCardContents( ItemStack is, String settingsName, NBTTagCompound data )
 	{
 		NBTTagCompound c = Platform.openNbtData( is );
-		c.setString( "Config", SettingsName );
+		c.setString( "Config", settingsName );
 		c.setTag( "Data", data );
 	}
 
 	@Override
-	public String getSettingsName(ItemStack is)
+	public String getSettingsName( ItemStack is )
 	{
 		NBTTagCompound c = Platform.openNbtData( is );
 		String name = c.getString( "Config" );
@@ -99,7 +94,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public NBTTagCompound getData(ItemStack is)
+	public NBTTagCompound getData( ItemStack is )
 	{
 		NBTTagCompound c = Platform.openNbtData( is );
 		NBTTagCompound o = c.getCompoundTag( "Data" );
@@ -109,7 +104,31 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack is, EntityPlayer player, World w, int x, int y, int z, int side, float hx, float hy, float hz)
+	public void notifyUser( EntityPlayer player, MemoryCardMessages msg )
+	{
+		if ( Platform.isClient() )
+			return;
+
+		switch ( msg )
+		{
+			case SETTINGS_CLEARED:
+				player.addChatMessage( PlayerMessages.SettingCleared.get() );
+				break;
+			case INVALID_MACHINE:
+				player.addChatMessage( PlayerMessages.InvalidMachine.get() );
+				break;
+			case SETTINGS_LOADED:
+				player.addChatMessage( PlayerMessages.LoadedSettings.get() );
+				break;
+			case SETTINGS_SAVED:
+				player.addChatMessage( PlayerMessages.SavedSettings.get() );
+				break;
+			default:
+		}
+	}
+
+	@Override
+	public boolean onItemUse( ItemStack is, EntityPlayer player, World w, int x, int y, int z, int side, float hx, float hy, float hz )
 	{
 		if ( player.isSneaking() && !w.isRemote )
 		{
@@ -123,27 +142,8 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public void notifyUser(EntityPlayer player, MemoryCardMessages msg)
+	public boolean doesSneakBypassUse( World world, int x, int y, int z, EntityPlayer player )
 	{
-		if ( Platform.isClient() )
-			return;
-
-		switch (msg)
-		{
-		case SETTINGS_CLEARED:
-			player.addChatMessage( PlayerMessages.SettingCleared.get() );
-			break;
-		case INVALID_MACHINE:
-			player.addChatMessage( PlayerMessages.InvalidMachine.get() );
-			break;
-		case SETTINGS_LOADED:
-			player.addChatMessage( PlayerMessages.LoadedSettings.get() );
-			break;
-		case SETTINGS_SAVED:
-			player.addChatMessage( PlayerMessages.SavedSettings.get() );
-			break;
-		default:
-		}
+		return true;
 	}
-
 }

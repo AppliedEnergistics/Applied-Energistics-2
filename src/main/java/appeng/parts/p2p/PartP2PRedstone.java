@@ -29,7 +29,6 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import appeng.api.config.TunnelType;
 import appeng.api.networking.events.MENetworkBootingStatusChange;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -39,12 +38,6 @@ import appeng.util.Platform;
 
 public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 {
-
-	@Override
-	public TunnelType getTunnelType()
-	{
-		return TunnelType.REDSTONE;
-	}
 
 	public PartP2PRedstone(ItemStack is) {
 		super( is );

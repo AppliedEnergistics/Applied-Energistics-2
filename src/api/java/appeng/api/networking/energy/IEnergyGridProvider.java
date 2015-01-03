@@ -23,16 +23,17 @@
 
 package appeng.api.networking.energy;
 
+
 import java.util.Set;
 
 import appeng.api.config.Actionable;
+
 
 /**
  * internal use only.
  */
 public interface IEnergyGridProvider
 {
-
 	/**
 	 * internal use only
 	 */
@@ -47,5 +48,4 @@ public interface IEnergyGridProvider
 	 * internal use only
 	 */
 	double getEnergyDemand( double d, Set<IEnergyGrid> seen );
-
 }

@@ -21,25 +21,40 @@ package appeng.tile.crafting;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IBlocks;
+
 
 public class TileCraftingStorageTile extends TileCraftingTile
 {
-
-	static final ItemStack STACK_4K_STORAGE = AEApi.instance().blocks().blockCraftingStorage4k.stack( 1 );
-	static final ItemStack STACK_16K_STORAGE = AEApi.instance().blocks().blockCraftingStorage16k.stack( 1 );
-	static final ItemStack STACK_64K_STORAGE = AEApi.instance().blocks().blockCraftingStorage64k.stack( 1 );
+	public static final int KILO_SCALAR = 1024;
 
 	@Override
 	protected ItemStack getItemFromTile(Object obj)
 	{
-		int storage = ((TileCraftingTile) obj).getStorageBytes() / 1024;
+		final IBlocks blocks = AEApi.instance().definitions().blocks();
+		final int storage = ((TileCraftingTile) obj).getStorageBytes() / KILO_SCALAR;
 
-		if ( storage == 4 )
-			return STACK_4K_STORAGE;
-		if ( storage == 16 )
-			return STACK_16K_STORAGE;
-		if ( storage == 64 )
-			return STACK_64K_STORAGE;
+		switch ( storage )
+		{
+			case 4:
+				for ( ItemStack stack : blocks.craftingStorage4k().maybeStack( 1 ).asSet() )
+				{
+					return stack;
+				}
+				break;
+			case 16:
+				for ( ItemStack stack : blocks.craftingStorage16k().maybeStack( 1 ).asSet() )
+				{
+					return stack;
+				}
+				break;
+			case 64:
+				for ( ItemStack stack : blocks.craftingStorage64k().maybeStack( 1 ).asSet() )
+				{
+					return stack;
+				}
+				break;
+		}
 
 		return super.getItemFromTile( obj );
 	}

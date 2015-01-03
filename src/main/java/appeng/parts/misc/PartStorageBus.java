@@ -76,6 +76,7 @@ import appeng.core.stats.Achievements;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
+import appeng.helpers.Reflected;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.me.storage.MEMonitorIInventory;
@@ -90,40 +91,32 @@ import appeng.util.prioitylist.PrecisePriorityList;
 
 
 @Interface( iname = "BC", iface = "buildcraft.api.transport.IPipeConnection" )
-public class PartStorageBus
-		extends PartUpgradeable
+public class PartStorageBus extends PartUpgradeable
 		implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack>, IPipeConnection, IPriorityHost
 {
-	int priority = 0;
 	final BaseActionSource mySrc;
-
 	final AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
+	int priority = 0;
+	boolean cached = false;
+	MEMonitorIInventory monitor = null;
+	MEInventoryHandler handler = null;
+	int handlerHash = 0;
+	boolean wasActive = false;
+	private byte resetCacheLogic = 0;
 
+	@Reflected
 	public PartStorageBus( ItemStack is )
 	{
-		super( PartStorageBus.class, is );
+		super( is );
 		this.getConfigManager().registerSetting( Settings.ACCESS, AccessRestriction.READ_WRITE );
 		this.getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 		this.getConfigManager().registerSetting( Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY );
 		this.mySrc = new MachineSource( this );
 	}
 
-	boolean cached = false;
-	MEMonitorIInventory monitor = null;
-	MEInventoryHandler handler = null;
-
-	int handlerHash = 0;
-	boolean wasActive = false;
-
 	@Override
 	@MENetworkEventSubscribe
 	public void powerRender( MENetworkPowerStatusChange c )
-	{
-		this.updateStatus();
-	}
-
-	@MENetworkEventSubscribe
-	public void updateChannels( MENetworkChannelsChanged changedChannels )
 	{
 		this.updateStatus();
 	}
@@ -146,19 +139,10 @@ public class PartStorageBus
 		}
 	}
 
-	@Override
-	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
+	@MENetworkEventSubscribe
+	public void updateChannels( MENetworkChannelsChanged changedChannels )
 	{
-		if ( !player.isSneaking() )
-		{
-			if ( Platform.isClient() )
-				return true;
-
-			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_STORAGEBUS );
-			return true;
-		}
-
-		return false;
+		this.updateStatus();
 	}
 
 	@Override
@@ -168,9 +152,19 @@ public class PartStorageBus
 	}
 
 	@Override
-	public boolean isValid( Object verificationToken )
+	public void writeToNBT( NBTTagCompound data )
 	{
-		return this.handler == verificationToken;
+		super.writeToNBT( data );
+		this.Config.writeToNBT( data, "config" );
+		data.setInteger( "priority", this.priority );
+	}
+
+	@Override
+	public void readFromNBT( NBTTagCompound data )
+	{
+		super.readFromNBT( data );
+		this.Config.readFromNBT( data, "config" );
+		this.priority = data.getInteger( "priority" );
 	}
 
 	@Override
@@ -182,7 +176,102 @@ public class PartStorageBus
 		return super.getInventoryByName( name );
 	}
 
-	private byte resetCacheLogic = 0;
+	@Override
+	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	{
+		this.resetCache( true );
+		this.host.markForSave();
+	}
+
+	@Override
+	public void upgradesChanged()
+	{
+		super.upgradesChanged();
+		this.resetCache( true );
+	}
+
+	@Override
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	{
+		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
+
+		if ( inv == this.Config )
+			this.resetCache( true );
+	}
+
+	@Override
+	public boolean isValid( Object verificationToken )
+	{
+		return this.handler == verificationToken;
+	}
+
+	@Override
+	public void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource source )
+	{
+		try
+		{
+			if ( this.proxy.isActive() )
+				this.proxy.getStorage().postAlterationOfStoredItems( StorageChannel.ITEMS, change, this.mySrc );
+		}
+		catch ( GridAccessException e )
+		{
+			// :(
+		}
+	}
+
+	@Override
+	public void onListUpdate()
+	{
+		// not used here.
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	{
+		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
+
+		rh.setBounds( 3, 3, 15, 13, 13, 16 );
+		rh.renderInventoryBox( renderer );
+
+		rh.setBounds( 2, 2, 14, 14, 14, 15 );
+		rh.renderInventoryBox( renderer );
+
+		rh.setBounds( 5, 5, 12, 11, 11, 14 );
+		rh.renderInventoryBox( renderer );
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	{
+		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
+		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
+
+		rh.setBounds( 3, 3, 15, 13, 13, 16 );
+		rh.renderBlock( x, y, z, renderer );
+
+		rh.setBounds( 2, 2, 14, 14, 14, 15 );
+		rh.renderBlock( x, y, z, renderer );
+
+		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
+
+		rh.setBounds( 5, 5, 12, 11, 11, 13 );
+		rh.renderBlock( x, y, z, renderer );
+
+		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
+
+		rh.setBounds( 5, 5, 13, 11, 11, 14 );
+		rh.renderBlock( x, y, z, renderer );
+
+		this.renderLights( x, y, z, rh, renderer );
+	}
+
+	@Override
+	public void onNeighborChanged()
+	{
+		this.resetCache( false );
+	}
 
 	private void resetCache( boolean fullReset )
 	{
@@ -202,6 +291,53 @@ public class PartStorageBus
 		{
 			// :P
 		}
+	}
+
+	@Override
+	public void getBoxes( IPartCollisionHelper bch )
+	{
+		bch.addBox( 3, 3, 15, 13, 13, 16 );
+		bch.addBox( 2, 2, 14, 14, 14, 15 );
+		bch.addBox( 5, 5, 12, 11, 11, 14 );
+	}
+
+	@Override
+	public int cableConnectionRenderTo()
+	{
+		return 4;
+	}
+
+	@Override
+	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
+	{
+		if ( !player.isSneaking() )
+		{
+			if ( Platform.isClient() )
+				return true;
+
+			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_STORAGEBUS );
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public TickingRequest getTickingRequest( IGridNode node )
+	{
+		return new TickingRequest( TickRates.StorageBus.min, TickRates.StorageBus.max, this.monitor == null, true );
+	}
+
+	@Override
+	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
+	{
+		if ( this.resetCacheLogic != 0 )
+			this.resetCache();
+
+		if ( this.monitor != null )
+			return this.monitor.onTick();
+
+		return TickRateModulation.SLEEP;
 	}
 
 	private void resetCache()
@@ -228,43 +364,6 @@ public class PartStorageBus
 			after = out.getAvailableItems( after );
 
 		Platform.postListChanges( before, after, this, this.mySrc );
-	}
-
-	@Override
-	public void onNeighborChanged()
-	{
-		this.resetCache( false );
-	}
-
-	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
-	{
-		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
-
-		if ( inv == this.Config )
-			this.resetCache( true );
-	}
-
-	@Override
-	public void upgradesChanged()
-	{
-		super.upgradesChanged();
-		this.resetCache( true );
-	}
-
-	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
-	{
-		this.resetCache( true );
-		this.host.markForSave();
-	}
-
-	@Override
-	public void setPriority( int newValue )
-	{
-		this.priority = newValue;
-		this.host.markForSave();
-		this.resetCache( true );
 	}
 
 	public MEInventoryHandler getInternalHandler()
@@ -305,13 +404,13 @@ public class PartStorageBus
 
 				if ( inv instanceof MEMonitorIInventory )
 				{
-					MEMonitorIInventory h = ( MEMonitorIInventory ) inv;
-					h.mode = ( StorageFilter ) this.getConfigManager().getSetting( Settings.STORAGE_FILTER );
+					MEMonitorIInventory h = (MEMonitorIInventory) inv;
+					h.mode = (StorageFilter) this.getConfigManager().getSetting( Settings.STORAGE_FILTER );
 					h.mySource = new MachineSource( this );
 				}
 
 				if ( inv instanceof MEMonitorIInventory )
-					this.monitor = ( MEMonitorIInventory ) inv;
+					this.monitor = (MEMonitorIInventory) inv;
 
 				if ( inv != null )
 				{
@@ -334,12 +433,12 @@ public class PartStorageBus
 					}
 
 					if ( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-						this.handler.setPartitionList( new FuzzyPriorityList( priorityList, ( FuzzyMode ) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
+						this.handler.setPartitionList( new FuzzyPriorityList( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
 					else
-						this.handler.setPartitionList ( new PrecisePriorityList( priorityList ));
+						this.handler.setPartitionList( new PrecisePriorityList( priorityList ) );
 
 					if ( inv instanceof IMEMonitor )
-						( ( IMEMonitor ) inv ).addListener( this, this.handler );
+						( (IMEMonitor) inv ).addListener( this, this.handler );
 				}
 			}
 		}
@@ -369,13 +468,13 @@ public class PartStorageBus
 		IInterfaceHost achievement = null;
 
 		if ( target instanceof IInterfaceHost )
-			achievement = ( IInterfaceHost ) target;
+			achievement = (IInterfaceHost) target;
 
 		if ( target instanceof IPartHost )
 		{
-			Object part = ( ( IPartHost ) target ).getPart( side );
+			Object part = ( (IPartHost) target ).getPart( side );
 			if ( part instanceof IInterfaceHost )
-				achievement = ( IInterfaceHost ) part;
+				achievement = (IInterfaceHost) part;
 		}
 
 		if ( achievement != null && achievement.getActionableNode() != null )
@@ -383,100 +482,6 @@ public class PartStorageBus
 			Platform.addStat( achievement.getActionableNode().getPlayerID(), Achievements.Recursive.getAchievement() );
 			// Platform.addStat( getActionableNode().getPlayerID(), Achievements.Recursive.getAchievement() );
 		}
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
-	{
-		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(),
-				this.is.getIconIndex(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
-
-		rh.setBounds( 3, 3, 15, 13, 13, 16 );
-		rh.renderInventoryBox( renderer );
-
-		rh.setBounds( 2, 2, 14, 14, 14, 15 );
-		rh.renderInventoryBox( renderer );
-
-		rh.setBounds( 5, 5, 12, 11, 11, 14 );
-		rh.renderInventoryBox( renderer );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
-	{
-		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
-		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
-
-		rh.setBounds( 3, 3, 15, 13, 13, 16 );
-		rh.renderBlock( x, y, z, renderer );
-
-		rh.setBounds( 2, 2, 14, 14, 14, 15 );
-		rh.renderBlock( x, y, z, renderer );
-
-		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(),
-				this.is.getIconIndex(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
-
-		rh.setBounds( 5, 5, 12, 11, 11, 13 );
-		rh.renderBlock( x, y, z, renderer );
-
-		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(),
-				CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSidesStatus.getIcon(),
-				CableBusTextures.PartMonitorSidesStatus.getIcon() );
-
-		rh.setBounds( 5, 5, 13, 11, 11, 14 );
-		rh.renderBlock( x, y, z, renderer );
-
-		this.renderLights( x, y, z, rh, renderer );
-	}
-
-	@Override
-	public void getBoxes( IPartCollisionHelper bch )
-	{
-		bch.addBox( 3, 3, 15, 13, 13, 16 );
-		bch.addBox( 2, 2, 14, 14, 14, 15 );
-		bch.addBox( 5, 5, 12, 11, 11, 14 );
-	}
-
-	@Override
-	public int cableConnectionRenderTo()
-	{
-		return 4;
-	}
-
-	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
-	{
-		return new TickingRequest( TickRates.StorageBus.min, TickRates.StorageBus.max, this.monitor == null, true );
-	}
-
-	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
-	{
-		if ( this.resetCacheLogic != 0 )
-			this.resetCache();
-
-		if ( this.monitor != null )
-			return this.monitor.onTick();
-
-		return TickRateModulation.SLEEP;
-	}
-
-	@Override
-	public void writeToNBT( NBTTagCompound data )
-	{
-		super.writeToNBT( data );
-		this.Config.writeToNBT( data, "config" );
-		data.setInteger( "priority", this.priority );
-	}
-
-	@Override
-	public void readFromNBT( NBTTagCompound data )
-	{
-		super.readFromNBT( data );
-		this.Config.readFromNBT( data, "config" );
-		this.priority = data.getInteger( "priority" );
 	}
 
 	@Override
@@ -488,7 +493,7 @@ public class PartStorageBus
 			if ( out != null )
 				return Collections.singletonList( out );
 		}
-		return Arrays.asList( new IMEInventoryHandler[] {} );
+		return Arrays.asList( new IMEInventoryHandler[] { } );
 	}
 
 	@Override
@@ -498,21 +503,16 @@ public class PartStorageBus
 	}
 
 	@Override
-	public void blinkCell( int slot )
-	{}
+	public void setPriority( int newValue )
+	{
+		this.priority = newValue;
+		this.host.markForSave();
+		this.resetCache( true );
+	}
 
 	@Override
-	public void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource source )
+	public void blinkCell( int slot )
 	{
-		try
-		{
-			if ( this.proxy.isActive() )
-				this.proxy.getStorage().postAlterationOfStoredItems( StorageChannel.ITEMS, change, this.mySrc );
-		}
-		catch ( GridAccessException e )
-		{
-			// :(
-		}
 	}
 
 	@Override
@@ -520,12 +520,6 @@ public class PartStorageBus
 	public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
 	{
 		return type == PipeType.ITEM && with == this.side ? ConnectOverride.CONNECT : ConnectOverride.DISCONNECT;
-	}
-
-	@Override
-	public void onListUpdate()
-	{
-		// not used here.
 	}
 
 	@Override

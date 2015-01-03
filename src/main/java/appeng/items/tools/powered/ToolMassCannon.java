@@ -22,8 +22,6 @@ package appeng.items.tools.powered;
 import java.util.EnumSet;
 import java.util.List;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.entity.Entity;
@@ -42,6 +40,8 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -83,9 +83,8 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 	public ToolMassCannon()
 	{
-		super( ToolMassCannon.class, Optional.<String> absent() );
+		super( AEConfig.instance.matterCannonBattery, Optional.<String> absent() );
 		this.setFeature( EnumSet.of( AEFeature.MatterCannon, AEFeature.PoweredTools ) );
-		this.maxStoredPower = AEConfig.instance.matterCannonBattery;
 	}
 
 	@Override
@@ -297,7 +296,10 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				Block whatsThere = w.getBlock( x, y, z );
 				if ( whatsThere.isReplaceable( w, x, y, z ) && w.isAirBlock( x, y, z ) )
 				{
-					w.setBlock( x, y, z, AEApi.instance().blocks().blockPaint.block(), 0, 3 );
+					for ( Block paintBlock : AEApi.instance().definitions().blocks().paint().maybeBlock().asSet() )
+					{
+						w.setBlock( x, y, z, paintBlock, 0, 3 );
+					}
 				}
 
 				TileEntity te = w.getTileEntity( x, y, z );

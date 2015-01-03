@@ -19,15 +19,17 @@
 package appeng.block.solids;
 
 import java.util.Random;
+import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.Item;
 import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
+import appeng.api.exceptions.MissingDefinition;
 import appeng.client.render.effects.ChargedOreFX;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
@@ -37,14 +39,20 @@ public class OreQuartzCharged extends OreQuartz
 
 	public OreQuartzCharged() {
 		super( OreQuartzCharged.class );
-		this.boostBrightnessLow = 2;
-		this.boostBrightnessHigh = 5;
+		this.setBoostBrightnessLow( 2 );
+		this.setBoostBrightnessHigh( 5 );
 	}
 
+	@Nullable
 	@Override
-	ItemStack getItemDropped()
+	public Item getItemDropped( int id, Random rand, int meta )
 	{
-		return AEApi.instance().materials().materialCertusQuartzCrystalCharged.stack( 1 );
+		for ( Item charged : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeItem().asSet() )
+		{
+			return charged;
+		}
+
+		throw new MissingDefinition( "Tried to access charged certus quartz crystal, even though they are disabled" );
 	}
 
 	@Override

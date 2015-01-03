@@ -18,6 +18,7 @@
 
 package appeng.items.parts;
 
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -42,6 +43,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
+import appeng.api.exceptions.MissingDefinition;
 import appeng.api.parts.IAlphaPassItem;
 import appeng.block.solids.OreQuartz;
 import appeng.client.render.BusRenderer;
@@ -52,11 +54,14 @@ import appeng.facade.IFacadeItem;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
+
 public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassItem
 {
 
-	public ItemFacade() {
-		super( ItemFacade.class );
+	private List<ItemStack> subTypes = null;
+
+	public ItemFacade()
+	{
 		this.setFeature( EnumSet.of( AEFeature.Facades ) );
 		this.setHasSubtypes( true );
 		if ( Platform.isClient() )
@@ -64,20 +69,46 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	public int getSpriteNumber()
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack is, EntityPlayer player, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	public boolean onItemUse( ItemStack is, EntityPlayer player, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
 		return AEApi.instance().partHelper().placeBus( is, x, y, z, side, player, w );
 	}
 
 	@Override
-	public FacadePart createPartFromItemStack(ItemStack is, ForgeDirection side)
+	public String getItemStackDisplayName( ItemStack is )
+	{
+		try
+		{
+			ItemStack in = this.getTextureItem( is );
+			if ( in != null )
+			{
+				return super.getItemStackDisplayName( is ) + " - " + in.getDisplayName();
+			}
+		}
+		catch ( Throwable ignored )
+		{
+
+		}
+
+		return super.getItemStackDisplayName( is );
+	}
+
+	@Override
+	public void getSubItems( Item number, CreativeTabs tab, List list )
+	{
+		this.calculateSubTypes();
+		list.addAll( this.subTypes );
+	}
+
+	@Override
+	public FacadePart createPartFromItemStack( ItemStack is, ForgeDirection side )
 	{
 		ItemStack in = this.getTextureItem( is );
 		if ( in != null )
@@ -85,40 +116,8 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		return null;
 	}
 
-	List<ItemStack> subTypes = null;
-
-	public List<ItemStack> getFacades()
-	{
-		this.calculateSubTypes();
-		return this.subTypes;
-	}
-
-	public ItemStack getCreativeTabIcon()
-	{
-		this.calculateSubTypes();
-		if ( this.subTypes.isEmpty() )
-			return new ItemStack( Items.cake );
-		return this.subTypes.get( 0 );
-	}
-
 	@Override
-	public void getSubItems(Item number, CreativeTabs tab, List list)
-	{
-		this.calculateSubTypes();
-		list.addAll( this.subTypes );
-	}
-
-	public ItemStack createFromIDs(int[] ids)
-	{
-		ItemStack is = new ItemStack( AEApi.instance().items().itemFacade.item() );
-		NBTTagCompound data = new NBTTagCompound();
-		data.setIntArray( "x", ids.clone() );
-		is.setTagCompound( data );
-		return is;
-	}
-
-	@Override
-	public ItemStack getTextureItem(ItemStack is)
+	public ItemStack getTextureItem( ItemStack is )
 	{
 		Block blk = this.getBlock( is );
 		if ( blk != null )
@@ -126,12 +125,51 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		return null;
 	}
 
+	@Override
+	public int getMeta( ItemStack is )
+	{
+		NBTTagCompound data = is.getTagCompound();
+		if ( data != null )
+		{
+			int[] blk = data.getIntArray( "x" );
+			if ( blk != null && blk.length == 2 )
+				return blk[1];
+		}
+		return 0;
+	}
+
+	@Override
+	public Block getBlock( ItemStack is )
+	{
+		NBTTagCompound data = is.getTagCompound();
+		if ( data != null )
+		{
+			if ( data.hasKey( "modid" ) && data.hasKey( "itemname" ) )
+			{
+				return GameRegistry.findBlock( data.getString( "modid" ), data.getString( "itemname" ) );
+			}
+			else
+			{
+				int[] blk = data.getIntArray( "x" );
+				if ( blk != null && blk.length == 2 )
+					return Block.getBlockById( blk[0] );
+			}
+		}
+		return Blocks.glass;
+	}
+
+	public List<ItemStack> getFacades()
+	{
+		this.calculateSubTypes();
+		return this.subTypes;
+	}
+
 	private void calculateSubTypes()
 	{
 		if ( this.subTypes == null )
 		{
 			this.subTypes = new ArrayList<ItemStack>();
-			for (Object blk : Block.blockRegistry)
+			for ( Object blk : Block.blockRegistry )
 			{
 				Block b = (Block) blk;
 				try
@@ -140,14 +178,14 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 					List<ItemStack> tmpList = new ArrayList<ItemStack>();
 					b.getSubBlocks( item, b.getCreativeTabToDisplayOn(), tmpList );
-					for (ItemStack l : tmpList)
+					for ( ItemStack l : tmpList )
 					{
 						ItemStack facade = this.createFacadeForItem( l, false );
 						if ( facade != null )
 							this.subTypes.add( facade );
 					}
 				}
-				catch (Throwable t)
+				catch ( Throwable t )
 				{
 					// just absorb..
 				}
@@ -156,10 +194,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			if ( FacadeConfig.instance.hasChanged() )
 				FacadeConfig.instance.save();
 		}
-
 	}
 
-	public ItemStack createFacadeForItem(ItemStack l, boolean returnItem)
+	public ItemStack createFacadeForItem( ItemStack l, boolean returnItem )
 	{
 		if ( l == null )
 			return null;
@@ -174,7 +211,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		boolean enableGlass = b instanceof BlockGlass || b instanceof BlockStainedGlass;
 		boolean disableOre = b instanceof OreQuartz;
 
-		boolean defaultValue = (b.isOpaqueCube() && !b.getTickRandomly() && !hasTile && !disableOre) || enableGlass;
+		boolean defaultValue = ( b.isOpaqueCube() && !b.getTickRandomly() && !hasTile && !disableOre ) || enableGlass;
 		if ( FacadeConfig.instance.checkEnabled( b, metadata, defaultValue ) )
 		{
 			if ( returnItem )
@@ -195,60 +232,30 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		return null;
 	}
 
-	@Override
-	public Block getBlock(ItemStack is)
+	public ItemStack getCreativeTabIcon()
 	{
-		NBTTagCompound data = is.getTagCompound();
-		if ( data != null )
+		this.calculateSubTypes();
+		if ( this.subTypes.isEmpty() )
+			return new ItemStack( Items.cake );
+		return this.subTypes.get( 0 );
+	}
+
+	public ItemStack createFromIDs( int[] ids )
+	{
+		for ( ItemStack facadeStack : AEApi.instance().definitions().items().facade().maybeStack( 1 ).asSet() )
 		{
-			if ( data.hasKey( "modid" ) && data.hasKey( "itemname" ) )
-			{
-				return GameRegistry.findBlock( data.getString( "modid" ), data.getString( "itemname" ) );
-			}
-			else
-			{
-				int[] blk = data.getIntArray( "x" );
-				if ( blk != null && blk.length == 2 )
-					return Block.getBlockById( blk[0] );
-			}
+			NBTTagCompound facadeTag = new NBTTagCompound();
+			facadeTag.setIntArray( "x", ids.clone() );
+			facadeStack.setTagCompound( facadeTag );
+
+			return facadeStack;
 		}
-		return Blocks.glass;
+
+		throw new MissingDefinition( "Tried to create a facade, while facades are being deactivated." );
 	}
 
 	@Override
-	public int getMeta(ItemStack is)
-	{
-		NBTTagCompound data = is.getTagCompound();
-		if ( data != null )
-		{
-			int[] blk = data.getIntArray( "x" );
-			if ( blk != null && blk.length == 2 )
-				return blk[1];
-		}
-		return 0;
-	}
-
-	@Override
-	public String getItemStackDisplayName(ItemStack is)
-	{
-		try
-		{
-			ItemStack in = this.getTextureItem( is );
-			if ( in != null )
-			{
-				return super.getItemStackDisplayName( is ) + " - " + in.getDisplayName();
-			}
-		}
-		catch (Throwable ignored)
-		{
-
-		}
-
-		return super.getItemStackDisplayName( is );
-	}
-
-	@Override
-	public boolean useAlphaPass(ItemStack is)
+	public boolean useAlphaPass( ItemStack is )
 	{
 		ItemStack out = this.getTextureItem( is );
 
@@ -261,5 +268,4 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 		return false;
 	}
-
 }

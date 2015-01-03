@@ -23,7 +23,9 @@
 
 package appeng.api.parts;
 
+
 import net.minecraftforge.common.util.ForgeDirection;
+
 
 /**
  * Reports a selected part from th IPartHost
@@ -46,22 +48,24 @@ public class SelectedPart
 	 */
 	public final ForgeDirection side;
 
-	public SelectedPart() {
+	public SelectedPart()
+	{
 		this.part = null;
 		this.facade = null;
 		this.side = ForgeDirection.UNKNOWN;
 	}
 
-	public SelectedPart(IPart part, ForgeDirection side) {
+	public SelectedPart( IPart part, ForgeDirection side )
+	{
 		this.part = part;
 		this.facade = null;
 		this.side = side;
 	}
 
-	public SelectedPart(IFacadePart facade, ForgeDirection side) {
+	public SelectedPart( IFacadePart facade, ForgeDirection side )
+	{
 		this.part = null;
 		this.facade = facade;
 		this.side = side;
 	}
-
 }

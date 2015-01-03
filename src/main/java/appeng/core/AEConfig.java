@@ -193,10 +193,10 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 			this.levelByStacks[btnNum] = Math.min( this.levelByStacks[btnNum], buttonCap );
 		}
 
-		for (Enum e : this.settings.getSettings())
+		for (Settings e : this.settings.getSettings())
 		{
 			String Category = "Client"; // e.getClass().getSimpleName();
-			Enum value = this.settings.getSetting( e );
+			Enum<?> value = this.settings.getSetting( e );
 
 			Property p = this.get( Category, e.name(), value.name(), this.getListComment( value ) );
 
@@ -376,7 +376,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 	@Override
 	public void updateSetting(IConfigManager manager, Enum setting, Enum newValue)
 	{
-		for (Enum e : this.settings.getSettings())
+		for (Settings e : this.settings.getSettings())
 		{
 			if ( e == setting )
 			{

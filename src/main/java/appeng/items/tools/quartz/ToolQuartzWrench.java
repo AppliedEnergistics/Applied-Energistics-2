@@ -21,8 +21,6 @@ package appeng.items.tools.quartz;
 
 import java.util.EnumSet;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -30,6 +28,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import buildcraft.api.tools.IToolWrench;
+import com.google.common.base.Optional;
 
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.util.DimensionalCoord;
@@ -45,7 +44,7 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWren
 
 	public ToolQuartzWrench( AEFeature type )
 	{
-		super( ToolQuartzWrench.class, Optional.of( type.name() ) );
+		super( Optional.of( type.name() ) );
 
 		this.setFeature( EnumSet.of( type, AEFeature.QuartzWrench ) );
 		this.setMaxStackSize( 1 );

@@ -23,8 +23,10 @@
 
 package appeng.api.features;
 
+
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
+
 
 public interface IWorldGen
 {
@@ -40,6 +42,5 @@ public interface IWorldGen
 
 	void disableWorldGenForDimension( WorldGenType type, int dimID );
 
-	boolean isWorldGenEnabled(WorldGenType type, World w);
-
+	boolean isWorldGenEnabled( WorldGenType type, World w );
 }

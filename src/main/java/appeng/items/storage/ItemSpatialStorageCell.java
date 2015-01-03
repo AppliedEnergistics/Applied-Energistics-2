@@ -22,13 +22,13 @@ package appeng.items.storage;
 import java.util.EnumSet;
 import java.util.List;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+
+import com.google.common.base.Optional;
 
 import appeng.api.implementations.TransitionResult;
 import appeng.api.implementations.items.ISpatialStorageCell;
@@ -37,7 +37,6 @@ import appeng.core.WorldSettings;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
-import appeng.items.materials.MaterialType;
 import appeng.spatial.StorageHelper;
 import appeng.spatial.StorageWorldProvider;
 import appeng.util.Platform;
@@ -45,17 +44,14 @@ import appeng.util.Platform;
 
 public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorageCell
 {
+	private final int maxRegion;
 
-	final MaterialType component;
-	final int maxRegion;
-
-	public ItemSpatialStorageCell( MaterialType whichCell, int spatialScale )
+	public ItemSpatialStorageCell( int spatialScale )
 	{
-		super( ItemSpatialStorageCell.class, Optional.of( spatialScale + "Cubed" ) );
+		super( Optional.of( spatialScale + "Cubed" ) );
 		this.setFeature( EnumSet.of( AEFeature.SpatialIO ) );
 		this.setMaxStackSize( 1 );
 		this.maxRegion = spatialScale;
-		this.component = whichCell;
 	}
 
 	@Override

@@ -25,6 +25,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IComparableDefinition;
+import appeng.api.definitions.IItems;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.core.sync.AppEngPacket;
@@ -58,21 +60,30 @@ public class PacketClick extends AppEngPacket
 	public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player)
 	{
 		ItemStack is = player.inventory.getCurrentItem();
-		if ( is != null && is.getItem() instanceof ToolNetworkTool )
+		final IItems items = AEApi.instance().definitions().items();
+		final IComparableDefinition maybeMemoryCard = items.memoryCard();
+		final IComparableDefinition maybeColorApplicator = items.colorApplicator();
+
+		if ( is != null )
 		{
-			ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
-			tnt.serverSideToolLogic( is, player, player.worldObj, this.x, this.y, this.z, this.side, this.hitX, this.hitY, this.hitZ );
-		}
-		else if ( is != null && AEApi.instance().items().itemMemoryCard.sameAsStack( is ) )
-		{
-			IMemoryCard mem = (IMemoryCard) is.getItem();
-			mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
-			is.setTagCompound( null );
-		}
-		else if ( is != null && AEApi.instance().items().itemColorApplicator.sameAsStack( is ) )
-		{
-			ToolColorApplicator mem = (ToolColorApplicator) is.getItem();
-			mem.cycleColors( is, mem.getColor( is ), 1 );
+			if ( is.getItem() instanceof ToolNetworkTool )
+			{
+				ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
+				tnt.serverSideToolLogic( is, player, player.worldObj, this.x, this.y, this.z, this.side, this.hitX, this.hitY, this.hitZ );
+			}
+
+			else if ( maybeMemoryCard.isSameAs( is ) )
+			{
+				IMemoryCard mem = (IMemoryCard) is.getItem();
+				mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
+				is.setTagCompound( null );
+			}
+
+			else if ( maybeColorApplicator.isSameAs( is ) )
+			{
+				ToolColorApplicator mem = (ToolColorApplicator) is.getItem();
+				mem.cycleColors( is, mem.getColor( is ), 1 );
+			}
 		}
 	}
 

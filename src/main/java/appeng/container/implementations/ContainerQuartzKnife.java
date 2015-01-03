@@ -120,10 +120,13 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 		{
 			if ( this.myName.length() > 0 )
 			{
-				ItemStack name = AEApi.instance().materials().materialNamePress.stack( 1 );
-				NBTTagCompound c = Platform.openNbtData( name );
-				c.setString( "InscribeName", this.myName );
-				return name;
+				for ( ItemStack namePressStack : AEApi.instance().definitions().materials().namePress().maybeStack( 1 ).asSet() )
+				{
+					final NBTTagCompound compound = Platform.openNbtData( namePressStack );
+					compound.setString( "InscribeName", this.myName );
+
+					return namePressStack;
+				}
 			}
 		}
 

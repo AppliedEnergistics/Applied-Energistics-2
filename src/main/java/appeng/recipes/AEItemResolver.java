@@ -22,6 +22,9 @@ package appeng.recipes;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IDefinitions;
+import appeng.api.definitions.IItems;
+import appeng.api.definitions.IParts;
 import appeng.api.recipes.ISubItemResolver;
 import appeng.api.recipes.ResolverResult;
 import appeng.api.recipes.ResolverResultSet;
@@ -34,63 +37,68 @@ import appeng.items.misc.ItemCrystalSeed;
 import appeng.items.parts.ItemMultiPart;
 import appeng.items.parts.PartType;
 
+
 public class AEItemResolver implements ISubItemResolver
 {
 
 	@Override
-	public Object resolveItemByName(String nameSpace, String itemName)
+	public Object resolveItemByName( String nameSpace, String itemName )
 	{
 
 		if ( nameSpace.equals( AppEng.MOD_ID ) )
 		{
+			final IDefinitions definitions = AEApi.instance().definitions();
+			final IItems items = definitions.items();
+			final IParts parts = definitions.parts();
+
 			if ( itemName.startsWith( "PaintBall." ) )
 			{
-				return this.paintBall( AEApi.instance().items().itemPaintBall, itemName.substring( itemName.indexOf( "." ) + 1 ), false );
+				return this.paintBall( items.coloredPaintBall(), itemName.substring( itemName.indexOf( '.' ) + 1 ), false );
 			}
 
 			if ( itemName.startsWith( "LumenPaintBall." ) )
 			{
-				return this.paintBall( AEApi.instance().items().itemPaintBall, itemName.substring( itemName.indexOf( "." ) + 1 ), true );
+				return this.paintBall( items.coloredLumenPaintBall(), itemName.substring( itemName.indexOf( '.' ) + 1 ), true );
 			}
 
 			if ( itemName.equals( "CableGlass" ) )
 			{
-				return new ResolverResultSet( "CableGlass", AEApi.instance().parts().partCableGlass.allStacks( 1 ) );
+				return new ResolverResultSet( "CableGlass", parts.cableGlass().allStacks( 1 ) );
 			}
 
 			if ( itemName.startsWith( "CableGlass." ) )
 			{
-				return this.cableItem( AEApi.instance().parts().partCableGlass, itemName.substring( itemName.indexOf( "." ) + 1 ) );
+				return this.cableItem( parts.cableGlass(), itemName.substring( itemName.indexOf( '.' ) + 1 ) );
 			}
 
 			if ( itemName.equals( "CableCovered" ) )
 			{
-				return new ResolverResultSet( "CableCovered", AEApi.instance().parts().partCableCovered.allStacks( 1 ) );
+				return new ResolverResultSet( "CableCovered", parts.cableCovered().allStacks( 1 ) );
 			}
 
 			if ( itemName.startsWith( "CableCovered." ) )
 			{
-				return this.cableItem( AEApi.instance().parts().partCableCovered, itemName.substring( itemName.indexOf( "." ) + 1 ) );
+				return this.cableItem( parts.cableCovered(), itemName.substring( itemName.indexOf( '.' ) + 1 ) );
 			}
 
 			if ( itemName.equals( "CableSmart" ) )
 			{
-				return new ResolverResultSet( "CableSmart", AEApi.instance().parts().partCableSmart.allStacks( 1 ) );
+				return new ResolverResultSet( "CableSmart", parts.cableSmart().allStacks( 1 ) );
 			}
 
 			if ( itemName.startsWith( "CableSmart." ) )
 			{
-				return this.cableItem( AEApi.instance().parts().partCableSmart, itemName.substring( itemName.indexOf( "." ) + 1 ) );
+				return this.cableItem( parts.cableSmart(), itemName.substring( itemName.indexOf( '.' ) + 1 ) );
 			}
 
 			if ( itemName.equals( "CableDense" ) )
 			{
-				return new ResolverResultSet( "CableDense", AEApi.instance().parts().partCableDense.allStacks( 1 ) );
+				return new ResolverResultSet( "CableDense", parts.cableDense().allStacks( 1 ) );
 			}
 
 			if ( itemName.startsWith( "CableDense." ) )
 			{
-				return this.cableItem( AEApi.instance().parts().partCableDense, itemName.substring( itemName.indexOf( "." ) + 1 ) );
+				return this.cableItem( parts.cableDense(), itemName.substring( itemName.indexOf( '.' ) + 1 ) );
 			}
 
 			if ( itemName.startsWith( "ItemCrystalSeed." ) )
@@ -107,7 +115,7 @@ public class AEItemResolver implements ISubItemResolver
 
 			if ( itemName.startsWith( "ItemMaterial." ) )
 			{
-				String materialName = itemName.substring( itemName.indexOf( "." ) + 1 );
+				String materialName = itemName.substring( itemName.indexOf( '.' ) + 1 );
 				MaterialType mt = MaterialType.valueOf( materialName );
 				// itemName = itemName.substring( 0, itemName.indexOf( "." ) );
 				if ( mt.itemInstance == ItemMultiMaterial.instance && mt.damageValue >= 0 && mt.isRegistered() )
@@ -116,7 +124,7 @@ public class AEItemResolver implements ISubItemResolver
 
 			if ( itemName.startsWith( "ItemPart." ) )
 			{
-				String partName = itemName.substring( itemName.indexOf( "." ) + 1 );
+				String partName = itemName.substring( itemName.indexOf( '.' ) + 1 );
 				PartType pt = PartType.valueOf( partName );
 				// itemName = itemName.substring( 0, itemName.indexOf( "." ) );
 				int dVal = ItemMultiPart.instance.getDamageByType( pt );
@@ -128,15 +136,15 @@ public class AEItemResolver implements ISubItemResolver
 		return null;
 	}
 
-	private Object paintBall(AEColoredItemDefinition partType, String substring, boolean lumen)
+	private Object paintBall( AEColoredItemDefinition partType, String substring, boolean lumen )
 	{
-		AEColor col = AEColor.Transparent;
+		AEColor col;
 
 		try
 		{
 			col = AEColor.valueOf( substring );
 		}
-		catch (Throwable t)
+		catch ( Throwable t )
 		{
 			col = AEColor.Transparent;
 		}
@@ -145,18 +153,18 @@ public class AEItemResolver implements ISubItemResolver
 			return null;
 
 		ItemStack is = partType.stack( col, 1 );
-		return new ResolverResult( "ItemPaintBall", (lumen ? 20 : 0) + is.getItemDamage() );
+		return new ResolverResult( "ItemPaintBall", ( lumen ? 20 : 0 ) + is.getItemDamage() );
 	}
 
-	private Object cableItem(AEColoredItemDefinition partType, String substring)
+	private Object cableItem( AEColoredItemDefinition partType, String substring )
 	{
-		AEColor col = AEColor.Transparent;
+		AEColor col;
 
 		try
 		{
 			col = AEColor.valueOf( substring );
 		}
-		catch (Throwable t)
+		catch ( Throwable t )
 		{
 			col = AEColor.Transparent;
 		}

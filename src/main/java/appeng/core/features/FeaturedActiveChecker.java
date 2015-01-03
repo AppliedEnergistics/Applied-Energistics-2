@@ -19,30 +19,30 @@
 package appeng.core.features;
 
 
-import java.util.EnumSet;
+import java.util.Set;
 
 import appeng.core.AEConfig;
 
 
 public class FeaturedActiveChecker
 {
-	private final EnumSet<AEFeature> features;
+	private final Set<AEFeature> features;
 
-	public FeaturedActiveChecker( EnumSet<AEFeature> features )
+	public FeaturedActiveChecker( Set<AEFeature> features )
 	{
 		this.features = features;
 	}
 
-	public boolean get()
+	public ActivityState getActivityState()
 	{
 		for ( AEFeature f : this.features )
 		{
 			if ( !AEConfig.instance.isFeatureEnabled( f ) )
 			{
-				return false;
+				return ActivityState.Disabled;
 			}
 		}
 
-		return true;
+		return ActivityState.Enabled;
 	}
 }

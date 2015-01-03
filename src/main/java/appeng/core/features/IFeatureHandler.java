@@ -19,18 +19,14 @@
 package appeng.core.features;
 
 
-import java.util.EnumSet;
-
-import appeng.api.util.AEItemDefinition;
+import appeng.api.definitions.IItemDefinition;
 
 
 public interface IFeatureHandler
 {
 	boolean isFeatureAvailable();
 
-	EnumSet<AEFeature> getFeatures();
-
-	AEItemDefinition getDefinition();
+	IItemDefinition getDefinition();
 
 	void register();
 }

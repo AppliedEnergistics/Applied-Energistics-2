@@ -16,7 +16,8 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.hooks;
+package appeng.worldgen;
+
 
 import java.util.Collection;
 import java.util.Random;
@@ -32,29 +33,12 @@ import appeng.api.features.IWorldGen.WorldGenType;
 import appeng.core.AEConfig;
 import appeng.core.WorldSettings;
 import appeng.core.features.registries.WorldGenRegistry;
-import appeng.helpers.MeteoritePlacer;
-import appeng.services.compass.ICompassCallback;
+import appeng.hooks.TickHandler;
 import appeng.util.Platform;
+import appeng.worldgen.meteorite.ChunkOnly;
 
 final public class MeteoriteWorldGen implements IWorldGenerator
 {
-
-	static class MyGen implements ICompassCallback
-	{
-
-		double distance = 0;
-
-		@Override
-		public void calculatedDirection(boolean hasResult, boolean spin, double radians, double dist)
-		{
-			if ( hasResult )
-				this.distance = dist;
-			else
-				this.distance = Double.MAX_VALUE;
-		}
-
-	}
-
 	@Override
 	public void generate(Random r, int chunkX, int chunkZ, World w, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
 	{
@@ -103,7 +87,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 			for (NBTTagCompound data : MeteoriteWorldGen.this.getNearByMeteorites( this.w, chunkX, chunkZ ))
 			{
 				MeteoritePlacer mp = new MeteoritePlacer();
-				mp.spawnMeteorite( new MeteoritePlacer.ChunkOnly( this.w, chunkX, chunkZ ), data );
+				mp.spawnMeteorite( new ChunkOnly( this.w, chunkX, chunkZ ), data );
 
 				minSqDist = Math.min( minSqDist, mp.getSqDistance( this.x, this.z ) );
 			}
@@ -126,7 +110,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 		{
 			MeteoritePlacer mp = new MeteoritePlacer();
 
-			if ( mp.spawnMeteorite( new MeteoritePlacer.ChunkOnly( w, x >> 4, z >> 4 ), x, depth, z ) )
+			if ( mp.spawnMeteorite( new ChunkOnly( w, x >> 4, z >> 4 ), x, depth, z ) )
 			{
 				int px = x >> 4;
 				int pz = z >> 4;
@@ -142,7 +126,7 @@ final public class MeteoriteWorldGen implements IWorldGenerator
 							if ( WorldSettings.getInstance().hasGenerated( w.provider.dimensionId, cx, cz ) )
 							{
 								MeteoritePlacer mp2 = new MeteoritePlacer();
-								mp2.spawnMeteorite( new MeteoritePlacer.ChunkOnly( w, cx, cz ), mp.getSettings() );
+								mp2.spawnMeteorite( new ChunkOnly( w, cx, cz ), mp.getSettings() );
 							}
 						}
 					}

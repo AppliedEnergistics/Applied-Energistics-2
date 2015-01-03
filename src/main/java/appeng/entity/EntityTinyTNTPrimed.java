@@ -26,6 +26,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityTNTPrimed;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.Explosion;
@@ -38,11 +39,12 @@ import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.packets.PacketMockExplosion;
+import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntityAdditionalSpawnData
 {
-
+	@Reflected
 	public EntityTinyTNTPrimed(World w) {
 		super( w );
 		this.setSize( 0.35F, 0.35F );
@@ -80,15 +82,20 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 
 		if ( this.isInWater() && Platform.isServer() ) // put out the fuse.
 		{
-			EntityItem item = new EntityItem( this.worldObj, this.posX, this.posY, this.posZ, AEApi.instance().blocks().blockTinyTNT.stack( 1 ) );
-			item.motionX = this.motionX;
-			item.motionY = this.motionY;
-			item.motionZ = this.motionZ;
-			item.prevPosX = this.prevPosX;
-			item.prevPosY = this.prevPosY;
-			item.prevPosZ = this.prevPosZ;
-			this.worldObj.spawnEntityInWorld( item );
-			this.setDead();
+			for ( ItemStack tntStack : AEApi.instance().definitions().blocks().tinyTNT().maybeStack( 1 ).asSet() )
+			{
+				final EntityItem item = new EntityItem( this.worldObj, this.posX, this.posY, this.posZ, tntStack );
+
+				item.motionX = this.motionX;
+				item.motionY = this.motionY;
+				item.motionZ = this.motionZ;
+				item.prevPosX = this.prevPosX;
+				item.prevPosY = this.prevPosY;
+				item.prevPosZ = this.prevPosZ;
+
+				this.worldObj.spawnEntityInWorld( item );
+				this.setDead();
+			}
 		}
 
 		if ( this.fuse <= 0 )

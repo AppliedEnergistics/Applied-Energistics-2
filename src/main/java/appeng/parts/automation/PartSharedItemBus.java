@@ -18,6 +18,7 @@
 
 package appeng.parts.automation;
 
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -32,29 +33,18 @@ import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
+
 public abstract class PartSharedItemBus extends PartUpgradeable implements IGridTickable
 {
 
-	private TileEntity getTileEntity(TileEntity self, int x, int y, int z)
+	final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
+	int adaptorHash = 0;
+	InventoryAdaptor adaptor;
+	boolean lastRedstone = false;
+
+	public PartSharedItemBus( ItemStack is )
 	{
-		World w = self.getWorldObj();
-
-		if ( w.getChunkProvider().chunkExists( x >> 4, z >> 4 ) )
-		{
-			return w.getTileEntity( x, y, z );
-		}
-
-		return null;
-	}
-
-	public PartSharedItemBus(Class c, ItemStack is) {
-		super( c, is );
-	}
-
-	@Override
-	public void upgradesChanged()
-	{
-		this.updateState();
+		super( is );
 	}
 
 	protected int availableSlots()
@@ -63,23 +53,48 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	}
 
 	@Override
-	public void writeToNBT(net.minecraft.nbt.NBTTagCompound extra)
+	public void writeToNBT( net.minecraft.nbt.NBTTagCompound extra )
 	{
 		super.writeToNBT( extra );
 		this.config.writeToNBT( extra, "config" );
 	}
 
 	@Override
-	public void readFromNBT(net.minecraft.nbt.NBTTagCompound extra)
+	public void readFromNBT( net.minecraft.nbt.NBTTagCompound extra )
 	{
 		super.readFromNBT( extra );
 		this.config.readFromNBT( extra, "config" );
 	}
 
-	final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
+	@Override
+	public IInventory getInventoryByName( String name )
+	{
+		if ( name.equals( "config" ) )
+			return this.config;
 
-	int adaptorHash = 0;
-	InventoryAdaptor adaptor;
+		return super.getInventoryByName( name );
+	}
+
+	@Override
+	public void upgradesChanged()
+	{
+		this.updateState();
+	}
+
+	private void updateState()
+	{
+		try
+		{
+			if ( !this.isSleeping() )
+				this.proxy.getTick().wakeDevice( this.proxy.getNode() );
+			else
+				this.proxy.getTick().sleepDevice( this.proxy.getNode() );
+		}
+		catch ( GridAccessException e )
+		{
+			// :P
+		}
+	}
 
 	InventoryAdaptor getHandler()
 	{
@@ -97,9 +112,17 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		return this.adaptor;
 	}
 
-	boolean lastRedstone = false;
+	private TileEntity getTileEntity( TileEntity self, int x, int y, int z )
+	{
+		World w = self.getWorldObj();
 
-	abstract TickRateModulation doBusWork();
+		if ( w.getChunkProvider().chunkExists( x >> 4, z >> 4 ) )
+		{
+			return w.getTileEntity( x, y, z );
+		}
+
+		return null;
+	}
 
 	@Override
 	public void onNeighborChanged()
@@ -113,28 +136,5 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		}
 	}
 
-	private void updateState()
-	{
-		try
-		{
-			if ( !this.isSleeping() )
-				this.proxy.getTick().wakeDevice( this.proxy.getNode() );
-			else
-				this.proxy.getTick().sleepDevice( this.proxy.getNode() );
-		}
-		catch (GridAccessException e)
-		{
-			// :P
-		}
-	}
-
-	@Override
-	public IInventory getInventoryByName(String name)
-	{
-		if ( name.equals( "config" ) )
-			return this.config;
-
-		return super.getInventoryByName( name );
-	}
-
+	abstract TickRateModulation doBusWork();
 }

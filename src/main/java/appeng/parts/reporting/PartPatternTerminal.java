@@ -18,6 +18,7 @@
 
 package appeng.parts.reporting;
 
+
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,20 +31,39 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
+import appeng.helpers.Reflected;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
 
+
 public class PartPatternTerminal extends PartTerminal
 {
-
-	final AppEngInternalInventory crafting = new AppEngInternalInventory( this, 9 );
-	final AppEngInternalInventory output = new AppEngInternalInventory( this, 3 );
-	final AppEngInternalInventory pattern = new AppEngInternalInventory( this, 2 );
+	private final AppEngInternalInventory crafting = new AppEngInternalInventory( this, 9 );
+	private final AppEngInternalInventory output = new AppEngInternalInventory( this, 3 );
+	private final AppEngInternalInventory pattern = new AppEngInternalInventory( this, 2 );
 
 	private boolean craftingMode = true;
 
+	@Reflected
+	public PartPatternTerminal( ItemStack is )
+	{
+		super( is );
+
+		this.frontBright = CableBusTextures.PartPatternTerm_Bright;
+		this.frontColored = CableBusTextures.PartPatternTerm_Colored;
+		this.frontDark = CableBusTextures.PartPatternTerm_Dark;
+	}
+
 	@Override
-	public void writeToNBT(NBTTagCompound data)
+	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	{
+		for ( ItemStack is : this.pattern )
+			if ( is != null )
+				drops.add( is );
+	}
+
+	@Override
+	public void writeToNBT( NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 		data.setBoolean( "craftingMode", this.craftingMode );
@@ -53,28 +73,13 @@ public class PartPatternTerminal extends PartTerminal
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound data)
+	public void readFromNBT( NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 		this.setCraftingRecipe( data.getBoolean( "craftingMode" ) );
 		this.pattern.readFromNBT( data, "pattern" );
 		this.output.readFromNBT( data, "outputList" );
 		this.crafting.readFromNBT( data, "craftingGrid" );
-	}
-
-	@Override
-	public void getDrops(List<ItemStack> drops, boolean wrenched)
-	{
-		for (ItemStack is : this.pattern)
-			if ( is != null )
-				drops.add( is );
-	}
-
-	public PartPatternTerminal(ItemStack is) {
-		super( PartPatternTerminal.class, is );
-		this.frontBright = CableBusTextures.PartPatternTerm_Bright;
-		this.frontColored = CableBusTextures.PartPatternTerm_Colored;
-		this.frontDark = CableBusTextures.PartPatternTerm_Dark;
 	}
 
 	@Override
@@ -90,28 +95,13 @@ public class PartPatternTerminal extends PartTerminal
 			z = this.tile.zCoord;
 		}
 
-		if( GuiBridge.GUI_PATTERN_TERMINAL.hasPermissions( this.getHost().getTile(), x, y, z, this.side, p ) )
+		if ( GuiBridge.GUI_PATTERN_TERMINAL.hasPermissions( this.getHost().getTile(), x, y, z, this.side, p ) )
 			return GuiBridge.GUI_PATTERN_TERMINAL;
 		return GuiBridge.GUI_ME;
 	}
 
 	@Override
-	public IInventory getInventoryByName(String name)
-	{
-		if ( name.equals( "crafting" ) )
-			return this.crafting;
-
-		if ( name.equals( "output" ) )
-			return this.output;
-
-		if ( name.equals( "pattern" ) )
-			return this.pattern;
-
-		return super.getInventoryByName( name );
-	}
-
-	@Override
-	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
 	{
 		if ( inv == this.pattern && slot == 1 )
 		{
@@ -124,13 +114,13 @@ public class PartPatternTerminal extends PartTerminal
 				{
 					this.setCraftingRecipe( details.isCraftable() );
 
-					for (int x = 0; x < this.crafting.getSizeInventory() && x < details.getInputs().length; x++)
+					for ( int x = 0; x < this.crafting.getSizeInventory() && x < details.getInputs().length; x++ )
 					{
 						IAEItemStack item = details.getInputs()[x];
 						this.crafting.setInventorySlotContents( x, item == null ? null : item.getItemStack() );
 					}
 
-					for (int x = 0; x < this.output.getSizeInventory() && x < details.getOutputs().length; x++)
+					for ( int x = 0; x < this.output.getSizeInventory() && x < details.getOutputs().length; x++ )
 					{
 						IAEItemStack item = details.getOutputs()[x];
 						this.output.setInventorySlotContents( x, item == null ? null : item.getItemStack() );
@@ -146,27 +136,42 @@ public class PartPatternTerminal extends PartTerminal
 		this.host.markForSave();
 	}
 
-	public boolean isCraftingRecipe()
-	{
-		return this.craftingMode;
-	}
-
-	public void setCraftingRecipe(boolean craftingMode)
-	{
-		this.craftingMode = craftingMode;
-		this.fixCraftingRecipes();
-	}
-
 	private void fixCraftingRecipes()
 	{
 		if ( this.craftingMode )
 		{
-			for (int x = 0; x < this.crafting.getSizeInventory(); x++)
+			for ( int x = 0; x < this.crafting.getSizeInventory(); x++ )
 			{
 				ItemStack is = this.crafting.getStackInSlot( x );
 				if ( is != null )
 					is.stackSize = 1;
 			}
 		}
+	}
+
+	public boolean isCraftingRecipe()
+	{
+		return this.craftingMode;
+	}
+
+	public void setCraftingRecipe( boolean craftingMode )
+	{
+		this.craftingMode = craftingMode;
+		this.fixCraftingRecipes();
+	}
+
+	@Override
+	public IInventory getInventoryByName( String name )
+	{
+		if ( name.equals( "crafting" ) )
+			return this.crafting;
+
+		if ( name.equals( "output" ) )
+			return this.output;
+
+		if ( name.equals( "pattern" ) )
+			return this.pattern;
+
+		return super.getInventoryByName( name );
 	}
 }

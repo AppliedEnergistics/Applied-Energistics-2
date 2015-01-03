@@ -22,8 +22,6 @@ package appeng.items.tools.powered;
 import java.util.EnumSet;
 import java.util.List;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -32,6 +30,8 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
 import appeng.api.config.Settings;
@@ -54,9 +54,8 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 
 	public ToolWirelessTerminal()
 	{
-		super( ToolWirelessTerminal.class, Optional.<String> absent() );
+		super( AEConfig.instance.wirelessTerminalBattery, Optional.<String> absent() );
 		this.setFeature( EnumSet.of( AEFeature.WirelessAccessTerminal, AEFeature.PoweredTools ) );
-		this.maxStoredPower = AEConfig.instance.wirelessTerminalBattery;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -98,7 +97,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	@Override
 	public boolean canHandle( ItemStack is )
 	{
-		return AEApi.instance().items().itemWirelessTerminal.sameAsStack( is );
+		return AEApi.instance().definitions().items().wirelessTerminal().isSameAs( is );
 	}
 
 	@Override

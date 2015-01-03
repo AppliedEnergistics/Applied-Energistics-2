@@ -23,8 +23,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
@@ -32,9 +30,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.google.common.base.Optional;
+
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
+import appeng.api.exceptions.MissingDefinition;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.ICellInventory;
@@ -63,7 +64,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 
 	public ItemBasicStorageCell( MaterialType whichCell, int kilobytes )
 	{
-		super( ItemBasicStorageCell.class, Optional.of( kilobytes + "k" ) );
+		super( Optional.of( kilobytes + "k" ) );
 
 		this.setFeature( EnumSet.of( AEFeature.StorageCells ) );
 		this.setMaxStackSize( 1 );
@@ -240,12 +241,17 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 					playerInventory.setInventorySlotContents( playerInventory.currentItem, null );
 
 					ItemStack extraB = ia.addItems( this.component.stack( 1 ) );
-					ItemStack extraA = ia.addItems( AEApi.instance().materials().materialEmptyStorageCell.stack( 1 ) );
-
-					if ( extraA != null )
-						player.dropPlayerItemWithRandomChoice( extraA, false );
 					if ( extraB != null )
 						player.dropPlayerItemWithRandomChoice( extraB, false );
+
+					for ( ItemStack storageCellStack : AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).asSet() )
+					{
+						final ItemStack extraA = ia.addItems( storageCellStack );
+						if ( extraA != null )
+						{
+							player.dropPlayerItemWithRandomChoice( extraA, false );
+						}
+					}
 
 					if ( player.inventoryContainer != null )
 						player.inventoryContainer.detectAndSendChanges();
@@ -266,7 +272,12 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	@Override
 	public ItemStack getContainerItem( ItemStack itemStack )
 	{
-		return AEApi.instance().materials().materialEmptyStorageCell.stack( 1 );
+		for ( ItemStack stack : AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).asSet() )
+		{
+			return stack;
+		}
+
+		throw new MissingDefinition( "Tried to use empty storage cells while basic storage cells are defined." );
 	}
 
 	@Override

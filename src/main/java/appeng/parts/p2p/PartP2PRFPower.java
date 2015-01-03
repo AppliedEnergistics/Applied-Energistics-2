@@ -33,9 +33,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import cofh.api.energy.IEnergyReceiver;
 
 import appeng.api.config.PowerUnits;
-import appeng.api.config.TunnelType;
-import appeng.core.AppEng;
-import appeng.integration.IntegrationType;
 import appeng.integration.modules.helpers.NullRFHandler;
 import appeng.me.GridAccessException;
 import appeng.transformer.annotations.Integration.Interface;
@@ -57,17 +54,6 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements IEn
 	public PartP2PRFPower( ItemStack is )
 	{
 		super( is );
-
-		if ( !AppEng.instance.isIntegrationEnabled( IntegrationType.RF ) )
-		{
-			throw new RuntimeException( "RF Not installed!" );
-		}
-	}
-
-	@Override
-	public TunnelType getTunnelType()
-	{
-		return TunnelType.RF_POWER;
 	}
 
 	@Override

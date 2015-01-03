@@ -21,19 +21,18 @@ package appeng.core.features;
 
 import java.util.EnumSet;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.block.BlockStairs;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 
-import appeng.api.util.AEItemDefinition;
+import com.google.common.base.Optional;
+
+import appeng.api.definitions.IBlockDefinition;
 import appeng.core.CreativeTab;
 
 
 public class StairBlockFeatureHandler implements IFeatureHandler
 {
-	private final EnumSet<AEFeature> features;
 	private final BlockStairs stairs;
 	private final FeatureNameExtractor extractor;
 	private final boolean enabled;
@@ -41,39 +40,37 @@ public class StairBlockFeatureHandler implements IFeatureHandler
 
 	public StairBlockFeatureHandler( EnumSet<AEFeature> features, BlockStairs stairs, Optional<String> subName )
 	{
-		this.features = features;
+		final ActivityState state = new FeaturedActiveChecker( features ).getActivityState();
+
 		this.stairs = stairs;
 		this.extractor = new FeatureNameExtractor( stairs.getClass(), subName );
-		this.enabled = new FeaturedActiveChecker( features ).get();
-		this.definition = new BlockDefinition( stairs, this.enabled );
+		this.enabled = state == ActivityState.Enabled;
+		this.definition = new BlockDefinition( stairs, state );
 	}
 
 	@Override
-	public boolean isFeatureAvailable()
+	public final boolean isFeatureAvailable()
 	{
 		return this.enabled;
 	}
 
 	@Override
-	public EnumSet<AEFeature> getFeatures()
-	{
-		return this.features;
-	}
-
-	@Override
-	public AEItemDefinition getDefinition()
+	public final IBlockDefinition getDefinition()
 	{
 		return this.definition;
 	}
 
 	@Override
-	public void register()
+	public final void register()
 	{
-		String name = this.extractor.get();
-		this.stairs.setCreativeTab( CreativeTab.instance );
-		this.stairs.setBlockName( "appliedenergistics2." + name );
-		this.stairs.setBlockTextureName( "appliedenergistics2:" + name );
+		if ( this.enabled )
+		{
+			String name = this.extractor.get();
+			this.stairs.setCreativeTab( CreativeTab.instance );
+			this.stairs.setBlockName( "appliedenergistics2." + name );
+			this.stairs.setBlockTextureName( "appliedenergistics2:" + name );
 
-		GameRegistry.registerBlock( this.stairs, "tile." + name );
+			GameRegistry.registerBlock( this.stairs, "tile." + name );
+		}
 	}
 }

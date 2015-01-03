@@ -193,7 +193,7 @@ public class AppEng
 	}
 
 	@EventHandler
-	public void serverStarting( FMLServerAboutToStartEvent evt )
+	public void serverAboutToStart( FMLServerAboutToStartEvent evt )
 	{
 		WorldSettings.getInstance().init();
 	}

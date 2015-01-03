@@ -18,6 +18,7 @@
 
 package appeng.spatial;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,43 +32,42 @@ import net.minecraft.world.gen.ChunkProviderGenerate;
 import appeng.api.AEApi;
 import appeng.core.AEConfig;
 
+
 public class StorageChunkProvider extends ChunkProviderGenerate
 {
+	public static final int SQUARE_CHUNK_SIZE = 256;
+	private final static Block[] BLOCKS;
 
-	final static Block[] BLOCKS;
+	static
+	{
+		BLOCKS = new Block[255 * SQUARE_CHUNK_SIZE];
 
-	static {
-
-		BLOCKS = new Block[255 * 256];
-
-		Block matrixFrame = AEApi.instance().blocks().blockMatrixFrame.block();
-		for (int x = 0; x < BLOCKS.length; x++)
-			BLOCKS[x] = matrixFrame;
-
+		for ( Block matrixFrameBlock : AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().asSet() )
+		{
+			for ( int x = 0; x < BLOCKS.length; x++ )
+			{
+				BLOCKS[x] = matrixFrameBlock;
+			}
+		}
 	}
 
-	final World w;
+	final World world;
 
-	public StorageChunkProvider(World wrd, long i) {
-		super( wrd, i, false );
-		this.w = wrd;
+	public StorageChunkProvider( World world, long i )
+	{
+		super( world, i, false );
+		this.world = world;
 	}
 
 	@Override
-	public boolean unloadQueuedChunks()
+	public Chunk provideChunk( int x, int z )
 	{
-		return true;
-	}
-
-	@Override
-	public Chunk provideChunk(int x, int z)
-	{
-		Chunk chunk = new Chunk( this.w, BLOCKS, x, z );
+		Chunk chunk = new Chunk( this.world, BLOCKS, x, z );
 
 		byte[] biomes = chunk.getBiomeArray();
 		AEConfig config = AEConfig.instance;
 
-		for (int k = 0; k < biomes.length; ++k)
+		for ( int k = 0; k < biomes.length; ++k )
 			biomes[k] = (byte) config.storageBiomeID;
 
 		if ( !chunk.isTerrainPopulated )
@@ -80,15 +80,20 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 	}
 
 	@Override
-	public void populate(IChunkProvider par1iChunkProvider, int par2, int par3)
+	public void populate( IChunkProvider par1iChunkProvider, int par2, int par3 )
 	{
 
 	}
 
 	@Override
-	public List getPossibleCreatures(EnumCreatureType a, int b, int c, int d)
+	public boolean unloadQueuedChunks()
+	{
+		return true;
+	}
+
+	@Override
+	public List getPossibleCreatures( EnumCreatureType a, int b, int c, int d )
 	{
 		return new ArrayList();
 	}
-
 }

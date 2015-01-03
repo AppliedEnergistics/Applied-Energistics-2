@@ -21,62 +21,61 @@ package appeng.core.features;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 
-import appeng.api.util.AEItemDefinition;
-import appeng.util.Platform;
+import com.google.common.base.Optional;
+
+import appeng.api.definitions.IBlockDefinition;
 
 
-public class BlockDefinition implements AEItemDefinition
+public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 {
 	private final Block block;
 	private final boolean enabled;
 
-	public BlockDefinition( Block block, boolean enabled )
+	public BlockDefinition( Block block, ActivityState state )
 	{
+		super( Item.getItemFromBlock( block ), state );
 		this.block = block;
-		this.enabled = enabled;
+		this.enabled = state == ActivityState.Enabled;
 	}
 
 	@Override
-	public Block block()
+	public Optional<Block> maybeBlock()
 	{
-		return this.block;
+		return Optional.of( this.block );
 	}
 
 	@Override
-	public Item item()
-	{
-		return Item.getItemFromBlock( this.block );
-	}
-
-	@Override
-	public Class<? extends TileEntity> entity()
-	{
-		return null;
-	}
-
-	@Override
-	public ItemStack stack( int stackSize )
+	public Optional<ItemBlock> maybeItemBlock()
 	{
 		if ( this.enabled )
 		{
-			return new ItemStack( this.block );
+			return Optional.of( new ItemBlock( this.block ) );
 		}
-
-		return null;
+		else
+		{
+			return Optional.absent();
+		}
 	}
 
 	@Override
-	public boolean sameAsStack( ItemStack comparableItem )
+	public final Optional<ItemStack> maybeStack( int stackSize )
 	{
-		return this.enabled && Platform.isSameItemType( comparableItem, this.stack( 1 ) );
+		if ( this.enabled )
+		{
+			return Optional.of( new ItemStack( this.block ) );
+		}
+		else
+		{
+			return Optional.absent();
+		}
 	}
 
 	@Override
-	public boolean sameAsBlock( IBlockAccess world, int x, int y, int z )
+	public final boolean isSameAs( IBlockAccess world, int x, int y, int z )
 	{
 		return this.enabled && world.getBlock( x, y, z ) == this.block;
 	}

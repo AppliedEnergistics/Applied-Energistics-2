@@ -34,7 +34,6 @@ import net.minecraft.world.WorldServer;
 
 import appeng.api.AEApi;
 import appeng.api.util.WorldCoord;
-import appeng.block.spatial.BlockMatrixFrame;
 import appeng.core.stats.Achievements;
 import appeng.util.Platform;
 
@@ -290,9 +289,10 @@ public class StorageHelper
 	, World dst /** storage cell **/
 	, int x, int y, int z, int i, int j, int k, int scaleX, int scaleY, int scaleZ)
 	{
-		BlockMatrixFrame blkMF = (BlockMatrixFrame) AEApi.instance().blocks().blockMatrixFrame.block();
-
-		this.transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new WrapInMatrixFrame( blkMF, 0, dst ) );
+		for ( Block matrixFrameBlock : AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().asSet() )
+		{
+			this.transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new WrapInMatrixFrame( matrixFrameBlock, 0, dst ) );
+		}
 
 		AxisAlignedBB srcBox = AxisAlignedBB.getBoundingBox( x, y, z, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1 );
 

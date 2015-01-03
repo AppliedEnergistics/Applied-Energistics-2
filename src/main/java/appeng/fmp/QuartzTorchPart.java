@@ -31,6 +31,8 @@ import codechicken.multipart.minecraft.McBlockPart;
 import codechicken.multipart.minecraft.McSidedMetaPart;
 
 import appeng.api.AEApi;
+import appeng.api.exceptions.MissingDefinition;
+
 
 public class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTick
 {
@@ -52,7 +54,12 @@ public class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTi
 	@Override
 	public Block getBlock()
 	{
-		return AEApi.instance().blocks().blockQuartzTorch.block();
+		for ( Block torchBlock : AEApi.instance().definitions().blocks().quartzTorch().maybeBlock().asSet() )
+		{
+			return torchBlock;
+		}
+
+		throw new MissingDefinition( "Tried to retrieve a quartz torch, even though it is disabled." );
 	}
 
 	@Override

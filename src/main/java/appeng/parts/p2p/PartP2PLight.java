@@ -32,7 +32,6 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import appeng.api.config.TunnelType;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
@@ -47,12 +46,6 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 
 	public PartP2PLight(ItemStack is) {
 		super( is );
-	}
-
-	@Override
-	public TunnelType getTunnelType()
-	{
-		return TunnelType.LIGHT;
 	}
 
 	int lastValue = 0;

@@ -52,18 +52,22 @@ import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 import appeng.util.Platform;
 
+
 public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IPowerChannelState
 {
-
-	CraftingCPUCluster cluster;
-	final CraftingCPUCalculator calc = new CraftingCPUCalculator( this );
+	private final CraftingCPUCalculator calc = new CraftingCPUCalculator( this );
 
 	public ISimplifiedBundle lightCache;
 
 	public NBTTagCompound previousState = null;
 	public boolean isCoreBlock = false;
+	CraftingCPUCluster cluster;
 
-	static final ItemStack STACK_CO_PROCESSOR = AEApi.instance().blocks().blockCraftingAccelerator.stack( 1 );
+	public TileCraftingTile()
+	{
+		this.gridProxy.setFlags( GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL );
+		this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+	}
 
 	@Override
 	protected AENetworkProxy createProxy()
@@ -72,59 +76,39 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	}
 
 	@Override
-	protected ItemStack getItemFromTile(Object obj)
+	protected ItemStack getItemFromTile( Object obj )
 	{
-		if ( ((TileCraftingTile) obj).isAccelerator() )
-			return STACK_CO_PROCESSOR;
+		if ( ( (TileCraftingTile) obj ).isAccelerator() )
+		{
+			for ( ItemStack accelerator : AEApi.instance().definitions().blocks().craftingAccelerator().maybeStack( 1 ).asSet() )
+			{
+				return accelerator;
+			}
+		}
+
 		return super.getItemFromTile( obj );
 	}
 
-	public void updateStatus(CraftingCPUCluster c)
+	@Override
+	public boolean canBeRotated()
 	{
-		if ( this.cluster != null && this.cluster != c )
-			this.cluster.breakCluster();
-
-		this.cluster = c;
-		this.updateMeta( true );
-	}
-
-	public void updateMultiBlock()
-	{
-		this.calc.calculateMultiblock( this.worldObj, this.getLocation() );
+		return true;// return BlockCraftingUnit.checkType( worldObj.getBlockMetadata( xCoord, yCoord, zCoord ),
+		// BlockCraftingUnit.BASE_MONITOR );
 	}
 
 	@Override
-	public void setName(String name)
+	public void setName( String name )
 	{
 		super.setName( name );
 		if ( this.cluster != null )
 			this.cluster.updateName();
 	}
 
-	@TileEvent(TileEventType.WORLD_NBT_WRITE)
-	public void writeToNBT_TileCraftingTile(NBTTagCompound data)
+	public boolean isAccelerator()
 	{
-		data.setBoolean( "core", this.isCoreBlock );
-		if ( this.isCoreBlock && this.cluster != null )
-			this.cluster.writeToNBT( data );
-	}
-
-	@TileEvent(TileEventType.WORLD_NBT_READ)
-	public void readFromNBT_TileCraftingTile(NBTTagCompound data)
-	{
-		this.isCoreBlock = data.getBoolean( "core" );
-		if ( this.isCoreBlock )
-		{
-			if ( this.cluster != null )
-				this.cluster.readFromNBT( data );
-			else
-				this.previousState = (NBTTagCompound) data.copy();
-		}
-	}
-
-	public TileCraftingTile() {
-		this.gridProxy.setFlags( GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL );
-		this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		if ( this.worldObj == null )
+			return false;
+		return ( this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord ) & 3 ) == 1;
 	}
 
 	@Override
@@ -135,37 +119,21 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		this.updateMultiBlock();
 	}
 
-	@Override
-	public boolean canBeRotated()
+	public void updateMultiBlock()
 	{
-		return true;// return BlockCraftingUnit.checkType( worldObj.getBlockMetadata( xCoord, yCoord, zCoord ),
-					// BlockCraftingUnit.BASE_MONITOR );
+		this.calc.calculateMultiblock( this.worldObj, this.getLocation() );
 	}
 
-	@Override
-	public void disconnect(boolean update)
+	public void updateStatus( CraftingCPUCluster c )
 	{
-		if ( this.cluster != null )
-		{
-			this.cluster.destroy();
-			if ( update )
-				this.updateMeta( true );
-		}
+		if ( this.cluster != null && this.cluster != c )
+			this.cluster.breakCluster();
+
+		this.cluster = c;
+		this.updateMeta( true );
 	}
 
-	@MENetworkEventSubscribe
-	public void onPowerStateChange(MENetworkChannelsChanged ev)
-	{
-		this.updateMeta( false );
-	}
-
-	@MENetworkEventSubscribe
-	public void onPowerStateChange(MENetworkPowerStatusChange ev)
-	{
-		this.updateMeta( false );
-	}
-
-	public void updateMeta(boolean updateFormed)
+	public void updateMeta( boolean updateFormed )
 	{
 		if ( this.worldObj == null || this.notLoaded() )
 			return;
@@ -177,7 +145,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			power = this.gridProxy.isActive();
 
 		int current = this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord );
-		int newMeta = (current & 3) | (formed ? 8 : 0) | (power ? 4 : 0);
+		int newMeta = ( current & 3 ) | ( formed ? 8 : 0 ) | ( power ? 4 : 0 );
 
 		if ( current != newMeta )
 			this.worldObj.setBlockMetadataWithNotify( this.xCoord, this.yCoord, this.zCoord, newMeta, 2 );
@@ -188,6 +156,45 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 				this.gridProxy.setValidSides( EnumSet.allOf( ForgeDirection.class ) );
 			else
 				this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
+		}
+	}
+
+	public boolean isFormed()
+	{
+		if ( Platform.isClient() )
+			return ( this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord ) & 8 ) == 8;
+		return this.cluster != null;
+	}
+
+	@TileEvent( TileEventType.WORLD_NBT_WRITE )
+	public void writeToNBT_TileCraftingTile( NBTTagCompound data )
+	{
+		data.setBoolean( "core", this.isCoreBlock );
+		if ( this.isCoreBlock && this.cluster != null )
+			this.cluster.writeToNBT( data );
+	}
+
+	@TileEvent( TileEventType.WORLD_NBT_READ )
+	public void readFromNBT_TileCraftingTile( NBTTagCompound data )
+	{
+		this.isCoreBlock = data.getBoolean( "core" );
+		if ( this.isCoreBlock )
+		{
+			if ( this.cluster != null )
+				this.cluster.readFromNBT( data );
+			else
+				this.previousState = (NBTTagCompound) data.copy();
+		}
+	}
+
+	@Override
+	public void disconnect( boolean update )
+	{
+		if ( this.cluster != null )
+		{
+			this.cluster.destroy();
+			if ( update )
+				this.updateMeta( true );
 		}
 	}
 
@@ -203,31 +210,27 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		return true;
 	}
 
-	@Override
-	public boolean isPowered()
+	@MENetworkEventSubscribe
+	public void onPowerStateChange( MENetworkChannelsChanged ev )
 	{
-		if ( Platform.isClient() )
-			return (this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord ) & 4) == 4;
-		return this.gridProxy.isActive();
+		this.updateMeta( false );
 	}
 
-	public boolean isFormed()
+	@MENetworkEventSubscribe
+	public void onPowerStateChange( MENetworkPowerStatusChange ev )
 	{
-		if ( Platform.isClient() )
-			return (this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord ) & 8) == 8;
-		return this.cluster != null;
-	}
-
-	public boolean isAccelerator()
-	{
-		if ( this.worldObj == null )
-			return false;
-		return (this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord ) & 3) == 1;
+		this.updateMeta( false );
 	}
 
 	public boolean isStatus()
 	{
 		return false;
+	}	@Override
+	public boolean isPowered()
+	{
+		if ( Platform.isClient() )
+			return ( this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord ) & 4 ) == 4;
+		return this.gridProxy.isActive();
 	}
 
 	public boolean isStorage()
@@ -240,14 +243,6 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		return 0;
 	}
 
-	@Override
-	public boolean isActive()
-	{
-		if ( Platform.isServer() )
-			return this.gridProxy.isActive();
-		return this.isPowered() && this.isFormed();
-	}
-
 	public void breakCluster()
 	{
 		if ( this.cluster != null )
@@ -258,7 +253,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			LinkedList<WorldCoord> places = new LinkedList<WorldCoord>();
 
 			Iterator<IGridHost> i = this.cluster.getTiles();
-			while (i.hasNext())
+			while ( i.hasNext() )
 			{
 				IGridHost h = i.next();
 				if ( h == this )
@@ -267,14 +262,13 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 				{
 					TileEntity te = (TileEntity) h;
 
-					for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
+					for ( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
 					{
 						WorldCoord wc = new WorldCoord( te );
 						wc.add( d, 1 );
 						if ( this.worldObj.isAirBlock( wc.x, wc.y, wc.z ) )
 							places.add( wc );
 					}
-
 				}
 			}
 
@@ -283,11 +277,11 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			if ( places.isEmpty() )
 				throw new RuntimeException( "No air or even the tile hat was destroyed?!?!" );
 
-			for (IAEItemStack ais : inv.getAvailableItems( AEApi.instance().storage().createItemList() ))
+			for ( IAEItemStack ais : inv.getAvailableItems( AEApi.instance().storage().createItemList() ) )
 			{
 				ais = ais.copy();
 				ais.setStackSize( ais.getItemStack().getMaxStackSize() );
-				while (true)
+				while ( true )
 				{
 					IAEItemStack g = inv.extractItems( ais.copy(), Actionable.MODULATE, this.cluster.getActionSource() );
 					if ( g == null )
@@ -298,10 +292,19 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 
 					Platform.spawnDrops( this.worldObj, wc.x, wc.y, wc.z, Collections.singletonList( g.getItemStack() ) );
 				}
-
 			}
 
 			this.cluster.destroy();
 		}
+	}
+
+
+
+	@Override
+	public boolean isActive()
+	{
+		if ( Platform.isServer() )
+			return this.gridProxy.isActive();
+		return this.isPowered() && this.isFormed();
 	}
 }

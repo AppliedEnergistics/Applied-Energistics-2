@@ -34,6 +34,8 @@ import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
+import appeng.api.definitions.IItemDefinition;
+import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.api.storage.data.IAEItemStack;
@@ -124,6 +126,8 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 		if ( myItem == null )
 			return;
 
+		final IMaterials materials = AEApi.instance().definitions().materials();
+
 		if ( this.internalCurrentPower > 149 && Platform.isChargeable( myItem ) )
 		{
 			IAEItemPowerStorage ps = (IAEItemPowerStorage) myItem.getItem();
@@ -138,12 +142,16 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 				this.tickTickTimer = 20; // keep ticking...
 			}
 		}
-		else if ( this.internalCurrentPower > 1499 && AEApi.instance().materials().materialCertusQuartzCrystal.sameAsStack( myItem ) )
+		else if ( this.internalCurrentPower > 1499 && materials.certusQuartzCrystal().isSameAs( myItem ) )
 		{
 			if ( Platform.getRandomFloat() > 0.8f ) // simulate wait
 			{
 				this.extractAEPower( this.internalMaxPower, Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
-				this.setInventorySlotContents( 0, AEApi.instance().materials().materialCertusQuartzCrystalCharged.stack( myItem.stackSize ) );
+
+				for ( ItemStack charged : materials.certusQuartzCrystalCharged().maybeStack( myItem.stackSize ).asSet() )
+				{
+					this.setInventorySlotContents( 0, charged );
+				}
 			}
 		}
 	}
@@ -175,10 +183,19 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 		this.injectExternalPower( PowerUnits.AE, 150 );
 
 		ItemStack myItem = this.getStackInSlot( 0 );
-		if ( this.internalCurrentPower > 1499 && AEApi.instance().materials().materialCertusQuartzCrystal.sameAsStack( myItem ) )
+		if ( this.internalCurrentPower > 1499 )
 		{
-			this.extractAEPower( this.internalMaxPower, Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
-			this.setInventorySlotContents( 0, AEApi.instance().materials().materialCertusQuartzCrystalCharged.stack( myItem.stackSize ) );
+			final IMaterials materials = AEApi.instance().definitions().materials();
+
+			if ( materials.certusQuartzCrystal().isSameAs( myItem ) )
+			{
+				this.extractAEPower( this.internalMaxPower, Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
+
+				for ( ItemStack charged : materials.certusQuartzCrystalCharged().maybeStack( myItem.stackSize ).asSet() )
+				{
+					this.setInventorySlotContents( 0, charged );
+				}
+			}
 		}
 	}
 
@@ -215,7 +232,9 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
-		return Platform.isChargeable( itemstack ) || AEApi.instance().materials().materialCertusQuartzCrystal.sameAsStack( itemstack );
+		final IItemDefinition cert = AEApi.instance().definitions().materials().certusQuartzCrystal();
+
+		return Platform.isChargeable( itemstack ) || cert.isSameAs( itemstack );
 	}
 
 	@Override
@@ -228,7 +247,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 				return true;
 		}
 
-		return AEApi.instance().materials().materialCertusQuartzCrystalCharged.sameAsStack( extractedItem );
+		return AEApi.instance().definitions().materials().certusQuartzCrystalCharged().isSameAs( extractedItem );
 	}
 
 	public void activate(EntityPlayer player)
@@ -240,7 +259,8 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 		if ( myItem == null )
 		{
 			ItemStack held = player.inventory.getCurrentItem();
-			if ( AEApi.instance().materials().materialCertusQuartzCrystal.sameAsStack( held ) || Platform.isChargeable( held ) )
+
+			if ( AEApi.instance().definitions().materials().certusQuartzCrystal().isSameAs( held ) || Platform.isChargeable( held ) )
 			{
 				held = player.inventory.decrStackSize( player.inventory.currentItem, 1 );
 				this.setInventorySlotContents( 0, held );

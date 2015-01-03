@@ -18,6 +18,7 @@
 
 package appeng.integration.modules.helpers;
 
+
 import net.mcft.copy.betterstorage.api.crate.ICrateStorage;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -30,30 +31,25 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.item.AEItemStack;
 
+
 public class BSCrate implements IMEInventory<IAEItemStack>
 {
+	private final ICrateStorage crateStorage;
+	private final ForgeDirection side;
 
-	final ICrateStorage cs;
-	final ForgeDirection side;
-
-	public BSCrate(Object object, ForgeDirection d) {
-		this.cs = (ICrateStorage) object;
+	public BSCrate( Object object, ForgeDirection d )
+	{
+		this.crateStorage = (ICrateStorage) object;
 		this.side = d;
 	}
 
 	@Override
-	public StorageChannel getChannel()
-	{
-		return StorageChannel.ITEMS;
-	}
-
-	@Override
-	public IAEItemStack injectItems(IAEItemStack input, Actionable mode, BaseActionSource src)
+	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
 	{
 		if ( mode == Actionable.SIMULATE )
 			return null;
 
-		ItemStack failed = this.cs.insertItems( input.getItemStack() );
+		ItemStack failed = this.crateStorage.insertItems( input.getItemStack() );
 		if ( failed == null )
 			return null;
 		input.setStackSize( failed.stackSize );
@@ -61,26 +57,31 @@ public class BSCrate implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src)
+	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
 	{
 		if ( mode == Actionable.SIMULATE )
 		{
-			int howMany = this.cs.getItemCount( request.getItemStack() );
+			int howMany = this.crateStorage.getItemCount( request.getItemStack() );
 			return howMany > request.getStackSize() ? request : request.copy().setStackSize( howMany );
 		}
 
-		ItemStack Obtained = this.cs.extractItems( request.getItemStack(), (int) request.getStackSize() );
-		return AEItemStack.create( Obtained );
+		ItemStack obtained = this.crateStorage.extractItems( request.getItemStack(), (int) request.getStackSize() );
+		return AEItemStack.create( obtained );
 	}
 
 	@Override
-	public IItemList getAvailableItems(IItemList out)
+	public IItemList getAvailableItems( IItemList out )
 	{
-		for (ItemStack is : this.cs.getContents())
+		for ( ItemStack is : this.crateStorage.getContents() )
 		{
 			out.add( AEItemStack.create( is ) );
 		}
 		return out;
 	}
 
+	@Override
+	public StorageChannel getChannel()
+	{
+		return StorageChannel.ITEMS;
+	}
 }

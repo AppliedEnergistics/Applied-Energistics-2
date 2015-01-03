@@ -23,7 +23,9 @@
 
 package appeng.api.features;
 
+
 import net.minecraft.item.ItemStack;
+
 
 /**
  * Provider for special comparisons. when an item is encountered AE Will request
@@ -38,16 +40,17 @@ public interface IItemComparisonProvider
 	 * the supplied item.
 	 *
 	 * @param is item
+	 *
 	 * @return IItemComparison, or null
 	 */
-	IItemComparison getComparison(ItemStack is);
+	IItemComparison getComparison( ItemStack is );
 
 	/**
 	 * Simple test for support ( AE generally skips this and calls the above function. )
 	 *
 	 * @param stack item
+	 *
 	 * @return true, if getComparison will return a valid IItemComparison Object
 	 */
 	boolean canHandle( ItemStack stack );
-
 }

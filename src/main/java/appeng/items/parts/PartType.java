@@ -23,7 +23,6 @@ import java.lang.reflect.Constructor;
 import java.util.EnumSet;
 
 import appeng.api.parts.IPart;
-import appeng.api.util.AEColor;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.parts.automation.PartAnnihilationPlane;
@@ -61,95 +60,121 @@ import appeng.parts.reporting.PartTerminal;
 
 public enum PartType
 {
-	InvalidType( -1, AEFeature.Core, null ),
+	InvalidType( -1, EnumSet.of( AEFeature.Core ), null ),
 
-	CableGlass( 0, AEFeature.Core, PartCableGlass.class ),
+	CableGlass( 0, EnumSet.of( AEFeature.Core ), PartCableGlass.class )
+			{
+				@Override
+				public boolean isCable()
+				{
+					return true;
+				}
+			},
 
-	CableCovered( 20, AEFeature.Core, PartCableCovered.class ),
+	CableCovered( 20, EnumSet.of( AEFeature.Core ), PartCableCovered.class )
+			{
+				@Override
+				public boolean isCable()
+				{
+					return true;
+				}
+			},
 
-	CableSmart( 40, AEFeature.Channels, PartCableSmart.class ),
+	CableSmart( 40, EnumSet.of( AEFeature.Channels ), PartCableSmart.class )
+			{
+				@Override
+				public boolean isCable()
+				{
+					return true;
+				}
+			},
 
-	CableDense( 60, AEFeature.Channels, PartDenseCable.class ),
+	CableDense( 60, EnumSet.of( AEFeature.Channels ), PartDenseCable.class )
+			{
+				@Override
+				public boolean isCable()
+				{
+					return true;
+				}
+			},
 
-	ToggleBus( 80, AEFeature.Core, PartToggleBus.class ),
+	ToggleBus( 80, EnumSet.of( AEFeature.Core ), PartToggleBus.class ),
 
-	InvertedToggleBus( 100, AEFeature.Core, PartInvertedToggleBus.class ),
+	InvertedToggleBus( 100, EnumSet.of( AEFeature.Core ), PartInvertedToggleBus.class ),
 
-	CableAnchor( 120, AEFeature.Core, PartCableAnchor.class ),
+	CableAnchor( 120, EnumSet.of( AEFeature.Core ), PartCableAnchor.class ),
 
-	QuartzFiber( 140, AEFeature.Core, PartQuartzFiber.class ),
+	QuartzFiber( 140, EnumSet.of( AEFeature.Core ), PartQuartzFiber.class ),
 
-	Monitor( 160, AEFeature.Core, PartMonitor.class ),
+	Monitor( 160, EnumSet.of( AEFeature.Core ), PartMonitor.class ),
 
-	SemiDarkMonitor( 180, AEFeature.Core, PartSemiDarkMonitor.class ),
+	SemiDarkMonitor( 180, EnumSet.of( AEFeature.Core ), PartSemiDarkMonitor.class ),
 
-	DarkMonitor( 200, AEFeature.Core, PartDarkMonitor.class ),
+	DarkMonitor( 200, EnumSet.of( AEFeature.Core ), PartDarkMonitor.class ),
 
-	StorageBus( 220, AEFeature.StorageBus, PartStorageBus.class ),
+	StorageBus( 220, EnumSet.of( AEFeature.StorageBus ), PartStorageBus.class ),
 
-	ImportBus( 240, AEFeature.ImportBus, PartImportBus.class ),
+	ImportBus( 240, EnumSet.of( AEFeature.ImportBus ), PartImportBus.class ),
 
-	ExportBus( 260, AEFeature.ExportBus, PartExportBus.class ),
+	ExportBus( 260, EnumSet.of( AEFeature.ExportBus ), PartExportBus.class ),
 
-	LevelEmitter( 280, AEFeature.LevelEmitter, PartLevelEmitter.class ),
+	LevelEmitter( 280, EnumSet.of( AEFeature.LevelEmitter ), PartLevelEmitter.class ),
 
-	AnnihilationPlane( 300, AEFeature.AnnihilationPlane, PartAnnihilationPlane.class ),
+	AnnihilationPlane( 300, EnumSet.of( AEFeature.AnnihilationPlane ), PartAnnihilationPlane.class ),
 
-	FormationPlane( 320, AEFeature.FormationPlane, PartFormationPlane.class ),
+	FormationPlane( 320, EnumSet.of( AEFeature.FormationPlane ), PartFormationPlane.class ),
 
-	PatternTerminal( 340, AEFeature.Patterns, PartPatternTerminal.class ),
+	PatternTerminal( 340, EnumSet.of( AEFeature.Patterns ), PartPatternTerminal.class ),
 
-	CraftingTerminal( 360, AEFeature.CraftingTerminal, PartCraftingTerminal.class ),
+	CraftingTerminal( 360, EnumSet.of( AEFeature.CraftingTerminal ), PartCraftingTerminal.class ),
 
-	Terminal( 380, AEFeature.Core, PartTerminal.class ),
+	Terminal( 380, EnumSet.of( AEFeature.Core ), PartTerminal.class ),
 
-	StorageMonitor( 400, AEFeature.StorageMonitor, PartStorageMonitor.class ),
+	StorageMonitor( 400, EnumSet.of( AEFeature.StorageMonitor ), PartStorageMonitor.class ),
 
-	ConversionMonitor( 420, AEFeature.PartConversionMonitor, PartConversionMonitor.class ),
+	ConversionMonitor( 420, EnumSet.of( AEFeature.PartConversionMonitor ), PartConversionMonitor.class ),
 
-	Interface( 440, AEFeature.Core, PartInterface.class ),
+	Interface( 440, EnumSet.of( AEFeature.Core ), PartInterface.class ),
 
-	P2PTunnelME( 460, AEFeature.P2PTunnelME, PartP2PTunnelME.class, GuiText.METunnel ),
+	P2PTunnelME( 460, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelME ), PartP2PTunnelME.class, GuiText.METunnel ),
 
-	P2PTunnelRedstone( 461, AEFeature.P2PTunnelRedstone, PartP2PRedstone.class, GuiText.RedstoneTunnel ),
+	P2PTunnelRedstone( 461, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelRedstone ), PartP2PRedstone.class, GuiText.RedstoneTunnel ),
 
-	P2PTunnelItems( 462, AEFeature.P2PTunnelItems, PartP2PItems.class, GuiText.ItemTunnel ),
+	P2PTunnelItems( 462, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelItems ), PartP2PItems.class, GuiText.ItemTunnel ),
 
-	P2PTunnelLiquids( 463, AEFeature.P2PTunnelLiquids, PartP2PLiquids.class, GuiText.FluidTunnel ),
+	P2PTunnelLiquids( 463, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelLiquids ), PartP2PLiquids.class, GuiText.FluidTunnel ),
 
-	P2PTunnelEU( 465, AEFeature.P2PTunnelEU, PartP2PIC2Power.class, GuiText.EUTunnel ),
+	P2PTunnelEU( 465, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelEU ), PartP2PIC2Power.class, GuiText.EUTunnel ),
 
-	P2PTunnelRF( 466, AEFeature.P2PTunnelRF, PartP2PRFPower.class, GuiText.RFTunnel ),
+	P2PTunnelRF( 466, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelRF ), PartP2PRFPower.class, GuiText.RFTunnel ),
 
-	P2PTunnelLight( 467, AEFeature.P2PTunnelLight, PartP2PLight.class, GuiText.LightTunnel ),
+	P2PTunnelLight( 467, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelLight ), PartP2PLight.class, GuiText.LightTunnel ),
 
-	InterfaceTerminal( 480, AEFeature.InterfaceTerminal, PartInterfaceTerminal.class );
+	InterfaceTerminal( 480, EnumSet.of( AEFeature.InterfaceTerminal ), PartInterfaceTerminal.class );
 
-	public final int baseDamage;
 	private final EnumSet<AEFeature> features;
 	private final Class<? extends IPart> myPart;
 	private final GuiText extraName;
+	public final int baseDamage;
+
 	public Constructor<? extends IPart> constructor;
 
-	PartType( int baseMetaValue, AEFeature part, Class<? extends IPart> c )
+	PartType( int baseMetaValue, EnumSet<AEFeature> features, Class<? extends IPart> c )
 	{
-		this( baseMetaValue, part, c, null );
+		this( baseMetaValue, features, c, null );
 	}
 
-	PartType( int baseMetaValue, AEFeature part, Class<? extends IPart> c, GuiText en )
+	PartType( int baseMetaValue, EnumSet<AEFeature> features, Class<? extends IPart> c, GuiText en )
 	{
-		this.features = EnumSet.of( part );
+		this.features = features;
 		this.myPart = c;
 		this.extraName = en;
 		this.baseDamage = baseMetaValue;
 	}
 
-	public Enum<AEColor>[] getVariants()
+	public boolean isCable()
 	{
-		if ( this == CableSmart || this == CableCovered || this == CableGlass || this == CableDense )
-			return AEColor.values();
-
-		return null;
+		return false;
 	}
 
 	public EnumSet<AEFeature> getFeature()

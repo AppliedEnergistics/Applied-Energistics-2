@@ -30,10 +30,12 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IMaterials;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
+import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 final public class EntityChargedQuartz extends AEBaseEntityItem
@@ -42,6 +44,7 @@ final public class EntityChargedQuartz extends AEBaseEntityItem
 	int delay = 0;
 	int transformTime = 0;
 
+	@Reflected
 	public EntityChargedQuartz(World w)
 	{
 		super( w );
@@ -88,7 +91,9 @@ final public class EntityChargedQuartz extends AEBaseEntityItem
 	public boolean transform()
 	{
 		ItemStack item = this.getEntityItem();
-		if ( AEApi.instance().materials().materialCertusQuartzCrystalCharged.sameAsStack( item ) )
+		final IMaterials materials = AEApi.instance().definitions().materials();
+
+		if ( materials.certusQuartzCrystalCharged().isSameAs( item ) )
 		{
 			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( this.posX - 1, this.posY - 1, this.posZ - 1, this.posX + 1, this.posY + 1, this.posZ + 1 );
 			List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
@@ -127,12 +132,17 @@ final public class EntityChargedQuartz extends AEBaseEntityItem
 				if ( netherQuartz.getEntityItem().stackSize <= 0 )
 					netherQuartz.setDead();
 
-				ItemStack Output = AEApi.instance().materials().materialFluixCrystal.stack( 2 );
-				this.worldObj.spawnEntityInWorld( new EntityItem( this.worldObj, this.posX, this.posY, this.posZ, Output ) );
+				for ( ItemStack fluixCrystalStack : materials.fluixCrystal().maybeStack( 2 ).asSet() )
+				{
+					final EntityItem entity = new EntityItem( this.worldObj, this.posX, this.posY, this.posZ, fluixCrystalStack );
+
+					this.worldObj.spawnEntityInWorld( entity );
+				}
 
 				return true;
 			}
 		}
+
 		return false;
 	}
 }

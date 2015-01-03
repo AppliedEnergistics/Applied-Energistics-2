@@ -23,14 +23,14 @@
 
 package appeng.api.config;
 
+
 public enum PowerUnits
 {
-	AE("gui.appliedenergistics2.units.appliedenergstics"), // Native Units - AE Energy
-	MJ("gui.appliedenergistics2.units.buildcraft"), // BuildCraft - Minecraft Joules
-	EU("gui.appliedenergistics2.units.ic2"), // IndustrialCraft 2 - Energy Units
-	WA("gui.appliedenergistics2.units.rotarycraft"), // RotaryCraft - Watts
-	RF("gui.appliedenergistics2.units.thermalexpansion"), // ThermalExpansion - Redstone Flux
-	MK("gui.appliedenergistics2.units.mekanism"); // Mekanism - Joules
+	AE( "gui.appliedenergistics2.units.appliedenergstics" ), // Native Units - AE Energy
+	EU( "gui.appliedenergistics2.units.ic2" ), // IndustrialCraft 2 - Energy Units
+	WA( "gui.appliedenergistics2.units.rotarycraft" ), // RotaryCraft - Watts
+	RF( "gui.appliedenergistics2.units.thermalexpansion" ), // ThermalExpansion - Redstone Flux
+	MK( "gui.appliedenergistics2.units.mekanism" ); // Mekanism - Joules
 
 	PowerUnits( String un ) {
 		this.unlocalizedName = un;
@@ -54,12 +54,13 @@ public enum PowerUnits
 	 * will normally returns 64, as it will convert the EU, to AE with AE's power settings.
 	 *
 	 * @param target target power unit
-	 * @param value value
+	 * @param value  value
+	 *
 	 * @return value converted to target units, from this units.
 	 */
-	public double convertTo(PowerUnits target, double value)
+	public double convertTo( PowerUnits target, double value )
 	{
-		return (value * this.conversionRatio ) / target.conversionRatio;
+		return ( value * this.conversionRatio ) / target.conversionRatio;
 	}
 
 }

@@ -19,66 +19,54 @@
 package appeng.core.features;
 
 
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 
-import appeng.api.util.AEItemDefinition;
+import com.google.common.base.Optional;
+
+import appeng.api.definitions.IItemDefinition;
 import appeng.util.Platform;
 
 
-public class ItemDefinition implements AEItemDefinition
+public class ItemDefinition implements IItemDefinition
 {
 	private final Item item;
 	private final boolean enabled;
 
-	public ItemDefinition( Item item, boolean enabled )
+	public ItemDefinition( Item item, ActivityState state )
 	{
 		this.item = item;
-		this.enabled = enabled;
+		this.enabled = state == ActivityState.Enabled;
 	}
 
 	@Override
-	public Block block()
+	public final Optional<Item> maybeItem()
 	{
-		return null;
+		return Optional.of( this.item );
 	}
 
 	@Override
-	public Item item()
-	{
-		return this.item;
-	}
-
-	@Override
-	public Class<? extends TileEntity> entity()
-	{
-		return null;
-	}
-
-	@Override
-	public ItemStack stack( int stackSize )
+	public Optional<ItemStack> maybeStack( int stackSize )
 	{
 		if ( this.enabled )
 		{
-			return new ItemStack( this.item );
+			return Optional.of( new ItemStack( this.item ) );
 		}
 		else
 		{
-			return null;
+			return Optional.absent();
 		}
 	}
 
 	@Override
-	public boolean sameAsStack( ItemStack comparableItem )
+	public final boolean isSameAs( ItemStack comparableStack )
 	{
-		return this.enabled && Platform.isSameItemType( comparableItem, this.stack( 1 ) );
+		return this.enabled && Platform.isSameItemType( comparableStack, this.maybeStack( 1 ).get() );
 	}
 
 	@Override
-	public boolean sameAsBlock( IBlockAccess world, int x, int y, int z )
+	public boolean isSameAs( IBlockAccess world, int x, int y, int z )
 	{
 		return false;
 	}

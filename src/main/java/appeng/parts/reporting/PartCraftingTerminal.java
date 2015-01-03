@@ -18,6 +18,7 @@
 
 package appeng.parts.reporting;
 
+
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,44 +28,48 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import appeng.client.texture.CableBusTextures;
 import appeng.core.sync.GuiBridge;
+import appeng.helpers.Reflected;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
 
+
 public class PartCraftingTerminal extends PartTerminal
 {
+	private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory( this, 9 );
 
-	final AppEngInternalInventory craftingGrid = new AppEngInternalInventory( this, 9 );
-
-	@Override
-	public void writeToNBT(NBTTagCompound data)
+	@Reflected
+	public PartCraftingTerminal( ItemStack is )
 	{
-		super.writeToNBT( data );
-		this.craftingGrid.writeToNBT( data, "craftingGrid" );
+		super( is );
+
+		this.frontBright = CableBusTextures.PartCraftingTerm_Bright;
+		this.frontColored = CableBusTextures.PartCraftingTerm_Colored;
+		this.frontDark = CableBusTextures.PartCraftingTerm_Dark;
+		// frontSolid = CableBusTextures.PartCraftingTerm_Solid;
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound data)
+	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	{
+		super.getDrops( drops, wrenched );
+
+		for ( ItemStack is : this.craftingGrid )
+			if ( is != null )
+				drops.add( is );
+	}
+
+	@Override
+	public void readFromNBT( NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 		this.craftingGrid.readFromNBT( data, "craftingGrid" );
 	}
 
 	@Override
-	public void getDrops(List<ItemStack> drops, boolean wrenched)
+	public void writeToNBT( NBTTagCompound data )
 	{
-		super.getDrops( drops, wrenched );
-
-		for (ItemStack is : this.craftingGrid)
-			if ( is != null )
-				drops.add( is );
-	}
-
-	public PartCraftingTerminal(ItemStack is) {
-		super( PartCraftingTerminal.class, is );
-		this.frontBright = CableBusTextures.PartCraftingTerm_Bright;
-		this.frontColored = CableBusTextures.PartCraftingTerm_Colored;
-		this.frontDark = CableBusTextures.PartCraftingTerm_Dark;
-		// frontSolid = CableBusTextures.PartCraftingTerm_Solid;
+		super.writeToNBT( data );
+		this.craftingGrid.writeToNBT( data, "craftingGrid" );
 	}
 
 	@Override
@@ -80,23 +85,22 @@ public class PartCraftingTerminal extends PartTerminal
 			z = this.tile.zCoord;
 		}
 
-		if( GuiBridge.GUI_CRAFTING_TERMINAL.hasPermissions( this.getHost().getTile(), x, y, z, this.side, p ) )
+		if ( GuiBridge.GUI_CRAFTING_TERMINAL.hasPermissions( this.getHost().getTile(), x, y, z, this.side, p ) )
 			return GuiBridge.GUI_CRAFTING_TERMINAL;
 		return GuiBridge.GUI_ME;
 	}
 
 	@Override
-	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
 	{
 		this.host.markForSave();
 	}
 
 	@Override
-	public IInventory getInventoryByName(String name)
+	public IInventory getInventoryByName( String name )
 	{
 		if ( name.equals( "crafting" ) )
 			return this.craftingGrid;
 		return super.getInventoryByName( name );
 	}
-
 }

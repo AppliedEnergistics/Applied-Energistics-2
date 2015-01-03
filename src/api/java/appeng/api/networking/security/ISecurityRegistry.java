@@ -23,9 +23,10 @@
 
 package appeng.api.networking.security;
 
-import appeng.api.config.SecurityPermissions;
 
 import java.util.EnumSet;
+
+import appeng.api.config.SecurityPermissions;
 
 /**
  * Used by vanilla Security Terminal to post biometric data into the security cache.

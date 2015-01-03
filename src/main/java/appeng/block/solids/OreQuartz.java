@@ -21,6 +21,8 @@ package appeng.block.solids;
 import java.util.EnumSet;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -30,6 +32,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
+import appeng.api.exceptions.MissingDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderQuartzOre;
@@ -37,12 +40,11 @@ import appeng.core.features.AEFeature;
 
 public class OreQuartz extends AEBaseBlock
 {
+	private int boostBrightnessLow;
+	private int boostBrightnessHigh;
+	private boolean enhanceBrightness;
 
-	public int boostBrightnessLow;
-	public int boostBrightnessHigh;
-	public boolean enhanceBrightness;
-
-	public OreQuartz(Class self) {
+	public OreQuartz(Class<? extends OreQuartz> self) {
 		super( self, Material.rock );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setHardness( 3.0F );
@@ -73,9 +75,13 @@ public class OreQuartz extends AEBaseBlock
 			j1 = Math.max( j1 >> 20, j1 >> 4 );
 
 			if ( j1 > 4 )
+			{
 				j1 += this.boostBrightnessHigh;
+			}
 			else
+			{
 				j1 += this.boostBrightnessLow;
+			}
 
 			if ( j1 > 15 )
 				j1 = 15;
@@ -88,21 +94,27 @@ public class OreQuartz extends AEBaseBlock
 		this( OreQuartz.class );
 	}
 
-	ItemStack getItemDropped()
-	{
-		return AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 );
-	}
-
+	@Nullable
 	@Override
 	public Item getItemDropped(int id, Random rand, int meta)
 	{
-		return this.getItemDropped().getItem();
+		for ( Item crystalItem : AEApi.instance().definitions().materials().certusQuartzCrystal().maybeItem().asSet() )
+		{
+			return crystalItem;
+		}
+
+		throw new MissingDefinition( "Tried to access certus quartz crystal, even though they are disabled" );
 	}
 
 	@Override
 	public int damageDropped(int id)
 	{
-		return this.getItemDropped().getItemDamage();
+		for ( ItemStack crystalStack : AEApi.instance().definitions().materials().certusQuartzCrystal().maybeStack( 1 ).asSet() )
+		{
+			return crystalStack.getItemDamage();
+		}
+
+		throw new MissingDefinition( "Tried to access certus quartz crystal, even though they are disabled" );
 	}
 
 	@Override
@@ -144,4 +156,18 @@ public class OreQuartz extends AEBaseBlock
 		}
 	}
 
+	public void setBoostBrightnessLow( int boostBrightnessLow )
+	{
+		this.boostBrightnessLow = boostBrightnessLow;
+	}
+
+	public void setBoostBrightnessHigh( int boostBrightnessHigh )
+	{
+		this.boostBrightnessHigh = boostBrightnessHigh;
+	}
+
+	public void setEnhanceBrightness( boolean enhanceBrightness )
+	{
+		this.enhanceBrightness = enhanceBrightness;
+	}
 }

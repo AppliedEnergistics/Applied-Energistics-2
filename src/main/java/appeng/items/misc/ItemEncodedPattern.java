@@ -21,6 +21,7 @@ package appeng.items.misc;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -42,18 +43,35 @@ import appeng.helpers.PatternHelper;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
+
 public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternItem
 {
+	// rather simple client side caching.
+	private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<ItemStack, ItemStack>();
 
-	public ItemEncodedPattern() {
-		super( ItemEncodedPattern.class );
+	public ItemEncodedPattern()
+	{
 		this.setFeature( EnumSet.of( AEFeature.Patterns ) );
 		this.setMaxStackSize( 1 );
 		if ( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, new ItemEncodedPatternRenderer() );
 	}
 
-	private boolean clearPattern(ItemStack stack, EntityPlayer player)
+	@Override
+	public ItemStack onItemRightClick( ItemStack stack, World w, EntityPlayer player )
+	{
+		this.clearPattern( stack, player );
+
+		return stack;
+	}
+
+	@Override
+	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	{
+		return this.clearPattern( stack, player );
+	}
+
+	private boolean clearPattern( ItemStack stack, EntityPlayer player )
 	{
 		if ( player.isSneaking() )
 		{
@@ -62,11 +80,15 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 			InventoryPlayer inv = player.inventory;
 
-			for (int s = 0; s < player.inventory.getSizeInventory(); s++)
+			for ( int s = 0; s < player.inventory.getSizeInventory(); s++ )
 			{
 				if ( inv.getStackInSlot( s ) == stack )
 				{
-					inv.setInventorySlotContents( s, AEApi.instance().materials().materialBlankPattern.stack( stack.stackSize ) );
+					for ( ItemStack blankPattern : AEApi.instance().definitions().materials().blankPattern().maybeStack( stack.stackSize ).asSet() )
+					{
+						inv.setInventorySlotContents( s, blankPattern );
+					}
+
 					return true;
 				}
 			}
@@ -76,20 +98,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
-	{
-		return this.clearPattern( stack, player );
-	}
-
-	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World w, EntityPlayer player)
-	{
-		this.clearPattern( stack, player );
-		return stack;
-	}
-
-	@Override
-	public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
+	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
 		ICraftingPatternDetails details = this.getPatternForItem( stack, player.worldObj );
 
@@ -104,39 +113,49 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		IAEItemStack[] in = details.getCondensedInputs();
 		IAEItemStack[] out = details.getCondensedOutputs();
 
-		String label = (isCrafting ? GuiText.Crafts.getLocal() : GuiText.Creates.getLocal()) + ": ";
+		String label = ( isCrafting ? GuiText.Crafts.getLocal() : GuiText.Creates.getLocal() ) + ": ";
 		String and = ' ' + GuiText.And.getLocal() + ' ';
 		String with = GuiText.With.getLocal() + ": ";
 
 		boolean first = true;
-		for (IAEItemStack anOut : out)
+		for ( IAEItemStack anOut : out )
 		{
 			if ( anOut == null )
 			{
 				continue;
 			}
 
-			lines.add( (first ? label : and) + anOut.getStackSize() + ' ' + Platform.getItemDisplayName( anOut ) );
+			lines.add( ( first ? label : and ) + anOut.getStackSize() + ' ' + Platform.getItemDisplayName( anOut ) );
 			first = false;
 		}
 
 		first = true;
-		for (IAEItemStack anIn : in)
+		for ( IAEItemStack anIn : in )
 		{
 			if ( anIn == null )
 			{
 				continue;
 			}
 
-			lines.add( (first ? with : and) + anIn.getStackSize() + ' ' + Platform.getItemDisplayName( anIn ) );
+			lines.add( ( first ? with : and ) + anIn.getStackSize() + ' ' + Platform.getItemDisplayName( anIn ) );
 			first = false;
 		}
 	}
 
-	// rather simple client side caching.
-	static final WeakHashMap<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<ItemStack, ItemStack>();
+	@Override
+	public ICraftingPatternDetails getPatternForItem( ItemStack is, World w )
+	{
+		try
+		{
+			return new PatternHelper( is, w );
+		}
+		catch ( Throwable t )
+		{
+			return null;
+		}
+	}
 
-	public ItemStack getOutput(ItemStack item)
+	public ItemStack getOutput( ItemStack item )
 	{
 		ItemStack out = SIMPLE_CACHE.get( item );
 		if ( out != null )
@@ -154,18 +173,4 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		SIMPLE_CACHE.put( item, out = details.getCondensedOutputs()[0].getItemStack() );
 		return out;
 	}
-
-	@Override
-	public ICraftingPatternDetails getPatternForItem(ItemStack is, World w)
-	{
-		try
-		{
-			return new PatternHelper( is, w );
-		}
-		catch (Throwable t)
-		{
-			return null;
-		}
-	}
-
 }

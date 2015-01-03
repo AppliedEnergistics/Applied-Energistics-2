@@ -21,11 +21,11 @@ package appeng.core.features;
 
 import java.util.EnumSet;
 
-import com.google.common.base.Optional;
-
 import cpw.mods.fml.common.registry.GameRegistry;
 
-import appeng.api.util.AEItemDefinition;
+import com.google.common.base.Optional;
+
+import appeng.api.definitions.ITileDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseItemBlock;
 import appeng.core.CommonHelper;
@@ -33,21 +33,21 @@ import appeng.core.CreativeTab;
 import appeng.util.Platform;
 
 
-public class AEBlockFeatureHandler implements IFeatureHandler
+public final class AEBlockFeatureHandler implements IFeatureHandler
 {
-	private final EnumSet<AEFeature> features;
 	private final AEBaseBlock featured;
 	private final FeatureNameExtractor extractor;
 	private final boolean enabled;
-	private final AEBlockDefinition definition;
+	private final TileDefinition definition;
 
 	public AEBlockFeatureHandler( EnumSet<AEFeature> features, AEBaseBlock featured, Optional<String> subName )
 	{
-		this.features = features;
+		final ActivityState state = new FeaturedActiveChecker( features ).getActivityState();
+
 		this.featured = featured;
 		this.extractor = new FeatureNameExtractor( featured.getClass(), subName );
-		this.enabled = new FeaturedActiveChecker( features ).get();
-		this.definition = new AEBlockDefinition( featured, this.enabled );
+		this.enabled = state == ActivityState.Enabled;
+		this.definition = new TileDefinition( featured, state );
 	}
 
 	@Override
@@ -57,13 +57,7 @@ public class AEBlockFeatureHandler implements IFeatureHandler
 	}
 
 	@Override
-	public EnumSet<AEFeature> getFeatures()
-	{
-		return this.features;
-	}
-
-	@Override
-	public AEItemDefinition getDefinition()
+	public ITileDefinition getDefinition()
 	{
 		return this.definition;
 	}

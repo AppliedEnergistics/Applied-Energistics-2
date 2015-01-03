@@ -23,55 +23,89 @@
 
 package appeng.api.util;
 
+
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 
+import appeng.api.definitions.IBlockDefinition;
+import appeng.api.definitions.IComparableDefinition;
+import appeng.api.definitions.IItemDefinition;
+import appeng.api.definitions.ITileDefinition;
+
+
 /**
  * Gives easy access to different part of the various, items/blocks/materials in AE.
+ *
+ * @deprecated use {@link ITileDefinition} and its sub-classes
  */
+@Deprecated
 public interface AEItemDefinition
 {
-
 	/**
 	 * @return the {@link Block} Implementation if applicable
+	 *
+	 * @deprecated use {@link IBlockDefinition#maybeBlock()}
 	 */
+	@Deprecated
+	@Nullable
 	Block block();
 
 	/**
 	 * @return the {@link Item} Implementation if applicable
+	 *
+	 * @deprecated use {@link IItemDefinition#maybeItem()}
 	 */
+	@Deprecated
+	@Nullable
 	Item item();
 
 	/**
 	 * @return the {@link TileEntity} Class if applicable.
+	 *
+	 * @deprecated use {@link ITileDefinition#maybeEntity()}
 	 */
+	@Deprecated
+	@Nullable
 	Class<? extends TileEntity> entity();
 
 	/**
 	 * @return an {@link ItemStack} with specified quantity of this item.
+	 *
+	 * @deprecated use {@link IItemDefinition#maybeStack(int)}
 	 */
-	ItemStack stack(int stackSize);
+	@Deprecated
+	@Nullable
+	ItemStack stack( int stackSize );
 
 	/**
 	 * Compare {@link ItemStack} with this
 	 *
 	 * @param comparableItem compared item
+	 *
 	 * @return true if the item stack is a matching item.
+	 *
+	 * @deprecated use {@link IComparableDefinition#isSameAs(ItemStack)}
 	 */
-	boolean sameAsStack(ItemStack comparableItem);
+	@Deprecated
+	boolean sameAsStack( ItemStack comparableItem );
 
 	/**
 	 * Compare Block with world.
 	 *
 	 * @param world world of block
-	 * @param x x pos of block
-	 * @param y y pos of block
-	 * @param z z pos of block
+	 * @param x     x pos of block
+	 * @param y     y pos of block
+	 * @param z     z pos of block
 	 *
 	 * @return if the block is placed in the world at the specific location.
+	 *
+	 * @deprecated use {@link IComparableDefinition#isSameAs(IBlockAccess, int, int, int)} }
 	 */
-	boolean sameAsBlock(IBlockAccess world, int x, int y, int z);
+	@Deprecated
+	boolean sameAsBlock( IBlockAccess world, int x, int y, int z );
 }

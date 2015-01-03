@@ -18,8 +18,10 @@
 
 package appeng.items.misc;
 
+
 import java.util.EnumSet;
 import java.util.List;
+import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -38,6 +40,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.common.registry.EntityRegistry;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.api.recipes.ResolverResult;
 import appeng.core.AppEng;
@@ -47,6 +50,7 @@ import appeng.entity.EntityGrowingCrystal;
 import appeng.entity.EntityIds;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
+
 
 public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 {
@@ -63,7 +67,36 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	final IIcon[] fluix = new IIcon[3];
 	final IIcon[] nether = new IIcon[3];
 
-	private int getProgress(ItemStack is)
+	public ItemCrystalSeed()
+	{
+		this.setHasSubtypes( true );
+		this.setFeature( EnumSet.of( AEFeature.Core ) );
+
+		EntityRegistry.registerModEntity( EntityGrowingCrystal.class, EntityGrowingCrystal.class.getSimpleName(), EntityIds.get( EntityGrowingCrystal.class ), AppEng.instance, 16, 4, true );
+	}
+
+	@Nullable
+	public static ResolverResult getResolver( int certus2 )
+	{
+		ResolverResult resolver = null;
+
+		for ( ItemStack crystalSeedStack : AEApi.instance().definitions().items().crystalSeed().maybeStack( 1 ).asSet() )
+		{
+			crystalSeedStack.setItemDamage( certus2 );
+			crystalSeedStack = newStyle( crystalSeedStack );
+			resolver = new ResolverResult( "ItemCrystalSeed", crystalSeedStack.getItemDamage(), crystalSeedStack.getTagCompound() );
+		}
+
+		return resolver;
+	}
+
+	private static ItemStack newStyle( ItemStack itemStack )
+	{
+		( (ItemCrystalSeed) itemStack.getItem() ).getProgress( itemStack );
+		return itemStack;
+	}
+
+	private int getProgress( ItemStack is )
 	{
 		if ( is.hasTagCompound() )
 		{
@@ -74,35 +107,74 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 			int progress;
 			NBTTagCompound comp = Platform.openNbtData( is );
 			comp.setInteger( "progress", progress = is.getItemDamage() );
-			is.setItemDamage( (is.getItemDamage() / SINGLE_OFFSET) * SINGLE_OFFSET );
+			is.setItemDamage( ( is.getItemDamage() / SINGLE_OFFSET ) * SINGLE_OFFSET );
 			return progress;
 		}
 	}
 
-	private void setProgress(ItemStack is, int newDamage)
+	@Nullable
+	@Override
+	public ItemStack triggerGrowth( ItemStack is )
+	{
+		int newDamage = this.getProgress( is ) + 1;
+		final IMaterials materials = AEApi.instance().definitions().materials();
+		final int size = is.stackSize;
+
+		if ( newDamage == Certus + SINGLE_OFFSET )
+		{
+			for ( ItemStack quartzStack : materials.purifiedCertusQuartzCrystal().maybeStack( size ).asSet() )
+			{
+				return quartzStack;
+			}
+		}
+		if ( newDamage == Nether + SINGLE_OFFSET )
+		{
+			for ( ItemStack quartzStack : materials.purifiedNetherQuartzCrystal().maybeStack( size ).asSet() )
+			{
+				return quartzStack;
+			}
+		}
+		if ( newDamage == Fluix + SINGLE_OFFSET )
+		{
+			for ( ItemStack quartzStack : materials.purifiedFluixCrystal().maybeStack( size ).asSet() )
+			{
+				return quartzStack;
+			}
+		}
+		if ( newDamage > END )
+			return null;
+
+		this.setProgress( is, newDamage );
+		return is;
+	}
+
+	private void setProgress( ItemStack is, int newDamage )
 	{
 		NBTTagCompound comp = Platform.openNbtData( is );
 		comp.setInteger( "progress", newDamage );
 		is.setItemDamage( is.getItemDamage() / LEVEL_OFFSET * LEVEL_OFFSET );
-	}
-
-	public ItemCrystalSeed() {
-		super( ItemCrystalSeed.class );
-		this.setHasSubtypes( true );
-		this.setFeature( EnumSet.of( AEFeature.Core ) );
-
-		EntityRegistry.registerModEntity( EntityGrowingCrystal.class, EntityGrowingCrystal.class.getSimpleName(), EntityIds.get( EntityGrowingCrystal.class ),
-				AppEng.instance, 16, 4, true );
-	}
-
-	@Override
-	public int getEntityLifespan(ItemStack itemStack, World world)
+	}	@Override
+	public int getEntityLifespan( ItemStack itemStack, World world )
 	{
 		return Integer.MAX_VALUE;
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack is)
+	public float getMultiplier( Block blk, Material mat )
+	{
+		return 0.5f;
+	}
+
+	@Override
+	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
+	{
+		lines.add( ButtonToolTips.DoesntDespawn.getLocal() );
+		int progress = this.getProgress( stack ) % SINGLE_OFFSET;
+		lines.add( Math.floor( (float) progress / (float) ( SINGLE_OFFSET / 100 ) ) + "%" );
+
+		super.addCheckedInformation( stack, player, lines, displayAdditionalInformation );
+	}	@Override
+	public String getUnlocalizedName( ItemStack is )
 	{
 		int damage = this.getProgress( is );
 
@@ -118,23 +190,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		return this.getUnlocalizedName();
 	}
 
-	@Override
-	public ItemStack triggerGrowth(ItemStack is)
-	{
-		int newDamage = this.getProgress( is ) + 1;
 
-		if ( newDamage == Certus + SINGLE_OFFSET )
-			return AEApi.instance().materials().materialPurifiedCertusQuartzCrystal.stack( is.stackSize );
-		if ( newDamage == Nether + SINGLE_OFFSET )
-			return AEApi.instance().materials().materialPurifiedNetherQuartzCrystal.stack( is.stackSize );
-		if ( newDamage == Fluix + SINGLE_OFFSET )
-			return AEApi.instance().materials().materialPurifiedFluixCrystal.stack( is.stackSize );
-		if ( newDamage > END )
-			return null;
-
-		this.setProgress( is, newDamage );
-		return is;
-	}
 
 	@Override
 	public boolean isDamageable()
@@ -143,35 +199,25 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
-	public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
-	{
-		lines.add( ButtonToolTips.DoesntDespawn.getLocal() );
-		int progress = this.getProgress( stack ) % SINGLE_OFFSET;
-		lines.add( Math.floor( (float) progress / (float) (SINGLE_OFFSET / 100) ) + "%" );
-
-		super.addCheckedInformation( stack, player, lines, displayAdditionalInformation );
-	}
-
-	@Override
-	public boolean isDamaged(ItemStack stack)
+	public boolean isDamaged( ItemStack stack )
 	{
 		return false;
 	}
 
 	@Override
-	public int getMaxDamage(ItemStack stack)
+	public int getMaxDamage( ItemStack stack )
 	{
 		return END;
 	}
 
 	@Override
-	public IIcon getIcon(ItemStack stack, int pass)
+	public IIcon getIcon( ItemStack stack, int pass )
 	{
 		return this.getIconIndex( stack );
 	}
 
 	@Override
-	public IIcon getIconIndex(ItemStack stack)
+	public IIcon getIconIndex( ItemStack stack )
 	{
 		IIcon[] list = null;
 
@@ -204,13 +250,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
-	public float getMultiplier(Block blk, Material mat)
-	{
-		return 0.5f;
-	}
-
-	@Override
-	public void registerIcons(IIconRegister ir)
+	public void registerIcons( IIconRegister ir )
 	{
 		String preFix = "appliedenergistics2:ItemCrystalSeed.";
 
@@ -228,13 +268,13 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
-	public boolean hasCustomEntity(ItemStack stack)
+	public boolean hasCustomEntity( ItemStack stack )
 	{
 		return true;
 	}
 
 	@Override
-	public Entity createEntity(World world, Entity location, ItemStack itemstack)
+	public Entity createEntity( World world, Entity location, ItemStack itemstack )
 	{
 		EntityGrowingCrystal egc = new EntityGrowingCrystal( world, location.posX, location.posY, location.posZ, itemstack );
 
@@ -243,13 +283,13 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		egc.motionZ = location.motionZ;
 
 		if ( location instanceof EntityItem )
-			egc.delayBeforeCanPickup = ((EntityItem) location).delayBeforeCanPickup;
+			egc.delayBeforeCanPickup = ( (EntityItem) location ).delayBeforeCanPickup;
 
 		return egc;
 	}
 
 	@Override
-	public void getSubItems(Item i, CreativeTabs t, List l)
+	public void getSubItems( Item i, CreativeTabs t, List l )
 	{
 		// lvl 0
 		l.add( newStyle( new ItemStack( this, 1, Certus ) ) );
@@ -267,18 +307,5 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		l.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + Fluix ) ) );
 	}
 
-	private static ItemStack newStyle(ItemStack itemStack)
-	{
-		((ItemCrystalSeed) itemStack.getItem()).getProgress( itemStack );
-		return itemStack;
-	}
-
-	public static ResolverResult getResolver(int certus2)
-	{
-		ItemStack is = AEApi.instance().items().itemCrystalSeed.stack( 1 );
-		is.setItemDamage( certus2 );
-		is = newStyle( is );
-		return new ResolverResult( "ItemCrystalSeed", is.getItemDamage(), is.getTagCompound() );
-	}
 
 }
