@@ -49,8 +49,8 @@ public class AEFeatureHandler implements AEItemDefinition
 	private final String subName;
 	private final IAEFeature feature;
 
-	private Item ItemData;
-	private Block BlockData;
+	private Item itemData;
+	private Block blockData;
 	private BlockStairs stairData;
 
 	public AEFeatureHandler( EnumSet<AEFeature> features, IAEFeature feature, String subName )
@@ -91,7 +91,7 @@ public class AEFeatureHandler implements AEItemDefinition
 
 	private void initItem( Item i )
 	{
-		this.ItemData = i;
+		this.itemData = i;
 
 		String name = getName( i.getClass(), this.subName );
 		i.setTextureName( "appliedenergistics2:" + name );
@@ -124,14 +124,14 @@ public class AEFeatureHandler implements AEItemDefinition
 
 	private void initBlock( Block b )
 	{
-		this.BlockData = b;
+		this.blockData = b;
 
 		String name = getName( b.getClass(), this.subName );
 		b.setCreativeTab( CreativeTab.instance );
 		b.setBlockName( /* "tile." */"appliedenergistics2." + name );
 		b.setBlockTextureName( "appliedenergistics2:" + name );
 
-		if ( Platform.isClient() && this.BlockData instanceof AEBaseBlock )
+		if ( Platform.isClient() && this.blockData instanceof AEBaseBlock )
 		{
 			AEBaseBlock bb = ( AEBaseBlock ) b;
 			CommonHelper.proxy.bindTileEntitySpecialRenderer( bb.getTileEntityClass(), bb );
@@ -179,19 +179,19 @@ public class AEFeatureHandler implements AEItemDefinition
 	@Override
 	public Block block()
 	{
-		return this.BlockData;
+		return this.blockData;
 	}
 
 	@Override
 	public Item item()
 	{
-		if ( this.ItemData != null )
+		if ( this.itemData != null )
 		{
-			return this.ItemData;
+			return this.itemData;
 		}
-		else if ( this.BlockData != null )
+		else if ( this.blockData != null )
 		{
-			return Item.getItemFromBlock( this.BlockData );
+			return Item.getItemFromBlock( this.blockData );
 		}
 		else if ( this.stairData != null )
 		{
@@ -204,9 +204,9 @@ public class AEFeatureHandler implements AEItemDefinition
 	@Override
 	public Class<? extends TileEntity> entity()
 	{
-		if ( this.BlockData instanceof AEBaseBlock )
+		if ( this.blockData instanceof AEBaseBlock )
 		{
-			AEBaseBlock bb = ( AEBaseBlock ) this.BlockData;
+			AEBaseBlock bb = ( AEBaseBlock ) this.blockData;
 			return bb.getTileEntityClass();
 		}
 
@@ -220,10 +220,10 @@ public class AEFeatureHandler implements AEItemDefinition
 		{
 			ItemStack rv;
 
-			if ( this.ItemData != null )
-				rv = new ItemStack( this.ItemData );
+			if ( this.itemData != null )
+				rv = new ItemStack( this.itemData );
 			else
-				rv = new ItemStack( this.BlockData );
+				rv = new ItemStack( this.blockData );
 
 			rv.stackSize = stackSize;
 			return rv;
@@ -255,7 +255,7 @@ public class AEFeatureHandler implements AEItemDefinition
 	@Override
 	public boolean sameAsBlock( IBlockAccess world, int x, int y, int z )
 	{
-		return this.isFeatureAvailable() && this.BlockData != null && world.getBlock( x, y, z ) == this.BlockData;
+		return this.isFeatureAvailable() && this.blockData != null && world.getBlock( x, y, z ) == this.blockData;
 	}
 
 }

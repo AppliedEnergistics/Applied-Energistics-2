@@ -32,9 +32,12 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.google.common.base.Optional;
+
 import appeng.api.AEApi;
 import appeng.api.movable.IMovableHandler;
 import appeng.api.movable.IMovableRegistry;
+import appeng.api.util.AEItemDefinition;
 import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.WorldSettings;
@@ -130,7 +133,8 @@ public class CachedPlane
 	final LinkedList<NextTickListEntry> ticks = new LinkedList<NextTickListEntry>();
 
 	final World world;
-	final Block matrixFrame = AEApi.instance().blocks().blockMatrixFrame.block();
+	private static final Optional<AEItemDefinition> MAYBE_MATRIX_FRAME = AEApi.instance().definitions().blocks().matrixFrame();
+	private final Block matrixFrame = ( MAYBE_MATRIX_FRAME.isPresent()) ? MAYBE_MATRIX_FRAME.get().block() : null;
 	final IMovableRegistry reg = AEApi.instance().registries().movable();
 
 	final LinkedList<WorldCoord> updates = new LinkedList<WorldCoord>();

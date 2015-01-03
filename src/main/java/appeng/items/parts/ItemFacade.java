@@ -41,8 +41,11 @@ import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import com.sun.corba.se.impl.oa.NullServantImpl;
+
 import appeng.api.AEApi;
 import appeng.api.parts.IAlphaPassItem;
+import appeng.api.util.AEItemDefinition;
 import appeng.block.solids.OreQuartz;
 import appeng.client.render.BusRenderer;
 import appeng.core.FacadeConfig;
@@ -110,11 +113,17 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 	public ItemStack createFromIDs(int[] ids)
 	{
-		ItemStack is = new ItemStack( AEApi.instance().items().itemFacade.item() );
-		NBTTagCompound data = new NBTTagCompound();
-		data.setIntArray( "x", ids.clone() );
-		is.setTagCompound( data );
-		return is;
+		ItemStack facade = null;
+
+		for ( AEItemDefinition definition : AEApi.instance().definitions().items().facade().asSet() )
+		{
+			facade = new ItemStack( definition.item() );
+			NBTTagCompound data = new NBTTagCompound();
+			data.setIntArray( "x", ids.clone() );
+			facade.setTagCompound( data );
+		}
+
+		return facade;
 	}
 
 	@Override

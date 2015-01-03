@@ -23,90 +23,155 @@
 
 package appeng.api.definitions;
 
+
+import javax.annotation.Nullable;
+
 import appeng.api.util.AEItemDefinition;
+
 
 public class Blocks
 {
-
-	/*
-	 * World Gen
-	 */
+	@Nullable
 	public AEItemDefinition blockQuartzOre;
+
+	@Nullable
 	public AEItemDefinition blockQuartzOreCharged;
+
+	@Nullable
 	public AEItemDefinition blockMatrixFrame;
 
-	/*
-	 * Decorative
-	 */
+	@Nullable
 	public AEItemDefinition blockQuartz;
+
+	@Nullable
 	public AEItemDefinition blockQuartzPillar;
+
+	@Nullable
 	public AEItemDefinition blockQuartzChiseled;
+
+	@Nullable
 	public AEItemDefinition blockQuartzGlass;
+
+	@Nullable
 	public AEItemDefinition blockQuartzVibrantGlass;
+
+	@Nullable
 	public AEItemDefinition blockQuartzTorch;
+
+	@Nullable
 	public AEItemDefinition blockFluix;
+
+	@Nullable
 	public AEItemDefinition blockSkyStone;
+
+	@Nullable
 	public AEItemDefinition blockSkyChest;
+
+	@Nullable
 	public AEItemDefinition blockSkyCompass;
 
-	/*
-	 * Misc
-	 */
+	@Nullable
 	public AEItemDefinition blockGrindStone;
+
+	@Nullable
 	public AEItemDefinition blockCrankHandle;
+
+	@Nullable
 	public AEItemDefinition blockInscriber;
+
+	@Nullable
 	public AEItemDefinition blockWireless;
+
+	@Nullable
 	public AEItemDefinition blockCharger;
+
+	@Nullable
 	public AEItemDefinition blockTinyTNT;
+
+	@Nullable
 	public AEItemDefinition blockSecurity;
 
-	/*
-	 * Quantum Network Bridge
-	 */
+	@Nullable
 	public AEItemDefinition blockQuantumRing;
+
+	@Nullable
 	public AEItemDefinition blockQuantumLink;
 
-	/*
-	 * Spatial IO
-	 */
+	@Nullable
 	public AEItemDefinition blockSpatialPylon;
+
+	@Nullable
 	public AEItemDefinition blockSpatialIOPort;
 
-	/*
-	 * Bus / Cables
-	 */
+	@Nullable
 	public AEItemDefinition blockMultiPart;
 
-	/*
-	 * Machines
-	 */
+	@Nullable
 	public AEItemDefinition blockController;
+
+	@Nullable
 	public AEItemDefinition blockDrive;
+
+	@Nullable
 	public AEItemDefinition blockChest;
+
+	@Nullable
 	public AEItemDefinition blockInterface;
+
+	@Nullable
 	public AEItemDefinition blockCellWorkbench;
+
+	@Nullable
 	public AEItemDefinition blockIOPort;
+
+	@Nullable
 	public AEItemDefinition blockCondenser;
+
+	@Nullable
 	public AEItemDefinition blockEnergyAcceptor;
+
+	@Nullable
 	public AEItemDefinition blockVibrationChamber;
+
+	@Nullable
 	public AEItemDefinition blockQuartzGrowthAccelerator;
 
+	@Nullable
 	public AEItemDefinition blockEnergyCell;
+
+	@Nullable
 	public AEItemDefinition blockEnergyCellDense;
+
+	@Nullable
 	public AEItemDefinition blockEnergyCellCreative;
 
-	// rv1
+	@Nullable
 	public AEItemDefinition blockCraftingUnit;
+
+	@Nullable
 	public AEItemDefinition blockCraftingAccelerator;
+
+	@Nullable
 	public AEItemDefinition blockCraftingStorage1k;
+
+	@Nullable
 	public AEItemDefinition blockCraftingStorage4k;
+
+	@Nullable
 	public AEItemDefinition blockCraftingStorage16k;
+
+	@Nullable
 	public AEItemDefinition blockCraftingStorage64k;
+
+	@Nullable
 	public AEItemDefinition blockCraftingMonitor;
 
+	@Nullable
 	public AEItemDefinition blockMolecularAssembler;
 
+	@Nullable
 	public AEItemDefinition blockLightDetector;
-	public AEItemDefinition blockPaint;
 
+	@Nullable
+	public AEItemDefinition blockPaint;
 }

@@ -30,9 +30,14 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
+import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IDefinitions;
+import appeng.api.definitions.IParts;
 import appeng.api.definitions.Parts;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.util.AEColor;
+import appeng.api.util.AEColoredItemDefinition;
+import appeng.api.util.AEItemDefinition;
 import appeng.util.Platform;
 
 public class P2PTunnelRegistry implements IP2PTunnelRegistry
@@ -78,14 +83,30 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 		/**
 		 * attune based on lots of random item related stuff
 		 */
-		appeng.api.definitions.Blocks AEBlocks = AEApi.instance().blocks();
-		Parts Parts = AEApi.instance().parts();
+		final IDefinitions definitions = AEApi.instance().definitions();
+		final IBlocks blocks = definitions.blocks();
+		final IParts parts = definitions.parts();
 
-		this.addNewAttunement( AEBlocks.blockInterface.stack( 1 ), TunnelType.ITEM );
-		this.addNewAttunement( Parts.partInterface.stack( 1 ), TunnelType.ITEM );
-		this.addNewAttunement( Parts.partStorageBus.stack( 1 ), TunnelType.ITEM );
-		this.addNewAttunement( Parts.partImportBus.stack( 1 ), TunnelType.ITEM );
-		this.addNewAttunement( Parts.partExportBus.stack( 1 ), TunnelType.ITEM );
+		for ( AEItemDefinition iface : blocks.iface().asSet() )
+		{
+			this.addNewAttunement( iface.stack( 1 ), TunnelType.ITEM );
+		}
+		for ( AEItemDefinition iface : parts.iface().asSet() )
+		{
+			this.addNewAttunement( iface.stack( 1 ), TunnelType.ITEM );
+		}
+		for ( AEItemDefinition storageBus : parts.storageBus().asSet() )
+		{
+			this.addNewAttunement( storageBus.stack( 1 ), TunnelType.ITEM );
+		}
+		for ( AEItemDefinition importBus : parts.importBus().asSet() )
+		{
+			this.addNewAttunement( importBus.stack( 1 ), TunnelType.ITEM );
+		}
+		for ( AEItemDefinition exportBus : parts.exportBus().asSet() )
+		{
+			this.addNewAttunement( exportBus.stack( 1 ), TunnelType.ITEM );
+		}
 		this.addNewAttunement( new ItemStack( Blocks.hopper ), TunnelType.ITEM );
 		this.addNewAttunement( new ItemStack( Blocks.chest ), TunnelType.ITEM );
 		this.addNewAttunement( new ItemStack( Blocks.trapped_chest ), TunnelType.ITEM );
@@ -108,10 +129,22 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 
 		for (AEColor c : AEColor.values())
 		{
-			this.addNewAttunement( Parts.partCableGlass.stack( c, 1 ), TunnelType.ME );
-			this.addNewAttunement( Parts.partCableCovered.stack( c, 1 ), TunnelType.ME );
-			this.addNewAttunement( Parts.partCableSmart.stack( c, 1 ), TunnelType.ME );
-			this.addNewAttunement( Parts.partCableDense.stack( c, 1 ), TunnelType.ME );
+			for ( AEColoredItemDefinition glass : parts.cableGlass().asSet() )
+			{
+				this.addNewAttunement( glass.stack( c, 1 ), TunnelType.ME );
+			}
+			for ( AEColoredItemDefinition covered : parts.cableCovered().asSet() )
+			{
+				this.addNewAttunement( covered.stack( c, 1 ), TunnelType.ME );
+			}
+			for ( AEColoredItemDefinition smart : parts.cableSmart().asSet() )
+			{
+				this.addNewAttunement( smart.stack( c, 1 ), TunnelType.ME );
+			}
+			for ( AEColoredItemDefinition dense : parts.cableDense().asSet() )
+			{
+				this.addNewAttunement( dense.stack( c, 1 ), TunnelType.ME );
+			}
 		}
 	}
 

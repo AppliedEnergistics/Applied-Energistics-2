@@ -30,6 +30,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IMaterials;
+import appeng.api.util.AEItemDefinition;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
@@ -87,49 +89,57 @@ final public class EntityChargedQuartz extends AEBaseEntityItem
 	public boolean transform()
 	{
 		ItemStack item = this.getEntityItem();
-		if ( AEApi.instance().materials().materialCertusQuartzCrystalCharged.sameAsStack( item ) )
+		final IMaterials materials = AEApi.instance().definitions().materials();
+
+		for ( AEItemDefinition definition : materials.certusQuartzCrystalCharged().asSet() )
 		{
-			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( this.posX - 1, this.posY - 1, this.posZ - 1, this.posX + 1, this.posY + 1, this.posZ + 1 );
-			List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
-
-			EntityItem redstone = null;
-			EntityItem netherQuartz = null;
-
-			for (Entity e : l)
+			if ( definition.sameAsStack( item ) )
 			{
-				if ( e instanceof EntityItem && !e.isDead )
-				{
-					ItemStack other = ((EntityItem) e).getEntityItem();
-					if ( other != null && other.stackSize > 0 )
-					{
-						if ( Platform.isSameItem( other, new ItemStack( Items.redstone ) ) )
-							redstone = (EntityItem) e;
+				AxisAlignedBB region = AxisAlignedBB.getBoundingBox( this.posX - 1, this.posY - 1, this.posZ - 1, this.posX + 1, this.posY + 1, this.posZ + 1 );
+				List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
 
-						if ( Platform.isSameItem( other, new ItemStack( Items.quartz ) ) )
-							netherQuartz = (EntityItem) e;
+				EntityItem redstone = null;
+				EntityItem netherQuartz = null;
+
+				for (Entity e : l)
+				{
+					if ( e instanceof EntityItem && !e.isDead )
+					{
+						ItemStack other = ((EntityItem) e).getEntityItem();
+						if ( other != null && other.stackSize > 0 )
+						{
+							if ( Platform.isSameItem( other, new ItemStack( Items.redstone ) ) )
+								redstone = (EntityItem) e;
+
+							if ( Platform.isSameItem( other, new ItemStack( Items.quartz ) ) )
+								netherQuartz = (EntityItem) e;
+						}
 					}
 				}
-			}
 
-			if ( redstone != null && netherQuartz != null )
-			{
-				this.getEntityItem().stackSize--;
-				redstone.getEntityItem().stackSize--;
-				netherQuartz.getEntityItem().stackSize--;
+				if ( redstone != null && netherQuartz != null )
+				{
+					this.getEntityItem().stackSize--;
+					redstone.getEntityItem().stackSize--;
+					netherQuartz.getEntityItem().stackSize--;
 
-				if ( this.getEntityItem().stackSize <= 0 )
-					this.setDead();
+					if ( this.getEntityItem().stackSize <= 0 )
+						this.setDead();
 
-				if ( redstone.getEntityItem().stackSize <= 0 )
-					redstone.setDead();
+					if ( redstone.getEntityItem().stackSize <= 0 )
+						redstone.setDead();
 
-				if ( netherQuartz.getEntityItem().stackSize <= 0 )
-					netherQuartz.setDead();
+					if ( netherQuartz.getEntityItem().stackSize <= 0 )
+						netherQuartz.setDead();
 
-				ItemStack Output = AEApi.instance().materials().materialFluixCrystal.stack( 2 );
-				this.worldObj.spawnEntityInWorld( new EntityItem( this.worldObj, this.posX, this.posY, this.posZ, Output ) );
+					for ( AEItemDefinition fluixCrystal : materials.fluixCrystal().asSet() )
+					{
+						ItemStack output = fluixCrystal.stack( 2 );
+						this.worldObj.spawnEntityInWorld( new EntityItem( this.worldObj, this.posX, this.posY, this.posZ, output ) );
+					}
 
-				return true;
+					return true;
+				}
 			}
 		}
 		return false;

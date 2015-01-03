@@ -23,7 +23,10 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IDefinitions;
+import appeng.api.definitions.IParts;
 import appeng.api.storage.ITerminalHost;
+import appeng.api.util.AEItemDefinition;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.client.gui.widgets.GuiTabButton;
@@ -81,33 +84,49 @@ public class GuiCraftAmount extends AEBaseGui
 
 		ItemStack myIcon = null;
 		Object target = ((AEBaseContainer) this.inventorySlots).getTarget();
+		final IDefinitions definitions = AEApi.instance().definitions();
+		final IParts parts = definitions.parts();
 
 		if ( target instanceof WirelessTerminalGuiObject )
 		{
-			myIcon = AEApi.instance().items().itemWirelessTerminal.stack( 1 );
-			this.OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
+			for ( AEItemDefinition definition : definitions.items().wirelessTerminal().asSet() )
+			{
+				myIcon = definition.stack( 1 );
+				this.OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
+			}
 		}
 
 		if ( target instanceof PartTerminal )
 		{
-			myIcon = AEApi.instance().parts().partTerminal.stack( 1 );
-			this.OriginalGui = GuiBridge.GUI_ME;
+			for ( AEItemDefinition definition : parts.terminal().asSet() )
+			{
+				myIcon = definition.stack( 1 );
+				this.OriginalGui = GuiBridge.GUI_ME;
+			}
 		}
 
 		if ( target instanceof PartCraftingTerminal )
 		{
-			myIcon = AEApi.instance().parts().partCraftingTerminal.stack( 1 );
-			this.OriginalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
+			for ( AEItemDefinition definition : parts.craftingTerminal().asSet() )
+			{
+				myIcon = definition.stack( 1 );
+				this.OriginalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
+			}
 		}
 
 		if ( target instanceof PartPatternTerminal )
 		{
-			myIcon = AEApi.instance().parts().partPatternTerminal.stack( 1 );
-			this.OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
+			for ( AEItemDefinition definition : parts.patternTerminal().asSet() )
+			{
+				myIcon = definition.stack( 1 );
+				this.OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
+			}
 		}
 
-		if ( this.OriginalGui != null )
+		if ( this.OriginalGui != null && myIcon != null )
+		{
 			this.buttonList.add( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), itemRender ) );
+		}
 
 		this.amountToCraft = new GuiNumberBox( this.fontRendererObj, this.guiLeft + 62, this.guiTop + 57, 59, this.fontRendererObj.FONT_HEIGHT, Integer.class );
 		this.amountToCraft.setEnableBackgroundDrawing( false );
@@ -154,22 +173,22 @@ public class GuiCraftAmount extends AEBaseGui
 	{
 		try
 		{
-			String Out = this.amountToCraft.getText();
+			String out = this.amountToCraft.getText();
 
-			boolean Fixed = false;
-			while (Out.startsWith( "0" ) && Out.length() > 1)
+			boolean fixed = false;
+			while (out.startsWith( "0" ) && out.length() > 1)
 			{
-				Out = Out.substring( 1 );
-				Fixed = true;
+				out = out.substring( 1 );
+				fixed = true;
 			}
 
-			if ( Fixed )
-				this.amountToCraft.setText( Out );
+			if ( fixed )
+				this.amountToCraft.setText( out );
 
-			if ( Out.length() == 0 )
-				Out = "0";
+			if ( out.length() == 0 )
+				out = "0";
 
-			long result = Integer.parseInt( Out );
+			long result = Integer.parseInt( out );
 
 			if ( result == 1 && i > 1 )
 				result = 0;
@@ -178,9 +197,9 @@ public class GuiCraftAmount extends AEBaseGui
 			if ( result < 1 )
 				result = 1;
 
-			Out = Long.toString( result );
-			Integer.parseInt( Out );
-			this.amountToCraft.setText( Out );
+			out = Long.toString( result );
+			Integer.parseInt( out );
+			this.amountToCraft.setText( out );
 		}
 		catch (NumberFormatException e)
 		{
@@ -202,22 +221,22 @@ public class GuiCraftAmount extends AEBaseGui
 			{
 				try
 				{
-					String Out = this.amountToCraft.getText();
+					String out = this.amountToCraft.getText();
 
-					boolean Fixed = false;
-					while (Out.startsWith( "0" ) && Out.length() > 1)
+					boolean fixed = false;
+					while (out.startsWith( "0" ) && out.length() > 1)
 					{
-						Out = Out.substring( 1 );
-						Fixed = true;
+						out = out.substring( 1 );
+						fixed = true;
 					}
 
-					if ( Fixed )
-						this.amountToCraft.setText( Out );
+					if ( fixed )
+						this.amountToCraft.setText( out );
 
-					if ( Out.length() == 0 )
-						Out = "0";
+					if ( out.length() == 0 )
+						out = "0";
 
-					long result = Long.parseLong( Out );
+					long result = Long.parseLong( out );
 					if ( result < 0 )
 					{
 						this.amountToCraft.setText( "1" );

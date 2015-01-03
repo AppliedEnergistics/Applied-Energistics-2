@@ -39,6 +39,9 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IDefinitions;
+import appeng.api.definitions.IItems;
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
@@ -47,6 +50,7 @@ import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
 import appeng.api.recipes.IRecipeHandler;
 import appeng.api.recipes.IRecipeLoader;
+import appeng.api.util.AEItemDefinition;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -258,7 +262,11 @@ public class RecipeHandler implements IRecipeHandler
 		if ( !id.modId.equals( AppEng.MOD_ID ) && !id.modId.equals( "minecraft" ) )
 			throw new RecipeError( "Not applicable for website" );
 
-		if ( is.getItem() == AEApi.instance().items().itemCrystalSeed.item() )
+		final IDefinitions definitions = AEApi.instance().definitions();
+		final IItems items = definitions.items();
+		final IBlocks blocks = definitions.blocks();
+
+		if ( items.crystalSeed().isPresent() && is.getItem() == items.crystalSeed().get().item() )
 		{
 			int dmg = is.getItemDamage();
 			if ( dmg < ItemCrystalSeed.Nether )
@@ -268,7 +276,7 @@ public class RecipeHandler implements IRecipeHandler
 			else if ( dmg < ItemCrystalSeed.END )
 				realName += ".Fluix";
 		}
-		else if ( is.getItem() == AEApi.instance().blocks().blockSkyStone.item() )
+		else if ( blocks.skyStone().isPresent() && is.getItem() == blocks.skyStone().get().item() )
 		{
 			switch (is.getItemDamage())
 			{
@@ -284,7 +292,7 @@ public class RecipeHandler implements IRecipeHandler
 			default:
 			}
 		}
-		else if ( is.getItem() == AEApi.instance().blocks().blockCraftingStorage1k.item() )
+		else if ( blocks.craftingStorage1k().isPresent() && is.getItem() == blocks.craftingStorage1k().get().item() )
 		{
 			switch (is.getItemDamage())
 			{
@@ -300,7 +308,7 @@ public class RecipeHandler implements IRecipeHandler
 			default:
 			}
 		}
-		else if ( is.getItem() == AEApi.instance().blocks().blockCraftingUnit.item() )
+		else if ( blocks.craftingUnit().isPresent() && is.getItem() == blocks.craftingUnit().get().item() )
 		{
 			switch (is.getItemDamage())
 			{
@@ -310,7 +318,7 @@ public class RecipeHandler implements IRecipeHandler
 			default:
 			}
 		}
-		else if ( is.getItem() == AEApi.instance().blocks().blockSkyChest.item() )
+		else if ( blocks.skyChest().isPresent() && is.getItem() == blocks.skyChest().get().item() )
 		{
 			switch (is.getItemDamage())
 			{

@@ -34,6 +34,7 @@ import appeng.api.AEApi;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.util.AEItemDefinition;
 import appeng.client.render.items.ItemEncodedPatternRenderer;
 import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
@@ -66,7 +67,11 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 			{
 				if ( inv.getStackInSlot( s ) == stack )
 				{
-					inv.setInventorySlotContents( s, AEApi.instance().materials().materialBlankPattern.stack( stack.stackSize ) );
+					for ( AEItemDefinition blankPattern : AEApi.instance().definitions().materials().blankPattern().asSet() )
+					{
+						inv.setInventorySlotContents( s, blankPattern.stack( stack.stackSize ) );
+					}
+
 					return true;
 				}
 			}

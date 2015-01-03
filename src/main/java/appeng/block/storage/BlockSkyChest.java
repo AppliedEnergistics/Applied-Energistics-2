@@ -39,7 +39,10 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import com.google.common.base.Optional;
+
 import appeng.api.AEApi;
+import appeng.api.util.AEItemDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockSkyChest;
@@ -81,9 +84,15 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int direction, int metadata)
 	{
-		if ( metadata == 1 )
-			return AEApi.instance().blocks().blockSkyStone.block().getIcon( direction, 1 );
-		return AEApi.instance().blocks().blockSkyStone.block().getIcon( direction, metadata );
+		final Optional<AEItemDefinition> maybeSkystone = AEApi.instance().definitions().blocks().skyStone();
+		IIcon icon = null;
+
+		for ( AEItemDefinition definition : maybeSkystone.asSet() )
+		{
+			icon = definition.block().getIcon( direction, metadata );
+		}
+
+		return icon;
 	}
 
 	@Override

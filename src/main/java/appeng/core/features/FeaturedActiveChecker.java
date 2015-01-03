@@ -33,7 +33,7 @@ public class FeaturedActiveChecker
 		this.features = features;
 	}
 
-	public boolean get()
+	public boolean isFeatureActive()
 	{
 		for ( AEFeature f : this.features )
 		{

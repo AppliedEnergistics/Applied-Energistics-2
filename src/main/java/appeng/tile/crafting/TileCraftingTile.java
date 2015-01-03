@@ -29,6 +29,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.google.common.base.Optional;
+
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.IPowerChannelState;
@@ -40,6 +42,7 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.ISimplifiedBundle;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.util.AEItemDefinition;
 import appeng.api.util.WorldCoord;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
@@ -63,7 +66,8 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	public NBTTagCompound previousState = null;
 	public boolean isCoreBlock = false;
 
-	static final ItemStack STACK_CO_PROCESSOR = AEApi.instance().blocks().blockCraftingAccelerator.stack( 1 );
+	private static final Optional<AEItemDefinition> MAYBE_ACCELERATOR = AEApi.instance().definitions().blocks().craftingAccelerator();
+	static final ItemStack STACK_CO_PROCESSOR = ( MAYBE_ACCELERATOR.isPresent() ) ? MAYBE_ACCELERATOR.get().stack( 1 ) : null;
 
 	@Override
 	protected AENetworkProxy createProxy()

@@ -34,6 +34,7 @@ import mods.immibis.core.api.multipart.IPartContainer;
 import appeng.api.AEApi;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
+import appeng.api.util.AEItemDefinition;
 import appeng.core.AELog;
 import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IImmibisMicroblocks;
@@ -102,19 +103,22 @@ public class ImmibisMicroblocks extends BaseModule implements IImmibisMicroblock
 
 		if ( te instanceof IMultipartTile && this.canConvertTiles && isPartItem )
 		{
-			final Block blk = AEApi.instance().blocks().blockMultiPart.block();
-			final ItemStack what = AEApi.instance().blocks().blockMultiPart.stack( 1 );
+			for ( AEItemDefinition multiPart : AEApi.instance().definitions().blocks().multiPart().asSet() )
+			{
+				final Block blk = multiPart.block();
+				final ItemStack what = multiPart.stack( 1 );
 
-			try
-			{
-				// ItemStack.class, EntityPlayer.class, World.class,
-				// int.class, int.class, int.class, int.class, Block.class, int.class );
-				this.mergeIntoMicroblockContainer.invoke( null, what, player, w, x, y, z, side, blk, 0 );
-			}
-			catch ( Throwable e )
-			{
-				this.canConvertTiles = false;
-				return null;
+				try
+				{
+					// ItemStack.class, EntityPlayer.class, World.class,
+					// int.class, int.class, int.class, int.class, Block.class, int.class );
+					this.mergeIntoMicroblockContainer.invoke( null, what, player, w, x, y, z, side, blk, 0 );
+				}
+				catch ( Throwable e )
+				{
+					this.canConvertTiles = false;
+					return null;
+				}
 			}
 		}
 

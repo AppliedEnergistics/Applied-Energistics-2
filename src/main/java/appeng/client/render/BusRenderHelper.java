@@ -30,10 +30,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
+import appeng.api.exceptions.MissingDefinition;
 import appeng.api.parts.IBoxProvider;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.ISimplifiedBundle;
+import appeng.api.util.AEItemDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.block.networking.BlockCableBus;
 import appeng.core.AEConfig;
@@ -52,8 +54,8 @@ public class BusRenderHelper implements IPartRenderHelper
 	double maxY = 16;
 	double maxZ = 16;
 
-	final AEBaseBlock blk = (AEBaseBlock) AEApi.instance().blocks().blockMultiPart.block();
-	final BaseBlockRender bbr = new BaseBlockRender();
+	private final AEBaseBlock blk = (AEBaseBlock) ((AEApi.instance().definitions().blocks().multiPart().isPresent() ) ? AEApi.instance().definitions().blocks().multiPart().get().block() : null );
+	private final BaseBlockRender bbr = new BaseBlockRender();
 
 	private ForgeDirection ax = ForgeDirection.EAST;
 	private ForgeDirection ay = ForgeDirection.UP;
@@ -348,35 +350,47 @@ public class BusRenderHelper implements IPartRenderHelper
 		if ( !this.renderThis() )
 			return;
 
-		AEBaseBlock blk = (AEBaseBlock) AEApi.instance().blocks().blockMultiPart.block();
-		BlockRenderInfo info = blk.getRendererInstance();
-		ForgeDirection forward = BusRenderHelper.INSTANCE.az;
-		ForgeDirection up = BusRenderHelper.INSTANCE.ay;
+		for ( AEItemDefinition definition : AEApi.instance().definitions().blocks().multiPart().asSet() )
+		{
+			final AEBaseBlock block = (AEBaseBlock) definition.block();
 
-		renderer.uvRotateBottom = info.getTexture( ForgeDirection.DOWN ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.DOWN, forward, up ) );
-		renderer.uvRotateTop = info.getTexture( ForgeDirection.UP ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.UP, forward, up ) );
+			BlockRenderInfo info = block.getRendererInstance();
+			ForgeDirection forward = BusRenderHelper.INSTANCE.az;
+			ForgeDirection up = BusRenderHelper.INSTANCE.ay;
 
-		renderer.uvRotateEast = info.getTexture( ForgeDirection.EAST ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.EAST, forward, up ) );
-		renderer.uvRotateWest = info.getTexture( ForgeDirection.WEST ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.WEST, forward, up ) );
+			renderer.uvRotateBottom = info.getTexture( ForgeDirection.DOWN ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.DOWN, forward, up ) );
+			renderer.uvRotateTop = info.getTexture( ForgeDirection.UP ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.UP, forward, up ) );
 
-		renderer.uvRotateNorth = info.getTexture( ForgeDirection.NORTH ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.NORTH, forward, up ) );
-		renderer.uvRotateSouth = info.getTexture( ForgeDirection.SOUTH ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.SOUTH, forward, up ) );
+			renderer.uvRotateEast = info.getTexture( ForgeDirection.EAST ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.EAST, forward, up ) );
+			renderer.uvRotateWest = info.getTexture( ForgeDirection.WEST ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.WEST, forward, up ) );
 
-		this.bbr.renderBlockBounds( renderer, this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ, this.ax, this.ay, this.az );
+			renderer.uvRotateNorth = info.getTexture( ForgeDirection.NORTH ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.NORTH, forward, up ) );
+			renderer.uvRotateSouth = info.getTexture( ForgeDirection.SOUTH ).setFlip( BaseBlockRender.getOrientation( ForgeDirection.SOUTH, forward, up ) );
 
-		renderer.renderStandardBlock( blk, x, y, z );
+			this.bbr.renderBlockBounds( renderer, this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ, this.ax, this.ay, this.az );
+
+			renderer.renderStandardBlock( block, x, y, z );
+		}
 	}
 
 	@Override
 	public Block getBlock()
 	{
-		return AEApi.instance().blocks().blockMultiPart.block();
+		for ( AEItemDefinition definition : AEApi.instance().definitions().blocks().multiPart().asSet() )
+		{
+			return definition.block();
+		}
+
+		throw new MissingDefinition( "No multi part." );
 	}
 
 	public void setRenderColor(int color)
 	{
-		BlockCableBus blk = (BlockCableBus) AEApi.instance().blocks().blockMultiPart.block();
-		blk.setRenderColor( color );
+		for ( AEItemDefinition definition : AEApi.instance().definitions().blocks().multiPart().asSet() )
+		{
+			final BlockCableBus block = (BlockCableBus) definition.block();
+			block.setRenderColor( color );
+		}
 	}
 
 	public void prepareBounds(RenderBlocks renderer)

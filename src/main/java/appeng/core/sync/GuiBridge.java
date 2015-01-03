@@ -23,6 +23,8 @@ import static appeng.core.sync.GuiHostType.ITEM_OR_WORLD;
 import static appeng.core.sync.GuiHostType.WORLD;
 
 import java.lang.reflect.Constructor;
+import java.util.List;
+import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -35,8 +37,12 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.definitions.IMaterials;
 import appeng.api.definitions.Materials;
 import appeng.api.exceptions.AppEngException;
 import appeng.api.features.IWirelessTermHandler;
@@ -52,6 +58,7 @@ import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.storage.ITerminalHost;
+import appeng.api.util.AEItemDefinition;
 import appeng.api.util.DimensionalCoord;
 import appeng.client.gui.GuiNull;
 import appeng.container.AEBaseContainer;
@@ -271,12 +278,8 @@ public enum GuiBridge implements IGuiHandler
 					{
 						ItemStack is = ((Slot) so).getStack();
 
-						Materials m = AEApi.instance().materials();
-						if ( m.materialLogicProcessorPress.sameAsStack( is ) || m.materialEngProcessorPress.sameAsStack( is )
-								|| m.materialCalcProcessorPress.sameAsStack( is ) || m.materialSiliconPress.sameAsStack( is ) )
-						{
-							Achievements.Presses.addToPlayer( inventory.player );
-						}
+						final IMaterials materials = AEApi.instance().definitions().materials();
+						this.addPressAchievementToPlayer( is, materials, inventory.player );
 					}
 				}
 			}
@@ -286,6 +289,26 @@ public enum GuiBridge implements IGuiHandler
 		catch (Throwable t)
 		{
 			throw new RuntimeException( t );
+		}
+	}
+
+	private void addPressAchievementToPlayer( ItemStack newItem, IMaterials possibleMaterials, EntityPlayer player )
+	{
+		final Optional<AEItemDefinition> maybeLogic = possibleMaterials.logicProcessorPress();
+		final Optional<AEItemDefinition> maybeEng = possibleMaterials.engProcessorPress();
+		final Optional<AEItemDefinition> maybeCalc = possibleMaterials.calcProcessorPress();
+		final Optional<AEItemDefinition> maybeSilicon = possibleMaterials.siliconPress();
+
+		final List<Optional<AEItemDefinition>> maybes = Lists.newArrayList( maybeLogic, maybeEng, maybeCalc, maybeSilicon );
+
+		for ( Optional<AEItemDefinition> maybe : maybes )
+		{
+			if ( maybe.isPresent() && maybe.get().sameAsStack( newItem ) )
+			{
+				Achievements.Presses.addToPlayer( player );
+
+				return;
+			}
 		}
 	}
 

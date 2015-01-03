@@ -22,6 +22,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
+import appeng.api.exceptions.MissingDefinition;
+import appeng.api.util.AEItemDefinition;
 import appeng.block.AEBaseItemBlock;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
@@ -42,7 +44,12 @@ public class ItemCraftingStorage extends AEBaseItemBlock
 	@Override
 	public ItemStack getContainerItem(ItemStack itemStack)
 	{
-		return AEApi.instance().blocks().blockCraftingUnit.stack( 1 );
+		for ( AEItemDefinition definition : AEApi.instance().definitions().blocks().craftingUnit().asSet() )
+		{
+			return definition.stack( 1 );
+		}
+
+		throw new MissingDefinition( "No crafting unit." );
 	}
 
 }

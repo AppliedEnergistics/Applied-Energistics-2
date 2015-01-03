@@ -23,7 +23,9 @@
 
 package appeng.api.parts;
 
+
 import net.minecraft.item.ItemStack;
+
 
 //@formatter:off
 /**
@@ -58,8 +60,8 @@ public interface IPartItem
 	 * create a new part INSTANCE, from the item stack.
 	 *
 	 * @param is item
+	 *
 	 * @return part from item
 	 */
-	IPart createPartFromItemStack(ItemStack is);
-
+	IPart createPartFromItemStack( ItemStack is );
 }

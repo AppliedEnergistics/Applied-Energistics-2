@@ -29,6 +29,7 @@ import net.minecraft.world.World;
 import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IDefinitions;
 import appeng.api.util.AEItemDefinition;
 import appeng.items.parts.ItemFacade;
 
@@ -41,8 +42,10 @@ public class FacadeRecipe implements IRecipe
 
 	public FacadeRecipe()
 	{
-		this.maybeFacade = Optional.fromNullable( AEApi.instance().items().itemFacade );
-		this.maybeAnchor = Optional.fromNullable( AEApi.instance().parts().partCableAnchor );
+		final IDefinitions definitions = AEApi.instance().definitions();
+
+		this.maybeFacade = definitions.items().facade();
+		this.maybeAnchor = definitions.parts().cableAnchor();
 	}
 
 	@Override

@@ -40,6 +40,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.definitions.IParts;
+import appeng.api.exceptions.MissingDefinition;
 import appeng.api.implementations.parts.IPartCable;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
@@ -52,6 +54,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
+import appeng.api.util.AEColoredItemDefinition;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.block.AEBaseBlock;
 import appeng.client.texture.CableBusTextures;
@@ -130,8 +133,13 @@ public class PartCable extends AEBasePart implements IPartCable
 				return CableBusTextures.MECable_Yellow.getIcon();
 			default:
 		}
-		return AEApi.instance().parts().partCableGlass.item( AEColor.Transparent ).getIconIndex(
-				AEApi.instance().parts().partCableGlass.stack( AEColor.Transparent, 1 ) );
+
+		for ( AEColoredItemDefinition glass : AEApi.instance().definitions().parts().cableGlass().asSet() )
+		{
+			return glass.item( AEColor.Transparent ).getIconIndex( glass.stack( AEColor.Transparent, 1 ) );
+		}
+
+		throw new MissingDefinition( "No cable glass" );
 	}
 
 	public IIcon getTexture( AEColor c )
@@ -177,8 +185,13 @@ public class PartCable extends AEBasePart implements IPartCable
 				return CableBusTextures.MECovered_Yellow.getIcon();
 			default:
 		}
-		return AEApi.instance().parts().partCableCovered.item( AEColor.Transparent ).getIconIndex(
-				AEApi.instance().parts().partCableCovered.stack( AEColor.Transparent, 1 ) );
+
+		for ( AEColoredItemDefinition covered : AEApi.instance().definitions().parts().cableCovered().asSet() )
+		{
+			return covered.item( AEColor.Transparent ).getIconIndex( covered.stack( AEColor.Transparent, 1 ) );
+		}
+
+		throw new MissingDefinition( "No covered cable" );
 	}
 
 	public IIcon getSmartTexture( AEColor c )
@@ -219,8 +232,19 @@ public class PartCable extends AEBasePart implements IPartCable
 				return CableBusTextures.MESmart_Yellow.getIcon();
 			default:
 		}
-		return AEApi.instance().parts().partCableCovered.item( AEColor.Transparent ).getIconIndex(
-				AEApi.instance().parts().partCableSmart.stack( AEColor.Transparent, 1 ) );
+
+		final IParts parts = AEApi.instance().definitions().parts();
+		for ( AEColoredItemDefinition covered : parts.cableCovered().asSet() )
+		{
+			for ( AEColoredItemDefinition smart : parts.cableSmart().asSet() )
+			{
+				return covered.item( AEColor.Transparent ).getIconIndex( smart.stack( AEColor.Transparent, 1 ) );
+			}
+
+			throw new MissingDefinition( "No smart cable" );
+		}
+
+		throw new MissingDefinition( "No covered glass" );
 	}
 
 	@Override
@@ -1009,21 +1033,35 @@ public class PartCable extends AEBasePart implements IPartCable
 		{
 			ItemStack newPart = null;
 
+			final IParts parts = AEApi.instance().definitions().parts();
+
 			if ( this.getCableConnectionType() == AECableType.GLASS )
 			{
-				newPart = AEApi.instance().parts().partCableGlass.stack( newColor, 1 );
+				for ( AEColoredItemDefinition glass : parts.cableGlass().asSet() )
+				{
+					newPart = glass.stack( newColor, 1 );
+				}
 			}
 			else if ( this.getCableConnectionType() == AECableType.COVERED )
 			{
-				newPart = AEApi.instance().parts().partCableCovered.stack( newColor, 1 );
+				for ( AEColoredItemDefinition covered : parts.cableCovered().asSet() )
+				{
+					newPart = covered.stack( newColor, 1 );
+				}
 			}
 			else if ( this.getCableConnectionType() == AECableType.SMART )
 			{
-				newPart = AEApi.instance().parts().partCableSmart.stack( newColor, 1 );
+				for ( AEColoredItemDefinition smart : parts.cableSmart().asSet() )
+				{
+					newPart = smart.stack( newColor, 1 );
+				}
 			}
 			else if ( this.getCableConnectionType() == AECableType.DENSE )
 			{
-				newPart = AEApi.instance().parts().partCableDense.stack( newColor, 1 );
+				for ( AEColoredItemDefinition dense : parts.cableDense().asSet() )
+				{
+					newPart = dense.stack( newColor, 1 );
+				}
 			}
 
 			boolean hasPermission = true;

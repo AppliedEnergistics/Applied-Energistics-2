@@ -19,10 +19,12 @@
 package appeng.core;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
+import appeng.api.util.AEItemDefinition;
 import appeng.items.parts.ItemFacade;
 
 public final class CreativeTabFacade extends CreativeTabs
@@ -43,7 +45,12 @@ public final class CreativeTabFacade extends CreativeTabs
 	@Override
 	public ItemStack getIconItemStack()
 	{
-		return ((ItemFacade) AEApi.instance().items().itemFacade.item()).getCreativeTabIcon();
+		for ( AEItemDefinition definition : AEApi.instance().definitions().items().facade().asSet() )
+		{
+			return ( (ItemFacade) definition.item() ).getCreativeTabIcon();
+		}
+
+		return new ItemStack( Blocks.planks );
 	}
 
 	public static void init()

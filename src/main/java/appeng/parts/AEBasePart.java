@@ -45,6 +45,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
+import appeng.api.definitions.IDefinitions;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
@@ -59,6 +60,7 @@ import appeng.api.parts.ISimplifiedBundle;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
+import appeng.api.util.AEItemDefinition;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.helpers.ICustomNameObject;
@@ -386,8 +388,17 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 			ItemStack is = this.getItemStack( PartItemStack.Network );
 
 			// Blocks and parts share the same soul!
-			if ( AEApi.instance().parts().partInterface.sameAsStack( is ) )
-				is = AEApi.instance().blocks().blockInterface.stack( 1 );
+			final IDefinitions definitions = AEApi.instance().definitions();
+			for ( AEItemDefinition ifacePart : definitions.parts().iface().asSet() )
+			{
+				if ( ifacePart.sameAsStack( is ) )
+				{
+					for ( AEItemDefinition ifaceBlock : definitions.blocks().iface().asSet() )
+					{
+						is = ifaceBlock.stack( 1 );
+					}
+				}
+			}
 
 			String name = is.getUnlocalizedName();
 

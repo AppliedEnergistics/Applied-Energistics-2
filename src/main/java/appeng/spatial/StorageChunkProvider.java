@@ -29,6 +29,7 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderGenerate;
 
 import appeng.api.AEApi;
+import appeng.api.util.AEItemDefinition;
 import appeng.core.AEConfig;
 
 public class StorageChunkProvider extends ChunkProviderGenerate
@@ -40,10 +41,13 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 
 		BLOCKS = new Block[255 * 256];
 
-		Block matrixFrame = AEApi.instance().blocks().blockMatrixFrame.block();
-		for (int x = 0; x < BLOCKS.length; x++)
-			BLOCKS[x] = matrixFrame;
-
+		for ( AEItemDefinition matrixFrame : AEApi.instance().definitions().blocks().matrixFrame().asSet() )
+		{
+			for (int x = 0; x < BLOCKS.length; x++)
+			{
+				BLOCKS[x] = matrixFrame.block();
+			}
+		}
 	}
 
 	final World w;

@@ -69,10 +69,12 @@ public class AECommand extends CommandBase
 					throw new WrongUsageException( c.command.getHelp( this.srv ) );
 				}
 			}
+			catch ( WrongUsageException wrong )
+			{
+				throw wrong;
+			}
 			catch (Throwable er)
 			{
-				if ( er instanceof WrongUsageException )
-					throw (WrongUsageException) er;
 				throw new WrongUsageException( "commands.ae2.usage" );
 			}
 		}
@@ -90,10 +92,12 @@ public class AECommand extends CommandBase
 				else
 					throw new WrongUsageException( "commands.ae2.permissions" );
 			}
+			catch ( WrongUsageException wrong )
+			{
+				throw wrong;
+			}
 			catch (Throwable er)
 			{
-				if ( er instanceof WrongUsageException )
-					throw (WrongUsageException) er;
 				throw new WrongUsageException( "commands.ae2.usage" );
 			}
 		}

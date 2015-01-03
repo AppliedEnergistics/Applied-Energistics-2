@@ -26,6 +26,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.google.common.base.Optional;
+
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FullnessMode;
@@ -51,6 +53,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEItemDefinition;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
@@ -70,19 +73,19 @@ import appeng.util.inv.WrapperInventoryRange;
 public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IConfigManagerHost, IGridTickable
 {
 
-	final ConfigManager cm = new ConfigManager( this );
+	final ConfigManager cm;
 
 	final int[] input = { 0, 1, 2, 3, 4, 5 };
 	final int[] output = { 6, 7, 8, 9, 10, 11 };
 
 	final int[] outputSlots = { 6, 7, 8, 9, 10, 11 };
 
-	final AppEngInternalInventory cells = new AppEngInternalInventory( this, 12 );
-	final UpgradeInventory upgrades = new UpgradeInventory( AEApi.instance().blocks().blockIOPort.block(), this, 3 );
+	final AppEngInternalInventory cells;
+	final UpgradeInventory upgrades;
 
-	final BaseActionSource mySrc = new MachineSource( this );
+	final BaseActionSource mySrc;
 
-	YesNo lastRedstoneState = YesNo.UNDECIDED;
+	YesNo lastRedstoneState;
 
 	@TileEvent(TileEventType.WORLD_NBT_WRITE)
 	public void writeToNBT_TileIOPort(NBTTagCompound data)
@@ -105,9 +108,23 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 
 	public TileIOPort() {
 		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
+		this.cm = new ConfigManager( this );
 		this.cm.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		this.cm.registerSetting( Settings.FULLNESS_MODE, FullnessMode.EMPTY );
 		this.cm.registerSetting( Settings.OPERATION_MODE, OperationMode.EMPTY );
+		this.cells = new AppEngInternalInventory( this, 12 );
+		this.mySrc = new MachineSource( this );
+		this.lastRedstoneState = YesNo.UNDECIDED;
+
+		final Optional<AEItemDefinition> maybeIOPort = AEApi.instance().definitions().blocks().iOPort();
+		if ( maybeIOPort.isPresent() )
+		{
+			this.upgrades = new UpgradeInventory( maybeIOPort.get().block(), this, 3 );
+		}
+		else
+		{
+			this.upgrades = new UpgradeInventory( null, this, 3 );
+		}
 	}
 
 	@Override

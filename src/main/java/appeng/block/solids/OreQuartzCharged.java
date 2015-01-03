@@ -28,6 +28,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
+import appeng.api.exceptions.MissingDefinition;
+import appeng.api.util.AEItemDefinition;
 import appeng.client.render.effects.ChargedOreFX;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
@@ -37,14 +39,19 @@ public class OreQuartzCharged extends OreQuartz
 
 	public OreQuartzCharged() {
 		super( OreQuartzCharged.class );
-		this.boostBrightnessLow = 2;
-		this.boostBrightnessHigh = 5;
+		this.setBoostBrightnessLow( 2 );
+		this.setBoostBrightnessHigh( 5 );
 	}
 
 	@Override
 	ItemStack getItemDropped()
 	{
-		return AEApi.instance().materials().materialCertusQuartzCrystalCharged.stack( 1 );
+		for ( AEItemDefinition definition : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().asSet() )
+		{
+			return definition.stack( 1 );
+		}
+
+		throw new MissingDefinition( "Wanted to access charged certus quartz crystal" );
 	}
 
 	@Override

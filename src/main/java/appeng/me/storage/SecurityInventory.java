@@ -31,6 +31,7 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.util.AEItemDefinition;
 import appeng.me.GridAccessException;
 import appeng.tile.misc.TileSecurity;
 
@@ -63,16 +64,22 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	@Override
 	public IAEItemStack injectItems(IAEItemStack input, Actionable type, BaseActionSource src)
 	{
-		if ( this.hasPermission( src ) && AEApi.instance().items().itemBiometricCard.sameAsStack( input.getItemStack() ) )
+		if ( this.hasPermission( src ) )
 		{
-			if ( this.canAccept( input ) )
+			for ( AEItemDefinition definition : AEApi.instance().definitions().items().biometricCard().asSet() )
 			{
-				if ( type == Actionable.SIMULATE )
-					return null;
+				if ( definition.sameAsStack( input.getItemStack() ) )
+				{
+					if ( this.canAccept( input ) )
+					{
+						if ( type == Actionable.SIMULATE )
+							return null;
 
-				this.storedItems.add( input );
-				this.securityTile.inventoryChanged();
-				return null;
+						this.storedItems.add( input );
+						this.securityTile.inventoryChanged();
+						return null;
+					}
+				}
 			}
 		}
 		return input;

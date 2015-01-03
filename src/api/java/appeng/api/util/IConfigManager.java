@@ -23,9 +23,10 @@
 
 package appeng.api.util;
 
-import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.Set;
+
+import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Used to adjust settings on an object,
