@@ -97,9 +97,9 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 		if ( tile instanceof TileCharger )
 		{
 			TileCharger tc = (TileCharger) tile;
-			if ( AEApi.instance().materials().materialCertusQuartzCrystalCharged.sameAsStack( tc.getStackInSlot( 0 ) ) )
-			{
 
+			if ( AEApi.instance().definitions().materials().certusQuartzCrystalCharged().sameAsStack( tc.getStackInSlot( 0 ) ) )
+			{
 				double xOff = 0.0;
 				double yOff = 0.0;
 				double zOff = 0.0;
@@ -112,7 +112,6 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 						Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 					}
 				}
-
 			}
 		}
 	}

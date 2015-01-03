@@ -23,6 +23,7 @@
 
 package appeng.api.networking;
 
+
 public enum GridNotification
 {
 	/**

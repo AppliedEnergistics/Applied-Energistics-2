@@ -29,7 +29,9 @@ import net.minecraft.world.gen.feature.WorldGenMinable;
 import cpw.mods.fml.common.IWorldGenerator;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IBlocks;
 import appeng.api.features.IWorldGen.WorldGenType;
+import appeng.api.util.AEItemDefinition;
 import appeng.core.AEConfig;
 import appeng.core.features.registries.WorldGenRegistry;
 
@@ -39,17 +41,17 @@ final public class QuartzWorldGen implements IWorldGenerator
 	final WorldGenMinable oreNormal;
 	final WorldGenMinable oreCharged;
 
-	public QuartzWorldGen() {
-		Block normal = AEApi.instance().blocks().blockQuartzOre.block();
-		Block charged = AEApi.instance().blocks().blockQuartzOreCharged.block();
+	public QuartzWorldGen()
+	{
+		final IBlocks blocks = AEApi.instance().definitions().blocks();
+		final AEItemDefinition maybeOre = blocks.quartzOre();
+		final AEItemDefinition maybeCharged = blocks.quartzOreCharged();
 
-		if ( normal != null && charged != null )
-		{
-			this.oreNormal = new WorldGenMinable( normal, 0, AEConfig.instance.quartzOresPerCluster, Blocks.stone );
-			this.oreCharged = new WorldGenMinable( charged, 0, AEConfig.instance.quartzOresPerCluster, Blocks.stone );
-		}
-		else
-			this.oreNormal = this.oreCharged = null;
+		final Block ore = maybeOre.block();
+		final Block charged = maybeCharged.block();
+
+		this.oreNormal = new WorldGenMinable( ore, 0, AEConfig.instance.quartzOresPerCluster, Blocks.stone );
+		this.oreCharged = new WorldGenMinable( charged, 0, AEConfig.instance.quartzOresPerCluster, Blocks.stone );
 	}
 
 	@Override

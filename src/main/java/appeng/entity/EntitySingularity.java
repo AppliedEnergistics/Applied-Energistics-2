@@ -32,6 +32,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IMaterials;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.util.Platform;
@@ -73,7 +74,10 @@ final public class EntitySingularity extends AEBaseEntityItem
 			return;
 
 		ItemStack item = this.getEntityItem();
-		if ( AEApi.instance().materials().materialSingularity.sameAsStack( item ) )
+
+		final IMaterials materials = AEApi.instance().definitions().materials();
+
+		if ( materials.singularity().sameAsStack( item ) )
 		{
 			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( this.posX - 4, this.posY - 4, this.posZ - 4, this.posX + 4, this.posY + 4, this.posZ + 4 );
 			List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
@@ -116,12 +120,12 @@ final public class EntitySingularity extends AEBaseEntityItem
 								if ( other.stackSize == 0 )
 									e.setDead();
 
-								ItemStack Output = AEApi.instance().materials().materialQESingularity.stack( 2 );
-								NBTTagCompound cmp = Platform.openNbtData( Output );
+								ItemStack output = materials.qESingularity().stack( 2 );
+								NBTTagCompound cmp = Platform.openNbtData( output );
 								cmp.setLong( "freq", ( new Date() ).getTime() * 100 + ( randTickSeed++ ) % 100 );
 								item.stackSize--;
 
-								this.worldObj.spawnEntityInWorld( new EntitySingularity( this.worldObj, this.posX, this.posY, this.posZ, Output ) );
+								this.worldObj.spawnEntityInWorld( new EntitySingularity( this.worldObj, this.posX, this.posY, this.posZ, output ) );
 							}
 
 							if ( item.stackSize <= 0 )

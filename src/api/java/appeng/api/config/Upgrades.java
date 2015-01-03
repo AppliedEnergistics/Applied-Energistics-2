@@ -26,6 +26,8 @@ package appeng.api.config;
 
 import java.util.HashMap;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.item.ItemStack;
 
 import appeng.api.util.AEItemDefinition;
@@ -59,9 +61,7 @@ public enum Upgrades
 		return this.supportedMax;
 	}
 
-
-
-	public void registerItem( AEItemDefinition myItem, int maxSupported )
+	public void registerItem( @Nonnull AEItemDefinition myItem, int maxSupported )
 	{
 		if ( myItem != null )
 		{

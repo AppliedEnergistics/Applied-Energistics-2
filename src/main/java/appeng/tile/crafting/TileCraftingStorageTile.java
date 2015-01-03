@@ -21,13 +21,15 @@ package appeng.tile.crafting;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IBlocks;
+
 
 public class TileCraftingStorageTile extends TileCraftingTile
 {
-
-	static final ItemStack STACK_4K_STORAGE = AEApi.instance().blocks().blockCraftingStorage4k.stack( 1 );
-	static final ItemStack STACK_16K_STORAGE = AEApi.instance().blocks().blockCraftingStorage16k.stack( 1 );
-	static final ItemStack STACK_64K_STORAGE = AEApi.instance().blocks().blockCraftingStorage64k.stack( 1 );
+	private static final IBlocks BLOCKS = AEApi.instance().definitions().blocks();
+	static final ItemStack STACK_4K_STORAGE = BLOCKS.craftingStorage4k().stack( 1 );
+	static final ItemStack STACK_16K_STORAGE = BLOCKS.craftingStorage16k().stack( 1 );
+	static final ItemStack STACK_64K_STORAGE = BLOCKS.craftingStorage64k().stack( 1 );
 
 	@Override
 	protected ItemStack getItemFromTile(Object obj)

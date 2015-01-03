@@ -31,81 +31,80 @@ import appeng.api.util.AEItemDefinition;
 
 public enum Achievements
 {
+	// done
+	Compass( -2, -4, AEApi.instance().definitions().blocks().skyCompass(), AchievementType.Craft ),
 
 	// done
-	Compass( -2, -4, AEApi.instance().blocks().blockSkyCompass, AchievementType.Craft ),
+	Presses( -2, -2, AEApi.instance().definitions().materials().logicProcessorPress(), AchievementType.Custom ),
 
 	// done
-	Presses( -2, -2, AEApi.instance().materials().materialLogicProcessorPress, AchievementType.Custom ),
+	SpatialIO( -4, -4, AEApi.instance().definitions().blocks().spatialIOPort(), AchievementType.Craft ),
 
 	// done
-	SpatialIO( -4, -4, AEApi.instance().blocks().blockSpatialIOPort, AchievementType.Craft ),
+	SpatialIOExplorer( -4, -2, AEApi.instance().definitions().items().spatialCell128(), AchievementType.Custom ),
 
 	// done
-	SpatialIOExplorer( -4, -2, AEApi.instance().items().itemSpatialCell128, AchievementType.Custom ),
+	StorageCell( -6, -4, AEApi.instance().definitions().items().cell64k(), AchievementType.CraftItem ),
 
 	// done
-	StorageCell( -6, -4, AEApi.instance().items().itemCell64k, AchievementType.CraftItem ),
+	IOPort( -6, -2, AEApi.instance().definitions().blocks().iOPort(), AchievementType.Craft ),
 
 	// done
-	IOPort( -6, -2, AEApi.instance().blocks().blockIOPort, AchievementType.Craft ),
+	CraftingTerminal( -8, -4, AEApi.instance().definitions().parts().craftingTerminal(), AchievementType.Craft ),
 
 	// done
-	CraftingTerminal( -8, -4, AEApi.instance().parts().partCraftingTerminal, AchievementType.Craft ),
+	PatternTerminal( -8, -2, AEApi.instance().definitions().parts().patternTerminal(), AchievementType.Craft ),
 
 	// done
-	PatternTerminal( -8, -2, AEApi.instance().parts().partPatternTerminal, AchievementType.Craft ),
+	ChargedQuartz( 0, -4, AEApi.instance().definitions().materials().certusQuartzCrystalCharged(), AchievementType.Pickup ),
 
 	// done
-	ChargedQuartz( 0, -4, AEApi.instance().materials().materialCertusQuartzCrystalCharged, AchievementType.Pickup ),
+	Fluix( 0, -2, AEApi.instance().definitions().materials().fluixCrystal(), AchievementType.Pickup ),
 
 	// done
-	Fluix( 0, -2, AEApi.instance().materials().materialFluixCrystal, AchievementType.Pickup ),
+	Charger( 0, 0, AEApi.instance().definitions().blocks().charger(), AchievementType.Craft ),
 
 	// done
-	Charger( 0, 0, AEApi.instance().blocks().blockCharger, AchievementType.Craft ),
+	CrystalGrowthAccelerator( -2, 0, AEApi.instance().definitions().blocks().quartzGrowthAccelerator(), AchievementType.Craft ),
 
 	// done
-	CrystalGrowthAccelerator( -2, 0, AEApi.instance().blocks().blockQuartzGrowthAccelerator, AchievementType.Craft ),
+	GlassCable( 2, 0, AEApi.instance().definitions().parts().cableGlass(), AchievementType.Craft ),
 
 	// done
-	GlassCable( 2, 0, AEApi.instance().parts().partCableGlass, AchievementType.Craft ),
+	Networking1( 4, -6, AEApi.instance().definitions().parts().cableCovered(), AchievementType.Custom ),
 
 	// done
-	Networking1( 4, -6, AEApi.instance().parts().partCableCovered, AchievementType.Custom ),
+	Controller( 4, -4, AEApi.instance().definitions().blocks().controller(), AchievementType.Craft ),
 
 	// done
-	Controller( 4, -4, AEApi.instance().blocks().blockController, AchievementType.Craft ),
+	Networking2( 4, 0, AEApi.instance().definitions().parts().cableSmart(), AchievementType.Custom ),
 
 	// done
-	Networking2( 4, 0, AEApi.instance().parts().partCableSmart, AchievementType.Custom ),
+	Networking3( 4, 2, AEApi.instance().definitions().parts().cableDense(), AchievementType.Custom ),
 
 	// done
-	Networking3( 4, 2, AEApi.instance().parts().partCableDense, AchievementType.Custom ),
+	P2P( 2, -2, AEApi.instance().definitions().parts().p2PTunnelME(), AchievementType.Craft ),
 
 	// done
-	P2P( 2, -2, AEApi.instance().parts().partP2PTunnelME, AchievementType.Craft ),
+	Recursive( 6, -2, AEApi.instance().definitions().blocks().iface(), AchievementType.Craft ),
 
 	// done
-	Recursive( 6, -2, AEApi.instance().blocks().blockInterface, AchievementType.Craft ),
+	CraftingCPU( 6, 0, AEApi.instance().definitions().blocks().craftingStorage64k(), AchievementType.CraftItem ),
 
 	// done
-	CraftingCPU( 6, 0, AEApi.instance().blocks().blockCraftingStorage64k, AchievementType.CraftItem ),
+	Facade( 6, 2, AEApi.instance().definitions().items().facade(), AchievementType.CraftItem ),
 
 	// done
-	Facade( 6, 2, AEApi.instance().items().itemFacade, AchievementType.CraftItem ),
+	NetworkTool( 8, 0, AEApi.instance().definitions().items().networkTool(), AchievementType.Craft ),
 
 	// done
-	NetworkTool( 8, 0, AEApi.instance().items().itemNetworkTool, AchievementType.Craft ),
+	PortableCell( 8, 2, AEApi.instance().definitions().items().portableCell(), AchievementType.Craft ),
 
 	// done
-	PortableCell( 8, 2, AEApi.instance().items().itemPortableCell, AchievementType.Craft ),
+	StorageBus( 10, 0, AEApi.instance().definitions().parts().storageBus(), AchievementType.Craft ),
 
 	// done
-	StorageBus( 10, 0, AEApi.instance().parts().partStorageBus, AchievementType.Craft ),
-
-	// done
-	QNB( 10, 2, AEApi.instance().blocks().blockQuantumLink, AchievementType.Craft );
+	QNB( 10, 2, AEApi.instance().definitions().blocks().quantumLink(), AchievementType.Craft );
 
 	public final ItemStack stack;
 	public final AchievementType type;

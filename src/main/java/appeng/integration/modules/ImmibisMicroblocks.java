@@ -34,6 +34,7 @@ import mods.immibis.core.api.multipart.IPartContainer;
 import appeng.api.AEApi;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
+import appeng.api.util.AEItemDefinition;
 import appeng.core.AELog;
 import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IImmibisMicroblocks;
@@ -102,8 +103,9 @@ public class ImmibisMicroblocks extends BaseModule implements IImmibisMicroblock
 
 		if ( te instanceof IMultipartTile && this.canConvertTiles && isPartItem )
 		{
-			final Block blk = AEApi.instance().blocks().blockMultiPart.block();
-			final ItemStack what = AEApi.instance().blocks().blockMultiPart.stack( 1 );
+			final AEItemDefinition multiPart = AEApi.instance().definitions().blocks().multiPart();
+			final Block blk = multiPart.block();
+			final ItemStack what = multiPart.stack( 1 );
 
 			try
 			{

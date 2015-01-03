@@ -61,12 +61,7 @@ public class BlockDefinition implements AEItemDefinition
 	@Override
 	public ItemStack stack( int stackSize )
 	{
-		if ( this.enabled )
-		{
-			return new ItemStack( this.block );
-		}
-
-		return null;
+		return new ItemStack( this.block );
 	}
 
 	@Override

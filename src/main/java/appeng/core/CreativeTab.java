@@ -20,20 +20,14 @@ package appeng.core;
 
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
-import appeng.api.IAppEngApi;
-import appeng.api.definitions.Items;
-import appeng.api.definitions.Materials;
-import appeng.api.util.AEItemDefinition;
 
 
 public final class CreativeTab extends CreativeTabs
 {
-
 	public static CreativeTab instance = null;
 
 	public CreativeTab()
@@ -55,28 +49,6 @@ public final class CreativeTab extends CreativeTabs
 	@Override
 	public ItemStack getIconItemStack()
 	{
-		final IAppEngApi api = AEApi.instance();
-		final appeng.api.definitions.Blocks blocks = api.blocks();
-		final Items items = api.items();
-		final Materials materials = api.materials();
-
-		return this.findFirst( blocks.blockController, blocks.blockChest, blocks.blockCellWorkbench, blocks.blockFluix, items.itemCell1k, items.itemNetworkTool, materials.materialFluixCrystal, materials.materialCertusQuartzCrystal );
-	}
-
-	private ItemStack findFirst( AEItemDefinition... choices )
-	{
-		for ( AEItemDefinition a : choices )
-		{
-			if ( a != null )
-			{
-				ItemStack is = a.stack( 1 );
-				if ( is != null )
-				{
-					return is;
-				}
-			}
-		}
-
-		return new ItemStack( Blocks.chest );
+		return AEApi.instance().definitions().materials().fluixCrystal().stack( 1 );
 	}
 }

@@ -23,6 +23,7 @@
 
 package appeng.api.networking.security;
 
+
 public class MachineSource extends BaseActionSource
 {
 
@@ -34,8 +35,8 @@ public class MachineSource extends BaseActionSource
 		return true;
 	}
 
-	public MachineSource(IActionHost v) {
+	public MachineSource( IActionHost v )
+	{
 		this.via = v;
 	}
-
 }

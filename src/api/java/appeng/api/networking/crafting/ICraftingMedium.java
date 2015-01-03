@@ -23,7 +23,9 @@
 
 package appeng.api.networking.crafting;
 
+
 import net.minecraft.inventory.InventoryCrafting;
+
 
 /**
  * A place to send Items for crafting purposes, this is considered part of AE's External crafting system.
@@ -36,14 +38,14 @@ public interface ICraftingMedium
 	 * possible the output should be directed.
 	 *
 	 * @param patternDetails details
-	 * @param table crafting table
+	 * @param table          crafting table
+	 *
 	 * @return if the pattern was successfully pushed.
 	 */
-	boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table);
+	boolean pushPattern( ICraftingPatternDetails patternDetails, InventoryCrafting table );
 
 	/**
 	 * @return if this is false, the crafting engine will refuse to send new jobs to this medium.
 	 */
 	boolean isBusy();
-
 }

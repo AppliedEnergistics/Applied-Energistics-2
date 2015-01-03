@@ -52,8 +52,8 @@ public class BusRenderHelper implements IPartRenderHelper
 	double maxY = 16;
 	double maxZ = 16;
 
-	final AEBaseBlock blk = (AEBaseBlock) AEApi.instance().blocks().blockMultiPart.block();
-	final BaseBlockRender bbr = new BaseBlockRender();
+	private final AEBaseBlock blk = (AEBaseBlock) AEApi.instance().definitions().blocks().multiPart().block();
+	private final BaseBlockRender bbr = new BaseBlockRender();
 
 	private ForgeDirection ax = ForgeDirection.EAST;
 	private ForgeDirection ay = ForgeDirection.UP;
@@ -348,8 +348,9 @@ public class BusRenderHelper implements IPartRenderHelper
 		if ( !this.renderThis() )
 			return;
 
-		AEBaseBlock blk = (AEBaseBlock) AEApi.instance().blocks().blockMultiPart.block();
-		BlockRenderInfo info = blk.getRendererInstance();
+		final AEBaseBlock block = (AEBaseBlock) AEApi.instance().definitions().blocks().multiPart().block();
+
+		BlockRenderInfo info = block.getRendererInstance();
 		ForgeDirection forward = BusRenderHelper.INSTANCE.az;
 		ForgeDirection up = BusRenderHelper.INSTANCE.ay;
 
@@ -364,19 +365,19 @@ public class BusRenderHelper implements IPartRenderHelper
 
 		this.bbr.renderBlockBounds( renderer, this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ, this.ax, this.ay, this.az );
 
-		renderer.renderStandardBlock( blk, x, y, z );
+		renderer.renderStandardBlock( block, x, y, z );
 	}
 
 	@Override
 	public Block getBlock()
 	{
-		return AEApi.instance().blocks().blockMultiPart.block();
+		return AEApi.instance().definitions().blocks().multiPart().block();
 	}
 
 	public void setRenderColor(int color)
 	{
-		BlockCableBus blk = (BlockCableBus) AEApi.instance().blocks().blockMultiPart.block();
-		blk.setRenderColor( color );
+		final BlockCableBus block = (BlockCableBus) AEApi.instance().definitions().blocks().multiPart().block();
+		block.setRenderColor( color );
 	}
 
 	public void prepareBounds(RenderBlocks renderer)

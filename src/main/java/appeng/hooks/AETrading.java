@@ -29,6 +29,8 @@ import net.minecraft.village.MerchantRecipeList;
 import cpw.mods.fml.common.registry.VillagerRegistry.IVillageTradeHandler;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IMaterials;
+
 
 public class AETrading implements IVillageTradeHandler
 {
@@ -96,12 +98,13 @@ public class AETrading implements IVillageTradeHandler
 	@Override
 	public void manipulateTradesForVillager(EntityVillager villager, MerchantRecipeList recipeList, Random random)
 	{
-		this.addMerchant( recipeList, AEApi.instance().materials().materialSilicon.stack( 1 ), 1, random, 2 );
-		this.addMerchant( recipeList, AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 ), 2, random, 4 );
-		this.addMerchant( recipeList, AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ), 1, random, 3 );
+		final IMaterials materials = AEApi.instance().definitions().materials();
 
-		this.addTrade( recipeList, AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ),
-				AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 ), random, 2 );
+		this.addMerchant( recipeList, materials.silicon().stack( 1 ), 1, random, 2 );
+		this.addMerchant( recipeList, materials.certusQuartzCrystal().stack( 1 ), 2, random, 4 );
+		this.addMerchant( recipeList, materials.certusQuartzDust().stack( 1 ), 1, random, 3 );
+
+		this.addTrade( recipeList, materials.certusQuartzDust().stack( 1 ), materials.certusQuartzCrystal().stack( 1 ), random, 2 );
 	}
 
 }

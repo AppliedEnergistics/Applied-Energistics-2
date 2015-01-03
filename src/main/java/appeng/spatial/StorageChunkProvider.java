@@ -37,13 +37,13 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 	final static Block[] BLOCKS;
 
 	static {
-
 		BLOCKS = new Block[255 * 256];
 
-		Block matrixFrame = AEApi.instance().blocks().blockMatrixFrame.block();
+		final Block matrixFrameBlock = AEApi.instance().definitions().blocks().matrixFrame().block();
 		for (int x = 0; x < BLOCKS.length; x++)
-			BLOCKS[x] = matrixFrame;
-
+		{
+			BLOCKS[x] = matrixFrameBlock;
+		}
 	}
 
 	final World w;

@@ -29,7 +29,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
-import appeng.api.IAppEngApi;
+import appeng.api.definitions.IDefinitions;
+import appeng.api.definitions.IItems;
+import appeng.api.definitions.IMaterials;
 import appeng.api.features.INetworkEncodable;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.implementations.items.IBiometricCard;
@@ -80,9 +82,7 @@ public class SlotRestrictedInput extends AppEngSlot
 		{
 			ICraftingPatternDetails ap = is.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem) is.getItem()).getPatternForItem( is, theWorld )
 					: null;
-			if ( ap != null )
-				return true;
-			return false;
+			return ap != null;
 		}
 		return true;
 	}
@@ -142,96 +142,101 @@ public class SlotRestrictedInput extends AppEngSlot
 		if ( !this.inventory.isItemValidForSlot( this.getSlotIndex(), i ) )
 			return false;
 
-		IAppEngApi api = AEApi.instance();
-
 		if ( !this.allowEdit )
 			return false;
 
+		final IDefinitions definitions = AEApi.instance().definitions();
+		final IMaterials materials = definitions.materials();
+		final IItems items = definitions.items();
+
 		switch (this.which)
 		{
-		case ENCODED_CRAFTING_PATTERN:
-			if ( i.getItem() instanceof ICraftingPatternItem )
-			{
-				ICraftingPatternItem b = (ICraftingPatternItem) i.getItem();
-				ICraftingPatternDetails de = b.getPatternForItem( i, this.p.player.worldObj );
-				if ( de != null )
-					return de.isCraftable();
+			case ENCODED_CRAFTING_PATTERN:
+				if ( i.getItem() instanceof ICraftingPatternItem )
+				{
+					ICraftingPatternItem b = (ICraftingPatternItem) i.getItem();
+					ICraftingPatternDetails de = b.getPatternForItem( i, this.p.player.worldObj );
+					if ( de != null )
+						return de.isCraftable();
+				}
+				return false;
+			case VALID_ENCODED_PATTERN_W_OUTPUT:
+			case ENCODED_PATTERN_W_OUTPUT:
+			case ENCODED_PATTERN: {
+				if ( i.getItem() instanceof ICraftingPatternItem )
+					return true;
+				// ICraftingPatternDetails pattern = i.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem)
+				// i.getItem()).getPatternForItem( i ) : null;
+				return false;// pattern != null;
 			}
-			return false;
-		case VALID_ENCODED_PATTERN_W_OUTPUT:
-		case ENCODED_PATTERN_W_OUTPUT:
-		case ENCODED_PATTERN: {
-			if ( i.getItem() instanceof ICraftingPatternItem )
-				return true;
-			// ICraftingPatternDetails pattern = i.getItem() instanceof ICraftingPatternItem ? ((ICraftingPatternItem)
-			// i.getItem()).getPatternForItem( i ) : null;
-			return false;// pattern != null;
-		}
-		case BLANK_PATTERN:
-			return AEApi.instance().materials().materialBlankPattern.sameAsStack( i );
-		case PATTERN:
+			case BLANK_PATTERN:
+				return materials.blankPattern().sameAsStack( i );
 
-			if ( i.getItem() instanceof ICraftingPatternItem )
-				return true;
+			case PATTERN:
 
-			return AEApi.instance().materials().materialBlankPattern.sameAsStack( i );
-
-		case INSCRIBER_PLATE:
-
-			if ( AEApi.instance().materials().materialNamePress.sameAsStack( i ) )
-				return true;
-
-			for (ItemStack is : Inscribe.PLATES )
-				if ( Platform.isSameItemPrecise( is, i ) )
+				if ( i.getItem() instanceof ICraftingPatternItem )
 					return true;
 
-			return false;
+				return materials.blankPattern().sameAsStack( i );
 
-		case INSCRIBER_INPUT:
-			return true;/*
-						 * for (ItemStack is : Inscribe.inputs) if ( Platform.isSameItemPrecise( is, i ) ) return true;
-						 *
-						 * return false;
-						 */
+			case INSCRIBER_PLATE:
+				if ( materials.namePress().sameAsStack( i ) )
+				{
+					return true;
+				}
 
-		case METAL_INGOTS:
+				for (ItemStack is : Inscribe.PLATES )
+					if ( Platform.isSameItemPrecise( is, i ) )
+						return true;
 
-			return isMetalIngot( i );
-
-		case VIEW_CELL:
-			return AEApi.instance().items().itemViewCell.sameAsStack( i );
-		case ORE:
-			return appeng.api.AEApi.instance().registries().grinder().getRecipeForInput( i ) != null;
-		case FUEL:
-			return TileEntityFurnace.getItemBurnTime( i ) > 0;
-		case POWERED_TOOL:
-			return Platform.isChargeable( i );
-		case QE_SINGULARITY:
-			return api.materials().materialQESingularity.sameAsStack( i );
-		case RANGE_BOOSTER:
-			return api.materials().materialWirelessBooster.sameAsStack( i );
-		case SPATIAL_STORAGE_CELLS:
-			return i.getItem() instanceof ISpatialStorageCell && ((ISpatialStorageCell) i.getItem()).isSpatialStorage( i );
-		case STORAGE_CELLS:
-			return AEApi.instance().registries().cell().isCellHandled( i );
-		case WORKBENCH_CELL:
-			return i.getItem() instanceof ICellWorkbenchItem && ((ICellWorkbenchItem) i.getItem()).isEditable( i );
-		case STORAGE_COMPONENT:
-			return i.getItem() instanceof IStorageComponent && ((IStorageComponent) i.getItem()).isStorageComponent( i );
-		case TRASH:
-			if ( AEApi.instance().registries().cell().isCellHandled( i ) )
 				return false;
-			if ( i.getItem() instanceof IStorageComponent && ((IStorageComponent) i.getItem()).isStorageComponent( i ) )
-				return false;
-			return true;
-		case ENCODABLE_ITEM:
-			return i.getItem() instanceof INetworkEncodable || AEApi.instance().registries().wireless().isWirelessTerminal( i );
-		case BIOMETRIC_CARD:
-			return i.getItem() instanceof IBiometricCard;
-		case UPGRADES:
-			return i.getItem() instanceof IUpgradeModule && ((IUpgradeModule) i.getItem()).getType( i ) != null;
-		default:
-			break;
+
+			case INSCRIBER_INPUT:
+				return true;/*
+							 * for (ItemStack is : Inscribe.inputs) if ( Platform.isSameItemPrecise( is, i ) ) return true;
+							 *
+							 * return false;
+							 */
+
+			case METAL_INGOTS:
+
+				return isMetalIngot( i );
+
+			case VIEW_CELL:
+				return items.viewCell().sameAsStack( i );
+			case ORE:
+				return appeng.api.AEApi.instance().registries().grinder().getRecipeForInput( i ) != null;
+			case FUEL:
+				return TileEntityFurnace.getItemBurnTime( i ) > 0;
+			case POWERED_TOOL:
+				return Platform.isChargeable( i );
+			case QE_SINGULARITY:
+				return materials.qESingularity().sameAsStack( i );
+
+			case RANGE_BOOSTER:
+				return materials.wirelessBooster().sameAsStack( i );
+
+			case SPATIAL_STORAGE_CELLS:
+				return i.getItem() instanceof ISpatialStorageCell && ((ISpatialStorageCell) i.getItem()).isSpatialStorage( i );
+			case STORAGE_CELLS:
+				return AEApi.instance().registries().cell().isCellHandled( i );
+			case WORKBENCH_CELL:
+				return i.getItem() instanceof ICellWorkbenchItem && ((ICellWorkbenchItem) i.getItem()).isEditable( i );
+			case STORAGE_COMPONENT:
+				return i.getItem() instanceof IStorageComponent && ((IStorageComponent) i.getItem()).isStorageComponent( i );
+			case TRASH:
+				if ( AEApi.instance().registries().cell().isCellHandled( i ) )
+					return false;
+
+				return !( i.getItem() instanceof IStorageComponent && ( (IStorageComponent) i.getItem() ).isStorageComponent( i ) );
+			case ENCODABLE_ITEM:
+				return i.getItem() instanceof INetworkEncodable || AEApi.instance().registries().wireless().isWirelessTerminal( i );
+			case BIOMETRIC_CARD:
+				return i.getItem() instanceof IBiometricCard;
+			case UPGRADES:
+				return i.getItem() instanceof IUpgradeModule && ((IUpgradeModule) i.getItem()).getType( i ) != null;
+			default:
+				break;
 		}
 
 		return false;

@@ -30,6 +30,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IMaterials;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
@@ -87,7 +88,9 @@ final public class EntityChargedQuartz extends AEBaseEntityItem
 	public boolean transform()
 	{
 		ItemStack item = this.getEntityItem();
-		if ( AEApi.instance().materials().materialCertusQuartzCrystalCharged.sameAsStack( item ) )
+		final IMaterials materials = AEApi.instance().definitions().materials();
+
+		if ( materials.certusQuartzCrystalCharged().sameAsStack( item ) )
 		{
 			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( this.posX - 1, this.posY - 1, this.posZ - 1, this.posX + 1, this.posY + 1, this.posZ + 1 );
 			List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
@@ -126,12 +129,13 @@ final public class EntityChargedQuartz extends AEBaseEntityItem
 				if ( netherQuartz.getEntityItem().stackSize <= 0 )
 					netherQuartz.setDead();
 
-				ItemStack Output = AEApi.instance().materials().materialFluixCrystal.stack( 2 );
-				this.worldObj.spawnEntityInWorld( new EntityItem( this.worldObj, this.posX, this.posY, this.posZ, Output ) );
+				ItemStack output = materials.fluixCrystal().stack( 2 );
+				this.worldObj.spawnEntityInWorld( new EntityItem( this.worldObj, this.posX, this.posY, this.posZ, output ) );
 
 				return true;
 			}
 		}
+
 		return false;
 	}
 }

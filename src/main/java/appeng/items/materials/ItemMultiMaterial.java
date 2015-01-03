@@ -31,8 +31,6 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -49,6 +47,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 
+import com.google.common.collect.ImmutableSet;
+
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.items.IItemGroup;
@@ -59,9 +59,9 @@ import appeng.api.parts.SelectedPart;
 import appeng.client.texture.MissingIcon;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
-import appeng.core.features.AEFeatureHandler;
 import appeng.core.features.IStackSrc;
 import appeng.core.features.MaterialStackSrc;
+import appeng.core.features.NameResolver;
 import appeng.items.AEBaseItem;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
@@ -72,9 +72,12 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 	final HashMap<Integer, MaterialType> dmgToMaterial = new HashMap<Integer, MaterialType>();
 
 	public static ItemMultiMaterial instance;
+	private final NameResolver nameResolver;
 
 	public ItemMultiMaterial() {
 		super( ItemMultiMaterial.class );
+
+		this.nameResolver = new NameResolver( this.getClass() );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setHasSubtypes( true );
 		instance = this;
@@ -260,7 +263,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 		if ( mt == null )
 			return "null";
 
-		return AEFeatureHandler.getName( ItemMultiMaterial.class, mt.name() );
+		return this.nameResolver.getName( mt.name() );
 	}
 
 	@Override

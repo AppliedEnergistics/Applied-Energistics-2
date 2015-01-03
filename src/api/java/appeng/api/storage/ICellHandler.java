@@ -23,12 +23,15 @@
 
 package appeng.api.storage;
 
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import appeng.api.implementations.tiles.IChestOrDrive;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import appeng.api.implementations.tiles.IChestOrDrive;
 
 /**
  * Registration record for {@link ICellRegistry}

@@ -23,17 +23,19 @@
 
 package appeng.api.parts;
 
+
 public enum CableRenderMode
 {
 
-	Standard(false),
+	Standard( false ),
 
-	CableView(true);
+	CableView( true );
 
 	public final boolean transparentFacades;
 	public final boolean opaqueFacades;
 
-	private CableRenderMode(boolean hideFacades) {
+	private CableRenderMode( boolean hideFacades )
+	{
 		this.transparentFacades = hideFacades;
 		this.opaqueFacades = !hideFacades;
 	}

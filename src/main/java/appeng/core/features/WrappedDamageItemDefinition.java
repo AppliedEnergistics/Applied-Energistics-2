@@ -18,6 +18,7 @@
 
 package appeng.core.features;
 
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,59 +27,56 @@ import net.minecraft.world.IBlockAccess;
 
 import appeng.api.util.AEItemDefinition;
 
-public class WrappedDamageItemDefinition implements AEItemDefinition
+
+public final class WrappedDamageItemDefinition implements AEItemDefinition
 {
+	private final AEItemDefinition definition;
+	private final int damage;
 
-	final AEItemDefinition baseItem;
-	final int damage;
-
-	public WrappedDamageItemDefinition(AEItemDefinition def, int dmg) {
-		this.baseItem = def;
-		this.damage = dmg;
+	public WrappedDamageItemDefinition( AEItemDefinition definition, int damage )
+	{
+		this.definition = definition;
+		this.damage = damage;
 	}
 
 	@Override
 	public Block block()
 	{
-		return this.baseItem.block();
+		return this.definition.block();
 	}
 
 	@Override
 	public Item item()
 	{
-		return this.baseItem.item();
+		return this.definition.item();
 	}
 
 	@Override
 	public Class<? extends TileEntity> entity()
 	{
-		return this.baseItem.entity();
+		return this.definition.entity();
 	}
 
 	@Override
-	public ItemStack stack(int stackSize)
+	public ItemStack stack( int stackSize )
 	{
-		if ( this.baseItem == null )
-			return null;
-
-		return new ItemStack( this.baseItem.block(), stackSize, this.damage );
+		return new ItemStack( this.definition.block(), stackSize, this.damage );
 	}
 
 	@Override
-	public boolean sameAsStack(ItemStack comparableItem)
+	public boolean sameAsStack( ItemStack comparableItem )
 	{
 		if ( comparableItem == null )
 			return false;
 
-		return comparableItem.getItem() == this.baseItem.item() && comparableItem.getItemDamage() == this.damage;
+		return comparableItem.getItem() == this.definition.item() && comparableItem.getItemDamage() == this.damage;
 	}
 
 	@Override
-	public boolean sameAsBlock(IBlockAccess world, int x, int y, int z)
+	public boolean sameAsBlock( IBlockAccess world, int x, int y, int z )
 	{
 		if ( this.block() != null )
 			return world.getBlock( x, y, z ) == this.block() && world.getBlockMetadata( x, y, z ) == this.damage;
 		return false;
 	}
-
 }

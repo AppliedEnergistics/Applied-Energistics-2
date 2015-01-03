@@ -29,7 +29,7 @@ import appeng.api.util.AEItemDefinition;
 import appeng.util.Platform;
 
 
-public class ItemDefinition implements AEItemDefinition
+public final class ItemDefinition implements AEItemDefinition
 {
 	private final Item item;
 	private final boolean enabled;
@@ -61,14 +61,7 @@ public class ItemDefinition implements AEItemDefinition
 	@Override
 	public ItemStack stack( int stackSize )
 	{
-		if ( this.enabled )
-		{
-			return new ItemStack( this.item );
-		}
-		else
-		{
-			return null;
-		}
+		return new ItemStack( this.item );
 	}
 
 	@Override

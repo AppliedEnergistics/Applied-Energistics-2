@@ -80,7 +80,7 @@ final public class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 
 		if ( this.isInWater() && Platform.isServer() ) // put out the fuse.
 		{
-			EntityItem item = new EntityItem( this.worldObj, this.posX, this.posY, this.posZ, AEApi.instance().blocks().blockTinyTNT.stack( 1 ) );
+			EntityItem item = new EntityItem( this.worldObj, this.posX, this.posY, this.posZ, AEApi.instance().definitions().blocks().tinyTNT().stack( 1 ) );
 			item.motionX = this.motionX;
 			item.motionY = this.motionY;
 			item.motionZ = this.motionZ;

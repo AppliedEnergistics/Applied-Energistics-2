@@ -128,7 +128,7 @@ public class GuiCraftConfirm extends AEBaseGui
 	private void updateCPUButtonText()
 	{
 		String btnTextText = GuiText.CraftingCPU.getLocal() + ": " + GuiText.Automatic.getLocal();
-		if ( this.ccc.selectedCpu >= 0 )// && ccc.selectedCpu < ccc.cpus.size() )
+		if ( this.ccc.selectedCpu >= 0 )// && status.selectedCpu < status.cpus.size() )
 		{
 			if ( this.ccc.myName.length() > 0 )
 			{

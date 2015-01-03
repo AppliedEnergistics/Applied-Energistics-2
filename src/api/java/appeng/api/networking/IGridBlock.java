@@ -23,13 +23,15 @@
 
 package appeng.api.networking;
 
-import appeng.api.parts.IPart;
-import appeng.api.util.AEColor;
-import appeng.api.util.DimensionalCoord;
+
+import java.util.EnumSet;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.EnumSet;
+import appeng.api.parts.IPart;
+import appeng.api.util.AEColor;
+import appeng.api.util.DimensionalCoord;
 
 /**
  * An Implementation is required to create your node for IGridHost

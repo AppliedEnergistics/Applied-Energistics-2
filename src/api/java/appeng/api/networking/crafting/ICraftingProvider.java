@@ -23,7 +23,9 @@
 
 package appeng.api.networking.crafting;
 
+
 import appeng.api.networking.events.MENetworkCraftingPatternChange;
+
 
 /**
  * Allows a IGridHost to provide crafting patterns to the network, post a {@link MENetworkCraftingPatternChange} to tell
@@ -37,6 +39,5 @@ public interface ICraftingProvider extends ICraftingMedium
 	 *
 	 * @param craftingTracker crafting helper
 	 */
-	void provideCrafting(ICraftingProviderHelper craftingTracker);
-
+	void provideCrafting( ICraftingProviderHelper craftingTracker );
 }

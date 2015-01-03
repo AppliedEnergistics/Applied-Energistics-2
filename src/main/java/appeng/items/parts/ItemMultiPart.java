@@ -24,8 +24,11 @@ import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import javax.annotation.Nullable;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -41,38 +44,80 @@ import cpw.mods.fml.relauncher.SideOnly;
 import appeng.api.AEApi;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHelper;
 import appeng.api.parts.IPartItem;
+import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.features.AEFeature;
-import appeng.core.features.AEFeatureHandler;
+import appeng.core.features.NameResolver;
 import appeng.core.features.ItemStackSrc;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 
 public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 {
+	private final NameResolver nameResolver;
 
-	static class PartTypeIst
+	private static class PartTypeIst
 	{
-
-		PartType part;
-		int variant;
+		private PartType part;
+		private int variant;
 
 		@SideOnly(Side.CLIENT)
-		IIcon ico;
+		private IIcon ico;
 	}
 
-	final HashMap<Integer, PartTypeIst> dmgToPart = new HashMap<Integer, PartTypeIst>();
+	private final Map<Integer, PartTypeIst> dmgToPart = new HashMap<Integer, PartTypeIst>();
 
 	public static ItemMultiPart instance;
 
-	public ItemMultiPart() {
+	public ItemMultiPart( IPartHelper partHelper ) {
 		super( ItemMultiPart.class );
+
+		this.nameResolver = new NameResolver( this.getClass() );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
-		AEApi.instance().partHelper().setItemBusRenderer( this );
+		partHelper.setItemBusRenderer( this );
 		this.setHasSubtypes( true );
 		instance = this;
+	}
+
+	public final ItemStackSrc createPart( PartType mat )
+	{
+		int varID = 0;
+
+		// verify
+		for (PartTypeIst p : this.dmgToPart.values())
+		{
+			if ( p.part == mat && p.variant == varID )
+				throw new RuntimeException( "Cannot create the same material twice..." );
+		}
+
+		boolean enabled = true;
+		for (AEFeature f : mat.getFeature())
+			enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
+
+		int newPartNum = mat.baseDamage + varID;
+		ItemStackSrc output = new ItemStackSrc( this, newPartNum );
+
+		if ( enabled )
+		{
+			PartTypeIst pti = new PartTypeIst();
+			pti.part = mat;
+			pti.variant = varID;
+
+			if ( this.dmgToPart.get( newPartNum ) == null )
+			{
+				this.dmgToPart.put( newPartNum, pti );
+				return output;
+			}
+			else
+			{
+				throw new RuntimeException( "Meta Overlap detected." );
+			}
+		}
+
+		return output;
 	}
 
 	public ItemStackSrc createPart(PartType mat, Enum variant)
@@ -86,6 +131,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		catch (Throwable e)
 		{
 			AELog.integration( e );
+			e.printStackTrace();
 			return null; // part not supported..
 		}
 
@@ -133,6 +179,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		return -1;
 	}
 
+	@Nullable
 	public PartType getTypeByStack(ItemStack is)
 	{
 		if ( is == null )
@@ -166,7 +213,7 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 
 	public String getName(ItemStack is)
 	{
-		return AEFeatureHandler.getName( ItemMultiPart.class, this.getTypeByStack( is ).name() );
+		return this.nameResolver.getName( this.getTypeByStack( is ).name() );
 	}
 
 	@Override
@@ -176,10 +223,12 @@ public class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
 		if ( pt == null )
 			return "Unnamed";
 
-		Enum[] variants = pt.getVariants();
+		if ( pt.isCable() )
+		{
+			final AEColor[] variants = AEColor.values();
 
-		if ( variants != null )
 			return super.getItemStackDisplayName( is ) + " - " + variants[this.dmgToPart.get( is.getItemDamage() ).variant].toString();
+		}
 
 		if ( pt.getExtraName() != null )
 			return super.getItemStackDisplayName( is ) + " - " + pt.getExtraName().getLocal();

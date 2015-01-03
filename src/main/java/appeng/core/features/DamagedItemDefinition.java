@@ -18,6 +18,7 @@
 
 package appeng.core.features;
 
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,13 +27,14 @@ import net.minecraft.world.IBlockAccess;
 
 import appeng.api.util.AEItemDefinition;
 
-public class DamagedItemDefinition implements AEItemDefinition
+
+public final class DamagedItemDefinition implements AEItemDefinition
 {
+	private final IStackSrc source;
 
-	final IStackSrc src;
-
-	public DamagedItemDefinition(IStackSrc is) {
-		this.src = is;
+	public DamagedItemDefinition( IStackSrc source )
+	{
+		this.source = source;
 	}
 
 	@Override
@@ -44,7 +46,7 @@ public class DamagedItemDefinition implements AEItemDefinition
 	@Override
 	public Item item()
 	{
-		return this.src.getItem();
+		return this.source.getItem();
 	}
 
 	@Override
@@ -54,24 +56,23 @@ public class DamagedItemDefinition implements AEItemDefinition
 	}
 
 	@Override
-	public ItemStack stack(int stackSize)
+	public ItemStack stack( int stackSize )
 	{
-		return this.src.stack( stackSize );
+		return this.source.stack( stackSize );
 	}
 
 	@Override
-	public boolean sameAsStack(ItemStack comparableItem)
+	public boolean sameAsStack( ItemStack comparableItem )
 	{
 		if ( comparableItem == null )
 			return false;
 
-		return comparableItem.getItem() == this.src.getItem() && comparableItem.getItemDamage() == this.src.getDamage();
+		return comparableItem.getItem() == this.source.getItem() && comparableItem.getItemDamage() == this.source.getDamage();
 	}
 
 	@Override
-	public boolean sameAsBlock(IBlockAccess world, int x, int y, int z)
+	public boolean sameAsBlock( IBlockAccess world, int x, int y, int z )
 	{
 		return false;
 	}
-
 }

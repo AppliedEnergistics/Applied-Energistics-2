@@ -33,6 +33,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEItemDefinition;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.GridAccessException;
 import appeng.me.cluster.IAECluster;
@@ -48,8 +49,7 @@ import appeng.util.Platform;
 
 public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 {
-
-	final private static ItemStack RING_STACK = ( AEApi.instance().blocks().blockQuantumRing != null ) ? AEApi.instance().blocks().blockQuantumRing.stack( 1 ) : null;
+	private static final ItemStack RING_STACK = AEApi.instance().definitions().blocks().quantumRing().stack( 1 );
 
 	final int[] sidesRing = new int[] { };
 	final int[] sidesLink = new int[] { 0 };
@@ -170,8 +170,13 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	public void onReady()
 	{
 		super.onReady();
-		if ( this.worldObj.getBlock( this.xCoord, this.yCoord, this.zCoord ) == AEApi.instance().blocks().blockQuantumRing.block() )
+
+		final AEItemDefinition quantumRing = AEApi.instance().definitions().blocks().quantumRing();
+
+		if ( this.worldObj.getBlock( this.xCoord, this.yCoord, this.zCoord ) == quantumRing.block() )
+		{
 			this.gridProxy.setVisualRepresentation( RING_STACK );
+		}
 	}
 
 	@Override
@@ -223,7 +228,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public boolean isCenter()
 	{
-		return this.getBlockType() == AEApi.instance().blocks().blockQuantumLink.block();
+		return this.getBlockType() == AEApi.instance().definitions().blocks().quantumLink().block();
 	}
 
 	public boolean isCorner()
