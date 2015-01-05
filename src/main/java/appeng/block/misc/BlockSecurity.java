@@ -124,7 +124,7 @@ public class BlockSecurity extends AEBaseBlock
 			}
 			else
 			{
-				Optional<UUID> maybeUUID = WorldSettings.getInstance().getUUIDFromNumericalId( playerID );
+				Optional<UUID> maybeUUID = WorldSettings.getInstance().getUUIDFromPlayerID( playerID );
 
 				if ( maybeUUID.isPresent() )
 				{

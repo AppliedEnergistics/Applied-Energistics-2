@@ -38,8 +38,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
@@ -436,18 +434,11 @@ public class WorldSettings extends Configuration
 			return prop.getInt();
 		else
 		{
-			playerList.put( uuid, prop = new Property( uuid, String.valueOf( this.nextPlayer() ), Property.Type.INTEGER ) );
+			playerList.put( uuid, prop = new Property( uuid, String.valueOf( this.nextPlayerID() ), Property.Type.INTEGER ) );
 			this.mappings.put( prop.getInt(), profile.getId() ); // add to reverse map
 			this.save();
 			return prop.getInt();
 		}
-	}
-
-	private long nextPlayer()
-	{
-		long r = this.lastPlayer++;
-		this.get( "Counters", "lastPlayer", this.lastPlayer ).set( this.lastPlayer );
-		return r;
 	}
 
 	public EntityPlayer getPlayerFromID( int playerID )
@@ -467,25 +458,22 @@ public class WorldSettings extends Configuration
 		return null;
 	}
 
-	public GameProfile getProfileFromID( int playerID )
-	{
-		Optional<UUID> maybe = getUUIDFromNumericalId( playerID );
-
-		if ( maybe.isPresent() )
-		{
-			final UUID uuid = maybe.get();
-			PlayerProfileCache cache = MinecraftServer.getServer().func_152358_ax();
-			GameProfile maybeGameProfile = cache.func_152652_a( uuid );
-			if (maybeGameProfile != null) {
-				return maybeGameProfile;
-			}
-		}
-
-		return null;
-	}
-
-	public Optional<UUID> getUUIDFromNumericalId( int playerID )
+	/**
+	 * Get the UUID from a numerical player ID.
+	 *
+	 * @param playerID numerical player ID from {@link appeng.api.networking.IGridNode#getPlayerID()}
+	 * @return UUID for the player
+	 * @see {@link appeng.util.Platform#getPlayerNameFromUUID(java.util.UUID)}
+	 */
+	public Optional<UUID> getUUIDFromPlayerID(int playerID)
 	{
 		return this.mappings.get( playerID );
+	}
+
+	private long nextPlayerID()
+	{
+		long r = this.lastPlayer++;
+		this.get( "Counters", "lastPlayer", this.lastPlayer ).set( this.lastPlayer );
+		return r;
 	}
 }
