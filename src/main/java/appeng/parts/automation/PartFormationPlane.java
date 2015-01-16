@@ -18,6 +18,7 @@
 
 package appeng.parts.automation;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +52,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.api.config.YesNo;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -80,6 +82,7 @@ import appeng.util.Platform;
 import appeng.util.prioitylist.FuzzyPriorityList;
 import appeng.util.prioitylist.PrecisePriorityList;
 
+
 public class PartFormationPlane extends PartUpgradeable implements ICellContainer, IPriorityHost, IMEInventory<IAEItemStack>
 {
 
@@ -89,14 +92,16 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	final MEInventoryHandler myHandler = new MEInventoryHandler( this, StorageChannel.ITEMS );
 	final AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
 
-	public PartFormationPlane(ItemStack is) {
+	public PartFormationPlane( ItemStack is )
+	{
 		super( PartFormationPlane.class, is );
 		this.settings.registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		this.settings.registerSetting( Settings.PLACE_BLOCK, YesNo.YES );
 		this.updateHandler();
 	}
 
 	@Override
-	public boolean onPartActivate(EntityPlayer player, Vec3 pos)
+	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
 	{
 		if ( !player.isSneaking() )
 		{
@@ -117,7 +122,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public IInventory getInventoryByName(String name)
+	public IInventory getInventoryByName( String name )
 	{
 		if ( name.equals( "config" ) )
 			return this.Config;
@@ -127,7 +132,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 	@Override
 	@MENetworkEventSubscribe
-	public void powerRender(MENetworkPowerStatusChange c)
+	public void powerRender( MENetworkPowerStatusChange c )
 	{
 		boolean currentActive = this.proxy.isActive();
 		if ( this.wasActive != currentActive )
@@ -139,7 +144,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@MENetworkEventSubscribe
-	public void updateChannels(MENetworkChannelsChanged changedChannels)
+	public void updateChannels( MENetworkChannelsChanged changedChannels )
 	{
 		boolean currentActive = this.proxy.isActive();
 		if ( this.wasActive != currentActive )
@@ -151,8 +156,8 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
+	@SideOnly( Side.CLIENT )
+	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		rh.setTexture( CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon(),
 				CableBusTextures.PartTransitionPlaneBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartPlaneSides.getIcon(),
@@ -166,8 +171,8 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
+	@SideOnly( Side.CLIENT )
+	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		int minX = 1;
 		int minY = 1;
@@ -191,7 +196,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		if ( this.isTransitionPlane( te.getWorldObj().getTileEntity( x + u.offsetX, y + u.offsetY, z + u.offsetZ ), this.side ) )
 			maxY = 16;
 
-		boolean isActive = (this.clientFlags & (this.POWERED_FLAG | this.CHANNEL_FLAG)) == (this.POWERED_FLAG | this.CHANNEL_FLAG);
+		boolean isActive = ( this.clientFlags & ( this.POWERED_FLAG | this.CHANNEL_FLAG ) ) == ( this.POWERED_FLAG | this.CHANNEL_FLAG );
 
 		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
 		rh.setTexture( CableBusTextures.PartPlaneSides.getIcon(), CableBusTextures.PartPlaneSides.getIcon(),
@@ -211,18 +216,18 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		this.renderLights( x, y, z, rh, renderer );
 	}
 
-	private boolean isTransitionPlane(TileEntity blockTileEntity, ForgeDirection side)
+	private boolean isTransitionPlane( TileEntity blockTileEntity, ForgeDirection side )
 	{
 		if ( blockTileEntity instanceof IPartHost )
 		{
-			IPart p = ((IPartHost) blockTileEntity).getPart( side );
+			IPart p = ( ( IPartHost ) blockTileEntity ).getPart( side );
 			return p instanceof PartFormationPlane;
 		}
 		return false;
 	}
 
 	@Override
-	public void getBoxes(IPartCollisionHelper bch)
+	public void getBoxes( IPartCollisionHelper bch )
 	{
 		int minX = 1;
 		int minY = 1;
@@ -265,7 +270,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public List<IMEInventoryHandler> getCellArray(StorageChannel channel)
+	public List<IMEInventoryHandler> getCellArray( StorageChannel channel )
 	{
 		if ( this.proxy.isActive() && channel == StorageChannel.ITEMS )
 		{
@@ -277,14 +282,14 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
+	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
 	{
 		this.updateHandler();
 		this.host.markForSave();
 	}
 
 	@Override
-	public void setPriority(int newValue)
+	public void setPriority( int newValue )
 	{
 		this.priority = newValue;
 		this.host.markForSave();
@@ -292,7 +297,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
 	{
 		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
 
@@ -315,7 +320,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
 
 		int slotsToUse = 18 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 9;
-		for (int x = 0; x < this.Config.getSizeInventory() && x < slotsToUse; x++)
+		for ( int x = 0; x < this.Config.getSizeInventory() && x < slotsToUse; x++ )
 		{
 			IAEItemStack is = this.Config.getAEStackInSlot( x );
 			if ( is != null )
@@ -323,7 +328,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		}
 
 		if ( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-			this.myHandler.myPartitionList = new FuzzyPriorityList( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) );
+			this.myHandler.myPartitionList = new FuzzyPriorityList( priorityList, ( FuzzyMode ) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) );
 		else
 			this.myHandler.myPartitionList = new PrecisePriorityList( priorityList );
 
@@ -331,14 +336,14 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		{
 			this.proxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
 		}
-		catch (GridAccessException e)
+		catch ( GridAccessException e )
 		{
 			// :P
 		}
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound data)
+	public void writeToNBT( NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 		this.Config.writeToNBT( data, "config" );
@@ -346,7 +351,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound data)
+	public void readFromNBT( NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 		this.Config.readFromNBT( data, "config" );
@@ -355,13 +360,13 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src)
+	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
 	{
 		return null;
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> out)
+	public IItemList<IAEItemStack> getAvailableItems( IItemList<IAEItemStack> out )
 	{
 		return out;
 	}
@@ -379,7 +384,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public void blinkCell(int slot)
+	public void blinkCell( int slot )
 	{
 		// :P
 	}
@@ -399,10 +404,12 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public IAEItemStack injectItems(IAEItemStack input, Actionable type, BaseActionSource src)
+	public IAEItemStack injectItems( IAEItemStack input, Actionable type, BaseActionSource src )
 	{
 		if ( this.blocked || input == null || input.getStackSize() <= 0 )
 			return input;
+
+		YesNo placeBlock = ( YesNo ) this.getConfigManager().getSetting( Settings.PLACE_BLOCK );
 
 		ItemStack is = input.getItemStack();
 		Item i = is.getItem();
@@ -420,17 +427,17 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 		if ( w.getBlock( x, y, z ).isReplaceable( w, x, y, z ) )
 		{
-			if ( i instanceof ItemBlock || i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemFirework || i instanceof IPartItem
-					|| i instanceof ItemReed )
+			if ( placeBlock == YesNo.YES && ( i instanceof ItemBlock || i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemFirework || i instanceof IPartItem
+					|| i instanceof ItemReed ) )
 			{
-				EntityPlayer player = Platform.getPlayer( (WorldServer) w );
+				EntityPlayer player = Platform.getPlayer( ( WorldServer ) w );
 				Platform.configurePlayer( player, side, this.tile );
 
 				if ( i instanceof ItemFirework )
 				{
 					Chunk c = w.getChunkFromBlockCoords( x, z );
 					int sum = 0;
-					for (List Z : c.entityLists)
+					for ( List Z : c.entityLists )
 						sum += Z.size();
 					if ( sum > 32 )
 						return input;
@@ -473,7 +480,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 				worked = true;
 				Chunk c = w.getChunkFromBlockCoords( x, z );
 				int sum = 0;
-				for (List Z : c.entityLists)
+				for ( List Z : c.entityLists )
 					sum += Z.size();
 
 				if ( sum < AEConfig.instance.formationPlaneEntityLimit )
@@ -481,12 +488,12 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 					if ( type == Actionable.MODULATE )
 					{
 
-						is.stackSize = (int) maxStorage;
+						is.stackSize = ( int ) maxStorage;
 						EntityItem ei = new EntityItem( w, // w
-								((side.offsetX != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetX * -0.3 + x, // spawn
-								((side.offsetY != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetY * -0.3 + y, // spawn
-								((side.offsetZ != 0 ? 0.0 : 0.7) * (Platform.getRandomFloat() - 0.5f)) + 0.5 + side.offsetZ * -0.3 + z, // spawn
-								is.copy() );
+						( ( side.offsetX != 0 ? 0.0 : 0.7 ) * ( Platform.getRandomFloat() - 0.5f ) ) + 0.5 + side.offsetX * -0.3 + x, // spawn
+						( ( side.offsetY != 0 ? 0.0 : 0.7 ) * ( Platform.getRandomFloat() - 0.5f ) ) + 0.5 + side.offsetY * -0.3 + y, // spawn
+						( ( side.offsetZ != 0 ? 0.0 : 0.7 ) * ( Platform.getRandomFloat() - 0.5f ) ) + 0.5 + side.offsetZ * -0.3 + z, // spawn
+						is.copy() );
 
 						Entity result = ei;
 
@@ -531,7 +538,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public void saveChanges(IMEInventory cellInventory)
+	public void saveChanges( IMEInventory cellInventory )
 	{
 		// nope!
 	}

@@ -155,6 +155,9 @@ public class GuiImgButton extends GuiButton implements ITooltip
 
 			this.registerApp( 16 * 3 + 5, Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY, ButtonToolTips.ReportInaccessibleItems, ButtonToolTips.ReportInaccessibleItemsNo );
 			this.registerApp( 16 * 3 + 6, Settings.STORAGE_FILTER, StorageFilter.NONE, ButtonToolTips.ReportInaccessibleItems, ButtonToolTips.ReportInaccessibleItemsYes );
+
+			this.registerApp( 16 * 14, Settings.PLACE_BLOCK, YesNo.YES, ButtonToolTips.BlockPlacement, ButtonToolTips.BlockPlacementYes );
+			this.registerApp( 16 * 14 + 1, Settings.PLACE_BLOCK, YesNo.NO, ButtonToolTips.BlockPlacement, ButtonToolTips.BlockPlacementNo );
 		}
 	}
 
@@ -361,7 +364,6 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			return other.setting == this.setting && other.value == this.value;
 		}
 	}
-
 
 	private static class ButtonAppearance
 	{
