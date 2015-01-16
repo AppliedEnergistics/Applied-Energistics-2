@@ -34,6 +34,7 @@ import appeng.api.config.ActionItems;
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.FullnessMode;
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.LevelEmitterRateMode;
 import appeng.api.config.LevelType;
 import appeng.api.config.OperationMode;
 import appeng.api.config.PowerUnits;
@@ -155,6 +156,10 @@ public class GuiImgButton extends GuiButton implements ITooltip
 
 			this.registerApp( 16 * 3 + 5, Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY, ButtonToolTips.ReportInaccessibleItems, ButtonToolTips.ReportInaccessibleItemsNo );
 			this.registerApp( 16 * 3 + 6, Settings.STORAGE_FILTER, StorageFilter.NONE, ButtonToolTips.ReportInaccessibleItems, ButtonToolTips.ReportInaccessibleItemsYes );
+
+			this.registerApp( 16 * 3 + 7, Settings.LEVEL_EMITTER_RATE_MODE, LevelEmitterRateMode.BALANCED, ButtonToolTips.RateMode, ButtonToolTips.RateModeBalanced );
+			this.registerApp( 16 * 3 + 8, Settings.LEVEL_EMITTER_RATE_MODE, LevelEmitterRateMode.POSITIVE, ButtonToolTips.RateMode, ButtonToolTips.RateModePositive );
+			this.registerApp( 16 * 3 + 9, Settings.LEVEL_EMITTER_RATE_MODE, LevelEmitterRateMode.NEGATIVE, ButtonToolTips.RateMode, ButtonToolTips.RateModeNegative );
 		}
 	}
 
@@ -361,7 +366,6 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			return other.setting == this.setting && other.value == this.value;
 		}
 	}
-
 
 	private static class ButtonAppearance
 	{

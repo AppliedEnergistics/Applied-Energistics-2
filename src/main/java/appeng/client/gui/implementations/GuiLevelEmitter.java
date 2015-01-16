@@ -27,6 +27,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.LevelEmitterRateMode;
 import appeng.api.config.LevelType;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
@@ -54,6 +55,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 
 	GuiImgButton levelMode;
 	GuiImgButton craftingMode;
+	GuiImgButton rateMode;
 
 	public GuiLevelEmitter( InventoryPlayer inventoryPlayer, PartLevelEmitter te )
 	{
@@ -81,11 +83,12 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL );
 		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 		this.craftingMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.CRAFT_VIA_REDSTONE, YesNo.NO );
+		this.rateMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.LEVEL_EMITTER_RATE_MODE, LevelEmitterRateMode.BALANCED );
 
-		int a = AEConfig.instance.levelByStackAmounts( 0 );
-		int b = AEConfig.instance.levelByStackAmounts( 1 );
-		int c = AEConfig.instance.levelByStackAmounts( 2 );
-		int d = AEConfig.instance.levelByStackAmounts( 3 );
+		final int a = AEConfig.instance.levelByStackAmounts( 0 );
+		final int b = AEConfig.instance.levelByStackAmounts( 1 );
+		final int c = AEConfig.instance.levelByStackAmounts( 2 );
+		final int d = AEConfig.instance.levelByStackAmounts( 3 );
 
 		this.buttonList.add( this.plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 17, 22, 20, "+" + a ) );
 		this.buttonList.add( this.plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 17, 28, 20, "+" + b ) );
@@ -101,6 +104,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		this.buttonList.add( this.redstoneMode );
 		this.buttonList.add( this.fuzzyMode );
 		this.buttonList.add( this.craftingMode );
+		this.buttonList.add( this.rateMode );
 	}
 
 	@Override
@@ -108,19 +112,30 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	{
 		super.actionPerformed( btn );
 
-		boolean backwards = Mouse.isButtonDown( 1 );
+		final boolean backwards = Mouse.isButtonDown( 1 );
 
 		if ( btn == this.craftingMode )
+		{
 			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.craftingMode.getSetting(), backwards ) );
+		}
 
 		if ( btn == this.levelMode )
+		{
 			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.levelMode.getSetting(), backwards ) );
+		}
 
-		boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
-		boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
+		if ( btn == this.rateMode )
+		{
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.rateMode.getSetting(), backwards ) );
+		}
+
+		final boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
+		final boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
 
 		if ( isPlus || isMinus )
+		{
 			this.addQty( this.getQty( btn ) );
+		}
 	}
 
 	private void addQty( long i )
@@ -137,10 +152,14 @@ public class GuiLevelEmitter extends GuiUpgradeable
 			}
 
 			if ( Fixed )
+			{
 				this.level.setText( Out );
+			}
 
 			if ( Out.length() == 0 )
+			{
 				Out = "0";
+			}
 
 			long result = Long.parseLong( Out );
 			result += i;
@@ -149,7 +168,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 				result = 0;
 			}
 
-			if ( bc.getInstalledUpgrades( Upgrades.SPEED ) > 0 && result > 15 )
+			if ( this.bc.getInstalledUpgrades( Upgrades.SPEED ) > 0 && result > 15 )
 			{
 				result = 15;
 			}
@@ -158,12 +177,12 @@ public class GuiLevelEmitter extends GuiUpgradeable
 
 			NetworkHandler.instance.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
 		}
-		catch ( NumberFormatException e )
+		catch ( final NumberFormatException e )
 		{
 			// nope..
 			this.level.setText( "0" );
 		}
-		catch ( IOException e )
+		catch ( final IOException e )
 		{
 			AELog.error( e );
 		}
@@ -174,6 +193,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	{
 		this.craftingMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 );
 		this.fuzzyMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );
+		this.rateMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.SPEED ) > 0 );
 	}
 
 	@Override
@@ -195,14 +215,18 @@ public class GuiLevelEmitter extends GuiUpgradeable
 					}
 
 					if ( Fixed )
+					{
 						this.level.setText( Out );
+					}
 
 					if ( Out.length() == 0 )
+					{
 						Out = "0";
+					}
 
 					NetworkHandler.instance.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
 				}
-				catch ( IOException e )
+				catch ( final IOException e )
 				{
 					AELog.error( e );
 				}
@@ -217,8 +241,8 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	@Override
 	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
-		boolean notCraftingMode = bc.getInstalledUpgrades( Upgrades.CRAFTING ) == 0;
-		boolean notRateMode = bc.getInstalledUpgrades( Upgrades.SPEED ) == 0;
+		final boolean notCraftingMode = this.bc.getInstalledUpgrades( Upgrades.CRAFTING ) == 0;
+		final boolean notRateMode = this.bc.getInstalledUpgrades( Upgrades.SPEED ) == 0;
 
 		// configure enabled status...
 		this.level.setEnabled( notCraftingMode );
@@ -236,10 +260,19 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
 
 		if ( this.craftingMode != null )
-			this.craftingMode.set( ( ( ContainerLevelEmitter ) cvb ).cmType );
+		{
+			this.craftingMode.set( ( ( ContainerLevelEmitter ) this.cvb ).cmType );
+		}
 
 		if ( this.levelMode != null )
-			this.levelMode.set( ( ( ContainerLevelEmitter ) cvb ).lvType );
+		{
+			this.levelMode.set( ( ( ContainerLevelEmitter ) this.cvb ).lvType );
+		}
+
+		if ( this.rateMode != null )
+		{
+			this.rateMode.set( ( ( ContainerLevelEmitter ) this.cvb ).rateMode );
+		}
 	}
 
 	@Override
