@@ -28,6 +28,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.LevelEmitterRateMode;
 import appeng.api.config.LevelType;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
@@ -62,7 +63,6 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 	@Override
 	public int availableUpgrades()
 	{
-
 		return 1;
 	}
 
@@ -106,6 +106,9 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 
 	@GuiSync(4)
 	public YesNo cmType;
+	
+	@GuiSync(6)
+	public LevelEmitterRateMode rateMode;
 
 	@Override
 	public void detectAndSendChanges()
@@ -119,6 +122,7 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 			this.lvType = (LevelType) this.upgradeable.getConfigManager().getSetting( Settings.LEVEL_TYPE );
 			this.fzMode = (FuzzyMode) this.upgradeable.getConfigManager().getSetting( Settings.FUZZY_MODE );
 			this.rsMode = (RedstoneMode) this.upgradeable.getConfigManager().getSetting( Settings.REDSTONE_EMITTER );
+			this.rateMode = (LevelEmitterRateMode) this.upgradeable.getConfigManager().getSetting( Settings.LEVEL_EMITTER_RATE_MODE );
 		}
 
 		this.standardDetectAndSendChanges();

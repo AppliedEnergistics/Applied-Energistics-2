@@ -288,6 +288,12 @@ gui.tooltips.appliedenergistics2.EmitWhenCrafting=Emit Redstone while item is cr
 gui.tooltips.appliedenergistics2.ReportInaccessibleItems=Report Inaccessible Items
 gui.tooltips.appliedenergistics2.ReportInaccessibleItemsYes=Yes: Items that cannot be extracted will be visible.
 gui.tooltips.appliedenergistics2.ReportInaccessibleItemsNo=No: Only extractable items will be visible.
+gui.tooltips.appliedenergistics2.RateMode=Rate Mode
+gui.tooltips.appliedenergistics2.RateModeBalanced=Monitors positive and negative changes. Idles at the set strength.
+gui.tooltips.appliedenergistics2.RateModePositive=Monitors only positive changes. Idles at the set strength.
+gui.tooltips.appliedenergistics2.RateModeNegative=Monitors only negative changes. Idles at the set strength.
+
+
 
 gui.appliedenergistics2.units.appliedenergstics=AE
 gui.appliedenergistics2.units.buildcraft=Minecraft Joules
