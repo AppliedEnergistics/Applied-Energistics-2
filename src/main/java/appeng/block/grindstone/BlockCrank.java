@@ -47,6 +47,7 @@ public class BlockCrank extends AEBaseBlock
 		this.setFeature( EnumSet.of( AEFeature.GrindStone ) );
 		this.setTileEntity( TileCrank.class );
 		this.setLightOpacity( 0 );
+		this.setHarvestLevel( "axe", 0 );
 		this.isFullSize = this.isOpaque = false;
 	}
 
