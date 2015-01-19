@@ -33,14 +33,14 @@ public class RF extends BaseModule
 	public static RF instance;
 
 	public RF() {
-		this.TestClass( cofh.api.energy.IEnergyReceiver.class );
-		this.TestClass( cofh.api.energy.IEnergyProvider.class );
-		this.TestClass( cofh.api.energy.IEnergyHandler.class );
-		this.TestClass( cofh.api.energy.IEnergyConnection.class );
+		this.testClassExistence( cofh.api.energy.IEnergyReceiver.class );
+		this.testClassExistence( cofh.api.energy.IEnergyProvider.class );
+		this.testClassExistence( cofh.api.energy.IEnergyHandler.class );
+		this.testClassExistence( cofh.api.energy.IEnergyConnection.class );
 	}
 
 	@Override
-	public void Init()
+	public void init()
 	{
 	}
 
@@ -55,7 +55,7 @@ public class RF extends BaseModule
 	}
 
 	@Override
-	public void PostInit()
+	public void postInit()
 	{
 		this.RFStack( "ExtraUtilities", "extractor_base", 12 );
 		this.RFStack( "ExtraUtilities", "pipes", 11 );

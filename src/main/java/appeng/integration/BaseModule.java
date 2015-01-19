@@ -20,15 +20,15 @@ package appeng.integration;
 
 public abstract class BaseModule implements IIntegrationModule {
 
-	protected void TestClass( Class clz )
+	protected void testClassExistence( Class<?> clz )
 	{
 		 clz.isInstance(this);
 	}
 
 	@Override
-	public abstract void Init() throws Throwable;
+	public abstract void init() throws Throwable;
 
 	@Override
-	public abstract  void PostInit();
+	public abstract  void postInit();
 	
 }

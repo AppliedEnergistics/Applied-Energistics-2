@@ -35,13 +35,13 @@ public class InvTweaks extends BaseModule implements IInvTweaks
 	static InvTweaksAPI api;
 
 	@Override
-	public void Init()
+	public void init()
 	{
 		api = (InvTweaksAPI) Loader.instance().getIndexedModList().get( "inventorytweaks" ).getMod();
 	}
 
 	@Override
-	public void PostInit()
+	public void postInit()
 	{
 		if ( api == null )
 			throw new RuntimeException( "InvTweaks API Instance Failed." );

@@ -39,7 +39,7 @@ public interface IPartStorageMonitor extends IPartMonitor, IPart, IGridHost, INe
 	 *         IAEFluidStack the quantity is important remember to use getStackSize() on the IAEStack, and not on the
 	 *         FluidStack/ItemStack acquired from it.
 	 */
-	IAEStack getDisplayed();
+	IAEStack<?> getDisplayed();
 
 	/**
 	 * @return the current locked state of the Storage Monitor

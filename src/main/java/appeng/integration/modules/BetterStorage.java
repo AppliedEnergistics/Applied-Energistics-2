@@ -50,13 +50,13 @@ public class BetterStorage implements IIntegrationModule, IBetterStorage
 	}
 
 	@Override
-	public void Init()
+	public void init()
 	{
 
 	}
 
 	@Override
-	public void PostInit()
+	public void postInit()
 	{
 		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new BSCrateHandler() );
 	}

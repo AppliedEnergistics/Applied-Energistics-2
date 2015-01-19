@@ -18,72 +18,71 @@
 
 package appeng.tile.networking;
 
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.util.AECableType;
 import appeng.me.GridAccessException;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkPowerTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
 
+
 public class TileEnergyAcceptor extends AENetworkPowerTile
 {
 
+	final static AppEngInternalInventory INTERNAL_INVENTORY = new AppEngInternalInventory( null, 0 );
 	final int[] sides = new int[] { };
-	final static AppEngInternalInventory inv = new AppEngInternalInventory( null, 0 );
+
+	public TileEnergyAcceptor()
+	{
+		this.gridProxy.setIdlePowerUsage( 0.0 );
+		this.internalMaxPower = 0;
+	}
 
 	@Override
-	public AECableType getCableConnectionType(ForgeDirection dir)
+	public AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.COVERED;
 	}
 
-	@TileEvent(TileEventType.TICK)
-	public void Tick_TileEnergyAcceptor()
+	@Override
+	public void readFromNBT_AENetwork( NBTTagCompound data )
 	{
-		if ( this.internalCurrentPower > 0 )
-		{
-			try
-			{
-				IEnergyGrid eg = this.gridProxy.getEnergy();
-				double powerRequested = this.internalCurrentPower - eg.injectPower( this.internalCurrentPower, Actionable.SIMULATE );
-
-				if ( powerRequested > 0 )
-				{
-					eg.injectPower( this.extractAEPower( powerRequested, Actionable.MODULATE, PowerMultiplier.ONE ), Actionable.MODULATE );
-				}
-			}
-			catch (GridAccessException e)
-			{
-				// null net, probably bad.
-			}
-
-		}
+		/**
+		 * Does nothing here since the NBT tag in the parent is not needed anymore
+		 */
 	}
 
 	@Override
-	protected double getFunnelPowerDemand(double maxRequired)
+	public void writeToNBT_AENetwork( NBTTagCompound data )
+	{
+		/**
+		 * Does nothing here since the NBT tag in the parent is not needed anymore
+		 */
+	}
+
+	@Override
+	protected double getFunnelPowerDemand( double maxRequired )
 	{
 		try
 		{
 			IEnergyGrid grid = this.gridProxy.getEnergy();
 			return grid.getEnergyDemand( maxRequired );
 		}
-		catch (GridAccessException e)
+		catch ( GridAccessException e )
 		{
-			return super.getFunnelPowerDemand( maxRequired );
+			return this.internalMaxPower;
 		}
 	}
 
 	@Override
-	protected double funnelPowerIntoStorage(double newPower, Actionable mode)
+	protected double funnelPowerIntoStorage( double newPower, Actionable mode )
 	{
 		try
 		{
@@ -93,33 +92,27 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 				return leftOver;
 			return 0.0;
 		}
-		catch (GridAccessException e)
+		catch ( GridAccessException e )
 		{
 			return super.funnelPowerIntoStorage( newPower, mode );
 		}
 	}
 
-	public TileEnergyAcceptor() {
-		this.gridProxy.setIdlePowerUsage( 0.0 );
-		this.internalMaxPower = 100;
-	}
-
 	@Override
 	public IInventory getInternalInventory()
 	{
-		return inv;
+		return INTERNAL_INVENTORY;
 	}
 
 	@Override
-	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added)
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
 	{
 
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide(ForgeDirection side)
+	public int[] getAccessibleSlotsBySide( ForgeDirection side )
 	{
 		return this.sides;
 	}
-
 }

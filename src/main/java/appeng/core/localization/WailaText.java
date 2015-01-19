@@ -22,6 +22,7 @@ import net.minecraft.util.StatCollector;
 
 public enum WailaText
 {
+	Crafting,
 
 	DeviceOnline, DeviceOffline, DeviceMissingChannel,
 

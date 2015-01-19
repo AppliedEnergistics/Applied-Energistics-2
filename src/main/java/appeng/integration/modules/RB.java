@@ -67,13 +67,13 @@ public class RB extends BaseModule implements IRB
 	public static RB instance;
 
 	@Override
-	public void Init() throws Throwable
+	public void init() throws Throwable
 	{
-		this.TestClass( IOrientable.class );
+		this.testClassExistence( IOrientable.class );
 	}
 
 	@Override
-	public void PostInit()
+	public void postInit()
 	{
 
 	}

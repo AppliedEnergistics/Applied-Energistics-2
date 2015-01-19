@@ -37,16 +37,16 @@ public class IC2 extends BaseModule implements IIC2
 	public static IC2 instance;
 
 	public IC2() {
-		this.TestClass( IEnergyTile.class );
+		this.testClassExistence( IEnergyTile.class );
 	}
 
 	@Override
-	public void Init()
+	public void init()
 	{
 	}
 
 	@Override
-	public void PostInit()
+	public void postInit()
 	{
 		IP2PTunnelRegistry reg = AEApi.instance().registries().p2pTunnel();
 		reg.addNewAttunement( this.getItem( "copperCableItem" ), TunnelType.IC2_POWER );

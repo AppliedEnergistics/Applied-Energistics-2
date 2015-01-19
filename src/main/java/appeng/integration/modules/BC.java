@@ -64,9 +64,9 @@ public class BC extends BaseModule implements IBC
 	public static BC instance;
 
 	public BC() {
-		this.TestClass( IPipeConnection.class );
-		this.TestClass( ItemFacade.class );
-		this.TestClass( IToolWrench.class );
+		this.testClassExistence( IPipeConnection.class );
+		this.testClassExistence( ItemFacade.class );
+		this.testClassExistence( IToolWrench.class );
 	}
 
 	@Override
@@ -225,7 +225,7 @@ public class BC extends BaseModule implements IBC
 	}
 
 	@Override
-	public void Init()
+	public void init()
 	{
 		AEApi.instance().partHelper().registerNewLayer( "appeng.parts.layers.LayerIPipeConnection", "buildcraft.api.transport.IPipeConnection" );
 		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new BCPipeHandler() );
@@ -292,7 +292,7 @@ public class BC extends BaseModule implements IBC
 	}
 
 	@Override
-	public void PostInit()
+	public void postInit()
 	{
 		this.registerPowerP2P();
 		this.registerItemP2P();

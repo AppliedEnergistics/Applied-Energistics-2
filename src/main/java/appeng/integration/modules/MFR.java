@@ -28,17 +28,17 @@ public class MFR extends BaseModule
 	public static MFR instance;
 
 	public MFR() {
-		this.TestClass( IRedNetConnection.class );
+		this.testClassExistence( IRedNetConnection.class );
 	}
 
 	@Override
-	public void Init() throws Throwable
+	public void init() throws Throwable
 	{
 
 	}
 
 	@Override
-	public void PostInit()
+	public void postInit()
 	{
 
 	}

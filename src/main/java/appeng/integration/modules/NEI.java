@@ -56,16 +56,16 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 
 	public static NEI instance;
 
-	Class API;
+	Class<?> API;
 
 	// recipe handler...
 	Method registerRecipeHandler;
 	Method registerUsageHandler;
 
 	public NEI() throws ClassNotFoundException {
-		this.TestClass( GuiContainerManager.class );
-		this.TestClass( codechicken.nei.recipe.ICraftingHandler.class );
-		this.TestClass( codechicken.nei.recipe.IUsageHandler.class );
+		this.testClassExistence( GuiContainerManager.class );
+		this.testClassExistence( codechicken.nei.recipe.ICraftingHandler.class );
+		this.testClassExistence( codechicken.nei.recipe.IUsageHandler.class );
 		this.API = Class.forName( "codechicken.nei.api.API" );
 	}
 
@@ -76,7 +76,7 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 	}
 
 	@Override
-	public void Init() throws Throwable
+	public void init() throws Throwable
 	{
 		this.registerRecipeHandler = this.API.getDeclaredMethod( "registerRecipeHandler", codechicken.nei.recipe.ICraftingHandler.class );
 		this.registerUsageHandler = this.API.getDeclaredMethod( "registerUsageHandler", codechicken.nei.recipe.IUsageHandler.class );
@@ -108,7 +108,7 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 	}
 
 	@Override
-	public void PostInit()
+	public void postInit()
 	{
 
 	}

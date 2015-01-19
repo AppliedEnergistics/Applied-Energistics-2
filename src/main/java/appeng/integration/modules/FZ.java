@@ -161,7 +161,7 @@ public class FZ implements IFZ, IIntegrationModule
 	}
 
 	@Override
-	public void Init() throws Throwable
+	public void init() throws Throwable
 	{
 		day_BarrelClass = Class.forName( "factorization.weird.TileEntityDayBarrel" );
 
@@ -172,7 +172,7 @@ public class FZ implements IFZ, IIntegrationModule
 	}
 
 	@Override
-	public void PostInit()
+	public void postInit()
 	{
 		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new FactorizationHandler() );
 	}
