@@ -18,6 +18,7 @@
 
 package appeng.parts.p2p;
 
+
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -46,6 +47,7 @@ import appeng.me.cache.helpers.Connections;
 import appeng.me.cache.helpers.TunnelConnection;
 import appeng.me.helpers.AENetworkProxy;
 
+
 public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements IGridTickable
 {
 
@@ -58,28 +60,29 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", null, true );
 	public final Connections connection = new Connections( this );
 
-	public PartP2PTunnelME(ItemStack is) {
+	public PartP2PTunnelME( ItemStack is )
+	{
 		super( is );
 		this.proxy.setFlags( GridFlags.REQUIRE_CHANNEL, GridFlags.COMPRESSED_CHANNEL );
 		this.outerProxy.setFlags( GridFlags.DENSE_CAPACITY, GridFlags.CANNOT_CARRY_COMPRESSED );
 	}
 
 	@Override
-	public void setPartHostInfo(ForgeDirection side, IPartHost host, TileEntity tile)
+	public void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
 	{
 		super.setPartHostInfo( side, host, tile );
 		this.outerProxy.setValidSides( EnumSet.of( side ) );
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound extra)
+	public void readFromNBT( NBTTagCompound extra )
 	{
 		super.readFromNBT( extra );
 		this.outerProxy.readFromNBT( extra );
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound extra)
+	public void writeToNBT( NBTTagCompound extra )
 	{
 		super.writeToNBT( extra );
 		this.outerProxy.writeToNBT( extra );
@@ -106,7 +109,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	}
 
 	@Override
-	public AECableType getCableConnectionType(ForgeDirection dir)
+	public AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.DENSE;
 	}
@@ -121,7 +124,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 			{
 				this.proxy.getTick().wakeDevice( this.proxy.getNode() );
 			}
-			catch (GridAccessException e)
+			catch ( GridAccessException e )
 			{
 				// :P
 			}
@@ -129,13 +132,13 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	}
 
 	@Override
-	public TickingRequest getTickingRequest(IGridNode node)
+	public TickingRequest getTickingRequest( IGridNode node )
 	{
 		return new TickingRequest( TickRates.METunnel.min, TickRates.METunnel.max, true, false );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
+	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
 	{
 		// just move on...
 		try
@@ -164,7 +167,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 				return TickRateModulation.SLEEP;
 			}
 		}
-		catch (GridAccessException e)
+		catch ( GridAccessException e )
 		{
 			// meh?
 		}
@@ -173,17 +176,17 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	}
 
 	@Override
-	public void onPlacement(EntityPlayer player, ItemStack held, ForgeDirection side)
+	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
 	{
 		super.onPlacement( player, held, side );
 		this.outerProxy.setOwner( player );
 	}
 
-	public void updateConnections(Connections connections)
+	public void updateConnections( Connections connections )
 	{
 		if ( connections.destroy )
 		{
-			for (TunnelConnection cw : this.connection.connections.values())
+			for ( TunnelConnection cw : this.connection.connections.values() )
 				cw.c.destroy();
 
 			this.connection.connections.clear();
@@ -192,7 +195,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 		{
 
 			Iterator<TunnelConnection> i = this.connection.connections.values().iterator();
-			while (i.hasNext())
+			while ( i.hasNext() )
 			{
 				TunnelConnection cw = i.next();
 				try
@@ -208,7 +211,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 						i.remove();
 					}
 				}
-				catch (GridAccessException e)
+				catch ( GridAccessException e )
 				{
 					// :P
 				}
@@ -217,7 +220,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 			LinkedList<PartP2PTunnelME> newSides = new LinkedList<PartP2PTunnelME>();
 			try
 			{
-				for (PartP2PTunnelME me : this.getOutputs())
+				for ( PartP2PTunnelME me : this.getOutputs() )
 				{
 					if ( me.proxy.isActive() && connections.connections.get( me.getGridNode() ) == null )
 					{
@@ -225,21 +228,23 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 					}
 				}
 
-				for (PartP2PTunnelME me : newSides)
+				for ( PartP2PTunnelME me : newSides )
 				{
 					try
 					{
 						connections.connections.put( me.getGridNode(),
 								new TunnelConnection( me, AEApi.instance().createGridConnection( this.outerProxy.getNode(), me.outerProxy.getNode() ) ) );
 					}
-					catch (FailedConnection e)
+					catch ( FailedConnection e )
 					{
-						AELog.error( e );
+						final TileEntity start = this.getTile();
+						final TileEntity end = me.getTile();
+						AELog.warning( "Failed to establish a ME P2P Tunnel between the tunnels at [x=%d, y=%d, z=%d] and [x=%d, y=%d, z=%d]", start.xCoord, start.yCoord, start.zCoord, end.xCoord, end.yCoord, end.zCoord );
 						// :(
 					}
 				}
 			}
-			catch (GridAccessException e)
+			catch ( GridAccessException e )
 			{
 				AELog.error( e );
 			}
