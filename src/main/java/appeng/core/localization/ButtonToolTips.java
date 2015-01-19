@@ -18,7 +18,9 @@
 
 package appeng.core.localization;
 
+
 import net.minecraft.util.StatCollector;
+
 
 public enum ButtonToolTips
 {
@@ -54,15 +56,19 @@ public enum ButtonToolTips
 
 	Stash, StashDesc, Encode, EncodeDescription, Substitutions, SubstitutionsOn, SubstitutionsOff, SubstitutionsDesc, CraftOnly, CraftEither,
 
-	Craft, Mod, DoesntDespawn, EmitterMode, CraftViaRedstone, EmitWhenCrafting, ReportInaccessibleItems, ReportInaccessibleItemsYes, ReportInaccessibleItemsNo;
+	Craft, Mod, DoesntDespawn, EmitterMode, CraftViaRedstone, EmitWhenCrafting, ReportInaccessibleItems, ReportInaccessibleItemsYes, ReportInaccessibleItemsNo,
+
+	BlockPlacement, BlockPlacementYes, BlockPlacementNo;
 
 	final String root;
 
-	ButtonToolTips() {
+	ButtonToolTips()
+	{
 		this.root = "gui.tooltips.appliedenergistics2";
 	}
 
-	ButtonToolTips(String r) {
+	ButtonToolTips( String r )
+	{
 		this.root = r;
 	}
 
