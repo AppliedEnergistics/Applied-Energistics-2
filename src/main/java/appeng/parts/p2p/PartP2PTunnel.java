@@ -74,6 +74,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 	@Override
 	public void writeToNBT(NBTTagCompound data)
 	{
+		super.writeToNBT( data );
 		data.setBoolean( "output", this.output );
 		data.setLong( "freq", this.freq );
 	}
@@ -81,6 +82,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 	@Override
 	public void readFromNBT(NBTTagCompound data)
 	{
+		super.readFromNBT( data );
 		this.output = data.getBoolean( "output" );
 		this.freq = data.getLong( "freq" );
 	}
