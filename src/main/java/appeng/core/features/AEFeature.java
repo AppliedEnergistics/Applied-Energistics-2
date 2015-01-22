@@ -72,7 +72,9 @@ public enum AEFeature
 
 	enableDisassemblyCrafting("Crafting"), MolecularAssembler("CraftingFeatures"), MeteoriteCompass("Tools"), Patterns("CraftingFeatures"),
 
-	ChunkLoggerTrace("Commands", false), LogSecurityAudits("Misc", false), Achievements("Misc");
+	ChunkLoggerTrace("Commands", false), LogSecurityAudits("Misc", false), LogSecurityTerminalBreak("Misc", false),
+
+	Achievements("Misc");
 
 	public final String category;
 	public final boolean isVisible;

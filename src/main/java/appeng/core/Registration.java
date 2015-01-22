@@ -580,6 +580,12 @@ public final class Registration
 		MinecraftForge.EVENT_BUS.register( pp );
 		FMLCommonHandler.instance().bus().register( pp );
 
+		if ( AEConfig.instance.isFeatureEnabled( AEFeature.LogSecurityTerminalBreak ) )
+		{
+			FMLCommonHandler.instance().bus().register( BlockSecurity.Listener.instance );
+			MinecraftForge.EVENT_BUS.register( BlockSecurity.Listener.instance );
+		}
+
 		IGridCacheRegistry gcr = AEApi.instance().registries().gridCache();
 		gcr.registerGridCache( ITickManager.class, TickManagerCache.class );
 		gcr.registerGridCache( IEnergyGrid.class, EnergyGridCache.class );

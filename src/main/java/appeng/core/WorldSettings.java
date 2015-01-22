@@ -34,7 +34,6 @@ import java.util.WeakHashMap;
 
 import com.google.common.base.Optional;
 import com.mojang.authlib.GameProfile;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -435,18 +434,11 @@ public class WorldSettings extends Configuration
 			return prop.getInt();
 		else
 		{
-			playerList.put( uuid, prop = new Property( uuid, String.valueOf( this.nextPlayer() ), Property.Type.INTEGER ) );
+			playerList.put( uuid, prop = new Property( uuid, String.valueOf( this.nextPlayerID() ), Property.Type.INTEGER ) );
 			this.mappings.put( prop.getInt(), profile.getId() ); // add to reverse map
 			this.save();
 			return prop.getInt();
 		}
-	}
-
-	private long nextPlayer()
-	{
-		long r = this.lastPlayer++;
-		this.get( "Counters", "lastPlayer", this.lastPlayer ).set( this.lastPlayer );
-		return r;
 	}
 
 	public EntityPlayer getPlayerFromID( int playerID )
@@ -464,5 +456,24 @@ public class WorldSettings extends Configuration
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get the UUID from a numerical player ID.
+	 *
+	 * @param playerID numerical player ID from {@link appeng.api.networking.IGridNode#getPlayerID()}
+	 * @return UUID for the player
+	 * @see {@link appeng.util.Platform#getPlayerNameFromUUID(java.util.UUID)}
+	 */
+	public Optional<UUID> getUUIDFromPlayerID(int playerID)
+	{
+		return this.mappings.get( playerID );
+	}
+
+	private long nextPlayerID()
+	{
+		long r = this.lastPlayer++;
+		this.get( "Counters", "lastPlayer", this.lastPlayer ).set( this.lastPlayer );
+		return r;
 	}
 }

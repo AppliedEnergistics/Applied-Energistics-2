@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.WeakHashMap;
 
 import net.minecraft.block.Block;
@@ -73,6 +74,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
@@ -1868,5 +1870,10 @@ public class Platform
 		return AEApi.instance().materials().materialPurifiedCertusQuartzCrystal.sameAsStack( what )
 				|| AEApi.instance().materials().materialPurifiedFluixCrystal.sameAsStack( what )
 				|| AEApi.instance().materials().materialPurifiedNetherQuartzCrystal.sameAsStack( what );
+	}
+
+	public static String getPlayerNameFromUUID(UUID uuid)
+	{
+		return UsernameCache.getLastKnownUsername(uuid);
 	}
 }
