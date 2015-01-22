@@ -40,6 +40,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -171,12 +172,20 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	@Override
 	public void writeToStream(ByteBuf data) throws IOException
 	{
-
+		data.writeBoolean( this.hasCustomName() );
+		if ( this.hasCustomName() )
+		{
+			ByteBufUtils.writeUTF8String( data, this.is.getDisplayName() );
+		}
 	}
 
 	@Override
 	public boolean readFromStream(ByteBuf data) throws IOException
 	{
+		if ( data.readBoolean() )
+		{
+			this.is.setStackDisplayName( ByteBufUtils.readUTF8String( data ) );
+		}
 		return false;
 	}
 
