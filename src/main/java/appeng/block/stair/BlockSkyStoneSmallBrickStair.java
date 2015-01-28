@@ -27,9 +27,9 @@ import appeng.block.AEBaseStairBlock;
 import appeng.core.features.AEFeature;
 
 
-public class SkyStoneSmallBrickStairBlock extends AEBaseStairBlock
+public class BlockSkyStoneSmallBrickStair extends AEBaseStairBlock
 {
-	public SkyStoneSmallBrickStairBlock( Block block, int meta )
+	public BlockSkyStoneSmallBrickStair( Block block, int meta )
 	{
 		super( block, meta, EnumSet.of( AEFeature.Core ) );
 	}
