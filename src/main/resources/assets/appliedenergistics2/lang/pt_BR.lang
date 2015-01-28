@@ -51,14 +51,14 @@ tile.appliedenergistics2.BlockCraftingUnit.name=Unidade de Fabricação
 tile.appliedenergistics2.BlockMolecularAssembler.name=Montador Molecular
 
 // Stairs
-tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Escadas de Quartzo Certus Cinzelado
-tile.appliedenergistics2.FluixStairBlock.name=Escadas de Fluix 
-tile.appliedenergistics2.QuartzPillarStairBlock.name=Escadas de Pilar de Quartzo Certus 
-tile.appliedenergistics2.QuartzStairBlock.name=Escadas de Quartzo Certus 
-tile.appliedenergistics2.SkyStoneBlockStairBlock.name=Escadas de Bloco de Pedra do Céu 
-tile.appliedenergistics2.SkyStoneBrickStairBlock.name=Escadas de Tijolos de Pedra do Céu 
-tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=Escadas de Tijolos Pequenos de Pedra do Céu 
-tile.appliedenergistics2.SkyStoneStairBlock.name=Escadas de Pedra do Céu 
+tile.appliedenergistics2.BlockChiseledQuartzStair.name=Escadas de Quartzo Certus Cinzelado
+tile.appliedenergistics2.BlockFluixStair.name=Escadas de Fluix 
+tile.appliedenergistics2.BlockQuartzPillarStair.name=Escadas de Pilar de Quartzo Certus 
+tile.appliedenergistics2.BlockQuartzStair.name=Escadas de Quartzo Certus 
+tile.appliedenergistics2.BlockSkyStoneBlockStair.name=Escadas de Bloco de Pedra do Céu 
+tile.appliedenergistics2.BlockSkyStoneBrickStair.name=Escadas de Tijolos de Pedra do Céu 
+tile.appliedenergistics2.BlockSkyStoneSmallBrickStair.name=Escadas de Tijolos Pequenos de Pedra do Céu 
+tile.appliedenergistics2.BlockSkyStoneStair.name=Escadas de Pedra do Céu 
 
 chat.appliedenergistics2.ChestCannotReadStorageCell=Baú ME não consegue ler a célula de armazenamento.
 chat.appliedenergistics2.SettingCleared=Configuração limpa.
