@@ -23,24 +23,26 @@ import java.util.EnumSet;
 
 import com.google.common.base.Optional;
 
+import crazypants.enderio.api.tool.IConduitControl;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import buildcraft.api.tools.IToolWrench;
-
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.features.AEFeature;
 import appeng.items.AEBaseItem;
 import appeng.transformer.annotations.integration.Interface;
+import appeng.transformer.annotations.integration.InterfaceList;
 import appeng.util.Platform;
 
 
-@Interface( iface = "buildcraft.api.tools.IToolWrench", iname = "BC" )
-public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWrench
+@InterfaceList( {
+    @Interface( iface = "buildcraft.api.tools.IToolWrench", iname = "BC" ),
+    @Interface( iface = "crazypants.enderio.api.tool.IConduitControl", iname = "EIO") })
+public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWrench, IConduitControl
 {
 
 	public ToolQuartzWrench( AEFeature type )
@@ -95,6 +97,17 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWren
 	public void wrenchUsed( EntityPlayer player, int x, int y, int z )
 	{
 		player.swingItem();
-	}
+    }
 
+    @Override
+    public boolean shouldHideFacades(ItemStack stack, EntityPlayer player)
+    {
+        return true;
+    }
+
+    @Override
+    public boolean showOverlay(ItemStack stack, EntityPlayer player)
+    {
+        return true;
+    }
 }
