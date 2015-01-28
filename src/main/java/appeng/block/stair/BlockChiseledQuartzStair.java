@@ -26,9 +26,9 @@ import appeng.block.solids.BlockQuartzChiseled;
 import appeng.core.features.AEFeature;
 
 
-public class ChiseledQuartzStairBlock extends AEBaseStairBlock
+public class BlockChiseledQuartzStair extends AEBaseStairBlock
 {
-	public ChiseledQuartzStairBlock( BlockQuartzChiseled block )
+	public BlockChiseledQuartzStair( BlockQuartzChiseled block )
 	{
 		super( block, 0, EnumSet.of( AEFeature.Core ) );
 	}
