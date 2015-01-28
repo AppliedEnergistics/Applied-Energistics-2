@@ -27,9 +27,9 @@ import appeng.block.AEBaseStairBlock;
 import appeng.core.features.AEFeature;
 
 
-public class FluixStairBlock extends AEBaseStairBlock
+public class BlockFluixStair extends AEBaseStairBlock
 {
-	public FluixStairBlock( Block block )
+	public BlockFluixStair( Block block )
 	{
 		super( block, 0, EnumSet.of( AEFeature.Core ) );
 	}
