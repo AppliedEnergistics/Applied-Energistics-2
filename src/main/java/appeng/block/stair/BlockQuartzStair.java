@@ -26,9 +26,9 @@ import appeng.block.solids.BlockQuartz;
 import appeng.core.features.AEFeature;
 
 
-public class QuartzStairBlock extends AEBaseStairBlock
+public class BlockQuartzStair extends AEBaseStairBlock
 {
-	public QuartzStairBlock( BlockQuartz block )
+	public BlockQuartzStair( BlockQuartz block )
 	{
 		super( block, 0, EnumSet.of( AEFeature.Core ) );
 	}
