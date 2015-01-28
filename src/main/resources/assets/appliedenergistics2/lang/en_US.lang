@@ -17,12 +17,6 @@ tile.appliedenergistics2.BlockInscriber.name=Inscriber
 tile.appliedenergistics2.BlockInterface.name=ME Interface
 tile.appliedenergistics2.BlockQuantumLinkChamber.name=ME Quantum Link Chamber
 tile.appliedenergistics2.BlockQuantumRing.name=ME Quantum Ring
-tile.appliedenergistics2.BlockFluix.name=Fluix Block
-tile.appliedenergistics2.BlockQuartz.name=Certus Quartz Block
-tile.appliedenergistics2.BlockQuartzChiseled.name=Chiseled Certus Quartz Block
-tile.appliedenergistics2.BlockQuartzGlass.name=Quartz Glass
-tile.appliedenergistics2.BlockQuartzLamp.name=Vibrant Quartz Glass
-tile.appliedenergistics2.BlockQuartzPillar.name=Certus Quartz Pillar
 tile.appliedenergistics2.BlockQuartzTorch.name=Charged Quartz Fixture
 tile.appliedenergistics2.BlockLightDetector.name=Light Detecting Fixture
 tile.appliedenergistics2.BlockSpatialIOPort.name=Spatial IO Port
@@ -30,14 +24,8 @@ tile.appliedenergistics2.BlockSpatialPylon.name=Spatial Pylon
 tile.appliedenergistics2.BlockTinyTNT.name=Tiny TNT
 tile.appliedenergistics2.BlockVibrationChamber.name=Vibration Chamber
 tile.appliedenergistics2.BlockWireless.name=ME Wireless Access Point
-tile.appliedenergistics2.OreQuartz.name=Certus Quartz Ore
-tile.appliedenergistics2.OreQuartzCharged.name=Charged Certus Quartz Ore
 tile.appliedenergistics2.BlockSecurity.name=ME Security Terminal
 tile.appliedenergistics2.BlockQuartzGrowthAccelerator.name=Crystal Growth Accelerator
-tile.appliedenergistics2.BlockSkyStone.name=Sky Stone
-tile.appliedenergistics2.BlockSkyStone.Block.name=Sky Stone Block
-tile.appliedenergistics2.BlockSkyStone.Brick.name=Sky Stone Brick
-tile.appliedenergistics2.BlockSkyStone.SmallBrick.name=Sky Stone Small Brick
 tile.appliedenergistics2.BlockSkyChest.name=Sky Stone Chest
 tile.appliedenergistics2.BlockSkyChest.Block.name=Sky Stone Block Chest
 tile.appliedenergistics2.BlockSkyCompass.name=Meteorite Compass
@@ -49,17 +37,38 @@ tile.appliedenergistics2.BlockCraftingStorage64k.name=64k Crafting Storage
 tile.appliedenergistics2.BlockCraftingAccelerator.name=Crafting Co-Processing Unit
 tile.appliedenergistics2.BlockCraftingUnit.name=Crafting Unit
 tile.appliedenergistics2.BlockMolecularAssembler.name=Molecular Assembler
+tile.appliedenergistics2.OreQuartz.name=Certus Quartz Ore
+tile.appliedenergistics2.OreQuartzCharged.name=Charged Certus Quartz Ore
 
-// Stairs
-tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Chiseled Certus Quartz Stairs
-tile.appliedenergistics2.FluixStairBlock.name=Fluix Stairs
-tile.appliedenergistics2.QuartzPillarStairBlock.name=Certus Quartz Pillar Stairs
-tile.appliedenergistics2.QuartzStairBlock.name=Certus Quartz Stairs
-tile.appliedenergistics2.SkyStoneBlockStairBlock.name=Sky Stone Block Stairs
-tile.appliedenergistics2.SkyStoneBrickStairBlock.name=Sky Stone Brick Stairs
-tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=Sky Stone Small Brick Stairs
-tile.appliedenergistics2.SkyStoneStairBlock.name=Sky Stone Stairs
+// Building Blocks
+tile.appliedenergistics2.BlockFluix.name=Fluix Block
+tile.appliedenergistics2.BlockFluixStair.name=Fluix Stairs
 
+tile.appliedenergistics2.BlockSkyStone.name=Sky Stone
+tile.appliedenergistics2.BlockSkyStoneStair.name=Sky Stone Stair
+
+tile.appliedenergistics2.BlockSkyStoneBlock.name=Sky Stone Block
+tile.appliedenergistics2.BlockSkyStoneBlockStair.name=Sky Stone Block Stairs
+
+tile.appliedenergistics2.BlockSkyStoneBrick.name=Sky Stone Brick
+tile.appliedenergistics2.BlockSkyStoneBrickStair.name=Sky Stone Brick Stairs
+
+tile.appliedenergistics2.BlockSkyStoneSmallBrick.name=Sky Stone Small Bricks
+tile.appliedenergistics2.BlockSkyStoneSmallBrickStair.name=Sky Stone Small Brick Stairs
+
+tile.appliedenergistics2.BlockQuartz.name=Certus Quartz Block
+tile.appliedenergistics2.BlockQuartzGlass.name=Quartz Glass
+tile.appliedenergistics2.BlockQuartzLamp.name=Vibrant Quartz Glass
+tile.appliedenergistics2.BlockQuartzStair.name=Certus Quartz Stairs
+
+tile.appliedenergistics2.BlockQuartzChiseled.name=Chiseled Certus Quartz Block
+tile.appliedenergistics2.BlockQuartzChiseledStair.name=Chiseled Certus Quartz Stairs
+
+tile.appliedenergistics2.BlockQuartzPillar.name=Certus Quartz Pillar
+tile.appliedenergistics2.BlockQuartzPillarStair.name=Certus Quartz Pillar Stairs
+
+
+//Chat
 chat.appliedenergistics2.ChestCannotReadStorageCell=ME Chest cannot read storage cell.
 chat.appliedenergistics2.SettingCleared=Setting Cleared.
 chat.appliedenergistics2.OutOfRange=Wireless Out Of Range.
