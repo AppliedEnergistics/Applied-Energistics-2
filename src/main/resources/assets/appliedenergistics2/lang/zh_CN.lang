@@ -51,14 +51,14 @@ tile.appliedenergistics2.BlockCraftingUnit.name=合成单元
 tile.appliedenergistics2.BlockMolecularAssembler.name=分子装配室
 
 // 楼梯
-tile.appliedenergistics2.ChiseledQuartzStairBlock.name=錾制赛特斯石英楼梯
-tile.appliedenergistics2.FluixStairBlock.name=福鲁伊克斯楼梯
-tile.appliedenergistics2.QuartzPillarStairBlock.name=竖纹赛特斯石英楼梯
-tile.appliedenergistics2.QuartzStairBlock.name=赛特斯石英楼梯
-tile.appliedenergistics2.SkyStoneBlockStairBlock.name=陨石块楼梯
-tile.appliedenergistics2.SkyStoneBrickStairBlock.name=陨石石砖楼梯
-tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=陨石砖块楼梯
-tile.appliedenergistics2.SkyStoneStairBlock.name=陨石楼梯
+tile.appliedenergistics2.BlockChiseledQuartzStair.name=錾制赛特斯石英楼梯
+tile.appliedenergistics2.BlockFluixStair.name=福鲁伊克斯楼梯
+tile.appliedenergistics2.BlockQuartzPillarStair.name=竖纹赛特斯石英楼梯
+tile.appliedenergistics2.BlockQuartzStair.name=赛特斯石英楼梯
+tile.appliedenergistics2.BlockSkyStoneBlockStair.name=陨石块楼梯
+tile.appliedenergistics2.BlockSkyStoneBrickStair.name=陨石石砖楼梯
+tile.appliedenergistics2.BlockSkyStoneSmallBrickStair.name=陨石砖块楼梯
+tile.appliedenergistics2.BlockSkyStoneStair.name=陨石楼梯
 
 chat.appliedenergistics2.ChestCannotReadStorageCell=ME箱子无法读取存储元件.
 chat.appliedenergistics2.SettingCleared=设置已清除.
