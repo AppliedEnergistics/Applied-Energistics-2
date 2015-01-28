@@ -21,15 +21,16 @@ package appeng.block.stair;
 
 import java.util.EnumSet;
 
+import net.minecraft.block.Block;
+
 import appeng.block.AEBaseStairBlock;
-import appeng.block.solids.BlockQuartz;
 import appeng.core.features.AEFeature;
 
 
-public class QuartzStairBlock extends AEBaseStairBlock
+public class BlockSkyStoneBrickStair extends AEBaseStairBlock
 {
-	public QuartzStairBlock( BlockQuartz block )
+	public BlockSkyStoneBrickStair( Block block, Integer meta )
 	{
-		super( block, 0, EnumSet.of( AEFeature.Core ) );
+		super( block, meta, EnumSet.of( AEFeature.Core ) );
 	}
 }

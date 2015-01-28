@@ -27,10 +27,10 @@ import appeng.block.AEBaseStairBlock;
 import appeng.core.features.AEFeature;
 
 
-public class FluixStairBlock extends AEBaseStairBlock
+public class BlockSkyStoneBlockStair extends AEBaseStairBlock
 {
-	public FluixStairBlock( Block block )
+	public BlockSkyStoneBlockStair( Block block, Integer meta )
 	{
-		super( block, 0, EnumSet.of( AEFeature.Core ) );
+		super( block, meta, EnumSet.of( AEFeature.Core ) );
 	}
 }

@@ -51,14 +51,14 @@ tile.appliedenergistics2.BlockCraftingUnit.name=조합 유닛
 tile.appliedenergistics2.BlockMolecularAssembler.name=분자 조합기
 
 // Stairs
-tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Chiseled Certus Quartz Stairs
-tile.appliedenergistics2.FluixStairBlock.name=Fluix Stairs
-tile.appliedenergistics2.QuartzPillarStairBlock.name=Certus Quartz Pillar Stairs
-tile.appliedenergistics2.QuartzStairBlock.name=세투스 석영 계단
-tile.appliedenergistics2.SkyStoneBlockStairBlock.name=스카이 스톤 블록 계단
-tile.appliedenergistics2.SkyStoneBrickStairBlock.name=스카이 스톤 벽돌 계단
-tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=Sky Stone Small Brick Stairs
-tile.appliedenergistics2.SkyStoneStairBlock.name=스카이 스톤 계단
+tile.appliedenergistics2.BlockChiseledQuartzStair.name=Chiseled Certus Quartz Stairs
+tile.appliedenergistics2.BlockFluixStair.name=Fluix Stairs
+tile.appliedenergistics2.BlockQuartzPillarStair.name=Certus Quartz Pillar Stairs
+tile.appliedenergistics2.BlockQuartzStair.name=세투스 석영 계단
+tile.appliedenergistics2.BlockSkyStoneBlockStair.name=스카이 스톤 블록 계단
+tile.appliedenergistics2.BlockSkyStoneBrickStair.name=스카이 스톤 벽돌 계단
+tile.appliedenergistics2.BlockSkyStoneSmallBrickStair.name=Sky Stone Small Brick Stairs
+tile.appliedenergistics2.BlockSkyStoneStair.name=스카이 스톤 계단
 
 chat.appliedenergistics2.ChestCannotReadStorageCell=ME 창고가 셀을 읽을 수 없습니다.
 chat.appliedenergistics2.SettingCleared=설정이 초기화 되었습니다.

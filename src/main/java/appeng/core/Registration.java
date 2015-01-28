@@ -104,14 +104,14 @@ import appeng.block.solids.OreQuartzCharged;
 import appeng.block.spatial.BlockMatrixFrame;
 import appeng.block.spatial.BlockSpatialIOPort;
 import appeng.block.spatial.BlockSpatialPylon;
-import appeng.block.stair.ChiseledQuartzStairBlock;
-import appeng.block.stair.FluixStairBlock;
-import appeng.block.stair.QuartzPillarStairBlock;
-import appeng.block.stair.QuartzStairBlock;
-import appeng.block.stair.SkyStoneBlockStairBlock;
-import appeng.block.stair.SkyStoneBrickStairBlock;
-import appeng.block.stair.SkyStoneSmallBrickStairBlock;
-import appeng.block.stair.SkyStoneStairBlock;
+import appeng.block.stair.BlockChiseledQuartzStair;
+import appeng.block.stair.BlockFluixStair;
+import appeng.block.stair.BlockQuartzPillarStair;
+import appeng.block.stair.BlockQuartzStair;
+import appeng.block.stair.BlockSkyStoneBlockStair;
+import appeng.block.stair.BlockSkyStoneBrickStair;
+import appeng.block.stair.BlockSkyStoneSmallBrickStair;
+import appeng.block.stair.BlockSkyStoneStair;
 import appeng.block.storage.BlockChest;
 import appeng.block.storage.BlockDrive;
 import appeng.block.storage.BlockIOPort;
@@ -449,14 +449,14 @@ public final class Registration
 		}
 
 		// stairs
-		this.addFeature( SkyStoneStairBlock.class, blocks.blockSkyStone.block(), 0 );
-		this.addFeature( SkyStoneBlockStairBlock.class, blocks.blockSkyStone.block(), 1 );
-		this.addFeature( SkyStoneBrickStairBlock.class, blocks.blockSkyStone.block(), 2 );
-		this.addFeature( SkyStoneSmallBrickStairBlock.class, blocks.blockSkyStone.block(), 3 );
-		this.addFeature( FluixStairBlock.class, blocks.blockFluix.block() );
-		this.addFeature( QuartzStairBlock.class, blocks.blockQuartz.block() );
-		this.addFeature( ChiseledQuartzStairBlock.class, blocks.blockQuartzChiseled.block() );
-		this.addFeature( QuartzPillarStairBlock.class, blocks.blockQuartzPillar.block() );
+		this.addFeature( BlockSkyStoneStair.class, blocks.blockSkyStone.block(), 0 );
+		this.addFeature( BlockSkyStoneBlockStair.class, blocks.blockSkyStone.block(), 1 );
+		this.addFeature( BlockSkyStoneBrickStair.class, blocks.blockSkyStone.block(), 2 );
+		this.addFeature( BlockSkyStoneSmallBrickStair.class, blocks.blockSkyStone.block(), 3 );
+		this.addFeature( BlockFluixStair.class, blocks.blockFluix.block() );
+		this.addFeature( BlockQuartzStair.class, blocks.blockQuartz.block() );
+		this.addFeature( BlockChiseledQuartzStair.class, blocks.blockQuartzChiseled.block() );
+		this.addFeature( BlockQuartzPillarStair.class, blocks.blockQuartzPillar.block() );
 
 		// unsupported developer tools
 		this.addFeature( ToolEraser.class );
