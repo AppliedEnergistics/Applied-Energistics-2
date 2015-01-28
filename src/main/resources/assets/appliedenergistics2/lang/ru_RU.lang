@@ -51,14 +51,14 @@ tile.appliedenergistics2.BlockCraftingUnit.name=Блок создания
 tile.appliedenergistics2.BlockMolecularAssembler.name=Молекулярный сборщик
 
 // Stairs
-tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Ступеньки из резного истинного кварца
-tile.appliedenergistics2.FluixStairBlock.name=Изменчивые ступеньки
-tile.appliedenergistics2.QuartzPillarStairBlock.name=Ступеньки из колонны истинного кварца
-tile.appliedenergistics2.QuartzStairBlock.name=Ступеньки из истинного кварца
-tile.appliedenergistics2.SkyStoneBlockStairBlock.name=Ступеньки из блока небесного камня
-tile.appliedenergistics2.SkyStoneBrickStairBlock.name=Ступеньки из кирпича небесного камня
-tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=Ступеньки из малого кирпича небесного камня
-tile.appliedenergistics2.SkyStoneStairBlock.name=Ступеньки из небесного камня
+tile.appliedenergistics2.BlockChiseledQuartzStair.name=Ступеньки из резного истинного кварца
+tile.appliedenergistics2.BlockFluixStair.name=Изменчивые ступеньки
+tile.appliedenergistics2.BlockQuartzPillarStair.name=Ступеньки из колонны истинного кварца
+tile.appliedenergistics2.BlockQuartzStair.name=Ступеньки из истинного кварца
+tile.appliedenergistics2.BlockSkyStoneBlockStair.name=Ступеньки из блока небесного камня
+tile.appliedenergistics2.BlockSkyStoneBrickStair.name=Ступеньки из кирпича небесного камня
+tile.appliedenergistics2.BlockSkyStoneSmallBrickStair.name=Ступеньки из малого кирпича небесного камня
+tile.appliedenergistics2.BlockSkyStoneStair.name=Ступеньки из небесного камня
 
 chat.appliedenergistics2.ChestCannotReadStorageCell=МЭ сундук не может прочитать ячейку хранения.
 chat.appliedenergistics2.SettingCleared=Настройки сброшены.
