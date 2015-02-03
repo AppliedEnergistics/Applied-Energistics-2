@@ -65,7 +65,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	{
 		return false;
 	}
-	
+
 	@Override
 	public ItemStack onItemRightClick( ItemStack item, World w, EntityPlayer player )
 	{

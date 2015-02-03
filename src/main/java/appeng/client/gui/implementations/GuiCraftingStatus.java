@@ -17,7 +17,7 @@
  */
 
 /**
- * 
+ *
  */
 package appeng.client.gui.implementations;
 

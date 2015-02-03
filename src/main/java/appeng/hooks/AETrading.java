@@ -64,7 +64,7 @@ public class AETrading implements IVillageTradeHandler
 	{
 		if ( item == null )
 			return;
-		
+
 		// Sell
 		ItemStack From = item.copy();
 		ItemStack To = new ItemStack( Items.emerald );

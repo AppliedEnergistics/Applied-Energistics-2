@@ -149,7 +149,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 	/**
 	 * Returns the input for this recipe, any mod accessing this value should never manipulate the values in this array
 	 * as it will effect the recipe itself.
-	 * 
+	 *
 	 * @return The recipes input vales.
 	 */
 	public ArrayList<Object> getInput()

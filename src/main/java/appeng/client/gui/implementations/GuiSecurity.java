@@ -40,7 +40,7 @@ public class GuiSecurity extends GuiMEMonitorable
 		super( inventoryPlayer, te, new ContainerSecurity( inventoryPlayer, te ) );
 		this.customSortOrder = false;
 		this.reservedSpace = 33;
-		
+
 		// increase size so that the slot is over the gui.
 		this.xSize += 56;
 		this.standardSize = this.xSize;

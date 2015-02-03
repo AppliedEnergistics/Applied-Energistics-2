@@ -40,7 +40,7 @@ public class ConfigManager implements IConfigManager
 
 	/**
 	 * read all settings using config manager.
-	 * 
+	 *
 	 * @param tagCompound to be read from compound
 	 */
 	@Override
@@ -77,7 +77,7 @@ public class ConfigManager implements IConfigManager
 
 	/**
 	 * save all settings using config manager.
-	 * 
+	 *
 	 * @param tagCompound to be written to compound
 	 */
 	@Override

@@ -1,18 +1,18 @@
 /*
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2013 AlgorithmX2
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -42,7 +42,7 @@ public interface IStorageHelper
 
 	/**
 	 * load a crafting link from nbt data.
-	 * 
+	 *
 	 * @param data to be loaded data
 	 * @return crafting link
 	 */
@@ -51,7 +51,7 @@ public interface IStorageHelper
 	/**
 	 * @param is
 	 *            An ItemStack
-	 * 
+	 *
 	 * @return a new INSTANCE of {@link IAEItemStack} from a MC {@link ItemStack}
 	 */
 	IAEItemStack createItemStack(ItemStack is);
@@ -59,7 +59,7 @@ public interface IStorageHelper
 	/**
 	 * @param is
 	 *            A FluidStack
-	 * 
+	 *
 	 * @return a new INSTANCE of {@link IAEFluidStack} from a Forge {@link FluidStack}
 	 */
 	IAEFluidStack createFluidStack(FluidStack is);
@@ -76,7 +76,7 @@ public interface IStorageHelper
 
 	/**
 	 * Read a AE Item Stack from a byte stream, returns a AE item stack or null.
-	 * 
+	 *
 	 * @param input to be loaded data
 	 * @return item based of data
 	 * @throws IOException if file could not be read
@@ -85,7 +85,7 @@ public interface IStorageHelper
 
 	/**
 	 * Read a AE Fluid Stack from a byte stream, returns a AE fluid stack or null.
-	 * 
+	 *
 	 * @param input to be loaded data
 	 * @return fluid based on data
 	 * @throws IOException if file could not be written
@@ -94,7 +94,7 @@ public interface IStorageHelper
 
 	/**
 	 * use energy from energy, to remove request items from cell, at the request of src.
-	 * 
+	 *
 	 * @param energy to be drained energy source
 	 * @param cell cell of requested items
 	 * @param request requested items
@@ -105,7 +105,7 @@ public interface IStorageHelper
 
 	/**
 	 * use energy from energy, to inject input items into cell, at the request of src
-	 * 
+	 *
 	 * @param energy to be added energy source
 	 * @param cell injected cell
 	 * @param input to be injected items

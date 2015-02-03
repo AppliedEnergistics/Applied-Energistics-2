@@ -47,7 +47,7 @@ public interface IPathItem
 
 	/**
 	 * get the grid flags for this IPathItem.
-	 * 
+	 *
 	 * @return the flag set.
 	 */
 	public EnumSet<GridFlags> getFlags();

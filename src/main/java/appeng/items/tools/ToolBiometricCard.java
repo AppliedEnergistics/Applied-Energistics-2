@@ -89,8 +89,8 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	private void encode(ItemStack is, EntityPlayer p)
 	{
 		GameProfile username = this.getProfile( is );
-		
-		if (username != null && username.equals(p.getGameProfile())) 
+
+		if (username != null && username.equals(p.getGameProfile()))
 			this.setProfile( is, null );
 		else
 			this.setProfile( is, p.getGameProfile() );
@@ -157,7 +157,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 		if ( profile!= null )
 		{
 			NBTTagCompound pNBT = new NBTTagCompound();
-			NBTUtil.func_152460_a( pNBT, profile );					
+			NBTUtil.func_152460_a( pNBT, profile );
 			tag.setTag( "profile", pNBT );
 		}
 		else

@@ -59,7 +59,7 @@ public enum IntegrationType
 	Mekanism(IntegrationSide.BOTH, "Mekanism", "Mekanism"),
 
 	ImmibisMicroblocks(IntegrationSide.BOTH, "ImmibisMicroblocks", "ImmibisMicroblocks"),
-	
+
 	BetterStorage(IntegrationSide.BOTH, "BetterStorage", "betterstorage" );
 
 	public final IntegrationSide side;

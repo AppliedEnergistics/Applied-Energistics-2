@@ -190,7 +190,7 @@ public class SlotRestrictedInput extends AppEngSlot
 		case INSCRIBER_INPUT:
 			return true;/*
 						 * for (ItemStack is : Inscribe.inputs) if ( Platform.isSameItemPrecise( is, i ) ) return true;
-						 * 
+						 *
 						 * return false;
 						 */
 

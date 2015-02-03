@@ -72,7 +72,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	{
 		return false;
 	}
-	
+
 	@Override
 	public ItemStack onItemRightClick( ItemStack item, World w, EntityPlayer player )
 	{

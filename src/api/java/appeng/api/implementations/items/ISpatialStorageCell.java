@@ -1,18 +1,18 @@
 /*
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2013 AlgorithmX2
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -55,7 +55,7 @@ public interface ISpatialStorageCell
 
 	/**
 	 * get the currently stored size.
-	 * 
+	 *
 	 * @param is spatial storage cell
 	 * @return size of spatial
 	 */
@@ -63,7 +63,7 @@ public interface ISpatialStorageCell
 
 	/**
 	 * Minimum coordinates in its world for the storage cell.
-	 * 
+	 *
 	 * @param is spatial storage cell
 	 * @return minimum coordinate of dimension
 	 */
@@ -71,7 +71,7 @@ public interface ISpatialStorageCell
 
 	/**
 	 * Maximum coordinates in its world for the storage cell.
-	 * 
+	 *
 	 * @param is spatial storage cell
 	 * @return maximum coordinate of dimension
 	 */
@@ -79,7 +79,7 @@ public interface ISpatialStorageCell
 
 	/**
 	 * Perform a spatial swap with the contents of the cell, and the world.
-	 * 
+	 *
 	 * @param is spatial storage cell
 	 * @param w world of spatial
 	 * @param min min coord

@@ -47,7 +47,7 @@ public class GridStorage implements IGridStorage
 
 	/**
 	 * for use with world settings
-	 * 
+	 *
 	 * @param id ID of grid storage
 	 * @param gss grid storage search
 	 */
@@ -59,7 +59,7 @@ public class GridStorage implements IGridStorage
 
 	/**
 	 * for use with world settings
-	 * 
+	 *
 	 * @param input array of bytes string
 	 * @param id ID of grid storage
 	 * @param gss grid storage search

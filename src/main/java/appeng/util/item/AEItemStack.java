@@ -90,7 +90,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 		/*
 		 * Super hackery.
-		 * 
+		 *
 		 * is.itemID = appeng.api.Materials.matQuartz.itemID; damageValue = is.getItemDamage(); is.itemID = itemID;
 		 */
 

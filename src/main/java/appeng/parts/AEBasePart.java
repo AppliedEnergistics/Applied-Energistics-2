@@ -311,7 +311,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 
 	/**
 	 * depending on the from, different settings will be accepted, don't call this with null
-	 * 
+	 *
 	 * @param from source of settings
 	 * @param compound compound of source
 	 */
@@ -343,7 +343,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 
 	/**
 	 * null means nothing to store...
-	 * 
+	 *
 	 * @param from source of settings
 	 * @return compound of source
 	 */

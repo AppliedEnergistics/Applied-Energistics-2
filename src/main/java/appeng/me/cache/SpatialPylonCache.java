@@ -175,14 +175,14 @@ public class SpatialPylonCache implements ISpatialCache
 			reqY = this.captureMax.y - this.captureMin.y;
 			reqZ = this.captureMax.z - this.captureMin.z;
 			requirePylonBlocks = Math.max( 6, ((reqX * reqZ + reqX * reqY + reqY * reqZ) * 3) / 8 );
-			
+
 			this.efficiency = (double) pylonBlocks / (double) requirePylonBlocks;
-			
+
 			if ( this.efficiency > 1.0 )
 				this.efficiency = 1.0;
 			if ( this.efficiency < 0.0 )
 				this.efficiency = 0.0;
-			
+
 			minPower = (double) reqX * (double) reqY * reqZ * AEConfig.instance.spatialPowerMultiplier;
 			maxPower = Math.pow( minPower, AEConfig.instance.spatialPowerExponent );
 		}

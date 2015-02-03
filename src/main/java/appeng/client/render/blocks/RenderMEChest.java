@@ -101,7 +101,7 @@ public class RenderMEChest extends BaseBlockRender
 
 		/*
 		 * 1.7.2
-		 * 
+		 *
 		 * else if ( forward == ForgeDirection.EAST && up == ForgeDirection.UP ) flippableIcon.setFlip( true, false ); else if (
 		 * forward == ForgeDirection.NORTH && up == ForgeDirection.UP ) flippableIcon.setFlip( true, false );
 		 */

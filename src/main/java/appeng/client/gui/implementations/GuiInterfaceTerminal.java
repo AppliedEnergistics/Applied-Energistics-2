@@ -347,7 +347,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	 *
 	 * If this cache should be empty, it will populate it with an earlier cache if available or at least the cache for
 	 * the empty string.
-	 * 
+	 *
 	 * @param searchTerm
 	 *            the corresponding search
 	 * @return a Set matching a superset of the search term

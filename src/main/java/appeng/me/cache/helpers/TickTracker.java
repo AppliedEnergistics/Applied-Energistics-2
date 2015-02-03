@@ -80,14 +80,14 @@ public class TickTracker implements Comparable<TickTracker>
 			AEBasePart part = (AEBasePart)this.gt;
 			part.addEntityCrashInfo( crashreportcategory );
 		}
-		
+
 		crashreportcategory.addCrashSection( "CurrentTickRate", this.current_rate );
 		crashreportcategory.addCrashSection( "MinTickRate", this.request.minTickRate );
 		crashreportcategory.addCrashSection( "MaxTickRate", this.request.maxTickRate );
 		crashreportcategory.addCrashSection( "MachineType", this.gt.getClass().getName() );
 		crashreportcategory.addCrashSection( "GridBlockType", this.node.getGridBlock().getClass().getName() );
 		crashreportcategory.addCrashSection( "ConnectedSides", this.node.getConnectedSides() );
-		
+
 		DimensionalCoord dc = this.node.getGridBlock().getLocation();
 		if ( dc != null )
 			crashreportcategory.addCrashSection( "Location", dc );

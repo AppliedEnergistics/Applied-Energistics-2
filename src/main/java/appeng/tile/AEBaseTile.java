@@ -285,7 +285,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	/**
 	 * By default all blocks can have orientation, this handles saving, and loading, as well as synchronization.
-	 * 
+	 *
 	 * @return true if tile can be rotated
 	 */
 	@Override
@@ -375,7 +375,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	/**
 	 * returns the contents of the tile entity, into the world, defaults to dropping everything in the inventory.
-	 * 
+	 *
 	 * @param w world
 	 * @param x x pos of tile entity
 	 * @param y y pos of tile entity
@@ -411,7 +411,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	/**
 	 * depending on the from, different settings will be accepted, don't call this with null
-	 * 
+	 *
 	 * @param from source of settings
 	 * @param compound compound of source
 	 */
@@ -446,7 +446,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	/**
 	 * null means nothing to store...
-	 * 
+	 *
 	 * @param from source of settings
 	 * @return compound of source
 	 */

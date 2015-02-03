@@ -1,18 +1,18 @@
 /*
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2013 AlgorithmX2
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -42,20 +42,20 @@ public interface IStorageGrid extends IGridCache, IStorageMonitorable
 	 * Used to inform the network of alterations to the storage system that fall outside of the standard Network
 	 * operations, Examples, ME Chest inputs from the world, or a Storage Bus detecting modifications made to the chest
 	 * by an outside force.
-	 * 
+	 *
 	 * Expects the input to have either a negative or a positive stack size to correspond to the injection, or
 	 * extraction operation.
-	 * 
+	 *
 	 * @param input injected items
 	 */
 	void postAlterationOfStoredItems(StorageChannel chan, Iterable<? extends IAEStack> input, BaseActionSource src);
 
 	/**
 	 * Used to add a cell provider to the storage system
-	 * 
+	 *
 	 * THIS IT NOT FOR USE {@link IGridHost} THAT PROVIDE {@link ICellContainer} - those are automatically handled by
 	 * the storage system.
-	 * 
+	 *
 	 * @param cc to be added cell provider
 	 */
 	void registerCellProvider(ICellProvider cc);

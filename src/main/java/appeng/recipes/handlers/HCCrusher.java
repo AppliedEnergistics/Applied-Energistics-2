@@ -66,7 +66,7 @@ public class HCCrusher implements ICraftHandler, IWebsiteSerializer
 				NBTTagCompound toRegister = new NBTTagCompound();
 
 				ItemStack endStack = this.pro_output[0].getItemStack();
-				
+
 				NBTTagCompound itemFrom = new NBTTagCompound();
 				NBTTagCompound itemTo = new NBTTagCompound();
 
@@ -76,7 +76,7 @@ public class HCCrusher implements ICraftHandler, IWebsiteSerializer
 				toRegister.setTag("itemFrom", itemFrom);
 				toRegister.setTag("itemTo", itemTo);
 				toRegister.setFloat("pressureRatio", 1.0F);
-				
+
 				FMLInterModComms.sendMessage("HydCraft", "registerCrushingRecipe", toRegister);
 			}
 			catch (java.lang.RuntimeException err)

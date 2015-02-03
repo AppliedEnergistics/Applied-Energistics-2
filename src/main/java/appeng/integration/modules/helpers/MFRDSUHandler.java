@@ -43,7 +43,7 @@ public class MFRDSUHandler implements IExternalStorageHandler
 	{
 		if ( chan == StorageChannel.ITEMS )
 			return new MEMonitorIInventory( new IMEAdaptor( DSU.instance.getDSU( te ), src ) );
-		
+
 		return null;
 	}
 }

@@ -28,7 +28,7 @@ public class GridStorageSearch
 
 	/**
 	 * for use with the world settings
-	 * 
+	 *
 	 * @param id ID of grid storage search
 	 */
 	public GridStorageSearch(long id) {

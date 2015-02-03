@@ -67,7 +67,7 @@ public enum GuiText
 	InterfaceTerminalHint, Range, TransparentFacades, TransparentFacadesHint,
 
 	NoCraftingJobs, CPUs, FacadeCrafting, inWorldCraftingPresses, ChargedQuartzFind,
-	
+
 	Included, Excluded, Partitioned, Precise, Fuzzy;
 
 	final String root;

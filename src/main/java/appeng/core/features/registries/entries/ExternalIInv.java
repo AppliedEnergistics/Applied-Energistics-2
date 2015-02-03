@@ -42,10 +42,10 @@ public class ExternalIInv implements IExternalStorageHandler
 	public IMEInventory getInventory(TileEntity te, ForgeDirection d, StorageChannel channel, BaseActionSource src)
 	{
 		InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, d );
-		
+
 		if ( channel == StorageChannel.ITEMS && ad != null )
 			return new MEMonitorIInventory( ad );
-		
+
 		return null;
 	}
 

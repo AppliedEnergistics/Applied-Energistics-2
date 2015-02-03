@@ -151,7 +151,7 @@ public class StorageHelper
 
 	/**
 	 * Mostly from dimensional doors.. which mostly got it form X-Comp.
-	 * 
+	 *
 	 * @param entity to be teleported entity
 	 * @param link destination
 	 * @return teleported entity
@@ -331,7 +331,7 @@ public class StorageHelper
 		/*
 		 * IChunkProvider cp = destination.getChunkProvider(); if ( cp instanceof ChunkProviderServer ) { ChunkProviderServer
 		 * srv = (ChunkProviderServer) cp; srv.unloadAllChunks(); }
-		 * 
+		 *
 		 * cp.unloadQueuedChunks();
 		 */
 

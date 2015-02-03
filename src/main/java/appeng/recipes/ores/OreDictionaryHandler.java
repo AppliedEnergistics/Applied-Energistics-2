@@ -41,7 +41,7 @@ public class OreDictionaryHandler
 
 	/**
 	 * Just limit what items are sent to the final listeners, I got sick of strange items showing up...
-	 * 
+	 *
 	 * @param name name about cared item
 	 * @return true if it should care
 	 */
@@ -69,7 +69,7 @@ public class OreDictionaryHandler
 	/**
 	 * Adds a new IOreListener and immediately notifies it of any previous ores, any ores added latter will be added at
 	 * that point.
-	 * 
+	 *
 	 * @param n to be added ore listener
 	 */
 	public void observe(IOreListener n)

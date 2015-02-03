@@ -43,7 +43,7 @@ public class InvLayerData
 
 	/**
 	 * check if a slot index is valid, prevent crashes from bad code :)
-	 * 
+	 *
 	 * @param slot slot index
 	 * @return true, if the slot exists.
 	 */

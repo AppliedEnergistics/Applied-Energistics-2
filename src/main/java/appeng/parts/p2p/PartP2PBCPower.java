@@ -182,7 +182,7 @@ public class PartP2PBCPower extends PartP2PTunnel<PartP2PBCPower> implements IPo
 			IBatteryObject bo = MjAPI.getMjBattery( te, MjAPI.DEFAULT_POWER_FRAMEWORK, this.side.getOpposite() );
 			if ( bo != null )
 				return bo;
-			
+
 			return ((IMJ6) AppEng.instance.getIntegration( IntegrationType.MJ6 )).provider( te, this.side.getOpposite() );
 		}
 		return null;

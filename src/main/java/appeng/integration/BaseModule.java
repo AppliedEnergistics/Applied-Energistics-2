@@ -30,5 +30,5 @@ public abstract class BaseModule implements IIntegrationModule {
 
 	@Override
 	public abstract  void postInit();
-	
+
 }
