@@ -45,52 +45,52 @@ public class AEItemResolver implements ISubItemResolver
 		{
 			if ( itemName.startsWith( "PaintBall." ) )
 			{
-				return this.paintBall( AEApi.instance().items().itemPaintBall, itemName.substring( itemName.indexOf( "." ) + 1 ), false );
+				return this.paintBall( AEApi.instance().definitions().items().coloredPaintBall().get(), itemName.substring( itemName.indexOf( "." ) + 1 ), false );
 			}
 
 			if ( itemName.startsWith( "LumenPaintBall." ) )
 			{
-				return this.paintBall( AEApi.instance().items().itemPaintBall, itemName.substring( itemName.indexOf( "." ) + 1 ), true );
+				return this.paintBall( AEApi.instance().definitions().items().coloredLumenPaintBall().get(), itemName.substring( itemName.indexOf( "." ) + 1 ), true );
 			}
 
 			if ( itemName.equals( "CableGlass" ) )
 			{
-				return new ResolverResultSet( "CableGlass", AEApi.instance().parts().partCableGlass.allStacks( 1 ) );
+				return new ResolverResultSet( "CableGlass", AEApi.instance().definitions().parts().cableGlass().get().allStacks( 1 ) );
 			}
 
 			if ( itemName.startsWith( "CableGlass." ) )
 			{
-				return this.cableItem( AEApi.instance().parts().partCableGlass, itemName.substring( itemName.indexOf( "." ) + 1 ) );
+				return this.cableItem( AEApi.instance().definitions().parts().cableGlass().get(), itemName.substring( itemName.indexOf( "." ) + 1 ) );
 			}
 
 			if ( itemName.equals( "CableCovered" ) )
 			{
-				return new ResolverResultSet( "CableCovered", AEApi.instance().parts().partCableCovered.allStacks( 1 ) );
+				return new ResolverResultSet( "CableCovered", AEApi.instance().definitions().parts().cableCovered().get().allStacks( 1 ) );
 			}
 
 			if ( itemName.startsWith( "CableCovered." ) )
 			{
-				return this.cableItem( AEApi.instance().parts().partCableCovered, itemName.substring( itemName.indexOf( "." ) + 1 ) );
+				return this.cableItem( AEApi.instance().definitions().parts().cableCovered().get(), itemName.substring( itemName.indexOf( "." ) + 1 ) );
 			}
 
 			if ( itemName.equals( "CableSmart" ) )
 			{
-				return new ResolverResultSet( "CableSmart", AEApi.instance().parts().partCableSmart.allStacks( 1 ) );
+				return new ResolverResultSet( "CableSmart", AEApi.instance().definitions().parts().cableSmart().get().allStacks( 1 ) );
 			}
 
 			if ( itemName.startsWith( "CableSmart." ) )
 			{
-				return this.cableItem( AEApi.instance().parts().partCableSmart, itemName.substring( itemName.indexOf( "." ) + 1 ) );
+				return this.cableItem( AEApi.instance().definitions().parts().cableSmart().get(), itemName.substring( itemName.indexOf( "." ) + 1 ) );
 			}
 
 			if ( itemName.equals( "CableDense" ) )
 			{
-				return new ResolverResultSet( "CableDense", AEApi.instance().parts().partCableDense.allStacks( 1 ) );
+				return new ResolverResultSet( "CableDense", AEApi.instance().definitions().parts().cableDense().get().allStacks( 1 ) );
 			}
 
 			if ( itemName.startsWith( "CableDense." ) )
 			{
-				return this.cableItem( AEApi.instance().parts().partCableDense, itemName.substring( itemName.indexOf( "." ) + 1 ) );
+				return this.cableItem( AEApi.instance().definitions().parts().cableDense().get(), itemName.substring( itemName.indexOf( "." ) + 1 ) );
 			}
 
 			if ( itemName.startsWith( "ItemCrystalSeed." ) )

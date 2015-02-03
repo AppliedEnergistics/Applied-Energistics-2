@@ -44,7 +44,7 @@ import buildcraft.transport.TileGenericPipe;
 
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
-import appeng.api.definitions.Blocks;
+import appeng.api.definitions.IBlocks;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.parts.IFacadePart;
 import appeng.api.util.AEItemDefinition;
@@ -230,11 +230,11 @@ public class BC extends BaseModule implements IBC
 		AEApi.instance().partHelper().registerNewLayer( "appeng.parts.layers.LayerIPipeConnection", "buildcraft.api.transport.IPipeConnection" );
 		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new BCPipeHandler() );
 
-		Blocks b = AEApi.instance().blocks();
-		this.addFacade( b.blockFluix.stack( 1 ) );
-		this.addFacade( b.blockQuartz.stack( 1 ) );
-		this.addFacade( b.blockQuartzChiseled.stack( 1 ) );
-		this.addFacade( b.blockQuartzPillar.stack( 1 ) );
+		IBlocks b = AEApi.instance().definitions().blocks();
+		this.addFacade( b.fluix().get().stack( 1 ) );
+		this.addFacade( b.quartz().get().stack( 1 ) );
+		this.addFacade( b.quartzChiseled().get().stack( 1 ) );
+		this.addFacade( b.quartzPillar().get().stack( 1 ) );
 
 		try
 		{
@@ -245,7 +245,7 @@ public class BC extends BaseModule implements IBC
 			// not supported?
 		}
 
-		Block skyStone = b.blockSkyStone.block();
+		Block skyStone = b.skyStone().get().block();
 		if ( skyStone != null )
 		{
 			this.addFacade( new ItemStack( skyStone, 1, 0 ) );
@@ -259,8 +259,8 @@ public class BC extends BaseModule implements IBC
 	{
 		SchematicRegistry.declareBlueprintSupport( AppEng.MOD_ID );
 
-		Blocks blocks = AEApi.instance().blocks();
-		Block cable = blocks.blockMultiPart.block();
+		IBlocks blocks = AEApi.instance().definitions().blocks();
+		Block cable = blocks.multiPart().get().block();
 		for (Field f : blocks.getClass().getFields())
 		{
 			AEItemDefinition def;

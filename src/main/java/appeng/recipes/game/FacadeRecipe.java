@@ -41,8 +41,8 @@ public class FacadeRecipe implements IRecipe
 
 	public FacadeRecipe()
 	{
-		this.maybeFacade = Optional.fromNullable( AEApi.instance().items().itemFacade );
-		this.maybeAnchor = Optional.fromNullable( AEApi.instance().parts().partCableAnchor );
+		this.maybeFacade = AEApi.instance().definitions().items().facade();
+		this.maybeAnchor = AEApi.instance().definitions().parts().cableAnchor();
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class FacadeRecipe implements IRecipe
 			if ( anchorDefinition.sameAsStack( inv.getStackInSlot( 1 ) ) && anchorDefinition.sameAsStack( inv.getStackInSlot( 3 ) ) && anchorDefinition.sameAsStack( inv.getStackInSlot( 5 ) ) && anchorDefinition.sameAsStack( inv.getStackInSlot( 7 ) ) )
 			{
 				final Item itemDefinition = facadeDefinition.item();
-				final ItemFacade facade = (ItemFacade) itemDefinition;
+				final ItemFacade facade = ( ItemFacade ) itemDefinition;
 
 				ItemStack facades = facade.createFacadeForItem( inv.getStackInSlot( 4 ), !createFacade );
 				if ( facades != null && createFacade )

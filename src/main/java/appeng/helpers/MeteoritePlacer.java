@@ -402,7 +402,7 @@ public class MeteoritePlacer
 
 	Fallout type = new Fallout();
 
-	final Block skystone = AEApi.instance().blocks().blockSkyStone.block();
+	final Block skystone = AEApi.instance().definitions().blocks().skyStone().get().block();
 	final Block skychest;
 
 	double real_sizeOfMeteorite = (Math.random() * 6.0) + 2;
@@ -413,10 +413,10 @@ public class MeteoritePlacer
 
 	public MeteoritePlacer() {
 
-		if ( AEApi.instance().blocks().blockSkyChest.block() == null )
+		if ( !AEApi.instance().definitions().blocks().skyChest().isPresent())
 			this.skychest = Blocks.chest;
 		else
-			this.skychest = AEApi.instance().blocks().blockSkyChest.block();
+			this.skychest = AEApi.instance().definitions().blocks().skyChest().get().block();
 
 		this.validSpawn.add( Blocks.stone );
 		this.validSpawn.add( Blocks.cobblestone );
@@ -685,16 +685,16 @@ public class MeteoritePlacer
 						switch (r % 4)
 						{
 						case 0:
-							toAdd = AEApi.instance().materials().materialCalcProcessorPress.stack( 1 );
+							toAdd = AEApi.instance().definitions().materials().calcProcessorPress().get().stack( 1 );
 							break;
 						case 1:
-							toAdd = AEApi.instance().materials().materialEngProcessorPress.stack( 1 );
+							toAdd = AEApi.instance().definitions().materials().engProcessorPress().get().stack( 1 );
 							break;
 						case 2:
-							toAdd = AEApi.instance().materials().materialLogicProcessorPress.stack( 1 );
+							toAdd = AEApi.instance().definitions().materials().logicProcessorPress().get().stack( 1 );
 							break;
 						case 3:
-							toAdd = AEApi.instance().materials().materialSiliconPress.stack( 1 );
+							toAdd = AEApi.instance().definitions().materials().siliconPress().get().stack( 1 );
 							break;
 						default:
 						}
@@ -716,7 +716,7 @@ public class MeteoritePlacer
 					switch ((int) (Math.random() * 1000) % 3)
 					{
 					case 0:
-						ap.addItems( AEApi.instance().blocks().blockSkyStone.stack( (int) (Math.random() * 12) + 1 ) );
+						ap.addItems( AEApi.instance().definitions().blocks().skyStone().get().stack( (int) (Math.random() * 12) + 1 ) );
 						break;
 					case 1:
 						List<ItemStack> possibles = new LinkedList<ItemStack>();

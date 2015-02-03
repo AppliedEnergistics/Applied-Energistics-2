@@ -89,6 +89,11 @@ public interface IAppEngApi
 	Parts parts();
 
 	/**
+	 * @return an accessible list of all AE definitions
+	 */
+	IDefinitions definitions();
+
+	/**
 	 * create a grid node for your {@link IGridHost}
 	 *
 	 * @param block grid block
@@ -106,4 +111,5 @@ public interface IAppEngApi
 	 * @throws appeng.api.exceptions.FailedConnection
 	 */
 	IGridConnection createGridConnection( IGridNode a, IGridNode b ) throws FailedConnection;
+
 }

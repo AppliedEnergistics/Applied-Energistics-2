@@ -78,7 +78,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 	public long clientStart;
 
-	static final ItemStack STACK_INSCRIBER = AEApi.instance().blocks().blockInscriber.stack( 1 );
+	static final ItemStack STACK_INSCRIBER = AEApi.instance().definitions().blocks().inscriber().get().stack( 1 );
 	private final IConfigManager settings = new ConfigManager( this );
 	private final UpgradeInventory upgrades = new UpgradeInventory( STACK_INSCRIBER, this, this.getUpgradeSlots() );
 
@@ -204,7 +204,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 		if ( i == 0 || i == 1 )
 		{
-			if ( AEApi.instance().materials().materialNamePress.sameAsStack( itemstack ) )
+			if ( AEApi.instance().definitions().materials().namePress().get().sameAsStack( itemstack ) )
 				return true;
 
 			for (ItemStack s : Inscribe.PLATES )
@@ -269,8 +269,8 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		if ( renamedItem != null && renamedItem.stackSize > 1 )
 			return null;
 
-		boolean isNameA = AEApi.instance().materials().materialNamePress.sameAsStack( PlateA );
-		boolean isNameB = AEApi.instance().materials().materialNamePress.sameAsStack( PlateB );
+		boolean isNameA = AEApi.instance().definitions().materials().namePress().get().sameAsStack( PlateA );
+		boolean isNameB = AEApi.instance().definitions().materials().namePress().get().sameAsStack( PlateB );
 
 		if ( (isNameA || isNameB) && (isNameA || PlateA == null) && (isNameB || PlateB == null) )
 		{

@@ -230,7 +230,7 @@ public class CompassService implements ThreadFactory
 		int low_y = cdy << 5;
 		int hi_y = low_y + 32;
 
-		Block skystone = AEApi.instance().blocks().blockSkyStone.block();
+		Block skystone = AEApi.instance().definitions().blocks().skyStone().get().block();
 
 		// lower level...
 		Chunk c = w.getChunkFromBlockCoords( x, z );

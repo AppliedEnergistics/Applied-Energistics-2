@@ -54,7 +54,14 @@ public final class Api implements IAppEngApi
 	private final Items items;
 	private final Blocks blocks;
 	private final Parts parts;
-	private final ApiDefinitions definitions;
+
+	/**
+	 * Contains all definitions.
+	 *
+	 * This cannot be final as it can currently only be successfully, if the API is fully constructed and every helper
+	 * is available through the public API.
+	 */
+	private ApiDefinitions definitions;
 
 	private Api()
 	{
@@ -65,14 +72,21 @@ public final class Api implements IAppEngApi
 		this.storageHelper = new ApiStorage();
 		this.registryContainer = new RegistryContainer();
 		this.partHelper = new ApiPart();
+	}
+
+	/**
+	 * Package private to prevent calling it from anywhere else.
+	 */
+	void initDefinitions()
+	{
 		this.definitions = new ApiDefinitions( this.partHelper );
 	}
 
-	// private MovableTileRegistry MovableRegistry = new MovableTileRegistry();
-	private final RegistryContainer rc = new RegistryContainer();
-	private final ApiStorage storageHelper = new ApiStorage();
-
-	public final ApiPart partHelper = new ApiPart();
+	@Override
+	public IRegistryContainer registries()
+	{
+		return this.registryContainer;
+	}
 
 	@Override
 	public IStorageHelper storage()

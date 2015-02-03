@@ -40,8 +40,8 @@ final public class QuartzWorldGen implements IWorldGenerator
 	final WorldGenMinable oreCharged;
 
 	public QuartzWorldGen() {
-		Block normal = AEApi.instance().blocks().blockQuartzOre.block();
-		Block charged = AEApi.instance().blocks().blockQuartzOreCharged.block();
+		Block normal = AEApi.instance().definitions().blocks().quartzOre().get().block();
+		Block charged = AEApi.instance().definitions().blocks().quartzOreCharged().get().block();
 
 		if ( normal != null && charged != null )
 		{

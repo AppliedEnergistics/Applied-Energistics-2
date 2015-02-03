@@ -63,7 +63,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	public NBTTagCompound previousState = null;
 	public boolean isCoreBlock = false;
 
-	static final ItemStack STACK_CO_PROCESSOR = AEApi.instance().blocks().blockCraftingAccelerator.stack( 1 );
+	static final ItemStack STACK_CO_PROCESSOR = AEApi.instance().definitions().blocks().craftingAccelerator().get().stack( 1 );
 
 	@Override
 	protected AENetworkProxy createProxy()

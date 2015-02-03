@@ -140,8 +140,8 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 				otherSlot = this.top.getStack();
 
 			// name presses
-			if ( AEApi.instance().materials().materialNamePress.sameAsStack( otherSlot ) )
-				return AEApi.instance().materials().materialNamePress.sameAsStack( is );
+			if ( AEApi.instance().definitions().materials().namePress().get().sameAsStack( otherSlot ) )
+				return AEApi.instance().definitions().materials().namePress().get().sameAsStack( is );
 
 			// everything else
 			for (InscriberRecipe i : Inscribe.RECIPES )

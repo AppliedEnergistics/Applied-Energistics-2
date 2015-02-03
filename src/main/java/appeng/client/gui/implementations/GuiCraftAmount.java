@@ -84,25 +84,25 @@ public class GuiCraftAmount extends AEBaseGui
 
 		if ( target instanceof WirelessTerminalGuiObject )
 		{
-			myIcon = AEApi.instance().items().itemWirelessTerminal.stack( 1 );
+			myIcon = AEApi.instance().definitions().items().wirelessTerminal().get().stack( 1 );
 			this.OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
 		}
 
 		if ( target instanceof PartTerminal )
 		{
-			myIcon = AEApi.instance().parts().partTerminal.stack( 1 );
+			myIcon = AEApi.instance().definitions().parts().terminal().get().stack( 1 );
 			this.OriginalGui = GuiBridge.GUI_ME;
 		}
 
 		if ( target instanceof PartCraftingTerminal )
 		{
-			myIcon = AEApi.instance().parts().partCraftingTerminal.stack( 1 );
+			myIcon = AEApi.instance().definitions().parts().craftingTerminal().get().stack( 1 );
 			this.OriginalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
 		}
 
 		if ( target instanceof PartPatternTerminal )
 		{
-			myIcon = AEApi.instance().parts().partPatternTerminal.stack( 1 );
+			myIcon = AEApi.instance().definitions().parts().patternTerminal().get().stack( 1 );
 			this.OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
 		}
 

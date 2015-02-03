@@ -130,7 +130,7 @@ public class CachedPlane
 	final LinkedList<NextTickListEntry> ticks = new LinkedList<NextTickListEntry>();
 
 	final World world;
-	final Block matrixFrame = AEApi.instance().blocks().blockMatrixFrame.block();
+	final Block matrixFrame = AEApi.instance().definitions().blocks().matrixFrame().get().block();
 	final IMovableRegistry reg = AEApi.instance().registries().movable();
 
 	final LinkedList<WorldCoord> updates = new LinkedList<WorldCoord>();
@@ -220,7 +220,7 @@ public class CachedPlane
 				}
 
 				long k = this.world.getTotalWorldTime();
-				List list = this.world.getPendingBlockUpdates( c, false );
+				List<?> list = this.world.getPendingBlockUpdates( c, false );
 				if ( list != null )
 				{
 					for (Object o : list)

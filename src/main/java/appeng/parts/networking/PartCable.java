@@ -127,8 +127,8 @@ public class PartCable extends AEBasePart implements IPartCable
 			return CableBusTextures.MECable_Yellow.getIcon();
 		default:
 		}
-		return AEApi.instance().parts().partCableGlass.item( AEColor.Transparent ).getIconIndex(
-				AEApi.instance().parts().partCableGlass.stack( AEColor.Transparent, 1 ) );
+		return AEApi.instance().definitions().parts().cableGlass().get().item( AEColor.Transparent ).getIconIndex(
+				AEApi.instance().definitions().parts().cableGlass().get().stack( AEColor.Transparent, 1 ) );
 	}
 
 	public IIcon getTexture(AEColor c)
@@ -174,8 +174,8 @@ public class PartCable extends AEBasePart implements IPartCable
 			return CableBusTextures.MECovered_Yellow.getIcon();
 		default:
 		}
-		return AEApi.instance().parts().partCableCovered.item( AEColor.Transparent ).getIconIndex(
-				AEApi.instance().parts().partCableCovered.stack( AEColor.Transparent, 1 ) );
+		return AEApi.instance().definitions().parts().cableCovered().get().item( AEColor.Transparent ).getIconIndex(
+				AEApi.instance().definitions().parts().cableCovered().get().stack( AEColor.Transparent, 1 ) );
 	}
 
 	public IIcon getSmartTexture(AEColor c)
@@ -216,8 +216,8 @@ public class PartCable extends AEBasePart implements IPartCable
 			return CableBusTextures.MESmart_Yellow.getIcon();
 		default:
 		}
-		return AEApi.instance().parts().partCableCovered.item( AEColor.Transparent ).getIconIndex(
-				AEApi.instance().parts().partCableSmart.stack( AEColor.Transparent, 1 ) );
+		return AEApi.instance().definitions().parts().cableCovered().get().item( AEColor.Transparent ).getIconIndex(
+				AEApi.instance().definitions().parts().cableSmart().get().stack( AEColor.Transparent, 1 ) );
 	}
 
 	@Override
@@ -997,13 +997,13 @@ public class PartCable extends AEBasePart implements IPartCable
 			ItemStack newPart = null;
 
 			if ( this.getCableConnectionType() == AECableType.GLASS )
-				newPart = AEApi.instance().parts().partCableGlass.stack( newColor, 1 );
+				newPart = AEApi.instance().definitions().parts().cableGlass().get().stack( newColor, 1 );
 			else if ( this.getCableConnectionType() == AECableType.COVERED )
-				newPart = AEApi.instance().parts().partCableCovered.stack( newColor, 1 );
+				newPart = AEApi.instance().definitions().parts().cableCovered().get().stack( newColor, 1 );
 			else if ( this.getCableConnectionType() == AECableType.SMART )
-				newPart = AEApi.instance().parts().partCableSmart.stack( newColor, 1 );
+				newPart = AEApi.instance().definitions().parts().cableSmart().get().stack( newColor, 1 );
 			else if ( this.getCableConnectionType() == AECableType.DENSE )
-				newPart = AEApi.instance().parts().partCableDense.stack( newColor, 1 );
+				newPart = AEApi.instance().definitions().parts().cableDense().get().stack( newColor, 1 );
 
 			boolean hasPermission = true;
 

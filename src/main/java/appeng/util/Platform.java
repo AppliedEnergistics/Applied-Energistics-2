@@ -1755,7 +1755,7 @@ public class Platform
 			return false;
 
 		if ( type == AEFeature.CertusQuartzTools )
-			return AEApi.instance().materials().materialCertusQuartzCrystal.sameAsStack( b );
+			return AEApi.instance().definitions().materials().certusQuartzCrystal().get().sameAsStack( b );
 
 		if ( type == AEFeature.NetherQuartzTools )
 			return Items.quartz == b.getItem();
@@ -1767,16 +1767,16 @@ public class Platform
 	{
 		for (ItemStack stack : is)
 		{
-			if ( AEApi.instance().parts().partCableGlass.sameAs( AEColor.Transparent, stack ) )
+			if ( AEApi.instance().definitions().parts().cableGlass().get().sameAs( AEColor.Transparent, stack ) )
 				return stack;
 
-			if ( AEApi.instance().parts().partCableCovered.sameAs( AEColor.Transparent, stack ) )
+			if ( AEApi.instance().definitions().parts().cableCovered().get().sameAs( AEColor.Transparent, stack ) )
 				return stack;
 
-			if ( AEApi.instance().parts().partCableSmart.sameAs( AEColor.Transparent, stack ) )
+			if ( AEApi.instance().definitions().parts().cableSmart().get().sameAs( AEColor.Transparent, stack ) )
 				return stack;
 
-			if ( AEApi.instance().parts().partCableDense.sameAs( AEColor.Transparent, stack ) )
+			if ( AEApi.instance().definitions().parts().cableDense().get().sameAs( AEColor.Transparent, stack ) )
 				return stack;
 		}
 
@@ -1865,8 +1865,8 @@ public class Platform
 
 	public static boolean isRecipePrioritized(ItemStack what)
 	{
-		return AEApi.instance().materials().materialPurifiedCertusQuartzCrystal.sameAsStack( what )
-				|| AEApi.instance().materials().materialPurifiedFluixCrystal.sameAsStack( what )
-				|| AEApi.instance().materials().materialPurifiedNetherQuartzCrystal.sameAsStack( what );
+		return AEApi.instance().definitions().materials().purifiedCertusQuartzCrystal().get().sameAsStack( what )
+				|| AEApi.instance().definitions().materials().purifiedFluixCrystal().get().sameAsStack( what )
+				|| AEApi.instance().definitions().materials().purifiedNetherQuartzCrystal().get().sameAsStack( what );
 	}
 }

@@ -19,6 +19,8 @@
 package appeng.core;
 
 
+import com.google.common.base.Function;
+
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -34,6 +36,8 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.VillagerRegistry;
+
+import javax.annotation.Nullable;
 
 import appeng.api.AEApi;
 import appeng.api.IAppEngApi;
@@ -60,6 +64,7 @@ import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPartHelper;
+import appeng.api.util.AEItemDefinition;
 import appeng.block.networking.BlockCableBus;
 import appeng.core.features.AEFeature;
 import appeng.core.features.IAEFeature;
@@ -131,6 +136,9 @@ public final class Registration
 		this.registerSpatial( false );
 
 		final Api api = Api.INSTANCE;
+		// initialize definitions, see ApiDefinitions for reasons.
+		api.initDefinitions();
+
 		IRecipeHandlerRegistry recipeRegistry = api.registries().recipes();
 		this.registerCraftHandlers( recipeRegistry );
 
@@ -537,7 +545,7 @@ public final class Registration
 		AEApi.instance().registries().cell().addCellHandler( new BasicCellHandler() );
 		AEApi.instance().registries().cell().addCellHandler( new CreativeCellHandler() );
 
-		AEApi.instance().registries().matterCannon().registerAmmo( AEApi.instance().materials().materialMatterBall.stack( 1 ), 32.0 );
+		AEApi.instance().registries().matterCannon().registerAmmo( AEApi.instance().definitions().materials().matterBall().get().stack( 1 ), 32.0 );
 
 		this.recipeHandler.injectRecipes();
 
@@ -558,95 +566,96 @@ public final class Registration
 
 		final IAppEngApi api = AEApi.instance();
 		final IRegistryContainer registries = api.registries();
-		final Parts parts = api.parts();
-		final Blocks blocks = api.blocks();
-		final Items items = api.items();
+		final IParts parts = api.definitions().parts();
+		final IBlocks blocks = api.definitions().blocks();
+		final IItems items = api.definitions().items();
 
 		// default settings..
-		( (P2PTunnelRegistry) registries.p2pTunnel() ).configure();
+		( ( P2PTunnelRegistry ) registries.p2pTunnel() ).configure();
 
 		// add to localization..
 		PlayerMessages.values();
 		GuiText.values();
 
 		Api.INSTANCE.getPartHelper().initFMPSupport();
-		( (BlockCableBus) blocks.blockMultiPart.block() ).setupTile();
+		( ( BlockCableBus ) blocks.multiPart().get().block() ).setupTile();
 
 		// Interface
-		Upgrades.CRAFTING.registerItem( parts.partInterface, 1 );
-		Upgrades.CRAFTING.registerItem( blocks.blockInterface, 1 );
+		parts.iface().transform( new UpgradesTransformationFunction( Upgrades.CRAFTING, 1 ) );
+		blocks.iface().transform( new UpgradesTransformationFunction( Upgrades.CRAFTING, 1 ) );
 
 		// IO Port!
-		Upgrades.SPEED.registerItem( blocks.blockIOPort, 3 );
-		Upgrades.REDSTONE.registerItem( blocks.blockIOPort, 1 );
+		blocks.iOPort().transform( new UpgradesTransformationFunction( Upgrades.SPEED, 3 ) );
+		blocks.iOPort().transform( new UpgradesTransformationFunction( Upgrades.REDSTONE, 1 ) );
 
 		// Level Emitter!
-		Upgrades.FUZZY.registerItem( parts.partLevelEmitter, 1 );
-		Upgrades.CRAFTING.registerItem( parts.partLevelEmitter, 1 );
+		// IO Port!
+		parts.levelEmitter().transform( new UpgradesTransformationFunction( Upgrades.FUZZY, 1 ) );
+		parts.levelEmitter().transform( new UpgradesTransformationFunction( Upgrades.CRAFTING, 1 ) );
 
 		// Import Bus
-		Upgrades.FUZZY.registerItem( parts.partImportBus, 1 );
-		Upgrades.REDSTONE.registerItem( parts.partImportBus, 1 );
-		Upgrades.CAPACITY.registerItem( parts.partImportBus, 2 );
-		Upgrades.SPEED.registerItem( parts.partImportBus, 4 );
+		parts.importBus().transform( new UpgradesTransformationFunction( Upgrades.FUZZY, 1 ) );
+		parts.importBus().transform( new UpgradesTransformationFunction( Upgrades.REDSTONE, 1 ) );
+		parts.importBus().transform( new UpgradesTransformationFunction( Upgrades.CAPACITY, 2 ) );
+		parts.importBus().transform( new UpgradesTransformationFunction( Upgrades.SPEED, 4 ) );
 
 		// Export Bus
-		Upgrades.FUZZY.registerItem( parts.partExportBus, 1 );
-		Upgrades.REDSTONE.registerItem( parts.partExportBus, 1 );
-		Upgrades.CAPACITY.registerItem( parts.partExportBus, 2 );
-		Upgrades.SPEED.registerItem( parts.partExportBus, 4 );
-		Upgrades.CRAFTING.registerItem( parts.partExportBus, 1 );
+		parts.exportBus().transform( new UpgradesTransformationFunction( Upgrades.FUZZY, 1 ) );
+		parts.exportBus().transform( new UpgradesTransformationFunction( Upgrades.REDSTONE, 1 ) );
+		parts.exportBus().transform( new UpgradesTransformationFunction( Upgrades.CAPACITY, 2 ) );
+		parts.exportBus().transform( new UpgradesTransformationFunction( Upgrades.SPEED, 4 ) );
+		parts.exportBus().transform( new UpgradesTransformationFunction( Upgrades.CRAFTING, 1 ) );
 
 		// Storage Cells
-		Upgrades.FUZZY.registerItem( items.itemCell1k, 1 );
-		Upgrades.INVERTER.registerItem( items.itemCell1k, 1 );
+		items.cell1k().transform( new UpgradesTransformationFunction( Upgrades.FUZZY, 1 ) );
+		items.cell1k().transform( new UpgradesTransformationFunction( Upgrades.INVERTER, 1 ) );
 
-		Upgrades.FUZZY.registerItem( items.itemCell4k, 1 );
-		Upgrades.INVERTER.registerItem( items.itemCell4k, 1 );
+		items.cell4k().transform( new UpgradesTransformationFunction( Upgrades.FUZZY, 1 ) );
+		items.cell4k().transform( new UpgradesTransformationFunction( Upgrades.INVERTER, 1 ) );
 
-		Upgrades.FUZZY.registerItem( items.itemCell16k, 1 );
-		Upgrades.INVERTER.registerItem( items.itemCell16k, 1 );
+		items.cell16k().transform( new UpgradesTransformationFunction( Upgrades.FUZZY, 1 ) );
+		items.cell16k().transform( new UpgradesTransformationFunction( Upgrades.INVERTER, 1 ) );
 
-		Upgrades.FUZZY.registerItem( items.itemCell64k, 1 );
-		Upgrades.INVERTER.registerItem( items.itemCell64k, 1 );
+		items.cell64k().transform( new UpgradesTransformationFunction( Upgrades.FUZZY, 1 ) );
+		items.cell64k().transform( new UpgradesTransformationFunction( Upgrades.INVERTER, 1 ) );
 
-		Upgrades.FUZZY.registerItem( items.itemPortableCell, 1 );
-		Upgrades.INVERTER.registerItem( items.itemPortableCell, 1 );
+		items.portableCell().transform( new UpgradesTransformationFunction( Upgrades.FUZZY, 1 ) );
+		items.portableCell().transform( new UpgradesTransformationFunction( Upgrades.INVERTER, 1 ) );
 
-		Upgrades.FUZZY.registerItem( items.itemViewCell, 1 );
-		Upgrades.INVERTER.registerItem( items.itemViewCell, 1 );
+		items.viewCell().transform( new UpgradesTransformationFunction( Upgrades.FUZZY, 1 ) );
+		items.viewCell().transform( new UpgradesTransformationFunction( Upgrades.INVERTER, 1 ) );
 
 		// Storage Bus
-		Upgrades.FUZZY.registerItem( parts.partStorageBus, 1 );
-		Upgrades.INVERTER.registerItem( parts.partStorageBus, 1 );
-		Upgrades.CAPACITY.registerItem( parts.partStorageBus, 5 );
+		parts.storageBus().transform( new UpgradesTransformationFunction( Upgrades.FUZZY, 1 ) );
+		parts.storageBus().transform( new UpgradesTransformationFunction( Upgrades.INVERTER, 1 ) );
+		parts.storageBus().transform( new UpgradesTransformationFunction( Upgrades.CAPACITY, 5 ) );
 
 		// Formation Plane
-		Upgrades.FUZZY.registerItem( parts.partFormationPlane, 1 );
-		Upgrades.INVERTER.registerItem( parts.partFormationPlane, 1 );
-		Upgrades.CAPACITY.registerItem( parts.partFormationPlane, 5 );
+		parts.formationPlane().transform( new UpgradesTransformationFunction( Upgrades.FUZZY, 1 ) );
+		parts.formationPlane().transform( new UpgradesTransformationFunction( Upgrades.INVERTER, 1 ) );
+		parts.formationPlane().transform( new UpgradesTransformationFunction( Upgrades.CAPACITY, 5 ) );
 
 		// Matter Cannon
-		Upgrades.FUZZY.registerItem( items.itemMassCannon, 1 );
-		Upgrades.INVERTER.registerItem( items.itemMassCannon, 1 );
-		Upgrades.SPEED.registerItem( items.itemMassCannon, 4 );
+		items.massCannon().transform( new UpgradesTransformationFunction( Upgrades.FUZZY, 1 ) );
+		items.massCannon().transform( new UpgradesTransformationFunction( Upgrades.INVERTER, 1 ) );
+		items.massCannon().transform( new UpgradesTransformationFunction( Upgrades.SPEED, 4 ) );
 
 		// Molecular Assembler
-		Upgrades.SPEED.registerItem( blocks.blockMolecularAssembler, 5 );
+		blocks.molecularAssembler().transform( new UpgradesTransformationFunction( Upgrades.SPEED, 5 ) );
 
 		// Inscriber
-		Upgrades.SPEED.registerItem( blocks.blockInscriber, 3 );
+		blocks.inscriber().transform( new UpgradesTransformationFunction( Upgrades.SPEED, 3 ) );
 
-		if ( items.itemWirelessTerminal != null )
+		if ( items.wirelessTerminal().isPresent() )
 		{
-			registries.wireless().registerWirelessHandler( (IWirelessTermHandler) items.itemWirelessTerminal.item() );
+			registries.wireless().registerWirelessHandler( ( IWirelessTermHandler ) items.wirelessTerminal().get().item() );
 		}
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.ChestLoot ) )
 		{
 			ChestGenHooks d = ChestGenHooks.getInfo( ChestGenHooks.MINESHAFT_CORRIDOR );
-			d.addItem( new WeightedRandomChestContent( api.materials().materialCertusQuartzCrystal.stack( 1 ), 1, 4, 2 ) );
-			d.addItem( new WeightedRandomChestContent( api.materials().materialCertusQuartzDust.stack( 1 ), 1, 4, 2 ) );
+			d.addItem( new WeightedRandomChestContent( api.definitions().materials().certusQuartzCrystal().get().stack( 1 ), 1, 4, 2 ) );
+			d.addItem( new WeightedRandomChestContent( api.definitions().materials().certusQuartzDust().get().stack( 1 ), 1, 4, 2 ) );
 		}
 
 		// add villager trading to black smiths for a few basic materials
@@ -720,5 +729,25 @@ public final class Registration
 		 * initial recipe bake, if ore dictionary changes after this it re-bakes.
 		 */
 		OreDictionaryHandler.INSTANCE.bakeRecipes();
+	}
+
+	private static final class UpgradesTransformationFunction implements Function<AEItemDefinition, Object>
+	{
+		private final Upgrades upgrade;
+		private final int maxSupported;
+
+		public UpgradesTransformationFunction( Upgrades upgrade, int maxSupported )
+		{
+			this.upgrade = upgrade;
+			this.maxSupported = maxSupported;
+		}
+
+		@Nullable
+		@Override
+		public Object apply( AEItemDefinition input )
+		{
+			this.upgrade.registerItem( input, this.maxSupported );
+			return true;
+		}
 	}
 }

@@ -99,7 +99,7 @@ public class FacadeContainer implements IFacadeContainer
 				}
 				else if ( !isBC )
 				{
-					ItemFacade ifa = (ItemFacade) AEApi.instance().items().itemFacade.item();
+					ItemFacade ifa = (ItemFacade) AEApi.instance().definitions().items().facade().get().item();
 					ItemStack facade = ifa.createFromIDs( ids );
 					if ( facade != null )
 					{

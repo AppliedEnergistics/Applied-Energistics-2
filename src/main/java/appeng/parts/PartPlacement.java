@@ -41,7 +41,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
 import appeng.api.AEApi;
-import appeng.api.definitions.Items;
+import appeng.api.definitions.IItems;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
@@ -96,10 +96,10 @@ public class PartPlacement
 			else
 			{
 				ItemStack held = event.entityPlayer.getHeldItem();
-				final Items items = AEApi.instance().items();
+				final IItems items = AEApi.instance().definitions().items();
 
-				final boolean sameAsMemoryCard = items.itemMemoryCard != null && items.itemMemoryCard.sameAsStack( held );
-				final boolean sameAsColorApp = items.itemColorApplicator != null && items.itemColorApplicator.sameAsStack( held );
+				final boolean sameAsMemoryCard = items.memoryCard().isPresent() && items.memoryCard().get().sameAsStack( held );
+				final boolean sameAsColorApp = items.colorApplicator().isPresent() && items.colorApplicator().get().sameAsStack( held );
 
 				final boolean supportedItem = sameAsMemoryCard || sameAsColorApp;
 
@@ -283,7 +283,7 @@ public class PartPlacement
 
 		if ( host == null && pass == PlaceType.PLACE_ITEM )
 		{
-			ItemStack is = AEApi.instance().blocks().blockMultiPart.stack( 1 );
+			ItemStack is = AEApi.instance().definitions().blocks().multiPart().get().stack( 1 );
 			ItemBlock ib = (ItemBlock) is.getItem();
 			ForgeDirection offset = ForgeDirection.UNKNOWN;
 
@@ -309,7 +309,7 @@ public class PartPlacement
 			if ( host == null && tile != null && AppEng.instance.isIntegrationEnabled( IntegrationType.ImmibisMicroblocks ) )
 				host = ((IImmibisMicroblocks) AppEng.instance.getIntegration( IntegrationType.ImmibisMicroblocks )).getOrCreateHost( player, face, tile );
 
-			if ( host == null && AEApi.instance().blocks().blockMultiPart.block().canPlaceBlockAt( world, te_x, te_y, te_z )
+			if ( host == null && AEApi.instance().definitions().blocks().multiPart().get().block().canPlaceBlockAt( world, te_x, te_y, te_z )
 					&& ib.placeBlockAt( is, player, world, te_x, te_y, te_z, side.ordinal(), 0.5f, 0.5f, 0.5f, 0 ) )
 			{
 				if ( !world.isRemote )
@@ -379,7 +379,7 @@ public class PartPlacement
 			ForgeDirection mySide = host.addPart( held, side, player );
 			if ( mySide != null )
 			{
-				SoundType ss = AEApi.instance().blocks().blockMultiPart.block().stepSound;
+				SoundType ss = AEApi.instance().definitions().blocks().multiPart().get().block().stepSound;
 
 				// ss.getPlaceSound()
 				world.playSoundEffect( 0.5 + x, 0.5 + y, 0.5 + z, ss.func_150496_b(), (ss.getVolume() + 1.0F) / 2.0F, ss.getPitch() * 0.8F );

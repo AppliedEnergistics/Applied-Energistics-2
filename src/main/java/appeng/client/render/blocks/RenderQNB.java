@@ -109,14 +109,14 @@ public class RenderQNB extends BaseBlockRender
 
 		renderer.renderAllFaces = true;
 
-		if ( tqb.getBlockType() == AEApi.instance().blocks().blockQuantumLink.block() )
+		if ( tqb.getBlockType() == AEApi.instance().definitions().blocks().quantumLink().get().block() )
 		{
 			if ( tqb.isFormed() )
 			{
-				AEColoredItemDefinition glassCableDefinition = AEApi.instance().parts().partCableGlass;
+				AEColoredItemDefinition glassCableDefinition = AEApi.instance().definitions().parts().cableGlass().get();
 				Item transparentGlassCable = glassCableDefinition.item( AEColor.Transparent );
 
-				AEColoredItemDefinition coveredCableDefinition = AEApi.instance().parts().partCableCovered;
+				AEColoredItemDefinition coveredCableDefinition = AEApi.instance().definitions().parts().cableCovered().get();
 				Item transparentCoveredCable = coveredCableDefinition.item( AEColor.Transparent );
 
 				EnumSet<ForgeDirection> sides = tqb.getConnections();
@@ -144,7 +144,7 @@ public class RenderQNB extends BaseBlockRender
 				// renderCableAt(0.11D, world, x, y, z, block, modelId,
 				// renderer,
 				// AppEngTextureRegistry.Blocks.MECable.get(), true, 0.0D);
-				AEColoredItemDefinition coveredCableDefinition = AEApi.instance().parts().partCableCovered;
+				AEColoredItemDefinition coveredCableDefinition = AEApi.instance().definitions().parts().cableCovered().get();
 				Item transparentCoveredCable = coveredCableDefinition.item( AEColor.Transparent );
 
 				this.renderCableAt( 0.188D, world, x, y, z, block, renderer, transparentCoveredCable.getIconIndex( coveredCableDefinition.stack( AEColor.Transparent, 1 ) ), 0.05D,

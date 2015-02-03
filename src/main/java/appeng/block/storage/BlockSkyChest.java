@@ -82,8 +82,8 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 	public IIcon getIcon(int direction, int metadata)
 	{
 		if ( metadata == 1 )
-			return AEApi.instance().blocks().blockSkyStone.block().getIcon( direction, 1 );
-		return AEApi.instance().blocks().blockSkyStone.block().getIcon( direction, metadata );
+			return AEApi.instance().definitions().blocks().skyStone().get().block().getIcon( direction, 1 );
+		return AEApi.instance().definitions().blocks().skyStone().get().block().getIcon( direction, metadata );
 	}
 
 	@Override

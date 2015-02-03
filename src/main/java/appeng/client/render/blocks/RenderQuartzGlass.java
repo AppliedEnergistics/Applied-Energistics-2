@@ -56,8 +56,8 @@ public class RenderQuartzGlass extends BaseBlockRender
 
 	boolean isGlass(AEBaseBlock imb, IBlockAccess world, int x, int y, int z)
 	{
-		return world.getBlock( x, y, z ) == AEApi.instance().blocks().blockQuartzGlass.block()
-				|| world.getBlock( x, y, z ) == AEApi.instance().blocks().blockQuartzVibrantGlass.block();
+		return world.getBlock( x, y, z ) == AEApi.instance().definitions().blocks().quartzGlass().get().block()
+				|| world.getBlock( x, y, z ) == AEApi.instance().definitions().blocks().quartzVibrantGlass().get().block();
 	}
 
 	void renderEdge(AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer, ForgeDirection side, ForgeDirection direction)

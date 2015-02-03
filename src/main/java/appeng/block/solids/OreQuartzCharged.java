@@ -44,7 +44,7 @@ public class OreQuartzCharged extends OreQuartz
 	@Override
 	ItemStack getItemDropped()
 	{
-		return AEApi.instance().materials().materialCertusQuartzCrystalCharged.stack( 1 );
+		return AEApi.instance().definitions().materials().certusQuartzCrystalCharged().get().stack( 1 );
 	}
 
 	@Override

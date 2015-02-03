@@ -96,12 +96,12 @@ public class AETrading implements IVillageTradeHandler
 	@Override
 	public void manipulateTradesForVillager(EntityVillager villager, MerchantRecipeList recipeList, Random random)
 	{
-		this.addMerchant( recipeList, AEApi.instance().materials().materialSilicon.stack( 1 ), 1, random, 2 );
-		this.addMerchant( recipeList, AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 ), 2, random, 4 );
-		this.addMerchant( recipeList, AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ), 1, random, 3 );
+		this.addMerchant( recipeList, AEApi.instance().definitions().materials().silicon().get().stack( 1 ), 1, random, 2 );
+		this.addMerchant( recipeList, AEApi.instance().definitions().materials().certusQuartzCrystal().get().stack( 1 ), 2, random, 4 );
+		this.addMerchant( recipeList, AEApi.instance().definitions().materials().certusQuartzDust().get().stack( 1 ), 1, random, 3 );
 
-		this.addTrade( recipeList, AEApi.instance().materials().materialCertusQuartzDust.stack( 1 ),
-				AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 ), random, 2 );
+		this.addTrade( recipeList, AEApi.instance().definitions().materials().certusQuartzDust().get().stack( 1 ),
+				AEApi.instance().definitions().materials().certusQuartzCrystal().get().stack( 1 ), random, 2 );
 	}
 
 }

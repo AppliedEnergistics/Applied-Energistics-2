@@ -258,7 +258,7 @@ public class RecipeHandler implements IRecipeHandler
 		if ( !id.modId.equals( AppEng.MOD_ID ) && !id.modId.equals( "minecraft" ) )
 			throw new RecipeError( "Not applicable for website" );
 
-		if ( is.getItem() == AEApi.instance().items().itemCrystalSeed.item() )
+		if ( is.getItem() == AEApi.instance().definitions().items().crystalSeed().get().item() )
 		{
 			int dmg = is.getItemDamage();
 			if ( dmg < ItemCrystalSeed.Nether )
@@ -268,7 +268,7 @@ public class RecipeHandler implements IRecipeHandler
 			else if ( dmg < ItemCrystalSeed.END )
 				realName += ".Fluix";
 		}
-		else if ( is.getItem() == AEApi.instance().blocks().blockSkyStone.item() )
+		else if ( is.getItem() == AEApi.instance().definitions().blocks().skyStone().get().item() )
 		{
 			switch (is.getItemDamage())
 			{
@@ -284,7 +284,7 @@ public class RecipeHandler implements IRecipeHandler
 			default:
 			}
 		}
-		else if ( is.getItem() == AEApi.instance().blocks().blockCraftingStorage1k.item() )
+		else if ( is.getItem() == AEApi.instance().definitions().blocks().craftingStorage1k().get().item() )
 		{
 			switch (is.getItemDamage())
 			{
@@ -300,7 +300,7 @@ public class RecipeHandler implements IRecipeHandler
 			default:
 			}
 		}
-		else if ( is.getItem() == AEApi.instance().blocks().blockCraftingUnit.item() )
+		else if ( is.getItem() == AEApi.instance().definitions().blocks().craftingUnit().get().item() )
 		{
 			switch (is.getItemDamage())
 			{
@@ -310,7 +310,7 @@ public class RecipeHandler implements IRecipeHandler
 			default:
 			}
 		}
-		else if ( is.getItem() == AEApi.instance().blocks().blockSkyChest.item() )
+		else if ( is.getItem() == AEApi.instance().definitions().blocks().skyChest().get().item() )
 		{
 			switch (is.getItemDamage())
 			{

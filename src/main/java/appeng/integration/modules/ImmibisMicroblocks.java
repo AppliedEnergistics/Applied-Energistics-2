@@ -102,8 +102,8 @@ public class ImmibisMicroblocks extends BaseModule implements IImmibisMicroblock
 
 		if ( te instanceof IMultipartTile && this.canConvertTiles && isPartItem )
 		{
-			final Block blk = AEApi.instance().blocks().blockMultiPart.block();
-			final ItemStack what = AEApi.instance().blocks().blockMultiPart.stack( 1 );
+			final Block blk = AEApi.instance().definitions().blocks().multiPart().get().block();
+			final ItemStack what = AEApi.instance().definitions().blocks().multiPart().get().stack( 1 );
 
 			try
 			{

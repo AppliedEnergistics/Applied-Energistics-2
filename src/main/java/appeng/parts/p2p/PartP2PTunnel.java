@@ -147,35 +147,35 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 			switch (tt)
 			{
 			case LIGHT:
-				newType = AEApi.instance().parts().partP2PTunnelLight.stack( 1 );
+				newType = AEApi.instance().definitions().parts().p2PTunnelLight().get().stack( 1 );
 				break;
 
 			case RF_POWER:
-				newType = AEApi.instance().parts().partP2PTunnelRF.stack( 1 );
+				newType = AEApi.instance().definitions().parts().p2PTunnelRF().get().stack( 1 );
 				break;
 
 			case BC_POWER:
-				newType = AEApi.instance().parts().partP2PTunnelMJ.stack( 1 );
+				newType = AEApi.instance().definitions().parts().p2PTunnelMJ().get().stack( 1 );
 				break;
 
 			case FLUID:
-				newType = AEApi.instance().parts().partP2PTunnelLiquids.stack( 1 );
+				newType = AEApi.instance().definitions().parts().p2PTunnelLiquids().get().stack( 1 );
 				break;
 
 			case IC2_POWER:
-				newType = AEApi.instance().parts().partP2PTunnelEU.stack( 1 );
+				newType = AEApi.instance().definitions().parts().p2PTunnelEU().get().stack( 1 );
 				break;
 
 			case ITEM:
-				newType = AEApi.instance().parts().partP2PTunnelItems.stack( 1 );
+				newType = AEApi.instance().definitions().parts().p2PTunnelItems().get().stack( 1 );
 				break;
 
 			case ME:
-				newType = AEApi.instance().parts().partP2PTunnelME.stack( 1 );
+				newType = AEApi.instance().definitions().parts().p2PTunnelME().get().stack( 1 );
 				break;
 
 			case REDSTONE:
-				newType = AEApi.instance().parts().partP2PTunnelRedstone.stack( 1 );
+				newType = AEApi.instance().definitions().parts().p2PTunnelRedstone().get().stack( 1 );
 				break;
 
 			default:
@@ -272,7 +272,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 		if ( type == PartItemStack.World || type == PartItemStack.Network || type == PartItemStack.Wrench || type == PartItemStack.Pick )
 			return super.getItemStack( type );
 
-		return AEApi.instance().parts().partP2PTunnelME.stack( 1 );
+		return AEApi.instance().definitions().parts().p2PTunnelME().get().stack( 1 );
 	}
 
 	public TunnelCollection<T> getCollection(Collection<PartP2PTunnel> collection, Class<? extends PartP2PTunnel> c)
@@ -335,7 +335,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 
 	protected IIcon getTypeTexture()
 	{
-		return AEApi.instance().blocks().blockQuartz.block().getIcon( 0, 0 );
+		return AEApi.instance().definitions().blocks().quartz().get().block().getIcon( 0, 0 );
 	}
 
 	@Override

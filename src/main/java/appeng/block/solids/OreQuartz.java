@@ -93,7 +93,7 @@ public class OreQuartz extends AEBaseBlock
 
 	ItemStack getItemDropped()
 	{
-		return AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 );
+		return AEApi.instance().definitions().materials().certusQuartzCrystal().get().stack( 1 );
 	}
 
 	@Override

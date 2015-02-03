@@ -19,6 +19,11 @@
 package appeng.core;
 
 
+import java.util.List;
+
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -26,8 +31,9 @@ import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
 import appeng.api.IAppEngApi;
-import appeng.api.definitions.Items;
-import appeng.api.definitions.Materials;
+import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IItems;
+import appeng.api.definitions.IMaterials;
 import appeng.api.util.AEItemDefinition;
 
 
@@ -56,20 +62,31 @@ public final class CreativeTab extends CreativeTabs
 	public ItemStack getIconItemStack()
 	{
 		final IAppEngApi api = AEApi.instance();
-		final appeng.api.definitions.Blocks blocks = api.blocks();
-		final Items items = api.items();
-		final Materials materials = api.materials();
+		final IBlocks blocks = api.definitions().blocks();
+		final IItems items = api.definitions().items();
+		final IMaterials materials = api.definitions().materials();
 
-		return this.findFirst( blocks.blockController, blocks.blockChest, blocks.blockCellWorkbench, blocks.blockFluix, items.itemCell1k, items.itemNetworkTool, materials.materialFluixCrystal, materials.materialCertusQuartzCrystal );
+		// ArrayLists do not like generics, so we use a linked list instead.
+		final List<Optional<AEItemDefinition>> choices = Lists.newLinkedList();
+		choices.add( blocks.controller() );
+		choices.add( blocks.chest() );
+		choices.add( blocks.cellWorkbench() );
+		choices.add( blocks.fluix() );
+		choices.add( items.cell1k() );
+		choices.add( items.networkTool() );
+		choices.add( materials.fluixCrystal() );
+		choices.add( materials.certusQuartzCrystal() );
+
+		return this.findFirst( choices );
 	}
 
-	private ItemStack findFirst( AEItemDefinition... choices )
+	private ItemStack findFirst( List<Optional<AEItemDefinition>> choices )
 	{
-		for ( AEItemDefinition a : choices )
+		for ( Optional<AEItemDefinition> choice : choices )
 		{
-			if ( a != null )
+			if ( choice.isPresent() )
 			{
-				ItemStack is = a.stack( 1 );
+				ItemStack is = choice.get().stack( 1 );
 				if ( is != null )
 				{
 					return is;

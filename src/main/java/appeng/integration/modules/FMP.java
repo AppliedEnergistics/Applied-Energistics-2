@@ -38,7 +38,7 @@ import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
 
 import appeng.api.AEApi;
-import appeng.api.definitions.Blocks;
+import appeng.api.definitions.IBlocks;
 import appeng.api.parts.IPartHost;
 import appeng.core.AELog;
 import appeng.fmp.CableBusPart;
@@ -86,13 +86,15 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	@Override
 	public void init() throws Throwable
 	{
-		this.createAndRegister( AEApi.instance().blocks().blockQuartz.block(), 0 );
-		this.createAndRegister( AEApi.instance().blocks().blockQuartzPillar.block(), 0 );
-		this.createAndRegister( AEApi.instance().blocks().blockQuartzChiseled.block(), 0 );
-		this.createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 0 );
-		this.createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 1 );
-		this.createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 2 );
-		this.createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 3 );
+		final IBlocks blocks = AEApi.instance().definitions().blocks();
+
+		this.createAndRegister( blocks.quartz().get().block(), 0 );
+		this.createAndRegister( blocks.quartzPillar().get().block(), 0 );
+		this.createAndRegister( blocks.quartzChiseled().get().block(), 0 );
+		this.createAndRegister( blocks.skyStone().get().block(), 0 );
+		this.createAndRegister( blocks.skyStone().get().block(), 1 );
+		this.createAndRegister( blocks.skyStone().get().block(), 2 );
+		this.createAndRegister( blocks.skyStone().get().block(), 3 );
 
 		PartRegistry[] reg = PartRegistry.values();
 
@@ -186,8 +188,8 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	@Override
 	public Iterable<Block> blockTypes()
 	{
-		Blocks def = AEApi.instance().blocks();
-		return Arrays.asList( def.blockMultiPart.block(), def.blockQuartzTorch.block() );
+		IBlocks def = AEApi.instance().definitions().blocks();
+		return Arrays.asList( def.multiPart().get().block(), def.quartzTorch().get().block() );
 	}
 
 }
