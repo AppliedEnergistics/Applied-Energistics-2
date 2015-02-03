@@ -31,7 +31,7 @@ Applied Energistics 2 API is (c) 2013 - 2014 AlgorithmX2 and licensed under MIT.
 Applied Energistics 2 is (c) 2013 - 2014 AlgorithmX2 and licensed under LGPL v3.
 See the LICENSE.txt for details or go to http://www.gnu.org/licenses/lgpl-3.0.txt for more information.
 
-Textures and Models are licensed under Creative Commons 3.
+Textures and Models are licensed under [Creative Commons, Attribution-NonCommercial-ShareAlike 3.0]( https://creativecommons.org/licenses/by-nc-sa/3.0/).
 
 ## Downloads
 
