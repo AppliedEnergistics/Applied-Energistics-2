@@ -257,25 +257,25 @@ public class PartDenseCable extends PartCable
 		 * ); break; case SOUTH: rh.setBounds( 3, 3, 12, 13, 13, 16 ); break; case UP: rh.setBounds( 3, 12, 3, 13, 16,
 		 * 13 ); break; case WEST: rh.setBounds( 0, 3, 3, 4, 13, 13 ); break; default: return; } rh.renderBlock( x, y,
 		 * z, renderer );
-		 * 
+		 *
 		 * if ( true ) { setSmartConnectionRotations( of, renderer ); IIcon firstIcon = new TaughtIcon( getChannelTex(
 		 * channels, false ).getIcon(), -0.2f ); IIcon secondIcon = new TaughtIcon( getChannelTex( channels, true ).getIcon(),
 		 * -0.2f );
-		 * 
+		 *
 		 * if ( of == ForgeDirection.EAST || of == ForgeDirection.WEST ) { AEBaseBlock blk = (AEBaseBlock)
 		 * rh.getBlock(); FlippableIcon ico = blk.getRendererInstance().getTexture( ForgeDirection.EAST ); ico.setFlip(
 		 * false, true ); }
-		 * 
+		 *
 		 * Tessellator.INSTANCE.setBrightness( 15 << 20 | 15 << 5 ); Tessellator.INSTANCE.setColorOpaque_I(
 		 * myColor.mediumVariant ); rh.setTexture( firstIcon, firstIcon, firstIcon, firstIcon, firstIcon, firstIcon ); renderAllFaces( (AEBaseBlock)
 		 * rh.getBlock(), x, y, z, renderer );
-		 * 
+		 *
 		 * Tessellator.INSTANCE.setColorOpaque_I( myColor.whiteVariant ); rh.setTexture( secondIcon, secondIcon, secondIcon, secondIcon, secondIcon,
 		 * secondIcon ); renderAllFaces( (AEBaseBlock) rh.getBlock(), x, y, z, renderer );
-		 * 
+		 *
 		 * renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth =
 		 * renderer.uvRotateTop = renderer.uvRotateWest = 0; }
-		 * 
+		 *
 		 * rh.setTexture( getTexture( getCableColor() ) ); }
 		 */
 

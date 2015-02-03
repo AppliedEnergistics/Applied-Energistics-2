@@ -82,7 +82,7 @@ public abstract class RotaryCraft extends IC2 implements ShaftPowerReceiver
 		this.alpha = io;
 	}
 
-	
+
 	@Override
 	final public int getMachineX()
 	{

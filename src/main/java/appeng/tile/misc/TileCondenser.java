@@ -113,7 +113,7 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 
 	/**
 	 * make sure you validate with canAddOutput prior to this.
-	 * 
+	 *
 	 * @param output to be added output
 	 */
 	private void addOutput(ItemStack output)

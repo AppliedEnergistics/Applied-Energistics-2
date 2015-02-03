@@ -1,18 +1,18 @@
 /*
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2013 AlgorithmX2
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -35,7 +35,7 @@ import java.util.Set;
 
 /**
  * Implemented on AE's TileEntity or AE's FMP Part.
- * 
+ *
  * Do Not Implement
  */
 public interface IPartHost
@@ -49,7 +49,7 @@ public interface IPartHost
 	/**
 	 * Test if you can add a part to the specified side of the Part Host, {@link ForgeDirection}.UNKNOWN is used to
 	 * represent the cable in the middle.
-	 * 
+	 *
 	 * @param part to be added part
 	 * @param side part placed onto side
 	 * @return returns false if the part cannot be added.
@@ -58,7 +58,7 @@ public interface IPartHost
 
 	/**
 	 * try to add a new part to the specified side, returns false if it failed to be added.
-	 * 
+	 *
 	 * @param is new part
 	 * @param side onto side
 	 * @param owner with owning player
@@ -69,7 +69,7 @@ public interface IPartHost
 
 	/**
 	 * Get part by side ( center is {@link ForgeDirection}.UNKNOWN )
-	 * 
+	 *
 	 * @param side side of part
 	 * @return the part located on the specified side, or null if there is no part.
 	 */
@@ -78,9 +78,9 @@ public interface IPartHost
 	/**
 	 * removes the part on the side, this doesn't drop it or anything, if you don't do something with it, its just
 	 * "gone" and its never coming back; think about it.
-	 * 
+	 *
 	 * if you want to drop the part you must request it prior to removing it.
-	 * 
+	 *
 	 * @param side side of part
 	 * @param suppressUpdate
 	 *            - used if you need to replace a part's INSTANCE, without really removing it first.
@@ -115,14 +115,14 @@ public interface IPartHost
 
 	/**
 	 * Used to test for FMP microblock blocking internally.
-	 * 
+	 *
 	 * @return returns if microblocks are blocking this cable path.
 	 */
 	boolean isBlocked(ForgeDirection side);
 
 	/**
 	 * finds the part located at the position ( pos must be relative, not global )
-	 * 
+	 *
 	 * @param pos part position
 	 * @return a new SelectedPart, this is never null.
 	 */
@@ -140,7 +140,7 @@ public interface IPartHost
 
 	/**
 	 * get the redstone state of host on this side, this value is cached internally.
-	 * 
+	 *
 	 * @param side side of part
 	 * @return true of the part host is receiving redstone from an external source.
 	 */
@@ -168,7 +168,7 @@ public interface IPartHost
 
 	/**
 	 * true if the tile is in the world, other wise false.
-	 * 
+	 *
 	 * @return true if tile is in world
 	 */
 	boolean isInWorld();

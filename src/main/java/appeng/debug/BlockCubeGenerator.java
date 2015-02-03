@@ -40,14 +40,14 @@ public class BlockCubeGenerator extends AEBaseBlock
 	@Override
 	public boolean onActivated(World w, int x, int y, int z,
 			EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
-		
+
 		TileCubeGenerator tcg = this.getTileEntity(w, x, y, z);
 		if ( tcg != null )
 			tcg.click( player );
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegistry)
 	{

@@ -207,9 +207,9 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 	/**
 	 * If the plane is accepting items.
-	 * 
+	 *
 	 * This might be improved if a performance problem shows up.
-	 * 
+	 *
 	 * @return true if planes accepts items.
 	 */
 	private boolean isAccepting()
@@ -403,9 +403,9 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 	/**
 	 * Checks if the network can store the possible drops.
-	 * 
+	 *
 	 * It also sets isAccepting to false, if the item can not be stored.
-	 * 
+	 *
 	 * @param itemStacks an array of {@link ItemStack} to test
 	 * @return true, if the network can store at least a single item of all drops or no drops are reported
 	 */
@@ -438,7 +438,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 	/**
 	 * Stores an {@link ItemStack} inside the network.
-	 * 
+	 *
 	 * @param item {@link ItemStack} to store
 	 * @return null or leftover {@link IAEItemStack}
 	 */
@@ -465,7 +465,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 	/**
 	 * Stores an {@link EntityItem} inside the network and either marks it as dead or sets it to the leftover stackSize.
-	 * 
+	 *
 	 * @param entityItem {@link EntityItem} to store
 	 */
 	private void storeEntityItem( EntityItem entityItem )

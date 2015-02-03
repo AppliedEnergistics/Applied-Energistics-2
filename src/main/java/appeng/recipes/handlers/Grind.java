@@ -72,5 +72,5 @@ public class Grind implements ICraftHandler, IWebsiteSerializer
 				h.getName(this.pro_input)+ '\n' +
 				h.getName(this.pro_output[0]);
 	}
-	
+
 }

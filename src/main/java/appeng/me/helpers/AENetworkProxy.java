@@ -208,7 +208,7 @@ public class AENetworkProxy implements IGridBlock
 
 	/**
 	 * short cut!
-	 * 
+	 *
 	 * @return grid of node
 	 * @throws GridAccessException of node or grid is null
 	 */

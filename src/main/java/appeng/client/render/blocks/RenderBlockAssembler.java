@@ -273,7 +273,7 @@ public class RenderBlockAssembler extends BaseBlockRender implements IBoxProvide
 
 		return true;
 	}
- 
+
 	@Override
 	public void getBoxes(IPartCollisionHelper bch)
 	{

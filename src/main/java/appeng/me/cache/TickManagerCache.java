@@ -87,7 +87,7 @@ public class TickManagerCache implements ITickManager
 					// remove tt..
 					this.upcomingTicks.poll();
 					TickRateModulation mod = tt.gt.tickingRequest( tt.node, diff );
-	
+
 					switch (mod)
 					{
 					case FASTER:
@@ -110,7 +110,7 @@ public class TickManagerCache implements ITickManager
 					default:
 						break;
 					}
-	
+
 					if ( this.awake.containsKey( tt.node ) )
 						this.addToQueue( tt );
 				}

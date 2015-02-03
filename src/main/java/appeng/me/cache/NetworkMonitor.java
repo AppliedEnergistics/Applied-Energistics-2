@@ -65,13 +65,13 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 	}
 
 	final static public LinkedList DEPTH = new LinkedList();
-	
+
 	@Override
 	protected void postChangesToListeners(Iterable<T> changes, BaseActionSource src)
 	{
 		this.postChange( true, changes, src );
 	}
-	
+
 	protected void postChange(boolean Add, Iterable<T> changes, BaseActionSource src)
 	{
 		if ( DEPTH.contains( this ) )

@@ -23,7 +23,7 @@ public interface ICompassCallback
 
 	/**
 	 * Called from another thread.
-	 * 
+	 *
 	 * @param hasResult true if found a target
 	 * @param spin true if should spin
 	 * @param radians radians

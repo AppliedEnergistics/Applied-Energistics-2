@@ -143,7 +143,7 @@ public class StorageWorldProvider extends WorldProvider
 	{
 		return "Storage Cell";
 	}
-	
+
 	@Override
 	public IRenderHandler getSkyRenderer()
 	{

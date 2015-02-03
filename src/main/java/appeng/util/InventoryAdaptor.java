@@ -66,9 +66,9 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 	{
 		if ( te == null )
 			return null;
-		
+
 		IBetterStorage bs = (IBetterStorage) (AppEng.instance.isIntegrationEnabled( IntegrationType.BetterStorage ) ? AppEng.instance.getIntegration( IntegrationType.BetterStorage ) : null);
-		
+
 		if ( te instanceof EntityPlayer )
 		{
 			return new AdaptorIInventory( new AdaptorPlayerInventory( ((EntityPlayer) te).inventory, false ) );

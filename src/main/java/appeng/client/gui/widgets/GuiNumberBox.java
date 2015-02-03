@@ -24,9 +24,9 @@ import net.minecraft.client.gui.GuiTextField;
 
 public class GuiNumberBox extends GuiTextField
 {
-	
+
 	final Class type;
-	
+
 	public GuiNumberBox(FontRenderer p_i1032_1_, int p_i1032_2_, int p_i1032_3_, int p_i1032_4_, int p_i1032_5_,Class type) {
 		super( p_i1032_1_, p_i1032_2_, p_i1032_3_, p_i1032_4_, p_i1032_5_ );
 		this.type = type;
@@ -37,7 +37,7 @@ public class GuiNumberBox extends GuiTextField
 	{
 		String original = this.getText();
 		super.writeText( p_146191_1_ );
-		
+
 		try
 		{
 			if ( this.type == int.class || this.type == Integer.class )
@@ -52,6 +52,6 @@ public class GuiNumberBox extends GuiTextField
 			this.setText( original );
 		}
 	}
-	
+
 
 }

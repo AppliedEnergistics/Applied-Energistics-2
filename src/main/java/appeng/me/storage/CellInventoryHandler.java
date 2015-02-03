@@ -114,7 +114,7 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 	}
 
 	@Override
-	public boolean isPreformatted() 
+	public boolean isPreformatted()
 	{
 		return ! this.myPartitionList.isEmpty();
 	}
@@ -134,10 +134,10 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 	public int getStatusForCell()
 	{
 			int val = this.getCellInv().getStatusForCell();
-			
+
 			if ( val == 1 && this.isPreformatted() )
 				val = 2;
-			
+
 			return val;
 	}
 

@@ -145,7 +145,7 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 					GameProfile thisUser = tbc.getProfile( ais.getItemStack() );
 					if ( thisUser == newUser )
 						return false;
-					
+
 					if ( thisUser != null && thisUser.equals( newUser ) )
 						return false;
 				}

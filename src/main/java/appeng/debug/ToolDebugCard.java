@@ -97,40 +97,40 @@ public class ToolDebugCard extends AEBaseItem
 					IGridNode center = g.getPivot();
 					this.outputMsg( player, "This Node: " + node.toString() );
 					this.outputMsg( player, "Center Node: " + center.toString() );
-					
+
 					IPathingGrid pg = g.getCache( IPathingGrid.class );
 					if ( pg.getControllerState() == ControllerState.CONTROLLER_ONLINE )
 					{
 						int length = 0;
-						
+
 						HashSet<IGridNode> next = new HashSet<IGridNode>();
 						next.add( node );
-						
+
 						int maxLength = 10000;
-						
+
 						outer: while ( ! next.isEmpty() )
 						{
 							HashSet<IGridNode> current = next;
 							next = new HashSet<IGridNode>();
-							
+
 							for ( IGridNode n : current )
 							{
 								if ( n.getMachine() instanceof TileController )
 									break outer;
-								
+
 								for ( IGridConnection c : n.getConnections() )
 									next.add( c.getOtherSide( n ) );
 							}
-							
+
 							length++;
-							
+
 							if ( length > maxLength )
 								break;
 						}
-						
+
 						this.outputMsg( player, "Cable Distance: " + length );
 					}
-					
+
 					if ( center.getMachine() instanceof PartP2PTunnel )
 					{
 						this.outputMsg( player, "Freq: " + ((PartP2PTunnel) center.getMachine()).freq );

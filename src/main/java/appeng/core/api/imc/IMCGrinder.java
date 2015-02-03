@@ -31,7 +31,7 @@ msg.setInteger( "turns", 8 );
 FMLInterModComms.sendMessage( "appliedenergistics2", "add-grindable", msg );
 
  -- or --
- 
+
 NBTTagCompound msg = new NBTTagCompound();
 NBTTagCompound in = new NBTTagCompound();
 NBTTagCompound out = new NBTTagCompound();

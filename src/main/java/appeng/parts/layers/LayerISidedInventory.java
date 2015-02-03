@@ -34,11 +34,11 @@ import appeng.api.parts.LayerBase;
 
 /**
  * Inventory wrapper for parts,
- * 
+ *
  * this is considerably more complicated then the other wrappers as it requires creating a "unified inventory".
- * 
+ *
  * You must use {@link ISidedInventory} instead of {@link IInventory}.
- * 
+ *
  * If your inventory changes in between placement and removal, you must trigger a PartChange on the {@link IPartHost} so
  * it can recalculate the inventory wrapper.
  */

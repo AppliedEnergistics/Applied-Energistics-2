@@ -78,7 +78,7 @@ import appeng.util.Platform;
 
 /**
  * Implementing these might help improve visuals for hollow covers
- * 
+ *
  * TSlottedPart,ISidedHollowConnect
  */
 public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IRedstonePart, AEMultiTile

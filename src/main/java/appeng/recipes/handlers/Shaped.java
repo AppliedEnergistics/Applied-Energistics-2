@@ -132,7 +132,7 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 					}
 				}
 			}
-		
+
 		return Platform.isSameItemPrecise( this.output.getItemStack(), reqOutput );
 	}
 

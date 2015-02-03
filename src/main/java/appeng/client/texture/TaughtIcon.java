@@ -31,10 +31,10 @@ public class TaughtIcon implements IIcon
 	private final IIcon p;
 
 	public TaughtIcon(IIcon o, float tightness) {
-		
+
 		if ( o == null )
 			throw new RuntimeException("Cannot create a wrapper icon with a null icon.");
-		
+
 		this.p = o;
 		this.tightness = tightness * 0.4f;
 	}

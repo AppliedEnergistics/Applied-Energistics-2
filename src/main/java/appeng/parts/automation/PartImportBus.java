@@ -87,7 +87,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	{
 		if ( stack == null || stack.getItem() == null )
 			return false;
-		
+
 		IAEItemStack out = this.destination.injectItems( this.lastItemChecked = AEApi.instance().storage().createItemStack( stack ), Actionable.SIMULATE, this.mySrc );
 		if ( out == null )
 			return true;

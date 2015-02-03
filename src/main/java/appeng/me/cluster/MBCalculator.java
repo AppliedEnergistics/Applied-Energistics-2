@@ -37,7 +37,7 @@ public abstract class MBCalculator
 
 	/**
 	 * check if the tile entities are correct for the structure.
-	 * 
+	 *
 	 * @param te to be checked tile entity
 	 * @return true if tile entity is valid for structure
 	 */
@@ -45,7 +45,7 @@ public abstract class MBCalculator
 
 	/**
 	 * construct the correct cluster, usually very simple.
-	 * 
+	 *
 	 * @param w world
 	 * @param min min world coord
 	 * @param max max world coord
@@ -55,7 +55,7 @@ public abstract class MBCalculator
 
 	/**
 	 * configure the multi-block tiles, most of the important stuff is in here.
-	 * 
+	 *
 	 * @param c updated cluster
 	 * @param w in world
 	 * @param min min world coord
@@ -70,7 +70,7 @@ public abstract class MBCalculator
 
 	/**
 	 * verify if the structure is the correct dimensions, or size
-	 * 
+	 *
 	 * @param min min world coord
 	 * @param max max world coord
 	 * @return true if structure has correct dimensions or size

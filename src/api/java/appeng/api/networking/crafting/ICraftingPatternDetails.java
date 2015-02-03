@@ -1,18 +1,18 @@
 /*
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2013 AlgorithmX2
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -31,7 +31,7 @@ import appeng.api.storage.data.IAEItemStack;
 
 /**
  * do not implement provided by {@link ICraftingPatternItem}
- * 
+ *
  * caching this INSTANCE will increase performance of validation and checks.
  */
 public interface ICraftingPatternDetails
@@ -46,7 +46,7 @@ public interface ICraftingPatternDetails
 	 * @param slotIndex specific slot index
 	 * @param itemStack item in slot
 	 * @param world crafting world
-	 * 
+	 *
 	 * @return if an item can be used in the specific slot for this pattern.
 	 */
 	boolean isValidItemForSlot(int slotIndex, ItemStack itemStack, World world);
@@ -83,7 +83,7 @@ public interface ICraftingPatternDetails
 
 	/**
 	 * Allow using this INSTANCE of the pattern details to preform the crafting action with performance enhancements.
-	 * 
+	 *
 	 * @param craftingInv inventory
 	 * @param world crafting world
 	 * @return the crafted ( work bench ) item.
@@ -92,7 +92,7 @@ public interface ICraftingPatternDetails
 
 	/**
 	 * Set the priority the of this pattern.
-	 * 
+	 *
 	 * @param priority priority of pattern
 	 */
 	void setPriority(int priority);

@@ -66,7 +66,7 @@ public class PacketPartPlacement extends AppEngPacket
 		data.writeInt( z );
 		data.writeByte( face );
 		data.writeFloat( eyeHeight );
-		
+
 		this.configureWrite( data );
 	}
 

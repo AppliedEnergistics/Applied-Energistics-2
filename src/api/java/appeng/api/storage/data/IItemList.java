@@ -1,18 +1,18 @@
 /*
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2013 AlgorithmX2
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -27,9 +27,9 @@ import java.util.Iterator;
 
 /**
  * Represents a list of items in AE.
- * 
+ *
  * Don't Implement.
- * 
+ *
  * Construct with Util.createItemList()
  */
 public interface IItemList<StackType extends IAEStack> extends IItemContainer<StackType>, Iterable<StackType>
@@ -38,14 +38,14 @@ public interface IItemList<StackType extends IAEStack> extends IItemContainer<St
 	/**
 	 * add a stack to the list stackSize is used to add to stackSize, this will merge the stack with an item already in
 	 * the list if found.
-	 * 
+	 *
 	 * @param option stacktype option
 	 */
 	public void addStorage(StackType option); // adds a stack as stored
 
 	/**
 	 * add a stack to the list as craftable, this will merge the stack with an item already in the list if found.
-	 * 
+	 *
 	 * @param option stacktype option
 	 */
 	public void addCrafting(StackType option);
@@ -53,7 +53,7 @@ public interface IItemList<StackType extends IAEStack> extends IItemContainer<St
 	/**
 	 * add a stack to the list, stack size is used to add to requestable, this will merge the stack with an item already
 	 * in the list if found.
-	 * 
+	 *
 	 * @param option stacktype option
 	 */
 	public void addRequestable(StackType option); // adds a stack as requestable

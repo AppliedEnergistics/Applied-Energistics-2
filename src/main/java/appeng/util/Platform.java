@@ -167,7 +167,7 @@ public class Platform
 
 	/**
 	 * This displays the value for encoded longs ( double *100 )
-	 * 
+	 *
 	 * @param n to be formatted long value
 	 * @param isRate if true it adds a /t to the formatted string
 	 * @return formatted long value
@@ -1212,13 +1212,13 @@ public class Platform
 
 		/*
 		 * // test ore dictionary.. int OreID = getOreID( a ); if ( OreID != -1 ) return OreID == getOreID( b );
-		 * 
+		 *
 		 * if ( Mode != FuzzyMode.IGNORE_ALL ) { if ( a.hasTagCompound() && !isShared( a.getTagCompound() ) ) { a =
 		 * Platform.getSharedItemStack( AEItemStack.create( a ) ); }
-		 * 
+		 *
 		 * if ( b.hasTagCompound() && !isShared( b.getTagCompound() ) ) { b = Platform.getSharedItemStack(
 		 * AEItemStack.create( b ) ); }
-		 * 
+		 *
 		 * // test regular items with damage values and what not... if ( isShared( a.getTagCompound() ) && isShared(
 		 * b.getTagCompound() ) && a.itemID == b.itemID ) { return ((AppEngSharedNBTTagCompound)
 		 * a.getTagCompound()).compareFuzzyWithRegistry( (AppEngSharedNBTTagCompound) b.getTagCompound() ); } }

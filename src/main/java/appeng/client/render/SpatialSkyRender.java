@@ -108,9 +108,9 @@ public class SpatialSkyRender extends IRenderHandler
         }
 
         GL11.glDepthMask(true);
-        
+
 		if ( fade > 0.0f )
-		{            
+		{
 			GL11.glDisable( GL11.GL_FOG );
 			GL11.glDisable( GL11.GL_ALPHA_TEST );
 			GL11.glEnable( GL11.GL_BLEND );
@@ -128,7 +128,7 @@ public class SpatialSkyRender extends IRenderHandler
 		}
 
 		GL11.glPopAttrib();
-		
+
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 

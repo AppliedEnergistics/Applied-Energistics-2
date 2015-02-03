@@ -53,7 +53,7 @@ public class PartCraftingTerminal extends PartTerminal
 	public void getDrops(List<ItemStack> drops, boolean wrenched)
 	{
 		super.getDrops(drops, wrenched);
-		
+
 		for (ItemStack is : this.craftingGrid)
 			if ( is != null )
 				drops.add( is );
