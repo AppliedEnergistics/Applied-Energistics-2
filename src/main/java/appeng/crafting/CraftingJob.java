@@ -164,7 +164,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 				Stopwatch timer = Stopwatch.createStarted();
 
-				MECraftingInventory craftingInventory = new MECraftingInventory( this.original, true, false, true );
+				MECraftingInventory craftingInventory = new MECraftingInventory( this.original, true, true, true );
 				craftingInventory.ignore( this.output );
 
 				this.availableCheck = new MECraftingInventory( this.original, false, false, false );
@@ -188,7 +188,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 				try
 				{
 					Stopwatch timer = Stopwatch.createStarted();
-					MECraftingInventory craftingInventory = new MECraftingInventory( this.original, true, false, true );
+					MECraftingInventory craftingInventory = new MECraftingInventory( this.original, true, true, true );
 					craftingInventory.ignore( this.output );
 
 					this.availableCheck = new MECraftingInventory( this.original, false, false, false );
