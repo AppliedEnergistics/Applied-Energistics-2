@@ -92,7 +92,7 @@ public class WorldSettings extends Configuration
 		}
 
 		final ConfigCategory playerList = this.getCategory( "players" );
-		this.mappings = new PlayerMappings( playerList, AELog.instance );
+		this.mappings = new PlayerMappings( playerList, AELog.INSTANCE );
 	}
 
 	public static WorldSettings getInstance()

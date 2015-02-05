@@ -138,12 +138,12 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 				this.tickTickTimer = 20; // keep ticking...
 			}
 		}
-		else if ( this.internalCurrentPower > 1499 && AEApi.instance().materials().materialCertusQuartzCrystal.sameAsStack( myItem ) )
+		else if ( this.internalCurrentPower > 1499 && AEApi.instance().definitions().materials().certusQuartzCrystal().get().sameAsStack( myItem ) )
 		{
 			if ( Platform.getRandomFloat() > 0.8f ) // simulate wait
 			{
 				this.extractAEPower( this.internalMaxPower, Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
-				this.setInventorySlotContents( 0, AEApi.instance().materials().materialCertusQuartzCrystalCharged.stack( myItem.stackSize ) );
+				this.setInventorySlotContents( 0, AEApi.instance().definitions().materials().certusQuartzCrystalCharged().get().stack( myItem.stackSize ) );
 			}
 		}
 	}
@@ -175,10 +175,10 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 		this.injectExternalPower( PowerUnits.AE, 150 );
 
 		ItemStack myItem = this.getStackInSlot( 0 );
-		if ( this.internalCurrentPower > 1499 && AEApi.instance().materials().materialCertusQuartzCrystal.sameAsStack( myItem ) )
+		if ( this.internalCurrentPower > 1499 && AEApi.instance().definitions().materials().certusQuartzCrystal().get().sameAsStack( myItem ) )
 		{
 			this.extractAEPower( this.internalMaxPower, Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
-			this.setInventorySlotContents( 0, AEApi.instance().materials().materialCertusQuartzCrystalCharged.stack( myItem.stackSize ) );
+			this.setInventorySlotContents( 0, AEApi.instance().definitions().materials().certusQuartzCrystalCharged().get().stack( myItem.stackSize ) );
 		}
 	}
 
@@ -215,7 +215,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
-		return Platform.isChargeable( itemstack ) || AEApi.instance().materials().materialCertusQuartzCrystal.sameAsStack( itemstack );
+		return Platform.isChargeable( itemstack ) || AEApi.instance().definitions().materials().certusQuartzCrystal().get().sameAsStack( itemstack );
 	}
 
 	@Override
@@ -228,7 +228,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 				return true;
 		}
 
-		return AEApi.instance().materials().materialCertusQuartzCrystalCharged.sameAsStack( itemstack );
+		return AEApi.instance().definitions().materials().certusQuartzCrystalCharged().get().sameAsStack( itemstack );
 	}
 
 	public void activate(EntityPlayer player)
@@ -240,7 +240,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 		if ( myItem == null )
 		{
 			ItemStack held = player.inventory.getCurrentItem();
-			if ( AEApi.instance().materials().materialCertusQuartzCrystal.sameAsStack( held ) || Platform.isChargeable( held ) )
+			if ( AEApi.instance().definitions().materials().certusQuartzCrystal().get().sameAsStack( held ) || Platform.isChargeable( held ) )
 			{
 				held = player.inventory.decrStackSize( player.inventory.currentItem, 1 );
 				this.setInventorySlotContents( 0, held );

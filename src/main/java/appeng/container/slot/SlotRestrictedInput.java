@@ -168,17 +168,17 @@ public class SlotRestrictedInput extends AppEngSlot
 			return false;// pattern != null;
 		}
 		case BLANK_PATTERN:
-			return AEApi.instance().materials().materialBlankPattern.sameAsStack( i );
+			return AEApi.instance().definitions().materials().blankPattern().get().sameAsStack( i );
 		case PATTERN:
 
 			if ( i.getItem() instanceof ICraftingPatternItem )
 				return true;
 
-			return AEApi.instance().materials().materialBlankPattern.sameAsStack( i );
+			return AEApi.instance().definitions().materials().blankPattern().get().sameAsStack( i );
 
 		case INSCRIBER_PLATE:
 
-			if ( AEApi.instance().materials().materialNamePress.sameAsStack( i ) )
+			if ( AEApi.instance().definitions().materials().namePress().get().sameAsStack( i ) )
 				return true;
 
 			for (ItemStack is : Inscribe.PLATES )
@@ -199,7 +199,7 @@ public class SlotRestrictedInput extends AppEngSlot
 			return isMetalIngot( i );
 
 		case VIEW_CELL:
-			return AEApi.instance().items().itemViewCell.sameAsStack( i );
+			return AEApi.instance().definitions().items().viewCell().get().sameAsStack( i );
 		case ORE:
 			return appeng.api.AEApi.instance().registries().grinder().getRecipeForInput( i ) != null;
 		case FUEL:
@@ -207,9 +207,9 @@ public class SlotRestrictedInput extends AppEngSlot
 		case POWERED_TOOL:
 			return Platform.isChargeable( i );
 		case QE_SINGULARITY:
-			return api.materials().materialQESingularity.sameAsStack( i );
+			return api.definitions().materials().qESingularity().get().sameAsStack( i );
 		case RANGE_BOOSTER:
-			return api.materials().materialWirelessBooster.sameAsStack( i );
+			return api.definitions().materials().wirelessBooster().get().sameAsStack( i );
 		case SPATIAL_STORAGE_CELLS:
 			return i.getItem() instanceof ISpatialStorageCell && ((ISpatialStorageCell) i.getItem()).isSpatialStorage( i );
 		case STORAGE_CELLS:

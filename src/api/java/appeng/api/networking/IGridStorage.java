@@ -23,7 +23,9 @@
 
 package appeng.api.networking;
 
+
 import net.minecraft.nbt.NBTTagCompound;
+
 
 public interface IGridStorage
 {
@@ -37,5 +39,4 @@ public interface IGridStorage
 	 * @return the id for this grid storage object, used internally
 	 */
 	long getID();
-
 }

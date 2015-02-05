@@ -23,55 +23,123 @@
 
 package appeng.api.definitions;
 
+
+import javax.annotation.Nullable;
+
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.api.util.AEItemDefinition;
 
+
 public class Items
 {
-
+	@Nullable
 	public AEItemDefinition itemCertusQuartzAxe;
+
+	@Nullable
 	public AEItemDefinition itemCertusQuartzHoe;
+
+	@Nullable
 	public AEItemDefinition itemCertusQuartzShovel;
+
+	@Nullable
 	public AEItemDefinition itemCertusQuartzPick;
+
+	@Nullable
 	public AEItemDefinition itemCertusQuartzSword;
+
+	@Nullable
 	public AEItemDefinition itemCertusQuartzWrench;
+
+	@Nullable
 	public AEItemDefinition itemCertusQuartzKnife;
 
+	@Nullable
 	public AEItemDefinition itemNetherQuartzAxe;
+
+	@Nullable
 	public AEItemDefinition itemNetherQuartzHoe;
+
+	@Nullable
 	public AEItemDefinition itemNetherQuartzShovel;
+
+	@Nullable
 	public AEItemDefinition itemNetherQuartzPick;
+
+	@Nullable
 	public AEItemDefinition itemNetherQuartzSword;
+
+	@Nullable
 	public AEItemDefinition itemNetherQuartzWrench;
+
+	@Nullable
 	public AEItemDefinition itemNetherQuartzKnife;
 
+	@Nullable
 	public AEItemDefinition itemEntropyManipulator;
+
+	@Nullable
 	public AEItemDefinition itemWirelessTerminal;
+
+	@Nullable
 	public AEItemDefinition itemBiometricCard;
+
+	@Nullable
 	public AEItemDefinition itemChargedStaff;
+
+	@Nullable
 	public AEItemDefinition itemMassCannon;
+
+	@Nullable
 	public AEItemDefinition itemMemoryCard;
+
+	@Nullable
 	public AEItemDefinition itemNetworkTool;
+
+	@Nullable
 	public AEItemDefinition itemPortableCell;
 
+	@Nullable
 	public AEItemDefinition itemCellCreative;
+
+	@Nullable
 	public AEItemDefinition itemViewCell;
 
+	@Nullable
 	public AEItemDefinition itemCell1k;
+
+	@Nullable
 	public AEItemDefinition itemCell4k;
+
+	@Nullable
 	public AEItemDefinition itemCell16k;
+
+	@Nullable
 	public AEItemDefinition itemCell64k;
 
+	@Nullable
 	public AEItemDefinition itemSpatialCell2;
+
+	@Nullable
 	public AEItemDefinition itemSpatialCell16;
+
+	@Nullable
 	public AEItemDefinition itemSpatialCell128;
 
+	@Nullable
 	public AEItemDefinition itemFacade;
+
+	@Nullable
 	public AEItemDefinition itemCrystalSeed;
 
-	// rv1
+	@Nullable
 	public AEItemDefinition itemEncodedPattern;
+
+	@Nullable
 	public AEItemDefinition itemColorApplicator;
+
+	@Nullable
 	public AEColoredItemDefinition itemPaintBall;
+
+	@Nullable
 	public AEColoredItemDefinition itemLumenPaintBall;
 }

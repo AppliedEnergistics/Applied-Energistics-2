@@ -23,6 +23,7 @@
 
 package appeng.api.networking.security;
 
+
 public class BaseActionSource
 {
 
@@ -35,5 +36,4 @@ public class BaseActionSource
 	{
 		return false;
 	}
-
 }

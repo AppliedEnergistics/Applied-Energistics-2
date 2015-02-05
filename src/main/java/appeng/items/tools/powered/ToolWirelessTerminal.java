@@ -98,7 +98,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	@Override
 	public boolean canHandle( ItemStack is )
 	{
-		return AEApi.instance().items().itemWirelessTerminal.sameAsStack( is );
+		return AEApi.instance().definitions().items().wirelessTerminal().get().sameAsStack( is );
 	}
 
 	@Override

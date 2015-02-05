@@ -85,37 +85,37 @@ public class GuiPriority extends AEBaseGui
 
 		if ( target instanceof PartStorageBus )
 		{
-			myIcon = AEApi.instance().parts().partStorageBus.stack( 1 );
+			myIcon = AEApi.instance().definitions().parts().storageBus().get().stack( 1 );
 			this.OriginalGui = GuiBridge.GUI_STORAGEBUS;
 		}
 
 		if ( target instanceof PartFormationPlane )
 		{
-			myIcon = AEApi.instance().parts().partFormationPlane.stack( 1 );
+			myIcon = AEApi.instance().definitions().parts().formationPlane().get().stack( 1 );
 			this.OriginalGui = GuiBridge.GUI_FORMATION_PLANE;
 		}
 
 		if ( target instanceof TileDrive )
 		{
-			myIcon = AEApi.instance().blocks().blockDrive.stack( 1 );
+			myIcon = AEApi.instance().definitions().blocks().drive().get().stack( 1 );
 			this.OriginalGui = GuiBridge.GUI_DRIVE;
 		}
 
 		if ( target instanceof TileChest )
 		{
-			myIcon = AEApi.instance().blocks().blockChest.stack( 1 );
+			myIcon = AEApi.instance().definitions().blocks().chest().get().stack( 1 );
 			this.OriginalGui = GuiBridge.GUI_CHEST;
 		}
 
 		if ( target instanceof TileInterface )
 		{
-			myIcon = AEApi.instance().blocks().blockInterface.stack( 1 );
+			myIcon = AEApi.instance().definitions().blocks().iface().get().stack( 1 );
 			this.OriginalGui = GuiBridge.GUI_INTERFACE;
 		}
 
 		if ( target instanceof PartInterface )
 		{
-			myIcon = AEApi.instance().parts().partInterface.stack( 1 );
+			myIcon = AEApi.instance().definitions().parts().iface().get().stack( 1 );
 			this.OriginalGui = GuiBridge.GUI_INTERFACE;
 		}
 

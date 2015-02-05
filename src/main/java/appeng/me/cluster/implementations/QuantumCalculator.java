@@ -131,12 +131,12 @@ public class QuantumCalculator extends MBCalculator
 					num++;
 					if ( num == 5 )
 					{
-						if ( !Platform.blockAtLocationIs( w, x, y, z, AEApi.instance().blocks().blockQuantumLink ) )
+						if ( !Platform.blockAtLocationIs( w, x, y, z, AEApi.instance().definitions().blocks().quantumLink().get() ) )
 							return false;
 					}
 					else
 					{
-						if ( !Platform.blockAtLocationIs( w, x, y, z, AEApi.instance().blocks().blockQuantumRing ) )
+						if ( !Platform.blockAtLocationIs( w, x, y, z, AEApi.instance().definitions().blocks().quantumRing().get() ) )
 							return false;
 					}
 

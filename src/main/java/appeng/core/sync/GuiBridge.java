@@ -37,7 +37,7 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.definitions.Materials;
+import appeng.api.definitions.IMaterials;
 import appeng.api.exceptions.AppEngException;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.IUpgradeableHost;
@@ -271,9 +271,9 @@ public enum GuiBridge implements IGuiHandler
 					{
 						ItemStack is = ((Slot) so).getStack();
 
-						Materials m = AEApi.instance().materials();
-						if ( m.materialLogicProcessorPress.sameAsStack( is ) || m.materialEngProcessorPress.sameAsStack( is )
-								|| m.materialCalcProcessorPress.sameAsStack( is ) || m.materialSiliconPress.sameAsStack( is ) )
+						IMaterials m = AEApi.instance().definitions().materials();
+						if ( m.logicProcessorPress().get().sameAsStack( is ) || m.engProcessorPress().get().sameAsStack( is )
+								|| m.calcProcessorPress().get().sameAsStack( is ) || m.siliconPress().get().sameAsStack( is ) )
 						{
 							Achievements.Presses.addToPlayer( inventory.player );
 						}

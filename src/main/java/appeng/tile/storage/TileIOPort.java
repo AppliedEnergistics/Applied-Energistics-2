@@ -78,7 +78,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	final int[] outputSlots = { 6, 7, 8, 9, 10, 11 };
 
 	final AppEngInternalInventory cells = new AppEngInternalInventory( this, 12 );
-	final UpgradeInventory upgrades = new UpgradeInventory( AEApi.instance().blocks().blockIOPort.block(), this, 3 );
+	final UpgradeInventory upgrades = new UpgradeInventory( AEApi.instance().definitions().blocks().iOPort().get().block(), this, 3 );
 
 	final BaseActionSource mySrc = new MachineSource( this );
 

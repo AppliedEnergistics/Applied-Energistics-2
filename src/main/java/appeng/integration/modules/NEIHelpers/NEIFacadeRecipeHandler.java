@@ -42,8 +42,8 @@ import appeng.items.parts.ItemFacade;
 public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 {
 
-	final ItemFacade ifa = (ItemFacade) AEApi.instance().items().itemFacade.item();
-	final ItemStack cable_anchor = AEApi.instance().parts().partCableAnchor.stack( 1 );
+	final ItemFacade ifa = (ItemFacade) AEApi.instance().definitions().items().facade().get().item();
+	final ItemStack cable_anchor = AEApi.instance().definitions().parts().cableAnchor().get().stack( 1 );
 
 	@Override
 	public void loadTransferRects()
@@ -68,7 +68,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 	{
 		if ( (outputId.equals( "crafting" )) && (this.getClass() == NEIFacadeRecipeHandler.class) )
 		{
-			ItemFacade ifa = (ItemFacade) AEApi.instance().items().itemFacade.item();
+			ItemFacade ifa = (ItemFacade) AEApi.instance().definitions().items().facade().get().item();
 			List<ItemStack> facades = ifa.getFacades();
 			for (ItemStack is : facades)
 			{

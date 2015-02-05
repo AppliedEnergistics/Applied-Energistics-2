@@ -92,7 +92,7 @@ public class PartDenseCable extends PartCable
 	public IIcon getTexture(AEColor c)
 	{
 		if ( c == AEColor.Transparent )
-			return AEApi.instance().parts().partCableSmart.stack( AEColor.Transparent, 1 ).getIconIndex();
+			return AEApi.instance().definitions().parts().cableSmart().get().stack( AEColor.Transparent, 1 ).getIconIndex();
 
 		return this.getSmartTexture( c );
 	}

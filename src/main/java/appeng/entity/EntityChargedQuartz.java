@@ -87,7 +87,7 @@ final public class EntityChargedQuartz extends AEBaseEntityItem
 	public boolean transform()
 	{
 		ItemStack item = this.getEntityItem();
-		if ( AEApi.instance().materials().materialCertusQuartzCrystalCharged.sameAsStack( item ) )
+		if ( AEApi.instance().definitions().materials().certusQuartzCrystalCharged().get().sameAsStack( item ) )
 		{
 			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( this.posX - 1, this.posY - 1, this.posZ - 1, this.posX + 1, this.posY + 1, this.posZ + 1 );
 			List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
@@ -126,7 +126,7 @@ final public class EntityChargedQuartz extends AEBaseEntityItem
 				if ( netherQuartz.getEntityItem().stackSize <= 0 )
 					netherQuartz.setDead();
 
-				ItemStack Output = AEApi.instance().materials().materialFluixCrystal.stack( 2 );
+				ItemStack Output = AEApi.instance().definitions().materials().fluixCrystal().get().stack( 2 );
 				this.worldObj.spawnEntityInWorld( new EntityItem( this.worldObj, this.posX, this.posY, this.posZ, Output ) );
 
 				return true;

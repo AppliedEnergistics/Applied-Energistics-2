@@ -37,12 +37,11 @@ import appeng.core.features.AEFeature;
 
 public class OreQuartz extends AEBaseBlock
 {
+	private int boostBrightnessLow;
+	private int boostBrightnessHigh;
+	private boolean enhanceBrightness;
 
-	public int boostBrightnessLow;
-	public int boostBrightnessHigh;
-	public boolean enhanceBrightness;
-
-	public OreQuartz(Class self) {
+	public OreQuartz(Class<? extends OreQuartz> self) {
 		super( self, Material.rock );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setHardness( 3.0F );
@@ -73,9 +72,13 @@ public class OreQuartz extends AEBaseBlock
 			j1 = Math.max( j1 >> 20, j1 >> 4 );
 
 			if ( j1 > 4 )
+			{
 				j1 += this.boostBrightnessHigh;
+			}
 			else
+			{
 				j1 += this.boostBrightnessLow;
+			}
 
 			if ( j1 > 15 )
 				j1 = 15;
@@ -90,7 +93,7 @@ public class OreQuartz extends AEBaseBlock
 
 	ItemStack getItemDropped()
 	{
-		return AEApi.instance().materials().materialCertusQuartzCrystal.stack( 1 );
+		return AEApi.instance().definitions().materials().certusQuartzCrystal().get().stack( 1 );
 	}
 
 	@Override
@@ -144,4 +147,18 @@ public class OreQuartz extends AEBaseBlock
 		}
 	}
 
+	public void setBoostBrightnessLow( int boostBrightnessLow )
+	{
+		this.boostBrightnessLow = boostBrightnessLow;
+	}
+
+	public void setBoostBrightnessHigh( int boostBrightnessHigh )
+	{
+		this.boostBrightnessHigh = boostBrightnessHigh;
+	}
+
+	public void setEnhanceBrightness( boolean enhanceBrightness )
+	{
+		this.enhanceBrightness = enhanceBrightness;
+	}
 }

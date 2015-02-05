@@ -73,7 +73,7 @@ final public class EntitySingularity extends AEBaseEntityItem
 			return;
 
 		ItemStack item = this.getEntityItem();
-		if ( AEApi.instance().materials().materialSingularity.sameAsStack( item ) )
+		if ( AEApi.instance().definitions().materials().singularity().get().sameAsStack( item ) )
 		{
 			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( this.posX - 4, this.posY - 4, this.posZ - 4, this.posX + 4, this.posY + 4, this.posZ + 4 );
 			List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
@@ -116,7 +116,7 @@ final public class EntitySingularity extends AEBaseEntityItem
 								if ( other.stackSize == 0 )
 									e.setDead();
 
-								ItemStack Output = AEApi.instance().materials().materialQESingularity.stack( 2 );
+								ItemStack Output = AEApi.instance().definitions().materials().qESingularity().get().stack( 2 );
 								NBTTagCompound cmp = Platform.openNbtData( Output );
 								cmp.setLong( "freq", ( new Date() ).getTime() * 100 + ( randTickSeed++ ) % 100 );
 								item.stackSize--;

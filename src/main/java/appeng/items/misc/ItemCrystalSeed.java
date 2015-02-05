@@ -124,11 +124,11 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		int newDamage = this.getProgress( is ) + 1;
 
 		if ( newDamage == Certus + SINGLE_OFFSET )
-			return AEApi.instance().materials().materialPurifiedCertusQuartzCrystal.stack( is.stackSize );
+			return AEApi.instance().definitions().materials().purifiedCertusQuartzCrystal().get().stack( is.stackSize );
 		if ( newDamage == Nether + SINGLE_OFFSET )
-			return AEApi.instance().materials().materialPurifiedNetherQuartzCrystal.stack( is.stackSize );
+			return AEApi.instance().definitions().materials().purifiedNetherQuartzCrystal().get().stack( is.stackSize );
 		if ( newDamage == Fluix + SINGLE_OFFSET )
-			return AEApi.instance().materials().materialPurifiedFluixCrystal.stack( is.stackSize );
+			return AEApi.instance().definitions().materials().purifiedFluixCrystal().get().stack( is.stackSize );
 		if ( newDamage > END )
 			return null;
 
@@ -275,7 +275,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 
 	public static ResolverResult getResolver(int certus2)
 	{
-		ItemStack is = AEApi.instance().items().itemCrystalSeed.stack( 1 );
+		ItemStack is = AEApi.instance().definitions().items().crystalSeed().get().stack( 1 );
 		is.setItemDamage( certus2 );
 		is = newStyle( is );
 		return new ResolverResult( "ItemCrystalSeed", is.getItemDamage(), is.getTagCompound() );

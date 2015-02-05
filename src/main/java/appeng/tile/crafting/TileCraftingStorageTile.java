@@ -25,9 +25,9 @@ import appeng.api.AEApi;
 public class TileCraftingStorageTile extends TileCraftingTile
 {
 
-	static final ItemStack STACK_4K_STORAGE = AEApi.instance().blocks().blockCraftingStorage4k.stack( 1 );
-	static final ItemStack STACK_16K_STORAGE = AEApi.instance().blocks().blockCraftingStorage16k.stack( 1 );
-	static final ItemStack STACK_64K_STORAGE = AEApi.instance().blocks().blockCraftingStorage64k.stack( 1 );
+	static final ItemStack STACK_4K_STORAGE = AEApi.instance().definitions().blocks().craftingStorage4k().get().stack( 1 );
+	static final ItemStack STACK_16K_STORAGE = AEApi.instance().definitions().blocks().craftingStorage16k().get().stack( 1 );
+	static final ItemStack STACK_64K_STORAGE = AEApi.instance().definitions().blocks().craftingStorage64k().get().stack( 1 );
 
 	@Override
 	protected ItemStack getItemFromTile(Object obj)

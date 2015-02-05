@@ -218,7 +218,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 				this.patternSlotIN.putStack( null );
 
 			// add a new encoded pattern.
-			this.patternSlotOUT.putStack( output = AEApi.instance().items().itemEncodedPattern.stack( 1 ) );
+			this.patternSlotOUT.putStack( output = AEApi.instance().definitions().items().encodedPattern().get().stack( 1 ) );
 		}
 
 		// encode the slot.
@@ -303,7 +303,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		if ( output == null )
 			return false;
 
-		return AEApi.instance().items().itemEncodedPattern.sameAsStack( output ) || AEApi.instance().materials().materialBlankPattern.sameAsStack( output );
+		return AEApi.instance().definitions().items().encodedPattern().get().sameAsStack( output ) || AEApi.instance().definitions().materials().blankPattern().get().sameAsStack( output );
 	}
 
 	@Override

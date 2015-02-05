@@ -193,7 +193,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	@Override
 	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
-		return AEApi.instance().materials().materialWirelessBooster.sameAsStack( itemstack );
+		return AEApi.instance().definitions().materials().wirelessBooster().get().sameAsStack( itemstack );
 	}
 
 	@Override

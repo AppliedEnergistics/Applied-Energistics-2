@@ -23,8 +23,10 @@
 
 package appeng.api.storage.data;
 
+
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+
 
 /**
  * An alternate version of FluidStack for AE to keep tabs on things easier, and
@@ -32,7 +34,7 @@ import net.minecraftforge.fluids.FluidStack;
  *
  * You may hold on to these if you want, just make sure you let go of them when
  * your not using them.
- *
+ * <p/>
  * Don't Implement.
  *
  * Construct with Util.createFluidStack( FluidStack )
@@ -59,11 +61,10 @@ public interface IAEFluidStack extends IAEStack<IAEFluidStack>
 	/**
 	 * Combines two IAEItemStacks via addition.
 	 *
-	 * @param option
-	 *            , to add to the current one.
+	 * @param option to add to the current one.
 	 */
 	@Override
-	void add(IAEFluidStack option);
+	void add( IAEFluidStack option );
 
 	/**
 	 * quick way to get access to the Forge Fluid Definition.
@@ -71,5 +72,4 @@ public interface IAEFluidStack extends IAEStack<IAEFluidStack>
 	 * @return fluid definition
 	 */
 	Fluid getFluid();
-
 }

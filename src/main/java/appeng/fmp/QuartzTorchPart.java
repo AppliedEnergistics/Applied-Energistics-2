@@ -52,7 +52,7 @@ public class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTi
 	@Override
 	public Block getBlock()
 	{
-		return AEApi.instance().blocks().blockQuartzTorch.block();
+		return AEApi.instance().definitions().blocks().quartzTorch().get().block();
 	}
 
 	@Override

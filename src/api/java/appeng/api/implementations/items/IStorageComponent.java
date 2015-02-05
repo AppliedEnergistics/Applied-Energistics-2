@@ -23,8 +23,10 @@
 
 package appeng.api.implementations.items;
 
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
 
 /**
  * Implemented on a {@link Item}
@@ -38,16 +40,17 @@ public interface IStorageComponent
 	 * the condenser.
 	 *
 	 * @param is item
+	 *
 	 * @return number of bytes
 	 */
-	int getBytes(ItemStack is);
+	int getBytes( ItemStack is );
 
 	/**
 	 * Just true or false for the item stack.
 	 *
 	 * @param is item
+	 *
 	 * @return true if item is a storage component
 	 */
-	boolean isStorageComponent(ItemStack is);
-
+	boolean isStorageComponent( ItemStack is );
 }

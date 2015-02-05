@@ -23,8 +23,10 @@
 
 package appeng.api.storage.data;
 
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
 
 /**
  * An alternate version of ItemStack for AE to keep tabs on things easier, and to support larger storage. stackSizes of
@@ -64,11 +66,10 @@ public interface IAEItemStack extends IAEStack<IAEItemStack>
 	/**
 	 * Combines two IAEItemStacks via addition.
 	 *
-	 * @param option
-	 *            to add to the current one.
+	 * @param option to add to the current one.
 	 */
 	@Override
-	void add(IAEItemStack option);
+	void add( IAEItemStack option );
 
 	/**
 	 * quick way to get access to the MC Item Definition.
@@ -85,21 +86,23 @@ public interface IAEItemStack extends IAEStack<IAEItemStack>
 	/**
 	 * Compare the Ore Dictionary ID for this to another item.
 	 */
-	boolean sameOre(IAEItemStack is);
+	boolean sameOre( IAEItemStack is );
 
 	/**
 	 * compare the item/damage/nbt of the stack.
 	 *
 	 * @param otherStack to be compared item
+	 *
 	 * @return true if it is the same type (same item, damage, nbt)
 	 */
-	boolean isSameType(IAEItemStack otherStack);
+	boolean isSameType( IAEItemStack otherStack );
 
 	/**
 	 * compare the item/damage/nbt of the stack.
 	 *
 	 * @param stored to be compared item
+	 *
 	 * @return true if it is the same type (same item, damage, nbt)
 	 */
-	boolean isSameType(ItemStack stored);
+	boolean isSameType( ItemStack stored );
 }

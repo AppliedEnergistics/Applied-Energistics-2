@@ -68,29 +68,29 @@ public class NEIWorldCraftingHandler implements ICraftingHandler, IUsageHandler
 	{
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.CertusQuartzWorldGen ) )
-			this.addRecipe( AEApi.instance().materials().materialCertusQuartzCrystalCharged,
+			this.addRecipe( AEApi.instance().definitions().materials().certusQuartzCrystalCharged().get(),
 					GuiText.ChargedQuartz.getLocal() + "\n\n" + GuiText.ChargedQuartzFind.getLocal() );
 		else
-			this.addRecipe( AEApi.instance().materials().materialCertusQuartzCrystalCharged, GuiText.ChargedQuartzFind.getLocal() );
+			this.addRecipe( AEApi.instance().definitions().materials().certusQuartzCrystalCharged().get(), GuiText.ChargedQuartzFind.getLocal() );
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.MeteoriteWorldGen ) )
 		{
-			this.addRecipe( AEApi.instance().materials().materialLogicProcessorPress, GuiText.inWorldCraftingPresses.getLocal() );
-			this.addRecipe( AEApi.instance().materials().materialCalcProcessorPress, GuiText.inWorldCraftingPresses.getLocal() );
-			this.addRecipe( AEApi.instance().materials().materialEngProcessorPress, GuiText.inWorldCraftingPresses.getLocal() );
+			this.addRecipe( AEApi.instance().definitions().materials().logicProcessorPress().get(), GuiText.inWorldCraftingPresses.getLocal() );
+			this.addRecipe( AEApi.instance().definitions().materials().calcProcessorPress().get(), GuiText.inWorldCraftingPresses.getLocal() );
+			this.addRecipe( AEApi.instance().definitions().materials().engProcessorPress().get(), GuiText.inWorldCraftingPresses.getLocal() );
 		}
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.inWorldFluix ) )
-			this.addRecipe( AEApi.instance().materials().materialFluixCrystal, GuiText.inWorldFluix.getLocal() );
+			this.addRecipe( AEApi.instance().definitions().materials().fluixCrystal().get(), GuiText.inWorldFluix.getLocal() );
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.inWorldSingularity ) )
-			this.addRecipe( AEApi.instance().materials().materialQESingularity, GuiText.inWorldSingularity.getLocal() );
+			this.addRecipe( AEApi.instance().definitions().materials().qESingularity().get(), GuiText.inWorldSingularity.getLocal() );
 
 		if ( AEConfig.instance.isFeatureEnabled( AEFeature.inWorldPurification ) )
 		{
-			this.addRecipe( AEApi.instance().materials().materialPurifiedCertusQuartzCrystal, GuiText.inWorldPurificationCertus.getLocal() );
-			this.addRecipe( AEApi.instance().materials().materialPurifiedNetherQuartzCrystal, GuiText.inWorldPurificationNether.getLocal() );
-			this.addRecipe( AEApi.instance().materials().materialPurifiedFluixCrystal, GuiText.inWorldPurificationFluix.getLocal() );
+			this.addRecipe( AEApi.instance().definitions().materials().purifiedCertusQuartzCrystal().get(), GuiText.inWorldPurificationCertus.getLocal() );
+			this.addRecipe( AEApi.instance().definitions().materials().purifiedNetherQuartzCrystal().get(), GuiText.inWorldPurificationNether.getLocal() );
+			this.addRecipe( AEApi.instance().definitions().materials().purifiedFluixCrystal().get(), GuiText.inWorldPurificationFluix.getLocal() );
 		}
 	}
 

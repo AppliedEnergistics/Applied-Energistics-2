@@ -23,7 +23,9 @@
 
 package appeng.api.networking.ticking;
 
+
 import appeng.api.networking.IGridNode;
+
 
 /**
  * Implement on IGridHosts which want to use AE's Network Ticking Feature.
@@ -55,7 +57,7 @@ public interface IGridTickable
 	 * @return null or a valid new TickingRequest
 	 *
 	 */
-	TickingRequest getTickingRequest(IGridNode node);
+	TickingRequest getTickingRequest( IGridNode node );
 
 	/**
 	 * AE lets you adjust your tick rate based on the results of your tick, if
@@ -74,6 +76,5 @@ public interface IGridTickable
 	 * @return tick rate adjustment.
 	 *
 	 */
-	TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall);
-
+	TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall );
 }

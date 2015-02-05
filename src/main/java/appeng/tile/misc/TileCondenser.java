@@ -133,9 +133,9 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 		switch ((CondenserOutput) this.cm.getSetting( Settings.CONDENSER_OUTPUT ))
 		{
 		case MATTER_BALLS:
-			return AEApi.instance().materials().materialMatterBall.stack( 1 );
+			return AEApi.instance().definitions().materials().matterBall().get().stack( 1 );
 		case SINGULARITY:
-			return AEApi.instance().materials().materialSingularity.stack( 1 );
+			return AEApi.instance().definitions().materials().singularity().get().stack( 1 );
 		case TRASH:
 		default:
 		}

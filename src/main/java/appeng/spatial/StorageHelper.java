@@ -289,7 +289,7 @@ public class StorageHelper
 	, World dst /** storage cell **/
 	, int x, int y, int z, int i, int j, int k, int scaleX, int scaleY, int scaleZ)
 	{
-		BlockMatrixFrame blkMF = (BlockMatrixFrame) AEApi.instance().blocks().blockMatrixFrame.block();
+		BlockMatrixFrame blkMF = (BlockMatrixFrame) AEApi.instance().definitions().blocks().matrixFrame().get().block();
 
 		this.transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new WrapInMatrixFrame( blkMF, 0, dst ) );
 

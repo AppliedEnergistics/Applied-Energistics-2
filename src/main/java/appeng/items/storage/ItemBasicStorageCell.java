@@ -240,7 +240,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 					playerInventory.setInventorySlotContents( playerInventory.currentItem, null );
 
 					ItemStack extraB = ia.addItems( this.component.stack( 1 ) );
-					ItemStack extraA = ia.addItems( AEApi.instance().materials().materialEmptyStorageCell.stack( 1 ) );
+					ItemStack extraA = ia.addItems( AEApi.instance().definitions().materials().emptyStorageCell().get().stack( 1 ) );
 
 					if ( extraA != null )
 						player.dropPlayerItemWithRandomChoice( extraA, false );
@@ -266,7 +266,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	@Override
 	public ItemStack getContainerItem( ItemStack itemStack )
 	{
-		return AEApi.instance().materials().materialEmptyStorageCell.stack( 1 );
+		return AEApi.instance().definitions().materials().emptyStorageCell().get().stack( 1 );
 	}
 
 	@Override

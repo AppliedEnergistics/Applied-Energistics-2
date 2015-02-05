@@ -63,13 +63,13 @@ public class PacketClick extends AppEngPacket
 			ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
 			tnt.serverSideToolLogic( is, player, player.worldObj, this.x, this.y, this.z, this.side, this.hitX, this.hitY, this.hitZ );
 		}
-		else if ( is != null && AEApi.instance().items().itemMemoryCard.sameAsStack( is ) )
+		else if ( is != null && AEApi.instance().definitions().items().memoryCard().get().sameAsStack( is ) )
 		{
 			IMemoryCard mem = (IMemoryCard) is.getItem();
 			mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
 			is.setTagCompound( null );
 		}
-		else if ( is != null && AEApi.instance().items().itemColorApplicator.sameAsStack( is ) )
+		else if ( is != null && AEApi.instance().definitions().items().colorApplicator().get().sameAsStack( is ) )
 		{
 			ToolColorApplicator mem = (ToolColorApplicator) is.getItem();
 			mem.cycleColors( is, mem.getColor( is ), 1 );

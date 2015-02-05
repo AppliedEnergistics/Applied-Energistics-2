@@ -23,8 +23,10 @@
 
 package appeng.api.networking.events;
 
+
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
+
 
 /**
  * Posted by the network when the power status of the network goes up or down,
