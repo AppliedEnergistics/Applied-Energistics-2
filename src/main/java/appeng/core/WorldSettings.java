@@ -101,7 +101,7 @@ public class WorldSettings extends Configuration
 		{
 			File world = DimensionManager.getCurrentSaveRootDirectory();
 
-			File aeBaseFolder = new File( world.getPath() + File.separatorChar + "AE2" );
+			File aeBaseFolder = new File( world, "AE2" );
 
 			if ( !aeBaseFolder.isDirectory() && !aeBaseFolder.mkdir() )
 			{
