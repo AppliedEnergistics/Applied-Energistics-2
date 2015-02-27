@@ -431,7 +431,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	public Iterable<Cuboid6> getCollisionBoxes()
 	{
 		LinkedList<Cuboid6> l = new LinkedList<Cuboid6>();
-		for (AxisAlignedBB b : this.cb.getSelectedBoundingBoxesFromPool( false, true, null, false ))
+		for (AxisAlignedBB b : this.cb.getSelectedBoundingBoxesFromPool( false, true, null, true ))
 		{
 			l.add( new Cuboid6( b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ ) );
 		}
