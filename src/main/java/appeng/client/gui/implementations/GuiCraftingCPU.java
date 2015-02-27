@@ -39,6 +39,7 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.ISortSource;
@@ -307,14 +308,31 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 				IAEItemStack pendingStack = this.pending.findPrecise( refStack );
 
 				int lines = 0;
+				boolean active = false, scheduled = false;
 
 				if ( stored != null && stored.getStackSize() > 0 )
+				{
 					lines++;
+				}
 				if ( activeStack != null && activeStack.getStackSize() > 0 )
+				{
 					lines++;
+					active = true;
+				}
 				if ( pendingStack != null && pendingStack.getStackSize() > 0 )
+				{
 					lines++;
-
+					scheduled = true;
+				}
+				
+				if ( active || scheduled )
+				{
+					int bgcol = ( active ? AEColor.Green.blackVariant : AEColor.Yellow.blackVariant ) | 0x5A000000;
+					int startX = (x * (1 + sectionLength) + xo) * 2;
+					int startY = ((y * offY + yo) - 3) * 2;
+					drawRect( startX, startY, startX + (sectionLength * 2), startY + (offY * 2) - 2, bgcol);
+				}
+				
 				int negY = ((lines - 1) * 5) / 2;
 				int downY = 0;
 
