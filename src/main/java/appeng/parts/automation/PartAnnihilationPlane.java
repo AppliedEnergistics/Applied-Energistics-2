@@ -19,6 +19,8 @@
 package appeng.parts.automation;
 
 
+import java.util.concurrent.Callable;
+
 import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
@@ -57,6 +59,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.packets.PacketTransitionEffect;
+import appeng.hooks.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.parts.PartBasicState;
 import appeng.server.ServerHelper;
@@ -64,15 +67,23 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 
-public class PartAnnihilationPlane extends PartBasicState implements IGridTickable
+public class PartAnnihilationPlane extends PartBasicState implements IGridTickable, Callable<TickRateModulation>
 {
 
 	private boolean isAccepting = true;
 	private final BaseActionSource mySrc = new MachineSource( this );
+	private boolean breaking = false;
 
 	public PartAnnihilationPlane( ItemStack is )
 	{
 		super( PartAnnihilationPlane.class, is );
+	}
+
+	@Override
+	public TickRateModulation call() throws Exception
+	{
+		this.breaking = false;
+		return this.breakblock( true );
 	}
 
 	@Override
@@ -233,7 +244,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		this.getHost().markForUpdate();
 	}
 
-	public TickRateModulation breakblock()
+	public TickRateModulation breakblock( boolean modulate )
 	{
 		if ( this.isAccepting() && this.proxy.isActive() )
 		{
@@ -273,29 +284,34 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 						if ( hasPower && canStore )
 						{
-							w.setBlock( x, y, z, Platform.AIR, 0, 3 );
-							energy.extractAEPower( total, Actionable.MODULATE, PowerMultiplier.CONFIG );
-
-							final AxisAlignedBB box = AxisAlignedBB.getBoundingBox( x - 0.2, y - 0.2, z - 0.2, x + 1.2, y + 1.2, z + 1.2 );
-							for ( final Object ei : w.getEntitiesWithinAABB( EntityItem.class, box ) )
+							if ( modulate )
 							{
-								if ( ei instanceof EntityItem )
-								{
-									final EntityItem entityItem = ( EntityItem ) ei;
-									this.storeEntityItem( entityItem );
-								}
-							}
+								w.setBlock( x, y, z, Platform.AIR, 0, 3 );
+								energy.extractAEPower( total, Actionable.MODULATE, PowerMultiplier.CONFIG );
 
-							for ( final ItemStack snaggedItem : out )
+								final AxisAlignedBB box = AxisAlignedBB.getBoundingBox( x - 0.2, y - 0.2, z - 0.2, x + 1.2, y + 1.2, z + 1.2 );
+								for ( final Object ei : w.getEntitiesWithinAABB( EntityItem.class, box ) )
+								{
+									if ( ei instanceof EntityItem )
+									{
+										final EntityItem entityItem = ( EntityItem ) ei;
+										this.storeEntityItem( entityItem );
+									}
+								}
+
+								for ( final ItemStack snaggedItem : out )
+								{
+									this.storeItemStack( snaggedItem );
+								}
+
+								ServerHelper.proxy.sendToAllNearExcept( null, x, y, z, 64, w, new PacketTransitionEffect( x, y, z, this.side, true ) );
+							}
+							else
 							{
-								if ( this.storeItemStack( snaggedItem ) )
-								{
-									ServerHelper.proxy.sendToAllNearExcept( null, x, y, z, 64, w, new PacketTransitionEffect( x, y, z, this.side, true ) );
-								}
+								this.breaking = true;
+								TickHandler.INSTANCE.addCallable( this.tile.getWorldObj(), this );
 							}
-
 							return TickRateModulation.URGENT;
-
 						}
 					}
 				}
@@ -397,8 +413,13 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	@Override
 	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
 	{
+		if ( this.breaking )
+		{
+			return TickRateModulation.URGENT;
+		}
+
 		this.isAccepting = true;
-		return this.breakblock();
+		return this.breakblock( false );
 	}
 
 	/**
