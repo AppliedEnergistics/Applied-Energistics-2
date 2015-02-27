@@ -134,6 +134,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 
 	public boolean enableEffects = true;
 	public boolean useLargeFonts = false;
+	public boolean useColoredCraftingStatus;
 	public final int[] craftByStacks = new int[] { 1, 10, 100, 1000 };
 	public final int[] priorityByStacks = new int[] { 1, 10, 100, 1000 };
 	public final int[] levelByStacks = new int[] { 1, 10, 100, 1000 };
@@ -156,6 +157,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 
 	public int craftingCalculationTimePerTick = 5;
 
+
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs)
 	{
@@ -170,6 +172,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 		this.disableColoredCableRecipesInNEI = this.get( "Client", "disableColoredCableRecipesInNEI", true ).getBoolean( true );
 		this.enableEffects = this.get( "Client", "enableEffects", true ).getBoolean( true );
 		this.useLargeFonts = this.get( "Client", "useTerminalUseLargeFont", false ).getBoolean( false );
+		this.useColoredCraftingStatus = this.get( "Client", "useColoredCraftingStatus", true ).getBoolean( true );
 
 		// load buttons..
 		for (int btnNum = 0; btnNum < 4; btnNum++)

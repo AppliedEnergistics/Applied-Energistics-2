@@ -44,6 +44,7 @@ import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.container.implementations.ContainerCraftingCPU;
+import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
@@ -324,15 +325,15 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 					lines++;
 					scheduled = true;
 				}
-				
-				if ( active || scheduled )
+
+				if ( AEConfig.instance.useColoredCraftingStatus && ( active || scheduled ) )
 				{
 					int bgcol = ( active ? AEColor.Green.blackVariant : AEColor.Yellow.blackVariant ) | 0x5A000000;
 					int startX = (x * (1 + sectionLength) + xo) * 2;
 					int startY = ((y * offY + yo) - 3) * 2;
 					drawRect( startX, startY, startX + (sectionLength * 2), startY + (offY * 2) - 2, bgcol);
 				}
-				
+
 				int negY = ((lines - 1) * 5) / 2;
 				int downY = 0;
 
