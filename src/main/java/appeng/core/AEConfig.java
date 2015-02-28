@@ -88,6 +88,10 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 	private double WirelessBoosterRangeMultiplier = 1;
 	private double WirelessBoosterExp = 1.5;
 
+    public int controllerMaxX = 7;
+    public int controllerMaxY = 7;
+    public int controllerMaxZ = 7;
+
 	public double wireless_getDrainRate(double range)
 	{
 		return this.WirelessTerminalDrainMultiplier * range;
@@ -287,6 +291,10 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 		this.portableCellBattery = this.get( "battery", "portableCell", this.portableCellBattery ).getInt( this.portableCellBattery );
 		this.colorApplicatorBattery = this.get( "battery", "colorApplicator", this.colorApplicatorBattery ).getInt( this.colorApplicatorBattery );
 		this.matterCannonBattery = this.get( "battery", "matterCannon", this.matterCannonBattery ).getInt( this.matterCannonBattery );
+
+        this.controllerMaxX = this.get( "controller", "controllerMaxX", this.controllerMaxX ).getInt( this.controllerMaxX );
+        this.controllerMaxY = this.get( "controller", "controllerMaxY", this.controllerMaxY ).getInt( this.controllerMaxY );
+        this.controllerMaxZ = this.get( "controller", "controllerMaxZ", this.controllerMaxZ ).getInt( this.controllerMaxZ );
 
 		this.clientSync();
 

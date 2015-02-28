@@ -22,6 +22,7 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridVisitor;
 import appeng.tile.networking.TileController;
+import appeng.core.AEConfig;
 
 public class ControllerValidator implements IGridVisitor
 {
@@ -33,6 +34,10 @@ public class ControllerValidator implements IGridVisitor
 	int maxX;
 	int maxY;
 	int maxZ;
+
+    int sizeMaxX = AEConfig.instance.controllerMaxX;
+    int sizeMaxY = AEConfig.instance.controllerMaxY;
+    int sizeMaxZ = AEConfig.instance.controllerMaxZ;
 
 	public boolean isValid = true;
 	public int found = 0;
@@ -61,7 +66,7 @@ public class ControllerValidator implements IGridVisitor
 			this.minZ = Math.min( c.zCoord, this.minZ );
 			this.maxZ = Math.max( c.zCoord, this.maxZ );
 
-			if ( this.maxX - this.minX < 7 && this.maxY - this.minY < 7 && this.maxZ - this.minZ < 7 )
+			if ( this.maxX - this.minX < sizeMaxX && this.maxY - this.minY < sizeMaxY && this.maxZ - this.minZ < sizeMaxZ )
 			{
 				this.found++;
 				return true;
