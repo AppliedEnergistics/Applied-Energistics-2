@@ -30,6 +30,7 @@ import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.pathing.IPathingGrid;
+import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -37,6 +38,7 @@ import appeng.core.features.AEFeature;
 import appeng.me.pathfinding.IPathItem;
 import appeng.util.Platform;
 import appeng.util.ReadOnlyCollection;
+
 
 public class GridConnection implements IGridConnection, IPathItem
 {
@@ -51,17 +53,21 @@ public class GridConnection implements IGridConnection, IPathItem
 
 	public int channelData = 0;
 
-	public GridConnection(IGridNode aNode, IGridNode bNode, ForgeDirection fromAtoB) throws FailedConnection {
+	public GridConnection( IGridNode aNode, IGridNode bNode, ForgeDirection fromAtoB ) throws FailedConnection
+	{
 
-		GridNode a = (GridNode) aNode;
-		GridNode b = (GridNode) bNode;
+		GridNode a = ( GridNode ) aNode;
+		GridNode b = ( GridNode ) bNode;
 
 		if ( Platform.securityCheck( a, b ) )
 		{
 			if ( AEConfig.instance.isFeatureEnabled( AEFeature.LogSecurityAudits ) )
 			{
-				AELog.info( "Audit Failed 1: " + a.getGridBlock().getLocation() );
-				AELog.info( "Audit Failed 2: " + b.getGridBlock().getLocation() );
+				final DimensionalCoord aCoordinates = a.getGridBlock().getLocation();
+				final DimensionalCoord bCoordinates = b.getGridBlock().getLocation();
+
+				AELog.info( "Security audit 1 failed at [x=%d, y=%d, z=%d] belonging to player [id=%d]", aCoordinates.x, aCoordinates.y, aCoordinates.z, a.playerID );
+				AELog.info( "Security audit 2 failed at [x=%d, y=%d, z=%d] belonging to player [id=%d]", bCoordinates.x, bCoordinates.y, bCoordinates.z, b.playerID );
 			}
 
 			throw new FailedConnection();
@@ -113,7 +119,7 @@ public class GridConnection implements IGridConnection, IPathItem
 		this.sideB.addConnection( this );
 	}
 
-	private boolean isNetworkABetter(GridNode a, GridNode b)
+	private boolean isNetworkABetter( GridNode a, GridNode b )
 	{
 		return a.getMyGrid().getPriority() > b.getMyGrid().getPriority() || a.getMyGrid().size() > b.getMyGrid().size();
 	}
@@ -139,7 +145,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	}
 
 	@Override
-	public ForgeDirection getDirection(IGridNode side)
+	public ForgeDirection getDirection( IGridNode side )
 	{
 		if ( this.fromAtoB == ForgeDirection.UNKNOWN )
 			return this.fromAtoB;
@@ -157,7 +163,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	}
 
 	@Override
-	public IGridNode getOtherSide(IGridNode gridNode)
+	public IGridNode getOtherSide( IGridNode gridNode )
 	{
 		if ( gridNode == this.sideA )
 			return this.sideB;
@@ -176,11 +182,11 @@ public class GridConnection implements IGridConnection, IPathItem
 	@Override
 	public IReadOnlyCollection<IPathItem> getPossibleOptions()
 	{
-		return new ReadOnlyCollection<IPathItem>( Arrays.asList( (IPathItem) this.a(), (IPathItem) this.b() ) );
+		return new ReadOnlyCollection<IPathItem>( Arrays.asList( ( IPathItem ) this.a(), ( IPathItem ) this.b() ) );
 	}
 
 	@Override
-	public void incrementChannelCount(int usedChannels)
+	public void incrementChannelCount( int usedChannels )
 	{
 		this.channelData += usedChannels;
 	}
@@ -194,7 +200,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	@Override
 	public int getUsedChannels()
 	{
-		return (this.channelData >> 8) & 0xff;
+		return ( this.channelData >> 8 ) & 0xff;
 	}
 
 	public int getLastUsedChannels()
@@ -211,7 +217,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	}
 
 	@Override
-	public void setControllerRoute(IPathItem fast, boolean zeroOut)
+	public void setControllerRoute( IPathItem fast, boolean zeroOut )
 	{
 		if ( zeroOut )
 			this.channelData &= ~0xff;
@@ -230,7 +236,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	{
 		if ( this.getUsedChannels() != this.getLastUsedChannels() )
 		{
-			this.channelData = (this.channelData & 0xff);
+			this.channelData = ( this.channelData & 0xff );
 			this.channelData |= this.channelData << 8;
 
 			if ( this.sideA.getInternalGrid() != null )
