@@ -34,6 +34,11 @@ repositories {
         name "FireBall API Depot"
         url "http://dl.tsr.me/artifactory/libs-release-local"
     }
+    
+    maven {
+        name "tterrag Maven"
+        url "http://maven.tterrag.com"
+    }
 }
 
 dependencies {
@@ -45,6 +50,10 @@ dependencies {
 
     compile "mcp.mobius.waila:Waila:${config.waila_version}:dev"
 	
+    compile ("com.enderio:EnderIO:${config.enderio_version}:api") {
+        transitive = false 
+    }
+    
     compile(group: 'api', name: 'betterstorage', version: "${config.api_betterstorage_version}")
     compile(group: 'api', name: 'coloredlightscore', version: "${config.api_coloredlightscore_version}")
     compile(group: 'api', name: 'craftguide', version: "${config.api_craftguide_version}")
