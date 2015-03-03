@@ -250,15 +250,21 @@ public enum GuiBridge implements IGuiHandler
 		ForgeDirection side = ForgeDirection.getOrientation( ID_ORDINAL & 0x07 );
 		GuiBridge ID = values()[ID_ORDINAL >> 4];
 		boolean stem = ( ( ID_ORDINAL >> 3 ) & 1 ) == 1;
-
-		if( ID.type.isItem() && stem )
+		if( ID.type.isItem() )
 		{
-			ItemStack it = player.inventory.getCurrentItem();
+			ItemStack it = null;
+			if( stem )
+			{
+				it = player.inventory.getCurrentItem();
+			}
+			else if( x >= 0 && x < player.inventory.mainInventory.length )
+			{
+				it = player.inventory.getStackInSlot( x );
+			}
 			Object myItem = this.getGuiObject( it, player, w, x, y, z );
 			if( myItem != null && ID.CorrectTileOrPart( myItem ) )
 				return this.updateGui( ID.ConstructContainer( player.inventory, side, myItem ), w, x, y, z, side, myItem );
 		}
-
 		if( ID.type.isTile() )
 		{
 			TileEntity TE = w.getTileEntity( x, y, z );
@@ -275,7 +281,6 @@ public enum GuiBridge implements IGuiHandler
 					return this.updateGui( ID.ConstructContainer( player.inventory, side, TE ), w, x, y, z, side, TE );
 			}
 		}
-
 		return new ContainerNull();
 	}
 
@@ -411,19 +416,24 @@ public enum GuiBridge implements IGuiHandler
 		ForgeDirection side = ForgeDirection.getOrientation( ID_ORDINAL & 0x07 );
 		GuiBridge ID = values()[ID_ORDINAL >> 4];
 		boolean stem = ( ( ID_ORDINAL >> 3 ) & 1 ) == 1;
-
-		if( ID.type.isItem() && stem )
+		if( ID.type.isItem() )
 		{
-			ItemStack it = player.inventory.getCurrentItem();
+			ItemStack it = null;
+			if( stem )
+			{
+				it = player.inventory.getCurrentItem();
+			}
+			else if( x >= 0 && x < player.inventory.mainInventory.length )
+			{
+				it = player.inventory.getStackInSlot( x );
+			}
 			Object myItem = this.getGuiObject( it, player, w, x, y, z );
-			if( ID.CorrectTileOrPart( myItem ) )
+			if( myItem != null && ID.CorrectTileOrPart( myItem ) )
 				return ID.ConstructGui( player.inventory, side, myItem );
 		}
-
 		if( ID.type.isTile() )
 		{
 			TileEntity TE = w.getTileEntity( x, y, z );
-
 			if( TE instanceof IPartHost )
 			{
 				( (IPartHost) TE ).getPart( side );
@@ -437,7 +447,6 @@ public enum GuiBridge implements IGuiHandler
 					return ID.ConstructGui( player.inventory, side, TE );
 			}
 		}
-
 		return new GuiNull( new ContainerNull() );
 	}
 

@@ -35,23 +35,32 @@ import appeng.api.storage.MEMonitorHandler;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.IConfigManager;
+import appeng.container.interfaces.IInventorySlotAware;
 import appeng.me.storage.CellInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
 
-public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implements IPortableCell
+public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implements IPortableCell, IInventorySlotAware
 {
 
 	private final ItemStack target;
 	private final IAEItemPowerStorage ips;
+	private final int inventorySlot;
 
-	public PortableCellViewer( ItemStack is )
+	public PortableCellViewer( ItemStack is, int slot )
 	{
 		super( CellInventory.getCell( is, null ) );
 		this.ips = (IAEItemPowerStorage) is.getItem();
 		this.target = is;
+		this.inventorySlot = slot;
+	}
+
+	@Override
+	public int getInventorySlot()
+	{
+		return inventorySlot;
 	}
 
 	@Override

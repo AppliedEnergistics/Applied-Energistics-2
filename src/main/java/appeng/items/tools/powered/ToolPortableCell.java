@@ -186,6 +186,6 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	@Override
 	public IGuiItemObject getGuiObject( ItemStack is, World w, int x, int y, int z )
 	{
-		return new PortableCellViewer( is );
+		return new PortableCellViewer( is, x );
 	}
 }
