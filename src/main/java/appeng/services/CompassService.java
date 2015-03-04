@@ -31,13 +31,14 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
 import appeng.api.AEApi;
+import appeng.api.util.AEItemDefinition;
 import appeng.api.util.DimensionalCoord;
 import appeng.services.helpers.CompassReader;
 import appeng.services.helpers.ICompassCallback;
 
 public class CompassService implements ThreadFactory
 {
-
+	private static final int CHUNK_SIZE = 16;
 	int jobSize = 0;
 
 	private class CMUpdatePost implements Runnable
@@ -208,15 +209,15 @@ public class CompassService implements ThreadFactory
 		int x = chunkX << 4;
 		int z = chunkZ << 4;
 
-		this.updateArea( w, x, 16, z );
-		this.updateArea( w, x, 16 + 32, z );
-		this.updateArea( w, x, 16 + 64, z );
-		this.updateArea( w, x, 16 + 96, z );
+		this.updateArea( w, x, CHUNK_SIZE, z );
+		this.updateArea( w, x, CHUNK_SIZE + 32, z );
+		this.updateArea( w, x, CHUNK_SIZE + 64, z );
+		this.updateArea( w, x, CHUNK_SIZE + 96, z );
 
-		this.updateArea( w, x, 16 + 128, z );
-		this.updateArea( w, x, 16 + 160, z );
-		this.updateArea( w, x, 16 + 192, z );
-		this.updateArea( w, x, 16 + 224, z );
+		this.updateArea( w, x, CHUNK_SIZE + 128, z );
+		this.updateArea( w, x, CHUNK_SIZE + 160, z );
+		this.updateArea( w, x, CHUNK_SIZE + 192, z );
+		this.updateArea( w, x, CHUNK_SIZE + 224, z );
 	}
 
 	public Future<?> updateArea(World w, int x, int y, int z)
@@ -230,21 +231,22 @@ public class CompassService implements ThreadFactory
 		int low_y = cdy << 5;
 		int hi_y = low_y + 32;
 
-		Block skystone = AEApi.instance().blocks().blockSkyStone.block();
-
-		// lower level...
-		Chunk c = w.getChunkFromBlockCoords( x, z );
-
-		for (int i = 0; i < 16; i++)
+		for ( AEItemDefinition skystone : AEApi.instance().definitions().blocks().skyStone().asSet() )
 		{
-			for (int j = 0; j < 16; j++)
+			// lower level...
+			Chunk c = w.getChunkFromBlockCoords( x, z );
+
+			for (int i = 0; i < CHUNK_SIZE; i++)
 			{
-				for (int k = low_y; k < hi_y; k++)
+				for (int j = 0; j < CHUNK_SIZE; j++)
 				{
-					Block blk = c.getBlock( i, k, j );
-					if ( blk == skystone && c.getBlockMetadata( i, k, j ) == 0 )
+					for (int k = low_y; k < hi_y; k++)
 					{
-						return this.executor.submit( new CMUpdatePost( w, cx, cz, cdy, true ) );
+						Block blk = c.getBlock( i, k, j );
+						if ( blk == skystone.block() && c.getBlockMetadata( i, k, j ) == 0 )
+						{
+							return this.executor.submit( new CMUpdatePost( w, cx, cz, cdy, true ) );
+						}
 					}
 				}
 			}
@@ -279,8 +281,8 @@ public class CompassService implements ThreadFactory
 
 	private int dist(int ax, int az, int bx, int bz)
 	{
-		int up = (bz - az) * 16;
-		int side = (bx - ax) * 16;
+		int up = (bz - az) * CHUNK_SIZE;
+		int side = (bx - ax) * CHUNK_SIZE;
 
 		return up * up + side * side;
 	}

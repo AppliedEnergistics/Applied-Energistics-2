@@ -85,6 +85,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import buildcraft.api.tools.IToolWrench;
+import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -95,6 +96,8 @@ import appeng.api.config.PowerUnits;
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
+import appeng.api.definitions.IMaterials;
+import appeng.api.definitions.IParts;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
@@ -118,6 +121,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAETagCompound;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
+import appeng.api.util.AEColoredItemDefinition;
 import appeng.api.util.AEItemDefinition;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
@@ -1755,7 +1759,11 @@ public class Platform
 			return false;
 
 		if ( type == AEFeature.CertusQuartzTools )
-			return AEApi.instance().materials().materialCertusQuartzCrystal.sameAsStack( b );
+		{
+			final Optional<AEItemDefinition> maybeCertus = AEApi.instance().definitions().materials().certusQuartzCrystal();
+
+			return maybeCertus.isPresent() && maybeCertus.get().sameAsStack( b );
+		}
 
 		if ( type == AEFeature.NetherQuartzTools )
 			return Items.quartz == b.getItem();
@@ -1765,19 +1773,41 @@ public class Platform
 
 	public static Object findPreferred(ItemStack[] is)
 	{
+		final IParts parts = AEApi.instance().definitions().parts();
+
 		for (ItemStack stack : is)
 		{
-			if ( AEApi.instance().parts().partCableGlass.sameAs( AEColor.Transparent, stack ) )
-				return stack;
+			for ( AEColoredItemDefinition glass : parts.cableGlass().asSet() )
+			{
+				if ( glass.sameAs( AEColor.Transparent, stack ) )
+				{
+					return stack;
+				}
+			}
 
-			if ( AEApi.instance().parts().partCableCovered.sameAs( AEColor.Transparent, stack ) )
-				return stack;
+			for ( AEColoredItemDefinition covered : parts.cableCovered().asSet() )
+			{
+				if ( covered.sameAs( AEColor.Transparent, stack ) )
+				{
+					return stack;
+				}
+			}
 
-			if ( AEApi.instance().parts().partCableSmart.sameAs( AEColor.Transparent, stack ) )
-				return stack;
+			for ( AEColoredItemDefinition smart : parts.cableSmart().asSet() )
+			{
+				if ( smart.sameAs( AEColor.Transparent, stack ) )
+				{
+					return stack;
+				}
+			}
 
-			if ( AEApi.instance().parts().partCableDense.sameAs( AEColor.Transparent, stack ) )
-				return stack;
+			for ( AEColoredItemDefinition dense : parts.cableDense().asSet() )
+			{
+				if ( dense.sameAs( AEColor.Transparent, stack ) )
+				{
+					return stack;
+				}
+			}
 		}
 
 		return is;
@@ -1865,8 +1895,23 @@ public class Platform
 
 	public static boolean isRecipePrioritized(ItemStack what)
 	{
-		return AEApi.instance().materials().materialPurifiedCertusQuartzCrystal.sameAsStack( what )
-				|| AEApi.instance().materials().materialPurifiedFluixCrystal.sameAsStack( what )
-				|| AEApi.instance().materials().materialPurifiedNetherQuartzCrystal.sameAsStack( what );
+		final IMaterials materials = AEApi.instance().definitions().materials();
+
+		for ( AEItemDefinition pureCert : materials.purifiedCertusQuartzCrystal().asSet() )
+		{
+			return pureCert.sameAsStack( what );
+		}
+
+		for ( AEItemDefinition pureFluix : materials.purifiedFluixCrystal().asSet() )
+		{
+			return pureFluix.sameAsStack( what );
+		}
+
+		for ( AEItemDefinition pureNether : materials.purifiedNetherQuartzCrystal().asSet() )
+		{
+			return pureNether.sameAsStack( what );
+		}
+
+		return false;
 	}
 }

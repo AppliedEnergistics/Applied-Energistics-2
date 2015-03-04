@@ -23,10 +23,13 @@
 
 package appeng.api.storage;
 
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
+
 
 public interface ICellInventory extends IMEInventory<IAEItemStack>
 {
@@ -115,5 +118,4 @@ public interface ICellInventory extends IMEInventory<IAEItemStack>
 	 * @return the status number for this drive.
 	 */
 	int getStatusForCell();
-
 }

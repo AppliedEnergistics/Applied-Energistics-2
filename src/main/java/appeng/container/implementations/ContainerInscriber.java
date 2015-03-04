@@ -22,7 +22,10 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import com.google.common.base.Optional;
+
 import appeng.api.AEApi;
+import appeng.api.util.AEItemDefinition;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.SlotOutput;
@@ -140,8 +143,13 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 				otherSlot = this.top.getStack();
 
 			// name presses
-			if ( AEApi.instance().materials().materialNamePress.sameAsStack( otherSlot ) )
-				return AEApi.instance().materials().materialNamePress.sameAsStack( is );
+			for ( AEItemDefinition definition : AEApi.instance().definitions().materials().namePress().asSet() )
+			{
+				if ( definition.sameAsStack( otherSlot ) )
+				{
+					return definition.sameAsStack( is );
+				}
+			}
 
 			// everything else
 			for (InscriberRecipe i : Inscribe.RECIPES )

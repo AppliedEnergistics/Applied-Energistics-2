@@ -39,6 +39,7 @@ import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.features.IWirelessTermHandler;
+import appeng.api.util.AEItemDefinition;
 import appeng.api.util.IConfigManager;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
@@ -98,7 +99,9 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	@Override
 	public boolean canHandle( ItemStack is )
 	{
-		return AEApi.instance().items().itemWirelessTerminal.sameAsStack( is );
+		final Optional<AEItemDefinition> maybe = AEApi.instance().definitions().items().wirelessTerminal();
+
+		return maybe.isPresent() && maybe.get().sameAsStack( is );
 	}
 
 	@Override

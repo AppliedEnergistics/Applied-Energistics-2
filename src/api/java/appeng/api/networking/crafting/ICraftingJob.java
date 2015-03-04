@@ -23,15 +23,17 @@
 
 package appeng.api.networking.crafting;
 
+
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+
 
 public interface ICraftingJob
 {
 
 	/**
 	 * @return if this job is a simulation, simulations cannot be submitted and only represent 1 possible future
-	 *         crafting job with fake items.
+	 * crafting job with fake items.
 	 */
 	boolean isSimulation();
 
@@ -46,11 +48,10 @@ public interface ICraftingJob
 	 *
 	 * @param plan plan
 	 */
-	void populatePlan(IItemList<IAEItemStack> plan);
+	void populatePlan( IItemList<IAEItemStack> plan );
 
 	/**
 	 * @return the final output of the job.
 	 */
 	IAEItemStack getOutput();
-
 }

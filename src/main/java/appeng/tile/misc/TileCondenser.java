@@ -30,7 +30,9 @@ import net.minecraftforge.fluids.IFluidHandler;
 import appeng.api.AEApi;
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
+import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IStorageComponent;
+import appeng.api.util.AEItemDefinition;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.tile.AEBaseInvTile;
@@ -130,14 +132,26 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 
 	private ItemStack getOutput()
 	{
+		final IMaterials materials = AEApi.instance().definitions().materials();
+
 		switch ((CondenserOutput) this.cm.getSetting( Settings.CONDENSER_OUTPUT ))
 		{
-		case MATTER_BALLS:
-			return AEApi.instance().materials().materialMatterBall.stack( 1 );
-		case SINGULARITY:
-			return AEApi.instance().materials().materialSingularity.stack( 1 );
-		case TRASH:
-		default:
+			case MATTER_BALLS:
+				for ( AEItemDefinition matterBall : materials.matterBall().asSet() )
+				{
+					return matterBall.stack( 1 );
+				}
+				break;
+
+			case SINGULARITY:
+				for ( AEItemDefinition singularity : materials.singularity().asSet() )
+				{
+					return singularity.stack( 1 );
+				}
+				break;
+
+			case TRASH:
+			default:
 		}
 		return null;
 	}

@@ -36,6 +36,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
+import appeng.api.util.AEItemDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderBlockCharger;
@@ -97,22 +98,24 @@ public class BlockCharger extends AEBaseBlock implements ICustomCollision
 		if ( tile instanceof TileCharger )
 		{
 			TileCharger tc = (TileCharger) tile;
-			if ( AEApi.instance().materials().materialCertusQuartzCrystalCharged.sameAsStack( tc.getStackInSlot( 0 ) ) )
+
+			for ( AEItemDefinition definition : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().asSet() )
 			{
-
-				double xOff = 0.0;
-				double yOff = 0.0;
-				double zOff = 0.0;
-
-				for (int bolts = 0; bolts < 3; bolts++)
+				if ( definition.sameAsStack( tc.getStackInSlot( 0 ) ) )
 				{
-					if ( CommonHelper.proxy.shouldAddParticles( r ) )
+					double xOff = 0.0;
+					double yOff = 0.0;
+					double zOff = 0.0;
+
+					for (int bolts = 0; bolts < 3; bolts++)
 					{
-						LightningFX fx = new LightningFX( w, xOff + 0.5 + x, yOff + 0.5 + y, zOff + 0.5 + z, 0.0D, 0.0D, 0.0D );
-						Minecraft.getMinecraft().effectRenderer.addEffect( fx );
+						if ( CommonHelper.proxy.shouldAddParticles( r ) )
+						{
+							LightningFX fx = new LightningFX( w, xOff + 0.5 + x, yOff + 0.5 + y, zOff + 0.5 + z, 0.0D, 0.0D, 0.0D );
+							Minecraft.getMinecraft().effectRenderer.addEffect( fx );
+						}
 					}
 				}
-
 			}
 		}
 	}

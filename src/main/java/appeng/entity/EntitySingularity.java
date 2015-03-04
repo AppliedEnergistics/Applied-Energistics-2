@@ -32,6 +32,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IMaterials;
+import appeng.api.util.AEItemDefinition;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.util.Platform;
@@ -73,32 +75,25 @@ final public class EntitySingularity extends AEBaseEntityItem
 			return;
 
 		ItemStack item = this.getEntityItem();
-		if ( AEApi.instance().materials().materialSingularity.sameAsStack( item ) )
+
+		final IMaterials materials = AEApi.instance().definitions().materials();
+
+		for ( AEItemDefinition singularity : materials.singularity().asSet() )
 		{
-			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( this.posX - 4, this.posY - 4, this.posZ - 4, this.posX + 4, this.posY + 4, this.posZ + 4 );
-			List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
-
-			for ( Entity e : l )
+			if ( singularity.sameAsStack( item ) )
 			{
-				if ( e instanceof EntityItem )
-				{
-					ItemStack other = ( ( EntityItem ) e ).getEntityItem();
-					if ( other != null )
-					{
-						boolean matches = false;
-						for ( ItemStack is : OreDictionary.getOres( "dustEnder" ) )
-						{
-							if ( OreDictionary.itemMatches( other, is, false ) )
-							{
-								matches = true;
-								break;
-							}
-						}
+				AxisAlignedBB region = AxisAlignedBB.getBoundingBox( this.posX - 4, this.posY - 4, this.posZ - 4, this.posX + 4, this.posY + 4, this.posZ + 4 );
+				List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
 
-						// check... other name.
-						if ( !matches )
+				for ( Entity e : l )
+				{
+					if ( e instanceof EntityItem )
+					{
+						ItemStack other = ( ( EntityItem ) e ).getEntityItem();
+						if ( other != null )
 						{
-							for ( ItemStack is : OreDictionary.getOres( "dustEnderPearl" ) )
+							boolean matches = false;
+							for ( ItemStack is : OreDictionary.getOres( "dustEnder" ) )
 							{
 								if ( OreDictionary.itemMatches( other, is, false ) )
 								{
@@ -106,26 +101,42 @@ final public class EntitySingularity extends AEBaseEntityItem
 									break;
 								}
 							}
-						}
 
-						if ( matches )
-						{
-							while ( item.stackSize > 0 && other.stackSize > 0 )
+							// check... other name.
+							if ( !matches )
 							{
-								other.stackSize--;
-								if ( other.stackSize == 0 )
-									e.setDead();
-
-								ItemStack Output = AEApi.instance().materials().materialQESingularity.stack( 2 );
-								NBTTagCompound cmp = Platform.openNbtData( Output );
-								cmp.setLong( "freq", ( new Date() ).getTime() * 100 + ( randTickSeed++ ) % 100 );
-								item.stackSize--;
-
-								this.worldObj.spawnEntityInWorld( new EntitySingularity( this.worldObj, this.posX, this.posY, this.posZ, Output ) );
+								for ( ItemStack is : OreDictionary.getOres( "dustEnderPearl" ) )
+								{
+									if ( OreDictionary.itemMatches( other, is, false ) )
+									{
+										matches = true;
+										break;
+									}
+								}
 							}
 
-							if ( item.stackSize <= 0 )
-								this.setDead();
+							if ( matches )
+							{
+								while ( item.stackSize > 0 && other.stackSize > 0 )
+								{
+									other.stackSize--;
+									if ( other.stackSize == 0 )
+										e.setDead();
+
+									for ( AEItemDefinition qes : materials.qESingularity().asSet() )
+									{
+										ItemStack output = qes.stack( 2 );
+										NBTTagCompound cmp = Platform.openNbtData( output );
+										cmp.setLong( "freq", ( new Date() ).getTime() * 100 + ( randTickSeed++ ) % 100 );
+										item.stackSize--;
+
+										this.worldObj.spawnEntityInWorld( new EntitySingularity( this.worldObj, this.posX, this.posY, this.posZ, output ) );
+									}
+								}
+
+								if ( item.stackSize <= 0 )
+									this.setDead();
+							}
 						}
 					}
 				}

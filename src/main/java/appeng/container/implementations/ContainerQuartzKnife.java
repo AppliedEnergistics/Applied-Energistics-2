@@ -27,6 +27,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 
 import appeng.api.AEApi;
+import appeng.api.util.AEItemDefinition;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.QuartzKnifeOutput;
 import appeng.container.slot.SlotRestrictedInput;
@@ -120,10 +121,14 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 		{
 			if ( this.myName.length() > 0 )
 			{
-				ItemStack name = AEApi.instance().materials().materialNamePress.stack( 1 );
-				NBTTagCompound c = Platform.openNbtData( name );
-				c.setString( "InscribeName", this.myName );
-				return name;
+				for ( AEItemDefinition definition : AEApi.instance().definitions().materials().namePress().asSet() )
+				{
+					ItemStack name = definition.stack( 1 );
+					NBTTagCompound c = Platform.openNbtData( name );
+					c.setString( "InscribeName", this.myName );
+
+					return name;
+				}
 			}
 		}
 

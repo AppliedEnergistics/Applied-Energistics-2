@@ -38,8 +38,10 @@ import net.minecraft.world.World;
 import cpw.mods.fml.common.registry.EntityRegistry;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.api.recipes.ResolverResult;
+import appeng.api.util.AEItemDefinition;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.ButtonToolTips;
@@ -122,13 +124,30 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	public ItemStack triggerGrowth(ItemStack is)
 	{
 		int newDamage = this.getProgress( is ) + 1;
+		final IMaterials materials = AEApi.instance().definitions().materials();
+		final int size = is.stackSize;
 
 		if ( newDamage == Certus + SINGLE_OFFSET )
-			return AEApi.instance().materials().materialPurifiedCertusQuartzCrystal.stack( is.stackSize );
+		{
+			for ( AEItemDefinition pureCert : materials.purifiedCertusQuartzCrystal().asSet() )
+			{
+				return pureCert.stack( size );
+			}
+		}
 		if ( newDamage == Nether + SINGLE_OFFSET )
-			return AEApi.instance().materials().materialPurifiedNetherQuartzCrystal.stack( is.stackSize );
+		{
+			for ( AEItemDefinition pureNether : materials.purifiedNetherQuartzCrystal().asSet() )
+			{
+				return pureNether.stack( size );
+			}
+		}
 		if ( newDamage == Fluix + SINGLE_OFFSET )
-			return AEApi.instance().materials().materialPurifiedFluixCrystal.stack( is.stackSize );
+		{
+			for ( AEItemDefinition pureFluix : materials.purifiedFluixCrystal().asSet() )
+			{
+				return pureFluix.stack( size );
+			}
+		}
 		if ( newDamage > END )
 			return null;
 
@@ -275,10 +294,17 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 
 	public static ResolverResult getResolver(int certus2)
 	{
-		ItemStack is = AEApi.instance().items().itemCrystalSeed.stack( 1 );
-		is.setItemDamage( certus2 );
-		is = newStyle( is );
-		return new ResolverResult( "ItemCrystalSeed", is.getItemDamage(), is.getTagCompound() );
+		ResolverResult resolver = null;
+
+		for ( AEItemDefinition definition : AEApi.instance().definitions().items().crystalSeed().asSet() )
+		{
+			ItemStack is = definition.stack( 1 );
+			is.setItemDamage( certus2 );
+			is = newStyle( is );
+			resolver = new ResolverResult( "ItemCrystalSeed", is.getItemDamage(), is.getTagCompound() );
+		}
+
+		return resolver;
 	}
 
 }

@@ -24,8 +24,14 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import com.google.common.base.Optional;
+
 import appeng.api.AEApi;
 import appeng.api.IAppEngApi;
+import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IDefinitions;
+import appeng.api.definitions.IItems;
+import appeng.api.definitions.IMaterials;
 import appeng.api.definitions.Items;
 import appeng.api.definitions.Materials;
 import appeng.api.util.AEItemDefinition;
@@ -55,24 +61,24 @@ public final class CreativeTab extends CreativeTabs
 	@Override
 	public ItemStack getIconItemStack()
 	{
-		final IAppEngApi api = AEApi.instance();
-		final appeng.api.definitions.Blocks blocks = api.blocks();
-		final Items items = api.items();
-		final Materials materials = api.materials();
+		final IDefinitions definitions = AEApi.instance().definitions();
+		final IBlocks blocks = definitions.blocks();
+		final IItems items = definitions.items();
+		final IMaterials materials = definitions.materials();
 
-		return this.findFirst( blocks.blockController, blocks.blockChest, blocks.blockCellWorkbench, blocks.blockFluix, items.itemCell1k, items.itemNetworkTool, materials.materialFluixCrystal, materials.materialCertusQuartzCrystal );
+		return this.findFirst( blocks.controller(), blocks.chest(), blocks.cellWorkbench(), blocks.fluix(), items.cell1k(), items.networkTool(), materials.fluixCrystal(), materials.certusQuartzCrystal() );
 	}
 
-	private ItemStack findFirst( AEItemDefinition... choices )
+	private ItemStack findFirst( Optional<AEItemDefinition>... choices )
 	{
-		for ( AEItemDefinition a : choices )
+		for ( Optional<AEItemDefinition> maybe : choices )
 		{
-			if ( a != null )
+			for ( AEItemDefinition definition : maybe.asSet() )
 			{
-				ItemStack is = a.stack( 1 );
-				if ( is != null )
+				final ItemStack stack = definition.stack( 1 );
+				if ( stack != null )
 				{
-					return is;
+					return stack;
 				}
 			}
 		}

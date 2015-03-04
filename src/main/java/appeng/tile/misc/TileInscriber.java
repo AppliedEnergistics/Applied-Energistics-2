@@ -30,10 +30,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.google.common.base.Optional;
+
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Upgrades;
+import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -42,6 +45,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEItemDefinition;
 import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
@@ -78,9 +82,8 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 	public long clientStart;
 
-	static final ItemStack STACK_INSCRIBER = AEApi.instance().blocks().blockInscriber.stack( 1 );
-	private final IConfigManager settings = new ConfigManager( this );
-	private final UpgradeInventory upgrades = new UpgradeInventory( STACK_INSCRIBER, this, this.getUpgradeSlots() );
+	private final IConfigManager settings;
+	private final UpgradeInventory upgrades;
 
 	@Override
 	public AECableType getCableConnectionType(ForgeDirection dir)
@@ -159,9 +162,21 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 	public TileInscriber()
 	{
+
 		this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 		this.internalMaxPower = 1500;
 		this.gridProxy.setIdlePowerUsage( 0 );
+		this.settings = new ConfigManager( this );
+
+		final Optional<AEItemDefinition> maybeInscriber = AEApi.instance().definitions().blocks().inscriber();
+		if ( maybeInscriber.isPresent() )
+		{
+			this.upgrades = new UpgradeInventory( maybeInscriber.get().stack( 1 ), this, this.getUpgradeSlots() );
+		}
+		else
+		{
+			this.upgrades = new UpgradeInventory( null, this, this.getUpgradeSlots() );
+		}
 	}
 
 	@Override
@@ -204,23 +219,17 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 		if ( i == 0 || i == 1 )
 		{
-			if ( AEApi.instance().materials().materialNamePress.sameAsStack( itemstack ) )
-				return true;
+			for ( AEItemDefinition namePress : AEApi.instance().definitions().materials().namePress().asSet() )
+			{
+				return namePress.sameAsStack( itemstack );
+			}
 
 			for (ItemStack s : Inscribe.PLATES )
 				if ( Platform.isSameItemPrecise( s, itemstack ) )
 					return true;
 		}
 
-		if ( i == 2 )
-		{
-			return true;
-			// for (ItemStack s : Inscribe.inputs)
-			// if ( Platform.isSameItemPrecise( s, itemstack ) )
-			// return true;
-		}
-
-		return false;
+		return i == 2;
 	}
 
 	@Override
@@ -269,42 +278,45 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		if ( renamedItem != null && renamedItem.stackSize > 1 )
 			return null;
 
-		boolean isNameA = AEApi.instance().materials().materialNamePress.sameAsStack( PlateA );
-		boolean isNameB = AEApi.instance().materials().materialNamePress.sameAsStack( PlateB );
-
-		if ( (isNameA || isNameB) && (isNameA || PlateA == null) && (isNameB || PlateB == null) )
+		for ( AEItemDefinition namePress : AEApi.instance().definitions().materials().namePress().asSet() )
 		{
-			if ( renamedItem != null )
+			boolean isNameA = namePress.sameAsStack( PlateA );
+			boolean isNameB = namePress.sameAsStack( PlateB );
+
+			if ( (isNameA || isNameB) && (isNameA || PlateA == null) && (isNameB || PlateB == null) )
 			{
-				String name = "";
-
-				if ( PlateA != null )
+				if ( renamedItem != null )
 				{
-					NBTTagCompound tag = Platform.openNbtData( PlateA );
-					name += tag.getString( "InscribeName" );
-				}
+					String name = "";
 
-				if ( PlateB != null )
-				{
-					NBTTagCompound tag = Platform.openNbtData( PlateB );
+					if ( PlateA != null )
+					{
+						NBTTagCompound tag = Platform.openNbtData( PlateA );
+						name += tag.getString( "InscribeName" );
+					}
+
+					if ( PlateB != null )
+					{
+						NBTTagCompound tag = Platform.openNbtData( PlateB );
+						if ( name.length() > 0 )
+							name += " ";
+						name += tag.getString( "InscribeName" );
+					}
+
+					ItemStack startingItem = renamedItem.copy();
+					renamedItem = renamedItem.copy();
+					NBTTagCompound tag = Platform.openNbtData( renamedItem );
+
+					NBTTagCompound display = tag.getCompoundTag( "display" );
+					tag.setTag( "display", display );
+
 					if ( name.length() > 0 )
-						name += " ";
-					name += tag.getString( "InscribeName" );
+						display.setString( "Name", name );
+					else
+						display.removeTag( "Name" );
+
+					return new InscriberRecipe( new ItemStack[] { startingItem }, PlateA, PlateB, renamedItem, false );
 				}
-
-				ItemStack startingItem = renamedItem.copy();
-				renamedItem = renamedItem.copy();
-				NBTTagCompound tag = Platform.openNbtData( renamedItem );
-
-				NBTTagCompound display = tag.getCompoundTag( "display" );
-				tag.setTag( "display", display );
-
-				if ( name.length() > 0 )
-					display.setString( "Name", name );
-				else
-					display.removeTag( "Name" );
-
-				return new InscriberRecipe( new ItemStack[] { startingItem }, PlateA, PlateB, renamedItem, false );
 			}
 		}
 

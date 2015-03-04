@@ -29,6 +29,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.AEApi;
 import appeng.api.util.AEColor;
+import appeng.api.util.AEItemDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.block.crafting.BlockCraftingMonitor;
 import appeng.block.crafting.BlockCraftingUnit;
@@ -70,7 +71,12 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 
 		IIcon nonForward = theIcon;
 		if ( isMonitor )
-			nonForward = AEApi.instance().blocks().blockCraftingUnit.block().getIcon( 0, meta | (formed ? 8 : 0) );
+		{
+			for ( AEItemDefinition definition : AEApi.instance().definitions().blocks().craftingUnit().asSet() )
+			{
+				nonForward = definition.block().getIcon( 0, meta | ( formed ? 8 : 0 ) );
+			}
+		}
 
 		if ( formed && renderer.overrideBlockTexture == null )
 		{

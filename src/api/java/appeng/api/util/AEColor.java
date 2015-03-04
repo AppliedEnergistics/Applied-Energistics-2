@@ -23,7 +23,12 @@
 
 package appeng.api.util;
 
+
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.util.StatCollector;
+
 
 /**
  * List of all colors supported by AE, their names, and various colors for display.
@@ -66,6 +71,8 @@ public enum AEColor
 	Black("gui.appliedenergistics2.Black", 0x2B2B2B, 0x565656, 0x848484),
 
 	Transparent("gui.appliedenergistics2.Fluix", 0x1B2344, 0x895CA8, 0xD7BBEC);
+
+	public static final List<AEColor> VALID_COLORS = Arrays.asList( White, Orange, Magenta, LightBlue, Yellow, Lime, Pink, Gray, LightGray, Cyan, Purple, Blue, Brown, Green, Red, Black );
 
 	/**
 	 * Unlocalized name for color.

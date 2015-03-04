@@ -37,6 +37,7 @@ import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEItemDefinition;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.me.GridAccessException;
@@ -193,7 +194,12 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	@Override
 	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
-		return AEApi.instance().materials().materialWirelessBooster.sameAsStack( itemstack );
+		for ( AEItemDefinition booster : AEApi.instance().definitions().materials().wirelessBooster().asSet() )
+		{
+			return booster.sameAsStack( itemstack );
+		}
+
+		return false;
 	}
 
 	@Override

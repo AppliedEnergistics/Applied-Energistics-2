@@ -22,7 +22,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IBlocks;
+import appeng.api.util.AEItemDefinition;
 import appeng.api.util.WorldCoord;
+import appeng.block.misc.BlockCondenser;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
@@ -129,17 +132,23 @@ public class QuantumCalculator extends MBCalculator
 						return false;
 
 					num++;
+					final IBlocks blocks = AEApi.instance().definitions().blocks();
 					if ( num == 5 )
 					{
-						if ( !Platform.blockAtLocationIs( w, x, y, z, AEApi.instance().blocks().blockQuantumLink ) )
-							return false;
+						for ( AEItemDefinition quantumLink : blocks.quantumLink().asSet() )
+						{
+							if ( !Platform.blockAtLocationIs( w, x, y, z, quantumLink ) )
+								return false;
+						}
 					}
 					else
 					{
-						if ( !Platform.blockAtLocationIs( w, x, y, z, AEApi.instance().blocks().blockQuantumRing ) )
-							return false;
+						for ( AEItemDefinition quantumRing : blocks.quantumRing().asSet() )
+						{
+							if ( !Platform.blockAtLocationIs( w, x, y, z, quantumRing ) )
+								return false;
+						}
 					}
-
 				}
 			}
 		}

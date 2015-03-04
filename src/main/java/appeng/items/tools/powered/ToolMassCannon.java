@@ -57,6 +57,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
+import appeng.api.util.AEItemDefinition;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -297,7 +298,10 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				Block whatsThere = w.getBlock( x, y, z );
 				if ( whatsThere.isReplaceable( w, x, y, z ) && w.isAirBlock( x, y, z ) )
 				{
-					w.setBlock( x, y, z, AEApi.instance().blocks().blockPaint.block(), 0, 3 );
+					for ( AEItemDefinition paint : AEApi.instance().definitions().blocks().paint().asSet() )
+					{
+						w.setBlock( x, y, z, paint.block(), 0, 3 );
+					}
 				}
 
 				TileEntity te = w.getTileEntity( x, y, z );

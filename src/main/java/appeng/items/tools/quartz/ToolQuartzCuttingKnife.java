@@ -42,11 +42,11 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 
 	final AEFeature type;
 
-	public ToolQuartzCuttingKnife( AEFeature Type )
+	public ToolQuartzCuttingKnife( AEFeature type )
 	{
-		super( ToolQuartzCuttingKnife.class, Optional.of( Type.name() ) );
+		super( ToolQuartzCuttingKnife.class, Optional.of( type.name() ) );
 
-		this.setFeature( EnumSet.of( this.type = Type, AEFeature.QuartzKnife ) );
+		this.setFeature( EnumSet.of( this.type = type, AEFeature.QuartzKnife ) );
 		this.setMaxDamage( 50 );
 		this.setMaxStackSize( 1 );
 	}

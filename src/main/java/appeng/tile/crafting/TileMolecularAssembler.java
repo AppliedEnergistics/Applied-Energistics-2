@@ -35,6 +35,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 
+import com.google.common.base.Optional;
+
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -54,6 +56,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.ISimplifiedBundle;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEItemDefinition;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.container.ContainerNull;
@@ -78,7 +81,8 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 {
 
 	private static final int[] SIDES = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-	private static final ItemStack STACK_ASSEMBLER = AEApi.instance().blocks().blockMolecularAssembler.stack( 1 );
+	private static final Optional<AEItemDefinition> MAYBE_ASSEMBLER = AEApi.instance().definitions().blocks().molecularAssembler();
+	private static final ItemStack STACK_ASSEMBLER = ( MAYBE_ASSEMBLER.isPresent() ) ? MAYBE_ASSEMBLER.get().stack( 1 ) : null;
 
 	private final InventoryCrafting craftingInv = new InventoryCrafting( new ContainerNull(), 3, 3 );
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 + 2 );

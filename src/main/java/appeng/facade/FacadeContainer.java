@@ -32,6 +32,7 @@ import appeng.api.AEApi;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
+import appeng.api.util.AEItemDefinition;
 import appeng.core.AppEng;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBC;
@@ -99,12 +100,15 @@ public class FacadeContainer implements IFacadeContainer
 				}
 				else if ( !isBC )
 				{
-					ItemFacade ifa = (ItemFacade) AEApi.instance().items().itemFacade.item();
-					ItemStack facade = ifa.createFromIDs( ids );
-					if ( facade != null )
+					for ( AEItemDefinition definition : AEApi.instance().definitions().items().facade().asSet() )
 					{
-						changed = changed || this.storage.getFacade( x ) == null;
-						this.storage.setFacade( x, ifa.createPartFromItemStack( facade, side ) );
+						ItemFacade ifa = (ItemFacade) definition.item();
+						ItemStack facade = ifa.createFromIDs( ids );
+						if ( facade != null )
+						{
+							changed = changed || this.storage.getFacade( x ) == null;
+							this.storage.setFacade( x, ifa.createPartFromItemStack( facade, side ) );
+						}
 					}
 				}
 			}

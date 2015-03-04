@@ -32,11 +32,15 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import com.google.common.base.Optional;
+
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.TunnelType;
+import appeng.api.definitions.IParts;
+import appeng.api.exceptions.MissingDefinition;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.parts.IPart;
@@ -44,6 +48,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.parts.PartItemStack;
+import appeng.api.util.AEItemDefinition;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.AEConfig;
 import appeng.me.GridAccessException;
@@ -144,42 +149,68 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 		{
 			ItemStack newType = null;
 
+			final IParts parts = AEApi.instance().definitions().parts();
+
 			switch (tt)
 			{
-			case LIGHT:
-				newType = AEApi.instance().parts().partP2PTunnelLight.stack( 1 );
-				break;
+				case LIGHT:
+					for ( AEItemDefinition light : parts.p2PTunnelLight().asSet() )
+					{
+						newType = light.stack( 1 );
+					}
+					break;
 
-			case RF_POWER:
-				newType = AEApi.instance().parts().partP2PTunnelRF.stack( 1 );
-				break;
+				case RF_POWER:
+					for ( AEItemDefinition rf : parts.p2PTunnelRF().asSet() )
+					{
+						newType = rf.stack( 1 );
+					}
+					break;
 
-			case BC_POWER:
-				newType = AEApi.instance().parts().partP2PTunnelMJ.stack( 1 );
-				break;
+				case BC_POWER:
+					for ( AEItemDefinition mj : parts.p2PTunnelMJ().asSet() )
+					{
+						newType = mj.stack( 1 );
+					}
+					break;
 
-			case FLUID:
-				newType = AEApi.instance().parts().partP2PTunnelLiquids.stack( 1 );
-				break;
+				case FLUID:
+					for ( AEItemDefinition liquids : parts.p2PTunnelLiquids().asSet() )
+					{
+						newType = liquids.stack( 1 );
+					}
+					break;
 
-			case IC2_POWER:
-				newType = AEApi.instance().parts().partP2PTunnelEU.stack( 1 );
-				break;
+				case IC2_POWER:
+					for ( AEItemDefinition eu : parts.p2PTunnelEU().asSet() )
+					{
+						newType = eu.stack( 1 );
+					}
+					break;
 
-			case ITEM:
-				newType = AEApi.instance().parts().partP2PTunnelItems.stack( 1 );
-				break;
+				case ITEM:
+					for ( AEItemDefinition items : parts.p2PTunnelItems().asSet() )
+					{
+						newType = items.stack( 1 );
+					}
+					break;
 
-			case ME:
-				newType = AEApi.instance().parts().partP2PTunnelME.stack( 1 );
-				break;
+				case ME:
+					for ( AEItemDefinition me : parts.p2PTunnelME().asSet() )
+					{
+						newType = me.stack( 1 );
+					}
+					break;
 
-			case REDSTONE:
-				newType = AEApi.instance().parts().partP2PTunnelRedstone.stack( 1 );
-				break;
+				case REDSTONE:
+					for ( AEItemDefinition redstone : parts.p2PTunnelRedstone().asSet() )
+					{
+						newType = redstone.stack( 1 );
+					}
+					break;
 
-			default:
-				break;
+				default:
+					break;
 
 			}
 
@@ -272,7 +303,12 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 		if ( type == PartItemStack.World || type == PartItemStack.Network || type == PartItemStack.Wrench || type == PartItemStack.Pick )
 			return super.getItemStack( type );
 
-		return AEApi.instance().parts().partP2PTunnelME.stack( 1 );
+		for ( AEItemDefinition me : AEApi.instance().definitions().parts().p2PTunnelME().asSet() )
+		{
+			return me.stack( 1 );
+		}
+
+		throw new MissingDefinition( "No me tunnel" );
 	}
 
 	public TunnelCollection<T> getCollection(Collection<PartP2PTunnel> collection, Class<? extends PartP2PTunnel> c)
@@ -335,7 +371,16 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 
 	protected IIcon getTypeTexture()
 	{
-		return AEApi.instance().blocks().blockQuartz.block().getIcon( 0, 0 );
+		final Optional<AEItemDefinition> maybeQuartz = AEApi.instance().definitions().blocks().quartz();
+
+		if ( maybeQuartz.isPresent() )
+		{
+			return maybeQuartz.get().block().getIcon( 0, 0 );
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	@Override

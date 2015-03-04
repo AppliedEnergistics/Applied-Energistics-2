@@ -20,6 +20,7 @@ package appeng.client.render.blocks;
 
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
@@ -27,6 +28,8 @@ import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IBlocks;
+import appeng.api.util.AEItemDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
@@ -56,8 +59,29 @@ public class RenderQuartzGlass extends BaseBlockRender
 
 	boolean isGlass(AEBaseBlock imb, IBlockAccess world, int x, int y, int z)
 	{
-		return world.getBlock( x, y, z ) == AEApi.instance().blocks().blockQuartzGlass.block()
-				|| world.getBlock( x, y, z ) == AEApi.instance().blocks().blockQuartzVibrantGlass.block();
+		final Block block = world.getBlock( x, y, z );
+
+		return this.isQuartzGlass( block ) || this.isVibrantQuartzGlass( block );
+	}
+
+	private boolean isQuartzGlass( Block block )
+	{
+		for ( AEItemDefinition definition : AEApi.instance().definitions().blocks().quartzGlass().asSet() )
+		{
+			return block == definition.block();
+		}
+
+		return false;
+	}
+
+	private boolean isVibrantQuartzGlass( Block block )
+	{
+		for ( AEItemDefinition definition : AEApi.instance().definitions().blocks().quartzVibrantGlass().asSet() )
+		{
+			return block == definition.block();
+		}
+
+		return false;
 	}
 
 	void renderEdge(AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer, ForgeDirection side, ForgeDirection direction)

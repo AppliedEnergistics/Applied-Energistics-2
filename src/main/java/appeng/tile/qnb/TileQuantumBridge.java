@@ -28,11 +28,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.google.common.base.Optional;
+
 import appeng.api.AEApi;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEItemDefinition;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.GridAccessException;
 import appeng.me.cluster.IAECluster;
@@ -48,8 +51,8 @@ import appeng.util.Platform;
 
 public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 {
-
-	final private static ItemStack RING_STACK = ( AEApi.instance().blocks().blockQuantumRing != null ) ? AEApi.instance().blocks().blockQuantumRing.stack( 1 ) : null;
+	private static final Optional<AEItemDefinition> QUANTUM_RING = AEApi.instance().definitions().blocks().quantumRing();
+	private static final ItemStack RING_STACK = ( QUANTUM_RING.isPresent() ) ? QUANTUM_RING.get().stack( 1 ) : null;
 
 	final int[] sidesRing = new int[] { };
 	final int[] sidesLink = new int[] { 0 };
@@ -170,8 +173,14 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	public void onReady()
 	{
 		super.onReady();
-		if ( this.worldObj.getBlock( this.xCoord, this.yCoord, this.zCoord ) == AEApi.instance().blocks().blockQuantumRing.block() )
-			this.gridProxy.setVisualRepresentation( RING_STACK );
+
+		for ( AEItemDefinition definition : AEApi.instance().definitions().blocks().quantumRing().asSet() )
+		{
+			if ( this.worldObj.getBlock( this.xCoord, this.yCoord, this.zCoord ) == definition.block() )
+			{
+				this.gridProxy.setVisualRepresentation( RING_STACK );
+			}
+		}
 	}
 
 	@Override
@@ -223,7 +232,12 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public boolean isCenter()
 	{
-		return this.getBlockType() == AEApi.instance().blocks().blockQuantumLink.block();
+		for ( AEItemDefinition definition : AEApi.instance().definitions().blocks().quantumLink().asSet() )
+		{
+			return this.getBlockType() == definition.block();
+		}
+
+		return false;
 	}
 
 	public boolean isCorner()

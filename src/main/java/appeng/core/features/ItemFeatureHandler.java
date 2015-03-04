@@ -46,7 +46,7 @@ public class ItemFeatureHandler implements IFeatureHandler
 		this.features = features;
 		this.item = item;
 		this.extractor = new FeatureNameExtractor( featured.getClass(), subName );
-		this.enabled = new FeaturedActiveChecker( features ).get();
+		this.enabled = new FeaturedActiveChecker( features ).isFeatureActive();
 		this.definition = new ItemDefinition( item, this.enabled );
 	}
 

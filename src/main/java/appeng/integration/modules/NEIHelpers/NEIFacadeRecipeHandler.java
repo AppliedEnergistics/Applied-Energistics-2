@@ -34,17 +34,29 @@ import codechicken.nei.api.IRecipeOverlayRenderer;
 import codechicken.nei.api.IStackPositioner;
 import codechicken.nei.recipe.RecipeInfo;
 import codechicken.nei.recipe.TemplateRecipeHandler;
+import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IDefinitions;
+import appeng.api.util.AEItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.items.parts.ItemFacade;
 
 public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 {
+	final ItemFacade facade;
+	final ItemStack anchor;
 
-	final ItemFacade ifa = (ItemFacade) AEApi.instance().items().itemFacade.item();
-	final ItemStack cable_anchor = AEApi.instance().parts().partCableAnchor.stack( 1 );
+	public NEIFacadeRecipeHandler()
+	{
+		final IDefinitions definitions = AEApi.instance().definitions();
+		final Optional<AEItemDefinition> facade = definitions.items().facade();
+		final Optional<AEItemDefinition> anchor = definitions.parts().cableAnchor();
 
+		this.facade = ( facade.isPresent() ) ? (ItemFacade) facade.get() : null;
+		this.anchor = ( anchor.isPresent() ) ? anchor.get().stack( 1 ) : null;
+	}
+	
 	@Override
 	public void loadTransferRects()
 	{
@@ -68,13 +80,16 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 	{
 		if ( (outputId.equals( "crafting" )) && (this.getClass() == NEIFacadeRecipeHandler.class) )
 		{
-			ItemFacade ifa = (ItemFacade) AEApi.instance().items().itemFacade.item();
-			List<ItemStack> facades = ifa.getFacades();
-			for (ItemStack is : facades)
+			for ( AEItemDefinition definition : AEApi.instance().definitions().items().facade().asSet() )
 			{
-				CachedShapedRecipe recipe = new CachedShapedRecipe( is );
-				recipe.computeVisuals();
-				this.arecipes.add( recipe );
+				ItemFacade ifa = (ItemFacade) definition.item();
+				List<ItemStack> facades = ifa.getFacades();
+				for (ItemStack is : facades)
+				{
+					CachedShapedRecipe recipe = new CachedShapedRecipe( is );
+					recipe.computeVisuals();
+					this.arecipes.add( recipe );
+				}
 			}
 		}
 		else
@@ -86,7 +101,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		if ( result.getItem() == this.ifa )
+		if ( result.getItem() == this.facade )
 		{
 			CachedShapedRecipe recipe = new CachedShapedRecipe( result );
 			recipe.computeVisuals();
@@ -97,7 +112,7 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		List<ItemStack> facades = this.ifa.getFacades();
+		List<ItemStack> facades = this.facade.getFacades();
 		for (ItemStack is : facades)
 		{
 			CachedShapedRecipe recipe = new CachedShapedRecipe( is );
@@ -176,8 +191,8 @@ public class NEIFacadeRecipeHandler extends TemplateRecipeHandler
 			output.stackSize = 4;
 			this.result = new PositionedStack( output, 119, 24 );
 			this.ingredients = new ArrayList<PositionedStack>();
-			ItemStack in = NEIFacadeRecipeHandler.this.ifa.getTextureItem( output );
-			this.setIngredients( 3, 3, new Object[] { null, NEIFacadeRecipeHandler.this.cable_anchor, null, NEIFacadeRecipeHandler.this.cable_anchor, in, NEIFacadeRecipeHandler.this.cable_anchor, null, NEIFacadeRecipeHandler.this.cable_anchor, null } );
+			ItemStack in = NEIFacadeRecipeHandler.this.facade.getTextureItem( output );
+			this.setIngredients( 3, 3, new Object[] { null, NEIFacadeRecipeHandler.this.anchor, null, NEIFacadeRecipeHandler.this.anchor, in, NEIFacadeRecipeHandler.this.anchor, null, NEIFacadeRecipeHandler.this.anchor, null } );
 		}
 
 		public void setIngredients(int width, int height, Object[] items)

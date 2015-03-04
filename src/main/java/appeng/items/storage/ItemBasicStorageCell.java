@@ -35,6 +35,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
+import appeng.api.exceptions.MissingDefinition;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.ICellInventory;
@@ -43,6 +44,7 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.util.AEItemDefinition;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
@@ -240,12 +242,16 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 					playerInventory.setInventorySlotContents( playerInventory.currentItem, null );
 
 					ItemStack extraB = ia.addItems( this.component.stack( 1 ) );
-					ItemStack extraA = ia.addItems( AEApi.instance().materials().materialEmptyStorageCell.stack( 1 ) );
-
-					if ( extraA != null )
-						player.dropPlayerItemWithRandomChoice( extraA, false );
 					if ( extraB != null )
 						player.dropPlayerItemWithRandomChoice( extraB, false );
+
+					for ( AEItemDefinition emptyStorageCell : AEApi.instance().definitions().materials().emptyStorageCell().asSet() )
+					{
+						ItemStack extraA = ia.addItems( emptyStorageCell.stack( 1 ) );
+						if ( extraA != null )
+							player.dropPlayerItemWithRandomChoice( extraA, false );
+					}
+
 
 					if ( player.inventoryContainer != null )
 						player.inventoryContainer.detectAndSendChanges();
@@ -266,7 +272,12 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	@Override
 	public ItemStack getContainerItem( ItemStack itemStack )
 	{
-		return AEApi.instance().materials().materialEmptyStorageCell.stack( 1 );
+		for ( AEItemDefinition emptyStorageCell : AEApi.instance().definitions().materials().emptyStorageCell().asSet() )
+		{
+			return emptyStorageCell.stack( 1 );
+		}
+
+		throw new MissingDefinition( "No empty storage cell." );
 	}
 
 	@Override

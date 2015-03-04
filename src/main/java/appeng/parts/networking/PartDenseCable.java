@@ -45,6 +45,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
+import appeng.api.util.AEColoredItemDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.client.texture.CableBusTextures;
 import appeng.client.texture.FlippableIcon;
@@ -92,7 +93,12 @@ public class PartDenseCable extends PartCable
 	public IIcon getTexture(AEColor c)
 	{
 		if ( c == AEColor.Transparent )
-			return AEApi.instance().parts().partCableSmart.stack( AEColor.Transparent, 1 ).getIconIndex();
+		{
+			for ( AEColoredItemDefinition smart : AEApi.instance().definitions().parts().cableSmart().asSet() )
+			{
+				return smart.stack( AEColor.Transparent, 1 ).getIconIndex();
+			}
+		}
 
 		return this.getSmartTexture( c );
 	}
