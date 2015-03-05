@@ -84,7 +84,7 @@ public class DimensionalCoord extends WorldCoord
 	@Override
 	public String toString()
 	{
-		return this.dimId + "," + super.toString();
+		return "dimension=" + this.dimId + ", " + super.toString();
 	}
 
 	public World getWorld()
