@@ -481,8 +481,7 @@ public class CellInventory implements ICellInventory
 		if ( request == null )
 			return null;
 
-		ItemStack sharedItem = request.getItemStack();
-		int size = sharedItem.stackSize;
+		long size = Math.min( Integer.MAX_VALUE, request.getStackSize() );
 
 		IAEItemStack Results = null;
 
