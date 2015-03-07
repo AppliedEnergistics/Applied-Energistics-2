@@ -66,8 +66,8 @@ public class GridConnection implements IGridConnection, IPathItem
 				final DimensionalCoord aCoordinates = a.getGridBlock().getLocation();
 				final DimensionalCoord bCoordinates = b.getGridBlock().getLocation();
 
-				AELog.info( "Security audit 1 failed at [x=%d, y=%d, z=%d] belonging to player [id=%d]", aCoordinates.x, aCoordinates.y, aCoordinates.z, a.playerID );
-				AELog.info( "Security audit 2 failed at [x=%d, y=%d, z=%d] belonging to player [id=%d]", bCoordinates.x, bCoordinates.y, bCoordinates.z, b.playerID );
+				AELog.info( "Security audit 1 failed at [%s] belonging to player [id=%d]", aCoordinates.toString(), a.playerID );
+				AELog.info( "Security audit 2 failed at [%s] belonging to player [id=%d]", bCoordinates.toString(), b.playerID );
 			}
 
 			throw new FailedConnection();

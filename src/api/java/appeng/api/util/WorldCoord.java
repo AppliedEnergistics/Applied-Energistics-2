@@ -148,7 +148,7 @@ public class WorldCoord
 	@Override
 	public String toString()
 	{
-		return "" + this.x + "," + this.y + "," + this.z;
+		return "x=" + this.x + ", y=" + this.y + ", z=" + this.z;
 	}
 
 	@Override
