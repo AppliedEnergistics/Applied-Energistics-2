@@ -50,6 +50,16 @@ tile.appliedenergistics2.BlockCraftingAccelerator.name=Unité de co-traitement
 tile.appliedenergistics2.BlockCraftingUnit.name=Unité de craft
 tile.appliedenergistics2.BlockMolecularAssembler.name=Assembleur moléculaire
 
+// Stairs
+tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Escaliers de Quartz Certus ciselé
+tile.appliedenergistics2.FluixStairBlock.name=Escaliers de Fluix
+tile.appliedenergistics2.QuartzPillarStairBlock.name=Escaliers de pilier de Quartz Certus
+tile.appliedenergistics2.QuartzStairBlock.name=Escaliers de Quartz Certus
+tile.appliedenergistics2.SkyStoneBlockStairBlock.name=Escaliers de bloc de pierre de ciel
+tile.appliedenergistics2.SkyStoneBrickStairBlock.name=Escaliers de briques de pierre de ciel
+tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=Escaliers de petites briques de pierre de ciel
+tile.appliedenergistics2.SkyStoneStairBlock.name=Escaliers de pierre de ciel
+
 chat.appliedenergistics2.ChestCannotReadStorageCell=Le coffre ME Chest ne peut pas lire la cellule de stockage.
 chat.appliedenergistics2.SettingCleared=Paramètres effacés.
 chat.appliedenergistics2.OutOfRange=Réseau sans-fil hors de portée.
@@ -242,7 +252,7 @@ gui.tooltips.appliedenergistics2.AlwaysActive=Toujours actif
 gui.tooltips.appliedenergistics2.ActiveWithoutSignal=Actif sans signal
 gui.tooltips.appliedenergistics2.ActiveWithSignal=Actif avec un signal
 gui.tooltips.appliedenergistics2.ActiveOnPulse=Activer une fois par impulsion
-gui.tooltips.appliedenergistics2.EmitLevelsBelow=Emettre quand les niveaux sont inférieurs ou égaux à la limite.
+gui.tooltips.appliedenergistics2.EmitLevelsBelow=Emettre quand les niveaux sont inférieurs à la limite.
 gui.tooltips.appliedenergistics2.EmitLevelAbove=Emettre quand les niveaux sont supérieurs ou égaux à la limite.
 gui.tooltips.appliedenergistics2.SearchMode_Auto=Recherche auto
 gui.tooltips.appliedenergistics2.SearchMode_Standard=Recharche standard
@@ -278,6 +288,9 @@ gui.tooltips.appliedenergistics2.EmitWhenCrafting=Emettre un signal Redstone qua
 gui.tooltips.appliedenergistics2.ReportInaccessibleItems=Rapport d'éléments inaccessibles
 gui.tooltips.appliedenergistics2.ReportInaccessibleItemsYes=Oui: Les éléments ne pouvant pas être extraits seront visibles.
 gui.tooltips.appliedenergistics2.ReportInaccessibleItemsNo=Non: Seuls les éléments extractibles seront visibles.
+gui.tooltips.appliedenergistics2.BlockPlacement=Placement de bloc
+gui.tooltips.appliedenergistics2.BlockPlacementYes=Les blocs seront placés comme un bloc.
+gui.tooltips.appliedenergistics2.BlockPlacementNo=Les blocs seront jettés comme un élément.
 
 gui.appliedenergistics2.units.appliedenergstics=AE
 gui.appliedenergistics2.units.buildcraft=Minecraft Joules
@@ -304,6 +317,7 @@ gui.appliedenergistics2.Red=Rouge
 gui.appliedenergistics2.Black=Noir
 gui.appliedenergistics2.Fluix=Fluix
 
+waila.appliedenergistics2.Crafting=Fabrication
 waila.appliedenergistics2.DeviceOnline=Dispositif en ligne
 waila.appliedenergistics2.DeviceOffline=Dispositif hors ligne
 waila.appliedenergistics2.DeviceMissingChannel=Appareil sans canal
@@ -380,7 +394,7 @@ item.appliedenergistics2.ItemMaterial.SiliconPress.name=Matrice de presse de sil
 item.appliedenergistics2.ItemMaterial.SiliconPrint.name=Silicone imprimé
 item.appliedenergistics2.ItemMaterial.NamePress.name=Matrice de presse de nommage
 item.appliedenergistics2.ItemMaterial.SkyDust.name=Poussière de pierre du ciel
-item.appliedenergistics2.ItemMaterial.CardCrafting.name=Carte de craft
+item.appliedenergistics2.ItemMaterial.CardCrafting.name=Carte de fabrication
 
 item.appliedenergistics2.ItemPart.AnnihilationPlane.name=Plan de dématérialisation ME
 item.appliedenergistics2.ItemPart.CableAnchor.name=Ancre de câble
