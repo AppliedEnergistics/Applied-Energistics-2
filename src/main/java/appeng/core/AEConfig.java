@@ -55,9 +55,6 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 
 	public static final double TUNNEL_POWER_LOSS = 0.05;
 
-	public String latestVersion = VERSION;
-	public long latestTimeStamp = 0;
-
 	public static final String VERSION = "@version@";
 	public static final String CHANNEL = "@aechannel@";
 
@@ -149,7 +146,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 	public boolean disableColoredCableRecipesInNEI = true;
 
 	public boolean updatable = false;
-	final private File myPath;
+	final private File configFile;
 
 	public double meteoriteClusterChance = 0.1;
 	public double meteoriteSpawnChance = 0.3;
@@ -224,22 +221,20 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 
 	public String getFilePath()
 	{
-		return this.myPath.toString();
+		return this.configFile.toString();
 	}
 
-	public AEConfig(String path) {
-		super( new File( path + "AppliedEnergistics2.cfg" ) );
-		this.myPath = new File( path + "AppliedEnergistics2.cfg" );
+	public AEConfig( File configFile ) {
+		super( configFile );
+		this.configFile = configFile;
 
 		FMLCommonHandler.instance().bus().register( this );
 
-		final double DEFAULT_BC_EXCHANGE = 5.0;
 		final double DEFAULT_IC2_EXCHANGE = 2.0;
 		final double DEFAULT_RTC_EXCHANGE = 1.0 / 11256.0;
 		final double DEFAULT_RF_EXCHANGE = 0.5;
 		final double DEFAULT_MEKANISM_EXCHANGE = 0.2;
 
-		PowerUnits.MJ.conversionRatio = this.get( "PowerRatios", "BuildCraft", DEFAULT_BC_EXCHANGE ).getDouble( DEFAULT_BC_EXCHANGE );
 		PowerUnits.MK.conversionRatio = this.get( "PowerRatios", "Mekanism", DEFAULT_MEKANISM_EXCHANGE ).getDouble( DEFAULT_MEKANISM_EXCHANGE );
 		PowerUnits.EU.conversionRatio = this.get( "PowerRatios", "IC2", DEFAULT_IC2_EXCHANGE ).getDouble( DEFAULT_IC2_EXCHANGE );
 		PowerUnits.WA.conversionRatio = this.get( "PowerRatios", "RotaryCraft", DEFAULT_RTC_EXCHANGE ).getDouble( DEFAULT_RTC_EXCHANGE );
@@ -340,19 +335,6 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 					this.craftingCalculationTimePerTick );
 		}
 
-		if ( this.isFeatureEnabled( AEFeature.VersionChecker ) )
-		{
-			try
-			{
-				this.latestVersion = this.get( "VersionChecker", "LatestVersion", "" ).getString();
-				this.latestTimeStamp = Long.parseLong( this.get( "VersionChecker", "LatestTimeStamp", "" ).getString() );
-			}
-			catch (NumberFormatException err)
-			{
-				this.latestTimeStamp = 0;
-			}
-		}
-
 		this.updatable = true;
 	}
 
@@ -411,12 +393,6 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 	@Override
 	public void save()
 	{
-		if ( this.isFeatureEnabled( AEFeature.VersionChecker ) )
-		{
-			this.get( "VersionChecker", "LatestVersion", this.latestVersion ).set( this.latestVersion );
-			this.get( "VersionChecker", "LatestTimeStamp", "" ).set( Long.toString( this.latestTimeStamp ) );
-		}
-
 		if ( this.isFeatureEnabled( AEFeature.SpatialIO ) )
 		{
 			this.get( "spatialio", "storageBiomeID", this.storageBiomeID ).set( this.storageBiomeID );

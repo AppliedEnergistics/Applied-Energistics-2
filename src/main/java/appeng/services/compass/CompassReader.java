@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.services.helpers;
+package appeng.services.compass;
 
 import java.io.File;
 import java.util.HashMap;

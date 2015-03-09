@@ -19,133 +19,167 @@
 package appeng.services;
 
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Date;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import net.minecraft.nbt.NBTTagCompound;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.event.FMLInterModComms;
 
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
+import appeng.services.version.github.FormattedRelease;
+import appeng.services.version.github.ReleaseFetcher;
+import appeng.services.version.ModVersionFetcher;
+import appeng.services.version.Version;
+import appeng.services.version.VersionCheckerConfig;
+import appeng.services.version.VersionFetcher;
+import appeng.services.version.VersionParser;
 
-public class VersionChecker implements Runnable
+
+/**
+ * Tries to connect to GitHub to retrieve the most current build.
+ * After comparison with the local version, several path can be chosen.
+ *
+ * If the local version is invalid, somebody might have build that version themselves
+ * or it is run in a developer environment, then nothing needs to be done.
+ *
+ * If GitHub can not be reached, then either is GitHub down
+ * or the connection to GitHub disturbed, then nothing needs to be done,
+ * since no comparison can be reached
+ *
+ * If the version was just recently checked, then no need to poll again.
+ * Nobody wants to bother to update several times a day.
+ *
+ * Config enables to fine-tune when a version is considered newer
+ *
+ * If the local version is newer or equal to the GitHub version,
+ * then no update needs to be posted
+ *
+ * Only after all that cases, if the external version is higher than the local,
+ * use Version Checker Mod and post several information needed for it to update the mod.
+ */
+public final class VersionChecker implements Runnable
 {
-	private static final int FOUR_HOURS = 1000 * 3600 * 4;
+	private static final int SEC_TO_HOUR = 3600;
+	private static final int MS_TO_SEC = 1000;
+	private final VersionCheckerConfig config;
 
-	private final long delay;
-
-	public VersionChecker()
+	public VersionChecker( VersionCheckerConfig config )
 	{
-		final long now = new Date().getTime();
-		final long timeDiff = now - AEConfig.instance.latestTimeStamp;
-
-		this.delay = Math.max( 1, FOUR_HOURS - timeDiff);
+		this.config = config;
 	}
 
 	@Override
 	public void run()
 	{
-		try
+		Thread.yield();
+
+		final String rawLastCheck = this.config.lastCheck();
+		final long lastCheck = Long.parseLong( rawLastCheck );
+		final Date now = new Date();
+		final long nowInMs = now.getTime();
+		final long intervalInMs = this.config.interval() * SEC_TO_HOUR * MS_TO_SEC;
+		final long lastAfterInterval = lastCheck + intervalInMs;
+
+		this.processInterval( nowInMs, lastAfterInterval );
+
+		AELog.info( "Stopping AE2 VersionChecker" );
+	}
+
+	/**
+	 * checks if enough time since last check has expired
+	 *
+	 * @param nowInMs now in milli seconds
+	 * @param lastAfterInterval last version check including the interval defined in the config
+	 */
+	private void processInterval( long nowInMs, long lastAfterInterval )
+	{
+		if ( nowInMs > lastAfterInterval )
 		{
-			this.sleep( this.delay );
+			final String rawModVersion = AEConfig.VERSION;
+			final VersionParser parser = new VersionParser();
+			final VersionFetcher modFetcher = new ModVersionFetcher( rawModVersion, parser );
+			final ReleaseFetcher githubFetcher = new ReleaseFetcher( this.config, parser );
+
+			final Version modVersion = modFetcher.get();
+			final FormattedRelease githubRelease = githubFetcher.get();
+
+			this.processVersions( modVersion, githubRelease );
 		}
-		catch (InterruptedException e)
+		else
 		{
-			// :(
-		}
-
-		while (true)
-		{
-			Thread.yield();
-
-			try
-			{
-				String MCVersion = cpw.mods.fml.common.Loader.instance().getMCVersionString().replace( "Minecraft ", "" );
-				URL url = new URL( "http://feeds.ae-mod.info/latest.json?VersionMC=" + MCVersion + "&Channel=" + AEConfig.CHANNEL + "&CurrentVersion="
-						+ AEConfig.VERSION );
-
-				URLConnection yc = url.openConnection();
-				yc.setRequestProperty( "User-Agent", "AE2/" + AEConfig.VERSION + " (Channel:" + AEConfig.CHANNEL + ',' + MCVersion.replace( " ", ":" ) + ')' );
-				BufferedReader in = new BufferedReader( new InputStreamReader( yc.getInputStream() ) );
-
-				StringBuilder Version = new StringBuilder();
-				String inputLine;
-
-				while ((inputLine = in.readLine()) != null)
-					Version.append( inputLine );
-
-				in.close();
-
-				if ( Version.length() > 2 )
-				{
-					JsonElement element = (new JsonParser()).parse( Version.toString() );
-
-					int version = element.getAsJsonObject().get( "FormatVersion" ).getAsInt();
-					if ( version == 1 )
-					{
-						JsonObject Meta = element.getAsJsonObject().get( "Meta" ).getAsJsonObject();
-						JsonArray Versions = element.getAsJsonObject().get( "Versions" ).getAsJsonArray();
-						if ( Versions.size() > 0 )
-						{
-							JsonObject Latest = Versions.get( 0 ).getAsJsonObject();
-
-							AEConfig.instance.latestVersion = Latest.get( "Version" ).getAsString();
-							AEConfig.instance.latestTimeStamp = (new Date()).getTime();
-							AEConfig.instance.save();
-
-							if ( !AEConfig.VERSION.equals( AEConfig.instance.latestVersion ) )
-							{
-								NBTTagCompound versionInf = new NBTTagCompound();
-								versionInf.setString( "modDisplayName", "Applied Energistics 2" );
-								versionInf.setString( "oldVersion", AEConfig.VERSION );
-								versionInf.setString( "newVersion", AEConfig.instance.latestVersion );
-								versionInf.setString( "updateUrl", Latest.get( "UserBuild" ).getAsString() );
-								versionInf.setBoolean( "isDirectLink", true );
-
-								JsonElement changeLog = Latest.get( "ChangeLog" );
-								if ( changeLog == null )
-									versionInf.setString( "changeLog", "For full change log please see: " + Meta.get( "DownloadLink" ).getAsString() );
-								else
-									versionInf.setString( "changeLog", changeLog.getAsString() );
-
-								versionInf.setString( "newFileName", "appliedenergistics2-" + AEConfig.instance.latestVersion + ".jar" );
-								FMLInterModComms.sendRuntimeMessage( AppEng.instance, "VersionChecker", "addUpdate", versionInf );
-
-								AELog.info( "Stopping VersionChecker" );
-								return;
-							}
-						}
-					}
-				}
-
-				this.sleep( FOUR_HOURS );
-			}
-			catch (Exception e)
-			{
-				try
-				{
-					this.sleep( FOUR_HOURS );
-				}
-				catch (InterruptedException e1)
-				{
-					AELog.error( e );
-				}
-			}
+			AELog.info( "Last check was just recently." );
 		}
 	}
 
-	private void sleep(long i) throws InterruptedException
+	/**
+	 * Checks if the retrieved version is newer as the current mod version.
+	 * Will notify player if config is enabled.
+	 *
+	 * @param modVersion version of mod
+	 * @param githubRelease release retrieved through github
+	 */
+	private void processVersions( Version modVersion, FormattedRelease githubRelease )
 	{
-		Thread.sleep( i );
+		final Version githubVersion = githubRelease.version();
+		final String modFormatted = modVersion.formatted();
+		final String ghFormatted = githubVersion.formatted();
+
+		if ( githubVersion.isNewerAs( modVersion ) )
+		{
+			final String changelog = githubRelease.changelog();
+
+			if ( this.config.shouldNotifyPlayer() )
+			{
+				AELog.info( "Newer version is available: " + ghFormatted + " (found) > " + modFormatted + " (current)" );
+
+				if ( this.config.shouldPostChangelog() )
+				{
+					AELog.info( "Changelog: " + changelog );
+				}
+			}
+
+			this.interactWithVersionCheckerMod( modFormatted, ghFormatted, changelog );
+		}
+		else
+		{
+			AELog.info( "No newer version is available: " + ghFormatted + "(found) < " + modFormatted + " (current)");
+		}
+	}
+
+	/**
+	 * Checks if the version checker mod is installed and handles it depending on that information
+	 *
+	 * @param modFormatted mod version formatted as rv2-beta-8
+	 * @param ghFormatted retrieved github version formatted as rv2-beta-8
+	 * @param changelog retrieved github changelog
+	 */
+	private void interactWithVersionCheckerMod( String modFormatted, String ghFormatted, String changelog )
+	{
+		if ( Loader.isModLoaded( "VersionChecker" ) )
+		{
+			final NBTTagCompound versionInf = new NBTTagCompound();
+			versionInf.setString( "modDisplayName", AppEng.MOD_NAME );
+			versionInf.setString( "oldVersion", modFormatted );
+			versionInf.setString( "newVersion", ghFormatted );
+			versionInf.setString( "updateUrl", "http://ae-mod.info/builds/appliedenergistics2-" + ghFormatted + ".jar" );
+			versionInf.setBoolean( "isDirectLink", true );
+
+			if ( !changelog.isEmpty() )
+			{
+				versionInf.setString( "changeLog", changelog );
+			}
+
+			versionInf.setString( "newFileName", "appliedenergistics2-" + ghFormatted + ".jar" );
+			FMLInterModComms.sendRuntimeMessage( AppEng.instance, "VersionChecker", "addUpdate", versionInf );
+
+			AELog.info( "Reported new version to VersionChecker mod." );
+		}
+		else
+		{
+			AELog.info( "VersionChecker mod is not installed; Proceeding." );
+		}
 	}
 }

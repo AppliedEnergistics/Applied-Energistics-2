@@ -29,7 +29,7 @@ import appeng.core.WorldSettings;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.services.helpers.ICompassCallback;
+import appeng.services.compass.ICompassCallback;
 
 public class PacketCompassRequest extends AppEngPacket implements ICompassCallback
 {

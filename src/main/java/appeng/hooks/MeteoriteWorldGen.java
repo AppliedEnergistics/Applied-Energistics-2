@@ -33,7 +33,7 @@ import appeng.core.AEConfig;
 import appeng.core.WorldSettings;
 import appeng.core.features.registries.WorldGenRegistry;
 import appeng.helpers.MeteoritePlacer;
-import appeng.services.helpers.ICompassCallback;
+import appeng.services.compass.ICompassCallback;
 import appeng.util.Platform;
 
 final public class MeteoriteWorldGen implements IWorldGenerator
