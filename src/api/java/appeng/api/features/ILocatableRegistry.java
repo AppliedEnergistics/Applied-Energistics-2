@@ -23,19 +23,31 @@
 
 package appeng.api.features;
 
+
 /**
  * A Registry for locatable items, works based on serial numbers.
  */
 public interface ILocatableRegistry
 {
-
 	/**
 	 * Attempts to find the object with the serial specified, if it can it
 	 * returns the object.
 	 *
 	 * @param serial serial
+	 *
 	 * @return requestedObject, or null
+	 *
+	 * @deprecated use {@link ILocatableRegistry#getLocatableBy(long)}
 	 */
-	public abstract Object findLocatableBySerial(long serial);
+	@Deprecated
+	Object findLocatableBySerial( long serial );
 
+	/**
+	 * Gets the {@link ILocatable} with the registered serial, if available
+	 *
+	 * @param serial serial
+	 *
+	 * @return requestedObject, or null, if the object does not exist anymore
+	 */
+	ILocatable getLocatableBy( long serial );
 }

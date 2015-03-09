@@ -25,7 +25,10 @@ public enum PlayerMessages
 {
 	ChestCannotReadStorageCell, InvalidMachine, LoadedSettings, SavedSettings, MachineNotPowered,
 
-	isNowLocked, isNowUnlocked, AmmoDepleted, CommunicationError, OutOfRange, DeviceNotPowered, SettingCleared;
+	isNowLocked, isNowUnlocked,
+	AmmoDepleted,
+	CommunicationError, OutOfRange, DeviceNotPowered, DeviceNotWirelessTerminal, DeviceNotLinked, StationCanNotBeLocated,
+	SettingCleared,;
 
 	String getName()
 	{
