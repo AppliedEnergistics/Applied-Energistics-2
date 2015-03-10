@@ -44,7 +44,9 @@ dependencies {
     compile "codechicken:NotEnoughItems:${config.cb_minecraft_version}-${config.nei_version}:dev"
 
     compile "mcp.mobius.waila:Waila:${config.waila_version}:dev"
-	
+
+    compile "com.mod-buildcraft:buildcraft:${config.bc_version}:dev"
+
     compile(group: 'api', name: 'betterstorage', version: "${config.api_betterstorage_version}")
     compile(group: 'api', name: 'coloredlightscore', version: "${config.api_coloredlightscore_version}")
     compile(group: 'api', name: 'craftguide', version: "${config.api_craftguide_version}")
@@ -57,10 +59,6 @@ dependencies {
     compile(group: 'api', name: 'rblocks', version: "${config.api_rblocks_version}")
     compile(group: 'api', name: 'rf', version: "${config.api_rf_version}")
     compile(group: 'api', name: 'rotarycraft', version: "${config.api_rotarycraft_version}")
-    compile(group: 'dev', name: 'buildcraft', version: "${config.dev_buildcraft_version}")
-
-    // add hacked buildcraft jar to compile time (for facades)
-    compile fileTree(dir: 'libs', include: '*.jar')
 
     testCompile "junit:junit:4.11"
 }

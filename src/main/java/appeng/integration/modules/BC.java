@@ -33,14 +33,15 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 
 import buildcraft.BuildCraftEnergy;
 import buildcraft.BuildCraftTransport;
-import buildcraft.api.blueprints.SchematicRegistry;
+import buildcraft.api.blueprints.BuilderAPI;
+import buildcraft.api.blueprints.ISchematicRegistry;
+import buildcraft.api.facades.IFacadeItem;
 import buildcraft.api.tools.IToolWrench;
+import buildcraft.api.transport.IInjectable;
 import buildcraft.api.transport.IPipeConnection;
 import buildcraft.api.transport.IPipeTile;
-import buildcraft.api.transport.IPipeTile.PipeType;
 import buildcraft.transport.ItemFacade;
 import buildcraft.transport.PipeIconProvider;
-import buildcraft.transport.TileGenericPipe;
 
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
@@ -49,7 +50,6 @@ import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.parts.IFacadePart;
 import appeng.api.util.AEItemDefinition;
 import appeng.api.util.IOrientableBlock;
-import appeng.core.AppEng;
 import appeng.facade.FacadePart;
 import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IBC;
@@ -58,7 +58,7 @@ import appeng.integration.modules.BCHelpers.AEGenericSchematicTile;
 import appeng.integration.modules.BCHelpers.AERotatableBlockSchematic;
 import appeng.integration.modules.BCHelpers.BCPipeHandler;
 
-public class BC extends BaseModule implements IBC
+public final class BC extends BaseModule implements IBC
 {
 
 	public static BC instance;
@@ -87,17 +87,8 @@ public class BC extends BaseModule implements IBC
 	{
 		if ( te instanceof IPipeTile )
 		{
-			try
-			{
-				if ( te instanceof TileGenericPipe )
-					if ( ((TileGenericPipe) te).hasPlug( dir.getOpposite() ) )
-						return false;
-			}
-			catch (Exception ignored)
-			{
-			}
-
-			return true;
+			final IPipeTile pipeTile = (IPipeTile) te;
+			return !pipeTile.hasPipePluggable( dir.getOpposite() );
 		}
 
 		return false;
@@ -118,15 +109,15 @@ public class BC extends BaseModule implements IBC
 	@Override
 	public boolean addItemsToPipe(TileEntity te, ItemStack is, ForgeDirection dir)
 	{
-		if ( is != null && te != null && te instanceof IPipeTile )
+		if ( is != null && te != null && te instanceof IInjectable )
 		{
-			IPipeTile pt = (IPipeTile) te;
-			if ( pt.getPipeType() == PipeType.ITEM )
+			IInjectable pt = (IInjectable) te;
+			if ( pt.canInjectItems( dir ) )
 			{
-				int amt = pt.injectItem( is, false, dir );
+				int amt = pt.injectItem( is, false, dir, null );
 				if ( amt == is.stackSize )
 				{
-					pt.injectItem( is, true, dir );
+					pt.injectItem( is, true, dir, null );
 					return true;
 				}
 			}
@@ -141,33 +132,18 @@ public class BC extends BaseModule implements IBC
 		if ( is == null )
 			return false;
 
-		try
-		{
-			return is.getItem() instanceof ItemFacade && ItemFacade.getType( is ) == ItemFacade.FacadeType.Basic;
-		}
-		catch (Throwable t)
-		{
-			try
-			{
-				return is.getItem() instanceof ItemFacade && ItemFacade.getType( is ) == ItemFacade.TYPE_BASIC;
-			}
-			catch (Throwable g)
-			{
-				return is.getItem() instanceof ItemFacade;
-			}
-		}
+		return is.getItem() instanceof IFacadeItem;
 	}
 
 	@Override
 	public boolean canAddItemsToPipe(TileEntity te, ItemStack is, ForgeDirection dir)
 	{
-
-		if ( is != null && te != null && te instanceof IPipeTile )
+		if ( is != null && te != null && te instanceof IInjectable )
 		{
-			IPipeTile pt = (IPipeTile) te;
-			if ( pt.getPipeType() == PipeType.ITEM )
+			IInjectable pt = (IInjectable) te;
+			if ( pt.canInjectItems( dir ) )
 			{
-				int amt = pt.injectItem( is, false, dir );
+				int amt = pt.injectItem( is, false, dir, null );
 				if ( amt == is.stackSize )
 				{
 					return true;
@@ -182,15 +158,15 @@ public class BC extends BaseModule implements IBC
 	public void registerPowerP2P()
 	{
 		IP2PTunnelRegistry reg = AEApi.instance().registries().p2pTunnel();
-		reg.addNewAttunement( new ItemStack( BuildCraftEnergy.engineBlock, 1, 0 ), TunnelType.BC_POWER );
-		reg.addNewAttunement( new ItemStack( BuildCraftEnergy.engineBlock, 1, 1 ), TunnelType.BC_POWER );
-		reg.addNewAttunement( new ItemStack( BuildCraftEnergy.engineBlock, 1, 2 ), TunnelType.BC_POWER );
-		reg.addNewAttunement( new ItemStack( BuildCraftTransport.pipePowerCobblestone ), TunnelType.BC_POWER );
-		reg.addNewAttunement( new ItemStack( BuildCraftTransport.pipePowerDiamond ), TunnelType.BC_POWER );
-		reg.addNewAttunement( new ItemStack( BuildCraftTransport.pipePowerGold ), TunnelType.BC_POWER );
-		reg.addNewAttunement( new ItemStack( BuildCraftTransport.pipePowerQuartz ), TunnelType.BC_POWER );
-		reg.addNewAttunement( new ItemStack( BuildCraftTransport.pipePowerStone ), TunnelType.BC_POWER );
-		reg.addNewAttunement( new ItemStack( BuildCraftTransport.pipePowerWood ), TunnelType.BC_POWER );
+		reg.addNewAttunement( new ItemStack( BuildCraftEnergy.engineBlock, 1, 0 ), TunnelType.RF_POWER );
+		reg.addNewAttunement( new ItemStack( BuildCraftEnergy.engineBlock, 1, 1 ), TunnelType.RF_POWER );
+		reg.addNewAttunement( new ItemStack( BuildCraftEnergy.engineBlock, 1, 2 ), TunnelType.RF_POWER );
+		reg.addNewAttunement( new ItemStack( BuildCraftTransport.pipePowerCobblestone ), TunnelType.RF_POWER );
+		reg.addNewAttunement( new ItemStack( BuildCraftTransport.pipePowerDiamond ), TunnelType.RF_POWER );
+		reg.addNewAttunement( new ItemStack( BuildCraftTransport.pipePowerGold ), TunnelType.RF_POWER );
+		reg.addNewAttunement( new ItemStack( BuildCraftTransport.pipePowerQuartz ), TunnelType.RF_POWER );
+		reg.addNewAttunement( new ItemStack( BuildCraftTransport.pipePowerStone ), TunnelType.RF_POWER );
+		reg.addNewAttunement( new ItemStack( BuildCraftTransport.pipePowerWood ), TunnelType.RF_POWER );
 	}
 
 	@Override
@@ -257,7 +233,7 @@ public class BC extends BaseModule implements IBC
 
 	private void initBuilderSupport()
 	{
-		SchematicRegistry.declareBlueprintSupport( AppEng.MOD_ID );
+		final ISchematicRegistry schematicRegistry = BuilderAPI.schematicRegistry;
 
 		Blocks blocks = AEApi.instance().blocks();
 		Block cable = blocks.blockMultiPart.block();
@@ -272,15 +248,15 @@ public class BC extends BaseModule implements IBC
 					Block myBlock = def.block();
 					if ( myBlock instanceof IOrientableBlock && ((IOrientableBlock) myBlock).usesMetadata() && def.entity() == null )
 					{
-						SchematicRegistry.registerSchematicBlock( myBlock, AERotatableBlockSchematic.class );
+						schematicRegistry.registerSchematicBlock( myBlock, AERotatableBlockSchematic.class );
 					}
 					else if ( myBlock == cable )
 					{
-						SchematicRegistry.registerSchematicBlock( myBlock, AECableSchematicTile.class );
+						schematicRegistry.registerSchematicBlock( myBlock, AECableSchematicTile.class );
 					}
 					else if ( def.entity() != null )
 					{
-						SchematicRegistry.registerSchematicBlock( myBlock, AEGenericSchematicTile.class );
+						schematicRegistry.registerSchematicBlock( myBlock, AEGenericSchematicTile.class );
 					}
 				}
 			}
@@ -304,18 +280,10 @@ public class BC extends BaseModule implements IBC
 	{
 		try
 		{
-			ItemStack fs = ItemFacade.getFacade( blk, meta );
-			return new FacadePart( fs, side );
-		}
-		catch (Throwable ignored)
-		{
+			final ItemFacade.FacadeState state = ItemFacade.FacadeState.create( blk, meta );
+			final ItemStack facade = ItemFacade.getFacade( state );
 
-		}
-
-		try
-		{
-			ItemStack fs = ItemFacade.getStack( blk, meta );
-			return new FacadePart( fs, side );
+			return new FacadePart( facade, side );
 		}
 		catch (Throwable ignored)
 		{
@@ -334,30 +302,19 @@ public class BC extends BaseModule implements IBC
 	@Override
 	public ItemStack getTextureForFacade(ItemStack facade)
 	{
-		try
-		{
-			Block[] blk = ItemFacade.getBlocks( facade );
-			int[] meta = ItemFacade.getMetaValues( facade );
-			if ( blk == null || blk.length < 1 )
-				return null;
+		final Item maybeFacadeItem = facade.getItem();
 
-			if ( blk[0] != null )
-				return new ItemStack( blk[0], 1, meta[0] );
-		}
-		catch (Throwable ignored)
+		if ( maybeFacadeItem instanceof buildcraft.api.facades.IFacadeItem)
 		{
+			final buildcraft.api.facades.IFacadeItem facadeItem = (buildcraft.api.facades.IFacadeItem) maybeFacadeItem;
 
-		}
+			final Block[] blocks = facadeItem.getBlocksForFacade( facade );
+			final int[] metas = facadeItem.getMetaValuesForFacade( facade );
 
-		try
-		{
-			Block blk = ItemFacade.getBlock( facade );
-			if ( blk != null )
-				return new ItemStack( blk, 1, ItemFacade.getMetaData( facade ) );
-		}
-		catch (Throwable ignored)
-		{
-
+			if ( blocks.length > 0 && metas.length > 0 )
+			{
+				return new ItemStack( blocks[0], 1, metas[0] );
+			}
 		}
 
 		return null;

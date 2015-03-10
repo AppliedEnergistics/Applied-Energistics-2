@@ -27,14 +27,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import buildcraft.api.inventory.ISpecialInventory;
-
 import appeng.api.config.FuzzyMode;
 import appeng.core.AppEng;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBetterStorage;
 import appeng.util.inv.AdaptorIInventory;
-import appeng.util.inv.AdaptorISpecialInventory;
 import appeng.util.inv.AdaptorList;
 import appeng.util.inv.AdaptorPlayerInventory;
 import appeng.util.inv.IInventoryDestination;
@@ -45,19 +42,19 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 {
 
 	// return what was extracted.
-	public abstract ItemStack removeItems(int how_many, ItemStack Filter, IInventoryDestination destination);
+	public abstract ItemStack removeItems(int amount, ItemStack filter, IInventoryDestination destination);
 
-	public abstract ItemStack simulateRemove(int how_many, ItemStack Filter, IInventoryDestination destination);
+	public abstract ItemStack simulateRemove(int amount, ItemStack filter, IInventoryDestination destination);
 
 	// return what was extracted.
 	public abstract ItemStack removeSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination);
 
-	public abstract ItemStack simulateSimilarRemove(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination);
+	public abstract ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination);
 
 	// return what isn't used...
-	public abstract ItemStack addItems(ItemStack A);
+	public abstract ItemStack addItems(ItemStack toBeAdded);
 
-	public abstract ItemStack simulateAdd(ItemStack A);
+	public abstract ItemStack simulateAdd(ItemStack toBeSimulated);
 
 	public abstract boolean containsItems();
 
@@ -75,7 +72,10 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 		}
 		else if ( te instanceof ArrayList )
 		{
-			return new AdaptorList( (ArrayList<ItemStack>) te );
+			@SuppressWarnings( "unchecked" )
+			final ArrayList<ItemStack> list = ( ArrayList<ItemStack> ) te;
+
+			return new AdaptorList( list );
 		}
 		else if ( bs != null && bs.isStorageCrate( te )  )
 		{
@@ -84,10 +84,6 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 		else if ( te instanceof TileEntityChest )
 		{
 			return new AdaptorIInventory( Platform.GetChestInv( te ) );
-		}
-		else if ( isSpecialInventory( te ) )
-		{
-			return new AdaptorISpecialInventory( (ISpecialInventory) te, d );
 		}
 		else if ( te instanceof ISidedInventory )
 		{
@@ -104,23 +100,5 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 		}
 
 		return null;
-	}
-
-	private static boolean canBeSpecial = true;
-
-	private static boolean isSpecialInventory(Object a)
-	{
-		if ( canBeSpecial )
-		{
-			try
-			{
-				return a instanceof ISpecialInventory;
-			}
-			catch (Throwable e)
-			{
-				canBeSpecial = false;
-			}
-		}
-		return false;
 	}
 }

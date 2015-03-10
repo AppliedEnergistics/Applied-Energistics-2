@@ -561,15 +561,6 @@ public final class Registration
 			ph.registerNewLayer( "appeng.parts.layers.LayerIEnergySource", "ic2.api.energy.tile.IEnergySource" );
 		}
 
-		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.MJ5 ) )
-		{
-			ph.registerNewLayer( "appeng.parts.layers.LayerIPowerEmitter", "buildcraft.api.power.IPowerEmitter" );
-			ph.registerNewLayer( "appeng.parts.layers.LayerIPowerReceptor", "buildcraft.api.power.IPowerReceptor" );
-		}
-
-		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.MJ6 ) )
-			ph.registerNewLayer( "appeng.parts.layers.LayerIBatteryProvider", "buildcraft.api.mj.IBatteryProvider" );
-
 		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.RF ) )
 			ph.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyReceiver" );
 

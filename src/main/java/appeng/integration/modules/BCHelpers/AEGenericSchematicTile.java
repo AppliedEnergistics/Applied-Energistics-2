@@ -24,23 +24,23 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import buildcraft.api.blueprints.IBuilderContext;
-import buildcraft.api.blueprints.SchematicTile;
-
+import appeng.api.util.ICommonTile;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
+import buildcraft.api.blueprints.IBuilderContext;
+import buildcraft.api.blueprints.SchematicTile;
 
 public class AEGenericSchematicTile extends SchematicTile
 {
 
 	@Override
-	public void writeRequirementsToBlueprint(IBuilderContext context, int x, int y, int z)
+	public void storeRequirements(IBuilderContext context, int x, int y, int z)
 	{
 		TileEntity tile = context.world().getTileEntity( x, y, z );
 		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
 		if ( tile instanceof AEBaseTile )
 		{
-			AEBaseTile tcb = (AEBaseTile) tile;
+			ICommonTile tcb = (AEBaseTile) tile;
 			tcb.getDrops( tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord, list );
 		}
 

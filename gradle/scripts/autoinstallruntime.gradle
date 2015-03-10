@@ -10,25 +10,3 @@ task copyChicken(type: Copy, dependsOn: "extractUserDev") {
 }
 tasks.setupDevWorkspace.dependsOn copyChicken
 tasks.setupDecompWorkspace.dependsOn copyChicken
-
-// same for BC hacked file
-task copyBuildcraft(type: Copy, dependsOn: "extractUserDev") {
-    from { configurations.compile }
-    include "**/*buildcraft*.jar"
-    into file(minecraft.runDir + "/mods")
-    mustRunAfter "deobfBinJar"
-    mustRunAfter "repackMinecraft"
-}
-tasks.setupDevWorkspace.dependsOn copyBuildcraft
-tasks.setupDecompWorkspace.dependsOn copyBuildcraft
-
-// and for IC2 because it needs its EMLJ jar
-task copyIndustrialcraft(type: Copy, dependsOn: "extractUserDev") {
-    from { configurations.compile }
-    include "**/*industrialcraft*.jar"
-    into file(minecraft.runDir + "/mods")
-    mustRunAfter "deobfBinJar"
-    mustRunAfter "repackMinecraft"
-}
-tasks.setupDevWorkspace.dependsOn copyIndustrialcraft
-tasks.setupDecompWorkspace.dependsOn copyIndustrialcraft

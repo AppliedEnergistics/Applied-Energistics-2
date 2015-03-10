@@ -18,6 +18,7 @@
 
 package appeng.items.parts;
 
+
 import java.lang.reflect.Constructor;
 import java.util.EnumSet;
 
@@ -40,7 +41,6 @@ import appeng.parts.networking.PartCableGlass;
 import appeng.parts.networking.PartCableSmart;
 import appeng.parts.networking.PartDenseCable;
 import appeng.parts.networking.PartQuartzFiber;
-import appeng.parts.p2p.PartP2PBCPower;
 import appeng.parts.p2p.PartP2PIC2Power;
 import appeng.parts.p2p.PartP2PItems;
 import appeng.parts.p2p.PartP2PLight;
@@ -58,86 +58,86 @@ import appeng.parts.reporting.PartSemiDarkMonitor;
 import appeng.parts.reporting.PartStorageMonitor;
 import appeng.parts.reporting.PartTerminal;
 
+
 public enum PartType
 {
-	InvalidType(-1, AEFeature.Core, null),
+	InvalidType( -1, AEFeature.Core, null ),
 
-	CableGlass(0, AEFeature.Core, PartCableGlass.class),
+	CableGlass( 0, AEFeature.Core, PartCableGlass.class ),
 
-	CableCovered(20, AEFeature.Core, PartCableCovered.class),
+	CableCovered( 20, AEFeature.Core, PartCableCovered.class ),
 
-	CableSmart(40, AEFeature.Channels, PartCableSmart.class),
+	CableSmart( 40, AEFeature.Channels, PartCableSmart.class ),
 
-	CableDense(60, AEFeature.Channels, PartDenseCable.class),
+	CableDense( 60, AEFeature.Channels, PartDenseCable.class ),
 
-	ToggleBus(80, AEFeature.Core, PartToggleBus.class),
+	ToggleBus( 80, AEFeature.Core, PartToggleBus.class ),
 
-	InvertedToggleBus(100, AEFeature.Core, PartInvertedToggleBus.class),
+	InvertedToggleBus( 100, AEFeature.Core, PartInvertedToggleBus.class ),
 
-	CableAnchor(120, AEFeature.Core, PartCableAnchor.class),
+	CableAnchor( 120, AEFeature.Core, PartCableAnchor.class ),
 
-	QuartzFiber(140, AEFeature.Core, PartQuartzFiber.class),
+	QuartzFiber( 140, AEFeature.Core, PartQuartzFiber.class ),
 
-	Monitor(160, AEFeature.Core, PartMonitor.class),
+	Monitor( 160, AEFeature.Core, PartMonitor.class ),
 
-	SemiDarkMonitor(180, AEFeature.Core, PartSemiDarkMonitor.class),
+	SemiDarkMonitor( 180, AEFeature.Core, PartSemiDarkMonitor.class ),
 
-	DarkMonitor(200, AEFeature.Core, PartDarkMonitor.class),
+	DarkMonitor( 200, AEFeature.Core, PartDarkMonitor.class ),
 
-	StorageBus(220, AEFeature.StorageBus, PartStorageBus.class),
+	StorageBus( 220, AEFeature.StorageBus, PartStorageBus.class ),
 
-	ImportBus(240, AEFeature.ImportBus, PartImportBus.class),
+	ImportBus( 240, AEFeature.ImportBus, PartImportBus.class ),
 
-	ExportBus(260, AEFeature.ExportBus, PartExportBus.class),
+	ExportBus( 260, AEFeature.ExportBus, PartExportBus.class ),
 
-	LevelEmitter(280, AEFeature.LevelEmitter, PartLevelEmitter.class),
+	LevelEmitter( 280, AEFeature.LevelEmitter, PartLevelEmitter.class ),
 
-	AnnihilationPlane(300, AEFeature.AnnihilationPlane, PartAnnihilationPlane.class),
+	AnnihilationPlane( 300, AEFeature.AnnihilationPlane, PartAnnihilationPlane.class ),
 
-	FormationPlane(320, AEFeature.FormationPlane, PartFormationPlane.class),
+	FormationPlane( 320, AEFeature.FormationPlane, PartFormationPlane.class ),
 
-	PatternTerminal(340, AEFeature.Patterns, PartPatternTerminal.class),
+	PatternTerminal( 340, AEFeature.Patterns, PartPatternTerminal.class ),
 
-	CraftingTerminal(360, AEFeature.CraftingTerminal, PartCraftingTerminal.class),
+	CraftingTerminal( 360, AEFeature.CraftingTerminal, PartCraftingTerminal.class ),
 
-	Terminal(380, AEFeature.Core, PartTerminal.class),
+	Terminal( 380, AEFeature.Core, PartTerminal.class ),
 
-	StorageMonitor(400, AEFeature.StorageMonitor, PartStorageMonitor.class),
+	StorageMonitor( 400, AEFeature.StorageMonitor, PartStorageMonitor.class ),
 
-	ConversionMonitor(420, AEFeature.PartConversionMonitor, PartConversionMonitor.class),
+	ConversionMonitor( 420, AEFeature.PartConversionMonitor, PartConversionMonitor.class ),
 
-	Interface(440, AEFeature.Core, PartInterface.class),
+	Interface( 440, AEFeature.Core, PartInterface.class ),
 
-	P2PTunnelME(460, AEFeature.P2PTunnelME, PartP2PTunnelME.class, GuiText.METunnel),
+	P2PTunnelME( 460, AEFeature.P2PTunnelME, PartP2PTunnelME.class, GuiText.METunnel ),
 
-	P2PTunnelRedstone(461, AEFeature.P2PTunnelRedstone, PartP2PRedstone.class, GuiText.RedstoneTunnel),
+	P2PTunnelRedstone( 461, AEFeature.P2PTunnelRedstone, PartP2PRedstone.class, GuiText.RedstoneTunnel ),
 
-	P2PTunnelItems(462, AEFeature.P2PTunnelItems, PartP2PItems.class, GuiText.ItemTunnel),
+	P2PTunnelItems( 462, AEFeature.P2PTunnelItems, PartP2PItems.class, GuiText.ItemTunnel ),
 
-	P2PTunnelLiquids(463, AEFeature.P2PTunnelLiquids, PartP2PLiquids.class, GuiText.FluidTunnel),
+	P2PTunnelLiquids( 463, AEFeature.P2PTunnelLiquids, PartP2PLiquids.class, GuiText.FluidTunnel ),
 
-	P2PTunnelMJ(464, AEFeature.P2PTunnelMJ, PartP2PBCPower.class, GuiText.MJTunnel),
+	P2PTunnelEU( 465, AEFeature.P2PTunnelEU, PartP2PIC2Power.class, GuiText.EUTunnel ),
 
-	P2PTunnelEU(465, AEFeature.P2PTunnelEU, PartP2PIC2Power.class, GuiText.EUTunnel),
+	P2PTunnelRF( 466, AEFeature.P2PTunnelRF, PartP2PRFPower.class, GuiText.RFTunnel ),
 
-	P2PTunnelRF(466, AEFeature.P2PTunnelRF, PartP2PRFPower.class, GuiText.RFTunnel),
+	P2PTunnelLight( 467, AEFeature.P2PTunnelLight, PartP2PLight.class, GuiText.LightTunnel ),
 
-	P2PTunnelLight(467, AEFeature.P2PTunnelLight, PartP2PLight.class, GuiText.LightTunnel),
+	InterfaceTerminal( 480, AEFeature.InterfaceTerminal, PartInterfaceTerminal.class );
 
-	InterfaceTerminal(480, AEFeature.InterfaceTerminal, PartInterfaceTerminal.class);
-
+	public final int baseDamage;
 	private final EnumSet<AEFeature> features;
 	private final Class<? extends IPart> myPart;
 	private final GuiText extraName;
-	public final int baseDamage;
-
 	public Constructor<? extends IPart> constructor;
 
-	PartType(int baseMetaValue, AEFeature part, Class<? extends IPart> c) {
+	PartType( int baseMetaValue, AEFeature part, Class<? extends IPart> c )
+	{
 		this( baseMetaValue, part, c, null );
 	}
 
-	PartType(int baseMetaValue, AEFeature part, Class<? extends IPart> c, GuiText en) {
+	PartType( int baseMetaValue, AEFeature part, Class<? extends IPart> c, GuiText en )
+	{
 		this.features = EnumSet.of( part );
 		this.myPart = c;
 		this.extraName = en;

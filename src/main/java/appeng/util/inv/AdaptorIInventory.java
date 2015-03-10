@@ -224,15 +224,15 @@ public class AdaptorIInventory extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack addItems( ItemStack itemsToAdd )
+	public ItemStack addItems( ItemStack toBeAdded )
 	{
-		return this.addItems( itemsToAdd, true );
+		return this.addItems( toBeAdded, true );
 	}
 
 	@Override
-	public ItemStack simulateAdd( ItemStack itemsToAdd )
+	public ItemStack simulateAdd( ItemStack toBeSimulated )
 	{
-		return this.addItems( itemsToAdd, false );
+		return this.addItems( toBeSimulated, false );
 	}
 
 	/**

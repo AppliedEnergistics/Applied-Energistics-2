@@ -103,23 +103,27 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 	public static boolean isFacade(ItemStack is)
 	{
-		if ( is.getItem() instanceof IFacadeItem )
-			return true;
-		return false;
+		return is.getItem() instanceof IFacadeItem;
 	}
 
 	ItemStack getTexture()
 	{
-		if ( this.facade.getItem() instanceof IFacadeItem )
+		final Item maybeFacade = this.facade.getItem();
+
+		// AE Facade
+		if ( maybeFacade instanceof IFacadeItem )
 		{
-			IFacadeItem fi = (IFacadeItem) this.facade.getItem();
-			return fi.getTextureItem( this.facade );
+			IFacadeItem facade = (IFacadeItem) maybeFacade;
+
+			return facade.getTextureItem( this.facade );
 		}
 		else if ( AppEng.instance.isIntegrationEnabled( IntegrationType.BC ) )
 		{
 			IBC bc = (IBC) AppEng.instance.getIntegration( IntegrationType.BC );
+
 			return bc.getTextureForFacade( this.facade );
 		}
+
 		return null;
 	}
 
@@ -133,7 +137,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 			BusRenderHelper instance = (BusRenderHelper) instance2;
 
 			try
-			{
+				{
 				ItemStack randomItem = this.getTexture();
 
 				RenderBlocksWorkaround rbw = null;
@@ -204,7 +208,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 						}
 
 						renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
-						instance.setBounds( 0, 0, 16 - this.getFacadeThickness(), 16, 16, 16 );
+						instance.setBounds( 0, 0, 16 - this.thickness, 16, 16, 16 );
 						instance.prepareBounds( renderer );
 
 						if ( rbw != null )
@@ -254,26 +258,38 @@ public class FacadePart implements IFacadePart, IBoxProvider
 							else if ( this.side == ForgeDirection.NORTH || this.side == ForgeDirection.SOUTH )
 							{
 								if ( fc.getFacade( ForgeDirection.UP ) != null )
-									renderer.renderMaxY -= this.getFacadeThickness() / 16.0;
+								{
+									renderer.renderMaxY -= this.thickness / 16.0;
+								}
 
 								if ( fc.getFacade( ForgeDirection.DOWN ) != null )
-									renderer.renderMinY += this.getFacadeThickness() / 16.0;
+								{
+									renderer.renderMinY += this.thickness / 16.0;
+								}
 
 								instance.renderBlockCurrentBounds( x, y, z, renderer );
 							}
 							else
 							{
 								if ( fc.getFacade( ForgeDirection.UP ) != null )
-									renderer.renderMaxY -= this.getFacadeThickness() / 16.0;
+								{
+									renderer.renderMaxY -= this.thickness / 16.0;
+								}
 
 								if ( fc.getFacade( ForgeDirection.DOWN ) != null )
-									renderer.renderMinY += this.getFacadeThickness() / 16.0;
+								{
+									renderer.renderMinY += this.thickness / 16.0;
+								}
 
 								if ( fc.getFacade( ForgeDirection.SOUTH ) != null )
-									renderer.renderMaxZ -= this.getFacadeThickness() / 16.0;
+								{
+									renderer.renderMaxZ -= this.thickness / 16.0;
+								}
 
 								if ( fc.getFacade( ForgeDirection.NORTH ) != null )
-									renderer.renderMinZ += this.getFacadeThickness() / 16.0;
+								{
+									renderer.renderMinZ += this.thickness / 16.0;
+								}
 
 								instance.renderBlockCurrentBounds( x, y, z, renderer );
 							}
@@ -290,10 +306,14 @@ public class FacadePart implements IFacadePart, IBoxProvider
 							else if ( this.side == ForgeDirection.NORTH || this.side == ForgeDirection.SOUTH )
 							{
 								if ( fc.getFacade( ForgeDirection.UP ) != null )
-									renderer.renderMaxY -= this.getFacadeThickness() / 16.0;
+								{
+									renderer.renderMaxY -= this.thickness / 16.0;
+								}
 
 								if ( fc.getFacade( ForgeDirection.DOWN ) != null )
-									renderer.renderMinY += this.getFacadeThickness() / 16.0;
+								{
+									renderer.renderMinY += this.thickness / 16.0;
+								}
 
 								this.renderSegmentBlockCurrentBounds( instance, x, y, z, renderer, busBounds.maxX, 0.0, 0.0, 1.0, 1.0, 1.0 );
 								this.renderSegmentBlockCurrentBounds( instance, x, y, z, renderer, 0.0, 0.0, 0.0, busBounds.minX, 1.0, 1.0 );
@@ -303,16 +323,24 @@ public class FacadePart implements IFacadePart, IBoxProvider
 							else
 							{
 								if ( fc.getFacade( ForgeDirection.UP ) != null )
-									renderer.renderMaxY -= this.getFacadeThickness() / 16.0;
+								{
+									renderer.renderMaxY -= this.thickness / 16.0;
+								}
 
 								if ( fc.getFacade( ForgeDirection.DOWN ) != null )
-									renderer.renderMinY += this.getFacadeThickness() / 16.0;
+								{
+									renderer.renderMinY += this.thickness / 16.0;
+								}
 
 								if ( fc.getFacade( ForgeDirection.SOUTH ) != null )
-									renderer.renderMaxZ -= this.getFacadeThickness() / 16.0;
+								{
+									renderer.renderMaxZ -= this.thickness / 16.0;
+								}
 
 								if ( fc.getFacade( ForgeDirection.NORTH ) != null )
-									renderer.renderMinZ += this.getFacadeThickness() / 16.0;
+								{
+									renderer.renderMinZ += this.thickness / 16.0;
+								}
 
 								this.renderSegmentBlockCurrentBounds( instance, x, y, z, renderer, 0.0, 0.0, busBounds.maxZ, 1.0, 1.0, 1.0 );
 								this.renderSegmentBlockCurrentBounds( instance, x, y, z, renderer, 0.0, 0.0, 0.0, 1.0, 1.0, busBounds.minZ );
@@ -348,7 +376,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 		for (ForgeDirection it : ForgeDirection.VALID_DIRECTIONS)
 		{
-			if ( !out.contains( it ) && this.alphaDiff( blockAccess.getTileEntity( x + it.offsetX, y + it.offsetY, z + it.offsetZ ), side, facade ) )
+			if ( !out.contains( it ) && this.hasAlphaDiff( blockAccess.getTileEntity( x + it.offsetX, y + it.offsetY, z + it.offsetZ ), side, facade ) )
 			{
 				out.add( it );
 			}
@@ -410,7 +438,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 		return out;
 	}
 
-	private boolean alphaDiff(TileEntity tileEntity, ForgeDirection side, IFacadePart facade)
+	private boolean hasAlphaDiff( TileEntity tileEntity, ForgeDirection side, IFacadePart facade )
 	{
 		if ( tileEntity instanceof IPartHost )
 		{
@@ -424,7 +452,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	}
 
 	@SideOnly(Side.CLIENT)
-	private void renderSegmentBlockCurrentBounds(BusRenderHelper instance, int x, int y, int z, RenderBlocks renderer, double minX, double minY, double minZ,
+	private void renderSegmentBlockCurrentBounds(IPartRenderHelper instance, int x, int y, int z, RenderBlocks renderer, double minX, double minY, double minZ,
 			double maxX, double maxY, double maxZ)
 	{
 		double oldMinX = renderer.renderMinX;
@@ -516,15 +544,10 @@ public class FacadePart implements IFacadePart, IBoxProvider
 		return this.side;
 	}
 
-	public int getFacadeThickness()
-	{
-		return this.thickness;
-	}
-
 	@Override
 	public AxisAlignedBB getPrimaryBox()
 	{
-		return Platform.getPrimaryBox( this.side, this.getFacadeThickness() );
+		return Platform.getPrimaryBox( this.side, this.thickness );
 	}
 
 	@Override
@@ -548,7 +571,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	@Override
 	public boolean isBC()
 	{
-		return !(this.facade.getItem() instanceof IFacadeItem);
+		return !( this.facade.getItem() instanceof IFacadeItem);
 	}
 
 	@Override
@@ -565,10 +588,8 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 		ItemStack is = this.getTexture();
 		Block blk = Block.getBlockFromItem( is.getItem() );
-		if ( !blk.isOpaqueCube() )
-			return true;
 
-		return false;
+		return !blk.isOpaqueCube();
 	}
 
 }

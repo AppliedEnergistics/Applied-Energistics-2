@@ -60,43 +60,43 @@ public class AdaptorBCPipe extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateSimilarRemove(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
+	public ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack removeItems(int how_many, ItemStack filter, IInventoryDestination destination)
+	public ItemStack removeItems(int amount, ItemStack filter, IInventoryDestination destination)
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack simulateRemove(int how_many, ItemStack filter, IInventoryDestination destination)
+	public ItemStack simulateRemove(int amount, ItemStack filter, IInventoryDestination destination)
 	{
 		return null;
 	}
 
 	@Override
-	public ItemStack addItems(ItemStack A)
+	public ItemStack addItems(ItemStack toBeAdded )
 	{
 		if ( this.i == null )
-			return A;
-		if ( A == null )
+			return toBeAdded;
+		if ( toBeAdded == null )
 			return null;
-		if ( A.stackSize == 0 )
+		if ( toBeAdded.stackSize == 0 )
 			return null;
 
-		if ( this.bc.addItemsToPipe( this.i, A, this.d ) )
+		if ( this.bc.addItemsToPipe( this.i, toBeAdded, this.d ) )
 			return null;
-		return A;
+		return toBeAdded;
 	}
 
 	@Override
-	public ItemStack simulateAdd(ItemStack A)
+	public ItemStack simulateAdd(ItemStack toBeSimulated )
 	{
 		if ( this.i == null )
-			return A;
+			return toBeSimulated;
 		return null;
 	}
 
