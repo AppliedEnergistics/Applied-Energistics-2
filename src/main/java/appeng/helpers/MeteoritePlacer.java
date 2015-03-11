@@ -21,6 +21,7 @@ package appeng.helpers;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -37,6 +38,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IMaterials;
+import appeng.api.util.AEItemDefinition;
 import appeng.core.AEConfig;
 import appeng.core.WorldSettings;
 import appeng.core.features.AEFeature;
@@ -396,14 +399,14 @@ public class MeteoritePlacer
 		}
 	}
 
-	final int minBLocks = 200;
-	final HashSet<Block> validSpawn = new HashSet<Block>();
-	final HashSet<Block> invalidSpawn = new HashSet<Block>();
 
-	Fallout type = new Fallout();
+	private final Set<Block> validSpawn = new HashSet<Block>();
+	private final Set<Block> invalidSpawn = new HashSet<Block>();
 
-	final Block skystone = AEApi.instance().blocks().blockSkyStone.block();
-	final Block skychest;
+	private Fallout type = new Fallout();
+
+	private final Block skystone;
+	private final Block skychest;
 
 	double real_sizeOfMeteorite = (Math.random() * 6.0) + 2;
 	double realCrater = this.real_sizeOfMeteorite * 2 + 5;
@@ -413,10 +416,9 @@ public class MeteoritePlacer
 
 	public MeteoritePlacer() {
 
-		if ( AEApi.instance().blocks().blockSkyChest.block() == null )
-			this.skychest = Blocks.chest;
-		else
-			this.skychest = AEApi.instance().blocks().blockSkyChest.block();
+		final AEItemDefinition maybeSkychest = AEApi.instance().definitions().blocks().skyChest();
+		this.skystone = AEApi.instance().definitions().blocks().skyStone().block();
+		this.skychest = AEApi.instance().definitions().blocks().skyChest().block();
 
 		this.validSpawn.add( Blocks.stone );
 		this.validSpawn.add( Blocks.cobblestone );
@@ -546,7 +548,8 @@ public class MeteoritePlacer
 						validBlocks++;
 				}
 
-		if ( validBlocks > this.minBLocks && realValidBlocks > 80 )
+		int minBLocks = 200;
+		if ( validBlocks > minBLocks && realValidBlocks > 80 )
 		{
 			// we can spawn here!
 
@@ -681,20 +684,21 @@ public class MeteoritePlacer
 							r = (int) (Math.random() * 1000);
 
 						ItemStack toAdd = null;
+						final IMaterials materials = AEApi.instance().definitions().materials();
 
 						switch (r % 4)
 						{
 						case 0:
-							toAdd = AEApi.instance().materials().materialCalcProcessorPress.stack( 1 );
+							toAdd = materials.calcProcessorPress().stack( 1 );
 							break;
 						case 1:
-							toAdd = AEApi.instance().materials().materialEngProcessorPress.stack( 1 );
+							toAdd = materials.engProcessorPress().stack( 1 );
 							break;
 						case 2:
-							toAdd = AEApi.instance().materials().materialLogicProcessorPress.stack( 1 );
+							toAdd = materials.logicProcessorPress().stack( 1 );
 							break;
 						case 3:
-							toAdd = AEApi.instance().materials().materialSiliconPress.stack( 1 );
+							toAdd = materials.siliconPress().stack( 1 );
 							break;
 						default:
 						}
@@ -710,13 +714,15 @@ public class MeteoritePlacer
 					while (duplicate);
 				}
 
+				final AEItemDefinition skyStone = AEApi.instance().definitions().blocks().skyStone();
+
 				int secondary = Math.max( 1, (int) (Math.random() * 3) );
 				for (int zz = 0; zz < secondary; zz++)
 				{
 					switch ((int) (Math.random() * 1000) % 3)
 					{
 					case 0:
-						ap.addItems( AEApi.instance().blocks().blockSkyStone.stack( (int) (Math.random() * 12) + 1 ) );
+						ap.addItems( skyStone.stack( (int) (Math.random() * 12) + 1 ) );
 						break;
 					case 1:
 						List<ItemStack> possibles = new LinkedList<ItemStack>();

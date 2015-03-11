@@ -23,7 +23,9 @@
 
 package appeng.api.storage.data;
 
+
 import net.minecraft.nbt.NBTTagCompound;
+
 import appeng.api.features.IItemComparison;
 
 /**

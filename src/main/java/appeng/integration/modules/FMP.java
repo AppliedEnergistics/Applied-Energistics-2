@@ -18,7 +18,7 @@
 
 package appeng.integration.modules;
 
-import java.util.Arrays;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -36,9 +36,10 @@ import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import codechicken.multipart.MultipartGenerator;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
+import com.google.common.collect.Lists;
 
 import appeng.api.AEApi;
-import appeng.api.definitions.Blocks;
+import appeng.api.definitions.IBlocks;
 import appeng.api.parts.IPartHost;
 import appeng.core.AELog;
 import appeng.fmp.CableBusPart;
@@ -86,13 +87,15 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	@Override
 	public void init() throws Throwable
 	{
-		this.createAndRegister( AEApi.instance().blocks().blockQuartz.block(), 0 );
-		this.createAndRegister( AEApi.instance().blocks().blockQuartzPillar.block(), 0 );
-		this.createAndRegister( AEApi.instance().blocks().blockQuartzChiseled.block(), 0 );
-		this.createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 0 );
-		this.createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 1 );
-		this.createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 2 );
-		this.createAndRegister( AEApi.instance().blocks().blockSkyStone.block(), 3 );
+		final IBlocks blocks = AEApi.instance().definitions().blocks();
+
+		this.createAndRegister( blocks.quartz().block(), 0 );
+		this.createAndRegister( blocks.quartzPillar().block(), 0 );
+		this.createAndRegister( blocks.quartzChiseled().block(), 0 );
+		this.createAndRegister( blocks.skyStone().block(), 0 );
+		this.createAndRegister( blocks.skyStone().block(), 1 );
+		this.createAndRegister( blocks.skyStone().block(), 2 );
+		this.createAndRegister( blocks.skyStone().block(), 3 );
 
 		PartRegistry[] reg = PartRegistry.values();
 
@@ -186,8 +189,13 @@ public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IF
 	@Override
 	public Iterable<Block> blockTypes()
 	{
-		Blocks def = AEApi.instance().blocks();
-		return Arrays.asList( def.blockMultiPart.block(), def.blockQuartzTorch.block() );
+		final IBlocks blocks = AEApi.instance().definitions().blocks();
+		final List<Block> blockTypes = Lists.newArrayListWithCapacity( 2 );
+
+		blockTypes.add( blocks.multiPart().block() );
+		blockTypes.add( blocks.quartzTorch().block() );
+
+		return blockTypes;
 	}
 
 }

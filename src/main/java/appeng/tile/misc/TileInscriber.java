@@ -42,6 +42,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEItemDefinition;
 import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
@@ -78,9 +79,8 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 	public long clientStart;
 
-	static final ItemStack STACK_INSCRIBER = AEApi.instance().blocks().blockInscriber.stack( 1 );
-	private final IConfigManager settings = new ConfigManager( this );
-	private final UpgradeInventory upgrades = new UpgradeInventory( STACK_INSCRIBER, this, this.getUpgradeSlots() );
+	private final IConfigManager settings;
+	private final UpgradeInventory upgrades;
 
 	@Override
 	public AECableType getCableConnectionType(ForgeDirection dir)
@@ -159,9 +159,14 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 	public TileInscriber()
 	{
+
 		this.gridProxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 		this.internalMaxPower = 1500;
 		this.gridProxy.setIdlePowerUsage( 0 );
+		this.settings = new ConfigManager( this );
+
+		final AEItemDefinition inscriber = AEApi.instance().definitions().blocks().inscriber();
+		this.upgrades = new UpgradeInventory( inscriber.stack( 1 ), this, this.getUpgradeSlots() );
 	}
 
 	@Override
@@ -204,23 +209,17 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 		if ( i == 0 || i == 1 )
 		{
-			if ( AEApi.instance().materials().materialNamePress.sameAsStack( itemstack ) )
+			if ( AEApi.instance().definitions().materials().namePress().sameAsStack( itemstack ) )
+			{
 				return true;
+			}
 
 			for (ItemStack s : Inscribe.PLATES )
 				if ( Platform.isSameItemPrecise( s, itemstack ) )
 					return true;
 		}
 
-		if ( i == 2 )
-		{
-			return true;
-			// for (ItemStack s : Inscribe.inputs)
-			// if ( Platform.isSameItemPrecise( s, itemstack ) )
-			// return true;
-		}
-
-		return false;
+		return i == 2;
 	}
 
 	@Override
@@ -256,37 +255,38 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 	public InscriberRecipe getTask()
 	{
-		ItemStack PlateA = this.getStackInSlot( 0 );
-		ItemStack PlateB = this.getStackInSlot( 1 );
+		ItemStack plateA = this.getStackInSlot( 0 );
+		ItemStack plateB = this.getStackInSlot( 1 );
 		ItemStack renamedItem = this.getStackInSlot( 2 );
 
-		if ( PlateA != null && PlateA.stackSize > 1 )
+		if ( plateA != null && plateA.stackSize > 1 )
 			return null;
 
-		if ( PlateB != null && PlateB.stackSize > 1 )
+		if ( plateB != null && plateB.stackSize > 1 )
 			return null;
 
 		if ( renamedItem != null && renamedItem.stackSize > 1 )
 			return null;
 
-		boolean isNameA = AEApi.instance().materials().materialNamePress.sameAsStack( PlateA );
-		boolean isNameB = AEApi.instance().materials().materialNamePress.sameAsStack( PlateB );
+		final AEItemDefinition namePress = AEApi.instance().definitions().materials().namePress();
+		boolean isNameA = namePress.sameAsStack( plateA );
+		boolean isNameB = namePress.sameAsStack( plateB );
 
-		if ( (isNameA || isNameB) && (isNameA || PlateA == null) && (isNameB || PlateB == null) )
+		if ( (isNameA || isNameB) && (isNameA || plateA == null) && (isNameB || plateB == null) )
 		{
 			if ( renamedItem != null )
 			{
 				String name = "";
 
-				if ( PlateA != null )
+				if ( plateA != null )
 				{
-					NBTTagCompound tag = Platform.openNbtData( PlateA );
+					NBTTagCompound tag = Platform.openNbtData( plateA );
 					name += tag.getString( "InscribeName" );
 				}
 
-				if ( PlateB != null )
+				if ( plateB != null )
 				{
-					NBTTagCompound tag = Platform.openNbtData( PlateB );
+					NBTTagCompound tag = Platform.openNbtData( plateB );
 					if ( name.length() > 0 )
 						name += " ";
 					name += tag.getString( "InscribeName" );
@@ -304,18 +304,18 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				else
 					display.removeTag( "Name" );
 
-				return new InscriberRecipe( new ItemStack[] { startingItem }, PlateA, PlateB, renamedItem, false );
+				return new InscriberRecipe( new ItemStack[] { startingItem }, plateA, plateB, renamedItem, false );
 			}
 		}
 
 		for (InscriberRecipe i : Inscribe.RECIPES )
 		{
 
-			boolean matchA = (PlateA == null && i.plateA == null) || (Platform.isSameItemPrecise( PlateA, i.plateA )) && // and...
-					(PlateB == null && i.plateB == null) | (Platform.isSameItemPrecise( PlateB, i.plateB ));
+			boolean matchA = (plateA == null && i.plateA == null) || (Platform.isSameItemPrecise( plateA, i.plateA )) && // and...
+					(plateB == null && i.plateB == null) | (Platform.isSameItemPrecise( plateB, i.plateB ));
 
-			boolean matchB = (PlateB == null && i.plateA == null) || (Platform.isSameItemPrecise( PlateB, i.plateA )) && // and...
-					(PlateA == null && i.plateB == null) | (Platform.isSameItemPrecise( PlateA, i.plateB ));
+			boolean matchB = (plateB == null && i.plateA == null) || (Platform.isSameItemPrecise( plateB, i.plateA )) && // and...
+					(plateA == null && i.plateB == null) | (Platform.isSameItemPrecise( plateA, i.plateB ));
 
 			if ( matchA || matchB )
 			{

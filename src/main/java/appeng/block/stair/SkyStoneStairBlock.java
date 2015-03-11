@@ -31,6 +31,6 @@ public class SkyStoneStairBlock extends AEBaseStairBlock
 {
 	public SkyStoneStairBlock( Block block, Integer meta )
 	{
-		super( block, meta, EnumSet.of( AEFeature.Core ) );
+		super( block, meta, EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
 	}
 }

@@ -23,10 +23,11 @@
 
 package appeng.api.parts;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Set;
+
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * All Layers must extends this, this get part implementation is provided to interface with the parts, however a real

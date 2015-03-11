@@ -95,6 +95,8 @@ import appeng.api.config.PowerUnits;
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
+import appeng.api.definitions.IMaterials;
+import appeng.api.definitions.IParts;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
@@ -1755,7 +1757,11 @@ public class Platform
 			return false;
 
 		if ( type == AEFeature.CertusQuartzTools )
-			return AEApi.instance().materials().materialCertusQuartzCrystal.sameAsStack( b );
+		{
+			final AEItemDefinition certusQuartzCrystal = AEApi.instance().definitions().materials().certusQuartzCrystal();
+
+			return certusQuartzCrystal.sameAsStack( b );
+		}
 
 		if ( type == AEFeature.NetherQuartzTools )
 			return Items.quartz == b.getItem();
@@ -1765,19 +1771,29 @@ public class Platform
 
 	public static Object findPreferred(ItemStack[] is)
 	{
+		final IParts parts = AEApi.instance().definitions().parts();
+
 		for (ItemStack stack : is)
 		{
-			if ( AEApi.instance().parts().partCableGlass.sameAs( AEColor.Transparent, stack ) )
+			if ( parts.cableGlass().sameAs( AEColor.Transparent, stack ) )
+			{
 				return stack;
+			}
 
-			if ( AEApi.instance().parts().partCableCovered.sameAs( AEColor.Transparent, stack ) )
+			if ( parts.cableCovered().sameAs( AEColor.Transparent, stack ) )
+			{
 				return stack;
+			}
 
-			if ( AEApi.instance().parts().partCableSmart.sameAs( AEColor.Transparent, stack ) )
+			if ( parts.cableSmart().sameAs( AEColor.Transparent, stack ) )
+			{
 				return stack;
+			}
 
-			if ( AEApi.instance().parts().partCableDense.sameAs( AEColor.Transparent, stack ) )
+			if ( parts.cableDense().sameAs( AEColor.Transparent, stack ) )
+			{
 				return stack;
+			}
 		}
 
 		return is;
@@ -1865,8 +1881,12 @@ public class Platform
 
 	public static boolean isRecipePrioritized(ItemStack what)
 	{
-		return AEApi.instance().materials().materialPurifiedCertusQuartzCrystal.sameAsStack( what )
-				|| AEApi.instance().materials().materialPurifiedFluixCrystal.sameAsStack( what )
-				|| AEApi.instance().materials().materialPurifiedNetherQuartzCrystal.sameAsStack( what );
+		final IMaterials materials = AEApi.instance().definitions().materials();
+
+		boolean isPurified = materials.purifiedCertusQuartzCrystal().sameAsStack( what );
+		isPurified |= materials.purifiedFluixCrystal().sameAsStack( what );
+		isPurified |= materials.purifiedNetherQuartzCrystal().sameAsStack( what );
+
+		return isPurified;
 	}
 }

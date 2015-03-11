@@ -23,12 +23,15 @@
 
 package appeng.api.storage.data;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.storage.StorageChannel;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.nbt.NBTTagCompound;
 
 import java.io.IOException;
+
+import io.netty.buffer.ByteBuf;
+
+import net.minecraft.nbt.NBTTagCompound;
+
+import appeng.api.config.FuzzyMode;
+import appeng.api.storage.StorageChannel;
 
 public interface IAEStack<StackType extends IAEStack>
 {

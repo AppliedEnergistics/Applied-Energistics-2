@@ -23,8 +23,10 @@
 
 package appeng.api.networking.spatial;
 
+
 import appeng.api.networking.IGridCache;
 import appeng.api.util.DimensionalCoord;
+
 
 public interface ISpatialCache extends IGridCache
 {
@@ -58,5 +60,4 @@ public interface ISpatialCache extends IGridCache
 	 * @return current 100% - 0% efficiency.
 	 */
 	float currentEfficiency();
-
 }

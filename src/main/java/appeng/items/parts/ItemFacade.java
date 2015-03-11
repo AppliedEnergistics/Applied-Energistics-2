@@ -110,11 +110,13 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 	public ItemStack createFromIDs(int[] ids)
 	{
-		ItemStack is = new ItemStack( AEApi.instance().items().itemFacade.item() );
-		NBTTagCompound data = new NBTTagCompound();
-		data.setIntArray( "x", ids.clone() );
-		is.setTagCompound( data );
-		return is;
+		final Item facadeItem = AEApi.instance().definitions().items().facade().item();
+		final ItemStack facadeStack = new ItemStack( facadeItem );
+		NBTTagCompound facadeTag = new NBTTagCompound();
+		facadeTag.setIntArray( "x", ids.clone() );
+		facadeStack.setTagCompound( facadeTag );
+
+		return facadeStack;
 	}
 
 	@Override

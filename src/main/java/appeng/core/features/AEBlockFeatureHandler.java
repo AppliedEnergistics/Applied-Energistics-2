@@ -21,9 +21,9 @@ package appeng.core.features;
 
 import java.util.EnumSet;
 
-import com.google.common.base.Optional;
-
 import cpw.mods.fml.common.registry.GameRegistry;
+
+import com.google.common.base.Optional;
 
 import appeng.api.util.AEItemDefinition;
 import appeng.block.AEBaseBlock;
@@ -33,9 +33,8 @@ import appeng.core.CreativeTab;
 import appeng.util.Platform;
 
 
-public class AEBlockFeatureHandler implements IFeatureHandler
+public final class AEBlockFeatureHandler implements IFeatureHandler
 {
-	private final EnumSet<AEFeature> features;
 	private final AEBaseBlock featured;
 	private final FeatureNameExtractor extractor;
 	private final boolean enabled;
@@ -43,10 +42,9 @@ public class AEBlockFeatureHandler implements IFeatureHandler
 
 	public AEBlockFeatureHandler( EnumSet<AEFeature> features, AEBaseBlock featured, Optional<String> subName )
 	{
-		this.features = features;
 		this.featured = featured;
 		this.extractor = new FeatureNameExtractor( featured.getClass(), subName );
-		this.enabled = new FeaturedActiveChecker( features ).get();
+		this.enabled = new FeaturedActiveChecker( features ).isFeatureActive();
 		this.definition = new AEBlockDefinition( featured, this.enabled );
 	}
 
@@ -54,12 +52,6 @@ public class AEBlockFeatureHandler implements IFeatureHandler
 	public boolean isFeatureAvailable()
 	{
 		return this.enabled;
-	}
-
-	@Override
-	public EnumSet<AEFeature> getFeatures()
-	{
-		return this.features;
 	}
 
 	@Override

@@ -32,6 +32,7 @@ import codechicken.multipart.minecraft.McSidedMetaPart;
 
 import appeng.api.AEApi;
 
+
 public class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTick
 {
 
@@ -52,7 +53,7 @@ public class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTi
 	@Override
 	public Block getBlock()
 	{
-		return AEApi.instance().blocks().blockQuartzTorch.block();
+		return AEApi.instance().definitions().blocks().quartzTorch().block();
 	}
 
 	@Override

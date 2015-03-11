@@ -130,7 +130,7 @@ public class CachedPlane
 	final LinkedList<NextTickListEntry> ticks = new LinkedList<NextTickListEntry>();
 
 	final World world;
-	final Block matrixFrame = AEApi.instance().blocks().blockMatrixFrame.block();
+	private final Block matrixFrame = AEApi.instance().definitions().blocks().matrixFrame().block();
 	final IMovableRegistry reg = AEApi.instance().registries().movable();
 
 	final LinkedList<WorldCoord> updates = new LinkedList<WorldCoord>();

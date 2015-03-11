@@ -19,7 +19,7 @@
 package appeng.integration.modules;
 
 
-import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -44,8 +44,9 @@ import buildcraft.transport.ItemFacade;
 import buildcraft.transport.PipeIconProvider;
 
 import appeng.api.AEApi;
+import appeng.api.IAppEngApi;
 import appeng.api.config.TunnelType;
-import appeng.api.definitions.Blocks;
+import appeng.api.definitions.IBlocks;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.parts.IFacadePart;
 import appeng.api.util.AEItemDefinition;
@@ -203,14 +204,17 @@ public final class BC extends BaseModule implements IBC
 	@Override
 	public void init()
 	{
-		AEApi.instance().partHelper().registerNewLayer( "appeng.parts.layers.LayerIPipeConnection", "buildcraft.api.transport.IPipeConnection" );
-		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new BCPipeHandler() );
+		final IAppEngApi api = AEApi.instance();
 
-		Blocks b = AEApi.instance().blocks();
-		this.addFacade( b.blockFluix.stack( 1 ) );
-		this.addFacade( b.blockQuartz.stack( 1 ) );
-		this.addFacade( b.blockQuartzChiseled.stack( 1 ) );
-		this.addFacade( b.blockQuartzPillar.stack( 1 ) );
+		api.partHelper().registerNewLayer( "appeng.parts.layers.LayerIPipeConnection", "buildcraft.api.transport.IPipeConnection" );
+		api.registries().externalStorage().addExternalStorageInterface( new BCPipeHandler() );
+
+		final IBlocks blocks = api.definitions().blocks();
+
+		this.addFacade( blocks.fluix().stack( 1 ) );
+		this.addFacade( blocks.quartz().stack( 1 ) );
+		this.addFacade( blocks.quartzChiseled().stack( 1 ) );
+		this.addFacade( blocks.quartzPillar().stack( 1 ) );
 
 		try
 		{
@@ -221,13 +225,13 @@ public final class BC extends BaseModule implements IBC
 			// not supported?
 		}
 
-		Block skyStone = b.blockSkyStone.block();
-		if ( skyStone != null )
+		final Block skystoneDef = blocks.skyStone().block();
+		if ( skystoneDef != null )
 		{
-			this.addFacade( new ItemStack( skyStone, 1, 0 ) );
-			this.addFacade( new ItemStack( skyStone, 1, 1 ) );
-			this.addFacade( new ItemStack( skyStone, 1, 2 ) );
-			this.addFacade( new ItemStack( skyStone, 1, 3 ) );
+			this.addFacade( new ItemStack( skystoneDef, 1, 0 ) );
+			this.addFacade( new ItemStack( skystoneDef, 1, 1 ) );
+			this.addFacade( new ItemStack( skystoneDef, 1, 2 ) );
+			this.addFacade( new ItemStack( skystoneDef, 1, 3 ) );
 		}
 	}
 
@@ -235,29 +239,28 @@ public final class BC extends BaseModule implements IBC
 	{
 		final ISchematicRegistry schematicRegistry = BuilderAPI.schematicRegistry;
 
-		Blocks blocks = AEApi.instance().blocks();
-		Block cable = blocks.blockMultiPart.block();
-		for (Field f : blocks.getClass().getFields())
+		final IBlocks blocks = AEApi.instance().definitions().blocks();
+		final AEItemDefinition maybeMultiPart = blocks.multiPart();
+
+		for ( Method blockDefinition : blocks.getClass().getMethods() )
 		{
 			AEItemDefinition def;
 			try
 			{
-				def = (AEItemDefinition) f.get( blocks );
-				if ( def != null )
+				def = (AEItemDefinition) blockDefinition.invoke( blocks );
+
+				Block myBlock = def.block();
+				if ( myBlock instanceof IOrientableBlock && ((IOrientableBlock) myBlock).usesMetadata() && def.entity() == null )
 				{
-					Block myBlock = def.block();
-					if ( myBlock instanceof IOrientableBlock && ((IOrientableBlock) myBlock).usesMetadata() && def.entity() == null )
-					{
-						schematicRegistry.registerSchematicBlock( myBlock, AERotatableBlockSchematic.class );
-					}
-					else if ( myBlock == cable )
-					{
-						schematicRegistry.registerSchematicBlock( myBlock, AECableSchematicTile.class );
-					}
-					else if ( def.entity() != null )
-					{
-						schematicRegistry.registerSchematicBlock( myBlock, AEGenericSchematicTile.class );
-					}
+					schematicRegistry.registerSchematicBlock( myBlock, AERotatableBlockSchematic.class );
+				}
+				else if ( myBlock == maybeMultiPart.block() )
+				{
+					schematicRegistry.registerSchematicBlock( myBlock, AECableSchematicTile.class );
+				}
+				else if ( def.entity() != null )
+				{
+					schematicRegistry.registerSchematicBlock( myBlock, AEGenericSchematicTile.class );
 				}
 			}
 			catch (Throwable t)
@@ -265,6 +268,11 @@ public final class BC extends BaseModule implements IBC
 				// :P
 			}
 		}
+	}
+
+	private void registerOrientableBlocks()
+	{
+
 	}
 
 	@Override

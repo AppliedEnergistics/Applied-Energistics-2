@@ -22,8 +22,6 @@ package appeng.core;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Stopwatch;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -36,6 +34,8 @@ import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+
+import com.google.common.base.Stopwatch;
 
 import appeng.core.crash.CrashEnhancement;
 import appeng.core.crash.CrashInfo;
@@ -182,7 +182,7 @@ public class AppEng
 	}
 
 	@EventHandler
-	public void serverStarting( FMLServerAboutToStartEvent evt )
+	public void serverAboutToStart( FMLServerAboutToStartEvent evt )
 	{
 		WorldSettings.getInstance().init();
 	}

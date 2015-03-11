@@ -66,7 +66,8 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 			{
 				if ( inv.getStackInSlot( s ) == stack )
 				{
-					inv.setInventorySlotContents( s, AEApi.instance().materials().materialBlankPattern.stack( stack.stackSize ) );
+					inv.setInventorySlotContents( s, AEApi.instance().definitions().materials().blankPattern().stack( stack.stackSize ) );
+
 					return true;
 				}
 			}

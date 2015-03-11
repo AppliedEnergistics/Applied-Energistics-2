@@ -18,11 +18,8 @@
 
 package appeng.core.sync;
 
-import static appeng.core.sync.GuiHostType.ITEM;
-import static appeng.core.sync.GuiHostType.ITEM_OR_WORLD;
-import static appeng.core.sync.GuiHostType.WORLD;
-
 import java.lang.reflect.Constructor;
+import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -35,9 +32,11 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
+import com.google.common.collect.Lists;
+
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.definitions.Materials;
+import appeng.api.definitions.IMaterials;
 import appeng.api.exceptions.AppEngException;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.IUpgradeableHost;
@@ -52,6 +51,7 @@ import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.storage.ITerminalHost;
+import appeng.api.util.AEItemDefinition;
 import appeng.api.util.DimensionalCoord;
 import appeng.client.gui.GuiNull;
 import appeng.container.AEBaseContainer;
@@ -117,6 +117,10 @@ import appeng.tile.storage.TileDrive;
 import appeng.tile.storage.TileIOPort;
 import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
+
+import static appeng.core.sync.GuiHostType.ITEM;
+import static appeng.core.sync.GuiHostType.ITEM_OR_WORLD;
+import static appeng.core.sync.GuiHostType.WORLD;
 
 public enum GuiBridge implements IGuiHandler
 {
@@ -271,12 +275,8 @@ public enum GuiBridge implements IGuiHandler
 					{
 						ItemStack is = ((Slot) so).getStack();
 
-						Materials m = AEApi.instance().materials();
-						if ( m.materialLogicProcessorPress.sameAsStack( is ) || m.materialEngProcessorPress.sameAsStack( is )
-								|| m.materialCalcProcessorPress.sameAsStack( is ) || m.materialSiliconPress.sameAsStack( is ) )
-						{
-							Achievements.Presses.addToPlayer( inventory.player );
-						}
+						final IMaterials materials = AEApi.instance().definitions().materials();
+						this.addPressAchievementToPlayer( is, materials, inventory.player );
 					}
 				}
 			}
@@ -286,6 +286,26 @@ public enum GuiBridge implements IGuiHandler
 		catch (Throwable t)
 		{
 			throw new RuntimeException( t );
+		}
+	}
+
+	private void addPressAchievementToPlayer( ItemStack newItem, IMaterials possibleMaterials, EntityPlayer player )
+	{
+		final AEItemDefinition logic = possibleMaterials.logicProcessorPress();
+		final AEItemDefinition eng = possibleMaterials.engProcessorPress();
+		final AEItemDefinition calc = possibleMaterials.calcProcessorPress();
+		final AEItemDefinition silicon = possibleMaterials.siliconPress();
+
+		final List<AEItemDefinition> presses = Lists.newArrayList( logic, eng, calc, silicon );
+
+		for ( AEItemDefinition press : presses )
+		{
+			if ( press.sameAsStack( newItem ) )
+			{
+				Achievements.Presses.addToPlayer( player );
+
+				return;
+			}
 		}
 	}
 

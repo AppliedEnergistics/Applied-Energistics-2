@@ -28,6 +28,7 @@ import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
+import appeng.api.definitions.IDefinitions;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.container.implementations.ContainerIOPort;
 import appeng.core.localization.GuiText;
@@ -50,8 +51,11 @@ public class GuiIOPort extends GuiUpgradeable
 	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
 	{
 		super.drawBG( offsetX, offsetY, mouseX, mouseY );
-		this.drawItem( offsetX + 66 - 8, offsetY + 17, AEApi.instance().items().itemCell1k.stack( 1 ) );
-		this.drawItem( offsetX + 94 + 8, offsetY + 17, AEApi.instance().blocks().blockDrive.stack( 1 ) );
+
+		final IDefinitions definitions = AEApi.instance().definitions();
+
+		this.drawItem( offsetX + 66 - 8, offsetY + 17, definitions.items().cell1k().stack( 1 ) );
+		this.drawItem( offsetX + 94 + 8, offsetY + 17, definitions.blocks().drive().stack( 1 ) );
 	}
 
 	@Override

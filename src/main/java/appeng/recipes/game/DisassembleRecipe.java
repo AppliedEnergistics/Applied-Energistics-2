@@ -24,20 +24,21 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
-import appeng.api.definitions.Blocks;
-import appeng.api.definitions.Items;
-import appeng.api.definitions.Materials;
+import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IItems;
+import appeng.api.definitions.IMaterials;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 
+
 public class DisassembleRecipe implements IRecipe
 {
 
-	private final Materials mats = AEApi.instance().materials();
-	private final Items items = AEApi.instance().items();
-	private final Blocks blocks = AEApi.instance().blocks();
+	private final IMaterials mats = AEApi.instance().definitions().materials();
+	private final IItems items = AEApi.instance().definitions().items();
+	private final IBlocks blocks = AEApi.instance().definitions().blocks();
 
 	private ItemStack getOutput(InventoryCrafting inv, boolean createFacade)
 	{
@@ -51,17 +52,25 @@ public class DisassembleRecipe implements IRecipe
 				if ( hasCell != null )
 					return null;
 
-				if ( this.items.itemCell1k.sameAsStack( is ) )
-					hasCell = this.mats.materialCell1kPart.stack( 1 );
+				if ( this.items.cell1k().sameAsStack( is ) )
+				{
+					hasCell = this.mats.cell1kPart().stack( 1 );
+				}
 
-				if ( this.items.itemCell4k.sameAsStack( is ) )
-					hasCell = this.mats.materialCell4kPart.stack( 1 );
+				if ( this.items.cell4k().sameAsStack( is ) )
+				{
+					hasCell = this.mats.cell4kPart().stack( 1 );
+				}
 
-				if ( this.items.itemCell16k.sameAsStack( is ) )
-					hasCell = this.mats.materialCell16kPart.stack( 1 );
+				if ( this.items.cell16k().sameAsStack( is ) )
+				{
+					hasCell = this.mats.cell16kPart().stack( 1 );
+				}
 
-				if ( this.items.itemCell64k.sameAsStack( is ) )
-					hasCell = this.mats.materialCell64kPart.stack( 1 );
+				if ( this.items.cell64k().sameAsStack( is ) )
+				{
+					hasCell = this.mats.cell64kPart().stack( 1 );
+				}
 
 				// make sure the storage cell is empty...
 				if ( hasCell != null )
@@ -75,20 +84,30 @@ public class DisassembleRecipe implements IRecipe
 					}
 				}
 
-				if ( this.items.itemEncodedPattern.sameAsStack( is ) )
-					hasCell = this.mats.materialBlankPattern.stack( 1 );
+				if ( this.items.encodedPattern().sameAsStack( is ) )
+				{
+					hasCell = this.mats.blankPattern().stack( 1 );
+				}
 
-				if ( this.blocks.blockCraftingStorage1k.sameAsStack( is ) )
-					hasCell = this.mats.materialCell1kPart.stack( 1 );
+				if ( this.blocks.craftingStorage1k().sameAsStack( is ) )
+				{
+					hasCell = this.mats.cell1kPart().stack( 1 );
+				}
 
-				if ( this.blocks.blockCraftingStorage4k.sameAsStack( is ) )
-					hasCell = this.mats.materialCell4kPart.stack( 1 );
+				if ( this.blocks.craftingStorage4k().sameAsStack( is ) )
+				{
+					hasCell = this.mats.cell4kPart().stack( 1 );
+				}
 
-				if ( this.blocks.blockCraftingStorage16k.sameAsStack( is ) )
-					hasCell = this.mats.materialCell16kPart.stack( 1 );
+				if ( this.blocks.craftingStorage16k().sameAsStack( is ) )
+				{
+					hasCell = this.mats.cell16kPart().stack( 1 );
+				}
 
-				if ( this.blocks.blockCraftingStorage64k.sameAsStack( is ) )
-					hasCell = this.mats.materialCell64kPart.stack( 1 );
+				if ( this.blocks.craftingStorage64k().sameAsStack( is ) )
+				{
+					hasCell = this.mats.cell64kPart().stack( 1 );
+				}
 
 				if ( hasCell == null )
 					return null;

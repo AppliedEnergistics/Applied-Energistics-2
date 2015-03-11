@@ -40,6 +40,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.definitions.IParts;
 import appeng.api.implementations.parts.IPartCable;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
@@ -52,6 +53,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
+import appeng.api.util.AEColoredItemDefinition;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.block.AEBaseBlock;
 import appeng.client.texture.CableBusTextures;
@@ -130,8 +132,11 @@ public class PartCable extends AEBasePart implements IPartCable
 				return CableBusTextures.MECable_Yellow.getIcon();
 			default:
 		}
-		return AEApi.instance().parts().partCableGlass.item( AEColor.Transparent ).getIconIndex(
-				AEApi.instance().parts().partCableGlass.stack( AEColor.Transparent, 1 ) );
+
+		final AEColoredItemDefinition glassCable = AEApi.instance().definitions().parts().cableGlass();
+		final ItemStack glassCableStack = glassCable.stack( AEColor.Transparent, 1 );
+
+		return glassCable.item( AEColor.Transparent ).getIconIndex( glassCableStack );
 	}
 
 	public IIcon getTexture( AEColor c )
@@ -177,8 +182,11 @@ public class PartCable extends AEBasePart implements IPartCable
 				return CableBusTextures.MECovered_Yellow.getIcon();
 			default:
 		}
-		return AEApi.instance().parts().partCableCovered.item( AEColor.Transparent ).getIconIndex(
-				AEApi.instance().parts().partCableCovered.stack( AEColor.Transparent, 1 ) );
+
+		final AEColoredItemDefinition coveredCable = AEApi.instance().definitions().parts().cableCovered();
+		final ItemStack coveredCableStack = coveredCable.stack( AEColor.Transparent, 1 );
+
+		return coveredCable.item( AEColor.Transparent ).getIconIndex( coveredCableStack );
 	}
 
 	public IIcon getSmartTexture( AEColor c )
@@ -219,8 +227,11 @@ public class PartCable extends AEBasePart implements IPartCable
 				return CableBusTextures.MESmart_Yellow.getIcon();
 			default:
 		}
-		return AEApi.instance().parts().partCableCovered.item( AEColor.Transparent ).getIconIndex(
-				AEApi.instance().parts().partCableSmart.stack( AEColor.Transparent, 1 ) );
+
+		final IParts parts = AEApi.instance().definitions().parts();
+		final ItemStack smartCableStack = parts.cableSmart().stack( AEColor.Transparent, 1 );
+
+		return parts.cableCovered().item( AEColor.Transparent ).getIconIndex( smartCableStack );
 	}
 
 	@Override
@@ -1009,21 +1020,23 @@ public class PartCable extends AEBasePart implements IPartCable
 		{
 			ItemStack newPart = null;
 
+			final IParts parts = AEApi.instance().definitions().parts();
+
 			if ( this.getCableConnectionType() == AECableType.GLASS )
 			{
-				newPart = AEApi.instance().parts().partCableGlass.stack( newColor, 1 );
+				newPart = parts.cableGlass().stack( newColor, 1 );
 			}
 			else if ( this.getCableConnectionType() == AECableType.COVERED )
 			{
-				newPart = AEApi.instance().parts().partCableCovered.stack( newColor, 1 );
+				newPart = parts.cableCovered().stack( newColor, 1 );
 			}
 			else if ( this.getCableConnectionType() == AECableType.SMART )
 			{
-				newPart = AEApi.instance().parts().partCableSmart.stack( newColor, 1 );
+				newPart = parts.cableSmart().stack( newColor, 1 );
 			}
 			else if ( this.getCableConnectionType() == AECableType.DENSE )
 			{
-				newPart = AEApi.instance().parts().partCableDense.stack( newColor, 1 );
+				newPart = parts.cableDense().stack( newColor, 1 );
 			}
 
 			boolean hasPermission = true;

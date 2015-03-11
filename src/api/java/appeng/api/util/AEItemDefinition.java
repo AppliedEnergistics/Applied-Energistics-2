@@ -29,38 +29,45 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 
+import appeng.api.definitions.ITileDefinition;
+
+
 /**
  * Gives easy access to different part of the various, items/blocks/materials in AE.
  */
-public interface AEItemDefinition
+public interface AEItemDefinition extends ITileDefinition
 {
-
 	/**
 	 * @return the {@link Block} Implementation if applicable
 	 */
+	@Override
 	Block block();
 
 	/**
 	 * @return the {@link Item} Implementation if applicable
 	 */
+	@Override
 	Item item();
 
 	/**
 	 * @return the {@link TileEntity} Class if applicable.
 	 */
+	@Override
 	Class<? extends TileEntity> entity();
 
 	/**
 	 * @return an {@link ItemStack} with specified quantity of this item.
 	 */
+	@Override
 	ItemStack stack(int stackSize);
 
 	/**
-	 * Compare {@link ItemStack} with this {@link AEItemDefinition}
+	 * Compare {@link ItemStack} with this
 	 *
 	 * @param comparableItem compared item
 	 * @return true if the item stack is a matching item.
 	 */
+	@Override
 	boolean sameAsStack(ItemStack comparableItem);
 
 	/**
@@ -73,5 +80,6 @@ public interface AEItemDefinition
 	 *
 	 * @return if the block is placed in the world at the specific location.
 	 */
+	@Override
 	boolean sameAsBlock(IBlockAccess world, int x, int y, int z);
 }

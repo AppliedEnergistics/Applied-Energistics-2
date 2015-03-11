@@ -26,9 +26,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
-import com.google.common.base.Optional;
-
 import appeng.api.AEApi;
+import appeng.api.definitions.IDefinitions;
 import appeng.api.util.AEItemDefinition;
 import appeng.items.parts.ItemFacade;
 
@@ -36,13 +35,15 @@ import appeng.items.parts.ItemFacade;
 public class FacadeRecipe implements IRecipe
 {
 
-	private final Optional<AEItemDefinition> maybeAnchor;
-	private final Optional<AEItemDefinition> maybeFacade;
+	private final AEItemDefinition anchor;
+	private final AEItemDefinition facade;
 
 	public FacadeRecipe()
 	{
-		this.maybeFacade = Optional.fromNullable( AEApi.instance().items().itemFacade );
-		this.maybeAnchor = Optional.fromNullable( AEApi.instance().parts().partCableAnchor );
+		final IDefinitions definitions = AEApi.instance().definitions();
+
+		this.facade = definitions.items().facade();
+		this.anchor = definitions.parts().cableAnchor();
 	}
 
 	@Override
@@ -53,14 +54,11 @@ public class FacadeRecipe implements IRecipe
 
 	private ItemStack getOutput( IInventory inv, boolean createFacade )
 	{
-		if ( this.maybeAnchor.isPresent() && this.maybeFacade.isPresent() && inv.getStackInSlot( 0 ) == null && inv.getStackInSlot( 2 ) == null && inv.getStackInSlot( 6 ) == null && inv.getStackInSlot( 8 ) == null )
+		if ( inv.getStackInSlot( 0 ) == null && inv.getStackInSlot( 2 ) == null && inv.getStackInSlot( 6 ) == null && inv.getStackInSlot( 8 ) == null )
 		{
-			final AEItemDefinition anchorDefinition = this.maybeAnchor.get();
-			final AEItemDefinition facadeDefinition = this.maybeFacade.get();
-
-			if ( anchorDefinition.sameAsStack( inv.getStackInSlot( 1 ) ) && anchorDefinition.sameAsStack( inv.getStackInSlot( 3 ) ) && anchorDefinition.sameAsStack( inv.getStackInSlot( 5 ) ) && anchorDefinition.sameAsStack( inv.getStackInSlot( 7 ) ) )
+			if ( this.anchor.sameAsStack( inv.getStackInSlot( 1 ) ) && this.anchor.sameAsStack( inv.getStackInSlot( 3 ) ) && this.anchor.sameAsStack( inv.getStackInSlot( 5 ) ) && this.anchor.sameAsStack( inv.getStackInSlot( 7 ) ) )
 			{
-				final Item itemDefinition = facadeDefinition.item();
+				final Item itemDefinition = this.facade.item();
 				final ItemFacade facade = (ItemFacade) itemDefinition;
 
 				ItemStack facades = facade.createFacadeForItem( inv.getStackInSlot( 4 ), !createFacade );

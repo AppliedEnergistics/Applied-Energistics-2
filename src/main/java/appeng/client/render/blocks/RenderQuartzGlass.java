@@ -20,6 +20,7 @@ package appeng.client.render.blocks;
 
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
@@ -56,8 +57,19 @@ public class RenderQuartzGlass extends BaseBlockRender
 
 	boolean isGlass(AEBaseBlock imb, IBlockAccess world, int x, int y, int z)
 	{
-		return world.getBlock( x, y, z ) == AEApi.instance().blocks().blockQuartzGlass.block()
-				|| world.getBlock( x, y, z ) == AEApi.instance().blocks().blockQuartzVibrantGlass.block();
+		final Block block = world.getBlock( x, y, z );
+
+		return this.isQuartzGlass( block ) || this.isVibrantQuartzGlass( block );
+	}
+
+	private boolean isQuartzGlass( Block block )
+	{
+		return block == AEApi.instance().definitions().blocks().quartzGlass().block();
+	}
+
+	private boolean isVibrantQuartzGlass( Block block )
+	{
+		return block == AEApi.instance().definitions().blocks().quartzVibrantGlass().block();
 	}
 
 	void renderEdge(AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer, ForgeDirection side, ForgeDirection direction)

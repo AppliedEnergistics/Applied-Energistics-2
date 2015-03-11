@@ -23,9 +23,10 @@
 
 package appeng.api.storage.data;
 
-import appeng.api.config.FuzzyMode;
 
 import java.util.Collection;
+
+import appeng.api.config.FuzzyMode;
 
 /**
  * Represents a list of items in AE.

@@ -30,7 +30,9 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
-import appeng.api.definitions.Parts;
+import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IDefinitions;
+import appeng.api.definitions.IParts;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.util.AEColor;
 import appeng.util.Platform;
@@ -78,14 +80,16 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 		/**
 		 * attune based on lots of random item related stuff
 		 */
-		appeng.api.definitions.Blocks AEBlocks = AEApi.instance().blocks();
-		Parts Parts = AEApi.instance().parts();
+		final IDefinitions definitions = AEApi.instance().definitions();
+		final IBlocks blocks = definitions.blocks();
+		final IParts parts = definitions.parts();
 
-		this.addNewAttunement( AEBlocks.blockInterface.stack( 1 ), TunnelType.ITEM );
-		this.addNewAttunement( Parts.partInterface.stack( 1 ), TunnelType.ITEM );
-		this.addNewAttunement( Parts.partStorageBus.stack( 1 ), TunnelType.ITEM );
-		this.addNewAttunement( Parts.partImportBus.stack( 1 ), TunnelType.ITEM );
-		this.addNewAttunement( Parts.partExportBus.stack( 1 ), TunnelType.ITEM );
+		this.addNewAttunement( blocks.iface().stack( 1 ), TunnelType.ITEM );
+		this.addNewAttunement( parts.iface().stack( 1 ), TunnelType.ITEM );
+		this.addNewAttunement( parts.storageBus().stack( 1 ), TunnelType.ITEM );
+		this.addNewAttunement( parts.importBus().stack( 1 ), TunnelType.ITEM );
+		this.addNewAttunement( parts.exportBus().stack( 1 ), TunnelType.ITEM );
+
 		this.addNewAttunement( new ItemStack( Blocks.hopper ), TunnelType.ITEM );
 		this.addNewAttunement( new ItemStack( Blocks.chest ), TunnelType.ITEM );
 		this.addNewAttunement( new ItemStack( Blocks.trapped_chest ), TunnelType.ITEM );
@@ -108,10 +112,10 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 
 		for (AEColor c : AEColor.values())
 		{
-			this.addNewAttunement( Parts.partCableGlass.stack( c, 1 ), TunnelType.ME );
-			this.addNewAttunement( Parts.partCableCovered.stack( c, 1 ), TunnelType.ME );
-			this.addNewAttunement( Parts.partCableSmart.stack( c, 1 ), TunnelType.ME );
-			this.addNewAttunement( Parts.partCableDense.stack( c, 1 ), TunnelType.ME );
+			this.addNewAttunement( parts.cableGlass().stack( c, 1 ), TunnelType.ME );
+			this.addNewAttunement( parts.cableCovered().stack( c, 1 ), TunnelType.ME );
+			this.addNewAttunement( parts.cableSmart().stack( c, 1 ), TunnelType.ME );
+			this.addNewAttunement( parts.cableDense().stack( c, 1 ), TunnelType.ME );
 		}
 	}
 

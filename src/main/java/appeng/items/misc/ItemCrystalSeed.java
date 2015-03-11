@@ -38,6 +38,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.common.registry.EntityRegistry;
 
 import appeng.api.AEApi;
+import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.api.recipes.ResolverResult;
 import appeng.core.AppEng;
@@ -122,13 +123,21 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	public ItemStack triggerGrowth(ItemStack is)
 	{
 		int newDamage = this.getProgress( is ) + 1;
+		final IMaterials materials = AEApi.instance().definitions().materials();
+		final int size = is.stackSize;
 
 		if ( newDamage == Certus + SINGLE_OFFSET )
-			return AEApi.instance().materials().materialPurifiedCertusQuartzCrystal.stack( is.stackSize );
+		{
+			return materials.purifiedCertusQuartzCrystal().stack( size );
+		}
 		if ( newDamage == Nether + SINGLE_OFFSET )
-			return AEApi.instance().materials().materialPurifiedNetherQuartzCrystal.stack( is.stackSize );
+		{
+			return materials.purifiedNetherQuartzCrystal().stack( size );
+		}
 		if ( newDamage == Fluix + SINGLE_OFFSET )
-			return AEApi.instance().materials().materialPurifiedFluixCrystal.stack( is.stackSize );
+		{
+			return materials.purifiedFluixCrystal().stack( size );
+		}
 		if ( newDamage > END )
 			return null;
 
@@ -275,10 +284,14 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 
 	public static ResolverResult getResolver(int certus2)
 	{
-		ItemStack is = AEApi.instance().items().itemCrystalSeed.stack( 1 );
-		is.setItemDamage( certus2 );
-		is = newStyle( is );
-		return new ResolverResult( "ItemCrystalSeed", is.getItemDamage(), is.getTagCompound() );
+		ResolverResult resolver = null;
+
+		ItemStack crystalSeedStack = AEApi.instance().definitions().items().crystalSeed().stack( 1 );
+		crystalSeedStack.setItemDamage( certus2 );
+		crystalSeedStack = newStyle( crystalSeedStack );
+		resolver = new ResolverResult( "ItemCrystalSeed", crystalSeedStack.getItemDamage(), crystalSeedStack.getTagCompound() );
+
+		return resolver;
 	}
 
 }

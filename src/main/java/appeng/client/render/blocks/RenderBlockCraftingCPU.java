@@ -70,7 +70,9 @@ public class RenderBlockCraftingCPU extends BaseBlockRender
 
 		IIcon nonForward = theIcon;
 		if ( isMonitor )
-			nonForward = AEApi.instance().blocks().blockCraftingUnit.block().getIcon( 0, meta | (formed ? 8 : 0) );
+		{
+			nonForward = AEApi.instance().definitions().blocks().craftingUnit().block().getIcon( 0, meta | ( formed ? 8 : 0 ) );
+		}
 
 		if ( formed && renderer.overrideBlockTexture == null )
 		{
