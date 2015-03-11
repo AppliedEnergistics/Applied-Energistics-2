@@ -76,8 +76,8 @@ public class OreHelper
 
 			for ( String ore : OreDictionary.getOreNames() )
 			{
-				// skip ore if it is a match already.
-				if ( toAdd.contains( ore ) )
+				// skip ore if it is a match already or null.
+				if ( ore == null || toAdd.contains( ore ) )
 				{
 					continue;
 				}
