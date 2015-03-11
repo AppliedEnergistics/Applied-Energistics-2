@@ -261,11 +261,19 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@Override
 	public int compareTo(AEItemStack b)
 	{
-		int id = this.compare( this.def.item.hashCode(), b.def.item.hashCode() );
-		int damageValue = this.compare( this.def.damageValue, b.def.damageValue );
-		int displayDamage = this.compare( this.def.displayDamage, b.def.displayDamage );
-		// AELog.info( "NBT: " + nbt );
-		return id == 0 ? (damageValue == 0 ? (displayDamage == 0 ? this.compareNBT( b.def ) : displayDamage) : damageValue) : id;
+		int id = this.def.itemID - b.def.itemID;
+		if (id != 0)
+			return id;
+
+		int damageValue = this.def.damageValue - b.def.damageValue ;
+		if (damageValue != 0)
+			return damageValue;
+
+		int displayDamage = this.def.displayDamage - b.def.displayDamage;
+		if (displayDamage != 0)
+			return displayDamage;
+
+		return (this.def.tagCompound == b.def.tagCompound) ? 0 : this.compareNBT( b.def );
 	}
 
 	private int compareNBT(AEItemDef b)
@@ -276,7 +284,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		return nbt;
 	}
 
-	private int compare(int l, long m)
+	private int compare(int l, int m)
 	{
 		return l < m ? -1 : (l > m ? 1 : 0);
 	}

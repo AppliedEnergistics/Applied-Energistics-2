@@ -37,7 +37,7 @@ public class AEItemDef
 
 	public int def;
 
-	private final int itemID;
+	public final int itemID;
 	public final Item item;
 	public int damageValue;
 
@@ -62,7 +62,7 @@ public class AEItemDef
 
 	public AEItemDef(Item it) {
 		this.item = it;
-		this.itemID = System.identityHashCode( this.item );
+		this.itemID = Item.getIdFromItem( it );
 	}
 
 	public AEItemDef copy()
