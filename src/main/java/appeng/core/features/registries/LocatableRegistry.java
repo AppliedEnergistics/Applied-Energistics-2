@@ -18,7 +18,9 @@
 
 package appeng.core.features.registries;
 
+
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraftforge.common.MinecraftForge;
 
@@ -30,13 +32,19 @@ import appeng.api.features.ILocatable;
 import appeng.api.features.ILocatableRegistry;
 import appeng.util.Platform;
 
-public class LocatableRegistry implements ILocatableRegistry
-{
 
-	private final HashMap<Long, ILocatable> set;
+public final class LocatableRegistry implements ILocatableRegistry
+{
+	private final Map<Long, ILocatable> set;
+
+	public LocatableRegistry()
+	{
+		this.set = new HashMap<Long, ILocatable>();
+		MinecraftForge.EVENT_BUS.register( this );
+	}
 
 	@SubscribeEvent
-	public void updateLocatable(LocatableEventAnnounce e)
+	public void updateLocatable( LocatableEventAnnounce e )
 	{
 		if ( Platform.isClient() )
 			return; // IGNORE!
@@ -51,18 +59,18 @@ public class LocatableRegistry implements ILocatableRegistry
 		}
 	}
 
-	public LocatableRegistry() {
-		this.set = new HashMap<Long, ILocatable>();
-		MinecraftForge.EVENT_BUS.register( this );
-	}
-
 	/**
 	 * Find a locate-able object by its serial.
 	 */
 	@Override
-	public Object findLocatableBySerial(long ser)
+	public Object findLocatableBySerial( long ser )
 	{
 		return this.set.get( ser );
 	}
 
+	@Override
+	public ILocatable getLocatableBy( long serial )
+	{
+		return this.set.get( serial );
+	}
 }

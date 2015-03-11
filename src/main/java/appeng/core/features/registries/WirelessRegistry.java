@@ -18,24 +18,25 @@
 
 package appeng.core.features.registries;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 
+import appeng.api.AEApi;
+import appeng.api.features.ILocatable;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWirelessTermRegistry;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.GuiBridge;
 import appeng.util.Platform;
 
-public class WirelessRegistry implements IWirelessTermRegistry
+public final class WirelessRegistry implements IWirelessTermRegistry
 {
-
-	final List<IWirelessTermHandler> handlers;
+	private final List<IWirelessTermHandler> handlers;
 
 	public WirelessRegistry() {
 		this.handlers = new ArrayList<IWirelessTermHandler>();
@@ -76,10 +77,25 @@ public class WirelessRegistry implements IWirelessTermRegistry
 		if ( Platform.isClient() )
 			return;
 
-		IWirelessTermHandler handler = this.getWirelessTerminalHandler( item );
-		if ( handler == null )
+		if ( !this.isWirelessTerminal( item ) )
 		{
-			player.addChatMessage( new ChatComponentText( "Item is not a wireless terminal." ) );
+			player.addChatMessage( PlayerMessages.DeviceNotWirelessTerminal.get() );
+			return;
+		}
+
+		final IWirelessTermHandler handler = this.getWirelessTerminalHandler( item );
+		final String unparsedKey = handler.getEncryptionKey( item );
+		if ( unparsedKey.length() == 0 )
+		{
+			player.addChatMessage( PlayerMessages.DeviceNotLinked.get() );
+			return;
+		}
+
+		final long parsedKey = Long.parseLong( unparsedKey );
+		final ILocatable securityStation = AEApi.instance().registries().locatable().getLocatableBy( parsedKey );
+		if ( securityStation == null )
+		{
+			player.addChatMessage( PlayerMessages.StationCanNotBeLocated.get() );
 			return;
 		}
 
