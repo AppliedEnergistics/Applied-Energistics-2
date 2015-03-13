@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -56,13 +57,14 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioitylist.IPartitionList;
 
+
 public class PacketNEIRecipe extends AppEngPacket
 {
 
 	ItemStack[][] recipe;
 
 	// automatic.
-	public PacketNEIRecipe(ByteBuf stream) throws IOException
+	public PacketNEIRecipe( ByteBuf stream ) throws IOException
 	{
 		ByteArrayInputStream bytes = new ByteArrayInputStream( stream.array() );
 		bytes.skip( stream.readerIndex() );
@@ -70,13 +72,13 @@ public class PacketNEIRecipe extends AppEngPacket
 		if ( comp != null )
 		{
 			this.recipe = new ItemStack[9][];
-			for (int x = 0; x < this.recipe.length; x++)
+			for ( int x = 0; x < this.recipe.length; x++ )
 			{
 				NBTTagList list = comp.getTagList( "#" + x, 10 );
 				if ( list.tagCount() > 0 )
 				{
 					this.recipe[x] = new ItemStack[list.tagCount()];
-					for (int y = 0; y < list.tagCount(); y++)
+					for ( int y = 0; y < list.tagCount(); y++ )
 					{
 						this.recipe[x][y] = ItemStack.loadItemStackFromNBT( list.getCompoundTagAt( y ) );
 					}
@@ -86,14 +88,14 @@ public class PacketNEIRecipe extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player)
+	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
 	{
-		EntityPlayerMP pmp = (EntityPlayerMP) player;
+		EntityPlayerMP pmp = ( EntityPlayerMP ) player;
 		Container con = pmp.openContainer;
 
 		if ( con != null && con instanceof IContainerCraftingPacket )
 		{
-			IContainerCraftingPacket cct = (IContainerCraftingPacket) con;
+			IContainerCraftingPacket cct = ( IContainerCraftingPacket ) con;
 			IGridNode node = cct.getNetworkNode();
 			if ( node != null )
 			{
@@ -112,11 +114,11 @@ public class PacketNEIRecipe extends AppEngPacket
 				if ( inv != null && this.recipe != null && security != null )
 				{
 					InventoryCrafting testInv = new InventoryCrafting( new ContainerNull(), 3, 3 );
-					for (int x = 0; x < 9; x++)
+					for ( int x = 0; x < 9; x++ )
 					{
 						if ( this.recipe[x] != null && this.recipe[x].length > 0 )
 						{
-							testInv.setInventorySlotContents(x, this.recipe[x][0]);
+							testInv.setInventorySlotContents( x, this.recipe[x][0] );
 						}
 					}
 
@@ -132,16 +134,16 @@ public class PacketNEIRecipe extends AppEngPacket
 							IItemList all = storage.getStorageList();
 							IPartitionList<IAEItemStack> filter = ItemViewCell.createFilter( cct.getViewCells() );
 
-							for (int x = 0; x < craftMatrix.getSizeInventory(); x++)
+							for ( int x = 0; x < craftMatrix.getSizeInventory(); x++ )
 							{
 								ItemStack PatternItem = testInv.getStackInSlot( x );
 
 								ItemStack currentItem = craftMatrix.getStackInSlot( x );
 								if ( currentItem != null )
 								{
-									testInv.setInventorySlotContents(x, currentItem);
+									testInv.setInventorySlotContents( x, currentItem );
 									ItemStack newItemStack = r.matches( testInv, pmp.worldObj ) ? r.getCraftingResult( testInv ) : null;
-									testInv.setInventorySlotContents(x, PatternItem);
+									testInv.setInventorySlotContents( x, PatternItem );
 
 									if ( newItemStack == null || !Platform.isSameItemPrecise( newItemStack, is ) )
 									{
@@ -171,7 +173,7 @@ public class PacketNEIRecipe extends AppEngPacket
 									// TODO see if this code is necessary
 									if ( whichItem == null )
 									{
-										for (int y = 0; y < this.recipe[x].length; y++)
+										for ( int y = 0; y < this.recipe[x].length; y++ )
 										{
 											IAEItemStack request = AEItemStack.create( this.recipe[x][y] );
 											if ( request != null )
@@ -191,19 +193,23 @@ public class PacketNEIRecipe extends AppEngPacket
 									}
 
 									// If that doesn't work, grab from the player's inventory
-									if ( whichItem == null && playerInventory != null ) {
+									if ( whichItem == null && playerInventory != null )
+									{
+										ItemStack playerItemStack = null;
 										for ( int y = 0; y < playerInventory.getSizeInventory(); y++ )
 										{
-											// Put the item in the test inventory, and check if the recipe is satisfied
-											testInv.setInventorySlotContents(x, playerInventory.getStackInSlot(y));
-											if ( r.matches(testInv, pmp.worldObj) )
+											// check if the item in slot y matches the required item.
+											playerItemStack = playerInventory.getStackInSlot( y );
+											if ( playerItemStack != null && playerItemStack.getItem() == this.recipe[x][y].getItem() )
 											{
-												// Take the item out.
-												if ( realForFake == Actionable.SIMULATE ) {
-													whichItem = playerInventory.getStackInSlot(y).copy();
+												if ( realForFake == Actionable.SIMULATE )
+												{
+													whichItem = playerInventory.getStackInSlot( y ).copy();
 													whichItem.stackSize = 1;
-												} else {
-													whichItem = playerInventory.decrStackSize(y, 1);
+												}
+												else
+												{
+													whichItem = playerInventory.decrStackSize( y, 1 );
 												}
 												break;
 											}
@@ -222,7 +228,7 @@ public class PacketNEIRecipe extends AppEngPacket
 	}
 
 	// api
-	public PacketNEIRecipe(NBTTagCompound recipe) throws IOException
+	public PacketNEIRecipe( NBTTagCompound recipe ) throws IOException
 	{
 		ByteBuf data = Unpooled.buffer();
 
