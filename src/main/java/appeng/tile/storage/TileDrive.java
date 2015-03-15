@@ -245,7 +245,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 							power += this.handlersBySlot[x].cellIdleDrain( is, cell );
 
 							DriveWatcher<IAEItemStack> ih = new DriveWatcher( cell, is, this.handlersBySlot[x], this );
-							ih.myPriority = this.priority;
+							ih.setPriority( this.priority );
 							this.invBySlot[x] = ih;
 							this.items.add( ih );
 						}
@@ -258,7 +258,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 								power += this.handlersBySlot[x].cellIdleDrain( is, cell );
 
 								DriveWatcher<IAEItemStack> ih = new DriveWatcher( cell, is, this.handlersBySlot[x], this );
-								ih.myPriority = this.priority;
+								ih.setPriority( this.priority );
 								this.invBySlot[x] = ih;
 								this.fluids.add( ih );
 							}

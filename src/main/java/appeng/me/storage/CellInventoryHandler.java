@@ -101,14 +101,14 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 					priorityList.add( AEItemStack.create( is ) );
 			}
 
-			this.myWhitelist = hasInverter ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST;
+			this.setWhitelist( hasInverter ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
 
 			if ( !priorityList.isEmpty() )
 			{
 				if ( hasFuzzy )
-					this.myPartitionList = new FuzzyPriorityList<IAEItemStack>( priorityList, fzMode );
+					this.setPartitionList( new FuzzyPriorityList<IAEItemStack>( priorityList, fzMode ) );
 				else
-					this.myPartitionList = new PrecisePriorityList<IAEItemStack>( priorityList );
+					this.setPartitionList( new PrecisePriorityList<IAEItemStack>( priorityList ) );
 			}
 		}
 	}
@@ -116,19 +116,19 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 	@Override
 	public boolean isPreformatted()
 	{
-		return ! this.myPartitionList.isEmpty();
+		return ! this.getPartitionList().isEmpty();
 	}
 
 	@Override
 	public boolean isFuzzy()
 	{
-		return this.myPartitionList instanceof FuzzyPriorityList;
+		return this.getPartitionList() instanceof FuzzyPriorityList;
 	}
 
 	@Override
 	public IncludeExclude getIncludeExcludeMode()
 	{
-		return this.myWhitelist;
+		return this.getWhitelist();
 	}
 
 	public int getStatusForCell()

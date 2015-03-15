@@ -313,9 +313,10 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 	private void updateHandler()
 	{
-		this.myHandler.myAccess = AccessRestriction.WRITE;
-		this.myHandler.myWhitelist = this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST;
-		this.myHandler.myPriority = this.priority;
+		this.myHandler.setBaseAccess( AccessRestriction.WRITE );
+		;
+		this.myHandler.setWhitelist( this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
+		this.myHandler.setPriority( this.priority );
 
 		IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
 
@@ -328,9 +329,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		}
 
 		if ( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-			this.myHandler.myPartitionList = new FuzzyPriorityList( priorityList, ( FuzzyMode ) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) );
+			this.myHandler.setPartitionList( new FuzzyPriorityList( priorityList, ( FuzzyMode ) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
 		else
-			this.myHandler.myPartitionList = new PrecisePriorityList( priorityList );
+			this.myHandler.setPartitionList( new PrecisePriorityList( priorityList ) );
 
 		try
 		{
