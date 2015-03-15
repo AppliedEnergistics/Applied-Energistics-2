@@ -128,7 +128,7 @@ public class AEConfig extends Configuration implements IConfigurableObject, ICon
 			// AE
 			"CertusQuartz", "Wheat", "Fluix",
 			// Other Mod Ores
-			"Brass", "Platinum", "Nickel", "Invar", "Aluminium", "Electrum", "Osmium" };
+			"Brass", "Platinum", "Nickel", "Invar", "Aluminium", "Electrum", "Osmium", "Zinc" };
 
 	public double oreDoublePercentage = 90.0;
 
