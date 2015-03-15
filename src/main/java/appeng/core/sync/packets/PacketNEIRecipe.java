@@ -195,23 +195,26 @@ public class PacketNEIRecipe extends AppEngPacket
 									// If that doesn't work, grab from the player's inventory
 									if ( whichItem == null && playerInventory != null )
 									{
-										ItemStack playerItemStack = null;
-										for ( int y = 0; y < playerInventory.getSizeInventory(); y++ )
+										for ( int y = 0; y < this.recipe[x].length; y++ )
 										{
-											// check if the item in slot y matches the required item.
-											playerItemStack = playerInventory.getStackInSlot( y );
-											if ( playerItemStack != null && playerItemStack.getItem() == this.recipe[x][y].getItem() )
+											ItemStack playerItemStack = null;
+											for ( int i = 0; i < playerInventory.getSizeInventory(); i++ )
 											{
-												if ( realForFake == Actionable.SIMULATE )
+												// check if the item in slot y matches the required item.
+												playerItemStack = playerInventory.getStackInSlot( i );
+												if ( playerItemStack != null && playerItemStack.getItem() == this.recipe[x][y].getItem() )
 												{
-													whichItem = playerInventory.getStackInSlot( y ).copy();
-													whichItem.stackSize = 1;
+													if ( realForFake == Actionable.SIMULATE )
+													{
+														whichItem = playerInventory.getStackInSlot( i ).copy();
+														whichItem.stackSize = 1;
+													}
+													else
+													{
+														whichItem = playerInventory.decrStackSize( i, 1 );
+													}
+													break;
 												}
-												else
-												{
-													whichItem = playerInventory.decrStackSize( y, 1 );
-												}
-												break;
 											}
 										}
 									}
