@@ -21,6 +21,9 @@ package appeng.me.cache;
 
 import java.util.HashMap;
 import java.util.PriorityQueue;
+import java.util.concurrent.TimeUnit;
+
+import com.google.common.base.Stopwatch;
 
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
@@ -34,6 +37,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.core.AEConfig;
 import appeng.me.cache.helpers.TickTracker;
 
 
@@ -46,10 +50,12 @@ public class TickManagerCache implements ITickManager
 	final HashMap<IGridNode, TickTracker> awake = new HashMap<IGridNode, TickTracker>();
 	final PriorityQueue<TickTracker> upcomingTicks = new PriorityQueue<TickTracker>();
 	private long currentTick = 0;
+	private final Stopwatch stopWatch;
 
 	public TickManagerCache( IGrid g )
 	{
 		this.myGrid = g;
+		this.stopWatch = Stopwatch.createUnstarted();
 	}
 
 	public long getCurrentTick()
@@ -81,20 +87,47 @@ public class TickManagerCache implements ITickManager
 		try
 		{
 			this.currentTick++;
+
+			final boolean isTiDi = AEConfig.instance.timeDilationEnabled;
+			int tiDiFactor = 0;
+			double timeLimitation = 1;
+
+			if( isTiDi )
+			{
+				final double baseTime = AEConfig.instance.timeDilationTimePerTick * 5000;
+				final double networkModifier = this.myGrid.getNodes().size() / ( AEConfig.instance.timeDilationGridSizeMultiplier + 1 ) + 1;
+				timeLimitation = baseTime * networkModifier / ( this.upcomingTicks.size() + 1 );
+			}
+
 			while( !this.upcomingTicks.isEmpty() )
 			{
+
 				tt = this.upcomingTicks.peek();
 				int diff = (int) ( this.currentTick - tt.lastTick );
 				if( diff >= tt.current_rate )
 				{
 					// remove tt..
 					this.upcomingTicks.poll();
+
+					if( isTiDi )
+					{
+						this.stopWatch.reset();
+						this.stopWatch.start();
+					}
+
 					TickRateModulation mod = tt.gt.tickingRequest( tt.node, diff );
+
+					if( isTiDi )
+					{
+						this.stopWatch.stop();
+						final long elapsedTime = this.stopWatch.elapsed( TimeUnit.MICROSECONDS );
+						tiDiFactor = (int) ( elapsedTime / timeLimitation );
+					}
 
 					switch( mod )
 					{
 						case FASTER:
-							tt.setRate( tt.current_rate - 2 );
+							tt.setRate( tt.current_rate - 2 + tiDiFactor );
 							break;
 						case IDLE:
 							tt.setRate( tt.request.maxTickRate );
@@ -105,24 +138,20 @@ public class TickManagerCache implements ITickManager
 							this.sleepDevice( tt.node );
 							break;
 						case SLOWER:
-							tt.setRate( tt.current_rate + 1 );
+							tt.setRate( tt.current_rate + 1 + tiDiFactor );
 							break;
 						case URGENT:
-							tt.setRate( 0 );
+							tt.setRate( 0 + tiDiFactor );
 							break;
 						default:
 							break;
 					}
 
 					if( this.awake.containsKey( tt.node ) )
-					{
 						this.addToQueue( tt );
-					}
 				}
 				else
-				{
-					return; // done!
-				}
+					break; // done!
 			}
 		}
 		catch( Throwable t )

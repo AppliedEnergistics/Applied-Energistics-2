@@ -21,11 +21,12 @@ package appeng.server;
 
 import appeng.server.subcommands.ChunkLogger;
 import appeng.server.subcommands.Supporters;
+import appeng.server.subcommands.TimeDilation;
 
 
 public enum Commands
 {
-	Chunklogger( 4, new ChunkLogger() ), supporters( 0, new Supporters() );
+	Chunklogger( 4, new ChunkLogger() ), supporters( 0, new Supporters() ), timedilation( 4, new TimeDilation() );
 
 	public final int level;
 	public final ISubCommand command;
