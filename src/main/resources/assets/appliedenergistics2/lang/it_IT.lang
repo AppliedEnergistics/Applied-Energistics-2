@@ -50,12 +50,25 @@ tile.appliedenergistics2.BlockCraftingAccelerator.name=Unità co-processore per 
 tile.appliedenergistics2.BlockCraftingUnit.name=Unità di fabbricazione
 tile.appliedenergistics2.BlockMolecularAssembler.name=Assemblatore moleculare
 
+// Stairs
+tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Scalini di quarzo certus intagliato
+tile.appliedenergistics2.FluixStairBlock.name=Scalini di fluix
+tile.appliedenergistics2.QuartzPillarStairBlock.name=Scalini di pilastro di quarzo certus
+tile.appliedenergistics2.QuartzStairBlock.name=Scalini di quarzo certus
+tile.appliedenergistics2.SkyStoneBlockStairBlock.name=Scalini di blocco di roccia del cielo
+tile.appliedenergistics2.SkyStoneBrickStairBlock.name=Scalini di roccia del cielo concia
+tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=Scalini di mattoni di roccia del cielo
+tile.appliedenergistics2.SkyStoneStairBlock.name=Scalini di roccia del cielo
+
 chat.appliedenergistics2.ChestCannotReadStorageCell=Baule ME non riesce a leggere cella di immagazzinaggio.
 chat.appliedenergistics2.SettingCleared=Impostazioni cancellate.
 chat.appliedenergistics2.OutOfRange=Wireless fuori portata.
 chat.appliedenergistics2.InvalidMachine=Macchina invalida.
 chat.appliedenergistics2.LoadedSettings=Impostazioni caricate con successo.
 chat.appliedenergistics2.DeviceNotPowered=Dispositivo a corto di energia.
+chat.appliedenergistics2.DeviceNotWirelessTerminal=Dispositivo non è un terminale wireless.
+chat.appliedenergistics2.DeviceNotLinked=Dispositivo non è collegato is not linked.
+chat.appliedenergistics2.StationCanNotBeLocated=Emittente non può essere trovato.
 chat.appliedenergistics2.MachineNotPowered=Macchina non alimentata.
 chat.appliedenergistics2.CommunicationError=Errore nel communicare col Sistema.
 chat.appliedenergistics2.SavedSettings=Impostazioni salvate con successo.
@@ -278,6 +291,9 @@ gui.tooltips.appliedenergistics2.EmitWhenCrafting=Emette pietrarossa mentre fabb
 gui.tooltips.appliedenergistics2.ReportInaccessibleItems=Riporta oggetti inaccessibili
 gui.tooltips.appliedenergistics2.ReportInaccessibleItemsYes=Si: gli oggetti che non possono essere estratti sono visibili.
 gui.tooltips.appliedenergistics2.ReportInaccessibleItemsNo=No: Solo oggetti estrabili sono visibili.
+gui.tooltips.appliedenergistics2.BlockPlacement=Piazzamento di blocco
+gui.tooltips.appliedenergistics2.BlockPlacementYes=I blocchi saranno piazzati come blocco.
+gui.tooltips.appliedenergistics2.BlockPlacementNo=I blocchi saranno fatti cadere come oggetti.
 
 gui.appliedenergistics2.units.appliedenergstics=AE
 gui.appliedenergistics2.units.buildcraft=Minecraft Joules
@@ -304,6 +320,7 @@ gui.appliedenergistics2.Red=Rosso
 gui.appliedenergistics2.Black=Nero
 gui.appliedenergistics2.Fluix=Fluix
 
+waila.appliedenergistics2.Crafting=Fabbricazione
 waila.appliedenergistics2.DeviceOnline=Dispositivo online
 waila.appliedenergistics2.DeviceOffline=Dispositivo offline
 waila.appliedenergistics2.DeviceMissingChannel=Al dispositivo manca il canale
