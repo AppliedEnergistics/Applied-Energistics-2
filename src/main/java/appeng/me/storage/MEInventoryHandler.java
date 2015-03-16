@@ -18,6 +18,7 @@
 
 package appeng.me.storage;
 
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
@@ -31,6 +32,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.util.prioitylist.DefaultPriorityList;
 import appeng.util.prioitylist.IPartitionList;
 
+
 public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
 
@@ -38,24 +40,78 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	final protected IMEMonitor<T> monitor;
 	final protected IMEInventoryHandler<T> internal;
 
-	public int myPriority = 0;
-	public IncludeExclude myWhitelist = IncludeExclude.WHITELIST;
-	public AccessRestriction myAccess = AccessRestriction.READ_WRITE;
-	public IPartitionList<T> myPartitionList = new DefaultPriorityList<T>();
+	private int myPriority;
+	private IncludeExclude myWhitelist;
+	private AccessRestriction myAccess;
+	private IPartitionList<T> myPartitionList;
 
-	public MEInventoryHandler(IMEInventory<T> i, StorageChannel channel) {
+	private AccessRestriction cachedAccessRestriction;
+	private boolean hasReadAccess;
+	private boolean hasWriteAccess;
+
+	public MEInventoryHandler( IMEInventory<T> i, StorageChannel channel )
+	{
 		this.channel = channel;
 
 		if ( i instanceof IMEInventoryHandler )
-			this.internal = (IMEInventoryHandler<T>) i;
+			this.internal = ( IMEInventoryHandler<T> ) i;
 		else
 			this.internal = new MEPassThrough<T>( i, channel );
 
-		this.monitor = this.internal instanceof IMEMonitor ? (IMEMonitor<T>) this.internal : null;
+		this.monitor = this.internal instanceof IMEMonitor ? ( IMEMonitor<T> ) this.internal : null;
+
+		this.setPriority( 0 );
+		this.setWhitelist( IncludeExclude.WHITELIST );
+		this.setBaseAccess( AccessRestriction.READ_WRITE );
+		this.setPartitionList( new DefaultPriorityList<T>() );
 	}
 
 	@Override
-	public T injectItems(T input, Actionable type, BaseActionSource src)
+	public int getPriority()
+	{
+		return this.myPriority;
+	}
+
+	public void setPriority( int myPriority )
+	{
+		this.myPriority = myPriority;
+	}
+
+	public IncludeExclude getWhitelist()
+	{
+		return this.myWhitelist;
+	}
+
+	public void setWhitelist( IncludeExclude myWhitelist )
+	{
+		this.myWhitelist = myWhitelist;
+	}
+
+	public AccessRestriction getBaseAccess()
+	{
+		return this.myAccess;
+	}
+
+	public void setBaseAccess( AccessRestriction myAccess )
+	{
+		this.myAccess = myAccess;
+		this.cachedAccessRestriction = this.myAccess.restrictPermissions( this.internal.getAccess() );
+		this.hasReadAccess = this.getAccess().hasPermission( AccessRestriction.READ );
+		this.hasWriteAccess = this.getAccess().hasPermission( AccessRestriction.WRITE );
+	}
+
+	public IPartitionList<T> getPartitionList()
+	{
+		return this.myPartitionList;
+	}
+
+	public void setPartitionList( IPartitionList<T> myPartitionList )
+	{
+		this.myPartitionList = myPartitionList;
+	}
+
+	@Override
+	public T injectItems( T input, Actionable type, BaseActionSource src )
 	{
 		if ( !this.canAccept( input ) )
 			return input;
@@ -64,18 +120,18 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	}
 
 	@Override
-	public T extractItems(T request, Actionable type, BaseActionSource src)
+	public T extractItems( T request, Actionable type, BaseActionSource src )
 	{
-		if ( !this.getAccess().hasPermission( AccessRestriction.READ ) )
+		if ( !hasReadAccess )
 			return null;
 
 		return this.internal.extractItems( request, type, src );
 	}
 
 	@Override
-	public IItemList<T> getAvailableItems(IItemList<T> out)
+	public IItemList<T> getAvailableItems( IItemList<T> out )
 	{
-		if ( !this.getAccess().hasPermission( AccessRestriction.READ ) )
+		if ( !hasReadAccess )
 			return out;
 
 		return this.internal.getAvailableItems( out );
@@ -90,11 +146,11 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	@Override
 	public AccessRestriction getAccess()
 	{
-		return this.myAccess.restrictPermissions( this.internal.getAccess() );
+		return this.cachedAccessRestriction;
 	}
 
 	@Override
-	public boolean isPrioritized(T input)
+	public boolean isPrioritized( T input )
 	{
 		if ( this.myWhitelist == IncludeExclude.WHITELIST )
 			return this.myPartitionList.isListed( input ) || this.internal.isPrioritized( input );
@@ -102,9 +158,9 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	}
 
 	@Override
-	public boolean canAccept(T input)
+	public boolean canAccept( T input )
 	{
-		if ( !this.getAccess().hasPermission( AccessRestriction.WRITE ) )
+		if ( !hasWriteAccess )
 			return false;
 
 		if ( this.myWhitelist == IncludeExclude.BLACKLIST && this.myPartitionList.isListed( input ) )
@@ -112,12 +168,6 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 		if ( this.myPartitionList.isEmpty() || this.myWhitelist == IncludeExclude.BLACKLIST )
 			return this.internal.canAccept( input );
 		return this.myPartitionList.isListed( input ) && this.internal.canAccept( input );
-	}
-
-	@Override
-	public int getPriority()
-	{
-		return this.myPriority;
 	}
 
 	@Override
@@ -132,7 +182,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	}
 
 	@Override
-	public boolean validForPass(int i)
+	public boolean validForPass( int i )
 	{
 		return true;
 	}

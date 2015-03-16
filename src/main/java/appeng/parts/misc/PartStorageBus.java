@@ -319,9 +319,9 @@ public class PartStorageBus
 
 					this.handler = new MEInventoryHandler( inv, StorageChannel.ITEMS );
 
-					this.handler.myAccess = ( AccessRestriction ) this.getConfigManager().getSetting( Settings.ACCESS );
-					this.handler.myWhitelist = this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST;
-					this.handler.myPriority = this.priority;
+					this.handler.setBaseAccess( ( AccessRestriction ) this.getConfigManager().getSetting( Settings.ACCESS ) );;
+					this.handler.setWhitelist( this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
+					this.handler.setPriority( this.priority );
 
 					IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
 
@@ -334,9 +334,9 @@ public class PartStorageBus
 					}
 
 					if ( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-						this.handler.myPartitionList = new FuzzyPriorityList( priorityList, ( FuzzyMode ) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) );
+						this.handler.setPartitionList( new FuzzyPriorityList( priorityList, ( FuzzyMode ) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
 					else
-						this.handler.myPartitionList = new PrecisePriorityList( priorityList );
+						this.handler.setPartitionList ( new PrecisePriorityList( priorityList ));
 
 					if ( inv instanceof IMEMonitor )
 						( ( IMEMonitor ) inv ).addListener( this, this.handler );
