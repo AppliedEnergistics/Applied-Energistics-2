@@ -22,8 +22,6 @@ package appeng.core;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Stopwatch;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -37,6 +35,8 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
+import com.google.common.base.Stopwatch;
+
 import appeng.core.crash.CrashEnhancement;
 import appeng.core.crash.CrashInfo;
 import appeng.core.features.AEFeature;
@@ -47,6 +47,7 @@ import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.server.AECommand;
 import appeng.services.VersionChecker;
+import appeng.services.version.VersionCheckerConfig;
 import appeng.util.Platform;
 
 
@@ -70,7 +71,7 @@ public class AppEng
 
 	private final IMCHandler imcHandler;
 
-	private String configPath;
+	private File configDirectory;
 
 	public AppEng()
 	{
@@ -81,9 +82,9 @@ public class AppEng
 		FMLCommonHandler.instance().registerCrashCallable( new CrashEnhancement( CrashInfo.MOD_VERSION ) );
 	}
 
-	public String getConfigPath()
+	public final File getConfigDirectory()
 	{
-		return this.configPath;
+		return this.configDirectory;
 	}
 
 	public boolean isIntegrationEnabled( IntegrationType integrationName )
@@ -104,11 +105,16 @@ public class AppEng
 			CommonHelper.proxy.missingCoreMod();
 		}
 
-		Stopwatch star = Stopwatch.createStarted();
-		this.configPath = event.getModConfigurationDirectory().getPath() + File.separator + "AppliedEnergistics2" + File.separator;
+		Stopwatch watch = Stopwatch.createStarted();
+		this.configDirectory = new File(event.getModConfigurationDirectory().getPath(), "AppliedEnergistics2");
 
-		AEConfig.instance = new AEConfig( this.configPath );
-		FacadeConfig.instance = new FacadeConfig( this.configPath );
+		final File configFile = new File( this.configDirectory, "AppliedEnergistics2.cfg");
+		final File facadeFile = new File( this.configDirectory, "Facades.cfg" );
+		final File versionFile = new File( this.configDirectory, "VersionChecker.cfg" );
+
+		AEConfig.instance = new AEConfig( configFile );
+		FacadeConfig.instance = new FacadeConfig( facadeFile );
+		final VersionCheckerConfig versionCheckerConfig = new VersionCheckerConfig( versionFile );
 
 		AELog.info( "Pre Initialization ( started )" );
 
@@ -121,19 +127,23 @@ public class AppEng
 
 		Registration.INSTANCE.preInitialize( event );
 
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.VersionChecker ) )
+		if ( versionCheckerConfig.isEnabled() )
 		{
-			AELog.info( "Starting VersionChecker" );
-			this.startService( "AE2 VersionChecker", new Thread( new VersionChecker() ) );
+			final VersionChecker versionChecker = new VersionChecker( versionCheckerConfig );
+			final Thread versionCheckerThread = new Thread( versionChecker );
+
+			this.startService( "AE2 VersionChecker", versionCheckerThread );
 		}
 
-		AELog.info( "Pre Initialization ( ended after " + star.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
+		AELog.info( "Pre Initialization ( ended after " + watch.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}
 
 	private void startService( String serviceName, Thread thread )
 	{
 		thread.setName( serviceName );
 		thread.setPriority( Thread.MIN_PRIORITY );
+
+		AELog.info( "Starting " + serviceName );
 		thread.start();
 	}
 

@@ -32,8 +32,8 @@ import net.minecraft.world.chunk.Chunk;
 
 import appeng.api.AEApi;
 import appeng.api.util.DimensionalCoord;
-import appeng.services.helpers.CompassReader;
-import appeng.services.helpers.ICompassCallback;
+import appeng.services.compass.CompassReader;
+import appeng.services.compass.ICompassCallback;
 
 public class CompassService implements ThreadFactory
 {

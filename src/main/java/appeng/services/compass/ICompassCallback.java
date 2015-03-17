@@ -16,17 +16,19 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.services.helpers;
+package appeng.services.compass;
 
-public class CompassException extends RuntimeException
+public interface ICompassCallback
 {
 
-	private static final long serialVersionUID = 8825268683203860877L;
-
-	public final Throwable inner;
-
-	public CompassException(Throwable t) {
-		this.inner = t;
-	}
+	/**
+	 * Called from another thread.
+	 *
+	 * @param hasResult true if found a target
+	 * @param spin true if should spin
+	 * @param radians radians
+	 * @param dist distance
+	 */
+	public void calculatedDirection(boolean hasResult, boolean spin, double radians, double dist);
 
 }

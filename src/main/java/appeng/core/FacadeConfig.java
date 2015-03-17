@@ -35,8 +35,8 @@ public class FacadeConfig extends Configuration
 	public static FacadeConfig instance;
 	final Pattern replacementPattern;
 
-	public FacadeConfig(String path) {
-		super( new File( path + "Facades.cfg" ) );
+	public FacadeConfig( File facadeFile ) {
+		super( facadeFile );
 		this.replacementPattern = Pattern.compile( "[^a-zA-Z0-9]" );
 	}
 

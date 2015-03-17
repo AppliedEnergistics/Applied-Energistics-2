@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Tests for {@link UUIDMatcher}
  */
-public class UUIDMatcherTest
+public final class UUIDMatcherTest
 {
 	private static final String IS_UUID = "03ba29a1-d6bd-32ba-90b2-375e4d65abc9";
 	private static final String NO_UUID = "no";

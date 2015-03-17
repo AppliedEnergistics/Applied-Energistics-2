@@ -79,6 +79,7 @@ jar {
 minecraft {
     version = config.minecraft_version + "-" + config.forge_version
 
+    replaceIn "AEConfig.java"
     replace "@version@", project.version
     replace "@aechannel@", config.aechannel
 

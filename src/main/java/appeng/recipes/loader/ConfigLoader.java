@@ -18,6 +18,7 @@
 
 package appeng.recipes.loader;
 
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,19 +26,21 @@ import java.io.InputStreamReader;
 
 import appeng.api.recipes.IRecipeLoader;
 
-public class ConfigLoader implements IRecipeLoader
+
+public final class ConfigLoader implements IRecipeLoader
 {
+	private final File rootDirectory;
 
-	private final String rootPath;
-
-	public ConfigLoader(String s) {
-		this.rootPath = s;
+	public ConfigLoader( File rootDirectory )
+	{
+		this.rootDirectory = rootDirectory;
 	}
 
 	@Override
-	public BufferedReader getFile(String s) throws Exception
+	public BufferedReader getFile( String s ) throws Exception
 	{
-		File f = new File( this.rootPath + s );
+		final File f = new File( this.rootDirectory, s );
+
 		return new BufferedReader( new InputStreamReader( new FileInputStream( f ), "UTF-8" ) );
 	}
 }
