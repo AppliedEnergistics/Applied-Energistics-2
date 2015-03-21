@@ -27,6 +27,7 @@ import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.features.ILocatable;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
@@ -76,12 +77,12 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 		this.myPlayer = ep;
 		this.wth = wh;
 
-		Object obj = null;
+		ILocatable obj = null;
 
 		try
 		{
 			long encKey = Long.parseLong( this.encryptionKey );
-			obj = AEApi.instance().registries().locatable().findLocatableBySerial( encKey );
+			obj = AEApi.instance().registries().locatable().getLocatableBy( encKey );
 		}
 		catch (NumberFormatException err)
 		{
