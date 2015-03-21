@@ -467,6 +467,7 @@ commands.ae2.ChunkLoggerOn=Chunk Logging is now on
 commands.ae2.ChunkLoggerOff=Chunk Logging is now off
 commands.ae2.Supporters=Displays a list of AE2 Supporters
 
+// Achievements
 achievement.ae2.Compass=Meteorite Hunter
 achievement.ae2.Compass.desc=Craft a Meteorite Compass
 achievement.ae2.Presses=Unknown Technology
@@ -494,13 +495,13 @@ achievement.ae2.CrystalGrowthAccelerator.desc=Craft a Crystal Growth Accelerator
 achievement.ae2.GlassCable=Fluix Energy Connection
 achievement.ae2.GlassCable.desc=Craft ME Glass Cable
 achievement.ae2.Networking1=Network Apprentice
-achievement.ae2.Networking1.desc=Reach 8 channel using devices on a network.
+achievement.ae2.Networking1.desc=Reach 8 channels using devices on a network.
 achievement.ae2.Controller=Networking Switchboard
 achievement.ae2.Controller.desc=Craft a Controller
 achievement.ae2.Networking2=Network Engineer
-achievement.ae2.Networking2.desc=Reach 128 channel using devices on a network.
+achievement.ae2.Networking2.desc=Reach 128 channels using devices on a network.
 achievement.ae2.Networking3=Network Administrator
-achievement.ae2.Networking3.desc=Reach 2048 channel using devices on a network.
+achievement.ae2.Networking3.desc=Reach 2048 channels using devices on a network.
 achievement.ae2.P2P=Point to Point Networking
 achievement.ae2.P2P.desc=Craft a P2P Tunnel
 achievement.ae2.Recursive=Recursive Networking
