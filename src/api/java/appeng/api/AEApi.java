@@ -24,7 +24,9 @@
 package appeng.api;
 
 
-import appeng.api.exceptions.CouldNotAccessCoreAPI;
+import java.lang.reflect.Field;
+
+import appeng.api.exceptions.CoreInaccessibleException;
 
 
 /**
@@ -35,34 +37,42 @@ import appeng.api.exceptions.CouldNotAccessCoreAPI;
 public enum AEApi
 {
 	;
-	private static final String CORE_API_PATH = "appeng.core.Api";
-	private static final String API_INSTANCE_NAME = "INSTANCE";
 
-	private static IAppEngApi instance = null;
+	private static final String CORE_API_FQN = "appeng.core.Api";
+	private static final String CORE_API_FIELD = "INSTANCE";
+	private static final IAppEngApi HELD_API;
+
+	static
+	{
+		try
+		{
+			final Class<?> apiClass = Class.forName( CORE_API_FQN );
+			final Field apiField = apiClass.getField( CORE_API_FIELD );
+
+			HELD_API = (IAppEngApi) apiField.get( apiClass );
+		}
+		catch ( ClassNotFoundException e )
+		{
+			throw new CoreInaccessibleException( "AE2 API tried to access the " + CORE_API_FQN + " class, without it being declared."  );
+		}
+		catch ( NoSuchFieldException e )
+		{
+			throw new CoreInaccessibleException( "AE2 API tried to access the " + CORE_API_FIELD + " field in " + CORE_API_FQN + " without it being declared." );
+		}
+		catch ( IllegalAccessException e )
+		{
+			throw new CoreInaccessibleException( "AE2 API tried to access the " + CORE_API_FIELD + " field in " + CORE_API_FQN + " without enough access permissions.");
+		}
+	}
 
 	/**
 	 * API Entry Point.
 	 *
 	 * @return the {@link IAppEngApi}
-	 *
-	 * @throws CouldNotAccessCoreAPI if the INSTANCE could not be retrieved
 	 */
 	public static IAppEngApi instance()
-
 	{
-		if ( instance == null )
-		{
-			try
-			{
-				Class<?> c = Class.forName( CORE_API_PATH );
-				instance = (IAppEngApi) c.getField( API_INSTANCE_NAME ).get( c );
-			}
-			catch ( Throwable e )
-			{
-				throw new CouldNotAccessCoreAPI( "Either core API was not in " + CORE_API_PATH + " or " + API_INSTANCE_NAME + " was not accessible" );
-			}
-		}
-
-		return instance;
+		return HELD_API;
 	}
+
 }
