@@ -18,6 +18,7 @@
 
 package appeng.tile.storage;
 
+
 import java.util.ArrayList;
 
 import net.minecraft.inventory.IInventory;
@@ -67,51 +68,67 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.WrapperInventoryRange;
 
+
 public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IConfigManagerHost, IGridTickable
 {
+	private static final int INPUT_SLOT_INDEX_TOP_LEFT = 0;
+	private static final int INPUT_SLOT_INDEX_TOP_RIGHT = 1;
+	private static final int INPUT_SLOT_INDEX_CENTER_LEFT = 2;
+	private static final int INPUT_SLOT_INDEX_CENTER_RIGHT = 3;
+	private static final int INPUT_SLOT_INDEX_BOTTOM_LEFT = 4;
+	private static final int INPUT_SLOT_INDEX_BOTTOM_RIGHT = 5;
 
-	final ConfigManager cm = new ConfigManager( this );
+	private static final int OUTPUT_SLOT_INDEX_TOP_LEFT = 6;
+	private static final int OUTPUT_SLOT_INDEX_TOP_RIGHT = 7;
+	private static final int OUTPUT_SLOT_INDEX_CENTER_LEFT = 8;
+	private static final int OUTPUT_SLOT_INDEX_CENTER_RIGHT = 9;
+	private static final int OUTPUT_SLOT_INDEX_BOTTOM_LEFT = 10;
+	private static final int OUTPUT_SLOT_INDEX_BOTTOM_RIGHT = 11;
 
-	final int[] input = { 0, 1, 2, 3, 4, 5 };
-	final int[] output = { 6, 7, 8, 9, 10, 11 };
+	private final ConfigManager manager = new ConfigManager( this );
 
-	final int[] outputSlots = { 6, 7, 8, 9, 10, 11 };
+	private final int[] input = { INPUT_SLOT_INDEX_TOP_LEFT, INPUT_SLOT_INDEX_TOP_RIGHT, INPUT_SLOT_INDEX_CENTER_LEFT, INPUT_SLOT_INDEX_CENTER_RIGHT, INPUT_SLOT_INDEX_BOTTOM_LEFT, INPUT_SLOT_INDEX_BOTTOM_RIGHT };
+	private final int[] output = { OUTPUT_SLOT_INDEX_TOP_LEFT, OUTPUT_SLOT_INDEX_TOP_RIGHT, OUTPUT_SLOT_INDEX_CENTER_LEFT, OUTPUT_SLOT_INDEX_CENTER_RIGHT, OUTPUT_SLOT_INDEX_BOTTOM_LEFT, OUTPUT_SLOT_INDEX_BOTTOM_RIGHT };
 
-	final AppEngInternalInventory cells = new AppEngInternalInventory( this, 12 );
-	final UpgradeInventory upgrades = new UpgradeInventory( AEApi.instance().blocks().blockIOPort.block(), this, 3 );
+	private final AppEngInternalInventory cells = new AppEngInternalInventory( this, 12 );
+	private final UpgradeInventory upgrades = new UpgradeInventory( AEApi.instance().blocks().blockIOPort.block(), this, 3 );
 
-	final BaseActionSource mySrc = new MachineSource( this );
+	private final BaseActionSource mySrc = new MachineSource( this );
 
-	YesNo lastRedstoneState = YesNo.UNDECIDED;
+	private YesNo lastRedstoneState = YesNo.UNDECIDED;
+	private ItemStack currentCell;
+	private IMEInventory<IAEFluidStack> cachedFluid;
+	private IMEInventory<IAEItemStack> cachedItem;
 
-	@TileEvent(TileEventType.WORLD_NBT_WRITE)
-	public void writeToNBT_TileIOPort(NBTTagCompound data)
+	public TileIOPort()
 	{
-		this.cm.writeToNBT( data );
+		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
+		this.manager.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
+		this.manager.registerSetting( Settings.FULLNESS_MODE, FullnessMode.EMPTY );
+		this.manager.registerSetting( Settings.OPERATION_MODE, OperationMode.EMPTY );
+	}
+
+	@TileEvent( TileEventType.WORLD_NBT_WRITE )
+	public void writeToNBT_TileIOPort( NBTTagCompound data )
+	{
+		this.manager.writeToNBT( data );
 		this.cells.writeToNBT( data, "cells" );
 		this.upgrades.writeToNBT( data, "upgrades" );
 		data.setInteger( "lastRedstoneState", this.lastRedstoneState.ordinal() );
 	}
 
-	@TileEvent(TileEventType.WORLD_NBT_READ)
-	public void readFromNBT_TileIOPort(NBTTagCompound data)
+	@TileEvent( TileEventType.WORLD_NBT_READ )
+	public void readFromNBT_TileIOPort( NBTTagCompound data )
 	{
-		this.cm.readFromNBT( data );
+		this.manager.readFromNBT( data );
 		this.cells.readFromNBT( data, "cells" );
 		this.upgrades.readFromNBT( data, "upgrades" );
 		if ( data.hasKey( "lastRedstoneState" ) )
 			this.lastRedstoneState = YesNo.values()[data.getInteger( "lastRedstoneState" )];
 	}
 
-	public TileIOPort() {
-		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
-		this.cm.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
-		this.cm.registerSetting( Settings.FULLNESS_MODE, FullnessMode.EMPTY );
-		this.cm.registerSetting( Settings.OPERATION_MODE, OperationMode.EMPTY );
-	}
-
 	@Override
-	public AECableType getCableConnectionType(ForgeDirection dir)
+	public AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.SMART;
 	}
@@ -120,21 +137,6 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	public DimensionalCoord getLocation()
 	{
 		return new DimensionalCoord( this );
-	}
-
-	@Override
-	public IInventory getInternalInventory()
-	{
-		return this.cells;
-	}
-
-	@Override
-	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added)
-	{
-		if ( this.cells == inv )
-		{
-			this.updateTask();
-		}
 	}
 
 	private void updateTask()
@@ -146,7 +148,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 			else
 				this.gridProxy.getTick().sleepDevice( this.gridProxy.getNode() );
 		}
-		catch (GridAccessException e)
+		catch ( GridAccessException e )
 		{
 			// :P
 		}
@@ -175,29 +177,20 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		if ( this.getInstalledUpgrades( Upgrades.REDSTONE ) == 0 )
 			return true;
 
-		RedstoneMode rs = (RedstoneMode) this.cm.getSetting( Settings.REDSTONE_CONTROLLED );
+		RedstoneMode rs = (RedstoneMode) this.manager.getSetting( Settings.REDSTONE_CONTROLLED );
 		if ( rs == RedstoneMode.HIGH_SIGNAL )
 			return this.getRedstoneState();
 		return !this.getRedstoneState();
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide(ForgeDirection d)
-	{
-		if ( d == ForgeDirection.UP || d == ForgeDirection.DOWN )
-			return this.input;
-
-		return this.output;
-	}
-
-	@Override
 	public IConfigManager getConfigManager()
 	{
-		return this.cm;
+		return this.manager;
 	}
 
 	@Override
-	public IInventory getInventoryByName(String name)
+	public IInventory getInventoryByName( String name )
 	{
 		if ( name.equals( "upgrades" ) )
 			return this.upgrades;
@@ -209,13 +202,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	}
 
 	@Override
-	public int getInstalledUpgrades(Upgrades u)
-	{
-		return this.upgrades.getInstalledUpgrades( u );
-	}
-
-	@Override
-	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
+	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
 	{
 		this.updateTask();
 	}
@@ -224,7 +211,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	{
 		if ( this.isEnabled() )
 		{
-			for (int x = 0; x < 6; x++)
+			for ( int x = 0; x < 6; x++ )
 				if ( this.cells.getStackInSlot( x ) != null )
 					return true;
 		}
@@ -233,30 +220,82 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	}
 
 	@Override
-	public TickingRequest getTickingRequest(IGridNode node)
+	public boolean canInsertItem( int slotIndex, ItemStack insertingItem, int side )
+	{
+		for ( int inputSlotIndex : this.input )
+		{
+			if ( inputSlotIndex == slotIndex )
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean canExtractItem( int slotIndex, ItemStack extractedItem, int side )
+	{
+		for ( int outputSlotIndex : this.output )
+		{
+			if ( outputSlotIndex == slotIndex )
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public IInventory getInternalInventory()
+	{
+		return this.cells;
+	}
+
+	@Override
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
+	{
+		if ( this.cells == inv )
+		{
+			this.updateTask();
+		}
+	}
+
+	@Override
+	public int[] getAccessibleSlotsBySide( ForgeDirection d )
+	{
+		if ( d == ForgeDirection.UP || d == ForgeDirection.DOWN )
+			return this.input;
+
+		return this.output;
+	}
+
+	@Override
+	public TickingRequest getTickingRequest( IGridNode node )
 	{
 		return new TickingRequest( TickRates.IOPort.min, TickRates.IOPort.max, this.hasWork(), false );
 	}
 
 	@Override
-	public TickRateModulation tickingRequest(IGridNode node, int TicksSinceLastCall)
+	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
 	{
 		if ( !this.gridProxy.isActive() )
 			return TickRateModulation.IDLE;
 
 		long ItemsToMove = 256;
 
-		switch (this.getInstalledUpgrades( Upgrades.SPEED ))
+		switch ( this.getInstalledUpgrades( Upgrades.SPEED ) )
 		{
-		case 1:
-			ItemsToMove *= 2;
-			break;
-		case 2:
-			ItemsToMove *= 4;
-			break;
-		case 3:
-			ItemsToMove *= 8;
-			break;
+			case 1:
+				ItemsToMove *= 2;
+				break;
+			case 2:
+				ItemsToMove *= 4;
+				break;
+			case 3:
+				ItemsToMove *= 8;
+				break;
 		}
 
 		try
@@ -264,7 +303,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 			IMEInventory<IAEItemStack> itemNet = this.gridProxy.getStorage().getItemInventory();
 			IMEInventory<IAEFluidStack> fluidNet = this.gridProxy.getStorage().getFluidInventory();
 			IEnergySource energy = this.gridProxy.getEnergy();
-			for (int x = 0; x < 6; x++)
+			for ( int x = 0; x < 6; x++ )
 			{
 				ItemStack is = this.cells.getStackInSlot( x );
 				if ( is != null )
@@ -274,7 +313,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 						IMEInventory<IAEItemStack> itemInv = this.getInv( is, StorageChannel.ITEMS );
 						IMEInventory<IAEFluidStack> fluidInv = this.getInv( is, StorageChannel.FLUIDS );
 
-						if ( this.cm.getSetting( Settings.OPERATION_MODE ) == OperationMode.EMPTY )
+						if ( this.manager.getSetting( Settings.OPERATION_MODE ) == OperationMode.EMPTY )
 						{
 							if ( itemInv != null )
 								ItemsToMove = this.transferContents( energy, itemInv, itemNet, ItemsToMove, StorageChannel.ITEMS );
@@ -298,9 +337,8 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 						return TickRateModulation.URGENT;
 				}
 			}
-
 		}
-		catch (GridAccessException e)
+		catch ( GridAccessException e )
 		{
 			return TickRateModulation.IDLE;
 		}
@@ -309,49 +347,13 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		return TickRateModulation.SLEEP;
 	}
 
-	private boolean shouldMove(IMEInventory<IAEItemStack> itemInv, IMEInventory<IAEFluidStack> fluidInv)
+	@Override
+	public int getInstalledUpgrades( Upgrades u )
 	{
-		FullnessMode fm = (FullnessMode) this.cm.getSetting( Settings.FULLNESS_MODE );
-
-		if ( itemInv != null && fluidInv != null )
-			return this.matches( fm, itemInv ) && this.matches( fm, fluidInv );
-		else if ( itemInv != null )
-			return this.matches( fm, itemInv );
-		else if ( fluidInv != null )
-			return this.matches( fm, fluidInv );
-
-		return true;
+		return this.upgrades.getInstalledUpgrades( u );
 	}
 
-	private boolean matches(FullnessMode fm, IMEInventory src)
-	{
-		if ( fm == FullnessMode.HALF )
-			return true;
-
-		IItemList<? extends IAEStack> myList;
-
-		if ( src instanceof IMEMonitor )
-			myList = ((IMEMonitor) src).getStorageList();
-		else
-			myList = src.getAvailableItems( src.getChannel().createList() );
-
-		if ( fm == FullnessMode.EMPTY )
-			return myList.isEmpty();
-
-		IAEStack test = myList.getFirstItem();
-		if ( test != null )
-		{
-			test.setStackSize( 1 );
-			return src.injectItems( test, Actionable.SIMULATE, this.mySrc ) != null;
-		}
-		return false;
-	}
-
-	ItemStack currentCell;
-	IMEInventory<IAEFluidStack> cachedFluid;
-	IMEInventory<IAEItemStack> cachedItem;
-
-	private IMEInventory getInv(ItemStack is, StorageChannel chan)
+	private IMEInventory getInv( ItemStack is, StorageChannel chan )
 	{
 		if ( this.currentCell != is )
 		{
@@ -366,11 +368,11 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		return this.cachedFluid;
 	}
 
-	private long transferContents(IEnergySource energy, IMEInventory src, IMEInventory destination, long itemsToMove, StorageChannel chan)
+	private long transferContents( IEnergySource energy, IMEInventory src, IMEInventory destination, long itemsToMove, StorageChannel chan )
 	{
 		IItemList<? extends IAEStack> myList;
 		if ( src instanceof IMEMonitor )
-			myList = ((IMEMonitor) src).getStorageList();
+			myList = ( (IMEMonitor) src ).getStorageList();
 		else
 			myList = src.getAvailableItems( src.getChannel().createList() );
 
@@ -380,7 +382,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		{
 			didStuff = false;
 
-			for (IAEStack s : myList)
+			for ( IAEStack s : myList )
 			{
 				long totalStackSize = s.getStackSize();
 				if ( totalStackSize > 0 )
@@ -422,14 +424,28 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 				}
 			}
 		}
-		while (itemsToMove > 0 && didStuff);
+		while ( itemsToMove > 0 && didStuff );
 
 		return itemsToMove;
 	}
 
-	private boolean moveSlot(int x)
+	private boolean shouldMove( IMEInventory<IAEItemStack> itemInv, IMEInventory<IAEFluidStack> fluidInv )
 	{
-		WrapperInventoryRange wir = new WrapperInventoryRange( this, this.outputSlots, true );
+		FullnessMode fm = (FullnessMode) this.manager.getSetting( Settings.FULLNESS_MODE );
+
+		if ( itemInv != null && fluidInv != null )
+			return this.matches( fm, itemInv ) && this.matches( fm, fluidInv );
+		else if ( itemInv != null )
+			return this.matches( fm, itemInv );
+		else if ( fluidInv != null )
+			return this.matches( fm, fluidInv );
+
+		return true;
+	}
+
+	private boolean moveSlot( int x )
+	{
+		WrapperInventoryRange wir = new WrapperInventoryRange( this, this.output, true );
 		ItemStack result = InventoryAdaptor.getAdaptor( wir, ForgeDirection.UNKNOWN ).addItems( this.getStackInSlot( x ) );
 
 		if ( result == null )
@@ -441,13 +457,37 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		return false;
 	}
 
+	private boolean matches( FullnessMode fm, IMEInventory src )
+	{
+		if ( fm == FullnessMode.HALF )
+			return true;
+
+		IItemList<? extends IAEStack> myList;
+
+		if ( src instanceof IMEMonitor )
+			myList = ( (IMEMonitor) src ).getStorageList();
+		else
+			myList = src.getAvailableItems( src.getChannel().createList() );
+
+		if ( fm == FullnessMode.EMPTY )
+			return myList.isEmpty();
+
+		IAEStack test = myList.getFirstItem();
+		if ( test != null )
+		{
+			test.setStackSize( 1 );
+			return src.injectItems( test, Actionable.SIMULATE, this.mySrc ) != null;
+		}
+		return false;
+	}
+
 	/**
 	 * Adds the items in the upgrade slots to the drop list.
 	 *
-	 * @param w world
-	 * @param x x pos of tile entity
-	 * @param y y pos of tile entity
-	 * @param z z pos of tile entity
+	 * @param w     world
+	 * @param x     x pos of tile entity
+	 * @param y     y pos of tile entity
+	 * @param z     z pos of tile entity
 	 * @param drops drops of tile entity
 	 */
 	@Override
@@ -455,9 +495,9 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	{
 		super.getDrops( w, x, y, z, drops );
 
-		for (int upgradeIndex = 0; upgradeIndex < this.upgrades.getSizeInventory(); upgradeIndex++)
+		for ( int upgradeIndex = 0; upgradeIndex < this.upgrades.getSizeInventory(); upgradeIndex++ )
 		{
-			ItemStack stackInSlot = this.upgrades.getStackInSlot(upgradeIndex);
+			ItemStack stackInSlot = this.upgrades.getStackInSlot( upgradeIndex );
 
 			if ( stackInSlot != null )
 			{

@@ -219,16 +219,16 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable
 	}
 
 	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j)
+	public boolean canExtractItem(int slotIndex, ItemStack extractedItem, int side )
 	{
-		if ( Platform.isChargeable( itemstack ) )
+		if ( Platform.isChargeable( extractedItem ) )
 		{
-			IAEItemPowerStorage ips = (IAEItemPowerStorage) itemstack.getItem();
-			if ( ips.getAECurrentPower( itemstack ) >= ips.getAEMaxPower( itemstack ) )
+			IAEItemPowerStorage ips = (IAEItemPowerStorage) extractedItem.getItem();
+			if ( ips.getAECurrentPower( extractedItem ) >= ips.getAEMaxPower( extractedItem ) )
 				return true;
 		}
 
-		return AEApi.instance().materials().materialCertusQuartzCrystalCharged.sameAsStack( itemstack );
+		return AEApi.instance().materials().materialCertusQuartzCrystalCharged.sameAsStack( extractedItem );
 	}
 
 	public void activate(EntityPlayer player)
