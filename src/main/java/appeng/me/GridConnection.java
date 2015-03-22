@@ -77,8 +77,12 @@ public class GridConnection implements IGridConnection, IPathItem
 			throw new GridException( "Connection Forged Between null entities." );
 
 		if ( a.hasConnection( b ) || b.hasConnection( a ) )
-			throw new GridException( "Connection already exists." );
+		{
+			final String aCoords = a.getGridBlock().getLocation().toString();
+			final String bCoords = b.getGridBlock().getLocation().toString();
 
+			throw new GridException( String.format( "Connection already exists between node at [%s] and node at [%s].", aCoords, bCoords ) );
+		}
 		this.sideA = a;
 		this.fromAtoB = fromAtoB;
 		this.sideB = b;
