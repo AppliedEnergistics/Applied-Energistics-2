@@ -31,9 +31,8 @@ public class FlippableIcon implements IIcon
 
 	public FlippableIcon( IIcon o )
 	{
-
 		if( o == null )
-			throw new RuntimeException( "Cannot create a wrapper icon with a null icon." );
+			throw new IllegalArgumentException( "Cannot create a wrapper icon with a null icon." );
 
 		this.original = o;
 		this.flip_u = false;

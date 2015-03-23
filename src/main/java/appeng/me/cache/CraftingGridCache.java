@@ -501,7 +501,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	{
 		if( world == null || grid == null || actionSrc == null || slotItem == null )
 		{
-			throw new RuntimeException( "Invalid Crafting Job Request" );
+			throw new IllegalArgumentException( "Invalid Crafting Job Request" );
 		}
 
 		CraftingJob job = new CraftingJob( world, grid, actionSrc, slotItem, cb );

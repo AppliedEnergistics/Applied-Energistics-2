@@ -264,7 +264,7 @@ public class CraftingTreeProcess
 			}
 		}
 
-		throw new RuntimeException( "Crafting Tree construction failed." );
+		throw new IllegalStateException( "Crafting Tree construction failed." );
 	}
 
 	public void setSimulate()

@@ -25,6 +25,7 @@ package appeng.api.config;
 
 
 import java.util.EnumSet;
+import javax.annotation.Nonnull;
 
 
 public enum Settings
@@ -55,16 +56,19 @@ public enum Settings
 
 	STORAGE_FILTER( EnumSet.allOf( StorageFilter.class ) ), PLACE_BLOCK( EnumSet.of( YesNo.YES, YesNo.NO ) );
 
-	private final EnumSet values;
+	private final EnumSet<? extends Enum<?>> values;
 
-	Settings( EnumSet set )
+	Settings( @Nonnull EnumSet<? extends Enum<?>> possibleOptions )
 	{
-		if( set == null || set.isEmpty() )
-			throw new RuntimeException( "Invalid configuration." );
-		this.values = set;
+		if ( possibleOptions.isEmpty() )
+		{
+			throw new IllegalArgumentException( "Tried to instantiate an empty setting." );
+		}
+
+		this.values = possibleOptions;
 	}
 
-	public EnumSet getPossibleValues()
+	public EnumSet<? extends Enum<?>> getPossibleValues()
 	{
 		return this.values;
 	}

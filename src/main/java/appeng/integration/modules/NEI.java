@@ -146,7 +146,7 @@ public class NEI extends BaseModule implements INEI, IContainerTooltipHandler
 		}
 		catch( Throwable t )
 		{
-			throw new RuntimeException( "Invalid version of NEI, please update", t );
+			throw new IllegalStateException( "Invalid version of NEI, please update", t );
 		}
 	}
 

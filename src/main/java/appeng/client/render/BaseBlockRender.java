@@ -325,9 +325,6 @@ public class BaseBlockRender
 
 	public void renderInvBlock( EnumSet<ForgeDirection> sides, AEBaseBlock block, ItemStack item, Tessellator tess, int color, RenderBlocks renderer )
 	{
-		if( Platform.isDrawing( tess ) )
-			tess.draw();
-
 		int meta = 0;
 		if( block != null && block.hasSubtypes() && item != null )
 			meta = item.getItemDamage();

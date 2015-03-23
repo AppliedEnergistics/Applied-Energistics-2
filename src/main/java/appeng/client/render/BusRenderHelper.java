@@ -472,7 +472,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 			return block;
 		}
 
-		throw new MissingDefinition( "Tried to access the multi part block." );
+		throw new MissingDefinition( "Tried to access the multi part block without it being defined." );
 	}
 
 	public void prepareBounds( RenderBlocks renderer )

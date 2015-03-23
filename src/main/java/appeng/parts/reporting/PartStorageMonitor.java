@@ -229,8 +229,6 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 			this.dspList = GLAllocation.generateDisplayLists( 1 );
 
 		Tessellator tess = Tessellator.instance;
-		if( Platform.isDrawing( tess ) )
-			return;
 
 		if( ( this.clientFlags & ( this.POWERED_FLAG | this.CHANNEL_FLAG ) ) != ( this.POWERED_FLAG | this.CHANNEL_FLAG ) )
 			return;

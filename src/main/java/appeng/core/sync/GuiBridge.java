@@ -228,10 +228,10 @@ public enum GuiBridge implements IGuiHandler
 			String guiClass = start.replaceFirst( "container.", "client.gui." ).replace( ".Container", ".Gui" );
 
 			if( start.equals( guiClass ) )
-				throw new RuntimeException( "Unable to find gui class" );
+				throw new IllegalStateException( "Unable to find gui class" );
 			this.Gui = ReflectionHelper.getClass( this.getClass().getClassLoader(), guiClass );
 			if( this.Gui == null )
-				throw new RuntimeException( "Cannot Load class: " + guiClass );
+				throw new IllegalStateException( "Cannot Load class: " + guiClass );
 		}
 	}
 
@@ -304,7 +304,7 @@ public enum GuiBridge implements IGuiHandler
 	public boolean CorrectTileOrPart( Object tE )
 	{
 		if( this.Tile == null )
-			throw new RuntimeException( "This Gui Cannot use the standard Handler." );
+			throw new IllegalArgumentException( "This Gui Cannot use the standard Handler." );
 
 		return this.Tile.isInstance( tE );
 	}
@@ -337,7 +337,7 @@ public enum GuiBridge implements IGuiHandler
 
 			if( target == null )
 			{
-				throw new RuntimeException( "Cannot find " + this.Container.getName() + "( " + this.typeName( inventory ) + ", " + this.typeName( tE ) + " )" );
+				throw new IllegalStateException( "Cannot find " + this.Container.getName() + "( " + this.typeName( inventory ) + ", " + this.typeName( tE ) + " )" );
 			}
 
 			Object o = target.newInstance( inventory, tE );
@@ -364,7 +364,7 @@ public enum GuiBridge implements IGuiHandler
 		}
 		catch( Throwable t )
 		{
-			throw new RuntimeException( t );
+			throw new IllegalStateException( t );
 		}
 	}
 
@@ -462,14 +462,14 @@ public enum GuiBridge implements IGuiHandler
 
 			if( target == null )
 			{
-				throw new RuntimeException( "Cannot find " + this.Container.getName() + "( " + this.typeName( inventory ) + ", " + this.typeName( tE ) + " )" );
+				throw new IllegalStateException( "Cannot find " + this.Container.getName() + "( " + this.typeName( inventory ) + ", " + this.typeName( tE ) + " )" );
 			}
 
 			return target.newInstance( inventory, tE );
 		}
 		catch( Throwable t )
 		{
-			throw new RuntimeException( t );
+			throw new IllegalStateException( t );
 		}
 	}
 

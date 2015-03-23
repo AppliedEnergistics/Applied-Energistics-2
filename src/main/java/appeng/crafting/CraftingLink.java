@@ -47,7 +47,7 @@ public class CraftingLink implements ICraftingLink
 		this.standalone = data.getBoolean( "standalone" );
 
 		if( !data.hasKey( "req" ) || !data.getBoolean( "req" ) )
-			throw new RuntimeException( "Invalid Crafting Link for Object" );
+			throw new IllegalStateException( "Invalid Crafting Link for Object" );
 
 		this.req = req;
 		this.cpu = null;
@@ -61,7 +61,7 @@ public class CraftingLink implements ICraftingLink
 		this.standalone = data.getBoolean( "standalone" );
 
 		if( !data.hasKey( "req" ) || data.getBoolean( "req" ) )
-			throw new RuntimeException( "Invalid Crafting Link for Object" );
+			throw new IllegalStateException( "Invalid Crafting Link for Object" );
 
 		this.cpu = cpu;
 		this.req = null;

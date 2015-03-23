@@ -168,7 +168,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	private void surface( NetworkInventoryHandler<T> networkInventoryHandler, Actionable type )
 	{
 		if( this.getDepth( type ).pop() != this )
-			throw new RuntimeException( "Invalid Access to Networked Storage API detected." );
+			throw new IllegalStateException( "Invalid Access to Networked Storage API detected." );
 	}
 
 	private LinkedList getDepth( Actionable type )

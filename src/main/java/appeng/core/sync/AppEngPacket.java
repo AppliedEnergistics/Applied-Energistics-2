@@ -40,7 +40,7 @@ public abstract class AppEngPacket
 
 	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
 	{
-		throw new RuntimeException( "This packet ( " + this.getPacketID() + " does not implement a server side handler." );
+		throw new UnsupportedOperationException( "This packet ( " + this.getPacketID() + " does not implement a server side handler." );
 	}
 
 	public final int getPacketID()
@@ -50,7 +50,7 @@ public abstract class AppEngPacket
 
 	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
 	{
-		throw new RuntimeException( "This packet ( " + this.getPacketID() + " does not implement a client side handler." );
+		throw new UnsupportedOperationException( "This packet ( " + this.getPacketID() + " does not implement a client side handler." );
 	}
 
 	protected void configureWrite( ByteBuf data )

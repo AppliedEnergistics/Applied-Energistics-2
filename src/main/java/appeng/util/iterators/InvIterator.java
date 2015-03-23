@@ -25,37 +25,37 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 
-public class InvIterator implements Iterator<ItemStack>
+public final class InvIterator implements Iterator<ItemStack>
 {
+	private final IInventory inventory;
+	private final int size;
 
-	final IInventory inv;
-	final int size;
+	private int counter = 0;
 
-	int x = 0;
-
-	public InvIterator( IInventory i )
+	public InvIterator( IInventory inventory )
 	{
-		this.inv = i;
-		this.size = this.inv.getSizeInventory();
+		this.inventory = inventory;
+		this.size = this.inventory.getSizeInventory();
 	}
 
 	@Override
 	public boolean hasNext()
 	{
-		return this.x < this.size;
+		return this.counter < this.size;
 	}
 
 	@Override
 	public ItemStack next()
 	{
-		ItemStack result = this.inv.getStackInSlot( this.x );
-		this.x++;
+		ItemStack result = this.inventory.getStackInSlot( this.counter );
+		this.counter++;
+
 		return result;
 	}
 
 	@Override
 	public void remove()
 	{
-		throw new RuntimeException( "no..." );
+		throw new UnsupportedOperationException();
 	}
 }

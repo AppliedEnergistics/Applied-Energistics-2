@@ -21,6 +21,7 @@ package appeng.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.security.InvalidParameterException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,13 +32,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.WeakHashMap;
-
-import javax.annotation.Nullable;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -951,7 +950,7 @@ public class Platform
 	public static EntityPlayer getPlayer( WorldServer w )
 	{
 		if( w == null )
-			throw new NullPointerException();
+			throw new InvalidParameterException( "World is null." );
 
 		EntityPlayer wrp = FAKE_PLAYERS.get( w );
 		if( wrp != null )
@@ -1576,11 +1575,6 @@ public class Platform
 			return false;
 
 		return !gs.hasPermission( playerID, SecurityPermissions.BUILD );
-	}
-
-	public static boolean isDrawing( Tessellator tess )
-	{
-		return false;
 	}
 
 	public static void configurePlayer( EntityPlayer player, ForgeDirection side, TileEntity tile )

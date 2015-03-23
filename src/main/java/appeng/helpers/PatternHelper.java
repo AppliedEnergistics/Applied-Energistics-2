@@ -65,7 +65,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		NBTTagCompound encodedValue = is.getTagCompound();
 
 		if( encodedValue == null )
-			throw new RuntimeException( "No pattern here!" );
+			throw new IllegalArgumentException( "No pattern here!" );
 
 		NBTTagList inTag = encodedValue.getTagList( "in", 10 );
 		NBTTagList outTag = encodedValue.getTagList( "out", 10 );
@@ -99,7 +99,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 				out.add( AEApi.instance().storage().createItemStack( this.correctOutput ) );
 			}
 			else
-				throw new RuntimeException( "No pattern here!" );
+				throw new IllegalStateException( "No pattern here!" );
 		}
 		else
 		{
@@ -144,7 +144,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		}
 
 		if( tmpOutputs.isEmpty() || tmpInputs.isEmpty() )
-			throw new RuntimeException( "No pattern here!" );
+			throw new IllegalStateException( "No pattern here!" );
 
 		int offset = 0;
 		this.condensedInputs = new IAEItemStack[tmpInputs.size()];
@@ -182,7 +182,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	{
 		if( !this.isCrafting )
 		{
-			throw new RuntimeException( "Only crafting recipes supported." );
+			throw new IllegalStateException( "Only crafting recipes supported." );
 		}
 
 		TestStatus result = this.getStatus( slotIndex, i );
@@ -270,7 +270,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	public ItemStack getOutput( InventoryCrafting craftingInv, World w )
 	{
 		if( !this.isCrafting )
-			throw new RuntimeException( "Only crafting recipes supported." );
+			throw new IllegalStateException( "Only crafting recipes supported." );
 
 		for( int x = 0; x < craftingInv.getSizeInventory(); x++ )
 		{

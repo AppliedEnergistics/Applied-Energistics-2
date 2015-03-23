@@ -140,6 +140,6 @@ public class NetworkMonitor<T extends IAEStack<T>> extends MEMonitorHandler<T>
 
 		final NetworkMonitor<?> last = DEPTH.pop();
 		if( last != this )
-			throw new RuntimeException( "Invalid Access to Networked Storage API detected." );
+			throw new IllegalStateException( "Invalid Access to Networked Storage API detected." );
 	}
 }

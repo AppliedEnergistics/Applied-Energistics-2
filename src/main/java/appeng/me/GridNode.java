@@ -305,7 +305,7 @@ public class GridNode implements IGridNode, IPathItem
 			this.setGridStorage( WorldSettings.getInstance().getGridStorage( node.getLong( "g" ) ) );
 		}
 		else
-			throw new RuntimeException( "Loading data after part of a grid, this is invalid." );
+			throw new IllegalStateException( "Loading data after part of a grid, this is invalid." );
 	}
 
 	@Override

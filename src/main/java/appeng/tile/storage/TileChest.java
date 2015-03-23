@@ -785,7 +785,6 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 	private static class ChestNoHandler extends Exception
 	{
-
 		private static final long serialVersionUID = 7995805326136526631L;
 	}
 

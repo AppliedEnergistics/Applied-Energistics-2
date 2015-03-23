@@ -20,7 +20,9 @@ package appeng.core.features.registries;
 
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.Map;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridCache;
@@ -28,10 +30,9 @@ import appeng.api.networking.IGridCacheRegistry;
 import appeng.core.AELog;
 
 
-public class GridCacheRegistry implements IGridCacheRegistry
+public final class GridCacheRegistry implements IGridCacheRegistry
 {
-
-	private final HashMap<Class<? extends IGridCache>, Class<? extends IGridCache>> caches = new HashMap<Class<? extends IGridCache>, Class<? extends IGridCache>>();
+	private final Map<Class<? extends IGridCache>, Class<? extends IGridCache>> caches = new HashMap<Class<? extends IGridCache>, Class<? extends IGridCache>>();
 
 	@Override
 	public void registerGridCache( Class<? extends IGridCache> iface, Class<? extends IGridCache> implementation )
@@ -39,7 +40,7 @@ public class GridCacheRegistry implements IGridCacheRegistry
 		if( iface.isAssignableFrom( implementation ) )
 			this.caches.put( iface, implementation );
 		else
-			throw new RuntimeException( "Invalid setup, grid cache must either be the same class, or an interface that the implementation implements" );
+			throw new IllegalArgumentException( "Invalid setup, grid cache must either be the same class, or an interface that the implementation implements. Gotten: " + iface + " and " + implementation );
 	}
 
 	@Override
@@ -49,15 +50,31 @@ public class GridCacheRegistry implements IGridCacheRegistry
 
 		for( Class<? extends IGridCache> iface : this.caches.keySet() )
 		{
+			Constructor<? extends IGridCache> c;
 			try
 			{
-				Constructor<? extends IGridCache> c = this.caches.get( iface ).getConstructor( IGrid.class );
+				c = this.caches.get( iface ).getConstructor( IGrid.class );
 				map.put( iface, c.newInstance( g ) );
 			}
-			catch( Throwable e )
+			catch( NoSuchMethodException e )
 			{
 				AELog.severe( "Grid Caches must have a constructor with IGrid as the single param." );
-				throw new RuntimeException( e );
+				throw new IllegalArgumentException( e );
+			}
+			catch( InvocationTargetException e )
+			{
+				AELog.severe( "Grid Caches must have a constructor with IGrid as the single param." );
+				throw new IllegalStateException( e );
+			}
+			catch( InstantiationException e )
+			{
+				AELog.severe( "Grid Caches must have a constructor with IGrid as the single param." );
+				throw new IllegalStateException( e );
+			}
+			catch( IllegalAccessException e )
+			{
+				AELog.severe( "Grid Caches must have a constructor with IGrid as the single param." );
+				throw new IllegalStateException( e );
 			}
 		}
 

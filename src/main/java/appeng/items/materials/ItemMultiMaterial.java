@@ -179,7 +179,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 				if( this.dmgToMaterial.get( newMaterialNum ) == null )
 					this.dmgToMaterial.put( newMaterialNum, mat );
 				else
-					throw new RuntimeException( "Meta Overlap detected." );
+					throw new IllegalStateException( "Meta Overlap detected." );
 
 				return mat.stackSrc;
 			}
@@ -187,7 +187,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 			return mat.stackSrc;
 		}
 		else
-			throw new RuntimeException( "Cannot create the same material twice..." );
+			throw new IllegalStateException( "Cannot create the same material twice..." );
 	}
 
 	public void makeUnique()
@@ -359,7 +359,7 @@ public class ItemMultiMaterial extends AEBaseItem implements IStorageComponent, 
 		}
 		catch( Throwable t )
 		{
-			throw new RuntimeException( t );
+			throw new IllegalStateException( t );
 		}
 
 		eqi.motionX = location.motionX;

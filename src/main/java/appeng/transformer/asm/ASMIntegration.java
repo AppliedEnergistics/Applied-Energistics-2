@@ -153,7 +153,7 @@ public class ASMIntegration implements IClassTransformer
 	private boolean stripInterface( ClassNode classNode, Class class1, AnnotationNode an )
 	{
 		if( an.values.size() != 4 )
-			throw new RuntimeException( "Unable to handle Interface annotation on " + classNode.name );
+			throw new IllegalArgumentException( "Unable to handle Interface annotation on " + classNode.name );
 
 		String iFace = null;
 		String iName = null;
@@ -182,7 +182,7 @@ public class ASMIntegration implements IClassTransformer
 				this.log( "Allowing Interface " + iFace + " from " + classNode.name + " because " + iName + " integration is enabled." );
 		}
 		else
-			throw new RuntimeException( "Unable to handle Method annotation on " + classNode.name );
+			throw new IllegalStateException( "Unable to handle Method annotation on " + classNode.name );
 
 		return false;
 	}
@@ -190,7 +190,7 @@ public class ASMIntegration implements IClassTransformer
 	private boolean stripMethod( ClassNode classNode, MethodNode mn, Iterator<MethodNode> i, Class class1, AnnotationNode an )
 	{
 		if( an.values.size() != 2 )
-			throw new RuntimeException( "Unable to handle Method annotation on " + classNode.name );
+			throw new IllegalArgumentException( "Unable to handle Method annotation on " + classNode.name );
 
 		String iName = null;
 
@@ -210,7 +210,7 @@ public class ASMIntegration implements IClassTransformer
 				this.log( "Allowing Method " + mn.name + " from " + classNode.name + " because " + iName + " integration is enabled." );
 		}
 		else
-			throw new RuntimeException( "Unable to handle Method annotation on " + classNode.name );
+			throw new IllegalStateException( "Unable to handle Method annotation on " + classNode.name );
 
 		return false;
 	}

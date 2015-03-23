@@ -95,7 +95,8 @@ public enum IntegrationRegistry
 				return node.instance;
 			}
 		}
-		throw new RuntimeException( "integration with " + name.name() + " is disabled." );
+
+		throw new IllegalStateException( "integration with " + name.name() + " is disabled." );
 	}
 
 }

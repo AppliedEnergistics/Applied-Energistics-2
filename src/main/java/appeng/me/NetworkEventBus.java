@@ -71,16 +71,16 @@ public class NetworkEventBus
 							classEvents.put( listAs, thisEvent );
 						}
 						else
-							throw new RuntimeException( "Invalid ME Network Event Subscriber, " + m.getName() + "s Parameter must extend MENetworkEvent." );
+							throw new IllegalStateException( "Invalid ME Network Event Subscriber, " + m.getName() + "s Parameter must extend MENetworkEvent." );
 					}
 					else
-						throw new RuntimeException( "Invalid ME Network Event Subscriber, " + m.getName() + " must have exactly 1 parameter." );
+						throw new IllegalStateException( "Invalid ME Network Event Subscriber, " + m.getName() + " must have exactly 1 parameter." );
 				}
 			}
 		}
 		catch( Throwable t )
 		{
-			throw new RuntimeException( "Error while adding " + c.getName() + " to event bus", t );
+			throw new IllegalStateException( "Error while adding " + c.getName() + " to event bus", t );
 		}
 	}
 
@@ -179,7 +179,7 @@ public class NetworkEventBus
 				AELog.severe( "Offending Class: " + obj.getClass().getName() );
 				AELog.severe( "Offending Object: " + obj.toString() );
 				AELog.error( e1 );
-				throw new RuntimeException( e1 );
+				throw new IllegalStateException( e1 );
 			}
 
 			if( e.isCanceled() )

@@ -54,7 +54,7 @@ public class IMCMatterCannon implements IIMCProcessor
 		double weight = msg.getDouble( "weight" );
 
 		if( ammo == null )
-			throw new RuntimeException( "invalid item" );
+			throw new IllegalStateException( "invalid item in message " + m );
 
 		AEApi.instance().registries().matterCannon().registerAmmo( ammo, weight );
 	}

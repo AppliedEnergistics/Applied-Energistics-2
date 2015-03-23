@@ -58,13 +58,13 @@ public class ServerHelper extends CommonHelper
 	@Override
 	public World getWorld()
 	{
-		throw new RuntimeException( "This is a server..." );
+		throw new UnsupportedOperationException( "This is a server..." );
 	}
 
 	@Override
 	public void bindTileEntitySpecialRenderer( Class tile, AEBaseBlock blk )
 	{
-		throw new RuntimeException( "This is a server..." );
+		throw new UnsupportedOperationException( "This is a server..." );
 	}
 
 	@Override
@@ -179,6 +179,6 @@ public class ServerHelper extends CommonHelper
 	@Override
 	public void missingCoreMod()
 	{
-		throw new RuntimeException( "Unable to Load Core Mod, please verify that AE2 is properly install in the mods folder, with a .jar extension." );
+		throw new IllegalStateException( "Unable to Load Core Mod, please verify that AE2 is properly install in the mods folder, with a .jar extension." );
 	}
 }

@@ -70,7 +70,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	public FacadePart( ItemStack facade, ForgeDirection side )
 	{
 		if( facade == null )
-			throw new RuntimeException( "Facade Part constructed on null item." );
+			throw new IllegalArgumentException( "Facade Part constructed on null item." );
 		this.facade = facade.copy();
 		this.facade.stackSize = 1;
 		this.side = side;

@@ -46,7 +46,7 @@ public class InvTweaks extends BaseModule implements IInvTweaks
 	public void postInit()
 	{
 		if( api == null )
-			throw new RuntimeException( "InvTweaks API Instance Failed." );
+			throw new IllegalStateException( "InvTweaks API Instance Failed." );
 	}
 
 	@Override

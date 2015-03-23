@@ -23,18 +23,24 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiErrorScreen;
 
 import cpw.mods.fml.client.CustomModLoadingErrorDisplayException;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 
-public class MissingCoreMod extends CustomModLoadingErrorDisplayException
+@SideOnly( Side.CLIENT )
+public final class MissingCoreMod extends CustomModLoadingErrorDisplayException
 {
-
+	private static final int SHADOW_WHITE = 0xeeeeee;
+	private static final int COLOR_WHITE = 0xffffff;
 	private static final long serialVersionUID = -966774766922821652L;
+	private static final int SCREEN_OFFSET = 15;
+
 	private boolean deobf = false;
 
 	@Override
 	public void initGui( GuiErrorScreen errorScreen, FontRenderer fontRenderer )
 	{
-		Class clz = errorScreen.getClass();
+		Class<?> clz = errorScreen.getClass();
 		try
 		{
 			clz.getField( "mc" );
@@ -50,35 +56,46 @@ public class MissingCoreMod extends CustomModLoadingErrorDisplayException
 	public void drawScreen( GuiErrorScreen errorScreen, FontRenderer fontRenderer, int mouseRelX, int mouseRelY, float tickTime )
 	{
 		int offset = 10;
-		this.drawCenteredString( fontRenderer, "Sorry, couldn't load AE2 Properly.", errorScreen.width / 2, offset += 15, 0xffffff );
-		this.drawCenteredString( fontRenderer, "Please make sure that AE2 is installed into your mods folder.", errorScreen.width / 2, offset += 15, 0xeeeeee );
+		this.drawCenteredString( fontRenderer, "Sorry, couldn't load AE2 properly.", errorScreen.width / 2, offset, COLOR_WHITE );
 
-		offset += 15;
+		offset += SCREEN_OFFSET;
+		this.drawCenteredString( fontRenderer, "Please make sure that AE2 is installed into your mods folder.", errorScreen.width / 2, offset, SHADOW_WHITE );
+
+		offset += 2 * SCREEN_OFFSET;
 
 		if( this.deobf )
 		{
-			offset += 15;
-			this.drawCenteredString( fontRenderer, "In a developer environment add the following too your args,", errorScreen.width / 2, offset += 15, 0xffffff );
-			this.drawCenteredString( fontRenderer, "-Dfml.coreMods.load=appeng.transformer.AppEngCore", errorScreen.width / 2, offset += 15, 0xeeeeee );
+			offset += SCREEN_OFFSET;
+			this.drawCenteredString( fontRenderer, "In a developer environment add the following too your args,", errorScreen.width / 2, offset, COLOR_WHITE );
+
+			offset += SCREEN_OFFSET;
+			this.drawCenteredString( fontRenderer, "-Dfml.coreMods.load=appeng.transformer.AppEngCore", errorScreen.width / 2, offset, SHADOW_WHITE );
 		}
 		else
 		{
-			this.drawCenteredString( fontRenderer, "You're launcher may refer to this by different names,", errorScreen.width / 2, offset += 15, 0xffffff );
+			this.drawCenteredString( fontRenderer, "You're launcher may refer to this by different names,", errorScreen.width / 2, offset, COLOR_WHITE );
 
-			offset += 5;
+			offset += SCREEN_OFFSET + 5;
 
-			this.drawCenteredString( fontRenderer, "MultiMC calls this tab \"Loader Mods\"", errorScreen.width / 2, offset += 15, 0xeeeeee );
-			this.drawCenteredString( fontRenderer, "Magic Launcher calls this tab \"External Mods\"", errorScreen.width / 2, offset += 15, 0xeeeeee );
-			this.drawCenteredString( fontRenderer, "Most other launchers refer to this tab as just \"Mods\"", errorScreen.width / 2, offset += 15, 0xeeeeee );
+			this.drawCenteredString( fontRenderer, "MultiMC calls this tab \"Loader Mods\"", errorScreen.width / 2, offset, SHADOW_WHITE );
 
-			offset += 15;
+			offset += SCREEN_OFFSET;
+			this.drawCenteredString( fontRenderer, "Magic Launcher calls this tab \"External Mods\"", errorScreen.width / 2, offset, SHADOW_WHITE );
 
-			this.drawCenteredString( fontRenderer, "Also make sure that the AE2 file is a .jar, and not a .zip", errorScreen.width / 2, offset += 15, 0xffffff );
+			offset += SCREEN_OFFSET;
+			this.drawCenteredString( fontRenderer, "Most other launchers refer to this tab as just \"Mods\"", errorScreen.width / 2, offset, SHADOW_WHITE );
+
+			offset += 2 * SCREEN_OFFSET;
+			this.drawCenteredString( fontRenderer, "Also make sure that the AE2 file is a .jar, and not a .zip", errorScreen.width / 2, offset, COLOR_WHITE );
 		}
 	}
 
-	public void drawCenteredString( FontRenderer fontRenderer, String string, int x, int y, int colour )
+	private void drawCenteredString( FontRenderer fontRenderer, String string, int x, int y, int colour )
 	{
-		fontRenderer.drawStringWithShadow( string, x - fontRenderer.getStringWidth( string.replaceAll( "\\P{InBasic_Latin}", "" ) ) / 2, y, colour );
+		final String reEncoded = string.replaceAll( "\\P{InBasic_Latin}", "" );
+		final int reEndcodedWidth = fontRenderer.getStringWidth( reEncoded );
+		final int centeredX = x - reEndcodedWidth / 2;
+
+		fontRenderer.drawStringWithShadow( string, centeredX, y, colour );
 	}
 }

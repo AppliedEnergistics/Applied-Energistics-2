@@ -54,7 +54,8 @@ public enum PartRegistry
 				return pr.name;
 			}
 		}
-		throw new RuntimeException( "Invalid PartName" );
+
+		throw new IllegalStateException( "Invalid PartName" );
 	}
 
 	public static TMultiPart getPartByBlock( Block block, int meta )
@@ -80,7 +81,7 @@ public enum PartRegistry
 		}
 		catch( Throwable t )
 		{
-			throw new RuntimeException( t );
+			throw new IllegalStateException( t );
 		}
 	}
 

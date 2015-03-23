@@ -105,19 +105,19 @@ public class WorldSettings extends Configuration
 
 			if( !aeBaseFolder.isDirectory() && !aeBaseFolder.mkdir() )
 			{
-				throw new RuntimeException( "Failed to create " + aeBaseFolder.getAbsolutePath() );
+				throw new IllegalStateException( "Failed to create " + aeBaseFolder.getAbsolutePath() );
 			}
 
 			File compass = new File( aeBaseFolder, COMPASS_FOLDER );
 			if( !compass.isDirectory() && !compass.mkdir() )
 			{
-				throw new RuntimeException( "Failed to create " + compass.getAbsolutePath() );
+				throw new IllegalStateException( "Failed to create " + compass.getAbsolutePath() );
 			}
 
 			File spawnData = new File( aeBaseFolder, SPAWNDATA_FOLDER );
 			if( !spawnData.isDirectory() && !spawnData.mkdir() )
 			{
-				throw new RuntimeException( "Failed to create " + spawnData.getAbsolutePath() );
+				throw new IllegalStateException( "Failed to create " + spawnData.getAbsolutePath() );
 			}
 
 			instance = new WorldSettings( aeBaseFolder );
@@ -158,7 +158,7 @@ public class WorldSettings extends Configuration
 	NBTTagCompound loadSpawnData( int dim, int chunkX, int chunkZ )
 	{
 		if( !Thread.holdsLock( WorldSettings.class ) )
-			throw new RuntimeException( "Invalid Request" );
+			throw new IllegalStateException( "Invalid Request" );
 
 		NBTTagCompound data = null;
 		File file = new File( this.spawnDataFolder, dim + '_' + ( chunkX >> 4 ) + '_' + ( chunkZ >> 4 ) + ".dat" );
@@ -225,7 +225,7 @@ public class WorldSettings extends Configuration
 	void writeSpawnData( int dim, int chunkX, int chunkZ, NBTTagCompound data )
 	{
 		if( !Thread.holdsLock( WorldSettings.class ) )
-			throw new RuntimeException( "Invalid Request" );
+			throw new IllegalStateException( "Invalid Request" );
 
 		File file = new File( this.spawnDataFolder, dim + '_' + ( chunkX >> 4 ) + '_' + ( chunkZ >> 4 ) + ".dat" );
 		FileOutputStream fileOutputStream = null;

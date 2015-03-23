@@ -22,11 +22,11 @@ package appeng.util.iterators;
 import java.util.Iterator;
 
 
-public class ChainedIterator<T> implements Iterator<T>
+public final class ChainedIterator<T> implements Iterator<T>
 {
+	private final T[] list;
 
-	final T[] list;
-	int offset = 0;
+	private int offset = 0;
 
 	public ChainedIterator( T... list )
 	{
@@ -50,6 +50,6 @@ public class ChainedIterator<T> implements Iterator<T>
 	@Override
 	public void remove()
 	{
-		throw new RuntimeException( "Not implemented." );
+		throw new UnsupportedOperationException();
 	}
 }

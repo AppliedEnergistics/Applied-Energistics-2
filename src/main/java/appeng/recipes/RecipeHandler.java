@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.Item;
@@ -324,7 +323,7 @@ public class RecipeHandler implements IRecipeHandler
 		{
 			AELog.error( e );
 			if( this.data.crash )
-				throw new RuntimeException( e );
+				throw new IllegalStateException( e );
 		}
 	}
 
@@ -332,7 +331,7 @@ public class RecipeHandler implements IRecipeHandler
 	public void injectRecipes()
 	{
 		if( cpw.mods.fml.common.Loader.instance().hasReachedState( LoaderState.POSTINITIALIZATION ) )
-			throw new RuntimeException( "Recipes must now be loaded in Init." );
+			throw new IllegalStateException( "Recipes must now be loaded in Init." );
 
 		HashMap<Class, Integer> processed = new HashMap<Class, Integer>();
 		try
@@ -376,7 +375,7 @@ public class RecipeHandler implements IRecipeHandler
 			if( this.data.exceptions )
 				AELog.error( e );
 			if( this.data.crash )
-				throw new RuntimeException( e );
+				throw new IllegalStateException( e );
 		}
 
 		for( Entry<Class, Integer> e : processed.entrySet() )

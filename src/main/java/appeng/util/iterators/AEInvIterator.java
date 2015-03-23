@@ -25,37 +25,38 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 
 
-public class AEInvIterator implements Iterator<IAEItemStack>
+public final class AEInvIterator implements Iterator<IAEItemStack>
 {
+	private final AppEngInternalAEInventory inventory;
+	private final int size;
 
-	final AppEngInternalAEInventory inv;
-	final int size;
+	private int counter = 0;
 
-	int x = 0;
-
-	public AEInvIterator( AppEngInternalAEInventory i )
+	public AEInvIterator( AppEngInternalAEInventory inventory )
 	{
-		this.inv = i;
-		this.size = this.inv.getSizeInventory();
+		this.inventory = inventory;
+		this.size = this.inventory.getSizeInventory();
 	}
 
 	@Override
 	public boolean hasNext()
 	{
-		return this.x < this.size;
+		return this.counter < this.size;
 	}
 
 	@Override
 	public IAEItemStack next()
 	{
-		IAEItemStack result = this.inv.getAEStackInSlot( this.x );
-		this.x++;
+		final IAEItemStack result = this.inventory.getAEStackInSlot( this.counter );
+
+		this.counter++;
+
 		return result;
 	}
 
 	@Override
 	public void remove()
 	{
-		throw new RuntimeException( "no..." );
+		throw new UnsupportedOperationException();
 	}
 }

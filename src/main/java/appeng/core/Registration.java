@@ -189,7 +189,7 @@ public final class Registration
 			{
 				config.storageBiomeID = Platform.findEmpty( BiomeGenBase.getBiomeGenArray() );
 				if( config.storageBiomeID == -1 )
-					throw new RuntimeException( "Biome Array is full, please free up some Biome ID's or disable spatial." );
+					throw new IllegalStateException( "Biome Array is full, please free up some Biome ID's or disable spatial." );
 
 				this.storageBiome = new BiomeGenStorage( config.storageBiomeID );
 				config.save();

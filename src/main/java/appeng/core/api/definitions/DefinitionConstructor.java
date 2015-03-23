@@ -40,7 +40,7 @@ public class DefinitionConstructor
 			return ( (ITileDefinition) definition );
 		}
 
-		throw new RuntimeException( "No tile definition" );
+		throw new IllegalStateException( "No tile definition for " + feature );
 	}
 
 	public final IBlockDefinition registerBlockDefinition( IAEFeature feature )
@@ -52,7 +52,7 @@ public class DefinitionConstructor
 			return ( (IBlockDefinition) definition );
 		}
 
-		throw new RuntimeException( "No block definition" );
+		throw new IllegalStateException( "No block definition for " + feature );
 	}
 
 	public final IItemDefinition registerItemDefinition( IAEFeature feature )

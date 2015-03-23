@@ -269,7 +269,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			Collections.shuffle( places );
 
 			if( places.isEmpty() )
-				throw new RuntimeException( "No air or even the tile hat was destroyed?!?!" );
+				throw new IllegalStateException( this.cluster + " does not contain any kind of blocks, which were destroyed." );
 
 			for( IAEItemStack ais : inv.getAvailableItems( AEApi.instance().storage().createItemList() ) )
 			{
