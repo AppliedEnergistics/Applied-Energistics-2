@@ -29,9 +29,9 @@ import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 
 import appeng.api.config.PowerUnits;
-import appeng.transformer.annotations.integration.Interface;
-import appeng.transformer.annotations.integration.InterfaceList;
-import appeng.transformer.annotations.integration.Method;
+import appeng.transformer.annotations.Integration.Interface;
+import appeng.transformer.annotations.Integration.InterfaceList;
+import appeng.transformer.annotations.Integration.Method;
 
 
 @InterfaceList( value = { @Interface( iface = "ic2.api.item.ISpecialElectricItem", iname = "IC2" ),

@@ -26,7 +26,7 @@ import net.minecraft.item.ItemStack;
 import cofh.api.energy.IEnergyContainerItem;
 
 import appeng.api.config.PowerUnits;
-import appeng.transformer.annotations.integration.Interface;
+import appeng.transformer.annotations.Integration.Interface;
 
 
 @Interface( iface = "cofh.api.energy.IEnergyContainerItem", iname = "RFItem" )

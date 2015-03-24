@@ -38,8 +38,8 @@ import appeng.core.AppEng;
 import appeng.integration.IntegrationType;
 import appeng.integration.modules.helpers.NullRFHandler;
 import appeng.me.GridAccessException;
-import appeng.transformer.annotations.integration.Interface;
-import appeng.transformer.annotations.integration.InterfaceList;
+import appeng.transformer.annotations.Integration.Interface;
+import appeng.transformer.annotations.Integration.InterfaceList;
 import appeng.util.Platform;
 
 

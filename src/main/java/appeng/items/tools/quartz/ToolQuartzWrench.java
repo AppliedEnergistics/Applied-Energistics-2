@@ -35,7 +35,7 @@ import appeng.api.implementations.items.IAEWrench;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.features.AEFeature;
 import appeng.items.AEBaseItem;
-import appeng.transformer.annotations.integration.Interface;
+import appeng.transformer.annotations.Integration.Interface;
 import appeng.util.Platform;
 
 

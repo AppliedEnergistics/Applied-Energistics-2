@@ -24,7 +24,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cofh.api.energy.IEnergyReceiver;
 
 import appeng.api.config.PowerUnits;
-import appeng.transformer.annotations.integration.Interface;
+import appeng.transformer.annotations.Integration.Interface;
 
 
 @Interface( iname = "RF", iface = "cofh.api.energy.IEnergyReceiver" )

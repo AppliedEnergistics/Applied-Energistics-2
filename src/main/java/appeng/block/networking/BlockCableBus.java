@@ -70,8 +70,8 @@ import appeng.parts.NullCableBusContainer;
 import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
 import appeng.tile.networking.TileCableBusTESR;
-import appeng.transformer.annotations.integration.Interface;
-import appeng.transformer.annotations.integration.Method;
+import appeng.transformer.annotations.Integration.Interface;
+import appeng.transformer.annotations.Integration.Method;
 import appeng.util.Platform;
 
 @Interface(iface = "powercrystals.minefactoryreloaded.api.rednet.connectivity.IRedNetConnection", iname = "MFR")
