@@ -87,10 +87,11 @@ public class BlockSkyChest extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+	public ItemStack getPickBlock( MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player )
 	{
-		ItemStack is = super.getPickBlock( target, world, x, y, z );
+		final ItemStack is = super.getPickBlock( target, world, x, y, z, player );
 		is.setItemDamage( world.getBlockMetadata( x, y, z ) );
+
 		return is;
 	}
 

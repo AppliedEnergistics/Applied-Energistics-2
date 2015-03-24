@@ -1080,7 +1080,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					{
 						if ( mop.blockX == te.xCoord && mop.blockY == te.yCoord && mop.blockZ == te.zCoord )
 						{
-							ItemStack g = blk.getPickBlock( mop, w, te.xCoord, te.yCoord, te.zCoord );
+							ItemStack g = blk.getPickBlock( mop, w, te.xCoord, te.yCoord, te.zCoord, null );
 							if ( g != null )
 								what = g;
 						}

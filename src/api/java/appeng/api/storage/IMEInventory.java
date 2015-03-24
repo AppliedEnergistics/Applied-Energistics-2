@@ -49,7 +49,7 @@ public interface IMEInventory<StackType extends IAEStack>
 	 * @param src action source
 	 * @return returns the number of items not added.
 	 */
-	public StackType injectItems(StackType input, Actionable type, BaseActionSource src);
+	StackType injectItems( StackType input, Actionable type, BaseActionSource src );
 
 	/**
 	 * Extract the specified item from the ME Inventory
@@ -60,7 +60,7 @@ public interface IMEInventory<StackType extends IAEStack>
 	 *            simulate, or perform action?
 	 * @return returns the number of items extracted, null
 	 */
-	public StackType extractItems(StackType request, Actionable mode, BaseActionSource src);
+	StackType extractItems( StackType request, Actionable mode, BaseActionSource src );
 
 	/**
 	 * request a full report of all available items, storage.
@@ -69,11 +69,11 @@ public interface IMEInventory<StackType extends IAEStack>
 	 *            the IItemList the results will be written too
 	 * @return returns same list that was passed in, is passed out
 	 */
-	public IItemList<StackType> getAvailableItems(IItemList<StackType> out);
+	IItemList<StackType> getAvailableItems( IItemList<StackType> out );
 
 	/**
 	 * @return the type of channel your handler should be part of
 	 */
-	public StorageChannel getChannel();
+	StorageChannel getChannel();
 
 }
