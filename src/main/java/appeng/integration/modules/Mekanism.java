@@ -19,13 +19,14 @@
 package appeng.integration.modules;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
-import mekanism.api.RecipeHelper;
+import cpw.mods.fml.common.event.FMLInterModComms;
 
 import appeng.integration.BaseModule;
 import appeng.integration.abstraction.IMekanism;
 
-public class Mekanism extends BaseModule implements IMekanism
+public final class Mekanism extends BaseModule implements IMekanism
 {
 
 	public static Mekanism instance;
@@ -45,13 +46,31 @@ public class Mekanism extends BaseModule implements IMekanism
 	@Override
 	public void addCrusherRecipe(ItemStack in, ItemStack out)
 	{
-		RecipeHelper.addCrusherRecipe( in, out );
+		final NBTTagCompound sendTag = this.convertToSimpleRecipe( in, out );
+
+		FMLInterModComms.sendMessage( "mekanism", "CrusherRecipe", sendTag );
 	}
 
 	@Override
 	public void addEnrichmentChamberRecipe(ItemStack in, ItemStack out)
 	{
-		RecipeHelper.addEnrichmentChamberRecipe( in, out );
+		final NBTTagCompound sendTag = this.convertToSimpleRecipe( in, out );
+
+		FMLInterModComms.sendMessage( "mekanism", "EnrichmentChamberRecipe", sendTag );
 	}
 
+	private NBTTagCompound convertToSimpleRecipe( ItemStack in, ItemStack out )
+	{
+		final NBTTagCompound sendTag = new NBTTagCompound();
+		final NBTTagCompound inputTagDummy = new NBTTagCompound();
+		final NBTTagCompound outputTagDummy = new NBTTagCompound();
+
+		final NBTTagCompound inputTag = in.writeToNBT( inputTagDummy );
+		final NBTTagCompound outputTag = out.writeToNBT( outputTagDummy );
+
+		sendTag.setTag( "input", inputTag );
+		sendTag.setTag( "output", outputTag );
+
+		return sendTag;
+	}
 }

@@ -53,7 +53,7 @@ dependencies {
     compile(group: 'api', name: 'ic2', version: "${config.api_ic2_version}")
     compile(group: 'api', name: 'immibis', version: "${config.api_immibis_version}")
     compile(group: 'api', name: 'invtweaks', version: "${config.api_invtweaks_version}")
-    compile(group: 'api', name: 'mekansim', version: "${config.api_mekansim_version}")
+    compile(group: 'api', name: 'mekanism', version: "${config.api_mekansim_version}", classifier: 'api')
     compile(group: 'api', name: 'mfr', version: "${config.api_mfr_version}")
     compile(group: 'api', name: 'railcraft', version: "${config.api_railcraft_version}")
     compile(group: 'api', name: 'rblocks', version: "${config.api_rblocks_version}")
