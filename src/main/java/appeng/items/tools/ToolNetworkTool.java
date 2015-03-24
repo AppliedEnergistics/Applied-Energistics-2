@@ -50,7 +50,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketClick;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolViewer;
-import appeng.transformer.annotations.integration.Interface;
+import appeng.transformer.annotations.Integration.Interface;
 import appeng.util.Platform;
 
 

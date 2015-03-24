@@ -23,7 +23,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 
 import appeng.api.config.PowerUnits;
-import appeng.transformer.annotations.integration.Interface;
+import appeng.transformer.annotations.Integration.Interface;
 
 @Interface(iname = "Mekanism", iface = "mekanism.api.energy.IStrictEnergyAcceptor")
 public abstract class MekJoules extends RedstoneFlux implements IStrictEnergyAcceptor   {

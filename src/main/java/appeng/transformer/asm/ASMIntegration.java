@@ -36,7 +36,7 @@ import cpw.mods.fml.relauncher.FMLRelaunchLog;
 
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
-import appeng.transformer.annotations.integration;
+import appeng.transformer.annotations.Integration;
 
 
 public class ASMIntegration implements IClassTransformer
@@ -105,16 +105,16 @@ public class ASMIntegration implements IClassTransformer
 		{
 			for ( AnnotationNode an : classNode.visibleAnnotations )
 			{
-				if ( this.hasAnnotation( an, integration.Interface.class ) )
+				if ( this.hasAnnotation( an, Integration.Interface.class ) )
 				{
-					if ( this.stripInterface( classNode, integration.Interface.class, an ) )
+					if ( this.stripInterface( classNode, Integration.Interface.class, an ) )
 						changed = true;
 				}
-				else if ( this.hasAnnotation( an, integration.InterfaceList.class ) )
+				else if ( this.hasAnnotation( an, Integration.InterfaceList.class ) )
 				{
 					for ( Object o : ( ( List ) an.values.get( 1 ) ) )
 					{
-						if ( this.stripInterface( classNode, integration.InterfaceList.class, ( AnnotationNode ) o ) )
+						if ( this.stripInterface( classNode, Integration.InterfaceList.class, ( AnnotationNode ) o ) )
 							changed = true;
 					}
 				}
@@ -130,9 +130,9 @@ public class ASMIntegration implements IClassTransformer
 			{
 				for ( AnnotationNode an : mn.visibleAnnotations )
 				{
-					if ( this.hasAnnotation( an, integration.Method.class ) )
+					if ( this.hasAnnotation( an, Integration.Method.class ) )
 					{
-						if ( this.stripMethod( classNode, mn, i, integration.Method.class, an ) )
+						if ( this.stripMethod( classNode, mn, i, Integration.Method.class, an ) )
 							changed = true;
 					}
 				}

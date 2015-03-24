@@ -36,8 +36,8 @@ import appeng.core.AppEng;
 import appeng.integration.IntegrationType;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
-import appeng.transformer.annotations.integration.Interface;
-import appeng.transformer.annotations.integration.InterfaceList;
+import appeng.transformer.annotations.Integration.Interface;
+import appeng.transformer.annotations.Integration.InterfaceList;
 import appeng.util.Platform;
 
 @InterfaceList(value = { @Interface(iface = "ic2.api.energy.tile.IEnergySink", iname = "IC2"),

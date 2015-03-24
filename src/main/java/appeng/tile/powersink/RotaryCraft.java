@@ -25,8 +25,8 @@ import Reika.RotaryCraft.API.ShaftPowerReceiver;
 import appeng.api.config.PowerUnits;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
-import appeng.transformer.annotations.integration.Interface;
-import appeng.transformer.annotations.integration.Method;
+import appeng.transformer.annotations.Integration.Interface;
+import appeng.transformer.annotations.Integration.Method;
 import appeng.util.Platform;
 
 @Interface(iname = "RotaryCraft", iface = "Reika.RotaryCraft.API.ShaftPowerReceiver")

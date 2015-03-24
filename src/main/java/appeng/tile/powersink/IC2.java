@@ -29,7 +29,7 @@ import appeng.api.config.PowerUnits;
 import appeng.core.AppEng;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IIC2;
-import appeng.transformer.annotations.integration.Interface;
+import appeng.transformer.annotations.Integration.Interface;
 import appeng.util.Platform;
 
 @Interface(iname = "IC2", iface = "ic2.api.energy.tile.IEnergySink")
