@@ -202,7 +202,7 @@ public class PacketNEIRecipe extends AppEngPacket
 											{
 												// check if the item in slot y matches the required item.
 												playerItemStack = playerInventory.getStackInSlot( i );
-												if ( playerItemStack != null && playerItemStack.getItem() == this.recipe[x][y].getItem() )
+												if ( playerItemStack != null && this.recipe[x][y] != null && playerItemStack.getItem() == this.recipe[x][y].getItem() )
 												{
 													if ( realForFake == Actionable.SIMULATE )
 													{
