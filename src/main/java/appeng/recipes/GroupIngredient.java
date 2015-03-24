@@ -18,6 +18,7 @@
 
 package appeng.recipes;
 
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,43 +31,33 @@ import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.IIngredient;
 
+
 public class GroupIngredient implements IIngredient
 {
 
-	int qty = 0;
 	final String name;
 	final List<IIngredient> ingredients;
+	int qty = 0;
 	ItemStack[] baked;
 
 	boolean isInside = false;
 
-	public GroupIngredient(String myName, List<IIngredient> ingredients) throws RecipeError {
+	public GroupIngredient( String myName, List<IIngredient> ingredients ) throws RecipeError
+	{
 		this.name = myName;
 
-		for (IIngredient I : ingredients)
-			if ( I.isAir() )
+		for( IIngredient I : ingredients )
+			if( I.isAir() )
 				throw new RecipeError( "Cannot include air in a group." );
 
 		this.ingredients = ingredients;
 	}
 
-	public IIngredient copy(int qty) throws RecipeError
+	public IIngredient copy( int qty ) throws RecipeError
 	{
 		GroupIngredient gi = new GroupIngredient( this.name, this.ingredients );
 		gi.qty = qty;
 		return gi;
-	}
-
-	@Override
-	public int getDamageValue()
-	{
-		return OreDictionary.WILDCARD_VALUE;
-	}
-
-	@Override
-	public String getItemName()
-	{
-		return this.name;
 	}
 
 	@Override
@@ -78,23 +69,23 @@ public class GroupIngredient implements IIngredient
 	@Override
 	public ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
 	{
-		if ( this.baked != null )
+		if( this.baked != null )
 			return this.baked;
 
-		if ( this.isInside )
+		if( this.isInside )
 			return new ItemStack[0];
 
 		List<ItemStack> out = new LinkedList<ItemStack>();
 		this.isInside = true;
 		try
 		{
-			for (IIngredient i : this.ingredients)
+			for( IIngredient i : this.ingredients )
 			{
 				try
 				{
 					out.addAll( Arrays.asList( i.getItemStackSet() ) );
 				}
-				catch (MissingIngredientError mir)
+				catch( MissingIngredientError mir )
 				{
 					// oh well this is a group!
 				}
@@ -105,25 +96,13 @@ public class GroupIngredient implements IIngredient
 			this.isInside = false;
 		}
 
-		if ( out.size() == 0 )
+		if( out.size() == 0 )
 			throw new MissingIngredientError( this.toString() + " - group could not be resolved to any items." );
 
-		for (ItemStack is : out)
+		for( ItemStack is : out )
 			is.stackSize = this.qty;
 
 		return out.toArray( new ItemStack[out.size()] );
-	}
-
-	@Override
-	public String getNameSpace()
-	{
-		return "";
-	}
-
-	@Override
-	public int getQty()
-	{
-		return 0;
 	}
 
 	@Override
@@ -133,10 +112,33 @@ public class GroupIngredient implements IIngredient
 	}
 
 	@Override
+	public String getNameSpace()
+	{
+		return "";
+	}
+
+	@Override
+	public String getItemName()
+	{
+		return this.name;
+	}
+
+	@Override
+	public int getDamageValue()
+	{
+		return OreDictionary.WILDCARD_VALUE;
+	}
+
+	@Override
+	public int getQty()
+	{
+		return 0;
+	}
+
+	@Override
 	public void bake() throws RegistrationError, MissingIngredientError
 	{
 		this.baked = null;
 		this.baked = this.getItemStackSet();
 	}
-
 }

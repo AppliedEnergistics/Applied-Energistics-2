@@ -52,13 +52,13 @@ public final class PartAccessor
 	 */
 	public Optional<IPart> getMaybePart( TileEntity te, MovingObjectPosition mop )
 	{
-		if ( te instanceof IPartHost )
+		if( te instanceof IPartHost )
 		{
 			final Vec3 position = mop.hitVec.addVector( -mop.blockX, -mop.blockY, -mop.blockZ );
-			final IPartHost host = ( IPartHost ) te;
+			final IPartHost host = (IPartHost) te;
 			final SelectedPart sp = host.selectPart( position );
 
-			if ( sp.part != null )
+			if( sp.part != null )
 			{
 				return Optional.of( sp.part );
 			}

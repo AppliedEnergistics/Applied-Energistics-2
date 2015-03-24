@@ -18,6 +18,7 @@
 
 package appeng.parts;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -70,27 +71,31 @@ import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
+
 public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradeableHost, ICustomNameObject
 {
 
-	protected ISimplifiedBundle renderCache = null;
-
 	protected final AENetworkProxy proxy;
+	protected final ItemStack is;
+	protected ISimplifiedBundle renderCache = null;
 	protected TileEntity tile = null;
 	protected IPartHost host = null;
 	protected ForgeDirection side = null;
 
-	protected final ItemStack is;
-
-	public AEBasePart(Class c, ItemStack is) {
+	public AEBasePart( Class c, ItemStack is )
+	{
 		this.is = is;
 		this.proxy = new AENetworkProxy( this, "part", is, this instanceof PartCable );
 		this.proxy.setValidSides( EnumSet.noneOf( ForgeDirection.class ) );
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
+	public IGridNode getGridNode( ForgeDirection dir )
+	{
+		return this.proxy.getNode();
+	}	@Override
+	@SideOnly( Side.CLIENT )
+	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		rh.setBounds( 1, 1, 1, 15, 15, 15 );
 		rh.renderInventoryBox( renderer );
@@ -100,24 +105,44 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
+	public AECableType getCableConnectionType( ForgeDirection dir )
+	{
+		return AECableType.GLASS;
+	}	@Override
+	@SideOnly( Side.CLIENT )
+	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		rh.setBounds( 1, 1, 1, 15, 15, 15 );
 		rh.renderBlock( x, y, z, renderer );
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderDynamic(double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer)
+	public void securityBreak()
+	{
+		if( this.is.stackSize > 0 )
+		{
+			List<ItemStack> items = new ArrayList<ItemStack>();
+			items.add( this.is.copy() );
+			this.host.removePart( this.side, false );
+			Platform.spawnDrops( this.tile.getWorldObj(), this.tile.xCoord, this.tile.yCoord, this.tile.zCoord, items );
+			this.is.stackSize = 0;
+		}
+	}	@Override
+	@SideOnly( Side.CLIENT )
+	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 
 	}
 
-	@Override
-	public ItemStack getItemStack(PartItemStack type)
+	protected AEColor getColor()
 	{
-		if ( type == PartItemStack.Network )
+		if( this.getHost() == null )
+			return AEColor.Transparent;
+		return this.getHost().getColor();
+	}	@Override
+	public ItemStack getItemStack( PartItemStack type )
+	{
+		if( type == PartItemStack.Network )
 		{
 			ItemStack copy = this.is.copy();
 			copy.setTagCompound( null );
@@ -126,73 +151,118 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 		return this.is;
 	}
 
-	@Override
+	public IPartHost getHost()
+	{
+		return this.host;
+	}	@Override
 	public boolean isSolid()
 	{
 		return false;
 	}
 
 	@Override
+	public void getBoxes( IPartCollisionHelper bch )
+	{
+
+	}	@Override
 	public void onNeighborChanged()
 	{
 
 	}
 
 	@Override
+	public int getInstalledUpgrades( Upgrades u )
+	{
+		return 0;
+	}	@Override
 	public boolean canConnectRedstone()
 	{
 		return false;
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound data)
+	public TileEntity getTile()
+	{
+		return this.tile;
+	}	@Override
+	public void readFromNBT( NBTTagCompound data )
 	{
 		this.proxy.readFromNBT( data );
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound data)
+	public AENetworkProxy getProxy()
+	{
+		return this.proxy;
+	}	@Override
+	public void writeToNBT( NBTTagCompound data )
 	{
 		this.proxy.writeToNBT( data );
 	}
 
 	@Override
+	public DimensionalCoord getLocation()
+	{
+		return new DimensionalCoord( this.tile );
+	}	@Override
 	public int isProvidingStrongPower()
 	{
 		return 0;
 	}
 
 	@Override
+	public void gridChanged()
+	{
+
+	}	@Override
 	public int isProvidingWeakPower()
 	{
 		return 0;
 	}
 
 	@Override
-	public void writeToStream(ByteBuf data) throws IOException
+	public IGridNode getActionableNode()
+	{
+		return this.proxy.getNode();
+	}	@Override
+	public void writeToStream( ByteBuf data ) throws IOException
 	{
 
 	}
 
-	@Override
-	public boolean readFromStream(ByteBuf data) throws IOException
+	public void saveChanges()
+	{
+		this.host.markForSave();
+	}	@Override
+	public boolean readFromStream( ByteBuf data ) throws IOException
 	{
 		return false;
 	}
 
 	@Override
+	public String getCustomName()
+	{
+		return this.is.getDisplayName();
+	}	@Override
 	public IGridNode getGridNode()
 	{
 		return this.proxy.getNode();
 	}
 
 	@Override
-	public void onEntityCollision(Entity entity)
+	public boolean hasCustomName()
+	{
+		return this.is.hasDisplayName();
+	}	@Override
+	public void onEntityCollision( Entity entity )
 	{
 
 	}
 
-	@Override
+	public void addEntityCrashInfo( CrashReportCategory crashreportcategory )
+	{
+		crashreportcategory.addCrashSection( "Part Side", this.side );
+	}	@Override
 	public void removeFromWorld()
 	{
 		this.proxy.invalidate();
@@ -205,17 +275,14 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	}
 
 	@Override
-	public void setPartHostInfo(ForgeDirection side, IPartHost host, TileEntity tile)
+	public void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
 	{
 		this.side = side;
 		this.tile = tile;
 		this.host = host;
 	}
 
-	public IPartHost getHost()
-	{
-		return this.host;
-	}
+
 
 	@Override
 	public IGridNode getExternalFacingNode()
@@ -223,34 +290,17 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 		return null;
 	}
 
-	@Override
-	public IGridNode getGridNode(ForgeDirection dir)
-	{
-		return this.proxy.getNode();
-	}
 
-	protected AEColor getColor()
-	{
-		if ( this.getHost() == null )
-			return AEColor.Transparent;
-		return this.getHost().getColor();
-	}
+
+
+
+
+
+
 
 	@Override
-	public DimensionalCoord getLocation()
-	{
-		return new DimensionalCoord( this.tile );
-	}
-
-	@Override
-	public void getBoxes(IPartCollisionHelper bch)
-	{
-
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World world, int x, int y, int z, Random r)
+	@SideOnly( Side.CLIENT )
+	public void randomDisplayTick( World world, int x, int y, int z, Random r )
 	{
 
 	}
@@ -261,14 +311,10 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 		return 0;
 	}
 
-	@Override
-	public AECableType getCableConnectionType(ForgeDirection dir)
-	{
-		return AECableType.GLASS;
-	}
+
 
 	@Override
-	public void getDrops(List<ItemStack> drops, boolean wrenched)
+	public void getDrops( List<ItemStack> drops, boolean wrenched )
 	{
 
 	}
@@ -279,14 +325,10 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 		return 3;
 	}
 
-	@Override
-	public void gridChanged()
-	{
 
-	}
 
 	@Override
-	public boolean isLadder(EntityLivingBase entity)
+	public boolean isLadder( EntityLivingBase entity )
 	{
 		return false;
 	}
@@ -298,45 +340,41 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	}
 
 	@Override
-	public IInventory getInventoryByName(String name)
+	public IInventory getInventoryByName( String name )
 	{
 		return null;
 	}
 
-	@Override
-	public int getInstalledUpgrades(Upgrades u)
-	{
-		return 0;
-	}
+
 
 	/**
 	 * depending on the from, different settings will be accepted, don't call this with null
 	 *
-	 * @param from source of settings
+	 * @param from     source of settings
 	 * @param compound compound of source
 	 */
-	public void uploadSettings(SettingsFrom from, NBTTagCompound compound)
+	public void uploadSettings( SettingsFrom from, NBTTagCompound compound )
 	{
-		if ( compound != null )
+		if( compound != null )
 		{
 			IConfigManager cm = this.getConfigManager();
-			if ( cm != null )
+			if( cm != null )
 				cm.readFromNBT( compound );
 		}
 
-		if ( this instanceof IPriorityHost )
+		if( this instanceof IPriorityHost )
 		{
 			IPriorityHost pHost = (IPriorityHost) this;
 			pHost.setPriority( compound.getInteger( "priority" ) );
 		}
 
 		IInventory inv = this.getInventoryByName( "config" );
-		if ( inv != null && inv instanceof AppEngInternalAEInventory )
+		if( inv != null && inv instanceof AppEngInternalAEInventory )
 		{
 			AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
 			AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSizeInventory() );
 			tmp.readFromNBT( compound, "config" );
-			for (int x = 0; x < tmp.getSizeInventory(); x++)
+			for( int x = 0; x < tmp.getSizeInventory(); x++ )
 				target.setInventorySlotContents( x, tmp.getStackInSlot( x ) );
 		}
 	}
@@ -345,26 +383,27 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	 * null means nothing to store...
 	 *
 	 * @param from source of settings
+	 *
 	 * @return compound of source
 	 */
-	public NBTTagCompound downloadSettings(SettingsFrom from)
+	public NBTTagCompound downloadSettings( SettingsFrom from )
 	{
 		NBTTagCompound output = new NBTTagCompound();
 
 		IConfigManager cm = this.getConfigManager();
-		if ( cm != null )
+		if( cm != null )
 			cm.writeToNBT( output );
 
-		if ( this instanceof IPriorityHost )
+		if( this instanceof IPriorityHost )
 		{
 			IPriorityHost pHost = (IPriorityHost) this;
 			output.setInteger( "priority", pHost.getPriority() );
 		}
 
 		IInventory inv = this.getInventoryByName( "config" );
-		if ( inv != null && inv instanceof AppEngInternalAEInventory )
+		if( inv != null && inv instanceof AppEngInternalAEInventory )
 		{
-			((AppEngInternalAEInventory) inv).writeToNBT( output, "config" );
+			( (AppEngInternalAEInventory) inv ).writeToNBT( output, "config" );
 		}
 
 		return output.hasNoTags() ? null : output;
@@ -375,26 +414,26 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 		return true;
 	}
 
-	private boolean useMemoryCard(EntityPlayer player)
+	private boolean useMemoryCard( EntityPlayer player )
 	{
 		ItemStack memCardIS = player.inventory.getCurrentItem();
 
-		if ( memCardIS != null && this.useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard )
+		if( memCardIS != null && this.useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard )
 		{
 			IMemoryCard memoryCard = (IMemoryCard) memCardIS.getItem();
 
 			ItemStack is = this.getItemStack( PartItemStack.Network );
 
 			// Blocks and parts share the same soul!
-			if ( AEApi.instance().parts().partInterface.sameAsStack( is ) )
+			if( AEApi.instance().parts().partInterface.sameAsStack( is ) )
 				is = AEApi.instance().blocks().blockInterface.stack( 1 );
 
 			String name = is.getUnlocalizedName();
 
-			if ( player.isSneaking() )
+			if( player.isSneaking() )
 			{
 				NBTTagCompound data = this.downloadSettings( SettingsFrom.MEMORY_CARD );
-				if ( data != null )
+				if( data != null )
 				{
 					memoryCard.setMemoryCardContents( memCardIS, name, data );
 					memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
@@ -404,7 +443,7 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 			{
 				String storedName = memoryCard.getSettingsName( memCardIS );
 				NBTTagCompound data = memoryCard.getData( memCardIS );
-				if ( name.equals( storedName ) )
+				if( name.equals( storedName ) )
 				{
 					this.uploadSettings( SettingsFrom.MEMORY_CARD, data );
 					memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
@@ -418,80 +457,54 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 	}
 
 	@Override
-	final public boolean onActivate(EntityPlayer player, Vec3 pos)
+	final public boolean onActivate( EntityPlayer player, Vec3 pos )
 	{
-		if ( this.useMemoryCard( player ) )
+		if( this.useMemoryCard( player ) )
 			return true;
 
 		return this.onPartActivate( player, pos );
 	}
 
 	@Override
-	final public boolean onShiftActivate(EntityPlayer player, Vec3 pos)
+	final public boolean onShiftActivate( EntityPlayer player, Vec3 pos )
 	{
-		if ( this.useMemoryCard( player ) )
+		if( this.useMemoryCard( player ) )
 			return true;
 
 		return this.onPartShiftActivate( player, pos );
 	}
 
-	public boolean onPartActivate(EntityPlayer player, Vec3 pos)
+	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
 	{
 		return false;
 	}
 
-	public boolean onPartShiftActivate(EntityPlayer player, Vec3 pos)
+	public boolean onPartShiftActivate( EntityPlayer player, Vec3 pos )
 	{
 		return false;
 	}
 
 	@Override
-	public void onPlacement(EntityPlayer player, ItemStack held, ForgeDirection side)
+	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
 	{
 		this.proxy.setOwner( player );
 	}
 
-	@Override
-	public TileEntity getTile()
-	{
-		return this.tile;
-	}
+
+
+
+
+
+
+
 
 	@Override
-	public void securityBreak()
-	{
-		if ( this.is.stackSize > 0 )
-		{
-			List<ItemStack> items = new ArrayList<ItemStack>();
-			items.add( this.is.copy() );
-			this.host.removePart( this.side, false );
-			Platform.spawnDrops( this.tile.getWorldObj(), this.tile.xCoord, this.tile.yCoord, this.tile.zCoord, items );
-			this.is.stackSize = 0;
-		}
-	}
-
-	@Override
-	public AENetworkProxy getProxy()
-	{
-		return this.proxy;
-	}
-
-	@Override
-	public IGridNode getActionableNode()
-	{
-		return this.proxy.getNode();
-	}
-
-	@Override
-	public boolean canBePlacedOn(BusSupport what)
+	public boolean canBePlacedOn( BusSupport what )
 	{
 		return what == BusSupport.CABLE;
 	}
 
-	public void saveChanges()
-	{
-		this.host.markForSave();
-	}
+
 
 	@Override
 	public boolean requireDynamicRender()
@@ -499,27 +512,16 @@ public class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradea
 		return false;
 	}
 
-	@Override
-	public String getCustomName()
-	{
-		return this.is.getDisplayName();
-	}
+
+
+
 
 	@Override
-	public boolean hasCustomName()
-	{
-		return this.is.hasDisplayName();
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	public IIcon getBreakingTexture()
 	{
 		return null;
 	}
 
-	public void addEntityCrashInfo(CrashReportCategory crashreportcategory)
-	{
-		crashreportcategory.addCrashSection( "Part Side", this.side );
-	}
+
 }

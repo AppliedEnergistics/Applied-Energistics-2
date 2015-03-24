@@ -18,6 +18,7 @@
 
 package appeng.block.spatial;
 
+
 import java.util.EnumSet;
 
 import net.minecraft.block.Block;
@@ -32,37 +33,38 @@ import appeng.core.sync.GuiBridge;
 import appeng.tile.spatial.TileSpatialIOPort;
 import appeng.util.Platform;
 
+
 public class BlockSpatialIOPort extends AEBaseBlock
 {
 
-	public BlockSpatialIOPort() {
+	public BlockSpatialIOPort()
+	{
 		super( BlockSpatialIOPort.class, Material.iron );
 		this.setFeature( EnumSet.of( AEFeature.SpatialIO ) );
 		this.setTileEntity( TileSpatialIOPort.class );
 	}
 
 	@Override
-	public final void onNeighborBlockChange(World w, int x, int y, int z, Block junk)
+	public final void onNeighborBlockChange( World w, int x, int y, int z, Block junk )
 	{
 		TileSpatialIOPort te = this.getTileEntity( w, x, y, z );
-		if ( te != null )
+		if( te != null )
 			te.updateRedstoneState();
 	}
 
 	@Override
-	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
+	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
 	{
-		if ( p.isSneaking() )
+		if( p.isSneaking() )
 			return false;
 
 		TileSpatialIOPort tg = this.getTileEntity( w, x, y, z );
-		if ( tg != null )
+		if( tg != null )
 		{
-			if ( Platform.isServer() )
+			if( Platform.isServer() )
 				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_SPATIAL_IO_PORT );
 			return true;
 		}
 		return false;
 	}
-
 }

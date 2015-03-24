@@ -18,6 +18,7 @@
 
 package appeng.block.spatial;
 
+
 import java.util.EnumSet;
 
 import net.minecraft.block.Block;
@@ -31,28 +32,30 @@ import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
 import appeng.tile.spatial.TileSpatialPylon;
 
+
 public class BlockSpatialPylon extends AEBaseBlock
 {
 
-	public BlockSpatialPylon() {
+	public BlockSpatialPylon()
+	{
 		super( BlockSpatialPylon.class, AEGlassMaterial.INSTANCE );
 		this.setFeature( EnumSet.of( AEFeature.SpatialIO ) );
 		this.setTileEntity( TileSpatialPylon.class );
 	}
 
 	@Override
-	public void onNeighborBlockChange(World w, int x, int y, int z, Block junk)
+	public void onNeighborBlockChange( World w, int x, int y, int z, Block junk )
 	{
 		TileSpatialPylon tsp = this.getTileEntity( w, x, y, z );
-		if ( tsp != null )
+		if( tsp != null )
 			tsp.onNeighborBlockChange();
 	}
 
 	@Override
-	public int getLightValue(IBlockAccess w, int x, int y, int z)
+	public int getLightValue( IBlockAccess w, int x, int y, int z )
 	{
 		TileSpatialPylon tsp = this.getTileEntity( w, x, y, z );
-		if ( tsp != null )
+		if( tsp != null )
 			return tsp.getLightValue();
 		return super.getLightValue( w, x, y, z );
 	}
@@ -62,5 +65,4 @@ public class BlockSpatialPylon extends AEBaseBlock
 	{
 		return RenderSpatialPylon.class;
 	}
-
 }

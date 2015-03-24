@@ -18,6 +18,7 @@
 
 package appeng.client.me;
 
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -25,61 +26,56 @@ import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.data.IAEItemStack;
 
+
 public class SlotME extends Slot
 {
 
 	public final InternalSlotME mySlot;
 
-	public SlotME(InternalSlotME me) {
+	public SlotME( InternalSlotME me )
+	{
 		super( null, 0, me.xPos, me.yPos );
 		this.mySlot = me;
 	}
 
-	@Override
-	public ItemStack getStack()
-	{
-		if ( this.mySlot.hasPower() )
-			return this.mySlot.getStack();
-		return null;
-	}
-
 	public IAEItemStack getAEStack()
 	{
-		if ( this.mySlot.hasPower() )
+		if( this.mySlot.hasPower() )
 			return this.mySlot.getAEStack();
 		return null;
 	}
 
 	@Override
-	public boolean canTakeStack(EntityPlayer par1EntityPlayer)
+	public void onPickupFromSlot( EntityPlayer par1EntityPlayer, ItemStack par2ItemStack )
+	{
+	}
+
+	@Override
+	public boolean isItemValid( ItemStack par1ItemStack )
 	{
 		return false;
 	}
 
 	@Override
-	public ItemStack decrStackSize(int par1)
+	public ItemStack getStack()
 	{
+		if( this.mySlot.hasPower() )
+			return this.mySlot.getStack();
 		return null;
-	}
-
-	@Override
-	public void putStack(ItemStack par1ItemStack)
-	{
-
 	}
 
 	@Override
 	public boolean getHasStack()
 	{
-		if ( this.mySlot.hasPower() )
+		if( this.mySlot.hasPower() )
 			return this.getStack() != null;
 		return false;
 	}
 
 	@Override
-	public boolean isItemValid(ItemStack par1ItemStack)
+	public void putStack( ItemStack par1ItemStack )
 	{
-		return false;
+
 	}
 
 	@Override
@@ -89,14 +85,20 @@ public class SlotME extends Slot
 	}
 
 	@Override
-	public boolean isSlotInInventory(IInventory par1iInventory, int par2)
+	public ItemStack decrStackSize( int par1 )
+	{
+		return null;
+	}
+
+	@Override
+	public boolean isSlotInInventory( IInventory par1iInventory, int par2 )
 	{
 		return false;
 	}
 
 	@Override
-	public void onPickupFromSlot(EntityPlayer par1EntityPlayer, ItemStack par2ItemStack)
+	public boolean canTakeStack( EntityPlayer par1EntityPlayer )
 	{
+		return false;
 	}
-
 }

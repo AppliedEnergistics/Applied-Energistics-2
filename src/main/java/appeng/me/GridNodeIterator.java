@@ -47,7 +47,7 @@ public class GridNodeIterator implements Iterator<IGridNode>
 	{
 		final boolean hasNext = this.outerIterator.hasNext();
 
-		if ( hasNext )
+		if( hasNext )
 		{
 			final MachineSet nextElem = this.outerIterator.next();
 			this.innerIterator = nextElem.iterator();
@@ -59,13 +59,13 @@ public class GridNodeIterator implements Iterator<IGridNode>
 	@Override
 	public boolean hasNext()
 	{
-		while ( true )
+		while( true )
 		{
-			if ( this.innerIterator.hasNext() )
+			if( this.innerIterator.hasNext() )
 			{
 				return true;
 			}
-			else if ( !this.innerHasNext() )
+			else if( !this.innerHasNext() )
 			{
 				return false;
 			}

@@ -34,56 +34,57 @@ import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
+
 public class ItemPaintBall extends AEBaseItem
 {
 
-	public ItemPaintBall() {
+	public ItemPaintBall()
+	{
 		super( ItemPaintBall.class );
 		this.setFeature( EnumSet.of( AEFeature.PaintBalls ) );
 		this.hasSubtypes = true;
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			MinecraftForgeClient.registerItemRenderer( this, new PaintBallRender() );
 	}
 
 	@Override
-	public String getItemStackDisplayName(ItemStack is)
+	public String getItemStackDisplayName( ItemStack is )
 	{
 		return super.getItemStackDisplayName( is ) + " - " + this.getExtraName( is );
 	}
 
-	public String getExtraName(ItemStack is)
+	public String getExtraName( ItemStack is )
 	{
-		return (is.getItemDamage() >= 20 ? GuiText.Lumen.getLocal() + ' ' : "") + this.getColor( is );
+		return ( is.getItemDamage() >= 20 ? GuiText.Lumen.getLocal() + ' ' : "" ) + this.getColor( is );
 	}
 
-	public AEColor getColor(ItemStack is)
+	public AEColor getColor( ItemStack is )
 	{
 		int dmg = is.getItemDamage();
-		if ( dmg >= 20 )
+		if( dmg >= 20 )
 			dmg -= 20;
 
-		if ( dmg >= AEColor.values().length )
+		if( dmg >= AEColor.values().length )
 			return AEColor.Transparent;
 
 		return AEColor.values()[dmg];
 	}
 
 	@Override
-	public void getSubItems(Item i, CreativeTabs ct, List l)
+	public void getSubItems( Item i, CreativeTabs ct, List l )
 	{
-		for (AEColor c : AEColor.values())
-			if ( c != AEColor.Transparent )
+		for( AEColor c : AEColor.values() )
+			if( c != AEColor.Transparent )
 				l.add( new ItemStack( this, 1, c.ordinal() ) );
 
-		for (AEColor c : AEColor.values())
-			if ( c != AEColor.Transparent )
+		for( AEColor c : AEColor.values() )
+			if( c != AEColor.Transparent )
 				l.add( new ItemStack( this, 1, 20 + c.ordinal() ) );
 	}
 
-	public boolean isLumen(ItemStack is)
+	public boolean isLumen( ItemStack is )
 	{
 		int dmg = is.getItemDamage();
 		return dmg >= 20;
 	}
-
 }

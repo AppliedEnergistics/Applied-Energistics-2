@@ -18,6 +18,7 @@
 
 package appeng.integration.modules;
 
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -32,6 +33,7 @@ import appeng.integration.abstraction.IFZ;
 import appeng.integration.modules.helpers.FactorizationBarrel;
 import appeng.integration.modules.helpers.FactorizationHandler;
 import appeng.util.Platform;
+
 
 /**
  * 100% Hacks.
@@ -48,116 +50,136 @@ public class FZ implements IFZ, IIntegrationModule
 	private static Field day_item;
 
 	@Override
-	public ItemStack barrelGetItem(TileEntity te)
+	public ItemStack barrelGetItem( TileEntity te )
 	{
 		try
 		{
 			ItemStack i = null;
 
-			if ( day_BarrelClass.isInstance( te ) )
+			if( day_BarrelClass.isInstance( te ) )
 				i = (ItemStack) day_item.get( te );
 
-			if ( i != null )
+			if( i != null )
 				i = Platform.cloneItemStack( i );
 
 			return i;
 		}
-		catch (IllegalArgumentException ignored)
+		catch( IllegalArgumentException ignored )
 		{
 		}
-		catch (IllegalAccessException ignored)
+		catch( IllegalAccessException ignored )
 		{
 		}
 		return null;
 	}
 
 	@Override
-	public int barrelGetMaxItemCount(TileEntity te)
+	public int barrelGetMaxItemCount( TileEntity te )
 	{
 		try
 		{
-			if ( day_BarrelClass.isInstance( te ) )
+			if( day_BarrelClass.isInstance( te ) )
 				return (Integer) day_getMaxSize.invoke( te );
 		}
-		catch (IllegalAccessException ignored)
+		catch( IllegalAccessException ignored )
 		{
 		}
-		catch (IllegalArgumentException ignored)
+		catch( IllegalArgumentException ignored )
 		{
 		}
-		catch (InvocationTargetException ignored)
+		catch( InvocationTargetException ignored )
 		{
 		}
 		return 0;
 	}
 
 	@Override
-	public int barrelGetItemCount(TileEntity te)
+	public int barrelGetItemCount( TileEntity te )
 	{
 		try
 		{
-			if ( day_BarrelClass.isInstance( te ) )
+			if( day_BarrelClass.isInstance( te ) )
 				return (Integer) day_getItemCount.invoke( te );
 		}
-		catch (IllegalAccessException ignored)
+		catch( IllegalAccessException ignored )
 		{
 		}
-		catch (IllegalArgumentException ignored)
+		catch( IllegalArgumentException ignored )
 		{
 		}
-		catch (InvocationTargetException ignored)
+		catch( InvocationTargetException ignored )
 		{
 		}
 		return 0;
 	}
 
 	@Override
-	public void setItemType(TileEntity te, ItemStack input)
+	public void setItemType( TileEntity te, ItemStack input )
 	{
 		try
 		{
-			if ( day_BarrelClass.isInstance( te ) )
+			if( day_BarrelClass.isInstance( te ) )
 				day_item.set( te, input == null ? null : input.copy() );
 		}
-		catch (IllegalArgumentException ignored)
+		catch( IllegalArgumentException ignored )
 		{
 		}
-		catch (IllegalAccessException ignored)
+		catch( IllegalAccessException ignored )
 		{
 		}
 	}
 
 	@Override
-	public void barrelSetCount(TileEntity te, int max)
+	public void barrelSetCount( TileEntity te, int max )
 	{
 		try
 		{
-			if ( day_BarrelClass.isInstance( te ) )
+			if( day_BarrelClass.isInstance( te ) )
 				day_setItemCount.invoke( te, max );
 
 			te.markDirty();
 		}
-		catch (IllegalAccessException ignored)
+		catch( IllegalAccessException ignored )
 		{
 		}
-		catch (IllegalArgumentException ignored)
+		catch( IllegalArgumentException ignored )
 		{
 		}
-		catch (InvocationTargetException ignored)
+		catch( InvocationTargetException ignored )
 		{
 		}
 	}
 
 	@Override
-	public IMEInventory getFactorizationBarrel(TileEntity te)
+	public IMEInventory getFactorizationBarrel( TileEntity te )
 	{
 		return new FactorizationBarrel( this, te );
 	}
 
 	@Override
-	public boolean isBarrel(TileEntity te)
+	public boolean isBarrel( TileEntity te )
 	{
 		return day_BarrelClass.isAssignableFrom( te.getClass() );
+	}
+
+	@Override
+	public void grinderRecipe( ItemStack in, ItemStack out )
+	{
+		try
+		{
+			Class<?> c = Class.forName( "factorization.oreprocessing.TileEntityGrinder" );
+			Method m = c.getMethod( "addRecipe", Object.class, ItemStack.class, float.class );
+
+			float amt = out.stackSize;
+			out.stackSize = 1;
+
+			m.invoke( c, in, out, amt );
+		}
+		catch( Throwable t )
+		{
+			// AELog.info( "" );
+			// throw new RuntimeException( t );
+		}
 	}
 
 	@Override
@@ -175,25 +197,5 @@ public class FZ implements IFZ, IIntegrationModule
 	public void postInit()
 	{
 		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new FactorizationHandler() );
-	}
-
-	@Override
-	public void grinderRecipe(ItemStack in, ItemStack out)
-	{
-		try
-		{
-			Class<?> c = Class.forName( "factorization.oreprocessing.TileEntityGrinder" );
-			Method m = c.getMethod( "addRecipe", Object.class, ItemStack.class, float.class );
-
-			float amt = out.stackSize;
-			out.stackSize = 1;
-
-			m.invoke( c, in, out, amt );
-		}
-		catch (Throwable t)
-		{
-			// AELog.info( "" );
-			// throw new RuntimeException( t );
-		}
 	}
 }

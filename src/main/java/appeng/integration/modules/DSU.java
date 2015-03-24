@@ -58,5 +58,4 @@ public class DSU extends BaseModule implements IDSU
 	{
 		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new MFRDSUHandler() );
 	}
-
 }

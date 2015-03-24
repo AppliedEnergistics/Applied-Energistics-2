@@ -18,6 +18,7 @@
 
 package appeng.block.misc;
 
+
 import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
@@ -31,32 +32,33 @@ import appeng.core.sync.GuiBridge;
 import appeng.tile.misc.TileCondenser;
 import appeng.util.Platform;
 
+
 public class BlockCondenser extends AEBaseBlock
 {
 
-	public BlockCondenser() {
+	public BlockCondenser()
+	{
 		super( BlockCondenser.class, Material.iron );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setTileEntity( TileCondenser.class );
 	}
 
 	@Override
-	public boolean onActivated(World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
 	{
-		if ( player.isSneaking() )
+		if( player.isSneaking() )
 			return false;
 
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 		{
 			TileCondenser tc = this.getTileEntity( w, x, y, z );
-			if ( tc != null && !player.isSneaking() )
+			if( tc != null && !player.isSneaking() )
 			{
-				Platform.openGUI( player, tc, ForgeDirection.getOrientation(side), GuiBridge.GUI_CONDENSER );
+				Platform.openGUI( player, tc, ForgeDirection.getOrientation( side ), GuiBridge.GUI_CONDENSER );
 				return true;
 			}
 		}
 
 		return true;
 	}
-
 }

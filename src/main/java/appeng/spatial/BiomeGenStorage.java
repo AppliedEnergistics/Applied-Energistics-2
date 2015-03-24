@@ -18,12 +18,15 @@
 
 package appeng.spatial;
 
+
 import net.minecraft.world.biome.BiomeGenBase;
+
 
 public class BiomeGenStorage extends BiomeGenBase
 {
 
-	public BiomeGenStorage(int id) {
+	public BiomeGenStorage( int id )
+	{
 		super( id );
 		this.setBiomeName( "Storage Cell" );
 
@@ -39,5 +42,4 @@ public class BiomeGenStorage extends BiomeGenBase
 		this.spawnableWaterCreatureList.clear();
 		this.spawnableCaveCreatureList.clear();
 	}
-
 }

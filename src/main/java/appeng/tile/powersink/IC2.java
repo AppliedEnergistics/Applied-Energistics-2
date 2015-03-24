@@ -18,6 +18,7 @@
 
 package appeng.tile.powersink;
 
+
 import java.util.EnumSet;
 
 import net.minecraft.tileentity.TileEntity;
@@ -32,14 +33,15 @@ import appeng.integration.abstraction.IIC2;
 import appeng.transformer.annotations.Integration.Interface;
 import appeng.util.Platform;
 
-@Interface(iname = "IC2", iface = "ic2.api.energy.tile.IEnergySink")
+
+@Interface( iname = "IC2", iface = "ic2.api.energy.tile.IEnergySink" )
 public abstract class IC2 extends AERootPoweredTile implements IEnergySink
 {
 
 	boolean isInIC2 = false;
 
 	@Override
-	final public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
+	final public boolean acceptsEnergyFrom( TileEntity emitter, ForgeDirection direction )
 	{
 		return this.getPowerSides().contains( direction );
 	}
@@ -51,7 +53,13 @@ public abstract class IC2 extends AERootPoweredTile implements IEnergySink
 	}
 
 	@Override
-	final public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)
+	final public int getSinkTier()
+	{
+		return Integer.MAX_VALUE;
+	}
+
+	@Override
+	final public double injectEnergy( ForgeDirection directionFrom, double amount, double voltage )
 	{
 		// just store the excess in the current block, if I return the waste,
 		// IC2 will just disintegrate it - Oct 20th 2013
@@ -61,16 +69,23 @@ public abstract class IC2 extends AERootPoweredTile implements IEnergySink
 	}
 
 	@Override
-	final public int getSinkTier()
-	{
-		return Integer.MAX_VALUE;
-	}
-
-	@Override
 	public void invalidate()
 	{
 		super.invalidate();
 		this.removeFromENet();
+	}
+
+	private void removeFromENet()
+	{
+		if( AppEng.instance.isIntegrationEnabled( IntegrationType.IC2 ) )
+		{
+			IIC2 ic2Integration = (IIC2) AppEng.instance.getIntegration( IntegrationType.IC2 );
+			if( this.isInIC2 && Platform.isServer() && ic2Integration != null )
+			{
+				ic2Integration.removeFromEnergyNet( this );
+				this.isInIC2 = false;
+			}
+		}
 	}
 
 	@Override
@@ -87,20 +102,12 @@ public abstract class IC2 extends AERootPoweredTile implements IEnergySink
 		this.addToENet();
 	}
 
-	@Override
-	protected void setPowerSides(EnumSet<ForgeDirection> sides)
-	{
-		super.setPowerSides( sides );
-		this.removeFromENet();
-		this.addToENet();
-	}
-
 	private void addToENet()
 	{
-		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.IC2 ) )
+		if( AppEng.instance.isIntegrationEnabled( IntegrationType.IC2 ) )
 		{
 			IIC2 ic2Integration = (IIC2) AppEng.instance.getIntegration( IntegrationType.IC2 );
-			if ( !this.isInIC2 && Platform.isServer() && ic2Integration != null )
+			if( !this.isInIC2 && Platform.isServer() && ic2Integration != null )
 			{
 				ic2Integration.addToEnergyNet( this );
 				this.isInIC2 = true;
@@ -108,17 +115,11 @@ public abstract class IC2 extends AERootPoweredTile implements IEnergySink
 		}
 	}
 
-	private void removeFromENet()
+	@Override
+	protected void setPowerSides( EnumSet<ForgeDirection> sides )
 	{
-		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.IC2 ) )
-		{
-			IIC2 ic2Integration = (IIC2) AppEng.instance.getIntegration( IntegrationType.IC2 );
-			if ( this.isInIC2 && Platform.isServer() && ic2Integration != null )
-			{
-				ic2Integration.removeFromEnergyNet( this );
-				this.isInIC2 = false;
-			}
-		}
+		super.setPowerSides( sides );
+		this.removeFromENet();
+		this.addToENet();
 	}
-
 }

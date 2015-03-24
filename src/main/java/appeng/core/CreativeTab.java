@@ -65,12 +65,12 @@ public final class CreativeTab extends CreativeTabs
 
 	private ItemStack findFirst( AEItemDefinition... choices )
 	{
-		for ( AEItemDefinition a : choices )
+		for( AEItemDefinition a : choices )
 		{
-			if ( a != null )
+			if( a != null )
 			{
 				ItemStack is = a.stack( 1 );
-				if ( is != null )
+				if( is != null )
 				{
 					return is;
 				}

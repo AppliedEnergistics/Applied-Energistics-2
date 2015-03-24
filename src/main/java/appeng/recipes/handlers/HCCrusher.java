@@ -18,6 +18,7 @@
 
 package appeng.recipes.handlers;
 
+
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -34,6 +35,7 @@ import appeng.core.AELog;
 import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
 
+
 public class HCCrusher implements ICraftHandler, IWebsiteSerializer
 {
 
@@ -41,12 +43,12 @@ public class HCCrusher implements ICraftHandler, IWebsiteSerializer
 	IIngredient[] pro_output;
 
 	@Override
-	public void setup(List<List<IIngredient>> input, List<List<IIngredient>> output) throws RecipeError
+	public void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeError
 	{
-		if ( input.size() == 1 && output.size() == 1 )
+		if( input.size() == 1 && output.size() == 1 )
 		{
 			int outs = output.get( 0 ).size();
-			if ( input.get( 0 ).size() == 1 && outs == 1 )
+			if( input.get( 0 ).size() == 1 && outs == 1 )
 			{
 				this.pro_input = input.get( 0 ).get( 0 );
 				this.pro_output = output.get( 0 ).toArray( new IIngredient[outs] );
@@ -59,7 +61,7 @@ public class HCCrusher implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		for (ItemStack beginStack : this.pro_input.getItemStackSet())
+		for( ItemStack beginStack : this.pro_input.getItemStackSet() )
 		{
 			try
 			{
@@ -71,15 +73,15 @@ public class HCCrusher implements ICraftHandler, IWebsiteSerializer
 				NBTTagCompound itemTo = new NBTTagCompound();
 
 				beginStack.writeToNBT( itemFrom );
-				endStack.writeToNBT(itemTo);
+				endStack.writeToNBT( itemTo );
 
-				toRegister.setTag("itemFrom", itemFrom);
-				toRegister.setTag("itemTo", itemTo);
-				toRegister.setFloat("pressureRatio", 1.0F);
+				toRegister.setTag( "itemFrom", itemFrom );
+				toRegister.setTag( "itemTo", itemTo );
+				toRegister.setFloat( "pressureRatio", 1.0F );
 
-				FMLInterModComms.sendMessage("HydCraft", "registerCrushingRecipe", toRegister);
+				FMLInterModComms.sendMessage( "HydCraft", "registerCrushingRecipe", toRegister );
 			}
-			catch (java.lang.RuntimeException err)
+			catch( java.lang.RuntimeException err )
 			{
 				AELog.info( "Hydraulicraft not happy - " + err.getMessage() );
 			}
@@ -87,15 +89,14 @@ public class HCCrusher implements ICraftHandler, IWebsiteSerializer
 	}
 
 	@Override
-	public boolean canCraft(ItemStack output) throws RegistrationError, MissingIngredientError
-	{
-		return Platform.isSameItemPrecise( this.pro_output[0].getItemStack(), output );
-	}
-
-	@Override
-	public String getPattern(RecipeHandler h)
+	public String getPattern( RecipeHandler h )
 	{
 		return null;
 	}
 
+	@Override
+	public boolean canCraft( ItemStack output ) throws RegistrationError, MissingIngredientError
+	{
+		return Platform.isSameItemPrecise( this.pro_output[0].getItemStack(), output );
+	}
 }

@@ -18,6 +18,7 @@
 
 package appeng.block.crafting;
 
+
 import java.util.List;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -35,10 +36,12 @@ import appeng.client.render.blocks.RenderBlockCraftingCPUMonitor;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 
+
 public class BlockCraftingMonitor extends BlockCraftingUnit
 {
 
-	public BlockCraftingMonitor() {
+	public BlockCraftingMonitor()
+	{
 		super( BlockCraftingMonitor.class );
 
 		this.setTileEntity( TileCraftingMonitorTile.class );
@@ -51,24 +54,24 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 	}
 
 	@Override
-	public IIcon getIcon(int direction, int metadata)
+	public IIcon getIcon( int direction, int metadata )
 	{
-		if ( direction != ForgeDirection.SOUTH.ordinal() )
+		if( direction != ForgeDirection.SOUTH.ordinal() )
 			return AEApi.instance().blocks().blockCraftingUnit.block().getIcon( direction, metadata );
 
-		switch (metadata)
+		switch( metadata )
 		{
-		default:
-		case 0:
-			return super.getIcon( 0, 0 );
-		case FLAG_FORMED:
-			return ExtraBlockTextures.BlockCraftingMonitorFit_Light.getIcon();
+			default:
+			case 0:
+				return super.getIcon( 0, 0 );
+			case FLAG_FORMED:
+				return ExtraBlockTextures.BlockCraftingMonitorFit_Light.getIcon();
 		}
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void getCheckedSubBlocks(Item item, CreativeTabs tabs, List<ItemStack> itemStacks)
+	@SideOnly( Side.CLIENT )
+	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
 	{
 		itemStacks.add( new ItemStack( this, 1, 0 ) );
 	}

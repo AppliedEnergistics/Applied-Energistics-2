@@ -18,6 +18,7 @@
 
 package appeng.core.features;
 
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,13 +27,15 @@ import net.minecraft.world.IBlockAccess;
 
 import appeng.api.util.AEItemDefinition;
 
+
 public class WrappedDamageItemDefinition implements AEItemDefinition
 {
 
 	final AEItemDefinition baseItem;
 	final int damage;
 
-	public WrappedDamageItemDefinition(AEItemDefinition def, int dmg) {
+	public WrappedDamageItemDefinition( AEItemDefinition def, int dmg )
+	{
 		this.baseItem = def;
 		this.damage = dmg;
 	}
@@ -56,29 +59,28 @@ public class WrappedDamageItemDefinition implements AEItemDefinition
 	}
 
 	@Override
-	public ItemStack stack(int stackSize)
+	public ItemStack stack( int stackSize )
 	{
-		if ( this.baseItem == null )
+		if( this.baseItem == null )
 			return null;
 
 		return new ItemStack( this.baseItem.block(), stackSize, this.damage );
 	}
 
 	@Override
-	public boolean sameAsStack(ItemStack comparableItem)
+	public boolean sameAsStack( ItemStack comparableItem )
 	{
-		if ( comparableItem == null )
+		if( comparableItem == null )
 			return false;
 
 		return comparableItem.getItem() == this.baseItem.item() && comparableItem.getItemDamage() == this.damage;
 	}
 
 	@Override
-	public boolean sameAsBlock(IBlockAccess world, int x, int y, int z)
+	public boolean sameAsBlock( IBlockAccess world, int x, int y, int z )
 	{
-		if ( this.block() != null )
+		if( this.block() != null )
 			return world.getBlock( x, y, z ) == this.block() && world.getBlockMetadata( x, y, z ) == this.damage;
 		return false;
 	}
-
 }

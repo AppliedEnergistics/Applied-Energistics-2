@@ -18,6 +18,7 @@
 
 package appeng.tile;
 
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -31,31 +32,34 @@ import appeng.tile.events.TileEventType;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 
+
 public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventory, IAEAppEngInventory
 {
 
-	@TileEvent(TileEventType.WORLD_NBT_READ)
-	public void readFromNBT_AEBaseInvTile(net.minecraft.nbt.NBTTagCompound data)
+	@TileEvent( TileEventType.WORLD_NBT_READ )
+	public void readFromNBT_AEBaseInvTile( net.minecraft.nbt.NBTTagCompound data )
 	{
 		IInventory inv = this.getInternalInventory();
 		NBTTagCompound opt = data.getCompoundTag( "inv" );
-		for (int x = 0; x < inv.getSizeInventory(); x++)
+		for( int x = 0; x < inv.getSizeInventory(); x++ )
 		{
 			NBTTagCompound item = opt.getCompoundTag( "item" + x );
 			inv.setInventorySlotContents( x, ItemStack.loadItemStackFromNBT( item ) );
 		}
 	}
 
-	@TileEvent(TileEventType.WORLD_NBT_WRITE)
-	public void writeToNBT_AEBaseInvTile(net.minecraft.nbt.NBTTagCompound data)
+	public abstract IInventory getInternalInventory();
+
+	@TileEvent( TileEventType.WORLD_NBT_WRITE )
+	public void writeToNBT_AEBaseInvTile( net.minecraft.nbt.NBTTagCompound data )
 	{
 		IInventory inv = this.getInternalInventory();
 		NBTTagCompound opt = new NBTTagCompound();
-		for (int x = 0; x < inv.getSizeInventory(); x++)
+		for( int x = 0; x < inv.getSizeInventory(); x++ )
 		{
 			NBTTagCompound item = new NBTTagCompound();
 			ItemStack is = this.getStackInSlot( x );
-			if ( is != null )
+			if( is != null )
 				is.writeToNBT( item );
 			opt.setTag( "item" + x, item );
 		}
@@ -69,89 +73,27 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int i)
+	public ItemStack getStackInSlot( int i )
 	{
 		return this.getInternalInventory().getStackInSlot( i );
 	}
 
 	@Override
-	public ItemStack decrStackSize(int i, int j)
+	public ItemStack decrStackSize( int i, int j )
 	{
 		return this.getInternalInventory().decrStackSize( i, j );
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int i)
+	public ItemStack getStackInSlotOnClosing( int i )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents(int i, ItemStack itemstack)
+	public void setInventorySlotContents( int i, ItemStack itemstack )
 	{
 		this.getInternalInventory().setInventorySlotContents( i, itemstack );
-	}
-
-	@Override
-	public void openInventory()
-	{
-	}
-
-	@Override
-	public void closeInventory()
-	{
-	}
-
-	@Override
-	public int getInventoryStackLimit()
-	{
-		return 64;
-	}
-
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer p)
-	{
-		final double squaredMCReach = 64.0D;
-
-		return this.worldObj.getTileEntity( this.xCoord, this.yCoord, this.zCoord ) == this && p.getDistanceSq( this.xCoord + 0.5D,
-				this.yCoord + 0.5D, this.zCoord + 0.5D ) <= squaredMCReach;
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack)
-	{
-		return true;
-	}
-
-	@Override
-	public boolean canInsertItem(int i, ItemStack itemstack, int j)
-	{
-		return this.isItemValidForSlot( i, itemstack );
-	}
-
-	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j)
-	{
-		return true;
-	}
-
-	public abstract IInventory getInternalInventory();
-
-	@Override
-	public abstract void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added);
-
-	public abstract int[] getAccessibleSlotsBySide(ForgeDirection whichSide);
-
-	@Override
-	final public int[] getAccessibleSlotsFromSide(int side)
-	{
-		Block blk = this.worldObj.getBlock( this.xCoord, this.yCoord, this.zCoord );
-		if ( blk instanceof AEBaseBlock )
-		{
-			ForgeDirection mySide = ForgeDirection.getOrientation( side );
-			return this.getAccessibleSlotsBySide( ((AEBaseBlock) blk).mapRotation( this, mySide ) );
-		}
-		return this.getAccessibleSlotsBySide( ForgeDirection.getOrientation( side ) );
 	}
 
 	/**
@@ -172,4 +114,62 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 		return this.hasCustomName();
 	}
 
+	@Override
+	public int getInventoryStackLimit()
+	{
+		return 64;
+	}
+
+	@Override
+	public boolean isUseableByPlayer( EntityPlayer p )
+	{
+		final double squaredMCReach = 64.0D;
+
+		return this.worldObj.getTileEntity( this.xCoord, this.yCoord, this.zCoord ) == this && p.getDistanceSq( this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D ) <= squaredMCReach;
+	}
+
+	@Override
+	public void openInventory()
+	{
+	}
+
+	@Override
+	public void closeInventory()
+	{
+	}
+
+	@Override
+	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	{
+		return true;
+	}
+
+	@Override
+	public abstract void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added );
+
+	@Override
+	final public int[] getAccessibleSlotsFromSide( int side )
+	{
+		Block blk = this.worldObj.getBlock( this.xCoord, this.yCoord, this.zCoord );
+		if( blk instanceof AEBaseBlock )
+		{
+			ForgeDirection mySide = ForgeDirection.getOrientation( side );
+			return this.getAccessibleSlotsBySide( ( (AEBaseBlock) blk ).mapRotation( this, mySide ) );
+		}
+		return this.getAccessibleSlotsBySide( ForgeDirection.getOrientation( side ) );
+	}
+
+	@Override
+	public boolean canInsertItem( int i, ItemStack itemstack, int j )
+	{
+		return this.isItemValidForSlot( i, itemstack );
+	}
+
+	@Override
+	public boolean canExtractItem( int i, ItemStack itemstack, int j )
+	{
+		return true;
+	}
+
+	public abstract int[] getAccessibleSlotsBySide( ForgeDirection whichSide );
 }

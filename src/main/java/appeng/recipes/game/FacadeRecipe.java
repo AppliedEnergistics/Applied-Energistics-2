@@ -53,18 +53,18 @@ public class FacadeRecipe implements IRecipe
 
 	private ItemStack getOutput( IInventory inv, boolean createFacade )
 	{
-		if ( this.maybeAnchor.isPresent() && this.maybeFacade.isPresent() && inv.getStackInSlot( 0 ) == null && inv.getStackInSlot( 2 ) == null && inv.getStackInSlot( 6 ) == null && inv.getStackInSlot( 8 ) == null )
+		if( this.maybeAnchor.isPresent() && this.maybeFacade.isPresent() && inv.getStackInSlot( 0 ) == null && inv.getStackInSlot( 2 ) == null && inv.getStackInSlot( 6 ) == null && inv.getStackInSlot( 8 ) == null )
 		{
 			final AEItemDefinition anchorDefinition = this.maybeAnchor.get();
 			final AEItemDefinition facadeDefinition = this.maybeFacade.get();
 
-			if ( anchorDefinition.sameAsStack( inv.getStackInSlot( 1 ) ) && anchorDefinition.sameAsStack( inv.getStackInSlot( 3 ) ) && anchorDefinition.sameAsStack( inv.getStackInSlot( 5 ) ) && anchorDefinition.sameAsStack( inv.getStackInSlot( 7 ) ) )
+			if( anchorDefinition.sameAsStack( inv.getStackInSlot( 1 ) ) && anchorDefinition.sameAsStack( inv.getStackInSlot( 3 ) ) && anchorDefinition.sameAsStack( inv.getStackInSlot( 5 ) ) && anchorDefinition.sameAsStack( inv.getStackInSlot( 7 ) ) )
 			{
 				final Item itemDefinition = facadeDefinition.item();
 				final ItemFacade facade = (ItemFacade) itemDefinition;
 
 				ItemStack facades = facade.createFacadeForItem( inv.getStackInSlot( 4 ), !createFacade );
-				if ( facades != null && createFacade )
+				if( facades != null && createFacade )
 					facades.stackSize = 4;
 				return facades;
 			}

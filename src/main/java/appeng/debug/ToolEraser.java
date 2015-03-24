@@ -18,6 +18,7 @@
 
 package appeng.debug;
 
+
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,18 +36,26 @@ import appeng.core.features.AEFeature;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
+
 public class ToolEraser extends AEBaseItem
 {
 
-	public ToolEraser() {
+	public ToolEraser()
+	{
 		super( ToolEraser.class );
 		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
 
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	public void registerIcons( IIconRegister par1IconRegister )
 	{
-		if ( Platform.isClient() )
+		this.itemIcon = new MissingIcon( this );
+	}
+
+	@Override
+	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	{
+		if( Platform.isClient() )
 			return false;
 
 		Block blk = world.getBlock( x, y, z );
@@ -56,18 +65,18 @@ public class ToolEraser extends AEBaseItem
 		List<WorldCoord> next = new LinkedList<WorldCoord>();
 		next.add( new WorldCoord( x, y, z ) );
 
-		while (blocks < 90000 && !next.isEmpty())
+		while( blocks < 90000 && !next.isEmpty() )
 		{
 
 			List<WorldCoord> c = next;
 			next = new LinkedList<WorldCoord>();
 
-			for (WorldCoord wc : c)
+			for( WorldCoord wc : c )
 			{
 				Block c_blk = world.getBlock( wc.x, wc.y, wc.z );
 				int c_meta = world.getBlockMetadata( wc.x, wc.y, wc.z );
 
-				if ( c_blk == blk && c_meta == meta )
+				if( c_blk == blk && c_meta == meta )
 				{
 					blocks++;
 					world.setBlock( wc.x, wc.y, wc.z, Platform.AIR );
@@ -80,7 +89,6 @@ public class ToolEraser extends AEBaseItem
 					this.check( world, wc.x, wc.y, wc.z - 1, next );
 				}
 			}
-
 		}
 
 		AELog.info( "Delete " + blocks + " blocks" );
@@ -88,15 +96,8 @@ public class ToolEraser extends AEBaseItem
 		return true;
 	}
 
-	private void check(World world, int i, int y, int z, List<WorldCoord> next)
+	private void check( World world, int i, int y, int z, List<WorldCoord> next )
 	{
 		next.add( new WorldCoord( i, y, z ) );
 	}
-
-	@Override
-	public void registerIcons(IIconRegister par1IconRegister)
-	{
-		this.itemIcon = new MissingIcon( this );
-	}
-
 }

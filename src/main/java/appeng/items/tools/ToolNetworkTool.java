@@ -21,8 +21,6 @@ package appeng.items.tools;
 
 import java.util.EnumSet;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -33,6 +31,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import buildcraft.api.tools.IToolWrench;
+import com.google.common.base.Optional;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
@@ -60,7 +59,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 
 	public ToolNetworkTool()
 	{
-		super( ToolNetworkTool.class, Optional.<String> absent() );
+		super( ToolNetworkTool.class, Optional.<String>absent() );
 
 		this.setFeature( EnumSet.of( AEFeature.NetworkTool ) );
 		this.setMaxStackSize( 1 );
@@ -71,17 +70,17 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	public IGuiItemObject getGuiObject( ItemStack is, World world, int x, int y, int z )
 	{
 		TileEntity te = world.getTileEntity( x, y, z );
-		return new NetworkToolViewer( is, ( IGridHost ) ( te instanceof IGridHost ? te : null ) );
+		return new NetworkToolViewer( is, (IGridHost) ( te instanceof IGridHost ? te : null ) );
 	}
 
 	@Override
 	public ItemStack onItemRightClick( ItemStack it, World w, EntityPlayer p )
 	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 		{
 			MovingObjectPosition mop = ClientHelper.proxy.getMOP();
 
-			if ( mop == null )
+			if( mop == null )
 			{
 				this.onItemUseFirst( it, p, w, 0, 0, 0, -1, 0, 0, 0 );
 			}
@@ -91,7 +90,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 				int j = mop.blockY;
 				int k = mop.blockZ;
 
-				if ( w.getBlock( i, j, k ).isAir( w, i, j, k ) )
+				if( w.getBlock( i, j, k ).isAir( w, i, j, k ) )
 					this.onItemUseFirst( it, p, w, 0, 0, 0, -1, 0, 0, 0 );
 			}
 		}
@@ -104,21 +103,21 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	{
 		MovingObjectPosition mop = new MovingObjectPosition( x, y, z, side, Vec3.createVectorHelper( hitX, hitY, hitZ ) );
 		TileEntity te = world.getTileEntity( x, y, z );
-		if ( te instanceof IPartHost )
+		if( te instanceof IPartHost )
 		{
-			SelectedPart part = ( ( IPartHost ) te ).selectPart( mop.hitVec );
-			if ( part.part != null )
+			SelectedPart part = ( (IPartHost) te ).selectPart( mop.hitVec );
+			if( part.part != null )
 			{
-				if ( part.part instanceof INetworkToolAgent && !( ( INetworkToolAgent ) part.part ).showNetworkInfo( mop ) )
+				if( part.part instanceof INetworkToolAgent && !( (INetworkToolAgent) part.part ).showNetworkInfo( mop ) )
 					return false;
 			}
 		}
-		else if ( te instanceof INetworkToolAgent && !( ( INetworkToolAgent ) te ).showNetworkInfo( mop ) )
+		else if( te instanceof INetworkToolAgent && !( (INetworkToolAgent) te ).showNetworkInfo( mop ) )
 		{
 			return false;
 		}
 
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 		{
 			NetworkHandler.instance.sendToServer( new PacketClick( x, y, z, side, hitX, hitY, hitZ ) );
 		}
@@ -133,18 +132,18 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 
 	public boolean serverSideToolLogic( ItemStack is, EntityPlayer p, World w, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
-		if ( side >= 0 )
+		if( side >= 0 )
 		{
-			if ( !Platform.hasPermissions( new DimensionalCoord( w, x, y, z ), p ) )
+			if( !Platform.hasPermissions( new DimensionalCoord( w, x, y, z ), p ) )
 				return false;
 
 			Block b = w.getBlock( x, y, z );
-			if ( b != null && !p.isSneaking() )
+			if( b != null && !p.isSneaking() )
 			{
 				TileEntity te = w.getTileEntity( x, y, z );
-				if ( !( te instanceof IGridHost ) )
+				if( !( te instanceof IGridHost ) )
 				{
-					if ( b.rotateBlock( w, x, y, z, ForgeDirection.getOrientation( side ) ) )
+					if( b.rotateBlock( w, x, y, z, ForgeDirection.getOrientation( side ) ) )
 					{
 						b.onNeighborBlockChange( w, x, y, z, Platform.AIR );
 						p.swingItem();
@@ -153,14 +152,14 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 				}
 			}
 
-			if ( !p.isSneaking() )
+			if( !p.isSneaking() )
 			{
-				if ( p.openContainer instanceof AEBaseContainer )
+				if( p.openContainer instanceof AEBaseContainer )
 					return true;
 
 				TileEntity te = w.getTileEntity( x, y, z );
 
-				if ( te instanceof IGridHost )
+				if( te instanceof IGridHost )
 					Platform.openGUI( p, te, ForgeDirection.getOrientation( side ), GuiBridge.GUI_NETWORK_STATUS );
 				else
 					Platform.openGUI( p, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_NETWORK_TOOL );
@@ -193,5 +192,4 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	{
 		player.swingItem();
 	}
-
 }

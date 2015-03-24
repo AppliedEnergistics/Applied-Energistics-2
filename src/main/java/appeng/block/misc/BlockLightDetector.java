@@ -18,6 +18,7 @@
 
 package appeng.block.misc;
 
+
 import java.util.EnumSet;
 import java.util.Random;
 
@@ -30,39 +31,40 @@ import cpw.mods.fml.relauncher.SideOnly;
 import appeng.core.features.AEFeature;
 import appeng.tile.misc.TileLightDetector;
 
+
 public class BlockLightDetector extends BlockQuartzTorch
 {
 
-	public BlockLightDetector() {
+	public BlockLightDetector()
+	{
 		super( BlockLightDetector.class );
 		this.setFeature( EnumSet.of( AEFeature.LightDetector ) );
 		this.setTileEntity( TileLightDetector.class );
 	}
 
 	@Override
-	public void onNeighborChange(IBlockAccess world, int x, int y, int z, int tileX, int tileY, int tileZ)
+	public int isProvidingWeakPower( IBlockAccess w, int x, int y, int z, int side )
 	{
-		super.onNeighborChange( world, x, y, z, tileX, tileY, tileZ );
-
-		TileLightDetector tld = this.getTileEntity( world, x, y, z );
-		if ( tld != null )
-			tld.updateLight();
-	}
-
-	@Override
-	public int isProvidingWeakPower(IBlockAccess w, int x, int y, int z, int side)
-	{
-		if ( w instanceof World && ((TileLightDetector) this.getTileEntity( w, x, y, z )).isReady() )
-			return ((World) w).getBlockLightValue( x, y, z ) - 6;
+		if( w instanceof World && ( (TileLightDetector) this.getTileEntity( w, x, y, z ) ).isReady() )
+			return ( (World) w ).getBlockLightValue( x, y, z ) - 6;
 
 		return 0;
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World w, int x, int y, int z, Random r)
+	public void onNeighborChange( IBlockAccess world, int x, int y, int z, int tileX, int tileY, int tileZ )
+	{
+		super.onNeighborChange( world, x, y, z, tileX, tileY, tileZ );
+
+		TileLightDetector tld = this.getTileEntity( world, x, y, z );
+		if( tld != null )
+			tld.updateLight();
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void randomDisplayTick( World w, int x, int y, int z, Random r )
 	{
 		// cancel out lightning
 	}
-
 }

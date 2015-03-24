@@ -18,75 +18,25 @@
 
 package appeng.client.texture;
 
+
 import net.minecraft.util.IIcon;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
 
 public class FullIcon implements IIcon
 {
 
 	private final IIcon p;
 
-	public FullIcon(IIcon o) {
+	public FullIcon( IIcon o )
+	{
 
-		if ( o == null )
-			throw new RuntimeException("Cannot create a wrapper icon with a null icon.");
+		if( o == null )
+			throw new RuntimeException( "Cannot create a wrapper icon with a null icon." );
 
 		this.p = o;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public float getMinU()
-	{
-		return this.p.getMinU();
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public float getMaxU()
-	{
-		return this.p.getMaxU();
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public float getInterpolatedU(double d0)
-	{
-		if ( d0 > 8.0 )
-			return this.p.getMaxU();
-		return this.p.getMinU();
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public float getMinV()
-	{
-		return this.p.getMinV();
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public float getMaxV()
-	{
-		return this.p.getMaxV();
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public float getInterpolatedV(double d0)
-	{
-		if ( d0 > 8.0 )
-			return this.p.getMaxV();
-		return this.p.getMinV();
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public String getIconName()
-	{
-		return this.p.getIconName();
 	}
 
 	@Override
@@ -101,4 +51,56 @@ public class FullIcon implements IIcon
 		return this.p.getIconHeight();
 	}
 
+	@Override
+	@SideOnly( Side.CLIENT )
+	public float getMinU()
+	{
+		return this.p.getMinU();
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public float getMaxU()
+	{
+		return this.p.getMaxU();
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public float getInterpolatedU( double d0 )
+	{
+		if( d0 > 8.0 )
+			return this.p.getMaxU();
+		return this.p.getMinU();
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public float getMinV()
+	{
+		return this.p.getMinV();
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public float getMaxV()
+	{
+		return this.p.getMaxV();
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public float getInterpolatedV( double d0 )
+	{
+		if( d0 > 8.0 )
+			return this.p.getMaxV();
+		return this.p.getMinV();
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public String getIconName()
+	{
+		return this.p.getIconName();
+	}
 }

@@ -18,6 +18,7 @@
 
 package appeng.core;
 
+
 import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.IAppEngApi;
@@ -39,30 +40,40 @@ import appeng.me.GridConnection;
 import appeng.me.GridNode;
 import appeng.util.Platform;
 
+
 public class Api implements IAppEngApi
 {
 
 	public static final Api INSTANCE = new Api();
-
-	private Api() {
-
-	}
-
+	public final ApiPart partHelper = new ApiPart();
 	// private MovableTileRegistry MovableRegistry = new MovableTileRegistry();
 	private final RegistryContainer rc = new RegistryContainer();
 	private final ApiStorage storageHelper = new ApiStorage();
-
-	public final ApiPart partHelper = new ApiPart();
-
 	private final Materials materials = new Materials();
 	private final Items items = new Items();
 	private final Blocks blocks = new Blocks();
 	private final Parts parts = new Parts();
+	private Api()
+	{
+
+	}
 
 	@Override
 	public IRegistryContainer registries()
 	{
 		return this.rc;
+	}
+
+	@Override
+	public IStorageHelper storage()
+	{
+		return this.storageHelper;
+	}
+
+	@Override
+	public IPartHelper partHelper()
+	{
+		return this.partHelper;
 	}
 
 	@Override
@@ -90,29 +101,16 @@ public class Api implements IAppEngApi
 	}
 
 	@Override
-	public IStorageHelper storage()
+	public IGridNode createGridNode( IGridBlock blk )
 	{
-		return this.storageHelper;
-	}
-
-	@Override
-	public IPartHelper partHelper()
-	{
-		return this.partHelper;
-	}
-
-	@Override
-	public IGridNode createGridNode(IGridBlock blk)
-	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			throw new RuntimeException( "Grid Features are Server Side Only." );
 		return new GridNode( blk );
 	}
 
 	@Override
-	public IGridConnection createGridConnection(IGridNode a, IGridNode b) throws FailedConnection
+	public IGridConnection createGridConnection( IGridNode a, IGridNode b ) throws FailedConnection
 	{
 		return new GridConnection( a, b, ForgeDirection.UNKNOWN );
 	}
-
 }

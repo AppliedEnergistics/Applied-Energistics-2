@@ -18,6 +18,7 @@
 
 package appeng.integration.modules.helpers;
 
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
@@ -31,48 +32,44 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.item.AEItemStack;
 
+
 public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemStack>
 {
 
 	final IDeepStorageUnit dsu;
 	final TileEntity te;
 
-	public MinefactoryReloadedDeepStorageUnit(TileEntity ta) {
+	public MinefactoryReloadedDeepStorageUnit( TileEntity ta )
+	{
 		this.te = ta;
 		this.dsu = (IDeepStorageUnit) ta;
 	}
 
 	@Override
-	public StorageChannel getChannel()
-	{
-		return StorageChannel.ITEMS;
-	}
-
-	@Override
-	public IAEItemStack injectItems(IAEItemStack input, Actionable mode, BaseActionSource src)
+	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
 	{
 		ItemStack is = this.dsu.getStoredItemType();
-		if ( is != null )
+		if( is != null )
 		{
-			if ( input.equals( is ) )
+			if( input.equals( is ) )
 			{
 				long max = this.dsu.getMaxStoredCount();
 				long storedItems = is.stackSize;
-				if ( max == storedItems )
+				if( max == storedItems )
 					return input;
 
 				storedItems += input.getStackSize();
-				if ( storedItems > max )
+				if( storedItems > max )
 				{
 					IAEItemStack overflow = AEItemStack.create( is );
-					overflow.setStackSize( (int) (storedItems - max) );
-					if ( mode == Actionable.MODULATE )
+					overflow.setStackSize( (int) ( storedItems - max ) );
+					if( mode == Actionable.MODULATE )
 						this.dsu.setStoredItemCount( (int) max );
 					return overflow;
 				}
 				else
 				{
-					if ( mode == Actionable.MODULATE )
+					if( mode == Actionable.MODULATE )
 						this.dsu.setStoredItemCount( is.stackSize + (int) input.getStackSize() );
 					return null;
 				}
@@ -80,9 +77,9 @@ public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemS
 		}
 		else
 		{
-			if ( input.getTagCompound() != null )
+			if( input.getTagCompound() != null )
 				return input;
-			if ( mode == Actionable.MODULATE )
+			if( mode == Actionable.MODULATE )
 				this.dsu.setStoredItemType( input.getItemStack(), (int) input.getStackSize() );
 			return null;
 		}
@@ -90,21 +87,21 @@ public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemS
 	}
 
 	@Override
-	public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src)
+	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
 	{
 		ItemStack is = this.dsu.getStoredItemType();
-		if ( request.equals( is ) )
+		if( request.equals( is ) )
 		{
-			if ( request.getStackSize() >= is.stackSize )
+			if( request.getStackSize() >= is.stackSize )
 			{
 				is = is.copy();
-				if ( mode == Actionable.MODULATE )
+				if( mode == Actionable.MODULATE )
 					this.dsu.setStoredItemCount( 0 );
 				return AEItemStack.create( is );
 			}
 			else
 			{
-				if ( mode == Actionable.MODULATE )
+				if( mode == Actionable.MODULATE )
 					this.dsu.setStoredItemCount( is.stackSize - (int) request.getStackSize() );
 				return request.copy();
 			}
@@ -113,14 +110,19 @@ public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemS
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> out)
+	public IItemList<IAEItemStack> getAvailableItems( IItemList<IAEItemStack> out )
 	{
 		ItemStack is = this.dsu.getStoredItemType();
-		if ( is != null )
+		if( is != null )
 		{
 			out.add( AEItemStack.create( is ) );
 		}
 		return out;
 	}
 
+	@Override
+	public StorageChannel getChannel()
+	{
+		return StorageChannel.ITEMS;
+	}
 }

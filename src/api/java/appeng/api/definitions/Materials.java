@@ -23,7 +23,9 @@
 
 package appeng.api.definitions;
 
+
 import appeng.api.util.AEItemDefinition;
+
 
 public class Materials
 {
@@ -99,5 +101,4 @@ public class Materials
 	public AEItemDefinition materialSingularity;
 	public AEItemDefinition materialQESingularity;
 	public AEItemDefinition materialBlankPattern;
-
 }

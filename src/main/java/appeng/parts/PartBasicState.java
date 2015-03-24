@@ -18,6 +18,7 @@
 
 package appeng.parts;
 
+
 import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
@@ -40,6 +41,7 @@ import appeng.api.parts.IPartRenderHelper;
 import appeng.client.texture.CableBusTextures;
 import appeng.me.GridAccessException;
 
+
 public class PartBasicState extends AEBasePart implements IPowerChannelState
 {
 
@@ -48,27 +50,44 @@ public class PartBasicState extends AEBasePart implements IPowerChannelState
 
 	protected int clientFlags = 0; // sent as byte.
 
+	public PartBasicState( Class c, ItemStack is )
+	{
+		super( c, is );
+		this.proxy.setFlags( GridFlags.REQUIRE_CHANNEL );
+	}
+
 	@MENetworkEventSubscribe
-	public void chanRender(MENetworkChannelsChanged c)
+	public void chanRender( MENetworkChannelsChanged c )
 	{
 		this.getHost().markForUpdate();
 	}
 
 	@MENetworkEventSubscribe
-	public void powerRender(MENetworkPowerStatusChange c)
+	public void powerRender( MENetworkPowerStatusChange c )
 	{
 		this.getHost().markForUpdate();
 	}
 
-	public void setColors(boolean hasChan, boolean hasPower)
+	@SideOnly( Side.CLIENT )
+	public void renderLights( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
-		if ( hasChan )
+		rh.normalRendering();
+		this.setColors( ( this.clientFlags & ( this.POWERED_FLAG | this.CHANNEL_FLAG ) ) == ( this.POWERED_FLAG | this.CHANNEL_FLAG ), ( this.clientFlags & this.POWERED_FLAG ) == this.POWERED_FLAG );
+		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.EAST, renderer );
+		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.WEST, renderer );
+		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.UP, renderer );
+		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.DOWN, renderer );
+	}
+
+	public void setColors( boolean hasChan, boolean hasPower )
+	{
+		if( hasChan )
 		{
 			int l = 14;
 			Tessellator.instance.setBrightness( l << 20 | l << 4 );
 			Tessellator.instance.setColorOpaque_I( this.getColor().blackVariant );
 		}
-		else if ( hasPower )
+		else if( hasPower )
 		{
 			int l = 9;
 			Tessellator.instance.setBrightness( l << 20 | l << 4 );
@@ -81,19 +100,8 @@ public class PartBasicState extends AEBasePart implements IPowerChannelState
 		}
 	}
 
-	@SideOnly(Side.CLIENT)
-	public void renderLights(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
-	{
-		rh.normalRendering();
-		this.setColors( (this.clientFlags & (this.POWERED_FLAG | this.CHANNEL_FLAG)) == (this.POWERED_FLAG | this.CHANNEL_FLAG), (this.clientFlags & this.POWERED_FLAG) == this.POWERED_FLAG );
-		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.EAST, renderer );
-		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.WEST, renderer );
-		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.UP, renderer );
-		rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.DOWN, renderer );
-	}
-
 	@Override
-	public void writeToStream(ByteBuf data) throws IOException
+	public void writeToStream( ByteBuf data ) throws IOException
 	{
 		super.writeToStream( data );
 
@@ -101,15 +109,15 @@ public class PartBasicState extends AEBasePart implements IPowerChannelState
 
 		try
 		{
-			if ( this.proxy.getEnergy().isNetworkPowered() )
+			if( this.proxy.getEnergy().isNetworkPowered() )
 				this.clientFlags |= this.POWERED_FLAG;
 
-			if ( this.proxy.getNode().meetsChannelRequirements() )
+			if( this.proxy.getNode().meetsChannelRequirements() )
 				this.clientFlags |= this.CHANNEL_FLAG;
 
 			this.clientFlags = this.populateFlags( this.clientFlags );
 		}
-		catch (GridAccessException e)
+		catch( GridAccessException e )
 		{
 			// meh
 		}
@@ -117,13 +125,13 @@ public class PartBasicState extends AEBasePart implements IPowerChannelState
 		data.writeByte( (byte) this.clientFlags );
 	}
 
-	protected int populateFlags(int cf)
+	protected int populateFlags( int cf )
 	{
 		return cf;
 	}
 
 	@Override
-	public boolean readFromStream(ByteBuf data) throws IOException
+	public boolean readFromStream( ByteBuf data ) throws IOException
 	{
 		boolean eh = super.readFromStream( data );
 
@@ -133,27 +141,22 @@ public class PartBasicState extends AEBasePart implements IPowerChannelState
 		return eh || old != this.clientFlags;
 	}
 
-	public PartBasicState(Class c, ItemStack is) {
-		super( c, is );
-		this.proxy.setFlags( GridFlags.REQUIRE_CHANNEL );
+	@Override
+	@SideOnly( Side.CLIENT )
+	public IIcon getBreakingTexture()
+	{
+		return CableBusTextures.PartTransitionPlaneBack.getIcon();
 	}
 
 	@Override
 	public boolean isPowered()
 	{
-		return (this.clientFlags & this.POWERED_FLAG) == this.POWERED_FLAG;
+		return ( this.clientFlags & this.POWERED_FLAG ) == this.POWERED_FLAG;
 	}
 
 	@Override
 	public boolean isActive()
 	{
-		return (this.clientFlags & this.CHANNEL_FLAG) == this.CHANNEL_FLAG;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getBreakingTexture()
-	{
-		return CableBusTextures.PartTransitionPlaneBack.getIcon();
+		return ( this.clientFlags & this.CHANNEL_FLAG ) == this.CHANNEL_FLAG;
 	}
 }

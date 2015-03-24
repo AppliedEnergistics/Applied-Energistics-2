@@ -18,6 +18,7 @@
 
 package appeng.parts.layers;
 
+
 import net.minecraftforge.common.util.ForgeDirection;
 
 import buildcraft.api.transport.IPipeConnection;
@@ -26,16 +27,16 @@ import buildcraft.api.transport.IPipeTile.PipeType;
 import appeng.api.parts.IPart;
 import appeng.api.parts.LayerBase;
 
+
 public class LayerIPipeConnection extends LayerBase implements IPipeConnection
 {
 
 	@Override
-	public ConnectOverride overridePipeConnection(PipeType type, ForgeDirection with)
+	public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
 	{
 		IPart part = this.getPart( with );
-		if ( part instanceof IPipeConnection )
-			return ((IPipeConnection) part).overridePipeConnection( type, with );
+		if( part instanceof IPipeConnection )
+			return ( (IPipeConnection) part ).overridePipeConnection( type, with );
 		return ConnectOverride.DEFAULT;
 	}
-
 }

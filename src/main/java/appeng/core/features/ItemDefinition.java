@@ -61,7 +61,7 @@ public class ItemDefinition implements AEItemDefinition
 	@Override
 	public ItemStack stack( int stackSize )
 	{
-		if ( this.enabled )
+		if( this.enabled )
 		{
 			return new ItemStack( this.item );
 		}

@@ -18,22 +18,23 @@
 
 package appeng.container.slot;
 
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+
 
 public class OptionalSlotFake extends SlotFake
 {
 
+	public final int srcX;
+	public final int srcY;
 	final int invSlot;
 	final int groupNum;
 	final IOptionalSlotHost host;
-
 	public boolean renderDisabled = true;
 
-	public final int srcX;
-	public final int srcY;
-
-	public OptionalSlotFake(IInventory inv, IOptionalSlotHost containerBus, int idx, int x, int y, int offX, int offY, int groupNum) {
+	public OptionalSlotFake( IInventory inv, IOptionalSlotHost containerBus, int idx, int x, int y, int offX, int offY, int groupNum )
+	{
 		super( inv, idx, x + offX * 18, y + offY * 18 );
 		this.srcX = x;
 		this.srcY = y;
@@ -45,9 +46,9 @@ public class OptionalSlotFake extends SlotFake
 	@Override
 	public ItemStack getStack()
 	{
-		if ( !this.isEnabled() )
+		if( !this.isEnabled() )
 		{
-			if ( this.getDisplayStack() != null )
+			if( this.getDisplayStack() != null )
 				this.clearStack();
 		}
 
@@ -57,7 +58,7 @@ public class OptionalSlotFake extends SlotFake
 	@Override
 	public boolean isEnabled()
 	{
-		if ( this.host == null )
+		if( this.host == null )
 			return false;
 
 		return this.host.isSlotEnabled( this.groupNum );
@@ -67,5 +68,4 @@ public class OptionalSlotFake extends SlotFake
 	{
 		return this.renderDisabled;
 	}
-
 }

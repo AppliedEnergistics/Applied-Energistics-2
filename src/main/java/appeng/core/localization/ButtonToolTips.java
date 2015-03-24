@@ -72,14 +72,14 @@ public enum ButtonToolTips
 		this.root = r;
 	}
 
-	public String getUnlocalized()
-	{
-		return this.root + '.' + this.toString();
-	}
-
 	public String getLocal()
 	{
 		return StatCollector.translateToLocal( this.getUnlocalized() );
+	}
+
+	public String getUnlocalized()
+	{
+		return this.root + '.' + this.toString();
 	}
 
 }

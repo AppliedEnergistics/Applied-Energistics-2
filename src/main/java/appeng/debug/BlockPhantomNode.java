@@ -18,6 +18,7 @@
 
 package appeng.debug;
 
+
 import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
@@ -28,17 +29,19 @@ import net.minecraft.world.World;
 import appeng.block.AEBaseBlock;
 import appeng.core.features.AEFeature;
 
+
 public class BlockPhantomNode extends AEBaseBlock
 {
 
-	public BlockPhantomNode() {
+	public BlockPhantomNode()
+	{
 		super( BlockPhantomNode.class, Material.iron );
 		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 		this.setTileEntity( TilePhantomNode.class );
 	}
 
 	@Override
-	public boolean onActivated(World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+	public boolean onActivated( World w, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ )
 	{
 		TilePhantomNode tpn = this.getTileEntity( w, x, y, z );
 		tpn.BOOM();
@@ -46,9 +49,8 @@ public class BlockPhantomNode extends AEBaseBlock
 	}
 
 	@Override
-	public void registerBlockIcons(IIconRegister iconRegistry)
+	public void registerBlockIcons( IIconRegister iconRegistry )
 	{
 		this.registerNoIcons();
 	}
-
 }

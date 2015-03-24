@@ -18,32 +18,33 @@
 
 package appeng.core.features.registries;
 
-import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.mojang.authlib.GameProfile;
+
 import appeng.api.features.IPlayerRegistry;
 import appeng.core.WorldSettings;
+
 
 public class PlayerRegistry implements IPlayerRegistry
 {
 
 	@Override
-	public int getID(GameProfile username)
+	public int getID( GameProfile username )
 	{
 		return WorldSettings.getInstance().getPlayerID( username );
 	}
 
 	@Override
-	public int getID(EntityPlayer player)
+	public int getID( EntityPlayer player )
 	{
 		return WorldSettings.getInstance().getPlayerID( player.getGameProfile() );
 	}
 
 	@Override
-	public EntityPlayer findPlayer(int playerID)
+	public EntityPlayer findPlayer( int playerID )
 	{
 		return WorldSettings.getInstance().getPlayerFromID( playerID );
 	}
-
 }

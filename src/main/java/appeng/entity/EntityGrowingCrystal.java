@@ -18,6 +18,7 @@
 
 package appeng.entity;
 
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.EntityItem;
@@ -35,16 +36,19 @@ import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
 import appeng.util.Platform;
 
+
 final public class EntityGrowingCrystal extends EntityItem
 {
 
 	private int progress_1000 = 0;
 
-	public EntityGrowingCrystal(World w) {
+	public EntityGrowingCrystal( World w )
+	{
 		super( w );
 	}
 
-	public EntityGrowingCrystal(World w, double x, double y, double z, ItemStack is) {
+	public EntityGrowingCrystal( World w, double x, double y, double z, ItemStack is )
+	{
 		super( w, x, y, z, is );
 	}
 
@@ -53,16 +57,16 @@ final public class EntityGrowingCrystal extends EntityItem
 	{
 		super.onUpdate();
 
-		if ( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldPurification ) )
+		if( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldPurification ) )
 			return;
 
-		if ( this.age > 600 )
+		if( this.age > 600 )
 			this.age = 100;
 
 		ItemStack is = this.getEntityItem();
 		Item gc = is.getItem();
 
-		if ( gc instanceof IGrowableCrystal ) // if it changes this just stops being an issue...
+		if( gc instanceof IGrowableCrystal ) // if it changes this just stops being an issue...
 		{
 			int j = MathHelper.floor_double( this.posX );
 			int i = MathHelper.floor_double( this.posY );
@@ -77,40 +81,39 @@ final public class EntityGrowingCrystal extends EntityItem
 
 			boolean isClient = Platform.isClient();
 
-			if ( mat.isLiquid() )
+			if( mat.isLiquid() )
 			{
-				if ( isClient )
+				if( isClient )
 					this.progress_1000++;
 				else
 					this.progress_1000 += speed;
-
 			}
 			else
 				this.progress_1000 = 0;
 
-			if ( isClient )
+			if( isClient )
 			{
 				int len = 40;
 
-				if ( speed > 2 )
+				if( speed > 2 )
 					len = 20;
 
-				if ( speed > 90 )
+				if( speed > 90 )
 					len = 15;
 
-				if ( speed > 150 )
+				if( speed > 150 )
 					len = 10;
 
-				if ( speed > 240 )
+				if( speed > 240 )
 					len = 7;
 
-				if ( speed > 360 )
+				if( speed > 360 )
 					len = 3;
 
-				if ( speed > 500 )
+				if( speed > 500 )
 					len = 1;
 
-				if ( this.progress_1000 >= len )
+				if( this.progress_1000 >= len )
 				{
 					this.progress_1000 = 0;
 					CommonHelper.proxy.spawnEffect( EffectType.Vibrant, this.worldObj, this.posX, this.posY + 0.2, this.posZ, null );
@@ -118,7 +121,7 @@ final public class EntityGrowingCrystal extends EntityItem
 			}
 			else
 			{
-				if ( this.progress_1000 > 1000 )
+				if( this.progress_1000 > 1000 )
 				{
 					this.progress_1000 -= 1000;
 					this.setEntityItemStack( cry.triggerGrowth( is ) );
@@ -127,39 +130,38 @@ final public class EntityGrowingCrystal extends EntityItem
 		}
 	}
 
-	private int getSpeed(int x, int y, int z)
+	private int getSpeed( int x, int y, int z )
 	{
 		final int per = 80;
 		final float mul = 0.3f;
 
 		int qty = 0;
 
-		if ( this.isAccelerated( x + 1, y, z ) )
+		if( this.isAccelerated( x + 1, y, z ) )
 			qty += per + qty * mul;
 
-		if ( this.isAccelerated( x, y + 1, z ) )
+		if( this.isAccelerated( x, y + 1, z ) )
 			qty += per + qty * mul;
 
-		if ( this.isAccelerated( x, y, z + 1 ) )
+		if( this.isAccelerated( x, y, z + 1 ) )
 			qty += per + qty * mul;
 
-		if ( this.isAccelerated( x - 1, y, z ) )
+		if( this.isAccelerated( x - 1, y, z ) )
 			qty += per + qty * mul;
 
-		if ( this.isAccelerated( x, y - 1, z ) )
+		if( this.isAccelerated( x, y - 1, z ) )
 			qty += per + qty * mul;
 
-		if ( this.isAccelerated( x, y, z - 1 ) )
+		if( this.isAccelerated( x, y, z - 1 ) )
 			qty += per + qty * mul;
 
 		return qty;
 	}
 
-	private boolean isAccelerated(int x, int y, int z)
+	private boolean isAccelerated( int x, int y, int z )
 	{
 		TileEntity te = this.worldObj.getTileEntity( x, y, z );
 
-		return te instanceof ICrystalGrowthAccelerator && ( ( ICrystalGrowthAccelerator ) te ).isPowered();
+		return te instanceof ICrystalGrowthAccelerator && ( (ICrystalGrowthAccelerator) te ).isPowered();
 	}
-
 }

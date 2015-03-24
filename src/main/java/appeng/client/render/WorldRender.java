@@ -18,6 +18,7 @@
 
 package appeng.client.render;
 
+
 import java.util.HashMap;
 
 import net.minecraft.block.Block;
@@ -34,33 +35,34 @@ import cpw.mods.fml.relauncher.SideOnly;
 import appeng.block.AEBaseBlock;
 import appeng.core.AELog;
 
-@SideOnly(Side.CLIENT)
+
+@SideOnly( Side.CLIENT )
 public class WorldRender implements ISimpleBlockRenderingHandler
 {
 
-	private final RenderBlocks renderer = new RenderBlocks();
-	final int renderID = RenderingRegistry.getNextAvailableRenderId();
 	public static final WorldRender INSTANCE = new WorldRender();
+	public final HashMap<AEBaseBlock, BaseBlockRender> blockRenders = new HashMap<AEBaseBlock, BaseBlockRender>();
+	final int renderID = RenderingRegistry.getNextAvailableRenderId();
+	private final RenderBlocks renderer = new RenderBlocks();
 	boolean hasError = false;
 
-	public final HashMap<AEBaseBlock, BaseBlockRender> blockRenders = new HashMap<AEBaseBlock, BaseBlockRender>();
+	private WorldRender()
+	{
+	}
 
-	void setRender(AEBaseBlock in, BaseBlockRender r)
+	void setRender( AEBaseBlock in, BaseBlockRender r )
 	{
 		this.blockRenders.put( in, r );
 	}
 
-	private WorldRender() {
-	}
-
 	@Override
-	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
+	public void renderInventoryBlock( Block block, int metadata, int modelID, RenderBlocks renderer )
 	{
 		// wtf is this for?
 	}
 
 	@Override
-	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
+	public boolean renderWorldBlock( IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer )
 	{
 		AEBaseBlock blk = (AEBaseBlock) block;
 		renderer.setRenderBoundsFromBlock( block );
@@ -68,7 +70,7 @@ public class WorldRender implements ISimpleBlockRenderingHandler
 	}
 
 	@Override
-	public boolean shouldRender3DInInventory(int modelId)
+	public boolean shouldRender3DInInventory( int modelId )
 	{
 		return true;
 	}
@@ -79,10 +81,15 @@ public class WorldRender implements ISimpleBlockRenderingHandler
 		return this.renderID;
 	}
 
-	public void renderItemBlock(ItemStack item, ItemRenderType type, Object[] data)
+	private BaseBlockRender getRender( AEBaseBlock block )
+	{
+		return block.getRendererInstance().rendererInstance;
+	}
+
+	public void renderItemBlock( ItemStack item, ItemRenderType type, Object[] data )
 	{
 		Block blk = Block.getBlockFromItem( item.getItem() );
-		if ( blk instanceof AEBaseBlock )
+		if( blk instanceof AEBaseBlock )
 		{
 			AEBaseBlock block = (AEBaseBlock) blk;
 			this.renderer.setRenderBoundsFromBlock( block );
@@ -93,7 +100,7 @@ public class WorldRender implements ISimpleBlockRenderingHandler
 		}
 		else
 		{
-			if ( !this.hasError )
+			if( !this.hasError )
 			{
 				this.hasError = true;
 				AELog.severe( "Invalid render - item/block mismatch" );
@@ -101,10 +108,5 @@ public class WorldRender implements ISimpleBlockRenderingHandler
 				AELog.severe( "		block: " + blk.getUnlocalizedName() );
 			}
 		}
-	}
-
-	private BaseBlockRender getRender(AEBaseBlock block)
-	{
-		return block.getRendererInstance().rendererInstance;
 	}
 }

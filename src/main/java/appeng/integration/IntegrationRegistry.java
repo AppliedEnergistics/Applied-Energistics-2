@@ -33,10 +33,10 @@ public enum IntegrationRegistry
 
 	public void add( IntegrationType type )
 	{
-		if ( type.side == IntegrationSide.CLIENT && FMLLaunchHandler.side() == Side.SERVER )
+		if( type.side == IntegrationSide.CLIENT && FMLLaunchHandler.side() == Side.SERVER )
 			return;
 
-		if ( type.side == IntegrationSide.SERVER && FMLLaunchHandler.side() == Side.CLIENT )
+		if( type.side == IntegrationSide.SERVER && FMLLaunchHandler.side() == Side.CLIENT )
 			return;
 
 		this.modules.add( new IntegrationNode( type.dspName, type.modID, type, "appeng.integration.modules." + type.name() ) );
@@ -44,16 +44,16 @@ public enum IntegrationRegistry
 
 	public void init()
 	{
-		for ( IntegrationNode node : this.modules )
+		for( IntegrationNode node : this.modules )
 			node.Call( IntegrationStage.PRE_INIT );
 
-		for ( IntegrationNode node : this.modules )
+		for( IntegrationNode node : this.modules )
 			node.Call( IntegrationStage.INIT );
 	}
 
 	public void postInit()
 	{
-		for ( IntegrationNode node : this.modules )
+		for( IntegrationNode node : this.modules )
 			node.Call( IntegrationStage.POST_INIT );
 	}
 
@@ -61,11 +61,11 @@ public enum IntegrationRegistry
 	{
 		String out = null;
 
-		for ( IntegrationNode node : this.modules )
+		for( IntegrationNode node : this.modules )
 		{
 			String str = node.shortName + ":" + ( node.state == IntegrationStage.FAILED ? "OFF" : "ON" );
 
-			if ( out == null )
+			if( out == null )
 				out = str;
 			else
 				out += ", " + str;
@@ -76,9 +76,9 @@ public enum IntegrationRegistry
 
 	public boolean isEnabled( IntegrationType name )
 	{
-		for ( IntegrationNode node : this.modules )
+		for( IntegrationNode node : this.modules )
 		{
-			if ( node.shortName == name )
+			if( node.shortName == name )
 				return node.isActive();
 		}
 		return false;
@@ -86,9 +86,9 @@ public enum IntegrationRegistry
 
 	public Object getInstance( IntegrationType name )
 	{
-		for ( IntegrationNode node : this.modules )
+		for( IntegrationNode node : this.modules )
 		{
-			if ( node.shortName == name && node.isActive() )
+			if( node.shortName == name && node.isActive() )
 			{
 				return node.instance;
 			}

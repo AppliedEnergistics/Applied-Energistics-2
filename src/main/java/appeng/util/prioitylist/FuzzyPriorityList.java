@@ -18,11 +18,13 @@
 
 package appeng.util.prioitylist;
 
+
 import java.util.Collection;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+
 
 public class FuzzyPriorityList<T extends IAEStack<T>> implements IPartitionList<T>
 {
@@ -30,13 +32,14 @@ public class FuzzyPriorityList<T extends IAEStack<T>> implements IPartitionList<
 	final IItemList<T> list;
 	final FuzzyMode mode;
 
-	public FuzzyPriorityList(IItemList<T> in, FuzzyMode mode) {
+	public FuzzyPriorityList( IItemList<T> in, FuzzyMode mode )
+	{
 		this.list = in;
 		this.mode = mode;
 	}
 
 	@Override
-	public boolean isListed(T input)
+	public boolean isListed( T input )
 	{
 		Collection<T> out = this.list.findFuzzy( input, this.mode );
 		return out != null && !out.isEmpty();
@@ -53,5 +56,4 @@ public class FuzzyPriorityList<T extends IAEStack<T>> implements IPartitionList<
 	{
 		return this.list;
 	}
-
 }

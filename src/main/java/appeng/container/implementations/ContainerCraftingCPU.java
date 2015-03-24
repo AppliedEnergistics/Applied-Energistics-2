@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,62 +48,74 @@ import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
 
+
 public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack>, ICustomNameObject
 {
 
+	final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
+	protected IGrid network;
 	CraftingCPUCluster monitor = null;
 	String cpuName = null;
-	protected IGrid network;
+	int delay = 40;
 
-	final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
-
-	public ContainerCraftingCPU(InventoryPlayer ip, Object te) {
+	public ContainerCraftingCPU( InventoryPlayer ip, Object te )
+	{
 		super( ip, te );
-		IGridHost host = (IGridHost) (te instanceof IGridHost ? te : null);
+		IGridHost host = (IGridHost) ( te instanceof IGridHost ? te : null );
 
-		if ( host != null )
+		if( host != null )
 		{
 			this.findNode( host, ForgeDirection.UNKNOWN );
-			for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
+			for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
 				this.findNode( host, d );
 		}
 
-		if ( te instanceof TileCraftingTile )
-			this.setCPU( (ICraftingCPU) ((TileCraftingTile) te).getCluster() );
+		if( te instanceof TileCraftingTile )
+			this.setCPU( (ICraftingCPU) ( (TileCraftingTile) te ).getCluster() );
 
-		if ( this.network == null && Platform.isServer() )
+		if( this.network == null && Platform.isServer() )
 			this.isContainerValid = false;
 	}
 
-	protected void setCPU(ICraftingCPU c)
+	private void findNode( IGridHost host, ForgeDirection d )
 	{
-		if ( c == this.monitor )
+		if( this.network == null )
+		{
+			IGridNode node = host.getGridNode( d );
+			if( node != null )
+				this.network = node.getGrid();
+		}
+	}
+
+	protected void setCPU( ICraftingCPU c )
+	{
+		if( c == this.monitor )
 			return;
 
-		if ( this.monitor != null )
+		if( this.monitor != null )
 			this.monitor.removeListener( this );
 
-		for (Object g : this.crafters)
+		for( Object g : this.crafters )
 		{
-			if ( g instanceof EntityPlayer )
+			if( g instanceof EntityPlayer )
 			{
 				try
 				{
 					NetworkHandler.instance.sendTo( new PacketValueConfig( "CraftingStatus", "Clear" ), (EntityPlayerMP) g );
 				}
-				catch (IOException e)
+				catch( IOException e )
 				{
 					AELog.error( e );
 				}
 			}
 		}
 
-		if ( c instanceof CraftingCPUCluster )
+		if( c instanceof CraftingCPUCluster )
 		{
 			this.cpuName = c.getName();
 
 			this.monitor = (CraftingCPUCluster) c;
-			if ( this.monitor != null )
+			if( this.monitor != null )
 			{
 				this.list.resetStatus();
 				this.monitor.getListOfItem( this.list, CraftingItemList.ALL );
@@ -118,45 +131,33 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 
 	public void cancelCrafting()
 	{
-		if ( this.monitor != null )
+		if( this.monitor != null )
 		{
 			this.monitor.cancel();
 		}
 	}
 
-	private void findNode(IGridHost host, ForgeDirection d)
-	{
-		if ( this.network == null )
-		{
-			IGridNode node = host.getGridNode( d );
-			if ( node != null )
-				this.network = node.getGrid();
-		}
-	}
-
-	int delay = 40;
-
 	@Override
-	public void onContainerClosed(EntityPlayer player)
+	public void removeCraftingFromCrafters( ICrafting c )
 	{
-		super.onContainerClosed( player );
-		if ( this.monitor != null )
+		super.removeCraftingFromCrafters( c );
+
+		if( this.crafters.isEmpty() && this.monitor != null )
 			this.monitor.removeListener( this );
 	}
 
 	@Override
-	public void removeCraftingFromCrafters(ICrafting c)
+	public void onContainerClosed( EntityPlayer player )
 	{
-		super.removeCraftingFromCrafters( c );
-
-		if ( this.crafters.isEmpty() && this.monitor != null )
+		super.onContainerClosed( player );
+		if( this.monitor != null )
 			this.monitor.removeListener( this );
 	}
 
 	@Override
 	public void detectAndSendChanges()
 	{
-		if ( Platform.isServer() && this.monitor != null && !this.list.isEmpty() )
+		if( Platform.isServer() && this.monitor != null && !this.list.isEmpty() )
 		{
 			try
 			{
@@ -164,7 +165,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 				PacketMEInventoryUpdate b = new PacketMEInventoryUpdate( (byte) 1 );
 				PacketMEInventoryUpdate c = new PacketMEInventoryUpdate( (byte) 2 );
 
-				for (IAEItemStack out : this.list)
+				for( IAEItemStack out : this.list )
 				{
 					a.appendItem( this.monitor.getItemStack( out, CraftingItemList.STORAGE ) );
 					b.appendItem( this.monitor.getItemStack( out, CraftingItemList.ACTIVE ) );
@@ -173,40 +174,39 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 
 				this.list.resetStatus();
 
-				for (Object g : this.crafters)
+				for( Object g : this.crafters )
 				{
-					if ( g instanceof EntityPlayer )
+					if( g instanceof EntityPlayer )
 					{
-						if ( !a.isEmpty() )
+						if( !a.isEmpty() )
 							NetworkHandler.instance.sendTo( a, (EntityPlayerMP) g );
 
-						if ( !b.isEmpty() )
+						if( !b.isEmpty() )
 							NetworkHandler.instance.sendTo( b, (EntityPlayerMP) g );
 
-						if ( !c.isEmpty() )
+						if( !c.isEmpty() )
 							NetworkHandler.instance.sendTo( c, (EntityPlayerMP) g );
 					}
 				}
 			}
-			catch (IOException e)
+			catch( IOException e )
 			{
 				// :P
 			}
-
 		}
 		super.detectAndSendChanges();
 	}
 
 	@Override
-	public boolean isValid(Object verificationToken)
+	public boolean isValid( Object verificationToken )
 	{
 		return true;
 	}
 
 	@Override
-	public void postChange(IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource actionSource)
+	public void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource actionSource )
 	{
-		for (IAEItemStack is : change)
+		for( IAEItemStack is : change )
 		{
 			is = is.copy();
 			is.setStackSize( 1 );

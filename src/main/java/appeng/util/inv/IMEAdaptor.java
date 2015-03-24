@@ -18,11 +18,12 @@
 
 package appeng.util.inv;
 
+
 import java.util.Iterator;
 
-import com.google.common.collect.ImmutableList;
-
 import net.minecraft.item.ItemStack;
+
+import com.google.common.collect.ImmutableList;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -34,6 +35,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.util.InventoryAdaptor;
 import appeng.util.item.AEItemStack;
 
+
 public class IMEAdaptor extends InventoryAdaptor
 {
 
@@ -41,14 +43,10 @@ public class IMEAdaptor extends InventoryAdaptor
 	final BaseActionSource src;
 	int maxSlots = 0;
 
-	public IMEAdaptor(IMEInventory<IAEItemStack> input, BaseActionSource src) {
+	public IMEAdaptor( IMEInventory<IAEItemStack> input, BaseActionSource src )
+	{
 		this.target = input;
 		this.src = src;
-	}
-
-	IItemList<IAEItemStack> getList()
-	{
-		return this.target.getAvailableItems( AEApi.instance().storage().createItemList() );
 	}
 
 	@Override
@@ -57,36 +55,25 @@ public class IMEAdaptor extends InventoryAdaptor
 		return new IMEAdaptorIterator( this, this.getList() );
 	}
 
-	public ItemStack doRemoveItemsFuzzy(int how_many, ItemStack Filter, IInventoryDestination destination, Actionable type, FuzzyMode fuzzyMode)
+	IItemList<IAEItemStack> getList()
 	{
-		IAEItemStack reqFilter = AEItemStack.create( Filter );
-		if ( reqFilter == null )
-			return null;
-
-		IAEItemStack out = null;
-
-		for (IAEItemStack req : ImmutableList.copyOf( this.getList().findFuzzy( reqFilter, fuzzyMode ) ))
-		{
-			if ( req != null )
-			{
-				req.setStackSize( how_many );
-				out = this.target.extractItems( req, type, this.src );
-				if ( out != null )
-					return out.getItemStack();
-			}
-		}
-
-		return null;
+		return this.target.getAvailableItems( AEApi.instance().storage().createItemList() );
 	}
 
-	public ItemStack doRemoveItems(int how_many, ItemStack Filter, IInventoryDestination destination, Actionable type)
+	@Override
+	public ItemStack removeItems( int amount, ItemStack filter, IInventoryDestination destination )
+	{
+		return this.doRemoveItems( amount, filter, destination, Actionable.MODULATE );
+	}
+
+	public ItemStack doRemoveItems( int how_many, ItemStack Filter, IInventoryDestination destination, Actionable type )
 	{
 		IAEItemStack req = null;
 
-		if ( Filter == null )
+		if( Filter == null )
 		{
 			IItemList<IAEItemStack> list = this.getList();
-			if ( !list.isEmpty() )
+			if( !list.isEmpty() )
 				req = list.getFirstItem();
 		}
 		else
@@ -94,67 +81,83 @@ public class IMEAdaptor extends InventoryAdaptor
 
 		IAEItemStack out = null;
 
-		if ( req != null )
+		if( req != null )
 		{
 			req.setStackSize( how_many );
 			out = this.target.extractItems( req, type, this.src );
 		}
 
-		if ( out != null )
+		if( out != null )
 			return out.getItemStack();
 
 		return null;
 	}
 
 	@Override
-	public ItemStack removeItems(int amount, ItemStack filter, IInventoryDestination destination)
-	{
-		return this.doRemoveItems( amount, filter, destination, Actionable.MODULATE );
-	}
-
-	@Override
-	public ItemStack simulateRemove(int amount, ItemStack filter, IInventoryDestination destination)
+	public ItemStack simulateRemove( int amount, ItemStack filter, IInventoryDestination destination )
 	{
 		return this.doRemoveItems( amount, filter, destination, Actionable.SIMULATE );
 	}
 
 	@Override
-	public ItemStack removeSimilarItems(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
+	public ItemStack removeSimilarItems( int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
 	{
-		if ( filter == null )
+		if( filter == null )
 			return this.doRemoveItems( how_many, null, destination, Actionable.MODULATE );
 		return this.doRemoveItemsFuzzy( how_many, filter, destination, Actionable.MODULATE, fuzzyMode );
 	}
 
-	@Override
-	public ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
+	public ItemStack doRemoveItemsFuzzy( int how_many, ItemStack Filter, IInventoryDestination destination, Actionable type, FuzzyMode fuzzyMode )
 	{
-		if ( filter == null )
+		IAEItemStack reqFilter = AEItemStack.create( Filter );
+		if( reqFilter == null )
+			return null;
+
+		IAEItemStack out = null;
+
+		for( IAEItemStack req : ImmutableList.copyOf( this.getList().findFuzzy( reqFilter, fuzzyMode ) ) )
+		{
+			if( req != null )
+			{
+				req.setStackSize( how_many );
+				out = this.target.extractItems( req, type, this.src );
+				if( out != null )
+					return out.getItemStack();
+			}
+		}
+
+		return null;
+	}
+
+	@Override
+	public ItemStack simulateSimilarRemove( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
+	{
+		if( filter == null )
 			return this.doRemoveItems( amount, null, destination, Actionable.SIMULATE );
 		return this.doRemoveItemsFuzzy( amount, filter, destination, Actionable.SIMULATE, fuzzyMode );
 	}
 
 	@Override
-	public ItemStack addItems(ItemStack toBeAdded )
+	public ItemStack addItems( ItemStack toBeAdded )
 	{
 		IAEItemStack in = AEItemStack.create( toBeAdded );
-		if ( in != null )
+		if( in != null )
 		{
 			IAEItemStack out = this.target.injectItems( in, Actionable.MODULATE, this.src );
-			if ( out != null )
+			if( out != null )
 				return out.getItemStack();
 		}
 		return null;
 	}
 
 	@Override
-	public ItemStack simulateAdd(ItemStack toBeSimulated )
+	public ItemStack simulateAdd( ItemStack toBeSimulated )
 	{
 		IAEItemStack in = AEItemStack.create( toBeSimulated );
-		if ( in != null )
+		if( in != null )
 		{
 			IAEItemStack out = this.target.injectItems( in, Actionable.SIMULATE, this.src );
-			if ( out != null )
+			if( out != null )
 				return out.getItemStack();
 		}
 		return null;
@@ -165,5 +168,4 @@ public class IMEAdaptor extends InventoryAdaptor
 	{
 		return !this.getList().isEmpty();
 	}
-
 }

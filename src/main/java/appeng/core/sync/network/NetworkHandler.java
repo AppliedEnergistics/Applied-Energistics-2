@@ -34,6 +34,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import appeng.core.WorldSettings;
 import appeng.core.sync.AppEngPacket;
 
+
 public class NetworkHandler
 {
 
@@ -45,7 +46,8 @@ public class NetworkHandler
 	final IPacketHandler clientHandler;
 	final IPacketHandler serveHandler;
 
-	public NetworkHandler(String channelName) {
+	public NetworkHandler( String channelName )
+	{
 		FMLCommonHandler.instance().bus().register( this );
 		this.ec = NetworkRegistry.INSTANCE.newEventDrivenChannel( this.myChannelName = channelName );
 		this.ec.register( this );
@@ -54,55 +56,55 @@ public class NetworkHandler
 		this.serveHandler = this.createServerSide();
 	}
 
-	private IPacketHandler createServerSide()
-	{
-		try
-		{
-			return new AppEngServerPacketHandler();
-		}
-		catch (Throwable t)
-		{
-			return null;
-		}
-	}
-
 	private IPacketHandler createClientSide()
 	{
 		try
 		{
 			return new AppEngClientPacketHandler();
 		}
-		catch (Throwable t)
+		catch( Throwable t )
+		{
+			return null;
+		}
+	}
+
+	private IPacketHandler createServerSide()
+	{
+		try
+		{
+			return new AppEngServerPacketHandler();
+		}
+		catch( Throwable t )
 		{
 			return null;
 		}
 	}
 
 	@SubscribeEvent
-	public void newConnection(ServerConnectionFromClientEvent ev)
+	public void newConnection( ServerConnectionFromClientEvent ev )
 	{
 		WorldSettings.getInstance().sendToPlayer( ev.manager );
 	}
 
 	@SubscribeEvent
-	public void newConnection(PlayerLoggedInEvent loginEvent)
+	public void newConnection( PlayerLoggedInEvent loginEvent )
 	{
-		if ( loginEvent.player instanceof EntityPlayerMP )
+		if( loginEvent.player instanceof EntityPlayerMP )
 			WorldSettings.getInstance().sendToPlayer( null );
 	}
 
 	@SubscribeEvent
-	public void serverPacket(ServerCustomPacketEvent ev)
+	public void serverPacket( ServerCustomPacketEvent ev )
 	{
 		NetHandlerPlayServer srv = (NetHandlerPlayServer) ev.packet.handler();
-		if ( this.serveHandler != null )
+		if( this.serveHandler != null )
 			this.serveHandler.onPacketData( null, ev.packet, srv.playerEntity );
 	}
 
 	@SubscribeEvent
-	public void clientPacket(ClientCustomPacketEvent ev)
+	public void clientPacket( ClientCustomPacketEvent ev )
 	{
-		if ( this.clientHandler != null )
+		if( this.clientHandler != null )
 			this.clientHandler.onPacketData( null, ev.packet, null );
 	}
 
@@ -111,29 +113,28 @@ public class NetworkHandler
 		return this.myChannelName;
 	}
 
-	public void sendToAll(AppEngPacket message)
+	public void sendToAll( AppEngPacket message )
 	{
 		this.ec.sendToAll( message.getProxy() );
 	}
 
-	public void sendTo(AppEngPacket message, EntityPlayerMP player)
+	public void sendTo( AppEngPacket message, EntityPlayerMP player )
 	{
 		this.ec.sendTo( message.getProxy(), player );
 	}
 
-	public void sendToAllAround(AppEngPacket message, NetworkRegistry.TargetPoint point)
+	public void sendToAllAround( AppEngPacket message, NetworkRegistry.TargetPoint point )
 	{
 		this.ec.sendToAllAround( message.getProxy(), point );
 	}
 
-	public void sendToDimension(AppEngPacket message, int dimensionId)
+	public void sendToDimension( AppEngPacket message, int dimensionId )
 	{
 		this.ec.sendToDimension( message.getProxy(), dimensionId );
 	}
 
-	public void sendToServer(AppEngPacket message)
+	public void sendToServer( AppEngPacket message )
 	{
 		this.ec.sendToServer( message.getProxy() );
 	}
-
 }

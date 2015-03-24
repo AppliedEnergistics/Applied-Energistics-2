@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -35,39 +36,17 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.tile.storage.TileIOPort;
 
+
 public class GuiIOPort extends GuiUpgradeable
 {
 
 	GuiImgButton fullMode;
 	GuiImgButton operationMode;
 
-	public GuiIOPort(InventoryPlayer inventoryPlayer, TileIOPort te) {
+	public GuiIOPort( InventoryPlayer inventoryPlayer, TileIOPort te )
+	{
 		super( new ContainerIOPort( inventoryPlayer, te ) );
 		this.ySize = 166;
-	}
-
-	@Override
-	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
-	{
-		super.drawBG( offsetX, offsetY, mouseX, mouseY );
-		this.drawItem( offsetX + 66 - 8, offsetY + 17, AEApi.instance().items().itemCell1k.stack( 1 ) );
-		this.drawItem( offsetX + 94 + 8, offsetY + 17, AEApi.instance().blocks().blockDrive.stack( 1 ) );
-	}
-
-	@Override
-	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
-	{
-		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.IOPort.getLocal() ), 8, 6, 4210752 );
-		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
-
-		if ( this.redstoneMode != null )
-			this.redstoneMode.set( this.cvb.rsMode );
-
-		if ( this.operationMode != null )
-			this.operationMode.set( ((ContainerIOPort) this.cvb).opMode );
-
-		if ( this.fullMode != null )
-			this.fullMode.set( ((ContainerIOPort) this.cvb).fMode );
 	}
 
 	@Override
@@ -83,17 +62,25 @@ public class GuiIOPort extends GuiUpgradeable
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton btn)
+	protected void actionPerformed( GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
 		boolean backwards = Mouse.isButtonDown( 1 );
 
-		if ( btn == this.fullMode )
+		if( btn == this.fullMode )
 			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.fullMode.getSetting(), backwards ) );
 
-		if ( btn == this.operationMode )
+		if( btn == this.operationMode )
 			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.operationMode.getSetting(), backwards ) );
+	}
+
+	@Override
+	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	{
+		super.drawBG( offsetX, offsetY, mouseX, mouseY );
+		this.drawItem( offsetX + 66 - 8, offsetY + 17, AEApi.instance().items().itemCell1k.stack( 1 ) );
+		this.drawItem( offsetX + 94 + 8, offsetY + 17, AEApi.instance().blocks().blockDrive.stack( 1 ) );
 	}
 
 	@Override
@@ -102,4 +89,19 @@ public class GuiIOPort extends GuiUpgradeable
 		return "guis/ioport.png";
 	}
 
+	@Override
+	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	{
+		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.IOPort.getLocal() ), 8, 6, 4210752 );
+		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+
+		if( this.redstoneMode != null )
+			this.redstoneMode.set( this.cvb.rsMode );
+
+		if( this.operationMode != null )
+			this.operationMode.set( ( (ContainerIOPort) this.cvb ).opMode );
+
+		if( this.fullMode != null )
+			this.fullMode.set( ( (ContainerIOPort) this.cvb ).fMode );
+	}
 }

@@ -18,6 +18,7 @@
 
 package appeng.spatial;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,46 +32,42 @@ import net.minecraft.world.gen.ChunkProviderGenerate;
 import appeng.api.AEApi;
 import appeng.core.AEConfig;
 
+
 public class StorageChunkProvider extends ChunkProviderGenerate
 {
 
 	final static Block[] BLOCKS;
 
-	static {
+	static
+	{
 
 		BLOCKS = new Block[255 * 256];
 
 		Block matrixFrame = AEApi.instance().blocks().blockMatrixFrame.block();
-		for (int x = 0; x < BLOCKS.length; x++)
+		for( int x = 0; x < BLOCKS.length; x++ )
 			BLOCKS[x] = matrixFrame;
-
 	}
 
 	final World w;
 
-	public StorageChunkProvider(World wrd, long i) {
+	public StorageChunkProvider( World wrd, long i )
+	{
 		super( wrd, i, false );
 		this.w = wrd;
 	}
 
 	@Override
-	public boolean unloadQueuedChunks()
-	{
-		return true;
-	}
-
-	@Override
-	public Chunk provideChunk(int x, int z)
+	public Chunk provideChunk( int x, int z )
 	{
 		Chunk chunk = new Chunk( this.w, BLOCKS, x, z );
 
 		byte[] biomes = chunk.getBiomeArray();
 		AEConfig config = AEConfig.instance;
 
-		for (int k = 0; k < biomes.length; ++k)
+		for( int k = 0; k < biomes.length; ++k )
 			biomes[k] = (byte) config.storageBiomeID;
 
-		if ( !chunk.isTerrainPopulated )
+		if( !chunk.isTerrainPopulated )
 		{
 			chunk.isTerrainPopulated = true;
 			chunk.resetRelightChecks();
@@ -80,15 +77,20 @@ public class StorageChunkProvider extends ChunkProviderGenerate
 	}
 
 	@Override
-	public void populate(IChunkProvider par1iChunkProvider, int par2, int par3)
+	public void populate( IChunkProvider par1iChunkProvider, int par2, int par3 )
 	{
 
 	}
 
 	@Override
-	public List getPossibleCreatures(EnumCreatureType a, int b, int c, int d)
+	public boolean unloadQueuedChunks()
+	{
+		return true;
+	}
+
+	@Override
+	public List getPossibleCreatures( EnumCreatureType a, int b, int c, int d )
 	{
 		return new ArrayList();
 	}
-
 }

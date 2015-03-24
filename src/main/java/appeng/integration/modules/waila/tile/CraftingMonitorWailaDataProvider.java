@@ -56,12 +56,12 @@ public final class CraftingMonitorWailaDataProvider extends BaseWailaDataProvide
 	public List<String> getWailaBody( ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
 	{
 		final TileEntity te = accessor.getTileEntity();
-		if ( te instanceof TileCraftingMonitorTile )
+		if( te instanceof TileCraftingMonitorTile )
 		{
-			final TileCraftingMonitorTile monitor = ( TileCraftingMonitorTile ) te;
+			final TileCraftingMonitorTile monitor = (TileCraftingMonitorTile) te;
 			final IAEItemStack displayStack = monitor.getJobProgress();
 
-			if ( displayStack != null )
+			if( displayStack != null )
 			{
 				final String currentCrafting = displayStack.getItemStack().getDisplayName();
 

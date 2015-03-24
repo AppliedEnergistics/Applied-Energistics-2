@@ -18,6 +18,7 @@
 
 package appeng.client.render.blocks;
 
+
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
@@ -28,15 +29,17 @@ import appeng.block.solids.OreQuartz;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
 
+
 public class RenderQuartzOre extends BaseBlockRender
 {
 
-	public RenderQuartzOre() {
+	public RenderQuartzOre()
+	{
 		super( false, 20 );
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
+	public void renderInventory( AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		super.renderInventory( blk, is, renderer, type, obj );
 		blk.getRendererInstance().setTemporaryRenderIcon( ExtraBlockTextures.OreQuartzStone.getIcon() );
@@ -45,7 +48,7 @@ public class RenderQuartzOre extends BaseBlockRender
 	}
 
 	@Override
-	public boolean renderInWorld(AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
+	public boolean renderInWorld( AEBaseBlock block, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		OreQuartz blk = (OreQuartz) block;
 		blk.enhanceBrightness = true;

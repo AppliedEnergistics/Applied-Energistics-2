@@ -21,9 +21,9 @@ package appeng.core.features;
 
 import java.util.EnumSet;
 
-import com.google.common.base.Optional;
-
 import cpw.mods.fml.common.registry.GameRegistry;
+
+import com.google.common.base.Optional;
 
 import appeng.api.util.AEItemDefinition;
 import appeng.block.AEBaseBlock;
@@ -71,14 +71,14 @@ public class AEBlockFeatureHandler implements IFeatureHandler
 	@Override
 	public void register()
 	{
-		if ( this.enabled )
+		if( this.enabled )
 		{
 			String name = this.extractor.get();
 			this.featured.setCreativeTab( CreativeTab.instance );
 			this.featured.setBlockName( /* "tile." */"appliedenergistics2." + name );
 			this.featured.setBlockTextureName( "appliedenergistics2:" + name );
 
-			if ( Platform.isClient() )
+			if( Platform.isClient() )
 			{
 				CommonHelper.proxy.bindTileEntitySpecialRenderer( this.featured.getTileEntityClass(), this.featured );
 			}

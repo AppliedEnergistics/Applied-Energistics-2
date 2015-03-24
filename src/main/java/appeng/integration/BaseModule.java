@@ -18,17 +18,18 @@
 
 package appeng.integration;
 
-public abstract class BaseModule implements IIntegrationModule {
+
+public abstract class BaseModule implements IIntegrationModule
+{
 
 	protected void testClassExistence( Class<?> clz )
 	{
-		 clz.isInstance(this);
+		clz.isInstance( this );
 	}
 
 	@Override
 	public abstract void init() throws Throwable;
 
 	@Override
-	public abstract  void postInit();
-
+	public abstract void postInit();
 }

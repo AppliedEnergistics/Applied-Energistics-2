@@ -18,10 +18,12 @@
 
 package appeng.transformer;
 
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiErrorScreen;
 
 import cpw.mods.fml.client.CustomModLoadingErrorDisplayException;
+
 
 public class MissingCoreMod extends CustomModLoadingErrorDisplayException
 {
@@ -30,7 +32,7 @@ public class MissingCoreMod extends CustomModLoadingErrorDisplayException
 	private boolean deobf = false;
 
 	@Override
-	public void initGui(GuiErrorScreen errorScreen, FontRenderer fontRenderer)
+	public void initGui( GuiErrorScreen errorScreen, FontRenderer fontRenderer )
 	{
 		Class clz = errorScreen.getClass();
 		try
@@ -38,14 +40,14 @@ public class MissingCoreMod extends CustomModLoadingErrorDisplayException
 			clz.getField( "mc" );
 			this.deobf = true;
 		}
-		catch (Throwable ignored)
+		catch( Throwable ignored )
 		{
 
 		}
 	}
 
 	@Override
-	public void drawScreen(GuiErrorScreen errorScreen, FontRenderer fontRenderer, int mouseRelX, int mouseRelY, float tickTime)
+	public void drawScreen( GuiErrorScreen errorScreen, FontRenderer fontRenderer, int mouseRelX, int mouseRelY, float tickTime )
 	{
 		int offset = 10;
 		this.drawCenteredString( fontRenderer, "Sorry, couldn't load AE2 Properly.", errorScreen.width / 2, offset += 15, 0xffffff );
@@ -53,7 +55,7 @@ public class MissingCoreMod extends CustomModLoadingErrorDisplayException
 
 		offset += 15;
 
-		if ( this.deobf )
+		if( this.deobf )
 		{
 			offset += 15;
 			this.drawCenteredString( fontRenderer, "In a developer environment add the following too your args,", errorScreen.width / 2, offset += 15, 0xffffff );
@@ -75,7 +77,7 @@ public class MissingCoreMod extends CustomModLoadingErrorDisplayException
 		}
 	}
 
-	public void drawCenteredString(FontRenderer fontRenderer, String string, int x, int y, int colour)
+	public void drawCenteredString( FontRenderer fontRenderer, String string, int x, int y, int colour )
 	{
 		fontRenderer.drawStringWithShadow( string, x - fontRenderer.getStringWidth( string.replaceAll( "\\P{InBasic_Latin}", "" ) ) / 2, y, colour );
 	}

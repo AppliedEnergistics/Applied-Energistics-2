@@ -18,20 +18,23 @@
 
 package appeng.util.iterators;
 
+
 import java.util.Iterator;
 
 import net.minecraft.item.ItemStack;
 
 import appeng.util.inv.ItemSlot;
 
+
 public class StackToSlotIterator implements Iterator<ItemSlot>
 {
 
-	int x = 0;
 	final ItemSlot iss = new ItemSlot();
 	final Iterator<ItemStack> is;
+	int x = 0;
 
-	public StackToSlotIterator(Iterator<ItemStack> is) {
+	public StackToSlotIterator( Iterator<ItemStack> is )
+	{
 		this.is = is;
 	}
 
@@ -54,5 +57,4 @@ public class StackToSlotIterator implements Iterator<ItemSlot>
 	{
 		// uhh no.
 	}
-
 }

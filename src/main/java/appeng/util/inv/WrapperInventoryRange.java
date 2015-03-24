@@ -18,25 +18,47 @@
 
 package appeng.util.inv;
 
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+
 
 public class WrapperInventoryRange implements IInventory
 {
 
 	private final IInventory src;
-	int[] slots;
 	protected boolean ignoreValidItems = false;
+	int[] slots;
 
-	public static String concatLines(int[] s, String separator)
+	public WrapperInventoryRange( IInventory a, int[] s, boolean ignoreValid )
 	{
-		if ( s.length > 0 )
+		this.src = a;
+		this.slots = s;
+
+		if( this.slots == null )
+			this.slots = new int[0];
+
+		this.ignoreValidItems = ignoreValid;
+	}
+
+	public WrapperInventoryRange( IInventory a, int _min, int _size, boolean ignoreValid )
+	{
+		this.src = a;
+		this.slots = new int[_size];
+		for( int x = 0; x < _size; x++ )
+			this.slots[x] = _min + x;
+		this.ignoreValidItems = ignoreValid;
+	}
+
+	public static String concatLines( int[] s, String separator )
+	{
+		if( s.length > 0 )
 		{
 			StringBuilder sb = new StringBuilder();
-			for (int value : s)
+			for( int value : s )
 			{
-				if ( sb.length() > 0 )
+				if( sb.length() > 0 )
 				{
 					sb.append( separator );
 				}
@@ -47,24 +69,6 @@ public class WrapperInventoryRange implements IInventory
 		return "";
 	}
 
-	public WrapperInventoryRange(IInventory a, int[] s, boolean ignoreValid) {
-		this.src = a;
-		this.slots = s;
-
-		if ( this.slots == null )
-			this.slots = new int[0];
-
-		this.ignoreValidItems = ignoreValid;
-	}
-
-	public WrapperInventoryRange(IInventory a, int _min, int _size, boolean ignoreValid) {
-		this.src = a;
-		this.slots = new int[_size];
-		for (int x = 0; x < _size; x++)
-			this.slots[x] = _min + x;
-		this.ignoreValidItems = ignoreValid;
-	}
-
 	@Override
 	public int getSizeInventory()
 	{
@@ -72,25 +76,25 @@ public class WrapperInventoryRange implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int var1)
+	public ItemStack getStackInSlot( int var1 )
 	{
 		return this.src.getStackInSlot( this.slots[var1] );
 	}
 
 	@Override
-	public ItemStack decrStackSize(int var1, int var2)
+	public ItemStack decrStackSize( int var1, int var2 )
 	{
 		return this.src.decrStackSize( this.slots[var1], var2 );
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int var1)
+	public ItemStack getStackInSlotOnClosing( int var1 )
 	{
 		return this.src.getStackInSlotOnClosing( this.slots[var1] );
 	}
 
 	@Override
-	public void setInventorySlotContents(int var1, ItemStack var2)
+	public void setInventorySlotContents( int var1, ItemStack var2 )
 	{
 		this.src.setInventorySlotContents( this.slots[var1], var2 );
 	}
@@ -99,6 +103,12 @@ public class WrapperInventoryRange implements IInventory
 	public String getInventoryName()
 	{
 		return this.src.getInventoryName();
+	}
+
+	@Override
+	public boolean hasCustomInventoryName()
+	{
+		return false;
 	}
 
 	@Override
@@ -114,7 +124,7 @@ public class WrapperInventoryRange implements IInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer var1)
+	public boolean isUseableByPlayer( EntityPlayer var1 )
 	{
 		return this.src.isUseableByPlayer( var1 );
 	}
@@ -132,18 +142,11 @@ public class WrapperInventoryRange implements IInventory
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
-		return false;
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack)
-	{
-		if ( this.ignoreValidItems )
+		if( this.ignoreValidItems )
 			return true;
 
 		return this.src.isItemValidForSlot( this.slots[i], itemstack );
 	}
-
 }

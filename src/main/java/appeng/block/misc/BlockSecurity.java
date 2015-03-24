@@ -18,6 +18,7 @@
 
 package appeng.block.misc;
 
+
 import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
@@ -33,10 +34,12 @@ import appeng.core.sync.GuiBridge;
 import appeng.tile.misc.TileSecurity;
 import appeng.util.Platform;
 
+
 public class BlockSecurity extends AEBaseBlock
 {
 
-	public BlockSecurity() {
+	public BlockSecurity()
+	{
 		super( BlockSecurity.class, Material.iron );
 		this.setFeature( EnumSet.of( AEFeature.Security ) );
 		this.setTileEntity( TileSecurity.class );
@@ -49,22 +52,20 @@ public class BlockSecurity extends AEBaseBlock
 	}
 
 	@Override
-	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
+	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
 	{
-		if ( p.isSneaking() )
+		if( p.isSneaking() )
 			return false;
 
 		TileSecurity tg = this.getTileEntity( w, x, y, z );
-		if ( tg != null )
+		if( tg != null )
 		{
-			if ( Platform.isClient() )
+			if( Platform.isClient() )
 				return true;
 
 			Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_SECURITY );
 			return true;
-
 		}
 		return false;
 	}
-
 }

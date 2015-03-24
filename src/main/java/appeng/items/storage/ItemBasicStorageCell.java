@@ -23,14 +23,14 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -70,7 +70,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 		this.totalBytes = kilobytes * 1024;
 		this.component = whichCell;
 
-		switch ( this.component )
+		switch( this.component )
 		{
 			case Cell1kPart:
 				this.idleDrain = 0.5;
@@ -99,31 +99,25 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 	{
 		IMEInventoryHandler inventory = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
 
-		if ( inventory instanceof ICellInventoryHandler )
+		if( inventory instanceof ICellInventoryHandler )
 		{
-			ICellInventoryHandler handler = ( ICellInventoryHandler ) inventory;
+			ICellInventoryHandler handler = (ICellInventoryHandler) inventory;
 			ICellInventory cellInventory = handler.getCellInv();
 
-			if ( cellInventory != null )
+			if( cellInventory != null )
 			{
-				lines.add( cellInventory.getUsedBytes() + " " + GuiText.Of.getLocal() + ' '
-						+ cellInventory.getTotalBytes() + ' '
-						+ GuiText.BytesUsed.getLocal() );
+				lines.add( cellInventory.getUsedBytes() + " " + GuiText.Of.getLocal() + ' ' + cellInventory.getTotalBytes() + ' ' + GuiText.BytesUsed.getLocal() );
 
-				lines.add( cellInventory.getStoredItemTypes() + " " + GuiText.Of.getLocal()
-						+ ' ' + cellInventory.getTotalItemTypes() + ' '
-						+ GuiText.Types.getLocal() );
+				lines.add( cellInventory.getStoredItemTypes() + " " + GuiText.Of.getLocal() + ' ' + cellInventory.getTotalItemTypes() + ' ' + GuiText.Types.getLocal() );
 
-				if ( handler.isPreformatted() )
+				if( handler.isPreformatted() )
 				{
-					String List = ( handler.getIncludeExcludeMode() == IncludeExclude.WHITELIST ? GuiText.Included
-							: GuiText.Excluded ).getLocal();
+					String List = ( handler.getIncludeExcludeMode() == IncludeExclude.WHITELIST ? GuiText.Included : GuiText.Excluded ).getLocal();
 
-					if ( handler.isFuzzy() )
+					if( handler.isFuzzy() )
 						lines.add( GuiText.Partitioned.getLocal() + " - " + List + ' ' + GuiText.Fuzzy.getLocal() );
 					else
 						lines.add( GuiText.Partitioned.getLocal() + " - " + List + ' ' + GuiText.Precise.getLocal() );
-
 				}
 			}
 		}
@@ -203,7 +197,7 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 		{
 			return FuzzyMode.valueOf( fz );
 		}
-		catch ( Throwable t )
+		catch( Throwable t )
 		{
 			return FuzzyMode.IGNORE_ALL;
 		}
@@ -224,30 +218,30 @@ public class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, II
 
 	private boolean disassembleDrive( ItemStack stack, World world, EntityPlayer player )
 	{
-		if ( player.isSneaking() )
+		if( player.isSneaking() )
 		{
-			if ( Platform.isClient() )
+			if( Platform.isClient() )
 				return false;
 
 			InventoryPlayer playerInventory = player.inventory;
 			IMEInventoryHandler inv = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
-			if ( inv != null && playerInventory.getCurrentItem() == stack )
+			if( inv != null && playerInventory.getCurrentItem() == stack )
 			{
 				InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
 				IItemList<IAEItemStack> list = inv.getAvailableItems( StorageChannel.ITEMS.createList() );
-				if ( list.isEmpty() && ia != null )
+				if( list.isEmpty() && ia != null )
 				{
 					playerInventory.setInventorySlotContents( playerInventory.currentItem, null );
 
 					ItemStack extraB = ia.addItems( this.component.stack( 1 ) );
 					ItemStack extraA = ia.addItems( AEApi.instance().materials().materialEmptyStorageCell.stack( 1 ) );
 
-					if ( extraA != null )
+					if( extraA != null )
 						player.dropPlayerItemWithRandomChoice( extraA, false );
-					if ( extraB != null )
+					if( extraB != null )
 						player.dropPlayerItemWithRandomChoice( extraB, false );
 
-					if ( player.inventoryContainer != null )
+					if( player.inventoryContainer != null )
 						player.inventoryContainer.detectAndSendChanges();
 
 					return true;

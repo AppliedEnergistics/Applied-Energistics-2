@@ -18,6 +18,7 @@
 
 package appeng.core.sync;
 
+
 public enum GuiHostType
 {
 	ITEM_OR_WORLD, ITEM, WORLD;

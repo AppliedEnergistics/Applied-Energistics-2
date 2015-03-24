@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiButton;
@@ -32,27 +33,29 @@ import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
 
+
 public class GuiNetworkTool extends AEBaseGui
 {
 
 	GuiToggleButton tFacades;
 
-	public GuiNetworkTool(InventoryPlayer inventoryPlayer, INetworkTool te) {
+	public GuiNetworkTool( InventoryPlayer inventoryPlayer, INetworkTool te )
+	{
 		super( new ContainerNetworkTool( inventoryPlayer, te ) );
 		this.ySize = 166;
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton btn)
+	protected void actionPerformed( GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
 		try
 		{
-			if ( btn == this.tFacades )
+			if( btn == this.tFacades )
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "NetworkTool", "Toggle" ) );
 		}
-		catch (IOException e)
+		catch( IOException e )
 		{
 			AELog.error( e );
 		}
@@ -69,20 +72,19 @@ public class GuiNetworkTool extends AEBaseGui
 	}
 
 	@Override
-	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
+	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
-		this.bindTexture( "guis/toolbox.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
-	}
-
-	@Override
-	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
-	{
-		if ( this.tFacades != null )
-			this.tFacades.setState( ((ContainerNetworkTool) this.inventorySlots).facadeMode );
+		if( this.tFacades != null )
+			this.tFacades.setState( ( (ContainerNetworkTool) this.inventorySlots ).facadeMode );
 
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.NetworkTool.getLocal() ), 8, 6, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 
+	@Override
+	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	{
+		this.bindTexture( "guis/toolbox.png" );
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+	}
 }

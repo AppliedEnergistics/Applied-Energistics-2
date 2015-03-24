@@ -18,6 +18,7 @@
 
 package appeng.block.storage;
 
+
 import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
@@ -33,10 +34,12 @@ import appeng.core.sync.GuiBridge;
 import appeng.tile.storage.TileDrive;
 import appeng.util.Platform;
 
+
 public class BlockDrive extends AEBaseBlock
 {
 
-	public BlockDrive() {
+	public BlockDrive()
+	{
 		super( BlockDrive.class, Material.iron );
 		this.setFeature( EnumSet.of( AEFeature.StorageCells, AEFeature.MEDrive ) );
 		this.setTileEntity( TileDrive.class );
@@ -49,19 +52,18 @@ public class BlockDrive extends AEBaseBlock
 	}
 
 	@Override
-	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
+	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
 	{
-		if ( p.isSneaking() )
+		if( p.isSneaking() )
 			return false;
 
 		TileDrive tg = this.getTileEntity( w, x, y, z );
-		if ( tg != null )
+		if( tg != null )
 		{
-			if ( Platform.isServer() )
+			if( Platform.isServer() )
 				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_DRIVE );
 			return true;
 		}
 		return false;
 	}
-
 }

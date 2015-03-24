@@ -23,8 +23,11 @@
 
 package appeng.api.events;
 
-import appeng.api.features.ILocatable;
+
 import cpw.mods.fml.common.eventhandler.Event;
+
+import appeng.api.features.ILocatable;
+
 
 /**
  * Input Event:
@@ -34,18 +37,17 @@ import cpw.mods.fml.common.eventhandler.Event;
 public class LocatableEventAnnounce extends Event
 {
 
+	final public ILocatable target;
+	final public LocatableEvent change;
+	public LocatableEventAnnounce( ILocatable o, LocatableEvent ev )
+	{
+		this.target = o;
+		this.change = ev;
+	}
+
 	public enum LocatableEvent
 	{
 		Register, // Adds the locatable to the registry
 		Unregister // Removes the locatable from the registry
 	}
-
-	final public ILocatable target;
-	final public LocatableEvent change;
-
-	public LocatableEventAnnounce(ILocatable o, LocatableEvent ev) {
-		this.target = o;
-		this.change = ev;
-	}
-
 }

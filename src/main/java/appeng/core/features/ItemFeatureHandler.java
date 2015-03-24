@@ -21,11 +21,11 @@ package appeng.core.features;
 
 import java.util.EnumSet;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.item.Item;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+
+import com.google.common.base.Optional;
 
 import appeng.api.util.AEItemDefinition;
 import appeng.core.CreativeTab;
@@ -75,7 +75,7 @@ public class ItemFeatureHandler implements IFeatureHandler
 		this.item.setTextureName( "appliedenergistics2:" + name );
 		this.item.setUnlocalizedName( /* "item." */"appliedenergistics2." + name );
 
-		if ( this.item instanceof ItemFacade )
+		if( this.item instanceof ItemFacade )
 		{
 			this.item.setCreativeTab( CreativeTabFacade.instance );
 		}
@@ -84,11 +84,11 @@ public class ItemFeatureHandler implements IFeatureHandler
 			this.item.setCreativeTab( CreativeTab.instance );
 		}
 
-		if ( name.equals( "ItemMaterial" ) )
+		if( name.equals( "ItemMaterial" ) )
 		{
 			name = "ItemMultiMaterial";
 		}
-		else if ( name.equals( "ItemPart" ) )
+		else if( name.equals( "ItemPart" ) )
 		{
 			name = "ItemMultiPart";
 		}

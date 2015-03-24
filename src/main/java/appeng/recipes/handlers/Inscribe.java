@@ -34,54 +34,31 @@ import appeng.api.recipes.IIngredient;
 import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
 
+
 public class Inscribe implements ICraftHandler, IWebsiteSerializer
 {
-
-	public static class InscriberRecipe
-	{
-
-		public InscriberRecipe(ItemStack[] imprintable, ItemStack plateA, ItemStack plateB, ItemStack out, boolean usePlates) {
-			this.imprintable = imprintable;
-			this.usePlates = usePlates;
-			this.plateA = plateA;
-			this.plateB = plateB;
-			this.output = out;
-		}
-
-		final public boolean usePlates;
-
-		final public ItemStack plateA;
-		final public ItemStack[] imprintable;
-		final public ItemStack plateB;
-		final public ItemStack output;
-
-	}
-
-	public boolean usePlates = false;
 
 	public static final HashSet<ItemStack> PLATES = new HashSet<ItemStack>();
 	public static final HashSet<ItemStack> INPUTS = new HashSet<ItemStack>();
 	public static final LinkedList<InscriberRecipe> RECIPES = new LinkedList<InscriberRecipe>();
-
+	public boolean usePlates = false;
 	IIngredient imprintable;
-
 	IIngredient plateA;
 	IIngredient plateB;
-
 	IIngredient output;
 
 	@Override
-	public void setup(List<List<IIngredient>> input, List<List<IIngredient>> output) throws RecipeError
+	public void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeError
 	{
-		if ( output.size() == 1 && output.get( 0 ).size() == 1 )
+		if( output.size() == 1 && output.get( 0 ).size() == 1 )
 		{
-			if ( input.size() == 1 && input.get( 0 ).size() > 1 )
+			if( input.size() == 1 && input.get( 0 ).size() > 1 )
 			{
 				this.imprintable = input.get( 0 ).get( 0 );
 
 				this.plateA = input.get( 0 ).get( 1 );
 
-				if ( input.get( 0 ).size() > 2 )
+				if( input.get( 0 ).size() > 2 )
 					this.plateB = input.get( 0 ).get( 2 );
 
 				this.output = output.get( 0 ).get( 0 );
@@ -96,42 +73,59 @@ public class Inscribe implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		if ( this.imprintable != null )
+		if( this.imprintable != null )
 			Collections.addAll( INPUTS, this.imprintable.getItemStackSet() );
 
-		if ( this.plateA != null )
+		if( this.plateA != null )
 			Collections.addAll( PLATES, this.plateA.getItemStackSet() );
 
-		if ( this.plateB != null )
+		if( this.plateB != null )
 			Collections.addAll( PLATES, this.plateB.getItemStackSet() );
 
-		InscriberRecipe ir = new InscriberRecipe( this.imprintable.getItemStackSet(), this.plateA == null ? null : this.plateA.getItemStack(), this.plateB == null ? null
-				: this.plateB.getItemStack(), this.output.getItemStack(), this.usePlates );
+		InscriberRecipe ir = new InscriberRecipe( this.imprintable.getItemStackSet(), this.plateA == null ? null : this.plateA.getItemStack(), this.plateB == null ? null : this.plateB.getItemStack(), this.output.getItemStack(), this.usePlates );
 		RECIPES.add( ir );
 	}
 
 	@Override
-	public boolean canCraft(ItemStack reqOutput) throws RegistrationError, MissingIngredientError
-	{
-		return Platform.isSameItemPrecise( this.output.getItemStack(), reqOutput );
-	}
-
-	@Override
-	public String getPattern(RecipeHandler h)
+	public String getPattern( RecipeHandler h )
 	{
 		String o = "inscriber " + this.output.getQty() + '\n';
 
 		o += h.getName( this.output ) + '\n';
 
-		if ( this.plateA != null )
-			o +=  h.getName( this.plateA )+ '\n';
+		if( this.plateA != null )
+			o += h.getName( this.plateA ) + '\n';
 
-		o += h.getName(this.imprintable);
+		o += h.getName( this.imprintable );
 
-		if ( this.plateB != null )
-			o += '\n' +h.getName( this.plateB );
+		if( this.plateB != null )
+			o += '\n' + h.getName( this.plateB );
 
 		return o;
 	}
 
+	@Override
+	public boolean canCraft( ItemStack reqOutput ) throws RegistrationError, MissingIngredientError
+	{
+		return Platform.isSameItemPrecise( this.output.getItemStack(), reqOutput );
+	}
+
+
+	public static class InscriberRecipe
+	{
+
+		final public boolean usePlates;
+		final public ItemStack plateA;
+		final public ItemStack[] imprintable;
+		final public ItemStack plateB;
+		final public ItemStack output;
+		public InscriberRecipe( ItemStack[] imprintable, ItemStack plateA, ItemStack plateB, ItemStack out, boolean usePlates )
+		{
+			this.imprintable = imprintable;
+			this.usePlates = usePlates;
+			this.plateA = plateA;
+			this.plateB = plateB;
+			this.output = out;
+		}
+	}
 }

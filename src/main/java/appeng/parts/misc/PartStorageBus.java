@@ -90,14 +90,18 @@ import appeng.util.prioitylist.PrecisePriorityList;
 
 
 @Interface( iname = "BC", iface = "buildcraft.api.transport.IPipeConnection" )
-public class PartStorageBus
-		extends PartUpgradeable
+public class PartStorageBus extends PartUpgradeable
 		implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack>, IPipeConnection, IPriorityHost
 {
-	int priority = 0;
 	final BaseActionSource mySrc;
-
 	final AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
+	int priority = 0;
+	boolean cached = false;
+	MEMonitorIInventory monitor = null;
+	MEInventoryHandler handler = null;
+	int handlerHash = 0;
+	boolean wasActive = false;
+	private byte resetCacheLogic = 0;
 
 	public PartStorageBus( ItemStack is )
 	{
@@ -108,13 +112,6 @@ public class PartStorageBus
 		this.mySrc = new MachineSource( this );
 	}
 
-	boolean cached = false;
-	MEMonitorIInventory monitor = null;
-	MEInventoryHandler handler = null;
-
-	int handlerHash = 0;
-	boolean wasActive = false;
-
 	@Override
 	@MENetworkEventSubscribe
 	public void powerRender( MENetworkPowerStatusChange c )
@@ -122,16 +119,10 @@ public class PartStorageBus
 		this.updateStatus();
 	}
 
-	@MENetworkEventSubscribe
-	public void updateChannels( MENetworkChannelsChanged changedChannels )
-	{
-		this.updateStatus();
-	}
-
 	private void updateStatus()
 	{
 		boolean currentActive = this.proxy.isActive();
-		if ( this.wasActive != currentActive )
+		if( this.wasActive != currentActive )
 		{
 			this.wasActive = currentActive;
 			try
@@ -139,26 +130,17 @@ public class PartStorageBus
 				this.proxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
 				this.host.markForUpdate();
 			}
-			catch ( GridAccessException e )
+			catch( GridAccessException e )
 			{
 				// :P
 			}
 		}
 	}
 
-	@Override
-	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
+	@MENetworkEventSubscribe
+	public void updateChannels( MENetworkChannelsChanged changedChannels )
 	{
-		if ( !player.isSneaking() )
-		{
-			if ( Platform.isClient() )
-				return true;
-
-			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_STORAGEBUS );
-			return true;
-		}
-
-		return false;
+		this.updateStatus();
 	}
 
 	@Override
@@ -168,88 +150,28 @@ public class PartStorageBus
 	}
 
 	@Override
-	public boolean isValid( Object verificationToken )
+	public void writeToNBT( NBTTagCompound data )
 	{
-		return this.handler == verificationToken;
+		super.writeToNBT( data );
+		this.Config.writeToNBT( data, "config" );
+		data.setInteger( "priority", this.priority );
+	}
+
+	@Override
+	public void readFromNBT( NBTTagCompound data )
+	{
+		super.readFromNBT( data );
+		this.Config.readFromNBT( data, "config" );
+		this.priority = data.getInteger( "priority" );
 	}
 
 	@Override
 	public IInventory getInventoryByName( String name )
 	{
-		if ( name.equals( "config" ) )
+		if( name.equals( "config" ) )
 			return this.Config;
 
 		return super.getInventoryByName( name );
-	}
-
-	private byte resetCacheLogic = 0;
-
-	private void resetCache( boolean fullReset )
-	{
-		if ( this.host == null || this.host.getTile() == null || this.host.getTile().getWorldObj() == null || this.host.getTile().getWorldObj().isRemote )
-			return;
-
-		if ( fullReset )
-			this.resetCacheLogic = 2;
-		else
-			this.resetCacheLogic = 1;
-
-		try
-		{
-			this.proxy.getTick().alertDevice( this.proxy.getNode() );
-		}
-		catch ( GridAccessException e )
-		{
-			// :P
-		}
-	}
-
-	private void resetCache()
-	{
-		boolean fullReset = this.resetCacheLogic == 2;
-		this.resetCacheLogic = 0;
-
-		IMEInventory<IAEItemStack> in = this.getInternalHandler();
-		IItemList<IAEItemStack> before = AEApi.instance().storage().createItemList();
-		if ( in != null )
-			before = in.getAvailableItems( before );
-
-		this.cached = false;
-		if ( fullReset )
-			this.handlerHash = 0;
-
-		IMEInventory<IAEItemStack> out = this.getInternalHandler();
-
-		if ( this.monitor != null )
-			this.monitor.onTick();
-
-		IItemList<IAEItemStack> after = AEApi.instance().storage().createItemList();
-		if ( out != null )
-			after = out.getAvailableItems( after );
-
-		Platform.postListChanges( before, after, this, this.mySrc );
-	}
-
-	@Override
-	public void onNeighborChanged()
-	{
-		this.resetCache( false );
-	}
-
-	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
-	{
-		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
-
-		if ( inv == this.Config )
-			this.resetCache( true );
-	}
-
-	@Override
-	public void upgradesChanged()
-	{
-		super.upgradesChanged();
-		this.resetCache( true );
 	}
 
 	@Override
@@ -260,137 +182,52 @@ public class PartStorageBus
 	}
 
 	@Override
-	public void setPriority( int newValue )
+	public void upgradesChanged()
 	{
-		this.priority = newValue;
-		this.host.markForSave();
+		super.upgradesChanged();
 		this.resetCache( true );
 	}
 
-	public MEInventoryHandler getInternalHandler()
+	@Override
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
 	{
-		if ( this.cached )
-			return this.handler;
+		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
 
-		boolean wasSleeping = this.monitor == null;
-
-		this.cached = true;
-		TileEntity self = this.getHost().getTile();
-		TileEntity target = self.getWorldObj().getTileEntity( self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
-
-		int newHandlerHash = Platform.generateTileHash( target );
-
-		if ( this.handlerHash == newHandlerHash && this.handlerHash != 0 )
-			return this.handler;
-
-		try
-		{
-			// force grid to update handlers...
-			this.proxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
-		}
-		catch ( GridAccessException e )
-		{
-			// :3
-		}
-
-		this.handlerHash = newHandlerHash;
-		this.handler = null;
-		this.monitor = null;
-		if ( target != null )
-		{
-			IExternalStorageHandler esh = AEApi.instance().registries().externalStorage().getHandler( target, this.side.getOpposite(), StorageChannel.ITEMS, this.mySrc );
-			if ( esh != null )
-			{
-				IMEInventory inv = esh.getInventory( target, this.side.getOpposite(), StorageChannel.ITEMS, this.mySrc );
-
-				if ( inv instanceof MEMonitorIInventory )
-				{
-					MEMonitorIInventory h = ( MEMonitorIInventory ) inv;
-					h.mode = ( StorageFilter ) this.getConfigManager().getSetting( Settings.STORAGE_FILTER );
-					h.mySource = new MachineSource( this );
-				}
-
-				if ( inv instanceof MEMonitorIInventory )
-					this.monitor = ( MEMonitorIInventory ) inv;
-
-				if ( inv != null )
-				{
-					this.checkInterfaceVsStorageBus( target, this.side.getOpposite() );
-
-					this.handler = new MEInventoryHandler( inv, StorageChannel.ITEMS );
-
-					this.handler.setBaseAccess( ( AccessRestriction ) this.getConfigManager().getSetting( Settings.ACCESS ) );;
-					this.handler.setWhitelist( this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
-					this.handler.setPriority( this.priority );
-
-					IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
-
-					int slotsToUse = 18 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 9;
-					for ( int x = 0; x < this.Config.getSizeInventory() && x < slotsToUse; x++ )
-					{
-						IAEItemStack is = this.Config.getAEStackInSlot( x );
-						if ( is != null )
-							priorityList.add( is );
-					}
-
-					if ( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-						this.handler.setPartitionList( new FuzzyPriorityList( priorityList, ( FuzzyMode ) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
-					else
-						this.handler.setPartitionList ( new PrecisePriorityList( priorityList ));
-
-					if ( inv instanceof IMEMonitor )
-						( ( IMEMonitor ) inv ).addListener( this, this.handler );
-				}
-			}
-		}
-
-		// update sleep state...
-		if ( wasSleeping != ( this.monitor == null ) )
-		{
-			try
-			{
-				ITickManager tm = this.proxy.getTick();
-				if ( this.monitor == null )
-					tm.sleepDevice( this.proxy.getNode() );
-				else
-					tm.wakeDevice( this.proxy.getNode() );
-			}
-			catch ( GridAccessException e )
-			{
-				// :(
-			}
-		}
-
-		return this.handler;
+		if( inv == this.Config )
+			this.resetCache( true );
 	}
 
-	private void checkInterfaceVsStorageBus( TileEntity target, ForgeDirection side )
+	@Override
+	public boolean isValid( Object verificationToken )
 	{
-		IInterfaceHost achievement = null;
+		return this.handler == verificationToken;
+	}
 
-		if ( target instanceof IInterfaceHost )
-			achievement = ( IInterfaceHost ) target;
-
-		if ( target instanceof IPartHost )
+	@Override
+	public void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource source )
+	{
+		try
 		{
-			Object part = ( ( IPartHost ) target ).getPart( side );
-			if ( part instanceof IInterfaceHost )
-				achievement = ( IInterfaceHost ) part;
+			if( this.proxy.isActive() )
+				this.proxy.getStorage().postAlterationOfStoredItems( StorageChannel.ITEMS, change, this.mySrc );
 		}
-
-		if ( achievement != null && achievement.getActionableNode() != null )
+		catch( GridAccessException e )
 		{
-			Platform.addStat( achievement.getActionableNode().getPlayerID(), Achievements.Recursive.getAchievement() );
-			// Platform.addStat( getActionableNode().getPlayerID(), Achievements.Recursive.getAchievement() );
+			// :(
 		}
+	}
+
+	@Override
+	public void onListUpdate()
+	{
+		// not used here.
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
 	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
-		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(),
-				this.is.getIconIndex(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
 
 		rh.setBounds( 3, 3, 15, 13, 13, 16 );
 		rh.renderInventoryBox( renderer );
@@ -415,15 +252,12 @@ public class PartStorageBus
 		rh.setBounds( 2, 2, 14, 14, 14, 15 );
 		rh.renderBlock( x, y, z, renderer );
 
-		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(),
-				this.is.getIconIndex(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartStorageSides.getIcon(), CableBusTextures.PartStorageSides.getIcon() );
 
 		rh.setBounds( 5, 5, 12, 11, 11, 13 );
 		rh.renderBlock( x, y, z, renderer );
 
-		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(),
-				CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSidesStatus.getIcon(),
-				CableBusTextures.PartMonitorSidesStatus.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
 
 		rh.setBounds( 5, 5, 13, 11, 11, 14 );
 		rh.renderBlock( x, y, z, renderer );
@@ -440,9 +274,50 @@ public class PartStorageBus
 	}
 
 	@Override
+	public void onNeighborChanged()
+	{
+		this.resetCache( false );
+	}
+
+	private void resetCache( boolean fullReset )
+	{
+		if( this.host == null || this.host.getTile() == null || this.host.getTile().getWorldObj() == null || this.host.getTile().getWorldObj().isRemote )
+			return;
+
+		if( fullReset )
+			this.resetCacheLogic = 2;
+		else
+			this.resetCacheLogic = 1;
+
+		try
+		{
+			this.proxy.getTick().alertDevice( this.proxy.getNode() );
+		}
+		catch( GridAccessException e )
+		{
+			// :P
+		}
+	}
+
+	@Override
 	public int cableConnectionRenderTo()
 	{
 		return 4;
+	}
+
+	@Override
+	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
+	{
+		if( !player.isSneaking() )
+		{
+			if( Platform.isClient() )
+				return true;
+
+			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_STORAGEBUS );
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
@@ -454,38 +329,167 @@ public class PartStorageBus
 	@Override
 	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
 	{
-		if ( this.resetCacheLogic != 0 )
+		if( this.resetCacheLogic != 0 )
 			this.resetCache();
 
-		if ( this.monitor != null )
+		if( this.monitor != null )
 			return this.monitor.onTick();
 
 		return TickRateModulation.SLEEP;
 	}
 
-	@Override
-	public void writeToNBT( NBTTagCompound data )
+	private void resetCache()
 	{
-		super.writeToNBT( data );
-		this.Config.writeToNBT( data, "config" );
-		data.setInteger( "priority", this.priority );
+		boolean fullReset = this.resetCacheLogic == 2;
+		this.resetCacheLogic = 0;
+
+		IMEInventory<IAEItemStack> in = this.getInternalHandler();
+		IItemList<IAEItemStack> before = AEApi.instance().storage().createItemList();
+		if( in != null )
+			before = in.getAvailableItems( before );
+
+		this.cached = false;
+		if( fullReset )
+			this.handlerHash = 0;
+
+		IMEInventory<IAEItemStack> out = this.getInternalHandler();
+
+		if( this.monitor != null )
+			this.monitor.onTick();
+
+		IItemList<IAEItemStack> after = AEApi.instance().storage().createItemList();
+		if( out != null )
+			after = out.getAvailableItems( after );
+
+		Platform.postListChanges( before, after, this, this.mySrc );
 	}
 
-	@Override
-	public void readFromNBT( NBTTagCompound data )
+	public MEInventoryHandler getInternalHandler()
 	{
-		super.readFromNBT( data );
-		this.Config.readFromNBT( data, "config" );
-		this.priority = data.getInteger( "priority" );
+		if( this.cached )
+			return this.handler;
+
+		boolean wasSleeping = this.monitor == null;
+
+		this.cached = true;
+		TileEntity self = this.getHost().getTile();
+		TileEntity target = self.getWorldObj().getTileEntity( self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
+
+		int newHandlerHash = Platform.generateTileHash( target );
+
+		if( this.handlerHash == newHandlerHash && this.handlerHash != 0 )
+			return this.handler;
+
+		try
+		{
+			// force grid to update handlers...
+			this.proxy.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+		}
+		catch( GridAccessException e )
+		{
+			// :3
+		}
+
+		this.handlerHash = newHandlerHash;
+		this.handler = null;
+		this.monitor = null;
+		if( target != null )
+		{
+			IExternalStorageHandler esh = AEApi.instance().registries().externalStorage().getHandler( target, this.side.getOpposite(), StorageChannel.ITEMS, this.mySrc );
+			if( esh != null )
+			{
+				IMEInventory inv = esh.getInventory( target, this.side.getOpposite(), StorageChannel.ITEMS, this.mySrc );
+
+				if( inv instanceof MEMonitorIInventory )
+				{
+					MEMonitorIInventory h = (MEMonitorIInventory) inv;
+					h.mode = (StorageFilter) this.getConfigManager().getSetting( Settings.STORAGE_FILTER );
+					h.mySource = new MachineSource( this );
+				}
+
+				if( inv instanceof MEMonitorIInventory )
+					this.monitor = (MEMonitorIInventory) inv;
+
+				if( inv != null )
+				{
+					this.checkInterfaceVsStorageBus( target, this.side.getOpposite() );
+
+					this.handler = new MEInventoryHandler( inv, StorageChannel.ITEMS );
+
+					this.handler.setBaseAccess( (AccessRestriction) this.getConfigManager().getSetting( Settings.ACCESS ) );
+					;
+					this.handler.setWhitelist( this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
+					this.handler.setPriority( this.priority );
+
+					IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
+
+					int slotsToUse = 18 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 9;
+					for( int x = 0; x < this.Config.getSizeInventory() && x < slotsToUse; x++ )
+					{
+						IAEItemStack is = this.Config.getAEStackInSlot( x );
+						if( is != null )
+							priorityList.add( is );
+					}
+
+					if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
+						this.handler.setPartitionList( new FuzzyPriorityList( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
+					else
+						this.handler.setPartitionList( new PrecisePriorityList( priorityList ) );
+
+					if( inv instanceof IMEMonitor )
+						( (IMEMonitor) inv ).addListener( this, this.handler );
+				}
+			}
+		}
+
+		// update sleep state...
+		if( wasSleeping != ( this.monitor == null ) )
+		{
+			try
+			{
+				ITickManager tm = this.proxy.getTick();
+				if( this.monitor == null )
+					tm.sleepDevice( this.proxy.getNode() );
+				else
+					tm.wakeDevice( this.proxy.getNode() );
+			}
+			catch( GridAccessException e )
+			{
+				// :(
+			}
+		}
+
+		return this.handler;
+	}
+
+	private void checkInterfaceVsStorageBus( TileEntity target, ForgeDirection side )
+	{
+		IInterfaceHost achievement = null;
+
+		if( target instanceof IInterfaceHost )
+			achievement = (IInterfaceHost) target;
+
+		if( target instanceof IPartHost )
+		{
+			Object part = ( (IPartHost) target ).getPart( side );
+			if( part instanceof IInterfaceHost )
+				achievement = (IInterfaceHost) part;
+		}
+
+		if( achievement != null && achievement.getActionableNode() != null )
+		{
+			Platform.addStat( achievement.getActionableNode().getPlayerID(), Achievements.Recursive.getAchievement() );
+			// Platform.addStat( getActionableNode().getPlayerID(), Achievements.Recursive.getAchievement() );
+		}
 	}
 
 	@Override
 	public List<IMEInventoryHandler> getCellArray( StorageChannel channel )
 	{
-		if ( channel == StorageChannel.ITEMS )
+		if( channel == StorageChannel.ITEMS )
 		{
 			IMEInventoryHandler out = this.proxy.isActive() ? this.getInternalHandler() : null;
-			if ( out != null )
+			if( out != null )
 				return Collections.singletonList( out );
 		}
 		return Arrays.asList( new IMEInventoryHandler[] {} );
@@ -498,21 +502,16 @@ public class PartStorageBus
 	}
 
 	@Override
-	public void blinkCell( int slot )
-	{}
+	public void setPriority( int newValue )
+	{
+		this.priority = newValue;
+		this.host.markForSave();
+		this.resetCache( true );
+	}
 
 	@Override
-	public void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource source )
+	public void blinkCell( int slot )
 	{
-		try
-		{
-			if ( this.proxy.isActive() )
-				this.proxy.getStorage().postAlterationOfStoredItems( StorageChannel.ITEMS, change, this.mySrc );
-		}
-		catch ( GridAccessException e )
-		{
-			// :(
-		}
 	}
 
 	@Override
@@ -520,12 +519,6 @@ public class PartStorageBus
 	public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
 	{
 		return type == PipeType.ITEM && with == this.side ? ConnectOverride.CONNECT : ConnectOverride.DISCONNECT;
-	}
-
-	@Override
-	public void onListUpdate()
-	{
-		// not used here.
 	}
 
 	@Override

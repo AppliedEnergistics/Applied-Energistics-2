@@ -18,6 +18,7 @@
 
 package appeng.hooks;
 
+
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
@@ -32,27 +33,28 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.items.tools.powered.ToolMassCannon;
 import appeng.util.Platform;
 
+
 final public class DispenserMatterCannon extends BehaviorDefaultDispenseItem
 {
 
 	@Override
-	protected ItemStack dispenseStack(IBlockSource dispenser, ItemStack dispensedItem)
+	protected ItemStack dispenseStack( IBlockSource dispenser, ItemStack dispensedItem )
 	{
 		Item i = dispensedItem.getItem();
-		if ( i instanceof ToolMassCannon )
+		if( i instanceof ToolMassCannon )
 		{
 			EnumFacing enumfacing = BlockDispenser.func_149937_b( dispenser.getBlockMetadata() );
 			ForgeDirection dir = ForgeDirection.UNKNOWN;
-			for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
+			for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
 			{
-				if ( enumfacing.getFrontOffsetX() == d.offsetX && enumfacing.getFrontOffsetY() == d.offsetY && enumfacing.getFrontOffsetZ() == d.offsetZ )
+				if( enumfacing.getFrontOffsetX() == d.offsetX && enumfacing.getFrontOffsetY() == d.offsetY && enumfacing.getFrontOffsetZ() == d.offsetZ )
 					dir = d;
 			}
 
 			ToolMassCannon tm = (ToolMassCannon) i;
 
 			World w = dispenser.getWorld();
-			if ( w instanceof WorldServer )
+			if( w instanceof WorldServer )
 			{
 				EntityPlayer p = Platform.getPlayer( (WorldServer) w );
 				Platform.configurePlayer( p, dir, dispenser.getBlockTileEntity() );

@@ -26,7 +26,9 @@ FMLInterModComms.sendMessage( "appliedenergistics2", "add-p2p-attunement-fluid",
 FMLInterModComms.sendMessage( "appliedenergistics2", "add-p2p-attunement-item", new ItemStack( myBlockOrItem ) );
 
  */
+
 package appeng.core.api.imc;
+
 
 import net.minecraft.item.ItemStack;
 
@@ -35,6 +37,7 @@ import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.core.api.IIMCProcessor;
+
 
 public class IMCP2PAttunement implements IIMCProcessor
 {
@@ -46,10 +49,10 @@ public class IMCP2PAttunement implements IIMCProcessor
 
 		TunnelType type = TunnelType.valueOf( key );
 
-		if ( type != null )
+		if( type != null )
 		{
 			ItemStack is = m.getItemStackValue();
-			if ( is != null )
+			if( is != null )
 				AEApi.instance().registries().p2pTunnel().addNewAttunement( is, type );
 			else
 				throw new RuntimeException( "invalid item" );
@@ -57,5 +60,4 @@ public class IMCP2PAttunement implements IIMCProcessor
 		else
 			throw new RuntimeException( "invalid type" );
 	}
-
 }

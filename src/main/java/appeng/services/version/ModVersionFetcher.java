@@ -25,7 +25,7 @@ public final class ModVersionFetcher implements VersionFetcher
 	@Override
 	public Version get()
 	{
-		if ( this.rawModVersion.equals( "@version@" ) || this.rawModVersion.contains( "pr" ) )
+		if( this.rawModVersion.equals( "@version@" ) || this.rawModVersion.contains( "pr" ) )
 		{
 			return new DoNotCheckVersion();
 		}

@@ -79,8 +79,8 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 
 
-public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherHost, IStackWatcherHost, ICraftingWatcherHost,
-		IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider
+public class PartLevelEmitter extends PartUpgradeable
+		implements IEnergyWatcherHost, IStackWatcherHost, ICraftingWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider
 {
 
 	final int FLAG_ON = 4;
@@ -95,6 +95,19 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	IStackWatcher myWatcher;
 	IEnergyWatcher myEnergyWatcher;
 	ICraftingWatcher myCraftingWatcher;
+	double centerX;
+	double centerY;
+	double centerZ;
+	boolean status = false;
+
+	public PartLevelEmitter( ItemStack is )
+	{
+		super( PartLevelEmitter.class, is );
+		this.getConfigManager().registerSetting( Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL );
+		this.getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		this.getConfigManager().registerSetting( Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL );
+		this.getConfigManager().registerSetting( Settings.CRAFT_VIA_REDSTONE, YesNo.NO );
+	}
 
 	public long getReportingValue()
 	{
@@ -104,7 +117,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	public void setReportingValue( long v )
 	{
 		this.reportingValue = v;
-		if ( this.getConfigManager().getSetting( Settings.LEVEL_TYPE ) == LevelType.ENERGY_LEVEL )
+		if( this.getConfigManager().getSetting( Settings.LEVEL_TYPE ) == LevelType.ENERGY_LEVEL )
 			this.configureWatchers();
 		else
 			this.updateState();
@@ -116,28 +129,10 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		this.updateState();
 	}
 
-	@MENetworkEventSubscribe
-	public void channelChanged( MENetworkChannelsChanged c )
-	{
-		this.updateState();
-	}
-
-	@Override
-	public void upgradesChanged()
-	{
-		this.configureWatchers();
-	}
-
-	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
-	{
-		this.configureWatchers();
-	}
-
 	private void updateState()
 	{
 		boolean isOn = this.isLevelEmitterOn();
-		if ( this.prevState != isOn )
+		if( this.prevState != isOn )
 		{
 			this.host.markForUpdate();
 			TileEntity te = this.host.getTile();
@@ -147,14 +142,172 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		}
 	}
 
-	@Override
-	public void writeToNBT( NBTTagCompound data )
+	private boolean isLevelEmitterOn()
 	{
-		super.writeToNBT( data );
-		data.setLong( "lastReportedValue", this.lastReportedValue );
-		data.setLong( "reportingValue", this.reportingValue );
-		data.setBoolean( "prevState", this.prevState );
-		this.config.writeToNBT( data, "config" );
+		if( Platform.isClient() )
+		{
+			return ( this.clientFlags & this.FLAG_ON ) == this.FLAG_ON;
+		}
+
+		if( !this.proxy.isActive() )
+		{
+			return false;
+		}
+
+		if( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
+		{
+			try
+			{
+				return this.proxy.getCrafting().isRequesting( this.config.getAEStackInSlot( 0 ) );
+			}
+			catch( GridAccessException e )
+			{
+				// :P
+			}
+
+			return this.prevState;
+		}
+
+		boolean flipState = this.getConfigManager().getSetting( Settings.REDSTONE_EMITTER ) == RedstoneMode.LOW_SIGNAL;
+		return flipState ? this.reportingValue >= this.lastReportedValue + 1 : this.reportingValue < this.lastReportedValue + 1;
+	}
+
+	@MENetworkEventSubscribe
+	public void channelChanged( MENetworkChannelsChanged c )
+	{
+		this.updateState();
+	}
+
+	@Override
+	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	{
+		this.configureWatchers();
+	}
+
+	@Override
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	{
+		if( inv == this.config )
+			this.configureWatchers();
+
+		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
+	}
+
+	@Override
+	public void upgradesChanged()
+	{
+		this.configureWatchers();
+	}
+
+	// update the system...
+	public void configureWatchers()
+	{
+		IAEItemStack myStack = this.config.getAEStackInSlot( 0 );
+
+		if( this.myWatcher != null )
+			this.myWatcher.clear();
+
+		if( this.myEnergyWatcher != null )
+			this.myEnergyWatcher.clear();
+
+		if( this.myCraftingWatcher != null )
+			this.myCraftingWatcher.clear();
+
+		try
+		{
+			this.proxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.proxy.getNode() ) );
+		}
+		catch( GridAccessException e1 )
+		{
+			// :/
+		}
+
+		if( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
+		{
+			if( this.myCraftingWatcher != null && myStack != null )
+				this.myCraftingWatcher.add( myStack );
+
+			return;
+		}
+
+		if( this.getConfigManager().getSetting( Settings.LEVEL_TYPE ) == LevelType.ENERGY_LEVEL )
+		{
+			if( this.myEnergyWatcher != null )
+				this.myEnergyWatcher.add( (double) this.reportingValue );
+
+			try
+			{
+				// update to power...
+				this.lastReportedValue = (long) this.proxy.getEnergy().getStoredPower();
+				this.updateState();
+
+				// no more item stuff..
+				this.proxy.getStorage().getItemInventory().removeListener( this );
+			}
+			catch( GridAccessException e )
+			{
+				// :P
+			}
+
+			return;
+		}
+
+		try
+		{
+			if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 || myStack == null )
+			{
+				this.proxy.getStorage().getItemInventory().addListener( this, this.proxy.getGrid() );
+			}
+			else
+			{
+				this.proxy.getStorage().getItemInventory().removeListener( this );
+
+				if( this.myWatcher != null )
+					this.myWatcher.add( myStack );
+			}
+
+			this.updateReportingValue( this.proxy.getStorage().getItemInventory() );
+		}
+		catch( GridAccessException e )
+		{
+			// >.>
+		}
+	}
+
+	private void updateReportingValue( IMEMonitor<IAEItemStack> monitor )
+	{
+		IAEItemStack myStack = this.config.getAEStackInSlot( 0 );
+
+		if( myStack == null )
+		{
+			this.lastReportedValue = 0;
+			for( IAEItemStack st : monitor.getStorageList() )
+				this.lastReportedValue += st.getStackSize();
+		}
+		else if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
+		{
+			this.lastReportedValue = 0;
+			FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
+			Collection<IAEItemStack> fuzzyList = monitor.getStorageList().findFuzzy( myStack, fzMode );
+			for( IAEItemStack st : fuzzyList )
+				this.lastReportedValue += st.getStackSize();
+		}
+		else
+		{
+			IAEItemStack r = monitor.getStorageList().findPrecise( myStack );
+			if( r == null )
+				this.lastReportedValue = 0;
+			else
+				this.lastReportedValue = r.getStackSize();
+		}
+
+		this.updateState();
+	}
+
+	@Override
+	public boolean canConnectRedstone()
+	{
+		return true;
 	}
 
 	@Override
@@ -168,9 +321,34 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
+	public void writeToNBT( NBTTagCompound data )
+	{
+		super.writeToNBT( data );
+		data.setLong( "lastReportedValue", this.lastReportedValue );
+		data.setLong( "reportingValue", this.reportingValue );
+		data.setBoolean( "prevState", this.prevState );
+		this.config.writeToNBT( data, "config" );
+	}
+
+	@Override
+	public IInventory getInventoryByName( String name )
+	{
+		if( name.equals( "config" ) )
+			return this.config;
+
+		return super.getInventoryByName( name );
+	}
+
+	@Override
 	protected int populateFlags( int cf )
 	{
 		return cf | ( this.prevState ? this.FLAG_ON : 0 );
+	}
+
+	@Override
+	public IIcon getBreakingTexture()
+	{
+		return this.is.getIconIndex();
 	}
 
 	@Override
@@ -181,10 +359,26 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
+	public void onRequestChange( ICraftingGrid craftingGrid, IAEItemStack what )
+	{
+		this.updateState();
+	}
+
+	@Override
 	public void updateWatcher( IStackWatcher newWatcher )
 	{
 		this.myWatcher = newWatcher;
 		this.configureWatchers();
+	}
+
+	@Override
+	public void onStackChange( IItemList o, IAEStack fullStack, IAEStack diffStack, BaseActionSource src, StorageChannel chan )
+	{
+		if( chan == StorageChannel.ITEMS && fullStack.equals( this.config.getAEStackInSlot( 0 ) ) && this.getInstalledUpgrades( Upgrades.FUZZY ) == 0 )
+		{
+			this.lastReportedValue = fullStack.getStackSize();
+			this.updateState();
+		}
 	}
 
 	@Override
@@ -194,138 +388,10 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		this.configureWatchers();
 	}
 
-	// update the system...
-	public void configureWatchers()
-	{
-		IAEItemStack myStack = this.config.getAEStackInSlot( 0 );
-
-		if ( this.myWatcher != null )
-			this.myWatcher.clear();
-
-		if ( this.myEnergyWatcher != null )
-			this.myEnergyWatcher.clear();
-
-		if ( this.myCraftingWatcher != null )
-			this.myCraftingWatcher.clear();
-
-		try
-		{
-			this.proxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.proxy.getNode() ) );
-		}
-		catch ( GridAccessException e1 )
-		{
-			// :/
-		}
-
-		if ( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
-		{
-			if ( this.myCraftingWatcher != null && myStack != null )
-				this.myCraftingWatcher.add( myStack );
-
-			return;
-		}
-
-		if ( this.getConfigManager().getSetting( Settings.LEVEL_TYPE ) == LevelType.ENERGY_LEVEL )
-		{
-			if ( this.myEnergyWatcher != null )
-				this.myEnergyWatcher.add( ( double ) this.reportingValue );
-
-			try
-			{
-				// update to power...
-				this.lastReportedValue = ( long ) this.proxy.getEnergy().getStoredPower();
-				this.updateState();
-
-				// no more item stuff..
-				this.proxy.getStorage().getItemInventory().removeListener( this );
-			}
-			catch ( GridAccessException e )
-			{
-				// :P
-			}
-
-			return;
-		}
-
-		try
-		{
-			if ( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 || myStack == null )
-			{
-				this.proxy.getStorage().getItemInventory().addListener( this, this.proxy.getGrid() );
-			}
-			else
-			{
-				this.proxy.getStorage().getItemInventory().removeListener( this );
-
-				if ( this.myWatcher != null )
-					this.myWatcher.add( myStack );
-			}
-
-			this.updateReportingValue( this.proxy.getStorage().getItemInventory() );
-		}
-		catch ( GridAccessException e )
-		{
-			// >.>
-		}
-	}
-
 	@Override
-	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	public void onThresholdPass( IEnergyGrid energyGrid )
 	{
-		if ( inv == this.config )
-			this.configureWatchers();
-
-		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
-	}
-
-	@Override
-	public void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource actionSource )
-	{
-		this.updateReportingValue( ( IMEMonitor<IAEItemStack> ) monitor );
-	}
-
-	@Override
-	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
-	{
-		if ( !player.isSneaking() )
-		{
-			if ( Platform.isClient() )
-				return true;
-
-			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_LEVEL_EMITTER );
-			return true;
-		}
-
-		return false;
-	}
-
-	private void updateReportingValue( IMEMonitor<IAEItemStack> monitor )
-	{
-		IAEItemStack myStack = this.config.getAEStackInSlot( 0 );
-
-		if ( myStack == null )
-		{
-			this.lastReportedValue = 0;
-			for ( IAEItemStack st : monitor.getStorageList() )
-				this.lastReportedValue += st.getStackSize();
-		}
-		else if ( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-		{
-			this.lastReportedValue = 0;
-			FuzzyMode fzMode = ( FuzzyMode ) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
-			Collection<IAEItemStack> fuzzyList = monitor.getStorageList().findFuzzy( myStack, fzMode );
-			for ( IAEItemStack st : fuzzyList )
-				this.lastReportedValue += st.getStackSize();
-		}
-		else
-		{
-			IAEItemStack r = monitor.getStorageList().findPrecise( myStack );
-			if ( r == null )
-				this.lastReportedValue = 0;
-			else
-				this.lastReportedValue = r.getStackSize();
-		}
-
+		this.lastReportedValue = (long) energyGrid.getStoredPower();
 		this.updateState();
 	}
 
@@ -336,42 +402,29 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		{
 			return this.proxy.getGrid() == effectiveGrid;
 		}
-		catch ( GridAccessException e )
+		catch( GridAccessException e )
 		{
 			return false;
 		}
 	}
 
 	@Override
-	public void onRequestChange( ICraftingGrid craftingGrid, IAEItemStack what )
+	public void postChange( IBaseMonitor<IAEItemStack> monitor, Iterable<IAEItemStack> change, BaseActionSource actionSource )
 	{
-		this.updateState();
+		this.updateReportingValue( (IMEMonitor<IAEItemStack>) monitor );
 	}
 
 	@Override
-	public void onThresholdPass( IEnergyGrid energyGrid )
+	public void onListUpdate()
 	{
-		this.lastReportedValue = ( long ) energyGrid.getStoredPower();
-		this.updateState();
-	}
-
-	@Override
-	public void onStackChange( IItemList o, IAEStack fullStack, IAEStack diffStack, BaseActionSource src, StorageChannel chan )
-	{
-		if ( chan == StorageChannel.ITEMS && fullStack.equals( this.config.getAEStackInSlot( 0 ) ) && this.getInstalledUpgrades( Upgrades.FUZZY ) == 0 )
+		try
 		{
-			this.lastReportedValue = fullStack.getStackSize();
-			this.updateState();
+			this.updateReportingValue( this.proxy.getStorage().getItemInventory() );
 		}
-	}
-
-	public PartLevelEmitter( ItemStack is )
-	{
-		super( PartLevelEmitter.class, is );
-		this.getConfigManager().registerSetting( Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL );
-		this.getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
-		this.getConfigManager().registerSetting( Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL );
-		this.getConfigManager().registerSetting( Settings.CRAFT_VIA_REDSTONE, YesNo.NO );
+		catch( GridAccessException e )
+		{
+			// ;P
+		}
 	}
 
 	@Override
@@ -384,76 +437,6 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		Tessellator.instance.draw();
 		// rh.setBounds( 7, 7, 10, 9, 9, 15 );
 		// rh.renderInventoryBox( renderer );
-	}
-
-	double centerX;
-	double centerY;
-	double centerZ;
-
-	public void addVertexWithUV( double x, double y, double z, double u, double v )
-	{
-		Tessellator var12 = Tessellator.instance;
-
-		x -= this.centerX;
-		y -= this.centerY;
-		z -= this.centerZ;
-
-		if ( this.side == ForgeDirection.DOWN )
-		{
-			y = -y;
-			z = -z;
-		}
-
-		if ( this.side == ForgeDirection.EAST )
-		{
-			double m = x;
-			x = y;
-			y = m;
-			y = -y;
-		}
-
-		if ( this.side == ForgeDirection.WEST )
-		{
-			double m = x;
-			x = -y;
-			y = m;
-		}
-
-		if ( this.side == ForgeDirection.SOUTH )
-		{
-			double m = z;
-			z = y;
-			y = m;
-			y = -y;
-		}
-
-		if ( this.side == ForgeDirection.NORTH )
-		{
-			double m = z;
-			z = -y;
-			y = m;
-		}
-
-		x += this.centerX;// + orientation.offsetX * 0.4;
-		y += this.centerY;// + orientation.offsetY * 0.4;
-		z += this.centerZ;// + orientation.offsetZ * 0.4;
-
-		var12.addVertexWithUV( x, y, z, u, v );
-	}
-
-	@Override
-	public void randomDisplayTick( World world, int x, int y, int z, Random r )
-	{
-		if ( this.isLevelEmitterOn() )
-		{
-			ForgeDirection d = this.side;
-
-			double d0 = d.offsetX * 0.45F + ( r.nextFloat() - 0.5F ) * 0.2D;
-			double d1 = d.offsetY * 0.45F + ( r.nextFloat() - 0.5F ) * 0.2D;
-			double d2 = d.offsetZ * 0.45F + ( r.nextFloat() - 0.5F ) * 0.2D;
-
-			world.spawnParticle( "reddust", 0.5 + x + d0, 0.5 + y + d1, 0.5 + z + d2, 0.0D, 0.0D, 0.0D );
-		}
 	}
 
 	public void renderTorchAtAngle( double baseX, double baseY, double baseZ )
@@ -516,13 +499,13 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 
 		double toff = 0.0d;
 
-		if ( !isOn )
+		if( !isOn )
 		{
 			toff = 1.0d / 16.0d;
 		}
 
 		Tessellator var12 = Tessellator.instance;
-		if ( isOn )
+		if( isOn )
 		{
 			var12.setColorOpaque_F( 1.0F, 1.0F, 1.0F );
 			var12.setBrightness( 11 << 20 | 11 << 4 );
@@ -564,36 +547,61 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		this.addVertexWithUV( var36, baseY + 1.0D, baseZ - var44, var17, var18 );
 	}
 
-	boolean status = false;
-
-	private boolean isLevelEmitterOn()
+	public void addVertexWithUV( double x, double y, double z, double u, double v )
 	{
-		if ( Platform.isClient() )
+		Tessellator var12 = Tessellator.instance;
+
+		x -= this.centerX;
+		y -= this.centerY;
+		z -= this.centerZ;
+
+		if( this.side == ForgeDirection.DOWN )
 		{
-			return ( this.clientFlags & this.FLAG_ON ) == this.FLAG_ON;
+			y = -y;
+			z = -z;
 		}
 
-		if ( !this.proxy.isActive() )
+		if( this.side == ForgeDirection.EAST )
 		{
-			return false;
+			double m = x;
+			x = y;
+			y = m;
+			y = -y;
 		}
 
-		if ( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
+		if( this.side == ForgeDirection.WEST )
 		{
-			try
-			{
-				return this.proxy.getCrafting().isRequesting( this.config.getAEStackInSlot( 0 ) );
-			}
-			catch ( GridAccessException e )
-			{
-				// :P
-			}
-
-			return this.prevState;
+			double m = x;
+			x = -y;
+			y = m;
 		}
 
-		boolean flipState = this.getConfigManager().getSetting( Settings.REDSTONE_EMITTER ) == RedstoneMode.LOW_SIGNAL;
-		return flipState ? this.reportingValue >= this.lastReportedValue + 1 : this.reportingValue < this.lastReportedValue + 1;
+		if( this.side == ForgeDirection.SOUTH )
+		{
+			double m = z;
+			z = y;
+			y = m;
+			y = -y;
+		}
+
+		if( this.side == ForgeDirection.NORTH )
+		{
+			double m = z;
+			z = -y;
+			y = m;
+		}
+
+		x += this.centerX;// + orientation.offsetX * 0.4;
+		y += this.centerY;// + orientation.offsetY * 0.4;
+		z += this.centerZ;// + orientation.offsetZ * 0.4;
+
+		var12.addVertexWithUV( x, y, z, u, v );
+	}
+
+	@Override
+	public AECableType getCableConnectionType( ForgeDirection dir )
+	{
+		return AECableType.SMART;
 	}
 
 	@Override
@@ -626,33 +634,9 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public IIcon getBreakingTexture()
-	{
-		return this.is.getIconIndex();
-	}
-
-	@Override
 	public void getBoxes( IPartCollisionHelper bch )
 	{
 		bch.addBox( 7, 7, 11, 9, 9, 16 );
-	}
-
-	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
-	{
-		return AECableType.SMART;
-	}
-
-	@Override
-	public int cableConnectionRenderTo()
-	{
-		return 16;
-	}
-
-	@Override
-	public boolean canConnectRedstone()
-	{
-		return true;
 	}
 
 	@Override
@@ -668,25 +652,39 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public IInventory getInventoryByName( String name )
+	public void randomDisplayTick( World world, int x, int y, int z, Random r )
 	{
-		if ( name.equals( "config" ) )
-			return this.config;
+		if( this.isLevelEmitterOn() )
+		{
+			ForgeDirection d = this.side;
 
-		return super.getInventoryByName( name );
+			double d0 = d.offsetX * 0.45F + ( r.nextFloat() - 0.5F ) * 0.2D;
+			double d1 = d.offsetY * 0.45F + ( r.nextFloat() - 0.5F ) * 0.2D;
+			double d2 = d.offsetZ * 0.45F + ( r.nextFloat() - 0.5F ) * 0.2D;
+
+			world.spawnParticle( "reddust", 0.5 + x + d0, 0.5 + y + d1, 0.5 + z + d2, 0.0D, 0.0D, 0.0D );
+		}
 	}
 
 	@Override
-	public void onListUpdate()
+	public int cableConnectionRenderTo()
 	{
-		try
+		return 16;
+	}
+
+	@Override
+	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
+	{
+		if( !player.isSneaking() )
 		{
-			this.updateReportingValue( this.proxy.getStorage().getItemInventory() );
+			if( Platform.isClient() )
+				return true;
+
+			Platform.openGUI( player, this.getHost().getTile(), this.side, GuiBridge.GUI_LEVEL_EMITTER );
+			return true;
 		}
-		catch ( GridAccessException e )
-		{
-			// ;P
-		}
+
+		return false;
 	}
 
 	@Override
@@ -704,12 +702,12 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@Override
 	public void provideCrafting( ICraftingProviderHelper craftingTracker )
 	{
-		if ( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
+		if( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 )
 		{
-			if ( this.settings.getSetting( Settings.CRAFT_VIA_REDSTONE ) == YesNo.YES )
+			if( this.settings.getSetting( Settings.CRAFT_VIA_REDSTONE ) == YesNo.YES )
 			{
 				IAEItemStack what = this.config.getAEStackInSlot( 0 );
-				if ( what != null )
+				if( what != null )
 					craftingTracker.setEmitable( what );
 			}
 		}

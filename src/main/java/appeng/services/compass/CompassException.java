@@ -18,6 +18,7 @@
 
 package appeng.services.compass;
 
+
 public class CompassException extends RuntimeException
 {
 
@@ -25,8 +26,8 @@ public class CompassException extends RuntimeException
 
 	public final Throwable inner;
 
-	public CompassException(Throwable t) {
+	public CompassException( Throwable t )
+	{
 		this.inner = t;
 	}
-
 }

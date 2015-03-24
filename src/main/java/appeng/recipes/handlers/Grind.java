@@ -32,6 +32,7 @@ import appeng.api.recipes.IIngredient;
 import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
 
+
 public class Grind implements ICraftHandler, IWebsiteSerializer
 {
 
@@ -39,12 +40,12 @@ public class Grind implements ICraftHandler, IWebsiteSerializer
 	IIngredient[] pro_output;
 
 	@Override
-	public void setup(List<List<IIngredient>> input, List<List<IIngredient>> output) throws RecipeError
+	public void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeError
 	{
-		if ( input.size() == 1 && output.size() == 1 )
+		if( input.size() == 1 && output.size() == 1 )
 		{
 			int outs = output.get( 0 ).size();
-			if ( input.get( 0 ).size() == 1 && outs == 1 )
+			if( input.get( 0 ).size() == 1 && outs == 1 )
 			{
 				this.pro_input = input.get( 0 ).get( 0 );
 				this.pro_output = output.get( 0 ).toArray( new IIngredient[outs] );
@@ -57,20 +58,21 @@ public class Grind implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		for (ItemStack is : this.pro_input.getItemStackSet())
+		for( ItemStack is : this.pro_input.getItemStackSet() )
 			AEApi.instance().registries().grinder().addRecipe( is, this.pro_output[0].getItemStack(), 8 );
 	}
 
 	@Override
-	public boolean canCraft(ItemStack output) throws RegistrationError, MissingIngredientError {
-		return Platform.isSameItemPrecise( this.pro_output[0].getItemStack(),output );
+	public String getPattern( RecipeHandler h )
+	{
+		return "grind\n" +
+				h.getName( this.pro_input ) + '\n' +
+				h.getName( this.pro_output[0] );
 	}
 
 	@Override
-	public String getPattern( RecipeHandler h ) {
-		return "grind\n"+
-				h.getName(this.pro_input)+ '\n' +
-				h.getName(this.pro_output[0]);
+	public boolean canCraft( ItemStack output ) throws RegistrationError, MissingIngredientError
+	{
+		return Platform.isSameItemPrecise( this.pro_output[0].getItemStack(), output );
 	}
-
 }

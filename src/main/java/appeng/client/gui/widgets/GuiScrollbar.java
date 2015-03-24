@@ -18,9 +18,11 @@
 
 package appeng.client.gui.widgets;
 
+
 import org.lwjgl.opengl.GL11;
 
 import appeng.client.gui.AEBaseGui;
+
 
 public class GuiScrollbar implements IScrollSource
 {
@@ -35,23 +37,18 @@ public class GuiScrollbar implements IScrollSource
 	private int minScroll = 0;
 	private int currentScroll = 0;
 
-	private void applyRange()
-	{
-		this.currentScroll = Math.max( Math.min( this.currentScroll, this.maxScroll ), this.minScroll );
-	}
-
-	public void draw(AEBaseGui g)
+	public void draw( AEBaseGui g )
 	{
 		g.bindTexture( "minecraft", "gui/container/creative_inventory/tabs.png" );
 		GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
-		if ( this.getRange() == 0 )
+		if( this.getRange() == 0 )
 		{
 			g.drawTexturedModalRect( this.displayX, this.displayY, 232 + this.width, 0, this.width, 15 );
 		}
 		else
 		{
-			int offset = (this.currentScroll - this.minScroll) * (this.height - 15) / this.getRange();
+			int offset = ( this.currentScroll - this.minScroll ) * ( this.height - 15 ) / this.getRange();
 			g.drawTexturedModalRect( this.displayX, offset + this.displayY, 232, 0, this.width, 15 );
 		}
 	}
@@ -66,9 +63,21 @@ public class GuiScrollbar implements IScrollSource
 		return this.displayX;
 	}
 
+	public GuiScrollbar setLeft( int v )
+	{
+		this.displayX = v;
+		return this;
+	}
+
 	public int getTop()
 	{
 		return this.displayY;
+	}
+
+	public GuiScrollbar setTop( int v )
+	{
+		this.displayY = v;
+		return this;
 	}
 
 	public int getWidth()
@@ -76,45 +85,38 @@ public class GuiScrollbar implements IScrollSource
 		return this.width;
 	}
 
-	public int getHeight()
-	{
-		return this.height;
-	}
-
-	public GuiScrollbar setLeft(int v)
-	{
-		this.displayX = v;
-		return this;
-	}
-
-	public GuiScrollbar setTop(int v)
-	{
-		this.displayY = v;
-		return this;
-	}
-
-	public GuiScrollbar setWidth(int v)
+	public GuiScrollbar setWidth( int v )
 	{
 		this.width = v;
 		return this;
 	}
 
-	public GuiScrollbar setHeight(int v)
+	public int getHeight()
+	{
+		return this.height;
+	}
+
+	public GuiScrollbar setHeight( int v )
 	{
 		this.height = v;
 		return this;
 	}
 
-	public void setRange(int min, int max, int pageSize)
+	public void setRange( int min, int max, int pageSize )
 	{
 		this.minScroll = min;
 		this.maxScroll = max;
 		this.pageSize = pageSize;
 
-		if ( this.minScroll > this.maxScroll )
+		if( this.minScroll > this.maxScroll )
 			this.maxScroll = this.minScroll;
 
 		this.applyRange();
+	}
+
+	private void applyRange()
+	{
+		this.currentScroll = Math.max( Math.min( this.currentScroll, this.maxScroll ), this.minScroll );
 	}
 
 	@Override
@@ -123,28 +125,27 @@ public class GuiScrollbar implements IScrollSource
 		return this.currentScroll;
 	}
 
-	public void click(AEBaseGui aeBaseGui, int x, int y)
+	public void click( AEBaseGui aeBaseGui, int x, int y )
 	{
-		if ( this.getRange() == 0 )
+		if( this.getRange() == 0 )
 			return;
 
-		if ( x > this.displayX && x <= this.displayX + this.width )
+		if( x > this.displayX && x <= this.displayX + this.width )
 		{
-			if ( y > this.displayY && y <= this.displayY + this.height )
+			if( y > this.displayY && y <= this.displayY + this.height )
 			{
-				this.currentScroll = (y - this.displayY);
-				this.currentScroll = this.minScroll + ((this.currentScroll * 2 * this.getRange() / this.height));
-				this.currentScroll = (this.currentScroll + 1) >> 1;
+				this.currentScroll = ( y - this.displayY );
+				this.currentScroll = this.minScroll + ( ( this.currentScroll * 2 * this.getRange() / this.height ) );
+				this.currentScroll = ( this.currentScroll + 1 ) >> 1;
 				this.applyRange();
 			}
 		}
 	}
 
-	public void wheel(int delta)
+	public void wheel( int delta )
 	{
 		delta = Math.max( Math.min( -delta, 1 ), -1 );
 		this.currentScroll += delta * this.pageSize;
 		this.applyRange();
 	}
-
 }

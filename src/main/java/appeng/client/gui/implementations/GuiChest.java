@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 
@@ -30,17 +31,24 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.tile.storage.TileChest;
 
+
 public class GuiChest extends AEBaseGui
 {
 
 	GuiTabButton priority;
 
+	public GuiChest( InventoryPlayer inventoryPlayer, TileChest te )
+	{
+		super( new ContainerChest( inventoryPlayer, te ) );
+		this.ySize = 166;
+	}
+
 	@Override
-	protected void actionPerformed(GuiButton par1GuiButton)
+	protected void actionPerformed( GuiButton par1GuiButton )
 	{
 		super.actionPerformed( par1GuiButton );
 
-		if ( par1GuiButton == this.priority )
+		if( par1GuiButton == this.priority )
 		{
 			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
 		}
@@ -54,23 +62,17 @@ public class GuiChest extends AEBaseGui
 		this.buttonList.add( this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), itemRender ) );
 	}
 
-	public GuiChest(InventoryPlayer inventoryPlayer, TileChest te) {
-		super( new ContainerChest( inventoryPlayer, te ) );
-		this.ySize = 166;
-	}
-
 	@Override
-	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
-	{
-		this.bindTexture( "guis/chest.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
-	}
-
-	@Override
-	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
+	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.Chest.getLocal() ), 8, 6, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 
+	@Override
+	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	{
+		this.bindTexture( "guis/chest.png" );
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+	}
 }

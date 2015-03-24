@@ -22,8 +22,6 @@ package appeng.items.tools.powered;
 import java.util.EnumSet;
 import java.util.List;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.entity.Entity;
@@ -42,6 +40,8 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -83,7 +83,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 	public ToolMassCannon()
 	{
-		super( ToolMassCannon.class, Optional.<String> absent() );
+		super( ToolMassCannon.class, Optional.<String>absent() );
 		this.setFeature( EnumSet.of( AEFeature.MatterCannon, AEFeature.PoweredTools ) );
 		this.maxStoredPower = AEConfig.instance.matterCannonBattery;
 	}
@@ -102,10 +102,10 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 		IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
 
-		if ( cdi instanceof CellInventoryHandler )
+		if( cdi instanceof CellInventoryHandler )
 		{
-			ICellInventory cd = ( ( ICellInventoryHandler ) cdi ).getCellInv();
-			if ( cd != null )
+			ICellInventory cd = ( (ICellInventoryHandler) cdi ).getCellInv();
+			if( cd != null )
 			{
 				lines.add( cd.getUsedBytes() + " " + GuiText.Of.getLocal() + ' ' + cd.getTotalBytes() + ' ' + GuiText.BytesUsed.getLocal() );
 				lines.add( cd.getStoredItemTypes() + " " + GuiText.Of.getLocal() + ' ' + cd.getTotalItemTypes() + ' ' + GuiText.Types.getLocal() );
@@ -116,37 +116,37 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 	@Override
 	public ItemStack onItemRightClick( ItemStack item, World w, EntityPlayer p )
 	{
-		if ( this.getAECurrentPower( item ) > 1600 )
+		if( this.getAECurrentPower( item ) > 1600 )
 		{
 			int shots = 1;
 
-			CellUpgrades cu = ( CellUpgrades ) this.getUpgradesInventory( item );
-			if ( cu != null )
+			CellUpgrades cu = (CellUpgrades) this.getUpgradesInventory( item );
+			if( cu != null )
 				shots += cu.getInstalledUpgrades( Upgrades.SPEED );
 
 			IMEInventory inv = AEApi.instance().registries().cell().getCellInventory( item, null, StorageChannel.ITEMS );
-			if ( inv != null )
+			if( inv != null )
 			{
 				IItemList itemList = inv.getAvailableItems( AEApi.instance().storage().createItemList() );
 				IAEStack aeAmmo = itemList.getFirstItem();
-				if ( aeAmmo instanceof IAEItemStack )
+				if( aeAmmo instanceof IAEItemStack )
 				{
-					shots = Math.min( shots, ( int ) aeAmmo.getStackSize() );
-					for ( int sh = 0; sh < shots; sh++ )
+					shots = Math.min( shots, (int) aeAmmo.getStackSize() );
+					for( int sh = 0; sh < shots; sh++ )
 					{
 						this.extractAEPower( item, 1600 );
 
-						if ( Platform.isClient() )
+						if( Platform.isClient() )
 							return item;
 
 						aeAmmo.setStackSize( 1 );
-						ItemStack ammo = ( ( IAEItemStack ) aeAmmo ).getItemStack();
-						if ( ammo == null )
+						ItemStack ammo = ( (IAEItemStack) aeAmmo ).getItemStack();
+						if( ammo == null )
 							return item;
 
 						ammo.stackSize = 1;
 						aeAmmo = inv.extractItems( aeAmmo, Actionable.MODULATE, new PlayerSource( p, null ) );
-						if ( aeAmmo == null )
+						if( aeAmmo == null )
 							return item;
 
 						float f = 1.0F;
@@ -156,8 +156,8 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						double d1 = p.prevPosY + ( p.posY - p.prevPosY ) * f + 1.62D - p.yOffset;
 						double d2 = p.prevPosZ + ( p.posZ - p.prevPosZ ) * f;
 						Vec3 vec3 = Vec3.createVectorHelper( d0, d1, d2 );
-						float f3 = MathHelper.cos( -f2 * 0.017453292F - ( float ) Math.PI );
-						float f4 = MathHelper.sin( -f2 * 0.017453292F - ( float ) Math.PI );
+						float f3 = MathHelper.cos( -f2 * 0.017453292F - (float) Math.PI );
+						float f4 = MathHelper.sin( -f2 * 0.017453292F - (float) Math.PI );
 						float f5 = -MathHelper.cos( -f1 * 0.017453292F );
 						float f6 = MathHelper.sin( -f1 * 0.017453292F );
 						float f7 = f4 * f5;
@@ -169,10 +169,10 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						direction.normalize();
 
 						float penetration = AEApi.instance().registries().matterCannon().getPenetration( ammo ); // 196.96655f;
-						if ( penetration <= 0 )
+						if( penetration <= 0 )
 						{
-							ItemStack type = ( ( IAEItemStack ) aeAmmo ).getItemStack();
-							if ( type.getItem() instanceof ItemPaintBall )
+							ItemStack type = ( (IAEItemStack) aeAmmo ).getItemStack();
+							if( type.getItem() instanceof ItemPaintBall )
 							{
 								this.shootPaintBalls( type, w, p, vec3, vec31, direction, d0, d1, d2 );
 							}
@@ -182,12 +182,11 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						{
 							this.standardAmmo( penetration, w, p, vec3, vec31, direction, d0, d1, d2 );
 						}
-
 					}
 				}
 				else
 				{
-					if ( Platform.isServer() )
+					if( Platform.isServer() )
 						p.addChatMessage( PlayerMessages.AmmoDepleted.get() );
 					return item;
 				}
@@ -198,25 +197,23 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 	private void shootPaintBalls( ItemStack type, World w, EntityPlayer p, Vec3 vec3, Vec3 vec31, Vec3 direction, double d0, double d1, double d2 )
 	{
-		AxisAlignedBB bb = AxisAlignedBB.getBoundingBox( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ),
-				Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ),
-				Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
+		AxisAlignedBB bb = AxisAlignedBB.getBoundingBox( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
 
 		Entity entity = null;
 		List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
 		double closest = 9999999.0D;
 		int l;
 
-		for ( l = 0; l < list.size(); ++l )
+		for( l = 0; l < list.size(); ++l )
 		{
-			Entity entity1 = ( Entity ) list.get( l );
+			Entity entity1 = (Entity) list.get( l );
 
-			if ( !entity1.isDead && entity1 != p && !( entity1 instanceof EntityItem ) )
+			if( !entity1.isDead && entity1 != p && !( entity1 instanceof EntityItem ) )
 			{
-				if ( entity1.isEntityAlive() )
+				if( entity1.isEntityAlive() )
 				{
 					// prevent killing / flying of mounts.
-					if ( entity1.riddenByEntity == p )
+					if( entity1.riddenByEntity == p )
 						continue;
 
 					float f1 = 0.3F;
@@ -224,11 +221,11 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 					AxisAlignedBB boundingBox = entity1.boundingBox.expand( f1, f1, f1 );
 					MovingObjectPosition movingObjectPosition = boundingBox.calculateIntercept( vec3, vec31 );
 
-					if ( movingObjectPosition != null )
+					if( movingObjectPosition != null )
 					{
 						double nd = vec3.squareDistanceTo( movingObjectPosition.hitVec );
 
-						if ( nd < closest )
+						if( nd < closest )
 						{
 							entity = entity1;
 							closest = nd;
@@ -241,49 +238,47 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 		MovingObjectPosition pos = w.rayTraceBlocks( vec3, vec31, false );
 
 		Vec3 vec = Vec3.createVectorHelper( d0, d1, d2 );
-		if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( vec ) > closest )
+		if( entity != null && pos != null && pos.hitVec.squareDistanceTo( vec ) > closest )
 		{
 			pos = new MovingObjectPosition( entity );
 		}
-		else if ( entity != null && pos == null )
+		else if( entity != null && pos == null )
 		{
 			pos = new MovingObjectPosition( entity );
 		}
 
 		try
 		{
-			CommonHelper.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, ( float ) direction.xCoord,
-					( float ) direction.yCoord, ( float ) direction.zCoord, ( byte ) ( pos == null ? 32 : pos.hitVec.squareDistanceTo( vec ) + 1 ) ) );
-
+			CommonHelper.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) direction.xCoord, (float) direction.yCoord, (float) direction.zCoord, (byte) ( pos == null ? 32 : pos.hitVec.squareDistanceTo( vec ) + 1 ) ) );
 		}
-		catch ( Exception err )
+		catch( Exception err )
 		{
 			AELog.error( err );
 		}
 
-		if ( pos != null && type != null && type.getItem() instanceof ItemPaintBall )
+		if( pos != null && type != null && type.getItem() instanceof ItemPaintBall )
 		{
-			ItemPaintBall ipb = ( ItemPaintBall ) type.getItem();
+			ItemPaintBall ipb = (ItemPaintBall) type.getItem();
 
 			AEColor col = ipb.getColor( type );
 			// boolean lit = ipb.isLumen( type );
 
-			if ( pos.typeOfHit == MovingObjectType.ENTITY )
+			if( pos.typeOfHit == MovingObjectType.ENTITY )
 			{
 				int id = pos.entityHit.getEntityId();
 				PlayerColor marker = new PlayerColor( id, col, 20 * 30 );
 				TickHandler.INSTANCE.getPlayerColors().put( id, marker );
 
-				if ( pos.entityHit instanceof EntitySheep )
+				if( pos.entityHit instanceof EntitySheep )
 				{
-					EntitySheep sh = ( EntitySheep ) pos.entityHit;
+					EntitySheep sh = (EntitySheep) pos.entityHit;
 					sh.setFleeceColor( col.ordinal() );
 				}
 
 				pos.entityHit.attackEntityFrom( DamageSource.causePlayerDamage( p ), 0 );
 				NetworkHandler.instance.sendToAll( marker.getPacket() );
 			}
-			else if ( pos.typeOfHit == MovingObjectType.BLOCK )
+			else if( pos.typeOfHit == MovingObjectType.BLOCK )
 			{
 				ForgeDirection side = ForgeDirection.getOrientation( pos.sideHit );
 
@@ -291,54 +286,51 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 				int y = pos.blockY + side.offsetY;
 				int z = pos.blockZ + side.offsetZ;
 
-				if ( !Platform.hasPermissions( new DimensionalCoord( w, x, y, z ), p ) )
+				if( !Platform.hasPermissions( new DimensionalCoord( w, x, y, z ), p ) )
 					return;
 
 				Block whatsThere = w.getBlock( x, y, z );
-				if ( whatsThere.isReplaceable( w, x, y, z ) && w.isAirBlock( x, y, z ) )
+				if( whatsThere.isReplaceable( w, x, y, z ) && w.isAirBlock( x, y, z ) )
 				{
 					w.setBlock( x, y, z, AEApi.instance().blocks().blockPaint.block(), 0, 3 );
 				}
 
 				TileEntity te = w.getTileEntity( x, y, z );
-				if ( te instanceof TilePaint )
+				if( te instanceof TilePaint )
 				{
 					pos.hitVec.xCoord -= x;
 					pos.hitVec.yCoord -= y;
 					pos.hitVec.zCoord -= z;
-					( ( TilePaint ) te ).addBlot( type, side.getOpposite(), pos.hitVec );
+					( (TilePaint) te ).addBlot( type, side.getOpposite(), pos.hitVec );
 				}
 			}
-
 		}
 	}
 
 	private void standardAmmo( float penetration, World w, EntityPlayer p, Vec3 vec3, Vec3 vec31, Vec3 direction, double d0, double d1, double d2 )
 	{
 		boolean hasDestroyedSomething = true;
-		while ( penetration > 0 && hasDestroyedSomething )
+		while( penetration > 0 && hasDestroyedSomething )
 		{
 			hasDestroyedSomething = false;
 
-			AxisAlignedBB bb = AxisAlignedBB.getBoundingBox( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ),
-					Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ),
-					Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
+			AxisAlignedBB bb = AxisAlignedBB.getBoundingBox( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
 
 			Entity entity = null;
 			List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
 			double closest = 9999999.0D;
 			int l;
 
-			for ( l = 0; l < list.size(); ++l )
+			for( l = 0; l < list.size(); ++l )
 			{
-				Entity entity1 = ( Entity ) list.get( l );
+				Entity entity1 = (Entity) list.get( l );
 
-				if ( !entity1.isDead && entity1 != p && !( entity1 instanceof EntityItem ) )
+				if( !entity1.isDead && entity1 != p && !( entity1 instanceof EntityItem ) )
 				{
-					if ( entity1.isEntityAlive() )
+					if( entity1.isEntityAlive() )
 					{
 						// prevent killing / flying of mounts.
-						if ( entity1.riddenByEntity == p )
+						if( entity1.riddenByEntity == p )
 							continue;
 
 						float f1 = 0.3F;
@@ -346,11 +338,11 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						AxisAlignedBB boundingBox = entity1.boundingBox.expand( f1, f1, f1 );
 						MovingObjectPosition movingObjectPosition = boundingBox.calculateIntercept( vec3, vec31 );
 
-						if ( movingObjectPosition != null )
+						if( movingObjectPosition != null )
 						{
 							double nd = vec3.squareDistanceTo( movingObjectPosition.hitVec );
 
-							if ( nd < closest )
+							if( nd < closest )
 							{
 								entity = entity1;
 								closest = nd;
@@ -362,58 +354,56 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 			Vec3 vec = Vec3.createVectorHelper( d0, d1, d2 );
 			MovingObjectPosition pos = w.rayTraceBlocks( vec3, vec31, true );
-			if ( entity != null && pos != null && pos.hitVec.squareDistanceTo( vec ) > closest )
+			if( entity != null && pos != null && pos.hitVec.squareDistanceTo( vec ) > closest )
 			{
 				pos = new MovingObjectPosition( entity );
 			}
-			else if ( entity != null && pos == null )
+			else if( entity != null && pos == null )
 			{
 				pos = new MovingObjectPosition( entity );
 			}
 
 			try
 			{
-				CommonHelper.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, ( float ) direction.xCoord,
-						( float ) direction.yCoord, ( float ) direction.zCoord, ( byte ) ( pos == null ? 32 : pos.hitVec.squareDistanceTo( vec ) + 1 ) ) );
-
+				CommonHelper.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) direction.xCoord, (float) direction.yCoord, (float) direction.zCoord, (byte) ( pos == null ? 32 : pos.hitVec.squareDistanceTo( vec ) + 1 ) ) );
 			}
-			catch ( Exception err )
+			catch( Exception err )
 			{
 				AELog.error( err );
 			}
 
-			if ( pos != null )
+			if( pos != null )
 			{
 				DamageSource dmgSrc = DamageSource.causePlayerDamage( p );
 				dmgSrc.damageType = "masscannon";
 
-				if ( pos.typeOfHit == MovingObjectType.ENTITY )
+				if( pos.typeOfHit == MovingObjectType.ENTITY )
 				{
-					int dmg = ( int ) Math.ceil( penetration / 20.0f );
-					if ( pos.entityHit instanceof EntityLivingBase )
+					int dmg = (int) Math.ceil( penetration / 20.0f );
+					if( pos.entityHit instanceof EntityLivingBase )
 					{
-						EntityLivingBase el = ( EntityLivingBase ) pos.entityHit;
+						EntityLivingBase el = (EntityLivingBase) pos.entityHit;
 						penetration -= dmg;
 						el.knockBack( p, 0, -direction.xCoord, -direction.zCoord );
 						// el.knockBack( p, 0, vec3.xCoord,
 						// vec3.zCoord );
 						el.attackEntityFrom( dmgSrc, dmg );
-						if ( !el.isEntityAlive() )
+						if( !el.isEntityAlive() )
 							hasDestroyedSomething = true;
 					}
-					else if ( pos.entityHit instanceof EntityItem )
+					else if( pos.entityHit instanceof EntityItem )
 					{
 						hasDestroyedSomething = true;
 						pos.entityHit.setDead();
 					}
-					else if ( pos.entityHit.attackEntityFrom( dmgSrc, dmg ) )
+					else if( pos.entityHit.attackEntityFrom( dmgSrc, dmg ) )
 					{
 						hasDestroyedSomething = true;
 					}
 				}
-				else if ( pos.typeOfHit == MovingObjectType.BLOCK )
+				else if( pos.typeOfHit == MovingObjectType.BLOCK )
 				{
-					if ( !AEConfig.instance.isFeatureEnabled( AEFeature.MassCannonBlockDamage ) )
+					if( !AEConfig.instance.isFeatureEnabled( AEFeature.MassCannonBlockDamage ) )
 						penetration = 0;
 					else
 					{
@@ -422,9 +412,9 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 						// pos.blockX, pos.blockY, pos.blockZ );
 
 						float hardness = b.getBlockHardness( w, pos.blockX, pos.blockY, pos.blockZ ) * 9.0f;
-						if ( hardness >= 0.0 )
+						if( hardness >= 0.0 )
 						{
-							if ( penetration > hardness && Platform.hasPermissions( new DimensionalCoord( w, pos.blockX, pos.blockY, pos.blockZ ), p ) )
+							if( penetration > hardness && Platform.hasPermissions( new DimensionalCoord( w, pos.blockX, pos.blockY, pos.blockZ ), p ) )
 							{
 								hasDestroyedSomething = true;
 								penetration -= hardness;
@@ -465,7 +455,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 		{
 			return FuzzyMode.valueOf( fz );
 		}
-		catch ( Throwable t )
+		catch( Throwable t )
 		{
 			return FuzzyMode.IGNORE_ALL;
 		}
@@ -499,10 +489,10 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 	public boolean isBlackListed( ItemStack cellItem, IAEItemStack requestedAddition )
 	{
 		float pen = AEApi.instance().registries().matterCannon().getPenetration( requestedAddition.getItemStack() );
-		if ( pen > 0 )
+		if( pen > 0 )
 			return false;
 
-		if ( requestedAddition.getItem() instanceof ItemPaintBall )
+		if( requestedAddition.getItem() instanceof ItemPaintBall )
 			return false;
 
 		return true;

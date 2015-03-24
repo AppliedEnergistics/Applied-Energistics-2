@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -36,6 +37,7 @@ import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.helpers.IInterfaceHost;
 
+
 public class GuiInterface extends GuiUpgradeable
 {
 
@@ -43,28 +45,10 @@ public class GuiInterface extends GuiUpgradeable
 	GuiImgButton BlockMode;
 	GuiToggleButton interfaceMode;
 
-	public GuiInterface(InventoryPlayer inventoryPlayer, IInterfaceHost te) {
+	public GuiInterface( InventoryPlayer inventoryPlayer, IInterfaceHost te )
+	{
 		super( new ContainerInterface( inventoryPlayer, te ) );
 		this.ySize = 211;
-	}
-
-	@Override
-	protected void actionPerformed(GuiButton btn)
-	{
-		super.actionPerformed( btn );
-
-		boolean backwards = Mouse.isButtonDown( 1 );
-
-		if ( btn == this.priority )
-		{
-			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
-		}
-
-		if ( btn == this.interfaceMode )
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( Settings.INTERFACE_TERMINAL, backwards ) );
-
-		if ( btn == this.BlockMode )
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.BlockMode.getSetting(), backwards ) );
 	}
 
 	@Override
@@ -76,9 +60,27 @@ public class GuiInterface extends GuiUpgradeable
 		this.BlockMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.BLOCK, YesNo.NO );
 		this.buttonList.add( this.BlockMode );
 
-		this.interfaceMode = new GuiToggleButton( this.guiLeft - 18, this.guiTop + 26, 84, 85, GuiText.InterfaceTerminal.getLocal(),
-				GuiText.InterfaceTerminalHint.getLocal() );
+		this.interfaceMode = new GuiToggleButton( this.guiLeft - 18, this.guiTop + 26, 84, 85, GuiText.InterfaceTerminal.getLocal(), GuiText.InterfaceTerminalHint.getLocal() );
 		this.buttonList.add( this.interfaceMode );
+	}
+
+	@Override
+	protected void actionPerformed( GuiButton btn )
+	{
+		super.actionPerformed( btn );
+
+		boolean backwards = Mouse.isButtonDown( 1 );
+
+		if( btn == this.priority )
+		{
+			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
+		}
+
+		if( btn == this.interfaceMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( Settings.INTERFACE_TERMINAL, backwards ) );
+
+		if( btn == this.BlockMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.BlockMode.getSetting(), backwards ) );
 	}
 
 	@Override
@@ -88,13 +90,13 @@ public class GuiInterface extends GuiUpgradeable
 	}
 
 	@Override
-	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
+	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
-		if ( this.BlockMode != null )
-			this.BlockMode.set( ((ContainerInterface) this.cvb).bMode );
+		if( this.BlockMode != null )
+			this.BlockMode.set( ( (ContainerInterface) this.cvb ).bMode );
 
-		if ( this.interfaceMode != null )
-			this.interfaceMode.setState( ((ContainerInterface) this.cvb).iTermMode == YesNo.YES );
+		if( this.interfaceMode != null )
+			this.interfaceMode.setState( ( (ContainerInterface) this.cvb ).iTermMode == YesNo.YES );
 
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.Interface.getLocal() ), 8, 6, 4210752 );
 

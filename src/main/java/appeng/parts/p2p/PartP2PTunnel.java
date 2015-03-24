@@ -18,6 +18,7 @@
 
 package appeng.parts.p2p;
 
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -52,17 +53,149 @@ import appeng.me.cache.helpers.TunnelCollection;
 import appeng.parts.PartBasicState;
 import appeng.util.Platform;
 
+
 public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 {
 
+	final TunnelCollection type = new TunnelCollection<T>( null, this.getClass() );
 	public boolean output;
 	public long freq;
-	final TunnelCollection type = new TunnelCollection<T>( null, this.getClass() );
 
-	public PartP2PTunnel(ItemStack is) {
+	public PartP2PTunnel( ItemStack is )
+	{
 		super( PartP2PTunnel.class, is );
-		if ( this.getClass() == PartP2PTunnel.class )
+		if( this.getClass() == PartP2PTunnel.class )
 			throw new RuntimeException( "Don't construct the root tunnel!" );
+	}
+
+	public TunnelType getTunnelType()
+	{
+		return null;
+	}
+
+	public TunnelCollection<T> getCollection( Collection<PartP2PTunnel> collection, Class<? extends PartP2PTunnel> c )
+	{
+		if( this.type.matches( c ) )
+		{
+			this.type.setSource( collection );
+			return this.type;
+		}
+
+		return null;
+	}
+
+	public T getInput()
+	{
+		if( this.freq == 0 )
+			return null;
+
+		PartP2PTunnel tunnel;
+		try
+		{
+			tunnel = this.proxy.getP2P().getInput( this.freq );
+			if( this.getClass().isInstance( tunnel ) )
+				return (T) tunnel;
+		}
+		catch( GridAccessException e )
+		{
+			// :P
+		}
+		return null;
+	}
+
+	public TunnelCollection<T> getOutputs() throws GridAccessException
+	{
+		if( this.proxy.isActive() )
+			return (TunnelCollection<T>) this.proxy.getP2P().getOutputs( this.freq, this.getClass() );
+		return new TunnelCollection( new ArrayList(), this.getClass() );
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
+	{
+		rh.setTexture( this.getTypeTexture() );
+
+		rh.setBounds( 2, 2, 14, 14, 14, 16 );
+		rh.renderInventoryBox( renderer );
+
+		rh.setTexture( CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(), this.is.getIconIndex(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon() );
+
+		rh.setBounds( 2, 2, 14, 14, 14, 16 );
+		rh.renderInventoryBox( renderer );
+	}
+
+	protected IIcon getTypeTexture()
+	{
+		return AEApi.instance().blocks().blockQuartz.block().getIcon( 0, 0 );
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
+	{
+		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
+		rh.setTexture( this.getTypeTexture() );
+
+		rh.setBounds( 2, 2, 14, 14, 14, 16 );
+		rh.renderBlock( x, y, z, renderer );
+
+		rh.setTexture( CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(), this.is.getIconIndex(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon() );
+
+		rh.setBounds( 2, 2, 14, 14, 14, 16 );
+		rh.renderBlock( x, y, z, renderer );
+
+		rh.setBounds( 3, 3, 13, 13, 13, 14 );
+		rh.renderBlock( x, y, z, renderer );
+
+		rh.setTexture( CableBusTextures.BlockP2PTunnel3.getIcon() );
+
+		rh.setBounds( 6, 5, 12, 10, 11, 13 );
+		rh.renderBlock( x, y, z, renderer );
+
+		rh.setBounds( 5, 6, 12, 11, 10, 13 );
+		rh.renderBlock( x, y, z, renderer );
+
+		this.renderLights( x, y, z, rh, renderer );
+	}
+
+	@Override
+	public ItemStack getItemStack( PartItemStack type )
+	{
+		if( type == PartItemStack.World || type == PartItemStack.Network || type == PartItemStack.Wrench || type == PartItemStack.Pick )
+			return super.getItemStack( type );
+
+		return AEApi.instance().parts().partP2PTunnelME.stack( 1 );
+	}
+
+	@Override
+	public void getBoxes( IPartCollisionHelper bch )
+	{
+		bch.addBox( 5, 5, 12, 11, 11, 13 );
+		bch.addBox( 3, 3, 13, 13, 13, 14 );
+		bch.addBox( 2, 2, 14, 14, 14, 16 );
+	}
+
+	@Override
+	public void readFromNBT( NBTTagCompound data )
+	{
+		super.readFromNBT( data );
+		this.output = data.getBoolean( "output" );
+		this.freq = data.getLong( "freq" );
+	}
+
+	@Override
+	public void writeToNBT( NBTTagCompound data )
+	{
+		super.writeToNBT( data );
+		data.setBoolean( "output", this.output );
+		data.setLong( "freq", this.freq );
+	}
+
+	@Override
+	public int cableConnectionRenderTo()
+	{
+		return 1;
 	}
 
 	@Override
@@ -72,23 +205,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound data)
-	{
-		super.writeToNBT( data );
-		data.setBoolean( "output", this.output );
-		data.setLong( "freq", this.freq );
-	}
-
-	@Override
-	public void readFromNBT(NBTTagCompound data)
-	{
-		super.readFromNBT( data );
-		this.output = data.getBoolean( "output" );
-		this.freq = data.getLong( "freq" );
-	}
-
-	@Override
-	public boolean onPartActivate(EntityPlayer player, Vec3 pos)
+	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
 	{
 		ItemStack is = player.inventory.getCurrentItem();
 
@@ -96,7 +213,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 		// AELog.info( "ID:" + id.toString() + " : " + is.getItemDamage() );
 
 		TunnelType tt = AEApi.instance().registries().p2pTunnel().getTunnelTypeByItem( is );
-		if ( is != null && is.getItem() instanceof IMemoryCard )
+		if( is != null && is.getItem() instanceof IMemoryCard )
 		{
 			IMemoryCard mc = (IMemoryCard) is.getItem();
 			NBTTagCompound data = mc.getData( is );
@@ -104,18 +221,18 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 			ItemStack newType = ItemStack.loadItemStackFromNBT( data );
 			long freq = data.getLong( "freq" );
 
-			if ( newType != null )
+			if( newType != null )
 			{
-				if ( newType.getItem() instanceof IPartItem )
+				if( newType.getItem() instanceof IPartItem )
 				{
-					IPart testPart = ((IPartItem) newType.getItem()).createPartFromItemStack( newType );
-					if ( testPart instanceof PartP2PTunnel )
+					IPart testPart = ( (IPartItem) newType.getItem() ).createPartFromItemStack( newType );
+					if( testPart instanceof PartP2PTunnel )
 					{
 						this.getHost().removePart( this.side, true );
 						ForgeDirection dir = this.getHost().addPart( newType, this.side, player );
 						IPart newBus = this.getHost().getPart( dir );
 
-						if ( newBus instanceof PartP2PTunnel )
+						if( newBus instanceof PartP2PTunnel )
 						{
 							PartP2PTunnel newTunnel = (PartP2PTunnel) newBus;
 							newTunnel.output = true;
@@ -125,7 +242,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 								P2PCache p2p = newTunnel.proxy.getP2P();
 								p2p.updateFreq( newTunnel, freq );
 							}
-							catch (GridAccessException e)
+							catch( GridAccessException e )
 							{
 								// :P
 							}
@@ -140,50 +257,49 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 			}
 			mc.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
 		}
-		else if ( tt != null ) // attunement
+		else if( tt != null ) // attunement
 		{
 			ItemStack newType = null;
 
-			switch (tt)
+			switch( tt )
 			{
-			case LIGHT:
-				newType = AEApi.instance().parts().partP2PTunnelLight.stack( 1 );
-				break;
+				case LIGHT:
+					newType = AEApi.instance().parts().partP2PTunnelLight.stack( 1 );
+					break;
 
-			case RF_POWER:
-				newType = AEApi.instance().parts().partP2PTunnelRF.stack( 1 );
-				break;
+				case RF_POWER:
+					newType = AEApi.instance().parts().partP2PTunnelRF.stack( 1 );
+					break;
 
-			case BC_POWER:
-				newType = AEApi.instance().parts().partP2PTunnelMJ.stack( 1 );
-				break;
+				case BC_POWER:
+					newType = AEApi.instance().parts().partP2PTunnelMJ.stack( 1 );
+					break;
 
-			case FLUID:
-				newType = AEApi.instance().parts().partP2PTunnelLiquids.stack( 1 );
-				break;
+				case FLUID:
+					newType = AEApi.instance().parts().partP2PTunnelLiquids.stack( 1 );
+					break;
 
-			case IC2_POWER:
-				newType = AEApi.instance().parts().partP2PTunnelEU.stack( 1 );
-				break;
+				case IC2_POWER:
+					newType = AEApi.instance().parts().partP2PTunnelEU.stack( 1 );
+					break;
 
-			case ITEM:
-				newType = AEApi.instance().parts().partP2PTunnelItems.stack( 1 );
-				break;
+				case ITEM:
+					newType = AEApi.instance().parts().partP2PTunnelItems.stack( 1 );
+					break;
 
-			case ME:
-				newType = AEApi.instance().parts().partP2PTunnelME.stack( 1 );
-				break;
+				case ME:
+					newType = AEApi.instance().parts().partP2PTunnelME.stack( 1 );
+					break;
 
-			case REDSTONE:
-				newType = AEApi.instance().parts().partP2PTunnelRedstone.stack( 1 );
-				break;
+				case REDSTONE:
+					newType = AEApi.instance().parts().partP2PTunnelRedstone.stack( 1 );
+					break;
 
-			default:
-				break;
-
+				default:
+					break;
 			}
 
-			if ( newType != null && !Platform.isSameItem( newType, this.is ) )
+			if( newType != null && !Platform.isSameItem( newType, this.is ) )
 			{
 				boolean oldOutput = this.output;
 				long myFreq = this.freq;
@@ -192,7 +308,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 				ForgeDirection dir = this.getHost().addPart( newType, this.side, player );
 				IPart newBus = this.getHost().getPart( dir );
 
-				if ( newBus instanceof PartP2PTunnel )
+				if( newBus instanceof PartP2PTunnel )
 				{
 					PartP2PTunnel newTunnel = (PartP2PTunnel) newBus;
 					newTunnel.output = oldOutput;
@@ -203,7 +319,7 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 						P2PCache p2p = newTunnel.proxy.getP2P();
 						p2p.updateFreq( newTunnel, myFreq );
 					}
-					catch (GridAccessException e)
+					catch( GridAccessException e )
 					{
 						// :P
 					}
@@ -217,16 +333,11 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 		return false;
 	}
 
-	public TunnelType getTunnelType()
-	{
-		return null;
-	}
-
 	@Override
-	public boolean onPartShiftActivate(EntityPlayer player, Vec3 pos)
+	public boolean onPartShiftActivate( EntityPlayer player, Vec3 pos )
 	{
 		ItemStack is = player.inventory.getCurrentItem();
-		if ( is != null && is.getItem() instanceof IMemoryCard )
+		if( is != null && is.getItem() instanceof IMemoryCard )
 		{
 			IMemoryCard mc = (IMemoryCard) is.getItem();
 			NBTTagCompound data = new NBTTagCompound();
@@ -235,14 +346,14 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 			boolean wasOutput = this.output;
 			this.output = false;
 
-			if ( wasOutput || this.freq == 0 )
+			if( wasOutput || this.freq == 0 )
 				newFreq = System.currentTimeMillis();
 
 			try
 			{
 				this.proxy.getP2P().updateFreq( this, newFreq );
 			}
-			catch (GridAccessException e)
+			catch( GridAccessException e )
 			{
 				// :P
 			}
@@ -266,116 +377,19 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 	{
 	}
 
-	@Override
-	public ItemStack getItemStack(PartItemStack type)
-	{
-		if ( type == PartItemStack.World || type == PartItemStack.Network || type == PartItemStack.Wrench || type == PartItemStack.Pick )
-			return super.getItemStack( type );
-
-		return AEApi.instance().parts().partP2PTunnelME.stack( 1 );
-	}
-
-	public TunnelCollection<T> getCollection(Collection<PartP2PTunnel> collection, Class<? extends PartP2PTunnel> c)
-	{
-		if ( this.type.matches( c ) )
-		{
-			this.type.setSource( collection );
-			return this.type;
-		}
-
-		return null;
-	}
-
-	public T getInput()
-	{
-		if ( this.freq == 0 )
-			return null;
-
-		PartP2PTunnel tunnel;
-		try
-		{
-			tunnel = this.proxy.getP2P().getInput( this.freq );
-			if ( this.getClass().isInstance( tunnel ) )
-				return (T) tunnel;
-		}
-		catch (GridAccessException e)
-		{
-			// :P
-		}
-		return null;
-	}
-
-	public TunnelCollection<T> getOutputs() throws GridAccessException
-	{
-		if ( this.proxy.isActive() )
-			return (TunnelCollection<T>) this.proxy.getP2P().getOutputs( this.freq, this.getClass() );
-		return new TunnelCollection( new ArrayList(), this.getClass() );
-	}
-
 	public void onTunnelNetworkChange()
 	{
 
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
-	{
-		rh.setTexture( this.getTypeTexture() );
-
-		rh.setBounds( 2, 2, 14, 14, 14, 16 );
-		rh.renderInventoryBox( renderer );
-
-		rh.setTexture( CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(),
-				this.is.getIconIndex(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon() );
-
-		rh.setBounds( 2, 2, 14, 14, 14, 16 );
-		rh.renderInventoryBox( renderer );
-	}
-
-	protected IIcon getTypeTexture()
-	{
-		return AEApi.instance().blocks().blockQuartz.block().getIcon( 0, 0 );
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
-	{
-		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
-		rh.setTexture( this.getTypeTexture() );
-
-		rh.setBounds( 2, 2, 14, 14, 14, 16 );
-		rh.renderBlock( x, y, z, renderer );
-
-		rh.setTexture( CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.BlockP2PTunnel2.getIcon(),
-				this.is.getIconIndex(), CableBusTextures.PartTunnelSides.getIcon(), CableBusTextures.PartTunnelSides.getIcon() );
-
-		rh.setBounds( 2, 2, 14, 14, 14, 16 );
-		rh.renderBlock( x, y, z, renderer );
-
-		rh.setBounds( 3, 3, 13, 13, 13, 14 );
-		rh.renderBlock( x, y, z, renderer );
-
-		rh.setTexture( CableBusTextures.BlockP2PTunnel3.getIcon() );
-
-		rh.setBounds( 6, 5, 12, 10, 11, 13 );
-		rh.renderBlock( x, y, z, renderer );
-
-		rh.setBounds( 5, 6, 12, 11, 10, 13 );
-		rh.renderBlock( x, y, z, renderer );
-
-		this.renderLights( x, y, z, rh, renderer );
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	public IIcon getBreakingTexture()
 	{
 		return CableBusTextures.BlockP2PTunnel2.getIcon();
 	}
 
-	protected void QueueTunnelDrain(PowerUnits unit, double f)
+	protected void QueueTunnelDrain( PowerUnits unit, double f )
 	{
 		double ae_to_tax = unit.convertTo( PowerUnits.AE, f * AEConfig.TUNNEL_POWER_LOSS );
 
@@ -383,24 +397,9 @@ public class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
 		{
 			this.proxy.getEnergy().extractAEPower( ae_to_tax, Actionable.MODULATE, PowerMultiplier.ONE );
 		}
-		catch (GridAccessException e)
+		catch( GridAccessException e )
 		{
 			// :P
 		}
 	}
-
-	@Override
-	public void getBoxes(IPartCollisionHelper bch)
-	{
-		bch.addBox( 5, 5, 12, 11, 11, 13 );
-		bch.addBox( 3, 3, 13, 13, 13, 14 );
-		bch.addBox( 2, 2, 14, 14, 14, 16 );
-	}
-
-	@Override
-	public int cableConnectionRenderTo()
-	{
-		return 1;
-	}
-
 }

@@ -18,6 +18,7 @@
 
 package appeng.util;
 
+
 import java.util.HashMap;
 import java.util.Set;
 
@@ -28,14 +29,63 @@ import appeng.api.config.StorageFilter;
 import appeng.api.util.IConfigManager;
 import appeng.core.AELog;
 
+
 public class ConfigManager implements IConfigManager
 {
 
 	final HashMap<Enum, Enum> Settings = new HashMap<Enum, Enum>();
 	final IConfigManagerHost target;
 
-	public ConfigManager(IConfigManagerHost tile) {
+	public ConfigManager( IConfigManagerHost tile )
+	{
 		this.target = tile;
+	}
+
+	@Override
+	public Set<Enum> getSettings()
+	{
+		return this.Settings.keySet();
+	}
+
+	@Override
+	public void registerSetting( Enum settingName, Enum defaultValue )
+	{
+		this.Settings.put( settingName, defaultValue );
+	}
+
+	@Override
+	public Enum getSetting( Enum settingName )
+	{
+		Enum oldValue = this.Settings.get( settingName );
+
+		if( oldValue != null )
+			return oldValue;
+
+		throw new RuntimeException( "Invalid Config setting" );
+	}
+
+	@Override
+	public Enum putSetting( Enum settingName, Enum newValue )
+	{
+		Enum oldValue = this.getSetting( settingName );
+		this.Settings.put( settingName, newValue );
+		this.target.updateSetting( this, settingName, newValue );
+		return oldValue;
+	}
+
+	/**
+	 * save all settings using config manager.
+	 *
+	 * @param tagCompound to be written to compound
+	 */
+	@Override
+	public void writeToNBT( NBTTagCompound tagCompound )
+	{
+
+		for( Enum e : this.Settings.keySet() )
+		{
+			tagCompound.setString( e.name(), this.Settings.get( e ).toString() );
+		}
 	}
 
 	/**
@@ -44,20 +94,23 @@ public class ConfigManager implements IConfigManager
 	 * @param tagCompound to be read from compound
 	 */
 	@Override
-	public void readFromNBT(NBTTagCompound tagCompound)
+	public void readFromNBT( NBTTagCompound tagCompound )
 	{
-		for (Enum key : this.Settings.keySet())
+		for( Enum key : this.Settings.keySet() )
 		{
 			try
 			{
-				if ( tagCompound.hasKey( key.name() ) )
+				if( tagCompound.hasKey( key.name() ) )
 				{
 					String value = tagCompound.getString( key.name() );
 
 					// Provides an upgrade path for the rename of this value in the API between rv1 and rv2
-					if( value.equals( "EXTACTABLE_ONLY" ) ){
+					if( value.equals( "EXTACTABLE_ONLY" ) )
+					{
 						value = StorageFilter.EXTRACTABLE_ONLY.toString();
-					} else if( value.equals( "STOREABLE_AMOUNT" ) ) {
+					}
+					else if( value.equals( "STOREABLE_AMOUNT" ) )
+					{
 						value = LevelEmitterMode.STORABLE_AMOUNT.toString();
 					}
 
@@ -68,59 +121,10 @@ public class ConfigManager implements IConfigManager
 					this.putSetting( key, newValue );
 				}
 			}
-			catch (IllegalArgumentException e)
+			catch( IllegalArgumentException e )
 			{
 				AELog.error( e );
 			}
 		}
 	}
-
-	/**
-	 * save all settings using config manager.
-	 *
-	 * @param tagCompound to be written to compound
-	 */
-	@Override
-	public void writeToNBT(NBTTagCompound tagCompound)
-	{
-
-		for (Enum e : this.Settings.keySet())
-		{
-			tagCompound.setString( e.name(), this.Settings.get( e ).toString() );
-		}
-
-	}
-
-	@Override
-	public Set<Enum> getSettings()
-	{
-		return this.Settings.keySet();
-	}
-
-	@Override
-	public void registerSetting(Enum settingName, Enum defaultValue)
-	{
-		this.Settings.put( settingName, defaultValue );
-	}
-
-	@Override
-	public Enum getSetting(Enum settingName)
-	{
-		Enum oldValue = this.Settings.get( settingName );
-
-		if ( oldValue != null )
-			return oldValue;
-
-		throw new RuntimeException( "Invalid Config setting" );
-	}
-
-	@Override
-	public Enum putSetting(Enum settingName, Enum newValue)
-	{
-		Enum oldValue = this.getSetting( settingName );
-		this.Settings.put( settingName, newValue );
-		this.target.updateSetting( this, settingName, newValue );
-		return oldValue;
-	}
-
 }

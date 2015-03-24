@@ -18,8 +18,10 @@
 
 package appeng.parts.layers;
 
+
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+
 
 public class InvSot
 {
@@ -27,12 +29,13 @@ public class InvSot
 	final public ISidedInventory partInv;
 	final public int index;
 
-	public InvSot(ISidedInventory part, int slot) {
+	public InvSot( ISidedInventory part, int slot )
+	{
 		this.partInv = part;
 		this.index = slot;
 	}
 
-	public ItemStack decreaseStackSize(int j)
+	public ItemStack decreaseStackSize( int j )
 	{
 		return this.partInv.decrStackSize( this.index, j );
 	}
@@ -42,24 +45,23 @@ public class InvSot
 		return this.partInv.getStackInSlot( this.index );
 	}
 
-	public boolean isItemValidForSlot(ItemStack itemstack)
+	public boolean isItemValidForSlot( ItemStack itemstack )
 	{
 		return this.partInv.isItemValidForSlot( this.index, itemstack );
 	}
 
-	public void setInventorySlotContents(ItemStack itemstack)
+	public void setInventorySlotContents( ItemStack itemstack )
 	{
 		this.partInv.setInventorySlotContents( this.index, itemstack );
 	}
 
-	public boolean canExtractItem(ItemStack itemstack, int side)
+	public boolean canExtractItem( ItemStack itemstack, int side )
 	{
 		return this.partInv.canExtractItem( this.index, itemstack, side );
 	}
 
-	public boolean canInsertItem(ItemStack itemstack, int side)
+	public boolean canInsertItem( ItemStack itemstack, int side )
 	{
 		return this.partInv.canInsertItem( this.index, itemstack, side );
 	}
-
 }

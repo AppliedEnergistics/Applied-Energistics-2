@@ -18,14 +18,15 @@
 
 package appeng.crafting;
 
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Stopwatch;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+
+import com.google.common.base.Stopwatch;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -41,33 +42,32 @@ import appeng.api.storage.data.IItemList;
 import appeng.core.AELog;
 import appeng.hooks.TickHandler;
 
+
 public class CraftingJob implements Runnable, ICraftingJob
 {
 
-	IAEItemStack output;
-
 	final IItemList<IAEItemStack> storage;
-
 	final HashSet<IAEItemStack> prophecies;
-
-	boolean simulate = false;
 	final MECraftingInventory original;
-
-	MECraftingInventory availableCheck;
+	final World world;
+	final IItemList<IAEItemStack> crafting = AEApi.instance().storage().createItemList();
+	final IItemList<IAEItemStack> missing = AEApi.instance().storage().createItemList();
+	final HashMap<String, TwoIntegers> opsAndMultiplier = new HashMap<String, TwoIntegers>();
+	private final Object monitor = new Object();
+	private final Stopwatch watch = Stopwatch.createUnstarted();
 	public CraftingTreeNode tree;
+	IAEItemStack output;
+	boolean simulate = false;
+	MECraftingInventory availableCheck;
+	long bytes = 0;
 	private BaseActionSource actionSrc;
 	private ICraftingCallback callback;
+	private boolean running = false;
+	private boolean done = false;
+	private int time = 5;
+	private int incTime = Integer.MAX_VALUE;
 
-	long bytes = 0;
-	final World world;
-
-	@Override
-	public IAEItemStack getOutput()
-	{
-		return this.output;
-	}
-
-	public CraftingJob(World w, NBTTagCompound data)
+	public CraftingJob( World w, NBTTagCompound data )
 	{
 		this.world = this.wrapWorld( w );
 		this.storage = AEApi.instance().storage().createItemList();
@@ -76,17 +76,12 @@ public class CraftingJob implements Runnable, ICraftingJob
 		this.availableCheck = null;
 	}
 
-	public void refund(IAEItemStack o)
+	private World wrapWorld( World w )
 	{
-		this.availableCheck.injectItems( o, Actionable.MODULATE, this.actionSrc );
+		return w;
 	}
 
-	public IAEItemStack checkUse(IAEItemStack available)
-	{
-		return this.availableCheck.extractItems( available, Actionable.MODULATE, this.actionSrc );
-	}
-
-	public CraftingJob(World w, IGrid grid, BaseActionSource actionSrc, IAEItemStack what, ICraftingCallback callback)
+	public CraftingJob( World w, IGrid grid, BaseActionSource actionSrc, IAEItemStack what, ICraftingCallback callback )
 	{
 		this.world = this.wrapWorld( w );
 		this.output = what.copy();
@@ -103,33 +98,29 @@ public class CraftingJob implements Runnable, ICraftingJob
 		this.availableCheck = null;
 	}
 
-	private World wrapWorld(World w)
-	{
-		return w;
-	}
-
-	private CraftingTreeNode getCraftingTree(ICraftingGrid cc, IAEItemStack what)
+	private CraftingTreeNode getCraftingTree( ICraftingGrid cc, IAEItemStack what )
 	{
 		return new CraftingTreeNode( cc, this, what, null, -1, 0 );
 	}
 
-	@Override
-	public long getByteTotal()
+	public void refund( IAEItemStack o )
 	{
-		return this.bytes;
+		this.availableCheck.injectItems( o, Actionable.MODULATE, this.actionSrc );
 	}
 
-	public void writeToNBT(NBTTagCompound out)
+	public IAEItemStack checkUse( IAEItemStack available )
+	{
+		return this.availableCheck.extractItems( available, Actionable.MODULATE, this.actionSrc );
+	}
+
+	public void writeToNBT( NBTTagCompound out )
 	{
 
 	}
 
-	final IItemList<IAEItemStack> crafting = AEApi.instance().storage().createItemList();
-	final IItemList<IAEItemStack> missing = AEApi.instance().storage().createItemList();
-
-	public void addTask(IAEItemStack what, long crafts, ICraftingPatternDetails details, int depth)
+	public void addTask( IAEItemStack what, long crafts, ICraftingPatternDetails details, int depth )
 	{
-		if ( crafts > 0 )
+		if( crafts > 0 )
 		{
 			what = what.copy();
 			what.setStackSize( what.getStackSize() * crafts );
@@ -137,20 +128,11 @@ public class CraftingJob implements Runnable, ICraftingJob
 		}
 	}
 
-	public void addMissing(IAEItemStack what)
+	public void addMissing( IAEItemStack what )
 	{
 		what = what.copy();
 		this.missing.add( what );
 	}
-
-	static class TwoIntegers
-	{
-
-		public final long perOp = 0;
-		public final long times = 0;
-	}
-
-	final HashMap<String, TwoIntegers> opsAndMultiplier = new HashMap<String, TwoIntegers>();
 
 	@Override
 	public void run()
@@ -171,17 +153,17 @@ public class CraftingJob implements Runnable, ICraftingJob
 				this.tree.request( craftingInventory, this.output.getStackSize(), this.actionSrc );
 				this.tree.dive( this );
 
-				for (String s : this.opsAndMultiplier.keySet())
+				for( String s : this.opsAndMultiplier.keySet() )
 				{
 					TwoIntegers ti = this.opsAndMultiplier.get( s );
-					AELog.crafting( s + " * " + ti.times + " = " + (ti.perOp * ti.times) );
+					AELog.crafting( s + " * " + ti.times + " = " + ( ti.perOp * ti.times ) );
 				}
 
 				AELog.crafting( "------------- " + this.getByteTotal() + "b real" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
 				// if ( mode == Actionable.MODULATE )
 				// craftingInventory.moveItemsToStorage( storage );
 			}
-			catch (CraftBranchFailure e)
+			catch( CraftBranchFailure e )
 			{
 				this.simulate = true;
 
@@ -197,34 +179,34 @@ public class CraftingJob implements Runnable, ICraftingJob
 					this.tree.request( craftingInventory, this.output.getStackSize(), this.actionSrc );
 					this.tree.dive( this );
 
-					for (String s : this.opsAndMultiplier.keySet())
+					for( String s : this.opsAndMultiplier.keySet() )
 					{
 						TwoIntegers ti = this.opsAndMultiplier.get( s );
-						AELog.crafting( s + " * " + ti.times + " = " + (ti.perOp * ti.times) );
+						AELog.crafting( s + " * " + ti.times + " = " + ( ti.perOp * ti.times ) );
 					}
 
 					AELog.crafting( "------------- " + this.getByteTotal() + "b simulate" + timer.elapsed( TimeUnit.MILLISECONDS ) + "ms" );
 				}
-				catch (CraftBranchFailure e1)
+				catch( CraftBranchFailure e1 )
 				{
 					AELog.error( e1 );
 				}
-				catch (CraftingCalculationFailure f)
+				catch( CraftingCalculationFailure f )
 				{
 					AELog.error( f );
 				}
-				catch (InterruptedException e1)
+				catch( InterruptedException e1 )
 				{
 					AELog.crafting( "Crafting calculation canceled." );
 					this.finish();
 					return;
 				}
 			}
-			catch (CraftingCalculationFailure f)
+			catch( CraftingCalculationFailure f )
 			{
 				AELog.error( f );
 			}
-			catch (InterruptedException e1)
+			catch( InterruptedException e1 )
 			{
 				AELog.crafting( "Crafting calculation canceled." );
 				this.finish();
@@ -233,29 +215,66 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 			this.log( "crafting job now done" );
 		}
-		catch (Throwable t)
+		catch( Throwable t )
 		{
 			this.finish();
 			throw new RuntimeException( t );
 		}
 
 		this.finish();
+	}
 
+	public void handlePausing() throws InterruptedException
+	{
+		if( this.incTime++ > 100 )
+		{
+			this.incTime = 0;
+
+			synchronized( this.monitor )
+			{
+				if( this.watch.elapsed( TimeUnit.MICROSECONDS ) > this.time )
+				{
+					this.running = false;
+					this.watch.stop();
+					this.monitor.notify();
+				}
+
+				if( !this.running )
+				{
+					this.log( "crafting job will now sleep" );
+
+					while( !this.running )
+					{
+						this.monitor.wait();
+					}
+
+					this.log( "crafting job now active" );
+				}
+			}
+
+			if( Thread.interrupted() )
+				throw new InterruptedException();
+		}
 	}
 
 	public void finish()
 	{
-		if ( this.callback != null )
+		if( this.callback != null )
 			this.callback.calculationComplete( this );
 
 		this.availableCheck = null;
 
-		synchronized (this.monitor)
+		synchronized( this.monitor )
 		{
 			this.running = false;
 			this.done = true;
 			this.monitor.notify();
 		}
+	}
+
+	private void log( String string )
+	{
+		// AELog.crafting( string );
 	}
 
 	@Override
@@ -264,9 +283,23 @@ public class CraftingJob implements Runnable, ICraftingJob
 		return this.simulate;
 	}
 
-	public boolean isDone()
+	@Override
+	public long getByteTotal()
 	{
-		return this.done;
+		return this.bytes;
+	}
+
+	@Override
+	public void populatePlan( IItemList<IAEItemStack> plan )
+	{
+		if( this.tree != null )
+			this.tree.getPlan( plan );
+	}
+
+	@Override
+	public IAEItemStack getOutput()
+	{
+		return this.output;
 	}
 
 	public World getWorld()
@@ -274,25 +307,20 @@ public class CraftingJob implements Runnable, ICraftingJob
 		return this.world;
 	}
 
-	private boolean running = false;
-	private boolean done = false;
-	private final Object monitor = new Object();
-	private final Stopwatch watch = Stopwatch.createUnstarted();
-	private int time = 5;
-
 	/**
 	 * returns true if this needs more simulation.
 	 *
 	 * @param milli milliseconds of simulation
+	 *
 	 * @return true if this needs more simulation
 	 */
-	public boolean simulateFor(int milli)
+	public boolean simulateFor( int milli )
 	{
 		this.time = milli;
 
-		synchronized (this.monitor)
+		synchronized( this.monitor )
 		{
-			if ( this.isDone() )
+			if( this.isDone() )
 				return false;
 
 			this.watch.reset();
@@ -303,13 +331,13 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 			this.monitor.notify();
 
-			while (this.running)
+			while( this.running )
 			{
 				try
 				{
 					this.monitor.wait();
 				}
-				catch (InterruptedException ignored)
+				catch( InterruptedException ignored )
 				{
 				}
 			}
@@ -320,56 +348,21 @@ public class CraftingJob implements Runnable, ICraftingJob
 		return true;
 	}
 
-	private int incTime = Integer.MAX_VALUE;
-
-	public void handlePausing() throws InterruptedException
+	public boolean isDone()
 	{
-		if ( this.incTime++ > 100 )
-		{
-			this.incTime = 0;
-
-			synchronized (this.monitor)
-			{
-				if ( this.watch.elapsed( TimeUnit.MICROSECONDS ) > this.time )
-				{
-					this.running = false;
-					this.watch.stop();
-					this.monitor.notify();
-				}
-
-				if ( !this.running )
-				{
-					this.log( "crafting job will now sleep" );
-
-					while (!this.running)
-					{
-						this.monitor.wait();
-					}
-
-					this.log( "crafting job now active" );
-				}
-			}
-
-			if ( Thread.interrupted() )
-				throw new InterruptedException();
-		}
+		return this.done;
 	}
 
-	private void log(String string)
-	{
-		// AELog.crafting( string );
-	}
-
-	public void addBytes(long crafts)
+	public void addBytes( long crafts )
 	{
 		this.bytes += crafts;
 	}
 
-	@Override
-	public void populatePlan(IItemList<IAEItemStack> plan)
-	{
-		if ( this.tree != null )
-			this.tree.getPlan( plan );
-	}
 
+	static class TwoIntegers
+	{
+
+		public final long perOp = 0;
+		public final long times = 0;
+	}
 }

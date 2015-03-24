@@ -18,6 +18,7 @@
 
 package appeng.util.inv;
 
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,96 +29,39 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.iterators.StackToSlotIterator;
 
+
 public class AdaptorList extends InventoryAdaptor
 {
 
 	private final List<ItemStack> i;
 
-	public AdaptorList(List<ItemStack> s) {
+	public AdaptorList( List<ItemStack> s )
+	{
 		this.i = s;
 	}
 
 	@Override
-	public ItemStack removeSimilarItems(int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
+	public ItemStack removeItems( int amount, ItemStack filter, IInventoryDestination destination )
 	{
 		int s = this.i.size();
-		for (int x = 0; x < s; x++)
+		for( int x = 0; x < s; x++ )
 		{
 			ItemStack is = this.i.get( x );
-			if ( is != null && (filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode )) )
+			if( is != null && ( filter == null || Platform.isSameItemPrecise( is, filter ) ) )
 			{
-				if ( how_many > is.stackSize )
-					how_many = is.stackSize;
-				if ( destination != null && !destination.canInsert( is ) )
-					how_many = 0;
-
-				if ( how_many > 0 )
-				{
-					ItemStack rv = is.copy();
-					rv.stackSize = how_many;
-					is.stackSize -= how_many;
-
-					// remove it..
-					if ( is.stackSize <= 0 )
-						this.i.remove( x );
-
-					return rv;
-				}
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
-	{
-		for (ItemStack is : this.i)
-		{
-			if ( is != null && (filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode )) )
-			{
-				if ( amount > is.stackSize )
-				{
+				if( amount > is.stackSize )
 					amount = is.stackSize;
-				}
-				if ( destination != null && !destination.canInsert( is ) )
-				{
-					amount = 0;
-				}
-
-				if ( amount > 0 )
-				{
-					ItemStack rv = is.copy();
-					rv.stackSize = amount;
-					return rv;
-				}
-			}
-		}
-		return null;
-
-	}
-
-	@Override
-	public ItemStack removeItems(int amount, ItemStack filter, IInventoryDestination destination)
-	{
-		int s = this.i.size();
-		for (int x = 0; x < s; x++)
-		{
-			ItemStack is = this.i.get( x );
-			if ( is != null && (filter == null || Platform.isSameItemPrecise( is, filter )) )
-			{
-				if ( amount > is.stackSize )
-					amount = is.stackSize;
-				if ( destination != null && !destination.canInsert( is ) )
+				if( destination != null && !destination.canInsert( is ) )
 					amount = 0;
 
-				if ( amount > 0 )
+				if( amount > 0 )
 				{
 					ItemStack rv = is.copy();
 					rv.stackSize = amount;
 					is.stackSize -= amount;
 
 					// remove it..
-					if ( is.stackSize <= 0 )
+					if( is.stackSize <= 0 )
 						this.i.remove( x );
 
 					return rv;
@@ -128,22 +72,22 @@ public class AdaptorList extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateRemove(int amount, ItemStack filter, IInventoryDestination destination)
+	public ItemStack simulateRemove( int amount, ItemStack filter, IInventoryDestination destination )
 	{
-		for (ItemStack is : this.i)
+		for( ItemStack is : this.i )
 		{
-			if ( is != null && (filter == null || Platform.isSameItemPrecise( is, filter )) )
+			if( is != null && ( filter == null || Platform.isSameItemPrecise( is, filter ) ) )
 			{
-				if ( amount > is.stackSize )
+				if( amount > is.stackSize )
 				{
 					amount = is.stackSize;
 				}
-				if ( destination != null && !destination.canInsert( is ) )
+				if( destination != null && !destination.canInsert( is ) )
 				{
 					amount = 0;
 				}
 
-				if ( amount > 0 )
+				if( amount > 0 )
 				{
 					ItemStack rv = is.copy();
 					rv.stackSize = amount;
@@ -152,22 +96,79 @@ public class AdaptorList extends InventoryAdaptor
 			}
 		}
 		return null;
-
 	}
 
 	@Override
-	public ItemStack addItems(ItemStack toBeAdded )
+	public ItemStack removeSimilarItems( int how_many, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
 	{
-		if ( toBeAdded == null )
+		int s = this.i.size();
+		for( int x = 0; x < s; x++ )
+		{
+			ItemStack is = this.i.get( x );
+			if( is != null && ( filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode ) ) )
+			{
+				if( how_many > is.stackSize )
+					how_many = is.stackSize;
+				if( destination != null && !destination.canInsert( is ) )
+					how_many = 0;
+
+				if( how_many > 0 )
+				{
+					ItemStack rv = is.copy();
+					rv.stackSize = how_many;
+					is.stackSize -= how_many;
+
+					// remove it..
+					if( is.stackSize <= 0 )
+						this.i.remove( x );
+
+					return rv;
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public ItemStack simulateSimilarRemove( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
+	{
+		for( ItemStack is : this.i )
+		{
+			if( is != null && ( filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode ) ) )
+			{
+				if( amount > is.stackSize )
+				{
+					amount = is.stackSize;
+				}
+				if( destination != null && !destination.canInsert( is ) )
+				{
+					amount = 0;
+				}
+
+				if( amount > 0 )
+				{
+					ItemStack rv = is.copy();
+					rv.stackSize = amount;
+					return rv;
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public ItemStack addItems( ItemStack toBeAdded )
+	{
+		if( toBeAdded == null )
 			return null;
-		if ( toBeAdded.stackSize == 0 )
+		if( toBeAdded.stackSize == 0 )
 			return null;
 
 		ItemStack left = toBeAdded.copy();
 
-		for (ItemStack is : this.i)
+		for( ItemStack is : this.i )
 		{
-			if ( Platform.isSameItem( is, left ) )
+			if( Platform.isSameItem( is, left ) )
 			{
 				is.stackSize += left.stackSize;
 				return null;
@@ -179,7 +180,7 @@ public class AdaptorList extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateAdd(ItemStack toBeSimulated )
+	public ItemStack simulateAdd( ItemStack toBeSimulated )
 	{
 		return null;
 	}
@@ -187,9 +188,9 @@ public class AdaptorList extends InventoryAdaptor
 	@Override
 	public boolean containsItems()
 	{
-		for (ItemStack is : this.i)
+		for( ItemStack is : this.i )
 		{
-			if ( is != null )
+			if( is != null )
 			{
 				return true;
 			}
@@ -202,5 +203,4 @@ public class AdaptorList extends InventoryAdaptor
 	{
 		return new StackToSlotIterator( this.i.iterator() );
 	}
-
 }

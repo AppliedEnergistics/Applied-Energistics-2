@@ -43,10 +43,12 @@ import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.misc.TileSkyCompass;
 
+
 public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
 {
 
-	public BlockSkyCompass() {
+	public BlockSkyCompass()
+	{
 		super( BlockSkyCompass.class, Material.iron );
 		this.setFeature( EnumSet.of( AEFeature.MeteoriteCompass ) );
 		this.setTileEntity( TileSkyCompass.class );
@@ -55,19 +57,43 @@ public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int direction, int metadata)
-	{
-		return Blocks.iron_block.getIcon( direction, metadata );
-	}
-
-	@Override
 	protected Class<? extends BaseBlockRender> getRenderer()
 	{
 		return RenderBlockSkyCompass.class;
 	}
 
-	private void dropTorch(World w, int x, int y, int z)
+	@Override
+	@SideOnly( Side.CLIENT )
+	public IIcon getIcon( int direction, int metadata )
+	{
+		return Blocks.iron_block.getIcon( direction, metadata );
+	}
+
+	@Override
+	public void registerBlockIcons( IIconRegister iconRegistry )
+	{
+		// :P
+	}
+
+	@Override
+	public boolean isValidOrientation( World w, int x, int y, int z, ForgeDirection forward, ForgeDirection up )
+	{
+		TileSkyCompass sc = this.getTileEntity( w, x, y, z );
+		if( sc != null )
+			return false;
+		return this.canPlaceAt( w, x, y, z, forward.getOpposite() );
+	}
+
+	@Override
+	public void onNeighborBlockChange( World w, int x, int y, int z, Block id )
+	{
+		TileSkyCompass sc = this.getTileEntity( w, x, y, z );
+		ForgeDirection up = sc.getForward();
+		if( !this.canPlaceAt( w, x, y, z, up.getOpposite() ) )
+			this.dropTorch( w, x, y, z );
+	}
+
+	private void dropTorch( World w, int x, int y, int z )
 	{
 		w.func_147480_a( x, y, z, true );
 		// w.destroyBlock( x, y, z, true );
@@ -75,42 +101,24 @@ public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean canPlaceBlockAt(World w, int x, int y, int z)
+	public boolean canPlaceBlockAt( World w, int x, int y, int z )
 	{
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
-			if ( this.canPlaceAt( w, x, y, z, dir ) )
+		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
+			if( this.canPlaceAt( w, x, y, z, dir ) )
 				return true;
 		return false;
 	}
 
-	private boolean canPlaceAt(World w, int x, int y, int z, ForgeDirection dir)
+	private boolean canPlaceAt( World w, int x, int y, int z, ForgeDirection dir )
 	{
 		return w.isSideSolid( x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, dir.getOpposite(), false );
 	}
 
 	@Override
-	public boolean isValidOrientation(World w, int x, int y, int z, ForgeDirection forward, ForgeDirection up)
-	{
-		TileSkyCompass sc = this.getTileEntity( w, x, y, z );
-		if ( sc != null )
-			return false;
-		return this.canPlaceAt( w, x, y, z, forward.getOpposite() );
-	}
-
-	@Override
-	public void onNeighborBlockChange(World w, int x, int y, int z, Block id)
-	{
-		TileSkyCompass sc = this.getTileEntity( w, x, y, z );
-		ForgeDirection up = sc.getForward();
-		if ( !this.canPlaceAt( w, x, y, z, up.getOpposite() ) )
-			this.dropTorch( w, x, y, z );
-	}
-
-	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
 	{
 		TileSkyCompass tile = this.getTileEntity( w, x, y, z );
-		if ( tile != null )
+		if( tile != null )
 		{
 			ForgeDirection forward = tile.getForward();
 
@@ -121,46 +129,46 @@ public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
 			double maxY = 1;
 			double maxZ = 1;
 
-			switch (forward)
+			switch( forward )
 			{
-			case DOWN:
-				minZ = minX = 5.0 / 16.0;
-				maxZ = maxX = 11.0 / 16.0;
-				maxY = 1.0;
-				minY = 14.0 / 16.0;
-				break;
-			case EAST:
-				minZ = minY = 5.0 / 16.0;
-				maxZ = maxY = 11.0 / 16.0;
-				maxX = 2.0 / 16.0;
-				minX = 0.0;
-				break;
-			case NORTH:
-				minY = minX = 5.0 / 16.0;
-				maxY = maxX = 11.0 / 16.0;
-				maxZ = 1.0;
-				minZ = 14.0 / 16.0;
-				break;
-			case SOUTH:
-				minY = minX = 5.0 / 16.0;
-				maxY = maxX = 11.0 / 16.0;
-				maxZ = 2.0 / 16.0;
-				minZ = 0.0;
-				break;
-			case UP:
-				minZ = minX = 5.0 / 16.0;
-				maxZ = maxX = 11.0 / 16.0;
-				maxY = 2.0 / 16.0;
-				minY = 0.0;
-				break;
-			case WEST:
-				minZ = minY = 5.0 / 16.0;
-				maxZ = maxY = 11.0 / 16.0;
-				maxX = 1.0;
-				minX = 14.0 / 16.0;
-				break;
-			default:
-				break;
+				case DOWN:
+					minZ = minX = 5.0 / 16.0;
+					maxZ = maxX = 11.0 / 16.0;
+					maxY = 1.0;
+					minY = 14.0 / 16.0;
+					break;
+				case EAST:
+					minZ = minY = 5.0 / 16.0;
+					maxZ = maxY = 11.0 / 16.0;
+					maxX = 2.0 / 16.0;
+					minX = 0.0;
+					break;
+				case NORTH:
+					minY = minX = 5.0 / 16.0;
+					maxY = maxX = 11.0 / 16.0;
+					maxZ = 1.0;
+					minZ = 14.0 / 16.0;
+					break;
+				case SOUTH:
+					minY = minX = 5.0 / 16.0;
+					maxY = maxX = 11.0 / 16.0;
+					maxZ = 2.0 / 16.0;
+					minZ = 0.0;
+					break;
+				case UP:
+					minZ = minX = 5.0 / 16.0;
+					maxZ = maxX = 11.0 / 16.0;
+					maxY = 2.0 / 16.0;
+					minY = 0.0;
+					break;
+				case WEST:
+					minZ = minY = 5.0 / 16.0;
+					maxZ = maxY = 11.0 / 16.0;
+					maxX = 1.0;
+					minX = 14.0 / 16.0;
+					break;
+				default:
+					break;
 			}
 
 			return Collections.singletonList( AxisAlignedBB.getBoundingBox( minX, minY, minZ, maxX, maxY, maxZ ) );
@@ -169,14 +177,8 @@ public class BlockSkyCompass extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e)
+	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List out, Entity e )
 	{
 
-	}
-
-	@Override
-	public void registerBlockIcons(IIconRegister iconRegistry)
-	{
-		// :P
 	}
 }

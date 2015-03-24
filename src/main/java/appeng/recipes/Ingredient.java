@@ -37,6 +37,7 @@ import appeng.api.recipes.IIngredient;
 import appeng.api.recipes.ResolverResult;
 import appeng.api.recipes.ResolverResultSet;
 
+
 public class Ingredient implements IIngredient
 {
 
@@ -45,18 +46,17 @@ public class Ingredient implements IIngredient
 	final public String nameSpace;
 	final public String itemName;
 	final public int meta;
-	NBTTagCompound nbt = null;
-
 	final public int qty;
-
+	NBTTagCompound nbt = null;
 	ItemStack[] baked;
 
-	public Ingredient(RecipeHandler handler, String input, int qty) throws RecipeError, MissedIngredientSet {
+	public Ingredient( RecipeHandler handler, String input, int qty ) throws RecipeError, MissedIngredientSet
+	{
 
 		// works no matter wat!
 		this.qty = qty;
 
-		if ( input.equals( "_" ) )
+		if( input.equals( "_" ) )
 		{
 			this.isAir = true;
 			this.nameSpace = "";
@@ -67,18 +67,18 @@ public class Ingredient implements IIngredient
 
 		this.isAir = false;
 		String[] parts = input.split( ":" );
-		if ( parts.length >= 2 )
+		if( parts.length >= 2 )
 		{
 			this.nameSpace = handler.alias( parts[0] );
 			String tmpName = handler.alias( parts[1] );
 
-			if ( parts.length != 3 )
+			if( parts.length != 3 )
 			{
 				int sel = 0;
 
-				if ( this.nameSpace.equals( "oreDictionary" ) )
+				if( this.nameSpace.equals( "oreDictionary" ) )
 				{
-					if ( parts.length == 3 )
+					if( parts.length == 3 )
 						throw new RecipeError( "Cannot specify meta when using ore dictionary." );
 					sel = OreDictionary.WILDCARD_VALUE;
 				}
@@ -87,19 +87,19 @@ public class Ingredient implements IIngredient
 					try
 					{
 						Object ro = AEApi.instance().registries().recipes().resolveItem( this.nameSpace, tmpName );
-						if ( ro instanceof ResolverResult )
+						if( ro instanceof ResolverResult )
 						{
 							ResolverResult rr = (ResolverResult) ro;
 							tmpName = rr.itemName;
 							sel = rr.damageValue;
 							this.nbt = rr.compound;
 						}
-						else if ( ro instanceof ResolverResultSet )
+						else if( ro instanceof ResolverResultSet )
 						{
 							throw new MissedIngredientSet( (ResolverResultSet) ro );
 						}
 					}
-					catch (IllegalArgumentException e)
+					catch( IllegalArgumentException e )
 					{
 						throw new RecipeError( tmpName + " is not a valid ae2 item definition." );
 					}
@@ -109,7 +109,7 @@ public class Ingredient implements IIngredient
 			}
 			else
 			{
-				if ( parts[2].equals( "*" ) )
+				if( parts[2].equals( "*" ) )
 				{
 					this.meta = OreDictionary.WILDCARD_VALUE;
 				}
@@ -119,7 +119,7 @@ public class Ingredient implements IIngredient
 					{
 						this.meta = Integer.parseInt( parts[2] );
 					}
-					catch (NumberFormatException e)
+					catch( NumberFormatException e )
 					{
 						throw new RecipeError( "Invalid Metadata." );
 					}
@@ -134,30 +134,34 @@ public class Ingredient implements IIngredient
 	}
 
 	@Override
+	public String toString()
+	{
+		return this.nameSpace + ':' + this.itemName + ':' + this.meta;
+	}	@Override
 	public ItemStack getItemStack() throws RegistrationError, MissingIngredientError
 	{
-		if ( this.isAir )
+		if( this.isAir )
 			throw new RegistrationError( "Found blank item and expected a real item." );
 
-		if ( this.nameSpace.equalsIgnoreCase( "oreDictionary" ) )
+		if( this.nameSpace.equalsIgnoreCase( "oreDictionary" ) )
 			throw new RegistrationError( "Recipe format expected a single item, but got a set of items." );
 
 		Block blk = GameRegistry.findBlock( this.nameSpace, this.itemName );
-		if ( blk == null )
+		if( blk == null )
 			blk = GameRegistry.findBlock( this.nameSpace, "tile." + this.itemName );
 
-		if ( blk != null )
+		if( blk != null )
 		{
 			Item it = Item.getItemFromBlock( blk );
-			if ( it != null )
+			if( it != null )
 				return this.MakeItemStack( it, this.qty, this.meta, this.nbt );
 		}
 
 		Item it = GameRegistry.findItem( this.nameSpace, this.itemName );
-		if ( it == null )
+		if( it == null )
 			it = GameRegistry.findItem( this.nameSpace, "item." + this.itemName );
 
-		if ( it != null )
+		if( it != null )
 			return this.MakeItemStack( it, this.qty, this.meta, this.nbt );
 
 		/*
@@ -176,39 +180,35 @@ public class Ingredient implements IIngredient
 		throw new MissingIngredientError( "Unable to find item: " + this.toString() );
 	}
 
-	private ItemStack MakeItemStack(Item it, int quantity, int damageValue, NBTTagCompound compound)
+	private ItemStack MakeItemStack( Item it, int quantity, int damageValue, NBTTagCompound compound )
 	{
 		ItemStack is = new ItemStack( it, quantity, damageValue );
 		is.setTagCompound( compound );
 		return is;
 	}
 
-	@Override
-	public String toString()
-	{
-		return this.nameSpace + ':' + this.itemName + ':' + this.meta;
-	}
+
 
 	@Override
 	public ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
 	{
-		if ( this.baked != null )
+		if( this.baked != null )
 			return this.baked;
 
-		if ( this.nameSpace.equalsIgnoreCase( "oreDictionary" ) )
+		if( this.nameSpace.equalsIgnoreCase( "oreDictionary" ) )
 		{
 			List<ItemStack> ores = OreDictionary.getOres( this.itemName );
 			ItemStack[] set = ores.toArray( new ItemStack[ores.size()] );
 
 			// clone and set qty.
-			for (int x = 0; x < set.length; x++)
+			for( int x = 0; x < set.length; x++ )
 			{
 				ItemStack is = set[x].copy();
 				is.stackSize = this.qty;
 				set[x] = is;
 			}
 
-			if ( set.length == 0 )
+			if( set.length == 0 )
 				throw new MissingIngredientError( this.getItemName() + " - ore dictionary could not be resolved to any items." );
 
 			return set;
@@ -253,5 +253,4 @@ public class Ingredient implements IIngredient
 		this.baked = null;
 		this.baked = this.getItemStackSet();
 	}
-
 }

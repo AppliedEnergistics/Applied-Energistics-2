@@ -23,8 +23,11 @@
 
 package appeng.api.storage.data;
 
+
 import net.minecraft.nbt.NBTTagCompound;
+
 import appeng.api.features.IItemComparison;
+
 
 /**
  * Don't cast this... either compare with it, or copy it.
@@ -43,14 +46,14 @@ public interface IAETagCompound
 	 * compare to other NBTTagCompounds or IAETagCompounds
 	 *
 	 * @param a compared object
+	 *
 	 * @return true, if they are the same.
 	 */
 	@Override
-	boolean equals(Object a);
+	boolean equals( Object a );
 
 	/**
 	 * @return the special comparison for this tag
 	 */
 	IItemComparison getSpecialComparison();
-
 }

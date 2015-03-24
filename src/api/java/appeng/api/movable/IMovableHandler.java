@@ -23,8 +23,10 @@
 
 package appeng.api.movable;
 
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
 
 public interface IMovableHandler
 {
@@ -34,10 +36,11 @@ public interface IMovableHandler
 	 * that single entity, you cannot opt out of single entities.
 	 *
 	 * @param myClass tile entity class
-	 * @param tile tile entity
+	 * @param tile    tile entity
+	 *
 	 * @return true if it can handle moving
 	 */
-	boolean canHandle(Class<? extends TileEntity> myClass, TileEntity tile);
+	boolean canHandle( Class<? extends TileEntity> myClass, TileEntity tile );
 
 	/**
 	 * request that the handler move the the tile from its current location to
@@ -56,12 +59,11 @@ public interface IMovableHandler
 	 * }
 	 * </pre>
 	 *
-	 * @param tile to be moved tile
+	 * @param tile  to be moved tile
 	 * @param world world of tile
-	 * @param x x coord of tile
-	 * @param y y coord of tile
-	 * @param z z coord of tile
+	 * @param x     x coord of tile
+	 * @param y     y coord of tile
+	 * @param z     z coord of tile
 	 */
-	void moveTile(TileEntity tile, World world, int x, int y, int z);
-
+	void moveTile( TileEntity tile, World world, int x, int y, int z );
 }

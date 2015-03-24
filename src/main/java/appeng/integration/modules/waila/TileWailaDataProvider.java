@@ -74,7 +74,7 @@ public final class TileWailaDataProvider implements IWailaDataProvider
 	@Override
 	public List<String> getWailaHead( ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
 	{
-		for ( IWailaDataProvider provider : this.providers )
+		for( IWailaDataProvider provider : this.providers )
 		{
 			provider.getWailaHead( itemStack, currentToolTip, accessor, config );
 		}
@@ -85,7 +85,7 @@ public final class TileWailaDataProvider implements IWailaDataProvider
 	@Override
 	public List<String> getWailaBody( ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
 	{
-		for ( IWailaDataProvider provider : this.providers )
+		for( IWailaDataProvider provider : this.providers )
 		{
 			provider.getWailaBody( itemStack, currentToolTip, accessor, config );
 		}
@@ -96,7 +96,7 @@ public final class TileWailaDataProvider implements IWailaDataProvider
 	@Override
 	public List<String> getWailaTail( ItemStack itemStack, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
 	{
-		for ( IWailaDataProvider provider : this.providers )
+		for( IWailaDataProvider provider : this.providers )
 		{
 			provider.getWailaTail( itemStack, currentToolTip, accessor, config );
 		}
@@ -107,7 +107,7 @@ public final class TileWailaDataProvider implements IWailaDataProvider
 	@Override
 	public NBTTagCompound getNBTData( EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, int x, int y, int z )
 	{
-		for ( IWailaDataProvider provider : this.providers )
+		for( IWailaDataProvider provider : this.providers )
 		{
 			provider.getNBTData( player, te, tag, world, x, y, z );
 		}

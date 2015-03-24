@@ -18,12 +18,15 @@
 
 package appeng.parts.misc;
 
+
 import net.minecraft.item.ItemStack;
+
 
 public class PartInvertedToggleBus extends PartToggleBus
 {
 
-	public PartInvertedToggleBus(ItemStack is) {
+	public PartInvertedToggleBus( ItemStack is )
+	{
 		super( PartInvertedToggleBus.class, is );
 		this.proxy.setIdlePowerUsage( 0.0 );
 		this.outerProxy.setIdlePowerUsage( 0.0 );
@@ -36,5 +39,4 @@ public class PartInvertedToggleBus extends PartToggleBus
 	{
 		return !super.getIntention();
 	}
-
 }

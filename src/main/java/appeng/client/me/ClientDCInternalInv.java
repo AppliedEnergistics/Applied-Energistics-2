@@ -18,10 +18,12 @@
 
 package appeng.client.me;
 
+
 import net.minecraft.util.StatCollector;
 
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ItemSorters;
+
 
 public class ClientDCInternalInv implements Comparable<ClientDCInternalInv>
 {
@@ -31,7 +33,8 @@ public class ClientDCInternalInv implements Comparable<ClientDCInternalInv>
 	final public long id;
 	final public long sortBy;
 
-	public ClientDCInternalInv(int size, long id, long sortBy, String unlocalizedName) {
+	public ClientDCInternalInv( int size, long id, long sortBy, String unlocalizedName )
+	{
 		this.inv = new AppEngInternalInventory( null, size );
 		this.unlocalizedName = unlocalizedName;
 		this.id = id;
@@ -41,15 +44,14 @@ public class ClientDCInternalInv implements Comparable<ClientDCInternalInv>
 	public String getName()
 	{
 		String s = StatCollector.translateToLocal( this.unlocalizedName + ".name" );
-		if ( s.equals( this.unlocalizedName + ".name" ) )
+		if( s.equals( this.unlocalizedName + ".name" ) )
 			return StatCollector.translateToLocal( this.unlocalizedName );
 		return s;
 	}
 
 	@Override
-	public int compareTo(ClientDCInternalInv o)
+	public int compareTo( ClientDCInternalInv o )
 	{
 		return ItemSorters.compareLong( this.sortBy, o.sortBy );
 	}
-
 }

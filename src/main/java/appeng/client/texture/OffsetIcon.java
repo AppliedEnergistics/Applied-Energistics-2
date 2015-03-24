@@ -18,10 +18,12 @@
 
 package appeng.client.texture;
 
+
 import net.minecraft.util.IIcon;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
 
 public class OffsetIcon implements IIcon
 {
@@ -31,73 +33,15 @@ public class OffsetIcon implements IIcon
 
 	private final IIcon p;
 
-	public OffsetIcon(IIcon o, float x, float y) {
+	public OffsetIcon( IIcon o, float x, float y )
+	{
 
-		if ( o == null )
-			throw new RuntimeException("Cannot create a wrapper icon with a null icon.");
+		if( o == null )
+			throw new RuntimeException( "Cannot create a wrapper icon with a null icon." );
 
 		this.p = o;
 		this.offsetX = x;
 		this.offsetY = y;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public float getMinU()
-	{
-		return this.u( 0 - this.offsetX );
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public float getMaxU()
-	{
-		return this.u( 16 - this.offsetX );
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public float getInterpolatedU(double d0)
-	{
-		return this.u( d0 - this.offsetX );
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public float getMinV()
-	{
-		return this.v( 0 - this.offsetY );
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public float getMaxV()
-	{
-		return this.v( 16 - this.offsetY );
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public float getInterpolatedV(double d0)
-	{
-		return this.v( d0 - this.offsetY );
-	}
-
-	private float v(double d)
-	{
-		return this.p.getInterpolatedV( Math.min( 16.0, Math.max( 0.0, d ) ) );
-	}
-
-	private float u(double d)
-	{
-		return this.p.getInterpolatedU( Math.min( 16.0, Math.max( 0.0, d ) ) );
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public String getIconName()
-	{
-		return this.p.getIconName();
 	}
 
 	@Override
@@ -112,4 +56,62 @@ public class OffsetIcon implements IIcon
 		return this.p.getIconHeight();
 	}
 
+	@Override
+	@SideOnly( Side.CLIENT )
+	public float getMinU()
+	{
+		return this.u( 0 - this.offsetX );
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public float getMaxU()
+	{
+		return this.u( 16 - this.offsetX );
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public float getInterpolatedU( double d0 )
+	{
+		return this.u( d0 - this.offsetX );
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public float getMinV()
+	{
+		return this.v( 0 - this.offsetY );
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public float getMaxV()
+	{
+		return this.v( 16 - this.offsetY );
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public float getInterpolatedV( double d0 )
+	{
+		return this.v( d0 - this.offsetY );
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public String getIconName()
+	{
+		return this.p.getIconName();
+	}
+
+	private float v( double d )
+	{
+		return this.p.getInterpolatedV( Math.min( 16.0, Math.max( 0.0, d ) ) );
+	}
+
+	private float u( double d )
+	{
+		return this.p.getInterpolatedU( Math.min( 16.0, Math.max( 0.0, d ) ) );
+	}
 }

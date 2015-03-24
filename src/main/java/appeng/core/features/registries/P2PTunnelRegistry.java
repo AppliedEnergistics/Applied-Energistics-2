@@ -18,6 +18,7 @@
 
 package appeng.core.features.registries;
 
+
 import java.util.HashMap;
 
 import net.minecraft.init.Blocks;
@@ -35,21 +36,11 @@ import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.util.AEColor;
 import appeng.util.Platform;
 
+
 public class P2PTunnelRegistry implements IP2PTunnelRegistry
 {
 
 	final HashMap<ItemStack, TunnelType> Tunnels = new HashMap<ItemStack, TunnelType>();
-
-	public ItemStack getModItem(String modID, String Name, int meta)
-	{
-		ItemStack myItemStack = GameRegistry.findItemStack( modID, Name, 1 );
-
-		if ( myItemStack == null )
-			return null;
-
-		myItemStack.setItemDamage( meta );
-		return myItemStack;
-	}
 
 	public void configure()
 	{
@@ -106,7 +97,7 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 		this.addNewAttunement( this.getModItem( "ExtraUtilities", "drum", OreDictionary.WILDCARD_VALUE ), TunnelType.FLUID );
 		this.addNewAttunement( this.getModItem( "EnderIO", "itemLiquidConduit", OreDictionary.WILDCARD_VALUE ), TunnelType.FLUID );
 
-		for (AEColor c : AEColor.values())
+		for( AEColor c : AEColor.values() )
 		{
 			this.addNewAttunement( Parts.partCableGlass.stack( c, 1 ), TunnelType.ME );
 			this.addNewAttunement( Parts.partCableCovered.stack( c, 1 ), TunnelType.ME );
@@ -116,33 +107,43 @@ public class P2PTunnelRegistry implements IP2PTunnelRegistry
 	}
 
 	@Override
-	public void addNewAttunement(ItemStack trigger, TunnelType type)
+	public void addNewAttunement( ItemStack trigger, TunnelType type )
 	{
-		if ( type == null || trigger == null )
+		if( type == null || trigger == null )
 			return;
 
 		this.Tunnels.put( trigger, type );
 	}
 
-	@Override
-	public TunnelType getTunnelTypeByItem(ItemStack trigger)
+	public ItemStack getModItem( String modID, String Name, int meta )
 	{
-		if ( trigger != null )
+		ItemStack myItemStack = GameRegistry.findItemStack( modID, Name, 1 );
+
+		if( myItemStack == null )
+			return null;
+
+		myItemStack.setItemDamage( meta );
+		return myItemStack;
+	}
+
+	@Override
+	public TunnelType getTunnelTypeByItem( ItemStack trigger )
+	{
+		if( trigger != null )
 		{
-			if ( FluidContainerRegistry.isContainer( trigger ) )
+			if( FluidContainerRegistry.isContainer( trigger ) )
 				return TunnelType.FLUID;
 
-			for (ItemStack is : this.Tunnels.keySet())
+			for( ItemStack is : this.Tunnels.keySet() )
 			{
-				if ( is.getItem() == trigger.getItem() && is.getItemDamage() == OreDictionary.WILDCARD_VALUE )
+				if( is.getItem() == trigger.getItem() && is.getItemDamage() == OreDictionary.WILDCARD_VALUE )
 					return this.Tunnels.get( is );
 
-				if ( Platform.isSameItem( is, trigger ) )
+				if( Platform.isSameItem( is, trigger ) )
 					return this.Tunnels.get( is );
 			}
 		}
 
 		return null;
 	}
-
 }

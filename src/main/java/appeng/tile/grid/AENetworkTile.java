@@ -18,6 +18,7 @@
 
 package appeng.tile.grid;
 
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -31,22 +32,23 @@ import appeng.tile.AEBaseTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 
+
 public class AENetworkTile extends AEBaseTile implements IActionHost, IGridProxyable
 {
 
-	@TileEvent(TileEventType.WORLD_NBT_READ)
-	public void readFromNBT_AENetwork(NBTTagCompound data)
+	final protected AENetworkProxy gridProxy = this.createProxy();
+
+	@TileEvent( TileEventType.WORLD_NBT_READ )
+	public void readFromNBT_AENetwork( NBTTagCompound data )
 	{
 		this.gridProxy.readFromNBT( data );
 	}
 
-	@TileEvent(TileEventType.WORLD_NBT_WRITE)
-	public void writeToNBT_AENetwork(NBTTagCompound data)
+	@TileEvent( TileEventType.WORLD_NBT_WRITE )
+	public void writeToNBT_AENetwork( NBTTagCompound data )
 	{
 		this.gridProxy.writeToNBT( data );
 	}
-
-	final protected AENetworkProxy gridProxy = this.createProxy();
 
 	protected AENetworkProxy createProxy()
 	{
@@ -54,16 +56,15 @@ public class AENetworkTile extends AEBaseTile implements IActionHost, IGridProxy
 	}
 
 	@Override
-	public IGridNode getGridNode(ForgeDirection dir)
+	public IGridNode getGridNode( ForgeDirection dir )
 	{
 		return this.gridProxy.getNode();
 	}
 
 	@Override
-	public void onReady()
+	public AECableType getCableConnectionType( ForgeDirection dir )
 	{
-		super.onReady();
-		this.gridProxy.onReady();
+		return AECableType.SMART;
 	}
 
 	@Override
@@ -74,10 +75,10 @@ public class AENetworkTile extends AEBaseTile implements IActionHost, IGridProxy
 	}
 
 	@Override
-	public void validate()
+	public void onReady()
 	{
-		super.validate();
-		this.gridProxy.validate();
+		super.onReady();
+		this.gridProxy.onReady();
 	}
 
 	@Override
@@ -88,27 +89,28 @@ public class AENetworkTile extends AEBaseTile implements IActionHost, IGridProxy
 	}
 
 	@Override
-	public DimensionalCoord getLocation()
+	public void validate()
 	{
-		return new DimensionalCoord( this );
-	}
-
-	@Override
-	public AECableType getCableConnectionType(ForgeDirection dir)
-	{
-		return AECableType.SMART;
-	}
-
-	@Override
-	public void gridChanged()
-	{
-
+		super.validate();
+		this.gridProxy.validate();
 	}
 
 	@Override
 	public AENetworkProxy getProxy()
 	{
 		return this.gridProxy;
+	}
+
+	@Override
+	public DimensionalCoord getLocation()
+	{
+		return new DimensionalCoord( this );
+	}
+
+	@Override
+	public void gridChanged()
+	{
+
 	}
 
 	@Override

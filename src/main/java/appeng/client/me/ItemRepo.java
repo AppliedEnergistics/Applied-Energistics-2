@@ -18,6 +18,7 @@
 
 package appeng.client.me;
 
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ import appeng.util.ItemSorters;
 import appeng.util.Platform;
 import appeng.util.prioitylist.IPartitionList;
 
+
 public class ItemRepo
 {
 
@@ -56,42 +58,45 @@ public class ItemRepo
 	public int rowSize = 9;
 
 	public String searchString = "";
+	IPartitionList<IAEItemStack> myPartitionList;
 	private String innerSearch = "";
+	private String NEIWord = null;
+	private boolean hasPower;
 
-	public ItemRepo(IScrollSource src, ISortSource sortSrc)
+	public ItemRepo( IScrollSource src, ISortSource sortSrc )
 	{
 		this.src = src;
 		this.sortSrc = sortSrc;
 	}
 
-	public IAEItemStack getReferenceItem(int idx)
+	public IAEItemStack getReferenceItem( int idx )
 	{
 		idx += this.src.getCurrentScroll() * this.rowSize;
 
-		if ( idx >= this.view.size() )
+		if( idx >= this.view.size() )
 			return null;
 		return this.view.get( idx );
 	}
 
-	public ItemStack getItem(int idx)
+	public ItemStack getItem( int idx )
 	{
 		idx += this.src.getCurrentScroll() * this.rowSize;
 
-		if ( idx >= this.dsp.size() )
+		if( idx >= this.dsp.size() )
 			return null;
 		return this.dsp.get( idx );
 	}
 
-	void setSearch(String search)
+	void setSearch( String search )
 	{
 		this.searchString = search == null ? "" : search;
 	}
 
-	public void postUpdate(IAEItemStack is)
+	public void postUpdate( IAEItemStack is )
 	{
 		IAEItemStack st = this.list.findPrecise( is );
 
-		if ( st != null )
+		if( st != null )
 		{
 			st.reset();
 			st.add( is );
@@ -100,38 +105,10 @@ public class ItemRepo
 			this.list.add( is );
 	}
 
-	IPartitionList<IAEItemStack> myPartitionList;
-
-	public void setViewCell(ItemStack[] list)
+	public void setViewCell( ItemStack[] list )
 	{
 		this.myPartitionList = ItemViewCell.createFilter( list );
 		this.updateView();
-	}
-
-	private String NEIWord = null;
-
-	private void updateNEI(String filter)
-	{
-		try
-		{
-			if ( this.NEIWord == null || !this.NEIWord.equals( filter ) )
-			{
-				Class c = ReflectionHelper.getClass( this.getClass().getClassLoader(), "codechicken.nei.LayoutManager" );
-				Field fldSearchField = c.getField( "searchField" );
-				Object searchField = fldSearchField.get( c );
-
-				Method a = searchField.getClass().getMethod( "setText", String.class );
-				Method b = searchField.getClass().getMethod( "onTextChange", String.class );
-
-				this.NEIWord = filter;
-				a.invoke( searchField, filter );
-				b.invoke( searchField, "" );
-			}
-		}
-		catch (Throwable ignore)
-		{
-
-		}
 	}
 
 	public void updateView()
@@ -144,7 +121,7 @@ public class ItemRepo
 
 		Enum viewMode = this.sortSrc.getSortDisplay();
 		Enum searchMode = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
-		if ( searchMode == SearchBoxMode.NEI_AUTOSEARCH || searchMode == SearchBoxMode.NEI_MANUAL_SEARCH )
+		if( searchMode == SearchBoxMode.NEI_AUTOSEARCH || searchMode == SearchBoxMode.NEI_MANUAL_SEARCH )
 			this.updateNEI( this.searchString );
 
 		this.innerSearch = this.searchString;
@@ -152,7 +129,7 @@ public class ItemRepo
 		// boolean terminalSearchMods = Configuration.INSTANCE.settings.getSetting( Settings.SEARCH_MODS ) != YesNo.NO;
 
 		boolean searchMod = false;
-		if ( this.innerSearch.startsWith( "@" ) )
+		if( this.innerSearch.startsWith( "@" ) )
 		{
 			searchMod = true;
 			this.innerSearch = this.innerSearch.substring( 1 );
@@ -163,52 +140,52 @@ public class ItemRepo
 		{
 			m = Pattern.compile( this.innerSearch.toLowerCase(), Pattern.CASE_INSENSITIVE );
 		}
-		catch (Throwable ignore)
+		catch( Throwable ignore )
 		{
 			try
 			{
 				m = Pattern.compile( Pattern.quote( this.innerSearch.toLowerCase() ), Pattern.CASE_INSENSITIVE );
 			}
-			catch (Throwable __)
+			catch( Throwable __ )
 			{
 				return;
 			}
 		}
 
 		boolean notDone = false;
-		for (IAEItemStack is : this.list)
+		for( IAEItemStack is : this.list )
 		{
-			if ( this.myPartitionList != null )
+			if( this.myPartitionList != null )
 			{
-				if ( !this.myPartitionList.isListed( is ) )
+				if( !this.myPartitionList.isListed( is ) )
 					continue;
 			}
 
-			if ( viewMode == ViewItems.CRAFTABLE && !is.isCraftable() )
+			if( viewMode == ViewItems.CRAFTABLE && !is.isCraftable() )
 				continue;
 
-			if ( viewMode == ViewItems.CRAFTABLE )
+			if( viewMode == ViewItems.CRAFTABLE )
 			{
 				is = is.copy();
 				is.setStackSize( 0 );
 			}
 
-			if ( viewMode == ViewItems.STORED && is.getStackSize() == 0 )
+			if( viewMode == ViewItems.STORED && is.getStackSize() == 0 )
 				continue;
 
 			String dspName = searchMod ? Platform.getModId( is ) : Platform.getItemDisplayName( is );
 			notDone = true;
 
-			if ( m.matcher( dspName.toLowerCase() ).find() )
+			if( m.matcher( dspName.toLowerCase() ).find() )
 			{
 				this.view.add( is );
 				notDone = false;
 			}
 
-			if ( terminalSearchToolTips && notDone )
+			if( terminalSearchToolTips && notDone )
 			{
-				for (Object lp : Platform.getTooltip( is ))
-					if ( lp instanceof String && m.matcher( (String) lp ).find() )
+				for( Object lp : Platform.getTooltip( is ) )
+					if( lp instanceof String && m.matcher( (String) lp ).find() )
 					{
 						this.view.add( is );
 						notDone = false;
@@ -228,17 +205,41 @@ public class ItemRepo
 		ItemSorters.Direction = (appeng.api.config.SortDir) SortDir;
 		ItemSorters.init();
 
-		if ( SortBy == SortOrder.MOD )
+		if( SortBy == SortOrder.MOD )
 			Collections.sort( this.view, ItemSorters.CONFIG_BASED_SORT_BY_MOD );
-		else if ( SortBy == SortOrder.AMOUNT )
+		else if( SortBy == SortOrder.AMOUNT )
 			Collections.sort( this.view, ItemSorters.CONFIG_BASED_SORT_BY_SIZE );
-		else if ( SortBy == SortOrder.INVTWEAKS )
+		else if( SortBy == SortOrder.INVTWEAKS )
 			Collections.sort( this.view, ItemSorters.CONFIG_BASED_SORT_BY_INV_TWEAKS );
 		else
 			Collections.sort( this.view, ItemSorters.CONFIG_BASED_SORT_BY_NAME );
 
-		for (IAEItemStack is : this.view)
+		for( IAEItemStack is : this.view )
 			this.dsp.add( is.getItemStack() );
+	}
+
+	private void updateNEI( String filter )
+	{
+		try
+		{
+			if( this.NEIWord == null || !this.NEIWord.equals( filter ) )
+			{
+				Class c = ReflectionHelper.getClass( this.getClass().getClassLoader(), "codechicken.nei.LayoutManager" );
+				Field fldSearchField = c.getField( "searchField" );
+				Object searchField = fldSearchField.get( c );
+
+				Method a = searchField.getClass().getMethod( "setText", String.class );
+				Method b = searchField.getClass().getMethod( "onTextChange", String.class );
+
+				this.NEIWord = filter;
+				a.invoke( searchField, filter );
+				b.invoke( searchField, "" );
+			}
+		}
+		catch( Throwable ignore )
+		{
+
+		}
 	}
 
 	public int size()
@@ -251,16 +252,13 @@ public class ItemRepo
 		this.list.resetStatus();
 	}
 
-	private boolean hasPower;
-
 	public boolean hasPower()
 	{
 		return this.hasPower;
 	}
 
-	public void setPower(boolean hasPower)
+	public void setPower( boolean hasPower )
 	{
 		this.hasPower = hasPower;
 	}
-
 }

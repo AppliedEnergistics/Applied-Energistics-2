@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+
 import java.io.IOException;
 
 import org.lwjgl.input.Mouse;
@@ -42,6 +43,7 @@ import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.parts.automation.PartLevelEmitter;
 
+
 public class GuiLevelEmitter extends GuiUpgradeable
 {
 
@@ -53,7 +55,8 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	GuiImgButton levelMode;
 	GuiImgButton craftingMode;
 
-	public GuiLevelEmitter(InventoryPlayer inventoryPlayer, PartLevelEmitter te) {
+	public GuiLevelEmitter( InventoryPlayer inventoryPlayer, PartLevelEmitter te )
+	{
 		super( new ContainerLevelEmitter( inventoryPlayer, te ) );
 	}
 
@@ -68,7 +71,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		this.level.setTextColor( 0xFFFFFF );
 		this.level.setVisible( true );
 		this.level.setFocused( true );
-		((ContainerLevelEmitter) this.inventorySlots).setTextField( this.level );
+		( (ContainerLevelEmitter) this.inventorySlots ).setTextField( this.level );
 	}
 
 	@Override
@@ -101,111 +104,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton btn)
-	{
-		super.actionPerformed( btn );
-
-		boolean backwards = Mouse.isButtonDown( 1 );
-
-		if ( btn == this.craftingMode )
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.craftingMode.getSetting(), backwards ) );
-
-		if ( btn == this.levelMode )
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.levelMode.getSetting(), backwards ) );
-
-		boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
-		boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
-
-		if ( isPlus || isMinus )
-			this.addQty( this.getQty( btn ) );
-	}
-
-	private void addQty(long i)
-	{
-		try
-		{
-			String Out = this.level.getText();
-
-			boolean Fixed = false;
-			while (Out.startsWith( "0" ) && Out.length() > 1)
-			{
-				Out = Out.substring( 1 );
-				Fixed = true;
-			}
-
-			if ( Fixed )
-				this.level.setText( Out );
-
-			if ( Out.length() == 0 )
-				Out = "0";
-
-			long result = Long.parseLong( Out );
-			result += i;
-			if ( result < 0 )
-				result = 0;
-
-			this.level.setText( Out = Long.toString( result ) );
-
-			NetworkHandler.instance.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
-		}
-		catch (NumberFormatException e)
-		{
-			// nope..
-			this.level.setText( "0" );
-		}
-		catch (IOException e)
-		{
-			AELog.error( e );
-		}
-	}
-
-	@Override
-	protected void handleButtonVisibility()
-	{
-		this.craftingMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 );
-		this.fuzzyMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );
-	}
-
-	@Override
-	protected void keyTyped(char character, int key)
-	{
-		if ( !this.checkHotbarKeys( key ) )
-		{
-			if ( (key == 211 || key == 205 || key == 203 || key == 14 || Character.isDigit( character )) && this.level.textboxKeyTyped( character, key ) )
-			{
-				try
-				{
-					String Out = this.level.getText();
-
-					boolean Fixed = false;
-					while (Out.startsWith( "0" ) && Out.length() > 1)
-					{
-						Out = Out.substring( 1 );
-						Fixed = true;
-					}
-
-					if ( Fixed )
-						this.level.setText( Out );
-
-					if ( Out.length() == 0 )
-						Out = "0";
-
-					NetworkHandler.instance.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
-				}
-				catch (IOException e)
-				{
-					AELog.error( e );
-				}
-			}
-			else
-			{
-				super.keyTyped( character, key );
-			}
-		}
-	}
-
-	@Override
-	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
+	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
 		boolean notCraftingMode = this.bc.getInstalledUpgrades( Upgrades.CRAFTING ) == 0;
 
@@ -224,18 +123,25 @@ public class GuiLevelEmitter extends GuiUpgradeable
 
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
 
-		if ( this.craftingMode != null )
-			this.craftingMode.set( ((ContainerLevelEmitter) this.cvb).cmType );
+		if( this.craftingMode != null )
+			this.craftingMode.set( ( (ContainerLevelEmitter) this.cvb ).cmType );
 
-		if ( this.levelMode != null )
-			this.levelMode.set( ((ContainerLevelEmitter) this.cvb).lvType );
+		if( this.levelMode != null )
+			this.levelMode.set( ( (ContainerLevelEmitter) this.cvb ).lvType );
 	}
 
 	@Override
-	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
+	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
 		super.drawBG( offsetX, offsetY, mouseX, mouseY );
 		this.level.drawTextBox();
+	}
+
+	@Override
+	protected void handleButtonVisibility()
+	{
+		this.craftingMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 );
+		this.fuzzyMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );
 	}
 
 	@Override
@@ -248,5 +154,102 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	protected GuiText getName()
 	{
 		return GuiText.LevelEmitter;
+	}
+
+	@Override
+	protected void actionPerformed( GuiButton btn )
+	{
+		super.actionPerformed( btn );
+
+		boolean backwards = Mouse.isButtonDown( 1 );
+
+		if( btn == this.craftingMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.craftingMode.getSetting(), backwards ) );
+
+		if( btn == this.levelMode )
+			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.levelMode.getSetting(), backwards ) );
+
+		boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
+		boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
+
+		if( isPlus || isMinus )
+			this.addQty( this.getQty( btn ) );
+	}
+
+	private void addQty( long i )
+	{
+		try
+		{
+			String Out = this.level.getText();
+
+			boolean Fixed = false;
+			while( Out.startsWith( "0" ) && Out.length() > 1 )
+			{
+				Out = Out.substring( 1 );
+				Fixed = true;
+			}
+
+			if( Fixed )
+				this.level.setText( Out );
+
+			if( Out.length() == 0 )
+				Out = "0";
+
+			long result = Long.parseLong( Out );
+			result += i;
+			if( result < 0 )
+				result = 0;
+
+			this.level.setText( Out = Long.toString( result ) );
+
+			NetworkHandler.instance.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
+		}
+		catch( NumberFormatException e )
+		{
+			// nope..
+			this.level.setText( "0" );
+		}
+		catch( IOException e )
+		{
+			AELog.error( e );
+		}
+	}
+
+	@Override
+	protected void keyTyped( char character, int key )
+	{
+		if( !this.checkHotbarKeys( key ) )
+		{
+			if( ( key == 211 || key == 205 || key == 203 || key == 14 || Character.isDigit( character ) ) && this.level.textboxKeyTyped( character, key ) )
+			{
+				try
+				{
+					String Out = this.level.getText();
+
+					boolean Fixed = false;
+					while( Out.startsWith( "0" ) && Out.length() > 1 )
+					{
+						Out = Out.substring( 1 );
+						Fixed = true;
+					}
+
+					if( Fixed )
+						this.level.setText( Out );
+
+					if( Out.length() == 0 )
+						Out = "0";
+
+					NetworkHandler.instance.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
+				}
+				catch( IOException e )
+				{
+					AELog.error( e );
+				}
+			}
+			else
+			{
+				super.keyTyped( character, key );
+			}
+		}
 	}
 }

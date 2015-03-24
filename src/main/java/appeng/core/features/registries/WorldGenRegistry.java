@@ -18,6 +18,7 @@
 
 package appeng.core.features.registries;
 
+
 import java.util.HashSet;
 
 import net.minecraft.world.World;
@@ -25,75 +26,49 @@ import net.minecraft.world.WorldProvider;
 
 import appeng.api.features.IWorldGen;
 
+
 public class WorldGenRegistry implements IWorldGen
 {
 
-	private static class TypeSet
-	{
-
-		final HashSet<Class<? extends WorldProvider>> badProviders = new HashSet<Class<? extends WorldProvider>>();
-		final HashSet<Integer> badDimensions = new HashSet<Integer>();
-		final HashSet<Integer> enabledDimensions = new HashSet<Integer>();
-
-	}
-
+	static final public WorldGenRegistry INSTANCE = new WorldGenRegistry();
 	final TypeSet[] types;
 
-	static final public WorldGenRegistry INSTANCE = new WorldGenRegistry();
-
-	private WorldGenRegistry() {
+	private WorldGenRegistry()
+	{
 
 		this.types = new TypeSet[WorldGenType.values().length];
 
-		for (WorldGenType type : WorldGenType.values())
+		for( WorldGenType type : WorldGenType.values() )
 		{
 			this.types[type.ordinal()] = new TypeSet();
 		}
-
 	}
 
 	@Override
-	public boolean isWorldGenEnabled(WorldGenType type, World w)
+	public void disableWorldGenForProviderID( WorldGenType type, Class<? extends WorldProvider> provider )
 	{
-		if ( type == null )
+		if( type == null )
 			throw new IllegalArgumentException( "Bad Type Passed" );
 
-		if ( w == null )
-			throw new IllegalArgumentException( "Bad Provider Passed" );
-
-		boolean	isBadProvider = this.types[type.ordinal()].badProviders.contains( w.provider.getClass() );
-		boolean isBadDimension = this.types[type.ordinal()].badDimensions.contains( w.provider.dimensionId );
-		boolean isGoodDimension = this.types[type.ordinal()].enabledDimensions.contains( w.provider.dimensionId );
-
-		if ( isBadProvider || isBadDimension )
-		{
-			return false;
-		}
-
-		if ( !isGoodDimension && type == WorldGenType.Meteorites)
-		{
-			return false;
-		}
-
-		return true;
-	}
-
-	@Override
-	public void disableWorldGenForProviderID(WorldGenType type, Class<? extends WorldProvider> provider)
-	{
-		if ( type == null )
-			throw new IllegalArgumentException( "Bad Type Passed" );
-
-		if ( provider == null )
+		if( provider == null )
 			throw new IllegalArgumentException( "Bad Provider Passed" );
 
 		this.types[type.ordinal()].badProviders.add( provider );
 	}
 
 	@Override
-	public void disableWorldGenForDimension(WorldGenType type, int dimensionID)
+	public void enableWorldGenForDimension( WorldGenType type, int dimensionID )
 	{
-		if ( type == null )
+		if( type == null )
+			throw new IllegalArgumentException( "Bad Type Passed" );
+
+		this.types[type.ordinal()].enabledDimensions.add( dimensionID );
+	}
+
+	@Override
+	public void disableWorldGenForDimension( WorldGenType type, int dimensionID )
+	{
+		if( type == null )
 		{
 			throw new IllegalArgumentException( "Bad Type Passed" );
 		}
@@ -102,12 +77,37 @@ public class WorldGenRegistry implements IWorldGen
 	}
 
 	@Override
-	public void enableWorldGenForDimension(WorldGenType type, int dimensionID)
+	public boolean isWorldGenEnabled( WorldGenType type, World w )
 	{
-		if ( type == null )
+		if( type == null )
 			throw new IllegalArgumentException( "Bad Type Passed" );
 
-		this.types[type.ordinal()].enabledDimensions.add( dimensionID );
+		if( w == null )
+			throw new IllegalArgumentException( "Bad Provider Passed" );
+
+		boolean isBadProvider = this.types[type.ordinal()].badProviders.contains( w.provider.getClass() );
+		boolean isBadDimension = this.types[type.ordinal()].badDimensions.contains( w.provider.dimensionId );
+		boolean isGoodDimension = this.types[type.ordinal()].enabledDimensions.contains( w.provider.dimensionId );
+
+		if( isBadProvider || isBadDimension )
+		{
+			return false;
+		}
+
+		if( !isGoodDimension && type == WorldGenType.Meteorites )
+		{
+			return false;
+		}
+
+		return true;
 	}
 
+
+	private static class TypeSet
+	{
+
+		final HashSet<Class<? extends WorldProvider>> badProviders = new HashSet<Class<? extends WorldProvider>>();
+		final HashSet<Integer> badDimensions = new HashSet<Integer>();
+		final HashSet<Integer> enabledDimensions = new HashSet<Integer>();
+	}
 }

@@ -23,12 +23,11 @@
 
 package appeng.api;
 
+
 /**
- *
  * Entry point for api.
  *
  * Available IMCs:
- *
  */
 public class AEApi
 {
@@ -42,14 +41,14 @@ public class AEApi
 	 */
 	public static IAppEngApi instance()
 	{
-		if ( api == null )
+		if( api == null )
 		{
 			try
 			{
 				Class c = Class.forName( "appeng.core.Api" );
 				api = (IAppEngApi) c.getField( "INSTANCE" ).get( c );
 			}
-			catch (Throwable e)
+			catch( Throwable e )
 			{
 				return null;
 			}
@@ -57,5 +56,4 @@ public class AEApi
 
 		return api;
 	}
-
 }

@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -33,45 +34,24 @@ import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
 
+
 public class PacketSwitchGuis extends AppEngPacket
 {
 
 	final GuiBridge newGui;
 
 	// automatic.
-	public PacketSwitchGuis(ByteBuf stream)
+	public PacketSwitchGuis( ByteBuf stream )
 	{
 		this.newGui = GuiBridge.values()[stream.readInt()];
 	}
 
-	@Override
-	public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player)
-	{
-		Container c = player.openContainer;
-		if ( c instanceof AEBaseContainer )
-		{
-			AEBaseContainer bc = (AEBaseContainer) c;
-			ContainerOpenContext context = bc.openContext;
-			if ( context != null )
-			{
-				TileEntity te = context.getTile();
-				Platform.openGUI( player, te, context.side, this.newGui );
-			}
-		}
-	}
-
-	@Override
-	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
-	{
-		AEBaseGui.switchingGuis = true;
-	}
-
 	// api
-	public PacketSwitchGuis(GuiBridge newGui)
+	public PacketSwitchGuis( GuiBridge newGui )
 	{
 		this.newGui = newGui;
 
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			AEBaseGui.switchingGuis = true;
 
 		ByteBuf data = Unpooled.buffer();
@@ -80,5 +60,27 @@ public class PacketSwitchGuis extends AppEngPacket
 		data.writeInt( newGui.ordinal() );
 
 		this.configureWrite( data );
+	}
+
+	@Override
+	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	{
+		Container c = player.openContainer;
+		if( c instanceof AEBaseContainer )
+		{
+			AEBaseContainer bc = (AEBaseContainer) c;
+			ContainerOpenContext context = bc.openContext;
+			if( context != null )
+			{
+				TileEntity te = context.getTile();
+				Platform.openGUI( player, te, context.side, this.newGui );
+			}
+		}
+	}
+
+	@Override
+	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	{
+		AEBaseGui.switchingGuis = true;
 	}
 }

@@ -18,6 +18,7 @@
 
 package appeng.parts.reporting;
 
+
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -44,13 +45,15 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
+
 public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigManagerHost, IViewCellStorage, IAEAppEngInventory
 {
 
 	final IConfigManager cm = new ConfigManager( this );
 	final AppEngInternalInventory viewCell = new AppEngInternalInventory( this, 5 );
 
-	public PartTerminal(Class clz, ItemStack is) {
+	public PartTerminal( Class clz, ItemStack is )
+	{
 		super( clz, is, true );
 
 		this.cm.registerSetting( Settings.SORT_BY, SortOrder.NAME );
@@ -58,33 +61,8 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 		this.cm.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 	}
 
-	@Override
-	public void getDrops(List<ItemStack> drops, boolean wrenched)
+	public PartTerminal( ItemStack is )
 	{
-		super.getDrops( drops, wrenched );
-
-		for (ItemStack is : this.viewCell)
-			if ( is != null )
-				drops.add( is );
-	}
-
-	@Override
-	public void readFromNBT(NBTTagCompound data)
-	{
-		super.readFromNBT( data );
-		this.cm.readFromNBT( data );
-		this.viewCell.readFromNBT( data, "viewCell" );
-	}
-
-	@Override
-	public void writeToNBT(NBTTagCompound data)
-	{
-		super.writeToNBT( data );
-		this.cm.writeToNBT( data );
-		this.viewCell.writeToNBT( data, "viewCell" );
-	}
-
-	public PartTerminal(ItemStack is) {
 		super( PartTerminal.class, is, true );
 		this.frontBright = CableBusTextures.PartTerminal_Bright;
 		this.frontColored = CableBusTextures.PartTerminal_Colored;
@@ -96,19 +74,46 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 		this.cm.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 	}
 
-	public GuiBridge getGui( EntityPlayer player )
+	@Override
+	public void getDrops( List<ItemStack> drops, boolean wrenched )
 	{
-		return GuiBridge.GUI_ME;
+		super.getDrops( drops, wrenched );
+
+		for( ItemStack is : this.viewCell )
+			if( is != null )
+				drops.add( is );
 	}
 
 	@Override
-	public boolean onPartActivate(EntityPlayer player, Vec3 pos)
+	public IConfigManager getConfigManager()
 	{
-		if ( !super.onPartActivate( player, pos ) )
+		return this.cm;
+	}
+
+	@Override
+	public void readFromNBT( NBTTagCompound data )
+	{
+		super.readFromNBT( data );
+		this.cm.readFromNBT( data );
+		this.viewCell.readFromNBT( data, "viewCell" );
+	}
+
+	@Override
+	public void writeToNBT( NBTTagCompound data )
+	{
+		super.writeToNBT( data );
+		this.cm.writeToNBT( data );
+		this.viewCell.writeToNBT( data, "viewCell" );
+	}
+
+	@Override
+	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
+	{
+		if( !super.onPartActivate( player, pos ) )
 		{
-			if ( !player.isSneaking() )
+			if( !player.isSneaking() )
 			{
-				if ( Platform.isClient() )
+				if( Platform.isClient() )
 					return true;
 
 				Platform.openGUI( player, this.getHost().getTile(), this.side, this.getGui( player ) );
@@ -119,18 +124,9 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 		return false;
 	}
 
-	@Override
-	public IMEMonitor getFluidInventory()
+	public GuiBridge getGui( EntityPlayer player )
 	{
-		try
-		{
-			return this.proxy.getStorage().getFluidInventory();
-		}
-		catch (GridAccessException e)
-		{
-			// err nope?
-		}
-		return null;
+		return GuiBridge.GUI_ME;
 	}
 
 	@Override
@@ -140,7 +136,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 		{
 			return this.proxy.getStorage().getItemInventory();
 		}
-		catch (GridAccessException e)
+		catch( GridAccessException e )
 		{
 			// err nope?
 		}
@@ -148,13 +144,21 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	}
 
 	@Override
-	public IConfigManager getConfigManager()
+	public IMEMonitor getFluidInventory()
 	{
-		return this.cm;
+		try
+		{
+			return this.proxy.getStorage().getFluidInventory();
+		}
+		catch( GridAccessException e )
+		{
+			// err nope?
+		}
+		return null;
 	}
 
 	@Override
-	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
+	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
 	{
 
 	}
@@ -166,7 +170,7 @@ public class PartTerminal extends PartMonitor implements ITerminalHost, IConfigM
 	}
 
 	@Override
-	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
 	{
 		this.host.markForSave();
 	}

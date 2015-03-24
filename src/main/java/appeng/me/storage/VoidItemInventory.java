@@ -42,18 +42,12 @@ public class VoidItemInventory implements IMEInventoryHandler<IAEItemStack>
 	@Override
 	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
 	{
-		if ( mode == Actionable.SIMULATE )
+		if( mode == Actionable.SIMULATE )
 			return null;
 
-		if ( input != null )
+		if( input != null )
 			this.target.addPower( input.getStackSize() );
 		return null;
-	}
-
-	@Override
-	public StorageChannel getChannel()
-	{
-		return StorageChannel.ITEMS;
 	}
 
 	@Override
@@ -66,6 +60,12 @@ public class VoidItemInventory implements IMEInventoryHandler<IAEItemStack>
 	public IItemList<IAEItemStack> getAvailableItems( IItemList out )
 	{
 		return out;
+	}
+
+	@Override
+	public StorageChannel getChannel()
+	{
+		return StorageChannel.ITEMS;
 	}
 
 	@Override
@@ -103,5 +103,4 @@ public class VoidItemInventory implements IMEInventoryHandler<IAEItemStack>
 	{
 		return i == 2;
 	}
-
 }

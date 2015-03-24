@@ -21,10 +21,10 @@ package appeng.items.tools.quartz;
 
 import java.util.EnumSet;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
+
+import com.google.common.base.Optional;
 
 import appeng.core.features.AEFeature;
 import appeng.core.features.IAEFeature;

@@ -18,24 +18,27 @@
 
 package appeng.core.features;
 
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import appeng.items.materials.MaterialType;
+
 
 public class MaterialStackSrc implements IStackSrc
 {
 
 	final MaterialType src;
 
-	public MaterialStackSrc(MaterialType src) {
+	public MaterialStackSrc( MaterialType src )
+	{
 		this.src = src;
-		if ( src == null )
+		if( src == null )
 			throw new RuntimeException( "Invalid Item Stack" );
 	}
 
 	@Override
-	public ItemStack stack(int stackSize)
+	public ItemStack stack( int stackSize )
 	{
 		return this.src.stack( stackSize );
 	}
@@ -51,5 +54,4 @@ public class MaterialStackSrc implements IStackSrc
 	{
 		return this.src.damageValue;
 	}
-
 }

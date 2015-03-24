@@ -18,6 +18,7 @@
 
 package appeng.tile.networking;
 
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -34,6 +35,7 @@ import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 import appeng.util.SettingsFrom;
 
+
 public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 {
 
@@ -42,46 +44,36 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 
 	private byte currentMeta = -1;
 
+	public TileEnergyCell()
+	{
+		this.gridProxy.setIdlePowerUsage( 0 );
+	}
+
 	@Override
-	public AECableType getCableConnectionType(ForgeDirection dir)
+	public AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.COVERED;
 	}
 
-	private void changePowerLevel()
+	@Override
+	public void onReady()
 	{
-		if ( this.notLoaded() )
-			return;
-
-		byte boundMetadata = (byte) (8.0 * (this.internalCurrentPower / this.internalMaxPower));
-
-		if ( boundMetadata > 7 )
-			boundMetadata = 7;
-		if ( boundMetadata < 0 )
-			boundMetadata = 0;
-
-		if ( this.currentMeta != boundMetadata )
-		{
-			this.currentMeta = boundMetadata;
-			this.worldObj.setBlockMetadataWithNotify( this.xCoord, this.yCoord, this.zCoord, this.currentMeta, 2 );
-		}
+		super.onReady();
+		this.currentMeta = (byte) this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord );
+		this.changePowerLevel();
 	}
 
-	@TileEvent(TileEventType.WORLD_NBT_WRITE)
-	public void writeToNBT_TileEnergyCell(NBTTagCompound data)
+	@TileEvent( TileEventType.WORLD_NBT_WRITE )
+	public void writeToNBT_TileEnergyCell( NBTTagCompound data )
 	{
-		if ( !this.worldObj.isRemote )
+		if( !this.worldObj.isRemote )
 			data.setDouble( "internalCurrentPower", this.internalCurrentPower );
 	}
 
-	@TileEvent(TileEventType.WORLD_NBT_READ)
-	public void readFromNBT_TileEnergyCell(NBTTagCompound data)
+	@TileEvent( TileEventType.WORLD_NBT_READ )
+	public void readFromNBT_TileEnergyCell( NBTTagCompound data )
 	{
 		this.internalCurrentPower = data.getDouble( "internalCurrentPower" );
-	}
-
-	public TileEnergyCell() {
-		this.gridProxy.setIdlePowerUsage( 0 );
 	}
 
 	@Override
@@ -91,12 +83,34 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@Override
-	final public double injectAEPower(double amt, Actionable mode)
+	public void uploadSettings( SettingsFrom from, NBTTagCompound compound )
 	{
-		if ( mode == Actionable.SIMULATE )
+		if( from == SettingsFrom.DISMANTLE_ITEM )
+		{
+			this.internalCurrentPower = compound.getDouble( "internalCurrentPower" );
+		}
+	}
+
+	@Override
+	public NBTTagCompound downloadSettings( SettingsFrom from )
+	{
+		if( from == SettingsFrom.DISMANTLE_ITEM )
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setDouble( "internalCurrentPower", this.internalCurrentPower );
+			tag.setDouble( "internalMaxPower", this.internalMaxPower ); // used for tool tip.
+			return tag;
+		}
+		return null;
+	}
+
+	@Override
+	final public double injectAEPower( double amt, Actionable mode )
+	{
+		if( mode == Actionable.SIMULATE )
 		{
 			double fakeBattery = this.internalCurrentPower + amt;
-			if ( fakeBattery > this.internalMaxPower )
+			if( fakeBattery > this.internalMaxPower )
 			{
 				return fakeBattery - this.internalMaxPower;
 			}
@@ -104,11 +118,11 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 			return 0;
 		}
 
-		if ( this.internalCurrentPower < 0.01 && amt > 0.01 )
+		if( this.internalCurrentPower < 0.01 && amt > 0.01 )
 			this.gridProxy.getNode().getGrid().postEvent( new MENetworkPowerStorage( this, PowerEventType.PROVIDE_POWER ) );
 
 		this.internalCurrentPower += amt;
-		if ( this.internalCurrentPower > this.internalMaxPower )
+		if( this.internalCurrentPower > this.internalMaxPower )
 		{
 			amt = this.internalCurrentPower - this.internalMaxPower;
 			this.internalCurrentPower = this.internalMaxPower;
@@ -121,48 +135,23 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 		return 0;
 	}
 
-	private double extractAEPower(double amt, Actionable mode)
+	private void changePowerLevel()
 	{
-		if ( mode == Actionable.SIMULATE )
+		if( this.notLoaded() )
+			return;
+
+		byte boundMetadata = (byte) ( 8.0 * ( this.internalCurrentPower / this.internalMaxPower ) );
+
+		if( boundMetadata > 7 )
+			boundMetadata = 7;
+		if( boundMetadata < 0 )
+			boundMetadata = 0;
+
+		if( this.currentMeta != boundMetadata )
 		{
-			if ( this.internalCurrentPower > amt )
-				return amt;
-			return this.internalCurrentPower;
+			this.currentMeta = boundMetadata;
+			this.worldObj.setBlockMetadataWithNotify( this.xCoord, this.yCoord, this.zCoord, this.currentMeta, 2 );
 		}
-
-		boolean wasFull = this.internalCurrentPower >= this.internalMaxPower - 0.001;
-
-		if ( wasFull && amt > 0.001 )
-		{
-			try
-			{
-				this.gridProxy.getGrid().postEvent( new MENetworkPowerStorage( this, PowerEventType.REQUEST_POWER ) );
-			}
-			catch (GridAccessException ignored)
-			{
-
-			}
-		}
-
-		if ( this.internalCurrentPower > amt )
-		{
-			this.internalCurrentPower -= amt;
-
-			this.changePowerLevel();
-			return amt;
-		}
-
-		amt = this.internalCurrentPower;
-		this.internalCurrentPower = 0;
-
-		this.changePowerLevel();
-		return amt;
-	}
-
-	@Override
-	final public double extractAEPower(double amt, Actionable mode, PowerMultiplier pm)
-	{
-		return pm.divide( this.extractAEPower( pm.multiply( amt ), mode ) );
 	}
 
 	@Override
@@ -190,32 +179,46 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@Override
-	public void onReady()
+	final public double extractAEPower( double amt, Actionable mode, PowerMultiplier pm )
 	{
-		super.onReady();
-		this.currentMeta = (byte) this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord );
+		return pm.divide( this.extractAEPower( pm.multiply( amt ), mode ) );
+	}
+
+	private double extractAEPower( double amt, Actionable mode )
+	{
+		if( mode == Actionable.SIMULATE )
+		{
+			if( this.internalCurrentPower > amt )
+				return amt;
+			return this.internalCurrentPower;
+		}
+
+		boolean wasFull = this.internalCurrentPower >= this.internalMaxPower - 0.001;
+
+		if( wasFull && amt > 0.001 )
+		{
+			try
+			{
+				this.gridProxy.getGrid().postEvent( new MENetworkPowerStorage( this, PowerEventType.REQUEST_POWER ) );
+			}
+			catch( GridAccessException ignored )
+			{
+
+			}
+		}
+
+		if( this.internalCurrentPower > amt )
+		{
+			this.internalCurrentPower -= amt;
+
+			this.changePowerLevel();
+			return amt;
+		}
+
+		amt = this.internalCurrentPower;
+		this.internalCurrentPower = 0;
+
 		this.changePowerLevel();
-	}
-
-	@Override
-	public NBTTagCompound downloadSettings(SettingsFrom from)
-	{
-		if ( from == SettingsFrom.DISMANTLE_ITEM )
-		{
-			NBTTagCompound tag = new NBTTagCompound();
-			tag.setDouble( "internalCurrentPower", this.internalCurrentPower );
-			tag.setDouble( "internalMaxPower", this.internalMaxPower ); // used for tool tip.
-			return tag;
-		}
-		return null;
-	}
-
-	@Override
-	public void uploadSettings(SettingsFrom from, NBTTagCompound compound)
-	{
-		if ( from == SettingsFrom.DISMANTLE_ITEM )
-		{
-			this.internalCurrentPower = compound.getDouble( "internalCurrentPower" );
-		}
+		return amt;
 	}
 }

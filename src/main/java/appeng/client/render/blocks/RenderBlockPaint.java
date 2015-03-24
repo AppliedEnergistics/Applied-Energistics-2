@@ -18,6 +18,7 @@
 
 package appeng.client.render.blocks;
 
+
 import java.util.EnumSet;
 
 import net.minecraft.client.renderer.RenderBlocks;
@@ -34,25 +35,27 @@ import appeng.client.texture.ExtraBlockTextures;
 import appeng.helpers.Splotch;
 import appeng.tile.misc.TilePaint;
 
+
 public class RenderBlockPaint extends BaseBlockRender
 {
 
-	public RenderBlockPaint() {
+	public RenderBlockPaint()
+	{
 		super( false, 0 );
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
+	public void renderInventory( AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 
 	}
 
 	@Override
-	public boolean renderInWorld(AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
+	public boolean renderInWorld( AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		TilePaint tp = imb.getTileEntity( world, x, y, z );
 		boolean out = false;
-		if ( tp != null )
+		if( tp != null )
 		{
 			// super.renderInWorld( imb, world, x, y, z, renderer );
 
@@ -67,18 +70,18 @@ public class RenderBlockPaint extends BaseBlockRender
 
 			EnumSet<ForgeDirection> validSides = EnumSet.noneOf( ForgeDirection.class );
 
-			for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
 			{
-				if ( tp.isSideValid( side ) )
+				if( tp.isSideValid( side ) )
 					validSides.add( side );
 			}
 
-			for (Splotch s : tp.getDots())
+			for( Splotch s : tp.getDots() )
 			{
-				if ( !validSides.contains( s.side ) )
+				if( !validSides.contains( s.side ) )
 					continue;
 
-				if ( s.lumen )
+				if( s.lumen )
 				{
 					tess.setColorOpaque_I( s.color.whiteVariant );
 					tess.setBrightness( lumen );
@@ -100,13 +103,13 @@ public class RenderBlockPaint extends BaseBlockRender
 				pos_x = Math.max( H, Math.min( 1.0 - H, pos_x ) );
 				pos_y = Math.max( H, Math.min( 1.0 - H, pos_y ) );
 
-				if ( s.side == ForgeDirection.SOUTH || s.side == ForgeDirection.NORTH )
+				if( s.side == ForgeDirection.SOUTH || s.side == ForgeDirection.NORTH )
 				{
 					pos_x += x;
 					pos_y += y;
 				}
 
-				else if ( s.side == ForgeDirection.UP || s.side == ForgeDirection.DOWN )
+				else if( s.side == ForgeDirection.UP || s.side == ForgeDirection.DOWN )
 				{
 					pos_x += x;
 					pos_y += z;
@@ -120,54 +123,54 @@ public class RenderBlockPaint extends BaseBlockRender
 
 				IIcon ico = icoSet[s.getSeed() % icoSet.length];
 
-				switch (s.side)
+				switch( s.side )
 				{
-				case UP:
-					offset = 1.0 - offset;
-					tess.addVertexWithUV( pos_x - H, y + offset, pos_y - H, ico.getMinU(), ico.getMinV() );
-					tess.addVertexWithUV( pos_x + H, y + offset, pos_y - H, ico.getMaxU(), ico.getMinV() );
-					tess.addVertexWithUV( pos_x + H, y + offset, pos_y + H, ico.getMaxU(), ico.getMaxV() );
-					tess.addVertexWithUV( pos_x - H, y + offset, pos_y + H, ico.getMinU(), ico.getMaxV() );
-					break;
+					case UP:
+						offset = 1.0 - offset;
+						tess.addVertexWithUV( pos_x - H, y + offset, pos_y - H, ico.getMinU(), ico.getMinV() );
+						tess.addVertexWithUV( pos_x + H, y + offset, pos_y - H, ico.getMaxU(), ico.getMinV() );
+						tess.addVertexWithUV( pos_x + H, y + offset, pos_y + H, ico.getMaxU(), ico.getMaxV() );
+						tess.addVertexWithUV( pos_x - H, y + offset, pos_y + H, ico.getMinU(), ico.getMaxV() );
+						break;
 
-				case DOWN:
-					tess.addVertexWithUV( pos_x + H, y + offset, pos_y - H, ico.getMinU(), ico.getMinV() );
-					tess.addVertexWithUV( pos_x - H, y + offset, pos_y - H, ico.getMaxU(), ico.getMinV() );
-					tess.addVertexWithUV( pos_x - H, y + offset, pos_y + H, ico.getMaxU(), ico.getMaxV() );
-					tess.addVertexWithUV( pos_x + H, y + offset, pos_y + H, ico.getMinU(), ico.getMaxV() );
-					break;
+					case DOWN:
+						tess.addVertexWithUV( pos_x + H, y + offset, pos_y - H, ico.getMinU(), ico.getMinV() );
+						tess.addVertexWithUV( pos_x - H, y + offset, pos_y - H, ico.getMaxU(), ico.getMinV() );
+						tess.addVertexWithUV( pos_x - H, y + offset, pos_y + H, ico.getMaxU(), ico.getMaxV() );
+						tess.addVertexWithUV( pos_x + H, y + offset, pos_y + H, ico.getMinU(), ico.getMaxV() );
+						break;
 
-				case EAST:
-					offset = 1.0 - offset;
-					tess.addVertexWithUV( x + offset, pos_x + H, pos_y - H, ico.getMinU(), ico.getMinV() );
-					tess.addVertexWithUV( x + offset, pos_x - H, pos_y - H, ico.getMaxU(), ico.getMinV() );
-					tess.addVertexWithUV( x + offset, pos_x - H, pos_y + H, ico.getMaxU(), ico.getMaxV() );
-					tess.addVertexWithUV( x + offset, pos_x + H, pos_y + H, ico.getMinU(), ico.getMaxV() );
-					break;
+					case EAST:
+						offset = 1.0 - offset;
+						tess.addVertexWithUV( x + offset, pos_x + H, pos_y - H, ico.getMinU(), ico.getMinV() );
+						tess.addVertexWithUV( x + offset, pos_x - H, pos_y - H, ico.getMaxU(), ico.getMinV() );
+						tess.addVertexWithUV( x + offset, pos_x - H, pos_y + H, ico.getMaxU(), ico.getMaxV() );
+						tess.addVertexWithUV( x + offset, pos_x + H, pos_y + H, ico.getMinU(), ico.getMaxV() );
+						break;
 
-				case WEST:
-					tess.addVertexWithUV( x + offset, pos_x - H, pos_y - H, ico.getMinU(), ico.getMinV() );
-					tess.addVertexWithUV( x + offset, pos_x + H, pos_y - H, ico.getMaxU(), ico.getMinV() );
-					tess.addVertexWithUV( x + offset, pos_x + H, pos_y + H, ico.getMaxU(), ico.getMaxV() );
-					tess.addVertexWithUV( x + offset, pos_x - H, pos_y + H, ico.getMinU(), ico.getMaxV() );
-					break;
+					case WEST:
+						tess.addVertexWithUV( x + offset, pos_x - H, pos_y - H, ico.getMinU(), ico.getMinV() );
+						tess.addVertexWithUV( x + offset, pos_x + H, pos_y - H, ico.getMaxU(), ico.getMinV() );
+						tess.addVertexWithUV( x + offset, pos_x + H, pos_y + H, ico.getMaxU(), ico.getMaxV() );
+						tess.addVertexWithUV( x + offset, pos_x - H, pos_y + H, ico.getMinU(), ico.getMaxV() );
+						break;
 
-				case SOUTH:
-					offset = 1.0 - offset;
-					tess.addVertexWithUV( pos_x + H, pos_y - H, z + offset, ico.getMinU(), ico.getMinV() );
-					tess.addVertexWithUV( pos_x - H, pos_y - H, z + offset, ico.getMaxU(), ico.getMinV() );
-					tess.addVertexWithUV( pos_x - H, pos_y + H, z + offset, ico.getMaxU(), ico.getMaxV() );
-					tess.addVertexWithUV( pos_x + H, pos_y + H, z + offset, ico.getMinU(), ico.getMaxV() );
-					break;
+					case SOUTH:
+						offset = 1.0 - offset;
+						tess.addVertexWithUV( pos_x + H, pos_y - H, z + offset, ico.getMinU(), ico.getMinV() );
+						tess.addVertexWithUV( pos_x - H, pos_y - H, z + offset, ico.getMaxU(), ico.getMinV() );
+						tess.addVertexWithUV( pos_x - H, pos_y + H, z + offset, ico.getMaxU(), ico.getMaxV() );
+						tess.addVertexWithUV( pos_x + H, pos_y + H, z + offset, ico.getMinU(), ico.getMaxV() );
+						break;
 
-				case NORTH:
-					tess.addVertexWithUV( pos_x - H, pos_y - H, z + offset, ico.getMinU(), ico.getMinV() );
-					tess.addVertexWithUV( pos_x + H, pos_y - H, z + offset, ico.getMaxU(), ico.getMinV() );
-					tess.addVertexWithUV( pos_x + H, pos_y + H, z + offset, ico.getMaxU(), ico.getMaxV() );
-					tess.addVertexWithUV( pos_x - H, pos_y + H, z + offset, ico.getMinU(), ico.getMaxV() );
-					break;
+					case NORTH:
+						tess.addVertexWithUV( pos_x - H, pos_y - H, z + offset, ico.getMinU(), ico.getMinV() );
+						tess.addVertexWithUV( pos_x + H, pos_y - H, z + offset, ico.getMaxU(), ico.getMinV() );
+						tess.addVertexWithUV( pos_x + H, pos_y + H, z + offset, ico.getMaxU(), ico.getMaxV() );
+						tess.addVertexWithUV( pos_x - H, pos_y + H, z + offset, ico.getMinU(), ico.getMaxV() );
+						break;
 
-				default:
+					default:
 				}
 			}
 

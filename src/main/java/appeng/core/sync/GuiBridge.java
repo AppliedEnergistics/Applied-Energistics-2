@@ -18,9 +18,6 @@
 
 package appeng.core.sync;
 
-import static appeng.core.sync.GuiHostType.ITEM;
-import static appeng.core.sync.GuiHostType.ITEM_OR_WORLD;
-import static appeng.core.sync.GuiHostType.WORLD;
 
 import java.lang.reflect.Constructor;
 
@@ -118,87 +115,101 @@ import appeng.tile.storage.TileIOPort;
 import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
 
+import static appeng.core.sync.GuiHostType.ITEM;
+import static appeng.core.sync.GuiHostType.ITEM_OR_WORLD;
+import static appeng.core.sync.GuiHostType.WORLD;
+
+
 public enum GuiBridge implements IGuiHandler
 {
 	GUI_Handler(),
 
-	GUI_GRINDER(ContainerGrinder.class, TileGrinder.class, WORLD, null),
+	GUI_GRINDER( ContainerGrinder.class, TileGrinder.class, WORLD, null ),
 
-	GUI_QNB(ContainerQNB.class, TileQuantumBridge.class, WORLD, SecurityPermissions.BUILD),
+	GUI_QNB( ContainerQNB.class, TileQuantumBridge.class, WORLD, SecurityPermissions.BUILD ),
 
-	GUI_SKYCHEST(ContainerSkyChest.class, TileSkyChest.class, WORLD, null),
+	GUI_SKYCHEST( ContainerSkyChest.class, TileSkyChest.class, WORLD, null ),
 
-	GUI_CHEST(ContainerChest.class, TileChest.class, WORLD, SecurityPermissions.BUILD),
+	GUI_CHEST( ContainerChest.class, TileChest.class, WORLD, SecurityPermissions.BUILD ),
 
-	GUI_WIRELESS(ContainerWireless.class, TileWireless.class, WORLD, SecurityPermissions.BUILD),
+	GUI_WIRELESS( ContainerWireless.class, TileWireless.class, WORLD, SecurityPermissions.BUILD ),
 
-	GUI_ME(ContainerMEMonitorable.class, ITerminalHost.class, WORLD, null),
+	GUI_ME( ContainerMEMonitorable.class, ITerminalHost.class, WORLD, null ),
 
-	GUI_PORTABLE_CELL(ContainerMEPortableCell.class, IPortableCell.class, ITEM, null),
+	GUI_PORTABLE_CELL( ContainerMEPortableCell.class, IPortableCell.class, ITEM, null ),
 
-	GUI_WIRELESS_TERM(ContainerWirelessTerm.class, WirelessTerminalGuiObject.class, ITEM, null),
+	GUI_WIRELESS_TERM( ContainerWirelessTerm.class, WirelessTerminalGuiObject.class, ITEM, null ),
 
-	GUI_NETWORK_STATUS(ContainerNetworkStatus.class, INetworkTool.class, ITEM, null),
+	GUI_NETWORK_STATUS( ContainerNetworkStatus.class, INetworkTool.class, ITEM, null ),
 
-	GUI_CRAFTING_CPU(ContainerCraftingCPU.class, TileCraftingTile.class, WORLD, SecurityPermissions.CRAFT),
+	GUI_CRAFTING_CPU( ContainerCraftingCPU.class, TileCraftingTile.class, WORLD, SecurityPermissions.CRAFT ),
 
-	GUI_NETWORK_TOOL(ContainerNetworkTool.class, INetworkTool.class, ITEM, null),
+	GUI_NETWORK_TOOL( ContainerNetworkTool.class, INetworkTool.class, ITEM, null ),
 
-	GUI_QUARTZ_KNIFE(ContainerQuartzKnife.class, QuartzKnifeObj.class, ITEM, null),
+	GUI_QUARTZ_KNIFE( ContainerQuartzKnife.class, QuartzKnifeObj.class, ITEM, null ),
 
-	GUI_DRIVE(ContainerDrive.class, TileDrive.class, WORLD, SecurityPermissions.BUILD),
+	GUI_DRIVE( ContainerDrive.class, TileDrive.class, WORLD, SecurityPermissions.BUILD ),
 
-	GUI_VIBRATION_CHAMBER(ContainerVibrationChamber.class, TileVibrationChamber.class, WORLD, null),
+	GUI_VIBRATION_CHAMBER( ContainerVibrationChamber.class, TileVibrationChamber.class, WORLD, null ),
 
-	GUI_CONDENSER(ContainerCondenser.class, TileCondenser.class, WORLD, null),
+	GUI_CONDENSER( ContainerCondenser.class, TileCondenser.class, WORLD, null ),
 
-	GUI_INTERFACE(ContainerInterface.class, IInterfaceHost.class, WORLD, SecurityPermissions.BUILD),
+	GUI_INTERFACE( ContainerInterface.class, IInterfaceHost.class, WORLD, SecurityPermissions.BUILD ),
 
-	GUI_BUS(ContainerUpgradeable.class, IUpgradeableHost.class, WORLD, SecurityPermissions.BUILD),
+	GUI_BUS( ContainerUpgradeable.class, IUpgradeableHost.class, WORLD, SecurityPermissions.BUILD ),
 
-	GUI_IOPORT(ContainerIOPort.class, TileIOPort.class, WORLD, SecurityPermissions.BUILD),
+	GUI_IOPORT( ContainerIOPort.class, TileIOPort.class, WORLD, SecurityPermissions.BUILD ),
 
-	GUI_STORAGEBUS(ContainerStorageBus.class, PartStorageBus.class, WORLD, SecurityPermissions.BUILD),
+	GUI_STORAGEBUS( ContainerStorageBus.class, PartStorageBus.class, WORLD, SecurityPermissions.BUILD ),
 
-	GUI_FORMATION_PLANE(ContainerFormationPlane.class, PartFormationPlane.class, WORLD, SecurityPermissions.BUILD),
+	GUI_FORMATION_PLANE( ContainerFormationPlane.class, PartFormationPlane.class, WORLD, SecurityPermissions.BUILD ),
 
-	GUI_PRIORITY(ContainerPriority.class, IPriorityHost.class, WORLD, SecurityPermissions.BUILD),
+	GUI_PRIORITY( ContainerPriority.class, IPriorityHost.class, WORLD, SecurityPermissions.BUILD ),
 
-	GUI_SECURITY(ContainerSecurity.class, TileSecurity.class, WORLD, SecurityPermissions.SECURITY),
+	GUI_SECURITY( ContainerSecurity.class, TileSecurity.class, WORLD, SecurityPermissions.SECURITY ),
 
-	GUI_CRAFTING_TERMINAL(ContainerCraftingTerm.class, PartCraftingTerminal.class, WORLD, SecurityPermissions.CRAFT),
+	GUI_CRAFTING_TERMINAL( ContainerCraftingTerm.class, PartCraftingTerminal.class, WORLD, SecurityPermissions.CRAFT ),
 
-	GUI_PATTERN_TERMINAL(ContainerPatternTerm.class, PartPatternTerminal.class, WORLD, SecurityPermissions.CRAFT),
+	GUI_PATTERN_TERMINAL( ContainerPatternTerm.class, PartPatternTerminal.class, WORLD, SecurityPermissions.CRAFT ),
 
 	// extends (Container/Gui) + Bus
-	GUI_LEVEL_EMITTER(ContainerLevelEmitter.class, PartLevelEmitter.class, WORLD, SecurityPermissions.BUILD),
+	GUI_LEVEL_EMITTER( ContainerLevelEmitter.class, PartLevelEmitter.class, WORLD, SecurityPermissions.BUILD ),
 
-	GUI_SPATIAL_IO_PORT(ContainerSpatialIOPort.class, TileSpatialIOPort.class, WORLD, SecurityPermissions.BUILD),
+	GUI_SPATIAL_IO_PORT( ContainerSpatialIOPort.class, TileSpatialIOPort.class, WORLD, SecurityPermissions.BUILD ),
 
-	GUI_INSCRIBER(ContainerInscriber.class, TileInscriber.class, WORLD, null),
+	GUI_INSCRIBER( ContainerInscriber.class, TileInscriber.class, WORLD, null ),
 
-	GUI_CELL_WORKBENCH(ContainerCellWorkbench.class, TileCellWorkbench.class, WORLD, null),
+	GUI_CELL_WORKBENCH( ContainerCellWorkbench.class, TileCellWorkbench.class, WORLD, null ),
 
-	GUI_MAC(ContainerMAC.class, TileMolecularAssembler.class, WORLD, null),
+	GUI_MAC( ContainerMAC.class, TileMolecularAssembler.class, WORLD, null ),
 
-	GUI_CRAFTING_AMOUNT(ContainerCraftAmount.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT),
+	GUI_CRAFTING_AMOUNT( ContainerCraftAmount.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT ),
 
-	GUI_CRAFTING_CONFIRM(ContainerCraftConfirm.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT),
+	GUI_CRAFTING_CONFIRM( ContainerCraftConfirm.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT ),
 
-	GUI_INTERFACE_TERMINAL(ContainerInterfaceTerminal.class, PartMonitor.class, WORLD, SecurityPermissions.BUILD),
+	GUI_INTERFACE_TERMINAL( ContainerInterfaceTerminal.class, PartMonitor.class, WORLD, SecurityPermissions.BUILD ),
 
-	GUI_CRAFTING_STATUS(ContainerCraftingStatus.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT);
+	GUI_CRAFTING_STATUS( ContainerCraftingStatus.class, ITerminalHost.class, ITEM_OR_WORLD, SecurityPermissions.CRAFT );
 
 	private final Class Tile;
-	private Class Gui;
 	private final Class Container;
+	private Class Gui;
 	private GuiHostType type;
 	private SecurityPermissions requiredPermission;
 
-	private GuiBridge() {
+	private GuiBridge()
+	{
 		this.Tile = null;
 		this.Gui = null;
 		this.Container = null;
+	}
+
+	private GuiBridge( Class _Container, SecurityPermissions requiredPermission )
+	{
+		this.requiredPermission = requiredPermission;
+		this.Container = _Container;
+		this.Tile = null;
+		this.getGui();
 	}
 
 	/**
@@ -207,26 +218,20 @@ public enum GuiBridge implements IGuiHandler
 	 */
 	private void getGui()
 	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 		{
 			String start = this.Container.getName();
 			String GuiClass = start.replaceFirst( "container.", "client.gui." ).replace( ".Container", ".Gui" );
-			if ( start.equals( GuiClass ) )
+			if( start.equals( GuiClass ) )
 				throw new RuntimeException( "Unable to find gui class" );
 			this.Gui = ReflectionHelper.getClass( this.getClass().getClassLoader(), GuiClass );
-			if ( this.Gui == null )
+			if( this.Gui == null )
 				throw new RuntimeException( "Cannot Load class: " + GuiClass );
 		}
 	}
 
-	private GuiBridge(Class _Container, SecurityPermissions requiredPermission) {
-		this.requiredPermission = requiredPermission;
-		this.Container = _Container;
-		this.Tile = null;
-		this.getGui();
-	}
-
-	private GuiBridge(Class _Container, Class _Tile, GuiHostType type, SecurityPermissions requiredPermission) {
+	private GuiBridge( Class _Container, Class _Tile, GuiHostType type, SecurityPermissions requiredPermission )
+	{
 		this.requiredPermission = requiredPermission;
 		this.Container = _Container;
 		this.type = type;
@@ -234,109 +239,69 @@ public enum GuiBridge implements IGuiHandler
 		this.getGui();
 	}
 
-	public boolean CorrectTileOrPart(Object tE)
+	@Override
+	public Object getServerGuiElement( int ID_ORDINAL, EntityPlayer player, World w, int x, int y, int z )
 	{
-		if ( this.Tile == null )
+		ForgeDirection side = ForgeDirection.getOrientation( ID_ORDINAL & 0x07 );
+		GuiBridge ID = values()[ID_ORDINAL >> 4];
+		boolean stem = ( ( ID_ORDINAL >> 3 ) & 1 ) == 1;
+
+		if( ID.type.isItem() && stem )
+		{
+			ItemStack it = player.inventory.getCurrentItem();
+			Object myItem = this.getGuiObject( it, player, w, x, y, z );
+			if( myItem != null && ID.CorrectTileOrPart( myItem ) )
+				return this.updateGui( ID.ConstructContainer( player.inventory, side, myItem ), w, x, y, z, side, myItem );
+		}
+
+		if( ID.type.isTile() )
+		{
+			TileEntity TE = w.getTileEntity( x, y, z );
+			if( TE instanceof IPartHost )
+			{
+				( (IPartHost) TE ).getPart( side );
+				IPart part = ( (IPartHost) TE ).getPart( side );
+				if( ID.CorrectTileOrPart( part ) )
+					return this.updateGui( ID.ConstructContainer( player.inventory, side, part ), w, x, y, z, side, part );
+			}
+			else
+			{
+				if( ID.CorrectTileOrPart( TE ) )
+					return this.updateGui( ID.ConstructContainer( player.inventory, side, TE ), w, x, y, z, side, TE );
+			}
+		}
+
+		return new ContainerNull();
+	}
+
+	private Object getGuiObject( ItemStack it, EntityPlayer player, World w, int x, int y, int z )
+	{
+		if( it != null )
+		{
+			if( it.getItem() instanceof IGuiItem )
+			{
+				return ( (IGuiItem) it.getItem() ).getGuiObject( it, w, x, y, z );
+			}
+
+			IWirelessTermHandler wh = AEApi.instance().registries().wireless().getWirelessTerminalHandler( it );
+			if( wh != null )
+				return new WirelessTerminalGuiObject( wh, it, player, w, x, y, z );
+		}
+
+		return null;
+	}
+
+	public boolean CorrectTileOrPart( Object tE )
+	{
+		if( this.Tile == null )
 			throw new RuntimeException( "This Gui Cannot use the standard Handler." );
 
 		return this.Tile.isInstance( tE );
 	}
 
-	public Object ConstructContainer(InventoryPlayer inventory, ForgeDirection side, Object tE)
+	private Object updateGui( Object newContainer, World w, int x, int y, int z, ForgeDirection side, Object myItem )
 	{
-		try
-		{
-			Constructor[] c = this.Container.getConstructors();
-			if ( c.length == 0 )
-				throw new AppEngException( "Invalid Gui Class" );
-
-			Constructor target = this.findConstructor( c, inventory, tE );
-
-			if ( target == null )
-			{
-				throw new RuntimeException( "Cannot find " + this.Container.getName() + "( " + this.typeName( inventory ) + ", " + this.typeName( tE ) + " )" );
-			}
-
-			Object o = target.newInstance( inventory, tE );
-
-			/**
-			 * triggers achievement when the player sees presses.
-			 */
-			if ( o instanceof AEBaseContainer )
-			{
-				AEBaseContainer bc = (AEBaseContainer) o;
-				for (Object so : bc.inventorySlots)
-				{
-					if ( so instanceof Slot )
-					{
-						ItemStack is = ((Slot) so).getStack();
-
-						Materials m = AEApi.instance().materials();
-						if ( m.materialLogicProcessorPress.sameAsStack( is ) || m.materialEngProcessorPress.sameAsStack( is )
-								|| m.materialCalcProcessorPress.sameAsStack( is ) || m.materialSiliconPress.sameAsStack( is ) )
-						{
-							Achievements.Presses.addToPlayer( inventory.player );
-						}
-					}
-				}
-			}
-
-			return o;
-		}
-		catch (Throwable t)
-		{
-			throw new RuntimeException( t );
-		}
-	}
-
-	public Object ConstructGui(InventoryPlayer inventory, ForgeDirection side, Object tE)
-	{
-		try
-		{
-			Constructor[] c = this.Gui.getConstructors();
-			if ( c.length == 0 )
-				throw new AppEngException( "Invalid Gui Class" );
-
-			Constructor target = this.findConstructor( c, inventory, tE );
-
-			if ( target == null )
-			{
-				throw new RuntimeException( "Cannot find " + this.Container.getName() + "( " + this.typeName( inventory ) + ", " + this.typeName( tE ) + " )" );
-			}
-
-			return target.newInstance( inventory, tE );
-		}
-		catch (Throwable t)
-		{
-			throw new RuntimeException( t );
-		}
-	}
-
-	private String typeName(Object inventory)
-	{
-		if ( inventory == null )
-			return "NULL";
-
-		return inventory.getClass().getName();
-	}
-
-	private Constructor findConstructor(Constructor[] c, InventoryPlayer inventory, Object tE)
-	{
-		for (Constructor con : c)
-		{
-			Class[] types = con.getParameterTypes();
-			if ( types.length == 2 )
-			{
-				if ( types[0].isAssignableFrom( inventory.getClass() ) && types[1].isAssignableFrom( tE.getClass() ) )
-					return con;
-			}
-		}
-		return null;
-	}
-
-	private Object updateGui(Object newContainer, World w, int x, int y, int z, ForgeDirection side, Object myItem)
-	{
-		if ( newContainer instanceof AEBaseContainer )
+		if( newContainer instanceof AEBaseContainer )
 		{
 			AEBaseContainer bc = (AEBaseContainer) newContainer;
 			bc.openContext = new ContainerOpenContext( myItem );
@@ -350,87 +315,103 @@ public enum GuiBridge implements IGuiHandler
 		return newContainer;
 	}
 
-	@Override
-	public Object getServerGuiElement(int ID_ORDINAL, EntityPlayer player, World w, int x, int y, int z)
+	public Object ConstructContainer( InventoryPlayer inventory, ForgeDirection side, Object tE )
 	{
-		ForgeDirection side = ForgeDirection.getOrientation( ID_ORDINAL & 0x07 );
-		GuiBridge ID = values()[ID_ORDINAL >> 4];
-		boolean stem = ((ID_ORDINAL >> 3) & 1) == 1;
-
-		if ( ID.type.isItem() && stem )
+		try
 		{
-			ItemStack it = player.inventory.getCurrentItem();
-			Object myItem = this.getGuiObject( it, player, w, x, y, z );
-			if ( myItem != null && ID.CorrectTileOrPart( myItem ) )
-				return this.updateGui( ID.ConstructContainer( player.inventory, side, myItem ), w, x, y, z, side, myItem );
-		}
+			Constructor[] c = this.Container.getConstructors();
+			if( c.length == 0 )
+				throw new AppEngException( "Invalid Gui Class" );
 
-		if ( ID.type.isTile() )
+			Constructor target = this.findConstructor( c, inventory, tE );
+
+			if( target == null )
+			{
+				throw new RuntimeException( "Cannot find " + this.Container.getName() + "( " + this.typeName( inventory ) + ", " + this.typeName( tE ) + " )" );
+			}
+
+			Object o = target.newInstance( inventory, tE );
+
+			/**
+			 * triggers achievement when the player sees presses.
+			 */
+			if( o instanceof AEBaseContainer )
+			{
+				AEBaseContainer bc = (AEBaseContainer) o;
+				for( Object so : bc.inventorySlots )
+				{
+					if( so instanceof Slot )
+					{
+						ItemStack is = ( (Slot) so ).getStack();
+
+						Materials m = AEApi.instance().materials();
+						if( m.materialLogicProcessorPress.sameAsStack( is ) || m.materialEngProcessorPress.sameAsStack( is ) || m.materialCalcProcessorPress.sameAsStack( is ) || m.materialSiliconPress.sameAsStack( is ) )
+						{
+							Achievements.Presses.addToPlayer( inventory.player );
+						}
+					}
+				}
+			}
+
+			return o;
+		}
+		catch( Throwable t )
 		{
-			TileEntity TE = w.getTileEntity( x, y, z );
-			if ( TE instanceof IPartHost )
-			{
-				((IPartHost) TE).getPart( side );
-				IPart part = ((IPartHost) TE).getPart( side );
-				if ( ID.CorrectTileOrPart( part ) )
-					return this.updateGui( ID.ConstructContainer( player.inventory, side, part ), w, x, y, z, side, part );
-			}
-			else
-			{
-				if ( ID.CorrectTileOrPart( TE ) )
-					return this.updateGui( ID.ConstructContainer( player.inventory, side, TE ), w, x, y, z, side, TE );
-			}
+			throw new RuntimeException( t );
 		}
-
-		return new ContainerNull();
 	}
 
-	private Object getGuiObject(ItemStack it, EntityPlayer player, World w, int x, int y, int z)
+	private Constructor findConstructor( Constructor[] c, InventoryPlayer inventory, Object tE )
 	{
-		if ( it != null )
+		for( Constructor con : c )
 		{
-			if ( it.getItem() instanceof IGuiItem )
+			Class[] types = con.getParameterTypes();
+			if( types.length == 2 )
 			{
-				return ((IGuiItem) it.getItem()).getGuiObject( it, w, x, y, z );
+				if( types[0].isAssignableFrom( inventory.getClass() ) && types[1].isAssignableFrom( tE.getClass() ) )
+					return con;
 			}
-
-			IWirelessTermHandler wh = AEApi.instance().registries().wireless().getWirelessTerminalHandler( it );
-			if ( wh != null )
-				return new WirelessTerminalGuiObject( wh, it, player, w, x, y, z );
 		}
-
 		return null;
 	}
 
+	private String typeName( Object inventory )
+	{
+		if( inventory == null )
+			return "NULL";
+
+		return inventory.getClass().getName();
+	}
+
 	@Override
-	public Object getClientGuiElement(int ID_ORDINAL, EntityPlayer player, World w, int x, int y, int z)
+	public Object getClientGuiElement( int ID_ORDINAL, EntityPlayer player, World w, int x, int y, int z )
 	{
 		ForgeDirection side = ForgeDirection.getOrientation( ID_ORDINAL & 0x07 );
 		GuiBridge ID = values()[ID_ORDINAL >> 4];
-		boolean stem = ((ID_ORDINAL >> 3) & 1) == 1;
+		boolean stem = ( ( ID_ORDINAL >> 3 ) & 1 ) == 1;
 
-		if ( ID.type.isItem() && stem )
+		if( ID.type.isItem() && stem )
 		{
 			ItemStack it = player.inventory.getCurrentItem();
 			Object myItem = this.getGuiObject( it, player, w, x, y, z );
-			if ( ID.CorrectTileOrPart( myItem ) )
+			if( ID.CorrectTileOrPart( myItem ) )
 				return ID.ConstructGui( player.inventory, side, myItem );
 		}
 
-		if ( ID.type.isTile() )
+		if( ID.type.isTile() )
 		{
 			TileEntity TE = w.getTileEntity( x, y, z );
 
-			if ( TE instanceof IPartHost )
+			if( TE instanceof IPartHost )
 			{
-				((IPartHost) TE).getPart( side );
-				IPart part = ((IPartHost) TE).getPart( side );
-				if ( ID.CorrectTileOrPart( part ) )
+				( (IPartHost) TE ).getPart( side );
+				IPart part = ( (IPartHost) TE ).getPart( side );
+				if( ID.CorrectTileOrPart( part ) )
 					return ID.ConstructGui( player.inventory, side, part );
 			}
 			else
 			{
-				if ( ID.CorrectTileOrPart( TE ) )
+				if( ID.CorrectTileOrPart( TE ) )
 					return ID.ConstructGui( player.inventory, side, TE );
 			}
 		}
@@ -438,38 +419,61 @@ public enum GuiBridge implements IGuiHandler
 		return new GuiNull( new ContainerNull() );
 	}
 
-	public boolean hasPermissions(TileEntity te, int x, int y, int z, ForgeDirection side, EntityPlayer player)
+	public Object ConstructGui( InventoryPlayer inventory, ForgeDirection side, Object tE )
+	{
+		try
+		{
+			Constructor[] c = this.Gui.getConstructors();
+			if( c.length == 0 )
+				throw new AppEngException( "Invalid Gui Class" );
+
+			Constructor target = this.findConstructor( c, inventory, tE );
+
+			if( target == null )
+			{
+				throw new RuntimeException( "Cannot find " + this.Container.getName() + "( " + this.typeName( inventory ) + ", " + this.typeName( tE ) + " )" );
+			}
+
+			return target.newInstance( inventory, tE );
+		}
+		catch( Throwable t )
+		{
+			throw new RuntimeException( t );
+		}
+	}
+
+	public boolean hasPermissions( TileEntity te, int x, int y, int z, ForgeDirection side, EntityPlayer player )
 	{
 		World w = player.getEntityWorld();
 
-		if ( Platform.hasPermissions( te != null ? new DimensionalCoord( te ) : new DimensionalCoord( player.worldObj, x, y, z ), player ) )
+		if( Platform.hasPermissions( te != null ? new DimensionalCoord( te ) : new DimensionalCoord( player.worldObj, x, y, z ), player ) )
 		{
-			if ( this.type.isItem() )
+			if( this.type.isItem() )
 			{
 				ItemStack it = player.inventory.getCurrentItem();
-				if ( it != null && it.getItem() instanceof IGuiItem )
+				if( it != null && it.getItem() instanceof IGuiItem )
 				{
-					Object myItem = ((IGuiItem) it.getItem()).getGuiObject( it, w, x, y, z );
-					if ( this.CorrectTileOrPart( myItem ) )
+					Object myItem = ( (IGuiItem) it.getItem() ).getGuiObject( it, w, x, y, z );
+					if( this.CorrectTileOrPart( myItem ) )
 					{
 						return true;
 					}
 				}
 			}
 
-			if ( this.type.isTile() )
+			if( this.type.isTile() )
 			{
 				TileEntity TE = w.getTileEntity( x, y, z );
-				if ( TE instanceof IPartHost )
+				if( TE instanceof IPartHost )
 				{
-					((IPartHost) TE).getPart( side );
-					IPart part = ((IPartHost) TE).getPart( side );
-					if ( this.CorrectTileOrPart( part ) )
+					( (IPartHost) TE ).getPart( side );
+					IPart part = ( (IPartHost) TE ).getPart( side );
+					if( this.CorrectTileOrPart( part ) )
 						return this.securityCheck( part, player );
 				}
 				else
 				{
-					if ( this.CorrectTileOrPart( TE ) )
+					if( this.CorrectTileOrPart( TE ) )
 						return this.securityCheck( TE, player );
 				}
 			}
@@ -477,29 +481,29 @@ public enum GuiBridge implements IGuiHandler
 		return false;
 	}
 
-	private boolean securityCheck(Object te, EntityPlayer player)
+	private boolean securityCheck( Object te, EntityPlayer player )
 	{
-		if ( te instanceof IActionHost && this.requiredPermission != null )
+		if( te instanceof IActionHost && this.requiredPermission != null )
 		{
 			boolean requirePower = false;
 
-			IGridNode gn = ((IActionHost) te).getActionableNode();
-			if ( gn != null )
+			IGridNode gn = ( (IActionHost) te ).getActionableNode();
+			if( gn != null )
 			{
 				IGrid g = gn.getGrid();
-				if ( g != null )
+				if( g != null )
 				{
-					if ( requirePower )
+					if( requirePower )
 					{
 						IEnergyGrid eg = g.getCache( IEnergyGrid.class );
-						if ( !eg.isNetworkPowered() )
+						if( !eg.isNetworkPowered() )
 						{
 							return false;
 						}
 					}
 
 					ISecurityGrid sg = g.getCache( ISecurityGrid.class );
-					if ( sg.hasPermission( player, this.requiredPermission ) )
+					if( sg.hasPermission( player, this.requiredPermission ) )
 						return true;
 				}
 			}

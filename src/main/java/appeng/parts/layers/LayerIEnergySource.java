@@ -18,6 +18,7 @@
 
 package appeng.parts.layers;
 
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -34,13 +35,9 @@ import appeng.api.parts.LayerBase;
 import appeng.api.parts.LayerFlags;
 import appeng.util.Platform;
 
+
 public class LayerIEnergySource extends LayerBase implements IEnergySource
 {
-
-	private boolean isInIC2()
-	{
-		return this.getLayerFlags().contains( LayerFlags.IC2_ENET );
-	}
 
 	private TileEntity getEnergySourceTile()
 	{
@@ -50,7 +47,7 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 
 	private World getEnergySourceWorld()
 	{
-		if ( this.getEnergySourceTile() == null )
+		if( this.getEnergySourceTile() == null )
 			return null;
 		return this.getEnergySourceTile().getWorldObj();
 	}
@@ -58,20 +55,20 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 	private boolean isTileValid()
 	{
 		TileEntity te = this.getEnergySourceTile();
-		if ( te == null )
+		if( te == null )
 			return false;
 		return !te.isInvalid();
 	}
 
 	private void addToENet()
 	{
-		if ( this.getEnergySourceWorld() == null )
+		if( this.getEnergySourceWorld() == null )
 			return;
 
 		// re-add
 		this.removeFromENet();
 
-		if ( !this.isInIC2() && Platform.isServer() && this.isTileValid() )
+		if( !this.isInIC2() && Platform.isServer() && this.isTileValid() )
 		{
 			this.getLayerFlags().add( LayerFlags.IC2_ENET );
 			MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileLoadEvent( (IEnergySink) this.getEnergySourceTile() ) );
@@ -80,10 +77,10 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 
 	private void removeFromENet()
 	{
-		if ( this.getEnergySourceWorld() == null )
+		if( this.getEnergySourceWorld() == null )
 			return;
 
-		if ( this.isInIC2() && Platform.isServer() )
+		if( this.isInIC2() && Platform.isServer() )
 		{
 			this.getLayerFlags().remove( LayerFlags.IC2_ENET );
 			MinecraftForge.EVENT_BUS.post( new ic2.api.energy.event.EnergyTileUnloadEvent( (IEnergySink) this.getEnergySourceTile() ) );
@@ -92,14 +89,14 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 
 	private boolean interestedInIC2()
 	{
-		if ( !((IPartHost) this).isInWorld() )
+		if( !( (IPartHost) this ).isInWorld() )
 			return false;
 
 		int interested = 0;
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{
 			IPart part = this.getPart( dir );
-			if ( part instanceof IEnergyTile )
+			if( part instanceof IEnergyTile )
 			{
 				interested++;
 			}
@@ -112,39 +109,44 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 	{
 		super.partChanged();
 
-		if ( this.interestedInIC2() )
+		if( this.interestedInIC2() )
 			this.addToENet();
 		else
 			this.removeFromENet();
 	}
 
 	@Override
-	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction)
+	public boolean emitsEnergyTo( TileEntity receiver, ForgeDirection direction )
 	{
-		if ( !this.isInIC2() )
+		if( !this.isInIC2() )
 			return false;
 
 		IPart part = this.getPart( direction );
-		if ( part instanceof IEnergySink )
-			return ((IEnergyEmitter) part).emitsEnergyTo( receiver, direction );
+		if( part instanceof IEnergySink )
+			return ( (IEnergyEmitter) part ).emitsEnergyTo( receiver, direction );
 		return false;
+	}
+
+	private boolean isInIC2()
+	{
+		return this.getLayerFlags().contains( LayerFlags.IC2_ENET );
 	}
 
 	@Override
 	public double getOfferedEnergy()
 	{
-		if ( !this.isInIC2() )
+		if( !this.isInIC2() )
 			return 0;
 
 		// this is a flawed implementation, that requires a change to the IC2 API.
 
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{
 			IPart part = this.getPart( dir );
-			if ( part instanceof IEnergySource )
+			if( part instanceof IEnergySource )
 			{
 				// use lower number cause ic2 deletes power it sends that isn't received.
-				return ((IEnergySource) part).getOfferedEnergy();
+				return ( (IEnergySource) part ).getOfferedEnergy();
 			}
 		}
 
@@ -152,16 +154,16 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 	}
 
 	@Override
-	public void drawEnergy(double amount)
+	public void drawEnergy( double amount )
 	{
 		// this is a flawed implementation, that requires a change to the IC2 API.
 
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{
 			IPart part = this.getPart( dir );
-			if ( part instanceof IEnergySource )
+			if( part instanceof IEnergySource )
 			{
-				((IEnergySource) part).drawEnergy( amount );
+				( (IEnergySource) part ).drawEnergy( amount );
 				return;
 			}
 		}
@@ -172,16 +174,15 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 	{
 		// this is a flawed implementation, that requires a change to the IC2 API.
 
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+		for( ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS )
 		{
 			IPart part = this.getPart( dir );
-			if ( part instanceof IEnergySource )
+			if( part instanceof IEnergySource )
 			{
-				return ((IEnergySource) part).getSourceTier();
+				return ( (IEnergySource) part ).getSourceTier();
 			}
 		}
 
 		return 0;
 	}
-
 }

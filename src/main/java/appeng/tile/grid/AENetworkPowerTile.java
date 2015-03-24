@@ -18,6 +18,7 @@
 
 package appeng.tile.grid;
 
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -31,33 +32,28 @@ import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.powersink.AEBasePoweredTile;
 
+
 public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IActionHost, IGridProxyable
 {
 
-	@TileEvent(TileEventType.WORLD_NBT_READ)
-	public void readFromNBT_AENetwork(NBTTagCompound data)
+	protected final AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", this.getItemFromTile( this ), true );
+
+	@TileEvent( TileEventType.WORLD_NBT_READ )
+	public void readFromNBT_AENetwork( NBTTagCompound data )
 	{
 		this.gridProxy.readFromNBT( data );
 	}
 
-	@TileEvent(TileEventType.WORLD_NBT_WRITE)
-	public void writeToNBT_AENetwork(NBTTagCompound data)
+	@TileEvent( TileEventType.WORLD_NBT_WRITE )
+	public void writeToNBT_AENetwork( NBTTagCompound data )
 	{
 		this.gridProxy.writeToNBT( data );
 	}
-
-	protected final AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", this.getItemFromTile( this ), true );
 
 	@Override
 	public AENetworkProxy getProxy()
 	{
 		return this.gridProxy;
-	}
-
-	@Override
-	public AECableType getCableConnectionType(ForgeDirection dir)
-	{
-		return AECableType.SMART;
 	}
 
 	@Override
@@ -67,23 +63,21 @@ public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IA
 	}
 
 	@Override
-	public IGridNode getGridNode(ForgeDirection dir)
+	public void gridChanged()
+	{
+
+	}
+
+	@Override
+	public IGridNode getGridNode( ForgeDirection dir )
 	{
 		return this.gridProxy.getNode();
 	}
 
 	@Override
-	public void onReady()
+	public AECableType getCableConnectionType( ForgeDirection dir )
 	{
-		super.onReady();
-		this.gridProxy.onReady();
-	}
-
-	@Override
-	public void onChunkUnload()
-	{
-		super.onChunkUnload();
-		this.gridProxy.onChunkUnload();
+		return AECableType.SMART;
 	}
 
 	@Override
@@ -101,9 +95,17 @@ public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IA
 	}
 
 	@Override
-	public void gridChanged()
+	public void onChunkUnload()
 	{
+		super.onChunkUnload();
+		this.gridProxy.onChunkUnload();
+	}
 
+	@Override
+	public void onReady()
+	{
+		super.onReady();
+		this.gridProxy.onReady();
 	}
 
 	@Override

@@ -18,6 +18,7 @@
 
 package appeng.core.sync;
 
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -50,65 +51,68 @@ import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketTransitionEffect;
 import appeng.core.sync.packets.PacketValueConfig;
 
+
 public class AppEngPacketHandlerBase
 {
 
 	public static final Map<Class, PacketTypes> REVERSE_LOOKUP = new HashMap<Class, AppEngPacketHandlerBase.PacketTypes>();
 
+
 	public enum PacketTypes
 	{
-		PACKET_COMPASS_REQUEST(PacketCompassRequest.class),
+		PACKET_COMPASS_REQUEST( PacketCompassRequest.class ),
 
-		PACKET_COMPASS_RESPONSE(PacketCompassResponse.class),
+		PACKET_COMPASS_RESPONSE( PacketCompassResponse.class ),
 
-		PACKET_INVENTORY_ACTION(PacketInventoryAction.class),
+		PACKET_INVENTORY_ACTION( PacketInventoryAction.class ),
 
-		PACKET_ME_INVENTORY_UPDATE(PacketMEInventoryUpdate.class),
+		PACKET_ME_INVENTORY_UPDATE( PacketMEInventoryUpdate.class ),
 
-		PACKET_CONFIG_BUTTON(PacketConfigButton.class),
+		PACKET_CONFIG_BUTTON( PacketConfigButton.class ),
 
-		PACKET_MULTIPART(PacketMultiPart.class),
+		PACKET_MULTIPART( PacketMultiPart.class ),
 
-		PACKET_PART_PLACEMENT(PacketPartPlacement.class),
+		PACKET_PART_PLACEMENT( PacketPartPlacement.class ),
 
-		PACKET_LIGHTNING(PacketLightning.class),
+		PACKET_LIGHTNING( PacketLightning.class ),
 
-		PACKET_MATTER_CANNON(PacketMatterCannon.class),
+		PACKET_MATTER_CANNON( PacketMatterCannon.class ),
 
-		PACKET_MOCK_EXPLOSION(PacketMockExplosion.class),
+		PACKET_MOCK_EXPLOSION( PacketMockExplosion.class ),
 
-		PACKET_VALUE_CONFIG(PacketValueConfig.class),
+		PACKET_VALUE_CONFIG( PacketValueConfig.class ),
 
-		PACKET_TRANSITION_EFFECT(PacketTransitionEffect.class),
+		PACKET_TRANSITION_EFFECT( PacketTransitionEffect.class ),
 
-		PACKET_PROGRESS_VALUE(PacketProgressBar.class),
+		PACKET_PROGRESS_VALUE( PacketProgressBar.class ),
 
-		PACKET_CLICK(PacketClick.class),
+		PACKET_CLICK( PacketClick.class ),
 
-		PACKET_NEW_STORAGE_DIMENSION(PacketNewStorageDimension.class),
+		PACKET_NEW_STORAGE_DIMENSION( PacketNewStorageDimension.class ),
 
-		PACKET_SWITCH_GUIS(PacketSwitchGuis.class),
+		PACKET_SWITCH_GUIS( PacketSwitchGuis.class ),
 
-		PACKET_SWAP_SLOTS(PacketSwapSlots.class),
+		PACKET_SWAP_SLOTS( PacketSwapSlots.class ),
 
-		PACKET_PATTERN_SLOT(PacketPatternSlot.class),
+		PACKET_PATTERN_SLOT( PacketPatternSlot.class ),
 
-		PACKET_RECIPE_NEI(PacketNEIRecipe.class),
+		PACKET_RECIPE_NEI( PacketNEIRecipe.class ),
 
-		PACKET_PARTIAL_ITEM(PacketPartialItem.class),
+		PACKET_PARTIAL_ITEM( PacketPartialItem.class ),
 
-		PACKET_CRAFTING_REQUEST(PacketCraftRequest.class),
+		PACKET_CRAFTING_REQUEST( PacketCraftRequest.class ),
 
-		PACKET_ASSEMBLER_ANIMATION(PacketAssemblerAnimation.class),
+		PACKET_ASSEMBLER_ANIMATION( PacketAssemblerAnimation.class ),
 
-		PACKET_COMPRESSED_NBT(PacketCompressedNBT.class),
+		PACKET_COMPRESSED_NBT( PacketCompressedNBT.class ),
 
-		PACKET_PAINTED_ENTITY(PacketPaintedEntity.class);
+		PACKET_PAINTED_ENTITY( PacketPaintedEntity.class );
 
 		final public Class pc;
 		final public Constructor con;
 
-		private PacketTypes(Class c) {
+		private PacketTypes( Class c )
+		{
 			this.pc = c;
 
 			Constructor x = null;
@@ -116,35 +120,34 @@ public class AppEngPacketHandlerBase
 			{
 				x = this.pc.getConstructor( ByteBuf.class );
 			}
-			catch (NoSuchMethodException ignored)
+			catch( NoSuchMethodException ignored )
 			{
 			}
-			catch (SecurityException ignored)
+			catch( SecurityException ignored )
 			{
 			}
 
 			this.con = x;
 			AppEngPacketHandlerBase.REVERSE_LOOKUP.put( this.pc, this );
 
-			if ( this.con == null )
+			if( this.con == null )
 				throw new RuntimeException( "Invalid Packet Class, must be constructable on DataInputStream" );
 		}
 
-		public AppEngPacket parsePacket(ByteBuf in) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+		public static PacketTypes getPacket( int id )
 		{
-			return (AppEngPacket) this.con.newInstance( in );
+			return ( values() )[id];
 		}
 
-		public static PacketTypes getPacket(int id)
-		{
-			return (values())[id];
-		}
-
-		public static PacketTypes getID(Class<? extends AppEngPacket> c)
+		public static PacketTypes getID( Class<? extends AppEngPacket> c )
 		{
 			return AppEngPacketHandlerBase.REVERSE_LOOKUP.get( c );
 		}
 
-	}
+		public AppEngPacket parsePacket( ByteBuf in ) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+		{
+			return (AppEngPacket) this.con.newInstance( in );
+		}
 
+	}
 }

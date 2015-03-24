@@ -18,6 +18,7 @@
 
 package appeng.util;
 
+
 public enum SettingsFrom
 {
 	// moved the item, and replaced it.

@@ -56,11 +56,11 @@ public class GuiTabButton extends GuiButton implements ITooltip
 	/**
 	 * Using itemstack as an icon
 	 *
-	 * @param x x pos of button
-	 * @param y y pos of button
-	 * @param ico used icon
+	 * @param x       x pos of button
+	 * @param y       y pos of button
+	 * @param ico     used icon
 	 * @param message mouse over message
-	 * @param ir renderer
+	 * @param ir      renderer
 	 */
 	public GuiTabButton( int x, int y, ItemStack ico, String message, RenderItem ir )
 	{
@@ -77,7 +77,7 @@ public class GuiTabButton extends GuiButton implements ITooltip
 	@Override
 	public void drawButton( Minecraft minecraft, int x, int y )
 	{
-		if ( this.visible )
+		if( this.visible )
 		{
 			GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 			minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
@@ -89,9 +89,9 @@ public class GuiTabButton extends GuiButton implements ITooltip
 
 			this.drawTexturedModalRect( this.xPosition, this.yPosition, uv_x * 16, 0, 25, 22 );
 
-			if ( this.myIcon >= 0 )
+			if( this.myIcon >= 0 )
 			{
-				int uv_y = ( int ) Math.floor( this.myIcon / 16 );
+				int uv_y = (int) Math.floor( this.myIcon / 16 );
 				uv_x = this.myIcon - uv_y * 16;
 
 				this.drawTexturedModalRect( offsetX + this.xPosition + 3, this.yPosition + 3, uv_x * 16, uv_y * 16, 16, 16 );
@@ -99,7 +99,7 @@ public class GuiTabButton extends GuiButton implements ITooltip
 
 			this.mouseDragged( minecraft, x, y );
 
-			if ( this.myItem != null )
+			if( this.myItem != null )
 			{
 				this.zLevel = 100.0F;
 				this.itemRenderer.zLevel = 100.0F;

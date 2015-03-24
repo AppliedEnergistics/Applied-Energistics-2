@@ -18,6 +18,7 @@
 
 package appeng.core.features;
 
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -25,6 +26,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 
 import appeng.api.util.AEItemDefinition;
+
 
 public class NullItemDefinition implements AEItemDefinition
 {
@@ -48,21 +50,20 @@ public class NullItemDefinition implements AEItemDefinition
 	}
 
 	@Override
-	public ItemStack stack(int stackSize)
+	public ItemStack stack( int stackSize )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean sameAsStack(ItemStack comparableItem)
+	public boolean sameAsStack( ItemStack comparableItem )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean sameAsBlock(IBlockAccess world, int x, int y, int z)
+	public boolean sameAsBlock( IBlockAccess world, int x, int y, int z )
 	{
 		return false;
 	}
-
 }

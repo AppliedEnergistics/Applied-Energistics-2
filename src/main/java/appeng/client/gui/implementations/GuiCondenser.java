@@ -35,6 +35,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.tile.misc.TileCondenser;
 
+
 public class GuiCondenser extends AEBaseGui
 {
 
@@ -42,7 +43,7 @@ public class GuiCondenser extends AEBaseGui
 	GuiProgressBar pb;
 	GuiImgButton mode;
 
-	public GuiCondenser(InventoryPlayer inventoryPlayer, TileCondenser te)
+	public GuiCondenser( InventoryPlayer inventoryPlayer, TileCondenser te )
 	{
 		super( new ContainerCondenser( inventoryPlayer, te ) );
 		this.cvc = (ContainerCondenser) this.inventorySlots;
@@ -50,13 +51,13 @@ public class GuiCondenser extends AEBaseGui
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton btn)
+	protected void actionPerformed( GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
 		boolean backwards = Mouse.isButtonDown( 1 );
 
-		if ( this.mode == btn )
+		if( this.mode == btn )
 		{
 			NetworkHandler.instance.sendToServer( new PacketConfigButton( Settings.CONDENSER_OUTPUT, backwards ) );
 		}
@@ -76,22 +77,20 @@ public class GuiCondenser extends AEBaseGui
 	}
 
 	@Override
-	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
-	{
-		this.bindTexture( "guis/condenser.png" );
-
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
-	}
-
-	@Override
-	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
+	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
 		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.Condenser.getLocal() ), 8, 6, 4210752 );
 		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
 		this.mode.set( this.cvc.output );
 		this.mode.fillVar = String.valueOf( this.cvc.output.requiredPower );
-
 	}
 
+	@Override
+	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	{
+		this.bindTexture( "guis/condenser.png" );
+
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+	}
 }

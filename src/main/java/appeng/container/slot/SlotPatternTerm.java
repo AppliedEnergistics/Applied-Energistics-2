@@ -18,6 +18,7 @@
 
 package appeng.container.slot;
 
+
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,28 +33,32 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.packets.PacketPatternSlot;
 import appeng.helpers.IContainerCraftingPacket;
 
+
 public class SlotPatternTerm extends SlotCraftingTerm
 {
 
 	final int groupNum;
 	final IOptionalSlotHost host;
 
-	public SlotPatternTerm(EntityPlayer player, BaseActionSource mySrc, IEnergySource energySrc, IStorageMonitorable storage, IInventory cMatrix,
-			IInventory secondMatrix, IInventory output, int x, int y, IOptionalSlotHost h, int groupNumber, IContainerCraftingPacket c)
+	public SlotPatternTerm( EntityPlayer player, BaseActionSource mySrc, IEnergySource energySrc, IStorageMonitorable storage, IInventory cMatrix, IInventory secondMatrix, IInventory output, int x, int y, IOptionalSlotHost h, int groupNumber, IContainerCraftingPacket c )
 	{
 		super( player, mySrc, energySrc, storage, cMatrix, secondMatrix, output, x, y, c );
 
 		this.host = h;
 		this.groupNum = groupNumber;
+	}
 
+	public AppEngPacket getRequest( boolean shift ) throws IOException
+	{
+		return new PacketPatternSlot( this.pattern, AEApi.instance().storage().createItemStack( this.getStack() ), shift );
 	}
 
 	@Override
 	public ItemStack getStack()
 	{
-		if ( !this.isEnabled() )
+		if( !this.isEnabled() )
 		{
-			if ( this.getDisplayStack() != null )
+			if( this.getDisplayStack() != null )
 				this.clearStack();
 		}
 
@@ -63,15 +68,9 @@ public class SlotPatternTerm extends SlotCraftingTerm
 	@Override
 	public boolean isEnabled()
 	{
-		if ( this.host == null )
+		if( this.host == null )
 			return false;
 
 		return this.host.isSlotEnabled( this.groupNum );
 	}
-
-	public AppEngPacket getRequest(boolean shift) throws IOException
-	{
-		return new PacketPatternSlot( this.pattern, AEApi.instance().storage().createItemStack( this.getStack() ), shift );
-	}
-
 }

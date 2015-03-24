@@ -39,10 +39,12 @@ import appeng.helpers.ICustomCollision;
 import appeng.tile.networking.TileWireless;
 import appeng.util.Platform;
 
+
 public class BlockWireless extends AEBaseBlock implements ICustomCollision
 {
 
-	public BlockWireless() {
+	public BlockWireless()
+	{
 		super( BlockWireless.class, AEGlassMaterial.INSTANCE );
 		this.setFeature( EnumSet.of( AEFeature.Core, AEFeature.WirelessAccessTerminal ) );
 		this.setTileEntity( TileWireless.class );
@@ -58,10 +60,26 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
+	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
+	{
+		if( p.isSneaking() )
+			return false;
+
+		TileWireless tg = this.getTileEntity( w, x, y, z );
+		if( tg != null )
+		{
+			if( Platform.isServer() )
+				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_WIRELESS );
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
 	{
 		TileWireless tile = this.getTileEntity( w, x, y, z );
-		if ( tile != null )
+		if( tile != null )
 		{
 			ForgeDirection forward = tile.getForward();
 
@@ -72,46 +90,46 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 			double maxY = 1;
 			double maxZ = 1;
 
-			switch (forward)
+			switch( forward )
 			{
-			case DOWN:
-				minZ = minX = 3.0 / 16.0;
-				maxZ = maxX = 13.0 / 16.0;
-				maxY = 1.0;
-				minY = 5.0 / 16.0;
-				break;
-			case EAST:
-				minZ = minY = 3.0 / 16.0;
-				maxZ = maxY = 13.0 / 16.0;
-				maxX = 11.0 / 16.0;
-				minX = 0.0;
-				break;
-			case NORTH:
-				minY = minX = 3.0 / 16.0;
-				maxY = maxX = 13.0 / 16.0;
-				maxZ = 1.0;
-				minZ = 5.0 / 16.0;
-				break;
-			case SOUTH:
-				minY = minX = 3.0 / 16.0;
-				maxY = maxX = 13.0 / 16.0;
-				maxZ = 11.0 / 16.0;
-				minZ = 0.0;
-				break;
-			case UP:
-				minZ = minX = 3.0 / 16.0;
-				maxZ = maxX = 13.0 / 16.0;
-				maxY = 11.0 / 16.0;
-				minY = 0.0;
-				break;
-			case WEST:
-				minZ = minY = 3.0 / 16.0;
-				maxZ = maxY = 13.0 / 16.0;
-				maxX = 1.0;
-				minX = 5.0 / 16.0;
-				break;
-			default:
-				break;
+				case DOWN:
+					minZ = minX = 3.0 / 16.0;
+					maxZ = maxX = 13.0 / 16.0;
+					maxY = 1.0;
+					minY = 5.0 / 16.0;
+					break;
+				case EAST:
+					minZ = minY = 3.0 / 16.0;
+					maxZ = maxY = 13.0 / 16.0;
+					maxX = 11.0 / 16.0;
+					minX = 0.0;
+					break;
+				case NORTH:
+					minY = minX = 3.0 / 16.0;
+					maxY = maxX = 13.0 / 16.0;
+					maxZ = 1.0;
+					minZ = 5.0 / 16.0;
+					break;
+				case SOUTH:
+					minY = minX = 3.0 / 16.0;
+					maxY = maxX = 13.0 / 16.0;
+					maxZ = 11.0 / 16.0;
+					minZ = 0.0;
+					break;
+				case UP:
+					minZ = minX = 3.0 / 16.0;
+					maxZ = maxX = 13.0 / 16.0;
+					maxY = 11.0 / 16.0;
+					minY = 0.0;
+					break;
+				case WEST:
+					minZ = minY = 3.0 / 16.0;
+					maxZ = maxY = 13.0 / 16.0;
+					maxX = 1.0;
+					minX = 5.0 / 16.0;
+					break;
+				default:
+					break;
 			}
 
 			return Collections.singletonList( AxisAlignedBB.getBoundingBox( minX, minY, minZ, maxX, maxY, maxZ ) );
@@ -120,10 +138,10 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e)
+	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
 	{
 		TileWireless tile = this.getTileEntity( w, x, y, z );
-		if ( tile != null )
+		if( tile != null )
 		{
 			ForgeDirection forward = tile.getForward();
 
@@ -134,46 +152,46 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 			double maxY = 1;
 			double maxZ = 1;
 
-			switch (forward)
+			switch( forward )
 			{
-			case DOWN:
-				minZ = minX = 3.0 / 16.0;
-				maxZ = maxX = 13.0 / 16.0;
-				maxY = 1.0;
-				minY = 5.0 / 16.0;
-				break;
-			case EAST:
-				minZ = minY = 3.0 / 16.0;
-				maxZ = maxY = 13.0 / 16.0;
-				maxX = 11.0 / 16.0;
-				minX = 0.0;
-				break;
-			case NORTH:
-				minY = minX = 3.0 / 16.0;
-				maxY = maxX = 13.0 / 16.0;
-				maxZ = 1.0;
-				minZ = 5.0 / 16.0;
-				break;
-			case SOUTH:
-				minY = minX = 3.0 / 16.0;
-				maxY = maxX = 13.0 / 16.0;
-				maxZ = 11.0 / 16.0;
-				minZ = 0.0;
-				break;
-			case UP:
-				minZ = minX = 3.0 / 16.0;
-				maxZ = maxX = 13.0 / 16.0;
-				maxY = 11.0 / 16.0;
-				minY = 0.0;
-				break;
-			case WEST:
-				minZ = minY = 3.0 / 16.0;
-				maxZ = maxY = 13.0 / 16.0;
-				maxX = 1.0;
-				minX = 5.0 / 16.0;
-				break;
-			default:
-				break;
+				case DOWN:
+					minZ = minX = 3.0 / 16.0;
+					maxZ = maxX = 13.0 / 16.0;
+					maxY = 1.0;
+					minY = 5.0 / 16.0;
+					break;
+				case EAST:
+					minZ = minY = 3.0 / 16.0;
+					maxZ = maxY = 13.0 / 16.0;
+					maxX = 11.0 / 16.0;
+					minX = 0.0;
+					break;
+				case NORTH:
+					minY = minX = 3.0 / 16.0;
+					maxY = maxX = 13.0 / 16.0;
+					maxZ = 1.0;
+					minZ = 5.0 / 16.0;
+					break;
+				case SOUTH:
+					minY = minX = 3.0 / 16.0;
+					maxY = maxX = 13.0 / 16.0;
+					maxZ = 11.0 / 16.0;
+					minZ = 0.0;
+					break;
+				case UP:
+					minZ = minX = 3.0 / 16.0;
+					maxZ = maxX = 13.0 / 16.0;
+					maxY = 11.0 / 16.0;
+					minY = 0.0;
+					break;
+				case WEST:
+					minZ = minY = 3.0 / 16.0;
+					maxZ = maxY = 13.0 / 16.0;
+					maxX = 1.0;
+					minX = 5.0 / 16.0;
+					break;
+				default:
+					break;
 			}
 
 			out.add( AxisAlignedBB.getBoundingBox( minX, minY, minZ, maxX, maxY, maxZ ) );
@@ -181,21 +199,4 @@ public class BlockWireless extends AEBaseBlock implements ICustomCollision
 		else
 			out.add( AxisAlignedBB.getBoundingBox( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
 	}
-
-	@Override
-	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
-	{
-		if ( p.isSneaking() )
-			return false;
-
-		TileWireless tg = this.getTileEntity( w, x, y, z );
-		if ( tg != null )
-		{
-			if ( Platform.isServer() )
-				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_WIRELESS );
-			return true;
-		}
-		return false;
-	}
-
 }

@@ -35,8 +35,8 @@ public class OreReference
 {
 
 	private final List<String> otherOptions = new LinkedList<String>();
-	private List<IAEItemStack> aeOtherOptions = null;
 	private final Set<Integer> ores = new HashSet<Integer>();
+	private List<IAEItemStack> aeOtherOptions = null;
 
 	public Collection<String> getEquivalents()
 	{
@@ -45,20 +45,19 @@ public class OreReference
 
 	public List<IAEItemStack> getAEEquivalents()
 	{
-		if ( this.aeOtherOptions == null )
+		if( this.aeOtherOptions == null )
 		{
 			this.aeOtherOptions = new ArrayList<IAEItemStack>( this.otherOptions.size() );
 
 			// SUMMON AE STACKS!
-			for ( String oreName : this.otherOptions )
+			for( String oreName : this.otherOptions )
 			{
-				for ( ItemStack is : OreHelper.INSTANCE.getCachedOres( oreName ) )
+				for( ItemStack is : OreHelper.INSTANCE.getCachedOres( oreName ) )
 				{
-					if ( is.getItem() != null )
+					if( is.getItem() != null )
 					{
 						this.aeOtherOptions.add( AEItemStack.create( is ) );
 					}
-
 				}
 			}
 		}
@@ -70,5 +69,4 @@ public class OreReference
 	{
 		return this.ores;
 	}
-
 }
