@@ -1,6 +1,6 @@
 # Applied Energistics 2
 
-## Table of Content
+## Table of Contents
 
 * [About](#about)
 * [Contacts](#contacts)
