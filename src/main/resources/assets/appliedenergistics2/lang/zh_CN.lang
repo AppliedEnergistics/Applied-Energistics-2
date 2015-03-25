@@ -467,6 +467,7 @@ commands.ae2.ChunkLoggerOn=区块日志已打开
 commands.ae2.ChunkLoggerOff=区块日志已关闭
 commands.ae2.Supporters=显示ae2支持者列表
 
+// 成就
 achievement.ae2.Compass=陨石猎手
 achievement.ae2.Compass.desc=制作一个陨石罗盘
 achievement.ae2.Presses=未知科技
