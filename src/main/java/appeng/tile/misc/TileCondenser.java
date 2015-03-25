@@ -168,15 +168,15 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	}
 
 	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j)
+	public boolean canExtractItem(int slotIndex, ItemStack extractedItem, int side )
 	{
-		return i != 0;
+		return slotIndex != 0;
 	}
 
 	@Override
-	public boolean canInsertItem(int i, ItemStack itemstack, int j)
+	public boolean canInsertItem(int slotIndex, ItemStack insertingItem, int side )
 	{
-		return i == 0;
+		return slotIndex == 0;
 	}
 
 	@Override

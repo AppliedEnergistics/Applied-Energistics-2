@@ -285,9 +285,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j)
+	public boolean canExtractItem(int slotIndex, ItemStack extractedItem, int side )
 	{
-		return i == 9;
+		return slotIndex == 9;
 	}
 
 	@Override

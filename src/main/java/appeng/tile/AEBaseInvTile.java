@@ -124,13 +124,13 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	}
 
 	@Override
-	public boolean canInsertItem(int i, ItemStack itemstack, int j)
+	public boolean canInsertItem(int slotIndex, ItemStack insertingItem, int side)
 	{
-		return this.isItemValidForSlot( i, itemstack );
+		return this.isItemValidForSlot( slotIndex, insertingItem );
 	}
 
 	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j)
+	public boolean canExtractItem(int slotIndex, ItemStack extractedItem, int side)
 	{
 		return true;
 	}

@@ -72,18 +72,18 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	}
 
 	@Override
-	public boolean canInsertItem(int i, ItemStack itemstack, int j)
+	public boolean canInsertItem(int slotIndex, ItemStack insertingItem, int side )
 	{
-		if ( AEApi.instance().registries().grinder().getRecipeForInput( itemstack ) == null )
+		if ( AEApi.instance().registries().grinder().getRecipeForInput( insertingItem ) == null )
 			return false;
 
-		return i >= 0 && i <= 2;
+		return slotIndex >= 0 && slotIndex <= 2;
 	}
 
 	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j)
+	public boolean canExtractItem(int slotIndex, ItemStack extractedItem, int side )
 	{
-		return i >= 3 && i <= 5;
+		return slotIndex >= 3 && slotIndex <= 5;
 	}
 
 	@Override

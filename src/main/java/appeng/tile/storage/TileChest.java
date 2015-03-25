@@ -548,19 +548,19 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	}
 
 	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j)
+	public boolean canExtractItem(int slotIndex, ItemStack extractedItem, int side )
 	{
-		return i == 1;
+		return slotIndex == 1;
 	}
 
 	@Override
-	public boolean canInsertItem(int i, ItemStack itemstack, int j)
+	public boolean canInsertItem(int slotIndex, ItemStack insertingItem, int side )
 	{
-		if ( i == 1 )
+		if ( slotIndex == 1 )
 		{
-			if ( AEApi.instance().registries().cell().getCellInventory( itemstack, this, StorageChannel.ITEMS ) != null )
+			if ( AEApi.instance().registries().cell().getCellInventory( insertingItem, this, StorageChannel.ITEMS ) != null )
 				return true;
-			if ( AEApi.instance().registries().cell().getCellInventory( itemstack, this, StorageChannel.FLUIDS ) != null )
+			if ( AEApi.instance().registries().cell().getCellInventory( insertingItem, this, StorageChannel.FLUIDS ) != null )
 				return true;
 		}
 		else
@@ -569,7 +569,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			{
 				IMEInventory<IAEItemStack> cell = this.getHandler( StorageChannel.ITEMS );
 				IAEItemStack returns = cell.injectItems( AEApi.instance().storage().createItemStack( this.inv.getStackInSlot( 0 ) ), Actionable.SIMULATE, this.mySrc );
-				return returns == null || returns.getStackSize() != itemstack.stackSize;
+				return returns == null || returns.getStackSize() != insertingItem.stackSize;
 			}
 			catch (ChestNoHandler ignored)
 			{

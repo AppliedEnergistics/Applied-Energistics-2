@@ -174,15 +174,15 @@ public class TileSpatialIOPort extends AENetworkInvTile implements Callable
 	}
 
 	@Override
-	public boolean canInsertItem(int i, ItemStack itemstack, int j)
+	public boolean canInsertItem(int slotIndex, ItemStack insertingItem, int side )
 	{
-		return this.isItemValidForSlot( i, itemstack );
+		return this.isItemValidForSlot( slotIndex, insertingItem );
 	}
 
 	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j)
+	public boolean canExtractItem(int slotIndex, ItemStack extractedItem, int side )
 	{
-		return i == 1;
+		return slotIndex == 1;
 	}
 
 	@Override

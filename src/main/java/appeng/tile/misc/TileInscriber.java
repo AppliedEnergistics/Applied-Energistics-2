@@ -224,12 +224,12 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j)
+	public boolean canExtractItem(int slotIndex, ItemStack extractedItem, int side )
 	{
 		if ( this.smash )
 			return false;
 
-		return i == 0 || i == 1 || i == 3;
+		return slotIndex == 0 || slotIndex == 1 || slotIndex == 3;
 	}
 
 	@Override
