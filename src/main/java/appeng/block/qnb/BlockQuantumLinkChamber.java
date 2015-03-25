@@ -46,10 +46,12 @@ import appeng.helpers.ICustomCollision;
 import appeng.tile.qnb.TileQuantumBridge;
 import appeng.util.Platform;
 
+
 public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomCollision
 {
 
-	public BlockQuantumLinkChamber() {
+	public BlockQuantumLinkChamber()
+	{
 		super( BlockQuantumLinkChamber.class, AEGlassMaterial.INSTANCE );
 		this.setFeature( EnumSet.of( AEFeature.QuantumNetworkBridge ) );
 		this.setTileEntity( TileQuantumBridge.class );
@@ -60,36 +62,26 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World w, int bx, int by, int bz, Random r)
+	@SideOnly( Side.CLIENT )
+	public void randomDisplayTick( World w, int bx, int by, int bz, Random r )
 	{
 		TileQuantumBridge bridge = this.getTileEntity( w, bx, by, bz );
-		if ( bridge != null )
+		if( bridge != null )
 		{
-			if ( bridge.hasQES() )
+			if( bridge.hasQES() )
 			{
-				if ( CommonHelper.proxy.shouldAddParticles( r ) )
+				if( CommonHelper.proxy.shouldAddParticles( r ) )
 					CommonHelper.proxy.spawnEffect( EffectType.Energy, w, bx + 0.5, by + 0.5, bz + 0.5, null );
 			}
 		}
 	}
 
 	@Override
-	public void onNeighborBlockChange(World w, int x, int y, int z, Block pointlessNumber)
+	public void onNeighborBlockChange( World w, int x, int y, int z, Block pointlessNumber )
 	{
 		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
-		if ( bridge != null )
+		if( bridge != null )
 			bridge.neighborUpdate();
-	}
-
-	@Override
-	public void breakBlock(World w, int x, int y, int z, Block a, int b)
-	{
-		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
-		if ( bridge != null )
-			bridge.breakCluster();
-
-		super.breakBlock( w, x, y, z, a, b );
 	}
 
 	@Override
@@ -99,15 +91,15 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 	}
 
 	@Override
-	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
+	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
 	{
-		if ( p.isSneaking() )
+		if( p.isSneaking() )
 			return false;
 
 		TileQuantumBridge tg = this.getTileEntity( w, x, y, z );
-		if ( tg != null )
+		if( tg != null )
 		{
-			if ( Platform.isServer() )
+			if( Platform.isServer() )
 				Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_QNB );
 			return true;
 		}
@@ -115,17 +107,26 @@ public class BlockQuantumLinkChamber extends AEBaseBlock implements ICustomColli
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
+	public void breakBlock( World w, int x, int y, int z, Block a, int b )
+	{
+		TileQuantumBridge bridge = this.getTileEntity( w, x, y, z );
+		if( bridge != null )
+			bridge.breakCluster();
+
+		super.breakBlock( w, x, y, z, a, b );
+	}
+
+	@Override
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
 	{
 		double OnePx = 2.0 / 16.0;
 		return Collections.singletonList( AxisAlignedBB.getBoundingBox( OnePx, OnePx, OnePx, 1.0 - OnePx, 1.0 - OnePx, 1.0 - OnePx ) );
 	}
 
 	@Override
-	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e)
+	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
 	{
 		double OnePx = 2.0 / 16.0;
 		out.add( AxisAlignedBB.getBoundingBox( OnePx, OnePx, OnePx, 1.0 - OnePx, 1.0 - OnePx, 1.0 - OnePx ) );
 	}
-
 }

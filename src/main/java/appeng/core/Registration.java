@@ -262,23 +262,23 @@ public final class Registration
 		AEItemDefinition materialItem = this.addFeature( ItemMultiMaterial.class );
 
 		Class<?> materialClass = materials.getClass();
-		for ( MaterialType mat : MaterialType.values() )
+		for( MaterialType mat : MaterialType.values() )
 		{
 			try
 			{
-				if ( mat == MaterialType.InvalidType )
-					( ( ItemMultiMaterial ) materialItem.item() ).createMaterial( mat );
+				if( mat == MaterialType.InvalidType )
+					( (ItemMultiMaterial) materialItem.item() ).createMaterial( mat );
 				else
 				{
 					Field f = materialClass.getField( "material" + mat.name() );
-					IStackSrc is = ( ( ItemMultiMaterial ) materialItem.item() ).createMaterial( mat );
-					if ( is != null )
+					IStackSrc is = ( (ItemMultiMaterial) materialItem.item() ).createMaterial( mat );
+					if( is != null )
 						f.set( materials, new DamagedItemDefinition( is ) );
 					else
 						f.set( materials, new NullItemDefinition() );
 				}
 			}
-			catch ( Throwable err )
+			catch( Throwable err )
 			{
 				AELog.severe( "Error creating material: " + mat.name() );
 				throw new RuntimeException( err );
@@ -288,35 +288,35 @@ public final class Registration
 		AEItemDefinition partItem = this.addFeature( ItemMultiPart.class );
 
 		Class<?> partClass = parts.getClass();
-		for ( PartType type : PartType.values() )
+		for( PartType type : PartType.values() )
 		{
 			try
 			{
-				if ( type == PartType.InvalidType )
-					( ( ItemMultiPart ) partItem.item() ).createPart( type, null );
+				if( type == PartType.InvalidType )
+					( (ItemMultiPart) partItem.item() ).createPart( type, null );
 				else
 				{
 					Field f = partClass.getField( "part" + type.name() );
 					Enum<AEColor>[] variants = type.getVariants();
-					if ( variants == null )
+					if( variants == null )
 					{
-						ItemStackSrc is = ( ( ItemMultiPart ) partItem.item() ).createPart( type, null );
-						if ( is != null )
+						ItemStackSrc is = ( (ItemMultiPart) partItem.item() ).createPart( type, null );
+						if( is != null )
 							f.set( parts, new DamagedItemDefinition( is ) );
 						else
 							f.set( parts, new NullItemDefinition() );
 					}
 					else
 					{
-						if ( variants[0] instanceof AEColor )
+						if( variants[0] instanceof AEColor )
 						{
 							ColoredItemDefinition def = new ColoredItemDefinition();
 
-							for ( Enum<AEColor> v : variants )
+							for( Enum<AEColor> v : variants )
 							{
-								ItemStackSrc is = ( ( ItemMultiPart ) partItem.item() ).createPart( type, v );
-								if ( is != null )
-									def.add( ( AEColor ) v, is );
+								ItemStackSrc is = ( (ItemMultiPart) partItem.item() ).createPart( type, v );
+								if( is != null )
+									def.add( (AEColor) v, is );
 							}
 
 							f.set( parts, def );
@@ -324,7 +324,7 @@ public final class Registration
 					}
 				}
 			}
-			catch ( Throwable err )
+			catch( Throwable err )
 			{
 				AELog.severe( "Error creating part: " + type.name() );
 				throw new RuntimeException( err );
@@ -439,9 +439,9 @@ public final class Registration
 		items.itemLumenPaintBall = lumenPaintBall = new ColoredItemDefinition();
 		AEItemDefinition pb = this.addFeature( ItemPaintBall.class );
 
-		for ( AEColor c : AEColor.values() )
+		for( AEColor c : AEColor.values() )
 		{
-			if ( c != AEColor.Transparent )
+			if( c != AEColor.Transparent )
 			{
 				paintBall.add( c, new ItemStackSrc( pb.item(), c.ordinal() ) );
 				lumenPaintBall.add( c, new ItemStackSrc( pb.item(), 20 + c.ordinal() ) );
@@ -471,37 +471,37 @@ public final class Registration
 
 	private void registerSpatial( boolean force )
 	{
-		if ( !AEConfig.instance.isFeatureEnabled( AEFeature.SpatialIO ) )
+		if( !AEConfig.instance.isFeatureEnabled( AEFeature.SpatialIO ) )
 			return;
 
 		AEConfig config = AEConfig.instance;
 
-		if ( this.storageBiome == null )
+		if( this.storageBiome == null )
 		{
-			if ( force && config.storageBiomeID == -1 )
+			if( force && config.storageBiomeID == -1 )
 			{
 				config.storageBiomeID = Platform.findEmpty( BiomeGenBase.getBiomeGenArray() );
-				if ( config.storageBiomeID == -1 )
+				if( config.storageBiomeID == -1 )
 					throw new RuntimeException( "Biome Array is full, please free up some Biome ID's or disable spatial." );
 
 				this.storageBiome = new BiomeGenStorage( config.storageBiomeID );
 				config.save();
 			}
 
-			if ( !force && config.storageBiomeID != -1 )
+			if( !force && config.storageBiomeID != -1 )
 				this.storageBiome = new BiomeGenStorage( config.storageBiomeID );
 		}
 
-		if ( config.storageProviderID != -1 )
+		if( config.storageProviderID != -1 )
 		{
 			DimensionManager.registerProviderType( config.storageProviderID, StorageWorldProvider.class, false );
 		}
 
-		if ( config.storageProviderID == -1 && force )
+		if( config.storageProviderID == -1 && force )
 		{
 			config.storageProviderID = -11;
 
-			while ( !DimensionManager.registerProviderType( config.storageProviderID, StorageWorldProvider.class, false ) )
+			while( !DimensionManager.registerProviderType( config.storageProviderID, StorageWorldProvider.class, false ) )
 				config.storageProviderID--;
 
 			config.save();
@@ -513,13 +513,13 @@ public final class Registration
 		final ClassInstantiation<IAEFeature> instantiation = new ClassInstantiation<IAEFeature>( featureClass, args );
 		final Optional<IAEFeature> instance = instantiation.get();
 
-		if ( instance.isPresent() )
+		if( instance.isPresent() )
 		{
 			final IAEFeature feature = instance.get();
 			final IFeatureHandler handler = feature.handler();
-			if ( handler.isFeatureAvailable() )
+			if( handler.isFeatureAvailable() )
 			{
-				for ( AEFeature f : handler.getFeatures() )
+				for( AEFeature f : handler.getFeatures() )
 				{
 					this.featuresToEntities.put( f, featureClass );
 				}
@@ -545,7 +545,7 @@ public final class Registration
 		// Perform ore camouflage!
 		ItemMultiMaterial.instance.makeUnique();
 
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.CustomRecipes ) )
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.CustomRecipes ) )
 			this.recipeHandler.parseRecipes( new ConfigLoader( AppEng.instance.getConfigDirectory() ), "index.recipe" );
 		else
 			this.recipeHandler.parseRecipes( new JarLoader( "/assets/appliedenergistics2/recipes/" ), "index.recipe" );
@@ -555,13 +555,13 @@ public final class Registration
 		ph.registerNewLayer( "appeng.parts.layers.LayerIFluidHandler", "net.minecraftforge.fluids.IFluidHandler" );
 		ph.registerNewLayer( "appeng.parts.layers.LayerITileStorageMonitorable", "appeng.api.implementations.tiles.ITileStorageMonitorable" );
 
-		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.IC2 ) )
+		if( AppEng.instance.isIntegrationEnabled( IntegrationType.IC2 ) )
 		{
 			ph.registerNewLayer( "appeng.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );
 			ph.registerNewLayer( "appeng.parts.layers.LayerIEnergySource", "ic2.api.energy.tile.IEnergySource" );
 		}
 
-		if ( AppEng.instance.isIntegrationEnabled( IntegrationType.RF ) )
+		if( AppEng.instance.isIntegrationEnabled( IntegrationType.RF ) )
 			ph.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyReceiver" );
 
 		FMLCommonHandler.instance().bus().register( TickHandler.INSTANCE );
@@ -594,10 +594,10 @@ public final class Registration
 		registration.registerAchievementHandlers();
 		registration.registerAchievements();
 
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.enableDisassemblyCrafting ) )
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.enableDisassemblyCrafting ) )
 			CraftingManager.getInstance().getRecipeList().add( new DisassembleRecipe() );
 
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.enableFacadeCrafting ) )
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.enableFacadeCrafting ) )
 			CraftingManager.getInstance().getRecipeList().add( new FacadeRecipe() );
 	}
 
@@ -612,14 +612,14 @@ public final class Registration
 		final Items items = api.items();
 
 		// default settings..
-		( ( P2PTunnelRegistry ) registries.p2pTunnel() ).configure();
+		( (P2PTunnelRegistry) registries.p2pTunnel() ).configure();
 
 		// add to localization..
 		PlayerMessages.values();
 		GuiText.values();
 
 		Api.INSTANCE.partHelper.initFMPSupport();
-		( ( BlockCableBus ) blocks.blockMultiPart.block() ).setupTile();
+		( (BlockCableBus) blocks.blockMultiPart.block() ).setupTile();
 
 		// Interface
 		Upgrades.CRAFTING.registerItem( parts.partInterface, 1 );
@@ -686,12 +686,12 @@ public final class Registration
 		// Inscriber
 		Upgrades.SPEED.registerItem( blocks.blockInscriber, 3 );
 
-		if ( items.itemWirelessTerminal != null )
+		if( items.itemWirelessTerminal != null )
 		{
-			registries.wireless().registerWirelessHandler( ( IWirelessTermHandler ) items.itemWirelessTerminal.item() );
+			registries.wireless().registerWirelessHandler( (IWirelessTermHandler) items.itemWirelessTerminal.item() );
 		}
 
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.ChestLoot ) )
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.ChestLoot ) )
 		{
 			ChestGenHooks d = ChestGenHooks.getInfo( ChestGenHooks.MINESHAFT_CORRIDOR );
 			d.addItem( new WeightedRandomChestContent( api.materials().materialCertusQuartzCrystal.stack( 1 ), 1, 4, 2 ) );
@@ -699,13 +699,13 @@ public final class Registration
 		}
 
 		// add villager trading to black smiths for a few basic materials
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.VillagerTrading ) )
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.VillagerTrading ) )
 			VillagerRegistry.instance().registerVillageTradeHandler( 3, new AETrading() );
 
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.CertusQuartzWorldGen ) )
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.CertusQuartzWorldGen ) )
 			GameRegistry.registerWorldGenerator( new QuartzWorldGen(), 0 );
 
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.MeteoriteWorldGen ) )
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.MeteoriteWorldGen ) )
 		{
 			GameRegistry.registerWorldGenerator( new MeteoriteWorldGen(), 0 );
 		}
@@ -748,7 +748,7 @@ public final class Registration
 		/**
 		 * world gen
 		 */
-		for ( WorldGenType type : WorldGenType.values() )
+		for( WorldGenType type : WorldGenType.values() )
 		{
 			registries.worldgen().disableWorldGenForProviderID( type, StorageWorldProvider.class );
 
@@ -760,7 +760,7 @@ public final class Registration
 		}
 
 		// whitelist from config
-		for ( int dimension : AEConfig.instance.meteoriteDimensionWhitelist )
+		for( int dimension : AEConfig.instance.meteoriteDimensionWhitelist )
 		{
 			registries.worldgen().enableWorldGenForDimension( WorldGenType.Meteorites, dimension );
 		}

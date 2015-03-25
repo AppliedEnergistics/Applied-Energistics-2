@@ -31,26 +31,27 @@ import appeng.api.util.AEColor;
 import appeng.client.texture.ExtraItemTextures;
 import appeng.items.misc.ItemPaintBall;
 
+
 public class PaintBallRender implements IItemRenderer
 {
 
 	@Override
-	public boolean handleRenderType(ItemStack item, ItemRenderType type)
+	public boolean handleRenderType( ItemStack item, ItemRenderType type )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper)
+	public boolean shouldUseRenderHelper( ItemRenderType type, ItemStack item, ItemRendererHelper helper )
 	{
 		return helper == ItemRendererHelper.ENTITY_BOBBING || helper == ItemRendererHelper.ENTITY_ROTATION;
 	}
 
 	@Override
-	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
+	public void renderItem( ItemRenderType type, ItemStack item, Object... data )
 	{
 		IIcon par2Icon = item.getIconIndex();
-		if ( item.getItemDamage() >= 20 )
+		if( item.getItemDamage() >= 20 )
 			par2Icon = ExtraItemTextures.ItemPaintBallShimmer.getIcon();
 
 		float f4 = par2Icon.getMinU();
@@ -68,19 +69,19 @@ public class PaintBallRender implements IItemRenderer
 		AEColor col = ipb.getColor( item );
 
 		int colorValue = item.getItemDamage() >= 20 ? col.mediumVariant : col.mediumVariant;
-		int r = (colorValue >> 16) & 0xff;
-		int g = (colorValue >> 8) & 0xff;
+		int r = ( colorValue >> 16 ) & 0xff;
+		int g = ( colorValue >> 8 ) & 0xff;
 		int b = ( colorValue ) & 0xff;
 
-		int full = (int) (255 * 0.3);
+		int full = (int) ( 255 * 0.3 );
 		float fail = 0.7f;
 
-		if ( item.getItemDamage() >= 20 )
-			GL11.glColor4ub( (byte) (full + r * fail), (byte) (full + g * fail), (byte) (full + b * fail), (byte) 255 );
+		if( item.getItemDamage() >= 20 )
+			GL11.glColor4ub( (byte) ( full + r * fail ), (byte) ( full + g * fail ), (byte) ( full + b * fail ), (byte) 255 );
 		else
 			GL11.glColor4ub( (byte) r, (byte) g, (byte) b, (byte) 255 );
 
-		if ( type == ItemRenderType.INVENTORY )
+		if( type == ItemRenderType.INVENTORY )
 		{
 			GL11.glScalef( 16F, 16F, 10F );
 			GL11.glTranslatef( 0.0F, 1.0F, 0.0F );
@@ -97,7 +98,7 @@ public class PaintBallRender implements IItemRenderer
 		}
 		else
 		{
-			if ( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
+			if( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
 				GL11.glTranslatef( 0.0F, 0.0F, 0.0F );
 			else
 				GL11.glTranslatef( -0.5F, -0.3F, 0.01F );

@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -40,6 +41,7 @@ import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.parts.reporting.PartTerminal;
 
+
 public class GuiCraftAmount extends AEBaseGui
 {
 
@@ -53,7 +55,8 @@ public class GuiCraftAmount extends AEBaseGui
 
 	GuiBridge OriginalGui;
 
-	public GuiCraftAmount(InventoryPlayer inventoryPlayer, ITerminalHost te) {
+	public GuiCraftAmount( InventoryPlayer inventoryPlayer, ITerminalHost te )
+	{
 		super( new ContainerCraftAmount( inventoryPlayer, te ) );
 	}
 
@@ -80,33 +83,33 @@ public class GuiCraftAmount extends AEBaseGui
 		this.buttonList.add( this.next = new GuiButton( 0, this.guiLeft + 128, this.guiTop + 51, 38, 20, GuiText.Next.getLocal() ) );
 
 		ItemStack myIcon = null;
-		Object target = ((AEBaseContainer) this.inventorySlots).getTarget();
+		Object target = ( (AEBaseContainer) this.inventorySlots ).getTarget();
 
-		if ( target instanceof WirelessTerminalGuiObject )
+		if( target instanceof WirelessTerminalGuiObject )
 		{
 			myIcon = AEApi.instance().items().itemWirelessTerminal.stack( 1 );
 			this.OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
 		}
 
-		if ( target instanceof PartTerminal )
+		if( target instanceof PartTerminal )
 		{
 			myIcon = AEApi.instance().parts().partTerminal.stack( 1 );
 			this.OriginalGui = GuiBridge.GUI_ME;
 		}
 
-		if ( target instanceof PartCraftingTerminal )
+		if( target instanceof PartCraftingTerminal )
 		{
 			myIcon = AEApi.instance().parts().partCraftingTerminal.stack( 1 );
 			this.OriginalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
 		}
 
-		if ( target instanceof PartPatternTerminal )
+		if( target instanceof PartPatternTerminal )
 		{
 			myIcon = AEApi.instance().parts().partPatternTerminal.stack( 1 );
 			this.OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
 		}
 
-		if ( this.OriginalGui != null )
+		if( this.OriginalGui != null )
 			this.buttonList.add( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), itemRender ) );
 
 		this.amountToCraft = new GuiNumberBox( this.fontRendererObj, this.guiLeft + 62, this.guiTop + 57, 59, this.fontRendererObj.FONT_HEIGHT, Integer.class );
@@ -119,111 +122,67 @@ public class GuiCraftAmount extends AEBaseGui
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton btn)
+	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
-		super.actionPerformed( btn );
-
-		try
-		{
-
-			if ( btn == this.originalGuiBtn )
-			{
-				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( this.OriginalGui ) );
-			}
-
-			if ( btn == this.next )
-			{
-				NetworkHandler.instance.sendToServer( new PacketCraftRequest( Integer.parseInt( this.amountToCraft.getText() ), isShiftKeyDown() ) );
-			}
-
-		}
-		catch (NumberFormatException e)
-		{
-			// nope..
-			this.amountToCraft.setText( "1" );
-		}
-
-		boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
-		boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
-
-		if ( isPlus || isMinus )
-			this.addQty( this.getQty( btn ) );
-	}
-
-	private void addQty(int i)
-	{
-		try
-		{
-			String Out = this.amountToCraft.getText();
-
-			boolean Fixed = false;
-			while (Out.startsWith( "0" ) && Out.length() > 1)
-			{
-				Out = Out.substring( 1 );
-				Fixed = true;
-			}
-
-			if ( Fixed )
-				this.amountToCraft.setText( Out );
-
-			if ( Out.length() == 0 )
-				Out = "0";
-
-			long result = Integer.parseInt( Out );
-
-			if ( result == 1 && i > 1 )
-				result = 0;
-
-			result += i;
-			if ( result < 1 )
-				result = 1;
-
-			Out = Long.toString( result );
-			Integer.parseInt( Out );
-			this.amountToCraft.setText( Out );
-		}
-		catch (NumberFormatException e)
-		{
-			// :P
-		}
+		this.fontRendererObj.drawString( GuiText.SelectAmount.getLocal(), 8, 6, 4210752 );
 	}
 
 	@Override
-	protected void keyTyped(char character, int key)
+	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
-		if ( !this.checkHotbarKeys( key ) )
+		this.next.displayString = isShiftKeyDown() ? GuiText.Start.getLocal() : GuiText.Next.getLocal();
+
+		this.bindTexture( "guis/craftAmt.png" );
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+
+		try
 		{
-			if ( key == 28 )
+			Long.parseLong( this.amountToCraft.getText() );
+			this.next.enabled = this.amountToCraft.getText().length() > 0;
+		}
+		catch( NumberFormatException e )
+		{
+			this.next.enabled = false;
+		}
+
+		this.amountToCraft.drawTextBox();
+	}
+
+	@Override
+	protected void keyTyped( char character, int key )
+	{
+		if( !this.checkHotbarKeys( key ) )
+		{
+			if( key == 28 )
 			{
 				this.actionPerformed( this.next );
 			}
-			if ( (key == 211 || key == 205 || key == 203 || key == 14 || character == '-' || Character.isDigit( character ))
-					&& this.amountToCraft.textboxKeyTyped( character, key ) )
+			if( ( key == 211 || key == 205 || key == 203 || key == 14 || character == '-' || Character.isDigit( character ) ) && this.amountToCraft.textboxKeyTyped( character, key ) )
 			{
 				try
 				{
 					String Out = this.amountToCraft.getText();
 
 					boolean Fixed = false;
-					while (Out.startsWith( "0" ) && Out.length() > 1)
+					while( Out.startsWith( "0" ) && Out.length() > 1 )
 					{
 						Out = Out.substring( 1 );
 						Fixed = true;
 					}
 
-					if ( Fixed )
+					if( Fixed )
 						this.amountToCraft.setText( Out );
 
-					if ( Out.length() == 0 )
+					if( Out.length() == 0 )
 						Out = "0";
 
 					long result = Long.parseLong( Out );
-					if ( result < 0 )
+					if( result < 0 )
 					{
 						this.amountToCraft.setText( "1" );
 					}
 				}
-				catch (NumberFormatException e)
+				catch( NumberFormatException e )
 				{
 					// :P
 				}
@@ -236,34 +195,76 @@ public class GuiCraftAmount extends AEBaseGui
 	}
 
 	@Override
-	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
+	protected void actionPerformed( GuiButton btn )
 	{
-		this.next.displayString = isShiftKeyDown() ? GuiText.Start.getLocal() : GuiText.Next.getLocal();
-
-		this.bindTexture( "guis/craftAmt.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		super.actionPerformed( btn );
 
 		try
 		{
-			Long.parseLong( this.amountToCraft.getText() );
-			this.next.enabled = this.amountToCraft.getText().length() > 0;
+
+			if( btn == this.originalGuiBtn )
+			{
+				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( this.OriginalGui ) );
+			}
+
+			if( btn == this.next )
+			{
+				NetworkHandler.instance.sendToServer( new PacketCraftRequest( Integer.parseInt( this.amountToCraft.getText() ), isShiftKeyDown() ) );
+			}
 		}
-		catch (NumberFormatException e)
+		catch( NumberFormatException e )
 		{
-			this.next.enabled = false;
+			// nope..
+			this.amountToCraft.setText( "1" );
 		}
 
-		this.amountToCraft.drawTextBox();
+		boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
+		boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
+
+		if( isPlus || isMinus )
+			this.addQty( this.getQty( btn ) );
+	}
+
+	private void addQty( int i )
+	{
+		try
+		{
+			String Out = this.amountToCraft.getText();
+
+			boolean Fixed = false;
+			while( Out.startsWith( "0" ) && Out.length() > 1 )
+			{
+				Out = Out.substring( 1 );
+				Fixed = true;
+			}
+
+			if( Fixed )
+				this.amountToCraft.setText( Out );
+
+			if( Out.length() == 0 )
+				Out = "0";
+
+			long result = Integer.parseInt( Out );
+
+			if( result == 1 && i > 1 )
+				result = 0;
+
+			result += i;
+			if( result < 1 )
+				result = 1;
+
+			Out = Long.toString( result );
+			Integer.parseInt( Out );
+			this.amountToCraft.setText( Out );
+		}
+		catch( NumberFormatException e )
+		{
+			// :P
+		}
 	}
 
 	protected String getBackground()
 	{
 		return "guis/craftAmt.png";
-	}
-
-	@Override
-	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
-	{
-		this.fontRendererObj.drawString( GuiText.SelectAmount.getLocal(), 8, 6, 4210752 );
 	}
 }

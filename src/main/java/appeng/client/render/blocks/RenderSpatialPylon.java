@@ -18,6 +18,7 @@
 
 package appeng.client.render.blocks;
 
+
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
@@ -32,15 +33,17 @@ import appeng.client.render.BlockRenderInfo;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.spatial.TileSpatialPylon;
 
+
 public class RenderSpatialPylon extends BaseBlockRender
 {
 
-	public RenderSpatialPylon() {
+	public RenderSpatialPylon()
+	{
 		super( false, 0 );
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
+	public void renderInventory( AEBaseBlock block, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		renderer.overrideBlockTexture = ExtraBlockTextures.BlockSpatialPylon_dim.getIcon();
 		super.renderInventory( block, is, renderer, type, obj );
@@ -49,7 +52,7 @@ public class RenderSpatialPylon extends BaseBlockRender
 	}
 
 	@Override
-	public boolean renderInWorld(AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
+	public boolean renderInWorld( AEBaseBlock imb, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		renderer.setRenderBounds( 0, 0, 0, 1, 1, 1 );
 
@@ -58,19 +61,19 @@ public class RenderSpatialPylon extends BaseBlockRender
 		int displayBits = sp.getDisplayBits();
 		ForgeDirection ori = ForgeDirection.UNKNOWN;
 
-		if ( displayBits != 0 )
+		if( displayBits != 0 )
 		{
-			if ( (displayBits & sp.DISPLAY_Z) == sp.DISPLAY_X )
+			if( ( displayBits & sp.DISPLAY_Z ) == sp.DISPLAY_X )
 			{
 				ori = ForgeDirection.EAST;
-				if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_END_MAX )
+				if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MAX )
 				{
 					renderer.uvRotateEast = 1;
 					renderer.uvRotateWest = 2;
 					renderer.uvRotateTop = 2;
 					renderer.uvRotateBottom = 1;
 				}
-				else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_END_MIN )
+				else if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MIN )
 				{
 					renderer.uvRotateEast = 2;
 					renderer.uvRotateWest = 1;
@@ -86,10 +89,10 @@ public class RenderSpatialPylon extends BaseBlockRender
 				}
 			}
 
-			else if ( (displayBits & sp.DISPLAY_Z) == sp.DISPLAY_Y )
+			else if( ( displayBits & sp.DISPLAY_Z ) == sp.DISPLAY_Y )
 			{
 				ori = ForgeDirection.UP;
-				if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_END_MAX )
+				if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MAX )
 				{
 					renderer.uvRotateNorth = 3;
 					renderer.uvRotateSouth = 3;
@@ -98,15 +101,15 @@ public class RenderSpatialPylon extends BaseBlockRender
 				}
 			}
 
-			else if ( (displayBits & sp.DISPLAY_Z) == sp.DISPLAY_Z )
+			else if( ( displayBits & sp.DISPLAY_Z ) == sp.DISPLAY_Z )
 			{
 				ori = ForgeDirection.NORTH;
-				if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_END_MAX )
+				if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MAX )
 				{
 					renderer.uvRotateSouth = 1;
 					renderer.uvRotateNorth = 2;
 				}
-				else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_END_MIN )
+				else if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MIN )
 				{
 					renderer.uvRotateNorth = 1;
 					renderer.uvRotateSouth = 2;
@@ -122,33 +125,23 @@ public class RenderSpatialPylon extends BaseBlockRender
 
 			BlockRenderInfo bri = imb.getRendererInstance();
 			bri.setTemporaryRenderIcon( null );
-			bri.setTemporaryRenderIcons( this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.UP ),
-					this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.DOWN ),
-					this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.SOUTH ),
-					this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.NORTH ),
-					this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.EAST ),
-					this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.WEST ) );
+			bri.setTemporaryRenderIcons( this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.UP ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.DOWN ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.SOUTH ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.NORTH ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.EAST ), this.getBlockTextureFromSideOutside( imb, sp, displayBits, ori, ForgeDirection.WEST ) );
 
 			boolean r = renderer.renderStandardBlock( imb, x, y, z );
 
-			if ( (displayBits & sp.DISPLAY_POWERED_ENABLED) == sp.DISPLAY_POWERED_ENABLED )
+			if( ( displayBits & sp.DISPLAY_POWERED_ENABLED ) == sp.DISPLAY_POWERED_ENABLED )
 			{
 				int bn = 15;
 				Tessellator.instance.setBrightness( bn << 20 | bn << 4 );
 				Tessellator.instance.setColorOpaque_I( 0xffffff );
 
-				for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS)
+				for( ForgeDirection d : ForgeDirection.VALID_DIRECTIONS )
 					this.renderFace( x, y, z, imb, this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, d ), renderer, d );
 			}
 			else
 			{
 				bri.setTemporaryRenderIcon( null );
-				bri.setTemporaryRenderIcons( this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.UP ),
-						this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.DOWN ),
-						this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.SOUTH ),
-						this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.NORTH ),
-						this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.EAST ),
-						this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.WEST ) );
+				bri.setTemporaryRenderIcons( this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.UP ), this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.DOWN ), this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.SOUTH ), this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.NORTH ), this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.EAST ), this.getBlockTextureFromSideInside( imb, sp, displayBits, ori, ForgeDirection.WEST ) );
 
 				renderer.renderStandardBlock( imb, x, y, z );
 			}
@@ -169,38 +162,38 @@ public class RenderSpatialPylon extends BaseBlockRender
 		return result;
 	}
 
-	private IIcon getBlockTextureFromSideOutside(AEBaseBlock blk, TileSpatialPylon sp, int displayBits, ForgeDirection ori, ForgeDirection dir)
+	private IIcon getBlockTextureFromSideOutside( AEBaseBlock blk, TileSpatialPylon sp, int displayBits, ForgeDirection ori, ForgeDirection dir )
 	{
 
-		if ( ori == dir || ori.getOpposite() == dir )
+		if( ori == dir || ori.getOpposite() == dir )
 			return blk.getRendererInstance().getTexture( dir );
 
-		if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_MIDDLE )
+		if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_MIDDLE )
 			return ExtraBlockTextures.BlockSpatialPylonC.getIcon();
 
-		else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_END_MIN )
+		else if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MIN )
 			return ExtraBlockTextures.BlockSpatialPylonE.getIcon();
 
-		else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_END_MAX )
+		else if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MAX )
 			return ExtraBlockTextures.BlockSpatialPylonE.getIcon();
 
 		return blk.getIcon( 0, 0 );
 	}
 
-	private IIcon getBlockTextureFromSideInside(AEBaseBlock blk, TileSpatialPylon sp, int displayBits, ForgeDirection ori, ForgeDirection dir)
+	private IIcon getBlockTextureFromSideInside( AEBaseBlock blk, TileSpatialPylon sp, int displayBits, ForgeDirection ori, ForgeDirection dir )
 	{
-		boolean good = (displayBits & sp.DISPLAY_ENABLED) == sp.DISPLAY_ENABLED;
+		boolean good = ( displayBits & sp.DISPLAY_ENABLED ) == sp.DISPLAY_ENABLED;
 
-		if ( ori == dir || ori.getOpposite() == dir )
+		if( ori == dir || ori.getOpposite() == dir )
 			return good ? ExtraBlockTextures.BlockSpatialPylon_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylon_red.getIcon();
 
-		if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_MIDDLE )
+		if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_MIDDLE )
 			return good ? ExtraBlockTextures.BlockSpatialPylonC_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylonC_red.getIcon();
 
-		else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_END_MIN )
+		else if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MIN )
 			return good ? ExtraBlockTextures.BlockSpatialPylonE_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylonE_red.getIcon();
 
-		else if ( (displayBits & sp.DISPLAY_MIDDLE) == sp.DISPLAY_END_MAX )
+		else if( ( displayBits & sp.DISPLAY_MIDDLE ) == sp.DISPLAY_END_MAX )
 			return good ? ExtraBlockTextures.BlockSpatialPylonE_dim.getIcon() : ExtraBlockTextures.BlockSpatialPylonE_red.getIcon();
 
 		return blk.getIcon( 0, 0 );

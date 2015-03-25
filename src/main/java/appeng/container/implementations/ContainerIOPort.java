@@ -33,19 +33,45 @@ import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.storage.TileIOPort;
 import appeng.util.Platform;
 
+
 public class ContainerIOPort extends ContainerUpgradeable
 {
 
 	final TileIOPort ioPort;
 
-	@GuiSync(2)
+	@GuiSync( 2 )
 	public FullnessMode fMode = FullnessMode.EMPTY;
-	@GuiSync(3)
+	@GuiSync( 3 )
 	public OperationMode opMode = OperationMode.EMPTY;
 
-	public ContainerIOPort(InventoryPlayer ip, TileIOPort te) {
+	public ContainerIOPort( InventoryPlayer ip, TileIOPort te )
+	{
 		super( ip, te );
 		this.ioPort = te;
+	}
+
+	@Override
+	protected void setupConfig()
+	{
+		int offX = 19;
+		int offY = 17;
+
+		IInventory cells = this.upgradeable.getInventoryByName( "cells" );
+
+		for( int y = 0; y < 3; y++ )
+			for( int x = 0; x < 2; x++ )
+				this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, cells, x + y * 2, offX + x * 18, offY + y * 18, this.invPlayer ) );
+
+		offX = 122;
+		offY = 17;
+		for( int y = 0; y < 3; y++ )
+			for( int x = 0; x < 2; x++ )
+				this.addSlotToContainer( new SlotOutput( cells, 6 + x + y * 2, offX + x * 18, offY + y * 18, SlotRestrictedInput.PlacableItemType.STORAGE_CELLS.IIcon ) );
+
+		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
+		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer ) ).setNotDraggable() );
+		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer ) ).setNotDraggable() );
+		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer ) ).setNotDraggable() );
 	}
 
 	@Override
@@ -67,35 +93,11 @@ public class ContainerIOPort extends ContainerUpgradeable
 	}
 
 	@Override
-	protected void setupConfig()
-	{
-		int offX = 19;
-		int offY = 17;
-
-		IInventory cells = this.upgradeable.getInventoryByName( "cells" );
-
-		for (int y = 0; y < 3; y++)
-			for (int x = 0; x < 2; x++)
-				this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, cells, x + y * 2, offX + x * 18, offY + y * 18, this.invPlayer ) );
-
-		offX = 122;
-		offY = 17;
-		for (int y = 0; y < 3; y++)
-			for (int x = 0; x < 2; x++)
-				this.addSlotToContainer( new SlotOutput( cells, 6 + x + y * 2, offX + x * 18, offY + y * 18, SlotRestrictedInput.PlacableItemType.STORAGE_CELLS.IIcon ) );
-
-		IInventory upgrades = this.upgradeable.getInventoryByName( "upgrades" );
-		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.invPlayer )).setNotDraggable() );
-		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.invPlayer )).setNotDraggable() );
-		this.addSlotToContainer( (new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.invPlayer )).setNotDraggable() );
-	}
-
-	@Override
 	public void detectAndSendChanges()
 	{
 		this.verifyPermissions( SecurityPermissions.BUILD, false );
 
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 		{
 			this.opMode = (OperationMode) this.upgradeable.getConfigManager().getSetting( Settings.OPERATION_MODE );
 			this.fMode = (FullnessMode) this.upgradeable.getConfigManager().getSetting( Settings.FULLNESS_MODE );
@@ -104,5 +106,4 @@ public class ContainerIOPort extends ContainerUpgradeable
 
 		this.standardDetectAndSendChanges();
 	}
-
 }

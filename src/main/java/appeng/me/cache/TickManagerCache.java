@@ -18,6 +18,7 @@
 
 package appeng.me.cache;
 
+
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
@@ -35,37 +36,35 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.me.cache.helpers.TickTracker;
 
+
 public class TickManagerCache implements ITickManager
 {
 
-	private long currentTick = 0;
-
 	final IGrid myGrid;
-
-	public TickManagerCache(IGrid g) {
-		this.myGrid = g;
-	}
-
 	final HashMap<IGridNode, TickTracker> alertable = new HashMap<IGridNode, TickTracker>();
-
 	final HashMap<IGridNode, TickTracker> sleeping = new HashMap<IGridNode, TickTracker>();
 	final HashMap<IGridNode, TickTracker> awake = new HashMap<IGridNode, TickTracker>();
-
 	final PriorityQueue<TickTracker> upcomingTicks = new PriorityQueue<TickTracker>();
+	private long currentTick = 0;
+
+	public TickManagerCache( IGrid g )
+	{
+		this.myGrid = g;
+	}
 
 	public long getCurrentTick()
 	{
 		return this.currentTick;
 	}
 
-	public long getAvgNanoTime(IGridNode node)
+	public long getAvgNanoTime( IGridNode node )
 	{
 		TickTracker tt = this.awake.get( node );
 
-		if ( tt == null )
+		if( tt == null )
 			tt = this.sleeping.get( node );
 
-		if ( tt == null )
+		if( tt == null )
 			return -1;
 
 		return tt.getAvgNanos();
@@ -78,40 +77,40 @@ public class TickManagerCache implements ITickManager
 		try
 		{
 			this.currentTick++;
-			while (!this.upcomingTicks.isEmpty())
+			while( !this.upcomingTicks.isEmpty() )
 			{
 				tt = this.upcomingTicks.peek();
-				int diff = (int) (this.currentTick - tt.lastTick);
-				if ( diff >= tt.current_rate )
+				int diff = (int) ( this.currentTick - tt.lastTick );
+				if( diff >= tt.current_rate )
 				{
 					// remove tt..
 					this.upcomingTicks.poll();
 					TickRateModulation mod = tt.gt.tickingRequest( tt.node, diff );
 
-					switch (mod)
+					switch( mod )
 					{
-					case FASTER:
-						tt.setRate( tt.current_rate - 2 );
-						break;
-					case IDLE:
-						tt.setRate( tt.request.maxTickRate );
-						break;
-					case SAME:
-						break;
-					case SLEEP:
-						this.sleepDevice( tt.node );
-						break;
-					case SLOWER:
-						tt.setRate( tt.current_rate + 1 );
-						break;
-					case URGENT:
-						tt.setRate( 0 );
-						break;
-					default:
-						break;
+						case FASTER:
+							tt.setRate( tt.current_rate - 2 );
+							break;
+						case IDLE:
+							tt.setRate( tt.request.maxTickRate );
+							break;
+						case SAME:
+							break;
+						case SLEEP:
+							this.sleepDevice( tt.node );
+							break;
+						case SLOWER:
+							tt.setRate( tt.current_rate + 1 );
+							break;
+						case URGENT:
+							tt.setRate( 0 );
+							break;
+						default:
+							break;
 					}
 
-					if ( this.awake.containsKey( tt.node ) )
+					if( this.awake.containsKey( tt.node ) )
 						this.addToQueue( tt );
 				}
 				else
@@ -120,24 +119,77 @@ public class TickManagerCache implements ITickManager
 		}
 		catch( Throwable t )
 		{
-	        CrashReport crashreport = CrashReport.makeCrashReport(t, "Ticking GridNode");
-	        CrashReportCategory crashreportcategory = crashreport.makeCategory( tt.gt.getClass().getSimpleName() + " being ticked." );
-            tt.addEntityCrashInfo(crashreportcategory);
-            throw new ReportedException(crashreport);
+			CrashReport crashreport = CrashReport.makeCrashReport( t, "Ticking GridNode" );
+			CrashReportCategory crashreportcategory = crashreport.makeCategory( tt.gt.getClass().getSimpleName() + " being ticked." );
+			tt.addEntityCrashInfo( crashreportcategory );
+			throw new ReportedException( crashreport );
 		}
 	}
 
-	private void addToQueue(TickTracker tt)
+	private void addToQueue( TickTracker tt )
 	{
 		tt.lastTick = this.currentTick;
 		this.upcomingTicks.add( tt );
 	}
 
 	@Override
-	public boolean alertDevice(IGridNode node)
+	public void removeNode( IGridNode gridNode, IGridHost machine )
+	{
+		if( machine instanceof IGridTickable )
+		{
+			this.alertable.remove( gridNode );
+			this.sleeping.remove( gridNode );
+			this.awake.remove( gridNode );
+		}
+	}
+
+	@Override
+	public void addNode( IGridNode gridNode, IGridHost machine )
+	{
+		if( machine instanceof IGridTickable )
+		{
+			TickingRequest tr = ( (IGridTickable) machine ).getTickingRequest( gridNode );
+			if( tr != null )
+			{
+				TickTracker tt = new TickTracker( tr, gridNode, (IGridTickable) machine, this.currentTick, this );
+
+				if( tr.canBeAlerted )
+					this.alertable.put( gridNode, tt );
+
+				if( tr.isSleeping )
+					this.sleeping.put( gridNode, tt );
+				else
+				{
+					this.awake.put( gridNode, tt );
+					this.addToQueue( tt );
+				}
+			}
+		}
+	}
+
+	@Override
+	public void onSplit( IGridStorage storageB )
+	{
+
+	}
+
+	@Override
+	public void onJoin( IGridStorage storageB )
+	{
+
+	}
+
+	@Override
+	public void populateGridStorage( IGridStorage storage )
+	{
+
+	}
+
+	@Override
+	public boolean alertDevice( IGridNode node )
 	{
 		TickTracker tt = this.alertable.get( node );
-		if ( tt == null )
+		if( tt == null )
 			return false;
 		// throw new RuntimeException(
 		// "Invalid alerted device, this node is not marked as alertable, or part of this grid." );
@@ -158,9 +210,9 @@ public class TickManagerCache implements ITickManager
 	}
 
 	@Override
-	public boolean sleepDevice(IGridNode node)
+	public boolean sleepDevice( IGridNode node )
 	{
-		if ( this.awake.containsKey( node ) )
+		if( this.awake.containsKey( node ) )
 		{
 			TickTracker gt = this.awake.get( node );
 			this.awake.remove( node );
@@ -173,9 +225,9 @@ public class TickManagerCache implements ITickManager
 	}
 
 	@Override
-	public boolean wakeDevice(IGridNode node)
+	public boolean wakeDevice( IGridNode node )
 	{
-		if ( this.sleeping.containsKey( node ) )
+		if( this.sleeping.containsKey( node ) )
 		{
 			TickTracker gt = this.sleeping.get( node );
 			this.sleeping.remove( node );
@@ -186,59 +238,5 @@ public class TickManagerCache implements ITickManager
 		}
 
 		return false;
-	}
-
-	@Override
-	public void removeNode(IGridNode gridNode, IGridHost machine)
-	{
-		if ( machine instanceof IGridTickable )
-		{
-			this.alertable.remove( gridNode );
-			this.sleeping.remove( gridNode );
-			this.awake.remove( gridNode );
-		}
-	}
-
-	@Override
-	public void addNode(IGridNode gridNode, IGridHost machine)
-	{
-		if ( machine instanceof IGridTickable )
-		{
-			TickingRequest tr = ((IGridTickable) machine).getTickingRequest( gridNode );
-			if ( tr != null )
-			{
-				TickTracker tt = new TickTracker( tr, gridNode, (IGridTickable) machine, this.currentTick, this );
-
-				if ( tr.canBeAlerted )
-					this.alertable.put( gridNode, tt );
-
-				if ( tr.isSleeping )
-					this.sleeping.put( gridNode, tt );
-				else
-				{
-					this.awake.put( gridNode, tt );
-					this.addToQueue( tt );
-				}
-
-			}
-		}
-	}
-
-	@Override
-	public void onSplit(IGridStorage storageB)
-	{
-
-	}
-
-	@Override
-	public void onJoin(IGridStorage storageB)
-	{
-
-	}
-
-	@Override
-	public void populateGridStorage(IGridStorage storage)
-	{
-
 	}
 }

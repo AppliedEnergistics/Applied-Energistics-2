@@ -28,14 +28,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import com.google.common.collect.HashMultimap;
-
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+
+import com.google.common.collect.HashMultimap;
 
 import appeng.api.AEApi;
 import appeng.client.gui.AEBaseGui;
@@ -47,6 +47,7 @@ import appeng.container.implementations.ContainerInterfaceTerminal;
 import appeng.core.localization.GuiText;
 import appeng.parts.reporting.PartMonitor;
 import appeng.util.Platform;
+
 
 public class GuiInterfaceTerminal extends AEBaseGui
 {
@@ -66,7 +67,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	private boolean refreshList = false;
 	private MEGuiTextField searchField;
 
-	public GuiInterfaceTerminal(InventoryPlayer inventoryPlayer, PartMonitor te)
+	public GuiInterfaceTerminal( InventoryPlayer inventoryPlayer, PartMonitor te )
 	{
 		super( new ContainerInterfaceTerminal( inventoryPlayer, te ) );
 		this.myScrollBar = new GuiScrollbar();
@@ -92,11 +93,54 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	}
 
 	@Override
-	protected void mouseClicked(int xCoord, int yCoord, int btn)
+	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	{
+		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.InterfaceTerminal.getLocal() ), 8, 6, 4210752 );
+		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+
+		int offset = 17;
+		int ex = this.myScrollBar.getCurrentScroll();
+
+		Iterator<Object> o = this.inventorySlots.inventorySlots.iterator();
+		while( o.hasNext() )
+		{
+			if( o.next() instanceof SlotDisconnected )
+				o.remove();
+		}
+
+		for( int x = 0; x < LINES_ON_PAGE && ex + x < this.lines.size(); x++ )
+		{
+			Object lineObj = this.lines.get( ex + x );
+			if( lineObj instanceof ClientDCInternalInv )
+			{
+				ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
+				for( int z = 0; z < inv.inv.getSizeInventory(); z++ )
+				{
+					this.inventorySlots.inventorySlots.add( new SlotDisconnected( inv, z, z * 18 + 8, 1 + offset ) );
+				}
+			}
+			else if( lineObj instanceof String )
+			{
+				String name = (String) lineObj;
+				int rows = this.byName.get( name ).size();
+				if( rows > 1 )
+					name = name + " (" + rows + ')';
+
+				while( name.length() > 2 && this.fontRendererObj.getStringWidth( name ) > 155 )
+					name = name.substring( 0, name.length() - 1 );
+
+				this.fontRendererObj.drawString( name, 10, 6 + offset, 4210752 );
+			}
+			offset += 18;
+		}
+	}
+
+	@Override
+	protected void mouseClicked( int xCoord, int yCoord, int btn )
 	{
 		this.searchField.mouseClicked( xCoord, yCoord, btn );
 
-		if ( btn == 1 && this.searchField.isMouseIn( xCoord, yCoord ) )
+		if( btn == 1 && this.searchField.isMouseIn( xCoord, yCoord ) )
 		{
 			this.searchField.setText( "" );
 			this.refreshList();
@@ -106,26 +150,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	}
 
 	@Override
-	protected void keyTyped(char character, int key)
-	{
-		if ( !this.checkHotbarKeys( key ) )
-		{
-			if ( character == ' ' && this.searchField.getText().length() == 0 )
-				return;
-
-			if ( this.searchField.textboxKeyTyped( character, key ) )
-			{
-				this.refreshList();
-			}
-			else
-			{
-				super.keyTyped( character, key );
-			}
-		}
-	}
-
-	@Override
-	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY)
+	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
 		this.bindTexture( "guis/interfaceterminal.png" );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
@@ -133,10 +158,10 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		int offset = 17;
 		int ex = this.myScrollBar.getCurrentScroll();
 
-		for (int x = 0; x < LINES_ON_PAGE && ex + x < this.lines.size(); x++)
+		for( int x = 0; x < LINES_ON_PAGE && ex + x < this.lines.size(); x++ )
 		{
 			Object lineObj = this.lines.get( ex + x );
-			if ( lineObj instanceof ClientDCInternalInv )
+			if( lineObj instanceof ClientDCInternalInv )
 			{
 				ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
 
@@ -147,65 +172,41 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			offset += 18;
 		}
 
-		if ( this.searchField != null )
+		if( this.searchField != null )
 			this.searchField.drawTextBox();
 	}
 
 	@Override
-	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
+	protected void keyTyped( char character, int key )
 	{
-		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.InterfaceTerminal.getLocal() ), 8, 6, 4210752 );
-		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
-
-		int offset = 17;
-		int ex = this.myScrollBar.getCurrentScroll();
-
-		Iterator<Object> o = this.inventorySlots.inventorySlots.iterator();
-		while (o.hasNext())
+		if( !this.checkHotbarKeys( key ) )
 		{
-			if ( o.next() instanceof SlotDisconnected )
-				o.remove();
-		}
+			if( character == ' ' && this.searchField.getText().length() == 0 )
+				return;
 
-		for (int x = 0; x < LINES_ON_PAGE && ex + x < this.lines.size(); x++)
-		{
-			Object lineObj = this.lines.get( ex + x );
-			if ( lineObj instanceof ClientDCInternalInv )
+			if( this.searchField.textboxKeyTyped( character, key ) )
 			{
-				ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
-				for (int z = 0; z < inv.inv.getSizeInventory(); z++)
-				{
-					this.inventorySlots.inventorySlots.add( new SlotDisconnected( inv, z, z * 18 + 8, 1 + offset ) );
-				}
+				this.refreshList();
 			}
-			else if ( lineObj instanceof String )
+			else
 			{
-				String name = (String) lineObj;
-				int rows = this.byName.get( name ).size();
-				if ( rows > 1 )
-					name = name + " (" + rows + ')';
-
-				while (name.length() > 2 && this.fontRendererObj.getStringWidth( name ) > 155)
-					name = name.substring( 0, name.length() - 1 );
-
-				this.fontRendererObj.drawString( name, 10, 6 + offset, 4210752 );
+				super.keyTyped( character, key );
 			}
-			offset += 18;
 		}
 	}
 
-	public void postUpdate(NBTTagCompound in)
+	public void postUpdate( NBTTagCompound in )
 	{
-		if ( in.getBoolean( "clear" ) )
+		if( in.getBoolean( "clear" ) )
 		{
 			this.byId.clear();
 			this.refreshList = true;
 		}
 
-		for (Object oKey : in.func_150296_c())
+		for( Object oKey : in.func_150296_c() )
 		{
 			String key = (String) oKey;
-			if ( key.startsWith( "=" ) )
+			if( key.startsWith( "=" ) )
 			{
 				try
 				{
@@ -213,20 +214,20 @@ public class GuiInterfaceTerminal extends AEBaseGui
 					NBTTagCompound invData = in.getCompoundTag( key );
 					ClientDCInternalInv current = this.getById( id, invData.getLong( "sortBy" ), invData.getString( "un" ) );
 
-					for (int x = 0; x < current.inv.getSizeInventory(); x++)
+					for( int x = 0; x < current.inv.getSizeInventory(); x++ )
 					{
 						String which = Integer.toString( x );
-						if ( invData.hasKey( which ) )
+						if( invData.hasKey( which ) )
 							current.inv.setInventorySlotContents( x, ItemStack.loadItemStackFromNBT( invData.getCompoundTag( which ) ) );
 					}
 				}
-				catch (NumberFormatException ignored)
+				catch( NumberFormatException ignored )
 				{
 				}
 			}
 		}
 
-		if ( this.refreshList )
+		if( this.refreshList )
 		{
 			this.refreshList = false;
 			// invalid caches on refresh
@@ -249,10 +250,10 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		final Set<Object> cachedSearch = this.getCacheForSearchTerm( searchFilterLowerCase );
 		final boolean rebuild = cachedSearch.isEmpty();
 
-		for (ClientDCInternalInv entry : this.byId.values())
+		for( ClientDCInternalInv entry : this.byId.values() )
 		{
 			// ignore inventory if not doing a full rebuild or cache already marks it as miss.
-			if ( !rebuild && !cachedSearch.contains( entry ) )
+			if( !rebuild && !cachedSearch.contains( entry ) )
 			{
 				continue;
 			}
@@ -261,12 +262,12 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			boolean found = searchFilterLowerCase.isEmpty();
 
 			// Search if the current inventory holds a pattern containing the search term.
-			if ( !found && !searchFilterLowerCase.isEmpty() )
+			if( !found && !searchFilterLowerCase.isEmpty() )
 			{
-				for (ItemStack itemStack : entry.inv)
+				for( ItemStack itemStack : entry.inv )
 				{
 					found = this.itemStackMatchesSearchTerm( itemStack, searchFilterLowerCase );
-					if ( found )
+					if( found )
 					{
 						break;
 					}
@@ -274,7 +275,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			}
 
 			// if found, filter skipped or machine name matching the search term, add it
-			if ( found || entry.getName().toLowerCase().contains( searchFilterLowerCase ) )
+			if( found || entry.getName().toLowerCase().contains( searchFilterLowerCase ) )
 			{
 				this.byName.put( entry.getName(), entry );
 				cachedSearch.add( entry );
@@ -293,7 +294,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		this.lines.clear();
 		this.lines.ensureCapacity( this.getMaxRows() );
 
-		for (String n : this.names)
+		for( String n : this.names )
 		{
 			this.lines.add( n );
 
@@ -307,16 +308,16 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		this.myScrollBar.setRange( 0, this.lines.size() - LINES_ON_PAGE, 2 );
 	}
 
-	private boolean itemStackMatchesSearchTerm(ItemStack itemStack, String searchTerm)
+	private boolean itemStackMatchesSearchTerm( ItemStack itemStack, String searchTerm )
 	{
-		if ( itemStack == null )
+		if( itemStack == null )
 		{
 			return false;
 		}
 
 		NBTTagCompound encodedValue = itemStack.getTagCompound();
 
-		if ( encodedValue == null )
+		if( encodedValue == null )
 		{
 			return false;
 		}
@@ -325,19 +326,18 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		// NBTTagList inTag = encodedValue.getTagList( "in", 10 );
 		NBTTagList outTag = encodedValue.getTagList( "out", 10 );
 
-		for (int i = 0; i < outTag.tagCount(); i++)
+		for( int i = 0; i < outTag.tagCount(); i++ )
 		{
 
 			ItemStack parsedItemStack = ItemStack.loadItemStackFromNBT( outTag.getCompoundTagAt( i ) );
-			if ( parsedItemStack != null )
+			if( parsedItemStack != null )
 			{
 				String displayName = Platform.getItemDisplayName( AEApi.instance().storage().createItemStack( parsedItemStack ) ).toLowerCase();
-				if ( displayName.contains( searchTerm ) )
+				if( displayName.contains( searchTerm ) )
 				{
 					return true;
 				}
 			}
-
 		}
 		return false;
 	}
@@ -348,20 +348,20 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	 * If this cache should be empty, it will populate it with an earlier cache if available or at least the cache for
 	 * the empty string.
 	 *
-	 * @param searchTerm
-	 *            the corresponding search
+	 * @param searchTerm the corresponding search
+	 *
 	 * @return a Set matching a superset of the search term
 	 */
-	private Set<Object> getCacheForSearchTerm(String searchTerm)
+	private Set<Object> getCacheForSearchTerm( String searchTerm )
 	{
-		if ( !this.cachedSearches.containsKey( searchTerm ) )
+		if( !this.cachedSearches.containsKey( searchTerm ) )
 		{
 			this.cachedSearches.put( searchTerm, new HashSet<Object>() );
 		}
 
 		Set<Object> cache = this.cachedSearches.get( searchTerm );
 
-		if ( cache.isEmpty() && searchTerm.length() > 1 )
+		if( cache.isEmpty() && searchTerm.length() > 1 )
 		{
 			cache.addAll( this.getCacheForSearchTerm( searchTerm.substring( 0, searchTerm.length() - 1 ) ) );
 			return cache;
@@ -380,11 +380,11 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		return this.names.size() + this.byId.size();
 	}
 
-	private ClientDCInternalInv getById(long id, long sortBy, String string)
+	private ClientDCInternalInv getById( long id, long sortBy, String string )
 	{
 		ClientDCInternalInv o = this.byId.get( id );
 
-		if ( o == null )
+		if( o == null )
 		{
 			this.byId.put( id, o = new ClientDCInternalInv( 9, id, sortBy, string ) );
 			this.refreshList = true;

@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -29,6 +30,7 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.parts.PartPlacement;
 
+
 public class PacketPartPlacement extends AppEngPacket
 {
 
@@ -36,7 +38,7 @@ public class PacketPartPlacement extends AppEngPacket
 	float eyeHeight;
 
 	// automatic.
-	public PacketPartPlacement(ByteBuf stream)
+	public PacketPartPlacement( ByteBuf stream )
 	{
 		this.x = stream.readInt();
 		this.y = stream.readInt();
@@ -45,18 +47,8 @@ public class PacketPartPlacement extends AppEngPacket
 		this.eyeHeight = stream.readFloat();
 	}
 
-	@Override
-	public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player)
-	{
-		EntityPlayerMP sender = (EntityPlayerMP) player;
-		CommonHelper.proxy.updateRenderMode( sender );
-		PartPlacement.eyeHeight = this.eyeHeight;
-		PartPlacement.place( sender.getHeldItem(), this.x, this.y, this.z, this.face, sender, sender.worldObj, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
-		CommonHelper.proxy.updateRenderMode( null );
-	}
-
 	// api
-	public PacketPartPlacement(int x, int y, int z, int face, float eyeHeight )
+	public PacketPartPlacement( int x, int y, int z, int face, float eyeHeight )
 	{
 		ByteBuf data = Unpooled.buffer();
 
@@ -70,4 +62,13 @@ public class PacketPartPlacement extends AppEngPacket
 		this.configureWrite( data );
 	}
 
+	@Override
+	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	{
+		EntityPlayerMP sender = (EntityPlayerMP) player;
+		CommonHelper.proxy.updateRenderMode( sender );
+		PartPlacement.eyeHeight = this.eyeHeight;
+		PartPlacement.place( sender.getHeldItem(), this.x, this.y, this.z, this.face, sender, sender.worldObj, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
+		CommonHelper.proxy.updateRenderMode( null );
+	}
 }

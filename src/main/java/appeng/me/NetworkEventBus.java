@@ -41,29 +41,29 @@ public class NetworkEventBus
 
 	public void readClass( Class listAs, Class c )
 	{
-		if ( READ_CLASSES.contains( c ) )
+		if( READ_CLASSES.contains( c ) )
 			return;
 		READ_CLASSES.add( c );
 
 		try
 		{
-			for ( Method m : c.getMethods() )
+			for( Method m : c.getMethods() )
 			{
 				MENetworkEventSubscribe s = m.getAnnotation( MENetworkEventSubscribe.class );
-				if ( s != null )
+				if( s != null )
 				{
 					Class[] types = m.getParameterTypes();
-					if ( types.length == 1 )
+					if( types.length == 1 )
 					{
-						if ( MENetworkEvent.class.isAssignableFrom( types[0] ) )
+						if( MENetworkEvent.class.isAssignableFrom( types[0] ) )
 						{
 
 							Map<Class, MENetworkEventInfo> classEvents = EVENTS.get( types[0] );
-							if ( classEvents == null )
+							if( classEvents == null )
 								EVENTS.put( types[0], classEvents = new HashMap<Class, MENetworkEventInfo>() );
 
 							MENetworkEventInfo thisEvent = classEvents.get( listAs );
-							if ( thisEvent == null )
+							if( thisEvent == null )
 								thisEvent = new MENetworkEventInfo();
 
 							thisEvent.Add( types[0], c, m );
@@ -78,7 +78,7 @@ public class NetworkEventBus
 				}
 			}
 		}
-		catch ( Throwable t )
+		catch( Throwable t )
 		{
 			throw new RuntimeException( "Error while adding " + c.getName() + " to event bus", t );
 		}
@@ -91,19 +91,19 @@ public class NetworkEventBus
 
 		try
 		{
-			if ( subscribers != null )
+			if( subscribers != null )
 			{
-				for ( Entry<Class, MENetworkEventInfo> subscriber : subscribers.entrySet() )
+				for( Entry<Class, MENetworkEventInfo> subscriber : subscribers.entrySet() )
 				{
 					MENetworkEventInfo target = subscriber.getValue();
 					GridCacheWrapper cache = g.getCaches().get( subscriber.getKey() );
-					if ( cache != null )
+					if( cache != null )
 					{
 						x++;
 						target.invoke( cache.myCache, e );
 					}
 
-					for ( IGridNode obj : g.getMachines( subscriber.getKey() ) )
+					for( IGridNode obj : g.getMachines( subscriber.getKey() ) )
 					{
 						x++;
 						target.invoke( obj.getMachine(), e );
@@ -111,7 +111,7 @@ public class NetworkEventBus
 				}
 			}
 		}
-		catch ( NetworkEventDone done )
+		catch( NetworkEventDone done )
 		{
 			// Early out.
 		}
@@ -127,17 +127,17 @@ public class NetworkEventBus
 
 		try
 		{
-			if ( subscribers != null )
+			if( subscribers != null )
 			{
 				MENetworkEventInfo target = subscribers.get( node.getMachineClass() );
-				if ( target != null )
+				if( target != null )
 				{
 					x++;
 					target.invoke( node.getMachine(), e );
 				}
 			}
 		}
-		catch ( NetworkEventDone done )
+		catch( NetworkEventDone done )
 		{
 			// Early out.
 		}
@@ -173,7 +173,7 @@ public class NetworkEventBus
 			{
 				this.objMethod.invoke( obj, e );
 			}
-			catch ( Throwable e1 )
+			catch( Throwable e1 )
 			{
 				AELog.severe( "[AppEng] Network Event caused exception:" );
 				AELog.severe( "Offending Class: " + obj.getClass().getName() );
@@ -182,7 +182,7 @@ public class NetworkEventBus
 				throw new RuntimeException( e1 );
 			}
 
-			if ( e.isCanceled() )
+			if( e.isCanceled() )
 				throw new NetworkEventDone();
 		}
 	}
@@ -200,7 +200,7 @@ public class NetworkEventBus
 
 		public void invoke( Object obj, MENetworkEvent e ) throws NetworkEventDone
 		{
-			for ( EventMethod em : this.methods )
+			for( EventMethod em : this.methods )
 				em.invoke( obj, e );
 		}
 	}

@@ -18,6 +18,7 @@
 
 package appeng.me.storage;
 
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -25,7 +26,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -43,157 +43,74 @@ import appeng.api.storage.data.IItemList;
 import appeng.me.cache.SecurityCache;
 import appeng.util.ItemSorters;
 
+
 public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
 
-	private final static Comparator<Integer> PRIORITY_SORTER = new Comparator<Integer>() {
+	static final ThreadLocal<LinkedList> DEPTH_MOD = new ThreadLocal<LinkedList>();
+	static final ThreadLocal<LinkedList> DEPTH_SIM = new ThreadLocal<LinkedList>();
+	private final static Comparator<Integer> PRIORITY_SORTER = new Comparator<Integer>()
+	{
 
 		@Override
-		public int compare(Integer o1, Integer o2)
+		public int compare( Integer o1, Integer o2 )
 		{
 			return ItemSorters.compareInt( o2, o1 );
 		}
-
 	};
-
+	static int currentPass = 0;
 	final StorageChannel myChannel;
 	final SecurityCache security;
-
 	// final TreeMultimap<Integer, IMEInventoryHandler<T>> priorityInventory;
 	private final NavigableMap<Integer, List<IMEInventoryHandler<T>>> priorityInventory;
-
-	public NetworkInventoryHandler(StorageChannel chan, SecurityCache security) {
+	int myPass = 0;
+	public NetworkInventoryHandler( StorageChannel chan, SecurityCache security )
+	{
 		this.myChannel = chan;
 		this.security = security;
 		this.priorityInventory = new TreeMap<Integer, List<IMEInventoryHandler<T>>>( PRIORITY_SORTER ); // TreeMultimap.create( prioritySorter, hashSorter );
 	}
 
-	public void addNewStorage(IMEInventoryHandler<T> h)
+	public void addNewStorage( IMEInventoryHandler<T> h )
 	{
 		int priority = h.getPriority();
 		List<IMEInventoryHandler<T>> list = this.priorityInventory.get( priority );
-		if ( list == null )
+		if( list == null )
 			this.priorityInventory.put( priority, list = new ArrayList<IMEInventoryHandler<T>>() );
 
 		list.add( h );
 	}
 
-	static int currentPass = 0;
-	int myPass = 0;
-	static final ThreadLocal<LinkedList> DEPTH_MOD = new ThreadLocal<LinkedList>();
-	static final ThreadLocal<LinkedList> DEPTH_SIM = new ThreadLocal<LinkedList>();
-
-	private LinkedList getDepth(Actionable type)
-	{
-		ThreadLocal<LinkedList> depth = type == Actionable.MODULATE ? DEPTH_MOD : DEPTH_SIM;
-
-		LinkedList s = depth.get();
-
-		if ( s == null )
-			depth.set( s = new LinkedList() );
-
-		return s;
-	}
-
-	private boolean diveList(NetworkInventoryHandler<T> networkInventoryHandler, Actionable type)
-	{
-		LinkedList cDepth = this.getDepth( type );
-		if ( cDepth.contains( networkInventoryHandler ) )
-			return true;
-
-		cDepth.push( this );
-		return false;
-	}
-
-	private boolean diveIteration(NetworkInventoryHandler<T> networkInventoryHandler, Actionable type)
-	{
-		LinkedList cDepth = this.getDepth( type );
-		if ( cDepth.isEmpty() )
-		{
-			currentPass++;
-			this.myPass = currentPass;
-		}
-		else
-		{
-			if ( currentPass == this.myPass )
-				return true;
-			else
-				this.myPass = currentPass;
-		}
-
-		cDepth.push( this );
-		return false;
-	}
-
-	private void surface(NetworkInventoryHandler<T> networkInventoryHandler, Actionable type)
-	{
-		if ( this.getDepth( type ).pop() != this )
-			throw new RuntimeException( "Invalid Access to Networked Storage API detected." );
-	}
-
-	private boolean testPermission(BaseActionSource src, SecurityPermissions permission)
-	{
-		if ( src.isPlayer() )
-		{
-			if ( !this.security.hasPermission( ((PlayerSource) src).player, permission ) )
-				return true;
-		}
-		else if ( src.isMachine() )
-		{
-			if ( this.security.isAvailable() )
-			{
-				IGridNode n = ((MachineSource) src).via.getActionableNode();
-				if ( n == null )
-					return true;
-
-				IGrid gn = n.getGrid();
-				if ( gn != this.security.myGrid )
-				{
-					int playerID = -1;
-
-					ISecurityGrid sg = gn.getCache( ISecurityGrid.class );
-					playerID = sg.getOwner();
-
-					if ( !this.security.hasPermission( playerID, permission ) )
-						return true;
-				}
-			}
-		}
-
-		return false;
-	}
-
 	@Override
-	public T injectItems(T input, Actionable type, BaseActionSource src)
+	public T injectItems( T input, Actionable type, BaseActionSource src )
 	{
-		if ( this.diveList( this, type ) )
+		if( this.diveList( this, type ) )
 			return input;
 
-		if ( this.testPermission( src, SecurityPermissions.INJECT ) )
+		if( this.testPermission( src, SecurityPermissions.INJECT ) )
 		{
 			this.surface( this, type );
 			return input;
 		}
 
-		for (List<IMEInventoryHandler<T>> invList : this.priorityInventory.values())
+		for( List<IMEInventoryHandler<T>> invList : this.priorityInventory.values() )
 		{
 			Iterator<IMEInventoryHandler<T>> ii = invList.iterator();
-			while (ii.hasNext() && input != null)
+			while( ii.hasNext() && input != null )
 			{
 				IMEInventoryHandler<T> inv = ii.next();
 
-				if ( inv.validForPass( 1 ) && inv.canAccept( input )
-						&& (inv.isPrioritized( input ) || inv.extractItems( input, Actionable.SIMULATE, src ) != null) )
+				if( inv.validForPass( 1 ) && inv.canAccept( input ) && ( inv.isPrioritized( input ) || inv.extractItems( input, Actionable.SIMULATE, src ) != null ) )
 				{
 					input = inv.injectItems( input, type, src );
 				}
 			}
 
 			ii = invList.iterator();
-			while (ii.hasNext() && input != null)
+			while( ii.hasNext() && input != null )
 			{
 				IMEInventoryHandler<T> inv = ii.next();
-				if ( inv.validForPass( 2 ) && inv.canAccept( input ) )// ignore crafting on the second pass.
+				if( inv.validForPass( 2 ) && inv.canAccept( input ) )// ignore crafting on the second pass.
 				{
 					input = inv.injectItems( input, type, src );
 				}
@@ -205,13 +122,73 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 		return input;
 	}
 
-	@Override
-	public T extractItems(T request, Actionable mode, BaseActionSource src)
+	private boolean diveList( NetworkInventoryHandler<T> networkInventoryHandler, Actionable type )
 	{
-		if ( this.diveList( this, mode ) )
+		LinkedList cDepth = this.getDepth( type );
+		if( cDepth.contains( networkInventoryHandler ) )
+			return true;
+
+		cDepth.push( this );
+		return false;
+	}
+
+	private boolean testPermission( BaseActionSource src, SecurityPermissions permission )
+	{
+		if( src.isPlayer() )
+		{
+			if( !this.security.hasPermission( ( (PlayerSource) src ).player, permission ) )
+				return true;
+		}
+		else if( src.isMachine() )
+		{
+			if( this.security.isAvailable() )
+			{
+				IGridNode n = ( (MachineSource) src ).via.getActionableNode();
+				if( n == null )
+					return true;
+
+				IGrid gn = n.getGrid();
+				if( gn != this.security.myGrid )
+				{
+					int playerID = -1;
+
+					ISecurityGrid sg = gn.getCache( ISecurityGrid.class );
+					playerID = sg.getOwner();
+
+					if( !this.security.hasPermission( playerID, permission ) )
+						return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	private void surface( NetworkInventoryHandler<T> networkInventoryHandler, Actionable type )
+	{
+		if( this.getDepth( type ).pop() != this )
+			throw new RuntimeException( "Invalid Access to Networked Storage API detected." );
+	}
+
+	private LinkedList getDepth( Actionable type )
+	{
+		ThreadLocal<LinkedList> depth = type == Actionable.MODULATE ? DEPTH_MOD : DEPTH_SIM;
+
+		LinkedList s = depth.get();
+
+		if( s == null )
+			depth.set( s = new LinkedList() );
+
+		return s;
+	}
+
+	@Override
+	public T extractItems( T request, Actionable mode, BaseActionSource src )
+	{
+		if( this.diveList( this, mode ) )
 			return null;
 
-		if ( this.testPermission( src, SecurityPermissions.EXTRACT ) )
+		if( this.testPermission( src, SecurityPermissions.EXTRACT ) )
 		{
 			this.surface( this, mode );
 			return null;
@@ -224,12 +201,12 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 		output.setStackSize( 0 );
 		long req = request.getStackSize();
 
-		while (i.hasNext())
+		while( i.hasNext() )
 		{
 			List<IMEInventoryHandler<T>> invList = i.next();
 
 			Iterator<IMEInventoryHandler<T>> ii = invList.iterator();
-			while (ii.hasNext() && output.getStackSize() < req)
+			while( ii.hasNext() && output.getStackSize() < req )
 			{
 				IMEInventoryHandler<T> inv = ii.next();
 
@@ -240,26 +217,46 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 
 		this.surface( this, mode );
 
-		if ( output.getStackSize() <= 0 )
+		if( output.getStackSize() <= 0 )
 			return null;
 
 		return output;
 	}
 
 	@Override
-	public IItemList<T> getAvailableItems(IItemList out)
+	public IItemList<T> getAvailableItems( IItemList out )
 	{
-		if ( this.diveIteration( this, Actionable.SIMULATE ) )
+		if( this.diveIteration( this, Actionable.SIMULATE ) )
 			return out;
 
 		// for (Entry<Integer, IMEInventoryHandler<T>> h : priorityInventory.entries())
-		for (List<IMEInventoryHandler<T>> i : this.priorityInventory.values())
-			for (IMEInventoryHandler<T> j : i)
+		for( List<IMEInventoryHandler<T>> i : this.priorityInventory.values() )
+			for( IMEInventoryHandler<T> j : i )
 				out = j.getAvailableItems( out );
 
 		this.surface( this, Actionable.SIMULATE );
 
 		return out;
+	}
+
+	private boolean diveIteration( NetworkInventoryHandler<T> networkInventoryHandler, Actionable type )
+	{
+		LinkedList cDepth = this.getDepth( type );
+		if( cDepth.isEmpty() )
+		{
+			currentPass++;
+			this.myPass = currentPass;
+		}
+		else
+		{
+			if( currentPass == this.myPass )
+				return true;
+			else
+				this.myPass = currentPass;
+		}
+
+		cDepth.push( this );
+		return false;
 	}
 
 	@Override
@@ -275,13 +272,13 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	}
 
 	@Override
-	public boolean isPrioritized(T input)
+	public boolean isPrioritized( T input )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canAccept(T input)
+	public boolean canAccept( T input )
 	{
 		return true;
 	}
@@ -299,9 +296,8 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	}
 
 	@Override
-	public boolean validForPass(int i)
+	public boolean validForPass( int i )
 	{
 		return true;
 	}
-
 }

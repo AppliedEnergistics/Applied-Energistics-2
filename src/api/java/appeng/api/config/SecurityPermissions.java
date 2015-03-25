@@ -23,6 +23,7 @@
 
 package appeng.api.config;
 
+
 /**
  * Represent the security systems basic permissions, these are not for anti-griefing, they are part of the mod as a
  * gameplay feature.

@@ -75,12 +75,12 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	@Override
 	public List<String> getWailaBody( IPart part, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config )
 	{
-		if ( part instanceof PartCableSmart || part instanceof PartDenseCable )
+		if( part instanceof PartCableSmart || part instanceof PartDenseCable )
 		{
 			final NBTTagCompound tag = accessor.getNBTData();
 
 			final byte usedChannels = this.getUsedChannels( part, tag, this.cache );
-			final byte maxChannels = ( byte ) ( ( part instanceof PartDenseCable ) ? 32 : 8 );
+			final byte maxChannels = (byte) ( ( part instanceof PartDenseCable ) ? 32 : 8 );
 
 			currentToolTip.add( usedChannels + " " + GuiText.Of.getLocal() + ' ' + maxChannels + ' ' + WailaText.Channels.getLocal() );
 		}
@@ -105,12 +105,12 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	{
 		final byte usedChannels;
 
-		if ( tag.hasKey( ID_USED_CHANNELS ) )
+		if( tag.hasKey( ID_USED_CHANNELS ) )
 		{
 			usedChannels = tag.getByte( ID_USED_CHANNELS );
 			this.cache.put( part, usedChannels );
 		}
-		else if ( this.cache.containsKey( part ) )
+		else if( this.cache.containsKey( part ) )
 		{
 			usedChannels = this.cache.get( part );
 		}
@@ -143,13 +143,13 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	@Override
 	public NBTTagCompound getNBTData( EntityPlayerMP player, IPart part, TileEntity te, NBTTagCompound tag, World world, int x, int y, int z )
 	{
-		if ( part instanceof PartCableSmart || part instanceof PartDenseCable )
+		if( part instanceof PartCableSmart || part instanceof PartDenseCable )
 		{
 			final NBTTagCompound tempTag = new NBTTagCompound();
 
 			part.writeToNBT( tempTag );
 
-			if ( tempTag.hasKey( ID_USED_CHANNELS ) )
+			if( tempTag.hasKey( ID_USED_CHANNELS ) )
 			{
 				final byte usedChannels = tempTag.getByte( ID_USED_CHANNELS );
 

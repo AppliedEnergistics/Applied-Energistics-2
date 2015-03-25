@@ -18,6 +18,7 @@
 
 package appeng.hooks;
 
+
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
@@ -29,20 +30,21 @@ import net.minecraft.world.WorldServer;
 
 import appeng.util.Platform;
 
+
 final public class DispenserBlockTool extends BehaviorDefaultDispenseItem
 {
 
 	@Override
-	protected ItemStack dispenseStack(IBlockSource dispenser, ItemStack dispensedItem)
+	protected ItemStack dispenseStack( IBlockSource dispenser, ItemStack dispensedItem )
 	{
 		Item i = dispensedItem.getItem();
-		if ( i instanceof IBlockTool )
+		if( i instanceof IBlockTool )
 		{
 			EnumFacing enumfacing = BlockDispenser.func_149937_b( dispenser.getBlockMetadata() );
 			IBlockTool tm = (IBlockTool) i;
 
 			World w = dispenser.getWorld();
-			if ( w instanceof WorldServer )
+			if( w instanceof WorldServer )
 			{
 				int x = dispenser.getXInt() + enumfacing.getFrontOffsetX();
 				int y = dispenser.getYInt() + enumfacing.getFrontOffsetY();

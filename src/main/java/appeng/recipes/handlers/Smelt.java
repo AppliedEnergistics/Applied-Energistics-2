@@ -33,6 +33,7 @@ import appeng.api.recipes.IIngredient;
 import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
 
+
 public class Smelt implements ICraftHandler, IWebsiteSerializer
 {
 
@@ -40,13 +41,13 @@ public class Smelt implements ICraftHandler, IWebsiteSerializer
 	IIngredient out;
 
 	@Override
-	public void setup(List<List<IIngredient>> input, List<List<IIngredient>> output) throws RecipeError
+	public void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeError
 	{
-		if ( input.size() == 1 && output.size() == 1 )
+		if( input.size() == 1 && output.size() == 1 )
 		{
 			List<IIngredient> inputList = input.get( 0 );
 			List<IIngredient> outputList = output.get( 0 );
-			if ( inputList.size() == 1 && outputList.size() == 1 )
+			if( inputList.size() == 1 && outputList.size() == 1 )
 			{
 				this.in = inputList.get( 0 );
 				this.out = outputList.get( 0 );
@@ -59,24 +60,26 @@ public class Smelt implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		if ( this.in.getItemStack().getItem() == null )
+		if( this.in.getItemStack().getItem() == null )
 			throw new RegistrationError( this.in.toString() + ": Smelting Input is not a valid item." );
 
-		if ( this.out.getItemStack().getItem() == null )
+		if( this.out.getItemStack().getItem() == null )
 			throw new RegistrationError( this.out.toString() + ": Smelting Output is not a valid item." );
 
 		GameRegistry.addSmelting( this.in.getItemStack(), this.out.getItemStack(), 0 );
 	}
 
 	@Override
-	public boolean canCraft(ItemStack reqOutput) throws RegistrationError, MissingIngredientError {
-		return Platform.isSameItemPrecise( this.out.getItemStack(),reqOutput );
+	public String getPattern( RecipeHandler h )
+	{
+		return "smelt " + this.out.getQty() + '\n' +
+				h.getName( this.out ) + '\n' +
+				h.getName( this.in );
 	}
 
 	@Override
-	public String getPattern( RecipeHandler h ) {
-		return "smelt "+this.out.getQty()+ '\n' +
-				h.getName(this.out)+ '\n' +
-				h.getName(this.in);
+	public boolean canCraft( ItemStack reqOutput ) throws RegistrationError, MissingIngredientError
+	{
+		return Platform.isSameItemPrecise( this.out.getItemStack(), reqOutput );
 	}
 }

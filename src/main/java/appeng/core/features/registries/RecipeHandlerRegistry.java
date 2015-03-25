@@ -18,6 +18,7 @@
 
 package appeng.core.features.registries;
 
+
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -28,6 +29,7 @@ import appeng.api.recipes.ISubItemResolver;
 import appeng.core.AELog;
 import appeng.recipes.RecipeHandler;
 
+
 public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 {
 
@@ -35,22 +37,28 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 	final LinkedList<ISubItemResolver> resolvers = new LinkedList<ISubItemResolver>();
 
 	@Override
-	public void addNewCraftHandler(String name, Class<? extends ICraftHandler> handler)
+	public void addNewCraftHandler( String name, Class<? extends ICraftHandler> handler )
 	{
 		this.handlers.put( name.toLowerCase(), handler );
 	}
 
 	@Override
-	public ICraftHandler getCraftHandlerFor(String name)
+	public void addNewSubItemResolver( ISubItemResolver sir )
+	{
+		this.resolvers.add( sir );
+	}
+
+	@Override
+	public ICraftHandler getCraftHandlerFor( String name )
 	{
 		Class<? extends ICraftHandler> clz = this.handlers.get( name );
-		if ( clz == null )
+		if( clz == null )
 			return null;
 		try
 		{
 			return clz.newInstance();
 		}
-		catch (Throwable e)
+		catch( Throwable e )
 		{
 			AELog.severe( "Error Caused when trying to construct " + clz.getName() );
 			AELog.error( e );
@@ -66,15 +74,9 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 	}
 
 	@Override
-	public void addNewSubItemResolver(ISubItemResolver sir)
+	public Object resolveItem( String nameSpace, String itemName )
 	{
-		this.resolvers.add( sir );
-	}
-
-	@Override
-	public Object resolveItem(String nameSpace, String itemName)
-	{
-		for (ISubItemResolver sir : this.resolvers)
+		for( ISubItemResolver sir : this.resolvers )
 		{
 			Object rr = null;
 
@@ -82,16 +84,15 @@ public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 			{
 				rr = sir.resolveItemByName( nameSpace, itemName );
 			}
-			catch (Throwable t)
+			catch( Throwable t )
 			{
 				AELog.error( t );
 			}
 
-			if ( rr != null )
+			if( rr != null )
 				return rr;
 		}
 
 		return null;
 	}
-
 }

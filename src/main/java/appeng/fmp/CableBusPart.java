@@ -18,6 +18,7 @@
 
 package appeng.fmp;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -76,6 +77,7 @@ import appeng.parts.PartPlacement;
 import appeng.tile.networking.TileCableBus;
 import appeng.util.Platform;
 
+
 /**
  * Implementing these might help improve visuals for hollow covers
  *
@@ -84,6 +86,7 @@ import appeng.util.Platform;
 public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IRedstonePart, AEMultiTile
 {
 
+	public static final ThreadLocal<Boolean> DISABLE_FACADE_OCCLUSION = new ThreadLocal<Boolean>();
 	private final static Cuboid6[] SIDE_TESTS = new Cuboid6[] {
 
 			new Cuboid6( 6.0 / 16.0, 0, 6.0 / 16.0, 10.0 / 16.0, 6.0 / 16.0, 10.0 / 16.0 ), // DOWN(0, -1, 0),
@@ -98,89 +101,13 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 
 			new Cuboid6( 10.0 / 16.0, 6.0 / 16.0, 6.0 / 16.0, 1.0, 10.0 / 16.0, 10.0 / 16.0 ),// EAST(1, 0, 0),
 	};
-
-	public static final ThreadLocal<Boolean> DISABLE_FACADE_OCCLUSION = new ThreadLocal<Boolean>();
 	public CableBusContainer cb = new CableBusContainer( this );
+	boolean canUpdate = false;
 
 	@Override
-	public boolean isInWorld()
-	{
-		return this.cb.isInWorld();
-	}
-
-	@Override
-	public boolean doesTick()
-	{
-		return false;
-	}
-
-	@Override
-	public AECableType getCableConnectionType(ForgeDirection dir)
-	{
-		return this.cb.getCableConnectionType( dir );
-	}
-
-	@Override
-	public boolean recolourBlock(ForgeDirection side, AEColor colour, EntityPlayer who)
+	public boolean recolourBlock( ForgeDirection side, AEColor colour, EntityPlayer who )
 	{
 		return this.cb.recolourBlock( side, colour, who );
-	}
-
-	@Override
-	public AEColor getColor()
-	{
-		return this.cb.getColor();
-	}
-
-	@Override
-	public void save(NBTTagCompound tag)
-	{
-		this.cb.writeToNBT( tag );
-	}
-
-	@Override
-	public void load(NBTTagCompound tag)
-	{
-		this.cb.readFromNBT( tag );
-	}
-
-	@Override
-	public void writeDesc(MCDataOutput packet)
-	{
-		ByteBuf stream = Unpooled.buffer();
-
-		try
-		{
-			this.cb.writeToStream( stream );
-			packet.writeInt( stream.readableBytes() );
-			stream.capacity( stream.readableBytes() );
-			packet.writeByteArray( stream.array() );
-		}
-		catch (IOException e)
-		{
-			AELog.error( e );
-		}
-
-	}
-
-	@Override
-	public void readDesc(MCDataInput packet)
-	{
-		int len = packet.readInt();
-		byte[] data = packet.readByteArray( len );
-
-		try
-		{
-			if ( len > 0 )
-			{
-				ByteBuf byteBuffer = Unpooled.wrappedBuffer( data );
-				this.cb.readFromStream( byteBuffer );
-			}
-		}
-		catch (IOException e)
-		{
-			AELog.error( e );
-		}
 	}
 
 	@Override
@@ -188,9 +115,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	{
 		AxisAlignedBB b = null;
 
-		for (AxisAlignedBB bx : this.cb.getSelectedBoundingBoxesFromPool( false, true, null, true ))
+		for( AxisAlignedBB bx : this.cb.getSelectedBoundingBoxesFromPool( false, true, null, true ) )
 		{
-			if ( b == null )
+			if( b == null )
 				b = bx;
 			else
 			{
@@ -204,7 +131,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 			}
 		}
 
-		if ( b == null )
+		if( b == null )
 			return new Cuboid6( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 );
 
 		return new Cuboid6( b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ );
@@ -217,24 +144,9 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	}
 
 	@Override
-	public void onPartChanged(TMultiPart part)
+	public boolean occlusionTest( TMultiPart part )
 	{
-		this.cb.updateConnections();
-	}
-
-	@Override
-	public ItemStack pickItem(MovingObjectPosition hit)
-	{
-		Vec3 v3 = hit.hitVec.addVector( -hit.blockX, -hit.blockY, -hit.blockZ );
-		SelectedPart sp = this.cb.selectPart( v3 );
-		if ( sp != null )
-		{
-			if ( sp.part != null )
-				return sp.part.getItemStack( PartItemStack.Break );
-			if ( sp.facade != null )
-				return sp.facade.getItemStack();
-		}
-		return null;
+		return NormalOcclusionTest.apply( this, part );
 	}
 
 	@Override
@@ -244,70 +156,15 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	}
 
 	@Override
-	public void onEntityCollision(Entity entity)
+	public int getLightValue()
 	{
-		this.cb.onEntityCollision( entity );
+		return this.cb.getLightValue();
 	}
 
 	@Override
-	public void onWorldJoin()
+	public boolean renderStatic( Vector3 pos, int pass )
 	{
-		this.canUpdate = true;
-		this.cb.updateConnections();
-		this.cb.addToWorld();
-	}
-
-	@Override
-	public void onWorldSeparate()
-	{
-		this.canUpdate = false;
-		this.cb.removeFromWorld();
-	}
-
-	@Override
-	public boolean canConnectRedstone(int side)
-	{
-		return this.cb.canConnectRedstone( EnumSet.of( ForgeDirection.getOrientation( side ) ) );
-	}
-
-	@Override
-	public int strongPowerLevel(int side)
-	{
-		return this.cb.isProvidingStrongPower( ForgeDirection.getOrientation( side ) );
-	}
-
-	@Override
-	public int weakPowerLevel(int side)
-	{
-		return this.cb.isProvidingWeakPower( ForgeDirection.getOrientation( side ) );
-	}
-
-	@Override
-	public void onNeighborChanged()
-	{
-		this.cb.onNeighborChanged();
-	}
-
-	@Override
-	public boolean activate(EntityPlayer player, MovingObjectPosition hit, ItemStack item)
-	{
-		return this.cb.activate( player, hit.hitVec.addVector( -hit.blockX, -hit.blockY, -hit.blockZ ) );
-	}
-
-	@Override
-	public void renderDynamic(Vector3 pos, float frame, int pass)
-	{
-		if ( pass == 0 || (pass == 1 && AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass )) )
-		{
-			BusRenderHelper.INSTANCE.setPass( pass );
-			this.cb.renderDynamic( pos.x, pos.y, pos.z );
-		}
-	}
-
-	@Override
-	public boolean renderStatic(Vector3 pos, int pass)
-	{
-		if ( pass == 0 || (pass == 1 && AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass )) )
+		if( pass == 0 || ( pass == 1 && AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass ) ) )
 		{
 			BusRenderHelper.INSTANCE.setPass( pass );
 			BusRenderer.INSTANCE.renderer.renderAllFaces = true;
@@ -320,93 +177,90 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	}
 
 	@Override
-	public int getLightValue()
+	public void renderDynamic( Vector3 pos, float frame, int pass )
 	{
-		return this.cb.getLightValue();
+		if( pass == 0 || ( pass == 1 && AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass ) ) )
+		{
+			BusRenderHelper.INSTANCE.setPass( pass );
+			this.cb.renderDynamic( pos.x, pos.y, pos.z );
+		}
 	}
 
 	@Override
-	public boolean canAddPart(ItemStack is, ForgeDirection side)
+	public void writeDesc( MCDataOutput packet )
 	{
-		IFacadePart fp = PartPlacement.isFacade( is, side );
-		if ( fp != null )
+		ByteBuf stream = Unpooled.buffer();
+
+		try
 		{
-			if ( !(side == null || side == ForgeDirection.UNKNOWN || this.tile() == null) )
-			{
-				List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
-				IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
-				fp.getBoxes( bch, null );
-				for (AxisAlignedBB bb : boxes)
-				{
-					DISABLE_FACADE_OCCLUSION.set( true );
-					boolean canAdd = this.tile().canAddPart( new NormallyOccludedPart( new Cuboid6( bb ) ) );
-					DISABLE_FACADE_OCCLUSION.remove();
-					if ( !canAdd )
-					{
-						return false;
-					}
-				}
-			}
-			return true;
+			this.cb.writeToStream( stream );
+			packet.writeInt( stream.readableBytes() );
+			stream.capacity( stream.readableBytes() );
+			packet.writeByteArray( stream.array() );
 		}
-
-		if ( is.getItem() instanceof IPartItem )
+		catch( IOException e )
 		{
-			IPartItem bi = (IPartItem) is.getItem();
+			AELog.error( e );
+		}
+	}
 
-			is = is.copy();
-			is.stackSize = 1;
+	@Override
+	public void readDesc( MCDataInput packet )
+	{
+		int len = packet.readInt();
+		byte[] data = packet.readByteArray( len );
 
-			IPart bp = bi.createPartFromItemStack( is );
-			if ( !(side == null || side == ForgeDirection.UNKNOWN || this.tile() == null) )
+		try
+		{
+			if( len > 0 )
 			{
-				List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
-				IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
-				bp.getBoxes( bch );
-				for (AxisAlignedBB bb : boxes)
-				{
-					if ( !this.tile().canAddPart( new NormallyOccludedPart( new Cuboid6( bb ) ) ) )
-					{
-						return false;
-					}
-				}
+				ByteBuf byteBuffer = Unpooled.wrappedBuffer( data );
+				this.cb.readFromStream( byteBuffer );
 			}
 		}
-
-		return this.cb.canAddPart( is, side );
+		catch( IOException e )
+		{
+			AELog.error( e );
+		}
 	}
 
 	@Override
-	public ForgeDirection addPart(ItemStack is, ForgeDirection side, EntityPlayer owner)
+	public void save( NBTTagCompound tag )
 	{
-		return this.cb.addPart( is, side, owner );
+		this.cb.writeToNBT( tag );
 	}
 
 	@Override
-	public IPart getPart(ForgeDirection side)
+	public void load( NBTTagCompound tag )
 	{
-		return this.cb.getPart( side );
+		this.cb.readFromNBT( tag );
 	}
 
 	@Override
-	public void removePart(ForgeDirection side, boolean suppressUpdate)
+	public void onPartChanged( TMultiPart part )
 	{
-		this.cb.removePart( side, suppressUpdate );
-	}
-
-	boolean canUpdate = false;
-
-	@Override
-	public void markForUpdate()
-	{
-		if ( Platform.isServer() && this.canUpdate )
-			this.sendDescUpdate();
+		this.cb.updateConnections();
 	}
 
 	@Override
-	public DimensionalCoord getLocation()
+	public void onNeighborChanged()
 	{
-		return new DimensionalCoord( this.tile() );
+		this.cb.onNeighborChanged();
+	}
+
+	@Override
+	public void onWorldSeparate()
+	{
+		this.canUpdate = false;
+		this.cb.removeFromWorld();
+	}
+
+	@Override
+	public void onWorldJoin()
+	{
+		this.canUpdate = true;
+		this.cb.updateConnections();
+		this.cb.addToWorld();
 	}
 
 	@Override
@@ -415,37 +269,81 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		this.cb.setHost( this );
 	}
 
-	public void convertFromTile(TileEntity blockTileEntity)
+	@Override
+	public boolean doesTick()
+	{
+		return false;
+	}
+
+	@Override
+	public ItemStack pickItem( MovingObjectPosition hit )
+	{
+		Vec3 v3 = hit.hitVec.addVector( -hit.blockX, -hit.blockY, -hit.blockZ );
+		SelectedPart sp = this.cb.selectPart( v3 );
+		if( sp != null )
+		{
+			if( sp.part != null )
+				return sp.part.getItemStack( PartItemStack.Break );
+			if( sp.facade != null )
+				return sp.facade.getItemStack();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean activate( EntityPlayer player, MovingObjectPosition hit, ItemStack item )
+	{
+		return this.cb.activate( player, hit.hitVec.addVector( -hit.blockX, -hit.blockY, -hit.blockZ ) );
+	}
+
+	@Override
+	public void onEntityCollision( Entity entity )
+	{
+		this.cb.onEntityCollision( entity );
+	}
+
+	@Override
+	public int strongPowerLevel( int side )
+	{
+		return this.cb.isProvidingStrongPower( ForgeDirection.getOrientation( side ) );
+	}
+
+	@Override
+	public int weakPowerLevel( int side )
+	{
+		return this.cb.isProvidingWeakPower( ForgeDirection.getOrientation( side ) );
+	}
+
+	@Override
+	public boolean canConnectRedstone( int side )
+	{
+		return this.cb.canConnectRedstone( EnumSet.of( ForgeDirection.getOrientation( side ) ) );
+	}
+
+	public void convertFromTile( TileEntity blockTileEntity )
 	{
 		TileCableBus tcb = (TileCableBus) blockTileEntity;
 		this.cb = tcb.cb;
 	}
 
 	@Override
-	public boolean occlusionTest(TMultiPart part)
+	public Iterable<IndexedCuboid6> getSubParts()
 	{
-		return NormalOcclusionTest.apply( this, part );
+		LinkedList<IndexedCuboid6> l = new LinkedList<IndexedCuboid6>();
+		for( Cuboid6 c : this.getCollisionBoxes() )
+		{
+			l.add( new IndexedCuboid6( 0, c ) );
+		}
+		return l;
 	}
 
 	@Override
 	public Iterable<Cuboid6> getCollisionBoxes()
 	{
 		LinkedList<Cuboid6> l = new LinkedList<Cuboid6>();
-		for (AxisAlignedBB b : this.cb.getSelectedBoundingBoxesFromPool( false, true, null, true ))
+		for( AxisAlignedBB b : this.cb.getSelectedBoundingBoxesFromPool( false, true, null, true ) )
 		{
 			l.add( new Cuboid6( b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ ) );
-		}
-		return l;
-
-	}
-
-	@Override
-	public Iterable<IndexedCuboid6> getSubParts()
-	{
-		LinkedList<IndexedCuboid6> l = new LinkedList<IndexedCuboid6>();
-		for (Cuboid6 c : this.getCollisionBoxes())
-		{
-			l.add( new IndexedCuboid6( 0, c ) );
 		}
 		return l;
 	}
@@ -454,7 +352,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	public Iterable<Cuboid6> getOcclusionBoxes()
 	{
 		LinkedList<Cuboid6> l = new LinkedList<Cuboid6>();
-		for (AxisAlignedBB b : this.cb.getSelectedBoundingBoxesFromPool( true, DISABLE_FACADE_OCCLUSION.get() == null, null, true ))
+		for( AxisAlignedBB b : this.cb.getSelectedBoundingBoxesFromPool( true, DISABLE_FACADE_OCCLUSION.get() == null, null, true ) )
 		{
 			l.add( new Cuboid6( b.minX, b.minY, b.minZ, b.maxX, b.maxY, b.maxZ ) );
 		}
@@ -462,68 +360,15 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	}
 
 	@Override
-	public IGridNode getGridNode(ForgeDirection dir)
+	public IGridNode getGridNode( ForgeDirection dir )
 	{
 		return this.cb.getGridNode( dir );
 	}
 
 	@Override
-	public IFacadeContainer getFacadeContainer()
+	public AECableType getCableConnectionType( ForgeDirection dir )
 	{
-		return this.cb.getFacadeContainer();
-	}
-
-	@Override
-	public void clearContainer()
-	{
-		this.cb = new CableBusContainer( this );
-	}
-
-	@Override
-	public boolean isBlocked(ForgeDirection side)
-	{
-		if ( side == null || side == ForgeDirection.UNKNOWN || this.tile() == null )
-			return false;
-
-		DISABLE_FACADE_OCCLUSION.set( true );
-		boolean blocked = !this.tile().canAddPart( new NormallyOccludedPart( SIDE_TESTS[side.ordinal()] ) );
-		DISABLE_FACADE_OCCLUSION.remove();
-
-		return blocked;
-	}
-
-	@Override
-	public SelectedPart selectPart(Vec3 pos)
-	{
-		return this.cb.selectPart( pos );
-	}
-
-	@Override
-	public void partChanged()
-	{
-		if ( this.isInWorld() )
-			this.notifyNeighbors();
-	}
-
-	@Override
-	public Set<LayerFlags> getLayerFlags()
-	{
-		return this.cb.getLayerFlags();
-	}
-
-	@Override
-	public void markForSave()
-	{
-		// mark the chunk for save...
-		TileEntity te = this.tile();
-		if ( te != null && te.getWorldObj() != null )
-			te.getWorldObj().getChunkFromBlockCoords( this.x(), this.z() ).isModified = true;
-	}
-
-	@Override
-	public boolean hasRedstone(ForgeDirection side)
-	{
-		return this.cb.hasRedstone( side );
+		return this.cb.getCableConnectionType( dir );
 	}
 
 	@Override
@@ -532,56 +377,34 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 		this.cb.securityBreak();
 	}
 
-	@Override
-	public boolean isEmpty()
-	{
-		return this.cb.isEmpty();
-	}
-
-	@Override
-	public void cleanup()
-	{
-		this.tile().remPart( this );
-	}
-
-	@Override
-	public void notifyNeighbors()
-	{
-		if ( this.tile() instanceof TIInventoryTile )
-			((TIInventoryTile) this.tile()).rebuildSlotMap();
-
-		if ( this.world() != null && this.world().blockExists( this.x(), this.y(), this.z() ) && !CableBusContainer.isLoading() )
-			Platform.notifyBlocksOfNeighbors(this.world(), this.x(), this.y(), this.z() );
-	}
-
 	// @Override
-	public int getHollowSize(int side)
+	public int getHollowSize( int side )
 	{
 		IPartCable cable = (IPartCable) this.getPart( ForgeDirection.UNKNOWN );
 
 		ForgeDirection dir = ForgeDirection.getOrientation( side );
-		if ( cable != null && cable.isConnected( dir ) )
+		if( cable != null && cable.isConnected( dir ) )
 		{
 			List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
 
 			BusCollisionHelper bch = new BusCollisionHelper( boxes, ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH, null, true );
 
-			for (ForgeDirection whichSide : ForgeDirection.values())
+			for( ForgeDirection whichSide : ForgeDirection.values() )
 			{
 				IPart fPart = this.getPart( whichSide );
 
-				if ( fPart != null )
+				if( fPart != null )
 					fPart.getBoxes( bch );
 			}
 
 			AxisAlignedBB b = null;
 			AxisAlignedBB pb = Platform.getPrimaryBox( dir, 2 );
 
-			for (AxisAlignedBB bb : boxes)
+			for( AxisAlignedBB bb : boxes )
 			{
-				if ( bb.intersectsWith( pb ) )
+				if( bb.intersectsWith( pb ) )
 				{
-					if ( b == null )
+					if( b == null )
 						b = bb;
 					else
 					{
@@ -595,33 +418,33 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 				}
 			}
 
-			if ( b == null )
+			if( b == null )
 				return 0;
 
-			switch (dir)
+			switch( dir )
 			{
-			case WEST:
-			case EAST:
-				return this.getSize( b.minZ, b.maxZ, b.minY, b.maxY );
-			case DOWN:
-			case NORTH:
-				return this.getSize( b.minX, b.maxX, b.minZ, b.maxZ );
-			case SOUTH:
-			case UP:
-				return this.getSize( b.minX, b.maxX, b.minY, b.maxY );
-			default:
+				case WEST:
+				case EAST:
+					return this.getSize( b.minZ, b.maxZ, b.minY, b.maxY );
+				case DOWN:
+				case NORTH:
+					return this.getSize( b.minX, b.maxX, b.minZ, b.maxZ );
+				case SOUTH:
+				case UP:
+					return this.getSize( b.minX, b.maxX, b.minY, b.maxY );
+				default:
 			}
 		}
 
 		return 12;
 	}
 
-	int getSize(double a, double b, double c, double d)
+	int getSize( double a, double b, double c, double d )
 	{
 		double r = Math.abs( a - 0.5 );
 		r = Math.max( Math.abs( b - 0.5 ), r );
 		r = Math.max( Math.abs( c - 0.5 ), r );
-		return (8 * (int) Math.max( Math.abs( d - 0.5 ), r ));
+		return ( 8 * (int) Math.max( Math.abs( d - 0.5 ), r ) );
 	}
 
 	// @Override
@@ -629,15 +452,189 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IReds
 	{
 		int mask = 0;
 
-		for (ForgeDirection side : ForgeDirection.values())
+		for( ForgeDirection side : ForgeDirection.values() )
 		{
-			if ( this.getPart( side ) != null )
+			if( this.getPart( side ) != null )
 				mask |= 1 << side.ordinal();
-			else if ( side != ForgeDirection.UNKNOWN && this.getFacadeContainer().getFacade( side ) != null )
+			else if( side != ForgeDirection.UNKNOWN && this.getFacadeContainer().getFacade( side ) != null )
 				mask |= 1 << side.ordinal();
 		}
 
 		return mask;
 	}
 
+	@Override
+	public IFacadeContainer getFacadeContainer()
+	{
+		return this.cb.getFacadeContainer();
+	}
+
+	@Override
+	public boolean canAddPart( ItemStack is, ForgeDirection side )
+	{
+		IFacadePart fp = PartPlacement.isFacade( is, side );
+		if( fp != null )
+		{
+			if( !( side == null || side == ForgeDirection.UNKNOWN || this.tile() == null ) )
+			{
+				List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
+				IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
+				fp.getBoxes( bch, null );
+				for( AxisAlignedBB bb : boxes )
+				{
+					DISABLE_FACADE_OCCLUSION.set( true );
+					boolean canAdd = this.tile().canAddPart( new NormallyOccludedPart( new Cuboid6( bb ) ) );
+					DISABLE_FACADE_OCCLUSION.remove();
+					if( !canAdd )
+					{
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+
+		if( is.getItem() instanceof IPartItem )
+		{
+			IPartItem bi = (IPartItem) is.getItem();
+
+			is = is.copy();
+			is.stackSize = 1;
+
+			IPart bp = bi.createPartFromItemStack( is );
+			if( !( side == null || side == ForgeDirection.UNKNOWN || this.tile() == null ) )
+			{
+				List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
+				IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
+				bp.getBoxes( bch );
+				for( AxisAlignedBB bb : boxes )
+				{
+					if( !this.tile().canAddPart( new NormallyOccludedPart( new Cuboid6( bb ) ) ) )
+					{
+						return false;
+					}
+				}
+			}
+		}
+
+		return this.cb.canAddPart( is, side );
+	}
+
+	@Override
+	public ForgeDirection addPart( ItemStack is, ForgeDirection side, EntityPlayer owner )
+	{
+		return this.cb.addPart( is, side, owner );
+	}
+
+	@Override
+	public IPart getPart( ForgeDirection side )
+	{
+		return this.cb.getPart( side );
+	}
+
+	@Override
+	public void removePart( ForgeDirection side, boolean suppressUpdate )
+	{
+		this.cb.removePart( side, suppressUpdate );
+	}
+
+	@Override
+	public void markForUpdate()
+	{
+		if( Platform.isServer() && this.canUpdate )
+			this.sendDescUpdate();
+	}
+
+	@Override
+	public DimensionalCoord getLocation()
+	{
+		return new DimensionalCoord( this.tile() );
+	}
+
+	@Override
+	public AEColor getColor()
+	{
+		return this.cb.getColor();
+	}
+
+	@Override
+	public void clearContainer()
+	{
+		this.cb = new CableBusContainer( this );
+	}
+
+	@Override
+	public boolean isBlocked( ForgeDirection side )
+	{
+		if( side == null || side == ForgeDirection.UNKNOWN || this.tile() == null )
+			return false;
+
+		DISABLE_FACADE_OCCLUSION.set( true );
+		boolean blocked = !this.tile().canAddPart( new NormallyOccludedPart( SIDE_TESTS[side.ordinal()] ) );
+		DISABLE_FACADE_OCCLUSION.remove();
+
+		return blocked;
+	}
+
+	@Override
+	public SelectedPart selectPart( Vec3 pos )
+	{
+		return this.cb.selectPart( pos );
+	}
+
+	@Override
+	public void markForSave()
+	{
+		// mark the chunk for save...
+		TileEntity te = this.tile();
+		if( te != null && te.getWorldObj() != null )
+			te.getWorldObj().getChunkFromBlockCoords( this.x(), this.z() ).isModified = true;
+	}
+
+	@Override
+	public void partChanged()
+	{
+		if( this.isInWorld() )
+			this.notifyNeighbors();
+	}
+
+	@Override
+	public boolean hasRedstone( ForgeDirection side )
+	{
+		return this.cb.hasRedstone( side );
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		return this.cb.isEmpty();
+	}
+
+	@Override
+	public Set<LayerFlags> getLayerFlags()
+	{
+		return this.cb.getLayerFlags();
+	}
+
+	@Override
+	public void cleanup()
+	{
+		this.tile().remPart( this );
+	}
+
+	@Override
+	public void notifyNeighbors()
+	{
+		if( this.tile() instanceof TIInventoryTile )
+			( (TIInventoryTile) this.tile() ).rebuildSlotMap();
+
+		if( this.world() != null && this.world().blockExists( this.x(), this.y(), this.z() ) && !CableBusContainer.isLoading() )
+			Platform.notifyBlocksOfNeighbors( this.world(), this.x(), this.y(), this.z() );
+	}
+
+	@Override
+	public boolean isInWorld()
+	{
+		return this.cb.isInWorld();
+	}
 }

@@ -18,6 +18,7 @@
 
 package appeng.items.contents;
 
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -39,33 +40,35 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
+
 public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implements IPortableCell
 {
 
 	private final ItemStack target;
 	private final IAEItemPowerStorage ips;
 
-	public PortableCellViewer(ItemStack is) {
+	public PortableCellViewer( ItemStack is )
+	{
 		super( CellInventory.getCell( is, null ) );
 		this.ips = (IAEItemPowerStorage) is.getItem();
 		this.target = is;
 	}
 
 	@Override
-	public ItemStack getItemStack()
-	{
-		return this.target;
-	}
-
-	@Override
-	public double extractAEPower(double amt, Actionable mode, PowerMultiplier usePowerMultiplier)
+	public double extractAEPower( double amt, Actionable mode, PowerMultiplier usePowerMultiplier )
 	{
 		amt = usePowerMultiplier.multiply( amt );
 
-		if ( mode == Actionable.SIMULATE )
+		if( mode == Actionable.SIMULATE )
 			return usePowerMultiplier.divide( Math.min( amt, this.ips.getAECurrentPower( this.getItemStack() ) ) );
 
 		return usePowerMultiplier.divide( this.ips.extractAEPower( this.getItemStack(), amt ) );
+	}
+
+	@Override
+	public ItemStack getItemStack()
+	{
+		return this.target;
 	}
 
 	@Override
@@ -83,10 +86,11 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 	@Override
 	public IConfigManager getConfigManager()
 	{
-		final ConfigManager out = new ConfigManager( new IConfigManagerHost() {
+		final ConfigManager out = new ConfigManager( new IConfigManagerHost()
+		{
 
 			@Override
-			public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
+			public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
 			{
 				NBTTagCompound data = Platform.openNbtData( PortableCellViewer.this.target );
 				manager.writeToNBT( data );
@@ -100,5 +104,4 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 		out.readFromNBT( (NBTTagCompound) Platform.openNbtData( this.target ).copy() );
 		return out;
 	}
-
 }

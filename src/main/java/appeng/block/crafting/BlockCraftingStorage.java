@@ -18,6 +18,7 @@
 
 package appeng.block.crafting;
 
+
 import java.util.List;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -30,6 +31,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.crafting.TileCraftingStorageTile;
+
 
 public class BlockCraftingStorage extends BlockCraftingUnit
 {
@@ -47,54 +49,54 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack is)
+	public IIcon getIcon( int direction, int metadata )
 	{
-		if ( is.getItemDamage() == 1 )
-			return "tile.appliedenergistics2.BlockCraftingStorage4k";
-
-		if ( is.getItemDamage() == 2 )
-			return "tile.appliedenergistics2.BlockCraftingStorage16k";
-
-		if ( is.getItemDamage() == 3 )
-			return "tile.appliedenergistics2.BlockCraftingStorage64k";
-
-		return this.getItemUnlocalizedName( is );
-	}
-
-	@Override
-	public IIcon getIcon(int direction, int metadata)
-	{
-		switch (metadata & (~4))
+		switch( metadata & ( ~4 ) )
 		{
-		default:
+			default:
 
-		case 0:
-			return super.getIcon( 0, 0 );
-		case 1:
-			return ExtraBlockTextures.BlockCraftingStorage4k.getIcon();
-		case 2:
-			return ExtraBlockTextures.BlockCraftingStorage16k.getIcon();
-		case 3:
-			return ExtraBlockTextures.BlockCraftingStorage64k.getIcon();
+			case 0:
+				return super.getIcon( 0, 0 );
+			case 1:
+				return ExtraBlockTextures.BlockCraftingStorage4k.getIcon();
+			case 2:
+				return ExtraBlockTextures.BlockCraftingStorage16k.getIcon();
+			case 3:
+				return ExtraBlockTextures.BlockCraftingStorage64k.getIcon();
 
-		case FLAG_FORMED:
-			return ExtraBlockTextures.BlockCraftingStorage1kFit.getIcon();
-		case 1 | FLAG_FORMED:
-			return ExtraBlockTextures.BlockCraftingStorage4kFit.getIcon();
-		case 2 | FLAG_FORMED:
-			return ExtraBlockTextures.BlockCraftingStorage16kFit.getIcon();
-		case 3 | FLAG_FORMED:
-			return ExtraBlockTextures.BlockCraftingStorage64kFit.getIcon();
+			case FLAG_FORMED:
+				return ExtraBlockTextures.BlockCraftingStorage1kFit.getIcon();
+			case 1 | FLAG_FORMED:
+				return ExtraBlockTextures.BlockCraftingStorage4kFit.getIcon();
+			case 2 | FLAG_FORMED:
+				return ExtraBlockTextures.BlockCraftingStorage16kFit.getIcon();
+			case 3 | FLAG_FORMED:
+				return ExtraBlockTextures.BlockCraftingStorage64kFit.getIcon();
 		}
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void getCheckedSubBlocks(Item item, CreativeTabs tabs, List<ItemStack> itemStacks)
+	@SideOnly( Side.CLIENT )
+	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
 	{
 		itemStacks.add( new ItemStack( this, 1, 0 ) );
 		itemStacks.add( new ItemStack( this, 1, 1 ) );
 		itemStacks.add( new ItemStack( this, 1, 2 ) );
 		itemStacks.add( new ItemStack( this, 1, 3 ) );
+	}
+
+	@Override
+	public String getUnlocalizedName( ItemStack is )
+	{
+		if( is.getItemDamage() == 1 )
+			return "tile.appliedenergistics2.BlockCraftingStorage4k";
+
+		if( is.getItemDamage() == 2 )
+			return "tile.appliedenergistics2.BlockCraftingStorage16k";
+
+		if( is.getItemDamage() == 3 )
+			return "tile.appliedenergistics2.BlockCraftingStorage64k";
+
+		return this.getItemUnlocalizedName( is );
 	}
 }

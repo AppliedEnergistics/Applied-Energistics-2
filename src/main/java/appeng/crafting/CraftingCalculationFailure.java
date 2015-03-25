@@ -18,7 +18,9 @@
 
 package appeng.crafting;
 
+
 import appeng.api.storage.data.IAEItemStack;
+
 
 public class CraftingCalculationFailure extends RuntimeException
 {
@@ -27,7 +29,8 @@ public class CraftingCalculationFailure extends RuntimeException
 
 	final IAEItemStack missing;
 
-	public CraftingCalculationFailure(IAEItemStack what, long howMany) {
+	public CraftingCalculationFailure( IAEItemStack what, long howMany )
+	{
 		super( "this should have been caught!" );
 		this.missing = what.copy();
 		this.missing.setStackSize( howMany );

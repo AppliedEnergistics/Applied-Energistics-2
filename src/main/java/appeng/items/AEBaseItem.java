@@ -22,11 +22,11 @@ package appeng.items;
 import java.util.EnumSet;
 import java.util.List;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
+import com.google.common.base.Optional;
 
 import appeng.core.features.AEFeature;
 import appeng.core.features.FeatureNameExtractor;
@@ -43,7 +43,7 @@ public class AEBaseItem extends Item implements IAEFeature
 
 	public AEBaseItem( Class c )
 	{
-		this( c, Optional.<String> absent() );
+		this( c, Optional.<String>absent() );
 		this.canRepair = false;
 	}
 

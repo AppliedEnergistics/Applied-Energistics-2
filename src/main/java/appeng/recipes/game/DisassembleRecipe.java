@@ -18,6 +18,7 @@
 
 package appeng.recipes.game;
 
+
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -32,6 +33,7 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 
+
 public class DisassembleRecipe implements IRecipe
 {
 
@@ -39,58 +41,64 @@ public class DisassembleRecipe implements IRecipe
 	private final Items items = AEApi.instance().items();
 	private final Blocks blocks = AEApi.instance().blocks();
 
-	private ItemStack getOutput(InventoryCrafting inv, boolean createFacade)
+	@Override
+	public boolean matches( InventoryCrafting inv, World w )
+	{
+		return this.getOutput( inv, false ) != null;
+	}
+
+	private ItemStack getOutput( InventoryCrafting inv, boolean createFacade )
 	{
 		ItemStack hasCell = null;
 
-		for (int x = 0; x < inv.getSizeInventory(); x++)
+		for( int x = 0; x < inv.getSizeInventory(); x++ )
 		{
 			ItemStack is = inv.getStackInSlot( x );
-			if ( is != null )
+			if( is != null )
 			{
-				if ( hasCell != null )
+				if( hasCell != null )
 					return null;
 
-				if ( this.items.itemCell1k.sameAsStack( is ) )
+				if( this.items.itemCell1k.sameAsStack( is ) )
 					hasCell = this.mats.materialCell1kPart.stack( 1 );
 
-				if ( this.items.itemCell4k.sameAsStack( is ) )
+				if( this.items.itemCell4k.sameAsStack( is ) )
 					hasCell = this.mats.materialCell4kPart.stack( 1 );
 
-				if ( this.items.itemCell16k.sameAsStack( is ) )
+				if( this.items.itemCell16k.sameAsStack( is ) )
 					hasCell = this.mats.materialCell16kPart.stack( 1 );
 
-				if ( this.items.itemCell64k.sameAsStack( is ) )
+				if( this.items.itemCell64k.sameAsStack( is ) )
 					hasCell = this.mats.materialCell64kPart.stack( 1 );
 
 				// make sure the storage cell is empty...
-				if ( hasCell != null )
+				if( hasCell != null )
 				{
 					IMEInventory<IAEItemStack> cellInv = AEApi.instance().registries().cell().getCellInventory( is, null, StorageChannel.ITEMS );
-					if ( cellInv != null )
+					if( cellInv != null )
 					{
 						IItemList<IAEItemStack> list = cellInv.getAvailableItems( StorageChannel.ITEMS.createList() );
-						if ( !list.isEmpty() )
+						if( !list.isEmpty() )
 							return null;
 					}
 				}
 
-				if ( this.items.itemEncodedPattern.sameAsStack( is ) )
+				if( this.items.itemEncodedPattern.sameAsStack( is ) )
 					hasCell = this.mats.materialBlankPattern.stack( 1 );
 
-				if ( this.blocks.blockCraftingStorage1k.sameAsStack( is ) )
+				if( this.blocks.blockCraftingStorage1k.sameAsStack( is ) )
 					hasCell = this.mats.materialCell1kPart.stack( 1 );
 
-				if ( this.blocks.blockCraftingStorage4k.sameAsStack( is ) )
+				if( this.blocks.blockCraftingStorage4k.sameAsStack( is ) )
 					hasCell = this.mats.materialCell4kPart.stack( 1 );
 
-				if ( this.blocks.blockCraftingStorage16k.sameAsStack( is ) )
+				if( this.blocks.blockCraftingStorage16k.sameAsStack( is ) )
 					hasCell = this.mats.materialCell16kPart.stack( 1 );
 
-				if ( this.blocks.blockCraftingStorage64k.sameAsStack( is ) )
+				if( this.blocks.blockCraftingStorage64k.sameAsStack( is ) )
 					hasCell = this.mats.materialCell64kPart.stack( 1 );
 
-				if ( hasCell == null )
+				if( hasCell == null )
 					return null;
 			}
 		}
@@ -99,13 +107,7 @@ public class DisassembleRecipe implements IRecipe
 	}
 
 	@Override
-	public boolean matches(InventoryCrafting inv, World w)
-	{
-		return this.getOutput( inv, false ) != null;
-	}
-
-	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv)
+	public ItemStack getCraftingResult( InventoryCrafting inv )
 	{
 		return this.getOutput( inv, true );
 	}
@@ -121,5 +123,4 @@ public class DisassembleRecipe implements IRecipe
 	{
 		return null;
 	}
-
 }

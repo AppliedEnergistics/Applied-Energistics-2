@@ -18,7 +18,6 @@
 
 package appeng.client.render.items;
 
-import com.mojang.authlib.GameProfile;
 
 import org.lwjgl.opengl.GL11;
 
@@ -28,27 +27,30 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
 
+import com.mojang.authlib.GameProfile;
+
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.util.AEColor;
 import appeng.client.texture.ExtraItemTextures;
+
 
 public class ToolBiometricCardRender implements IItemRenderer
 {
 
 	@Override
-	public boolean handleRenderType(ItemStack item, ItemRenderType type)
+	public boolean handleRenderType( ItemStack item, ItemRenderType type )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper)
+	public boolean shouldUseRenderHelper( ItemRenderType type, ItemStack item, ItemRendererHelper helper )
 	{
 		return helper == ItemRendererHelper.ENTITY_BOBBING || helper == ItemRendererHelper.ENTITY_ROTATION;
 	}
 
 	@Override
-	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
+	public void renderItem( ItemRenderType type, ItemStack item, Object... data )
 	{
 		IIcon par2Icon = item.getIconIndex();
 
@@ -62,7 +64,7 @@ public class ToolBiometricCardRender implements IItemRenderer
 		GL11.glPushMatrix();
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
-		if ( type == ItemRenderType.INVENTORY )
+		if( type == ItemRenderType.INVENTORY )
 		{
 			GL11.glColor4f( 1, 1, 1, 1.0F );
 			GL11.glScalef( 16F, 16F, 10F );
@@ -94,10 +96,10 @@ public class ToolBiometricCardRender implements IItemRenderer
 		float v = ExtraItemTextures.White.getIcon().getInterpolatedV( 8.1 );
 
 		String username = "";
-		if ( item.getItem() instanceof IBiometricCard )
+		if( item.getItem() instanceof IBiometricCard )
 		{
-			GameProfile gp = (( IBiometricCard) item.getItem() ).getProfile(item);
-			if ( gp != null )
+			GameProfile gp = ( (IBiometricCard) item.getItem() ).getProfile( item );
+			if( gp != null )
 				username = gp.getName();
 		}
 		int hash = username.length() > 0 ? username.hashCode() : 0;
@@ -110,26 +112,25 @@ public class ToolBiometricCardRender implements IItemRenderer
 		float z = 0;
 
 		AEColor col = AEColor.values()[Math.abs( 3 + hash ) % AEColor.values().length];
-		if ( hash == 0 )
+		if( hash == 0 )
 			col = AEColor.Black;
 
-		for (int x = 0; x < 8; x++)// 8
+		for( int x = 0; x < 8; x++ )// 8
 		{
-			for (int y = 0; y < 6; y++)// 6
+			for( int y = 0; y < 6; y++ )// 6
 			{
 				boolean isLit = false;
 				float scale = 0.3f / 255.0f;
 
-				if ( x == 0 || y == 0 || x == 7 || y == 5 )
+				if( x == 0 || y == 0 || x == 7 || y == 5 )
 					isLit = false;
 				else
-					isLit = (hash & (1 << x)) != 0 || (hash & (1 << y)) != 0;
+					isLit = ( hash & ( 1 << x ) ) != 0 || ( hash & ( 1 << y ) ) != 0;
 
-				if ( isLit )
+				if( isLit )
 					tessellator.setColorOpaque_I( col.mediumVariant );
 				else
-					tessellator.setColorOpaque_F( ((col.blackVariant >> 16) & 0xff) * scale, ((col.blackVariant >> 8) & 0xff) * scale,
-							(col.blackVariant & 0xff) * scale );
+					tessellator.setColorOpaque_F( ( ( col.blackVariant >> 16 ) & 0xff ) * scale, ( ( col.blackVariant >> 8 ) & 0xff ) * scale, ( col.blackVariant & 0xff ) * scale );
 
 				tessellator.addVertexWithUV( x, y, z, u, v );
 				tessellator.addVertexWithUV( x + 1, y, z, u, v );

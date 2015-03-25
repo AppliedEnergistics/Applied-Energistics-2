@@ -21,12 +21,12 @@ package appeng.items.tools.quartz;
 
 import java.util.EnumSet;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import com.google.common.base.Optional;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
@@ -54,7 +54,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	@Override
 	public boolean onItemUse( ItemStack is, EntityPlayer p, World w, int x, int y, int z, int s, float hitX, float hitY, float hitZ )
 	{
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 			Platform.openGUI( p, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_QUARTZ_KNIFE );
 		return true;
 	}
@@ -62,7 +62,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	@Override
 	public ItemStack onItemRightClick( ItemStack it, World w, EntityPlayer p )
 	{
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 			Platform.openGUI( p, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_QUARTZ_KNIFE );
 		p.swingItem();
 		return it;
@@ -104,5 +104,4 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	{
 		return new QuartzKnifeObj( is );
 	}
-
 }

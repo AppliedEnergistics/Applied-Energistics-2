@@ -18,8 +18,10 @@
 
 package appeng.me.energy;
 
+
 import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.util.ItemSorters;
+
 
 public class EnergyThreshold implements Comparable<EnergyThreshold>
 {
@@ -28,14 +30,15 @@ public class EnergyThreshold implements Comparable<EnergyThreshold>
 	public final IEnergyWatcher watcher;
 	final int hash;
 
-	public EnergyThreshold(double lim, IEnergyWatcher wat) {
+	public EnergyThreshold( double lim, IEnergyWatcher wat )
+	{
 		this.Limit = lim;
 		this.watcher = wat;
 
-		if ( this.watcher != null )
-			this.hash = this.watcher.hashCode() ^ ((Double) lim).hashCode();
+		if( this.watcher != null )
+			this.hash = this.watcher.hashCode() ^ ( (Double) lim ).hashCode();
 		else
-			this.hash = ((Double) lim).hashCode();
+			this.hash = ( (Double) lim ).hashCode();
 	}
 
 	@Override
@@ -45,9 +48,8 @@ public class EnergyThreshold implements Comparable<EnergyThreshold>
 	}
 
 	@Override
-	public int compareTo(EnergyThreshold o)
+	public int compareTo( EnergyThreshold o )
 	{
 		return ItemSorters.compareDouble( this.Limit, o.Limit );
 	}
-
 }

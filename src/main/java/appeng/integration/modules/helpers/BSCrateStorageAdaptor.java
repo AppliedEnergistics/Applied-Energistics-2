@@ -18,6 +18,7 @@
 
 package appeng.integration.modules.helpers;
 
+
 import java.util.Iterator;
 
 import net.mcft.copy.betterstorage.api.crate.ICrateStorage;
@@ -31,29 +32,31 @@ import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.ItemSlot;
 import appeng.util.iterators.StackToSlotIterator;
 
+
 public class BSCrateStorageAdaptor extends InventoryAdaptor
 {
 
 	final ICrateStorage cs;
 	final ForgeDirection side;
 
-	public BSCrateStorageAdaptor(Object te, ForgeDirection d) {
+	public BSCrateStorageAdaptor( Object te, ForgeDirection d )
+	{
 		this.cs = (ICrateStorage) te;
 		this.side = d;
 	}
 
 	@Override
-	public ItemStack removeItems(int amount, ItemStack filter, IInventoryDestination destination)
+	public ItemStack removeItems( int amount, ItemStack filter, IInventoryDestination destination )
 	{
 		ItemStack target = null;
 
-		for (ItemStack is : this.cs.getContents())
+		for( ItemStack is : this.cs.getContents() )
 		{
-			if ( is != null )
+			if( is != null )
 			{
-				if ( is.stackSize > 0 && ( filter == null || Platform.isSameItem( filter, is )) )
+				if( is.stackSize > 0 && ( filter == null || Platform.isSameItem( filter, is ) ) )
 				{
-					if ( destination == null || destination.canInsert( is ) )
+					if( destination == null || destination.canInsert( is ) )
 					{
 						target = is;
 						break;
@@ -62,7 +65,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 			}
 		}
 
-		if ( target != null )
+		if( target != null )
 		{
 			ItemStack f = Platform.cloneItemStack( target );
 			f.stackSize = amount;
@@ -73,17 +76,17 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateRemove(int amount, ItemStack filter, IInventoryDestination destination)
+	public ItemStack simulateRemove( int amount, ItemStack filter, IInventoryDestination destination )
 	{
 		ItemStack target = null;
 
-		for (ItemStack is : this.cs.getContents())
+		for( ItemStack is : this.cs.getContents() )
 		{
-			if ( is != null )
+			if( is != null )
 			{
-				if ( is.stackSize > 0 && ( filter == null || Platform.isSameItem( filter, is )) )
+				if( is.stackSize > 0 && ( filter == null || Platform.isSameItem( filter, is ) ) )
 				{
-					if ( destination == null || destination.canInsert( is ) )
+					if( destination == null || destination.canInsert( is ) )
 					{
 						target = is;
 						break;
@@ -92,12 +95,12 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 			}
 		}
 
-		if ( target != null )
+		if( target != null )
 		{
 			int cnt = this.cs.getItemCount( target );
-			if ( cnt == 0 )
+			if( cnt == 0 )
 				return null;
-			if ( cnt > amount )
+			if( cnt > amount )
 				cnt = amount;
 			ItemStack c = target.copy();
 			c.stackSize = cnt;
@@ -108,17 +111,17 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack removeSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
+	public ItemStack removeSimilarItems( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
 	{
 		ItemStack target = null;
 
-		for (ItemStack is : this.cs.getContents())
+		for( ItemStack is : this.cs.getContents() )
 		{
-			if ( is != null )
+			if( is != null )
 			{
-				if ( is.stackSize > 0 && (filter == null || Platform.isSameItemFuzzy( filter, is, fuzzyMode )) )
+				if( is.stackSize > 0 && ( filter == null || Platform.isSameItemFuzzy( filter, is, fuzzyMode ) ) )
 				{
-					if ( destination == null || destination.canInsert( is ) )
+					if( destination == null || destination.canInsert( is ) )
 					{
 						target = is;
 						break;
@@ -127,7 +130,7 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 			}
 		}
 
-		if ( target != null )
+		if( target != null )
 		{
 			ItemStack f = Platform.cloneItemStack( target );
 			f.stackSize = amount;
@@ -138,17 +141,17 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination)
+	public ItemStack simulateSimilarRemove( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
 	{
 		ItemStack target = null;
 
-		for (ItemStack is : this.cs.getContents())
+		for( ItemStack is : this.cs.getContents() )
 		{
-			if ( is != null )
+			if( is != null )
 			{
-				if ( is.stackSize > 0 && (filter == null || Platform.isSameItemFuzzy( filter, is, fuzzyMode )) )
+				if( is.stackSize > 0 && ( filter == null || Platform.isSameItemFuzzy( filter, is, fuzzyMode ) ) )
 				{
-					if ( destination == null || destination.canInsert( is ) )
+					if( destination == null || destination.canInsert( is ) )
 					{
 						target = is;
 						break;
@@ -157,12 +160,12 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 			}
 		}
 
-		if ( target != null )
+		if( target != null )
 		{
 			int cnt = this.cs.getItemCount( target );
-			if ( cnt == 0 )
+			if( cnt == 0 )
 				return null;
-			if ( cnt > amount )
+			if( cnt > amount )
 				cnt = amount;
 			ItemStack c = target.copy();
 			c.stackSize = cnt;
@@ -173,17 +176,17 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	}
 
 	@Override
-	public ItemStack addItems(ItemStack toBeAdded )
+	public ItemStack addItems( ItemStack toBeAdded )
 	{
 		return this.cs.insertItems( toBeAdded );
 	}
 
 	@Override
-	public ItemStack simulateAdd(ItemStack toBeSimulated )
+	public ItemStack simulateAdd( ItemStack toBeSimulated )
 	{
 		int items = this.cs.getSpaceForItem( toBeSimulated );
 		ItemStack B = Platform.cloneItemStack( toBeSimulated );
-		if ( toBeSimulated.stackSize <= items )
+		if( toBeSimulated.stackSize <= items )
 			return null;
 		B.stackSize -= items;
 		return B;
@@ -200,5 +203,4 @@ public class BSCrateStorageAdaptor extends InventoryAdaptor
 	{
 		return new StackToSlotIterator( this.cs.getContents().iterator() );
 	}
-
 }

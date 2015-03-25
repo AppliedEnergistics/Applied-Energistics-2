@@ -18,6 +18,7 @@
 
 package appeng.me.cache;
 
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -37,24 +38,24 @@ import appeng.api.networking.security.ISecurityProvider;
 import appeng.core.WorldSettings;
 import appeng.me.GridNode;
 
+
 public class SecurityCache implements ISecurityGrid
 {
 
+	public final IGrid myGrid;
 	final private List<ISecurityProvider> securityProvider = new ArrayList<ISecurityProvider>();
 	final private HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms = new HashMap<Integer, EnumSet<SecurityPermissions>>();
-
-	public SecurityCache(IGrid g) {
+	private long securityKey = -1;
+	public SecurityCache( IGrid g )
+	{
 		this.myGrid = g;
 	}
 
-	private long securityKey = -1;
-	public final IGrid myGrid;
-
 	@MENetworkEventSubscribe
-	public void updatePermissions(MENetworkSecurityChange ev)
+	public void updatePermissions( MENetworkSecurityChange ev )
 	{
 		this.playerPerms.clear();
-		if ( this.securityProvider.isEmpty() )
+		if( this.securityProvider.isEmpty() )
 			return;
 
 		this.securityProvider.get( 0 ).readPermissions( this.playerPerms );
@@ -66,27 +67,54 @@ public class SecurityCache implements ISecurityGrid
 	}
 
 	@Override
+	public void onUpdateTick()
+	{
+
+	}	@Override
 	public boolean isAvailable()
 	{
 		return this.securityProvider.size() == 1 && this.securityProvider.get( 0 ).isSecurityEnabled();
 	}
 
 	@Override
-	public boolean hasPermission(EntityPlayer player, SecurityPermissions perm)
+	public void removeNode( IGridNode gridNode, IGridHost machine )
+	{
+		if( machine instanceof ISecurityProvider )
+		{
+			this.securityProvider.remove( machine );
+			this.updateSecurityKey();
+		}
+	}	@Override
+	public boolean hasPermission( EntityPlayer player, SecurityPermissions perm )
 	{
 		return this.hasPermission( player == null ? -1 : WorldSettings.getInstance().getPlayerID( player.getGameProfile() ), perm );
 	}
 
-	@Override
-	public boolean hasPermission(int playerID, SecurityPermissions perm)
+	private void updateSecurityKey()
 	{
-		if ( this.isAvailable() )
+		long lastCode = this.securityKey;
+
+		if( this.securityProvider.size() == 1 )
+			this.securityKey = this.securityProvider.get( 0 ).getSecurityKey();
+		else
+			this.securityKey = -1;
+
+		if( lastCode != this.securityKey )
+		{
+			this.myGrid.postEvent( new MENetworkSecurityChange() );
+			for( IGridNode n : this.myGrid.getNodes() )
+				( (GridNode) n ).lastSecurityKey = this.securityKey;
+		}
+	}	@Override
+	public boolean hasPermission( int playerID, SecurityPermissions perm )
+	{
+		if( this.isAvailable() )
 		{
 			EnumSet<SecurityPermissions> perms = this.playerPerms.get( playerID );
 
-			if ( perms == null )
+			if( perms == null )
 			{
-				if ( playerID == -1 ) // no default?
+				if( playerID == -1 ) // no default?
 					return false;
 				else
 					return this.hasPermission( -1, perm );
@@ -97,75 +125,47 @@ public class SecurityCache implements ISecurityGrid
 		return true;
 	}
 
-	private void updateSecurityKey()
-	{
-		long lastCode = this.securityKey;
-
-		if ( this.securityProvider.size() == 1 )
-			this.securityKey = this.securityProvider.get( 0 ).getSecurityKey();
-		else
-			this.securityKey = -1;
-
-		if ( lastCode != this.securityKey )
-		{
-			this.myGrid.postEvent( new MENetworkSecurityChange() );
-			for (IGridNode n : this.myGrid.getNodes())
-				((GridNode) n).lastSecurityKey = this.securityKey;
-		}
-	}
-
 	@Override
-	public void removeNode(IGridNode gridNode, IGridHost machine)
+	public void addNode( IGridNode gridNode, IGridHost machine )
 	{
-		if ( machine instanceof ISecurityProvider )
-		{
-			this.securityProvider.remove( machine );
-			this.updateSecurityKey();
-		}
-	}
-
-	@Override
-	public void addNode(IGridNode gridNode, IGridHost machine)
-	{
-		if ( machine instanceof ISecurityProvider )
+		if( machine instanceof ISecurityProvider )
 		{
 			this.securityProvider.add( (ISecurityProvider) machine );
 			this.updateSecurityKey();
 		}
 		else
-			((GridNode) gridNode).lastSecurityKey = this.securityKey;
+			( (GridNode) gridNode ).lastSecurityKey = this.securityKey;
 	}
 
 	@Override
-	public void onUpdateTick()
+	public void onSplit( IGridStorage destinationStorage )
 	{
 
 	}
 
 	@Override
-	public void onSplit(IGridStorage destinationStorage)
+	public void onJoin( IGridStorage sourceStorage )
 	{
 
 	}
 
 	@Override
-	public void onJoin(IGridStorage sourceStorage)
+	public void populateGridStorage( IGridStorage destinationStorage )
 	{
 
 	}
 
-	@Override
-	public void populateGridStorage(IGridStorage destinationStorage)
-	{
 
-	}
+
+
+
+
 
 	@Override
 	public int getOwner()
 	{
-		if ( this.isAvailable() )
+		if( this.isAvailable() )
 			return this.securityProvider.get( 0 ).getOwner();
 		return -1;
 	}
-
 }

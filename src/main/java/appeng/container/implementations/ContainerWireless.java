@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+
 import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.container.AEBaseContainer;
@@ -26,20 +27,19 @@ import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.AEConfig;
 import appeng.tile.networking.TileWireless;
 
+
 public class ContainerWireless extends AEBaseContainer
 {
 
 	final TileWireless wirelessTerminal;
-
-	@GuiSync(1)
+	final SlotRestrictedInput boosterSlot;
+	@GuiSync( 1 )
 	public long range = 0;
-
-	@GuiSync(2)
+	@GuiSync( 2 )
 	public long drain = 0;
 
-	final SlotRestrictedInput boosterSlot;
-
-	public ContainerWireless(InventoryPlayer ip, TileWireless te) {
+	public ContainerWireless( InventoryPlayer ip, TileWireless te )
+	{
 		super( ip, te, null );
 		this.wirelessTerminal = te;
 
@@ -53,10 +53,9 @@ public class ContainerWireless extends AEBaseContainer
 	{
 		int boosters = this.boosterSlot.getStack() == null ? 0 : this.boosterSlot.getStack().stackSize;
 
-		this.range = (long) (10 * AEConfig.instance.wireless_getMaxRange( boosters ));
-		this.drain = (long) (100 * AEConfig.instance.wireless_getPowerDrain( boosters ));
+		this.range = (long) ( 10 * AEConfig.instance.wireless_getMaxRange( boosters ) );
+		this.drain = (long) ( 100 * AEConfig.instance.wireless_getPowerDrain( boosters ) );
 
 		super.detectAndSendChanges();
 	}
-
 }

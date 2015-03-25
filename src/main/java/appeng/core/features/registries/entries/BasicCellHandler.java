@@ -18,6 +18,7 @@
 
 package appeng.core.features.registries.entries;
 
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -37,27 +38,22 @@ import appeng.me.storage.CellInventoryHandler;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 
+
 public class BasicCellHandler implements ICellHandler
 {
 
 	@Override
-	public boolean isCell(ItemStack is)
+	public boolean isCell( ItemStack is )
 	{
 		return CellInventory.isCell( is );
 	}
 
 	@Override
-	public IMEInventoryHandler getCellInventory(ItemStack is, ISaveProvider container, StorageChannel channel)
+	public IMEInventoryHandler getCellInventory( ItemStack is, ISaveProvider container, StorageChannel channel )
 	{
-		if ( channel == StorageChannel.ITEMS )
+		if( channel == StorageChannel.ITEMS )
 			return CellInventory.getCell( is, container );
 		return null;
-	}
-
-	@Override
-	public IIcon getTopTexture_Dark()
-	{
-		return ExtraBlockTextures.BlockMEChestItems_Dark.getIcon();
 	}
 
 	@Override
@@ -73,15 +69,21 @@ public class BasicCellHandler implements ICellHandler
 	}
 
 	@Override
-	public void openChestGui(EntityPlayer player, IChestOrDrive chest, ICellHandler cellHandler, IMEInventoryHandler inv, ItemStack is, StorageChannel chan)
+	public IIcon getTopTexture_Dark()
+	{
+		return ExtraBlockTextures.BlockMEChestItems_Dark.getIcon();
+	}
+
+	@Override
+	public void openChestGui( EntityPlayer player, IChestOrDrive chest, ICellHandler cellHandler, IMEInventoryHandler inv, ItemStack is, StorageChannel chan )
 	{
 		Platform.openGUI( player, (AEBaseTile) chest, chest.getUp(), GuiBridge.GUI_ME );
 	}
 
 	@Override
-	public int getStatusForCell(ItemStack is, IMEInventory handler)
+	public int getStatusForCell( ItemStack is, IMEInventory handler )
 	{
-		if ( handler instanceof CellInventoryHandler )
+		if( handler instanceof CellInventoryHandler )
 		{
 			CellInventoryHandler ci = (CellInventoryHandler) handler;
 			return ci.getStatusForCell();
@@ -90,9 +92,9 @@ public class BasicCellHandler implements ICellHandler
 	}
 
 	@Override
-	public double cellIdleDrain(ItemStack is, IMEInventory handler)
+	public double cellIdleDrain( ItemStack is, IMEInventory handler )
 	{
-		ICellInventory inv = ((ICellInventoryHandler) handler).getCellInv();
+		ICellInventory inv = ( (ICellInventoryHandler) handler ).getCellInv();
 		return inv.getIdleDrain();
 	}
 }

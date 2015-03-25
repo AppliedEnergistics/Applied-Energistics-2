@@ -18,6 +18,7 @@
 
 package appeng.parts.automation;
 
+
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -31,6 +32,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
+
 
 public class UpgradeInventory extends AppEngInternalInventory implements IAEAppEngInventory
 {
@@ -46,7 +48,8 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 	private int InverterUpgrades = 0;
 	private int CraftingUpgrades = 0;
 
-	public UpgradeInventory(Object itemOrBlock, IAEAppEngInventory _te, int s) {
+	public UpgradeInventory( Object itemOrBlock, IAEAppEngInventory _te, int s )
+	{
 		super( null, s );
 		this.te = this;
 		this.parent = _te;
@@ -60,15 +63,21 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack)
+	public int getInventoryStackLimit()
 	{
-		if ( itemstack == null )
+		return 1;
+	}
+
+	@Override
+	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	{
+		if( itemstack == null )
 			return false;
 		Item it = itemstack.getItem();
-		if ( it instanceof IUpgradeModule )
+		if( it instanceof IUpgradeModule )
 		{
-			Upgrades u = ((IUpgradeModule) it).getType( itemstack );
-			if ( u != null )
+			Upgrades u = ( (IUpgradeModule) it ).getType( itemstack );
+			if( u != null )
 			{
 				return this.getInstalledUpgrades( u ) < this.getMaxInstalled( u );
 			}
@@ -76,37 +85,55 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 		return false;
 	}
 
-	public int getMaxInstalled(Upgrades u)
+	public int getInstalledUpgrades( Upgrades u )
+	{
+		if( !this.cached )
+			this.updateUpgradeInfo();
+
+		switch( u )
+		{
+			case CAPACITY:
+				return this.CapacityUpgrades;
+			case FUZZY:
+				return this.FuzzyUpgrades;
+			case REDSTONE:
+				return this.RedstoneUpgrades;
+			case SPEED:
+				return this.SpeedUpgrades;
+			case INVERTER:
+				return this.InverterUpgrades;
+			case CRAFTING:
+				return this.CraftingUpgrades;
+			default:
+				return 0;
+		}
+	}
+
+	public int getMaxInstalled( Upgrades u )
 	{
 		Integer max = null;
-		for (ItemStack is : u.getSupported().keySet())
+		for( ItemStack is : u.getSupported().keySet() )
 		{
-			if ( is.getItem() == this.itemOrBlock )
+			if( is.getItem() == this.itemOrBlock )
 			{
 				max = u.getSupported().get( is );
 				break;
 			}
-			else if ( is.getItem() instanceof ItemBlock && Block.getBlockFromItem( is.getItem() ) == this.itemOrBlock )
+			else if( is.getItem() instanceof ItemBlock && Block.getBlockFromItem( is.getItem() ) == this.itemOrBlock )
 			{
 				max = u.getSupported().get( is );
 				break;
 			}
-			else if ( this.itemOrBlock instanceof ItemStack && Platform.isSameItem( (ItemStack) this.itemOrBlock, is ) )
+			else if( this.itemOrBlock instanceof ItemStack && Platform.isSameItem( (ItemStack) this.itemOrBlock, is ) )
 			{
 				max = u.getSupported().get( is );
 				break;
 			}
 		}
 
-		if ( max == null )
+		if( max == null )
 			return 0;
 		return max;
-	}
-
-	@Override
-	public int getInventoryStackLimit()
-	{
-		return 1;
 	}
 
 	private void updateUpgradeInfo()
@@ -114,34 +141,34 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 		this.cached = true;
 		this.InverterUpgrades = this.CapacityUpgrades = this.RedstoneUpgrades = this.SpeedUpgrades = this.FuzzyUpgrades = this.CraftingUpgrades = 0;
 
-		for (ItemStack is : this)
+		for( ItemStack is : this )
 		{
-			if ( is == null || is.getItem() == null || !(is.getItem() instanceof IUpgradeModule) )
+			if( is == null || is.getItem() == null || !( is.getItem() instanceof IUpgradeModule ) )
 				continue;
 
-			Upgrades myUpgrade = ((IUpgradeModule) is.getItem()).getType( is );
-			switch (myUpgrade)
+			Upgrades myUpgrade = ( (IUpgradeModule) is.getItem() ).getType( is );
+			switch( myUpgrade )
 			{
-			case CAPACITY:
-				this.CapacityUpgrades++;
-				break;
-			case FUZZY:
-				this.FuzzyUpgrades++;
-				break;
-			case REDSTONE:
-				this.RedstoneUpgrades++;
-				break;
-			case SPEED:
-				this.SpeedUpgrades++;
-				break;
-			case INVERTER:
-				this.InverterUpgrades++;
-				break;
-			case CRAFTING:
-				this.CraftingUpgrades++;
-				break;
-			default:
-				break;
+				case CAPACITY:
+					this.CapacityUpgrades++;
+					break;
+				case FUZZY:
+					this.FuzzyUpgrades++;
+					break;
+				case REDSTONE:
+					this.RedstoneUpgrades++;
+					break;
+				case SPEED:
+					this.SpeedUpgrades++;
+					break;
+				case INVERTER:
+					this.InverterUpgrades++;
+					break;
+				case CRAFTING:
+					this.CraftingUpgrades++;
+					break;
+				default:
+					break;
 			}
 		}
 
@@ -153,43 +180,11 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 		this.CraftingUpgrades = Math.min( this.CraftingUpgrades, this.getMaxInstalled( Upgrades.CRAFTING ) );
 	}
 
-	public int getInstalledUpgrades(Upgrades u)
-	{
-		if ( !this.cached )
-			this.updateUpgradeInfo();
-
-		switch (u)
-		{
-		case CAPACITY:
-			return this.CapacityUpgrades;
-		case FUZZY:
-			return this.FuzzyUpgrades;
-		case REDSTONE:
-			return this.RedstoneUpgrades;
-		case SPEED:
-			return this.SpeedUpgrades;
-		case INVERTER:
-			return this.InverterUpgrades;
-		case CRAFTING:
-			return this.CraftingUpgrades;
-		default:
-			return 0;
-		}
-	}
-
 	@Override
-	public void readFromNBT(NBTTagCompound target)
+	public void readFromNBT( NBTTagCompound target )
 	{
 		super.readFromNBT( target );
 		this.updateUpgradeInfo();
-	}
-
-	@Override
-	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
-	{
-		this.cached = false;
-		if ( this.parent != null && Platform.isServer() )
-			this.parent.onChangeInventory( inv, slot, mc, removedStack, newStack );
 	}
 
 	@Override
@@ -198,4 +193,11 @@ public class UpgradeInventory extends AppEngInternalInventory implements IAEAppE
 		this.parent.saveChanges();
 	}
 
+	@Override
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	{
+		this.cached = false;
+		if( this.parent != null && Platform.isServer() )
+			this.parent.onChangeInventory( inv, slot, mc, removedStack, newStack );
+	}
 }

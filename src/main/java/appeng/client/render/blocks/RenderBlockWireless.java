@@ -18,6 +18,7 @@
 
 package appeng.client.render.blocks;
 
+
 import java.util.EnumSet;
 
 import net.minecraft.client.renderer.RenderBlocks;
@@ -38,15 +39,23 @@ import appeng.client.texture.OffsetIcon;
 import appeng.tile.networking.TileWireless;
 import appeng.util.Platform;
 
+
 public class RenderBlockWireless extends BaseBlockRender
 {
 
-	public RenderBlockWireless() {
+	int centerX = 0;
+	int centerY = 0;
+	int centerZ = 0;
+	AEBaseBlock blk;
+	boolean hasChan = false;
+	boolean hasPower = false;
+	public RenderBlockWireless()
+	{
 		super( false, 20 );
 	}
 
 	@Override
-	public void renderInventory(AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj)
+	public void renderInventory( AEBaseBlock blk, ItemStack is, RenderBlocks renderer, ItemRenderType type, Object[] obj )
 	{
 		this.blk = blk;
 		this.centerX = 0;
@@ -81,43 +90,30 @@ public class RenderBlockWireless extends BaseBlockRender
 
 		int s = 1;
 
-		for (ForgeDirection side : sides)
+		for( ForgeDirection side : sides )
 		{
-			this.renderBlockBounds( renderer, 8 + (side.offsetX != 0 ? side.offsetX * 2 : -2), 8 + (side.offsetY != 0 ? side.offsetY * 2 : -2), 2
-					+ (side.offsetZ != 0 ? side.offsetZ * 2 : -1) + s, 8 + (side.offsetX != 0 ? side.offsetX * 4 : 2),
-					8 + (side.offsetY != 0 ? side.offsetY * 4 : 2), 2 + (side.offsetZ != 0 ? side.offsetZ * 5 : 1) + s, ForgeDirection.EAST, ForgeDirection.UP,
-					ForgeDirection.SOUTH );
+			this.renderBlockBounds( renderer, 8 + ( side.offsetX != 0 ? side.offsetX * 2 : -2 ), 8 + ( side.offsetY != 0 ? side.offsetY * 2 : -2 ), 2 + ( side.offsetZ != 0 ? side.offsetZ * 2 : -1 ) + s, 8 + ( side.offsetX != 0 ? side.offsetX * 4 : 2 ), 8 + ( side.offsetY != 0 ? side.offsetY * 4 : 2 ), 2 + ( side.offsetZ != 0 ? side.offsetZ * 5 : 1 ) + s, ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
 			this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 		}
 
 		s = 3;
-		for (ForgeDirection side : sides)
+		for( ForgeDirection side : sides )
 		{
-			this.renderBlockBounds( renderer, 8 + (side.offsetX != 0 ? side.offsetX * 4 : -1), 8 + (side.offsetY != 0 ? side.offsetY * 4 : -1), 1
-					+ (side.offsetZ != 0 ? side.offsetZ * 4 : -1) + s, 8 + (side.offsetX != 0 ? side.offsetX * 5 : 1),
-					8 + (side.offsetY != 0 ? side.offsetY * 5 : 1), 2 + (side.offsetZ != 0 ? side.offsetZ * 5 : 1) + s, ForgeDirection.EAST, ForgeDirection.UP,
-					ForgeDirection.SOUTH );
+			this.renderBlockBounds( renderer, 8 + ( side.offsetX != 0 ? side.offsetX * 4 : -1 ), 8 + ( side.offsetY != 0 ? side.offsetY * 4 : -1 ), 1 + ( side.offsetZ != 0 ? side.offsetZ * 4 : -1 ) + s, 8 + ( side.offsetX != 0 ? side.offsetX * 5 : 1 ), 8 + ( side.offsetY != 0 ? side.offsetY * 5 : 1 ), 2 + ( side.offsetZ != 0 ? side.offsetZ * 5 : 1 ) + s, ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH );
 
 			this.renderInvBlock( EnumSet.allOf( ForgeDirection.class ), blk, is, tess, 0xffffff, renderer );
 		}
 	}
 
-	int centerX = 0;
-	int centerY = 0;
-	int centerZ = 0;
-	AEBaseBlock blk;
-	boolean hasChan = false;
-	boolean hasPower = false;
-
 	@Override
-	public boolean renderInWorld(AEBaseBlock blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer)
+	public boolean renderInWorld( AEBaseBlock blk, IBlockAccess world, int x, int y, int z, RenderBlocks renderer )
 	{
 		TileWireless tw = blk.getTileEntity( world, x, y, z );
 		this.blk = blk;
-		if ( tw != null )
+		if( tw != null )
 		{
-			this.hasChan = (tw.clientFlags & (TileWireless.POWERED_FLAG | TileWireless.CHANNEL_FLAG)) == (TileWireless.POWERED_FLAG | TileWireless.CHANNEL_FLAG);
-			this.hasPower = (tw.clientFlags & TileWireless.POWERED_FLAG) == TileWireless.POWERED_FLAG;
+			this.hasChan = ( tw.clientFlags & ( TileWireless.POWERED_FLAG | TileWireless.CHANNEL_FLAG ) ) == ( TileWireless.POWERED_FLAG | TileWireless.CHANNEL_FLAG );
+			this.hasPower = ( tw.clientFlags & TileWireless.POWERED_FLAG ) == TileWireless.POWERED_FLAG;
 
 			BlockRenderInfo ri = blk.getRendererInstance();
 
@@ -151,20 +147,16 @@ public class RenderBlockWireless extends BaseBlockRender
 
 			int s = 1;
 
-			for (ForgeDirection side : sides)
+			for( ForgeDirection side : sides )
 			{
-				this.renderBlockBounds( renderer, 8 + (side.offsetX != 0 ? side.offsetX * 2 : -2), 8 + (side.offsetY != 0 ? side.offsetY * 2 : -2), 2
-						+ (side.offsetZ != 0 ? side.offsetZ * 2 : -1) + s, 8 + (side.offsetX != 0 ? side.offsetX * 4 : 2),
-						8 + (side.offsetY != 0 ? side.offsetY * 4 : 2), 2 + (side.offsetZ != 0 ? side.offsetZ * 5 : 1) + s, fdx, fdy, fdz );
+				this.renderBlockBounds( renderer, 8 + ( side.offsetX != 0 ? side.offsetX * 2 : -2 ), 8 + ( side.offsetY != 0 ? side.offsetY * 2 : -2 ), 2 + ( side.offsetZ != 0 ? side.offsetZ * 2 : -1 ) + s, 8 + ( side.offsetX != 0 ? side.offsetX * 4 : 2 ), 8 + ( side.offsetY != 0 ? side.offsetY * 4 : 2 ), 2 + ( side.offsetZ != 0 ? side.offsetZ * 5 : 1 ) + s, fdx, fdy, fdz );
 				super.renderInWorld( blk, world, x, y, z, renderer );
 			}
 
 			s = 3;
-			for (ForgeDirection side : sides)
+			for( ForgeDirection side : sides )
 			{
-				this.renderBlockBounds( renderer, 8 + (side.offsetX != 0 ? side.offsetX * 4 : -1), 8 + (side.offsetY != 0 ? side.offsetY * 4 : -1), 1
-						+ (side.offsetZ != 0 ? side.offsetZ * 4 : -1) + s, 8 + (side.offsetX != 0 ? side.offsetX * 5 : 1),
-						8 + (side.offsetY != 0 ? side.offsetY * 5 : 1), 2 + (side.offsetZ != 0 ? side.offsetZ * 5 : 1) + s, fdx, fdy, fdz );
+				this.renderBlockBounds( renderer, 8 + ( side.offsetX != 0 ? side.offsetX * 4 : -1 ), 8 + ( side.offsetY != 0 ? side.offsetY * 4 : -1 ), 1 + ( side.offsetZ != 0 ? side.offsetZ * 4 : -1 ) + s, 8 + ( side.offsetX != 0 ? side.offsetX * 5 : 1 ), 8 + ( side.offsetY != 0 ? side.offsetY * 5 : 1 ), 2 + ( side.offsetZ != 0 ? side.offsetZ * 5 : 1 ) + s, fdx, fdy, fdz );
 				super.renderInWorld( blk, world, x, y, z, renderer );
 			}
 
@@ -173,13 +165,13 @@ public class RenderBlockWireless extends BaseBlockRender
 			// ExtraTextures.BlockChargerInside.getIcon(), r, r );
 			this.renderBlockBounds( renderer, 5, 5, 0, 11, 11, 1, fdx, fdy, fdz );
 
-			if ( this.hasChan )
+			if( this.hasChan )
 			{
 				int l = 14;
 				Tessellator.instance.setBrightness( l << 20 | l << 4 );
 				Tessellator.instance.setColorOpaque_I( AEColor.Transparent.blackVariant );
 			}
-			else if ( this.hasPower )
+			else if( this.hasPower )
 			{
 				int l = 9;
 				Tessellator.instance.setBrightness( l << 20 | l << 4 );
@@ -191,17 +183,17 @@ public class RenderBlockWireless extends BaseBlockRender
 				Tessellator.instance.setColorOpaque_I( 0x000000 );
 			}
 
-			if ( ForgeDirection.UP != fdz.getOpposite() )
+			if( ForgeDirection.UP != fdz.getOpposite() )
 				super.renderFace( x, y, z, blk, r, renderer, ForgeDirection.UP );
-			if ( ForgeDirection.DOWN != fdz.getOpposite() )
+			if( ForgeDirection.DOWN != fdz.getOpposite() )
 				super.renderFace( x, y, z, blk, r, renderer, ForgeDirection.DOWN );
-			if ( ForgeDirection.EAST != fdz.getOpposite() )
+			if( ForgeDirection.EAST != fdz.getOpposite() )
 				super.renderFace( x, y, z, blk, r, renderer, ForgeDirection.EAST );
-			if ( ForgeDirection.WEST != fdz.getOpposite() )
+			if( ForgeDirection.WEST != fdz.getOpposite() )
 				super.renderFace( x, y, z, blk, r, renderer, ForgeDirection.WEST );
-			if ( ForgeDirection.SOUTH != fdz.getOpposite() )
+			if( ForgeDirection.SOUTH != fdz.getOpposite() )
 				super.renderFace( x, y, z, blk, r, renderer, ForgeDirection.SOUTH );
-			if ( ForgeDirection.NORTH != fdz.getOpposite() )
+			if( ForgeDirection.NORTH != fdz.getOpposite() )
 				super.renderFace( x, y, z, blk, r, renderer, ForgeDirection.NORTH );
 
 			ri.setTemporaryRenderIcon( null );
@@ -211,45 +203,45 @@ public class RenderBlockWireless extends BaseBlockRender
 		return true;
 	}
 
-	private void renderTorchAtAngle(RenderBlocks renderer, ForgeDirection x, ForgeDirection y, ForgeDirection z)
+	private void renderTorchAtAngle( RenderBlocks renderer, ForgeDirection x, ForgeDirection y, ForgeDirection z )
 	{
-		IIcon r = (this.hasChan ? CableBusTextures.BlockWirelessOn.getIcon() : this.blk.getIcon( 0, 0 ));
+		IIcon r = ( this.hasChan ? CableBusTextures.BlockWirelessOn.getIcon() : this.blk.getIcon( 0, 0 ) );
 		IIcon sides = new OffsetIcon( r, 0.0f, -2.0f );
 
-		switch (z)
+		switch( z )
 		{
-		case DOWN:
-			renderer.uvRotateNorth = 3;
-			renderer.uvRotateSouth = 3;
-			renderer.uvRotateEast = 3;
-			renderer.uvRotateWest = 3;
-			break;
-		case EAST:
-			renderer.uvRotateTop = 1;
-			renderer.uvRotateBottom = 2;
-			renderer.uvRotateEast = 2;
-			renderer.uvRotateWest = 1;
-			break;
-		case NORTH:
-			renderer.uvRotateTop = 0;
-			renderer.uvRotateBottom = 0;
-			renderer.uvRotateNorth = 2;
-			renderer.uvRotateSouth = 1;
-			break;
-		case SOUTH:
-			renderer.uvRotateTop = 3;
-			renderer.uvRotateBottom = 3;
-			renderer.uvRotateNorth = 1;
-			renderer.uvRotateSouth = 2;
-			break;
-		case WEST:
-			renderer.uvRotateTop = 2;
-			renderer.uvRotateBottom = 1;
-			renderer.uvRotateEast = 1;
-			renderer.uvRotateWest = 2;
-			break;
-		default:
-			break;
+			case DOWN:
+				renderer.uvRotateNorth = 3;
+				renderer.uvRotateSouth = 3;
+				renderer.uvRotateEast = 3;
+				renderer.uvRotateWest = 3;
+				break;
+			case EAST:
+				renderer.uvRotateTop = 1;
+				renderer.uvRotateBottom = 2;
+				renderer.uvRotateEast = 2;
+				renderer.uvRotateWest = 1;
+				break;
+			case NORTH:
+				renderer.uvRotateTop = 0;
+				renderer.uvRotateBottom = 0;
+				renderer.uvRotateNorth = 2;
+				renderer.uvRotateSouth = 1;
+				break;
+			case SOUTH:
+				renderer.uvRotateTop = 3;
+				renderer.uvRotateBottom = 3;
+				renderer.uvRotateNorth = 1;
+				renderer.uvRotateSouth = 2;
+				break;
+			case WEST:
+				renderer.uvRotateTop = 2;
+				renderer.uvRotateBottom = 1;
+				renderer.uvRotateEast = 1;
+				renderer.uvRotateWest = 2;
+				break;
+			default:
+				break;
 		}
 
 		Tessellator.instance.setColorOpaque_I( 0xffffff );

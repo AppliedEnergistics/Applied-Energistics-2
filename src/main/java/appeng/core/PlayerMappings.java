@@ -22,11 +22,11 @@ package appeng.core;
 import java.util.Map;
 import java.util.UUID;
 
-import com.google.common.base.Optional;
-
 import net.minecraftforge.common.config.ConfigCategory;
 
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
+
+import com.google.common.base.Optional;
 
 
 /**

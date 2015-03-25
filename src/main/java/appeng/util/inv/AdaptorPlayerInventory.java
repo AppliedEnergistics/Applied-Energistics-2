@@ -18,25 +18,26 @@
 
 package appeng.util.inv;
 
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+
 
 public class AdaptorPlayerInventory implements IInventory
 {
 
 	private final IInventory src;
-	private final int min=0;
-	private final int size=36;
+	private final int min = 0;
+	private final int size = 36;
 
-	public AdaptorPlayerInventory(IInventory playerInv, boolean swap)
+	public AdaptorPlayerInventory( IInventory playerInv, boolean swap )
 	{
 
-		if ( swap )
-			this.src = new WrapperChainedInventory( new WrapperInventoryRange( playerInv, 9, this.size -9, false ), new WrapperInventoryRange( playerInv, 0, 9, false )  );
+		if( swap )
+			this.src = new WrapperChainedInventory( new WrapperInventoryRange( playerInv, 9, this.size - 9, false ), new WrapperInventoryRange( playerInv, 0, 9, false ) );
 		else
 			this.src = playerInv;
-
 	}
 
 	@Override
@@ -46,25 +47,25 @@ public class AdaptorPlayerInventory implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int var1)
+	public ItemStack getStackInSlot( int var1 )
 	{
 		return this.src.getStackInSlot( var1 + this.min );
 	}
 
 	@Override
-	public ItemStack decrStackSize(int var1, int var2)
+	public ItemStack decrStackSize( int var1, int var2 )
 	{
 		return this.src.decrStackSize( this.min + var1, var2 );
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int var1)
+	public ItemStack getStackInSlotOnClosing( int var1 )
 	{
 		return this.src.getStackInSlotOnClosing( this.min + var1 );
 	}
 
 	@Override
-	public void setInventorySlotContents(int var1, ItemStack var2)
+	public void setInventorySlotContents( int var1, ItemStack var2 )
 	{
 		this.src.setInventorySlotContents( var1 + this.min, var2 );
 	}
@@ -73,6 +74,12 @@ public class AdaptorPlayerInventory implements IInventory
 	public String getInventoryName()
 	{
 		return this.src.getInventoryName();
+	}
+
+	@Override
+	public boolean hasCustomInventoryName()
+	{
+		return false;
 	}
 
 	@Override
@@ -88,7 +95,7 @@ public class AdaptorPlayerInventory implements IInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer var1)
+	public boolean isUseableByPlayer( EntityPlayer var1 )
 	{
 		return this.src.isUseableByPlayer( var1 );
 	}
@@ -106,15 +113,8 @@ public class AdaptorPlayerInventory implements IInventory
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack)
+	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		return this.src.isItemValidForSlot( i, itemstack );
 	}
-
 }

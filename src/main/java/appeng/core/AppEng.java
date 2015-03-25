@@ -100,15 +100,15 @@ public class AppEng
 	@EventHandler
 	void preInit( FMLPreInitializationEvent event )
 	{
-		if ( !Loader.isModLoaded( "appliedenergistics2-core" ) )
+		if( !Loader.isModLoaded( "appliedenergistics2-core" ) )
 		{
 			CommonHelper.proxy.missingCoreMod();
 		}
 
 		Stopwatch watch = Stopwatch.createStarted();
-		this.configDirectory = new File(event.getModConfigurationDirectory().getPath(), "AppliedEnergistics2");
+		this.configDirectory = new File( event.getModConfigurationDirectory().getPath(), "AppliedEnergistics2" );
 
-		final File configFile = new File( this.configDirectory, "AppliedEnergistics2.cfg");
+		final File configFile = new File( this.configDirectory, "AppliedEnergistics2.cfg" );
 		final File facadeFile = new File( this.configDirectory, "Facades.cfg" );
 		final File versionFile = new File( this.configDirectory, "VersionChecker.cfg" );
 
@@ -119,15 +119,15 @@ public class AppEng
 		AELog.info( "Pre Initialization ( started )" );
 
 		CreativeTab.init();
-		if ( AEConfig.instance.isFeatureEnabled( AEFeature.Facades ) )
+		if( AEConfig.instance.isFeatureEnabled( AEFeature.Facades ) )
 			CreativeTabFacade.init();
 
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			CommonHelper.proxy.init();
 
 		Registration.INSTANCE.preInitialize( event );
 
-		if ( versionCheckerConfig.isEnabled() )
+		if( versionCheckerConfig.isEnabled() )
 		{
 			final VersionChecker versionChecker = new VersionChecker( versionCheckerConfig );
 			final Thread versionCheckerThread = new Thread( versionChecker );

@@ -18,6 +18,7 @@
 
 package appeng.parts.layers;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +32,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.LayerBase;
+
 
 /**
  * Inventory wrapper for parts,
@@ -64,10 +66,10 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 		inventories = new ArrayList<ISidedInventory>();
 		int slotCount = 0;
 
-		for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
 		{
 			IPart bp = this.getPart( side );
-			if ( bp instanceof ISidedInventory )
+			if( bp instanceof ISidedInventory )
 			{
 				ISidedInventory part = (ISidedInventory) bp;
 				slotCount += part.getSizeInventory();
@@ -75,7 +77,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 			}
 		}
 
-		if ( inventories.isEmpty() || slotCount == 0 )
+		if( inventories.isEmpty() || slotCount == 0 )
 		{
 			inventories = null;
 		}
@@ -86,21 +88,21 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 
 			int offsetForLayer = 0;
 			int offsetForPart = 0;
-			for (ISidedInventory sides : inventories)
+			for( ISidedInventory sides : inventories )
 			{
 				offsetForPart = 0;
 				slotCount = sides.getSizeInventory();
 
 				ForgeDirection currentSide = ForgeDirection.UNKNOWN;
-				for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-					if ( this.getPart( side ) == sides )
+				for( ForgeDirection side : ForgeDirection.VALID_DIRECTIONS )
+					if( this.getPart( side ) == sides )
 					{
 						currentSide = side;
 						break;
 					}
 
 				int[] cSidesList = sideData[currentSide.ordinal()] = new int[slotCount];
-				for (int cSlot = 0; cSlot < slotCount; cSlot++)
+				for( int cSlot = 0; cSlot < slotCount; cSlot++ )
 				{
 					cSidesList[cSlot] = offsetForLayer;
 					slots.set( offsetForLayer++, new InvSot( sides, offsetForPart++ ) );
@@ -108,7 +110,7 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 			}
 		}
 
-		if ( sideData == null || slots == null )
+		if( sideData == null || slots == null )
 			this.invLayer = null;
 		else
 			this.invLayer = new InvLayerData( sideData, inventories, slots );
@@ -118,90 +120,45 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public ItemStack decrStackSize(int slot, int amount)
-	{
-		if ( this.invLayer == null )
-			return null;
-
-		return this.invLayer.decreaseStackSize( slot, amount );
-	}
-
-	@Override
 	public int getSizeInventory()
 	{
-		if ( this.invLayer == null )
+		if( this.invLayer == null )
 			return 0;
 
 		return this.invLayer.getSizeInventory();
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int slot)
+	public ItemStack getStackInSlot( int slot )
 	{
-		if ( this.invLayer == null )
+		if( this.invLayer == null )
 			return null;
 
 		return this.invLayer.getStackInSlot( slot );
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack itemstack)
+	public ItemStack decrStackSize( int slot, int amount )
 	{
-		if ( this.invLayer == null )
-			return false;
+		if( this.invLayer == null )
+			return null;
 
-		return this.invLayer.isItemValidForSlot( slot, itemstack );
+		return this.invLayer.decreaseStackSize( slot, amount );
 	}
 
 	@Override
-	public void setInventorySlotContents(int slot, ItemStack itemstack)
+	public ItemStack getStackInSlotOnClosing( int slot )
 	{
-		if ( this.invLayer == null )
+		return null;
+	}
+
+	@Override
+	public void setInventorySlotContents( int slot, ItemStack itemstack )
+	{
+		if( this.invLayer == null )
 			return;
 
 		this.invLayer.setInventorySlotContents( slot, itemstack );
-	}
-
-	@Override
-	public boolean canExtractItem(int slot, ItemStack itemstack, int side)
-	{
-		if ( this.invLayer == null )
-			return false;
-
-		return this.invLayer.canExtractItem( slot, itemstack, side );
-	}
-
-	@Override
-	public boolean canInsertItem(int slot, ItemStack itemstack, int side)
-	{
-		if ( this.invLayer == null )
-			return false;
-
-		return this.invLayer.canInsertItem( slot, itemstack, side );
-	}
-
-	@Override
-	public void markDirty()
-	{
-		if ( this.invLayer != null )
-			this.invLayer.markDirty();
-
-		super.markForSave();
-	}
-
-	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
-	{
-		if ( this.invLayer != null )
-			return this.invLayer.getAccessibleSlotsFromSide( side );
-
-		return NULL_SIDES;
-	}
-
-	@Override
-	public int getInventoryStackLimit()
-	{
-		return 64; // no options here.
 	}
 
 	@Override
@@ -217,15 +174,20 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int slot)
+	public int getInventoryStackLimit()
 	{
-		return null;
+		return 64; // no options here.
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer)
+	public boolean isUseableByPlayer( EntityPlayer entityplayer )
 	{
 		return false;
+	}
+
+	@Override
+	public void openInventory()
+	{
 	}
 
 	@Override
@@ -234,7 +196,47 @@ public class LayerISidedInventory extends LayerBase implements ISidedInventory
 	}
 
 	@Override
-	public void openInventory()
+	public boolean isItemValidForSlot( int slot, ItemStack itemstack )
 	{
+		if( this.invLayer == null )
+			return false;
+
+		return this.invLayer.isItemValidForSlot( slot, itemstack );
+	}
+
+	@Override
+	public void markDirty()
+	{
+		if( this.invLayer != null )
+			this.invLayer.markDirty();
+
+		super.markForSave();
+	}
+
+	@Override
+	public int[] getAccessibleSlotsFromSide( int side )
+	{
+		if( this.invLayer != null )
+			return this.invLayer.getAccessibleSlotsFromSide( side );
+
+		return NULL_SIDES;
+	}
+
+	@Override
+	public boolean canInsertItem( int slot, ItemStack itemstack, int side )
+	{
+		if( this.invLayer == null )
+			return false;
+
+		return this.invLayer.canInsertItem( slot, itemstack, side );
+	}
+
+	@Override
+	public boolean canExtractItem( int slot, ItemStack itemstack, int side )
+	{
+		if( this.invLayer == null )
+			return false;
+
+		return this.invLayer.canExtractItem( slot, itemstack, side );
 	}
 }

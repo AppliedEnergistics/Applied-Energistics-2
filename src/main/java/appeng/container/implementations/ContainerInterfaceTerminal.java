@@ -53,6 +53,7 @@ import appeng.util.inv.AdaptorIInventory;
 import appeng.util.inv.AdaptorPlayerHand;
 import appeng.util.inv.WrapperInvSlot;
 
+
 public class ContainerInterfaceTerminal extends AEBaseContainer
 {
 
@@ -61,61 +62,124 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 	 */
 
 	static private long autoBase = Long.MIN_VALUE;
-
-	static class InvTracker
-	{
-
-		final long which = autoBase++;
-		final String unlocalizedName;
-
-		public InvTracker(DualityInterface dual, IInventory patterns, String unlocalizedName) {
-			this.server = patterns;
-			this.client = new AppEngInternalInventory( null, this.server.getSizeInventory() );
-			this.unlocalizedName = unlocalizedName;
-			this.sortBy = dual.getSortValue();
-		}
-
-		final IInventory client;
-		final IInventory server;
-		public final long sortBy;
-
-	}
-
 	final Map<IInterfaceHost, InvTracker> diList = new HashMap<IInterfaceHost, InvTracker>();
 	final Map<Long, InvTracker> byId = new HashMap<Long, InvTracker>();
 	IGrid g;
+	NBTTagCompound data = new NBTTagCompound();
 
-	public ContainerInterfaceTerminal(InventoryPlayer ip, PartMonitor anchor) {
+	public ContainerInterfaceTerminal( InventoryPlayer ip, PartMonitor anchor )
+	{
 		super( ip, anchor );
 
-		if ( Platform.isServer() )
+		if( Platform.isServer() )
 			this.g = anchor.getActionableNode().getGrid();
 
 		this.bindPlayerInventory( ip, 0, 222 - /* height of player inventory */82 );
 	}
 
-	NBTTagCompound data = new NBTTagCompound();
-
-	static class PatternInvSlot extends WrapperInvSlot
+	@Override
+	public void detectAndSendChanges()
 	{
+		if( Platform.isClient() )
+			return;
 
-		public PatternInvSlot(IInventory inv) {
-			super( inv );
-		}
+		super.detectAndSendChanges();
 
-		@Override
-		public boolean isItemValid(ItemStack itemstack)
+		if( this.g == null )
+			return;
+
+		int total = 0;
+		boolean missing = false;
+
+		IActionHost host = this.getActionHost();
+		if( host != null )
 		{
-			return itemstack != null && itemstack.getItem() instanceof ItemEncodedPattern;
+			IGridNode agn = host.getActionableNode();
+			if( agn != null && agn.isActive() )
+			{
+				for( IGridNode gn : this.g.getMachines( TileInterface.class ) )
+				{
+					if( gn.isActive() )
+					{
+						IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
+						if( ih.getInterfaceDuality().getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.NO )
+							continue;
+
+						InvTracker t = this.diList.get( ih );
+
+						if( t == null )
+							missing = true;
+						else
+						{
+							DualityInterface dual = ih.getInterfaceDuality();
+							if( !t.unlocalizedName.equals( dual.getTermName() ) )
+								missing = true;
+						}
+
+						total++;
+					}
+				}
+
+				for( IGridNode gn : this.g.getMachines( PartInterface.class ) )
+				{
+					if( gn.isActive() )
+					{
+						IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
+						if( ih.getInterfaceDuality().getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.NO )
+							continue;
+
+						InvTracker t = this.diList.get( ih );
+
+						if( t == null )
+							missing = true;
+						else
+						{
+							DualityInterface dual = ih.getInterfaceDuality();
+							if( !t.unlocalizedName.equals( dual.getTermName() ) )
+								missing = true;
+						}
+
+						total++;
+					}
+				}
+			}
 		}
 
+		if( total != this.diList.size() || missing )
+			this.regenList( this.data );
+		else
+		{
+			for( Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet() )
+			{
+				InvTracker inv = en.getValue();
+				for( int x = 0; x < inv.server.getSizeInventory(); x++ )
+				{
+					if( this.isDifferent( inv.server.getStackInSlot( x ), inv.client.getStackInSlot( x ) ) )
+						this.addItems( this.data, inv, x, 1 );
+				}
+			}
+		}
+
+		if( !this.data.hasNoTags() )
+		{
+			try
+			{
+				NetworkHandler.instance.sendTo( new PacketCompressedNBT( this.data ), (EntityPlayerMP) this.getPlayerInv().player );
+			}
+			catch( IOException e )
+			{
+				// :P
+			}
+
+			this.data = new NBTTagCompound();
+		}
 	}
 
 	@Override
-	public void doAction(EntityPlayerMP player, InventoryAction action, int slot, long id)
+	public void doAction( EntityPlayerMP player, InventoryAction action, int slot, long id )
 	{
 		InvTracker inv = this.byId.get( id );
-		if ( inv != null )
+		if( inv != null )
 		{
 			ItemStack is = inv.server.getStackInSlot( slot );
 			boolean hasItemInHand = player.inventory.getItemStack() != null;
@@ -127,226 +191,117 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 			IInventory theSlot = slotInv.getWrapper( slot );
 			InventoryAdaptor interfaceSlot = new AdaptorIInventory( theSlot );
 
-			switch (action)
+			switch( action )
 			{
-			case PICKUP_OR_SET_DOWN:
+				case PICKUP_OR_SET_DOWN:
 
-				if ( hasItemInHand )
-				{
-					ItemStack inSlot = theSlot.getStackInSlot( 0 );
-					if ( inSlot == null )
-						player.inventory.setItemStack( interfaceSlot.addItems( player.inventory.getItemStack() ) );
-					else
+					if( hasItemInHand )
 					{
-						inSlot = inSlot.copy();
-						ItemStack inHand = player.inventory.getItemStack().copy();
-
-						theSlot.setInventorySlotContents( 0, null );
-						player.inventory.setItemStack( null );
-
-						player.inventory.setItemStack( interfaceSlot.addItems( inHand.copy() ) );
-
-						if ( player.inventory.getItemStack() == null )
-							player.inventory.setItemStack( inSlot );
+						ItemStack inSlot = theSlot.getStackInSlot( 0 );
+						if( inSlot == null )
+							player.inventory.setItemStack( interfaceSlot.addItems( player.inventory.getItemStack() ) );
 						else
 						{
-							player.inventory.setItemStack( inHand );
-							theSlot.setInventorySlotContents( 0, inSlot );
+							inSlot = inSlot.copy();
+							ItemStack inHand = player.inventory.getItemStack().copy();
+
+							theSlot.setInventorySlotContents( 0, null );
+							player.inventory.setItemStack( null );
+
+							player.inventory.setItemStack( interfaceSlot.addItems( inHand.copy() ) );
+
+							if( player.inventory.getItemStack() == null )
+								player.inventory.setItemStack( inSlot );
+							else
+							{
+								player.inventory.setItemStack( inHand );
+								theSlot.setInventorySlotContents( 0, inSlot );
+							}
 						}
 					}
-				}
-				else
-				{
+					else
+					{
+						IInventory mySlot = slotInv.getWrapper( slot );
+						mySlot.setInventorySlotContents( 0, playerHand.addItems( mySlot.getStackInSlot( 0 ) ) );
+					}
+
+					break;
+				case SPLIT_OR_PLACE_SINGLE:
+
+					if( hasItemInHand )
+					{
+						ItemStack extra = playerHand.removeItems( 1, null, null );
+						if( extra != null )
+							extra = interfaceSlot.addItems( extra );
+						if( extra != null )
+							playerHand.addItems( extra );
+					}
+					else if( is != null )
+					{
+						ItemStack extra = interfaceSlot.removeItems( ( is.stackSize + 1 ) / 2, null, null );
+						if( extra != null )
+							extra = playerHand.addItems( extra );
+						if( extra != null )
+							interfaceSlot.addItems( extra );
+					}
+
+					break;
+				case SHIFT_CLICK:
+
 					IInventory mySlot = slotInv.getWrapper( slot );
-					mySlot.setInventorySlotContents( 0, playerHand.addItems( mySlot.getStackInSlot( 0 ) ) );
-				}
+					InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
+					mySlot.setInventorySlotContents( 0, playerInv.addItems( mySlot.getStackInSlot( 0 ) ) );
 
-				break;
-			case SPLIT_OR_PLACE_SINGLE:
+					break;
+				case MOVE_REGION:
 
-				if ( hasItemInHand )
-				{
-					ItemStack extra = playerHand.removeItems( 1, null, null );
-					if ( extra != null )
-						extra = interfaceSlot.addItems( extra );
-					if ( extra != null )
-						playerHand.addItems( extra );
-				}
-				else if ( is != null )
-				{
-					ItemStack extra = interfaceSlot.removeItems( (is.stackSize + 1) / 2, null, null );
-					if ( extra != null )
-						extra = playerHand.addItems( extra );
-					if ( extra != null )
-						interfaceSlot.addItems( extra );
-				}
+					InventoryAdaptor playerInvAd = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
+					for( int x = 0; x < inv.server.getSizeInventory(); x++ )
+					{
+						inv.server.setInventorySlotContents( x, playerInvAd.addItems( inv.server.getStackInSlot( x ) ) );
+					}
 
-				break;
-			case SHIFT_CLICK:
+					break;
+				case CREATIVE_DUPLICATE:
 
-				IInventory mySlot = slotInv.getWrapper( slot );
-				InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
-				mySlot.setInventorySlotContents( 0, playerInv.addItems( mySlot.getStackInSlot( 0 ) ) );
+					if( player.capabilities.isCreativeMode && !hasItemInHand )
+					{
+						player.inventory.setItemStack( is == null ? null : is.copy() );
+					}
 
-				break;
-			case MOVE_REGION:
-
-				InventoryAdaptor playerInvAd = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
-				for (int x = 0; x < inv.server.getSizeInventory(); x++)
-				{
-					inv.server.setInventorySlotContents( x, playerInvAd.addItems( inv.server.getStackInSlot( x ) ) );
-				}
-
-				break;
-			case CREATIVE_DUPLICATE:
-
-				if ( player.capabilities.isCreativeMode && !hasItemInHand )
-				{
-					player.inventory.setItemStack( is == null ? null : is.copy() );
-				}
-
-				break;
-			default:
-				return;
+					break;
+				default:
+					return;
 			}
 
 			this.updateHeld( player );
 		}
 	}
 
-	@Override
-	public void detectAndSendChanges()
-	{
-		if ( Platform.isClient() )
-			return;
-
-		super.detectAndSendChanges();
-
-		if ( this.g == null )
-			return;
-
-		int total = 0;
-		boolean missing = false;
-
-		IActionHost host = this.getActionHost();
-		if ( host != null )
-		{
-			IGridNode agn = host.getActionableNode();
-			if ( agn != null && agn.isActive() )
-			{
-				for (IGridNode gn : this.g.getMachines( TileInterface.class ))
-				{
-					if ( gn.isActive() )
-					{
-						IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
-						if ( ih.getInterfaceDuality().getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.NO )
-							continue;
-
-						InvTracker t = this.diList.get( ih );
-
-						if ( t == null )
-							missing = true;
-						else
-						{
-							DualityInterface dual = ih.getInterfaceDuality();
-							if ( !t.unlocalizedName.equals( dual.getTermName() ) )
-								missing = true;
-						}
-
-						total++;
-					}
-				}
-
-				for (IGridNode gn : this.g.getMachines( PartInterface.class ))
-				{
-					if ( gn.isActive() )
-					{
-						IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
-						if ( ih.getInterfaceDuality().getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.NO )
-							continue;
-
-						InvTracker t = this.diList.get( ih );
-
-						if ( t == null )
-							missing = true;
-						else
-						{
-							DualityInterface dual = ih.getInterfaceDuality();
-							if ( !t.unlocalizedName.equals( dual.getTermName() ) )
-								missing = true;
-						}
-
-						total++;
-					}
-				}
-			}
-		}
-
-		if ( total != this.diList.size() || missing )
-			this.regenList( this.data );
-		else
-		{
-			for (Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet())
-			{
-				InvTracker inv = en.getValue();
-				for (int x = 0; x < inv.server.getSizeInventory(); x++)
-				{
-					if ( this.isDifferent( inv.server.getStackInSlot( x ), inv.client.getStackInSlot( x ) ) )
-						this.addItems( this.data, inv, x, 1 );
-				}
-			}
-		}
-
-		if ( !this.data.hasNoTags() )
-		{
-			try
-			{
-				NetworkHandler.instance.sendTo( new PacketCompressedNBT( this.data ), (EntityPlayerMP) this.getPlayerInv().player );
-			}
-			catch (IOException e)
-			{
-				// :P
-			}
-
-			this.data = new NBTTagCompound();
-		}
-	}
-
-	private boolean isDifferent(ItemStack a, ItemStack b)
-	{
-		if ( a == null && b == null )
-			return false;
-
-		if ( a == null || b == null )
-			return true;
-
-		return !ItemStack.areItemStacksEqual( a, b );
-	}
-
-	private void regenList(NBTTagCompound data)
+	private void regenList( NBTTagCompound data )
 	{
 		this.byId.clear();
 		this.diList.clear();
 
 		IActionHost host = this.getActionHost();
-		if ( host != null )
+		if( host != null )
 		{
 			IGridNode agn = host.getActionableNode();
-			if ( agn != null && agn.isActive() )
+			if( agn != null && agn.isActive() )
 			{
-				for (IGridNode gn : this.g.getMachines( TileInterface.class ))
+				for( IGridNode gn : this.g.getMachines( TileInterface.class ) )
 				{
 					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
 					DualityInterface dual = ih.getInterfaceDuality();
-					if ( gn.isActive() && dual.getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.YES )
+					if( gn.isActive() && dual.getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.YES )
 						this.diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName() ) );
 				}
 
-				for (IGridNode gn : this.g.getMachines( PartInterface.class ))
+				for( IGridNode gn : this.g.getMachines( PartInterface.class ) )
 				{
 					IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
 					DualityInterface dual = ih.getInterfaceDuality();
-					if ( gn.isActive() && dual.getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.YES )
+					if( gn.isActive() && dual.getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.YES )
 						this.diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName() ) );
 				}
 			}
@@ -354,7 +309,7 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 
 		data.setBoolean( "clear", true );
 
-		for (Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet())
+		for( Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet() )
 		{
 			InvTracker inv = en.getValue();
 			this.byId.put( inv.which, inv );
@@ -362,18 +317,29 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 		}
 	}
 
-	private void addItems(NBTTagCompound data, InvTracker inv, int offset, int length)
+	private boolean isDifferent( ItemStack a, ItemStack b )
+	{
+		if( a == null && b == null )
+			return false;
+
+		if( a == null || b == null )
+			return true;
+
+		return !ItemStack.areItemStacksEqual( a, b );
+	}
+
+	private void addItems( NBTTagCompound data, InvTracker inv, int offset, int length )
 	{
 		String name = '=' + Long.toString( inv.which, Character.MAX_RADIX );
 		NBTTagCompound tag = data.getCompoundTag( name );
 
-		if ( tag.hasNoTags() )
+		if( tag.hasNoTags() )
 		{
 			tag.setLong( "sortBy", inv.sortBy );
 			tag.setString( "un", inv.unlocalizedName );
 		}
 
-		for (int x = 0; x < length; x++)
+		for( int x = 0; x < length; x++ )
 		{
 			NBTTagCompound itemNBT = new NBTTagCompound();
 
@@ -382,12 +348,46 @@ public class ContainerInterfaceTerminal extends AEBaseContainer
 			// "update" client side.
 			inv.client.setInventorySlotContents( x + offset, is == null ? null : is.copy() );
 
-			if ( is != null )
+			if( is != null )
 				is.writeToNBT( itemNBT );
 
 			tag.setTag( Integer.toString( x + offset ), itemNBT );
 		}
 
 		data.setTag( name, tag );
+	}
+
+
+	static class InvTracker
+	{
+
+		public final long sortBy;
+		final long which = autoBase++;
+		final String unlocalizedName;
+		final IInventory client;
+		final IInventory server;
+		public InvTracker( DualityInterface dual, IInventory patterns, String unlocalizedName )
+		{
+			this.server = patterns;
+			this.client = new AppEngInternalInventory( null, this.server.getSizeInventory() );
+			this.unlocalizedName = unlocalizedName;
+			this.sortBy = dual.getSortValue();
+		}
+	}
+
+
+	static class PatternInvSlot extends WrapperInvSlot
+	{
+
+		public PatternInvSlot( IInventory inv )
+		{
+			super( inv );
+		}
+
+		@Override
+		public boolean isItemValid( ItemStack itemstack )
+		{
+			return itemstack != null && itemstack.getItem() instanceof ItemEncodedPattern;
+		}
 	}
 }

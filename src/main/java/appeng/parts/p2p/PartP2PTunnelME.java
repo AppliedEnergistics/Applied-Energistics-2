@@ -51,15 +51,8 @@ import appeng.me.helpers.AENetworkProxy;
 public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements IGridTickable
 {
 
-	@Override
-	public TunnelType getTunnelType()
-	{
-		return TunnelType.ME;
-	}
-
-	final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", null, true );
 	public final Connections connection = new Connections( this );
-
+	final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", null, true );
 	public PartP2PTunnelME( ItemStack is )
 	{
 		super( is );
@@ -68,10 +61,9 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	}
 
 	@Override
-	public void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
+	public TunnelType getTunnelType()
 	{
-		super.setPartHostInfo( side, host, tile );
-		this.outerProxy.setValidSides( EnumSet.of( side ) );
+		return TunnelType.ME;
 	}
 
 	@Override
@@ -89,10 +81,26 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	}
 
 	@Override
-	public void addToWorld()
+	public void onTunnelNetworkChange()
 	{
-		super.addToWorld();
-		this.outerProxy.onReady();
+		super.onTunnelNetworkChange();
+		if( !this.output )
+		{
+			try
+			{
+				this.proxy.getTick().wakeDevice( this.proxy.getNode() );
+			}
+			catch( GridAccessException e )
+			{
+				// :P
+			}
+		}
+	}
+
+	@Override
+	public AECableType getCableConnectionType( ForgeDirection dir )
+	{
+		return AECableType.DENSE;
 	}
 
 	@Override
@@ -103,32 +111,30 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	}
 
 	@Override
+	public void addToWorld()
+	{
+		super.addToWorld();
+		this.outerProxy.onReady();
+	}
+
+	@Override
+	public void setPartHostInfo( ForgeDirection side, IPartHost host, TileEntity tile )
+	{
+		super.setPartHostInfo( side, host, tile );
+		this.outerProxy.setValidSides( EnumSet.of( side ) );
+	}
+
+	@Override
 	public IGridNode getExternalFacingNode()
 	{
 		return this.outerProxy.getNode();
 	}
 
 	@Override
-	public AECableType getCableConnectionType( ForgeDirection dir )
+	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
 	{
-		return AECableType.DENSE;
-	}
-
-	@Override
-	public void onTunnelNetworkChange()
-	{
-		super.onTunnelNetworkChange();
-		if ( !this.output )
-		{
-			try
-			{
-				this.proxy.getTick().wakeDevice( this.proxy.getNode() );
-			}
-			catch ( GridAccessException e )
-			{
-				// :P
-			}
-		}
+		super.onPlacement( player, held, side );
+		this.outerProxy.setOwner( player );
 	}
 
 	@Override
@@ -143,16 +149,16 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 		// just move on...
 		try
 		{
-			if ( !this.proxy.getPath().isNetworkBooting() )
+			if( !this.proxy.getPath().isNetworkBooting() )
 			{
-				if ( !this.proxy.getEnergy().isNetworkPowered() )
+				if( !this.proxy.getEnergy().isNetworkPowered() )
 				{
 					this.connection.markDestroy();
 					TickHandler.INSTANCE.addCallable( this.tile.getWorldObj(), this.connection );
 				}
 				else
 				{
-					if ( this.proxy.isActive() )
+					if( this.proxy.isActive() )
 					{
 						this.connection.markCreate();
 						TickHandler.INSTANCE.addCallable( this.tile.getWorldObj(), this.connection );
@@ -167,7 +173,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 				return TickRateModulation.SLEEP;
 			}
 		}
-		catch ( GridAccessException e )
+		catch( GridAccessException e )
 		{
 			// meh?
 		}
@@ -175,43 +181,36 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 		return TickRateModulation.IDLE;
 	}
 
-	@Override
-	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
-	{
-		super.onPlacement( player, held, side );
-		this.outerProxy.setOwner( player );
-	}
-
 	public void updateConnections( Connections connections )
 	{
-		if ( connections.destroy )
+		if( connections.destroy )
 		{
-			for ( TunnelConnection cw : this.connection.connections.values() )
+			for( TunnelConnection cw : this.connection.connections.values() )
 				cw.c.destroy();
 
 			this.connection.connections.clear();
 		}
-		else if ( connections.create )
+		else if( connections.create )
 		{
 
 			Iterator<TunnelConnection> i = this.connection.connections.values().iterator();
-			while ( i.hasNext() )
+			while( i.hasNext() )
 			{
 				TunnelConnection cw = i.next();
 				try
 				{
-					if ( cw.tunnel.proxy.getGrid() != this.proxy.getGrid() )
+					if( cw.tunnel.proxy.getGrid() != this.proxy.getGrid() )
 					{
 						cw.c.destroy();
 						i.remove();
 					}
-					else if ( !cw.tunnel.proxy.isActive() )
+					else if( !cw.tunnel.proxy.isActive() )
 					{
 						cw.c.destroy();
 						i.remove();
 					}
 				}
-				catch ( GridAccessException e )
+				catch( GridAccessException e )
 				{
 					// :P
 				}
@@ -220,22 +219,21 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 			LinkedList<PartP2PTunnelME> newSides = new LinkedList<PartP2PTunnelME>();
 			try
 			{
-				for ( PartP2PTunnelME me : this.getOutputs() )
+				for( PartP2PTunnelME me : this.getOutputs() )
 				{
-					if ( me.proxy.isActive() && connections.connections.get( me.getGridNode() ) == null )
+					if( me.proxy.isActive() && connections.connections.get( me.getGridNode() ) == null )
 					{
 						newSides.add( me );
 					}
 				}
 
-				for ( PartP2PTunnelME me : newSides )
+				for( PartP2PTunnelME me : newSides )
 				{
 					try
 					{
-						connections.connections.put( me.getGridNode(),
-								new TunnelConnection( me, AEApi.instance().createGridConnection( this.outerProxy.getNode(), me.outerProxy.getNode() ) ) );
+						connections.connections.put( me.getGridNode(), new TunnelConnection( me, AEApi.instance().createGridConnection( this.outerProxy.getNode(), me.outerProxy.getNode() ) ) );
 					}
-					catch ( FailedConnection e )
+					catch( FailedConnection e )
 					{
 						final TileEntity start = this.getTile();
 						final TileEntity end = me.getTile();
@@ -244,7 +242,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 					}
 				}
 			}
-			catch ( GridAccessException e )
+			catch( GridAccessException e )
 			{
 				AELog.error( e );
 			}

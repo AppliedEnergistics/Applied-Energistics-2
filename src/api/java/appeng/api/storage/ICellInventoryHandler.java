@@ -23,8 +23,10 @@
 
 package appeng.api.storage;
 
+
 import appeng.api.config.IncludeExclude;
 import appeng.api.storage.data.IAEItemStack;
+
 
 public interface ICellInventoryHandler extends IMEInventoryHandler<IAEItemStack>
 {
@@ -39,5 +41,4 @@ public interface ICellInventoryHandler extends IMEInventoryHandler<IAEItemStack>
 	boolean isFuzzy();
 
 	IncludeExclude getIncludeExcludeMode();
-
 }

@@ -18,10 +18,12 @@
 
 package appeng.util.iterators;
 
+
 import java.util.Iterator;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+
 
 public class InvIterator implements Iterator<ItemStack>
 {
@@ -31,7 +33,8 @@ public class InvIterator implements Iterator<ItemStack>
 
 	int x = 0;
 
-	public InvIterator(IInventory i) {
+	public InvIterator( IInventory i )
+	{
 		this.inv = i;
 		this.size = this.inv.getSizeInventory();
 	}
@@ -53,5 +56,4 @@ public class InvIterator implements Iterator<ItemStack>
 	{
 		throw new RuntimeException( "no..." );
 	}
-
 }

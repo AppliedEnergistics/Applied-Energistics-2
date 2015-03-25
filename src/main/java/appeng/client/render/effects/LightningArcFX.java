@@ -53,13 +53,11 @@ public class LightningArcFX extends LightningFX
 		double lastDirectionZ = this.rz * i;
 
 		double len = Math.sqrt( lastDirectionX * lastDirectionX + lastDirectionY * lastDirectionY + lastDirectionZ * lastDirectionZ );
-		for ( int s = 0; s < this.steps; s++ )
+		for( int s = 0; s < this.steps; s++ )
 		{
 			this.Steps[s][0] = ( lastDirectionX + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * len * 1.2 ) / 2.0;
 			this.Steps[s][1] = ( lastDirectionY + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * len * 1.2 ) / 2.0;
 			this.Steps[s][2] = ( lastDirectionZ + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * len * 1.2 ) / 2.0;
 		}
-
 	}
-
 }

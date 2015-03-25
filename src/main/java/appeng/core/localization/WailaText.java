@@ -18,7 +18,9 @@
 
 package appeng.core.localization;
 
+
 import net.minecraft.util.StatCollector;
+
 
 public enum WailaText
 {
@@ -32,22 +34,24 @@ public enum WailaText
 
 	final String root;
 
-	WailaText() {
+	WailaText()
+	{
 		this.root = "waila.appliedenergistics2";
 	}
 
-	WailaText(String r) {
-		this.root = r;
-	}
-
-	public String getUnlocalized()
+	WailaText( String r )
 	{
-		return this.root + '.' + this.toString();
+		this.root = r;
 	}
 
 	public String getLocal()
 	{
 		return StatCollector.translateToLocal( this.getUnlocalized() );
+	}
+
+	public String getUnlocalized()
+	{
+		return this.root + '.' + this.toString();
 	}
 
 }

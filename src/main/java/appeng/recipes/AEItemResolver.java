@@ -34,93 +34,94 @@ import appeng.items.misc.ItemCrystalSeed;
 import appeng.items.parts.ItemMultiPart;
 import appeng.items.parts.PartType;
 
+
 public class AEItemResolver implements ISubItemResolver
 {
 
 	@Override
-	public Object resolveItemByName(String nameSpace, String itemName)
+	public Object resolveItemByName( String nameSpace, String itemName )
 	{
 
-		if ( nameSpace.equals( AppEng.MOD_ID ) )
+		if( nameSpace.equals( AppEng.MOD_ID ) )
 		{
-			if ( itemName.startsWith( "PaintBall." ) )
+			if( itemName.startsWith( "PaintBall." ) )
 			{
 				return this.paintBall( AEApi.instance().items().itemPaintBall, itemName.substring( itemName.indexOf( "." ) + 1 ), false );
 			}
 
-			if ( itemName.startsWith( "LumenPaintBall." ) )
+			if( itemName.startsWith( "LumenPaintBall." ) )
 			{
 				return this.paintBall( AEApi.instance().items().itemPaintBall, itemName.substring( itemName.indexOf( "." ) + 1 ), true );
 			}
 
-			if ( itemName.equals( "CableGlass" ) )
+			if( itemName.equals( "CableGlass" ) )
 			{
 				return new ResolverResultSet( "CableGlass", AEApi.instance().parts().partCableGlass.allStacks( 1 ) );
 			}
 
-			if ( itemName.startsWith( "CableGlass." ) )
+			if( itemName.startsWith( "CableGlass." ) )
 			{
 				return this.cableItem( AEApi.instance().parts().partCableGlass, itemName.substring( itemName.indexOf( "." ) + 1 ) );
 			}
 
-			if ( itemName.equals( "CableCovered" ) )
+			if( itemName.equals( "CableCovered" ) )
 			{
 				return new ResolverResultSet( "CableCovered", AEApi.instance().parts().partCableCovered.allStacks( 1 ) );
 			}
 
-			if ( itemName.startsWith( "CableCovered." ) )
+			if( itemName.startsWith( "CableCovered." ) )
 			{
 				return this.cableItem( AEApi.instance().parts().partCableCovered, itemName.substring( itemName.indexOf( "." ) + 1 ) );
 			}
 
-			if ( itemName.equals( "CableSmart" ) )
+			if( itemName.equals( "CableSmart" ) )
 			{
 				return new ResolverResultSet( "CableSmart", AEApi.instance().parts().partCableSmart.allStacks( 1 ) );
 			}
 
-			if ( itemName.startsWith( "CableSmart." ) )
+			if( itemName.startsWith( "CableSmart." ) )
 			{
 				return this.cableItem( AEApi.instance().parts().partCableSmart, itemName.substring( itemName.indexOf( "." ) + 1 ) );
 			}
 
-			if ( itemName.equals( "CableDense" ) )
+			if( itemName.equals( "CableDense" ) )
 			{
 				return new ResolverResultSet( "CableDense", AEApi.instance().parts().partCableDense.allStacks( 1 ) );
 			}
 
-			if ( itemName.startsWith( "CableDense." ) )
+			if( itemName.startsWith( "CableDense." ) )
 			{
 				return this.cableItem( AEApi.instance().parts().partCableDense, itemName.substring( itemName.indexOf( "." ) + 1 ) );
 			}
 
-			if ( itemName.startsWith( "ItemCrystalSeed." ) )
+			if( itemName.startsWith( "ItemCrystalSeed." ) )
 			{
-				if ( itemName.equalsIgnoreCase( "ItemCrystalSeed.Certus" ) )
+				if( itemName.equalsIgnoreCase( "ItemCrystalSeed.Certus" ) )
 					return ItemCrystalSeed.getResolver( ItemCrystalSeed.Certus );
-				if ( itemName.equalsIgnoreCase( "ItemCrystalSeed.Nether" ) )
+				if( itemName.equalsIgnoreCase( "ItemCrystalSeed.Nether" ) )
 					return new ResolverResult( "ItemCrystalSeed", ItemCrystalSeed.Nether );
-				if ( itemName.equalsIgnoreCase( "ItemCrystalSeed.Fluix" ) )
+				if( itemName.equalsIgnoreCase( "ItemCrystalSeed.Fluix" ) )
 					return new ResolverResult( "ItemCrystalSeed", ItemCrystalSeed.Fluix );
 
 				return null;
 			}
 
-			if ( itemName.startsWith( "ItemMaterial." ) )
+			if( itemName.startsWith( "ItemMaterial." ) )
 			{
 				String materialName = itemName.substring( itemName.indexOf( "." ) + 1 );
 				MaterialType mt = MaterialType.valueOf( materialName );
 				// itemName = itemName.substring( 0, itemName.indexOf( "." ) );
-				if ( mt.itemInstance == ItemMultiMaterial.instance && mt.damageValue >= 0 && mt.isRegistered() )
+				if( mt.itemInstance == ItemMultiMaterial.instance && mt.damageValue >= 0 && mt.isRegistered() )
 					return new ResolverResult( "ItemMultiMaterial", mt.damageValue );
 			}
 
-			if ( itemName.startsWith( "ItemPart." ) )
+			if( itemName.startsWith( "ItemPart." ) )
 			{
 				String partName = itemName.substring( itemName.indexOf( "." ) + 1 );
 				PartType pt = PartType.valueOf( partName );
 				// itemName = itemName.substring( 0, itemName.indexOf( "." ) );
 				int dVal = ItemMultiPart.instance.getDamageByType( pt );
-				if ( dVal >= 0 )
+				if( dVal >= 0 )
 					return new ResolverResult( "ItemMultiPart", dVal );
 			}
 		}
@@ -128,7 +129,7 @@ public class AEItemResolver implements ISubItemResolver
 		return null;
 	}
 
-	private Object paintBall(AEColoredItemDefinition partType, String substring, boolean lumen)
+	private Object paintBall( AEColoredItemDefinition partType, String substring, boolean lumen )
 	{
 		AEColor col = AEColor.Transparent;
 
@@ -136,19 +137,19 @@ public class AEItemResolver implements ISubItemResolver
 		{
 			col = AEColor.valueOf( substring );
 		}
-		catch (Throwable t)
+		catch( Throwable t )
 		{
 			col = AEColor.Transparent;
 		}
 
-		if ( col == AEColor.Transparent )
+		if( col == AEColor.Transparent )
 			return null;
 
 		ItemStack is = partType.stack( col, 1 );
-		return new ResolverResult( "ItemPaintBall", (lumen ? 20 : 0) + is.getItemDamage() );
+		return new ResolverResult( "ItemPaintBall", ( lumen ? 20 : 0 ) + is.getItemDamage() );
 	}
 
-	private Object cableItem(AEColoredItemDefinition partType, String substring)
+	private Object cableItem( AEColoredItemDefinition partType, String substring )
 	{
 		AEColor col = AEColor.Transparent;
 
@@ -156,7 +157,7 @@ public class AEItemResolver implements ISubItemResolver
 		{
 			col = AEColor.valueOf( substring );
 		}
-		catch (Throwable t)
+		catch( Throwable t )
 		{
 			col = AEColor.Transparent;
 		}

@@ -18,6 +18,7 @@
 
 package appeng.tile.inventory;
 
+
 import java.util.Iterator;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,15 +32,23 @@ import appeng.me.storage.MEIInventoryWrapper;
 import appeng.util.Platform;
 import appeng.util.iterators.InvIterator;
 
+
 public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 {
 
-	protected IAEAppEngInventory te;
 	protected final int size;
+	protected final ItemStack[] inv;
+	public boolean enableClientEvents = false;
+	protected IAEAppEngInventory te;
 	protected int maxStack;
 
-	public boolean enableClientEvents = false;
-	protected final ItemStack[] inv;
+	public AppEngInternalInventory( IAEAppEngInventory _te, int s )
+	{
+		this.te = _te;
+		this.size = s;
+		this.maxStack = 64;
+		this.inv = new ItemStack[s];
+	}
 
 	public IMEInventory getMEInventory()
 	{
@@ -48,44 +57,33 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 
 	public boolean isEmpty()
 	{
-		for (int x = 0; x < this.getSizeInventory(); x++)
-			if ( this.getStackInSlot( x ) != null )
+		for( int x = 0; x < this.getSizeInventory(); x++ )
+			if( this.getStackInSlot( x ) != null )
 				return false;
 		return true;
 	}
 
-	public AppEngInternalInventory(IAEAppEngInventory _te, int s) {
-		this.te = _te;
-		this.size = s;
-		this.maxStack = 64;
-		this.inv = new ItemStack[s];
-	}
-
-	protected boolean eventsEnabled()
+	@Override
+	public int getSizeInventory()
 	{
-		return Platform.isServer() || this.enableClientEvents;
-	}
-
-	public void setMaxStackSize(int s)
-	{
-		this.maxStack = s;
+		return this.size;
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int var1)
+	public ItemStack getStackInSlot( int var1 )
 	{
 		return this.inv[var1];
 	}
 
 	@Override
-	public ItemStack decrStackSize(int slot, int qty)
+	public ItemStack decrStackSize( int slot, int qty )
 	{
-		if ( this.inv[slot] != null )
+		if( this.inv[slot] != null )
 		{
 			ItemStack split = this.getStackInSlot( slot );
 			ItemStack ns = null;
 
-			if ( qty >= split.stackSize )
+			if( qty >= split.stackSize )
 			{
 				ns = this.inv[slot];
 				this.inv[slot] = null;
@@ -93,7 +91,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 			else
 				ns = split.splitStack( qty );
 
-			if ( this.te != null && this.eventsEnabled() )
+			if( this.te != null && this.eventsEnabled() )
 			{
 				this.te.onChangeInventory( this, slot, InvOperation.decreaseStackSize, ns, null );
 			}
@@ -105,32 +103,37 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 		return null;
 	}
 
+	protected boolean eventsEnabled()
+	{
+		return Platform.isServer() || this.enableClientEvents;
+	}
+
 	@Override
-	public ItemStack getStackInSlotOnClosing(int var1)
+	public ItemStack getStackInSlotOnClosing( int var1 )
 	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents(int slot, ItemStack newItemStack)
+	public void setInventorySlotContents( int slot, ItemStack newItemStack )
 	{
 		ItemStack oldStack = this.inv[slot];
 		this.inv[slot] = newItemStack;
 
-		if ( this.te != null && this.eventsEnabled() )
+		if( this.te != null && this.eventsEnabled() )
 		{
 			ItemStack removed = oldStack;
 			ItemStack added = newItemStack;
 
-			if ( oldStack != null && newItemStack != null && Platform.isSameItem( oldStack, newItemStack ) )
+			if( oldStack != null && newItemStack != null && Platform.isSameItem( oldStack, newItemStack ) )
 			{
-				if ( oldStack.stackSize > newItemStack.stackSize )
+				if( oldStack.stackSize > newItemStack.stackSize )
 				{
 					removed = removed.copy();
 					removed.stackSize -= newItemStack.stackSize;
 					added = null;
 				}
-				else if ( oldStack.stackSize < newItemStack.stackSize )
+				else if( oldStack.stackSize < newItemStack.stackSize )
 				{
 					added = added.copy();
 					added.stackSize -= oldStack.stackSize;
@@ -149,106 +152,6 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	}
 
 	@Override
-	public void markDirty()
-	{
-		if ( this.te != null && this.eventsEnabled() )
-		{
-			this.te.onChangeInventory( this, -1, InvOperation.markDirty, null, null );
-		}
-	}
-
-	// for guis...
-	public void markDirty(int slotIndex)
-	{
-		if ( this.te != null && this.eventsEnabled() )
-		{
-			this.te.onChangeInventory( this, slotIndex, InvOperation.markDirty, null, null );
-		}
-	}
-
-	@Override
-	public int getInventoryStackLimit()
-	{
-		return this.maxStack > 64 ? 64 : this.maxStack;
-	}
-
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer var1)
-	{
-		return true;
-	}
-
-	@Override
-	public void closeInventory()
-	{
-	}
-
-	@Override
-	public void openInventory()
-	{
-	}
-
-	public void writeToNBT(NBTTagCompound target)
-	{
-		for (int x = 0; x < this.size; x++)
-		{
-			try
-			{
-				NBTTagCompound c = new NBTTagCompound();
-
-				if ( this.inv[x] != null )
-				{
-					this.inv[x].writeToNBT( c );
-				}
-
-				target.setTag( "#" + x, c );
-			}
-			catch (Exception ignored)
-			{
-			}
-		}
-	}
-
-	public void readFromNBT(NBTTagCompound target)
-	{
-		for (int x = 0; x < this.size; x++)
-		{
-			try
-			{
-				NBTTagCompound c = target.getCompoundTag( "#" + x );
-
-				if ( c != null )
-					this.inv[x] = ItemStack.loadItemStackFromNBT( c );
-
-			}
-			catch (Exception e)
-			{
-				AELog.error( e );
-			}
-		}
-	}
-
-	public void writeToNBT(NBTTagCompound data, String name)
-	{
-		NBTTagCompound c = new NBTTagCompound();
-		this.writeToNBT( c );
-		data.setTag( name, c );
-	}
-
-	public void readFromNBT(NBTTagCompound data, String name)
-	{
-		NBTTagCompound c = data.getCompoundTag( name );
-		if ( c != null )
-			this.readFromNBT( c );
-	}
-
-	@Override
-	public int getSizeInventory()
-	{
-		return this.size;
-	}
-
-	@Override
 	public String getInventoryName()
 	{
 		return "appeng-internal";
@@ -261,9 +164,107 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack)
+	public int getInventoryStackLimit()
+	{
+		return this.maxStack > 64 ? 64 : this.maxStack;
+	}
+
+	@Override
+	public void markDirty()
+	{
+		if( this.te != null && this.eventsEnabled() )
+		{
+			this.te.onChangeInventory( this, -1, InvOperation.markDirty, null, null );
+		}
+	}
+
+	@Override
+	public boolean isUseableByPlayer( EntityPlayer var1 )
 	{
 		return true;
+	}
+
+	@Override
+	public void openInventory()
+	{
+	}
+
+	@Override
+	public void closeInventory()
+	{
+	}
+
+	@Override
+	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	{
+		return true;
+	}
+
+	public void setMaxStackSize( int s )
+	{
+		this.maxStack = s;
+	}
+
+	// for guis...
+	public void markDirty( int slotIndex )
+	{
+		if( this.te != null && this.eventsEnabled() )
+		{
+			this.te.onChangeInventory( this, slotIndex, InvOperation.markDirty, null, null );
+		}
+	}
+
+	public void writeToNBT( NBTTagCompound data, String name )
+	{
+		NBTTagCompound c = new NBTTagCompound();
+		this.writeToNBT( c );
+		data.setTag( name, c );
+	}
+
+	public void writeToNBT( NBTTagCompound target )
+	{
+		for( int x = 0; x < this.size; x++ )
+		{
+			try
+			{
+				NBTTagCompound c = new NBTTagCompound();
+
+				if( this.inv[x] != null )
+				{
+					this.inv[x].writeToNBT( c );
+				}
+
+				target.setTag( "#" + x, c );
+			}
+			catch( Exception ignored )
+			{
+			}
+		}
+	}
+
+	public void readFromNBT( NBTTagCompound data, String name )
+	{
+		NBTTagCompound c = data.getCompoundTag( name );
+		if( c != null )
+			this.readFromNBT( c );
+	}
+
+	public void readFromNBT( NBTTagCompound target )
+	{
+		for( int x = 0; x < this.size; x++ )
+		{
+			try
+			{
+				NBTTagCompound c = target.getCompoundTag( "#" + x );
+
+				if( c != null )
+					this.inv[x] = ItemStack.loadItemStackFromNBT( c );
+			}
+			catch( Exception e )
+			{
+				AELog.error( e );
+			}
+		}
 	}
 
 	@Override
@@ -271,5 +272,4 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	{
 		return new InvIterator( this );
 	}
-
 }

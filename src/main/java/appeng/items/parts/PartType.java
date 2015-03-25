@@ -146,7 +146,7 @@ public enum PartType
 
 	public Enum<AEColor>[] getVariants()
 	{
-		if ( this == CableSmart || this == CableCovered || this == CableGlass || this == CableDense )
+		if( this == CableSmart || this == CableCovered || this == CableGlass || this == CableDense )
 			return AEColor.values();
 
 		return null;

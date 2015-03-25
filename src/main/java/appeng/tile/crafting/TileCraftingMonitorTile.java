@@ -18,6 +18,7 @@
 
 package appeng.tile.crafting;
 
+
 import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
@@ -36,27 +37,28 @@ import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.util.item.AEItemStack;
 
+
 public class TileCraftingMonitorTile extends TileCraftingTile implements IColorableTile
 {
 
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	public Integer dspList;
 
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	public boolean updateList;
 
 	IAEItemStack dspPlay;
 	AEColor paintedColor = AEColor.Transparent;
 
-	@TileEvent(TileEventType.NETWORK_READ)
-	public boolean readFromStream_TileCraftingMonitorTile(ByteBuf data) throws IOException
+	@TileEvent( TileEventType.NETWORK_READ )
+	public boolean readFromStream_TileCraftingMonitorTile( ByteBuf data ) throws IOException
 	{
 		AEColor oldPaintedColor = this.paintedColor;
 		this.paintedColor = AEColor.values()[data.readByte()];
 
 		boolean hasItem = data.readBoolean();
 
-		if ( hasItem )
+		if( hasItem )
 			this.dspPlay = AEItemStack.loadItemStackFromPacket( data );
 		else
 			this.dspPlay = null;
@@ -65,12 +67,12 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 		return oldPaintedColor != this.paintedColor; // tesr!
 	}
 
-	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void writeToStream_TileCraftingMonitorTile(ByteBuf data) throws IOException
+	@TileEvent( TileEventType.NETWORK_WRITE )
+	public void writeToStream_TileCraftingMonitorTile( ByteBuf data ) throws IOException
 	{
 		data.writeByte( this.paintedColor.ordinal() );
 
-		if ( this.dspPlay == null )
+		if( this.dspPlay == null )
 			data.writeBoolean( false );
 		else
 		{
@@ -79,15 +81,15 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 		}
 	}
 
-	@TileEvent(TileEventType.WORLD_NBT_READ)
-	public void readFromNBT_TileCraftingMonitorTile(NBTTagCompound data)
+	@TileEvent( TileEventType.WORLD_NBT_READ )
+	public void readFromNBT_TileCraftingMonitorTile( NBTTagCompound data )
 	{
-		if ( data.hasKey( "paintedColor" ) )
+		if( data.hasKey( "paintedColor" ) )
 			this.paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
 	}
 
-	@TileEvent(TileEventType.WORLD_NBT_WRITE)
-	public void writeToNBT_TileCraftingMonitorTile(NBTTagCompound data)
+	@TileEvent( TileEventType.WORLD_NBT_WRITE )
+	public void writeToNBT_TileCraftingMonitorTile( NBTTagCompound data )
 	{
 		data.setByte( "paintedColor", (byte) this.paintedColor.ordinal() );
 	}
@@ -104,16 +106,16 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 		return true;
 	}
 
-	public void setJob(IAEItemStack is)
+	public void setJob( IAEItemStack is )
 	{
-		if ( (is == null) != (this.dspPlay == null) )
+		if( ( is == null ) != ( this.dspPlay == null ) )
 		{
 			this.dspPlay = is == null ? null : is.copy();
 			this.markForUpdate();
 		}
-		else if ( is != null && this.dspPlay != null )
+		else if( is != null && this.dspPlay != null )
 		{
-			if ( is.getStackSize() != this.dspPlay.getStackSize() )
+			if( is.getStackSize() != this.dspPlay.getStackSize() )
 			{
 				this.dspPlay = is.copy();
 				this.markForUpdate();
@@ -121,15 +123,15 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 		}
 	}
 
-	public IAEItemStack getJobProgress()
-	{
-		return this.dspPlay;// AEItemStack.create( new ItemStack( Items.diamond, 64 ) );
-	}
-
 	@Override
 	public boolean requiresTESR()
 	{
 		return this.getJobProgress() != null;
+	}
+
+	public IAEItemStack getJobProgress()
+	{
+		return this.dspPlay;// AEItemStack.create( new ItemStack( Items.diamond, 64 ) );
 	}
 
 	@Override
@@ -139,9 +141,9 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	}
 
 	@Override
-	public boolean recolourBlock(ForgeDirection side, AEColor newPaintedColor, EntityPlayer who)
+	public boolean recolourBlock( ForgeDirection side, AEColor newPaintedColor, EntityPlayer who )
 	{
-		if ( this.paintedColor == newPaintedColor )
+		if( this.paintedColor == newPaintedColor )
 			return false;
 
 		this.paintedColor = newPaintedColor;

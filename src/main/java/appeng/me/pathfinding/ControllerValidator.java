@@ -18,26 +18,27 @@
 
 package appeng.me.pathfinding;
 
+
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridVisitor;
 import appeng.tile.networking.TileController;
 
+
 public class ControllerValidator implements IGridVisitor
 {
 
+	public boolean isValid = true;
+	public int found = 0;
 	int minX;
 	int minY;
 	int minZ;
-
 	int maxX;
 	int maxY;
 	int maxZ;
 
-	public boolean isValid = true;
-	public int found = 0;
-
-	public ControllerValidator(int x, int y, int z) {
+	public ControllerValidator( int x, int y, int z )
+	{
 		this.minX = x;
 		this.minY = y;
 		this.minZ = z;
@@ -47,10 +48,10 @@ public class ControllerValidator implements IGridVisitor
 	}
 
 	@Override
-	public boolean visitNode(IGridNode n)
+	public boolean visitNode( IGridNode n )
 	{
 		IGridHost host = n.getMachine();
-		if ( this.isValid && host instanceof TileController )
+		if( this.isValid && host instanceof TileController )
 		{
 			TileController c = (TileController) host;
 
@@ -61,7 +62,7 @@ public class ControllerValidator implements IGridVisitor
 			this.minZ = Math.min( c.zCoord, this.minZ );
 			this.maxZ = Math.max( c.zCoord, this.maxZ );
 
-			if ( this.maxX - this.minX < 7 && this.maxY - this.minY < 7 && this.maxZ - this.minZ < 7 )
+			if( this.maxX - this.minX < 7 && this.maxY - this.minY < 7 && this.maxZ - this.minZ < 7 )
 			{
 				this.found++;
 				return true;

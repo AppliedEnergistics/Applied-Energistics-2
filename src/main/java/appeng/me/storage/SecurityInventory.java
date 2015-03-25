@@ -18,6 +18,7 @@
 
 package appeng.me.storage;
 
+
 import com.mojang.authlib.GameProfile;
 
 import appeng.api.AEApi;
@@ -34,40 +35,26 @@ import appeng.api.storage.data.IItemList;
 import appeng.me.GridAccessException;
 import appeng.tile.misc.TileSecurity;
 
+
 public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 {
 
-	final TileSecurity securityTile;
 	final public IItemList<IAEItemStack> storedItems = AEApi.instance().storage().createItemList();
+	final TileSecurity securityTile;
 
-	public SecurityInventory(TileSecurity ts) {
+	public SecurityInventory( TileSecurity ts )
+	{
 		this.securityTile = ts;
 	}
 
-	private boolean hasPermission(BaseActionSource src)
-	{
-		if ( src.isPlayer() )
-		{
-			try
-			{
-				return this.securityTile.getProxy().getSecurity().hasPermission( ((PlayerSource) src).player, SecurityPermissions.SECURITY );
-			}
-			catch (GridAccessException e)
-			{
-				// :P
-			}
-		}
-		return false;
-	}
-
 	@Override
-	public IAEItemStack injectItems(IAEItemStack input, Actionable type, BaseActionSource src)
+	public IAEItemStack injectItems( IAEItemStack input, Actionable type, BaseActionSource src )
 	{
-		if ( this.hasPermission( src ) && AEApi.instance().items().itemBiometricCard.sameAsStack( input.getItemStack() ) )
+		if( this.hasPermission( src ) && AEApi.instance().items().itemBiometricCard.sameAsStack( input.getItemStack() ) )
 		{
-			if ( this.canAccept( input ) )
+			if( this.canAccept( input ) )
 			{
-				if ( type == Actionable.SIMULATE )
+				if( type == Actionable.SIMULATE )
 					return null;
 
 				this.storedItems.add( input );
@@ -78,17 +65,33 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 		return input;
 	}
 
-	@Override
-	public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src)
+	private boolean hasPermission( BaseActionSource src )
 	{
-		if ( this.hasPermission( src ) )
+		if( src.isPlayer() )
+		{
+			try
+			{
+				return this.securityTile.getProxy().getSecurity().hasPermission( ( (PlayerSource) src ).player, SecurityPermissions.SECURITY );
+			}
+			catch( GridAccessException e )
+			{
+				// :P
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
+	{
+		if( this.hasPermission( src ) )
 		{
 			IAEItemStack target = this.storedItems.findPrecise( request );
-			if ( target != null )
+			if( target != null )
 			{
 				IAEItemStack output = target.copy();
 
-				if ( mode == Actionable.SIMULATE )
+				if( mode == Actionable.SIMULATE )
 					return output;
 
 				target.setStackSize( 0 );
@@ -100,9 +103,9 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems(IItemList out)
+	public IItemList<IAEItemStack> getAvailableItems( IItemList out )
 	{
-		for (IAEItemStack ais : this.storedItems)
+		for( IAEItemStack ais : this.storedItems )
 			out.add( ais );
 
 		return out;
@@ -121,32 +124,32 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	}
 
 	@Override
-	public boolean isPrioritized(IAEItemStack input)
+	public boolean isPrioritized( IAEItemStack input )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canAccept(IAEItemStack input)
+	public boolean canAccept( IAEItemStack input )
 	{
-		if ( input.getItem() instanceof IBiometricCard )
+		if( input.getItem() instanceof IBiometricCard )
 		{
 			IBiometricCard tbc = (IBiometricCard) input.getItem();
 			GameProfile newUser = tbc.getProfile( input.getItemStack() );
 
 			int PlayerID = AEApi.instance().registries().players().getID( newUser );
-			if ( this.securityTile.getOwner() == PlayerID )
+			if( this.securityTile.getOwner() == PlayerID )
 				return false;
 
-			for (IAEItemStack ais : this.storedItems)
+			for( IAEItemStack ais : this.storedItems )
 			{
-				if ( ais.isMeaningful() )
+				if( ais.isMeaningful() )
 				{
 					GameProfile thisUser = tbc.getProfile( ais.getItemStack() );
-					if ( thisUser == newUser )
+					if( thisUser == newUser )
 						return false;
 
-					if ( thisUser != null && thisUser.equals( newUser ) )
+					if( thisUser != null && thisUser.equals( newUser ) )
 						return false;
 				}
 			}
@@ -169,9 +172,8 @@ public class SecurityInventory implements IMEInventoryHandler<IAEItemStack>
 	}
 
 	@Override
-	public boolean validForPass(int i)
+	public boolean validForPass( int i )
 	{
 		return true;
 	}
-
 }

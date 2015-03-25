@@ -18,6 +18,7 @@
 
 package appeng.block.networking;
 
+
 import java.util.EnumSet;
 
 import net.minecraft.block.Block;
@@ -30,10 +31,12 @@ import appeng.client.render.blocks.RenderBlockController;
 import appeng.core.features.AEFeature;
 import appeng.tile.networking.TileController;
 
+
 public class BlockController extends AEBaseBlock
 {
 
-	public BlockController() {
+	public BlockController()
+	{
 		super( BlockController.class, Material.iron );
 		this.setFeature( EnumSet.of( AEFeature.Channels ) );
 		this.setTileEntity( TileController.class );
@@ -41,10 +44,10 @@ public class BlockController extends AEBaseBlock
 	}
 
 	@Override
-	public void onNeighborBlockChange(World w, int x, int y, int z, Block id_junk)
+	public void onNeighborBlockChange( World w, int x, int y, int z, Block id_junk )
 	{
 		TileController tc = this.getTileEntity( w, x, y, z );
-		if ( tc != null )
+		if( tc != null )
 			tc.onNeighborChange( false );
 	}
 
@@ -53,5 +56,4 @@ public class BlockController extends AEBaseBlock
 	{
 		return RenderBlockController.class;
 	}
-
 }

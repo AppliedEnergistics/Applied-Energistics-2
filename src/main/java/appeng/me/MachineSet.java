@@ -18,11 +18,13 @@
 
 package appeng.me;
 
+
 import java.util.HashSet;
 
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IMachineSet;
+
 
 public class MachineSet extends HashSet<IGridNode> implements IMachineSet
 {
@@ -31,7 +33,8 @@ public class MachineSet extends HashSet<IGridNode> implements IMachineSet
 
 	private final Class<? extends IGridHost> machine;
 
-	MachineSet(Class<? extends IGridHost> m) {
+	MachineSet( Class<? extends IGridHost> m )
+	{
 		this.machine = m;
 	}
 
@@ -40,5 +43,4 @@ public class MachineSet extends HashSet<IGridNode> implements IMachineSet
 	{
 		return this.machine;
 	}
-
 }

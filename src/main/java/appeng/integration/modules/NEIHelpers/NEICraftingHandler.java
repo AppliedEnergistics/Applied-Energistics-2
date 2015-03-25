@@ -18,6 +18,7 @@
 
 package appeng.integration.modules.NEIHelpers;
 
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,61 +40,61 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketNEIRecipe;
 import appeng.util.Platform;
 
+
 public class NEICraftingHandler implements IOverlayHandler
 {
 
-	public NEICraftingHandler(int x, int y)
+	final int offsetX;
+	final int offsetY;
+	public NEICraftingHandler( int x, int y )
 	{
 		this.offsetX = x;
 		this.offsetY = y;
 	}
 
-	final int offsetX;
-	final int offsetY;
-
 	@Override
-	public void overlayRecipe(GuiContainer gui, IRecipeHandler recipe, int recipeIndex, boolean shift)
+	public void overlayRecipe( GuiContainer gui, IRecipeHandler recipe, int recipeIndex, boolean shift )
 	{
 		try
 		{
 			List ingredients = recipe.getIngredientStacks( recipeIndex );
 			this.overlayRecipe( gui, ingredients, shift );
 		}
-		catch (Exception ignored)
+		catch( Exception ignored )
 		{
 		}
-		catch (Error ignored)
+		catch( Error ignored )
 		{
 		}
 	}
 
-	public void overlayRecipe(GuiContainer gui, List<PositionedStack> ingredients, boolean shift)
+	public void overlayRecipe( GuiContainer gui, List<PositionedStack> ingredients, boolean shift )
 	{
 		try
 		{
 			NBTTagCompound recipe = new NBTTagCompound();
 
-			if ( gui instanceof GuiCraftingTerm || gui instanceof GuiPatternTerm )
+			if( gui instanceof GuiCraftingTerm || gui instanceof GuiPatternTerm )
 			{
-				for (PositionedStack positionedStack : ingredients)
+				for( PositionedStack positionedStack : ingredients )
 				{
-					int col = (positionedStack.relx - 25) / 18;
-					int row = (positionedStack.rely - 6) / 18;
-					if ( positionedStack.items != null && positionedStack.items.length > 0 )
+					int col = ( positionedStack.relx - 25 ) / 18;
+					int row = ( positionedStack.rely - 6 ) / 18;
+					if( positionedStack.items != null && positionedStack.items.length > 0 )
 					{
-						for (Slot slot : (List<Slot>) gui.inventorySlots.inventorySlots)
+						for( Slot slot : (List<Slot>) gui.inventorySlots.inventorySlots )
 						{
-							if ( slot instanceof SlotCraftingMatrix || slot instanceof SlotFakeCraftingMatrix )
+							if( slot instanceof SlotCraftingMatrix || slot instanceof SlotFakeCraftingMatrix )
 							{
-								if ( slot.getSlotIndex() == col + row * 3 )
+								if( slot.getSlotIndex() == col + row * 3 )
 								{
 									NBTTagList tags = new NBTTagList();
 									List<ItemStack> list = new LinkedList<ItemStack>();
 
 									// prefer pure crystals.
-									for (int x = 0; x < positionedStack.items.length; x++)
+									for( int x = 0; x < positionedStack.items.length; x++ )
 									{
-										if ( Platform.isRecipePrioritized( positionedStack.items[x] ) )
+										if( Platform.isRecipePrioritized( positionedStack.items[x] ) )
 										{
 											list.add( 0, positionedStack.items[x] );
 										}
@@ -103,7 +104,7 @@ public class NEICraftingHandler implements IOverlayHandler
 										}
 									}
 
-									for (ItemStack is : list)
+									for( ItemStack is : list )
 									{
 										NBTTagCompound tag = new NBTTagCompound();
 										is.writeToNBT( tag );
@@ -121,10 +122,10 @@ public class NEICraftingHandler implements IOverlayHandler
 				NetworkHandler.instance.sendToServer( new PacketNEIRecipe( recipe ) );
 			}
 		}
-		catch (Exception ignored)
+		catch( Exception ignored )
 		{
 		}
-		catch (Error ignored)
+		catch( Error ignored )
 		{
 		}
 	}

@@ -29,7 +29,6 @@ public class ChargedOreFX extends EntityReddustFX
 	public ChargedOreFX( World w, double x, double y, double z, float r, float g, float b )
 	{
 		super( w, x, y, z, 0.21f, 0.61f, 1.0f );
-
 	}
 
 	@Override
@@ -38,9 +37,8 @@ public class ChargedOreFX extends EntityReddustFX
 		int j1 = super.getBrightnessForRender( par1 );
 		j1 = Math.max( j1 >> 20, j1 >> 4 );
 		j1 += 3;
-		if ( j1 > 15 )
+		if( j1 > 15 )
 			j1 = 15;
 		return j1 << 20 | j1 << 4;
 	}
-
 }

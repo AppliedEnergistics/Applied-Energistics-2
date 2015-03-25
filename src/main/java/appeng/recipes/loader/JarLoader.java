@@ -18,24 +18,26 @@
 
 package appeng.recipes.loader;
 
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 import appeng.api.recipes.IRecipeLoader;
+
 
 public class JarLoader implements IRecipeLoader
 {
 
 	private final String rootPath;
 
-	public JarLoader(String s) {
+	public JarLoader( String s )
+	{
 		this.rootPath = s;
 	}
 
 	@Override
-	public BufferedReader getFile(String s) throws Exception
+	public BufferedReader getFile( String s ) throws Exception
 	{
 		return new BufferedReader( new InputStreamReader( this.getClass().getResourceAsStream( this.rootPath + s ), "UTF-8" ) );
 	}
-
 }

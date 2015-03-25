@@ -37,6 +37,7 @@ import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 
+
 public class TileCrank extends AEBaseTile implements ICustomCollision
 {
 
@@ -49,18 +50,18 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 	public int hits = 0;
 	public int rotation = 0;
 
-	@TileEvent(TileEventType.TICK)
+	@TileEvent( TileEventType.TICK )
 	public void Tick_TileCrank()
 	{
-		if ( this.rotation > 0 )
+		if( this.rotation > 0 )
 		{
-			this.visibleRotation -= 360 / (this.ticksPerRotation);
+			this.visibleRotation -= 360 / ( this.ticksPerRotation );
 			this.charge++;
-			if ( this.charge >= this.ticksPerRotation )
+			if( this.charge >= this.ticksPerRotation )
 			{
 				this.charge -= this.ticksPerRotation;
 				ICrankable g = this.getGrinder();
-				if ( g != null )
+				if( g != null )
 					g.applyTurn();
 			}
 
@@ -68,36 +69,42 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 		}
 	}
 
-	@TileEvent(TileEventType.NETWORK_READ)
-	public boolean readFromStream_TileCrank(ByteBuf data)
+	public ICrankable getGrinder()
+	{
+		if( Platform.isClient() )
+			return null;
+
+		ForgeDirection grinder = this.getUp().getOpposite();
+		TileEntity te = this.worldObj.getTileEntity( this.xCoord + grinder.offsetX, this.yCoord + grinder.offsetY, this.zCoord + grinder.offsetZ );
+		if( te instanceof ICrankable )
+			return (ICrankable) te;
+		return null;
+	}
+
+	@TileEvent( TileEventType.NETWORK_READ )
+	public boolean readFromStream_TileCrank( ByteBuf data )
 	{
 		this.rotation = data.readInt();
 		return false;
 	}
 
-	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void writeToStream_TileCrank(ByteBuf data)
+	@TileEvent( TileEventType.NETWORK_WRITE )
+	public void writeToStream_TileCrank( ByteBuf data )
 	{
 		data.writeInt( this.rotation );
 	}
 
-	public ICrankable getGrinder()
-	{
-		if ( Platform.isClient() )
-			return null;
-
-		ForgeDirection grinder = this.getUp().getOpposite();
-		TileEntity te = this.worldObj.getTileEntity( this.xCoord + grinder.offsetX, this.yCoord + grinder.offsetY, this.zCoord + grinder.offsetZ );
-		if ( te instanceof ICrankable )
-			return (ICrankable) te;
-		return null;
-	}
-
 	@Override
-	public void setOrientation(ForgeDirection inForward, ForgeDirection inUp)
+	public void setOrientation( ForgeDirection inForward, ForgeDirection inUp )
 	{
 		super.setOrientation( inForward, inUp );
 		this.getBlockType().onNeighborBlockChange( this.worldObj, this.xCoord, this.yCoord, this.zCoord, Platform.AIR );
+	}
+
+	@Override
+	public boolean requiresTESR()
+	{
+		return true;
 	}
 
 	/**
@@ -105,15 +112,15 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 	 */
 	public boolean power()
 	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			return false;
 
-		if ( this.rotation < 3 )
+		if( this.rotation < 3 )
 		{
 			ICrankable g = this.getGrinder();
-			if ( g != null )
+			if( g != null )
 			{
-				if ( g.canTurn() )
+				if( g.canTurn() )
 				{
 					this.hits = 0;
 					this.rotation += this.ticksPerRotation;
@@ -123,7 +130,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 				else
 				{
 					this.hits++;
-					if ( this.hits > 10 )
+					if( this.hits > 10 )
 					{
 						this.worldObj.func_147480_a( this.xCoord, this.yCoord, this.zCoord, false );
 						// worldObj.destroyBlock( xCoord, yCoord, zCoord, false );
@@ -136,7 +143,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(World w, int x, int y, int z, Entity e, boolean isVisual)
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, int x, int y, int z, Entity e, boolean isVisual )
 	{
 		double xOff = -0.15 * this.getUp().offsetX;
 		double yOff = -0.15 * this.getUp().offsetY;
@@ -145,18 +152,12 @@ public class TileCrank extends AEBaseTile implements ICustomCollision
 	}
 
 	@Override
-	public void addCollidingBlockToList(World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e)
+	public void addCollidingBlockToList( World w, int x, int y, int z, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e )
 	{
 		double xOff = -0.15 * this.getUp().offsetX;
 		double yOff = -0.15 * this.getUp().offsetY;
 		double zOff = -0.15 * this.getUp().offsetZ;
 		out.add( AxisAlignedBB.getBoundingBox( xOff + 0.15, yOff + 0.15, zOff + 0.15,// ahh
 				xOff + 0.85, yOff + 0.85, zOff + 0.85 ) );
-	}
-
-	@Override
-	public boolean requiresTESR()
-	{
-		return true;
 	}
 }

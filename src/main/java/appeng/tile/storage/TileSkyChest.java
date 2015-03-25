@@ -18,6 +18,7 @@
 
 package appeng.tile.storage;
 
+
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.inventory.IInventory;
@@ -31,47 +32,40 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 
+
 public class TileSkyChest extends AEBaseInvTile
 {
 
 	final int[] sides = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35 };
 	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 * 4 );
+	// server
+	public int playerOpen;
+	// client..
+	public long lastEvent;
+	public float lidAngle;
 
-	@TileEvent(TileEventType.NETWORK_WRITE)
-	public void writeToStream_TileSkyChest(ByteBuf data)
+	@TileEvent( TileEventType.NETWORK_WRITE )
+	public void writeToStream_TileSkyChest( ByteBuf data )
 	{
 		data.writeBoolean( this.playerOpen > 0 );
 	}
 
-	@TileEvent(TileEventType.NETWORK_READ)
-	public boolean readFromStream_TileSkyChest(ByteBuf data)
+	@TileEvent( TileEventType.NETWORK_READ )
+	public boolean readFromStream_TileSkyChest( ByteBuf data )
 	{
 		int wasOpen = this.playerOpen;
 		this.playerOpen = data.readBoolean() ? 1 : 0;
 
-		if ( wasOpen != this.playerOpen )
+		if( wasOpen != this.playerOpen )
 			this.lastEvent = System.currentTimeMillis();
 
 		return false; // TESR yo!
 	}
 
-	// server
-	public int playerOpen;
-
-	// client..
-	public long lastEvent;
-	public float lidAngle;
-
 	@Override
 	public boolean requiresTESR()
 	{
 		return true;
-	}
-
-	@Override
-	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added)
-	{
-
 	}
 
 	@Override
@@ -81,20 +75,14 @@ public class TileSkyChest extends AEBaseInvTile
 	}
 
 	@Override
-	public int[] getAccessibleSlotsBySide(ForgeDirection side)
-	{
-		return this.sides;
-	}
-
-	@Override
 	public void openInventory()
 	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			return;
 
 		this.playerOpen++;
 
-		if ( this.playerOpen == 1 )
+		if( this.playerOpen == 1 )
 		{
 			this.getWorldObj().playSoundEffect( this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D, "random.chestopen", 0.5F, this.getWorldObj().rand.nextFloat() * 0.1F + 0.9F );
 			this.markForUpdate();
@@ -104,20 +92,30 @@ public class TileSkyChest extends AEBaseInvTile
 	@Override
 	public void closeInventory()
 	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			return;
 
 		this.playerOpen--;
 
-		if ( this.playerOpen < 0 )
+		if( this.playerOpen < 0 )
 			this.playerOpen = 0;
 
-		if ( this.playerOpen == 0 )
+		if( this.playerOpen == 0 )
 		{
-			this.getWorldObj().playSoundEffect( this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D, "random.chestclosed", 0.5F,
-					this.getWorldObj().rand.nextFloat() * 0.1F + 0.9F );
+			this.getWorldObj().playSoundEffect( this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D, "random.chestclosed", 0.5F, this.getWorldObj().rand.nextFloat() * 0.1F + 0.9F );
 			this.markForUpdate();
 		}
 	}
 
+	@Override
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
+	{
+
+	}
+
+	@Override
+	public int[] getAccessibleSlotsBySide( ForgeDirection side )
+	{
+		return this.sides;
+	}
 }

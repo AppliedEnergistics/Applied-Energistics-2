@@ -22,13 +22,13 @@ package appeng.items.tools.powered.powersink;
 import java.text.MessageFormat;
 import java.util.List;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
+import com.google.common.base.Optional;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.PowerUnits;
@@ -59,16 +59,14 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 		double internalCurrentPower = 0;
 		double internalMaxPower = this.getAEMaxPower( stack );
 
-		if ( tag != null )
+		if( tag != null )
 		{
 			internalCurrentPower = tag.getDouble( "internalCurrentPower" );
 		}
 
 		double percent = internalCurrentPower / internalMaxPower;
 
-		lines.add( GuiText.StoredEnergy.getLocal() + ':' + MessageFormat.format( " {0,number,#} ", internalCurrentPower )
-				+ Platform.gui_localize( PowerUnits.AE.unlocalizedName ) + " - " + MessageFormat.format( " {0,number,#.##%} ", percent ) );
-
+		lines.add( GuiText.StoredEnergy.getLocal() + ':' + MessageFormat.format( " {0,number,#} ", internalCurrentPower ) + Platform.gui_localize( PowerUnits.AE.unlocalizedName ) + " - " + MessageFormat.format( " {0,number,#.##%} ", percent ) );
 	}
 
 	@Override
@@ -113,15 +111,50 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 
 	}
 
+	private double getInternalBattery( ItemStack is, batteryOperation op, double adjustment )
+	{
+		NBTTagCompound data = Platform.openNbtData( is );
+
+		double currentStorage = data.getDouble( this.EnergyVar );
+		double maxStorage = this.getAEMaxPower( is );
+
+		switch( op )
+		{
+			case INJECT:
+				currentStorage += adjustment;
+				if( currentStorage > maxStorage )
+				{
+					double diff = currentStorage - maxStorage;
+					data.setDouble( this.EnergyVar, maxStorage );
+					return diff;
+				}
+				data.setDouble( this.EnergyVar, currentStorage );
+				return 0;
+			case EXTRACT:
+				if( currentStorage > adjustment )
+				{
+					currentStorage -= adjustment;
+					data.setDouble( this.EnergyVar, currentStorage );
+					return adjustment;
+				}
+				data.setDouble( this.EnergyVar, 0 );
+				return currentStorage;
+			default:
+				break;
+		}
+
+		return currentStorage;
+	}
+
 	/**
 	 * inject external
 	 */
 	double injectExternalPower( PowerUnits input, ItemStack is, double amount, boolean simulate )
 	{
-		if ( simulate )
+		if( simulate )
 		{
-			int requiredEU = ( int ) PowerUnits.AE.convertTo( PowerUnits.EU, this.getAEMaxPower( is ) - this.getAECurrentPower( is ) );
-			if ( amount < requiredEU )
+			int requiredEU = (int) PowerUnits.AE.convertTo( PowerUnits.EU, this.getAEMaxPower( is ) - this.getAECurrentPower( is ) );
+			if( amount < requiredEU )
 				return 0;
 			return amount - requiredEU;
 		}
@@ -142,41 +175,6 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 	public double extractAEPower( ItemStack is, double amt )
 	{
 		return this.getInternalBattery( is, batteryOperation.EXTRACT, amt );
-	}
-
-	private double getInternalBattery( ItemStack is, batteryOperation op, double adjustment )
-	{
-		NBTTagCompound data = Platform.openNbtData( is );
-
-		double currentStorage = data.getDouble( this.EnergyVar );
-		double maxStorage = this.getAEMaxPower( is );
-
-		switch ( op )
-		{
-			case INJECT:
-				currentStorage += adjustment;
-				if ( currentStorage > maxStorage )
-				{
-					double diff = currentStorage - maxStorage;
-					data.setDouble( this.EnergyVar, maxStorage );
-					return diff;
-				}
-				data.setDouble( this.EnergyVar, currentStorage );
-				return 0;
-			case EXTRACT:
-				if ( currentStorage > adjustment )
-				{
-					currentStorage -= adjustment;
-					data.setDouble( this.EnergyVar, currentStorage );
-					return adjustment;
-				}
-				data.setDouble( this.EnergyVar, 0 );
-				return currentStorage;
-			default:
-				break;
-		}
-
-		return currentStorage;
 	}
 
 	@Override
@@ -201,5 +199,4 @@ public class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
 	{
 		STORAGE, INJECT, EXTRACT
 	}
-
 }

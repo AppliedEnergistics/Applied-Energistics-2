@@ -18,9 +18,11 @@
 
 package appeng.tile.crafting;
 
+
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
+
 
 public class TileCraftingStorageTile extends TileCraftingTile
 {
@@ -30,15 +32,15 @@ public class TileCraftingStorageTile extends TileCraftingTile
 	static final ItemStack STACK_64K_STORAGE = AEApi.instance().blocks().blockCraftingStorage64k.stack( 1 );
 
 	@Override
-	protected ItemStack getItemFromTile(Object obj)
+	protected ItemStack getItemFromTile( Object obj )
 	{
-		int storage = ((TileCraftingTile) obj).getStorageBytes() / 1024;
+		int storage = ( (TileCraftingTile) obj ).getStorageBytes() / 1024;
 
-		if ( storage == 4 )
+		if( storage == 4 )
 			return STACK_4K_STORAGE;
-		if ( storage == 16 )
+		if( storage == 16 )
 			return STACK_16K_STORAGE;
-		if ( storage == 64 )
+		if( storage == 64 )
 			return STACK_64K_STORAGE;
 
 		return super.getItemFromTile( obj );
@@ -59,20 +61,20 @@ public class TileCraftingStorageTile extends TileCraftingTile
 	@Override
 	public int getStorageBytes()
 	{
-		if ( this.worldObj == null || this.notLoaded() )
+		if( this.worldObj == null || this.notLoaded() )
 			return 0;
 
-		switch (this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord ) & 3)
+		switch( this.worldObj.getBlockMetadata( this.xCoord, this.yCoord, this.zCoord ) & 3 )
 		{
-		default:
-		case 0:
-			return 1024;
-		case 1:
-			return 4 * 1024;
-		case 2:
-			return 16 * 1024;
-		case 3:
-			return 64 * 1024;
+			default:
+			case 0:
+				return 1024;
+			case 1:
+				return 4 * 1024;
+			case 2:
+				return 16 * 1024;
+			case 3:
+				return 64 * 1024;
 		}
 	}
 }

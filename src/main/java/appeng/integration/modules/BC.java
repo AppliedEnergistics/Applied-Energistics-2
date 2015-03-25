@@ -58,64 +58,66 @@ import appeng.integration.modules.BCHelpers.AEGenericSchematicTile;
 import appeng.integration.modules.BCHelpers.AERotatableBlockSchematic;
 import appeng.integration.modules.BCHelpers.BCPipeHandler;
 
+
 public final class BC extends BaseModule implements IBC
 {
 
 	public static BC instance;
 
-	public BC() {
+	public BC()
+	{
 		this.testClassExistence( IPipeConnection.class );
 		this.testClassExistence( ItemFacade.class );
 		this.testClassExistence( IToolWrench.class );
 	}
 
 	@Override
-	public void addFacade(ItemStack item)
-	{
-		if ( item != null )
-			FMLInterModComms.sendMessage( "BuildCraft|Transport", "add-facade", item );
-	}
-
-	@Override
-	public boolean isWrench(Item eq)
+	public boolean isWrench( Item eq )
 	{
 		return eq instanceof IToolWrench;
 	}
 
 	@Override
-	public boolean isPipe(TileEntity te, ForgeDirection dir)
+	public boolean canWrench( Item i, EntityPlayer p, int x, int y, int z )
 	{
-		if ( te instanceof IPipeTile )
+		return ( (IToolWrench) i ).canWrench( p, x, y, z );
+	}
+
+	@Override
+	public void wrenchUsed( Item i, EntityPlayer p, int x, int y, int z )
+	{
+		( (IToolWrench) i ).wrenchUsed( p, x, y, z );
+	}
+
+	@Override
+	public boolean canAddItemsToPipe( TileEntity te, ItemStack is, ForgeDirection dir )
+	{
+		if( is != null && te != null && te instanceof IInjectable )
 		{
-			final IPipeTile pipeTile = (IPipeTile) te;
-			return !pipeTile.hasPipePluggable( dir.getOpposite() );
+			IInjectable pt = (IInjectable) te;
+			if( pt.canInjectItems( dir ) )
+			{
+				int amt = pt.injectItem( is, false, dir, null );
+				if( amt == is.stackSize )
+				{
+					return true;
+				}
+			}
 		}
 
 		return false;
 	}
 
 	@Override
-	public boolean canWrench(Item i, EntityPlayer p, int x, int y, int z)
+	public boolean addItemsToPipe( TileEntity te, ItemStack is, ForgeDirection dir )
 	{
-		return ((IToolWrench) i).canWrench( p, x, y, z );
-	}
-
-	@Override
-	public void wrenchUsed(Item i, EntityPlayer p, int x, int y, int z)
-	{
-		((IToolWrench) i).wrenchUsed( p, x, y, z );
-	}
-
-	@Override
-	public boolean addItemsToPipe(TileEntity te, ItemStack is, ForgeDirection dir)
-	{
-		if ( is != null && te != null && te instanceof IInjectable )
+		if( is != null && te != null && te instanceof IInjectable )
 		{
 			IInjectable pt = (IInjectable) te;
-			if ( pt.canInjectItems( dir ) )
+			if( pt.canInjectItems( dir ) )
 			{
 				int amt = pt.injectItem( is, false, dir, null );
-				if ( amt == is.stackSize )
+				if( amt == is.stackSize )
 				{
 					pt.injectItem( is, true, dir, null );
 					return true;
@@ -127,31 +129,31 @@ public final class BC extends BaseModule implements IBC
 	}
 
 	@Override
-	public boolean isFacade(ItemStack is)
+	public boolean isFacade( ItemStack is )
 	{
-		if ( is == null )
+		if( is == null )
 			return false;
 
 		return is.getItem() instanceof IFacadeItem;
 	}
 
 	@Override
-	public boolean canAddItemsToPipe(TileEntity te, ItemStack is, ForgeDirection dir)
+	public boolean isPipe( TileEntity te, ForgeDirection dir )
 	{
-		if ( is != null && te != null && te instanceof IInjectable )
+		if( te instanceof IPipeTile )
 		{
-			IInjectable pt = (IInjectable) te;
-			if ( pt.canInjectItems( dir ) )
-			{
-				int amt = pt.injectItem( is, false, dir, null );
-				if ( amt == is.stackSize )
-				{
-					return true;
-				}
-			}
+			final IPipeTile pipeTile = (IPipeTile) te;
+			return !pipeTile.hasPipePluggable( dir.getOpposite() );
 		}
 
 		return false;
+	}
+
+	@Override
+	public void addFacade( ItemStack item )
+	{
+		if( item != null )
+			FMLInterModComms.sendMessage( "BuildCraft|Transport", "add-facade", item );
 	}
 
 	@Override
@@ -201,82 +203,7 @@ public final class BC extends BaseModule implements IBC
 	}
 
 	@Override
-	public void init()
-	{
-		AEApi.instance().partHelper().registerNewLayer( "appeng.parts.layers.LayerIPipeConnection", "buildcraft.api.transport.IPipeConnection" );
-		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new BCPipeHandler() );
-
-		Blocks b = AEApi.instance().blocks();
-		this.addFacade( b.blockFluix.stack( 1 ) );
-		this.addFacade( b.blockQuartz.stack( 1 ) );
-		this.addFacade( b.blockQuartzChiseled.stack( 1 ) );
-		this.addFacade( b.blockQuartzPillar.stack( 1 ) );
-
-		try
-		{
-			this.initBuilderSupport();
-		}
-		catch (Throwable builderSupport)
-		{
-			// not supported?
-		}
-
-		Block skyStone = b.blockSkyStone.block();
-		if ( skyStone != null )
-		{
-			this.addFacade( new ItemStack( skyStone, 1, 0 ) );
-			this.addFacade( new ItemStack( skyStone, 1, 1 ) );
-			this.addFacade( new ItemStack( skyStone, 1, 2 ) );
-			this.addFacade( new ItemStack( skyStone, 1, 3 ) );
-		}
-	}
-
-	private void initBuilderSupport()
-	{
-		final ISchematicRegistry schematicRegistry = BuilderAPI.schematicRegistry;
-
-		Blocks blocks = AEApi.instance().blocks();
-		Block cable = blocks.blockMultiPart.block();
-		for (Field f : blocks.getClass().getFields())
-		{
-			AEItemDefinition def;
-			try
-			{
-				def = (AEItemDefinition) f.get( blocks );
-				if ( def != null )
-				{
-					Block myBlock = def.block();
-					if ( myBlock instanceof IOrientableBlock && ((IOrientableBlock) myBlock).usesMetadata() && def.entity() == null )
-					{
-						schematicRegistry.registerSchematicBlock( myBlock, AERotatableBlockSchematic.class );
-					}
-					else if ( myBlock == cable )
-					{
-						schematicRegistry.registerSchematicBlock( myBlock, AECableSchematicTile.class );
-					}
-					else if ( def.entity() != null )
-					{
-						schematicRegistry.registerSchematicBlock( myBlock, AEGenericSchematicTile.class );
-					}
-				}
-			}
-			catch (Throwable t)
-			{
-				// :P
-			}
-		}
-	}
-
-	@Override
-	public void postInit()
-	{
-		this.registerPowerP2P();
-		this.registerItemP2P();
-		this.registerLiquidsP2P();
-	}
-
-	@Override
-	public IFacadePart createFacadePart(Block blk, int meta, ForgeDirection side)
+	public IFacadePart createFacadePart( Block blk, int meta, ForgeDirection side )
 	{
 		try
 		{
@@ -285,7 +212,7 @@ public final class BC extends BaseModule implements IBC
 
 			return new FacadePart( facade, side );
 		}
-		catch (Throwable ignored)
+		catch( Throwable ignored )
 		{
 
 		}
@@ -294,24 +221,24 @@ public final class BC extends BaseModule implements IBC
 	}
 
 	@Override
-	public IFacadePart createFacadePart(ItemStack fs, ForgeDirection side)
+	public IFacadePart createFacadePart( ItemStack fs, ForgeDirection side )
 	{
 		return new FacadePart( fs, side );
 	}
 
 	@Override
-	public ItemStack getTextureForFacade(ItemStack facade)
+	public ItemStack getTextureForFacade( ItemStack facade )
 	{
 		final Item maybeFacadeItem = facade.getItem();
 
-		if ( maybeFacadeItem instanceof buildcraft.api.facades.IFacadeItem)
+		if( maybeFacadeItem instanceof buildcraft.api.facades.IFacadeItem )
 		{
 			final buildcraft.api.facades.IFacadeItem facadeItem = (buildcraft.api.facades.IFacadeItem) maybeFacadeItem;
 
 			final Block[] blocks = facadeItem.getBlocksForFacade( facade );
 			final int[] metas = facadeItem.getMetaValuesForFacade( facade );
 
-			if ( blocks.length > 0 && metas.length > 0 )
+			if( blocks.length > 0 && metas.length > 0 )
 			{
 				return new ItemStack( blocks[0], 1, metas[0] );
 			}
@@ -327,11 +254,85 @@ public final class BC extends BaseModule implements IBC
 		{
 			return BuildCraftTransport.instance.pipeIconProvider.getIcon( PipeIconProvider.TYPE.PipeStructureCobblestone.ordinal() ); // Structure
 		}
-		catch (Throwable ignored)
+		catch( Throwable ignored )
 		{
 		}
 		return null;
 		// Pipe
 	}
 
+	@Override
+	public void init()
+	{
+		AEApi.instance().partHelper().registerNewLayer( "appeng.parts.layers.LayerIPipeConnection", "buildcraft.api.transport.IPipeConnection" );
+		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new BCPipeHandler() );
+
+		Blocks b = AEApi.instance().blocks();
+		this.addFacade( b.blockFluix.stack( 1 ) );
+		this.addFacade( b.blockQuartz.stack( 1 ) );
+		this.addFacade( b.blockQuartzChiseled.stack( 1 ) );
+		this.addFacade( b.blockQuartzPillar.stack( 1 ) );
+
+		try
+		{
+			this.initBuilderSupport();
+		}
+		catch( Throwable builderSupport )
+		{
+			// not supported?
+		}
+
+		Block skyStone = b.blockSkyStone.block();
+		if( skyStone != null )
+		{
+			this.addFacade( new ItemStack( skyStone, 1, 0 ) );
+			this.addFacade( new ItemStack( skyStone, 1, 1 ) );
+			this.addFacade( new ItemStack( skyStone, 1, 2 ) );
+			this.addFacade( new ItemStack( skyStone, 1, 3 ) );
+		}
+	}
+
+	private void initBuilderSupport()
+	{
+		final ISchematicRegistry schematicRegistry = BuilderAPI.schematicRegistry;
+
+		Blocks blocks = AEApi.instance().blocks();
+		Block cable = blocks.blockMultiPart.block();
+		for( Field f : blocks.getClass().getFields() )
+		{
+			AEItemDefinition def;
+			try
+			{
+				def = (AEItemDefinition) f.get( blocks );
+				if( def != null )
+				{
+					Block myBlock = def.block();
+					if( myBlock instanceof IOrientableBlock && ( (IOrientableBlock) myBlock ).usesMetadata() && def.entity() == null )
+					{
+						schematicRegistry.registerSchematicBlock( myBlock, AERotatableBlockSchematic.class );
+					}
+					else if( myBlock == cable )
+					{
+						schematicRegistry.registerSchematicBlock( myBlock, AECableSchematicTile.class );
+					}
+					else if( def.entity() != null )
+					{
+						schematicRegistry.registerSchematicBlock( myBlock, AEGenericSchematicTile.class );
+					}
+				}
+			}
+			catch( Throwable t )
+			{
+				// :P
+			}
+		}
+	}
+
+	@Override
+	public void postInit()
+	{
+		this.registerPowerP2P();
+		this.registerItemP2P();
+		this.registerLiquidsP2P();
+	}
 }

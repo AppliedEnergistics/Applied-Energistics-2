@@ -18,11 +18,12 @@
 
 package appeng.recipes.handlers;
 
+
 public class Press extends Inscribe
 {
 
-	public Press() {
+	public Press()
+	{
 		this.usePlates = true;
 	}
-
 }

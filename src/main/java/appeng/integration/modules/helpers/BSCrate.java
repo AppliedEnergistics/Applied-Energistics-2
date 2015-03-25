@@ -18,6 +18,7 @@
 
 package appeng.integration.modules.helpers;
 
+
 import net.mcft.copy.betterstorage.api.crate.ICrateStorage;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -30,40 +31,36 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.item.AEItemStack;
 
+
 public class BSCrate implements IMEInventory<IAEItemStack>
 {
 
 	final ICrateStorage cs;
 	final ForgeDirection side;
 
-	public BSCrate(Object object, ForgeDirection d) {
+	public BSCrate( Object object, ForgeDirection d )
+	{
 		this.cs = (ICrateStorage) object;
 		this.side = d;
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public IAEItemStack injectItems( IAEItemStack input, Actionable mode, BaseActionSource src )
 	{
-		return StorageChannel.ITEMS;
-	}
-
-	@Override
-	public IAEItemStack injectItems(IAEItemStack input, Actionable mode, BaseActionSource src)
-	{
-		if ( mode == Actionable.SIMULATE )
+		if( mode == Actionable.SIMULATE )
 			return null;
 
 		ItemStack failed = this.cs.insertItems( input.getItemStack() );
-		if ( failed == null )
+		if( failed == null )
 			return null;
 		input.setStackSize( failed.stackSize );
 		return input;
 	}
 
 	@Override
-	public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src)
+	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
 	{
-		if ( mode == Actionable.SIMULATE )
+		if( mode == Actionable.SIMULATE )
 		{
 			int howMany = this.cs.getItemCount( request.getItemStack() );
 			return howMany > request.getStackSize() ? request : request.copy().setStackSize( howMany );
@@ -74,13 +71,18 @@ public class BSCrate implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IItemList getAvailableItems(IItemList out)
+	public IItemList getAvailableItems( IItemList out )
 	{
-		for (ItemStack is : this.cs.getContents())
+		for( ItemStack is : this.cs.getContents() )
 		{
 			out.add( AEItemStack.create( is ) );
 		}
 		return out;
 	}
 
+	@Override
+	public StorageChannel getChannel()
+	{
+		return StorageChannel.ITEMS;
+	}
 }

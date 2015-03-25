@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -28,6 +29,7 @@ import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 
+
 public class PacketProgressBar extends AppEngPacket
 {
 
@@ -35,30 +37,14 @@ public class PacketProgressBar extends AppEngPacket
 	final long value;
 
 	// automatic.
-	public PacketProgressBar(ByteBuf stream)
+	public PacketProgressBar( ByteBuf stream )
 	{
 		this.id = stream.readShort();
 		this.value = stream.readLong();
 	}
 
-	@Override
-	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
-	{
-		Container c = player.openContainer;
-		if ( c instanceof AEBaseContainer )
-			((AEBaseContainer) c).updateFullProgressBar( this.id, this.value );
-	}
-
-	@Override
-	public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player)
-	{
-		Container c = player.openContainer;
-		if ( c instanceof AEBaseContainer )
-			((AEBaseContainer) c).updateFullProgressBar( this.id, this.value );
-	}
-
 	// api
-	public PacketProgressBar(int short_id, long value)
+	public PacketProgressBar( int short_id, long value )
 	{
 		this.id = (short) short_id;
 		this.value = value;
@@ -70,5 +56,21 @@ public class PacketProgressBar extends AppEngPacket
 		data.writeLong( value );
 
 		this.configureWrite( data );
+	}
+
+	@Override
+	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	{
+		Container c = player.openContainer;
+		if( c instanceof AEBaseContainer )
+			( (AEBaseContainer) c ).updateFullProgressBar( this.id, this.value );
+	}
+
+	@Override
+	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	{
+		Container c = player.openContainer;
+		if( c instanceof AEBaseContainer )
+			( (AEBaseContainer) c ).updateFullProgressBar( this.id, this.value );
 	}
 }

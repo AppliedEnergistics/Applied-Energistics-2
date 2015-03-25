@@ -18,6 +18,7 @@
 
 package appeng.tile.grid;
 
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -29,22 +30,23 @@ import appeng.tile.AEBaseInvTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 
+
 public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionHost, IGridProxyable
 {
 
-	@TileEvent(TileEventType.WORLD_NBT_READ)
-	public void readFromNBT_AENetwork(NBTTagCompound data)
+	protected final AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", this.getItemFromTile( this ), true );
+
+	@TileEvent( TileEventType.WORLD_NBT_READ )
+	public void readFromNBT_AENetwork( NBTTagCompound data )
 	{
 		this.gridProxy.readFromNBT( data );
 	}
 
-	@TileEvent(TileEventType.WORLD_NBT_WRITE)
-	public void writeToNBT_AENetwork(NBTTagCompound data)
+	@TileEvent( TileEventType.WORLD_NBT_WRITE )
+	public void writeToNBT_AENetwork( NBTTagCompound data )
 	{
 		this.gridProxy.writeToNBT( data );
 	}
-
-	protected final AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", this.getItemFromTile( this ), true );
 
 	@Override
 	public AENetworkProxy getProxy()
@@ -53,16 +55,15 @@ public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionH
 	}
 
 	@Override
-	public IGridNode getGridNode(ForgeDirection dir)
+	public void gridChanged()
 	{
-		return this.gridProxy.getNode();
+
 	}
 
 	@Override
-	public void onReady()
+	public IGridNode getGridNode( ForgeDirection dir )
 	{
-		super.onReady();
-		this.gridProxy.onReady();
+		return this.gridProxy.getNode();
 	}
 
 	@Override
@@ -73,10 +74,10 @@ public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionH
 	}
 
 	@Override
-	public void validate()
+	public void onReady()
 	{
-		super.validate();
-		this.gridProxy.validate();
+		super.onReady();
+		this.gridProxy.onReady();
 	}
 
 	@Override
@@ -87,9 +88,10 @@ public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionH
 	}
 
 	@Override
-	public void gridChanged()
+	public void validate()
 	{
-
+		super.validate();
+		this.gridProxy.validate();
 	}
 
 	@Override

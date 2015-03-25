@@ -18,6 +18,7 @@
 
 package appeng.me.helpers;
 
+
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -25,34 +26,21 @@ import com.google.common.collect.Multimap;
 
 import appeng.api.storage.data.IAEStack;
 
+
 public class GenericInterestManager<T>
 {
-
-	class SavedTransactions
-	{
-
-		public final boolean put;
-		public final IAEStack stack;
-		public final T iw;
-
-		public SavedTransactions(boolean putOperation, IAEStack myStack, T watcher) {
-			this.put = putOperation;
-			this.stack = myStack;
-			this.iw = watcher;
-		}
-	}
 
 	private final Multimap<IAEStack, T> container;
 	private LinkedList<SavedTransactions> transactions = null;
 	private int transDepth = 0;
-
-	public GenericInterestManager(Multimap<IAEStack, T> interests) {
+	public GenericInterestManager( Multimap<IAEStack, T> interests )
+	{
 		this.container = interests;
 	}
 
 	public void enableTransactions()
 	{
-		if ( this.transDepth == 0 )
+		if( this.transDepth == 0 )
 			this.transactions = new LinkedList<SavedTransactions>();
 
 		this.transDepth++;
@@ -62,14 +50,14 @@ public class GenericInterestManager<T>
 	{
 		this.transDepth--;
 
-		if ( this.transDepth == 0 )
+		if( this.transDepth == 0 )
 		{
 			LinkedList<SavedTransactions> myActions = this.transactions;
 			this.transactions = null;
 
-			for (SavedTransactions t : myActions)
+			for( SavedTransactions t : myActions )
 			{
-				if ( t.put )
+				if( t.put )
 					this.put( t.stack, t.iw );
 				else
 					this.remove( t.stack, t.iw );
@@ -77,19 +65,9 @@ public class GenericInterestManager<T>
 		}
 	}
 
-	public boolean containsKey(IAEStack stack)
+	public boolean put( IAEStack stack, T iw )
 	{
-		return this.container.containsKey( stack );
-	}
-
-	public Collection<T> get(IAEStack stack)
-	{
-		return this.container.get( stack );
-	}
-
-	public boolean put(IAEStack stack, T iw)
-	{
-		if ( this.transactions != null )
+		if( this.transactions != null )
 		{
 			this.transactions.add( new SavedTransactions( true, stack, iw ) );
 			return true;
@@ -98,9 +76,9 @@ public class GenericInterestManager<T>
 			return this.container.put( stack, iw );
 	}
 
-	public boolean remove(IAEStack stack, T iw)
+	public boolean remove( IAEStack stack, T iw )
 	{
-		if ( this.transactions != null )
+		if( this.transactions != null )
 		{
 			this.transactions.add( new SavedTransactions( true, stack, iw ) );
 			return true;
@@ -109,4 +87,29 @@ public class GenericInterestManager<T>
 			return this.container.remove( stack, iw );
 	}
 
+	public boolean containsKey( IAEStack stack )
+	{
+		return this.container.containsKey( stack );
+	}
+
+	public Collection<T> get( IAEStack stack )
+	{
+		return this.container.get( stack );
+	}
+
+
+	class SavedTransactions
+	{
+
+		public final boolean put;
+		public final IAEStack stack;
+		public final T iw;
+
+		public SavedTransactions( boolean putOperation, IAEStack myStack, T watcher )
+		{
+			this.put = putOperation;
+			this.stack = myStack;
+			this.iw = watcher;
+		}
+	}
 }

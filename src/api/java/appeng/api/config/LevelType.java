@@ -23,6 +23,7 @@
 
 package appeng.api.config;
 
+
 public enum LevelType
 {
 

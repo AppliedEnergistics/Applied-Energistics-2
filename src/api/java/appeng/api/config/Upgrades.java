@@ -59,11 +59,9 @@ public enum Upgrades
 		return this.supportedMax;
 	}
 
-
-
 	public void registerItem( AEItemDefinition myItem, int maxSupported )
 	{
-		if ( myItem != null )
+		if( myItem != null )
 		{
 			final ItemStack stack = myItem.stack( 1 );
 
@@ -73,7 +71,7 @@ public enum Upgrades
 
 	public void registerItem( ItemStack stack, int maxSupported )
 	{
-		if ( stack != null )
+		if( stack != null )
 		{
 			this.supportedMax.put( stack, maxSupported );
 		}

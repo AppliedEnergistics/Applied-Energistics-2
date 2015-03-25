@@ -18,6 +18,7 @@
 
 package appeng.util.iterators;
 
+
 import java.util.Iterator;
 
 import net.minecraftforge.common.util.ForgeDirection;
@@ -25,12 +26,14 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 
+
 public class ProxyNodeIterator implements Iterator<IGridNode>
 {
 
 	final Iterator<IGridHost> hosts;
 
-	public ProxyNodeIterator(Iterator<IGridHost> hosts) {
+	public ProxyNodeIterator( Iterator<IGridHost> hosts )
+	{
 		this.hosts = hosts;
 	}
 
@@ -52,5 +55,4 @@ public class ProxyNodeIterator implements Iterator<IGridNode>
 	{
 		throw new RuntimeException( "Not implemented." );
 	}
-
 }

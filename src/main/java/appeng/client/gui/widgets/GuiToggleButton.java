@@ -59,7 +59,7 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 	@Override
 	public void drawButton( Minecraft par1Minecraft, int par2, int par3 )
 	{
-		if ( this.visible )
+		if( this.visible )
 		{
 			int iconIndex = this.getIconIndex();
 
@@ -67,7 +67,7 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 			par1Minecraft.renderEngine.bindTexture( ExtraBlockTextures.GuiTexture( "guis/states.png" ) );
 			this.field_146123_n = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
 
-			int uv_y = ( int ) Math.floor( iconIndex / 16 );
+			int uv_y = (int) Math.floor( iconIndex / 16 );
 			int uv_x = iconIndex - uv_y * 16;
 
 			this.drawTexturedModalRect( this.xPosition, this.yPosition, 256 - 16, 256 - 16, 16, 16 );
@@ -84,23 +84,23 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 	@Override
 	public String getMessage()
 	{
-		if ( this.displayName != null )
+		if( this.displayName != null )
 		{
 			String name = StatCollector.translateToLocal( this.displayName );
 			String value = StatCollector.translateToLocal( this.displayHint );
 
-			if ( name == null || name.isEmpty() )
+			if( name == null || name.isEmpty() )
 				name = this.displayName;
-			if ( value == null || value.isEmpty() )
+			if( value == null || value.isEmpty() )
 				value = this.displayHint;
 
 			value = value.replace( "\\n", "\n" );
 			StringBuilder sb = new StringBuilder( value );
 
 			int i = sb.lastIndexOf( "\n" );
-			if ( i <= 0 )
+			if( i <= 0 )
 				i = 0;
-			while ( i + 30 < sb.length() && ( i = sb.lastIndexOf( " ", i + 30 ) ) != -1 )
+			while( i + 30 < sb.length() && ( i = sb.lastIndexOf( " ", i + 30 ) ) != -1 )
 			{
 				sb.replace( i, i + 1, "\n" );
 			}

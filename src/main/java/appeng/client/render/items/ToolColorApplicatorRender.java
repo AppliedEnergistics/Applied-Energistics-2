@@ -18,6 +18,7 @@
 
 package appeng.client.render.items;
 
+
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.ItemRenderer;
@@ -30,23 +31,24 @@ import appeng.api.util.AEColor;
 import appeng.client.texture.ExtraItemTextures;
 import appeng.items.tools.powered.ToolColorApplicator;
 
+
 public class ToolColorApplicatorRender implements IItemRenderer
 {
 
 	@Override
-	public boolean handleRenderType(ItemStack item, ItemRenderType type)
+	public boolean handleRenderType( ItemStack item, ItemRenderType type )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper)
+	public boolean shouldUseRenderHelper( ItemRenderType type, ItemStack item, ItemRendererHelper helper )
 	{
 		return helper == ItemRendererHelper.ENTITY_BOBBING || helper == ItemRendererHelper.ENTITY_ROTATION;
 	}
 
 	@Override
-	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
+	public void renderItem( ItemRenderType type, ItemStack item, Object... data )
 	{
 		IIcon par2Icon = item.getIconIndex();
 
@@ -60,7 +62,7 @@ public class ToolColorApplicatorRender implements IItemRenderer
 		GL11.glPushMatrix();
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 
-		if ( type == ItemRenderType.INVENTORY )
+		if( type == ItemRenderType.INVENTORY )
 		{
 			GL11.glColor4f( 1, 1, 1, 1.0F );
 			GL11.glScalef( 16F, 16F, 10F );
@@ -78,9 +80,9 @@ public class ToolColorApplicatorRender implements IItemRenderer
 		}
 		else
 		{
-			if ( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
+			if( type == ItemRenderType.EQUIPPED_FIRST_PERSON )
 				GL11.glTranslatef( 0.0F, 0.0F, 0.0F );
-			else if ( type == ItemRenderType.EQUIPPED )
+			else if( type == ItemRenderType.EQUIPPED )
 				GL11.glTranslatef( 0.0F, 0.0F, 0.0F );
 			else
 				GL11.glTranslatef( -0.5F, -0.3F, 0.01F );
@@ -98,15 +100,15 @@ public class ToolColorApplicatorRender implements IItemRenderer
 		IIcon light = ExtraItemTextures.ToolColorApplicatorTip_Light.getIcon();
 
 		GL11.glScalef( 1F / 16F, 1F / 16F, 1F );
-		if ( type != ItemRenderType.INVENTORY )
+		if( type != ItemRenderType.INVENTORY )
 			GL11.glTranslatef( 2, 0, 0 );
 		GL11.glDisable( GL11.GL_LIGHTING );
 
 		AEColor col = null;
 
-		col = ((ToolColorApplicator) item.getItem()).getActiveColor( item );
+		col = ( (ToolColorApplicator) item.getItem() ).getActiveColor( item );
 
-		if ( col != null )
+		if( col != null )
 		{
 			tessellator.startDrawingQuads();
 

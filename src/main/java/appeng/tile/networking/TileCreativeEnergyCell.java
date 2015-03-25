@@ -18,6 +18,7 @@
 
 package appeng.tile.networking;
 
+
 import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.config.AccessRestriction;
@@ -27,29 +28,25 @@ import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.util.AECableType;
 import appeng.tile.grid.AENetworkTile;
 
+
 public class TileCreativeEnergyCell extends AENetworkTile implements IAEPowerStorage
 {
 
-	public TileCreativeEnergyCell() {
+	public TileCreativeEnergyCell()
+	{
 		this.gridProxy.setIdlePowerUsage( 0 );
 	}
 
 	@Override
-	public AECableType getCableConnectionType(ForgeDirection dir)
+	public AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.COVERED;
 	}
 
 	@Override
-	public double injectAEPower(double amt, Actionable mode)
+	public double injectAEPower( double amt, Actionable mode )
 	{
 		return 0;
-	}
-
-	@Override
-	public double extractAEPower(double amt, Actionable mode, PowerMultiplier pm)
-	{
-		return amt;
 	}
 
 	@Override
@@ -76,4 +73,9 @@ public class TileCreativeEnergyCell extends AENetworkTile implements IAEPowerSto
 		return AccessRestriction.READ_WRITE;
 	}
 
+	@Override
+	public double extractAEPower( double amt, Actionable mode, PowerMultiplier pm )
+	{
+		return amt;
+	}
 }

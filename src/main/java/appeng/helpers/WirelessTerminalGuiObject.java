@@ -18,6 +18,7 @@
 
 package appeng.helpers;
 
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -49,29 +50,23 @@ import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.tile.networking.TileWireless;
 
+
 public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 {
 
+	public final ItemStack effectiveItem;
 	final IWirelessTermHandler wth;
 	final String encryptionKey;
-
+	final EntityPlayer myPlayer;
 	IGrid targetGrid;
 	IStorageGrid sg;
 	IMEMonitor<IAEItemStack> itemStorage;
 	IWirelessAccessPoint myWap;
-
 	double sqRange = Double.MAX_VALUE;
 	double myRange = Double.MAX_VALUE;
 
-	final EntityPlayer myPlayer;
-	public final ItemStack effectiveItem;
-
-	public double getRange()
+	public WirelessTerminalGuiObject( IWirelessTermHandler wh, ItemStack is, EntityPlayer ep, World w, int x, int y, int z )
 	{
-		return this.myRange;
-	}
-
-	public WirelessTerminalGuiObject(IWirelessTermHandler wh, ItemStack is, EntityPlayer ep, World w, int x, int y, int z) {
 		this.encryptionKey = wh.getEncryptionKey( is );
 		this.effectiveItem = is;
 		this.myPlayer = ep;
@@ -84,90 +79,36 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 			long encKey = Long.parseLong( this.encryptionKey );
 			obj = AEApi.instance().registries().locatable().getLocatableBy( encKey );
 		}
-		catch (NumberFormatException err)
+		catch( NumberFormatException err )
 		{
 			// :P
 		}
 
-		if ( obj instanceof IGridHost )
+		if( obj instanceof IGridHost )
 		{
-			IGridNode n = ((IGridHost) obj).getGridNode( ForgeDirection.UNKNOWN );
-			if ( n != null )
+			IGridNode n = ( (IGridHost) obj ).getGridNode( ForgeDirection.UNKNOWN );
+			if( n != null )
 			{
 				this.targetGrid = n.getGrid();
-				if ( this.targetGrid != null )
+				if( this.targetGrid != null )
 				{
 					this.sg = this.targetGrid.getCache( IStorageGrid.class );
-					if ( this.sg != null )
+					if( this.sg != null )
 						this.itemStorage = this.sg.getItemInventory();
 				}
 			}
 		}
 	}
 
-	public boolean rangeCheck()
+	public double getRange()
 	{
-		this.sqRange = this.myRange = Double.MAX_VALUE;
-
-		if ( this.targetGrid != null && this.itemStorage != null )
-		{
-			if ( this.myWap != null )
-			{
-				if ( this.myWap.getGrid() == this.targetGrid )
-				{
-					if ( this.testWap( this.myWap ) )
-						return true;
-				}
-				return false;
-			}
-
-			IMachineSet tw = this.targetGrid.getMachines( TileWireless.class );
-
-			this.myWap = null;
-
-			for (IGridNode n : tw)
-			{
-				IWirelessAccessPoint wap = (IWirelessAccessPoint) n.getMachine();
-				if ( this.testWap( wap ) )
-					this.myWap = wap;
-			}
-
-			return this.myWap != null;
-		}
-		return false;
-	}
-
-	private boolean testWap(IWirelessAccessPoint wap)
-	{
-		double rangeLimit = wap.getRange();
-		rangeLimit *= rangeLimit;
-
-		DimensionalCoord dc = wap.getLocation();
-
-		if ( dc.getWorld() == this.myPlayer.worldObj )
-		{
-			double offX = dc.x - this.myPlayer.posX;
-			double offY = dc.y - this.myPlayer.posY;
-			double offZ = dc.z - this.myPlayer.posZ;
-
-			double r = offX * offX + offY * offY + offZ * offZ;
-			if ( r < rangeLimit && this.sqRange > r )
-			{
-				if ( wap.isActive() )
-				{
-					this.sqRange = r;
-					this.myRange = Math.sqrt( r );
-					return true;
-				}
-			}
-		}
-		return false;
+		return this.myRange;
 	}
 
 	@Override
 	public IMEMonitor<IAEItemStack> getItemInventory()
 	{
-		if ( this.sg == null )
+		if( this.sg == null )
 			return null;
 		return this.sg.getItemInventory();
 	}
@@ -175,29 +116,29 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 	@Override
 	public IMEMonitor<IAEFluidStack> getFluidInventory()
 	{
-		if ( this.sg == null )
+		if( this.sg == null )
 			return null;
 		return this.sg.getFluidInventory();
 	}
 
 	@Override
-	public void addListener(IMEMonitorHandlerReceiver<IAEItemStack> l, Object verificationToken)
+	public void addListener( IMEMonitorHandlerReceiver<IAEItemStack> l, Object verificationToken )
 	{
-		if ( this.itemStorage != null )
+		if( this.itemStorage != null )
 			this.itemStorage.addListener( l, verificationToken );
 	}
 
 	@Override
-	public void removeListener(IMEMonitorHandlerReceiver<IAEItemStack> l)
+	public void removeListener( IMEMonitorHandlerReceiver<IAEItemStack> l )
 	{
-		if ( this.itemStorage != null )
+		if( this.itemStorage != null )
 			this.itemStorage.removeListener( l );
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems(IItemList out)
+	public IItemList<IAEItemStack> getAvailableItems( IItemList out )
 	{
-		if ( this.itemStorage != null )
+		if( this.itemStorage != null )
 			return this.itemStorage.getAvailableItems( out );
 		return out;
 	}
@@ -205,7 +146,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 	@Override
 	public IItemList<IAEItemStack> getStorageList()
 	{
-		if ( this.itemStorage != null )
+		if( this.itemStorage != null )
 			return this.itemStorage.getStorageList();
 		return null;
 	}
@@ -213,23 +154,23 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 	@Override
 	public AccessRestriction getAccess()
 	{
-		if ( this.itemStorage != null )
+		if( this.itemStorage != null )
 			return this.itemStorage.getAccess();
 		return AccessRestriction.NO_ACCESS;
 	}
 
 	@Override
-	public boolean isPrioritized(IAEItemStack input)
+	public boolean isPrioritized( IAEItemStack input )
 	{
-		if ( this.itemStorage != null )
+		if( this.itemStorage != null )
 			return this.itemStorage.isPrioritized( input );
 		return false;
 	}
 
 	@Override
-	public boolean canAccept(IAEItemStack input)
+	public boolean canAccept( IAEItemStack input )
 	{
-		if ( this.itemStorage != null )
+		if( this.itemStorage != null )
 			return this.itemStorage.canAccept( input );
 		return false;
 	}
@@ -237,7 +178,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 	@Override
 	public int getPriority()
 	{
-		if ( this.itemStorage != null )
+		if( this.itemStorage != null )
 			return this.itemStorage.getPriority();
 		return 0;
 	}
@@ -245,23 +186,29 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 	@Override
 	public int getSlot()
 	{
-		if ( this.itemStorage != null )
+		if( this.itemStorage != null )
 			return this.itemStorage.getSlot();
 		return 0;
 	}
 
 	@Override
-	public IAEItemStack injectItems(IAEItemStack input, Actionable type, BaseActionSource src)
+	public boolean validForPass( int i )
 	{
-		if ( this.itemStorage != null )
+		return this.itemStorage.validForPass( i );
+	}
+
+	@Override
+	public IAEItemStack injectItems( IAEItemStack input, Actionable type, BaseActionSource src )
+	{
+		if( this.itemStorage != null )
 			return this.itemStorage.injectItems( input, type, src );
 		return input;
 	}
 
 	@Override
-	public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src)
+	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
 	{
-		if ( this.itemStorage != null )
+		if( this.itemStorage != null )
 			return this.itemStorage.extractItems( request, mode, src );
 		return null;
 	}
@@ -269,17 +216,17 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 	@Override
 	public StorageChannel getChannel()
 	{
-		if ( this.itemStorage != null )
+		if( this.itemStorage != null )
 			return this.itemStorage.getChannel();
 		return StorageChannel.ITEMS;
 	}
 
 	@Override
-	public double extractAEPower(double amt, Actionable mode, PowerMultiplier usePowerMultiplier)
+	public double extractAEPower( double amt, Actionable mode, PowerMultiplier usePowerMultiplier )
 	{
-		if ( this.wth != null && this.effectiveItem != null )
+		if( this.wth != null && this.effectiveItem != null )
 		{
-			if ( mode == Actionable.SIMULATE )
+			if( mode == Actionable.SIMULATE )
 				return this.wth.hasPower( this.myPlayer, amt, this.getItemStack() ) ? amt : 0;
 			return this.wth.usePower( this.myPlayer, amt, this.getItemStack() ) ? amt : 0;
 		}
@@ -299,13 +246,13 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 	}
 
 	@Override
-	public IGridNode getGridNode(ForgeDirection dir)
+	public IGridNode getGridNode( ForgeDirection dir )
 	{
 		return this.getActionableNode();
 	}
 
 	@Override
-	public AECableType getCableConnectionType(ForgeDirection dir)
+	public AECableType getCableConnectionType( ForgeDirection dir )
 	{
 		return AECableType.NONE;
 	}
@@ -320,15 +267,67 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost
 	public IGridNode getActionableNode()
 	{
 		this.rangeCheck();
-		if ( this.myWap != null )
+		if( this.myWap != null )
 			return this.myWap.getActionableNode();
 		return null;
 	}
 
-	@Override
-	public boolean validForPass(int i)
+	public boolean rangeCheck()
 	{
-		return this.itemStorage.validForPass( i );
+		this.sqRange = this.myRange = Double.MAX_VALUE;
+
+		if( this.targetGrid != null && this.itemStorage != null )
+		{
+			if( this.myWap != null )
+			{
+				if( this.myWap.getGrid() == this.targetGrid )
+				{
+					if( this.testWap( this.myWap ) )
+						return true;
+				}
+				return false;
+			}
+
+			IMachineSet tw = this.targetGrid.getMachines( TileWireless.class );
+
+			this.myWap = null;
+
+			for( IGridNode n : tw )
+			{
+				IWirelessAccessPoint wap = (IWirelessAccessPoint) n.getMachine();
+				if( this.testWap( wap ) )
+					this.myWap = wap;
+			}
+
+			return this.myWap != null;
+		}
+		return false;
 	}
 
+	private boolean testWap( IWirelessAccessPoint wap )
+	{
+		double rangeLimit = wap.getRange();
+		rangeLimit *= rangeLimit;
+
+		DimensionalCoord dc = wap.getLocation();
+
+		if( dc.getWorld() == this.myPlayer.worldObj )
+		{
+			double offX = dc.x - this.myPlayer.posX;
+			double offY = dc.y - this.myPlayer.posY;
+			double offZ = dc.z - this.myPlayer.posZ;
+
+			double r = offX * offX + offY * offY + offZ * offZ;
+			if( r < rangeLimit && this.sqRange > r )
+			{
+				if( wap.isActive() )
+				{
+					this.sqRange = r;
+					this.myRange = Math.sqrt( r );
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

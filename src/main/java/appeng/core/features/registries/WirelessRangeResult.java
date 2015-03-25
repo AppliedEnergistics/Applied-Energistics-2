@@ -18,17 +18,18 @@
 
 package appeng.core.features.registries;
 
+
 import net.minecraft.tileentity.TileEntity;
+
 
 public class WirelessRangeResult
 {
 
-	public WirelessRangeResult(TileEntity t, float d) {
+	final public float dist;
+	final public TileEntity te;
+	public WirelessRangeResult( TileEntity t, float d )
+	{
 		this.dist = d;
 		this.te = t;
 	}
-
-	final public float dist;
-	final public TileEntity te;
-
 }

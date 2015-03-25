@@ -55,7 +55,7 @@ final public class EntitySingularity extends AEBaseEntityItem
 	@Override
 	public boolean attackEntityFrom( DamageSource src, float dmg )
 	{
-		if ( src.isExplosion() )
+		if( src.isExplosion() )
 		{
 			this.doExplosion();
 			return false;
@@ -66,29 +66,29 @@ final public class EntitySingularity extends AEBaseEntityItem
 
 	public void doExplosion()
 	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			return;
 
-		if ( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldSingularity ) )
+		if( !AEConfig.instance.isFeatureEnabled( AEFeature.inWorldSingularity ) )
 			return;
 
 		ItemStack item = this.getEntityItem();
-		if ( AEApi.instance().materials().materialSingularity.sameAsStack( item ) )
+		if( AEApi.instance().materials().materialSingularity.sameAsStack( item ) )
 		{
 			AxisAlignedBB region = AxisAlignedBB.getBoundingBox( this.posX - 4, this.posY - 4, this.posZ - 4, this.posX + 4, this.posY + 4, this.posZ + 4 );
 			List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
 
-			for ( Entity e : l )
+			for( Entity e : l )
 			{
-				if ( e instanceof EntityItem )
+				if( e instanceof EntityItem )
 				{
-					ItemStack other = ( ( EntityItem ) e ).getEntityItem();
-					if ( other != null )
+					ItemStack other = ( (EntityItem) e ).getEntityItem();
+					if( other != null )
 					{
 						boolean matches = false;
-						for ( ItemStack is : OreDictionary.getOres( "dustEnder" ) )
+						for( ItemStack is : OreDictionary.getOres( "dustEnder" ) )
 						{
-							if ( OreDictionary.itemMatches( other, is, false ) )
+							if( OreDictionary.itemMatches( other, is, false ) )
 							{
 								matches = true;
 								break;
@@ -96,11 +96,11 @@ final public class EntitySingularity extends AEBaseEntityItem
 						}
 
 						// check... other name.
-						if ( !matches )
+						if( !matches )
 						{
-							for ( ItemStack is : OreDictionary.getOres( "dustEnderPearl" ) )
+							for( ItemStack is : OreDictionary.getOres( "dustEnderPearl" ) )
 							{
-								if ( OreDictionary.itemMatches( other, is, false ) )
+								if( OreDictionary.itemMatches( other, is, false ) )
 								{
 									matches = true;
 									break;
@@ -108,12 +108,12 @@ final public class EntitySingularity extends AEBaseEntityItem
 							}
 						}
 
-						if ( matches )
+						if( matches )
 						{
-							while ( item.stackSize > 0 && other.stackSize > 0 )
+							while( item.stackSize > 0 && other.stackSize > 0 )
 							{
 								other.stackSize--;
-								if ( other.stackSize == 0 )
+								if( other.stackSize == 0 )
 									e.setDead();
 
 								ItemStack Output = AEApi.instance().materials().materialQESingularity.stack( 2 );
@@ -124,7 +124,7 @@ final public class EntitySingularity extends AEBaseEntityItem
 								this.worldObj.spawnEntityInWorld( new EntitySingularity( this.worldObj, this.posX, this.posY, this.posZ, Output ) );
 							}
 
-							if ( item.stackSize <= 0 )
+							if( item.stackSize <= 0 )
 								this.setDead();
 						}
 					}

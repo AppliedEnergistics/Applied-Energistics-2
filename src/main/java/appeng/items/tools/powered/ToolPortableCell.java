@@ -23,8 +23,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -33,6 +31,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import com.google.common.base.Optional;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -61,16 +61,9 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 {
 	public ToolPortableCell()
 	{
-		super( ToolPortableCell.class, Optional.<String> absent() );
+		super( ToolPortableCell.class, Optional.<String>absent() );
 		this.setFeature( EnumSet.of( AEFeature.PortableCell, AEFeature.StorageCells, AEFeature.PoweredTools ) );
 		this.maxStoredPower = AEConfig.instance.portableCellBattery;
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public boolean isFull3D()
-	{
-		return false;
 	}
 
 	@Override
@@ -80,6 +73,13 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 		return item;
 	}
 
+	@SideOnly( Side.CLIENT )
+	@Override
+	public boolean isFull3D()
+	{
+		return false;
+	}
+
 	@Override
 	public void addCheckedInformation( ItemStack stack, EntityPlayer player, List<String> lines, boolean displayAdditionalInformation )
 	{
@@ -87,10 +87,10 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 
 		IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
 
-		if ( cdi instanceof CellInventoryHandler )
+		if( cdi instanceof CellInventoryHandler )
 		{
-			ICellInventory cd = ( ( ICellInventoryHandler ) cdi ).getCellInv();
-			if ( cd != null )
+			ICellInventory cd = ( (ICellInventoryHandler) cdi ).getCellInv();
+			if( cd != null )
 			{
 				lines.add( cd.getUsedBytes() + " " + GuiText.Of.getLocal() + ' ' + cd.getTotalBytes() + ' ' + GuiText.BytesUsed.getLocal() );
 				lines.add( cd.getStoredItemTypes() + " " + GuiText.Of.getLocal() + ' ' + cd.getTotalItemTypes() + ' ' + GuiText.Types.getLocal() );
@@ -172,7 +172,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 		{
 			return FuzzyMode.valueOf( fz );
 		}
-		catch ( Throwable t )
+		catch( Throwable t )
 		{
 			return FuzzyMode.IGNORE_ALL;
 		}

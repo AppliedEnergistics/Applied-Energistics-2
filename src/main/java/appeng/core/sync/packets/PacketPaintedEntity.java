@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -29,6 +30,7 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.hooks.TickHandler;
 import appeng.hooks.TickHandler.PlayerColor;
 
+
 public class PacketPaintedEntity extends AppEngPacket
 {
 
@@ -37,30 +39,31 @@ public class PacketPaintedEntity extends AppEngPacket
 	private int ticks;
 
 	// automatic.
-	public PacketPaintedEntity(ByteBuf stream)
+	public PacketPaintedEntity( ByteBuf stream )
 	{
 		this.entityId = stream.readInt();
 		this.myColor = AEColor.values()[stream.readByte()];
 		this.ticks = stream.readInt();
 	}
 
-	@Override
-	public void clientPacketData(INetworkInfo network, AppEngPacket packet, EntityPlayer player)
-	{
-		PlayerColor pc = new PlayerColor( this.entityId, this.myColor, this.ticks );
-		TickHandler.INSTANCE.getPlayerColors().put( this.entityId, pc );
-	}
-
 	// api
-	public PacketPaintedEntity(int myEntity, AEColor myColor, int ticksLeft) {
+	public PacketPaintedEntity( int myEntity, AEColor myColor, int ticksLeft )
+	{
 
 		ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( this.entityId = myEntity );
-		data.writeByte( (this.myColor = myColor).ordinal() );
+		data.writeByte( ( this.myColor = myColor ).ordinal() );
 		data.writeInt( ticksLeft );
 
 		this.configureWrite( data );
+	}
+
+	@Override
+	public void clientPacketData( INetworkInfo network, AppEngPacket packet, EntityPlayer player )
+	{
+		PlayerColor pc = new PlayerColor( this.entityId, this.myColor, this.ticks );
+		TickHandler.INSTANCE.getPlayerColors().put( this.entityId, pc );
 	}
 }

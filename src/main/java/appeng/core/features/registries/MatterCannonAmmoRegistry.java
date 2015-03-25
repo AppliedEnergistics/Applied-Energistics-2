@@ -18,6 +18,7 @@
 
 package appeng.core.features.registries;
 
+
 import java.util.HashMap;
 
 import net.minecraft.init.Items;
@@ -28,29 +29,22 @@ import appeng.recipes.ores.IOreListener;
 import appeng.recipes.ores.OreDictionaryHandler;
 import appeng.util.Platform;
 
+
 public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmoRegistry
 {
 
 	private final HashMap<ItemStack, Double> DamageModifiers = new HashMap<ItemStack, Double>();
 
-	@Override
-	public void registerAmmo(ItemStack ammo, double weight)
+	public MatterCannonAmmoRegistry()
 	{
-		this.DamageModifiers.put( ammo, weight );
-	}
-
-	private void considerItem(String ore, ItemStack item, String Name, double weight)
-	{
-		if ( ore.equals( "berry" + Name ) || ore.equals( "nugget" + Name ) )
-		{
-			this.registerAmmo( item, weight );
-		}
+		OreDictionaryHandler.INSTANCE.observe( this );
+		this.registerAmmo( new ItemStack( Items.gold_nugget ), 196.96655 );
 	}
 
 	@Override
-	public void oreRegistered(String name, ItemStack item)
+	public void oreRegistered( String name, ItemStack item )
 	{
-		if ( !(name.startsWith( "berry" ) || name.startsWith( "nugget" )) )
+		if( !( name.startsWith( "berry" ) || name.startsWith( "nugget" ) ) )
 			return;
 
 		// addNugget( "Cobble", 18 ); // ?
@@ -122,24 +116,32 @@ public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmo
 		this.considerItem( name, item, "Plutonium", 244 );
 
 		// TE stuff...
-		this.considerItem( name, item, "Invar", (58.6934 + 55.845 + 55.845) / 3.0 );
-		this.considerItem( name, item, "Electrum", (107.8682 + 196.96655) / 2.0 );
+		this.considerItem( name, item, "Invar", ( 58.6934 + 55.845 + 55.845 ) / 3.0 );
+		this.considerItem( name, item, "Electrum", ( 107.8682 + 196.96655 ) / 2.0 );
 	}
 
-	public MatterCannonAmmoRegistry() {
-		OreDictionaryHandler.INSTANCE.observe( this );
-		this.registerAmmo( new ItemStack( Items.gold_nugget ), 196.96655 );
+	private void considerItem( String ore, ItemStack item, String Name, double weight )
+	{
+		if( ore.equals( "berry" + Name ) || ore.equals( "nugget" + Name ) )
+		{
+			this.registerAmmo( item, weight );
+		}
 	}
 
 	@Override
-	public float getPenetration(ItemStack is)
+	public void registerAmmo( ItemStack ammo, double weight )
 	{
-		for (ItemStack o : this.DamageModifiers.keySet())
+		this.DamageModifiers.put( ammo, weight );
+	}
+
+	@Override
+	public float getPenetration( ItemStack is )
+	{
+		for( ItemStack o : this.DamageModifiers.keySet() )
 		{
-			if ( Platform.isSameItem( o, is ) )
+			if( Platform.isSameItem( o, is ) )
 				return this.DamageModifiers.get( o ).floatValue();
 		}
 		return 0;
 	}
-
 }

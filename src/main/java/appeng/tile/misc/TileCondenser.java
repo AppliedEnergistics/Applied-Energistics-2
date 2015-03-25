@@ -18,6 +18,7 @@
 
 package appeng.tile.misc;
 
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -42,59 +43,61 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
+
 public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConfigManagerHost, IConfigurableObject
 {
 
-	final int[] sides = new int[] { 0, 1 };
 	static private final FluidTankInfo[] EMPTY = new FluidTankInfo[] { new FluidTankInfo( null, 10 ) };
+	final int[] sides = new int[] { 0, 1 };
 	final AppEngInternalInventory inv = new AppEngInternalInventory( this, 3 );
 	final ConfigManager cm = new ConfigManager( this );
 
 	public double storedPower = 0;
 
-	@TileEvent(TileEventType.WORLD_NBT_WRITE)
-	public void writeToNBT_TileCondenser(NBTTagCompound data)
+	public TileCondenser()
+	{
+		this.cm.registerSetting( Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH );
+	}
+
+	@TileEvent( TileEventType.WORLD_NBT_WRITE )
+	public void writeToNBT_TileCondenser( NBTTagCompound data )
 	{
 		this.cm.writeToNBT( data );
 		data.setDouble( "storedPower", this.storedPower );
 	}
 
-	@TileEvent(TileEventType.WORLD_NBT_READ)
-	public void readFromNBT_TileCondenser(NBTTagCompound data)
+	@TileEvent( TileEventType.WORLD_NBT_READ )
+	public void readFromNBT_TileCondenser( NBTTagCompound data )
 	{
 		this.cm.readFromNBT( data );
 		this.storedPower = data.getDouble( "storedPower" );
 	}
 
-	public TileCondenser() {
-		this.cm.registerSetting( Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH );
-	}
-
 	public double getStorage()
 	{
 		ItemStack is = this.inv.getStackInSlot( 2 );
-		if ( is != null )
+		if( is != null )
 		{
-			if ( is.getItem() instanceof IStorageComponent )
+			if( is.getItem() instanceof IStorageComponent )
 			{
 				IStorageComponent sc = (IStorageComponent) is.getItem();
-				if ( sc.isStorageComponent( is ) )
+				if( sc.isStorageComponent( is ) )
 					return sc.getBytes( is ) * 8;
 			}
 		}
 		return 0;
 	}
 
-	public void addPower(double rawPower)
+	public void addPower( double rawPower )
 	{
 		this.storedPower += rawPower;
 		this.storedPower = Math.max( 0.0, Math.min( this.getStorage(), this.storedPower ) );
 
 		double requiredPower = this.getRequiredPower();
 		ItemStack output = this.getOutput();
-		while (requiredPower <= this.storedPower && output != null && requiredPower > 0)
+		while( requiredPower <= this.storedPower && output != null && requiredPower > 0 )
 		{
-			if ( this.canAddOutput( output ) )
+			if( this.canAddOutput( output ) )
 			{
 				this.storedPower -= requiredPower;
 				this.addOutput( output );
@@ -102,13 +105,12 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 			else
 				break;
 		}
-
 	}
 
-	private boolean canAddOutput(ItemStack output)
+	private boolean canAddOutput( ItemStack output )
 	{
 		ItemStack outputStack = this.getStackInSlot( 1 );
-		return outputStack == null || (Platform.isSameItem( outputStack, output ) && outputStack.stackSize < outputStack.getMaxStackSize());
+		return outputStack == null || ( Platform.isSameItem( outputStack, output ) && outputStack.stackSize < outputStack.getMaxStackSize() );
 	}
 
 	/**
@@ -116,10 +118,10 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	 *
 	 * @param output to be added output
 	 */
-	private void addOutput(ItemStack output)
+	private void addOutput( ItemStack output )
 	{
 		ItemStack outputStack = this.getStackInSlot( 1 );
-		if ( outputStack == null )
+		if( outputStack == null )
 			this.setInventorySlotContents( 1, output.copy() );
 		else
 		{
@@ -130,59 +132,21 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 
 	private ItemStack getOutput()
 	{
-		switch ((CondenserOutput) this.cm.getSetting( Settings.CONDENSER_OUTPUT ))
+		switch( (CondenserOutput) this.cm.getSetting( Settings.CONDENSER_OUTPUT ) )
 		{
-		case MATTER_BALLS:
-			return AEApi.instance().materials().materialMatterBall.stack( 1 );
-		case SINGULARITY:
-			return AEApi.instance().materials().materialSingularity.stack( 1 );
-		case TRASH:
-		default:
+			case MATTER_BALLS:
+				return AEApi.instance().materials().materialMatterBall.stack( 1 );
+			case SINGULARITY:
+				return AEApi.instance().materials().materialSingularity.stack( 1 );
+			case TRASH:
+			default:
 		}
 		return null;
 	}
 
 	public double getRequiredPower()
 	{
-		return ((CondenserOutput) this.cm.getSetting( Settings.CONDENSER_OUTPUT )).requiredPower;
-	}
-
-	@Override
-	public void setInventorySlotContents(int i, ItemStack itemstack)
-	{
-		if ( i == 0 )
-		{
-			if ( itemstack != null )
-				this.addPower( itemstack.stackSize );
-		}
-		else
-		{
-			this.inv.setInventorySlotContents( 1, itemstack );
-		}
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack)
-	{
-		return i == 0;
-	}
-
-	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j)
-	{
-		return i != 0;
-	}
-
-	@Override
-	public boolean canInsertItem(int i, ItemStack itemstack, int j)
-	{
-		return i == 0;
-	}
-
-	@Override
-	public int[] getAccessibleSlotsBySide(ForgeDirection side)
-	{
-		return this.sides;
+		return ( (CondenserOutput) this.cm.getSetting( Settings.CONDENSER_OUTPUT ) ).requiredPower;
 	}
 
 	@Override
@@ -192,12 +156,32 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	}
 
 	@Override
-	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added)
+	public void setInventorySlotContents( int i, ItemStack itemstack )
 	{
-		if ( slot == 0 )
+		if( i == 0 )
+		{
+			if( itemstack != null )
+				this.addPower( itemstack.stackSize );
+		}
+		else
+		{
+			this.inv.setInventorySlotContents( 1, itemstack );
+		}
+	}
+
+	@Override
+	public boolean isItemValidForSlot( int i, ItemStack itemstack )
+	{
+		return i == 0;
+	}
+
+	@Override
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added )
+	{
+		if( slot == 0 )
 		{
 			ItemStack is = inv.getStackInSlot( 0 );
-			if ( is != null )
+			if( is != null )
 			{
 				this.addPower( is.stackSize );
 				inv.setInventorySlotContents( 0, null );
@@ -206,46 +190,64 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+	public boolean canInsertItem( int i, ItemStack itemstack, int j )
 	{
-		if ( doFill )
-			this.addPower( (resource == null ? 0.0 : (double) resource.amount) / 500.0 );
+		return i == 0;
+	}
+
+	@Override
+	public boolean canExtractItem( int i, ItemStack itemstack, int j )
+	{
+		return i != 0;
+	}
+
+	@Override
+	public int[] getAccessibleSlotsBySide( ForgeDirection side )
+	{
+		return this.sides;
+	}
+
+	@Override
+	public int fill( ForgeDirection from, FluidStack resource, boolean doFill )
+	{
+		if( doFill )
+			this.addPower( ( resource == null ? 0.0 : (double) resource.amount ) / 500.0 );
 
 		return resource == null ? 0 : resource.amount;
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+	public FluidStack drain( ForgeDirection from, FluidStack resource, boolean doDrain )
 	{
 		return null;
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain( ForgeDirection from, int maxDrain, boolean doDrain )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
+	public boolean canFill( ForgeDirection from, Fluid fluid )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain( ForgeDirection from, Fluid fluid )
 	{
 		return false;
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from)
+	public FluidTankInfo[] getTankInfo( ForgeDirection from )
 	{
 		return EMPTY;
 	}
 
 	@Override
-	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
+	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
 	{
 		this.addPower( 0 );
 	}
@@ -255,5 +257,4 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	{
 		return this.cm;
 	}
-
 }

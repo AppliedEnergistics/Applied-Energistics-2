@@ -18,6 +18,7 @@
 
 package appeng.block.crafting;
 
+
 import java.util.EnumSet;
 import java.util.List;
 
@@ -43,17 +44,10 @@ import appeng.core.sync.GuiBridge;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
 
+
 public class BlockCraftingUnit extends AEBaseBlock
 {
 	public static final int FLAG_FORMED = 8;
-
-	public BlockCraftingUnit(Class<? extends BlockCraftingUnit> childClass)
-	{
-		super( childClass, Material.iron );
-
-		this.hasSubtypes = true;
-		this.setFeature( EnumSet.of( AEFeature.CraftingCPU ) );
-	}
 
 	public BlockCraftingUnit()
 	{
@@ -62,13 +56,44 @@ public class BlockCraftingUnit extends AEBaseBlock
 		this.setTileEntity( TileCraftingTile.class );
 	}
 
+	public BlockCraftingUnit( Class<? extends BlockCraftingUnit> childClass )
+	{
+		super( childClass, Material.iron );
+
+		this.hasSubtypes = true;
+		this.setFeature( EnumSet.of( AEFeature.CraftingCPU ) );
+	}
+
 	@Override
-	public boolean onActivated(World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ)
+	protected Class<? extends BaseBlockRender> getRenderer()
+	{
+		return RenderBlockCraftingCPU.class;
+	}
+
+	@Override
+	public IIcon getIcon( int direction, int metadata )
+	{
+		switch( metadata )
+		{
+			default:
+			case 0:
+				return super.getIcon( 0, 0 );
+			case 1:
+				return ExtraBlockTextures.BlockCraftingAccelerator.getIcon();
+			case FLAG_FORMED:
+				return ExtraBlockTextures.BlockCraftingUnitFit.getIcon();
+			case 1 | FLAG_FORMED:
+				return ExtraBlockTextures.BlockCraftingAcceleratorFit.getIcon();
+		}
+	}
+
+	@Override
+	public boolean onActivated( World w, int x, int y, int z, EntityPlayer p, int side, float hitX, float hitY, float hitZ )
 	{
 		TileCraftingTile tg = this.getTileEntity( w, x, y, z );
-		if ( tg != null && !p.isSneaking() && tg.isFormed() && tg.isActive() )
+		if( tg != null && !p.isSneaking() && tg.isFormed() && tg.isActive() )
 		{
-			if ( Platform.isClient() )
+			if( Platform.isClient() )
 				return true;
 
 			Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_CRAFTING_CPU );
@@ -79,34 +104,15 @@ public class BlockCraftingUnit extends AEBaseBlock
 	}
 
 	@Override
-	public int getDamageValue(World w, int x, int y, int z)
+	@SideOnly( Side.CLIENT )
+	public void getCheckedSubBlocks( Item item, CreativeTabs tabs, List<ItemStack> itemStacks )
 	{
-		int meta = w.getBlockMetadata( x, y, z );
-		return this.damageDropped( meta );
+		itemStacks.add( new ItemStack( this, 1, 0 ) );
+		itemStacks.add( new ItemStack( this, 1, 1 ) );
 	}
 
 	@Override
-	public int damageDropped(int meta)
-	{
-		return meta & 3;
-	}
-
-	@Override
-	public String getUnlocalizedName(ItemStack is)
-	{
-		if ( is.getItemDamage() == 1 )
-			return "tile.appliedenergistics2.BlockCraftingAccelerator";
-
-		return this.getItemUnlocalizedName( is );
-	}
-
-	protected String getItemUnlocalizedName(ItemStack is)
-	{
-		return super.getUnlocalizedName( is );
-	}
-
-	@Override
-	public void setRenderStateByMeta(int itemDamage)
+	public void setRenderStateByMeta( int itemDamage )
 	{
 		IIcon front = this.getIcon( ForgeDirection.SOUTH.ordinal(), itemDamage );
 		IIcon other = this.getIcon( ForgeDirection.NORTH.ordinal(), itemDamage );
@@ -114,51 +120,47 @@ public class BlockCraftingUnit extends AEBaseBlock
 	}
 
 	@Override
-	public IIcon getIcon(int direction, int metadata)
-	{
-		switch (metadata)
-		{
-		default:
-		case 0:
-			return super.getIcon( 0, 0 );
-		case 1:
-			return ExtraBlockTextures.BlockCraftingAccelerator.getIcon();
-		case FLAG_FORMED:
-			return ExtraBlockTextures.BlockCraftingUnitFit.getIcon();
-		case 1 | FLAG_FORMED:
-			return ExtraBlockTextures.BlockCraftingAcceleratorFit.getIcon();
-		}
-	}
-
-	@Override
-	protected Class<? extends BaseBlockRender> getRenderer()
-	{
-		return RenderBlockCraftingCPU.class;
-	}
-
-	@Override
-	public void breakBlock(World w, int x, int y, int z, Block a, int b)
+	public void breakBlock( World w, int x, int y, int z, Block a, int b )
 	{
 		TileCraftingTile cp = this.getTileEntity( w, x, y, z );
-		if ( cp != null )
+		if( cp != null )
 			cp.breakCluster();
 
 		super.breakBlock( w, x, y, z, a, b );
 	}
 
 	@Override
-	public void onNeighborBlockChange(World w, int x, int y, int z, Block junk)
+	public String getUnlocalizedName( ItemStack is )
+	{
+		if( is.getItemDamage() == 1 )
+			return "tile.appliedenergistics2.BlockCraftingAccelerator";
+
+		return this.getItemUnlocalizedName( is );
+	}
+
+	protected String getItemUnlocalizedName( ItemStack is )
+	{
+		return super.getUnlocalizedName( is );
+	}
+
+	@Override
+	public void onNeighborBlockChange( World w, int x, int y, int z, Block junk )
 	{
 		TileCraftingTile cp = this.getTileEntity( w, x, y, z );
-		if ( cp != null )
+		if( cp != null )
 			cp.updateMultiBlock();
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void getCheckedSubBlocks(Item item, CreativeTabs tabs, List<ItemStack> itemStacks)
+	public int damageDropped( int meta )
 	{
-		itemStacks.add( new ItemStack( this, 1, 0 ) );
-		itemStacks.add( new ItemStack( this, 1, 1 ) );
+		return meta & 3;
+	}
+
+	@Override
+	public int getDamageValue( World w, int x, int y, int z )
+	{
+		int meta = w.getBlockMetadata( x, y, z );
+		return this.damageDropped( meta );
 	}
 }

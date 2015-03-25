@@ -18,6 +18,7 @@
 
 package appeng.parts;
 
+
 import java.util.EnumSet;
 import java.util.Random;
 
@@ -31,35 +32,36 @@ import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
 
+
 public class NullCableBusContainer implements ICableBusContainer
 {
 
 	@Override
-	public int isProvidingStrongPower(ForgeDirection opposite)
+	public int isProvidingStrongPower( ForgeDirection opposite )
 	{
 		return 0;
 	}
 
 	@Override
-	public int isProvidingWeakPower(ForgeDirection opposite)
+	public int isProvidingWeakPower( ForgeDirection opposite )
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean canConnectRedstone(EnumSet<ForgeDirection> of)
+	public boolean canConnectRedstone( EnumSet<ForgeDirection> of )
 	{
 		return false;
 	}
 
 	@Override
-	public void onEntityCollision(Entity e)
+	public void onEntityCollision( Entity e )
 	{
 
 	}
 
 	@Override
-	public boolean activate(EntityPlayer player, Vec3 vecFromPool)
+	public boolean activate( EntityPlayer player, Vec3 vecFromPool )
 	{
 		return false;
 	}
@@ -71,7 +73,7 @@ public class NullCableBusContainer implements ICableBusContainer
 	}
 
 	@Override
-	public boolean isSolidOnSide(ForgeDirection side)
+	public boolean isSolidOnSide( ForgeDirection side )
 	{
 		return false;
 	}
@@ -83,25 +85,25 @@ public class NullCableBusContainer implements ICableBusContainer
 	}
 
 	@Override
-	public SelectedPart selectPart(Vec3 v3)
+	public SelectedPart selectPart( Vec3 v3 )
 	{
 		return new SelectedPart();
 	}
 
 	@Override
-	public boolean recolourBlock(ForgeDirection side, AEColor colour, EntityPlayer who)
+	public boolean recolourBlock( ForgeDirection side, AEColor colour, EntityPlayer who )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isLadder(EntityLivingBase entity)
+	public boolean isLadder( EntityLivingBase entity )
 	{
 		return false;
 	}
 
 	@Override
-	public void randomDisplayTick(World world, int x, int y, int z, Random r)
+	public void randomDisplayTick( World world, int x, int y, int z, Random r )
 	{
 
 	}
@@ -111,5 +113,4 @@ public class NullCableBusContainer implements ICableBusContainer
 	{
 		return 0;
 	}
-
 }

@@ -32,9 +32,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
-import com.google.common.base.Optional;
-import com.mojang.authlib.GameProfile;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -43,6 +40,9 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+
+import com.google.common.base.Optional;
+import com.mojang.authlib.GameProfile;
 
 import appeng.api.util.WorldCoord;
 import appeng.core.sync.network.NetworkHandler;
@@ -74,7 +74,7 @@ public class WorldSettings extends Configuration
 		this.aeFolder = aeFolder;
 		this.compass = new CompassService( aeFolder );
 
-		for ( int dimID : this.get( "DimensionManager", "StorageCells", new int[0] ).getIntList() )
+		for( int dimID : this.get( "DimensionManager", "StorageCells", new int[0] ).getIntList() )
 		{
 			this.storageCellDims.add( dimID );
 			DimensionManager.registerDimension( dimID, AEConfig.instance.storageProviderID );
@@ -85,7 +85,7 @@ public class WorldSettings extends Configuration
 			this.lastGridStorage = Long.parseLong( this.get( "Counters", "lastGridStorage", 0 ).getString() );
 			this.lastPlayer = this.get( "Counters", "lastPlayer", 0 ).getInt();
 		}
-		catch ( NumberFormatException err )
+		catch( NumberFormatException err )
 		{
 			this.lastGridStorage = 0;
 			this.lastPlayer = 0;
@@ -97,25 +97,25 @@ public class WorldSettings extends Configuration
 
 	public static WorldSettings getInstance()
 	{
-		if ( instance == null )
+		if( instance == null )
 		{
 			File world = DimensionManager.getCurrentSaveRootDirectory();
 
 			File aeBaseFolder = new File( world.getPath() + File.separatorChar + "AE2" );
 
-			if ( !aeBaseFolder.isDirectory() && !aeBaseFolder.mkdir() )
+			if( !aeBaseFolder.isDirectory() && !aeBaseFolder.mkdir() )
 			{
 				throw new RuntimeException( "Failed to create " + aeBaseFolder.getAbsolutePath() );
 			}
 
 			File compass = new File( aeBaseFolder, COMPASS_FOLDER );
-			if ( !compass.isDirectory() && !compass.mkdir() )
+			if( !compass.isDirectory() && !compass.mkdir() )
 			{
 				throw new RuntimeException( "Failed to create " + compass.getAbsolutePath() );
 			}
 
 			File spawnData = new File( aeBaseFolder, SPAWNDATA_FOLDER );
-			if ( !spawnData.isDirectory() && !spawnData.mkdir() )
+			if( !spawnData.isDirectory() && !spawnData.mkdir() )
 			{
 				throw new RuntimeException( "Failed to create " + spawnData.getAbsolutePath() );
 			}
@@ -130,22 +130,22 @@ public class WorldSettings extends Configuration
 	{
 		Collection<NBTTagCompound> ll = new LinkedList<NBTTagCompound>();
 
-		synchronized ( WorldSettings.class )
+		synchronized( WorldSettings.class )
 		{
-			for ( int x = -1; x <= 1; x++ )
+			for( int x = -1; x <= 1; x++ )
 			{
-				for ( int z = -1; z <= 1; z++ )
+				for( int z = -1; z <= 1; z++ )
 				{
 					int cx = x + ( chunkX >> 4 );
 					int cz = z + ( chunkZ >> 4 );
 
 					NBTTagCompound data = this.loadSpawnData( dim, cx << 4, cz << 4 );
 
-					if ( data != null )
+					if( data != null )
 					{
 						// edit.
 						int size = data.getInteger( "num" );
-						for ( int s = 0; s < size; s++ )
+						for( int s = 0; s < size; s++ )
 							ll.add( data.getCompoundTag( String.valueOf( s ) ) );
 					}
 				}
@@ -157,13 +157,13 @@ public class WorldSettings extends Configuration
 
 	NBTTagCompound loadSpawnData( int dim, int chunkX, int chunkZ )
 	{
-		if ( !Thread.holdsLock( WorldSettings.class ) )
+		if( !Thread.holdsLock( WorldSettings.class ) )
 			throw new RuntimeException( "Invalid Request" );
 
 		NBTTagCompound data = null;
 		File file = new File( this.aeFolder, SPAWNDATA_FOLDER + File.separatorChar + dim + '_' + ( chunkX >> 4 ) + '_' + ( chunkZ >> 4 ) + ".dat" );
 
-		if ( file.isFile() )
+		if( file.isFile() )
 		{
 			FileInputStream fileInputStream = null;
 
@@ -172,20 +172,20 @@ public class WorldSettings extends Configuration
 				fileInputStream = new FileInputStream( file );
 				data = CompressedStreamTools.readCompressed( fileInputStream );
 			}
-			catch ( Throwable e )
+			catch( Throwable e )
 			{
 				data = new NBTTagCompound();
 				AELog.error( e );
 			}
 			finally
 			{
-				if ( fileInputStream != null )
+				if( fileInputStream != null )
 				{
 					try
 					{
 						fileInputStream.close();
 					}
-					catch ( IOException e )
+					catch( IOException e )
 					{
 						AELog.error( e );
 					}
@@ -202,7 +202,7 @@ public class WorldSettings extends Configuration
 
 	public boolean hasGenerated( int dim, int chunkX, int chunkZ )
 	{
-		synchronized ( WorldSettings.class )
+		synchronized( WorldSettings.class )
 		{
 			NBTTagCompound data = this.loadSpawnData( dim, chunkX, chunkZ );
 			return data.getBoolean( chunkX + "," + chunkZ );
@@ -211,7 +211,7 @@ public class WorldSettings extends Configuration
 
 	public void setGenerated( int dim, int chunkX, int chunkZ )
 	{
-		synchronized ( WorldSettings.class )
+		synchronized( WorldSettings.class )
 		{
 			NBTTagCompound data = this.loadSpawnData( dim, chunkX, chunkZ );
 
@@ -224,7 +224,7 @@ public class WorldSettings extends Configuration
 
 	void writeSpawnData( int dim, int chunkX, int chunkZ, NBTTagCompound data )
 	{
-		if ( !Thread.holdsLock( WorldSettings.class ) )
+		if( !Thread.holdsLock( WorldSettings.class ) )
 			throw new RuntimeException( "Invalid Request" );
 
 		File file = new File( this.aeFolder, SPAWNDATA_FOLDER + File.separatorChar + dim + '_' + ( chunkX >> 4 ) + '_' + ( chunkZ >> 4 ) + ".dat" );
@@ -235,19 +235,19 @@ public class WorldSettings extends Configuration
 			fileOutputStream = new FileOutputStream( file );
 			CompressedStreamTools.writeCompressed( data, fileOutputStream );
 		}
-		catch ( Throwable e )
+		catch( Throwable e )
 		{
 			AELog.error( e );
 		}
 		finally
 		{
-			if ( fileOutputStream != null )
+			if( fileOutputStream != null )
 			{
 				try
 				{
 					fileOutputStream.close();
 				}
-				catch ( IOException e )
+				catch( IOException e )
 				{
 					AELog.error( e );
 				}
@@ -257,7 +257,7 @@ public class WorldSettings extends Configuration
 
 	public boolean addNearByMeteorites( int dim, int chunkX, int chunkZ, NBTTagCompound newData )
 	{
-		synchronized ( WorldSettings.class )
+		synchronized( WorldSettings.class )
 		{
 			NBTTagCompound data = this.loadSpawnData( dim, chunkX, chunkZ );
 
@@ -276,7 +276,7 @@ public class WorldSettings extends Configuration
 	{
 		this.save();
 
-		for ( Integer dimID : this.storageCellDims )
+		for( Integer dimID : this.storageCellDims )
 			DimensionManager.unregisterDimension( dimID );
 
 		this.storageCellDims.clear();
@@ -289,10 +289,10 @@ public class WorldSettings extends Configuration
 	public void save()
 	{
 		// populate new data
-		for ( GridStorageSearch gs : this.loadedStorage.keySet() )
+		for( GridStorageSearch gs : this.loadedStorage.keySet() )
 		{
 			GridStorage thisStorage = gs.gridStorage.get();
-			if ( thisStorage != null && thisStorage.getGrid() != null && !thisStorage.getGrid().isEmpty() )
+			if( thisStorage != null && thisStorage.getGrid() != null && !thisStorage.getGrid().isEmpty() )
 			{
 				String value = thisStorage.getValue();
 				this.get( "gridstorage", String.valueOf( thisStorage.getID() ), value ).set( value );
@@ -300,7 +300,7 @@ public class WorldSettings extends Configuration
 		}
 
 		// save to files
-		if ( this.hasChanged() )
+		if( this.hasChanged() )
 			super.save();
 	}
 
@@ -313,7 +313,7 @@ public class WorldSettings extends Configuration
 
 		String[] values = new String[this.storageCellDims.size()];
 
-		for ( int x = 0; x < values.length; x++ )
+		for( int x = 0; x < values.length; x++ )
 			values[x] = String.valueOf( this.storageCellDims.get( x ) );
 
 		this.get( "DimensionManager", "StorageCells", new int[0] ).set( values );
@@ -327,16 +327,16 @@ public class WorldSettings extends Configuration
 
 	public void sendToPlayer( NetworkManager manager )
 	{
-		if ( manager != null )
+		if( manager != null )
 		{
-			for ( int newDim : this.get( "DimensionManager", "StorageCells", new int[0] ).getIntList() )
+			for( int newDim : this.get( "DimensionManager", "StorageCells", new int[0] ).getIntList() )
 			{
 				manager.scheduleOutboundPacket( ( new PacketNewStorageDimension( newDim ) ).getProxy() );
 			}
 		}
 		else
 		{
-			for ( PlayerColor pc : TickHandler.INSTANCE.getPlayerColors().values() )
+			for( PlayerColor pc : TickHandler.INSTANCE.getPlayerColors().values() )
 				NetworkHandler.instance.sendToAll( pc.getPacket() );
 		}
 	}
@@ -374,7 +374,7 @@ public class WorldSettings extends Configuration
 		GridStorageSearch gss = new GridStorageSearch( storageID );
 		WeakReference<GridStorageSearch> result = this.loadedStorage.get( gss );
 
-		if ( result == null || result.get() == null )
+		if( result == null || result.get() == null )
 		{
 			String id = String.valueOf( storageID );
 			String Data = this.get( "gridstorage", id, "" ).getString();
@@ -425,13 +425,13 @@ public class WorldSettings extends Configuration
 	{
 		ConfigCategory playerList = this.getCategory( "players" );
 
-		if ( playerList == null || profile == null || !profile.isComplete() )
+		if( playerList == null || profile == null || !profile.isComplete() )
 			return -1;
 
 		String uuid = profile.getId().toString();
 
 		Property prop = playerList.get( uuid );
-		if ( prop != null && prop.isIntValue() )
+		if( prop != null && prop.isIntValue() )
 			return prop.getInt();
 		else
 		{
@@ -453,12 +453,12 @@ public class WorldSettings extends Configuration
 	{
 		Optional<UUID> maybe = this.mappings.get( playerID );
 
-		if ( maybe.isPresent() )
+		if( maybe.isPresent() )
 		{
 			final UUID uuid = maybe.get();
-			for ( EntityPlayer player : CommonHelper.proxy.getPlayers() )
+			for( EntityPlayer player : CommonHelper.proxy.getPlayers() )
 			{
-				if ( player.getUniqueID().equals( uuid ) )
+				if( player.getUniqueID().equals( uuid ) )
 					return player;
 			}
 		}

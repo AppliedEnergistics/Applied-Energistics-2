@@ -23,7 +23,9 @@
 
 package appeng.api.networking.events;
 
+
 import appeng.api.networking.IGrid;
+
 
 /**
  * Part of AE's Event Bus.
@@ -69,7 +71,7 @@ public class MENetworkEvent
 	 *
 	 * @param v current number of visitors
 	 */
-	public void setVisitedObjects(int v)
+	public void setVisitedObjects( int v )
 	{
 		this.visited = v;
 	}

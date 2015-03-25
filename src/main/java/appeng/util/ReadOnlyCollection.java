@@ -18,17 +18,20 @@
 
 package appeng.util;
 
+
 import java.util.Collection;
 import java.util.Iterator;
 
 import appeng.api.util.IReadOnlyCollection;
+
 
 public class ReadOnlyCollection<T> implements IReadOnlyCollection<T>
 {
 
 	private final Collection<T> c;
 
-	public ReadOnlyCollection(Collection<T> in) {
+	public ReadOnlyCollection( Collection<T> in )
+	{
 		this.c = in;
 	}
 
@@ -51,9 +54,8 @@ public class ReadOnlyCollection<T> implements IReadOnlyCollection<T>
 	}
 
 	@Override
-	public boolean contains(Object node)
+	public boolean contains( Object node )
 	{
 		return this.c.contains( node );
 	}
-
 }

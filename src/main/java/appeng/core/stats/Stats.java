@@ -18,9 +18,11 @@
 
 package appeng.core.stats;
 
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.stats.StatBasic;
 import net.minecraft.util.ChatComponentTranslation;
+
 
 public enum Stats
 {
@@ -36,23 +38,24 @@ public enum Stats
 
 	private StatBasic stat;
 
+	private Stats()
+	{
+	}
+
+	public void addToPlayer( EntityPlayer player, int howMany )
+	{
+		player.addStat( this.getStat(), howMany );
+	}
+
 	public StatBasic getStat()
 	{
-		if ( this.stat == null )
+		if( this.stat == null )
 		{
 			this.stat = new StatBasic( "stat.ae2." + this.name(), new ChatComponentTranslation( "stat.ae2." + this.name() ) );
 			this.stat.registerStat();
 		}
 
 		return this.stat;
-	}
-
-	private Stats() {
-	}
-
-	public void addToPlayer(EntityPlayer player, int howMany)
-	{
-		player.addStat( this.getStat(), howMany );
 	}
 
 }

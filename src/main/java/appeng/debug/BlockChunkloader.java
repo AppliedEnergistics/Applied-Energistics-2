@@ -18,6 +18,7 @@
 
 package appeng.debug;
 
+
 import java.util.EnumSet;
 import java.util.List;
 
@@ -32,10 +33,12 @@ import appeng.block.AEBaseBlock;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 
+
 public class BlockChunkloader extends AEBaseBlock implements LoadingCallback
 {
 
-	public BlockChunkloader() {
+	public BlockChunkloader()
+	{
 		super( BlockChunkloader.class, Material.iron );
 		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 		this.setTileEntity( TileChunkLoader.class );
@@ -43,15 +46,14 @@ public class BlockChunkloader extends AEBaseBlock implements LoadingCallback
 	}
 
 	@Override
-	public void ticketsLoaded(List<Ticket> tickets, World world)
+	public void ticketsLoaded( List<Ticket> tickets, World world )
 	{
 
 	}
 
 	@Override
-	public void registerBlockIcons(IIconRegister iconRegistry)
+	public void registerBlockIcons( IIconRegister iconRegistry )
 	{
 		this.registerNoIcons();
 	}
-
 }

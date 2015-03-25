@@ -32,7 +32,7 @@ public class CrashEnhancement implements ICrashCallable
 	private final String value;
 
 	private final String ModVersion = AEConfig.CHANNEL + ' ' + AEConfig.VERSION + " for Forge " + // WHAT?
-	net.minecraftforge.common.ForgeVersion.majorVersion + '.' // majorVersion
+			net.minecraftforge.common.ForgeVersion.majorVersion + '.' // majorVersion
 			+ net.minecraftforge.common.ForgeVersion.minorVersion + '.' // minorVersion
 			+ net.minecraftforge.common.ForgeVersion.revisionVersion + '.' // revisionVersion
 			+ net.minecraftforge.common.ForgeVersion.buildVersion;
@@ -40,12 +40,12 @@ public class CrashEnhancement implements ICrashCallable
 	public CrashEnhancement( CrashInfo Output )
 	{
 
-		if ( Output == CrashInfo.MOD_VERSION )
+		if( Output == CrashInfo.MOD_VERSION )
 		{
 			this.name = "AE2 Version";
 			this.value = this.ModVersion;
 		}
-		else if ( Output == CrashInfo.INTEGRATION )
+		else if( Output == CrashInfo.INTEGRATION )
 		{
 			this.name = "AE2 Integration";
 			this.value = IntegrationRegistry.INSTANCE.getStatus();
@@ -68,5 +68,4 @@ public class CrashEnhancement implements ICrashCallable
 	{
 		return this.name;
 	}
-
 }

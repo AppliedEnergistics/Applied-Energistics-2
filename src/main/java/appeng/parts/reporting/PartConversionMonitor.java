@@ -38,10 +38,12 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
+
 public class PartConversionMonitor extends PartStorageMonitor
 {
 
-	public PartConversionMonitor(ItemStack is) {
+	public PartConversionMonitor( ItemStack is )
+	{
 		super( PartConversionMonitor.class, is );
 		this.frontBright = CableBusTextures.PartConversionMonitor_Bright;
 		this.frontColored = CableBusTextures.PartConversionMonitor_Colored;
@@ -50,43 +52,43 @@ public class PartConversionMonitor extends PartStorageMonitor
 	}
 
 	@Override
-	public boolean onPartShiftActivate(EntityPlayer player, Vec3 pos)
+	public boolean onPartShiftActivate( EntityPlayer player, Vec3 pos )
 	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			return true;
 
-		if ( !this.proxy.isActive() )
+		if( !this.proxy.isActive() )
 			return false;
 
-		if ( !Platform.hasPermissions( this.getLocation(), player ) )
+		if( !Platform.hasPermissions( this.getLocation(), player ) )
 			return false;
 
 		boolean ModeB = false;
 
 		ItemStack item = player.getCurrentEquippedItem();
-		if ( item == null && this.getDisplayed() != null )
+		if( item == null && this.getDisplayed() != null )
 		{
 			ModeB = true;
-			item = ((IAEItemStack) this.getDisplayed()).getItemStack();
+			item = ( (IAEItemStack) this.getDisplayed() ).getItemStack();
 		}
 
-		if ( item != null )
+		if( item != null )
 		{
 			try
 			{
-				if ( !this.proxy.isActive() )
+				if( !this.proxy.isActive() )
 					return false;
 
 				IEnergySource energy = this.proxy.getEnergy();
 				IMEMonitor<IAEItemStack> cell = this.proxy.getStorage().getItemInventory();
 				IAEItemStack input = AEItemStack.create( item );
 
-				if ( ModeB )
+				if( ModeB )
 				{
-					for (int x = 0; x < player.inventory.getSizeInventory(); x++)
+					for( int x = 0; x < player.inventory.getSizeInventory(); x++ )
 					{
 						ItemStack targetStack = player.inventory.getStackInSlot( x );
-						if ( input.equals( targetStack ) )
+						if( input.equals( targetStack ) )
 						{
 							IAEItemStack insertItem = input.copy();
 							insertItem.setStackSize( targetStack.stackSize );
@@ -101,7 +103,7 @@ public class PartConversionMonitor extends PartStorageMonitor
 					player.inventory.setInventorySlotContents( player.inventory.currentItem, failedToInsert == null ? null : failedToInsert.getItemStack() );
 				}
 			}
-			catch (GridAccessException e)
+			catch( GridAccessException e )
 			{
 				// :P
 			}
@@ -110,14 +112,14 @@ public class PartConversionMonitor extends PartStorageMonitor
 	}
 
 	@Override
-	protected void extractItem(EntityPlayer player)
+	protected void extractItem( EntityPlayer player )
 	{
 		IAEItemStack input = (IAEItemStack) this.getDisplayed();
-		if ( input != null )
+		if( input != null )
 		{
 			try
 			{
-				if ( !this.proxy.isActive() )
+				if( !this.proxy.isActive() )
 					return;
 
 				IEnergySource energy = this.proxy.getEnergy();
@@ -127,27 +129,26 @@ public class PartConversionMonitor extends PartStorageMonitor
 				input.setStackSize( is.getMaxStackSize() );
 
 				IAEItemStack retrieved = Platform.poweredExtraction( energy, cell, input, new PlayerSource( player, this ) );
-				if ( retrieved != null )
+				if( retrieved != null )
 				{
 					ItemStack newItems = retrieved.getItemStack();
 					InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor( player, ForgeDirection.UNKNOWN );
 					newItems = adaptor.addItems( newItems );
-					if ( newItems != null )
+					if( newItems != null )
 					{
 						TileEntity te = this.tile;
 						List<ItemStack> list = Collections.singletonList( newItems );
 						Platform.spawnDrops( player.worldObj, te.xCoord + this.side.offsetX, te.yCoord + this.side.offsetY, te.zCoord + this.side.offsetZ, list );
 					}
 
-					if ( player.openContainer != null )
+					if( player.openContainer != null )
 						player.openContainer.detectAndSendChanges();
 				}
 			}
-			catch (GridAccessException e)
+			catch( GridAccessException e )
 			{
 				// :P
 			}
 		}
 	}
-
 }

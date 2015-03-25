@@ -46,14 +46,14 @@ public final class LocatableRegistry implements ILocatableRegistry
 	@SubscribeEvent
 	public void updateLocatable( LocatableEventAnnounce e )
 	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			return; // IGNORE!
 
-		if ( e.change == LocatableEvent.Register )
+		if( e.change == LocatableEvent.Register )
 		{
 			this.set.put( e.target.getLocatableSerial(), e.target );
 		}
-		else if ( e.change == LocatableEvent.Unregister )
+		else if( e.change == LocatableEvent.Unregister )
 		{
 			this.set.remove( e.target.getLocatableSerial() );
 		}

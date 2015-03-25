@@ -18,8 +18,10 @@
 
 package appeng.client.render.model;
 
+
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+
 
 public class ModelCompass extends ModelBase
 {
@@ -33,7 +35,8 @@ public class ModelCompass extends ModelBase
 
 	final ModelRenderer Pointer;
 
-	public ModelCompass() {
+	public ModelCompass()
+	{
 		this.textureWidth = 16;
 		this.textureHeight = 8;
 
@@ -90,14 +93,14 @@ public class ModelCompass extends ModelBase
 		this.setRotation( this.Base, 0F, 0F, 0F );
 	}
 
-	private void setRotation(ModelRenderer model, float x, float y, float z)
+	private void setRotation( ModelRenderer model, float x, float y, float z )
 	{
 		model.rotateAngleX = x;
 		model.rotateAngleY = y;
 		model.rotateAngleZ = z;
 	}
 
-	public void renderAll(float rad)
+	public void renderAll( float rad )
 	{
 		this.setRotation( this.Pointer, 0F, 0F, 0F );
 

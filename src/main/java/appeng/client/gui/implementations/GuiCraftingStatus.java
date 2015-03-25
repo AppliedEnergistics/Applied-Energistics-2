@@ -19,7 +19,9 @@
 /**
  *
  */
+
 package appeng.client.gui.implementations;
+
 
 import java.io.IOException;
 
@@ -44,6 +46,7 @@ import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.parts.reporting.PartTerminal;
 
+
 public class GuiCraftingStatus extends GuiCraftingCPU
 {
 
@@ -54,31 +57,32 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	GuiBridge OriginalGui;
 	ItemStack myIcon = null;
 
-	public GuiCraftingStatus(InventoryPlayer inventoryPlayer, ITerminalHost te) {
+	public GuiCraftingStatus( InventoryPlayer inventoryPlayer, ITerminalHost te )
+	{
 		super( new ContainerCraftingStatus( inventoryPlayer, te ) );
 
 		this.ccc = (ContainerCraftingStatus) this.inventorySlots;
 		Object target = this.ccc.getTarget();
 
-		if ( target instanceof WirelessTerminalGuiObject )
+		if( target instanceof WirelessTerminalGuiObject )
 		{
 			this.myIcon = AEApi.instance().items().itemWirelessTerminal.stack( 1 );
 			this.OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
 		}
 
-		if ( target instanceof PartTerminal )
+		if( target instanceof PartTerminal )
 		{
 			this.myIcon = AEApi.instance().parts().partTerminal.stack( 1 );
 			this.OriginalGui = GuiBridge.GUI_ME;
 		}
 
-		if ( target instanceof PartCraftingTerminal )
+		if( target instanceof PartCraftingTerminal )
 		{
 			this.myIcon = AEApi.instance().parts().partCraftingTerminal.stack( 1 );
 			this.OriginalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
 		}
 
-		if ( target instanceof PartPatternTerminal )
+		if( target instanceof PartPatternTerminal )
 		{
 			this.myIcon = AEApi.instance().parts().partPatternTerminal.stack( 1 );
 			this.OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
@@ -86,34 +90,28 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton btn)
+	protected void actionPerformed( GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
 		boolean backwards = Mouse.isButtonDown( 1 );
 
-		if ( btn == this.selectCPU )
+		if( btn == this.selectCPU )
 		{
 			try
 			{
 				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Terminal.Cpu", backwards ? "Prev" : "Next" ) );
 			}
-			catch (IOException e)
+			catch( IOException e )
 			{
 				AELog.error( e );
 			}
 		}
 
-		if ( btn == this.originalGuiBtn )
+		if( btn == this.originalGuiBtn )
 		{
 			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( this.OriginalGui ) );
 		}
-	}
-
-	@Override
-	protected String getGuiDisplayName(String in)
-	{
-		return in; // the cup name is on the button
 	}
 
 	@Override
@@ -125,20 +123,27 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 		// selectCPU.enabled = false;
 		this.buttonList.add( this.selectCPU );
 
-		if ( this.myIcon != null )
+		if( this.myIcon != null )
 		{
 			this.buttonList.add( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 213, this.guiTop - 4, this.myIcon, this.myIcon.getDisplayName(), itemRender ) );
 			this.originalGuiBtn.hideEdge = 13;
 		}
 	}
 
+	@Override
+	public void drawScreen( int mouse_x, int mouse_y, float btn )
+	{
+		this.updateCPUButtonText();
+		super.drawScreen( mouse_x, mouse_y, btn );
+	}
+
 	private void updateCPUButtonText()
 	{
 		String btnTextText = GuiText.NoCraftingJobs.getLocal();
 
-		if ( this.ccc.selectedCpu >= 0 )// && ccc.selectedCpu < ccc.cpus.size() )
+		if( this.ccc.selectedCpu >= 0 )// && ccc.selectedCpu < ccc.cpus.size() )
 		{
-			if ( this.ccc.myName.length() > 0 )
+			if( this.ccc.myName.length() > 0 )
 			{
 				String name = this.ccc.myName.substring( 0, Math.min( 20, this.ccc.myName.length() ) );
 				btnTextText = GuiText.CPUs.getLocal() + ": " + name;
@@ -147,16 +152,15 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 				btnTextText = GuiText.CPUs.getLocal() + ": #" + this.ccc.selectedCpu;
 		}
 
-		if ( this.ccc.noCPU )
+		if( this.ccc.noCPU )
 			btnTextText = GuiText.NoCraftingJobs.getLocal();
 
 		this.selectCPU.displayString = btnTextText;
 	}
 
 	@Override
-	public void drawScreen(int mouse_x, int mouse_y, float btn)
+	protected String getGuiDisplayName( String in )
 	{
-		this.updateCPUButtonText();
-		super.drawScreen( mouse_x, mouse_y, btn );
+		return in; // the cup name is on the button
 	}
 }

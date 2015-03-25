@@ -18,6 +18,7 @@
 
 package appeng.core.features.registries;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,22 +28,24 @@ import appeng.api.features.IItemComparison;
 import appeng.api.features.IItemComparisonProvider;
 import appeng.api.features.ISpecialComparisonRegistry;
 
+
 public class SpecialComparisonRegistry implements ISpecialComparisonRegistry
 {
 
 	private final List<IItemComparisonProvider> CompRegistry;
 
-	public SpecialComparisonRegistry() {
+	public SpecialComparisonRegistry()
+	{
 		this.CompRegistry = new ArrayList<IItemComparisonProvider>();
 	}
 
 	@Override
-	public IItemComparison getSpecialComparison(ItemStack stack)
+	public IItemComparison getSpecialComparison( ItemStack stack )
 	{
-		for (IItemComparisonProvider i : this.CompRegistry)
+		for( IItemComparisonProvider i : this.CompRegistry )
 		{
 			IItemComparison comp = i.getComparison( stack );
-			if ( comp != null )
+			if( comp != null )
 			{
 				return comp;
 			}
@@ -52,9 +55,8 @@ public class SpecialComparisonRegistry implements ISpecialComparisonRegistry
 	}
 
 	@Override
-	public void addComparisonProvider(IItemComparisonProvider prov)
+	public void addComparisonProvider( IItemComparisonProvider prov )
 	{
 		this.CompRegistry.add( prov );
 	}
-
 }

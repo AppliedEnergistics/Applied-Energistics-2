@@ -18,27 +18,24 @@
 
 package appeng.helpers;
 
+
 import net.minecraftforge.common.util.ForgeDirection;
 
 import appeng.api.util.IOrientable;
 
+
 public class NullRotation implements IOrientable
 {
 
-	public NullRotation() {
-
-	}
-
-	@Override
-	public void setOrientation(ForgeDirection Forward, ForgeDirection Up)
+	public NullRotation()
 	{
 
 	}
 
 	@Override
-	public ForgeDirection getUp()
+	public boolean canBeRotated()
 	{
-		return ForgeDirection.UP;
+		return false;
 	}
 
 	@Override
@@ -48,8 +45,14 @@ public class NullRotation implements IOrientable
 	}
 
 	@Override
-	public boolean canBeRotated()
+	public ForgeDirection getUp()
 	{
-		return false;
+		return ForgeDirection.UP;
+	}
+
+	@Override
+	public void setOrientation( ForgeDirection Forward, ForgeDirection Up )
+	{
+
 	}
 }

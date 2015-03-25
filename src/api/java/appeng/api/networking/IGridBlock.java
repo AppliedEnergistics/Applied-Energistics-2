@@ -23,13 +23,16 @@
 
 package appeng.api.networking;
 
-import appeng.api.parts.IPart;
-import appeng.api.util.AEColor;
-import appeng.api.util.DimensionalCoord;
+
+import java.util.EnumSet;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.EnumSet;
+import appeng.api.parts.IPart;
+import appeng.api.util.AEColor;
+import appeng.api.util.DimensionalCoord;
+
 
 /**
  * An Implementation is required to create your node for IGridHost
@@ -77,15 +80,15 @@ public interface IGridBlock
 	/**
 	 * Notifies your IGridBlock that changes were made to your connections
 	 */
-	void onGridNotification(GridNotification notification);
+	void onGridNotification( GridNotification notification );
 
 	/**
 	 * Update Blocks network/connection/booting status. grid,
 	 *
-	 * @param grid grid
+	 * @param grid          grid
 	 * @param channelsInUse used channels
 	 */
-	public void setNetworkStatus(IGrid grid, int channelsInUse);
+	public void setNetworkStatus( IGrid grid, int channelsInUse );
 
 	/**
 	 * Determine which sides of the block can be connected too, only used when isWorldAccessible returns true, not used

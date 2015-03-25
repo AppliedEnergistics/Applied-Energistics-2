@@ -58,7 +58,7 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements IEn
 	{
 		super( is );
 
-		if ( !AppEng.instance.isIntegrationEnabled( IntegrationType.RF ) )
+		if( !AppEng.instance.isIntegrationEnabled( IntegrationType.RF ) )
 		{
 			throw new RuntimeException( "RF Not installed!" );
 		}
@@ -71,16 +71,16 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements IEn
 	}
 
 	@Override
-	public void onTunnelNetworkChange()
-	{
-		this.getHost().notifyNeighbors();
-	}
-
-	@Override
 	@SideOnly( Side.CLIENT )
 	public IIcon getTypeTexture()
 	{
 		return Blocks.iron_block.getBlockTextureFromSide( 0 );
+	}
+
+	@Override
+	public void onTunnelNetworkChange()
+	{
+		this.getHost().notifyNeighbors();
 	}
 
 	@Override
@@ -94,15 +94,15 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements IEn
 	@Override
 	public int receiveEnergy( ForgeDirection from, int maxReceive, boolean simulate )
 	{
-		if ( this.output )
+		if( this.output )
 			return 0;
 
-		if ( this.isActive() )
+		if( this.isActive() )
 		{
 			Stack<PartP2PRFPower> stack = this.getDepth();
 
-			for ( PartP2PRFPower t : stack )
-				if ( t == this )
+			for( PartP2PRFPower t : stack )
+				if( t == this )
 					return 0;
 
 			stack.push( this );
@@ -111,39 +111,39 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements IEn
 
 			try
 			{
-				for ( PartP2PRFPower t : this.getOutputs() )
+				for( PartP2PRFPower t : this.getOutputs() )
 				{
-					if ( Platform.getRandomInt() % 2 > 0 )
+					if( Platform.getRandomInt() % 2 > 0 )
 					{
 						int receiver = t.getOutput().receiveEnergy( t.side.getOpposite(), maxReceive, simulate );
 						maxReceive -= receiver;
 						total += receiver;
 
-						if ( maxReceive <= 0 )
+						if( maxReceive <= 0 )
 							break;
 					}
 				}
 
-				if ( maxReceive > 0 )
+				if( maxReceive > 0 )
 				{
-					for ( PartP2PRFPower t : this.getOutputs() )
+					for( PartP2PRFPower t : this.getOutputs() )
 					{
 						int receiver = t.getOutput().receiveEnergy( t.side.getOpposite(), maxReceive, simulate );
 						maxReceive -= receiver;
 						total += receiver;
 
-						if ( maxReceive <= 0 )
+						if( maxReceive <= 0 )
 							break;
 					}
 				}
 
 				this.QueueTunnelDrain( PowerUnits.RF, total );
 			}
-			catch ( GridAccessException ignored )
+			catch( GridAccessException ignored )
 			{
 			}
 
-			if ( stack.pop() != this )
+			if( stack.pop() != this )
 				throw new RuntimeException( "Invalid Recursion detected." );
 
 			return total;
@@ -156,7 +156,7 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements IEn
 	{
 		Stack<PartP2PRFPower> s = THREAD_STACK.get();
 
-		if ( s == null )
+		if( s == null )
 			THREAD_STACK.set( s = new Stack<PartP2PRFPower>() );
 
 		return s;
@@ -164,17 +164,17 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements IEn
 
 	private IEnergyReceiver getOutput()
 	{
-		if ( this.output )
+		if( this.output )
 		{
-			if ( !this.cachedTarget )
+			if( !this.cachedTarget )
 			{
 				TileEntity self = this.getTile();
 				TileEntity te = self.getWorldObj().getTileEntity( self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
-				this.outputTarget = te instanceof IEnergyReceiver ? ( IEnergyReceiver ) te : null;
+				this.outputTarget = te instanceof IEnergyReceiver ? (IEnergyReceiver) te : null;
 				this.cachedTarget = true;
 			}
 
-			if ( this.outputTarget == null || !this.outputTarget.canConnectEnergy( this.side.getOpposite() ) )
+			if( this.outputTarget == null || !this.outputTarget.canConnectEnergy( this.side.getOpposite() ) )
 				return NULL_HANDLER;
 
 			return this.outputTarget;
@@ -185,32 +185,32 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements IEn
 	@Override
 	public int getEnergyStored( ForgeDirection from )
 	{
-		if ( this.output || !this.isActive() )
+		if( this.output || !this.isActive() )
 			return 0;
 
 		int total = 0;
 
 		Stack<PartP2PRFPower> stack = this.getDepth();
 
-		for ( PartP2PRFPower t : stack )
-			if ( t == this )
+		for( PartP2PRFPower t : stack )
+			if( t == this )
 				return 0;
 
 		stack.push( this );
 
 		try
 		{
-			for ( PartP2PRFPower t : this.getOutputs() )
+			for( PartP2PRFPower t : this.getOutputs() )
 			{
 				total += t.getOutput().getEnergyStored( t.side.getOpposite() );
 			}
 		}
-		catch ( GridAccessException e )
+		catch( GridAccessException e )
 		{
 			return 0;
 		}
 
-		if ( stack.pop() != this )
+		if( stack.pop() != this )
 			throw new RuntimeException( "Invalid Recursion detected." );
 
 		return total;
@@ -219,32 +219,32 @@ public class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements IEn
 	@Override
 	public int getMaxEnergyStored( ForgeDirection from )
 	{
-		if ( this.output || !this.isActive() )
+		if( this.output || !this.isActive() )
 			return 0;
 
 		int total = 0;
 
 		Stack<PartP2PRFPower> stack = this.getDepth();
 
-		for ( PartP2PRFPower t : stack )
-			if ( t == this )
+		for( PartP2PRFPower t : stack )
+			if( t == this )
 				return 0;
 
 		stack.push( this );
 
 		try
 		{
-			for ( PartP2PRFPower t : this.getOutputs() )
+			for( PartP2PRFPower t : this.getOutputs() )
 			{
 				total += t.getOutput().getMaxEnergyStored( t.side.getOpposite() );
 			}
 		}
-		catch ( GridAccessException e )
+		catch( GridAccessException e )
 		{
 			return 0;
 		}
 
-		if ( stack.pop() != this )
+		if( stack.pop() != this )
 			throw new RuntimeException( "Invalid Recursion detected." );
 
 		return total;

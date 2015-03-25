@@ -23,7 +23,9 @@
 
 package appeng.api.definitions;
 
+
 import appeng.api.util.AEItemDefinition;
+
 
 public class Blocks
 {
@@ -108,5 +110,4 @@ public class Blocks
 
 	public AEItemDefinition blockLightDetector;
 	public AEItemDefinition blockPaint;
-
 }

@@ -18,6 +18,7 @@
 
 package appeng.core.sync.network;
 
+
 import java.lang.reflect.InvocationTargetException;
 
 import io.netty.buffer.ByteBuf;
@@ -31,11 +32,12 @@ import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandlerBase;
 
+
 public class AppEngClientPacketHandler extends AppEngPacketHandlerBase implements IPacketHandler
 {
 
 	@Override
-	public void onPacketData(INetworkInfo network, FMLProxyPacket packet, EntityPlayer player)
+	public void onPacketData( INetworkInfo network, FMLProxyPacket packet, EntityPlayer player )
 	{
 		ByteBuf stream = packet.payload();
 		int packetType = -1;
@@ -48,22 +50,21 @@ public class AppEngClientPacketHandler extends AppEngPacketHandlerBase implement
 			AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
 			pack.clientPacketData( network, pack, player );
 		}
-		catch (InstantiationException e)
+		catch( InstantiationException e )
 		{
 			AELog.error( e );
 		}
-		catch (IllegalAccessException e)
+		catch( IllegalAccessException e )
 		{
 			AELog.error( e );
 		}
-		catch (IllegalArgumentException e)
+		catch( IllegalArgumentException e )
 		{
 			AELog.error( e );
 		}
-		catch (InvocationTargetException e)
+		catch( InvocationTargetException e )
 		{
 			AELog.error( e );
 		}
-
 	}
 }

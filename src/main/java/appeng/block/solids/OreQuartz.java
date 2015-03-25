@@ -18,6 +18,7 @@
 
 package appeng.block.solids;
 
+
 import java.util.EnumSet;
 import java.util.Random;
 
@@ -35,6 +36,7 @@ import appeng.client.render.BaseBlockRender;
 import appeng.client.render.blocks.RenderQuartzOre;
 import appeng.core.features.AEFeature;
 
+
 public class OreQuartz extends AEBaseBlock
 {
 
@@ -42,7 +44,13 @@ public class OreQuartz extends AEBaseBlock
 	public int boostBrightnessHigh;
 	public boolean enhanceBrightness;
 
-	public OreQuartz(Class self) {
+	public OreQuartz()
+	{
+		this( OreQuartz.class );
+	}
+
+	public OreQuartz( Class self )
+	{
 		super( self, Material.rock );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setHardness( 3.0F );
@@ -53,39 +61,66 @@ public class OreQuartz extends AEBaseBlock
 	}
 
 	@Override
-	public void postInit()
-	{
-		OreDictionary.registerOre( "oreCertusQuartz", new ItemStack( this ) );
-	}
-
-	@Override
 	protected Class<? extends BaseBlockRender> getRenderer()
 	{
 		return RenderQuartzOre.class;
 	}
 
 	@Override
-	public int getMixedBrightnessForBlock(IBlockAccess par1iBlockAccess, int par2, int par3, int par4)
+	public void postInit()
+	{
+		OreDictionary.registerOre( "oreCertusQuartz", new ItemStack( this ) );
+	}
+
+	@Override
+	public int getMixedBrightnessForBlock( IBlockAccess par1iBlockAccess, int par2, int par3, int par4 )
 	{
 		int j1 = super.getMixedBrightnessForBlock( par1iBlockAccess, par2, par3, par4 );
-		if ( this.enhanceBrightness )
+		if( this.enhanceBrightness )
 		{
 			j1 = Math.max( j1 >> 20, j1 >> 4 );
 
-			if ( j1 > 4 )
+			if( j1 > 4 )
 				j1 += this.boostBrightnessHigh;
 			else
 				j1 += this.boostBrightnessLow;
 
-			if ( j1 > 15 )
+			if( j1 > 15 )
 				j1 = 15;
 			return j1 << 20 | j1 << 4;
 		}
 		return j1;
 	}
 
-	public OreQuartz() {
-		this( OreQuartz.class );
+	@Override
+	public int quantityDropped( Random rand )
+	{
+		return 1 + rand.nextInt( 2 );
+	}
+
+	@Override
+	public Item getItemDropped( int id, Random rand, int meta )
+	{
+		return this.getItemDropped().getItem();
+	}
+
+	@Override
+	public void dropBlockAsItemWithChance( World w, int x, int y, int z, int blockID, float something, int meta )
+	{
+		super.dropBlockAsItemWithChance( w, x, y, z, blockID, something, meta );
+
+		if( this.getItemDropped( blockID, w.rand, meta ) != Item.getItemFromBlock( this ) )
+		{
+			int xp = MathHelper.getRandomIntegerInRange( w.rand, 2, 5 );
+
+			this.dropXpOnBlockBreak( w, x, y, z, xp );
+		}
+	}
+
+	@Override
+	public int damageDropped( int id )
+	{
+		return this.getItemDropped().getItemDamage();
 	}
 
 	ItemStack getItemDropped()
@@ -94,54 +129,22 @@ public class OreQuartz extends AEBaseBlock
 	}
 
 	@Override
-	public Item getItemDropped(int id, Random rand, int meta)
+	public int quantityDroppedWithBonus( int fortune, Random rand )
 	{
-		return this.getItemDropped().getItem();
-	}
-
-	@Override
-	public int damageDropped(int id)
-	{
-		return this.getItemDropped().getItemDamage();
-	}
-
-	@Override
-	public int quantityDropped(Random rand)
-	{
-		return 1 + rand.nextInt( 2 );
-	}
-
-	@Override
-	public int quantityDroppedWithBonus(int fortune, Random rand)
-	{
-		if ( fortune > 0 && Item.getItemFromBlock( this ) != this.getItemDropped( 0, rand, fortune ) )
+		if( fortune > 0 && Item.getItemFromBlock( this ) != this.getItemDropped( 0, rand, fortune ) )
 		{
 			int j = rand.nextInt( fortune + 2 ) - 1;
 
-			if ( j < 0 )
+			if( j < 0 )
 			{
 				j = 0;
 			}
 
-			return this.quantityDropped( rand ) * (j + 1);
+			return this.quantityDropped( rand ) * ( j + 1 );
 		}
 		else
 		{
 			return this.quantityDropped( rand );
 		}
 	}
-
-	@Override
-	public void dropBlockAsItemWithChance(World w, int x, int y, int z, int blockID, float something, int meta)
-	{
-		super.dropBlockAsItemWithChance( w, x, y, z, blockID, something, meta );
-
-		if ( this.getItemDropped( blockID, w.rand, meta ) != Item.getItemFromBlock( this ) )
-		{
-			int xp = MathHelper.getRandomIntegerInRange( w.rand, 2, 5 );
-
-			this.dropXpOnBlockBreak( w, x, y, z, xp );
-		}
-	}
-
 }

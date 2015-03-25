@@ -18,6 +18,7 @@
 
 package appeng.me.cache;
 
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,58 +37,36 @@ import appeng.me.cluster.implementations.SpatialPylonCluster;
 import appeng.tile.spatial.TileSpatialIOPort;
 import appeng.tile.spatial.TileSpatialPylon;
 
+
 public class SpatialPylonCache implements ISpatialCache
 {
 
+	final IGrid myGrid;
 	long powerRequired = 0;
 	double efficiency = 0.0;
-
 	DimensionalCoord captureMin;
 	DimensionalCoord captureMax;
 	boolean isValid = false;
-
 	List<TileSpatialIOPort> ioPorts = new LinkedList<TileSpatialIOPort>();
 	HashMap<SpatialPylonCluster, SpatialPylonCluster> clusters = new HashMap<SpatialPylonCluster, SpatialPylonCluster>();
-
 	boolean needsUpdate = false;
 
-	final IGrid myGrid;
-
-	public SpatialPylonCache(IGrid g) {
+	public SpatialPylonCache( IGrid g )
+	{
 		this.myGrid = g;
 	}
 
-	@Override
+	@MENetworkEventSubscribe
+	public void bootingRender( MENetworkBootingStatusChange c )
+	{
+		this.reset( this.myGrid );
+	}	@Override
 	public long requiredPower()
 	{
 		return this.powerRequired;
 	}
 
-	@Override
-	public boolean hasRegion()
-	{
-		return this.captureMin != null;
-	}
-
-	@Override
-	public boolean isValidRegion()
-	{
-		return this.hasRegion() && this.isValid;
-	}
-
-	@Override
-	public DimensionalCoord getMin()
-	{
-		return this.captureMin;
-	}
-
-	@Override
-	public DimensionalCoord getMax()
-	{
-		return this.captureMax;
-	}
-
-	public void reset(IGrid grid)
+	public void reset( IGrid grid )
 	{
 		int reqX = 0;
 		int reqY = 0;
@@ -100,18 +79,18 @@ public class SpatialPylonCache implements ISpatialCache
 		this.clusters = new HashMap<SpatialPylonCluster, SpatialPylonCluster>();
 		this.ioPorts = new LinkedList<TileSpatialIOPort>();
 
-		for (IGridNode gm : grid.getMachines( TileSpatialIOPort.class ))
+		for( IGridNode gm : grid.getMachines( TileSpatialIOPort.class ) )
 		{
 			this.ioPorts.add( (TileSpatialIOPort) gm.getMachine() );
 		}
 
 		IReadOnlyCollection<IGridNode> set = grid.getMachines( TileSpatialPylon.class );
-		for (IGridNode gm : set)
+		for( IGridNode gm : set )
 		{
-			if ( gm.meetsChannelRequirements() )
+			if( gm.meetsChannelRequirements() )
 			{
-				SpatialPylonCluster c = ((TileSpatialPylon) gm.getMachine()).getCluster();
-				if ( c != null )
+				SpatialPylonCluster c = ( (TileSpatialPylon) gm.getMachine() ).getCluster();
+				if( c != null )
 					this.clusters.put( c, c );
 			}
 		}
@@ -121,11 +100,11 @@ public class SpatialPylonCache implements ISpatialCache
 		this.isValid = true;
 
 		int pylonBlocks = 0;
-		for (SpatialPylonCluster cl : this.clusters.values())
+		for( SpatialPylonCluster cl : this.clusters.values() )
 		{
-			if ( this.captureMax == null )
+			if( this.captureMax == null )
 				this.captureMax = cl.max.copy();
-			if ( this.captureMin == null )
+			if( this.captureMin == null )
 				this.captureMin = cl.min.copy();
 
 			pylonBlocks += cl.tileCount();
@@ -139,48 +118,45 @@ public class SpatialPylonCache implements ISpatialCache
 			this.captureMax.z = Math.max( this.captureMax.z, cl.max.z );
 		}
 
-		if ( this.hasRegion() )
+		if( this.hasRegion() )
 		{
 			this.isValid = this.captureMax.x - this.captureMin.x > 1 && this.captureMax.y - this.captureMin.y > 1 && this.captureMax.z - this.captureMin.z > 1;
 
-			for (SpatialPylonCluster cl : this.clusters.values())
+			for( SpatialPylonCluster cl : this.clusters.values() )
 			{
-				switch (cl.currentAxis)
+				switch( cl.currentAxis )
 				{
-				case X:
+					case X:
 
-					this.isValid = this.isValid && ((this.captureMax.y == cl.min.y || this.captureMin.y == cl.max.y) || (this.captureMax.z == cl.min.z || this.captureMin.z == cl.max.z))
-							&& ((this.captureMax.y == cl.max.y || this.captureMin.y == cl.min.y) || (this.captureMax.z == cl.max.z || this.captureMin.z == cl.min.z));
+						this.isValid = this.isValid && ( ( this.captureMax.y == cl.min.y || this.captureMin.y == cl.max.y ) || ( this.captureMax.z == cl.min.z || this.captureMin.z == cl.max.z ) ) && ( ( this.captureMax.y == cl.max.y || this.captureMin.y == cl.min.y ) || ( this.captureMax.z == cl.max.z || this.captureMin.z == cl.min.z ) );
 
-					break;
-				case Y:
+						break;
+					case Y:
 
-					this.isValid = this.isValid && ((this.captureMax.x == cl.min.x || this.captureMin.x == cl.max.x) || (this.captureMax.z == cl.min.z || this.captureMin.z == cl.max.z))
-							&& ((this.captureMax.x == cl.max.x || this.captureMin.x == cl.min.x) || (this.captureMax.z == cl.max.z || this.captureMin.z == cl.min.z));
+						this.isValid = this.isValid && ( ( this.captureMax.x == cl.min.x || this.captureMin.x == cl.max.x ) || ( this.captureMax.z == cl.min.z || this.captureMin.z == cl.max.z ) ) && ( ( this.captureMax.x == cl.max.x || this.captureMin.x == cl.min.x ) || ( this.captureMax.z == cl.max.z || this.captureMin.z == cl.min.z ) );
 
-					break;
-				case Z:
+						break;
+					case Z:
 
-					this.isValid = this.isValid && ((this.captureMax.y == cl.min.y || this.captureMin.y == cl.max.y) || (this.captureMax.x == cl.min.x || this.captureMin.x == cl.max.x))
-							&& ((this.captureMax.y == cl.max.y || this.captureMin.y == cl.min.y) || (this.captureMax.x == cl.max.x || this.captureMin.x == cl.min.x));
+						this.isValid = this.isValid && ( ( this.captureMax.y == cl.min.y || this.captureMin.y == cl.max.y ) || ( this.captureMax.x == cl.min.x || this.captureMin.x == cl.max.x ) ) && ( ( this.captureMax.y == cl.max.y || this.captureMin.y == cl.min.y ) || ( this.captureMax.x == cl.max.x || this.captureMin.x == cl.min.x ) );
 
-					break;
-				case UNFORMED:
-					this.isValid = false;
-					break;
+						break;
+					case UNFORMED:
+						this.isValid = false;
+						break;
 				}
 			}
 
 			reqX = this.captureMax.x - this.captureMin.x;
 			reqY = this.captureMax.y - this.captureMin.y;
 			reqZ = this.captureMax.z - this.captureMin.z;
-			requirePylonBlocks = Math.max( 6, ((reqX * reqZ + reqX * reqY + reqY * reqZ) * 3) / 8 );
+			requirePylonBlocks = Math.max( 6, ( ( reqX * reqZ + reqX * reqY + reqY * reqZ ) * 3 ) / 8 );
 
 			this.efficiency = (double) pylonBlocks / (double) requirePylonBlocks;
 
-			if ( this.efficiency > 1.0 )
+			if( this.efficiency > 1.0 )
 				this.efficiency = 1.0;
-			if ( this.efficiency < 0.0 )
+			if( this.efficiency < 0.0 )
 				this.efficiency = 0.0;
 
 			minPower = (double) reqX * (double) reqY * reqZ * AEConfig.instance.spatialPowerMultiplier;
@@ -188,62 +164,81 @@ public class SpatialPylonCache implements ISpatialCache
 		}
 
 		double affective_efficiency = Math.pow( this.efficiency, 0.25 );
-		this.powerRequired = (long) (affective_efficiency * minPower + (1.0 - affective_efficiency) * maxPower);
+		this.powerRequired = (long) ( affective_efficiency * minPower + ( 1.0 - affective_efficiency ) * maxPower );
 
-		for (SpatialPylonCluster cl : this.clusters.values())
+		for( SpatialPylonCluster cl : this.clusters.values() )
 		{
 			boolean myWasValid = cl.isValid;
 			cl.isValid = this.isValid;
-			if ( myWasValid != this.isValid )
+			if( myWasValid != this.isValid )
 				cl.updateStatus( false );
 		}
-	}
-
-	@Override
-	public float currentEfficiency()
+	}	@Override
+	public boolean hasRegion()
 	{
-		return (float) this.efficiency * 100;
-	}
-
-	@MENetworkEventSubscribe
-	public void bootingRender(MENetworkBootingStatusChange c)
-	{
-		this.reset( this.myGrid );
+		return this.captureMin != null;
 	}
 
 	@Override
 	public void onUpdateTick()
 	{
+	}	@Override
+	public boolean isValidRegion()
+	{
+		return this.hasRegion() && this.isValid;
 	}
 
 	@Override
-	public void addNode(IGridNode node, IGridHost machine)
+	public void removeNode( IGridNode node, IGridHost machine )
+	{
+
+	}	@Override
+	public DimensionalCoord getMin()
+	{
+		return this.captureMin;
+	}
+
+	@Override
+	public void addNode( IGridNode node, IGridHost machine )
+	{
+
+	}	@Override
+	public DimensionalCoord getMax()
+	{
+		return this.captureMax;
+	}
+
+	@Override
+	public void onSplit( IGridStorage storageB )
 	{
 
 	}
 
 	@Override
-	public void removeNode(IGridNode node, IGridHost machine)
+	public void onJoin( IGridStorage storageB )
 	{
 
+	}	@Override
+	public float currentEfficiency()
+	{
+		return (float) this.efficiency * 100;
 	}
 
 	@Override
-	public void onSplit(IGridStorage storageB)
+	public void populateGridStorage( IGridStorage storage )
 	{
 
 	}
 
-	@Override
-	public void onJoin(IGridStorage storageB)
-	{
 
-	}
 
-	@Override
-	public void populateGridStorage(IGridStorage storage)
-	{
 
-	}
+
+
+
+
+
+
+
 
 }

@@ -61,28 +61,34 @@ import appeng.me.GridAccessException;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
+
 public class PartStorageMonitor extends PartMonitor implements IPartStorageMonitor, IStackWatcherHost
 {
 
 	IAEItemStack configuredItem;
 	boolean isLocked;
+	IStackWatcher myWatcher;
+	@SideOnly( Side.CLIENT )
+	private boolean updateList;
+	@SideOnly( Side.CLIENT )
+	private Integer dspList;
 
-	@Override
-	public void writeToNBT(NBTTagCompound data)
+	protected PartStorageMonitor( Class myClass, ItemStack is )
 	{
-		super.writeToNBT( data );
+		super( myClass, is, true );
+	}
 
-		data.setBoolean( "isLocked", this.isLocked );
-
-		NBTTagCompound myItem = new NBTTagCompound();
-		if ( this.configuredItem != null )
-			this.configuredItem.writeToNBT( myItem );
-
-		data.setTag( "configuredItem", myItem );
+	public PartStorageMonitor( ItemStack is )
+	{
+		super( PartStorageMonitor.class, is, true );
+		this.frontBright = CableBusTextures.PartStorageMonitor_Bright;
+		this.frontColored = CableBusTextures.PartStorageMonitor_Colored;
+		this.frontDark = CableBusTextures.PartStorageMonitor_Dark;
+		// frontSolid = CableBusTextures.PartStorageMonitor_Solid;
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound data)
+	public void readFromNBT( NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 
@@ -93,26 +99,40 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	public void writeToStream(ByteBuf data) throws IOException
+	public void writeToNBT( NBTTagCompound data )
+	{
+		super.writeToNBT( data );
+
+		data.setBoolean( "isLocked", this.isLocked );
+
+		NBTTagCompound myItem = new NBTTagCompound();
+		if( this.configuredItem != null )
+			this.configuredItem.writeToNBT( myItem );
+
+		data.setTag( "configuredItem", myItem );
+	}
+
+	@Override
+	public void writeToStream( ByteBuf data ) throws IOException
 	{
 		super.writeToStream( data );
 
 		data.writeByte( this.spin );
 		data.writeBoolean( this.isLocked );
 		data.writeBoolean( this.configuredItem != null );
-		if ( this.configuredItem != null )
+		if( this.configuredItem != null )
 			this.configuredItem.writeToPacket( data );
 	}
 
 	@Override
-	public boolean readFromStream(ByteBuf data) throws IOException
+	public boolean readFromStream( ByteBuf data ) throws IOException
 	{
 		boolean stuff = super.readFromStream( data );
 
 		this.spin = data.readByte();
 		this.isLocked = data.readBoolean();
 		boolean val = data.readBoolean();
-		if ( val )
+		if( val )
 			this.configuredItem = AEItemStack.loadItemStackFromPacket( data );
 		else
 			this.configuredItem = null;
@@ -123,26 +143,26 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	public boolean onPartActivate(EntityPlayer player, Vec3 pos)
+	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
 	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			return true;
 
-		if ( !this.proxy.isActive() )
+		if( !this.proxy.isActive() )
 			return false;
 
-		if ( !Platform.hasPermissions( this.getLocation(), player ) )
+		if( !Platform.hasPermissions( this.getLocation(), player ) )
 			return false;
 
 		TileEntity te = this.tile;
 		ItemStack eq = player.getCurrentEquippedItem();
-		if ( Platform.isWrench( player, eq, te.xCoord, te.yCoord, te.zCoord ) )
+		if( Platform.isWrench( player, eq, te.xCoord, te.yCoord, te.zCoord ) )
 		{
 			this.isLocked = !this.isLocked;
-			player.addChatMessage( (this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).get() );
+			player.addChatMessage( ( this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked ).get() );
 			this.getHost().markForUpdate();
 		}
-		else if ( !this.isLocked )
+		else if( !this.isLocked )
 		{
 			this.configuredItem = AEItemStack.create( eq );
 			this.configureWatchers();
@@ -154,65 +174,75 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		return true;
 	}
 
-	protected void extractItem(EntityPlayer player)
+	// update the system...
+	public void configureWatchers()
+	{
+		if( this.myWatcher != null )
+			this.myWatcher.clear();
+
+		try
+		{
+			if( this.configuredItem != null )
+			{
+				if( this.myWatcher != null )
+					this.myWatcher.add( this.configuredItem );
+
+				this.updateReportingValue( this.proxy.getStorage().getItemInventory() );
+			}
+		}
+		catch( GridAccessException e )
+		{
+			// >.>
+		}
+	}
+
+	protected void extractItem( EntityPlayer player )
 	{
 
 	}
 
-	protected PartStorageMonitor(Class myClass, ItemStack is) {
-		super( myClass, is, true );
-	}
-
-	public PartStorageMonitor(ItemStack is) {
-		super( PartStorageMonitor.class, is, true );
-		this.frontBright = CableBusTextures.PartStorageMonitor_Bright;
-		this.frontColored = CableBusTextures.PartStorageMonitor_Colored;
-		this.frontDark = CableBusTextures.PartStorageMonitor_Dark;
-		// frontSolid = CableBusTextures.PartStorageMonitor_Solid;
-	}
-
-	@Override
-	public boolean requireDynamicRender()
+	private void updateReportingValue( IMEMonitor<IAEItemStack> itemInventory )
 	{
-		return true;
+		if( this.configuredItem != null )
+		{
+			IAEItemStack result = itemInventory.getStorageList().findPrecise( this.configuredItem );
+			if( result == null )
+				this.configuredItem.setStackSize( 0 );
+			else
+				this.configuredItem.setStackSize( result.getStackSize() );
+		}
 	}
 
-	@SideOnly(Side.CLIENT)
-	private boolean updateList;
-
-	@SideOnly(Side.CLIENT)
-	private Integer dspList;
-
 	@Override
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	protected void finalize() throws Throwable
 	{
 		super.finalize();
-		if ( this.dspList != null )
+		if( this.dspList != null )
 			GLAllocation.deleteDisplayLists( this.dspList );
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderDynamic(double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer)
+	@SideOnly( Side.CLIENT )
+	public void renderDynamic( double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
-		if ( this.dspList == null )
+		if( this.dspList == null )
 			this.dspList = GLAllocation.generateDisplayLists( 1 );
 
 		Tessellator tess = Tessellator.instance;
-		if ( Platform.isDrawing( tess ) )
+		if( Platform.isDrawing( tess ) )
 			return;
 
-		if ( (this.clientFlags & (this.POWERED_FLAG | this.CHANNEL_FLAG)) != (this.POWERED_FLAG | this.CHANNEL_FLAG) )
+		if( ( this.clientFlags & ( this.POWERED_FLAG | this.CHANNEL_FLAG ) ) != ( this.POWERED_FLAG | this.CHANNEL_FLAG ) )
 			return;
 
 		IAEItemStack ais = (IAEItemStack) this.getDisplayed();
-		if ( ais != null )
+		if( ais != null )
 		{
 			GL11.glPushMatrix();
 			GL11.glTranslated( x + 0.5, y + 0.5, z + 0.5 );
 
-			if ( this.updateList )
+			if( this.updateList )
 			{
 				this.updateList = false;
 				GL11.glNewList( this.dspList, GL11.GL_COMPILE_AND_EXECUTE );
@@ -226,44 +256,56 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		}
 	}
 
-	private void tesrRenderScreen(Tessellator tess, IAEItemStack ais)
+	@Override
+	public boolean requireDynamicRender()
+	{
+		return true;
+	}
+
+	@Override
+	public IAEStack getDisplayed()
+	{
+		return this.configuredItem;
+	}
+
+	private void tesrRenderScreen( Tessellator tess, IAEItemStack ais )
 	{
 		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 		ForgeDirection d = this.side;
 		GL11.glTranslated( d.offsetX * 0.77, d.offsetY * 0.77, d.offsetZ * 0.77 );
 
-		if ( d == ForgeDirection.UP )
+		if( d == ForgeDirection.UP )
 		{
 			GL11.glScalef( 1.0f, -1.0f, 1.0f );
 			GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
 			GL11.glRotatef( this.spin * 90.0F, 0, 0, 1 );
 		}
 
-		if ( d == ForgeDirection.DOWN )
+		if( d == ForgeDirection.DOWN )
 		{
 			GL11.glScalef( 1.0f, -1.0f, 1.0f );
 			GL11.glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
 			GL11.glRotatef( this.spin * -90.0F, 0, 0, 1 );
 		}
 
-		if ( d == ForgeDirection.EAST )
+		if( d == ForgeDirection.EAST )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 			GL11.glRotatef( -90.0f, 0.0f, 1.0f, 0.0f );
 		}
 
-		if ( d == ForgeDirection.WEST )
+		if( d == ForgeDirection.WEST )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 			GL11.glRotatef( 90.0f, 0.0f, 1.0f, 0.0f );
 		}
 
-		if ( d == ForgeDirection.NORTH )
+		if( d == ForgeDirection.NORTH )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 		}
 
-		if ( d == ForgeDirection.SOUTH )
+		if( d == ForgeDirection.SOUTH )
 		{
 			GL11.glScalef( -1.0f, -1.0f, -1.0f );
 			GL11.glRotatef( 180.0f, 0.0f, 1.0f, 0.0f );
@@ -288,9 +330,8 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 			tess.setColorOpaque_F( 1.0f, 1.0f, 1.0f );
 
 			ClientHelper.proxy.doRenderItem( sis, this.tile.getWorldObj() );
-
 		}
-		catch (Exception e)
+		catch( Exception e )
 		{
 			AELog.error( e );
 		}
@@ -301,15 +342,15 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 		GL11.glScalef( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
 
 		long qty = ais.getStackSize();
-		if ( qty > 999999999999L )
+		if( qty > 999999999999L )
 			qty = 999999999999L;
 
 		String msg = Long.toString( qty );
-		if ( qty > 1000000000 )
+		if( qty > 1000000000 )
 			msg = Long.toString( qty / 1000000000 ) + 'B';
-		else if ( qty > 1000000 )
+		else if( qty > 1000000 )
 			msg = Long.toString( qty / 1000000 ) + 'M';
-		else if ( qty > 9999 )
+		else if( qty > 9999 )
 			msg = Long.toString( qty / 1000 ) + 'K';
 
 		FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
@@ -321,66 +362,24 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	public IAEStack getDisplayed()
-	{
-		return this.configuredItem;
-	}
-
-	@Override
 	public boolean isLocked()
 	{
 		return this.isLocked;
 	}
 
-	IStackWatcher myWatcher;
-
 	@Override
-	public void updateWatcher(IStackWatcher newWatcher)
+	public void updateWatcher( IStackWatcher newWatcher )
 	{
 		this.myWatcher = newWatcher;
 		this.configureWatchers();
 	}
 
-	// update the system...
-	public void configureWatchers()
-	{
-		if ( this.myWatcher != null )
-			this.myWatcher.clear();
-
-		try
-		{
-			if ( this.configuredItem != null )
-			{
-				if ( this.myWatcher != null )
-					this.myWatcher.add( this.configuredItem );
-
-				this.updateReportingValue( this.proxy.getStorage().getItemInventory() );
-			}
-		}
-		catch (GridAccessException e)
-		{
-			// >.>
-		}
-	}
-
-	private void updateReportingValue(IMEMonitor<IAEItemStack> itemInventory)
-	{
-		if ( this.configuredItem != null )
-		{
-			IAEItemStack result = itemInventory.getStorageList().findPrecise( this.configuredItem );
-			if ( result == null )
-				this.configuredItem.setStackSize( 0 );
-			else
-				this.configuredItem.setStackSize( result.getStackSize() );
-		}
-	}
-
 	@Override
-	public void onStackChange(IItemList o, IAEStack fullStack, IAEStack diffStack, BaseActionSource src, StorageChannel chan)
+	public void onStackChange( IItemList o, IAEStack fullStack, IAEStack diffStack, BaseActionSource src, StorageChannel chan )
 	{
-		if ( this.configuredItem != null )
+		if( this.configuredItem != null )
 		{
-			if ( fullStack == null )
+			if( fullStack == null )
 				this.configuredItem.setStackSize( 0 );
 			else
 				this.configuredItem.setStackSize( fullStack.getStackSize() );
@@ -390,9 +389,8 @@ public class PartStorageMonitor extends PartMonitor implements IPartStorageMonit
 	}
 
 	@Override
-	public boolean showNetworkInfo(MovingObjectPosition where)
+	public boolean showNetworkInfo( MovingObjectPosition where )
 	{
 		return false;
 	}
-
 }

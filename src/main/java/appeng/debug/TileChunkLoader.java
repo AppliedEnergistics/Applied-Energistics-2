@@ -18,6 +18,7 @@
 
 package appeng.debug;
 
+
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -37,16 +38,17 @@ import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 
+
 public class TileChunkLoader extends AEBaseTile
 {
 
 	boolean requestTicket = true;
 	Ticket ct;
 
-	@TileEvent(TileEventType.TICK)
+	@TileEvent( TileEventType.TICK )
 	public void Tick_TileChunkLoader()
 	{
-		if ( this.requestTicket )
+		if( this.requestTicket )
 		{
 			this.requestTicket = false;
 			this.initTicket();
@@ -55,18 +57,18 @@ public class TileChunkLoader extends AEBaseTile
 
 	void initTicket()
 	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			return;
 
 		this.ct = ForgeChunkManager.requestTicket( AppEng.instance, this.worldObj, Type.NORMAL );
 
-		if ( this.ct == null )
+		if( this.ct == null )
 		{
 			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-			if ( server != null )
+			if( server != null )
 			{
 				List<EntityPlayerMP> pl = server.getConfigurationManager().playerEntityList;
-				for (EntityPlayerMP p : pl)
+				for( EntityPlayerMP p : pl )
 				{
 					p.addChatMessage( new ChatComponentText( "Can't chunk load.." ) );
 				}
@@ -81,7 +83,7 @@ public class TileChunkLoader extends AEBaseTile
 	@Override
 	public void invalidate()
 	{
-		if ( Platform.isClient() )
+		if( Platform.isClient() )
 			return;
 
 		AELog.info( "Released Ticket " + this.ct.toString() );

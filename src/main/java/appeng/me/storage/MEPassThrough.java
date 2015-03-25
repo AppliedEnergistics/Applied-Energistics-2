@@ -18,6 +18,7 @@
 
 package appeng.me.storage;
 
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
@@ -27,41 +28,43 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
+
 public class MEPassThrough<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
 
-	private IMEInventory<T> internal;
 	final protected StorageChannel channel;
+	private IMEInventory<T> internal;
+
+	public MEPassThrough( IMEInventory<T> i, StorageChannel channel )
+	{
+		this.channel = channel;
+		this.setInternal( i );
+	}
 
 	protected IMEInventory<T> getInternal()
 	{
 		return this.internal;
 	}
 
-	public MEPassThrough(IMEInventory<T> i, StorageChannel channel) {
-		this.channel = channel;
-		this.setInternal( i );
-	}
-
-	public void setInternal(IMEInventory<T> i)
+	public void setInternal( IMEInventory<T> i )
 	{
 		this.internal = i;
 	}
 
 	@Override
-	public T injectItems(T input, Actionable type, BaseActionSource src)
+	public T injectItems( T input, Actionable type, BaseActionSource src )
 	{
 		return this.internal.injectItems( input, type, src );
 	}
 
 	@Override
-	public T extractItems(T request, Actionable type, BaseActionSource src)
+	public T extractItems( T request, Actionable type, BaseActionSource src )
 	{
 		return this.internal.extractItems( request, type, src );
 	}
 
 	@Override
-	public IItemList<T> getAvailableItems(IItemList out)
+	public IItemList<T> getAvailableItems( IItemList out )
 	{
 		return this.internal.getAvailableItems( out );
 	}
@@ -79,13 +82,13 @@ public class MEPassThrough<T extends IAEStack<T>> implements IMEInventoryHandler
 	}
 
 	@Override
-	public boolean isPrioritized(T input)
+	public boolean isPrioritized( T input )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canAccept(T input)
+	public boolean canAccept( T input )
 	{
 		return true;
 	}
@@ -103,9 +106,8 @@ public class MEPassThrough<T extends IAEStack<T>> implements IMEInventoryHandler
 	}
 
 	@Override
-	public boolean validForPass(int i)
+	public boolean validForPass( int i )
 	{
 		return true;
 	}
-
 }

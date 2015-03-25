@@ -18,6 +18,7 @@
 
 package appeng.parts.reporting;
 
+
 import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
@@ -48,205 +49,60 @@ import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
 import appeng.util.Platform;
 
+
 public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChannelState
 {
-
-	// CableBusTextures frontSolid = CableBusTextures.PartMonitor_Solid;
-	CableBusTextures frontDark = CableBusTextures.PartMonitor_Colored;
-	CableBusTextures frontBright = CableBusTextures.PartMonitor_Bright;
-	CableBusTextures frontColored = CableBusTextures.PartMonitor_Colored;
-
-	boolean notLightSource = !this.getClass().equals( PartMonitor.class );
 
 	final int POWERED_FLAG = 4;
 	final int BOOTING_FLAG = 8;
 	final int CHANNEL_FLAG = 16;
-
+	// CableBusTextures frontSolid = CableBusTextures.PartMonitor_Solid;
+	CableBusTextures frontDark = CableBusTextures.PartMonitor_Colored;
+	CableBusTextures frontBright = CableBusTextures.PartMonitor_Bright;
+	CableBusTextures frontColored = CableBusTextures.PartMonitor_Colored;
+	boolean notLightSource = !this.getClass().equals( PartMonitor.class );
 	byte spin = 0; // 0-3
 	int clientFlags = 0; // sent as byte.
 	float opacity = -1;
 
-	@Override
-	public void onPlacement(EntityPlayer player, ItemStack held, ForgeDirection side)
+	public PartMonitor( ItemStack is )
 	{
-		super.onPlacement( player, held, side );
-
-		byte rotation = (byte) (MathHelper.floor_double( (player.rotationYaw * 4F) / 360F + 2.5D ) & 3);
-		if ( side == ForgeDirection.UP )
-			this.spin = rotation;
-		else if ( side == ForgeDirection.DOWN )
-			this.spin = rotation;
-	}
-
-	@Override
-	public void writeToNBT(NBTTagCompound data)
-	{
-		super.writeToNBT( data );
-		data.setFloat( "opacity", this.opacity );
-		data.setByte( "spin", this.spin );
-	}
-
-	@Override
-	public void readFromNBT(NBTTagCompound data)
-	{
-		super.readFromNBT( data );
-		if ( data.hasKey( "opacity" ) )
-			this.opacity = data.getFloat( "opacity" );
-		this.spin = data.getByte( "spin" );
-	}
-
-	@Override
-	public boolean onPartActivate(EntityPlayer player, Vec3 pos)
-	{
-		TileEntity te = this.getTile();
-
-		if ( !player.isSneaking() && Platform.isWrench( player, player.inventory.getCurrentItem(), te.xCoord, te.yCoord, te.zCoord ) )
-		{
-			if ( Platform.isServer() )
-			{
-				if ( this.spin > 3 )
-					this.spin = 0;
-
-				switch (this.spin)
-				{
-				case 0:
-					this.spin = 1;
-					break;
-				case 1:
-					this.spin = 3;
-					break;
-				case 2:
-					this.spin = 0;
-					break;
-				case 3:
-					this.spin = 2;
-					break;
-				}
-
-				this.host.markForUpdate();
-				this.saveChanges();
-			}
-			return true;
-		}
-		else
-			return super.onPartActivate( player, pos );
-	}
-
-	@MENetworkEventSubscribe
-	public void bootingRender(MENetworkBootingStatusChange c)
-	{
-		if ( this.notLightSource )
-			this.getHost().markForUpdate();
-	}
-
-	@Override
-	public void onNeighborChanged()
-	{
-		this.opacity = -1;
-		this.getHost().markForUpdate();
-	}
-
-	@MENetworkEventSubscribe
-	public void powerRender(MENetworkPowerStatusChange c)
-	{
-		this.getHost().markForUpdate();
-	}
-
-	@Override
-	public void writeToStream(ByteBuf data) throws IOException
-	{
-		super.writeToStream( data );
-		this.clientFlags = this.spin & 3;
-
-		try
-		{
-			if ( this.proxy.getEnergy().isNetworkPowered() )
-				this.clientFlags = this.clientFlags | this.POWERED_FLAG;
-
-			if ( this.proxy.getPath().isNetworkBooting() )
-				this.clientFlags = this.clientFlags | this.BOOTING_FLAG;
-
-			if ( this.proxy.getNode().meetsChannelRequirements() )
-				this.clientFlags = this.clientFlags | this.CHANNEL_FLAG;
-		}
-		catch (GridAccessException e)
-		{
-			// um.. nothing.
-		}
-
-		data.writeByte( (byte) this.clientFlags );
-	}
-
-	@Override
-	public boolean readFromStream(ByteBuf data) throws IOException
-	{
-		super.readFromStream( data );
-		int oldFlags = this.clientFlags;
-		this.clientFlags = data.readByte();
-		this.spin = (byte) (this.clientFlags & 3);
-		if ( this.clientFlags == oldFlags )
-			return false;
-		return true;
-	}
-
-	@Override
-	public int getLightLevel()
-	{
-		return this.blockLight( this.isPowered() ? (this.notLightSource ? 9 : 15) : 0 );
-	}
-
-	private int blockLight(int emit)
-	{
-		if ( this.opacity < 0 )
-		{
-			TileEntity te = this.getTile();
-			this.opacity = 255 - te.getWorldObj().getBlockLightOpacity( te.xCoord + this.side.offsetX, te.yCoord + this.side.offsetY, te.zCoord + this.side.offsetZ );
-		}
-
-		return (int) (emit * (this.opacity / 255.0f));
-	}
-
-	@Override
-	public boolean isPowered()
-	{
-		try
-		{
-			if ( Platform.isServer() )
-				return this.proxy.getEnergy().isNetworkPowered();
-			else
-				return ((this.clientFlags & this.POWERED_FLAG) == this.POWERED_FLAG);
-		}
-		catch (GridAccessException e)
-		{
-			return false;
-		}
-	}
-
-	public PartMonitor(ItemStack is) {
 		this( PartMonitor.class, is, false );
 	}
 
-	protected PartMonitor(Class c, ItemStack is, boolean requireChannel) {
+	protected PartMonitor( Class c, ItemStack is, boolean requireChannel )
+	{
 		super( c, is );
 
-		if ( requireChannel )
+		if( requireChannel )
 		{
 			this.proxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 			this.proxy.setIdlePowerUsage( 1.0 / 2.0 );
 		}
 		else
 			this.proxy.setIdlePowerUsage( 1.0 / 16.0 ); // lights drain a little bit.
+	}
 
+	@MENetworkEventSubscribe
+	public void bootingRender( MENetworkBootingStatusChange c )
+	{
+		if( this.notLightSource )
+			this.getHost().markForUpdate();
+	}
+
+	@MENetworkEventSubscribe
+	public void powerRender( MENetworkPowerStatusChange c )
+	{
+		this.getHost().markForUpdate();
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderInventory(IPartRenderHelper rh, RenderBlocks renderer)
+	@SideOnly( Side.CLIENT )
+	public void renderInventory( IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
-				this.is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 		rh.renderInventoryBox( renderer );
 
 		rh.setInvColor( this.getColor().whiteVariant );
@@ -263,18 +119,17 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer)
+	@SideOnly( Side.CLIENT )
+	public void renderStatic( int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer )
 	{
 		this.renderCache = rh.useSimplifiedRendering( x, y, z, this, this.renderCache );
 
-		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(),
-				this.is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
+		rh.setTexture( CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSides.getIcon(), CableBusTextures.PartMonitorSides.getIcon() );
 
 		rh.setBounds( 2, 2, 14, 14, 14, 16 );
 		rh.renderBlock( x, y, z, renderer );
 
-		if ( this.getLightLevel() > 0 )
+		if( this.getLightLevel() > 0 )
 		{
 			int l = 13;
 			Tessellator.instance.setBrightness( l << 20 | l << 4 );
@@ -293,28 +148,26 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 
 		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;
 
-		if ( this.notLightSource )
+		if( this.notLightSource )
 		{
-			rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(),
-					CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSidesStatus.getIcon(),
-					CableBusTextures.PartMonitorSidesStatus.getIcon() );
+			rh.setTexture( CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorBack.getIcon(), this.is.getIconIndex(), CableBusTextures.PartMonitorSidesStatus.getIcon(), CableBusTextures.PartMonitorSidesStatus.getIcon() );
 		}
 
 		rh.setBounds( 4, 4, 13, 12, 12, 14 );
 		rh.renderBlock( x, y, z, renderer );
 
-		if ( this.notLightSource )
+		if( this.notLightSource )
 		{
-			boolean hasChan = (this.clientFlags & (this.POWERED_FLAG | this.CHANNEL_FLAG)) == (this.POWERED_FLAG | this.CHANNEL_FLAG);
-			boolean hasPower = (this.clientFlags & this.POWERED_FLAG) == this.POWERED_FLAG;
+			boolean hasChan = ( this.clientFlags & ( this.POWERED_FLAG | this.CHANNEL_FLAG ) ) == ( this.POWERED_FLAG | this.CHANNEL_FLAG );
+			boolean hasPower = ( this.clientFlags & this.POWERED_FLAG ) == this.POWERED_FLAG;
 
-			if ( hasChan )
+			if( hasChan )
 			{
 				int l = 14;
 				Tessellator.instance.setBrightness( l << 20 | l << 4 );
 				Tessellator.instance.setColorOpaque_I( this.getColor().blackVariant );
 			}
-			else if ( hasPower )
+			else if( hasPower )
 			{
 				int l = 9;
 				Tessellator.instance.setBrightness( l << 20 | l << 4 );
@@ -331,23 +184,164 @@ public class PartMonitor extends AEBasePart implements IPartMonitor, IPowerChann
 			rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.UP, renderer );
 			rh.renderFace( x, y, z, CableBusTextures.PartMonitorSidesStatusLights.getIcon(), ForgeDirection.DOWN, renderer );
 		}
+	}
 
+	private int blockLight( int emit )
+	{
+		if( this.opacity < 0 )
+		{
+			TileEntity te = this.getTile();
+			this.opacity = 255 - te.getWorldObj().getBlockLightOpacity( te.xCoord + this.side.offsetX, te.yCoord + this.side.offsetY, te.zCoord + this.side.offsetZ );
+		}
+
+		return (int) ( emit * ( this.opacity / 255.0f ) );
 	}
 
 	@Override
-	public void getBoxes(IPartCollisionHelper bch)
+	public boolean isPowered()
+	{
+		try
+		{
+			if( Platform.isServer() )
+				return this.proxy.getEnergy().isNetworkPowered();
+			else
+				return ( ( this.clientFlags & this.POWERED_FLAG ) == this.POWERED_FLAG );
+		}
+		catch( GridAccessException e )
+		{
+			return false;
+		}
+	}
+
+	@Override
+	public void getBoxes( IPartCollisionHelper bch )
 	{
 		bch.addBox( 2, 2, 14, 14, 14, 16 );
 		bch.addBox( 4, 4, 13, 12, 12, 14 );
 	}
 
 	@Override
+	public void onNeighborChanged()
+	{
+		this.opacity = -1;
+		this.getHost().markForUpdate();
+	}
+
+	@Override
+	public void readFromNBT( NBTTagCompound data )
+	{
+		super.readFromNBT( data );
+		if( data.hasKey( "opacity" ) )
+			this.opacity = data.getFloat( "opacity" );
+		this.spin = data.getByte( "spin" );
+	}
+
+	@Override
+	public void writeToNBT( NBTTagCompound data )
+	{
+		super.writeToNBT( data );
+		data.setFloat( "opacity", this.opacity );
+		data.setByte( "spin", this.spin );
+	}
+
+	@Override
+	public void writeToStream( ByteBuf data ) throws IOException
+	{
+		super.writeToStream( data );
+		this.clientFlags = this.spin & 3;
+
+		try
+		{
+			if( this.proxy.getEnergy().isNetworkPowered() )
+				this.clientFlags = this.clientFlags | this.POWERED_FLAG;
+
+			if( this.proxy.getPath().isNetworkBooting() )
+				this.clientFlags = this.clientFlags | this.BOOTING_FLAG;
+
+			if( this.proxy.getNode().meetsChannelRequirements() )
+				this.clientFlags = this.clientFlags | this.CHANNEL_FLAG;
+		}
+		catch( GridAccessException e )
+		{
+			// um.. nothing.
+		}
+
+		data.writeByte( (byte) this.clientFlags );
+	}
+
+	@Override
+	public boolean readFromStream( ByteBuf data ) throws IOException
+	{
+		super.readFromStream( data );
+		int oldFlags = this.clientFlags;
+		this.clientFlags = data.readByte();
+		this.spin = (byte) ( this.clientFlags & 3 );
+		if( this.clientFlags == oldFlags )
+			return false;
+		return true;
+	}
+
+	@Override
+	public int getLightLevel()
+	{
+		return this.blockLight( this.isPowered() ? ( this.notLightSource ? 9 : 15 ) : 0 );
+	}
+
+	@Override
+	public boolean onPartActivate( EntityPlayer player, Vec3 pos )
+	{
+		TileEntity te = this.getTile();
+
+		if( !player.isSneaking() && Platform.isWrench( player, player.inventory.getCurrentItem(), te.xCoord, te.yCoord, te.zCoord ) )
+		{
+			if( Platform.isServer() )
+			{
+				if( this.spin > 3 )
+					this.spin = 0;
+
+				switch( this.spin )
+				{
+					case 0:
+						this.spin = 1;
+						break;
+					case 1:
+						this.spin = 3;
+						break;
+					case 2:
+						this.spin = 0;
+						break;
+					case 3:
+						this.spin = 2;
+						break;
+				}
+
+				this.host.markForUpdate();
+				this.saveChanges();
+			}
+			return true;
+		}
+		else
+			return super.onPartActivate( player, pos );
+	}
+
+	@Override
+	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
+	{
+		super.onPlacement( player, held, side );
+
+		byte rotation = (byte) ( MathHelper.floor_double( ( player.rotationYaw * 4F ) / 360F + 2.5D ) & 3 );
+		if( side == ForgeDirection.UP )
+			this.spin = rotation;
+		else if( side == ForgeDirection.DOWN )
+			this.spin = rotation;
+	}
+
+	@Override
 	public boolean isActive()
 	{
-		if ( this.notLightSource )
-			return ((this.clientFlags & (this.CHANNEL_FLAG | this.POWERED_FLAG)) == (this.CHANNEL_FLAG | this.POWERED_FLAG));
+		if( this.notLightSource )
+			return ( ( this.clientFlags & ( this.CHANNEL_FLAG | this.POWERED_FLAG ) ) == ( this.CHANNEL_FLAG | this.POWERED_FLAG ) );
 		else
 			return this.isPowered();
 	}
-
 }

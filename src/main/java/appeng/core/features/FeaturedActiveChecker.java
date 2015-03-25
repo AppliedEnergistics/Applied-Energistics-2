@@ -35,9 +35,9 @@ public class FeaturedActiveChecker
 
 	public boolean get()
 	{
-		for ( AEFeature f : this.features )
+		for( AEFeature f : this.features )
 		{
-			if ( !AEConfig.instance.isFeatureEnabled( f ) )
+			if( !AEConfig.instance.isFeatureEnabled( f ) )
 			{
 				return false;
 			}

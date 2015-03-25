@@ -18,6 +18,7 @@
 
 package appeng.parts.automation;
 
+
 import java.util.List;
 
 import net.minecraft.inventory.IInventory;
@@ -32,14 +33,78 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 
+
 public class PartUpgradeable extends PartBasicState implements IAEAppEngInventory, IConfigManagerHost
 {
 
 	final IConfigManager settings = new ConfigManager( this );
 	private final UpgradeInventory upgrades = new UpgradeInventory( this.is, this, this.getUpgradeSlots() );
 
+	public PartUpgradeable( Class c, ItemStack is )
+	{
+		super( c, is );
+		this.upgrades.setMaxStackSize( 1 );
+	}
+
+	protected int getUpgradeSlots()
+	{
+		return 4;
+	}
+
 	@Override
-	public int getInstalledUpgrades(Upgrades u)
+	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	{
+
+	}
+
+	@Override
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
+	{
+		if( inv == this.upgrades )
+		{
+			this.upgradesChanged();
+		}
+	}
+
+	public void upgradesChanged()
+	{
+
+	}
+
+	protected boolean isSleeping()
+	{
+		if( this.getInstalledUpgrades( Upgrades.REDSTONE ) > 0 )
+		{
+			switch( this.getRSMode() )
+			{
+				case IGNORE:
+					return false;
+
+				case HIGH_SIGNAL:
+					if( this.host.hasRedstone( this.side ) )
+						return false;
+
+					break;
+
+				case LOW_SIGNAL:
+					if( !this.host.hasRedstone( this.side ) )
+						return false;
+
+					break;
+
+				case SIGNAL_PULSE:
+				default:
+					break;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int getInstalledUpgrades( Upgrades u )
 	{
 		return this.upgrades.getInstalledUpgrades( u );
 	}
@@ -50,21 +115,16 @@ public class PartUpgradeable extends PartBasicState implements IAEAppEngInventor
 		return this.upgrades.getMaxInstalled( Upgrades.REDSTONE ) > 0;
 	}
 
-	protected int getUpgradeSlots()
+	@Override
+	public void readFromNBT( net.minecraft.nbt.NBTTagCompound extra )
 	{
-		return 4;
+		super.readFromNBT( extra );
+		this.settings.readFromNBT( extra );
+		this.upgrades.readFromNBT( extra, "upgrades" );
 	}
 
 	@Override
-	public void getDrops(List<ItemStack> drops, boolean wrenched)
-	{
-		for (ItemStack is : this.upgrades)
-			if ( is != null )
-				drops.add( is );
-	}
-
-	@Override
-	public void writeToNBT(net.minecraft.nbt.NBTTagCompound extra)
+	public void writeToNBT( net.minecraft.nbt.NBTTagCompound extra )
 	{
 		super.writeToNBT( extra );
 		this.settings.writeToNBT( extra );
@@ -72,16 +132,11 @@ public class PartUpgradeable extends PartBasicState implements IAEAppEngInventor
 	}
 
 	@Override
-	public void readFromNBT(net.minecraft.nbt.NBTTagCompound extra)
+	public void getDrops( List<ItemStack> drops, boolean wrenched )
 	{
-		super.readFromNBT( extra );
-		this.settings.readFromNBT( extra );
-		this.upgrades.readFromNBT( extra, "upgrades" );
-	}
-
-	public PartUpgradeable(Class c, ItemStack is) {
-		super( c, is );
-		this.upgrades.setMaxStackSize( 1 );
+		for( ItemStack is : this.upgrades )
+			if( is != null )
+				drops.add( is );
 	}
 
 	@Override
@@ -91,69 +146,16 @@ public class PartUpgradeable extends PartBasicState implements IAEAppEngInventor
 	}
 
 	@Override
-	public IInventory getInventoryByName(String name)
+	public IInventory getInventoryByName( String name )
 	{
-		if ( name.equals( "upgrades" ) )
+		if( name.equals( "upgrades" ) )
 			return this.upgrades;
 
 		return null;
 	}
 
-	@Override
-	public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue)
-	{
-
-	}
-
-	public void upgradesChanged()
-	{
-
-	}
-
-	@Override
-	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
-	{
-		if ( inv == this.upgrades )
-		{
-			this.upgradesChanged();
-		}
-	}
-
 	public RedstoneMode getRSMode()
 	{
 		return null;
-	}
-
-	protected boolean isSleeping()
-	{
-		if ( this.getInstalledUpgrades( Upgrades.REDSTONE ) > 0 )
-		{
-			switch (this.getRSMode())
-			{
-			case IGNORE:
-				return false;
-
-			case HIGH_SIGNAL:
-				if ( this.host.hasRedstone( this.side ) )
-					return false;
-
-				break;
-
-			case LOW_SIGNAL:
-				if ( !this.host.hasRedstone( this.side ) )
-					return false;
-
-				break;
-
-			case SIGNAL_PULSE:
-			default:
-				break;
-
-			}
-
-			return true;
-		}
-
-		return false;
 	}
 }

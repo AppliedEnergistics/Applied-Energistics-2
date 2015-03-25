@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -34,10 +35,17 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.helpers.InventoryAction;
 
+
 public class GuiCraftingTerm extends GuiMEMonitorable
 {
 
 	GuiImgButton clearBtn;
+
+	public GuiCraftingTerm( InventoryPlayer inventoryPlayer, ITerminalHost te )
+	{
+		super( inventoryPlayer, te, new ContainerCraftingTerm( inventoryPlayer, te ) );
+		this.reservedSpace = 73;
+	}
 
 	@Override
 	public void initGui()
@@ -48,32 +56,27 @@ public class GuiCraftingTerm extends GuiMEMonitorable
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton btn)
+	protected void actionPerformed( GuiButton btn )
 	{
 		super.actionPerformed( btn );
 
-		if ( this.clearBtn == btn )
+		if( this.clearBtn == btn )
 		{
 			Slot s = null;
 			Container c = this.inventorySlots;
-			for (Object j : c.inventorySlots)
+			for( Object j : c.inventorySlots )
 			{
-				if ( j instanceof SlotCraftingMatrix )
+				if( j instanceof SlotCraftingMatrix )
 					s = (Slot) j;
 			}
 
-			if ( s != null )
+			if( s != null )
 			{
 				PacketInventoryAction p;
 				p = new PacketInventoryAction( InventoryAction.MOVE_REGION, s.slotNumber, 0 );
 				NetworkHandler.instance.sendToServer( p );
 			}
 		}
-	}
-
-	public GuiCraftingTerm(InventoryPlayer inventoryPlayer, ITerminalHost te) {
-		super( inventoryPlayer, te, new ContainerCraftingTerm( inventoryPlayer, te ) );
-		this.reservedSpace = 73;
 	}
 
 	@Override
@@ -83,10 +86,9 @@ public class GuiCraftingTerm extends GuiMEMonitorable
 	}
 
 	@Override
-	public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY)
+	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
 		this.fontRendererObj.drawString( GuiText.CraftingTerminal.getLocal(), 8, this.ySize - 96 + 1 - this.reservedSpace, 4210752 );
 	}
-
 }

@@ -18,6 +18,7 @@
 
 package appeng.items.contents;
 
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -27,6 +28,7 @@ import appeng.api.networking.IGridHost;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 
+
 public class NetworkToolViewer implements INetworkTool
 {
 
@@ -34,11 +36,12 @@ public class NetworkToolViewer implements INetworkTool
 	final ItemStack is;
 	final IGridHost gh;
 
-	public NetworkToolViewer(ItemStack is, IGridHost gHost) {
+	public NetworkToolViewer( ItemStack is, IGridHost gHost )
+	{
 		this.is = is;
 		this.gh = gHost;
 		this.inv = new AppEngInternalInventory( null, 9 );
-		if ( is.hasTagCompound() ) // prevent crash when opening network status screen.
+		if( is.hasTagCompound() ) // prevent crash when opening network status screen.
 			this.inv.readFromNBT( Platform.openNbtData( is ), "inv" );
 	}
 
@@ -49,25 +52,25 @@ public class NetworkToolViewer implements INetworkTool
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int i)
+	public ItemStack getStackInSlot( int i )
 	{
 		return this.inv.getStackInSlot( i );
 	}
 
 	@Override
-	public ItemStack decrStackSize(int i, int j)
+	public ItemStack decrStackSize( int i, int j )
 	{
 		return this.inv.decrStackSize( i, j );
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int i)
+	public ItemStack getStackInSlotOnClosing( int i )
 	{
 		return this.inv.getStackInSlotOnClosing( i );
 	}
 
 	@Override
-	public void setInventorySlotContents(int i, ItemStack itemstack)
+	public void setInventorySlotContents( int i, ItemStack itemstack )
 	{
 		this.inv.setInventorySlotContents( i, itemstack );
 	}
@@ -98,7 +101,7 @@ public class NetworkToolViewer implements INetworkTool
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer)
+	public boolean isUseableByPlayer( EntityPlayer entityplayer )
 	{
 		return this.inv.isUseableByPlayer( entityplayer );
 	}
@@ -116,10 +119,9 @@ public class NetworkToolViewer implements INetworkTool
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack)
+	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
-		return this.inv.isItemValidForSlot( i, itemstack ) && itemstack.getItem() instanceof IUpgradeModule
-				&& ((IUpgradeModule) itemstack.getItem()).getType( itemstack ) != null;
+		return this.inv.isItemValidForSlot( i, itemstack ) && itemstack.getItem() instanceof IUpgradeModule && ( (IUpgradeModule) itemstack.getItem() ).getType( itemstack ) != null;
 	}
 
 	@Override
@@ -133,5 +135,4 @@ public class NetworkToolViewer implements INetworkTool
 	{
 		return this.gh;
 	}
-
 }

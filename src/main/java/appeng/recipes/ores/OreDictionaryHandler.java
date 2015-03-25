@@ -18,6 +18,7 @@
 
 package appeng.recipes.ores;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import appeng.core.AELog;
 import appeng.recipes.game.IRecipeBakeable;
 
+
 public class OreDictionaryHandler
 {
 
@@ -39,31 +41,52 @@ public class OreDictionaryHandler
 
 	private boolean enableRebaking = false;
 
+	@SubscribeEvent
+	public void onOreDictionaryRegister( OreDictionary.OreRegisterEvent event )
+	{
+		if( event.Name == null || event.Ore == null )
+			return;
+
+		if( this.shouldCare( event.Name ) )
+		{
+			for( IOreListener v : this.ol )
+				v.oreRegistered( event.Name, event.Ore );
+		}
+
+		if( this.enableRebaking )
+			this.bakeRecipes();
+	}
+
 	/**
 	 * Just limit what items are sent to the final listeners, I got sick of strange items showing up...
 	 *
 	 * @param name name about cared item
+	 *
 	 * @return true if it should care
 	 */
-	private boolean shouldCare(String name)
+	private boolean shouldCare( String name )
 	{
 		return true;
 	}
 
-	@SubscribeEvent
-	public void onOreDictionaryRegister(OreDictionary.OreRegisterEvent event)
+	public void bakeRecipes()
 	{
-		if ( event.Name == null || event.Ore == null )
-			return;
+		this.enableRebaking = true;
 
-		if ( this.shouldCare( event.Name ) )
+		for( Object o : CraftingManager.getInstance().getRecipeList() )
 		{
-			for (IOreListener v : this.ol)
-				v.oreRegistered( event.Name, event.Ore );
+			if( o instanceof IRecipeBakeable )
+			{
+				try
+				{
+					( (IRecipeBakeable) o ).bake();
+				}
+				catch( Throwable e )
+				{
+					AELog.error( e );
+				}
+			}
 		}
-
-		if ( this.enableRebaking )
-			this.bakeRecipes();
 	}
 
 	/**
@@ -72,42 +95,21 @@ public class OreDictionaryHandler
 	 *
 	 * @param n to be added ore listener
 	 */
-	public void observe(IOreListener n)
+	public void observe( IOreListener n )
 	{
 		this.ol.add( n );
 
 		// notify the listener of any ore already in existence.
-		for (String name : OreDictionary.getOreNames())
+		for( String name : OreDictionary.getOreNames() )
 		{
-			if ( name != null && this.shouldCare( name ) )
+			if( name != null && this.shouldCare( name ) )
 			{
-				for (ItemStack item : OreDictionary.getOres( name ))
+				for( ItemStack item : OreDictionary.getOres( name ) )
 				{
-					if ( item != null )
+					if( item != null )
 						n.oreRegistered( name, item );
 				}
 			}
 		}
 	}
-
-	public void bakeRecipes()
-	{
-		this.enableRebaking = true;
-
-		for (Object o : CraftingManager.getInstance().getRecipeList())
-		{
-			if ( o instanceof IRecipeBakeable )
-			{
-				try
-				{
-					((IRecipeBakeable) o).bake();
-				}
-				catch (Throwable e)
-				{
-					AELog.error( e );
-				}
-			}
-		}
-	}
-
 }

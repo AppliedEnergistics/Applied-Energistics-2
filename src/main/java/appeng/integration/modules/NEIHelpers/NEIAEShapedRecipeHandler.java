@@ -18,7 +18,8 @@
 
 package appeng.integration.modules.NEIHelpers;
 
-import java.awt.Rectangle;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +47,7 @@ import appeng.core.AEConfig;
 import appeng.recipes.game.ShapedRecipe;
 import appeng.util.Platform;
 
+
 public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 {
 
@@ -56,28 +58,16 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public Class<? extends GuiContainer> getGuiClass()
+	public void loadCraftingRecipes( String outputId, Object... results )
 	{
-		return GuiCrafting.class;
-	}
-
-	@Override
-	public String getRecipeName()
-	{
-		return NEIClientUtils.translate( "recipe.shaped" );
-	}
-
-	@Override
-	public void loadCraftingRecipes(String outputId, Object... results)
-	{
-		if ( (outputId.equals( "crafting" )) && (this.getClass() == NEIAEShapedRecipeHandler.class) )
+		if( ( outputId.equals( "crafting" ) ) && ( this.getClass() == NEIAEShapedRecipeHandler.class ) )
 		{
 			List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
-			for (IRecipe recipe : recipes)
+			for( IRecipe recipe : recipes )
 			{
-				if ( (recipe instanceof ShapedRecipe) )
+				if( ( recipe instanceof ShapedRecipe ) )
 				{
-					if ( ((ShapedRecipe) recipe).isEnabled() )
+					if( ( (ShapedRecipe) recipe ).isEnabled() )
 					{
 						CachedShapedRecipe cachedRecipe = new CachedShapedRecipe( (ShapedRecipe) recipe );
 						cachedRecipe.computeVisuals();
@@ -93,14 +83,14 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public void loadCraftingRecipes(ItemStack result)
+	public void loadCraftingRecipes( ItemStack result )
 	{
 		List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
-		for (IRecipe recipe : recipes)
+		for( IRecipe recipe : recipes )
 		{
-			if ( (recipe instanceof ShapedRecipe) )
+			if( ( recipe instanceof ShapedRecipe ) )
 			{
-				if ( ((ShapedRecipe) recipe).isEnabled() && NEIServerUtils.areStacksSameTypeCrafting( recipe.getRecipeOutput(), result ) )
+				if( ( (ShapedRecipe) recipe ).isEnabled() && NEIServerUtils.areStacksSameTypeCrafting( recipe.getRecipeOutput(), result ) )
 				{
 					CachedShapedRecipe cachedRecipe = new CachedShapedRecipe( (ShapedRecipe) recipe );
 					cachedRecipe.computeVisuals();
@@ -111,19 +101,19 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public void loadUsageRecipes(ItemStack ingredient)
+	public void loadUsageRecipes( ItemStack ingredient )
 	{
 		List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
-		for (IRecipe recipe : recipes)
+		for( IRecipe recipe : recipes )
 		{
-			if ( (recipe instanceof ShapedRecipe) )
+			if( ( recipe instanceof ShapedRecipe ) )
 			{
 				CachedShapedRecipe cachedRecipe = new CachedShapedRecipe( (ShapedRecipe) recipe );
 
-				if ( ((ShapedRecipe) recipe).isEnabled() && cachedRecipe.contains( cachedRecipe.ingredients, ingredient.getItem() ) )
+				if( ( (ShapedRecipe) recipe ).isEnabled() && cachedRecipe.contains( cachedRecipe.ingredients, ingredient.getItem() ) )
 				{
 					cachedRecipe.computeVisuals();
-					if ( cachedRecipe.contains( cachedRecipe.ingredients, ingredient ) )
+					if( cachedRecipe.contains( cachedRecipe.ingredients, ingredient ) )
 					{
 						cachedRecipe.setIngredientPermutation( cachedRecipe.ingredients, ingredient );
 						this.arecipes.add( cachedRecipe );
@@ -146,44 +136,57 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 	}
 
 	@Override
-	public boolean hasOverlay(GuiContainer gui, Container container, int recipe)
+	public Class<? extends GuiContainer> getGuiClass()
 	{
-		return (super.hasOverlay( gui, container, recipe )) || ((this.isRecipe2x2( recipe )) && (RecipeInfo.hasDefaultOverlay( gui, "crafting2x2" )));
+		return GuiCrafting.class;
 	}
 
 	@Override
-	public IRecipeOverlayRenderer getOverlayRenderer(GuiContainer gui, int recipe)
+	public boolean hasOverlay( GuiContainer gui, Container container, int recipe )
+	{
+		return ( super.hasOverlay( gui, container, recipe ) ) || ( ( this.isRecipe2x2( recipe ) ) && ( RecipeInfo.hasDefaultOverlay( gui, "crafting2x2" ) ) );
+	}
+
+	@Override
+	public IRecipeOverlayRenderer getOverlayRenderer( GuiContainer gui, int recipe )
 	{
 		IRecipeOverlayRenderer renderer = super.getOverlayRenderer( gui, recipe );
-		if ( renderer != null )
+		if( renderer != null )
 			return renderer;
 
 		IStackPositioner positioner = RecipeInfo.getStackPositioner( gui, "crafting2x2" );
-		if ( positioner == null )
+		if( positioner == null )
 			return null;
 
 		return new DefaultOverlayRenderer( this.getIngredientStacks( recipe ), positioner );
 	}
 
 	@Override
-	public IOverlayHandler getOverlayHandler(GuiContainer gui, int recipe)
+	public IOverlayHandler getOverlayHandler( GuiContainer gui, int recipe )
 	{
 		IOverlayHandler handler = super.getOverlayHandler( gui, recipe );
-		if ( handler != null )
+		if( handler != null )
 			return handler;
 
 		return RecipeInfo.getOverlayHandler( gui, "crafting2x2" );
 	}
 
-	public boolean isRecipe2x2(int recipe)
+	public boolean isRecipe2x2( int recipe )
 	{
-		for (PositionedStack stack : this.getIngredientStacks( recipe ))
+		for( PositionedStack stack : this.getIngredientStacks( recipe ) )
 		{
-			if ( (stack.relx > 43) || (stack.rely > 24) )
+			if( ( stack.relx > 43 ) || ( stack.rely > 24 ) )
 				return false;
 		}
 		return true;
 	}
+
+	@Override
+	public String getRecipeName()
+	{
+		return NEIClientUtils.translate( "recipe.shaped" );
+	}
+
 
 	public class CachedShapedRecipe extends TemplateRecipeHandler.CachedRecipe
 	{
@@ -191,22 +194,23 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 		public final ArrayList<PositionedStack> ingredients;
 		public final PositionedStack result;
 
-		public CachedShapedRecipe(ShapedRecipe recipe) {
+		public CachedShapedRecipe( ShapedRecipe recipe )
+		{
 			this.result = new PositionedStack( recipe.getRecipeOutput(), 119, 24 );
 			this.ingredients = new ArrayList<PositionedStack>();
 			this.setIngredients( recipe.getWidth(), recipe.getHeight(), recipe.getIngredients() );
 		}
 
-		public void setIngredients(int width, int height, Object[] items)
+		public void setIngredients( int width, int height, Object[] items )
 		{
 			boolean useSingleItems = AEConfig.instance.disableColoredCableRecipesInNEI();
-			for (int x = 0; x < width; x++)
+			for( int x = 0; x < width; x++ )
 			{
-				for (int y = 0; y < height; y++)
+				for( int y = 0; y < height; y++ )
 				{
-					if ( items[(y * width + x)] != null )
+					if( items[( y * width + x )] != null )
 					{
-						IIngredient ing = (IIngredient) items[(y * width + x)];
+						IIngredient ing = (IIngredient) items[( y * width + x )];
 
 						try
 						{
@@ -215,24 +219,17 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 							stack.setMaxSize( 1 );
 							this.ingredients.add( stack );
 						}
-						catch (RegistrationError ignored)
+						catch( RegistrationError ignored )
 						{
 
 						}
-						catch (MissingIngredientError ignored)
+						catch( MissingIngredientError ignored )
 						{
 
 						}
-
 					}
 				}
 			}
-		}
-
-		@Override
-		public List<PositionedStack> getIngredients()
-		{
-			return this.getCycledIngredients( NEIAEShapedRecipeHandler.this.cycleticks / 20, this.ingredients );
 		}
 
 		@Override
@@ -241,9 +238,15 @@ public class NEIAEShapedRecipeHandler extends TemplateRecipeHandler
 			return this.result;
 		}
 
+		@Override
+		public List<PositionedStack> getIngredients()
+		{
+			return this.getCycledIngredients( NEIAEShapedRecipeHandler.this.cycleticks / 20, this.ingredients );
+		}
+
 		public void computeVisuals()
 		{
-			for (PositionedStack p : this.ingredients)
+			for( PositionedStack p : this.ingredients )
 			{
 				p.generatePermutations();
 			}

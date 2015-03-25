@@ -23,10 +23,9 @@
 
 package appeng.api.networking.ticking;
 
+
 /**
- *
  * Describes how your tiles ticking is executed.
- *
  */
 public class TickingRequest
 {
@@ -37,7 +36,6 @@ public class TickingRequest
 	 * Valid Values are : 1+
 	 *
 	 * Suggested is 5-20
-	 *
 	 */
 	public final int minTickRate;
 
@@ -48,30 +46,25 @@ public class TickingRequest
 	 * Valid Values are 1+
 	 *
 	 * Suggested is 20-40
-	 *
 	 */
 	public final int maxTickRate;
 
 	/**
-	 *
 	 * Determines the current expected state of your node, if your node expects
 	 * to be sleeping, then return true.
-	 *
 	 */
 	public final boolean isSleeping;
 
 	/**
-	 *
 	 * True only if you call {@link ITickManager}.alertDevice( IGridNode );
-	 *
 	 */
 	public final boolean canBeAlerted;
 
-	public TickingRequest(int min, int max, boolean sleep, boolean alertable) {
+	public TickingRequest( int min, int max, boolean sleep, boolean alertable )
+	{
 		this.minTickRate = min;
 		this.maxTickRate = max;
 		this.isSleeping = sleep;
 		this.canBeAlerted = alertable;
 	}
-
 }

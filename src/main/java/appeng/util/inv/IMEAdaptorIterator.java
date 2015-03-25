@@ -18,23 +18,25 @@
 
 package appeng.util.inv;
 
+
 import java.util.Iterator;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+
 
 public class IMEAdaptorIterator implements Iterator<ItemSlot>
 {
 
 	final Iterator<IAEItemStack> stack;
 	final ItemSlot slot = new ItemSlot();
+	final IMEAdaptor parent;
+	final int containerSize;
 	int offset = 0;
 	boolean hasNext;
 
-	final IMEAdaptor parent;
-	final int containerSize;
-
-	public IMEAdaptorIterator(IMEAdaptor parent, IItemList<IAEItemStack> availableItems) {
+	public IMEAdaptorIterator( IMEAdaptor parent, IItemList<IAEItemStack> availableItems )
+	{
 		this.stack = availableItems.iterator();
 		this.containerSize = parent.maxSlots;
 		this.parent = parent;
@@ -51,12 +53,12 @@ public class IMEAdaptorIterator implements Iterator<ItemSlot>
 	public ItemSlot next()
 	{
 		this.slot.slot = this.offset++;
-		this.slot.isExtractable=true;
+		this.slot.isExtractable = true;
 
-		if ( this.parent.maxSlots < this.offset )
+		if( this.parent.maxSlots < this.offset )
 			this.parent.maxSlots = this.offset;
 
-		if ( this.hasNext )
+		if( this.hasNext )
 		{
 			IAEItemStack item = this.stack.next();
 			this.slot.setAEItemStack( item );

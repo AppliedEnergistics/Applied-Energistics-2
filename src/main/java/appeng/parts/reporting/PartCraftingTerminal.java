@@ -18,6 +18,7 @@
 
 package appeng.parts.reporting;
 
+
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,36 +31,14 @@ import appeng.core.sync.GuiBridge;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
 
+
 public class PartCraftingTerminal extends PartTerminal
 {
 
 	final AppEngInternalInventory craftingGrid = new AppEngInternalInventory( this, 9 );
 
-	@Override
-	public void writeToNBT(NBTTagCompound data)
+	public PartCraftingTerminal( ItemStack is )
 	{
-		super.writeToNBT( data );
-		this.craftingGrid.writeToNBT( data, "craftingGrid" );
-	}
-
-	@Override
-	public void readFromNBT(NBTTagCompound data)
-	{
-		super.readFromNBT( data );
-		this.craftingGrid.readFromNBT( data, "craftingGrid" );
-	}
-
-	@Override
-	public void getDrops(List<ItemStack> drops, boolean wrenched)
-	{
-		super.getDrops(drops, wrenched);
-
-		for (ItemStack is : this.craftingGrid)
-			if ( is != null )
-				drops.add( is );
-	}
-
-	public PartCraftingTerminal(ItemStack is) {
 		super( PartCraftingTerminal.class, is );
 		this.frontBright = CableBusTextures.PartCraftingTerm_Bright;
 		this.frontColored = CableBusTextures.PartCraftingTerm_Colored;
@@ -68,10 +47,34 @@ public class PartCraftingTerminal extends PartTerminal
 	}
 
 	@Override
+	public void getDrops( List<ItemStack> drops, boolean wrenched )
+	{
+		super.getDrops( drops, wrenched );
+
+		for( ItemStack is : this.craftingGrid )
+			if( is != null )
+				drops.add( is );
+	}
+
+	@Override
+	public void readFromNBT( NBTTagCompound data )
+	{
+		super.readFromNBT( data );
+		this.craftingGrid.readFromNBT( data, "craftingGrid" );
+	}
+
+	@Override
+	public void writeToNBT( NBTTagCompound data )
+	{
+		super.writeToNBT( data );
+		this.craftingGrid.writeToNBT( data, "craftingGrid" );
+	}
+
+	@Override
 	public GuiBridge getGui( EntityPlayer p )
 	{
 		int x = (int) p.posX, y = (int) p.posY, z = (int) p.posZ;
-		if ( this.getHost().getTile() != null )
+		if( this.getHost().getTile() != null )
 		{
 			x = this.tile.xCoord;
 			y = this.tile.yCoord;
@@ -84,17 +87,16 @@ public class PartCraftingTerminal extends PartTerminal
 	}
 
 	@Override
-	public void onChangeInventory(IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack)
+	public void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
 	{
 		this.host.markForSave();
 	}
 
 	@Override
-	public IInventory getInventoryByName(String name)
+	public IInventory getInventoryByName( String name )
 	{
-		if ( name.equals( "crafting" ) )
+		if( name.equals( "crafting" ) )
 			return this.craftingGrid;
 		return super.getInventoryByName( name );
 	}
-
 }

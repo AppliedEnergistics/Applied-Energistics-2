@@ -18,10 +18,8 @@
 
 package appeng.transformer.asm;
 
-import java.util.Iterator;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import java.util.Iterator;
 
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassReader;
@@ -38,24 +36,18 @@ import net.minecraft.launchwrapper.IClassTransformer;
 
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
+
 public class ASMTweaker implements IClassTransformer
 {
 
-	class publicLine
-	{
-
-		public publicLine(String name, String desc) {
-			this.name = name;
-			this.desc = desc;
-		}
-
-		final String name, desc;
-
-	}
-
 	final Multimap<String, publicLine> privateToPublicMethods = HashMultimap.create();
 
-	public ASMTweaker() {
+
+	public ASMTweaker()
+	{
 		this.privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new publicLine( "func_146977_a", "(Lnet/minecraft/inventory/Slot;)V" ) );
 		this.privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new publicLine( "a", "(Lzk;)V" ) );
 
@@ -69,30 +61,30 @@ public class ASMTweaker implements IClassTransformer
 	}
 
 	@Override
-	public byte[] transform(String name, String transformedName, byte[] basicClass)
+	public byte[] transform( String name, String transformedName, byte[] basicClass )
 	{
-		if ( basicClass == null )
+		if( basicClass == null )
 			return null;
 
 		try
 		{
-			if ( transformedName != null && this.privateToPublicMethods.containsKey( transformedName ) )
+			if( transformedName != null && this.privateToPublicMethods.containsKey( transformedName ) )
 			{
 				ClassNode classNode = new ClassNode();
 				ClassReader classReader = new ClassReader( basicClass );
 				classReader.accept( classNode, 0 );
 
-				for (publicLine Set : this.privateToPublicMethods.get( transformedName ))
+				for( publicLine Set : this.privateToPublicMethods.get( transformedName ) )
 				{
 					this.makePublic( classNode, Set );
 				}
 
 				// CALL VIRTUAL!
-				if ( transformedName.equals( "net.minecraft.client.gui.inventory.GuiContainer" ) )
+				if( transformedName.equals( "net.minecraft.client.gui.inventory.GuiContainer" ) )
 				{
-					for (MethodNode mn : classNode.methods)
+					for( MethodNode mn : classNode.methods )
 					{
-						if ( mn.name.equals( "func_146977_a" ) || (mn.name.equals( "a" ) && mn.desc.equals( "(Lzk;)V" )) )
+						if( mn.name.equals( "func_146977_a" ) || ( mn.name.equals( "a" ) && mn.desc.equals( "(Lzk;)V" ) ) )
 						{
 							MethodNode newNode = new MethodNode( Opcodes.ACC_PUBLIC, "func_146977_a_original", mn.desc, mn.signature, new String[0] );
 							newNode.instructions.add( new VarInsnNode( Opcodes.ALOAD, 0 ) );
@@ -105,18 +97,18 @@ public class ASMTweaker implements IClassTransformer
 						}
 					}
 
-					for (MethodNode mn : classNode.methods)
+					for( MethodNode mn : classNode.methods )
 					{
-						if ( mn.name.equals( "func_73863_a" ) || mn.name.equals( "drawScreen" ) || (mn.name.equals( "a" ) && mn.desc.equals( "(IIF)V" )) )
+						if( mn.name.equals( "func_73863_a" ) || mn.name.equals( "drawScreen" ) || ( mn.name.equals( "a" ) && mn.desc.equals( "(IIF)V" ) ) )
 						{
 							Iterator<AbstractInsnNode> i = mn.instructions.iterator();
-							while (i.hasNext())
+							while( i.hasNext() )
 							{
 								AbstractInsnNode in = i.next();
-								if ( in.getOpcode() == Opcodes.INVOKESPECIAL )
+								if( in.getOpcode() == Opcodes.INVOKESPECIAL )
 								{
 									MethodInsnNode n = (MethodInsnNode) in;
-									if ( n.name.equals( "func_146977_a" ) || (n.name.equals( "a" ) && n.desc.equals( "(Lzk;)V" )) )
+									if( n.name.equals( "func_146977_a" ) || ( n.name.equals( "a" ) && n.desc.equals( "(Lzk;)V" ) ) )
 									{
 										this.log( n.name + n.desc + " - Invoke Virtual" );
 										mn.instructions.insertBefore( n, new MethodInsnNode( Opcodes.INVOKEVIRTUAL, n.owner, n.name, n.desc, false ) );
@@ -134,27 +126,40 @@ public class ASMTweaker implements IClassTransformer
 				return writer.toByteArray();
 			}
 		}
-		catch (Throwable ignored)
+		catch( Throwable ignored )
 		{
 		}
 
 		return basicClass;
 	}
 
-	private void log(String string)
+	private void makePublic( ClassNode classNode, publicLine set )
+	{
+		for( MethodNode mn : classNode.methods )
+		{
+			if( mn.name.equals( set.name ) && mn.desc.equals( set.desc ) )
+			{
+				mn.access = ( mn.access & ( ~( Opcodes.ACC_FINAL | Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED ) ) ) | Opcodes.ACC_PUBLIC;
+				this.log( mn.name + mn.desc + " - Transformed" );
+			}
+		}
+	}
+
+	private void log( String string )
 	{
 		FMLRelaunchLog.log( "AE2-CORE", Level.INFO, string );
 	}
 
-	private void makePublic(ClassNode classNode, publicLine set)
+
+	class publicLine
 	{
-		for (MethodNode mn : classNode.methods)
+
+		final String name, desc;
+
+		public publicLine( String name, String desc )
 		{
-			if ( mn.name.equals( set.name ) && mn.desc.equals( set.desc ) )
-			{
-				mn.access = (mn.access & (~(Opcodes.ACC_FINAL | Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED))) | Opcodes.ACC_PUBLIC;
-				this.log( mn.name + mn.desc + " - Transformed" );
-			}
+			this.name = name;
+			this.desc = desc;
 		}
 	}
 }

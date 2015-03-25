@@ -19,11 +19,10 @@
 package appeng.items.tools.powered.powersink;
 
 
-import com.google.common.base.Optional;
-
 import net.minecraft.item.ItemStack;
 
 import cofh.api.energy.IEnergyContainerItem;
+import com.google.common.base.Optional;
 
 import appeng.api.config.PowerUnits;
 import appeng.transformer.annotations.Integration.Interface;
@@ -41,7 +40,7 @@ public class RedstoneFlux extends IC2 implements IEnergyContainerItem
 	@Override
 	public int receiveEnergy( ItemStack is, int maxReceive, boolean simulate )
 	{
-		return maxReceive - ( int ) this.injectExternalPower( PowerUnits.RF, is, maxReceive, simulate );
+		return maxReceive - (int) this.injectExternalPower( PowerUnits.RF, is, maxReceive, simulate );
 	}
 
 	@Override
@@ -53,13 +52,12 @@ public class RedstoneFlux extends IC2 implements IEnergyContainerItem
 	@Override
 	public int getEnergyStored( ItemStack is )
 	{
-		return ( int ) PowerUnits.AE.convertTo( PowerUnits.RF, this.getAECurrentPower( is ) );
+		return (int) PowerUnits.AE.convertTo( PowerUnits.RF, this.getAECurrentPower( is ) );
 	}
 
 	@Override
 	public int getMaxEnergyStored( ItemStack is )
 	{
-		return ( int ) PowerUnits.AE.convertTo( PowerUnits.RF, this.getAEMaxPower( is ) );
+		return (int) PowerUnits.AE.convertTo( PowerUnits.RF, this.getAEMaxPower( is ) );
 	}
-
 }

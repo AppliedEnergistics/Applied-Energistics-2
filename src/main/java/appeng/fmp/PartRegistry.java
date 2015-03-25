@@ -18,6 +18,7 @@
 
 package appeng.fmp;
 
+
 import net.minecraft.block.Block;
 
 import codechicken.multipart.TMultiPart;
@@ -27,56 +28,43 @@ import appeng.block.misc.BlockQuartzTorch;
 import appeng.block.networking.BlockCableBus;
 import appeng.core.Api;
 
+
 public enum PartRegistry
 {
-	QuartzTorchPart("ae2_torch", BlockQuartzTorch.class, QuartzTorchPart.class), CableBusPart("ae2_cablebus", BlockCableBus.class, CableBusPart.class);
+	QuartzTorchPart( "ae2_torch", BlockQuartzTorch.class, QuartzTorchPart.class ), CableBusPart( "ae2_cablebus", BlockCableBus.class, CableBusPart.class );
 
 	final private String name;
 	final private Class<? extends AEBaseBlock> blk;
 	final private Class<? extends TMultiPart> part;
+
+	private PartRegistry( String name, Class<? extends AEBaseBlock> blk, Class<? extends TMultiPart> part )
+	{
+		this.name = name;
+		this.blk = blk;
+		this.part = part;
+	}
+
+	public static String getPartName( TMultiPart part )
+	{
+		Class c = part.getClass();
+		for( PartRegistry pr : values() )
+		{
+			if( pr.equals( c ) )
+				return pr.getName();
+		}
+		throw new RuntimeException( "Invalid PartName" );
+	}
 
 	public String getName()
 	{
 		return this.name;
 	}
 
-	private PartRegistry(String name, Class<? extends AEBaseBlock> blk, Class<? extends TMultiPart> part) {
-		this.name = name;
-		this.blk = blk;
-		this.part = part;
-	}
-
-	public TMultiPart construct(int meta)
+	public static TMultiPart getPartByBlock( Block block, int meta )
 	{
-		try
+		for( PartRegistry pr : values() )
 		{
-			if ( this == CableBusPart )
-				return (TMultiPart) Api.INSTANCE.partHelper.getCombinedInstance( this.part.getName() ).newInstance();
-			else
-				return this.part.getConstructor( int.class ).newInstance( meta );
-		}
-		catch (Throwable t)
-		{
-			throw new RuntimeException( t );
-		}
-	}
-
-	public static String getPartName(TMultiPart part)
-	{
-		Class c = part.getClass();
-		for (PartRegistry pr : values())
-		{
-			if ( pr.equals( c ) )
-				return pr.getName();
-		}
-		throw new RuntimeException( "Invalid PartName" );
-	}
-
-	public static TMultiPart getPartByBlock(Block block, int meta)
-	{
-		for (PartRegistry pr : values())
-		{
-			if ( pr.blk.isInstance( block ) )
+			if( pr.blk.isInstance( block ) )
 			{
 				return pr.construct( meta );
 			}
@@ -84,11 +72,26 @@ public enum PartRegistry
 		return null;
 	}
 
-	public static boolean isPart(Block block)
+	public TMultiPart construct( int meta )
 	{
-		for (PartRegistry pr : values())
+		try
 		{
-			if ( pr.blk.isInstance( block ) )
+			if( this == CableBusPart )
+				return (TMultiPart) Api.INSTANCE.partHelper.getCombinedInstance( this.part.getName() ).newInstance();
+			else
+				return this.part.getConstructor( int.class ).newInstance( meta );
+		}
+		catch( Throwable t )
+		{
+			throw new RuntimeException( t );
+		}
+	}
+
+	public static boolean isPart( Block block )
+	{
+		for( PartRegistry pr : values() )
+		{
+			if( pr.blk.isInstance( block ) )
 			{
 				return true;
 			}
