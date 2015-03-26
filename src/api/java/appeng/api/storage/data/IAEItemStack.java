@@ -44,7 +44,7 @@ public interface IAEItemStack extends IAEStack<IAEItemStack>
 	 *
 	 * @return new ItemStack
 	 */
-	public ItemStack getItemStack();
+	ItemStack getItemStack();
 
 	/**
 	 * create a AE Item clone
@@ -52,7 +52,7 @@ public interface IAEItemStack extends IAEStack<IAEItemStack>
 	 * @return the copy
 	 */
 	@Override
-	public IAEItemStack copy();
+	IAEItemStack copy();
 
 	/**
 	 * is there NBT Data for this item?

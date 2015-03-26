@@ -28,5 +28,5 @@ import net.minecraft.item.ItemStack;
 public interface IGuiItemObject
 {
 
-	public ItemStack getItemStack();
+	ItemStack getItemStack();
 }

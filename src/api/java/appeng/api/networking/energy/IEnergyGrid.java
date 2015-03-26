@@ -36,18 +36,18 @@ public interface IEnergyGrid extends IGridCache, IEnergySource, IEnergyGridProvi
 	/**
 	 * @return the current calculated idle energy drain each tick, is used internally to drain power for each tick.
 	 */
-	public double getIdlePowerUsage();
+	double getIdlePowerUsage();
 
 	/**
 	 * @return the average power drain over the past 10 ticks, includes idle usage during this time, and all use of
 	 *         extractPower.
 	 */
-	public double getAvgPowerUsage();
+	double getAvgPowerUsage();
 
 	/**
 	 * @return the average energy injected into the system per tick, for the last 10 ticks.
 	 */
-	public double getAvgPowerInjection();
+	double getAvgPowerInjection();
 
 	/**
 	 * AE maintains an idle draw of power separate from active power draw, it condenses this into a single operation
@@ -59,7 +59,7 @@ public interface IEnergyGrid extends IGridCache, IEnergySource, IEnergyGridProvi
 	 *
 	 * @return if the network is powered or not.
 	 */
-	public boolean isNetworkPowered();
+	boolean isNetworkPowered();
 
 	/**
 	 * AE will accept any power, and store it, to maintain sanity please don't send more then 10,000 at a time.
@@ -78,14 +78,14 @@ public interface IEnergyGrid extends IGridCache, IEnergySource, IEnergyGridProvi
 	 *            should the action be simulated or performed?
 	 * @return the amount of power that the network has OVER the limit.
 	 */
-	public double injectPower(double amt, Actionable mode);
+	double injectPower( double amt, Actionable mode );
 
 	/**
 	 * this is should be considered an estimate, and not relied upon for real calculations.
 	 *
 	 * @return estimated available power.
 	 */
-	public double getStoredPower();
+	double getStoredPower();
 
 	/**
 	 * this is should be considered an estimate, and not relied upon for real calculations.
@@ -100,6 +100,6 @@ public interface IEnergyGrid extends IGridCache, IEnergySource, IEnergyGridProvi
 	 *
 	 * @return Amount of power required to charge the grid, in AE.
 	 */
-	public double getEnergyDemand(double maxRequired);
+	double getEnergyDemand( double maxRequired );
 
 }

@@ -48,6 +48,6 @@ public interface IItemComparisonProvider
 	 * @param stack item
 	 * @return true, if getComparison will return a valid IItemComparison Object
 	 */
-	public boolean canHandle(ItemStack stack);
+	boolean canHandle( ItemStack stack );
 
 }

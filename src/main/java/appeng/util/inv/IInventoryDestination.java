@@ -23,6 +23,6 @@ import net.minecraft.item.ItemStack;
 public interface IInventoryDestination
 {
 
-	public boolean canInsert(ItemStack stack);
+	boolean canInsert( ItemStack stack );
 
 }

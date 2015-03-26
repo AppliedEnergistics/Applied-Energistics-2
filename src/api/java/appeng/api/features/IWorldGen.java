@@ -29,16 +29,16 @@ import net.minecraft.world.WorldProvider;
 public interface IWorldGen
 {
 
-	public enum WorldGenType
+	enum WorldGenType
 	{
 		CertusQuartz, ChargedCertusQuartz, Meteorites
 	}
 
-	public void disableWorldGenForProviderID(WorldGenType type, Class<? extends WorldProvider> provider);
+	void disableWorldGenForProviderID( WorldGenType type, Class<? extends WorldProvider> provider );
 
-	public void enableWorldGenForDimension(WorldGenType type, int dimID);
+	void enableWorldGenForDimension( WorldGenType type, int dimID );
 
-	public void disableWorldGenForDimension(WorldGenType type, int dimID);
+	void disableWorldGenForDimension( WorldGenType type, int dimID );
 
 	boolean isWorldGenEnabled(WorldGenType type, World w);
 

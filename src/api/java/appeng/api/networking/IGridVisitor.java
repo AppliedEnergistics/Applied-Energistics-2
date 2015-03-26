@@ -39,6 +39,6 @@ public interface IGridVisitor
 	 *
 	 * @return true to continue visiting nodes beyond this node.
 	 */
-	public boolean visitNode(IGridNode n);
+	boolean visitNode( IGridNode n );
 
 }

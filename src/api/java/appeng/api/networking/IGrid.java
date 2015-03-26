@@ -40,7 +40,7 @@ public interface IGrid
 	 * @param iface face
 	 * @return the IGridCache you requested.
 	 */
-	public <C extends IGridCache> C getCache(Class<? extends IGridCache> iface);
+	<C extends IGridCache> C getCache( Class<? extends IGridCache> iface );
 
 	/**
 	 * Post an event into the network event bus.
@@ -49,7 +49,7 @@ public interface IGrid
 	 *            - event to post
 	 * @return returns ev back to original poster
 	 */
-	public MENetworkEvent postEvent(MENetworkEvent ev);
+	MENetworkEvent postEvent( MENetworkEvent ev );
 
 	/**
 	 * Post an event into the network event bus, but direct it at a single node.
@@ -58,7 +58,7 @@ public interface IGrid
 	 *            event to post
 	 * @return returns ev back to original poster
 	 */
-	public MENetworkEvent postEventTo(IGridNode node, MENetworkEvent ev);
+	MENetworkEvent postEventTo( IGridNode node, MENetworkEvent ev );
 
 	/**
 	 * get a list of the diversity of classes, you can use this to better detect which machines your interested in,
@@ -66,7 +66,7 @@ public interface IGrid
 	 *
 	 * @return IReadOnlyCollection of all available host types (Of Type IGridHost).
 	 */
-	public IReadOnlyCollection<Class<? extends IGridHost>> getMachinesClasses();
+	IReadOnlyCollection<Class<? extends IGridHost>> getMachinesClasses();
 
 	/**
 	 * Get machines on the network.
@@ -74,7 +74,7 @@ public interface IGrid
 	 * @param gridHostClass class of the grid host
 	 * @return IMachineSet of all nodes belonging to hosts of specified class.
 	 */
-	public IMachineSet getMachines(Class<? extends IGridHost> gridHostClass);
+	IMachineSet getMachines( Class<? extends IGridHost> gridHostClass );
 
 	/**
 	 * @return IReadOnlyCollection for all nodes on the network, node visitors are preferred.
@@ -84,11 +84,11 @@ public interface IGrid
 	/**
 	 * @return true if the last node has been removed from the grid.
 	 */
-	public boolean isEmpty();
+	boolean isEmpty();
 
 	/**
 	 * @return the node considered the pivot point of the grid.
 	 */
-	public IGridNode getPivot();
+	IGridNode getPivot();
 
 }

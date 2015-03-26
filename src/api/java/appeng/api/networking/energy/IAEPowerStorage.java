@@ -40,17 +40,17 @@ public interface IAEPowerStorage extends IEnergySource
 	 *
 	 * @return amount of power which was unable to be stored
 	 */
-	public double injectAEPower(double amt, Actionable mode);
+	double injectAEPower( double amt, Actionable mode );
 
 	/**
 	 * @return the current maximum power ( this can change :P )
 	 */
-	public double getAEMaxPower();
+	double getAEMaxPower();
 
 	/**
 	 * @return the current AE Power Level, this may exceed getMEMaxPower()
 	 */
-	public double getAECurrentPower();
+	double getAECurrentPower();
 
 	/**
 	 * Checked on network reset to see if your block can be used as a public power storage ( use getPowerFlow to control
@@ -58,13 +58,13 @@ public interface IAEPowerStorage extends IEnergySource
 	 *
 	 * @return true if it can be used as a public power storage
 	 */
-	public boolean isAEPublicPowerStorage();
+	boolean isAEPublicPowerStorage();
 
 	/**
 	 * Control the power flow by telling what the network can do, either add? or subtract? or both!
 	 *
 	 * @return access restriction what the network can do
 	 */
-	public AccessRestriction getPowerFlow();
+	AccessRestriction getPowerFlow();
 
 }

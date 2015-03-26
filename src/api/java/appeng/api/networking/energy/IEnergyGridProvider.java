@@ -36,16 +36,16 @@ public interface IEnergyGridProvider
 	/**
 	 * internal use only
 	 */
-	public double extractAEPower(double amt, Actionable mode, Set<IEnergyGrid> seen);
+	double extractAEPower( double amt, Actionable mode, Set<IEnergyGrid> seen );
 
 	/**
 	 * internal use only
 	 */
-	public double injectAEPower(double amt, Actionable mode, Set<IEnergyGrid> seen);
+	double injectAEPower( double amt, Actionable mode, Set<IEnergyGrid> seen );
 
 	/**
 	 * internal use only
 	 */
-	public double getEnergyDemand(double d, Set<IEnergyGrid> seen);
+	double getEnergyDemand( double d, Set<IEnergyGrid> seen );
 
 }

@@ -58,7 +58,7 @@ public interface IRecipeHandlerRegistry
 	/**
 	 * @return a new recipe handler, which can be used to parse, and read recipe files.
 	 */
-	public IRecipeHandler createNewRecipehandler();
+	IRecipeHandler createNewRecipehandler();
 
 	/**
 	 * resolve sub items by name.

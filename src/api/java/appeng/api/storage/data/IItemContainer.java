@@ -23,9 +23,10 @@
 
 package appeng.api.storage.data;
 
-import appeng.api.config.FuzzyMode;
 
 import java.util.Collection;
+
+import appeng.api.config.FuzzyMode;
 
 /**
  * Represents a list of items in AE.
@@ -42,7 +43,7 @@ public interface IItemContainer<StackType extends IAEStack>
 	 *
 	 * @param option added stack
 	 */
-	public void add(StackType option); // adds stack as is
+	void add( StackType option ); // adds stack as is
 
 	/**
 	 * @param i compared item
@@ -55,11 +56,11 @@ public interface IItemContainer<StackType extends IAEStack>
 	 * @param input compared item
 	 * @return a list of relevant fuzzy matched stacks
 	 */
-	public Collection<StackType> findFuzzy(StackType input, FuzzyMode fuzzy);
+	Collection<StackType> findFuzzy( StackType input, FuzzyMode fuzzy );
 
 	/**
 	 * @return true if there are no items in the list
 	 */
-	public boolean isEmpty();
+	boolean isEmpty();
 
 }

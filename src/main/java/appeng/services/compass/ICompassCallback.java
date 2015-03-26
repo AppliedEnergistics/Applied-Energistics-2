@@ -29,6 +29,6 @@ public interface ICompassCallback
 	 * @param radians radians
 	 * @param dist distance
 	 */
-	public void calculatedDirection(boolean hasResult, boolean spin, double radians, double dist);
+	void calculatedDirection( boolean hasResult, boolean spin, double radians, double dist );
 
 }

@@ -23,7 +23,9 @@
 
 package appeng.api.features;
 
+
 import net.minecraft.item.ItemStack;
+
 import appeng.api.config.TunnelType;
 
 /**
@@ -41,7 +43,7 @@ public interface IP2PTunnelRegistry
 	 * @param type
 	 *            - the type of tunnel
 	 */
-	public abstract void addNewAttunement(ItemStack trigger, TunnelType type);
+	void addNewAttunement( ItemStack trigger, TunnelType type );
 
 	/**
 	 * returns null if no attunement can be found.

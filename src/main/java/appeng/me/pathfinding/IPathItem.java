@@ -50,7 +50,7 @@ public interface IPathItem
 	 *
 	 * @return the flag set.
 	 */
-	public EnumSet<GridFlags> getFlags();
+	EnumSet<GridFlags> getFlags();
 
 	/**
 	 * channels are done, wrap it up.

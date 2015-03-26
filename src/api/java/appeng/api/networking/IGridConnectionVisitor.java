@@ -32,6 +32,6 @@ public interface IGridConnectionVisitor extends IGridVisitor
 	 * @param n
 	 *            the connection.
 	 */
-	public void visitConnection(IGridConnection n);
+	void visitConnection( IGridConnection n );
 
 }

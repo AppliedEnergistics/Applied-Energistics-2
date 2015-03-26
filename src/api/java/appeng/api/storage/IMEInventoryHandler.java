@@ -40,7 +40,7 @@ public interface IMEInventoryHandler<StackType extends IAEStack> extends IMEInve
 	 *
 	 * @return the access
 	 */
-	public AccessRestriction getAccess();
+	AccessRestriction getAccess();
 
 	/**
 	 * determine if a particular item is prioritized for this inventory handler, if it is, then it will be added to this
@@ -50,7 +50,7 @@ public interface IMEInventoryHandler<StackType extends IAEStack> extends IMEInve
 	 *            - item that might be added
 	 * @return if its prioritized
 	 */
-	public boolean isPrioritized(StackType input);
+	boolean isPrioritized( StackType input );
 
 	/**
 	 * determine if an item can be accepted and stored.
@@ -59,14 +59,14 @@ public interface IMEInventoryHandler<StackType extends IAEStack> extends IMEInve
 	 *            - item that might be added
 	 * @return if the item can be added
 	 */
-	public boolean canAccept(StackType input);
+	boolean canAccept( StackType input );
 
 	/**
 	 * determine what the priority of the inventory is.
 	 *
 	 * @return the priority, zero is default, positive and negative are supported.
 	 */
-	public int getPriority();
+	int getPriority();
 
 	/**
 	 * pass back value for blinkCell.
@@ -75,7 +75,7 @@ public interface IMEInventoryHandler<StackType extends IAEStack> extends IMEInve
 	 *         {@link ICellContainer} will be called with this value, only trust the return value of this method if you
 	 *         are the implementer of this.
 	 */
-	public int getSlot();
+	int getSlot();
 
 	/**
 	 * AE Uses a two pass placement system, the first pass checks contents and tries to find a place where the item
@@ -86,5 +86,5 @@ public interface IMEInventoryHandler<StackType extends IAEStack> extends IMEInve
 	 *            - pass number ( 1 or 2 )
 	 * @return true, if this inventory is valid for this pass.
 	 */
-	public boolean validForPass(int i);
+	boolean validForPass( int i );
 }

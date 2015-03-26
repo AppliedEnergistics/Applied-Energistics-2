@@ -45,6 +45,6 @@ public interface ISpecialComparisonRegistry
 	 *
 	 * @param prov comparison provider
 	 */
-	public void addComparisonProvider(IItemComparisonProvider prov);
+	void addComparisonProvider( IItemComparisonProvider prov );
 
 }

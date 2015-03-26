@@ -23,7 +23,9 @@
 
 package appeng.api.recipes;
 
+
 import net.minecraft.item.ItemStack;
+
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RegistrationError;
 
@@ -55,27 +57,27 @@ public interface IIngredient {
 	 *
 	 * @return true if this slot contains no ItemStack, this is passed as "_"
 	 */
-	public boolean isAir();
+	boolean isAir();
 
 	/**
 	 * @return The Name Space of the item. Prefer getItemStack or getItemStackSet
 	 */
-	public String getNameSpace();
+	String getNameSpace();
 
 	/**
 	 * @return The Name of the item. Prefer getItemStack or getItemStackSet
 	 */
-	public String getItemName();
+	String getItemName();
 
 	/**
 	 * @return The Damage Value of the item. Prefer getItemStack or getItemStackSet
 	 */
-	public int getDamageValue();
+	int getDamageValue();
 
 	/**
 	 * @return The Damage Value of the item. Prefer getItemStack or getItemStackSet
 	 */
-	public int getQty();
+	int getQty();
 
 	/**
 	 * Bakes the lists in for faster runtime look-ups.

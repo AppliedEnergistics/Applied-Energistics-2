@@ -54,7 +54,7 @@ public interface IAEFluidStack extends IAEStack<IAEFluidStack>
 	 * @return the copy.
 	 */
 	@Override
-	public IAEFluidStack copy();
+	IAEFluidStack copy();
 
 	/**
 	 * Combines two IAEItemStacks via addition.

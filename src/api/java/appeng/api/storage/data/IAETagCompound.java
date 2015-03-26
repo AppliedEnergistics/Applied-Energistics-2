@@ -23,7 +23,9 @@
 
 package appeng.api.storage.data;
 
+
 import net.minecraft.nbt.NBTTagCompound;
+
 import appeng.api.features.IItemComparison;
 
 /**
@@ -37,7 +39,7 @@ public interface IAETagCompound
 	/**
 	 * @return a copy ( the copy will not be a IAETagCompound, it will be a NBTTagCompound )
 	 */
-	public NBTTagCompound getNBTTagCompoundCopy();
+	NBTTagCompound getNBTTagCompoundCopy();
 
 	/**
 	 * compare to other NBTTagCompounds or IAETagCompounds

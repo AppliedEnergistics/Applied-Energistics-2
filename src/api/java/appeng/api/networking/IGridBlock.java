@@ -23,13 +23,15 @@
 
 package appeng.api.networking;
 
-import appeng.api.parts.IPart;
-import appeng.api.util.AEColor;
-import appeng.api.util.DimensionalCoord;
+
+import java.util.EnumSet;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.EnumSet;
+import appeng.api.parts.IPart;
+import appeng.api.util.AEColor;
+import appeng.api.util.DimensionalCoord;
 
 /**
  * An Implementation is required to create your node for IGridHost
@@ -85,7 +87,7 @@ public interface IGridBlock
 	 * @param grid grid
 	 * @param channelsInUse used channels
 	 */
-	public void setNetworkStatus(IGrid grid, int channelsInUse);
+	void setNetworkStatus( IGrid grid, int channelsInUse );
 
 	/**
 	 * Determine which sides of the block can be connected too, only used when isWorldAccessible returns true, not used
@@ -108,5 +110,5 @@ public interface IGridBlock
 	 *
 	 * @return the render item stack to use to render this node, null is valid, and will not show this node.
 	 */
-	public ItemStack getMachineRepresentation();
+	ItemStack getMachineRepresentation();
 }

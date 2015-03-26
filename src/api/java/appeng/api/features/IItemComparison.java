@@ -26,8 +26,8 @@ package appeng.api.features;
 public interface IItemComparison
 {
 
-	public boolean sameAsPrecise(IItemComparison comp);
+	boolean sameAsPrecise( IItemComparison comp );
 
-	public boolean sameAsFuzzy(IItemComparison comp);
+	boolean sameAsFuzzy( IItemComparison comp );
 
 }

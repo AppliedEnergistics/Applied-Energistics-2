@@ -23,8 +23,10 @@
 
 package appeng.api.networking;
 
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import appeng.api.parts.IPart;
 import appeng.api.util.AECableType;
 
@@ -48,7 +50,7 @@ public interface IGridHost
 	 * @return a new IGridNode, create these with
 	 *         AEApi.INSTANCE().createGridNode( MyIGridBlock )
 	 */
-	public IGridNode getGridNode(ForgeDirection dir);
+	IGridNode getGridNode( ForgeDirection dir );
 
 	/**
 	 * Determines how cables render when they connect to this block. Priority is
@@ -56,11 +58,11 @@ public interface IGridHost
 	 *
 	 * @param dir direction
 	 */
-	public AECableType getCableConnectionType(ForgeDirection dir);
+	AECableType getCableConnectionType( ForgeDirection dir );
 
 	/**
 	 * break this host, its violating security rules, just break your block, or part.
 	 */
-	public void securityBreak();
+	void securityBreak();
 
 }

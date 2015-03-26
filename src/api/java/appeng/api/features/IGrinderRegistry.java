@@ -23,9 +23,10 @@
 
 package appeng.api.features;
 
-import net.minecraft.item.ItemStack;
 
 import java.util.List;
+
+import net.minecraft.item.ItemStack;
 
 /**
  * Lets you manipulate Grinder Recipes, by adding or editing existing ones.
@@ -38,7 +39,7 @@ public interface IGrinderRegistry
 	 *
 	 * @return currentlyRegisteredRecipes
 	 */
-	public List<IGrinderEntry> getRecipes();
+	List<IGrinderEntry> getRecipes();
 
 	/**
 	 * add a new recipe the easy way, in &#8594; out, how many turns., duplicates will not be added.
@@ -47,7 +48,7 @@ public interface IGrinderRegistry
 	 * @param out output
 	 * @param turns amount of turns to turn the input into the output
 	 */
-	public void addRecipe(ItemStack in, ItemStack out, int turns);
+	void addRecipe( ItemStack in, ItemStack out, int turns );
 
 	/**
 	 * add a new recipe with optional outputs, duplicates will not be added.
@@ -79,6 +80,6 @@ public interface IGrinderRegistry
 	 * @param input input
 	 * @return identified recipe or null
 	 */
-	public IGrinderEntry getRecipeForInput(ItemStack input);
+	IGrinderEntry getRecipeForInput( ItemStack input );
 
 }
